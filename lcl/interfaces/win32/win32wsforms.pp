@@ -273,16 +273,16 @@ procedure CalcFormWindowFlags(const AForm: TCustomForm; var Flags, FlagsEx: DWOR
 var
   BorderStyle: TFormBorderStyle;
 begin
-  BorderStyle := GetDesigningBorderStyle(AForm);
-  Flags := BorderStyleToWin32Flags(BorderStyle);
-  if AForm.Parent <> nil then
-    Flags := (Flags or WS_CHILD) and not WS_POPUP;
-  // clear border style flags
-  FlagsEx := FlagsEx and not (WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE or WS_EX_TOOLWINDOW);
+  // clear all styles which can be set by border style and icons
+  Flags := Flags and not (WS_POPUP or WS_BORDER or WS_CAPTION or WS_THICKFRAME or
+    WS_DLGFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX or WS_SYSMENU);
+  FlagsEx := FlagsEx and not (WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE or
+    WS_EX_TOOLWINDOW or WS_EX_CONTEXTHELP);
   // set border style flags
+  BorderStyle := GetDesigningBorderStyle(AForm);
+  Flags := Flags or BorderStyleToWin32Flags(BorderStyle);
   FlagsEx := FlagsEx or BorderStyleToWin32FlagsEx(BorderStyle);
-  if (AForm.FormStyle in fsAllStayOnTop) and 
-      not (csDesigning in AForm.ComponentState) then
+  if (AForm.FormStyle in fsAllStayOnTop) and not (csDesigning in AForm.ComponentState) then
     FlagsEx := FlagsEx or WS_EX_TOPMOST;
   Flags := Flags or CalcBorderIconsFlags(AForm);
   FlagsEx := FlagsEx or CalcBorderIconsFlagsEx(AForm);

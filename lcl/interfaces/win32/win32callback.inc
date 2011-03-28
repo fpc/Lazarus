@@ -2255,7 +2255,7 @@ begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
         MoveType := Move_SourceIsInterface;
-        if (lWinControl is TCustomForm) and (TCustomForm(lWinControl).Parent = nil) then
+        if (lWinControl is TCustomForm) and (GetWindowLong(Window, GWL_STYLE) and WS_CHILD = 0) then
         begin
           WindowPlacement.length := SizeOf(WindowPlacement);
           if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
