@@ -3707,7 +3707,8 @@ begin
   if FindResource(HInstance, PChar(ResName), PChar(RT_BITMAP)) <> 0 then
   begin
     Result := TBitmap.Create;
-    Result.LoadFromResourceName(HInstance, ResName)
+    Result.LoadFromResourceName(HInstance, ResName);
+    Result.Transparent := True;
   end;
 
   if Result = nil then
