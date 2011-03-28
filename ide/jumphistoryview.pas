@@ -135,7 +135,7 @@ begin
         SrcLine:=CodeBuf.GetLine(jh_item.CaretXY.Y-1);
       Filename:=jh_item.Filename;
       if Project1<>nil then
-        Project1.ShortenFilename(Filename);
+        Filename:=Project1.GetShortFilename(Filename,true);
       listHistory.Items.Append
         (BeautifyLine(Filename,
                       jh_item.CaretXY.X,
@@ -144,7 +144,7 @@ begin
                      )
         );
     end;
-    DebugLn(['TJumpHistoryViewWin.InitDisplay Project1.JumpHistory.HistoryIndex=',Project1.JumpHistory.HistoryIndex]);
+    //DebugLn(['TJumpHistoryViewWin.InitDisplay Project1.JumpHistory.HistoryIndex=',Project1.JumpHistory.HistoryIndex]);
     listHistory.ItemIndex := Project1.JumpHistory.HistoryIndex;
   end;
   listHistory.Items.EndUpdate;

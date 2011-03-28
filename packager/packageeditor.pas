@@ -282,8 +282,8 @@ type
     function CanBeAddedToProject: boolean;
     procedure IdleHandler(Sender: TObject; var Done: Boolean);
     function FitsFilter(aFilename: string): boolean;
-    procedure FreeTVNodeData(Node: TTreeNode);
     function ComparePkgFilenames(AFilename1, AFilename2: string): integer;
+    procedure FreeTVNodeData(Node: TTreeNode);
   protected
     procedure SetLazPackage(const AValue: TLazPackage); override;
   public
@@ -1510,10 +1510,8 @@ begin
   ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
 
   FilterEdit.Text:=lisCEFilter;
-  //SortAlphabeticallySpeedButton.Caption:=dlgAlphabetically;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
   SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
-  //DirectoryHierarchySpeedButton.Caption:=lisPEDirectories;
   DirectoryHierarchySpeedButton.Hint:=lisPEShowDirectoryHierarchy;
   DirectoryHierarchySpeedButton.LoadGlyphFromLazarusResource('pkg_hierarchical');
 
@@ -1715,82 +1713,6 @@ procedure TPackageEditorForm.UpdateFiles(Immediately: boolean);
     ANode.SelectedIndex:=ANode.ImageIndex;
   end;
 
-  procedure DeleteUnneededNodes(TVNodeStack: TFPList; p: integer);
-  // delete all nodes behind the nodes in the stack, and depth>=p
-  var
-    i: Integer;
-    Node: TTreeNode;
-  begin
-    for i:=TVNodeStack.Count-1 downto p do begin
-      Node:=TTreeNode(TVNodeStack[i]);
-      while Node.GetNextSibling<>nil do
-        Node.GetNextSibling.Free;
-    end;
-    TVNodeStack.Count:=p;
-  end;
-
-  procedure ClearUnneededAndCreateHierachy(Filename: string; TVNodeStack: TFPList);
-  // TVNodeStack contains a path of TTreeNode for the last filename
-  var
-    DelimPos: Integer;
-    FilePart: String;
-    Node: TTreeNode;
-    p: Integer;
-  begin
-    p:=0;
-    while Filename<>'' do begin
-      // get the next file name part
-      if ShowDirectoryHierarchy then
-        DelimPos:=System.Pos(PathDelim,Filename)
-      else
-        DelimPos:=0;
-      if DelimPos>0 then begin
-        FilePart:=copy(Filename,1,DelimPos-1);
-        Filename:=copy(Filename,DelimPos+1,length(Filename));
-      end else begin
-        FilePart:=Filename;
-        Filename:='';
-      end;
-      //debugln(['ClearUnneededAndCreateHierachy FilePart=',FilePart,' Filename=',Filename,' p=',p]);
-      if p<TVNodeStack.Count then begin
-        Node:=TTreeNode(TVNodeStack[p]);
-        if (FilePart=Node.Text) and (Node.Data=nil) then begin
-          // same sub directory
-        end
-        else begin
-          // change directory => last directory is complete
-          // => delete unneeded nodes after last path
-          DeleteUnneededNodes(TVNodeStack,p+1);
-          if Node.GetNextSibling<>nil then begin
-            Node:=Node.GetNextSibling;
-            Node.Text:=FilePart;
-          end
-          else
-            Node:=FilesTreeView.Items.Add(Node,FilePart);
-          TVNodeStack[p]:=Node;
-        end;
-      end else begin
-        // new sub node
-        if p>0 then
-          Node:=TTreeNode(TVNodeStack[p-1])
-        else
-          Node:=FFilesNode;
-        if Node.GetFirstChild<>nil then begin
-          Node:=Node.GetFirstChild;
-          Node.Text:=FilePart;
-        end
-        else
-          Node:=FilesTreeView.Items.AddChild(Node,FilePart);
-        TVNodeStack.Add(Node);
-      end;
-      if (Filename<>'') then begin
-        Node.ImageIndex:=ImageIndexDirectory;
-        Node.SelectedIndex:=Node.ImageIndex;
-      end;
-      inc(p);
-    end;
-  end;
-
 var
   Cnt: Integer;
   i: Integer;
@@ -1850,7 +1772,8 @@ begin
       for i:=0 to Files.Count-1 do begin
         Filename:=Files[i];
         CurFile:=TPkgFile(Files.Objects[i]);
-        ClearUnneededAndCreateHierachy(Filename,TVNodeStack);
+        TVClearUnneededAndCreateHierachy(FilesTreeView,FFilesNode,Filename,
+          TVNodeStack,ShowDirectoryHierarchy,ImageIndexDirectory);
         CurNode:=TTreeNode(TVNodeStack[TVNodeStack.Count-1]);
         if FNextSelectedPart<>nil then
           CurNode.Selected:=FNextSelectedPart=CurFile;
@@ -1858,7 +1781,7 @@ begin
         SetImageIndex(CurNode,CurFile);
         CurNode.DeleteChildren;
       end;
-      DeleteUnneededNodes(TVNodeStack,0);
+      TVDeleteUnneededNodes(TVNodeStack,0);
     end;
 
     // removed files

@@ -372,8 +372,9 @@ type
     function FindFile(const AFilename: string;
                       SearchFlags: TProjectFileSearchFlags): TLazProjectFile; virtual; abstract;
     procedure UpdateExecutableType; virtual; abstract;
-    procedure ShortenFilename(var AFilename: string); virtual; abstract;
-    procedure LongenFilename(var AFilename: string); virtual; abstract;
+    function GetShortFilename(const Filename: string; UseUp: boolean): string; virtual; abstract;
+    procedure ConvertToLPIFilename(var AFilename: string); virtual; abstract;
+    procedure ConvertFromLPIFilename(var AFilename: string); virtual; abstract;
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;

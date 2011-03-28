@@ -7098,9 +7098,9 @@ var
     LFMFilename:=ChangeFileExt(UnitCode.Filename,'.lfm');
     if FileExistsUTF8(LFMFilename) then begin
       UsingFilename:=AnUnitInfo.Filename;
-      Project1.ShortenFilename(UsingFilename);
+      Project1.ConvertToLPIFilename(UsingFilename);
       UsedFilename:=UnitCode.Filename;
-      Project1.ShortenFilename(UsedFilename);
+      Project1.ConvertToLPIFilename(UsedFilename);
       TheModalResult:=QuestionDlg(lisCodeTemplError,
         Format(lisClassConflictsWithLfmFileTheUnitUsesTheUnitWhic, [#13,
           UsingFilename, #13, UsedFilename, #13, AComponentClassName, #13, #13,

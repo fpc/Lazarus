@@ -692,7 +692,7 @@ begin
   if DocFile<>nil then begin
     Filename:=DocFile.Filename;
     if (LazarusIDE.ActiveProject<>nil) then
-      LazarusIDE.ActiveProject.ShortenFilename(Filename);
+      Filename:=LazarusIDE.ActiveProject.GetShortFilename(Filename,true);
     Caption := strCaption + Filename;
   end else
     Caption := strCaption + lisCodeHelpNoTagCaption;

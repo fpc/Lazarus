@@ -895,7 +895,7 @@ begin
     if PackageEditors<>nil then
       PackageEditors.UpdateAllEditors(false);
     if ProjInspector<>nil then
-      ProjInspector.UpdateItems;
+      ProjInspector.UpdateItems(false);
     DoCallNotifyHandler(pihtGraphChanged,Self);
   end;
 end;

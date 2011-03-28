@@ -2328,7 +2328,7 @@ begin
   FBreakPointGroups.LoadFromXMLConfig(XMLConfig,
                                      'Debugging/'+XMLBreakPointGroupsNode+'/');
   FBreakPoints.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
-                                 @Project1.LongenFilename,
+                                 @Project1.ConvertFromLPIFilename,
                                  @FBreakPointGroups.GetGroupByName);
   FWatches.LoadFromXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
 end;
@@ -2347,7 +2347,7 @@ begin
     FBreakPointGroups.SaveToXMLConfig(XMLConfig,
                                       'Debugging/'+XMLBreakPointGroupsNode+'/');
     FBreakPoints.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLBreakPointsNode+'/',
-                                 @Project1.ShortenFilename);
+                                 @Project1.ConvertToLPIFilename);
     FWatches.SaveToXMLConfig(XMLConfig,'Debugging/'+XMLWatchesNode+'/');
   end;
   if not (pwfDoNotSaveProjectInfo in Flags) then

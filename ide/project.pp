@@ -342,6 +342,7 @@ type
     function IsMainUnit: boolean;
     function IsVirtual: boolean;
     function GetDirectory: string;
+    function GetShortFilename(UseUp: boolean): string;
     function NeedsSaveToDisk: boolean;
     function ReadOnly: boolean;
     function ReadUnitSource(ReadUnitName,Revert:boolean): TModalResult;
@@ -958,8 +959,9 @@ type
     function FileIsInProjectDir(const AFilename: string): boolean;
     procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
     function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
-    procedure ShortenFilename(var AFilename: string); override; // for lpi file
-    procedure LongenFilename(var AFilename: string); override; // for lpi file
+    function GetShortFilename(const Filename: string; UseUp: boolean): string; override;
+    procedure ConvertToLPIFilename(var AFilename: string); override;
+    procedure ConvertFromLPIFilename(var AFilename: string); override;
 
     // package dependencies
     function FindDependencyByName(const PackageName: string): TPkgDependency;
@@ -1965,6 +1967,14 @@ begin
   end else  begin
     Result:=ExtractFilePath(Filename);
   end;
+end;
+
+function TUnitInfo.GetShortFilename(UseUp: boolean): string;
+begin
+  if Project<>nil then
+    Result:=Project.GetShortFilename(Filename,UseUp)
+  else
+    Result:=Filename;
 end;
 
 function TUnitInfo.IsMainUnit: boolean;
@@ -4068,12 +4078,29 @@ begin
   Result:='';
 end;
 
-procedure TProject.ShortenFilename(var AFilename: string);
+function TProject.GetShortFilename(const Filename: string; UseUp: boolean
+  ): string;
+var
+  BaseDir: String;
+  CurPath: String;
+begin
+  Result:=Filename;
+  BaseDir:=AppendPathDelim(ProjectDirectory);
+  if (BaseDir<>'') and FilenameIsAbsolute(BaseDir) and UseUp then
+    Result:=CreateRelativePath(Result,BaseDir)
+  else begin
+    CurPath:=copy(ExtractFilePath(Result),1,length(BaseDir));
+    if CompareFilenames(BaseDir,CurPath)=0 then
+      Result:=copy(Result,length(CurPath)+1,length(Result));
+  end;
+end;
+
+procedure TProject.ConvertToLPIFilename(var AFilename: string);
 begin
   OnLoadSaveFilename(AFilename,false);
 end;
 
-procedure TProject.LongenFilename(var AFilename: string);
+procedure TProject.ConvertFromLPIFilename(var AFilename: string);
 begin
   OnLoadSaveFilename(AFilename,true);
 end;
@@ -5017,7 +5044,7 @@ begin
   Result:=POOutputDirectory;
   IDEMacros.SubstituteMacros(Result);
   Result:=TrimFilename(Result);
-  LongenFilename(Result);
+  ConvertFromLPIFilename(Result);
 end;
 
 function TProject.GetAutoCreatedFormsList: TStrings;
