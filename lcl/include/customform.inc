@@ -479,7 +479,8 @@ begin
   {$IFDEF VerboseFocus}
   DebugLn('TCustomForm.WMActivate A ',DbgSName(Self),' Msg.Active=',dbgs(Message.Active));
   {$ENDIF}
-  if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
+  if (Parent = nil) and (ParentWindow = 0) and
+     (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
     SetActive(Message.Active);
 
   if Application <> nil then
