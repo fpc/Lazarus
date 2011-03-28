@@ -2131,6 +2131,15 @@ begin
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
     end;
+    WM_WINDOWPOSCHANGING:
+    begin
+      with TLMWindowPosMsg(LMessage) Do
+      begin
+        Msg := LM_WINDOWPOSCHANGING;
+        Unused := WParam;
+        WindowPos := PWindowPos(LParam);
+      end;
+    end;
     WM_WINDOWPOSCHANGED:
     begin
       with TLMWindowPosMsg(LMessage) Do
