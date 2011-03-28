@@ -6680,14 +6680,12 @@ begin
     if CompareRect(@NewBoundsRealized,@FBoundsRealized) then exit;
 
     TopParent:=GetTopParent;
-    if (TopParent is TWinControl)
-      and (wcfKillIntfSetBounds in TWinControl(TopParent).FWinControlFlags)
-    then
+    if (TopParent is TWinControl) and (wcfKillIntfSetBounds in TWinControl(TopParent).FWinControlFlags) then
       RaiseLoop;
 
     FBoundsRealized := NewBoundsRealized;
-    if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
-    then begin
+    if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[]) then
+    begin
       // while the LCL is creating handles the widgetset may send default bounds
       // we have not yet told the widgetset the final bounds
       // => the InvalidatePreferredSize and the InvalidateClientRectCache
@@ -6699,7 +6697,7 @@ begin
       exit;
     end;
   end;
-  if Parent<>nil then
+  if Assigned(Parent) then
     SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight)
   else
     SetBounds(Message.XPos, Message.YPos, NewWidth, NewHeight);

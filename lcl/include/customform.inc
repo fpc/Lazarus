@@ -570,7 +570,7 @@ end;
 
 procedure TCustomForm.DoShowWindow;
 begin
-  if (ActiveControl = nil) and (not (csDesigning in ComponentState)) and (Parent=nil) then
+  if (ActiveControl = nil) and (not (csDesigning in ComponentState)) and (Parent = nil) then
   begin
     // automatically choose a control to focus
     {$IFDEF VerboseFocus}
@@ -632,14 +632,14 @@ begin
   DebugLn(['[TCustomForm.WMSize] ',DbgSName(Self),' Message.SizeType=',Message.SizeType,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' AutoSizeDelayed=',AutoSizeDelayed]);
   {$ENDIF}
 
-  if (Parent=nil) and ((Message.SizeType and SIZE_SourceIsInterface)>0) then
+  if (Parent = nil) and ((Message.SizeType and SIZE_SourceIsInterface) > 0) then
   begin
     // this is a top level form (constraints depend on window manager)
     // and the widgetset set a size
-    if (Message.Width<>Width) or (Message.Height<>Height) then
+    if (Message.Width <> Width) or (Message.Height <> Height) then
     begin
       // the window manager sets another size => disable autosize to prevent endless loop
-      Include(FFormState,fsDisableAutoSize);
+      Include(FFormState, fsDisableAutoSize);
     end;
   end;
 
@@ -689,12 +689,11 @@ end;
 
 procedure TCustomForm.WMWindowPosChanged(var Message: TLMWindowPosChanged);
 begin
-  if (Parent=nil) and (Message.WindowPos<>nil)
-  and ((Message.WindowPos^.flags and SWP_SourceIsInterface)>0)
-  then begin
+  if (Parent = nil) and Assigned(Message.WindowPos) and ((Message.WindowPos^.flags and SWP_SourceIsInterface)>0) then
+  begin
     // this is a top level form (constraints depend on window manager)
     // and the widgetset set a size
-    if (Message.WindowPos^.cx<>Width) or (Message.WindowPos^.cy<>Height) then
+    if (Message.WindowPos^.cx <> Width) or (Message.WindowPos^.cy <> Height) then
     begin
       // the window manager sets another size => disable autosize to prevent endless loop
       Include(FFormState,fsDisableAutoSize);
@@ -1091,13 +1090,14 @@ var
 begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
     WithThemeSpace);
-  if (Parent=nil) and (Anchors*[akRight,akBottom]<>[]) then begin
+  if (Parent = nil) and (Anchors * [akRight, akBottom] <> []) then
+  begin
     // do size bigger than the monitor workarea
-    WorkArea:=Monitor.WorkareaRect;
+    WorkArea := Monitor.WorkareaRect;
     if akRight in Anchors then
-      PreferredWidth:=min(PreferredWidth,WorkArea.Right-WorkArea.Left);
+      PreferredWidth := min(PreferredWidth, WorkArea.Right - WorkArea.Left);
     if akBottom in Anchors then
-      PreferredHeight:=min(PreferredHeight,WorkArea.Bottom-WorkArea.Top);
+      PreferredHeight := min(PreferredHeight, WorkArea.Bottom - WorkArea.Top);
   end;
 end;
 

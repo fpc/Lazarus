@@ -4922,7 +4922,7 @@ begin
   DebugLn('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',DbgS(Message.XPos),' Message.YPos=',DbgS(Message.YPos),' OldLeft=',DbgS(Left),' OldTop=',DbgS(Top));
   {$ENDIF}
   // Just sync the coordinates
-  if Parent<>nil then
+  if Assigned(Parent) then
     SetBoundsKeepBase(Message.XPos, Message.YPos, Width, Height)
   else
     SetBounds(Message.XPos, Message.YPos, Width, Height);
