@@ -3794,14 +3794,16 @@ var
   Editable: Boolean;
   SelAvail: Boolean;
   SelEditable: Boolean;
+  SrcEditorActive: Boolean;
 begin
   GetCurrentUnit(ASrcEdit,AnUnitInfo);
   Editable:=(ASrcEdit<>nil) and (not ASrcEdit.ReadOnly);
   SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
   SelEditable:=Editable and SelAvail;
+  SrcEditorActive:=FDisplayState=dsSource;
   with MainIDEBar do begin
-    itmEditUndo.Enabled:=Editable;
-    itmEditRedo.Enabled:=Editable;
+    itmEditUndo.Enabled:=Editable and SrcEditorActive;
+    itmEditRedo.Enabled:=Editable and SrcEditorActive;
   //itmEditClipboard: TIDEMenuSection;
     itmEditCut.Enabled:=SelEditable;
     itmEditCopy.Enabled:=SelAvail;
