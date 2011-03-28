@@ -6871,8 +6871,8 @@ begin
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.WindowPos^.flags and SWP_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
 
-  if (Message.WindowPos=nil)
-  or ((Message.WindowPos^.flags and SWP_SourceIsInterface) = 0) then begin
+  if (Message.WindowPos=nil) or ((Message.WindowPos^.flags and SWP_SourceIsInterface) = 0) then
+  begin
     inherited WMWindowPosChanged(Message);
     exit;
   end;
