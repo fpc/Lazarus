@@ -112,7 +112,6 @@ type
     Buddy, Parent, Window: HWND;
     Left, Top, Height, Width: integer;
     WindowInfo, BuddyWindowInfo: PWin32WindowInfo;
-    MenuHandle: HMENU;
     Flags, FlagsEx: dword;
     SubClassWndProc: pointer;
     StrCaption, WindowTitle: String;
@@ -237,25 +236,20 @@ begin
           end;
         end;
       end;
-      if (Flags and WS_CHILD) <> 0 then
-        // menu handle is also for specifying a control id if this is a child
-        MenuHandle := HMENU(AWinControl)
-      else
-        MenuHandle := HMENU(nil);
 
       {$ifdef WindowsUnicodeSupport}
       if UnicodeEnabledOS then
         Window := CreateWindowExW(FlagsEx, PWideChar(WideString(pClassName)),
           PWideChar(UTF8ToUTF16(WindowTitle)), Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, @NCCreateParams)
+          Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams)
       else
         Window := CreateWindowEx(FlagsEx, pClassName,
           PChar(Utf8ToAnsi(WindowTitle)), Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, @NCCreateParams);
+          Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams);
       {$else}
         Window := CreateWindowEx(FlagsEx, pClassName,
           PChar(WindowTitle), Flags,
-          Left, Top, Width, Height, Parent, MenuHandle, HInstance, @NCCreateParams);
+          Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams);
       {$endif}
 
       if Window = 0 then
