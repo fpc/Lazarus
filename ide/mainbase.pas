@@ -602,7 +602,7 @@ begin
     CreateMenuSeparatorSection(mnuRefactor,itmRefactorCodeTools,'itmRefactorCodeTools');
     ParentMI:=itmRefactorCodeTools;
     CreateMenuItem(ParentMI,itmRefactorCompleteCode,'itmRefactorCompleteCode',lisMenuCompleteCode);
-    CreateMenuItem(ParentMI,itmRefactorUseUnit,'itmRefactorUseUnit',lisMenuUseUnit);
+    CreateMenuItem(ParentMI,itmRefactorUseUnit,'itmRefactorUseUnit',lisMenuUseProjectUnit);
     CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
     CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
     CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);

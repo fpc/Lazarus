@@ -2618,7 +2618,7 @@ resourcestring
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';
   lisMenuCompleteCode             = 'Complete Code';
-  lisMenuUseUnit                  = 'Add unit to uses section';
+  lisMenuUseProjectUnit           = 'Add unit to uses section';
   srkmecShowCodeContext           = 'Show code context';
   srkmecExtractProc               = 'Extract procedure';
   lisMenuExtractProc              = 'Extract procedure ...';
@@ -2639,7 +2639,6 @@ resourcestring
   srkmecRemoveEmptyMethods        = 'Remove empty methods';
   srkmecUnusedUnits               = 'Unused units ...';
   srkmecRemoveUnusedUnits         = 'Remove unused units';
-  srkmecUseProjectUnit            = 'Add unit to uses section';
   srkmecFindOverloads             = 'Find overloads';
   srkmecFindOverloadsCapt         = 'Find overloads ...';
 
