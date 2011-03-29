@@ -136,6 +136,7 @@ type
   protected
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
+    function GetTextChangeStamp: int64; override;
 
     function GetRedoList: TSynEditUndoList; override;
     function GetUndoList: TSynEditUndoList; override;
@@ -201,7 +202,6 @@ type
     property Flags[Index: Integer]: TSynEditStringFlags read GetFlags
       write SetFlags;
     property Modified: Boolean read FModified write SetModified;
-    property TextChangeStamp: int64 read FTextChangeStamp;
   public
     property UndoList: TSynEditUndoList read GetUndoList write fUndoList;
     property RedoList: TSynEditUndoList read GetRedoList write fRedoList;
@@ -640,6 +640,11 @@ begin
     Result := length(FList[fIndexOfLongestLine])
   else
     Result := 0;
+end;
+
+function TSynEditStringList.GetTextChangeStamp: int64;
+begin
+  Result := FTextChangeStamp;
 end;
 
 function TSynEditStringList.GetRedoList: TSynEditUndoList;

@@ -1593,7 +1593,7 @@ begin
     with TCustomSynEdit(F.CurrentEditor) do begin
       BeginUndoBlock;
       BeginUpdate;
-      LogCaret:=PhysicalToLogicalPos(CaretXY);
+      LogCaret := LogicalCaretXY;
       NewBlockBegin:=LogCaret;
       CurLine:=Lines[NewBlockBegin.Y - 1];
       while (NewBlockBegin.X>1) and (NewBlockBegin.X-1<=length(CurLine))

@@ -716,7 +716,7 @@ end;
 constructor TSynEditSelection.Create(ALines : TSynEditStrings; aActOnLineChanges: Boolean);
 begin
   Inherited Create(ALines);
-  FInternalCaret := TSynEditCaret.Create;
+  FInternalCaret := TSynEditCaret.Create; // TODO: does not need FLines.AddEditHandler
   FInternalCaret.Lines := FLines;
 
   FActiveSelectionMode := smNormal;

@@ -58,11 +58,13 @@ type
     FTabData: TSynEditStringTabData;
     FLastLineHasTab: Boolean; // Last line, parsed by GetPhysicalCharWidths
     FLastLinePhysLen: Integer;
+    FViewChangeStamp: int64;
     procedure TextBufferChanged(Sender: TObject);
     procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     function ExpandedString(Index: integer): string;
     function ExpandedStringLength(Index: integer): Integer;
   protected
+    function GetViewChangeStamp: int64; override;
     function  GetTabWidth : integer;
     procedure SetTabWidth(const AValue : integer);
     function  GetExpandedString(Index: integer): string; override;
@@ -170,11 +172,23 @@ var
 begin
   if FTabWidth = AValue then exit;
 
+  {$PUSH}{$Q-}{$R-}
+  FViewChangeStamp := FViewChangeStamp + 1;
+  {$POP}
+
   FTabWidth := AValue;
   FIndexOfLongestLine := -1;
   for i := 0 to Count - 1 do
     if not(FTabData[i] >= NO_TAB_IN_LINE_OFFSET) then
       FTabData[i] := LINE_LEN_UNKNOWN;
+end;
+
+function TSynEditStringTabExpander.GetViewChangeStamp: int64;
+begin
+  Result := inherited GetViewChangeStamp;
+  {$PUSH}{$Q-}{$R-}
+  Result := Result + FViewChangeStamp;
+  {$POP}
 end;
 
 procedure TSynEditStringTabExpander.TextBufferChanged(Sender: TObject);

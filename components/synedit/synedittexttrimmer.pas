@@ -52,6 +52,7 @@ type
     fLockList : TStringList;
     FLineEdited: Boolean;
     FTempLineStringForPChar: String; // experimental; used by GetPChar;
+    FViewChangeStamp: int64;
     procedure DoCaretChanged(Sender : TObject);
     procedure ListCleared(Sender: TObject);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -68,7 +69,9 @@ type
     procedure EditMoveToTrim(LogY, Len: Integer);
     procedure EditMoveFromTrim(LogY, Len: Integer);
     procedure UpdateLineText(LogY: Integer);
+    procedure IncViewChangeStamp;
   protected
+    function GetViewChangeStamp: int64; override;
     function  GetExpandedString(Index: integer): string; override;
     function  GetLengthOfLongestLine: integer; override;
     function  Get(Index: integer): string; override;
@@ -378,6 +381,7 @@ begin
   then begin
     if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) then begin
     {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CarteChnaged - Clearing 1 ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
+      if fSpaces <> '' then IncViewChangeStamp;
       fLineIndex := TSynEditCaret(Sender).LinePos - 1;
       fSpaces := '';
     end;
@@ -385,7 +389,7 @@ begin
   end;
 
   FIsTrimming := True;
-  SendNotification(senrLineChange, self, fLineIndex, 1);
+  IncViewChangeStamp;
   if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) or
      (FTrimType = settIgnoreAll) then
   begin
@@ -393,6 +397,7 @@ begin
     CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, FSpaces));
     i := length(FSpaces);
     fSpaces := '';
+    SendNotification(senrLineChange, self, fLineIndex, 1);
     SendNotification(senrEditAction, self, FLineIndex+1, 0,
                      1+length(fSynStrings[FLineIndex]), -i, '');
   end else begin
@@ -408,6 +413,7 @@ begin
     FSpaces := copy(FSpaces, 1, j);
     i := length(s);
     CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, s));
+    SendNotification(senrLineChange, self, fLineIndex, 1);
     SendNotification(senrEditAction, self, FLineIndex+1, 0,
                      1+length(fSynStrings[FLineIndex]) + length(FSpaces), -i, '');
   end;
@@ -419,6 +425,7 @@ end;
 procedure TSynEditStringTrimmingList.ListCleared(Sender: TObject);
 begin
     {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- LIST CLEARED ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces) ]);{$ENDIF}
+  if fSpaces <> '' then IncViewChangeStamp;
   fLockList.Clear;
   fLineIndex:= -1;
   fSpaces := '';
@@ -445,6 +452,7 @@ var
   i, j: Integer;
 begin
   if (not fEnabled) then exit;
+  IncViewChangeStamp;
   if  fLockCount > 0 then begin
     {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Lines Changed (ins/del)  locked ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces) ]);{$ENDIF}
     for i := fLockList.Count-1 downto 0 do begin
@@ -549,6 +557,7 @@ begin
   if Index <> fLineIndex then exit('');
   if (fLineIndex < 0) or (fLineIndex >= fSynStrings.Count)
     or (fLineText <> fSynStrings[fLineIndex]) then begin
+    if fSpaces <> '' then IncViewChangeStamp;
     fSpaces:='';
     fLineText:='';
   end;
@@ -578,6 +587,7 @@ var
 begin
   if (not fEnabled) then exit;
   FIsTrimming := True;
+  IncViewChangeStamp;
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimAfterLock', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' LockList=',fLockList.CommaText]);{$ENDIF}
   i := fLockList.IndexOfObject(TObject(Pointer(PtrUInt(fLineIndex))));
   if i >= 0 then begin
@@ -760,6 +770,7 @@ begin
                      copy(s,1, LogX - 1) + AText + copy(s, LogX, length(s)),
                      fSynStrings.Strings[LogY - 1]);
   CurUndoList.AddChange(TSynEditUndoTrimInsert.Create(LogX, LogY, Length(AText)));
+  IncViewChangeStamp;
 end;
 
 function TSynEditStringTrimmingList.EditDeleteTrim(LogX, LogY, ByteLen:
@@ -777,6 +788,7 @@ begin
                      fSynStrings.Strings[LogY - 1]);
   if Result <> '' then
     CurUndoList.AddChange(TSynEditUndoTrimDelete.Create(LogX, LogY, Result));
+  IncViewChangeStamp;
 end;
 
 procedure TSynEditStringTrimmingList.EditMoveToTrim(LogY, Len: Integer);
@@ -792,6 +804,7 @@ begin
   StoreSpacesForLine(LogY - 1, s, t);
   fSynStrings[LogY - 1] := t;
   CurUndoList.AddChange(TSynEditUndoTrimMoveTo.Create(LogY, Len));
+  IncViewChangeStamp;
 end;
 
 procedure TSynEditStringTrimmingList.EditMoveFromTrim(LogY, Len: Integer);
@@ -807,12 +820,28 @@ begin
   StoreSpacesForLine(LogY - 1, s, t);
   fSynStrings[LogY - 1] := t;
   CurUndoList.AddChange(TSynEditUndoTrimMoveFrom.Create(LogY, Len));
+  IncViewChangeStamp;
 end;
 
 procedure TSynEditStringTrimmingList.UpdateLineText(LogY: Integer);
 begin
   if LogY - 1 = fLineIndex then
     fLineText := fSynStrings[LogY - 1];
+end;
+
+procedure TSynEditStringTrimmingList.IncViewChangeStamp;
+begin
+  {$PUSH}{$Q-}{$R-}
+  FViewChangeStamp := FViewChangeStamp + 1;
+  {$POP}
+end;
+
+function TSynEditStringTrimmingList.GetViewChangeStamp: int64;
+begin
+  Result := inherited GetViewChangeStamp;
+  {$PUSH}{$Q-}{$R-}
+  Result := Result + FViewChangeStamp;
+  {$POP}
 end;
 
 procedure TSynEditStringTrimmingList.EditInsert(LogX, LogY: Integer; AText: String);
