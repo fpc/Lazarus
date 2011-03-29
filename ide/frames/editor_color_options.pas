@@ -496,6 +496,8 @@ begin
   begin
     AttrToEdit.FrameColor := DefaultToNone(FrameColorBox.Selected);
     FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected <> clDefault;
+    FrameEdgesBox.Enabled := FrameColorBox.Selected <> clDefault;
+    FrameStyleBox.Enabled := FrameColorBox.Selected <> clDefault;
   end;
   if Sender = FrameEdgesBox then
   begin
