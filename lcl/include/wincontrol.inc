@@ -5174,7 +5174,8 @@ begin
     LM_KILLFOCUS:
       begin
         //DebugLn(Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
-        if csFocusing in ControlState then begin
+        if csFocusing in ControlState then
+        begin
           {$IFDEF VerboseFocus}
           DebugLn('TWinControl.WndProc LM_KillFocus during focusing ',Name,':',ClassName);
           {$ENDIF}
@@ -5186,10 +5187,9 @@ begin
     LM_NCHITTEST:
       begin
         inherited WndPRoc(Message);
-        if (Message.Result = HTTRANSPARENT)
-        and (ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)),
-                          False) <> nil)
-        then  Message.Result := HTCLIENT;
+        if (Message.Result = HTTRANSPARENT) and
+           Assigned(ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)), False)) then
+          Message.Result := HTCLIENT;
         Exit;
       end;
 

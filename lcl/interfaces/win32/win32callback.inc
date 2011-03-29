@@ -1864,6 +1864,9 @@ begin
     begin
       if (lWinControl <> nil) then
       begin
+        LMessage.msg := LM_NCHITTEST;
+        LMessage.wParam := WParam;
+        LMessage.lParam := LParam;
         if (lWinControl.FCompStyle = csHintWindow) then
         begin
           LMessage.Result := HTTRANSPARENT;
