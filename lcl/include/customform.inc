@@ -1289,7 +1289,7 @@ begin
         NewActiveControl := nil;
         NewFocus := 0;
 
-        if (ActiveControl = nil) and (not (csDesigning in ComponentState)) and (Parent=nil) then
+        if (ActiveControl = nil) and not (csDesigning in ComponentState) then
         begin
           // automatically choose a control to focus
           {$IFDEF VerboseFocus}
