@@ -689,6 +689,7 @@ begin
   TVNodeStack:=TFPList.Create;
   ExpandedState:=TTreeNodeExpandedState.Create(ItemsTreeView);
   try
+    FreeTVNodeData(FFilesNode);
     if LazProject<>nil then begin
       // collect and sort files
       CurFile:=LazProject.FirstPartOfProject;
@@ -708,7 +709,6 @@ begin
       //debugln(['TProjectInspectorForm.UpdateFiles filtered=',Files.Count,' of ',LazProject.FileCount,' Filter="',Filter,'" Hierachy=',ShowDirectoryHierarchy,' SortAlpha=',SortAlphabetically]);
 
       // update treeview nodes
-      FreeTVNodeData(FFilesNode);
       if Files.Count=0 then
         FFilesNode.DeleteChildren
       else begin
@@ -981,15 +981,12 @@ begin
       ANode:=ItemsTreeView.Items.GetFirstNode
     else
       ANode:=ANode.GetFirstChild;
-    while (ANode<>nil) and (ANode.Text<>CurText) do
-      ANode:=ANode.GetNextSibling;
+    while ANode.Text<>CurText do ANode:=ANode.GetNextSibling;
     if ANode=nil then break;
     ASelection.Delete(0);
   end;
-  if ANode<>nil then
-    ItemsTreeView.Selected:=ANode;
-  if FreeList then
-    ASelection.Free;
+  if ANode<>nil then ItemsTreeView.Selected:=ANode;
+  if FreeList then ASelection.Free;
 end;
 
 constructor TProjectInspectorForm.Create(TheOwner: TComponent);
