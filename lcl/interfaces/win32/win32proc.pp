@@ -94,8 +94,6 @@ procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
-function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
-function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
 
 function AllocWindowInfo(Window: HWND): PWin32WindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
@@ -887,32 +885,6 @@ begin
   CurrentStyle := GetWindowLong(Handle, GWL_STYLE);
   NewStyle := (Style and StyleMask) or (CurrentStyle and (not StyleMask));
   SetWindowLong(Handle, GWL_STYLE, NewStyle);
-end;
-
-function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
-begin
-  Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
-  case Style of
-  bsSizeable, bsSizeToolWin:
-    Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
-  bsSingle, bsToolWindow:
-    Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
-  bsDialog:
-    Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
-  bsNone:
-    Result := Result or WS_POPUP;
-  end;
-end;
-
-function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
-begin
-  Result := 0;
-  case Style of
-    bsDialog:
-      Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
-    bsToolWindow, bsSizeToolWin:
-      Result := WS_EX_TOOLWINDOW;
-  end;
 end;
 
 function AllocWindowInfo(Window: HWND): PWin32WindowInfo;
