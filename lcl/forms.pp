@@ -1065,7 +1065,7 @@ type
 
   { TApplication }
 
-  TQueryEndSessionEvent = procedure (var Cancel : Boolean) of object;
+  TQueryEndSessionEvent = procedure (var Cancel: Boolean) of object;
   TExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
   TGetHandleEvent = procedure(var Handle: HWND) of object;
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
@@ -1227,8 +1227,8 @@ type
     FOnHint: TNotifyEvent;
     FOnIdle: TIdleEvent;
     FOnIdleEnd: TNotifyEvent;
-    FOnEndSession : TNotifyEvent;
-    FOnQueryEndSession : TQueryEndSessionEvent;
+    FOnEndSession: TNotifyEvent;
+    FOnQueryEndSession: TQueryEndSessionEvent;
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShortcut: TShortcutEvent;
@@ -1390,7 +1390,7 @@ type
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
     function  IsShortcut(var Message: TLMKey): boolean;
-    procedure IntfQueryEndSession(var Cancel : Boolean);
+    procedure IntfQueryEndSession(var Cancel: Boolean);
     procedure IntfEndSession;
     procedure IntfAppActivate;
     procedure IntfAppDeactivate;

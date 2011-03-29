@@ -1909,9 +1909,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
+  procedure TApplication.IntfQueryEndSession(var Cancel: Boolean);
 ------------------------------------------------------------------------------}
-procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
+procedure TApplication.IntfQueryEndSession(var Cancel: Boolean);
 var
   i: LongInt;
 begin
