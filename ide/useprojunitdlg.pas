@@ -144,7 +144,7 @@ begin
     else begin
       if CurrentUnitName='' then
         CurrentUnitName:=ExtractFileNameOnly(Code.Filename);
-      ShowMessage(Format(dlgUnitAlreadyUsesAllOtherUnits,[CurrentUnitName]));
+      ShowMessage(Format(dlgAlreadyUsesAllOtherUnits,[CurrentUnitName]));
     end;
   finally
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;

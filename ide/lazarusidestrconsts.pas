@@ -5155,7 +5155,7 @@ resourcestring
   lisCircleInMacros = 'Circle in macros';
 
   // Uses Unit dialog
-  dlgUnitAlreadyUsesAllOtherUnits = 'Unit "%s" already uses all the units in this project';
+  dlgAlreadyUsesAllOtherUnits = '"%s" already uses all the units in this project';
   dlgUseUnitCaption = 'Use a unit from this project';
   dlgInsertSection = 'Insert into Uses section of';
   dlgInsertInterface = 'Interface';
