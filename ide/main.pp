@@ -177,6 +177,8 @@ type
     procedure OnApplicationKeyDown(Sender: TObject;
                                    var Key: Word; Shift: TShiftState);
     procedure OnApplicationDropFiles(Sender: TObject; const FileNames: array of String);
+    procedure OnApplicationQueryEndSession(var Cancel: Boolean);
+    procedure OnApplicationEndSession(Sender: TObject);
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure OnRemoteControlTimer(Sender: TObject);
     procedure OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
@@ -1429,6 +1431,8 @@ begin
   Application.AddOnActivateHandler(@OnApplicationActivate);
   Application.AddOnKeyDownHandler(@OnApplicationKeyDown);
   Application.AddOnDropFilesHandler(@OnApplicationDropFiles);
+  Application.AddOnQueryEndSessionHandler(@OnApplicationQueryEndSession);
+  Application.AddOnEndSessionHandler(@OnApplicationEndSession);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   SetupHints;
 
@@ -16824,6 +16828,16 @@ begin
     SetRecentFilesMenu;
     SaveEnvironment;
   end;
+end;
+
+procedure TMainIDE.OnApplicationQueryEndSession(var Cancel: Boolean);
+begin
+ Cancel := False;
+end;
+
+procedure TMainIDE.OnApplicationEndSession(Sender: TObject);
+begin
+ QuitIDE;
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
