@@ -1862,17 +1862,9 @@ begin
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCHITTEST:
     begin
-      if (lWinControl <> nil) then
-      begin
-        LMessage.msg := LM_NCHITTEST;
-        LMessage.wParam := WParam;
-        LMessage.lParam := LParam;
-        if (lWinControl.FCompStyle = csHintWindow) then
-        begin
-          LMessage.Result := HTTRANSPARENT;
-          WinProcess := false;
-        end;
-      end;
+      LMessage.msg := LM_NCHITTEST;
+      LMessage.wParam := WParam;
+      LMessage.lParam := LParam;
     end;
     WM_NCLBUTTONDOWN:
     begin
