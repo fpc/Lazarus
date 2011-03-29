@@ -3379,7 +3379,7 @@ begin
     end;
     if (not APackage.IsVirtual) and FilenameIsAbsolute(AFilename) then
       APackage.LongenFilename(AFilename);
-    if FilenameIsAbsolute(AFilename) then begin
+    if not AFile.IsVirtual then begin
       if not FileExistsCached(AFilename) then begin
         if not APackage.IsVirtual then
           AFilename:=CreateRelativePath(AFilename,APackage.Directory);

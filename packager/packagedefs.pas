@@ -1688,7 +1688,7 @@ end;
 
 function TPkgFile.IsVirtual: boolean;
 begin
-  Result:=FilenameIsAbsolute(Filename);
+  Result:=not FilenameIsAbsolute(Filename);
 end;
 
 function TPkgFile.GetShortFilename(UseUp: boolean): string;
