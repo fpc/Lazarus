@@ -179,7 +179,7 @@ type
     // Mouse-states
     sfLeftGutterClick, sfRightGutterClick,
     sfDblClicked, sfTripleClicked, sfQuadClicked,
-    sfWaitForDragging, sfIsDragging, sfMouseSelecting, sfMouseDoneSelecting,
+    sfWaitForDragging, sfIsDragging, sfWaitForMouseSelecting, sfMouseSelecting, sfMouseDoneSelecting,
     sfIgnoreUpClick
     );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
@@ -2591,7 +2591,7 @@ begin
             Include(fStateFlags, sfMouseDoneSelecting);
           end;
           MouseCapture := True;
-          Include(fStateFlags, sfMouseSelecting);
+          Include(fStateFlags, sfWaitForMouseSelecting);
         end;
       emcSelectWord:
         begin
@@ -2744,7 +2744,7 @@ begin
 
   fStateFlags := fStateFlags - [sfDblClicked, sfTripleClicked, sfQuadClicked,
                                 sfLeftGutterClick, sfRightGutterClick,
-                                sfMouseSelecting, sfMouseDoneSelecting,
+                                sfWaitForMouseSelecting, sfMouseSelecting, sfMouseDoneSelecting,
                                 sfWaitForDragging, sfIgnoreUpClick
                                ];
 
@@ -2802,14 +2802,20 @@ begin
   LastMouseCaret := PixelsToRowColumn(Point(X,Y));
   UpdateCursor;
 
+  if (sfWaitForMouseSelecting in fStateFlags) and MouseCapture and
+     ( (abs(fMouseDownX-X) >= MinMax(fCharWidth div 2, 2, 4)) or
+       (abs(fMouseDownY-Y) >= MinMax(fTextHeight div 2, 2, 4)) )
+  then
+    FStateFlags := FStateFlags - [sfWaitForMouseSelecting] + [sfMouseSelecting];
+
   //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture),' GetCaptureControl=',DbgSName(GetCaptureControl));
   if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
-      Exclude(fStateFlags, sfWaitForDragging);
-      Exclude(fStateFlags, sfMouseSelecting);
-      Include(fStateFlags, sfIsDragging);
+      FStateFlags := FStateFlags
+                   -[sfWaitForDragging, sfWaitForMouseSelecting, sfMouseSelecting]
+                   + [sfIsDragging];
       //debugln('TCustomSynEdit.MouseMove BeginDrag');
       BeginDrag(true);
     end;
@@ -2872,7 +2878,7 @@ begin
       FBlockSelection.DecPersistentLock;
   end
   else
-  if MouseCapture and (not(sfIsDragging in fStateFlags))
+  if MouseCapture and (fStateFlags * [sfIsDragging, sfWaitForMouseSelecting] = [])
   then begin
     MouseCapture:=false;
     fScrollTimer.Enabled := False;
@@ -2970,6 +2976,7 @@ begin
   wasSelecting := (sfMouseDoneSelecting in fStateFlags);
   ignoreUp := (sfIgnoreUpClick in fStateFlags);
   Exclude(fStateFlags, sfIsDragging);
+  Exclude(fStateFlags, sfWaitForMouseSelecting);
   Exclude(fStateFlags, sfMouseSelecting);
   Exclude(fStateFlags, sfMouseDoneSelecting);
   Exclude(fStateFlags, sfIgnoreUpClick);
