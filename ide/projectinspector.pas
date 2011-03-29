@@ -981,12 +981,15 @@ begin
       ANode:=ItemsTreeView.Items.GetFirstNode
     else
       ANode:=ANode.GetFirstChild;
-    while ANode.Text<>CurText do ANode:=ANode.GetNextSibling;
+    while (ANode<>nil) and (ANode.Text<>CurText) do
+      ANode:=ANode.GetNextSibling;
     if ANode=nil then break;
     ASelection.Delete(0);
   end;
-  if ANode<>nil then ItemsTreeView.Selected:=ANode;
-  if FreeList then ASelection.Free;
+  if ANode<>nil then
+    ItemsTreeView.Selected:=ANode;
+  if FreeList then
+    ASelection.Free;
 end;
 
 constructor TProjectInspectorForm.Create(TheOwner: TComponent);
