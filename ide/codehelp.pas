@@ -99,7 +99,7 @@ type
     Doc: TXMLdocument;// IMPORTANT: if you change this, call DocChanging and DocChanged to notify the references
     DocErrorMsg: string; // if xml is broken, Doc could not be created
     DocModified: boolean;
-    ChangeStep: integer;// the CodeBuffer.ChangeStep value, when Doc was built
+    CodeBufferChangeStep: integer;// the CodeBuffer.ChangeStep value, when Doc was built
     CodeBuffer: TCodeBuffer;
     destructor Destroy; override;
     function GetPackageNode: TDOMNode; // the lazarus project or package
@@ -138,13 +138,16 @@ type
   public
     SourceFilename: string;
     FPDocFilename: string;
-    FPDocFileOwner: TObject;
-    FPDocFilenameTimeStamp: integer;
-    FilesTimeStamp: int64;
+    FPDocFileOwner: TObject; // always check FPDocFilenameTimeStamp before accessing
+    FPDocFilenameTimeStamp: integer; // corresponds to CompilerParseStamp
+    FilesTimeStamp: int64; // corresponds to FileStateCache.TimeStamp
+    function IsValid: boolean;
+    procedure MakeValid;
   end;
   
   { TCodeHelpElement - mapping between one codetools position and a fpdoc xml node.
-    This data is only valid for short times, so don't store it. }
+    This data is only valid as long as codetools data and fpdoc data are not
+    changed, so don't store it. }
 
   TCodeHelpElement = class
   public
@@ -154,7 +157,7 @@ type
     ElementUnitName: string;
     ElementUnitFileName: string;
     ElementName: string;
-    ElementNode: TDOMNode;
+    ElementNode: TDOMNode; // nil = not yet parsed (ElementNodeValid=false) or does not exist (ElementNodeValid=true)
     ElementNodeValid: boolean;
     FPDocFile: TLazFPDocFile;
     procedure WriteDebugReport;
@@ -172,8 +175,8 @@ type
     function Add: TCodeHelpElement;
   public
     CodePos: TCodePosition;
-    IDEChangeStep: integer;
-    CodetoolsChangeStep: integer;
+    IDEChangeStep: integer; // corresponds to CompilerParseStamp
+    CodetoolsChangeStep: integer; // corresponds to CodeToolBoss.CodeTreeNodesDeletedStep
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -184,7 +187,7 @@ type
     function IndexOfElementName(ElementUnitName, ElementName: string): integer;
     function IsValid: boolean;
     procedure MakeValid;
-    function DocFile: TLazFPDocFile;
+    function DocFile: TLazFPDocFile; // DocFile of first element
     procedure WriteDebugReport;
   end;
   
@@ -427,6 +430,20 @@ end;
 function CompareAnsistringWithLDSrc2DocSrcFile(Key, Data: Pointer): integer;
 begin
   Result:=CompareFilenames(AnsiString(Key),TCHSourceToFPDocFile(Data).SourceFilename);
+end;
+
+{ TCHSourceToFPDocFile }
+
+function TCHSourceToFPDocFile.IsValid: boolean;
+begin
+  Result:=(FPDocFilenameTimeStamp=CompilerParseStamp)
+      and (FilesTimeStamp=FileStateCache.TimeStamp)
+end;
+
+procedure TCHSourceToFPDocFile.MakeValid;
+begin
+  FPDocFilenameTimeStamp:=CompilerParseStamp;
+  FilesTimeStamp:=FileStateCache.TimeStamp;
 end;
 
 { TLazFPDocFile }
@@ -1195,7 +1212,7 @@ begin
     FreeAndNil(ADocFile.Doc);
     exit;
   end;
-  if (ADocFile.ChangeStep=ADocFile.CodeBuffer.ChangeStep) then begin
+  if (ADocFile.CodeBufferChangeStep=ADocFile.CodeBuffer.ChangeStep) then begin
     // CodeBuffer has not changed
     if ADocFile.DocErrorMsg<>'' then begin
       if not (chofQuiet in Flags) then begin
@@ -1221,7 +1238,7 @@ begin
   CallDocChangeEvents(chmhDocChanging,ADocFile);
 
   // parse XML
-  ADocFile.ChangeStep:=ADocFile.CodeBuffer.ChangeStep;
+  ADocFile.CodeBufferChangeStep:=ADocFile.CodeBuffer.ChangeStep;
   ADocFile.DocModified:=false;
   ADocFile.DocErrorMsg:='Unknown error';
   FreeAndNil(ADocFile.Doc);
@@ -1269,7 +1286,7 @@ var
   s: string;
 begin
   if (not ADocFile.DocModified)
-  and (ADocFile.ChangeStep=ADocFile.CodeBuffer.ChangeStep)
+  and (ADocFile.CodeBufferChangeStep=ADocFile.CodeBuffer.ChangeStep)
   and (not ADocFile.CodeBuffer.FileOnDiskNeedsUpdate) then begin
     DebugLn(['TCodeHelpManager.SaveFPDocFile no save needed: ',ADocFile.Filename]);
     exit(mrOk);
@@ -1298,12 +1315,12 @@ begin
   // write to CodeBuffer
   ADocFile.CodeBuffer.Source:=s;
   ADocFile.DocModified:=false;
-  if ADocFile.CodeBuffer.ChangeStep=ADocFile.ChangeStep then begin
+  if ADocFile.CodeBuffer.ChangeStep=ADocFile.CodeBufferChangeStep then begin
     // doc was not really modified => do not save to keep file date
     DebugLn(['TCodeHelpManager.SaveFPDocFile Doc was not really modified ',ADocFile.Filename]);
     exit(mrOk);
   end;
-  ADocFile.ChangeStep:=ADocFile.CodeBuffer.ChangeStep;
+  ADocFile.CodeBufferChangeStep:=ADocFile.CodeBuffer.ChangeStep;
   
   // write to disk
   Result:=SaveCodeBuffer(ADocFile.CodeBuffer);
@@ -1463,8 +1480,7 @@ begin
                                   @CompareAnsistringWithLDSrc2DocSrcFile);
     if AVLNode<>nil then begin
       MapEntry:=TCHSourceToFPDocFile(AVLNode.Data);
-      if (MapEntry.FPDocFilenameTimeStamp=CompilerParseStamp)
-      and (MapEntry.FilesTimeStamp=FileStateCache.TimeStamp) then begin
+      if MapEntry.IsValid then begin
         AnOwner:=MapEntry.FPDocFileOwner;
         Result:=MapEntry.FPDocFilename;
         exit;
@@ -1495,9 +1511,8 @@ begin
       FSrcToDocMap.Add(MapEntry);
     end;
     MapEntry.FPDocFilename:=Result;
-    MapEntry.FPDocFilenameTimeStamp:=CompilerParseStamp;
     MapEntry.FPDocFileOwner:=AnOwner;
-    MapEntry.FilesTimeStamp:=FileStateCache.TimeStamp;
+    MapEntry.MakeValid;
   finally
     if (Result='') and CreateIfNotExists then begin
       Result:=DoCreateFPDocFileForSource(SrcFilename,AnOwner);
