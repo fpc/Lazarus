@@ -423,6 +423,7 @@ begin
     CreateMenuItem(ParentMI,itmEditSelectAll,'itmEditSelectAll',lisMenuSelectAll, 'menu_select_all');
     CreateMenuItem(ParentMI,itmEditSelectToBrace,'itmEditSelectToBrace',lisMenuSelectToBrace);
     CreateMenuItem(ParentMI,itmEditSelectCodeBlock,'itmEditSelectCodeBlock',lisMenuSelectCodeBlock);
+    CreateMenuItem(ParentMI,itmEditSelectWord,'itmEditSelectWord',lisMenuSelectWord);
     CreateMenuItem(ParentMI,itmEditSelectLine,'itmEditSelectLine',lisMenuSelectLine);
     CreateMenuItem(ParentMI,itmEditSelectParagraph,'itmEditSelectParagraph',lisMenuSelectParagraph);
 
@@ -842,6 +843,7 @@ begin
     itmEditSelectAll.Command:=GetCommand(ecSelectAll);
     itmEditSelectToBrace.Command:=GetCommand(ecSelectToBrace);
     itmEditSelectCodeBlock.Command:=GetCommand(ecSelectCodeBlock);
+    itmEditSelectWord.Command:=GetCommand(ecSelectWord);
     itmEditSelectLine.Command:=GetCommand(ecSelectLine);
     itmEditSelectParagraph.Command:=GetCommand(ecSelectParagraph);
 

@@ -117,6 +117,7 @@ type
         itmEditSelectAll: TIDEMenuCommand;
         itmEditSelectToBrace: TIDEMenuCommand;
         itmEditSelectCodeBlock: TIDEMenuCommand;
+        itmEditSelectWord: TIDEMenuCommand;
         itmEditSelectLine: TIDEMenuCommand;
         itmEditSelectParagraph: TIDEMenuCommand;
       //itmEditBlockActions: TIDEMenuSection;

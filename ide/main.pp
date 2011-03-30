@@ -211,6 +211,7 @@ type
     procedure mnuEditSelectAllClick(Sender: TObject);
     procedure mnuEditSelectCodeBlockClick(Sender: TObject);
     procedure mnuEditSelectToBraceClick(Sender: TObject);
+    procedure mnuEditSelectWordClick(Sender: TObject);
     procedure mnuEditSelectLineClick(Sender: TObject);
     procedure mnuEditSelectParagraphClick(Sender: TObject);
     procedure mnuEditUpperCaseBlockClicked(Sender: TObject);
@@ -2452,6 +2453,7 @@ begin
     itmEditSelectAll.OnClick:=@mnuEditSelectAllClick;
     itmEditSelectToBrace.OnClick:=@mnuEditSelectToBraceClick;
     itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
+    itmEditSelectWord.OnClick:=@mnuEditSelectWordClick;
     itmEditSelectLine.OnClick:=@mnuEditSelectLineClick;
     itmEditSelectParagraph.OnClick:=@mnuEditSelectParagraphClick;
     itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
@@ -17806,6 +17808,11 @@ end;
 procedure TMainIDE.mnuEditSelectToBraceClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecSelectToBrace);
+end;
+
+procedure TMainIDE.mnuEditSelectWordClick(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecSelectWord);
 end;
 
 procedure TMainIDE.mnuEditSelectLineClick(Sender: TObject);
