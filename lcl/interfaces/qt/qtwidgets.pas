@@ -490,6 +490,7 @@ type
   TQtPushButton = class(TQtAbstractButton)
   private
     FClickedHook: QAbstractButton_hookH;
+    FToggledHook: QAbstractButton_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
@@ -499,7 +500,16 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
-    procedure SlotClicked; cdecl;
+    procedure SlotClicked; cdecl; virtual;
+    procedure SlotToggled(AChecked: Boolean); cdecl; virtual;
+  end;
+
+  { TQtToggleBox }
+
+  TQtToggleBox = class(TQtPushButton)
+  public
+    procedure SlotClicked; cdecl; override;
+    procedure SlotToggled(AChecked: Boolean); cdecl; override;
   end;
 
   { TQtMainWindow }
@@ -4678,11 +4688,15 @@ begin
   
   FClickedHook := QAbstractButton_hook_create(Widget);
   QAbstractButton_hook_hook_clicked2(FClickedHook, @SlotClicked);
+
+  FToggledHook := QAbstractButton_hook_create(Widget);
+  QAbstractButton_hook_hook_toggled(FToggledHook, @SlotToggled);
 end;
 
 procedure TQtPushButton.DetachEvents;
 begin
   QAbstractButton_hook_destroy(FClickedHook);
+  QAbstractButton_hook_destroy(FToggledHook);
   inherited DetachEvents;
 end;
 
@@ -4699,6 +4713,31 @@ begin
   Msg.Msg := LM_CLICKED;
   DeliverMessage(Msg);
 end;
+
+procedure TQtPushButton.SlotToggled(AChecked: Boolean); cdecl;
+begin
+  // override later (eg. TQtToggleBox)
+end;
+
+{ TQtToggleBox }
+
+procedure TQtToggleBox.SlotClicked; cdecl;
+begin
+  // do nothing with ToggleBox
+end;
+
+procedure TQtToggleBox.SlotToggled(AChecked: Boolean); cdecl;
+var
+  Msg: TLMessage;
+begin
+  if InUpdate then
+    exit;
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CHANGED;
+  DeliverMessage(Msg);
+end;
+
 
 { TQtMainWindow }
 
