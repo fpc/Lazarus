@@ -290,7 +290,7 @@ begin
   ecSelectionEnclose: SetResult(VK_N, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelectionComment: SetResult(VK_V, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelectionUncomment: SetResult(VK_U, [ssShift,ssCtrl],VK_UNKNOWN,[]);
-  ecToggleComment: SetResult(VK_T, [ssShift,ssCtrl], VK_OEM_2, [ssCtrl]);
+  ecToggleComment: SetResult(VK_W, [ssShift,ssCtrl], VK_OEM_2, [ssCtrl]);
   ecSelectionEncloseIFDEF: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
