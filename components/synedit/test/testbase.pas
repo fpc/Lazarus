@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, fpcunit, SynEdit, LCLType, LCLProc, math,
-  SynEditTypes, Clipbrd;
+  SynEditTypes, SynEditPointClasses, Clipbrd;
 
 type
 
@@ -24,6 +24,7 @@ type
     property ViewedTextBuffer;
     property TextBuffer;
     property TextView; // foldedview
+    property CaretObj: TSynEditCaret read GetCaretObj;
   end;
 
   { TTestBase }
@@ -318,6 +319,7 @@ end;
 procedure TTestBase.TestFail(Name, Func, Expect, Got: String; Result: Boolean = False);
 begin
   if Result then exit;
+  DebugLn(DbgStr(SynEdit.Text));
   if BaseTestName <> '' then
     Fail(Format('%s: %s (%s)%sExpected: %s%s     Got: %s', [BaseTestName, Name, Func, LineEnding, Expect, LineEnding, Got]))
   else

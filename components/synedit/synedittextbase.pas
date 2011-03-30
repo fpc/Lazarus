@@ -242,6 +242,7 @@ type
     function PhysicalToLogicalPos(const p: TPoint): TPoint;
     function PhysicalToLogicalCol(const Line: string;
                                   Index, PhysicalPos: integer): integer; virtual;
+    property LogPhysConvertor :TSynLogicalPhysicalConvertor read FLogPhysConvertor;
   public
     procedure EditInsert(LogX, LogY: Integer; AText: String); virtual; abstract;
     function  EditDelete(LogX, LogY, ByteLen: Integer): String; virtual; abstract;
@@ -469,11 +470,13 @@ procedure TSynLogicalPhysicalConvertor.PrepareWidthsForLine(AIndex: Integer;
 var
   LineLen: Integer;
   Line: PChar;
+//const dbg_cnt: integer = 0;
 begin
   if (not AForce) and (FCurrentLine = AIndex) and
      (FLines.TextChangeStamp = FTextChangeStamp) and (FLines.ViewChangeStamp = FViewChangeStamp)
   then begin
     //debugln(['**************** RE-USING widths: ', AIndex,' (',dbgs(Pointer(self)),')']);
+    //dbg_cnt := dbg_cnt + 1;
     exit;
   end;
 
@@ -498,6 +501,7 @@ begin
   //else begin
   //  debugln(['**************** COMPUTING widths: ', AIndex,' (',dbgs(Pointer(self)),') alloc=',FCurrentWidthsAlloc]);
   end;
+  //debugln(['**************** NEW for index:: ', AIndex,' (',dbgs(Pointer(self)),') after index: ', FCurrentLine, ' used ', dbg_cnt,' times // old-alloc=', FCurrentWidthsAlloc, '  new-len=',LineLen, '  viewchg:',dbgs(not(FViewChangeStamp=FLines.ViewChangeStamp)),' txtchg:',dbgs(not(FTextChangeStamp=FLines.TextChangeStamp))]); dbg_cnt := 0;
 
   FCurrentWidthsLen := LineLen;
   if LineLen > 0 then
