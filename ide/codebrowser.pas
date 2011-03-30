@@ -1771,6 +1771,7 @@ const
   function BigIntToStr(i: integer): string;
   var
     p: Integer;
+    ThousandSep: String;
   begin
     if i=0 then begin
       Result:='0';
@@ -1795,9 +1796,10 @@ const
     end;
 
     p:=0;
+    ThousandSep:=AnsiToUTF8(DefaultFormatSettings.ThousandSeparator);
     while i>0 do begin
       if p=3 then begin
-        Result:=DefaultFormatSettings.ThousandSeparator+Result;
+        Result:=ThousandSep+Result;
         p:=0;
       end;
       Result:=chr((i mod 10)+ord('0'))+Result;
