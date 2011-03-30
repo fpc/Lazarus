@@ -1767,10 +1767,16 @@ components/mouseandkeyinput/winmouseinput.pas svneol=native#text/pascal
 components/mouseandkeyinput/xkeyinput.pas svneol=native#text/pascal
 components/mouseandkeyinput/xmouseinput.pas svneol=native#text/pascal
 components/mpaslex/mpaslex.pp svneol=native#text/pascal
+components/opengl/example/imgui.lpi svneol=native#text/plain
+components/opengl/example/imgui.pas svneol=native#text/pascal
+components/opengl/example/imgui.res -text
+components/opengl/example/imguimain.lfm svneol=native#text/plain
+components/opengl/example/imguimain.pas svneol=native#text/pascal
 components/opengl/example/mainunit.lfm svneol=native#text/plain
 components/opengl/example/mainunit.pas svneol=native#text/plain
 components/opengl/example/testopenglcontext1.lpi svneol=native#text/plain
 components/opengl/example/testopenglcontext1.lpr svneol=native#text/plain
+components/opengl/example/uglyfont.pas svneol=native#text/pascal
 components/opengl/glcarbonaglcontext.pas svneol=native#text/plain
 components/opengl/glgtkglxcontext.pas svneol=native#text/plain
 components/opengl/glqtcontext.pas svneol=native#text/plain
