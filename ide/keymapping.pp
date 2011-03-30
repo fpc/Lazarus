@@ -287,10 +287,10 @@ begin
   ecSelectionLowerCase: SetResult2(VK_K,[SSCtrl],VK_O,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionSwapCase: SetResult2(VK_K,[SSCtrl],VK_P,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSelectionTabs2Spaces: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  ecSelectionEnclose: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
-  ecToggleComment: SetResult(VK_OEM_2, [ssCtrl], VK_UNKNOWN, []);
+  ecSelectionEnclose: SetResult(VK_N, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelectionComment: SetResult(VK_V, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecSelectionUncomment: SetResult(VK_U, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  ecToggleComment: SetResult(VK_T, [ssShift,ssCtrl], VK_OEM_2, [ssCtrl]);
   ecSelectionEncloseIFDEF: SetResult(VK_D, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
