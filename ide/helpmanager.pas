@@ -1294,7 +1294,7 @@ begin
   if (Code=nil) or Code.LineColIsSpace(CodePos.Y,CodePos.X) then
     exit(shrHelpNotFound);
   if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,
-    [chhoSmartHint, chhoComplete, chhoComments],
+    [chhoSmartHint, chhoComments],
     BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);

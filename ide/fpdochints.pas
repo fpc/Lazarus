@@ -142,7 +142,7 @@ begin
     end;
     //DebugLn(['TFPDocHintProvider.ReadLazDocData ',Item.Identifier,' ',Item.Tool.MainFilename,' ',Caret.Code.Filename,' ',Caret.X,',',Caret.Y]);
     HelpResult:=CodeHelpBoss.GetHTMLHint(Caret.Code,Caret.X,Caret.Y,
-                                    [chhoSmartHint, chhoComplete, chhoComments],
+                                    [chhoSmartHint, chhoComments],
                                     FBaseURL,FHTMLHint,CacheWasUsed);
     if HelpResult<>chprSuccess then begin
       DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Identifier=',Item.Identifier]);

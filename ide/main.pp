@@ -16885,7 +16885,7 @@ begin
   if (ARow <> nil)
   and FindDeclarationOfOIProperty(OI, ARow, Code, Caret, NewTopLine) then
   begin
-    if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [chhoComplete],
+    if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [],
       BaseURL, HtmlHint, CacheWasUsed) <> chprSuccess then
     begin
       HtmlHint := '';

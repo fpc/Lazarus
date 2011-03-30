@@ -212,11 +212,10 @@ type
     );
 
   TCodeHelpHintOption = (
-    chhoComplete,         // ??
+    chhoSmallStep,    // do the next step. Use this to run on idle.
     chhoSmartHint,    // add smart hint
     chhoComments      // return info from comments in the code
   );
-
   TCodeHelpHintOptions = set of TCodeHelpHintOption;
     
   { TCodeHelpManager }
@@ -2202,7 +2201,7 @@ var
         LastResult:=chprFailed;
       exit;
     end;
-    if (not CacheWasUsed) and not(chhoComplete in Options) then
+    if (not CacheWasUsed) and (chhoSmallStep in Options) then
     begin
       Result:=true;
       LastResult:=chprParsing;
@@ -2290,7 +2289,7 @@ begin
       {$ifdef VerboseHints}
       DebugLn(['TCodeHelpManager.GetHint GetElementChain...']);
       {$endif}
-      Result := GetElementChain(Code, X, Y, chhoComplete in Options, Chain, CacheWasUsed);
+      Result := GetElementChain(Code, X, Y, not (chhoSmallStep in Options), Chain, CacheWasUsed);
       if EndNow(Result) then exit;
 
       if Chain <> nil then
