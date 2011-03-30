@@ -300,6 +300,9 @@ procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 {$I win32memostrings.inc}
 {$UNDEF MEMOHEADER}
 
+function ListBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+
 implementation
 
 const
@@ -366,6 +369,7 @@ begin
           WindowInfo^.WinControl.Handle := Window;
           WindowInfo^.DefWndProc := NCCreateParams^.DefWndProc;
           WindowInfo^.needParentPaint := False;
+          SetWindowLong(Window, GWL_ID, PtrInt(NCCreateParams^.WinControl));
           NCCreateParams^.Handled := True;
         end;
       end;
@@ -400,6 +404,15 @@ begin
       begin
         WindowInfo := GetWin32WindowInfo(Window);
         WindowInfo^.WinControl.Constraints.UpdateInterfaceConstraints;
+      end;
+    WM_MEASUREITEM:
+      begin
+        WindowInfo := GetWin32WindowInfo(Window);
+        LMessage.Msg := LM_MEASUREITEM;
+        LMessage.LParam := LParam;
+        LMessage.WParam := WParam;
+        LMessage.Result := 0;
+        Exit(DeliverMessage(WindowInfo^.WinControl, LMessage));
       end;
   end;
   // normal processing
@@ -557,6 +570,42 @@ end;
 
 { TWin32WSCustomListBox }
 
+function ListBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  WindowInfo: PWin32WindowInfo;
+  NCCreateParams: PNCCreateParams;
+  LMessage: TLMessage;
+begin
+  case Msg of
+    WM_NCCREATE:
+      begin
+        NCCreateParams := PCREATESTRUCT(lParam)^.lpCreateParams;
+        if Assigned(NCCreateParams) then
+        begin
+          WindowInfo := AllocWindowInfo(Window);
+          WindowInfo^.WinControl := NCCreateParams^.WinControl;
+          WindowInfo^.WinControl.Handle := Window;
+          WindowInfo^.DefWndProc := NCCreateParams^.DefWndProc;
+          WindowInfo^.needParentPaint := False;
+          SetWindowLong(Window, GWL_ID, PtrInt(NCCreateParams^.WinControl));
+          NCCreateParams^.Handled := True;
+        end;
+      end;
+    WM_MEASUREITEM:
+      begin
+        WindowInfo := GetWin32WindowInfo(Window);
+        LMessage.Msg := LM_MEASUREITEM;
+        LMessage.LParam := LParam;
+        LMessage.WParam := WParam;
+        LMessage.Result := 0;
+        Exit(DeliverMessage(WindowInfo^.WinControl, LMessage));
+      end;
+  end;
+  // normal processing
+  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 class procedure TWin32WSCustomListBox.AdaptBounds(
   const AWinControl: TWinControl; var Left, Top, Width, Height: integer;
   var SuppressMove: boolean);
@@ -586,9 +635,13 @@ begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
   with Params do
+  begin
     pClassName := ListBoxClsName;
+    pSubClassName := LCLListboxClsName;
+    SubClassWndProc := @ListBoxWindowProc;
+  end;
   // create window
-  FinishCreateWindow(AWinControl, Params, False);
+  FinishCreateWindow(AWinControl, Params, False, True);
   // listbox is not a transparent control -> no need for parentpainting
   Params.WindowInfo^.needParentPaint := False;
   Result := Params.Window;

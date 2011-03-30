@@ -221,6 +221,8 @@ const
   ListViewClsName: array[0..13] of char = 'SysListView32'#0;
 
   LCLComboboxClsName: array[0..11] of char = 'LCLComboBox'#0;
+  LCLListboxClsName: array[0..10] of char = 'LCLListBox'#0;
+  LCLCheckListboxClsName: array[0..15] of char = 'LCLCheckListBox'#0;
   ClsNameW: array[0..6] of WideChar = ('W', 'i', 'n', 'd', 'o', 'w', #0);
   ClsHintNameW: array[0..10] of WideChar = ('H', 'i', 'n', 't', 'W', 'i', 'n', 'd', 'o', 'w', #0);
 

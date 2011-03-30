@@ -271,7 +271,7 @@ begin
 
   with Params do
   begin
-    if Window <> HWND(Nil) then
+    if Window <> 0 then
     begin
       // some controls (combobox) immediately send a message upon setting font
       if not NCCreateParams.Handled then
@@ -283,6 +283,10 @@ begin
         if Assigned(SubClassWndProc) then
           WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
             Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
+        // Set control ID to map WinControl. This is required for messages that sent to parent
+        // to extract control from the passed ID.
+        // In case of subclassing this ID will be set in WM_NCCREATE message handler
+        SetWindowLong(Window, GWL_ID, PtrInt(AWinControl));
       end;
 
       if AWinControl.Font.IsDefault then

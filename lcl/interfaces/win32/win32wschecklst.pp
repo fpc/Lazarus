@@ -37,7 +37,7 @@ uses
   Windows, Classes, Controls, CheckLst, StdCtrls, Themes, Graphics, LCLType, LCLProc,
   LMessages, LCLMessageGlue,
 ////////////////////////////////////////////////////
-  WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Win32WSControls;
+  WSCheckLst, WSLCLClasses, Win32Int, Win32Proc, Win32WSControls, Win32WSStdCtrls;
 
 type
 
@@ -139,7 +139,7 @@ begin
       end;
   end;
 
-  Result := WindowProc(Window, Msg, WParam, LParam);
+  Result := ListBoxWindowProc(Window, Msg, WParam, LParam);
 
   case Msg of
     WM_LBUTTONDOWN, WM_LBUTTONDBLCLK:
@@ -161,10 +161,11 @@ begin
   with Params do
   begin
     pClassName := ListBoxClsName;
+    pSubClassName := LCLCheckListboxClsName;
     SubClassWndProc := @CheckListBoxWndProc;
   end;
   // create window
-  FinishCreateWindow(AWinControl, Params, False);
+  FinishCreateWindow(AWinControl, Params, False, True);
   // listbox is not a transparent control -> no need for parentpainting
   Params.WindowInfo^.needParentPaint := False;
   Result := Params.Window;

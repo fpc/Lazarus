@@ -2149,29 +2149,28 @@ begin
     end;
     WM_MEASUREITEM:
     begin
-      if WParam = 0 then begin
-        menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
-        if menuItem is TMenuItem then
+      case PMeasureItemStruct(LParam)^.CtlType of
+        ODT_MENU:
+          begin
+            menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
+            if menuItem is TMenuItem then
+            begin
+              menuHDC := GetDC(Window);
+              TmpSize := MenuItemSize(TMenuItem(menuItem), menuHDC);
+              PMeasureItemStruct(LParam)^.itemWidth := TmpSize.cx;
+              PMeasureItemStruct(LParam)^.itemHeight := TmpSize.cy;
+              ReleaseDC(Window, menuHDC);
+              Winprocess := False;
+            end
+            else
+              DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
+          end;
+        else
+        if WParam <> 0 then
         begin
-          menuHDC := GetDC(Window);
-          TmpSize := MenuItemSize(TMenuItem(menuItem), menuHDC);
-          PMeasureItemStruct(LParam)^.itemWidth := TmpSize.cx;
-          PMeasureItemStruct(LParam)^.itemHeight := TmpSize.cy;
-          ReleaseDC(Window, menuHDC);
-          Winprocess := False;
-        end else
-          DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
-      end;
-      if LWinControl<>nil then begin
-        if LWinControl is TCustomCombobox then begin
-          LMessage.Msg := LM_MEASUREITEM;
-          LMessage.LParam := LParam;
-          LMessage.WParam := WParam;
-          Winprocess := False;
-        end else
-        if WParam <> 0 then begin
-          LWinControl := TWinControl(WParam);
-          if LWinControl<>nil then begin
+          lWinControl := TWinControl(WParam);
+          if Assigned(lWinControl) then
+          begin
             LMessage.Msg := LM_MEASUREITEM;
             LMessage.LParam := LParam;
             LMessage.WParam := WParam;
