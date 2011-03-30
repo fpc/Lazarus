@@ -2116,7 +2116,7 @@ begin
     ecShowAbstractMethods     : Result:= srkmecShowAbstractMethods;
     ecRemoveEmptyMethods      : Result:= srkmecRemoveEmptyMethods;
     ecRemoveUnusedUnits       : Result:= srkmecRemoveUnusedUnits;
-    ecUseProjectUnit          : Result:= lisMenuUseProjectUnit;
+    ecUseProjectUnit          : Result:= lisUseProjectUnit;
     ecFindOverloads           : Result:= srkmecFindOverloads;
 
     // project (menu string resource)
@@ -2621,7 +2621,7 @@ begin
   AddDefault(C, 'Show abstract methods', srkmecShowAbstractMethods, ecShowAbstractMethods);
   AddDefault(C, 'Remove empty methods', srkmecRemoveEmptyMethods, ecRemoveEmptyMethods);
   AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits, ecRemoveUnusedUnits);
-  AddDefault(C, 'Add unit to uses section', lisMenuUseProjectUnit, ecUseProjectUnit);
+  AddDefault(C, 'Add unit to uses section', lisUseProjectUnit, ecUseProjectUnit);
   AddDefault(C, 'Find overloads', srkmecFindOverloads, ecFindOverloads);
 
   // Template editing
