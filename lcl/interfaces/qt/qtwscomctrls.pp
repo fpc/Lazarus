@@ -1243,10 +1243,12 @@ begin
   begin
     QtListWidget := TQtListWidget(ALV.Handle);
     LWI := QtListWidget.getItem(AIndex);
+    QtListWidget.BeginUpdate;
     case AState of
       lisFocused: QtListWidget.setCurrentItem(LWI);
       lisSelected: QtListWidget.setItemSelected(LWI, AIsSet);
     end;
+    QtListWidget.EndUpdate;
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);

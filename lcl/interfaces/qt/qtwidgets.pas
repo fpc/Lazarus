@@ -1086,6 +1086,7 @@ type
 
   TQtListWidget = class(TQtListView)
   private
+    FSavedSelection: TPtrIntArray;
     FCurrentItemChangedHook: QListWidget_hookH;
     FSelectionChangeHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
@@ -8692,6 +8693,7 @@ function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
+  SetLength(FSavedSelection, 0);
   FSavedEvent := nil;
   FSavedEventTimer := nil;
   FSavedEventTimerHook := nil;
@@ -8899,7 +8901,17 @@ begin
       if QEvent_type(Event) = QEventMouseButtonRelease then
         PostponedMouseRelease(Event)
       else
+      begin
+        if (QEvent_type(Event) = QEventMouseButtonPress) then
+        begin
+          MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+          Item := itemAt(MousePos.x, MousePos.y);
+          if Item = nil then
+            FSavedSelection := selectedItems;
+        end;
+
         Result := inherited itemViewViewportEventFilter(Sender, Event);
+      end;
     end else
     case QEvent_type(Event) of
       QEventMouseButtonPress,
@@ -8952,7 +8964,10 @@ begin
   NMLV.hdr.hwndfrom := LCLObject.Handle;
   NMLV.hdr.code := LVN_ITEMCHANGING;
 
-  AIndex := getRow(Current);
+  if Current <> nil then
+    AIndex := getRow(Current)
+  else
+    AIndex := -1;
 
   ASubIndex := 0;
 
@@ -9016,6 +9031,8 @@ end;
 procedure TQtListWidget.signalSelectionChanged(); cdecl;
 var
   Msg: TLMessage;
+  i: Integer;
+  Item: QListWidgetItemH;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtListWidget.signalSelectionChange');
@@ -9027,13 +9044,31 @@ begin
     Exit;
   end;
 
-  if ViewStyle >= 0 then
+  if (ViewStyle >= 0) and (InUpdate or
+    (not InUpdate and (length(FSavedSelection) = 0)) ) then
     exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
-  if (getSelCount > 0) and (FChildOfComplexWidget <> ccwComboBox) then
-    DeliverMessage(Msg);
+  if (FChildOfComplexWidget <> ccwComboBox) then
+  begin
+    if (ViewStyle < 0) and (getSelCount > 0) then
+      DeliverMessage(Msg)
+    else
+    if (ViewStyle >= 0) then
+    begin
+      if getSelCount = 0 then
+      begin
+        for i := 0 to High(FSavedSelection) do
+        begin
+          Item := QListWidgetItemH(FSavedSelection[i]);
+          if (Item <> nil) then
+            signalItemClicked(Item);
+        end;
+      end;
+      setLength(FSavedSelection, 0);
+    end;
+  end;
 end;
 
 procedure TQtListWidget.signalItemTextChanged(ANewText: PWideString); cdecl;
