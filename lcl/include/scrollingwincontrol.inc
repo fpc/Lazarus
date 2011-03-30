@@ -195,11 +195,6 @@ begin
   if HandleAllocated and IsWindowVisible(Handle) then
   begin
     TWSScrollingWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY);
-    // scroll inner controls
-    for i := 0 to ControlCount - 1 do
-      if not (Controls[i] is TWinControl) then
-        with Controls[i] do
-          SetBounds(Left + DeltaX, Top + DeltaY, Width, Height);
     Invalidate;
   end
   else
