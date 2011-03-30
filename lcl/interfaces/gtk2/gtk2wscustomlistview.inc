@@ -1219,7 +1219,7 @@ begin
               gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False)
             else
             begin
-              if (gtk_major_version = 2) and (gtk_minor_version < 20) then
+              if (gtk_major_version = 2) and (gtk_minor_version < 14) then
                 gtk_tree_view_set_cursor(PGtkTreeView(MainView), nil, nil, False)
               else
                 gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False);
