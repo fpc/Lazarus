@@ -37,7 +37,13 @@ type
   TBitmappedButtonState = (bbsNormal, bbsDown, bbsMouseOver, bbsFocused
     (* bbsChecked, bbsCheckedSelected, bbsCheckedDown { is going to be unchecked }*));
 
-  TCDDrawStyle = (dsGrad, dsWinCE, dsWin2000, dsAndroid, dsXPTaskBar, dsCustom);
+  TCDDrawStyle = (
+    // Operating system styles
+    dsWinCE, dsWin2000, dsAndroid, dsXPTaskBar,
+    // Other special styles
+    dsGrad,
+    // Defined by the user
+    dsCustom);
 
   { TCustomBitmappedButton }
 
