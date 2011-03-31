@@ -5,7 +5,7 @@ unit testform;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
   Buttons, StdCtrls, ExtCtrls;
 
 type
@@ -56,10 +56,10 @@ type
     Label8: TLabel;
     Label9: TLabel;
     ListView1: TListView;
-    Notebook1: TNotebook;
-    Page1: TPage;
-    Page2: TPage;
-    Page3: TPage;
+    PageControl1: TPageControl;
+    Page1: TTabSheet;
+    Page2: TTabSheet;
+    Page3: TTabSheet;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -68,7 +68,6 @@ type
     procedure Button6Click(Sender: TObject);
     procedure CheckBox1Click (Sender: TObject );
     procedure CheckBox2Click (Sender: TObject );
-    procedure CheckBox3Change(Sender: TObject);
     procedure CheckBox3Click(Sender: TObject);
     procedure CheckBox4Click(Sender: TObject);
     procedure CheckBox5Click(Sender: TObject);
@@ -87,7 +86,6 @@ type
     procedure Edit7Change(Sender: TObject);
     procedure Edit8Change(Sender: TObject);
     procedure HideSelectionChange(Sender: TObject);
-    procedure ImageList1Change(Sender: TObject);
     procedure ListView1ColumnClick(Sender: TObject; Column: TListColumn);
     procedure ListView1SelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
   private
@@ -102,6 +100,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -168,10 +168,6 @@ var
 begin
   Column := ListView1.Columns[StrToIntDef(Edit2.Text, 0)];
   Column.Autosize := CheckBox2.Checked;
-end;
-
-procedure TForm1.CheckBox3Change(Sender: TObject);
-begin
 end;
 
 procedure TForm1.CheckBox3Click(Sender: TObject);
@@ -304,11 +300,6 @@ begin
   Listview1.HideSelection := HideSelection.Checked;
 end;
 
-procedure TForm1.ImageList1Change(Sender: TObject);
-begin
-
-end;
-
 procedure TForm1.ListView1ColumnClick(Sender: TObject; Column: TListColumn);
 begin
   Edit2.Text := IntToStr(Column.Index);
@@ -359,9 +350,6 @@ begin
   CheckBox1.Checked := Column.Visible;
   CheckBox2.Checked := Column.AutoSize;
 end;
-
-initialization
-  {$I testform.lrs}
 
 end.
 

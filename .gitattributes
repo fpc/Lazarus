@@ -3399,7 +3399,6 @@ examples/listboxtest.pp svneol=native#text/pascal
 examples/listview/listview.lpi svneol=native#text/plain
 examples/listview/listview.lpr svneol=native#text/pascal
 examples/listview/testform.lfm svneol=native#text/plain
-examples/listview/testform.lrs svneol=native#text/pascal
 examples/listview/testform.pp svneol=native#text/pascal
 examples/listviewtest.lpi svneol=native#text/plain
 examples/listviewtest.pp svneol=native#text/pascal
