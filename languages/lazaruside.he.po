@@ -291,6 +291,10 @@ msgstr "כל הקבצים"
 msgid "Alphabetically"
 msgstr "לפי סדר א' ב'"
 
+#: lazarusidestrconsts.dlgalreadyusesallotherunits
+msgid "\"%s\" already uses all the units in this project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr "הסמן תמיד גלוי"
@@ -2898,10 +2902,6 @@ msgstr "בטל/בצע מחדש:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "בטל גבול"
-
-#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
-msgid "Unit \"%s\" already uses all the units in this project"
-msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -7222,6 +7222,10 @@ msgstr "שגיאה בשמירת s% ל s%s%s%s%"
 msgid "Error setting the name of a component %s to %s"
 msgstr "שגיאה בהגדרת שם ברכיב s% ל s%"
 
+#: lazarusidestrconsts.liserrorwritingfile
+msgid "Error writing file \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "שגיאה בכתיבת רשימת חבילות לקובץ s%s%%s%"
@@ -8371,6 +8375,10 @@ msgstr "טופס JIT"
 #: lazarusidestrconsts.liskeep
 msgid "keep"
 msgstr "שמור "
+
+#: lazarusidestrconsts.liskeep2
+msgid "Keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopen
 #, fuzzy
@@ -10435,9 +10443,8 @@ msgstr "בטל את זיהוי הבחירה"
 msgid "Uppercase selection"
 msgstr "בחירה באותיות ראשיות"
 
-#: lazarusidestrconsts.lismenuuseunit
-msgctxt "lazarusidestrconsts.lismenuuseunit"
-msgid "Add unit to uses section"
+#: lazarusidestrconsts.lismenuuseprojectunit
+msgid "Add unit to uses section ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuview
@@ -11129,6 +11136,10 @@ msgstr "האם לפתוח את החבילה %s?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "האם לפתוח את הפרויקט %s?"
+
+#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
+msgid "Options changed, recompiling clean with -B"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -13000,6 +13011,10 @@ msgstr "הסר מהפרוייקט"
 msgid "Remove from search path"
 msgstr "הסר מנתיב החיפוש"
 
+#: lazarusidestrconsts.lisremoveincludepath
+msgid "Remove include path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
 msgstr "הסר משתנה מקומי s%"
@@ -13027,6 +13042,10 @@ msgstr "הסר את הנתיבים מ \"Other sources\""
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr "הסר יחידה מסעיף \"משתמש ב\""
+
+#: lazarusidestrconsts.lisremoveunitpath
+msgid "Remove unit path?"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -13839,6 +13858,14 @@ msgstr "תיקיית היעד %s%s%s%s אינה קיימת. "
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "תיקיית היעד %s%s%s%s אינה קיימת. בדוק את שם קובץ המטרה של הפרוייקט Menu > Project > Project Options."
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
+msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
+msgstr ""
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
+msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
+msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -14846,6 +14873,11 @@ msgstr "השתמש בחבילה %s בפרוייקט"
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
 msgstr "השתמש בחבילה בפרוייקט"
+
+#: lazarusidestrconsts.lisuseprojectunit
+msgctxt "lazarusidestrconsts.lisuseprojectunit"
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -16376,11 +16408,6 @@ msgstr "פקודת עורך לא ידועה"
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
-msgstr ""
-
-#: lazarusidestrconsts.srkmecuseprojectunit
-msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
-msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst

@@ -288,6 +288,10 @@ msgstr "すべてのファイル"
 msgid "Alphabetically"
 msgstr "アルファベット順に"
 
+#: lazarusidestrconsts.dlgalreadyusesallotherunits
+msgid "\"%s\" already uses all the units in this project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr "常にカーソルを表示"
@@ -2911,10 +2915,6 @@ msgstr "元に戻す／やり直し"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "元に戻す回数の上限"
-
-#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
-msgid "Unit \"%s\" already uses all the units in this project"
-msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -7258,6 +7258,10 @@ msgstr "%s%s%s%sを%sに保存中にエラー"
 msgid "Error setting the name of a component %s to %s"
 msgstr "コンポーネントの名前を %s から %sに変更中にエラー"
 
+#: lazarusidestrconsts.liserrorwritingfile
+msgid "Error writing file \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "パッケージリストをファイル %s%s%s%s に書き込み中にエラー"
@@ -8409,6 +8413,10 @@ msgstr "JITフォーム"
 #: lazarusidestrconsts.liskeep
 msgid "keep"
 msgstr "保持"
+
+#: lazarusidestrconsts.liskeep2
+msgid "Keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopen
 msgid "Keep converted files open in editor"
@@ -10477,9 +10485,8 @@ msgstr "選択部分のインデントを削除"
 msgid "Uppercase selection"
 msgstr "選択部を大文字化"
 
-#: lazarusidestrconsts.lismenuuseunit
-msgctxt "lazarusidestrconsts.lismenuuseunit"
-msgid "Add unit to uses section"
+#: lazarusidestrconsts.lismenuuseprojectunit
+msgid "Add unit to uses section ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuview
@@ -11181,6 +11188,10 @@ msgstr "パッケージ %s を開きますか？"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "プロジェクト %s を開きますか？"
+
+#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
+msgid "Options changed, recompiling clean with -B"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -13053,6 +13064,10 @@ msgstr "プロジェクトから削除"
 msgid "Remove from search path"
 msgstr "サーチパスから削除"
 
+#: lazarusidestrconsts.lisremoveincludepath
+msgid "Remove include path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
 msgstr "ローカル変数を削除 %s"
@@ -13080,6 +13095,10 @@ msgstr "\"他のソース\"からパスを削除"
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr "uses節からユニットを削除"
+
+#: lazarusidestrconsts.lisremoveunitpath
+msgid "Remove unit path?"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -13888,6 +13907,14 @@ msgstr "行き先のディレクトリ%s%s%s%sは存在しません。"
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "行き先のディレクトリ%s%s%sは存在しません。メニュー > プロジェクト > プロジェクトオプションでプロジェクトの対象ファイルをチェックしてください。"
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
+msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
+msgstr ""
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
+msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
+msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -14903,6 +14930,11 @@ msgstr "パッケージ %s をプロジェクトで使用"
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
 msgstr "パッケージをプロジェクトで使用"
+
+#: lazarusidestrconsts.lisuseprojectunit
+msgctxt "lazarusidestrconsts.lisuseprojectunit"
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -16432,11 +16464,6 @@ msgstr "不明なエディタコマンド"
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
-msgstr ""
-
-#: lazarusidestrconsts.srkmecuseprojectunit
-msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
-msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst

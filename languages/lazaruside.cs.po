@@ -293,6 +293,10 @@ msgstr "Všechny soubory"
 msgid "Alphabetically"
 msgstr "Abecedně"
 
+#: lazarusidestrconsts.dlgalreadyusesallotherunits
+msgid "\"%s\" already uses all the units in this project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr "Kurzor vždy viditelný"
@@ -2891,10 +2895,6 @@ msgstr "Vrátit zpět / Znovu opakovat:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Omezení vrátitelných akcí"
-
-#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
-msgid "Unit \"%s\" already uses all the units in this project"
-msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -7203,6 +7203,10 @@ msgstr "Chyba ukládání %s do %s%s%s%s"
 msgid "Error setting the name of a component %s to %s"
 msgstr "Chyba nastavení jména komponenty %s na %s"
 
+#: lazarusidestrconsts.liserrorwritingfile
+msgid "Error writing file \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Chyba zápisu seznamu balíčků do souboru%s%s%s%s"
@@ -8352,6 +8356,10 @@ msgstr "Formulář JIT"
 #: lazarusidestrconsts.liskeep
 msgid "keep"
 msgstr "udržovat"
+
+#: lazarusidestrconsts.liskeep2
+msgid "Keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopen
 msgid "Keep converted files open in editor"
@@ -10393,10 +10401,9 @@ msgstr "Zrušit odsazení výběru"
 msgid "Uppercase selection"
 msgstr "Změnit výběr na velká písmena"
 
-#: lazarusidestrconsts.lismenuuseunit
-msgctxt "lazarusidestrconsts.lismenuuseunit"
-msgid "Add unit to uses section"
-msgstr "Přidat jednotku do sekce použitých jednotek"
+#: lazarusidestrconsts.lismenuuseprojectunit
+msgid "Add unit to uses section ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
@@ -11075,6 +11082,10 @@ msgstr "Otevřít balíček %s?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "Otevřít projekt %s?"
+
+#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
+msgid "Options changed, recompiling clean with -B"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -12935,6 +12946,10 @@ msgstr "Odstranit z projektu"
 msgid "Remove from search path"
 msgstr "Odstranit z vyhledávací cesty"
 
+#: lazarusidestrconsts.lisremoveincludepath
+msgid "Remove include path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
 msgstr "Odstranit lokální proměnnou %s"
@@ -12962,6 +12977,10 @@ msgstr "Odstranit cesty z \"Ostatní zdroje\""
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr "Odstranit jednotku ze sekce uses"
+
+#: lazarusidestrconsts.lisremoveunitpath
+msgid "Remove unit path?"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -13773,6 +13792,14 @@ msgstr "Cílový adresář%s%s%s%s neexistuje."
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "Cílový adresář %s%s%s neexistuje.%sProsím, zkontrolujte cílové jméno souboru projektu v menu Projekt -> Volby projektu."
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
+msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
+msgstr ""
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
+msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
+msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -14778,6 +14805,11 @@ msgstr "Použít balíček %s v projektu"
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
 msgstr "Použít balíček v projektu"
+
+#: lazarusidestrconsts.lisuseprojectunit
+msgctxt "lazarusidestrconsts.lisuseprojectunit"
+msgid "Add unit to uses section"
+msgstr "Přidat jednotku do sekce použitých jednotek"
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -16306,11 +16338,6 @@ msgstr "neznámý příkaz editoru"
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
 msgstr ""
-
-#: lazarusidestrconsts.srkmecuseprojectunit
-msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
-msgid "Add unit to uses section"
-msgstr "Přidat jednotku do sekce použitých jednotek"
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-27 17:46+0300\n"
+"PO-Revision-Date: 2011-04-01 02:42+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -301,6 +301,10 @@ msgstr "Все файлы"
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
 msgstr "По алфавиту"
+
+#: lazarusidestrconsts.dlgalreadyusesallotherunits
+msgid "\"%s\" already uses all the units in this project"
+msgstr "\"%s\" уже использует все модули проекта"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
@@ -2927,10 +2931,6 @@ msgstr "Параметры отмены:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Лимит отмен"
-
-#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
-msgid "Unit \"%s\" already uses all the units in this project"
-msgstr "Модуль \"%s\" уже использует все модули в этом проекте"
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -7257,6 +7257,10 @@ msgstr "Ошибка при сохранении %s в%s%s%s%s"
 msgid "Error setting the name of a component %s to %s"
 msgstr "Ошибка установки имени компонента %s в %s"
 
+#: lazarusidestrconsts.liserrorwritingfile
+msgid "Error writing file \"%s\""
+msgstr "Ошибка записи файла \"%s\""
+
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Ошибка записи списка пакетов в файл%s%s%s%s"
@@ -8407,6 +8411,10 @@ msgstr "JIT Form"
 #: lazarusidestrconsts.liskeep
 msgid "keep"
 msgstr "оставить"
+
+#: lazarusidestrconsts.liskeep2
+msgid "Keep"
+msgstr "Оставить"
 
 #: lazarusidestrconsts.liskeepfileopen
 #| msgid "Keep converted file open in editor"
@@ -10460,10 +10468,9 @@ msgstr "Уменьшить отступ выделенного"
 msgid "Uppercase selection"
 msgstr "Верхний регистр выделенного"
 
-#: lazarusidestrconsts.lismenuuseunit
-msgctxt "lazarusidestrconsts.lismenuuseunit"
-msgid "Add unit to uses section"
-msgstr "Добавить модуль в выражение Uses"
+#: lazarusidestrconsts.lismenuuseprojectunit
+msgid "Add unit to uses section ..."
+msgstr "Добавить модуль в выражение Uses ..."
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
@@ -11158,6 +11165,10 @@ msgstr "Открыть пакет %s?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "Открыть проект %s?"
+
+#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
+msgid "Options changed, recompiling clean with -B"
+msgstr "Параметры были изменены, перекомпиляция с очисткой (ключ -B)"
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -13025,6 +13036,10 @@ msgstr "Удалить из проекта"
 msgid "Remove from search path"
 msgstr "Удалить из путей поиска"
 
+#: lazarusidestrconsts.lisremoveincludepath
+msgid "Remove include path?"
+msgstr "Удалить путь к включаемым файлам?"
+
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
 msgstr "Удалить локальную переменную %s"
@@ -13052,6 +13067,10 @@ msgstr "Удалить пути из списка \"Другие модули\""
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr "Удалить модуль из выражения Uses"
+
+#: lazarusidestrconsts.lisremoveunitpath
+msgid "Remove unit path?"
+msgstr "Удалить путь к модулям?"
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -13865,6 +13884,14 @@ msgstr "Каталог назначения%s%s%s%s не существует."
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "Каталог назначения %s%s%s не существует.%sПроверьте имя исполнимого файла в меню Проект -> Параметры проекта."
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
+msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
+msgstr "Каталог \"%s\" больше не содержит включаемых файлов проекта. Удалить его из списка путей к включаемым файлам проекта?"
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
+msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
+msgstr "Каталог \"%s\" больше не содержит модулей проекта. Удалить его из списка путей к модулям проекта?"
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -14876,6 +14903,11 @@ msgstr "Использовать пакет %s в проекте"
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
 msgstr "Использовать пакет в проекте"
+
+#: lazarusidestrconsts.lisuseprojectunit
+msgctxt "lazarusidestrconsts.lisuseprojectunit"
+msgid "Add unit to uses section"
+msgstr "Добавить модуль в выражение Uses"
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -16408,11 +16440,6 @@ msgstr "неизвестная команда редактора"
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
 msgstr "Неиспользуемые модули ..."
-
-#: lazarusidestrconsts.srkmecuseprojectunit
-msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
-msgid "Add unit to uses section"
-msgstr "Добавить модуль в выражение Uses"
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

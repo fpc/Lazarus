@@ -290,6 +290,10 @@ msgstr "所有文件"
 msgid "Alphabetically"
 msgstr "按字母顺序排列"
 
+#: lazarusidestrconsts.dlgalreadyusesallotherunits
+msgid "\"%s\" already uses all the units in this project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr "光标总是可视"
@@ -2915,10 +2919,6 @@ msgstr "撤销/重做:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "撤销限制"
-
-#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
-msgid "Unit \"%s\" already uses all the units in this project"
-msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -7261,6 +7261,10 @@ msgstr "保存%到%s%s%s%s出错"
 msgid "Error setting the name of a component %s to %s"
 msgstr ""
 
+#: lazarusidestrconsts.liserrorwritingfile
+msgid "Error writing file \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "将包列表信息写入文件 %s%s%s%s 时错误"
@@ -8409,6 +8413,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
+msgstr ""
+
+#: lazarusidestrconsts.liskeep2
+msgid "Keep"
 msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopen
@@ -10478,9 +10486,8 @@ msgstr "取消所选缩进"
 msgid "Uppercase selection"
 msgstr "转换所选为大写"
 
-#: lazarusidestrconsts.lismenuuseunit
-msgctxt "lazarusidestrconsts.lismenuuseunit"
-msgid "Add unit to uses section"
+#: lazarusidestrconsts.lismenuuseprojectunit
+msgid "Add unit to uses section ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuview
@@ -11182,6 +11189,10 @@ msgstr "打开包 %s ?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "打开工程 %s?"
+
+#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
+msgid "Options changed, recompiling clean with -B"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -13054,6 +13065,10 @@ msgstr "从工程移除"
 msgid "Remove from search path"
 msgstr ""
 
+#: lazarusidestrconsts.lisremoveincludepath
+msgid "Remove include path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
 msgstr ""
@@ -13080,6 +13095,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
+msgstr ""
+
+#: lazarusidestrconsts.lisremoveunitpath
+msgid "Remove unit path?"
 msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
@@ -13889,6 +13908,14 @@ msgstr "目标目录 %s%s%s%s 不存在."
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "目标目录 %s%s%s%s 不存在.%s请检查工程文件名从菜单 工程>工程选项."
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
+msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
+msgstr ""
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
+msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
+msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -14901,6 +14928,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
+msgstr ""
+
+#: lazarusidestrconsts.lisuseprojectunit
+msgctxt "lazarusidestrconsts.lisuseprojectunit"
+msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.lisusershomedirectory
@@ -16433,11 +16465,6 @@ msgstr "未知编辑器命令"
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
-msgstr ""
-
-#: lazarusidestrconsts.srkmecuseprojectunit
-msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
-msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst

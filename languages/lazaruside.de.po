@@ -292,6 +292,10 @@ msgstr "Alle Dateien"
 msgid "Alphabetically"
 msgstr "Alphabetisch"
 
+#: lazarusidestrconsts.dlgalreadyusesallotherunits
+msgid "\"%s\" already uses all the units in this project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr "Ständig sichtbarer Cursor"
@@ -2925,10 +2929,6 @@ msgstr "Einstellungen für Rücknahme"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Rücknahmemaximum"
-
-#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
-msgid "Unit \"%s\" already uses all the units in this project"
-msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -7268,6 +7268,10 @@ msgstr "Fehler beim Speichern von %s nach %s%s%s%s"
 msgid "Error setting the name of a component %s to %s"
 msgstr "Fehler beim Festlegen des Names einer Komponente %s to %s"
 
+#: lazarusidestrconsts.liserrorwritingfile
+msgid "Error writing file \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Fehler beim Schreiben der Package-Liste in die Datei%s%s%s%s"
@@ -8419,6 +8423,10 @@ msgstr "JIT-Form"
 #: lazarusidestrconsts.liskeep
 msgid "keep"
 msgstr "beibehalten"
+
+#: lazarusidestrconsts.liskeep2
+msgid "Keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopen
 msgid "Keep converted files open in editor"
@@ -10481,10 +10489,9 @@ msgstr "Auswahl ausrücken"
 msgid "Uppercase selection"
 msgstr "Auswahl großschreiben"
 
-#: lazarusidestrconsts.lismenuuseunit
-msgctxt "lazarusidestrconsts.lismenuuseunit"
-msgid "Add unit to uses section"
-msgstr "Unit zum uses Abschnitt hinzufügen"
+#: lazarusidestrconsts.lismenuuseprojectunit
+msgid "Add unit to uses section ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
@@ -11186,6 +11193,10 @@ msgstr "Package %s öffnen?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "Projekt %s öffnen?"
+
+#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
+msgid "Options changed, recompiling clean with -B"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -13057,6 +13068,10 @@ msgstr "Vom Projekt entfernen"
 msgid "Remove from search path"
 msgstr "Aus dem Suchpfad entfernen"
 
+#: lazarusidestrconsts.lisremoveincludepath
+msgid "Remove include path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
 msgstr "Lokale Variable %s entfernen"
@@ -13084,6 +13099,10 @@ msgstr "Pfade von \"Other sources\" entfernen"
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
 msgstr "Unit aus der Sektion <Uses> entfernen"
+
+#: lazarusidestrconsts.lisremoveunitpath
+msgid "Remove unit path?"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -13898,6 +13917,14 @@ msgstr "Das Zielverzeichnis%s%s%s%s ist nicht vorhanden."
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "Es gibt das Zielverzeichnis %s%s%s nicht.%sBitte prüfen Sie den Namen des Projektziels im Menü Projekt > Projekteinstellungen."
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
+msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
+msgstr ""
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
+msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
+msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -14907,6 +14934,11 @@ msgstr "Verwende Package %s in Projekt"
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
 msgstr "Verwende Package in Projekt"
+
+#: lazarusidestrconsts.lisuseprojectunit
+msgctxt "lazarusidestrconsts.lisuseprojectunit"
+msgid "Add unit to uses section"
+msgstr "Unit zum uses Abschnitt hinzufügen"
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -16441,11 +16473,6 @@ msgstr "unbekannter Editorbefehl"
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
 msgstr "Ungenutzte Units ..."
-
-#: lazarusidestrconsts.srkmecuseprojectunit
-msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
-msgid "Add unit to uses section"
-msgstr "Unit zum uses Abschnitt hinzufügen"
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"

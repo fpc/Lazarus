@@ -292,6 +292,10 @@ msgstr "Visi failai"
 msgid "Alphabetically"
 msgstr "Pagal abėcėlę"
 
+#: lazarusidestrconsts.dlgalreadyusesallotherunits
+msgid "\"%s\" already uses all the units in this project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr "Visuomet matomas žymeklis"
@@ -2910,10 +2914,6 @@ msgstr "Atšaukti / grąžinti:"
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
 msgstr "Grąžinimų riba"
-
-#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
-msgid "Unit \"%s\" already uses all the units in this project"
-msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
 msgctxt "lazarusidestrconsts.dlgunitdepbrowse"
@@ -7249,6 +7249,10 @@ msgstr "Įvyko klaida %s rašant į%s%s%s%s"
 msgid "Error setting the name of a component %s to %s"
 msgstr "Įvyko klaida komponentei „%s“ suteikiant pavadinimą „%s“"
 
+#: lazarusidestrconsts.liserrorwritingfile
+msgid "Error writing file \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Įvyko klaida rašant paketo sąrašą į failą%s%s%s%s"
@@ -8399,6 +8403,10 @@ msgstr "JITForm"
 #: lazarusidestrconsts.liskeep
 msgid "keep"
 msgstr "palikti"
+
+#: lazarusidestrconsts.liskeep2
+msgid "Keep"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopen
 msgid "Keep converted files open in editor"
@@ -10465,9 +10473,8 @@ msgstr "Naikinti įtrauką pažymėjime"
 msgid "Uppercase selection"
 msgstr "Pažymėjime visas raides didžiosiomis"
 
-#: lazarusidestrconsts.lismenuuseunit
-msgctxt "lazarusidestrconsts.lismenuuseunit"
-msgid "Add unit to uses section"
+#: lazarusidestrconsts.lismenuuseprojectunit
+msgid "Add unit to uses section ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuview
@@ -11160,6 +11167,10 @@ msgstr "Atverti paketą %s?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "Atverti projektą %s?"
+
+#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
+msgid "Options changed, recompiling clean with -B"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -13029,6 +13040,10 @@ msgstr "Pašalinti iš projekto"
 msgid "Remove from search path"
 msgstr "Šalinti iš paieškos kelio"
 
+#: lazarusidestrconsts.lisremoveincludepath
+msgid "Remove include path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
 msgstr ""
@@ -13055,6 +13070,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
+msgstr ""
+
+#: lazarusidestrconsts.lisremoveunitpath
+msgid "Remove unit path?"
 msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
@@ -13873,6 +13892,14 @@ msgstr "Paskirties aplankas%s%s%s%s neegzistuoja."
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "%s%s%s paskirties aplankas neegzistuoja.%sPatikrinkite projekto būsimo failo pavadinimą menių punkte „Projektas -> Projekto parinktys…“."
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
+msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
+msgstr ""
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
+msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
+msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -14886,6 +14913,11 @@ msgstr "Paketą „%s“ naudoti projekte"
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
 msgstr "Paketą naudoti projekte"
+
+#: lazarusidestrconsts.lisuseprojectunit
+msgctxt "lazarusidestrconsts.lisuseprojectunit"
+msgid "Add unit to uses section"
+msgstr ""
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -16416,11 +16448,6 @@ msgstr "nežinoma rengyklės komanda"
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
-msgstr ""
-
-#: lazarusidestrconsts.srkmecuseprojectunit
-msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
-msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst

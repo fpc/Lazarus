@@ -287,6 +287,10 @@ msgstr "Tüm dosyalar"
 msgid "Alphabetically"
 msgstr "Alfabetik"
 
+#: lazarusidestrconsts.dlgalreadyusesallotherunits
+msgid "\"%s\" already uses all the units in this project"
+msgstr ""
+
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
 msgstr ""
@@ -2885,10 +2889,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
-msgstr ""
-
-#: lazarusidestrconsts.dlgunitalreadyusesallotherunits
-msgid "Unit \"%s\" already uses all the units in this project"
 msgstr ""
 
 #: lazarusidestrconsts.dlgunitdepbrowse
@@ -7206,6 +7206,10 @@ msgstr ""
 msgid "Error setting the name of a component %s to %s"
 msgstr ""
 
+#: lazarusidestrconsts.liserrorwritingfile
+msgid "Error writing file \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
 msgstr ""
@@ -8354,6 +8358,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
+msgstr ""
+
+#: lazarusidestrconsts.liskeep2
+msgid "Keep"
 msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopen
@@ -10417,9 +10425,8 @@ msgstr "Seçimi beriye al"
 msgid "Uppercase selection"
 msgstr "Seçimi büyük harfe çevir"
 
-#: lazarusidestrconsts.lismenuuseunit
-msgctxt "lazarusidestrconsts.lismenuuseunit"
-msgid "Add unit to uses section"
+#: lazarusidestrconsts.lismenuuseprojectunit
+msgid "Add unit to uses section ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuview
@@ -11115,6 +11122,10 @@ msgstr "%s adlı paket açılsın mı?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "%s adlı proje açılsın mı?"
+
+#: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
+msgid "Options changed, recompiling clean with -B"
+msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -12977,6 +12988,10 @@ msgstr "Projeden kaldır"
 msgid "Remove from search path"
 msgstr ""
 
+#: lazarusidestrconsts.lisremoveincludepath
+msgid "Remove include path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
 msgstr ""
@@ -13003,6 +13018,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
+msgstr ""
+
+#: lazarusidestrconsts.lisremoveunitpath
+msgid "Remove unit path?"
 msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
@@ -13811,6 +13830,14 @@ msgstr "Hedef dizin %s%s%s%s mevcut değil."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
 msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgstr ""
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
+msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
+msgstr ""
+
+#: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
+msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
 msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
@@ -14822,6 +14849,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinproject2
 msgid "Use package in project"
+msgstr ""
+
+#: lazarusidestrconsts.lisuseprojectunit
+msgctxt "lazarusidestrconsts.lisuseprojectunit"
+msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.lisusershomedirectory
@@ -16350,11 +16382,6 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
-msgstr ""
-
-#: lazarusidestrconsts.srkmecuseprojectunit
-msgctxt "lazarusidestrconsts.srkmecuseprojectunit"
-msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
