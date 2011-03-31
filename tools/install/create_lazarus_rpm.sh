@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#
+# Note: To create an rpm as normal user, see the script rpm/create_nonroot_rpmmacros.sh 
 set -x
 set -e
 
@@ -15,7 +16,8 @@ if [ "x$FPCRPM" = "x" ]; then
   echo ERROR: fpc rpm not installed
   exit
 fi
-FPCRPMVersion=$(echo $FPCRPM | sed -e 's/fpc-//g' -e 's/\.i386\|\.x86_64//g')
+# remove from the fpc version the architecture i386, i686, x86_64
+FPCRPMVersion=$(echo $FPCRPM | sed -e 's/fpc-//g' -e 's/\.[a-z0-9_]\+$//g')
 echo "installed fpc version: $FPCRPMVersion"
 FPCSRCRPMVersion=$(echo $FPCRPMVersion | cut -d- -f1)
 
