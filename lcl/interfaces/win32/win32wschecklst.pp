@@ -166,8 +166,6 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, False, True);
-  // listbox is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.needParentPaint := False;
   Result := Params.Window;
 end;
 

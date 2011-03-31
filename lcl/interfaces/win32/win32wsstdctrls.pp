@@ -587,6 +587,7 @@ begin
           WindowInfo^.WinControl := NCCreateParams^.WinControl;
           WindowInfo^.WinControl.Handle := Window;
           WindowInfo^.DefWndProc := NCCreateParams^.DefWndProc;
+          // listbox is not a transparent control -> no need for parentpainting
           WindowInfo^.needParentPaint := False;
           SetWindowLong(Window, GWL_ID, PtrInt(NCCreateParams^.WinControl));
           NCCreateParams^.Handled := True;
@@ -642,8 +643,6 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, False, True);
-  // listbox is not a transparent control -> no need for parentpainting
-  Params.WindowInfo^.needParentPaint := False;
   Result := Params.Window;
 end;
 
