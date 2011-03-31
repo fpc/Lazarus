@@ -1488,6 +1488,7 @@ var
   i: Integer;
 begin
   if IsScanning then exit;
+  inherited;
 
   FCurLineIndex := LineNumber;
   FLine := NewValue;

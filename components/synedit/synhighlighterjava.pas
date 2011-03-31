@@ -693,6 +693,7 @@ end; { Create }
 procedure TSynJavaSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String;
   LineNumber:Integer);
 begin
+  inherited;
   fLine := PChar(NewValue);
   Run := 0;
   fEol := False;
