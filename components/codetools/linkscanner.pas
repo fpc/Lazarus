@@ -289,7 +289,7 @@ type
     CommentInnerStartPos: integer; // position after '{', '(*', '//'
     CommentInnerEndPos: integer;   // position of '}', '*)', #10
     CommentEndPos: integer;        // postion after '}', '*)', #10
-    LastCleanSrcPos: integer;
+    CopiedSrcPos: integer;
     IfLevel: integer;
     procedure ReadNextToken;
     function ReturnFromIncludeFileAndIsEnd: boolean;
@@ -304,7 +304,7 @@ type
     procedure IncCommentLevel; {$IFDEF UseInline}inline;{$ENDIF}
     procedure DecCommentLevel; {$IFDEF UseInline}inline;{$ENDIF}
     procedure HandleDirectives;
-    procedure UpdateCleanedSource(SourcePos: integer);
+    procedure UpdateCleanedSource(NewCopiedSrcPos: integer);
     function ReturnFromIncludeFile: boolean;
     function ParseKeyWord(StartPos, WordLen: integer; LastTokenType: TLSTokenType
                           ): boolean;
@@ -970,7 +970,7 @@ begin
     TokenStart:=1;
     TokenType:=lsttNone;
     SrcLen:=length(Src);
-    LastCleanSrcPos:=0;
+    CopiedSrcPos:=0;
   end else begin
     RaiseUnableToGetCode;
   end;
@@ -1306,8 +1306,8 @@ begin
         SrcPos:=TokenStart;
       while ord(ScanTill)>ord(ScannedRange) do begin
         // check every 100.000 bytes for abort
-        if CheckForAbort and ((LastProgressPos-LastCleanSrcPos)>100000) then begin
-          LastProgressPos:=LastCleanSrcPos;
+        if CheckForAbort and ((LastProgressPos-CopiedSrcPos)>100000) then begin
+          LastProgressPos:=CopiedSrcPos;
           DoCheckAbort;
         end;
         ReadNextToken;
@@ -1329,7 +1329,8 @@ begin
         {$IFDEF ShowUpdateCleanedSrc}
         DebugLn('TLinkScanner.Scan UpdatePos=',DbgS(SrcPos-1));
         {$ENDIF}
-        UpdateCleanedSource(SrcPos-1);
+        if SrcPos>CopiedSrcPos then
+          UpdateCleanedSource(SrcPos-1);
       end else begin
         {$IFDEF ShowUpdateCleanedSrc}
         DebugLn(['TLinkScanner.Scan missing $ENDIF']);
@@ -1472,26 +1473,34 @@ begin
   RaiseException(ctsCommentEndNotFound);
 end;
 
-procedure TLinkScanner.UpdateCleanedSource(SourcePos: integer);
+procedure TLinkScanner.UpdateCleanedSource(NewCopiedSrcPos: integer);
 // add new parsed code to cleaned source string
+
+  procedure RaiseInvalid;
+  begin
+    debugln(['TLinkScanner.UpdateCleanedSource inconsistency found: Srclen=',SrcLen,'=',length(Src),' FCleanedSrc=',CleanedLen,'/',length(FCleanedSrc),' CopiedSrcPos=',CopiedSrcPos,' NewCopiedSrcPos=',NewCopiedSrcPos,' AddLen=',NewCopiedSrcPos-CopiedSrcPos]);
+    RaiseException('TLinkScanner.UpdateCleanedSource inconsistency found AddLen='+dbgs(NewCopiedSrcPos-CopiedSrcPos));
+  end;
+
 var AddLen: integer;
 begin
-  if SourcePos=LastCleanSrcPos then exit;
-  if SourcePos>SrcLen then SourcePos:=SrcLen;
-  AddLen:=SourcePos-LastCleanSrcPos;
+  if NewCopiedSrcPos>SrcLen then NewCopiedSrcPos:=SrcLen+1;
+  if NewCopiedSrcPos=CopiedSrcPos then exit;
+  AddLen:=NewCopiedSrcPos-CopiedSrcPos;
+  if AddLen<=0 then RaiseInvalid;
   if AddLen>length(FCleanedSrc)-CleanedLen then begin
     // expand cleaned source string by at least 1024
     SetLength(FCleanedSrc,length(FCleanedSrc)+SrcLen+1024);
   end;
-  System.Move(Src[LastCleanSrcPos+1],FCleanedSrc[CleanedLen+1],AddLen);
+  System.Move(Src[CopiedSrcPos+1],FCleanedSrc[CleanedLen+1],AddLen);
   inc(CleanedLen,AddLen);
   {$IFDEF ShowUpdateCleanedSrc}
   DebugLn('TLinkScanner.UpdateCleanedSource A ',
-    DbgS(LastCleanSrcPos),'-',DbgS(SourcePos),'="',
-    StringToPascalConst(copy(Src,LastCleanSrcPos+1,20)),
-    '".."',StringToPascalConst(copy(Src,SourcePos-19,20)),'"');
+    DbgS(CopiedSrcPos),'-',DbgS(NewCopiedSrcPos),'="',
+    StringToPascalConst(copy(Src,CopiedSrcPos+1,20)),
+    '".."',StringToPascalConst(copy(Src,NewCopiedSrcPos-19,20)),'"');
   {$ENDIF}
-  LastCleanSrcPos:=SourcePos;
+  CopiedSrcPos:=NewCopiedSrcPos;
 end;
 
 procedure TLinkScanner.AddSourceChangeStep(ACode: pointer; AChangeStep: integer);
@@ -3292,7 +3301,7 @@ begin
   Src:=Macro^.Src;
   SrcLen:=length(Src);
   SrcFilename:=Macro^.SrcFilename;
-  LastCleanSrcPos:=Macro^.StartPos-1;
+  CopiedSrcPos:=Macro^.StartPos-1;
   UpdateCleanedSource(Macro^.EndPos-1);
   //DebugLn(['TLinkScanner.AddMacroSource MACRO CleanedSrc=',dbgstr(copy(FCleanedSrc,CleanedLen-19,20))]);
   // restore code pos
@@ -3300,7 +3309,7 @@ begin
   Src:=OldSrc;
   SrcLen:=length(Src);
   SrcFilename:=OldSrcFilename;
-  LastCleanSrcPos:=SrcPos-1;
+  CopiedSrcPos:=SrcPos-1;
   AddLink(CleanedLen+1,SrcPos,Code);
   // clear token type
   TokenType:=lsttNone;
@@ -3323,7 +3332,7 @@ begin
     OldPos:=PopIncludeLink;
     SetSource(OldPos.Code);
     SrcPos:=OldPos.SrcPos;
-    LastCleanSrcPos:=SrcPos-1;
+    CopiedSrcPos:=SrcPos-1;
     AddLink(CleanedLen+1,SrcPos,Code);
   end;
   Result:=SrcPos<=SrcLen;
@@ -3517,10 +3526,10 @@ begin
     end;
   end;
   if CommentStartPos>0 then begin
-    LastCleanSrcPos:=CommentStartPos-1;
+    CopiedSrcPos:=CommentStartPos-1;
     AddLink(CleanedLen+1,CommentStartPos,Code);
   end else begin
-    LastCleanSrcPos:=SrcLen+1;
+    CopiedSrcPos:=SrcLen+1;
   end;
   {$IFDEF ShowUpdateCleanedSrc}
   DebugLn('TLinkScanner.SkipTillEndifElse B Continuing after: ',
