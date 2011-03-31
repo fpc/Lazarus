@@ -4014,7 +4014,7 @@ begin
     QtKey_Flip,
     QtKey_unknown: Result := VK_UNKNOWN;
   else
-    if AKey <= $FF then // Qt:AKey = VK_KEY in many cases
+    if AKey in [0..255] then // Qt:AKey = VK_KEY in many cases
       Result := AKey
     else
     if AText <> '' then
