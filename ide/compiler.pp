@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils, Process, LCLProc, Forms, Controls, FileUtil, InfoBuild,
   LazarusIDEStrConsts, CompilerOptions, Project, OutputFilter, UTF8Process,
-  LazIDEIntf, ProjectIntf;
+  IDEMsgIntf, LazIDEIntf, ProjectIntf;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
@@ -201,6 +201,9 @@ begin
         TheProcess.CurrentDirectory:=WorkingDir;
         
         if OutputFilter<>nil then begin
+          if BuildAll then
+            IDEMessagesWindow.AddMsg(lisOptionsChangedRecompilingCleanWithB,
+              WorkingDir, -1);
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
           OutputFilter.CompilerOptions:=AProject.CompilerOptions;
           {$IFDEF WithAsyncCompile}
