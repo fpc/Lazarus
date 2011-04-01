@@ -1175,8 +1175,10 @@ end;
 procedure TSynPluginCustomSyncroEdit.DoPaintLockEnded;
 begin
   inherited DoPaintLockEnded;
-  ApplyChangeList;
-  UpdateCurrentCell;
+  if Active then begin
+    ApplyChangeList;
+    UpdateCurrentCell;
+  end;
 end;
 
 procedure TSynPluginCustomSyncroEdit.UpdateCurrentCell;
