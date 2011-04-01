@@ -5767,7 +5767,7 @@ begin
       end;
 
     gsNormal:
-      if not FixedGrid then
+      if not FixedGrid and (Cur.X=FGCache.ClickCell.X) and (Cur.Y=FGCache.ClickCell.Y) then
         CellClick(cur.x, cur.y, Button);
 
     gsSelecting:
@@ -5842,6 +5842,7 @@ begin
   if IsPushCellActive() then begin
     ResetPushedCell;
   end;
+  FGCache.ClickCell := point(-1, -1);
 
   {$IfDef dbgGrid}DebugLn('MouseUP  END  RND=', FloatToStr(Random));{$Endif}
 end;
@@ -8000,6 +8001,7 @@ begin
   FRows:=TList.Create;
   FGCache.AccumWidth:=TList.Create;
   FGCache.AccumHeight:=TList.Create;
+  FGCache.ClickCell := point(-1, -1);
   inherited Create(AOwner);
 
   FColumns := CreateColumns;
