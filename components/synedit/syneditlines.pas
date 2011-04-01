@@ -57,9 +57,7 @@ type
     FLineEndType: TSynLinesFileLineEndType;
     FTextBuffer: TSynEditStringList;
     FOnSaved: TSavedNotification;
-    function GetDosFileFormat: boolean;
     function GetTextChangeStamp: int64;
-    procedure SetDosFileFormat(const AValue: boolean);
   protected
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
@@ -81,8 +79,6 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
-    property DosFileFormat: boolean read GetDosFileFormat write SetDosFileFormat;
-      deprecated {$IFDEF VER2_5}'use FileLineEndType and FileWriteLineEndType / to be removed'{$ENDIF};
     property FileLineEndType: TSynLinesFileLineEndType read FFileLineEndType;
     property FileWriteLineEndType: TSynLinesFileLineEndType
              read FFileWriteLineEndType write FFileWriteLineEndType;
@@ -315,19 +311,6 @@ end;
 function TSynEditLines.GetTextChangeStamp: int64;
 begin
   Result:=FTextBuffer.TextChangeStamp;
-end;
-
-function TSynEditLines.GetDosFileFormat: boolean;
-begin
-  Result := FLineEndType = sfleCrLf;
-end;
-
-procedure TSynEditLines.SetDosFileFormat(const AValue: boolean);
-begin
-  if AValue then
-    FLineEndType := sfleCrLf
-  else
-    FLineEndType := sfleSystem;
 end;
 
 function TSynEditLines.Get(Index: integer): string;

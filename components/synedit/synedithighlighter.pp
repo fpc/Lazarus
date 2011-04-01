@@ -241,7 +241,7 @@ type
     fWordBreakChars: TSynIdentChars;
     FIsScanning: Boolean;
     function GetKnownRanges(Index: Integer): TSynHighlighterRangeList;
-    procedure SetDrawDividerLevel(const AValue: Integer);
+    procedure SetDrawDividerLevel(const AValue: Integer); deprecated;
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
   protected
     FAttributeChangeNeedScan: Boolean;
@@ -312,7 +312,7 @@ type
 
     property DrawDivider[Index: integer]: TSynDividerDrawConfigSetting
       read GetDrawDivider;
-    property DrawDividerLevel: Integer read FDrawDividerLevel write SetDrawDividerLevel;
+    property DrawDividerLevel: Integer read FDrawDividerLevel write SetDrawDividerLevel; deprecated;
   public
     property CurrentLines: TSynEditStringsBase read FCurrentLines write SetCurrentLines;
 

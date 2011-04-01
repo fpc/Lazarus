@@ -348,7 +348,6 @@ type
     FInternalBlockSelection: TSynEditSelection;
     FOnChangeUpdating: TChangeUpdatingEvent;
     FMouseSelectionMode: TSynSelectionMode;
-    fCtrlMouseActive: boolean;                                                  // deprecated since 0.9.29
     fMarkupManager : TSynEditMarkupManager;
     fMarkupHighAll : TSynEditMarkupHighlightAll;
     fMarkupHighCaret : TSynEditMarkupHighlightAllCaret;
@@ -463,14 +462,11 @@ type
     function GetChangeStamp: int64;
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldState: String;
-    function GetGutterWidth: Integer; deprecated; // deprecated in 0.9.29 (08/2010)
     function GetModified: Boolean;
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TSynEditPlugin;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
-    function GetDividerDrawLevel: Integer; deprecated;
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
-    procedure SetDividerDrawLevel(const AValue: Integer); deprecated;
     procedure SetFoldState(const AValue: String);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
@@ -841,7 +837,6 @@ type
     procedure SelectAll;
     Procedure SetHighlightSearch(const ASearch: String; AOptions: TSynSearchOptions);
     procedure SelectToBrace;
-    procedure SetSelWord; deprecated;
     procedure SelectWord;
     procedure SelectLine(WithLeadSpaces: Boolean = True);
     procedure SelectParagraph;
@@ -872,14 +867,10 @@ type
     property Color default clWhite;
     property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
     {$IFDEF SYN_LAZARUS}
-    property CtrlMouseActive: boolean read fCtrlMouseActive; deprecated;        // deprecated in 0.9.29
-    {$ENDIF}
-    {$IFDEF SYN_LAZARUS}
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
     {$ENDIF}
-    property GutterWidth: Integer read GetGutterWidth; deprecated; // deprecated in 0.9.29 (08/2010)
     property Highlighter: TSynCustomHighlighter
       read fHighlighter write SetHighlighter;
     property LeftChar: Integer read fLeftChar write SetLeftChar;
@@ -972,9 +963,6 @@ type
       read GetDefSelectionMode write SetDefSelectionMode default smNormal;
     property SelectionMode: TSynSelectionMode
       read GetSelectionMode write SetSelectionMode default smNormal;
-    // See Highlighter for new methods
-    property CFDividerDrawLevel: Integer
-      read GetDividerDrawLevel write SetDividerDrawLevel; deprecated;
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default FALSE;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -1412,11 +1400,6 @@ begin
   Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
 end;
 
-function TCustomSynEdit.GetGutterWidth: Integer;
-begin
-  Result := FLeftGutter.Width;
-end;
-
 function TCustomSynEdit.GetModified: Boolean;
 begin
   Result := TSynEditStringList(FLines).Modified;
@@ -1438,11 +1421,6 @@ begin
   FInternalBlockSelection.StartLineBytePos := aStartPoint;
   FInternalBlockSelection.EndLineBytePos := aEndPoint;
   Result := FInternalBlockSelection.SelText;
-end;
-
-function TCustomSynEdit.GetDividerDrawLevel: Integer;
-begin
-  Result := fHighlighter.DrawDividerLevel;
 end;
 
 procedure TCustomSynEdit.SetDefSelectionMode(const AValue: TSynSelectionMode);
@@ -4115,11 +4093,6 @@ begin
   FindMatchingBracket(CaretXY,true,true,true,false);
 end;
 
-procedure TCustomSynEdit.SetSelWord;
-begin
-  SelectWord;
-end;
-
 procedure TCustomSynEdit.SelectWord;
 begin
   SetWordBlock(LogicalCaretXY);
@@ -5254,13 +5227,6 @@ begin
     FCaret.DecForcePastEOL;
     Item.Free;
   end;
-end;
-
-procedure TCustomSynEdit.SetDividerDrawLevel(const AValue: Integer);
-begin
-  if assigned(fHighlighter) then
-    fHighlighter.DrawDividerLevel := AValue;
-  Invalidate;
 end;
 
 procedure TCustomSynEdit.SetFoldState(const AValue: String);

@@ -71,7 +71,6 @@ end;
 
 procedure TTestBookMarks.TestMarks;
 var
-  mks: TSynEditMarks;
   m, m1, m2: TSynEditMark;
 begin
   ReCreateEdit;
@@ -81,29 +80,29 @@ begin
   m := AddMark(3,2);
   CheckMarks('3/2', [ 3,2 ]);
 
-  SynEdit.Marks.GetMarksForLine(2, True, mks);  Assert(mks[1] = nil, 'mfl2');
-  SynEdit.Marks.GetMarksForLine(3, True, mks);  Assert(mks[1] = m, 'mfl3');
+  Assert(SynEdit.Marks.Line[2][1] = nil, 'mfl2');
+  Assert(SynEdit.Marks.Line[3][1] = m, 'mfl3');
 
   m1 := AddMark(5,2);
   CheckMarks('3/2 - 5/1', [ 3,2,   5,2 ]);
-  SynEdit.Marks.GetMarksForLine(1, True, mks);  Assert(mks[1] = nil, 'mfl1 /2');
-  SynEdit.Marks.GetMarksForLine(2, True, mks);  Assert(mks[1] = nil, 'mfl2 /2');
-  SynEdit.Marks.GetMarksForLine(3, True, mks);  Assert(mks[1] = m, 'mfl3 /2');  Assert(mks[2] = nil, 'mfl3a /2');
-  SynEdit.Marks.GetMarksForLine(4, True, mks);  Assert(mks[1] = nil, 'mfl4 /2');
-  SynEdit.Marks.GetMarksForLine(5, True, mks);  Assert(mks[1] = m1, 'mfl5 /2');  Assert(mks[2] = nil, 'mfl5a /2');
-  SynEdit.Marks.GetMarksForLine(6, True, mks);  Assert(mks[1] = nil, 'mfl6 /2');
+  Assert(SynEdit.Marks.Line[1][1] = nil, 'mfl1 /2');
+  Assert(SynEdit.Marks.Line[2][1] = nil, 'mfl2 /2');
+  Assert(SynEdit.Marks.Line[3][1] = m, 'mfl3 /2');  Assert(SynEdit.Marks.Line[3].Count = 1, 'mfl3a /2');
+  Assert(SynEdit.Marks.Line[4][1] = nil, 'mfl4 /2');
+  Assert(SynEdit.Marks.Line[5][1] = m1, 'mfl5 /2');  Assert(SynEdit.Marks.Line[5].Count = 1, 'mfl5a /2');
+  Assert(SynEdit.Marks.Line[6][1] = nil, 'mfl6 /2');
 
   m2 := AddMark(3,1);
   // colums are in order, in which they where added
   CheckMarks('3/1 - 3/2 - 5/1', [ 3,2,   3,1,   5,2 ]);
-  SynEdit.Marks.GetMarksForLine(1, True, mks);  Assert(mks[1] = nil, 'mfl1 /3');
-  SynEdit.Marks.GetMarksForLine(2, True, mks);  Assert(mks[1] = nil, 'mfl2 /3');
-  SynEdit.Marks.GetMarksForLine(3, True, mks);
-    Assert(mks[1] = m, 'mfl3 /3');  Assert(mks[2] = m2, 'mfl3 /3');
-    Assert(mks[3] = nil, 'mfl3a /3');
-  SynEdit.Marks.GetMarksForLine(4, True, mks);  Assert(mks[1] = nil, 'mfl4 /3');
-  SynEdit.Marks.GetMarksForLine(5, True, mks);  Assert(mks[1] = m1, 'mfl5 /3');  Assert(mks[2] = nil, 'mfl5a /3');
-  SynEdit.Marks.GetMarksForLine(6, True, mks);  Assert(mks[1] = nil, 'mfl6 /3');
+  Assert(SynEdit.Marks.Line[1][1] = nil, 'mfl1 /3');
+  Assert(SynEdit.Marks.Line[2][1] = nil, 'mfl2 /3');
+  Assert(SynEdit.Marks.Line[3][1] = m, 'mfl3 /3');
+    Assert(SynEdit.Marks.Line[3][2] = m2, 'mfl3 /3');
+    Assert(SynEdit.Marks.Line[3].Count = 2, 'mfl3a /3');
+  Assert(SynEdit.Marks.Line[4][1] = nil, 'mfl4 /3');
+  Assert(SynEdit.Marks.Line[5][1] = m1, 'mfl5 /3');  Assert(SynEdit.Marks.Line[5].Count = 1, 'mfl5a /3');
+  Assert(SynEdit.Marks.Line[6][1] = nil, 'mfl6 /3');
 
 
   // check movement

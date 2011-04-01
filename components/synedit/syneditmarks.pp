@@ -7,11 +7,6 @@ interface
 uses
   Classes, Controls, SysUtils, math, SynEditMiscClasses, SynEditTextBase, LCLProc;
 
-const
-// Max number of book/gutter marks returned from GetEditMarksForLine - that
-// really should be enough.
-  maxMarks = 16;// deprecated;
-
 type
 
   TSynEditMark = class;
@@ -43,8 +38,6 @@ type
     procedure CallMarkChangedHandlers(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
   end;
 
-
-  TSynEditMarks = array[1..maxMarks] of TSynEditMark deprecated;
 
   { TSynEditMark }
 
@@ -252,18 +245,11 @@ type
 
 
     function  Add(Item: TSynEditMark): Integer;
-    procedure Insert(Index: Integer; Item: TSynEditMark); deprecated {$IFDEF VER2_5}'List is always sorted, use ADD / to be removed after 0.9.30'{$ENDIF};
     procedure Delete(Index: Integer);
     function  Remove(Item: TSynEditMark): Integer;
     function  IndexOf(Item: TSynEditMark): Integer;
     function  Count: Integer;
 
-    function  First: TSynEditMark;       deprecated {$IFDEF VER2_5}'to be removed after 0.9.30'{$ENDIF};
-    function  Last: TSynEditMark;        deprecated {$IFDEF VER2_5}'to be removed after 0.9.30'{$ENDIF};
-    procedure Place(Mark: TSynEditMark); deprecated {$IFDEF VER2_5}'use add instead / to be removed after 0.9.30'{$ENDIF};
-
-    procedure GetMarksForLine(line: integer; BookmarksFirst: Boolean; var Marks: TSynEditMarks);
-      deprecated {$IFDEF VER2_5}'use property Line'{$ENDIF};
     procedure ClearLine(line: integer);
 
     procedure RegisterChangeHandler(Handler: TSynEditMarkChangeEvent; Filter: TSynEditMarkChangeReasons);
@@ -317,31 +303,6 @@ begin
     Result := Mark2.Priority - Mark1.Priority
   else
     Result := Mark2.Column - Mark1.Column;
-end;
-
-procedure SortMarks(var Marks: TSynEditMarks; Compare: TListSortCompare);
-var
-  i, j, LastMark: Integer;
-  P: Pointer;
-begin
-  for i := Low(Marks) to High(Marks) do
-    if Marks[i] = nil then
-    begin
-      LastMark := i - 1;
-      break;
-    end;
-  // insert sort is the best for our items count
-  for i := Low(Marks) + 1 to LastMark do
-  begin
-    P := Marks[i];
-    j := i - 1;
-    while (j >= Low(Marks)) and (Compare(P, Marks[j]) < 1) do
-    begin
-      Marks[j + 1] := Marks[j];
-      j := j - 1;
-    end;
-    Marks[j + 1] := TSynEditMark(P);
-  end;
 end;
 
 { TSynEditMark }
@@ -1054,35 +1015,6 @@ end;
 
 //Returns up to maxMarks book/gutter marks for a chosen line.
 
-procedure TSynEditMarkList.GetMarksForLine(line: integer; BookmarksFirst: Boolean;
-  var marks: TSynEditMarks);
-var
-  cnt: integer;
-  i: integer;
-  l: TSynEditMarkLine;
-begin
-  FillChar(marks, SizeOf(marks), 0);
-  cnt := 0;
-  l := FMarkLines.Lines[line];
-  if l = nil then
-    exit;
-  for i := 0 to l.Count - 1 do
-  begin
-    Inc(cnt);
-    marks[cnt] := l.Items[i];
-    if cnt = maxMarks then break;
-  end;
-  if BookmarksFirst then
-    SortMarks(marks, @DoMarksCompareBookmarksFirst)
-  else
-    SortMarks(marks, @DoMarksCompareBookmarksLast);
-end;
-
-procedure TSynEditMarkList.Insert(Index: Integer; Item: TSynEditMark);
-begin
-  Add(Item);
-end;
-
 procedure TSynEditMarkList.Delete(Index: Integer);
 var
   Mrk: TSynEditMark;
@@ -1091,20 +1023,6 @@ begin
   Mrk.MarkList := Self;
   FMarkLines.RemoveMark(Mrk);
   DoChange;
-end;
-
-function TSynEditMarkList.Last: TSynEditMark;
-begin
-  if Count > 0 then
-    Result := Items[Count - 1]
-  else
-    Result := nil;
-end;
-
-procedure TSynEditMarkList.Place(mark: TSynEditMark);
-begin
-  if assigned(mark) then
-    Add(mark);
 end;
 
 procedure TSynEditMarkList.Put(Index: Integer; Item: TSynEditMark);
@@ -1211,14 +1129,6 @@ end;
 function TSynEditMarkList.Count: Integer;
 begin
   Result := FMarkLines.MarkCount;
-end;
-
-function TSynEditMarkList.First: TSynEditMark;
-begin
-  if Count > 0 then
-    Result := Items[0]
-  else
-    Result := nil;
 end;
 
 procedure TSynEditMarkList.RegisterChangeHandler(Handler: TSynEditMarkChangeEvent;
