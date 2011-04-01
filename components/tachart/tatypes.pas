@@ -121,6 +121,7 @@ type
 
   TChartMarkAttachment = (maDefault, maEdge, maCenter);
 
+  {$IFNDEF fpdoc}  // Workaround for issue #18549.
   { TGenericChartMarks }
 
   generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
@@ -191,6 +192,7 @@ type
     property LabelFont: TFont read FLabelFont write SetLabelFont;
     property Visible default true;
   end;
+  {$ENDIF}
 
   TChartLinkPen = class(TChartPen)
   published
