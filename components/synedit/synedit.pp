@@ -369,7 +369,7 @@ type
     FLastMousePoint: TPoint;  // Pixel
     FChangedLinesStart: integer; // 1 based, 0 means invalid
     FChangedLinesEnd: integer; // 1 based, 0 means invalid, -1 means rest of screen
-    FBeautifier: TSynCustomBeautifier;
+    FBeautifier, FDefaultBeautifier: TSynCustomBeautifier;
     FBeautifyStartLineIdx, FBeautifyEndLineIdx: Integer;
 
     FFoldedLinesView:  TSynEditFoldedView;
@@ -1213,9 +1213,6 @@ type
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
-var
-  SynDefaultBeautifier: TSynCustomBeautifier;
-
 { TSynEditUndoCaret }
 
 function TSynEditUndoCaret.IsEqualContent(AnItem: TSynEditUndoItem): Boolean;
@@ -1609,7 +1606,8 @@ begin
 
   FStatusChangedList := TSynStatusChangedHandlerList.Create;
 
-  FBeautifier := SynDefaultBeautifier;
+  FDefaultBeautifier := TSynBeautifier.Create(self);
+  FBeautifier := FDefaultBeautifier;
 
   FLines := TSynEditStringList.Create;
   TSynEditStringList(FLines).AttachSynEdit(Self);
@@ -2021,6 +2019,8 @@ begin
   FreeAndNil(fInternalCaret);
   FreeAndNil(FScreenCaret);
   FreeAndNil(FStatusChangedList);
+  FBeautifier := nil;
+  FreeAndNil(FDefaultBeautifier);
   inherited Destroy;
 end;
 
@@ -2181,7 +2181,7 @@ procedure TCustomSynEdit.SetBeautifier(NewBeautifier: TSynCustomBeautifier);
 begin
   if fBeautifier = NewBeautifier then exit;
   if NewBeautifier = nil then
-    fBeautifier := SynDefaultBeautifier
+    fBeautifier := FDefaultBeautifier
   else
     fBeautifier := NewBeautifier;
 end;
@@ -9018,7 +9018,6 @@ end;
 
 initialization
   InitSynDefaultFont;
-  SynDefaultBeautifier := TSynBeautifier.Create(Application);
   Register;
 
 end.

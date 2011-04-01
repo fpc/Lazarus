@@ -7136,8 +7136,7 @@ var
   CodeBuf: TCodeBuffer;
 begin
   Result:=false;
-  //SrcEdit:=GetActiveSE;
-  SrcEdit := Manager.ActiveEditor; // Todo: Each SynEdit needs its own Beautifier, otherwise they call the wrong notebook
+  SrcEdit := FindSourceEditorWithEditorComponent(TComponent(Editor));
   if assigned(Manager) and Assigned(Manager.OnGetIndent) then begin
     Result := Manager.OnGetIndent(Sender, SrcEdit, LogCaret, OldLogCaret, FirstLinePos, LastLinePos,
                           Reason, SetIndentProc);
@@ -7479,10 +7478,6 @@ begin
   FSourceWindowByFocusList.Remove(AValue);
   FSourceWindowByFocusList.Insert(0, AValue);
 
-  // Todo: Each synEdit needs it's own beautifier
-  if SourceEditorCount > 0 then
-    TSourceEditor(SourceEditors[0]).EditorComponent.Beautifier.OnGetDesiredIndent
-      := @TSourceNotebook(ActiveSourceWindow).EditorGetIndent;
 
   if Assigned(OnCurrentCodeBufferChanged) then
     OnCurrentCodeBufferChanged(nil);
