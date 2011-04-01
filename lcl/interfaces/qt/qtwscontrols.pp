@@ -415,12 +415,35 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  Pt: TQtPoint;
+  R: TRect;
+  Box: TQtWidget;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetBounds') then
     Exit;
+  R := Rect(ALeft, ATop, AWidth, AHeight);
+
+  Box := nil;
+  if Assigned(AWinControl.Parent) and
+    AWinControl.Parent.HandleAllocated then
+      Box := TQtWidget(AWinControl.Parent.Handle);
+
+  if Assigned(Box) and
+    (Box.ChildOfComplexWidget = ccwScrollingWinControl) then
+  begin
+    Pt := TQtWidget(AWinControl.Handle).getPos;
+
+    R := Rect(ALeft - TQtCustomControl(Box).horizontalScrollBar.getValue,
+      ATop - TQtCustomControl(Box).verticalScrollBar.getValue, AWidth, AHeight);
+  end;
+
   TQtWidget(AWinControl.Handle).BeginUpdate;
-  TQtWidget(AWinControl.Handle).move(ALeft, ATop);
-  TQtWidget(AWinControl.Handle).resize(AWidth, AHeight);
+  with R do
+  begin
+    TQtWidget(AWinControl.Handle).move(Left, Top);
+    TQtWidget(AWinControl.Handle).resize(Right, Bottom);
+  end;
   TQtWidget(AWinControl.Handle).EndUpdate;
 end;
 

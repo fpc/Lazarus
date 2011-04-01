@@ -5776,9 +5776,12 @@ procedure TQtAbstractSlider.SlotRangeChanged(minimum: Integer; maximum: Integer)
 begin
   { TODO: find out what needs to be done on rangeChanged event
     Possibilities: repaint or recount pageSize() }
- {$ifdef VerboseQt}
+  {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.rangeChanged() to min=',minimum,' max=',maximum);
- {$endif}
+  {$endif}
+  if (FOwner <> nil) and
+    (FOwner.FChildOfComplexWidget = ccwScrollingWinControl) then
+      LCLObject.InvalidateClientRectCache(True);
 end;
 
 {------------------------------------------------------------------------------
