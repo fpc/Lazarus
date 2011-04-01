@@ -841,7 +841,7 @@ var
   sz, center, ratio, zoom: TDoublePoint;
   ext: TDoubleRect;
 begin
-  if ZoomFactor <= 0 then exit;
+  if (ZoomFactor <= 0) or (ZoomRatio <= 0) then exit;
   ext := FChart.LogicalExtent;
   center := FChart.ImageToGraph(APoint);
   sz := ext.b - ext.a;
