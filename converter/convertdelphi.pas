@@ -1373,8 +1373,6 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    if (MisUnits<>nil) and (MisUnits.Count>0) then
-      raise Exception.Create(lisConvDelphiAtThisPointThereShouldBeNoMissingUnits);
     try
       // add all units to the project
       for i:=0 to FoundUnits.Count-1 do begin
