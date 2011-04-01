@@ -2778,8 +2778,10 @@ begin
   finally
     DecPaintLock;
   end;
-  if FMouseClickDoPopUp and (PopupMenu <> nil) then
+  if FMouseClickDoPopUp and (PopupMenu <> nil) then begin
+    PopupMenu.PopupComponent:=self;
     PopupMenu.PopUp;
+  end;
 
   inherited MouseDown(Button, Shift, X, Y);
   LCLIntf.SetFocus(Handle);
@@ -3031,8 +3033,10 @@ begin
   finally
     DecPaintLock;
   end;
-  if FMouseClickDoPopUp and (PopupMenu <> nil) then
+  if FMouseClickDoPopUp and (PopupMenu <> nil) then begin
+    PopupMenu.PopupComponent:=self;
     PopupMenu.PopUp;
+  end;
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
