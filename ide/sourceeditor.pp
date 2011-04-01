@@ -1110,9 +1110,6 @@ type
              read FOnNoteBookCloseQuery write FOnNoteBookCloseQuery;
   end;
 
-function SourceNotebook: TSourceNotebook;
-  deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};   // deprecated in 0.9.29 March 2010
-
 function SourceEditorManager: TSourceEditorManager;
 
 
@@ -1206,14 +1203,6 @@ var
   SourceCompletionTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
   AWordCompletion: TWordCompletion = nil;
-
-function SourceNotebook: TSourceNotebook;
-begin
-  if SourceEditorManager = nil then
-    Result := nil
-  else
-    Result := SourceEditorManager.ActiveOrNewSourceWindow;
-end;
 
 function SourceEditorManager: TSourceEditorManager;
 begin
