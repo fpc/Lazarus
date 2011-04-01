@@ -2136,8 +2136,14 @@ end;
 
 function TSynPasSyn.Func191: TtkTokenKind;
 begin
-  if KeyComp('Resourcestring') then Result := tkKey else
-    if KeyComp('Stringresource') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Resourcestring') then begin
+    Result := tkKey;
+	if TopPascalCodeFoldBlockType = cfbtVarType then
+      EndPascalCodeFoldBlockLastLine;
+    StartPascalCodeFoldBlock(cfbtVarType);
+  end
+  else if KeyComp('Stringresource') then
+    Result := tkKey else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.AltFunc: TtkTokenKind;
