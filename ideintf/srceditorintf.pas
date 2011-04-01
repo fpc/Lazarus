@@ -323,9 +323,6 @@ type
   end;
 
 
-function SourceEditorWindow: TSourceEditorWindowInterface;                      // Returns the active window
-             deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
-
 var
   SourceEditorManagerIntf: TSourceEditorManagerInterface= nil;                      // set by the IDE
 
@@ -474,14 +471,6 @@ var
   IDESearchInText: TIDESearchInTextFunction = nil;// set by the IDE
 
 implementation
-
-function SourceEditorWindow: TSourceEditorWindowInterface;
-begin
-  if SourceEditorManagerIntf = nil then
-    result := nil
-  else
-    Result := SourceEditorManagerIntf.ActiveSourceWindow;
-end;
 
 function RegisterCodeMacro(const Name: string; const ShortDescription,
   LongDescription: string; OnGetValueProc: TIDECodeMacroGetValueProc;
