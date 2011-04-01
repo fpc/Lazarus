@@ -12167,6 +12167,7 @@ var
   i: integer;
   Children: TPtrIntArray;
   AnObject: QObjectH;
+  WP: QWidgetH;
 begin
   inherited AttachEvents;
   
@@ -12192,7 +12193,9 @@ begin
       {do not localize !!}
       if QObject_inherits(AnObject,'QAbstractScrollArea') then
       begin
-        FCalViewportEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QAbstractScrollAreaH(AnObject)));
+        WP := QAbstractScrollArea_viewport(QAbstractScrollAreaH(AnObject));
+        QWidget_setMouseTracking(WP, True);
+        FCalViewportEventHook := QObject_hook_create(WP);
         QObject_hook_hook_events(FCalViewportEventHook, @calViewportEventFilter);
       end;
     end;
@@ -12221,6 +12224,9 @@ begin
   if (LCLObject <> nil) then
   begin
     case QEvent_type(Event) of
+      QEventMouseMove: Result := SlotMouseMove(Sender, Event);
+      QEventEnter,
+      QEventLeave: Result := SlotMouseEnter(Sender, Event);
       QEventMouseButtonDblClick: FMouseDoubleClicked := True;
     end;
   end;
