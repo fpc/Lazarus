@@ -53,6 +53,7 @@ type
                           ccwComboBox,
                           ccwTreeWidget,
                           ccwAbstractScrollArea,
+                          ccwCustomControl,
                           ccwScrollingWinControl,
                           ccwTabWidget);
 
@@ -11520,7 +11521,7 @@ end;
 function TQtViewPort.CanPaintBackground: Boolean;
 begin
   Result := CanSendLCLMessage and getEnabled and
-    (FChildOfComplexWidget = ccwScrollingWinControl) and
+    (FChildOfComplexWidget in [ccwCustomControl, ccwScrollingWinControl]) and
     (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
 end;
 
@@ -11556,13 +11557,10 @@ begin
       end else
         LCLObject.DoAdjustClientRectChange;
     end;
-    QEventLayoutRequest: ; // nothing to do here
     QEventWheel:
-    begin
-      inherited EventFilter(Sender, Event);
-      Result := True;
-      QEvent_ignore(Event);
-    end;
+      if (QtVersionMajor = 4) and (QtVersionMinor < 7) then
+        Result := inherited EventFilter(Sender, Event);
+    QEventLayoutRequest: ; // nothing to do here
   else
     Result := inherited EventFilter(Sender, Event);
   end;
@@ -11872,6 +11870,8 @@ begin
     Parent := nil;
   Result := QLCLAbstractScrollArea_create(Parent);
 
+  FChildOfComplexWidget := ccwCustomControl;
+
   if (LCLObject is TScrollingWinControl) then
   begin
     if (QtVersionMajor = 4) and (QtVersionMinor < 6) and
@@ -11962,7 +11962,8 @@ begin
         (QEvent_type(Event) = QEventMouseButtonDblClick) or
         (QEvent_type(Event) = QEventWheel);
 
-      if QEvent_type(Event) = QEventWheel then
+      if (QEvent_type(Event) = QEventWheel) and
+        (QtVersionMajor = 4) and (QtVersionMinor > 6) then
         QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
 
       retval^ := True;
