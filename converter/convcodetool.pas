@@ -620,11 +620,14 @@ var
       for i:=0 to ReplaceFuncs.Funcs.Count-1 do begin
         FuncName:=ReplaceFuncs.Funcs[i];
         if (IdentEndPos-xStart=length(FuncName))
-        and (CompareIdentifiers(PChar(Pointer(FuncName)),@Src[xStart])=0)
+        and (CompareIdentifiers(PChar(FuncName),@Src[xStart])=0)
         and not fDefinedProcNames.Find(FuncName, x)
         then begin
           FuncDefInfo:=ReplaceFuncs.FuncAtInd(i);
           if ReplaceFuncs.Categories.Find(FuncDefInfo.Category, x)
+          // Categories.Objects[x] is used as a boolean flag.
+          and Assigned(ReplaceFuncs.Categories.Objects[x])
+          // UTF8 funcs are in LCL which console apps don't have -> don't change.
           and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
           then begin
             // Create a new replacement object for params, position and other info.
