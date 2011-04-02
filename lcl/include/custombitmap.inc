@@ -443,6 +443,7 @@ begin
   if UpdateHandles(ABitmap, AMask)
   then begin
     FPixelFormatNeedsUpdate := True;
+    FMasked := AMask <> 0;
     Changed(Self);
   end;
 end;
