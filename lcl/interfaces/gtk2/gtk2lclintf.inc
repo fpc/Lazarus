@@ -442,7 +442,13 @@ begin
 
     if ARawImage.IsMasked(False)
     then Drawable := gdk_bitmap_create_from_data(nil, ImgMask, ImgWidth, ImgHeight)
-    else Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, 1);
+    else begin
+      Drawable := gdk_pixmap_new(nil, ImgWidth, ImgHeight, 1);
+      // clear drawable, the contents of a new pixmap are indefined
+      GC := gdk_gc_new(Drawable);
+      gdk_draw_rectangle(Drawable, GC, 1, 0, 0, ImgWidth, ImgHeight);
+      gdk_gc_unref(GC);
+    end;
 
     GdiMaskObject := NewGDIObject(gdiBitmap);
     GdiMaskObject^.Depth := 1;
