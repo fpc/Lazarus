@@ -725,7 +725,6 @@ end;
 function HintWindowWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
 var
   Info: PWin32WindowInfo;
-  WinControl: TWinControl;
 begin
   Info := GetWin32WindowInfo(Window);
   WinControl := Info^.WinControl;
