@@ -491,8 +491,6 @@ constructor TUsedUnitsTool.Create(ACTLink: TCodeToolLink; AFilename: string);
 begin
   inherited Create;
   fCTLink:=ACTLink;
-  if pos('fraInspectorPath', AFilename) > 0 then
-    fFilename:='';
   fFilename:=AFilename;
   fIsMainFile:=False;
   fIsConsoleApp:=False;
