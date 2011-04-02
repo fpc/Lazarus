@@ -150,6 +150,34 @@ const
      cfbtUnitSection, // unitsection, actually interface only
      cfbtVarType, cfbtLocalVarType];
 
+  PascalFoldTypeCompatibility: Array [TPascalCodeFoldBlockType] of TPascalCodeFoldBlockType =
+    ( cfbtBeginEnd,      // Nested
+      cfbtBeginEnd,  // cfbtTopBeginEnd,   // Begin of Procedure
+      cfbtNestedComment,
+      cfbtProcedure,
+      cfbtUses,
+      cfbtVarType,
+      cfbtVarType, // cfbtLocalVarType,
+      cfbtClass,
+      cfbtClassSection,
+      cfbtUnitSection,
+      cfbtProgram,
+      cfbtUnit,
+      cfbtRecord,
+      cfbtTry,
+      cfbtExcept,
+      cfbtRepeat,
+      cfbtAsm,
+      cfbtCase,
+      cfbtIfDef,        // {$IfDef} directive, this is not counted in the Range-Node
+      cfbtRegion,       // {%Region} user folds, not counted in the Range-Node
+      cfbtNestedComment, //cfbtAnsiComment,  // (* ... *)
+      cfbtNestedComment, //cfbtBorCommand,   // { ... }
+      cfbtSlashComment, // //
+      // Internal type / not configurable
+      cfbtNone
+    );
+
 type
 
   TPascalCompilerMode = (
@@ -3422,6 +3450,7 @@ begin
   Node.LogXStart := Run;
   Node.LogXEnd := Run + fStringLen;
   Node.FoldType := Pointer(PtrInt(ABlockType));
+  Node.FoldTypeCompatible := Pointer(PascalFoldTypeCompatibility[ABlockType]);
   Node.FoldAction := aActions;
   case ABlockType of
     cfbtRegion:

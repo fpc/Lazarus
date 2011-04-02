@@ -861,6 +861,7 @@ begin
     exit;
   end;
 
+  IncIsInEditAction;
   if Count = 0 then fSynStrings.Add('');
   FlushNotificationCache;
   IgnoreSendNotification(senrEditAction, True);
@@ -911,6 +912,7 @@ begin
   UpdateLineText(LogY);
   IgnoreSendNotification(senrEditAction, False);
   SendNotification(senrEditAction, self, LogY, 0, SaveLogX, length(SaveText), SaveText);
+  DecIsInEditAction;
 end;
 
 Function TSynEditStringTrimmingList.EditDelete(LogX, LogY, ByteLen: Integer): String;
@@ -924,6 +926,7 @@ begin
     exit;
   end;
 
+  IncIsInEditAction;
   FlushNotificationCache;
   SaveByteLen := ByteLen;
   Result := '';
@@ -953,6 +956,7 @@ begin
 
   IgnoreSendNotification(senrEditAction, False);
   SendNotification(senrEditAction, self, LogY, 0, LogX, -SaveByteLen, '');
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringTrimmingList.EditLineBreak(LogX, LogY: Integer);
@@ -964,6 +968,7 @@ begin
     exit;
   end;
 
+  IncIsInEditAction;
   FlushNotificationCache;
   IgnoreSendNotification(senrEditAction, True);
   s := Spaces(LogY - 1);
@@ -988,6 +993,7 @@ begin
   EditMoveToTrim(LogY + 1, length(s) - LastNoneSpacePos(s));
   IgnoreSendNotification(senrEditAction, False);
   SendNotification(senrEditAction, self, LogY, 1, LogX, 0, '');
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringTrimmingList.EditLineJoin(LogY: Integer;
@@ -1000,6 +1006,7 @@ begin
     exit;
   end;
 
+  IncIsInEditAction;
   FlushNotificationCache;
   EditMoveFromTrim(LogY, length(Spaces(LogY - 1)));
 
@@ -1013,6 +1020,7 @@ begin
   // Trim any existing (committed/real) spaces
   s := fSynStrings[LogY - 1];
   EditMoveToTrim(LogY, length(s) - LastNoneSpacePos(s));
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringTrimmingList.EditLinesInsert(LogY, ACount: Integer;
@@ -1020,20 +1028,24 @@ procedure TSynEditStringTrimmingList.EditLinesInsert(LogY, ACount: Integer;
 var
   s: string;
 begin
+  IncIsInEditAction;
   FlushNotificationCache;
   fSynStrings.EditLinesInsert(LogY, ACount, AText);
   s := fSynStrings[LogY - 1];
   EditMoveToTrim(LogY, length(s) - LastNoneSpacePos(s));
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringTrimmingList.EditLinesDelete(LogY, ACount: Integer);
 var
   i: Integer;
 begin
+  IncIsInEditAction;
   FlushNotificationCache;
   for i := LogY to LogY + ACount - 1 do
     EditMoveFromTrim(i, length(Spaces(i - 1)));
   fSynStrings.EditLinesDelete(LogY, ACount);
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringTrimmingList.EditUndo(Item: TSynEditUndoItem);

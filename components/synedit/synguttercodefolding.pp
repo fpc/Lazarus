@@ -57,6 +57,8 @@ type
     procedure ResetDefaults; override;
   end;
 
+  TDrawNodeSymbolOptions = set of (nsoSubtype, nsoLostHl);
+
   { TSynGutterCodeFolding }
 
   TSynGutterCodeFolding = class(TSynGutterPartBase)
@@ -76,7 +78,7 @@ type
     procedure InitPopUpImageList;
     procedure DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
                              NodeType: TSynEditFoldLineCapability;
-                             SubType: Integer);
+                             SubType: TDrawNodeSymbolOptions);
   protected
     function  PreferedWidth: Integer; override;
     procedure CreatePopUpMenuEntries(APopUp: TPopupMenu; ALine: Integer); virtual;
@@ -197,22 +199,22 @@ begin
   FPopUpImageList.DrawingStyle := dsTransparent;
 
   NewImg;
-  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfFoldStart, 0);  // [-]
+  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfFoldStart, []);  // [-]
   FPopUpImageList.Add(img, nil);
   img.Free;
 
   NewImg;
-  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfCollapsedFold, 0);  // [+]
+  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfCollapsedFold, []);  // [+]
   FPopUpImageList.Add(img, nil);
   img.Free;
 
   NewImg;
-  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfHideStart, 0);  // [.]
+  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfHideStart, []);  // [.]
   FPopUpImageList.Add(img, nil);
   img.Free;
 
   NewImg;
-  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfCollapsedHide, 0);  // [v]
+  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfCollapsedHide, []);  // [v]
   FPopUpImageList.Add(img, nil);
   img.Free;
 
@@ -437,15 +439,23 @@ begin
 end;
 
 procedure TSynGutterCodeFolding.DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
-  NodeType: TSynEditFoldLineCapability; SubType: Integer);
+  NodeType: TSynEditFoldLineCapability; SubType: TDrawNodeSymbolOptions);
 var
   Points: Array [0..3] of TPoint;
   X, Y: Integer;
   AliasMode: TAntialiasingMode;
+  OdlCosmetic: Boolean;
 begin
   AliasMode := Canvas.AntialiasingMode;
   Canvas.AntialiasingMode:=amOff;
+  if nsoLostHl in SubType then begin
+    Canvas.Pen.Style := psDot;
+    OdlCosmetic := Canvas.Pen.Cosmetic;
+    Canvas.Pen.Cosmetic := False;
+  end;
   Canvas.Rectangle(Rect);
+  Canvas.Pen.Style := psSolid;
+  Canvas.Pen.Cosmetic := OdlCosmetic;
   X := (Rect.Left - 1 + Rect.Right) div 2;
   Y := (Rect.Top - 1 + Rect.Bottom) div 2;
 
@@ -472,8 +482,8 @@ begin
       end;
     cfCollapsedHide:
       begin
-        case SubType of
-          0: begin
+        case nsoSubtype in SubType of
+          false: begin
               // [v]
               Points[0].X := X;
               Points[0].y := Y + 2;
@@ -484,7 +494,7 @@ begin
               Points[3].X := X;
               Points[3].y := Y + 2;
           end;
-          1: begin
+          true: begin
               // [v]
               Points[0].X := X;
               Points[0].y := Y - 2;
@@ -522,9 +532,14 @@ var
     ptCenter : TPoint;
     isPrevLine: Boolean;
     i: Integer;
+    HasExHl: Boolean;
+    DrawOpts: TDrawNodeSymbolOptions;
   begin
     isPrevLine := IsFoldHidePreviousLine(iLine);
     LineOffset := 0;
+    DrawOpts := [];
+    if fncHighlighterEx in FoldView.FoldClasifications[iLine] then
+      include(DrawOpts, nsoLostHl);
 
     //center of the draw area
     ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
@@ -566,8 +581,9 @@ var
       Canvas.Pen.Color := MarkupInfo.FrameColor;
 
     i:= 0;
-    if isPrevLine and (NodeType = cfCollapsedHide) then i := 1;
-    DrawNodeSymbol(Canvas, rcNode, NodeType, i);
+    if isPrevLine and (NodeType = cfCollapsedHide) then
+      include(DrawOpts, nsoSubtype);
+    DrawNodeSymbol(Canvas, rcNode, NodeType, DrawOpts);
 
     Canvas.Pen.Color := MarkupInfo.Foreground;
     Canvas.Brush.Style := bsSolid;

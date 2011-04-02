@@ -115,6 +115,7 @@ type
     FCachedNotifyStart, FCachedNotifyCount: Integer;
     FCachedNotifySender: TSynEditStrings;
 
+    FIsInEditAction: Integer;
     FIgnoreSendNotification: array [TSynEditNotifyReason] of Integer;
     fDosFileFormat: boolean;
     fIndexOfLongestLine: integer;
@@ -138,6 +139,9 @@ type
     function GetLengthOfLongestLine: integer; override;
     function GetTextChangeStamp: int64; override;
 
+    function GetIsInEditAction: Boolean; override;
+    procedure IncIsInEditAction; override;
+    procedure DecIsInEditAction; override;
     function GetRedoList: TSynEditUndoList; override;
     function GetUndoList: TSynEditUndoList; override;
     function GetCurUndoList: TSynEditUndoList; override;
@@ -457,6 +461,7 @@ begin
   FIsUndoing := False;
   FIsRedoing := False;
   FModified := False;
+  FIsInEditAction := 0;
 
   for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason)
   do case r of
@@ -645,6 +650,21 @@ end;
 function TSynEditStringList.GetTextChangeStamp: int64;
 begin
   Result := FTextChangeStamp;
+end;
+
+function TSynEditStringList.GetIsInEditAction: Boolean;
+begin
+  Result := FIsInEditAction > 0;
+end;
+
+procedure TSynEditStringList.IncIsInEditAction;
+begin
+  inc(FIsInEditAction);
+end;
+
+procedure TSynEditStringList.DecIsInEditAction;
+begin
+  dec(FIsInEditAction);
 end;
 
 function TSynEditStringList.GetRedoList: TSynEditUndoList;
@@ -979,6 +999,7 @@ procedure TSynEditStringList.EditInsert(LogX, LogY: Integer; AText: String);
 var
   s: string;
 begin
+  IncIsInEditAction;
   s := Strings[LogY - 1];
   if LogX - 1 > Length(s) then begin
     AText := StringOfChar(' ', LogX - 1 - Length(s)) + AText;
@@ -988,12 +1009,14 @@ begin
   CurUndoList.AddChange(TSynEditUndoTxtInsert.Create(LogX, LogY, Length(AText)));
   MarkModified(LogY, LogY);
   SendNotification(senrEditAction, self, LogY, 0, LogX, length(AText), AText);
+  DecIsInEditAction;
 end;
 
 function TSynEditStringList.EditDelete(LogX, LogY, ByteLen: Integer): String;
 var
   s: string;
 begin
+  IncIsInEditAction;
   s := Strings[LogY - 1];
   if LogX - 1 > Length(s) then
     exit;
@@ -1002,12 +1025,14 @@ begin
   CurUndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
   MarkModified(LogY, LogY);
   SendNotification(senrEditAction, self, LogY, 0, LogX, -ByteLen, '');
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringList.EditLineBreak(LogX, LogY: Integer);
 var
   s: string;
 begin
+  IncIsInEditAction;
   if Count = 0 then Add('');
   s := Strings[LogY - 1];
   if LogX - 1 < length(s) then
@@ -1016,12 +1041,14 @@ begin
   CurUndoList.AddChange(TSynEditUndoTxtLineBreak.Create(LogY));
   MarkModified(LogY, LogY + 1);
   SendNotification(senrEditAction, self, LogY, 1, LogX, 0, '');
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringList.EditLineJoin(LogY: Integer; FillText: String = '');
 var
   t: string;
 begin
+  IncIsInEditAction;
   t := Strings[LogY - 1];
   if FillText <> ''  then
     EditInsert(1 + Length(t), LogY, FillText);
@@ -1032,28 +1059,33 @@ begin
   Delete(LogY);
   MarkModified(LogY, LogY);
   SendNotification(senrEditAction, self, LogY, -1, 1+length(t), 0, '');
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringList.EditLinesInsert(LogY, ACount: Integer;
   AText: String = '');
 begin
+  IncIsInEditAction;
   InsertLines(LogY - 1, ACount);
   CurUndoList.AddChange(TSynEditUndoTxtLinesIns.Create(LogY, ACount));
   SendNotification(senrEditAction, self, LogY, ACount, 1, 0, '');
   if AText <> '' then
     EditInsert(1, LogY, AText);
   MarkModified(LogY, LogY + ACount - 1);
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringList.EditLinesDelete(LogY, ACount: Integer);
 var
   i: Integer;
 begin
+  IncIsInEditAction;
   for i := LogY to LogY + ACount - 1 do
     EditDelete(1, i, length(Strings[i-1]));
   DeleteLines(LogY - 1, ACount);
   CurUndoList.AddChange(TSynEditUndoTxtLinesDel.Create(LogY, ACount));
   SendNotification(senrEditAction, self, LogY, -ACount, 1, 0, '');
+  DecIsInEditAction;
 end;
 
 procedure TSynEditStringList.EditUndo(Item: TSynEditUndoItem);

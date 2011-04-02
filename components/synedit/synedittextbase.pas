@@ -183,6 +183,9 @@ type
     function GetTextChangeStamp: int64; virtual; abstract;
     function GetViewChangeStamp: int64; virtual;
 
+    function GetIsInEditAction: Boolean; virtual; abstract;
+    procedure IncIsInEditAction; virtual; abstract;
+    procedure DecIsInEditAction; virtual; abstract;
     function GetUndoList: TSynEditUndoList; virtual; abstract;
     function GetRedoList: TSynEditUndoList; virtual; abstract;
     function GetCurUndoList: TSynEditUndoList; virtual; abstract;
@@ -252,6 +255,7 @@ type
     procedure EditLinesDelete(LogY, ACount: Integer); virtual; abstract;
     procedure EditUndo(Item: TSynEditUndoItem); virtual; abstract;
     procedure EditRedo(Item: TSynEditUndoItem); virtual; abstract;
+    property IsInEditAction: Boolean read GetIsInEditAction;
     property UndoList: TSynEditUndoList read GetUndoList;
     property RedoList: TSynEditUndoList read GetRedoList;
     property CurUndoList: TSynEditUndoList read GetCurUndoList; // Re or Undo (Redo while undoing)
@@ -284,6 +288,9 @@ type
 
     procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
                                      IncIgnore: Boolean); override;
+    function GetIsInEditAction: Boolean; override;
+    procedure IncIsInEditAction; override;
+    procedure DecIsInEditAction; override;
     function GetUndoList: TSynEditUndoList; override;
     function GetRedoList: TSynEditUndoList; override;
     function GetCurUndoList: TSynEditUndoList; override;
@@ -1077,6 +1084,21 @@ procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyRe
   IncIgnore: Boolean);
 begin
   fSynStrings.IgnoreSendNotification(AReason, IncIgnore);
+end;
+
+function TSynEditStringsLinked.GetIsInEditAction: Boolean;
+begin
+  Result := fSynStrings.GetIsInEditAction;
+end;
+
+procedure TSynEditStringsLinked.IncIsInEditAction;
+begin
+  fSynStrings.IncIsInEditAction;
+end;
+
+procedure TSynEditStringsLinked.DecIsInEditAction;
+begin
+  fSynStrings.DecIsInEditAction;
 end;
 
 { TSynEditUndoList }

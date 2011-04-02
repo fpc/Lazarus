@@ -62,6 +62,7 @@ type
     NestLvlStart, NestLvlEnd: Integer; // include disabled nodes, e.g markup (within each FoldGroup)
     FoldAction: TSynFoldActions;
     FoldType: Pointer;           // e.g.cfbtBeginEnd, cfbtcfbtProcedure ...
+    FoldTypeCompatible: Pointer; // map outer and inner begin, and other exchangeable types
     FoldGroup: Integer;          // independend/overlapping folds, e.g begin/end; ifdef, region
   end;
 

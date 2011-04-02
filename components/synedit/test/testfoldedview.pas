@@ -13,7 +13,7 @@ interface
 uses
   Classes, SysUtils, testregistry, TestBase, TestHighlightPas, Forms, LCLProc,
   SynEdit, SynHighlighterPas, SynEditFoldedView, SynEditHighlighterFoldBase,
-  SynGutterCodeFolding;
+  SynGutterCodeFolding, SynEditKeyCmds;
 
 type
 
@@ -37,17 +37,141 @@ type
     function TestTextPasHl(AIfCol: Integer): TStringArray;
     function TestText4: TStringArray;
     function TestText5: TStringArray;
+    function TestText6: TStringArray;
     function TestTextHide(ALen: Integer): TStringArray;
     function TestTextHide2(ALen: Integer): TStringArray;
     function TestTextHide3: TStringArray;
     function TestTextHide4: TStringArray;
+  protected
+    procedure TstSetText(AName: String; AText: TStringArray);
+    procedure TstFold(AName: String; AFoldAtIndex: integer; AExpectedLines: Array of Integer);
+    procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum: integer; AExpectedLines: Array of Integer);
+    procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
+      AExpectedLines: Array of Integer);
+    procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
+      AFoldAtSkip: Boolean; AExpectedLines: Array of Integer);
+    procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
+      AFoldAtSkip: Boolean; AVisibleLines: Integer; AExpectedLines: Array of Integer);
+    procedure TstUnFoldAtCaret(AName: String; X, Y: integer; AExpectedLines: Array of Integer);
+    procedure TstTxtIndexToViewPos(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+    procedure TstViewPosToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+    procedure TstTextIndexToScreenLine(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+    procedure TstScreenLineToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
   published
     procedure TestFold;
+    procedure TestFoldEdit;
     procedure TestFoldStateFromText;
     procedure TestFoldStateDesc;
   end;
 
 implementation
+
+type
+  TSynEditFoldedViewHack = class(TSynEditFoldedView) end;
+
+procedure TTestFoldedView.TstSetText(AName: String; AText: TStringArray);
+begin
+  PopBaseName;
+  ReCreateEdit;
+  SetLines(AText);
+  PushBaseName(AName);
+end;
+
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex: integer; AExpectedLines: Array of Integer);
+begin
+  FoldedView.FoldAtTextIndex(AFoldAtIndex);
+  TestFoldedText(AName, AExpectedLines);
+end;
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum: integer; AExpectedLines: Array of Integer);
+begin
+  FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum);
+  TestFoldedText(AName, AExpectedLines);
+end;
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
+  AExpectedLines: Array of Integer);
+begin
+  FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt);
+  TestFoldedText(AName, AExpectedLines);
+end;
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
+  AFoldAtSkip: Boolean; AExpectedLines: Array of Integer);
+begin
+  FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip);
+  TestFoldedText(AName, AExpectedLines);
+end;
+procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
+  AFoldAtSkip: Boolean; AVisibleLines: Integer; AExpectedLines: Array of Integer);
+begin
+  FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip, AVisibleLines);
+  TestFoldedText(AName, AExpectedLines);
+end;
+
+procedure TTestFoldedView.TstUnFoldAtCaret(AName: String; X, Y: integer; AExpectedLines: Array of Integer);
+begin
+  SynEdit.CaretXY := Point(X, Y);
+  TestFoldedText('UnfoldCaret - '+AName, AExpectedLines);
+end;
+
+// ViewPos is 1 based
+procedure TTestFoldedView.TstTxtIndexToViewPos(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+var i: Integer;
+begin
+  i := 0;
+  while i < high(AExpectedPairs)-1 do begin
+    AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i])+') to ViewPos[1-based]('+IntToStr( AExpectedPairs[i+1])+') ',
+                 AExpectedPairs[i+1], FoldedView.TextIndexToViewPos(AExpectedPairs[i]));
+    if ADoReverse then
+      AssertEquals(AName+' ViewPos[1-based]('+IntToStr( AExpectedPairs[i+1])+') to TxtIdx('+IntToStr( AExpectedPairs[i])+') [R]',
+                 AExpectedPairs[i], FoldedView.ViewPosToTextIndex(AExpectedPairs[i+1]));
+    inc(i, 2);
+  end;
+end;
+// ViewPos is 1 based // Reverse of the above
+procedure TTestFoldedView.TstViewPosToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+var i: Integer;
+begin
+  i := 0;
+  while i < high(AExpectedPairs)-1 do begin
+    AssertEquals(AName+' ViewPos[1-based]('+IntToStr( AExpectedPairs[i])+') to TxtIdx('+IntToStr( AExpectedPairs[i+1])+')',
+                 AExpectedPairs[i+1], FoldedView.ViewPosToTextIndex(AExpectedPairs[i]));
+    if ADoReverse then
+      AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i+1])+') to ViewPos[1-based]('+IntToStr( AExpectedPairs[i])+') [R]',
+                 AExpectedPairs[i], FoldedView.TextIndexToViewPos(AExpectedPairs[i+1]));
+    inc(i, 2);
+  end;
+end;
+
+// ScreenLine is 0 based
+procedure TTestFoldedView.TstTextIndexToScreenLine(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+var i: Integer;
+begin
+  i := 0;
+  while i < high(AExpectedPairs)-1 do begin
+    AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i])+') to ScreenLine[0-based]('+IntToStr( AExpectedPairs[i+1])+') ',
+                 AExpectedPairs[i+1], FoldedView.TextIndexToScreenLine(AExpectedPairs[i]));
+    if ADoReverse then
+      AssertEquals(AName+' ScreenLine[0-based]('+IntToStr( AExpectedPairs[i+1])+') to TxtIdx('+IntToStr( AExpectedPairs[i])+') [R]',
+                 AExpectedPairs[i], FoldedView.ScreenLineToTextIndex(AExpectedPairs[i+1]));
+    inc(i, 2);
+  end;
+end;
+// ScreenLine is 0 based // Reverse of the above
+procedure TTestFoldedView.TstScreenLineToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+var i: Integer;
+begin
+  i := 0;
+  while i < high(AExpectedPairs)-1 do begin
+    AssertEquals(AName+' ScreenLine[0-based]('+IntToStr( AExpectedPairs[i])+') to TxtIdx('+IntToStr( AExpectedPairs[i+1])+') ',
+                 AExpectedPairs[i+1], FoldedView.ScreenLineToTextIndex(AExpectedPairs[i]));
+    if ADoReverse then
+      AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i+1])+') to ScreenLine[0-based]('+IntToStr( AExpectedPairs[i])+') [R]',
+                 AExpectedPairs[i], FoldedView.TextIndexToScreenLine(AExpectedPairs[i+1]));
+    inc(i, 2);
+  end;
+end;
+
+
+
 
 procedure TTestFoldedView.TestFoldedText(AName: String; ALines: array of Integer);
 var
@@ -210,6 +334,19 @@ begin
   Result[7] := '';
 end;
 
+function TTestFoldedView.TestText6: TStringArray;
+begin
+  SetLength(Result, 8);
+  Result[0] := 'program Foo;';
+  Result[1] := 'procedure a; procedure b;';          // 2 folds open on one line
+  Result[2] := '  begin writeln(1);';
+  Result[3] := '  end; // inner';
+  Result[4] := 'begin';
+  Result[5] := '    writeln(2)';
+  Result[6]:= 'end;';
+  Result[7]:= '';
+end;
+
 function TTestFoldedView.TestTextHide(ALen: Integer): TStringArray;
 begin
   SetLength(Result, 3+ALen);
@@ -264,108 +401,6 @@ end;
 
 
 procedure TTestFoldedView.TestFold;
-
-  procedure TstSetText(AName: String; AText: TStringArray);
-  begin
-    PopBaseName;
-    ReCreateEdit;
-    SetLines(AText);
-    PushBaseName(AName);
-  end;
-
-  procedure TstFold(AName: String; AFoldAtIndex: integer; AExpectedLines: Array of Integer);
-  begin
-    FoldedView.FoldAtTextIndex(AFoldAtIndex);
-    TestFoldedText(AName, AExpectedLines);
-  end;
-  procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum: integer; AExpectedLines: Array of Integer);
-  begin
-    FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum);
-    TestFoldedText(AName, AExpectedLines);
-  end;
-  procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-    AExpectedLines: Array of Integer);
-  begin
-    FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt);
-    TestFoldedText(AName, AExpectedLines);
-  end;
-  procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-    AFoldAtSkip: Boolean; AExpectedLines: Array of Integer);
-  begin
-    FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip);
-    TestFoldedText(AName, AExpectedLines);
-  end;
-  procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
-    AFoldAtSkip: Boolean; AVisibleLines: Integer; AExpectedLines: Array of Integer);
-  begin
-    FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip, AVisibleLines);
-    TestFoldedText(AName, AExpectedLines);
-  end;
-
-  procedure TstUnFoldAtCaret(AName: String; X, Y: integer; AExpectedLines: Array of Integer);
-  begin
-    SynEdit.CaretXY := Point(X, Y);
-    TestFoldedText('UnfoldCaret - '+AName, AExpectedLines);
-  end;
-
-  // ViewPos is 1 based
-  procedure TstTxtIndexToViewPos(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
-  var i: Integer;
-  begin
-    i := 0;
-    while i < high(AExpectedPairs)-1 do begin
-      AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i])+') to ViewPos[1-based]('+IntToStr( AExpectedPairs[i+1])+') ',
-                   AExpectedPairs[i+1], FoldedView.TextIndexToViewPos(AExpectedPairs[i]));
-      if ADoReverse then
-        AssertEquals(AName+' ViewPos[1-based]('+IntToStr( AExpectedPairs[i+1])+') to TxtIdx('+IntToStr( AExpectedPairs[i])+') [R]',
-                   AExpectedPairs[i], FoldedView.ViewPosToTextIndex(AExpectedPairs[i+1]));
-      inc(i, 2);
-    end;
-  end;
-  // ViewPos is 1 based // Reverse of the above
-  procedure TstViewPosToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
-  var i: Integer;
-  begin
-    i := 0;
-    while i < high(AExpectedPairs)-1 do begin
-      AssertEquals(AName+' ViewPos[1-based]('+IntToStr( AExpectedPairs[i])+') to TxtIdx('+IntToStr( AExpectedPairs[i+1])+')',
-                   AExpectedPairs[i+1], FoldedView.ViewPosToTextIndex(AExpectedPairs[i]));
-      if ADoReverse then
-        AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i+1])+') to ViewPos[1-based]('+IntToStr( AExpectedPairs[i])+') [R]',
-                   AExpectedPairs[i], FoldedView.TextIndexToViewPos(AExpectedPairs[i+1]));
-      inc(i, 2);
-    end;
-  end;
-
-  // ScreenLine is 0 based
-  procedure TstTextIndexToScreenLine(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
-  var i: Integer;
-  begin
-    i := 0;
-    while i < high(AExpectedPairs)-1 do begin
-      AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i])+') to ScreenLine[0-based]('+IntToStr( AExpectedPairs[i+1])+') ',
-                   AExpectedPairs[i+1], FoldedView.TextIndexToScreenLine(AExpectedPairs[i]));
-      if ADoReverse then
-        AssertEquals(AName+' ScreenLine[0-based]('+IntToStr( AExpectedPairs[i+1])+') to TxtIdx('+IntToStr( AExpectedPairs[i])+') [R]',
-                   AExpectedPairs[i], FoldedView.ScreenLineToTextIndex(AExpectedPairs[i+1]));
-      inc(i, 2);
-    end;
-  end;
-  // ScreenLine is 0 based // Reverse of the above
-  procedure TstScreenLineToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
-  var i: Integer;
-  begin
-    i := 0;
-    while i < high(AExpectedPairs)-1 do begin
-      AssertEquals(AName+' ScreenLine[0-based]('+IntToStr( AExpectedPairs[i])+') to TxtIdx('+IntToStr( AExpectedPairs[i+1])+') ',
-                   AExpectedPairs[i+1], FoldedView.ScreenLineToTextIndex(AExpectedPairs[i]));
-      if ADoReverse then
-        AssertEquals(AName+' TxtIdx('+IntToStr( AExpectedPairs[i+1])+') to ScreenLine[0-based]('+IntToStr( AExpectedPairs[i])+') [R]',
-                   AExpectedPairs[i], FoldedView.TextIndexToScreenLine(AExpectedPairs[i+1]));
-      inc(i, 2);
-    end;
-  end;
-
   procedure RunTest;
   begin
     PushBaseName('');
@@ -587,14 +622,493 @@ begin
   RunTest;
 end;
 
-procedure TTestFoldedView.TestFoldStateFromText;
-  procedure TstSetText(AName: String; AText: TStringArray);
+procedure TTestFoldedView.TestFoldEdit;
+
+  procedure DoChar(x, y: integer; char: String);
   begin
-    PopBaseName;
-    ReCreateEdit;
-    SetLines(AText);
-    PushBaseName(AName);
+    SynEdit.CaretXY := Point(x,y);
+    SynEdit.CommandProcessor(ecChar, char, nil);
   end;
+  procedure DoNewLine(x, y: integer);
+  begin
+    SynEdit.CaretXY := Point(x,y);
+    SynEdit.CommandProcessor(ecLineBreak, '', nil);
+  end;
+  procedure DoBackspace(x, y: integer);
+  begin
+    SynEdit.CaretXY := Point(x,y);
+    SynEdit.CommandProcessor(ecDeleteLastChar, '', nil);
+  end;
+
+  procedure TestNodeAtPos(name: string; x, y: integer);
+  var
+    n: TSynTextFoldAVLNode;
+  begin
+    n := TSynEditFoldedViewHack(FoldedView).FoldTree.FindFoldForLine(y, true);
+    AssertTrue(BaseTestName+' '+ name+ ' got node for line '+inttostr(y), n.IsInFold);
+    AssertEquals(BaseTestName+' '+ name+ ' got node for src-line '+inttostr(y), y, n.SourceLine);
+    AssertEquals(BaseTestName+' '+ name+ ' got node for src-line '+inttostr(y)+' col='+inttostr(x), x, n.FoldColumn);
+  end;
+
+var
+  n: string;
+  i: integer;
+begin
+
+  {%region simple}
+    TstSetText('Simple: fold Prc', TestText);
+
+    TstFold('', 1, [0, 1]);
+    TestNodeAtPos('', 1, 2);
+
+    DoChar(1,2, ' ');
+    TestFoldedText('(ins char)', [0, 1]);
+    TestNodeAtPos('(ins char)', 2, 2);
+
+    DoNewLine(13,1);
+    TestFoldedText('(newline before)', [0, 1, 2]);
+    TestNodeAtPos('(newline before)', 2, 3);
+
+    DoBackspace(1,2);
+    TestFoldedText('(del newline)', [0, 1]);
+    TestNodeAtPos('(del newline)', 2, 2);
+
+    DoBackspace(2,2);
+    TestFoldedText('(del char)', [0, 1]);
+    TestNodeAtPos('(del char)', 1, 2);
+
+    DoBackspace(1,2);
+    TestFoldedText('(del to prev line)', [0]);
+    TestNodeAtPos('(del to prev line)', 13, 1);
+
+    DoNewLine(13,1);  // newline, on same line
+    TestFoldedText('(newline on srcline)', [0, 1]);
+    TestNodeAtPos('(newline on srcline)', 1, 2);
+    PopBaseName;
+  {%endregion}
+
+  {%region Nested}
+    TstSetText('Nested: fold Prc Beg ', TestText);
+
+    for i := 0 to 63 do begin
+      PushBaseName(inttostr(i));
+      SetLines(TestText);
+      SynEdit.UnfoldAll;
+      n := '';
+      TstFold(n, 2, [0, 1, 2]);             TestNodeAtPos(n, 1, 3);
+      n := 'outer';
+      TstFold(n, 1, [0, 1]);                TestNodeAtPos(n, 1, 2);
+
+      n := '(ins char)';
+      //debugln(['############### ',n]);
+      DoChar(1,2, ' ');
+      TestFoldedText(n, [0, 1]);            TestNodeAtPos(n, 2, 2);
+      if (i and 1) <> 0 then begin
+        n := '(ins char) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,3, [0,1,2]);    TestNodeAtPos(n, 1, 3);
+        n := '(ins char) refold';
+        TstFold(n, 1, [0, 1]);                TestNodeAtPos(n, 2, 2); // re-folded
+      end;
+
+      n := '(newline before)';
+        //debugln(['############### ',n]);
+      DoNewLine(13,1);
+      TestFoldedText(n, [0, 1, 2]);         TestNodeAtPos(n, 2, 3);
+      if (i and 2) <> 0 then begin
+        n := '(newline before) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,4, [0,1,2,3]);  TestNodeAtPos(n, 1, 4);
+        n := '(newline before) refold';
+        TstFold(n, 2, [0, 1, 2]);             TestNodeAtPos(n, 2, 3); // re-folded
+      end;
+
+      n := '(del newline)';
+      //debugln(['############### ',n]);
+      DoBackspace(1,2);
+      TestFoldedText(n, [0, 1]);            TestNodeAtPos(n, 2, 2);
+      if (i and 4) <> 0 then begin
+        n := '(del newline) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,3, [0,1,2]);    TestNodeAtPos(n, 1, 3);
+        n := '(del newline) refold';
+        TstFold(n, 1, [0, 1]);                TestNodeAtPos(n, 2, 2); // re-folded
+      end;
+
+      n := '(del char)';
+      //debugln(['############### ',n]);
+      DoBackspace(2,2);
+      TestFoldedText(n, [0, 1]);            TestNodeAtPos(n, 1, 2);
+      if (i and 8) <> 0 then begin
+        n := '(del char) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,3, [0,1,2]);    TestNodeAtPos(n, 1, 3);
+        n := '(del char) refold';
+        TstFold(n, 1, [0, 1]);                TestNodeAtPos(n, 1, 2); // re-folded
+      end;
+
+      n := '(del to prev line)';
+      //debugln(['############### ',n]);
+      DoBackspace(1,2);
+      TestFoldedText(n, [0]);               TestNodeAtPos(n, 13, 1);
+      if (i and 16) <> 0 then begin
+        n := '(del to prev line) nested';
+        TstUnFoldAtCaret(n, 1,2, [0,1]);    TestNodeAtPos(n, 1, 2);
+        n := '(del to prev line) refold';
+        TstFold(n, 0, [0]);                TestNodeAtPos(n, 13, 1); // re-folded
+      end;
+
+      n := '(newline on srcline)';
+      DoNewLine(13,1);  // newline, on same line
+      TestFoldedText(n, [0, 1]);           TestNodeAtPos(n, 1, 2);
+      if (i and 32) <> 0 then begin
+        n := '(del to prev line) nested';
+        TstUnFoldAtCaret(n, 1,3, [0,1,2]);    TestNodeAtPos(n, 1, 3);
+        n := '(del to prev line) refold';
+        TstFold(n, 1, [0,1]);                TestNodeAtPos(n, 1, 2); // re-folded
+      end;
+
+      PopBaseName;
+    end;
+    PopBaseName;
+  {%endregion}
+
+  {%region Nested}
+  TstSetText('Nested, same line: fold Prc Beg', TestText6);
+
+    for i := 0 to 255 do begin
+      PushBaseName(inttostr(i));
+      SetLines(TestText6);
+      SynEdit.UnfoldAll;
+      n := '';
+      TstFold(n, 1, 1, [0, 1, 4,5,6]);             TestNodeAtPos(n, 14, 2);
+      n := 'outer';
+      TstFold(n, 1, 0, [0, 1]);                    TestNodeAtPos(n, 1, 2);
+
+      n := '(ins char)';
+      //debugln(['############### ',n]);
+      DoChar(1,2, ' ');
+      TestFoldedText(n, [0, 1]);                    TestNodeAtPos(n, 2, 2);
+      if (i and 1) <> 0 then begin
+        n := '(ins char) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,5, [0,1,4,5,6]);      TestNodeAtPos(n, 15, 2);
+        n := '(ins char) refold';
+        TstFold(n, 1, 0, [0, 1]);                   TestNodeAtPos(n, 2, 2); // re-folded
+      end;
+
+      n := '(ins char middle)';
+      //debugln(['############### ',n]);
+      DoChar(14,2, ' ');
+      TestFoldedText(n, [0, 1]);                    TestNodeAtPos(n, 2, 2);
+      if (i and 2) <> 0 then begin
+        n := '(ins char middle) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,5, [0,1,4,5,6]);      TestNodeAtPos(n, 16, 2);
+        n := '(ins char middle) refold';
+        TstFold(n, 1, 0, [0, 1]);                   TestNodeAtPos(n, 2, 2); // re-folded
+      end;
+
+
+      n := '(newline before)';
+        //debugln(['############### ',n]);
+      DoNewLine(13,1);
+      TestFoldedText(n, [0, 1, 2]);                 TestNodeAtPos(n, 2, 3);
+      if (i and 4) <> 0 then begin
+        n := '(newline before) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,6, [0,1,2, 5,6,7]);   TestNodeAtPos(n, 16, 3);
+        n := '(newline before) refold';
+        TstFold(n, 2, 0, [0, 1, 2]);                TestNodeAtPos(n, 2, 3); // re-folded
+      end;
+
+      n := '(del newline)';
+      //debugln(['############### ',n]);
+      DoBackspace(1,2);
+      TestFoldedText(n, [0, 1]);                   TestNodeAtPos(n, 2, 2);
+      if (i and 8) <> 0 then begin
+        n := '(del newline) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,5, [0,1, 4,5,6]);    TestNodeAtPos(n, 16, 2);
+        n := '(del newline) refold';
+        TstFold(n, 1, 0, [0, 1]);                  TestNodeAtPos(n, 2, 2); // re-folded
+      end;
+
+      n := '(del char)';
+      //debugln(['############### ',n]);
+      DoBackspace(2,2);
+      TestFoldedText(n, [0, 1]);                   TestNodeAtPos(n, 1, 2);
+      if (i and 16) <> 0 then begin
+        n := '(del char) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,5, [0,1,4,5,6]);     TestNodeAtPos(n, 15, 2);
+        n := '(del char) refold';
+        TstFold(n, 1, 0, [0, 1]);                  TestNodeAtPos(n, 1, 2); // re-folded
+      end;
+
+      n := '(del char middle)';
+      //debugln(['############### ',n]);
+      DoBackspace(15,2);
+      TestFoldedText(n, [0, 1]);                   TestNodeAtPos(n, 1, 2);
+      if (i and 32) <> 0 then begin
+        n := '(del char middle) nested';
+        //debugln(['############### ',n]);
+        TstUnFoldAtCaret(n, 1,5, [0,1,4,5,6]);     TestNodeAtPos(n, 14, 2);
+        n := '(del char middle) refold';
+        TstFold(n, 1, 0, [0, 1]);                  TestNodeAtPos(n, 1, 2); // re-folded
+      end;
+
+
+      n := '(del to prev line)';
+      //debugln(['############### ',n]);
+      DoBackspace(1,2);
+      TestFoldedText(n, [0]);               TestNodeAtPos(n, 13, 1);
+      if (i and 64) <> 0 then begin
+        n := '(del to prev line) nested';
+        TstUnFoldAtCaret(n, 1,4, [0,3,4,5]);    TestNodeAtPos(n, 26, 1);
+        n := '(del to prev line) refold';
+        TstFold(n, 0,1, [0]);                TestNodeAtPos(n, 13, 1); // re-folded idx=1, prg is at 0
+      end;
+
+      n := '(newline on srcline)';
+      DoNewLine(13,1);  // newline, on same line
+      TestFoldedText(n, [0, 1]);           TestNodeAtPos(n, 1, 2);
+      if (i and 128) <> 0 then begin
+        n := '(del to prev line) nested';
+        TstUnFoldAtCaret(n, 1,5, [0,1,4,5,6]);    TestNodeAtPos(n, 14, 2);
+        n := '(del to prev line) refold';
+        TstFold(n, 1, 0, [0,1]);                TestNodeAtPos(n, 1, 2); // re-folded
+      end;
+
+      PopBaseName;
+    end;
+  {%endregion}
+
+  {%region}
+    TstSetText('Nested, same line, new line in middle:', TestText6);
+    SynEdit.UnfoldAll;
+    n := '';
+    TstFold(n, 1, 1, [0, 1, 4,5,6]);             TestNodeAtPos(n, 14, 2);
+    n := 'outer';
+    TstFold(n, 1, 0, [0, 1]);                    TestNodeAtPos(n, 1, 2);
+    n := '(new line)';
+    //debugln(['############### ',n]);
+    DoNewLine(14,2);
+    TestFoldedText(n, [0, 1, 2, 5,6,7]);
+    TestNodeAtPos(n, 1, 3);
+    PopBaseName;
+
+    TstSetText('Nested, same line, new line in middle: (2)', TestText6);
+    SynEdit.UnfoldAll;
+    n := '';
+    TstFold(n, 1, 1, [0, 1, 4,5,6]);             TestNodeAtPos(n, 14, 2);
+    TstFold(n, 1, 0, [0, 1]);                    TestNodeAtPos(n, 1, 2);
+    n := '(new line)';
+    //debugln(['############### ',n]);
+    DoNewLine(13,2);
+    TestFoldedText(n, [0, 1, 2, 5,6,7]);
+    TestNodeAtPos(n, 2, 3);
+    PopBaseName;
+  {%endregion}
+
+  {%region simple, block edit}
+    TstSetText('Simple: block edit', TestText);
+
+    TstFold('', 1, [0, 1]);
+    TestNodeAtPos('', 1, 2);
+
+    SynEdit.TextBetweenPoints[point(1,2), point(1,2)] := ' ';
+    TestFoldedText('(ins char)', [0, 1]);
+    TestNodeAtPos('(ins char)', 2, 2);
+
+    SynEdit.TextBetweenPoints[point(13,1), point(13,1)] := LineEnding;
+    TestFoldedText('(newline before)', [0, 1, 2]);
+    TestNodeAtPos('(newline before)', 2, 3);
+
+    SynEdit.TextBetweenPoints[point(13,1), point(1,2)] := '';
+    TestFoldedText('(del newline)', [0, 1]);
+    TestNodeAtPos('(del newline)', 2, 2);
+
+    SynEdit.TextBetweenPoints[point(1,2), point(2,2)] := '';
+    TestFoldedText('(del char)', [0, 1]);
+    TestNodeAtPos('(del char)', 1, 2);
+
+    SynEdit.TextBetweenPoints[point(13,1), point(1,2)] := '';
+    TestFoldedText('(del to prev line)', [0]);
+    TestNodeAtPos('(del to prev line)', 13, 1);
+
+    SynEdit.TextBetweenPoints[point(13,1), point(13,1)] := LineEnding;
+    TestFoldedText('(newline on srcline)', [0, 1]);
+    TestNodeAtPos('(newline on srcline)', 1, 2);
+
+
+    SynEdit.TextBetweenPoints[point(1,3), point(1,3)] := LineEnding;
+    TestFoldedText('(newline, 1st fold line)', [0, 1]);
+    TestNodeAtPos('(newline 1st fold line)', 1, 2);
+
+    SynEdit.TextBetweenPoints[point(1,3), point(1,4)] := '';
+    TestFoldedText('(del newline, 1st fold line)', [0, 1]);
+    TestNodeAtPos('(del newline 1st fold line)', 1, 2);
+
+    PopBaseName;
+  {%endregion}
+
+  {%region Nested block edit}
+    TstSetText('Nested: block edit ', TestText);
+    //SetLines(TestText);
+
+    n := '(ins char)';
+    TstFold(n, 2, [0, 1, 2]);             TestNodeAtPos(n, 1, 3);
+    TstFold(n, 1, [0, 1]);                TestNodeAtPos(n, 1, 2);
+    //debugln(['############### ',n]);
+    SynEdit.TextBetweenPoints[point(1,3), point(1,3)] := ' ';
+    TestFoldedText(n, [0, 1]);            TestNodeAtPos(n, 1, 2);
+    TstUnFoldAtCaret(n, 1,3, [0,1,2]);    TestNodeAtPos(n, 2, 3);
+
+    n := '(repl char to newline)';
+    TstFold(n, 1, [0, 1]);                TestNodeAtPos(n, 1, 2);
+    //debugln(['############### ',n]);
+    SynEdit.TextBetweenPoints[point(1,3), point(2,3)] := LineEnding;
+    TestFoldedText(n, [0, 1]);            TestNodeAtPos(n, 1, 2);
+    TstUnFoldAtCaret(n, 1,4, [0,1,2,3]);    TestNodeAtPos(n, 1, 4);
+
+    n := '(repl newline to char)';
+    TstFold(n, 1, [0, 1]);                TestNodeAtPos(n, 1, 2);
+    //debugln(['############### ',n]);
+    SynEdit.TextBetweenPoints[point(1,3), point(1,4)] := '  ';
+    TestFoldedText(n, [0, 1]);            TestNodeAtPos(n, 1, 2);
+    TstUnFoldAtCaret(n, 1,3, [0,1,2]);    TestNodeAtPos(n, 3, 3);
+
+    n := '(del char)';
+    TstFold(n, 1, [0, 1]);                TestNodeAtPos(n, 1, 2);
+    //debugln(['############### ',n]);
+    SynEdit.TextBetweenPoints[point(1,3), point(3,3)] := '';
+    TestFoldedText(n, [0, 1]);            TestNodeAtPos(n, 1, 2);
+    TstUnFoldAtCaret(n, 1,3, [0,1,2]);    TestNodeAtPos(n, 1, 3);
+
+  PopBaseName;
+  {%endregion}
+
+  {%region simple, lines access}
+    TstSetText('Simple: lines access', TestText);
+
+    TstFold('', 1, [0, 1]);
+    TestNodeAtPos('', 1, 2);
+
+    SynEdit.Lines.Insert(1,'// foo');
+    TestFoldedText('(insert before)', [0, 1, 2]);
+    TestNodeAtPos('(insert before)', 1, 3);
+
+    SynEdit.Lines.Delete(1);
+    TestFoldedText('(del before)', [0, 1]);
+    TestNodeAtPos('(del before)', 1, 2);
+
+    SynEdit.Lines.Insert(2,'// foo');
+    TestFoldedText('(insert inside)', [0, 1]);
+    TestNodeAtPos('(insert inside)', 1, 2);
+
+    SynEdit.Lines.Delete(2);
+    TestFoldedText('(del inside)', [0, 1]);
+    TestNodeAtPos('(del inside)', 1, 2);
+
+    PopBaseName;
+  {%endregion}
+
+
+  {%region hide}
+    TstSetText('Simple HIDE', TestTextHide(3));
+
+    TstFold('', 1, -1, 1, False, 0, [0, 4]);
+    TestNodeAtPos('', 1, 2);
+
+    DoNewLine(13,1);
+    TestFoldedText('(ins newline)', [0, 1, 5]);
+    TestNodeAtPos('(ins newline)', 1, 3);
+
+    SynEdit.Undo; // cannot use backspace, since caret would unfold
+    TestFoldedText('(del newline)', [0, 4]);
+    TestNodeAtPos('(del newline)', 1, 2);
+
+    PopBaseName;
+  {%endregion}
+
+  {%region hide, block edit}
+    TstSetText('Simple HIDE: block edit', TestTextHide(3));
+
+// TODO /newline BEFORE
+    TstFold('', 1, -1, 1, False, 0, [0, 4]);
+    TestNodeAtPos('', 1, 2);
+
+    SynEdit.TextBetweenPoints[point(13,1), point(13,1)] := LineEnding;
+    TestFoldedText('(newline before)', [0, 1, 5]);
+    TestNodeAtPos('(newline before)', 1, 3);
+
+    SynEdit.TextBetweenPoints[point(13,1), point(1,2)] := '';
+    TestFoldedText('(del newline before)', [0, 4]);
+    TestNodeAtPos('(del newline before)', 1, 2);
+
+
+
+    SynEdit.TextBetweenPoints[point(1,2), point(1,2)] := ' ';
+    TestFoldedText('(ins char)', [0, 4]);
+    TestNodeAtPos('(ins char)', 2, 2);
+
+    debugln(['############### ins newline']);
+    SynEdit.TextBetweenPoints[point(1,2), point(2,2)] := LineEnding;
+    TestFoldedText('(ins newline)', [0, 1, 5]);
+    TestNodeAtPos('(ins newline)', 1, 3);
+
+    debugln(['############### del newline']);
+    SynEdit.TextBetweenPoints[point(1,2), point(1,3)] := '  ';
+    TestFoldedText('(del newline)', [0, 4]);
+    TestNodeAtPos('(del newline)', 3, 2);
+
+    debugln(['############### del char']);
+    SynEdit.TextBetweenPoints[point(1,2), point(3,2)] := ' ';
+    TestFoldedText('(del char)', [0, 4]);
+    TestNodeAtPos('(del char)', 2, 2);
+
+    debugln(['############### ins newline (again)']);
+    SynEdit.TextBetweenPoints[point(1,2), point(2,2)] := LineEnding;
+    TestFoldedText('(ins newline)', [0, 1, 5]);
+    TestNodeAtPos('(ins newline)', 1, 3);
+
+    debugln(['############### del TWO newline']);
+    SynEdit.TextBetweenPoints[point(1,2), point(1,4)] := '';
+    TestFoldedText('(del newline)', [0, 3]);
+    TestNodeAtPos('(del newline)', 1, 2);
+
+    PopBaseName;
+  {%endregion}
+
+  {%region lines access}
+    TstSetText('Simple HIDE: lines access', TestTextHide(3));
+
+    TstFold('', 1, -1, 1, False, 0, [0, 4]);
+    TestNodeAtPos('', 1, 2);
+
+    SynEdit.Lines.Insert(1,'var a: integer;');
+    TestFoldedText('(ins newline before)', [0, 1, 5]);
+    TestNodeAtPos('(ins newline before)', 1, 3);
+
+    SynEdit.Lines.Delete(1);
+    TestFoldedText('(del newline before)', [0, 4]);
+    TestNodeAtPos('(del newline before)', 1, 2);
+
+    SynEdit.Lines.Insert(2,'// foo bar');
+    TestFoldedText('(ins newline inside)', [0, 5]);
+    TestNodeAtPos('(ins newline inside)', 1, 2);
+
+    SynEdit.Lines.Delete(2);
+    TestFoldedText('(del newline inside)', [0, 4]);
+    TestNodeAtPos('(del newline inside)', 1, 2);
+
+    PopBaseName;
+  {%endregion}
+
+end;
+
+procedure TTestFoldedView.TestFoldStateFromText;
 
   procedure TstFoldState(AName, AFoldDesc: String; AExpectedLines: Array of Integer);
   begin
