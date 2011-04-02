@@ -3534,6 +3534,10 @@ begin
     exit;
   top := TopTextIndex;
   c := FoldProvider.FoldOpenCount(AStartIndex);
+  if c < 1 then begin
+    // TODO: foldprovider to return all folded nodes, for hte line
+    ColCount := 0;
+  end;
 
   r := -1;
   if ColCount = 0 then begin
