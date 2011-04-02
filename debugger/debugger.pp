@@ -2834,7 +2834,7 @@ end;
 
 procedure TDBGBreakPoint.SetSlave(const ASlave : TBaseBreakPoint);
 begin
-  Assert(FSlave = nil, 'TDBGBreakPoint.SetSlave already has a slave');
+  Assert((FSlave = nil) or (ASlave = nil), 'TDBGBreakPoint.SetSlave already has a slave');
   FSlave := ASlave;
 end;
 
