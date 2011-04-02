@@ -303,7 +303,6 @@ function TUsedUnits.AddDelphiAndLCLSections: Boolean;
 var
   DelphiOnlyUnits: TStringList;  // Delphi specific units.
   LclOnlyUnits: TStringList;     // LCL specific units.
-//  TempRemoveUnits: TStringList;  // To be removed.
 
   function MoveToDelphi(AUnitName: string): boolean;
   var
@@ -324,22 +323,7 @@ var
     end;
     DelphiOnlyUnits.Add(AUnitName);
   end;
-{
-  function RemoveOrigUnits: boolean;
-  var
-    i: Integer;
-  begin
-    for i := 0 to TempRemoveUnits.Count-1 do begin
-      Result:=True;
-      with fCTLink do begin
-        ResetMainScanner;
-        CodeTool.BuildTree(fUsesSection=usMain);
-        Result:=CodeTool.RemoveUnitFromUsesSection(UsesSectionNode,
-                                       UpperCaseStr(TempRemoveUnits[i]),SrcCache);
-      end;
-    end;
-  end;
-}
+
 var
   i, InsPos: Integer;
   s: string;
@@ -352,7 +336,6 @@ begin
   DelphiOnlyUnits:=TStringList.Create;
   LclOnlyUnits:=TStringList.Create;
   RenameList:=TStringList.Create;
-//  TempRemoveUnits:=TStringList.Create;
   try
     // Don't remove the unit names but add to Delphi block instead.
     for i:=0 to fUnitsToRemove.Count-1 do
@@ -415,9 +398,7 @@ begin
     // Now add the generated lines.
     if not fCTLink.SrcCache.Replace(gtNewLine,gtNone,InsPos,InsPos,s) then exit;
     Result:=fCTLink.SrcCache.Apply;
-//    RemoveOrigUnits;
   finally
-//    TempRemoveUnits.Free;
     RenameList.Free;
     LclOnlyUnits.Free;
     DelphiOnlyUnits.Free;
@@ -608,8 +589,6 @@ begin
         if not CodeTool.AddUnitToSpecificUsesSection(
                           fUsesSection, fUnitsToAdd[i], '', SrcCache) then exit;
     end;
-//if Pos('SynEditKey', fFilename) > 0 then // Debug
-// i:=0;
     if fIsMainFile or (Settings.MultiPlatform and not Settings.SupportDelphi) then begin
       // One way conversion (or main file) -> remove and rename units.
       if not fMainUsedUnits.RemoveUnits then exit;    // Remove
