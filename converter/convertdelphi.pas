@@ -453,6 +453,9 @@ end;
 
 function TConvertDelphiUnit.CopyAndLoadFile: TModalResult;
 begin
+  IDEMessagesWindow.AddMsg(Format(lisConvDelphiConvertingFile,
+                                  [fOrigUnitFilename]), '', -1);
+  Application.ProcessMessages;
   // Convert in place. File must be writable.
   Result:=CheckFileIsWritable(fOrigUnitFilename,[mbAbort]);
   if Result<>mrOk then exit;
@@ -544,9 +547,6 @@ var
   DfmFilename: string;     // Delphi .DFM file name.
   ConvTool: TConvDelphiCodeTool;
 begin
-  IDEMessagesWindow.AddMsg(Format(lisConvDelphiConvertingFile,
-                                  [fOrigUnitFilename]), '', -1);
-  Application.ProcessMessages;
   // Get DFM file name and close it in editor.
   DfmFilename:=GetDfmFileName;
   Result:=FixLfmFilename(DfmFilename);
