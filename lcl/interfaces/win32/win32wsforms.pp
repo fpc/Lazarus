@@ -727,7 +727,6 @@ var
   Info: PWin32WindowInfo;
 begin
   Info := GetWin32WindowInfo(Window);
-  WinControl := Info^.WinControl;
   case Msg of
     WM_NCHITTEST:
       Result := HTTRANSPARENT;
