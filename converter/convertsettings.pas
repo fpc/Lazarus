@@ -399,6 +399,7 @@ begin
   MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
   MapReplacement('Mask',                'MaskEdit');
   MapReplacement('OpenGL',              'GL, GLu');
+  MapReplacement('dglOpenGL',           'GL, GLu, GLut');  // ?
   MapReplacement('ShellApi',            '');
   MapReplacement('pngImage',            '');
   MapReplacement('Jpeg',                '');
