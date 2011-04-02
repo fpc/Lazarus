@@ -1336,12 +1336,11 @@ begin
       end;
     finally
       AllPath:=fUnitSearchPaths.DelimitedText;
-      // set unit paths to find all project units
-      LazProject.CompilerOptions.OtherUnitFiles:=
-          MergeSearchPaths(LazProject.CompilerOptions.OtherUnitFiles,AllPath);
-      // set include path
-      LazProject.CompilerOptions.IncludePath:=
-          MergeSearchPaths(LazProject.CompilerOptions.IncludePath,AllPath);
+      // set unit and include paths for project
+      with LazProject.CompilerOptions do begin
+        OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,AllPath);
+        IncludePath:=MergeSearchPaths(IncludePath,AllPath);
+      end;
       // clear caches
       LazProject.DefineTemplates.SourceDirectoriesChanged;
     end;
