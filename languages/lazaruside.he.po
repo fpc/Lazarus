@@ -3,10 +3,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Ido Kanner <idokan@gmail.com>\n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Last-Translator: shulamy <shulamy@regba.org.il>\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-05 16:36+0300\n"
+"PO-Revision-Date: 2011-04-02 22:25+0200\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "X-Generator: Lokalize 1.0\n"
@@ -293,7 +293,7 @@ msgstr "לפי סדר א' ב'"
 
 #: lazarusidestrconsts.dlgalreadyusesallotherunits
 msgid "\"%s\" already uses all the units in this project"
-msgstr ""
+msgstr "כבר משתמש בכל היחידות שבפרוייקט \"%s\" "
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
@@ -1648,15 +1648,15 @@ msgstr "שם הבונה חייב להיות init (שם ההורס חייב לה�
 
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
-msgstr ""
+msgstr "מימוש"
 
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
-msgstr ""
+msgstr "ממשק"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
-msgstr ""
+msgstr "הכנס לסעיף \"משתמש ב\""
 
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
@@ -2741,7 +2741,7 @@ msgstr "הראה לחצן בודד בפס המשימות"
 
 #: lazarusidestrconsts.dlgskipforwardclassdeclarations
 msgid "Skip forward class declarations"
-msgstr ""
+msgstr "דלג קדימה בהצהרות המחלקות"
 
 #: lazarusidestrconsts.dlgsmarttabs
 msgid "Smart tabs"
@@ -2977,7 +2977,7 @@ msgstr "השתמש בהסטוריית לשוניות בזמן סגירת לשו�
 
 #: lazarusidestrconsts.dlguseunitcaption
 msgid "Use a unit from this project"
-msgstr ""
+msgstr "השתמש ביחידה מפרוייקט זה"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3709,7 +3709,7 @@ msgstr "השתמש בדגלי בניה (B-) גם לתלויות"
 
 #: lazarusidestrconsts.lisapplyconventions
 msgid "Apply conventions"
-msgstr ""
+msgstr "יישם את ההסכמות"
 
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
@@ -3961,7 +3961,7 @@ msgstr "הבדלים בין אופני בניה"
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencestootherbuildmodes
 msgid "Differences to other build modes"
-msgstr ""
+msgstr "הבדלים מאופני בנייה אחרים"
 
 #: lazarusidestrconsts.lisbuildmodediffmode
 msgid "Mode:"
@@ -4370,119 +4370,119 @@ msgstr "הזחה שגויה"
 
 #: lazarusidestrconsts.liscfeanexceptionoccuredduringdeletionof
 msgid "An exception occured during deletion of%s\"%s:%s\"%s%s"
-msgstr ""
+msgstr "קרתה חריגה בזמן הסרת %s\"%s:%s\"%s%s"
 
 #: lazarusidestrconsts.liscfecancelloadingthisresource
 msgid "Cancel loading this resource"
-msgstr ""
+msgstr "בטל טעינת משאב זה"
 
 #: lazarusidestrconsts.liscfeclassnotfound
 msgid "%s%sClass \"%s\" not found."
-msgstr ""
+msgstr "המחלקה  \"%s\" לא נמצאה."
 
 #: lazarusidestrconsts.liscfecomponent
 msgid "%s%sComponent: %s:%s"
-msgstr ""
+msgstr "רכיב: %s:%s"
 
 #: lazarusidestrconsts.liscfecomponentclass
 msgid "%s%sComponent Class: %s"
-msgstr ""
+msgstr "מחלקת רכיבים: %s"
 
 #: lazarusidestrconsts.liscfecontinueloading
 msgid "Continue loading"
-msgstr ""
+msgstr "ממשיך בטעינה"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
-msgstr ""
+msgstr "לא יודע איך להעתיק את עריכת הטפסים הנבחרת"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocutthisformeditingselection
 msgid "Do not know how to cut this form editing selection"
-msgstr ""
+msgstr "לא יודע איך לגזור את עריכת הטפסים הנבחרת"
 
 #: lazarusidestrconsts.liscfedonotknowhowtodeletethisformeditingselection
 msgid "Do not know how to delete this form editing selection"
-msgstr ""
+msgstr "לא יודע איך למחוק את עריכת הטפסים הנבחרת"
 
 #: lazarusidestrconsts.liscfeerrorcreatingcomponent
 msgid "Error creating component"
-msgstr ""
+msgstr "שגיאה ביצירת רכיב"
 
 #: lazarusidestrconsts.liscfeerrorcreatingcomponent2
 msgid "Error creating component: %s%s%s"
-msgstr ""
+msgstr "שגיאה ביצירת רכיב: %s%s%s"
 
 #: lazarusidestrconsts.liscfeerrordestroyingcomponent
 msgid "Error destroying component"
-msgstr ""
+msgstr "שגיאה בהריסת רכיב"
 
 #: lazarusidestrconsts.liscfeerrordestroyingcomponentoftypeofunit
 msgid "Error destroying component of type %s of unit %s:%s%s"
-msgstr ""
+msgstr "שגיאה בהריסת רכיב מסוג %s של יחידה %s:%s%s"
 
 #: lazarusidestrconsts.liscfeerrordestroyingmediator
 msgid "Error destroying mediator"
-msgstr ""
+msgstr "שגיאה בהריסת מתווך"
 
 #: lazarusidestrconsts.liscfeerrordestroyingmediatorofunit
 msgid "Error destroying mediator %s of unit %s:%s%s"
-msgstr ""
+msgstr "שגיאה בהריסת מתווך %s של יחידה %s:%s%s"
 
 #: lazarusidestrconsts.liscfeerrorreading
 msgid "Error reading %s"
-msgstr ""
+msgstr "שגיאה בקריאת %s"
 
 #: lazarusidestrconsts.liscfeinfile
 msgid "%sIn file %s%s"
-msgstr ""
+msgstr "בקובץ %s%s"
 
 #: lazarusidestrconsts.liscfeinvalidcomponentowner
 msgid "Invalid component owner"
-msgstr ""
+msgstr "הבעלים של הרכיב אינו חוקי"
 
 #: lazarusidestrconsts.liscferoot
 msgid "%sRoot=%s:%s"
-msgstr ""
+msgstr "רוט= %s:%s"
 
 #: lazarusidestrconsts.liscfestopallloading
 msgid "Stop all loading"
-msgstr ""
+msgstr "עצור את כל הטעינות"
 
 #: lazarusidestrconsts.liscfestream
 msgid "%sStream=%s"
-msgstr ""
+msgstr "זרם= %s"
 
 #: lazarusidestrconsts.liscfestreamposition
 msgid "%s%sStream position: %s"
-msgstr ""
+msgstr "מיקום הזרם: %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformalreadyexists
 msgid "TCustomFormEditor.CreateNonFormForm already exists"
-msgstr ""
+msgstr "כבר קיים TCustomFormEditor.CreateNonFormForm"
 
 #: lazarusidestrconsts.liscfetcustomformeditorcreatenonformformunknowntype
 msgid "TCustomFormEditor.CreateNonFormForm Unknown type %s"
-msgstr ""
+msgstr "סוג לא ידוע TCustomFormEditor.CreateNonFormForm"
 
 #: lazarusidestrconsts.liscfetcustomformeditordeletecomponentwhereisthetcustomn
 msgid "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s"
-msgstr ""
+msgstr "TCustomFormEditor.DeleteComponent  Where is the TCustomNonFormDesignerForm? %s"
 
 #: lazarusidestrconsts.liscfetcustomformeditorregisterdesignermediatoralreadyre
 msgid "TCustomFormEditor.RegisterDesignerMediator already registered: %s"
-msgstr ""
+msgstr "כבר רשום: TCustomFormEditor.RegisterDesignerMediator"
 
 #: lazarusidestrconsts.liscfethecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class \"%s\"has created the error:%s\"%s\""
-msgstr ""
+msgstr "עורך הרכיבים של המחלקה  \"%s\" גרם לשגיאה: %s\"%s\""
 
 #: lazarusidestrconsts.liscfethecomponentoftypefailedtosetitsownerto
 msgid "The component of type %s failed to set its owner to %s:%s"
-msgstr ""
+msgstr "הרכיב מסוג %s  נכשל בקביעת הבעלים להיות %s:%s"
 
 #: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
 msgid "Unable to clear the form editing selection%s%s"
-msgstr ""
+msgstr "לא יכול לנקות את בחירת עורך הטפסים"
 
 #: lazarusidestrconsts.lischangebuildmode
 msgid "Change build mode"
@@ -4527,7 +4527,7 @@ msgstr "בדוק אפשרויות"
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
-msgstr ""
+msgstr "בדוק את היעד (OS, CPU, LCL widget type). יתכן שתצטרך להדר את החבילה מחדש עבור יעד זה או לקבוע יעד אחר לפרוייקט."
 
 #: lazarusidestrconsts.lischooseadifferentname
 msgid "Choose a different name"
@@ -4623,7 +4623,7 @@ msgstr "בחר את התיקיה עבור בדיקות"
 
 #: lazarusidestrconsts.liscircleinmacros
 msgid "Circle in macros"
-msgstr ""
+msgstr "מעגליות במאקרו"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -5463,7 +5463,7 @@ msgstr "מהדר"
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
-msgstr ""
+msgstr "מהדר  \"%s\"  לא תומך ביעד %s-%s"
 
 #: lazarusidestrconsts.liscompilererror
 msgid "Compiler error"
@@ -5653,7 +5653,7 @@ msgstr "אופסט לקואורדינטות"
 
 #: lazarusidestrconsts.lisconvdelphiaddedpackagerequirement
 msgid "Added Package %s as a requirement."
-msgstr ""
+msgstr "נוספה חבילה %s בתור דרישה."
 
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
@@ -5690,7 +5690,7 @@ msgstr "המר יחידת דלפי"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingfile
 msgid "* Converting file %s *"
-msgstr ""
+msgstr "* ממיר קובץ %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
 msgid "*** Converting unit files... ***"
@@ -5722,11 +5722,11 @@ msgstr "*** מצא את כל קבצי היחידה... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
-msgstr ""
+msgstr "תוקנה ראשיות התוים ביחידה \"%s\" ל \"%s\"."
 
 #: lazarusidestrconsts.lisconvdelphifixingusedunits
 msgid "* Fixing used units for file %s *"
-msgstr ""
+msgstr "* מתקן יחידות שהשתמשו בהן בקובץ %s *"
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
@@ -5750,11 +5750,11 @@ msgstr "שם החבילה קיים"
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"
-msgstr ""
+msgstr "הושמטה יחידה %s מהפרוייקט"
 
 #: lazarusidestrconsts.lisconvdelphiremovedunitinusessection
 msgid "Removed unit \"%s\" in uses section."
-msgstr ""
+msgstr "הוסרה יחידה  \"%s\"  מסעיף \"משתמש ב\""
 
 #: lazarusidestrconsts.lisconvdelphiremovefirst
 msgid "Remove first"
@@ -5830,27 +5830,27 @@ msgstr "הממיר מוסיף הידור מותנה כדי לתמוך ביעדי
 
 #: lazarusidestrconsts.lisconverttargetmultiplatform
 msgid "Multi-Platform"
-msgstr ""
+msgstr "מרובה מערכות"
 
 #: lazarusidestrconsts.lisconverttargetmultiplatformhint
 msgid "Multi-Platform versus Windows-only"
-msgstr ""
+msgstr "מרובה מערכות לעומת חלונות בלבד"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfile
 msgid "Use the same DFM form file"
-msgstr ""
+msgstr "השתמש באותו DFM מהקובץ"
 
 #: lazarusidestrconsts.lisconverttargetsamedfmfilehint
 msgid "Same DFM file for Lazarus and Delphi instead of copying it to LFM"
-msgstr ""
+msgstr "אותו קובץ DFM  עבור לזארוס ודלפי במקום להעתיק אותו ל LFM"
 
 #: lazarusidestrconsts.lisconverttargetsupportdelphi
 msgid "Support Delphi"
-msgstr ""
+msgstr "תומך בדלפי"
 
 #: lazarusidestrconsts.lisconverttargetsupportdelphihint
 msgid "Use conditional compilation to support Delphi"
-msgstr ""
+msgstr "השתמש בהידור מותנה לתמיכה בדלפי"
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -5971,7 +5971,7 @@ msgstr "סרוק הודעות של Make"
 
 #: lazarusidestrconsts.liscoscanformessages
 msgid "Scan for messages:"
-msgstr ""
+msgstr "סורק עבור הודעות:"
 
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
@@ -6763,7 +6763,7 @@ msgstr "כפילות בשם: רכיב בשם s%s%s% כבר קיים ברכיב �
 
 #: lazarusidestrconsts.lisduplicateppufilesdeleteoneormakesureallsearchpaths
 msgid "Duplicate ppu files. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
-msgstr ""
+msgstr "קבצי ppu כפולים.מחק אחד או שתבדוק שכל נתיבי החיפוש הם בסדר הנכון (טיפ: FPC משתמש קודם בנתיב האחרון). "
 
 #: lazarusidestrconsts.lisduplicatesearchpath
 msgid "Duplicate search path"
@@ -6771,7 +6771,7 @@ msgstr "מסלול חיפוש כפול"
 
 #: lazarusidestrconsts.lisduplicatesourcesdeleteoneormakesureallsearchpathsh
 msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
-msgstr ""
+msgstr "מקורות כפולים.מחק אחד או שתבדוק שכל נתיבי החיפוש הם בסדר הנכון (טיפ: FPC משתמש קודם בנתיב האחרון). "
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -6779,7 +6779,7 @@ msgstr "ערוך עזרה תלויית הקשר"
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
-msgstr ""
+msgstr "סוגי הקבצים של העורך"
 
 #: lazarusidestrconsts.lisedoptschoosescheme
 msgid "Choose Scheme"
@@ -6935,11 +6935,11 @@ msgstr "נמצאה מתודה ריקה:"
 
 #: lazarusidestrconsts.lisemdnoclass
 msgid "No class"
-msgstr ""
+msgstr "אין מחלקה"
 
 #: lazarusidestrconsts.lisemdnoclassat
 msgid "No class at %s(%s,%s)"
-msgstr ""
+msgstr "אין מחלקה ב %s(%s,%s)"
 
 #: lazarusidestrconsts.lisemdonlypublished
 msgid "Only published"
@@ -6963,7 +6963,7 @@ msgstr "חפש בחלקי מחלקה אלו:"
 
 #: lazarusidestrconsts.lisemdunabletoshowemptymethodsofthecurrentclassbecause
 msgid "Unable to show empty methods of the current class, because%s%s"
-msgstr ""
+msgstr "לא יכול להציג מתודות ריקות של המחלקה הנוכחית, בגלל %s%s"
 
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
@@ -7004,7 +7004,7 @@ msgstr "צרף "
 
 #: lazarusidestrconsts.lisencloseinifdef
 msgid "Enclose in $IFDEF"
-msgstr ""
+msgstr "תחום ב $IFDEF"
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
@@ -7123,15 +7123,15 @@ msgstr "שגיאה באיתחול תכנית s%s%s%s%s% שגיאה: s%"
 
 #: lazarusidestrconsts.liserrorinthecompilerfilename
 msgid "Error in the compiler file name:"
-msgstr ""
+msgstr "שגיאה בשם קובץ המהדר:"
 
 #: lazarusidestrconsts.liserrorinthecustomcompileroptionsother
 msgid "Error in the custom compiler options (Other):"
-msgstr ""
+msgstr "שגיאה באפשרויות מהדר מותאמות אישית (אחר):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
 msgid "Error in the custom linker options (Linking / Pass options to linker):"
-msgstr ""
+msgstr "שגיאה באפשרויות מהדר מותאמות אישית (קישור / העבר אפשרויות למקשר):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
 msgid "Error in the \"Debugger path addition\":"
@@ -7139,27 +7139,27 @@ msgstr ""
 
 #: lazarusidestrconsts.liserrorinthesearchpathforincludefiles
 msgid "Error in the search path for \"Include files\":"
-msgstr ""
+msgstr "שגיאה בנתיב החיפוש עבור קבצי \"כלול\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforlibraries
 msgid "Error in the search path for \"Libraries\":"
-msgstr ""
+msgstr "שגיאה בנתיב החיפוש עבור ספריות:"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforobjectfiles
 msgid "Error in the search path for \"Object files\":"
-msgstr ""
+msgstr "שגיאה בנתיב החיפוש עבור קבצי Object:"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforothersources
 msgid "Error in the search path for \"Other sources\":"
-msgstr ""
+msgstr "שגיאה בנתיב החיפוש עבור מקורות אחרים:"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforotherunitfiles
 msgid "Error in the search path for \"Other unit files\":"
-msgstr ""
+msgstr "שגיאה בנתיב החיפוש עבור קבצי יחידות אחרות:"
 
 #: lazarusidestrconsts.liserrorintheunitoutputdirectory
 msgid "Error in the \"unit output directory\":"
-msgstr ""
+msgstr "שגיאה בתיקיית הפלט של היחידה:"
 
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
@@ -7224,7 +7224,7 @@ msgstr "שגיאה בהגדרת שם ברכיב s% ל s%"
 
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
-msgstr ""
+msgstr "שגיאה בקריאת קובץ  \"%s\""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -7256,7 +7256,7 @@ msgstr "דוגמאות"
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
-msgstr "דוגמה: מזהים TMyEnum.Enum \"שם יחידה.מזהה\"  \"#שם חבילה.שם יחידה.מזהה\""
+msgstr "דוגמה: מזהים TMyEnum.Enum \"שם יחידה.מ/nזהה\"  \"#שם חבילה.שם יחידה.מזהה\""
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -7783,7 +7783,7 @@ msgstr "הסתר הודעה דרך הוראת מהדר"
 
 #: lazarusidestrconsts.lishint
 msgid "Hint"
-msgstr ""
+msgstr "טיפ"
 
 #: lazarusidestrconsts.lishintadefaultvaluecanbedefinedintheconditionals
 msgid "Hint: A default value can be defined in the conditionals."
@@ -8033,11 +8033,11 @@ msgstr "בלתי אפשרי"
 
 #: lazarusidestrconsts.lisinasourcedirectoryofthepackage
 msgid "In a source directory of the package \"%s\"."
-msgstr ""
+msgstr "בתיקיית המקור של החבילה  \"%s\""
 
 #: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
 msgid "In a source directory of the project. Check for duplicates."
-msgstr ""
+msgstr "בתיקיית המקור של הפרוייקט. בדוק כפילויות."
 
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
@@ -8127,7 +8127,7 @@ msgstr "מידע על  FPC"
 
 #: lazarusidestrconsts.lisinfpcunitsearchpathprobablyinstalledbythefpcpackag
 msgid "In FPC unit search path. Probably installed by the FPC package. Check if the compiler and the ppu file are from the same installation."
-msgstr ""
+msgstr "בנתיב החיפוש של יחידות FPC. כנראה הותקן על ידי חבילת FPC. בדוק אם המהדר וקובץ ה ppu הם מאותה התקנה."
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
@@ -8139,7 +8139,7 @@ msgstr "פריט מורש"
 
 #: lazarusidestrconsts.lisinheritedprojectcomponent
 msgid "Inherited project component"
-msgstr ""
+msgstr "רכיב מורש של הפרוייקט"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
@@ -8246,7 +8246,7 @@ msgstr "התקן/הסר חבילות"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
 msgid "Instead of compile package create a simple Makefile."
-msgstr ""
+msgstr "במקום חבילה מהודרת צור קובץ  Makefile פשוט."
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
@@ -8358,11 +8358,11 @@ msgstr "תלות מעגלית זאת אסורה"
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
-msgstr ""
+msgstr "אני מתפלא איך עשית זאת. שגיאה ב %s:"
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthebasedirectory
 msgid "I wonder how you did that: Error in the base directory:"
-msgstr ""
+msgstr "אני מתפלא איך עשית זאת. שגיאה בתיקיית הבסיס:"
 
 #: lazarusidestrconsts.lisjhjumphistory
 msgid "Jump History"
@@ -8378,7 +8378,7 @@ msgstr "שמור "
 
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
-msgstr ""
+msgstr "שמור"
 
 #: lazarusidestrconsts.liskeepfileopen
 #, fuzzy
@@ -8400,11 +8400,11 @@ msgstr "שמור שם"
 
 #: lazarusidestrconsts.liskeeprelativeindentationofmultilinetemplate
 msgid "Keep relative indentation of multi line template"
-msgstr ""
+msgstr "שמור הזחה יחסית של תבנית מרובת שורות"
 
 #: lazarusidestrconsts.liskeepsubindentation
 msgid "Keep indentation"
-msgstr ""
+msgstr "שמור הזחה"
 
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
@@ -8468,7 +8468,7 @@ msgstr "אפשרויות CodeTools"
 
 #: lazarusidestrconsts.liskmcompileprojectprogram
 msgid "Compile project/program"
-msgstr ""
+msgstr "הדר פרוייקט.תוכנית"
 
 #: lazarusidestrconsts.liskmcompileroptions
 msgid "Compiler options"
@@ -9095,7 +9095,7 @@ msgstr "אשר מחיקה"
 
 #: lazarusidestrconsts.lislazbuilddebugide
 msgid "Debug IDE"
-msgstr ""
+msgstr "נפה שגיאות IDE"
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
@@ -9117,7 +9117,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildeditlistofdefineswhichcanbeusedbyanyprofile
 msgid "Edit list of defines which can be used by any profile"
-msgstr ""
+msgstr "קפל תיקייה"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
 msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
@@ -9126,7 +9126,7 @@ msgstr "שגיאה בכתיבת קובץ"
 
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
-msgstr ""
+msgstr "ללא חבילות IDE"
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -9168,7 +9168,7 @@ msgstr "אשר"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
-msgstr ""
+msgstr "במצב מיטבי  IDE"
 
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
@@ -9533,7 +9533,7 @@ msgstr "מקסימום d%"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
-msgstr ""
+msgstr "יתכן שתצטרך להדר מחדש את החבילה."
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -9805,7 +9805,7 @@ msgstr "תצוגה מקדימה של תבניות"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
 msgid "Enclose in $IFDEF..."
-msgstr ""
+msgstr "תחום ב $IFDEF..."
 
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
@@ -9960,7 +9960,7 @@ msgstr "קפוץ אל"
 
 #: lazarusidestrconsts.lismenujumptoimplementation
 msgid "Jump to implementation"
-msgstr ""
+msgstr "קפוץ למימוש"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -10306,7 +10306,7 @@ msgstr "עצור"
 
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap case in selection"
-msgstr ""
+msgstr "החלף ראשיות באזור שנבחר"
 
 #: lazarusidestrconsts.lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
@@ -10445,7 +10445,7 @@ msgstr "בחירה באותיות ראשיות"
 
 #: lazarusidestrconsts.lismenuuseprojectunit
 msgid "Add unit to uses section ..."
-msgstr ""
+msgstr "הוסף יחידה לסעיף \"משתמש ב\""
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
@@ -10636,7 +10636,7 @@ msgstr "חפש את נתיב היחידה"
 
 #: lazarusidestrconsts.lismissingunitsskip
 msgid "Skip this Unit"
-msgstr ""
+msgstr "דלג על יחידה זאת"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -10756,7 +10756,7 @@ msgstr "צור יחידה חדשה עם טופס LCL."
 
 #: lazarusidestrconsts.lisnewdlginheritfromaprojectformcomponent
 msgid "Inherit from a project form or component"
-msgstr ""
+msgstr "ירושה מפרוייקט טופס או רכיב"
 
 #: lazarusidestrconsts.lisnewdlgnoitemselected
 msgid "No item selected"
@@ -11139,7 +11139,7 @@ msgstr "האם לפתוח את הפרויקט %s?"
 
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
-msgstr ""
+msgstr "אפשרויות השתנו, הדר (נקי) מחדש עם הפרמטר  -B"
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -11683,7 +11683,7 @@ msgstr "יחידה בפסקל חייבת להיות עם סיומת pp. או pas
 
 #: lazarusidestrconsts.lispecollapsedirectory
 msgid "Collapse directory"
-msgstr ""
+msgstr "קפל תיקייה"
 
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
@@ -11691,7 +11691,7 @@ msgstr "נמצאה התנגשות"
 
 #: lazarusidestrconsts.lispedirectories
 msgid "Directories"
-msgstr ""
+msgstr "תיקיות"
 
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
@@ -11699,7 +11699,7 @@ msgstr "ערוך יחידה וירטואלית"
 
 #: lazarusidestrconsts.lispeexpanddirectory
 msgid "Expand directory"
-msgstr ""
+msgstr "פרוש תיקייה"
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11719,7 +11719,7 @@ msgstr "שם יחידה לא חוקי"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
-msgstr ""
+msgstr "חסרים קבצים של של החבילה %s"
 
 #: lazarusidestrconsts.lispemovefiledown
 msgid "Move file down"
@@ -11731,36 +11731,36 @@ msgstr "הזז קובץ למעלה"
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
-msgstr ""
+msgstr "קובץ חדש לא בנתיב \"כלול\""
 
 #: lazarusidestrconsts.lispenofilesmissingallfilesexist
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
 msgid "No files missing. All files exist."
-msgstr ""
+msgstr "לא חסרים קבצים. כל הקבצים קיימים."
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"
-msgstr ""
+msgstr "הסר קבצים"
 
 #: lazarusidestrconsts.lisperemoveselectedfiles
 msgid "Remove selected files"
-msgstr ""
+msgstr "הסר קבצים שנבחרו"
 
 #: lazarusidestrconsts.lisperevertpackage
 msgid "Revert package"
-msgstr ""
+msgstr "החזר חבילה לצצבה הקודם"
 
 #: lazarusidestrconsts.lispesavepackageas
 msgid "Save package as"
-msgstr ""
+msgstr "שמור חבילה בשם"
 
 #: lazarusidestrconsts.lispeshowdirectoryhierarchy
 msgid "Show directory hierarchy"
-msgstr ""
+msgstr "הראה מידרג תיקיות"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
 msgid "Show missing files"
-msgstr ""
+msgstr "הראה קבצים חסרים"
 
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort files"
@@ -11768,11 +11768,11 @@ msgstr "סדר קבצים"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
 msgid "Sort files alphabetically"
-msgstr ""
+msgstr "סדר קבצים בסדר אלפבתי"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
-msgstr ""
+msgstr "הקובץ \"%s\" אינו נמצא כרגע בנתיב \"כלול\" של החבילה. האם להוסיף  \"%s\" לנתיב \"כלול\""
 
 #: lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile
 msgctxt "lazarusidestrconsts.lispethereisalreadyanunitwiththisnamefile"
@@ -11800,11 +11800,11 @@ msgstr "שם היחידה ושם הקובץ לא מתאימים. לדוגמה: u
 
 #: lazarusidestrconsts.lispeuseallunitsindirectory
 msgid "Use all units in directory"
-msgstr ""
+msgstr "השתמש בכל היחידות בתיקייה"
 
 #: lazarusidestrconsts.lispeusenounitsindirectory
 msgid "Use no units in directory"
-msgstr ""
+msgstr "אל תשתמש באף יחידה מהתיקייה"
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -12375,7 +12375,7 @@ msgstr "הקובץ של החבילה לא נמצא"
 
 #: lazarusidestrconsts.lispkgsyspackageregistrationerror
 msgid "Package registration error"
-msgstr ""
+msgstr "שגיאה ברישום החבילה"
 
 #: lazarusidestrconsts.lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
@@ -12464,7 +12464,7 @@ msgstr "משתמש"
 
 #: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
 msgid "Please fix the error shown in the message window, which is normally below the source editor."
-msgstr ""
+msgstr "תקן בבקשה את שגיאה המופיעה בחלון ההודעות, הנמצא בדרך כלל מתחת לחלון עורך הטקסט."
 
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
@@ -13013,7 +13013,7 @@ msgstr "הסר מנתיב החיפוש"
 
 #: lazarusidestrconsts.lisremoveincludepath
 msgid "Remove include path?"
-msgstr ""
+msgstr "להסיר נתיב \"כלול\" ?"
 
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
@@ -13045,7 +13045,7 @@ msgstr "הסר יחידה מסעיף \"משתמש ב\""
 
 #: lazarusidestrconsts.lisremoveunitpath
 msgid "Remove unit path?"
-msgstr ""
+msgstr "להסיר נתיב היחידות ?"
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -13335,7 +13335,7 @@ msgstr "בחר צומת"
 
 #: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
 msgid "Select another LCL widget set (macro LCLWidgetType)"
-msgstr ""
+msgstr "בחר סט סמלים אחר של LCL (מאקרו LCLWidgetType)"
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -13444,11 +13444,11 @@ msgstr "הראה חבילות"
 
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
-msgstr ""
+msgstr "הראה מיקום של עורך הקוד"
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"
-msgstr ""
+msgstr "הראה דיאלוג הגדרות עבור ההגדרות החשובות ביותר"
 
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
@@ -13757,7 +13757,7 @@ msgid ""
 "Inserts an editable Cell, with a default value\n"
 "\"\",Sync=n (,S=n), to Sync with a previous cell (n=1 to highest prev cell\n"
 "\"default\",Sync, to Sync with a previous cell of equal default\n"
-msgstr "מכניס תא בר עריכה, עם ערך ברירת מחדל, (Sync=n (,S=n, לסינכרון עם התא הקודם מ n=1 ועד לתא הקודם הגבוה ביותר. ברירת המחדל היא לסנכרן עם התא הקודם עם אותה ברירת מחדל "
+msgstr "מכניס תא בר עריכה, עם ערך ברירת מחדל, (Sync=n (,S=n, לסינכרון עם התא הקודם מ n=1 ועד לתא הקודם הגבוה ביותר. ברירת המחדל היא לסנכרן עם התא הקודם עם אותה ברירת מחדל  "
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
@@ -13813,11 +13813,11 @@ msgstr "שם הרכיב חייב להיות יחודי בין כל הרכיבי�
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
 msgid "The %s contains a not existing directory:%s%s"
-msgstr ""
+msgstr "ה %s מכיל תיקייה בלתי קיימת %s%s"
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
 msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
-msgstr ""
+msgstr "ה %s מכילה את התו כוכבית. לאזרוס משתמש בו כתו רגיל ולא פורש אותו כמסכת קבצים."
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -13861,11 +13861,11 @@ msgstr "תיקיית היעד %s%s%s%s אינה קיימת. בדוק את שם �
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
-msgstr ""
+msgstr "התיקייה \"%s\"  לא מכילה יותר שום קבצי \"כלול\" של הפרוייקט. להסיר את התיקייה  מנתיב החיפוש של קבצי \"כלול של הפרוייקט ?"
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
 msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
-msgstr ""
+msgstr "התיקייה \"%s\"  לא מכילה יותר שום יחידות של הפרוייקט. להסיר את התיקייה  מנתיב החיפוש של יחידות הפרוייקט ?"
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
@@ -14448,7 +14448,7 @@ msgstr "לא יכול לשנות את המחלקה s% ל s%"
 
 #: lazarusidestrconsts.lisunabletochangeprojecttitleinsource
 msgid "Unable to change project title in source.%s%s"
-msgstr ""
+msgstr "לא יכול לשנות את כותרת הפרוייקט בקוד. %s%s"
 
 #: lazarusidestrconsts.lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
@@ -14520,7 +14520,7 @@ msgstr "לא ניתן ליצור את הקישור %s%s%s עם %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
-msgstr ""
+msgstr "לא יכול ליצור מתודה חדשה."
 
 #: lazarusidestrconsts.lisunabletocreatetemporarylfmbuffer
 msgid "Unable to create temporary lfm buffer."
@@ -14556,7 +14556,7 @@ msgstr "לא ניתן למצוא את %s בזרם של LFM."
 
 #: lazarusidestrconsts.lisunabletofindmethod
 msgid "Unable to find method."
-msgstr ""
+msgstr "לא יכול למצוא מתודה."
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
@@ -14634,7 +14634,7 @@ msgstr "לא ניתן להסיר את קובץ הגיבויים  %s%s%s הישן
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
 msgid "Unable to remove project title from source.%s%s"
-msgstr ""
+msgstr "לא יכול להסיר את כותרת הפרוייקט בקוד. %s%s"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
 msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
@@ -14678,7 +14678,7 @@ msgstr "לא ניתן לקבוע את צד העיגון בפקד"
 
 #: lazarusidestrconsts.lisunabletoshowmethod
 msgid "Unable to show method."
-msgstr ""
+msgstr "לא יכול להציג מתודה."
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
@@ -14836,7 +14836,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
-msgstr ""
+msgstr "השתמש ב\"חבילות זמן תיכנות\""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"
@@ -14877,7 +14877,7 @@ msgstr "השתמש בחבילה בפרוייקט"
 #: lazarusidestrconsts.lisuseprojectunit
 msgctxt "lazarusidestrconsts.lisuseprojectunit"
 msgid "Add unit to uses section"
-msgstr ""
+msgstr "הוסף יחידה לסעיף \"משתמש ב\""
 
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
@@ -14901,7 +14901,7 @@ msgstr "ערך%s"
 
 #: lazarusidestrconsts.lisvalue3
 msgid "Value: "
-msgstr ""
+msgstr "ערך:"
 
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
@@ -15251,11 +15251,11 @@ msgstr "פולנית"
 
 #: lazarusidestrconsts.rslanguageportuguese
 msgid "Portuguese"
-msgstr ""
+msgstr "פורטוגזית"
 
 #: lazarusidestrconsts.rslanguageportuguesebr
 msgid "Brazilian Portuguese"
-msgstr ""
+msgstr "פורטוגזית ברזילאית"
 
 #: lazarusidestrconsts.rslanguagerussian
 msgid "Russian"
@@ -15461,7 +15461,7 @@ msgstr "בטל בנייה"
 
 #: lazarusidestrconsts.srkmecabstractmethods
 msgid "Abstract methods ..."
-msgstr ""
+msgstr "מתודה מופשטת ..."
 
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
@@ -15617,7 +15617,7 @@ msgstr "אופן בחירת עמודה"
 
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
-msgstr ""
+msgstr "הדר תוכנית/פרוייקט"
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"
@@ -15698,7 +15698,7 @@ msgstr "הזז את הסמן להתחלה המוחלטת"
 
 #: lazarusidestrconsts.srkmecemptymethods
 msgid "Empty methods ..."
-msgstr ""
+msgstr "מתודות ריקות ..."
 
 #: lazarusidestrconsts.srkmecenvironmentoptions
 msgid "IDE options"
@@ -16408,7 +16408,7 @@ msgstr "פקודת עורך לא ידועה"
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused units ..."
-msgstr ""
+msgstr "יחידות שלא השתמשו בהן"
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"
