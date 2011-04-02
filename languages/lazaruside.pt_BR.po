@@ -303,7 +303,7 @@ msgstr "Alfabeticamente"
 
 #: lazarusidestrconsts.dlgalreadyusesallotherunits
 msgid "\"%s\" already uses all the units in this project"
-msgstr ""
+msgstr "\"%s\" já usa todas as unidades deste projeto"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
@@ -7251,7 +7251,7 @@ msgstr "Erro ao definir o nome de um componente %s para %s"
 
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
-msgstr ""
+msgstr "Erro ao gravar arquivo \"%s\""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -8407,7 +8407,7 @@ msgstr "mantém"
 
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
-msgstr ""
+msgstr "Manter"
 
 #: lazarusidestrconsts.liskeepfileopen
 msgid "Keep converted files open in editor"
@@ -9120,7 +9120,7 @@ msgstr "Confirmar exclusão"
 
 #: lazarusidestrconsts.lislazbuilddebugide
 msgid "Debug IDE"
-msgstr ""
+msgstr "Depurar IDE"
 
 #: lazarusidestrconsts.lislazbuilddefines
 msgid "Defines"
@@ -9151,7 +9151,7 @@ msgstr "Erro escrevendo arquivo"
 
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
-msgstr ""
+msgstr "IDE sem Pacotes"
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
@@ -9193,7 +9193,7 @@ msgstr "Ok"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
-msgstr ""
+msgstr "IDE Otimizada"
 
 #: lazarusidestrconsts.lislazbuildoptions
 msgid "Options:"
@@ -9238,7 +9238,7 @@ msgstr "Reiniciar após construir IDE"
 
 #: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
-msgstr "Reiniciar Lazarus automaticamente após construção da IDE (sem efeito ao contruir outras partes)"
+msgstr "Reiniciar Lazarus automaticamente após construção da IDE (sem efeito ao construir outras partes)"
 
 #: lazarusidestrconsts.lislazbuildsavesettings
 msgid "Save settings"
@@ -9250,7 +9250,7 @@ msgstr "Selecione perfis à construir"
 
 #: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
 msgid "Show confirmation dialog when building directly from Tools menu"
-msgstr "Exibir diálogo confirmação ao contruir diretamente do menu Ferramentas"
+msgstr "Exibir diálogo confirmação ao construir diretamente do menu Ferramentas"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -9981,7 +9981,7 @@ msgstr "Saltar para"
 
 #: lazarusidestrconsts.lismenujumptoimplementation
 msgid "Jump to implementation"
-msgstr ""
+msgstr "Saltar para implementação"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
 msgid "Jump to next bookmark"
@@ -10462,7 +10462,7 @@ msgstr "Seleção em maiúsculas"
 
 #: lazarusidestrconsts.lismenuuseprojectunit
 msgid "Add unit to uses section ..."
-msgstr ""
+msgstr "Adicionar unidades à seção \"uses\" ..."
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
@@ -11157,7 +11157,7 @@ msgstr "Abrir o projeto %s?"
 
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
-msgstr ""
+msgstr "Opções alteradas, recompilando após limpeza com -B"
 
 #: lazarusidestrconsts.lisor
 msgid "or"
@@ -13027,7 +13027,7 @@ msgstr "Remover do caminho de busca"
 
 #: lazarusidestrconsts.lisremoveincludepath
 msgid "Remove include path?"
-msgstr ""
+msgstr "Remover caminho inclusão?"
 
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
@@ -13059,7 +13059,7 @@ msgstr "Remover unidade da seção \"uses\""
 
 #: lazarusidestrconsts.lisremoveunitpath
 msgid "Remove unit path?"
-msgstr ""
+msgstr "Remover caminho unidade?"
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -13458,7 +13458,7 @@ msgstr "Exibir pacotes"
 
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
-msgstr ""
+msgstr "Exibir posição do editor de código"
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"
@@ -13876,11 +13876,11 @@ msgstr "O diretório destino %s%s%s não existe.%sFavor verificar o nome do arqu
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
-msgstr ""
+msgstr "O diretório \"%s\" não contém mais arquivos de inclusão de projeto. Remover este diretório do caminho de busca de inclusões de projeto?"
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectunitsanymoreremovethi
 msgid "The directory \"%s\" contains no project units any more. Remove this directory from the project's unit search path?"
-msgstr ""
+msgstr "O diretório \"%s\" não contém mais unidades de projeto. Remover este diretório do caminho de busca de unidades de projeto?"
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
 msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
