@@ -3450,7 +3450,7 @@ begin
   Node.LogXStart := Run;
   Node.LogXEnd := Run + fStringLen;
   Node.FoldType := Pointer(PtrInt(ABlockType));
-  Node.FoldTypeCompatible := Pointer(PascalFoldTypeCompatibility[ABlockType]);
+  Node.FoldTypeCompatible := Pointer(PtrInt(PascalFoldTypeCompatibility[ABlockType]));
   Node.FoldAction := aActions;
   case ABlockType of
     cfbtRegion:
