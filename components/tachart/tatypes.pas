@@ -121,11 +121,14 @@ type
 
   TChartMarkAttachment = (maDefault, maEdge, maCenter);
 
-  {$IFNDEF fpdoc}  // Workaround for issue #18549.
   { TGenericChartMarks }
 
+  {$IFNDEF fpdoc}  // Workaround for issue #18549.
   generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
     class(TChartElement)
+  {$ELSE}
+  TGenericChartMarks = class(TChartElement)
+  {$ENDIF}
   private
     procedure AddMargins(ADrawer: IChartDrawer; var ASize: TPoint);
     function GetDistanceToCenter: Boolean;
@@ -192,7 +195,6 @@ type
     property LabelFont: TFont read FLabelFont write SetLabelFont;
     property Visible default true;
   end;
-  {$ENDIF}
 
   TChartLinkPen = class(TChartPen)
   published
@@ -204,8 +206,10 @@ type
     property Color default clYellow;
   end;
 
+  {$IFNDEF fpdoc}  // Workaround for issue #18549.
   TCustomChartMarks =
     specialize TGenericChartMarks<TChartLabelBrush, TChartLinkPen, TChartPen>;
+  {$ENDIF}
 
   { TChartMarks }
 
