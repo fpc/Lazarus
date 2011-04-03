@@ -276,6 +276,21 @@ begin
   end;
 end;
 
+function GtkWSNotebook_AfterSwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer; data: gPointer): GBoolean; cdecl;
+var
+  Mess: TLMNotify;
+  NMHdr: tagNMHDR;
+begin
+  // then send the new page
+  FillChar(Mess, SizeOf(Mess), 0);
+  Mess.Msg := LM_NOTIFY;
+  FillChar(NMHdr, SizeOf(NMHdr), 0);
+  NMHdr.code := TCN_SELCHANGE;
+  NMHdr.hwndFrom := PtrUInt(widget);
+  NMHdr.idFrom := NotebookPageRealToLCLIndex(TCustomNotebook(Data), pagenum);  //use this to set pageindex to the correct page.
+  Mess.NMHdr := @NMHdr;
+  DeliverMessage(Data, Mess);
+end;
 
 function GtkWSNotebook_SwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer; data: gPointer): GBoolean; cdecl;
 var
@@ -315,15 +330,6 @@ begin
     end;
   end;
 
-  // then send the new page
-  FillChar(Mess, SizeOf(Mess), 0);
-  Mess.Msg := LM_NOTIFY;
-  FillChar(NMHdr, SizeOf(NMHdr), 0);
-  NMHdr.code := TCN_SELCHANGE;
-  NMHdr.hwndFrom := PtrUInt(widget);
-  NMHdr.idFrom := NotebookPageRealToLCLIndex(TCustomNotebook(Data), pagenum);  //use this to set pageindex to the correct page.
-  Mess.NMHdr := @NMHdr;
-  DeliverMessage(Data, Mess);
 end;
 
 class procedure TGtk2WSCustomNotebook.SetCallbacks(
@@ -331,6 +337,7 @@ class procedure TGtk2WSCustomNotebook.SetCallbacks(
 begin
   TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
   ConnectSignal(PGtkObject(AGtkWidget), 'switch_page', @GtkWSNotebook_SwitchPage, AWidgetInfo^.LCLObject);
+  ConnectSignalAfter(PGtkObject(AGtkWidget), 'switch_page', @GtkWSNotebook_AfterSwitchPage, AWidgetInfo^.LCLObject);
 end;
 
 class function TGtk2WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
