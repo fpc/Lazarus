@@ -57,7 +57,7 @@ type
     procedure ResetDefaults; override;
   end;
 
-  TDrawNodeSymbolOptions = set of (nsoSubtype, nsoLostHl);
+  TDrawNodeSymbolOptions = set of (nsoSubtype, nsoLostHl, nsoBlockSel);
 
   { TSynGutterCodeFolding }
 
@@ -453,6 +453,11 @@ begin
     OdlCosmetic := Canvas.Pen.Cosmetic;
     Canvas.Pen.Cosmetic := False;
   end;
+  if nsoBlockSel in SubType then begin
+    Canvas.Pen.Style := psDash;
+    OdlCosmetic := Canvas.Pen.Cosmetic;
+    Canvas.Pen.Cosmetic := False;
+  end;
   Canvas.Rectangle(Rect);
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Cosmetic := OdlCosmetic;
@@ -539,7 +544,10 @@ var
     LineOffset := 0;
     DrawOpts := [];
     if fncHighlighterEx in FoldView.FoldClasifications[iLine] then
-      include(DrawOpts, nsoLostHl);
+      include(DrawOpts, nsoLostHl)
+    else
+    if fncBlockSelection in FoldView.FoldClasifications[iLine] then
+      include(DrawOpts, nsoBlockSel);
 
     //center of the draw area
     ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
