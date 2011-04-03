@@ -180,6 +180,7 @@ components/tachart/demo/save/*.lps
 components/tachart/demo/save/lib
 components/tachart/demo/tools/*.lps
 components/tachart/demo/tools/lib
+components/tachart/fpdoc/html/*
 components/tachart/lib
 components/tachart/test/*.lps
 components/tachart/test/lib
