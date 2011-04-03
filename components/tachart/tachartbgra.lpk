@@ -2,7 +2,7 @@
 <CONFIG>
   <Package Version="3">
     <PathDelim Value="\"/>
-    <Name Value="TAChartAggPas"/>
+    <Name Value="TAChartBgra"/>
     <Author Value="Alexander Klenin"/>
     <CompilerOptions>
       <Version Value="10"/>
@@ -17,12 +17,12 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="AggPas drawing back-end for TAChart"/>
+    <Description Value="BGRABitmap drawing back-end for TAChart"/>
     <Version Major="1"/>
     <Files Count="1">
       <Item1>
-        <Filename Value="tadraweraggpas.pas"/>
-        <UnitName Value="TADrawerAggPas"/>
+        <Filename Value="tadrawerbgra.pas"/>
+        <UnitName Value="TADrawerBGRA"/>
       </Item1>
     </Files>
     <Type Value="RunAndDesignTime"/>
@@ -31,7 +31,7 @@
         <PackageName Value="TAChartLazarusPkg"/>
       </Item1>
       <Item2>
-        <PackageName Value="AggPasLCL"/>
+        <PackageName Value="bgrabitmappack"/>
       </Item2>
       <Item3>
         <PackageName Value="FCL"/>

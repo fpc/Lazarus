@@ -8,8 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   bgrabitmappack, tachartlazaruspkg,
-  Forms, Main, tadrawerbgra
-  { you can add units after this };
+  Forms, Main;
 
 {$R *.res}
 
