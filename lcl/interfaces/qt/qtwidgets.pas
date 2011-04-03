@@ -766,6 +766,7 @@ type
   { TQtTabBar }
   TQtTabBar = class(TQtWidget)
   private
+    FSavedIndexOnPageChanging: Integer; // used to handle OnPageChanging AllowChange param
     FTabBarChangedHook: QTabBar_hookH;
   public
     procedure AttachEvents; override;
@@ -1658,6 +1659,8 @@ uses
 
 const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
+  Forbid_TCN_SELCHANGE = -3;
+  Allow_TCN_SELCHANGE = -2;
 
 type
   TWinControlAccess = class(TWinControl)
@@ -7016,7 +7019,10 @@ begin
   Hdr.idFrom := PtrUInt(TQtTabWidget(LCLObject.Handle).GetLCLPageIndex(Index));
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
-  DeliverMessage(Msg);
+  if FSavedIndexOnPageChanging = Forbid_TCN_SELCHANGE then
+    FSavedIndexOnPageChanging := Allow_TCN_SELCHANGE
+  else
+    DeliverMessage(Msg);
 end;
 
 function TQtTabBar.SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean;
@@ -7133,13 +7139,26 @@ begin
       end;
     {$ENDIF}
     QEventKeyPress,
-    QEventKeyRelease: SlotKey(Sender, Event);
+    QEventKeyRelease:
+    begin
+      {$note check if this works correctly under qt-4.6 and then remove
+       TCN_SELCHANGING from SlotTabBarMouse}
+      if (QEvent_type(Event) = QEventKeyPress) and
+        (QtVersionMajor = 4) and (QtVersionMinor > 6) then
+        FSavedIndexOnPageChanging := QTabBar_currentIndex(QTabBarH(Widget));
+      SlotKey(Sender, Event);
+    end;
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick:
       begin
         if QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton then
         begin
+          {$note check if this works correctly under qt-4.6 and then remove
+           TCN_SELCHANGING from SlotTabBarMouse}
+          if (QEvent_type(Event) = QEventMouseButtonPress) and
+            (QtVersionMajor = 4) and (QtVersionMinor > 6) then
+            FSavedIndexOnPageChanging := QTabBar_currentIndex(QTabBarH(Widget));
           Result := SlotTabBarMouse(Sender, Event);
           SetNoMousePropagation(QWidgetH(Sender), False);
         end;
@@ -7162,6 +7181,7 @@ begin
     {$IFDEF QT_ENABLE_LCL_PAINT_TABS}
     FTabBar.HasPaint := True;
     {$ENDIF}
+    FTabBar.FSavedIndexOnPageChanging := Allow_TCN_SELCHANGE;
     FTabBar.FOwner := Self;
     FTabBar.AttachEvents;
   end;
@@ -7448,12 +7468,14 @@ procedure TQtTabWidget.SignalCurrentChanged(Index: Integer); cdecl;
 var
   Msg: TLMNotify;
   Hdr: TNmHdr;
+  i: Integer;
 begin
-  if LCLObject = nil then
-    Exit;
-
-  if InUpdate or not GetVisible then
+  if (LCLObject = nil) or InUpdate or not GetVisible then
+  begin
+    if TabBar.FSavedIndexOnPageChanging <> Forbid_TCN_SELCHANGE then
+      TabBar.FSavedIndexOnPageChanging := Allow_TCN_SELCHANGE;
     exit;
+  end;
 
   FillChar(Msg, SizeOf(Msg), 0);
   Msg.Msg := LM_NOTIFY;
@@ -7464,7 +7486,18 @@ begin
   Hdr.idFrom := PtrUInt(GetLCLPageIndex(Index));
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
-  DeliverMessage(Msg);
+  if (DeliverMessage(Msg) <> 0) and (Index >= 0) and
+    (TabBar.FSavedIndexOnPageChanging >= 0) then
+  begin
+    BeginUpdate;
+    try
+      i := TabBar.FSavedIndexOnPageChanging;
+      FTabBar.FSavedIndexOnPageChanging := Forbid_TCN_SELCHANGE;
+      setCurrentIndex(i);
+    finally
+      EndUpdate;
+    end;
+  end;
 end;
 
 procedure TQtTabWidget.SignalCloseRequested(Index: Integer); cdecl;
