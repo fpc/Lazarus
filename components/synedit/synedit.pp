@@ -1607,6 +1607,7 @@ begin
 
   FFoldedLinesView := TSynEditFoldedView.Create(FTabbedLinesView, fCaret);
   FFoldedLinesView.OnFoldChanged := {$IFDEF FPC}@{$ENDIF}FoldChanged;
+  FFoldedLinesView.OnLineInvalidate := {$IFDEF FPC}@{$ENDIF}InvalidateGutterLines;
 
   // Pointer to the First/Lowest View
   // TODO: this should be Folded...

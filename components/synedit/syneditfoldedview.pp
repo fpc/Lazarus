@@ -229,6 +229,7 @@ type
   end;
 
   TFoldChangedEvent = procedure(aLine: Integer) of object;
+  TInvalidateLineProc = procedure(FirstLine, LastLine: integer) of object;
 
   TFoldViewNodeInfo = record
     HNode: TSynFoldNodeInfo;    // Highlighter Node
@@ -325,6 +326,7 @@ type
     fLines : TSynEditStrings;
     fFoldTree : TSynTextFoldAVLTree;   // Folds are stored 1-based (the 1st line is 1)
     FMarkupInfoFoldedCode: TSynSelectedColor;
+    FOnLineInvalidate: TInvalidateLineProc;
     fTopLine : Integer;
     fLinesInWindow : Integer;          // there may be an additional part visible line
     fTextIndexList : Array of integer;   (* Map each Screen line into a line in textbuffer *)
@@ -333,6 +335,7 @@ type
     fLockCount : Integer;
     fNeedFixFrom, fNeedFixMinEnd : Integer;
     fNeedCaretCheck : Boolean;
+    FInTopLineChanged: Boolean;
 
     function GetCount : integer;
     function GetFoldClasifications(index : Integer): TFoldNodeClassifications;
@@ -473,6 +476,8 @@ type
 
     property OnFoldChanged: TFoldChangedEvent  (* reports 1-based line *) {TODO: synedit expects 0 based }
       read fOnFoldChanged write fOnFoldChanged;
+    property OnLineInvalidate: TInvalidateLineProc(* reports 1-based line *) {TODO: synedit expects 0 based }
+      read FOnLineInvalidate write FOnLineInvalidate;
     property HighLighter: TSynCustomHighlighter read GetHighLighter
                                                 write SetHighLighter;
     property FoldProvider: TSynEditFoldProvider read FFoldProvider;
@@ -2985,8 +2990,10 @@ end;
 procedure TSynEditFoldedView.SetTopLine(const ALine : integer);
 begin
   if fTopLine = ALine then exit;
+  FInTopLineChanged := True;
   fTopLine := ALine;
   CalculateMaps;
+  FInTopLineChanged := False;
 end;
 
 function TSynEditFoldedView.GetTopTextIndex : integer;
@@ -3018,6 +3025,9 @@ procedure TSynEditFoldedView.CalculateMaps;
 var
   i, tpos, cnt  : Integer;
   node, tmpnode: TSynTextFoldAVLNode;
+  FirstChanged, LastChanged: Integer;
+  NewCapability: TSynEditFoldLineCapabilities;
+  NewClassifications :TFoldNodeClassifications;
 begin
   if fLinesInWindow < 0 then exit;
 
@@ -3035,24 +3045,26 @@ begin
   end;
   {$IFDEF SynFoldDebug}debugln(['FOLD-- CalculateMaps fTopLine:=', fTopLine, '  tpos=',tpos]);{$ENDIF}
   cnt := fLines.Count;
+  FirstChanged := -1;
+  LastChanged := -1;
   for i := 0 to fLinesInWindow + 2 do begin
-    fFoldTypeList[i].Classifications := [];
     if (tpos > cnt) or (tpos < 0) then begin
       // Past end of Text
       fTextIndexList[i] := -1;
-      fFoldTypeList[i].Capability := [];
+      NewCapability := [];
+      NewClassifications := [];
     end else begin
       fTextIndexList[i] := tpos - 1; // TextIndex is 0-based
-      fFoldTypeList[i].Capability := FFoldProvider.LineCapabilities[tpos - 1];
-      fFoldTypeList[i].Classifications := FFoldProvider.LineClassification[tpos - 1];
+      NewCapability := FFoldProvider.LineCapabilities[tpos - 1];
+      NewClassifications := FFoldProvider.LineClassification[tpos - 1];
       if (node.IsInFold) then begin
         if (tpos = node.SourceLine) then begin
-          include(fFoldTypeList[i].Capability, cfCollapsedFold);
-          include(fFoldTypeList[i].Classifications, node.fData.Classification);
+          include(NewCapability, cfCollapsedFold);
+          include(NewClassifications, node.fData.Classification);
         end
         else if node.IsHide and (tpos + 1 = node.SourceLine) then begin
-          include(fFoldTypeList[i].Capability, cfCollapsedHide);
-          include(fFoldTypeList[i].Classifications, node.fData.Classification);
+          include(NewCapability, cfCollapsedHide);
+          include(NewClassifications, node.fData.Classification);
         end;
       end;
 
@@ -3062,7 +3074,18 @@ begin
         node := node.Next;
       end;
     end;
+
+    if (fFoldTypeList[i].Capability <> NewCapability) or
+       (fFoldTypeList[i].Classifications <> NewClassifications)
+    then begin
+      if FirstChanged < 0 then FirstChanged := tpos - 1;
+      LastChanged := tpos;
+    end;
+    fFoldTypeList[i].Capability := NewCapability;
+    fFoldTypeList[i].Classifications := NewClassifications;
   end;
+  if (not FInTopLineChanged) and assigned(FOnLineInvalidate) and (FirstChanged > 0) then
+    FOnLineInvalidate(FirstChanged, LastChanged + 1);
 end;
 
 (* Lines *)
