@@ -1310,6 +1310,7 @@ const
 var
   DesignOnlySignal: boolean;
   ShiftState: TShiftState;
+  ACtl: TWinControl;
 begin
   Result := CallBackDefaultReturn;
 
@@ -1360,8 +1361,17 @@ begin
     Result := CallBackDefaultReturn; // why not True if we want to stop it?
   end;
 
-  DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
-  if TControl(Data).FCompStyle = csWinControl then
+  ACtl := TWinControl(Data);
+  if not (csCaptureMouse in ACtl.ControlStyle) and
+    ([ssLeft,ssRight,ssMiddle]*ShiftState <> []) and
+    not (ACtl is TCustomForm) and not DragManager.IsDragging then
+  begin
+    if (Event^.x < 0) or (Event^.y < 0) or
+      (Event^.x > ACtl.Width) or (Event^.y > ACtl.Height) then
+      Exit(True);
+  end;
+  DeliverMouseMoveMessage(Widget,Event, ACtl);
+  if ACtl.FCompStyle = csWinControl then
     Result := True; // stop signal
 end;
 
