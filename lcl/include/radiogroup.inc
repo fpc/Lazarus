@@ -362,6 +362,8 @@ var
 begin
   //DebugLn('TCustomRadioGroup.SetItemIndex ',dbgsName(Self),' Old=',dbgs(FItemIndex),' New=',dbgs(Value));
   if Value = FItemIndex then exit;
+  // needed later if handle isn't allocated
+  OldItemIndex := FItemIndex;
   if FReading then
     FItemIndex:=Value
   else begin
@@ -373,7 +375,6 @@ begin
       // the radiobuttons are grouped by the widget interface
       // and some does not allow to uncheck all buttons in a group
       // Therefore there is a hidden button
-      OldItemIndex:=FItemIndex;
       FItemIndex:=Value;
       OldIgnoreClicks:=FIgnoreClicks;
       FIgnoreClicks:=true;
@@ -397,9 +398,14 @@ begin
       UpdateTabStops;
 
       OwnerFormDesignerModified(Self);
-    end
-    else
+    end else
+    begin
       FItemIndex := Value;
+      // trigger event to be delphi compat, even if handle isn't allocated.
+      // issue #15989
+      if (Value <> OldItemIndex) and not FCreatingWnd and
+        Assigned(FOnClick) then FOnClick(Self);
+    end;
   end;
   //DebugLn('TCustomRadioGroup.SetItemIndex ',dbgsName(Self),' END Old=',dbgs(FItemIndex),' New=',dbgs(Value));
 end;
@@ -419,7 +425,8 @@ end;
 
 procedure TCustomRadioGroup.CheckItemIndexChanged;
 begin
-  if FCreatingWnd or FUpdatingItems then exit;
+  if FCreatingWnd or FUpdatingItems then
+    exit;
   if [csLoading,csDestroying]*ComponentState<>[] then exit;
   UpdateRadioButtonStates;
   if [csDesigning]*ComponentState<>[] then exit;
