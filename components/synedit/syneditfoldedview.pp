@@ -281,6 +281,7 @@ type
   private
     FHighlighter: TSynCustomFoldHighlighter;
     FLines : TSynEditStrings;
+    FSelection: TSynEditSelection;
     function GetLineCapabilities(ALineIdx: Integer): TSynEditFoldLineCapabilities;
     procedure SetHighLighter(const AValue: TSynCustomFoldHighlighter);
   public
@@ -313,6 +314,7 @@ type
   TSynEditFoldedView = class // TODO: class(TSynEditStringsLinked)
   private
     fCaret: TSynEditCaret;
+    FBlockSelection: TSynEditSelection;
     FFoldProvider: TSynEditFoldProvider;
     fLines : TSynEditStrings;
     fFoldTree : TSynTextFoldAVLTree;   // Folds are stored 1-based (the 1st line is 1)
@@ -334,12 +336,14 @@ type
     function GetTextIndex(index : Integer) : Integer;
     function GetFoldType(index : Integer) : TSynEditFoldLineCapabilities;
     function IsFolded(index : integer) : Boolean;  // TextIndex
+    procedure SetBlockSelection(const AValue: TSynEditSelection);
     procedure SetHighLighter(AValue: TSynCustomHighlighter);
     procedure SetTopLine(const ALine : integer);
     function  GetTopTextIndex : integer;
     procedure SetTopTextIndex(const AIndex : integer);
     procedure SetLinesInWindow(const AValue : integer);
   protected
+    procedure DoBlockSelChanged(Sender: TObject);
     Procedure CalculateMaps;
     function  FoldNodeAtTextIndex(AStartIndex, ColIndex: Integer): TSynTextFoldAVLNode; (* Returns xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
     function  FixFolding(AStart : Integer; AMinEnd : Integer; aFoldTree : TSynTextFoldAVLTree) : Boolean;
@@ -371,6 +375,7 @@ type
     function TextIndexAddLines(aTextIndex, LineOffset : Integer) : Integer;     (* Add/Sub to/from TextIndex (0-based) skipping folded *)
     function TextPosAddLines(aTextpos, LineOffset : Integer) : Integer;     (* Add/Sub to/from TextPos (1-based) skipping folded *)
 
+    property BlockSelection: TSynEditSelection write SetBlockSelection;
     // Attributes for Visible-Lines-On-screen
     property Lines[index : Integer] : String            (* Lines on screen / 0 = TopLine *)
       read GetLines; default;
@@ -2593,7 +2598,17 @@ var
   c: Integer;
 begin
   Result := [];
-  if (FHighlighter = nil) or (ALineIdx < 0) then exit;
+  if FSelection.SelAvail then begin
+    if (FSelection.FirstLineBytePos.Y = ALineIdx+1) then Result := [cfHideStart];
+    if (FSelection.LastLineBytePos.Y  = ALineIdx+1) then Result := [cfFoldEnd];
+    if (FSelection.FirstLineBytePos.Y = ALineIdx+1) and
+       (FSelection.LastLineBytePos.Y  = ALineIdx+1) then Result := [cfSingleLineHide];
+    if (FSelection.FirstLineBytePos.Y < ALineIdx+1) and
+       (FSelection.LastLineBytePos.Y  > ALineIdx+1)
+    then Result := [cfFoldBody];
+  end;
+  if (FHighlighter = nil) or (ALineIdx < 0) then
+    exit;
 
   FHighlighter.CurrentLines := FLines;
   if FHighlighter.FoldNestCount(ALineIdx - 1) > 0 then Result := Result + [cfFoldBody];
@@ -2631,7 +2646,10 @@ function TSynEditFoldProvider.FoldOpenCount(ALineIdx: Integer; AType: Integer = 
 var
   i: Integer;
 begin
-  if (FHighlighter = nil) or (ALineIdx < 0) then exit(0);
+  if (FHighlighter = nil) or (ALineIdx < 0) then begin
+    if (AType=0) and FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALineIdx+1) then exit(1);
+    exit(0);
+  end;
 
   FHighlighter.CurrentLines := FLines;
   Result := FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOpen, sfaFold]];
@@ -2649,19 +2667,47 @@ begin
   else
   if Result < 0 then
     Result := FHighlighter.FoldOpenCount(ALineIdx, AType);
+  if (AType=0) and FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALineIdx+1) then
+    inc(Result);
 end;
 
 function TSynEditFoldProvider.FoldOpenInfo(ALineIdx, AFoldIdx: Integer;
   AType: Integer = 0): TSynFoldNodeInfo;
+
+  function BlockSelInfo(NIdx: Integer): TSynFoldNodeInfo;
+  begin
+    Result.LineIndex    := ALineIdx;
+    Result.NodeIndex    := NIdx;
+    Result.LogXStart    := FSelection.FirstLineBytePos.x;
+    Result.LogXEnd      := FSelection.FirstLineBytePos.x;
+    Result.FoldLvlStart := 0;
+    Result.NestLvlStart := 0;
+    Result.NestLvlEnd   := 1;
+    Result.FoldLvlEnd   := 1;
+    Result.FoldAction   := [sfaOpen, sfaFold, sfaFoldHide];
+    Result.FoldType           := nil;
+    Result.FoldTypeCompatible := nil;
+    Result.FoldGroup := -1;
+  end;
+
 var
   i, x: Integer;
 begin
   Result.FoldAction := [sfaInvalid];
-  if (FHighlighter = nil) or (ALineIdx < 0) then exit;
+  if (FHighlighter = nil) or (ALineIdx < 0) then begin
+    if (AType=0) and FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALineIdx+1) then
+      exit(BlockSelInfo(0));
+    exit;
+  end;
 
   FHighlighter.CurrentLines := FLines;
   if AType = 0 then
-    Result := FHighlighter.FoldNodeInfo[ALineIdx, AFoldIdx, [sfaOpen, sfaFold]]
+    if FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALineIdx+1) and
+      (AFoldIdx = FoldOpenCount(ALineIdx, 0)-1)
+    then
+      Result := BlockSelInfo(AFoldIdx-1)
+    else
+      Result := FHighlighter.FoldNodeInfo[ALineIdx, AFoldIdx, [sfaOpen, sfaFold]]
   else begin
     x := FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOpen, sfaFold]];
     i := 0;
@@ -2680,6 +2726,11 @@ end;
 
 function TSynEditFoldProvider.FoldLineLength(ALine, AFoldIndex: Integer): integer;
 begin
+  if FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALine+1) and
+    (AFoldIndex = FoldOpenCount(ALine, 0)-1)
+  then
+    exit(FSelection.LastLineBytePos.y - FSelection.FirstLineBytePos.y);
+
   FHighlighter.CurrentLines := FLines;
   Result := FHighlighter.FoldLineLength(ALine, AFoldIndex);
 end;
@@ -2694,17 +2745,23 @@ begin
   Result.Column := 0;
   Result.ColumnLen := 0;
   Result.DefaultCollapsed := False;
+  //if FSelection.SelAvail and (FSelection.FirstLineBytePos.Y=ALine) and
+  //  AFoldIndex = FoldOpenCount(ALineIdx, 0)-1
+  //then begin
+  //end;
+
   if not assigned(FHighlighter) then
     exit;
   FHighlighter.CurrentLines := FLines;
   if NeedLen then begin
-    Result.LineCount := FHighlighter.FoldLineLength(ALine, AFoldIndex);
+    Result.LineCount := FoldLineLength(ALine, AFoldIndex);
     if HideLen then
       inc(Result.LineCount);
   end
   else
     Result.LineCount := -1;
-  nd := FHighlighter.FoldNodeInfo[ALine, AFoldIndex, [sfaOpen, sfaFold]];
+  nd := FoldOpenInfo(ALine, AFoldIndex, 0);
+  // FHighlighter.FoldNodeInfo[ALine, AFoldIndex, [sfaOpen, sfaFold]];
   Result.Column := nd.LogXStart+1;
   Result.ColumnLen := nd.LogXEnd - nd.LogXStart;
   Result.DefaultCollapsed := (sfaDefaultCollapsed in nd.FoldAction);
@@ -2934,6 +2991,11 @@ begin
   CalculateMaps;
 end;
 
+procedure TSynEditFoldedView.DoBlockSelChanged(Sender: TObject);
+begin
+  CalculateMaps;
+end;
+
 procedure TSynEditFoldedView.CalculateMaps;
 var
   i, tpos, cnt  : Integer;
@@ -3025,6 +3087,16 @@ end;
 function TSynEditFoldedView.IsFolded(index : integer) : Boolean;
 begin
   Result := fFoldTree.FindFoldForLine(index+1).IsInFold;
+end;
+
+procedure TSynEditFoldedView.SetBlockSelection(const AValue: TSynEditSelection);
+begin
+  if FBlockSelection <> nil then
+    FBlockSelection.RemoveChangeHandler(@DoBlockSelChanged);
+  FBlockSelection := AValue;
+  if FBlockSelection <> nil then
+    FBlockSelection.AddChangeHandler(@DoBlockSelChanged);
+  FoldProvider.FSelection := AValue;
 end;
 
 procedure TSynEditFoldedView.SetHighLighter(AValue: TSynCustomHighlighter);

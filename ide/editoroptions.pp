@@ -2320,12 +2320,16 @@ begin
     AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [],        [],              emcoCodeFoldExpandOne);
     if FTextMiddleClick <> moTMIgnore then
       AddCommand(emcCodeFoldCollaps,   False, mbMiddle, ccAny,    CDir, [],       [],               emcoCodeFoldCollapsOne);
+    if CDir = cdUp then
+      AddCommand(emcNone,              False, mbLeft,   ccAny,    cdDown, [], []);
   end;
   with FGutterActionsFoldExp do begin
     AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [],       [ssCtrl], emcoCodeFoldCollapsOne);
     AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [ssCtrl], [ssCtrl], emcoCodeFoldCollapsAll);
     if FTextMiddleClick <> moTMIgnore then
       AddCommand(emcCodeFoldCollaps,   False, mbMiddle, ccAny,    CDir, [],       [],       emcoCodeFoldCollapsOne);
+    if CDir = cdUp then
+      AddCommand(emcNone,              False, mbLeft,   ccAny,    cdDown, [], []);
   end;
 
 end;

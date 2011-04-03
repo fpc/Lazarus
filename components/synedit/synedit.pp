@@ -1650,6 +1650,8 @@ begin
   FInternalBlockSelection.InvalidateLinesMethod := {$IFDEF FPC}@{$ENDIF}InvalidateLines;
   // No need for caret, on interanl block
 
+  FFoldedLinesView.BlockSelection := FBlockSelection;
+
   FWordBreaker := TSynWordBreaker.Create;
 
   RecreateMarkList;
@@ -1945,6 +1947,7 @@ begin
   SurrenderPrimarySelection;
   Highlighter := nil;
   Beautifier:=nil;
+  FFoldedLinesView.BlockSelection := nil;
   // free listeners while other fields are still valid
   if Assigned(fHookedCommandHandlers) then begin
     for i := 0 to fHookedCommandHandlers.Count - 1 do
