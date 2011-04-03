@@ -34,8 +34,7 @@
         <MinVersion Major="1" Release="1" Valid="True"/>
       </Item1>
       <Item2>
-        <PackageName Value="LazOpenGLContext"/>
-        <MinVersion Release="1" Valid="True"/>
+        <PackageName Value="LCL"/>
       </Item2>
       <Item3>
         <PackageName Value="TAChartLazarusPkg"/>
@@ -46,7 +45,7 @@
         <MinVersion Major="1" Valid="True"/>
       </Item4>
       <Item5>
-        <PackageName Value="LCL"/>
+        <PackageName Value="TAChartAggPas"/>
       </Item5>
     </RequiredPackages>
     <Units Count="2">
@@ -72,7 +71,6 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="$(LazarusDir)\components\tachart"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

@@ -6,8 +6,8 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  aggpaslcl, Interfaces, // this includes the LCL widgetset
-  Forms, Main, tachartlazaruspkg;
+  aggpaslcl, tachartaggpas, tachartlazaruspkg, Interfaces, // this includes the LCL widgetset
+  Forms, Main;
 
 {$R *.res}
 
