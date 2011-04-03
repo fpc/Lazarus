@@ -3926,14 +3926,13 @@ end;
 
 function TSynEditFoldedView.OpenFoldCount(aStartIndex: Integer): Integer;
 // Todo: move entirely to FoldProvider
-//var
-//  hl: TSynCustomFoldHighlighter;
+var
+  hl: TSynCustomFoldHighlighter;
 begin
-  Result := FoldProvider.FoldOpenCount(aStartIndex);
-  //hl := TSynCustomFoldHighlighter(HighLighter);
-  //if not assigned(hl) then
-  //  exit(-1);
-  //Result := hl.FoldNestCount(AStartIndex-1) + FoldProvider.FoldOpenCount(AStartIndex);
+  hl := TSynCustomFoldHighlighter(HighLighter);
+  if not assigned(hl) then
+    exit(-1);
+  Result := hl.FoldNestCount(AStartIndex-1) + FoldProvider.FoldOpenCount(AStartIndex);
 end;
 
 function TSynEditFoldedView.OpenFoldInfo(aStartIndex, ColIndex: Integer): TFoldViewNodeInfo;
