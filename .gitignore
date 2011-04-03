@@ -130,6 +130,14 @@ components/synunihighlighter/languages/units
 components/synunihighlighter/lib/*.bak
 components/synunihighlighter/lib/units
 components/synunihighlighter/units
+components/tachart/*.compiled
+components/tachart/*.exe
+components/tachart/*.lps
+components/tachart/*.manifest
+components/tachart/*.o
+components/tachart/*.or
+components/tachart/*.ppu
+components/tachart/*.res
 components/tdbf/*.bak
 components/tdbf/languages/*.bak
 components/tdbf/languages/units
