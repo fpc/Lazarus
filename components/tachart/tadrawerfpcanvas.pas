@@ -19,8 +19,14 @@ unit TADrawerFPCanvas;
 
 interface
 
+{$DEFINE USE_FTFONT}
+{$IF (FPC_VERSION = 2) and (FPC_RELEASE <= 4) and defined(WIN64)}
+  {$UNDEF USE_FTFONT}
+{$ENDIF}
+
 uses
-  Classes, FPCanvas, FTFont, TAChartUtils, TADrawUtils;
+  Classes, FPCanvas, {$IFDEF USE_FTFONT}FTFont,{$ENDIF}
+  TAChartUtils, TADrawUtils;
 
 type
 
@@ -29,7 +35,7 @@ type
   TFPCanvasDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
     FCanvas: TFPCustomCanvas;
-    FFont: TFreeTypeFont;
+    {$IFDEF USE_FTFONT}FFont: TFreeTypeFont;{$ENDIF}
 
     procedure EnsureFont;
     procedure SetBrush(ABrush: TFPCustomBrush);
@@ -74,7 +80,7 @@ type
 implementation
 
 uses
-  SysUtils, TAGeometry;
+  SysUtils {$IFDEF USE_FTFONT}, TAGeometry{$ENDIF};
 
 type
   TFPCanvasHelperCrack = class(TFPCanvasHelper);
@@ -101,7 +107,11 @@ end;
 procedure TFPCanvasDrawer.AddToFontOrientation(ADelta: Integer);
 begin
   EnsureFont;
+  {$IFDEF USE_FTFONT}
   FFont.Angle := FFont.Angle + OrientToRad(ADelta);
+  {$ELSE}
+  Unused(ADelta);
+  {$ENDIF}
 end;
 
 procedure TFPCanvasDrawer.ClippingStart(const AClipRect: TRect);
@@ -130,7 +140,7 @@ end;
 
 destructor TFPCanvasDrawer.Destroy;
 begin
-  FreeAndNil(FFont);
+  {$IFDEF USE_FTFONT}FreeAndNil(FFont);{$ENDIF}
   inherited Destroy;
 end;
 
@@ -141,11 +151,13 @@ end;
 
 procedure TFPCanvasDrawer.EnsureFont;
 begin
+  {$IFDEF USE_FTFONT}
   if FFont <> nil then exit;
   FFont := TFreeTypeFont.Create;
   FFont.Resolution := 72;
   FFont.AntiAliased := false;
   FCanvas.Font := FFont;
+  {$ENDIF}
 end;
 
 procedure TFPCanvasDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
@@ -250,10 +262,14 @@ end;
 procedure TFPCanvasDrawer.SetFont(AFont: TFPCustomFont);
 begin
   EnsureFont;
+  {$IFDEF USE_FTFONT}
   AssignFPCanvasHelper(FFont, AFont);
   // DoCopyProps performs direct variable assignment, so call SetName by hand.
   FFont.Name := AFont.Name;
   FFont.Angle := OrientToRad(FGetFontOrientationFunc(AFont));
+  {$ELSE}
+  Unused(AFont);
+  {$ENDIF}
 end;
 
 procedure TFPCanvasDrawer.SetPen(APen: TFPCustomPen);
@@ -274,13 +290,20 @@ begin
 end;
 
 procedure TFPCanvasDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
+{$IFDEF USE_FTFONT}
 var
   p: TPoint;
+{$ENDIF}
 begin
   EnsureFont;
+  {$IFDEF USE_FTFONT}
   // FreeType uses lower-left instead of upper-left corner as starting position.
   p := RotatePoint(Point(0, FCanvas.GetTextHeight(AText)), -FFont.Angle);
   FCanvas.TextOut(p.X + AX, p.Y + AY , AText);
+  {$ELSE}
+  Unused(AX, AY);
+  Unused(AText);
+  {$ENDIF}
 end;
 
 end.
