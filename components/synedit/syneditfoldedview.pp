@@ -282,12 +282,13 @@ type
     FHighlighter: TSynCustomFoldHighlighter;
     FLines : TSynEditStrings;
     FSelection: TSynEditSelection;
+    FFoldTree : TSynTextFoldAVLTree;
     function GetFoldsAvailable: Boolean;
     function GetLineCapabilities(ALineIdx: Integer): TSynEditFoldLineCapabilities;
     function GetLineClassification(ALineIdx: Integer): TFoldNodeClassifications;
     procedure SetHighLighter(const AValue: TSynCustomFoldHighlighter);
   public
-    constructor Create(aTextView : TSynEditStrings);
+    constructor Create(aTextView : TSynEditStrings; AFoldTree : TSynTextFoldAVLTree);
     function FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
     function FoldOpenInfo(ALineIdx, AFoldIdx: Integer; AType: Integer = 0): TSynFoldNodeInfo;
     //property FoldOpenInfo[ALineIdx, AColumnIdx: Integer]: Integer read GetFoldOpenInfo;
@@ -2655,9 +2656,10 @@ begin
   FHighlighter := AValue;
 end;
 
-constructor TSynEditFoldProvider.Create(aTextView: TSynEditStrings);
+constructor TSynEditFoldProvider.Create(aTextView: TSynEditStrings; AFoldTree : TSynTextFoldAVLTree);
 begin
   FLines := aTextView;
+  FFoldTree := AFoldTree;
 end;
 
 function TSynEditFoldProvider.FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
@@ -2803,13 +2805,13 @@ end;
 
 constructor TSynEditFoldedView.Create(aTextView : TSynEditStrings; ACaret: TSynEditCaret);
 begin
-  FFoldProvider := TSynEditFoldProvider.Create(aTextView);
+  fTopLine := 0;
+  fLinesInWindow := -1;
   fLines := aTextView;
   fCaret := ACaret;
   fCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
   fFoldTree := TSynTextFoldAVLTree.Create;
-  fTopLine := 0;
-  fLinesInWindow := -1;
+  FFoldProvider := TSynEditFoldProvider.Create(aTextView, fFoldTree);
 
   FMarkupInfoFoldedCode := TSynSelectedColor.Create;
   FMarkupInfoFoldedCode.Background := clNone;
@@ -3606,6 +3608,14 @@ var
 begin
   top := TopTextIndex;
   c := FoldProvider.FoldOpenCount(AStartIndex);
+
+  //TODO move to FoldProvider
+  NFolded := fFoldTree.FindFoldForLine(AStartIndex+1, True);
+  while NFolded.IsInFold and (NFolded.StartLine = AStartIndex+1) do begin
+    if NFolded.FoldIndex + 1 > c then c := NFolded.FoldIndex + 1;
+    NFolded := fFoldTree.TreeForNestedNode(NFolded.fData, NFolded.StartLine).FindFoldForLine(AStartIndex, True);
+  end;
+
   if c < 1 then begin
     // TODO: foldprovider to return all folded nodes, for hte line
     ColCount := 0;
@@ -3707,10 +3717,8 @@ end;
 function TSynEditFoldedView.FixFolding(AStart: Integer; AMinEnd: Integer;
   aFoldTree: TSynTextFoldAVLTree): Boolean;
 var
-  FirstchangedLine: Integer;
-
+  FirstchangedLine, MaxCol: Integer;
   FldInfos: TSynEditFoldProviderNodeInfoList;
-  GotFldInfos: Integer;
 
   function DoFixFolding(doStart: Integer; doMinEnd, AtColumn: Integer;
     doFoldTree: TSynTextFoldAVLTree; node: TSynTextFoldAVLNode) : Boolean;
@@ -3732,7 +3740,7 @@ var
 
   var
     FldLine, FldIndex, FldLen, FndLen, FldCol: Integer;
-    i, j, MaxCol, CurLen: Integer;
+    i, j, CurLen: Integer;
     PrevFldLine: Integer;
     SubTree: TSynTextFoldAVLTree;
     IsHide: Boolean;
@@ -3754,16 +3762,12 @@ var
         // Next Line
         AtColumn := 0;
         FldInfos := nil;
-        GotFldInfos := -2;
+        FldInfos := FoldProvider.InfoListForFoldsAtTextIndex(FldIndex, False);
+        MaxCol := length(FldInfos)-1;
       end;
 
       if node.fData.Classification in [fncHighlighter, fncHighlighterEx] then begin
         // find node in list
-        if GotFldInfos <> FldIndex then begin
-          FldInfos := FoldProvider.InfoListForFoldsAtTextIndex(FldIndex, False);
-          GotFldInfos := FldIndex;
-          MaxCol := length(FldInfos)-1;
-        end;
         i := -1;
         while (i < MaxCol) do begin
           inc(i);
@@ -3803,10 +3807,17 @@ var
         if i = MaxCol then begin
           {$IFDEF SynFoldDebug}debugln(['>>FOLD-- FixFolding: set Node to fncHighlighterEx (NOT FOUND) FldLine=', FldLine]);{$ENDIF}
           node.fData.Classification :=  fncHighlighterEx;
+          node.fData.FoldIndex := MaxCol + AtColumn;
+          inc(AtColumn);
           Result := True;
         end;
+      end
+      else begin
+        if node.fData.FoldIndex <> MaxCol + AtColumn then
+          Result := True;
+        node.fData.FoldIndex := MaxCol + AtColumn;
+        inc(AtColumn);
       end;
-
 
       if (node.fData.Nested <> nil) then begin
         SubTree := doFoldTree.TreeForNestedNode(node.fData, FldLine+1);
@@ -3858,7 +3869,8 @@ begin
   end;
 
   FirstchangedLine := -1;
-  GotFldInfos := -2;
+  FldInfos := nil;
+  MaxCol := 0;
   Result := DoFixFolding(-1, AMinEnd, 0, aFoldTree, node);
   CalculateMaps;
   if Assigned(fOnFoldChanged) and (FirstchangedLine >= 0) then
