@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  bgrabitmappack, tachartlazaruspkg,
+  bgrabitmappack, tachartbgra, tachartlazaruspkg,
   Forms, Main;
 
 {$R *.res}

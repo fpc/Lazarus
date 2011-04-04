@@ -28,7 +28,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="5">
       <Item1>
         <PackageName Value="LCLBase"/>
         <MinVersion Major="1" Release="1" Valid="True"/>
@@ -43,6 +43,9 @@
         <PackageName Value="TAChartLazarusPkg"/>
         <MinVersion Major="1" Valid="True"/>
       </Item4>
+      <Item5>
+        <PackageName Value="TAChartBgra"/>
+      </Item5>
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
