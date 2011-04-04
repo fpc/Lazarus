@@ -30,6 +30,7 @@ type
     FBrushColor: TBGRAPixel;
     FCanvas: TBGRABitmap;
     FFontColor: TBGRAPixel;
+    FFontOrientation: Integer;
     FPenColor: TBGRAPixel;
     FPenWidth: Integer;
     FPrevPoint: TPoint;
@@ -104,7 +105,7 @@ end;
 
 procedure TBGRABitmapDrawer.AddToFontOrientation(ADelta: Integer);
 begin
-  // NA
+  FFontOrientation += ADelta;
 end;
 
 procedure TBGRABitmapDrawer.ClippingStart(const AClipRect: TRect);
@@ -234,6 +235,7 @@ procedure TBGRABitmapDrawer.SetFont(AFont: TFPCustomFont);
 begin
   FCanvas.FontName := AFont.Name;
   FCanvas.FontHeight := AFont.Size * 96 div 72;
+  FFontOrientation := FGetFontOrientationFunc(AFont);
   with AFont.FPColor do
     FFontColor := BGRA(red shr 8, green shr 8, blue shr 8, alpha shr 8);
   // TODO: FontStyle
@@ -262,7 +264,8 @@ end;
 
 procedure TBGRABitmapDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 begin
-  FCanvas.TextOut(AX, AY, AText, FFontColor);
+  FCanvas.TextOutAngle(
+    AX, AY, FFontOrientation, AText, FFontColor, taLeftJustify);
 end;
 
 end.
