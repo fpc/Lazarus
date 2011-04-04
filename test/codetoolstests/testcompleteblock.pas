@@ -1,3 +1,10 @@
+{
+ Test all with:
+     ./runtests --format=plain --suite=TTestCodetoolsCompleteBlock
+
+ Test specific with:
+     ./runtests --format=plain --suite=TestCompleteBlockClassStart
+}
 unit TestCompleteBlock;
 
 {$mode objfpc}{$H+}
@@ -5,47 +12,33 @@ unit TestCompleteBlock;
 interface
 
 uses
-  fpcunit, Classes, SysUtils;
+  Classes, SysUtils, fpcunit, testglobals, FileProcs, CodeToolManager,
+  CodeCache, CustomCodeTool;
 
 type
-  { TCodeBlocksTest }
 
-  TCodeBlocksTest = class(TTestCase)
-  protected
-    function CompareComplete(const InputDefines, ResultFile: String): Boolean;
-  published
+  { TTestCodetoolsCompleteBlock }
+
+  TTestCodetoolsCompleteBlock = class(TTestCase)
+  public
     procedure TestCompleteBlocks;
+    procedure CompleteBlock(Src, ExpectedSrc: string;
+                OnlyIfCursorBlockIndented: boolean = false);
+  published
+    procedure TestCompleteBlockClassStart;
   end;
 
 implementation
 
-{ TCodeBlocksTest }
+{ TTestCodetoolsCompleteBlock }
 
-function TCodeBlocksTest.CompareComplete(const InputFile, InputDefines, ResultFile: String): Boolean;
-var
-  st : TStringList;
-  rs : TStringList;
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlocks;
 
-  function StripSpaceChars(const s: string): String;
+  procedure CompareComplete(a,b,c: string);
   begin
-    // removes all [#10,#13,#9, #32] chars, giving a line: "beginwriteln('helloworld');end."
-    Result:=s;
-    for i:=length(Result) downto 1 do
-      if Result[i] in [#10,#13,#9,' '] then
-        System.Delete(Result,i,1);
+    writeln('CompareComplete ',a,',',b,',',c);
   end;
-begin
-  // ToDo: fix path to completeblock, InputFile nd ResultFile
-  st := GetProcessOutput('completeblock '+InputFile+' '+inputdefines); // reads all output from blockcompleted file
-  // remove debugging output and take only the new source
-  while (st.Count>0) and (st[0]<>'{%MainUnit unit1.pas}') do st.Delete(0);
-  // reads the correct result file
-  rs.LoadFromFile(resultfile);
-  // check result
-  AssertEquals(StripSpaceChars(st.text), StripSpaceChars(rs.text)); // compares resulting strings
-end;
 
-procedure TCodeBlocksTest.TestCompleteBlocks;
 begin
   CompareComplete('ifbeginelse1.inc','6 28 ifbeginelse fpcunit', 'ifbeginelse1_result.inc');
   CompareComplete('whilebegin1.inc','5 10 whilebegin fpcunit', 'whilebegin1_result.inc');
@@ -64,6 +57,70 @@ begin
   CompareComplete('repeatifelse1.inc','11 18 repeatifelse fpcunit', 'repeatifelse1_result.inc');
   CompareComplete('tryif1.inc','4 6 tryif fpcunit', 'tryif1_result.inc');
 end;
+
+procedure TTestCodetoolsCompleteBlock.CompleteBlock(Src, ExpectedSrc: string;
+  OnlyIfCursorBlockIndented: boolean);
+var
+  Code: TCodeBuffer;
+  p: integer;
+  Y: integer;
+  X: integer;
+  NewCode: TCodeBuffer;
+  NewX: integer;
+  NewY: integer;
+  NewTopLine: integer;
+  ExpectedCode: TCodeBuffer;
+  ep: integer;
+  eY: integer;
+  eX: integer;
+begin
+  AssertEquals('Src is empty',Trim(Src)<>'',true);
+  AssertEquals('ExpectedSrc is empty',Trim(ExpectedSrc)<>'',true);
+  if not (Src[length(Src)] in [#10,#13]) then Src:=Src+LineEnding;
+
+  ExpectedCode:=TCodeBuffer.Create;
+  try
+    // replace cursor | marker in Src
+    Code:=CodeToolBoss.CreateFile('TestCompleteBlock.pas');
+    p:=System.Pos('|',Src);
+    if p<1 then
+      AssertEquals('missing cursor | in test source: "'+dbgstr(Src)+'"',true,false);
+    System.Delete(Src,p,1);
+    Code.Source:=Src;
+    Code.AbsoluteToLineCol(p,Y,X);
+
+    // replace cursor | marker in ExpectedSrc
+    ep:=System.Pos('|',ExpectedSrc);
+    if ep<1 then
+      AssertEquals('missing cursor | in expected source: "'+dbgstr(ExpectedSrc)+'"',true,false);
+    System.Delete(ExpectedSrc,ep,1);
+    ExpectedCode.Source:=ExpectedSrc;
+    ExpectedCode.AbsoluteToLineCol(ep,eY,eX);
+
+    if not CodeToolBoss.CompleteBlock(Code,X,Y,OnlyIfCursorBlockIndented,
+      NewCode,NewX,NewY,NewTopLine)
+    then begin
+      AssertEquals('completing block failed src="'+dbgstr(Src)+'"',true,false);
+      exit;
+    end;
+    AssertEquals('CompleteBlock did no or the wrong completion: ',dbgstr(Trim(ExpectedSrc)),dbgstr(Trim(Code.Source)));
+
+  finally
+    ExpectedCode.Free;
+  end;
+end;
+
+procedure TTestCodetoolsCompleteBlock.TestCompleteBlockClassStart;
+begin
+  CompleteBlock('type'+LineEnding
+              +'  TTestClass = class(TObject)|',
+              'type'+LineEnding
+              +'  TTestClass = class(TObject)'+LineEnding
+              +'  |end;');
+end;
+
+initialization
+  AddToCodetoolsTestSuite(TTestCodetoolsCompleteBlock);
 
 end.
 

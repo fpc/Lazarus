@@ -1,10 +1,14 @@
 {
- Test with:
+ Test all with:
+     ./runtests --format=plain --suite=TTestCodetoolsRangeScan
+
+ Test specific with:
      ./runtests --format=plain --suite=TestCTScanRange
      ./runtests --format=plain --suite=TestCTScanRangeAscending
      ./runtests --format=plain --suite=TestCTScanRangeDescending
      ./runtests --format=plain --suite=TestCTScanRangeProcModified
      ./runtests --format=plain --suite=TestCTScanRangeImplementationToEnd
+     ./runtests --format=plain --suite=TestCTScanRangeInitializationModified
 }
 unit TestCTRangeScan;
 

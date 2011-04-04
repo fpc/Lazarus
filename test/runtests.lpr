@@ -26,7 +26,7 @@ uses
   {Unit needed to set the LCL version and widget set name}
   LCLVersion, InterfaceBase, Interfaces,
   // testing codetools
-  TestCTXMLFixFragments, TestCTRangeScan, TestCTH2Pas;
+  TestCTXMLFixFragments, TestCTRangeScan, TestCTH2Pas, TestCompleteBlock;
   
 type
 
