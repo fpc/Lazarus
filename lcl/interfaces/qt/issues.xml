@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package name="lcl">
 	<widgetset name="qt">
+		<issue name="TBitBtn.Layout">
+			<short>Bitmap button glyph Layout property is not supported</short>
+		</issue>	  	  
 		<issue name="TEdit.HideSelection">
 			<short>HideSelection property is not supported</short>
 		</issue>
