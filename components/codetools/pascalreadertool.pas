@@ -1313,7 +1313,7 @@ end;
 function TPascalReaderTool.GetNodeIdentifier(Node: TCodeTreeNode): PChar;
 begin
   Result:=nil;
-  if Node=nil then exit;
+  if (Node=nil) or (Node.StartPos>SrcLen) then exit;
   case Node.Desc of
   ctnProcedure,ctnProcedureHead:
     Result:=GetProcNameIdentifier(Node);
