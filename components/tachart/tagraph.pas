@@ -1027,7 +1027,7 @@ var
   axisMargin: TChartAxisMargins = (0, 0, 0, 0);
   a: TChartAxisAlignment;
 begin
-  if not AxisVisible or (AxisList.Count = 0) then begin
+  if not AxisVisible then begin
     FClipRect.Left += Depth;
     FClipRect.Bottom -= Depth;
     CalculateTransformationCoeffs(GetMargins(ADrawer));
