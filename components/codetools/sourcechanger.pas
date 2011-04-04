@@ -43,7 +43,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
-  LinkScanner, AVL_Tree, CodeBeautifier, KeywordFuncLists;
+  typinfo, LinkScanner, AVL_Tree, CodeBeautifier, KeywordFuncLists;
   
 type
   // Insert policy types for class parts (properties, variables, method defs)
@@ -323,6 +323,7 @@ function ForwardProcBodyInsertPolicyNameToPolicy(
   const s: string): TForwardProcBodyInsertPolicy;
 function UsesInsertPolicyNameToPolicy(const s: string): TUsesInsertPolicy;
 
+function dbgs(g: TGapTyp): string; overload;
 
 implementation
 
@@ -385,6 +386,11 @@ begin
   for Result:=Low(TUsesInsertPolicy) to High(TUsesInsertPolicy) do
     if SysUtils.CompareText(UsesInsertPolicyNames[Result],s)=0 then exit;
   Result:=DefaultUsesInsertPolicy;
+end;
+
+function dbgs(g: TGapTyp): string;
+begin
+  Result:=GetEnumName(typeinfo(g),ord(g));
 end;
 
 function CompareSourceChangeCacheEntry(NodeData1, NodeData2: pointer): integer;

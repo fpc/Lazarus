@@ -5322,7 +5322,7 @@ var
     p: LongInt;
   begin
     if NewCode='' then exit(true);
-    // avoid changing current line
+    // try to avoid changing current line
     if (FrontGap=gtEmptyLine) then begin
       p:=FromPos;
       while (p>1) and (Src[p-1] in [' ',#9]) do dec(p);
@@ -5372,7 +5372,7 @@ var
       AfterGap:=gtNone;
     end;
     {$IFDEF ShowCompleteBlock}
-    debugln(['Replace Indent=',Indent,' NewCode="',dbgstr(NewCode),'" Replace="',DbgStr(copy(Src,FromPos-5,5)),'|',dbgstr(copy(Src,FromPos,ToPos-FromPos)),'|',dbgstr(copy(Src,ToPos,5)),'"']);
+    debugln(['Replace Indent=',Indent,' NewCode="',dbgstr(NewCode),'" Replace: InFront="',DbgStr(copy(Src,FromPos-15,15)),'",Replace="',dbgstr(copy(Src,FromPos,ToPos-FromPos)),'",Behind="',dbgstr(copy(Src,ToPos,15)),'" FrontGap=',dbgs(FrontGap),' AfterGap=',dbgs(AfterGap)]);
     {$ENDIF}
     // insert
     if not SourceChangeCache.Replace(FrontGap,AfterGap,
@@ -5913,12 +5913,19 @@ var
     if CleanCursorPos<StartNode.StartPos then exit;
     LastIndent:=GetLineIndent(Src,StartNode.Parent.StartPos);
     MoveCursorToNodeStart(StartNode);
+    //debugln(['CompleteClassSection ',dbgstr(copy(Src,StartNode.StartPos-10,10)),'|',dbgstr(copy(Src,StartNode.StartPos,10))]);
     Indent:=GetLineIndent(Src,CurPos.StartPos);
     if Indent<LastIndent then
       LastIndent:=Indent;
     ReadNextAtom;
     NeedCompletion:=0;
-    if CurPos.Flag=cafWord then begin
+    if (CurPos.StartPos>SrcLen) then begin
+      { For example:
+          TMyClass = class
+          <EOF>
+      }
+      NeedCompletion:=CleanCursorPos;
+    end else if CurPos.Flag=cafWord then begin
       if AtomIsIdentifier(false) then begin
         ReadNextAtom;
         if CurPos.Flag=cafEqual then begin
@@ -5943,7 +5950,7 @@ var
       end;
     end else
       exit(true);
-
+    //debugln(['CompleteClassSection NeedCompletion=',NeedCompletion]);
     if NeedCompletion>0 then begin
       InsertPos:=NeedCompletion;
       Result:=Replace('end;',InsertPos,InsertPos,LastIndent,
@@ -6038,7 +6045,9 @@ begin
         StartNode:=StartNode.Parent;
       if not CompleteStatements(Stack) then exit;
     end
-    else if StartNode.Desc in AllClassSections then begin
+    else if (StartNode.Desc in AllClassSections)
+    or ((StartNode.Desc in AllClassSubSections) and (StartNode.Parent.Desc in AllClassSections))
+    then begin
       if not CompleteClassSection(Stack) then exit;
     end
     else if StartNode.Desc in AllClassInterfaces then begin
