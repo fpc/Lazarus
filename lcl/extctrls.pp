@@ -498,6 +498,8 @@ type
     rsUpdate    // draw nothing, update splitter position during moving
   );
 
+  TCanOffsetEvent = procedure(Sender: TObject; var NewOffset: Integer;
+    var Accept: Boolean) of object;
   TCanResizeEvent = procedure(Sender: TObject; var NewSize: Integer;
     var Accept: Boolean) of object;
   { TCustomSplitter is a control to interactively resize another control.
@@ -515,6 +517,7 @@ type
     FBeveled: boolean;
     FMinSize: integer;
     FMouseInControl: Boolean;
+    FOnCanOffset: TCanOffsetEvent;
     FOnCanResize: TCanResizeEvent;
     FOnMoved: TNotifyEvent;
     FResizeAnchor: TAnchorKind;
@@ -529,7 +532,9 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure CheckAlignment;
-    function CheckNewSize(var NewSize: integer): boolean; virtual;
+    function CheckNewSize(var NewSize: Integer): Boolean; virtual;
+    function CheckOffset(var NewOffset: Integer): Boolean; virtual;
+
     function FindAlignControl: TControl;
     function FindAlignOtherControl: TControl;
 
@@ -560,6 +565,7 @@ type
     property Beveled: boolean read FBeveled write SetBeveled default false;
     property Cursor default crHSplit;
     property MinSize: integer read FMinSize write SetMinSize default 30;
+    property OnCanOffset: TCanOffsetEvent read FOnCanOffset write FOnCanOffset;
     property OnCanResize: TCanResizeEvent read FOnCanResize write FOnCanResize;
     property OnMoved: TNotifyEvent read FOnMoved write FOnMoved;
     property ResizeAnchor: TAnchorKind read FResizeAnchor write SetResizeAnchor default akLeft;
@@ -580,6 +586,7 @@ type
     property Cursor;
     property Height;
     property MinSize;
+    property OnCanOffset;
     property OnCanResize;
     property OnChangeBounds;
     property OnMoved;

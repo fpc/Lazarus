@@ -401,7 +401,7 @@ begin
     NewSize := CalcNewSize(StartSize, EndSize, Offset);
 
     // OnCanResize event
-    if CheckNewSize(NewSize) then
+    if CheckOffset(Offset) and CheckNewSize(NewSize) then
       if not FSplitDragging or (ResizeStyle = rsUpdate) then
         SetAlignControlSize(NewSize)
       else
@@ -463,25 +463,28 @@ begin
     //DebugLn(['TCustomSplitter.MoveSplitter Offset=',Offset,' OffsetMaxLower=',OffsetMaxLower,' OffsetMaxUpper=',OffsetMaxUpper]);
 
     // move splitter
-    if not FSplitDragging or (ResizeStyle = rsUpdate) then
+    if CheckOffset(Offset) then
     begin
-      if ResizeAnchor in [akLeft, akRight] then
-        Left := Left + Offset
+      if not FSplitDragging or (ResizeStyle = rsUpdate) then
+      begin
+        if ResizeAnchor in [akLeft, akRight] then
+          Left := Left + Offset
+        else
+          Top := Top + Offset;
+      end
       else
-        Top := Top + Offset;
-    end
-    else
-    begin
-      // get the splitter position
-      NewRect := BoundsRect;
-      NewRect.TopLeft := Parent.ClientToScreen(NewRect.TopLeft);
-      NewRect.BottomRight := Parent.ClientToScreen(NewRect.BottomRight);
+      begin
+        // get the splitter position
+        NewRect := BoundsRect;
+        NewRect.TopLeft := Parent.ClientToScreen(NewRect.TopLeft);
+        NewRect.BottomRight := Parent.ClientToScreen(NewRect.BottomRight);
 
-      if ResizeAnchor in [akLeft, akRight] then
-        OffsetRect(NewRect, Offset, 0)
-      else
-        OffsetRect(NewRect, 0, Offset);
-      SetRubberBandRect(FSplitterWindow, NewRect);
+        if ResizeAnchor in [akLeft, akRight] then
+          OffsetRect(NewRect, Offset, 0)
+        else
+          OffsetRect(NewRect, 0, Offset);
+        SetRubberBandRect(FSplitterWindow, NewRect);
+      end;
     end;
   end;
 end;
@@ -819,6 +822,13 @@ begin
   Result := True;
   if Assigned(OnCanResize) then
     OnCanResize(Self, NewSize, Result);
+end;
+
+function TCustomSplitter.CheckOffset(var NewOffset: Integer): Boolean;
+begin
+  Result := True;
+  if Assigned(OnCanOffset) then
+    OnCanOffset(Self, NewOffset, Result);
 end;
 
 procedure TCustomSplitter.Paint;
