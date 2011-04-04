@@ -526,6 +526,7 @@ begin
     Cursor := crVSplit;
   if not (csLoading in ComponentState) then
     Align := alNone;
+  Invalidate;
 end;
 
 procedure TCustomSplitter.SetResizeControl(const AValue: TControl);
