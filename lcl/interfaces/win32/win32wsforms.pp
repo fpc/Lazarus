@@ -517,7 +517,7 @@ begin
   // From normal to StayOnTop
   if (AOldFormStyle = fsNormal) and (AFormStyle in fsAllStayOnTop) then begin
     if not (csDesigning in AForm.ComponentState) then
-      SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
+      SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE)
   // From StayOnTop to normal
   end else if (AOldFormStyle in fsAllStayOnTop) and (AFormStyle = fsNormal) then begin
 
@@ -537,14 +537,16 @@ begin
     //  RecreateWnd(AForm);
 
 
-    if not (csDesigning in AForm.ComponentState) then begin
-      toplist:=TList.Create;
+    if not (csDesigning in AForm.ComponentState) then 
+    begin
+      toplist := TList.Create;
       try
         EnumStayOnTop(AForm.Handle, toplist);
-        SetWindowPos(AForm.Handle, HWND_NOTOPMOST,  0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-        for i:=0 to toplist.Count-1 do begin
-          if HWND(toplist[i])<>AForm.Handle then
-            SetWindowPos(HWND(toplist[i]), HWND_TOPMOST,  0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+        SetWindowPos(AForm.Handle, HWND_NOTOPMOST,  0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+        for i := 0 to toplist.Count - 1 do 
+        begin
+          if HWND(toplist[i]) <> AForm.Handle then
+            SetWindowPos(HWND(toplist[i]), HWND_TOPMOST,  0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
         end;
       finally
         toplist.Free;
@@ -691,7 +693,7 @@ var
 begin
   Parent := GetParent(ACustomForm.Handle);
   if (Parent <> 0) and (GetWindowLong(Parent, GWL_EXSTYLE) and WS_EX_TOPMOST <> 0) then
-    SetWindowPos(ACustomForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
+    SetWindowPos(ACustomForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE)
   else
     BringWindowToTop(ACustomForm.Handle);
 end;
