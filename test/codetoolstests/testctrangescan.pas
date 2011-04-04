@@ -24,6 +24,8 @@ type
     crsfWithProc1Modified,
     crsfWithCommentAtEnd,
     crsfWithInitialization,
+    crsfWithInitializationStatement1,
+    crsfWithInitializationStatement2,
     crsfWithFinalization
     );
   TCTRgSrcFlags = set of TCTRgSrcFlag;
@@ -39,6 +41,7 @@ type
     procedure TestCTScanRangeDescending;
     procedure TestCTScanRangeProcModified;
     procedure TestCTScanRangeImplementationToEnd;
+    procedure TestCTScanRangeInitializationModified;
   end;
 
 implementation
@@ -66,8 +69,13 @@ begin
       +'begin'+LineEnding
       +'  // comment'+LineEnding
       +'end;'+LineEnding;
-  if crsfWithInitialization in Flags then
+  if crsfWithInitialization in Flags then begin
     Result:=Result+'initialization'+LineEnding;
+    if crsfWithInitializationStatement1 in Flags then
+      Result:=Result+'i:=3;'+LineEnding;
+    if crsfWithInitializationStatement2 in Flags then
+      Result:=Result+'i:=5;'+LineEnding;
+  end;
   if crsfWithFinalization in Flags then
     Result:=Result+'finalization'+LineEnding;
   Result:=Result+'end.';
@@ -190,6 +198,8 @@ begin
   Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
   // scan source
+  Code.Source:='begin end.';
+  Tool.BuildTree(lsrEnd);
   Code.Source:=GetSource([]);
   MinRange:=low(TLinkScannerRange);
   MaxRange:=high(TLinkScannerRange);
@@ -237,12 +247,32 @@ begin
   // scan source
   Code.Source:=GetSource([crsfWithProc1]);
   Tool.BuildTree(lsrImplementationStart);
-  Tool.WriteDebugTreeReport;
+  //Tool.WriteDebugTreeReport;
   AssertEquals('step1: implementation found',true,Tool.FindImplementationNode<>nil);
 
   Tool.BuildTree(lsrEnd);
-  Tool.WriteDebugTreeReport;
+  //Tool.WriteDebugTreeReport;
   AssertEquals('step2: end. found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+end;
+
+procedure TTestCodetoolsRangeScan.TestCTScanRangeInitializationModified;
+var
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+begin
+  Code:=CodeToolBoss.CreateFile('TestRangeScan.pas');
+  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
+
+  // scan source with initialization
+  Code.Source:=GetSource([crsfWithInitialization,crsfWithInitializationStatement1]);
+  Tool.BuildTree(lsrEnd);
+  AssertEquals('step1: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+
+  // scan source with a modified initialization
+  Code.Source:=GetSource([crsfWithInitialization,crsfWithInitializationStatement2]);
+  Tool.BuildTree(lsrEnd);
+  AssertEquals('step2: end found',true,Tool.Tree.FindRootNode(ctnEndPoint)<>nil);
+  //Tool.WriteDebugTreeReport;
 end;
 
 initialization
