@@ -1197,7 +1197,7 @@ begin
   else
     ImageIndex:=ImgIDError;
   TVNodeLazarus.ImageIndex:=ImageIndex;
-  TVNodeLazarus.StateIndex:=ImageIndex;
+  TVNodeLazarus.SelectedIndex:=ImageIndex;
 end;
 
 procedure TInitialSetupDialog.UpdateCompilerNote;
@@ -1267,7 +1267,7 @@ begin
   else
     ImageIndex:=ImgIDError;
   TVNodeCompiler.ImageIndex:=ImageIndex;
-  TVNodeCompiler.StateIndex:=ImageIndex;
+  TVNodeCompiler.SelectedIndex:=ImageIndex;
 end;
 
 procedure TInitialSetupDialog.UpdateFPCSrcDirNote;
@@ -1326,7 +1326,7 @@ begin
   else
     ImageIndex:=ImgIDError;
   TVNodeFPCSources.ImageIndex:=ImageIndex;
-  TVNodeFPCSources.StateIndex:=ImageIndex;
+  TVNodeFPCSources.SelectedIndex:=ImageIndex;
 end;
 
 function TInitialSetupDialog.FirstErrorNode: TTreeNode;
