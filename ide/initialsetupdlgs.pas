@@ -382,7 +382,7 @@ begin
   end;
   if not FileIsExecutableCached(AFilename) then
   begin
-    Note:='File is not executable';
+    Note:='File is not an executable';
     exit;
   end;
   if TestSrcFilename<>'' then
@@ -901,7 +901,7 @@ end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
 begin
-  UpdateLazDirNote;
+  UpdateCompilerNote;
 end;
 
 procedure TInitialSetupDialog.CompilerBrowseButtonClick(Sender: TObject);
