@@ -110,7 +110,7 @@ end;
 
 procedure TBGRABitmapDrawer.ClippingStart(const AClipRect: TRect);
 begin
-  // NA
+  Unused(AClipRect);
 end;
 
 procedure TBGRABitmapDrawer.ClippingStart;
@@ -187,6 +187,7 @@ procedure TBGRABitmapDrawer.Polyline(
   const APoints: array of TPoint;
   AStartIndex: Integer; ANumPts: Integer; AEndPoint: Boolean);
 begin
+  Unused(AEndPoint);
   FCanvas.DrawPolyLineAntialias(
     PointsToPointsF(APoints, AStartIndex, ANumPts), FPenColor, FPenWidth);
 end;
@@ -200,7 +201,9 @@ end;
 procedure TBGRABitmapDrawer.RadialPie(
   AX1, AY1, AX2, AY2: Integer; AStartAngle16Deg, AAngleLength16Deg: Integer);
 begin
-  // NA
+  Unused(AX1, AY1);
+  Unused(AX2, AY2);
+  Unused(AStartAngle16Deg, AAngleLength16Deg);
 end;
 
 procedure TBGRABitmapDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
@@ -267,6 +270,10 @@ begin
   FCanvas.TextOutAngle(
     AX, AY, FFontOrientation, AText, FFontColor, taLeftJustify);
 end;
+
+initialization
+  // Suppress incorrect "TAGeometry is unused" hint
+  Unused(DoublePoint(0, 0));
 
 end.
 

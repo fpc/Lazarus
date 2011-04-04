@@ -5,7 +5,7 @@ unit Main;
 interface
 
 uses
-  Classes, ExtCtrls, PairSplitter, SysUtils, FileUtil, Forms, Controls,
+  Classes, ExtCtrls, SysUtils, FileUtil, Forms, Controls,
   Graphics, Dialogs, TAGraph, TASeries, TASources;
 
 type
