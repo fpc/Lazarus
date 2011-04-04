@@ -1172,7 +1172,7 @@ end;
 function TCodeBuffer.FileNeedsUpdate: boolean;
 // file needs update (to be loaded), if file is not modified and file on disk has changed
 begin
-  if Modified then exit(false);
+  if Modified or IsVirtual then exit(false);
   if LoadDateValid then
     Result:=(FFileChangeStep=ChangeStep) and (FileDateOnDisk<>LoadDate)
   else

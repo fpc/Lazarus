@@ -525,7 +525,7 @@ begin
   if not UpdateNeeded(Range) then begin
     // input is the same as last time -> output is the same
     // => if there was an error, raise it again
-    //debugln(['TPascalParserTool.BuildTree ',IgnoreErrorAfterValid]);
+    //debugln(['TPascalParserTool.BuildTree no update needed, IgnoreErrorAfterValid=',IgnoreErrorAfterValid]);
     if LastErrorValid then begin
       // last time a parsing error occurred
       if IgnoreErrorAfterValid
@@ -683,7 +683,8 @@ begin
           // section was not parsed => reopen it
           MoveCursorToCleanPos(Node.StartPos);
           // skip keyword starting the section
-          ReadNextAtom;
+          if Node.Desc in [ctnInterface,ctnImplementation] then
+            ReadNextAtom;
           {$IFDEF VerboseUpdateNeeded}
           debugln(['TPascalParserTool.BuildTree scan section ',Node.DescAsString,' from start. First atom=',GetAtom]);
           {$ENDIF}
@@ -708,12 +709,12 @@ begin
               {$IFDEF VerboseUpdateNeeded}
               debugln(['TPascalParserTool.BuildTree scan at end of ',Node.LastChild.DescAsString]);
               {$ENDIF}
-              MoveCursorToCleanPos(Node.LastChild.EndPos)
+              MoveCursorToCleanPos(Node.LastChild.EndPos);
             end else if Node.EndPos>0 then begin
               {$IFDEF VerboseUpdateNeeded}
               debugln(['TPascalParserTool.BuildTree scan at end of ',Node.DescAsString]);
               {$ENDIF}
-              MoveCursorToCleanPos(Node.EndPos)
+              MoveCursorToCleanPos(Node.EndPos);
             end else begin
               {$IFDEF VerboseUpdateNeeded}
               debugln(['TPascalParserTool.BuildTree scan at start of ',Node.DescAsString]);
@@ -732,7 +733,9 @@ begin
       end;
 
       ReadNextAtom;
-      //debugln(['TPascalParserTool.BuildTree first atom=',GetAtom]);
+      {$IFDEF VerboseUpdateNeeded}
+      debugln(['TPascalParserTool.BuildTree ScannedRange=',dbgs(ScannedRange),' CurNode=',CurNode.DescAsString,' first atom=',GetAtom]);
+      {$ENDIF}
 
       if (CurNode.Desc in (AllSourceTypes+[ctnInterface]))
       or ((CurNode.Desc=ctnUsesSection) and (CurNode.Parent.Desc<>ctnImplementation))
@@ -742,10 +745,9 @@ begin
           ReadUsesSection(true);
         //debugln(['TPascalParserTool.BuildTree AFTER reading main uses section Atom="',GetAtom,'"']);
         if ord(Range)<=ord(ScannedRange) then exit;
+        ScannedRange:=lsrMainUsesSectionEnd;
+        if ord(Range)<=ord(ScannedRange) then exit;
       end;
-
-      ScannedRange:=lsrMainUsesSectionEnd;
-      if ord(Range)<=ord(ScannedRange) then exit;
 
       if (CurNode.Desc=ctnPackage)
       and ((CurNode.FirstChild=nil) or (CurNode.LastChild.Desc=ctnUsesSection))
@@ -759,7 +761,9 @@ begin
       end;
 
       if CurNode.GetNodeOfType(ctnImplementation)<>nil then begin
-        //debugln(['TPascalParserTool.BuildTree CONTINUE implementation ...']);
+        {$IFDEF VerboseUpdateNeeded}
+        debugln(['TPascalParserTool.BuildTree CONTINUE implementation ...']);
+        {$ENDIF}
         ScannedRange:=lsrImplementationStart;
         if ord(Range)<=ord(ScannedRange) then exit;
 
@@ -772,6 +776,8 @@ begin
           //debugln(['TPascalParserTool.BuildTree AFTER reading implementation uses section Atom="',GetAtom,'"']);
           if ord(Range)<=ord(ScannedRange) then exit;
         end;
+        ScannedRange:=lsrImplementationUsesSectionEnd;
+        if ord(Range)<=ord(ScannedRange) then exit;
       end;
 
       repeat
@@ -1814,6 +1820,7 @@ function TPascalParserTool.ReadUsesSection(
 
 }
 begin
+  Result:=false;
   if CurNode.Desc<>ctnUsesSection then begin
     CreateChildNode;
     CurNode.Desc:=ctnUsesSection;
@@ -1849,8 +1856,15 @@ begin
   until (CurPos.StartPos>SrcLen);
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
-  ReadNextAtom;
   Result:=true;
+
+  if ScannedRange=lsrMainUsesSectionStart then
+    ScannedRange:=lsrMainUsesSectionEnd
+  else if ScannedRange=lsrImplementationUsesSectionStart then
+    ScannedRange:=lsrImplementationUsesSectionEnd;
+  if ord(ScanTill)<=ord(ScannedRange) then exit;
+
+  ReadNextAtom;
 end;
 
 function TPascalParserTool.ReadRequiresSection(ExceptionOnError: boolean

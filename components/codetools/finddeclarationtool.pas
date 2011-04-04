@@ -775,7 +775,7 @@ type
     function FindDeclarationNodeInInterface(const Identifier: string;
       BuildTheTree: Boolean): TCodeTreeNode;// search for type, const, var
 
-    function FindInitializationSection: TCodeTreeNode;
+    function FindInitializationSection: TCodeTreeNode; deprecated; // use FindInitializationNode
     function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
     function FindImplementationUsesSection: TCodeTreeNode;
     function FindNameInUsesSection(UsesNode: TCodeTreeNode;
@@ -1962,10 +1962,7 @@ end;
 
 function TFindDeclarationTool.FindInitializationSection: TCodeTreeNode;
 begin
-  Result:=Tree.Root;
-  if Result=nil then exit;
-  while (Result<>nil) and (Result.Desc<>ctnInitialization) do
-    Result:=Result.NextBrother;
+  Result:=FindInitializationNode;
 end;
 
 function TFindDeclarationTool.FindDeclarationInUsesSection(
