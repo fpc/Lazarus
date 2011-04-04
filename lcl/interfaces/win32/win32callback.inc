@@ -266,24 +266,6 @@ var
   Info: TComboboxInfo;
   OrgCharCode: word; // used in WM_CHAR handling
 
-  function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
-  const
-    ShowFlags: array[Boolean] of DWord = (SWP_HIDEWINDOW or SWP_NOZORDER, SWP_SHOWWINDOW);
-  var
-    NoteBook: TCustomNotebook;
-    PageIndex: Integer;
-    PageHandle: HWND;
-  begin
-    Notebook := GetWin32WindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
-    PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
-    PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
-    if PageIndex = -1 then exit;
-    PageHandle := Notebook.CustomPage(PageIndex).Handle;
-    Windows.SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or ShowFlags[Showing]);
-    Windows.RedrawWindow(PageHandle, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
-    Result := PageIndex;
-  end;
-
   function GetMenuParent(ASearch, AParent: HMENU): HMENU;
   var
     c, i: integer;
@@ -1924,8 +1906,6 @@ begin
           NMHdr := PNMHDR(LParam);
           with NMHdr^ do
             case code of
-              TCN_SELCHANGE:
-                idFrom := ShowHideTabPage(HWndFrom, True);
               NM_CUSTOMDRAW:
               begin
                 if WindowInfo^.WinControl is TCustomBitBtn then

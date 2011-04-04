@@ -201,6 +201,7 @@ type
 
 procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);
 function NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
+function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
 
 implementation
 
@@ -265,6 +266,24 @@ begin
     if not ANotebook.Page[I].TabVisible then Inc(Result);
     Inc(I);
   end;
+end;
+
+function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
+const
+  ShowFlags: array[Boolean] of DWord = (SWP_HIDEWINDOW or SWP_NOZORDER, SWP_SHOWWINDOW);
+var
+  NoteBook: TCustomNotebook;
+  PageIndex: Integer;
+  PageHandle: HWND;
+begin
+  Notebook := GetWin32WindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
+  PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
+  PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
+  if PageIndex = -1 then exit;
+  PageHandle := Notebook.CustomPage(PageIndex).Handle;
+  Windows.SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or ShowFlags[Showing]);
+  Windows.RedrawWindow(PageHandle, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
+  Result := PageIndex;
 end;
 
 function PageWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
@@ -402,6 +421,24 @@ end;
 
 { TWin32WSCustomNotebook }
 
+function NotebookParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
+      Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam;
+      var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
+var
+  NMHdr: PNMHDR;
+begin
+  if Msg = WM_NOTIFY then
+  begin
+    Result := False;
+    NMHdr := PNMHDR(LParam);
+    with NMHdr^ do
+      case code of
+        TCN_SELCHANGE:
+          idFrom := ShowHideTabPage(HWndFrom, True);
+      end;
+  end;
+end;
+
 class function TWin32WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 const
@@ -433,6 +470,7 @@ begin
 
   // although we may be child of tabpage, cut the paint chain
   // to improve speed and possible paint anomalities
+  Params.WindowInfo^.ParentMsgHandler := @NotebookParentMsgHandler;
   Params.WindowInfo^.needParentPaint := false;
 end;
 
