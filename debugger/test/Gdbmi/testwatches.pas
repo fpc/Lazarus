@@ -494,7 +494,6 @@ begin
 end;
 
 procedure TTestWatches.TestWatches;
-var FailText: String;
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
   begin
@@ -536,7 +535,7 @@ var FailText: String;
       then AssertTrue(Name + ' Matches "'+Data.Mtch + '", but was "' + s + '"', rx.Exec(s));
     except
       on e: Exception do
-        FailText := FailText + LineEnding + e.Message;
+        AddTestError(e.Message);
     end;
     try
       if (AWatch <> nil) and (Data.TpNm <> '') then begin
@@ -555,7 +554,7 @@ var FailText: String;
       end;
     except
       on e: Exception do
-        FailText := FailText + LineEnding + e.Message;
+        AddTestError(e.Message);
     end;
     FreeAndNil(rx);
   end;
@@ -566,6 +565,7 @@ var
   i: Integer;
   WList: Array of TTestWatch;
 begin
+  ClearTestErrors;
   try
     TestCompile(AppDir + 'WatchesPrg.pas', TestExeName);
   except
@@ -670,9 +670,9 @@ begin
     dbg.Free;
     FreeAndNil(FWatches);
 
-    if (DbgMemo <> nil) and (FailText <> '') then DbgMemo.Lines.Add(FailText);
+    if (DbgMemo <> nil) and (TestErrors <> '') then DbgMemo.Lines.Add(TestErrors);
     //debugln(FailText)
-    if FailText <> '' then fail(FailText);
+    AssertTestErrors;
   end;
 end;
 
