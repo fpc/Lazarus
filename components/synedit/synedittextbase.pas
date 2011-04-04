@@ -22,6 +22,9 @@ of this file under either the MPL or the GPL.
 unit SynEditTextBase;
 
 {$I synedit.inc}
+{$IFOPT C+}
+  {$DEFINE AssertSynMemIndex}
+{$ENDIF}
 
 interface
 
