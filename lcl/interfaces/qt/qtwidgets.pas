@@ -7045,27 +7045,6 @@ begin
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
   NewIndex := QTabBar_tabAt(QTabBarH(Sender), @MousePos);
   CurIndex := QTabBar_currentIndex(QTabBarH(Sender));
-  if (QtVersionMajor = 4) and (QtVersionMinor < 7) and
-    (NewIndex <> CurIndex) and (NewIndex <> -1) and (CurIndex <> -1) then
-  begin
-    FillChar(Msg, SizeOf(Msg), 0);
-    Msg.Msg := LM_NOTIFY;
-    FillChar(Hdr, SizeOf(Hdr), 0);
-
-    Hdr.hwndFrom := LCLObject.Handle;
-    Hdr.Code := TCN_SELCHANGING;
-    Hdr.idFrom := TQtTabWidget(LCLObject.Handle).GetLCLPageIndex(CurIndex);
-    Msg.NMHdr := @Hdr;
-    Msg.Result := 0;
-    DeliverMessage(Msg);
-
-    if Msg.Result <> 0 then
-    begin
-      QEvent_accept(Event);
-      Result := True;
-      Exit;
-    end;
-  end;
 
   if Assigned(FOwner) then
   begin
@@ -7141,10 +7120,7 @@ begin
     QEventKeyPress,
     QEventKeyRelease:
     begin
-      {$note check if this works correctly under qt-4.6 and then remove
-       TCN_SELCHANGING from SlotTabBarMouse}
-      if (QEvent_type(Event) = QEventKeyPress) and
-        (QtVersionMajor = 4) and (QtVersionMinor > 6) then
+      if (QEvent_type(Event) = QEventKeyPress) then
         FSavedIndexOnPageChanging := QTabBar_currentIndex(QTabBarH(Widget));
       SlotKey(Sender, Event);
     end;
@@ -7154,10 +7130,7 @@ begin
       begin
         if QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton then
         begin
-          {$note check if this works correctly under qt-4.6 and then remove
-           TCN_SELCHANGING from SlotTabBarMouse}
-          if (QEvent_type(Event) = QEventMouseButtonPress) and
-            (QtVersionMajor = 4) and (QtVersionMinor > 6) then
+          if (QEvent_type(Event) = QEventMouseButtonPress) then
             FSavedIndexOnPageChanging := QTabBar_currentIndex(QTabBarH(Widget));
           Result := SlotTabBarMouse(Sender, Event);
           SetNoMousePropagation(QWidgetH(Sender), False);
