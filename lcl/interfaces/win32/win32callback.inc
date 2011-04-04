@@ -372,7 +372,6 @@ var
     DCIndex: integer;
     parLeft, parTop: integer;
     useDoubleBuffer: boolean;
-    isNotebook: boolean;
     isNativeControl: boolean;
     needParentPaint: boolean;
     BufferWasSaved: Boolean;
@@ -387,7 +386,6 @@ var
     end;
 
     // create a paint message
-    isNotebook := ThemeServices.ThemesEnabled and (WndClassName(Window) = TabControlClsName);
     isNativeControl := GetIsNativeControl(Window);
     needParentPaint := GetNeedParentPaint(WindowInfo, lWinControl);
     // if needParentPaint and not isTabPage then background will be drawn in
@@ -498,7 +496,7 @@ var
       PaintMsg.PaintStruct := @PS;
       if not useDoubleBuffer then
         PaintMsg.DC := DC;
-      if not needParentPaint and not isNotebook then
+      if not needParentPaint then
       begin
         // send through message to allow message override, moreover use SendMessage
         // to allow subclass window proc override this message too
