@@ -89,6 +89,7 @@ type
   private
     FTextChanged: Boolean; // Inform TQtMemoStrings about change in TextChange event
     FStringList: TStringList; // Holds the lines to show
+    FHasTrailingLineBreak: Boolean; // Indicates whether lines have trailing line break
     FOwner: TWinControl;      // Lazarus Control Owning MemoStrings
     procedure InternalUpdate;
     procedure ExternalUpdate(var AStr: WideString;
@@ -138,7 +139,7 @@ begin
   if W <> '' then
     SetInternalText(UTF16ToUTF8(W))
   else
-    FStringList.Text := '';
+    SetInternalText('');
   FTextChanged := False;
 end;
 
@@ -189,18 +190,26 @@ var
 begin
   Result := FStringList.Text;
 
-  // remove trailing line break
-  TextLen := Length(Result);
-  if (TextLen > 0) and (Result[TextLen] = #10) then
-    Dec(TextLen);
-  if (TextLen > 0) and (Result[TextLen] = #13) then
-    Dec(TextLen);
-  SetLength(Result, TextLen);
+  // Since TStringList.Text automatically adds line break to the last line,
+  // we should remove it if original text does not contain it
+  if not FHasTrailingLineBreak then
+  begin
+    TextLen := Length(Result);
+    if (TextLen > 0) and (Result[TextLen] = #10) then
+      Dec(TextLen);
+    if (TextLen > 0) and (Result[TextLen] = #13) then
+      Dec(TextLen);
+    SetLength(Result, TextLen);
+  end;
 end;
 
 procedure TQtMemoStrings.SetInternalText(const Value: string);
+var
+  TextLen: Integer;
 begin
-  FStringList.Text := Value + LineEnding;
+  TextLen := Length(Value);
+  FHasTrailingLineBreak := (TextLen > 0) and (Value[TextLen] in [#13, #10]);
+  FStringList.Text := Value;
 end;
 
 {------------------------------------------------------------------------------
@@ -295,6 +304,7 @@ begin
     WriteLn('TQtMemoStrings.Create Unspecified owner');
   {$endif}
   FStringList := TStringList.Create;
+  FHasTrailingLineBreak := False;
   FOwner := TheOwner;
 end;
 
