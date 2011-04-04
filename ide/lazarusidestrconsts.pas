@@ -750,6 +750,7 @@ resourcestring
     +'unit with the name %s%s%s. Pascal identifiers must be unique.';
   lisSeeMessages = 'See messages.';
   lisError = 'Error: ';
+  lisWarning = 'Warning: ';
   lisSaveChanges = 'Save changes?';
   lisSaveFileBeforeClosingForm =
     'Save file %s%s%s%sbefore closing form %s%s%s?';
@@ -1221,6 +1222,9 @@ resourcestring
   lisEnvOptDlgInvalidDebuggerFilenameMsg =
     'The debugger file "%s" is not an executable.';
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
+  lisFoundVersionExpected = 'Found version %s, expected %s';
+  lisInvalidVersionIn = 'invalid version in %s';
+  lisWrongVersionIn = 'wrong version in %s: %s';
   lisDirectoryNotFound = 'Directory %s%s%s not found.';
   lisRemoveFromSearchPath = 'Remove from search path';
   lisTheDirectoryWasNotFound = 'The directory %s was not found.';
@@ -1875,6 +1879,7 @@ resourcestring
   dlgCOLibraries = 'Libraries (-Fl):';
   dlgCODebugPath = 'Debugger path addition (none):';
   lisCompiler = 'Compiler';
+  lisFPCSources = 'FPC sources';
   lisToFPCPath = 'Path:';
   lisCOSkipCallingCompiler = 'Skip calling Compiler';
   lisCOAmbiguousAdditionalCompilerConfigFile = 'Ambiguous additional compiler '
@@ -1992,6 +1997,7 @@ resourcestring
     +'abstract methods of the current class, because';
   lisCCOUnableToGetFileDate = 'Unable to get file date of %s.';
   lisCCOWarningCaption = 'Warning';
+  lisConfigureLazarusIDE = 'Configure Lazarus IDE';
   lisTheContainsANotExistingDirectory = 'The %s contains a not existing '
     +'directory:%s%s';
   lisTheProjectDoesNotUseTheLCLUnitInterfacesButItSeems = 'The project does '
@@ -3257,6 +3263,25 @@ resourcestring
   lisPathEditMovePathDown = 'Move path down';
   lisPathEditMovePathUp = 'Move path up';
   lisPathEditBrowse = 'Browse';
+  lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro = 'The sources of the '
+    +'Free Pascal packages are required for browsing and code completion. For '
+    +'example it has the file "%s".';
+  lisSelectPathOf = 'Select path of %s';
+  lisSelectFPCSourceDirectory = 'Select FPC source directory';
+  lisSelectLazarusSourceDirectory = 'Select Lazarus source directory';
+  lisWithoutAProperLazarusDirectoryYouWillGetALotOfWarn = 'Without a proper '
+    +'Lazarus directory you will get a lot of warnings.';
+  lisWithoutAProperCompilerTheCodeBrowsingAndCompilingW = 'Without a proper '
+    +'compiler the code browsing and compiling will be disappointing.';
+  lisWithoutTheProperFPCSourcesCodeBrowsingAndCompletio = 'Without the proper '
+    +'FPC sources code browsing and completion will be very limited.';
+  lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh = 'The Lazarus '
+    +'directory contains the sources of the IDE and the package files of LCL '
+    +'and many standard packages. For example it contains the file ide%'
+    +'slazarus.lpi. The translation files are located there too.';
+  lisTheFreePascalCompilerExecutableTypicallyHasTheName = 'The Free Pascal '
+    +'compiler executable typically has the name "%s". You can also use the '
+    +'target specific compiler like "%s". Please give the full file path.';
   lisPathEditPathTemplates = 'Path templates';
   
   // new dialog
@@ -3390,6 +3415,12 @@ resourcestring
   lisExecutionPausedAdress = 'Execution paused%s  Address: $%s%s  Procedure: %'
     +'s%s  File: %s%s(Some day an assembler window might popup here :)%s';
   lisFileNotFound = 'File not found';
+  lisFileIsNotAnExecutable = 'File is not an executable';
+  lisFpcCfgIsMissing = 'fpc.cfg is missing.';
+  lisSystemPpuNotFoundCheckYourFpcCfg = 'system.ppu not found. Check your fpc.'
+    +'cfg.';
+  lisClassesPpuNotFoundCheckYourFpcCfg = 'classes.ppu not found. Check your '
+    +'fpc.cfg.';
   lisCleanUpUnitPath = 'Clean up unit path?';
   lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt = 'The directory %s%s%'
     +'s is no longer needed in the unit path.%sRemove it?';
@@ -4757,6 +4788,9 @@ resourcestring
     +'file %s%s%s%shas changed on disk.';
   lisReopenProject = 'Reopen project';
   rsOk = 'ok';
+  lisWelcomeToLazarusIDE = 'Welcome to Lazarus IDE %s';
+  lisStartIDE = 'Start IDE';
+  lisUnableToLoadFile2 = 'unable to load file %s: %s';
   rsScanners = 'Scanners';
   rsAvailableScanners = 'Available scanners';
   rsSelectAnInheritedEntry = 'Select an inherited entry';
@@ -5211,6 +5245,8 @@ resourcestring
   lisShowSetupDialogForMostImportantSettings = 'Show setup dialog for most '
     +'important settings';
   lisShowPositionOfSourceEditor = 'Show position of source editor';
+  lisDirectoryNotFound2 = 'directory %s not found';
+  lisFileNotFound3 = 'file %s not found';
 
 implementation
 

@@ -191,7 +191,8 @@ function CheckLazarusDirectoryQuality(ADirectory: string;
     SubDir:=SetDirSeparators(SubDir);
     if DirPathExistsCached(ADirectory+SubDir) then exit(true);
     Result:=false;
-    Note:='directory '+SubDir+' not found';
+    Note:=Format(lisDirectoryNotFound2, [SubDir]);
+    q:=sddqIncomplete;
   end;
 
   function SubFileExists(SubFile: string; var q: TSDFilenameQuality): boolean;
@@ -199,7 +200,8 @@ function CheckLazarusDirectoryQuality(ADirectory: string;
     SubFile:=SetDirSeparators(SubFile);
     if FileExistsCached(ADirectory+SubFile) then exit(true);
     Result:=false;
-    Note:='file '+SubFile+' not found';
+    Note:=Format(lisFileNotFound3, [SubFile]);
+    q:=sddqIncomplete;
   end;
 
 var
@@ -211,7 +213,7 @@ begin
   ADirectory:=TrimFilename(ADirectory);
   if not DirPathExistsCached(ADirectory) then
   begin
-    Note:='Directory not found';
+    Note:=lisEnvOptDlgDirectoryNotFound;
     exit;
   end;
   ADirectory:=AppendPathDelim(ADirectory);
@@ -229,21 +231,21 @@ begin
       sl.LoadFromFile(ADirectory+VersionIncFile);
       if (sl.Count=0) or (sl[0]='') or (sl[0][1]<>'''') then
       begin
-        Note:='invalid version in '+VersionIncFile;
+        Note:=Format(lisInvalidVersionIn, [VersionIncFile]);
         exit;
       end;
       Version:=copy(sl[0],2,length(sl[0])-2);
       if Version<>LazarusVersionStr then
       begin
-        Note:='wrong version in '+VersionIncFile+': '+Version;
+        Note:=Format(lisWrongVersionIn, [VersionIncFile, Version]);
         Result:=sddqWrongVersion;
         exit;
       end;
-      Note:='ok';
+      Note:=rsOk;
       Result:=sddqCompatible;
     except
       on E: Exception do begin
-        Note:='unable to load file '+VersionIncFile+': '+E.Message;
+        Note:=Format(lisUnableToLoadFile2, [VersionIncFile, E.Message]);
         exit;
       end;
     end;
@@ -377,12 +379,12 @@ begin
   AFilename:=TrimFilename(AFilename);
   if not FileExistsCached(AFilename) then
   begin
-    Note:='File not found';
+    Note:=lisFileNotFound;
     exit;
   end;
   if not FileIsExecutableCached(AFilename) then
   begin
-    Note:='File is not an executable';
+    Note:=lisFileIsNotAnExecutable;
     exit;
   end;
   if TestSrcFilename<>'' then
@@ -394,22 +396,22 @@ begin
     i:=CfgCache.IndexOfUsedCfgFile;
     if i<0 then
     begin
-      Note:='fpc.cfg is missing.';
+      Note:=lisFpcCfgIsMissing;
       exit;
     end;
     if not CfgCache.HasPPUs then
     begin
-      Note:='system.ppu not found. Check your fpc.cfg.';
+      Note:=lisSystemPpuNotFoundCheckYourFpcCfg;
       exit;
     end;
     if CompareFileExt(CfgCache.Units['classes'],'ppu',false)<>0 then
     begin
-      Note:='classes.ppu not found. Check your fpc.cfg.';
+      Note:=lisClassesPpuNotFoundCheckYourFpcCfg;
       exit;
     end;
   end;
 
-  Note:='ok';
+  Note:=rsOk;
   Result:=sddqCompatible;
 end;
 
@@ -603,7 +605,8 @@ function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
     SubDir:=SetDirSeparators(SubDir);
     if DirPathExistsCached(ADirectory+SubDir) then exit(true);
     Result:=false;
-    Note:='directory '+SubDir+' not found';
+    Note:=Format(lisDirectoryNotFound2, [SubDir]);
+    q:=sddqIncomplete;
   end;
 
   function SubFileExists(SubFile: string; var q: TSDFilenameQuality): boolean;
@@ -611,7 +614,8 @@ function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
     SubFile:=SetDirSeparators(SubFile);
     if FileExistsCached(ADirectory+SubFile) then exit(true);
     Result:=false;
-    Note:='file '+SubFile+' not found';
+    Note:=Format(lisFileNotFound3, [SubFile]);
+    q:=sddqIncomplete;
   end;
 
 var
@@ -628,18 +632,13 @@ begin
   ADirectory:=TrimFilename(ADirectory);
   if not DirPathExistsCached(ADirectory) then
   begin
-    Note:='Directory not found';
+    Note:=lisEnvOptDlgDirectoryNotFound;
     exit;
   end;
   ADirectory:=AppendPathDelim(ADirectory);
   if not SubDirExists('rtl',Result) then exit;
   if not SubDirExists('packages',Result) then exit;
-  if not SubFileExists('rtl/linux/system.pp',Result) then
-  begin
-    Note:='missing file ';
-    Result:=sddqIncomplete;
-    exit;
-  end;
+  if not SubFileExists('rtl/linux/system.pp',Result) then exit;
   // check version
   if (FPCVer<>'') then
   begin
@@ -664,7 +663,7 @@ begin
           SrcVer:=VersionNr+'.'+ReleaseNr+'.'+PatchNr;
           if SrcVer<>FPCVer then
           begin
-            Note:='Found version '+SrcVer+', expected '+FPCVer;
+            Note:=Format(lisFoundVersionExpected, [SrcVer, FPCVer]);
             Result:=sddqWrongVersion;
             exit;
           end;
@@ -675,7 +674,7 @@ begin
       end;
     end;
   end;
-  Note:='ok';
+  Note:=rsOk;
   Result:=sddqCompatible;
 end;
 
@@ -867,13 +866,13 @@ procedure TInitialSetupDialog.FormCreate(Sender: TObject);
 var
   Node: TTreeNode;
 begin
-  Caption:='Welcome to Lazarus IDE '+GetLazarusVersionString;
+  Caption:=Format(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
 
-  StartIDEBitBtn.Caption:='Start IDE';
+  StartIDEBitBtn.Caption:=lisStartIDE;
 
   LazarusTabSheet.Caption:='Lazarus';
-  CompilerTabSheet.Caption:='Compiler';
-  FPCSourcesTabSheet.Caption:='FPC sources';
+  CompilerTabSheet.Caption:=lisCompiler;
+  FPCSourcesTabSheet.Caption:=lisFPCSources;
 
   FHeadGraphic:=TPortableNetworkGraphic.Create;
   FHeadGraphic.LoadFromLazarusResource('ide_icon48x48');
@@ -883,14 +882,20 @@ begin
   TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,FPCSourcesTabSheet.Caption);
   ImgIDError := ImageList1.AddLazarusResource('state_error');
 
-  LazDirBrowseButton.Caption:='Browse';
-  LazDirLabel.Caption:='The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file ide'+PathDelim+'lazarus.lpi. The translation files are located there too.';
+  LazDirBrowseButton.Caption:=lisPathEditBrowse;
+  LazDirLabel.Caption:=Format(
+    lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh, [PathDelim]);
 
-  CompilerBrowseButton.Caption:='Browse';
-  CompilerLabel.Caption:='The Free Pascal compiler executable typically has the name "'+DefineTemplates.GetDefaultCompilerFilename+'". You can also use the target specific compiler like "'+DefineTemplates.GetDefaultCompilerFilename(GetCompiledTargetCPU)+'". Please give the full file path.';
+  CompilerBrowseButton.Caption:=lisPathEditBrowse;
+  CompilerLabel.Caption:=Format(
+    lisTheFreePascalCompilerExecutableTypicallyHasTheName, [DefineTemplates.
+    GetDefaultCompilerFilename, DefineTemplates.GetDefaultCompilerFilename(
+    GetCompiledTargetCPU)]);
 
-  FPCSrcDirBrowseButton.Caption:='Browse';
-  FPCSrcDirLabel.Caption:='The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file "'+SetDirSeparators('rtl/linux/system.pp')+'".';
+  FPCSrcDirBrowseButton.Caption:=lisPathEditBrowse;
+  FPCSrcDirLabel.Caption:=Format(
+    lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro, [SetDirSeparators('rtl'
+    +'/linux/system.pp')]);
 
   // select first error
   Node:=FirstErrorNode;
@@ -908,7 +913,8 @@ procedure TInitialSetupDialog.CompilerBrowseButtonClick(Sender: TObject);
 var
   Filename: String;
 begin
-  Filename:=SelectDirectory('Select path of '+GetDefaultCompilerFilename);
+  Filename:=SelectDirectory(Format(lisSelectPathOf, [GetDefaultCompilerFilename]
+    ));
   if Filename='' then exit;
   CompilerComboBox.Text:=Filename;
   UpdateCompilerNote;
@@ -928,7 +934,7 @@ procedure TInitialSetupDialog.FPCSrcDirBrowseButtonClick(Sender: TObject);
 var
   Dir: String;
 begin
-  Dir:=SelectDirectory('Select FPC source directory');
+  Dir:=SelectDirectory(lisSelectFPCSourceDirectory);
   if Dir='' then exit;
   FPCSrcDirComboBox.Text:=Dir;
   UpdateFPCSrcDirNote;
@@ -943,7 +949,7 @@ procedure TInitialSetupDialog.LazDirBrowseButtonClick(Sender: TObject);
 var
   Dir: String;
 begin
-  Dir:=SelectDirectory('Select Lazarus source directory');
+  Dir:=SelectDirectory(lisSelectLazarusSourceDirectory);
   if Dir='' then exit;
   LazDirComboBox.Text:=Dir;
   UpdateLazDirNote;
@@ -983,13 +989,14 @@ var
 begin
   Node:=FirstErrorNode;
   if Node=TVNodeLazarus then
-    s:='Without a proper Lazarus directory you will get a lot of warnings.'
+    s:=lisWithoutAProperLazarusDirectoryYouWillGetALotOfWarn
   else if Node=TVNodeCompiler then
-    s:='Without a proper compiler the code browsing and compiling will be disappointing.'
+    s:=lisWithoutAProperCompilerTheCodeBrowsingAndCompilingW
   else if Node=TVNodeFPCSources then
-    s:='Without the proper FPC sources code browsing and completion will be very limited.';
+    s:=lisWithoutTheProperFPCSourcesCodeBrowsingAndCompletio;
   if s<>'' then begin
-    MsgResult:=MessageDlg('Warning',s,mtWarning,[mbIgnore,mbCancel],0);
+    MsgResult:=MessageDlg(lisCCOWarningCaption, s, mtWarning, [mbIgnore,
+      mbCancel], 0);
     if MsgResult<>mrIgnore then exit;
   end;
 
@@ -1013,7 +1020,7 @@ begin
     Font.Color:=clWhite;
     Font.Height:=30;
     Brush.Style:=bsClear;
-    TextOut(FHeadGraphic.Width+15,5,'Configure Lazarus IDE');
+    TextOut(FHeadGraphic.Width+15, 5, lisConfigureLazarusIDE);
   end;
 end;
 
@@ -1179,9 +1186,9 @@ begin
     Quality:=CheckLazarusDirectoryQuality(CurCaption,Note);
   end;
   case Quality of
-  sddqInvalid: s:='Error: ';
+  sddqInvalid: s:=lisError;
   sddqCompatible: s:='';
-  else s:='Warning: ';
+  else s:=lisWarning;
   end;
   LazDirMemo.Text:=s+Note;
 
@@ -1249,9 +1256,9 @@ begin
   end;
 
   case Quality of
-  sddqInvalid: s:='Error: ';
+  sddqInvalid: s:=lisError;
   sddqCompatible: s:='';
-  else s:='Warning: ';
+  else s:=lisWarning;
   end;
   CompilerMemo.Text:=s+Note;
 
@@ -1308,9 +1315,9 @@ begin
     Quality:=CheckFPCSrcDirQuality(CurCaption,Note,FPCVer);
   end;
   case Quality of
-  sddqInvalid: s:='Error: ';
+  sddqInvalid: s:=lisError;
   sddqCompatible: s:='';
-  else s:='Warning: ';
+  else s:=lisWarning;
   end;
   FPCSrcDirMemo.Text:=s+Note;
 
