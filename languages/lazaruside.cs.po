@@ -4624,6 +4624,10 @@ msgstr "Konflikt třídy se souborem .lfm:%sJednotka %s%spoužívá jednotku %s%
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Třídy a vlastnosti existují. Hodnoty nebyly zkontrolovány."
 
+#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
+msgid "classes.ppu not found. Check your fpc.cfg."
+msgstr ""
+
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgstr "Třída %s%s%s není třídou registrované komponenty.%sNelze vložit."
@@ -5557,6 +5561,10 @@ msgstr "Nastavit sestavení %s"
 #: lazarusidestrconsts.lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
 msgstr "Nastavení %sSestavení Lazarusu%s"
+
+#: lazarusidestrconsts.lisconfigurelazaruside
+msgid "Configure Lazarus IDE"
+msgstr ""
 
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
@@ -6573,6 +6581,10 @@ msgstr "Pokyny pro novou jednotku"
 msgid "Directory %s%s%s not found."
 msgstr "Adresář %s%s%s nenalezen."
 
+#: lazarusidestrconsts.lisdirectorynotfound2
+msgid "directory %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
 msgstr "Adresář není zapisovatelný"
@@ -7397,6 +7409,10 @@ msgstr "Soubor %s%s%s byl pozměněn. Uložit?"
 msgid "File has no project"
 msgstr "Soubor nemá projekt"
 
+#: lazarusidestrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Soubor není zapisovatelný"
@@ -7424,6 +7440,10 @@ msgstr "Soubor nenalezen"
 #: lazarusidestrconsts.lisfilenotfound2
 msgid "File %s%s%s not found.%s"
 msgstr "Soubor %s%s%s nenalezen.%s"
+
+#: lazarusidestrconsts.lisfilenotfound3
+msgid "file %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
@@ -7557,6 +7577,14 @@ msgstr "Chyba formátování"
 msgid "Form load error"
 msgstr "Chyba načtení formuláře"
 
+#: lazarusidestrconsts.lisfoundversionexpected
+msgid "Found version %s, expected %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpccfgismissing
+msgid "fpc.cfg is missing."
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake selhal"
@@ -7573,6 +7601,10 @@ msgstr "Zdroje FPC"
 #: lazarusidestrconsts.lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "Chyba zdrojového adresáře FPC"
+
+#: lazarusidestrconsts.lisfpcsources
+msgid "FPC sources"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpctooold
 msgid "FPC too old"
@@ -8320,6 +8352,10 @@ msgstr "Neplatný adresář pro zveřejňování"
 #: lazarusidestrconsts.lisinvalidselection
 msgid "Invalid selection"
 msgstr "Neplatný výběr"
+
+#: lazarusidestrconsts.lisinvalidversionin
+msgid "invalid version in %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisisagroupasettingcanonlybeaddedtonormalbuildmodes
 msgid "%s is a group. A setting can only be added to normal build modes."
@@ -13300,6 +13336,10 @@ msgstr "(vybraný horní soused)"
 msgid "Select the file"
 msgstr "Vybrat soubor"
 
+#: lazarusidestrconsts.lisselectfpcsourcedirectory
+msgid "Select FPC source directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Výběr přesahuje řetězcovou konstantu"
@@ -13307,6 +13347,14 @@ msgstr "Výběr přesahuje řetězcovou konstantu"
 #: lazarusidestrconsts.lisselectiontool
 msgid "Selection tool"
 msgstr "Nástroj výběru"
+
+#: lazarusidestrconsts.lisselectlazarussourcedirectory
+msgid "Select Lazarus source directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectpathof
+msgid "Select path of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
@@ -13553,6 +13601,10 @@ msgstr "Hledat text"
 msgid "Start Conversion"
 msgstr "Začátek převodu"
 
+#: lazarusidestrconsts.lisstartide
+msgid "Start IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "Začít s novým projektem"
@@ -13641,6 +13693,10 @@ msgstr "SynEdit"
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "Režim syntaxe"
+
+#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr ""
 
 #: lazarusidestrconsts.listab
 msgid "Tab"
@@ -13871,6 +13927,10 @@ msgstr "První sestavovací mód je předvolený mód a musí být uložen v pro
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Následující metody použité v %s nejsou v zdrojovém kódu%s%s%s%s%s%sOdstranit tyto odkazy?"
 
+#: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
+msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr "Překladač Free Pascal (jméno souboru: %s) nebyl nalezen.%sDoporučujeme nainstalovat fpc."
@@ -13898,6 +13958,10 @@ msgstr "Program %s%snutný ke spuštění neexistuje, nebo není spustitelný.%s
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Spouštěcí aplikace %s%s%s%sneexistuje, nebo není spustitelná.%s%sViz. Spustit -> Parametry spouštění -> Lokální"
+
+#: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
+msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
+msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
@@ -14074,6 +14138,10 @@ msgstr "Tyto nastavení jsou uloženy v projektu"
 #: lazarusidestrconsts.listheseunitswerenotfound
 msgid "These units were not found:"
 msgstr "Tyto jednotky nebyly nalezeny:"
+
+#: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
+msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -14512,6 +14580,10 @@ msgstr "Nelze získat zdroj pro návrhář."
 msgid "Unable to load file:%s%s"
 msgstr "Nelze načíst soubor:%s%s"
 
+#: lazarusidestrconsts.lisunabletoloadfile2
+msgid "unable to load file %s: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
 msgstr "Nelze načíst starý soubor zdrojů.%sSoubor zdrojů je první vkládaný soubor v inicializační části %s.Na příklad {$I %s.lrs}.%sPravděpodobně chyba syntaxe."
@@ -14875,6 +14947,10 @@ msgstr "Dopředné hledání"
 msgid "Reset Result List"
 msgstr "Resetovat seznam výsledků"
 
+#: lazarusidestrconsts.liswarning
+msgid "Warning: "
+msgstr ""
+
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Varování: víceznačný soubor nalezen: %s%s%s. Zdrojový soubor je: %s%s%"
@@ -14890,6 +14966,10 @@ msgstr "&Sledování"
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
 msgstr "Vlastnosti sledování"
+
+#: lazarusidestrconsts.liswelcometolazaruside
+msgid "Welcome to Lazarus IDE %s"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references ..."
@@ -14910,6 +14990,18 @@ msgstr "%s, se zahrnutými %s"
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
 msgstr ", se zahrnutými "
+
+#: lazarusidestrconsts.liswithoutapropercompilerthecodebrowsingandcompilingw
+msgid "Without a proper compiler the code browsing and compiling will be disappointing."
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
+msgid "Without a proper Lazarus directory you will get a lot of warnings."
+msgstr ""
+
+#: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
+msgid "Without the proper FPC sources code browsing and completion will be very limited."
+msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
@@ -14970,6 +15062,10 @@ msgstr "Chyba zápisu"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Chyba zápisu: %s%sSoubor: %s%s%s"
+
+#: lazarusidestrconsts.liswrongversionin
+msgid "wrong version in %s: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisxmlerror
 msgid "XML Error"

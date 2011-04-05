@@ -4665,6 +4665,10 @@ msgstr "Klasės ir „.lfm“ failo konfliktas:%smodulis %s%snaudoja modulį %s%
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Klasės ir savybės yra. Vertės nebuvo tikrintos."
 
+#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
+msgid "classes.ppu not found. Check your fpc.cfg."
+msgstr ""
+
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgstr "Klasė %s%s%s nėra registruoto komponento klasė.%sĮdėti nepavyks."
@@ -5599,6 +5603,10 @@ msgstr "Derinti %s daryklę"
 #: lazarusidestrconsts.lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
 msgstr "Derinti %sDaryti Lazarus%s"
+
+#: lazarusidestrconsts.lisconfigurelazaruside
+msgid "Configure Lazarus IDE"
+msgstr ""
 
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
@@ -6618,6 +6626,10 @@ msgstr ""
 msgid "Directory %s%s%s not found."
 msgstr "Nepavyko rasti aplanko %s%s%s."
 
+#: lazarusidestrconsts.lisdirectorynotfound2
+msgid "directory %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
 msgstr "Aplanke draudžiama rašyti"
@@ -7443,6 +7455,10 @@ msgstr "Failas %s%s%s pakeistas. Įrašyti?"
 msgid "File has no project"
 msgstr "Objekto faile nėra"
 
+#: lazarusidestrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Failas tik skaitymui"
@@ -7470,6 +7486,10 @@ msgstr "Failas nerastas"
 #: lazarusidestrconsts.lisfilenotfound2
 msgid "File %s%s%s not found.%s"
 msgstr "Failas %s%s%s nerastas.%s"
+
+#: lazarusidestrconsts.lisfilenotfound3
+msgid "file %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
@@ -7603,6 +7623,14 @@ msgstr "Formato klaida"
 msgid "Form load error"
 msgstr "Klaida įkeliant formą"
 
+#: lazarusidestrconsts.lisfoundversionexpected
+msgid "Found version %s, expected %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpccfgismissing
+msgid "fpc.cfg is missing."
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "„fpcmake“ nepavyko"
@@ -7619,6 +7647,10 @@ msgstr "FPC ištekliai"
 #: lazarusidestrconsts.lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "Įvyko FPC pirminio kodo aplanko klaida"
+
+#: lazarusidestrconsts.lisfpcsources
+msgid "FPC sources"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpctooold
 msgid "FPC too old"
@@ -8367,6 +8399,10 @@ msgstr "Klaidingas skelbimo aplankas"
 #: lazarusidestrconsts.lisinvalidselection
 msgid "Invalid selection"
 msgstr "Klaidingas žymėjimas"
+
+#: lazarusidestrconsts.lisinvalidversionin
+msgid "invalid version in %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisisagroupasettingcanonlybeaddedtonormalbuildmodes
 msgid "%s is a group. A setting can only be added to normal build modes."
@@ -13400,6 +13436,10 @@ msgstr "(pažymėtas viršutinysis kaimynas)"
 msgid "Select the file"
 msgstr "Pažymėti failą"
 
+#: lazarusidestrconsts.lisselectfpcsourcedirectory
+msgid "Select FPC source directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Pažymėta daugiau nei eilutės konstanta"
@@ -13407,6 +13447,14 @@ msgstr "Pažymėta daugiau nei eilutės konstanta"
 #: lazarusidestrconsts.lisselectiontool
 msgid "Selection tool"
 msgstr "Žymėjimo įrankis"
+
+#: lazarusidestrconsts.lisselectlazarussourcedirectory
+msgid "Select Lazarus source directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectpathof
+msgid "Select path of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
@@ -13653,6 +13701,10 @@ msgstr "Teksto paieška"
 msgid "Start Conversion"
 msgstr "Pradėti konversiją"
 
+#: lazarusidestrconsts.lisstartide
+msgid "Start IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "Startuoti su nauju projektu"
@@ -13741,6 +13793,10 @@ msgstr "SynEdit"
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "Sintaksės veiksena"
+
+#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr ""
 
 #: lazarusidestrconsts.listab
 msgid "Tab"
@@ -13971,6 +14027,10 @@ msgstr ""
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Šių metodų, kuriuos naudoja %s, nėra pirminiame kode%s%s%s%s%s%sPašalinti betikslius įrašus?"
 
+#: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
+msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr "Nerastas Free Pascal kompiliatorius (failas: %s).%sRekomenduotina instaliuoti fpc."
@@ -13998,6 +14058,10 @@ msgstr "Nėra startavimui reikalingo programos-ryšulio %s%s arba ji nėra vykdo
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Nerasta paleidžiančioji programa%s%s%s%s, arba ji nėra paleidžiamasis failas.%s%sŽvilgtelėkit į „Startuoti -> Startavimo parametrai -> Vietiniai“."
+
+#: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
+msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
+msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
@@ -14174,6 +14238,10 @@ msgstr "Šios nuostatos įrašytos kartu su projektu."
 #: lazarusidestrconsts.listheseunitswerenotfound
 msgid "These units were not found:"
 msgstr "Šių modulių nepavyko rasti:"
+
+#: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
+msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -14617,6 +14685,10 @@ msgstr "Nepavyko gauti pirminio kodo, skirto konstruktoriui."
 msgid "Unable to load file:%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletoloadfile2
+msgid "unable to load file %s: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
 msgstr "Nepavyko įkelti senąjį išteklių failą.%sIšteklių failas yra pirmasis įdedamasis failas%s „initialization“ sekcijoje.%sPavyzdžiui: {$I %s.lrs}.%sKo gero tai sintaksės klaida."
@@ -14983,6 +15055,10 @@ msgstr "Ieškoti pirmyn"
 msgid "Reset Result List"
 msgstr "Atstatyti rezultatų sąrašą"
 
+#: lazarusidestrconsts.liswarning
+msgid "Warning: "
+msgstr ""
+
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Dėmesio: rastas neaiškus failas: %s%s%s. Pirminio kodo failas: %s%s%s"
@@ -14998,6 +15074,10 @@ msgstr "&Stebėti"
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
 msgstr "Stebimųjų savybės"
+
+#: lazarusidestrconsts.liswelcometolazaruside
+msgid "Welcome to Lazarus IDE %s"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references ..."
@@ -15017,6 +15097,18 @@ msgstr ""
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutapropercompilerthecodebrowsingandcompilingw
+msgid "Without a proper compiler the code browsing and compiling will be disappointing."
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
+msgid "Without a proper Lazarus directory you will get a lot of warnings."
+msgstr ""
+
+#: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
+msgid "Without the proper FPC sources code browsing and completion will be very limited."
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
@@ -15078,6 +15170,10 @@ msgstr "Rašymo klaida"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Klaida rašant: %s%sFailas: %s%s%s"
+
+#: lazarusidestrconsts.liswrongversionin
+msgid "wrong version in %s: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisxmlerror
 msgid "XML Error"

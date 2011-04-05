@@ -4637,6 +4637,10 @@ msgstr "המחלקה מתנגשת עם קובץ ifm. היחידה s%s% משתמ�
 msgid "Classes and properties exist. Values were not checked."
 msgstr "המחלקה והתכונות קיימות. הערכים לא בדוקים."
 
+#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
+msgid "classes.ppu not found. Check your fpc.cfg."
+msgstr ""
+
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgstr "המחלקה s%s%s% אינה מחלקה רשומה. לא מצליח להדביק."
@@ -5570,6 +5574,10 @@ msgstr "מגדיר את הבנייה של %s"
 #: lazarusidestrconsts.lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
 msgstr "הגדר ובנה את לזארוס"
+
+#: lazarusidestrconsts.lisconfigurelazaruside
+msgid "Configure Lazarus IDE"
+msgstr ""
 
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
@@ -6592,6 +6600,10 @@ msgstr "הוראות ליחידה חדשה"
 msgid "Directory %s%s%s not found."
 msgstr "תיקייה s%s%s% לא נמצאה."
 
+#: lazarusidestrconsts.lisdirectorynotfound2
+msgid "directory %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
 msgstr "אי אפשר לכתוב לתיקייה"
@@ -7416,6 +7428,10 @@ msgstr "הקובץ s%s%s%s% השתנה. לשמור?"
 msgid "File has no project"
 msgstr "לקובץ אין פרוייקט"
 
+#: lazarusidestrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "הקובץ לא לכתיבה"
@@ -7443,6 +7459,10 @@ msgstr "הקובץ לא נמצא"
 #: lazarusidestrconsts.lisfilenotfound2
 msgid "File %s%s%s not found.%s"
 msgstr "הקובץ s%s%s% לא נמצא"
+
+#: lazarusidestrconsts.lisfilenotfound3
+msgid "file %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
@@ -7576,6 +7596,14 @@ msgstr "שגיאת מבנה"
 msgid "Form load error"
 msgstr "שגיאה בטעינת טופס"
 
+#: lazarusidestrconsts.lisfoundversionexpected
+msgid "Found version %s, expected %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpccfgismissing
+msgid "fpc.cfg is missing."
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake נכשל"
@@ -7592,6 +7620,10 @@ msgstr " משאבי  FPC"
 #: lazarusidestrconsts.lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "שגיאה בתיקיית קוד המקור של FPC"
+
+#: lazarusidestrconsts.lisfpcsources
+msgid "FPC sources"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpctooold
 msgid "FPC too old"
@@ -8339,6 +8371,10 @@ msgstr "תיקיית פרסום לא חוקית"
 #: lazarusidestrconsts.lisinvalidselection
 msgid "Invalid selection"
 msgstr "בחירה לא חוקית"
+
+#: lazarusidestrconsts.lisinvalidversionin
+msgid "invalid version in %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisisagroupasettingcanonlybeaddedtonormalbuildmodes
 msgid "%s is a group. A setting can only be added to normal build modes."
@@ -13366,6 +13402,10 @@ msgstr "(שכן עליון שנבחר)"
 msgid "Select the file"
 msgstr "בחר את הקובץ"
 
+#: lazarusidestrconsts.lisselectfpcsourcedirectory
+msgid "Select FPC source directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "הבחירה חורגת מגבולות המחרוזת"
@@ -13373,6 +13413,14 @@ msgstr "הבחירה חורגת מגבולות המחרוזת"
 #: lazarusidestrconsts.lisselectiontool
 msgid "Selection tool"
 msgstr "כלי בחירה"
+
+#: lazarusidestrconsts.lisselectlazarussourcedirectory
+msgid "Select Lazarus source directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectpathof
+msgid "Select path of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
@@ -13621,6 +13669,10 @@ msgstr "חפש טקסט"
 msgid "Start Conversion"
 msgstr "התחל בהמרה"
 
+#: lazarusidestrconsts.lisstartide
+msgid "Start IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "התחל עם פרוייקט חדש"
@@ -13709,6 +13761,10 @@ msgstr "SynEdit"
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "מצב תחביר"
+
+#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr ""
 
 #: lazarusidestrconsts.listab
 msgid "Tab"
@@ -13937,6 +13993,10 @@ msgstr "אופן הבנייה הראשון הוא אופן ברירת המחדל
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "המתודות הבאות שבשימוש s% אינם במקורות %s%s%s%s%s%s האם להסיר את המקורות הרעועים?"
 
+#: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
+msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr "המהדר של Free Pascal (שם קובץ\" s%) לא נמצא. מומלץ שתתקין fpc."
@@ -13964,6 +14024,10 @@ msgstr "חבורת היישומים s%s% הדרושה להרצה לא קיימת
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "היישום המשגר %s%s%s%s לא קיים או שאינו בר ריצה. ראה Run -> Run parameters -> Local"
+
+#: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
+msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
+msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
@@ -14140,6 +14204,10 @@ msgstr "ההגדרות אוחסנו עם הפרוייקט."
 #: lazarusidestrconsts.listheseunitswerenotfound
 msgid "These units were not found:"
 msgstr "היחידות לא נמצאו:"
+
+#: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
+msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -14578,6 +14646,10 @@ msgstr "לא ניתן לקבל את הקוד של המתכנן."
 msgid "Unable to load file:%s%s"
 msgstr "לא יכול לטעון קובץ: s%s%"
 
+#: lazarusidestrconsts.lisunabletoloadfile2
+msgid "unable to load file %s: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
 msgstr "לא ניתן לטעון את קובץ המשאבים הישן. %s קובץ המשאבים הוא ה include הראשון בחלק ה%sinitialization.%s למשל {$I %s.lrs}.%sכנראה שמדובר בשגיאת תחביר."
@@ -14943,6 +15015,10 @@ msgstr "חיפוש לפנים"
 msgid "Reset Result List"
 msgstr "אתחל את רשימת התוצאות"
 
+#: lazarusidestrconsts.liswarning
+msgid "Warning: "
+msgstr ""
+
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "אזהרה: נמצא קובץ רב משמעי: %s%s%s. קוד המקור של הקובץ הוא: %s%s%s"
@@ -14958,6 +15034,10 @@ msgstr "משגיח"
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
 msgstr "תכונות המשגיח"
+
+#: lazarusidestrconsts.liswelcometolazaruside
+msgid "Welcome to Lazarus IDE %s"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references ..."
@@ -14978,6 +15058,18 @@ msgstr "עם קבצי \"כלול\""
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
 msgstr "עם קבצי \"כלול\""
+
+#: lazarusidestrconsts.liswithoutapropercompilerthecodebrowsingandcompilingw
+msgid "Without a proper compiler the code browsing and compiling will be disappointing."
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
+msgid "Without a proper Lazarus directory you will get a lot of warnings."
+msgstr ""
+
+#: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
+msgid "Without the proper FPC sources code browsing and completion will be very limited."
+msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
@@ -15038,6 +15130,10 @@ msgstr "שגיאת כתיבה"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "שגיאת כתיבה: %s%sקובץ: %s%s%s"
+
+#: lazarusidestrconsts.liswrongversionin
+msgid "wrong version in %s: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisxmlerror
 msgid "XML Error"

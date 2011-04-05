@@ -4682,6 +4682,10 @@ msgstr "Die Klasse steht in Konflikt mit der .lfm-Datei:%sDie Unit %s%snutzt die
 msgid "Classes and properties exist. Values were not checked."
 msgstr "Klassen und Eigenschaften existieren. Werte wurden nicht geprüft."
 
+#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
+msgid "classes.ppu not found. Check your fpc.cfg."
+msgstr ""
+
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgstr "Klasse %s%s%s ist keine registrierte Komponentenklasse.%sKann keine Übernahme durchführen."
@@ -5616,6 +5620,10 @@ msgstr "Neukompilieren von %s einrichten"
 #: lazarusidestrconsts.lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
 msgstr "%sLazarus kompilieren%s einstellen"
+
+#: lazarusidestrconsts.lisconfigurelazaruside
+msgid "Configure Lazarus IDE"
+msgstr ""
 
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
@@ -6636,6 +6644,10 @@ msgstr "Direktiven für neue Unit"
 msgid "Directory %s%s%s not found."
 msgstr "Verzeichnis %s%s%s nicht gefunden."
 
+#: lazarusidestrconsts.lisdirectorynotfound2
+msgid "directory %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
 msgstr "Verzeichnis nicht beschreibbar"
@@ -7462,6 +7474,10 @@ msgstr "Datei %s%s%s wurde geändert. Speichern?"
 msgid "File has no project"
 msgstr "Datei gehört zu keinem Projekt"
 
+#: lazarusidestrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "Datei ist schreibgeschützt"
@@ -7489,6 +7505,10 @@ msgstr "Datei nicht gefunden"
 #: lazarusidestrconsts.lisfilenotfound2
 msgid "File %s%s%s not found.%s"
 msgstr "Datei %s%s%s nicht gefunden.%s"
+
+#: lazarusidestrconsts.lisfilenotfound3
+msgid "file %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
@@ -7622,6 +7642,14 @@ msgstr "Formatfehler"
 msgid "Form load error"
 msgstr "Formularladefehler"
 
+#: lazarusidestrconsts.lisfoundversionexpected
+msgid "Found version %s, expected %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpccfgismissing
+msgid "fpc.cfg is missing."
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake fehlgeschlagen"
@@ -7638,6 +7666,10 @@ msgstr "FPC-Ressourcen"
 #: lazarusidestrconsts.lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "FPC-Quelltextverzeichnis-Fehler"
+
+#: lazarusidestrconsts.lisfpcsources
+msgid "FPC sources"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpctooold
 msgid "FPC too old"
@@ -8387,6 +8419,10 @@ msgstr "Ungültiges Ausgabeverzeichnis"
 #: lazarusidestrconsts.lisinvalidselection
 msgid "Invalid selection"
 msgstr "Ungültige Auswahl"
+
+#: lazarusidestrconsts.lisinvalidversionin
+msgid "invalid version in %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisisagroupasettingcanonlybeaddedtonormalbuildmodes
 msgid "%s is a group. A setting can only be added to normal build modes."
@@ -13425,6 +13461,10 @@ msgstr "(oberen Nachbarn auswählen)"
 msgid "Select the file"
 msgstr "Die Datei auswählen"
 
+#: lazarusidestrconsts.lisselectfpcsourcedirectory
+msgid "Select FPC source directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "Auswahl überschreitet Stringkonstante"
@@ -13432,6 +13472,14 @@ msgstr "Auswahl überschreitet Stringkonstante"
 #: lazarusidestrconsts.lisselectiontool
 msgid "Selection tool"
 msgstr "Auswahlwerkzeug"
+
+#: lazarusidestrconsts.lisselectlazarussourcedirectory
+msgid "Select Lazarus source directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectpathof
+msgid "Select path of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
@@ -13678,6 +13726,10 @@ msgstr "Suchtext"
 msgid "Start Conversion"
 msgstr "Konvertierung beginnen"
 
+#: lazarusidestrconsts.lisstartide
+msgid "Start IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "Mit einem neuen Projekt beginnen"
@@ -13766,6 +13818,10 @@ msgstr "SynEdit"
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "Syntax-Modus"
+
+#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr ""
 
 #: lazarusidestrconsts.listab
 msgid "Tab"
@@ -13996,6 +14052,10 @@ msgstr "Der erste Erstellmodus ist der Vorgabemodus und muß im Projekt gespeich
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "Die folgenden Methoden, die von %s verwendet werden sind nicht im Quelltext%s%s%s%s%s%sDie hängenden Verweise löschen?"
 
+#: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
+msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr "Der Free Pascal-Compiler (Dateiname: %s) wurde nicht gefunden.%sEs wird empfohlen, FPC zu installieren."
@@ -14023,6 +14083,10 @@ msgstr "Das Anwendungspaket %s%sdas für die Ausführung nötig ist fehlt oder i
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "Das ausführende Programm %s%s%s%sist nicht vorhanden oder nicht ausführbar.%s%sSiehe Start -> Startparameter -> Lokal"
+
+#: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
+msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
+msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
@@ -14199,6 +14263,10 @@ msgstr "Diese Einstellungen werden mit dem Projekt gespeichert."
 #: lazarusidestrconsts.listheseunitswerenotfound
 msgid "These units were not found:"
 msgstr "Diese Units wurden gefunden:"
+
+#: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
+msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -14638,6 +14706,10 @@ msgstr "Quelltexte des Designers können nicht geholt werden."
 msgid "Unable to load file:%s%s"
 msgstr "Kann Datei:%s%s nicht laden"
 
+#: lazarusidestrconsts.lisunabletoloadfile2
+msgid "unable to load file %s: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
 msgstr "Die alte Ressourcendatei kann nicht geladen werden.%sDie Ressourcendatei ist die erste Include-Datei im%sInitialisierungsabschnitt.%sZum Beispiel {$I %s.lrs}.%sMögliche Ursache ist ein Syntaxfehler."
@@ -15004,6 +15076,10 @@ msgstr "Vorwärts suchen"
 msgid "Reset Result List"
 msgstr "Ergebnisliste zurücksetzen"
 
+#: lazarusidestrconsts.liswarning
+msgid "Warning: "
+msgstr ""
+
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "Warnung: Unklarer Dateiname gefunden: %s%s%s. Quelldatei ist: %s%s%s"
@@ -15019,6 +15095,10 @@ msgstr "Über&wachen"
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
 msgstr "Properties überwachen"
+
+#: lazarusidestrconsts.liswelcometolazaruside
+msgid "Welcome to Lazarus IDE %s"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references ..."
@@ -15038,6 +15118,18 @@ msgstr ""
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutapropercompilerthecodebrowsingandcompilingw
+msgid "Without a proper compiler the code browsing and compiling will be disappointing."
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
+msgid "Without a proper Lazarus directory you will get a lot of warnings."
+msgstr ""
+
+#: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
+msgid "Without the proper FPC sources code browsing and completion will be very limited."
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
@@ -15099,6 +15191,10 @@ msgstr "Schreibfehler"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Schreibfehler: %s%sDatei: %s%s%s"
+
+#: lazarusidestrconsts.liswrongversionin
+msgid "wrong version in %s: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisxmlerror
 msgid "XML Error"

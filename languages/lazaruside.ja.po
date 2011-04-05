@@ -4670,6 +4670,10 @@ msgstr "クラスはlfmファイルと衝突します。%sユニット%s%sはク
 msgid "Classes and properties exist. Values were not checked."
 msgstr "クラスとプロパティが存在します。値はまだチェックされていません。"
 
+#: lazarusidestrconsts.lisclassesppunotfoundcheckyourfpccfg
+msgid "classes.ppu not found. Check your fpc.cfg."
+msgstr ""
+
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgstr "クラス%s%s%sは登録されたコンポーネントクラスではありあせん。%s貼り付けできません。"
@@ -5605,6 +5609,10 @@ msgstr "構築 %s を設定"
 #: lazarusidestrconsts.lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
 msgstr "%sLazarus構築 %s を設定"
+
+#: lazarusidestrconsts.lisconfigurelazaruside
+msgid "Configure Lazarus IDE"
+msgstr ""
 
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
@@ -6626,6 +6634,10 @@ msgstr "新しいユニットの指令"
 msgid "Directory %s%s%s not found."
 msgstr "フォルダ %s%s%s が見つかりません。"
 
+#: lazarusidestrconsts.lisdirectorynotfound2
+msgid "directory %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectorynotwritable
 msgid "Directory not writable"
 msgstr "フォルダは書き込み可能ではありません。"
@@ -7452,6 +7464,10 @@ msgstr "ファイル%s%s%sは変更されています。保存しますか？"
 msgid "File has no project"
 msgstr "ファイルはプロジェクトを有していません"
 
+#: lazarusidestrconsts.lisfileisnotanexecutable
+msgid "File is not an executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
 msgstr "ファイルは書き込み不可です"
@@ -7479,6 +7495,10 @@ msgstr "ファイルが見つかりません"
 #: lazarusidestrconsts.lisfilenotfound2
 msgid "File %s%s%s not found.%s"
 msgstr "ファイル %s%s%sは見つかりません%s"
+
+#: lazarusidestrconsts.lisfilenotfound3
+msgid "file %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
@@ -7612,6 +7632,14 @@ msgstr "フォーマットエラー"
 msgid "Form load error"
 msgstr "フォームの読み込みエラー"
 
+#: lazarusidestrconsts.lisfoundversionexpected
+msgid "Found version %s, expected %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpccfgismissing
+msgid "fpc.cfg is missing."
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmakeに失敗しました"
@@ -7628,6 +7656,10 @@ msgstr "FPC リソース"
 #: lazarusidestrconsts.lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
 msgstr "FPCソースディレクトリエラー"
+
+#: lazarusidestrconsts.lisfpcsources
+msgid "FPC sources"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpctooold
 msgid "FPC too old"
@@ -8377,6 +8409,10 @@ msgstr "無効な発行ディレクトリ"
 #: lazarusidestrconsts.lisinvalidselection
 msgid "Invalid selection"
 msgstr "無効な選択"
+
+#: lazarusidestrconsts.lisinvalidversionin
+msgid "invalid version in %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisisagroupasettingcanonlybeaddedtonormalbuildmodes
 msgid "%s is a group. A setting can only be added to normal build modes."
@@ -13418,6 +13454,10 @@ msgstr "（選択された上隣）"
 msgid "Select the file"
 msgstr "ファイルを選択"
 
+#: lazarusidestrconsts.lisselectfpcsourcedirectory
+msgid "Select FPC source directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectionexceedsstringconstant
 msgid "Selection exceeds string constant"
 msgstr "選択範囲が文字列定数を超過しています。"
@@ -13425,6 +13465,14 @@ msgstr "選択範囲が文字列定数を超過しています。"
 #: lazarusidestrconsts.lisselectiontool
 msgid "Selection tool"
 msgstr "選択ツール"
+
+#: lazarusidestrconsts.lisselectlazarussourcedirectory
+msgid "Select Lazarus source directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectpathof
+msgid "Select path of %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
@@ -13671,6 +13719,10 @@ msgstr "テキスト検索"
 msgid "Start Conversion"
 msgstr "変換を開始"
 
+#: lazarusidestrconsts.lisstartide
+msgid "Start IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"
 msgstr "新プロジェクトで開始"
@@ -13759,6 +13811,10 @@ msgstr "SynEdit"
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "構文モード"
+
+#: lazarusidestrconsts.lissystemppunotfoundcheckyourfpccfg
+msgid "system.ppu not found. Check your fpc.cfg."
+msgstr ""
 
 #: lazarusidestrconsts.listab
 msgid "Tab"
@@ -13986,6 +14042,10 @@ msgstr "第一構築モードは既定のモードで、セッションでなく
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgstr "%sに用いられている以下のメソッドはソース%s%s%s%s%s%sにありません。その付随参照を削除しますか？"
 
+#: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
+msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
+msgstr ""
+
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
 msgstr "Free Pascalコンパイラ（ファイル名：%s）が見つかりませんでした。%s fpcをインストールすることをお薦めします。"
@@ -14013,6 +14073,10 @@ msgstr "実行ファイルの実行に必要なアプリケーションバンド
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr "起動しようとしているアプリケーション%s%s%s%sは存在しないか、実行ファイルではありません。実行→実行パラメータ→ローカル を参照のこと"
+
+#: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
+msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
+msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
@@ -14189,6 +14253,10 @@ msgstr "これらの設定は、プロジェクトに保管されました。"
 #: lazarusidestrconsts.listheseunitswerenotfound
 msgid "These units were not found:"
 msgstr "それらのユニットは見つかりませんでした。"
+
+#: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
+msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -14629,6 +14697,10 @@ msgstr "デザイナのソースを取得できません。"
 msgid "Unable to load file:%s%s"
 msgstr "ファイル%s%sを読み込めません"
 
+#: lazarusidestrconsts.lisunabletoloadfile2
+msgid "unable to load file %s: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
 msgstr "古いリソースファイルを読み込めません。%sそのリソースファイルは初期化セクションの%s最初のインクルードファイルです。%s例：{$I %s.lrs}%sおそらく文法エラーです。"
@@ -15000,6 +15072,10 @@ msgstr "前方検索"
 msgid "Reset Result List"
 msgstr "結果リストをリセット"
 
+#: lazarusidestrconsts.liswarning
+msgid "Warning: "
+msgstr ""
+
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "警告：紛らわしいファイルが見つかりました。ソースファイルは%s%s%sです。"
@@ -15015,6 +15091,10 @@ msgstr "監視(&W)"
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
 msgstr "プロパティを監視する"
+
+#: lazarusidestrconsts.liswelcometolazaruside
+msgid "Welcome to Lazarus IDE %s"
+msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references ..."
@@ -15034,6 +15114,18 @@ msgstr ""
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutapropercompilerthecodebrowsingandcompilingw
+msgid "Without a proper compiler the code browsing and compiling will be disappointing."
+msgstr ""
+
+#: lazarusidestrconsts.liswithoutaproperlazarusdirectoryyouwillgetalotofwarn
+msgid "Without a proper Lazarus directory you will get a lot of warnings."
+msgstr ""
+
+#: lazarusidestrconsts.liswithouttheproperfpcsourcescodebrowsingandcompletio
+msgid "Without the proper FPC sources code browsing and completion will be very limited."
 msgstr ""
 
 #: lazarusidestrconsts.liswithrequiredpackages
@@ -15095,6 +15187,10 @@ msgstr "書き込みエラー"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "書き込みエラー: %s%sファイル: %s%s%s"
+
+#: lazarusidestrconsts.liswrongversionin
+msgid "wrong version in %s: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisxmlerror
 msgid "XML Error"
