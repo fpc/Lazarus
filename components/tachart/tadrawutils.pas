@@ -69,6 +69,8 @@ type
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStart;
     procedure ClippingStop;
+    procedure DrawingBegin(const ABoundingBox: TRect);
+    procedure DrawingEnd;
     procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
     procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
@@ -126,6 +128,8 @@ type
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); virtual; abstract;
   public
     constructor Create;
+    procedure DrawingBegin(const ABoundingBox: TRect); virtual;
+    procedure DrawingEnd; virtual;
     procedure DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);
     procedure DrawLineDepth(const AP1, AP2: TPoint; ADepth: Integer);
     procedure LineTo(AX, AY: Integer); virtual; abstract;
@@ -274,6 +278,16 @@ constructor TBasicDrawer.Create;
 begin
   FChartColorToFPColorFunc := @ChartColorToFPColor;
   FGetFontOrientationFunc := @DummyGetFontOrientationFunc;
+end;
+
+procedure TBasicDrawer.DrawingBegin(const ABoundingBox: TRect);
+begin
+  Unused(ABoundingBox);
+end;
+
+procedure TBasicDrawer.DrawingEnd;
+begin
+  // Empty
 end;
 
 procedure TBasicDrawer.DrawLineDepth(AX1, AY1, AX2, AY2, ADepth: Integer);

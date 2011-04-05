@@ -677,6 +677,7 @@ var
   legendItems: TChartLegendItems = nil;
   legendRect: TRect;
 begin
+  ADrawer.DrawingBegin(ARect);
   Clear(ADrawer, ARect);
 
   FClipRect := ARect;
@@ -719,6 +720,7 @@ begin
       OnExtentChanged(Self);
     FPrevLogicalExtent := FLogicalExtent;
   end;
+  ADrawer.DrawingEnd;
 end;
 
 procedure TChart.DrawBackWall(ADrawer: IChartDrawer);
