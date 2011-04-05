@@ -2298,15 +2298,7 @@ begin
           if (lWinControl.Width <> Width) or
              (lWinControl.Height <> Height) or
              lWinControl.ClientRectNeedsInterfaceUpdate then
-          begin
-            lWinControl.DoAdjustClientRectChange;
-            if (lWinControl is TCustomPage) and (lWinControl.Parent is TCustomNotebook) then
-            begin
-              // the TCustomPage size is the ClientRect size of the parent
-              // => invalidate the Parent.ClientRect
-              lWinControl.Parent.InvalidateClientRectCache(false);
-            end;
-          end
+            lWinControl.DoAdjustClientRectChange
           else
           // If we get form size message then we probably changed it state
           // (minimized/maximized -> normal). Form adjust its clientrect in the

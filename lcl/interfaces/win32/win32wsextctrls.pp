@@ -288,11 +288,25 @@ end;
 
 function PageWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+var
+  Info: PWin32WindowInfo;
 begin
-  if Msg = WM_THEMECHANGED then
-  begin
-    ThemeServices.UpdateThemes;
-    TWin32WSCustomPage.ThemeChange(Window);
+  case Msg of
+    WM_THEMECHANGED:
+      begin
+        ThemeServices.UpdateThemes;
+        TWin32WSCustomPage.ThemeChange(Window);
+      end;
+    WM_SIZE:
+      begin
+        Info := GetWin32WindowInfo(Window);
+        if (Info^.WinControl.Parent is TCustomNotebook) then
+        begin
+          // the TCustomPage size is the ClientRect size of the parent
+          // => invalidate the Parent.ClientRect
+          Info^.WinControl.Parent.InvalidateClientRectCache(false);
+        end;
+      end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
 end;
