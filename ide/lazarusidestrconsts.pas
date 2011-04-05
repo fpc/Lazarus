@@ -3277,8 +3277,8 @@ resourcestring
     +'FPC sources code browsing and completion will be very limited.';
   lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh = 'The Lazarus '
     +'directory contains the sources of the IDE and the package files of LCL '
-    +'and many standard packages. For example it contains the file ide%'
-    +'slazarus.lpi. The translation files are located there too.';
+    +'and many standard packages. For example it contains the file "ide%'
+    +'slazarus.lpi". The translation files are located there too.';
   lisTheFreePascalCompilerExecutableTypicallyHasTheName = 'The Free Pascal '
     +'compiler executable typically has the name "%s". You can also use the '
     +'target specific compiler like "%s". Please give the full file path.';
