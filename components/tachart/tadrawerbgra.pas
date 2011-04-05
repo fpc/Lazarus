@@ -92,16 +92,6 @@ begin
       Result[i] := PointF(X, Y);
 end;
 
-procedure BoundingBoxToCenterAndHalfRadius(
-  AX1, AY1, AX2, AY2: Integer;
-  out ACX, ACY, ARX, ARY: Integer);
-begin
-  ACX := (AX1 + AX2) div 2;
-  ACY := (AY1 + AY2) div 2;
-  ARX := Abs(AX1 - AX2) div 2;
-  ARY := Abs(AY1 - AY2) div 2;
-end;
-
 { TBGRABitmapDrawer }
 
 procedure TBGRABitmapDrawer.AddToFontOrientation(ADelta: Integer);
@@ -309,10 +299,6 @@ begin
   FCanvas.TextOutAngle(
     AX, AY, FFontOrientation, AText, FFontColor, taLeftJustify);
 end;
-
-initialization
-  // Suppress incorrect "TAGeometry is unused" hint
-  Unused(DoublePoint(0, 0));
 
 end.
 

@@ -23,6 +23,8 @@ interface
 uses
   TAChartUtils, Types;
 
+procedure BoundingBoxToCenterAndHalfRadius(
+  AX1, AY1, AX2, AY2: Integer; out ACX, ACY, ARX, ARY: Integer);
 function CopyPoints(
   APoints: array of TPoint; AStartIndex, ANumPts: Integer): TPointArray;
 function DoublePoint(AX, AY: Double): TDoublePoint; inline;
@@ -79,6 +81,15 @@ uses
   Math;
 
 function PointLineSide(AP, A1, A2: TPoint): TValueSign; forward;
+
+procedure BoundingBoxToCenterAndHalfRadius(
+  AX1, AY1, AX2, AY2: Integer; out ACX, ACY, ARX, ARY: Integer);
+begin
+  ACX := (AX1 + AX2) div 2;
+  ACY := (AY1 + AY2) div 2;
+  ARX := Abs(AX1 - AX2) div 2;
+  ARY := Abs(AY1 - AY2) div 2;
+end;
 
 function CopyPoints(
   APoints: array of TPoint; AStartIndex, ANumPts: Integer): TPointArray;
