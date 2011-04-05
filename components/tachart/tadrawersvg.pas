@@ -32,18 +32,20 @@ type
     FClippingPathId: Integer;
     FFont: TFPCustomFont;
     FFontAngle: Double;
-    FPenColor: TFPColor;
+    FPen: TFPCustomPen;
     FPrevPos: TPoint;
     FStream: TStream;
 
     function FontSize: Integer; inline;
-    procedure InternalPolyline(
-      const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
-      const AFill: String);
+    function PointsToStr(
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer): String;
 
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
+
+    function StyleFill: String;
+    function StyleStroke: String;
 
     procedure WriteFmt(const AFormat: String; AParams: array of const);
     procedure WriteStr(const AString: String);
@@ -53,6 +55,7 @@ type
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
     constructor Create(AStream: TStream; AWriteDocType: Boolean);
+    destructor Destroy; override;
   public
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart;
@@ -91,16 +94,17 @@ uses
 
 const
   RECT_FMT =
-    '<rect x="%d" y="%d" width="%d" height="%d" ' +
-    'style="stroke: %s; fill: %s;"/>';
+    '<rect x="%d" y="%d" width="%d" height="%d" style="%s"/>';
 
 function ColorToHex(AColor: TFPColor): String;
 begin
-  With AColor do
-    Result := '#' +
-      IntToHex(red shr 8, 2) +
-      IntToHex(green shr 8, 2) +
-      IntToHex(blue shr 8, 2);
+  if AColor = colBlack then
+    Result := 'black'
+  else if AColor = colWhite then
+    Result := 'white'
+  else
+    with AColor do
+      Result := Format('#%.2x%.2x%.2x', [red shr 8, green shr 8, blue shr 8]);
 end;
 
 { TSVGDrawer }
@@ -115,7 +119,7 @@ begin
   FClippingPathId += 1;
   WriteFmt('<clipPath id="clip%d">', [FClippingPathId]);
   with AClipRect do
-    WriteFmt(RECT_FMT, [Left, Top, Right - Left, Bottom - Top, 'black', 'none']);
+    WriteFmt(RECT_FMT, [Left, Top, Right - Left, Bottom - Top, '']);
   WriteStr('</clipPath>');
   ClippingStart;
 end;
@@ -133,11 +137,18 @@ end;
 constructor TSVGDrawer.Create(AStream: TStream; AWriteDocType: Boolean);
 begin
   FStream := AStream;
+  FPen := TFPCustomPen.Create;
   if AWriteDocType then begin
     WriteStr('<?xml version="1.0"?>');
     WriteStr('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"');
     WriteStr('"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">');
   end;
+end;
+
+destructor TSVGDrawer.Destroy;
+begin
+  FreeAndNil(FPen);
+  inherited Destroy;
 end;
 
 procedure TSVGDrawer.DrawingBegin(const ABoundingBox: TRect);
@@ -162,14 +173,14 @@ var
   cx, cy, rx, ry: Integer;
 begin
   BoundingBoxToCenterAndHalfRadius(AX1, AY1, AX2, AY2, cx, cy, rx, ry);
-  WriteFmt('<ellipse cx="%d" cy="%d" rx="%d" ry="%d"/>', [cx, cy, rx, ry]);
+  WriteFmt(
+    '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" style="%s"/>',
+    [cx, cy, rx, ry, StyleFill + StyleStroke]);
 end;
 
 procedure TSVGDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
 begin
-  WriteFmt(
-    RECT_FMT,
-    [AX1, AY1, AX2 - AX1, AY2 - AY1, 'none', ColorToHex(FBrushColor)]);
+  WriteFmt(RECT_FMT, [AX1, AY1, AX2 - AX1, AY2 - AY1, StyleFill]);
 end;
 
 function TSVGDrawer.FontSize: Integer;
@@ -187,28 +198,11 @@ begin
   Result := FFontAngle;
 end;
 
-procedure TSVGDrawer.InternalPolyline(
-  const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
-  const AFill: String);
-var
-  s: String;
-  i: Integer;
-begin
-  if ANumPts < 0 then
-    ANumPts := Length(APoints) - AStartIndex;
-  s := '';
-  for i := 0 to ANumPts - 1 do
-    s += Format('%d %d ', [APoints[i].X, APoints[i].Y]);
-  WriteFmt(
-    '<polyline points="%s" style="stroke: %s; fill: %s"/>',
-    [s, ColorToHex(FPenColor), AFill]);
-end;
-
 procedure TSVGDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
   WriteFmt(
-    '<line x1="%d" y1="%d" x2="%d" y2="%d" style="stroke: %s;"/>',
-    [AX1, AY1, AX2, AY2, ColorToHex(FPenColor)]);
+    '<line x1="%d" y1="%d" x2="%d" y2="%d" style="%s"/>',
+    [AX1, AY1, AX2, AY2, StyleStroke]);
 end;
 
 procedure TSVGDrawer.Line(const AP1, AP2: TPoint);
@@ -227,10 +221,25 @@ begin
   FPrevPos := Point(AX, AY);
 end;
 
+function TSVGDrawer.PointsToStr(
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer): String;
+var
+  i: Integer;
+begin
+  if ANumPts < 0 then
+    ANumPts := Length(APoints) - AStartIndex;
+  Result := '';
+  for i := 0 to ANumPts - 1 do
+    with APoints[i + AStartIndex] do
+      Result += Format('%d %d ', [X, Y]);
+end;
+
 procedure TSVGDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex: Integer; ANumPts: Integer);
 begin
-  InternalPolyline(APoints, AStartIndex, ANumPts, ColorToHex(FBrushColor));
+  WriteFmt(
+    '<polygon points="%s" style="%s"/>',
+    [PointsToStr(APoints, AStartIndex, ANumPts), StyleFill + StyleStroke]);
 end;
 
 procedure TSVGDrawer.Polyline(
@@ -238,12 +247,14 @@ procedure TSVGDrawer.Polyline(
   AEndPoint: Boolean);
 begin
   Unused(AEndPoint);
-  InternalPolyline(APoints, AStartIndex, ANumPts, 'none');
+  WriteFmt(
+    '<polyline points="%s" style="stroke: %s;"/>',
+    [PointsToStr(APoints, AStartIndex, ANumPts), StyleStroke]);
 end;
 
 procedure TSVGDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
-  FPenColor := FChartColorToFPColorFunc(AColor);
+  FPen.FPColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TSVGDrawer.RadialPie(
@@ -257,9 +268,7 @@ end;
 procedure TSVGDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
 begin
   WriteFmt(
-    RECT_FMT,
-    [AX1, AY1, AX2 - AX1, AY2 - AY1,
-      ColorToHex(FPenColor), ColorToHex(FBrushColor)]);
+    RECT_FMT, [AX1, AY1, AX2 - AX1, AY2 - AY1, StyleFill + StyleStroke]);
 end;
 
 procedure TSVGDrawer.Rectangle(const ARect: TRect);
@@ -292,13 +301,14 @@ end;
 
 procedure TSVGDrawer.SetPen(APen: TFPCustomPen);
 begin
-  FPenColor := APen.FPColor;
+  FPen.FPColor := APen.FPColor;
+  FPen.Width := APen.Width;
 end;
 
 procedure TSVGDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
 begin
-  FPenColor := FChartColorToFPColorFunc(AColor);
-  Unused(AStyle);
+  FPen.FPColor := FChartColorToFPColorFunc(AColor);
+  FPen.Style := AStyle;
 end;
 
 function TSVGDrawer.SimpleTextExtent(const AText: String): TPoint;
@@ -319,6 +329,18 @@ begin
     'style="stroke: none; fill: %s; font-family: %s; font-size: %dpt;">' +
     '%s</text>',
     [p.X, p.Y, ColorToHex(FFont.FPColor), FFont.Name, FontSize, AText]);
+end;
+
+function TSVGDrawer.StyleFill: String;
+begin
+  Result := Format('fill:%s;', [ColorToHex(FBrushColor)]);
+end;
+
+function TSVGDrawer.StyleStroke: String;
+begin
+  Result := 'stroke:' + ColorToHex(FPen.FPColor) + ';';
+  if FPen.Width <> 1 then
+    Result += 'stroke-width:' + IntToStr(FPen.Width) + ';';
 end;
 
 procedure TSVGDrawer.WriteFmt(const AFormat: String; AParams: array of const);
