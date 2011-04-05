@@ -7470,6 +7470,10 @@ msgstr "No se encontró el archivo %s%s%s.%s"
 msgid "file %s not found"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgstr "No se encontró el archivo %s%s%s.%s¿Desea crearlo?%s"
@@ -8398,6 +8402,10 @@ msgstr "%s%s%s es un nombre de proyecto no válido.%sPor favor escoja otro (e.j.
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%s es un %s.%sEsta dependencia circular no es permitida."
+
+#: lazarusidestrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -15370,7 +15378,10 @@ msgid "Mi&nor version:"
 msgstr "Versión Me&nor:"
 
 #: lazarusidestrconsts.rsok
-msgid "ok"
+#, fuzzy
+#| msgid "ok"
+msgctxt "lazarusidestrconsts.rsok"
+msgid "OK"
 msgstr "Aceptar"
 
 #: lazarusidestrconsts.rsotherinfo

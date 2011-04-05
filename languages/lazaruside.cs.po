@@ -7445,6 +7445,10 @@ msgstr "Soubor %s%s%s nenalezen.%s"
 msgid "file %s not found"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgstr "Soubor %s%s%s nenalezen.%sChcete jej vytvořit?%s"
@@ -8372,6 +8376,10 @@ msgstr "%s%s%s je chybné jméno projektu.%sProsím vyberte jiné (např. projec
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%s je %s.%sTaková cyklická závislost není povolená."
+
+#: lazarusidestrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -15315,7 +15323,10 @@ msgid "Mi&nor version:"
 msgstr "Ve&dlejší verze:"
 
 #: lazarusidestrconsts.rsok
-msgid "ok"
+#, fuzzy
+#| msgid "ok"
+msgctxt "lazarusidestrconsts.rsok"
+msgid "OK"
 msgstr "ok"
 
 #: lazarusidestrconsts.rsotherinfo

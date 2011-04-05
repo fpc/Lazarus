@@ -7500,6 +7500,10 @@ msgstr "ファイル %s%s%sは見つかりません%s"
 msgid "file %s not found"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgstr "ファイル %s%s%sは見つかりません%s作成しますか？%s"
@@ -8429,6 +8433,10 @@ msgstr "%s%s%s は無効なプロジェクト名です. 別の(例 project1.lpi)
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%sは%sです、%s循環参照は許されません。"
+
+#: lazarusidestrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -15442,7 +15450,10 @@ msgid "Mi&nor version:"
 msgstr "マイナーバージョン(&n)"
 
 #: lazarusidestrconsts.rsok
-msgid "ok"
+#, fuzzy
+#| msgid "ok"
+msgctxt "lazarusidestrconsts.rsok"
+msgid "OK"
 msgstr "ok"
 
 #: lazarusidestrconsts.rsotherinfo

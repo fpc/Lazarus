@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-06 01:33+0300\n"
+"PO-Revision-Date: 2011-04-06 03:04+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7499,6 +7499,10 @@ msgstr "Файл %s%s%s не найден.%s"
 msgid "file %s not found"
 msgstr "файл %s не найден"
 
+#: lazarusidestrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr "файл не найден"
+
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgstr "Файл %s%s%s не найден.%sСоздать его?%s"
@@ -8427,6 +8431,10 @@ msgstr "%s%s%s не является корректным именем прое�
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%s является %s.%sТакая круговая зависимость не разрешена."
+
+#: lazarusidestrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr "каталог не найден"
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -15417,7 +15425,9 @@ msgid "Mi&nor version:"
 msgstr "&Младшая:"
 
 #: lazarusidestrconsts.rsok
-msgid "ok"
+#| msgid "ok"
+msgctxt "lazarusidestrconsts.rsok"
+msgid "OK"
 msgstr "ОК"
 
 #: lazarusidestrconsts.rsotherinfo

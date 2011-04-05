@@ -7446,6 +7446,10 @@ msgstr ""
 msgid "file %s not found"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgstr ""
@@ -8372,6 +8376,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
+msgstr ""
+
+#: lazarusidestrconsts.lisisddirectorynotfound
+msgid "directory not found"
 msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
@@ -15323,7 +15331,8 @@ msgid "Mi&nor version:"
 msgstr ""
 
 #: lazarusidestrconsts.rsok
-msgid "ok"
+msgctxt "lazarusidestrconsts.rsok"
+msgid "OK"
 msgstr ""
 
 #: lazarusidestrconsts.rsotherinfo

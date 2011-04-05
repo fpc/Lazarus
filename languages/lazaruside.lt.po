@@ -7491,6 +7491,10 @@ msgstr "Failas %s%s%s nerastas.%s"
 msgid "file %s not found"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgstr "Failas %s%s%s nerastas.%sJį sukurti?%s"
@@ -8419,6 +8423,10 @@ msgstr "Projekto pavadinimas %s%s%s yra klaidingas.%sNurodykite kitokį pavadini
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
 msgstr "%s yra %s.%sŠis priklausomybių ratas nėra leidžiamas."
+
+#: lazarusidestrconsts.lisisddirectorynotfound
+msgid "directory not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
 msgid "I wonder how you did that. Error in the %s:"
@@ -15425,7 +15433,10 @@ msgid "Mi&nor version:"
 msgstr "&Mažoji laida:"
 
 #: lazarusidestrconsts.rsok
-msgid "ok"
+#, fuzzy
+#| msgid "ok"
+msgctxt "lazarusidestrconsts.rsok"
+msgid "OK"
 msgstr "gerai"
 
 #: lazarusidestrconsts.rsotherinfo

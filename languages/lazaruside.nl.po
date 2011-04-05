@@ -7486,6 +7486,10 @@ msgstr "Bestand %s%s%s niet gevonden.%s"
 msgid "file %s not found"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilenotfound4
+msgid "file not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgstr "Bestand %s%s%s niet gevonden.%sWilt u het bestand maken?%s"
@@ -8412,6 +8416,10 @@ msgstr "%s%s%s is geen geldige projectnaam.%s(Geldig is bijvoorbeeld: project1.l
 
 #: lazarusidestrconsts.lisisathiscircledependencyisnotallowed
 msgid "%s is a %s.%sThis circle dependency is not allowed."
+msgstr ""
+
+#: lazarusidestrconsts.lisisddirectorynotfound
+msgid "directory not found"
 msgstr ""
 
 #: lazarusidestrconsts.lisiwonderhowyoudidthaterrorinthe
@@ -15414,8 +15422,9 @@ msgid "Mi&nor version:"
 msgstr ""
 
 #: lazarusidestrconsts.rsok
-msgid "ok"
-msgstr ""
+msgctxt "lazarusidestrconsts.rsok"
+msgid "OK"
+msgstr "Ok"
 
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
