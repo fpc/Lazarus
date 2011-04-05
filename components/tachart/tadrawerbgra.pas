@@ -28,6 +28,7 @@ type
   TBGRABitmapDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
     FBrushColor: TBGRAPixel;
+    FBrushStyle: TFPBrushStyle;
     FCanvas: TBGRABitmap;
     FFontColor: TBGRAPixel;
     FFontOrientation: Integer;
@@ -138,8 +139,20 @@ begin
 end;
 
 procedure TBGRABitmapDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
+var
+  bt: TBGRACustomBitmap;
 begin
-  FCanvas.FillRect(AX1, AY1, AX2, AY2, FBrushColor, dmSet);
+  if FBrushStyle = bsSolid then
+    FCanvas.FillRect(AX1, AY1, AX2, AY2, FBrushColor, dmSet)
+  else begin
+    bt := FCanvas.CreateBrushTexture(
+      FBrushStyle, FBrushColor, BGRAPixelTransparent);
+    try
+      FCanvas.FillRect(AX1, AY1, AX2, AY2, bt, dmSet)
+    finally
+      bt.Free;
+    end;
+  end;
 end;
 
 function TBGRABitmapDrawer.GetBrushColor: TChartColor;
@@ -178,9 +191,22 @@ end;
 
 procedure TBGRABitmapDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex: Integer; ANumPts: Integer);
+var
+  bt: TBGRACustomBitmap;
 begin
-  FCanvas.DrawPolygonAntialias(
-    PointsToPointsF(APoints, AStartIndex, ANumPts), FBrushColor, 1.0);
+  if FBrushStyle = bsSolid then
+    FCanvas.DrawPolygonAntialias(
+      PointsToPointsF(APoints, AStartIndex, ANumPts), FBrushColor, FPenWidth)
+  else begin
+    bt := FCanvas.CreateBrushTexture(
+      FBrushStyle, FBrushColor, BGRAPixelTransparent);
+    try
+      FCanvas.DrawPolygonAntialias(
+        PointsToPointsF(APoints, AStartIndex, ANumPts), bt, FPenWidth);
+    finally
+      bt.Free;
+    end;
+  end;
 end;
 
 procedure TBGRABitmapDrawer.Polyline(
@@ -207,19 +233,34 @@ begin
 end;
 
 procedure TBGRABitmapDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
+var
+  bt: TBGRACustomBitmap;
 begin
-  FCanvas.Rectangle(AX1, AY1, AX2, AY2, FPenColor, FBrushColor, dmSet);
+  if FBrushStyle = bsSolid then
+    FCanvas.RectangleAntialias(
+      AX1, AY1, AX2, AY2, FPenColor, FPenWidth, FBrushColor)
+  else begin
+    bt := FCanvas.CreateBrushTexture(
+      FBrushStyle, FBrushColor, BGRAPixelTransparent);
+    try
+      FCanvas.RectangleAntialias(AX1, AY1, AX2, AY2, bt, FPenWidth);
+    finally
+      bt.Free;
+    end;
+  end;
 end;
 
 procedure TBGRABitmapDrawer.Rectangle(const ARect: TRect);
 begin
-  FCanvas.Rectangle(ARect, FPenColor, FBrushColor, dmSet);
+  with ARect do
+    Rectangle(Left, Top, Right, Bottom)
 end;
 
 procedure TBGRABitmapDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
   with ABrush.FPColor do
     FBrushColor := BGRA(red shr 8, green shr 8, blue shr 8, alpha shr 8);
+  FBrushStyle := ABrush.Style;
 end;
 
 procedure TBGRABitmapDrawer.SetBrushColor(AColor: TChartColor);
@@ -232,6 +273,7 @@ procedure TBGRABitmapDrawer.SetBrushParams(
 begin
   Unused(AStyle);
   FBrushColor := ColorToBGRA(AColor);
+  FBrushStyle := AStyle;
 end;
 
 procedure TBGRABitmapDrawer.SetFont(AFont: TFPCustomFont);
