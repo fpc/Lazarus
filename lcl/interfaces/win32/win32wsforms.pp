@@ -725,10 +725,7 @@ end;
 { TWin32WSHintWindow }
 
 function HintWindowWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
-var
-  Info: PWin32WindowInfo;
 begin
-  Info := GetWin32WindowInfo(Window);
   case Msg of
     WM_NCHITTEST:
       Result := HTTRANSPARENT;
