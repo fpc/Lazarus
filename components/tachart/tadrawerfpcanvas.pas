@@ -80,7 +80,7 @@ type
 implementation
 
 uses
-  SysUtils {$IFDEF USE_FTFONT}, TAGeometry{$ENDIF};
+  SysUtils, TAGeometry;
 
 type
   TFPCanvasHelperCrack = class(TFPCanvasHelper);
@@ -90,16 +90,6 @@ var
   d: TFPCanvasHelperCrack absolute ADest;
 begin
   d.DoCopyProps(ASrc);
-end;
-
-function CopyArray(
-  const A: array of TPoint; AStart, ACount: Integer): TPointArray;
-var
-  i: Integer;
-begin
-  SetLength(Result, ACount);
-  for i := 0 to ACount - 1 do
-    Result[i] := A[i + AStart];
 end;
 
 { TFPCanvasDrawer }
@@ -202,7 +192,7 @@ begin
   if (ANumPts < 0) and (AStartIndex = 0) then
     FCanvas.Polygon(APoints)
   else
-    FCanvas.Polygon(CopyArray(APoints, AStartIndex, ANumPts));
+    FCanvas.Polygon(CopyPoints(APoints, AStartIndex, ANumPts));
 end;
 
 procedure TFPCanvasDrawer.Polyline(
@@ -213,7 +203,7 @@ begin
   if (ANumPts < 0) and (AStartIndex = 0) then
     FCanvas.Polyline(APoints)
   else
-    FCanvas.Polyline(CopyArray(APoints, AStartIndex, ANumPts));
+    FCanvas.Polyline(CopyPoints(APoints, AStartIndex, ANumPts));
 end;
 
 procedure TFPCanvasDrawer.PrepareSimplePen(AColor: TChartColor);

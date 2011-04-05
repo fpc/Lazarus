@@ -23,6 +23,8 @@ interface
 uses
   TAChartUtils, Types;
 
+function CopyPoints(
+  APoints: array of TPoint; AStartIndex, ANumPts: Integer): TPointArray;
 function DoublePoint(AX, AY: Double): TDoublePoint; inline;
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint); inline;
@@ -77,6 +79,18 @@ uses
   Math;
 
 function PointLineSide(AP, A1, A2: TPoint): TValueSign; forward;
+
+function CopyPoints(
+  APoints: array of TPoint; AStartIndex, ANumPts: Integer): TPointArray;
+var
+  i: Integer;
+begin
+  if ANumPts = -1 then
+    ANumPts := Length(APoints) - AStartIndex;
+  SetLength(Result, ANumPts);
+  for i := 0 to ANumPts - 1 do
+    Result[i] := APoints[i + AStartIndex];
+end;
 
 function DoublePoint(AX, AY: Double): TDoublePoint; inline;
 begin
