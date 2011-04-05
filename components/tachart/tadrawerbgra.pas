@@ -258,8 +258,7 @@ end;
 
 procedure TBGRABitmapDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  with ABrush.FPColor do
-    FBrushColor := BGRA(red shr 8, green shr 8, blue shr 8, alpha shr 8);
+  FBrushColor := FPColorToBGRA(ABrush.FPColor);
   FBrushStyle := ABrush.Style;
 end;
 
@@ -281,8 +280,7 @@ begin
   FCanvas.FontName := AFont.Name;
   FCanvas.FontHeight := AFont.Size * 96 div 72;
   FFontOrientation := FGetFontOrientationFunc(AFont);
-  with AFont.FPColor do
-    FFontColor := BGRA(red shr 8, green shr 8, blue shr 8, alpha shr 8);
+  FFontColor := FPColorToBGRA(AFont.FPColor);
   // TODO: FontStyle
 end;
 
@@ -291,8 +289,7 @@ begin
   FCanvas.PenStyle := APen.Style;
   FPenWidth := APen.Width;
   // TODO: JoinStyle
-  with APen.FPColor do
-    FPenColor := BGRA(red shr 8, green shr 8, blue shr 8, alpha shr 8);
+  FPenColor := FPColorToBGRA(APen.FPColor);
 end;
 
 procedure TBGRABitmapDrawer.SetPenParams(
