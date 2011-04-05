@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  SysUtils, Forms, Graphics, Dialogs, ComCtrls, TAGraph, TASeries, TAFuncSeries;
+  SysUtils, Forms, Graphics, Dialogs, ComCtrls, TAGraph, TASeries, TAFuncSeries, Classes;
 
 type
 
@@ -21,12 +21,14 @@ type
     tbSaveAsPNG: TToolButton;
     tbCopyToClipboard: TToolButton;
     tbSaveAsJPEG: TToolButton;
+    tbSaveAsSVG: TToolButton;
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure FormCreate(Sender: TObject);
     procedure tbCopyToClipboardClick(Sender: TObject);
     procedure tbSaveAsBMPClick(Sender: TObject);
     procedure tbSaveAsJPEGClick(Sender: TObject);
     procedure tbSaveAsPNGClick(Sender: TObject);
+    procedure tbSaveAsSVGClick(Sender: TObject);
   private
     function GetFileName(const AExt: String): String;
   end;
@@ -37,6 +39,9 @@ var
 implementation
 
 {$R *.lfm}
+
+uses
+  TADrawerSVG, TADrawUtils, TADrawerCanvas;
 
 { TForm1 }
 
@@ -83,6 +88,22 @@ end;
 procedure TForm1.tbSaveAsPNGClick(Sender: TObject);
 begin
   Chart1.SaveToFile(TPortableNetworkGraphic, GetFileName('png'));
+end;
+
+procedure TForm1.tbSaveAsSVGClick(Sender: TObject);
+var
+  fs: TFileStream;
+  id: IChartDrawer;
+begin
+  fs := TFileStream.Create(GetFileName('svg'), fmCreate);
+  try
+    id := TSVGDrawer.Create(fs, true);
+    id.DoChartColorToFPColor := @ChartColorSysToFPColor;
+    with Chart1 do
+      Draw(id, Rect(0, 0, Width, Height));
+  finally
+    fs.Free;
+  end;
 end;
 
 end.
