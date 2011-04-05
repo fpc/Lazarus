@@ -426,15 +426,44 @@ function NotebookParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
       var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
 var
   NMHdr: PNMHDR;
+  LMNotify: TLMNotify;
 begin
+  Result := False;
   if Msg = WM_NOTIFY then
   begin
-    Result := False;
     NMHdr := PNMHDR(LParam);
     with NMHdr^ do
       case code of
         TCN_SELCHANGE:
-          idFrom := ShowHideTabPage(HWndFrom, True);
+          begin
+            Result := True;
+            idFrom := ShowHideTabPage(HWndFrom, True);
+            with LMNotify Do
+            begin
+              Msg := LM_NOTIFY;
+              IDCtrl := WParam;
+              NMHdr := PNMHDR(LParam);
+              Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+            end;
+            DeliverMessage(AWinControl, LMNotify);
+            NotebookFocusNewControl(AWinControl as TCustomNotebook, idFrom);
+            MsgResult := LMNotify.Result;
+          end;
+        TCN_SELCHANGING:
+          begin
+            Result := True;
+            with LMNotify Do
+            begin
+              Msg := LM_NOTIFY;
+              IDCtrl := WParam;
+              NMHdr := PNMHDR(LParam);
+              Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+            end;
+            DeliverMessage(AWinControl, LMNotify);
+            if LMNotify.Result = 0 then
+              ShowHideTabPage(HWndFrom, False);
+            MsgResult := LMNotify.Result;
+          end;
       end;
   end;
 end;

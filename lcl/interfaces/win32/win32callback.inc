@@ -2438,19 +2438,6 @@ begin
       WinProcess := LMKey.Result = 0;
       WParam := LMKey.CharCode;
     end;
-
-    LM_NOTIFY:
-    begin
-      with LMNotify.NMHdr^ do
-        case code of
-          TCN_SELCHANGING:
-            if LMNotify.Result = 0 then
-              ShowHideTabPage(HWndFrom, False);
-          TCN_SELCHANGE:
-            NotebookFocusNewControl(GetWin32WindowInfo(hwndFrom)^.WinControl as TCustomNotebook, idFrom);
-        end;
-    end;
-
   else
     case Msg of
       WM_LBUTTONDOWN, WM_LBUTTONUP:
