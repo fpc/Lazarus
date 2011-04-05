@@ -141,6 +141,13 @@ type
     ASender: TChart; const ARect: TRect;
     var ADoDefaultDrawing: Boolean) of object;
 
+  TChartRenderingParams = record
+    FClipRect: TRect;
+    FIsZoomed: Boolean;
+    FLogicalExtent, FPrevLogicalExtent: TDoubleRect;
+    FScale, FOffset: TDoublePoint;
+  end;
+
   { TChart }
 
   TChart = class(TCustomChart, ICoordTransformer)
@@ -195,6 +202,7 @@ type
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
     function GetMargins(ADrawer: IChartDrawer): TRect;
+    function GetRenderingParams: TChartRenderingParams;
     function GetSeriesCount: Integer;
     function GetToolset: TBasicChartToolset;
     procedure HideReticule;
@@ -219,6 +227,7 @@ type
     procedure SetOnChartPaint(AValue: TChartPaintEvent);
     procedure SetOnDrawReticule(AValue: TDrawReticuleEvent);
     procedure SetProportional(AValue: Boolean);
+    procedure SetRenderingParams(AValue: TChartRenderingParams);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetReticulePos(const AValue: TPoint);
     procedure SetTitle(Value: TChartTitle);
@@ -274,6 +283,9 @@ type
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure StyleChanged(Sender: TObject); override;
     procedure ZoomFull; override;
+  public
+    property RenderingParams: TChartRenderingParams
+      read GetRenderingParams write SetRenderingParams;
   public // Coordinate conversion
     function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
     function ImageToGraph(const APoint: TPoint): TDoublePoint;
@@ -914,6 +926,16 @@ begin
     a[i] := ADrawer.Scale(a[i]);
 end;
 
+function TChart.GetRenderingParams: TChartRenderingParams;
+begin
+  Result.FScale := FScale;
+  Result.FOffset := FOffset;
+  Result.FClipRect := FClipRect;
+  Result.FLogicalExtent := FLogicalExtent;
+  Result.FPrevLogicalExtent := FPrevLogicalExtent;
+  Result.FIsZoomed := FIsZoomed;
+end;
+
 function TChart.GetSeriesCount: Integer;
 begin
   Result := FSeries.FList.Count;
@@ -987,29 +1009,15 @@ end;
 
 procedure TChart.PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
 var
-  oldScale, oldOffset: TDoublePoint;
-  oldClipRect: TRect;
-  oldLogicalExtent, oldPrevLogicalExtent: TDoubleRect;
-  oldIsZoomed: Boolean;
+  rp: TChartRenderingParams;
 begin
-  // TODO: Group rendering params into a structure.
-  oldScale := FScale;
-  oldOffset := FOffset;
-  oldClipRect := FClipRect;
-  oldLogicalExtent := FLogicalExtent;
-  oldPrevLogicalExtent := FPrevLogicalExtent;
-  oldIsZoomed := FIsZoomed;
+  rp := RenderingParams;
   ExtentBroadcaster.Locked := true;
   try
     FIsZoomed := false;
     PaintOnCanvas(ACanvas, ARect);
   finally
-    FScale := oldScale;
-    FOffset := oldOffset;
-    FClipRect := oldClipRect;
-    FLogicalExtent := oldLogicalExtent;
-    FPrevLogicalExtent := oldPrevLogicalExtent;
-    FIsZoomed := oldIsZoomed;
+    RenderingParams := rp;
     ExtentBroadcaster.Locked := false;
   end;
 end;
@@ -1242,6 +1250,16 @@ begin
   if FProportional = AValue then exit;
   FProportional := AValue;
   Invalidate;
+end;
+
+procedure TChart.SetRenderingParams(AValue: TChartRenderingParams);
+begin
+  FScale := AValue.FScale;
+  FOffset := AValue.FOffset;
+  FClipRect := AValue.FClipRect;
+  FLogicalExtent := AValue.FLogicalExtent;
+  FPrevLogicalExtent := AValue.FPrevLogicalExtent;
+  FIsZoomed := AValue.FIsZoomed;
 end;
 
 procedure TChart.SetReticuleMode(const AValue: TReticuleMode);
