@@ -213,7 +213,7 @@ begin
   ADirectory:=TrimFilename(ADirectory);
   if not DirPathExistsCached(ADirectory) then
   begin
-    Note:=lisEnvOptDlgDirectoryNotFound;
+    Note:=lisISDDirectoryNotFound;
     exit;
   end;
   ADirectory:=AppendPathDelim(ADirectory);
@@ -379,7 +379,7 @@ begin
   AFilename:=TrimFilename(AFilename);
   if not FileExistsCached(AFilename) then
   begin
-    Note:=lisFileNotFound;
+    Note:=lisFileNotFound4;
     exit;
   end;
   if not FileIsExecutableCached(AFilename) then
@@ -632,7 +632,7 @@ begin
   ADirectory:=TrimFilename(ADirectory);
   if not DirPathExistsCached(ADirectory) then
   begin
-    Note:=lisEnvOptDlgDirectoryNotFound;
+    Note:=lisISDDirectoryNotFound;
     exit;
   end;
   ADirectory:=AppendPathDelim(ADirectory);
