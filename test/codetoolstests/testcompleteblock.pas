@@ -113,10 +113,40 @@ end;
 procedure TTestCodetoolsCompleteBlock.TestCompleteBlockClassStart;
 begin
   CompleteBlock('type'+LineEnding
-              +'  TTestClass = class(TObject)|',
-              'type'+LineEnding
-              +'  TTestClass = class(TObject)'+LineEnding
-              +'  |end;');
+               +'  TTestClass = class(TObject)|',
+                'type'+LineEnding
+               +'  TTestClass = class(TObject)'+LineEnding
+               +'  |end;');
+  CompleteBlock('type'+LineEnding
+               +'  TTestClass = class(TObject)|'+LineEnding
+               +'  TSecondClass =',
+                'type'+LineEnding
+               +'  TTestClass = class(TObject)'+LineEnding
+               +'  |end;'+LineEnding
+               +LineEnding
+               +'  TSecondClass =');
+  CompleteBlock('type'+LineEnding
+               +'  TTestClass = class(TObject)|'+LineEnding
+               +'implementation',
+                'type'+LineEnding
+               +'  TTestClass = class(TObject)'+LineEnding
+               +'  |end;'+LineEnding
+               +LineEnding
+               +'implementation');
+  CompleteBlock('begin'+LineEnding
+               +'  while do begin|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  while do begin|'+LineEnding
+               +'  end;'+LineEnding
+               +'end.');
+  CompleteBlock('begin'+LineEnding
+               +'  repeat|'+LineEnding
+               +'end.',
+                'begin'+LineEnding
+               +'  repeat|'+LineEnding
+               +'  until ;'+LineEnding
+               +'end.');
 end;
 
 initialization
