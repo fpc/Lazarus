@@ -10358,8 +10358,10 @@ var
   AIndex: Integer;
   ASubIndex: Integer;
 begin
-  if ((FSelection.Count > 0) and (FSelection.IndexOf(AItem) <> -1)) or
-    (QTreeWidget_isItemSelected(QTreeWidgetH(Widget), AItem) = ASelect) then
+
+  if not InUpdate and
+    (((FSelection.Count > 0) and (FSelection.IndexOf(AItem) <> -1)) or
+    (QTreeWidget_isItemSelected(QTreeWidgetH(Widget), AItem) = ASelect)) then
     exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
@@ -10392,7 +10394,6 @@ begin
   Msg.NMHdr := @NMLV.hdr;
 
   QTreeWidget_setItemSelected(QTreeWidgetH(Widget), AItem, ASelect);
-
   if not FSyncingItems then
     DeliverMessage(Msg);
 end;

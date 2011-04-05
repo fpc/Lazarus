@@ -1258,7 +1258,7 @@ begin
       lisFocused: QtTreeWidget.setCurrentItem(TWI);
       lisSelected:
       begin
-        if ALV.RowSelect and AIsSet then
+        if ALV.RowSelect and AIsSet and not ALV.MultiSelect then
           QtTreeWidget.setCurrentItem(TWI);
         QtTreeWidget.setItemSelected(TWI, AIsSet);
       end;
