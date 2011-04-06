@@ -2806,22 +2806,22 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
     case StringCase(AFileType, [
       'efi-app-ia32', 'elf32-i386', 'pei-i386', 'elf32-i386-freebsd',
-      'elf64-x86-64',
+      'elf64-x86-64', 'pei-x86-64',
       'mach-o-be',
       'mach-o-le',
       'pei-arm-little',
       'pei-arm-big'
     ], True, False) of
       0..3: TargetInfo^.TargetCPU := 'x86';
-      4: TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
-      5: begin
+      4..5: TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
+      6: begin
          //mach-o-be
         TargetInfo^.TargetIsBE := True;
         if FTheDebugger.FGDBCPU <> ''
         then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
         else TargetInfo^.TargetCPU := 'powerpc'; // guess
       end;
-      6: begin
+      7: begin
         //mach-o-le
         if FoundPtrSize then begin
           if FTheDebugger.FGDBPtrSize = TargetInfo^.TargetPtrSize
@@ -2839,10 +2839,10 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
           else TargetInfo^.TargetCPU := 'x86'; // guess
         end;
       end;
-      7: begin
+      8: begin
         TargetInfo^.TargetCPU := 'arm';
       end;
-      8: begin
+      9: begin
         TargetInfo^.TargetIsBE := True;
         TargetInfo^.TargetCPU := 'arm';
       end;
