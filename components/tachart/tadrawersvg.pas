@@ -355,9 +355,11 @@ begin
 end;
 
 procedure TSVGDrawer.WriteStr(const AString: String);
+var
+  le: String = LineEnding;
 begin
   FStream.WriteBuffer(AString[1], Length(AString));
-  FStream.WriteBuffer(LineEnding[1], Length(LineEnding));
+  FStream.WriteBuffer(le[1], Length(le));
 end;
 
 end.
