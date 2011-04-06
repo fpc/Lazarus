@@ -33,6 +33,12 @@ var
   OldPosition, MaxPos: Integer;
   ScrollInfo: TScrollInfo;
 begin
+  if csLoading in FControl.ComponentState then
+  begin
+    FPosition := Value;
+    Exit;
+  end;
+
   if Value < 0 then
   begin
     SetPosition(0);
@@ -146,9 +152,9 @@ begin
     ScrollInfo.fMask := SIF_Range + SIF_Page;
     GetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo);
     NewRange := ScrollInfo.nMax - ScrollInfo.nMin;
-    if NewRange<>FRange then
+    if NewRange <> FRange then
     begin
-      FRange:=NewRange;
+      FRange := NewRange;
       InvalidateScrollInfo;
     end;
   end;
@@ -405,7 +411,7 @@ begin
   FRange := AValue;
   {$IFDEF VerboseScrollingWinControl}
   //if DebugCondition then
-    DebugLn(['TControlScrollBar.SetRange ',dbgs(Kind),' ',Self,' fRange=',FRange]);
+    DebugLn(['TControlScrollBar.SetRange ',dbgs(Kind),' ',Self,' FRange=',FRange]);
   {$ENDIF}
   ControlUpdateScrollBars;
 end;
@@ -475,7 +481,7 @@ end;
 
 function TControlScrollBar.IsScrollBarVisible: Boolean;
 begin
-  Result:=FVisible;
+  Result := FVisible;
   if HandleAllocated then
     Result := GetScrollbarVisible(ControlHandle, IntfBarKind[Kind]);
 end;
@@ -499,23 +505,23 @@ end;
 function TControlScrollBar.ClientSize: integer;
 begin
   if Kind = sbVertical then
-    Result:=FControl.ClientWidth
+    Result := FControl.ClientWidth
   else
-    Result:=FControl.ClientHeight;
+    Result := FControl.ClientHeight;
 end;
 
 function TControlScrollBar.ClientSizeWithBar: integer;
 begin
-  Result:=ClientSize;
+  Result := ClientSize;
   if not IsScrollBarVisible then
-    dec(Result,GetSize);
+    dec(Result, GetSize);
 end;
 
 function TControlScrollBar.ClientSizeWithoutBar: integer;
 begin
   Result:=ClientSize;
   if IsScrollBarVisible then
-    inc(Result,GetSize);
+    inc(Result, GetSize);
 end;
 
 function TControlScrollBar.GetHorzScrollBar: TControlScrollBar;
@@ -523,7 +529,7 @@ begin
   if FControl is TScrollingWinControl then
     Result := TScrollingWinControl(FControl).HorzScrollBar
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 function TControlScrollBar.GetVertScrollBar: TControlScrollBar;
@@ -531,12 +537,12 @@ begin
   if FControl is TScrollingWinControl then
     Result := TScrollingWinControl(FControl).VertScrollBar
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 function TControlScrollBar.ScrollBarShouldBeVisible: Boolean;
 begin
-  Result:=FVisible and (FRange>FPage);
+  Result := FVisible and (FRange > FPage);
 end;
 
 // included by forms.pp

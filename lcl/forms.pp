@@ -86,7 +86,7 @@ type
 
   TControlScrollBar = class(TPersistent)
   private
-    FAutoRange : Longint; // = FRange - ClientSize, >=0
+    FAutoRange: Longint; // = FRange - ClientSize, >=0
     FIncrement: TScrollBarInc;
     FKind: TScrollBarKind;
     FPage: TScrollBarInc;
@@ -162,7 +162,6 @@ type
     FIsUpdating: Boolean;
     procedure SetHorzScrollBar(Value: TControlScrollBar);
     procedure SetVertScrollBar(Value: TControlScrollBar);
-    function StoreScrollBars: Boolean;
   protected
     class procedure WSRegisterClass; override;
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
@@ -186,10 +185,8 @@ type
     class function GetControlClassDefaultSize: TSize; override;
     procedure ScrollBy(DeltaX, DeltaY: Integer); override;
   published
-    property HorzScrollBar: TControlScrollBar
-              read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
-    property VertScrollBar: TControlScrollBar
-              read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
+    property HorzScrollBar: TControlScrollBar read FHorzScrollBar write SetHorzScrollBar;
+    property VertScrollBar: TControlScrollBar read FVertScrollBar write SetVertScrollBar;
   end;
 
 

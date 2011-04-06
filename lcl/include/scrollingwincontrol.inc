@@ -32,6 +32,11 @@ begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TScrollingWinControl.CreateWnd'){$ENDIF};
   try
     inherited CreateWnd;
+    if AutoScroll then
+    begin
+      HorzScrollBar.AutoCalcRange;
+      VertScrollBar.AutoCalcRange;
+    end;
     UpdateScrollBars;
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TScrollingWinControl.CreateWnd'){$ENDIF};
@@ -118,7 +123,7 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
     OtherScrollbar: TControlScrollBar;
     OldAutoRange: LongInt;
   begin
-    Result:=false;
+    Result := False;
     OldAutoRange := p_Bar.FAutoRange;
     p_Bar.FAutoRange := 0;
     OtherScrollbar := p_Bar.GetOtherScrollBar;
@@ -129,7 +134,7 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
       p_Bar.FAutoRange := 0;
     {$IFDEF VerboseScrollingWinControl}
     if p_Bar.DebugCondition then
-      DebugLn(['UpdateRange p_Bar.fRange=',p_Bar.fRange,' SBSize=',SBSize,' ClientWidth=',ClientWidth,' FAutoRange=',p_Bar.FAutoRange]);
+      DebugLn(['UpdateRange p_Bar.fRange=',p_Bar.FRange,' SBSize=',SBSize,' ClientWidth=',ClientWidth,' FAutoRange=',p_Bar.FAutoRange]);
     {$ENDIF}
     if OldAutoRange <> p_Bar.FAutoRange then
       Result := True;
@@ -175,11 +180,6 @@ begin
   finally
     FIsUpdating := False;
   end;
-end;
-
-function TScrollingWinControl.StoreScrollBars : Boolean;
-begin
-  Result := not AutoScroll;
 end;
 
 class procedure TScrollingWinControl.WSRegisterClass;
