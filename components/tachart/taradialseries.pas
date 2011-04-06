@@ -401,7 +401,7 @@ begin
     pts[i] := FChart.GraphToImage(GraphPoint(i));
   ADrawer.Pen := LinePen;
   ADrawer.SetBrushParams(bsClear, clTAColor);
-  ADrawer.Polygon(pts);
+  ADrawer.Polygon(pts, 0, Length(pts));
 end;
 
 function TPolarSeries.Extent: TDoubleRect;

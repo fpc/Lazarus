@@ -71,11 +71,10 @@ type
     procedure LineTo(AX, AY: Integer); override;
     procedure MoveTo(AX, AY: Integer); override;
     procedure Polygon(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer); override;
     procedure Polyline(
-      const APoints: array of TPoint; AStartIndex: Integer = 0;
-      ANumPts: Integer = -1; AEndPoint: Boolean = false);
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
+      AEndPoint: Boolean = false);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -235,7 +234,7 @@ begin
 end;
 
 procedure TSVGDrawer.Polygon(
-  const APoints: array of TPoint; AStartIndex: Integer; ANumPts: Integer);
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
   WriteFmt(
     '<polygon points="%s" style="%s"/>',
@@ -243,7 +242,7 @@ begin
 end;
 
 procedure TSVGDrawer.Polyline(
-  const APoints: array of TPoint; AStartIndex: Integer; ANumPts: Integer;
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
   AEndPoint: Boolean);
 begin
   Unused(AEndPoint);

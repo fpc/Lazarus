@@ -51,11 +51,10 @@ type
     procedure LineTo(AX, AY: Integer); override;
     procedure MoveTo(AX, AY: Integer); override;
     procedure Polygon(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer); override;
     procedure Polyline(
-      const APoints: array of TPoint; AStartIndex: Integer = 0;
-      ANumPts: Integer = -1; AEndPoint: Boolean = false);
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
+      AEndPoint: Boolean = false);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -147,8 +146,6 @@ procedure TAggPasDrawer.Polygon(
 begin
   FCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
   FCanvas.Polyline(APoints, AStartIndex, ANumPts);
-  if ANumPts < 0 then
-    ANumPts := Length(APoints);
   FCanvas.Line(APoints[ANumPts - 1], APoints[0])
 end;
 

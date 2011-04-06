@@ -84,11 +84,10 @@ type
     procedure MoveTo(AX, AY: Integer);
     procedure MoveTo(const AP: TPoint);
     procedure Polygon(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1);
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure Polyline(
-      const APoints: array of TPoint; AStartIndex: Integer = 0;
-      ANumPts: Integer = -1; AEndPoint: Boolean = false);
+      const APoints: array of TPoint;
+      AStartIndex, ANumPts: Integer; AEndPoint: Boolean = false);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -137,8 +136,7 @@ type
     procedure MoveTo(AX, AY: Integer); virtual; abstract;
     procedure MoveTo(const AP: TPoint);
     procedure Polygon(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1); virtual; abstract;
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer); virtual; abstract;
     function Scale(ADistance: Integer): Integer; virtual;
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
@@ -300,7 +298,7 @@ var
   d: TPoint;
 begin
   d := Point(ADepth, -ADepth);
-  Polygon([AP1, AP1 + d, AP2 + d, AP2]);
+  Polygon([AP1, AP1 + d, AP2 + d, AP2], 0, 4);
 end;
 
 procedure TBasicDrawer.LineTo(const AP: TPoint);

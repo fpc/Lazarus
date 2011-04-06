@@ -55,8 +55,7 @@ type
     procedure LineTo(AX, AY: Integer); override;
     procedure MoveTo(AX, AY: Integer); override;
     procedure Polygon(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer); override;
     procedure Polyline(
       const APoints: array of TPoint; AStartIndex: Integer = 0;
       ANumPts: Integer = -1; AEndPoint: Boolean = false);
@@ -155,13 +154,11 @@ procedure TOpenGLDrawer.InternalPolyline(
 var
   i: Integer;
 begin
-  if ANumPts < 0 then
-    ANumPts := Length(APoints);
   glBegin(AMode);
   ChartGLColor(FPenColor);
   glLineWidth(FPenWidth);
   for i := AStartIndex to AStartIndex + ANumPts - 1 do
-    glVertex2i(APoints[i].X, APoints[i].Y);
+    glVertex2iv(@APoints[i]);
   glEnd();
 end;
 
@@ -191,22 +188,20 @@ begin
 end;
 
 procedure TOpenGLDrawer.Polygon(
-  const APoints: array of TPoint; AStartIndex: Integer; ANumPts: Integer);
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 var
   i: Integer;
 begin
-  if ANumPts < 0 then
-    ANumPts := Length(APoints);
   glBegin(GL_POLYGON);
   ChartGLColor(FBrushColor);
   for i := AStartIndex to AStartIndex + ANumPts - 1 do
-    glVertex2i(APoints[i].X, APoints[i].Y);
+    glVertex2iv(@APoints[i]);
   glEnd();
   InternalPolyline(APoints, AStartIndex, ANumPts, GL_LINE_LOOP);
 end;
 
 procedure TOpenGLDrawer.Polyline(
-  const APoints: array of TPoint; AStartIndex: Integer; ANumPts: Integer;
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
   AEndPoint: Boolean);
 begin
   Unused(AEndPoint);

@@ -96,8 +96,7 @@ function CopyPoints(
 var
   i: Integer;
 begin
-  if ANumPts = -1 then
-    ANumPts := Length(APoints) - AStartIndex;
+  Assert(ANumPts >= 0);
   SetLength(Result, ANumPts);
   for i := 0 to ANumPts - 1 do
     Result[i] := APoints[i + AStartIndex];

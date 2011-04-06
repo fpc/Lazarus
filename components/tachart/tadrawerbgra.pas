@@ -58,11 +58,10 @@ type
     procedure LineTo(AX, AY: Integer); override;
     procedure MoveTo(AX, AY: Integer); override;
     procedure Polygon(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer); override;
     procedure Polyline(
-      const APoints: array of TPoint; AStartIndex: Integer = 0;
-      ANumPts: Integer = -1; AEndPoint: Boolean = false);
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
+      AEndPoint: Boolean = false);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -84,8 +83,7 @@ function PointsToPointsF(
 var
   i: Integer;
 begin
-  if ANumPts = -1 then
-    ANumPts := Length(APoints) - AStartIndex;
+  Assert(ANumPts >= 0);
   SetLength(Result, ANumPts);
   for i := 0 to ANumPts - 1 do
     with APoints[i + AStartIndex] do
@@ -180,7 +178,7 @@ begin
 end;
 
 procedure TBGRABitmapDrawer.Polygon(
-  const APoints: array of TPoint; AStartIndex: Integer; ANumPts: Integer);
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 var
   bt: TBGRACustomBitmap;
 begin
@@ -201,7 +199,7 @@ end;
 
 procedure TBGRABitmapDrawer.Polyline(
   const APoints: array of TPoint;
-  AStartIndex: Integer; ANumPts: Integer; AEndPoint: Boolean);
+  AStartIndex, ANumPts: Integer; AEndPoint: Boolean);
 begin
   Unused(AEndPoint);
   FCanvas.DrawPolyLineAntialias(

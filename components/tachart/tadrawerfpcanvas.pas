@@ -61,11 +61,10 @@ type
     procedure LineTo(AX, AY: Integer); override;
     procedure MoveTo(AX, AY: Integer); override;
     procedure Polygon(
-      const APoints: array of TPoint;
-      AStartIndex: Integer = 0; ANumPts: Integer = -1); override;
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer); override;
     procedure Polyline(
-      const APoints: array of TPoint; AStartIndex: Integer = 0;
-      ANumPts: Integer = -1; AEndPoint: Boolean = false);
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
+      AEndPoint: Boolean = false);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -187,9 +186,9 @@ begin
 end;
 
 procedure TFPCanvasDrawer.Polygon(
-  const APoints: array of TPoint; AStartIndex: Integer; ANumPts: Integer);
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  if (ANumPts < 0) and (AStartIndex = 0) then
+  if (ANumPts = Length(APoints)) and (AStartIndex = 0) then
     FCanvas.Polygon(APoints)
   else
     FCanvas.Polygon(CopyPoints(APoints, AStartIndex, ANumPts));
@@ -197,10 +196,10 @@ end;
 
 procedure TFPCanvasDrawer.Polyline(
   const APoints: array of TPoint;
-  AStartIndex: Integer; ANumPts: Integer; AEndPoint: Boolean);
+  AStartIndex, ANumPts: Integer; AEndPoint: Boolean);
 begin
   Unused(AEndPoint);
-  if (ANumPts < 0) and (AStartIndex = 0) then
+  if (ANumPts = Length(APoints)) and (AStartIndex = 0) then
     FCanvas.Polyline(APoints)
   else
     FCanvas.Polyline(CopyPoints(APoints, AStartIndex, ANumPts));

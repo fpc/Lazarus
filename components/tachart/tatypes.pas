@@ -580,7 +580,7 @@ begin
   ADrawer.Brush := LabelBrush;
   if IsMarginRequired then begin
     ADrawer.Pen := Frame;
-    ADrawer.Polygon(labelPoly);
+    ADrawer.Polygon(labelPoly, 0, Length(labelPoly));
   end;
 
   ptText := RotatePoint(-ptText div 2, LabelAngle) + ALabelCenter;
