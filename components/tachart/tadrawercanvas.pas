@@ -60,8 +60,7 @@ type
     procedure Polygon(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer); override;
     procedure Polyline(
-      const APoints: array of TPoint;
-      AStartIndex, ANumPts: Integer; AEndPoint: Boolean = false);
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -188,17 +187,12 @@ begin
 end;
 
 procedure TCanvasDrawer.Polyline(
-  const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
-  AEndPoint: Boolean);
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
   FCanvas.Polyline(APoints, AStartIndex, ANumPts);
-  if AEndPoint then begin
-    if ANumPts < 0 then
-      ANumPts := Length(APoints);
-    // Polyline does not draw the end point.
-    with APoints[ANumPts - 1] do
-      FCanvas.Pixels[X, Y] := FCanvas.Pen.Color;
-  end;
+  // TCanvas.Polyline does not draw the end point.
+  with APoints[AStartIndex + ANumPts - 1] do
+    FCanvas.Pixels[X, Y] := FCanvas.Pen.Color;
 end;
 
 procedure TCanvasDrawer.PrepareSimplePen(AColor: TChartColor);

@@ -63,8 +63,7 @@ type
     procedure Polygon(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer); override;
     procedure Polyline(
-      const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
-      AEndPoint: Boolean = false);
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -195,10 +194,8 @@ begin
 end;
 
 procedure TFPCanvasDrawer.Polyline(
-  const APoints: array of TPoint;
-  AStartIndex, ANumPts: Integer; AEndPoint: Boolean);
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  Unused(AEndPoint);
   if (ANumPts = Length(APoints)) and (AStartIndex = 0) then
     FCanvas.Polyline(APoints)
   else

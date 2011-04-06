@@ -86,8 +86,7 @@ type
     procedure Polygon(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure Polyline(
-      const APoints: array of TPoint;
-      AStartIndex, ANumPts: Integer; AEndPoint: Boolean = false);
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;

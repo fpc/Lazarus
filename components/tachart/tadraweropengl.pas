@@ -57,8 +57,7 @@ type
     procedure Polygon(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer); override;
     procedure Polyline(
-      const APoints: array of TPoint; AStartIndex: Integer = 0;
-      ANumPts: Integer = -1; AEndPoint: Boolean = false);
+      const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
     procedure PrepareSimplePen(AColor: TChartColor);
     procedure RadialPie(
       AX1, AY1, AX2, AY2: Integer;
@@ -201,10 +200,8 @@ begin
 end;
 
 procedure TOpenGLDrawer.Polyline(
-  const APoints: array of TPoint; AStartIndex, ANumPts: Integer;
-  AEndPoint: Boolean);
+  const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  Unused(AEndPoint);
   InternalPolyline(APoints, AStartIndex, ANumPts, GL_LINE_STRIP);
 end;
 

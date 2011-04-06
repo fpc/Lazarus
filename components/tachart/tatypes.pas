@@ -812,7 +812,7 @@ procedure TSeriesPointer.DrawSize(
     for i := 1 to Length(AStr) do begin
       if AStr[i] = ' ' then begin
         if Brush.Style = bsClear then
-          ADrawer.Polyline(pts, 0, j, true)
+          ADrawer.Polyline(pts, 0, j)
         else
           ADrawer.Polygon(pts, 0, j); // Winding?
         j := 0;
