@@ -2146,6 +2146,8 @@ procedure TQtDeviceContext.qDrawShadeRect(x, y, w, h: integer; Palette: QPalette
 var
   AppPalette: QPaletteH;
 begin
+  if (w < 0) or (h < 0) then
+    exit;
   AppPalette := nil;
   if Palette = nil then
   begin
@@ -2171,6 +2173,10 @@ var
   i: integer;
   AppPalette: QPaletteH;
 begin
+
+  if (w < 0) or (h < 0) then
+    exit;
+
   AppPalette := nil;
   if Palette = nil then
   begin
@@ -2191,6 +2197,7 @@ begin
     dec(w, 2);
     dec(h, 2);
   end;
+
   if lineWidth > 1 then
     q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken, FillBrush)
   else
