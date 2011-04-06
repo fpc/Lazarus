@@ -255,6 +255,8 @@ end;
 procedure TSVGDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
   FPen.FPColor := FChartColorToFPColorFunc(AColor);
+  FPen.Style := psSolid;
+  FPen.Width := 1;
 end;
 
 procedure TSVGDrawer.RadialPie(
@@ -302,6 +304,7 @@ end;
 procedure TSVGDrawer.SetPen(APen: TFPCustomPen);
 begin
   FPen.FPColor := APen.FPColor;
+  FPen.Style := APen.Style;
   FPen.Width := APen.Width;
 end;
 
@@ -337,10 +340,17 @@ begin
 end;
 
 function TSVGDrawer.StyleStroke: String;
+const
+  PEN_DASHARRAY: array [TFPPenStyle] of String =
+    ('', '2,2', '1,1', '2,1,1,1', '2,1,1,1,1,1', '', '', '');
 begin
+  if FPen.Style = psClear then
+    exit('stroke: none');
   Result := 'stroke:' + ColorToHex(FPen.FPColor) + ';';
   if FPen.Width <> 1 then
     Result += 'stroke-width:' + IntToStr(FPen.Width) + ';';
+  if PEN_DASHARRAY[FPen.Style] <> '' then
+    Result += 'stroke-dasharray:' + PEN_DASHARRAY[FPen.Style] + ';';
 end;
 
 procedure TSVGDrawer.WriteFmt(const AFormat: String; AParams: array of const);
