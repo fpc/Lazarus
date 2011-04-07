@@ -370,8 +370,9 @@ begin
   {$IFNDEF gtk_no_set_modal}
   gtk_window_set_modal(GtkWindow, true);
   {$ENDIF}
+  if gtk_window_get_type_hint(GtkWindow) <> GDK_WINDOW_TYPE_HINT_DIALOG then
+    gtk_window_set_skip_taskbar_hint(GtkWindow, True);
   gtk_window_present(GtkWindow);
-
   {$IFDEF VerboseTransient}
   DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
   {$ENDIF}
