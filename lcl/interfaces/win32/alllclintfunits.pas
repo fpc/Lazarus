@@ -12,6 +12,7 @@ uses
   win32wscalendar,
   win32def,
   win32wstoolwin,
+  win32uxtheme,
   interfaces,
   win32proc,
   win32wspairsplitter,

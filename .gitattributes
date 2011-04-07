@@ -5410,6 +5410,7 @@ lcl/interfaces/win32/win32object.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32proc.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32themes.pas svneol=native#text/pascal
 lcl/interfaces/win32/win32trayicon.inc svneol=native#text/pascal
+lcl/interfaces/win32/win32uxtheme.pas svneol=native#text/pascal
 lcl/interfaces/win32/win32winapi.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32winapih.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32wsarrow.pp svneol=native#text/pascal

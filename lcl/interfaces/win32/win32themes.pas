@@ -7,7 +7,7 @@ interface
 
 uses
   // os
-  Windows, UxTheme, Win32Proc, Win32Extra,
+  Windows, Win32UxTheme, Win32Proc, Win32Extra, 
   // rtl
   Classes, SysUtils,
   // lcl
@@ -282,14 +282,14 @@ end;
 
 function TWin32ThemeServices.UseThemes: Boolean;
 begin
-  Result := UxTheme.UseThemes and (GetFileVersion(comctl32) >= ComCtlVersionIE6);
+  Result := Win32UxTheme.UseThemes and (GetFileVersion(comctl32) >= ComCtlVersionIE6);
 end;
 
 function TWin32ThemeServices.ThemedControlsEnabled: Boolean;
 var
   Flags: DWORD;
 begin
-  Flags := UxTheme.GetThemeAppProperties();
+  Flags := Win32UxTheme.GetThemeAppProperties();
   if (Flags and STAP_ALLOW_CONTROLS) = 0 then
     Result := False
   else
