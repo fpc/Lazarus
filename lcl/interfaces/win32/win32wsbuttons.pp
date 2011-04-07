@@ -285,8 +285,7 @@ var
         if Color = clDefault then
           Color := BitBtn.GetDefaultColor(dctFont);
         Options.crText := ThemeServices.ColorToRGB(Color, @Details);
-        Options.iFontPropId := TMT_GLYPHFONT;
-        Options.dwFlags := Options.dwFlags or DTT_TEXTCOLOR or DTT_FONTPROP;
+        Options.dwFlags := Options.dwFlags or DTT_TEXTCOLOR;
       end;
       TWin32ThemeServices(ThemeServices).DrawTextEx(TmpDC, Details, ButtonCaption,
         Rect(XDestText, YDestText, XDestText + TextSize.cx, YDestText + TextSize.cy),
