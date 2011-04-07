@@ -517,6 +517,9 @@ var
 begin
   // Some changes don't require RecreateWnd
 
+  if (AOldFormStyle in fsAllStayOnTop) and (AFormStyle in fsAllStayOnTop) then
+    Exit;
+
   // From normal to StayOnTop
   if (AOldFormStyle = fsNormal) and (AFormStyle in fsAllStayOnTop) then 
   begin
