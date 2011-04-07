@@ -788,7 +788,7 @@ var
 
 var
   GetThemeFont: function(hTheme: HTHEME; hdc: HDC; iPartId, iStateId, iPropId: Integer;
-    var pFont: LOGFONT): HRESULT; stdcall;
+    var pFont: LOGFONTW): HRESULT; stdcall;
 {$EXTERNALSYM GetThemeFont}
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1045,7 +1045,7 @@ var
 //----------------------------------------------------------------------------------------------------------------------
 
 var
-  GetThemeSysFont: function(hTheme: HTHEME; iFontId: Integer; var plf: LOGFONT): HRESULT; stdcall;
+  GetThemeSysFont: function(hTheme: HTHEME; iFontId: Integer; var plf: LOGFONTW): HRESULT; stdcall;
 {$EXTERNALSYM GetThemeSysFont}
 
 //----------------------------------------------------------------------------------------------------------------------
