@@ -358,6 +358,7 @@ procedure GrabKeyBoardToForm(AForm: TCustomForm);
 procedure ReleaseKeyBoardFromForm(AForm: TCustomForm);
 procedure GrabMouseToForm(AForm: TCustomForm);
 procedure ReleaseMouseFromForm(AForm: TCustomForm);
+procedure GtkWindowShowModal(AForm: TCustomForm; GtkWindow: PGtkWindow);
 
 // label
 procedure SetLabelAlignment(LabelWidget: PGtkLabel;

@@ -808,6 +808,28 @@ begin
   {$ENDIF}
 end;
 
+procedure GtkWindowShowModal(AForm: TCustomForm; GtkWindow: PGtkWindow);
+begin
+  if (GtkWindow=nil) then exit;
+  UnsetResizeRequest(PgtkWidget(GtkWindow));
+
+  if ModalWindows=nil then ModalWindows:=TFPList.Create;
+  ModalWindows.Add(GtkWindow);
+  {$IFNDEF gtk_no_set_modal}
+  gtk_window_set_modal(GtkWindow, true);
+  {$ENDIF}
+
+  if (AForm <> nil) and (AForm.ShowInTaskBar <> stAlways) and
+    (gtk_window_get_type_hint(GtkWindow) <> GDK_WINDOW_TYPE_HINT_DIALOG) then
+    gtk_window_set_skip_taskbar_hint(GtkWindow, True);
+  gtk_window_present(GtkWindow);
+  {$IFDEF VerboseTransient}
+  DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
+  {$ENDIF}
+  //TGtk2WidgetSet(WidgetSet).
+  GTK2WidgetSet.UpdateTransientWindows;
+end;
+
 {$IFDEF HasX}
 function FormToX11Window(const AForm: TCustomForm): X.TWindow;
 var

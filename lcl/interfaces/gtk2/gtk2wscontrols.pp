@@ -144,7 +144,6 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
   end;
 
-procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
 function GetWidgetHAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
 function GetWidgetVAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
 
@@ -357,27 +356,6 @@ begin
     gtk_entry_set_has_frame(PGtkEntry(Widget), ABorderStyle <> bsNone)
   else
     Gtk1SetBorderStyle(AWinControl, ABorderStyle);
-end;
-
-
-procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
-begin
-  if (GtkWindow=nil) then exit;
-  UnsetResizeRequest(PgtkWidget(GtkWindow));
-
-  if ModalWindows=nil then ModalWindows:=TFPList.Create;
-  ModalWindows.Add(GtkWindow);
-  {$IFNDEF gtk_no_set_modal}
-  gtk_window_set_modal(GtkWindow, true);
-  {$ENDIF}
-  if gtk_window_get_type_hint(GtkWindow) <> GDK_WINDOW_TYPE_HINT_DIALOG then
-    gtk_window_set_skip_taskbar_hint(GtkWindow, True);
-  gtk_window_present(GtkWindow);
-  {$IFDEF VerboseTransient}
-  DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
-  {$ENDIF}
-  //TGtk2WidgetSet(WidgetSet).
-  GTK2WidgetSet.UpdateTransientWindows;
 end;
 
 function GetWidgetHAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
