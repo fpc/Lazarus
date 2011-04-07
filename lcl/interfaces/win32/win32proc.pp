@@ -99,8 +99,8 @@ function AllocWindowInfo(Window: HWND): PWin32WindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
 function GetWin32WindowInfo(Window: HWND): PWin32WindowInfo;
 
-procedure RemoveStayOnTopFlags(Window: HWND; ASystemTopAlso: Boolean = False);
-procedure RestoreStayOnTopFlags(Window: HWND);
+procedure RemoveStayOnTopFlags(AppHandle: HWND; ASystemTopAlso: Boolean = False);
+procedure RestoreStayOnTopFlags(AppHandle: HWND);
 procedure HidePopups(AppHandle: HWND);
 procedure RestorePopups;
 
@@ -132,6 +132,7 @@ procedure UpdateWindowsVersion;
 type 
   PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
   TStayOnTopWindowsInfo = record
+    AppHandle: HWND;
     SystemTopAlso: Boolean;
     StayOnTopList: TList;
   end;
@@ -903,7 +904,7 @@ var
   WindowInfo: PWin32WindowInfo;
 begin
   WindowInfo := PWin32WindowInfo(Windows.GetProp(Window, PChar(PtrUInt(WindowInfoAtom))));
-  Result := Windows.RemoveProp(Window, PChar(PtrUInt(WindowInfoAtom)))<>0;
+  Result := Windows.RemoveProp(Window, PChar(PtrUInt(WindowInfoAtom))) <> 0;
   if Result then
   begin
     WindowInfo^.StayOnTopList.Free;
@@ -920,76 +921,76 @@ end;
 
 function EnumStayOnTopRemove(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
 var
-  AStyle: DWord;
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo absolute Param;
   lWindowInfo: PWin32WindowInfo;
   lWinControl: TWinControl;
 begin
   Result := True;
-  AStyle := GetWindowLong(Handle, GWL_EXSTYLE);
-  if (AStyle and WS_EX_TOPMOST) <> 0 then // if stay on top then
+  if ((GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_TOPMOST) <> 0) then
   begin
     // Don't remove system-wide stay on top, unless desired
     if not StayOnTopWindowsInfo^.SystemTopAlso then
     begin
       lWindowInfo := GetWin32WindowInfo(Handle);
-      if (lWindowInfo <> nil) then
+      if Assigned(lWindowInfo) then
       begin
         lWinControl := lWindowInfo^.WinControl;
-        if (lWinControl <> nil) and (lWinControl is TCustomForm)
-        and (TCustomForm(lWinControl).FormStyle = fsSystemStayOnTop) then
+        if Assigned(lWinControl) and
+          (lWinControl is TCustomForm) and
+          (TCustomForm(lWinControl).FormStyle = fsSystemStayOnTop) then
         Exit;
       end;
     end;
 
     StayOnTopWindowsInfo^.StayOnTopList.Add(Pointer(Handle));
-    SetWindowPos(Handle, HWND_NOTOPMOST, 0, 0, 0, 0,
-      SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSENDCHANGING);
   end;
 end;
 
-procedure RemoveStayOnTopFlags(Window: HWND; ASystemTopAlso: Boolean = False);
+procedure RemoveStayOnTopFlags(AppHandle: HWND; ASystemTopAlso: Boolean = False);
 var
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo;
   WindowInfo: PWin32WindowInfo;
+  I: Integer;
 begin
-  // WriteLn('RemoveStayOnTopFlags 1');
+  //WriteLn('RemoveStayOnTopFlags ', InRemoveStayOnTopFlags);
   if InRemoveStayOnTopFlags = 0 then
   begin
     New(StayOnTopWindowsInfo);
+    StayOnTopWindowsInfo^.AppHandle := AppHandle;
     StayOnTopWindowsInfo^.SystemTopAlso := ASystemTopAlso;
     StayOnTopWindowsInfo^.StayOnTopList := TList.Create;
-    WindowInfo := GetWin32WindowInfo(Window);
+    WindowInfo := GetWin32WindowInfo(AppHandle);
     WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
-    EnumThreadWindows(GetWindowThreadProcessId(Window, nil),
+    EnumThreadWindows(GetWindowThreadProcessId(AppHandle, nil),
       @EnumStayOnTopRemove, LPARAM(StayOnTopWindowsInfo));
+    for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
+      SetWindowPos(HWND(WindowInfo^.StayOnTopList[I]), HWND_NOTOPMOST, 0, 0, 0, 0,
+        SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_DRAWFRAME);
     Dispose(StayOnTopWindowsInfo);
   end;
   inc(InRemoveStayOnTopFlags);
-  // WriteLn('RemoveStayOnTopFlags 2');
 end;
 
-procedure RestoreStayOnTopFlags(Window: HWND);
+procedure RestoreStayOnTopFlags(AppHandle: HWND);
 var
   WindowInfo: PWin32WindowInfo;
   I: integer;
 begin
-  // WriteLn('RestoreStayOnTopFlags 1');
+  //WriteLn('RestoreStayOnTopFlags ', InRemoveStayOnTopFlags);
   if InRemoveStayOnTopFlags = 1 then
   begin
-    WindowInfo := GetWin32WindowInfo(Window);
+    WindowInfo := GetWin32WindowInfo(AppHandle);
     if WindowInfo^.StayOnTopList <> nil then
     begin
       for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
         SetWindowPos(HWND(WindowInfo^.StayOnTopList.Items[I]),
           HWND_TOPMOST, 0, 0, 0, 0,
-          SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSENDCHANGING);
+          SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_DRAWFRAME);
       FreeAndNil(WindowInfo^.StayOnTopList);
     end;
   end;
   if InRemoveStayOnTopFlags > 0 then
     dec(InRemoveStayOnTopFlags);
-  // WriteLn('RestoreStayOnTopFlags 2');
 end;
 
 function EnumHidePopups(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;

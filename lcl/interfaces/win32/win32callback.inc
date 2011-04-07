@@ -1006,6 +1006,8 @@ begin
   WinProcess := True;
   NotifyUserInput := False;
 
+  // WriteLn('Msg: ', WM_To_String(Msg));
+
   WindowInfo := GetWin32WindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
@@ -2207,15 +2209,15 @@ begin
         begin
           //WriteLn('Restore');
           RestoreStayOnTopFlags(Window);
-          if assigned(Application) then
-             Application.IntfAppActivate;
+          if Assigned(Application) then
+            Application.IntfAppActivate;
         end
         else
         begin // deactivated
           //WriteLn('Remove');
           RemoveStayOnTopFlags(Window);
-          if assigned(Application) then
-             Application.IntfAppDeactivate;
+          if Assigned(Application) then
+            Application.IntfAppDeactivate;
         end;
       end;
     end;

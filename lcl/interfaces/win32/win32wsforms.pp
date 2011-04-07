@@ -493,14 +493,15 @@ begin
   if (lWindowInfo <> nil) then
   begin
     lWinControl := lWindowInfo^.WinControl;
-    if (lWinControl <> nil) and (lWinControl is TCustomForm)
-      and (TCustomForm(lWinControl).FormStyle in fsAllStayOnTop)
-      and not (csDesigning in TCustomForm(lWinControl).ComponentState) then
+    if Assigned(lWinControl) and
+       (lWinControl is TCustomForm) and
+       (TCustomForm(lWinControl).FormStyle in fsAllStayOnTop) and
+       not (csDesigning in lWinControl.ComponentState) then
       list.Add(Pointer(Handle));
   end;
 end;
 
-procedure EnumStayOnTop(window: THandle; dstlist: TList);
+procedure EnumStayOnTop(Window: THandle; dstlist: TList);
 begin
   EnumThreadWindows(GetWindowThreadProcessId(Window, nil),
     @EnumStayOnTopProc, LPARAM(dstlist));
@@ -508,9 +509,11 @@ end;
 
 class procedure TWin32WSCustomForm.SetFormStyle(const AForm: TCustomform;
   const AFormStyle, AOldFormStyle: TFormStyle);
+const
+  WindowPosFlags = SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER;
 var
-  toplist : TList;
-  i       : Integer;
+  toplist: TList;
+  i: Integer;
 begin
   // Some changes don't require RecreateWnd
 
@@ -518,7 +521,7 @@ begin
   if (AOldFormStyle = fsNormal) and (AFormStyle in fsAllStayOnTop) then 
   begin
     if not (csDesigning in AForm.ComponentState) then
-      SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE)
+      SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, WindowPosFlags)
   // From StayOnTop to normal
   end 
   else 
@@ -546,12 +549,10 @@ begin
       toplist := TList.Create;
       try
         EnumStayOnTop(AForm.Handle, toplist);
-        SetWindowPos(AForm.Handle, HWND_NOTOPMOST,  0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+        SetWindowPos(AForm.Handle, HWND_NOTOPMOST,  0, 0, 0, 0, WindowPosFlags);
         for i := 0 to toplist.Count - 1 do 
-        begin
           if HWND(toplist[i]) <> AForm.Handle then
-            SetWindowPos(HWND(toplist[i]), HWND_TOPMOST,  0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
-        end;
+            SetWindowPos(HWND(toplist[i]), HWND_TOPMOST,  0, 0, 0, 0, WindowPosFlags);
       finally
         toplist.Free;
       end;
