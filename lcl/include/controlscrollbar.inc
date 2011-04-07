@@ -133,7 +133,7 @@ begin
   begin
     ScrollInfo.fMask := SIF_POS;
     GetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo);
-    if FPosition<>ScrollInfo.nPos then
+    if FPosition <> ScrollInfo.nPos then
     begin
       FPosition := ScrollInfo.nPos;
       InvalidateScrollInfo;
@@ -449,7 +449,7 @@ end;
 constructor TControlScrollBar.Create(AControl: TWinControl;
   AKind: TScrollBarKind);
 begin
-  Inherited Create;
+  inherited Create;
   FControl := AControl;
   FKind := AKind;
   FPage := 80;
