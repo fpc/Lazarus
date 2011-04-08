@@ -176,7 +176,9 @@ components/tachart/demo/radial/*.lps
 components/tachart/demo/radial/lib
 components/tachart/demo/rotate/*.lps
 components/tachart/demo/rotate/lib
+components/tachart/demo/save/*.exe
 components/tachart/demo/save/*.lps
+components/tachart/demo/save/*.svg
 components/tachart/demo/save/lib
 components/tachart/demo/tools/*.lps
 components/tachart/demo/tools/lib

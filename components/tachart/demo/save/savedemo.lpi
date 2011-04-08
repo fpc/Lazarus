@@ -62,6 +62,9 @@
   <CompilerOptions>
     <Version Value="10"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="savedemo"/>
+    </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
