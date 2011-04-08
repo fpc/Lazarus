@@ -74,7 +74,6 @@
     - popup menu
        - shrink side left, top, right, bottom
     - simple way to make forms dockable at designtime without any code
-    - minimize button and Hide => show in header
     - on show again: restore layout
     - close button for pages
 }
@@ -535,13 +534,6 @@ type
     property HeaderClass: TAnchorDockHeaderClass read FHeaderClass write FHeaderClass;
     property PageControlClass: TAnchorDockPageControlClass read FPageControlClass write FPageControlClass;
     property PageClass: TAnchorDockPageClass read FPageClass write FPageClass;
-  end;
-
-  { TControl_Hack }
-
-  TControl_Hack = class(TControl)
-  published
-    property OnStartDock; // was Protected
   end;
 
 var
