@@ -324,10 +324,11 @@ var
 begin
   p := RotatePoint(Point(0, FontSize), -FFontAngle) + Point(AX, AY);
   WriteFmt(
-    '<text x="%d" y="%d" ' +
+    '<text x="%d" y="%d" textLength="%d" ' +
     'style="stroke: none; fill: %s; font-family: %s; font-size: %dpt;">' +
     '%s</text>',
-    [p.X, p.Y, ColorToHex(FFont.FPColor), FFont.Name, FontSize, AText]);
+    [p.X, p.Y, SimpleTextExtent(AText).X,
+      ColorToHex(FFont.FPColor), FFont.Name, FontSize, AText]);
 end;
 
 function TSVGDrawer.StyleFill: String;
