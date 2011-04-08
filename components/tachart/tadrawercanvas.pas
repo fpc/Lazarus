@@ -35,11 +35,11 @@ type
   TCanvasDrawer = class(
     TBasicDrawer, IChartDrawer, IChartTCanvasDrawer)
   private
-    FCanvas: TCanvas;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
   strict protected
+    FCanvas: TCanvas;
     function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
