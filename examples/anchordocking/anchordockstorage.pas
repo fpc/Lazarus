@@ -759,11 +759,17 @@ procedure DebugWriteChildAnchors(RootNode: TAnchorDockLayoutTreeNode);
     DbgOut(Prefix);
     DbgOut('"'+Node.Name+'"');
     DbgOut(' Type='+dbgs(Node.NodeType));
-    DbgOut(' Bounds=',dbgs(Node.BoundsRect));
+    DbgOut(' Bounds=',dbgs(Node.BoundsRect)
+              ,',w=',dbgs(Node.BoundsRect.Right-Node.BoundsRect.Left)
+              ,',h=',dbgs(Node.BoundsRect.Bottom-Node.BoundsRect.Top));
     if Node.WindowState<>wsNormal then
       DbgOut(' WindowState=',dbgs(Node.WindowState));
     if Node.Monitor<>0 then
       DbgOut(' Monitor=',dbgs(Node.Monitor));
+    if Node.BoundSplitterPos<>0 then
+      DbgOut(' SplitterPos=',dbgs(Node.BoundSplitterPos));
+    if (Node.WorkAreaRect.Right>0) and (Node.WorkAreaRect.Bottom>0) then
+      DbgOut(' WorkArea=',dbgs(Node.WorkAreaRect));
     debugln;
     for a:=low(TAnchorKind) to high(TAnchorKind) do begin
       if Node.Anchors[a]<>'' then

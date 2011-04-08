@@ -1217,7 +1217,7 @@ var
   function ScaleY(p: integer; const SrcRect: TRect): integer;
   begin
     Result:=p;
-    if SrcRectValid(SrcRect) then
+    if SrcRectValid(SrcRect) and SrcRectValid(WorkArea) then
       Result:=((p-SrcRect.Top)*(WorkArea.Bottom-WorkArea.Top))
                    div (SrcRect.Bottom-SrcRect.Top)
               +WorkArea.Top;
@@ -1232,7 +1232,9 @@ var
   begin
     if Parent=nil then begin
       WorkArea:=Site.Monitor.WorkareaRect;
-      //debugln(['SetupSite WorkArea=',dbgs(WorkArea)]);
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.RestoreLayout.SetupSite WorkArea=',dbgs(WorkArea)]);
+      {$ENDIF}
     end;
     if IsCustomSite(Site) then begin
       aManager:=TAnchorDockManager(Site.DockManager);
@@ -1244,16 +1246,22 @@ var
     Site.Constraints.MaxWidth:=0;
     Site.Constraints.MaxHeight:=0;
     NewBounds:=Node.BoundsRect;
-    if Parent=nil then
+    if Parent=nil then begin
       NewBounds:=Rect(ScaleX(NewBounds.Left,SrcRect),ScaleY(NewBounds.Top,SrcRect),
                       ScaleX(NewBounds.Right,SrcRect),ScaleY(NewBounds.Bottom,SrcRect));
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.RestoreLayout.SetupSite scale Site=',DbgSName(Site),' OldWorkArea=',dbgs(SrcRect),' CurWorkArea=',dbgs(WorkArea),' OldBounds=',dbgs(Node.BoundsRect),' NewBounds=',dbgs(NewBounds)]);
+      {$ENDIF}
+    end;
     Site.BoundsRect:=NewBounds;
     Site.Visible:=true;
     Site.Parent:=Parent;
     if IsCustomSite(Parent) then begin
       aManager:=TAnchorDockManager(Parent.DockManager);
       Site.Align:=Node.Align;
-      //debugln(['TAnchorDockMaster.RestoreLayout.SetupSite Site=',DbgSName(Site),' Site.Bounds=',dbgs(Site.BoundsRect),' BoundSplitterPos=',Node.BoundSplitterPos]);
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.RestoreLayout.SetupSite custom Site=',DbgSName(Site),' Site.Bounds=',dbgs(Site.BoundsRect),' BoundSplitterPos=',Node.BoundSplitterPos]);
+      {$ENDIF}
       aManager.RestoreSite(Node.BoundSplitterPos);
       Site.HostDockSite:=Parent;
     end;
@@ -1285,7 +1293,9 @@ var
     Result:=nil;
     if Scale and SrcRectValid(Node.WorkAreaRect) then
       SrcRect:=Node.WorkAreaRect;
-    //debugln(['Restore ',Node.Name,' ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
+    {$IFDEF VerboseAnchorDockRestore}
+    debugln(['TAnchorDockMaster.RestoreLayout.Restore ',Node.Name,' ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
+    {$ENDIF}
     if Node.NodeType=adltnControl then begin
       // restore control
       // the control was already created
@@ -1301,7 +1311,9 @@ var
       else
         ClearLayoutProperties(AControl);
       Site:=AControl.HostDockSite as TAnchorDockHostSite;
-      //debugln(['Restore Control Node.Name=',Node.Name,' Control=',DbgSName(AControl),' Site=',DbgSName(Site)]);
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.RestoreLayout.Restore Control Node.Name=',Node.Name,' Control=',DbgSName(AControl),' Site=',DbgSName(Site)]);
+      {$ENDIF}
       AControl.Visible:=true;
       SetupSite(Site,Node,Parent,SrcRect);
       Result:=Site;
@@ -1332,7 +1344,9 @@ var
         Splitter:=CreateSplitter;
         fTreeNameToDocker[Node.Name]:=Splitter;
       end;
-      //debugln(['Restore Splitter Node.Name=',Node.Name,' ',dbgs(Node.NodeType),' Splitter=',DbgSName(Splitter)]);
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.RestoreLayout.Restore Splitter Node.Name=',Node.Name,' ',dbgs(Node.NodeType),' Splitter=',DbgSName(Splitter)]);
+      {$ENDIF}
       Splitter.Parent:=Parent;
       NewBounds:=Node.BoundsRect;
       if SrcRectValid(SrcRect) then
@@ -1353,7 +1367,9 @@ var
         fDisabledAutosizing.Add(Site);
         fTreeNameToDocker[Node.Name]:=Site;
       end;
-      //debugln(['Restore Layout Node.Name=',Node.Name,' ChildCount=',Node.Count]);
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.RestoreLayout.Restore Layout Node.Name=',Node.Name,' ChildCount=',Node.Count]);
+      {$ENDIF}
       Site.BeginUpdateLayout;
       try
         SetupSite(Site,Node,Parent,SrcRect);
@@ -1366,7 +1382,9 @@ var
         for i:=0 to Node.Count-1 do begin
           ChildNode:=Node[i];
           AControl:=fTreeNameToDocker[ChildNode.Name];
-          //debugln(['  Restore layout child anchors Site=',DbgSName(Site),' ChildNode.Name=',ChildNode.Name,' Control=',DbgSName(AControl)]);
+          {$IFDEF VerboseAnchorDockRestore}
+          debugln(['  Restore layout child anchors Site=',DbgSName(Site),' ChildNode.Name=',ChildNode.Name,' Control=',DbgSName(AControl)]);
+          {$ENDIF}
           if AControl=nil then continue;
           for Side:=Low(TAnchorKind) to high(TAnchorKind) do begin
             if ((ChildNode.NodeType=adltnSplitterHorizontal)
@@ -2173,8 +2191,10 @@ begin
     RestoreLayouts.LoadFromConfig(Config);
     Config.UndoAppendBasePath;
 
-    //WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
-    //DebugWriteChildAnchors(Tree.Root);
+    {$IFDEF VerboseAnchorDockRestore}
+    WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
+    DebugWriteChildAnchors(Tree.Root);
+    {$ENDIF}
 
     // close all unneeded forms/controls
     if not CloseUnneededControls(Tree) then exit;
@@ -2186,13 +2206,17 @@ begin
 
       // simplify layouts
       ControlNames.Sort;
-      //debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
-      //debugln(ControlNames.Text);
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
+      debugln(ControlNames.Text);
+      {$ENDIF}
       Tree.Root.Simplify(ControlNames);
 
       // reuse existing sites to reduce flickering
       MapTreeToControls(Tree);
-      //fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
+      {$IFDEF VerboseAnchorDockRestore}
+      fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
+      {$ENDIF}
 
       // create sites
       RestoreLayout(Tree,Scale);
@@ -2207,7 +2231,9 @@ begin
     // commit (this can raise an exception)
     EnableAllAutoSizing;
   end;
-  //DebugWriteChildAnchors(Application.MainForm,true,false);
+  {$IFDEF VerboseAnchorDockRestore}
+  DebugWriteChildAnchors(Application.MainForm,true,false);
+  {$ENDIF}
   Result:=true;
 end;
 
@@ -2216,16 +2242,16 @@ begin
   Config.AppendBasePath('Settings/');
   DragTreshold:=Config.GetValue('DragThreshold',4);
   DockOutsideMargin:=Config.GetValue('DockOutsideMargin',10);
-  DockParentMargin:=Config.GetValue('DockOutsideMargin',10);
-  PageAreaInPercent:=Config.GetValue('DockOutsideMargin',40);
-  HeaderAlignTop:=Config.GetValue('DockOutsideMargin',80);
-  HeaderAlignLeft:=Config.GetValue('DockOutsideMargin',120);
-  SplitterWidth:=Config.GetValue('DockOutsideMargin',4);
-  ScaleOnResize:=Config.GetValue('DockOutsideMargin',true);
-  ShowHeaderCaption:=Config.GetValue('DockOutsideMargin',true);
-  HideHeaderCaptionFloatingControl:=Config.GetValue('DockOutsideMargin',true);
-  AllowDragging:=Config.GetValue('DockOutsideMargin',true);
-  HeaderButtonSize:=Config.GetValue('DockOutsideMargin',10);
+  DockParentMargin:=Config.GetValue('DockParentMargin',10);
+  PageAreaInPercent:=Config.GetValue('PageAreaInPercent',40);
+  HeaderAlignTop:=Config.GetValue('HeaderAlignTop',80);
+  HeaderAlignLeft:=Config.GetValue('HeaderAlignLeft',120);
+  SplitterWidth:=Config.GetValue('SplitterWidth',4);
+  ScaleOnResize:=Config.GetValue('ScaleOnResize',true);
+  ShowHeaderCaption:=Config.GetValue('ShowHeaderCaption',true);
+  HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
+  AllowDragging:=Config.GetValue('AllowDragging',true);
+  HeaderButtonSize:=Config.GetValue('HeaderButtonSize',10);
 
   //property HeaderHint: string read FHeaderHint write FHeaderHint;
 
@@ -4889,7 +4915,9 @@ var
           b:=TAnchorDockSplitter(AControl).DockRestoreBounds;
         if (b.Right<=b.Left) or (b.Bottom<=b.Top) then
           b:=AControl.BoundsRect;
-        //debugln(['TAnchorDockManager.ResetBounds RESTORE ',DbgSName(AControl),' Cur=',dbgs(AControl.BoundsRect),' Restore=',dbgs(b)]);
+        {$IFDEF VerboseAnchorDockRestore}
+        debugln(['TAnchorDockManager.ResetBounds RESTORE ',DbgSName(AControl),' Cur=',dbgs(AControl.BoundsRect),' Restore=',dbgs(b)]);
+        {$ENDIF}
         if AControl is TAnchorDockSplitter then begin
           // fit splitter into clientarea
           if AControl.AnchorSide[akLeft].Control=nil then
@@ -4918,7 +4946,9 @@ var
     Child:=GetChildSite;
     if Child=nil then exit;
 
-    //debugln(['TAnchorDockManager.ResetBounds ',DbgSName(Site),' ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
+    {$IFDEF VerboseAnchorDockRestore}
+    debugln(['TAnchorDockManager.ResetBounds ',DbgSName(Site),' ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
+    {$ENDIF}
     ChildMaxSize:=Point(Site.ClientWidth-DockMaster.SplitterWidth,
                         Site.ClientHeight-DockMaster.SplitterWidth);
     if PreferredSiteSizeAsSiteMinimum then begin
@@ -4938,7 +4968,9 @@ var
           Child.Width:=Max(1,Min(ChildMaxSize.X,Child.Width+WidthDiff))
         else begin
           i:=Max(1,Min(ChildMaxSize.Y,Child.Height+HeightDiff));
-          //debugln(['TAnchorDockManager.ResetBounds Child=',DbgSName(Child),' OldHeight=',Child.Height,' NewHeight=',i]);
+          {$IFDEF VerboseAnchorDockRestore}
+          debugln(['TAnchorDockManager.ResetBounds Child=',DbgSName(Child),' OldHeight=',Child.Height,' NewHeight=',i]);
+          {$ENDIF}
           Child.Height:=i;
         end;
       end;
@@ -5042,7 +5074,9 @@ begin
   FSiteClientRect:=Site.ClientRect;
   if DockSite<>nil then exit;
   ChildSite:=GetChildSite;
-  //debugln(['TAnchorDockManager.RestoreSite ',DbgSName(Site),' ChildSite=',DbgSName(ChildSite)]);
+  {$IFDEF VerboseAnchorDockRestore}
+  debugln(['TAnchorDockManager.RestoreSite START ',DbgSName(Site),' ChildSite=',DbgSName(ChildSite)]);
+  {$ENDIF}
   if ChildSite<>nil then begin
     ChildSite.CreateBoundSplitter;
     ChildSite.PositionBoundSplitter;
@@ -5060,7 +5094,9 @@ begin
     end;
     // only allow to dock one control
     DragManager.RegisterDockSite(Site,false);
-    //debugln(['TAnchorDockManager.RestoreSite ',DbgSName(Site),' ChildSite=',DbgSName(ChildSite),' Site.Bounds=',dbgs(Site.BoundsRect),' Site.Client=',dbgs(Site.ClientRect),' ChildSite.Bounds=',dbgs(ChildSite.BoundsRect),' Splitter.Bounds=',dbgs(ChildSite.BoundSplitter.BoundsRect)]);
+    {$IFDEF VerboseAnchorDockRestore}
+    debugln(['TAnchorDockManager.RestoreSite ',DbgSName(Site),' ChildSite=',DbgSName(ChildSite),' Site.Bounds=',dbgs(Site.BoundsRect),' Site.Client=',dbgs(Site.ClientRect),' ChildSite.Bounds=',dbgs(ChildSite.BoundsRect),' Splitter.Bounds=',dbgs(ChildSite.BoundSplitter.BoundsRect)]);
+    {$ENDIF}
   end;
 end;
 
