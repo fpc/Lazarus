@@ -74,8 +74,6 @@ end;
 var
   Application: TAChartTests;
 
-{$R *.res}
-
 begin
   Application:=TAChartTests.Create(nil);
   Application.Title := 'TAChart tests';
