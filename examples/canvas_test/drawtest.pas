@@ -26,6 +26,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfrmDraw }
 
 procedure TfrmDraw.FormPaint(Sender: TObject);
@@ -49,9 +51,6 @@ procedure TfrmDraw.FormCreate(Sender: TObject);
 begin
 
 end;
-
-initialization
-  {$I drawtest.lrs}
 
 end.
 

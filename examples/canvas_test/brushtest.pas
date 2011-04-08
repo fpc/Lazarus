@@ -24,6 +24,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfrmBrush }
 
 procedure TfrmBrush.FormPaint(Sender: TObject);
@@ -98,9 +100,6 @@ begin
     MyBitmap.Free;
   end;
 end;
-
-initialization
-  {$I brushtest.lrs}
 
 end.
 

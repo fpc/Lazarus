@@ -37,6 +37,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfrmImage }
 
 procedure TfrmImage.FormCreate(Sender: TObject);
@@ -135,6 +137,7 @@ begin
 
     TempIntfImg.Width :=(MaxX-MinX)+1;
     TempIntfImg.Height:=(MaxY-MinY)+1;
+    TempIntfImg.FillPixels(FPColor(0, 0, 0, 0));
 
     Dx:=(TempIntfImg.Width div 2)-Xo;
     Dy:=(TempIntfImg.Height div 2)-Yo;
@@ -239,9 +242,6 @@ begin
   RotateBitmap(MyBitmap, MyImage.Canvas, 0, 0, 40);
   MyBitmap.Free;
 end;
-
-initialization
-  {$I imagetest.lrs}
 
 end.
 

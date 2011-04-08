@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons;
+  ExtCtrls, Buttons, LCLType, LCLIntf;
 
 type
 
@@ -27,20 +27,25 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfrmScreenshot }
 
 procedure TfrmScreenshot.btnScreenshotClick(Sender: TObject);
 var
   bmp: TBitmap;
+  DC: HDC;
 begin
   bmp := TBitmap.Create;
-  bmp.LoadFromDevice(0);
+  DC := GetDC(0);
+  try
+    bmp.LoadFromDevice(DC);
+  finally
+    ReleaseDC(0, DC);
+  end;
   imgScreenshot.Picture.Bitmap.Assign(bmp);
   FreeAndNil(bmp);
 end;
-
-initialization
-  {$I screenshotunit.lrs}
 
 end.
 

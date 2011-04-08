@@ -24,6 +24,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfrmRectangles }
 
 procedure TfrmRectangles.FormPaint(Sender: TObject);
@@ -74,9 +76,6 @@ begin
     MyBitmap.Free;
   end;
 end;
-
-initialization
-  {$I rectanglestest.lrs}
 
 end.
 

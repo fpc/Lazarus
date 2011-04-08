@@ -24,6 +24,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfrmEllipse }
 
 procedure TfrmEllipse.FormPaint(Sender: TObject);
@@ -50,9 +52,6 @@ begin
   Canvas.Arc(150, 150, 200, 200, -25*16, 45*16);
   Canvas.Arc(250, 150, 300, 200, 30*16, -45*16);
 end;
-
-initialization
-  {$I ellipseunit.lrs}
 
 end.
 

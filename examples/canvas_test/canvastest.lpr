@@ -12,10 +12,9 @@ uses
   brushtest, fonttest, rectanglestest, shapedwindowtest, ellipseunit,
   screenshotunit, drawtest, imagetest;
 
-//{$IFDEF WINDOWS}{$R canvastest.rc}{$ENDIF}
+{$R *.res}
 
 begin
-  {$I canvastest.lrs}
   Application.Initialize;
   Application.CreateForm(TfrmCanvasTest, frmCanvasTest);
   Application.CreateForm(TfrmPen, frmPen);

@@ -26,6 +26,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfrmShapedWindow }
 
 procedure TfrmShapedWindow.FormShow(Sender: TObject);
@@ -48,9 +50,6 @@ begin
     Shape.Free;
   end;
 end;
-
-initialization
-  {$I shapedwindowtest.lrs}
 
 end.
 

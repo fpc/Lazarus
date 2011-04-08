@@ -48,6 +48,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfrmCanvasTest }
 
 procedure TfrmCanvasTest.btnBrushClick(Sender: TObject);
@@ -99,9 +101,6 @@ procedure TfrmCanvasTest.btnShapedWindowClick(Sender: TObject);
 begin
   frmShapedWindow.ShowModal;
 end;
-
-initialization
-  {$I canvastestunit.lrs}
 
 end.
 

@@ -24,6 +24,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfrmFont }
 
 procedure TfrmFont.FormPaint(Sender: TObject);
@@ -121,9 +123,6 @@ begin
     MyBitmap.Free;
   end;
 end;
-
-initialization
-  {$I fonttest.lrs}
 
 end.
 

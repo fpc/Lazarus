@@ -6,13 +6,14 @@ object frmScreenshot: TfrmScreenshot
   Caption = 'Screenshot Test'
   ClientHeight = 240
   ClientWidth = 320
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object imgScreenshot: TImage
     Left = 0
-    Height = 168
-    Top = 72
+    Height = 176
+    Top = 64
     Width = 320
     Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
   end
   object btnScreenshot: TBitBtn
     Left = 17
