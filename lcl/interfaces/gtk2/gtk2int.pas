@@ -133,11 +133,11 @@ type
     FDragImageListIcon: PGtkWidget;
     FDragHotStop: TPoint;
   public
-    procedure InitStockItems; virtual;
-    procedure FreeStockItems; virtual;
+    procedure InitStockItems;
+    procedure FreeStockItems;
     procedure InitSystemColors;
-    procedure InitSystemBrushes; virtual;
-    procedure FreeSystemBrushes; virtual;
+    procedure InitSystemBrushes;
+    procedure FreeSystemBrushes;
     procedure PassCmdLineOptions; override;
 
 {$ifdef Unix}
@@ -149,44 +149,44 @@ type
     procedure HandlePipeEvent(AData: PtrInt; AFlags: dword);
 
     // styles
-    procedure FreeAllStyles; virtual;
-    function GetCompStyle(Sender : TObject) : Longint; virtual;
+    procedure FreeAllStyles;
+    function GetCompStyle(Sender : TObject) : Longint;
 
     // create and destroy
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
       NotOnParentsClientArea: boolean): PGtkWidget;
-    procedure DestroyEmptySubmenu(Sender: TObject);virtual;
+    procedure DestroyEmptySubmenu(Sender: TObject);
     procedure DestroyConnectedWidget(Widget: PGtkWidget;
-                                     CheckIfDestroying: boolean);virtual;
-    function  RecreateWnd(Sender: TObject): Integer; virtual;
+                                     CheckIfDestroying: boolean);
+    function  RecreateWnd(Sender: TObject): Integer;
 
     // clipboard
-    procedure SetClipboardWidget(TargetWidget: PGtkWidget);virtual;
+    procedure SetClipboardWidget(TargetWidget: PGtkWidget);
 
     // device contexts
-    function IsValidDC(const DC: HDC): Boolean;virtual;
-    function NewDC: TGtkDeviceContext;virtual;
-    function FindDCWithGDIObject(GDIObject: PGdiObject): TGtkDeviceContext;virtual;
-    procedure DisposeDC(aDC: TGtkDeviceContext);virtual;
+    function IsValidDC(const DC: HDC): Boolean;
+    function NewDC: TGtkDeviceContext;
+    function FindDCWithGDIObject(GDIObject: PGdiObject): TGtkDeviceContext;
+    procedure DisposeDC(aDC: TGtkDeviceContext);
     function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
                                AWithChildWindows: Boolean; ADoubleBuffer: PgdkDrawable = nil): HDC;
     function GetDoubleBufferedDC(Handle: HWND): HDC;
 
     // GDIObjects
-    function IsValidGDIObject(const AGDIObj: HGDIOBJ): Boolean; virtual;
+    function IsValidGDIObject(const AGDIObj: HGDIOBJ): Boolean;
     function IsValidGDIObjectType(const GDIObject: HGDIOBJ;
-                                  const GDIType: TGDIType): Boolean;virtual;
-    function NewGDIObject(const GDIType: TGDIType): PGdiObject;virtual;
-    procedure DisposeGDIObject(GdiObject: PGdiObject);virtual;
-    function ReleaseGDIObject(GdiObject: PGdiObject): boolean;virtual;
-    procedure ReferenceGDIObject(GdiObject: PGdiObject);virtual;
-    function CreateDefaultBrush: PGdiObject;virtual;
-    function CreateDefaultFont: PGdiObject;virtual;
-    function CreateDefaultPen: PGdiObject;virtual;
-    function CreateDefaultGDIBitmap: PGdiObject;virtual;
-    procedure UpdateDCTextMetric(DC: TGtkDeviceContext); virtual;
+                                  const GDIType: TGDIType): Boolean;
+    function NewGDIObject(const GDIType: TGDIType): PGdiObject;
+    procedure DisposeGDIObject(GdiObject: PGdiObject);
+    function ReleaseGDIObject(GdiObject: PGdiObject): boolean;
+    procedure ReferenceGDIObject(GdiObject: PGdiObject);
+    function CreateDefaultBrush: PGdiObject;
+    function CreateDefaultFont: PGdiObject;
+    function CreateDefaultPen: PGdiObject;
+    function CreateDefaultGDIBitmap: PGdiObject;
+    procedure UpdateDCTextMetric(DC: TGtkDeviceContext);
     function GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
     function GetDefaultGtkFont(IncreaseReferenceCount: boolean): TGtkIntfFont;
     function GetGtkFont(DC: TGtkDeviceContext): TGtkIntfFont;
@@ -198,7 +198,7 @@ type
     procedure LoadPixbufFromLazResource(const ResourceName: string;
       var Pixbuf: PGdkPixbuf);
     function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
-      BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;virtual;
+      BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
     function RawImage_DescriptionFromDrawable(out ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean): boolean;
     function RawImage_DescriptionFromPixbuf(out ADesc: TRawImageDescription; APixbuf: PGdkPixbuf): boolean;
     function RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; ARect: PRect = nil): boolean;
@@ -211,20 +211,20 @@ type
       Rop: Cardinal): Boolean;
 
     // RC file
-    procedure SetRCFilename(const AValue: string);virtual;
-    procedure CheckRCFilename;virtual;
-    procedure ParseRCFile;virtual;
+    procedure SetRCFilename(const AValue: string);
+    procedure CheckRCFilename;
+    procedure ParseRCFile;
 
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
     procedure UntransientWindow(GtkWindow: PGtkWindow);
     // misc
-    function GetCaption(Sender : TObject) : String; virtual;
+    function GetCaption(Sender : TObject) : String;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
 
-    procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
-    procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
+    procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
+    procedure RemoveCallbacks(Widget: PGtkWidget);
 
     // for gtk specific components:
     procedure SetWidgetColor(const AWidget: PGtkWidget;
@@ -234,10 +234,10 @@ type
                           const ALCLObject: TObject);
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject;
                           const ALCLObject: TObject);
-    function  LCLtoGtkMessagePending: boolean;virtual;
-    procedure SendCachedGtkMessages;virtual;
+    function  LCLtoGtkMessagePending: boolean;
+    procedure SendCachedGtkMessages;
     // show, hide and invalidate
-    procedure SetVisible(Sender: TObject; const AVisible: Boolean); virtual;
+    procedure SetVisible(Sender: TObject; const AVisible: Boolean);
 
     // Drag ImageLsit
     function DragImageList_BeginDrag(APixmap: PGdkPixmap; AMask: PGdkBitmap; AHotSpot: TPoint): Boolean;
@@ -245,14 +245,14 @@ type
     function DragImageList_DragMove(X, Y: Integer): Boolean;
     function DragImageList_SetVisible(NewVisible: Boolean): Boolean;
 
-    procedure UpdateTransientWindows; virtual;
+    procedure UpdateTransientWindows;
     procedure SendCachedLCLMessages; override;
 
     function CreateTimer(Interval: integer; TimerProc: TWSTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
-    procedure DestroyLCLComponent(Sender: TObject);virtual;
+    procedure DestroyLCLComponent(Sender: TObject);
     // notebook
-    procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
+    procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
 
 
     procedure SetDesigning(AComponent: TComponent); override;
@@ -329,7 +329,7 @@ type
     function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: Integer; const S: String); override;
     procedure PutObject(Index: Integer; AnObject: TObject); override;
-    procedure SetSorted(Val: Boolean); virtual;
+    procedure SetSorted(Val: Boolean);
     procedure UpdateItemCache;
     procedure GrowCache;
     procedure ShrinkCache;
@@ -345,7 +345,7 @@ type
     function Find(const S: String; var Index: Integer): Boolean;
     function IndexOf(const S: String): Integer; override;
     procedure Insert(Index: Integer; const S: String); override;
-    procedure Sort; virtual;
+    procedure Sort;
     function IsEqual(List: TStrings): Boolean;
     procedure BeginUpdate;
     procedure EndUpdate;
