@@ -43,6 +43,7 @@ type
     UnitsListBox: TListBox;
     SectionRadioGroup: TRadioGroup;
     procedure FormCreate(Sender: TObject);
+    procedure UnitsListBoxDblClick(Sender: TObject);
     procedure UnitsListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
   private
@@ -168,6 +169,11 @@ begin
   ButtonPanel1.OKButton.Caption:=lisOk;
   ButtonPanel1.CancelButton.Caption:=dlgCancel;
   UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
+end;
+
+procedure TUseProjUnitDialog.UnitsListBoxDblClick(Sender: TObject);
+begin
+  if UnitsListBox.ItemIndex >= 0 then ModalResult := mrOK;
 end;
 
 procedure TUseProjUnitDialog.UnitsListBoxDrawItem(Control: TWinControl;

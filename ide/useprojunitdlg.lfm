@@ -77,6 +77,7 @@ object UseProjUnitDialog: TUseProjUnitDialog
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
+    OnDblClick = UnitsListBoxDblClick
     OnDrawItem = UnitsListBoxDrawItem
     Style = lbOwnerDrawFixed
     TabOrder = 0
