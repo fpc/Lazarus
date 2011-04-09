@@ -2553,7 +2553,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.AppTerminate;
 begin
-  FreeAllStyles;
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
 end;
