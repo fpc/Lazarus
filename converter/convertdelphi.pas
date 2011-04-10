@@ -1113,8 +1113,10 @@ function TConvertDelphiPBase.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): int
       sUnitPath:=GetCachedUnitPath(mUnit);
       if sUnitPath<>'' then begin
         // Found from cached paths: add unit path to project's settings.
-        with CompOpts do
+        with CompOpts do begin
           OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
+          IncludePath:=MergeSearchPaths(IncludePath,sUnitPath);
+        end;
         // Rename a unit with different casing if needed.
         RealFileName:=fCachedRealFileNames[UpperCase(mUnit)];
         RealUnitName:=ExtractFileNameOnly(RealFileName);
