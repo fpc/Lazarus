@@ -7029,9 +7029,6 @@ function TQtTabBar.SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
 var
   MousePos: TQtPoint;
-  NewIndex, CurIndex: Integer;
-  Msg: TLMNotify;
-  Hdr: TNmHdr;
   NewEvent: QMouseEventH;
   R: TRect;
   R1: TRect;
@@ -7043,8 +7040,6 @@ begin
     exit;
 
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-  NewIndex := QTabBar_tabAt(QTabBarH(Sender), @MousePos);
-  CurIndex := QTabBar_currentIndex(QTabBarH(Sender));
 
   if Assigned(FOwner) then
   begin
