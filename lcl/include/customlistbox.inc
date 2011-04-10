@@ -113,6 +113,7 @@ begin
   // free old items
   OldItems.Free;
   TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, FSorted);
+  TWSCustomListBoxClass(WidgetSetClass).SetScrollWidth(Self, FScrollWidth);
   UnlockSelectionChange;
 end;
 
@@ -194,12 +195,27 @@ begin
     TWSCustomListBoxClass(WidgetSetClass).SetColumnCount(Self, FColumns);
 end;
 
+procedure TCustomListBox.SetScrollWidth(const AValue: Integer);
+begin
+  FScrollWidth := AValue;
+  if HandleAllocated then
+    TWSCustomListBoxClass(WidgetSetClass).SetScrollWidth(Self, FScrollWidth);
+end;
+
 {------------------------------------------------------------------------------
   function TCustomListBox.GetCount: Integer;
 ------------------------------------------------------------------------------}
 function TCustomListBox.GetCount: Integer;
 begin
   Result := Items.Count;
+end;
+
+function TCustomListBox.GetScrollWidth: Integer;
+begin
+  if HandleAllocated then
+    Result := TWSCustomListBoxClass(WidgetSetClass).GetScrollWidth(Self)
+  else
+    Result := FScrollWidth;
 end;
 
 {------------------------------------------------------------------------------
@@ -509,6 +525,7 @@ begin
   FClickOnSelChange:= True;
   FItemIndex:=-1;
   FExtendedSelect := true;
+  FScrollWidth := 0;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ParentColor := false;

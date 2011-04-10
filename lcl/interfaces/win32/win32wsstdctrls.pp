@@ -124,6 +124,7 @@ type
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
+    class function GetScrollWidth(const ACustomListBox: TCustomListBox): Integer; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
@@ -133,6 +134,7 @@ type
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
       AMultiSelect: boolean); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
@@ -654,6 +656,11 @@ begin
     LPARAM(@ARect)) <> LB_ERR;
 end;
 
+class function TWin32WSCustomListBox.GetScrollWidth(const ACustomListBox: TCustomListBox): Integer;
+begin
+  Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETHORIZONTALEXTENT, 0, 0);
+end;
+
 class function TWin32WSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
 begin
   // GetSelCount only works for multiple-selection listboxes
@@ -744,6 +751,12 @@ begin
     end;
   end else
     Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
+end;
+
+class procedure TWin32WSCustomListBox.SetScrollWidth(
+  const ACustomListBox: TCustomListBox; const AScrollWidth: Integer);
+begin
+  Windows.SendMessage(ACustomListBox.Handle, LB_SETHORIZONTALEXTENT, AScrollWidth, 0);
 end;
 
 class procedure TWin32WSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;

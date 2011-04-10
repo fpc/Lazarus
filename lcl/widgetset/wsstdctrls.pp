@@ -112,6 +112,7 @@ type
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; virtual;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; virtual;
+    class function GetScrollWidth(const ACustomListBox: TCustomListBox): Integer; virtual;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; virtual;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; virtual;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; virtual;
@@ -123,6 +124,7 @@ type
     class procedure SetBorder(const ACustomListBox: TCustomListBox); virtual;
     class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); virtual;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); virtual;
+    class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); virtual;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, 
       AMultiSelect: boolean); virtual;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); virtual;
@@ -298,6 +300,12 @@ begin
   Result:=false;
 end;
 
+class function TWSCustomListBox.GetScrollWidth(
+  const ACustomListBox: TCustomListBox): Integer;
+begin
+  Result := 0;
+end;
+
 class function  TWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := 0;
@@ -339,6 +347,12 @@ end;
 
 class procedure TWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
 begin
+end;
+
+class procedure TWSCustomListBox.SetScrollWidth(
+  const ACustomListBox: TCustomListBox; const AScrollWidth: Integer);
+begin
+
 end;
 
 class procedure TWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;

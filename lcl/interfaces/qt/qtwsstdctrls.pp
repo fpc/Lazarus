@@ -113,6 +113,7 @@ type
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
+    class function GetScrollWidth(const ACustomListBox: TCustomListBox): Integer; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
@@ -122,6 +123,7 @@ type
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
@@ -502,6 +504,15 @@ begin
     ARect := Rect(-1,-1,-1,-1);
 end;
 
+class function TQtWSCustomListBox.GetScrollWidth(
+  const ACustomListBox: TCustomListBox): Integer;
+var
+  QtListWidget: TQtListWidget;
+begin
+  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  Result := QtListWidget.horizontalScrollBar.getMax;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListBox.GetTopIndex
   Params:  None
@@ -565,6 +576,20 @@ class procedure TQtWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomLis
   const AIndex: integer);
 begin
   TQtListWidget(ACustomListBox.Handle).setCurrentRow(AIndex);
+end;
+
+class procedure TQtWSCustomListBox.SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer);
+const
+  BoolToPolicy: array[Boolean] of QtScrollBarPolicy = (QtScrollBarAlwaysOff, QtScrollBarAlwaysOn);
+var
+  QtListWidget: TQtListWidget;
+  ClientWidth: Integer;
+begin
+  QtListWidget := TQtListWidget(ACustomListBox.Handle);
+  QtListWidget.horizontalScrollBar.setMaximum(AScrollWidth);
+  with QtListWidget.getClientBounds do
+    ClientWidth := Right - Left;
+  QtListWidget.ScrollBarPolicy[False] := BoolToPolicy[AScrollWidth > ClientWidth];
 end;
 
 {------------------------------------------------------------------------------

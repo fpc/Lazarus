@@ -497,13 +497,16 @@ type
     FOnDrawItem: TDrawItemEvent;
     FOnMeasureItem: TMeasureItemEvent;
     FOnSelectionChange: TSelectionChangeEvent;
+    FScrollWidth: Integer;
     FSorted: boolean;
     FStyle: TListBoxStyle;
     FTopIndex: integer;
     function GetCount: Integer;
+    function GetScrollWidth: Integer;
     function GetTopIndex: Integer;
     procedure RaiseIndexOutOfBounds(AIndex: integer);
     procedure SetColumns(const AValue: Integer);
+    procedure SetScrollWidth(const AValue: Integer);
     procedure SetTopIndex(const AValue: Integer);
     procedure UpdateSelectionMode;
     procedure UpdateSorted;
@@ -603,6 +606,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property ScrollWidth: Integer read GetScrollWidth write SetScrollWidth default 0;
     property SelCount: integer read GetSelCount;
     property Selected[Index: integer]: boolean read GetSelected write SetSelected;
     property ShowHint;
@@ -670,6 +674,7 @@ type
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;
+    property ScrollWidth;
     property ShowHint;
     property Sorted;
     property Style;

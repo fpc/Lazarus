@@ -162,6 +162,7 @@ type
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
+    class function GetScrollWidth(const ACustomListBox: TCustomListBox): Integer; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
@@ -171,6 +172,7 @@ type
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetScrollWidth(const ACustomListBox: TCustomListBox; const AScrollWidth: Integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
                                      AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
@@ -497,8 +499,15 @@ begin
   end;
 end;
 
-class function TGtk2WSCustomListBox.GetTopIndex(
-  const ACustomListBox: TCustomListBox): integer;
+class function TGtk2WSCustomListBox.GetScrollWidth(const ACustomListBox: TCustomListBox): Integer;
+var
+  Adjustment: PGtkAdjustment;
+begin
+  Adjustment := gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(ACustomListBox.Handle));
+  Result := Trunc(Adjustment^.upper);
+end;
+
+class function TGtk2WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := GetIndexAtXY(ACustomListBox, 0, 1);
 end;
@@ -595,6 +604,21 @@ begin
     gtk_tree_path_free(Path);
 
   Dec(WidgetInfo^.ChangeLock);
+end;
+
+class procedure TGtk2WSCustomListBox.SetScrollWidth(
+  const ACustomListBox: TCustomListBox; const AScrollWidth: Integer);
+const
+  BoolToPolicy: array[Boolean] of TGtkPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+var
+  Adjustment: PGtkAdjustment;
+  ScrolledWindow: PGtkScrolledWindow;
+begin
+  ScrolledWindow := PGtkScrolledWindow(ACustomListBox.Handle);
+  gtk_scrolled_window_set_policy(ScrolledWindow, BoolToPolicy[AScrollWidth > PgtkWidget(ScrolledWindow)^.allocation.width], GTK_POLICY_AUTOMATIC);
+  Adjustment := gtk_scrolled_window_get_hadjustment(ScrolledWindow);
+  Adjustment^.upper := AScrollWidth;
+  gtk_adjustment_changed(Adjustment);
 end;
 
 class procedure TGtk2WSCustomListBox.SetSelectionMode(
@@ -705,8 +729,9 @@ begin
 
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+  // by default horz scrollbar is invisible. it is set by SetScrollWidth
   gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+                                 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
   //Set BorderStyle according to the provided Params
   if (AParams.ExStyle and WS_EX_CLIENTEDGE) > 0 then
     gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p), GTK_SHADOW_ETCHED_IN)

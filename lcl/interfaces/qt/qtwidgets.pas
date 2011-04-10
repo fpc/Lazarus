@@ -1100,6 +1100,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    procedure InitializeWidget; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
@@ -1131,7 +1132,7 @@ type
     procedure setItemText(AIndex: Integer; AText: String); overload;
     procedure setItemText(AIndex: Integer; AText: String; AAlignment: Integer); overload;
     procedure setItemSelected(AItem: QListWidgetItemH; const ASelect: Boolean);
-    procedure setItemVisible(AItem: QListWidgetItemH; Const AVisible: Boolean);
+    procedure setItemVisible(AItem: QListWidgetItemH; const AVisible: Boolean);
     procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
     procedure removeItem(AIndex: Integer);
     function rowCount: integer;
@@ -8677,6 +8678,13 @@ begin
   QListWidget_hook_destroy(FItemTextChangedHook);
 
   inherited DetachEvents;
+end;
+
+procedure TQtListWidget.InitializeWidget;
+begin
+  inherited InitializeWidget;
+  // by default horz scrollbars is off. it is set by SetScrollWidth
+  setScrollBarPolicy(False, QtScrollBarAlwaysOff);
 end;
 
 function TQtListWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
