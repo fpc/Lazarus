@@ -4,26 +4,26 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: codystrconsts.crsbyfpccfg
 msgid "by fpc.cfg"
-msgstr ""
+msgstr "por fpc.cfg"
 
 #: codystrconsts.crsclose
 msgid "&Close"
-msgstr ""
+msgstr "&Fechar"
 
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
-msgstr ""
+msgstr "Gbytes"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
-msgstr ""
+msgstr "kbytes"
 
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
@@ -31,7 +31,7 @@ msgstr "Arquivo fonte principal: %s"
 
 #: codystrconsts.crsmbytes
 msgid "Mbytes"
-msgstr ""
+msgstr "Mbytes"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -43,11 +43,11 @@ msgstr "Nenhum projeto"
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
-msgstr ""
+msgstr "Nenhuma unidade selecionada"
 
 #: codystrconsts.crspackage
 msgid "Package"
-msgstr ""
+msgstr "Pacote"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
@@ -55,7 +55,7 @@ msgstr "Favor abrir um projeto primeiro."
 
 #: codystrconsts.crsppu
 msgid "PPU: %s"
-msgstr ""
+msgstr "PPU: %s"
 
 #: codystrconsts.crsppufilesofproject
 msgid "PPU files of project \"%s\""
@@ -67,7 +67,7 @@ msgstr "Projeto não tem arquivo fonte principal."
 
 #: codystrconsts.crsprojectoutput
 msgid "Project output"
-msgstr ""
+msgstr "Saída do Projeto"
 
 #: codystrconsts.crssearching
 msgid "searching ..."
@@ -75,7 +75,7 @@ msgstr "localizando ..."
 
 #: codystrconsts.crsshowusedppufiles
 msgid "Show used .ppu files"
-msgstr ""
+msgstr "Exibir arquivos .ppu usados"
 
 #: codystrconsts.crssizeofofile
 msgid "Size of .o file"
@@ -87,7 +87,7 @@ msgstr "Tamanho do arquivo .ppu"
 
 #: codystrconsts.crssource
 msgid "Source: %s"
-msgstr ""
+msgstr "Fonte: %s"
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -95,11 +95,11 @@ msgstr "Total"
 
 #: codystrconsts.crsunit
 msgid "Unit"
-msgstr ""
+msgstr "Unidade"
 
 #: codystrconsts.crsunit2
 msgid "Unit: %s"
-msgstr ""
+msgstr "Unidade: %s"
 
 #: codystrconsts.crsusedby
 msgid "Used by"
@@ -111,7 +111,7 @@ msgstr "\"Uses\""
 
 #: codystrconsts.crsvirtualunit
 msgid "Virtual unit"
-msgstr ""
+msgstr "Unidade Virtual"
 
 #: codystrconsts.liscogeneral
 msgid "General"
