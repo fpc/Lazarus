@@ -11557,6 +11557,7 @@ function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cde
 var
   HaveVertBar: Boolean;
   HaveHorzBar: Boolean;
+  ScrollBar: QScrollBarH;
 begin
   Result := False;
   {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
@@ -11587,7 +11588,32 @@ begin
     end;
     QEventWheel:
       if (QtVersionMajor = 4) and (QtVersionMinor < 7) then
-        Result := inherited EventFilter(Sender, Event);
+      begin
+        Result := SlotMouseWheel(Sender, Event);
+        if not Result then
+        case QWheelEvent_orientation(QWheelEventH(Event)) of
+          QtVertical:
+            begin
+              if TQtCustomControl(FOwner).verticalScrollBar.getVisible then
+              begin
+                ScrollBar := QScrollBarH(TQtCustomControl(FOwner).verticalScrollBar.Widget);
+                QScrollBar_event(ScrollBar, Event);
+              end else
+                Result := inherited EventFilter(Sender, Event);
+            end;
+          QtHorizontal:
+          begin
+            if TQtCustomControl(FOwner).horizontalScrollBar.getVisible then
+            begin
+              ScrollBar := QScrollBarH(TQtCustomControl(FOwner).horizontalScrollBar.Widget);
+              QScrollBar_event(ScrollBar, Event);
+            end else
+              Result := inherited EventFilter(Sender, Event);
+          end;
+        end;
+        Result := True;
+        QEvent_ignore(Event);
+      end;
     QEventLayoutRequest: ; // nothing to do here
   else
     Result := inherited EventFilter(Sender, Event);
