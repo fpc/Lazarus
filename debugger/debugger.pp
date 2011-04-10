@@ -3721,7 +3721,7 @@ end;
 
 procedure TIDEWatches.Update(Item: TCollectionItem);
 var
-  n, m: Integer;
+  n, m, c: Integer;
   Notification: TIDEWatchesNotification;
 begin
   // Note: Item will be nil in case all items need to be updated
@@ -3732,8 +3732,16 @@ begin
 
     if Item = nil
     then begin
-      for m := 0 to Count - 1 do
+      m := 0;
+      c := Count;
+      while m < c do begin;
         Notification.FOnUpdate(Self, Items[m]);
+        if c <> Count then begin
+          m := Max(0, m - Max(0, Count - c));
+          c := Count;
+        end;
+        inc(m);
+      end;
     end
     else begin
       Notification.FOnUpdate(Self, TIDEWatch(Item));

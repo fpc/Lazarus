@@ -38,11 +38,13 @@ unit WatchesDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, math,
   StdCtrls, Buttons, Menus, ComCtrls, LCLType, ActnList, IDEImagesIntf,
   LazarusIDEStrConsts, Debugger, DebuggerDlg, BaseDebugManager;
 
 type
+
+  TWatchesDlgStateFlags = set of (wdsfUpdating, wdsfNeedDeleteAll, wdsfNeedDeleteCurrent);
 
   { TWatchesDlg }
 
@@ -105,7 +107,7 @@ type
     FWatchesNotification: TIDEWatchesNotification;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded: Boolean;
-    procedure DoEndUpdate; override;
+    FStateFlags: TWatchesDlgStateFlags;
     function GetSelected: TIDEWatch;
     procedure SetWatches(const AValue: TIDEWatches);
     procedure WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
@@ -116,6 +118,7 @@ type
     procedure UpdateAll;
     procedure DisableAllActions;
   protected
+    procedure DoEndUpdate; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -138,6 +141,7 @@ begin
   FWatchesNotification.OnAdd := @WatchAdd;
   FWatchesNotification.OnUpdate := @WatchUpdate;
   FWatchesNotification.OnRemove := @WatchRemove;
+  FStateFlags := [];
 
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
@@ -211,8 +215,6 @@ begin
 end;
 
 procedure TWatchesDlg.SetWatches(const AValue: TIDEWatches);
-var
-  i: Integer;
 begin
   if FWatches = AValue then Exit;
 
@@ -230,9 +232,7 @@ begin
     if FWatches <> nil
     then begin
       FWatches.AddNotification(FWatchesNotification);
-
-      for i:=0 to FWatches.Count-1 do
-        WatchUpdate(FWatches, FWatches.Items[i]);
+      UpdateAll;
     end;
     
   finally
@@ -393,7 +393,10 @@ end;
 procedure TWatchesDlg.popDeleteAllClick(Sender: TObject);
 var
   n: Integer;
-begin                                    
+begin
+  Include(FStateFlags, wdsfNeedDeleteAll);
+  if wdsfUpdating in FStateFlags then exit;
+  Exclude(FStateFlags, wdsfNeedDeleteAll);
   try
     DisableAllActions;
     for n := lvWatches.Items.Count - 1 downto 0 do
@@ -416,6 +419,9 @@ procedure TWatchesDlg.popDeleteClick(Sender: TObject);
 var
   Item: TIDEWatch;
 begin
+  Include(FStateFlags, wdsfNeedDeleteCurrent);
+  if (wdsfUpdating in FStateFlags) then exit;
+  Exclude(FStateFlags, wdsfNeedDeleteCurrent);
   try
     DisableAllActions;
     repeat
@@ -523,17 +529,32 @@ procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TIDEWatch
 begin
 // Expression
 // Result
-  AItem.Caption := AWatch.Expression;
   if (not ToolButtonPower.Down) or (not Visible) then exit;
+
+  include(FStateFlags, wdsfUpdating);
+  AItem.Caption := AWatch.Expression;
   AItem.SubItems[0] := ClearMultiline(AWatch.Value);
+  exclude(FStateFlags, wdsfUpdating);
+  if wdsfNeedDeleteCurrent in FStateFlags then
+    popDeleteClick(nil);
+  if wdsfNeedDeleteAll in FStateFlags then
+    popDeleteAllClick(nil);
 end;
 
 procedure TWatchesDlg.UpdateAll;
 var
-  i: Integer;
+  i, l: Integer;
 begin
-  for i:=0 to FWatches.Count-1 do
+  l := FWatches.Count;
+  i := 0;
+  while i < l do begin
     WatchUpdate(FWatches, FWatches.Items[i]);
+    if l <> FWatches.Count then begin
+      i := Max(0, i - Max(0, FWatches.Count - l));
+      l := FWatches.Count;
+    end;
+    inc(i);
+  end;
 end;
 
 procedure TWatchesDlg.DisableAllActions;
