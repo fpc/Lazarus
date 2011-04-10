@@ -1252,9 +1252,7 @@ begin
     ResetRange
   else
     SetRange(FCurrentRanges[LineNumber - 1]);
-  // Keep a copy of the line text, since some highlighters just use a PChar pointer to it.
-  FLineText := CurrentLines[LineNumber];
-  SetLine(FLineText, LineNumber);
+  SetLine(CurrentLines[LineNumber], LineNumber);
 end;
 
 procedure TSynCustomHighlighter.ResetRange;
@@ -1263,6 +1261,8 @@ end;
 
 procedure TSynCustomHighlighter.SetLine(const NewValue: String; LineNumber: Integer);
 begin
+  // Keep a copy of the line text, since some highlighters just use a PChar pointer to it.
+  FLineText := NewValue;
   FIsInNextToEOL := False;
   FLineIndex := LineNumber;
 end;

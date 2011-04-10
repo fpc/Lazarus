@@ -264,6 +264,7 @@ procedure TSynPositionHighlighter.SetLine(const NewValue: string;
 var
   p: PPositionTokens;
 begin
+  inherited;
   fLine := NewValue;
   fLineLen := length(fLine);
   fLineNumber := LineNumber;

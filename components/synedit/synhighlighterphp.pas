@@ -696,6 +696,7 @@ end;
 
 procedure TSynPHPSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber: Integer);
 begin
+  inherited;
   fLine := PChar(NewValue);
   {$IFDEF SYN_LAZARUS}
   fLineLen := length(NewValue);

@@ -468,6 +468,7 @@ end; { Destroy }
 
 procedure TSynAnySyn.SetLine(const NewValue: String; LineNumber:Integer);
 begin
+  inherited;
   fLine := PChar(NewValue);
   Run := 0;
   fLineNumber := LineNumber;
