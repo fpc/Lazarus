@@ -1053,9 +1053,9 @@ begin
             if NewBounds.Bottom<20 then
               OffsetRect(NewBounds,0,20-NewBounds.Bottom);
             if NewBounds.Left>Screen.DesktopWidth-20 then
-              OffsetRect(NewBounds,NewBounds.Left-(Screen.DesktopWidth-20),0);
+              OffsetRect(NewBounds,(Screen.DesktopWidth-20)-NewBounds.Left,0);
             if NewBounds.Top>Screen.DesktopHeight-20 then
-              OffsetRect(NewBounds,NewBounds.Top-(Screen.DesktopHeight-20),0);
+              OffsetRect(NewBounds,(Screen.DesktopHeight-20)-NewBounds.Top,0);
             // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
             AForm.SetBounds(
               NewBounds.Left,NewBounds.Top,
