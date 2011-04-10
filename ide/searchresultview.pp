@@ -419,8 +419,10 @@ begin
       iCurrentIndex := CurrentTV.Selected.Index + 1
     else
       iCurrentIndex := 0;
-    if (iCurrentIndex > CurrentTV.Items.Count) then iCurrentIndex := CurrentTV.Items.Count;
-    if (iCurrentIndex < 0) then iCurrentIndex := 0;//Set to 1st list-item if none are selected
+    if (iCurrentIndex > CurrentTV.Items.Count) then
+      iCurrentIndex := CurrentTV.Items.Count;
+    if (iCurrentIndex < 0) then
+      iCurrentIndex := 0;             //Set to 1st list-item if none are selected
     //Parse Phrases
     Parse_Search_Phrases(slPhrases);
     if (slPhrases.Count > 0) then
@@ -695,8 +697,7 @@ begin
     Hide;
 end;
 
-{Sets the Items from the treeview on the currently selected page in the
- TNoteBook}
+{Sets the Items from the treeview on the currently selected page in the TNoteBook}
 procedure TSearchResultsView.SetItems(Index: integer; Value: TStrings);
 var
   CurrentTV: TLazSearchResultTV;
@@ -891,7 +892,6 @@ var
   TheTop: integer;
   MatchObj: TObject;
   MatchPos,FirstMatchPos: TLazSearchMatchPos;
-
   TextEnd, DrawnTextLength: integer;
   ARect: TRect;
 begin
@@ -976,8 +976,7 @@ begin
     fOnSelectionChanged(Self)
 end;//TreeViewDoubleClicked
 
-{Returns the Position within the source file from a properly formated search
- result}
+{Returns the Position within the source file from a properly formated search result}
 function TSearchResultsView.GetSourcePositon: TPoint;
 var
   MatchPos: TLazSearchMatchPos;
