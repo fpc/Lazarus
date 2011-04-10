@@ -2973,7 +2973,8 @@ begin
 
     if not (csCaptureMouse in LCLObject.ControlStyle) and
       (QApplication_mouseButtons() <> QtNoButton) and
-      ((MousePos.X < 0) or (MousePos.Y < 0)) then
+      (((MousePos.X < 0) or (MousePos.Y < 0)) or
+      ((MousePos.X > getWidth) or (MousePos.Y > getHeight))) then
     begin
       if not QWidget_underMouse(Widget) then
         exit;
