@@ -1359,10 +1359,7 @@ Begin
     Top := Top + dy;
     Bottom := Bottom + dy;
   end;
-  if (ARect.Left >= 0) and (ARect.Top >= 0) then
-    Result := True
-  else
-    Result := False;
+  Result := (ARect.Left >= 0) and (ARect.Top >= 0);
 end;
 
 procedure FreeThenNil(var obj);
