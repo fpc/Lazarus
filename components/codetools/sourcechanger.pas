@@ -761,10 +761,11 @@ var
     if AnEntry.AfterGap in [gtNewLine,gtEmptyLine] then begin
       // move the rest of the line behind the insert position to the next line
       // with auto indent
-      NeededIndent:=0;
       j:=ToPos;
-      while (j>1) and (IsSpaceChar[ToSrc[j-1]]) do dec(j);
-      dec(NeededIndent,ToPos-j);
+      while (j>1) and (ToSrc[j-1] in [' ',#9]) do dec(j);
+      NeededIndent:=ToPos-j;
+      //debugln(['AddAfterGap InsertTxt=',dbgstr(InsertText)]);
+      //debugln(['AddAfterGap ToSrc=',dbgstr(copy(ToSrc,ToPos-10,10)),'|',dbgstr(copy(ToSrc,ToPos,10))]);
       if NeededIndent>0 then
         InsertText:=InsertText+GetIndentStr(NeededIndent);
     end;
