@@ -1981,7 +1981,7 @@ begin
 
   // adjust cursor position
   AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
-  //DebugLn(['TCodeCompletionCodeTool.CompleteMethod END OldCodePos.P=',OldCodePos.P,' OldTopLine=',OldTopLine,' NewPos=',DbgsCXY(NewPos),' NewTopLine=',NewTopLine]);
+  //DebugLn(['TCodeCompletionCodeTool.CompleteMethod END OldCodePos.P=',OldCodePos.P,' OldTopLine=',OldTopLine,' NewPos=',Dbgs(NewPos),' NewTopLine=',NewTopLine]);
 end;
 
 function TCodeCompletionCodeTool.CreateParamListFromStatement(
@@ -4817,7 +4817,7 @@ begin
     CodeCompleteClassNode:=FindClassNode(CursorNode);
   end;
   if CodeCompleteClassNode=nil then begin
-    DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods no class at ',DbgsCXY(CursorPos)]);
+    DebugLn(['TCodeCompletionCodeTool.FindEmptyMethods no class at ',Dbgs(CursorPos)]);
     exit;
   end;
   ProcBodyNodes:=nil;
@@ -6977,7 +6977,7 @@ var
   ProcNode, ImplementationNode, AClassNode: TCodeTreeNode;
   IsEventAssignment: boolean;
 begin
-  //DebugLn(['TCodeCompletionCodeTool.CompleteCode CursorPos=',DbgsCXY(CursorPos),' OldTopLine=',OldTopLine]);
+  //DebugLn(['TCodeCompletionCodeTool.CompleteCode CursorPos=',Dbgs(CursorPos),' OldTopLine=',OldTopLine]);
 
   Result:=false;
   if (SourceChangeCache=nil) then 

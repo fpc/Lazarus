@@ -151,8 +151,8 @@ procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
 procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
                           DestTree: TAVLTree; ClearList, CreateCopies: boolean);
 
-function DbgsCXY(const p: TCodeXYPosition): string;
-function DbgsCP(const p: TCodePosition): string;
+function Dbgs(const p: TCodeXYPosition): string; overload;
+function Dbgs(const p: TCodePosition): string; overload;
 function dbgs(const a: TAtomPosition): string; overload;
 function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList): string;
 
@@ -302,7 +302,7 @@ begin
     SrcList.Clear;
 end;
 
-function DbgsCXY(const p: TCodeXYPosition): string;
+function Dbgs(const p: TCodeXYPosition): string;
 begin
   if p.Code=nil then
     Result:='(none)'
@@ -310,7 +310,7 @@ begin
     Result:=p.Code.Filename+'(y='+dbgs(p.y)+',x='+dbgs(p.x)+')';
 end;
 
-function DbgsCP(const p: TCodePosition): string;
+function Dbgs(const p: TCodePosition): string;
 var
   CodeXYPosition: TCodeXYPosition;
 begin
@@ -319,7 +319,7 @@ begin
   if CodeXYPosition.Code<>nil then begin
     CodeXYPosition.Code.AbsoluteToLineCol(p.P,CodeXYPosition.Y,CodeXYPosition.X);
   end;
-  Result:=DbgsCXY(CodeXYPosition);
+  Result:=Dbgs(CodeXYPosition);
 end;
 
 function dbgs(const a: TAtomPosition): string;
@@ -339,7 +339,7 @@ begin
     Result:='';
     for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
       p:=PCodeXYPosition(ListOfPCodeXYPosition[i])^;
-      Result:=Result+'  '+DbgsCXY(p)+LineEnding;
+      Result:=Result+'  '+Dbgs(p)+LineEnding;
     end;
   end;
 end;

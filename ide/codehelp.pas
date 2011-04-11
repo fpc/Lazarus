@@ -42,12 +42,14 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, AvgLvlTree,
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
-  PascalParserTool, CodeCache, CacheCodeTools, FileProcs,
+  KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, FileProcs,
   {$IFDEF NewXMLCfg}
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   {$ELSE}
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   {$ENDIF}
+  // synedit
+  SynHighlighterPas,
   // IDEIntf
   IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, IDEDialogs,
   IDEHelpIntf, LazIDEIntf,
@@ -80,7 +82,6 @@ const
     );
 
 type
-
   TLazFPDocFileFlag = (
     ldffDocChangingCalled,
     ldffDocChangedNeedsCalling
@@ -220,10 +221,11 @@ type
     
   { TCodeHelpManager }
 
-  TCodeHelpManager = class
+  TCodeHelpManager = class(TComponent)
   private
     FDocs: TAvgLvlTree;// tree of loaded TLazFPDocFile
     FHandlers: array[TCodeHelpManagerHandler] of TMethodList;
+    FPasHighlighter: TSynPasSyn;
     FSrcToDocMap: TAvgLvlTree; // tree of TCHSourceToFPDocFile sorted for SourceFilename
     FDeclarationCache: TDeclarationInheritanceCache;
     procedure AddHandler(HandlerType: TCodeHelpManagerHandler;
@@ -238,11 +240,11 @@ type
     function CreateFPDocFile(const ExpandedFilename, PackageName,
                              ModuleName: string): TCodeBuffer;
   public
-    constructor Create;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure FreeDocs;
     procedure ClearSrcToDocMap;
-    
+
     function FindFPDocFile(const Filename: string): TLazFPDocFile;
     function LoadFPDocFile(const Filename: string;
                            Flags: TCodeHelpOpenFileFlags;
@@ -300,8 +302,16 @@ type
     function GetHTMLHint(Code: TCodeBuffer; X, Y: integer; Options: TCodeHelpHintOptions;
                      out BaseURL, HTMLHint: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
+    function GetHTMLHint2(Code: TCodeBuffer; X, Y: integer; Options: TCodeHelpHintOptions;
+                     out BaseURL, HTMLHint: string;
+                     out CacheWasUsed: boolean): TCodeHelpParseResult;
+    function GetPasDocCommentsAsHTML(Tool: TCodeTool; Node: TCodeTreeNode): string;
+    function GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
+    function TextToHTML(Txt: string): string;
     function CreateElement(Code: TCodeBuffer; X, Y: integer;
                            out Element: TCodeHelpElement): Boolean;
+    function SourceToFPDocHint(Src: string; NestedComments: boolean = true): string;
+    function SourcePosToFPDocHint(XYPos: TCodeXYPosition; Caption: string=''): string;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -311,7 +321,18 @@ type
     procedure AddHandlerOnChanged(const OnDocChangedEvent: TCodeHelpChangeEvent;
                                   AsLast: boolean = false);
     procedure RemoveHandlerOnChanged(const OnDocChangedEvent: TCodeHelpChangeEvent);
+  public
+    property PasHighlighter: TSynPasSyn read FPasHighlighter;
   end;
+
+  TFPDocHintToken = (
+    fpdhtText,
+    fpdhtKeyword,
+    fpdhtString,
+    fpdhtNumber,
+    fpdhtSymbol
+    );
+  TFPDocHintTokens = set of TFPDocHintToken;
 
 var
   CodeHelpBoss: TCodeHelpManager = nil;// set by the IDE
@@ -325,9 +346,7 @@ function ToUnixLineEnding(const s: String): String;
 function ToOSLineEnding(const s: String): String;
 function ReplaceLineEndings(const s, NewLineEnds: string): string;
 
-
 implementation
-
 
 function ToUnixLineEnding(const s: String): String;
 var
@@ -1156,13 +1175,15 @@ begin
   end;
 end;
 
-constructor TCodeHelpManager.Create;
+constructor TCodeHelpManager.Create(TheOwner: TComponent);
 begin
+  inherited Create(TheOwner);
   FDocs:=TAvgLvlTree.Create(@CompareLazFPDocFilenames);
   FSrcToDocMap:=TAvgLvlTree.Create(@CompareLDSrc2DocSrcFilenames);
   FDeclarationCache:=TDeclarationInheritanceCache.Create(
                                   @CodeToolBoss.FindDeclarationAndOverload,
                                   @CodeToolBoss.GetCodeTreeNodesDeletedStep);
+  FPasHighlighter:=TSynPasSyn.Create(Self);
 end;
 
 destructor TCodeHelpManager.Destroy;
@@ -1400,6 +1421,7 @@ var
     if PkgList=nil then exit;
     try
       for i:=0 to PkgList.Count-1 do begin
+        //debugln(['CheckUnitOwners ',DbgSName(TObject(PkgList[i]))]);
         if TObject(PkgList[i]) is TLazProject then begin
           AProject:=TLazProject(PkgList[i]);
           AnOwner:=AProject;
@@ -1411,12 +1433,12 @@ var
             exit(true);
         end else if TObject(PkgList[i]) is TLazPackage then begin
           APackage:=TLazPackage(PkgList[i]);
+          AnOwner:=APackage;
           if APackage.LazDocPaths='' then continue;
           BaseDir:=APackage.Directory;
           if BaseDir='' then continue;
           // add lazdoc paths of package
           if SearchInPath(APackage.LazDocPaths,BaseDir,Filename) then begin
-            AnOwner:=APackage;
             exit(true);
           end else if AnOwner=nil then
             AnOwner:=APackage;
@@ -1500,7 +1522,9 @@ begin
     then begin
       // not found
       if AnOwner=nil then
-        DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Hint: file without owner: ',SrcFilename]);
+        DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Hint: file without owner: ',SrcFilename])
+      else
+        debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner has no lazdoc paths: ',SrcFilename]);
     end;
 
     // save to cache
@@ -2209,27 +2233,6 @@ var
     Result:=false;
   end;
   
-  function TextToHTML(const s: string): string;
-  var
-    p: Integer;
-    EndPos: Integer;
-  begin
-    Result:=s;
-    // replace line breaks with <BR>
-    p:=1;
-    while (p<=length(Result)) do begin
-      if Result[p] in [#10,#13] then begin
-        EndPos:=p+1;
-        if (EndPos<=length(Result)) and (Result[EndPos] in [#10,#13]) then
-          inc(EndPos);
-        Result:=copy(Result,1,p-1)+le+copy(Result,EndPos,length(Result));
-        inc(p,length(le));
-      end else begin
-        inc(p);
-      end;
-    end;
-  end;
-
   procedure AddText(const s: string);
   begin
     if IsHTML then
@@ -2270,6 +2273,9 @@ var
   f: TFPDocItem;
   {$endif}
 begin
+  {$IFDEF EnableNewCodeHints}
+  Result:=GetHTMLHint2(Code,X,Y,Options,BaseURL,HTMLHint,CacheWasUsed);
+  {$ENDIF}
   {$ifdef VerboseHints}
     DebugLn(['TCodeHelpManager.GetHint ',Code.Filename,' ',X,',',Y]);
   {$endif}
@@ -2367,6 +2373,188 @@ begin
   {$endif}
 end;
 
+function TCodeHelpManager.GetHTMLHint2(Code: TCodeBuffer; X, Y: integer;
+  Options: TCodeHelpHintOptions; out BaseURL, HTMLHint: string;
+  out CacheWasUsed: boolean): TCodeHelpParseResult;
+var
+  CursorPos: TCodeXYPosition;
+  CTTool: TFindDeclarationTool;
+  CTNode: TCodeTreeNode;
+  XYPos: TCodeXYPosition;
+  aTopLine: integer;
+  CTHint: String;
+  ListOfPCodeXYPosition: TFPList;
+  ElementName: String;
+  AnOwner: TObject;
+  FPDocFilename: String;
+  FPDocFile: TLazFPDocFile;
+  Complete: boolean;
+  ElementNode: TDOMNode;
+begin
+  Result:=chprFailed;
+  BaseURL:='lazdoc://';
+  HTMLHint:='';
+  CacheWasUsed:=true;
+  if not CodeToolBoss.InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  ListOfPCodeXYPosition:=nil;
+  Complete:=not (chhoSmallStep in Options);
+  try
+    try
+      // find declaration
+      if not CodeToolBoss.CurCodeTool.FindDeclaration(CursorPos,DefaultFindSmartHintFlags,
+        CTTool,CTNode,XYPos,aTopLine)
+      then
+        exit;
+
+      // add declaration
+      CTHint:=CTTool.GetSmartHint(CTNode,XYPos,false);
+      HTMLHint:=SourceToFPDocHint(CTHint);
+
+      // add link
+      HTMLHint:=HTMLHint+'<br>'+LineEnding;
+      if XYPos.Code=nil then
+        CTTool.CleanPosToCaret(CTNode.StartPos,XYPos);
+      HTMLHint:=HTMLHint+SourcePosToFPDocHint(XYPos);
+
+      ElementName:=CodeNodeToElementName(CTTool,CTNode);
+      // ToDo: check if ElementName already added (can happen on forward definitions)
+      FPDocFilename:=GetFPDocFilenameForSource(CTTool.MainFilename,
+                                               false,CacheWasUsed,AnOwner);
+      DebugLn(['TCodeHelpManager.GetHTMLHint2 FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
+      if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
+
+      if FPDocFilename<>'' then begin
+        // load FPDoc file
+        LoadFPDocFile(FPDocFilename,[chofUpdateFromDisk],FPDocFile,CacheWasUsed);
+        if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
+
+        ElementNode:=FPDocFile.GetElementWithName(ElementName);
+        if ElementNode<>nil then begin
+          debugln(['TCodeHelpManager.GetHTMLHint2 fpdoc element found "',ElementName,'"']);
+          HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(ElementNode.FindNode(FPDocItemNames[fpdiShort]));
+          HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(ElementNode.FindNode(FPDocItemNames[fpdiDescription]));
+        end;
+      end;
+
+
+    except
+      on E: Exception do begin
+        debugln(['TCodeHelpManager.GetHTMLHint2 ',E.Message]);
+      end;
+    end;
+
+  finally
+    FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+  end;
+  debugln(['TCodeHelpManager.GetHTMLHint2 ',HTMLHint]);
+  Result:=chprSuccess;
+end;
+
+function TCodeHelpManager.GetPasDocCommentsAsHTML(Tool: TCodeTool;
+  Node: TCodeTreeNode): string;
+var
+  ListOfPCodeXYPosition: TFPList;
+  i: Integer;
+  CodeXYPos: PCodeXYPosition;
+  CommentCode: TCodeBuffer;
+  CommentStart: integer;
+  NestedComments: Boolean;
+  CommentStr: String;
+begin
+  Result:='';
+  if (Tool=nil) or (Node=nil) then exit;
+  ListOfPCodeXYPosition:=nil;
+  try
+    if not Tool.GetPasDocComments(Node,ListOfPCodeXYPosition) then exit;
+    if ListOfPCodeXYPosition=nil then exit;
+    NestedComments := Tool.Scanner.NestedComments;
+    for i := 0 to ListOfPCodeXYPosition.Count - 1 do
+    begin
+      CodeXYPos := PCodeXYPosition(ListOfPCodeXYPosition[i]);
+      CommentCode := CodeXYPos^.Code;
+      CommentCode.LineColToPosition(CodeXYPos^.Y,CodeXYPos^.X,CommentStart);
+      if (CommentStart<1) or (CommentStart>CommentCode.SourceLength)
+      then
+        continue;
+      CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
+                                        NestedComments,true,true,true);
+      if CommentStr <> '' then
+        Result:=Result+'<span class="comment">'+TextToHTML(CommentStr)+'</span><br>'+LineEnding;
+    end;
+
+  finally
+    FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+  end;
+end;
+
+function TCodeHelpManager.GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
+
+  function NodeToHTML(Node: TDOMNode): string; forward;
+
+  function AddChilds(Node: TDOMNode): string;
+  var
+    Child: TDOMNode;
+    Element: TDOMElement;
+  begin
+    Result:='';
+    if Node is TDOMElement then begin
+      Element:=TDOMElement(Node);
+
+    end else begin
+      Child:=Node.FirstChild;
+      while Child<>nil do begin
+        Result:=Result+NodeToHTML(Child);
+        Child:=Child.NextSibling;
+      end;
+    end;
+  end;
+
+  function NodeToHTML(Node: TDOMNode): string;
+  var
+    s: String;
+  begin
+    Result:='';
+    if Node=nil then exit;
+    if (Node.NodeName='short')
+    or (Node.NodeName='descr') then begin
+      s:=AddChilds(Node);
+      if s<>'' then
+        Result:=Result+'<div class="'+Node.NodeName+'">'+AddChilds(Node)+'</div>';
+    end else begin
+      debugln(['Traverse ',Node.NodeName]);
+    end;
+  end;
+
+begin
+  Result:=NodeToHTML(DOMNode);
+end;
+
+function TCodeHelpManager.TextToHTML(Txt: string): string;
+var
+  p: Integer;
+begin
+  Result:=Txt;
+  p:=length(Result);
+  while p>0 do
+  begin
+    case Result[p] of
+    '<': Result:=copy(Result,1,p-1)+'&lt;'+copy(Result,p+1,length(Result));
+    '>': Result:=copy(Result,1,p-1)+'&gt;'+copy(Result,p+1,length(Result));
+    '&': Result:=copy(Result,1,p-1)+'&amp;'+copy(Result,p+1,length(Result));
+    #10,#13:
+      begin
+        if (p>1) and (Result[p-1] in [#10,#13]) and (Result[p-1]<>Result[p]) then
+          dec(p);
+        Result:=copy(Result,1,p-1)+'<br>'+copy(Result,p,length(Result));
+      end;
+    end;
+    dec(p);
+  end;
+end;
+
 function TCodeHelpManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
   out Element: TCodeHelpElement): Boolean;
 var
@@ -2425,6 +2613,79 @@ begin
     if not Result then
       FreeAndNil(Element);
   end;
+end;
+
+function TCodeHelpManager.SourceToFPDocHint(Src: string; NestedComments: boolean
+  ): string;
+
+  procedure EndSpan(SpanName: string; var r: string);
+  begin
+    if SpanName='' then exit;
+    r:=r+'</span>';
+  end;
+
+  procedure StartSpan(SpanName: string; var r: string);
+  begin
+    if SpanName='' then exit;
+    r:=r+'<span class="'+SpanName+'">';
+  end;
+
+  function TokenIDToSpan(TokenID: TtkTokenKind): string;
+  begin
+    case TokenID of
+    tkComment: Result:='comment';
+    tkIdentifier: Result:='identifer';
+    tkKey: Result:='keyword';
+    tkNumber: Result:='number';
+    tkString: Result:='string';
+    tkSymbol: Result:='symbol';
+    tkDirective: Result:='directive';
+    else Result:='';
+    end;
+  end;
+
+var
+  TokenID: TtkTokenKind;
+  LastTokenID: TtkTokenKind;
+  Token: String;
+begin
+  Result:='';
+  PasHighlighter.NestedComments:=NestedComments;
+  PasHighlighter.ResetRange;
+  PasHighlighter.SetLine(Src,0);
+  LastTokenID:=tkUnknown;
+  while not PasHighlighter.GetEol do begin
+    TokenID:=PasHighlighter.GetTokenID;
+    if (Result<>'') and (LastTokenID<>TokenID) then
+      EndSpan(TokenIDToSpan(LastTokenID),Result);
+    if (Result='') or (LastTokenID<>TokenID) then
+      StartSpan(TokenIDToSpan(TokenID),Result);
+    Token:=PasHighlighter.GetToken;
+    //debugln(['TCodeHelpManager.SourceToFPDocHint ',Token,' ',ord(TokenID)]);
+    Result:=Result+TextToHTML(Token);
+    LastTokenID:=TokenID;
+    PasHighlighter.Next;
+  end;
+  if (Result<>'') and (LastTokenID<>tkUnknown) then
+    EndSpan(TokenIDToSpan(LastTokenID),Result);
+end;
+
+function TCodeHelpManager.SourcePosToFPDocHint(XYPos: TCodeXYPosition;
+  Caption: string): string;
+var
+  Link: String;
+begin
+  Result:='';
+  if XYPos.Code=nil then exit;
+  Link:=XYPos.Code.Filename;
+  if XYPos.Y>=1 then begin
+    Link:=Link+'('+IntToStr(XYPos.Y);
+    if XYPos.X>=1 then
+      Link:=Link+','+IntToStr(XYPos.X);
+    Link:=Link+')';
+  end;
+  if Caption='' then Caption:=Link;
+  Result:='<a href="source://'+Link+'">'+Caption+'</a>';
 end;
 
 procedure TCodeHelpManager.FreeDocs;

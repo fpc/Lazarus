@@ -4736,7 +4736,7 @@ begin
       IgnorePos.Code:=CursorPos.Code;
       IgnorePos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,IgnorePos.P);
       if IgnorePos.P<1 then IgnorePos.Code:=nil;
-      //debugln(['TPascalParserTool.BuildTreeAndGetCleanPos IgnorePos=',dbgsCP(IgnorePos),' After=',IgnorePos.P,'=',copy(CursorPos.Code.Source,IgnorePos.P,10)]);
+      //debugln(['TPascalParserTool.BuildTreeAndGetCleanPos IgnorePos=',dbgs(IgnorePos),' After=',IgnorePos.P,'=',copy(CursorPos.Code.Source,IgnorePos.P,10)]);
       IgnoreErrorAfter:=IgnorePos;
     end else
       ClearIgnoreErrorAfter;

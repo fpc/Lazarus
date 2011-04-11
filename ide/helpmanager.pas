@@ -779,7 +779,7 @@ begin
   RegisterIDEHelpDatabases;
   RegisterDefaultIDEHelpViewers;
   
-  CodeHelpBoss:=TCodeHelpManager.Create;
+  CodeHelpBoss:=TCodeHelpManager.Create(Self);
 
   // register property editors for URL handling
   RegisterPropertyEditor(TypeInfo(AnsiString),

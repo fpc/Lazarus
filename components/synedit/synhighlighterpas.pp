@@ -488,10 +488,10 @@ type
     function TopPascalCodeFoldBlockType
              (DownIndex: Integer = 0): TPascalCodeFoldBlockType;
 
-public
+  public
     function MinimumPasFoldLevel(Index: Integer; AType: Integer = 1): integer;
     function EndPasFoldLevel(Index: Integer; AType: Integer = 1): integer;
-protected
+  protected
     function LastLinePasFoldLevelFix(Index: Integer; AType: Integer = 1): integer;
 
     function LastLineFoldLevelFix(Index: Integer): integer;

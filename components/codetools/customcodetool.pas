@@ -2170,7 +2170,7 @@ begin
   FIgnoreErrorAfter:=AValue;
   LastErrorCheckedForIgnored:=false;
   {$IFDEF ShowIgnoreErrorAfter}
-  DebugLn('TCustomCodeTool.SetIgnoreErrorAfter FIgnoreErrorAfter=',dbgsCP(FIgnoreErrorAfter));
+  DebugLn('TCustomCodeTool.SetIgnoreErrorAfter FIgnoreErrorAfter=',dbgs(FIgnoreErrorAfter));
   {$ENDIF}
   if Scanner<>nil then
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);

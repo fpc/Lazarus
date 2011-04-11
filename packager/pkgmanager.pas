@@ -3099,6 +3099,7 @@ begin
     PkgFile:=PackageGraph.FindFileInAllPackages(UnitFilename,true,true);
     if (PkgFile<>nil) and (PkgFile.LazPackage<>nil) then
       Result.Add(PkgFile.LazPackage);
+    //debugln(['TPkgManager.GetPossibleOwnersOfUnit ',UnitFilename,' ',PkgFile<>nil,' ',(PkgFile<>nil) and (PkgFile.LazPackage<>nil),' Result.Count=',Result.Count]);
     // check package source files (they usually do not have a TPkgFile)
     for i:=0 to PackageGraph.Count-1 do begin
       CurPackage:=PackageGraph.Packages[i];

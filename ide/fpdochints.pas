@@ -36,7 +36,6 @@ uses
   IDEHelpIntf, SrcEditorIntf, SrcEditHintFrm, CodeHelp;
 
 type
-
   { TFPDocHintProvider }
 
   TFPDocHintProvider = class(TCodeHintProvider)

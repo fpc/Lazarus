@@ -1816,7 +1816,7 @@ begin
       NewCode:=NewPos.Code;
       if (NewTool=nil) and (NewNode<>nil) then ;
       {$IFDEF CTDEBUG}
-      debugln(['TCodeToolManager.FindDeclaration ',DbgsCXY(NewPos)]);
+      debugln(['TCodeToolManager.FindDeclaration ',Dbgs(NewPos)]);
       {$ENDIF}
     end;
   {$IFDEF DoNotHandleFindDeclException}
@@ -2345,7 +2345,7 @@ begin
     // check if old identifier is there
     if CompareIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)))<>0
     then begin
-      debugln(['TCodeToolManager.RenameIdentifier CONSISTENCY ERROR ',DbgsCXY(CurCodePos^),' ']);
+      debugln(['TCodeToolManager.RenameIdentifier CONSISTENCY ERROR ',Dbgs(CurCodePos^),' ']);
       SetError(CurCodePos^.Code,CurCodePos^.Y,CurCodePos^.X,
         Format(ctsStrExpectedButAtomFound,[OldIdentifier,
                                    GetIdentifier(@Code.Source[IdentStartPos])])

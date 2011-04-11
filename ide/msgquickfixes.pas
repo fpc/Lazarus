@@ -641,7 +641,7 @@ begin
       exit;
     end;
     Identifier:=REVar(1);
-    DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Identifier=',Identifier,' ',DbgsCXY(CodeXY)]);
+    DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Identifier=',Identifier,' ',Dbgs(CodeXY)]);
 
     if not IsIdentifierInCode(CodeXY.Code,CodeXY.X,CodeXY.Y,Identifier,
       Identifier+' not found in '+CodeBuf.Filename

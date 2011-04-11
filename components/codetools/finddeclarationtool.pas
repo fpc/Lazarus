@@ -796,8 +796,10 @@ type
     function SearchUnitInUnitSet(const TheUnitName: string): string;
 
     function FindSmartHint(const CursorPos: TCodeXYPosition;
-                   Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
-    
+                    Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
+    function GetSmartHint(Node: TCodeTreeNode; XYPos: TCodeXYPosition;
+                          WithPosition: boolean): string;
+
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
       Node: TCodeTreeNode): TFindContext;
@@ -2122,14 +2124,9 @@ function TFindDeclarationTool.FindSmartHint(const CursorPos: TCodeXYPosition;
   Flags: TFindSmartFlags): string;
 var
   NewTool: TFindDeclarationTool;
-  NewNode, IdentNode, TypeNode, ANode: TCodeTreeNode;
+  NewNode: TCodeTreeNode;
   NewPos: TCodeXYPosition;
   NewTopLine: integer;
-  AbsCursorPos: integer;
-  IdentStartPos, IdentEndPos: integer;
-  IdentAdded: boolean;
-  ClassStr: String;
-  NodeStr: String;
 begin
   Result:='';
   if not FindDeclaration(CursorPos,Flags,NewTool,NewNode,NewPos,NewTopLine) then
@@ -2137,17 +2134,27 @@ begin
     // identifier not found
     exit;
   end;
+  Result:=NewTool.GetSmartHint(NewNode,NewPos,true);
+end;
+
+function TFindDeclarationTool.GetSmartHint(Node: TCodeTreeNode;
+  XYPos: TCodeXYPosition; WithPosition: boolean): string;
+var
+  IdentNode, TypeNode, ANode: TCodeTreeNode;
+  ClassStr: String;
+  NodeStr: String;
+begin
+  Result:='';
 
   { Examples:
       var i: integer
       /home/.../codetools/finddeclarationtools.pas(1224,7)
   }
-  IdentAdded:=false;
   // identifier category and identifier
-  if NewNode<>nil then begin
+  if Node<>nil then begin
     // class visibility
-    if NewNode.Parent<>nil then begin
-      ANode:=NewNode.Parent;
+    if Node.Parent<>nil then begin
+      ANode:=Node.Parent;
       while ANode<>nil do begin
         if ANode.Desc in AllClassSections then begin
           case ANode.Desc of
@@ -2160,24 +2167,20 @@ begin
           ctnClassPublished:
             Result:=Result+'published ';
           else
-            begin
-              ANode:=ANode.Parent;
-              Continue;
-            end;
+            break;
           end;
-          break;
         end else if ANode.Desc in ([ctnParameterList]+AllClasses) then
           break;
         ANode:=ANode.Parent;
       end;
     end;
 
-    if NewNode.Desc = ctnGenericName then NewNode := NewNode.Parent;
-    case NewNode.Desc of
+    if Node.Desc = ctnGenericName then Node := Node.Parent;
+    case Node.Desc of
     ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
     ctnEnumIdentifier, ctnGenericType:
       begin
-        case NewNode.Desc of
+        case Node.Desc of
         ctnVarDefinition: Result:=Result+'var ';
         ctnTypeDefinition: Result:=Result+'type ';
         ctnConstDefinition: Result:=Result+'const ';
@@ -2186,44 +2189,43 @@ begin
         end;
 
         // add class name
-        ClassStr := NewTool.ExtractClassName(NewNode.Parent, False, true);
+        ClassStr := ExtractClassName(Node.Parent, False, true);
         if ClassStr <> '' then Result := Result + ClassStr + '.';
 
-        Result:=Result+NewTool.ExtractDefinitionName(NewNode);
-        IdentAdded:=true;
-        TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
+        Result:=Result+ExtractDefinitionName(Node);
+        TypeNode:=FindTypeNodeOfDefinition(Node);
         if TypeNode<>nil then begin
           case TypeNode.Desc of
           ctnIdentifier, ctnSpecialize, ctnSpecializeType:
             begin
-              if NewNode.Desc = ctnTypeDefinition then
+              if Node.Desc = ctnTypeDefinition then
                 Result:=Result+' = '
               else
                 Result:=Result+': ';
-              Result := Result + NewTool.ExtractNode(TypeNode, []);
+              Result := Result + ExtractNode(TypeNode, []);
             end;
           ctnClass, ctnClassInterface, ctnDispinterface,
           ctnObject, ctnRecordType,
           ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
             begin
-              NewTool.MoveCursorToNodeStart(TypeNode);
-              NewTool.ReadNextAtom;
-              Result:=Result+': '+NewTool.GetAtom;
+              MoveCursorToNodeStart(TypeNode);
+              ReadNextAtom;
+              Result:=Result+': '+GetAtom;
             end;
           ctnConstant:
             begin
-              NodeStr:=' = '+NewTool.ExtractNode(TypeNode,[]);
+              NodeStr:=' = '+ExtractNode(TypeNode,[]);
               Result:=Result+copy(NodeStr,1,50);
             end;
           end;
         end else begin
-          case NewNode.Desc of
+          case Node.Desc of
           ctnConstDefinition:
             begin
-              DebugLn('TFindDeclarationTool.FindSmartHint const without subnode "',NewTool.ExtractNode(NewNode,[]),'"');
-              NodeStr:=NewTool.ExtractCode(NewNode.StartPos
-                                 +GetIdentLen(@NewTool.Src[NewNode.StartPos]),
-                                 NewNode.EndPos,[]);
+              DebugLn('TFindDeclarationTool.FindSmartHint const without subnode "',ExtractNode(Node,[]),'"');
+              NodeStr:=ExtractCode(Node.StartPos
+                                 +GetIdentLen(@Src[Node.StartPos]),
+                                 Node.EndPos,[]);
               Result:=Result+copy(NodeStr,1,50);
             end;
           end;
@@ -2235,80 +2237,66 @@ begin
 
         // ToDo: ppu, dcu files
 
-        Result:=Result+NewTool.ExtractProcHead(NewNode,
+        Result:=Result+ExtractProcHead(Node,
           [phpAddClassName,phpWithStart,phpWithVarModifiers,phpWithParameterNames,
            phpWithDefaultValues,phpWithResultType,phpWithOfObject]);
-        IdentAdded:=true;
       end;
 
     ctnProperty,
     ctnProgram,ctnUnit,ctnPackage,ctnLibrary:
       begin
-        IdentNode:=NewNode;
+        IdentNode:=Node;
 
         // ToDo: ppu, dcu files
 
-        NewTool.MoveCursorToNodeStart(IdentNode);
-        NewTool.ReadNextAtom;
+        MoveCursorToNodeStart(IdentNode);
+        ReadNextAtom;
         if (IdentNode.Desc=ctnProgram) and not UpAtomIs('PROGRAM') then begin
           // program without source name
           Result:='program '+ExtractFileNameOnly(MainFilename)+' ';
         end else begin
-          Result:=Result+NewTool.GetAtom+' ';
+          Result:=Result+GetAtom+' ';
 
-          if NewNode.Desc = ctnProperty then begin // add class name
-            ClassStr := NewTool.ExtractClassName(NewNode, False, True);
+          if Node.Desc = ctnProperty then begin // add class name
+            ClassStr := ExtractClassName(Node, False, True);
             if ClassStr <> '' then Result := Result + ClassStr + '.';
           end;
 
-          NewTool.ReadNextAtom;
-          Result:=Result+NewTool.GetAtom+' ';
+          ReadNextAtom;
+          Result:=Result+GetAtom+' ';
         end;
-        IdentAdded:=true;
       end;
 
     ctnGlobalProperty:
       begin
-        IdentNode:=NewNode;
+        IdentNode:=Node;
 
         // ToDo: ppu, dcu files
 
-        NewTool.MoveCursorToNodeStart(IdentNode);
+        MoveCursorToNodeStart(IdentNode);
         Result:=Result+'property ';
-        NewTool.ReadNextAtom;
-        Result:=Result+NewTool.GetAtom+' ';
-        IdentAdded:=true;
+        ReadNextAtom;
+        Result:=Result+GetAtom+' ';
       end;
 
-
     else
-      DebugLn('ToDo: TFindDeclarationTool.FindSmartHint ',NewNode.DescAsString);
+      DebugLn('ToDo: TFindDeclarationTool.FindSmartHint ',Node.DescAsString);
     end;
   end;
-  // read the identifier if not already done
-  if not IdentAdded then begin
-    CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,AbsCursorPos);
-    GetIdentStartEndAtPosition(CursorPos.Code.Source,
-      AbsCursorPos,IdentStartPos,IdentEndPos);
-    if IdentStartPos<IdentEndPos then begin
-      Result:=Result+copy(CursorPos.Code.Source,IdentStartPos,IdentEndPos-IdentStartPos);
-      // type
-
-      // ToDo
-
-      Result:=Result+' ';
+  if WithPosition then begin
+    // filename
+    if Result<>'' then Result:=Result+LineEnding;
+    if XYPos.Code=nil then
+      CleanPosToCaret(Node.StartPos,XYPos);
+    Result:=Result+XYPos.Code.Filename;
+    // file position
+    if XYPos.Y>=1 then begin
+      Result:=Result+'('+IntToStr(XYPos.Y);
+      if XYPos.X>=1 then begin
+        Result:=Result+','+IntToStr(XYPos.X);
+      end;
+      Result:=Result+')';
     end;
-  end;
-  // filename
-  if Result<>'' then Result:=Result+LineEnding;
-  Result:=Result+NewPos.Code.Filename;
-  // file position
-  if NewPos.Y>=1 then begin
-    Result:=Result+'('+IntToStr(NewPos.Y);
-    if NewPos.X>=1 then begin
-      Result:=Result+','+IntToStr(NewPos.X);
-    end;
-    Result:=Result+')';
   end;
 end;
 
@@ -4575,7 +4563,7 @@ var
       //DebugLn(['CheckUsesSection ',GetAtom,' ',AUnitName]);
       if UpAtomIs(UpperUnitName) then begin // compare case insensitive
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
-          //DebugLn(['CheckUsesSection found in uses section: ',DbgsCXY(ReferencePos)]);
+          //DebugLn(['CheckUsesSection found in uses section: ',Dbgs(ReferencePos)]);
           Found:=true;
           AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
         end;
@@ -4602,7 +4590,7 @@ var
       if UpAtomIs(UpperUnitName)
       and not LastAtomIs(0,'.') then begin
         if CleanPosToCaret(CurPos.StartPos,ReferencePos) then begin
-          //DebugLn(['CheckSource found: ',DbgsCXY(ReferencePos)]);
+          //DebugLn(['CheckSource found: ',Dbgs(ReferencePos)]);
           AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
         end;
       end;

@@ -212,6 +212,8 @@ type
     function GetPasDocComments(const StartPos: TCodeXYPosition;
                                InvokeBuildTree: boolean;
                                out ListOfPCodeXYPosition: TFPList): boolean;
+    function GetPasDocComments(Node: TCodeTreeNode;
+                               out ListOfPCodeXYPosition: TFPList): boolean;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
@@ -533,7 +535,7 @@ begin
 end;
 
 function TPascalReaderTool.ExtractClassName(ClassNode: TCodeTreeNode;
-  InUpperCase, WithParents: boolean): string;
+  InUpperCase: boolean; WithParents: boolean): string;
 begin
   Result:='';
   while ClassNode<>nil do begin
@@ -2561,6 +2563,26 @@ end;
 
 function TPascalReaderTool.GetPasDocComments(const StartPos: TCodeXYPosition;
   InvokeBuildTree: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+begin
+  ListOfPCodeXYPosition:=nil;
+  Result:=false;
+
+  // parse source and find clean positions
+  if InvokeBuildTree then
+    BuildTreeAndGetCleanPos(StartPos,CleanCursorPos)
+  else
+    if CaretToCleanPos(StartPos,CleanCursorPos)<>0 then
+      exit;
+
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  Result:=GetPasDocComments(ANode,ListOfPCodeXYPosition);
+end;
+
+function TPascalReaderTool.GetPasDocComments(Node: TCodeTreeNode;
+  out ListOfPCodeXYPosition: TFPList): boolean;
 // Comments are normally in front.
 // { Description of TMyClass. }
 //  TMyClass = class
@@ -2633,49 +2655,37 @@ function TPascalReaderTool.GetPasDocComments(const StartPos: TCodeXYPosition;
   end;
 
 var
-  CleanCursorPos: integer;
-  ANode: TCodeTreeNode;
   NextNode: TCodeTreeNode;
   EndPos: LongInt;
   TypeNode: TCodeTreeNode;
 begin
   ListOfPCodeXYPosition:=nil;
   Result:=false;
-
-  // parse source and find clean positions
-  if InvokeBuildTree then
-    BuildTreeAndGetCleanPos(StartPos,CleanCursorPos)
-  else
-    if CaretToCleanPos(StartPos,CleanCursorPos)<>0 then
-      exit;
-
-  // find node
-  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-  if (ANode=nil) then exit;
-  if (ANode.Desc=ctnProcedureHead)
-  and (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnProcedure) then
-    ANode:=ANode.Parent;
+  if (Node=nil) then exit;
+  if (Node.Desc=ctnProcedureHead)
+  and (Node.Parent<>nil) and (Node.Parent.Desc=ctnProcedure) then
+    Node:=Node.Parent;
 
   // add space behind node to scan range
-  NextNode:=ANode.Next;
+  NextNode:=Node.Next;
   if NextNode<>nil then
     EndPos:=NextNode.StartPos
   else
-    EndPos:=ANode.EndPos;
+    EndPos:=Node.EndPos;
 
   // scan range for comments
-  if not Scan(ANode.StartPos,EndPos) then exit;
+  if not Scan(Node.StartPos,EndPos) then exit;
 
-  if ANode.Desc in AllIdentifierDefinitions then begin
+  if Node.Desc in AllIdentifierDefinitions then begin
     // scan behind type
     // for example:   i: integer; // comment
-    TypeNode:=FindTypeNodeOfDefinition(ANode);
+    TypeNode:=FindTypeNodeOfDefinition(Node);
     if TypeNode<>nil then begin
       NextNode:=TypeNode.Next;
       if NextNode<>nil then
         EndPos:=NextNode.StartPos
       else
-        EndPos:=ANode.EndPos;
+        EndPos:=Node.EndPos;
       if not Scan(TypeNode.EndPos,EndPos) then exit;
     end;
   end;
