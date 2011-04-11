@@ -4,7 +4,7 @@ program TestGdbmi;
 
 uses
   Interfaces, Forms, GuiTestRunner, CompileHelpers,
-  TestGdbType,
+  TestGdbType, TestGDBMIControl,
   TestBase, TestException, Testwatches;
 
 {$R *.res}
@@ -12,6 +12,7 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TGuiTestRunner, TestRunner);
+  Application.CreateForm(TTestControlForm, TestControlForm);
   Application.Run;
 end.
 

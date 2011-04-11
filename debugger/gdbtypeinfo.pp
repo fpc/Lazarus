@@ -34,7 +34,7 @@ unit GDBTypeInfo;
 interface
 
 uses
-  Classes, SysUtils, Debugger, LclProc, DebugUtils;
+  Classes, SysUtils, Debugger, LclProc, DebugUtils, GDBMIMiscClasses;
 
 (*
   ptype = {
@@ -136,6 +136,8 @@ type
      ptprfPointer,
      ptprfNoStructure,     // for Class or Record: no full class declaration, type ends after class keyword; DWARF "whatis TFoo"
                          // includes "record {...}"
+     ptprfDynArray,
+     ptprfNoBounds, // no bounds for array found
      ptprfEmpty
     );
   TGDBPTypeResultFlags = set of TGDBPTypeResultFlag;
@@ -148,12 +150,17 @@ type
     Flags: TGDBPTypeResultFlags;
     Kind: TGDBPTypeResultKind;
     Name, BaseName: TPCharWithLen; // BaseName is without ^&
-    Declaration: TPCharWithLen;
+    SubName, BaseSubName: TPCharWithLen; // type of array entry, or set-enum
+    BoundLow, BoundHigh: TPCharWithLen;
+    Declaration, BaseDeclaration: TPCharWithLen; // BaseDeclaration only for Array and Set types
   end;
+
+  TGDBCommandRequestType = (gcrtPType, gcrtEvalExpr);
 
   PGDBPTypeRequest = ^TGDBPTypeRequest;
   TGDBPTypeRequest = record
     Request: string;
+    ReqType: TGDBCommandRequestType;
     Result: TGDBPTypeResult;
     Error: string;
     Next: PGDBPTypeRequest;
@@ -168,18 +175,25 @@ type
 
   { TGDBType }
 
-  TGDBTypeCreationFlag = (gtcfClassIsPointer, gtcfFullTypeInfo, gtcfExprIsType);
+  TGDBTypeCreationFlag = (gtcfClassIsPointer,
+                          gtcfFullTypeInfo,
+                          gtcfSkipTypeName,
+                          gtcfExprIsType,
+                          gtcfExprEvaluate);
   TGDBTypeCreationFlags = set of TGDBTypeCreationFlag;
 
   TGDBTypeProcessState =
-    (gtpsInitial,
+    (gtpsInitial, gtpsInitialSimple,
      gtpsSimplePointer,
      gtpsClass, gtpsClassPointer, gtpsClassAncestor,
+     gtpsArray, gtpsArrayEntry,
+     gtpsEvalExpr,
      gtpsFinished
     );
   TGDBTypeProcessRequest =
     (gptrPTypeExpr, gptrWhatisExpr, gptrPTypeOfWhatis,
-     gptrPTypeExprDeRef, gptrPTypeExprDeDeRef  // "Foo^", "Foo^^"  for Foo=Object, or &Object
+     gptrPTypeExprDeRef, gptrPTypeExprDeDeRef,  // "Foo^", "Foo^^"  for Foo=Object, or &Object
+     gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast
     );
   TGDBTypeProcessRequests = set of TGDBTypeProcessRequest;
 
@@ -187,28 +201,48 @@ type
   private
     FInternalTypeName: string;
   private
-    FEvalError: boolean;
-    FEvalRequest: PGDBPTypeRequest;
-    FExpression: string;
+    FExpression, FOrigExpression: string;
     FCreationFlags: TGDBTypeCreationFlags;
+
+    // Value-Eval
+    FExprEvaluatedAsText: String;
+    FHasExprEvaluatedAsText: Boolean;
+    FExprEvaluateFormat: TWatchDisplayFormat;
+
+    // Sub-Types (FNext is managed by creator / linked list)
+    FFirstProcessingSubType, FNextProcessingSubType: TGDBType;
     FTypeInfoAncestor: TGDBType;
+    FTypeInfoArrayExpression: TGDBType;
+
+    // Gdb-Requests
+    FEvalError: boolean;
+    FEvalRequest, FLastEvalRequest: PGDBPTypeRequest;
 
     FProcessState: TGDBTypeProcessState;
     FProccesReuestsMade: TGDBTypeProcessRequests;
     FReqResults: Array [TGDBTypeProcessRequest] of TGDBPTypeRequest;
 
+    FArrayEntryIndexExpr: String;
+
     procedure AddTypeReq(var AReq :TGDBPTypeRequest; const ACmd: string = '');
+    procedure AddSubType(ASubType :TGDBType);
+    function GetIsFinished: Boolean;
     function RequireRequests(ARequired: TGDBTypeProcessRequests): Boolean;
     function IsReqError(AReqType: TGDBTypeProcessRequest; CheckResKind: Boolean = True): Boolean;
   protected
     procedure Init; override;
   public
     constructor CreateForExpression(const AnExpression: string;
-                                    const AFlags: TGDBTypeCreationFlags);
+                                    const AFlags: TGDBTypeCreationFlags;
+                                    AFormat: TWatchDisplayFormat = wdfDefault);
     destructor Destroy; override;
     function ProcessExpression: Boolean;
     property EvalRequest: PGDBPTypeRequest read FEvalRequest;
     property EvalError: boolean read FEvalError;
+    property IsFinished: Boolean read GetIsFinished;
+
+    property HasExprEvaluatedAsText: Boolean read FHasExprEvaluatedAsText;
+    property ExprEvaluatedAsText: String read FExprEvaluatedAsText;
   public
     // InternalTypeName: include ^ for TObject, if needed
     property InternalTypeName: string read FInternalTypeName;
@@ -484,8 +518,18 @@ begin
   Result.Name.Len := 0;
   Result.BaseName.Ptr := nil;
   Result.BaseName.Len := 0;
+  Result.SubName.Ptr := nil;
+  Result.SubName.Len := 0;
+  Result.BaseSubName.Ptr := nil;
+  Result.BaseSubName.Len := 0;
   Result.Declaration.Ptr := nil;
   Result.Declaration.Len := 0;
+  Result.BaseDeclaration.Ptr := nil;
+  Result.BaseDeclaration.Len := 0;
+  Result.BoundLow.Ptr := nil;
+  Result.BoundLow.Len := 0;
+  Result.BoundHigh.Ptr := nil;
+  Result.BoundHigh.Len := 0;
   If ATypeText = '' then exit;
 
 (*  // Clean the gdb outpu, remove   ~"...."; replace \n by #13
@@ -558,7 +602,8 @@ begin
 
 
   if CurPtr^ = '=' then begin
-    // un-nmaed type
+    // type = |= ...
+    // un-named type
     inc(CurPtr);
     SkipSpaces(CurPtr);
 
@@ -568,6 +613,8 @@ begin
       Result.Kind := ptprkEnum;
       Result.Declaration.Ptr := CurPtr;
       Result.Declaration.Len := i;
+      Result.BaseDeclaration.Ptr := CurPtr;
+      Result.BaseDeclaration.Len := i;
       exit;
     end;
 
@@ -582,11 +629,18 @@ begin
 
   else
   begin
+    HelpPtr2 := EndPtr;
     if CurPtr^ = '(' then begin
       // type in brackets, eg ^(array...)
       inc(CurPtr);
+      if HelpPtr2^ = ')' then dec(HelpPtr2)
     end;
     SkipSpaces(CurPtr); // shouldn'tever happen
+
+    HelpPtr := CurPtr;
+    while HelpPtr^ in ['&', '^'] do inc(DeclPtr); // shouldn't happen
+    Result.BaseDeclaration.Ptr := HelpPtr;
+    Result.BaseDeclaration.Len := HelpPtr2 - HelpPtr + 1;
 
     Result.Kind := CheckKeyword;
     if Result.Kind = ptprkSimple then begin
@@ -616,6 +670,8 @@ begin
           Result.Kind := ptprkEnum;
           Result.Declaration.Ptr := CurPtr;
           Result.Declaration.Len := i;
+          Result.BaseDeclaration.Ptr := CurPtr;
+          Result.BaseDeclaration.Len := i;
           exit;
         end;
 
@@ -631,6 +687,8 @@ begin
         while EndPtr^ = ' ' do dec(EndPtr);
         Result.Declaration.Ptr := CurPtr;
         Result.Declaration.Len := EndPtr - CurPtr + 1;
+        Result.BaseDeclaration.Ptr := CurPtr;
+        Result.BaseDeclaration.Len := EndPtr - CurPtr + 1;
         exit;
       end;
     end;
@@ -661,11 +719,68 @@ begin
         if CurPtr^ <> '<' then begin;
           Result.Declaration.Ptr := DeclPtr;
           Result.Declaration.Len := EndPtr - DeclPtr + 1;
+          CurPtr := Result.BaseDeclaration.Ptr + 3;
+          SkipSpaces(CurPtr);
+          if (CurPtr^ in ['o', 'O']) and ((CurPtr+1)^ in ['f', 'F']) then begin
+            CurPtr := CurPtr + 2;
+            SkipSpaces(CurPtr);
+            if (CurPtr^ = '=') then begin
+              CurPtr := CurPtr + 1;
+              SkipSpaces(CurPtr);
+            end;
+            HelpPtr2 := Result.BaseDeclaration.Ptr + Result.BaseDeclaration.Len;
+            Result.BaseSubName.Ptr := CurPtr;
+            Result.BaseSubName.Len := HelpPtr2 - CurPtr;
+            while (CurPtr^ in ['^', '&']) and (CurPtr < EndPtr) do inc(CurPtr);
+            Result.SubName.Ptr := CurPtr;
+            Result.SubName.Len := HelpPtr2 - CurPtr;
+          end;
+        end
+        else begin
+          Result.BaseDeclaration.Ptr := nil;
+          Result.BaseDeclaration.Len := 0;
         end;
       end;
     ptprkArray: begin
         Result.Declaration.Ptr := DeclPtr;
         Result.Declaration.Len := EndPtr - DeclPtr + 1;
+        CurPtr := Result.BaseDeclaration.Ptr + 5;
+        SkipSpaces(CurPtr);
+        include(Result.Flags, ptprfNoBounds);
+        include(Result.Flags, ptprfDynArray);
+        if CurPtr^ = '[' then begin
+          inc(CurPtr);
+          HelpPtr := CurPtr;
+          while (HelpPtr^ in ['-', '0'..'9']) and (HelpPtr < EndPtr - 3) do inc (HelpPtr);
+          if (HelpPtr > CurPtr) and (HelpPtr^ = '.') and  ((HelpPtr+1)^ = '.') then begin
+            HelpPtr2 := HelpPtr + 2;
+            while (HelpPtr2^ in ['-', '0'..'9']) and (HelpPtr2 < EndPtr - 1) do inc (HelpPtr2);
+            if (HelpPtr2 > HelpPtr) and (HelpPtr2^ = ']') then begin
+              exclude(Result.Flags, ptprfNoBounds);
+              Result.BoundLow.Ptr := CurPtr;
+              Result.BoundLow.Len := HelpPtr - CurPtr;
+              Result.BoundHigh.Ptr := HelpPtr + 2;
+              Result.BoundHigh.Len := HelpPtr2 - (HelpPtr + 2);
+              if (HelpPtr2 - CurPtr <> 5) or (strlcomp(Result.BoundLow.Ptr, PChar('0..-1'), 5) <> 0) then
+                exclude(Result.Flags, ptprfDynArray);
+              CurPtr := HelpPtr2 + 1;
+            end;
+          end;
+        end;
+
+        SkipSpaces(CurPtr);
+        if (CurPtr^ in ['o', 'O']) and ((CurPtr+1)^ in ['f', 'F']) then begin
+          CurPtr := CurPtr + 2;
+          SkipSpaces(CurPtr);
+          //HelpPtr := CurPtr;
+          //while (not (HelpPtr^ in [#0..#31, ' '])) and (HelpPtr < EndPtr) do inc(HelpPtr);
+          HelpPtr2 := Result.BaseDeclaration.Ptr + Result.BaseDeclaration.Len;
+          Result.BaseSubName.Ptr := CurPtr;
+          Result.BaseSubName.Len := HelpPtr2 - CurPtr;
+          while (CurPtr^ in ['^', '&']) and (CurPtr < EndPtr) do inc(CurPtr);
+          Result.SubName.Ptr := CurPtr;
+          Result.SubName.Len := HelpPtr2 - CurPtr;
+        end;
       end;
     ptprkProcedure, ptprkFunction: begin
         Result.Declaration.Ptr := DeclPtr;
@@ -683,6 +798,21 @@ begin
   AReq.Error := '';
   AReq.Next := FEvalRequest;
   FEvalRequest := @AReq;
+  if FLastEvalRequest = nil then
+    FLastEvalRequest := @AReq;
+end;
+
+procedure TGDBType.AddSubType(ASubType: TGDBType);
+begin
+  if ASubType.ProcessExpression then
+    exit;
+  ASubType.FNextProcessingSubType := FFirstProcessingSubType;
+  FFirstProcessingSubType := ASubType;
+end;
+
+function TGDBType.GetIsFinished: Boolean;
+begin
+  Result := FProcessState = gtpsFinished;
 end;
 
 function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests): Boolean;
@@ -701,8 +831,23 @@ function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests): Boolean;
       Result := '(' + Result + ')';
   end;
 
+  function GetReqText(AReq: TGDBTypeProcessRequest): String;
+  begin
+    case areq of
+      gptrPTypeExpr:        Result := 'ptype ' + FExpression;
+      gptrWhatisExpr:       Result := 'whatis ' + FExpression;
+      gptrPTypeOfWhatis:    Result := 'ptype ' + PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName);
+      gptrPTypeExprDeRef:   Result := 'ptype ' + ApplyBrackets(FExpression) + '^';
+      gptrPTypeExprDeDeRef: Result := 'ptype ' + ApplyBrackets(FExpression) + '^^';
+      gptrEvalExpr:      Result := '-data-evaluate-expression '+FExpression;
+      gptrEvalExprDeRef: Result := '-data-evaluate-expression '+FExpression+'^';
+      gptrEvalExprCast:  Result := '-data-evaluate-expression '+InternalTypeName+'('+FExpression+')';
+    end;
+  end;
+
 var
   NeededReq: TGDBTypeProcessRequests;
+  i: TGDBTypeProcessRequest;
 begin
   NeededReq := ARequired - FProccesReuestsMade;
   Result := NeededReq = [];
@@ -715,21 +860,13 @@ begin
   end;
 
   FProccesReuestsMade := FProccesReuestsMade + NeededReq;
-
-  if gptrPTypeExpr in NeededReq then
-    AddTypeReq(FReqResults[gptrPTypeExpr], 'ptype ' + FExpression);
-
-  if gptrWhatisExpr in NeededReq then
-    AddTypeReq(FReqResults[gptrWhatisExpr], 'whatis ' + FExpression);
-
-  if gptrPTypeExprDeRef in NeededReq then
-    AddTypeReq(FReqResults[gptrPTypeExprDeRef], 'ptype ' + ApplyBrackets(FExpression) + '^');
-
-  if gptrPTypeExprDeDeRef in NeededReq then
-    AddTypeReq(FReqResults[gptrPTypeExprDeDeRef], 'ptype ' + ApplyBrackets(FExpression) + '^^');
-
-  if gptrPTypeOfWhatis in NeededReq then
-    AddTypeReq(FReqResults[gptrPTypeOfWhatis], 'ptype ' + PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName));
+  for i := low(TGDBTypeProcessRequest) to high(TGDBTypeProcessRequest) do
+    if i in NeededReq then begin
+      AddTypeReq(FReqResults[i], GetReqText(i));
+      if i in [gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast]
+      then FReqResults[i].ReqType := gcrtEvalExpr
+      else FReqResults[i].ReqType := gcrtPType;
+    end;
 end;
 
 function TGDBType.IsReqError(AReqType: TGDBTypeProcessRequest; CheckResKind: Boolean = True): Boolean;
@@ -746,26 +883,35 @@ begin
 end;
 
 constructor TGDBType.CreateForExpression(const AnExpression: string;
-  const AFlags: TGDBTypeCreationFlags);
+  const AFlags: TGDBTypeCreationFlags; AFormat: TWatchDisplayFormat = wdfDefault);
 begin
   Create(skSimple, ''); // initialize
   FInternalTypeName := '';
   FEvalError := False;
   FExpression := AnExpression;
+  FOrigExpression := FExpression;
   FCreationFlags := AFlags;
+  FExprEvaluateFormat := AFormat;
   FEvalRequest := nil;
+  FFirstProcessingSubType := nil;
+  FNextProcessingSubType := nil;
   FProcessState := gtpsInitial;
+  FHasExprEvaluatedAsText := False;
 end;
 
 destructor TGDBType.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FTypeInfoAncestor);
+  FreeAndNil(FTypeInfoArrayExpression);
 end;
 
 function TGDBType.ProcessExpression: Boolean;
 var
   Lines: TStringList;
+  procedure ProcessInitialSimple; forward;
+  procedure ProcessSimplePointer; forward;
+
 
   function ClearAmpersand(s: string): string;
   var i: Integer;
@@ -1007,36 +1153,22 @@ var
 
   procedure ProcessClassAncestor;
   var
-    r: PGDBPTypeRequest;
     i: Integer;
   begin
     FProcessState := gtpsClassAncestor;
 
     If FTypeInfoAncestor = nil then begin
       FTypeInfoAncestor := TGDBType.CreateForExpression(FAncestor, FCreationFlags + [gtcfExprIsType]);
+      AddSubType(FTypeInfoAncestor);
     end;
+    if not FTypeInfoAncestor.IsFinished then
+      exit;
 
-    if FTypeInfoAncestor.ProcessExpression then begin
-      // add ancestor
-      if FTypeInfoAncestor.FFields <> nil then
-        for i := 0 to FTypeInfoAncestor.FFields.Count - 1 do
-          FFields.Add(FTypeInfoAncestor.FFields[i]);
-      Result := True;
-    end
-    else begin
-      if FTypeInfoAncestor.EvalError then begin
-        debugln('TGDBType: EvaleError in ancestor');
-        Result := True; // unable to get ancestor
-        exit;
-      end;
-      if (EvalRequest =  nil) then
-        FEvalRequest := FTypeInfoAncestor.EvalRequest
-      else begin
-        r := FEvalRequest;
-        while r^.Next <> nil do r := r^.Next;
-        r^.Next := FTypeInfoAncestor.EvalRequest;
-      end;
-    end;
+    // add ancestor
+    if FTypeInfoAncestor.FFields <> nil then
+      for i := 0 to FTypeInfoAncestor.FFields.Count - 1 do
+        FFields.Add(FTypeInfoAncestor.FFields[i]);
+    Result := True;
   end;
 
   procedure ProcessClass;
@@ -1081,6 +1213,79 @@ var
   end;
   {%endregion    * Class * }
 
+  {%region    * Array * }
+  procedure ProcessArray;
+  var
+    PTypeResult: TGDBPTypeResult;
+  begin
+    FProcessState := gtpsArray;
+
+    PTypeResult := FReqResults[gptrPTypeExpr].Result;
+    if (ptprfPointer in PTypeResult.Flags) and (PTypeResult.Kind =ptprkSimple)
+    then begin
+      if not RequireRequests([gptrPTypeExprDeRef])
+      then exit;
+      if (not IsReqError(gptrPTypeExprDeRef)) then
+      PTypeResult := FReqResults[gptrPTypeExprDeRef].Result
+    end;
+
+    if (ptprfDynArray in PTypeResult.Flags)
+    then include(FAttributes, saInternalPointer);
+
+    if (saInternalPointer in FAttributes) then begin
+      if not RequireRequests([gptrPTypeExprDeRef])
+      then exit;
+    end;
+
+    if (saInternalPointer in FAttributes) and (not IsReqError(gptrPTypeExprDeRef)) then
+      PTypeResult := FReqResults[gptrPTypeExprDeRef].Result
+    else
+      PTypeResult := FReqResults[gptrPTypeExpr].Result;
+
+    if ptprfPointer in PTypeResult.Flags then begin
+      ProcessSimplePointer;
+      exit;
+    end;
+
+    FKind := skSimple;
+
+    if not(gtcfSkipTypeName in FCreationFlags) then begin
+      if not RequireRequests([gptrWhatisExpr])
+      then exit;
+      SetTypNameFromReq(gptrWhatisExpr, True);
+    end;
+
+    FTypeDeclaration := ClearAmpersand(PCLenToString(PTypeResult.Declaration));
+    Result := True;
+    // ====> DONE
+  end;
+  {%endregion    * Array * }
+
+  {%region    * ArrayEntry * }
+  procedure ProcessArrayEntryInit(PosIndexStart, PosIndexEnd: Integer);
+  begin
+    FProcessState := gtpsArrayEntry;
+    FTypeInfoArrayExpression := TGDBType.CreateForExpression
+      (copy(FExpression, 1, PosIndexStart-1),
+       FCreationFlags * [gtcfClassIsPointer] + [gtcfSkipTypeName]);
+    AddSubType(FTypeInfoArrayExpression);
+    // include []
+    FArrayEntryIndexExpr := Copy(FExpression, PosIndexStart, PosIndexEnd - PosIndexStart + 1);
+  end;
+
+  procedure ProcessArrayEntry;
+  begin
+    FProcessState := gtpsArrayEntry;
+    if not FTypeInfoArrayExpression.IsFinished then exit;
+
+    if saInternalPointer in FTypeInfoArrayExpression.FAttributes
+    then begin
+      FExpression := FTypeInfoArrayExpression.FExpression + '^' + FArrayEntryIndexExpr;
+    end;
+    ProcessInitialSimple;
+  end;
+  {%endregion    * ArrayEntry * }
+
   {%region    * Simple * }
   procedure ProcessSimplePointer;
   begin
@@ -1106,19 +1311,97 @@ var
   end;
   {%endregion    * Simple * }
 
-  procedure ProcessInitial;
-  var
-    i: Integer;
+  {%region    * EvaluateExpression * }
+  procedure EvaluateExpression;
+    procedure ParseFromResult(AGdbDesc, AField: String);
+    var
+      ResultList: TGDBMINameValueList;
+    begin
+      ResultList := TGDBMINameValueList.Create(AGdbDesc);
+      FExprEvaluatedAsText := ResultList.Values['value'];
+      FHasExprEvaluatedAsText := True;
+      //FTextValue := DeleteEscapeChars(FTextValue);
+      ResultList.Free;
+    end;
   begin
-    if FReqResults[gptrPTypeExpr].Error <> '' then begin
-      FEvalError := True;
+    FProcessState := gtpsEvalExpr;
+    if not(gtcfExprEvaluate in FCreationFlags) then begin
+      Result := True;
+      exit;
+    end;
+    if FExprEvaluateFormat <> wdfDefault then begin;
+      Result := True;
       exit;
     end;
 
-    if (ptprfParamByRef in FReqResults[gptrPTypeExpr].Result.Flags) then
+    if (saInternalPointer in FAttributes) then begin
+      if not RequireRequests([gptrEvalExprDeRef]) then exit;
+      if not IsReqError(gptrEvalExprDeRef, False) then begin
+        ParseFromResult(FReqResults[gptrEvalExprDeRef].Result.GdbDescription, 'value');
+        Result := True;
+        exit;
+      end;
+    end;
+
+    if (saRefParam in FAttributes) then begin
+      if not RequireRequests([gptrEvalExprCast]) then exit;
+      if not IsReqError(gptrEvalExprCast, False) then begin
+        ParseFromResult(FReqResults[gptrEvalExprCast].Result.GdbDescription, 'value');
+        Result := True;
+        exit;
+      end;
+    end;
+
+    if not RequireRequests([gptrEvalExpr]) then exit;
+    if not IsReqError(gptrEvalExpr, False) then begin
+      ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'value');
+      Result := True;
+      exit;
+    end;
+
+    ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'msg');
+    Result := True;
+  end;
+  {%endregion    * EvaluateExpression * }
+
+  procedure ProcessInitialSimple;
+  var
+    i: Integer;
+    PTypeResult: TGDBPTypeResult;
+    wi: TGDBTypeProcessRequests;
+  begin
+    FProcessState := gtpsInitialSimple;
+
+    if (gtcfFullTypeInfo in FCreationFlags)
+    and not (gtcfExprIsType in FCreationFlags)
+    then wi := [gptrWhatisExpr]
+    else wi := [];
+    if not RequireRequests([gptrPTypeExpr]+wi)
+    then exit;
+
+    if IsReqError(gptrPTypeExpr) then begin
+      FEvalError := True;
+      exit;
+    end;
+    PTypeResult := FReqResults[gptrPTypeExpr].Result;
+
+    if (ptprfParamByRef in PTypeResult.Flags) then
       include(FAttributes, saRefParam);
 
-    case FReqResults[gptrPTypeExpr].Result.Kind of
+    // In DWARF, some Dynamic Array, are pointer to there base type
+    if (ptprfPointer in PTypeResult.Flags) and (PTypeResult.Kind =ptprkSimple)
+    then begin
+      if not RequireRequests([gptrPTypeExprDeRef])
+      then exit;
+      if (not IsReqError(gptrPTypeExprDeRef)) and
+         (FReqResults[gptrPTypeExprDeRef].Result.Kind = ptprkArray)
+      then begin
+        ProcessArray;
+        exit;
+      end;
+    end;
+
+    case PTypeResult.Kind of
       //ptprkError: ;
       //ptprkSimple: ;
       ptprkClass: begin
@@ -1128,25 +1411,26 @@ var
       //ptprkRecord: ;
       //ptprkEnum: ;
       //ptprkSet: ;
-      //ptprkArray: ;
+      ptprkArray: begin
+          ProcessArray;
+          exit;
+      end;
       //ptprkProcedure: ;
       //ptprkFunction: ;
     end;
 
-
-    if (ptprfPointer in FReqResults[gptrPTypeExpr].Result.Flags)
-    and ( (FReqResults[gptrPTypeExpr].Result.Kind in
-           [ptprkSimple, ptprkRecord, ptprkEnum, ptprkSet])
-         or ( (gtcfClassIsPointer in FCreationFlags)
-              and (FReqResults[gptrPTypeExpr].Result.Kind in [ptprkProcedure, ptprkFunction])  )
+    if (ptprfPointer in PTypeResult.Flags)
+    and ( (PTypeResult.Kind in [ptprkSimple, ptprkRecord, ptprkEnum, ptprkSet])
+          or ( (gtcfClassIsPointer in FCreationFlags) and
+               (PTypeResult.Kind in [ptprkProcedure, ptprkFunction])  )
         )
     then begin
       ProcessSimplePointer;
       exit;
     end;
 
-    if (ptprfParamByRef in FReqResults[gptrPTypeExpr].Result.Flags)
-    and not (FReqResults[gptrPTypeExpr].Result.Kind in [ptprkError])
+    if (ptprfParamByRef in PTypeResult.Flags)
+    and not (PTypeResult.Kind in [ptprkError])
     then begin
       // could be a pointer // need ptype of whatis
       if not RequireRequests([gptrWhatisExpr])
@@ -1169,7 +1453,7 @@ var
       end;
     end;
 
-    case FReqResults[gptrPTypeExpr].Result.Kind of
+    case PTypeResult.Kind of
       ptprkError: begin
           // could be empty pointer @ArgProcedure
           Result := True; // nothing to be done, keep simple type, no name
@@ -1184,6 +1468,10 @@ var
           Result := True;
           // ====> DONE
         end;
+      ptprkClass: begin
+          Assert(False, 'GDBTypeInfo Class: Should be handled before');
+          ProcessClass;
+        end;
       ptprkRecord: begin
           SetTypNameFromReq(gptrWhatisExpr, True);
           DoRecord;
@@ -1192,7 +1480,7 @@ var
         end;
       ptprkEnum: begin
           SetTypNameFromReq(gptrWhatisExpr, True);
-          FTypeDeclaration := ClearAmpersand(PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration));
+          FTypeDeclaration := ClearAmpersand(PCLenToString(PTypeResult.Declaration));
           DoEnum;
           Result := True;
           // ====> DONE
@@ -1203,7 +1491,7 @@ var
 
           SetTypNameFromReq(gptrWhatisExpr, True);
           // TODO: resolve enum-name (set of SomeEnum) if mode-full ?
-          FTypeDeclaration := ClearAmpersand(PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration));
+          FTypeDeclaration := ClearAmpersand(PCLenToString(PTypeResult.Declaration));
           i := pos('set of  = ', FTypeDeclaration);
           if  i > 0 then delete(FTypeDeclaration, i+7, 3);
           DoSet;
@@ -1211,19 +1499,13 @@ var
           // ====> DONE
         end;
       ptprkArray: begin
-          if not RequireRequests([gptrWhatisExpr])
-          then exit;
-
-          FKind := skSimple;
-          SetTypNameFromReq(gptrWhatisExpr, True);
-          FTypeDeclaration := ClearAmpersand(PCLenToString(FReqResults[gptrPTypeExpr].Result.Declaration));
-          Result := True;
-          // ====> DONE
+          Assert(False, 'GDBTypeInfo Array: Should be handled before');
+          ProcessArray;
         end;
       ptprkProcedure: begin
           // under stabs, procedure/function are always pointer // pointer to proc/func return empty type
           if (gtcfClassIsPointer in FCreationFlags) // Dwarf
-          and (ptprfPointer in FReqResults[gptrPTypeExpr].Result.Flags)
+          and (ptprfPointer in PTypeResult.Flags)
           then begin
             ProcessSimplePointer;
             exit;
@@ -1240,7 +1522,7 @@ var
       ptprkFunction: begin
           // under stabs, procedure/function are always pointer // pointer to proc/func return empty type
           if (gtcfClassIsPointer in FCreationFlags) // Dwarf
-          and (ptprfPointer in FReqResults[gptrPTypeExpr].Result.Flags)
+          and (ptprfPointer in PTypeResult.Flags)
           then begin
             ProcessSimplePointer;
             exit;
@@ -1257,37 +1539,108 @@ var
     end;
   end;
 
+  procedure ProcessInitial;
+  var
+    p, p1: PChar;
+  begin
+    if FExpression = '' then begin;
+      ProcessInitialSimple;
+      exit;
+    end;
+    // parse expression
+
+    // Array entry ?
+    p := @FExpression[length(FExpression)];
+    while (p^ in [#9, #32]) and (p > @FExpression[1]) do dec(p);
+    if p^ = ']' then begin
+      p1 := p;
+      while (not (p1^ = '[')) and (p1 > @FExpression[1]) do dec(p1);
+      ProcessArrayEntryInit(p1 - @FExpression[1]+1, p - @FExpression[1]+1);
+      exit;
+    end;
+
+
+    ProcessInitialSimple;
+  end;
+
+  procedure MergeSubProcessRequests;
+  var
+    SubType: TGDBType;
+  begin
+    SubType := FFirstProcessingSubType;
+    while SubType <> nil do begin
+      if (FEvalRequest =  nil)
+      then FEvalRequest := SubType.FEvalRequest
+      else FLastEvalRequest^.Next := SubType.FEvalRequest;;
+      FLastEvalRequest := SubType.FLastEvalRequest;
+      SubType := SubType.FNextProcessingSubType;
+    end;
+  end;
+
+  function ProcessSubProcessRequests: Boolean;
+  var
+    SubType, PrevSubType: TGDBType;
+  begin
+    Result := False;
+    PrevSubType := nil;
+    SubType := FFirstProcessingSubType;
+    Result := SubType = nil;
+    while SubType <> nil do begin
+      if SubType.ProcessExpression then begin
+        Result := True;
+        if PrevSubType = nil
+        then FFirstProcessingSubType := SubType.FNextProcessingSubType
+        else PrevSubType.FNextProcessingSubType := SubType.FNextProcessingSubType;
+      end;
+      PrevSubType := SubType;
+      SubType := SubType.FNextProcessingSubType;
+    end;
+  end;
+
 var
   OldProcessState: TGDBTypeProcessState;
   OldReqMade: TGDBTypeProcessRequests;
-  wi: TGDBTypeProcessRequests;
 begin
   Result := False;
   FEvalRequest := nil;
+  FLastEvalRequest := nil;
   Lines := nil;
+
+  if FFirstProcessingSubType <> nil then begin
+    if not ProcessSubProcessRequests then begin
+      MergeSubProcessRequests;
+      exit;
+    end;
+  end;
+
   OldProcessState := FProcessState;
   OldReqMade := FProccesReuestsMade;
 
-  if (gtcfFullTypeInfo in FCreationFlags)
-  and not (gtcfExprIsType in FCreationFlags)
-  then wi := [gptrWhatisExpr]
-  else wi := [];
-
-  if not RequireRequests([gptrPTypeExpr]+wi)
-  then exit;
-
   case FProcessState of
     gtpsInitial:         ProcessInitial;
+    gtpsInitialSimple:   ProcessInitialSimple;
     gtpsSimplePointer:   ProcessSimplePointer;
     gtpsClass:           ProcessClass;
     gtpsClassPointer:    ProcessClassPointer;
     gtpsClassAncestor:   ProcessClassAncestor;
+    gtpsArray:           ProcessArray;
+    gtpsArrayEntry:      ProcessArrayEntry;
+    gtpsEvalExpr:        EvaluateExpression;
   end;
 
   FreeAndNil(Lines);
+  if Result and not(FProcessState = gtpsEvalExpr)
+  then begin
+    Result := False;
+    EvaluateExpression;
+  end;
+
   if Result
   then FProcessState := gtpsFinished;
 
+  if FFirstProcessingSubType <> nil then
+    MergeSubProcessRequests
+  else
   if (FProcessState = OldProcessState) and (FProccesReuestsMade = OldReqMade)
   and (not Result) and (FEvalRequest = nil)
   then begin

@@ -5,7 +5,7 @@ unit TestException;
 interface
 
 uses
-  Classes, fpcunit, testutils, testregistry,
+  Classes, fpcunit, testutils, testregistry, TestGDBMIControl,
   TestBase, Debugger, GDBMIDebugger, LCLProc;
 
 type
@@ -52,6 +52,7 @@ var
   TestExeName, TstName: string;
   dbg: TGDBMIDebugger;
 begin
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
   ClearTestErrors;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '', '');

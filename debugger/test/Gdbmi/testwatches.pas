@@ -5,7 +5,7 @@ unit TestWatches;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testutils, testregistry,
+  Classes, SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl,
   TestBase, Debugger, GDBMIDebugger, LCLProc, SynRegExpr, Forms, StdCtrls, Controls;
 
 const
@@ -54,7 +54,7 @@ type
     FWatches: TBaseWatches;
     FDbgOutPut: String;
     FDbgOutPutEnable: Boolean;
-    procedure DoDbgOutput(Sender: TObject; const AText: String);
+    procedure DoDbgOutput(Sender: TObject; const AText: String); reintroduce;
   public
     procedure DebugInteract(dbg: TGDBMIDebugger);
 
@@ -118,7 +118,9 @@ const
     (Exp: '-data-evaluate-expression sizeof(ArgTFoo^)'; Fmt: wdfDefault; Mtch: 'value="\d\d+"|(parse|syntax) error in expression';  Kind: skClass; TpNm: '';  Flgs: [])//,
   );
 
-  ExpectBrk1NoneNil: Array [1..121] of TWatchExpectation = (
+  (* *****     *****     *****     *****     *****     *****     ***** *)
+
+  ExpectBrk1NoneNil: Array [1..133] of TWatchExpectation = (
     {%region    * records * }
 
     (Exp: 'ArgTRec';       Fmt: wdfDefault;  Mtch: Match_ArgTRec;                   Kind: skRecord;      TpNm: 'TRec'; Flgs: []),
@@ -250,7 +252,7 @@ const
     //(Exp: 'ArgTFoo=nil';          Fmt: wdfDefault;  Mtch: 'False';        Kind: skSimple;      TpNm: 'bool'; Flgs: []),
     //(Exp: 'not(ArgTFoo=nil)';     Fmt: wdfDefault;  Mtch: 'True';         Kind: skSimple;      TpNm: 'bool'; Flgs: []),
     //(Exp: 'ArgTFoo<>nil';         Fmt: wdfDefault;  Mtch: 'True';         Kind: skSimple;      TpNm: 'bool'; Flgs: []),
-    {%endendregion    * Classes * }
+    {%endregion    * Classes * }
 
     {%region    * Strings * }
       { strings }
@@ -382,6 +384,49 @@ const
     (Exp: 'VarSetA';       Fmt: wdfDefault;  Mtch: '^\[s2\]$';                   Kind: skSet;        TpNm: ''; Flgs: [fnoDwrfNoSet]),
     {%endregion    * Enum/Set * }
 
+    {%region    * Array * }
+    //TODO: DynArray, decide what to display
+    // TODO {} fixup array => replace with []
+    (Exp: 'VarDynIntArray';       Fmt: wdfDefault;      Mtch: Match_Pointer+'|\{\}|0,[\s\r\n]+2';
+                                  Kind: skSimple;       TpNm: 'TDynIntArray';
+                                  Flgs: []) ,
+//TODO add () around list
+    (Exp: 'VarStatIntArray';      Fmt: wdfDefault;      Mtch: '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18';
+                                  Kind: skSimple;       TpNm: 'TStatIntArray';
+                                  Flgs: []) ,
+    (Exp: 'VarPDynIntArray';      Fmt: wdfDefault;      Mtch: Match_Pointer;
+                                  Kind: skPointer;      TpNm: 'PDynIntArray';
+                                  Flgs: []) ,
+    (Exp: 'VarPStatIntArray';     Fmt: wdfDefault;      Mtch: Match_Pointer;
+                                  Kind: skPointer;      TpNm: 'PStatIntArray';
+                                  Flgs: []) ,
+    (Exp: 'VarDynIntArrayA';      Fmt: wdfDefault;      Mtch: Match_Pointer+'|\{\}|0,[\s\r\n]+2';
+                                  Kind: skSimple;       TpNm: '';
+                                  Flgs: []) ,
+    (Exp: 'VarStatIntArrayA';     Fmt: wdfDefault;      Mtch: '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18';
+                                  Kind: skSimple;       TpNm: '';
+                                  Flgs: []) ,
+
+    (Exp: 'VarDynIntArray[1]';    Fmt: wdfDefault;      Mtch: '2';
+                                  Kind: skSimple;       TpNm: 'Integer|LongInt';
+                                  Flgs: [fTpMtch]) ,
+    (Exp: 'VarStatIntArray[6]';   Fmt: wdfDefault;      Mtch: '12';
+                                  Kind: skSimple;       TpNm: 'Integer|LongInt';
+                                  Flgs: [fTpMtch]) ,
+    (Exp: 'VarPDynIntArray^[1]';  Fmt: wdfDefault;      Mtch: '2';
+                                  Kind: skSimple;       TpNm: 'Integer|LongInt';
+                                  Flgs: [fTpMtch]) ,
+    (Exp: 'VarPStatIntArray^[6]'; Fmt: wdfDefault;      Mtch: '12';
+                                  Kind: skSimple;       TpNm: 'Integer|LongInt';
+                                  Flgs: [fTpMtch]) ,
+    (Exp: 'VarDynIntArrayA[1]';   Fmt: wdfDefault;      Mtch: '2';
+                                  Kind: skSimple;       TpNm: 'Integer|LongInt';
+                                  Flgs: [fTpMtch]) ,
+    (Exp: 'VarStatIntArrayA[6]';  Fmt: wdfDefault;      Mtch: '12';
+                                  Kind: skSimple;       TpNm: 'Integer|LongInt';
+                                  Flgs: [fTpMtch]),
+    {%endregion    * Array * }
+
     {%region    * Variant * }
 
     (Exp: 'ArgVariantInt';       Fmt: wdfDefault;  Mtch: '^5$';         Kind: skVariant;       TpNm: 'Variant'; Flgs: []),
@@ -424,7 +469,6 @@ const
     {%endregion    * procedure/function/method * }
 
   );
-
 
 
 
@@ -477,6 +521,7 @@ end;
 
 procedure TTestWatches.DoDbgOutput(Sender: TObject; const AText: String);
 begin
+  inherited DoDbgOutput(Sender, AText);
   if FDbgOutPutEnable then
     FDbgOutPut := FDbgOutPut + AText;
   if DbgLog and (DbgMemo <> nil) then
@@ -514,47 +559,43 @@ procedure TTestWatches.TestWatches;
   var
     rx: TRegExpr;
     s: String;
+    flag: Boolean;
   begin
     rx := nil;
 
     Name := Name + ' ' + Data.Exp + ' (' + TWatchDisplayFormatNames[Data.Fmt] + ')';
-    try
-      if AWatch <> nil then begin;
-        AWatch.Master.Value; // trigger read
-        AssertTrue  (Name+ ' (HasValue)',   AWatch.HasValue);
-        AssertFalse (Name+ ' (One Value)',  AWatch.HasMultiValue);
-        s := AWatch.Value;
-      end
-      else
-        s := WatchValue;
+    flag := AWatch <> nil;
+    if flag then begin;
+      AWatch.Master.Value; // trigger read
+      flag := flag and TestTrue  (Name+ ' (HasValue)',   AWatch.HasValue);
+      flag := flag and TestFalse (Name+ ' (One Value)',  AWatch.HasMultiValue);
+      s := AWatch.Value;
+    end
+    else
+      s := WatchValue;
 
+    if flag then begin
       rx := TRegExpr.Create;
       rx.ModifierI := true;
       rx.Expression := Data.Mtch;
       if Data.Mtch <> ''
-      then AssertTrue(Name + ' Matches "'+Data.Mtch + '", but was "' + s + '"', rx.Exec(s));
-    except
-      on e: Exception do
-        AddTestError(e.Message);
+      then TestTrue(Name + ' Matches "'+Data.Mtch + '", but was "' + s + '"', rx.Exec(s));
     end;
-    try
-      if (AWatch <> nil) and (Data.TpNm <> '') then begin
-        AssertTrue(Name + ' has typeinfo',  AWatch.TypeInfo <> nil);
-        AssertEquals(Name + ' kind',  KindName[Data.Kind], KindName[AWatch.TypeInfo.Kind]);
-        if fTpMtch  in Data.Flgs
-        then begin
-          FreeAndNil(rx);
-          s := AWatch.TypeInfo.TypeName;
-          rx := TRegExpr.Create;
-          rx.ModifierI := true;
-          rx.Expression := Data.TpNm;
-          AssertTrue(Name + ' TypeName matches '+Data.TpNm+' but was '+AWatch.TypeInfo.TypeName,  rx.Exec(s))
-        end
-        else AssertEquals(Name + ' TypeName',  LowerCase(Data.TpNm), LowerCase(AWatch.TypeInfo.TypeName));
-      end;
-    except
-      on e: Exception do
-        AddTestError(e.Message);
+
+    flag := (AWatch <> nil) and (Data.TpNm <> '');
+    if flag then flag := TestTrue(Name + ' has typeinfo',  AWatch.TypeInfo <> nil);
+    if flag then flag := TestEquals(Name + ' kind',  KindName[Data.Kind], KindName[AWatch.TypeInfo.Kind]);
+    if flag then begin
+      if fTpMtch  in Data.Flgs
+      then begin
+        FreeAndNil(rx);
+        s := AWatch.TypeInfo.TypeName;
+        rx := TRegExpr.Create;
+        rx.ModifierI := true;
+        rx.Expression := Data.TpNm;
+        TestTrue(Name + ' TypeName matches '+Data.TpNm+' but was '+AWatch.TypeInfo.TypeName,  rx.Exec(s))
+      end
+      else TestEquals(Name + ' TypeName',  LowerCase(Data.TpNm), LowerCase(AWatch.TypeInfo.TypeName));
     end;
     FreeAndNil(rx);
   end;
@@ -565,6 +606,8 @@ var
   i: Integer;
   WList: Array of TTestWatch;
 begin
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch')] then exit;
+
   ClearTestErrors;
   try
     TestCompile(AppDir + 'WatchesPrg.pas', TestExeName);
@@ -574,7 +617,7 @@ begin
 
   try
     FWatches := TBaseWatches.Create(TBaseWatch);
-    dbg := TGDBMIDebugger.Create(DebuggerInfo.ExeName);
+    dbg := StartGDB(AppDir, TestExeName);
 
     dbg.OnDbgOutput  := @DoDbgOutput;
     if (RUN_TEST_ONLY >= 0) or (RUN_GDB_TEST_ONLY >= 0) then begin
@@ -618,13 +661,9 @@ begin
 
 
     (* Start debugging *)
-    dbg.Init;
     if dbg.State = dsError then
       Fail(' Failed Init');
 
-    dbg.WorkingDir := AppDir;
-    dbg.FileName   := TestExeName;
-    dbg.Arguments := '';
     dbg.ShowConsole := True;
 
     dbg.Run;

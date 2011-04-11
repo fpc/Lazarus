@@ -55,12 +55,20 @@ type
   TRunner = class(TGDBTestCase)
   private
     FTesting: Boolean;
+    procedure dobrk(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint;
+      var ACanContinue: Boolean);
   published
     procedure DoDbgOut(Sender: TObject; const AText: String);
     procedure DoRun;
   end;
 
 { TRunner }
+
+procedure TRunner.dobrk(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint;
+  var ACanContinue: Boolean);
+begin
+  ACanContinue := False;
+end;
 
 procedure TRunner.DoDbgOut(Sender: TObject; const AText: String);
 begin
@@ -98,6 +106,7 @@ begin
   try
     dbg := TGDBMIDebugger.Create(DebuggerInfo.ExeName);
     dbg.OnDbgOutput  := @DoDbgOut;
+    dbg.OnBreakPointHit  := @dobrk;
     ;
 
     (* Add breakpoints *)

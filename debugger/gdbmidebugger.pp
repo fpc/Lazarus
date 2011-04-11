@@ -47,7 +47,7 @@ uses
 {$IFDEF UNIX}
    Unix,BaseUnix,termio,
 {$ENDIF}
-  BaseDebugManager;
+  BaseDebugManager, GDBMIMiscClasses;
 
 type
   TGDBMIProgramInfo = record
@@ -71,17 +71,6 @@ type
   );
   TGDBMICommandFlags = set of TGDBMICommandFlag;
 
-  TGDBMIResultFlags = set of (
-    rfNoMI         // flag is set if the output is not MI formatted
-                   // some MI functions return normal output
-                   // some normal functions return MI output
-  );
-
-  TGDBMIExecResult = record
-    State: TDBGState;
-    Values: String;
-    Flags: TGDBMIResultFlags
-  end;
 
   TGDBMICallback = procedure(const AResult: TGDBMIExecResult; const ATag: PtrInt) of object;
   TGDBMIPauseWaitState = (pwsNone, pwsInternal, pwsExternal);
@@ -233,7 +222,9 @@ type
     function  GetChar(const AExpression: String; const AValues: array of const): String; overload;
     function  GetFloat(const AExpression: String; const AValues: array of const): String;
     function  GetWideText(const ALocation: TDBGPtr): String;
-    function  GetGDBTypeInfo(const AExpression: String; FullTypeInfo: Boolean = False): TGDBType;
+    function  GetGDBTypeInfo(const AExpression: String; FullTypeInfo: Boolean = False;
+                             AFlags: TGDBTypeCreationFlags = [];
+                             AFormat: TWatchDisplayFormat = wdfDefault): TGDBType;
     function  GetClassName(const AClass: TDBGPtr): String; overload;
     function  GetClassName(const AExpression: String; const AValues: array of const): String; overload;
     function  GetInstanceClassName(const AInstance: TDBGPtr): String; overload;
@@ -416,46 +407,6 @@ type
   TGDBMIEvaluationState = (esInvalid, esRequested, esValid);
 
   {%region       *****  TGDBMINameValueList and Parsers  *****   }
-
-  PGDBMINameValue = ^TGDBMINameValue;
-  TGDBMINameValue = record
-    Name: TPCharWithLen;
-    Value: TPCharWithLen;
-  end;
-
-  { TGDBMINameValueList }
-
-  TGDBMINameValueList = class(TObject)
-  private
-    FText: String;
-    FCount: Integer;
-    FIndex: array of TGDBMINameValue;
-    FUseTrim: Boolean;
-
-    function Find(const AName : string): PGDBMINameValue;
-    function GetItem(const AIndex: Integer): PGDBMINameValue;
-    function GetString(const AIndex: Integer): string;
-    function GetValue(const AName : string): string;
-    function GetValuePtr(const AName: string): TPCharWithLen;
-  public
-    constructor Create(const AResultValues: String); overload;
-    constructor Create(const AResultValues: TPCharWithLen); overload;
-    constructor Create(AResult: TGDBMIExecResult); overload;
-    constructor Create(const AResultValues: String; const APath: array of String); overload;
-    constructor Create(AResult: TGDBMIExecResult; const APath: array of String); overload;
-    procedure Delete(AIndex: Integer);
-    procedure Init(const AResultValues: String);
-    procedure Init(AResultValues: PChar; ALength: Integer);
-    procedure Init(const AResultValues: TPCharWithLen);
-    procedure SetPath(const APath: String); overload;
-    procedure SetPath(const APath: array of String); overload;
-    function IndexOf(const AName: string): Integer;
-    property Count: Integer read FCount;
-    property Items[const AIndex: Integer]: PGDBMINameValue read GetItem;
-    property Values[const AName: string]: string read GetValue;
-    property ValuesPtr[const AName: string]: TPCharWithLen read GetValuePtr;
-    property UseTrim: Boolean read FUseTrim write FUseTrim;
-  end;
 
   { TGDBMINameValueBasedList }
 
@@ -4226,316 +4177,6 @@ begin
   FGetLineSymbolsCmdObj.Priority := GDCMD_PRIOR_LINE_INFO;
   TGDBMIDebugger(Debugger).QueueCommand(FGetLineSymbolsCmdObj);
   (* DoEvaluationFinished may be called immediately at this point *)
-end;
-
-{ TGDBMINameValueList }
-
-constructor TGDBMINameValueList.Create(const AResultValues: String);
-begin
-  inherited Create;
-  Init(AResultValues);
-end;
-
-constructor TGDBMINameValueList.Create(const AResultValues: TPCharWithLen);
-begin
-  inherited Create;
-  Init(AResultValues);
-end;
-
-constructor TGDBMINameValueList.Create(const AResultValues: String; const APath: array of String);
-begin
-  inherited Create;
-  Init(AResultValues);
-  SetPath(APath);
-end;
-
-constructor TGDBMINameValueList.Create(AResult: TGDBMIExecResult);
-begin
-  inherited Create;
-  Init(AResult.Values);
-end;
-
-constructor TGDBMINameValueList.Create(AResult: TGDBMIExecResult; const APath: array of String);
-begin
-  inherited Create;
-  Init(AResult.Values);
-  SetPath(APath);
-end;
-
-procedure TGDBMINameValueList.Delete(AIndex: Integer);
-begin
-  if AIndex < 0 then Exit;
-  if AIndex >= FCount then Exit;
-  Dec(FCount);
-  Move(FIndex[AIndex + 1], FIndex[AIndex], SizeOf(FIndex[0]) * (FCount - AIndex));
-end;
-
-function TGDBMINameValueList.Find(const AName: string): PGDBMINameValue;
-var
-  n: Integer;
-begin
-  n := IndexOf(AName);
-  if n < 0 then Exit(nil);
-  Result := @FIndex[n];
-end;
-
-function TGDBMINameValueList.GetItem(const AIndex: Integer): PGDBMINameValue;
-begin
-  if AIndex < 0 then Exit(nil);
-  if AIndex >= FCount then Exit(nil);
-  Result := @FIndex[AIndex];
-end;
-
-function TGDBMINameValueList.GetString(const AIndex : Integer) : string;
-var
-  len: Integer;
-  item: PGDBMINameValue;
-begin
-  Result := '';
-  if (AIndex < 0) or (AIndex >= FCount) then Exit;
-  item := @FIndex[AIndex];
-  if item = nil then Exit;
-
-  len := Item^.Name.Len;
-  if Item^.Value.Ptr <> nil then begin
-    if (Item^.Value.Ptr-1) = '"' then inc(len, 2);
-    len := len + 1 + Item^.Value.Len;
-  end;
-
-  SetLength(Result, len);
-  Move(Item^.Name.Ptr^, Result[1], len);
-end;
-
-function TGDBMINameValueList.GetValue(const AName: string): string;
-var
-  item: PGDBMINameValue;
-begin
-  Result := '';
-  if FCount = 0 then Exit;
-  item := Find(AName);
-  if item = nil then Exit;
-
-  SetLength(Result, Item^.Value.Len);
-  Move(Item^.Value.Ptr^, Result[1], Item^.Value.Len);
-end;
-
-function TGDBMINameValueList.GetValuePtr(const AName: string): TPCharWithLen;
-var
-  item: PGDBMINameValue;
-begin
-  Result.Ptr := nil;
-  Result.Len := 0;
-  if FCount = 0 then Exit;
-  item := Find(AName);
-  if item = nil then Exit;
-
-  Result := item^.Value;
-end;
-
-procedure TGDBMINameValueList.Init(AResultValues: PChar; ALength: Integer);
-
-  function FindNextQuote(ACurPtr, AEndPtr: PChar): PChar;
-  begin
-    Result := ACurPtr;
-    while Result <= AEndPtr do
-    begin
-      case Result^ of
-        '\': Inc(Result, 2);
-        '"': Break;
-      else
-        Inc(Result);
-      end;
-    end;
-  end;
-
-  function FindClosingBracket(ACurPtr, AEndPtr: PChar): PChar;
-  var
-    deep: Integer;
-  begin
-    deep := 1;
-    Result := ACurPtr;
-
-    while Result <= AEndPtr do
-    begin
-      case Result^ of
-        '\': Inc(Result);
-        '"': Result := FindNextQuote(Result + 1, AEndPtr);
-        '[', '{': Inc(deep);
-        ']', '}': begin
-          Dec(deep);
-          if deep = 0 then break;
-        end;
-      end;
-      Inc(Result);
-    end;
-  end;
-
-  procedure Add(AStartPtr, AEquPtr, AEndPtr: PChar);
-  var
-    Item: PGDBMINameValue;
-  begin
-    if AEndPtr <= AStartPtr then Exit;
-
-    // check space
-    if Length(FIndex) <= FCount
-    then SetLength(FIndex, FCount + 16);
-
-    Item := @FIndex[FCount];
-    if AEquPtr < AStartPtr
-    then begin
-      // trim spaces
-      if UseTrim then
-      begin
-        while (AStartPtr < AEndPtr) and (AStartPtr^ = #32) do
-          inc(AStartPtr);
-        while (AEndPtr > AStartPtr) and (AEndPtr^ = #32) do
-          dec(AEndPtr);
-      end;
-
-      // only name, no value
-      Item^.Name.Ptr := AStartPtr;
-      Item^.Name.Len := PtrUInt(AEndPtr) - PtrUInt(AStartPtr) + 1;
-      Item^.Value.Ptr := nil;
-      Item^.Value.Len := 0;
-    end
-    else begin
-      // trim surrounding spaces
-      if UseTrim then
-      begin
-        while (AStartPtr < AEquPtr) and (AStartPtr^ = #32) do
-          inc(AStartPtr);
-        while (AEndPtr > AEquPtr) and (AEndPtr^ = #32) do
-          dec(AEndPtr);
-      end;
-
-      Item^.Name.Ptr := AStartPtr;
-      Item^.Name.Len := PtrUInt(AEquPtr) - PtrUInt(AStartPtr);
-
-      // trim name spaces
-      if UseTrim then
-        while (Item^.Name.Len > 0) and (Item^.Name.Ptr[Item^.Name.Len - 1] = #32) do
-          dec(Item^.Name.Len);
-
-      if (AEquPtr < AEndPtr - 1) and (AEquPtr[1] = '"') and (AEndPtr^ = '"')
-      then begin
-        // strip surrounding "
-        Item^.Value.Ptr := AEquPtr + 2;
-        Item^.Value.Len := PtrUInt(AEndPtr) - PtrUInt(AEquPtr) - 2;
-      end
-      else begin
-        Item^.Value.Ptr := AEquPtr + 1;
-        Item^.Value.Len := PtrUInt(AEndPtr) - PtrUInt(AEquPtr)
-      end;
-      // trim value spaces
-      if UseTrim then
-        while (Item^.Value.Len > 0) and (Item^.Value.Ptr[0] = #32) do
-        begin
-          inc(Item^.Value.Ptr);
-          dec(Item^.Value.Len);
-        end;
-    end;
-
-    Inc(FCount);
-  end;
-
-var
-  CurPtr, StartPtr, EquPtr, EndPtr: PChar;
-begin
-  // clear
-  FCount := 0;
-
-  if AResultValues = nil then Exit;
-  if ALength <= 0 then Exit;
-  EndPtr := AResultValues + ALength - 1;
-
-  // strip surrounding '[]' OR '{}' first
-  case AResultValues^ of
-    '[': begin
-      if EndPtr^ = ']'
-      then begin
-        Inc(AResultValues);
-        Dec(EndPtr);
-      end;
-    end;
-    '{': begin
-      if EndPtr^ = '}'
-      then begin
-        Inc(AResultValues);
-        Dec(EndPtr);
-      end;
-    end;
-  end;
-
-  StartPtr := AResultValues;
-  CurPtr := AResultValues;
-  EquPtr := nil;
-  while CurPtr <= EndPtr do
-  begin
-    case CurPtr^ of
-      '\': Inc(CurPtr); // skip escaped char
-      '"': CurPtr := FindNextQuote(CurPtr + 1, EndPtr);
-      '[',
-      '{': CurPtr := FindClosingBracket(CurPtr + 1, EndPtr);
-      '=': EquPtr := CurPtr;
-      ',': begin
-        Add(StartPtr, EquPtr, CurPtr - 1);
-        Inc(CurPtr);
-        StartPtr := CurPtr;
-        Continue;
-      end;
-    end;
-    Inc(CurPtr);
-  end;
-  if StartPtr <= EndPtr
-  then Add(StartPtr, EquPtr, EndPtr);
-end;
-
-procedure TGDBMINameValueList.Init(const AResultValues: TPCharWithLen);
-begin
-  Init(AResultValues.Ptr, AResultValues.Len)
-end;
-
-procedure TGDBMINameValueList.Init(const AResultValues: String);
-begin
-  FText := AResultValues;
-  Init(PChar(FText), Length(FText));
-end;
-
-procedure TGDBMINameValueList.SetPath(const APath: String);
-begin
-  SetPath([APath]);
-end;
-
-procedure TGDBMINameValueList.SetPath(const APath: array of String);
-var
-  i: integer;
-  Item: PGDBMINameValue;
-begin
-  for i := low(APath) to High(APath) do
-  begin
-    item := Find(APath[i]);
-    if item = nil
-    then begin
-      FCount := 0;
-      Exit;
-    end;
-    Init(Item^.Value);
-  end;
-end;
-
-function TGDBMINameValueList.IndexOf(const AName: string): Integer;
-var
-  len: Integer;
-begin
-  len := Length(AName);
-  Result := 0;
-  while Result < FCount do begin
-    if (FIndex[Result].Name.Len = len)
-    and (strlcomp(FIndex[Result].Name.Ptr, PChar(AName), len) = 0)
-    then exit;
-    inc(Result);
-  end;
-  Result := -1;
 end;
 
 
@@ -8545,11 +8186,12 @@ begin
   Result := UTF8Encode(WStr);
 end;
 
-function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String; FullTypeInfo: Boolean = False): TGDBType;
+function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String;
+  FullTypeInfo: Boolean = False; AFlags: TGDBTypeCreationFlags = [];
+  AFormat: TWatchDisplayFormat = wdfDefault): TGDBType;
 var
   R: TGDBMIExecResult;
   f: Boolean;
-  flags: TGDBTypeCreationFlags;
   AReq: PGDBPTypeRequest;
 begin
   (*   Analyze what type is in AExpression
@@ -8614,20 +8256,30 @@ begin
 
   *)
 
-  flags := [];
   if tfClassIsPointer in TargetInfo^.TargetFlags
-  then flags := [gtcfClassIsPointer];
+  then AFlags := AFlags + [gtcfClassIsPointer];
   if FullTypeInfo
-  then flags := [gtcfFullTypeInfo];
-  Result := TGdbType.CreateForExpression(AExpression, flags);
+  then AFlags := AFlags + [gtcfFullTypeInfo];
+  Result := TGdbType.CreateForExpression(AExpression, AFlags);
   while not Result.ProcessExpression do begin
     if Result.EvalError
     then break;
     AReq := Result.EvalRequest;
-    while AReq <> nil do begin;
+    while AReq <> nil do begin
+      if (dcsCanceled in SeenStates) then begin
+        FreeAndNil(Result);
+        exit;
+      end;
+
       f :=  ExecuteCommand(AReq^.Request, R);
-      if f and (R.State <> dsError) then
-        AReq^.Result := ParseTypeFromGdb(R.Values)
+      if f and (R.State <> dsError) then begin
+        if AReq^.ReqType = gcrtPType
+        then AReq^.Result := ParseTypeFromGdb(R.Values)
+        else begin
+          AReq^.Result.GdbDescription := R.Values;
+          AReq^.Result.Kind := ptprkSimple;
+        end;
+      end
       else
         AReq^.Error := R.Values;
       AReq := AReq^.Next;
@@ -10013,7 +9665,10 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
       else // wdfDefault
         begin
           Result := False;
-          FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags);
+          FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags, [gtcfExprEvaluate], FDisplayFormat);
+          if (dcsCanceled in SeenStates)
+          then exit;
+
           if FTypeInfo = nil
           then begin
             ResultList := TGDBMINameValueList.Create(LastExecResult.Values);
@@ -10021,39 +9676,16 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
             FreeAndNil(ResultList);
             exit;
           end;
-
-          if (dcsCanceled in SeenStates)
-          then exit;
-
-          if (saInternalPointer in FTypeInfo.Attributes)
-          then begin
-            Result := ExecuteCommand('-data-evaluate-expression %s%s', [AnExpression, '^'], R);
-            Result := Result and (R.State <> dsError);
+          if FTypeInfo.HasExprEvaluatedAsText then begin
+            FTextValue := FTypeInfo.ExprEvaluatedAsText;
+            FTextValue := DeleteEscapeChars(FTextValue);
+            Result := True;
+            FixUpResult(AnExpression, FTypeInfo);
+            exit;
           end;
 
-          if (not Result)
-          and (saRefParam in FTypeInfo.Attributes) and (FTypeInfo.InternalTypeName <> '')
-          then begin
-            Result := ExecuteCommand('-data-evaluate-expression %s(%s)', [FTypeInfo.InternalTypeName, AnExpression], R);
-            Result := Result and (R.State <> dsError);
-          end;
-
-          if (not Result)
-          then Result := ExecuteCommand('-data-evaluate-expression %s', [AnExpression], R);
-          Result := Result and (R.State <> dsError);
-
-          if (not Result) and (not StoreError)
-          then exit;
-
-          ResultList := TGDBMINameValueList.Create(R.Values);
-          if Result
-          then FTextValue := ResultList.Values['value']
-          else FTextValue := ResultList.Values['msg'];
-          FTextValue := DeleteEscapeChars(FTextValue);
-          ResultList.Free;
-
-          if Result
-          then FixUpResult(AnExpression, FTypeInfo);
+          debugln('############# Not expected to be here');
+          FTextValue := 'ERROR';
         end;
     end;
     {$IFDEF DBG_WITH_TIMEOUT}

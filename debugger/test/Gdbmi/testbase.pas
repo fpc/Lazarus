@@ -169,18 +169,27 @@ type
   TGDBTestCase = class(TTestCase)
   private
     FParent: TGDBTestsuite;
-    FTestErrors, FIgnoredErrors: String;
+    FTestErrors, FIgnoredErrors, FUnexpectedSuccess: String;
+    FCurrentPrgName, FCurrentExename: String;
+    FLogFile: TextFile;
     function GetCompilerInfo: TCompilerInfo;
     function GetDebuggerInfo: TDebuggerInfo;
     function GetSymbolType: TSymbolType;
   protected
+    function GetLogActive: Boolean;
+    procedure SetUp; override;
+    procedure TearDown; override;
+    procedure DoDbgOutPut(Sender: TObject; const AText: String);
     function StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
     procedure ClearTestErrors;
     procedure AddTestError(s: string; MinGdbVers: Integer = 0);
-    procedure TestEquals(Expected, Got: string);
-    procedure TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0);
-    procedure TestEquals(Expected, Got: integer);
-    procedure TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0);
+    procedure AddTestSuccess(s: string; MinGdbVers: Integer = 0);
+    function TestEquals(Expected, Got: string): Boolean;
+    function TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0): Boolean;
+    function TestEquals(Expected, Got: integer): Boolean;
+    function TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0): Boolean;
+    function TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer = 0): Boolean;
+    function TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer = 0): Boolean;
     procedure AssertTestErrors;
     property TestErrors: string read FTestErrors;
   public
@@ -201,6 +210,8 @@ procedure RegisterDbgTest(ATestClass: TTestCaseClass);
 var
   AppDir: String;
   ConfDir: String;
+  Logdir: String;
+  WriteLog: Boolean;
 
 implementation
 
@@ -257,6 +268,13 @@ end;
 
 { TGDBTestCase }
 
+procedure TGDBTestCase.DoDbgOutPut(Sender: TObject; const AText: String);
+begin
+  if GetLogActive then begin
+    writeln(FLogFile, AText);
+  end;
+end;
+
 function TGDBTestCase.GetCompilerInfo: TCompilerInfo;
 begin
   Result := Parent.CompilerInfo;
@@ -272,6 +290,44 @@ begin
   Result := Parent.SymbolType;
 end;
 
+function TGDBTestCase.GetLogActive: Boolean;
+begin
+  Result := WriteLog;
+end;
+
+procedure TGDBTestCase.SetUp;
+var
+  name: String;
+  i: Integer;
+  dir: String;
+begin
+  if GetLogActive then begin
+    name := TestName
+      + '_' + GetCompilerInfo.Name
+      + '_' + SymbolTypeNames[GetSymbolType]
+      + '_' + GetDebuggerInfo.Name
+      + '.log';
+    dir := ConfDir;
+    if DirectoryExistsUTF8(Logdir) then
+      dir := Logdir;
+
+    for i := 1 to length(name) do
+      if name[i] in ['/', '\', '*', '?', ':'] then
+        name[i] := '_';
+    AssignFile(FLogFile, Dir +  name);
+    Rewrite(FLogFile);
+  end;
+  inherited SetUp;
+end;
+
+procedure TGDBTestCase.TearDown;
+begin
+  inherited TearDown;
+  if GetLogActive then begin
+    CloseFile(FLogFile);
+  end;
+end;
+
 function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
 begin
   Result := TGDBMIDebugger.Create(DebuggerInfo.ExeName);
@@ -282,6 +338,7 @@ begin
   Result.FileName   := TestExeName;
   Result.Arguments := '';
   Result.ShowConsole := True;
+  Result.OnDbgOutput  := @DoDbgOutPut;
 end;
 
 procedure TGDBTestCase.ClearTestErrors;
@@ -306,32 +363,59 @@ begin
     FTestErrors := FTestErrors + s + LineEnding;
 end;
 
-procedure TGDBTestCase.TestEquals(Expected, Got: string);
+procedure TGDBTestCase.AddTestSuccess(s: string; MinGdbVers: Integer);
+var
+  i: Integer;
 begin
-  try     AssertEquals(Expected, Got);
-  except  on e: exception do AddTestError(e.Message);
+  if MinGdbVers > 0 then begin
+    i := GetDebuggerInfo.Version;
+    if (i > 0) and (i < MinGdbVers) then
+      FUnexpectedSuccess := FUnexpectedSuccess + s
+        + 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers)
+        + LineEnding;
   end;
 end;
 
-procedure TGDBTestCase.TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0);
+function TGDBTestCase.TestEquals(Expected, Got: string): Boolean;
 begin
-  try     AssertEquals(Name, Expected, Got);
-  except  on e: exception do AddTestError(e.Message, MinGdbVers);
-  end;
+  Result := TestEquals('', Expected, Got);
 end;
 
-procedure TGDBTestCase.TestEquals(Expected, Got: integer);
+function TGDBTestCase.TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0): Boolean;
 begin
-  try     AssertEquals(Expected, Got);
-  except  on e: exception do AddTestError(e.Message);
-  end;
+  Result :=  Got = Expected;
+  if Result
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+Got+'"', MinGdbVers)
+  else AddTestError(Name + ': Expected "'+Expected+'", Got "'+Got+'"', MinGdbVers);
 end;
 
-procedure TGDBTestCase.TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0);
+function TGDBTestCase.TestEquals(Expected, Got: integer): Boolean;
 begin
-  try     AssertEquals(Name, Expected, Got);
-  except  on e: exception do AddTestError(e.Message, MinGdbVers);
-  end;
+  Result := TestEquals('', Expected, Got);
+end;
+
+function TGDBTestCase.TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0): Boolean;
+begin
+  Result :=  Got = Expected;
+  if Result
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+IntToStr(Got)+'"', MinGdbVers)
+  else AddTestError(Name + ': Expected "'+IntToStr(Expected)+'", Got "'+IntToStr(Got)+'"', MinGdbVers);
+end;
+
+function TGDBTestCase.TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer): Boolean;
+begin
+  Result := Got;
+  if Result
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "True"', MinGdbVers)
+  else AddTestError(Name + ': Expected "True", Got "False"', MinGdbVers);
+end;
+
+function TGDBTestCase.TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer): Boolean;
+begin
+  Result := not Got;
+  if Result
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "False"', MinGdbVers)
+  else AddTestError(Name + ': Expected "False", Got "True"', MinGdbVers);
 end;
 
 procedure TGDBTestCase.AssertTestErrors;
@@ -340,13 +424,29 @@ var
 begin
   s := FTestErrors;
   FTestErrors := '';
-  if s <> '' then Fail(s);
+  if GetLogActive then begin
+    writeln(FLogFile, '================= Failed:'+LineEnding);
+    writeln(FLogFile, s);
+    writeln(FLogFile, '================= Ignored'+LineEnding);
+    writeln(FLogFile, FIgnoredErrors);
+    writeln(FLogFile, '================= Unexpected Success'+LineEnding);
+    writeln(FLogFile, FUnexpectedSuccess);
+    writeln(FLogFile, '================='+LineEnding);
+  end;
+  if s <> '' then begin
+    Fail(s);
+  end;
 end;
 
 procedure TGDBTestCase.TestCompile(const PrgName: string; out ExeName: string;
   NamePostFix: String=''; ExtraArgs: String='');
 begin
+  if GetLogActive then begin
+    writeln(FLogFile, LineEnding+LineEnding+'******************* compile '+PrgName + ' ' + ExtraArgs +LineEnding);
+  end;
   Parent.TestCompile(PrgName, ExeName, NamePostFix, ExtraArgs);
+  FCurrentPrgName := PrgName;
+  FCurrentExename := ExeName;
 end;
 
 { TBaseList }
@@ -758,6 +858,7 @@ initialization
   end;
   ConfDir := AppDir;
   AppDir := AppendPathDelim(AppDir + 'TestApps');
+
 
   EnvironmentOptions := TEnvironmentOptions.Create;
   with EnvironmentOptions do

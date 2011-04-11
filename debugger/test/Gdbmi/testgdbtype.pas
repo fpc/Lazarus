@@ -10,6 +10,8 @@ uses
 type
 
   TTestGdbType = class(TTestCase)
+  private
+    FIgnoreBaseDeclaration: Boolean;
   published
     procedure TestPTypeParser;
   end; 
@@ -35,6 +37,8 @@ const
           0: Result := Result + 'ptprfParamByRef, ';
           1: Result := Result + 'ptprfPointer, ';
           2: Result := Result + 'ptprfNoStructure, ';
+          3: Result := Result + 'ptprfDynArray, ';
+          4: Result := Result + 'ptprNoBounds, ';
           else Result := Result + IntToStr(ord(i)) + ', ';
         end
     end;
@@ -43,20 +47,36 @@ const
   procedure CheckResult(TestName: string; TestRes: TGDBPTypeResult;
     ExpKind: TGDBPTypeResultKind;
     ExpHasFlags, ExpIgnoreFlags: TGDBPTypeResultFlags;
-    ExpName, ExpDecl: string);
+    ExpName, ExpDecl: string;
+    ExpSubName: String = '';
+    ExpLow: String = '';
+    ExpHigh: String = '';
+    ExpBaseDecl: String = ''
+    );
   begin
     AssertEquals(TestName + ' Kind',          KindNames[ExpKind], KindNames[TestRes.Kind]);
     AssertEquals(TestName + ' Has Flags',     FlagsToString(ExpHasFlags), FlagsToString(TestRes.Flags * (AllFlags - ExpIgnoreFlags)));
     AssertEquals(TestName + ' Name',          ExpName, PCLenToString(TestRes.Name));
+    AssertEquals(TestName + ' SubName',       ExpSubName, PCLenToString(TestRes.SubName));
     AssertEquals(TestName + ' Decl',          ExpDecl, PCLenToString(TestRes.Declaration));
+    AssertEquals(TestName + ' Low',           ExpLow, PCLenToString(TestRes.BoundLow));
+    AssertEquals(TestName + ' High',          ExpHigh, PCLenToString(TestRes.BoundHigh));
     while (ExpName <> '') and (ExpName[1] in ['^', '&']) do Delete(ExpName, 1, 1);
+    while (ExpSubName <> '') and (ExpSubName[1] in ['^', '&']) do Delete(ExpSubName, 1, 1);
+    while (ExpDecl <> '') and (ExpDecl[1] in ['(', '^', '&']) do Delete(ExpDecl, 1, 1);
+    while (ExpDecl <> '') and (ExpDecl[length(ExpDecl)] in [')']) do Delete(ExpDecl, length(ExpDecl), 1);
     AssertEquals(TestName + ' BaseName',      ExpName, PCLenToString(TestRes.BaseName));
+    AssertEquals(TestName + ' BaseSubName',   ExpSubName, PCLenToString(TestRes.BaseSubName));
+    if FIgnoreBaseDeclaration then exit;
+    if ExpBaseDecl <> '' then ExpDecl := ExpBaseDecl;
+    AssertEquals(TestName + ' BaseDecl',      ExpDecl, PCLenToString(TestRes.BaseDeclaration));
   end;
 
 var
   R: TGDBPTypeResult;
 begin
   (* Test with data captured from gdb *)
+  FIgnoreBaseDeclaration := true;
 
   // dummy data
   R := ParseTypeFromGdb('type = char');
@@ -93,57 +113,92 @@ begin
 
 
   (* array *)
+  FIgnoreBaseDeclaration := False;
 
   // <whatis VarDynIntArrayA>        type = array [0..-1] of LONGINT
   r := ParseTypeFromGdb('type = array [0..-1] of LONGINT'+LN);
-  CheckResult('type = array [0..-1] of LONGINT', R, ptprkArray, [], [], '', 'array [0..-1] of LONGINT');
+  CheckResult('type = array [0..-1] of LONGINT', R, ptprkArray, [ptprfDynArray], [],
+              '', 'array [0..-1] of LONGINT', 'LONGINT', '0', '-1');
+
+  r := ParseTypeFromGdb('type = array [0..0] of LONGINT'+LN);
+  CheckResult('type = array [0..0] of LONGINT', R, ptprkArray, [], [], '',
+              'array [0..0] of LONGINT', 'LONGINT', '0', '0');
+
+  r := ParseTypeFromGdb('type = array [0..2] of LONGINT'+LN);
+  CheckResult('type = array [0..2] of LONGINT', R, ptprkArray, [], [], '',
+              'array [0..2] of LONGINT', 'LONGINT', '0', '2');
+
+  r := ParseTypeFromGdb('type = array [2..2] of TFOO'+LN);
+  CheckResult('type = array [2..2] of TFOO', R, ptprkArray, [], [], '',
+              'array [2..2] of TFOO', 'TFOO', '2', '2');
+
+  r := ParseTypeFromGdb('type = array of LONGINT'+LN);
+  CheckResult('type = array of LONGINT', R, ptprkArray, [ptprfDynArray, ptprfNoBounds], [], '',
+              'array of LONGINT', 'LONGINT', '', '');
 
   // <whatis VarDynIntArrayA>        type = ^(array [0..-1] of LONGINT)
   r := ParseTypeFromGdb('type = ^(array [0..-1] of LONGINT)'+LN);
-  CheckResult('type = ^(array [0..-1] of LONGINT)', R, ptprkArray, [ptprfPointer], [], '', '^(array [0..-1] of LONGINT)');
+  CheckResult('type = ^(array [0..-1] of LONGINT)', R, ptprkArray, [ptprfPointer, ptprfDynArray], [],
+              '', '^(array [0..-1] of LONGINT)', 'LONGINT', '0', '-1');
+
+  r := ParseTypeFromGdb('type = ^(array [0..1] of LONGINT)'+LN);
+  CheckResult('type = ^(array [0..1] of LONGINT)', R, ptprkArray, [ptprfPointer], [], '',
+              '^(array [0..1] of LONGINT)', 'LONGINT', '0', '1');
+
+  r := ParseTypeFromGdb('type = ^(array of LONGINT)'+LN);
+  CheckResult('type = ^(array of )', R, ptprkArray, [ptprfPointer, ptprfDynArray, ptprfNoBounds], [],
+              '', '^(array of LONGINT)', 'LONGINT', '', '');
 
 
   (* enum *)
 
   // <whatis ArgEnum>      type = TENUM  = (ONE, TWO, THREE)
   r := ParseTypeFromGdb('type = TENUM  = (ONE, TWO, THREE)'+LN);
-  CheckResult('type = TENUM  = (ONE, TWO, THREE)', R, ptprkEnum, [], [], 'TENUM', '(ONE, TWO, THREE)');
+  CheckResult('type = TENUM  = (ONE, TWO, THREE)', R, ptprkEnum, [], [],
+              'TENUM', '(ONE, TWO, THREE)', '', '' ,'', '(ONE, TWO, THREE)');
 
   // <whatis ArgEnum>      type = ^TENUM  = (ONE, TWO, THREE)
   r := ParseTypeFromGdb('type = ^TENUM  = (ONE, TWO, THREE)'+LN);
-  CheckResult('type = ^TENUM  = (ONE, TWO, THREE)', R, ptprkEnum, [ptprfPointer], [], '^TENUM', '(ONE, TWO, THREE)');
+  CheckResult('type = ^TENUM  = (ONE, TWO, THREE)', R, ptprkEnum, [ptprfPointer], [],
+              '^TENUM', '(ONE, TWO, THREE)', '', '' ,'', '(ONE, TWO, THREE)');
 
   // <whatis VarEnumA>     type =  = (E1, E2, E3)
   r := ParseTypeFromGdb('type =  = (E1, E2, E3)'+LN);
-  CheckResult('type =  = (E1, E2, E3)', R, ptprkEnum, [], [], '', '(E1, E2, E3)');
+  CheckResult('type =  = (E1, E2, E3)', R, ptprkEnum, [], [],
+              '', '(E1, E2, E3)', '', '' ,'', '(E1, E2, E3)');
 
   // <whatis VarEnumA>     type = ^ = (E1, E2, E3)
   r := ParseTypeFromGdb('type = ^ = (E1, E2, E3)'+LN);
-  CheckResult('type = ^ = (E1, E2, E3)', R, ptprkEnum, [ptprfPointer], [], '', '(E1, E2, E3)');
+  CheckResult('type = ^ = (E1, E2, E3)', R, ptprkEnum, [ptprfPointer], [],
+              '', '(E1, E2, E3)', '', '' ,'', '(E1, E2, E3)');
 
 
   (* set *)
 
   // type = set of TENUM
   r := ParseTypeFromGdb('type = set of TENUM'+LN);
-  CheckResult('type = set of TENUM', R, ptprkSet, [], [], '', 'set of TENUM');
+  CheckResult('type = set of TENUM', R, ptprkSet, [], [], '', 'set of TENUM', 'TENUM');
   // type = ^set of TENUM
   r := ParseTypeFromGdb('type = ^set of TENUM'+LN);
-  CheckResult('type = ^set of TENUM', R, ptprkSet, [ptprfPointer], [], '', '^set of TENUM');
+  CheckResult('type = ^set of TENUM', R, ptprkSet, [ptprfPointer], [], '', '^set of TENUM', 'TENUM');
 
   // type = set of  = (...)
   r := ParseTypeFromGdb('type = set of  = (...)'+LN);
-  CheckResult('type = set of  = (...)', R, ptprkSet, [], [], '', 'set of  = (...)');
+  CheckResult('type = set of  = (...)', R, ptprkSet, [], [],
+              '', 'set of  = (...)', '(...)', '', '', 'set of  = (...)');
   // type = ^set of  = (...)
   r := ParseTypeFromGdb('type = ^set of  = (...)'+LN);
-  CheckResult('type = ^set of  = (...)', R, ptprkSet, [ptprfPointer], [], '', '^set of  = (...)');
+  CheckResult('type = ^set of  = (...)', R, ptprkSet, [ptprfPointer], [],
+              '', '^set of  = (...)', '(...)', '', '', 'set of  = (...)');
 
   // type = set of  = (ALPHA, BETA, GAMMA)
   r := ParseTypeFromGdb('type = set of  = (ALPHA, BETA, GAMMA)'+LN);
-  CheckResult('type = set of  = (ALPHA, BETA, GAMMA)', R, ptprkSet, [], [], '', 'set of  = (ALPHA, BETA, GAMMA)');
+  CheckResult('type = set of  = (ALPHA, BETA, GAMMA)', R, ptprkSet, [], [],
+              '', 'set of  = (ALPHA, BETA, GAMMA)', '(ALPHA, BETA, GAMMA)', '', '', 'set of  = (ALPHA, BETA, GAMMA)');
   // type = ^set of  = (ALPHA, BETA, GAMMA)
   r := ParseTypeFromGdb('type = ^set of  = (ALPHA, BETA, GAMMA)'+LN);
-  CheckResult('type = ^set of  = (ALPHA, BETA, GAMMA)', R, ptprkSet, [ptprfPointer], [], '', '^set of  = (ALPHA, BETA, GAMMA)');
+  CheckResult('type = ^set of  = (ALPHA, BETA, GAMMA)', R, ptprkSet, [ptprfPointer], [],
+              '', '^set of  = (ALPHA, BETA, GAMMA)', '(ALPHA, BETA, GAMMA)', '', '', 'set of  = (ALPHA, BETA, GAMMA)');
 
   // type = <invalid unnamed pascal type code 8>   ## Dwarf no sets
   r := ParseTypeFromGdb('type = <invalid unnamed pascal type code 8>'+LN);
@@ -154,19 +209,20 @@ begin
 
   // 'type = set of ONE..THREE'+LN   ## Dwarf gdb 7.0
   r := ParseTypeFromGdb('type = set of ONE..THREE'+LN);
-  CheckResult('type = set of ONE..THREE'+LN, R, ptprkSet, [], [], '', 'set of ONE..THREE');
+  CheckResult('type = set of ONE..THREE'+LN, R, ptprkSet, [], [], '', 'set of ONE..THREE', 'ONE..THREE');
   // 'type = ^set of ONE..THREE'+LN
   r := ParseTypeFromGdb('type = ^set of ONE..THREE'+LN);
-  CheckResult('type = ^set of ONE..THREE'+LN, R, ptprkSet, [ptprfPointer], [], '', '^set of ONE..THREE');
+  CheckResult('type = ^set of ONE..THREE'+LN, R, ptprkSet, [ptprfPointer], [], '', '^set of ONE..THREE', 'ONE..THREE');
   // 'type = &set of ONE..THREE'+LN
   r := ParseTypeFromGdb('type = &set of ONE..THREE'+LN);
-  CheckResult('type = &set of ONE..THREE'+LN, R, ptprkSet, [ptprfParamByRef], [], '', '&set of ONE..THREE');
+  CheckResult('type = &set of ONE..THREE'+LN, R, ptprkSet, [ptprfParamByRef], [], '', '&set of ONE..THREE', 'ONE..THREE');
   // 'type = ^&set of ONE..THREE'+LN
   r := ParseTypeFromGdb('type = ^&set of ONE..THREE'+LN);
-  CheckResult('type = ^&set of ONE..THREE'+LN, R, ptprkSet, [ptprfPointer, ptprfParamByRef], [], '', '^&set of ONE..THREE');
+  CheckResult('type = ^&set of ONE..THREE'+LN, R, ptprkSet, [ptprfPointer, ptprfParamByRef], [], '', '^&set of ONE..THREE', 'ONE..THREE');
 
 
   (* record *)
+  FIgnoreBaseDeclaration := true;
 
   // type = TREC = record
   r := ParseTypeFromGdb('type = TREC = record '+LN + '    VALINT : LONGINT;'+LN + '    VALFOO : TFOO;'+LN + 'end'+LN);
