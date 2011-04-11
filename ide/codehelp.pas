@@ -305,7 +305,7 @@ type
     function GetHTMLHint2(Code: TCodeBuffer; X, Y: integer; Options: TCodeHelpHintOptions;
                      out BaseURL, HTMLHint: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
-    function GetPasDocCommentsAsHTML(Tool: TCodeTool; Node: TCodeTreeNode): string;
+    function GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool; Node: TCodeTreeNode): string;
     function GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
     function TextToHTML(Txt: string): string;
     function CreateElement(Code: TCodeBuffer; X, Y: integer;
@@ -2420,6 +2420,8 @@ begin
       HTMLHint:=HTMLHint+SourcePosToFPDocHint(XYPos);
 
       ElementName:=CodeNodeToElementName(CTTool,CTNode);
+
+      // add fpdoc entry
       // ToDo: check if ElementName already added (can happen on forward definitions)
       FPDocFilename:=GetFPDocFilenameForSource(CTTool.MainFilename,
                                                false,CacheWasUsed,AnOwner);
@@ -2439,6 +2441,10 @@ begin
         end;
       end;
 
+      // add pasdoc
+      HTMLHint:=HTMLHint+GetPasDocCommentsAsHTML(CTTool,CTNode);
+
+      // find inherited node
 
     except
       on E: Exception do begin
@@ -2453,7 +2459,7 @@ begin
   Result:=chprSuccess;
 end;
 
-function TCodeHelpManager.GetPasDocCommentsAsHTML(Tool: TCodeTool;
+function TCodeHelpManager.GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool;
   Node: TCodeTreeNode): string;
 var
   ListOfPCodeXYPosition: TFPList;
@@ -2497,18 +2503,12 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
   function AddChilds(Node: TDOMNode): string;
   var
     Child: TDOMNode;
-    Element: TDOMElement;
   begin
     Result:='';
-    if Node is TDOMElement then begin
-      Element:=TDOMElement(Node);
-
-    end else begin
-      Child:=Node.FirstChild;
-      while Child<>nil do begin
-        Result:=Result+NodeToHTML(Child);
-        Child:=Child.NextSibling;
-      end;
+    Child:=Node.FirstChild;
+    while Child<>nil do begin
+      Result:=Result+NodeToHTML(Child);
+      Child:=Child.NextSibling;
     end;
   end;
 
@@ -2518,11 +2518,12 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
   begin
     Result:='';
     if Node=nil then exit;
+    debugln(['NodeToHTML ',DbgSName(Node)]);
     if (Node.NodeName='short')
     or (Node.NodeName='descr') then begin
       s:=AddChilds(Node);
       if s<>'' then
-        Result:=Result+'<div class="'+Node.NodeName+'">'+AddChilds(Node)+'</div>';
+        Result:=Result+'<div class="'+Node.NodeName+'">'+s+'</div>';
     end else begin
       debugln(['Traverse ',Node.NodeName]);
     end;
