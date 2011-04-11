@@ -168,6 +168,7 @@ var
     Details: TThemedElementDetails;
     ShowAccel: Boolean;
     Color: TColor;
+    PaintParams: TBP_PaintParams;
   begin
     glyphWidth := srcWidth;
     glyphHeight := srcHeight;
@@ -179,7 +180,12 @@ var
 
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
     if UseThemes and AlphaDraw then
-      PaintBuffer := BeginBufferedPaint(hdcNewBitmap, @BitmapRect, BPBF_COMPOSITED, nil, TmpDC)
+    begin
+      FillChar(PaintParams, SizeOf(PaintParams), 0);
+      PaintParams.cbSize := SizeOf(PaintParams);
+      PaintParams.dwFlags := BPPF_ERASE;
+      PaintBuffer := BeginBufferedPaint(hdcNewBitmap, @BitmapRect, BPBF_COMPOSITED, @PaintParams, TmpDC);
+    end
     else
     begin
       TmpDC := hdcNewBitmap;
@@ -191,9 +197,7 @@ var
     // clear background:
     // for alpha bitmap clear it with $00000000 else make it solid color for
     // further masking
-    if PaintBuffer <> 0 then
-      BufferedPaintClear(PaintBuffer, nil)
-    else
+    if PaintBuffer = 0 then
     begin
       Windows.FillRect(TmpDC, BitmapRect, GetSysColorBrush(COLOR_BTNFACE));
       Color := BitBtn.Font.Color;
