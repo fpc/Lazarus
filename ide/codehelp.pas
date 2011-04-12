@@ -2390,6 +2390,8 @@ var
   FPDocFile: TLazFPDocFile;
   Complete: boolean;
   ElementNode: TDOMNode;
+  ElementNames: TStringList;
+  i: Integer;
 begin
   Result:=chprFailed;
   BaseURL:='lazdoc://';
@@ -2401,6 +2403,7 @@ begin
   CursorPos.Code:=Code;
   ListOfPCodeXYPosition:=nil;
   Complete:=not (chhoSmallStep in Options);
+  ElementNames:=TStringList.Create;
   try
     try
       // find declaration
@@ -2419,33 +2422,56 @@ begin
         CTTool.CleanPosToCaret(CTNode.StartPos,XYPos);
       HTMLHint:=HTMLHint+SourcePosToFPDocHint(XYPos);
 
-      ElementName:=CodeNodeToElementName(CTTool,CTNode);
+      repeat
+        ElementName:=CodeNodeToElementName(CTTool,CTNode);
+        i:=ElementNames.Count-1;
+        while (i>=0) and (ElementNames.Objects[i]<>CTTool)
+        and (SysUtils.CompareText(ElementNames[i],ElementName)<>0) do
+          dec(i);
+        if i>=0 then begin
+          // a loop or a forward definition
+          if ElementNames.Count>16 then break;
+        end else begin
+          ElementNames.AddObject(ElementName,CTTool);
 
-      // add fpdoc entry
-      // ToDo: check if ElementName already added (can happen on forward definitions)
-      FPDocFilename:=GetFPDocFilenameForSource(CTTool.MainFilename,
-                                               false,CacheWasUsed,AnOwner);
-      DebugLn(['TCodeHelpManager.GetHTMLHint2 FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
-      if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
+          // add fpdoc entry
+          // ToDo: check if ElementName already added (can happen on forward definitions)
+          FPDocFilename:=GetFPDocFilenameForSource(CTTool.MainFilename,
+                                                   false,CacheWasUsed,AnOwner);
+          DebugLn(['TCodeHelpManager.GetHTMLHint2 FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
+          if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
-      if FPDocFilename<>'' then begin
-        // load FPDoc file
-        LoadFPDocFile(FPDocFilename,[chofUpdateFromDisk],FPDocFile,CacheWasUsed);
-        if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
+          if FPDocFilename<>'' then begin
+            // load FPDoc file
+            LoadFPDocFile(FPDocFilename,[chofUpdateFromDisk],FPDocFile,CacheWasUsed);
+            if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
-        ElementNode:=FPDocFile.GetElementWithName(ElementName);
-        if ElementNode<>nil then begin
-          debugln(['TCodeHelpManager.GetHTMLHint2 fpdoc element found "',ElementName,'"']);
-          HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(ElementNode.FindNode(FPDocItemNames[fpdiShort]));
-          HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(ElementNode.FindNode(FPDocItemNames[fpdiDescription]));
+            ElementNode:=FPDocFile.GetElementWithName(ElementName);
+            if ElementNode<>nil then begin
+              debugln(['TCodeHelpManager.GetHTMLHint2 fpdoc element found "',ElementName,'"']);
+              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(ElementNode.FindNode(FPDocItemNames[fpdiShort]));
+              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(ElementNode.FindNode(FPDocItemNames[fpdiDescription]));
+            end;
+          end;
+
+          // add pasdoc
+          HTMLHint:=HTMLHint+GetPasDocCommentsAsHTML(CTTool,CTNode);
         end;
-      end;
 
-      // add pasdoc
-      HTMLHint:=HTMLHint+GetPasDocCommentsAsHTML(CTTool,CTNode);
+        // find inherited node
+        if (CTNode.Desc in [ctnProperty])
+        or ((CTNode.Desc in [ctnProcedure,ctnProcedureHead])
+            and (CTTool.ProcNodeHasSpecifier(CTNode,psOVERRIDE)))
+        then begin
+          debugln(['TCodeHelpManager.GetHTMLHint2 TODO: search inherited for ',CTNode.DescAsString]);
 
-      // find inherited node
+          break;
+        end else begin
+          debugln(['TCodeHelpManager.GetHTMLHint2 not searching inherited for ',CTNode.DescAsString]);
+          break;
+        end;
 
+      until false;
     except
       on E: Exception do begin
         debugln(['TCodeHelpManager.GetHTMLHint2 ',E.Message]);
@@ -2453,6 +2479,7 @@ begin
     end;
 
   finally
+    ElementNames.Free;
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
   end;
   debugln(['TCodeHelpManager.GetHTMLHint2 ',HTMLHint]);

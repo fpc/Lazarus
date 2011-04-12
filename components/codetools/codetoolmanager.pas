@@ -210,7 +210,7 @@ type
     property OnSearchUsedUnit: TOnSearchUsedUnit
                                  read FOnSearchUsedUnit write FOnSearchUsedUnit;
 
-    // initializing single codetools
+    // initializing single codetool
     function GetCodeToolForSource(Code: TCodeBuffer;
                       GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
@@ -220,14 +220,13 @@ type
     function InitResourceTool: boolean;
     procedure ClearPositions;
 
-    // initializing single compilerdirectivestrees
+    // initializing single compilerdirectivestree
     function GetDirectivesToolForSource(Code: TCodeBuffer;
                             ExceptionOnError: boolean): TCompilerDirectivesTree;
     property CurDirectivesTool: TDirectivesTool read FCurDirectivesTool;
     procedure ClearCurDirectivesTool;
     function InitCurDirectivesTool(Code: TCodeBuffer): boolean;
-    function FindDirectivesToolForSource(Code: TCodeBuffer
-                                        ): TDirectivesTool;
+    function FindDirectivesToolForSource(Code: TCodeBuffer): TDirectivesTool;
 
     // exception handling
     procedure ClearError;
@@ -302,7 +301,7 @@ type
                                       UseCache: boolean = false): string;
     function FindUnitInUnitSet(const Directory, AUnitName: string): string;
     function GetUnitSetIDForDirectory(const Directory: string;
-                                    UseCache: boolean = false): string;
+                                      UseCache: boolean = false): string;
     function GetFPCUnitPathForDirectory(const Directory: string;
                                         UseCache: boolean = false): string;// unit paths reported by FPC
     procedure GetFPCVersionForDirectory(const Directory: string;
