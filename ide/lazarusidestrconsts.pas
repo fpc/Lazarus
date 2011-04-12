@@ -4556,9 +4556,8 @@ resourcestring
   lisIgnoreAndContinue = 'Ignore and continue';
   lisNotImplemented = 'Not implemented';
   lisNotImplementedYet = 'Not implemented yet:%s%s';
-  lisOpenFile2 = 'Open File ...';
-  lisMovePage = 'Move Page ...';
-  lisFileSettings = 'File Settings ...';
+  lisMovePage = 'Move Page';
+  lisFileSettings = 'File Settings';
 
   // Debugger Dialogs
   lisDbgWinPower = 'On/Off';

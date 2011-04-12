@@ -1318,7 +1318,7 @@ begin
 
     {%region * Move Page (left/right) *}
       SrcEditSubMenuMovePage :=
-        RegisterIDESubMenu(SrcEditMenuSectionPages, 'Move Page ...', lisMovePage);
+        RegisterIDESubMenu(SrcEditMenuSectionPages, 'Move Page', lisMovePage);
       AParent:=SrcEditSubMenuMovePage;
 
       SrcEditMenuMoveEditorLeft := RegisterIDEMenuCommand
@@ -1332,8 +1332,8 @@ begin
     {%endregion}
 
     {%region * sub menu Open File *}
-      SrcEditSubMenuOpenFile:=RegisterIDESubMenu
-          (SrcEditMenuSectionPages, 'Open File ...', lisOpenFile2);
+      SrcEditSubMenuOpenFile :=
+        RegisterIDESubMenu(SrcEditMenuSectionPages, 'Open File', lisOpenFile);
       AParent:=SrcEditSubMenuOpenFile;
 
       SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand
