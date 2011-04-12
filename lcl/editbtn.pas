@@ -506,7 +506,7 @@ procedure Register;
 implementation
 
 
-{ TEditBtn }
+{ TCustomEditButton }
 
 constructor TCustomEditButton.Create(AOwner: TComponent);
 var
