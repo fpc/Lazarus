@@ -236,6 +236,25 @@ type
     procedure mnuSearchProcedureList(Sender: TObject);
     procedure mnuSetFreeBookmark(Sender: TObject);
 
+    // view menu
+    procedure mnuViewInspectorClicked(Sender: TObject);
+    procedure mnuViewSourceEditorClicked(Sender: TObject);
+    procedure mnuViewUnitDependenciesClicked(Sender: TObject);
+    procedure mnuViewUnitInfoClicked(Sender: TObject);
+    procedure mnuViewFPDocEditorClicked(Sender: TObject);
+    procedure mnuViewCodeExplorerClick(Sender: TObject);
+    procedure mnuViewCodeBrowserClick(Sender: TObject);
+    procedure mnuViewComponentsClick(Sender: TObject);
+    procedure mnuViewRestrictionBrowserClick(Sender: TObject);
+    procedure mnuViewMessagesClick(Sender: TObject);
+    procedure mnuViewSearchResultsClick(Sender: TObject);
+    procedure mnuToggleFormUnitClicked(Sender: TObject);
+    procedure mnuViewAnchorEditorClicked(Sender: TObject);
+    procedure mnuViewComponentPaletteClicked(Sender: TObject);
+    procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
+    procedure mnuViewFPCInfoClicked(Sender: TObject);
+    procedure mnuViewIDEInfoClicked(Sender: TObject);
+
     // source menu
     procedure mnuSourceClicked(Sender: TObject);
     procedure mnuSourceCommentBlockClicked(Sender: TObject);
@@ -279,25 +298,6 @@ type
     procedure mnuRefactorShowUnusedUnitsClicked(Sender: TObject);
     procedure mnuRefactorFindOverloadsClicked(Sender: TObject);
     procedure mnuRefactorMakeResourceStringClicked(Sender: TObject);
-
-    // view menu
-    procedure mnuViewInspectorClicked(Sender: TObject);
-    procedure mnuViewSourceEditorClicked(Sender: TObject);
-    procedure mnuViewUnitDependenciesClicked(Sender: TObject);
-    procedure mnuViewUnitInfoClicked(Sender: TObject);
-    procedure mnuViewFPDocEditorClicked(Sender: TObject);
-    procedure mnuViewCodeExplorerClick(Sender: TObject);
-    procedure mnuViewCodeBrowserClick(Sender: TObject);
-    procedure mnuViewComponentsClick(Sender: TObject);
-    procedure mnuViewRestrictionBrowserClick(Sender: TObject);
-    procedure mnuViewMessagesClick(Sender: TObject);
-    procedure mnuViewSearchResultsClick(Sender: TObject);
-    procedure mnuToggleFormUnitClicked(Sender: TObject);
-    procedure mnuViewAnchorEditorClicked(Sender: TObject);
-    procedure mnuViewComponentPaletteClicked(Sender: TObject);
-    procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
-    procedure mnuViewFPCInfoClicked(Sender: TObject);
-    procedure mnuViewIDEInfoClicked(Sender: TObject);
 
     // project menu
     procedure mnuNewProjectClicked(Sender: TObject);
