@@ -11,7 +11,7 @@ object TabOrderDialog: TTabOrderDialog
   OnClose = TabOrderDialogCLOSE
   OnCreate = TabOrderDialogCREATE
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object ArrowUp: TSpeedButton
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -21,7 +21,6 @@ object TabOrderDialog: TTabOrderDialog
     Width = 25
     Anchors = [akTop, akRight]
     BorderSpacing.Around = 6
-    Color = clBtnFace
     NumGlyphs = 0
     OnClick = UpSpeedbuttonCLICK
   end
@@ -34,7 +33,6 @@ object TabOrderDialog: TTabOrderDialog
     Width = 25
     Anchors = [akTop, akRight]
     BorderSpacing.Around = 6
-    Color = clBtnFace
     NumGlyphs = 0
     OnClick = DownSpeedbuttonCLICK
   end
@@ -43,7 +41,7 @@ object TabOrderDialog: TTabOrderDialog
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = ShowOldValuesCheckbox
     Left = 6
-    Height = 320
+    Height = 313
     Top = 6
     Width = 267
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -59,31 +57,14 @@ object TabOrderDialog: TTabOrderDialog
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 17
-    Top = 332
-    Width = 141
+    Height = 18
+    Top = 325
+    Width = 166
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ShowOldValuesCheckbox'
     OnClick = ShowOldValuesCheckboxCLICK
     TabOrder = 1
-  end
-  object OkButton: TBitBtn
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 161
-    Height = 26
-    Top = 355
-    Width = 59
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = OkButtonCLICK
-    TabOrder = 2
   end
   object BtnPanel: TButtonPanel
     AnchorSideRight.Control = Owner
@@ -91,11 +72,21 @@ object TabOrderDialog: TTabOrderDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 26
-    Top = 355
+    Height = 32
+    Top = 349
     Width = 298
     Anchors = [akRight, akBottom]
-    TabOrder = 3
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 2
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
   end

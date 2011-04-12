@@ -43,7 +43,6 @@ type
     ArrowDown: TSpeedButton;
     ArrowUp: TSpeedButton;
     BtnPanel: TButtonPanel;
-    OkButton:     TBitBtn;
     ShowOldValuesCheckbox: TCheckBox;
     ItemTreeview: TTreeView;
     procedure DownSpeedbuttonCLICK(Sender: TObject);

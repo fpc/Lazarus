@@ -524,8 +524,7 @@ begin
                                        'Size',fdmSizeWord, nil, nil, nil, 'size');
 
   // register tab and z-order section
-  DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,
-                                                               'Order section');
+  DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,'Order section');
     DesignerMenuTabOrder:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
                                        'Tab order',fdmTabOrder);
     DesignerMenuSectionZOrder:=RegisterIDESubMenu(DesignerMenuSectionOrder,
