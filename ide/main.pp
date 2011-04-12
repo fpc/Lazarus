@@ -240,7 +240,6 @@ type
     procedure mnuViewInspectorClicked(Sender: TObject);
     procedure mnuViewSourceEditorClicked(Sender: TObject);
     procedure mnuViewUnitDependenciesClicked(Sender: TObject);
-    procedure mnuViewUnitInfoClicked(Sender: TObject);
     procedure mnuViewFPDocEditorClicked(Sender: TObject);
     procedure mnuViewCodeExplorerClick(Sender: TObject);
     procedure mnuViewCodeBrowserClick(Sender: TObject);
@@ -262,11 +261,9 @@ type
     procedure mnuSourceToggleCommentClicked(Sender: TObject);
     procedure mnuSourceEncloseBlockClicked(Sender: TObject);
     procedure mnuSourceEncloseInIFDEFClicked(Sender: TObject);
-
     procedure mnuSourceSyntaxCheckClicked(Sender: TObject);
     procedure mnuSourceGuessUnclosedBlockClicked(Sender: TObject);
     procedure mnuSourceGuessMisplacedIFDEFClicked(Sender: TObject);
-
     // source->insert CVS keyword
     procedure mnuSourceInsertCVSAuthorClick(Sender: TObject);
     procedure mnuSourceInsertCVSDateClick(Sender: TObject);
@@ -276,7 +273,6 @@ type
     procedure mnuSourceInsertCVSNameClick(Sender: TObject);
     procedure mnuSourceInsertCVSRevisionClick(Sender: TObject);
     procedure mnuSourceInsertCVSSourceClick(Sender: TObject);
-
     // source->insert general
     procedure mnuSourceInsertGPLNoticeClick(Sender: TObject);
     procedure mnuSourceInsertLGPLNoticeClick(Sender: TObject);
@@ -285,6 +281,8 @@ type
     procedure mnuSourceInsertDateTimeClick(Sender: TObject);
     procedure mnuSourceInsertChangeLogEntryClick(Sender: TObject);
     procedure mnuSourceInsertGUID(Sender: TObject);
+    // source->Tools
+    procedure mnuSourceUnitInfoClicked(Sender: TObject);
 
     // refactor menu
     procedure mnuRefactorClicked(Sender: TObject);
@@ -2492,7 +2490,6 @@ begin
     itmViewComponents.OnClick := @mnuViewComponentsClick;
     itmViewFPDocEditor.OnClick := @mnuViewFPDocEditorClicked;
     itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
-    itmViewUnitInfo.OnClick := @mnuViewUnitInfoClicked;
     itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
     itmViewMessage.OnClick := @mnuViewMessagesClick;
     itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
@@ -2537,6 +2534,8 @@ begin
     itmSourceInsertDateTime.OnClick:=@mnuSourceInsertDateTimeClick;
     itmSourceInsertChangeLogEntry.OnClick:=@mnuSourceInsertChangeLogEntryClick;
     itmSourceInsertGUID.OnClick:=@mnuSourceInsertGUID;
+    // Tools
+    itmSourceUnitInfo.OnClick := @mnuSourceUnitInfoClicked;
   end;
 end;
 
@@ -3926,7 +3925,7 @@ begin
   DoViewUnitDependencies(true);
 end;
 
-procedure TMainIDE.mnuViewUnitInfoClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceUnitInfoClicked(Sender: TObject);
 begin
   DoViewUnitInfo;
 end;

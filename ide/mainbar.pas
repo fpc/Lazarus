@@ -174,7 +174,6 @@ type
         itmJumpHistory: TIDEMenuCommand;
       //itmViewUnitWindows: TIDEMenuSection;
         itmViewUnitDependencies: TIDEMenuCommand;
-        itmViewUnitInfo: TIDEMenuCommand;
         itmViewToggleFormUnit: TIDEMenuCommand;
       //itmViewSecondaryWindows: TIDEMenuSection;
         itmViewAnchorEditor: TIDEMenuCommand;
@@ -227,6 +226,8 @@ type
           itmSourceInsertChangeLogEntry: TIDEMenuCommand;
           itmSourceInsertGUID: TIDEMenuCommand;
           itmSourceInsertTodo: TIDEMenuCommand;
+      // itmSourceTools
+        itmSourceUnitInfo: TIDEMenuCommand;
 
     // refactor menu
     //mnuRefactor: TIDEMenuSection;

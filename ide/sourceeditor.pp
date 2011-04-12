@@ -1145,10 +1145,12 @@ var
     SrcEditMenuAddWatchAtCursor: TIDEMenuCommand;
     SrcEditMenuInspect: TIDEMenuCommand;
     SrcEditMenuViewCallStack: TIDEMenuCommand;
-    // refactoring
-    SrcEditMenuCompleteCode: TIDEMenuCommand;
+    // source
     SrcEditMenuEncloseSelection: TIDEMenuCommand;
     SrcEditMenuEncloseInIFDEF: TIDEMenuCommand;
+    SrcEditMenuShowUnitInfo: TIDEMenuCommand;
+    // refactoring
+    SrcEditMenuCompleteCode: TIDEMenuCommand;
     SrcEditMenuRenameIdentifier: TIDEMenuCommand;
     SrcEditMenuExtractProc: TIDEMenuCommand;
     SrcEditMenuInvertAssignment: TIDEMenuCommand;
@@ -1163,7 +1165,6 @@ var
   SrcEditMenuReadOnly: TIDEMenuCommand;
   SrcEditMenuShowLineNumbers: TIDEMenuCommand;
   SrcEditMenuDisableI18NForLFM: TIDEMenuCommand;
-  SrcEditMenuShowUnitInfo: TIDEMenuCommand;
   SrcEditMenuEditorProperties: TIDEMenuCommand;
   {$IFnDEF SingleSrcWindow}
   // Multi Window
@@ -1355,8 +1356,6 @@ begin
       SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
       SrcEditMenuDisableI18NForLFM := RegisterIDEMenuCommand
           (AParent, 'DisableI18NForLFM',lisDisableI18NForLFM);
-      SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand
-          (AParent,'ShowUnitInfo', uemShowUnitInfo);
       SrcEditSubMenuHighlighter := RegisterIDESubMenu
           (AParent,'Highlighter', uemHighlighter);
       SrcEditSubMenuEncoding := RegisterIDESubMenu
@@ -1441,6 +1440,7 @@ begin
         (AParent, 'EncloseSelection',lisMenuEncloseSelection);
     SrcEditMenuEncloseInIFDEF := RegisterIDEMenuCommand
         (AParent,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
+    SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand(AParent,'ShowUnitInfo', lisMenuViewUnitInfo);
   {%endregion}
 
   {%region *** Refactoring Section ***}

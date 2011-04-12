@@ -512,7 +512,6 @@ begin
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
     ParentMI:=itmViewUnitWindows;
     CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
-    CreateMenuItem(ParentMI,itmViewUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo, 'menu_view_unit_info');
     CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit, 'menu_view_toggle_form_unit');
 
     CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
@@ -590,6 +589,8 @@ begin
       CreateMenuItem(SubParentMI,itmSourceInsertGUID,'itmSourceInsertGUID',srkmecInsertGUID);
     end;
     CreateMenuSeparatorSection(mnuSource,itmSourceTools,'itmSourceTools');
+    ParentMI:=itmSourceTools;
+    CreateMenuItem(ParentMI,itmSourceUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo, 'menu_view_unit_info');
   end;
 end;
 
@@ -882,6 +883,24 @@ begin
     itmGotoIncludeDirective.Command:=GetCommand(ecGotoIncludeDirective);
     itmSearchProcedureList.Command:=GetCommand(ecProcedureList);
 
+    // view menu
+    itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);
+    itmViewSourceEditor.Command:=GetCommand(ecToggleSourceEditor);
+    itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
+    itmViewFPDocEditor.Command:=GetCommand(ecToggleFPDocEditor);
+    itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
+    itmViewRestrictionBrowser.Command:=GetCommand(ecToggleRestrictionBrowser);
+    itmViewComponents.Command:=GetCommand(ecViewComponents);
+    itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
+    itmViewToggleFormUnit.Command:=GetCommand(ecToggleFormUnit);
+    itmViewMessage.Command:=GetCommand(ecToggleMessages);
+    itmViewSearchResults.Command:=GetCommand(ecToggleSearchResults);
+    itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
+    itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
+    itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
+    itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);
+    //itmViewPackageLinks.Command:=GetCommand(ec?);
+
     // source menu
     itmSourceCommentBlock.Command:=GetCommand(ecSelectionComment);
     itmSourceUncommentBlock.Command:=GetCommand(ecSelectionUncomment);
@@ -910,6 +929,8 @@ begin
     itmSourceInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);
     itmSourceInsertGUID.Command:=GetCommand(ecInsertGUID);
 
+    itmSourceUnitInfo.Command:=GetCommand(ecViewUnitInfo);
+
     // refactor menu
     itmRefactorCompleteCode.Command:=GetCommand(ecCompleteCode);
     itmRefactorUseUnit.Command:=GetCommand(ecUseProjectUnit);
@@ -924,25 +945,6 @@ begin
     itmRefactorFindOverloads.Command:=GetCommand(ecFindOverloads);
     {$ENDIF}
     itmRefactorMakeResourceString.Command:=GetCommand(ecMakeResourceString);
-
-    // view menu
-    itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);
-    itmViewSourceEditor.Command:=GetCommand(ecToggleSourceEditor);
-    itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
-    itmViewFPDocEditor.Command:=GetCommand(ecToggleFPDocEditor);
-    itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
-    itmViewRestrictionBrowser.Command:=GetCommand(ecToggleRestrictionBrowser);
-    itmViewComponents.Command:=GetCommand(ecViewComponents);
-    itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
-    itmViewUnitInfo.Command:=GetCommand(ecViewUnitInfo);
-    itmViewToggleFormUnit.Command:=GetCommand(ecToggleFormUnit);
-    itmViewMessage.Command:=GetCommand(ecToggleMessages);
-    itmViewSearchResults.Command:=GetCommand(ecToggleSearchResults);
-    itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
-    itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
-    itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
-    itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);
-    //itmViewPackageLinks.Command:=GetCommand(ec?);
 
     // project menu
     itmProjectNew.Command:=GetCommand(ecNewProject);

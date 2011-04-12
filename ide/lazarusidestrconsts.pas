@@ -2273,7 +2273,6 @@ resourcestring
   uemToggleBookmark = '&Toggle Bookmark';
   uemReadOnly = 'Read Only';
   uemShowLineNumbers = 'Show Line Numbers';
-  uemShowUnitInfo = 'Unit Info';
   lisDisableI18NForLFM = 'Disable I18N for LFM';
   uemDebugWord = 'Debug';
   uemToggleBreakpoint = '&Toggle Breakpoint';
