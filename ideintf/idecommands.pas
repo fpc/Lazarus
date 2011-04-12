@@ -169,8 +169,6 @@ const
   ecToggleWatches           = ecFirstLazarus + 307;
   ecToggleBreakPoints       = ecFirstLazarus + 308;
   ecToggleDebuggerOut       = ecFirstLazarus + 309;
-  ecViewUnits               = ecFirstLazarus + 310;
-  ecViewForms               = ecFirstLazarus + 311;
   ecViewUnitDependencies    = ecFirstLazarus + 312;
   ecViewUnitInfo            = ecFirstLazarus + 313;
   ecToggleLocals            = ecFirstLazarus + 314;
@@ -186,7 +184,6 @@ const
   ecToggleRegisters         = ecFirstLazarus + 324;
   ecToggleAssembler         = ecFirstLazarus + 325;
   ecToggleDebugEvents       = ecFirstLazarus + 326;
-
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;
@@ -266,8 +263,10 @@ const
   ecProjectInspector        = ecFirstLazarus + 507;
   ecAddCurUnitToProj        = ecFirstLazarus + 508;
   ecRemoveFromProj          = ecFirstLazarus + 509;
-  ecViewProjectSource       = ecFirstLazarus + 510;
-  ecProjectOptions          = ecFirstLazarus + 512;
+  ecViewProjectUnits        = ecFirstLazarus + 510;
+  ecViewProjectForms        = ecFirstLazarus + 511;
+  ecViewProjectSource       = ecFirstLazarus + 512;
+  ecProjectOptions          = ecFirstLazarus + 513;
 
   // components menu
   ecOpenPackage             = ecFirstLazarus + 600;

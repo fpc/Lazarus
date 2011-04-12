@@ -173,8 +173,6 @@ type
         itmViewComponents: TIDEMenuCommand;
         itmJumpHistory: TIDEMenuCommand;
       //itmViewUnitWindows: TIDEMenuSection;
-        itmViewUnits: TIDEMenuCommand;
-        itmViewForms: TIDEMenuCommand;
         itmViewUnitDependencies: TIDEMenuCommand;
         itmViewUnitInfo: TIDEMenuCommand;
         itmViewToggleFormUnit: TIDEMenuCommand;
@@ -266,6 +264,8 @@ type
       //itmProjectAddRemoveSection: TIDEMenuSection;
         itmProjectAddTo: TIDEMenuCommand;
         itmProjectRemoveFrom: TIDEMenuCommand;
+        itmProjectViewUnits: TIDEMenuCommand;
+        itmProjectViewForms: TIDEMenuCommand;
         itmProjectViewSource: TIDEMenuCommand;
 
     // run menu

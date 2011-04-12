@@ -283,8 +283,6 @@ type
     // view menu
     procedure mnuViewInspectorClicked(Sender: TObject);
     procedure mnuViewSourceEditorClicked(Sender: TObject);
-    procedure mnuViewUnitsClicked(Sender: TObject);
-    procedure mnuViewFormsClicked(Sender: TObject);
     procedure mnuViewUnitDependenciesClicked(Sender: TObject);
     procedure mnuViewUnitInfoClicked(Sender: TObject);
     procedure mnuViewFPDocEditorClicked(Sender: TObject);
@@ -312,6 +310,8 @@ type
     procedure mnuProjectInspectorClicked(Sender: TObject);
     procedure mnuAddToProjectClicked(Sender: TObject);
     procedure mnuRemoveFromProjectClicked(Sender: TObject);
+    procedure mnuViewUnitsClicked(Sender: TObject);
+    procedure mnuViewFormsClicked(Sender: TObject);
     procedure mnuViewProjectSourceClicked(Sender: TObject);
     procedure mnuProjectOptionsClicked(Sender: TObject);
 
@@ -2491,8 +2491,6 @@ begin
     itmViewRestrictionBrowser.OnClick := @mnuViewRestrictionBrowserClick;
     itmViewComponents.OnClick := @mnuViewComponentsClick;
     itmViewFPDocEditor.OnClick := @mnuViewFPDocEditorClicked;
-    itmViewUnits.OnClick := @mnuViewUnitsClicked;
-    itmViewForms.OnClick := @mnuViewFormsClicked;
     itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
     itmViewUnitInfo.OnClick := @mnuViewUnitInfoClicked;
     itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
@@ -2580,6 +2578,8 @@ begin
     itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
     itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
     itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
+    itmProjectViewUnits.OnClick := @mnuViewUnitsClicked;
+    itmProjectViewForms.OnClick := @mnuViewFormsClicked;
     itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
   end;
 end;
@@ -3309,10 +3309,10 @@ begin
   ecToggleFPDocEditor:
     DoShowFPDocEditor(true,true);
 
-  ecViewUnits:
+  ecViewProjectUnits:
     DoViewUnitsAndForms(false);
 
-  ecViewForms:
+  ecViewProjectForms:
     DoViewUnitsAndForms(true);
 
   ecProjectInspector:

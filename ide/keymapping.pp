@@ -518,8 +518,6 @@ begin
   ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebugEvents: SetResult(VK_V,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[]);
-  ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[]);
   ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
@@ -540,6 +538,8 @@ begin
   ecProjectInspector: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddCurUnitToProj: SetResult(VK_F11,[ssShift],VK_UNKNOWN,[]);
   ecRemoveFromProj: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewProjectUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[]);
+  ecViewProjectForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[]);
   ecViewProjectSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
 
@@ -957,8 +957,6 @@ begin
   ecToggleAssembler: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleDebugEvents: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -979,6 +977,8 @@ begin
   ecProjectInspector: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddCurUnitToProj: SetResult(VK_F11,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRemoveFromProj: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewProjectUnits: SetResult(VK_F12,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewProjectForms: SetResult(VK_F12,[ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewProjectSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecProjectOptions: SetResult(VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
@@ -1577,8 +1577,6 @@ begin
   ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebugEvents: SetResult(VK_V,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewUnits: SetResult(VK_U,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
-  ecViewForms: SetResult(VK_U,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F,[ssMeta,ssAlt],VK_UNKNOWN,[]);
@@ -1599,6 +1597,8 @@ begin
   ecProjectInspector: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddCurUnitToProj: SetResult(VK_A,[ssAlt,ssMeta],VK_UNKNOWN,[]);
   ecRemoveFromProj: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewProjectUnits: SetResult(VK_U,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecViewProjectForms: SetResult(VK_U,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecViewProjectSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecProjectOptions: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
@@ -2081,8 +2081,6 @@ begin
     ecToggleCallStack         : Result:= srkmecToggleCallStack;
     ecToggleRegisters         : Result:= srkmecToggleRegisters;
     ecToggleAssembler         : Result:= srkmecToggleAssembler;
-    ecViewUnits               : Result:= srkmecViewUnits;
-    ecViewForms               : Result:= srkmecViewForms;
     ecViewUnitDependencies    : Result:= srkmecViewUnitDependencies;
     ecViewUnitInfo            : Result:= srkmecViewUnitInfo;
     ecViewAnchorEditor        : Result:= srkmecViewAnchorEditor;
@@ -2130,6 +2128,8 @@ begin
     ecProjectInspector        : Result:= lisMenuProjectInspector;
     ecAddCurUnitToProj        : Result:= lisMenuAddToProject;
     ecRemoveFromProj          : Result:= lisMenuRemoveFromProject;
+    ecViewProjectUnits        : Result:= srkmecViewUnits;
+    ecViewProjectForms        : Result:= srkmecViewForms;
     ecViewProjectSource       : Result:= lisMenuViewSource;
     ecProjectOptions          : Result:= lisMenuProjectOptions;
 
@@ -2749,8 +2749,6 @@ begin
   AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler, ecToggleAssembler);
   AddDefault(C, 'Toggle view Event Log', lisKMToggleViewDebugEvents, ecToggleDebugEvents);
   AddDefault(C, 'Toggle view Debugger Output', lisKMToggleViewDebuggerOutput, ecToggleDebuggerOut);
-  AddDefault(C, 'View Units', lisHintViewUnits, ecViewUnits);
-  AddDefault(C, 'View Forms', lisHintViewForms, ecViewForms);
   AddDefault(C, 'View Unit Dependencies', lisMenuViewUnitDependencies, ecViewUnitDependencies);
   AddDefault(C, 'View Unit Info', lisKMViewUnitInfo, ecViewUnitInfo);
   AddDefault(C, 'Toggle between Unit and Form', lisKMToggleBetweenUnitAndForm, ecToggleFormUnit);
@@ -2770,6 +2768,8 @@ begin
   AddDefault(C, 'Project Inspector', lisMenuProjectInspector, ecProjectInspector);
   AddDefault(C, 'Add active unit to project', lisKMAddActiveUnitToProject, ecAddCurUnitToProj);
   AddDefault(C, 'Remove active unit from project', lisKMRemoveActiveUnitFromProject, ecRemoveFromProj);
+  AddDefault(C, 'View Units', lisHintViewUnits, ecViewProjectUnits);
+  AddDefault(C, 'View Forms', lisHintViewForms, ecViewProjectForms);
   AddDefault(C, 'View project source', lisKMViewProjectSource, ecViewProjectSource);
   AddDefault(C, 'View project options', lisKMViewProjectOptions, ecProjectOptions);
 

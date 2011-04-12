@@ -511,8 +511,6 @@ begin
 
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
     ParentMI:=itmViewUnitWindows;
-    CreateMenuItem(ParentMI,itmViewUnits,'itmViewUnits',lisMenuViewUnits, 'menu_view_units');
-    CreateMenuItem(ParentMI,itmViewForms,'itmViewForms',lisMenuViewForms, 'menu_view_forms');
     CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
     CreateMenuItem(ParentMI,itmViewUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo, 'menu_view_unit_info');
     CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit, 'menu_view_toggle_form_unit');
@@ -655,6 +653,8 @@ begin
     ParentMI:=itmProjectAddRemoveSection;
     CreateMenuItem(ParentMI,itmProjectAddTo,'itmProjectAddTo',lisMenuAddToProject, 'menu_project_add');
     CreateMenuItem(ParentMI,itmProjectRemoveFrom,'itmProjectRemoveFrom',lisMenuRemoveFromProject, 'menu_project_remove');
+    CreateMenuItem(ParentMI,itmProjectViewUnits,'itmProjectViewUnits',lisMenuViewUnits, 'menu_view_units');
+    CreateMenuItem(ParentMI,itmProjectViewForms,'itmProjectViewForms',lisMenuViewForms, 'menu_view_forms');
     CreateMenuItem(ParentMI,itmProjectViewSource,'itmProjectViewSource',lisMenuViewSource, 'menu_project_viewsource');
   end;
 end;
@@ -928,7 +928,6 @@ begin
     // view menu
     itmViewInspector.Command:=GetCommand(ecToggleObjectInsp);
     itmViewSourceEditor.Command:=GetCommand(ecToggleSourceEditor);
-    itmViewUnits.Command:=GetCommand(ecViewUnits);
     itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
     itmViewFPDocEditor.Command:=GetCommand(ecToggleFPDocEditor);
     itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
@@ -936,7 +935,6 @@ begin
     itmViewComponents.Command:=GetCommand(ecViewComponents);
     itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
     itmViewUnitInfo.Command:=GetCommand(ecViewUnitInfo);
-    itmViewForms.Command:=GetCommand(ecViewForms);
     itmViewToggleFormUnit.Command:=GetCommand(ecToggleFormUnit);
     itmViewMessage.Command:=GetCommand(ecToggleMessages);
     itmViewSearchResults.Command:=GetCommand(ecToggleSearchResults);
@@ -958,6 +956,8 @@ begin
     itmProjectOptions.Command:=GetCommand(ecProjectOptions);
     itmProjectAddTo.Command:=GetCommand(ecAddCurUnitToProj);
     itmProjectRemoveFrom.Command:=GetCommand(ecRemoveFromProj);
+    itmProjectViewUnits.Command:=GetCommand(ecViewProjectUnits);
+    itmProjectViewForms.Command:=GetCommand(ecViewProjectForms);
     itmProjectViewSource.Command:=GetCommand(ecViewProjectSource);
 
     // run menu
