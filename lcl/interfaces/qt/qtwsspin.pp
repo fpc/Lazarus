@@ -33,7 +33,7 @@ uses
   qt4,
   qtwidgets,
   // LCL
-  Spin, SysUtils, Controls, Classes, LCLType, LCLProc, LCLIntf, Forms, StdCtrls,
+  Spin, SysUtils, Controls, Classes, LCLType, LCLProc, LCLIntf, Forms,
   // Widgetset
   WsProc, WSSpin, WSLCLClasses;
 

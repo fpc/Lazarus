@@ -34,7 +34,6 @@ uses
   qtwidgets, qtobjects, qtproc, qtint,
   // LCL
   SysUtils, Classes, Types, Controls, LCLType, LCLProc, Forms, Graphics,
-  StdCtrls,
   // Widgetset
   InterfaceBase, WSProc, WSControls, WSLCLClasses;
 
@@ -522,8 +521,6 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
     Exit;
 
-  if AWinControl.Color = CLR_INVALID then exit;
-
   // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
   if AWinControl.Color = clDefault then
   begin
@@ -582,8 +579,6 @@ begin
 
   QtWidget := TQtWidget(AWinControl.Handle);
   QtWidget.setFont(TQtFont(AFont.Reference.Handle).Widget);
-
-  if AFont.Color = CLR_INVALID then exit;
 
   if AFont.Color = clDefault then
   begin

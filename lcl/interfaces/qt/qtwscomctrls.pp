@@ -31,7 +31,7 @@ interface
 uses
   // Bindings
   qt4,
-  qtwidgets, qtprivate, qtobjects, qtproc, qtwscontrols,
+  qtwidgets, qtobjects, qtproc,
   // LCL
   SysUtils, Classes, Types, ComCtrls, Controls, LCLType, Graphics, StdCtrls,
   LCLProc, LCLIntf, Forms,
@@ -514,7 +514,6 @@ end;
 
 class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
-  AStatusBar: TStatusBar absolute AWinControl;
   QtStatusBar: TQtStatusBar;
 begin
   QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);

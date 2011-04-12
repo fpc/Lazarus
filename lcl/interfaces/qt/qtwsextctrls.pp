@@ -33,8 +33,8 @@ uses
   qt4,
   qtwidgets, qtobjects, qtproc, QtWSControls,
   // LCL
-  LMessages, LCLMessageGlue, LCLProc,
-  SysUtils, Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, LCLType,
+  LCLProc,
+  SysUtils, Classes, Controls, Graphics, Forms, ExtCtrls, LCLType,
   ImgList,
   // Widgetset
   WSExtCtrls, WSProc, WSLCLClasses;

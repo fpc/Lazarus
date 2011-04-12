@@ -2416,7 +2416,7 @@ end;
 function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
   StateDown    = SmallInt($FF80);
-  StateToggled = SmallInt($0001);
+  {StateToggled = SmallInt($0001);}
 begin
   Result := 0;
 

@@ -32,7 +32,7 @@ uses
   qt4,
   qtobjects, qtint,
   // Free Pascal
-  Classes, SysUtils, Types, Math,
+  Classes, SysUtils, Types,
   // LCL
   LCLType, LCLProc, LCLIntf, LMessages, Graphics, Forms, Controls,
   ComCtrls, ExtCtrls, StdCtrls, Menus, Dialogs;
@@ -1651,7 +1651,6 @@ const
 implementation
 
 uses
-  LCLMessageGlue,
   qtCaret,
   qtproc,
   qtprivate,
@@ -2478,7 +2477,6 @@ var
   AChar: Char;
   AKeyEvent: QKeyEventH;
   GlobalAction: Integer;
-  ActiveWin: QWidgetH;
 begin
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotKey ', dbgsname(LCLObject));
@@ -3142,19 +3140,22 @@ var
   Color: TQColor;
   R: TRect;
 begin
-  if LCLObject.Color = clDefault then
-    Color := Palette.DefaultColor
-  else
-    ColorRefToTQColor(ColorToRGB(LCLObject.Color), Color);
-  Painter := QPainter_create(QWidget_to_QPaintDevice(Widget));
-  Brush := QBrush_create(@Color, QtSolidPattern);
-  try
-    QPaintEvent_rect(QPaintEventH(Event), @R);
-    QPainter_fillRect(Painter, @R, Brush);
-    QPainter_end(Painter);
-  finally
-    QBrush_destroy(Brush);
-    QPainter_destroy(Painter);
+  if CanSendLCLMessage and (LCLObject is TWinControl) then
+  begin
+    if LCLObject.Color = clDefault then
+      Color := Palette.DefaultColor
+    else
+      ColorRefToTQColor(ColorToRGB(LCLObject.Color), Color);
+    Painter := QPainter_create(QWidget_to_QPaintDevice(Widget));
+    Brush := QBrush_create(@Color, QtSolidPattern);
+    try
+      QPaintEvent_rect(QPaintEventH(Event), @R);
+      QPainter_fillRect(Painter, @R, Brush);
+      QPainter_end(Painter);
+    finally
+      QBrush_destroy(Brush);
+      QPainter_destroy(Painter);
+    end;
   end;
 end;
 
@@ -3222,7 +3223,8 @@ begin
         Dispose(AStruct);
       end;
     except
-      Application.HandleException(nil);
+      raise Exception.CreateFmt('TQtWidget.SlotPaint(): TQtObject %s LCLObject %s ',
+        [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(LCLObject))]);
     end;
   end;
 end;
@@ -4441,7 +4443,9 @@ begin
       raise Exception.CreateFmt('%s.DeliverMessage(): error in input event %d ',
         [ClassName, TLMessage(Msg).Msg]);
     end else
-      Application.HandleException(nil);
+      raise Exception.CreateFmt(
+        'TQtWidget.DeliverMessage(): TQtObject %s LCLObject %s Msg %d',
+        [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(LCLObject)), TLMessage(Msg).Msg]);
   end;
 end;
 
@@ -11611,7 +11615,9 @@ begin
         Dispose(ItemStruct);
       end;
     except
-      Application.HandleException(nil);
+      raise Exception.CreateFmt(
+        'TQtStatusBarPanel.DrawItem: TQtObject %s LCLObject %s ',
+        [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(LCLObject))]);
     end;
   end;
 end;
@@ -11728,7 +11734,9 @@ begin
     end else
       Result := 0;
   except
-    Application.HandleException(nil);
+    raise Exception.CreateFmt(
+      'TQtDialog.DeliverMessage: TQtObject %s LCLObject %s ',
+      [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(FDialog))]);
   end;
 end;
 
@@ -13820,7 +13828,7 @@ var
   P: TPoint;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWidget.SlotPaint ', dbgsName(LCLObject));
+    WriteLn('TQtDesignWidget.SlotDesignControlPaint ', dbgsName(LCLObject));
   {$endif}
 
   if (LCLObject is TWinControl) then
@@ -13865,7 +13873,9 @@ begin
         Dispose(AStruct);
       end;
     except
-      Application.HandleException(nil);
+      raise Exception.CreateFmt(
+        'TQtDesignWidget.SlotDesignControlPaint: TQtObject %s LCLObject %s ',
+        [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(LCLObject))]);
     end;
   end;
 end;

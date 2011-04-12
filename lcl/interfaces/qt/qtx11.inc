@@ -149,7 +149,7 @@ procedure SetSkipX11Taskbar(Widget: QWidgetH; const ASkipTaskBar: Boolean);
 const
   _NET_WM_STATE_REMOVE = 0;
   _NET_WM_STATE_ADD = 1;
-  _NET_WM_STATE_TOGGLE = 2;
+  {_NET_WM_STATE_TOGGLE = 2;}
 var
    Display: PDisplay;
    RootWin: TWindow;

@@ -29,11 +29,7 @@ interface
 {$I qtdefines.inc}
 
 uses
-  // Bindings
-  qt4,
-  qtwidgets,
-  // LCL
-  LCLType, LCLProc, Controls, Grids,
+  Controls,
   // Widgetset
   WSGrids, WSLCLClasses;
 

@@ -31,10 +31,9 @@ uses
   // Bindings
   qt4,
   // Free Pascal
-  Classes, SysUtils, Types,
+  Classes, SysUtils,
   // LCL
-  LMessages, Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls, Menus,
-  CheckLst,
+  Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls,
   //Widgetset
   QtWidgets, qtproc;
 
