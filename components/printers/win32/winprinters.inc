@@ -2,21 +2,22 @@
 {**************************************************************
 Implementation for winprinter
 ***************************************************************}
-Uses InterfaceBase, LCLIntf, WinVer, WinUtilPrn;
+uses
+  InterfaceBase, LCLIntf, WinVer, WinUtilPrn, WinSpool;
 
 // todo: this ^ is a mess: mixed WinUtilPrn/Windows units clean...
 
 // todo: this should be a method, can not be atm because mixed units ^
-function GetCurrentDevMode(out DM:PDeviceMode): boolean;
+function GetCurrentDevMode(out DM:PDeviceMode): Boolean;
 var
   PDev: TPrinterDevice;
 begin
-  result := false;
-  if (Printer.Printers.Count>0) then
+  Result := false;
+  if (Printer.Printers.Count > 0) then
   begin
-    PDev:=TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
+    PDev := TPrinterDevice(Printer.Printers.Objects[Printer.PrinterIndex]);
     DM := PDev.DevMode;
-    result := DM<>nil;
+    Result := DM <> nil;
   end;
 end;
 
@@ -26,8 +27,8 @@ constructor TWinPrinter.Create;
 begin
   inherited Create;
 
-  fLastHandleType:=htNone;
-  fPrinterHandle :=0; //None
+  fLastHandleType := htNone;
+  fPrinterHandle := 0; //None
 end;
 
 destructor TWinPrinter.Destroy;
@@ -36,8 +37,8 @@ begin
 
   DoResetPrintersList;
 
-  if fPrinterHandle<>0 then
-      ClosePrinter(fPrinterHandle);
+  if fPrinterHandle <> 0 then
+    ClosePrinter(fPrinterHandle);
 
   inherited Destroy;
 end;
@@ -46,13 +47,13 @@ function TWinPrinter.Write(const Buffer; Count: Integer;
   var Written: Integer): Boolean;
 begin
   CheckRawMode(True);
-  result := WritePrinter(FPrinterHandle, @Buffer, Count, pdword(@Written));
+  Result := WritePrinter(FPrinterHandle, @Buffer, Count, pdword(@Written));
 end;
 
 function TWinPrinter.GetHandlePrinter : HDC;
 begin
   SetIC;
-  Result:=fDC;
+  Result := fDC;
 end;
 
 
@@ -61,30 +62,31 @@ begin
   CheckRawMode(False);
   if aValue <> fDC then
   begin
-   ClearDC;
-   fDC := aValue;
-   if Assigned(Canvas) then Canvas.Handle:=fDC;
-   fLastHandleType:=htDC;
+    ClearDC;
+    fDC := aValue;
+    if Assigned(Canvas) then
+      Canvas.Handle := fDC;
+    fLastHandleType := htDC;
   end;
 end;
 
 procedure TWinPrinter.RawModeChanging;
 begin
   // if old mode was standard free DC if it was created
-  if not RawMode and (fDC<>0) then
+  if not RawMode and (fDC <> 0) then
     FreeDC;
 end;
 
 procedure TWinPrinter.PrinterSelected;
 begin
-  if (PrinterIndex>=0) and not RawMode then
+  if (PrinterIndex >= 0) and not RawMode then
     SetDC;
 end;
 
 function TWinPrinter.GetXDPI: Integer;
 begin
   Result:=72;
-  if (Printers.Count>0) and not RawMode then
+  if (Printers.Count > 0) and not RawMode then
   begin
     SetDC;
     Result:=windows.GetDeviceCaps(fDC, LOGPIXELSX);
@@ -234,43 +236,45 @@ var
 begin
   inherited DoBeginDoc;
 
-  if fPrinterHandle=0 then
+  if fPrinterHandle = 0 then
     raise EPrinter.Create('Printer handle not defined');
 
-  if RawMode then begin
-
-    Doc1.DocName    := pchar(Title);
-    if Filename<>'' then
-      Doc1.OutputFile := PChar(Filename)
+  if RawMode then
+  begin
+    Doc1.pDocName := PChar(Title);
+    if Filename <> '' then
+      Doc1.pOutputFile := PChar(Filename)
     else
-      Doc1.OutputFile := nil;
-    Doc1.DataType   := 'RAW';
+      Doc1.pOutputFile := nil;
+    Doc1.pDataType := 'RAW';
     
-    if StartDocPrinter(FPrinterHandle, 1, PByte(@Doc1))=0 then begin
+    if StartDocPrinter(FPrinterHandle, 1, PByte(@Doc1)) = 0 then
+    begin
       ClosePrinter(FPrinterHandle);
-      FPrinterHandle:=0;
-    end else
-    if StartPagePrinter(FPrinterHandle)=0 then begin
+      FPrinterHandle := 0;
+    end
+    else
+    if not StartPagePrinter(FPrinterHandle) then
+    begin
       EndDocPrinter(FPrinterHandle);
       ClosePrinter(FPrinterHandle);
-      FPrinterHandle:=0;
+      FPrinterHandle := 0;
     end;
-      
-  end else begin
-
+  end
+  else
+  begin
     SetDC;
-    Canvas.Handle:=fDC;
+    Canvas.Handle := fDC;
     Canvas.Refresh;
 
-    FillChar(Inf,SizeOf(Inf),0);
-    Inf.cbSize:=SizeOf(Inf);
-    Inf.lpszDocName:=PChar(Title);
-    if FileName<>'' then
-      Inf.lpszOutput:=PChar(Filename);
+    FillChar(Inf, SizeOf(Inf), 0);
+    Inf.cbSize := SizeOf(Inf);
+    Inf.lpszDocName := PChar(Title);
+    if FileName <> '' then
+      Inf.lpszOutput := PChar(Filename);
 
     StartDoc(fDC,@Inf);
     StartPage(fDC);
-    
   end;
 end;
 
@@ -327,54 +331,51 @@ var
   Needed, PrtCount: DWORD;
   BoolRes: BOOL;
   IntRes: Integer;
-  PrintInfo2Buf: pchar;
-  GetDefPrnFunc: function(buffer: pchar; var bufSize:DWORD):BOOL; stdcall;
+  PrintInfo2Buf: PByte;
+  GetDefPrnFunc: function(buffer: PChar; var bufSize: DWORD): BOOL; stdcall;
   SpoolerHandle: HINST;
 begin
   // retrieve default printer using ms blessed method, see
   // see: http://support.microsoft.com/default.aspx?scid=kb;en-us;246772
-  result := '';
-  if Win32Platform=VER_PLATFORM_WIN32_WINDOWS then
+  Result := '';
+  if Win32Platform = VER_PLATFORM_WIN32_WINDOWS then
   begin
-
     // Get PRINT_INFO_2 record size
     SetLastError(0);
     BoolRes := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, nil, 0,
-                              Needed, PrtCount);
+                              @Needed, @PrtCount);
     if not BoolRes and
-      ((GetLastError<>ERROR_INSUFFICIENT_BUFFER) or (Needed=0)) then
-      exit;
+      ((GetLastError <> ERROR_INSUFFICIENT_BUFFER) or (Needed = 0)) then
+      Exit;
 
     // Get PRINT_INFO_2 record
     GetMem(PrintInfo2Buf, Needed);
     BoolRes := EnumPrinters(PRINTER_ENUM_DEFAULT, nil, 2, PrintInfo2Buf,
-                              Needed, Needed, PrtCount);
+                              Needed, @Needed, @PrtCount);
     if not BoolRes then
     begin
       FreeMem(PrintInfo2Buf);
-      exit;
+      Exit;
     end;
 
     Result := PPRINTER_INFO_2(PrintInfo2Buf)^.pPrinterName;
     FreeMem(PrintInfo2Buf);
-
-  end else
+  end
+  else
   if Win32Platform=VER_PLATFORM_WIN32_NT then
   begin
-
     if Win32MajorVersion >=5 then
     begin
-
       // for Windows 2000 or later, use api GetDefaultPrinter
       // TODO: needs to check WindowsUnicodeSupport
       SpoolerHandle := LoadLibrary(LibWinSpool);
       if SpoolerHandle = 0 then
-        exit;
-      Pointer(GetDefPrnFunc) := GetProcAddress(SpoolerHandle,'GetDefaultPrinterA');
-      if GetDefPrnFunc=nil then
+        Exit;
+      Pointer(GetDefPrnFunc) := GetProcAddress(SpoolerHandle, 'GetDefaultPrinterA');
+      if GetDefPrnFunc = nil then
       begin
         FreeLibrary(SpoolerHandle);
-        exit;
+        Exit;
       end;
 
       PrtCount := MAXBUFSIZE;
@@ -383,19 +384,16 @@ begin
       FreeLibrary(SpoolerHandle);
       PrtCount := strlen(pchar(result));
       SetLength(Result, PrtCount);
-
     end else
     begin
-
       // for NT, use GetProfileString
       SetLength(result, MAXBUFSIZE);
-      IntRes := GetProfileString('windows', 'device', ',,,', pchar(result),
+      IntRes := GetProfileString('windows', 'device', ',,,', PChar(result),
                                                                   MAXBUFSIZE);
       if (IntRes>0) and (pos(',',Result)<>0) then
         Result := copy(Result, 1, pos(',', Result)-1)
       else
         Result := '';
-
     end;
   end;
 
@@ -405,17 +403,18 @@ end;
 
 //Enum all defined printers. First printer it's default
 procedure TWinPrinter.DoEnumPrinters(Lst: TStrings);
-Var Flags          : DWORD;
-    Level          : DWORD;
-    PrtCount       : DWORD;
-    Needed         : DWORD;
-    Buffer         : PChar;
-    InfoPrt        : PChar;
-    i              : Integer;
-    DefaultPrinter : string;
-    PDev           : TPrinterDevice;
-    TmpDevMode     : PDeviceMode;
-    PrtStr         : string;
+var
+  Flags          : DWORD;
+  Level          : DWORD;
+  PrtCount       : DWORD;
+  Needed         : DWORD;
+  Buffer         : PByte;
+  InfoPrt        : PByte;
+  i              : Integer;
+  DefaultPrinter : string;
+  PDev           : TPrinterDevice;
+  TmpDevMode     : PDeviceMode;
+  PrtStr         : string;
 begin
   {$IFDEF NOPRINTERS}
   Lst.Clear;
@@ -423,31 +422,32 @@ begin
   {$ENDIF}
   DefaultPrinter := GetDefaultPrinter;
 
-  Flags:=PRINTER_ENUM_CONNECTIONS or PRINTER_ENUM_LOCAL;
-  Level:=2;
+  Flags := PRINTER_ENUM_CONNECTIONS or PRINTER_ENUM_LOCAL;
+  Level := 2;
 
   //Evaluate buffer size
-  Needed:=0;
-  EnumPrinters(Flags,nil,Level,nil,0,Needed,PrtCount);
-  if Needed<>0 then
+  Needed := 0;
+  EnumPrinters(Flags, nil, Level, nil, 0, @Needed, @PrtCount);
+  if Needed <> 0 then
   begin
-    GetMem(Buffer,Needed);
+    GetMem(Buffer, Needed);
     Fillchar(Buffer^, Needed, 0);
     try
       //Enumerate Printers
-      if EnumPrinters(Flags,nil,Level,Buffer,Needed,Needed,PrtCount) then
+      if EnumPrinters(Flags, nil, Level, Buffer, Needed, @Needed, @PrtCount) then
       begin
-        InfoPrt:=Buffer;
-        for i:=0 to PrtCount-1 do
+        InfoPrt := Buffer;
+        for i := 0 to PrtCount - 1 do
         begin
-          if Level=2 then
+          if Level = 2 then
           begin
-            PDev:=TPrinterDevice.Create;
-            PDev.Name  :=PPRINTER_INFO_2(InfoPrt)^.pPrinterName;
-            PDev.Driver:=PPRINTER_INFO_2(InfoPrt)^.pDriverName;
-            PDev.Port  :=PPRINTER_INFO_2(InfoPrt)^.pPortName;
-            TmpDevMode :=PPRINTER_INFO_2(InfoPrt)^.pDevMode;
-            if TmpDevMode<>nil then begin
+            PDev := TPrinterDevice.Create;
+            PDev.Name := PPRINTER_INFO_2(InfoPrt)^.pPrinterName;
+            PDev.Driver := PPRINTER_INFO_2(InfoPrt)^.pDriverName;
+            PDev.Port := PPRINTER_INFO_2(InfoPrt)^.pPortName;
+            TmpDevMode := PPRINTER_INFO_2(InfoPrt)^.pDevMode;
+            if TmpDevMode <> nil then
+            begin
               // the devmode structure obtained this way have two problems
               // 1. It's not the full devmode, because it doesn't have
               //    the private info
@@ -455,8 +455,8 @@ begin
               //    have not extra settings at all.
               //
               // PDev.DevMode:=PPRINTER_INFO_2(InfoPrt)^.PDevMode^;
-              PDev.Device:= TmpDevMode^.dmDeviceName;
-              PDev.DefaultPaper:=TmpDevMode^.dmPaperSize;
+              PDev.Device := PChar(PByte(TmpDevMode^.dmDeviceName));
+              PDev.DefaultPaper := TmpDevMode^.dmPaperSize;
             end
             else begin
               PDev.Device:='';
@@ -519,8 +519,7 @@ begin
 
     //Retreive the supported papers
     PaperC:=0;
-    Count := DeviceCapabilities(PChar(Pdev.Name),PCHar(PDev.Port),
-          DC_PAPERNAMES,nil,nil);
+    Count := DeviceCapabilities(PChar(Pdev.Name), PCHar(PDev.Port), DC_PAPERNAMES, nil, nil);
     if Count<=0 then
       raise EPrinter.CreateFmt('DoEnumPapers<DC_PAPERNAMES> error : %d, (%s)',
           [GetLastError,SysErrorMessage(GetLastError)]);
@@ -655,21 +654,22 @@ begin
 end;
 
 function TWinPrinter.DoSetPrinter(aName: string): Integer;
-var i    : Integer;
-    PDev : TPrinterDevice;
+var
+  i: Integer;
+  PDev: TPrinterDevice;
 begin
-  Result:=inherited DoSetPrinter(aName);
+  Result := inherited DoSetPrinter(aName);
 
-  i:=Printers.IndexOf(aName);
-  if i<>-1 then
+  i := Printers.IndexOf(aName);
+  if i <> -1 then
   begin
     ClearDC;
 
-    if FPrinterHandle<>0 then
+    if FPrinterHandle <> 0 then
       ClosePrinter(FPrinterHandle);
 
-    PDev:=TPrinterDevice(Printers.Objects[i]);
-    if not OpenPrinter(PChar(PDev.Name),fPrinterHandle, nil) then
+    PDev := TPrinterDevice(Printers.Objects[i]);
+    if not OpenPrinter(PChar(PDev.Name), @fPrinterHandle, nil) then
     begin
       FprinterHandle := 0;
       raise EPrinter.CreateFmt('OpenPrinter exception : %s',
@@ -677,9 +677,9 @@ begin
     end;
     
     if UpdateDevMode(i) then
-      Result:=i
+      Result := i
     else
-      Result:=-1;
+      Result := -1;
   end;
 end;
 
@@ -731,18 +731,18 @@ end;
 
 function TWinPrinter.GetPrinterType: TPrinterType;
 var
- Size : Dword;
- InfoPrt : Pointer;
+  Size: Dword;
+  InfoPrt: Pointer;
 begin
   Result := inherited GetPrinterType;
-  Result:=ptLocal;
+  Result := ptLocal;
   //On Win9X all printers are local
   if Win32Platform <> VER_PLATFORM_WIN32_NT then Exit;
   
-  GetPrinter(fPrinterHandle,4,nil,0,Size);
-  GetMem(InfoPrt,Size);
+  GetPrinter(fPrinterHandle, 4, nil, 0, @Size);
+  GetMem(InfoPrt, Size);
   try
-  if not GetPrinter(fPRinterHandle,4,InfoPrt,Size,Size)
+  if not GetPrinter(fPRinterHandle, 4, InfoPrt, Size, @Size)
   then
     raise EPrinter.CreateFmt('GetPrinterType failed : %s',
         [SysErrorMessage(GetLastError)]);
@@ -757,15 +757,15 @@ end;
 
 function TWinPrinter.DoGetPrinterState: TPrinterState;
 var
- Size,Status,Jobs : Dword;
- InfoPrt : Pointer;
+  Size, Status, Jobs : DWord;
+  InfoPrt: Pointer;
 begin
   Result := inherited DoGetPrinterState;
-  Result:=psNoDefine;
-  GetPrinter(fPrinterHandle,2,nil,0,Size);
+  Result := psNoDefine;
+  GetPrinter(fPrinterHandle, 2, nil, 0, @Size);
   GetMem(InfoPrt,Size);
   try
-  if not GetPrinter(fPrinterHandle,2,InfoPrt,Size,Size)
+  if not GetPrinter(fPrinterHandle, 2, InfoPrt, Size, @Size)
   then
     raise EPrinter.CreateFmt('GetPrinterState failed : %s',
         [SysErrorMessage(GetLastError)]);
@@ -773,27 +773,28 @@ begin
   Jobs := PPRINTER_INFO_2(InfoPrt)^.cJobs;
   Status := PPRINTER_INFO_2(InfoPrt)^.Status;
   case Status of
-     0 :  Result := psReady;
-     PRINTER_STATUS_PRINTING,
-     PRINTER_STATUS_PROCESSING,
-     PRINTER_STATUS_WARMING_UP,
-     PRINTER_STATUS_WAITING,
-     PRINTER_STATUS_IO_ACTIVE,
-     PRINTER_STATUS_PENDING_DELETION,
-     PRINTER_STATUS_INITIALIZING: Result := psPrinting;
-     PRINTER_STATUS_PAPER_JAM,
-     PRINTER_STATUS_PAPER_OUT,
-     PRINTER_STATUS_PAPER_PROBLEM,
-     PRINTER_STATUS_USER_INTERVENTION,
-     PRINTER_STATUS_NO_TONER,
-     PRINTER_STATUS_ERROR,
-     PRINTER_STATUS_DOOR_OPEN,
-     PRINTER_STATUS_PAGE_PUNT,
-     PRINTER_STATUS_OUT_OF_MEMORY,
-     PRINTER_STATUS_PAUSED : Result := psStopped;
-   end;
+    0: Result := psReady;
+    PRINTER_STATUS_PRINTING,
+    PRINTER_STATUS_PROCESSING,
+    PRINTER_STATUS_WARMING_UP,
+    PRINTER_STATUS_WAITING,
+    PRINTER_STATUS_IO_ACTIVE,
+    PRINTER_STATUS_PENDING_DELETION,
+    PRINTER_STATUS_INITIALIZING: Result := psPrinting;
+    PRINTER_STATUS_PAPER_JAM,
+    PRINTER_STATUS_PAPER_OUT,
+    PRINTER_STATUS_PAPER_PROBLEM,
+    PRINTER_STATUS_USER_INTERVENTION,
+    PRINTER_STATUS_NO_TONER,
+    PRINTER_STATUS_ERROR,
+    PRINTER_STATUS_DOOR_OPEN,
+    PRINTER_STATUS_PAGE_PUNT,
+    PRINTER_STATUS_OUT_OF_MEMORY,
+    PRINTER_STATUS_PAUSED: Result := psStopped;
+  end;
    
-  if (Result = psReady) and (Jobs > 0) then Result := psPrinting;
+  if (Result = psReady) and (Jobs > 0) then
+    Result := psPrinting;
   finally
     FreeMem(InfoPrt);
   end;
@@ -841,11 +842,3 @@ initialization
   Printer:=TWinPrinter.Create;
 
 {end.}
-
-
-
-
-
-
-
-
