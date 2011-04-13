@@ -344,9 +344,9 @@ type
     FBlockIndent: integer;
     FCaret: TSynEditCaret;
     FInternalCaret: TSynEditCaret;
+    FScreenCaret: TSynEditScreenCaret;
     FInternalBlockSelection: TSynEditSelection;
     FOnChangeUpdating: TChangeUpdatingEvent;
-    FScreenCaret: TSynEditScreenCaret;
     FMouseSelectionMode: TSynSelectionMode;
     fCtrlMouseActive: boolean;                                                  // deprecated since 0.9.29
     fMarkupManager : TSynEditMarkupManager;
@@ -866,6 +866,7 @@ type
     property CaretX: Integer read GetCaretX write SetCaretX;
     property CaretY: Integer read GetCaretY write SetCaretY;
     property CaretXY: TPoint read GetCaretXY write SetCaretXY;// screen position
+    property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
     property CharsInWindow: Integer read fCharsInWindow;
     property CharWidth: integer read fCharWidth;
     property Color default clWhite;
@@ -873,7 +874,6 @@ type
     {$IFDEF SYN_LAZARUS}
     property CtrlMouseActive: boolean read fCtrlMouseActive; deprecated;        // deprecated in 0.9.29
     {$ENDIF}
-    property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
     {$IFDEF SYN_LAZARUS}
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
@@ -2169,12 +2169,13 @@ end;
 
 function TCustomSynEdit.GetLogicalCaretXY: TPoint;
 begin
-  Result:=PhysicalToLogicalPos(CaretXY);
+  Result := FCaret.LineBytePos;
 end;
 
 procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);
 begin
-  CaretXY:=LogicalToPhysicalPos(NewLogCaretXY);
+  FCaret.ChangeOnTouch;
+  FCaret.LineBytePos := NewLogCaretXY;
 end;
 
 procedure TCustomSynEdit.SetBeautifier(NewBeautifier: TSynCustomBeautifier);
@@ -2937,7 +2938,7 @@ begin
         Inc(X, CharsInWindow);
       FCaret.LineCharPos := Point(X, C.Y);
       if (not(sfIsDragging in fStateFlags)) then
-        SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+        SetBlockEnd(LogicalCaretXY);
     end;
     if fScrollDeltaY <> 0 then begin
       if GetKeyState(VK_SHIFT) < 0 then
@@ -2949,7 +2950,7 @@ begin
       else Y := TopLine;  // scrolling up
       FCaret.LineCharPos := Point(C.X, Y);
       if (not(sfIsDragging in fStateFlags)) then
-        SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+        SetBlockEnd(LogicalCaretXY);
     end;
   finally
     DoDecPaintLock(Self);
@@ -3005,8 +3006,8 @@ begin
   if sfWaitForDragging in fStateFlags then
   begin
     ComputeCaret(X, Y);
-    SetBlockBegin(PhysicalToLogicalPos(CaretXY));
-    SetBlockEnd(PhysicalToLogicalPos(CaretXY));
+    SetBlockBegin(LogicalCaretXY);
+    SetBlockEnd(LogicalCaretXY);
     Exclude(fStateFlags, sfWaitForDragging);
   end;
 
@@ -4121,7 +4122,7 @@ end;
 
 procedure TCustomSynEdit.SelectWord;
 begin
-  SetWordBlock(PhysicalToLogicalPos(CaretXY));
+  SetWordBlock(LogicalCaretXY);
 end;
 
 procedure TCustomSynEdit.SelectLine(WithLeadSpaces: Boolean = True);
@@ -4157,12 +4158,12 @@ end;
 
 function TCustomSynEdit.GetCaretX : Integer;
 begin
-  Result:= fCaret.CharPos;
+  Result:= FCaret.CharPos;
 end;
 
 function TCustomSynEdit.GetCaretY : Integer;
 begin
-  Result:= fCaret.LinePos;
+  Result:= FCaret.LinePos;
 end;
 
 function TCustomSynEdit.GetCaretUndo: TSynEditUndoItem;
@@ -4192,7 +4193,7 @@ end;
 
 function TCustomSynEdit.GetCaretXY: TPoint;
 begin
-  Result := Point(CaretX, CaretY);
+  Result := FCaret.LineCharPos;
 end;
 
 function TCustomSynEdit.GetFoldedCodeColor: TSynSelectedColor;
@@ -4997,7 +4998,7 @@ begin
     FBlockSelection.EndLineBytePos := Point(x2, MinMax(Value.y, 1, FTheLinesView.Count));
   end;
   FBlockSelection.ActiveSelectionMode := smNormal;
-  CaretXY := FTheLinesView.LogicalToPhysicalPos(FBlockSelection.EndLineBytePos);
+  LogicalCaretXY := FBlockSelection.EndLineBytePos;
   //DebugLn(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   DoDecPaintLock(Self);
 end;
@@ -5751,10 +5752,8 @@ begin
             FCaret.DecForcePastEOL;
           end;
           FCaret.LineCharPos := NewCaret;
-          BlockBegin := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(NewCaret)
-                        {$ELSE}NewCaret{$ENDIF};
-          BlockEnd := {$IFDEF SYN_LAZARUS}PhysicalToLogicalPos(CaretXY)
-                        {$ELSE}CaretXY{$ENDIF};
+          BlockBegin := PhysicalToLogicalPos(NewCaret);
+          BlockEnd := LogicalCaretXY;
         finally
           InternalEndUndoBlock;
         end;
@@ -6214,9 +6213,9 @@ begin
           CaretNew := PrevWordPos;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
-            CaretNew := LogicalToPhysicalPos(Point(1 + Length(FTheLinesView[CY-1]), CY));
+            CaretNew := Point(1 + Length(FTheLinesView[CY-1]), CY);
           end;
-          FCaret.LineCharPos := CaretNew;
+          FCaret.LineBytePos := CaretNew;
         end;
       ecWordRight, ecSelWordRight, ecColSelWordRight:
         begin
@@ -6238,7 +6237,7 @@ begin
           else begin
             Temp := LineText;
             Len := Length(Temp);
-            LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+            LogCaretXY:=LogicalCaretXY;
             Caret := CaretXY;
             //debugln('ecDeleteLastChar B Temp="',DbgStr(Temp),'" CaretX=',dbgs(CaretX),' LogCaretXY=',dbgs(LogCaretXY));
             if LogCaretXY.X > Len +1
@@ -6278,7 +6277,7 @@ begin
           else begin
             Temp := LineText;
             Len := Length(Temp);
-            LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+            LogCaretXY:=LogicalCaretXY;
             if LogCaretXY.X <= Len then
             begin
               // delete char
@@ -6308,7 +6307,7 @@ begin
             WP := Point(Len + 1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
             FInternalBlockSelection.StartLineBytePos := PhysicalToLogicalPos(WP);
-            FInternalBlockSelection.EndLineBytePos := PhysicalToLogicalPos(CaretXY);
+            FInternalBlockSelection.EndLineBytePos := LogicalCaretXY;
             FInternalBlockSelection.ActiveSelectionMode := smNormal;
             FInternalBlockSelection.SetSelTextPrimitive(smNormal, nil);
             if Helper <> '' then
@@ -6324,7 +6323,7 @@ begin
             WP := Point(1, CaretY);
           if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
             FInternalBlockSelection.StartLineBytePos := PhysicalToLogicalPos(WP);
-            FInternalBlockSelection.EndLineBytePos := PhysicalToLogicalPos(CaretXY);
+            FInternalBlockSelection.EndLineBytePos := LogicalCaretXY;
             FInternalBlockSelection.ActiveSelectionMode := smNormal;
             FInternalBlockSelection.SetSelTextPrimitive(smNormal, nil);
             CaretXY := WP;
@@ -6350,7 +6349,7 @@ begin
           if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
             SetSelTextExternal('');
           Temp := LineText;
-          LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+          LogCaretXY:=LogicalCaretXY;
           Len := Length(Temp);
           if LogCaretXY.X > Len + 1 then
             LogCaretXY.X := Len + 1;
@@ -6426,7 +6425,7 @@ begin
           // Insert a linebreak, but do not apply any other functionality (such as indent)
           if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
             SetSelTextExternal('');
-          LogCaretXY:=PhysicalToLogicalPos(CaretXY);
+          LogCaretXY:=LogicalCaretXY;
           FTheLinesView.EditLineBreak(LogCaretXY.X, LogCaretXY.Y);
           CaretXY := Point(1, CaretY + 1);
           EnsureCursorPosVisible;
@@ -6613,7 +6612,7 @@ begin
               if fInserting then
                 Helper := '';
               fUndoList.AddChange(crInsert, StartOfBlock,
-                PhysicalToLogicalPos(CaretXY),
+                LogicalCaretXY,
                 Helper, smNormal);
               if CaretX >= LeftChar + fCharsInWindow then
                 LeftChar := LeftChar + min(25, fCharsInWindow - 1);
@@ -8270,8 +8269,9 @@ var
       end;
       inc(EndPt.X);
       SetCaretAndSelection(CaretXY, StartPt, EndPt);
-    end else if MoveCaret then
-      CaretXY := LogicalToPhysicalPos(Result)
+    end
+    else if MoveCaret then
+      LogicalCaretXY := Result;
   end;
 
   procedure DoFindMatchingQuote(q: char);
@@ -8547,7 +8547,7 @@ var
   end;
 
 begin
-  LogCaret:=PhysicalToLogicalPos(CaretXY);
+  LogCaret:=LogicalCaretXY;
   CX := LogCaret.X;
   CY := LogCaret.Y;
   // valid line?
@@ -8600,7 +8600,7 @@ var
   LogCaret: TPoint;
   DelSpaces : Boolean;
 begin
-  LogCaret:=PhysicalToLogicalPos(CaretXY);
+  LogCaret:=LogicalCaretXY;
   CX := LogCaret.X;
   CY := LogCaret.Y;
   // valid line?

@@ -129,6 +129,30 @@ type
              read GetStorageMems write SetStorageMems; default;
   end;
 
+  { TSynLogicalPhysicalConvertor }
+const
+  SYN_LP_MIN_ALLOC = 1024; // Keep at least n*SizeOf(TPhysicalCharWidths) allocated
+type
+  TSynLogicalPhysicalConvertor = class
+  private
+    FLines: TSynEditStrings;
+    FCurrentWidths: TPhysicalCharWidths;
+    FCurrentWidthsLen, FCurrentWidthsAlloc: Integer;
+    FCurrentLine: Integer;
+    FTextChangeStamp, FViewChangeStamp: Int64;
+    // TODOtab-width
+    procedure PrepareWidthsForLine(AIndex: Integer; AForce: Boolean = False);
+  public
+    constructor Create(ALines: TSynEditStrings);
+    destructor Destroy; override;
+    // Line is 0-based // Column is 1-based
+    function PhysicalToLogical(AIndex, AColumn: Integer): Integer;
+    function PhysicalToLogical(AIndex, AColumn: Integer; out AColOffset: Integer): Integer;
+    // ACharPos 1=before 1st char
+    function LogicalToPhysical(AIndex, ABytePos: Integer): Integer;
+    function LogicalToPhysical(AIndex, ABytePos: Integer; var AColOffset: Integer): Integer;
+  end;
+
   { TSynEditStringsBase }
 
   TSynEditStringsBase = class(TStrings)
@@ -147,6 +171,7 @@ type
   TSynEditStrings = class(TSynEditStringsBase)
   private
     FSenderUpdateCount: Integer;
+    FLogPhysConvertor :TSynLogicalPhysicalConvertor;
   protected
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
@@ -155,6 +180,8 @@ type
     function GetExpandedString(Index: integer): string; virtual; abstract;
     function GetLengthOfLongestLine: integer; virtual; abstract;
     procedure SetTextStr(const Value: string); override;
+    function GetTextChangeStamp: int64; virtual; abstract;
+    function GetViewChangeStamp: int64; virtual;
 
     function GetUndoList: TSynEditUndoList; virtual; abstract;
     function GetRedoList: TSynEditUndoList; virtual; abstract;
@@ -172,6 +199,7 @@ type
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); virtual; abstract;
   public
     constructor Create;
+    destructor Destroy; override;
     procedure BeginUpdate(Sender: TObject); overload;
     procedure EndUpdate(Sender: TObject); overload;
     function  IsUpdating: Boolean;
@@ -229,6 +257,8 @@ type
     property IsUndoing: Boolean read GetIsUndoing write SetIsUndoing;
     property IsRedoing: Boolean read GetIsRedoing write SetIsRedoing;
   public
+    property TextChangeStamp: int64 read GetTextChangeStamp;
+    property ViewChangeStamp: int64 read GetViewChangeStamp; // tabs-size, trailing-spaces, ...
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
     property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
@@ -242,6 +272,8 @@ type
 
     function  GetIsUtf8 : Boolean;  override;
     procedure SetIsUtf8(const AValue : Boolean);  override;
+    function GetTextChangeStamp: int64; override;
+    function GetViewChangeStamp: int64; override;
 
     function GetRange(Index: Pointer): TSynManagedStorageMem; override;
     procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
@@ -430,6 +462,130 @@ begin
   raise ESynEditStorageMem.CreateFmt(SListIndexOutOfBounds, [Index]);
 end;
 
+{ TSynLogicalPhysicalConvertor }
+
+procedure TSynLogicalPhysicalConvertor.PrepareWidthsForLine(AIndex: Integer;
+  AForce: Boolean);
+var
+  LineLen: Integer;
+  Line: PChar;
+begin
+  if (not AForce) and (FCurrentLine = AIndex) and
+     (FLines.TextChangeStamp = FTextChangeStamp) and (FLines.ViewChangeStamp = FViewChangeStamp)
+  then begin
+    //debugln(['**************** RE-USING widths: ', AIndex,' (',dbgs(Pointer(self)),')']);
+    exit;
+  end;
+
+  if (AIndex < 0) or (AIndex >= FLines.Count) then begin
+    FCurrentWidthsLen := 0;
+    FViewChangeStamp := FLines.ViewChangeStamp;
+    FTextChangeStamp := FLines.TextChangeStamp;
+    exit;
+  end;
+
+  Line := FLines.GetPChar(AIndex, LineLen);
+  if LineLen > FCurrentWidthsAlloc then begin
+    //debugln(['**************** COMPUTING widths (grow): ', AIndex,' (',dbgs(Pointer(self)),') old-alloc=', FCurrentWidthsAlloc, '  new-len=',LineLen]);
+    SetLength(FCurrentWidths, LineLen * SizeOf(TPhysicalCharWidth));
+    FCurrentWidthsAlloc := LineLen;
+  end
+  else if FCurrentWidthsAlloc > Max(Max(LineLen, FCurrentWidthsLen)*4, SYN_LP_MIN_ALLOC) then begin
+    //debugln(['**************** COMPUTING widths (shrink): ', AIndex,' (',dbgs(Pointer(self)),') old-alloc=', FCurrentWidthsAlloc, '  new-len=',LineLen]);
+    FCurrentWidthsAlloc := Max(Max(LineLen, FCurrentWidthsLen), SYN_LP_MIN_ALLOC) ;
+    SetLength(FCurrentWidths, FCurrentWidthsAlloc * SizeOf(TPhysicalCharWidth));
+  //end
+  //else begin
+  //  debugln(['**************** COMPUTING widths: ', AIndex,' (',dbgs(Pointer(self)),') alloc=',FCurrentWidthsAlloc]);
+  end;
+
+  FCurrentWidthsLen := LineLen;
+  if LineLen > 0 then
+    FLines.DoGetPhysicalCharWidths(Line, LineLen, AIndex, @FCurrentWidths[0]);
+  FViewChangeStamp := FLines.ViewChangeStamp;
+  FTextChangeStamp := FLines.TextChangeStamp;
+  FCurrentLine := AIndex;
+end;
+
+constructor TSynLogicalPhysicalConvertor.Create(ALines: TSynEditStrings);
+begin
+  FLines := ALines;
+  FCurrentLine := -1;
+  FCurrentWidths := nil;
+  FCurrentWidthsLen := 0;
+  FCurrentWidthsAlloc := 0;
+end;
+
+destructor TSynLogicalPhysicalConvertor.Destroy;
+begin
+  SetLength(FCurrentWidths, 0);
+  inherited Destroy;
+end;
+
+function TSynLogicalPhysicalConvertor.PhysicalToLogical(AIndex,
+  AColumn: Integer): Integer;
+var
+  ColOffs: Integer;
+begin
+  Result := PhysicalToLogical(AIndex, AColumn, ColOffs);
+end;
+
+function TSynLogicalPhysicalConvertor.PhysicalToLogical(AIndex, AColumn: Integer;
+  out AColOffset: Integer): Integer;
+var
+  BytePos, ScreenPos, ScreenPosOld: integer;
+begin
+  PrepareWidthsForLine(AIndex);
+
+  ScreenPos := 1;
+  BytePos := 0;
+  while BytePos < FCurrentWidthsLen do begin
+    ScreenPosOld := ScreenPos;
+    ScreenPos := ScreenPos + FCurrentWidths[BytePos];
+    inc(BytePos);
+    if ScreenPos > AColumn then begin
+      AColOffset := AColumn - ScreenPosOld;
+      exit(BytePos);
+    end;
+  end;
+
+  // Column at/past end of line
+  AColOffset := 0;
+  Result := BytePos + 1 + AColumn - ScreenPos;
+end;
+
+function TSynLogicalPhysicalConvertor.LogicalToPhysical(AIndex,
+  ABytePos: Integer): Integer;
+var
+  ColOffs: Integer;
+begin
+  ColOffs := 0;
+  Result := LogicalToPhysical(AIndex, ABytePos, ColOffs);
+end;
+
+function TSynLogicalPhysicalConvertor.LogicalToPhysical(AIndex, ABytePos: Integer;
+  var AColOffset: Integer): Integer;
+var
+  i: integer;
+  CharWidths: TPhysicalCharWidths;
+begin
+  PrepareWidthsForLine(AIndex);
+
+  dec(ABytePos);
+  if ABytePos >= FCurrentWidthsLen then begin
+    Result := 1 + ABytePos - FCurrentWidthsLen;
+    ABytePos := FCurrentWidthsLen;
+    AColOffset := 0;
+  end
+  else begin
+    AColOffset := Min(AColOffset, FCurrentWidths[ABytePos]-1);
+    Result := 1 + AColOffset;
+  end;
+
+  for i := 0 to ABytePos - 1 do
+    Result := Result + FCurrentWidths[i];
+end;
+
 { TSynEditStringsBase }
 
 function TSynEditStringsBase.GetPChar(ALineIndex: Integer): PChar;
@@ -443,8 +599,15 @@ end;
 
 constructor TSynEditStrings.Create;
 begin
+  FLogPhysConvertor := TSynLogicalPhysicalConvertor.Create(self);
   inherited Create;
   IsUtf8 := True;
+end;
+
+destructor TSynEditStrings.Destroy;
+begin
+  FreeAndNil(FLogPhysConvertor);
+  inherited Destroy;
 end;
 
 procedure TSynEditStrings.BeginUpdate(Sender: TObject);
@@ -579,6 +742,11 @@ begin
   end;
 end;
 
+function TSynEditStrings.GetViewChangeStamp: int64;
+begin
+  Result := 0;
+end;
+
 procedure TSynEditStrings.SetUpdateState(Updating: Boolean);
 begin
   // Update/check "FSenderUpdateCount", to avoid extra locking/unlocking
@@ -591,8 +759,9 @@ end;
 function TSynEditStrings.LogicalToPhysicalPos(const p : TPoint) : TPoint;
 begin
   Result := p;
-  if Result.Y - 1 < Count then
-    Result.X:=LogicalToPhysicalCol(self[Result.Y - 1], Result.Y, Result.X);
+  Result.X := FLogPhysConvertor.LogicalToPhysical(p.y - 1, p.x);
+//  if Result.Y - 1 < Count then
+//    Result.X:=LogicalToPhysicalCol(self[Result.Y - 1], Result.Y, Result.X);
 end;
 
 function TSynEditStrings.LogicalToPhysicalCol(const Line : String;
@@ -619,8 +788,9 @@ end;
 function TSynEditStrings.PhysicalToLogicalPos(const p : TPoint) : TPoint;
 begin
   Result := p;
-  if (Result.Y>=1) and (Result.Y <= Count) then
-    Result.X:=PhysicalToLogicalCol(self[Result.Y - 1], Result.Y - 1, Result.X);
+  Result.X := FLogPhysConvertor.PhysicalToLogical(p.y - 1, p.x);
+//  if (Result.Y>=1) and (Result.Y <= Count) then
+//    Result.X:=PhysicalToLogicalCol(self[Result.Y - 1], Result.Y - 1, Result.X);
 end;
 
 function TSynEditStrings.PhysicalToLogicalCol(const Line : string;
@@ -726,6 +896,16 @@ end;
 procedure TSynEditStringsLinked.SetIsUtf8(const AValue: Boolean);
 begin
   FSynStrings.IsUtf8 := AValue;
+end;
+
+function TSynEditStringsLinked.GetTextChangeStamp: int64;
+begin
+  Result := fSynStrings.GetTextChangeStamp;
+end;
+
+function TSynEditStringsLinked.GetViewChangeStamp: int64;
+begin
+  Result := fSynStrings.GetViewChangeStamp;
 end;
 
 //Ranges
