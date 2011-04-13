@@ -3074,7 +3074,7 @@ docs/xml/lcl/postscriptprinter.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/postscriptunicode.xml svneol=native#text/plain
 docs/xml/lcl/printers.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/propertystorage.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/registerlcl.pas svneol=native#text/plain
+docs/xml/lcl/registerlcl.xml svneol=native#text/plain
 docs/xml/lcl/rubberband.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/shellctrls.xml svneol=native#text/plain
 docs/xml/lcl/spin.xml svneol=LF#text/xml eol=lf
