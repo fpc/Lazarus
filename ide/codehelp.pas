@@ -2392,6 +2392,8 @@ var
   ElementNode: TDOMNode;
   ElementNames: TStringList;
   i: Integer;
+  OldXYPos: TCodeXYPosition;
+  OldCTTool: TFindDeclarationTool;
 begin
   Result:=chprFailed;
   BaseURL:='lazdoc://';
@@ -2463,9 +2465,15 @@ begin
         or ((CTNode.Desc in [ctnProcedure,ctnProcedureHead])
             and (CTTool.ProcNodeHasSpecifier(CTNode,psOVERRIDE)))
         then begin
-          debugln(['TCodeHelpManager.GetHTMLHint2 TODO: search inherited for ',CTNode.DescAsString]);
-
-          break;
+          debugln(['TCodeHelpManager.GetHTMLHint2 searching for inherited of ',CTNode.DescAsString,' ',dbgs(XYPos)]);
+          OldXYPos:=XYPos;
+          OldCTTool:=CTTool;
+          if not OldCTTool.FindDeclaration(OldXYPos,DefaultFindSmartHintFlags,
+            CTTool,CTNode,XYPos,aTopLine)
+          then begin
+            debugln(['TCodeHelpManager.GetHTMLHint2 inherited not found: ',dbgs(OldXYPos)]);
+            break;
+          end;
         end else begin
           debugln(['TCodeHelpManager.GetHTMLHint2 not searching inherited for ',CTNode.DescAsString]);
           break;
