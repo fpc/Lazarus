@@ -146,9 +146,6 @@ function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Butt
 function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
 function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
 
-// should go to sysutils.pp
-procedure RaiseLastOSError;
-
 //##apiwiz##epi##    // Do not remove
 
 {$ENDIF}

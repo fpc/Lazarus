@@ -521,9 +521,4 @@ begin
     High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult, X, Y);
 end;
 
-procedure RaiseLastOSError;
-begin
-  RaiseGDBException('ToDo: RaiseLastOSError');
-end;
-
 //##apiwiz##epi##   // Do not remove
