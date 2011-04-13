@@ -45,6 +45,7 @@ uses
 
 type
   TApplicationState = record
+    ActiveWindow: HWND;
     FocusedWindow: HWND;
     DisabledWindows: TList;
   end;
@@ -164,6 +165,7 @@ implementation
 
 function SaveApplicationState: TApplicationState;
 begin
+  Result.ActiveWindow := Windows.GetActiveWindow;
   Result.FocusedWindow := Windows.GetFocus;
   Result.DisabledWindows := Screen.DisableForms(nil);
 end;
@@ -171,6 +173,7 @@ end;
 procedure RestoreApplicationState(AState: TApplicationState);
 begin
   Screen.EnableForms(AState.DisabledWindows);
+  Windows.SetActiveWindow(AState.ActiveWindow);
   Windows.SetFocus(AState.FocusedWindow);
 end;
 
