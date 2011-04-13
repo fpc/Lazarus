@@ -352,6 +352,16 @@ end;
   other dialogs modal
 }
 function TScreen.DisableForms(SkipForm: TCustomForm; DisabledList: TList = nil): TList;
+
+  procedure ProcessWindow(AWindow: HWND); inline;
+  begin
+    if IsWindowEnabled(AWindow) and IsWindowVisible(AWindow) then
+    begin
+      EnableWindow(AWindow, False);
+      Result.Add(Pointer(AWindow));
+    end;
+  end;
+
 var
   i: integer;
   AForm: TCustomForm;
@@ -362,20 +372,14 @@ begin
   for i := 0 to CustomFormCount - 1 do
   begin
     AForm := CustomForms[i];
+    // we cannot use AForm.Enabled := False; since it checks csDesigning
+    // but we need this for IDE too. We also cannot check AForm.Visible -
+    // it returns wrong info for the forms opened in the designer
     if (AForm <> SkipForm) and AForm.HandleAllocated then
-    begin
-      // we cannot use AForm.Enabled := False; since it checks csDesigning
-      // but we need this for IDE too. We also cannot check AForm.Visible -
-      // it returns wrong info for the forms opened in the designer
-      if IsWindowEnabled(AForm.Handle) and IsWindowVisible(AForm.Handle) then
-      begin
-        EnableWindow(AForm.Handle, False);
-        Result.Add(AForm);
-      end;
-    end;
+      ProcessWindow(AForm.Handle);
   end;
   if WidgetSet.GetLCLCapability(lcApplicationWindow) = LCL_CAPABILITY_YES then
-    EnableWindow(WidgetSet.AppHandle, False);
+    ProcessWindow(WidgetSet.AppHandle);
 end;
 
 {
@@ -383,19 +387,34 @@ end;
   DisableForms
 }
 procedure TScreen.EnableForms(var AFormList: TList);
+
+  function WindowExists(AWindow: HWND): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := (WidgetSet.GetLCLCapability(lcApplicationWindow) = LCL_CAPABILITY_YES) and
+      (WidgetSet.AppHandle = AWindow);
+
+    if not Result then
+    begin
+      I := FCustomForms.Count - 1;
+      while (I >= 0) and not (CustomForms[I].HandleAllocated and (CustomForms[I].Handle = AWindow)) do
+        Dec(I);
+      Result := I >= 0;
+    end;
+  end;
+
 var
   i: integer;
-  AForm: TCustomForm;
+  AWindow: HWND;
 begin
-  if WidgetSet.GetLCLCapability(lcApplicationWindow) = LCL_CAPABILITY_YES then
-    EnableWindow(WidgetSet.AppHandle, True);
   if AFormList = nil then
     Exit;
   for i := AFormList.Count - 1 downto 0 do
   begin
-    AForm := TCustomForm(AFormList[i]);
-    if (CustomFormIndex(AForm) <> -1) and AForm.HandleAllocated then
-      EnableWindow(AForm.Handle, True);
+    AWindow := HWND(AFormList[i]);
+    if WindowExists(AWindow) then
+      EnableWindow(AWindow, True);
   end;
   FreeAndNil(AFormList);
 end;
