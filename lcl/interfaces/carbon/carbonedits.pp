@@ -804,6 +804,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonComboBox.ValueChanged;
 begin
+  writeln('crb: ', LCLObject.Name,' value changed!');
   if FReadOnly then ListItemSelected(GetValue - 1);
 end;
 
@@ -1575,8 +1576,8 @@ begin
 
   if OSError(TXNGetLineMetrics(O, AIndex, W, H), Self, SName, 'TXNGetLineMetrics') then Exit;
   if OSError(TXNOffsetToHIPoint(O, 0, P), Self, SName, 'TXNOffsetToHIPoint') then Exit;
-  LineTop := P.y + AIndex * (H / $10000);
-  LineBottom := LineTop + H / $10000;
+  LineTop := P.y + AIndex * Fix2X(H);
+  LineBottom := LineTop + Fix2X(H);
 
   // find line offset with bisection
   TextStart := 0;
