@@ -107,6 +107,7 @@ type
     procedure AfterCommand(const Editor: TSynEditBase; const Lines: TSynEditStrings;
                            const ACaret: TSynEditCaret; var Command: TSynEditorCommand;
                            InitialCmd: TSynEditorCommand; StartLinePos, EndLinePos: Integer);
+    // GetDesiredIndentForLine: Returns the 1-based Physical x pos
     function GetDesiredIndentForLine
              (Editor: TSynEditBase; const Lines: TSynEditStrings;
               const ACaret: TSynEditCaret): Integer; virtual; abstract;
@@ -144,6 +145,7 @@ type
     function UnIndentLine(const ACaret: TSynEditCaret; out CaretNewX: Integer): Boolean;
   public
     procedure Assign(Src: TPersistent); override;
+    // Retruns a 0-based position (even 0-based physical)
     function GetIndentForLine(Editor: TSynEditBase; const Line: string;
                         Physical: boolean): Integer;
     function GetDesiredIndentForLine
@@ -475,14 +477,14 @@ var
   Temp: string;
   FoundLine: LongInt;
 begin
-  Result := 0;
+  Result := 1;
   FCurrentLines := Lines; // for GetCurrentIndent
   BackCounter := ACaret.LinePos - 1;
   if BackCounter > 0 then
     repeat
       Dec(BackCounter);
       Temp := Lines[BackCounter];
-      Result := GetIndentForLine(Editor, Temp, True) + 1;
+      Result := GetIndentForLine(Editor, Temp, True) + 1; // Physical
     until (BackCounter = 0) or (Temp <> '');
 
   FoundLine := BackCounter + 1;
@@ -491,12 +493,12 @@ begin
   //  FOnGetDesiredIndent(Editor, ACaret.LineBytePos, ACaret.LinePos, Result,
   //                      FoundLine, ReplaceIndent);
 
-  if Result < 0 then exit;
+  //if Result < 0 then exit;
 
-  if FoundLine > 0 then
-    Temp := Lines[FoundLine-1]
-  else
-    FoundLine := BackCounter + 1;
+  //if FoundLine > 0 then
+  //  Temp := Lines[FoundLine-1]
+  //else
+  //  FoundLine := BackCounter + 1;
   Temp := copy(Temp, 1, GetIndentForLine(Editor, Temp, False));
 
   case FIndentType of

@@ -490,13 +490,13 @@ begin
   Line := FLines.GetPChar(AIndex, LineLen);
   if LineLen > FCurrentWidthsAlloc then begin
     //debugln(['**************** COMPUTING widths (grow): ', AIndex,' (',dbgs(Pointer(self)),') old-alloc=', FCurrentWidthsAlloc, '  new-len=',LineLen]);
-    SetLength(FCurrentWidths, LineLen * SizeOf(TPhysicalCharWidth));
+    SetLength(FCurrentWidths, LineLen);
     FCurrentWidthsAlloc := LineLen;
   end
   else if FCurrentWidthsAlloc > Max(Max(LineLen, FCurrentWidthsLen)*4, SYN_LP_MIN_ALLOC) then begin
     //debugln(['**************** COMPUTING widths (shrink): ', AIndex,' (',dbgs(Pointer(self)),') old-alloc=', FCurrentWidthsAlloc, '  new-len=',LineLen]);
     FCurrentWidthsAlloc := Max(Max(LineLen, FCurrentWidthsLen), SYN_LP_MIN_ALLOC) ;
-    SetLength(FCurrentWidths, FCurrentWidthsAlloc * SizeOf(TPhysicalCharWidth));
+    SetLength(FCurrentWidths, FCurrentWidthsAlloc);
   //end
   //else begin
   //  debugln(['**************** COMPUTING widths: ', AIndex,' (',dbgs(Pointer(self)),') alloc=',FCurrentWidthsAlloc]);
@@ -573,10 +573,15 @@ var
   i: integer;
   CharWidths: TPhysicalCharWidths;
 begin
+  {$IFDEF AssertSynMemIndex}
+  if (ABytePos <= 0) then
+    raise Exception.Create(Format('Bad Bytpos for PhystoLogical BytePos=%d ColOffs= %d idx= %d',[ABytePos, AColOffset, AIndex]));
+  {$ENDIF}
+  if (ABytePos = 0) or ((ABytePos = 1) and (AColOffset=0)) then
+    exit(ABytePos);
   PrepareWidthsForLine(AIndex);
 
   dec(ABytePos);
-  Assert(ABytePos >= 0, 'ABytePos < 0 in TSynLogicalPhysicalConvertor.LogicalToPhysical');
   if ABytePos >= FCurrentWidthsLen then begin
     Result := 1 + ABytePos - FCurrentWidthsLen;
     ABytePos := FCurrentWidthsLen;
