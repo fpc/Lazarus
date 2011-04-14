@@ -3570,7 +3570,7 @@ end;
 
 procedure TDBGWatch.SetSlave(const ASlave : TBaseWatch);
 begin
-  Assert(FSlave = nil, 'TDBGWatch.SetSlave already has a slave');
+  Assert((FSlave = nil) or (ASlave = nil), 'TDBGWatch.SetSlave already has a slave');
   FSlave := ASlave;
 end;
 
