@@ -678,7 +678,7 @@ begin
 
   inherited WMSize(Message);
 
-  if (Message.SizeType and Size_Restored)>0 then
+  if (Message.SizeType and Size_Restored) > 0 then
   begin
     FRestoredLeft := Left;
     FRestoredTop := Top;
@@ -1381,11 +1381,12 @@ end;
 procedure TCustomForm.DoSendBoundsToInterface;
 begin
   inherited DoSendBoundsToInterface;
-  if WindowState=wsNormal then begin
-    FRestoredLeft:=Left;
-    FRestoredTop:=Top;
-    FRestoredWidth:=Width;
-    FRestoredHeight:=Height;
+  if WindowState = wsNormal then
+  begin
+    FRestoredLeft := Left;
+    FRestoredTop := Top;
+    FRestoredWidth := Width;
+    FRestoredHeight := Height;
   end;
 end;
 

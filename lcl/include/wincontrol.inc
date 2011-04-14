@@ -6738,7 +6738,7 @@ begin
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
   {$ENDIF}
-   if (Message.SizeType and Size_SourceIsInterface)>0 then
+   if (Message.SizeType and Size_SourceIsInterface) > 0 then
     DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
       ' BoundsRealized=',dbgs(FBoundsRealized),
       ' WChg=',FBoundsRealized.Right-FBoundsRealized.Left<>Message.Width,
@@ -6746,8 +6746,8 @@ begin
       ' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
 
-  NewLeft:=Left;
-  NewTop:=Top;
+  NewLeft := Left;
+  NewTop := Top;
   if ((Message.SizeType and Size_SourceIsInterface) > 0) then
   begin
     // interface widget has resized
@@ -6771,14 +6771,17 @@ begin
       GetWindowRelativePosition(Handle, NewLeft, NewTop);
     //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     NewBoundsRealized := Bounds(NewLeft, NewTop, Message.Width, Message.Height);
-    OldClientSize:=Size(0,0);
-    NewClientSize:=Size(0,0);
-    if CompareRect(@NewBoundsRealized,@FBoundsRealized) then begin
-      if not (wcfClientRectNeedsUpdate in FWinControlFlags) then begin
-        OldClientSize:=Size(FClientWidth,FClientHeight);
-        NewClientSize:=Size(ClientWidth,ClientHeight);
-        if (OldClientSize.cx=NewClientSize.cx)
-        and (OldClientSize.cy=NewClientSize.cy) then exit;
+    OldClientSize := Size(0, 0);
+    NewClientSize := Size(0, 0);
+    if CompareRect(@NewBoundsRealized, @FBoundsRealized) then
+    begin
+      if not (wcfClientRectNeedsUpdate in FWinControlFlags) then
+      begin
+        OldClientSize := Size(FClientWidth, FClientHeight);
+        NewClientSize := Size(ClientWidth, ClientHeight);
+        if (OldClientSize.cx = NewClientSize.cx) and
+           (OldClientSize.cy = NewClientSize.cy) then
+           Exit;
       end;
     end;
     {$IFDEF VerboseAllAutoSize}
@@ -6787,16 +6790,14 @@ begin
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
 
-    TopParent:=GetTopParent;
-    if (TopParent is TWinControl)
-      and (wcfKillIntfSetBounds in TWinControl(TopParent).FWinControlFlags)
-    then
+    TopParent := GetTopParent;
+    if (TopParent is TWinControl) and (wcfKillIntfSetBounds in TWinControl(TopParent).FWinControlFlags) then
       RaiseLoop;
 
     FBoundsRealized := NewBoundsRealized;
     //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
-    if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
-    then begin
+    if ([caspCreatingHandles, caspComputingBounds] * AutoSizePhases <> []) then
+    begin
       // while the LCL is creating handles the widgetset may send default bounds
       // we have not yet told the widgetset the final bounds
       // => the InvalidatePreferredSize and the InvalidateClientRectCache
@@ -6805,19 +6806,18 @@ begin
       // => do not call SetBounds, as this will set the Bounds to the widgetset
       //    default values.
       //DebugLn(['TWinControl.WMSize from intf ignored, because phases=',dbgs(AutoSizePhases),' boundsrealized=',wcfBoundsRealized in FWinControlFlags]);
-      exit;
+      Exit;
     end;
 
-    if Parent<>nil then
+    if Assigned(Parent) then
       InvalidatePreferredSize;
   end;
 
-  if Parent<>nil then
+  if Assigned(Parent) then
     SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height)
   else
     SetBounds(NewLeft, NewTop, Message.Width, Message.Height);
-  if ((Message.SizeType and Size_SourceIsInterface) > 0)
-  and ClientRectNeedsInterfaceUpdate then
+  if ((Message.SizeType and Size_SourceIsInterface) > 0) and ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
   {$IFDEF VerboseClientRectBugFix}
   //if Name=CheckClientRectName then
@@ -7207,46 +7207,47 @@ var
 
 begin
   //DebugLn('[TWinControl.CreateWnd] START ',DbgSName(Self));
-  if (csDestroying in ComponentState)
-  or (Parent<>nil) and (csDestroying in Parent.ComponentState) then begin
+  if (csDestroying in ComponentState) or Assigned(Parent) and (csDestroying in Parent.ComponentState) then
+  begin
     DebugLn('[TWinControl.CreateWnd] NOTE: csDestroying ',DbgSName(Self));
     RaiseGDBException('');
     exit;
   end;
 
-  if wcfInitializing in FWinControlFlags
-  then begin
+  if wcfInitializing in FWinControlFlags then
+  begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while initializing');
     RaiseGDBException('');
     Exit;
   end;
 
-  if wcfCreatingHandle in FWinControlFlags
-  then begin
+  if wcfCreatingHandle in FWinControlFlags then
+  begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating handle');
     RaiseGDBException('');
     Exit;
   end;
 
-  if wcfCreatingChildHandles in FWinControlFlags
-  then begin
+  if wcfCreatingChildHandles in FWinControlFlags then
+  begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating children');
     RaiseGDBException('');
     Exit;
   end;
   
-  if [csLoading,csDesigning]*ComponentState=[csLoading] then begin
+  if [csLoading,csDesigning]*ComponentState=[csLoading] then
+  begin
     DebugLn('[HINT] TWinControl.CreateWnd creating Handle during loading ',DbgSName(Self),' csDesigning=',dbgs(csDesigning in ComponentState));
     //DumpStack;
     //RaiseGDBException('');
   end;
 
-  FBoundsRealized:=Rect(0,0,0,0);
-  Exclude(FWinControlFlags,wcfBoundsRealized);
+  FBoundsRealized := Rect(0,0,0,0);
+  Exclude(FWinControlFlags, wcfBoundsRealized);
 
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.CreateWnd'){$ENDIF};
   try
-    if (Parent<>nil) and (not Parent.HandleAllocated) then
+    if Assigned(Parent) and not Parent.HandleAllocated then
     begin
       // first create the parent handle
       Parent.HandleNeeded;
@@ -7257,7 +7258,7 @@ begin
     FShowing := False;
     Exclude(FWinControlFlags, wcfHandleVisible);
 
-    Include(FWinControlFlags,wcfCreatingHandle);
+    Include(FWinControlFlags, wcfCreatingHandle);
     try
       CreateParams(Params);
       with Params do
@@ -7271,7 +7272,8 @@ begin
 
       //DebugLn(['TWinControl.CreateWnd Creating handle ... ',DbgSName(WidgetSetClass),' ',DbgSName(Self)]);
       FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
-      if not HandleAllocated then begin
+      if not HandleAllocated then
+      begin
         if WidgetSet.LCLPlatform=lpNoGUI then
           RaiseGDBException('TWinControl.CreateWnd: The nogui widgetset does not support visual controls.')
         else
@@ -7286,7 +7288,7 @@ begin
       TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
 
       //WriteClientRect('A');
-      if Parent <> nil then
+      if Assigned(Parent) then
         AddControl
       else
       if ParentWindow <> 0 then
@@ -7376,13 +7378,13 @@ begin
     begin
       // replace by update style call
       TWSWinControlClass(WidgetSetClass).SetColor(Self);
-      FWinControlFlags:=FWinControlFlags-[wcfColorChanged];
+      Exclude(FWinControlFlags, wcfColorChanged);
     end;
     if wcfFontChanged in FWinControlFlags then
     begin
       // replace by update style call
       TWSWinControlClass(WidgetSetClass).SetFont(Self,Font);
-      FWinControlFlags:=FWinControlFlags-[wcfFontChanged];
+      Exclude(FWinControlFlags, wcfFontChanged);
     end;
 
     if not (csDesigning in ComponentState) then
@@ -7396,9 +7398,10 @@ begin
       InvalidatePreferredSize;
     end;
 
-    if csDesigning in ComponentState
-    then TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[crDefault])
-    else TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Cursor]);
+    if csDesigning in ComponentState then
+      TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[crDefault])
+    else
+      TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Cursor]);
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InitializeWnd'){$ENDIF};
   end;
@@ -7624,7 +7627,7 @@ end;
 
 function TWinControl.BrushCreated: Boolean;
 begin
-  Result := FBrush <> nil;
+  Result := Assigned(FBrush);
 end;
 
 {------------------------------------------------------------------------------
@@ -8118,7 +8121,8 @@ var
   OldBounds: TRect;
   {$ENDIF}
 begin
-  if (Parent=nil) and (not HandleObjectShouldBeVisible) then begin
+  if (Parent = nil) and (not HandleObjectShouldBeVisible) then
+  begin
     { do not move invisible forms
        Reason: It is common to do this:
             Form1:=TForm1.Create(nil);
@@ -8127,9 +8131,9 @@ begin
             Form1.Show;
        This moves the form around and confuses some windowmanagers.
        Only send the last bounds. }
-    exit;
+    Exit;
   end;
-  NewBounds:=Bounds(Left, Top, Width, Height);
+  NewBounds := Bounds(Left, Top, Width, Height);
   {$IF defined(VerboseResizeFlicker) or defined(VerboseSizeMsg)}
   if HandleAllocated then begin
     GetWindowRelativePosition(Handle,OldBounds.Left,OldBounds.Top);
@@ -8172,14 +8176,15 @@ begin
     ' -> NewBounds=',dbgs(NewBounds));
   end;
   {$ENDIF}
-  FBoundsRealized:=NewBounds;
-  OldClientRect:=ClientRect;
-  Include(FWinControlFlags,wcfBoundsRealized); // Note: set before calling widgetset, because used in WMSize
+  FBoundsRealized := NewBounds;
+  OldClientRect := ClientRect;
+  Include(FWinControlFlags, wcfBoundsRealized); // Note: set before calling widgetset, because used in WMSize
   //if Parent=nil then DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   // this can trigger WMSize messages
   TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
-  NewClientRect:=ClientRect;
-  if not CompareRect(@OldClientRect,@NewClientRect) then begin
+  NewClientRect := ClientRect;
+  if not CompareRect(@OldClientRect,@NewClientRect) then
+  begin
     // the widgetset has changed the clientrect
     //DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' Bounds=',dbgs(BoundsRect),' OldClientRect=',dbgs(OldClientRect),' NewClientRect=',dbgs(NewClientRect)]);
     AdjustSize;
