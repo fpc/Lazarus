@@ -76,20 +76,12 @@ Type
 
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
-procedure AssertEx(const Message: String; const PassErr: Boolean;
-  const Severity: Byte);
-procedure AssertEx(const PassErr: Boolean; const Message: String);
-procedure AssertEx(const Message: String);
 function GetShiftState: TShiftState;
-procedure CallEvent(const Target: TObject; Event: TNotifyEvent;
-  const Data: Pointer; const EventType: TEventType);
 function ObjectToHWND(const AObject: TObject): HWND;
-function LCLControlSizeNeedsUpdate(Sender: TWinControl;
-  SendSizeMsgOnDiff: boolean): boolean;
+function LCLControlSizeNeedsUpdate(Sender: TWinControl; SendSizeMsgOnDiff: boolean): boolean;
 function GetLCLClientBoundsOffset(Sender: TObject; out ORect: TRect): boolean;
 function GetLCLClientBoundsOffset(Handle: HWnd; out Rect: TRect): boolean;
-procedure LCLBoundsToWin32Bounds(Sender: TObject;
-  var Left, Top, Width, Height: Integer);
+procedure LCLBoundsToWin32Bounds(Sender: TObject; var Left, Top, Width, Height: Integer);
 procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
@@ -529,67 +521,6 @@ begin
   Result := FlagsStr;
 end;
 
-
-{------------------------------------------------------------------------------
-  function: AssertEx
-  Params: Message  - Message sent
-          PassErr  - Pass error to a catching procedure (default: False)
-          Severity - How severe is the error on a scale from 0 to 3
-                     (default: 0)
-  Returns: Nothing
-
-  An expanded, better version of Assert
- ------------------------------------------------------------------------------}
-procedure AssertEx(const Message: String; const PassErr: Boolean; const Severity: Byte);
-begin
-  Case Severity Of
-    0:
-    begin
-      Assert(PassErr, Message);
-    end;
-    1:
-    begin
-      Assert(PassErr, Format('Trace:%S', [Message]));
-    end;
-    2:
-    begin
-      Case IsConsole Of
-        True:
-        begin
-          WriteLn(rsWin32Warning, Message);
-        end;
-        False:
-        begin
-          MessageBox(0, PChar(Message), PChar(rsWin32Warning), MB_OK);
-        end;
-      end;
-    end;
-    3:
-    begin
-      Case IsConsole Of
-        True:
-        begin
-          WriteLn(rsWin32Error, Message);
-        end;
-        False:
-        begin
-          MessageBox(0, PChar(Message), nil, MB_OK);
-        end;
-      end;
-    end;
-  end;
-end;
-
-procedure AssertEx(const PassErr: Boolean; const Message: String);
-begin
-  AssertEx(Message, PassErr, 0);
-end;
-
-procedure AssertEx(const Message: String);
-begin
-  AssertEx(Message, False, 0);
-end;
-
 {------------------------------------------------------------------------------
   function: GetShiftState
   Params: None
@@ -651,29 +582,6 @@ begin
   Toggle := Lo(GetKeyState(VirtualKey)) = 1;
 end;
 }
-
-{-----------------------------------------------------------------------------
-  procedure: CallEvent
-  Params: Target    - the object for which the event will be called
-          Event     - event to call
-          Data      - misc data
-          EventType - the type of event
-  Returns: Nothing
-
-  Calls an event
--------------------------------------------------------------------------------}
-procedure CallEvent(const Target: TObject; Event: TNotifyEvent; const Data: Pointer; const EventType: TEventType);
-begin
-  if Assigned(Target) And Assigned(Event) then
-  begin
-    Case EventType Of
-      etNotify:
-      begin
-        Event(Target);
-      end;
-    end;
-  end;
-end;
 
 {------------------------------------------------------------------------------
   function: ObjectToHWND
