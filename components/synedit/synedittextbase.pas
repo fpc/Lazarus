@@ -576,6 +576,7 @@ begin
   PrepareWidthsForLine(AIndex);
 
   dec(ABytePos);
+  Assert(ABytePos >= 0, 'ABytePos < 0 in TSynLogicalPhysicalConvertor.LogicalToPhysical');
   if ABytePos >= FCurrentWidthsLen then begin
     Result := 1 + ABytePos - FCurrentWidthsLen;
     ABytePos := FCurrentWidthsLen;
