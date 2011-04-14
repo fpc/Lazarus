@@ -7917,7 +7917,7 @@ var
   OldPos: TPoint;
   NewPos: TPoint;
 begin
-  OldPos := LogicalCaretXY;
+  OldPos := CaretXY;
   NewPos := OldPos;
 
   if not(eoEnhanceHomeKey in fOptions) and (CaretX > 1) and (aMode in [synhmDefault]) then
@@ -7944,7 +7944,8 @@ begin
     if (FirstNonBlank >= 1) or (aMode in [synhmFirstWord]) then
     begin
       // this line is not blank
-      LineStart := FirstNonBlank;
+      if FirstNonBlank < 1 then FirstNonBlank := 1;
+      LineStart := LogicalToPhysicalPos(Point(FirstNonBlank, CaretY)).x;
     end else 
     begin
       // this line is blank
@@ -7959,8 +7960,7 @@ begin
       NewPos.X:=1;
     end;
   end;
-
-  FCaret.LineBytePos := NewPos;
+  FCaret.LineCharPos := NewPos;
 end;
 
 procedure TCustomSynEdit.DoEndKey;
@@ -7975,13 +7975,13 @@ var
   OldPos: TPoint;
   NewPos: TPoint;
 begin
-  OldPos := LogicalCaretXY;
+  OldPos := CaretXY;
   NewPos := OldPos;
   s := LineText;
 
-  if not (eoEnhanceEndKey in fOptions2) and (CaretX <> Length(s)+1) then begin
+  if not (eoEnhanceEndKey in fOptions2) and (FCaret.BytePos <> Length(s)+1) then begin
     // not at end of real line -> jump to end of line
-    NewPos.X := Length(s)+1;
+    FCaret.BytePos := Length(s)+1;
   end else begin
     // calculate line end position
     LastNonBlank := -1;
@@ -7993,7 +7993,7 @@ begin
     end;
     if LastNonBlank >=1 then begin
       // this line is not blank
-      LineEnd := LastNonBlank + 1;
+      LineEnd := LogicalToPhysicalPos(Point(LastNonBlank + 1, CaretY)).x;
     end else begin
       // this line is blank
       // -> use automatic line indent
@@ -8001,13 +8001,13 @@ begin
     end;
 
     NewPos.X:=LineEnd;
-    if (eoEnhanceEndKey in fOptions2) and (OldPos.X <> Length(s)+1) and (OldPos.X >= NewPos.X)
+    if (eoEnhanceEndKey in fOptions2) and (FCaret.BytePos <> Length(s)+1) and (OldPos.X >= NewPos.X)
     then begin
-      NewPos.X := Length(s)+1;
-    end;
+      FCaret.BytePos := Length(s)+1;
+    end
+    else
+      FCaret.LineCharPos := NewPos;
   end;
-
-  FCaret.LineBytePos := NewPos;
 end;
 
 {$IFDEF SYN_COMPILER_4_UP}

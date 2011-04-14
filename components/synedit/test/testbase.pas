@@ -475,7 +475,7 @@ end;
 
 procedure TTestBase.SetCaretPhys(X, Y: Integer);
 begin
-  SynEdit.LogicalCaretXY := Point(X, Y);
+  SynEdit.CaretXY := Point(X, Y);
   SynEdit.BlockBegin := SynEdit.LogicalCaretXY;
   {$IFDEF WITH_APPMSG}Application.ProcessMessages;{$ENDIF}
 end;
