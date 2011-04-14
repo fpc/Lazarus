@@ -28,6 +28,7 @@ type
     procedure TestEditEmpty;
     procedure TestEditTabs;
     procedure TestEditPhysicalLogical;
+    procedure TestCaretAutoMove;
   end;
 
 implementation
@@ -246,6 +247,65 @@ begin
   TestPhysLog('line with tab (start)', 3, 8, 3);
   TestPhysLog('line with tab (start)', 3, 9, 4);
   TestPhysLog('line with tab (start)', 3, 11, 6);
+
+end;
+
+procedure TTestBasicSynEdit.TestCaretAutoMove;
+
+  procedure DoTest(name: string; y, x, insertY, insertX, InsertY2, InsertX2: integer;
+                   txt: string; expY, expX: Integer);
+  begin
+    name := name + ' y='+inttostr(y)+' x='+inttostr(x);
+    if y > 0 then begin
+      ReCreateEdit;
+      SynEdit.TabWidth := 6;
+      SetLines(['x', 'abc', ' ääX', #9'mn', 'abc'#9'de', #9'Xää.']);
+      SynEdit.CaretXY := Point(x, y);
+    end;
+
+    SynEdit.TextBetweenPointsEx[Point(insertX, insertY), point(insertX2, InsertY2), scamAdjust]
+      := txt;
+debugln(dbgstr(SynEdit.Text));
+    TestIsCaretPhys(name, expX, expY);
+  end;
+
+const
+  cr = LineEnding;
+begin
+
+
+  DoTest('simple insert',              2,2,   2,1,  2,1, 'X',      2,3);
+  DoTest('simple insert CR',           2,2,   2,1,  2,1, 'X'+cr,   3,2);
+  DoTest('simple insert CR+',          2,2,   2,1,  2,1, cr+'X',   3,3);
+  DoTest('simple delete',              2,2,   2,1,  2,2, '',       2,1);
+  DoTest('simple delete CR',           2,2,   1,2,  2,1, '',       1,3);
+  DoTest('+simple delete CR',          2,2,   1,1,  2,1, '',       1,2);
+
+  DoTest('simple insert (eol)',        2,4,   2,1,  2,1, 'X',   2,5);
+  DoTest('simple insert (past eol)',   2,7,   2,1,  2,1, 'X',   2,8);
+
+  DoTest('insert with tab',            4,8,   4,1,  4,1, 'X',      4,8);
+  DoTest('insert with tab (cont)',    -4,8,   4,2,  4,2, 'Y',      4,8);
+  DoTest('insert with tab (cont)',    -4,8,   4,3,  4,3, 'abc',    4,8);
+  DoTest('insert with tab (cont)',    -4,8,   4,6,  4,6, 'Z',      4,14);
+  DoTest('insert with tab (cont)',    -4,8,   4,7,  4,7, '.',      4,14);
+  DoTest('delete with tab (cont)',    -4,8,   4,1,  4,2, '',       4,14);
+  DoTest('delete with tab (cont)',    -4,8,   4,1,  4,2, '',       4,8);
+  DoTest('delete with tab (cont)',    -4,8,   4,1,  4,2, '',       4,8);
+  DoTest('delete with tab (cont)',    -4,8,   4,1,  4,2, '',       4,8);
+
+
+  SynEdit.CaretObj.IncAutoMoveOnEdit;
+  DoTest('insert with tab (am-block)',            4,8,   4,1,  4,1, 'X',      4,8);
+  DoTest('insert with tab (am-block) (cont)',    -4,8,   4,2,  4,2, 'Y',      4,8);
+  DoTest('insert with tab (am-block) (cont)',    -4,8,   4,3,  4,3, 'abc',    4,8);
+  DoTest('insert with tab (am-block) (cont)',    -4,8,   4,6,  4,6, 'Z',      4,14);
+  DoTest('insert with tab (am-block) (cont)',    -4,8,   4,7,  4,7, '.',      4,14);
+  DoTest('delete with tab (cont)',    -4,8,   4,1,  4,2, '',       4,14);
+  DoTest('delete with tab (cont)',    -4,8,   4,1,  4,2, '',       4,8);
+  DoTest('delete with tab (cont)',    -4,8,   4,1,  4,2, '',       4,8);
+  DoTest('delete with tab (cont)',    -4,8,   4,1,  4,2, '',       4,8);
+  SynEdit.CaretObj.DecAutoMoveOnEdit;
 
 end;
 

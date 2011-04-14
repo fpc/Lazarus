@@ -176,6 +176,7 @@ type
     FLinePos: Integer;     // 1 based
     FCharPos: Integer;     // 1 based
     FLastCharPos: Integer; // used by KeepCaretX
+    FBytePos, FBytePosOffset: Integer;     // 1 based
     FOldLinePos: Integer; // 1 based
     FOldCharPos: Integer; // 1 based
     FAdjustToNextChar: Boolean;
@@ -185,6 +186,7 @@ type
     FTouched: Boolean;
 
     procedure AdjustToChar;
+    procedure UpdateBytePos;
     function GetOldLineBytePos: TPoint;
     function GetOldLineCharPos: TPoint;
     procedure InternalSetLineCharPos(NewLine, NewCharPos: Integer;
@@ -436,6 +438,8 @@ end;
 
 procedure TSynEditCaret.IncAutoMoveOnEdit;
 begin
+  if FAutoMoveOnEdit =0 then
+    UpdateBytePos;;
   inc(FAutoMoveOnEdit);
 end;
 
@@ -509,6 +513,11 @@ begin
     ScreenPos := ScreenPos + CharWidths[LogPos];
     inc(LogPos);
   end;
+end;
+
+procedure TSynEditCaret.UpdateBytePos;
+begin
+  FBytePos := FLines.LogPhysConvertor.PhysicalToLogical(FLinePos-1, FCharPos, FBytePosOffset);
 end;
 
 function TSynEditCaret.GetOldLineBytePos: TPoint;
@@ -589,6 +598,8 @@ begin
       AdjustToChar;
       if (not KeepLastCharPos) or (not FKeepCaretX) then
         FLastCharPos := FCharPos;
+      if FAutoMoveOnEdit <> 0 then
+        UpdateBytePos;
     end;
   finally
     Unlock;
@@ -703,10 +714,17 @@ procedure TSynEditCaret.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePo
     end;
   end;
 
+var
+  p: TPoint;
 begin
   if FAutoMoveOnEdit > 0 then begin
     IncForcePastEOL;
-    LineBytePos := AdjustPoint(LineBytePos);
+    p :=  AdjustPoint(Point(FBytePos, FLinePos));
+    p.x := FLines.LogPhysConvertor.LogicalToPhysical(p.y-1, p.x, FBytePosOffset);
+    FBytePos := -1;
+    LineCharPos := p;
+    if FBytePos < 0 then
+      UpdateBytePos;
     DecForcePastEOL;
   end;
 end;

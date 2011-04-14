@@ -587,18 +587,23 @@ var
 begin
   if (not fEnabled) then exit;
   FIsTrimming := True;
-  IncViewChangeStamp;
   {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimAfterLock', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' LockList=',fLockList.CommaText]);{$ENDIF}
   i := fLockList.IndexOfObject(TObject(Pointer(PtrUInt(fLineIndex))));
   if i >= 0 then begin
+    if fSpaces <> fLockList[i] then
+      IncViewChangeStamp;
     fSpaces:= fLockList[i];
     if (fLineIndex >= 0) and (fLineIndex < fSynStrings.Count) then
       fLineText := fSynStrings[fLineIndex];
     fLockList.Delete(i);
     DoCaretChanged(fCaret);
-  end;
+  end
+  else if fSpaces <> '' then
+    IncViewChangeStamp;
   FIsTrimming := True;
   BeginUpdate;
+  if fLockList.Count > 0 then
+    IncViewChangeStamp;
   try
     for i := 0 to fLockList.Count-1 do begin
       index := Integer(PtrUInt(Pointer(fLockList.Objects[i])));
