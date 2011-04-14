@@ -223,6 +223,7 @@ type
     procedure InitAndSort(AList: TFPList; ACompare: TListSortCompare);
   protected
     function GetOwner: TPersistent; override;
+    procedure Update(AItem: TCollectionItem); override;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -921,6 +922,12 @@ begin
     a := Add;
   a.Assign(AValue);
   a.FAlignment := AXIS_INDEX[AIndex];
+end;
+
+procedure TChartAxisList.Update(AItem: TCollectionItem);
+begin
+  Unused(AItem);
+  FChart.Invalidate;
 end;
 
 { TAxisCoeffHelper }
