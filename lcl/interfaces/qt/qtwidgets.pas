@@ -3171,6 +3171,7 @@ var
   Msg: TLMPaint;
   AStruct: PPaintStruct;
   P: TPoint;
+  B: Boolean;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotPaint ', dbgsName(LCLObject));
@@ -3223,8 +3224,16 @@ begin
         Dispose(AStruct);
       end;
     except
-      raise Exception.CreateFmt('TQtWidget.SlotPaint(): TQtObject %s LCLObject %s ',
-        [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(LCLObject))]);
+      // prevent recursive repainting !
+      B := (Sender <> nil) and QtWidgetSet.IsValidHandle(HWND(Self));
+      if B then
+        QWidget_setUpdatesEnabled(QWidgetH(Sender), False);
+      try
+        Application.HandleException(nil);
+      finally
+        if B and Assigned(Application) and not Application.Terminated then
+          QWidget_setUpdatesEnabled(QWidgetH(Sender), True);
+      end;
     end;
   end;
 end;
@@ -4443,9 +4452,7 @@ begin
       raise Exception.CreateFmt('%s.DeliverMessage(): error in input event %d ',
         [ClassName, TLMessage(Msg).Msg]);
     end else
-      raise Exception.CreateFmt(
-        'TQtWidget.DeliverMessage(): TQtObject %s LCLObject %s Msg %d',
-        [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(LCLObject)), TLMessage(Msg).Msg]);
+      Application.HandleException(nil);
   end;
 end;
 
@@ -11568,6 +11575,7 @@ var
   AStruct: TPaintStruct;
   ItemStruct: PDrawItemStruct;
   P: TPoint;
+  B: Boolean;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.DrawItem ', dbgsName(LCLObject));
@@ -11615,9 +11623,16 @@ begin
         Dispose(ItemStruct);
       end;
     except
-      raise Exception.CreateFmt(
-        'TQtStatusBarPanel.DrawItem: TQtObject %s LCLObject %s ',
-        [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(LCLObject))]);
+      // prevent recursive repainting !
+      B := (Sender <> nil) and QtWidgetSet.IsValidHandle(HWND(Self));
+      if B then
+        QWidget_setUpdatesEnabled(QWidgetH(Sender), False);
+      try
+        Application.HandleException(nil);
+      finally
+        if B and Assigned(Application) and not Application.Terminated then
+          QWidget_setUpdatesEnabled(QWidgetH(Sender), True);
+      end;
     end;
   end;
 end;
@@ -11734,9 +11749,7 @@ begin
     end else
       Result := 0;
   except
-    raise Exception.CreateFmt(
-      'TQtDialog.DeliverMessage: TQtObject %s LCLObject %s ',
-      [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(FDialog))]);
+    Application.HandleException(nil);
   end;
 end;
 
@@ -13826,6 +13839,7 @@ var
   Msg: TLMPaint;
   AStruct: PPaintStruct;
   P: TPoint;
+  B: Boolean;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtDesignWidget.SlotDesignControlPaint ', dbgsName(LCLObject));
@@ -13873,9 +13887,16 @@ begin
         Dispose(AStruct);
       end;
     except
-      raise Exception.CreateFmt(
-        'TQtDesignWidget.SlotDesignControlPaint: TQtObject %s LCLObject %s ',
-        [DbgHex(PtrUInt(Self)), DbgHex(PtrUInt(LCLObject))]);
+      // prevent recursive repainting !
+      B := (Sender <> nil) and QtWidgetSet.IsValidHandle(HWND(Self));
+      if B then
+        QWidget_setUpdatesEnabled(QWidgetH(Sender), False);
+      try
+        Application.HandleException(nil);
+      finally
+        if B and Assigned(Application) and not Application.Terminated then
+          QWidget_setUpdatesEnabled(QWidgetH(Sender), True);
+      end;
     end;
   end;
 end;
