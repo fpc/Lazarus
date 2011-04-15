@@ -494,6 +494,7 @@ end;
 procedure TMessagesView.AddMsg(const Msg, CurDir: string; OriginalIndex: integer;
   Parts: TStrings);
 begin
+  if Self=nil then exit;
   Add(Msg, CurDir, False, True, OriginalIndex, Parts);
 end;
 
@@ -853,6 +854,7 @@ end;
 
 procedure TMessagesView.BeginBlock(ClearOldBlocks: Boolean = true);
 begin
+  if Self=nil then exit;
   if ClearOldBlocks then
     Clear;
   //if fBlockLevel=0 then DumpStack;
@@ -861,6 +863,7 @@ end;
 
 procedure TMessagesView.EndBlock;
 begin
+  if Self=nil then exit;
   if fBlockLevel <= 0 then
     RaiseException('TMessagesView.EndBlock Internal Error');
   Dec(fBlockLevel);
@@ -882,7 +885,10 @@ end;
 
 function TMessagesView.LinesCount: integer;
 begin
-  Result := FItems.Count;
+  if Self=nil then
+    Result:=0
+  else
+    Result := FItems.Count;
 end;
 
 function TMessagesView.VisibleItemCount: integer;
