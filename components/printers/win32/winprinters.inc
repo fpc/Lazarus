@@ -3,7 +3,8 @@
 Implementation for winprinter
 ***************************************************************}
 uses
-  InterfaceBase, LCLIntf, WinVer, WinUtilPrn, WinSpool;
+  InterfaceBase, LCLIntf, WinVer, WinUtilPrn
+  {todo: use WinSpool when it will be released with fpc, WinSpool};
 
 // todo: this ^ is a mess: mixed WinUtilPrn/Windows units clean...
 
