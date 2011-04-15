@@ -26,19 +26,20 @@
 { Protected Methods }
 
 procedure TDBListBox.DataChange(Sender: TObject);
+var
+  DataLinkField: TField;
 begin
-  if Assigned(FDataLink.Field) then
-    ItemIndex := Items.IndexOf(FDataLink.Field.AsString)
+  DataLinkField := FDataLink.Field;
+  if Assigned(DataLinkField) then
+    ItemIndex := Items.IndexOf(DataLinkField.Text)
   else
     ItemIndex := -1;
 end;
 
 procedure TDBListBox.UpdateData(Sender: TObject);
 begin
-  if (ItemIndex >= 0) then
-    FDataLink.Field.AsString := Items[ItemIndex]
-  else
-    FDataLink.Field.AsString := '';
+  if ItemIndex >= 0 then
+    FDataLink.Field.Text := Items[ItemIndex];
 end;
 
 class procedure TDBListBox.WSRegisterClass;
