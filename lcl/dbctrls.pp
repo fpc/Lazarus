@@ -356,7 +356,7 @@ Type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-
+    // we need to override the Items Write method for db aware.
     procedure SetItems(Values : TStrings); override;
 
     function GetReadOnly: Boolean;
@@ -393,12 +393,6 @@ Type
   protected
     procedure DataChange(Sender: TObject); override;
     procedure UpdateData(Sender: TObject); override;
-    class procedure WSRegisterClass; override;
-  public
-    // we need to overrride the write method for db aware.
-    // the Read isn't an issue since the list will be updated
-    // on data change anyway
-    property Items write SetItems;
   published
     property Align;
     property Anchors;
@@ -410,6 +404,7 @@ Type
     property DragMode;
     property ExtendedSelect;
     property ItemHeight;
+    property Items;
     property MultiSelect;
     property OnClick;
     property OnDblClick;
