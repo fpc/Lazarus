@@ -28,13 +28,15 @@
 procedure TDBComboBox.UpdateData(Sender: TObject);
 begin
   FDataLink.Field.Text := Text;
-  FDataLink.Field.AsString := Text;
 end;
 
 procedure TDBComboBox.UpdateText;
+var
+  DataLinkField: TField;
 begin
-  if Assigned(FDataLink.Field ) then
-    Text := FDataLink.Field.AsString
+  DataLinkField := FDataLink.Field;
+  if Assigned(DataLinkField) then
+    Text := DataLinkField.Text
   else
     inherited;
 end;
