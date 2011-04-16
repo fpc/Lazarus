@@ -326,26 +326,20 @@ type
                            read FOnPropertiesChanged write FOnPropertiesChanged;
     property OnRenameComponent: TOnRenameComponent
                                read FOnRenameComponent write FOnRenameComponent;
-    property OnSetDesigning: TOnSetDesigning
-                                     read FOnSetDesigning write FOnSetDesigning;
-    property OnComponentAdded: TNotifyEvent
-                                      read FOnComponentAdded
-                                      write FOnComponentAdded;
-    property OnShowOptions: TNotifyEvent
-                                       read FOnShowOptions write FOnShowOptions;
+    property OnSetDesigning: TOnSetDesigning read FOnSetDesigning write FOnSetDesigning;
+    property OnComponentAdded: TNotifyEvent read FOnComponentAdded
+                                           write FOnComponentAdded;
+    property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
     property OnSaveAsXML: TNotifyEvent read FOnSaveAsXML write FOnSaveAsXML;
     property OnShowObjectInspector: TNotifyEvent read FOnShowObjectInspector write FOnShowObjectInspector;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
-    property ShowEditorHints: boolean
-                               read GetShowEditorHints write SetShowEditorHints;
-    property ShowComponentCaptions: boolean
-                                           read GetShowComponentCaptions
+    property ShowEditorHints: boolean read GetShowEditorHints write SetShowEditorHints;
+    property ShowComponentCaptions: boolean read GetShowComponentCaptions
                                            write SetShowComponentCaptions;
     property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
-    property TheFormEditor: TCustomFormEditor
-                                       read FTheFormEditor write FTheFormEditor;
+    property TheFormEditor: TCustomFormEditor read FTheFormEditor write FTheFormEditor;
     property DefaultFormBounds: TRect read FDefaultFormBounds write SetDefaultFormBounds;
     property DefaultFormBoundsValid: boolean read FDefaultFormBoundsValid
                                              write FDefaultFormBoundsValid;
@@ -1259,8 +1253,7 @@ end;
 
 procedure TDesigner.DoShowChangeClassDialog;
 begin
-  if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected)
-  then
+  if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected) then
     ShowChangeClassDialog(Self,ControlSelection[0].Persistent);
 end;
 
