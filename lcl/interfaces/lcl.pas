@@ -7,7 +7,7 @@ unit LCL;
 interface
 
 uses
-  AllLCLIntfUnits, cocoawsbuttons, LazarusPackageIntf;
+  AllLCLIntfUnits, LazarusPackageIntf;
 
 implementation
 
