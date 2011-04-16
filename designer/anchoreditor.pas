@@ -139,26 +139,26 @@ type
     procedure SiblingComboBoxChange(Sender: TObject);
     procedure ReferenceSideButtonClicked(Sender: TObject);
   private
+    Values: TAnchorDesignerValues;
     FSelection: TPersistentSelectionList;
     FSelectedControlsList: TList;
     FUpdating: Boolean;
-  protected
-    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure Refresh(Force: boolean);
+    procedure OnRefreshPropertyValues;
+    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
+    function GetSelectedControls: TList;
+    function FindSibling(const Sibling: string): TControl;
     procedure FillComboBoxWithSiblings(AComboBox: TComboBox);
     function AnchorDesignerNoSiblingText: string;
     function AnchorDesignerNeighbourText(direction: TAnchorKind): string;
-  public
-    Values: TAnchorDesignerValues;
-    destructor Destroy; override;
-    procedure Refresh(Force: boolean);
-    procedure OnRefreshPropertyValues;
-    function GetSelectedControls: TList;
-    function FindSibling(const Sibling: string): TControl;
-    class function ControlToStr(AControl: TControl): string;
     procedure CollectValues(const ASelection: TList;
                             var TheValues: TAnchorDesignerValues;
                             var SelectedControlCount: integer);
-    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
+  protected
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+  public
+    destructor Destroy; override;
+    class function ControlToStr(AControl: TControl): string;
     property Selection: TPersistentSelectionList read FSelection;
   end;
   
@@ -767,7 +767,7 @@ var
 begin
   //debugln('TAnchorDesigner.Refresh A ');
   if not Force then begin
-    // check if uddate is needed
+    // check if update is needed
     if not IsVisible then exit;
   end;
   if FUpdating then exit;
