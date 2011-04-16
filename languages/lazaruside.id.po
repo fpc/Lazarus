@@ -7511,7 +7511,7 @@ msgid "File not text"
 msgstr "File bukan teks"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+msgid "File Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10739,7 +10739,7 @@ msgid "Move \"%s\" one position up"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+msgid "Move Page"
 msgstr ""
 
 #: lazarusidestrconsts.lisms
@@ -11162,10 +11162,6 @@ msgstr "Buka file yang ada"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "Buka file"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr ""
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16817,10 +16813,6 @@ msgstr "Set penunjuk bebas"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Tampilkan Niomor Baris"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Info Unit"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

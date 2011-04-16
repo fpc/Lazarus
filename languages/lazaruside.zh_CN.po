@@ -7520,7 +7520,9 @@ msgid "File not text"
 msgstr "文件不是文本文件"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+#, fuzzy
+#| msgid "File Settings ..."
+msgid "File Settings"
 msgstr "文件设置 ..."
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10750,7 +10752,9 @@ msgid "Move \"%s\" one position up"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+#, fuzzy
+#| msgid "Move Page ..."
+msgid "Move Page"
 msgstr "移动页 ..."
 
 #: lazarusidestrconsts.lisms
@@ -11177,10 +11181,6 @@ msgstr "打开存在的文件"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "打开文件"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr "打开文件 ..."
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16838,10 +16838,6 @@ msgstr ""
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "显示行号"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "单元信息"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

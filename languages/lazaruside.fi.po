@@ -7492,7 +7492,9 @@ msgid "File not text"
 msgstr "Tiedosto ei ole tekstitiedosto"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+#, fuzzy
+#| msgid "File Settings ..."
+msgid "File Settings"
 msgstr "Tiedoston asetukset ..."
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10710,7 +10712,9 @@ msgid "Move \"%s\" one position up"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+#, fuzzy
+#| msgid "Move Page ..."
+msgid "Move Page"
 msgstr "Siirrä välilehdelle ..."
 
 #: lazarusidestrconsts.lisms
@@ -11127,10 +11131,6 @@ msgstr "Avaa tiedosto"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "Avaa tiedosto"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr "Avaa tiedosto ..."
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16780,10 +16780,6 @@ msgstr ""
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Näytä rivinumerot"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Käännösyksikön tiedot"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

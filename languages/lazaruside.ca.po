@@ -7499,7 +7499,7 @@ msgid "File not text"
 msgstr "No és un fitxer de text"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+msgid "File Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10723,7 +10723,7 @@ msgid "Move \"%s\" one position up"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+msgid "Move Page"
 msgstr ""
 
 #: lazarusidestrconsts.lisms
@@ -11146,10 +11146,6 @@ msgstr ""
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "Obre el fitxer"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr ""
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16795,10 +16791,6 @@ msgstr "Estableix un Marcador lliure"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Mostra nombre de línia"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Informació de la unitat"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

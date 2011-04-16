@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-06 03:04+0300\n"
+"PO-Revision-Date: 2011-04-16 17:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7516,7 +7516,8 @@ msgid "File not text"
 msgstr "Файл не текстовый"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+#| msgid "File Settings ..."
+msgid "File Settings"
 msgstr "Параметры файла"
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10732,7 +10733,8 @@ msgid "Move \"%s\" one position up"
 msgstr "Переместить \"%s\" на позицию вверх"
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+#| msgid "Move Page ..."
+msgid "Move Page"
 msgstr "Переместить страницу"
 
 #: lazarusidestrconsts.lisms
@@ -11152,10 +11154,6 @@ msgstr "Открыть существующий файл"
 
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
-msgstr "Открыть файл"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
 msgstr "Открыть файл"
 
 #: lazarusidestrconsts.lisopenlfm
@@ -16813,10 +16811,6 @@ msgstr "Установить свободную закладку"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Показывать номера строк"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Сведения о модуле"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

@@ -7500,7 +7500,7 @@ msgid "File not text"
 msgstr "Не текстовий файл"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+msgid "File Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10724,7 +10724,7 @@ msgid "Move \"%s\" one position up"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+msgid "Move Page"
 msgstr ""
 
 #: lazarusidestrconsts.lisms
@@ -11147,10 +11147,6 @@ msgstr "Відкрити існуючий файл"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "Відкрити файл"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr ""
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16802,10 +16798,6 @@ msgstr "Встановити вільну Закладку"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Показувати нумерацію рядків"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Відомості про модулі"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

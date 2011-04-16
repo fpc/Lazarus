@@ -7521,7 +7521,9 @@ msgid "File not text"
 msgstr "Pas un fichier texte"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+#, fuzzy
+#| msgid "File Settings ..."
+msgid "File Settings"
 msgstr "paramêtres fichiers"
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10740,7 +10742,9 @@ msgid "Move \"%s\" one position up"
 msgstr "Déplacer \"%s\" une position plus haut"
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+#, fuzzy
+#| msgid "Move Page ..."
+msgid "Move Page"
 msgstr "Déplacer la page..."
 
 #: lazarusidestrconsts.lisms
@@ -11163,10 +11167,6 @@ msgstr "Ouvrir le fichier existant"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "Ouvrir un fichier"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr "Ouvrir un fichier..."
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16818,10 +16818,6 @@ msgstr "Mettre un signet libre"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Afficher les numéros de ligne"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Informations sur l'unité"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

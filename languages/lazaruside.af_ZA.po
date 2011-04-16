@@ -7463,7 +7463,7 @@ msgid "File not text"
 msgstr "Lêer is nie teks nie"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+msgid "File Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10662,7 +10662,7 @@ msgid "Move \"%s\" one position up"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+msgid "Move Page"
 msgstr ""
 
 #: lazarusidestrconsts.lisms
@@ -11078,10 +11078,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
-msgstr ""
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisopenlfm
@@ -16716,10 +16712,6 @@ msgstr ""
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Wys Lyn Nommers"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Eenheid Informasie"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

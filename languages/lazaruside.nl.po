@@ -7503,7 +7503,7 @@ msgid "File not text"
 msgstr "Bestand is geen tekst"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+msgid "File Settings"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10729,7 +10729,7 @@ msgid "Move \"%s\" one position up"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+msgid "Move Page"
 msgstr ""
 
 #: lazarusidestrconsts.lisms
@@ -11152,10 +11152,6 @@ msgstr "Open bestannd bestand"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "Open bestand"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr ""
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16807,10 +16803,6 @@ msgstr "Plaats een beschikbaar Bookmark"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Toon regelnummers"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Unit informatie"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

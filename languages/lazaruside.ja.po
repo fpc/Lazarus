@@ -7517,7 +7517,9 @@ msgid "File not text"
 msgstr "ファイルはテキストでない"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+#, fuzzy
+#| msgid "File Settings ..."
+msgid "File Settings"
 msgstr "ファイル設定 ..."
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10751,7 +10753,9 @@ msgid "Move \"%s\" one position up"
 msgstr "\"%s\" を一つ上に移動"
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+#, fuzzy
+#| msgid "Move Page ..."
+msgid "Move Page"
 msgstr "ページ移動 ..."
 
 #: lazarusidestrconsts.lisms
@@ -11176,10 +11180,6 @@ msgstr "既存のファイルを開く"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "ファイルを開く"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr "ファイルを開く ..."
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16837,10 +16837,6 @@ msgstr "自由なブックマークをつける"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "行番号を表示"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "ユニット情報"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

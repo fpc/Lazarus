@@ -7462,7 +7462,9 @@ msgid "File not text"
 msgstr "Soubor není textový"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+#, fuzzy
+#| msgid "File Settings ..."
+msgid "File Settings"
 msgstr "Nastavení souboru..."
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10655,7 +10657,9 @@ msgid "Move \"%s\" one position up"
 msgstr "Posunout \"%s\" o jednu pozici nahoru"
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+#, fuzzy
+#| msgid "Move Page ..."
+msgid "Move Page"
 msgstr "Přesunout stránku..."
 
 #: lazarusidestrconsts.lisms
@@ -11070,10 +11074,6 @@ msgstr "Otevřít existující soubor"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "Otevřít soubor"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr "Otevřít soubor..."
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16708,10 +16708,6 @@ msgstr "Nastavit volnou Záložku"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Zobrazovat čísla řádků"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Informace o jednotce"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

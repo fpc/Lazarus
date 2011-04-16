@@ -7508,7 +7508,9 @@ msgid "File not text"
 msgstr "Ne teksto failas"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+#, fuzzy
+#| msgid "File Settings ..."
+msgid "File Settings"
 msgstr "Failo nuostatos…"
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10733,7 +10735,9 @@ msgid "Move \"%s\" one position up"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+#, fuzzy
+#| msgid "Move Page ..."
+msgid "Move Page"
 msgstr "Perkelti lapą…"
 
 #: lazarusidestrconsts.lisms
@@ -11155,10 +11159,6 @@ msgstr "Atverti failą"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "Atverti failą"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr "Atverti failą…"
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16820,10 +16820,6 @@ msgstr "Padėti laisvą žymę"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "Rodyti eilučių numerius"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Informacija apie modulį"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"

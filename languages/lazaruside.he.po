@@ -7481,7 +7481,9 @@ msgid "File not text"
 msgstr "הקובץ אינו קובץ טקסט"
 
 #: lazarusidestrconsts.lisfilesettings
-msgid "File Settings ..."
+#, fuzzy
+#| msgid "File Settings ..."
+msgid "File Settings"
 msgstr "הגדרות קובץ ..."
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
@@ -10703,7 +10705,9 @@ msgid "Move \"%s\" one position up"
 msgstr "הזז  \"%s\" מיקום אחד למעלה"
 
 #: lazarusidestrconsts.lismovepage
-msgid "Move Page ..."
+#, fuzzy
+#| msgid "Move Page ..."
+msgid "Move Page"
 msgstr "הזז דף ..."
 
 #: lazarusidestrconsts.lisms
@@ -11124,10 +11128,6 @@ msgstr "פתח קובץ קיים"
 #: lazarusidestrconsts.lisopenfile
 msgid "Open file"
 msgstr "פתח קובץ"
-
-#: lazarusidestrconsts.lisopenfile2
-msgid "Open File ..."
-msgstr "פתח קובץ ..."
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -16780,10 +16780,6 @@ msgstr "קבע סימניה חופשית"
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
 msgstr "הראה מספרי שורה"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "מידע על היחידה"
 
 #: lazarusidestrconsts.uemsource
 msgctxt "lazarusidestrconsts.uemsource"
