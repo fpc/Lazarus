@@ -2343,7 +2343,6 @@ resourcestring
   fdmMirrorVertical='Mirror Vertical';
   fdmScaleWord='Scale';
   fdmSizeWord='Size';
-  fdmTabOrder='Tab Order...';
   fdmZOrder='Z-order';
   fdmOrder='Order';
   fdmOrderMoveTofront='Move to Front';

@@ -47,7 +47,7 @@ uses
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
   NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
-  TabOrderDlg, DesignerProcs, CustomFormEditor,  AskCompNameDlg,
+  TabOrderDlg, AnchorEditor, DesignerProcs, CustomFormEditor,  AskCompNameDlg,
   ControlSelection, ChangeClassDialog, EditorOptions;
 
 type
@@ -95,6 +95,7 @@ type
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
     FOnShowObjectInspector: TNotifyEvent;
+    FOnShowAnchorEditor: TNotifyEvent;
     FOnShowTabOrderEditor: TNotifyEvent;
     FOnPersistentDeleted: TOnPersistentDeleted;
     FOnGetNonVisualCompIcon: TOnGetNonVisualCompIcon;
@@ -192,6 +193,7 @@ type
                                            ): boolean;
     function DoInsertFromStream(s: TStream; PasteParent: TWinControl;
                                 PasteFlags: TComponentPasteSelectionFlags): Boolean;
+    procedure DoShowAnchorEditor;
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
     procedure DoShowObjectInspector;
@@ -216,6 +218,7 @@ type
     procedure OnMirrorVerticalPopupMenuClick(Sender: TObject);
     procedure OnScalePopupMenuClick(Sender: TObject);
     procedure OnSizePopupMenuClick(Sender: TObject);
+    procedure OnAnchorEditorMenuClick(Sender: TObject);
     procedure OnTabOrderMenuClick(Sender: TObject);
     procedure OnOrderMoveToFrontMenuClick(Sender: TObject);
     procedure OnOrderMoveToBackMenuClick(Sender: TObject);
@@ -334,6 +337,7 @@ type
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
     property OnSaveAsXML: TNotifyEvent read FOnSaveAsXML write FOnSaveAsXML;
     property OnShowObjectInspector: TNotifyEvent read FOnShowObjectInspector write FOnShowObjectInspector;
+    property OnShowAnchorEditor: TNotifyEvent read FOnShowAnchorEditor write FOnShowAnchorEditor;
     property OnShowTabOrderEditor: TNotifyEvent read FOnShowTabOrderEditor write FOnShowTabOrderEditor;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
@@ -356,6 +360,7 @@ var
   DesignerMenuScale: TIDEMenuCommand;
   DesignerMenuSize: TIDEMenuCommand;
   
+  DesignerMenuAnchorEditor: TIDEMenuCommand;
   DesignerMenuTabOrder: TIDEMenuCommand;
     DesignerMenuOrderMoveToFront: TIDEMenuCommand;
     DesignerMenuOrderMoveToBack: TIDEMenuCommand;
@@ -521,8 +526,10 @@ begin
 
   // register tab and z-order section
   DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,'Order section');
+    DesignerMenuAnchorEditor:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
+                                       'Anchor Editor',lisMenuViewAnchorEditor);
     DesignerMenuTabOrder:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
-                                       'Tab order',fdmTabOrder);
+                                       'Tab order',lisMenuViewTabOrderEditor);
     DesignerMenuSectionZOrder:=RegisterIDESubMenu(DesignerMenuSectionOrder,
                                                   'ZOrder section', fdmZOrder);
       DesignerMenuOrderMoveToFront:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
@@ -1245,6 +1252,12 @@ begin
     NewSelection.Free;
   end;
   Result:=true;
+end;
+
+procedure TDesigner.DoShowAnchorEditor;
+begin
+  if Assigned(FOnShowAnchorEditor) then
+    FOnShowAnchorEditor(Self);
 end;
 
 procedure TDesigner.DoShowTabOrderEditor;
@@ -2941,6 +2954,11 @@ begin
   PasteSelection([cpsfFindUniquePositions]);
 end;
 
+procedure TDesigner.OnAnchorEditorMenuClick(Sender: TObject);
+begin
+  DoShowAnchorEditor;
+end;
+
 procedure TDesigner.OnTabOrderMenuClick(Sender: TObject);
 begin
   DoShowTabOrderEditor;
@@ -3455,6 +3473,7 @@ begin
   DesignerMenuScale.OnClick := @OnScalePopupMenuClick;
   DesignerMenuSize.OnClick := @OnSizePopupMenuClick;
 
+  DesignerMenuAnchorEditor.OnClick:=@OnAnchorEditorMenuClick;
   DesignerMenuTabOrder.OnClick:=@OnTabOrderMenuClick;
     DesignerMenuOrderMoveToFront.OnClick := @OnOrderMoveToFrontMenuClick;
     DesignerMenuOrderMoveToFront.MenuItem.ShortCut :=
@@ -3568,6 +3587,7 @@ begin
   DesignerMenuScale.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
   DesignerMenuSize.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
 
+  DesignerMenuAnchorEditor.Enabled := (FLookupRoot is TWinControl) and (TWinControl(FLookupRoot).ControlCount > 0);
   DesignerMenuTabOrder.Enabled := (FLookupRoot is TWinControl) and (TWinControl(FLookupRoot).ControlCount > 0);
   DesignerMenuSectionZOrder.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
     DesignerMenuOrderMoveToFront.Enabled := OneControlSelected and not OnlyNonVisualsAreSelected;

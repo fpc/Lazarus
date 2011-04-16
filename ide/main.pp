@@ -524,6 +524,7 @@ type
     procedure OnDesignerViewLFM(Sender: TObject);
     procedure OnDesignerSaveAsXML(Sender: TObject);
     procedure OnDesignerShowObjectInspector(Sender: TObject);
+    procedure OnDesignerShowAnchorEditor(Sender: TObject);
     procedure OnDesignerShowTabOrderEditor(Sender: TObject);
 
     // control selection
@@ -3681,6 +3682,7 @@ begin
     OnViewLFM:=@OnDesignerViewLFM;
     OnSaveAsXML:=@OnDesignerSaveAsXML;
     OnShowObjectInspector:=@OnDesignerShowObjectInspector;
+    OnShowAnchorEditor:=@OnDesignerShowAnchorEditor;
     OnShowTabOrderEditor:=@OnDesignerShowTabOrderEditor;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
@@ -16504,6 +16506,11 @@ end;
 procedure TMainIDE.OnDesignerShowObjectInspector(Sender: TObject);
 begin
   DoBringToFrontFormOrInspector(True);
+end;
+
+procedure TMainIDE.OnDesignerShowAnchorEditor(Sender: TObject);
+begin
+  DoViewAnchorEditor(True);
 end;
 
 procedure TMainIDE.OnDesignerShowTabOrderEditor(Sender: TObject);
