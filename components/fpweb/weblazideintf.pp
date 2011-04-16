@@ -250,8 +250,6 @@ begin
   AProject.MainFile.SetSourceText(NewSource);
 
   // add
-  AProject.AddPackageDependency('FCL');
-  AProject.AddPackageDependency('LCL');
   AProject.AddPackageDependency('WebLaz');
 
   // compiler options
@@ -337,7 +335,6 @@ begin
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
-  AProject.Flags := AProject.Flags - [pfRunnable];
   Result:= mrOK;
 end;
 
@@ -358,8 +355,10 @@ end;
 
 function TFileDescWebDataModule.GetInterfaceUsesSection: string;
 begin
-  Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+',HTTPDefs, websession, fpHTTP,fpWeb';
+  Result:='SysUtils, Classes';
+  if GetResourceType = rtLRS then
+    Result :=  Result+ ', LResources, ';
+  Result:=Result+', fpHTTP,fpWeb';
 end;
 
 function TFileDescWebDataModule.GetLocalizedName: string;
@@ -393,7 +392,8 @@ end;
 
 function TFileDescHTMLModule.GetInterfaceUsesSection: string;
 begin
-  Result:=inherited GetInterfaceUsesSection;
+  if (GetResourceType = rtLRS) then
+    Result :=  Result+ ', LResources, ';
   Result:=Result+',HTTPDefs,websession,fpHTTP,htmlwriter,htmlelements,fphtml';
 end;
 
@@ -577,7 +577,6 @@ begin
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
-  AProject.Flags := AProject.Flags - [pfRunnable];
   Result:= mrOK;
 end;
 
@@ -638,13 +637,11 @@ begin
 
   // add
   AProject.AddPackageDependency('FCL');
-  AProject.AddPackageDependency('LCL');
   AProject.AddPackageDependency('WebLaz');
 
   // compiler options
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
-  AProject.Flags := AProject.Flags - [pfRunnable];
   Result:= mrOK;
 end;
 
