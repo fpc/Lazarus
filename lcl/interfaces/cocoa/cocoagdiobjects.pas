@@ -9,6 +9,7 @@ interface
 
 uses
   MacOSAll, // for CGContextRef
+  LCLtype,
   CocoaAll, CocoaUtils,
   Classes, Types;
 
@@ -126,6 +127,7 @@ type
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
     function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
+    function GetTextMetrics(var TM: TTextMetric): Boolean;
     procedure SetOrigin(X,Y: Integer);
     procedure GetOrigin(var X,Y: Integer);
     function CGContext: CGContextRef; virtual;
@@ -402,6 +404,81 @@ begin
 
   fText.SetText(PChar(LStr), Length(LStr));
   Size := fText.getSize();
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaContext.GetTextMetrics
+  Params:  TM - The Record for the text metrics
+  Returns: If the function succeeds
+
+  Fills the specified buffer with the metrics for the currently selected font
+ ------------------------------------------------------------------------------}
+function TCocoaContext.GetTextMetrics(var TM: TTextMetric): Boolean;
+{var
+  TextStyle: ATSUStyle;
+  M: ATSUTextMeasurement;
+  B: Boolean;
+  TextLayout: TCarbonTextLayout;
+const
+  SName = 'GetTextMetrics';
+  SGetAttrName = 'ATSUGetAttribute';}
+begin
+  Result := False;
+
+//  TextStyle := CurrentFont.Style;
+
+  FillChar(TM, SizeOf(TM), 0);
+
+{  // According to the MSDN library, TEXTMETRIC:
+  // the average char width is generally defined as the width of the letter x
+  if not BeginTextRender('x', 1, TextLayout) then Exit;
+  try}
+
+    TM.tmAscent := 5;//RoundFixed(TextLayout.Ascent);
+    TM.tmDescent := 5;//RoundFixed(TextLayout.Descent);
+    TM.tmHeight := 15;//RoundFixed(TextLayout.Ascent + TextLayout.Descent);
+
+//    if OSError(ATSUGetAttribute(TextStyle, kATSULeadingTag, SizeOf(M), @M, nil),
+//      Self, SName, SGetAttrName, 'kATSULeadingTag', kATSUNotSetErr) then Exit;
+//    TM.tmInternalLeading := RoundFixed(M);
+    TM.tmExternalLeading := 0;
+
+    TM.tmAveCharWidth := 15;//RoundFixed(TextLayout.TextAfter - TextLayout.TextBefore);
+//  finally
+//    EndTextRender(TextLayout);
+//  end;
+
+  TM.tmMaxCharWidth := 15;//TM.tmAscent; // TODO: don't know how to determine this right
+  TM.tmOverhang := 0;
+  TM.tmDigitizedAspectX := 0;
+  TM.tmDigitizedAspectY := 0;
+  TM.tmFirstChar := 'a';
+  TM.tmLastChar := 'z';
+  TM.tmDefaultChar := 'x';
+  TM.tmBreakChar := '?';
+
+//  if OSError(ATSUGetAttribute(TextStyle, kATSUQDBoldfaceTag, SizeOf(B), @B, nil),
+//    Self, SName, SGetAttrName, 'kATSUQDBoldfaceTag', kATSUNotSetErr) then Exit;
+{  if B then} TM.tmWeight := FW_NORMAL;
+//       else TM.tmWeight := FW_BOLD;
+
+{  if OSError(ATSUGetAttribute(TextStyle, kATSUQDItalicTag, SizeOf(B), @B, nil),
+    Self, SName, SGetAttrName, 'kATSUQDItalicTag', kATSUNotSetErr) then Exit;
+  TM.tmItalic := Byte(B);}
+
+{  if OSError(ATSUGetAttribute(TextStyle, kATSUQDUnderlineTag, SizeOf(B), @B, nil),
+    Self, SName, SGetAttrName, 'kATSUQDUnderlineTag', kATSUNotSetErr) then Exit;
+  TM.tmUnderlined := Byte(B);
+
+  if OSError(ATSUGetAttribute(TextStyle, kATSUStyleStrikeThroughTag, SizeOf(B), @B, nil),
+    Self, SName, SGetAttrName, 'kATSUStyleStrikeThroughTag', kATSUNotSetErr) then Exit;
+  TM.tmStruckOut := Byte(B);}
+
+  // TODO: get these from font
+  TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
+  TM.tmCharSet := DEFAULT_CHARSET;
 
   Result := True;
 end;
@@ -711,6 +788,7 @@ end;
 
 procedure TCocoaBrush.Apply(cg:CGContextRef);
 begin
+  if cg = nil then Exit;
   CGContextSetRGBFillColor(cg, R,G,B, 1);
 end;
 

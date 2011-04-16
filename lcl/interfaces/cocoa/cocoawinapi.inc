@@ -449,10 +449,10 @@ begin
       Result := HDC(ctx)
     // use dummy context if we are outside paint event
     else
-    begin
-      ctx := TCocoaContext.Create(NSObject(HWnd));
+    begin}
+      ctx := TCocoaContext.Create({NSObject(HWnd)});
       Result := HDC(ctx);
-    end;}
+{    end;}
   end;
 
   {$IFDEF VerboseWinAPI}
@@ -707,6 +707,35 @@ begin
   Result := ctx.GetTextExtentPoint(Str, Count, Size);
   {$IFDEF VerboseWinAPI}
     DebugLn('[TCocoaWidgetSet.GetTextExtentPoint] Size: %d,%d', [Size.cx, Size.cy]);
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetTextMetrics
+  Params:  DC - Handle of device context
+           TM - The Record for the text metrics
+  Returns: If the function succeeds
+
+  Fills the specified buffer with the metrics for the currently selected font
+  TODO: get exact max. and av. char width, pitch and charset
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.GetTextMetrics DC: ' + DbgS(DC));
+  {$ENDIF}
+
+  ctx:=CheckDC(DC);
+  if not Assigned(ctx) then Exit(False);
+  Result := ctx.GetTextMetrics(TM);
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.GetTextMetrics Result: ' + DbgS(Result) +
+      ' TextMetric: ' + DbgS(TM));
   {$ENDIF}
 end;
 

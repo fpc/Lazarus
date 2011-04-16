@@ -117,8 +117,8 @@ function GetSysColor(nIndex: Integer): DWORD; override;}
 function GetSystemMetrics(nIndex: Integer): Integer; override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
-{function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
-function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;}
+function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
+{function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;}
 function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
 function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
