@@ -5,7 +5,7 @@
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="10"/>
       <SearchPaths>
         <OtherUnitFiles Value="/home/michael/public_html/extjs/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
@@ -201,11 +201,11 @@ HTML editing functionality by Alexei Lagunov"/>
       </Item40>
       <Item41>
         <Filename Value="fpwebnewhtmltagpreunit.pas"/>
-        <UnitName Value="fpwebnewhtmltagpreunit"/>
+        <UnitName Value="fpWebNewHtmlTagPreUnit"/>
       </Item41>
       <Item42>
         <Filename Value="fpwebnewhtmltagtdunit.pas"/>
-        <UnitName Value="fpwebnewhtmltagtdunit"/>
+        <UnitName Value="fpwebNewHtmlTagTDUnit"/>
       </Item42>
       <Item43>
         <Filename Value="fpwebnewhtmltagtdunit.lfm"/>
@@ -217,20 +217,17 @@ HTML editing functionality by Alexei Lagunov"/>
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="4">
+    <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="sqldblaz"/>
       </Item1>
       <Item2>
-        <PackageName Value="sqldblaz"/>
+        <PackageName Value="weblaz"/>
       </Item2>
       <Item3>
-        <PackageName Value="weblaz"/>
-      </Item3>
-      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item4>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>
