@@ -8,9 +8,9 @@ interface
 uses
   Types,
   MacOSAll, CocoaAll,
-  Classes,
-  Controls,
-  WSControls, LCLType,
+  Classes, Controls, SysUtils,
+  //
+  WSControls, LCLType, LCLProc,
   CocoaPrivate, CocoaGDIObjects, CocoaUtils, LCLMessageGlue;
 
 type
@@ -146,10 +146,17 @@ begin
   if not Assigned(Context) then Context:=TCocoaContext.Create;
 
   Context.ctx:=ControlContext;
-  if Context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then begin
+  if Context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
+  begin
     FillChar(struct, SizeOf(TPaintStruct), 0);
     struct.hdc := HDC(Context);
+    {$IFDEF VerboseWinAPI}
+      DebugLn(Format('[TLCLCommonCallback.Draw] OnPaint event started context: %x', [HDC(context)]));
+    {$ENDIF}
     LCLSendPaintMsg(Target, HDC(Context), @struct);
+    {$IFDEF VerboseWinAPI}
+      DebugLn('[TLCLCommonCallback.Draw] OnPaint event ended');
+    {$ENDIF}
   end;
 end;
 

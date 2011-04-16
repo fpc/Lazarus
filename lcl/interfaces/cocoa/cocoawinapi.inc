@@ -274,6 +274,10 @@ function TCocoaWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   ctx : TCocoaContext;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('[TCocoaWidgetSet.Rectangle] DC: %x X1: %d Y1: %d X2: %d Y2: %d',
+      [DC, X1, Y1, X2, Y2]);
+  {$ENDIF}
   ctx:=CheckDC(DC);
   Result:=Assigned(ctx);
   if not Result then Exit;
@@ -473,7 +477,7 @@ const
   SName = 'TCarbonWidgetSet.SelectObject';
 begin
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.SelectObject DC: ' + DbgS(DC) + ' GDIObj: ' +  DbgS(GDIObj));
+    DebugLn(Format('TCocoaWidgetSet.SelectObject DC: %x GDIObj: %x', [ADC, GDIObj]));
   {$ENDIF}
   Result := 0;
 
@@ -508,7 +512,7 @@ begin
   if Assigned(gdi) then gdi.AddRef;
 
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.SelectObject Result: ' + DbgS(Result));
+    DebugLn(Format('TCocoaWidgetSet.SelectObject Result: %x', [Result]));
   {$ENDIF}
 end;
 
