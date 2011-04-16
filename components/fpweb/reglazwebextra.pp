@@ -160,6 +160,7 @@ function TFileDescWebProviderDataModule.GetImplementationSource(const Filename,
   SourceName, ResourceName: string): string;
 begin
   Result:=Inherited GetImplementationSource(FileName,SourceName,ResourceName);
+  Result:=Result+'Initialization'+sLineBreak;
   Result:=Result+'  RegisterHTTPModule(''T'+ResourceName+''',T'+ResourceName+');'+LineEnding;
 end;
 
@@ -218,6 +219,8 @@ begin
       Free;
     end;
   Result:=Inherited GetImplementationSource(FileName,SourceName,ResourceName);
+  if RM or RH then
+    Result:=Result+'Initialization'+sLineBreak;
   If RM then
     Result:=Result+'  RegisterHTTPModule('''+HP+''',T'+ResourceName+');'+LineEnding;
   If RH then
@@ -278,6 +281,8 @@ begin
       Free;
     end;
   Result:=Inherited GetImplementationSource(FileName,SourceName,ResourceName);
+  if RM or RH then
+    Result:=Result+'Initialization'+sLineBreak;
   If RM then
     Result:=Result+'  RegisterHTTPModule('''+HP+''',T'+ResourceName+');'+LineEnding;
   If RH then
