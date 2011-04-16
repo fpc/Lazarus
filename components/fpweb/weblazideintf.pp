@@ -358,7 +358,7 @@ begin
   Result:='SysUtils, Classes';
   if GetResourceType = rtLRS then
     Result :=  Result+ ', LResources, ';
-  Result:=Result+', fpHTTP,fpWeb';
+  Result:=Result+',httpdefs, fpHTTP,fpWeb';
 end;
 
 function TFileDescWebDataModule.GetLocalizedName: string;
@@ -392,6 +392,7 @@ end;
 
 function TFileDescHTMLModule.GetInterfaceUsesSection: string;
 begin
+  Result:='SysUtils, Classes ';
   if (GetResourceType = rtLRS) then
     Result :=  Result+ ', LResources, ';
   Result:=Result+',HTTPDefs,websession,fpHTTP,htmlwriter,htmlelements,fphtml';
