@@ -1311,6 +1311,9 @@ const
   TCN_SELCHANGE = TCN_FIRST - 1;
   TCN_SELCHANGING = TCN_FIRST - 2;
 
+procedure Frame3D(ACanvas: TCanvas; var ARect: TRect;
+  TopColor, BottomColor: TColor; const FrameWidth: integer);
+
 procedure Register;
 
 implementation
@@ -1320,6 +1323,13 @@ uses
   Math, WSExtCtrls;
 
 {.$define INSTALL_TUNTABBEDNOTEBOOK}
+
+// Wrapper function for TCanvas.Frame3D.
+procedure Frame3D(ACanvas: TCanvas; var ARect: TRect;
+  TopColor, BottomColor: TColor; const FrameWidth: integer);
+begin
+  ACanvas.Frame3D(ARect, TopColor, BottomColor, FrameWidth);
+end;
 
 procedure Register;
 begin

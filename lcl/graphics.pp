@@ -1104,6 +1104,8 @@ type
                         FillStyle: TFillStyle); virtual;
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
                       const Style: TGraphicsBevelCut); virtual;
+    procedure Frame3D(var ARect: TRect; TopColor, BottomColor: TColor;
+                      const FrameWidth: integer); overload;
     procedure Frame(const ARect: TRect); virtual; // border using pen
     procedure Frame(X1,Y1,X2,Y2: Integer);     // border using pen
     procedure FrameRect(const ARect: TRect); virtual; // border using brush

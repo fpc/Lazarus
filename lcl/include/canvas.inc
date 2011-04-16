@@ -971,6 +971,45 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.Frame3D
+  Params:   Rect
+  Returns:  the inflated rectangle (the inner rectangle without the frame)
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Frame3D(var ARect: TRect; TopColor, BottomColor: TColor;
+  const FrameWidth: integer);
+var
+  Delta, W, ii : Integer;
+begin
+  if ARect.Bottom-ARect.Top > ARect.Right-ARect.Left
+  then
+    W := ARect.Right-ARect.Left+1
+  else
+    W := ARect.Bottom-ARect.Top+1;
+
+  if FrameWidth > W then
+    W := W-1
+  else
+    W := FrameWidth;
+
+  for ii := 1 to W do
+  begin
+    Pen.Color := TopColor;
+    MoveTo(ARect.Left,    ARect.Bottom-1);
+    LineTo(ARect.Left,    ARect.Top);
+    LineTo(ARect.Right-1, ARect.Top);
+    Pen.Color := BottomColor;
+    LineTo(ARect.Right-1, ARect.Bottom-1);
+    LineTo(ARect.Left,    ARect.Bottom-1);
+
+    Inc(ARect.Left);
+    Inc(ARect.Top);
+    Dec(ARect.Right);
+    Dec(ARect.Bottom);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   procedure TCanvas.Frame(const ARect: TRect);
 
   Drawing the border of a rectangle with the current pen
