@@ -1670,6 +1670,7 @@ end;"/>
       </Item334>
       <Item335>
         <Filename Value="cocoa/cocoawsbuttons.pp"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoawsbuttons"/>
       </Item335>
     </Files>
