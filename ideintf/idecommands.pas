@@ -175,15 +175,16 @@ const
   ecToggleCallStack         = ecFirstLazarus + 315;
   ecToggleSearchResults     = ecFirstLazarus + 316;
   ecViewAnchorEditor        = ecFirstLazarus + 317;
-  ecToggleCodeBrowser       = ecFirstLazarus + 318;
-  ecToggleCompPalette       = ecFirstLazarus + 319;
-  ecToggleIDESpeedBtns      = ecFirstLazarus + 320;
-  ecViewComponents          = ecFirstLazarus + 321;
-  ecToggleRestrictionBrowser = ecFirstLazarus + 322;
-  ecViewTodoList            = ecFirstLazarus + 323;
-  ecToggleRegisters         = ecFirstLazarus + 324;
-  ecToggleAssembler         = ecFirstLazarus + 325;
-  ecToggleDebugEvents       = ecFirstLazarus + 326;
+  ecViewTabOrderEditor      = ecFirstLazarus + 318;
+  ecToggleCodeBrowser       = ecFirstLazarus + 319;
+  ecToggleCompPalette       = ecFirstLazarus + 320;
+  ecToggleIDESpeedBtns      = ecFirstLazarus + 321;
+  ecViewComponents          = ecFirstLazarus + 322;
+  ecToggleRestrictionBrowser= ecFirstLazarus + 323;
+  ecViewTodoList            = ecFirstLazarus + 324;
+  ecToggleRegisters         = ecFirstLazarus + 325;
+  ecToggleAssembler         = ecFirstLazarus + 326;
+  ecToggleDebugEvents       = ecFirstLazarus + 327;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;

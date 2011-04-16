@@ -314,6 +314,7 @@ var
     mnuView: TIDEMenuSection;
       itmViewMainWindows: TIDEMenuSection;
       itmViewUnitWindows: TIDEMenuSection;
+      itmViewDesignerWindows: TIDEMenuSection;
       itmViewSecondaryWindows: TIDEMenuSection;
         itmViewDebugWindows: TIDEMenuSection;
         itmViewIDEInternalsWindows: TIDEMenuSection;

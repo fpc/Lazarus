@@ -2084,6 +2084,7 @@ begin
     ecViewUnitDependencies    : Result:= srkmecViewUnitDependencies;
     ecViewUnitInfo            : Result:= srkmecViewUnitInfo;
     ecViewAnchorEditor        : Result:= srkmecViewAnchorEditor;
+    ecViewTabOrderEditor      : Result:= srkmecViewTabOrderEditor;
     ecToggleCodeBrowser       : Result:= srkmecToggleCodeBrowser;
     ecToggleRestrictionBrowser: Result:= srkmecToggleRestrictionBrowser;
     ecViewComponents          : Result:= srkmecViewComponents;
@@ -2753,6 +2754,7 @@ begin
   AddDefault(C, 'View Unit Info', lisKMViewUnitInfo, ecViewUnitInfo);
   AddDefault(C, 'Toggle between Unit and Form', lisKMToggleBetweenUnitAndForm, ecToggleFormUnit);
   AddDefault(C, 'View Anchor Editor', lisMenuViewAnchorEditor, ecViewAnchorEditor);
+  AddDefault(C, 'View Tab Order Editor', lisMenuViewTabOrderEditor, ecViewTabOrderEditor);
   AddDefault(C, 'Toggle view component palette', lisKMToggleViewComponentPalette, ecToggleCompPalette);
   AddDefault(C, 'Toggle view IDE speed buttons', lisKMToggleViewIDESpeedButtons, ecToggleIDESpeedBtns);
 

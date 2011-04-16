@@ -514,10 +514,14 @@ begin
     CreateMenuItem(ParentMI,itmViewUnitDependencies,'itmViewUnitDependencies',lisMenuViewUnitDependencies);
     CreateMenuItem(ParentMI,itmViewToggleFormUnit,'itmViewToggleFormUnit',lisMenuViewToggleFormUnit, 'menu_view_toggle_form_unit');
 
+    CreateMenuSeparatorSection(mnuView,itmViewDesignerWindows,'itmViewDesignerWindows');
+    ParentMI:=itmViewDesignerWindows;
+    CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor,'menu_view_anchor_editor');
+    CreateMenuItem(ParentMI,itmViewTabOrderEditor,'itmViewTabOrderEditor',lisMenuViewTabOrderEditor,'');
+
     CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
     ParentMI:=itmViewSecondaryWindows;
     CreateMenuItem(ParentMI,itmViewSearchResults,'itmViewSearchResults',lisMenuViewSearchResults);
-    CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor,'menu_view_anchor_editor');
     CreateMenuItem(ParentMI,itmViewComponentPalette,'itmViewComponentPalette',lisMenuViewComponentPalette, '', true, EnvironmentOptions.ComponentPaletteVisible);
     CreateMenuItem(ParentMI,itmViewIDESpeedButtons,'itmViewIDESpeedButtons',lisMenuViewIDESpeedButtons, '', true, EnvironmentOptions.IDESpeedButtonsVisible);
     CreateMenuSubSection(ParentMI,itmViewDebugWindows,'itmViewDebugWindows',lisMenuDebugWindows,'debugger');
@@ -896,6 +900,7 @@ begin
     itmViewMessage.Command:=GetCommand(ecToggleMessages);
     itmViewSearchResults.Command:=GetCommand(ecToggleSearchResults);
     itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
+    itmViewTabOrderEditor.Command:=GetCommand(ecViewTabOrderEditor);
     itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
     itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
     itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);

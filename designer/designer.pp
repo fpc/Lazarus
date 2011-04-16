@@ -95,6 +95,7 @@ type
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
     FOnShowObjectInspector: TNotifyEvent;
+    FOnShowTabOrderEditor: TNotifyEvent;
     FOnPersistentDeleted: TOnPersistentDeleted;
     FOnGetNonVisualCompIcon: TOnGetNonVisualCompIcon;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
@@ -333,6 +334,7 @@ type
     property OnViewLFM: TNotifyEvent read FOnViewLFM write FOnViewLFM;
     property OnSaveAsXML: TNotifyEvent read FOnSaveAsXML write FOnSaveAsXML;
     property OnShowObjectInspector: TNotifyEvent read FOnShowObjectInspector write FOnShowObjectInspector;
+    property OnShowTabOrderEditor: TNotifyEvent read FOnShowTabOrderEditor write FOnShowTabOrderEditor;
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property ShowBorderSpacing: boolean read GetShowBorderSpacing write SetShowBorderSpacing;
     property ShowEditorHints: boolean read GetShowEditorHints write SetShowEditorHints;
@@ -1247,8 +1249,8 @@ end;
 
 procedure TDesigner.DoShowTabOrderEditor;
 begin
-  if ShowTabOrderDialog(FLookupRoot)=mrOk then
-    Modified;
+  if Assigned(FOnShowTabOrderEditor) then
+    FOnShowTabOrderEditor(Self);
 end;
 
 procedure TDesigner.DoShowChangeClassDialog;

@@ -64,12 +64,15 @@ type
     property LookupRoot: TComponent Read FLookupRoot Write SetLookupRoot;
   end;
 
-function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
+//function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
+
+var
+  TabOrderDialog: TTabOrderDialog;
 
 implementation
 
 {$R *.lfm}
-
+{
 function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
 var
   TabOrderDialog: TTabOrderDialog;
@@ -79,7 +82,7 @@ begin
   Result := TabOrderDialog.ShowModal;
   TabOrderDialog.Free;
 end;
-
+}
 { TTabOrderDialog }
 
 procedure TTabOrderDialog.TabOrderDialogCREATE(Sender: TObject);

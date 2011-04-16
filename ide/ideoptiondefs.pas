@@ -96,6 +96,7 @@ type
     // extra
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
+    nmiwTabOrderEditor,
     nmiwCodeBrowser,
     nmiwIssueBrowser,
     nmiwJumpHistory
@@ -140,6 +141,7 @@ const
     // extra
     'SearchResults',
     'AnchorEditor',
+    'TabOrderEditor',
     'CodeBrowser',
     'IssueBrowser',
     'JumpHistory'

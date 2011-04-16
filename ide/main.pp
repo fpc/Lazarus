@@ -89,8 +89,7 @@ uses
   // designer
   JITForms, ComponentPalette, ComponentList, ComponentReg, FormEditingIntf,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
-  ControlSelection, AnchorEditor,
-  MenuEditorForm,
+  ControlSelection, AnchorEditor, TabOrderDlg, MenuEditorForm,
   // LRT stuff
   Translations,
   // debugger
@@ -249,6 +248,7 @@ type
     procedure mnuViewSearchResultsClick(Sender: TObject);
     procedure mnuToggleFormUnitClicked(Sender: TObject);
     procedure mnuViewAnchorEditorClicked(Sender: TObject);
+    procedure mnuViewTabOrderEditorClicked(Sender: TObject);
     procedure mnuViewComponentPaletteClicked(Sender: TObject);
     procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
     procedure mnuViewFPCInfoClicked(Sender: TObject);
@@ -524,6 +524,7 @@ type
     procedure OnDesignerViewLFM(Sender: TObject);
     procedure OnDesignerSaveAsXML(Sender: TObject);
     procedure OnDesignerShowObjectInspector(Sender: TObject);
+    procedure OnDesignerShowTabOrderEditor(Sender: TObject);
 
     // control selection
     procedure OnControlSelectionChanged(Sender: TObject; ForceUpdate: Boolean);
@@ -1073,6 +1074,7 @@ type
     procedure UpdateIDEComponentPalette;
     procedure ShowDesignerForm(AForm: TCustomForm);
     procedure DoViewAnchorEditor(Show: boolean);
+    procedure DoViewTabOrderEditor(Show: boolean);
     procedure DoToggleViewComponentPalette;
     procedure DoToggleViewIDESpeedButtons;
 
@@ -2290,6 +2292,8 @@ begin
     nil,@CreateIDEWindow,'250','250','+70%','+300');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAnchorEditor],
     nil,@CreateIDEWindow,'250','250','','');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwTabOrderEditor],
+    nil,@CreateIDEWindow,'270','270','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeBrowser],
     nil,@CreateIDEWindow,'200','200','+650','+500');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwIssueBrowser],
@@ -2494,6 +2498,7 @@ begin
     itmViewMessage.OnClick := @mnuViewMessagesClick;
     itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
     itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
+    itmViewTabOrderEditor.OnClick := @mnuViewTabOrderEditorClicked;
     itmViewComponentPalette.OnClick := @mnuViewComponentPaletteClicked;
     itmViewIDESpeedButtons.OnClick := @mnuViewIDESpeedButtonsClicked;
 
@@ -2672,6 +2677,11 @@ end;
 procedure TMainIDE.mnuViewAnchorEditorClicked(Sender: TObject);
 begin
   DoViewAnchorEditor(true);
+end;
+
+procedure TMainIDE.mnuViewTabOrderEditorClicked(Sender: TObject);
+begin
+  DoViewTabOrderEditor(true);
 end;
 
 procedure TMainIDE.mnuViewComponentPaletteClicked(Sender: TObject);
@@ -3671,6 +3681,7 @@ begin
     OnViewLFM:=@OnDesignerViewLFM;
     OnSaveAsXML:=@OnDesignerSaveAsXML;
     OnShowObjectInspector:=@OnDesignerShowObjectInspector;
+    OnShowTabOrderEditor:=@OnDesignerShowTabOrderEditor;
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
   end;
@@ -3722,6 +3733,14 @@ begin
     AnchorDesigner:=TAnchorDesigner.Create(OwningComponent);
   if Show then
     IDEWindowCreators.ShowForm(AnchorDesigner,true);
+end;
+
+procedure TMainIDE.DoViewTabOrderEditor(Show: boolean);
+begin
+  if TabOrderDialog=nil then
+    TabOrderDialog:=TTabOrderDialog.Create(OwningComponent);
+  if Show then
+    IDEWindowCreators.ShowForm(TabOrderDialog,true);
 end;
 
 procedure TMainIDE.DoToggleViewComponentPalette;
@@ -16485,6 +16504,11 @@ end;
 procedure TMainIDE.OnDesignerShowObjectInspector(Sender: TObject);
 begin
   DoBringToFrontFormOrInspector(True);
+end;
+
+procedure TMainIDE.OnDesignerShowTabOrderEditor(Sender: TObject);
+begin
+  DoViewTabOrderEditor(True);
 end;
 
 Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;
