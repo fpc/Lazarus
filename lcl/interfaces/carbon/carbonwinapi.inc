@@ -1401,7 +1401,8 @@ var
   r : TRect;
 begin
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.GetDCOriginRelativeToWindow HWnd: ' + DbgS(HWnd) + ' PaintDC: ' + DbgS(PaintDC));
+    DebugLn(Format('TCarbonWidgetSet.GetDCOriginRelativeToWindow WindowHandle: %x PaintDC: %x',
+     [WindowHandle, PaintDC]));
   {$ENDIF}
 
   Result := CheckDC(PaintDC, 'GetDCOriginRelativeToWindow');
@@ -2056,7 +2057,7 @@ begin
   Result := clNone;
 
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.GetTextColor DC: ' + DbgS(HDC));
+    DebugLn('TCarbonWidgetSet.GetTextColor DC: ' + DbgS(DC));
   {$ENDIF}
 
   if not CheckDC(DC, 'GetTextColor') then Exit;
@@ -3281,7 +3282,8 @@ function TCarbonWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Bool
 begin
   Result := False;
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.SetMenu AWindowHAndle: ' + DbgS(HWnd) + ' AMenuHandle: ' + DbgS(AMenuHandle));
+    DebugLn(Format('TCarbonWidgetSet.SetMenu AWindowHAndle: %x AMenuHandle: %x',
+     [AWindowHandle, AMenuHandle]));
   {$ENDIF}
 
   if not CheckWidget(AWindowHandle, 'SetMenu') then Exit;
