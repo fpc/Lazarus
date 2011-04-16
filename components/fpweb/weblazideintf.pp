@@ -304,22 +304,50 @@ begin
     +'{$mode objfpc}{$H+}'+le
     +le
     +'uses'+le
-    +'  Classes,SysUtils,httpDefs,custcgi;'+le
+    +'  Classes, SysUtils, httpDefs, fpweb,'
+{$ifndef VER2_4}
+    +' custweb, custcgi;'+le
+{$else}
+    +' custcgi;'+le
+{$endif}
     +le
     +'Type'+le
-    +'  TCGIApp = Class(TCustomCGIApplication)'+le
+{$ifndef VER2_4}
+    +'  TMyCGIHandler = Class(TCgiHandler)'+le
     +'  Public'+le
     +'    Procedure HandleRequest(ARequest : Trequest; AResponse : TResponse); override;'+le
     +'  end;'+le
-    +le
-    +'Procedure TCGIApp.HandleRequest(ARequest : Trequest; AResponse : TResponse);'+le
+    +le+le
+    +'  TMyCGIApp = Class(TCustomCGIApplication)'+le
+    +'  Protected'+le
+    +'   function InitializeWebHandler: TWebHandler; override;'+le
+    +'  end;'+le
+    +le+le
+    +'Procedure TMyCGIHandler.HandleRequest(ARequest : Trequest; AResponse : TResponse);'+le
     +le
     +'begin'+le
     +'  // Your code here'+le
     +'end;'+le
+    +le+le
+    +'Function TMyCGIApp.InitializeWebHandler: TWebHandler; '+le
+    +'begin'+le
+    +'  Result:=TMyCgiHandler.Create(self);'+le
+    +'end;'+le
+{$else VER2_4}
+    +'  TMyCGIApp = Class(TCustomCGIApplication)'+le
+    +'  Protected'+le
+    +'    Procedure HandleRequest(ARequest : Trequest; AResponse : TResponse); override;'+le
+    +'  end;'+le
+    +le+le
+    +'Procedure TMyCGIApp.HandleRequest(ARequest : Trequest; AResponse : TResponse);'+le
     +le
     +'begin'+le
-    +'  With TCGIApp.Create(Nil) do'+le
+    +'  // Your code here'+le
+    +'end;'+le
+{$endif VER2_4}
+    +le+le
+    +'begin'+le
+    +'  With TMyCGIApp.Create(Nil) do'+le
     +'    try'+le
     +'      Initialize;'+le
     +'      Run;'+le
