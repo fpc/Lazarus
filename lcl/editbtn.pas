@@ -48,7 +48,6 @@ type
     function GetButtonWidth: Integer;
     function GetDirectInput: Boolean;
     function GetFlat: Boolean;
-    procedure CheckButtonVisible;
     procedure SetButtonHint(const AValue: TTranslateString);
     procedure SetButtonNeedsFocus(const AValue: Boolean);
     procedure SetButtonWidth(const AValue: Integer);
@@ -62,6 +61,9 @@ type
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   protected
+    procedure CheckButtonVisible;
+    function CalcButtonVisible: boolean; virtual;
+    function CalcButtonEnabled: Boolean; virtual;
     function GetReadOnly: Boolean; override;
     function GetDefaultGlyph: TBitmap; virtual;
     function GetDefaultGlyphName: String; virtual;
@@ -573,11 +575,16 @@ begin
     Result := False;
 end;
 
+function TCustomEditButton.CalcButtonVisible: boolean;
+begin
+  Result := (csdesigning in ComponentState) or
+            (Visible and (Focused or not FButtonNeedsFocus));
+end;
+
 procedure TCustomEditButton.CheckButtonVisible;
 begin
   If Assigned(FButton) then
-    FButton.Visible:=(csdesigning in ComponentState) or
-                     (Visible and (Focused or not FButtonNeedsFocus));
+    FButton.Visible:=CalcButtonVisible;
 end;
 
 procedure TCustomEditButton.SetButtonHint(const AValue: TTranslateString);
@@ -636,16 +643,14 @@ end;
 procedure TCustomEditButton.CMVisibleChanged(var Msg: TLMessage);
 begin
   inherited CMVisibleChanged(Msg);
-  
   CheckButtonVisible;
 end;
 
 procedure TCustomEditButton.CMEnabledChanged(var Msg: TLMessage);
 begin
   inherited CMEnabledChanged(Msg);
-
-  if (FButton<>nil) and (not ReadOnly) then
-    FButton.Enabled:=Enabled;
+  if (FButton<>nil) then
+    FButton.Enabled:=CalcButtonEnabled;
 end;
 
 function TCustomEditButton.GetMinHeight: Integer;
@@ -663,14 +668,13 @@ end;
 procedure TCustomEditButton.Loaded;
 begin
   inherited Loaded;
+  DoPositionButton;
   CheckButtonVisible;
-  DoPositionButton; 
 end;
 
 procedure TCustomEditButton.WMKillFocus(var Message: TLMKillFocus);
 begin
-  if FButtonNeedsFocus then
-    FButton.Visible:=False;
+  CheckButtonVisible;
   inherited;
 end;
 
@@ -682,32 +686,36 @@ end;
 procedure TCustomEditButton.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
-  if FButton <> nil then 
+  if FButton <> nil then
   begin
-    DoPositionButton; 
+    DoPositionButton;
     CheckButtonVisible;
   end;
+end;
+
+function TCustomEditButton.CalcButtonEnabled: Boolean;
+begin
+  Result := not FIsReadOnly and Enabled;
 end;
 
 procedure TCustomEditButton.SetReadOnly(AValue: Boolean);
 begin
   FIsReadOnly := AValue;
   if Assigned(FButton) then
-    FButton.Enabled := not FIsReadOnly and Enabled;
+    FButton.Enabled := CalcButtonEnabled;
   inherited SetReadOnly(FIsReadOnly or (not DirectInput));
 end;
 
 procedure TCustomEditButton.DoPositionButton;
 begin
-  if FButton = nil then exit; 
+  if FButton = nil then exit;
   FButton.Parent := Parent;
-  FButton.Visible := Visible;
-  FButton.AnchorToCompanion(akLeft,0,Self); 
+  FButton.AnchorToCompanion(akLeft,0,Self);
 end;
 
 procedure TCustomEditButton.WMSetFocus(var Message: TLMSetFocus);
 begin
-  FButton.Visible:=True;
+  CheckButtonVisible;
   inherited;
 end;
 
