@@ -68,8 +68,8 @@ function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
 function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;
 function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
-function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;
-function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: Cardinal): Integer; override;}
+function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;}
+//function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
 {function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;}
@@ -113,11 +113,11 @@ function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
 {function GetStockObject(Value: Integer): THandle; override;
-function GetSysColor(nIndex: Integer): DWORD; override;
-function GetSystemMetrics(nIndex: Integer): Integer; override;}
+function GetSysColor(nIndex: Integer): DWORD; override;}
+function GetSystemMetrics(nIndex: Integer): Integer; override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
-{function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
-function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
+function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
+{function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;}
 function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
 function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;

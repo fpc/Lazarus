@@ -125,6 +125,7 @@ type
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+    function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
     procedure SetOrigin(X,Y: Integer);
     procedure GetOrigin(var X,Y: Integer);
     function CGContext: CGContextRef; virtual;
@@ -374,6 +375,35 @@ begin
 
   CGContextTranslateCTM(cg, 0, ContextSize.cy);
   CGContextScaleCTM(cg, 1, -1);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetTextExtentPoint
+  Params:  Str   - Text string
+           Count - Number of characters in string
+           Size  - The record for the dimensions of the string
+  Returns: If the function succeeds
+
+  Computes the width and height of the specified string of text
+ ------------------------------------------------------------------------------}
+function TCocoaContext.GetTextExtentPoint(AStr: PChar; ACount: Integer;
+  var Size: TSize): Boolean;
+var
+  LStr: String;
+begin
+  Result := False;
+  Size.cx := 0;
+  Size.cy := 0;
+
+  if ACount = 0 then Exit(True);
+
+  if ACount < 0 then LStr := AStr
+  else LStr := Copy(AStr, 1, ACount);
+
+  fText.SetText(PChar(LStr), Length(LStr));
+  Size := fText.getSize();
+
+  Result := True;
 end;
 
 procedure TCocoaContext.SetOrigin(X,Y:Integer);

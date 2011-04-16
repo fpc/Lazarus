@@ -426,13 +426,34 @@ end;
 {------------------------------- DEVICE CONTEXT -------------------------------}
 
 function TCocoaWidgetSet.GetDC(hWnd: HWND): HDC;
+var
+  ctx: TCocoaContext;
 begin
-  if hWnd=0 then begin
+  if hWnd=0 then
+  begin
     if not Assigned(ScreenContext) then ScreenContext:=TCocoaContext.Create;
     Result:=HDC(ScreenContext);
-  end else
-    //todo:!
-    Result:=0;
+  end
+  else
+  begin
+    // ToDo: Not finished yet
+    Result := 0;
+
+{    if NSObject(hWnd) is TCocoaGroupBox then ctx := TCocoaGroupBox(hWnd).Context;
+
+    if ctx <> nil then
+      Result := HDC(ctx)
+    // use dummy context if we are outside paint event
+    else
+    begin
+      ctx := TCocoaContext.Create(NSObject(HWnd));
+      Result := HDC(ctx);
+    end;}
+  end;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('[TCocoaWidgetSet.GetDC] hWnd: %x Result: %x', [hWnd, Result]);
+  {$ENDIF}
 end;
 
 function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
@@ -594,6 +615,59 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetSystemMetrics
+  Params:  NIndex - System metric to retrieve
+  Returns: The requested system metric value
+
+  Retrieves various system metrics.
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
+begin
+  Result := 0;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.GetSystemMetrics NIndex: ' + DbgS(NIndex));
+  {$ENDIF}
+
+  case NIndex of
+{    SM_CXHSCROLL,
+    SM_CYHSCROLL,
+    SM_CXVSCROLL,
+    SM_CYVSCROLL:
+      Result := 10;//GetCarbonThemeMetric(kThemeMetricScrollBarWidth);}
+    SM_CXSCREEN,
+    SM_CXVIRTUALSCREEN : Result := CGDisplayPixelsWide(CGMainDisplayID);
+    SM_CYSCREEN,
+    SM_CYVIRTUALSCREEN : Result := CGDisplayPixelsHigh(CGMainDisplayID);
+    SM_CXSMICON,
+    SM_CYSMICON:
+      Result := 16;
+    SM_CXICON,
+    SM_CYICON:
+      Result := 128;
+    SM_CXCURSOR,
+    SM_CYCURSOR:
+      begin
+{        if TCarbonCursor.HardwareCursorsSupported then
+          Result := 64 else}
+          Result := 16;
+      end;
+{    SM_CXHTHUMB:
+      Result := 16;//GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbWidth);
+    SM_CYVTHUMB:
+      Result := 16;//GetCarbonThemeMetric(kThemeMetricScrollBarMinThumbHeight);}
+    SM_SWSCROLLBARSPACING:
+      Result:=0;
+  else
+    DebugLn('TCocoaWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
+  end;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.GetSystemMetrics Result: ' + DbgS(Result));
+  {$ENDIF}
+end;
+
 function TCocoaWidgetSet.GetTextColor(DC: HDC) : TColorRef;
 var
   ctx : TCocoaContext;
@@ -604,6 +678,32 @@ begin
     Exit;
   end;
   with ctx do Result:=RGBToColorFloat(TR, TG, TB);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetTextExtentPoint
+  Params:  DC    - Handle of device context
+           Str   - Text string
+           Count - Number of characters in string
+           Size  - The record for the dimensions of the string
+  Returns: If the function succeeds
+
+  Computes the width and height of the specified string of text
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('[TCocoaWidgetSet.GetTextExtentPoint] DC: %x Str: %s Count: %d', [DC, Str, Count]);
+  {$ENDIF}
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx);
+  if not Assigned(ctx) then Exit(False);
+  Result := ctx.GetTextExtentPoint(Str, Count, Size);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('[TCocoaWidgetSet.GetTextExtentPoint] Size: %d,%d', [Size.cx, Size.cy]);
+  {$ENDIF}
 end;
 
 function TCocoaWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
