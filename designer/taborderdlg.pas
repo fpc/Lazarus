@@ -32,8 +32,8 @@ unit TabOrderDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  Buttons, ComCtrls, StdCtrls, Arrow, LazarusIDEStrConsts, ButtonPanel;
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
+  ComCtrls, StdCtrls, Arrow, LazarusIDEStrConsts, ButtonPanel, PropEdits;
 
 type
 
@@ -42,168 +42,109 @@ type
   TTabOrderDialog = class(TForm)
     ArrowDown: TSpeedButton;
     ArrowUp: TSpeedButton;
-    BtnPanel: TButtonPanel;
-    ShowOldValuesCheckbox: TCheckBox;
     ItemTreeview: TTreeView;
-    procedure DownSpeedbuttonCLICK(Sender: TObject);
-    procedure OkButtonCLICK(Sender: TObject);
-    procedure ShowOldValuesCheckboxCLICK(Sender: TObject);
-    procedure TabOrderDialogCLOSE(Sender: TObject;
-      var CloseAction: TCloseAction);
     procedure TabOrderDialogCREATE(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure UpSpeedbuttonCLICK(Sender: TObject);
+    procedure DownSpeedbuttonCLICK(Sender: TObject);
   private
-    FLookupRoot: TComponent;
-    procedure SetLookupRoot(const AValue: TComponent);
-    procedure CommitNodes(ANode: TTreeNode; var TabChanged: boolean);
-    procedure CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
-  public
+    FUpdating: Boolean;
+    function SwapNodes(ANode1, ANode2: TTreeNode): boolean;
     procedure FillTree;
-    procedure ClearTree;
-  public
-    property LookupRoot: TComponent Read FLookupRoot Write SetLookupRoot;
+    procedure CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
+    procedure Refresh(Force: boolean);
+    procedure OnRefreshPropertyValues;
   end;
 
-//function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
+  { TTabOrderPropEditor }
+
+  TTabOrderPropEditor = class(TIntegerPropertyEditor)
+  public
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
+    procedure SetValue(const NewValue: ansistring);  override;
+    procedure Edit; override;
+  end;
 
 var
   TabOrderDialog: TTabOrderDialog;
+  ShowTabOrderEditor: TNotifyEvent;
 
 implementation
 
 {$R *.lfm}
-{
-function ShowTabOrderDialog(LookupRoot: TComponent): TModalresult;
-var
-  TabOrderDialog: TTabOrderDialog;
-begin
-  TabOrderDialog := TTabOrderDialog.Create(nil);
-  TabOrderDialog.LookupRoot := LookupRoot;
-  Result := TabOrderDialog.ShowModal;
-  TabOrderDialog.Free;
-end;
-}
+
 { TTabOrderDialog }
 
 procedure TTabOrderDialog.TabOrderDialogCREATE(Sender: TObject);
 begin
-  ShowOldValuesCheckbox.Caption := lisShowOldTabOrder;
-  BtnPanel.OKButton.OnClick := @OkButtonCLICK;
-
+  GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
   ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
   ArrowUp.LoadGlyphFromLazarusResource('arrow_up');
 end;
 
+procedure TTabOrderDialog.FormShow(Sender: TObject);
+begin
+  Refresh(true);
+end;
+
 procedure TTabOrderDialog.UpSpeedbuttonCLICK(Sender: TObject);
 var
-  CurItem: TTreeNode;
+  CurItem, NewItem: TTreeNode;
 begin
   CurItem:=ItemTreeview.Selected;
   if (CurItem=nil) or (CurItem.GetPrevSibling=nil) then exit;
-  CurItem.MoveTo(CurItem.GetPrevSibling,naInsert);
+  NewItem := CurItem.GetPrevSibling;
+  SwapNodes(NewItem, CurItem);
   ItemTreeview.Selected:=CurItem;
-end;
-
-procedure TTabOrderDialog.TabOrderDialogCLOSE(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  FLookupRoot:=nil;
-end;
-
-procedure TTabOrderDialog.ShowOldValuesCheckboxCLICK(Sender: TObject);
-var
-  i: integer;
-begin
-  for i := 0 to Pred(ItemTreeView.Items.Count) do
-    if Assigned(ItemTreeView.Items[i].Data) then
-      if ShowOldValuesCheckbox.Checked then
-        ItemTreeView.Items[i].Text :=
-          TWinControl(ItemTreeView.Items[i].Data).Name +
-          '   (' + IntToStr(TWinControl(ItemTreeView.Items[i].Data).TabOrder) + ')'
-      else
-        ItemTreeView.Items[i].Text := TWinControl(ItemTreeView.Items[i].Data).Name;
 end;
 
 procedure TTabOrderDialog.DownSpeedbuttonCLICK(Sender: TObject);
 var
-  CurItem: TTreeNode;
+  CurItem, NewItem: TTreeNode;
 begin
   CurItem:=ItemTreeview.Selected;
   if (CurItem=nil) or (CurItem.GetNextSibling=nil) then exit;
-  CurItem.MoveTo(CurItem.GetNextSibling,naInsertBehind);
+  NewItem := CurItem.GetNextSibling;
+  SwapNodes(CurItem, NewItem);
   ItemTreeview.Selected:=CurItem;
 end;
 
-procedure TTabOrderDialog.OkButtonCLICK(Sender: TObject);
+function TTabOrderDialog.SwapNodes(ANode1, ANode2: TTreeNode): boolean;
 var
-  TabChanged: Boolean;
+  Ctrl1, Ctrl2: TWinControl;
+  TabOrd: TTabOrder;
 begin
-  TabChanged:=false;
-  CommitNodes(ItemTreeview.Items.GetFirstNode,TabChanged);
-  if TabChanged then
-    ModalResult:=mrOk
-  else
-    ModalResult:=mrCancel;
-end;
-
-procedure TTabOrderDialog.SetLookupRoot(const AValue: TComponent);
-begin
-  if FLookupRoot=AValue then exit;
-  FLookupRoot:=AValue;
-  if FLookupRoot<>nil then begin
-    Caption:=lisTabOrderOf + ' ' + FLookupRoot.Name;
-  end;
-  FillTree;
-end;
-
-procedure TTabOrderDialog.CommitNodes(ANode: TTreeNode;
-  var TabChanged: boolean);
-var
-  AControl: TWinControl;
-  CurTabOrder: Integer;
-begin
-  CurTabOrder := 0;
-  while ANode <> nil do
-  begin
-    AControl := TWinControl(ANode.Data);
-    if AControl.TabOrder <> CurTabOrder then
-      TabChanged := True;
-    AControl.TabOrder := TTabOrder(CurTabOrder);
-    //DebugLn('TTabOrderDialog.CommitNodes A ',AControl.Name,' ',
-    //  IntToStr(AControl.TabOrder),' ',IntToStr(CurTabOrder));
-    inc(CurTabOrder);
-    CommitNodes(ANode.GetFirstChild, TabChanged);
-    ANode := ANode.GetNextSibling;
-  end;
+  ANode2.MoveTo(ANode1,naInsert);          // Move Node2 in front of Node1.
+  Ctrl1 := TWinControl(ANode1.Data);
+  Ctrl2 := TWinControl(ANode2.Data);
+  TabOrd := Ctrl1.TabOrder;                // Swap TabOrder values.
+  Ctrl1.TabOrder := Ctrl2.TabOrder;
+  Ctrl2.TabOrder := TabOrd;
+  ANode1.Text := Ctrl1.Name + '   (' + IntToStr(Ctrl1.TabOrder) + ')';
+  ANode2.Text := Ctrl2.Name + '   (' + IntToStr(Ctrl2.TabOrder) + ')';
 end;
 
 procedure TTabOrderDialog.FillTree;
 var
-  AControl: TWinControl;
+  LookupRoot: TPersistent;
 begin
   ItemTreeview.BeginUpdate;
   try
-    ClearTree;
-    if (FLookupRoot = nil) or (not (FLookupRoot is TWinControl)) then
-      exit;
-    AControl := TWinControl(FLookupRoot);
-    CreateNodes(AControl, nil);
+    ItemTreeview.Items.Clear;
+    LookupRoot := GlobalDesignHook.LookupRoot;
+    if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
+      CreateNodes(TWinControl(LookupRoot), nil);
+      Caption:=lisTabOrderOf + ' ' + TWinControl(LookupRoot).Name;
+    end;
   finally
     ItemTreeview.EndUpdate;
   end;
 end;
 
-procedure TTabOrderDialog.ClearTree;
-begin
-  ItemTreeview.Items.Clear;
-end;
-
-procedure TTabOrderDialog.CreateNodes(ParentControl: TWinControl;
-  ParentNode: TTreeNode);
+procedure TTabOrderDialog.CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
 var
-  i:      integer;
   AControl: TControl;
-  CurTab: integer;
+  i, CurTab: integer;
   FirstSibling: TTreeNode;
   NodeBehind: TTreeNode;
   NewNode: TTreeNode;
@@ -226,9 +167,7 @@ begin
     NodeBehind  := FirstSibling;
     while (NodeBehind <> nil) and (TWinControl(NodeBehind.Data).TabOrder <= CurTab) do
       NodeBehind := NodeBehind.GetNextSibling;
-    NodeText := AWinControl.Name;
-    if ShowOldValuesCheckbox.Checked then
-      NodeText := NodeText + '   (' + IntToStr(AWinControl.TabOrder) + ')';
+    NodeText := AWinControl.Name + '   (' + IntToStr(AWinControl.TabOrder) + ')';
     if NodeBehind <> nil then
       NewNode := ItemTreeview.Items.InsertObject(NodeBehind, NodeText, AControl)
     else
@@ -240,5 +179,43 @@ begin
   end;
   ItemTreeview.EndUpdate;
 end;
+
+procedure TTabOrderDialog.Refresh(Force: boolean);
+begin
+  if Force or IsVisible and not FUpdating then
+  begin
+    FUpdating:=true;
+    try
+      FillTree;
+    finally
+      FUpdating:=false;
+    end;
+  end;
+end;
+
+procedure TTabOrderDialog.OnRefreshPropertyValues;
+begin
+  Refresh(false);
+end;
+
+{ TTabOrderPropEditor }
+
+function TTabOrderPropEditor.OrdValueToVisualValue(OrdValue: longint): string;
+begin
+  Result:=inherited OrdValueToVisualValue(OrdValue);
+end;
+
+procedure TTabOrderPropEditor.SetValue(const NewValue: ansistring);
+begin
+  inherited SetValue(NewValue);
+end;
+
+procedure TTabOrderPropEditor.Edit;
+begin
+  ShowTabOrderEditor(Self);
+end;
+
+initialization
+  RegisterPropertyEditor(TypeInfo(Integer), TControl, 'TabOrder', TTabOrderPropEditor);
 
 end.

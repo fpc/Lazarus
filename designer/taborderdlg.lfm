@@ -1,15 +1,15 @@
 object TabOrderDialog: TTabOrderDialog
-  Left = 381
-  Height = 387
-  Top = 167
+  Left = 349
+  Height = 374
+  Top = 112
   Width = 310
   ActiveControl = ItemTreeview
   BorderStyle = bsSizeToolWin
   Caption = 'TabOrderDialog'
-  ClientHeight = 387
+  ClientHeight = 374
   ClientWidth = 310
-  OnClose = TabOrderDialogCLOSE
   OnCreate = TabOrderDialogCREATE
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object ArrowUp: TSpeedButton
@@ -39,9 +39,8 @@ object TabOrderDialog: TTabOrderDialog
   object ItemTreeview: TTreeView
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    AnchorSideBottom.Control = ShowOldValuesCheckbox
     Left = 6
-    Height = 313
+    Height = 357
     Top = 6
     Width = 267
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -52,42 +51,5 @@ object TabOrderDialog: TTabOrderDialog
     RightClickSelect = True
     TabOrder = 0
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-  end
-  object ShowOldValuesCheckbox: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = BtnPanel
-    Left = 6
-    Height = 18
-    Top = 325
-    Width = 166
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Around = 6
-    Caption = 'ShowOldValuesCheckbox'
-    OnClick = ShowOldValuesCheckboxCLICK
-    TabOrder = 1
-  end
-  object BtnPanel: TButtonPanel
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 6
-    Height = 32
-    Top = 349
-    Width = 298
-    Anchors = [akRight, akBottom]
-    OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
-    HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
-    HelpButton.Enabled = False
-    CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
-    CloseButton.Enabled = False
-    CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
-    TabOrder = 2
-    ShowButtons = [pbOK, pbCancel]
-    ShowBevel = False
   end
 end

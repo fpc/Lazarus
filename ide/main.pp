@@ -2025,8 +2025,8 @@ begin
    '0','120','+230','-120','',alNone,false,@OnGetLayout);
 
   EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
-
   ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
+  ShowTabOrderEditor:=@mnuViewTabOrderEditorClicked;
 end;
 
 procedure TMainIDE.SetupFormEditor;
