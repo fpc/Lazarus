@@ -22,21 +22,19 @@
 unit cocoawsbuttons;
 
 {$mode objfpc}{$H+}
+{$modeswitch objectivec1}
 
 interface
 
-// defines
-//{$I carbondefines.inc}
-
 uses
   // libs
-  MacOSAll,
+  MacOSAll, CocoaAll,
   // LCL
   Classes, Controls, Buttons, LCLType, LCLProc, Graphics,
   // widgetset
-  WSButtons, WSLCLClasses, WSProc;
+  WSButtons, WSLCLClasses, WSProc,
   // LCL Carbon
-//  CarbonDef, CarbonPrivate, CarbonButtons, CarbonWSControls, CarbonGDIObjects};
+  CocoaWSStdCtrls, CocoaUtils;
 
 type
 
@@ -71,8 +69,13 @@ implementation
  ------------------------------------------------------------------------------}
 class function TCocoaWSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
+var
+  btn : NSButton;
 begin
-//  Result := TLCLIntfHandle(TCarbonBitBtn.Create(AWinControl, AParams));
+  btn:=AllocButton(AWinControl, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
+  if Assigned(btn) then
+    AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+  Result:=TLCLIntfHandle(btn);
 end;
 
 {------------------------------------------------------------------------------
