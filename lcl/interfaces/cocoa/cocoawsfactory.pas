@@ -9,6 +9,7 @@ uses
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
   WSLCLClasses,
   CocoaWSCommon,
+  CocoaWSButtons,
   CocoaWSExtCtrls,
   CocoaWSForms,
   CocoaWSMenus,
@@ -421,7 +422,8 @@ end;
 // Buttons
 function RegisterCustomBitBtn: Boolean; alias : 'WSRegisterCustomBitBtn';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomBitBtn, TCocoaWSBitBtn);
+  Result := True;
 end;
 
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';

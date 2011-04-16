@@ -110,7 +110,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="334">
+    <Files Count="335">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1668,6 +1668,10 @@ end;"/>
         <Filename Value="qt/qtx11.inc"/>
         <Type Value="Include"/>
       </Item334>
+      <Item335>
+        <Filename Value="cocoa/cocoawsbuttons.pp"/>
+        <UnitName Value="cocoawsbuttons"/>
+      </Item335>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
