@@ -50,7 +50,7 @@ type
     procedure DownSpeedbuttonCLICK(Sender: TObject);
   private
     FUpdating: Boolean;
-    function SwapNodes(ANode1, ANode2: TTreeNode): boolean;
+    procedure SwapNodes(ANode1, ANode2: TTreeNode);
     procedure CheckButtonsEnabled;
     procedure CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
     procedure Refresh(Force: boolean);
@@ -125,7 +125,7 @@ begin
   CheckButtonsEnabled;
 end;
 
-function TTabOrderDialog.SwapNodes(ANode1, ANode2: TTreeNode): boolean;
+procedure TTabOrderDialog.SwapNodes(ANode1, ANode2: TTreeNode);
 var
   Ctrl1, Ctrl2: TWinControl;
   TabOrd: TTabOrder;
