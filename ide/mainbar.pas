@@ -191,6 +191,7 @@ type
           itmViewAssembler: TIDEMenuCommand;
           itmViewDebugOutput: TIDEMenuCommand;
           itmViewDebugEvents: TIDEMenuCommand;
+          itmViewPseudoTerminal: TIDEMenuCommand;
         //itmViewIDEInternalsWindows: TIDEMenuSection;
           itmViewPackageLinks: TIDEMenuCommand;
           itmViewFPCInfo: TIDEMenuCommand;

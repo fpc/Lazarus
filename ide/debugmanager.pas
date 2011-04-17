@@ -56,7 +56,7 @@ uses
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
-  InspectDlg, DebugEventsForm,
+  InspectDlg, DebugEventsForm, PseudoTerminalDlg,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -79,6 +79,7 @@ type
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
     procedure DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AText: String);
+    procedure DebuggerConsoleOutput(Sender: TObject; const AText: String);
     procedure DebuggerException(Sender: TObject;
       const AExceptionType: TDBGExceptionType;
       const AExceptionClass, AExceptionText: String;
@@ -124,6 +125,7 @@ type
     procedure InitDebugEventsDlg;
     procedure InitBreakPointDlg;
     procedure InitWatchesDlg;
+    procedure InitPseudoTerminal;
     procedure InitLocalsDlg;
     procedure InitCallStackDlg;
     procedure InitEvaluateDlg;
@@ -171,6 +173,7 @@ type
     function DoRunToCursor: TModalResult; override;
     function DoStopProject: TModalResult; override;
     procedure DoToggleCallStack; override;
+    procedure DoSendConsoleInput(AText: String); override;
     procedure ProcessCommand(Command: word; var Handled: boolean); override;
 
     //Some debuugers may do things like ProcessMessages while processing commands
@@ -212,7 +215,8 @@ implementation
 const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
     nmiwDbgOutput, nmiwDbgEvents,  nmiwBreakPoints, nmiwWatches, nmiwLocals,
-    nmiwCallStack, nmiwEvaluate, nmiwRegisters, nmiwAssembler, nmiwInspect
+    nmiwCallStack, nmiwEvaluate, nmiwRegisters, nmiwAssembler, nmiwInspect,
+    nmiwPseudoTerminal
   );
 
 type
@@ -960,6 +964,7 @@ var
   Item: TIDEException;
 begin
   if FMaster = AValue then Exit;
+  Assert((FMaster=nil) or (AValue=nil), 'TManagedExceptions already has a Master');
   FMaster := AValue;
   if FMaster = nil
   then begin
@@ -1473,6 +1478,15 @@ begin
   end;
 end;
 
+procedure TDebugManager.DebuggerConsoleOutput(Sender: TObject;
+  const AText: String);
+begin
+  if not HasConsoleSupport then exit;;
+  if FDialogs[ddtPseudoTerminal] = nil
+  then ViewDebugDialog(ddtPseudoTerminal, False, False);
+  TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).AddOutput(AText);
+end;
+
 procedure TDebugManager.BreakAutoContinueTimer(Sender: TObject);
 begin
   FAutoContinueTimer.Enabled := False;
@@ -1516,6 +1530,7 @@ begin
       ecToggleDebugEvents : ViewDebugDialog(ddtEvents);
       ecEvaluate          : ViewDebugDialog(ddtEvaluate);
       ecInspect           : ViewDebugDialog(ddtInspect);
+      ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
     end;
   end;
 end;
@@ -1916,12 +1931,15 @@ procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType;
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
-    TCallStackDlg, TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TIDEInspectDlg
+    TCallStackDlg, TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TIDEInspectDlg,
+    TPseudoConsoleDlg
   );
 var
   CurDialog: TDebuggerDlg;
 begin
   if Destroying then exit;
+  if (ADialogType = ddtPseudoTerminal) and not HasConsoleSupport
+  then exit;
   if FDialogs[ADialogType] = nil
   then begin
     CurDialog := TDebuggerDlg(DEBUGDIALOGCLASS[ADialogType].NewInstance);
@@ -1942,6 +1960,7 @@ begin
       ddtEvaluate:    InitEvaluateDlg;
       ddtAssembler:   InitAssemblerDlg;
       ddtInspect:     InitInspectDlg;
+      ddtPseudoTerminal: InitPseudoTerminal;
     end;
   end
   else begin
@@ -2013,6 +2032,14 @@ var
 begin
   TheDialog := TWatchesDlg(FDialogs[ddtWatches]);
   TheDialog.Watches := FWatches;
+end;
+
+procedure TDebugManager.InitPseudoTerminal;
+var
+  TheDialog: TPseudoConsoleDlg;
+begin
+  if not HasConsoleSupport then exit;
+  TheDialog := TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]);
 end;
 
 procedure TDebugManager.InitLocalsDlg;
@@ -2174,6 +2201,10 @@ begin
     itmViewDebugOutput.Tag := Ord(ddtOutput);
     itmViewDebugEvents.OnClick := @mnuViewDebugDialogClick;
     itmViewDebugEvents.Tag := Ord(ddtEvents);
+    if itmViewPseudoTerminal <> nil then begin
+      itmViewPseudoTerminal.OnClick := @mnuViewDebugDialogClick;
+      itmViewPseudoTerminal.Tag := Ord(ddtPseudoTerminal);
+    end;
 
     itmRunMenuResetDebugger.OnClick := @mnuResetDebuggerClicked;
 
@@ -2580,6 +2611,7 @@ begin
     FDebugger.OnDbgOutput     := @DebuggerOutput;
     FDebugger.OnDbgEvent      := @DebuggerEvent;
     FDebugger.OnException     := @DebuggerException;
+    FDebugger.OnConsoleOutput :=@DebuggerConsoleOutput;
 
     if FDebugger.State = dsNone
     then begin
@@ -2778,6 +2810,11 @@ begin
   ViewDebugDialog(ddtCallStack);
 end;
 
+procedure TDebugManager.DoSendConsoleInput(AText: String);
+begin
+  FDebugger.SendConsoleInput(AText);
+end;
+
 procedure TDebugManager.ProcessCommand(Command: word; var Handled: boolean);
 begin
   //debugln('TDebugManager.ProcessCommand ',dbgs(Command));
@@ -2810,6 +2847,7 @@ begin
     ecToggleDebuggerOut: ViewDebugDialog(ddtOutput);
     ecToggleDebugEvents: ViewDebugDialog(ddtEvents);
     ecToggleLocals:      ViewDebugDialog(ddtLocals);
+    ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
   else
     Handled := False;
   end;

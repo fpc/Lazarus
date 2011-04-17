@@ -69,7 +69,8 @@ type
     dcSetStackFrame,
     dcDisassemble,
     dcStepOverInstr,
-    dcStepIntoInstr
+    dcStepIntoInstr,
+    dcSendConsoleInput
     );
   TDBGCommands = set of TDBGCommand;
 
@@ -1521,6 +1522,7 @@ type
     FFileName: String;
     FLocals: TDBGLocals;
     FLineInfo: TDBGLineInfo;
+    FOnConsoleOutput: TDBGOutputEvent;
     FRegisters: TDBGRegisters;
     FShowConsole: Boolean;
     FSignals: TDBGSignals;
@@ -1599,6 +1601,7 @@ type
     procedure StepOut;
     procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
+    procedure SendConsoleInput(AText: String);
     function  Evaluate(const AExpression: String; var AResult: String;
                        var ATypeInfo: TDBGType;
                        EvalFlags: TDBGEvaluateFlags = []): Boolean;                     // Evaluates the given expression, returns true if valid
@@ -1641,6 +1644,7 @@ type
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
     property OnState: TDebuggerStateChangedEvent read FOnState write FOnState;   // Fires when the current state of the debugger changes
     property OnBreakPointHit: TDebuggerBreakPointHitEvent read FOnBreakPointHit write FOnBreakPointHit;   // Fires when the program is paused at a breakpoint
+    property OnConsoleOutput: TDBGOutputEvent read FOnConsoleOutput write FOnConsoleOutput;  // Passes Application Console Output
   end;
   TDebuggerClass = class of TDebugger;
 
@@ -1663,7 +1667,8 @@ const
     'SetStackFrame',
     'Disassemble',
     'StepOverInstr',
-    'StepIntoInstr'
+    'StepIntoInstr',
+    'SendConsoleInput'
     );
 
   DBGStateNames: array[TDBGState] of string = (
@@ -1690,6 +1695,7 @@ function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
 function dbgs(AState: TDBGState): String; overload;
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
 
+function HasConsoleSupport: Boolean;
 (******************************************************************************)
 (******************************************************************************)
 (******************************************************************************)
@@ -1702,12 +1708,13 @@ const
   {dsNone } [],
   {dsIdle } [dcEnvironment],
   {dsStop } [dcRun, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
-             dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch, dcEvaluate, dcEnvironment],
+             dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch, dcEvaluate, dcEnvironment,
+             dcSendConsoleInput],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
              dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
-             dcEnvironment, dcSetStackFrame, dcDisassemble],
+             dcEnvironment, dcSetStackFrame, dcDisassemble, dcSendConsoleInput],
   {dsInit } [],
-  {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
+  {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput],
   {dsError} [dcStop],
   {dsDestroying} []
   );
@@ -1736,6 +1743,15 @@ begin
       Result := Format('Range(%u)=[[ Cnt=%d, Capac=%d, First=%u, RFirst=%u, Last=%u, RLast=%u, REnd=%u, FirstOfs=%d ]]',
         [PtrUInt(ADisassRange), Count, Capacity, FirstAddr, RangeStartAddr, LastAddr, RangeEndAddr, LastEntryEndAddr, fo]);
   end;
+end;
+
+function HasConsoleSupport: Boolean;
+begin
+  {$IFDEF UNIX}
+  Result := True;
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
 end;
 
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
@@ -2144,6 +2160,11 @@ end;
 procedure TDebugger.JumpTo(const ASource: String; const ALine: Integer);
 begin
   ReqCmd(dcJumpTo, [ASource, ALine]);
+end;
+
+procedure TDebugger.SendConsoleInput(AText: String);
+begin
+  ReqCmd(dcSendConsoleInput, [AText]);
 end;
 
 function TDebugger.Modify(const AExpression, AValue: String): Boolean;

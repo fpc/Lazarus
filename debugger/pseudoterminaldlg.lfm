@@ -1,0 +1,24 @@
+inherited PseudoConsoleDlg: TPseudoConsoleDlg
+  Left = 1261
+  Top = 344
+  Caption = 'Console'
+  DockSite = True
+  object Memo1: TMemo[0]
+    Left = 0
+    Height = 213
+    Top = 0
+    Width = 320
+    Align = alClient
+    ReadOnly = True
+    TabOrder = 0
+  end
+  object Edit1: TEdit[1]
+    Left = 0
+    Height = 27
+    Top = 213
+    Width = 320
+    Align = alBottom
+    OnKeyPress = Edit1KeyPress
+    TabOrder = 1
+  end
+end

@@ -54,7 +54,8 @@ type
     ddtEvaluate,
     ddtRegisters,
     ddtAssembler,
-    ddtInspect
+    ddtInspect,
+    ddtPseudoTerminal
     );
 
   { TBaseDebugManager }
@@ -128,6 +129,7 @@ type
     function DoRunToCursor: TModalResult; virtual; abstract;
     function DoStopProject: TModalResult; virtual; abstract;
     procedure DoToggleCallStack; virtual; abstract;
+    procedure DoSendConsoleInput(AText: String); virtual; abstract;
     procedure ProcessCommand(Command: word; var Handled: boolean); virtual; abstract;
 
     procedure LockCommandProcessing; virtual; abstract;

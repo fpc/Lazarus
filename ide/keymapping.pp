@@ -36,7 +36,7 @@ uses
   Forms, Classes, SysUtils, Buttons, LResources, Controls,
   Dialogs, StringHashList, ExtCtrls,
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit, Laz_XMLCfg,
-  PropEdits, IDECommands, LazarusIDEStrConsts;
+  PropEdits, IDECommands, LazarusIDEStrConsts, Debugger;
 
 type
   TKeyMapScheme = (
@@ -193,7 +193,6 @@ function CompareNameWithLoadedKeyCommand(NameAsAnsiString, Key: Pointer): intege
 
 
 implementation
-
 
 const
   KeyMappingFormatVersion = 6;
@@ -513,6 +512,7 @@ begin
   ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleLocals: SetResult(VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecViewPseudoTerminal: if HasConsoleSupport then SetResult(VK_T,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleRegisters: SetResult(VK_R,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
@@ -1572,6 +1572,7 @@ begin
   ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleLocals: SetResult(VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecViewPseudoTerminal: if HasConsoleSupport then SetResult(VK_T,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleRegisters: SetResult(VK_R,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
@@ -2078,6 +2079,7 @@ begin
     ecToggleBreakPoints       : Result:= srkmecToggleBreakPoints;
     ecToggleDebuggerOut       : Result:= srkmecToggleDebuggerOut;
     ecToggleLocals            : Result:= srkmecToggleLocals;
+    ecViewPseudoTerminal      : Result:= srkmecViewPseudoTerminal;
     ecToggleCallStack         : Result:= srkmecToggleCallStack;
     ecToggleRegisters         : Result:= srkmecToggleRegisters;
     ecToggleAssembler         : Result:= srkmecToggleAssembler;
@@ -2745,6 +2747,8 @@ begin
   AddDefault(C, 'Toggle view Watches', lisKMToggleViewWatches, ecToggleWatches);
   AddDefault(C, 'Toggle view Breakpoints', lisKMToggleViewBreakpoints, ecToggleBreakPoints);
   AddDefault(C, 'Toggle view Local Variables', lisKMToggleViewLocalVariables, ecToggleLocals);
+  if HasConsoleSupport then
+  AddDefault(C, 'Toggle view Terminal Output', lisKMToggleViewPseudoTerminal, ecViewPseudoTerminal);
   AddDefault(C, 'Toggle view Call Stack', lisKMToggleViewCallStack, ecToggleCallStack);
   AddDefault(C, 'Toggle view Registers', lisKMToggleViewRegisters, ecToggleRegisters);
   AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler, ecToggleAssembler);

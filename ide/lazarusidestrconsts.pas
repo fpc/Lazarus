@@ -301,6 +301,7 @@ resourcestring
   lisMenuViewWatches = 'Watches';
   lisMenuViewBreakPoints = 'BreakPoints';
   lisMenuViewLocalVariables = 'Local Variables';
+  lisMenuViewPseudoTerminal = 'Terminal Output';
   lisMenuViewRegisters = 'Registers';
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewAssembler = 'Assembler';
@@ -2600,6 +2601,7 @@ resourcestring
   srkmecToggleBreakPoints         = 'View breakpoints';
   srkmecToggleDebuggerOut         = 'View debugger output';
   srkmecToggleLocals              = 'View local variables';
+  srkmecViewPseudoTerminal        = 'View Terminal Output';
   srkmecTogglecallStack           = 'View call stack';
   srkmecToggleRegisters           = 'View registers';
   srkmecToggleAssembler           = 'View assembler';
@@ -2747,6 +2749,7 @@ resourcestring
   lisKMToggleViewWatches = 'Toggle view Watches';
   lisKMToggleViewBreakpoints = 'Toggle view Breakpoints';
   lisKMToggleViewLocalVariables = 'Toggle view Local Variables';
+  lisKMToggleViewPseudoTerminal = 'Toggle view Terminal Output';
   lisKMToggleViewCallStack = 'Toggle view Call Stack';
   lisKMToggleViewRegisters = 'Toggle view Registers';
   lisKMToggleViewAssembler = 'Toggle view Assembler';

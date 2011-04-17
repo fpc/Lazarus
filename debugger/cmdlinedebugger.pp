@@ -55,7 +55,10 @@ type
     FPeekOffset: Integer;    // Count the number of lines we have peeked
     FReadLineTimedOut: Boolean;
     function GetDebugProcessRunning: Boolean;
+    function WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer; overload;
+    function WaitForHandles(const AHandles: array of Integer): Integer; overload;
   protected
+    procedure ProcessWhileWaitForHandles; virtual;
     function  CreateDebugProcess(const AOptions: String): Boolean;
     procedure Flush;                                   // Flushes output buffer
     function  GetWaiting: Boolean; override;
@@ -98,7 +101,7 @@ uses
   TimeOut: Max Time in milli-secs => set to 0 if timeout occured
   Returns: BitArray of handles set, 0 when an error occoured
  ------------------------------------------------------------------------------}
-function WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer;
+function TCmdLineDebugger.WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer;
 {$IFDEF UNIX}
 var
   n, R, Max, Count: Integer;
@@ -158,6 +161,7 @@ begin
       end;
     end;
 
+    ProcessWhileWaitForHandles;
     inc(Step);
     if Step=50 then begin
       Step:=0;
@@ -231,6 +235,7 @@ begin
       end;
     end;
 
+    ProcessWhileWaitForHandles;
     // process messages
     inc(Step);
     if Step=20 then begin
@@ -251,12 +256,17 @@ end;
 {$ENDIF win32}
 {$ENDIF linux}
 
-function WaitForHandles(const AHandles: array of Integer): Integer; overload;
+function TCmdLineDebugger.WaitForHandles(const AHandles: array of Integer): Integer; overload;
 var
   t: Integer;
 begin
   t := -1;
   Result := WaitForHandles(AHandles, t);
+end;
+
+procedure TCmdLineDebugger.ProcessWhileWaitForHandles;
+begin
+  // nothing
 end;
 
 //////////////////////////////////////////////////

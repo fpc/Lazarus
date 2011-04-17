@@ -93,6 +93,7 @@ type
     nmiwRegisters,
     nmiwAssembler,
     nmiwInspect,
+    nmiwPseudoTerminal,
     // extra
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
@@ -138,6 +139,7 @@ const
     'Registers',
     'Assembler',
     'Inspect',
+    'PseudoTerminal',
     // extra
     'SearchResults',
     'AnchorEditor',

@@ -45,7 +45,7 @@ uses
   Windows,
 {$ENDIF}
 {$IFDEF UNIX}
-   Unix,BaseUnix,termio,
+   Unix,BaseUnix,termio,PseudoTerminalDlg,
 {$ENDIF}
   BaseDebugManager, GDBMIMiscClasses;
 
@@ -294,6 +294,7 @@ type
     // Target info (move to record ?)
     FTargetInfo: TGDBMITargetInfo;
 
+    procedure DoPseudoTerminalRead(Sender: TObject);
     // Implementation of external functions
     function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
     function  GDBEvaluate(const AExpression: String; var AResult: String;
@@ -345,6 +346,10 @@ type
   protected
     {$IFDEF MSWindows}
     FPauseRequestInThreadID: Cardinal;
+    {$ENDIF}
+    {$IFDEF UNIX}
+    FPseudoTerminal: TPseudoTerminal;
+    procedure ProcessWhileWaitForHandles; override;
     {$ENDIF}
     procedure QueueExecuteLock;
     procedure QueueExecuteUnlock;
@@ -2942,8 +2947,9 @@ begin
     ExecuteCommand('set width 50000', []);
     {$IFDEF UNIX}
     // Make sure consule output will ot be mixed with gbd output
+    FTheDebugger.FPseudoTerminal.Open;
     s := TGDBMIDebuggerProperties(FTheDebugger.GetProperties).ConsoleTty;
-    if s = '' then s := '/dev/null';
+    if s = '' then s := FTheDebugger.FPseudoTerminal.Devicename;
     h := fileopen(S, fmOpenWrite);
     if (IsATTY(h) <> 1)
     or (not ExecuteCommand('set inferior-tty %s', [s], R)) or (r.State = dsError)
@@ -4188,7 +4194,7 @@ constructor TGDBMIDebuggerProperties.Create;
 begin
   FOverrideRTLCallingConvention := ccDefault;
     {$IFDEF UNIX}
-    FConsoleTty := '/dev/null';
+    FConsoleTty := '';
     {$ENDIF}
   inherited;
 end;
@@ -4302,6 +4308,10 @@ begin
 {$IFdef MSWindows}
   InitWin32;
 {$ENDIF}
+  {$IFDEF UNIX}
+  FPseudoTerminal := TPseudoTerminal.Create;
+  FPseudoTerminal.OnCanRead :=@DoPseudoTerminalRead;
+  {$ENDIF}
 
   inherited;
 end;
@@ -4354,6 +4364,9 @@ begin
   FreeAndNil(FCommandQueue);
   ClearSourceInfo;
   FreeAndNil(FSourceNames);
+  {$IFDEF UNIX}
+  FreeAndNil(FPseudoTerminal);
+  {$ENDIF}
 end;
 
 procedure TGDBMIDebugger.Done;
@@ -4757,6 +4770,14 @@ begin
   FreeAndNil(NewEntryMap);
 end;
 
+procedure TGDBMIDebugger.DoPseudoTerminalRead(Sender: TObject);
+begin
+  {$IFDEF UNIX}
+  if assigned(OnConsoleOutput)
+  then OnConsoleOutput(self, FPseudoTerminal.Read);
+  {$ENDIF}
+end;
+
 function TGDBMIDebugger.GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
 var
   S: String;
@@ -5086,7 +5107,9 @@ begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcStepOut,
              dcStepOverInstr, dcStepIntoInstr, dcRunTo, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
-             dcSetStackFrame, dcDisassemble];
+             dcSetStackFrame, dcDisassemble
+             {$IFDEF UNIX}, dcSendConsoleInput{$ENDIF}
+            ];
 end;
 
 function TGDBMIDebugger.GetTargetWidth: Byte;
@@ -5322,6 +5345,9 @@ begin
                                               String(AParams[5].VPointer^), Integer(AParams[6].VPointer^));
       dcStepOverInstr: Result := GDBStepOverInstr;
       dcStepIntoInstr: Result := GDBStepIntoInstr;
+      {$IFDEF UNIX}
+      dcSendConsoleInput: FPseudoTerminal.Write(String(AParams[0].VAnsiString));
+      {$ENDIF}
     end;
   finally
     UnlockRelease;
@@ -5528,6 +5554,14 @@ begin
   then Cmd.Cancel;
   Cmd.KeepFinished := False;
 end;
+
+{$IFDEF UNIX}
+procedure TGDBMIDebugger.ProcessWhileWaitForHandles;
+begin
+  inherited ProcessWhileWaitForHandles;
+  FPseudoTerminal.CheckCanRead;
+end;
+{$ENDIF}
 
 procedure TGDBMIDebugger.QueueExecuteLock;
 begin
