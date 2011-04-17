@@ -15731,7 +15731,6 @@ begin
   ActiveUnitInfo.SetLastUsedEditor(SourceEditorManager.ActiveEditor);
 
   UpdateSaveMenuItemsAndButtons(false);
-  MainIDEBar.ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Component);
   MainIDEBar.itmViewToggleFormUnit.Enabled := Assigned(ActiveUnitInfo.Component)
                                            or (ActiveUnitInfo.ComponentName<>'');
   MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
@@ -16777,9 +16776,7 @@ begin
     begin
       AnIDesigner:=Screen.ActiveForm.Designer;
       if AnIDesigner is TDesigner then
-      begin
-        MainIDEBar.itmViewToggleFormUnit.Enabled := true;
-      end
+        MainIDEBar.itmViewToggleFormUnit.Enabled := true
       else
       begin
         HasResources:=false;
@@ -16789,24 +16786,21 @@ begin
             HasResources:=true
           else if FilenameIsAbsolute(AnUnitInfo.Filename)
             and FilenameIsPascalSource(AnUnitInfo.Filename)
-            and FileExistsCached(ChangeFileExt(AnUnitInfo.Filename,'.lfm'))
+            and ( FileExistsCached(ChangeFileExt(AnUnitInfo.Filename,'.lfm'))
+               or FileExistsCached(ChangeFileExt(AnUnitInfo.Filename,'.dfm')) )
           then
             HasResources:=true;
         end;
         MainIDEBar.itmViewToggleFormUnit.Enabled := HasResources;
       end;
       MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
-
       DebugBoss.UpdateButtonsAndMenuItems;
     end;
   end;
-
   if FCheckFilesOnDiskNeeded then
     DoCheckFilesOnDisk(true);
-
   if (FRemoteControlTimer=nil) and EnableRemoteControl then
     SetupRemoteControl;
-
   if Screen.GetCurrentModalForm=nil then
     PkgBoss.OpenHiddenModifiedPackages;
 end;
