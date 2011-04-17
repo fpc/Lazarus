@@ -4495,7 +4495,7 @@ resourcestring
   lisPListAll                   = '<All>';
   lisPListNone                  = '<None>';
   lisUIClearIncludedByReference = 'Clear include cache';
-  lisChangeParent = 'Change Parent...';
+  lisChangeParent = 'Change Parent';
   lisLazarusIDE = 'Lazarus IDE';
   lisDirectives = 'Directives';
 
