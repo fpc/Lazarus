@@ -342,11 +342,10 @@ Type
     property OptimalFill;
   end;
 
-
-  { TDBListBox }
+  { TCustomDBListBox }
 
   TCustomDBListBox = class(TCustomListBox)
-
+  private
     procedure EditingChange(Sender: TObject);
     procedure FocusRequest(Sender: TObject);
 
@@ -385,6 +384,7 @@ Type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   end;
 
+  { TDBListBox }
 
   TDBListBox = class(TCustomDBListBox)
   protected
@@ -909,6 +909,7 @@ Type
   { TDBGroupBox }
   
   TDBGroupBox = class(TCustomGroupBox)
+  private
     FDataLink: TFieldDataLink;
     function GetDataField: string;
     function GetDataSource: TDataSource;
@@ -1032,6 +1033,7 @@ Type
   { TDBCalendar }
 
   TDBCalendar = class(TCalendar)
+  private
     FDataLink: TFieldDataLink;
 
     procedure DataChange(Sender: TObject);
