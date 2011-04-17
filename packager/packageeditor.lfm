@@ -131,6 +131,7 @@ inherited PackageEditorForm: TPackageEditorForm
       Top = 37
       Width = 569
       Align = alBottom
+      Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       Caption = 'RegisteredPluginsGroupBox'
       ClientHeight = 39
