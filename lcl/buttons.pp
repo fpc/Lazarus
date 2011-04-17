@@ -480,18 +480,10 @@ begin
   else
     C := CreateBitmapFromLazarusResource(AName);
 
-  if C = nil
-  then begin
-    AGlyph.Glyph := nil;
-    Exit;
-  end
-  else
-  begin
-    try
-      AGlyph.Glyph.Assign(C);
-    finally
-      C.Free;
-    end;
+  try
+    AGlyph.Glyph.Assign(C);
+  finally
+    C.Free;
   end;
 end;
 
@@ -500,15 +492,10 @@ var
   C: TCustomBitmap;
 begin
   C := GetButtonIcon(idButton);
-  if C = nil then
-    AGlyph.Glyph := nil
-  else
-  begin
-    try
-      AGlyph.Glyph.Assign(C);
-    finally
-      C.Free;
-    end;
+  try
+    AGlyph.Glyph.Assign(C);
+  finally
+    C.Free;
   end;
 end;
 
