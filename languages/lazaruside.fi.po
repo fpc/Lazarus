@@ -3107,10 +3107,6 @@ msgstr "Sijoita apupisteiden mukaan"
 msgid "Option: Snap to guide lines"
 msgstr "Sijoita kohdistusviivojen mukaan"
 
-#: lazarusidestrconsts.fdmtaborder
-msgid "Tab Order..."
-msgstr ""
-
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
 msgstr ""
@@ -4513,7 +4509,7 @@ msgid "Change file"
 msgstr "Muunna tiedosto"
 
 #: lazarusidestrconsts.lischangeparent
-msgid "Change Parent..."
+msgid "Change Parent"
 msgstr ""
 
 #: lazarusidestrconsts.lischaracter
@@ -10598,6 +10594,10 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Lähdekoodi editori"
 
+#: lazarusidestrconsts.lismenuviewtabordereditor
+msgid "Tab Order Editor"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -13489,10 +13489,6 @@ msgstr ""
 msgid "Show information box"
 msgstr "Näytä lisätietojaosa"
 
-#: lazarusidestrconsts.lisshowoldtaborder
-msgid "Show old tab order"
-msgstr ""
-
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr ""
@@ -13776,7 +13772,7 @@ msgid "Tab"
 msgstr ""
 
 #: lazarusidestrconsts.listaborderof
-msgid "Tab Order of"
+msgid "Tab Order of %s"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
@@ -16528,6 +16524,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecviewtabordereditor
+msgid "View Tab Order editor"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies

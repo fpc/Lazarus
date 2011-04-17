@@ -3089,10 +3089,6 @@ msgstr "Volba: Přitáhnout k mřížce"
 msgid "Option: Snap to guide lines"
 msgstr "Volba: Přitáhnout k vodícím čarám"
 
-#: lazarusidestrconsts.fdmtaborder
-msgid "Tab Order..."
-msgstr "Pořadí záložek..."
-
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
 msgstr "Z-pořadí"
@@ -4487,7 +4483,9 @@ msgid "Change file"
 msgstr "Změnit soubor"
 
 #: lazarusidestrconsts.lischangeparent
-msgid "Change Parent..."
+#, fuzzy
+#| msgid "Change Parent..."
+msgid "Change Parent"
 msgstr "Změnit rodiče..."
 
 #: lazarusidestrconsts.lischaracter
@@ -10535,6 +10533,10 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Editor zdrojového kódu"
 
+#: lazarusidestrconsts.lismenuviewtabordereditor
+msgid "Tab Order Editor"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -13412,10 +13414,6 @@ msgstr "Ukázat identifikátory"
 msgid "Show information box"
 msgstr "Ukázat informační rámeček"
 
-#: lazarusidestrconsts.lisshowoldtaborder
-msgid "Show old tab order"
-msgstr "Ukázat staré pořadí záložek"
-
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Ukázat balíčky"
@@ -13699,7 +13697,9 @@ msgid "Tab"
 msgstr "Tab"
 
 #: lazarusidestrconsts.listaborderof
-msgid "Tab Order of"
+#, fuzzy
+#| msgid "Tab Order of"
+msgid "Tab Order of %s"
 msgstr "Pořadí záložek"
 
 #: lazarusidestrconsts.listargetcpu
@@ -16447,6 +16447,10 @@ msgstr "Zobrazit komponenty"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Zobrazit formuláře"
+
+#: lazarusidestrconsts.srkmecviewtabordereditor
+msgid "View Tab Order editor"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

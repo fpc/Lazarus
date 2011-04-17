@@ -3132,12 +3132,6 @@ msgstr "Opzione: griglia magnetica"
 msgid "Option: Snap to guide lines"
 msgstr "Opzione: linee guida magnetiche"
 
-#: lazarusidestrconsts.fdmtaborder
-#, fuzzy
-#| msgid "Tab order..."
-msgid "Tab Order..."
-msgstr "Ordine di tabulazione..."
-
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
 msgstr ""
@@ -4539,8 +4533,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lischangeparent
 #, fuzzy
-#| msgid "Change parent ..."
-msgid "Change Parent..."
+#| msgid "Change Parent..."
+msgid "Change Parent"
 msgstr "Cambia padre ..."
 
 #: lazarusidestrconsts.lischaracter
@@ -10634,6 +10628,10 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Editor sorgente"
 
+#: lazarusidestrconsts.lismenuviewtabordereditor
+msgid "Tab Order Editor"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -13535,10 +13533,6 @@ msgstr "Mostra gli identificatori"
 msgid "Show information box"
 msgstr ""
 
-#: lazarusidestrconsts.lisshowoldtaborder
-msgid "Show old tab order"
-msgstr "Mostra il vecchio ordine di tabulazione"
-
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Mostra i pacchetti"
@@ -13822,7 +13816,9 @@ msgid "Tab"
 msgstr "Tab"
 
 #: lazarusidestrconsts.listaborderof
-msgid "Tab Order of"
+#, fuzzy
+#| msgid "Tab Order of"
+msgid "Tab Order of %s"
 msgstr "Ordine di tabulazione di "
 
 #: lazarusidestrconsts.listargetcpu
@@ -16575,6 +16571,10 @@ msgstr "Mostrare i componenti"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Mostra le form"
+
+#: lazarusidestrconsts.srkmecviewtabordereditor
+msgid "View Tab Order editor"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

@@ -3113,12 +3113,6 @@ msgstr "Параметр:Кинути на решітку"
 msgid "Option: Snap to guide lines"
 msgstr "Параметр:Прикріпити до лінійок"
 
-#: lazarusidestrconsts.fdmtaborder
-#, fuzzy
-#| msgid "Tab order..."
-msgid "Tab Order..."
-msgstr "Чергування ..."
-
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
 msgstr ""
@@ -4520,8 +4514,8 @@ msgstr ""
 
 #: lazarusidestrconsts.lischangeparent
 #, fuzzy
-#| msgid "Change parent ..."
-msgid "Change Parent..."
+#| msgid "Change Parent..."
+msgid "Change Parent"
 msgstr "Змінити предка ..."
 
 #: lazarusidestrconsts.lischaracter
@@ -10610,6 +10604,10 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Редактор тексту"
 
+#: lazarusidestrconsts.lismenuviewtabordereditor
+msgid "Tab Order Editor"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -13509,10 +13507,6 @@ msgstr "Показувати змінні"
 msgid "Show information box"
 msgstr ""
 
-#: lazarusidestrconsts.lisshowoldtaborder
-msgid "Show old tab order"
-msgstr "Показувати попередній порядок tab"
-
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Показувати пакунки"
@@ -13796,7 +13790,7 @@ msgid "Tab"
 msgstr "ТАБ"
 
 #: lazarusidestrconsts.listaborderof
-msgid "Tab Order of"
+msgid "Tab Order of %s"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
@@ -16549,6 +16543,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Показувати форми"
+
+#: lazarusidestrconsts.srkmecviewtabordereditor
+msgid "View Tab Order editor"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

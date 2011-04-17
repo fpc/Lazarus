@@ -3117,11 +3117,6 @@ msgstr "Parinktis: pritraukti prie tinklelio taškų"
 msgid "Option: Snap to guide lines"
 msgstr "Parinktis: pritraukti prie orientavimo linijų"
 
-#: lazarusidestrconsts.fdmtaborder
-#| msgid "Tab order..."
-msgid "Tab Order..."
-msgstr "Tabuliatoriaus eilė…"
-
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
 msgstr "Z eilė"
@@ -4529,8 +4524,9 @@ msgid "Change file"
 msgstr "Keisti failą"
 
 #: lazarusidestrconsts.lischangeparent
-#| msgid "Change parent ..."
-msgid "Change Parent..."
+#, fuzzy
+#| msgid "Change Parent..."
+msgid "Change Parent"
 msgstr "Pakeisti tėvą…"
 
 #: lazarusidestrconsts.lischaracter
@@ -10623,6 +10619,10 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Pirminio kodo rengyklė"
 
+#: lazarusidestrconsts.lismenuviewtabordereditor
+msgid "Tab Order Editor"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -13524,10 +13524,6 @@ msgstr "Rodyti identifikatorius"
 msgid "Show information box"
 msgstr "Rodyti informacijos laukelį"
 
-#: lazarusidestrconsts.lisshowoldtaborder
-msgid "Show old tab order"
-msgstr "Rodyti buvusią vietą tabuliatoriaus eilėje"
-
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Rodyti paketus"
@@ -13811,7 +13807,9 @@ msgid "Tab"
 msgstr "Tab"
 
 #: lazarusidestrconsts.listaborderof
-msgid "Tab Order of"
+#, fuzzy
+#| msgid "Tab Order of"
+msgid "Tab Order of %s"
 msgstr "Vieta tabuliatoriaus eilėje"
 
 #: lazarusidestrconsts.listargetcpu
@@ -16572,6 +16570,10 @@ msgstr "Rodyti komponentes"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Rodyti formas"
+
+#: lazarusidestrconsts.srkmecviewtabordereditor
+msgid "View Tab Order editor"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

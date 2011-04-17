@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-16 17:25+0300\n"
+"PO-Revision-Date: 2011-04-17 16:02+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3133,11 +3133,6 @@ msgstr "Параметр: Выровнять по сетке"
 msgid "Option: Snap to guide lines"
 msgstr "Параметр: Выровнять по линиям позиционирования"
 
-#: lazarusidestrconsts.fdmtaborder
-#| msgid "Tab order..."
-msgid "Tab Order..."
-msgstr "Порядок перехода..."
-
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
 msgstr "Z-порядок"
@@ -4538,8 +4533,8 @@ msgid "Change file"
 msgstr "Изменить файл"
 
 #: lazarusidestrconsts.lischangeparent
-#| msgid "Change parent ..."
-msgid "Change Parent..."
+#| msgid "Change Parent..."
+msgid "Change Parent"
 msgstr "Сменить родителя"
 
 #: lazarusidestrconsts.lischaracter
@@ -10618,6 +10613,10 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Редактор исходного кода"
 
+#: lazarusidestrconsts.lismenuviewtabordereditor
+msgid "Tab Order Editor"
+msgstr "Редактор порядка перехода"
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -13513,10 +13512,6 @@ msgstr "Показывать идентификаторы"
 msgid "Show information box"
 msgstr "Показывать информационную панель"
 
-#: lazarusidestrconsts.lisshowoldtaborder
-msgid "Show old tab order"
-msgstr "Показать старый порядок перехода"
-
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Показывать пакеты"
@@ -13800,8 +13795,9 @@ msgid "Tab"
 msgstr "Таб"
 
 #: lazarusidestrconsts.listaborderof
-msgid "Tab Order of"
-msgstr "Порядок перехода"
+#| msgid "Tab Order of"
+msgid "Tab Order of %s"
+msgstr "Порядок перехода для %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -16561,6 +16557,10 @@ msgstr "Показать список компонентов"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Показать формы"
+
+#: lazarusidestrconsts.srkmecviewtabordereditor
+msgid "View Tab Order editor"
+msgstr "Показать редактор порядка перехода"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

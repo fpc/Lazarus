@@ -3125,12 +3125,6 @@ msgstr "オプション：グリッドに留まる"
 msgid "Option: Snap to guide lines"
 msgstr "オプション：ガイドラインに留まる"
 
-#: lazarusidestrconsts.fdmtaborder
-#, fuzzy
-#| msgid "Tab order..."
-msgid "Tab Order..."
-msgstr "タブ順序..."
-
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
 msgstr "Z 順序"
@@ -4534,8 +4528,8 @@ msgstr "ファイルを変更"
 
 #: lazarusidestrconsts.lischangeparent
 #, fuzzy
-#| msgid "Change parent ..."
-msgid "Change Parent..."
+#| msgid "Change Parent..."
+msgid "Change Parent"
 msgstr "基本クラスを変更 ..."
 
 #: lazarusidestrconsts.lischaracter
@@ -10639,6 +10633,10 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "ソースエディタ"
 
+#: lazarusidestrconsts.lismenuviewtabordereditor
+msgid "Tab Order Editor"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -13542,10 +13540,6 @@ msgstr "識別子を表示"
 msgid "Show information box"
 msgstr "情報ボックスを表示"
 
-#: lazarusidestrconsts.lisshowoldtaborder
-msgid "Show old tab order"
-msgstr "古いタブ順序を表示"
-
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "パッケージを表示"
@@ -13829,7 +13823,9 @@ msgid "Tab"
 msgstr "タブ"
 
 #: lazarusidestrconsts.listaborderof
-msgid "Tab Order of"
+#, fuzzy
+#| msgid "Tab Order of"
+msgid "Tab Order of %s"
 msgstr "次のタブ順序"
 
 #: lazarusidestrconsts.listargetcpu
@@ -16588,6 +16584,10 @@ msgstr "コンポーネントを表示"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "フォームを表示"
+
+#: lazarusidestrconsts.srkmecviewtabordereditor
+msgid "View Tab Order editor"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

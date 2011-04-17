@@ -3134,11 +3134,6 @@ msgstr "Option : aligner sur la grille"
 msgid "Option: Snap to guide lines"
 msgstr "Option : aligner sur les lignes guides"
 
-#: lazarusidestrconsts.fdmtaborder
-#| msgid "Tab order..."
-msgid "Tab Order..."
-msgstr "Odre des onglets..."
-
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
 msgstr "Z-order"
@@ -4543,8 +4538,9 @@ msgid "Change file"
 msgstr "Changer de fichier"
 
 #: lazarusidestrconsts.lischangeparent
-#| msgid "Change parent ..."
-msgid "Change Parent..."
+#, fuzzy
+#| msgid "Change Parent..."
+msgid "Change Parent"
 msgstr "Changer le parent..."
 
 #: lazarusidestrconsts.lischaracter
@@ -10629,6 +10625,10 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Editeur de source"
 
+#: lazarusidestrconsts.lismenuviewtabordereditor
+msgid "Tab Order Editor"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -13528,10 +13528,6 @@ msgstr "Afficher les marques"
 msgid "Show information box"
 msgstr "Afficher la boîte d'information"
 
-#: lazarusidestrconsts.lisshowoldtaborder
-msgid "Show old tab order"
-msgstr "Afficher l'ancien ordre de tabulation"
-
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Afficher les paquets"
@@ -13815,7 +13811,9 @@ msgid "Tab"
 msgstr "Tab"
 
 #: lazarusidestrconsts.listaborderof
-msgid "Tab Order of"
+#, fuzzy
+#| msgid "Tab Order of"
+msgid "Tab Order of %s"
 msgstr "Odre de tabulation de"
 
 #: lazarusidestrconsts.listargetcpu
@@ -16570,6 +16568,10 @@ msgstr "Afficher les composants"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Afficher les fiches"
+
+#: lazarusidestrconsts.srkmecviewtabordereditor
+msgid "View Tab Order editor"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

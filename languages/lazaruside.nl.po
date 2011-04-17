@@ -3118,12 +3118,6 @@ msgstr "Optie: Snap to grid"
 msgid "Option: Snap to guide lines"
 msgstr "Optie: snap naar guide lijnen"
 
-#: lazarusidestrconsts.fdmtaborder
-#, fuzzy
-#| msgid "Tab order..."
-msgid "Tab Order..."
-msgstr "Tab volgorde..."
-
 #: lazarusidestrconsts.fdmzorder
 msgid "Z-order"
 msgstr ""
@@ -4524,7 +4518,7 @@ msgid "Change file"
 msgstr ""
 
 #: lazarusidestrconsts.lischangeparent
-msgid "Change Parent..."
+msgid "Change Parent"
 msgstr ""
 
 #: lazarusidestrconsts.lischaracter
@@ -10615,6 +10609,10 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Broncode Bewerker"
 
+#: lazarusidestrconsts.lismenuviewtabordereditor
+msgid "Tab Order Editor"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -13514,10 +13512,6 @@ msgstr ""
 msgid "Show information box"
 msgstr ""
 
-#: lazarusidestrconsts.lisshowoldtaborder
-msgid "Show old tab order"
-msgstr "Toon oude tab volgorde"
-
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
 msgstr "Toon paketten"
@@ -13801,7 +13795,9 @@ msgid "Tab"
 msgstr "Tab"
 
 #: lazarusidestrconsts.listaborderof
-msgid "Tab Order of"
+#, fuzzy
+#| msgid "Tab Order of"
+msgid "Tab Order of %s"
 msgstr "Tab volgorde van"
 
 #: lazarusidestrconsts.listargetcpu
@@ -16554,6 +16550,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Toon Forms"
+
+#: lazarusidestrconsts.srkmecviewtabordereditor
+msgid "View Tab Order editor"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"
