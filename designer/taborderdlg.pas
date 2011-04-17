@@ -43,25 +43,27 @@ type
     ArrowDown: TSpeedButton;
     ArrowUp: TSpeedButton;
     ItemTreeview: TTreeView;
-    procedure TabOrderDialogCREATE(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure TabOrderDialogCREATE(Sender: TObject);
     procedure UpSpeedbuttonCLICK(Sender: TObject);
     procedure DownSpeedbuttonCLICK(Sender: TObject);
   private
     FUpdating: Boolean;
     function SwapNodes(ANode1, ANode2: TTreeNode): boolean;
-    procedure FillTree;
     procedure CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
     procedure Refresh(Force: boolean);
-    procedure OnRefreshPropertyValues;
+    procedure OnSomethingChanged;
+    procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
+    procedure OnPersistentDeleting(APersistent: TPersistent);
+    procedure OnDeletePersistent(var APersistent: TPersistent);
   end;
 
   { TTabOrderPropEditor }
 
   TTabOrderPropEditor = class(TIntegerPropertyEditor)
   public
-    function OrdValueToVisualValue(OrdValue: longint): string; override;
-    procedure SetValue(const NewValue: ansistring);  override;
+//    function OrdValueToVisualValue(OrdValue: longint): string; override;
+//    procedure SetValue(const NewValue: ansistring);  override;
     procedure Edit; override;
   end;
 
@@ -77,7 +79,12 @@ implementation
 
 procedure TTabOrderDialog.TabOrderDialogCREATE(Sender: TObject);
 begin
-  GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
+  GlobalDesignHook.AddHandlerChangeLookupRoot(@OnSomethingChanged);
+  GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnSomethingChanged);
+  GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
+  GlobalDesignHook.AddHandlerDeletePersistent(@OnDeletePersistent);
+
   ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
   ArrowUp.LoadGlyphFromLazarusResource('arrow_up');
 end;
@@ -124,23 +131,6 @@ begin
   ANode2.Text := Ctrl2.Name + '   (' + IntToStr(Ctrl2.TabOrder) + ')';
 end;
 
-procedure TTabOrderDialog.FillTree;
-var
-  LookupRoot: TPersistent;
-begin
-  ItemTreeview.BeginUpdate;
-  try
-    ItemTreeview.Items.Clear;
-    LookupRoot := GlobalDesignHook.LookupRoot;
-    if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
-      CreateNodes(TWinControl(LookupRoot), nil);
-      Caption:=lisTabOrderOf + ' ' + TWinControl(LookupRoot).Name;
-    end;
-  finally
-    ItemTreeview.EndUpdate;
-  end;
-end;
-
 procedure TTabOrderDialog.CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
 var
   AControl: TControl;
@@ -181,25 +171,50 @@ begin
 end;
 
 procedure TTabOrderDialog.Refresh(Force: boolean);
+var
+  LookupRoot: TPersistent;
 begin
   if Force or IsVisible and not FUpdating then
   begin
     FUpdating:=true;
+    ItemTreeview.BeginUpdate;
     try
-      FillTree;
+      ItemTreeview.Items.Clear;
+      LookupRoot := GlobalDesignHook.LookupRoot;
+      if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
+        CreateNodes(TWinControl(LookupRoot), nil);
+        Caption:=lisTabOrderOf + ' ' + TWinControl(LookupRoot).Name;
+      end;
     finally
+      ItemTreeview.EndUpdate;
       FUpdating:=false;
     end;
   end;
 end;
 
-procedure TTabOrderDialog.OnRefreshPropertyValues;
+procedure TTabOrderDialog.OnSomethingChanged;
 begin
   Refresh(false);
 end;
 
-{ TTabOrderPropEditor }
+procedure TTabOrderDialog.OnPersistentAdded(APersistent: TPersistent; Select: boolean);
+begin
+  Refresh(false);
+end;
 
+procedure TTabOrderDialog.OnPersistentDeleting(APersistent: TPersistent);
+begin
+  Refresh(false);
+end;
+
+procedure TTabOrderDialog.OnDeletePersistent(var APersistent: TPersistent);
+begin
+  ShowMessage('TTabOrderDialog.OnDeletePersistent is never called for some reason!');
+  Refresh(false);
+end;
+
+{ TTabOrderPropEditor }
+{
 function TTabOrderPropEditor.OrdValueToVisualValue(OrdValue: longint): string;
 begin
   Result:=inherited OrdValueToVisualValue(OrdValue);
@@ -209,7 +224,7 @@ procedure TTabOrderPropEditor.SetValue(const NewValue: ansistring);
 begin
   inherited SetValue(NewValue);
 end;
-
+}
 procedure TTabOrderPropEditor.Edit;
 begin
   ShowTabOrderEditor(Self);
