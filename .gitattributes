@@ -4437,6 +4437,7 @@ images/designer/mirror_horizontal.png -text
 images/designer/mirror_vertical.png -text
 images/designer/scale.png -text
 images/designer/size.png -text
+images/designer/tab_order.png -text
 images/folder.png -text
 images/icon-naming-spec.xml svneol=native#text/plain
 images/icons/aqua.ico -text
