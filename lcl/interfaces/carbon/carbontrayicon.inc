@@ -389,9 +389,16 @@ begin
   Result.unlockFocus;
 end;
 
+// Using private APIs might cause a rejection in the Apple AppStore
+// See: http://bugs.freepascal.org/view.php?id=19025
+// But on the other hand there is no other way to check if the menu is visible
+// http://www.cocoabuilder.com/archive/cocoa/100570-checking-if-menu-is-visible.html
+{$ifdef CarbonUsePrivateAPIs}
 function _NSGetCarbonMenu(AMenu: lobjc.id {NSMenu}): MenuRef; cdecl; external name '_NSGetCarbonMenu';
+{$endif}
 
 function TPrivateCocoaCarbonTrayIcon.IsMenuVisible: Boolean;
+{$ifdef CarbonUsePrivateAPIs}
 var
   CarbonMenu: MenuRef;
   theMenuTrackingData: MenuTrackingData;
@@ -405,6 +412,11 @@ begin
 
   Result :=  GetMenuTrackingData(CarbonMenu, theMenuTrackingData) = noErr;
 end;
+{$else}
+begin
+  Result := False;
+end;
+{$endif}
 
 { Here we try to get the LCL MenuItem from the Tag and then call
   it's OnClick method }
