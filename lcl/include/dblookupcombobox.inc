@@ -27,7 +27,6 @@ constructor TDBLookupComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLookup:= TDBLookup.Create(Self);
-  FLookup.OnClearSelection:=@RemoveSelection;
   FDataLink.OnActiveChange:= @ActiveChange;
 end;
 
@@ -53,6 +52,17 @@ procedure TDBLookupComboBox.InitializeWnd;
 begin
   inherited InitializeWnd;
   ActiveChange(Self);
+end;
+
+procedure TDBLookupComboBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if FLookup.HandleNullKey(Key, Shift) then
+  begin
+    //clear selection
+    ItemIndex := -1;
+    //Text := '';
+  end;
+  inherited KeyDown(Key, Shift);
 end;
 
 function TDBLookupComboBox.GetKeyField: string;
@@ -132,11 +142,4 @@ procedure TDBLookupComboBox.SetNullValueKey(const AValue: TShortCut);
 begin
   FLookup.NullValueKey := AValue;
 end;
-
-procedure TDBLookupComboBox.RemoveSelection(Sender: TObject);
-begin
-  ItemIndex := -1;
-  Text := '';
-end;
-
 

@@ -145,7 +145,6 @@ Type
     FLookupCache: boolean;
     FLookupList: TLookupList;
     FNullValueKey: TShortcut;
-    FOnClearSelection: TNotifyEvent;
     procedure ActiveChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     procedure FetchLookupData;
@@ -157,11 +156,10 @@ Type
     procedure SetListFieldName(const Value: string);
     procedure SetListSource(Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
-    procedure NullKeyHandler(Sender: TObject; var Key: Word; Shift: TShiftState);
+    function HandleNullKey(var Key: Word; Shift: TShiftState): Boolean;
   protected
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure DoClearSelection;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -178,7 +176,6 @@ Type
     property ListFieldIndex: Integer read FListFieldIndex write FListFieldIndex default 0;
     property ListSource: TDataSource read GetListSource write SetListSource;
     property NullValueKey: TShortcut read FNullValueKey write FNullValueKey;
-    property OnClearSelection: TNotifyEvent read FOnClearSelection write FOnClearSelection;
   end;
 
   { TDBEdit }
@@ -454,10 +451,10 @@ Type
     procedure SetListFieldIndex(const Value: Integer);
     procedure SetListSource(const Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
-    procedure RemoveSelection(Sender: TObject);
     procedure SetNullValueKey(const AValue: TShortCut);
   protected
     procedure DataChange(Sender: TObject); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure InitializeWnd; override;
     procedure UpdateData(Sender: TObject); override;
   public
@@ -769,9 +766,9 @@ Type
     procedure SetListSource(const Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
     procedure SetNullValueKey(const AValue: TShortCut);
-    procedure RemoveSelection(Sender: TObject);
   protected
     procedure InitializeWnd; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure UpdateData(Sender: TObject); override;
     procedure UpdateText; override;
   public

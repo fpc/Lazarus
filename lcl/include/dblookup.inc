@@ -75,7 +75,6 @@ begin
   FHasLookUpField:= False;
   FListLinkTmpSetActive := False;
   FLookupCache := False;
-  Application.AddOnKeyDownBeforeHandler(@NullKeyHandler, false);
 end;
 
 destructor TDBLookup.Destroy;
@@ -147,12 +146,17 @@ begin
     FLookupList := TLookupList.Create;
 end;
 
-procedure TDBLookup.NullKeyHandler(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+{
+Returns True if selection must be cleared
+If NullKey is detected set Key to VK_UNKNOWN
+}
+
+function TDBLookup.HandleNullKey(var Key: Word; Shift: TShiftState): Boolean;
 var
-  i:  Integer;
+  i: Integer;
 begin
-  if (FNullValueKey=KeyToShortCut(Key, Shift)) then
+  Result:=False;
+  if FNullValueKey=KeyToShortCut(Key, Shift) then
   begin
     // null associated field
     if Assigned(FControlLink) and (FDataFieldNames<>'') and FControlLink.Active then
@@ -161,11 +165,9 @@ begin
       for i:=0 to FDataFields.Count-1 do
         TField(FDataFields[i]).Clear;
     end else
-    if Assigned(FListLink.DataSet) and FListLink.DataSet.Active and Assigned(FListField) then
-      // associated list is active, clear current selection
-      DoClearSelection;
+      Result:=Assigned(FListLink.DataSet) and FListLink.DataSet.Active and Assigned(FListField);
+    Key:=VK_UNKNOWN;
   end;
-
 end;
 
 procedure TDBLookup.Notification(AComponent: TComponent; Operation: TOperation);
@@ -174,12 +176,6 @@ begin
   if (Operation=opRemove) then
     if (AComponent = FListSource) then
       FListSource:= nil;
-end;
-
-procedure TDBLookup.DoClearSelection;
-begin
-  if Assigned(FOnClearSelection) then
-    OnClearSelection(Self);
 end;
 
 procedure TDBLookup.LinkGetBookMark;

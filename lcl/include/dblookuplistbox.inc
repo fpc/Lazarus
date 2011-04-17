@@ -26,7 +26,6 @@ constructor TDBLookupListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FLookup:= TDBLookup.Create(Self);
-  FLookup.OnClearSelection := @RemoveSelection;
   FDataLink.OnActiveChange:= @ActiveChange;
 end;
 
@@ -57,6 +56,19 @@ begin
     ItemIndex := Items.IndexOf(FLookup.ListFieldValue);
     UnlockSelectionChange;
   end;
+end;
+
+procedure TDBLookupListBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if FLookup.HandleNullKey(Key, Shift) then
+  begin
+    //clear selection
+    if not assigned(FDatalink.DataSet) or not FDatalink.DataSet.Active or
+       not assigned(FDatalink.Field) then
+      GetItemIndex; // a list-only dblookuplist do not automatically update itemindex
+    ItemIndex := -1;
+  end;
+  inherited KeyDown(Key, Shift);
 end;
 
 procedure TDBLookupListBox.InitializeWnd;
@@ -139,15 +151,6 @@ procedure TDBLookupListBox.SetLookupCache(const Value: boolean);
 begin
   FLookup.LookupCache := Value;
   ActiveChange(Self);
-end;
-
-procedure TDBLookupListBox.RemoveSelection(Sender: TObject);
-begin
-  if not assigned(FDatalink.DataSet) or not FDatalink.DataSet.Active or
-     not assigned(FDatalink.Field) then
-  GetItemIndex; // a list-only dblookuplist do not automatically update itemindex
-
-  ItemIndex := -1;
 end;
 
 procedure TDBLookupListBox.SetNullValueKey(const AValue: TShortCut);
