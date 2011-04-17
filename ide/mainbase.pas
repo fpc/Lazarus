@@ -517,7 +517,7 @@ begin
     CreateMenuSeparatorSection(mnuView,itmViewDesignerWindows,'itmViewDesignerWindows');
     ParentMI:=itmViewDesignerWindows;
     CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor,'menu_view_anchor_editor');
-    CreateMenuItem(ParentMI,itmViewTabOrderEditor,'itmViewTabOrderEditor',lisMenuViewTabOrderEditor,'');
+    CreateMenuItem(ParentMI,itmViewTabOrderEditor,'itmViewTabOrderEditor',lisMenuViewTabOrderEditor,'tab_order');
 
     CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
     ParentMI:=itmViewSecondaryWindows;

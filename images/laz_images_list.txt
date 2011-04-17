@@ -169,6 +169,7 @@ designer/Order_move_back.png
 designer/Order_move_front.png
 designer/scale.png
 designer/size.png
+designer/tab_order.png
 debugger/callstack_bottom.png
 debugger/callstack_goto.png
 debugger/callstack_more.png
