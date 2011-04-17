@@ -140,7 +140,7 @@ begin
   FOriginal.Assign(Value);
   FOriginal.OnChange := @GlyphChanged;
   FNumGlyphs := 1;
-  if (FOriginal <> nil) and (FOriginal.Height > 0) then
+  if FOriginal.Height > 0 then
   begin
     if FOriginal.Width mod FOriginal.Height = 0 then
     begin
