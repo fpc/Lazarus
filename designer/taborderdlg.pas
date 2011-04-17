@@ -44,12 +44,14 @@ type
     ArrowUp: TSpeedButton;
     ItemTreeview: TTreeView;
     procedure FormShow(Sender: TObject);
+    procedure ItemTreeviewClick(Sender: TObject);
     procedure TabOrderDialogCREATE(Sender: TObject);
     procedure UpSpeedbuttonCLICK(Sender: TObject);
     procedure DownSpeedbuttonCLICK(Sender: TObject);
   private
     FUpdating: Boolean;
     function SwapNodes(ANode1, ANode2: TTreeNode): boolean;
+    procedure CheckButtonsEnabled;
     procedure CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
     procedure Refresh(Force: boolean);
     procedure OnSomethingChanged;
@@ -94,6 +96,11 @@ begin
   Refresh(true);
 end;
 
+procedure TTabOrderDialog.ItemTreeviewClick(Sender: TObject);
+begin
+  CheckButtonsEnabled;
+end;
+
 procedure TTabOrderDialog.UpSpeedbuttonCLICK(Sender: TObject);
 var
   CurItem, NewItem: TTreeNode;
@@ -103,6 +110,7 @@ begin
   NewItem := CurItem.GetPrevSibling;
   SwapNodes(NewItem, CurItem);
   ItemTreeview.Selected:=CurItem;
+  CheckButtonsEnabled;
 end;
 
 procedure TTabOrderDialog.DownSpeedbuttonCLICK(Sender: TObject);
@@ -114,6 +122,7 @@ begin
   NewItem := CurItem.GetNextSibling;
   SwapNodes(CurItem, NewItem);
   ItemTreeview.Selected:=CurItem;
+  CheckButtonsEnabled;
 end;
 
 function TTabOrderDialog.SwapNodes(ANode1, ANode2: TTreeNode): boolean;
@@ -129,6 +138,15 @@ begin
   Ctrl2.TabOrder := TabOrd;
   ANode1.Text := Ctrl1.Name + '   (' + IntToStr(Ctrl1.TabOrder) + ')';
   ANode2.Text := Ctrl2.Name + '   (' + IntToStr(Ctrl2.TabOrder) + ')';
+end;
+
+procedure TTabOrderDialog.CheckButtonsEnabled;
+var
+  CurItem: TTreeNode;
+begin
+  CurItem:=ItemTreeview.Selected;
+  ArrowUp.Enabled   := Assigned(CurItem) and Assigned(CurItem.GetPrevSibling);
+  ArrowDown.Enabled := Assigned(CurItem) and Assigned(CurItem.GetNextSibling);
 end;
 
 procedure TTabOrderDialog.CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
@@ -184,6 +202,7 @@ begin
       if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
         CreateNodes(TWinControl(LookupRoot), nil);
         Caption:=Format(lisTabOrderOf, [TWinControl(LookupRoot).Name]);
+        CheckButtonsEnabled;
       end;
     finally
       ItemTreeview.EndUpdate;

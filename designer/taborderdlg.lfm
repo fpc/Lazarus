@@ -50,6 +50,7 @@ object TabOrderDialog: TTabOrderDialog
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 0
+    OnClick = ItemTreeviewClick
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
 end
