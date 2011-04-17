@@ -228,10 +228,14 @@ type
   TProcTableProc = procedure of object;
   TIdentFuncTableFunc = function: TtkTokenKind of object;
 
+  TSynHTMLSynMode = (shmHtml, shmXHtml);
+
   { TSynHTMLSyn }
 
   TSynHTMLSyn = class(TSynCustomXmlHighlighter)
   private
+    FMode: TSynHTMLSynMode;
+    fSimpleTag: Boolean;
     fAndCode: Integer;
     fRange: TRangeState;
     fLine: PChar;
@@ -397,6 +401,7 @@ type
     procedure InitIdent;
     procedure MakeMethodTables;
     procedure ASPProc;
+    procedure SetMode(const AValue: TSynHTMLSynMode);
     procedure TextProc;
     procedure CommentProc;
     procedure BraceCloseProc;
@@ -464,6 +469,7 @@ type
       write fUndefKeyAttri;
     property ValueAttri: TSynHighlighterAttributes read fValueAttri
       write fValueAttri;
+    property Mode: TSynHTMLSynMode read FMode write SetMode default shmHtml;
   end;
 
 implementation
@@ -790,6 +796,7 @@ function TSynHTMLSyn.Func20: TtkTokenKind;
 begin
   if KeyComp('BR') then begin
     Result := tkKey;
+    fSimpleTag := True;
   end else begin
     Result := tkUndefKey;
   end;
@@ -826,6 +833,7 @@ function TSynHTMLSyn.Func25: TtkTokenKind;
 begin
   if KeyComp('AREA') then begin
     Result := tkKey;
+    fSimpleTag := True;
   end else begin
     Result := tkUndefKey;
   end;
@@ -835,6 +843,7 @@ function TSynHTMLSyn.Func26: TtkTokenKind;
 begin
   if KeyComp('HR') then begin
     Result := tkKey;
+    fSimpleTag := True;
   end else begin
     Result := tkUndefKey;
   end;
@@ -842,7 +851,10 @@ end;
 
 function TSynHTMLSyn.Func27: TtkTokenKind;
 begin
-  if KeyComp('BASE') Or KeyComp('CODE') Or KeyComp('OL') then begin
+  if KeyComp('BASE') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else if KeyComp('CODE') Or KeyComp('OL') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -860,8 +872,11 @@ end;
 
 function TSynHTMLSyn.Func29: TtkTokenKind;
 begin
-  if KeyComp('EMBED') Or KeyComp('IMG') then begin
+  if KeyComp('EMBED') then begin
+    Result := tkKey
+  end else if KeyComp('IMG') then begin
     Result := tkKey;
+    fSimpleTag := True;
   end else begin
     Result := tkUndefKey;
   end;
@@ -869,7 +884,10 @@ end;
 
 function TSynHTMLSyn.Func30: TtkTokenKind;
 begin
-  if KeyComp('COL') Or KeyComp('MAP') then begin
+  if KeyComp('COL') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else if KeyComp('MAP') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -932,7 +950,10 @@ end;
 
 function TSynHTMLSyn.Func39: TtkTokenKind;
 begin
-  if KeyComp('META') Or KeyComp('PRE') then begin
+  if KeyComp('META') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else if KeyComp('PRE') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -968,7 +989,11 @@ end;
 
 function TSynHTMLSyn.Func43: TtkTokenKind;
 begin
-  if KeyComp('FRAME') Or KeyComp('WBR') then begin
+  if KeyComp('FRAME') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end
+  else if KeyComp('WBR') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -977,8 +1002,11 @@ end;
 
 function TSynHTMLSyn.Func46: TtkTokenKind;
 begin
-  if KeyComp('BODY') Or KeyComp('LINK') then begin
+  if KeyComp('BODY') then begin
     Result := tkKey;
+  end else if KeyComp('LINK') then begin
+    Result := tkKey;
+    fSimpleTag := True;
   end else begin
     Result := tkUndefKey;
   end;
@@ -1004,7 +1032,10 @@ end;
 
 function TSynHTMLSyn.Func49: TtkTokenKind;
 begin
-  if KeyComp('NOBR') Or KeyComp('PARAM') Or KeyComp('SAMP') then begin
+  if KeyComp('PARAM') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else if KeyComp('NOBR') Or KeyComp('SAMP') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1157,11 +1188,13 @@ end;
 
 function TSynHTMLSyn.Func80: TtkTokenKind;
 begin
-  if KeyComp('FIELDSET') Or KeyComp('INPUT') Or KeyComp('MARQUEE') then begin
+  if KeyComp('INPUT') then  begin
+    fSimpleTag := True;
     Result := tkKey;
-  end else begin
+  end else if KeyComp('FIELDSET') Or KeyComp('MARQUEE') then begin
+    Result := tkKey;
+  end else
     Result := tkUndefKey;
-  end;
 end;
 
 function TSynHTMLSyn.Func81: TtkTokenKind;
@@ -1175,7 +1208,10 @@ end;
 
 function TSynHTMLSyn.Func82: TtkTokenKind;
 begin
-  if KeyComp('BASEFONT') Or KeyComp('BGSOUND') Or KeyComp('STRIKE') then begin
+  if KeyComp('BASEFONT') then begin
+    Result := tkKey;
+    fSimpleTag := True;
+  end else if KeyComp('BGSOUND') Or KeyComp('STRIKE') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
@@ -1195,6 +1231,7 @@ function TSynHTMLSyn.Func84: TtkTokenKind;
 begin
   if KeyComp('ISINDEX') then begin
     Result := tkKey;
+    fSimpleTag := True;
   end else begin
     Result := tkUndefKey;
   end;
@@ -1940,6 +1977,7 @@ end;
 constructor TSynHTMLSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FMode := shmHtml;
 
   fASPAttri := TSynHighlighterAttributes.Create(SYNS_AttrASP, SYNS_XML_AttrASP);
   fASPAttri.Foreground := clBlack;
@@ -2019,10 +2057,22 @@ begin
   end;
 end;
 
+procedure TSynHTMLSyn.SetMode(const AValue: TSynHTMLSynMode);
+begin
+  if FMode = AValue then exit;
+  FMode := AValue;
+  FAttributeChangeNeedScan := True;
+  DefHighlightChange(self);
+end;
+
 procedure TSynHTMLSyn.BraceCloseProc;
 begin
   fRange := rsText;
   fTokenId := tkSymbol;
+  if ((FMode = shmXHtml) or (not fSimpleTag)) and (Run > 0) and (fLine[Run - 1] = '/') then
+    EndHtmlNodeCodeFoldBlock(Run + 1, '')
+  else
+    fSimpleTag := False;
   Inc(Run);
 end;
 
@@ -2050,6 +2100,7 @@ end;
 
 procedure TSynHTMLSyn.BraceOpenProc;
 begin
+  fSimpleTag := False;
   Inc(Run);
   if (Run <= length(fLine)-2) and (fLine[Run] = '!') and (fLine[Run + 1] = '-') and (fLine[Run + 2] = '-')
   then begin
@@ -2104,10 +2155,11 @@ begin
     begin
       fRange := rsParam;
       fTokenID := IdentKind((fLine + Run));
-      if fLine[Run] = '/' then
-        EndHtmlNodeCodeFoldBlock(Run+1, copy(fline, Run+2, fStringLen-1))
-      else if fLine[Run] <> '!' then
-        StartHtmlNodeCodeFoldBlock(cfbtHtmlNode, Run, copy(fline, Run+1, fStringLen));
+      if ((FMode = shmXHtml) or (not fSimpleTag)) then
+        if fLine[Run] = '/' then
+          EndHtmlNodeCodeFoldBlock(Run+1, copy(fline, Run+2, fStringLen-1))
+        else if fLine[Run] <> '!' then
+          StartHtmlNodeCodeFoldBlock(cfbtHtmlNode, Run, copy(fline, Run+1, fStringLen));
       Inc(Run, fStringLen);
     end;
   rsValue:
