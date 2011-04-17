@@ -97,6 +97,16 @@ begin
   State:=GetFieldCheckState;
 end;
 
+procedure TDBCheckBox.DoOnChange;
+begin
+  if FDatalink.Edit then begin
+    FDatalink.Modified;
+    FDataLink.UpdateRecord;
+  end else
+    State:=GetFieldCheckState;
+  inherited DoOnChange;
+end;
+
 procedure TDBCheckBox.UpdateData(Sender: TObject);
 var
   NewFieldText: string;
@@ -138,16 +148,6 @@ begin
   inherited Loaded;
   if (csDesigning in ComponentState) then
     DataChange(Self);
-end;
-
-procedure TDBCheckBox.EditingDone;
-begin
-  if FDatalink.Edit then begin
-    FDatalink.Modified;
-    FDataLink.UpdateRecord;
-  end else
-    State:=GetFieldCheckState;
-  inherited EditingDone;
 end;
 
 procedure TDBCheckBox.CMGetDataLink(var Message: TLMessage);

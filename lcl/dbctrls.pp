@@ -597,6 +597,7 @@ Type
   protected
     function GetFieldCheckState: TCheckBoxState; virtual;
     procedure DataChange(Sender: TObject); virtual;
+    procedure DoOnChange; override;
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
@@ -605,7 +606,6 @@ Type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EditingDone; override;
     property Checked;
     property Field: TField read GetField;
     property State;
