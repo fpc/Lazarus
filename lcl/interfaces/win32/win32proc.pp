@@ -843,8 +843,7 @@ begin
       if Assigned(lWindowInfo) then
       begin
         lWinControl := lWindowInfo^.WinControl;
-        if Assigned(lWinControl) and
-          (lWinControl is TCustomForm) and
+        if (lWinControl is TCustomForm) and
           (TCustomForm(lWinControl).FormStyle = fsSystemStayOnTop) then
         Exit;
       end;
