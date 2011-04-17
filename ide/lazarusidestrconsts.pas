@@ -4402,7 +4402,7 @@ resourcestring
   lisPODoNotSaveAnySessionInfo = 'Do not save any session info';
   lisPOSaveSessionInformationIn = 'Save session information in';
   lisMVSaveMessagesToFileTxt = 'Save messages to file (*.txt)';
-  lisTabOrderOf = 'Tab Order of';
+  lisTabOrderOf = 'Tab Order of %s';
 
   lisAnchorEnabledHint = 'Enabled = Include %s in Anchors';
   lisAroundBorderSpaceHint = 'Borderspace around the control. The other four borderspaces are added to this value.';

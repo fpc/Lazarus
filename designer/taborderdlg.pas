@@ -183,7 +183,7 @@ begin
       LookupRoot := GlobalDesignHook.LookupRoot;
       if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
         CreateNodes(TWinControl(LookupRoot), nil);
-        Caption:=lisTabOrderOf + ' ' + TWinControl(LookupRoot).Name;
+        Caption:=Format(lisTabOrderOf, [TWinControl(LookupRoot).Name]);
       end;
     finally
       ItemTreeview.EndUpdate;
