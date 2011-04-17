@@ -111,16 +111,6 @@ begin
     //cancel out of editing by reset on esc
     FDataLink.Reset;
     Key := VK_UNKNOWN;
-  end else if (Key<>VK_UNKNOWN) then begin
-    //make sure we call edit to ensure the datset is in edit,
-    //this is for where the datasource is in autoedit, so we aren't
-    //read only even though the dataset isn't really in edit
-    //if this validates false make sure the entry doesn't change
-    //since listbox doesn't have its own read only yet we gots to fake it
-    //here
-    if FDataLink.Edit then
-       exit;
-    Key := VK_UNKNOWN;
   end;
 end;
 
