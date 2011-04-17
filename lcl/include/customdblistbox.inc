@@ -149,7 +149,7 @@ procedure TCustomDBListBox.Click;
 begin
   //make sure we are in modify mode if can edit
   //so if a user changed the selection it can be
-  //updated, and if not canel out ala ReadOnly
+  //updated, and if not cancel out ala ReadOnly
   if not FDataLink.Edit then
   begin
     // restore value
@@ -162,7 +162,10 @@ end;
 
 procedure TCustomDBListBox.EditingDone;
 begin
-  FDataLink.UpdateRecord;
+  //update record only when loosing focus to keep the ability to cancel
+  //after changing the selection more than one time
+  if not Focused then
+    FDataLink.UpdateRecord;
   inherited EditingDone;
 end;
 
@@ -179,8 +182,7 @@ end;
 
 destructor TCustomDBListBox.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink := nil;
+  FDataLink.Destroy;
   inherited Destroy;
 end;
 
