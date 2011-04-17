@@ -1741,11 +1741,12 @@ end;
 
 const
 { TypeKinds  see typinfo.pp
-       TTypeKind = (tkUnknown,tkInteger,tkChar,tkEnumeration,
-                   tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
+       TTypeKind = (tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,
+                   tkSet,tkMethod,tkSString,tkLString,tkAString,
                    tkWString,tkVariant,tkArray,tkRecord,tkInterface,
                    tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
-                   tkDynArray,tkInterfaceRaw);
+                   tkDynArray,tkInterfaceRaw,tkProcVar,tkUString,tkUChar,
+                   tkHelper);
 }
 
   PropClassMap:array[TypInfo.TTypeKind] of TPropertyEditorClass=(
@@ -1777,6 +1778,9 @@ const
     ,nil,                      // tkProcVar
     nil,                       // tkUString
     nil                        // tkUChar
+{$ENDIF}
+{$IF declared(tkHelper)}
+    ,nil                       // tkHelper
 {$ENDIF}
     );
 
