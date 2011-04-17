@@ -5613,17 +5613,17 @@ begin
   begin
     if CharCode = VK_UNKNOWN then Exit;
     ShiftState := KeyDataToShiftState(KeyData);
-    
-    // let application handle the key
-    if not IsRecurseCall and Assigned(Application) then
-    begin
-      Application.NotifyKeyDownBeforeHandler(Self, CharCode, ShiftState);
-      if CharCode = VK_UNKNOWN then Exit;
-    end;
 
-    // let each parent form with keypreview handle the key
     if not IsRecurseCall then
     begin
+      // let application handle the key
+      if Assigned(Application) then
+      begin
+        Application.NotifyKeyDownBeforeHandler(Self, CharCode, ShiftState);
+        if CharCode = VK_UNKNOWN then Exit;
+      end;
+
+      // let each parent form with keypreview handle the key
       AParent := Parent;
       while Assigned(AParent) do
       begin
