@@ -72,16 +72,16 @@ begin
   FListLink.Control := Self;
   FListLink.OnActiveChange := @ActiveChange;
   FListLink.OnEditingChange:=@EditingChange;
-  FHasLookUpField:= False;
-  FListLinkTmpSetActive := False;
-  FLookupCache := False;
+  //FHasLookUpField:= False;
+  //FListLinkTmpSetActive := False;
+  //FLookupCache := False;
 end;
 
 destructor TDBLookup.Destroy;
 begin
-  FDataFields.Free;
-  FKeyFields.Free;
-  FListLink.Free;
+  FDataFields.Destroy;
+  FKeyFields.Destroy;
+  FListLink.Destroy;
   FLookupList.Free;
   inherited Destroy;
 end;
