@@ -54,6 +54,7 @@ type
     pnlSpeedButtons      : TPanel;
     tbStandard           : TToolBar;
       NewUnitSpeedBtn      : TToolButton;
+      NewFormSpeedBtn      : TToolButton;
       tbDivider1           : TToolButton;
       OpenFileSpeedBtn     : TToolButton;
       OpenFilePopUpMenu    : TPopupMenu;
@@ -61,7 +62,6 @@ type
       SaveAllSpeedBtn      : TToolButton;
       tbDivider2           : TToolButton;
       ToggleFormSpeedBtn   : TToolButton;
-      NewFormSpeedBtn      : TToolButton;
     tbViewDebug            : TToolBar;
       ViewUnitsSpeedBtn    : TToolButton;
       ViewFormsSpeedBtn    : TToolButton;
