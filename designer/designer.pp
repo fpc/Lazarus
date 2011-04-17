@@ -514,46 +514,46 @@ begin
   DesignerMenuSectionAlign:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                                'Align section');
     DesignerMenuAlign:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                         'Align',fdmAlignWord, nil, nil, nil, 'align');
+        'Align',fdmAlignWord, nil, nil, nil, 'align');
     DesignerMenuMirrorHorizontal:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                       'Mirror horizontal',fdmMirrorHorizontal, nil, nil, nil, 'mirror_horizontal');
+        'Mirror horizontal',fdmMirrorHorizontal, nil, nil, nil, 'mirror_horizontal');
     DesignerMenuMirrorVertical:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                       'Mirror vertical',fdmMirrorVertical, nil, nil, nil, 'mirror_vertical');
+        'Mirror vertical',fdmMirrorVertical, nil, nil, nil, 'mirror_vertical');
     DesignerMenuScale:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                       'Scale',fdmScaleWord, nil, nil, nil, 'scale');
+        'Scale',fdmScaleWord, nil, nil, nil, 'scale');
     DesignerMenuSize:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                       'Size',fdmSizeWord, nil, nil, nil, 'size');
+        'Size',fdmSizeWord, nil, nil, nil, 'size');
 
   // register tab and z-order section
   DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,'Order section');
     DesignerMenuAnchorEditor:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
-                                       'Anchor Editor',lisMenuViewAnchorEditor);
+        'Anchor Editor',lisMenuViewAnchorEditor, nil, nil, nil, 'menu_view_anchor_editor');
     DesignerMenuTabOrder:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
-                                       'Tab order',lisMenuViewTabOrderEditor);
+        'Tab order',lisMenuViewTabOrderEditor);
     DesignerMenuSectionZOrder:=RegisterIDESubMenu(DesignerMenuSectionOrder,
-                                                  'ZOrder section', fdmZOrder);
+        'ZOrder section', fdmZOrder);
       DesignerMenuOrderMoveToFront:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
-                                   'Move to z order front',fdmOrderMoveTofront, nil, nil, nil, 'Order_move_front');
+          'Move to z order front',fdmOrderMoveTofront, nil, nil, nil, 'Order_move_front');
       DesignerMenuOrderMoveToBack:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
-                                   'Move to z order back',fdmOrderMoveToBack, nil, nil, nil, 'Order_move_back');
+          'Move to z order back',fdmOrderMoveToBack, nil, nil, nil, 'Order_move_back');
       DesignerMenuOrderForwardOne:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
-                                 'Move z order forward one',fdmOrderForwardOne, nil, nil, nil, 'Order_forward_one');
+          'Move z order forward one',fdmOrderForwardOne, nil, nil, nil, 'Order_forward_one');
       DesignerMenuOrderBackOne:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
-                                  'Move z order backwards one',fdmOrderBackOne, nil, nil, nil, 'Order_back_one');
+          'Move z order backwards one',fdmOrderBackOne, nil, nil, nil, 'Order_back_one');
 
   // register clipboard section
   DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                            'Clipboard section');
     DesignerMenuCut:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Cut',lisMenuCut, nil, nil, nil, 'laz_cut');
+        'Cut',lisMenuCut, nil, nil, nil, 'laz_cut');
     DesignerMenuCopy:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Copy',lisMenuCopy, nil, nil, nil, 'laz_copy');
+        'Copy',lisMenuCopy, nil, nil, nil, 'laz_copy');
     DesignerMenuPaste:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Paste',lisMenuPaste, nil, nil, nil, 'laz_paste');
+        'Paste',lisMenuPaste, nil, nil, nil, 'laz_paste');
     DesignerMenuDeleteSelection:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                         'Delete Selection',fdmDeleteSelection, nil, nil, nil, 'delete_selection');
+        'Delete Selection',fdmDeleteSelection, nil, nil, nil, 'delete_selection');
     DesignerMenuSelectAll:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                         'Select All',fdmSelectAll, nil, nil, nil, 'menu_select_all');
+        'Select All',fdmSelectAll, nil, nil, nil, 'menu_select_all');
 
   // register miscellaneous section
   DesignerMenuSectionMisc:=RegisterIDEMenuSection(DesignerMenuRoot,
@@ -579,7 +579,7 @@ begin
     DesignerMenuSnapToGuideLinesOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
                                'Snap to guide lines',fdmSnapToGuideLinesOption);
     DesignerMenuShowOptions:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
-                                                 'Show options',dlgFROpts, nil, nil, nil, 'menu_environment_options');
+        'Show options',dlgFROpts, nil, nil, nil, 'menu_environment_options');
 end;
 
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
