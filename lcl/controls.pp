@@ -115,6 +115,35 @@ type
   TCMDialogChar = TLMKEY;
   TCMDialogKey = TLMKEY;
 
+  TCMEnter = TLMEnter;
+  TCMExit = TLMExit;
+
+  TCMCancelMode = record
+    Msg: Cardinal;
+    Unused: Integer;
+    Sender: TControl;
+    Result: Longint;
+  end;
+
+  TCMChildKey = record
+    Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
+{$IFDEF FPC_LITTLE_ENDIAN}
+    CharCode: Word; // VK_XXX constants as TLMKeyDown/Up, ascii if TLMChar
+    Unused: Word;
+{$ELSE}
+    Unused: Word;
+    CharCode: Word; // VK_XXX constants as TLMKeyDown/Up, ascii if TLMChar
+{$ENDIF}
+{$ifdef cpu64}
+    Unused2 : Longint;
+{$endif cpu64}
+    Sender: TWinControl;
+    Result: LRESULT;
+  end;
+
   TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   TAlignSet = set of TAlign;
   TAnchorKind = (akTop, akLeft, akRight, akBottom);

@@ -455,6 +455,27 @@ type
   TLMSysKeyUp = TLMKey;
 
 
+  TLMCut = TLMNoParams;
+  TLMCopy = TLMNoParams;
+  TLMPaste = TLMNoParams;
+
+  TLMSetCursor = record
+    Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
+    CursorWnd: HWND;
+    case Boolean of
+      False: (
+        HitTest: SmallInt;
+        MouseMsg: Word;
+      );
+      True: (
+        Dummy: LPARAM;
+        Result: LRESULT;
+      );
+  end;
+
   TLMMouse = record
     Msg : Cardinal;
     Keys: PtrInt;
