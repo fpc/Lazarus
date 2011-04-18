@@ -3895,23 +3895,42 @@ procedure TMainIDE.mnuRefactorClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
-  Editable: Boolean;
-  SelAvail: Boolean;
-  SelEditable: Boolean;
+  Editable, SelAvail, IdentFound, StringFound: Boolean;
+  StartCode, EndCode: TCodeBuffer;
+  StartPos, EndPos: TPoint;
+  NewX, NewY, NewTopLine: integer;
+  CursorXY: TPoint;
 begin
-  GetCurrentUnit(ASrcEdit,AnUnitInfo);
-  Editable:=(ASrcEdit<>nil) and (not ASrcEdit.ReadOnly);
-  SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
-  SelEditable:=Editable and SelAvail;
+  Editable:=False;
+  SelAvail:=False;
+  IdentFound:=False;
+  StringFound:=False;
+  if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then begin
+    Editable:=not ASrcEdit.ReadOnly;
+    SelAvail:=ASrcEdit.SelectionAvailable;
+
+    // Try to find main identifier declaration to enable rename feature.
+    CursorXY:=ASrcEdit.EditorComponent.LogicalCaretXY;
+    IdentFound:=CodeToolBoss.FindMainDeclaration(AnUnitInfo.Source,
+                  CursorXY.X,CursorXY.Y,StartCode,NewX,NewY,NewTopLine);
+
+    // Calculate start and end of string expr to enable ResourceString feature.
+    if ASrcEdit.EditorComponent.SelAvail then
+      CursorXY:=ASrcEdit.EditorComponent.BlockBegin;
+    if CodeToolBoss.GetStringConstBounds(AnUnitInfo.Source,CursorXY.X,CursorXY.Y,
+                                         StartCode,StartPos.X,StartPos.Y,
+                                         EndCode,EndPos.X,EndPos.Y,true) then
+      StringFound:=(StartCode<>EndCode) or (CompareCaret(StartPos,EndPos)<>0);
+  end;
   with MainIDEBar do begin
   //itmRefactorCodeTools
     itmRefactorCompleteCode.Enabled:=Editable;
     itmRefactorUseUnit.Enabled:=Editable;
-    itmRefactorRenameIdentifier.Enabled:=Editable;
-    itmRefactorExtractProc.Enabled:=SelEditable;
-    itmRefactorInvertAssignment.Enabled:=SelEditable;
+    itmRefactorRenameIdentifier.Enabled:=Editable and IdentFound;
+    itmRefactorExtractProc.Enabled:=Editable and SelAvail;
+    itmRefactorInvertAssignment.Enabled:=Editable and SelAvail;
   //itmRefactorAdvanced
-    //...
+    itmRefactorMakeResourceString.Enabled:=Editable and StringFound;
   end;
 end;
 
@@ -15509,8 +15528,7 @@ begin
     if not CodeToolBoss.GetStringConstBounds(
       CursorCode,CursorXY.X,CursorXY.Y,
       StartCode,StartPos.X,StartPos.Y,
-      EndCode,EndPos.X,EndPos.Y,
-      true) then
+      EndCode,EndPos.X,EndPos.Y,true) then
     begin
       DoJumpToCodeToolBossError;
       exit;
