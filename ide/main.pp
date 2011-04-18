@@ -3896,6 +3896,8 @@ var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
   Editable, SelAvail, IdentFound, StringFound: Boolean;
+  CurrentUnitName: String;
+  AvailUnits: TStringList;
   StartCode, EndCode: TCodeBuffer;
   StartPos, EndPos: TPoint;
   NewX, NewY, NewTopLine: integer;
@@ -3905,32 +3907,41 @@ begin
   SelAvail:=False;
   IdentFound:=False;
   StringFound:=False;
-  if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then begin
-    Editable:=not ASrcEdit.ReadOnly;
-    SelAvail:=ASrcEdit.SelectionAvailable;
+  AvailUnits:=nil;
+  try
+    if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then begin
+      Editable:=not ASrcEdit.ReadOnly;
+      SelAvail:=ASrcEdit.SelectionAvailable;
 
-    // Try to find main identifier declaration to enable rename feature.
-    CursorXY:=ASrcEdit.EditorComponent.LogicalCaretXY;
-    IdentFound:=CodeToolBoss.FindMainDeclaration(AnUnitInfo.Source,
-                  CursorXY.X,CursorXY.Y,StartCode,NewX,NewY,NewTopLine);
+      // Get Available Units count to enable UseProjUnit feature.
+      AvailUnits:=GetAvailableUnits(ASrcEdit, CurrentUnitName);
 
-    // Calculate start and end of string expr to enable ResourceString feature.
-    if ASrcEdit.EditorComponent.SelAvail then
-      CursorXY:=ASrcEdit.EditorComponent.BlockBegin;
-    if CodeToolBoss.GetStringConstBounds(AnUnitInfo.Source,CursorXY.X,CursorXY.Y,
-                                         StartCode,StartPos.X,StartPos.Y,
-                                         EndCode,EndPos.X,EndPos.Y,true) then
-      StringFound:=(StartCode<>EndCode) or (CompareCaret(StartPos,EndPos)<>0);
-  end;
-  with MainIDEBar do begin
-  //itmRefactorCodeTools
-    itmRefactorCompleteCode.Enabled:=Editable;
-    itmRefactorUseUnit.Enabled:=Editable;
-    itmRefactorRenameIdentifier.Enabled:=Editable and IdentFound;
-    itmRefactorExtractProc.Enabled:=Editable and SelAvail;
-    itmRefactorInvertAssignment.Enabled:=Editable and SelAvail;
-  //itmRefactorAdvanced
-    itmRefactorMakeResourceString.Enabled:=Editable and StringFound;
+      // Try to find main identifier declaration to enable rename feature.
+      CursorXY:=ASrcEdit.EditorComponent.LogicalCaretXY;
+      IdentFound:=CodeToolBoss.FindMainDeclaration(AnUnitInfo.Source,
+                    CursorXY.X,CursorXY.Y,StartCode,NewX,NewY,NewTopLine);
+
+      // Calculate start and end of string expr to enable ResourceString feature.
+      if ASrcEdit.EditorComponent.SelAvail then
+        CursorXY:=ASrcEdit.EditorComponent.BlockBegin;
+      if CodeToolBoss.GetStringConstBounds(AnUnitInfo.Source,CursorXY.X,CursorXY.Y,
+                                           StartCode,StartPos.X,StartPos.Y,
+                                           EndCode,EndPos.X,EndPos.Y,true) then
+        StringFound:=(StartCode<>EndCode) or (CompareCaret(StartPos,EndPos)<>0);
+    end;
+    with MainIDEBar do begin
+    //itmRefactorCodeTools
+      itmRefactorCompleteCode.Enabled:=Editable;
+      itmRefactorUseUnit.Enabled:=Editable and
+                                  Assigned(AvailUnits) and (AvailUnits.Count>0);
+      itmRefactorRenameIdentifier.Enabled:=Editable and IdentFound;
+      itmRefactorExtractProc.Enabled:=Editable and SelAvail;
+      itmRefactorInvertAssignment.Enabled:=Editable and SelAvail;
+    //itmRefactorAdvanced
+      itmRefactorMakeResourceString.Enabled:=Editable and StringFound;
+    end;
+  finally
+    AvailUnits.Free;
   end;
 end;
 

@@ -31,7 +31,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons,
   ButtonPanel, Dialogs, LCLProc, FileProcs,
-  SrcEditorIntf, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts,
+  SourceEditor, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts,
   ProjectIntf, Project, CodeCache, CodeToolManager;
 
 type
@@ -57,39 +57,34 @@ type
 
   end; 
 
+  function GetAvailableUnits(SrcEdit: TSourceEditor;
+                             out CurrentUnitName: String): TStringList;
   function ShowUseProjUnitDialog: TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowUseProjUnitDialog: TModalResult;
+function GetAvailableUnits(SrcEdit: TSourceEditor;
+                           out CurrentUnitName: String): TStringList;
 var
-  UseProjUnitDlg: TUseProjUnitDialog;
-  SrcEdit: TSourceEditorInterface;
-  Code: TCodeBuffer;
-  ProjFile: TUnitInfo;
   MainUsedUnits, ImplUsedUnits: TStrings;
-  AvailUnits: TStringList;
-  CurrentUnitName, s: String;
-  CTRes: Boolean;
+  ProjFile: TUnitInfo;
+  s: String;
 begin
-  Result:=mrOk;
-  if not LazarusIDE.BeginCodeTools then exit;
-  // get cursor position
-  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
-  if SrcEdit=nil then exit;
-  Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
-  if Code=nil then exit;
   MainUsedUnits:=nil;
   ImplUsedUnits:=nil;
-  AvailUnits:=TStringList.Create;
+  Result:=nil;
   try
-    if not CodeToolBoss.FindUsedUnitNames(Code,MainUsedUnits,ImplUsedUnits) then begin
+    if SrcEdit=nil then exit;
+    Assert(Assigned(SrcEdit.CodeBuffer));
+    if not CodeToolBoss.FindUsedUnitNames(SrcEdit.CodeBuffer,
+                                          MainUsedUnits,ImplUsedUnits) then begin
       DebugLn(['ShowUseProjUnitDialog CodeToolBoss.FindUsedUnitNames failed']);
       LazarusIDE.DoJumpToCodeToolBossError;
-      exit(mrCancel);
+      exit;
     end;
+    Result:=TStringList.Create;  // Result TStringList must be freed by caller.
     TStringList(MainUsedUnits).CaseSensitive:=False;
     TStringList(ImplUsedUnits).CaseSensitive:=False;
     // Debug message will be cleaned soon!!!
@@ -97,8 +92,8 @@ begin
       CurrentUnitName:=TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
     else
       CurrentUnitName:='';
-    DebugLn('ShowUseProjUnitDialog: CurrentUnitName before loop = ' + CurrentUnitName);
-    // Add available unit names to AvailUnits.
+    DebugLn('ShowUseProjUnitDialog: CurrentUnitName before loop = '+CurrentUnitName);
+    // Add available unit names to Result.
     ProjFile:=Project1.FirstPartOfProject;
     while ProjFile<>nil do begin
       s:=ProjFile.Unit_Name;
@@ -112,11 +107,33 @@ begin
       end;
       if (ProjFile<>Project1.MainUnitInfo) and (s<>'') then
         if (MainUsedUnits.IndexOf(s)<0) and (ImplUsedUnits.IndexOf(s)<0) then
-          AvailUnits.Add(s);
+          Result.Add(s);
       ProjFile:=ProjFile.NextPartOfProject;
     end;
-    // Show the dialog.
+  finally
+    ImplUsedUnits.Free;
+    MainUsedUnits.Free;
+  end;
+end;
+
+function ShowUseProjUnitDialog: TModalResult;
+var
+  UseProjUnitDlg: TUseProjUnitDialog;
+  SrcEdit: TSourceEditor;
+  AvailUnits: TStringList;
+  CurrentUnitName, s: String;
+  CTRes: Boolean;
+begin
+  Result:=mrOk;
+  if not LazarusIDE.BeginCodeTools then exit;
+  // get cursor position
+  SrcEdit:=SourceEditorManager.ActiveEditor;
+  try
+    AvailUnits:=GetAvailableUnits(SrcEdit, CurrentUnitName);
+    if AvailUnits=nil then
+      exit(mrCancel);
     if AvailUnits.Count>0 then begin
+      // Show the dialog.
       AvailUnits.Sorted:=True;
       UseProjUnitDlg:=TUseProjUnitDialog.Create(nil);
       try
@@ -129,9 +146,9 @@ begin
           s:=UseProjUnitDlg.SelectedUnit;
           if s<>'' then begin
             if UseProjUnitDlg.InterfaceSelected then
-              CTRes:=CodeToolBoss.AddUnitToMainUsesSection(Code, s, '')
+              CTRes:=CodeToolBoss.AddUnitToMainUsesSection(SrcEdit.CodeBuffer, s, '')
             else
-              CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(Code, s, '');
+              CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(SrcEdit.CodeBuffer, s, '');
             if not CTRes then begin
               LazarusIDE.DoJumpToCodeToolBossError;
               exit(mrCancel);
@@ -144,13 +161,11 @@ begin
     end
     else begin
       if CurrentUnitName='' then
-        CurrentUnitName:=ExtractFileNameOnly(Code.Filename);
+        CurrentUnitName:=ExtractFileNameOnly(SrcEdit.CodeBuffer.Filename);
       ShowMessage(Format(dlgAlreadyUsesAllOtherUnits,[CurrentUnitName]));
     end;
   finally
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
-    ImplUsedUnits.Free;
-    MainUsedUnits.Free;
     AvailUnits.Free;
   end;
 end;
