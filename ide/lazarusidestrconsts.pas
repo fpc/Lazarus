@@ -322,7 +322,6 @@ resourcestring
   lisMenuSaveProjectAs = 'Save Project As ...';
   lisMenuPublishProject = 'Publish Project ...';
   lisMenuProjectInspector = 'Project Inspector';
-  lisKMAddActiveUnitToProject = 'Add active unit to project';
   lisKMRemoveActiveUnitFromProject = 'Remove active unit from project';
   lisKMViewProjectSource = 'View project source';
   lisMenuAddToProject = 'Add editor file to Project';

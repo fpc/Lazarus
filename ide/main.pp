@@ -333,6 +333,9 @@ type
     procedure mnuRunFileClicked(Sender: TObject);
     procedure mnuConfigBuildFileClicked(Sender: TObject);
 
+    // project menu
+    procedure mnuProjectClicked(Sender: TObject);
+
     // package menu
     procedure mnuPackageClicked(Sender: TObject);
     // see pkgmanager.pas
@@ -2571,6 +2574,7 @@ end;
 procedure TMainIDE.SetupProjectMenu;
 begin
   inherited SetupProjectMenu;
+  mnuProject.OnClick:=@mnuProjectClicked;
   with MainIDEBar do begin
     itmProjectNew.OnClick := @mnuNewProjectClicked;
     itmProjectNewFromFile.OnClick := @mnuNewProjectFromFileClicked;
@@ -3943,6 +3947,18 @@ begin
   finally
     AvailUnits.Free;
   end;
+end;
+
+procedure TMainIDE.mnuProjectClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  PartOfProj: Boolean;
+begin
+  PartOfProj:=False;
+  if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then
+    PartOfProj:=AnUnitInfo.IsPartOfProject;
+  MainIDEBar.itmProjectAddTo.Enabled:=not PartOfProj;
 end;
 
 procedure TMainIDE.mnuPackageClicked(Sender: TObject);

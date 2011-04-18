@@ -2772,7 +2772,7 @@ begin
   AddDefault(C, 'Save project as', lisKMSaveProjectAs, ecSaveProjectAs);
   AddDefault(C, 'Publish project', lisKMPublishProject, ecPublishProject);
   AddDefault(C, 'Project Inspector', lisMenuProjectInspector, ecProjectInspector);
-  AddDefault(C, 'Add active unit to project', lisKMAddActiveUnitToProject, ecAddCurUnitToProj);
+  AddDefault(C, 'Add editor file to Project', lisMenuAddToProject, ecAddCurUnitToProj);
   AddDefault(C, 'Remove active unit from project', lisKMRemoveActiveUnitFromProject, ecRemoveFromProj);
   AddDefault(C, 'View Units', lisHintViewUnits, ecViewProjectUnits);
   AddDefault(C, 'View Forms', lisHintViewForms, ecViewProjectForms);
