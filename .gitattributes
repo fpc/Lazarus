@@ -3984,6 +3984,7 @@ ide/idefpcinfo.lfm svneol=native#text/plain
 ide/idefpcinfo.pas svneol=native#text/plain
 ide/ideinfodlg.lfm svneol=native#text/plain
 ide/ideinfodlg.pas svneol=native#text/plain
+ide/ideminilibc.pas svneol=native#text/plain
 ide/ideoptiondefs.pas svneol=native#text/pascal
 ide/ideoptionsdlg.lfm svneol=native#text/plain
 ide/ideoptionsdlg.pas svneol=native#text/pascal

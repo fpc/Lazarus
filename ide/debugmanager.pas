@@ -2035,11 +2035,11 @@ begin
 end;
 
 procedure TDebugManager.InitPseudoTerminal;
-var
-  TheDialog: TPseudoConsoleDlg;
+//var
+//  TheDialog: TPseudoConsoleDlg;
 begin
   if not HasConsoleSupport then exit;
-  TheDialog := TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]);
+  //TheDialog := TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]);
 end;
 
 procedure TDebugManager.InitLocalsDlg;

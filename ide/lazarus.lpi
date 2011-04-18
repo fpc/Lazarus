@@ -60,7 +60,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="82">
+    <Units Count="83">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -622,6 +622,11 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="package_i18n_options"/>
       </Unit81>
+      <Unit82>
+        <Filename Value="ideminilibc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="IDEMiniLibC"/>
+      </Unit82>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

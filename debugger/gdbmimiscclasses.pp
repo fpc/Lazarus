@@ -32,7 +32,7 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF UNIX}
-  libc,
+  IDEMiniLibC,
   {$ENDIF}
   Debugger, DebugUtils;
 
@@ -93,8 +93,6 @@ type
   end;
 
   {$IFDEF UNIX}
-const
-  InvalHandle = -1;
 type
 
   { TPseudoTerminal }
@@ -433,6 +431,7 @@ begin
 end;
 
 {$IFDEF UNIX}
+
 { TPseudoTerminal }
 
 procedure TPseudoTerminal.CloseInp;
@@ -443,8 +442,8 @@ begin
   if FPTy = InvalHandle then exit;
   tcgetattr(FPty, @ios);
   ios.c_lflag:= (ios.c_lflag and not (icanon)) or echo;
-  ios.c_cc[vmin]:= #0;
-  ios.c_cc[vtime]:= #0;
+  ios.c_cc[vmin]:= 0;
+  ios.c_cc[vtime]:= 0;
   tcsetattr(FPty, tcsanow, @ios);
     //foutput.writeln('');
 end;
@@ -464,7 +463,7 @@ procedure TPseudoTerminal.Close;
 begin
   CloseInp;
   if FPTy <> InvalHandle
-  then libc.__Close(FPTy);;
+  then __Close(FPTy);
   FPTy := InvalHandle;
 end;
 
@@ -478,7 +477,7 @@ var
   procedure Error;
   begin
     if FPTy <> InvalHandle
-    then libc.__Close(FPTy);;
+    then __Close(FPTy);
     FPTy := InvalHandle;
   end;
 
@@ -492,8 +491,8 @@ begin
   setlength(FDeviceName,length(pchar(FDeviceName)));
   if tcgetattr(FPTy, @ios) <> 0 then Error;
   ios.c_lflag:= ios.c_lflag and not (icanon); // or echo);
-  ios.c_cc[vmin]:= #1;
-  ios.c_cc[vtime]:= #0;
+  ios.c_cc[vmin]:= 1;
+  ios.c_cc[vtime]:= 0;
   if tcsetattr(FPTy, tcsanow, @ios) <> 0 then Error;
 
   int1 := fcntl(FPTy, f_getfl, 0);
@@ -511,9 +510,9 @@ begin
   Result:= nbytes;
   p := @s[1];
   repeat
-    int1 := libc.__write(FPTy, p^, nbytes);
+    int1 := __write(FPTy, p^, nbytes);
     if int1 = -1 then begin
-      if libc.errno <> eintr then begin
+      if errno <> eintr then begin
         Result:= int1;
         break;
       end;
@@ -535,7 +534,7 @@ begin
   Result := FReadBuf;
   FReadBuf := '';
   repeat
-    i := libc.__read(FPTy, buf[1], BufLen);
+    i := __read(FPTy, buf[1], BufLen);
     if i > 0 then Result := Result + copy(buf, 1, i);
   until i <= 0;
 end;
