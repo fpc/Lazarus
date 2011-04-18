@@ -2423,8 +2423,8 @@ end;
 procedure TMainIDE.SetupFileMenu;
 begin
   inherited SetupFileMenu;
+  mnuFile.OnClick:=@mnuFileClicked;
   with MainIDEBar do begin
-    mnuFile.OnClick:=@mnuFileClicked;
     itmFileNewUnit.OnClick := @mnuNewUnitClicked;
     itmFileNewForm.OnClick := @mnuNewFormClicked;
     itmFileNewOther.OnClick := @mnuNewOtherClicked;
@@ -2447,8 +2447,8 @@ end;
 procedure TMainIDE.SetupEditMenu;
 begin
   inherited SetupEditMenu;
+  mnuEdit.OnClick:=@mnuEditClicked;
   with MainIDEBar do begin
-    mnuEdit.OnClick:=@mnuEditClicked;
     itmEditUndo.OnClick:=@mnuEditUndoClicked;
     itmEditRedo.OnClick:=@mnuEditRedoClicked;
     itmEditCut.OnClick:=@mnuEditCutClicked;
@@ -2475,8 +2475,8 @@ end;
 procedure TMainIDE.SetupSearchMenu;
 begin
   inherited SetupSearchMenu;
+//  mnuSearch.OnClick:=@mnuSearchClicked;
   with MainIDEBar do begin
-//    mnuSearch.OnClick:=@mnuSearchClicked;
     itmSearchFindIdentifierRefs.OnClick:=@mnuSearchFindIdentifierRefsClicked;
     itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
     itmSearchProcedureList.OnClick := @mnuSearchProcedureList;
@@ -2512,8 +2512,8 @@ end;
 procedure TMainIDE.SetupSourceMenu;
 begin
   inherited SetupSourceMenu;
+  mnuSource.OnClick:=@mnuSourceClicked;
   with MainIDEBar do begin
-    mnuSource.OnClick:=@mnuSourceClicked;
     itmSourceCommentBlock.OnClick:=@mnuSourceCommentBlockClicked;
     itmSourceUncommentBlock.OnClick:=@mnuSourceUncommentBlockClicked;
     itmSourceToggleComment.OnClick:=@mnuSourceToggleCommentClicked;
@@ -2549,8 +2549,8 @@ end;
 procedure TMainIDE.SetupRefactorMenu;
 begin
   inherited SetupRefactorMenu;
+  mnuRefactor.OnClick:=@mnuRefactorClicked;
   with MainIDEBar do begin
-    mnuRefactor.OnClick:=@mnuRefactorClicked;
     itmRefactorCompleteCode.OnClick:=@mnuRefactorCompleteCodeClicked;
     itmRefactorUseUnit.OnClick:=@mnuRefactorUseUnitClicked;
     itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
