@@ -13415,6 +13415,8 @@ begin
         SrcEdit:=SourceEditorManager.ActiveEditor;
         if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
           LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
+        if LogCaretXY.X<1 then
+          LogCaretXY.X:=1;
         TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
         if TopLine<1 then TopLine:=1;
         if FocusEditor then begin
