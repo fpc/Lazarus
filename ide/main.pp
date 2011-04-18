@@ -334,6 +334,7 @@ type
     procedure mnuConfigBuildFileClicked(Sender: TObject);
 
     // package menu
+    procedure mnuPackageClicked(Sender: TObject);
     // see pkgmanager.pas
 
     // tools menu
@@ -2615,6 +2616,7 @@ end;
 procedure TMainIDE.SetupComponentsMenu;
 begin
   inherited SetupComponentsMenu;
+  mnuPackage.OnClick:=@mnuPackageClicked;
 end;
 
 procedure TMainIDE.SetupToolsMenu;
@@ -3911,6 +3913,20 @@ begin
   //itmRefactorAdvanced
     //...
   end;
+end;
+
+procedure TMainIDE.mnuPackageClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  PkgFile: TPkgFile;
+begin
+  PkgFile:=nil;
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  if Assigned(ASrcEdit) then
+    PkgFile:=PackageGraph.FindFileInAllPackages(AnUnitInfo.Filename,true,
+                                            not AnUnitInfo.IsPartOfProject);
+  MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=Assigned(PkgFile);
 end;
 
 {------------------------------------------------------------------------------}
