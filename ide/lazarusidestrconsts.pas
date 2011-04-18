@@ -254,7 +254,7 @@ resourcestring
   lisMenuJumpBack = 'Jump back';
   lisMenuJumpForward = 'Jump forward';
   lisMenuAddJumpPointToHistory = 'Add jump point to history';
-  lisMenuViewJumpHistory = 'Jump History ...';
+  lisMenuViewJumpHistory = 'Jump History';
   lisMenuFindBlockOtherEndOfCodeBlock = 'Find other end of code block';
   lisMenuFindCodeBlockStart = 'Find code block start';
   lisMenuFindDeclarationAtCursor = 'Find Declaration at cursor';
@@ -279,7 +279,7 @@ resourcestring
   lisMenuViewForms = 'Forms...';
   lisMenuViewUnitDependencies = 'Unit Dependencies';
   lisKMViewUnitInfo = 'View Unit Info';
-  lisMenuViewUnitInfo = 'Unit Information';
+  lisMenuViewUnitInfo = 'Unit Information ...';
   lisMenuViewToggleFormUnit = 'Toggle form/unit view';
   lisMenuViewMessages = 'Messages';
   lisCopySelectedMessagesToClipboard = 'Copy selected messages to clipboard';
@@ -397,7 +397,7 @@ resourcestring
   lisMenuOpenRecentPkg = 'Open recent package';
   lisMenuOpenPackageFile = 'Open package file (.lpk) ...';
   lisMenuOpenPackageOfCurUnit = 'Open package of current unit';
-  lisMenuAddCurUnitToPkg = 'Add active unit to a package';
+  lisMenuAddCurUnitToPkg = 'Add active unit to a package ...';
   lisKMConfigureCustomComponents = 'Configure custom components';
   lisMenuConfigCustomComps = 'Configure custom components ...';
 
@@ -4067,7 +4067,7 @@ resourcestring
   lisPckOptsPackageOptions = 'Package Options';
 
   // package explorer (package graph)
-  dlgPackageGraph = 'Package Graph';
+  lisMenuPackageGraph = 'Package Graph';
   lisPckExplLoadedPackages = 'Loaded Packages:';
   lisPckExplIsRequiredBy = 'Selected package is required by:';
   lisPckExplPackageNotFound = 'Package %s not found';
@@ -4267,8 +4267,6 @@ resourcestring
   lisInstallUninstallPackages = 'Install/Uninstall packages';
   lisMenuEditInstallPkgs = 'Install/Uninstall packages ...';
   lisAvailablePackages = 'Available packages';
-  lisKMPackageGraph = 'Package graph';
-  lisMenuPackageGraph = 'Package Graph ...';
   lisExportList = 'Export list';
   lisDoNotInstall = 'Do not install';
   lisImportList = 'Import list';

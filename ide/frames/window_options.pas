@@ -356,7 +356,7 @@ begin
   if Fits('UnitDependencies',dlgUnitDepCaption) then exit;
   if Fits('CodeExplorerView',lisCodeExplorer) then exit;
   if Fits('FPDocEditor',lisCodeHelpMainFormCaption) then exit;
-  if Fits('PkgGraphExplorer',dlgPackageGraph) then exit;
+  if Fits('PkgGraphExplorer',lisMenuPackageGraph) then exit;
   if Fits('ProjectInspector',lisMenuProjectInspector) then exit;
   if Fits('DbgOutput',lisMenuViewDebugOutput) then exit;
   if Fits('DbgEvents',lisMenuViewDebugEvents) then exit;

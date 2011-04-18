@@ -385,7 +385,7 @@ begin
   FUpdateLock:=PackageGraph.UpdateLock;
   fSortedPackages:=TAVLTree.Create(@CompareLazPackageID);
   Name:=NonModalIDEWindowNames[nmiwPkgGraphExplorer];
-  Caption:=dlgPackageGraph;
+  Caption:=lisMenuPackageGraph;
 
   SetupComponents;
 end;

@@ -2813,7 +2813,7 @@ begin
   AddDefault(C, 'Open package file', lisKMOpenPackageFile, ecOpenPackageFile);
   AddDefault(C, 'Open package of current unit', lisMenuOpenPackageOfCurUnit, ecOpenPackageOfCurUnit);
   AddDefault(C, 'Add active unit to a package', lisMenuAddCurUnitToPkg, ecAddCurUnitToPkg);
-  AddDefault(C, 'Package graph', lisKMPackageGraph, ecPackageGraph);
+  AddDefault(C, 'Package graph', lisMenuPackageGraph, ecPackageGraph);
   AddDefault(C, 'Configure installed packages', lisInstallUninstallPackages, ecEditInstallPkgs);
   AddDefault(C, 'Configure custom components', lisKMConfigureCustomComponents, ecConfigCustomComps);
 
