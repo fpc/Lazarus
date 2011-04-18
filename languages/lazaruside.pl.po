@@ -2330,10 +2330,6 @@ msgstr "Inne pliki modułów (-Fu) (średnik jest separatorem):"
 msgid "Overwrite Block"
 msgstr "Nadpisz blok"
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr "Lista pakietów"
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Podpowiedzi dla palety komponentów"
@@ -8439,6 +8435,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr ""
 
@@ -8500,10 +8497,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
-msgstr ""
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
 msgstr ""
 
 #: lazarusidestrconsts.liskmaddwatch
@@ -8756,10 +8749,6 @@ msgstr ""
 msgid "Open package file"
 msgstr ""
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr ""
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr ""
@@ -8962,6 +8951,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -9624,7 +9617,9 @@ msgid "Add breakpoint"
 msgstr "Dodaj pułapkę"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+#, fuzzy
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr "Dodaj aktywny moduł do pakietu"
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10136,7 +10131,9 @@ msgid "Pa&ckage"
 msgstr "P&akiet"
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+#, fuzzy
+#| msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr "Lista pakietów ..."
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10580,8 +10577,9 @@ msgstr "Przyciski szybkiego uruchamiania"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "Jump-History ..."
-msgid "Jump History ..."
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr "Pokaż historę skoków ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10597,6 +10595,10 @@ msgstr "Komunikaty"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Inspektor obiektów"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10640,8 +10642,9 @@ msgid "Unit Dependencies"
 msgstr "Zależności modułów"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#| msgid "View Unit Information"
-msgid "Unit Information"
+#, fuzzy
+#| msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr "Informacje o module"
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16560,6 +16563,10 @@ msgstr "Pokaż komponenty"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Pokaż formularze"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"

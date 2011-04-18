@@ -2294,10 +2294,6 @@ msgstr ""
 msgid "Overwrite Block"
 msgstr ""
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr ""
@@ -8377,6 +8373,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr ""
 
@@ -8439,10 +8436,6 @@ msgstr ""
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
 msgstr "أوقف البناء"
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
-msgstr ""
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -8694,10 +8687,6 @@ msgstr ""
 msgid "Open package file"
 msgstr ""
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr ""
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr ""
@@ -8900,6 +8889,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -9558,7 +9551,7 @@ msgid "Add breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10053,7 +10046,7 @@ msgid "Pa&ckage"
 msgstr ""
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr ""
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10490,7 +10483,8 @@ msgid "IDE speed buttons"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10505,6 +10499,10 @@ msgstr ""
 #: lazarusidestrconsts.lismenuviewobjectinspector
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
@@ -10547,7 +10545,7 @@ msgid "Unit Dependencies"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16441,6 +16439,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor

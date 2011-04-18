@@ -8445,6 +8445,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Storico dei salti"
 
@@ -10130,6 +10131,7 @@ msgstr "Apri pacchetto recente ..."
 #: lazarusidestrconsts.lismenuopenrecentproject
 #, fuzzy
 #| msgid "Open Recent Project ..."
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Apri progetto recente ..."
 
@@ -10591,6 +10593,7 @@ msgstr "Visualizza gli speed buttons dell'IDE"
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
 #| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
 msgstr "Visualizza storico salti ..."
 
@@ -15447,6 +15450,7 @@ msgstr "Versione mi&nore:"
 #: lazarusidestrconsts.rsok
 #, fuzzy
 #| msgid "ok"
+msgctxt "lazarusidestrconsts.rsok"
 msgid "OK"
 msgstr "ok"
 

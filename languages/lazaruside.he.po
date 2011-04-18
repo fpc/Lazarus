@@ -2304,10 +2304,6 @@ msgstr "קבצי יחידה אחרים (-Fu) (המפריד הוא פסיק):"
 msgid "Overwrite Block"
 msgstr "כתוב על הבלוק הקיים"
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr "גרף החבילות"
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "טיפים ללוח הרכיבים"
@@ -8408,6 +8404,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr "אני מתפלא איך עשית זאת. שגיאה בתיקיית הבסיס:"
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "היסטוריית קפיצות"
 
@@ -8472,10 +8469,6 @@ msgstr "מפתח (או סדרה של שני מפתחות)"
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
 msgstr "בטל בנייה"
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
-msgstr "הוסף את היחידה הפעילה לפרויקט"
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -8727,10 +8720,6 @@ msgstr "הערה: כל המקשים יוגדרו לערכים של הסכמה ה
 msgid "Open package file"
 msgstr "לפתוח קובץ חבילה"
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr "גרף החבילות"
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr "הדבק את הרכיבים מהלוח הזמני"
@@ -8934,6 +8923,10 @@ msgstr "החלף (הצג/הסתר) הודעות"
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
 msgstr "החלף (הצג/הסתר) צופה העצמים"
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "Toggle view Registers"
@@ -9599,7 +9592,9 @@ msgid "Add breakpoint"
 msgstr "הוסף נקודת עצירה"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+#, fuzzy
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr "הוסף את היחידה הפעילה לחבילה"
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10109,7 +10104,9 @@ msgid "Pa&ckage"
 msgstr "ח&בילה"
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+#, fuzzy
+#| msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr "גרף החבילות ..."
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10550,8 +10547,10 @@ msgid "IDE speed buttons"
 msgstr "כפתורי ה Speed ב IDE"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#| msgid "Jump-History ..."
-msgid "Jump History ..."
+#, fuzzy
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr "היסטורית הקפיצות ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10567,6 +10566,10 @@ msgstr "הודעות"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "מפקח עצמים"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10609,8 +10612,9 @@ msgid "Unit Dependencies"
 msgstr "תלויות היחידה"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#| msgid "View Unit Information"
-msgid "Unit Information"
+#, fuzzy
+#| msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr "מידע על היחידה"
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16531,6 +16535,10 @@ msgstr "הצג רכיבים"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "הצג טפסים"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"

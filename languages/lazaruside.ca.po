@@ -2306,10 +2306,6 @@ msgstr "Altres fitxers d'unitats (-Fu) (El delimitador és punt i coma):"
 msgid "Overwrite Block"
 msgstr ""
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Suggeriments per a la paleta de components"
@@ -8423,6 +8419,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr ""
 
@@ -8484,10 +8481,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
-msgstr ""
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
 msgstr ""
 
 #: lazarusidestrconsts.liskmaddwatch
@@ -8740,10 +8733,6 @@ msgstr ""
 msgid "Open package file"
 msgstr ""
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr ""
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr ""
@@ -8946,6 +8935,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -9608,7 +9601,9 @@ msgid "Add breakpoint"
 msgstr "Afegeix un punt de ruptura"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+#, fuzzy
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr "Afegeix la unitat activa a un paquet"
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10119,7 +10114,9 @@ msgid "Pa&ckage"
 msgstr ""
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+#, fuzzy
+#| msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr "Gràfica dels paquets ..."
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10565,8 +10562,9 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "Jump-History ..."
-msgid "Jump History ..."
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr "Mostra la història dels salts ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10582,6 +10580,10 @@ msgstr "Missatges"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Inspector dels objectes"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10626,8 +10628,8 @@ msgstr "Mostra les dependències de les unitats"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
 #, fuzzy
-#| msgid "View Unit Information"
-msgid "Unit Information"
+#| msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr "Mostra la informació de les unitats"
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16540,6 +16542,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Mostra les formes"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"

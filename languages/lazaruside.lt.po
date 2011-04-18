@@ -2312,10 +2312,6 @@ msgstr "Kitų modulių failai (-Fu) (atskirti kabliataškiais):"
 msgid "Overwrite Block"
 msgstr "Pakeisti bloką"
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr "Paketų grafas"
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Sufleriai komponenčių paletei"
@@ -8435,6 +8431,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Peršokimų praeitis"
 
@@ -8497,10 +8494,6 @@ msgstr "Klavišas (arba dviejų klavišų seka)"
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
 msgstr "Nutraukti darymą"
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
-msgstr "Įdėti į projektą aktyvųjį modulį"
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -8752,10 +8745,6 @@ msgstr "Pastaba: visų klavišų vertės bus nustatytos pagal pasirinktą derin�
 msgid "Open package file"
 msgstr "Atverti paketo failą"
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr "Paketų grafas"
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr "Įdėti komponentę iš iškarpinės"
@@ -8959,6 +8948,10 @@ msgstr "Keisti „Pranešimai“ matomumą"
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
 msgstr "Keisti „Objektų inspektorius“ matomumą"
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "Toggle view Registers"
@@ -9627,7 +9620,9 @@ msgid "Add breakpoint"
 msgstr "Padėti stabdos tašką"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+#, fuzzy
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr "Įdėti aktyvųjį modulį į paketą"
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10138,7 +10133,9 @@ msgid "Pa&ckage"
 msgstr "&Paketas"
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+#, fuzzy
+#| msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr "Paketų grafas…"
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10579,8 +10576,10 @@ msgid "IDE speed buttons"
 msgstr "IKA spartieji mygtukai"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#| msgid "Jump-History ..."
-msgid "Jump History ..."
+#, fuzzy
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr "Peršokimų praeitis…"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10596,6 +10595,10 @@ msgstr "Pranešimai"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Objektų inspektorius"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10638,8 +10641,9 @@ msgid "Unit Dependencies"
 msgstr "Modulio priklausomybės"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#| msgid "View Unit Information"
-msgid "Unit Information"
+#, fuzzy
+#| msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr "Informacija apie modulį"
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16570,6 +16574,10 @@ msgstr "Rodyti komponentes"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Rodyti formas"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"

@@ -2311,10 +2311,6 @@ msgstr "その他のユニットファイル(区切り記号はセミコロン):
 msgid "Overwrite Block"
 msgstr "ブロックを上書き"
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr "パッケージグラフ"
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "コンポーネントパレットのヒント"
@@ -8443,6 +8439,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "移動履歴"
 
@@ -8505,10 +8502,6 @@ msgstr "キー（あるいは2つのキー配列）"
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
 msgstr "構築を中止"
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
-msgstr "アクティブなユニットをプロジェクトに追加"
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -8760,10 +8753,6 @@ msgstr "注釈：すべてのキーは選択されたスキームの値にセッ
 msgid "Open package file"
 msgstr "パッケージファイルを開く"
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr "パッケージグラフ"
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr "クリップボードからコンポーネントを貼り付け"
@@ -8967,6 +8956,10 @@ msgstr "メッセージ表示の切り替え"
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
 msgstr "オブジェクトインスペクタの表示の切り替え"
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "Toggle view Registers"
@@ -9632,7 +9625,9 @@ msgid "Add breakpoint"
 msgstr "ブレークポイントを追加"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+#, fuzzy
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr "アクティブなユニットをパッケージに追加"
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10145,7 +10140,9 @@ msgid "Pa&ckage"
 msgstr "パッケージ(&P)"
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+#, fuzzy
+#| msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr "パッケージグラフ ..."
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10593,8 +10590,9 @@ msgstr "IDEスピードボタンを表示"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "Jump-History ..."
-msgid "Jump History ..."
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr "移動先履歴を表示 ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10610,6 +10608,10 @@ msgstr "メッセージ"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "オブジェクトインスペクタ"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10654,8 +10656,8 @@ msgstr "ユニットの依存性を表示"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
 #, fuzzy
-#| msgid "View Unit Information"
-msgid "Unit Information"
+#| msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr "ユニットの情報を表示"
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16584,6 +16586,10 @@ msgstr "コンポーネントを表示"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "フォームを表示"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"

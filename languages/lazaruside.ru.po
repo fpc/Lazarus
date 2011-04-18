@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-17 16:02+0300\n"
+"PO-Revision-Date: 2011-04-19 00:37+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2332,10 +2332,6 @@ msgstr "Другие модули (-Fu) (разделитель - точка с 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite Block"
 msgstr "Заменять выделение"
-
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr "Диаграмма пакетов"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -8441,6 +8437,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr "Интересно, как вам удалось добиться такого. Ошибка в пути к базовому каталогу:"
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "История переходов"
 
@@ -8504,10 +8501,6 @@ msgstr "Клавиша (или двухклавишная комбинация)"
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
 msgstr "Прервать сборку"
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
-msgstr "Добавить текущий модуль к проекту"
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -8760,10 +8753,6 @@ msgstr "Внимание: все клавиши получат значения 
 msgid "Open package file"
 msgstr "Открыть файл пакета"
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr "Диаграмма пакетов"
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr "Вставить компоненты из буфера обмена"
@@ -8968,6 +8957,10 @@ msgstr "Показывать окно сообщений"
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
 msgstr "Показывать инспектор объектов"
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
+msgstr "Показать вывод в терминал"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "Toggle view Registers"
@@ -9630,8 +9623,9 @@ msgid "Add breakpoint"
 msgstr "Добавить точку останова"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
-msgstr "Добавить активный модуль к проекту"
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
+msgstr "Добавить активный модуль к пакету ..."
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"
@@ -10131,8 +10125,9 @@ msgid "Pa&ckage"
 msgstr "П&акет"
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
-msgstr "Диаграмма пакетов ..."
+#| msgid "Package Graph ..."
+msgid "Package Graph"
+msgstr "Диаграмма пакетов"
 
 #: lazarusidestrconsts.lismenupackagelinks
 msgid "Package links ..."
@@ -10573,9 +10568,10 @@ msgid "IDE speed buttons"
 msgstr "Кнопки быстрого доступа IDE"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#| msgid "Jump-History ..."
-msgid "Jump History ..."
-msgstr "История переходов ..."
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
+msgstr "История переходов"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
 msgid "Local Variables"
@@ -10590,6 +10586,10 @@ msgstr "Сообщения"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Инспектор объектов"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr "Вывод в терминал"
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10632,9 +10632,9 @@ msgid "Unit Dependencies"
 msgstr "Зависимости модулей"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#| msgid "View Unit Information"
-msgid "Unit Information"
-msgstr "Сведения о модуле"
+#| msgid "Unit Information"
+msgid "Unit Information ..."
+msgstr "Сведения о модуле ..."
 
 #: lazarusidestrconsts.lismenuviewunits
 msgid "Units..."
@@ -16557,6 +16557,10 @@ msgstr "Показать список компонентов"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Показать формы"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr "Показать вывод в терминал"
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"

@@ -2315,10 +2315,6 @@ msgstr "补充单元文件 (-Fu) (分号格开):"
 msgid "Overwrite Block"
 msgstr ""
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "组件面板提示"
@@ -8444,6 +8440,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr ""
 
@@ -8506,10 +8503,6 @@ msgstr ""
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
 msgstr "中止构建"
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
-msgstr "添加活动单元到工程"
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -8761,10 +8754,6 @@ msgstr ""
 msgid "Open package file"
 msgstr "打开包文件"
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr "包关系图"
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr "从剪贴板粘贴组件"
@@ -8968,6 +8957,10 @@ msgstr "切换到消息视图"
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
 msgstr "切换到对象查看器视图"
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "Toggle view Registers"
@@ -9633,7 +9626,9 @@ msgid "Add breakpoint"
 msgstr "添加断点"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+#, fuzzy
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr "将活动单元添加到包 "
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10146,7 +10141,9 @@ msgid "Pa&ckage"
 msgstr "包(&P)"
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+#, fuzzy
+#| msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr "包关系图..."
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10592,8 +10589,9 @@ msgstr "IDE快速按钮"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "Jump-History ..."
-msgid "Jump History ..."
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr "查看跳转历史 ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10609,6 +10607,10 @@ msgstr "消息"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "对象观察器"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10653,8 +10655,8 @@ msgstr "查看单元依赖关系"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
 #, fuzzy
-#| msgid "View Unit Information"
-msgid "Unit Information"
+#| msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr "查看单元信息"
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16585,6 +16587,10 @@ msgstr "查看组件"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "查看窗体"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"

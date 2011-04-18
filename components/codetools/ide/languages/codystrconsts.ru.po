@@ -74,8 +74,9 @@ msgid "searching ..."
 msgstr "поиск ..."
 
 #: codystrconsts.crsshowusedppufiles
-msgid "Show used .ppu files"
-msgstr "Показать используемые файлы PPU"
+#| msgid "Show used .ppu files"
+msgid "Show used .ppu files ..."
+msgstr "Показать используемые файлы PPU ..."
 
 #: codystrconsts.crssizeofofile
 msgid "Size of .o file"

@@ -2306,10 +2306,6 @@ msgstr "Andere unit bestanden (-Fu)"
 msgid "Overwrite Block"
 msgstr ""
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Hints voor componenten palet"
@@ -8425,6 +8421,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr ""
 
@@ -8486,10 +8483,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
-msgstr ""
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
 msgstr ""
 
 #: lazarusidestrconsts.liskmaddwatch
@@ -8742,10 +8735,6 @@ msgstr ""
 msgid "Open package file"
 msgstr "Open pakket bestand"
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr ""
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr "Plak componenten van clipboard"
@@ -8948,6 +8937,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
@@ -9610,7 +9603,9 @@ msgid "Add breakpoint"
 msgstr "Breekpunt toevoegen"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+#, fuzzy
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr "Een actieve unit toevoegen aan een Pakket"
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10121,7 +10116,9 @@ msgid "Pa&ckage"
 msgstr ""
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+#, fuzzy
+#| msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr "Pakketplaatje ..."
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10569,8 +10566,9 @@ msgstr "Toon IDE speed buttons"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "Jump-History ..."
-msgid "Jump History ..."
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr "Toon Springpunt geschiedenis ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10586,6 +10584,10 @@ msgstr "Berichten"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Object Inspecteur"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10630,8 +10632,8 @@ msgstr "Toon Unit Afhankelijkheden"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
 #, fuzzy
-#| msgid "View Unit Information"
-msgid "Unit Information"
+#| msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr "Toon Unit informatie"
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16550,6 +16552,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Toon Forms"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"

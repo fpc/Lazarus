@@ -2323,10 +2323,6 @@ msgstr "Autres fichiers unité (-Fu) (le délimiteur est le point-virgule):"
 msgid "Overwrite Block"
 msgstr "Ecraser le bloc"
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr "Paquet Graph"
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Conseils pour la palette de composants"
@@ -8451,6 +8447,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr "Je me demande comment vous avez fait cela: Erreur dans le répertoire de base"
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Historique des déplacements"
 
@@ -8513,10 +8510,6 @@ msgstr "Touche (ou séquence de 2 touches)"
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
 msgstr "Arrêter la création"
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
-msgstr "Ajouter l'unité active au projet"
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -8768,10 +8761,6 @@ msgstr "Note: toutes les touches seront définies avec les valeurs du programme 
 msgid "Open package file"
 msgstr "Ouvrir un fichier paquet"
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr "Graphique des paquets"
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr "Coller les composants depuis le presse-papiers"
@@ -8975,6 +8964,10 @@ msgstr "Commuter vue Messages"
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
 msgstr "Commuter vue Inspecteur d'objets"
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "Toggle view Registers"
@@ -9636,7 +9629,9 @@ msgid "Add breakpoint"
 msgstr "Ajouter un point d'arrêt"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+#, fuzzy
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr "Ajouter l'unité active au projet"
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10142,7 +10137,9 @@ msgid "Pa&ckage"
 msgstr "Pa&quet"
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+#, fuzzy
+#| msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr "Graphe des paquets ..."
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10585,8 +10582,10 @@ msgid "IDE speed buttons"
 msgstr "Afficher les boutons rapides de l'EDI"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#| msgid "View Jump-History ..."
-msgid "Jump History ..."
+#, fuzzy
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr "Historique des déplacements ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10602,6 +10601,10 @@ msgstr "Messages"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Inspecteur d'objets"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10644,8 +10647,9 @@ msgid "Unit Dependencies"
 msgstr "Dépendances de l'unité"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#| msgid "View Unit Information"
-msgid "Unit Information"
+#, fuzzy
+#| msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr "Informations sur l'unité"
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16568,6 +16572,10 @@ msgstr "Afficher les composants"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Afficher les fiches"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"

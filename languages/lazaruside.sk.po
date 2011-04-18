@@ -2311,10 +2311,6 @@ msgstr "Ostatné súbory jednotiek (-Fu) (oddelené bodkočiarkou):"
 msgid "Overwrite Block"
 msgstr ""
 
-#: lazarusidestrconsts.dlgpackagegraph
-msgid "Package Graph"
-msgstr ""
-
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
 msgstr "Rady pre paletu komponentov"
@@ -8442,6 +8438,7 @@ msgid "I wonder how you did that: Error in the base directory:"
 msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
+msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr ""
 
@@ -8504,10 +8501,6 @@ msgstr "Kláves (alebo postupnosť dvoch)"
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
 msgstr "Zrušiť budovanie"
-
-#: lazarusidestrconsts.liskmaddactiveunittoproject
-msgid "Add active unit to project"
-msgstr "Pridať aktívnu jednotku do projektu"
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -8759,10 +8752,6 @@ msgstr ""
 msgid "Open package file"
 msgstr "Otvoriť súbor balíčka"
 
-#: lazarusidestrconsts.liskmpackagegraph
-msgid "Package graph"
-msgstr "Graf balíčkov"
-
 #: lazarusidestrconsts.liskmpastecomponentsfromclipboard
 msgid "Paste Components from clipboard"
 msgstr "Vložiť komponenty zo schránky"
@@ -8966,6 +8955,10 @@ msgstr "Prepnúť zobrazenie Správy"
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
 msgstr "Prepnúť zobrazenie Inšpektor obejktov"
+
+#: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgid "Toggle view Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "Toggle view Registers"
@@ -9631,7 +9624,9 @@ msgid "Add breakpoint"
 msgstr "Pridať bod prerušenia"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package"
+#, fuzzy
+#| msgid "Add active unit to a package"
+msgid "Add active unit to a package ..."
 msgstr "Pridať aktívnu jednotku do balíčka"
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
@@ -10144,7 +10139,9 @@ msgid "Pa&ckage"
 msgstr "&Balíček"
 
 #: lazarusidestrconsts.lismenupackagegraph
-msgid "Package Graph ..."
+#, fuzzy
+#| msgid "Package Graph ..."
+msgid "Package Graph"
 msgstr "Graf balíčkov ..."
 
 #: lazarusidestrconsts.lismenupackagelinks
@@ -10592,8 +10589,9 @@ msgstr "Zobraziť tlačítka IDE"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
 #, fuzzy
-#| msgid "Jump-History ..."
-msgid "Jump History ..."
+#| msgid "Jump History ..."
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
+msgid "Jump History"
 msgstr "Zobraziť Históriu skokov ..."
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
@@ -10609,6 +10607,10 @@ msgstr "Správy"
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Inšpektor objektov"
+
+#: lazarusidestrconsts.lismenuviewpseudoterminal
+msgid "Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10653,8 +10655,8 @@ msgstr "Zobraziť závislosti jednotky"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
 #, fuzzy
-#| msgid "View Unit Information"
-msgid "Unit Information"
+#| msgid "Unit Information"
+msgid "Unit Information ..."
 msgstr "Zobraziť info o jednotke"
 
 #: lazarusidestrconsts.lismenuviewunits
@@ -16583,6 +16585,10 @@ msgstr "Zobraziť komponenty"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Zobraziť formuláre"
+
+#: lazarusidestrconsts.srkmecviewpseudoterminal
+msgid "View Terminal Output"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtabordereditor
 msgid "View Tab Order editor"
