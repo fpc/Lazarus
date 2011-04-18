@@ -1,7 +1,11 @@
 {
-  This unit contains all access functions for libc (unix like OS like
-    Linux, Mac OS X, BSD).
+  This unit contains all access functions to libc (unix like OS like
+  Linux, Mac OS X, BSD), which are needed by the IDE, but are not provided
+  by FPC units SysUtils, Unix and BaseUnix.
 
+  Before adding stuff here always check if fpc units Unix or BaseUnix already
+  contains corresponding functions.
+  Always use types from the ctypes unit.
 }
 unit IDEMiniLibC;
 
