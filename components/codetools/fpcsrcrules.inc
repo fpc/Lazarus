@@ -28,8 +28,16 @@ Score:=-10;
 Targets:='win32,win64';
 Add('packages/winceunits');
 
+Score:=-10;
 Targets:='win';
 Add('packages/winunits-base');
+
+Score:=105;
+Targets:='unix';
+Add('packages/libc');
+Score:=10;
+Targets:='netware';
+Add('rtl/netwlibc');
 
 // end.
 
