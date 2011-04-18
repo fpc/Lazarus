@@ -479,10 +479,14 @@ begin
   *  Now shows the GtkPlug
   *******************************************************************}
   TrayIconHandle.Show;
+  {$ifdef UseStatusIcon}
+  Result := True;
+  {$else}
   if TrayIconHandle.fEmbedded then
     Result := True
   else
     Hide(ATrayIcon);
+  {$endif}
 end;
 
 {*******************************************************************
