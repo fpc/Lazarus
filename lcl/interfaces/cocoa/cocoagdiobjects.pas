@@ -79,7 +79,13 @@ type
 
   { TCocoaBitmap }
 
-  TCocoaBitmap = class(TCocoaGDIObject);
+  TCocoaBitmap = class(TCocoaGDIObject)
+  public
+    image: NSImage;
+    imagerep: NSBitmapImageRep;
+    constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
+      AData: Pointer; ACopyData: Boolean = True);
+   end;
 
   { TCocoaTextLayout }
 
@@ -142,6 +148,71 @@ var
   TextLayoutClass  : TCocoaTextLayoutClass = nil;
 
 implementation
+
+{ TCocoaBitmap }
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaBitmap.Create
+  Params:  AWidth        - Bitmap width
+           AHeight       - Bitmap height
+           ADepth        - Significant bits per pixel
+           ABitsPerPixel - The number of allocated bits per pixel (can be larger than depth)
+//           AAlignment    - Alignment of the data for each row
+//           ABytesPerRow  - The number of bytes between rows
+           ACopyData     - Copy supplied bitmap data (OPTIONAL)
+
+  Creates Carbon bitmap with the specified characteristics
+ ------------------------------------------------------------------------------}
+constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth,
+  ABitsPerPixel: Integer; AData: Pointer; ACopyData: Boolean);
+var
+  bitsPerSample: NSInteger;  // How many bits in each color component
+  samplesPerPixel: NSInteger;// How many color components
+begin
+{  case ABitsPerPixel of
+    // Mono
+    1:
+    begin
+      bitsPerSample := 1;
+      samplesPerPixel := 1;
+    end;
+    // Gray scale
+    8:
+    begin
+      bitsPerSample := 8;
+      samplesPerPixel := 1;
+    end;
+    // ARGB
+    32:
+    begin
+      bitsPerSample := 8;
+      samplesPerPixel := 4;
+    end;
+  else
+    // Other RGB
+    bitsPerSample := bitsPerSample div 3;
+    samplesPerPixel := 3;
+  end;
+
+  // Create the associated NSImageRep
+  imagerep := NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh_bitsPerSample_samplesPerPixel_hasAlpha_isPlanar_colorSpaceName_bytesPerRow_bitsPerPixel(
+    @AData, // planes, BitmapDataPlanes
+    AWidth, // width, pixelsWide
+    AHeight,// height, PixelsHigh
+    bitsPerSample,// bitsPerSample, bps
+    samplesPerPixel, // samplesPerPixel, sps
+    NO, // hasAlpha
+    NO, // isPlanar
+    NSCalibratedRGBColorSpace, // colorSpaceName
+    0, // bitmapFormat
+    0, // bytesPerRow
+    ABitsPerPixel //bitsPerPixel
+    );
+
+  // Create the associated NSImage
+  image := NSImage.alloc.initWithSize(NSMakeSize(AWidth, AHeight));
+  image.addRepresentation(imagerep);}
+end;
 
 { TCocoaContext }
 

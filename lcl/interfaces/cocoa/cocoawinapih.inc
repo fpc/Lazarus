@@ -49,7 +49,7 @@ function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;}
 
 function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
-{function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;}
+function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 {function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
@@ -57,7 +57,7 @@ function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;}
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
-{function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;}
+function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;

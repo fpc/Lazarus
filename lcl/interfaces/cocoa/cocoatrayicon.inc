@@ -1,37 +1,36 @@
-{%mainunit cocoawsextctrls.pp}
+{%mainunit cocoawsextctrls.pas}
 
-{$STATIC ON}
-(*
-type
-
-  { TPrivateCocoaCocoaTrayIcon }
-
-    TPrivateCocoaCocoaTrayIcon = class(NSObject)
-  public
+(*type
+  TCocoaStatusItem = objcclass(NSStatusItem)
     { Fields }
     bar: NSStatusBar;
-    item: NSStatusItem;
     image: NSImage;
     menu: NSMenu;
-    { Structural Methods }
-//    constructor Create; override;
-  end;
-*)
+    { Methods }
+    //  procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;*)
 
 { TCocoaWSCustomTrayIcon }
 
-(*
 class function TCocoaWSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
-var
-  APrivateTrayIcon: TPrivateCocoaCocoaTrayIcon;
+{var
+  statusitem: TCocoaStatusItem;
+  bar: NSStatusBar;}
 begin
-  APrivateTrayIcon := TPrivateCocoaCocoaTrayIcon(ATrayIcon.Handle);
+{  bar := NSStatusBar.systemStatusBar();
+  statusitem := bar.statusItemWithLength(NSSquareStatusItemLength);
+  statusitem.bar := bar;
+  statusicon.callback:=TLCLCommonCallback.Create(box, AWinControl);
+  statusitem.retain();
+  statusitem.item.setImage(APrivateTrayIcon.image.Handle);
+  Result:=TLCLIntfHandle(box);
+//  APrivateTrayIcon := TPrivateCocoaCocoaTrayIcon(ATrayIcon.Handle);
 
   if APrivateTrayIcon.item <> nil then
   begin
     APrivateTrayIcon.item.Free;
     APrivateTrayIcon.item := nil;
-  end;
+  end;}
 
   Result := True;
 end;
@@ -40,10 +39,13 @@ end;
 }
 class function TCocoaWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  APrivateTrayIcon: TPrivateCocoaCocoaTrayIcon;
-  ASize: NSSize;
-  ACGRect: CGRect;
-  AcurrentContext: NSGraphicsContext;
+  statusitem: NSStatusItem;
+  bar: NSStatusBar;
+  {var
+    APrivateTrayIcon: TPrivateCocoaCocoaTrayIcon;
+    ASize: NSSize;
+    ACGRect: CGRect;
+    AcurrentContext: NSGraphicsContext;}
 begin
   {$ifdef VerboseCocoaTrayIcon}
     WriteLn(':>[TCocoaWSCustomTrayIcon.Show]');
@@ -53,12 +55,21 @@ begin
 
   { Creates the handle }
   
-  APrivateTrayIcon := TPrivateCocoaCocoaTrayIcon.Create;
-  
-  APrivateTrayIcon.bar := NSStatusBar.systemStatusBar();
+  bar := NSStatusBar.systemStatusBar();
+  statusitem := bar.statusItemWithLength(NSSquareStatusItemLength);
+//  statusitem.bar := bar;
+  //statusicon.callback:=TLCLCommonCallback.Create(box, AWinControl);
+  statusitem.retain();
+  statusitem.setImage(TCocoaBitmap(ATrayIcon.icon.Handle).image);
+  //Result:=TLCLIntfHandle(box);
+//  APrivateTrayIcon := TPrivateCocoaCocoaTrayIcon(ATrayIcon.Handle);
 
-  ATrayIcon.Handle := PtrInt(APrivateTrayIcon);
-  
+{  if APrivateTrayIcon.item <> nil then
+  begin
+    APrivateTrayIcon.item.Free;
+    APrivateTrayIcon.item := nil;
+  end;}
+
   { Shows the icon }
 
 {  if APrivateTrayIcon.item <> nil then Exit(True);
@@ -103,5 +114,4 @@ class function TCocoaWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIc
 begin
   Result := Point(0, 0);
 end;
-*)
 

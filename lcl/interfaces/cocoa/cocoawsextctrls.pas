@@ -23,6 +23,7 @@
 unit CocoaWSExtCtrls;
 
 {$mode delphi}
+{$modeswitch objectivec1}
 
 interface
 
@@ -34,7 +35,7 @@ uses
   // widgetset
   WSExtCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
-  CocoaPrivate;
+  CocoaPrivate, CocoaGDIObjects;
 
 type
 
@@ -209,11 +210,11 @@ type
 
   TCocoaWSCustomTrayIcon = class(TWSCustomTrayIcon)
   public
-    {class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
+    class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
     class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
-    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;}
+    class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
   end;
 
 implementation

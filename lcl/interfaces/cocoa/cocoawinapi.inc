@@ -358,6 +358,27 @@ begin
     TCocoaRegion(Dest). CombineWith(TCocoaRegion(Src2), CocoaCombineMode(fnCombineMode));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  CreateBitmap
+  Params:  Width      - Bitmap width, in pixels
+           Height     - Bitmap height, in pixels
+           Planes     - Number of color planes
+           BitCount   - Number of bits required to identify a color (TODO)
+           BitmapBits - Pointer to array containing color data (TODO)
+  Returns: A handle to a bitmap
+
+  Creates a bitmap with the specified width, height and color format
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.CreateBitmap(Width, Height: Integer;
+  Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+begin
+//  {$IFDEF VerboseWinAPI}
+//    DebugLn('TCocoaWidgetSet.CreateBitmap');
+//  {$ENDIF}
+
+  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, BitCount, BitCount, BitmapBits));
+end;
+
 function TCocoaWidgetSet.CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;
 begin
   {$IFDEF VerboseWinAPI}
@@ -591,6 +612,29 @@ begin
   if LogFont.lfStrikeOut>0 then Include(cf.Style, cfs_Strikeout);
   cf.Antialiased:=logFont.lfQuality>=ANTIALIASED_QUALITY;
   Result:=HFONT(cf);
+end;
+
+function TCocoaWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+var
+  ABitmap: TCocoaBitmap;
+begin
+  Result := 0;
+  if IconInfo^.hbmColor = 0 then Exit;
+
+//  ABitmap := Create32BitAlphaBitmap(TCarbonBitmap(IconInfo^.hbmColor), TCarbonBitmap(IconInfo^.hbmMask));
+  // For now just ignore the mask
+  Result := HICON(IconInfo^.hbmColor);
+
+{  if IconInfo^.fIcon then
+  begin
+    Result := HICON(ABitmap)
+  end
+  else
+  begin
+    IconInfo^.hbmColor := HBITMAP(ABitmap);
+    IconInfo^.hbmMask := 0;
+    Result := HICON(TCarbonCursor.CreateFromInfo(IconInfo));
+  end;}
 end;
 
 function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
