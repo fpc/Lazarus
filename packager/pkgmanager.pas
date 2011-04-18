@@ -598,22 +598,16 @@ var
   ActiveSourceEditor: TSourceEditorInterface;
   ActiveUnitInfo: TUnitInfo;
   PkgFile: TPkgFile;
-  Filename: String;
 begin
   MainIDE.GetCurrentUnitInfo(ActiveSourceEditor,ActiveUnitInfo);
   if ActiveSourceEditor=nil then exit;
-
-  Filename:=ActiveUnitInfo.Filename;
-
-  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,true,
+  PkgFile:=PackageGraph.FindFileInAllPackages(ActiveUnitInfo.Filename,true,
                                             not ActiveUnitInfo.IsPartOfProject);
-  if PkgFile=nil then begin
+  if PkgFile=nil then
     IDEMessageDialog(lisProjAddPackageNotFound,
-      lisPkgThisFileIsNotInAnyLoadedPackage, mtInformation,
-      [mbCancel]);
-    exit;
-  end;
-  DoOpenPackageFile(PkgFile.LazPackage.Filename,[pofAddToRecent],false)
+        lisPkgThisFileIsNotInAnyLoadedPackage, mtInformation, [mbCancel])
+  else
+    DoOpenPackageFile(PkgFile.LazPackage.Filename,[pofAddToRecent],false);
 end;
 
 function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
