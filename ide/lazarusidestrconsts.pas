@@ -2338,11 +2338,13 @@ resourcestring
     +'is inherited from %s.%sTo delete an inherited component open the '
     +'ancestor and delete it there.';
   lisTheRootComponentCanNotBeDeleted = 'The root component can not be deleted.';
-  fdmAlignWord='Align';
+  fdmAlignMenu='Align ...';
   fdmMirrorHorizontal='Mirror Horizontal';
   fdmMirrorVertical='Mirror Vertical';
   fdmScaleWord='Scale';
+  fdmScaleMenu='Scale ...';
   fdmSizeWord='Size';
+  fdmSizeMenu='Size ...';
   fdmZOrder='Z-order';
   fdmOrder='Order';
   fdmOrderMoveTofront='Move to Front';

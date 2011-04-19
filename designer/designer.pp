@@ -514,15 +514,15 @@ begin
   DesignerMenuSectionAlign:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                                'Align section');
     DesignerMenuAlign:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-        'Align',fdmAlignWord, nil, nil, nil, 'align');
+        'Align',fdmAlignMenu, nil, nil, nil, 'align');
     DesignerMenuMirrorHorizontal:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
         'Mirror horizontal',fdmMirrorHorizontal, nil, nil, nil, 'mirror_horizontal');
     DesignerMenuMirrorVertical:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
         'Mirror vertical',fdmMirrorVertical, nil, nil, nil, 'mirror_vertical');
     DesignerMenuScale:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-        'Scale',fdmScaleWord, nil, nil, nil, 'scale');
+        'Scale',fdmScaleMenu, nil, nil, nil, 'scale');
     DesignerMenuSize:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-        'Size',fdmSizeWord, nil, nil, nil, 'size');
+        'Size',fdmSizeMenu, nil, nil, nil, 'size');
 
   // register tab and z-order section
   DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,'Order section');
