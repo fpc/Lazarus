@@ -33,7 +33,7 @@ interface
 
 uses
   Types, SysUtils, Classes, LCLProc, LCLIntf, LCLType, Controls, ExtCtrls, Graphics,
-  Dialogs;
+  Dialogs, db;
 
 type
 
@@ -154,6 +154,9 @@ type
 
 procedure Register;
 
+procedure FillBarChart(BC: TBarChart; DS: TDataset;
+  const LabelField, ValueField: String; AColor: TColor);
+
 implementation
 
 procedure Register;
@@ -161,6 +164,38 @@ begin
   {$WARNINGS off}
   RegisterComponents('Misc',[TBarChart]);
   {$WARNINGS on}
+end;
+
+procedure FillBarChart(BC: TBarChart; DS: TDataset;
+  const LabelField, ValueField: String; AColor: TColor);
+Var
+  LF : TList;
+  VF : TField;
+  I : Integer;
+  L : String;
+begin
+  VF:=DS.FieldByName(ValueField);
+  LF:=TList.Create;
+  Try
+    DS.GetFieldList(LF,LabelField);
+    With DS do
+      begin
+      While Not EOF do
+        begin
+        L:='';
+        For I:=0 to LF.Count-1 do
+          begin
+          If L<>'' then
+            L:=L+' ';
+          L:=L+TField(LF[i]).AsString;
+          end;
+        BC.AddBar(L, VF.AsInteger, AColor);
+        Next;
+        end;
+      end;
+  Finally
+    LF.Free;
+  end;
 end;
 
 constructor TCustomBarChart.Create(AOwner: TComponent);

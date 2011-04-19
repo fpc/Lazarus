@@ -39,7 +39,7 @@ uses
   Types, Classes, SysUtils, DB,
   LCLStrConsts, LCLProc, LMessages, LCLType, LResources, GraphType,
   Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
-  Calendar, BarChart, Variants;
+  Calendar, Variants;
 
 Type
   { TFieldDataLink }
@@ -1272,9 +1272,6 @@ type
 // ToDo: Move this to db.pp
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
 
-procedure FillBarChart(BC: TBarChart; DS: TDataset;
-  const LabelField, ValueField: String; AColor: TColor);
-
 procedure ChangeDataSource(AControl: TControl; Link: TDataLink;
   NewDataSource: TDataSource);
 
@@ -1310,38 +1307,6 @@ begin
   Result:=Trim(Copy(Fields,StartPos,i-StartPos));
   if (i<=Length(Fields)) and (Fields[i]=';') then Inc(i);
   StartPos:=i;
-end;
-
-procedure FillBarChart(BC: TBarChart; DS: TDataset;
-  const LabelField, ValueField: String; AColor: TColor);
-Var
-  LF : TList;
-  VF : TField;
-  I : Integer;
-  L : String;
-begin
-  VF:=DS.FieldByName(ValueField);
-  LF:=TList.Create;
-  Try
-    DS.GetFieldList(LF,LabelField);
-    With DS do
-      begin
-      While Not EOF do
-        begin
-        L:='';
-        For I:=0 to LF.Count-1 do
-          begin
-          If L<>'' then
-            L:=L+' ';
-          L:=L+TField(LF[i]).AsString;
-          end;
-        BC.AddBar(L, VF.AsInteger, AColor);
-        Next;
-        end;
-      end;
-  Finally
-    LF.Free;
-  end;
 end;
 
 procedure ChangeDataSource(AControl: TControl; Link: TDataLink;
