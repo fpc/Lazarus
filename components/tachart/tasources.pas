@@ -187,6 +187,7 @@ type
     function GetItem(AIndex: Integer): PChartDataItem; override;
     procedure SetYCount(AValue: Cardinal); override;
   public
+    procedure EndUpdate; override;
     function IsSorted: Boolean; override;
     procedure Reset; inline;
   published
@@ -947,6 +948,14 @@ begin
 end;
 
 { TUserDefinedChartSource }
+
+procedure TUserDefinedChartSource.EndUpdate;
+begin
+  // There is no way to detect if the extent changed --
+  // so call Reset to be a bit safer, but a bit slower.
+  Reset;
+  inherited EndUpdate;
+end;
 
 function TUserDefinedChartSource.GetCount: Integer;
 begin
