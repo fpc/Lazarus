@@ -7,7 +7,7 @@ unit alllclunits;
 interface
 
 uses
-  Chart, CheckLst, Clipbrd, ColorBox, ComCtrls, Controls, CustomTimer, 
+  BarChart, CheckLst, Clipbrd, ColorBox, ComCtrls, Controls, CustomTimer, 
   DBActns, DbCtrls, DBGrids, DefaultTranslator, Dialogs, DynamicArray, 
   DynHashArray, DynQueue, EditBtn, ExtCtrls, ExtDlgs, ExtendedStrings, 
   extgraphics, FileCtrl, FileUtil, Forms, FPCAdds, Graphics, GraphMath, 

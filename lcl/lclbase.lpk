@@ -34,8 +34,8 @@
     <Version Major="1" Release="1"/>
     <Files Count="292">
       <Item1>
-        <Filename Value="chart.pp"/>
-        <UnitName Value="Chart"/>
+        <Filename Value="barchart.pp"/>
+        <UnitName Value="BarChart"/>
       </Item1>
       <Item2>
         <Filename Value="checklst.pas"/>

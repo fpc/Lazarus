@@ -39,7 +39,7 @@ uses
   Types, Classes, SysUtils, DB,
   LCLStrConsts, LCLProc, LMessages, LCLType, LResources, GraphType,
   Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
-  Calendar, Chart, Variants;
+  Calendar, BarChart, Variants;
 
 Type
   { TFieldDataLink }

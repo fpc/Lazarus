@@ -25,7 +25,7 @@
 
   Author: Michael Van Canneyt
 }
-unit Chart;
+unit BarChart;
 
 {$MODE ObjFPC}{$H+}
 
