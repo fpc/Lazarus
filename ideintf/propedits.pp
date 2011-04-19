@@ -4455,7 +4455,8 @@ const
     'mrNo',
     'mrAll',
     'mrNoToAll',
-    'mrYesToAll');
+    'mrYesToAll',
+    'mrClose');
 
 function TModalResultPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
