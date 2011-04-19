@@ -773,10 +773,6 @@ type
   TLMSize = TWMSize;
 {$endif}
 
-  TLMNoPara = record
-    Msg: Cardinal;
-  end;
-
   PLMessage = ^TLMessage;
 {$ifndef windows}
   TLMessage = record
@@ -813,8 +809,8 @@ type
   TLMessage = TMessage;
 {$endif}
 
-  TLMEnter = TLMNoPara;
-  TLMExit  = TLMNoPara;
+  TLMEnter = TLMNoParams;
+  TLMExit  = TLMNoParams;
 
 // MWE: TLMScroll has not the same size as the VCL/Winapi counterpart.
 // IMO we don't have to force all widgetsets to be compatible in a shortcoming
