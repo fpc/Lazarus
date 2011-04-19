@@ -432,7 +432,7 @@ uses
 const
   BitBtnModalResults: array[TBitBtnKind] of TModalResult = (
     0, mrOK, mrCancel, 0, mrYes, mrNo,
-    0, mrAbort, mrRetry, mrIgnore, mrAll,
+    mrClose, mrAbort, mrRetry, mrIgnore, mrAll,
     mrNoToAll, mrYesToAll);
 
   BitBtnImages: array[TBitBtnKind] of Longint = (
