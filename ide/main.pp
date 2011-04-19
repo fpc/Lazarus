@@ -3953,12 +3953,9 @@ procedure TMainIDE.mnuProjectClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
-  PartOfProj: Boolean;
 begin
-  PartOfProj:=False;
-  if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then
-    PartOfProj:=AnUnitInfo.IsPartOfProject;
-  MainIDEBar.itmProjectAddTo.Enabled:=not PartOfProj;
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  MainIDEBar.itmProjectAddTo.Enabled:=not AnUnitInfo.IsPartOfProject;
 end;
 
 procedure TMainIDE.mnuPackageClicked(Sender: TObject);
