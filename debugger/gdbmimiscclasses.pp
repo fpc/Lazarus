@@ -27,11 +27,13 @@
 
 unit GDBMIMiscClasses;
 {$mode objfpc}{$H+}
+{$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
+
 interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF UNIX}
+  {$IFDEF DBG_ENABLE_TERMINAL}
   IDEMiniLibC,
   {$ENDIF}
   Debugger, DebugUtils;
@@ -92,7 +94,7 @@ type
     property UseTrim: Boolean read FUseTrim write FUseTrim;
   end;
 
-  {$IFDEF UNIX}
+  {$IFDEF DBG_ENABLE_TERMINAL}
 type
 
   { TPseudoTerminal }
@@ -430,7 +432,7 @@ begin
   Result := -1;
 end;
 
-{$IFDEF UNIX}
+{$IFDEF DBG_ENABLE_TERMINAL}
 
 { TPseudoTerminal }
 

@@ -33,6 +33,8 @@ unit Debugger;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
+
 interface
 
 uses
@@ -1747,7 +1749,7 @@ end;
 
 function HasConsoleSupport: Boolean;
 begin
-  {$IFDEF UNIX}
+  {$IFDEF DBG_ENABLE_TERMINAL}
   Result := True;
   {$ELSE}
   Result := False;

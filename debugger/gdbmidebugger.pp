@@ -35,6 +35,7 @@ unit GDBMIDebugger;
 {$H+}
 
 {$IFDEF GDMI_QUEUE_DEBUG}{$DEFINE DBGMI_QUEUE_DEBUG}{$ENDIF} // temporary, since renamed/spelling
+{$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
 interface
 
@@ -45,7 +46,10 @@ uses
   Windows,
 {$ENDIF}
 {$IFDEF UNIX}
-   Unix,BaseUnix,termio,PseudoTerminalDlg,
+   Unix,BaseUnix,termio,
+{$ENDIF}
+{$IFDEF DBG_ENABLE_TERMINAL}
+   PseudoTerminalDlg,
 {$ENDIF}
   BaseDebugManager, GDBMIMiscClasses;
 
@@ -347,7 +351,7 @@ type
     {$IFDEF MSWindows}
     FPauseRequestInThreadID: Cardinal;
     {$ENDIF}
-    {$IFDEF UNIX}
+    {$IFDEF DBG_ENABLE_TERMINAL}
     FPseudoTerminal: TPseudoTerminal;
     procedure ProcessWhileWaitForHandles; override;
     {$ENDIF}
@@ -2907,7 +2911,7 @@ var
   TargetPIDPart: String;
   TempInstalled, CanContinue: Boolean;
   CommandObj: TGDBMIDebuggerCommandExecute;
-  {$IFDEF UNIX}
+  {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
   s: String;
   h: THandle;
   {$ENDIF}
@@ -2945,17 +2949,24 @@ begin
     // set the output width to a great value to avoid unexpected
     // new lines like in large functions or procedures
     ExecuteCommand('set width 50000', []);
-    {$IFDEF UNIX}
-    // Make sure consule output will ot be mixed with gbd output
-    FTheDebugger.FPseudoTerminal.Open;
-    s := TGDBMIDebuggerProperties(FTheDebugger.GetProperties).ConsoleTty;
-    if s = '' then s := FTheDebugger.FPseudoTerminal.Devicename;
-    h := fileopen(S, fmOpenWrite);
-    if (IsATTY(h) <> 1)
-    or (not ExecuteCommand('set inferior-tty %s', [s], R)) or (r.State = dsError)
-    then
-      ExecuteCommand('set inferior-tty /dev/null', []);
-    FileClose(h);
+    {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
+      // Make sure consule output will ot be mixed with gbd output
+      {$IFDEF UNIX}
+        s := TGDBMIDebuggerProperties(FTheDebugger.GetProperties).ConsoleTty;
+      {$ENDIF}
+      {$IFDEF DBG_ENABLE_TERMINAL}
+        FTheDebugger.FPseudoTerminal.Open;
+        {$IFDEF UNIX}if s = '' then{$ENDIF}
+        s := FTheDebugger.FPseudoTerminal.Devicename;
+      {$ELSE}
+        if s = '' then s := '/dev/null';
+      {$ENDIF}
+      h := fileopen(S, fmOpenWrite);
+      if (IsATTY(h) <> 1)
+      or (not ExecuteCommand('set inferior-tty %s', [s], R)) or (r.State = dsError)
+      then
+        ExecuteCommand('set inferior-tty /dev/null', []);
+      FileClose(h);
     {$ENDIF}
 
     if tfHasSymbols in TargetInfo^.TargetFlags
@@ -4308,7 +4319,7 @@ begin
 {$IFdef MSWindows}
   InitWin32;
 {$ENDIF}
-  {$IFDEF UNIX}
+  {$IFDEF DBG_ENABLE_TERMINAL}
   FPseudoTerminal := TPseudoTerminal.Create;
   FPseudoTerminal.OnCanRead :=@DoPseudoTerminalRead;
   {$ENDIF}
@@ -4364,7 +4375,7 @@ begin
   FreeAndNil(FCommandQueue);
   ClearSourceInfo;
   FreeAndNil(FSourceNames);
-  {$IFDEF UNIX}
+  {$IFDEF DBG_ENABLE_TERMINAL}
   FreeAndNil(FPseudoTerminal);
   {$ENDIF}
 end;
@@ -4772,7 +4783,7 @@ end;
 
 procedure TGDBMIDebugger.DoPseudoTerminalRead(Sender: TObject);
 begin
-  {$IFDEF UNIX}
+  {$IFDEF DBG_ENABLE_TERMINAL}
   if assigned(OnConsoleOutput)
   then OnConsoleOutput(self, FPseudoTerminal.Read);
   {$ENDIF}
@@ -5108,7 +5119,7 @@ begin
              dcStepOverInstr, dcStepIntoInstr, dcRunTo, dcJumpto,
              dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
              dcSetStackFrame, dcDisassemble
-             {$IFDEF UNIX}, dcSendConsoleInput{$ENDIF}
+             {$IFDEF DBG_ENABLE_TERMINAL}, dcSendConsoleInput{$ENDIF}
             ];
 end;
 
@@ -5345,7 +5356,7 @@ begin
                                               String(AParams[5].VPointer^), Integer(AParams[6].VPointer^));
       dcStepOverInstr: Result := GDBStepOverInstr;
       dcStepIntoInstr: Result := GDBStepIntoInstr;
-      {$IFDEF UNIX}
+      {$IFDEF DBG_ENABLE_TERMINAL}
       dcSendConsoleInput: FPseudoTerminal.Write(String(AParams[0].VAnsiString));
       {$ENDIF}
     end;
@@ -5555,7 +5566,7 @@ begin
   Cmd.KeepFinished := False;
 end;
 
-{$IFDEF UNIX}
+{$IFDEF DBG_ENABLE_TERMINAL}
 procedure TGDBMIDebugger.ProcessWhileWaitForHandles;
 begin
   inherited ProcessWhileWaitForHandles;
