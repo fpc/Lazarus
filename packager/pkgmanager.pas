@@ -3329,7 +3329,7 @@ begin
     Result:=IDEMessageDialog(lisPkgMangFileIsInProject,
       Format(lisPkgMangWarningTheFileBelongsToTheCurrentProject, ['"',
         Filename, '"', #13])
-      ,mtWarning,[mbIgnore,mbCancel,mbAbort]);
+      ,mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then exit;
   end;
   
@@ -3339,7 +3339,7 @@ begin
     Result:=IDEMessageDialog(lisPkgMangFileIsAlreadyInPackage,
       Format(lisPkgMangTheFileIsAlreadyInThePackage, ['"', Filename, '"', #13,
         PkgFile.LazPackage.IDAsString]),
-      mtWarning,[mbIgnore,mbCancel,mbAbort]);
+      mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then exit;
   end;
   
