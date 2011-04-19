@@ -58,7 +58,8 @@ const
   mrAll = mrNone + 8;
   mrNoToAll = mrNone + 9;
   mrYesToAll = mrNone + 10;
-  mrLast = mrYesToAll;
+  mrClose = mrNone + 11;
+  mrLast = mrClose;
 
   // define aliases for Delphi compatibility
   fsSurface = GraphType.fsSurface;

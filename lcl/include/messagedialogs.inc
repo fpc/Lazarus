@@ -30,7 +30,7 @@
     - User ability to customize Button order
 
 }
-function ModalEscapeValue(Buttons : TMsgDlgButtons) : TModalResult;
+function ModalEscapeValue(Buttons: TMsgDlgButtons): TModalResult;
 begin
   If mbCancel in Buttons then
     Result := mrCancel
@@ -62,7 +62,7 @@ begin
     If mbYesToAll in Buttons then
       Result := mrYesToAll
   else
-    Result:=mrCancel;
+    Result := mrCancel;
 end;
 
 function ModalDefaultButton(Buttons : TMsgDlgButtons) : TMsgDlgbtn;
@@ -98,10 +98,11 @@ begin
   else
     If mbIgnore in Buttons then
       Result := mbIgnore
-  else begin
-    for b:=Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
+  else
+  begin
+    for b := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
       if b in Buttons then
-        Result:=b;
+        Result := b;
   end;
 end;
 
@@ -115,13 +116,13 @@ const
     idButtonClose);
 
   DialogResults : Array[idButtonOK..idButtonNoToAll] of TModalResult = (
-    mrOk, mrCancel, mrOk{CLOSE!!}, mrYes, mrNo, -1{HELP!!}, mrAbort, mrRetry,
+    mrOk, mrCancel, mrNone{Help}, mrYes, mrNo, mrClose, mrAbort, mrRetry,
     mrIgnore, mrAll, mrYesToAll, mrNoToAll);
 
-  ButtonResults : Array[mrNone..mrYesToAll] of Longint = (
+  ButtonResults : Array[mrNone..mrClose] of Longint = (
     -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
-    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
-    idButtonYesToAll);
+    idButtonIgnore, idButtonYes, idButtonNo, idButtonAll, idButtonNoToAll,
+    idButtonYesToAll, idButtonClose);
 
 function GetPromptUserButtons(Buttons: TMsgDlgButtons; var CancelValue,
   DefaultIndex, ButtonCount : Longint; UseDefButton: Boolean; DefButton: TMsgDlgBtn) : PLongint;
@@ -143,7 +144,7 @@ begin
   begin
     if CurBtn in Buttons then
     begin
-      ReallocMem(Result, (ButtonCount + 1)*SizeOf(Longint));
+      ReallocMem(Result, (ButtonCount + 1) * SizeOf(Longint));
       Result[ButtonCount] := ButtonIds[CurBtn];
       if DefaultButton = CurBtn then
         DefaultIndex := ButtonCount;
