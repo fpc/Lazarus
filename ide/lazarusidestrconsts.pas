@@ -292,7 +292,7 @@ resourcestring
   lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMenuViewSearchResults = 'Search Results';
   lisMenuViewAnchorEditor = 'Anchor Editor';
-  lisMenuViewTabOrderEditor = 'Tab Order Editor';
+  lisMenuViewTabOrder = 'Tab Order';
   lisKMToggleViewComponentPalette = 'Toggle view component palette';
   lisMenuViewComponentPalette = 'Component Palette';
   lisMenuViewTodoList = 'ToDo List';
@@ -2610,7 +2610,7 @@ resourcestring
   srkmecViewUnitDependencies      = 'View unit dependencies';
   srkmecViewUnitInfo              = 'View unit information';
   srkmecViewAnchorEditor          = 'View anchor editor';
-  srkmecViewTabOrderEditor        = 'View Tab Order editor';
+  srkmecViewTabOrder              = 'View Tab Order';
   srkmecToggleCodeBrowser         = 'View code browser';
   srkmecToggleRestrictionBrowser  = 'View restriction browser';
   srkmecToggleCompPalette         = 'View component palette';

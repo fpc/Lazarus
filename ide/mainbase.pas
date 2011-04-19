@@ -517,7 +517,7 @@ begin
     CreateMenuSeparatorSection(mnuView,itmViewDesignerWindows,'itmViewDesignerWindows');
     ParentMI:=itmViewDesignerWindows;
     CreateMenuItem(ParentMI,itmViewAnchorEditor,'itmViewAnchorEditor',lisMenuViewAnchorEditor,'menu_view_anchor_editor');
-    CreateMenuItem(ParentMI,itmViewTabOrderEditor,'itmViewTabOrderEditor',lisMenuViewTabOrderEditor,'tab_order');
+    CreateMenuItem(ParentMI,itmViewTabOrder,'itmViewTabOrder',lisMenuViewTabOrder,'tab_order');
 
     CreateMenuSeparatorSection(mnuView,itmViewSecondaryWindows,'itmViewSecondaryWindows');
     ParentMI:=itmViewSecondaryWindows;
@@ -904,7 +904,7 @@ begin
     itmViewMessage.Command:=GetCommand(ecToggleMessages);
     itmViewSearchResults.Command:=GetCommand(ecToggleSearchResults);
     itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
-    itmViewTabOrderEditor.Command:=GetCommand(ecViewTabOrderEditor);
+    itmViewTabOrder.Command:=GetCommand(ecViewTabOrder);
     itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
     itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
     itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);

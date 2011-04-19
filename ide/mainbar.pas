@@ -177,7 +177,7 @@ type
         itmViewToggleFormUnit: TIDEMenuCommand;
       //itmViewSecondaryWindows: TIDEMenuSection;
         itmViewAnchorEditor: TIDEMenuCommand;
-        itmViewTabOrderEditor: TIDEMenuCommand;
+        itmViewTabOrder: TIDEMenuCommand;
         itmViewComponentPalette: TIDEMenuCommand;
         itmViewIDESpeedButtons: TIDEMenuCommand;
         itmViewMessage: TIDEMenuCommand;

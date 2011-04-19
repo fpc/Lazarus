@@ -248,7 +248,7 @@ type
     procedure mnuViewSearchResultsClick(Sender: TObject);
     procedure mnuToggleFormUnitClicked(Sender: TObject);
     procedure mnuViewAnchorEditorClicked(Sender: TObject);
-    procedure mnuViewTabOrderEditorClicked(Sender: TObject);
+    procedure mnuViewTabOrderClicked(Sender: TObject);
     procedure mnuViewComponentPaletteClicked(Sender: TObject);
     procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
     procedure mnuViewFPCInfoClicked(Sender: TObject);
@@ -2031,7 +2031,7 @@ begin
 
   EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
-  ShowTabOrderEditor:=@mnuViewTabOrderEditorClicked;
+  ShowTabOrderEditor:=@mnuViewTabOrderClicked;
 end;
 
 procedure TMainIDE.SetupFormEditor;
@@ -2503,7 +2503,7 @@ begin
     itmViewMessage.OnClick := @mnuViewMessagesClick;
     itmViewSearchResults.OnClick := @mnuViewSearchResultsClick;
     itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
-    itmViewTabOrderEditor.OnClick := @mnuViewTabOrderEditorClicked;
+    itmViewTabOrder.OnClick := @mnuViewTabOrderClicked;
     itmViewComponentPalette.OnClick := @mnuViewComponentPaletteClicked;
     itmViewIDESpeedButtons.OnClick := @mnuViewIDESpeedButtonsClicked;
 
@@ -2686,7 +2686,7 @@ begin
   DoViewAnchorEditor(true);
 end;
 
-procedure TMainIDE.mnuViewTabOrderEditorClicked(Sender: TObject);
+procedure TMainIDE.mnuViewTabOrderClicked(Sender: TObject);
 begin
   DoViewTabOrderEditor(true);
 end;

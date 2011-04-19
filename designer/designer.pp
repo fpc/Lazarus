@@ -529,7 +529,7 @@ begin
     DesignerMenuAnchorEditor:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
         'Anchor Editor',lisMenuViewAnchorEditor, nil, nil, nil, 'menu_view_anchor_editor');
     DesignerMenuTabOrder:=RegisterIDEMenuCommand(DesignerMenuSectionOrder,
-        'Tab order',lisMenuViewTabOrderEditor, nil, nil, nil, 'tab_order');
+        'Tab order',lisMenuViewTabOrder, nil, nil, nil, 'tab_order');
     DesignerMenuSectionZOrder:=RegisterIDESubMenu(DesignerMenuSectionOrder,
         'ZOrder section', fdmZOrder);
       DesignerMenuOrderMoveToFront:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,

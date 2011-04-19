@@ -175,7 +175,7 @@ const
   ecToggleCallStack         = ecFirstLazarus + 315;
   ecToggleSearchResults     = ecFirstLazarus + 316;
   ecViewAnchorEditor        = ecFirstLazarus + 317;
-  ecViewTabOrderEditor      = ecFirstLazarus + 318;
+  ecViewTabOrder            = ecFirstLazarus + 318;
   ecToggleCodeBrowser       = ecFirstLazarus + 319;
   ecToggleCompPalette       = ecFirstLazarus + 320;
   ecToggleIDESpeedBtns      = ecFirstLazarus + 321;
