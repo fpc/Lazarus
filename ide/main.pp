@@ -3972,7 +3972,11 @@ begin
   if Assigned(ASrcEdit) then
     PkgFile:=PackageGraph.FindFileInAllPackages(AnUnitInfo.Filename,true,
                                             not AnUnitInfo.IsPartOfProject);
-  MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=Assigned(PkgFile);
+  with MainIDEBar do begin
+    itmPkgOpenPackageOfCurUnit.Enabled:=Assigned(PkgFile);
+    itmPkgAddCurUnitToPkg.Enabled:=
+        (not AnUnitInfo.IsVirtual) and FileExistsUTF8(AnUnitInfo.Filename);
+  end;
 end;
 
 {------------------------------------------------------------------------------}

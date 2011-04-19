@@ -3319,8 +3319,7 @@ begin
   // check if filename is absolute
   if ActiveUnitInfo.IsVirtual or (not FileExistsUTF8(Filename)) then begin
     Result:=IDEMessageDialog(lisPkgMangFileNotSaved,
-      lisPkgMangPleaseSaveTheFileBeforeAddingItToAPackage,
-      mtWarning,[mbCancel]);
+      lisPkgMangPleaseSaveTheFileBeforeAddingItToAPackage, mtWarning,[mbCancel]);
     exit;
   end;
   
