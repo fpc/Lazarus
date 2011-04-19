@@ -151,6 +151,17 @@ implementation
 
 { TCocoaBitmap }
 
+type
+  // The following dummy categories fix bugs in the Cocoa bindings available in FPC
+  // Remove them when the FPC binding parser is fixed.
+  // More details:
+  // http://wiki.freepascal.org/FPC_PasCocoa/Differences#Sending_messages_to_id
+  // http://wiki.lazarus.freepascal.org/FPC_PasCocoa#Category_declaration
+  NSBitmapImageRepFix = objccategory external(NSBitmapImageRep)
+    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bytesPerRow_bitsPerPixel(planes: PChar; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:';
+    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(planes: PChar; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; bitmapFormat_: NSBitmapFormat; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:';
+  end;
+
 {------------------------------------------------------------------------------
   Method:  TCocoaBitmap.Create
   Params:  AWidth        - Bitmap width
@@ -169,7 +180,7 @@ var
   bitsPerSample: NSInteger;  // How many bits in each color component
   samplesPerPixel: NSInteger;// How many color components
 begin
-{  case ABitsPerPixel of
+  case ABitsPerPixel of
     // Mono
     1:
     begin
@@ -195,23 +206,23 @@ begin
   end;
 
   // Create the associated NSImageRep
-  imagerep := NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh_bitsPerSample_samplesPerPixel_hasAlpha_isPlanar_colorSpaceName_bytesPerRow_bitsPerPixel(
+  imagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
     @AData, // planes, BitmapDataPlanes
     AWidth, // width, pixelsWide
     AHeight,// height, PixelsHigh
     bitsPerSample,// bitsPerSample, bps
     samplesPerPixel, // samplesPerPixel, sps
-    NO, // hasAlpha
-    NO, // isPlanar
+    False, // hasAlpha
+    False, // isPlanar
     NSCalibratedRGBColorSpace, // colorSpaceName
     0, // bitmapFormat
     0, // bytesPerRow
     ABitsPerPixel //bitsPerPixel
-    );
+    ));
 
   // Create the associated NSImage
   image := NSImage.alloc.initWithSize(NSMakeSize(AWidth, AHeight));
-  image.addRepresentation(imagerep);}
+  image.addRepresentation(imagerep);
 end;
 
 { TCocoaContext }

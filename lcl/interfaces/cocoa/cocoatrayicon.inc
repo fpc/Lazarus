@@ -41,6 +41,7 @@ class function TCocoaWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Bo
 var
   statusitem: NSStatusItem;
   bar: NSStatusBar;
+  image: NSImage;
   {var
     APrivateTrayIcon: TPrivateCocoaCocoaTrayIcon;
     ASize: NSSize;
@@ -60,7 +61,11 @@ begin
 //  statusitem.bar := bar;
   //statusicon.callback:=TLCLCommonCallback.Create(box, AWinControl);
   statusitem.retain();
-  statusitem.setImage(TCocoaBitmap(ATrayIcon.icon.Handle).image);
+  if (ATrayIcon.icon <> nil) and (ATrayIcon.icon.Handle <> 0) then
+  begin
+    image := TCocoaBitmap(ATrayIcon.icon.Handle).image;
+    if image <> nil then statusitem.setImage(image);
+  end;
   //Result:=TLCLIntfHandle(box);
 //  APrivateTrayIcon := TPrivateCocoaCocoaTrayIcon(ATrayIcon.Handle);
 
