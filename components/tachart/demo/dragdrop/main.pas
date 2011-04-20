@@ -19,12 +19,15 @@ type
     ChartToolset1DataPointClickTool1: TDataPointClickTool;
     ChartToolset1DataPointDragTool1: TDataPointDragTool;
     cbSorted: TCheckBox;
+    ChartToolset1DataPointHintTool1: TDataPointHintTool;
     Panel1: TPanel;
     procedure cbSortedChange(Sender: TObject);
     procedure Chart1LineSeries1GetMark(out AFormattedMark: String;
       AIndex: Integer);
     procedure ChartToolset1DataPointClickTool1PointClick(ATool: TChartTool;
       APoint: TPoint);
+    procedure ChartToolset1DataPointHintTool1Hint(ATool: TDataPointHintTool;
+      const APoint: TPoint; var AHint: String);
     procedure FormCreate(Sender: TObject);
   end;
 
@@ -59,6 +62,12 @@ procedure TForm1.ChartToolset1DataPointClickTool1PointClick(
   ATool: TChartTool; APoint: TPoint);
 begin
   Chart1LineSeries1.SetColor(ChartToolset1DataPointClickTool1.PointIndex, clRed);
+end;
+
+procedure TForm1.ChartToolset1DataPointHintTool1Hint(ATool: TDataPointHintTool;
+  const APoint: TPoint; var AHint: String);
+begin
+  AHint := 'Custom hint for point ' + IntToStr(ATool.PointIndex);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

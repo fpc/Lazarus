@@ -75,6 +75,14 @@ object Form1: TForm1
     object ChartToolset1DataPointClickTool1: TDataPointClickTool
       Shift = [ssRight]
       ActiveCursor = crHandPoint
+      OnPointClick = ChartToolset1DataPointClickTool1PointClick
+    end
+    object ChartToolset1DataPointHintTool1: TDataPointHintTool
+      Shift = []
+      GrabRadius = 8
+      ActiveCursor = crHandPoint
+      UseDefaultHintText = False
+      OnHint = ChartToolset1DataPointHintTool1Hint
     end
   end
 end
