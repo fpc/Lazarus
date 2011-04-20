@@ -46,8 +46,6 @@ type
   private
     FOldCursor: TCursor;
     function GetMouseEvent(AIndex: Integer): TChartToolMouseEvent;
-    procedure RestoreCursor;
-    procedure SetCursor;
     procedure SetMouseEvent(AIndex: Integer; AValue: TChartToolMouseEvent);
   protected
     procedure ReadState(Reader: TReader); override;
@@ -62,6 +60,8 @@ type
     procedure MouseDown(APoint: TPoint); virtual;
     procedure MouseMove(APoint: TPoint); virtual;
     procedure MouseUp(APoint: TPoint); virtual;
+    procedure RestoreCursor;
+    procedure SetCursor;
     procedure SetIndex(AValue: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -306,6 +306,29 @@ type
     property ActiveCursor;
     property OnPointClick: TChartToolMouseEvent
       read FOnPointClick write FOnPointClick;
+  end;
+
+  TDataPointHintTool = class;
+
+  TChartToolHintEvent = procedure (
+    ATool: TDataPointHintTool; const APoint: TPoint; var AHint: String) of object;
+
+  { TDataPointHintTool }
+
+  TDataPointHintTool = class(TDataPointTool)
+  strict private
+    FOnHint: TChartToolHintEvent;
+    FPrevPointIndex: Integer;
+    FPrevSeries: TBasicChartSeries;
+    FUseDefaultHintText: Boolean;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure MouseMove(APoint: TPoint); override;
+  published
+    property ActiveCursor;
+    property UseDefaultHintText: Boolean
+      read FUseDefaultHintText write FUseDefaultHintText default true;
+    property OnHint: TChartToolHintEvent read FOnHint write FOnHint;
   end;
 
   { TReticuleTool }
@@ -1204,6 +1227,51 @@ begin
   Handled;
 end;
 
+{ TDataPointHintTool }
+
+constructor TDataPointHintTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FUseDefaultHintText := true;
+end;
+
+procedure TDataPointHintTool.MouseMove(APoint: TPoint);
+
+  function GetHintText: String;
+  begin
+    if UseDefaultHintText then begin
+      if Series is TChartSeries then
+        Result := (Series as TChartSeries).FormattedMark(PointIndex)
+      else
+        Result := Format('%s: %d', [Series.Title, PointIndex]);
+    end;
+    if Assigned(OnHint) then
+      OnHint(Self, APoint, Result);
+  end;
+
+begin
+  FSeries := nil;
+  FindNearestPoint(APoint);
+  if Series = nil then begin
+    FChart.ShowHint := false;
+    Application.CancelHint;
+    RestoreCursor;
+    FPrevSeries := nil;
+    exit;
+  end;
+  if (FPrevSeries = Series) and (FPrevPointIndex = PointIndex) then
+    exit;
+  if FPrevSeries = nil then
+    SetCursor;
+  FPrevSeries := Series;
+  FPrevPointIndex := PointIndex;
+  FChart.Hint := GetHintText;
+  FChart.ShowHint := FChart.Hint <> '';
+  if not FChart.ShowHint then exit;
+  Application.HintPause := 0;
+  Application.ActivateHint(FChart.ClientToScreen(APoint));
+end;
+
 initialization
 
   ToolsClassRegistry := TStringList.Create;
@@ -1215,6 +1283,7 @@ initialization
   RegisterChartToolClass(TReticuleTool, 'Reticule');
   RegisterChartToolClass(TDataPointClickTool, 'Data point click');
   RegisterChartToolClass(TDataPointDragTool, 'Data point drag');
+  RegisterChartToolClass(TDataPointHintTool, 'Data point hint');
   RegisterChartToolClass(TUserDefinedTool, 'User-defined');
 
 finalization
