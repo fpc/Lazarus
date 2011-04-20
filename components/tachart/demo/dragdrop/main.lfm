@@ -38,6 +38,7 @@ object Form1: TForm1
       Marks.Clipped = False
       Marks.Format = '%0:.9g'
       Marks.Style = smsValue
+      OnGetMark = Chart1LineSeries1GetMark
       Pointer.Brush.Color = clPurple
       Pointer.HorizSize = 6
       Pointer.Style = psDiamond
