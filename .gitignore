@@ -166,6 +166,9 @@ components/tachart/demo/events/lib
 components/tachart/demo/extent/*.exe
 components/tachart/demo/extent/*.lps
 components/tachart/demo/extent/lib
+components/tachart/demo/fpvectorial/*.exe
+components/tachart/demo/fpvectorial/*.lps
+components/tachart/demo/fpvectorial/lib
 components/tachart/demo/func/*.exe
 components/tachart/demo/func/*.lps
 components/tachart/demo/func/lib

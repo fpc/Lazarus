@@ -1,0 +1,66 @@
+object Form1: TForm1
+  Left = 1373
+  Height = 342
+  Top = 164
+  Width = 422
+  Caption = 'Form1'
+  ClientHeight = 342
+  ClientWidth = 422
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object Chart1: TChart
+    Left = 0
+    Height = 300
+    Top = 42
+    Width = 422
+    AxisList = <    
+      item
+        Title.LabelFont.Orientation = 900
+      end    
+      item
+        Alignment = calBottom
+      end>
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object Chart1LineSeries1: TLineSeries
+      LinePen.Color = clFuchsia
+      Source = RandomChartSource1
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 422
+    Align = alTop
+    ClientHeight = 42
+    ClientWidth = 422
+    TabOrder = 1
+    object Button1: TButton
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 75
+      Caption = 'Button1'
+      OnClick = Button1Click
+      TabOrder = 0
+    end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 11
+    RandSeed = 1335683875
+    XMax = 1
+    XMin = -1
+    YMax = 100
+    YMin = -100
+    left = 68
+    top = 156
+  end
+end
