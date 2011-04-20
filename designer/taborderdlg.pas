@@ -276,6 +276,7 @@ begin
     Node:=Node.GetNext;
   end;
   ItemTreeview.EndUpdate;
+  CheckButtonsEnabled;
 end;
 
 { TTabOrderPropEditor }
