@@ -2178,6 +2178,9 @@ begin
     end;
     Last := lItem;
   end;
+
+  if Assigned(WakeMainThread) then
+    WakeMainThread(nil);
 end;
 
 procedure TApplication.RemoveAsyncCalls(const AnObject: TObject);
