@@ -53,11 +53,13 @@ type
     procedure SwapNodes(ANode1, ANode2: TTreeNode);
     procedure CheckButtonsEnabled;
     procedure CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
-    procedure Refresh(Force: boolean);
+    procedure RefreshTree;
     procedure OnSomethingChanged;
     procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
     procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnDeletePersistent(var APersistent: TPersistent);
+    procedure OnSetSelection(const ASelection: TPersistentSelectionList);
+    procedure OnRefreshPropertyValues;
   end;
 
   { TTabOrderPropEditor }
@@ -86,14 +88,26 @@ begin
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
   GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@OnDeletePersistent);
+  GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
+  GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
 
   ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
   ArrowUp.LoadGlyphFromLazarusResource('arrow_up');
 end;
 
 procedure TTabOrderDialog.FormShow(Sender: TObject);
+var
+  Sel: TPersistentSelectionList;
 begin
-  Refresh(true);
+  RefreshTree;
+  Sel := TPersistentSelectionList.Create;
+  try
+    GlobalDesignHook.GetSelection(Sel);
+    OnSetSelection(Sel);
+  finally
+    Sel.Free;
+  end;
+  CheckButtonsEnabled;
 end;
 
 procedure TTabOrderDialog.ItemTreeviewClick(Sender: TObject);
@@ -105,11 +119,11 @@ procedure TTabOrderDialog.UpSpeedbuttonCLICK(Sender: TObject);
 var
   CurItem, NewItem: TTreeNode;
 begin
-  CurItem:=ItemTreeview.Selected;
+  CurItem := ItemTreeview.Selected;
   if (CurItem=nil) or (CurItem.GetPrevSibling=nil) then exit;
   NewItem := CurItem.GetPrevSibling;
   SwapNodes(NewItem, CurItem);
-  ItemTreeview.Selected:=CurItem;
+  ItemTreeview.Selected := CurItem;
   CheckButtonsEnabled;
 end;
 
@@ -144,12 +158,13 @@ procedure TTabOrderDialog.CheckButtonsEnabled;
 var
   CurItem: TTreeNode;
 begin
-  CurItem:=ItemTreeview.Selected;
+  CurItem := ItemTreeview.Selected;
   ArrowUp.Enabled   := Assigned(CurItem) and Assigned(CurItem.GetPrevSibling);
   ArrowDown.Enabled := Assigned(CurItem) and Assigned(CurItem.GetNextSibling);
 end;
 
 procedure TTabOrderDialog.CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
+// Add all controls in Designer to ItemTreeview.
 var
   AControl: TControl;
   i, CurTab: integer;
@@ -167,7 +182,7 @@ begin
   for i := 0 to ParentControl.ControlCount - 1 do
   begin
     AControl := ParentControl.Controls[i];
-    // skip non TWinControls and ivisible for designer controls
+    // skip non TWinControls and invisible form designer controls
     if not (AControl is TWinControl) or (csNoDesignVisible in AControl.ControlStyle) then
       continue;
     AWinControl := TWinControl(AControl);
@@ -188,48 +203,79 @@ begin
   ItemTreeview.EndUpdate;
 end;
 
-procedure TTabOrderDialog.Refresh(Force: boolean);
+procedure TTabOrderDialog.RefreshTree;
 var
   LookupRoot: TPersistent;
 begin
-  if Force or IsVisible and not FUpdating then
+  if IsVisible and not FUpdating then
   begin
-    FUpdating:=true;
+    FUpdating := true;
     ItemTreeview.BeginUpdate;
     try
       ItemTreeview.Items.Clear;
       LookupRoot := GlobalDesignHook.LookupRoot;
       if Assigned(LookupRoot) and (LookupRoot is TWinControl) then begin
         CreateNodes(TWinControl(LookupRoot), nil);
-        Caption:=Format(lisTabOrderOf, [TWinControl(LookupRoot).Name]);
-        CheckButtonsEnabled;
+        Caption := Format(lisTabOrderOf, [TWinControl(LookupRoot).Name]);
       end;
     finally
       ItemTreeview.EndUpdate;
-      FUpdating:=false;
+      FUpdating := false;
     end;
   end;
 end;
 
 procedure TTabOrderDialog.OnSomethingChanged;
 begin
-  Refresh(false);
+  RefreshTree;
+  CheckButtonsEnabled;
 end;
 
 procedure TTabOrderDialog.OnPersistentAdded(APersistent: TPersistent; Select: boolean);
 begin
-  Refresh(false);
+  RefreshTree;
+  CheckButtonsEnabled;
 end;
 
 procedure TTabOrderDialog.OnPersistentDeleting(APersistent: TPersistent);
 begin
-  Refresh(false);
+  RefreshTree;
+  CheckButtonsEnabled;
 end;
 
 procedure TTabOrderDialog.OnDeletePersistent(var APersistent: TPersistent);
 begin
   ShowMessage('TTabOrderDialog.OnDeletePersistent is never called for some reason!');
-  Refresh(false);
+  RefreshTree;
+  CheckButtonsEnabled;
+end;
+
+procedure TTabOrderDialog.OnSetSelection(const ASelection: TPersistentSelectionList);
+// Select item also in TreeView when selection in Designer changes.
+var
+  Ctrl: TPersistent;
+  Node: TTreeNode;
+begin
+  // ToDo: support also multiply selections.
+  ItemTreeview.BeginUpdate;
+  Node := ItemTreeview.Items.GetFirstNode;
+  while Assigned(Node) do begin
+    if Assigned(Node.Data) then begin
+      Ctrl := TPersistent(Node.Data);
+      Assert(Ctrl is TWinControl);
+      if ASelection.IndexOf(Ctrl) >= 0 then begin
+        ItemTreeview.Selected := Node;
+        Break;
+      end;
+    end;
+    Node:=Node.GetNext;
+  end;
+  ItemTreeview.EndUpdate;
+end;
+
+procedure TTabOrderDialog.OnRefreshPropertyValues;
+begin
+  DebugLn('OnRefreshPropertyValues: ... never happens');
 end;
 
 { TTabOrderPropEditor }
