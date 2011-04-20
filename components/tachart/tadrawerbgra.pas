@@ -30,6 +30,7 @@ type
     FBrushColor: TBGRAPixel;
     FBrushStyle: TFPBrushStyle;
     FCanvas: TBGRABitmap;
+    FClipRect: TRect;
     FFontColor: TBGRAPixel;
     FFontOrientation: Integer;
     FPenColor: TBGRAPixel;
@@ -98,17 +99,18 @@ end;
 
 procedure TBGRABitmapDrawer.ClippingStart(const AClipRect: TRect);
 begin
-  Unused(AClipRect);
+  FClipRect := AClipRect;
+  ClippingStart;
 end;
 
 procedure TBGRABitmapDrawer.ClippingStart;
 begin
-  // NA
+  FCanvas.ClipRect := FClipRect;
 end;
 
 procedure TBGRABitmapDrawer.ClippingStop;
 begin
-  // NA
+  FCanvas.NoClip;
 end;
 
 constructor TBGRABitmapDrawer.Create(ACanvas: TBGRABitmap);
