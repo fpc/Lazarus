@@ -713,6 +713,7 @@ begin
 
   for i := 0 to SeriesCount - 1 do
     Series[i].AfterDraw;
+  ADrawer.DrawingEnd;
 
   if FPrevLogicalExtent <> FLogicalExtent then begin
     FExtentBroadcaster.Broadcast(Self);
@@ -720,7 +721,6 @@ begin
       OnExtentChanged(Self);
     FPrevLogicalExtent := FLogicalExtent;
   end;
-  ADrawer.DrawingEnd;
 end;
 
 procedure TChart.DrawBackWall(ADrawer: IChartDrawer);
