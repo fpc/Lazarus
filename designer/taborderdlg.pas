@@ -50,7 +50,7 @@ type
     procedure DownSpeedbuttonCLICK(Sender: TObject);
   private
     FUpdating: Boolean;
-    procedure SwapNodes(ANode1, ANode2: TTreeNode);
+    procedure SwapNodes(ANode1, ANode2, NewSelected: TTreeNode);
     procedure CheckButtonsEnabled;
     procedure CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);
     procedure RefreshTree;
@@ -59,7 +59,6 @@ type
     procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnDeletePersistent(var APersistent: TPersistent);
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
-    procedure OnRefreshPropertyValues;
   end;
 
   { TTabOrderPropEditor }
@@ -89,7 +88,6 @@ begin
   GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@OnDeletePersistent);
   GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
-  GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
 
   ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
   ArrowUp.LoadGlyphFromLazarusResource('arrow_up');
@@ -122,9 +120,7 @@ begin
   CurItem := ItemTreeview.Selected;
   if (CurItem=nil) or (CurItem.GetPrevSibling=nil) then exit;
   NewItem := CurItem.GetPrevSibling;
-  SwapNodes(NewItem, CurItem);
-  ItemTreeview.Selected := CurItem;
-  CheckButtonsEnabled;
+  SwapNodes(NewItem, CurItem, CurItem);
 end;
 
 procedure TTabOrderDialog.DownSpeedbuttonCLICK(Sender: TObject);
@@ -134,24 +130,36 @@ begin
   CurItem:=ItemTreeview.Selected;
   if (CurItem=nil) or (CurItem.GetNextSibling=nil) then exit;
   NewItem := CurItem.GetNextSibling;
-  SwapNodes(CurItem, NewItem);
-  ItemTreeview.Selected:=CurItem;
-  CheckButtonsEnabled;
+  SwapNodes(CurItem, NewItem, CurItem);
 end;
 
-procedure TTabOrderDialog.SwapNodes(ANode1, ANode2: TTreeNode);
+procedure TTabOrderDialog.SwapNodes(ANode1, ANode2, NewSelected: TTreeNode);
 var
   Ctrl1, Ctrl2: TWinControl;
   TabOrd: TTabOrder;
 begin
-  ANode2.MoveTo(ANode1,naInsert);          // Move Node2 in front of Node1.
-  Ctrl1 := TWinControl(ANode1.Data);
-  Ctrl2 := TWinControl(ANode2.Data);
-  TabOrd := Ctrl1.TabOrder;                // Swap TabOrder values.
-  Ctrl1.TabOrder := Ctrl2.TabOrder;
-  Ctrl2.TabOrder := TabOrd;
-  ANode1.Text := Ctrl1.Name + '   (' + IntToStr(Ctrl1.TabOrder) + ')';
-  ANode2.Text := Ctrl2.Name + '   (' + IntToStr(Ctrl2.TabOrder) + ')';
+  if IsVisible and not FUpdating then
+  begin
+    FUpdating := true;
+    ItemTreeview.BeginUpdate;
+    try
+      ANode2.MoveTo(ANode1,naInsert);          // Move Node2 in front of Node1.
+      Ctrl1 := TWinControl(ANode1.Data);
+      Ctrl2 := TWinControl(ANode2.Data);
+      TabOrd := Ctrl1.TabOrder;                // Swap TabOrder values.
+      Ctrl1.TabOrder := Ctrl2.TabOrder;
+      Ctrl2.TabOrder := TabOrd;
+      ANode1.Text := Ctrl1.Name + '   (' + IntToStr(Ctrl1.TabOrder) + ')';
+      ANode2.Text := Ctrl2.Name + '   (' + IntToStr(Ctrl2.TabOrder) + ')';
+      ItemTreeview.Selected := NewSelected;
+      GlobalDesignHook.Modified(Self);
+      GlobalDesignHook.RefreshPropertyValues;
+      CheckButtonsEnabled;
+    finally
+      ItemTreeview.EndUpdate;
+      FUpdating := false;
+    end;
+  end;
 end;
 
 procedure TTabOrderDialog.CheckButtonsEnabled;
@@ -233,21 +241,18 @@ end;
 
 procedure TTabOrderDialog.OnPersistentAdded(APersistent: TPersistent; Select: boolean);
 begin
-  RefreshTree;
-  CheckButtonsEnabled;
+  OnSomethingChanged;
 end;
 
 procedure TTabOrderDialog.OnPersistentDeleting(APersistent: TPersistent);
 begin
-  RefreshTree;
-  CheckButtonsEnabled;
+  OnSomethingChanged;
 end;
 
 procedure TTabOrderDialog.OnDeletePersistent(var APersistent: TPersistent);
 begin
   ShowMessage('TTabOrderDialog.OnDeletePersistent is never called for some reason!');
-  RefreshTree;
-  CheckButtonsEnabled;
+  OnSomethingChanged;
 end;
 
 procedure TTabOrderDialog.OnSetSelection(const ASelection: TPersistentSelectionList);
@@ -273,11 +278,6 @@ begin
   ItemTreeview.EndUpdate;
 end;
 
-procedure TTabOrderDialog.OnRefreshPropertyValues;
-begin
-  DebugLn('OnRefreshPropertyValues: ... never happens');
-end;
-
 { TTabOrderPropEditor }
 {
 function TTabOrderPropEditor.OrdValueToVisualValue(OrdValue: longint): string;
@@ -299,3 +299,4 @@ initialization
   RegisterPropertyEditor(TypeInfo(Integer), TControl, 'TabOrder', TTabOrderPropEditor);
 
 end.
+
