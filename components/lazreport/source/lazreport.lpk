@@ -5,7 +5,7 @@
     <Name Value="lazreport"/>
     <Author Value="Olivier Guilbaud, Jesus Reyes A. "/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="10"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
@@ -27,7 +27,7 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
 See license.txt and license-lazreport.txt for details.
 "/>
     <Version Minor="9" Release="8"/>
-    <Files Count="58">
+    <Files Count="59">
       <Item1>
         <Filename Value="lr_about.pas"/>
         <UnitName Value="LR_About"/>
@@ -261,6 +261,10 @@ See license.txt and license-lazreport.txt for details.
         <Filename Value="lr_view.lfm"/>
         <Type Value="LFM"/>
       </Item58>
+      <Item59>
+        <Filename Value="lr_newrp.pas"/>
+        <UnitName Value="LR_Newrp"/>
+      </Item59>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
