@@ -201,7 +201,7 @@ begin
         TheProcess.CurrentDirectory:=WorkingDir;
         
         if OutputFilter<>nil then begin
-          if BuildAll then
+          if BuildAll and Assigned(IDEMessagesWindow) then
             IDEMessagesWindow.AddMsg(lisOptionsChangedRecompilingCleanWithB,
               WorkingDir, -1);
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];

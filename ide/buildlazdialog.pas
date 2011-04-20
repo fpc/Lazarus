@@ -566,13 +566,15 @@ begin
         Result:=CreateApplicationBundle(CurTargetFilename, 'Lazarus');
         if not (Result in [mrOk,mrIgnore]) then begin
           debugln(['CreateBuildLazarusOptions CreateApplicationBundle failed']);
-          IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,NewTargetDirectory,-1);
+          if IDEMessagesWindow<>nil then
+            IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,NewTargetDirectory,-1);
           exit;
         end;
         Result:=CreateAppBundleSymbolicLink(CurTargetFilename);
         if not (Result in [mrOk,mrIgnore]) then begin
           debugln(['CreateBuildLazarusOptions CreateAppBundleSymbolicLink failed']);
-          IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTargetFilename,NewTargetDirectory,-1);
+          if IDEMessagesWindow<>nil then
+            IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+CurTargetFilename,NewTargetDirectory,-1);
           exit;
         end;
       end;
