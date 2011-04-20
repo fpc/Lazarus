@@ -43,14 +43,23 @@ object Form1: TForm1
     ClientHeight = 42
     ClientWidth = 422
     TabOrder = 1
-    object Button1: TButton
+    object btnSVG: TButton
       Left = 8
       Height = 25
       Top = 8
       Width = 75
-      Caption = 'Button1'
-      OnClick = Button1Click
+      Caption = 'Save as SVG'
+      OnClick = btnSVGClick
       TabOrder = 0
+    end
+    object btnGCode: TButton
+      Left = 92
+      Height = 25
+      Top = 8
+      Width = 95
+      Caption = 'Save as G-code'
+      OnClick = btnGCodeClick
+      TabOrder = 1
     end
   end
   object RandomChartSource1: TRandomChartSource

@@ -146,7 +146,7 @@ end;
 
 procedure TFPVectorialDrawer.Line(const AP1, AP2: TPoint);
 begin
-  Line(AP1.X, AP1.Y, AP2.Y, AP2.Y);
+  Line(AP1.X, AP1.Y, AP2.X, AP2.Y);
 end;
 
 procedure TFPVectorialDrawer.LineTo(AX, AY: Integer);

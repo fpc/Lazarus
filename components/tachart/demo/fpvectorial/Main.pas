@@ -15,12 +15,14 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Button1: TButton;
+    btnSVG: TButton;
+    btnGCode: TButton;
     Chart1: TChart;
     Chart1LineSeries1: TLineSeries;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
-    procedure Button1Click(Sender: TObject);
+    procedure btnGCodeClick(Sender: TObject);
+    procedure btnSVGClick(Sender: TObject);
   end;
 
 var
@@ -31,20 +33,33 @@ implementation
 {$R *.lfm}
 
 uses
-  FPVectorial, SVGVectorialWriter, TADrawerFPVectorial;
+  FPVectorial, SVGVectorialWriter, avisocncgcodewriter, TADrawerFPVectorial;
 
-{ TForm1 }
-
-procedure TForm1.Button1Click(Sender: TObject);
+procedure SaveAs(AChart: TChart; AFormat: TvVectorialFormat);
+const
+  ext: array [TvVectorialFormat] of String = (
+    'pdf', 'ps', 'svg', 'cdr', 'wmf', 'dxf', 'gcode5', 'gcode6');
 var
   d: TvVectorialDocument;
 begin
   d := TvVectorialDocument.Create;
-  d.Width := Chart1.Width;
-  d.Height := Chart1.Height;
-  with Chart1 do
+  d.Width := AChart.Width;
+  d.Height := AChart.Height;
+  with AChart do
     Draw(TFPVectorialDrawer.Create(d), Rect(0, 0, Width, Height));
-  d.WriteToFile('test.svg', vfSVG);
+  d.WriteToFile('test.' + ext[AFormat], AFormat);
+end;
+
+{ TForm1 }
+
+procedure TForm1.btnGCodeClick(Sender: TObject);
+begin
+  SaveAs(Chart1, vfGCodeAvisoCNCPrototipoV5);
+end;
+
+procedure TForm1.btnSVGClick(Sender: TObject);
+begin
+  SaveAs(Chart1, vfSVG);
 end;
 
 end.
