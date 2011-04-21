@@ -1015,7 +1015,7 @@ var
   DockSibling: TCustomForm;
   DockSiblingBounds: TRect;
   Offset: TPoint;
-  dx: Integer;
+  i: Integer;
 begin
   {$IFDEF VerboseIDEDocking}
   debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm),' ',BringToFront,
@@ -1058,16 +1058,16 @@ begin
             if NewBounds.Bottom<20 then
               OffsetRect(NewBounds,0,20-NewBounds.Bottom);
             if NewBounds.Left>Screen.DesktopWidth-20 then begin
-              dx:=(Screen.DesktopWidth-20)-NewBounds.Left;
+              i:=(Screen.DesktopWidth-20)-NewBounds.Left;
               DebugLn(Format('TSimpleWindowLayoutList.ApplyAndShow: Adding %d to form %s Left coord %d (=%d).',
-                             [dx, AForm.Name, NewBounds.Left, NewBounds.Left+dx]));
-              OffsetRect(NewBounds,dx,0);
+                             [i, AForm.Name, NewBounds.Left, NewBounds.Left+i]));
+              OffsetRect(NewBounds,i,0);
             end;
             if NewBounds.Top>Screen.DesktopHeight-20 then begin
-              dx:=(Screen.DesktopHeight-20)-NewBounds.Top;
+              i:=(Screen.DesktopHeight-20)-NewBounds.Top;
               DebugLn(Format('TSimpleWindowLayoutList.ApplyAndShow: Adding %d to form %s Top coord %d (=%d).',
-                             [dx, AForm.Name, NewBounds.Top, NewBounds.Top+dx]));
-              OffsetRect(NewBounds,dx,0);
+                             [i, AForm.Name, NewBounds.Top, NewBounds.Top+i]));
+              OffsetRect(NewBounds,0,i);
             end;
             // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
             AForm.SetBounds(NewBounds.Left,NewBounds.Top,
