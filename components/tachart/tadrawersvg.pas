@@ -28,6 +28,7 @@ type
 
   TSVGDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
+    FAntialiasingMode: TChartAntialiasingMode;
     FBrushColor: TFPColor;
     FClippingPathId: Integer;
     FFont: TFPCustomFont;
@@ -80,6 +81,7 @@ type
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
@@ -151,6 +153,7 @@ end;
 
 procedure TSVGDrawer.DrawingBegin(const ABoundingBox: TRect);
 begin
+  FAntialiasingMode := amDontCare;
   with ABoundingBox do
     WriteFmt(
       '<svg ' +
@@ -163,6 +166,8 @@ end;
 
 procedure TSVGDrawer.DrawingEnd;
 begin
+  if FAntialiasingMode <> amDontCare then
+    WriteStr('</g>');
   WriteStr('</svg>');
 end;
 
@@ -273,6 +278,19 @@ procedure TSVGDrawer.Rectangle(const ARect: TRect);
 begin
   with ARect do
     Rectangle(Left, Top, Right, Bottom);
+end;
+
+procedure TSVGDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);
+const
+  AM_TO_CSS: array [amOn .. amOff] of String =
+    ('geometricPrecision', 'crispEdges');
+begin
+  if FAntialiasingMode = AValue then exit;
+  if FAntialiasingMode <> amDontCare then
+    WriteStr('</g>');
+  FAntialiasingMode := AValue;
+  if FAntialiasingMode <> amDontCare then
+    WriteFmt('<g style="shape-rendering: %s">',[AM_TO_CSS[FAntialiasingMode]]);
 end;
 
 procedure TSVGDrawer.SetBrush(ABrush: TFPCustomBrush);
