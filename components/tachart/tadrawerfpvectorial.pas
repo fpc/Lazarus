@@ -124,7 +124,14 @@ end;
 
 procedure TFPVectorialDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
 begin
-  // Not implemented.
+  MoveTo(AX1, AY1);
+  FCanvas.AddLineToPath(AX2, AY1);
+  FCanvas.AddLineToPath(AX2, AY2);
+  FCanvas.AddLineToPath(AX1, AY2);
+  FCanvas.AddLineToPath(AX1, AY1);
+  FCanvas.SetBrushStyle(bsClear);
+  FCanvas.SetPenColor(FPenColor);
+  FCanvas.EndPath();
 end;
 
 function TFPVectorialDrawer.GetBrushColor: TChartColor;
@@ -140,7 +147,8 @@ end;
 procedure TFPVectorialDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
   FCanvas.StartPath(AX1, AY1);
-  FCanvas.AddLineToPath(AX2, AY2, FPenColor);
+  FCanvas.AddLineToPath(AX2, AY2);
+  FCanvas.SetPenColor(FPenColor);
   FCanvas.EndPath();
 end;
 
@@ -162,9 +170,16 @@ end;
 
 procedure TFPVectorialDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
+var
+  i: Integer;
 begin
-  // Not implemented.
-  Polyline(APoints, AStartIndex, ANumPts);
+  MoveTo(APoints[AStartIndex]);
+  for i := 1 to ANumPts - 1 do
+    with APoints[i + AStartIndex] do
+      FCanvas.AddLineToPath(X, Y);
+  FCanvas.SetBrushColor(FBrushColor);
+  FCanvas.SetPenColor(FPenColor);
+  FCanvas.EndPath();
 end;
 
 procedure TFPVectorialDrawer.Polyline(
@@ -175,7 +190,8 @@ begin
   MoveTo(APoints[AStartIndex]);
   for i := 1 to ANumPts - 1 do
     with APoints[i + AStartIndex] do
-      FCanvas.AddLineToPath(X, Y, FPenColor);
+      FCanvas.AddLineToPath(X, Y);
+  FCanvas.SetPenColor(FPenColor);
   FCanvas.EndPath();
 end;
 
@@ -192,12 +208,21 @@ end;
 
 procedure TFPVectorialDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
 begin
-  // Not implemented.
+  MoveTo(AX1, AY1);
+  FCanvas.AddLineToPath(AX2, AY1);
+  FCanvas.AddLineToPath(AX2, AY2);
+  FCanvas.AddLineToPath(AX1, AY2);
+  FCanvas.AddLineToPath(AX1, AY1);
+  FCanvas.SetBrushColor(FBrushColor);
+  FCanvas.SetBrushStyle(bsSolid);
+  FCanvas.SetPenColor(FPenColor);
+  FCanvas.EndPath();
 end;
 
 procedure TFPVectorialDrawer.Rectangle(const ARect: TRect);
 begin
-  // Not implemented.
+  with ARect do
+    Rectangle(Left, Top, Right, Bottom);
 end;
 
 procedure TFPVectorialDrawer.SetBrush(ABrush: TFPCustomBrush);

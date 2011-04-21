@@ -33,6 +33,10 @@ object Form1: TForm1
       LinePen.Color = clFuchsia
       Source = RandomChartSource1
     end
+    object Chart1BarSeries1: TBarSeries
+      BarBrush.Color = clRed
+      Source = RandomChartSource1
+    end
   end
   object Panel1: TPanel
     Left = 0

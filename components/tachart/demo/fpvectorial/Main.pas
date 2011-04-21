@@ -18,6 +18,7 @@ type
     btnSVG: TButton;
     btnGCode: TButton;
     Chart1: TChart;
+    Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
