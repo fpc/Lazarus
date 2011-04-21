@@ -373,9 +373,6 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Click; override;
-    procedure EditingDone; override;
-
     property Field: TField read GetField;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -389,7 +386,10 @@ Type
   TDBListBox = class(TCustomDBListBox)
   protected
     procedure DataChange(Sender: TObject); override;
+    procedure DoSelectionChange(User: Boolean); override;
     procedure UpdateData(Sender: TObject); override;
+  public
+    procedure EditingDone; override;
   published
     property Align;
     property Anchors;
@@ -454,6 +454,7 @@ Type
     procedure SetNullValueKey(const AValue: TShortCut);
   protected
     procedure DataChange(Sender: TObject); override;
+    procedure DoSelectionChange(User: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure InitializeWnd; override;
     procedure UpdateData(Sender: TObject); override;

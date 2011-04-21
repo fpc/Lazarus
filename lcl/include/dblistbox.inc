@@ -36,9 +36,35 @@ begin
     ItemIndex := -1;
 end;
 
+procedure TDBListBox.DoSelectionChange(User: Boolean);
+begin
+  if User then
+  begin
+    //make sure we are in modify mode if can edit
+    //so if a user changed the selection it can be
+    //updated, and if not cancel out ala ReadOnly
+    if FDataLink.Edit then
+      FDataLink.Modified
+    else
+    begin
+      // restore value
+      DataChange(Self);
+      //necessary to avoid double call of SelectionChange
+      Exit;
+    end;
+  end;
+  inherited DoSelectionChange(User);
+end;
+
 procedure TDBListBox.UpdateData(Sender: TObject);
 begin
   if ItemIndex >= 0 then
     FDataLink.Field.Text := Items[ItemIndex];
+end;
+
+procedure TDBListBox.EditingDone;
+begin
+  FDataLink.UpdateRecord;
+  inherited EditingDone;
 end;
 

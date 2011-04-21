@@ -135,30 +135,6 @@ begin
   end;
 end;
 
-procedure TCustomDBListBox.Click;
-begin
-  //make sure we are in modify mode if can edit
-  //so if a user changed the selection it can be
-  //updated, and if not cancel out ala ReadOnly
-  if not FDataLink.Edit then
-  begin
-    // restore value
-    DataChange(self);
-    Exit;
-  end;
-  inherited Click;
-  FDataLink.Modified;
-end;
-
-procedure TCustomDBListBox.EditingDone;
-begin
-  //update record only when loosing focus to keep the ability to cancel
-  //after changing the selection more than one time
-  if not Focused then
-    FDataLink.UpdateRecord;
-  inherited EditingDone;
-end;
-
 { Public Methods }
 constructor TCustomDBListBox.Create(AOwner: TComponent);
 begin
