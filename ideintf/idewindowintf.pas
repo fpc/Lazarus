@@ -1048,26 +1048,24 @@ begin
             // explicit position
             NewBounds:=Bounds(ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
             // set minimum size
-            if NewBounds.Right-NewBounds.Left<20 then
-              NewBounds.Right:=NewBounds.Left+20;
-            if NewBounds.Bottom-NewBounds.Top<20 then
-              NewBounds.Bottom:=NewBounds.Top+20;
+            if NewBounds.Right-NewBounds.Left<60 then
+              NewBounds.Right:=NewBounds.Left+60;
+            if NewBounds.Bottom-NewBounds.Top<60 then
+              NewBounds.Bottom:=NewBounds.Top+60;
             // move to visible area
-            if NewBounds.Right<20 then
-              OffsetRect(NewBounds,20-NewBounds.Right,0);
-            if NewBounds.Bottom<20 then
-              OffsetRect(NewBounds,0,20-NewBounds.Bottom);
-            if NewBounds.Left>Screen.DesktopWidth-20 then begin
-              i:=(Screen.DesktopWidth-20)-NewBounds.Left;
-              DebugLn(Format('TSimpleWindowLayoutList.ApplyAndShow: Adding %d to form %s Left coord %d (=%d).',
-                             [i, AForm.Name, NewBounds.Left, NewBounds.Left+i]));
-              OffsetRect(NewBounds,i,0);
+            if NewBounds.Right<60 then
+              OffsetRect(NewBounds,60-NewBounds.Right,0);
+            if NewBounds.Bottom<60 then
+              OffsetRect(NewBounds,0,60-NewBounds.Bottom);
+            if NewBounds.Left>Screen.DesktopWidth-60 then begin
+              i:=(Screen.DesktopWidth-60)-NewBounds.Left;
+              NewBounds.Left := Screen.DesktopWidth-60;
+              NewBounds.Right := NewBounds.Right + i;
             end;
-            if NewBounds.Top>Screen.DesktopHeight-20 then begin
-              i:=(Screen.DesktopHeight-20)-NewBounds.Top;
-              DebugLn(Format('TSimpleWindowLayoutList.ApplyAndShow: Adding %d to form %s Top coord %d (=%d).',
-                             [i, AForm.Name, NewBounds.Top, NewBounds.Top+i]));
-              OffsetRect(NewBounds,0,i);
+            if NewBounds.Top>Screen.DesktopHeight-60 then begin
+              i:=(Screen.DesktopHeight-60)-NewBounds.Top;
+              NewBounds.Top := Screen.DesktopHeight-60;
+              NewBounds.Bottom := NewBounds.Bottom + i;
             end;
             // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
             AForm.SetBounds(NewBounds.Left,NewBounds.Top,
