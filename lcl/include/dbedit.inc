@@ -40,7 +40,8 @@ begin
     end else
       //otherwise display the pretified/formated text since we can't
       DisableMask(FDataLink.Field.DisplayText);
-    if (FDataLink.Field.DataType = ftString) and (MaxLength = 0) then
+    if (FDataLink.Field.DataType in [ftString, ftFixedChar, ftWidestring, ftFixedWideChar])
+      and (MaxLength = 0) then
       MaxLength := FDatalink.Field.Size;
   end
   else begin
