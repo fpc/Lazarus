@@ -58,6 +58,7 @@ begin
   else begin
     Text := '';
     FDataLink.Reset;
+    MaxLength := 0;
   end;
 end;
 
