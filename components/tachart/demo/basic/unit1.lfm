@@ -13,6 +13,7 @@ object Form1: TForm1
     Height = 392
     Top = 0
     Width = 585
+    AntialiasingMode = amOn
     AxisList = <    
       item
         Grid.Color = clGray
