@@ -67,6 +67,7 @@ type
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
@@ -221,6 +222,11 @@ end;
 procedure TCanvasDrawer.Rectangle(const ARect: TRect);
 begin
   FCanvas.Rectangle(ARect);
+end;
+
+procedure TCanvasDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);
+begin
+  FCanvas.AntialiasingMode := TAntialiasingMode(AValue);
 end;
 
 procedure TCanvasDrawer.SetBrush(ABrush: TFPCustomBrush);

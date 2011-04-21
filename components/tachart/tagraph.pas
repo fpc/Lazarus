@@ -153,6 +153,7 @@ type
   TChart = class(TCustomChart, ICoordTransformer)
   private // Property fields
     FAllowZoom: Boolean;
+    FAntialiasingMode: TChartAntialiasingMode;
     FAxisList: TChartAxisList;
     FAxisVisible: Boolean;
     FBackColor: TColor;
@@ -207,6 +208,7 @@ type
     function GetToolset: TBasicChartToolset;
     procedure HideReticule;
 
+    procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
     procedure SetAxisList(AValue: TChartAxisList);
     procedure SetAxisVisible(Value: Boolean);
@@ -314,6 +316,8 @@ type
 
   published
     property AllowZoom: Boolean read FAllowZoom write FAllowZoom default true;
+    property AntialiasingMode: TChartAntialiasingMode
+      read FAntialiasingMode write SetAntialiasingMode default amDontCare;
     property AxisList: TChartAxisList read FAxisList write SetAxisList;
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
     property BackColor: TColor read FBackColor write SetBackColor default clBtnFace;
@@ -529,6 +533,7 @@ begin
   FBroadcaster := TBroadcaster.Create;
   FExtentBroadcaster := TBroadcaster.Create;
   FAllowZoom := true;
+  FAntialiasingMode := amDontCare;
   FAxisVisible := true;
   FDrawer := TCanvasDrawer.Create(Canvas);
 
@@ -678,6 +683,7 @@ var
   legendRect: TRect;
 begin
   ADrawer.DrawingBegin(ARect);
+  ADrawer.SetAntialiasingMode(AntialiasingMode);
   Clear(ADrawer, ARect);
 
   FClipRect := ARect;
@@ -1101,6 +1107,13 @@ begin
     Result.Free;
     raise;
   end;
+end;
+
+procedure TChart.SetAntialiasingMode(AValue: TChartAntialiasingMode);
+begin
+  if FAntialiasingMode = AValue then exit;
+  FAntialiasingMode := AValue;
+  Invalidate;
 end;
 
 procedure TChart.SetAxis(AIndex: Integer; AValue: TChartAxis);

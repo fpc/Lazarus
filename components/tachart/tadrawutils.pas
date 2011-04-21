@@ -24,7 +24,9 @@ uses
   Classes, FPCanvas, FPImage, Types;
 
 type
+  // Same types as in Graphics unit, but without dependency.
   TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
+  TChartAntialiasingMode = (amDontCare, amOn, amOff);
 
 type
 
@@ -94,6 +96,7 @@ type
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
     function Scale(ADistance: Integer): Integer;
+    procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
@@ -137,6 +140,7 @@ type
     procedure Polygon(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer); virtual; abstract;
     function Scale(ADistance: Integer): Integer; virtual;
+    procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
     function TextExtent(const AText: String): TPoint;
@@ -313,6 +317,11 @@ end;
 function TBasicDrawer.Scale(ADistance: Integer): Integer;
 begin
   Result := ADistance;
+end;
+
+procedure TBasicDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);
+begin
+  Unused(AValue);
 end;
 
 procedure TBasicDrawer.SetDoChartColorToFPColorFunc(
