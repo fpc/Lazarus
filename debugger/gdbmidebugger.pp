@@ -122,6 +122,8 @@ type
     {$ENDIF}
     FGDBOptions: String;
     FOverrideRTLCallingConvention: TGDBMIRTLCallingConvention;
+    FTimeoutForEval: Integer;
+    procedure SetTimeoutForEval(const AValue: Integer);
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
@@ -131,6 +133,7 @@ type
     {$IFDEF UNIX}
     property ConsoleTty: String read FConsoleTty write FConsoleTty;
     {$ENDIF}
+    property TimeoutForEval: Integer read FTimeoutForEval write SetTimeoutForEval;
   end;
 
   TGDBMIDebugger = class;
@@ -4245,12 +4248,25 @@ end;
 { TGDBMIDebuggerProperties }
 { =========================================================================== }
 
+procedure TGDBMIDebuggerProperties.SetTimeoutForEval(const AValue: Integer);
+begin
+  if FTimeoutForEval = AValue then exit;
+  FTimeoutForEval := AValue;
+  if (FTimeoutForEval <> -1) and (FTimeoutForEval < 250)
+  then FTimeoutForEval := -1;
+end;
+
 constructor TGDBMIDebuggerProperties.Create;
 begin
   FOverrideRTLCallingConvention := ccDefault;
-    {$IFDEF UNIX}
-    FConsoleTty := '';
-    {$ENDIF}
+  {$IFDEF UNIX}
+  FConsoleTty := '';
+  {$ENDIF}
+  {$IFDEF darwin}
+  FTimeoutForEval := 2000;
+  {$ELSE darwin}
+  FTimeoutForEval := -1;
+  {$ENDIF}
   inherited;
 end;
 
@@ -4262,6 +4278,7 @@ begin
   {$IFDEF UNIX}
   FConsoleTty := TGDBMIDebuggerProperties(Source).FConsoleTty;
   {$ENDIF}
+  FTimeoutForEval := TGDBMIDebuggerProperties(Source).FTimeoutForEval;
 end;
 
 
@@ -8206,7 +8223,8 @@ function TGDBMIDebuggerCommand.GetText(const AExpression: String;
 var
   R: TGDBMIExecResult;
 begin
-  if not ExecuteCommand('x/s ' + AExpression, AValues, R {$IFDEF DBG_WITH_TIMEOUT}, [], 2500{$ENDIF})
+  if not ExecuteCommand('x/s ' + AExpression, AValues, R, [],
+                       TGDBMIDebuggerProperties(FTheDebugger.GetProperties).TimeoutForEval)
   then begin
     Result := '';
     Exit;
@@ -9641,10 +9659,6 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
   begin
     Result := False;
 
-    {$IFDEF DBG_WITH_TIMEOUT}
-    DefaultTimeOut := 1500;
-    try
-    {$ENDIF}
     case FDisplayFormat of
       wdfStructure:
         begin
@@ -9777,11 +9791,6 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
           FTextValue := 'ERROR';
         end;
     end;
-    {$IFDEF DBG_WITH_TIMEOUT}
-    finally
-      DefaultTimeOut := -1;
-    end
-    {$ENDIF}
 
   end;
 
@@ -9793,6 +9802,7 @@ var
 begin
   FTextValue:='';
   FTypeInfo:=nil;
+
 
   S := StripExprNewlines(FExpression);
 
@@ -9815,6 +9825,7 @@ begin
   // original
   frame := TGDBMIDebugger(FTheDebugger).FCurrentStackFrame;
   frameidx := 0;
+  DefaultTimeOut := TGDBMIDebuggerProperties(FTheDebugger.GetProperties).TimeoutForEval;
   try
     repeat
       if TryExecute(S, frame = -1)
@@ -9825,6 +9836,7 @@ begin
     until not SelectParentFrame(frameidx);
 
   finally
+    DefaultTimeOut := -1;
     if frameidx <> 0
     then begin
       // Restore current frame
