@@ -1015,9 +1015,11 @@ var
   DockSibling: TCustomForm;
   DockSiblingBounds: TRect;
   Offset: TPoint;
+  dx: Integer;
 begin
   {$IFDEF VerboseIDEDocking}
-  debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm),' ',BringToFront]);
+  debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm),' ',BringToFront,
+           '  DesktopWidth=', Screen.DesktopWidth, '  DesktopHeight=', Screen.DesktopHeight]);
   {$ENDIF}
   try
     ALayout:=ItemByFormID(AForm.Name);
@@ -1027,7 +1029,10 @@ begin
       if ALayout.Applied then exit;
       ALayout.Applied:=true;
       {$IFDEF VerboseIDEDocking}
-      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',ALayout.FormID,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' Valid=',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,',',ALayout.Top,',',ALayout.Width,',',ALayout.Height]);
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',
+              ALayout.FormID,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],
+              ' Valid=',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,',',
+              ALayout.Top,',',ALayout.Width,',',ALayout.Height]);
       {$ENDIF}
 
       case ALayout.WindowPlacement of
@@ -1052,14 +1057,22 @@ begin
               OffsetRect(NewBounds,20-NewBounds.Right,0);
             if NewBounds.Bottom<20 then
               OffsetRect(NewBounds,0,20-NewBounds.Bottom);
-            if NewBounds.Left>Screen.DesktopWidth-20 then
-              OffsetRect(NewBounds,(Screen.DesktopWidth-20)-NewBounds.Left,0);
-            if NewBounds.Top>Screen.DesktopHeight-20 then
-              OffsetRect(NewBounds,(Screen.DesktopHeight-20)-NewBounds.Top,0);
+            if NewBounds.Left>Screen.DesktopWidth-20 then begin
+              dx:=(Screen.DesktopWidth-20)-NewBounds.Left;
+              DebugLn(Format('TSimpleWindowLayoutList.ApplyAndShow: Adding %d to form %s Left coord %d (=%d).',
+                             [dx, AForm.Name, NewBounds.Left, NewBounds.Left+dx]));
+              OffsetRect(NewBounds,dx,0);
+            end;
+            if NewBounds.Top>Screen.DesktopHeight-20 then begin
+              dx:=(Screen.DesktopHeight-20)-NewBounds.Top;
+              DebugLn(Format('TSimpleWindowLayoutList.ApplyAndShow: Adding %d to form %s Top coord %d (=%d).',
+                             [dx, AForm.Name, NewBounds.Top, NewBounds.Top+dx]));
+              OffsetRect(NewBounds,dx,0);
+            end;
             // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
-            AForm.SetBounds(
-              NewBounds.Left,NewBounds.Top,
-              NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
+            AForm.SetBounds(NewBounds.Left,NewBounds.Top,
+                            NewBounds.Right-NewBounds.Left,
+                            NewBounds.Bottom-NewBounds.Top);
             exit;
           end;
 
@@ -1075,7 +1088,8 @@ begin
     end;
 
     {$IFDEF VerboseIDEDocking}
-    debugln(['TSimpleWindowLayoutList.ApplyAndShow no stored layout found, layout registered=',ALayout<>nil,' AForm=',DbgSName(AForm)]);
+    debugln(['TSimpleWindowLayoutList.ApplyAndShow no stored layout found, layout registered=',
+            ALayout<>nil,' AForm=',DbgSName(AForm)]);
     {$ENDIF}
 
     // no layout found => use default
