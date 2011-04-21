@@ -6279,7 +6279,7 @@ begin
   Result:=false;
   Code:=ExtractClassName(CodeCompleteClassNode,false);
   // search the comment
-  Result:=FindCommentInFront(StartPos,Code,false,true,false,true,true,
+  Result:=FindCommentInFront(StartPos,Code,false,false,false,true,true,
                              CommentStart,CommentEnd)
 end;
 
