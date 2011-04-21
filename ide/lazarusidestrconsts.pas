@@ -5251,6 +5251,12 @@ resourcestring
   lisFileNotFound3 = 'file %s not found';
   lisFileNotFound4 = 'file not found';
   lisISDDirectoryNotFound = 'directory not found';
+  lisDebuggerFeedbackWarning = 'Debugger Warning';
+  lisDebuggerFeedbackError = 'Debugger Error';
+  lisDebuggerFeedbackStop = 'Stop';
+  lisDebuggerFeedbackLess = 'Less';
+  lisDebuggerFeedbackMore = 'More';
+  lisDebuggerFeedbackOk = 'Ok';
 
 implementation
 

@@ -56,7 +56,7 @@ uses
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
-  InspectDlg, DebugEventsForm, PseudoTerminalDlg,
+  InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -80,6 +80,8 @@ type
     procedure DebuggerOutput(Sender: TObject; const AText: String);
     procedure DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AText: String);
     procedure DebuggerConsoleOutput(Sender: TObject; const AText: String);
+    function DebuggerFeedback(Sender: TObject; const AText, AInfo: String;
+      AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
     procedure DebuggerException(Sender: TObject;
       const AExceptionType: TDBGExceptionType;
       const AExceptionClass, AExceptionText: String;
@@ -1487,6 +1489,12 @@ begin
   TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).AddOutput(AText);
 end;
 
+function TDebugManager.DebuggerFeedback(Sender: TObject; const AText, AInfo: String;
+  AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
+begin
+  Result := ExecuteFeedbackDialog(AText, AInfo, AType, AButtons);
+end;
+
 procedure TDebugManager.BreakAutoContinueTimer(Sender: TObject);
 begin
   FAutoContinueTimer.Enabled := False;
@@ -2611,7 +2619,8 @@ begin
     FDebugger.OnDbgOutput     := @DebuggerOutput;
     FDebugger.OnDbgEvent      := @DebuggerEvent;
     FDebugger.OnException     := @DebuggerException;
-    FDebugger.OnConsoleOutput :=@DebuggerConsoleOutput;
+    FDebugger.OnConsoleOutput := @DebuggerConsoleOutput;
+    FDebugger.OnFeedback      := @DebuggerFeedback;
 
     if FDebugger.State = dsNone
     then begin

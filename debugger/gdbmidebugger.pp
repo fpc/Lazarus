@@ -399,6 +399,14 @@ type
     procedure TestCmd(const ACommand: String); override;
   end;
 
+resourcestring
+  gdbmiErrorOnRunCommand = 'The debugger encountered an error when trying to '
+    + 'run/step the application:%0:s%0:s%1:s%0:s%0:s'
+    + 'Press "Ok" to continue debugging (paused), '
+    + 'and correct the problem, or choose an alternative run command%0:s'
+    + 'Press "Stop" to end the debug session';
+  gdbmiErrorOnRunCommandWithWarning = '%0:s%0:sIn addition to the Error the following '
+    + 'warning was encountered:%0:s%0:s%1:s';
 
 implementation
 
@@ -514,6 +522,7 @@ type
     FExecType: TGDBMIExecCommandType;
     FCommand: String;
     FCanKillNow, FDidKillNow: Boolean;
+    FLogWarnings: String;
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnockQueueExecute; override;
@@ -2903,7 +2912,6 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     FTheDebugger.FMainAddr := StrToQWordDef(ResultList.Values['addr'], 0);
     ResultList.Free;
   end;
-
 var
   R: TGDBMIExecResult;
   FileType, EntryPoint: String;
@@ -3167,6 +3175,8 @@ begin
 end;
 
 function TGDBMIDebuggerCommandExecute.ProcessRunning(var AStoppedParams: String): Boolean;
+var
+  InLogWarning: Boolean;
 
   function DoExecAsync(var Line: String): Boolean;
   var
@@ -3222,8 +3232,16 @@ function TGDBMIDebuggerCommandExecute.ProcessRunning(var AStoppedParams: String)
   end;
 
   procedure DoLogStream(const Line: String);
+  const
+    LogWarning = '&"Warning:\n"';
   begin
     DebugLn('[Debugger] Log output: ', Line);
+    if copy(Line, 1, length(LogWarning)) = LogWarning then
+      InLogWarning := True;
+    if InLogWarning then
+      FLogWarnings := FLogWarnings + copy(Line, 3, length(Line)-5) + LineEnding;
+    if copy(Line, 1, length(LogWarning)) = '&"\n"' then
+      InLogWarning := False;
   end;
 
 var
@@ -3231,6 +3249,8 @@ var
   idx: Integer;
 begin
   Result := True;
+  InLogWarning := False;
+  FLogWarnings := '';
   while FTheDebugger.DebugProcessRunning do
   begin
     S := FTheDebugger.ReadLine;
@@ -3631,9 +3651,10 @@ end;
 
 function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
 var
-  StoppedParams: String;
+  StoppedParams, s, s2: String;
   ContinueExecution: Boolean;
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
+  List: TGDBMINameValueList;
 begin
   Result := True;
   FCanKillNow := False;
@@ -3646,8 +3667,31 @@ begin
     if not ExecuteCommand(FCommand, FResult)
     then exit;
 
+    if (FResult.State = dsError) and assigned(FTheDebugger.OnFeedback) then begin
+      List := TGDBMINameValueList.Create(FResult);
+      s := List.Values['msg'];
+      FreeAndNil(List);
+      if FLogWarnings <> ''
+      then s2 := Format(gdbmiErrorOnRunCommandWithWarning, [LineEnding, FLogWarnings])
+      else s2 := '';
+      FLogWarnings := '';
+      if s <> '' then begin
+        case FTheDebugger.OnFeedback(self,
+                                     Format(gdbmiErrorOnRunCommand, [LineEnding, s]) + s2,
+                                     FResult.Values, ftError, [frOk, frStop]
+             ) of
+          frOk: FResult.State := dsPause;
+          frStop: begin
+              FTheDebugger.Stop;
+              FResult.State := dsStop;
+              exit;
+            end;
+        end;
+      end
+    end;
     if (FResult.State <> dsNone)
     then SetDebuggerState(FResult.State);
+
     // if ContinueExecution will be true, the we ignore dsError..
 
     // TODO: chack for cancelled

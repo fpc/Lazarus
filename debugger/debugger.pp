@@ -1481,6 +1481,10 @@ type
     ecDebugger);  // debugger errors and warnings
   TDBGEventCategories = set of TDBGEventCategory;
 
+  TDBGFeedbackType = (ftWarning, ftError);
+  TDBGFeedbackResult = (frOk, frStop);
+  TDBGFeedbackResults = set of TDBGFeedbackResult;
+
   TDBGEventNotify = procedure(Sender: TObject; const ACategory: TDBGEventCategory;
                               const AText: String) of object;
 
@@ -1495,6 +1499,10 @@ type
                                  const AExceptionClass: String;
                                  const AExceptionText: String;
                                  out AContinue: Boolean) of object;
+
+  TDBGFeedbackEvent = function(Sender: TObject; const AText, AInfo: String;
+                               AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults
+                              ): TDBGFeedbackResult of object;
 
   TDebuggerNotifyReason = (dnrDestroy);
 
@@ -1525,6 +1533,7 @@ type
     FLocals: TDBGLocals;
     FLineInfo: TDBGLineInfo;
     FOnConsoleOutput: TDBGOutputEvent;
+    FOnFeedback: TDBGFeedbackEvent;
     FRegisters: TDBGRegisters;
     FShowConsole: Boolean;
     FSignals: TDBGSignals;
@@ -1647,6 +1656,7 @@ type
     property OnState: TDebuggerStateChangedEvent read FOnState write FOnState;   // Fires when the current state of the debugger changes
     property OnBreakPointHit: TDebuggerBreakPointHitEvent read FOnBreakPointHit write FOnBreakPointHit;   // Fires when the program is paused at a breakpoint
     property OnConsoleOutput: TDBGOutputEvent read FOnConsoleOutput write FOnConsoleOutput;  // Passes Application Console Output
+    property OnFeedback: TDBGFeedbackEvent read FOnFeedback write FOnFeedback;
   end;
   TDebuggerClass = class of TDebugger;
 
