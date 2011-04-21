@@ -64,6 +64,7 @@ type
       AStartAngle16Deg, AAngleLength16Deg: Integer);
     procedure Rectangle(const ARect: TRect);
     procedure Rectangle(AX1, AY1, AX2, AY2: Integer);
+    procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
@@ -236,6 +237,20 @@ end;
 procedure TOpenGLDrawer.Rectangle(const ARect: TRect);
 begin
   Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+end;
+
+procedure TOpenGLDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);
+begin
+  case AValue of
+    amOn: begin
+      glEnable(GL_LINE_SMOOTH);
+      glEnable(GL_POLYGON_SMOOTH);
+    end;
+    amOff: begin
+      glDisable(GL_LINE_SMOOTH);
+      glDisable(GL_POLYGON_SMOOTH);
+    end;
+  end;
 end;
 
 procedure TOpenGLDrawer.SetBrush(ABrush: TFPCustomBrush);
