@@ -320,8 +320,6 @@ end;
 procedure TCustomListBox.LMSelChange(var TheMessage);
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
-  if FLockSelectionChange=0 then
-    EditingDone;
   DoSelectionChange(FLockSelectionChange = 0);
 end;
 
