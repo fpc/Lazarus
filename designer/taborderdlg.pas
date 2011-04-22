@@ -65,8 +65,7 @@ type
 
   TTabOrderPropEditor = class(TIntegerPropertyEditor)
   public
-//    function OrdValueToVisualValue(OrdValue: longint): string; override;
-//    procedure SetValue(const NewValue: ansistring);  override;
+    function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
 
@@ -280,24 +279,19 @@ begin
 end;
 
 { TTabOrderPropEditor }
-{
-function TTabOrderPropEditor.OrdValueToVisualValue(OrdValue: longint): string;
+
+function TTabOrderPropEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=inherited OrdValueToVisualValue(OrdValue);
+  Result:=(inherited GetAttributes)+[paDialog];
 end;
 
-procedure TTabOrderPropEditor.SetValue(const NewValue: ansistring);
-begin
-  inherited SetValue(NewValue);
-end;
-}
 procedure TTabOrderPropEditor.Edit;
 begin
   ShowTabOrderEditor(Self);
 end;
 
 initialization
-  RegisterPropertyEditor(TypeInfo(Integer), TControl, 'TabOrder', TTabOrderPropEditor);
+  RegisterPropertyEditor(TypeInfo(TTabOrder), TControl, 'TabOrder', TTabOrderPropEditor);
 
 end.
 
