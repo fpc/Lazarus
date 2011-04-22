@@ -128,9 +128,11 @@ type
     MainNotebook: TPageControl;
     MenuItem1: TMenuItem;
     CodeTreeviewButtonPanel: TPanel;
-    OptionsSpeedButton: TSpeedButton;
-    RefreshSpeedButton: TSpeedButton;
-    ModeSpeedButton: TSpeedButton;
+    CodeOptionsSpeedButton: TSpeedButton;
+    CodeRefreshSpeedButton: TSpeedButton;
+    CodeModeSpeedButton: TSpeedButton;
+    DirOptionsSpeedButton: TSpeedButton;
+    DirRefreshSpeedButton: TSpeedButton;
     TreePopupmenu: TPopupMenu;
     procedure CodeExplorerViewCreate(Sender: TObject);
     procedure CodeExplorerViewDestroy(Sender: TObject);
@@ -149,10 +151,10 @@ type
     procedure JumpToImplementationMenuItemClick(Sender: TObject);
     procedure ShowSrcEditPosMenuItemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
-    procedure ModeSpeedButtonClick(Sender: TObject);
-    procedure OptionsSpeedButtonClick(Sender: TObject);
+    procedure CodeModeSpeedButtonClick(Sender: TObject);
+    procedure CodeOptionsSpeedButtonClick(Sender: TObject);
     procedure RefreshMenuItemClick(Sender: TObject);
-    procedure RefreshSpeedButtonClick(Sender: TObject);
+    procedure CodeRefreshSpeedButtonClick(Sender: TObject);
     procedure RenameMenuItemClick(Sender: TObject);
     procedure TreePopupmenuPopup(Sender: TObject);
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
@@ -454,16 +456,19 @@ begin
 
   MainNotebook.ActivePage:=CodePage;
 
-  RefreshSpeedButton.Hint:=dlgUnitDepRefresh;
-  OptionsSpeedButton.Hint:=dlgFROpts;
-  CodeFilterEdit.Text:=lisCEFilter;
   CodePage.Caption:=lisCode;
-  DirectivesFilterEdit.Text:=lisCEFilter;
+  CodeRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
+  CodeOptionsSpeedButton.Hint:=dlgFROpts;
+  CodeFilterEdit.Text:=lisCEFilter;
   DirectivesPage.Caption:=lisDirectives;
-  
+  DirectivesFilterEdit.Text:=lisCEFilter;
+  DirRefreshSpeedButton.Hint:=dlgUnitDepRefresh;
+  DirOptionsSpeedButton.Hint:=dlgFROpts;
 
-  RefreshSpeedButton.LoadGlyphFromLazarusResource('laz_refresh');
-  OptionsSpeedButton.LoadGlyphFromLazarusResource('menu_environment_options');
+  CodeRefreshSpeedButton.LoadGlyphFromLazarusResource('laz_refresh');
+  CodeOptionsSpeedButton.LoadGlyphFromLazarusResource('menu_environment_options');
+  DirRefreshSpeedButton.LoadGlyphFromLazarusResource('laz_refresh');
+  DirOptionsSpeedButton.LoadGlyphFromLazarusResource('menu_environment_options');
 
   ImgIDDefault := Imagelist1.AddLazarusResource('ce_default');
   ImgIDProgram := Imagelist1.AddLazarusResource('ce_program');
@@ -591,7 +596,7 @@ begin
   Refresh(true);
 end;
 
-procedure TCodeExplorerView.ModeSpeedButtonClick(Sender: TObject);
+procedure TCodeExplorerView.CodeModeSpeedButtonClick(Sender: TObject);
 begin
   // Let's Invert Mode of Exibition
   if Mode = cemCategory then
@@ -600,7 +605,7 @@ begin
     SetMode(cemCategory);
 end;
 
-procedure TCodeExplorerView.OptionsSpeedButtonClick(Sender: TObject);
+procedure TCodeExplorerView.CodeOptionsSpeedButtonClick(Sender: TObject);
 begin
   if Assigned(FOnShowOptions) then
   begin
@@ -614,7 +619,7 @@ begin
   Refresh(true);
 end;
 
-procedure TCodeExplorerView.RefreshSpeedButtonClick(Sender: TObject);
+procedure TCodeExplorerView.CodeRefreshSpeedButtonClick(Sender: TObject);
 begin
   Refresh(true);
 end;
@@ -1630,12 +1635,12 @@ procedure TCodeExplorerView.UpdateMode;
 begin
   if FMode=cemCategory
   then begin
-    ModeSpeedButton.LoadGlyphFromLazarusResource('show_category');
-    ModeSpeedButton.Hint:=lisCEModeShowSourceNodes;
+    CodeModeSpeedButton.LoadGlyphFromLazarusResource('show_category');
+    CodeModeSpeedButton.Hint:=lisCEModeShowSourceNodes;
   end
   else begin
-    ModeSpeedButton.LoadGlyphFromLazarusResource('show_source');
-    ModeSpeedButton.Hint:=lisCEModeShowCategories;
+    CodeModeSpeedButton.LoadGlyphFromLazarusResource('show_source');
+    CodeModeSpeedButton.Hint:=lisCEModeShowCategories;
   end;
   Refresh(true);
 end;
