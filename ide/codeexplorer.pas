@@ -845,14 +845,13 @@ begin
       ShowChilds:=false;
     end;
 
-    // don't show End.
-    if CodeNode.Desc=ctnEndPoint then
+    // don't show special nodes
+    if CodeNode.Desc in [ctnEndPoint,ctnConstant,ctnIdentifier] then
       ShowNode:=false;
       
     // don't show class visibility section nodes
-    if (CodeNode.Desc in AllClassSections) then begin
+    if (CodeNode.Desc in AllClassSections) then
       ShowNode:=false;
-    end;
 
     if Mode=cemCategory then begin
       // don't show method bodies
