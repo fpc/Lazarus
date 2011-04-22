@@ -1,44 +1,51 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-20 17:36+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: heaptrcview.rsdtimes
 msgid " (%d times)"
-msgstr ""
+msgstr " (%d volte)"
 
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"
-msgstr ""
+msgstr "Errore nell'analisi del tracefile"
 
 #: heaptrcview.rsleakview
 msgid "Leak View"
-msgstr ""
+msgstr "Vista Perdite"
 
 #: heaptrcview.sbtnclipbrd
 msgid "Paste Clipboard"
-msgstr ""
+msgstr "Incolla da appunti"
 
 #: heaptrcview.sbtnupdate
 msgid "Update"
-msgstr ""
+msgstr "Aggiorna"
 
 #: heaptrcview.schkraw
 msgid "Raw leak data"
-msgstr ""
+msgstr "Dati perdite grezzi"
 
 #: heaptrcview.schktop
 msgid "Stay on top"
-msgstr ""
+msgstr "Resta in cima"
 
 #: heaptrcview.sfrmcap
 msgid "LeakView - HeapTrc output viewer"
-msgstr ""
+msgstr "Visore output LeakView - HeapTrc"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"
-msgstr ""
+msgstr "file .trc"
 
 #: heaptrcview.stacklineformat
 msgid "%s"
@@ -50,21 +57,20 @@ msgstr ""
 
 #: heaptrcview.stacktraceformat
 msgid "Leak: %d bytes x %d times"
-msgstr ""
+msgstr "Perdita: %d byte per %d volte"
 
 #: heaptrcview.stacktraceformatsingle
 msgid "Leak: %d bytes"
-msgstr ""
+msgstr "Perdita: %d bytes"
 
 #: heaptrcview.strleakingblockscount
 msgid "Leaking Blocks Count: %d"
-msgstr ""
+msgstr "Conteggio blocchi persi: %d"
 
 #: heaptrcview.strleakingmemsize
 msgid "Leaking Mem Size: %d"
-msgstr ""
+msgstr "Dimensione memoria perduta: %d"
 
 #: heaptrcview.strtotalmemalloc
 msgid "Total Mem alloced: %d"
-msgstr ""
-
+msgstr "Totale memoria ALLOCata: %d"

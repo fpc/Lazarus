@@ -1,28 +1,35 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-18 11:17+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: sdb_consts.scancelrecordsexported
 msgid "Exported %d before user canceled."
-msgstr ""
+msgstr "Esportati %d prima della terminazione."
 
 #: sdb_consts.sdb_availableexportformats
 msgid "Available export formats:"
-msgstr ""
+msgstr "Formati di esportazione disponibili:"
 
 #: sdb_consts.sdb_cancel
 msgid "&Cancel"
-msgstr "Annulla"
+msgstr "&Annulla"
 
 #: sdb_consts.sdb_configuredataexport
 msgid "Configure data export"
-msgstr ""
+msgstr "Configura esportazione dati"
 
 #: sdb_consts.sdb_exportprogress
 msgid "Export progress"
-msgstr ""
+msgstr "Progresso esportazione"
 
 #: sdb_consts.sdb_fields
 msgid "Fields"
@@ -34,45 +41,44 @@ msgstr "Nome file:"
 
 #: sdb_consts.sdb_formatting
 msgid "Formatting"
-msgstr ""
+msgstr "Formattazione"
 
 #: sdb_consts.sdb_moveselectedfielddown
 msgid "Move selected field down"
-msgstr ""
+msgstr "Sposta giù il campo selezionato"
 
 #: sdb_consts.sdb_moveselectedfieldup
 msgid "Move selected field up"
-msgstr ""
+msgstr "Sposta su il campo selezionato"
 
 #: sdb_consts.sdb_propertiesforselectedfield
 msgid "Properties for selected field:"
-msgstr ""
+msgstr "Proprietà del campo selezionato:"
 
 #: sdb_consts.sdb_selectdataexportformat
 msgid "Select data export Format"
-msgstr ""
+msgstr "Scegli il formato di export dati"
 
 #: sdb_consts.sdb_selectfieldstoexport
 msgid "Select fi&elds to export"
-msgstr ""
+msgstr "Sc&egli i campi da esportare"
 
 #: sdb_consts.serrnodatasetassigned
 msgid "DataExporter has no Dataset assigned."
-msgstr ""
+msgstr "DataExporter non ha Dataset assegnati."
 
 #: sdb_consts.serropeningdataset
 msgid "Could not open dataset for exporting: %s"
-msgstr ""
+msgstr "Non posso aprire il Dataset %s per l'export"
 
 #: sdb_consts.sexecute
 msgid "Execute..."
-msgstr ""
+msgstr "Esegui..."
 
 #: sdb_consts.snrecordsexported
 msgid "Succesfully exported %d records."
-msgstr ""
+msgstr "Esportati %d record con successo."
 
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
-msgstr ""
-
+msgstr "Esportazione di %d record"

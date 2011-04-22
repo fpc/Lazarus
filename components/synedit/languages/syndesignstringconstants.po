@@ -1,0 +1,27 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr ""
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr ""
+
+#: syndesignstringconstants.syndscodefolding
+msgid "Code Folding"
+msgstr ""
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr ""
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr ""
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr ""
+

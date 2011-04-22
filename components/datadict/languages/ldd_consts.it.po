@@ -1,20 +1,27 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-18 11:12+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: ldd_consts.ldd_availablecodegenerators
 msgid "Available code generators"
-msgstr ""
+msgstr "Generatori di codice disponibili"
 
 #: ldd_consts.ldd_cancel
 msgid "&Cancel"
-msgstr "Annulla"
+msgstr "&Annulla"
 
 #: ldd_consts.ldd_close
 msgid "&Close"
-msgstr "Chiudi"
+msgstr "&Chiudi"
 
 #: ldd_consts.ldd_configuredatadictionary
 msgid "Configure Data Dictionary"
@@ -26,15 +33,15 @@ msgstr "Configura il codice generato"
 
 #: ldd_consts.ldd_databasedesktopapplication
 msgid "Database desktop application"
-msgstr ""
+msgstr "Applicazione desktop database "
 
 #: ldd_consts.ldd_datadictionary
 msgid "Data dictionary &file:"
-msgstr ""
+msgstr "&File dizionario dati:"
 
 #: ldd_consts.ldd_defaultdatadictdirectory
 msgid "Default data dictionary directory"
-msgstr ""
+msgstr "Cartella di default dei dizionari dati"
 
 #: ldd_consts.ldd_fields
 msgid "Fields"
@@ -42,7 +49,7 @@ msgstr "Campi"
 
 #: ldd_consts.ldd_fieldstogeneratecodefor
 msgid "Fields to generate code for"
-msgstr ""
+msgstr "Campi per cui generare codice"
 
 #: ldd_consts.ldd_filenameapplicationsfilter
 msgid "Applications|*.exe|Any file|*.*"
@@ -50,15 +57,15 @@ msgstr "Applicazioni|*.exe|Tutti i file|*.*"
 
 #: ldd_consts.ldd_filenameedit
 msgid "Data dictionary|*.fdd|Any file|*.*"
-msgstr ""
+msgstr "Dizionari dati|*.fdd|Tutti i file|*.*"
 
 #: ldd_consts.ldd_generatedcode
 msgid "Generated code"
-msgstr "Genera codice"
+msgstr "Codice generato"
 
 #: ldd_consts.ldd_knowndatadictionary
 msgid "Known data dictionary"
-msgstr ""
+msgstr "Dizionari dati già noti"
 
 #: ldd_consts.ldd_ok
 msgid "&OK"
@@ -74,7 +81,7 @@ msgstr "Opzioni"
 
 #: ldd_consts.ldd_propertiesforselected
 msgid "Properties for selected fields"
-msgstr ""
+msgstr "Proprietà per i campi selezionati"
 
 #: ldd_consts.ldd_save
 msgid "&Save"
@@ -94,7 +101,7 @@ msgstr "Salva file con nome"
 
 #: ldd_consts.ldd_selectcodetobegenerated
 msgid "Select code to be generated"
-msgstr "Seleziona il codice che deve essere generato"
+msgstr "Selezionare il codice da generare"
 
 #: ldd_consts.ldd_setprojectdatadictionary
 msgid "Set project Data Dictionary"
@@ -102,11 +109,11 @@ msgstr "Imposta il Dizionario Dati per il progetto"
 
 #: ldd_consts.ldd_showgeneratedcode
 msgid "Show generated code"
-msgstr "Visualizza il codice generato"
+msgstr "Visualizza codice generato"
 
 #: ldd_consts.ldd_usedatadictionary
 msgid "&Use Data dictionary for this project"
-msgstr "&Utilizza il dizionario Dati per questo progetto"
+msgstr "&Usa il dizionario Dati per questo progetto"
 
 #: ldd_consts.sapplicationfilter
 msgid "Applications|*"
@@ -114,27 +121,31 @@ msgstr "Applicazioni|*"
 
 #: ldd_consts.sapplyingddtodataset
 msgid "Applying data dictionary to dataset %s"
-msgstr ""
+msgstr "Applico il dizionario dati al dataset %s"
 
 #: ldd_consts.sapplyingddtofield
 msgid "Applying data dictionary to field %s"
-msgstr ""
+msgstr "Applico il dizionario dati al campo %s"
 
 #: ldd_consts.serrnodatadesktopdoselect
 msgid ""
 "Could not locate the database desktop application.\n"
 "Would you like to select it ?\n"
 msgstr ""
+"Non posso trovare l'applicazione desktop database. Vorreste selezionarla "
+"voi?"
 
 #: ldd_consts.serrnodatadictactive
 msgid ""
 "No datadictionary active.\n"
 "Please set a data dictionary for the project\n"
 msgstr ""
+"Nessun dizionario dati attivo. Prego impostare un dizionario dati per il "
+"progetto"
 
 #: ldd_consts.serrselectdd
 msgid "Please select a known data dictionary"
-msgstr ""
+msgstr "PEr favore selezionare un dizionario dati conosciuto"
 
 #: ldd_consts.serrselectdir
 msgid "Please select an existing directory"
@@ -142,7 +153,7 @@ msgstr "Selezionare un dizionario esistente"
 
 #: ldd_consts.serrselectexe
 msgid "Please select an existing database desktop application"
-msgstr "Selezionare una applicazione database desktop esistent"
+msgstr "Selezionare un'applicazione DB desktop esistente"
 
 #: ldd_consts.serrselectfile
 msgid "Please select an existing data dictionary file"
@@ -162,11 +173,11 @@ msgstr "Configurazione"
 
 #: ldd_consts.smenuconfprojdatadict
 msgid "Set..."
-msgstr ""
+msgstr "Imposta..."
 
 #: ldd_consts.smenudatadesktop
 msgid "Database Desktop"
-msgstr ""
+msgstr "Desktop database"
 
 #: ldd_consts.smenudatadict
 msgid "Data dictionary"
@@ -178,7 +189,7 @@ msgstr "Applica"
 
 #: ldd_consts.smenudatadictcreatecode
 msgid "Create code from dataset"
-msgstr ""
+msgstr "Crea codice dal dataset"
 
 #: ldd_consts.smenudatadictdesignsql
 msgid "Design SQL"
@@ -194,9 +205,8 @@ msgstr "Non ancora implementato"
 
 #: ldd_consts.swarningnoddforfield
 msgid "Warning: No definition in data dictionary for field %s"
-msgstr ""
+msgstr "Attenzione: il dizionario dati non definisce il campo %s"
 
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
-msgstr ""
-
+msgstr "Conteggio selezione errato: %d"

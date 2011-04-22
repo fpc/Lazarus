@@ -1,12 +1,19 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-18 11:18+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: editortoolbar_str.rsadddivider
 msgid "Add Divider"
-msgstr ""
+msgstr "Aggiungi divisore"
 
 #: editortoolbar_str.rscancel
 msgid "Cancel"
@@ -14,19 +21,19 @@ msgstr "Annulla"
 
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
-msgstr ""
+msgstr "Configura la toolbar"
 
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
-msgstr ""
+msgstr "Editor di configurazione toolbar"
 
 #: editortoolbar_str.rsjumpto
 msgid "Jump To"
-msgstr ""
+msgstr "Salta a"
 
 #: editortoolbar_str.rsmenutree
 msgid "Menu Tree"
-msgstr ""
+msgstr "Albero dei menu"
 
 #: editortoolbar_str.rsok
 msgid "OK"
@@ -34,9 +41,8 @@ msgstr "OK"
 
 #: editortoolbar_str.rstoolbar
 msgid "Toolbar"
-msgstr ""
+msgstr "Toolbar"
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
 msgstr "Impossibile trovare <%s>"
-

@@ -1,8 +1,15 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-22 00:08+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
@@ -34,10 +41,12 @@ msgid ""
 "The JSON data was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
+"I dati JSON sono cambiati ma non ancora salvati.\n"
+"Cosa volete fare?\n"
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."
-msgstr ""
+msgstr "Nome di membro duplicato \"%s\"."
 
 #: msgjsonviewer.selement
 msgid "Element nr. %d"
@@ -49,27 +58,27 @@ msgstr "Documento vuoto"
 
 #: msgjsonviewer.serrcreatingconfigdir
 msgid "Could not create the configuration files directory \"s\""
-msgstr ""
+msgstr "Non posso creare la cartella dei file di configurazione \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
 msgid "Invalid value or wrong type: \"%s\""
-msgstr ""
+msgstr "Valore non valido o tipo errato: \"%s\""
 
 #: msgjsonviewer.serrnovalidjsonclipboard
 msgid "The clipboard does not contain valid JSON data"
-msgstr ""
+msgstr "Gli appunti non contengono dati JSON validi"
 
 #: msgjsonviewer.snewmember
 msgid "New object member"
-msgstr ""
+msgstr "Nuovo membro di oggetto"
 
 #: msgjsonviewer.snewmembername
 msgid "Enter a name for the new member (type: %s)"
-msgstr ""
+msgstr "Dare un nome al nuovo membro (tipo: %s)"
 
 #: msgjsonviewer.snomorematches
 msgid "No nodes match the criterium"
-msgstr ""
+msgstr "Nessun nodo corrisponde al criterio"
 
 #: msgjsonviewer.snull
 msgid "null"
@@ -77,7 +86,7 @@ msgstr ""
 
 #: msgjsonviewer.sobject
 msgid "Object (%d members)"
-msgstr ""
+msgstr "Oggetto (%d membri)"
 
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
@@ -89,7 +98,7 @@ msgstr "&Copia"
 
 #: TMAINFORM.ACOPY.HINT
 msgid "Copy selected node to clipboard as JSON"
-msgstr ""
+msgstr "copia il nodo scelto negli appunti come JSON"
 
 #: TMAINFORM.ACUT.CAPTION
 msgid "C&ut"
@@ -97,11 +106,11 @@ msgstr "Taglia"
 
 #: TMAINFORM.ACUT.HINT
 msgid "Cut selected node to clipboard as JSON"
-msgstr ""
+msgstr "Taglia il nodo scelto negli appunti come JSON"
 
 #: TMAINFORM.ADELETEVALUE.CAPTION
 msgid "&Delete value"
-msgstr "Cancella valore"
+msgstr "&Cancella valore"
 
 #: TMAINFORM.ADELETEVALUE.HINT
 msgid "Delete the selected value"
@@ -109,7 +118,7 @@ msgstr "Cancella il valore selezionato"
 
 #: TMAINFORM.AEXPANDALL.CAPTION
 msgid "E&xpand all nodes"
-msgstr "Espandi tuti i nodi"
+msgstr "Espandi tutti i nodi"
 
 #: TMAINFORM.AEXPANDALL.HINT
 msgid "Expand all nodes in the document"
@@ -117,19 +126,19 @@ msgstr "Espandi tutti i nodi nel documento"
 
 #: TMAINFORM.AEXPANDCURRENTCONTAINER.CAPTION
 msgid "Expand &current object/array"
-msgstr ""
+msgstr "Espandi l'oggetto/array &corrente"
 
 #: TMAINFORM.AEXPANDCURRENTCONTAINER.HINT
 msgid "Expand all nodes in the current object/array"
-msgstr ""
+msgstr "Espandi tutti i nodi nell'oggetto/array corrente"
 
 #: TMAINFORM.AFIND.CAPTION
 msgid "&Find"
-msgstr "Trova"
+msgstr "&Trova"
 
 #: TMAINFORM.AFINDNEXT.CAPTION
 msgid "Find &next occurrence"
-msgstr ""
+msgstr "Trova la &prossima occorrenza"
 
 #: TMAINFORM.ANEW.CAPTION
 msgid "&New"
@@ -141,39 +150,39 @@ msgstr "Crea un nuovo documento JSON"
 
 #: TMAINFORM.ANEWARRAY.CAPTION
 msgid "New &Array"
-msgstr ""
+msgstr "Nuovo &array"
 
 #: TMAINFORM.ANEWARRAY.HINT
 msgid "Add a new JSON array"
-msgstr ""
+msgstr "Aggiungi un nuovo array JSON"
 
 #: TMAINFORM.ANEWBOOLEANVALUE.CAPTION
 msgid "New &boolean value"
-msgstr ""
+msgstr "Nuovo valore &booleano"
 
 #: TMAINFORM.ANEWBOOLEANVALUE.HINT
 msgid "Add a new boolean value"
-msgstr ""
+msgstr "Aggiungi un nuovo valore booleano"
 
 #: TMAINFORM.ANEWNULLVALUE.CAPTION
 msgid "New N&ull value"
-msgstr ""
+msgstr "Nuovo valore n&ull"
 
 #: TMAINFORM.ANEWNULLVALUE.HINT
 msgid "Add a new null value"
-msgstr ""
+msgstr "Aggiungi un nuovo valore null"
 
 #: TMAINFORM.ANEWNUMBERVALUE.CAPTION
 msgid "&New numerical Value"
-msgstr ""
+msgstr "&Nuovo valore numerico"
 
 #: TMAINFORM.ANEWNUMBERVALUE.HINT
 msgid "Add a new number value"
-msgstr ""
+msgstr "Aggiungi un nuovo valore numerico"
 
 #: TMAINFORM.ANEWOBJECT.CAPTION
 msgid "New &Object"
-msgstr "Nuovo oggetto"
+msgstr "Nuovo &oggetto"
 
 #: TMAINFORM.ANEWOBJECT.HINT
 msgid "Add a new JSON object"
@@ -181,59 +190,59 @@ msgstr "Aggiungi un nuovo oggetto JSON"
 
 #: TMAINFORM.ANEWSTRINGVALUE.CAPTION
 msgid "New &string value"
-msgstr ""
+msgstr "Nuovo valore &stringa"
 
 #: TMAINFORM.ANEWSTRINGVALUE.HINT
 msgid "Add a new string value"
-msgstr ""
+msgstr "Aggiungi un nuovo valore stringa"
 
 #: TMAINFORM.AOPEN.CAPTION
 msgid "&Open"
-msgstr "Apri"
+msgstr "&Apri"
 
 #: TMAINFORM.AOPEN.HINT
 msgid "Open JSON document from file"
-msgstr ""
+msgstr "Apri documento JSON da file"
 
 #: TMAINFORM.APASTE.CAPTION
 msgid "&Paste"
-msgstr "Incolla"
+msgstr "&Incolla"
 
 #: TMAINFORM.APASTE.HINT
 msgid "Paste JSON data in clipboard as new member"
-msgstr ""
+msgstr "Incolla dati JSON negli appunti come nuovo membro"
 
 #: TMAINFORM.APASTEASDOCUMENT.CAPTION
 msgid "Paste as new document"
-msgstr ""
+msgstr "Incolla come nuovo documento"
 
 #: TMAINFORM.APASTEASDOCUMENT.HINT
 msgid "Paste JSON data in clipboard as new document"
-msgstr ""
+msgstr "Incolla dati JSON negli appunti come nuovo documento"
 
 #: TMAINFORM.AQUIT.CAPTION
 msgid "&Quit"
-msgstr "Esci"
+msgstr "&Esci"
 
 #: TMAINFORM.AQUIT.HINT
 msgid "Exit the program"
-msgstr "Uscire dal programma"
+msgstr "Esci dal programma"
 
 #: TMAINFORM.ASAVE.CAPTION
 msgid "&Save"
-msgstr "Salva"
+msgstr "&Salva"
 
 #: TMAINFORM.ASAVE.HINT
 msgid "Save the JSON document to file"
-msgstr ""
+msgstr "Salva il documento JSON nel file"
 
 #: TMAINFORM.ASAVEAS.CAPTION
 msgid "Save &as"
-msgstr "Salva con nome"
+msgstr "S&alva con nome"
 
 #: TMAINFORM.ASAVEAS.HINT
 msgid "Save JSON document with a new name"
-msgstr ""
+msgstr "Salva il documento JSON con un nuovo nome"
 
 #: TMAINFORM.MAINFORM.CAPTION
 msgctxt "TMAINFORM.MAINFORM.CAPTION"
@@ -242,7 +251,7 @@ msgstr "Visualizzatore JSON"
 
 #: TMAINFORM.MEDIT.CAPTION
 msgid "&Edit"
-msgstr "Modifica"
+msgstr "&Modifica"
 
 #: TMAINFORM.MENUITEM1.CAPTION
 msgctxt "TMAINFORM.MENUITEM1.CAPTION"
@@ -270,7 +279,7 @@ msgstr "&File"
 
 #: TMAINFORM.MIDOCUMENT.CAPTION
 msgid "&New document with object"
-msgstr ""
+msgstr "&Nuovo documento con oggetto"
 
 #: TMAINFORM.MIINSERT.CAPTION
 msgid "&Values"
@@ -278,11 +287,11 @@ msgstr "&Valori"
 
 #: TMAINFORM.MISORTMEMBERS.CAPTION
 msgid "Sort object members"
-msgstr ""
+msgstr "Ordina oggetti membri"
 
 #: TMAINFORM.MISTRICT.CAPTION
 msgid "&Strict JSON"
-msgstr ""
+msgstr "J&SON rigoroso"
 
 #: TMAINFORM.MOPTIONS.CAPTION
 msgid "&Options"
@@ -299,4 +308,3 @@ msgstr ""
 #: TMAINFORM.TOOLBUTTON4.CAPTION
 msgid "ToolButton4"
 msgstr ""
-

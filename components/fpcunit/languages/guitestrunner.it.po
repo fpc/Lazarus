@@ -1,8 +1,15 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-18 11:42+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: guitestrunner.rsalltests
 msgid "All Tests"
@@ -10,27 +17,27 @@ msgstr "Tutti i Test"
 
 #: guitestrunner.rserrors
 msgid "%s    Errors: %s"
-msgstr ""
+msgstr "%s    Errori: %s"
 
 #: guitestrunner.rsexception
 msgid "Exception: %s"
-msgstr ""
+msgstr "Eccezione: %s"
 
 #: guitestrunner.rsexceptioncla
 msgid "Exception class: %s"
-msgstr ""
+msgstr "Classe eccezione: %s"
 
 #: guitestrunner.rsexceptionmes
 msgid "Exception message: %s"
-msgstr ""
+msgstr "Messaggio dell'eccezione: %s"
 
 #: guitestrunner.rsfailures
 msgid "%s     Failures: %s"
-msgstr ""
+msgstr "%s     Insuccessi: %s"
 
 #: guitestrunner.rslinenumber
 msgid "Line number: %s"
-msgstr "Numero di linea: %s"
+msgstr "Numero di riga: %s"
 
 #: guitestrunner.rsmessage
 msgid "Message: %s"
@@ -38,23 +45,23 @@ msgstr "Messaggio: %s"
 
 #: guitestrunner.rsmethodname
 msgid "Method name: %s"
-msgstr ""
+msgstr "Nome metodo: %s"
 
 #: guitestrunner.rsnumberofexec
 msgid "Number of executed tests: %s  Time elapsed: %s"
-msgstr ""
+msgstr "Numero di test eseguiti: %s Tempo impiegato: %s"
 
 #: guitestrunner.rsrun
 msgid "Run "
-msgstr ""
+msgstr "Esegui"
 
 #: guitestrunner.rsrunning
 msgid "Running %s"
-msgstr ""
+msgstr "Esecuzione %s"
 
 #: guitestrunner.rsruns
 msgid "Runs: %s/%s"
-msgstr ""
+msgstr "Esecuzioni: %s/%s"
 
 #: guitestrunner.rsunitname
 msgid "Unit name: %s"
@@ -62,7 +69,7 @@ msgstr "Nome unit: %s"
 
 #: guitestrunner.sactcheckall
 msgid "Check all Tests"
-msgstr "Seleziona tutti i Test"
+msgstr "Abilita tutti i Test"
 
 #: guitestrunner.sactcheckcurrentsuite
 msgid "Check the Current Suite"
@@ -74,11 +81,11 @@ msgstr "Esci"
 
 #: guitestrunner.sactcloseformh
 msgid "Quit Testting"
-msgstr ""
+msgstr "Esci dai test"
 
 #: guitestrunner.sactrunaction
 msgid "&Run"
-msgstr "Esegui"
+msgstr "&Esegui"
 
 #: guitestrunner.sactrunactionh
 msgid "Run all checked test(s)"
@@ -91,7 +98,7 @@ msgstr "Esegui il test evidenziato"
 
 #: guitestrunner.sactuncheckall
 msgid "Uncheck all tests"
-msgstr "Deseleziona tutti i test"
+msgstr "Disabilita tutti i test"
 
 #: guitestrunner.sactuncheckcurrentsuite
 msgid "Uncheck the Current Suite"
@@ -112,7 +119,7 @@ msgstr "Esegui il test evidenziato"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"
-msgstr ""
+msgstr "FPCUnit - esegui unit di test"
 
 #: guitestrunner.smicopy
 msgid "&Copy"
@@ -120,25 +127,24 @@ msgstr "&Copia"
 
 #: guitestrunner.smicopyclipbrd
 msgid "Copy to clipboard"
-msgstr "Copia nella clipboard"
+msgstr "Copia negli appunti"
 
 #: guitestrunner.smicut
 msgid "C&ut"
-msgstr "Taglia"
+msgstr "&Taglia"
 
 #: guitestrunner.smiruntest
 msgid "  &Run all selected (checked) tests"
-msgstr ""
+msgstr "&Esegui tutti i test abilitati"
 
 #: guitestrunner.smishowfail
 msgid "Copy message to clipboard"
-msgstr "Copia il messaggio nella clipboard"
+msgstr "Copia il messaggio negli appunti"
 
 #: guitestrunner.stshresults
 msgid "Results XML"
-msgstr ""
+msgstr "Risultato in XML"
 
 #: guitestrunner.stshtree
 msgid "Testcase tree"
-msgstr ""
-
+msgstr "Albero dei casi di test"

@@ -1,12 +1,23 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-21 23:43+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+msgid ""
+"A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors["
+"%s]=%s%s%s"
 msgstr ""
+"Un lato libero di uno splitter non deve essere ancorato: Nodo=%s%s%s Tipo=%s "
+"Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsallfiles
 msgid "All files"
@@ -15,26 +26,32 @@ msgstr "Tutti i file"
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr ""
+"Di quanti pixel deve spostarsi il mouse per far partire il trascinamento"
 
 #: anchordockstr.adrsanchordockinglayout
 msgid "Anchor Docking Layout"
-msgstr ""
+msgstr "Posizionamento degli ancoraggi di docking"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
-msgstr ""
+msgstr "L'ancora non è uno splitter: Nodo=%s%s%s Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
 msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
-msgstr ""
+msgstr "Ancora non trovata: Nodo=%s%s%s Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
 msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
 msgstr ""
+"L'ancora è sul lato sbagliato dello splitter: Nodo=%s%s%s Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+msgid ""
+"A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%"
+"s]=%s%s%s"
 msgstr ""
+"Una pagina non deve essere ancorata:Nodo=%s%s%s Padre=%s ParentType=%s "
+"Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -42,7 +59,7 @@ msgstr "Automaticamente"
 
 #: anchordockstr.adrsbottom
 msgid "bottom"
-msgstr ""
+msgstr "basso"
 
 #: anchordockstr.adrsclose
 msgid "Close"
@@ -50,43 +67,43 @@ msgstr "Chiudi"
 
 #: anchordockstr.adrscontrolisalreadyadocksite
 msgid "control is already a docksite"
-msgstr ""
+msgstr "Il controllo è già un sito di docking"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
 msgid "Custom dock site %s%s%s can have only one site."
-msgstr ""
+msgstr "Il sito di docking personalizzato %s%s%s può avere un solo sito."
 
 #: anchordockstr.adrsdockingenabledrequiresarestartoftheide
 msgid "Docking enabled (Requires a restart of the IDE)"
-msgstr ""
+msgstr "docking abilitato (richiede il riavvio dell'IDE)"
 
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
-msgstr ""
+msgstr "Opzioni di docking"
 
 #: anchordockstr.adrsdraganddockc
 msgid "Use the mouse to drag and dock window \"%c\""
-msgstr ""
+msgstr "Usa il mouse per trascinare la finestra \"%c\""
 
 #: anchordockstr.adrsdragthreshold
 msgid "Drag threshold"
-msgstr ""
+msgstr "Soglia di trascinamento"
 
 #: anchordockstr.adrsduplicatename
 msgid "Duplicate name: "
-msgstr ""
+msgstr "Nome duplicato: "
 
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
-msgstr ""
+msgstr "Nome vuoto: "
 
 #: anchordockstr.adrsenlarge
 msgid "Enlarge"
-msgstr ""
+msgstr "Allarga"
 
 #: anchordockstr.adrsenlargeside
 msgid "Enlarge %s side"
-msgstr ""
+msgstr "Allarga lato a %s"
 
 #: anchordockstr.adrserror
 msgid "Error"
@@ -94,31 +111,35 @@ msgstr "Errore"
 
 #: anchordockstr.adrserrorloadingwindowlayoutfromfile
 msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr ""
+msgstr "Errore nel caricamento del layout della finestra dal file \"%s\"%s%s"
 
 #: anchordockstr.adrserrorwritingwindowlayouttofile
 msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr ""
+msgstr "Errore nella scrittura del layout della finestra dal file \"%s\"%s%s"
 
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
-msgstr ""
+msgstr "Opzioni generiche di docking"
 
 #: anchordockstr.adrsheaderalignleft
 msgid "Header align left"
-msgstr ""
+msgstr "Allinea testata a sinistra"
 
 #: anchordockstr.adrsheaderaligntop
 msgid "Header align top"
-msgstr ""
+msgstr "Allinea testata in alto"
 
 #: anchordockstr.adrsheaderposition
 msgid "Header position"
-msgstr ""
+msgstr "Posizione testata"
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
-msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
+msgid ""
+"Hide header captions for sites with only one docked control, as that is "
+"already shown in the normal window title"
 msgstr ""
+"Nascondi il titolo della testata per siti con un solo controllo ospite, "
+"perché è già mostrato nel normale titolo della finestra"
 
 #: anchordockstr.adrsleft
 msgid "left"
@@ -126,11 +147,11 @@ msgstr "sinistra"
 
 #: anchordockstr.adrsloadwindowlayoutfromfile
 msgid "Load window layout from file ..."
-msgstr ""
+msgstr "Carica layout della finestra dal file ..."
 
 #: anchordockstr.adrsloadwindowlayoutfromfilexml
 msgid "Load window layout from file (*.xml)"
-msgstr ""
+msgstr "Carica layout della finestra dal file (*.xml)"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -142,47 +163,50 @@ msgstr "Unisci"
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"
-msgstr ""
+msgstr "nome controllo mancante"
 
 #: anchordockstr.adrsmodalformscannotbemadedockable
 msgid "modal forms can not be made dockable"
-msgstr ""
+msgstr "I form modali non possono essere dockabili"
 
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
 msgstr ""
+"Sposta la testata a sinistra quando (larghezza/altezza)*100 >= "
+"HeaderAlignLeft"
 
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
 msgstr ""
+"Sposta la testata in alto quando (larghezza/altezza)*100 <= HeaderAlignTop"
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "Sposta la pagina a sinistra"
 
 #: anchordockstr.adrsmovepageleftmost
 msgid "Move page leftmost"
-msgstr ""
+msgstr "Sposta la pagina tutta a sinistra"
 
 #: anchordockstr.adrsmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "Sposta la pagina a destra"
 
 #: anchordockstr.adrsmovepagerightmost
 msgid "Move page rightmost"
-msgstr ""
+msgstr "Sposta la pagina tutta a destra"
 
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"
-msgstr ""
+msgstr "Nessun titolo per i siti flottanti"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
 msgid "No children allowed for Node=%s%s%s Type=%s"
-msgstr ""
+msgstr "Non sono ammessi figli per il nodo=%s%s%s tipo=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
 msgid "Not supported: %s has parent %s"
-msgstr ""
+msgstr "Non supportato: %s ha padre %s"
 
 #: anchordockstr.adrsquit
 msgid "Quit %s"
@@ -190,7 +214,7 @@ msgstr "Esci %s"
 
 #: anchordockstr.adrsrequestedbutcreated
 msgid "%s requested, but %s created"
-msgstr "richiesto %s, invece � stato creato %s"
+msgstr "Era richiesto %s, invece è stato creato %s"
 
 #: anchordockstr.adrsright
 msgid "right"
@@ -210,35 +234,41 @@ msgstr "Salva l'aspetto della finestra in un file (*.xml)"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"
-msgstr ""
+msgstr "Scala durante il ridimensionamento"
 
 #: anchordockstr.adrsscalesubsiteswhenasiteisresized
 msgid "Scale sub sites when a site is resized"
-msgstr ""
+msgstr "Ridimensiona i sottositi insieme al sito"
 
 #: anchordockstr.adrsshowcaptionsofdockedcontrolsintheheader
 msgid "Show captions of docked controls in the header"
-msgstr ""
+msgstr "Mostra il titolo dei controlli ospiti nell'intestazione"
 
 #: anchordockstr.adrsshowheadercaptions
 msgid "Show header captions"
-msgstr ""
+msgstr "Mostra titolo delle intestazioni"
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
-msgstr ""
+msgstr "Spessore dello splitter"
 
 #: anchordockstr.adrssplitterwidth
 msgid "Splitter width"
-msgstr ""
+msgstr "Larghezza dello splitter"
 
 #: anchordockstr.adrstabposition
 msgid "Tab position"
-msgstr ""
+msgstr "Posizione dei tab"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
-msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
+msgid ""
+"There is another dock master installed. Only one docking package can be "
+"installed at a time. Please uninstall the other dock master %s and restart "
+"the IDE"
 msgstr ""
+"C'è un altro pacchetto dock master installato: ci può essere un solo dock "
+"master nell'IDE, quindi dovete prima disinstallare l'attuale dockmaster %s e "
+"poi riavviare l'IDE."
 
 #: anchordockstr.adrstop
 msgid "top"
@@ -246,9 +276,8 @@ msgstr "alto"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
 msgid "To use anchordocking you must first uninstall %s"
-msgstr ""
+msgstr "Per usare l'anchordocking dovete prima disinstallare %s"
 
 #: anchordockstr.adrsundock
 msgid "Undock"
-msgstr ""
-
+msgstr "Libera"

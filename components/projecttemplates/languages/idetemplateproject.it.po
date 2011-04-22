@@ -1,13 +1,17 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-07-19 17:03+0100\n"
-"Last-Translator: tiz <xx@xx>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2011-04-21 14:21+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: idetemplateproject.snewfromtemplate
 msgid "New project from template"
@@ -21,5 +25,4 @@ msgstr "Opzioni Modelli Progetto"
 
 #: idetemplateproject.stemplatecategory
 msgid "Template projects"
-msgstr ""
-
+msgstr "Progetti modello"

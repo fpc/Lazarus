@@ -1,12 +1,10 @@
 # Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9.3\n"
-"PO-Revision-Date: 2011-04-21 20:20+0200\n"
+"PO-Revision-Date: 2011-04-22 02:31+0200\n"
 "Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -22,7 +20,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrattributename
 msgid "Attribute Name"
-msgstr "Nome attributo"
+msgstr "Nome Attributo"
 
 #: syneditstrconst.syns_attrattributevalue
 msgid "Attribute Value"
@@ -38,11 +36,11 @@ msgstr "Parentesi"
 
 #: syneditstrconst.syns_attrcaselabel
 msgid "Case label"
-msgstr "Label case"
+msgstr "Etichetta case"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
-msgstr "Sezione CDATA"
+msgstr "sezione CDATA"
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
@@ -58,11 +56,11 @@ msgstr "Numero righe blocco Diff"
 
 #: syneditstrconst.syns_attrchunknew
 msgid "Diff Chunk New Line Count"
-msgstr "Numero a capo blocco Diff"
+msgstr "Numero di a capo blocco Diff"
 
 #: syneditstrconst.syns_attrchunkorig
 msgid "Diff Chunk Original Line Count"
-msgstr "Numero righe originali blocco Diff"
+msgstr "Numero originale di righe nel blocco Diff"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -82,7 +80,7 @@ msgstr "Tipo dati"
 
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
-msgstr "Package di default"
+msgstr "Pacchetti di default"
 
 #: syneditstrconst.syns_attrdir
 msgid "Direction"
@@ -114,11 +112,11 @@ msgstr "Testo integrato"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
-msgstr "Entità Reference"
+msgstr "Riferimento a entità"
 
 #: syneditstrconst.syns_attrescapeampersand
 msgid "Escape ampersand"
-msgstr "Ampersand di escape"
+msgstr ""
 
 #: syneditstrconst.syns_attrevent
 msgid "Event"
@@ -130,7 +128,7 @@ msgstr "Eccezione"
 
 #: syneditstrconst.syns_attrfloat
 msgid "Float"
-msgstr ""
+msgstr "Virgola mobile"
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
@@ -146,7 +144,7 @@ msgstr "Esadecimale"
 
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
-msgstr "Reference icona"
+msgstr "Riferimento a icona"
 
 #: syneditstrconst.syns_attridedirective
 msgid "IDE Directive"
@@ -178,7 +176,7 @@ msgstr "Simbolo non valido"
 
 #: syneditstrconst.syns_attrkey
 msgid "Key"
-msgstr "Chiave"
+msgstr "Tasto"
 
 #: syneditstrconst.syns_attrlabel
 msgid "Label"
@@ -186,11 +184,11 @@ msgstr "Etichetta"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
-msgstr "Riga Diff aggiunta"
+msgstr "Riga aggiunta Diff"
 
 #: syneditstrconst.syns_attrlinechanged
 msgid "Diff Changed Line"
-msgstr "Riga Diff cambiata"
+msgstr "Riga modificata Diff"
 
 #: syneditstrconst.syns_attrlinecontext
 msgid "Diff Context Line"
@@ -198,7 +196,7 @@ msgstr "Riga contesto Diff"
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
-msgstr "Riga diff rimossa"
+msgstr "Riga rimossa Diff"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
@@ -210,7 +208,7 @@ msgstr "Marcatore"
 
 #: syneditstrconst.syns_attrmathmode
 msgid "Math Mode"
-msgstr "Modo matematica"
+msgstr "Modo matematico"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
@@ -222,11 +220,11 @@ msgstr "Varie"
 
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
-msgstr "Nome attributo namespace"
+msgstr "Nome attributo del namespace"
 
 #: syneditstrconst.syns_attrnamespaceattrvalue
 msgid "Namespace Attribute Value"
-msgstr "Valore attributo namespace"
+msgstr "Valore attributo del namespace"
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
@@ -270,7 +268,7 @@ msgstr "Preprocessore"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
-msgstr "Elaborazione dell'istruzione"
+msgstr "Elaborazione istruzione"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
@@ -350,11 +348,11 @@ msgstr "Simbolo"
 
 #: syneditstrconst.syns_attrsyntaxerror
 msgid "SyntaxError"
-msgstr ""
+msgstr "Errore di sintassi"
 
 #: syneditstrconst.syns_attrsystem
 msgid "System functions and variables"
-msgstr "Funzioni e variabili di sistema"
+msgstr "Variabili e funzioni di sistema"
 
 #: syneditstrconst.syns_attrsystemvalue
 msgid "System value"
@@ -362,7 +360,7 @@ msgstr "Valore di sistema"
 
 #: syneditstrconst.syns_attrtablename
 msgid "Table Name"
-msgstr "Nome della tabella"
+msgstr "Nome di tabella"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
@@ -378,7 +376,7 @@ msgstr "Testo"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
-msgstr "Testo in modo matematica"
+msgstr "Testo in modo matematico"
 
 #: syneditstrconst.syns_attrunknownword
 msgid "Unknown word"
@@ -386,7 +384,7 @@ msgstr "Parola sconosciuta"
 
 #: syneditstrconst.syns_attruser
 msgid "User functions and variables"
-msgstr "Funzioni e variabili utente"
+msgstr "Variabili e funzioni utente"
 
 #: syneditstrconst.syns_attruserfunction
 msgid "User functions"
@@ -402,25 +400,23 @@ msgstr "Variabile"
 
 #: syneditstrconst.syns_attrwhitespace
 msgid "Whitespace"
-msgstr "Spazio bianco"
+msgstr "Spazio"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#, fuzzy
-#| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "Il tasto \"%s\" è già assegnato ad un altro comando dell'editor. (%s)"
+msgstr "Il tasto \"%s\" è già assegnato a un altro comando dell'editor. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
 msgid "Mouse-Shortcut already exists"
-msgstr "La scorciatoia esiste già"
+msgstr "La scorciatoia via mouse esiste già"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
 msgid "Toggle Breakpoint"
-msgstr "Inverti il breakpoint"
+msgstr "Inverti breakpoint"
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
-msgstr "Collassa il codice"
+msgstr "Collassa codice"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
@@ -444,268 +440,268 @@ msgstr "Menu popup"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr "\"Nuovi il cursore quando c'è la selezione\", Mai, \"Clicca fuori\", Sempre"
+msgstr ""
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
-msgstr "Collegamento al sorgente"
+msgstr ""
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"
-msgstr "Sottolinea,sì,no"
+msgstr ""
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
-msgstr "Nessuna azione"
+msgstr ""
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
-msgstr "Selezione incolla veloce"
+msgstr ""
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
-msgstr "Modo,inizia,continua"
+msgstr ""
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
-msgstr "Scegli riga"
+msgstr ""
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr "\"Includi spazi\",no,sì"
+msgstr ""
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
-msgstr "Scegli paragrafo"
+msgstr ""
 
 #: syneditstrconst.syns_emcselectword
 msgid "Select Word"
-msgstr "Scegli parola"
+msgstr ""
 
 #: syneditstrconst.syns_emcstartcolumnselections
 msgid "Column Selection"
-msgstr "Scegli colonna"
+msgstr ""
 
 #: syneditstrconst.syns_emcstartdragmove
 msgid "Drag Selection"
-msgstr "Trascina la selezione"
+msgstr ""
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
-msgstr "Selezione riga"
+msgstr ""
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
-msgstr "Selezione"
+msgstr ""
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
-msgstr "Comando IDE"
+msgstr ""
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
-msgstr "HTML"
+msgstr ""
 
 #: syneditstrconst.syns_exporterformatrtf
 msgid "RTF"
-msgstr "RTF"
+msgstr ""
 
 #: syneditstrconst.syns_filteradsp21xx
 msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
-msgstr "File DSP (*.dsp,*.inc)|*.DSP;*.INC"
+msgstr ""
 
 #: syneditstrconst.syns_filterasm68hc11
 msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr "File assembler 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr ""
 
 #: syneditstrconst.syns_filterawk
 msgid "AWK Script (*.awk)|*.awk"
-msgstr "Script AWK (*.awk)|*.awk"
+msgstr ""
 
 #: syneditstrconst.syns_filterbaan
 msgid "Baan 4GL Files (*.cln)|*.cln"
-msgstr "File Baan 4GL (*.cln)|*.cln"
+msgstr ""
 
 #: syneditstrconst.syns_filterbatch
 msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
-msgstr "File batch DOS (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr ""
 
 #: syneditstrconst.syns_filtercache
 msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-msgstr "File Cache (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
+msgstr ""
 
 #: syneditstrconst.syns_filtercaclipper
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
-msgstr "File CA-Clipper (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
+msgstr ""
 
 #: syneditstrconst.syns_filtercorbaidl
 msgid "CORBA IDL files (*.idl)|*.idl"
-msgstr "File CORBA IDL (*.idl)|*.idl"
+msgstr ""
 
 #: syneditstrconst.syns_filtercpm
 msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
-msgstr "Report CPM (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
+msgstr ""
 
 #: syneditstrconst.syns_filtercpp
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
-msgstr "Files C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
+msgstr ""
 
 #: syneditstrconst.syns_filtercss
 msgid "Cascading Stylesheets (*.css)|*.css"
-msgstr "Fogli di stile (*.css)|*.css"
+msgstr ""
 
 #: syneditstrconst.syns_filterdfm
 msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
-msgstr "File Form Borland (*.dfm;*.xfm)|*.dfm;*.xfm"
+msgstr ""
 
 #: syneditstrconst.syns_filterfortran
 msgid "Fortran Files (*.for)|*.for"
-msgstr "File Fortran (*.for)|*.for"
+msgstr ""
 
 #: syneditstrconst.syns_filterfoxpro
 msgid "Foxpro Files (*.prg)|*.prg"
-msgstr "File Foxpro (*.prg)|*.prg"
+msgstr ""
 
 #: syneditstrconst.syns_filtergalaxy
 msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-msgstr "File Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
+msgstr ""
 
 #: syneditstrconst.syns_filtergembase
 msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
-msgstr "File GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
+msgstr ""
 
 #: syneditstrconst.syns_filtergws
 msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "File script GW-TEL (*.gws)|*.gws"
+msgstr ""
 
 #: syneditstrconst.syns_filterhp
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr "Files HP48 (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
+msgstr ""
 
 #: syneditstrconst.syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-msgstr "File HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
+msgstr ""
 
 #: syneditstrconst.syns_filterhtml
 msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
-msgstr "Documento HTML (*.htm,*.html)|*.htm;*.html"
+msgstr ""
 
 #: syneditstrconst.syns_filterini
 msgid "INI Files (*.ini)|*.ini"
-msgstr "File INI (*.ini)|*.ini"
+msgstr ""
 
 #: syneditstrconst.syns_filterinno
 msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "File script Inno Setup (*.iss)|*.iss"
+msgstr ""
 
 #: syneditstrconst.syns_filterjava
 msgid "Java Files (*.java)|*.java"
-msgstr "File Java (*.java)|*.java"
+msgstr ""
 
 #: syneditstrconst.syns_filterjscript
 msgid "Javascript Files (*.js)|*.js"
-msgstr "File Javascript (*.js)|*.js"
+msgstr ""
 
 #: syneditstrconst.syns_filterkix
 msgid "KiXtart scripts (*.kix)|*.kix"
-msgstr "Script KiXtart (*.kix)|*.kix"
+msgstr ""
 
 #: syneditstrconst.syns_filterlfm
 msgid "Lazarus Form Files (*.lfm)|*.lfm"
-msgstr "File Form Lazarus (*.lfm)|*.lfm"
+msgstr ""
 
 #: syneditstrconst.syns_filtermodelica
 msgid "Modelica Files (*.mo)|*.mo"
-msgstr "File Modelica (*.mo)|*.mo"
+msgstr ""
 
 #: syneditstrconst.syns_filtermodula3
 msgid "Modula-3 Files (*.m3)|*.m3"
-msgstr "File Modula-3 (*.m3)|*.m3"
+msgstr ""
 
 #: syneditstrconst.syns_filterpascal
 msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
-msgstr "File Pascal (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+msgstr ""
 
 #: syneditstrconst.syns_filterperl
 msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
-msgstr "File Perl (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
+msgstr ""
 
 #: syneditstrconst.syns_filterphp
 msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
-msgstr "File PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
+msgstr ""
 
 #: syneditstrconst.syns_filterprogress
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
-msgstr "File Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
+msgstr ""
 
 #: syneditstrconst.syns_filterpython
 msgid "Python Files (*.py)|*.py"
-msgstr "File Python (*.py)|*.py"
+msgstr ""
 
 #: syneditstrconst.syns_filterrtf
 msgid "Rich Text Format (*.rtf)|*.rtf"
-msgstr "File RTF (*.rtf)|*.rtf"
+msgstr ""
 
 #: syneditstrconst.syns_filtersdd
 msgid "Semanta DD files (*.sdd)|*.sdd"
-msgstr "File Semanta DD (*.sdd)|*.sdd"
+msgstr ""
 
 #: syneditstrconst.syns_filtersml
 msgid "Standard ML Files (*.sml)|*.sml"
-msgstr "File standard ML (*.sml)|*.sml"
+msgstr ""
 
 #: syneditstrconst.syns_filtersql
 msgid "SQL Files (*.sql)|*.sql"
-msgstr "File SQL (*.sql)|*.sql"
+msgstr ""
 
 #: syneditstrconst.syns_filtersyngenmsgfiles
 msgid "Msg files (*.msg)|*.msg"
-msgstr "File Msg (*.msg)|*.msg"
+msgstr ""
 
 #: syneditstrconst.syns_filtertcltk
 msgid "Tcl/Tk Files (*.tcl)|*.tcl"
-msgstr "File Tcl/Tk (*.tcl)|*.tcl"
+msgstr ""
 
 #: syneditstrconst.syns_filtertex
 msgid "TeX Files (*.tex)|*.tex"
-msgstr "File TeX (*.tex)|*.tex"
+msgstr ""
 
 #: syneditstrconst.syns_filterunixshellscript
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
-msgstr "Script di shell Unix (*.sh)|*.sh"
+msgstr ""
 
 #: syneditstrconst.syns_filtervbscript
 msgid "VBScript Files (*.vbs)|*.vbs"
-msgstr "File VBScript (*.vbs)|*.vbs"
+msgstr ""
 
 #: syneditstrconst.syns_filtervisualbasic
 msgid "Visual Basic Files (*.bas)|*.bas"
-msgstr "File Visual Basic (*.bas)|*.bas"
+msgstr ""
 
 #: syneditstrconst.syns_filterx86asm
 msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "File assembly x86 (*.asm)|*.ASM"
+msgstr ""
 
 #: syneditstrconst.syns_filterxml
 msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr "Documenti XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr ""
 
 #: syneditstrconst.syns_previewscrollinfofmt
 msgid "Page: %d"
-msgstr "Pagina: %d"
+msgstr ""
 
 #: syneditstrconst.syns_scrollinfofmt
 msgid "%d - %d"
-msgstr "%d - %d"
+msgstr ""
 
 #: syneditstrconst.syns_scrollinfofmttop
 msgid "Top Line: %d"
-msgstr "Linea in cima: %d"
+msgstr ""
 
 #: syneditstrconst.syns_shortcutnone
 msgid "<none>"
-msgstr "<nessuno>"
+msgstr ""
 
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
-msgstr "Senza titolo"
+msgstr ""

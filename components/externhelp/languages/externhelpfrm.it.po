@@ -1,24 +1,31 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-18 11:31+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: externhelpfrm.ehrsaddnewitem
 msgid "Add new item"
-msgstr "Aggiungi un nuovo elemento"
+msgstr "Aggiungi nuovo elemento"
 
 #: externhelpfrm.ehrsbrowse
 msgid "Browse ..."
-msgstr ""
+msgstr "Naviga..."
 
 #: externhelpfrm.ehrsbrowseforpath
 msgid "Browse for path"
-msgstr ""
+msgstr "Cerca il cammino"
 
 #: externhelpfrm.ehrschooseapascalunit
 msgid "Choose a pascal unit"
-msgstr ""
+msgstr "Scegli una unit pascal"
 
 #: externhelpfrm.ehrsdeleteitem
 msgid "Delete item"
@@ -30,7 +37,7 @@ msgstr "Cartella non trovata: %s"
 
 #: externhelpfrm.ehrseditorfile
 msgid "Editor file ..."
-msgstr ""
+msgstr "File editor..."
 
 #: externhelpfrm.ehrsexternal
 msgid "External"
@@ -46,7 +53,7 @@ msgstr "Generale"
 
 #: externhelpfrm.ehrsgrouptitle
 msgid "Extern help"
-msgstr ""
+msgstr "Help esterno"
 
 #: externhelpfrm.ehrshelp
 msgid "Help"
@@ -58,11 +65,11 @@ msgstr "Includi sottocartelle"
 
 #: externhelpfrm.ehrsmacrofy
 msgid "Macrofy"
-msgstr ""
+msgstr "Macrifica"
 
 #: externhelpfrm.ehrsmysettings
 msgid "My settings (default)"
-msgstr ""
+msgstr "Mie impostazioni (default)"
 
 #: externhelpfrm.ehrsname
 msgid "Name"
@@ -70,11 +77,11 @@ msgstr "Nome"
 
 #: externhelpfrm.ehrsreplacecommondirectorieswithmacros
 msgid "Replace common directories with macros"
-msgstr ""
+msgstr "Sostituisci cartelle comuni con macro"
 
 #: externhelpfrm.ehrsselectafilefromthesourceeditor
 msgid "Select a file from the source editor"
-msgstr ""
+msgstr "Scegli un file dall'editor sorgenti"
 
 #: externhelpfrm.ehrsselectfile
 msgid "Select file"
@@ -82,11 +89,11 @@ msgstr "Seleziona file"
 
 #: externhelpfrm.ehrsstorethisurlin
 msgid "Store this URL in"
-msgstr ""
+msgstr "Salva questa URL in"
 
 #: externhelpfrm.ehrsunitfileorunitdirectory
 msgid "Unit file or unit directory"
-msgstr ""
+msgstr "Flie o cartella delle unit"
 
 #: externhelpfrm.ehrsurl
 msgid "URL"
@@ -95,4 +102,3 @@ msgstr "URL"
 #: externhelpfrm.ehrswarning
 msgid "Warning"
 msgstr "Attenzione"
-

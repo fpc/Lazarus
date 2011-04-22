@@ -1,56 +1,89 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-20 17:28+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: weblazideintf.rsapachemodule
 msgid "Apache Module"
 msgstr "Modulo Apache"
 
 #: weblazideintf.rsapachemodule2
-msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgid ""
+"Apache module%sAn Apache loadable module in Free Pascal using webmodules. "
+"The main library file is automatically maintained by Lazarus."
 msgstr ""
+"Modulo Apache%sUn modulo caricabile da Apache scritto in Free Pascal Free "
+"Pascal usando moduli web. Il file delle libreria principale è mantenuto "
+"automaticamente da Lazarus."
 
 #: weblazideintf.rscgiapplicati
 msgid "CGI Application"
 msgstr "Applicazione CGI"
 
 #: weblazideintf.rscgiapplicati2
-msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid ""
+"CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal "
+"using webmodules. The program source is automatically maintained by Lazarus."
 msgstr ""
+"Applicazione CGI%sUn programma CGI (Common Gateway Interface) scritta in "
+"Free Pascal usando moduli web. Il sorgente del programma è mantenuto "
+"automaticamente da Lazarus"
 
 #: weblazideintf.rscustomcgiapp
 msgid "Custom CGI Application"
 msgstr "Applicazione CGI personalizzata"
 
 #: weblazideintf.rscustomcgiapp2
-msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid ""
+"Custom CGI Application%sA CGI (Common Gateway Interface) program in Free "
+"Pascal. The program source is automatically maintained by Lazarus."
 msgstr ""
+"Applicazione CGI personalizzata%sUn programma CGI (Common Gateway Interface) "
+"scritto in Free Pascal. Il sorgente del programma è mantenuto "
+"automaticamente da Lazarus"
 
 #: weblazideintf.rscustomfastcg
 msgid "Custom FastCGI Application"
 msgstr "Applicazione FastCGI personalizzata"
 
 #: weblazideintf.rscustomfastcg2
-msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgid ""
+"Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in "
+"Free Pascal. The program source is automatically maintained by Lazarus."
 msgstr ""
+"Applicazione CGI personalizzata%sUn programma FastCGI (Common Gateway "
+"Interface) scritto in Free Pascal. Il sorgente del programma è mantenuto "
+"automaticamente da Lazarus."
 
 #: weblazideintf.rsfastcgiappli
 msgid "FastCGI Application"
 msgstr "Applicazione FastCGI"
 
 #: weblazideintf.rsfastcgiappli2
-msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgid ""
+"FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free "
+"Pascal using webmodules. The program source is automatically maintained by "
+"Lazarus."
 msgstr ""
+"Applicazione FastCGI%sUn programma FastCGI (Common Gateway Interface) "
+"scritto in Free Pascal usando moduli web. Il sorgente del programma è "
+"mantenuto automaticamente da Lazarus."
 
 #: weblazideintf.rshtmlwebmodul
 msgid "HTML Web Module"
-msgstr "Modulo Web HTML"
+msgstr "Modulo web HTML"
 
 #: weblazideintf.rshtmlwebmodul2
 msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
-msgstr ""
+msgstr "Modulo web HTML%sUn modulo dati web che produce HTML stretto."
 
 #: weblazideintf.rswebmodule
 msgid "Web Module"
@@ -58,5 +91,4 @@ msgstr "Modulo Web"
 
 #: weblazideintf.rswebmoduleada
 msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
-msgstr ""
-
+msgstr "Modulo web%sUn modulo dati per applicazioni web (HTTP)."

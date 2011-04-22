@@ -1,12 +1,19 @@
+# Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2011-04-22 02:11+0200\n"
+"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
 
 #: maincalleditor.ceractivereport
 msgid "Active report: %s"
-msgstr ""
+msgstr "Report attivo: %s"
 
 #: maincalleditor.cerappcaption
 msgctxt "maincalleditor.cerappcaption"
@@ -29,7 +36,7 @@ msgstr "Chiudi l'applicazione"
 
 #: maincalleditor.cerhintcomposite
 msgid "This Action will Load and Preview a composite Report"
-msgstr ""
+msgstr "Questa azione caricherà e mostrerà l'anteprima di un report composito"
 
 #: maincalleditor.cerhinteditreport
 msgid "Edit active report"
@@ -45,7 +52,7 @@ msgstr "Apri un report esistente"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
-msgstr ""
+msgstr "Stampa anteprima del contenuto del DbGrid corrente"
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"
@@ -53,11 +60,11 @@ msgstr "Anteprima del report attivo"
 
 #: maincalleditor.cerhintprnreport
 msgid "Print directly the active report (i.e. without preview)"
-msgstr ""
+msgstr "Stampa direttamente il report attivo (senza anteprima)"
 
 #: maincalleditor.cerhintthumbnails
 msgid "This Action will Load and Preview a thumbnails Report"
-msgstr ""
+msgstr "Questa azione caricherà e mostrerà l'anteprima di un report miniatura"
 
 #: maincalleditor.cerindex
 msgctxt "maincalleditor.cerindex"
@@ -66,7 +73,7 @@ msgstr "Indice"
 
 #: maincalleditor.cerindexfields
 msgid "Index Fields: %s"
-msgstr ""
+msgstr "Campi indice: %s"
 
 #: maincalleditor.cernewreport
 msgid "New report"
@@ -78,7 +85,7 @@ msgstr "nessuno"
 
 #: maincalleditor.cernotimplemented
 msgid "This feature is not yet implemented!"
-msgstr "Questa caratteristica non � ancora stata implementata!"
+msgstr "Questa funzione non è ancora stata implementata!"
 
 #: maincalleditor.ceropenreport
 msgid "Open report"
@@ -86,15 +93,15 @@ msgstr "Apri report"
 
 #: maincalleditor.ceropenreportfirst
 msgid "Open report first"
-msgstr ""
+msgstr "Apri report per primo"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
-msgstr ""
+msgstr "PrepareReport fallito!"
 
 #: maincalleditor.cerpreviewreport
 msgid "Preview report"
-msgstr ""
+msgstr "Anteprima report"
 
 #: maincalleditor.cerprintgrid
 msgid "Print grid"
@@ -107,7 +114,7 @@ msgstr "Stampa il report"
 #: maincalleditor.certhumbnails
 msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
-msgstr ""
+msgstr "Miniature"
 
 #: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
 msgid "frmCustomPreview"
@@ -125,7 +132,7 @@ msgstr "Chiudi"
 #: TFRMMAIN.ACCCOMPOSITE.CAPTION
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
-msgstr ""
+msgstr "Composito"
 
 #: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
 msgid "Custom Preview"
@@ -146,7 +153,7 @@ msgstr ""
 
 #: TFRMMAIN.ACCEXPORTTOHTML.CAPTION
 msgid "Export to html"
-msgstr "Esporta in formato html"
+msgstr "Esporta in html"
 
 #: TFRMMAIN.ACCEXPORTTOTEXT.CAPTION
 msgid "Export to text"
@@ -175,11 +182,11 @@ msgstr "Stampa il Report"
 #: TFRMMAIN.ACCTHUMBNAILS.CAPTION
 msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
-msgstr ""
+msgstr "Miniature"
 
 #: TFRMMAIN.BTNMASTERDETAIL.CAPTION
 msgid "Master-Detail Test"
-msgstr ""
+msgstr "Test master-detail"
 
 #: TFRMMAIN.FRMMAIN.CAPTION
 msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
@@ -188,7 +195,7 @@ msgstr ""
 
 #: TFRMMAIN.LBLEXPR.CAPTION
 msgid "Expression"
-msgstr ""
+msgstr "Espressione"
 
 #: TFRMMAIN.LBLINDEX.CAPTION
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
@@ -206,4 +213,3 @@ msgstr "Test"
 #: TFRMMAIN.MENUITEM9.CAPTION
 msgid "Export"
 msgstr "Esporta"
-
