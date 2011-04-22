@@ -169,6 +169,7 @@ Type
     property AutoDropDown;
     property AutoSize;// Note: windows has a fixed height in some styles
     property BidiMode;
+    property BorderSpacing;
     property Color;
     property Constraints;
     property DragCursor;
@@ -184,6 +185,7 @@ Type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property ShellListView;
     property ShowHint;
     property TabOrder;
     property TabStop;
