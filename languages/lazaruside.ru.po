@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-19 00:37+0300\n"
+"PO-Revision-Date: 2011-04-23 00:36+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3060,9 +3060,9 @@ msgstr "Выводить логотип FPC"
 msgid "Multiselected components must be of a single form."
 msgstr "Множественный выбор компонентов должен быть на одной форме"
 
-#: lazarusidestrconsts.fdmalignword
-msgid "Align"
-msgstr "Выравнивание"
+#: lazarusidestrconsts.fdmalignmenu
+msgid "Align ..."
+msgstr "Выровнять ..."
 
 #: lazarusidestrconsts.fdmdeleteselection
 msgid "Delete Selection"
@@ -3108,6 +3108,10 @@ msgstr "Поместить cпереди"
 msgid "Save form as XML"
 msgstr "Сохранить форму в виде XML"
 
+#: lazarusidestrconsts.fdmscalemenu
+msgid "Scale ..."
+msgstr "Масштабировать ..."
+
 #: lazarusidestrconsts.fdmscaleword
 msgid "Scale"
 msgstr "Масштаб"
@@ -3116,6 +3120,10 @@ msgstr "Масштаб"
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
 msgstr "Выделить все"
+
+#: lazarusidestrconsts.fdmsizemenu
+msgid "Size ..."
+msgstr "Изменить размер ..."
 
 #: lazarusidestrconsts.fdmsizeword
 msgid "Size"
@@ -6272,6 +6280,33 @@ msgstr "Ошибка отладчика"
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "Ошибка отладчика%sОп, отладчик находится в нерабочем состоянии%sСохраните работу!%sНажмите Стоп и надейтесь на лучшее!"
 
+#: lazarusidestrconsts.lisdebuggerfeedbackerror
+msgid "Debugger Error"
+msgstr "Ошибка отладчика"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackless
+msgid "Less"
+msgstr "Меньше"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackmore
+msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
+msgid "More"
+msgstr "Больше"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackok
+msgctxt "lazarusidestrconsts.lisdebuggerfeedbackok"
+msgid "Ok"
+msgstr "ОК"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackstop
+msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
+msgid "Stop"
+msgstr "Остановить"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackwarning
+msgid "Debugger Warning"
+msgstr "Предупреждение отладчика"
+
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
 msgstr "Неверный отладчик"
@@ -7948,7 +7983,7 @@ msgstr "Путь к  HTML-документации FPC"
 
 #: lazarusidestrconsts.lishorizontal
 msgid "Horizontal"
-msgstr "Горизонтально"
+msgstr "По горизонтали"
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
@@ -10613,9 +10648,9 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Редактор исходного кода"
 
-#: lazarusidestrconsts.lismenuviewtabordereditor
-msgid "Tab Order Editor"
-msgstr "Редактор порядка перехода"
+#: lazarusidestrconsts.lismenuviewtaborder
+msgid "Tab Order"
+msgstr "Порядок перехода"
 
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
@@ -10720,6 +10755,7 @@ msgid "&Modify"
 msgstr "&Изменить"
 
 #: lazarusidestrconsts.lismore
+msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Больше"
 
@@ -13365,7 +13401,7 @@ msgstr "Сохранить "
 
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
-msgstr "Масштабный фактор:"
+msgstr "Коэффициент масштабирования:"
 
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
@@ -15022,7 +15058,7 @@ msgstr "Версия"
 
 #: lazarusidestrconsts.lisvertical
 msgid "Vertical"
-msgstr "Вертикально"
+msgstr "По вертикали"
 
 #: lazarusidestrconsts.lisvertoclipboard
 msgid "Copy version information to clipboard"
@@ -16562,9 +16598,9 @@ msgstr "Показать формы"
 msgid "View Terminal Output"
 msgstr "Показать вывод в терминал"
 
-#: lazarusidestrconsts.srkmecviewtabordereditor
-msgid "View Tab Order editor"
-msgstr "Показать редактор порядка перехода"
+#: lazarusidestrconsts.srkmecviewtaborder
+msgid "View Tab Order"
+msgstr "Показать порядок перехода"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

@@ -1099,34 +1099,20 @@ msgid "Test Input"
 msgstr "Prova Input"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid ""
-"The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore "
-"to force it."
-msgstr ""
-"L'identificatore %s%s%s non è un metodo.%sPremere Annulla per disfare, "
-"oppure Ignora per forzarlo."
+msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "L'identificatore %s%s%s non è un metodo.%sPremere Annulla per disfare, oppure Ignora per forzarlo."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid ""
-"The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,"
-"%spress Ignore to force it."
-msgstr ""
-"Il metodo %s%s%s è incompatibile con questo evento (%s).%sPremere Annulla "
-"per disfare, oppure Ignora per forzarlo."
+msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Il metodo %s%s%s è incompatibile con questo evento (%s).%sPremere Annulla per disfare, oppure Ignora per forzarlo."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid ""
-"The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to "
-"force it."
-msgstr ""
-"Il metodo %s%s%s non è pubblicato.%sPremere Annulla per disfare, oppure "
-"Ignora per forzarlo."
+msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "Il metodo %s%s%s non è pubblicato.%sPremere Annulla per disfare, oppure Ignora per forzarlo."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
-msgstr ""
-"Impossibile cambiare il padre del controllo %s%s%s con il nuovo padre %s%s%"
-"s.%s%s"
+msgstr "Impossibile cambiare il padre del controllo %s%s%s con il nuovo padre %s%s%s.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1793,3 +1779,4 @@ msgstr "Muovi scheda a sinistra"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Muovi scheda a destra"
+

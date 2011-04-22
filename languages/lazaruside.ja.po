@@ -3043,9 +3043,9 @@ msgstr "FPC logoを書く"
 msgid "Multiselected components must be of a single form."
 msgstr "複数選択されたコンポーネントは単一のフォームのものでなければなりません。"
 
-#: lazarusidestrconsts.fdmalignword
-msgid "Align"
-msgstr "整列する"
+#: lazarusidestrconsts.fdmalignmenu
+msgid "Align ..."
+msgstr ""
 
 #: lazarusidestrconsts.fdmdeleteselection
 #, fuzzy
@@ -3100,6 +3100,10 @@ msgstr "前に移動"
 msgid "Save form as XML"
 msgstr "フォームをxmlとして保存"
 
+#: lazarusidestrconsts.fdmscalemenu
+msgid "Scale ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmscaleword
 msgid "Scale"
 msgstr "スケール"
@@ -3108,6 +3112,10 @@ msgstr "スケール"
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
 msgstr "すべて選択"
+
+#: lazarusidestrconsts.fdmsizemenu
+msgid "Size ..."
+msgstr ""
 
 #: lazarusidestrconsts.fdmsizeword
 msgid "Size"
@@ -6270,6 +6278,33 @@ msgstr "デバッガエラー"
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "デバッガエラー%sおっと、デバッガがエラー状態になりました。%sすぐに作業内容を保存してください！%sStopキーを押してください。うまくいけば停止します。"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackerror
+msgid "Debugger Error"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebuggerfeedbackless
+msgid "Less"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebuggerfeedbackmore
+msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
+msgid "More"
+msgstr "その他"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackok
+msgctxt "lazarusidestrconsts.lisdebuggerfeedbackok"
+msgid "Ok"
+msgstr "Ok"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackstop
+msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
+msgid "Stop"
+msgstr "停止"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackwarning
+msgid "Debugger Warning"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -10635,8 +10670,8 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "ソースエディタ"
 
-#: lazarusidestrconsts.lismenuviewtabordereditor
-msgid "Tab Order Editor"
+#: lazarusidestrconsts.lismenuviewtaborder
+msgid "Tab Order"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewtodolist
@@ -10741,6 +10776,7 @@ msgid "&Modify"
 msgstr "修正 (&M)"
 
 #: lazarusidestrconsts.lismore
+msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "その他"
 
@@ -16591,8 +16627,8 @@ msgstr "フォームを表示"
 msgid "View Terminal Output"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecviewtabordereditor
-msgid "View Tab Order editor"
+#: lazarusidestrconsts.srkmecviewtaborder
+msgid "View Tab Order"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies

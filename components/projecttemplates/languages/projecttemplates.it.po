@@ -24,3 +24,4 @@ msgstr "Errore copia del file \"%s\" to \"%s\""
 #: projecttemplates.serrnosuchtemplate
 msgid "\"%s\": No such template."
 msgstr "\"%s\": Modello inesistente."
+

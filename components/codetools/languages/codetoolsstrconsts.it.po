@@ -1,4 +1,5 @@
-﻿"PO-Revision-Date: 2011-04-17 08:31+0200\n"
+msgid ""
+msgstr ""
 "Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
 "Language-Team: italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -139,7 +140,7 @@ msgid "Default fpc source Operating System 2"
 msgstr "Sorgenti fpc di default sistema operativo 2"
 
 #: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
-msgid "Sorgenti fpc di default sistema operativo"
+msgid "Default fpc source Operating System"
 msgstr ""
 
 #: codetoolsstrconsts.ctsdefaultfpcsymbol
@@ -317,7 +318,7 @@ msgid "expected identifier, but found %s"
 msgstr "era atteso un identificatore, ma è stato trovato %s"
 
 #: codetoolsstrconsts.ctsexpectedstatementbutfound
-msgid "era attesa una istruzione, ma è stato trovato %s"
+msgid "expected statement, but found %s"
 msgstr ""
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
@@ -379,7 +380,7 @@ msgstr "In questa classe non c'è la funzione GetEnumerator"
 
 #: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
 msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
-msgid "In questa classe non c'è la funzione GetEnumerator"
+msgid "function GetEnumerator not found in this class"
 msgstr ""
 
 #: codetoolsstrconsts.ctsgenericidentifier

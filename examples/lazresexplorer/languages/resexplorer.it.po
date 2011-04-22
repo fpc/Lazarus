@@ -61,9 +61,7 @@ msgstr "Versione LCL: "
 
 #: reconstsunit.slicense
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
-msgstr ""
-"Questo programma è software libero distribuito sotto la licenza GNU GPL 2, "
-"vedi file COPYING"
+msgstr "Questo programma è software libero distribuito sotto la licenza GNU GPL 2, vedi file COPYING"
 
 #: reconstsunit.sopen
 msgid "Open..."
@@ -104,3 +102,4 @@ msgstr "Set di widget Win32/Win64"
 #: reconstsunit.swincewidgetset
 msgid "WinCE widget set"
 msgstr "Set di widget WinCE"
+

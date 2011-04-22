@@ -1083,9 +1083,7 @@ msgstr "Stream non assegnato"
 
 #: ipconst.snotenoughdata
 msgid "Not enough data in queue (%s bytes) to satisfy read request (%s bytes)"
-msgstr ""
-"I dati in coda (%s byte) non bastano per soddisfare la richiesta di lettura "
-"(%s byte)"
+msgstr "I dati in coda (%s byte) non bastano per soddisfare la richiesta di lettura (%s byte)"
 
 #: ipconst.snotimererr
 msgid "Not enough system timers available"
@@ -1403,12 +1401,8 @@ msgid "Chunk data is truncated"
 msgstr "Blocco dati troncato"
 
 #: ipconst.spngunsupportedfeature
-msgid ""
-"A %s chunk was found in the PNG File. This feature is not supported in this "
-"version of the PNG decoder"
-msgstr ""
-"TRovato blocco %s nel file PNG. Tale capacità non è supportata in questa "
-"versione del decoder PNG"
+msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
+msgstr "TRovato blocco %s nel file PNG. Tale capacità non è supportata in questa versione del decoder PNG"
 
 #: ipconst.spngwarningconstant
 msgid "**** WARNING ****"
@@ -1425,7 +1419,7 @@ msgstr ""
 #: ipconst.spop3cmdlist
 msgctxt "ipconst.spop3cmdlist"
 msgid "LIST"
-msgstr ""
+msgstr "LISTA"
 
 #: ipconst.spop3cmdnoop
 msgid "NOOP"
@@ -1438,7 +1432,7 @@ msgstr ""
 #: ipconst.spop3cmdquit
 msgctxt "ipconst.spop3cmdquit"
 msgid "QUIT"
-msgstr ""
+msgstr "ESCI"
 
 #: ipconst.spop3cmdretr
 msgid "RETR"
@@ -1723,12 +1717,8 @@ msgid "%s: row number is out of range"
 msgstr "%s: numero di riga fuori limite"
 
 #: ipconst.srowrowoor
-msgid ""
-"TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of "
-"range"
-msgstr ""
-"TIpTerminalArray.ScrollRows: o la riga di inizio o la riga di fine sono "
-"fuori dai limiti"
+msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
+msgstr "TIpTerminalArray.ScrollRows: o la riga di inizio o la riga di fine sono fuori dai limiti"
 
 #: ipconst.sseekingdiskfileto
 msgid "Seeking disk file to "
@@ -2571,3 +2561,4 @@ msgstr "E' arrivato almeno un cammino"
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
 msgstr "Problema con alcune parti del flowspec"
+

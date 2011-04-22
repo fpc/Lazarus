@@ -27,3 +27,4 @@ msgstr "Non puoi registrare una macro mentre ne stai registrando un'altra"
 #: synmacrorecorder.scannotresume
 msgid "Can only resume when paused"
 msgstr "In pausa puoi solo ricominciare"
+

@@ -38,12 +38,8 @@ msgid "This project has no additional variables."
 msgstr "Questo progetto non ha variabili aggiuntive."
 
 #: frmtemplatevariables.sthisproject
-msgid ""
-"This project contains some additional variables. Please provide values for "
-"these variables."
-msgstr ""
-"Questo progetto contiene alcune variabili aggiuntive. Fornire un valore per "
-"queste variabili."
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Questo progetto contiene alcune variabili aggiuntive. Fornire un valore per queste variabili."
 
 #: frmtemplatevariables.stitle
 msgid "New project from template"
@@ -56,3 +52,4 @@ msgstr "Valore"
 #: frmtemplatevariables.svariable
 msgid "Variable"
 msgstr "Variabile"
+

@@ -639,9 +639,7 @@ msgstr "Mostra metodi p&rivati"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr ""
-"makeskel ha riportato l'errore %d. Provo a caricare lo stesso il file che ha "
-"prodotto?"
+msgstr "makeskel ha riportato l'errore %d. Provo a caricare lo stesso il file che ha prodotto?"
 
 #: lazdemsg.sskelerrorwithoutfile
 msgid "makeskel reported an error (%d) and produced no file."
@@ -662,3 +660,4 @@ msgstr "Costruzione documentazione con il comando:"
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
 msgstr "Avvisa se non ci sono nodi di documentazione"
+

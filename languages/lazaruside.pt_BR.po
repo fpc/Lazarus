@@ -3053,9 +3053,9 @@ msgstr "Escrever logotipo FPC"
 msgid "Multiselected components must be of a single form."
 msgstr "Componentes multi-selecionados deverm estar num formulário único."
 
-#: lazarusidestrconsts.fdmalignword
-msgid "Align"
-msgstr "Alinhamento"
+#: lazarusidestrconsts.fdmalignmenu
+msgid "Align ..."
+msgstr ""
 
 #: lazarusidestrconsts.fdmdeleteselection
 #| msgid "Delete selection"
@@ -3102,6 +3102,10 @@ msgstr "Mover para frente"
 msgid "Save form as XML"
 msgstr "Salvar formulário como XML"
 
+#: lazarusidestrconsts.fdmscalemenu
+msgid "Scale ..."
+msgstr ""
+
 #: lazarusidestrconsts.fdmscaleword
 msgid "Scale"
 msgstr "Escala"
@@ -3110,6 +3114,10 @@ msgstr "Escala"
 msgctxt "lazarusidestrconsts.fdmselectall"
 msgid "Select All"
 msgstr "Selecionar Tudo"
+
+#: lazarusidestrconsts.fdmsizemenu
+msgid "Size ..."
+msgstr ""
 
 #: lazarusidestrconsts.fdmsizeword
 msgid "Size"
@@ -6264,6 +6272,33 @@ msgstr "Erro do Depurador "
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "Erro do Depurador%sOoops, o depurador entrou em uma condição de erro%sSalve seu trabalho agora !%sClique Parar e espere pelo melhor, estamos puxando a tomada."
+
+#: lazarusidestrconsts.lisdebuggerfeedbackerror
+msgid "Debugger Error"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebuggerfeedbackless
+msgid "Less"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebuggerfeedbackmore
+msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
+msgid "More"
+msgstr "Mais"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackok
+msgctxt "lazarusidestrconsts.lisdebuggerfeedbackok"
+msgid "Ok"
+msgstr "Ok"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackstop
+msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
+msgid "Stop"
+msgstr "Parar"
+
+#: lazarusidestrconsts.lisdebuggerfeedbackwarning
+msgid "Debugger Warning"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -10609,8 +10644,8 @@ msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
 msgid "Source Editor"
 msgstr "Editor de Código"
 
-#: lazarusidestrconsts.lismenuviewtabordereditor
-msgid "Tab Order Editor"
+#: lazarusidestrconsts.lismenuviewtaborder
+msgid "Tab Order"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewtodolist
@@ -10714,6 +10749,7 @@ msgid "&Modify"
 msgstr "&Modificar"
 
 #: lazarusidestrconsts.lismore
+msgctxt "lazarusidestrconsts.lismore"
 msgid "More"
 msgstr "Mais"
 
@@ -16554,8 +16590,8 @@ msgstr "Exibir formulários"
 msgid "View Terminal Output"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecviewtabordereditor
-msgid "View Tab Order editor"
+#: lazarusidestrconsts.srkmecviewtaborder
+msgid "View Tab Order"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
