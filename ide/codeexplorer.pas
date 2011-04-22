@@ -836,17 +836,21 @@ begin
       ShowNode:=false;
     end;
 
-    // don't show modifier nodes
-    if CodeNode.Desc in [ctnIdentifier,ctnRangedArrayType,
+    // don't show subs
+    if CodeNode.Desc in [ctnConstant,ctnIdentifier,ctnRangedArrayType,
       ctnOpenArrayType,ctnOfConstType,ctnRangeType,ctnTypeType,ctnFileType,
-      ctnVariantType,ctnEnumerationType,ctnSetType,ctnProcedureType]
+      ctnVariantType,ctnSetType,ctnProcedureType]
     then begin
       ShowNode:=false;
       ShowChilds:=false;
     end;
 
+    // show enums, but not the brackets
+    if CodeNode.Desc=ctnEnumerationType then
+      ShowNode:=false;
+
     // don't show special nodes
-    if CodeNode.Desc in [ctnEndPoint,ctnConstant,ctnIdentifier] then
+    if CodeNode.Desc in [ctnEndPoint] then
       ShowNode:=false;
       
     // don't show class visibility section nodes
