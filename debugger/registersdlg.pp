@@ -37,20 +37,40 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, Debugger, DebuggerDlg;
+  ComCtrls, ActnList, Menus, Debugger, DebuggerDlg,
+  LazarusIDEStrConsts, IDEImagesIntf;
 
 type
 
   { TRegistersDlg }
 
   TRegistersDlg = class(TDebuggerDlg)
+    actPower: TAction;
+    ActionList1: TActionList;
     ImageList1: TImageList;
     lvRegisters: TListView;
+    DispDefault: TMenuItem;
+    DispHex: TMenuItem;
+    DispBin: TMenuItem;
+    DispOct: TMenuItem;
+    DispDec: TMenuItem;
+    DispRaw: TMenuItem;
+    PopupDispType: TPopupMenu;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButtonDispType: TToolButton;
+    ToolButtonPower: TToolButton;
+    procedure actPowerExecute(Sender: TObject);
+    procedure DispDefaultClick(Sender: TObject);
+    procedure lvRegistersSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure ToolButtonDispTypeClick(Sender: TObject);
   private
     FRegisters: TIDERegisters;
     FRegistersNotification: TIDERegistersNotification;
+    FPowerImgIdx, FPowerImgIdxGrey: Integer;
     procedure RegistersChanged(Sender: TObject);
     procedure SetRegisters(const AValue: TIDERegisters);
+    function IndexOfName(AName: String): Integer;
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
@@ -66,9 +86,6 @@ implementation
 
 {$R *.lfm}
 
-uses
-  LazarusIDEStrConsts;
-  
 { TRegistersDlg }
 
 constructor TRegistersDlg.Create(AOwner: TComponent);
@@ -80,6 +97,30 @@ begin
   Caption:= lisRegisters;
   lvRegisters.Columns[0].Caption:= lisRegistersDlgName;
   lvRegisters.Columns[1].Caption:= lisRegistersDlgValue;
+
+  ActionList1.Images := IDEImages.Images_16;
+  ToolBar1.Images := IDEImages.Images_16;
+
+  FPowerImgIdx := IDEImages.LoadImage(16, 'debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage(16, 'debugger_power_grey');
+  actPower.ImageIndex := FPowerImgIdx;
+  //actPower.Caption := lisDbgWinPower;
+  actPower.Hint := lisDbgWinPowerHint;
+
+  ToolButtonDispType.Hint := regdlgDisplayTypeForSelectedRegisters;
+  DispDefault.Caption := dlgPasStringKeywordsOptDefault;
+  DispHex.Caption := regdlgHex;
+  DispBin.Caption := lisPkgFileTypeBinary;
+  DispOct.Caption := regdlgOctal;
+  DispDec.Caption := lisDecimal;
+  DispRaw.Caption := regdlgRaw;
+
+  DispDefault.Tag := ord(rdDefault);
+  DispHex.Tag := ord(rdHex);
+  DispBin.Tag := ord(rdBinary);
+  DispOct.Tag := ord(rdOctal);
+  DispDec.Tag := ord(rdDecimal);
+  DispRaw.Tag := ord(rdRaw);
 end;
 
 destructor TRegistersDlg.Destroy;
@@ -90,13 +131,98 @@ begin
   inherited Destroy;
 end;
 
+procedure TRegistersDlg.actPowerExecute(Sender: TObject);
+begin
+  if ToolButtonPower.Down
+  then begin
+    actPower.ImageIndex := FPowerImgIdx;
+    ToolButtonPower.ImageIndex := FPowerImgIdx;
+    RegistersChanged(nil);
+  end
+  else begin
+    actPower.ImageIndex := FPowerImgIdxGrey;
+    ToolButtonPower.ImageIndex := FPowerImgIdxGrey;
+  end;
+end;
+
+procedure TRegistersDlg.DispDefaultClick(Sender: TObject);
+var
+  n, i: Integer;
+  Item: TListItem;
+begin
+  ToolButtonPower.Down := True;
+  FRegisters.BeginUpdate;
+  try
+    for n := 0 to lvRegisters.Items.Count -1 do
+    begin
+      Item := lvRegisters.Items[n];
+      if Item.Selected then begin
+        i := IndexOfName(Item.Caption);
+        if i >= 0
+        then FRegisters.Formats[i] := TRegisterDisplayFormat(TMenuItem(Sender).Tag);
+      end;
+    end;
+  finally
+    FRegisters.EndUpdate;
+  end;
+  lvRegistersSelectItem(nil, nil, True);
+end;
+
+procedure TRegistersDlg.lvRegistersSelectItem(Sender: TObject; Item: TListItem;
+  Selected: Boolean);
+var
+  n, i, j: Integer;
+  SelFormat: TRegisterDisplayFormat;
+  MultiFormat: Boolean;
+begin
+  j := 0;
+  MultiFormat := False;
+  SelFormat := rdDefault;
+  for n := 0 to lvRegisters.Items.Count -1 do
+  begin
+    Item := lvRegisters.Items[n];
+    if Item.Selected then begin
+      i := IndexOfName(Item.Caption);
+      if i >= 0 then begin
+        if j = 0
+        then SelFormat := FRegisters.Formats[i];
+        inc(j);
+        if SelFormat <> FRegisters.Formats[i] then begin
+          MultiFormat := True;
+          break;
+        end;
+      end;
+    end;
+  end;
+  ToolButtonDispType.Enabled := j > 0;
+  if MultiFormat
+  then ToolButtonDispType.Caption := '...'
+  else begin
+    case SelFormat of
+      rdDefault: ToolButtonDispType.Caption := DispDefault.Caption;
+      rdHex:     ToolButtonDispType.Caption := DispHex.Caption;
+      rdBinary:  ToolButtonDispType.Caption := DispBin.Caption;
+      rdOctal:   ToolButtonDispType.Caption := DispOct.Caption;
+      rdDecimal: ToolButtonDispType.Caption := DispDec.Caption;
+      rdRaw:     ToolButtonDispType.Caption := DispRaw.Caption;
+    end;
+  end;
+end;
+
+procedure TRegistersDlg.ToolButtonDispTypeClick(Sender: TObject);
+begin
+  ToolButtonDispType.CheckMenuDropdown;
+end;
+
 procedure TRegistersDlg.RegistersChanged(Sender: TObject);
 var
-  n, idx: Integer;                               
+  n, idx: Integer;
   List: TStringList;
   Item: TListItem;
   S: String;
-begin                                        
+begin
+  if (not ToolButtonPower.Down) then exit;
+
   List := TStringList.Create;
   try
     BeginUpdate;
@@ -148,6 +274,7 @@ begin
   finally
     List.Free;
   end;
+  lvRegistersSelectItem(nil, nil, True);
 end;
 
 procedure TRegistersDlg.SetRegisters(const AValue: TIDERegisters);
@@ -172,6 +299,12 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+function TRegistersDlg.IndexOfName(AName: String): Integer;
+begin
+  Result := FRegisters.Count - 1;
+  while (Result >= 0) and (FRegisters.Names[Result] <> AName) do dec(Result);
 end;
 
 procedure TRegistersDlg.DoBeginUpdate;

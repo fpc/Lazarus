@@ -354,6 +354,8 @@ type
     function GetModified(const AnIndex: Integer): Boolean; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
+    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat; override;
+    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); override;
   public
     function Count: Integer; override;
     property Master: TDBGRegisters read FMaster write SetMaster;
@@ -772,6 +774,21 @@ begin
   if Master = nil
   then Result := inherited GetValue(AnIndex)
   else Result := Master.Values[AnIndex];
+end;
+
+function TManagedRegisters.GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
+begin
+  if Master = nil
+  then Result := inherited GetFormat(AnIndex)
+  else Result := Master.Formats[AnIndex];
+end;
+
+procedure TManagedRegisters.SetFormat(const AnIndex: Integer;
+  const AValue: TRegisterDisplayFormat);
+begin
+  if Master = nil
+  then inherited SetFormat(AnIndex, AValue)
+  else Master.Formats[AnIndex] := AValue;
 end;
 
 function TManagedRegisters.Count: Integer;

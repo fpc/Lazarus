@@ -5257,6 +5257,10 @@ resourcestring
   lisDebuggerFeedbackLess = 'Less';
   lisDebuggerFeedbackMore = 'More';
   lisDebuggerFeedbackOk = 'Ok';
+  regdlgDisplayTypeForSelectedRegisters = 'Display type for selected Registers';
+  regdlgHex = 'Hex';
+  regdlgOctal = 'Octal';
+  regdlgRaw = 'Raw';
 
 implementation
 

@@ -596,6 +596,10 @@ type
      wdfMemDump
     );
 
+  TRegisterDisplayFormat =
+    (rdDefault, rdHex, rdBinary, rdOctal, rdDecimal, rdRaw
+    );
+
 const
   TWatchDisplayFormatNames: array [TWatchDisplayFormat] of string =
     ('wdfDefault',
@@ -881,7 +885,7 @@ type
     property OnChange: TIDELineInfoEvent read FOnChange write FOnChange;
   end;
 
-
+  {%region   ^^^^^  Register  ^^^^^   }
 (******************************************************************************)
 (******************************************************************************)
 (**                                                                          **)
@@ -893,18 +897,26 @@ type
   { TBaseRegisters }
 
   TBaseRegisters = class(TObject)
-  private
   protected
+    FUpdateCount: Integer;
     function GetModified(const AnIndex: Integer): Boolean; virtual;
     function GetName(const AnIndex: Integer): String; virtual;
     function GetValue(const AnIndex: Integer): String; virtual;
+    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat; virtual;
+    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); virtual;
+    procedure ChangeUpdating; virtual;
+    function  Updating: Boolean;
   public
     constructor Create;
     function Count: Integer; virtual;
   public
+    procedure BeginUpdate;
+    procedure EndUpdate;
     property Modified[const AnIndex: Integer]: Boolean read GetModified;
     property Names[const AnIndex: Integer]: String read GetName;
     property Values[const AnIndex: Integer]: String read GetValue;
+    property Formats[const AnIndex: Integer]: TRegisterDisplayFormat
+             read GetFormat write SetFormat;
   end;
 
   { TIDERegisters }
@@ -934,17 +946,21 @@ type
   private
     FDebugger: TDebugger;  // reference to our debugger
     FOnChange: TNotifyEvent;
+    FChanged: Boolean;
   protected
     procedure Changed; virtual;
     procedure DoChange;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     function GetCount: Integer; virtual;
+    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); override;
+    procedure ChangeUpdating; override;
     property Debugger: TDebugger read FDebugger;
   public
     function Count: Integer; override;
     constructor Create(const ADebugger: TDebugger);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
+  {%endregion   ^^^^^  Register  ^^^^^   }
 
 (******************************************************************************)
 (******************************************************************************)
@@ -4020,9 +4036,42 @@ begin
   Result := 0;
 end;
 
+procedure TBaseRegisters.BeginUpdate;
+begin
+  inc(FUpdateCount);
+  if FUpdateCount = 1 then ChangeUpdating;
+end;
+
+procedure TBaseRegisters.EndUpdate;
+begin
+  dec(FUpdateCount);
+  if FUpdateCount = 0 then ChangeUpdating;
+end;
+
 constructor TBaseRegisters.Create;
 begin
   inherited Create;
+end;
+
+function TBaseRegisters.GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
+begin
+  Result := rdDefault;
+end;
+
+procedure TBaseRegisters.SetFormat(const AnIndex: Integer;
+  const AValue: TRegisterDisplayFormat);
+begin
+  //
+end;
+
+procedure TBaseRegisters.ChangeUpdating;
+begin
+  //
+end;
+
+function TBaseRegisters.Updating: Boolean;
+begin
+  Result := FUpdateCount <> 0;
 end;
 
 function TBaseRegisters.GetModified(const AnIndex: Integer): Boolean;
@@ -4101,12 +4150,18 @@ end;
 
 constructor TDBGRegisters.Create(const ADebugger: TDebugger);
 begin
+  FChanged := False;
   inherited Create;
   FDebugger := ADebugger;
 end;
 
 procedure TDBGRegisters.DoChange;
 begin
+  if Updating then begin
+    FChanged := True;
+    exit;
+  end;
+  FChanged := False;
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
@@ -4122,6 +4177,19 @@ end;
 function TDBGRegisters.GetCount: Integer;
 begin
   Result := 0;
+end;
+
+procedure TDBGRegisters.SetFormat(const AnIndex: Integer;
+  const AValue: TRegisterDisplayFormat);
+begin
+  inherited SetFormat(AnIndex, AValue);
+  Changed;
+end;
+
+procedure TDBGRegisters.ChangeUpdating;
+begin
+  inherited ChangeUpdating;
+  if (not Updating) and FChanged then DoChange;
 end;
 
 (******************************************************************************)

@@ -10,8 +10,8 @@ inherited RegistersDlg: TRegistersDlg
   ClientWidth = 346
   object lvRegisters: TListView[0]
     Left = 0
-    Height = 253
-    Top = 0
+    Height = 227
+    Top = 26
     Width = 346
     Align = alClient
     Columns = <    
@@ -27,8 +27,45 @@ inherited RegistersDlg: TRegistersDlg
     SmallImages = ImageList1
     TabOrder = 0
     ViewStyle = vsReport
+    OnSelectItem = lvRegistersSelectItem
   end
-  object ImageList1: TImageList[1]
+  object ToolBar1: TToolBar[1]
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 346
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 1
+    object ToolButtonPower: TToolButton
+      Left = 1
+      Top = 2
+      Action = actPower
+      Down = True
+      ParentShowHint = False
+      ShowCaption = False
+      ShowHint = True
+      Style = tbsCheck
+    end
+    object ToolButton1: TToolButton
+      Left = 24
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object ToolButtonDispType: TToolButton
+      Left = 32
+      Top = 2
+      Caption = '...'
+      DropdownMenu = PopupDispType
+      OnClick = ToolButtonDispTypeClick
+      ParentShowHint = False
+      ShowHint = True
+      Style = tbsDropDown
+    end
+  end
+  object ImageList1: TImageList[2]
     Height = 8
     Width = 8
     left = 112
@@ -44,5 +81,40 @@ inherited RegistersDlg: TRegistersDlg
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000
     }
+  end
+  object ActionList1: TActionList[3]
+    left = 200
+    top = 112
+    object actPower: TAction
+      OnExecute = actPowerExecute
+    end
+  end
+  object PopupDispType: TPopupMenu[4]
+    left = 200
+    top = 176
+    object DispDefault: TMenuItem
+      Caption = 'New Item1'
+      OnClick = DispDefaultClick
+    end
+    object DispHex: TMenuItem
+      Caption = 'New Item2'
+      OnClick = DispDefaultClick
+    end
+    object DispBin: TMenuItem
+      Caption = 'New Item3'
+      OnClick = DispDefaultClick
+    end
+    object DispOct: TMenuItem
+      Caption = 'New Item4'
+      OnClick = DispDefaultClick
+    end
+    object DispDec: TMenuItem
+      Caption = 'New Item5'
+      OnClick = DispDefaultClick
+    end
+    object DispRaw: TMenuItem
+      Caption = 'New Item6'
+      OnClick = DispDefaultClick
+    end
   end
 end

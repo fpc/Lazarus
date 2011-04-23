@@ -417,13 +417,6 @@ type
   THackDBGType = class(TGDBType) end;
 
 type
-  TGDBMICpuRegister = record
-    Name: String;
-    Value: String;
-    Modified: Boolean;
-  end;
-  TGDBMICpuRegisters = Array of TGDBMICpuRegister;
-
   TGDBMIEvaluationState = (esInvalid, esRequested, esValid);
 
   {%region       *****  TGDBMINameValueList and Parsers  *****   }
@@ -747,6 +740,8 @@ type
   {%region      *****  Register  *****   }
 
   { TGDBMIDebuggerCommandRegisterNames }
+  TStringArray = Array of string;
+  TBoolArray = Array of Boolean;
 
   TGDBMIDebuggerCommandRegisterNames = class(TGDBMIDebuggerCommand)
   private
@@ -764,12 +759,30 @@ type
 
   TGDBMIDebuggerCommandRegisterValues = class(TGDBMIDebuggerCommand)
   private
-    FRegistersToUpdate: TGDBMICpuRegisters;
+    FRegistersToUpdate: TStringArray;
+    FFormat: TRegisterDisplayFormat;
   protected
     function DoExecute: Boolean; override;
   public
     // updates the given array directly
-    constructor Create(AOwner: TGDBMIDebugger; RegistersToUpdate: TGDBMICpuRegisters);
+    constructor Create(AOwner: TGDBMIDebugger;
+                       RegistersToUpdate: TStringArray;
+                       AFormat: TRegisterDisplayFormat = rdDefault
+                      );
+    function DebugText: String; override;
+    property Format: TRegisterDisplayFormat read FFormat;
+  end;
+
+  { TGDBMIDebuggerCommandRegisterModified }
+
+  TGDBMIDebuggerCommandRegisterModified = class(TGDBMIDebuggerCommand)
+  private
+    FModifiedToUpdate: TBoolArray;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    // updates the given array directly
+    constructor Create(AOwner: TGDBMIDebugger; ModifiedToUpdate: TBoolArray);
     function DebugText: String; override;
   end;
 
@@ -777,22 +790,33 @@ type
 
   TGDBMIRegisters = class(TDBGRegisters)
   private
-    FRegisters: TGDBMICpuRegisters;
+    FRegNames: TStringArray;
+    FRegValues: Array [TRegisterDisplayFormat] of TStringArray;
+    FRegModified: TBoolArray;
+    FFormats: Array of TRegisterDisplayFormat;
 
     FGetRegisterCmdObj: TGDBMIDebuggerCommandRegisterNames;
     FRegistersReqState: TGDBMIEvaluationState;
     FInRegistersNeeded: Boolean;
 
-    FGetValuesCmdObj: TGDBMIDebuggerCommandRegisterValues;
-    FValuesReqState: TGDBMIEvaluationState;
-    FInValuesNeeded: Boolean;
+    FGetModifiedCmd: TGDBMIDebuggerCommandRegisterModified;
+    FModifiedReqState: TGDBMIEvaluationState;
+    FInModifiedNeeded: Boolean;
 
+    FGetValuesCmdObj: Array [TRegisterDisplayFormat] of TGDBMIDebuggerCommandRegisterValues;
+    FValuesReqState: Array [TRegisterDisplayFormat] of TGDBMIEvaluationState;
+    FInValuesNeeded: Array [TRegisterDisplayFormat] of Boolean;
+
+    function GetDebugger: TGDBMIDebugger;
     procedure RegistersNeeded;
-    procedure ValuesNeeded;
+    procedure ValuesNeeded(AFormat: TRegisterDisplayFormat);
+    procedure ModifiedNeeded;
     procedure DoGetRegisterNamesDestroyed(Sender: TObject);
     procedure DoGetRegisterNamesFinished(Sender: TObject);
     procedure DoGetRegValuesDestroyed(Sender: TObject);
     procedure DoGetRegValuesFinished(Sender: TObject);
+    procedure DoGetRegModifiedDestroyed(Sender: TObject);
+    procedure DoGetRegModifiedFinished(Sender: TObject);
   protected
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Invalidate;
@@ -800,6 +824,9 @@ type
     function GetModified(const AnIndex: Integer): Boolean; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
+    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat; override;
+    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); override;
+    property Debugger: TGDBMIDebugger read GetDebugger;
   public
     procedure Changed; override;
   end;
@@ -1274,6 +1301,48 @@ begin
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
   Result := '"' + Result + '"';
+end;
+
+{ TGDBMIDebuggerCommandRegisterModified }
+
+function TGDBMIDebuggerCommandRegisterModified.DoExecute: Boolean;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+  n, idx: Integer;
+begin
+  Result := True;
+  if length(FModifiedToUpdate) = 0
+  then exit;
+
+  for n := Low(FModifiedToUpdate) to High(FModifiedToUpdate) do
+    FModifiedToUpdate[n] := False;
+
+  ExecuteCommand('-data-list-changed-registers', [cfIgnoreError], R);
+  if R.State = dsError then Exit;
+
+  List := TGDBMINameValueList.Create(R, ['changed-registers']);
+  for n := 0 to List.Count - 1 do
+  begin
+    idx := StrToIntDef(Unquote(List.GetString(n)), -1);
+    if idx < Low(FModifiedToUpdate) then Continue;
+    if idx > High(FModifiedToUpdate) then Continue;
+
+    FModifiedToUpdate[idx] := True;
+  end;
+  FreeAndNil(List);
+end;
+
+constructor TGDBMIDebuggerCommandRegisterModified.Create(AOwner: TGDBMIDebugger;
+  ModifiedToUpdate: TBoolArray);
+begin
+  inherited Create(AOwner);
+  FModifiedToUpdate := ModifiedToUpdate;
+end;
+
+function TGDBMIDebuggerCommandRegisterModified.DebugText: String;
+begin
+  Result := Format('%s: Reg-Cnt=%d', [ClassName, length(FModifiedToUpdate)]);
 end;
 
 { TGDBMINameValueBasedList }
@@ -3835,6 +3904,10 @@ end;
 { TGDBMIDebuggerCommandRegisterValues }
 
 function TGDBMIDebuggerCommandRegisterValues.DoExecute: Boolean;
+const
+  // rdDefault, rdHex, rdBinary, rdOctal, rdDecimal, rdRaw
+  FormatChar : array [TRegisterDisplayFormat] of string =
+    ('N', 'x', 't', 'o', 'd', 'r');
 var
   R: TGDBMIExecResult;
   List, ValList: TGDBMINameValueList;
@@ -3846,13 +3919,11 @@ begin
   then exit;
 
   for n := Low(FRegistersToUpdate) to High(FRegistersToUpdate) do
-  begin
-    FRegistersToUpdate[n].Value := '';
-    FRegistersToUpdate[n].Modified := False;
-  end;
+    FRegistersToUpdate[n] := '';
 
-  ExecuteCommand('-data-list-register-values N', R);
+  ExecuteCommand('-data-list-register-values %s', [FormatChar[FFormat]], R);
   if R.State = dsError then Exit;
+
 
   ValList := TGDBMINameValueList.Create('');
   List := TGDBMINameValueList.Create(R, ['register-values']);
@@ -3861,39 +3932,25 @@ begin
     Item := List.Items[n];
     ValList.Init(Item^.Name);
     idx := StrToIntDef(Unquote(ValList.Values['number']), -1);
-    if idx < Low(FRegistersToUpdate) then Continue;
-    if idx > High(FRegistersToUpdate) then Continue;
-
-    FRegistersToUpdate[idx].Value := Unquote(ValList.Values['value']);
+    if (idx >= Low(FRegistersToUpdate)) and
+       (idx <= High(FRegistersToUpdate))
+    then FRegistersToUpdate[idx] := Unquote(ValList.Values['value']);
   end;
   FreeAndNil(List);
   FreeAndNil(ValList);
-
-  ExecuteCommand('-data-list-changed-registers', [cfIgnoreError], R);
-  if R.State = dsError then Exit;
-
-  List := TGDBMINameValueList.Create(R, ['changed-registers']);
-  for n := 0 to List.Count - 1 do
-  begin
-    idx := StrToIntDef(Unquote(List.GetString(n)), -1);
-    if idx < Low(FRegistersToUpdate) then Continue;
-    if idx > High(FRegistersToUpdate) then Continue;
-
-    FRegistersToUpdate[idx].Modified := True;
-  end;
-  FreeAndNil(List);
 end;
 
 constructor TGDBMIDebuggerCommandRegisterValues.Create(AOwner: TGDBMIDebugger;
-  RegistersToUpdate: TGDBMICpuRegisters);
+  RegistersToUpdate: TStringArray; AFormat: TRegisterDisplayFormat = rdDefault);
 begin
   inherited Create(AOwner);
   FRegistersToUpdate := RegistersToUpdate;
+  FFormat := AFormat;
 end;
 
 function TGDBMIDebuggerCommandRegisterValues.DebugText: String;
 begin
-  Result := Format('%s: Reg-Cnt=%d', [ClassName, length(FRegistersToUpdate)]);
+  Result := SysUtils.Format('%s: Reg-Cnt=%d', [ClassName, length(FRegistersToUpdate)]);
 end;
 
 { TGDBMIDebuggerCommandRegisterNames }
@@ -6369,13 +6426,16 @@ end;
 procedure TGDBMIRegisters.Invalidate;
 var
   n: Integer;
+  i: TRegisterDisplayFormat;
 begin
-  for n := Low(FRegisters) to High(FRegisters) do
-  begin
-    FRegisters[n].Value := '';
-    FRegisters[n].Modified := False;
+  for n := Low(FRegModified) to High(FRegModified) do
+    FRegModified[n] := False;
+  for i := low(TRegisterDisplayFormat) to high(TRegisterDisplayFormat) do begin
+    for n := Low(FRegValues[i]) to High(FRegValues[i]) do
+      FRegValues[i][n] := '';
+    FValuesReqState[i] := esInvalid;
   end;
-  FValuesReqState := esInvalid;
+  FModifiedReqState := esInvalid;
 end;
 
 function TGDBMIRegisters.GetCount: Integer;
@@ -6384,20 +6444,20 @@ begin
   and (Debugger.State = dsPause)
   then RegistersNeeded;
 
-  Result := Length(FRegisters)
+  Result := Length(FRegNames)
 end;
 
 function TGDBMIRegisters.GetModified(const AnIndex: Integer): Boolean;
 begin
   if  (Debugger <> nil)
   and (Debugger.State = dsPause)
-  then ValuesNeeded;
+  and (FModifiedReqState <> esValid)
+  then ModifiedNeeded;
 
-  if  (FValuesReqState = esValid)
-  and (FRegistersReqState = esValid)
-  and (AnIndex >= Low(FRegisters))
-  and (AnIndex <= High(FRegisters))
-  then Result := FRegisters[AnIndex].Modified
+  if  (FModifiedReqState = esValid)
+  and (AnIndex >= Low(FRegModified))
+  and (AnIndex <= High(FRegModified))
+  then Result := FRegModified[AnIndex]
   else Result := False;
 end;
 
@@ -6408,9 +6468,9 @@ begin
   then RegistersNeeded;
 
   if  (FRegistersReqState = esValid)
-  and (AnIndex >= Low(FRegisters))
-  and (AnIndex <= High(FRegisters))
-  then Result := FRegisters[AnIndex].Name
+  and (AnIndex >= Low(FRegNames))
+  and (AnIndex <= High(FRegNames))
+  then Result := FRegNames[AnIndex]
   else Result := '';
 end;
 
@@ -6418,14 +6478,44 @@ function TGDBMIRegisters.GetValue(const AnIndex: Integer): String;
 begin
   if  (Debugger <> nil)
   and (Debugger.State = dsPause)
-  then ValuesNeeded;
+  then ValuesNeeded(Formats[AnIndex]);
 
-  if  (FValuesReqState = esValid)
+  if  (FValuesReqState[FFormats[AnIndex]] = esValid)
   and (FRegistersReqState = esValid)
-  and (AnIndex >= Low(FRegisters))
-  and (AnIndex <= High(FRegisters))
-  then Result := FRegisters[AnIndex].Value
+  and (AnIndex >= Low(FRegValues[Formats[AnIndex]]))
+  and (AnIndex <= High(FRegValues[Formats[AnIndex]]))
+  then Result := FRegValues[Formats[AnIndex]][AnIndex]
   else Result := '';
+end;
+
+function TGDBMIRegisters.GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then RegistersNeeded;
+
+  if  (FRegistersReqState = esValid)
+  and (AnIndex >= Low(FFormats))
+  and (AnIndex <= High(FFormats))
+  then Result := FFormats[AnIndex]
+  else Result := inherited;
+end;
+
+procedure TGDBMIRegisters.SetFormat(const AnIndex: Integer;
+  const AValue: TRegisterDisplayFormat);
+begin
+  if  (Debugger <> nil)
+  and (Debugger.State = dsPause)
+  then RegistersNeeded;
+
+  if  (FRegistersReqState = esValid)
+  and (AnIndex >= Low(FFormats))
+  and (AnIndex <= High(FFormats))
+  then begin
+    FFormats[AnIndex] := AValue;
+    inherited Changed;
+  end
+  else inherited SetFormat(AnIndex, AValue);
 end;
 
 procedure TGDBMIRegisters.DoGetRegisterNamesDestroyed(Sender: TObject);
@@ -6438,15 +6528,25 @@ procedure TGDBMIRegisters.DoGetRegisterNamesFinished(Sender: TObject);
 var
   Cmd: TGDBMIDebuggerCommandRegisterNames;
   n: Integer;
+  f: TRegisterDisplayFormat;
 begin
   Cmd := TGDBMIDebuggerCommandRegisterNames(Sender);
 
-  SetLength(FRegisters, Cmd.Count);
+  SetLength(FRegNames, Cmd.Count);
+  SetLength(FRegModified, Cmd.Count);
+  SetLength(FFormats, Cmd.Count);
+  for f := low(TRegisterDisplayFormat) to high(TRegisterDisplayFormat) do begin
+    SetLength(FRegValues[f], Cmd.Count);
+    FValuesReqState[f] := esInvalid;
+  end;
+  FModifiedReqState := esInvalid;
   for n := 0 to Cmd.Count - 1 do
   begin
-    FRegisters[n].Name := Cmd.Names[n];
-    FRegisters[n].Value := '';
-    FRegisters[n].Modified := False;
+    FRegNames[n] := Cmd.Names[n];
+    for f := low(TRegisterDisplayFormat) to high(TRegisterDisplayFormat) do
+      FRegValues[f][n] := '';
+    FRegModified[n] := False;
+    FFormats[n] := rdDefault;
   end;
 
   FGetRegisterCmdObj:= nil;
@@ -6454,12 +6554,6 @@ begin
 
   if not FInRegistersNeeded
   then Changed;
-end;
-
-procedure TGDBMIRegisters.DoGetRegValuesDestroyed(Sender: TObject);
-begin
-  if FGetValuesCmdObj = Sender
-  then FGetValuesCmdObj := nil;
 end;
 
 procedure TGDBMIRegisters.RegistersNeeded;
@@ -6473,7 +6567,7 @@ begin
   then begin
     FInRegistersNeeded := True;
     FRegistersReqState := esRequested;
-    SetLength(FRegisters, 0);
+    SetLength(FRegNames, 0);
 
     FGetRegisterCmdObj := TGDBMIDebuggerCommandRegisterNames.Create(TGDBMIDebugger(Debugger));
     FGetRegisterCmdObj.OnExecuted := @DoGetRegisterNamesFinished;
@@ -6489,38 +6583,104 @@ begin
   end;
 end;
 
-procedure TGDBMIRegisters.DoGetRegValuesFinished(Sender: TObject);
+function TGDBMIRegisters.GetDebugger: TGDBMIDebugger;
 begin
-  FValuesReqState := esValid;
-  FGetValuesCmdObj := nil;
-  if not FInValuesNeeded
+  Result := TGDBMIDebugger(inherited Debugger)
+end;
+
+procedure TGDBMIRegisters.DoGetRegValuesDestroyed(Sender: TObject);
+var
+  Cmd: TGDBMIDebuggerCommandRegisterValues;
+begin
+  Cmd := TGDBMIDebuggerCommandRegisterValues(Sender);
+  if FGetValuesCmdObj[Cmd.Format] = Sender
+  then FGetValuesCmdObj[Cmd.Format] := nil;
+end;
+
+procedure TGDBMIRegisters.DoGetRegValuesFinished(Sender: TObject);
+var
+  Cmd: TGDBMIDebuggerCommandRegisterValues;
+begin
+  Cmd := TGDBMIDebuggerCommandRegisterValues(Sender);
+  FValuesReqState[Cmd.Format] := esValid;
+  FGetValuesCmdObj[Cmd.Format] := nil;
+  if not FInValuesNeeded[Cmd.Format]
   then inherited Changed;
 end;
 
-procedure TGDBMIRegisters.ValuesNeeded;
+procedure TGDBMIRegisters.ValuesNeeded(AFormat: TRegisterDisplayFormat);
 var
   ForceQueue: Boolean;
 begin
-  if (Debugger = nil) or (FValuesReqState in [esRequested, esValid]) or (Count = 0)
+  if  (Debugger <> nil) and (Debugger.State = dsPause)
+  then RegistersNeeded;
+
+  if (Debugger = nil)
+  or (not (Debugger.State in [dsPause, dsStop]))
+  or (FRegistersReqState <> esValid)
+  or (FValuesReqState[AFormat] in [esRequested, esValid])
+  or (Count = 0)
   then Exit;
 
-  if (Debugger.State in [dsPause, dsStop])
-  then begin
-    FInValuesNeeded := True;
-    FValuesReqState := esRequested;
+  FInValuesNeeded[AFormat] := True;
+  FValuesReqState[AFormat] := esRequested;
 
-    FGetValuesCmdObj := TGDBMIDebuggerCommandRegisterValues.Create(TGDBMIDebugger(Debugger), FRegisters);
-    FGetValuesCmdObj.OnExecuted := @DoGetRegValuesFinished;
-    FGetValuesCmdObj.OnDestroy   := @DoGetRegValuesDestroyed;
-    FGetValuesCmdObj.Priority := GDCMD_PRIOR_LOCALS;
-    FGetValuesCmdObj.Properties := [dcpCancelOnRun];
-    ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
-              and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-              and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
-    TGDBMIDebugger(Debugger).QueueCommand(FGetValuesCmdObj, ForceQueue);
-    (* DoEvaluationFinished may be called immediately at this point *)
-    FInValuesNeeded := False;
-  end;
+  FGetValuesCmdObj[AFormat] := TGDBMIDebuggerCommandRegisterValues.Create
+    (Debugger,  FRegValues[AFormat], AFormat);
+  FGetValuesCmdObj[AFormat].OnExecuted := @DoGetRegValuesFinished;
+  FGetValuesCmdObj[AFormat].OnDestroy   := @DoGetRegValuesDestroyed;
+  FGetValuesCmdObj[AFormat].Priority := GDCMD_PRIOR_LOCALS;
+  FGetValuesCmdObj[AFormat].Properties := [dcpCancelOnRun];
+  ForceQueue := (Debugger.FCurrentCommand <> nil)
+            and (Debugger.FCurrentCommand is TGDBMIDebuggerCommandExecute)
+            and (not TGDBMIDebuggerCommandExecute(Debugger.FCurrentCommand).NextExecQueued);
+  Debugger.QueueCommand(FGetValuesCmdObj[AFormat], ForceQueue);
+  (* DoEvaluationFinished may be called immediately at this point *)
+  FInValuesNeeded[AFormat] := False;
+end;
+
+procedure TGDBMIRegisters.DoGetRegModifiedDestroyed(Sender: TObject);
+begin
+  if FGetModifiedCmd = Sender
+  then FGetModifiedCmd := nil;
+end;
+
+procedure TGDBMIRegisters.DoGetRegModifiedFinished(Sender: TObject);
+begin
+  FModifiedReqState := esValid;
+  FGetModifiedCmd := nil;
+  if not FInModifiedNeeded
+  then inherited Changed;
+end;
+
+procedure TGDBMIRegisters.ModifiedNeeded;
+var
+  ForceQueue: Boolean;
+begin
+  if  (Debugger <> nil) and (Debugger.State = dsPause)
+  then RegistersNeeded;
+
+  if (Debugger = nil)
+  or (not (Debugger.State in [dsPause, dsStop]))
+  or (FRegistersReqState <> esValid)
+  or (FModifiedReqState in [esRequested, esValid])
+  or (Count = 0)
+  then Exit;
+
+  FInModifiedNeeded := True;
+  FModifiedReqState := esRequested;
+
+  FGetModifiedCmd := TGDBMIDebuggerCommandRegisterModified.Create(Debugger,  FRegModified);
+  FGetModifiedCmd.OnExecuted  := @DoGetRegModifiedFinished;
+  FGetModifiedCmd.OnDestroy    := @DoGetRegModifiedDestroyed;
+  FGetModifiedCmd.Priority := GDCMD_PRIOR_LOCALS;
+  FGetModifiedCmd.Properties := [dcpCancelOnRun];
+  ForceQueue := (Debugger.FCurrentCommand <> nil)
+            and (Debugger.FCurrentCommand is TGDBMIDebuggerCommandExecute)
+            and (not TGDBMIDebuggerCommandExecute(Debugger.FCurrentCommand).NextExecQueued);
+  Debugger.QueueCommand(FGetModifiedCmd, ForceQueue);
+  (* DoEvaluationFinished may be called immediately at this point *)
+  FInModifiedNeeded := False;
 end;
 
 { =========================================================================== }
