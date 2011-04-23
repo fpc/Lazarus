@@ -4808,6 +4808,9 @@ resourcestring
   lisRequiresFPC24OrAboveLikeDelphiResources = 'Requires FPC 2.4 or above. '
     +'Like Delphi resources';
   lisStorePathDelimitersAndAs = 'Store path delimiters \ and / as';
+  lisDoNotChange = 'Do not change';
+  lisChangeToUnix = 'Change to Unix /';
+  lisChangeToWindows = 'Change to Windows \';
   dlgCOCreateNodeAbove = 'Create node above';
   dlgCOCreateNodeBelow = 'Create node below';
   dlgCOCreateChildNode = 'Create child node';

@@ -5,8 +5,10 @@ unit project_misc_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, ProjectIntf, Project, IDEOptionsIntf, LazarusIDEStrConsts;
+  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, StdCtrls,
+  ProjectIntf, IDEOptionsIntf,
+  IDEProcs, Project, LazarusIDEStrConsts;
 
 type
 
@@ -65,6 +67,9 @@ begin
   UseFPCResourcesRadioButton.Caption := lisFPCResources;
   UseFPCResourcesRadioButton.Hint := lisRequiresFPC24OrAboveLikeDelphiResources;
   PathDelimLabel.Caption:=lisStorePathDelimitersAndAs;
+  PathDelimComboBox.Items.Text:=lisDoNotChange+LineEnding
+                               +lisChangeToUnix+LineEnding
+                               +lisChangeToWindows;
 end;
 
 procedure TProjectMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -82,6 +87,13 @@ begin
     case Resources.ResourceType of
       rtLRS: UseLRSFilesRadioButton.Checked := True;
       rtRes: UseFPCResourcesRadioButton.Checked := True;
+    end;
+    case StorePathDelim of
+    pdsNone: PathDelimComboBox.ItemIndex:=0;
+    pdsSystem: if PathDelim='/' then {%H-}PathDelimComboBox.ItemIndex:=1
+                                else {%H-}PathDelimComboBox.ItemIndex:=2;
+    pdsUnix: PathDelimComboBox.ItemIndex:=1;
+    pdsWindows: PathDelimComboBox.ItemIndex:=2;
     end;
   end;
 end;
@@ -118,6 +130,11 @@ begin
     Project.Resources.ResourceType := rtLRS
   else
     Project.Resources.ResourceType := rtRes;
+  case PathDelimComboBox.ItemIndex of
+  0: Project.StorePathDelim:=pdsNone;
+  1: Project.StorePathDelim:=pdsUnix;
+  2: Project.StorePathDelim:=pdsWindows;
+  end;
 end;
 
 class function TProjectMiscOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

@@ -188,13 +188,13 @@ inherited ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Bevel2
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
     Left = 116
     Height = 27
     Top = 326
-    Width = 119
+    Width = 259
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    Enabled = False
     ItemHeight = 0
     TabOrder = 9
     Text = 'PathDelimComboBox'
