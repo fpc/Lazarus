@@ -821,6 +821,7 @@ type
     procedure SetMainUnitID(const AValue: Integer);
     procedure SetPOOutputDirectory(const AValue: string);
     procedure SetSkipCheckLCLInterfaces(const AValue: boolean);
+    procedure SetStorePathDelim(const AValue: TPathDelimSwitch);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SourceDirectoriesChanged(Sender: TObject);
     procedure UpdateProjectDirectory;
@@ -1087,7 +1088,7 @@ type
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
     property SessionStorePathDelim: TPathDelimSwitch read FSessionStorePathDelim write FSessionStorePathDelim;
-    property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
+    property StorePathDelim: TPathDelimSwitch read FStorePathDelim write SetStorePathDelim;
     property TargetFilename: string
                                  read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits;
@@ -3332,7 +3333,7 @@ begin
     try
       Path:='ProjectOptions/';
       // get format
-      StorePathDelim:=CheckPathDelim(
+      fStorePathDelim:=CheckPathDelim(
         XMLConfig.GetValue(Path+'PathDelim/Value', '/'),fPathDelimChanged);
       fCurStorePathDelim:=StorePathDelim;
 
@@ -5170,6 +5171,13 @@ begin
   if FSkipCheckLCLInterfaces=AValue then exit;
   FSkipCheckLCLInterfaces:=AValue;
   SessionModified:=true;
+end;
+
+procedure TProject.SetStorePathDelim(const AValue: TPathDelimSwitch);
+begin
+  if FStorePathDelim=AValue then exit;
+  FStorePathDelim:=AValue;
+  Modified:=true;
 end;
 
 function TProject.JumpHistoryCheckPosition(
