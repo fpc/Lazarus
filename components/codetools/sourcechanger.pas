@@ -106,7 +106,7 @@ type
     Src: string;
     procedure AddAtom(var CurCode: string; NewAtom: string);
     procedure ReadNextAtom;
-    procedure ReadTilDirectiveEnd;
+    procedure ReadTilCommentEnd;
     procedure StartComment(p: integer);
     procedure EndComment(CommentStart: char; p: integer);
   public
@@ -1363,21 +1363,14 @@ begin
   AtomEnd:=CurPos;
 end;
 
-procedure TBeautifyCodeOptions.ReadTilDirectiveEnd;
+procedure TBeautifyCodeOptions.ReadTilCommentEnd;
 var
   Lvl: Integer;
 begin
-  Lvl:=1;
+  Lvl:=CommentLvl;
   repeat
     ReadNextAtom;
-    if (CurAtomType in [atCommentStart,atDirectiveStart])
-    and NestedComments then
-      inc(Lvl)
-    else if CurAtomType=atCommentEnd then begin
-      dec(Lvl);
-      if Lvl=0 then break;
-    end;
-  until CurAtomType=atNone;
+  until (CurAtomType=atNone) or (CommentLvl<Lvl);
 end;
 
 procedure TBeautifyCodeOptions.StartComment(p: integer);
@@ -1457,10 +1450,11 @@ begin
     while (CurPos<=SrcLen) do begin
       repeat
         ReadNextAtom;
-        if CurAtomType=atDirectiveStart then begin
+        if CurAtomType in [atDirectiveStart,atCommentStart] then begin
           // don't touch directives: they can contain macros and filenames
+          // don't touch comments
           OldAtomStart:=AtomStart;
-          ReadTilDirectiveEnd;
+          ReadTilCommentEnd;
           AtomStart:=OldAtomStart;
         end;
         CurAtom:=copy(Src,AtomStart,AtomEnd-AtomStart);
