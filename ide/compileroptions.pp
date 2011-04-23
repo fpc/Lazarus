@@ -3746,7 +3746,7 @@ end;
 procedure TCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
 begin
-  //debugln(['TCompilationToolOptions.LoadFromXMLConfig ',Command,' Path=',Path]);
+  //debugln(['TCompilationToolOptions.LoadFromXMLConfig ',Command,' Path=',Path,' DoSwitchPathDelims=',DoSwitchPathDelims]);
   Command:=SwitchPathDelims(XMLConfig.GetValue(Path+'Command/Value',''),
                             DoSwitchPathDelims);
   ScanForFPCMessages:=XMLConfig.GetValue(Path+'ScanForFPCMsgs/Value',false);

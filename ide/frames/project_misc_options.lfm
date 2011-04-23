@@ -159,4 +159,44 @@ inherited ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     Caption = 'UseDesignTimePkgsCheckBox'
     TabOrder = 8
   end
+  object PathDelimLabel: TLabel[10]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PathDelimComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 18
+    Top = 330
+    Width = 110
+    Caption = 'PathDelimLabel'
+    ParentColor = False
+  end
+  object Bevel2: TBevel[11]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ResourceGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 3
+    Top = 317
+    Width = 536
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+  end
+  object PathDelimComboBox: TComboBox[12]
+    AnchorSideLeft.Control = PathDelimLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Bevel2
+    AnchorSideTop.Side = asrBottom
+    Left = 116
+    Height = 27
+    Top = 326
+    Width = 119
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Enabled = False
+    ItemHeight = 0
+    TabOrder = 9
+    Text = 'PathDelimComboBox'
+  end
 end

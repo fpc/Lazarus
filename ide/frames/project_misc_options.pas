@@ -15,11 +15,14 @@ type
   TProjectMiscOptionsFrame = class(TAbstractIDEOptionsEditor)
     AlwaysBuildCheckBox: TCheckBox;
     Bevel1: TBevel;
+    Bevel2: TBevel;
     LRSInOutputDirCheckBox: TCheckBox;
     MainUnitHasCreateFormStatementsCheckBox: TCheckBox;
     MainUnitHasTitleStatementCheckBox: TCheckBox;
     MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox;
     MainUnitIsPascalSourceCheckBox: TCheckBox;
+    PathDelimComboBox: TComboBox;
+    PathDelimLabel: TLabel;
     ResourceGroupBox: TGroupBox;
     RunnableCheckBox: TCheckBox;
     UseDesignTimePkgsCheckBox: TCheckBox;
@@ -61,6 +64,7 @@ begin
   UseLRSFilesRadioButton.Hint := lisAutomaticallyConvertLfmFilesToLrsIncludeFiles;
   UseFPCResourcesRadioButton.Caption := lisFPCResources;
   UseFPCResourcesRadioButton.Hint := lisRequiresFPC24OrAboveLikeDelphiResources;
+  PathDelimLabel.Caption:=lisStorePathDelimitersAndAs;
 end;
 
 procedure TProjectMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
