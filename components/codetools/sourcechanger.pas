@@ -107,8 +107,9 @@ type
     procedure AddAtom(var CurCode: string; NewAtom: string);
     procedure ReadNextAtom;
     procedure ReadTilCommentEnd;
+    function IsCommentType(CommentStart: char): boolean;
     procedure StartComment(p: integer);
-    procedure EndComment(CommentStart: char; p: integer);
+    function EndComment(CommentStart: char; p: integer): boolean;
   public
     LineLength: integer;
     LineEnd: string;
@@ -1256,7 +1257,7 @@ begin
           until (CurPos>SrcLen) or (not IsHexNumberChar[Src[CurPos]]);
         end;
       '{': // curly bracket comment or directive
-        begin
+        if (CommentLvl=0) or (NestedComments and IsCommentType('{')) then begin
           StartComment(CurPos);
           inc(CurPos);
           if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
@@ -1269,15 +1270,21 @@ begin
           end else begin
             CurAtomType:=atCommentStart;
           end;
+        end else begin
+          // symbol in comment
+          inc(CurPos);
+          CurAtomType:=atSymbol;
         end;
       '}': // curly bracket comment end
         begin
-          EndComment('{',CurPos);
+          if EndComment('{',CurPos) then
+            CurAtomType:=atCommentEnd
+          else
+            CurAtomType:=atSymbol;
           inc(CurPos);
-          CurAtomType:=atCommentEnd;
         end;
       '(': // (* comment or directive
-        begin
+        if (CommentLvl=0) or (NestedComments and IsCommentType('(')) then begin
           inc(CurPos);
           if (CurPos<=SrcLen) and (Src[CurPos]='*') then begin
             StartComment(CurPos-1);
@@ -1295,6 +1302,10 @@ begin
           end else begin
             CurAtomType:=atBracket;
           end;
+        end else begin
+          // symbol in comment
+          inc(CurPos);
+          CurAtomType:=atSymbol;
         end;
       '[', ']', ')':
         begin
@@ -1304,7 +1315,8 @@ begin
       '*': // *) comment end
         begin
           inc(CurPos);
-          if (CurPos<=SrcLen) and (Src[CurPos]=')') then begin
+          if IsCommentType('(') and (CurPos<=SrcLen) and (Src[CurPos]=')') then
+          begin
             EndComment('(',CurPos-1);
             inc(CurPos);
             CurAtomType:=atCommentEnd;
@@ -1315,7 +1327,7 @@ begin
       '/': // line comment or directive
         begin
           inc(CurPos);
-          if (CurPos<=SrcLen) and (Src[CurPos]='/') then begin
+          if (CommentLvl=0) and (CurPos<=SrcLen) and (Src[CurPos]='/') then begin
             StartComment(CurPos-1);
             inc(CurPos);
             if (CurPos<=SrcLen) and (Src[CurPos]='$') then begin
@@ -1370,7 +1382,13 @@ begin
   Lvl:=CommentLvl;
   repeat
     ReadNextAtom;
+    //debugln(['TBeautifyCodeOptions.ReadTilCommentEnd Atom="',dbgstr(Src,AtomStart,CurPos-AtomStart),'" CommentLvl=',CommentLvl]);
   until (CurAtomType=atNone) or (CommentLvl<Lvl);
+end;
+
+function TBeautifyCodeOptions.IsCommentType(CommentStart: char): boolean;
+begin
+  Result:=(CommentLvl>0) and (Src[CommentStartPos[CommentLvl-1]]=CommentStart);
 end;
 
 procedure TBeautifyCodeOptions.StartComment(p: integer);
@@ -1381,11 +1399,13 @@ begin
   CommentStartPos[CommentLvl-1]:=p;
 end;
 
-procedure TBeautifyCodeOptions.EndComment(CommentStart: char; p: integer);
+function TBeautifyCodeOptions.EndComment(CommentStart: char; p: integer): boolean;
 begin
-  if (CommentLvl>0)
-  and (Src[CommentStartPos[CommentLvl-1]]=CommentStart) then
+  if IsCommentType(CommentStart) then begin
     dec(CommentLvl);
+    Result:=true;
+  end else
+    Result:=false;
 end;
 
 function TBeautifyCodeOptions.BeautifyProc(const AProcCode: string;

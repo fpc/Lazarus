@@ -76,17 +76,15 @@ procedure TCodetoolsLineSplittingOptionsFrame.UpdateSplitLineExample;
 const
   LineSplitExampleText =
     'function F(Sender: TObject; const Val1, Val2, Val3:char; ' +
-    'var Var1, Var2: array of const): integer;'#13 +
-    'const i=1+2+3; // ąčęęėįšųūž';
+    'var Var1, Var2: array of const): integer; { comment // }'#13 +
+    'const i=1+2+3;';
 begin
   if BeautifyCodeOptions = nil then
     Exit;
   WriteBeautifyCodeOptions(BeautifyCodeOptions);
   BeautifyCodeOptions.LineLength := 1;
-  debugln(['TCodetoolsLineSplittingOptionsFrame.UpdateSplitLineExample AAA1']);
   SplitPreviewSynEdit.Text :=
     BeautifyCodeOptions.BeautifyStatement(LineSplitExampleText, 0);
-  debugln(['TCodetoolsLineSplittingOptionsFrame.UpdateSplitLineExample AAA2']);
 end;
 
 procedure TCodetoolsLineSplittingOptionsFrame.UpdatePreviewSettings;

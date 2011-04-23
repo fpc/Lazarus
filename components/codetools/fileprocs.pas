@@ -371,7 +371,8 @@ function DbgSName(const p: TClass): string; overload;
 function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
 
 function DbgS(const i1,i2,i3,i4: integer): string; overload;
-function DbgStr(const StringWithSpecialChars: string): string;
+function DbgStr(const StringWithSpecialChars: string): string; overload;
+function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt): string; overload;
 
 type
   TCTMemStat = class
@@ -2899,6 +2900,12 @@ begin
       inc(i,length(s));
     end;
   end;
+end;
+
+function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt
+  ): string;
+begin
+  Result:=dbgstr(copy(StringWithSpecialChars,StartPos,Len));
 end;
 
 function CompareCTMemStat(Stat1, Stat2: TCTMemStat): integer;
