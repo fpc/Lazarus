@@ -1072,7 +1072,7 @@ var
   IndentLen: Integer;
 begin
   if NewAtom='' then exit;
-  //DebugLn('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');
+  //DebugLn(['[TBeautifyCodeOptions.AddAtom]  NewAtom="',dbgstr(NewAtom),'"']);
 
   // beautify identifier
   if IsIdentStartChar[NewAtom[1]]
@@ -1123,7 +1123,7 @@ begin
   and (LastSplitPos>1) then begin
     // new atom does not fit into the line and there is a split position
     // -> split line
-    //DebugLn(['[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(CurCode,LastSplitPos,5),'" LineLength=',LineLength]);
+    //DebugLn(['[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom="',dbgstr(NewAtom),'" LastSplitPos="',dbgstr(copy(CurCode,LastSplitPos-5,5))+'|'+dbgstr(copy(CurCode,LastSplitPos,5)),'" LineLength=',LineLength]);
     RestLineLen:=length(CurCode)-LastSplitPos+1;
     IndentLen:=Indent+GetLineIndent(CurCode,LastSrcLineStart)+HiddenIndent;
     CurCode:=copy(CurCode,1,LastSplitPos-1)+LineEnd
@@ -1143,7 +1143,7 @@ begin
       HiddenIndent:=0;
     end;
   end;
-  //debugln(['TBeautifyCodeOptions.AddAtom ',dbgstr(CurCode),' ',CurLineLen]);
+  //debugln(['TBeautifyCodeOptions.AddAtom CurCode="',dbgstr(CurCode),'" CurLineLen=',CurLineLen]);
 end;
 
 procedure TBeautifyCodeOptions.ReadNextAtom;
@@ -1153,7 +1153,7 @@ begin
   if AtomStart<=SrcLen then begin
     c1:=Src[CurPos];
     case c1 of
-      'a'..'z','A'..'Z','_': // identifier
+      'a'..'z','A'..'Z','_': // identifier or keyword
         begin
           CurAtomType:=atIdentifier;
           repeat
@@ -1162,6 +1162,13 @@ begin
           if WordIsKeyWord.DoItCaseInsensitive(Src,AtomStart,CurPos-AtomStart)
           then
             CurAtomType:=atKeyword;
+        end;
+      #128..#255: // UTF8
+        begin
+          CurAtomType:=atIdentifier;
+          repeat
+            inc(CurPos);
+          until (CurPos>SrcLen) or not (IsIdentChar[Src[CurPos]] or (Src[CurPos]>=#128));
         end;
       #10,#13: // line break
         begin
@@ -1484,7 +1491,8 @@ begin
       end;
       
       if (not (CurAtomType in DoNotSplitLineInFront))
-      and (not (LastAtomType in DoNotSplitLineAfter)) then
+      and (not (LastAtomType in DoNotSplitLineAfter))
+      and (CommentLvl=0) then
         LastSplitPos:=length(Result)+1;
       {DebugLn('SPLIT LINE  CurPos='+dbgs(CurPos)+' CurAtom="'+CurAtom+'"'
       +' CurAtomType='+AtomTypeNames[CurAtomType]

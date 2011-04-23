@@ -81,6 +81,7 @@ const
     '  A:=@B.C;D:=3;E:=X[5];'#13 +
     '  {$I unit1.lrs}'#13 +
     '  {$R-}{$R+}'#13 +
+    '  // ąčęęėįšųūž'#13+
     'end;';
 begin
   if BeautifyCodeOptions = nil then

@@ -560,9 +560,10 @@ begin
   LastLine:=StringConstSynEdit.Lines[EndPos.Y-StartPos.Y];
   RightSide:=copy(LastLine,EndPos.X,length(LastLine)-EndPos.X+1);
 
-  NewSource:=LeftSide+NewString+RightSide;
+  NewSource:=LeftSide+NewString;
   with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
     NewSource:=BeautifyStatement(NewSource,0);
+  NewSource:=NewString+RightSide;
 
   ResourceStringValue:=FormatStringConstant;
 end;

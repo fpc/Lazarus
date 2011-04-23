@@ -25,7 +25,7 @@ unit codetools_linesplitting_options;
 interface
 
 uses
-  Classes, SysUtils, Forms, StdCtrls, SynEdit,
+  Classes, SysUtils, LCLProc, Forms, StdCtrls, SynEdit,
   SourceChanger, IDEOptionsIntf, EditorOptions, atom_checkboxes_options;
 
 type
@@ -77,14 +77,16 @@ const
   LineSplitExampleText =
     'function F(Sender: TObject; const Val1, Val2, Val3:char; ' +
     'var Var1, Var2: array of const): integer;'#13 +
-    'const i=1+2+3;';
+    'const i=1+2+3; // ąčęęėįšųūž';
 begin
   if BeautifyCodeOptions = nil then
     Exit;
   WriteBeautifyCodeOptions(BeautifyCodeOptions);
   BeautifyCodeOptions.LineLength := 1;
+  debugln(['TCodetoolsLineSplittingOptionsFrame.UpdateSplitLineExample AAA1']);
   SplitPreviewSynEdit.Text :=
     BeautifyCodeOptions.BeautifyStatement(LineSplitExampleText, 0);
+  debugln(['TCodetoolsLineSplittingOptionsFrame.UpdateSplitLineExample AAA2']);
 end;
 
 procedure TCodetoolsLineSplittingOptionsFrame.UpdatePreviewSettings;
