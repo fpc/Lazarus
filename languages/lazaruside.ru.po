@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-23 00:36+0300\n"
+"PO-Revision-Date: 2011-04-23 17:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -10352,7 +10352,7 @@ msgstr "Сортировать выделенное ..."
 
 #: lazarusidestrconsts.lismenusource
 msgid "S&ource"
-msgstr "&Исходный код"
+msgstr "Ко&д"
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
