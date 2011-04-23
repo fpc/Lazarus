@@ -179,7 +179,7 @@ function StringToPascalConst(const s: string): string;
 // string constants
 function SplitStringConstant(const StringConstant: string;
     FirstLineLength, OtherLineLengths, Indent: integer;
-    const NewLine: string): string;
+    const aLineBreak: string): string;
 procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer);
 procedure ImproveStringConstantEnd(const ACode: string; var EndPos: integer);
 
@@ -4309,7 +4309,7 @@ end;
 
 function SplitStringConstant(const StringConstant: string;
   FirstLineLength, OtherLineLengths, Indent: integer;
-  const NewLine: string): string;
+  const aLineBreak: string): string;
 { Split long string constants
   If possible it tries to split on word boundaries.
 
@@ -4332,9 +4332,10 @@ const
   stctStart      = 'S'; // ' start char
   stctEnd        = 'E'; // ' end char
   stctWordStart  = 'W'; // word char after non word char
-  stctQuotation1 = 'Q'; // first ' of a double ''
-  stctQuotation2 = 'M'; // second ' of a double ''
+  stctQuotation1 = '1'; // first ' of a double ''
+  stctQuotation2 = '2'; // second ' of a double ''
   stctChar       = 'C'; // normal character
+  stctMBC        = 'M'; // follow character of multi byte char
   stctHash       = '#'; // hash
   stctHashNumber = '0'; // hash number
   stctLineEnd10  = #10; // hash number is 10
@@ -4348,17 +4349,34 @@ var
   ParsedSrc: string;
   ParsedLen: integer;
   SplitPos: integer;
+  i: Integer;
 
   procedure ParseSrc;
   var
     APos: Integer;
+
+    procedure MarkMBC;
+    var
+      l: LongInt;
+    begin
+      l:=UTF8CharacterLength(@Src[APos]);
+      inc(APos);
+      dec(l);
+      while (l>0) and (APos<ParsedLen) do begin
+        ParsedSrc[APos]:=stctMBC;
+        inc(APos);
+        dec(l);
+      end;
+    end;
+
+  var
     NumberStart: Integer;
     Number: Integer;
   begin
-    SetLength(ParsedSrc,CurLineMax+1);
     APos:=1;
     ParsedLen:=CurLineMax+1;
     if ParsedLen>SrcLen then ParsedLen:=SrcLen;
+    SetLength(ParsedSrc,CurLineMax+1);
     while APos<=ParsedLen do begin
       if Src[APos]='''' then begin
         ParsedSrc[APos]:=stctStart;
@@ -4376,15 +4394,16 @@ var
               ParsedSrc[APos-1]:=stctEnd;
               break;
             end;
-          end else begin
-            // normal char
-            if (Src[APos] in ['A'..'Z','a'..'z'])
-            and (APos>1)
-            and (ParsedSrc[APos-1]=stctChar)
-            and (not (Src[APos-1] in ['A'..'Z','a'..'z'])) then
-              ParsedSrc[APos]:=stctWordStart
+          end else if Src[APos] in ['A'..'Z','a'..'z',#128..#255] then begin
+            // normal word char
+            if (APos>1) and (Src[APos-1] in ['A'..'Z','a'..'z',#128..#255]) then
+              ParsedSrc[APos]:=stctChar
             else
-              ParsedSrc[APos]:=stctChar;
+              ParsedSrc[APos]:=stctWordStart;
+            MarkMBC;
+          end else begin
+            // other char in string constant
+            ParsedSrc[APos]:=stctWordStart;
             inc(APos);
           end;
         end;
@@ -4418,7 +4437,7 @@ var
       end else begin
         // junk
         ParsedSrc[APos]:=stctJunk;
-        inc(APos);
+        MarkMBC;
       end;
     end;
   end;
@@ -4444,7 +4463,7 @@ var
     NewSplitPos: Integer;
   begin
     if SplitPos>0 then exit;
-    // check if there is a newline character constant
+    // check if there is a aLineBreak character constant
     HashPos:=SearchCharLeftToRight(stctLineEnd10)-1;
     if (HashPos<1) then begin
       HashPos:=SearchCharLeftToRight(stctLineEnd13)-1;
@@ -4528,7 +4547,7 @@ var
       CurIndent:=CurLineMax-10;
     if CurIndent<0 then CurIndent:=0;
     // add indent spaces to Result
-    Result:=Result+NewLine+GetIndentStr(CurIndent)+'+';
+    Result:=Result+aLineBreak+GetIndentStr(CurIndent)+'+';
     // calculate next maximum line length
     CurLineMax:=CurLineMax-CurIndent-1;
   end;
@@ -4542,8 +4561,9 @@ begin
   CurLineMax:=FirstLineLength;
   //DebugLn('SplitStringConstant FirstLineLength=',FirstLineLength,
   //' OtherLineLengths=',OtherLineLengths,' Indent=',Indent,' ');
+  i:=0;
   repeat
-    //DebugLn('SrcLen=',SrcLen,' CurMaxLine=',CurLineMax);
+    //DebugLn(['SrcLen=',SrcLen,' CurMaxLine=',CurLineMax]);
     //DebugLn('Src="',Src,'"');
     //DebugLn('Result="',Result,'"');
     if SrcLen<=CurLineMax then begin
@@ -4553,12 +4573,21 @@ begin
     end;
     // split line -> search nice split position
     ParseSrc;
+    //debugln(['ParsedSrc=',ParsedSrc]);
     SplitPos:=0;
     SplitAtNewLineCharConstant;
     SplitBetweenConstants;
     SplitAtWordBoundary;
     SplitDefault;
+    if SplitPos<=1 then begin
+      // no split possible
+      Result:=Result+Src;
+      break;
+    end;
+    //debugln(['SplitStringConstant SplitPos=',SplitPos]);
     Split;
+    inc(i);
+    if i>10 then break;
   until false;
   //DebugLn('END Result="',Result,'"');
   //DebugLn('SplitStringConstant END---------------------------------');

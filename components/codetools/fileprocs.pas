@@ -278,6 +278,7 @@ function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
 procedure SetNeedRTLAnsi(NewValue: boolean);
 function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
 function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
+function UTF8CharacterLength(p: PChar): integer;
 
 // file operations
 function FileExistsUTF8(const Filename: string): boolean;
@@ -529,6 +530,43 @@ begin
     Result:=AnsiToUTF8(s)
   else
     Result:=s;
+end;
+
+function UTF8CharacterLength(p: PChar): integer;
+begin
+  if p<>nil then begin
+    if ord(p^)<%11000000 then begin
+      // regular single byte character (#0 is a character, this is pascal ;)
+      Result:=1;
+    end
+    else if ((ord(p^) and %11100000) = %11000000) then begin
+      // could be 2 byte character
+      if (ord(p[1]) and %11000000) = %10000000 then
+        Result:=2
+      else
+        Result:=1;
+    end
+    else if ((ord(p^) and %11110000) = %11100000) then begin
+      // could be 3 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000) then
+        Result:=3
+      else
+        Result:=1;
+    end
+    else if ((ord(p^) and %11111000) = %11110000) then begin
+      // could be 4 byte character
+      if ((ord(p[1]) and %11000000) = %10000000)
+      and ((ord(p[2]) and %11000000) = %10000000)
+      and ((ord(p[3]) and %11000000) = %10000000) then
+        Result:=4
+      else
+        Result:=1;
+    end
+    else
+      Result:=1
+  end else
+    Result:=0;
 end;
 
 function FileExistsUTF8(const Filename: string): boolean;
