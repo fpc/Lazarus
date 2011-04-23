@@ -169,6 +169,8 @@ type
     procedure SearchInListEditKeyDown(Sender: TObject; var Key: Word;
                                     Shift: TShiftState );
     procedure FilterButtonClick (Sender: TObject );
+    procedure TreeViewMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     FMaxItems: integer;
     FWorkedSearchText: string;
@@ -177,8 +179,6 @@ type
     function BeautifyPageName(const APageName: string): string;
     function GetPageIndex(const APageName: string): integer;
     function GetTreeView(APageIndex: integer): TLazSearchResultTV;
-    procedure TreeViewClicked(Sender: TObject);
-    procedure TreeViewDoubleClicked(Sender: TObject);
     procedure SetItems(Index: Integer; Value: TStrings);
     function GetItems(Index: integer): TStrings;
     procedure SetMaxItems(const AValue: integer);
@@ -565,6 +565,23 @@ begin
   end;//End if Assigned(CurrentTV)
 end;
 
+procedure TSearchResultsView.TreeViewMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  TV: TCustomTreeView;
+  Node: TTreeNode;
+begin
+  if Button<>mbLeft then exit;
+  TV:=Sender as TCustomTreeView;
+  Node:=TV.GetNodeAt(X,Y);
+  if Node=nil then exit;
+  if x<Node.DisplayTextLeft then exit;
+  if ([ssDouble,ssTriple,ssQuad]*Shift=[])
+    and EnvironmentOptions.MsgViewDblClickJumps then exit;
+  if Assigned(fOnSelectionChanged) then
+    fOnSelectionChanged(Self)
+end;
+
 function TSearchResultsView.BeautifyPageName(const APageName: string): string;
 const
   MaxPageName = 22;
@@ -826,13 +843,12 @@ begin
             Parent:= Page[NewPage];
             Align:= alClient;
             BorderSpacing.Around := 0;
-            OnClick:= @TreeViewClicked;
-            OnDblClick:= @TreeViewDoubleClicked;
             OnKeyDown := @TreeViewKeyDown;
             OnAdvancedCustomDrawItem:= @TreeViewAdvancedCustomDrawItem;
             OnShowHint:= @LazTVShowHint;
             OnMouseMove:= @LazTVMousemove;
             OnMouseWheel:= @LazTVMouseWheel;
+            OnMouseUp:=@TreeViewMouseUp;
             ShowHint:= true;
             RowSelect := True;                        // we are using custom draw
             Options := Options + [tvoAllowMultiselect] - [tvoThemedDraw];
@@ -961,20 +977,6 @@ begin
     end;//if
   end;//with
 end;//TreeViewDrawItem
-
-procedure TSearchResultsView.TreeViewClicked(Sender: TObject);
-begin
-  if EnvironmentOptions.MsgViewDblClickJumps then exit;
-  if Assigned(fOnSelectionChanged) then
-    fOnSelectionChanged(Self)
-end;//TreeViewClicked
-
-procedure TSearchResultsView.TreeViewDoubleClicked(Sender: TObject);
-begin
-  if not EnvironmentOptions.MsgViewDblClickJumps then exit;
-  if Assigned(fOnSelectionChanged) then
-    fOnSelectionChanged(Self)
-end;//TreeViewDoubleClicked
 
 {Returns the Position within the source file from a properly formated search result}
 function TSearchResultsView.GetSourcePositon: TPoint;
