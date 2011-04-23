@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
   
   Abstract:
-    Hint using the fpdoc data.
+    A hint using the fpdoc data.
 }
 unit FPDocHints;
 
@@ -141,7 +141,7 @@ begin
     end;
     //DebugLn(['TFPDocHintProvider.ReadLazDocData ',Item.Identifier,' ',Item.Tool.MainFilename,' ',Caret.Code.Filename,' ',Caret.X,',',Caret.Y]);
     HelpResult:=CodeHelpBoss.GetHTMLHint(Caret.Code,Caret.X,Caret.Y,
-                                    [chhoSmartHint, chhoComments],
+                                    [chhoDeclarationHeader],
                                     FBaseURL,FHTMLHint,CacheWasUsed);
     if HelpResult<>chprSuccess then begin
       DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Identifier=',Item.Identifier]);

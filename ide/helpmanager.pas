@@ -97,10 +97,11 @@ type
 
   TSimpleHTMLControl = class(TLabel,TIDEHTMLControlIntf)
   private
+    FMaxLineCount: integer;
     FProvider: TAbstractIDEHTMLProvider;
     FURL: string;
     procedure SetProvider(const AValue: TAbstractIDEHTMLProvider);
-    function HTMLToCaption(const s: string): string;
+    function HTMLToCaption(const s: string; MaxLines: integer): string;
   public
     constructor Create(AOwner: TComponent); override;
     function GetURL: string;
@@ -108,6 +109,7 @@ type
     property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
     procedure SetHTMLContent(Stream: TStream);
     procedure GetPreferredControlSize(out AWidth, AHeight: integer);
+    property MaxLineCount: integer read FMaxLineCount write FMaxLineCount;
   end;
 
   { TIDEHelpDatabases }
@@ -258,18 +260,23 @@ begin
   FProvider:=AValue;
 end;
 
-function TSimpleHTMLControl.HTMLToCaption(const s: string): string;
+function TSimpleHTMLControl.HTMLToCaption(const s: string; MaxLines: integer
+  ): string;
 var
   p: Integer;
   EndPos: Integer;
   CurTag: String;
   NewTag: String;
+  Line: Integer;
+  sp: LongInt;
 begin
   Result:=s;
+  //debugln(['TSimpleHTMLControl.HTMLToCaption HTML="',Result,'"']);
+  Line:=1;
   p:=1;
   while p<=length(Result) do begin
     if Result[p]='<' then begin
-      // skip html tag
+      // removes html tags
       EndPos:=p+1;
       while (EndPos<=length(Result)) do begin
         if Result[EndPos]='"' then begin
@@ -285,8 +292,30 @@ begin
         inc(EndPos);
       end;
       CurTag:=copy(Result,p,EndPos-p);
-      if SysUtils.CompareText(CurTag,'<BR>')=0 then
-        NewTag:=LineEnding
+
+      if ((SysUtils.CompareText(CurTag,'<P>')=0)
+        or (SysUtils.CompareText(CurTag,'</P>')=0))
+      then begin
+        // add a line break if there is not already one
+        sp:=p;
+        while (sp>1) and (Result[sp-1] in [' ',#9]) do dec(sp);
+        if (sp>1) and (not (Result[sp-1] in [#10,#13])) then
+          CurTag:='<BR>';
+      end;
+
+      if (p>1)
+      and ((SysUtils.CompareText(CurTag,'<BR>')=0)
+        or (SysUtils.CompareText(CurTag,'<DIV>')=0)
+        or (SysUtils.CompareText(copy(CurTag,1,5),'<DIV ')=0)
+        or (SysUtils.CompareText(CurTag,'</DIV>')=0))
+      then begin
+        NewTag:=LineEnding;
+        inc(Line);
+        if Line>MaxLines then begin
+          Result:=copy(Result,1,p)+LineEnding+'...';
+          break;
+        end;
+      end
       else
         NewTag:='';
       if NewTag='' then
@@ -310,12 +339,18 @@ begin
     end else
       inc(p);
   end;
-  //DebugLn(['TSimpleHTMLControl.HTMLToCaption "',dbgstr(Result),'"']);
+  // trim space at end
+  p:=length(Result);
+  while (p>0) and (Result[p] in [' ',#9,#10,#13]) do dec(p);
+  SetLength(Result,p);
+
+  //DebugLn(['TSimpleHTMLControl.HTMLToCaption Caption="',dbgstr(Result),'"']);
 end;
 
 constructor TSimpleHTMLControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  MaxLineCount:=30;
   WordWrap := True;
   Layout := tlCenter;
   Alignment := taLeftJustify;
@@ -344,7 +379,7 @@ begin
     SetLength(s,Stream.Size);
     if s<>'' then
       Stream.Read(s[1],length(s));
-    Caption:=HTMLToCaption(s);
+    Caption:=HTMLToCaption(s,MaxLineCount);
     Provider.ReleaseStream(FURL);
   except
     on E: Exception do begin
@@ -360,7 +395,7 @@ begin
   SetLength(s,Stream.Size);
   if s<>'' then
     Stream.Read(s[1],length(s));
-  Caption:=HTMLToCaption(s);
+  Caption:=HTMLToCaption(s,MaxLineCount);
 end;
 
 procedure TSimpleHTMLControl.GetPreferredControlSize(out AWidth, AHeight: integer);
@@ -1294,7 +1329,7 @@ begin
   if (Code=nil) or Code.LineColIsSpace(CodePos.Y,CodePos.X) then
     exit(shrHelpNotFound);
   if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,
-    [chhoSmartHint, chhoComments],
+    [chhoDeclarationHeader],
     BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);

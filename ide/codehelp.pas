@@ -214,8 +214,8 @@ type
 
   TCodeHelpHintOption = (
     chhoSmallStep,    // do the next step. Use this to run on idle.
-    chhoSmartHint,    // add smart hint
-    chhoComments      // return info from comments in the code
+    chhoDeclarationHeader, // add a header with source position and type of identifier
+    chhoNoComments    // do not add the pasdoc comments
   );
   TCodeHelpHintOptions = set of TCodeHelpHintOption;
     
@@ -2275,6 +2275,7 @@ var
 begin
   {$IFDEF EnableNewCodeHints}
   Result:=GetHTMLHint2(Code,X,Y,Options,BaseURL,HTMLHint,CacheWasUsed);
+  exit;
   {$ENDIF}
   {$ifdef VerboseHints}
     DebugLn(['TCodeHelpManager.GetHint ',Code.Filename,' ',X,',',Y]);
@@ -2283,7 +2284,7 @@ begin
   IsHTML:=false;
   CodeToolBoss.ActivateWriteLock;
   try
-    if chhoSmartHint in Options then
+    if chhoDeclarationHeader in Options then
       HTMLHint := CodeToolBoss.FindSmartHint(Code,X,Y)
     else
       HTMLHint := '';
@@ -2322,7 +2323,7 @@ begin
           end;
 
           // Add comments
-          if chhoComments in Options then
+          if not (chhoNoComments in Options) then
           begin
             FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
             if CodeToolBoss.GetPasDocComments(Item.CodeXYPos.Code,
@@ -2394,12 +2395,14 @@ var
   i: Integer;
   OldXYPos: TCodeXYPosition;
   OldCTTool: TFindDeclarationTool;
+  OldCTNode: TCodeTreeNode;
+  n: Integer;
 begin
   Result:=chprFailed;
   BaseURL:='lazdoc://';
   HTMLHint:='';
   CacheWasUsed:=true;
-  if not CodeToolBoss.InitCurCodeTool(Code) then exit;
+
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
@@ -2407,6 +2410,7 @@ begin
   Complete:=not (chhoSmallStep in Options);
   ElementNames:=TStringList.Create;
   try
+    if not CodeToolBoss.InitCurCodeTool(Code) then exit;
     try
       // find declaration
       if not CodeToolBoss.CurCodeTool.FindDeclaration(CursorPos,DefaultFindSmartHintFlags,
@@ -2414,17 +2418,21 @@ begin
       then
         exit;
 
-      // add declaration
-      CTHint:=CTTool.GetSmartHint(CTNode,XYPos,false);
-      HTMLHint:=SourceToFPDocHint(CTHint);
+      if chhoDeclarationHeader in Options then begin
+        HTMLHint:=HTMLHint+'<div class="header">';
+        // add declaration
+        CTHint:=CTTool.GetSmartHint(CTNode,XYPos,false);
+        HTMLHint:=HTMLHint+'  '+SourceToFPDocHint(CTHint);
 
-      // add link
-      HTMLHint:=HTMLHint+'<br>'+LineEnding;
-      if XYPos.Code=nil then
-        CTTool.CleanPosToCaret(CTNode.StartPos,XYPos);
-      HTMLHint:=HTMLHint+SourcePosToFPDocHint(XYPos);
+        // add link
+        HTMLHint:=HTMLHint+'<br>'+LineEnding;
+        if XYPos.Code=nil then
+          CTTool.CleanPosToCaret(CTNode.StartPos,XYPos);
+        HTMLHint:=HTMLHint+'  '+SourcePosToFPDocHint(XYPos)+LineEnding;
+        HTMLHint:=HTMLHint+'</div>'+LineEnding;
+      end;
 
-      repeat
+      for n:=1 to 30 do begin
         ElementName:=CodeNodeToElementName(CTTool,CTNode);
         i:=ElementNames.Count-1;
         while (i>=0) and (ElementNames.Objects[i]<>CTTool)
@@ -2432,12 +2440,10 @@ begin
           dec(i);
         if i>=0 then begin
           // a loop or a forward definition
-          if ElementNames.Count>16 then break;
         end else begin
           ElementNames.AddObject(ElementName,CTTool);
 
           // add fpdoc entry
-          // ToDo: check if ElementName already added (can happen on forward definitions)
           FPDocFilename:=GetFPDocFilenameForSource(CTTool.MainFilename,
                                                    false,CacheWasUsed,AnOwner);
           DebugLn(['TCodeHelpManager.GetHTMLHint2 FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
@@ -2456,8 +2462,11 @@ begin
             end;
           end;
 
-          // add pasdoc
-          HTMLHint:=HTMLHint+GetPasDocCommentsAsHTML(CTTool,CTNode);
+          if not (chhoNoComments in Options) then
+          begin
+            // add pasdoc
+            HTMLHint:=HTMLHint+GetPasDocCommentsAsHTML(CTTool,CTNode);
+          end;
         end;
 
         // find inherited node
@@ -2468,8 +2477,10 @@ begin
           debugln(['TCodeHelpManager.GetHTMLHint2 searching for inherited of ',CTNode.DescAsString,' ',dbgs(XYPos)]);
           OldXYPos:=XYPos;
           OldCTTool:=CTTool;
-          if not OldCTTool.FindDeclaration(OldXYPos,DefaultFindSmartHintFlags,
-            CTTool,CTNode,XYPos,aTopLine)
+          OldCTNode:=CTNode;
+          if (not OldCTTool.FindDeclaration(OldXYPos,[fsfSearchSourceName],
+            CTTool,CTNode,XYPos,aTopLine))
+          or (CTNode=OldCTNode)
           then begin
             debugln(['TCodeHelpManager.GetHTMLHint2 inherited not found: ',dbgs(OldXYPos)]);
             break;
@@ -2479,16 +2490,17 @@ begin
           break;
         end;
 
-      until false;
+      end;
     except
       on E: Exception do begin
-        debugln(['TCodeHelpManager.GetHTMLHint2 ',E.Message]);
+        debugln(['TCodeHelpManager.GetHTMLHint2 Exception: ',E.Message]);
       end;
     end;
 
   finally
     ElementNames.Free;
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    HTMLHint:='<HTML><HEADER></HEADER><BODY>'+LineEnding+HTMLHint+LineEnding+'</BODY>'+LineEnding;
   end;
   debugln(['TCodeHelpManager.GetHTMLHint2 ',HTMLHint]);
   Result:=chprSuccess;
@@ -2523,7 +2535,9 @@ begin
       CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
                                         NestedComments,true,true,true);
       if CommentStr <> '' then
-        Result:=Result+'<span class="comment">'+TextToHTML(CommentStr)+'</span><br>'+LineEnding;
+        Result:=Result+'<span class="comment">'+TextToHTML(CommentStr)
+          +'('+SourcePosToFPDocHint(CodeXYPos^,'Source')+')'
+          +'</span><br>'+LineEnding;
     end;
 
   finally
@@ -2553,14 +2567,18 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
   begin
     Result:='';
     if Node=nil then exit;
-    debugln(['NodeToHTML ',DbgSName(Node)]);
+    //debugln(['TCodeHelpManager.GetFPDocNodeAsHTML.NodeToHTML ',DbgSName(Node)]);
     if (Node.NodeName='short')
     or (Node.NodeName='descr') then begin
       s:=AddChilds(Node);
       if s<>'' then
-        Result:=Result+'<div class="'+Node.NodeName+'">'+s+'</div>';
+        Result:=Result+'<div class="'+Node.NodeName+'">'+s+'</div>'+LineEnding;
+    end else if (Node.NodeName='p') then begin
+      Result:=Result+'<'+Node.NodeName+'>'+AddChilds(Node)+'</'+Node.NodeName+'>';
+    end else if (Node.NodeName='#text') then begin
+      Result:=Result+Node.NodeValue;
     end else begin
-      debugln(['Traverse ',Node.NodeName]);
+      debugln(['TCodeHelpManager.GetFPDocNodeAsHTML.NodeToHTML skipping ',Node.NodeName]);
     end;
   end;
 
