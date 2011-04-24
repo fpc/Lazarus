@@ -5852,13 +5852,13 @@ begin
     exit;
   end;
 
-  // try ucs-2le BOM FF FE
+  // try ucs-2le BOM FF FE (ToDo: nowadays this BOM is UTF16LE)
   if (length(s)>=2) and (s[1]=#$FF) and (s[2]=#$FE) then begin
     Result:=EncodingUCS2LE;
     exit;
   end;
 
-  // try ucs-2be BOM FE FF
+  // try ucs-2be BOM FE FF (ToDo: nowadays this BOM is UTF16BE)
   if (length(s)>=2) and (s[1]=#$FE) and (s[2]=#$FF) then begin
     Result:=EncodingUCS2BE;
     exit;
@@ -5903,7 +5903,7 @@ begin
   if NormalizeEncoding(Result)=EncodingUTF8 then begin
     // the system encoding is UTF-8, but it is not UTF-8
     // use ISO-8859-1 instead. This encoding has a full 1:1 mapping to unicode,
-    // so no character is lost during conversions.
+    // so no character is lost during conversion back and forth.
     Result:='ISO-8859-1';
   end;
 end;
