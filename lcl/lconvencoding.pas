@@ -32,6 +32,10 @@ const
   EncodingUCS2LE = 'ucs2le'; // UCS 2 byte little endian
   EncodingUCS2BE = 'ucs2be'; // UCS 2 byte big endian
   UTF8BOM = #$EF#$BB#$BF;
+  UTF16BEBOM = #$FE#$FF;
+  UTF16LEBOM = #$FF#$FE;
+  UTF32BEBOM = #0#0#$FE#$FF;
+  UTF32LEBOM = #$FE#$FF#0#0;
 
 function GuessEncoding(const s: string): string;
 
@@ -89,8 +93,8 @@ function UTF8ToCP874(const s: string): string;  // thai
 function UTF8ToKOI8(const s: string): string;  // russian cyrillic
 function UTF8ToSingleByte(const s: string;
                           const UTF8CharConvFunc: TUnicodeToCharID): string;
-function UTF8ToUCS2LE(const s: string): string; // UCS2-LE 2byte little endian
-function UTF8ToUCS2BE(const s: string): string; // UCS2-BE 2byte big endian
+function UTF8ToUCS2LE(const s: string): string; // UCS2-LE 2byte little endian without BOM
+function UTF8ToUCS2BE(const s: string): string; // UCS2-BE 2byte big endian without BOM
 
 // Asian encodings
 
@@ -99,7 +103,7 @@ function CP950ToUTF8(const s: string): string;      // Chinese Complex
 function CP949ToUTF8(const s: string): string;      // korea
 function CP932ToUTF8(const s: string): string;      // japanese
 
-function SingleByteToUTF8Ex(const s: string; CodeP: integer): string;
+function SingleByteToUTF8Ex(const s: string; CodeP: integer): string; // Note: slow, needs optimization
 
 function UTF8ToCP936(const s: string): string;      // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
 function UTF8ToCP950(const s: string): string;      // Chinese Complex
@@ -4479,7 +4483,7 @@ begin
     exit;
   end;
   len:=length(s) div 2;
-  SetLength(Result,len*3);// UTF-8 is at most three times the size
+  SetLength(Result,len*3);// UTF-8 is at most 3/2 times the size
   Src:=PWord(Pointer(s));
   Dest:=PChar(Result);
   for i:=1 to len do begin
@@ -5548,7 +5552,7 @@ end;
 
 function UTF8ToUTF8BOM(const s: string): string;
 begin
-  Result:=#$EF#$BB#$BF+s;
+  Result:=UTF8BOM+s;
 end;
 
 function UTF8ToISO_8859_1(const s: string): string;

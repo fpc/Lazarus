@@ -37,7 +37,7 @@ begin
     exit;
   end;
   len := length(s);
-  SetLength(Result, len * 6);// Asia UTF-8 is at most 6 bytes
+  SetLength(Result, len * 4);// Asia UTF-8 is at most 4 bytes
   Src  := PChar(s);
   Dest := PChar(Result);
   i    := 1;
