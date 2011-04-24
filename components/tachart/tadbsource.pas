@@ -144,6 +144,7 @@ begin
   inherited Create(AOwner);
   FDataLink := TDbChartSourceDataLink.Create(Self);
   FFieldYList := TStringList.Create;
+  FYCount := 0; // Set to 1 by inherited.
 end;
 
 destructor TDbChartSource.Destroy;
