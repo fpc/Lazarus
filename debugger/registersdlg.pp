@@ -110,9 +110,9 @@ begin
   ToolButtonDispType.Hint := regdlgDisplayTypeForSelectedRegisters;
   DispDefault.Caption := dlgPasStringKeywordsOptDefault;
   DispHex.Caption := regdlgHex;
-  DispBin.Caption := lisPkgFileTypeBinary;
+  DispBin.Caption := regdlgBinary;
   DispOct.Caption := regdlgOctal;
-  DispDec.Caption := lisDecimal;
+  DispDec.Caption := regdlgDecimal;
   DispRaw.Caption := regdlgRaw;
 
   DispDefault.Tag := ord(rdDefault);
