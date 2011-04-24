@@ -42,6 +42,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     procedure GatherIDEVersion(sl: TStrings);
+    procedure GatherParameters(sl: TStrings);
     procedure GatherEnvironmentVars(sl: TStrings);
     procedure GatherGlobalOptions(sl: TStrings);
   public
@@ -91,6 +92,16 @@ begin
   sl.Add('');
 end;
 
+procedure TIDEInfoDialog.GatherParameters(sl: TStrings);
+var
+  i: Integer;
+begin
+  sl.add('Parameters:');
+  for i:=0 to Paramcount do
+    sl.Add(ParamStrUTF8(i));
+  sl.Add('');
+end;
+
 procedure TIDEInfoDialog.GatherEnvironmentVars(sl: TStrings);
 var
   i: Integer;
@@ -124,6 +135,7 @@ begin
   try
     GatherIDEVersion(sl);
     GatherGlobalOptions(sl);
+    GatherParameters(sl);
     GatherEnvironmentVars(sl);
     Memo1.Lines.Assign(sl);
   finally
