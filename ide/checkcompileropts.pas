@@ -17,6 +17,11 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+ Abstract:
+   This dialog is typically called by the 'Test' button on the compiler options
+   dialog.
+   A dialog testing for common misconfigurations in some compiler options.
 }
 unit CheckCompilerOpts;
 
@@ -25,11 +30,12 @@ unit CheckCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  FileUtil, Clipbrd, StdCtrls, Buttons, Process, AsyncProcess, Menus, ExtCtrls,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, FileUtil,
+  Clipbrd, StdCtrls, Buttons, Process, AVL_Tree, AsyncProcess, Menus, ExtCtrls,
   UTF8Process, ButtonPanel,
   // codetools
-  KeywordFuncLists, CodeToolManager, FileProcs,
+  KeywordFuncLists, CodeToolManager, FileProcs, DefineTemplates,
+  CodeToolsStructs,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf,
   // IDE
@@ -69,24 +75,23 @@ type
     procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
     procedure CopyOutputMenuItemClick(Sender: TObject);
   private
+    FIdleConnected: boolean;
     FMacroList: TTransferMacroList;
     FOptions: TCompilerOptions;
     FTest: TCompilerOptionsTest;
     FLastLineIsProgress: boolean;
     FDirectories: TStringList;
+    procedure SetIdleConnected(const AValue: boolean);
     procedure SetMacroList(const AValue: TTransferMacroList);
     procedure SetOptions(const AValue: TCompilerOptions);
     procedure SetMsgDirectory(Index: integer; const CurDir: string);
     function CheckSpecialCharsInPath(const Title, ExpandedPath: string): TModalResult;
-    function CheckNonExistsingSearchPaths(const Title, ExpandedPath: string): TModalResult;
+    function CheckNonExistingSearchPaths(const Title, ExpandedPath: string): TModalResult;
     function CheckCompilerExecutable(const CompilerFilename: string): TModalResult;
-    function CheckAmbiguousFPCCfg(const CompilerFilename: string): TModalResult;
-    function CheckCompilerConfig(const CompilerFilename: string;
-                                 out FPCCfgUnitPath: string): TModalResult;
-    function FindAllPPUFiles(const FPCCfgUnitPath: string): TStrings;
-    function CheckMissingFPCPPUs(PPUs: TStrings): TModalResult;
-    function CheckCompilerDate(const CompilerFilename: string;
-                               PPUs: TStrings): TModalResult;
+    function CheckCompilerConfig(CfgCache: TFPCTargetConfigCache): TModalResult;
+    function FindAllPPUFiles(const AnUnitPath: string): TStrings;
+    function CheckMissingFPCPPUs(CfgCache: TFPCTargetConfigCache): TModalResult;
+    function CheckCompilerDate(CfgCache: TFPCTargetConfigCache): TModalResult;
     function CheckForAmbiguousPPUs(SearchForPPUs: TStrings;
                                    SearchInPPUs: TStrings = nil): TModalResult;
     function CheckFPCUnitPathsContainSources(const FPCCfgUnitPath: string
@@ -107,6 +112,7 @@ type
     procedure AddHint(const Msg: string);
     procedure AddWarning(const Msg: string);
     procedure AddMsg(const Level: TCompilerCheckMsgLvl; const Msg: string);
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   public
     property Options: TCompilerOptions read FOptions write SetOptions;
     property Test: TCompilerOptionsTest read FTest;
@@ -178,7 +184,7 @@ end;
 procedure TCheckCompilerOptsDlg.ApplicationOnIdle(Sender: TObject;
   var Done: Boolean);
 begin
-  Application.RemoveOnIdleHandler(@ApplicationOnIdle);
+  IdleConnected:=false;
   DoTestAll;
 end;
 
@@ -237,7 +243,7 @@ begin
   end;
 end;
 
-function TCheckCompilerOptsDlg.CheckNonExistsingSearchPaths(const Title,
+function TCheckCompilerOptsDlg.CheckNonExistingSearchPaths(const Title,
   ExpandedPath: string): TModalResult;
 var
   p: Integer;
@@ -290,71 +296,6 @@ begin
     CompilerFiles.Free;
   end;
   
-  Result:=mrOk;
-end;
-
-function TCheckCompilerOptsDlg.CheckAmbiguousFPCCfg(
-  const CompilerFilename: string): TModalResult;
-var
-  CfgFiles: TStringList;
-  Dir: String;
-  Filename: String;
-  i: Integer;
-  
-  procedure AddFile(const aFilename: string);
-  begin
-    if (CfgFiles.IndexOf(aFilename)<0) and FileExistsUTF8(aFilename) then
-      CfgFiles.Add(aFilename);
-  end;
-  
-begin
-  FTest:=cotCheckAmbiguousFPCCfg;
-  TestGroupbox.Caption:=dlgCCOTestCheckingFPCConfigs;
-
-  CfgFiles:=TStringList.Create;
-  
-  // check $HOME/.fpc.cfg
-  Dir:=GetEnvironmentVariableUTF8('HOME');
-  if Dir<>'' then begin
-    Filename:=CleanAndExpandDirectory(Dir)+'.fpc.cfg';
-    AddFile(Filename);
-  end;
-
-  // check compiler path + fpc.cfg
-  Dir:=ExtractFilePath(CompilerFilename);
-  Dir:=ReadAllLinks(Dir,false);
-  if Dir<>'' then begin
-    Filename:=CleanAndExpandDirectory(Dir)+'fpc.cfg';
-    AddFile(Filename);
-  end;
-
-  // check working directory + fpc.cfg
-  Dir:=ExtractFilePath(Options.BaseDirectory);
-  Dir:=ReadAllLinks(Dir,false);
-  if Dir<>'' then begin
-    Filename:=CleanAndExpandDirectory(Dir)+'fpc.cfg';
-    AddFile(Filename);
-  end;
-
-  // check /etc/fpc.cfg
-  {$IFDEF Unix}
-    Dir:=ExtractFilePath(CompilerFilename);
-    Dir:=GetEnvironmentVariableUTF8('HOME');
-    if Dir<>'' then begin
-      Filename:='/etc/fpc.cfg';
-      AddFile(Filename);
-    end;
-  {$ENDIF}
-
-  // warn about missing or too many fpc.cfg
-  if CfgFiles.Count<1 then begin
-    AddWarning(lisCCONoCfgFound);
-  end else if CfgFiles.Count>1 then begin
-    for i:=0 to CfgFiles.Count-1 do
-      AddWarning(lisCCOMultipleCfgFound+CfgFiles[i]);
-  end;
-
-  CfgFiles.Free;
   Result:=mrOk;
 end;
 
@@ -475,151 +416,46 @@ begin
 end;
 
 function TCheckCompilerOptsDlg.CheckCompilerConfig(
-  const CompilerFilename: string; out FPCCfgUnitPath: string): TModalResult;
+  CfgCache: TFPCTargetConfigCache): TModalResult;
 var
-  TestDir: String;
-
-  procedure ProcessOutputLine(const Line: string);
-  const
-    USING_UNIT_PATH = 'USING UNIT PATH: ';
-    READING_OPTIONS_FROM_FILE = 'READING OPTIONS FROM FILE ';
-    HANDLING_OPTION = 'HANDLING OPTION ';
-  var
-    len, curpos: integer;
-    NewPath: String;
-    UpLine: String;
-  begin
-    len := length(Line);
-    if len <= 6 then Exit; // shortest match
-
-    CurPos := 1;
-    // strip timestamp e.g. [0.306]
-    if Line[CurPos] = '[' then begin
-      repeat
-        inc(CurPos);
-        if CurPos > len then Exit;
-      until line[CurPos] = ']';
-      Inc(CurPos, 2); //skip space also
-      if len - CurPos < 6 then Exit; // shortest match
-    end;
-
-    UpLine:=UpperCaseStr(Line);
-
-    case UpLine[CurPos] of
-    'C':
-      if (StrLComp(@UpLine[CurPos], READING_OPTIONS_FROM_FILE,
-          length(READING_OPTIONS_FROM_FILE)) = 0) then
-      begin
-        // show a hint what cfg file is read by FPC
-        AddHint(Line);
-      end;
-    'U':
-      if (StrLComp(@UpLine[CurPos], USING_UNIT_PATH, length(USING_UNIT_PATH)) = 0)
-      then begin
-        Inc(CurPos, length(USING_UNIT_PATH));
-        NewPath:=copy(Line,CurPos,len);
-        if NewPath<>'' then begin
-          if not FilenameIsAbsolute(NewPath) then begin
-            AddWarning(Format(lisCCORelUnitPathFoundInCfg,[NewPath]));
-            NewPath:=ExpandFileNameUTF8(NewPath);
-          end;
-          NewPath:=AppendPathDelim(TrimFilename(NewPath));
-          if (CompareFilenames(NewPath,Options.BaseDirectory)<>0)
-          and (CompareFilenames(NewPath,TestDir)<>0)
-          then begin
-            //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerConfig: Using unit path: "',NewPath,'"']);
-            FPCCfgUnitPath:=FPCCfgUnitPath+NewPath+';';
-          end;
-        end;
-      end;
-    end;
-  end;
-  
-var
-  ATestPascalFile: String;
-  CurCompilerOptions: String;
-  TargetOS: String;
-  TargetCPU: String;
-  OutputLine: String;
-  TheProcess: TProcessUTF8;
-  OutLen: Integer;
-  LineStart: integer;
   i: Integer;
-  CmdLine: string;
-  Buf: string;
+  CfgFile: TFPCConfigFileState;
+  CfgCount: Integer;
 begin
-  FPCCfgUnitPath:='';
-
   FTest:=cotCheckCompilerConfig;
   TestGroupbox.Caption:=dlgCCOTestCheckingCompilerConfig;
 
-  Result:=CheckAmbiguousFPCCfg(CompilerFilename);
-  if not (Result in [mrOk,mrIgnore]) then exit;
-
-  TestDir:=AppendPathDelim(EnvironmentOptions.TestBuildDirectory);
-  ATestPascalFile:=CreateNonExistingFilename(TestDir+'testcompileroptions.pas');
-  
-  CurCompilerOptions:='';
-  TargetOS:=Options.TargetOS;
-  if TargetOS<>'' then
-    CurCompilerOptions:=AddCmdLineParameter(CurCompilerOptions,'-T'+TargetOS);
-  TargetCPU:=Options.TargetCPU;
-  if TargetCPU<>'' then
-    CurCompilerOptions:=AddCmdLineParameter(CurCompilerOptions,'-P'+TargetCPU);
-
-  CmdLine:=CompilerFilename+' -va ';
-  
-  // set english message file to be able to parse the fpc output
-  if FileExistsCached(CodeToolBoss.DefinePool.EnglishErrorMsgFilename) then
-    CmdLine:=CmdLine+'-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename+' '
-  else
-    AddWarning(lisCCOEnglishMessageFileMissing);
-
-  if CurCompilerOptions<>'' then
-    CmdLine:=CmdLine+CurCompilerOptions+' ';
-  CmdLine:=CmdLine+ATestPascalFile;
-
-  TheProcess := TProcessUTF8.Create(nil);
-  TheProcess.CommandLine := CmdLine;
-  TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
-  TheProcess.ShowWindow := swoHide;
-  TheProcess.CurrentDirectory:=Options.BaseDirectory;
-  //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerConfig Options.BaseDirectory=',Options.BaseDirectory]);
-  try
-    TheProcess.Execute;
-    OutputLine:='';
-    SetLength(Buf,1024);
-    repeat
-      if (TheProcess.Output<>nil) then begin
-        OutLen:=TheProcess.Output.Read(Buf[1],length(Buf));
-      end else
-        OutLen:=0;
-      LineStart:=1;
-      i:=1;
-      while i<=OutLen do begin
-        if Buf[i] in [#10,#13] then begin
-          OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
-          ProcessOutputLine(OutputLine);
-          OutputLine:='';
-          if (i<OutLen) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
-          then
-            inc(i);
-          LineStart:=i+1;
-        end;
-        inc(i);
-      end;
-      OutputLine:=copy(Buf,LineStart,OutLen-LineStart+1);
-    until OutLen=0;
-    TheProcess.WaitOnExit;
-  finally
-    TheProcess.Free;
+  CfgCount:=0;
+  for i:=0 to CfgCache.ConfigFiles.Count-1 do begin
+    CfgFile:=CfgCache.ConfigFiles[i];
+    if CfgFile.FileExists then inc(CfgCount);
   end;
-  FPCCfgUnitPath:=TrimSearchPath(FPCCfgUnitPath,'');
+  if CfgCount<0 then begin
+    // missing config file => warning
+    AddWarning(lisCCONoCfgFound);
+  end else if CfgCount=1 then begin
+    // exactly one config, sounds good, but might still the be wrong one
+    // => hint
+    for i:=0 to CfgCache.ConfigFiles.Count-1 do begin
+      CfgFile:=CfgCache.ConfigFiles[i];
+      if CfgFile.FileExists then begin
+        AddHint('using config file '+CfgFile.Filename);
+        break;
+      end;
+    end;
+  end else if CfgCount>1 then begin
+    // multiple config files => warning
+    for i:=0 to CfgCache.ConfigFiles.Count-1 do begin
+      CfgFile:=CfgCache.ConfigFiles[i];
+      if CfgFile.FileExists then
+        AddWarning(lisCCOMultipleCfgFound+CfgFile.Filename);
+    end;
+  end;
 
   Result:=mrOk;
 end;
 
-function TCheckCompilerOptsDlg.FindAllPPUFiles(const FPCCfgUnitPath: string
+function TCheckCompilerOptsDlg.FindAllPPUFiles(const AnUnitPath: string
   ): TStrings;
 var
   Directory: String;
@@ -629,8 +465,8 @@ begin
   Result:=TStringList.Create;
 
   p:=1;
-  while p<=length(FPCCfgUnitPath) do begin
-    Directory:=TrimAndExpandDirectory(GetNextDirectoryInSearchPath(FPCCfgUnitPath,p));
+  while p<=length(AnUnitPath) do begin
+    Directory:=TrimAndExpandDirectory(GetNextDirectoryInSearchPath(AnUnitPath,p));
     if Directory<>'' then begin
       if FindFirstUTF8(Directory+GetAllFilesMask,faAnyFile,FileInfo)=0
       then begin
@@ -649,17 +485,14 @@ begin
   end;
 end;
 
-function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(PPUs: TStrings
-  ): TModalResult;
+function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(
+  CfgCache: TFPCTargetConfigCache): TModalResult;
   
   function Check(const TheUnitname: string; Severity: TCompilerCheckMsgLvl
     ): Boolean;
-  var
-    i: Integer;
   begin
-    for i:=0 to PPUs.Count-1 do begin
-      if ExtractFileNameOnly(PPUs[i])=TheUnitname then exit(true);
-    end;
+    if (CfgCache.Units<>nil)
+    and (CfgCache.Units.Contains(TheUnitname)) then exit(true);
     AddMsg(Severity,Format(lisCCOMsgPPUNotFound,[TheUnitname]));
     Result:=ord(Severity)>=ord(ccmlError);
     if not Result then begin
@@ -686,15 +519,16 @@ begin
   Result:=mrOk;
 end;
 
-function TCheckCompilerOptsDlg.CheckCompilerDate(
-  const CompilerFilename: string; PPUs: TStrings): TModalResult;
+function TCheckCompilerOptsDlg.CheckCompilerDate(CfgCache: TFPCTargetConfigCache
+  ): TModalResult;
 var
   MinPPUDate: LongInt;
   MaxPPUDate: LongInt;
   CompilerDate: LongInt;
   MinPPU: String;
   MaxPPU: String;
-  i: Integer;
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
   
   procedure CheckFileAge(const aFilename: string);
   var
@@ -715,31 +549,25 @@ var
   
   procedure CheckFileAgeOfUnit(const aUnitName: string);
   var
-    i: Integer;
+    Filename: string;
   begin
-    for i:=0 to PPUs.Count-1 do
-      if ExtractFileNameOnly(PPUs[i])=aUnitName then begin
-        CheckFileAge(PPUs[i]);
-        exit;
-      end;
-    //DebugLn(['CheckFileAgeOfUnit Unit not found: ',aUnitName]);
+    Filename:=CfgCache.Units[aUnitName];
+    if Filename='' then exit;
+    CheckFileAge(Filename);
   end;
   
 begin
+  if CfgCache.Units=nil then exit(mrOK);
+
   FTest:=cotCheckCompilerDate;
   TestGroupbox.Caption:=dlgCCOTestCompilerDate;
 
   Result:=mrCancel;
   
-  CompilerDate:=FileAgeCached(CompilerFilename);
-  if CompilerDate=-1 then begin
-    Result:=MessageDlg(lisCCOErrorCaption,Format(lisCCOUnableToGetFileDate,[CompilerFilename]),
-      mtError,[mbIgnore,mbAbort],0);
-    exit;
-  end;
+  CompilerDate:=CfgCache.CompilerDate;
 
   // first check some rtl and fcl units
-  // They are normally installed in one step, so there dates should be nearly
+  // They are normally installed in one step, so the dates should be nearly
   // the same. If not, then probably two different installations are mixed up.
   MinPPUDate:=-1;
   MinPPU:='';
@@ -769,8 +597,13 @@ begin
   // if a .ppu is much older than the compiler itself, then the ppu is probably
   // a) a leftover from a installation
   // b) not updated
-  for i:=0 to PPUs.Count-1 do
-    CheckFileAge(PPUs[i]);
+  Node:=CfgCache.Units.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    if Item^.Value<>'' then
+      CheckFileAge(Item^.Value);
+    Node:=CfgCache.Units.Tree.FindSuccessor(Node);
+  end;
 
   if MinPPU<>'' then begin
     if CompilerDate-MinPPUDate>300 then begin
@@ -803,7 +636,7 @@ begin
     ResolveLinksInFileList(SearchInPPUs,true);
     RemoveDoubles(SearchInPPUs);
   end;
-  
+
   for i:=1 to SearchForPPUs.Count-1 do begin
     CurUnitName:=ExtractFileNameOnly(SearchForPPUs[i]);
     if SearchForPPUs=SearchInPPUs then
@@ -993,24 +826,37 @@ begin
   FMacroList:=AValue;
 end;
 
+procedure TCheckCompilerOptsDlg.SetIdleConnected(const AValue: boolean);
+begin
+  if FIdleConnected=AValue then exit;
+  FIdleConnected:=AValue;
+  if FIdleConnected then
+    Application.AddOnIdleHandler(@ApplicationOnIdle)
+  else
+    Application.RemoveOnIdleHandler(@ApplicationOnIdle);
+end;
+
 function TCheckCompilerOptsDlg.DoTestAll: TModalResult;
 var
   CompilerFilename: String;
   CompileTool: TExternalToolOptions;
   CompilerFiles: TStrings;
   FPCCfgUnitPath: string;
-  FPC_PPUs: TStrings;
   TargetUnitPath: String;
   Target_PPUs: TStrings;
   cp: TParsedCompilerOptString;
+  TargetCPU: String;
+  TargetOS: String;
+  CfgCache: TFPCTargetConfigCache;
+  FPC_PPUs: TStrings;
 begin
   Result:=mrCancel;
   if Test<>cotNone then exit;
   CompileTool:=nil;
   TestMemo.Lines.Clear;
   CompilerFiles:=nil;
-  FPC_PPUs:=nil;
   Target_PPUs:=nil;
+  FPC_PPUs:=nil;
   try
     // do not confuse the user with cached data
     InvalidateFileStateCache();
@@ -1027,14 +873,14 @@ begin
     end;
     
     // check for non existing paths
-    CheckNonExistsingSearchPaths('include search path',
-                                 Options.GetIncludePath(false));
-    CheckNonExistsingSearchPaths('library search path',
-                                 Options.GetLibraryPath(false));
-    CheckNonExistsingSearchPaths('unit search path',
-                                 Options.GetUnitPath(false));
-    CheckNonExistsingSearchPaths('source search path',
-                                 Options.GetSrcPath(false));
+    CheckNonExistingSearchPaths('include search path',
+                                Options.GetIncludePath(false));
+    CheckNonExistingSearchPaths('library search path',
+                                Options.GetLibraryPath(false));
+    CheckNonExistingSearchPaths('unit search path',
+                                Options.GetUnitPath(false));
+    CheckNonExistingSearchPaths('source search path',
+                                Options.GetSrcPath(false));
 
     // fetch compiler filename
     CompilerFilename:=Options.ParsedOpts.GetParsedValue(pcosCompilerPath);
@@ -1043,21 +889,26 @@ begin
     Result:=CheckCompilerExecutable(CompilerFilename);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
+    TargetOS:=Options.TargetOS;
+    TargetCPU:=Options.TargetCPU;
+    CfgCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(CompilerFilename,
+                                                    '',TargetOS,TargetCPU,true);
+
     // check compiler config
-    Result:=CheckCompilerConfig(CompilerFilename,FPCCfgUnitPath);
+    Result:=CheckCompilerConfig(CfgCache);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    FPC_PPUs:=FindAllPPUFiles(FPCCfgUnitPath);
-
     // check if compiler paths include base units
-    Result:=CheckMissingFPCPPUs(FPC_PPUs);
+    Result:=CheckMissingFPCPPUs(CfgCache);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
     // check if compiler is older than fpc ppu
-    Result:=CheckCompilerDate(CompilerFilename,FPC_PPUs);
+    Result:=CheckCompilerDate(CfgCache);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
     // check if there are ambiguous fpc ppu
+    FPCCfgUnitPath:=CfgCache.GetUnitPaths;
+    FPC_PPUs:=FindAllPPUFiles(FPCCfgUnitPath);
     Result:=CheckForAmbiguousPPUs(FPC_PPUs);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
@@ -1114,7 +965,7 @@ end;
 constructor TCheckCompilerOptsDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Application.AddOnIdleHandler(@ApplicationOnIdle,true);
+  IdleConnected:=true;
   Caption:=dlgCCOCaption;
   TestGroupbox.Caption:=dlgCCOTest;
   OutputGroupBox.Caption:=dlgCCOResults;
@@ -1123,7 +974,7 @@ end;
 
 destructor TCheckCompilerOptsDlg.Destroy;
 begin
-  Application.RemoveOnIdleHandler(@ApplicationOnIdle);
+  IdleConnected:=false;;
   FDirectories.Free;
   inherited Destroy;
 end;

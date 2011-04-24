@@ -702,6 +702,7 @@ type
     function Update(TestFilename: string; ExtraOptions: string = '';
                     const OnProgress: TDefinePoolProgress = nil): boolean;
     function FindRealCompilerInPath(aTargetCPU: string; ResolveLinks: boolean): string;
+    function GetUnitPaths: string;
     function GetFPCVerNumbers(out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
     function GetFPCVer: string;
     function IndexOfUsedCfgFile: integer;
@@ -7721,6 +7722,13 @@ begin
   if Result='' then exit;
   if ResolveLinks then
     Result:=TryReadAllLinks(Result);
+end;
+
+function TFPCTargetConfigCache.GetUnitPaths: string;
+begin
+  UnitPaths.Delimiter:=';';
+  UnitPaths.StrictDelimiter:=true;
+  Result:=UnitPaths.DelimitedText;
 end;
 
 function TFPCTargetConfigCache.GetFPCVerNumbers(out FPCVersion, FPCRelease,

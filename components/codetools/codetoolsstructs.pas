@@ -128,7 +128,7 @@ type
     procedure Remove(const Name: string);
     property Strings[const s: string]: string read GetStrings write SetStrings; default;
     property CaseSensitive: boolean read FCaseSensitive;
-    property Tree: TAVLTree read FTree;
+    property Tree: TAVLTree read FTree; // tree of PStringToStringTreeItem
     function AsText: string;
     function Equals(OtherTree: TStringToStringTree): boolean; reintroduce;
     procedure Assign(Source: TStringToStringTree);
