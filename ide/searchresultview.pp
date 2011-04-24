@@ -579,6 +579,7 @@ begin
   //debugln(['TSearchResultsView.TreeViewMouseDown single=',([ssDouble,ssTriple,ssQuad]*Shift=[]),' Option=',EnvironmentOptions.MsgViewDblClickJumps]);
   if ([ssDouble,ssTriple,ssQuad]*Shift=[]) = EnvironmentOptions.MsgViewDblClickJumps
   then exit;
+  Node.Selected:=true;
   if Assigned(fOnSelectionChanged) then
     fOnSelectionChanged(Self);
 end;
