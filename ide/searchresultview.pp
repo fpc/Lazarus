@@ -576,7 +576,7 @@ begin
   Node:=TV.GetNodeAt(X,Y);
   if Node=nil then exit;
   if x<Node.DisplayTextLeft then exit;
-  //debugln(['TSearchResultsView.TreeViewMouseDown single=',([ssDouble,ssTriple,ssQuad]*Shift<>[]),' Option=',EnvironmentOptions.MsgViewDblClickJumps]);
+  //debugln(['TSearchResultsView.TreeViewMouseDown single=',([ssDouble,ssTriple,ssQuad]*Shift=[]),' Option=',EnvironmentOptions.MsgViewDblClickJumps]);
   if ([ssDouble,ssTriple,ssQuad]*Shift=[]) = EnvironmentOptions.MsgViewDblClickJumps
   then exit;
   if Assigned(fOnSelectionChanged) then
