@@ -145,6 +145,7 @@ type
     function KeyWordFuncLabel: boolean;
     function KeyWordFuncProperty: boolean;
     procedure ReadConst;
+    procedure ReadConstExpr;
     // types
     procedure ReadTypeNameAndDefinition;
     procedure ReadTypeReference;
@@ -3063,20 +3064,8 @@ begin
     ReadNextAtom;
     ReadConstant(true,false,[]);
   end;
-  if CurPos.Flag=cafEqual then begin
-    // read constant
-    repeat
-      ReadNextAtom;
-      if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
-        ReadTilBracketClose(true);
-      if (CurPos.Flag in AllCommonAtomWords)
-      and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
-        CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-      and AtomIsKeyWord
-      then
-        RaiseCharExpectedButAtomFound(';');
-    until (CurPos.Flag=cafSemicolon) or (CurPos.StartPos>SrcLen);
-  end;
+  if CurPos.Flag=cafEqual then
+    ReadConstExpr; // read constant
   if UpAtomIs('DEPRECATED') then
     ReadNextAtom;
   if CurPos.Flag=cafSemicolon then begin
@@ -3534,26 +3523,7 @@ begin
     ReadNextAtom;
     ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
   end;
-  if (CurPos.Flag<>cafEqual) then
-    RaiseCharExpectedButAtomFound('=');
-  // read constant
-  ReadNextAtom;
-  CreateChildNode;
-  CurNode.Desc:=ctnConstant;
-  repeat
-    if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
-      ReadTilBracketClose(true);
-    if (CurPos.Flag in AllCommonAtomWords)
-    and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
-      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-    and AtomIsKeyWord then
-      RaiseStringExpectedButAtomFound('constant');
-    if (CurPos.Flag=cafSemicolon) then break;
-    CurNode.EndPos:=CurPos.EndPos;
-    ReadNextAtom;
-  until (CurPos.StartPos>SrcLen);
-  // close ctnConstant node
-  EndChildNode;
+  ReadConstExpr;
 end;
 
 procedure TPascalParserTool.ReadTypeNameAndDefinition;
@@ -4446,6 +4416,30 @@ end;
 procedure TPascalParserTool.RaiseEndOfSourceExpected;
 begin
   SaveRaiseExceptionFmt(ctsEndofSourceExpectedButAtomFound,[GetAtom]);
+end;
+
+procedure TPascalParserTool.ReadConstExpr;
+begin
+  if (CurPos.Flag <> cafEqual) then
+    RaiseCharExpectedButAtomFound('=');
+  // read constant
+  ReadNextAtom;
+  CreateChildNode;
+  CurNode.Desc := ctnConstant;
+  repeat
+    if (CurPos.Flag in [cafRoundBracketOpen, cafEdgedBracketOpen]) then
+      ReadTilBracketClose(true);
+    if (CurPos.Flag in AllCommonAtomWords)
+    and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
+      CurPos.StartPos, CurPos.EndPos - CurPos.StartPos))
+    and AtomIsKeyWord then
+      RaiseStringExpectedButAtomFound('constant');
+    if (CurPos.Flag = cafSemicolon) then break;
+    CurNode.EndPos := CurPos.EndPos;
+    ReadNextAtom;
+  until (CurPos.StartPos > SrcLen);
+  // close ctnConstant node
+  EndChildNode;
 end;
 
 procedure TPascalParserTool.InitExtraction;
