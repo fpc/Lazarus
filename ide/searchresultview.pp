@@ -169,7 +169,7 @@ type
     procedure SearchInListEditKeyDown(Sender: TObject; var Key: Word;
                                     Shift: TShiftState );
     procedure FilterButtonClick (Sender: TObject );
-    procedure TreeViewMouseUp(Sender: TObject; Button: TMouseButton;
+    procedure TreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
     FMaxItems: integer;
@@ -565,7 +565,7 @@ begin
   end;//End if Assigned(CurrentTV)
 end;
 
-procedure TSearchResultsView.TreeViewMouseUp(Sender: TObject;
+procedure TSearchResultsView.TreeViewMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   TV: TCustomTreeView;
@@ -576,10 +576,11 @@ begin
   Node:=TV.GetNodeAt(X,Y);
   if Node=nil then exit;
   if x<Node.DisplayTextLeft then exit;
-  if ([ssDouble,ssTriple,ssQuad]*Shift=[])
-    and EnvironmentOptions.MsgViewDblClickJumps then exit;
+  //debugln(['TSearchResultsView.TreeViewMouseDown single=',([ssDouble,ssTriple,ssQuad]*Shift<>[]),' Option=',EnvironmentOptions.MsgViewDblClickJumps]);
+  if ([ssDouble,ssTriple,ssQuad]*Shift=[]) = EnvironmentOptions.MsgViewDblClickJumps
+  then exit;
   if Assigned(fOnSelectionChanged) then
-    fOnSelectionChanged(Self)
+    fOnSelectionChanged(Self);
 end;
 
 function TSearchResultsView.BeautifyPageName(const APageName: string): string;
@@ -848,7 +849,7 @@ begin
             OnShowHint:= @LazTVShowHint;
             OnMouseMove:= @LazTVMousemove;
             OnMouseWheel:= @LazTVMouseWheel;
-            OnMouseUp:=@TreeViewMouseUp;
+            OnMouseDown:=@TreeViewMouseDown;
             ShowHint:= true;
             RowSelect := True;                        // we are using custom draw
             Options := Options + [tvoAllowMultiselect] - [tvoThemedDraw];
