@@ -4512,6 +4512,14 @@ msgstr "Modificar archivo"
 msgid "Change Parent"
 msgstr "Cambiar Padre ..."
 
+#: lazarusidestrconsts.lischangetounix
+msgid "Change to Unix /"
+msgstr ""
+
+#: lazarusidestrconsts.lischangetowindows
+msgid "Change to Windows \\"
+msgstr ""
+
 #: lazarusidestrconsts.lischaracter
 msgid "Character"
 msgstr "Carácter"
@@ -6421,6 +6429,7 @@ msgid "Unable to load file %s%s%s."
 msgstr "No se ha podido cargar el archivo %s%s%s."
 
 #: lazarusidestrconsts.lisdecimal
+msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "Decimal"
 
@@ -6732,6 +6741,10 @@ msgstr "Editor de Documentación"
 #: lazarusidestrconsts.lisdoesnotexists
 msgid "%s does not exists: %s"
 msgstr "%s no existe: %s"
+
+#: lazarusidestrconsts.lisdonotchange
+msgid "Do not change"
+msgstr ""
 
 #: lazarusidestrconsts.lisdonotclosetheide
 msgid "Do not close the IDE"
@@ -11929,6 +11942,7 @@ msgid "There are more functions in the popupmenu"
 msgstr "Hay más funciones en el menú contextual"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
+msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
 msgid "Binary"
 msgstr "Binario"
 
@@ -13723,6 +13737,10 @@ msgstr "Detener en excepción"
 msgid "Stop the debugging?"
 msgstr "¿Parar la depuración?"
 
+#: lazarusidestrconsts.lisstorepathdelimitersandas
+msgid "Store path delimiters \\ and / as"
+msgstr ""
+
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
 msgstr "Archivo lpi extraño"
@@ -15196,6 +15214,32 @@ msgstr "Editor de código fuente"
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
 msgstr "Añadir la Unidad del paquete a la sección Uses"
+
+#: lazarusidestrconsts.regdlgbinary
+msgctxt "lazarusidestrconsts.regdlgbinary"
+msgid "Binary"
+msgstr "Binario"
+
+#: lazarusidestrconsts.regdlgdecimal
+msgctxt "lazarusidestrconsts.regdlgdecimal"
+msgid "Decimal"
+msgstr "Decimal"
+
+#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
+msgid "Display type for selected Registers"
+msgstr ""
+
+#: lazarusidestrconsts.regdlghex
+msgid "Hex"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgoctal
+msgid "Octal"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgraw
+msgid "Raw"
+msgstr ""
 
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"

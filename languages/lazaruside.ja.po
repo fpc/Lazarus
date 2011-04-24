@@ -4536,6 +4536,14 @@ msgstr "ファイルを変更"
 msgid "Change Parent"
 msgstr "基本クラスを変更 ..."
 
+#: lazarusidestrconsts.lischangetounix
+msgid "Change to Unix /"
+msgstr ""
+
+#: lazarusidestrconsts.lischangetowindows
+msgid "Change to Windows \\"
+msgstr ""
+
 #: lazarusidestrconsts.lischaracter
 msgid "Character"
 msgstr "キャラクタ"
@@ -6448,6 +6456,7 @@ msgid "Unable to load file %s%s%s."
 msgstr "ファイル%s%s%sを読み込めません。"
 
 #: lazarusidestrconsts.lisdecimal
+msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "小数"
 
@@ -6759,6 +6768,10 @@ msgstr "ドキュメントエディタ"
 #: lazarusidestrconsts.lisdoesnotexists
 msgid "%s does not exists: %s"
 msgstr "%s は存在しません: %s"
+
+#: lazarusidestrconsts.lisdonotchange
+msgid "Do not change"
+msgstr ""
 
 #: lazarusidestrconsts.lisdonotclosetheide
 msgid "Do not close the IDE"
@@ -11989,6 +12002,7 @@ msgid "There are more functions in the popupmenu"
 msgstr "ポップアップメニューの中にもっと多くの機能があります。"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
+msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
 msgid "Binary"
 msgstr "バイナリー"
 
@@ -13787,6 +13801,10 @@ msgstr "例外で停止"
 msgid "Stop the debugging?"
 msgstr "デバッグを停止してよろしいですか?"
 
+#: lazarusidestrconsts.lisstorepathdelimitersandas
+msgid "Store path delimiters \\ and / as"
+msgstr ""
+
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
 msgstr "奇妙なlpiファイル"
@@ -15262,6 +15280,32 @@ msgstr "ソースエディタ"
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
 msgstr "usesセクションにパッケージユニットを追加"
+
+#: lazarusidestrconsts.regdlgbinary
+msgctxt "lazarusidestrconsts.regdlgbinary"
+msgid "Binary"
+msgstr "バイナリー"
+
+#: lazarusidestrconsts.regdlgdecimal
+msgctxt "lazarusidestrconsts.regdlgdecimal"
+msgid "Decimal"
+msgstr "小数"
+
+#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
+msgid "Display type for selected Registers"
+msgstr ""
+
+#: lazarusidestrconsts.regdlghex
+msgid "Hex"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgoctal
+msgid "Octal"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgraw
+msgid "Raw"
+msgstr ""
 
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"

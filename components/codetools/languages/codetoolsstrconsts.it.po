@@ -381,7 +381,7 @@ msgstr "In questa classe non c'è la funzione GetEnumerator"
 #: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
 msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
 msgid "function GetEnumerator not found in this class"
-msgstr ""
+msgstr "In questa classe non c'è la funzione GetEnumerator"
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"

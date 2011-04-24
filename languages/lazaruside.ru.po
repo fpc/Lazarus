@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-23 17:12+0300\n"
+"PO-Revision-Date: 2011-04-24 17:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4541,6 +4541,14 @@ msgstr "Изменить файл"
 msgid "Change Parent"
 msgstr "Сменить родителя"
 
+#: lazarusidestrconsts.lischangetounix
+msgid "Change to Unix /"
+msgstr "Заменять на / Unix"
+
+#: lazarusidestrconsts.lischangetowindows
+msgid "Change to Windows \\"
+msgstr "Заменять на \\ Windows"
+
 #: lazarusidestrconsts.lischaracter
 msgid "Character"
 msgstr "Символ"
@@ -6449,6 +6457,7 @@ msgid "Unable to load file %s%s%s."
 msgstr "Невозможно загрузить файл %s%s%s."
 
 #: lazarusidestrconsts.lisdecimal
+msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr "Десятичное"
 
@@ -6760,6 +6769,10 @@ msgstr "Редактор документации"
 #: lazarusidestrconsts.lisdoesnotexists
 msgid "%s does not exists: %s"
 msgstr "%s не существует: %s"
+
+#: lazarusidestrconsts.lisdonotchange
+msgid "Do not change"
+msgstr "В неизменном виде"
 
 #: lazarusidestrconsts.lisdonotclosetheide
 msgid "Do not close the IDE"
@@ -11961,6 +11974,7 @@ msgid "There are more functions in the popupmenu"
 msgstr "Во всплывающем меню больше функций"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
+msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
 msgid "Binary"
 msgstr "Двоичный"
 
@@ -13757,6 +13771,10 @@ msgstr "Останов при исключении"
 msgid "Stop the debugging?"
 msgstr "Остановить отладку?"
 
+#: lazarusidestrconsts.lisstorepathdelimitersandas
+msgid "Store path delimiters \\ and / as"
+msgstr "Сохранение разделителей пути \\ и /:"
+
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
 msgstr "Странный файл LPI"
@@ -15233,6 +15251,32 @@ msgstr "Редактор исходного кода"
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
 msgstr "Добавлять модуль пакета в выражение uses"
+
+#: lazarusidestrconsts.regdlgbinary
+msgctxt "lazarusidestrconsts.regdlgbinary"
+msgid "Binary"
+msgstr "Двоичный"
+
+#: lazarusidestrconsts.regdlgdecimal
+msgctxt "lazarusidestrconsts.regdlgdecimal"
+msgid "Decimal"
+msgstr "Десятичный"
+
+#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
+msgid "Display type for selected Registers"
+msgstr "Метод отображения значений выбранных регистров"
+
+#: lazarusidestrconsts.regdlghex
+msgid "Hex"
+msgstr "Шестнадцатеричный"
+
+#: lazarusidestrconsts.regdlgoctal
+msgid "Octal"
+msgstr "Восьмеричный"
+
+#: lazarusidestrconsts.regdlgraw
+msgid "Raw"
+msgstr "Исходный"
 
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"

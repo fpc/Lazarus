@@ -4531,6 +4531,14 @@ msgstr ""
 msgid "Change Parent"
 msgstr "Ubah leluhur ..."
 
+#: lazarusidestrconsts.lischangetounix
+msgid "Change to Unix /"
+msgstr ""
+
+#: lazarusidestrconsts.lischangetowindows
+msgid "Change to Windows \\"
+msgstr ""
+
 #: lazarusidestrconsts.lischaracter
 msgid "Character"
 msgstr ""
@@ -6442,6 +6450,7 @@ msgid "Unable to load file %s%s%s."
 msgstr "Tidak bisa mengambil file %s%s%s."
 
 #: lazarusidestrconsts.lisdecimal
+msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr ""
 
@@ -6752,6 +6761,10 @@ msgstr "Editor Dokumentasi"
 
 #: lazarusidestrconsts.lisdoesnotexists
 msgid "%s does not exists: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisdonotchange
+msgid "Do not change"
 msgstr ""
 
 #: lazarusidestrconsts.lisdonotclosetheide
@@ -11971,6 +11984,7 @@ msgid "There are more functions in the popupmenu"
 msgstr "Ada fungsi lebih banyak dalam menu popup"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
+msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
 msgid "Binary"
 msgstr "Biner"
 
@@ -13769,6 +13783,10 @@ msgstr ""
 msgid "Stop the debugging?"
 msgstr "Hentikan debugging?"
 
+#: lazarusidestrconsts.lisstorepathdelimitersandas
+msgid "Store path delimiters \\ and / as"
+msgstr ""
+
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
 msgstr ""
@@ -15241,6 +15259,32 @@ msgstr "Editor Sumber"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgbinary
+msgctxt "lazarusidestrconsts.regdlgbinary"
+msgid "Binary"
+msgstr "Biner"
+
+#: lazarusidestrconsts.regdlgdecimal
+msgctxt "lazarusidestrconsts.regdlgdecimal"
+msgid "Decimal"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
+msgid "Display type for selected Registers"
+msgstr ""
+
+#: lazarusidestrconsts.regdlghex
+msgid "Hex"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgoctal
+msgid "Octal"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgraw
+msgid "Raw"
 msgstr ""
 
 #: lazarusidestrconsts.rsaddinverse

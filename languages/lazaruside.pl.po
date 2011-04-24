@@ -4541,6 +4541,14 @@ msgstr ""
 msgid "Change Parent"
 msgstr "Zmień rodzica ..."
 
+#: lazarusidestrconsts.lischangetounix
+msgid "Change to Unix /"
+msgstr ""
+
+#: lazarusidestrconsts.lischangetowindows
+msgid "Change to Windows \\"
+msgstr ""
+
 #: lazarusidestrconsts.lischaracter
 msgid "Character"
 msgstr ""
@@ -6448,6 +6456,7 @@ msgid "Unable to load file %s%s%s."
 msgstr "Nie można załadować pliku %s%s%s."
 
 #: lazarusidestrconsts.lisdecimal
+msgctxt "lazarusidestrconsts.lisdecimal"
 msgid "Decimal"
 msgstr ""
 
@@ -6758,6 +6767,10 @@ msgstr "Edytor dokumentacji"
 
 #: lazarusidestrconsts.lisdoesnotexists
 msgid "%s does not exists: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisdonotchange
+msgid "Do not change"
 msgstr ""
 
 #: lazarusidestrconsts.lisdonotclosetheide
@@ -11976,6 +11989,7 @@ msgid "There are more functions in the popupmenu"
 msgstr "Więcej funkcji jest w menu podręcznym"
 
 #: lazarusidestrconsts.lispkgfiletypebinary
+msgctxt "lazarusidestrconsts.lispkgfiletypebinary"
 msgid "Binary"
 msgstr "Binarny"
 
@@ -13770,6 +13784,10 @@ msgstr ""
 msgid "Stop the debugging?"
 msgstr "Zatrzymać odpluskiwanie?"
 
+#: lazarusidestrconsts.lisstorepathdelimitersandas
+msgid "Store path delimiters \\ and / as"
+msgstr ""
+
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
 msgstr ""
@@ -15240,6 +15258,32 @@ msgstr "Edytor źródeł"
 
 #: lazarusidestrconsts.podaddpackageunittousessection
 msgid "Add package unit to uses section"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgbinary
+msgctxt "lazarusidestrconsts.regdlgbinary"
+msgid "Binary"
+msgstr "Binarny"
+
+#: lazarusidestrconsts.regdlgdecimal
+msgctxt "lazarusidestrconsts.regdlgdecimal"
+msgid "Decimal"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
+msgid "Display type for selected Registers"
+msgstr ""
+
+#: lazarusidestrconsts.regdlghex
+msgid "Hex"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgoctal
+msgid "Octal"
+msgstr ""
+
+#: lazarusidestrconsts.regdlgraw
+msgid "Raw"
 msgstr ""
 
 #: lazarusidestrconsts.rsaddinverse
