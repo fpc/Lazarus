@@ -76,6 +76,9 @@ function fsXor (s1,s2 : TFontStyles) : TFontStyles; inline;
 function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
   UseTabs: boolean): string;
 
+procedure SynAssert(Condition: Boolean; Msg: String);
+procedure SynAssert(Condition: Boolean; Msg: String; Args: Array of Const);
+
 implementation
 
 uses
@@ -230,6 +233,16 @@ begin
   end;
   if TabCount>0 then
     Result:=StringOfChar(#9,TabCount)+Result;
+end;
+
+procedure SynAssert(Condition: Boolean; Msg: String);
+begin
+  if not Condition then raise Exception.Create(Msg);
+end;
+
+procedure SynAssert(Condition: Boolean; Msg: String; Args: array of const);
+begin
+  if not Condition then raise Exception.Create(Format(Msg, Args));
 end;
 
 end.

@@ -4,6 +4,9 @@ unit SynEditMarks;
 {$IFOPT C+}
   {$DEFINE AssertSynMemIndex}
 {$ENDIF}
+{$IFDEF SynAssert}
+  {$DEFINE AssertSynMemIndex}
+{$ENDIF}
 
 interface
 

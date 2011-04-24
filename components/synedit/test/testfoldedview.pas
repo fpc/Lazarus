@@ -22,7 +22,7 @@ type
   TTestFoldedView = class(TTestBaseHighlighterPas)
   private
     FoldedView: TSynEditFoldedView;
-    DoAutoFoldDescTests: Boolean;
+    DoAutoFoldDescTests, DoAutoFoldDescTestsReadOnly: Boolean;
     DoAllowScrollPastEof: Boolean;
     EnableDebug: Boolean;
 
@@ -38,6 +38,7 @@ type
     function TestText4: TStringArray;
     function TestText5: TStringArray;
     function TestText6: TStringArray;
+    function TestText7: TStringArray;
     function TestTextHide(ALen: Integer): TStringArray;
     function TestTextHide2(ALen: Integer): TStringArray;
     function TestTextHide3: TStringArray;
@@ -51,6 +52,8 @@ type
     procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
       AFoldAtSkip: Boolean; AExpectedLines: Array of Integer);
     procedure TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
+      AFoldAtSkip: Boolean; AVisibleLines: Integer; AExpectedLines: Array of Integer);
+    procedure TstUnFold(AName: String; AFoldAtIndex, AFoldAtColum, AFoldAtColCnt: integer;
       AFoldAtSkip: Boolean; AVisibleLines: Integer; AExpectedLines: Array of Integer);
     procedure TstUnFoldAtCaret(AName: String; X, Y: integer; AExpectedLines: Array of Integer);
     procedure TstTxtIndexToViewPos(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
@@ -103,6 +106,14 @@ procedure TTestFoldedView.TstFold(AName: String; AFoldAtIndex, AFoldAtColum, AFo
   AFoldAtSkip: Boolean; AVisibleLines: Integer; AExpectedLines: Array of Integer);
 begin
   FoldedView.FoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip, AVisibleLines);
+  TestFoldedText(AName, AExpectedLines);
+end;
+
+procedure TTestFoldedView.TstUnFold(AName: String; AFoldAtIndex, AFoldAtColum,
+  AFoldAtColCnt: integer; AFoldAtSkip: Boolean; AVisibleLines: Integer;
+  AExpectedLines: array of Integer);
+begin
+  FoldedView.UnFoldAtTextIndex(AFoldAtIndex, AFoldAtColum, AFoldAtColCnt, AFoldAtSkip, AVisibleLines);
   TestFoldedText(AName, AExpectedLines);
 end;
 
@@ -177,7 +188,7 @@ procedure TTestFoldedView.TestFoldedText(AName: String; ALines: array of Integer
 var
   ExpTxt: String;
   i: Integer;
-  tmp: String;
+  tmp, tmp1, tmp2, tmp3: String;
   function GetFoldedText: String;
   var I: Integer;
   begin
@@ -191,8 +202,23 @@ begin
   for i := 0 to high(ALines) do ExpTxt := ExpTxt + SynEdit.Lines[ALines[i]] + LineEnding;
   TestCompareString('', ExpTxt, GetFoldedText);
 
+  if DoAutoFoldDescTests or DoAutoFoldDescTestsReadOnly then begin
+    tmp  := FoldedView.GetFoldDescription(0, 1, -1, -1, False, False);
+    tmp1 := FoldedView.GetFoldDescription(0, 1, -1, -1, False, True);
+    tmp2 := FoldedView.GetFoldDescription(0, 1, -1, -1, True, False);
+    tmp3 := FoldedView.GetFoldDescription(0, 1, -1, -1, True, True);
+  end;
+
+
   FoldedView.FixFoldingAtTextIndex(0, SynEdit.Lines.Count-1);
   TestCompareString('after FixFolding', ExpTxt, GetFoldedText);
+
+  if DoAutoFoldDescTests or DoAutoFoldDescTestsReadOnly then begin
+    TestCompareString('GetFoldDesc after Fix fold 1', tmp,  FoldedView.GetFoldDescription(0, 1, -1, -1, False, False));
+    TestCompareString('GetFoldDesc after Fix fold 2', tmp1, FoldedView.GetFoldDescription(0, 1, -1, -1, False, True));
+    TestCompareString('GetFoldDesc after Fix fold 3', tmp2, FoldedView.GetFoldDescription(0, 1, -1, -1, True, False));
+    TestCompareString('GetFoldDesc after Fix fold 4', tmp3, FoldedView.GetFoldDescription(0, 1, -1, -1, True, True));
+  end;
 
   if DoAutoFoldDescTests then begin
     tmp := FoldedView.GetFoldDescription(0, 1, -1, -1, False, False);
@@ -347,6 +373,38 @@ begin
   Result[7]:= '';
 end;
 
+function TTestFoldedView.TestText7: TStringArray;
+begin
+  SetLength(Result, 27);
+  Result[0] := 'program Foo;';
+  Result[1] := '{$IFDEF x1}';
+  Result[2] := '{$IFDEF x2} {$IFDEF x3}';
+  Result[3] := '{$IFDEF x4} {$IFDEF x5} {$IFDEF x6} {$IFDEF x7}';
+  Result[4] := '{$IFDEF x8} {$IFDEF x9} {$IFDEF xA}';
+  Result[5] := '//foo A';
+  Result[6] := '{$ENDIF XA}';
+  Result[7] := '//foo 9';
+  Result[8] := '{$ENDIF X9}';
+  Result[9] := '//foo 8';
+  Result[10] := '{$ENDIF X8}';
+  Result[11] := '//foo 7';
+  Result[12] := '{$ENDIF X7}';
+  Result[13] := '//foo 6';
+  Result[14] := '{$ENDIF X6}';
+  Result[15] := '//foo 5';
+  Result[16] := '{$ENDIF X5}';
+  Result[17] := '//foo 4';
+  Result[18] := '{$ENDIF X4}';
+  Result[19] := '//foo 3';
+  Result[20] := '{$ENDIF X3}';
+  Result[21] := '//foo 2';
+  Result[22] := '{$ENDIF X2}';
+  Result[23] := '//foo 1';
+  Result[24] := '{$ENDIF X1}';
+  Result[25] := '//bar';
+  Result[26] := '';
+end;
+
 function TTestFoldedView.TestTextHide(ALen: Integer): TStringArray;
 begin
   SetLength(Result, 3+ALen);
@@ -402,6 +460,8 @@ end;
 
 procedure TTestFoldedView.TestFold;
   procedure RunTest;
+  var
+    i: Integer;
   begin
     PushBaseName('');
 
@@ -608,6 +668,123 @@ procedure TTestFoldedView.TestFold;
     AssertEquals(FoldedView.Count, 4999-2);
   {%endregion}
 
+  {%region Text7 fold at indes, skip, ...}
+    (* Arguments for (Un)FoldAt* (Line, ViewPos, TextIndex):
+       - ColumnIndex (0-based)
+           Can be negative, to access the highest(-1) available, 2nd highest(-2) ...
+           If negative, count points downward
+       - ColCount = 0 => all
+       - Skip => Do not count nodes that are already in the desired state
+           (or can not archive the desired state: e.g. can not hide)
+       - AVisibleLines: 0 = Hide / 1 = Fold
+    *)
+    TstSetText('Text7 fold at indes, skip, ...', TestText7);
+    {%region fold one}
+    for i := 0 to 1 do begin
+      PushBaseName('X='+IntToStr(i));
+      SynEdit.UnfoldAll;
+      TstFold('fold one col (pos): 0,1,x', 3,   0, 1, i=0, 1,  [0, 1, 2, 3,  19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('fold one col (pos): 1,1,x', 3,   1, 1, i=0, 1,  [0, 1, 2, 3,  17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('fold one col (pos): 2,1,x', 3,   2, 1, i=0, 1,  [0, 1, 2, 3,  15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('fold one col (pos): 3,1,x', 3,   3, 1, i=0, 1,  [0, 1, 2, 3,  13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('NOT fold one col (pos): 4,1,x', 3,   4, 1, i=0, 1,  [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12, 13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+
+      SynEdit.UnfoldAll;
+      TstFold('fold one col (neg): -4,1,x', 3,   -4, 1, i=0, 1,  [0, 1, 2, 3,  19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('fold one col (neg): -3,1,x', 3,   -3, 1, i=0, 1,  [0, 1, 2, 3,  17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('fold one col (neg): -2,1,x', 3,   -2, 1, i=0, 1,  [0, 1, 2, 3,  15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('fold one col (neg): -1,1,x', 3,   -1, 1, i=0, 1,  [0, 1, 2, 3,  13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('NOT fold one col (neg): -5,1,x', 3,   -5, 1, i=0, 1,  [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12, 13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+
+
+      DoAutoFoldDescTestsReadOnly := DoAutoFoldDescTests;
+      DoAutoFoldDescTests := False;
+      // SKIP, if DoAutoFoldDescTests, since fold-info-apply checks for correct node type, and this code force hide.
+
+      SynEdit.UnfoldAll;
+      TstFold('hide one col (pos): 0,1,x', 3,   0, 1, i=0, 0,  [0, 1, 2,  19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('hide one col (pos): 1,1,x', 3,   1, 1, i=0, 0,  [0, 1, 2,  17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('hide one col (pos): 2,1,x', 3,   2, 1, i=0, 0,  [0, 1, 2,  15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('hide one col (pos): 3,1,x', 3,   3, 1, i=0, 0,  [0, 1, 2,  13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('NOT hide one col (pos): 4,1,x', 3,   4, 1, i=0, 0,  [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12, 13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+
+      SynEdit.UnfoldAll;
+      TstFold('hide all-after col (pos): 0,1,x', 3,   0, 0, i=0, 0,  [0, 1, 2,  19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('hide all-after col (pos): 1,1,x', 3,   1, 0, i=0, 0,  [0, 1, 2,  17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('hide all-after col (pos): 2,1,x', 3,   2, 0, i=0, 0,  [0, 1, 2,  15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('hide all-after col (pos): 3,1,x', 3,   3, 0, i=0, 0,  [0, 1, 2,  13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+      SynEdit.UnfoldAll;
+      TstFold('NOT hide all-after col (pos): 4,1,x', 3,   4, 1, i=0, 0,  [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12, 13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+
+      DoAutoFoldDescTests := DoAutoFoldDescTestsReadOnly;
+
+
+      PopBaseName;
+    end;
+    {%endregion}
+
+    {%region fold two}
+      {%region  1st:: 0,1,F}
+        // 1st:: 0,1,F // SKIP=False
+        SynEdit.UnfoldAll; PushBaseName('(1st:: 0,1,F / 2nd::  x=1 no-sk c=1)');
+        TstFold  ('  fold pre-one col (pos):   0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+        TstFold  ('  fold 2nd col (pos/no-sk): 1,1,F', 3,   1, 1, False, 1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+        TstUnFold('UNfold 1st col (pos/no-sk): 0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  17,18,19, 20, 21, 22, 23, 24, 25]);
+
+        SynEdit.UnfoldAll; PushBaseName('(1st:: 0,1,F / 2nd::  x=2 no-sk c=1)');
+        TstFold  ('  fold pre-one col (pos):   0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+        TstFold  ('  fold 3rd col (pos/no-sk): 2,1,F', 3,   2, 1, False, 1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+        TstUnFold('UNfold 1st col (pos/no-sk): 0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+
+        SynEdit.UnfoldAll; PushBaseName('(1st:: 0,1,F / 2nd::  x=3 no-sk c=1)');
+        TstFold  ('  fold pre-one col (pos):   0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+        TstFold  ('  fold 4th col (pos/no-sk): 3,1,F', 3,   3, 1, False, 1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+        TstUnFold('UNfold 1st col (pos/no-sk): 0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+
+        // 1st:: 0,1,F // SKIP=True
+        SynEdit.UnfoldAll; PopPushBaseName('(1st:: 0,1,F / 2nd::  x=0 skip c=1)');
+        TstFold  ('  fold pre-one col (pos):   0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+        TstFold  ('  fold 2nd col (pos/skip):  0,1,T', 3,   0, 1, True,  1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+  //      TstUnFold('UNfold 1st col (pos/no-sk): 0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  17,18,19, 20, 21, 22, 23, 24, 25]);
+
+        SynEdit.UnfoldAll; PopPushBaseName('(1st:: 0,1,F / 2nd::  x=1 skip c=1)');
+        TstFold  ('  fold pre-one col (pos):   0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+        TstFold  ('  fold 3rd col (pos/skip):  1,1,T', 3,   1, 1, True,  1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+  //      TstUnFold('UNfold 1st col (pos/no-sk): 0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+
+        SynEdit.UnfoldAll; PopPushBaseName('(1st:: 0,1,F / 2nd::  x=2 skip c=1)');
+        TstFold  ('  fold pre-one col (pos):   0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+        TstFold  ('  fold 4th col (pos/skip):  2,1,T', 3,   2, 1, True,  1,  [0,1,2,3,  19, 20, 21, 22, 23, 24, 25]);
+  //      TstUnFold('UNfold 1st col (pos/no-sk): 0,1,F', 3,   0, 1, False, 1,  [0,1,2,3,  13,14,15,16,17,18,19, 20, 21, 22, 23, 24, 25]);
+      {%endregion}
+
+      {%region  1st:: 1,1,F}
+      {%endregion}
+
+      {%region  1st:: -1,1,F}
+      {%endregion}
+
+      {%region  1st:: -2,1,F}
+      {%endregion}
+    {%endregion}
+  {%endregion Text7 fold at indes, skip, ...}
+
+
   end;
 
 begin
@@ -684,6 +861,15 @@ begin
     DoNewLine(13,1);  // newline, on same line
     TestFoldedText('(newline on srcline)', [0, 1]);
     TestNodeAtPos('(newline on srcline)', 1, 2);
+    PopBaseName;
+
+    TstSetText('Simple 2: edit del foldable line', TestText3);
+    TstFold('', 7, [0, 1, 2, 3, 4, 5, 6, 7,  10, 11]);
+    SetCaretAndSel(1,3, 1,4);
+    SynEdit.CommandProcessor(ecDeleteChar, '', nil);
+    TestFoldedText('fold after', [0, 1, 2, 3, 4, 5, 6,  9, 10]);
+
+
     PopBaseName;
   {%endregion}
 

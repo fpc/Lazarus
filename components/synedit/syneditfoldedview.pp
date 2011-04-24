@@ -27,6 +27,13 @@ unit SynEditFoldedView;
 {$coperators on}
 {$IFDEF CPUPOWERPC} {$INLINE OFF} {$ENDIF} (* Workaround for bug 12576 (fpc) see bugs.freepascal.org/view.php?id=12576 *)
 
+{$IFOPT C+}
+  {$DEFINE SynAssertFold}
+{$ENDIF}
+{$IFDEF SynAssert}
+  {$DEFINE SynAssertFold}
+{$ENDIF}
+
 {$IFDEF SynFoldDebug}
   {$DEFINE SynDebug}
   {$DEFINE SynFoldSaveDebug}
@@ -1897,6 +1904,9 @@ begin
 
   EndLineIdx := FHighlighter.FoldEndLine(ANode.StartLine - ANode.SourceLineOffset - 1,
                                         ANode.FoldIndex);
+  {$IFDEF SynAssertFold}
+  SynAssert(EndLineIdx >= 0, 'TSynFoldNodeInfoHelper.GotoNodeClosePos: Bad EndLineIdx=%d # Anode: StartLine=%d SrcLOffs=%d ColIdx=%d FoldCol=%d', [EndLineIdx, ANode.StartLine, ANode.SourceLineOffset, ANode.FoldIndex, ANode.FoldColumn]);
+  {$ENDIF}
   Cnt := FHighlighter.FoldNodeInfoCount[EndLineIdx, [sfaClose, sfaFold]];
   EndCol := 0;
   while EndCol < Cnt do begin
@@ -3579,6 +3589,7 @@ begin
       continue;
     end;
 
+    // TODO: missing check, that hl-node is hideable
     fldinf := FoldProvider.InfoForFoldAtTextIndex(AStartIndex, ColIndex, IsHide);
     if not NFolded.IsInFold then
       fFoldTree.InsertNewFold(AStartIndex+1+AVisibleLines, ColIndex,
@@ -3762,30 +3773,36 @@ var
     end;
 
   var
-    FldLine, FldIndex, FldLen, FndLen, FldCol: Integer;
+    FldSrcLine, FldSrcIndex, FLdNodeLine, FldLen, FndLen, FldCol: Integer;
     i, j, CurLen: Integer;
-    PrevFldLine: Integer;
+    PrevFldSrcLine: Integer;
     SubTree: TSynTextFoldAVLTree;
     IsHide: Boolean;
   begin
     Result := False;
-    FldLine := doStart;
+    FldSrcLine := doStart;
     while node.IsInFold do begin
-      PrevFldLine := FldLine;
-      FldLine := node.SourceLine; // the 1-based cfCollapsed (last visible) Line (or 1st hidden)
-      FldIndex := FldLine - 1;
+      PrevFldSrcLine := FldSrcLine;
+      FldSrcLine := node.SourceLine; // the 1-based cfCollapsed (last visible) Line (or 1st hidden)
+      FLdNodeLine := node.StartLine; // the 1 based, first hidden line
+      FldSrcIndex := FldSrcLine - 1;
       FldLen := node.FullCount;
       if (FldLen <= 0) then begin
-        {$IFDEF SynFoldDebug}debugln(['>>FOLD-- FixFolding: Remove node with len<0 FldLine=', FldLine]);{$ENDIF}
+        {$IFDEF SynFoldDebug}debugln(['>>FOLD-- FixFolding: Remove node with len<0 FldSrcLine=', FldSrcLine]);{$ENDIF}
         DoRemoveNode(node);
         continue;
       end;
 
-      if (FldLine > PrevFldLine) then begin
+      //{$IFDEF SynAssertFold}
+      //With mixed fold/hide => line goes up/down
+      //SynAssert(FldSrcLine >= PrevFldSrcLine, 'TSynEditFoldedView.FixFolding: FoldLine went backwards now %d was %d', [FldSrcLine, PrevFldSrcLine]);
+      //{$ENDIF}
+      if (FldSrcLine <> PrevFldSrcLine) then begin
         // Next Line
         AtColumn := 0;
-        FldInfos := nil;
-        FldInfos := FoldProvider.InfoListForFoldsAtTextIndex(FldIndex, False);
+                  // AtColumn is used for nodes, behing the HLs index-range (fncHighlighterEx, fncBlockSelection)
+                  // TODO: At Colum may be wrong for mixed fold/hide
+        FldInfos := FoldProvider.InfoListForFoldsAtTextIndex(FldSrcIndex, False);
         MaxCol := length(FldInfos)-1;
       end;
 
@@ -3802,7 +3819,7 @@ var
           j := abs(FldInfos[i].Column - node.FoldColumn);
           if (j > 0) and (j < node.FoldColumnLen) then begin
             //maybe
-            FndLen := FoldProvider.FoldLineLength(FldIndex, i);
+            FndLen := FoldProvider.FoldLineLength(FldSrcIndex, i);
             if node.IsHide then inc(FndLen);
             if FndLen <> node.FullCount then Continue;
             debugln('******** FixFolding: Adjusting x pos');
@@ -3810,7 +3827,7 @@ var
           end;
           if (FndLen > 0) or (FldInfos[i].Column = node.FoldColumn) then begin
             if FndLen < 0 then begin
-              FndLen := FoldProvider.FoldLineLength(FldIndex, i);
+              FndLen := FoldProvider.FoldLineLength(FldSrcIndex, i);
               if node.IsHide then inc(FndLen);
             end;
             if abs(FndLen - node.FullCount) > 1 then continue;
@@ -3819,7 +3836,7 @@ var
                (node.FoldIndex <> i)
             then
               Result := true;
-            {$IFDEF SynFoldDebug}if (node.fData.Classification <> fncHighlighter) then debugln(['>>FOLD-- FixFolding: set Node to fncHighlighter (FOUND) FldLine=', FldLine]);{$ENDIF}
+            {$IFDEF SynFoldDebug}if (node.fData.Classification <> fncHighlighter) then debugln(['>>FOLD-- FixFolding: set Node to fncHighlighter (FOUND) FldSrcLine=', FldSrcLine]);{$ENDIF}
             node.fData.Classification :=  fncHighlighter;
             node.FoldColumn := FldInfos[i].Column;
             node.fData.FoldIndex := i;
@@ -3828,7 +3845,7 @@ var
           end;
         end;
         if i = MaxCol then begin
-          {$IFDEF SynFoldDebug}debugln(['>>FOLD-- FixFolding: set Node to fncHighlighterEx (NOT FOUND) FldLine=', FldLine]);{$ENDIF}
+          {$IFDEF SynFoldDebug}debugln(['>>FOLD-- FixFolding: set Node to fncHighlighterEx (NOT FOUND) FldSrcLine=', FldSrcLine]);{$ENDIF}
           node.fData.Classification :=  fncHighlighterEx;
           node.fData.FoldIndex := MaxCol + AtColumn;
           inc(AtColumn);
@@ -3843,9 +3860,9 @@ var
       end;
 
       if (node.fData.Nested <> nil) then begin
-        SubTree := doFoldTree.TreeForNestedNode(node.fData, FldLine+1);
+        SubTree := doFoldTree.TreeForNestedNode(node.fData, FLdNodeLine);
         CurLen := node.MergedLineCount;
-        if DoFixFolding(FldLine, FldLine + CurLen + 1, AtColumn, SubTree, SubTree.FindFirstFold)
+        if DoFixFolding(FldSrcLine, FLdNodeLine + CurLen, AtColumn, SubTree, SubTree.FindFirstFold)
         then begin
           if CurLen > FldLen then begin
             node.fData.MergedLineCount:= max(node.FullCount,
