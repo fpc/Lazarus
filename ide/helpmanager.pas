@@ -35,7 +35,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, AVL_Tree, LCLProc, LCLIntf, LCLType, Forms, Controls, Buttons,
-  StdCtrls, Dialogs, ExtCtrls, FileProcs, Graphics, ButtonPanel,
+  StdCtrls, Dialogs, ExtCtrls, FileProcs, Graphics, ButtonPanel, LConvEncoding,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -265,19 +265,29 @@ function TSimpleHTMLControl.HTMLToCaption(const s: string; MaxLines: integer
 var
   p: Integer;
   EndPos: Integer;
-  CurTag: String;
   NewTag: String;
   Line: Integer;
   sp: LongInt;
+  InHeader: Boolean;
+  CurTagName: String;
 begin
   Result:=s;
   //debugln(['TSimpleHTMLControl.HTMLToCaption HTML="',Result,'"']);
   Line:=1;
   p:=1;
+  // remove UTF8 BOM
+  if copy(Result,1,3)=UTF8BOM then
+    Result:=copy(s,4,length(Result));
+  InHeader:=false; // it could be a snippet
   while p<=length(Result) do begin
     if Result[p]='<' then begin
       // removes html tags
       EndPos:=p+1;
+      if (EndPos<=length(Result)) and (Result[EndPos]='/') then inc(EndPos);
+      while (EndPos<=length(Result))
+      and (not (Result[EndPos] in [' ','>','"','/',#9,#10,#13])) do
+        inc(EndPos);
+      CurTagName:=UpperCase(copy(Result,p+1,EndPos-p-1));
       while (EndPos<=length(Result)) do begin
         if Result[EndPos]='"' then begin
           // skip " tag
@@ -291,26 +301,47 @@ begin
         end;
         inc(EndPos);
       end;
-      CurTag:=copy(Result,p,EndPos-p);
 
-      if ((SysUtils.CompareText(CurTag,'<P>')=0)
-        or (SysUtils.CompareText(CurTag,'</P>')=0))
-      then begin
+      if CurTagName='HTML' then
+      begin
+        // it's a whole page
+        InHeader:=true;
+      end;
+      if CurTagName='BODY' then
+      begin
+        // start of body => ignore header
+        InHeader:=false;
+        Result:=copy(Result,EndPos,length(Result));
+        p:=1;
+        EndPos:=1;
+        Line:=1;
+      end;
+      if CurTagName='/BODY' then
+      begin
+        // end of body
+        Result:=copy(Result,1,p-1);
+        break;
+      end;
+
+      if (CurTagName='P') or (CurTagName='/P') then begin
         // add a line break if there is not already one
         sp:=p;
         while (sp>1) and (Result[sp-1] in [' ',#9]) do dec(sp);
         if (sp>1) and (not (Result[sp-1] in [#10,#13])) then
-          CurTag:='<BR>';
+          CurTagName:='BR';
+      end;
+      if (CurTagName='DIV') or (CurTagName='/DIV')
+      then begin
+        // add a line break if not in first line
+        if Line>1 then
+          CurTagName:='BR';
       end;
 
-      if (p>1)
-      and ((SysUtils.CompareText(CurTag,'<BR>')=0)
-        or (SysUtils.CompareText(CurTag,'<DIV>')=0)
-        or (SysUtils.CompareText(copy(CurTag,1,5),'<DIV ')=0)
-        or (SysUtils.CompareText(CurTag,'</DIV>')=0))
-      then begin
+      if CurTagName='BR' then
+      begin
         NewTag:=LineEnding;
-        inc(Line);
+        if not InHeader then
+          inc(Line);
         if Line>MaxLines then begin
           Result:=copy(Result,1,p)+LineEnding+'...';
           break;

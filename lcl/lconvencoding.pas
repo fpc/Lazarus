@@ -31,6 +31,7 @@ const
   EncodingUTF8BOM = 'utf8bom'; // UTF-8 with byte order mark
   EncodingUCS2LE = 'ucs2le'; // UCS 2 byte little endian
   EncodingUCS2BE = 'ucs2be'; // UCS 2 byte big endian
+  UTF8BOM = #$EF#$BB#$BF;
 
 function GuessEncoding(const s: string): string;
 
@@ -5842,7 +5843,7 @@ begin
   end;
   
   // try UTF-8 BOM (Byte Order Mark)
-  if CompareI(@s[1],#$EF#$BB#$BF,3) then begin
+  if CompareI(@s[1],UTF8BOM,3) then begin
     Result:=EncodingUTF8BOM;
     exit;
   end;
