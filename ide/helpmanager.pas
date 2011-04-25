@@ -107,7 +107,7 @@ type
     function GetURL: string;
     procedure SetURL(const AValue: string);
     property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
-    procedure SetHTMLContent(Stream: TStream);
+    procedure SetHTMLContent(Stream: TStream; const NewURL: string);
     procedure GetPreferredControlSize(out AWidth, AHeight: integer);
     property MaxLineCount: integer read FMaxLineCount write FMaxLineCount;
   end;
@@ -402,7 +402,7 @@ var
 begin
   if Provider=nil then raise Exception.Create('TSimpleHTMLControl.SetURL missing Provider');
   if FURL=AValue then exit;
-  NewURL:=Provider.BuildURL(Provider.BaseURL,AValue);
+  NewURL:=Provider.MakeURLAbsolute(Provider.BaseURL,AValue);
   if FURL=NewURL then exit;
   FURL:=NewURL;
   try
@@ -419,10 +419,12 @@ begin
   end;
 end;
 
-procedure TSimpleHTMLControl.SetHTMLContent(Stream: TStream);
+procedure TSimpleHTMLControl.SetHTMLContent(Stream: TStream;
+  const NewURL: string);
 var
   s: string;
 begin
+  FURL:=NewURL;
   SetLength(s,Stream.Size);
   if s<>'' then
     Stream.Read(s[1],length(s));
@@ -508,21 +510,34 @@ end;
 
 function TLIHProviders.GetStream(const URL: string): TStream;
 
-  procedure OpenFile(out Stream: TStream; const Filename: string);
+  procedure OpenFile(out Stream: TStream; const Filename: string;
+    UseCTCache: boolean);
   var
     fs: TFileStream;
     ok: Boolean;
+    Buf: TCodeBuffer;
+    ms: TMemoryStream;
   begin
-    fs:=nil;
-    ok:=false;
-    try
-      fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
-      //DebugLn(['OpenFile ',Filename,' ',fs.Size,' ',fs.Position]);
-      Stream:=fs;
-      ok:=true;
-    finally
-      if not ok then
-        fs.Free;
+    if UseCTCache then begin
+      Buf:=CodeToolBoss.LoadFile(Filename,true,false);
+      if Buf=nil then
+        raise Exception.Create('TLIHProviders.GetStream: unable to open file '+Filename);
+      ms:=TMemoryStream.Create;
+      Buf.SaveToStream(ms);
+      ms.Position:=0;
+      Result:=ms;
+    end else begin
+      fs:=nil;
+      ok:=false;
+      try
+        DebugLn(['TLIHProviders.GetStream.OpenFile ',Filename]);
+        fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenRead);
+        Stream:=fs;
+        ok:=true;
+      finally
+        if not ok then
+          fs.Free;
+      end;
     end;
   end;
 
@@ -553,8 +568,12 @@ begin
           URLPath:=copy(URLPath,9,length(URLPath));
           if (URLPath='index.html')
           or (URLPath='images/laztitle.jpg')
-          or (URLPath='images/cheetah1.png') then begin
-            OpenFile(Result,EnvironmentOptions.LazarusDirectory+PathDelim+'docs'+PathDelim+URLPath);
+          or (URLPath='images/cheetah1.png')
+          or (URLPath='lazdoc.css')
+          then begin
+            OpenFile(Result,
+              EnvironmentOptions.LazarusDirectory+SetDirSeparators('/docs/'+URLPath),
+              true);
           end;
         end;
       end else begin
@@ -1322,7 +1341,7 @@ begin
       if TheHint<>'' then
         ms.Write(TheHint[1],length(TheHint));
       ms.Position:=0;
-      Provider.ControlIntf.SetHTMLContent(ms);
+      Provider.ControlIntf.SetHTMLContent(ms,'');
     finally
       ms.Free;
     end;

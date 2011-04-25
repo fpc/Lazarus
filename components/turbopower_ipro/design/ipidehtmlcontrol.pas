@@ -22,30 +22,44 @@ unit IPIDEHTMLControl;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Graphics, Controls, Dialogs,
-  IpHtml, IDEHelpIntf, LazHelpIntf;
+  Classes, SysUtils, math, LCLProc, Graphics, Controls, Dialogs,
+  IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf;
 
 type
-  TSimpleIpHtml = class(TIpHtml)
+  TLazIPHtmlControl = class;
+
+  { TLazIpHtmlDataProvider }
+
+  TLazIpHtmlDataProvider = class(TIpHtmlDataProvider)
+  private
+    FControl: TLazIPHtmlControl;
+  protected
+    function DoGetStream(const URL: string): TStream; override;
   public
-    property OnGetImageX;
+    property Control: TLazIPHtmlControl read FControl;
   end;
 
-  { TIPLazHtmlControl }
+  { TLazIPHtmlControl }
 
-  TIPLazHtmlControl = class(TIpHtmlPanel,TIDEHTMLControlIntf)
+  TLazIPHtmlControl = class(TIpHtmlPanel,TIDEHTMLControlIntf)
+    function DataProviderCanHandle(Sender: TObject; const URL: string): Boolean;
+    procedure DataProviderCheckURL(Sender: TObject; const URL: string;
+      var Available: Boolean; var ContentType: string);
+    procedure DataProviderGetHtml(Sender: TObject; const URL: string;
+      const {%H-}aPostData: TIpFormDataEntity; var Stream: TStream);
+    procedure DataProviderGetImage(Sender: TIpHtmlNode; const URL: string;
+      var Picture: TPicture);
+    procedure DataProviderLeave(Sender: TIpHtml);
+    procedure DataProviderReportReference(Sender: TObject; const URL: string);
   private
-    FProvider: TAbstractIDEHTMLProvider;
+    FIDEProvider: TAbstractIDEHTMLProvider;
     FURL: string;
-    procedure SetProvider(const AValue: TAbstractIDEHTMLProvider);
-    procedure HTMLGetImageX(Sender: TIpHtmlNode; const URL: string;
-                            var Picture: TPicture);
   public
     constructor Create(AOwner: TComponent); override;
     function GetURL: string;
     procedure SetURL(const AValue: string);
-    property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
-    procedure SetHTMLContent(Stream: TStream);
+    property IDEProvider: TAbstractIDEHTMLProvider read FIDEProvider write FIDEProvider;
+    procedure SetHTMLContent(Stream: TStream; const NewURL: string);
     procedure GetPreferredControlSize(out AWidth, AHeight: integer);
   end;
 
@@ -64,25 +78,49 @@ end;
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
   var Provider: TAbstractIDEHTMLProvider): TControl;
 var
-  HTMLControl: TIPLazHtmlControl;
+  HTMLControl: TLazIPHtmlControl;
 begin
-  HTMLControl:=TIPLazHtmlControl.Create(Owner);
+  HTMLControl:=TLazIPHtmlControl.Create(Owner);
   Result:=HTMLControl;
   if Provider=nil then
     Provider:=CreateIDEHTMLProvider(HTMLControl);
   Provider.ControlIntf:=HTMLControl;
-  HTMLControl.Provider:=Provider;
+  HTMLControl.IDEProvider:=Provider;
 end;
 
-{ TIPLazHtmlControl }
+{ TLazIpHtmlDataProvider }
 
-procedure TIPLazHtmlControl.SetProvider(const AValue: TAbstractIDEHTMLProvider);
+function TLazIpHtmlDataProvider.DoGetStream(const URL: string): TStream;
 begin
-  if FProvider=AValue then exit;
-  FProvider:=AValue;
+  debugln(['TLazIpHtmlDataProvider.DoGetStream ',URL]);
+  Result:=Control.IDEProvider.GetStream(URL);
 end;
 
-procedure TIPLazHtmlControl.HTMLGetImageX(Sender: TIpHtmlNode;
+{ TLazIPHtmlControl }
+
+function TLazIPHtmlControl.DataProviderCanHandle(Sender: TObject;
+  const URL: string): Boolean;
+begin
+  debugln(['TLazIPHtmlControl.DataProviderCanHandle URL=',URL]);
+  Result:=false;
+end;
+
+procedure TLazIPHtmlControl.DataProviderCheckURL(Sender: TObject;
+  const URL: string; var Available: Boolean; var ContentType: string);
+begin
+  debugln(['TLazIPHtmlControl.DataProviderCheckURL URL=',URL]);
+  Available:=false;
+  ContentType:='';
+end;
+
+procedure TLazIPHtmlControl.DataProviderGetHtml(Sender: TObject;
+  const URL: string; const aPostData: TIpFormDataEntity; var Stream: TStream);
+begin
+  debugln(['TLazIPHtmlControl.DataProviderGetHtml URL=',URL]);
+  Stream:=nil;
+end;
+
+procedure TLazIPHtmlControl.DataProviderGetImage(Sender: TIpHtmlNode;
   const URL: string; var Picture: TPicture);
 var
   URLType: string;
@@ -94,9 +132,9 @@ var
   NewURL: String;
 begin
   //DebugLn(['TIPLazHtmlControl.HTMLGetImageX URL=',URL]);
-  if Provider=nil then exit;
-  NewURL:=Provider.BuildURL(Provider.BaseURL,URL);
-  //DebugLn(['TIPLazHtmlControl.HTMLGetImageX NewURL=',NewURL,' Provider.BaseURL=',Provider.BaseURL,' URL=',URL]);
+  if IDEProvider=nil then exit;
+  NewURL:=IDEProvider.MakeURLAbsolute(IDEProvider.BaseURL,URL);
+  //DebugLn(['TIPLazHtmlControl.HTMLGetImageX NewURL=',NewURL,' Provider.BaseURL=',IDEProvider.BaseURL,' URL=',URL]);
 
   Picture:=nil;
   Stream:=nil;
@@ -109,15 +147,15 @@ begin
       Ext:=ExtractFileExt(Filename);
       //DebugLn(['TIPLazHtmlControl.HTMLGetImageX URLPath=',URLPath,' Filename=',Filename,' Ext=',Ext]);
       Picture:=TPicture.Create;
-      // quick check if file format is supported
+      // quick check if file format is supported (raises an exception)
       Picture.FindGraphicClassWithFileExt(Ext);
       // get stream
-      Stream:=Provider.GetStream(NewURL);
+      Stream:=IDEProvider.GetStream(NewURL);
       // load picture
       Picture.LoadFromStreamWithFileExt(Stream,Ext);
     finally
       if Stream<>nil then
-        Provider.ReleaseStream(NewURL);
+        IDEProvider.ReleaseStream(NewURL);
     end;
   except
     on E: Exception do begin
@@ -127,43 +165,64 @@ begin
   end;
 end;
 
-constructor TIPLazHtmlControl.Create(AOwner: TComponent);
+procedure TLazIPHtmlControl.DataProviderLeave(Sender: TIpHtml);
+begin
+  //debugln(['TLazIPHtmlControl.DataProviderLeave ']);
+end;
+
+procedure TLazIPHtmlControl.DataProviderReportReference(Sender: TObject;
+  const URL: string);
+begin
+  debugln(['TLazIPHtmlControl.DataProviderReportReference URL=',URL]);
+end;
+
+constructor TLazIPHtmlControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   DefaultFontSize := 8;
   MarginHeight := 0;
-  MarginWidth := 0; 
+  MarginWidth := 0;
+  DataProvider:=TLazIpHtmlDataProvider.Create(Self);
+  with TLazIpHtmlDataProvider(DataProvider) do begin
+    FControl:=Self;
+    Name:='TLazIPHtmlControlDataProvider';
+    OnCanHandle:=@DataProviderCanHandle;
+    OnGetHtml:=@DataProviderGetHtml;
+    OnGetImage:=@DataProviderGetImage;
+    OnLeave:=@DataProviderLeave;
+    OnCheckURL:=@DataProviderCheckURL;
+    OnReportReference:=@DataProviderReportReference;
+  end;
 end;
 
-function TIPLazHtmlControl.GetURL: string;
+function TLazIPHtmlControl.GetURL: string;
 begin
   Result:=FURL;
 end;
 
-procedure TIPLazHtmlControl.SetURL(const AValue: string);
+procedure TLazIPHtmlControl.SetURL(const AValue: string);
 var
   Stream: TStream;
-  NewHTML: TSimpleIpHtml;
+  NewHTML: TIpHtml;
   NewURL: String;
   ok: Boolean;
 begin
-  if Provider=nil then raise Exception.Create('TIPLazHtmlControl.SetURL missing Provider');
+  if IDEProvider=nil then raise Exception.Create('TIPLazHtmlControl.SetURL missing Provider');
   if FURL=AValue then exit;
-  NewURL:=Provider.BuildURL(Provider.BaseURL,AValue);
+  NewURL:=IDEProvider.MakeURLAbsolute(IDEProvider.BaseURL,AValue);
   if FURL=NewURL then exit;
   FURL:=NewURL;
   try
-    Stream:=Provider.GetStream(FURL);
+    Stream:=IDEProvider.GetStream(FURL);
     ok:=false;
     NewHTML:=nil;
     try
-      NewHTML:=TSimpleIpHtml.Create; // Beware: Will be freed automatically TIpHtmlPanel
-      NewHTML.OnGetImageX:=@HTMLGetImageX;
+      NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically TIpHtmlPanel
       NewHTML.LoadFromStream(Stream);
       ok:=true;
     finally
       if not ok then NewHTML.Free;
-      Provider.ReleaseStream(FURL);
+      IDEProvider.ReleaseStream(FURL);
     end;
     SetHtml(NewHTML);
   except
@@ -175,31 +234,25 @@ begin
   end;
 end;
 
-procedure TIPLazHtmlControl.SetHTMLContent(Stream: TStream);
+procedure TLazIPHtmlControl.SetHTMLContent(Stream: TStream; const NewURL: string
+  );
 var
-  ok: Boolean;
-  NewHTML: TSimpleIpHtml;
+  NewHTML: TIpHtml;
 begin
-  ok:=false;
-  NewHTML:=nil;
-  try
-    NewHTML:=TSimpleIpHtml.Create; // Beware: Will be freed automatically by TIpHtmlPanel
-    NewHTML.OnGetImageX:=@HTMLGetImageX;
-    NewHTML.LoadFromStream(Stream);
-    ok:=true;
-  finally
-    if not ok then NewHTML.Free;
-  end;
+  FURL:=NewURL;
+  NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically by TIpHtmlPanel
   SetHtml(NewHTML);
+  NewHTML.LoadFromStream(Stream);
 end;
 
-procedure TIPLazHtmlControl.GetPreferredControlSize(out AWidth, AHeight: integer);
+procedure TLazIPHtmlControl.GetPreferredControlSize(out AWidth, AHeight: integer);
 begin
   with GetContentSize do
   begin
-    AWidth := cx;
-    AHeight := cy;
+    AWidth := Max(0,Min(cx,10000));
+    AHeight := Max(0,Min(cy,10000));
   end;
+  debugln(['TLazIPHtmlControl.GetPreferredControlSize Width=',AWidth,' Height=',AHeight]);
 end;
 
 end.

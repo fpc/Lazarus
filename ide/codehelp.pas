@@ -2500,7 +2500,7 @@ begin
   finally
     ElementNames.Free;
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-    HTMLHint:='<html><head><link rel="stylesheet" href="fpdoc.css" type="text/css"></head>'+LineEnding
+    HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css"></head>'+LineEnding
       +'<body>'+LineEnding+HTMLHint+LineEnding+'</body>'+LineEnding;
   end;
   debugln(['TCodeHelpManager.GetHTMLHint2 ',HTMLHint]);

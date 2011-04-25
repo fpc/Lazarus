@@ -174,7 +174,7 @@ begin
       if FHTMLHint<>'' then
         ms.Write(FHTMLHint[1],length(FHTMLHint));
       ms.Position:=0;
-      FHTMLProvider.ControlIntf.SetHTMLContent(ms);
+      FHTMLProvider.ControlIntf.SetHTMLContent(ms,'');
     finally
       ms.Free;
     end;

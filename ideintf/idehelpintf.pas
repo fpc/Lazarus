@@ -86,7 +86,7 @@ type
     function GetURL: string;
     procedure SetURL(const AValue: string);
     property URL: string read GetURL write SetURL;
-    procedure SetHTMLContent(Stream: TStream);
+    procedure SetHTMLContent(Stream: TStream; const NewURL: string = '');
     procedure GetPreferredControlSize(out AWidth, AHeight: integer);
   end;
 
@@ -112,7 +112,7 @@ type
                                        If not found it raises an exception. }
     procedure ReleaseStream(const URL: string); virtual; abstract;
     property BaseURL: string read FBaseURL write SetBaseURL;// fallback for relative URLs
-    function BuildURL(const CurBaseURL, CurURL: string): string; virtual;
+    function MakeURLAbsolute(const aBaseURL, aURL: string): string; virtual;
     property ControlIntf: TIDEHTMLControlIntf read FControlIntf write SetControlIntf;
   end;
 
@@ -123,7 +123,7 @@ type
 
 var
   CreateIDEHTMLControl: TCreateIDEHTMLControlEvent = nil;// will be set by the IDE
-    // and overidden by a package like turbopoweriprodsgn.lpk
+    // and can be overidden by a package like turbopoweriprodsgn.lpk
   CreateIDEHTMLProvider: TCreateIDEHTMLProviderEvent = nil;// will be set by the IDE
 
 
@@ -173,24 +173,27 @@ begin
   inherited Destroy;
 end;
 
-function TAbstractIDEHTMLProvider.BuildURL(const CurBaseURL, CurURL: string
+function TAbstractIDEHTMLProvider.MakeURLAbsolute(const aBaseURL, aURL: string
   ): string;
 var
   URLType: string;
   URLPath: string;
   URLParams: string;
 begin
-  Result:=CurURL;
-  SplitURL(CurURL,URLType,URLPath,URLParams);
-  //DebugLn(['TAbstractIDEHTMLProvider.BuildURL CurURL=',CurURL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams]);
+  Result:=aURL;
+  SplitURL(aURL,URLType,URLPath,URLParams);
+  //DebugLn(['TAbstractIDEHTMLProvider.BuildURL URL=',aURL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams]);
   if URLType='' then begin
-    // no URLType => use CurURL as URLPath
-    Result:=CurURL;
-    //DebugLn(['TAbstractIDEHTMLProvider.BuildURL AAA1 ',Result]);
-    if not URLFilenameIsAbsolute(Result) then
-      Result:=CurBaseURL+Result;
+    // no URLType => use aURL as URLPath
+    Result:=aURL;
+    if not URLFilenameIsAbsolute(Result) then begin
+      if aBaseURL<>'' then
+        Result:=aBaseURL+Result
+      else
+        Result:=BaseURL+Result;
+    end;
   end else begin
-    Result:=CurURL;
+    Result:=aURL;
   end;
 end;
 

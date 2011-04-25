@@ -2926,6 +2926,7 @@ docs/html/sourceforgefooter.xml svneol=native#text/xml
 docs/images/laztitle.png -text
 docs/images/laztitle.svg -text svneol=native#image/svg%2Bxml
 docs/index.html svneol=native#text/html
+docs/lazdoc.css svneol=native#text/plain
 docs/xml/README.txt svneol=native#text/plain
 docs/xml/fcl/bmpcomn.xml svneol=native#text/xml
 docs/xml/fcl/clipping.xml svneol=native#text/xml
