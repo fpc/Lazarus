@@ -436,7 +436,7 @@ begin
         // if we change selstart in OnChange event new cursor pos need to
         // be postponed in TGtk2WSCustomEdit.SetSelStart
         NeedCursorCheck := True;
-        gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
+        gtk_editable_set_position(PGtkEditable(Widget), GStart);
       end;
     end;
   end;
