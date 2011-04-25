@@ -188,6 +188,7 @@ type
           itmViewLocals: TIDEMenuCommand;
           itmViewRegisters: TIDEMenuCommand;
           itmViewCallStack: TIDEMenuCommand;
+          itmViewThreads: TIDEMenuCommand;
           itmViewAssembler: TIDEMenuCommand;
           itmViewDebugOutput: TIDEMenuCommand;
           itmViewDebugEvents: TIDEMenuCommand;

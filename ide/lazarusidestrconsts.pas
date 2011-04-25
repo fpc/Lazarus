@@ -304,6 +304,7 @@ resourcestring
   lisMenuViewPseudoTerminal = 'Terminal Output';
   lisMenuViewRegisters = 'Registers';
   lisMenuViewCallStack = 'Call Stack';
+  lisMenuViewThreads = 'Threads';
   lisMenuViewAssembler = 'Assembler';
   lisDbgAsmCopyToClipboard = 'Copy to clipboard';
   lisMenuViewDebugOutput = 'Debug output';
@@ -2602,6 +2603,7 @@ resourcestring
   srkmecToggleBreakPoints         = 'View breakpoints';
   srkmecToggleDebuggerOut         = 'View debugger output';
   srkmecToggleLocals              = 'View local variables';
+  srkmecViewThreads               = 'View Threads';
   srkmecViewPseudoTerminal        = 'View Terminal Output';
   srkmecTogglecallStack           = 'View call stack';
   srkmecToggleRegisters           = 'View registers';
@@ -2750,6 +2752,7 @@ resourcestring
   lisKMToggleViewWatches = 'Toggle view Watches';
   lisKMToggleViewBreakpoints = 'Toggle view Breakpoints';
   lisKMToggleViewLocalVariables = 'Toggle view Local Variables';
+  lisKMToggleViewThreads = 'Toggle view Threads';
   lisKMToggleViewPseudoTerminal = 'Toggle view Terminal Output';
   lisKMToggleViewCallStack = 'Toggle view Call Stack';
   lisKMToggleViewRegisters = 'Toggle view Registers';
@@ -4664,6 +4667,17 @@ resourcestring
   lisRegisters = 'Registers';
   lisRegistersDlgName = 'Name';
   lisRegistersDlgValue = 'Value';
+
+  // ThreadDlg
+  lisThreads = 'Threads';
+  lisThreadsId   = 'Id';
+  lisThreadsName = 'Name';
+  lisThreadsState = 'State';
+  lisThreadsSrc  = 'Source';
+  lisThreadsLine = 'Line';
+  lisThreadsFunc = 'Function';
+  lisThreadsCurrent = 'Current';
+  lisThreadsGoto = 'Goto';
 
   // Exception Dialog
   lisExceptionDialog = 'Debugger Exception Notification';

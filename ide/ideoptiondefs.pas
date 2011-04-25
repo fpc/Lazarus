@@ -94,6 +94,7 @@ type
     nmiwAssembler,
     nmiwInspect,
     nmiwPseudoTerminal,
+    nmiwThreads,
     // extra
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
@@ -140,6 +141,7 @@ const
     'Assembler',
     'Inspect',
     'PseudoTerminal',
+    'Threads',
     // extra
     'SearchResults',
     'AnchorEditor',

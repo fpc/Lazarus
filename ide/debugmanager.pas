@@ -56,7 +56,7 @@ uses
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
-  InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg,
+  InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -127,6 +127,7 @@ type
     procedure InitDebugEventsDlg;
     procedure InitBreakPointDlg;
     procedure InitWatchesDlg;
+    procedure InitThreadsDlg;
     procedure InitPseudoTerminal;
     procedure InitLocalsDlg;
     procedure InitCallStackDlg;
@@ -218,7 +219,7 @@ const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
     nmiwDbgOutput, nmiwDbgEvents,  nmiwBreakPoints, nmiwWatches, nmiwLocals,
     nmiwCallStack, nmiwEvaluate, nmiwRegisters, nmiwAssembler, nmiwInspect,
-    nmiwPseudoTerminal
+    nmiwPseudoTerminal, nmiwThreads
   );
 
 type
@@ -1556,6 +1557,7 @@ begin
       ecEvaluate          : ViewDebugDialog(ddtEvaluate);
       ecInspect           : ViewDebugDialog(ddtInspect);
       ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
+      ecViewThreads       : ViewDebugDialog(ddtThreads);
     end;
   end;
 end;
@@ -1957,7 +1959,7 @@ const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
     TCallStackDlg, TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TIDEInspectDlg,
-    TPseudoConsoleDlg
+    TPseudoConsoleDlg, TThreadsDlg
   );
 var
   CurDialog: TDebuggerDlg;
@@ -1986,6 +1988,7 @@ begin
       ddtAssembler:   InitAssemblerDlg;
       ddtInspect:     InitInspectDlg;
       ddtPseudoTerminal: InitPseudoTerminal;
+      ddtThreads:     InitThreadsDlg;
     end;
   end
   else begin
@@ -2057,6 +2060,14 @@ var
 begin
   TheDialog := TWatchesDlg(FDialogs[ddtWatches]);
   TheDialog.Watches := FWatches;
+end;
+
+procedure TDebugManager.InitThreadsDlg;
+var
+  TheDialog: TThreadsDlg;
+begin
+  TheDialog := TThreadsDlg(FDialogs[ddtThreads]);
+  TheDialog.Threads := FThreads;
 end;
 
 procedure TDebugManager.InitPseudoTerminal;
@@ -2139,6 +2150,7 @@ begin
   FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TManagedWatches.Create(Self);
+  FThreads := TIDEThreads.Create;
   FExceptions := TManagedExceptions.Create(Self);
   FSignals := TManagedSignals.Create(Self);
   FLocals := TManagedLocals.Create;
@@ -2176,6 +2188,7 @@ begin
   SetDebugger(nil);
 
   FreeAndNil(FWatches);
+  FreeAndNil(FThreads);
   FreeAndNil(FBreakPoints);
   FreeAndNil(FBreakPointGroups);
   FreeAndNil(FCallStack);
@@ -2199,6 +2212,7 @@ begin
   FBreakPoints.Clear;
   FBreakPointGroups.Clear;
   FWatches.Clear;
+  FThreads.Clear;
   FExceptions.Reset;
   FSignals.Reset;
   FUserSourceFiles.Clear;
@@ -2220,6 +2234,8 @@ begin
     itmViewRegisters.Tag := Ord(ddtRegisters);
     itmViewCallStack.OnClick := @mnuViewDebugDialogClick;
     itmViewCallStack.Tag := Ord(ddtCallStack);
+    itmViewThreads.OnClick := @mnuViewDebugDialogClick;
+    itmViewThreads.Tag := Ord(ddtThreads);
     itmViewAssembler.OnClick := @mnuViewDebugDialogClick;
     itmViewAssembler.Tag := Ord(ddtAssembler);
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
@@ -2874,6 +2890,7 @@ begin
     ecToggleDebugEvents: ViewDebugDialog(ddtEvents);
     ecToggleLocals:      ViewDebugDialog(ddtLocals);
     ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
+    ecViewThreads:       ViewDebugDialog(ddtThreads);
   else
     Handled := False;
   end;
@@ -3140,6 +3157,7 @@ begin
   then begin
     TManagedBreakpoints(FBreakpoints).Master := nil;
     TManagedWatches(FWatches).Master := nil;
+    FThreads.Master := nil;
     TManagedLocals(FLocals).Master := nil;
     TManagedLineInfo(FLineInfo).Master := nil;
     TManagedCallStack(FCallStack).Master := nil;
@@ -3151,6 +3169,7 @@ begin
   else begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
     TManagedWatches(FWatches).Master := FDebugger.Watches;
+    FThreads.Master := FDebugger.Threads;
     TManagedLocals(FLocals).Master := FDebugger.Locals;
     TManagedLineInfo(FLineInfo).Master := FDebugger.LineInfo;
     TManagedCallStack(FCallStack).Master := FDebugger.CallStack;

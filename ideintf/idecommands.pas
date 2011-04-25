@@ -186,6 +186,7 @@ const
   ecToggleAssembler         = ecFirstLazarus + 326;
   ecToggleDebugEvents       = ecFirstLazarus + 327;
   ecViewPseudoTerminal      = ecFirstLazarus + 328;
+  ecViewThreads             = ecFirstLazarus + 329;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;

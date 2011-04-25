@@ -719,20 +719,8 @@ begin
 end;
 
 function TCallStackDlg.GetFunction(const Entry: TCallStackEntry): string;
-var
-  S: String;
-  m: Integer;
 begin
-  S := '';
-  for m := 0 to Entry.ArgumentCount - 1 do
-  begin
-    if S <> '' then
-      S := S + ', ';
-    S := S + Entry.ArgumentValues[m];
-  end;
-  if S <> '' then
-    S := '(' + S + ')';
-  Result := Entry.FunctionName + S;
+  Result := Entry.GetFunctionWithArg;
 end;
 
 procedure TCallStackDlg.GotoIndex(AIndex: Integer);

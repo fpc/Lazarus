@@ -169,6 +169,41 @@ type
     procedure ReleaseReference;
   end;
 
+  TDebuggerChangeNotification = class(TDebuggerNotification)
+  private
+    FOnChange: TNotifyEvent;
+  public
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+  { TDebuggerNotificationList }
+
+  TDebuggerNotificationList = class(TObject)
+  private
+    FList: TList;
+    function GetItem(AIndex: Integer): TDebuggerNotification;
+  protected
+    function NextDownIndex(var Index: integer): boolean;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Add(const ANotification: TDebuggerNotification);
+    procedure Remove(const ANotification: TDebuggerNotification);
+    function Count: Integer;
+    procedure Clear;
+    property Items[AIndex: Integer]: TDebuggerNotification read GetItem; default;
+  end;
+
+  { TDebuggerChangeNotificationList }
+
+  TDebuggerChangeNotificationList = class(TDebuggerNotificationList)
+  private
+    function GetItem(AIndex: Integer): TDebuggerChangeNotification; reintroduce;
+  public
+    procedure NotifyChange(Sender: TObject);
+    property Items[AIndex: Integer]: TDebuggerChangeNotification read GetItem; default;
+  end;
+
 
   TIDEBreakPoints = class;
   TIDEBreakPointGroup = class;
@@ -578,14 +613,13 @@ type
     property Result: TDBGType read FResult;
   end;
 
-
-(******************************************************************************)
-(******************************************************************************)
-(**                                                                          **)
-(**   W A T C H E S                                                          **)
-(**                                                                          **)
-(******************************************************************************)
-(******************************************************************************)
+{%region Watches **************************************************************
+ ******************************************************************************
+ **                                                                          **
+ **   W A T C H E S                                                          **
+ **                                                                          **
+ ******************************************************************************
+ ******************************************************************************}
 
   TWatchDisplayFormat =
     (wdfDefault,
@@ -741,7 +775,7 @@ type
   private
     FDebugger: TDebugger;  // reference to our debugger
     FOnChange: TNotifyEvent;
-    function GetItem(const AnIndex: Integer): TDBGWatch;
+    function  GetItem(const AnIndex: Integer): TDBGWatch;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
   protected
     procedure DoStateChange(const AOldState: TDBGState); virtual;
@@ -758,14 +792,15 @@ type
                                                       write SetItem; default;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
+  {%endregion   ^^^^^  Watches  ^^^^^   }
 
-(******************************************************************************)
-(******************************************************************************)
-(**                                                                          **)
-(**   L O C A L S                                                            **)
-(**                                                                          **)
-(******************************************************************************)
-(******************************************************************************)
+{%region Locals ***************************************************************
+ ******************************************************************************
+ **                                                                          **
+ **   L O C A L S                                                            **
+ **                                                                          **
+ ******************************************************************************
+ ******************************************************************************}
 
   { TBaseLocals }
 
@@ -820,15 +855,16 @@ type
     constructor Create(const ADebugger: TDebugger);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
+  {%endregion   ^^^^^  Locals  ^^^^^   }
 
 
-(******************************************************************************)
-(******************************************************************************)
-(**                                                                          **)
-(**   L I N E   I N F O                                                      **)
-(**                                                                          **)
-(******************************************************************************)
-(******************************************************************************)
+{%region Line Info ************************************************************
+ ******************************************************************************
+ **                                                                          **
+ **   L I N E   I N F O                                                      **
+ **                                                                          **
+ ******************************************************************************
+ ******************************************************************************}
 
   TIDELineInfoEvent = procedure(const ASender: TObject; const ASource: String) of object;
   { TBaseLineInfo }
@@ -884,15 +920,15 @@ type
     constructor Create(const ADebugger: TDebugger);
     property OnChange: TIDELineInfoEvent read FOnChange write FOnChange;
   end;
+  {%endregion   ^^^^^  Line Info  ^^^^^   }
 
-  {%region   ^^^^^  Register  ^^^^^   }
-(******************************************************************************)
-(******************************************************************************)
-(**                                                                          **)
-(**   R E G I S T E R S                                                      **)
-(**                                                                          **)
-(******************************************************************************)
-(******************************************************************************)
+{%region Register *************************************************************
+ ******************************************************************************
+ **                                                                          **
+ **   R E G I S T E R S                                                      **
+ **                                                                          **
+ ******************************************************************************
+ ******************************************************************************}
 
   { TBaseRegisters }
 
@@ -962,18 +998,18 @@ type
   end;
   {%endregion   ^^^^^  Register  ^^^^^   }
 
-(******************************************************************************)
-(******************************************************************************)
-(**                                                                          **)
-(**   C A L L S T A C K                                                      **)
-(**                                                                          **)
-(******************************************************************************)
-(******************************************************************************)
-(* The entries for the callstack are created on demand. This way when the     *)
-(* first entry is needed, it isn't required to create the whole stack         *)
-(*                                                                            *)
-(* TCallStackEntry needs to stay a readonly object so its data can be shared  *)
-(******************************************************************************)
+{%region Callstack ************************************************************
+ ******************************************************************************
+ **                                                                          **
+ **   C A L L S T A C K                                                      **
+ **                                                                          **
+ ******************************************************************************
+ ******************************************************************************
+ * The entries for the callstack are created on demand. This way when the     *
+ * first entry is needed, it isn't required to create the whole stack         *
+ *                                                                            *
+ * TCallStackEntry needs to stay a readonly object so its data can be shared  *
+ ******************************************************************************}
 
   TBaseCallStack = class;
 
@@ -1007,6 +1043,7 @@ type
                        const ALine: Integer; AState: TCallStackEntryState = cseValid);
     constructor CreateCopy(const ASource: TCallStackEntry);
     destructor Destroy; override;
+    function GetFunctionWithArg: String;
     property Address: TDbgPtr read FAdress;
     property ArgumentCount: Integer read GetArgumentCount;
     property ArgumentNames[const AnIndex: Integer]: String read GetArgumentName;
@@ -1098,6 +1135,7 @@ type
     property OnClear: TNotifyEvent read FOnClear write FOnClear;
     property OnCurrent: TNotifyEvent read FOnCurrent write FOnCurrent;
   end;
+  {%endregion   ^^^^^  Callstack  ^^^^^   }
 
 {%region      *****  Disassembler  *****   }
 (******************************************************************************)
@@ -1281,6 +1319,105 @@ type
   end;
 
 {%endregion   ^^^^^  Disassembler  ^^^^^   }
+
+{%region Threads **************************************************************
+ ******************************************************************************
+ **                                                                          **
+ **   T H R E A D S                                                          **
+ **                                                                          **
+ ******************************************************************************
+ ******************************************************************************}
+
+  { TIDEThreadsNotification }
+
+  TIDEThreadsNotification = class(TDebuggerChangeNotification)
+  end;
+
+  { TDBGThreadEntry }
+
+  TDBGThreadEntry = class(TCallStackEntry)
+  private
+    FThreadId: Integer;
+    FThreadName: String;
+    FThreadState: String;
+  public
+    constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
+                       const AnArguments: TStrings; const AFunctionName: String;
+                       const ASource: String; const AFullFileName: String;
+                       const ALine: Integer;
+                       const AThreadId: Integer; const AThreadName: String;
+                       const AThreadState: String;
+                       AState: TCallStackEntryState = cseValid);
+    constructor CreateCopy(const ASource: TDBGThreadEntry);
+    property ThreadId: Integer read FThreadId;
+    property ThreadName: String read FThreadName;
+    property ThreadState: String read FThreadState;
+  end;
+
+  { TBaseThreads }
+
+  TBaseThreads = class(TObject)
+  private
+    FCurrentThreadId: Integer;
+    FList: TList;
+    function GetEntry(const AnIndex: Integer): TDBGThreadEntry;
+    procedure SetCurrentThreadId(const AValue: Integer); virtual;
+  protected
+    procedure Assign(AOther: TBaseThreads);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Count: Integer; virtual;
+    procedure Clear;
+    procedure Add(AThread: TDBGThreadEntry);
+    property Entries[const AnIndex: Integer]: TDBGThreadEntry read GetEntry; default;
+    property CurrentThreadId: Integer read FCurrentThreadId write SetCurrentThreadId;
+  end;
+
+  TDBGThreads = class;
+
+  TIDEThreads = class(TBaseThreads)
+  private
+    FNotificationList: TDebuggerChangeNotificationList;
+    FMaster: TDBGThreads;
+    FDataValid: Boolean;
+    procedure SetMaster(const AValue: TDBGThreads);
+  protected
+    procedure MasterDestroyed;
+    procedure Changed;
+    procedure InvalidateData;
+    procedure ValidateData;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function  Count: Integer; override;
+    procedure AddNotification(const ANotification: TIDEThreadsNotification);
+    procedure RemoveNotification(const ANotification: TIDEThreadsNotification);
+    procedure ChangeCurrentThread(ANewId: Integer);
+    property  Master: TDBGThreads read FMaster write SetMaster;
+  end;
+
+  { TDBGThreads }
+
+  TDBGThreads = class(TObject)
+  private
+    FSlave: TIDEThreads;
+    FDebugger: TDebugger;
+    procedure SetSlave(const AValue: TIDEThreads);
+  protected
+    procedure ChangeCurrentThread(ANewId: Integer); virtual; abstract;
+    procedure RequestMasterData; virtual; abstract;
+    procedure Changed;
+    procedure Finished;
+    property Debugger: TDebugger read FDebugger write FDebugger;
+  public
+    constructor Create(const ADebugger: TDebugger);
+    destructor Destroy; override;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
+    property Slave: TIDEThreads read FSlave write SetSlave;
+  end;
+
+{%endregion   ^^^^^  Threads  ^^^^^   }
 
 (******************************************************************************)
 (******************************************************************************)
@@ -1556,6 +1693,7 @@ type
     FState: TDBGState;
     FCallStack: TDBGCallStack;
     FWatches: TDBGWatches;
+    FThreads: TDBGThreads;
     FOnCurrent: TDBGCurrentLineEvent;
     FOnException: TDBGExceptionEvent;
     FOnOutput: TDBGOutputEvent;
@@ -1581,6 +1719,7 @@ type
     function  CreateCallStack: TDBGCallStack; virtual;
     function  CreateDisassembler: TDBGDisassembler; virtual;
     function  CreateWatches: TDBGWatches; virtual;
+    function  CreateThreads: TDBGThreads; virtual;
     function  CreateSignals: TDBGSignals; virtual;
     function  CreateExceptions: TDBGExceptions; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
@@ -1662,6 +1801,7 @@ type
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
     property Waiting: Boolean read GetWaiting;                                   // Set when the debugger is wating for a command to complete
     property Watches: TDBGWatches read FWatches;                                 // list of all watches etc
+    property Threads: TDBGThreads read FThreads;
     property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
     // Events
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
@@ -1803,6 +1943,259 @@ begin
   Result:=bpaStop;
 end;
 
+{ TDBGThreads }
+
+procedure TDBGThreads.SetSlave(const AValue: TIDEThreads);
+begin
+  if FSlave = AValue then exit;
+  Assert((FSlave=nil) or (AValue=nil), 'TDBGThreads.Slave already set');
+  FSlave := AValue;
+end;
+
+procedure TDBGThreads.Changed;
+begin
+  If Slave <> nil then Slave.InvalidateData;
+end;
+
+procedure TDBGThreads.Finished;
+begin
+  If Slave <> nil then Slave.ValidateData;
+end;
+
+constructor TDBGThreads.Create(const ADebugger: TDebugger);
+begin
+  FSlave := nil;
+  FDebugger := ADebugger;
+end;
+
+destructor TDBGThreads.Destroy;
+begin
+  inherited Destroy;
+  if FSlave <> nil then FSlave.MasterDestroyed;
+end;
+
+procedure TDBGThreads.DoStateChange(const AOldState: TDBGState);
+begin
+  //
+end;
+
+{ TIDEThreads }
+
+procedure TIDEThreads.SetMaster(const AValue: TDBGThreads);
+begin
+  if FMaster = AValue then exit;
+  Assert((FMaster=nil) or (AValue=nil), 'TIDEThreads.Master already set');
+  if FMaster <> nil then FMaster.Slave := nil;
+  FMaster := AValue;
+  if FMaster <> nil then FMaster.Slave := self;
+  InvalidateData;
+end;
+
+procedure TIDEThreads.MasterDestroyed;
+begin
+  Master := nil;
+end;
+
+procedure TIDEThreads.InvalidateData;
+begin
+  FDataValid := False;
+  Changed;
+end;
+
+procedure TIDEThreads.ValidateData;
+begin
+  FDataValid := True;
+  Changed;
+end;
+
+procedure TIDEThreads.Changed;
+begin
+  FNotificationList.NotifyChange(Self);
+end;
+
+constructor TIDEThreads.Create;
+begin
+  inherited;
+  FNotificationList := TDebuggerChangeNotificationList.Create;
+end;
+
+destructor TIDEThreads.Destroy;
+begin
+  inherited Destroy;
+  FNotificationList.Clear;
+  Master := nil;
+  FreeAndNil(FNotificationList);
+end;
+
+function TIDEThreads.Count: Integer;
+begin
+  if (not FDataValid) and (FMaster <> nil) then
+    FMaster.RequestMasterData;
+
+  if FDataValid then
+    Result := inherited Count
+  else
+    Result := 0;
+end;
+
+procedure TIDEThreads.AddNotification(const ANotification: TIDEThreadsNotification);
+begin
+  FNotificationList.Add(ANotification);
+end;
+
+procedure TIDEThreads.RemoveNotification(const ANotification: TIDEThreadsNotification);
+begin
+  FNotificationList.Remove(ANotification);
+end;
+
+procedure TIDEThreads.ChangeCurrentThread(ANewId: Integer);
+begin
+  if FMaster <> nil then FMaster.ChangeCurrentThread(ANewId);
+end;
+
+{ TDebuggerChangeNotificationList }
+
+function TDebuggerChangeNotificationList.GetItem(AIndex: Integer): TDebuggerChangeNotification;
+begin
+  Result := TDebuggerChangeNotification(FList[AIndex]);
+end;
+
+procedure TDebuggerChangeNotificationList.NotifyChange(Sender: TObject);
+var
+  i: LongInt;
+begin
+  i := Count;
+  while NextDownIndex(i) do
+    if Assigned(Items[i]) then
+      Items[i].OnChange(Sender);
+end;
+
+{ TDebuggerNotificationList }
+
+function TDebuggerNotificationList.GetItem(AIndex: Integer): TDebuggerNotification;
+begin
+  Result := TDebuggerNotification(FList[AIndex]);
+end;
+
+function TDebuggerNotificationList.NextDownIndex(var Index: integer): boolean;
+begin
+  dec(Index);
+  if (Index >= FList.Count) then
+    Index := FList.Count-1;
+  Result := Index >= 0;
+end;
+
+function TDebuggerNotificationList.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
+procedure TDebuggerNotificationList.Clear;
+begin
+  while Count > 0 do
+    Remove(Items[0]);
+end;
+
+constructor TDebuggerNotificationList.Create;
+begin
+  FList := TList.Create;
+end;
+
+destructor TDebuggerNotificationList.Destroy;
+begin
+  inherited Destroy;
+  Clear;
+  FreeAndNil(FList);
+end;
+
+procedure TDebuggerNotificationList.Add(const ANotification: TDebuggerNotification);
+begin
+  FList.Add(ANotification);
+  ANotification.AddReference;
+end;
+
+procedure TDebuggerNotificationList.Remove(const ANotification: TDebuggerNotification);
+begin
+  ANotification.ReleaseReference;
+  FList.Remove(ANotification);
+end;
+
+{ TDBGThreadEntry }
+
+constructor TDBGThreadEntry.Create(const AIndex: Integer; const AnAdress: TDbgPtr;
+  const AnArguments: TStrings; const AFunctionName: String; const ASource: String;
+  const AFullFileName: String; const ALine: Integer; const AThreadId: Integer;
+  const AThreadName: String; const AThreadState: String;
+  AState: TCallStackEntryState);
+begin
+  inherited Create(AIndex, AnAdress, AnArguments, AFunctionName, ASource,
+                   AFullFileName, ALine, AState);
+  FThreadId    := AThreadId;
+  FThreadName  := AThreadName;
+  FThreadState := AThreadState;
+end;
+
+constructor TDBGThreadEntry.CreateCopy(const ASource: TDBGThreadEntry);
+begin
+  inherited CreateCopy(ASource);
+  FThreadId    := ASource.FThreadId;
+  FThreadName  := ASource.FThreadName;
+  FThreadState := ASource.FThreadState;
+end;
+
+{ TBaseThreads }
+
+function TBaseThreads.GetEntry(const AnIndex: Integer): TDBGThreadEntry;
+begin
+  if (AnIndex < 0) or (AnIndex >= Count) then exit(nil);
+  Result := TDBGThreadEntry(FList[AnIndex]);
+end;
+
+procedure TBaseThreads.SetCurrentThreadId(const AValue: Integer);
+begin
+  if FCurrentThreadId = AValue then exit;
+  FCurrentThreadId := AValue;
+end;
+
+procedure TBaseThreads.Assign(AOther: TBaseThreads);
+var
+  i: Integer;
+begin
+  Clear;
+  for i := 0 to AOther.FList.Count-1 do
+    FList.Add(TDBGThreadEntry.CreateCopy(TDBGThreadEntry(AOther.FList[i])));
+end;
+
+constructor TBaseThreads.Create;
+begin
+  FList := TList.Create;
+end;
+
+destructor TBaseThreads.Destroy;
+begin
+  Clear;
+  FreeAndNil(FList);
+  inherited Destroy;
+end;
+
+function TBaseThreads.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
+procedure TBaseThreads.Clear;
+begin
+  while FList.Count > 0 do begin
+    TDBGThreadEntry(Flist[0]).Free;
+    FList.Delete(0);
+  end;
+end;
+
+procedure TBaseThreads.Add(AThread: TDBGThreadEntry);
+begin
+  FList.Add(TDBGThreadEntry.CreateCopy(AThread));
+end;
+
 { TDebuggerProperties }
 
 constructor TDebuggerProperties.Create;
@@ -1902,6 +2295,7 @@ begin
   FCallStack := CreateCallStack;
   FDisassembler := CreateDisassembler;
   FWatches := CreateWatches;
+  FThreads := CreateThreads;
   FExceptions := CreateExceptions;
   FSignals := CreateSignals;
   FExitCode := 0;
@@ -1957,6 +2351,11 @@ begin
   Result := TDBGWatches.Create(Self, TDBGWatch);
 end;
 
+function TDebugger.CreateThreads: TDBGThreads;
+begin
+  Result := nil;
+end;
+
 procedure TDebugger.DebuggerEnvironmentChanged (Sender: TObject );
 begin
 end;
@@ -1984,6 +2383,7 @@ begin
   FCallStack.FDebugger := nil;
   FDisassembler.FDebugger := nil;
   FWatches.FDebugger := nil;
+  FThreads.Debugger := nil;
 
   FreeAndNil(FExceptions);
   FreeAndNil(FBreakPoints);
@@ -1993,6 +2393,7 @@ begin
   FreeAndNil(FCallStack);
   FreeAndNil(FDisassembler);
   FreeAndNil(FWatches);
+  FreeAndNil(FThreads);
   FreeAndNil(FDebuggerEnvironment);
   FreeAndNil(FEnvironment);
   FreeAndNil(FCurEnvironment);
@@ -2306,6 +2707,7 @@ begin
   then begin
     OldState := FState;
     FState := AValue;
+    FThreads.DoStateChange(OldState);
     FBreakpoints.DoStateChange(OldState);
     FLocals.DoStateChange(OldState);
     FLineInfo.DoStateChange(OldState);
@@ -4233,6 +4635,23 @@ destructor TCallStackEntry.Destroy;
 begin
   inherited;
   FreeAndNil(FArguments);
+end;
+
+function TCallStackEntry.GetFunctionWithArg: String;
+var
+  S: String;
+  m: Integer;
+begin
+  S := '';
+  for m := 0 to ArgumentCount - 1 do
+  begin
+    if S <> '' then
+      S := S + ', ';
+    S := S + ArgumentValues[m];
+  end;
+  if S <> '' then
+    S := '(' + S + ')';
+  Result := FunctionName + S;
 end;
 
 function TCallStackEntry.GetArgumentCount: Integer;
