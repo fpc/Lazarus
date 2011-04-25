@@ -130,8 +130,11 @@ var
   j : integer;
 begin
   Inherited Paint;
-  
-  Canvas.Pen.Color := clBtnText;//Not perfect, but it works
+
+  if Enabled then
+    Canvas.Pen.Color := clBtnText //Not perfect, but it works
+  else
+    Canvas.Pen.Color := clGrayText;
 
   ah := height div 2;
   aw := width div 2;
@@ -391,6 +394,13 @@ procedure TCustomUpDown.DoOnResize;
 begin
   inherited DoOnResize;
   UpdateOrientation;
+end;
+
+procedure TCustomUpDown.SetEnabled(Value: Boolean);
+begin
+  MinBtn.Enabled := Value;
+  MaxBtn.Enabled := Value;
+  inherited SetEnabled(Value);
 end;
 
 class function TCustomUpDown.GetControlClassDefaultSize: TSize;

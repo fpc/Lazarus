@@ -1439,6 +1439,7 @@ type
     procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure OnAssociateChangeBounds(Sender: TObject);
     procedure DoOnResize; override;
+    procedure SetEnabled(Value: Boolean); override;
     class function GetControlClassDefaultSize: TSize; override;
     function CanChange: Boolean; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
