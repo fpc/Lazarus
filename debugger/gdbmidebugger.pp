@@ -90,6 +90,7 @@ type
     tfHasSymbols,     // Debug symbols are present
     tfRTLUsesRegCall, // the RTL is compiled with RegCall calling convention
     tfClassIsPointer,  // with dwarf class names are pointer. with stabs they are not
+    tfExceptionIsPointer, // Can happen, if stabs and dwarf are mixed
     tfFlagHasTypeObject,
     tfFlagHasTypeException,
     tfFlagHasTypeShortstring,
@@ -2787,7 +2788,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     FoundPtrSize: Boolean;
   begin
     // assume some defaults
-    TargetInfo^.TargetPtrSize := GetIntValue('sizeof(POINTER)', []);
+    TargetInfo^.TargetPtrSize := GetIntValue('sizeof(%s)', [PointerTypeCast]);
     FoundPtrSize := (FLastExecResult.State <> dsError) and (TargetInfo^.TargetPtrSize > 0);
     if not FoundPtrSize
     then TargetInfo^.TargetPtrSize := 4;
@@ -2990,10 +2991,15 @@ begin
     R := CheckHasType('TObject', tfFlagHasTypeObject);
     if R.State <> dsError
     then begin
-      if (LeftStr(R.Values, 15) = 'type = ^TOBJECT')
+      if UpperCase(LeftStr(R.Values, 15)) = UpperCase('type = ^TOBJECT')
       then include(TargetInfo^.TargetFlags, tfClassIsPointer);
     end;
-    CheckHasType('Exception', tfFlagHasTypeException);
+    R := CheckHasType('Exception', tfFlagHasTypeException);
+    if R.State <> dsError
+    then begin
+      if UpperCase(LeftStr(R.Values, 17)) = UpperCase('type = ^EXCEPTION')
+      then include(TargetInfo^.TargetFlags, tfExceptionIsPointer);
+    end;
     CheckHasType('Shortstring', tfFlagHasTypeShortstring);
     //CheckHasType('PShortstring', tfFlagHasTypePShortString);
     CheckHasType('pointer', tfFlagHasTypePointer);
@@ -3312,7 +3318,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     if (dfImplicidTypes in FTheDebugger.DebuggerFlags)
     then begin
       if (tfFlagHasTypeException in TargetInfo^.TargetFlags) then begin
-        if tfClassIsPointer in TargetInfo^.TargetFlags
+        if tfExceptionIsPointer in TargetInfo^.TargetFlags
         then ExceptionMessage := GetText('Exception(%s).FMessage', [AInfo.ObjAddr])
         else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
         //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
