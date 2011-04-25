@@ -2086,7 +2086,7 @@ const
   end;
 
   procedure AddMemDumpToRange(const ARange: TDBGDisassemblerEntryRange;
-    AMemDump: TGDBMIMemoryDumpResultList; AFirstAddr, ALastAddr: Integer);
+    AMemDump: TGDBMIMemoryDumpResultList; AFirstAddr, ALastAddr: TDBGPtr);
   var
     i, Cnt, FromIndex: Integer;
     Itm, NextItm: PDisassemblerEntry;
