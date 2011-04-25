@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
-  EnvironmentOpts, LCLProc, CompileHelpers, Dialogs;
+  EnvironmentOpts, LCLProc, CompileHelpers, Dialogs, ExtToolDialog;
 
 (*
   fpclist.txt contains lines of format:
