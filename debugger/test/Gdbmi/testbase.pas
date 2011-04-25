@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry,
-  EnvironmentOpts, LCLProc, CompileHelpers, Dialogs, ExtToolDialog;
+  EnvironmentOpts, LCLProc, CompileHelpers, Dialogs, ExtToolDialog,
+  Debugger, GDBMIDebugger;
 
 (*
   fpclist.txt contains lines of format:
@@ -18,7 +19,8 @@ uses
   gdblist.txt contains lines of format:
     [Name]
     exe=/path/fpc.exe
-    symbols=gs,gw,gwset,gw3
+    version=070201
+    symbols=none,gs,gw,gwset,gw3
 
 *)
 
@@ -43,6 +45,7 @@ type
         Name: string;
         ExeName: string;
         SymbolTypes: TSymbolTypes;
+        Version: Integer;
       end;
 
   { TBaseList }
@@ -116,7 +119,7 @@ type
     procedure Run(AResult: TTestResult); override;
     procedure RunTest(ATest: TTest; AResult: TTestResult); override;
     procedure RegisterDbgTest(ATestClass: TTestCaseClass);
-    Procedure TestCompile(const PrgName: string; out ExeName: string);
+    Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String='');
   public
     property SymbolType: TSymbolType read FSymbolType;
     property SymbolSwitch: String read FSymbolSwitch;
@@ -134,7 +137,7 @@ type
   public
     constructor Create(AParent: TCompilerSuite; ADebuggerInfo: TDebuggerInfo);
     procedure RegisterDbgTest(ATestClass: TTestCaseClass);
-    Procedure TestCompile(const PrgName: string; out ExeName: string);
+    Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String='');
   public
     property Parent: TCompilerSuite read FParent;
     property DebuggerInfo: TDebuggerInfo read FDebuggerInfo;
@@ -153,7 +156,7 @@ type
   public
     constructor Create(AParent: TDebuggerSuite; AClass: TClass);
     procedure AddTest(ATest: TTest); overload; override;
-    Procedure TestCompile(const PrgName: string; out ExeName: string);
+    Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String='');
   public
     property Parent: TDebuggerSuite read FParent;
     property DebuggerInfo: TDebuggerInfo read GetDebuggerInfo;
@@ -166,11 +169,22 @@ type
   TGDBTestCase = class(TTestCase)
   private
     FParent: TGDBTestsuite;
+    FTestErrors, FIgnoredErrors: String;
     function GetCompilerInfo: TCompilerInfo;
     function GetDebuggerInfo: TDebuggerInfo;
     function GetSymbolType: TSymbolType;
+  protected
+    function StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
+    procedure ClearTestErrors;
+    procedure AddTestError(s: string; MinGdbVers: Integer = 0);
+    procedure TestEquals(Expected, Got: string);
+    procedure TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0);
+    procedure TestEquals(Expected, Got: integer);
+    procedure TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0);
+    procedure AssertTestErrors;
+    property TestErrors: string read FTestErrors;
   public
-    Procedure TestCompile(const PrgName: string; out ExeName: string);
+    Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String='');
   public
     property Parent: TGDBTestsuite read FParent write FParent;
     property DebuggerInfo: TDebuggerInfo read GetDebuggerInfo;
@@ -257,9 +271,81 @@ begin
   Result := Parent.SymbolType;
 end;
 
-procedure TGDBTestCase.TestCompile(const PrgName: string; out ExeName: string);
+function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
 begin
-  Parent.TestCompile(PrgName, ExeName);
+  Result := TGDBMIDebugger.Create(DebuggerInfo.ExeName);
+  Result.Init;
+  if Result.State = dsError then
+    Fail(' Failed Init');
+  Result.WorkingDir := AppDir;
+  Result.FileName   := TestExeName;
+  Result.Arguments := '';
+  Result.ShowConsole := True;
+end;
+
+procedure TGDBTestCase.ClearTestErrors;
+begin
+  FTestErrors := '';
+end;
+
+procedure TGDBTestCase.AddTestError(s: string; MinGdbVers: Integer = 0);
+var
+  IgnoreReason: String;
+  i: Integer;
+begin
+  IgnoreReason := '';
+  if MinGdbVers > 0 then begin
+    i := GetDebuggerInfo.Version;
+    if (i > 0) and (i < MinGdbVers) then
+      IgnoreReason := 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers);
+  end;
+  if IgnoreReason <> '' then
+    FIgnoredErrors := FIgnoredErrors + '### '+IgnoreReason +' >>> '+s+LineEnding
+  else
+    FTestErrors := FTestErrors + s + LineEnding;
+end;
+
+procedure TGDBTestCase.TestEquals(Expected, Got: string);
+begin
+  try     AssertEquals(Expected, Got);
+  except  on e: exception do AddTestError(e.Message);
+  end;
+end;
+
+procedure TGDBTestCase.TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0);
+begin
+  try     AssertEquals(Name, Expected, Got);
+  except  on e: exception do AddTestError(e.Message, MinGdbVers);
+  end;
+end;
+
+procedure TGDBTestCase.TestEquals(Expected, Got: integer);
+begin
+  try     AssertEquals(Expected, Got);
+  except  on e: exception do AddTestError(e.Message);
+  end;
+end;
+
+procedure TGDBTestCase.TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0);
+begin
+  try     AssertEquals(Name, Expected, Got);
+  except  on e: exception do AddTestError(e.Message, MinGdbVers);
+  end;
+end;
+
+procedure TGDBTestCase.AssertTestErrors;
+var
+  s: String;
+begin
+  s := FTestErrors;
+  FTestErrors := '';
+  if s <> '' then Fail(s);
+end;
+
+procedure TGDBTestCase.TestCompile(const PrgName: string; out ExeName: string;
+  NamePostFix: String=''; ExtraArgs: String='');
+begin
+  Parent.TestCompile(PrgName, ExeName, NamePostFix, ExtraArgs);
 end;
 
 { TBaseList }
@@ -380,12 +466,15 @@ end;
 
 procedure TDebuggerList.SetAttribute(AIndex: Integer; const AAttr, AValue: string);
 begin
-  case StringCase(AAttr, ['exe', 'symbols'], True, False) of
+  case StringCase(AAttr, ['exe', 'symbols', 'vers', 'version'], True, False) of
     0: begin // exe
         FList[AIndex].ExeName := AValue;
       end;
     1: begin // symbols
         FList[AIndex].SymbolTypes := StrToSymbolTypes(AValue);
+      end;
+    2,3: begin
+        FList[AIndex].Version := StrToIntDef(AValue,-1);
       end;
   end;
 end;
@@ -483,7 +572,8 @@ begin
       TDebuggerSuite(Test[i]).RegisterDbgTest(ATestClass);
 end;
 
-procedure TCompilerSuite.TestCompile(const PrgName: string; out ExeName: string);
+procedure TCompilerSuite.TestCompile(const PrgName: string; out ExeName: string;
+  NamePostFix: String=''; ExtraArgs: String='');
 var
   ExePath, ErrMsg: String;
 begin
@@ -492,13 +582,15 @@ begin
   ExePath := AppendPathDelim(copy(ExePath, 1, length(ExePath) - length(ExeName)));
   if DirectoryExistsUTF8(ExePath + 'lib') then
     ExePath := AppendPathDelim(ExePath + 'lib');
-  ExeName := ExePath + ExeName + FFileNameExt + GetExeExt;
+  ExeName := ExePath + ExeName + FFileNameExt + NamePostFix + GetExeExt;
 
+  if ExtraArgs <> '' then
+    ExtraArgs := ' '+ExtraArgs;
   if FCompiledList.IndexOf(ExeName) < 0 then begin
     if FileExists(ExeName) then
       raise EAssertionFailedError.Create('Found existing file before compiling: ' + ExeName);
     FCompiledList.Add(ExeName);
-    ErrMsg := CompileHelpers.TestCompile(PrgName, FSymbolSwitch + ' ' + FCompilerInfo.ExtraOpts, ExeName, CompilerInfo.ExeName);
+    ErrMsg := CompileHelpers.TestCompile(PrgName, FSymbolSwitch + ' ' + FCompilerInfo.ExtraOpts + ExtraArgs, ExeName, CompilerInfo.ExeName);
     if ErrMsg <> '' then
       raise EAssertionFailedError.Create('Compilation Failed: ' + ExeName + LineEnding + ErrMsg);
   end;
@@ -535,9 +627,10 @@ begin
   AddTest(NewTest);
 end;
 
-procedure TDebuggerSuite.TestCompile(const PrgName: string; out ExeName: string);
+procedure TDebuggerSuite.TestCompile(const PrgName: string; out ExeName: string;
+  NamePostFix: String=''; ExtraArgs: String='');
 begin
-  Parent.TestCompile(PrgName, ExeName);
+  Parent.TestCompile(PrgName, ExeName, NamePostFix, ExtraArgs);
 end;
 
 { TGDBTestsuite }
@@ -570,9 +663,10 @@ begin
     TGDBTestCase(ATest).Parent := Self;
 end;
 
-procedure TGDBTestsuite.TestCompile(const PrgName: string; out ExeName: string);
+procedure TGDBTestsuite.TestCompile(const PrgName: string; out ExeName: string;
+  NamePostFix: String=''; ExtraArgs: String='');
 begin
-  Parent.TestCompile(PrgName, ExeName);
+  Parent.TestCompile(PrgName, ExeName, NamePostFix, ExtraArgs);
 end;
 
 { --- }

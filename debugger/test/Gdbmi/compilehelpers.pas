@@ -76,6 +76,7 @@ begin
     FpcBuild.ShowWindow := swoHIDE;
 
     CmdLine := FpcExe + ' -MObjFPC  -FUlib -o'+ ExeName + ' ' + FpcOpts + ' ' + PrgName;
+    debugln(['**** running compiler: ', CmdLine]);
     FpcBuild.CommandLine := CmdLine;
 
     FpcBuild.CurrentDirectory := ExtractFileDir(PrgName);

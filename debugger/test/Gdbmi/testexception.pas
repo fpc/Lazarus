@@ -30,6 +30,12 @@ type
 
 implementation
 
+    //dbg.OnBreakPointHit := @DebuggerBreakPointHit;
+    //dbg.OnState         := @DebuggerChangeState;
+    //dbg.OnCurrent       := @DebuggerCurrentLine;
+    //dbg.OnDbgOutput     := @DebuggerOutput;
+    //dbg.OnDbgEvent      := @DebuggerEvent;
+
 procedure TTestExceptionOne.DoDebuggerException(Sender: TObject;
   const AExceptionType: TDBGExceptionType; const AExceptionClass: String;
   const AExceptionText: String; out AContinue: Boolean);
@@ -43,41 +49,148 @@ end;
 
 procedure TTestExceptionOne.TestException;
 var
-  TestExeName: string;
+  TestExeName, TstName: string;
   dbg: TGDBMIDebugger;
 begin
-  FGotExceptCount := 0;
+  ClearTestErrors;
 
-  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName);
-
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '', '');
   try
-    dbg := TGDBMIDebugger.Create(DebuggerInfo.ExeName);
-    //dbg.OnBreakPointHit := @DebuggerBreakPointHit;
-    //dbg.OnState         := @DebuggerChangeState;
-    //dbg.OnCurrent       := @DebuggerCurrentLine;
-    //dbg.OnDbgOutput     := @DebuggerOutput;
-    //dbg.OnDbgEvent      := @DebuggerEvent;
+    FGotExceptCount := 0; TstName := 'all';
+    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
-    dbg.Init;
-    if dbg.State = dsError then
-      Fail(' Failed Init');
-    //dbg.Environment
-
-    dbg.WorkingDir := AppDir;
-    dbg.FileName   := TestExeName;
-    dbg.Arguments := '';
-    dbg.ShowConsole := True;
-
     dbg.Run;
+    TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 060000);
+    dbg.Run;
+    TestEquals(TstName+' Got 2nd exception', 2, FGotExceptCount);
+    dbg.Run;
+    TestEquals(TstName+' Got no more exception', 2, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'MyESome', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'abc', FGotExceptMsg, 050300);
     dbg.Stop;
   finally
     dbg.Free;
   end;
 
-  AssertEquals(' Got 1 exception', 1, FGotExceptCount);
-  AssertEquals(' Got class', 'Exception', FGotExceptClass);
-  AssertEquals(' Got msg',   'foo', FGotExceptMsg);
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype',
+              '-dTEST_NO_EXCEPTION_TYPE');
+  try
+    FGotExceptCount := 0; TstName := 'no_exp_type';
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+
+    dbg.Run;
+    TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
+    dbg.Run;
+    TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
+    dbg.Stop;
+  finally
+    dbg.Free;
+  end;
+
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr',
+              '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR');
+  try
+    FGotExceptCount := 0; TstName := 'no_exp_type_ptr';
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+
+    dbg.Run;
+    TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
+    dbg.Run;
+    TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
+    dbg.Stop;
+  finally
+    dbg.Free;
+  end;
+
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_str',
+              '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_STRING_VAR');
+  try
+    FGotExceptCount := 0; TstName := 'no_exp_type_str';
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+
+    dbg.Run;
+    TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
+    dbg.Run;
+    TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
+    dbg.Stop;
+  finally
+    dbg.Free;
+  end;
+
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str',
+               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR');
+  try
+    FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str';
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+
+    dbg.Run;
+    TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
+    dbg.Run;
+    TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
+    dbg.Stop;
+  finally
+    dbg.Free;
+  end;
+
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str_var',
+               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -dTEST_NO_EXCEPTION_VAR');
+  try
+    FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str_var';
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+
+    dbg.Run;
+    TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
+    dbg.Run;
+    TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
+    dbg.Stop;
+  finally
+    dbg.Free;
+  end;
+
+
+
+  TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'with_hplus', '-dTEST_WITH_HPLUS');
+  try
+    FGotExceptCount := 0; TstName := 'with_hplus';
+    dbg := StartGDB(AppDir, TestExeName);
+    dbg.OnException      := @DoDebuggerException;
+
+    dbg.Run;
+    TestEquals(TstName+' Got 1 exception', 1, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'Exception', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'foo', FGotExceptMsg, 050300);
+    dbg.Run;
+    TestEquals(TstName+' Got 2nd exception', 2, FGotExceptCount);
+    dbg.Run;
+    TestEquals(TstName+' Got no more exception', 2, FGotExceptCount);
+    TestEquals(TstName+' Got class', 'MyESome', FGotExceptClass);
+    TestEquals(TstName+' Got msg',   'abc', FGotExceptMsg, 050300);
+    dbg.Stop;
+  finally
+    dbg.Free;
+  end;
+
+
+
+  AssertTestErrors;
 end;
 
 initialization

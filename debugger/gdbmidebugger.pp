@@ -86,11 +86,19 @@ type
   TGDBMICallback = procedure(const AResult: TGDBMIExecResult; const ATag: PtrInt) of object;
   TGDBMIPauseWaitState = (pwsNone, pwsInternal, pwsExternal);
 
-  TGDBMITargetFlags = set of (
+  TGDBMITargetFlag = (
     tfHasSymbols,     // Debug symbols are present
     tfRTLUsesRegCall, // the RTL is compiled with RegCall calling convention
-    tfClassIsPointer  // with dwarf class names are pointer. with stabs they are not
+    tfClassIsPointer,  // with dwarf class names are pointer. with stabs they are not
+    tfFlagHasTypeObject,
+    tfFlagHasTypeException,
+    tfFlagHasTypeShortstring,
+    //tfFlagHasTypePShortString,
+    tfFlagHasTypePointer,
+    tfFlagHasTypeByte
+    //tfFlagHasTypeChar
   );
+  TGDBMITargetFlags = set of TGDBMITargetFlag;
 
   TGDBMIDebuggerFlags = set of (
     dfImplicidTypes,    // Debugger supports implicit types (^Type)
@@ -227,6 +235,8 @@ type
     function  GetStrValue(const AExpression: String; const AValues: array of const): String;
     function  GetIntValue(const AExpression: String; const AValues: array of const): Integer;
     function  GetPtrValue(const AExpression: String; const AValues: array of const; ConvertNegative: Boolean = False): TDbgPtr;
+    function  CheckHasType(TypeName: String; TypeFlag: TGDBMITargetFlag): TGDBMIExecResult;
+    function  PointerTypeCast: string;
     procedure ProcessFrame(const AFrame: String = '');
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
     property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
@@ -2977,11 +2987,18 @@ begin
     end;
 
     // check whether we need class cast dereference
-    if ExecuteCommand('ptype TObject', R)
+    R := CheckHasType('TObject', tfFlagHasTypeObject);
+    if R.State <> dsError
     then begin
       if (LeftStr(R.Values, 15) = 'type = ^TOBJECT')
       then include(TargetInfo^.TargetFlags, tfClassIsPointer);
     end;
+    CheckHasType('Exception', tfFlagHasTypeException);
+    CheckHasType('Shortstring', tfFlagHasTypeShortstring);
+    //CheckHasType('PShortstring', tfFlagHasTypePShortString);
+    CheckHasType('pointer', tfFlagHasTypePointer);
+    CheckHasType('byte', tfFlagHasTypeByte);
+    //CheckHasType('char', tfFlagHasTypeChar);
 
     // try Insert Break breakpoint
     // we might have rtl symbols
@@ -3279,7 +3296,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     then  Result.ObjAddr := TargetInfo^.TargetRegisters[0]
     else begin
       if dfImplicidTypes in FTheDebugger.DebuggerFlags
-      then Result.ObjAddr := Format('^POINTER($fp+%d)^', [TargetInfo^.TargetPtrSize * 2])
+      then Result.ObjAddr := Format('^%s($fp+%d)^', [PointerTypeCast, TargetInfo^.TargetPtrSize * 2])
       else Str(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]), Result.ObjAddr);
     end;
     Result.Name := GetInstanceClassName(Result.ObjAddr, []);
@@ -3292,12 +3309,17 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     ExceptionMessage: String;
     CanContinue: Boolean;
   begin
-    if dfImplicidTypes in FTheDebugger.DebuggerFlags
+    if (dfImplicidTypes in FTheDebugger.DebuggerFlags)
     then begin
-      if tfClassIsPointer in TargetInfo^.TargetFlags
-      then ExceptionMessage := GetText('Exception(%s).FMessage', [AInfo.ObjAddr])
-      else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
-      //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
+      if (tfFlagHasTypeException in TargetInfo^.TargetFlags) then begin
+        if tfClassIsPointer in TargetInfo^.TargetFlags
+        then ExceptionMessage := GetText('Exception(%s).FMessage', [AInfo.ObjAddr])
+        else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
+        //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
+      end else begin
+        // Only works if Exception class is not changed. FMessage must be first member
+        ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, AInfo.ObjAddr]);
+      end;
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
@@ -8541,8 +8563,11 @@ begin
   if dfImplicidTypes in FTheDebugger.DebuggerFlags
   then begin
     S := Format(AExpression, AValues);
-    OK :=  ExecuteCommand('-data-evaluate-expression ^^shortstring(%s+%d)^^',
-          [S, TargetInfo^.TargetPtrSize * 3], R);
+    if tfFlagHasTypeShortstring in TargetInfo^.TargetFlags
+    then s := Format('^^shortstring(%s+%d)^^', [S, TargetInfo^.TargetPtrSize * 3])
+    else s := Format('^^char(%s+%d)^+1', [S, TargetInfo^.TargetPtrSize * 3]);
+    OK :=  ExecuteCommand('-data-evaluate-expression %s',
+          [S], R);
     if (not OK) or (LastExecResult.State = dsError)
     then OK :=  ExecuteCommand('-data-evaluate-expression ^char(^pointer(%s+%d)^+1)',
           [S, TargetInfo^.TargetPtrSize * 3], R);
@@ -8574,7 +8599,7 @@ function TGDBMIDebuggerCommand.GetInstanceClassName(const AExpression: String;
 begin
   if dfImplicidTypes in FTheDebugger.DebuggerFlags
   then begin
-    Result := GetClassName('^POINTER(' + AExpression + ')^', AValues);
+    Result := GetClassName('^' + PointerTypeCast + '(' + AExpression + ')^', AValues);
   end
   else begin
     Result := GetClassName(GetData(AExpression, AValues));
@@ -8642,6 +8667,27 @@ begin
   end
   else Val(s, Result, e);
   if e=0 then ;
+end;
+
+function TGDBMIDebuggerCommand.CheckHasType(TypeName: String;
+  TypeFlag: TGDBMITargetFlag): TGDBMIExecResult;
+begin
+  if not ExecuteCommand('ptype '+TypeName, Result) then begin
+    Result.State := dsError;
+    exit;
+  end;
+  if (LeftStr(Result.Values, 6) = 'type =') then
+    include(TargetInfo^.TargetFlags, TypeFlag);
+end;
+
+function TGDBMIDebuggerCommand.PointerTypeCast: string;
+begin
+  if tfFlagHasTypePointer in TargetInfo^.TargetFlags
+  then Result := 'POINTER'
+  // TODO: check dfImplicidTypes support?
+  else if tfFlagHasTypeByte in TargetInfo^.TargetFlags
+  then Result := '^byte'
+  else Result := '^char';
 end;
 
 procedure TGDBMIDebuggerCommand.ProcessFrame(const AFrame: String);
