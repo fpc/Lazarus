@@ -65,7 +65,7 @@ type
     procedure AfterDraw; virtual;
     procedure BeforeDraw; virtual;
     procedure BeginUpdate;
-    procedure EndUpdate;
+    procedure EndUpdate; virtual;
     function IsUpdating: Boolean; inline;
   public
     class procedure CheckFormat(const AFormat: String);
