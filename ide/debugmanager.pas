@@ -2292,6 +2292,9 @@ begin
     itmViewRegisters.Command:=GetCommand(ecToggleRegisters);
     itmViewCallStack.Command:=GetCommand(ecToggleCallStack);
     itmViewAssembler.Command:=GetCommand(ecToggleAssembler);
+    itmViewThreads.Command:=GetCommand(ecViewThreads);
+    if itmViewPseudoTerminal <> nil then
+      itmViewPseudoTerminal.Command:=GetCommand(ecViewPseudoTerminal);
 
     itmRunMenuInspect.Command:=GetCommand(ecInspect);
     itmRunMenuEvaluate.Command:=GetCommand(ecEvaluate);
