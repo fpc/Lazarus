@@ -3,6 +3,8 @@ unit TestBasicSynEdit;
 (* TODO:
    - TestEditEmpty:
      Test with different sets of VirtualViews (with/without trimming (enabled/module present at all)
+
+     Word Left/Right: Need tests with fold, trim, selection
 *)
 
 {$mode objfpc}{$H+}
@@ -30,6 +32,8 @@ type
     procedure TestEditPhysicalLogical;
     procedure TestCaretAutoMove;
     procedure TestEditHomeEnd;
+    procedure TestCaretMoveLeftRightWord;
+    procedure TestCaretDeleteWord_LastWord;
   end;
 
 implementation
@@ -593,6 +597,351 @@ begin
 
   //SyneDit.Options := [eoScrollPastEol, eoEnhanceHomeKey];
   //SyneDit.Options2 := [eoEnhanceEndKey];
+
+end;
+
+procedure TTestBasicSynEdit.TestCaretMoveLeftRightWord;
+
+  procedure DoInit;
+  begin
+    InsertFlag := False;
+    TrimEnabled := False;;
+    ReCreateEdit;
+
+    SynEdit.TabWidth := 7;
+            // 1    6    11 14
+    SetLines(['Some text to test',                 //1
+            // 1   5   9
+              'Foo bar abc',                       // 2
+            //   8     14   19   24
+              #9'Other line with tab',             // 3
+            // 1      8  11  15
+              'tab'#9'in the middle',              // 4
+            // 1       9  12  16     23   28
+              'tab'#9' in the middle with space',  // 5
+            // 1       9   13 16
+              'umlaute äää in text',               // 6
+              'normal line',
+            //    4         14     21     28  32
+              '   untrimmed spaces around line   ', // 8
+              'normal line',
+            //   8      15      22  26
+              #9'tab'#9'only'#9'line'#9,            // 10
+            // 1      8
+              'normal line',
+              '',                                    // 12 (empty)
+              'normal line',
+              '     ', // space only empty line      // 14
+              'normal line',
+              ''
+             ]);
+  end;
+
+  procedure TestWordLeft(Name:String; X, Y, ExpX1, ExpY1: Integer;
+                         ExpX2: Integer = -1; ExpY2: Integer = -1);
+  begin
+    SetCaretPhys(X,Y);
+    SynEdit.CommandProcessor(ecWordLeft, '', nil);
+    TestIsCaretPhys(Name + '(1st WordLeft)', ExpX1, ExpY1);
+    if ExpY2 > 0 then begin
+      SynEdit.CommandProcessor(ecWordLeft, '', nil);
+      TestIsCaretPhys(Name + '(2nd WordLeft)', ExpX2, ExpY2);
+    end;
+  end;
+
+  procedure TestWordRight(Name:String; X, Y, ExpX1, ExpY1: Integer;
+                         ExpX2: Integer = -1; ExpY2: Integer = -1);
+  begin
+    SetCaretPhys(X,Y);
+    SynEdit.CommandProcessor(ecWordRight, '', nil);
+    TestIsCaretPhys(Name + '(1st WordRight)', ExpX1, ExpY1);
+    if ExpY2 > 0 then begin
+      SynEdit.CommandProcessor(ecWordRight, '', nil);
+      TestIsCaretPhys(Name + '(2nd WordRight)', ExpX2, ExpY2);
+    end;
+  end;
+
+begin
+  DoInit;
+  {%region word left}
+  TestWordLeft('simple "te|st"',                   16, 1,   14, 1,  11, 1);
+  TestWordLeft('simple EOW "test|"',               18, 1,   14, 1,  11, 1);
+  TestWordLeft('simple BOW "|test"',               14, 1,   11, 1,  6, 1);
+  TestWordLeft('simple > BOT "So|me"',              3, 1,    1, 1,   1, 1);
+  TestWordLeft('simple > prev-line "F|oo"',         2, 2,    1, 2,  18, 1);
+  TestWordLeft('simple > prev-line "|Foo"',         1, 2,   18, 1,  14, 1);
+
+  TestWordLeft('tab "wi|th"',                      21, 3,   19, 3,  14, 3);
+  TestWordLeft('tab EOW "with|"',                  23, 3,   19, 3,  14, 3);
+  TestWordLeft('tab BOW "|with"',                  19, 3,   14, 3,   8, 3);
+  TestWordLeft('tab > prev-line "O|ther"',          9, 3,    8, 3,  12, 2);
+
+  TestWordLeft('M-tab "i|n"',                       9, 4,    8, 4,   1, 4);
+  TestWordLeft('M-tab > prev-line-tab "ta|b"',      3, 4,    1, 4,  27, 3);
+
+  TestWordLeft('M-S-tab "i|n"',                    10, 5,    9, 5,   1, 5);
+  TestWordLeft('M-S-EOW tab "in|"',                11, 5,    9, 5,   1, 5);
+  TestWordLeft('M-S-BOW tab "|in"',                 9, 5,    1, 5,  21, 4);
+  TestWordLeft('M-S-tab "#9| in"',                  8, 5,    1, 5);
+
+  TestWordLeft('Umlaut "ää|ä"',                    11, 6,    9, 6,   1, 6);
+  TestWordLeft('Umlaut EOW "äää|"',                12, 6,    9, 6,   1, 6);
+  TestWordLeft('Umlaut BOW "|äää"',                 9, 6,    1, 6,  33, 5);
+  TestWordLeft('Umlaut "i|n"',                     14, 6,   13, 6,   9, 6);
+  TestWordLeft('After Umlaut > prev line',          1, 7,   20, 6,  16, 6);
+
+  TestWordLeft('untrimmed "un|trimmed"',            6, 8,    4, 8,  12, 7);
+  TestWordLeft('After untrimmed > prev',            1, 9,   35, 8,  28, 8);
+  TestWordLeft('untrimmed tab "t|ab"',              9,10,    8,10,  12, 9);
+  TestWordLeft('After untrimmed tab > prev',        1,11,   29,10,  22,10);
+
+  TestWordLeft('After empty > prev',                1,13,    1,12);
+  TestWordLeft('After space empty > prev',          1,15,    6,14);
+  {%endregion}
+
+  {%region word right}
+  TestWordRight('simple "te|xt"',                    8, 1,   11, 1,  14, 1);
+  TestWordRight('simple EOW "text|"',               10, 1,   11, 1,  14, 1);
+  TestWordRight('simple BOW "|text"',                6, 1,   11, 1,  14, 1);
+  TestWordRight('simple EOT "li|ne"',               10,15,   12,15,  12,15);
+  TestWordRight('simple > EOL, next line "te|st"',  16, 1,   18, 1,   1, 2);
+
+  TestWordRight('tab "li|ne"',                      16, 3,   19, 3,  24, 3);
+  TestWordRight('tab EOW "line|"',                  18, 3,   19, 3,  24, 3);
+  TestWordRight('tab BOW "|line"',                  14, 3,   19, 3,  24, 3);
+  TestWordRight('tab > EOL, next-line',             25, 3,   27, 3,   1, 4);
+
+  TestWordRight('M-tab "t|ab"',                      2, 4,    8, 4,  11, 4);
+  TestWordRight('M-tab "tab|"',                      4, 4,    8, 4,  11, 4);
+  TestWordRight('M-tab > EOL, next-line-tab',       17, 4,   21, 4,   1, 5);
+
+  TestWordRight('M-S-tab BOW "t|ab"',                2, 5,    9, 5,  12, 5);
+  TestWordRight('M-S-tab EOW "tab|"',                4, 5,    9, 5,  12, 5);
+  TestWordRight('M-S-tab BOW "|tab"',                1, 5,    9, 5,  12, 5);
+  TestWordRight('M-S-tab "tab#9| "',                 5, 5,    9, 5,  12, 5);
+
+  TestWordRight('Umlaut "ää|ä"',                    11, 6,   13, 6,  16, 6);
+  TestWordRight('Umlaut EOW "äää|"',                12, 6,   13, 6,  16, 6);
+  TestWordRight('Umlaut BOW "|äää"',                 9, 6,   13, 6,  16, 6);
+  TestWordRight('Umlaut "um|laute"',                 2, 6,    9, 6,  13, 6);
+  TestWordRight('After Umlaut > EOL, next line',    18, 6,   20, 6,   1, 7);
+
+  TestWordRight('Before untrimmed > next',           12, 7,    4, 8,  14, 8);
+  TestWordRight('untrimmed > EOL, next',             30, 8,   35, 8,   1, 9);
+  TestWordRight('Before untrimmed tab > next',       12, 9,    8,10,  15,10);
+  TestWordRight('untrimmed tab > EOL, next',         24,10,   29,10,   1,11);
+
+  TestWordRight('Before empty > next',                12,11,    1,12);
+  TestWordRight('Before space empty > next',          12,13,    1,14,   6, 14);
+  {%endregion}
+end;
+
+procedure TTestBasicSynEdit.TestCaretDeleteWord_LastWord;
+
+  function TestLines: TStringArray;
+  begin
+    SetLength(Result, 16);
+                // 1    6    11 14
+    Result[0]  := 'Some text to test';                 //1
+                // 1   5   9
+    Result[1]  := 'Foo bar abc';                       // 2
+                //   8     14   19   24
+    Result[2]  := #9'Other line with tab';             // 3
+                // 1      8  11  15
+    Result[3]  := 'tab'#9'in the middle';              // 4
+                // 1       9  12  16     23   28
+    Result[4]  := 'tab'#9' in the middle with space';  // 5
+                // 1       9   13 16
+    Result[5]  := 'umlaute äää in text';               // 6
+    Result[6]  := 'normal line';
+                //    4         14     21     28  32
+    Result[7]  := '   untrimmed spaces around line   '; // 8
+    Result[8]  := 'normal line';
+                //   8      15      22  26
+    Result[9]  := #9'tab'#9'only'#9'line'#9;            // 10
+                // 1      8
+    Result[10] := 'normal line';
+    Result[11] := '';                                    // 12 (empty)
+    Result[12] := 'normal line';
+    Result[13] := '     '; // space only empty line      // 14
+    Result[14] := 'normal line';
+    Result[15] := ''
+  end;
+
+  procedure DoInit;
+  begin
+    InsertFlag := False;
+    TrimEnabled := False;;
+    ReCreateEdit;
+
+    SynEdit.TabWidth := 7;
+            // 1    6    11 14
+    SetLines(TestLines);
+  end;
+
+  procedure TestWordLeft(Name:String; X, Y: Integer;
+                         ExpX1, ExpY1: Integer; Repl: Array of const);
+  begin
+    DoInit;
+    SetCaretPhys(X,Y);
+    SynEdit.CommandProcessor(ecDeleteLastWord, '', nil);
+    TestIsCaretPhys(Name + '(1st DeleteLastWord)', ExpX1, ExpY1);
+    TestIsFullText(Name +  '(1st DeleteLastWord)', TestLines, Repl);
+  end;
+  procedure TestWordLeft(Name:String; X, Y: Integer;
+                         ExpX1, ExpY1: Integer; Repl: Array of const;
+                         ExpX2, ExpY2: Integer; Repl2: Array of const);
+  begin
+    TestWordLeft(Name, X, Y, ExpX1, ExpY1, Repl);
+    SynEdit.CommandProcessor(ecDeleteLastWord, '', nil);
+    TestIsCaretPhys(Name + '(2nd DeleteLastWord)', ExpX2, ExpY2);
+    TestIsFullText(Name +  '(2nd DeleteLastWord)', TestLines, Repl2);
+  end;
+
+  procedure TestWordRight(Name:String; X, Y: Integer;
+                         ExpX1, ExpY1: Integer; Repl: Array of const);
+  begin
+    DoInit;
+    SetCaretPhys(X,Y);
+    SynEdit.CommandProcessor(ecDeleteWord, '', nil);
+    TestIsCaretPhys(Name + '(1st DeleteWord)', ExpX1, ExpY1);
+    TestIsFullText(Name +  '(1st DeleteWord)', TestLines, Repl);
+  end;
+  procedure TestWordRight(Name:String; X, Y: Integer;
+                         ExpX1, ExpY1: Integer; Repl: Array of const;
+                         ExpX2, ExpY2: Integer; Repl2: Array of const);
+  begin
+    TestWordRight(Name, X, Y, ExpX1, ExpY1, Repl);
+    SynEdit.CommandProcessor(ecDeleteWord, '', nil);
+    TestIsCaretPhys(Name + '(2nd DeleteWord)', ExpX2, ExpY2);
+    TestIsFullText(Name +  '(2nd DeleteWord)', TestLines, Repl2);
+  end;
+
+begin
+  {%region word left}
+  TestWordLeft('simple "te|st"',                   16, 1,   14, 1, [1,'Some text to st'],
+                                                            11, 1, [1,'Some text st']);
+  TestWordLeft('simple EOW "test|"',               18, 1,   14, 1, [1,'Some text to '],
+                                                            11, 1, [1,'Some text ']);
+  TestWordLeft('simple BOW "|test"',               14, 1,   11, 1, [1,'Some text test'],
+                                                             6, 1, [1,'Some test']);
+  TestWordLeft('simple > BOT "So|me"',              3, 1,    1, 1, [1,'me text to test'],
+                                                             1, 1, [1,'me text to test']);
+  TestWordLeft('simple > prev-line "F|oo"',         2, 2,    1, 2, [2,'oo bar abc'],
+                                                            18, 1, [1, 1, 'Some text to testoo bar abc']);
+  TestWordLeft('simple > prev-line "|Foo"',         1, 2,   18, 1, [1, 1, 'Some text to testFoo bar abc'],
+                                                            14, 1, [1, 1, 'Some text to Foo bar abc']);
+
+  TestWordLeft('tab "wi|th"',                      21, 3,   19, 3, [3, #9'Other line th tab'],
+                                                            14, 3, [3, #9'Other th tab']);
+  TestWordLeft('tab EOW "with|"',                  23, 3,   19, 3, [3, #9'Other line  tab'],
+                                                            14, 3, [3, #9'Other  tab']);
+  TestWordLeft('tab BOW "|with"',                  19, 3,   14, 3, [3, #9'Other with tab'],
+                                                             8, 3, [3, #9'with tab']);
+  TestWordLeft('tab > prev-line "O|ther"',          9, 3,    8, 3, [3, #9'ther line with tab'],
+                                                            12, 2, [2, 2, 'Foo bar abcther line with tab']);
+
+  TestWordLeft('M-tab "i|n"',                       9, 4,    8, 4, [4, 'tab'#9'n the middle'],
+                                                             1, 4, [4, 'n the middle']);
+  TestWordLeft('M-tab > prev-line-tab "ta|b"',      3, 4,    1, 4, [4, 'b'#9'in the middle'],
+                                                            27, 3, [3, 3, #9'Other line with tabb'#9'in the middle']);
+
+  //TestWordLeft('M-S-tab "i|n"',                    10, 5,    9, 5,
+  //                                                           1, 5);
+  //TestWordLeft('M-S-EOW tab "in|"',                11, 5,    9, 5,
+  //                                                           1, 5);
+  //TestWordLeft('M-S-BOW tab "|in"',                 9, 5,    1, 5,
+  //                                                          21, 4);
+  //TestWordLeft('M-S-tab "#9| in"',                  8, 5,    1, 5);
+  //
+  TestWordLeft('Umlaut "ää|ä"',                    11, 6,    9, 6, [6, 'umlaute ä in text'],
+                                                             1, 6, [6, 'ä in text']);
+  TestWordLeft('Umlaut EOW "äää|"',                12, 6,    9, 6, [6, 'umlaute  in text'],
+                                                             1, 6, [6, ' in text']);
+  TestWordLeft('Umlaut BOW "|äää"',                 9, 6,    1, 6, [6, 'äää in text'],
+                                                            33, 5, [5, 5, TestLines[4]+'äää in text']);
+  TestWordLeft('Umlaut "i|n"',                     14, 6,   13, 6, [6, 'umlaute äää n text'],
+                                                             9, 6, [6, 'umlaute n text']);
+  TestWordLeft('After Umlaut > prev line',          1, 7,   20, 6, [6, 6, 'umlaute äää in text'+TestLines[6]],
+                                                            16, 6, [6, 6, 'umlaute äää in '+TestLines[6]]);
+
+  //TestWordLeft('untrimmed "un|trimmed"',            6, 8,    4, 8,
+  //                                                          12, 7);
+  //TestWordLeft('After untrimmed > prev',            1, 9,   35, 8,
+  //                                                          28, 8);
+  //TestWordLeft('untrimmed tab "t|ab"',              9,10,    8,10,
+  //                                                          12, 9);
+  //TestWordLeft('After untrimmed tab > prev',        1,11,   29,10,
+  //                                                          22,10);
+  //
+  //TestWordLeft('After empty > prev',                1,13,    1,12);
+  //TestWordLeft('After space empty > prev',          1,15,    6,14);
+  {%endregion}
+
+  {%region word right}
+  // if in middle of word, keep spaces after
+  TestWordRight('simple "te|xt"',                    8, 1,    8, 1, [1,'Some te to test'],
+                                                              8, 1, [1,'Some teto test']);
+  // if at end of word, just del spaces after
+  TestWordRight('simple EOW "text|"',               10, 1,   10, 1, [1,'Some textto test'],
+                                                             10, 1, [1,'Some text test']);
+  // if at start of word, do NOT keep spaces after
+  TestWordRight('simple BOW "|text"',                6, 1,    6, 1, [1,'Some to test'],
+                                                              6, 1, [1,'Some test']);
+  TestWordRight('simple EOT "li|ne"',               10,15,   10,15, [15,'normal li'],
+                                                             10,15, [15,'normal li']);
+  TestWordRight('simple > EOL, next line "te|st"',  16, 1,   16, 1, [1,'Some text to te'],
+                                                             16, 1, [1, 1,'Some text to teFoo bar abc']);
+
+  TestWordRight('tab "li|ne"',                      16, 3,   16, 3, [3, #9'Other li with tab'],
+                                                             16, 3, [3, #9'Other liwith tab']);
+  TestWordRight('tab EOW "line|"',                  18, 3,   18, 3, [3, #9'Other linewith tab'],
+                                                             18, 3, [3, #9'Other line tab']);
+  TestWordRight('tab BOW "|line"',                  14, 3,   14, 3, [3, #9'Other with tab'],
+                                                             14, 3, [3, #9'Other tab']);
+  TestWordRight('tab > EOL, next-line',             25, 3,   25, 3, [3, #9'Other line with t'],
+                                                             25, 3, [3, 3, #9'Other line with ttab'#9'in the middle']);
+
+  TestWordRight('M-tab "t|ab"',                      2, 4,    2, 4, [4, 't'#9'in the middle'],
+                                                              2, 4, [4, 'tin the middle']);
+  TestWordRight('M-tab "tab|"',                      4, 4,    4, 4, [4, 'tabin the middle'],
+                                                              4, 4, [4, 'tab the middle']);
+  TestWordRight('M-tab > EOL, next-line-tab',       17, 4,   17, 4, [4, 'tab'#9'in the mi'],
+                                                             17, 4, [4, 4, 'tab'#9'in the mitab'#9' in the middle with space']);
+
+  //TestWordRight('M-S-tab BOW "t|ab"',                2, 5,    9, 5,
+  //                                                           12, 5);
+  //TestWordRight('M-S-tab EOW "tab|"',                4, 5,    9, 5,
+  //                                                           12, 5);
+  //TestWordRight('M-S-tab BOW "|tab"',                1, 5,    9, 5,
+  //                                                           12, 5);
+  //TestWordRight('M-S-tab "tab#9| "',                 5, 5,    9, 5,
+  //                                                           12, 5);
+  //
+  TestWordRight('Umlaut "ää|ä"',                    11, 6,   11, 6, [6, 'umlaute ää in text'],
+                                                             11, 6, [6, 'umlaute ääin text']);
+  TestWordRight('Umlaut EOW "äää|"',                12, 6,   12, 6, [6, 'umlaute äääin text'],
+                                                             12, 6, [6, 'umlaute äää text']);
+  TestWordRight('Umlaut BOW "|äää"',                 9, 6,    9, 6, [6, 'umlaute in text'],
+                                                              9, 6, [6, 'umlaute text']);
+  TestWordRight('Umlaut "umlaute|"',                 8, 6,    8, 6, [6, 'umlauteäää in text'],
+                                                              8, 6, [6, 'umlaute in text']);
+  TestWordRight('After Umlaut > EOL, next line',    18, 6,   18, 6, [6, 'umlaute äää in te'],
+                                                             18, 6, [6, 6, 'umlaute äää in te'+TestLines[6]]);
+
+  //TestWordRight('Before untrimmed > next',           12, 7,   4, 8,
+  //                                                           14, 8);
+  //TestWordRight('untrimmed > EOL, next',             30, 8,  35, 8,
+  //                                                            1, 9);
+  //TestWordRight('Before untrimmed tab > next',       12, 9,   8,10,
+  //                                                           15,10);
+  //TestWordRight('untrimmed tab > EOL, next',         24,10,  29,10,
+  //                                                            1,11);
+  //
+  //TestWordRight('Before empty > next',                12,11,  1,12);
+  //TestWordRight('Before space empty > next',          12,13,  1,14,
+  //                                                            6, 14);
+  {%endregion}
 
 end;
 
