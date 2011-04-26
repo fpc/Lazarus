@@ -140,10 +140,10 @@ begin
   Caption:= lisThreads;
   lvThreads.Column[1].Caption := lisThreadsID;
   lvThreads.Column[2].Caption := lisThreadsName;
-  lvThreads.Column[2].Caption := lisThreadsState;
-  lvThreads.Column[3].Caption := lisThreadsSrc;
-  lvThreads.Column[4].Caption := lisThreadsLine;
-  lvThreads.Column[5].Caption := lisThreadsFunc;
+  lvThreads.Column[3].Caption := lisThreadsState;
+  lvThreads.Column[4].Caption := lisThreadsSrc;
+  lvThreads.Column[5].Caption := lisThreadsLine;
+  lvThreads.Column[6].Caption := lisThreadsFunc;
   tbCurrent.Caption := lisThreadsCurrent;
   tbGoto.Caption := lisThreadsGoto;
 
