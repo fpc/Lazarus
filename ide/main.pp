@@ -1441,17 +1441,14 @@ begin
   Application.AddOnEndSessionHandler(@OnApplicationEndSession);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   SetupHints;
-
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
   // make sure the main IDE bar is always shown
   IDEWindowCreators.ShowForm(MainIDEBar,false);
-
-  // Now load a project
-  SetupStartProject;
-
-  // reopen extra windows
-  DoShowMessagesView(false);
+  DebugBoss.UpdateButtonsAndMenuItems; // Disable Stop-button (and some others).
+  SetupStartProject;                   // Now load a project
+  DoShowMessagesView(false);           // reopen extra windows
+  fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
 
