@@ -170,6 +170,7 @@ inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       ItemHeight = 16
+      OnChange = ForegroundColorBoxChange
       TabOrder = 2
     end
     object BackGroundColorBox: TColorBox
@@ -193,6 +194,7 @@ inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       ItemHeight = 16
+      OnChange = ForegroundColorBoxChange
       TabOrder = 3
     end
     object ForeGroundLabel: TLabel
