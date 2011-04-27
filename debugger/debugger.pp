@@ -1405,8 +1405,8 @@ type
     FDebugger: TDebugger;
     procedure SetSlave(const AValue: TIDEThreads);
   protected
-    procedure ChangeCurrentThread(ANewId: Integer); virtual; abstract;
-    procedure RequestMasterData; virtual; abstract;
+    procedure ChangeCurrentThread(ANewId: Integer); virtual;
+    procedure RequestMasterData; virtual;
     procedure Changed;
     procedure Finished;
     property Debugger: TDebugger read FDebugger write FDebugger;
@@ -1979,6 +1979,16 @@ begin
   FSlave := AValue;
 end;
 
+procedure TDBGThreads.ChangeCurrentThread(ANewId: Integer);
+begin
+  //
+end;
+
+procedure TDBGThreads.RequestMasterData;
+begin
+  //
+end;
+
 procedure TDBGThreads.Changed;
 begin
   If Slave <> nil then Slave.InvalidateData;
@@ -2380,7 +2390,7 @@ end;
 
 function TDebugger.CreateThreads: TDBGThreads;
 begin
-  Result := nil;
+  Result := TDBGThreads.Create(Self);
 end;
 
 procedure TDebugger.DebuggerEnvironmentChanged (Sender: TObject );
