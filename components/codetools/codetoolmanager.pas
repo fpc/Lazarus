@@ -550,6 +550,13 @@ type
           FunctionResultVariableStartPos: integer = 0
           ): boolean;
 
+    // Assign method
+    function FindAssignMethod(Code: TCodeBuffer; X, Y: integer;
+          out Tool: TCodeTool; out ClassNode, AncestorClassNode: TCodeTreeNode;
+          out AssignDeclNode: TCodeTreeNode;
+          var MemberNodeExts: TAVLTree; // tree of TCodeTreeNodeExtension, Node=var or property, Data=write property
+          out AssignBodyNode: TCodeTreeNode): boolean;
+
     // code templates
     function InsertCodeTemplate(Code: TCodeBuffer;
           SelectionStart, SelectionEnd: TPoint;
@@ -3891,6 +3898,32 @@ begin
       NewY:=NewPos.Y;
       NewCode:=NewPos.Code;
     end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindAssignMethod(Code: TCodeBuffer; X, Y: integer;
+  out Tool: TCodeTool; out ClassNode, AncestorClassNode: TCodeTreeNode;
+  out AssignDeclNode: TCodeTreeNode; var MemberNodeExts: TAVLTree;
+  out AssignBodyNode: TCodeTreeNode): boolean;
+var
+  CodePos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindAssignMethod A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  AssignDeclNode:=nil;
+  AssignBodyNode:=nil;
+  if not InitCurCodeTool(Code) then exit;
+  Tool:=FCurCodeTool;
+  CodePos.X:=X;
+  CodePos.Y:=Y;
+  CodePos.Code:=Code;
+  try
+    Result:=FCurCodeTool.FindAssignMethod(CodePos,ClassNode,AncestorClassNode,
+           AssignDeclNode,MemberNodeExts,AssignBodyNode);
   except
     on e: Exception do Result:=HandleException(e);
   end;

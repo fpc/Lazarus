@@ -244,6 +244,18 @@ type
                         SourceChangeCache: TSourceChangeCache): boolean;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
                       SourceChangeCache: TSourceChangeCache): boolean; override;
+    function GatherPublishedMethods(ClassNode: TCodeTreeNode;
+                              out ListOfPFindContext: TFPList): boolean;
+
+    // graph of definitions of a unit
+    function GatherUnitDefinitions(out TreeOfCodeTreeNodeExt: TAVLTree;
+                      OnlyInterface, ExceptionOnRedefinition: boolean): boolean;
+    function BuildUnitDefinitionGraph(
+                        out DefinitionsTreeOfCodeTreeNodeExt: TAVLTree;
+                        out Graph: TCodeGraph; OnlyInterface: boolean): boolean;
+    procedure WriteCodeGraphDebugReport(Graph: TCodeGraph);
+
+    // redefinitions
     function GetRedefinitionNodeText(Node: TCodeTreeNode): string;
     function FindRedefinitions(out TreeOfCodeTreeNodeExt: TAVLTree;
                         WithEnums: boolean): boolean;
@@ -253,22 +265,24 @@ type
                                   OnlyWrongType: boolean): boolean;
     function FixAliasDefinitions(TreeOfCodeTreeNodeExt: TAVLTree;
                                 SourceChangeCache: TSourceChangeCache): boolean;
+
+    // const functions
     function FindConstFunctions(out TreeOfCodeTreeNodeExt: TAVLTree): boolean;
     function ReplaceConstFunctions(TreeOfCodeTreeNodeExt: TAVLTree;
                                 SourceChangeCache: TSourceChangeCache): boolean;
     function FindTypeCastFunctions(out TreeOfCodeTreeNodeExt: TAVLTree): boolean;
+
+    // typecast functions
     function ReplaceTypeCastFunctions(TreeOfCodeTreeNodeExt: TAVLTree;
                                 SourceChangeCache: TSourceChangeCache): boolean;
     function MovePointerTypesToTargetSections(
                                 SourceChangeCache: TSourceChangeCache): boolean;
+
+    // sort procs
     function FixForwardDefinitions(SourceChangeCache: TSourceChangeCache
                                    ): boolean;
-    function GatherUnitDefinitions(out TreeOfCodeTreeNodeExt: TAVLTree;
-                      OnlyInterface, ExceptionOnRedefinition: boolean): boolean;
-    function BuildUnitDefinitionGraph(
-                        out DefinitionsTreeOfCodeTreeNodeExt: TAVLTree;
-                        out Graph: TCodeGraph; OnlyInterface: boolean): boolean;
-    procedure WriteCodeGraphDebugReport(Graph: TCodeGraph);
+
+    // empty functions
     function FindEmptyMethods(CursorPos: TCodeXYPosition;
                               const AClassName: string; // can be ''
                               const Sections: TPascalClassSections;
@@ -286,11 +300,22 @@ type
                               out AllRemoved: boolean;
                               const Attr: TProcHeadAttributes;
                               out RemovedProcHeads: TStrings): boolean;
-    function GatherPublishedMethods(ClassNode: TCodeTreeNode;
-                              out ListOfPFindContext: TFPList): boolean;
+
+    // assign/init records/classes
+    function FindAssignMethod(CursorPos: TCodeXYPosition;
+        out ClassNode, AncestorClassNode: TCodeTreeNode;
+        out AssignDeclNode: TCodeTreeNode;
+        var MemberNodeExts: TAVLTree; // tree of TCodeTreeNodeExtension, Node=var or property, Data=write property
+        out AssignBodyNode: TCodeTreeNode): boolean;
+    function AddAssignMethod(MemberNodeExts: TAVLTree;
+        const ProcName, ParamName, ParamType: string;
+        CallInherited, CallInheritedOnlyInElse: boolean;
+        SourceChanger: TSourceChangeCache): boolean;
 
     // custom class completion
     function InitClassCompletion(const AClassName: string;
+                                 SourceChangeCache: TSourceChangeCache): boolean;
+    function InitClassCompletion(ClassNode: TCodeTreeNode;
                                  SourceChangeCache: TSourceChangeCache): boolean;
     function ApplyClassCompletion(AddMissingProcBodies: boolean): boolean;
     function ProcExistsInCodeCompleteClass(
@@ -4987,6 +5012,237 @@ begin
   end;
 end;
 
+function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
+  out ClassNode, AncestorClassNode: TCodeTreeNode;
+  out AssignDeclNode: TCodeTreeNode; var MemberNodeExts: TAVLTree;
+  out AssignBodyNode: TCodeTreeNode): boolean;
+{ if CursorPos is in a class declaration search for a method "Assign"
+  and its corresponding body.
+  If CursorPos is in a method body use this as a Assign method and return
+  its corresponding declararion.
+  If neither return false.
+  Also return a tree of all variables and properties (excluding ancestors).
+}
+
+  procedure SearchAssign(Node: TCodeTreeNode);
+  var
+    Child: TCodeTreeNode;
+  begin
+    if Node=nil then exit;
+    Child:=Node.FirstChild;
+    while Child<>nil do begin
+      if Child.Desc in AllClassSections then
+        SearchAssign(Child)
+      else if Child.Desc=ctnProcedure then begin
+        if ExtractProcName(Child,[phpInUpperCase])='ASSIGN' then begin
+          if AssignDeclNode<>nil then begin
+            debugln(['WARNING: TCodeCompletionCodeTool.FindAssignMethod.SearchAssign'
+              +' multiple Assign methods found, using the first at ',CleanPosToStr(AssignDeclNode.StartPos)]);
+          end else
+            AssignDeclNode:=Child;
+        end;
+      end;
+      Child:=Child.NextBrother;
+    end;
+  end;
+
+  procedure GatherAssignableMembers(Node: TCodeTreeNode);
+  var
+    Child: TCodeTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+  begin
+    if Node=nil then exit;
+    Child:=Node.FirstChild;
+    while Child<>nil do begin
+      if Child.Desc in AllClassSections then
+        GatherAssignableMembers(Child)
+      else if (Child.Desc=ctnVarDefinition)
+      or ((Child.Desc=ctnProperty)
+        and (PropertyHasSpecifier(Child,'read'))
+        and (PropertyHasSpecifier(Child,'write')))
+      then begin
+        // a variable or a property which is readable and writable
+        if MemberNodeExts=nil then
+          MemberNodeExts:=TAVLTree.Create(@CompareCodeTreeNodeExtTxtAndPos);
+        NodeExt:=TCodeTreeNodeExtension.Create;
+        NodeExt.Node:=Child;
+        NodeExt.Position:=Child.StartPos;
+        if Child.Desc=ctnVarDefinition then
+          NodeExt.Txt:=ExtractDefinitionName(Child)
+        else
+          NodeExt.Txt:=ExtractPropName(Child,false);
+        MemberNodeExts.Add(NodeExt);
+      end;
+
+      Child:=Child.NextBrother;
+    end;
+  end;
+
+  procedure FindVarsWrittenByProperties;
+  var
+    AVLNode: TAVLTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+    WrittenNodeExt: TCodeTreeNodeExtension;
+  begin
+    if MemberNodeExts=nil then exit;
+    AVLNode:=MemberNodeExts.FindLowest;
+    while AVLNode<>nil do begin
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      if NodeExt.Node.Desc=ctnProperty then begin
+        if PropertyHasSpecifier(NodeExt.Node,'write') then begin
+          ReadNextAtom;
+          if AtomIsIdentifier(false) then begin
+            WrittenNodeExt:=FindCodeTreeNodeExtWithIdentifier(MemberNodeExts,
+                                      @Src[CurPos.StartPos]);
+            if WrittenNodeExt<>nil then
+              WrittenNodeExt.Data:=NodeExt.Node;
+          end;
+        end;
+      end;
+      AVLNode:=MemberNodeExts.FindSuccessor(AVLNode);
+    end;
+  end;
+
+  procedure FindAncestor;
+  var
+    Params: TFindDeclarationParams;
+  begin
+    if ClassNode=nil then exit;
+    Params:=TFindDeclarationParams.Create;
+    try
+      //FindAncestorOfClassInheritance();
+
+    finally
+      Params.Free;
+    end;
+  end;
+
+var
+  CleanPos: integer;
+  CursorNode: TCodeTreeNode;
+  Node: TCodeTreeNode;
+begin
+  Result:=false;
+  ClassNode:=nil;
+  AncestorClassNode:=nil;
+  AssignDeclNode:=nil;
+  AssignBodyNode:=nil;
+  BuildTreeAndGetCleanPos(CursorPos,CleanPos);
+  // check context
+  CursorNode:=FindDeepestNodeAtPos(CleanPos,true);
+  Node:=CursorNode;
+  while (Node<>nil) do begin
+    if (Node.Desc=ctnProcedure) then begin
+      if NodeIsMethodBody(Node) then begin
+        // cursor in method body
+        AssignBodyNode:=Node;
+        Result:=true;
+        AssignDeclNode:=FindCorrespondingProcNode(AssignBodyNode);
+        if AssignDeclNode<>nil then
+          ClassNode:=FindClassOrInterfaceNode(AssignDeclNode.Parent);
+        break;
+      end;
+    end else if (Node.Desc in AllClassObjects) then begin
+      // cursor in class/record
+      Result:=true;
+      ClassNode:=Node;
+      SearchAssign(ClassNode);
+      if AssignDeclNode<>nil then
+        AssignBodyNode:=FindCorrespondingProcNode(AssignDeclNode);
+      break;
+    end;
+    Node:=Node.Parent;
+  end;
+  if ClassNode=nil then exit;
+  GatherAssignableMembers(ClassNode);
+  FindVarsWrittenByProperties;
+  FindAncestor;
+end;
+
+function TCodeCompletionCodeTool.AddAssignMethod(MemberNodeExts: TAVLTree;
+  const ProcName, ParamName, ParamType: string; CallInherited,
+  CallInheritedOnlyInElse: boolean; SourceChanger: TSourceChangeCache): boolean;
+var
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+  Node: TCodeTreeNode;
+  CleanDef: String;
+  Def: String;
+  ClassNode: TCodeTreeNode;
+  aClassName: String;
+  ProcBody: String;
+  e: String;
+  SameType: boolean;
+  Indent: Integer;
+  IndentStep: LongInt;
+  LocalVar: String;
+begin
+  Result:=false;
+  if (MemberNodeExts=nil) or (MemberNodeExts.Count=0) then exit(true);
+  if (ParamName='') or (ParamType='') then exit;
+  ClassNode:=nil;
+  CleanDef:='procedure '+ProcName+'(:'+ParamType+')';
+  Def:='procedure '+ProcName+'('+ParamName+':'+ParamType+')';
+  ProcBody:='';
+  AVLNode:=MemberNodeExts.FindLowest;
+  e:=SourceChanger.BeautifyCodeOptions.LineEnd;
+  SameType:=true;
+  Indent:=0;
+  IndentStep:=SourceChanger.BeautifyCodeOptions.Indent;
+  LocalVar:=ParamName;
+  while AVLNode<>nil do begin
+    NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+    Node:=NodeExt.Node;
+    if ClassNode=nil then begin
+      // first assignment
+      // => get the classnode, create the proc header
+      ClassNode:=FindClassOrInterfaceNode(Node.Parent);
+      aClassName:=ExtractClassName(ClassNode,false);
+      SameType:=CompareIdentifiers(PChar(aClassName),PChar(ParamType))=0;
+      ProcBody:='procedure '+aClassName+'.'+ProcName+'('+ParamName+':'+ParamType+')'+e;
+      if not SameType then begin
+        LocalVar:='aSrc';
+        if CompareIdentifiers(PChar(LocalVar),PChar(ParamName))=0 then
+          LocalVar:='aSource';
+        ProcBody:=ProcBody+'var'+e
+           +GetIndentStr(Indent+IndentStep)+LocalVar+':'+aClassName+';'+e;
+      end;
+      ProcBody:=ProcBody+'begin'+e;
+      inc(Indent,IndentStep);
+      if CallInherited and (not CallInheritedOnlyInElse) then
+        ProcBody:=ProcBody
+          +GetIndentStr(Indent)+'inherited '+ProcName+'('+ParamName+');'+e;
+      if not SameType then begin
+        // add a parameter check to the new procedure
+        ProcBody:=ProcBody
+            +GetIndentStr(Indent)+'if '+ParamName+' is '+aClassName+' then'+e
+            +GetIndentStr(Indent)+'begin'+e;
+        inc(Indent,IndentStep);
+        ProcBody:=ProcBody+GetIndentStr(Indent)+LocalVar+':='+aClassName+'('+ParamName+');'+e;
+      end;
+    end;
+    // add assignment
+    ProcBody:=ProcBody+GetIndentStr(Indent)+NodeExt.Txt+':='+LocalVar+'.'+NodeExt.Txt+';'+e;
+    AVLNode:=MemberNodeExts.FindSuccessor(AVLNode);
+  end;
+  if not SameType then begin
+    // close if block
+    dec(Indent,IndentStep);
+    if CallInherited and CallInheritedOnlyInElse then begin
+      ProcBody:=ProcBody+GetIndentStr(Indent)+'end else'+e
+          +GetIndentStr(Indent+IndentStep)+'inherited '+ProcName+'('+ParamName+');'+e;
+    end else begin
+      ProcBody:=ProcBody+GetIndentStr(Indent)+'end;'+e
+    end;
+  end;
+  // close procedure body
+  ProcBody:=ProcBody+'end;';
+  // apply
+  if not InitClassCompletion(ClassNode,SourceChanger) then exit;
+  AddClassInsertion(CleanDef,Def,ProcName,ncpPublicProcs,nil,ProcBody);
+  Result:=ApplyClassCompletion(true);
+end;
+
 function TCodeCompletionCodeTool.GatherPublishedMethods(
   ClassNode: TCodeTreeNode; out ListOfPFindContext: TFPList): boolean;
 var
@@ -5020,7 +5276,13 @@ begin
   if ScannedRange<>lsrEnd then exit;
   if (SourceChangeCache=nil) or (Scanner=nil) then exit;
   ClassNode:=FindClassNodeInUnit(AClassName,true,false,false,true);
-  if (ClassNode=nil) then exit;
+  Result:=InitClassCompletion(ClassNode,SourceChangeCache);
+end;
+
+function TCodeCompletionCodeTool.InitClassCompletion(ClassNode: TCodeTreeNode;
+  SourceChangeCache: TSourceChangeCache): boolean;
+begin
+  if (ClassNode=nil) then exit(false);
   CodeCompleteClassNode:=ClassNode;
   CodeCompleteSrcChgCache:=SourceChangeCache;
   FreeClassInsertionList;

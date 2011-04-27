@@ -309,10 +309,11 @@ function CompareTxtWithCodeTreeNodeExt(p: Pointer;
                                        NodeData: pointer): integer;
 function CompareIdentifierWithCodeTreeNodeExt(p: Pointer;
                                               NodeData: pointer): integer;
-function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
-function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
+function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer; // Txt
+function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer; // Position
 function CompareCodeTreeNodeExtWithNodeStartPos(
-  NodeData1, NodeData2: pointer): integer;
+  NodeData1, NodeData2: pointer): integer; // Node.StartPos
+function CompareCodeTreeNodeExtTxtAndPos(NodeData1, NodeData2: pointer): integer; // Txt, then Position
 function CompareCodeTreeNodeExtWithNode(NodeData1, NodeData2: pointer): integer;
 function ComparePointerWithCodeTreeNodeExtNode(p: Pointer;
                                                NodeExt: pointer): integer;
@@ -497,9 +498,8 @@ function CompareTxtWithCodeTreeNodeExt(p: Pointer; NodeData: pointer
   ): integer;
 var
   s: String;
-  NodeExt: TCodeTreeNodeExtension;
+  NodeExt: TCodeTreeNodeExtension absolute NodeData;
 begin
-  NodeExt:=TCodeTreeNodeExtension(NodeData);
   s:=PAnsistring(p)^;
   Result:=CompareTextIgnoringSpace(s,NodeExt.Txt,false);
   //debugln('CompareTxtWithCodeTreeNodeExt ',NodeExt.Txt,' ',s,' ',dbgs(Result));
@@ -508,17 +508,17 @@ end;
 function CompareIdentifierWithCodeTreeNodeExt(p: Pointer; NodeData: pointer
   ): integer;
 var
-  NodeExt: TCodeTreeNodeExtension;
+  NodeExt: TCodeTreeNodeExtension absolute NodeData;
 begin
   NodeExt:=TCodeTreeNodeExtension(NodeData);
   Result:=CompareIdentifierPtrs(p,Pointer(NodeExt.Txt));
 end;
 
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
-var NodeExt1, NodeExt2: TCodeTreeNodeExtension;
+var
+  NodeExt1: TCodeTreeNodeExtension absolute NodeData1;
+  NodeExt2: TCodeTreeNodeExtension absolute NodeData2;
 begin
-  NodeExt1:=TCodeTreeNodeExtension(NodeData1);
-  NodeExt2:=TCodeTreeNodeExtension(NodeData2);
   Result:=CompareTextIgnoringSpace(NodeExt1.Txt,NodeExt2.Txt,false);
 end;
 
@@ -544,6 +544,22 @@ begin
   if NodeExt1Pos<NodeExt2Pos then
     Result:=1
   else if NodeExt1Pos>NodeExt2Pos then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareCodeTreeNodeExtTxtAndPos(NodeData1, NodeData2: pointer
+  ): integer;
+var
+  NodeExt1: TCodeTreeNodeExtension absolute NodeData1;
+  NodeExt2: TCodeTreeNodeExtension absolute NodeData2;
+begin
+  Result:=CompareTextIgnoringSpace(NodeExt1.Txt,NodeExt2.Txt,false);
+  if Result<>0 then exit;
+  if NodeExt1.Position<NodeExt2.Position then
+    Result:=1
+  else if NodeExt1.Position>NodeExt2.Position then
     Result:=-1
   else
     Result:=0;
