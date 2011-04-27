@@ -228,7 +228,6 @@ type
 
   TManagedBreakPoint = class(TIDEBreakPoint)
   private
-    FMaster: TDBGBreakPoint;
     FSourceMark: TSourceMark;
     FCurrentDebugExeLine: Integer;
     procedure OnSourceMarkBeforeFree(Sender: TObject);
@@ -240,23 +239,14 @@ type
     procedure OnDeleteMenuItemClick(Sender: TObject);
     procedure OnViewPropertiesMenuItemClick(Sender: TObject);
   protected
-    procedure AssignLocationTo(Dest: TPersistent); override;
-    procedure AssignTo(Dest: TPersistent); override;
     procedure DoChanged; override;
-    function GetHitCount: Integer; override;
-    function GetValid: TValidState; override;
-    procedure SetBreakHitCount(const AValue: Integer); override;
-    procedure SetEnabled(const AValue: Boolean); override;
-    procedure SetInitialEnabled(const AValue: Boolean); override;
-    procedure SetExpression(const AValue: String); override;
+
     procedure SetSourceMark(const AValue: TSourceMark);
     procedure UpdateSourceMark;
     procedure UpdateSourceMarkImage;
     procedure UpdateSourceMarkLineColor;
-    function  DebugExeLine: Integer;  // If known, the line in the compiled exe
+    function  DebugExeLine: Integer; override; // If known, the line in the compiled exe
   public
-    destructor Destroy; override;
-    procedure ResetMaster;
     procedure CopySourcePositionToBreakPoint;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
     property SourceMark: TSourceMark read FSourceMark write SetSourceMark;
@@ -264,870 +254,54 @@ type
 
   TManagedBreakPoints = class(TIDEBreakPoints)
   private
-    FMaster: TDBGBreakPoints;
     FManager: TDebugManager;
-    procedure SetMaster(const AValue: TDBGBreakPoints);
   protected
     procedure NotifyAdd(const ABreakPoint: TIDEBreakPoint); override;
     procedure NotifyRemove(const ABreakPoint: TIDEBreakPoint); override;
   public
     constructor Create(const AManager: TDebugManager);
-    property Master: TDBGBreakPoints read FMaster write SetMaster;
   end;
 
-  { TManagedWatch }
+  { TProjectExceptions }
 
-  TManagedWatch = class(TIDEWatch)
-  private
-    FMaster: TDBGWatch;
+  TProjectExceptions = class(TIDEExceptions)
   protected
-    procedure AssignTo(Dest: TPersistent); override;
-    procedure DoChanged; override;
-    function GetValid: TValidState; override;
-    function GetValue: String; override;
-    function GetTypeInfo: TDBGType; override;
-    procedure SetEnabled(const AValue: Boolean); override;
-    procedure SetExpression(const AValue: String); override;
-    procedure SetDisplayFormat(const AValue: TWatchDisplayFormat); override;
-  public
-    destructor Destroy; override;
-    procedure ResetMaster;
-  end;
-
-  { TManagedWatches }
-
-  TManagedWatches = class(TIDEWatches)
-  private
-    FMaster: TDBGWatches;
-    FManager: TDebugManager;
-    procedure WatchesChanged(Sender: TObject);
-    procedure SetMaster(const AMaster: TDBGWatches);
-  protected
-    procedure NotifyAdd(const AWatch: TIDEWatch); override;
-    procedure NotifyRemove(const AWatch: TIDEWatch); override;
-  public
-    constructor Create(const AManager: TDebugManager);
-    destructor Destroy; override;
-    property Master: TDBGWatches read FMaster write SetMaster;
-  end;
-
-  { TManagedLocals }
-
-  TManagedLocals = class(TIDELocals)
-  private
-    FMaster: TDBGLocals;
-    procedure LocalsChanged(Sender: TObject);
-    procedure SetMaster(const AMaster: TDBGLocals);
-  protected
-    function GetName(const AnIndex: Integer): String; override;
-    function GetValue(const AnIndex: Integer): String; override;
-  public
-    function Count: Integer; override;
-    property Master: TDBGLocals read FMaster write SetMaster;
-  end;
-
-  { TManagedLineInfo }
-
-  TManagedLineInfo = class(TIDELineInfo)
-  private
-    FMaster: TDBGLineInfo;
-    procedure LineInfoChanged(const ASender: TObject; const ASource: String);
-    procedure SetMaster(const AMaster: TDBGLineInfo);
-  protected
-    function GetSource(const AIndex: Integer): String; override;
-  public
-    function Count: Integer; override;
-    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
-    function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
-    function IndexOf(const ASource: String): integer; override;
-    procedure Request(const ASource: String); override;
-    property Master: TDBGLineInfo read FMaster write SetMaster;
-  end;
-
-  { TManagedRegisters }
-
-  TManagedRegisters = class(TIDERegisters)
-  private
-    FMaster: TDBGRegisters;
-    procedure RegistersChanged(Sender: TObject);
-    procedure SetMaster(const AMaster: TDBGRegisters);
-  protected
-    function GetModified(const AnIndex: Integer): Boolean; override;
-    function GetName(const AnIndex: Integer): String; override;
-    function GetValue(const AnIndex: Integer): String; override;
-    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat; override;
-    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); override;
-  public
-    function Count: Integer; override;
-    property Master: TDBGRegisters read FMaster write SetMaster;
-  end;
-
-  { TManagedCallStack }
-
-  TManagedCallStack = class(TIDECallStack)
-  private
-    FMaster: TDBGCallStack;
-    procedure CallStackChanged(Sender: TObject);
-    procedure CallStackClear(Sender: TObject);
-    procedure CallStackCurrent(Sender: TObject);
-    procedure SetMaster(AMaster: TDBGCallStack);
-  protected
-    function CheckCount: Boolean; override;
-    function GetCurrent: TCallStackEntry; override;
-    function InternalGetEntry(AIndex: Integer): TCallStackEntry; override;
-    procedure SetCurrent(AValue: TCallStackEntry); override;
-  public
-    procedure PrepareRange(AIndex, ACount: Integer); override;
-    property Master: TDBGCallStack read FMaster write SetMaster;
-  end;
-
-  { TManagedDisassembler }
-
-  TManagedDisassembler = class(TIDEDisassembler)
-  private
-    FMaster: TDBGDisassembler;
-    procedure DisassemblerChanged(Sender: TObject);
-    procedure SetMaster(AMaster: TDBGDisassembler);
-  protected
-    procedure DoChanged; override;
-    function  InternalGetEntry(AIndex: Integer): TDisassemblerEntry; override;
-    function  InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry; override;
-  public
-    procedure Clear; override;
-    function PrepareRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean; override;
-    property Master: TDBGDisassembler read FMaster write SetMaster;
-  end;
-
-  TManagedSignal = class(TIDESignal)
-  private
-    FMaster: TDBGSignal;
-  protected
-    procedure AssignTo(Dest: TPersistent); override;
-  public
-    procedure ResetMaster;
-  end;
-
-  { TManagedSignals }
-
-  TManagedSignals = class(TIDESignals)
-  private
-    FMaster: TDBGSignals;
-    FManager: TDebugManager;
-    procedure SetMaster(const AValue: TDBGSignals);
-  protected
-    procedure AddDefault;
-  public
-    constructor Create(const AManager: TDebugManager);
-    procedure Reset; override;
-    property Master: TDBGSignals read FMaster write SetMaster;
-  end;
-
-  TManagedException = class(TIDEException)
-  private
-    FMaster: TDBGException;
-  protected
-    procedure DoChanged; override;
-  public
-    procedure ResetMaster;
-  end;
-
-  { TManagedExceptions }
-
-  TManagedExceptions = class(TIDEExceptions)
-  private
-    FMaster: TDBGExceptions;
-    FManager: TDebugManager;
-    procedure SetMaster(const AValue: TDBGExceptions);
-  protected
-    procedure AddDefault;
     procedure SetIgnoreAll(const AValue: Boolean); override;
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
-  public
-    constructor Create(const AManager: TDebugManager);
-    procedure AddIfNeeded(AName: string);
-    procedure Reset; override;
-    property Master: TDBGExceptions read FMaster write SetMaster;
   end;
 
   TDBGEventCategories = set of TDBGEventCategory;
 
-{ TManagedDisassembler }
+{ TProjectExceptions }
 
-procedure TManagedDisassembler.DisassemblerChanged(Sender: TObject);
-begin
-  Changed;
-end;
-
-procedure TManagedDisassembler.SetMaster(AMaster: TDBGDisassembler);
-begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then FMaster.OnChange := nil;
-
-  FMaster := AMaster;
-
-  if FMaster <> nil
-  then FMaster.OnChange := @DisassemblerChanged;
-
-  Changed;
-end;
-
-procedure TManagedDisassembler.DoChanged;
-begin
-  if FMaster <> nil
-  then begin
-    SetCountBefore(FMaster.CountBefore);
-    SetCountAfter(FMaster.CountAfter);
-    SetBaseAddr(FMaster.BaseAddr);
-  end
-  else Clear;
-  inherited DoChanged;
-end;
-
-function TManagedDisassembler.InternalGetEntry(AIndex: Integer): TDisassemblerEntry;
-begin
-  if FMaster <> nil
-  then Result := FMaster.Entries[AIndex]
-  else Result := inherited InternalGetEntry(AIndex);
-end;
-
-function TManagedDisassembler.InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry;
-begin
-  if FMaster <> nil
-  then Result := FMaster.EntriesPtr[AIndex]
-  else Result := inherited InternalGetEntryPtr(AIndex);
-end;
-
-procedure TManagedDisassembler.Clear;
-begin
-  if FMaster <> nil
-  then FMaster.Clear
-  else inherited Clear;
-end;
-
-function TManagedDisassembler.PrepareRange(AnAddr: TDbgPtr; ALinesBefore,
-  ALinesAfter: Integer): Boolean;
-begin
-  if (AnAddr = BaseAddr) and (ALinesBefore < CountBefore) and (ALinesAfter < CountAfter)
-  then exit(True);
-
-  if FMaster <> nil
-  then Result := FMaster.PrepareRange(AnAddr, ALinesBefore, ALinesAfter)
-  else Result := inherited PrepareRange(AnAddr, ALinesBefore, ALinesAfter);
-end;
-
-{ TManagedLineInfo }
-
-procedure TManagedLineInfo.LineInfoChanged(const ASender: TObject; const ASource: String);
-begin
-  NotifyChange(ASource);
-end;
-
-procedure TManagedLineInfo.SetMaster(const AMaster: TDBGLineInfo);
-begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := nil;
-  end;
-
-  FMaster := AMaster;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := @LineInfoChanged;
-  end;
-end;
-
-function TManagedLineInfo.GetSource(const AIndex: Integer): String;
-begin
-  if Master = nil
-  then Result := inherited GetSource(AIndex)
-  else Result := Master.Sources[AIndex];
-end;
-
-function TManagedLineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
-begin
-  if Master = nil
-  then Result := inherited GetAddress(AIndex, ALine)
-  else Result := Master.GetAddress(AIndex, ALine);
-end;
-
-function TManagedLineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean;
-begin
-  if Master = nil
-  then Result := inherited GetInfo(AAdress, ASource, ALine, AOffset)
-  else Result := Master.GetInfo(AAdress, ASource, ALine, AOffset);
-end;
-
-function TManagedLineInfo.IndexOf(const ASource: String): integer;
-begin
-  if Master = nil
-  then Result := inherited IndexOf(ASource)
-  else Result := Master.IndexOf(ASource);
-end;
-
-function TManagedLineInfo.Count: Integer;
-begin
-  if Master = nil
-  then Result := inherited Count
-  else Result := Master.Count;
-end;
-
-procedure TManagedLineInfo.Request(const ASource: String);
-begin
-  if Master = nil
-  then inherited Request(ASource)
-  else Master.Request(ASource);
-end;
-
-{ TManagedCallStack }
-
-procedure TManagedCallStack.CallStackChanged(Sender: TObject);
-begin
-  // Clear it first to force the count update
-  Clear;
-  NotifyChange;
-end;
-
-procedure TManagedCallStack.CallStackClear(Sender: TObject);
-begin
-  // Don't clear, set it to 0 so there are no entries shown
-  SetCount(0);
-  NotifyChange;
-end;
-
-procedure TManagedCallStack.CallStackCurrent(Sender: TObject);
-begin
-  NotifyCurrent;
-end;
-
-function TManagedCallStack.CheckCount: Boolean;
-begin
-  Result := Master <> nil;
-  if Result
-  then SetCount(Master.Count);
-end;
-
-function TManagedCallStack.GetCurrent: TCallStackEntry;
-begin
-  if Master = nil
-  then Result := nil
-  else Result := Master.Current;
-end;
-
-function TManagedCallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
-begin
-  Assert(FMaster <> nil);
-
-  Result := FMaster.Entries[AIndex];
-end;
-
-procedure TManagedCallStack.SetCurrent(AValue: TCallStackEntry);
-begin
-  if Master = nil then Exit;
-
-  Master.Current := AValue;
-end;
-
-procedure TManagedCallStack.PrepareRange(AIndex, ACount: Integer);
-begin
-  if FMaster <> nil
-  then FMaster.PrepareRange(AIndex, ACount)
-  else inherited PrepareRange(AIndex, ACount);
-end;
-
-procedure TManagedCallStack.SetMaster(AMaster: TDBGCallStack);
-var
-  DoNotify: Boolean;
-begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := nil;
-    FMaster.OnClear := nil;
-    FMaster.OnCurrent := nil;
-    DoNotify := FMaster.Count <> 0;
-  end
-  else DoNotify := False;
-
-  FMaster := AMaster;
-
-  if FMaster = nil
-  then begin
-    SetCount(0);
-  end
-  else begin
-    FMaster.OnChange := @CallStackChanged;
-    FMaster.OnClear := @CallStackClear;
-    FMaster.OnCurrent := @CallStackCurrent;
-    DoNotify := DoNotify or (FMaster.Count <> 0);
-  end;
-
-  if DoNotify
-  then NotifyChange;
-end;
-
-{ TManagedLocals }
-
-procedure TManagedLocals.LocalsChanged(Sender: TObject);
-begin
-  NotifyChange;
-end;
-
-procedure TManagedLocals.SetMaster(const AMaster: TDBGLocals);
-var
-  DoNotify: Boolean;
-begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := nil;
-    DoNotify := FMaster.Count <> 0;
-  end
-  else DoNotify := False;
-
-  FMaster := AMaster;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := @LocalsChanged;
-    DoNotify := DoNotify or (FMaster.Count <> 0);
-  end;
-
-  if DoNotify
-  then NotifyChange;
-end;
-
-function TManagedLocals.GetName(const AnIndex: Integer): String;
-begin
-  if Master = nil
-  then Result := inherited GetName(AnIndex)
-  else Result := Master.Names[AnIndex];
-end;
-
-function TManagedLocals.GetValue(const AnIndex: Integer): String;
-begin
-  if Master = nil
-  then Result := inherited GetValue(AnIndex)
-  else Result := Master.Values[AnIndex];
-end;
-
-function TManagedLocals.Count: Integer;
-begin
-  if Master = nil
-  then Result := 0
-  else Result := Master.Count;
-end;
-
-{ TManagedRegisters }
-
-procedure TManagedRegisters.RegistersChanged(Sender: TObject);
-begin
-  NotifyChange;
-end;
-
-procedure TManagedRegisters.SetMaster(const AMaster: TDBGRegisters);
-var
-  DoNotify: Boolean;
-begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := nil;
-    DoNotify := FMaster.Count <> 0;
-  end
-  else DoNotify := False;
-
-  FMaster := AMaster;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := @RegistersChanged;
-    DoNotify := DoNotify or (FMaster.Count <> 0);
-  end;
-
-  if DoNotify
-  then NotifyChange;
-end;
-
-function TManagedRegisters.GetModified(const AnIndex: Integer): Boolean;
-begin
-  if Master = nil
-  then Result := inherited GetModified(AnIndex)
-  else Result := Master.Modified[AnIndex];
-end;
-
-function TManagedRegisters.GetName(const AnIndex: Integer): String;
-begin
-  if Master = nil
-  then Result := inherited GetName(AnIndex)
-  else Result := Master.Names[AnIndex];
-end;
-
-function TManagedRegisters.GetValue(const AnIndex: Integer): String;
-begin
-  if Master = nil
-  then Result := inherited GetValue(AnIndex)
-  else Result := Master.Values[AnIndex];
-end;
-
-function TManagedRegisters.GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
-begin
-  if Master = nil
-  then Result := inherited GetFormat(AnIndex)
-  else Result := Master.Formats[AnIndex];
-end;
-
-procedure TManagedRegisters.SetFormat(const AnIndex: Integer;
-  const AValue: TRegisterDisplayFormat);
-begin
-  if Master = nil
-  then inherited SetFormat(AnIndex, AValue)
-  else Master.Formats[AnIndex] := AValue;
-end;
-
-function TManagedRegisters.Count: Integer;
-begin
-  if Master = nil
-  then Result := 0
-  else Result := Master.Count;
-end;
-
-{ TManagedWatch }
-
-procedure TManagedWatch.AssignTo(Dest: TPersistent);
-begin
-  inherited AssignTo(Dest);
-  if (TManagedWatches(GetOwner).FMaster <> nil)
-  and (Dest is TDBGWatch)
-  then begin
-    Assert(FMaster=nil, 'TManagedWatch.AssignTo already has a master');
-    if FMaster<>nil then FMaster.Slave := nil;
-    FMaster := TDBGWatch(Dest);
-    FMaster.Slave := Self;
-  end;
-end;
-
-procedure TManagedWatch.DoChanged;
-begin
-  if (FMaster <> nil)
-  and (FMaster.Slave = nil)
-  then FMaster := nil;
-
-  inherited DoChanged;
-end;
-
-function TManagedWatch.GetValid: TValidState;
-begin
-  if FMaster = nil
-  then Result := inherited GetValid
-  else Result := FMaster.Valid;
-end;
-
-function TManagedWatch.GetValue: String;
-begin
-  if FMaster = nil
-  then Result := inherited GetValue
-  else Result := FMaster.Value;
-end;
-
-function TManagedWatch.GetTypeInfo: TDBGType;
-begin
-  if FMaster = nil
-  then Result := inherited GetTypeInfo
-  else Result := FMaster.TypeInfo;
-end;
-
-procedure TManagedWatch.SetEnabled(const AValue: Boolean);
-begin
-  if Enabled = AValue then Exit;
-  inherited SetEnabled(AValue);
-  if FMaster <> nil then FMaster.Enabled := AValue;
-end;
-
-procedure TManagedWatch.SetExpression(const AValue: String);
-begin
-  if AValue = Expression then Exit;
-  inherited SetExpression(AValue);
-  if FMaster <> nil then FMaster.Expression := AValue;
-end;
-
-procedure TManagedWatch.SetDisplayFormat(const AValue: TWatchDisplayFormat);
-begin
-  if AValue = DisplayFormat then Exit;
-  inherited SetDisplayFormat(AValue);
-  if FMaster <> nil then FMaster.DisplayFormat := AValue;
-end;
-
-destructor TManagedWatch.Destroy;
-begin
-  ResetMaster;
-  inherited Destroy;
-end;
-
-procedure TManagedWatch.ResetMaster;
-begin
-  if FMaster <> nil then FMaster.Slave := nil;
-  FMaster := nil;
-end;
-
-{ TManagedWatches }
-
-procedure TManagedWatches.SetMaster(const AMaster: TDBGWatches);
-var
-  n: Integer;
-begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then FMaster.OnChange := nil;
-
-  FMaster := AMaster;
-  if FMaster = nil
-  then begin
-    for n := 0 to Count - 1 do
-      TManagedWatch(Items[n]).ResetMaster;
-  end
-  else begin
-    FMaster.Assign(Self);
-    FMaster.OnChange := @WatchesChanged;
-  end;
-end;
-
-procedure TManagedWatches.WatchesChanged(Sender: TObject);
-begin
-  Changed;
-end;
-
-procedure TManagedWatches.NotifyAdd(const AWatch: TIDEWatch);
-var
-  W: TDBGWatch;
-begin
-  inherited;
-
-  if FManager.FDebugger <> nil
-  then begin
-    W := FManager.FDebugger.Watches.Add(AWatch.Expression);
-    W.Assign(AWatch);
-  end;
-end;
-
-procedure TManagedWatches.NotifyRemove(const AWatch: TIDEWatch);
-begin
-  inherited NotifyRemove(AWatch);
-end;
-
-constructor TManagedWatches.Create(const AManager: TDebugManager);
-begin
-  FMaster := nil;
-  FManager := AManager;
-  inherited Create(TManagedWatch);
-end;
-
-destructor TManagedWatches.Destroy;
-begin
-  if Master <> nil then FMaster.OnChange := nil;
-  inherited Destroy;
-end;
-
-{ TManagedException }
-
-procedure TManagedException.DoChanged;
-var
-  E: TDBGExceptions;
-begin
-  E := TManagedExceptions(GetOwner).FMaster;
-  if ((FMaster = nil) = Enabled) and (E <> nil)
-  then begin
-    if Enabled then
-    begin
-      FMaster := E.Find(Name);
-      if FMaster = nil then
-        FMaster := E.Add(Name);
-    end
-    else FreeAndNil(FMaster);
-  end;
-
-  inherited DoChanged;
-end;
-
-procedure TManagedException.ResetMaster;
-begin
-  FMaster := nil;
-end;
-
-{ TManagedExceptions }
-
-constructor TManagedExceptions.Create(const AManager: TDebugManager);
-begin
-  FMaster := nil;
-  FManager := AManager;
-  inherited Create(TManagedException);
-  AddDefault;
-end;
-
-procedure TManagedExceptions.Reset;
-begin
-  inherited Reset;
-  AddDefault;
-end;
-
-procedure TManagedExceptions.SetMaster(const AValue: TDBGExceptions);
-var
-  n: Integer;
-  Item: TIDEException;
-begin
-  if FMaster = AValue then Exit;
-  Assert((FMaster=nil) or (AValue=nil), 'TManagedExceptions already has a Master');
-  FMaster := AValue;
-  if FMaster = nil
-  then begin
-    for n := 0 to Count - 1 do
-      TManagedException(Items[n]).ResetMaster;
-  end
-  else begin
-    // Do not assign, add only enabled exceptions
-    for n := 0 to Count - 1 do
-    begin
-      Item := Items[n];
-      if Item.Enabled and (FMaster.Find(Item.Name) = nil)
-      then FMaster.Add(Item.Name);
-    end;
-    FMaster.IgnoreAll := IgnoreAll;
-  end;
-end;
-
-procedure TManagedExceptions.AddDefault;
-begin
-  AddIfNeeded('EAbort');
-  AddIfNeeded('ECodetoolError');
-  AddIfNeeded('EFOpenError');
-end;
-
-procedure TManagedExceptions.SetIgnoreAll(const AValue: Boolean);
+procedure TProjectExceptions.SetIgnoreAll(const AValue: Boolean);
 begin
   inherited SetIgnoreAll(AValue);
   Project1.Modified := True;
 end;
 
-procedure TManagedExceptions.Notify(Item: TCollectionItem;
-  Action: TCollectionNotification);
+procedure TProjectExceptions.Notify(Item: TCollectionItem; Action: TCollectionNotification);
 begin
   inherited Notify(Item, Action);
   if Project1 <> nil then
     Project1.Modified := True;
 end;
 
-procedure TManagedExceptions.AddIfNeeded(AName: string);
-begin
-  if Find(AName) = nil then
-    Add(AName);
-end;
-
-{ TManagedSignal }
-
-procedure TManagedSignal.AssignTo (Dest: TPersistent );
-begin
-  inherited AssignTo(Dest);
-  if (TManagedSignals(GetOwner).FMaster <> nil)
-  and (Dest is TDBGSignal)
-  then begin
-    FMaster := TDBGSignal(Dest);
-  end;
-end;
-
-procedure TManagedSignal.ResetMaster;
-begin
-  FMaster := nil;
-end;
-
-{ TManagedSignals }
-
-constructor TManagedSignals.Create(const AManager: TDebugManager);
-begin
-  FMaster := nil;
-  FManager := AManager;
-  inherited Create(TManagedSignal);
-  AddDefault;
-end;
-
-procedure TManagedSignals.Reset;
-begin
-  inherited Reset;
-  AddDefault;
-end;
-
-procedure TManagedSignals.SetMaster(const AValue: TDBGSignals);
-var
-  n: Integer;
-begin
-  if FMaster = AValue then Exit;
-  FMaster := AValue;
-  if FMaster = nil
-  then begin
-    for n := 0 to Count - 1 do
-      TManagedSignal(Items[n]).ResetMaster;
-  end
-  else begin
-    FMaster.Assign(Self);
-  end;
-end;
-
-procedure TManagedSignals.AddDefault;
-begin
-  // todo: add default signals
-end;
-
 { TManagedBreakPoints }
 
 constructor TManagedBreakPoints.Create(const AManager: TDebugManager);
 begin
-  FMaster := nil;
   FManager := AManager;
   inherited Create(TManagedBreakPoint);
 end;
 
-procedure TManagedBreakPoints.SetMaster(const AValue: TDBGBreakPoints);
-var
-  n: Integer;
-begin
-  if FMaster = AValue then Exit;
-
-  FMaster := AValue;
-  if FMaster = nil
-  then begin
-    for n := 0 to Count - 1 do
-      TManagedBreakPoint(Items[n]).ResetMaster;
-  end
-  else begin
-    FMaster.Assign(Self);
-  end;
-end;
-
 procedure TManagedBreakPoints.NotifyAdd(const ABreakPoint: TIDEBreakPoint);
-var
-  BP: TBaseBreakPoint;
 begin
 {$ifdef VerboseDebugger}
   debugln('TManagedBreakPoints.NotifyAdd A ',ABreakpoint.Source,' ',IntToStr(ABreakpoint.Line));
 {$endif}
-  ABreakpoint.InitialEnabled := True;
-  ABreakpoint.Enabled := True;
-
   inherited;
 
-  if FManager.FDebugger <> nil
-  then begin
-    // create without source. it will be set in assign (but during Begin/EndUpdate)
-    BP := FManager.FDebugger.BreakPoints.Add('', 0);
-    BP.Assign(ABreakPoint);
-  end;
   FManager.CreateSourceMarkForBreakPoint(ABreakpoint,nil);
   Project1.Modified := True;
 end;
@@ -1194,16 +368,6 @@ begin
   DebugBoss.ShowBreakPointProperties(Self);
 end;
 
-procedure TManagedBreakPoint.AssignLocationTo(Dest: TPersistent);
-var
-  DestBreakPoint: TBaseBreakPoint absolute Dest;
-begin
-  if DestBreakPoint is TDBGBreakPoint then
-    DestBreakPoint.SetLocation(Source, DebugExeLine)
-  else
-    inherited;
-end;
-
 procedure TManagedBreakPoint.OnSourceMarkBeforeFree(Sender: TObject);
 begin
   SourceMark:=nil;
@@ -1230,93 +394,16 @@ begin
   AddMenuItem(lisViewBreakPointProperties, True, @OnViewPropertiesMenuItemClick);
 end;
 
-procedure TManagedBreakPoint.AssignTo(Dest: TPersistent);
-begin
-  inherited AssignTo(Dest);
-  if (TManagedBreakPoints(GetOwner).FMaster <> nil)
-  and (Dest is TDBGBreakPoint)
-  then begin
-    Assert(FMaster=nil, 'TManagedBreakPoint.AssignTO already has Master');
-    if FMaster <> nil then FMaster.Slave := nil;
-    FMaster := TDBGBreakPoint(Dest);
-    FMaster.Slave := Self;
-  end;
-end;
-
-destructor TManagedBreakPoint.Destroy;
-begin
-  if FMaster <> nil
-  then begin
-    FMaster.Slave := nil;
-    FreeAndNil(FMaster);
-  end;
-  inherited Destroy;
-end;
-
 procedure TManagedBreakPoint.DoChanged;
 begin
-  if (FMaster <> nil)
-  and (FMaster.Slave = nil)
-  then FMaster := nil;
-
   inherited DoChanged;
   UpdateSourceMark;
-end;
-
-function TManagedBreakPoint.GetHitCount: Integer;
-begin
-  if FMaster = nil
-  then Result := 0
-  else Result := FMaster.HitCount;
-end;
-
-function TManagedBreakPoint.GetValid: TValidState;
-begin
-  if FMaster = nil
-  then Result := vsUnknown
-  else Result := FMaster.Valid;
-end;
-
-procedure TManagedBreakPoint.SetBreakHitCount(const AValue: Integer);
-begin
-  if BreakHitCount = AValue then exit;
-  inherited SetBreakHitCount(AValue);
-  if FMaster <> nil then FMaster.BreakHitCount := AValue;
-end;
-
-procedure TManagedBreakPoint.ResetMaster;
-begin
-  if FMaster <> nil then FMaster.Slave := nil;
-  FMaster := nil;
-  Changed;
 end;
 
 procedure TManagedBreakPoint.CopySourcePositionToBreakPoint;
 begin
   if FSourceMark=nil then exit;
   SetLocation(Source,FSourceMark.Line);
-end;
-
-procedure TManagedBreakPoint.SetEnabled(const AValue: Boolean);
-begin
-  if Enabled = AValue then exit;
-  inherited SetEnabled(AValue);
-  InitialEnabled:=Enabled;
-  if FMaster <> nil then FMaster.Enabled := AValue;
-end;
-
-procedure TManagedBreakPoint.SetInitialEnabled(const AValue: Boolean);
-begin
-  if InitialEnabled = AValue then exit;
-  inherited SetInitialEnabled(AValue);
-  if FMaster <> nil then FMaster.InitialEnabled := AValue;
-end;
-
-procedure TManagedBreakPoint.SetExpression(const AValue: String);
-begin
-  if AValue=Expression then exit;
-  inherited SetExpression(AValue);
-  if FMaster <> nil then FMaster.Expression := AValue;
 end;
 
 procedure TManagedBreakPoint.SetLocation(const ASource: String;
@@ -1329,7 +416,6 @@ begin
   then exit;
   inherited SetLocation(ASource, ALine);
   FCurrentDebugExeLine := NewDebugExeLine;
-  if FMaster<>nil then FMaster.SetLocation(ASource, DebugExeLine);
   if Project1 <> nil
   then Project1.Modified := True;
 end;
@@ -1643,7 +729,7 @@ begin
   begin
     AContinue := ExecuteExceptionDialog(msg, Ignore) = mrCancel;
     if Ignore then
-      TManagedExceptions(Exceptions).AddIfNeeded(AExceptionClass);
+      Exceptions.AddIfNeeded(AExceptionClass);
   end;
 end;
 
@@ -1848,7 +934,7 @@ begin
         SrcLine := StackEntry.Line;
         SrcFile := StackEntry.Source;
         SrcFullName := StackEntry.FullFileName;
-        StackEntry.Current := True;
+        StackEntry.MakeCurrent;
         Break;
       end;
       Inc(i);
@@ -2149,15 +1235,15 @@ begin
   FDebugger := nil;
   FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
-  FWatches := TManagedWatches.Create(Self);
+  FWatches := TIDEWatches.Create;
   FThreads := TIDEThreads.Create;
-  FExceptions := TManagedExceptions.Create(Self);
-  FSignals := TManagedSignals.Create(Self);
-  FLocals := TManagedLocals.Create;
-  FLineInfo := TManagedLineInfo.Create;
-  FCallStack := TManagedCallStack.Create;
-  FDisassembler := TManagedDisassembler.Create;
-  FRegisters := TManagedRegisters.Create;
+  FExceptions := TProjectExceptions.Create;
+  FSignals := TIDESignals.Create;
+  FLocals := TIDELocals.Create;
+  FLineInfo := TIDELineInfo.Create;
+  FCallStack := TIDECallStack.Create;
+  FDisassembler := TIDEDisassembler.Create;
+  FRegisters := TIDERegisters.Create;
 
   FUserSourceFiles := TStringList.Create;
   FIgnoreSourceFiles := TStringList.Create;
@@ -3159,27 +2245,27 @@ begin
   if FDebugger = nil
   then begin
     TManagedBreakpoints(FBreakpoints).Master := nil;
-    TManagedWatches(FWatches).Master := nil;
+    FWatches.Master := nil;
     FThreads.Master := nil;
-    TManagedLocals(FLocals).Master := nil;
-    TManagedLineInfo(FLineInfo).Master := nil;
-    TManagedCallStack(FCallStack).Master := nil;
-    TManagedDisassembler(FDisassembler).Master := nil;
-    TManagedExceptions(FExceptions).Master := nil;
-    TManagedSignals(FSignals).Master := nil;
-    TManagedRegisters(FRegisters).Master := nil;
+    FLocals.Master := nil;
+    FLineInfo.Master := nil;
+    FCallStack.Master := nil;
+    FDisassembler.Master := nil;
+    FExceptions.Master := nil;
+    FSignals.Master := nil;
+    FRegisters.Master := nil;
   end
   else begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
-    TManagedWatches(FWatches).Master := FDebugger.Watches;
+    FWatches.Master := FDebugger.Watches;
     FThreads.Master := FDebugger.Threads;
-    TManagedLocals(FLocals).Master := FDebugger.Locals;
-    TManagedLineInfo(FLineInfo).Master := FDebugger.LineInfo;
-    TManagedCallStack(FCallStack).Master := FDebugger.CallStack;
-    TManagedDisassembler(FDisassembler).Master := FDebugger.Disassembler;
-    TManagedExceptions(FExceptions).Master := FDebugger.Exceptions;
-    TManagedSignals(FSignals).Master := FDebugger.Signals;
-    TManagedRegisters(FRegisters).Master := FDebugger.Registers;
+    FLocals.Master := FDebugger.Locals;
+    FLineInfo.Master := FDebugger.LineInfo;
+    FCallStack.Master := FDebugger.CallStack;
+    FDisassembler.Master := FDebugger.Disassembler;
+    FExceptions.Master := FDebugger.Exceptions;
+    FSignals.Master := FDebugger.Signals;
+    FRegisters.Master := FDebugger.Registers;
   end;
 end;
 

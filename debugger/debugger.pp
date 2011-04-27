@@ -291,8 +291,11 @@ type
   end;
   TBaseBreakPointClass = class of TBaseBreakPoint;
 
+  TDBGBreakPoint = class;
+
   TIDEBreakPoint = class(TBaseBreakPoint)
   private
+    FMaster: TDBGBreakPoint;
     FAutoContinueTime: Cardinal;
     FActions: TIDEBreakPointActions;
     FDisableGroupList: TList;
@@ -300,7 +303,18 @@ type
     FGroup: TIDEBreakPointGroup;
     FLoading: Boolean;
   protected
+    procedure AssignLocationTo(Dest: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
+    procedure DoChanged; override;
+
+    function GetHitCount: Integer; override;
+    function GetValid: TValidState; override;
+    procedure SetBreakHitCount(const AValue: Integer); override;
+    procedure SetEnabled(const AValue: Boolean); override;
+    procedure SetInitialEnabled(const AValue: Boolean); override;
+    procedure SetExpression(const AValue: String); override;
+    function  DebugExeLine: Integer; virtual;  // Same as line, but in Subclass: the line in the compiled exe
+
     procedure DisableGroups;
     procedure DoActionChange; virtual;
     procedure DoHit(const ACount: Integer; var AContinue: Boolean); override;
@@ -329,6 +343,8 @@ type
                       const OnGetGroup: TOnGetGroupByName); virtual;
     procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string;
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
+    procedure SetLocation(const ASource: String; const ALine: Integer); override;
+    procedure ResetMaster;
   public
     property Actions: TIDEBreakPointActions read GetActions write SetActions;
     property AutoContinueTime: Cardinal read GetAutoContinueTime write SetAutoContinueTime;
@@ -383,9 +399,13 @@ type
     // no items property needed, it is "overridden" anyhow
   end;
 
+  TDBGBreakPoints = class;
+
   TIDEBreakPoints = class(TBaseBreakPoints)
   private
     FNotificationList: TList;
+    FMaster: TDBGBreakPoints;
+    procedure SetMaster(const AValue: TDBGBreakPoints);
     function GetItem(const AnIndex: Integer): TIDEBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TIDEBreakPoint);
   protected
@@ -405,6 +425,7 @@ type
                       const OnGetGroup: TOnGetGroupByName); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
+    property Master: TDBGBreakPoints read FMaster write SetMaster;
   public
     property Items[const AnIndex: Integer]: TIDEBreakPoint read GetItem
                                                          write SetItem; default;
@@ -685,12 +706,25 @@ type
   end;
   TBaseWatchClass = class of TBaseWatch;
 
+  { TIDEWatch }
+  TDBGWatch = class;
+
   TIDEWatch = class(TBaseWatch)
   private
+    FMaster: TDBGWatch;
   protected
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure DoChanged; override;
+    function GetValid: TValidState; override;
+    function GetValue: String; override;
+    function GetTypeInfo: TDBGType; override;
+    procedure SetEnabled(const AValue: Boolean); override;
+    procedure SetExpression(const AValue: String); override;
+    procedure SetDisplayFormat(const AValue: TWatchDisplayFormat); override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
+    procedure ResetMaster;
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig;
                                 const APath: string); virtual;
     procedure SaveToXMLConfig(const AConfig: TXMLConfig;
@@ -744,9 +778,16 @@ type
     // no items property needed, it is "overridden" anyhow
   end;
 
+  { TIDEWatches }
+  TDBGWatches = class;
+
   TIDEWatches = class(TBaseWatches)
   private
     FNotificationList: TList;
+    FMaster: TDBGWatches;
+    procedure WatchesChanged(Sender: TObject);
+    procedure SetMaster(const AMaster: TDBGWatches);
+  protected
     function GetItem(const AnIndex: Integer): TIDEWatch;
     procedure SetItem(const AnIndex: Integer; const AValue: TIDEWatch);
   protected
@@ -754,7 +795,7 @@ type
     procedure NotifyRemove(const AWatch: TIDEWatch); virtual; // called by watch when destructed
     procedure Update(Item: TCollectionItem); override;
   public
-    constructor Create(const AWatchClass: TIDEWatchClass);
+    constructor Create;
     destructor Destroy; override;
     // Watch
     function Add(const AExpression: String): TIDEWatch;
@@ -764,6 +805,7 @@ type
     procedure RemoveNotification(const ANotification: TIDEWatchesNotification);
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string); virtual;
     procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string); virtual;
+    property Master: TDBGWatches read FMaster write SetMaster;
   public
     property Items[const AnIndex: Integer]: TIDEWatch read GetItem
                                                       write SetItem; default;
@@ -819,6 +861,9 @@ type
 
   { TIDELocals }
 
+  { TIDELocalsNotification }
+  TDBGLocals = class;
+
   TIDELocalsNotification = class(TDebuggerNotification)
   private
     FOnChange: TNotifyEvent;
@@ -829,13 +874,20 @@ type
   TIDELocals = class(TBaseLocals)
   private
     FNotificationList: TList;
+    FMaster: TDBGLocals;
+    procedure LocalsChanged(Sender: TObject);
+    procedure SetMaster(const AMaster: TDBGLocals);
   protected
     procedure NotifyChange;
+    function GetName(const AnIndex: Integer): String; override;
+    function GetValue(const AnIndex: Integer): String; override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure AddNotification(const ANotification: TIDELocalsNotification);
     procedure RemoveNotification(const ANotification: TIDELocalsNotification);
+    function Count: Integer; override;
+    property Master: TDBGLocals read FMaster write SetMaster;
   end;
 
   { TDBGLocals }
@@ -893,9 +945,15 @@ type
     property OnChange: TIDELineInfoEvent read FOnChange write FOnChange;
   end;
 
+  TDBGLineInfo = class;
   TIDELineInfo = class(TBaseLineInfo)
   private
     FNotificationList: TList;
+    FMaster: TDBGLineInfo;
+    procedure LineInfoChanged(const ASender: TObject; const ASource: String);
+    procedure SetMaster(const AMaster: TDBGLineInfo);
+  protected
+    function GetSource(const AIndex: Integer): String; override;
   protected
     procedure NotifyChange(ASource: String);
   public
@@ -903,6 +961,12 @@ type
     destructor Destroy; override;
     procedure AddNotification(const ANotification: TIDELineInfoNotification);
     procedure RemoveNotification(const ANotification: TIDELineInfoNotification);
+    function Count: Integer; override;
+    function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
+    function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
+    function IndexOf(const ASource: String): integer; override;
+    procedure Request(const ASource: String); override;
+    property Master: TDBGLineInfo read FMaster write SetMaster;
   end;
 
   { TDBGLineInfo }
@@ -964,9 +1028,20 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
+  TDBGRegisters = class;
+
   TIDERegisters = class(TBaseRegisters)
   private
     FNotificationList: TList;
+    FMaster: TDBGRegisters;
+    procedure RegistersChanged(Sender: TObject);
+    procedure SetMaster(const AMaster: TDBGRegisters);
+  protected
+    function GetModified(const AnIndex: Integer): Boolean; override;
+    function GetName(const AnIndex: Integer): String; override;
+    function GetValue(const AnIndex: Integer): String; override;
+    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat; override;
+    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); override;
   protected
     procedure NotifyChange;
   public
@@ -974,6 +1049,8 @@ type
     destructor Destroy; override;
     procedure AddNotification(const ANotification: TIDERegistersNotification);
     procedure RemoveNotification(const ANotification: TIDERegistersNotification);
+    function Count: Integer; override;
+    property Master: TDBGRegisters read FMaster write SetMaster;
   end;
 
   { TDBGRegisters }
@@ -1031,11 +1108,9 @@ type
     function GetArgumentCount: Integer;
     function GetArgumentName(const AnIndex: Integer): String;
     function GetArgumentValue(const AnIndex: Integer): String;
-    function GetCurrent: Boolean;
     function GetFullFileName: String;
     function GetFunctionName: String;
     function GetSource: String;
-    procedure SetCurrent(const AValue: Boolean);
   public
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
@@ -1044,11 +1119,12 @@ type
     constructor CreateCopy(const ASource: TCallStackEntry);
     destructor Destroy; override;
     function GetFunctionWithArg: String;
+    function IsCurrent: Boolean;
+    procedure MakeCurrent;
     property Address: TDbgPtr read FAdress;
     property ArgumentCount: Integer read GetArgumentCount;
     property ArgumentNames[const AnIndex: Integer]: String read GetArgumentName;
     property ArgumentValues[const AnIndex: Integer]: String read GetArgumentValue;
-    property Current: Boolean read GetCurrent write SetCurrent;
     property FunctionName: String read GetFunctionName;
     property Index: Integer read FIndex;
     property Line: Integer read FLine;
@@ -1067,15 +1143,15 @@ type
   protected
     function CheckCount: Boolean; virtual;
     procedure Clear; virtual;
-    function GetCurrent: TCallStackEntry; virtual;
+    function GetCurrent: Integer; virtual;
     function InternalGetEntry(AIndex: Integer): TCallStackEntry; virtual;
-    procedure SetCurrent(AValue: TCallStackEntry); virtual;
+    procedure SetCurrent(AValue: Integer); virtual;
     procedure SetCount(ACount: Integer); virtual;
   public
     function Count: Integer;
     destructor Destroy; override;
     procedure PrepareRange(AIndex, ACount: Integer); virtual;
-    property Current: TCallStackEntry read GetCurrent write SetCurrent;
+    property CurrentIndex: Integer read GetCurrent write SetCurrent;
     property Entries[AIndex: Integer]: TCallStackEntry read GetEntry;
   end;
 
@@ -1091,18 +1167,30 @@ type
   end;
 
   { TIDECallStack }
+  TDBGCallStack = class;
 
   TIDECallStack = class(TBaseCallStack)
   private
+    FMaster: TDBGCallStack;
     FNotificationList: TList;
+    procedure CallStackChanged(Sender: TObject);
+    procedure CallStackClear(Sender: TObject);
+    procedure CallStackCurrent(Sender: TObject);
+    procedure SetMaster(const AMaster: TDBGCallStack);
   protected
     procedure NotifyChange;
     procedure NotifyCurrent;
+    function CheckCount: Boolean; override;
+    function GetCurrent: Integer; override;
+    function InternalGetEntry(AIndex: Integer): TCallStackEntry; override;
+    procedure SetCurrent(AValue: Integer); override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure AddNotification(const ANotification: TIDECallStackNotification);
     procedure RemoveNotification(const ANotification: TIDECallStackNotification);
+    procedure PrepareRange(AIndex, ACount: Integer); override;
+    property Master: TDBGCallStack read FMaster write SetMaster;
   end;
 
   { TDBGCallStack }
@@ -1153,7 +1241,7 @@ type
     Statement: String;               // Asm
     FuncName: String;                // Function, if avail
     Offset: Integer;                 // Byte-Offest in Fonction
-    SrcFileName: String;             // SrcFile if avai;
+    SrcFileName: String;             // SrcFile if avail
     SrcFileLine: Integer;            // Line in SrcFile
     SrcStatementIndex: SmallInt;     // Index of Statement, within list of Stmnt of the same SrcLine
     SrcStatementCount: SmallInt;     // Count of Statements for this SrcLine
@@ -1205,16 +1293,26 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
+  TDBGDisassembler = class;
+
   TIDEDisassembler = class(TBaseDisassembler)
   private
     FNotificationList: TList;
+    FMaster: TDBGDisassembler;
+    procedure DisassemblerChanged(Sender: TObject);
+    procedure SetMaster(AMaster: TDBGDisassembler);
   protected
     procedure DoChanged; override;
+    function  InternalGetEntry(AIndex: Integer): TDisassemblerEntry; override;
+    function  InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry; override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure AddNotification(const ANotification: TIDEDisassemblerNotification);
     procedure RemoveNotification(const ANotification: TIDEDisassemblerNotification);
+    procedure Clear; override;
+    function PrepareRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean; override;
+    property Master: TDBGDisassembler read FMaster write SetMaster;
   end;
 
   { TDBGDisassemblerEntryRange }
@@ -1461,14 +1559,19 @@ type
   end;
   TDBGSignalClass = class of TDBGSignal;
 
+  { TIDESignal }
+
   TIDESignal = class(TBaseSignal)
   private
+    FMaster: TDBGSignal;
   protected
+    procedure AssignTo(Dest: TPersistent); override;
   public
     procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
                                 const APath: string);
     procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
                               const APath: string);
+    procedure ResetMaster;
   end;
 
   { TBaseSignals }
@@ -1504,12 +1607,18 @@ type
 
   TIDESignals = class(TBaseSignals)
   private
+    FMaster: TDBGSignals;
+    procedure SetMaster(const AValue: TDBGSignals);
     function GetItem(const AIndex: Integer): TIDESignal;
     procedure SetItem(const AIndex: Integer; const AValue: TIDESignal);
   protected
+    procedure AddDefault;
   public
+    constructor Create;
+    procedure Reset; override;
     function Add(const AName: String; AID: Integer): TIDESignal;
     function Find(const AName: String): TIDESignal;
+    property Master: TDBGSignals read FMaster write SetMaster;
   public
     procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
                                 const APath: string);
@@ -1545,10 +1654,14 @@ type
   end;
   TDBGExceptionClass = class of TDBGException;
 
+
   { TIDEException }
   TIDEException = class(TBaseException)
   private
     FEnabled: Boolean;
+    FMaster: TDBGException;
+  protected
+    procedure DoChanged; override;
     procedure SetEnabled(const AValue: Boolean);
   protected
   public
@@ -1557,6 +1670,7 @@ type
                                 const APath: string); override;
     procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
                               const APath: string); override;
+    procedure ResetMaster;
     property Enabled: Boolean read FEnabled write SetEnabled;
   end;
 
@@ -1599,17 +1713,24 @@ type
 
   TIDEExceptions = class(TBaseExceptions)
   private
+    FMaster: TDBGExceptions;
+    procedure SetMaster(const AValue: TDBGExceptions);
     function GetItem(const AIndex: Integer): TIDEException;
     procedure SetItem(const AIndex: Integer; const AValue: TIDEException);
   protected
+    procedure AddDefault;
   public
     function Add(const AName: String): TIDEException;
     function Find(const AName: String): TIDEException;
   public
+    constructor Create;
     procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
                                 const APath: string);
     procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
                               const APath: string);
+    procedure AddIfNeeded(AName: string);
+    procedure Reset; override;
+    property Master: TDBGExceptions read FMaster write SetMaster;
     property Items[const AIndex: Integer]: TIDEException read GetItem
                                                         write SetItem; default;
   end;
@@ -2993,6 +3114,16 @@ begin
   Changed;
 end;
 
+procedure TIDEBreakPoint.AssignLocationTo(Dest: TPersistent);
+var
+  DestBreakPoint: TBaseBreakPoint absolute Dest;
+begin
+  if DestBreakPoint is TDBGBreakPoint then
+    DestBreakPoint.SetLocation(Source, DebugExeLine)
+  else
+    inherited;
+end;
+
 procedure TIDEBreakPoint.AssignTo(Dest: TPersistent);
 begin
   inherited;
@@ -3001,6 +3132,72 @@ begin
     TIDEBreakPoint(Dest).Actions := FActions;
     TIDEBreakPoint(Dest).AutoContinueTime := FAutoContinueTime;
   end;
+
+  if (Collection <> nil) and (TIDEBreakPoints(Collection).FMaster <> nil)
+  and (Dest is TDBGBreakPoint)
+  then begin
+    Assert(FMaster=nil, 'TManagedBreakPoint.AssignTO already has Master');
+    if FMaster <> nil then FMaster.Slave := nil;
+    FMaster := TDBGBreakPoint(Dest);
+    FMaster.Slave := Self;
+  end;
+end;
+
+procedure TIDEBreakPoint.DoChanged;
+begin
+  if (FMaster <> nil)
+  and (FMaster.Slave = nil)
+  then FMaster := nil;
+
+  inherited DoChanged;
+end;
+
+function TIDEBreakPoint.GetHitCount: Integer;
+begin
+  if FMaster = nil
+  then Result := 0
+  else Result := FMaster.HitCount;
+end;
+
+function TIDEBreakPoint.GetValid: TValidState;
+begin
+  if FMaster = nil
+  then Result := vsUnknown
+  else Result := FMaster.Valid;
+end;
+
+procedure TIDEBreakPoint.SetBreakHitCount(const AValue: Integer);
+begin
+  if BreakHitCount = AValue then exit;
+  inherited SetBreakHitCount(AValue);
+  if FMaster <> nil then FMaster.BreakHitCount := AValue;
+end;
+
+procedure TIDEBreakPoint.SetEnabled(const AValue: Boolean);
+begin
+  if Enabled = AValue then exit;
+  inherited SetEnabled(AValue);
+  InitialEnabled:=Enabled;
+  if FMaster <> nil then FMaster.Enabled := AValue;
+end;
+
+procedure TIDEBreakPoint.SetInitialEnabled(const AValue: Boolean);
+begin
+  if InitialEnabled = AValue then exit;
+  inherited SetInitialEnabled(AValue);
+  if FMaster <> nil then FMaster.InitialEnabled := AValue;
+end;
+
+procedure TIDEBreakPoint.SetExpression(const AValue: String);
+begin
+  if AValue=Expression then exit;
+  inherited SetExpression(AValue);
+  if FMaster <> nil then FMaster.Expression := AValue;
+end;
+
+function TIDEBreakPoint.DebugExeLine: Integer;
+begin
+  Result := Line;
 end;
 
 procedure TIDEBreakPoint.ClearAllGroupLists;
@@ -3032,6 +3229,12 @@ end;
 
 destructor TIDEBreakPoint.Destroy;
 begin
+  if FMaster <> nil
+  then begin
+    FMaster.Slave := nil;
+    FreeAndNil(FMaster);
+  end;
+
   if (TIDEBreakPoints(Collection) <> nil)
   then TIDEBreakPoints(Collection).NotifyRemove(Self);
 
@@ -3207,6 +3410,19 @@ begin
   SaveGroupList(FEnableGroupList, APath + 'EnableGroups/');
 end;
 
+procedure TIDEBreakPoint.SetLocation(const ASource: String; const ALine: Integer);
+begin
+  inherited SetLocation(ASource, ALine);
+  if FMaster<>nil then FMaster.SetLocation(ASource, DebugExeLine);
+end;
+
+procedure TIDEBreakPoint.ResetMaster;
+begin
+  if FMaster <> nil then FMaster.Slave := nil;
+  FMaster := nil;
+  Changed;
+end;
+
 procedure TIDEBreakPoint.SetActions(const AValue: TIDEBreakPointActions);
 begin
   if FActions <> AValue
@@ -3348,6 +3564,7 @@ end;
 
 constructor TIDEBreakPoints.Create(const ABreakPointClass: TIDEBreakPointClass);
 begin
+  FMaster := nil;
   FNotificationList := TList.Create;
   inherited Create(ABreakPointClass);
 end;
@@ -3376,6 +3593,23 @@ begin
   Result := TIDEBreakPoint(inherited Find(ASource, ALine, AIgnore));
 end;
 
+procedure TIDEBreakPoints.SetMaster(const AValue: TDBGBreakPoints);
+var
+  n: Integer;
+begin
+  if FMaster = AValue then Exit;
+
+  FMaster := AValue;
+  if FMaster = nil
+  then begin
+    for n := 0 to Count - 1 do
+      Items[n].ResetMaster;
+  end
+  else begin
+    FMaster.Assign(Self);
+  end;
+end;
+
 function TIDEBreakPoints.GetItem(const AnIndex: Integer): TIDEBreakPoint;
 begin
   Result := TIDEBreakPoint(inherited GetItem(AnIndex));
@@ -3385,12 +3619,23 @@ procedure TIDEBreakPoints.NotifyAdd(const ABreakPoint: TIDEBreakPoint);
 var
   n: Integer;
   Notification: TIDEBreakPointsNotification;
+  BP: TBaseBreakPoint;
 begin
+  ABreakpoint.InitialEnabled := True;
+  ABreakpoint.Enabled := True;
+
   for n := 0 to FNotificationList.Count - 1 do
   begin
     Notification := TIDEBreakPointsNotification(FNotificationList[n]);
     if Assigned(Notification.FOnAdd)
     then Notification.FOnAdd(Self, ABreakPoint);
+  end;
+
+  if FMaster <> nil
+  then begin
+    // create without source. it will be set in assign (but during Begin/EndUpdate)
+    BP := FMaster.Add('', 0);
+    BP.Assign(ABreakPoint);
   end;
 end;
 
@@ -4040,6 +4285,76 @@ end;
 { TIDEWatch }
 { =========================================================================== }
 
+procedure TIDEWatch.AssignTo(Dest: TPersistent);
+begin
+  inherited AssignTo(Dest);
+  if (TIDEWatches(Collection).FMaster <> nil)
+  and (Dest is TDBGWatch)
+  then begin
+    Assert(FMaster=nil, 'TManagedWatch.AssignTo already has a master');
+    if FMaster<>nil then FMaster.Slave := nil;
+    FMaster := TDBGWatch(Dest);
+    FMaster.Slave := Self;
+  end;
+end;
+
+procedure TIDEWatch.DoChanged;
+begin
+  if (FMaster <> nil)
+  and (FMaster.Slave = nil)
+  then FMaster := nil;
+
+  inherited DoChanged;
+end;
+
+function TIDEWatch.GetValid: TValidState;
+begin
+  if FMaster = nil
+  then Result := inherited GetValid
+  else Result := FMaster.Valid;
+end;
+
+function TIDEWatch.GetValue: String;
+begin
+  if FMaster = nil
+  then Result := inherited GetValue
+  else Result := FMaster.Value;
+end;
+
+function TIDEWatch.GetTypeInfo: TDBGType;
+begin
+  if FMaster = nil
+  then Result := inherited GetTypeInfo
+  else Result := FMaster.TypeInfo;
+end;
+
+procedure TIDEWatch.SetEnabled(const AValue: Boolean);
+begin
+  if Enabled = AValue then Exit;
+  inherited SetEnabled(AValue);
+  if FMaster <> nil then FMaster.Enabled := AValue;
+end;
+
+procedure TIDEWatch.SetExpression(const AValue: String);
+begin
+  if AValue = Expression then Exit;
+  inherited SetExpression(AValue);
+  if FMaster <> nil then FMaster.Expression := AValue;
+end;
+
+procedure TIDEWatch.SetDisplayFormat(const AValue: TWatchDisplayFormat);
+begin
+  if AValue = DisplayFormat then Exit;
+  inherited SetDisplayFormat(AValue);
+  if FMaster <> nil then FMaster.DisplayFormat := AValue;
+end;
+
+procedure TIDEWatch.ResetMaster;
+begin
+  if FMaster <> nil then FMaster.Slave := nil;
+  FMaster := nil;
+end;
+
 constructor TIDEWatch.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
@@ -4047,6 +4362,7 @@ end;
 
 destructor TIDEWatch.Destroy;
 begin
+  ResetMaster;
   if (TIDEWatches(Collection) <> nil)
   then TIDEWatches(Collection).NotifyRemove(Self);
   inherited Destroy;
@@ -4169,16 +4485,19 @@ begin
   ANotification.AddReference;
 end;
 
-constructor TIDEWatches.Create(const AWatchClass: TIDEWatchClass);
+constructor TIDEWatches.Create;
 begin
+  FMaster := nil;
   FNotificationList := TList.Create;
-  inherited Create(AWatchClass);
+  inherited Create(TIDEWatch);
 end;
 
 destructor TIDEWatches.Destroy;
 var
   n: Integer;
 begin
+  if Master <> nil then FMaster.OnChange := nil;
+
   for n := FNotificationList.Count - 1 downto 0 do
     TDebuggerNotification(FNotificationList[n]).ReleaseReference;
 
@@ -4191,6 +4510,32 @@ end;
 function TIDEWatches.Find(const AExpression: String): TIDEWatch;
 begin
   Result := TIDEWatch(inherited Find(AExpression));
+end;
+
+procedure TIDEWatches.WatchesChanged(Sender: TObject);
+begin
+  Changed;
+end;
+
+procedure TIDEWatches.SetMaster(const AMaster: TDBGWatches);
+var
+  n: Integer;
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then FMaster.OnChange := nil;
+
+  FMaster := AMaster;
+  if FMaster = nil
+  then begin
+    for n := 0 to Count - 1 do
+      Items[n].ResetMaster;
+  end
+  else begin
+    FMaster.Assign(Self);
+    FMaster.OnChange := @WatchesChanged;
+  end;
 end;
 
 function TIDEWatches.GetItem(const AnIndex: Integer): TIDEWatch;
@@ -4219,12 +4564,19 @@ procedure TIDEWatches.NotifyAdd(const AWatch: TIDEWatch);
 var
   n: Integer;
   Notification: TIDEWatchesNotification;
+  W: TDBGWatch;
 begin
   for n := 0 to FNotificationList.Count - 1 do
   begin
     Notification := TIDEWatchesNotification(FNotificationList[n]);
     if Assigned(Notification.FOnAdd)
     then Notification.FOnAdd(Self, AWatch);
+  end;
+
+  if FMaster <> nil
+  then begin
+    W := FMaster.Add(AWatch.Expression);
+    W.Assign(AWatch);
   end;
 end;
 
@@ -4404,6 +4756,36 @@ begin
   FreeAndNil(FNotificationList);
 end;
 
+procedure TIDELocals.LocalsChanged(Sender: TObject);
+begin
+  NotifyChange;
+end;
+
+procedure TIDELocals.SetMaster(const AMaster: TDBGLocals);
+var
+  DoNotify: Boolean;
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := nil;
+    DoNotify := FMaster.Count <> 0;
+  end
+  else DoNotify := False;
+
+  FMaster := AMaster;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := @LocalsChanged;
+    DoNotify := DoNotify or (FMaster.Count <> 0);
+  end;
+
+  if DoNotify
+  then NotifyChange;
+end;
+
 procedure TIDELocals.NotifyChange;
 var
   n: Integer;
@@ -4417,10 +4799,31 @@ begin
   end;
 end;
 
+function TIDELocals.GetName(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetName(AnIndex)
+  else Result := Master.Names[AnIndex];
+end;
+
+function TIDELocals.GetValue(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetValue(AnIndex)
+  else Result := Master.Values[AnIndex];
+end;
+
 procedure TIDELocals.RemoveNotification(const ANotification: TIDELocalsNotification);
 begin
   FNotificationList.Remove(ANotification);
   ANotification.ReleaseReference;
+end;
+
+function TIDELocals.Count: Integer;
+begin
+  if Master = nil
+  then Result := 0
+  else Result := Master.Count;
 end;
 
 { =========================================================================== }
@@ -4558,6 +4961,72 @@ begin
   FreeAndNil(FNotificationList);
 end;
 
+procedure TIDERegisters.RegistersChanged(Sender: TObject);
+begin
+  NotifyChange;
+end;
+
+procedure TIDERegisters.SetMaster(const AMaster: TDBGRegisters);
+var
+  DoNotify: Boolean;
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := nil;
+    DoNotify := FMaster.Count <> 0;
+  end
+  else DoNotify := False;
+
+  FMaster := AMaster;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := @RegistersChanged;
+    DoNotify := DoNotify or (FMaster.Count <> 0);
+  end;
+
+  if DoNotify
+  then NotifyChange;
+end;
+
+function TIDERegisters.GetModified(const AnIndex: Integer): Boolean;
+begin
+  if Master = nil
+  then Result := inherited GetModified(AnIndex)
+  else Result := Master.Modified[AnIndex];
+end;
+
+function TIDERegisters.GetName(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetName(AnIndex)
+  else Result := Master.Names[AnIndex];
+end;
+
+function TIDERegisters.GetValue(const AnIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetValue(AnIndex)
+  else Result := Master.Values[AnIndex];
+end;
+
+function TIDERegisters.GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
+begin
+  if Master = nil
+  then Result := inherited GetFormat(AnIndex)
+  else Result := Master.Formats[AnIndex];
+end;
+
+procedure TIDERegisters.SetFormat(const AnIndex: Integer;
+  const AValue: TRegisterDisplayFormat);
+begin
+  if Master = nil
+  then inherited SetFormat(AnIndex, AValue)
+  else Master.Formats[AnIndex] := AValue;
+end;
+
 procedure TIDERegisters.NotifyChange;
 var
   n: Integer;
@@ -4575,6 +5044,13 @@ procedure TIDERegisters.RemoveNotification(const ANotification: TIDERegistersNot
 begin
   FNotificationList.Remove(ANotification);
   ANotification.ReleaseReference;
+end;
+
+function TIDERegisters.Count: Integer;
+begin
+  if Master = nil
+  then Result := 0
+  else Result := Master.Count;
 end;
 
 { =========================================================================== }
@@ -4693,6 +5169,19 @@ begin
   Result := FunctionName + S;
 end;
 
+function TCallStackEntry.IsCurrent: Boolean;
+begin
+  Result := (FOwner <> nil) and (FOwner.CurrentIndex = Self.Index);
+  //TODO: check current thread
+end;
+
+procedure TCallStackEntry.MakeCurrent;
+begin
+  if FOwner = nil then Exit;
+  if IsCurrent then exit;
+  FOwner.CurrentIndex := self.Index;
+end;
+
 function TCallStackEntry.GetArgumentCount: Integer;
 begin
   Result := FArguments.Count;
@@ -4707,11 +5196,6 @@ function TCallStackEntry.GetArgumentValue(const AnIndex: Integer): String;
 begin
   Result := FArguments[AnIndex];
   Result := GetPart('=', '', Result);
-end;
-
-function TCallStackEntry.GetCurrent: Boolean;
-begin
-  Result := (FOwner <> nil) and (FOwner.GetCurrent = Self)
 end;
 
 function TCallStackEntry.GetFullFileName: String;
@@ -4735,16 +5219,6 @@ begin
   if FState = cseValid
   then Result := FSource
   else Result := '';
-end;
-
-procedure TCallStackEntry.SetCurrent(const AValue: Boolean);
-begin
-  if FOwner = nil then Exit;
-  if GetCurrent = AValue then Exit;
-
-  if AValue
-  then FOwner.SetCurrent(self)
-  else FOwner.SetCurrent(nil);
 end;
 
 { =========================================================================== }
@@ -4774,9 +5248,9 @@ begin
   inherited Destroy;
 end;
 
-function TBaseCallStack.GetCurrent: TCallStackEntry;
+function TBaseCallStack.GetCurrent: Integer;
 begin
-  Result := nil;
+  Result := -1;
 end;
 
 function TBaseCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
@@ -4813,7 +5287,7 @@ begin
   FCount := ACount;
 end;
 
-procedure TBaseCallStack.SetCurrent(AValue: TCallStackEntry);
+procedure TBaseCallStack.SetCurrent(AValue: Integer);
 begin
 end;
 
@@ -4844,6 +5318,90 @@ begin
   inherited;
 
   FreeAndNil(FNotificationList);
+end;
+
+procedure TIDECallStack.SetMaster(const AMaster: TDBGCallStack);
+var
+  DoNotify: Boolean;
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := nil;
+    FMaster.OnClear := nil;
+    FMaster.OnCurrent := nil;
+    DoNotify := FMaster.Count <> 0;
+  end
+  else DoNotify := False;
+
+  FMaster := AMaster;
+
+  if FMaster = nil
+  then begin
+    SetCount(0);
+  end
+  else begin
+    FMaster.OnChange := @CallStackChanged;
+    FMaster.OnClear := @CallStackClear;
+    FMaster.OnCurrent := @CallStackCurrent;
+    DoNotify := DoNotify or (FMaster.Count <> 0);
+  end;
+
+  if DoNotify
+  then NotifyChange;
+end;
+
+function TIDECallStack.CheckCount: Boolean;
+begin
+  Result := Master <> nil;
+  if Result
+  then SetCount(Master.Count);
+end;
+
+function TIDECallStack.GetCurrent: Integer;
+begin
+  if Master = nil
+  then Result := -1
+  else Result := Master.CurrentIndex;
+end;
+
+function TIDECallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
+begin
+  Assert(FMaster <> nil);
+  Result := FMaster.Entries[AIndex];
+end;
+
+procedure TIDECallStack.SetCurrent(AValue: Integer);
+begin
+  if Master = nil then Exit;
+  Master.CurrentIndex := AValue;
+end;
+
+procedure TIDECallStack.PrepareRange(AIndex, ACount: Integer);
+begin
+  if FMaster <> nil
+  then FMaster.PrepareRange(AIndex, ACount)
+  else inherited PrepareRange(AIndex, ACount);
+end;
+
+procedure TIDECallStack.CallStackChanged(Sender: TObject);
+begin
+  // Clear it first to force the count update
+  Clear;
+  NotifyChange;
+end;
+
+procedure TIDECallStack.CallStackClear(Sender: TObject);
+begin
+  // Don't clear, set it to 0 so there are no entries shown
+  SetCount(0);
+  NotifyChange;
+end;
+
+procedure TIDECallStack.CallStackCurrent(Sender: TObject);
+begin
+  NotifyCurrent;
 end;
 
 procedure TIDECallStack.NotifyChange;
@@ -5085,6 +5643,16 @@ end;
 { TIDESignal }
 { =========================================================================== }
 
+procedure TIDESignal.AssignTo(Dest: TPersistent);
+begin
+  inherited AssignTo(Dest);
+  if (TIDESignals(Collection).FMaster <> nil)
+  and (Dest is TDBGSignal)
+  then begin
+    FMaster := TDBGSignal(Dest);
+  end;
+end;
+
 procedure TIDESignal.LoadFromXMLConfig (const AXMLConfig: TXMLConfig; const APath: string );
 begin
   // TODO
@@ -5093,6 +5661,11 @@ end;
 procedure TIDESignal.SaveToXMLConfig (const AXMLConfig: TXMLConfig; const APath: string );
 begin
   // TODO
+end;
+
+procedure TIDESignal.ResetMaster;
+begin
+  FMaster := nil;
 end;
 
 { =========================================================================== }
@@ -5181,6 +5754,22 @@ begin
   Result := TIDESignal(inherited Find(AName));
 end;
 
+procedure TIDESignals.SetMaster(const AValue: TDBGSignals);
+var
+  n: Integer;
+begin
+  if FMaster = AValue then Exit;
+  FMaster := AValue;
+  if FMaster = nil
+  then begin
+    for n := 0 to Count - 1 do
+      Items[n].ResetMaster;
+  end
+  else begin
+    FMaster.Assign(Self);
+  end;
+end;
+
 function TIDESignals.GetItem(const AIndex: Integer): TIDESignal;
 begin
   Result := TIDESignal(inherited GetItem(AIndex));
@@ -5199,6 +5788,24 @@ end;
 procedure TIDESignals.SetItem(const AIndex: Integer; const AValue: TIDESignal);
 begin
   inherited SetItem(AIndex, AValue);
+end;
+
+procedure TIDESignals.AddDefault;
+begin
+  // todo: add default signals
+end;
+
+constructor TIDESignals.Create;
+begin
+  FMaster := nil;
+  inherited Create(TIDESignal);
+  AddDefault;
+end;
+
+procedure TIDESignals.Reset;
+begin
+  inherited Reset;
+  AddDefault;
 end;
 
 { =========================================================================== }
@@ -5264,6 +5871,30 @@ procedure TIDEException.SaveToXMLConfig(const AXMLConfig: TXMLConfig;
 begin
   inherited SaveToXMLConfig(AXMLConfig, APath);
   AXMLConfig.SetDeleteValue(APath+'Enabled/Value',FEnabled,true);
+end;
+
+procedure TIDEException.ResetMaster;
+begin
+  FMaster := nil;
+end;
+
+procedure TIDEException.DoChanged;
+var
+  E: TDBGExceptions;
+begin
+  E := TIDEExceptions(Collection).FMaster;
+  if ((FMaster = nil) = Enabled) and (E <> nil)
+  then begin
+    if Enabled then
+    begin
+      FMaster := E.Find(Name);
+      if FMaster = nil then
+        FMaster := E.Add(Name);
+    end
+    else FreeAndNil(FMaster);
+  end;
+
+  inherited DoChanged;
 end;
 
 procedure TIDEException.SetEnabled(const AValue: Boolean);
@@ -5382,6 +6013,38 @@ begin
   Result := TIDEException(inherited Find(AName));
 end;
 
+constructor TIDEExceptions.Create;
+begin
+  FMaster := nil;
+  inherited Create(TIDEException);
+  AddDefault;
+end;
+
+procedure TIDEExceptions.SetMaster(const AValue: TDBGExceptions);
+var
+  n: Integer;
+  Item: TIDEException;
+begin
+  if FMaster = AValue then Exit;
+  Assert((FMaster=nil) or (AValue=nil), 'TManagedExceptions already has a Master');
+  FMaster := AValue;
+  if FMaster = nil
+  then begin
+    for n := 0 to Count - 1 do
+      Items[n].ResetMaster;
+  end
+  else begin
+    // Do not assign, add only enabled exceptions
+    for n := 0 to Count - 1 do
+    begin
+      Item := Items[n];
+      if Item.Enabled and (FMaster.Find(Item.Name) = nil)
+      then FMaster.Add(Item.Name);
+    end;
+    FMaster.IgnoreAll := IgnoreAll;
+  end;
+end;
+
 function TIDEExceptions.GetItem(const AIndex: Integer): TIDEException;
 begin
   Result := TIDEException(inherited GetItem(AIndex));
@@ -5423,10 +6086,29 @@ begin
   end;
 end;
 
+procedure TIDEExceptions.AddIfNeeded(AName: string);
+begin
+  if Find(AName) = nil then
+    Add(AName);
+end;
+
+procedure TIDEExceptions.Reset;
+begin
+  inherited Reset;
+  AddDefault;
+end;
+
 procedure TIDEExceptions.SetItem(const AIndex: Integer;
   const AValue: TIDEException);
 begin
   inherited SetItem(Aindex, AValue);
+end;
+
+procedure TIDEExceptions.AddDefault;
+begin
+  AddIfNeeded('EAbort');
+  AddIfNeeded('ECodetoolError');
+  AddIfNeeded('EFOpenError');
 end;
 
 procedure DoFinalization;
@@ -5489,6 +6171,35 @@ end;
 
 { TIDELineInfo }
 
+procedure TIDELineInfo.LineInfoChanged(const ASender: TObject; const ASource: String);
+begin
+  NotifyChange(ASource);
+end;
+
+procedure TIDELineInfo.SetMaster(const AMaster: TDBGLineInfo);
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := nil;
+  end;
+
+  FMaster := AMaster;
+
+  if FMaster <> nil
+  then begin
+    FMaster.OnChange := @LineInfoChanged;
+  end;
+end;
+
+function TIDELineInfo.GetSource(const AIndex: Integer): String;
+begin
+  if Master = nil
+  then Result := inherited GetSource(AIndex)
+  else Result := Master.Sources[AIndex];
+end;
+
 procedure TIDELineInfo.NotifyChange(ASource: String);
 var
   n: Integer;
@@ -5533,6 +6244,42 @@ begin
     FNotificationList.Remove(ANotification);
     ANotification.ReleaseReference;
   end;
+end;
+
+function TIDELineInfo.Count: Integer;
+begin
+  if Master = nil
+  then Result := inherited Count
+  else Result := Master.Count;
+end;
+
+function TIDELineInfo.GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr;
+begin
+  if Master = nil
+  then Result := inherited GetAddress(AIndex, ALine)
+  else Result := Master.GetAddress(AIndex, ALine);
+end;
+
+function TIDELineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine,
+  AOffset: Integer): Boolean;
+begin
+  if Master = nil
+  then Result := inherited GetInfo(AAdress, ASource, ALine, AOffset)
+  else Result := Master.GetInfo(AAdress, ASource, ALine, AOffset);
+end;
+
+function TIDELineInfo.IndexOf(const ASource: String): integer;
+begin
+  if Master = nil
+  then Result := inherited IndexOf(ASource)
+  else Result := Master.IndexOf(ASource);
+end;
+
+procedure TIDELineInfo.Request(const ASource: String);
+begin
+  if Master = nil
+  then inherited Request(ASource)
+  else Master.Request(ASource);
 end;
 
 { TDBGLineInfo }
@@ -5700,17 +6447,59 @@ end;
 
 { TIDEDisassembler }
 
+procedure TIDEDisassembler.DisassemblerChanged(Sender: TObject);
+begin
+  Changed;
+end;
+
+procedure TIDEDisassembler.SetMaster(AMaster: TDBGDisassembler);
+begin
+  if FMaster = AMaster then Exit;
+
+  if FMaster <> nil
+  then FMaster.OnChange := nil;
+
+  FMaster := AMaster;
+
+  if FMaster <> nil
+  then FMaster.OnChange := @DisassemblerChanged;
+
+  Changed;
+end;
+
 procedure TIDEDisassembler.DoChanged;
 var
   n: Integer;
   Notification: TIDEDisassemblerNotification;
 begin
+  if FMaster <> nil
+  then begin
+    SetCountBefore(FMaster.CountBefore);
+    SetCountAfter(FMaster.CountAfter);
+    SetBaseAddr(FMaster.BaseAddr);
+  end
+  else Clear;
+
   for n := 0 to FNotificationList.Count - 1 do
   begin
     Notification := TIDEDisassemblerNotification(FNotificationList[n]);
     if Assigned(Notification.FOnChange)
     then Notification.FOnChange(Self);
   end;
+end;
+
+function TIDEDisassembler.InternalGetEntry(AIndex: Integer): TDisassemblerEntry;
+begin
+  if FMaster <> nil
+  then Result := FMaster.Entries[AIndex]
+  else Result := inherited InternalGetEntry(AIndex);
+end;
+
+function TIDEDisassembler.InternalGetEntryPtr(AIndex: Integer): PDisassemblerEntry;
+begin
+  if FMaster <> nil
+  then Result := FMaster.EntriesPtr[AIndex]
+  else Result := inherited InternalGetEntryPtr(AIndex);
 end;
 
 constructor TIDEDisassembler.Create;
@@ -5740,6 +6529,24 @@ procedure TIDEDisassembler.RemoveNotification(const ANotification: TIDEDisassemb
 begin
   FNotificationList.Remove(ANotification);
   ANotification.ReleaseReference;
+end;
+
+procedure TIDEDisassembler.Clear;
+begin
+  if FMaster <> nil
+  then FMaster.Clear
+  else inherited Clear;
+end;
+
+function TIDEDisassembler.PrepareRange(AnAddr: TDbgPtr; ALinesBefore,
+  ALinesAfter: Integer): Boolean;
+begin
+  if (AnAddr = BaseAddr) and (ALinesBefore < CountBefore) and (ALinesAfter < CountAfter)
+  then exit(True);
+
+  if FMaster <> nil
+  then Result := FMaster.PrepareRange(AnAddr, ALinesBefore, ALinesAfter)
+  else Result := inherited PrepareRange(AnAddr, ALinesBefore, ALinesAfter);
 end;
 
 { TDBGDisassemblerEntryRange }

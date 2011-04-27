@@ -958,8 +958,8 @@ type
     function CreateStackEntry(AIndex: Integer): TCallStackEntry; override;
     procedure PrepareEntries(AIndex, ACount: Integer); override;
 
-    function GetCurrent: TCallStackEntry; override;
-    procedure SetCurrent(AValue: TCallStackEntry); override;
+    function GetCurrent: Integer; override;
+    procedure SetCurrent(AValue: Integer); override;
     procedure DoThreadChanged;
   public
   end;
@@ -7346,14 +7346,9 @@ begin
   FreeAndNil(FrameList);
 end;
 
-function TGDBMICallStack.GetCurrent: TCallStackEntry;
-var
-  idx: Integer;
+function TGDBMICallStack.GetCurrent: Integer;
 begin
-  idx := TGDBMIDebugger(Debugger).FCurrentStackFrame;
-  if (idx < 0) or (idx >= Count)
-  then Result := nil
-  else Result := Entries[idx];
+  Result := TGDBMIDebugger(Debugger).FCurrentStackFrame;
 end;
 
 procedure TGDBMICallStack.DoFramesCommandExecuted(Sender: TObject);
@@ -7432,9 +7427,9 @@ begin
   FInEvalFrames := False;
 end;
 
-procedure TGDBMICallStack.SetCurrent(AValue: TCallStackEntry);
+procedure TGDBMICallStack.SetCurrent(AValue: Integer);
 begin
-  TGDBMIDebugger(Debugger).CallStackSetCurrent(AValue.Index);
+  TGDBMIDebugger(Debugger).CallStackSetCurrent(AValue);
 end;
 
 procedure TGDBMICallStack.DoThreadChanged;

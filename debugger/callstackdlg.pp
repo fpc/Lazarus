@@ -207,14 +207,14 @@ function TCallStackDlg.GetImageIndex(Entry: TCallStackEntry): Integer;
 begin
   if HasBreakPoint(Entry) then
   begin
-    if Entry.Current then
+    if Entry.IsCurrent then
       Result := imgCurrentLineAtBreakPoint
     else
       Result := imgBreakPoint;
   end
   else
   begin
-    if Entry.Current then
+    if Entry.IsCurrent then
       Result := imgCurrentLine
     else
     if Entry.Source = '' then
@@ -475,7 +475,7 @@ begin
     Entry := GetCurrentEntry;
     if Entry = nil then Exit;
 
-    CallStack.Current := Entry;
+    CallStack.CurrentIndex := Entry.Index;
   finally
     EnableAllActions;
   end;
