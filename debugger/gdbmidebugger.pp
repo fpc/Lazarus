@@ -6269,7 +6269,7 @@ begin
       SetBreakpoint;
     end;
     dsStop: begin
-      if AOldState = dsRun
+      if FBreakID > 0
       then ReleaseBreakpoint;
     end;
   end;
@@ -6421,7 +6421,7 @@ begin
   if (Source = ASource) and (Line = ALine) then exit;
   inherited;
   if (Debugger = nil) or (Source = '')  then Exit;
-  if TGDBMIDebugger(Debugger).State in [dsStop, dsPause, dsRun]
+  if TGDBMIDebugger(Debugger).State in [dsPause, dsRun]
   then SetBreakpoint;
 end;
 
