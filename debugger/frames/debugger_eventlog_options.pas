@@ -182,7 +182,7 @@ begin
     ecThread: Result := lisDebugOptionsFrmThread;
     ecModule: Result := lisDebugOptionsFrmModule;
     ecOutput: Result := lisDebugOptionsFrmOutput;
-    ecWindow: Result := lisDebugOptionsFrmWindow;
+    ecWindows: Result := lisDebugOptionsFrmWindows;
     ecDebugger: Result := lisDebugOptionsFrmDebugger;
   else
     Result := '???';
@@ -253,7 +253,7 @@ begin
     SetChecked(ecThread, DebuggerEventLogShowThread);
     SetChecked(ecModule, DebuggerEventLogShowModule);
     SetChecked(ecOutput, DebuggerEventLogShowOutput);
-    SetChecked(ecWindow, DebuggerEventLogShowWindow);
+    SetChecked(ecWindows, DebuggerEventLogShowWindows);
     SetChecked(ecDebugger, DebuggerEventLogShowDebugger);
   end;
 end;
@@ -276,7 +276,7 @@ begin
     DebuggerEventLogShowThread := GetChecked(ecThread);
     DebuggerEventLogShowModule := GetChecked(ecModule);
     DebuggerEventLogShowOutput := GetChecked(ecOutput);
-    DebuggerEventLogShowWindow := GetChecked(ecWindow);
+    DebuggerEventLogShowWindows := GetChecked(ecWindows);
     DebuggerEventLogShowDebugger := GetChecked(ecDebugger);
   end;
 end;

@@ -8545,12 +8545,13 @@ function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATime
     EventText: String;
   begin
     EventText := GetPart(['='], [','], Line, False, False);
-    case StringCase(EventText, ['library-unloaded',
+    case StringCase(EventText, [
+      'library-loaded', 'library-unloaded',
       'thread-created', 'thread-group-created',
       'thread-exited', 'thread-group-exited'], False, False)
     of
-      0: DoDbgEvent(ecModule, Line);
-      1..4: DoDbgEvent(ecThread, Line);
+      0..1: DoDbgEvent(ecModule, Line);
+      2..5: DoDbgEvent(ecThread, Line);
     else
       DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
     end;

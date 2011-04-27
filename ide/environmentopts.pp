@@ -260,7 +260,7 @@ type
     FDebuggerEventLogShowOutput: Boolean;
     FDebuggerEventLogShowProcess: Boolean;
     FDebuggerEventLogShowThread: Boolean;
-    FDebuggerEventLogShowWindow: Boolean;
+    FDebuggerEventLogShowWindows: Boolean;
 
     // recent files and directories
     FRecentOpenFiles: TStringList;
@@ -474,7 +474,7 @@ type
     property DebuggerEventLogShowThread: Boolean read FDebuggerEventLogShowThread write FDebuggerEventLogShowThread;
     property DebuggerEventLogShowModule: Boolean read FDebuggerEventLogShowModule write FDebuggerEventLogShowModule;
     property DebuggerEventLogShowOutput: Boolean read FDebuggerEventLogShowOutput write FDebuggerEventLogShowOutput;
-    property DebuggerEventLogShowWindow: Boolean read FDebuggerEventLogShowWindow write FDebuggerEventLogShowWindow;
+    property DebuggerEventLogShowWindows: Boolean read FDebuggerEventLogShowWindows write FDebuggerEventLogShowWindows;
     property DebuggerEventLogShowDebugger: Boolean read FDebuggerEventLogShowDebugger write FDebuggerEventLogShowDebugger;
     property CompilerMessagesFilename: string read FCompilerMessagesFilename
                                               write FCompilerMessagesFilename;
@@ -1120,8 +1120,8 @@ begin
           Path+'Debugger/EventLogShowModule', False);
         FDebuggerEventLogShowOutput := XMLConfig.GetValue(
           Path+'Debugger/EventLogShowOutput', True);
-        FDebuggerEventLogShowWindow := XMLConfig.GetValue(
-          Path+'Debugger/EventLogShowWindow', False);
+        FDebuggerEventLogShowWindows := XMLConfig.GetValue(
+          Path+'Debugger/EventLogShowWindows', False);
         FDebuggerEventLogShowDebugger := XMLConfig.GetValue(
           Path+'Debugger/EventLogShowDebugger', True);
       end;
@@ -1419,8 +1419,8 @@ begin
             FDebuggerEventLogShowModule, False);
         XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowOutput',
             FDebuggerEventLogShowOutput, True);
-        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowWindow',
-            FDebuggerEventLogShowWindow, False);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowWindows',
+            FDebuggerEventLogShowWindows, False);
         XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowDebugger',
             FDebuggerEventLogShowDebugger, True);
       end;

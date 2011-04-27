@@ -1630,7 +1630,7 @@ type
     ecThread,     // Thread creation, destruction, start, etc.
     ecModule,     // Library load and unload
     ecOutput,     // DebugOutput calls
-    ecWindow,
+    ecWindows,    // Windows events
     ecDebugger);  // debugger errors and warnings
   TDBGEventCategories = set of TDBGEventCategory;
 

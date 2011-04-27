@@ -76,7 +76,7 @@ const
     { ecThread     } 2,
     { ecModule     } 3,
     { ecOutput     } 4,
-    { ecWindow     } 5,
+    { ecWindows    } 5,
     { ecDebugger   } 6
   );
 
@@ -128,8 +128,8 @@ begin
     Include(FFilter, ecModule);
   if EnvironmentOptions.DebuggerEventLogShowOutput then
     Include(FFilter, ecOutput);
-  if EnvironmentOptions.DebuggerEventLogShowWindow then
-    Include(FFilter, ecWindow);
+  if EnvironmentOptions.DebuggerEventLogShowWindows then
+    Include(FFilter, ecWindows);
   if EnvironmentOptions.DebuggerEventLogShowDebugger then
     Include(FFilter, ecDebugger);
 

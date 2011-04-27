@@ -4450,7 +4450,7 @@ resourcestring
   lisDebugOptionsFrmThread = 'Thread';
   lisDebugOptionsFrmModule = 'Module';
   lisDebugOptionsFrmOutput = 'Output';
-  lisDebugOptionsFrmWindow = 'Window';
+  lisDebugOptionsFrmWindows = 'Windows';
   lisDebugOptionsFrmDebugger = 'Debugger';
   lisDebugOptionsFrmLanguageExceptions = 'Language Exceptions';
   lisDebugOptionsFrmIgnoreTheseExceptions = 'Ignore these exceptions';
