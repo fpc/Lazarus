@@ -3,6 +3,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
   Width = 640
   ClientHeight = 440
   ClientWidth = 640
+  TabOrder = 0
   Visible = False
   DesignLeft = 420
   DesignTop = 200

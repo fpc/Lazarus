@@ -229,7 +229,7 @@ begin
   end;
   NodeRect := Node.DisplayRect(true);
   FullAbcWidth := ColorElementTree.Canvas.TextExtent(COLOR_NODE_PREFIX).cx;
-  TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight(Node.Text)) div 2;
+  TextY := (NodeRect.Top + NodeRect.Bottom - ColorElementTree.Canvas.TextHeight(Node.Text)) div 2;
   ColorElementTree.Canvas.FillRect(NodeRect);
   ColorElementTree.Canvas.TextOut(NodeRect.Left+FullAbcWidth, TextY, Attri.Name);
 
