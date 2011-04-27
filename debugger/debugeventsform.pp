@@ -53,7 +53,7 @@ type
     procedure SetEvents(const AEvents: TStrings);
     procedure GetEvents(const AResultEvents: TStrings);
     procedure Clear;
-    procedure AddEvent(const ACategory: TDBGEventCategory; const AText: String);
+    procedure AddEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
   end; 
 
 implementation
@@ -160,7 +160,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TDbgEventsForm.AddEvent(const ACategory: TDBGEventCategory; const AText: String);
+procedure TDbgEventsForm.AddEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
 var
   Item: TListItem;
 begin

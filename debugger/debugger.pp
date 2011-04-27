@@ -1626,7 +1626,7 @@ type
 
   TDBGEventCategory = (
     ecBreakpoint, // Breakpoint hit
-    ecProcess,
+    ecProcess,    // Process start, process stop
     ecThread,     // Thread creation, destruction, start, etc.
     ecModule,     // Library load and unload
     ecOutput,     // DebugOutput calls
@@ -1634,11 +1634,37 @@ type
     ecDebugger);  // debugger errors and warnings
   TDBGEventCategories = set of TDBGEventCategory;
 
+  TDBGEventType = (
+    etDefault,
+    // ecBreakpoint category
+    etBreakpointEvaluation,
+    etBreakpointHit,
+    etBreakpointMessage,
+    etBreakpointStackDump,
+    etExceptionRaised,
+    // ecModule category
+    etModuleLoad,
+    etModuleUnload,
+    // ecOutput category
+    etOutputDebugString,
+    // ecProcess category
+    etProcessExit,
+    etProcessStart,
+    // ecThread category
+    etThreadExit,
+    etThreadStart,
+    // ecWindows category
+    etWindowsMessagePosted,
+    etWindowsMessageSent
+  );
+
   TDBGFeedbackType = (ftWarning, ftError);
   TDBGFeedbackResult = (frOk, frStop);
   TDBGFeedbackResults = set of TDBGFeedbackResult;
 
-  TDBGEventNotify = procedure(Sender: TObject; const ACategory: TDBGEventCategory;
+  TDBGEventNotify = procedure(Sender: TObject;
+                              const ACategory: TDBGEventCategory;
+                              const AEventType: TDBGEventType;
                               const AText: String) of object;
 
   TDebuggerStateChangedEvent = procedure(ADebugger: TDebugger;
@@ -1724,7 +1750,7 @@ type
     function  CreateExceptions: TDBGExceptions; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
-    procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
+    procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
     procedure DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String; const AExceptionText: String; out AContinue: Boolean);
     procedure DoOutput(const AText: String);
     procedure DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
@@ -2450,9 +2476,9 @@ begin
   if Assigned(FOnDbgOutput) then FOnDbgOutput(Self, AText);
 end;
 
-procedure TDebugger.DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
+procedure TDebugger.DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
 begin
-  if Assigned(FOnDbgEvent) then FOnDbgEvent(Self, ACategory, AText);
+  if Assigned(FOnDbgEvent) then FOnDbgEvent(Self, ACategory, AEventType, AText);
 end;
 
 procedure TDebugger.DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String;

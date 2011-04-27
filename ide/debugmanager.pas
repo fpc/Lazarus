@@ -78,7 +78,7 @@ type
     procedure DebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
-    procedure DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AText: String);
+    procedure DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
     procedure DebuggerConsoleOutput(Sender: TObject; const AText: String);
     function DebuggerFeedback(Sender: TObject; const AText, AInfo: String;
       AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
@@ -1662,12 +1662,12 @@ begin
   end;
 end;
 
-procedure TDebugManager.DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AText: String);
+procedure TDebugManager.DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
 begin
   if Destroying then exit;
   if FDialogs[ddtEvents] <> nil
   then begin
-    TDbgEventsForm(FDialogs[ddtEvents]).AddEvent(ACategory, AText)
+    TDbgEventsForm(FDialogs[ddtEvents]).AddEvent(ACategory, AEventType, AText)
   end
   else begin
     // store it internally, and copy it to the dialog, when the user opens it

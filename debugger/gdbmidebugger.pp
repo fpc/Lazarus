@@ -244,7 +244,7 @@ type
     function  CheckHasType(TypeName: String; TypeFlag: TGDBMITargetFlag): TGDBMIExecResult;
     function  PointerTypeCast: string;
     procedure ProcessFrame(const AFrame: String = '');
-    procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AText: String);
+    procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
     property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
     property  LastExecResult: TGDBMIExecResult read FLastExecResult;
     property  DefaultTimeOut: Integer read FDefaultTimeOut write FDefaultTimeOut;
@@ -3590,10 +3590,13 @@ var
     S: String;
   begin
     S := GetPart(['='], [','], Line, False, False);
-    case StringCase(S, ['shlibs-added', 'shlibs-updated',
-      'library-loaded', 'library-unloaded'], False, False)
-    of
-      0..3: DoDbgEvent(ecModule, Line);
+    case StringCase(S, [
+      'shlibs-added', 'library-loaded',
+      'library-unloaded',
+      'shlibs-updated'], False, False) of
+      0..1: DoDbgEvent(ecModule, etModuleLoad, Line);
+      2: DoDbgEvent(ecModule, etModuleUnload, Line);
+      3: DoDbgEvent(ecModule, etDefault, Line);
     else
       DebugLn('[Debugger] Notify output: ', Line);
     end;
@@ -8486,7 +8489,7 @@ function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATime
     if Pos('no debugging symbols', Line) > 0
     then begin
       TargetInfo^.TargetFlags := TargetInfo^.TargetFlags - [tfHasSymbols];
-      DoDbgEvent(ecDebugger, Format('File ''%s'' has no debug symbols', [FTheDebugger.FileName]));
+      DoDbgEvent(ecDebugger, etDefault, Format('File ''%s'' has no debug symbols', [FTheDebugger.FileName]));
     end
     else begin
       // Strip surrounding ~" "
@@ -8530,7 +8533,7 @@ function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATime
     EventText := GetPart(['*'], [','], Line, False, False);
     if EventText = 'running'
     then
-      DoDbgEvent(ecProcess, Line)
+      DoDbgEvent(ecProcess, etProcessStart, Line)
     else
       DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
   end;
@@ -8550,8 +8553,10 @@ function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATime
       'thread-created', 'thread-group-created',
       'thread-exited', 'thread-group-exited'], False, False)
     of
-      0..1: DoDbgEvent(ecModule, Line);
-      2..5: DoDbgEvent(ecThread, Line);
+      0: DoDbgEvent(ecModule, etModuleLoad, Line);
+      1: DoDbgEvent(ecModule, etModuleUnload, Line);
+      2..3: DoDbgEvent(ecThread, etThreadStart, Line);
+      4..5: DoDbgEvent(ecThread, etThreadExit, Line);
     else
       DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
     end;
@@ -9067,9 +9072,9 @@ begin
 end;
 
 procedure TGDBMIDebuggerCommand.DoDbgEvent(const ACategory: TDBGEventCategory;
-  const AText: String);
+  const AEventType: TDBGEventType; const AText: String);
 begin
-  FTheDebugger.DoDbgEvent(ACategory, AText);
+  FTheDebugger.DoDbgEvent(ACategory, AEventType, AText);
 end;
 
 constructor TGDBMIDebuggerCommand.Create(AOwner: TGDBMIDebugger);
