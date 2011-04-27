@@ -4443,7 +4443,8 @@ resourcestring
     +'type of debugger)';
   lisDebugOptionsFrmEventLog = 'Event Log';
   lisDebugOptionsFrmClearLogOnRun = 'Clear log on run';
-  lisDebugOptionsFrmLimitLinecountTo = 'Limit linecount to';
+  lisDebugOptionsFrmLimitLinecountTo = 'Limit line count to';
+  lisDebugOptionsFrmUseEventLogColors = 'Use event log colors';
   lisDebugOptionsFrmBreakpoint = 'Breakpoint';
   lisDebugOptionsFrmProcess = 'Process';
   lisDebugOptionsFrmThread = 'Thread';
