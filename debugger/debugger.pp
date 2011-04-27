@@ -1751,7 +1751,8 @@ type
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
-    procedure DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String; const AExceptionText: String; out AContinue: Boolean);
+    procedure DoException(const AExceptionType: TDBGExceptionType;
+      const AExceptionClass: String; AExceptionAddress: TDBGPtr; const AExceptionText: String; out AContinue: Boolean);
     procedure DoOutput(const AText: String);
     procedure DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
     procedure DoState(const OldState: TDBGState); virtual;
@@ -2481,9 +2482,11 @@ begin
   if Assigned(FOnDbgEvent) then FOnDbgEvent(Self, ACategory, AEventType, AText);
 end;
 
-procedure TDebugger.DoException(const AExceptionType: TDBGExceptionType; const AExceptionClass: String;
-  const AExceptionText: String; out AContinue: Boolean);
+procedure TDebugger.DoException(const AExceptionType: TDBGExceptionType;
+  const AExceptionClass: String; AExceptionAddress: TDBGPtr; const AExceptionText: String; out AContinue: Boolean);
 begin
+  if AExceptionType = deInternal then
+    DoDbgEvent(ecDebugger, etExceptionRaised, Format('Exception class "%s" at $%x with message "%s"', [AExceptionClass, AExceptionAddress, AExceptionText]));
   if Assigned(FOnException) then
     FOnException(Self, AExceptionType, AExceptionClass, AExceptionText, AContinue)
   else

@@ -3748,6 +3748,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   var
     ExceptionMessage: String;
     CanContinue: Boolean;
+    Location: TDBGLocationRec;
   begin
     if (dfImplicidTypes in FTheDebugger.DebuggerFlags)
     then begin
@@ -3763,34 +3764,37 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
-    FTheDebugger.DoException(deInternal, AInfo.Name, ExceptionMessage, CanContinue);
+    Location := GetLocation;
+    FTheDebugger.DoException(deInternal, AInfo.Name, Location.Address, ExceptionMessage, CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
       Result := True; // outer funciton result
       exit;
     end
-    else FTheDebugger.DoCurrent(GetLocation);
+    else FTheDebugger.DoCurrent(Location);
   end;
 
   procedure ProcessBreak;
   var
     ErrorNo: Integer;
     CanContinue: Boolean;
+    Location: TDBGLocationRec;
   begin
     if tfRTLUsesRegCall in TargetInfo^.TargetFlags
     then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[0], [])
     else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
     ErrorNo := ErrorNo and $FFFF;
 
-    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '', CanContinue);
+    Location := GetLocation;
+    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), Location.Address, '', CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
       Result := True; // outer funciton result
       exit;
     end
-    else FTheDebugger.DoCurrent(GetLocation);
+    else FTheDebugger.DoCurrent(Location);
   end;
 
   procedure ProcessRunError;
@@ -3803,7 +3807,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
     ErrorNo := ErrorNo and $FFFF;
 
-    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '', CanContinue);
+    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), 0, '', CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
@@ -3839,7 +3843,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     end;
 
     if not SigInt
-    then FTheDebugger.DoException(deExternal, 'External: ' + S, '', CanContinue);
+    then FTheDebugger.DoException(deExternal, 'External: ' + S, 0, '', CanContinue);
 
     if not AIgnoreSigIntState
     or not SigInt
@@ -3876,7 +3880,7 @@ begin
     if Reason = 'exited-signalled'
     then begin
       SetDebuggerState(dsStop);
-      FTheDebugger.DoException(deExternal, 'External: ' + List.Values['signal-name'], '', CanContinue);
+      FTheDebugger.DoException(deExternal, 'External: ' + List.Values['signal-name'], 0, '', CanContinue);
       // ProcessFrame(List.Values['frame']);
       Exit;
     end;
