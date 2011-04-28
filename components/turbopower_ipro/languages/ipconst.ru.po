@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-28 23:37+0300\n"
+"PO-Revision-Date: 2011-04-29 02:39+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -434,7 +434,7 @@ msgstr "Выполнение потока %d (номер хопа = %d)"
 
 #: ipconst.sicmpthreadterminate
 msgid "Thread %d terminating (Hop number = %d)"
-msgstr "Завершение потока выполнения %d (номер хопа = %d)"
+msgstr "Завершение потока исполнения %d (номер хопа = %d)"
 
 #: ipconst.sicmptracecomplete
 msgid "Trace complete (%s), %d hops"

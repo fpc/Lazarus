@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-28 23:46+0300\n"
+"PO-Revision-Date: 2011-04-29 02:39+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6443,7 +6443,7 @@ msgstr "Сигналы"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmthread
 msgid "Thread"
-msgstr "Поток выполнения"
+msgstr "Поток исполнения"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
@@ -9030,7 +9030,7 @@ msgstr "Показать редактор исходного кода"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
 msgid "Toggle view Threads"
-msgstr "Показать окно потоков выполнения"
+msgstr "Показать окно потоков исполнения"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
 msgid "Toggle view Watches"
@@ -10678,7 +10678,7 @@ msgstr "Порядок перехода"
 #: lazarusidestrconsts.lismenuviewthreads
 msgctxt "lazarusidestrconsts.lismenuviewthreads"
 msgid "Threads"
-msgstr "Потоки выполнения"
+msgstr "Потоки исполнения"
 
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
@@ -14379,7 +14379,7 @@ msgstr "Это действие приведёт к появлению цикл�
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
 msgid "Threads"
-msgstr "Потоки выполнения"
+msgstr "Потоки исполнения"
 
 #: lazarusidestrconsts.listhreadscurrent
 msgctxt "lazarusidestrconsts.listhreadscurrent"
@@ -16707,7 +16707,7 @@ msgstr "Показать порядок перехода"
 
 #: lazarusidestrconsts.srkmecviewthreads
 msgid "View Threads"
-msgstr "Показать потоки выполнения"
+msgstr "Показать потоки исполнения"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"
