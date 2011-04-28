@@ -129,7 +129,7 @@ procedure TCustomTimer.UpdateTimer;
 begin
   KillTimer;
   if (FEnabled) and (FInterval > 0)
-  and (([csDesigning,csLoading,csDestroying]*ComponentState=[]))
+  and (([csLoading,csDestroying]*ComponentState=[]))
   and Assigned (FOnTimer) then begin
     //DebugLn(['TCustomTimer.UpdateTimer ',dbgsName(Self),' WidgetSet.CreateTimer']);
     FTimerHandle := WidgetSet.CreateTimer(FInterval, @Timer);
