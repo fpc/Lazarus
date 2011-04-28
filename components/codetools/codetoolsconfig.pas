@@ -294,6 +294,15 @@ begin
 end;
 
 procedure TCodeToolsOptions.InitWithEnvironmentVariables;
+
+{  procedure WriteEnv;
+  var
+    i: Integer;
+  begin
+    for i:=0 to GetEnvironmentVariableCount-1 do
+      debugln(['TCodeToolsOptions.InitWithEnvironmentVariables ',i,' ',GetEnvironmentStringUTF8(i)]);
+  end;
+}
 begin
   if GetEnvironmentVariableUTF8('PP')<>'' then
     FPCPath:=GetEnvironmentVariableUTF8('PP')

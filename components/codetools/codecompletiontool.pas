@@ -303,14 +303,19 @@ type
 
     // assign/init records/classes
     function FindAssignMethod(CursorPos: TCodeXYPosition;
-        out ClassNode, AncestorClassNode: TCodeTreeNode;
+        out ClassNode: TCodeTreeNode;
         out AssignDeclNode: TCodeTreeNode;
         var MemberNodeExts: TAVLTree; // tree of TCodeTreeNodeExtension, Node=var or property, Data=write property
-        out AssignBodyNode: TCodeTreeNode): boolean;
+        out AssignBodyNode: TCodeTreeNode;
+        out InheritedDeclContext: TFindContext;
+        ProcName: string = '' // default is 'Assign'
+        ): boolean;
     function AddAssignMethod(MemberNodeExts: TAVLTree;
         const ProcName, ParamName, ParamType: string;
-        CallInherited, CallInheritedOnlyInElse: boolean;
-        SourceChanger: TSourceChangeCache): boolean;
+        OverrideMod, CallInherited, CallInheritedOnlyInElse: boolean;
+        SourceChanger: TSourceChangeCache;
+        LocalVarName: string = '' // default aSource
+        ): boolean;
 
     // custom class completion
     function InitClassCompletion(const AClassName: string;
@@ -5013,9 +5018,10 @@ begin
 end;
 
 function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
-  out ClassNode, AncestorClassNode: TCodeTreeNode;
-  out AssignDeclNode: TCodeTreeNode; var MemberNodeExts: TAVLTree;
-  out AssignBodyNode: TCodeTreeNode): boolean;
+  out ClassNode: TCodeTreeNode; out AssignDeclNode: TCodeTreeNode;
+  var MemberNodeExts: TAVLTree; out AssignBodyNode: TCodeTreeNode;
+  out InheritedDeclContext: TFindContext;
+  ProcName: string): boolean;
 { if CursorPos is in a class declaration search for a method "Assign"
   and its corresponding body.
   If CursorPos is in a method body use this as a Assign method and return
@@ -5024,22 +5030,25 @@ function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
   Also return a tree of all variables and properties (excluding ancestors).
 }
 
-  procedure SearchAssign(Node: TCodeTreeNode);
+  procedure SearchAssign(Tool: TFindDeclarationTool; Node: TCodeTreeNode;
+    var DeclNode: TCodeTreeNode);
   var
     Child: TCodeTreeNode;
+    CurProcName: String;
   begin
     if Node=nil then exit;
     Child:=Node.FirstChild;
     while Child<>nil do begin
       if Child.Desc in AllClassSections then
-        SearchAssign(Child)
+        SearchAssign(Tool,Child,DeclNode)
       else if Child.Desc=ctnProcedure then begin
-        if ExtractProcName(Child,[phpInUpperCase])='ASSIGN' then begin
-          if AssignDeclNode<>nil then begin
+        CurProcName:=Tool.ExtractProcName(Child,[]);
+        if CompareIdentifiers(PChar(CurProcName),PChar(ProcName))=0 then begin
+          if DeclNode<>nil then begin
             debugln(['WARNING: TCodeCompletionCodeTool.FindAssignMethod.SearchAssign'
-              +' multiple Assign methods found, using the first at ',CleanPosToStr(AssignDeclNode.StartPos)]);
+              +' multiple ',ProcName,' methods found, using the first at ',CleanPosToStr(DeclNode.StartPos)]);
           end else
-            AssignDeclNode:=Child;
+            DeclNode:=Child;
         end;
       end;
       Child:=Child.NextBrother;
@@ -5103,15 +5112,21 @@ function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
     end;
   end;
 
-  procedure FindAncestor;
+  procedure FindInheritedAssign;
   var
     Params: TFindDeclarationParams;
   begin
     if ClassNode=nil then exit;
     Params:=TFindDeclarationParams.Create;
     try
-      //FindAncestorOfClassInheritance();
-
+      Params.Flags:=[fdfSearchInAncestors];
+      Params.Identifier:=PChar(ProcName);
+      Params.ContextNode:=ClassNode;
+      if not FindIdentifierInContext(Params) then exit;
+      debugln(['FindInheritedAssign NewNode=',Params.NewNode.DescAsString]);
+      if Params.NewNode=nil then exit;
+      if Params.NewNode.Desc<>ctnProcedure then exit;
+      InheritedDeclContext:=CreateFindContext(Params);
     finally
       Params.Free;
     end;
@@ -5124,10 +5139,11 @@ var
 begin
   Result:=false;
   ClassNode:=nil;
-  AncestorClassNode:=nil;
   AssignDeclNode:=nil;
   AssignBodyNode:=nil;
+  InheritedDeclContext:=CleanFindContext;
   BuildTreeAndGetCleanPos(CursorPos,CleanPos);
+  if ProcName='' then ProcName:='Assign';
   // check context
   CursorNode:=FindDeepestNodeAtPos(CleanPos,true);
   Node:=CursorNode;
@@ -5146,7 +5162,7 @@ begin
       // cursor in class/record
       Result:=true;
       ClassNode:=Node;
-      SearchAssign(ClassNode);
+      SearchAssign(Self,ClassNode,AssignDeclNode);
       if AssignDeclNode<>nil then
         AssignBodyNode:=FindCorrespondingProcNode(AssignDeclNode);
       break;
@@ -5156,12 +5172,13 @@ begin
   if ClassNode=nil then exit;
   GatherAssignableMembers(ClassNode);
   FindVarsWrittenByProperties;
-  FindAncestor;
+  FindInheritedAssign;
 end;
 
 function TCodeCompletionCodeTool.AddAssignMethod(MemberNodeExts: TAVLTree;
-  const ProcName, ParamName, ParamType: string; CallInherited,
-  CallInheritedOnlyInElse: boolean; SourceChanger: TSourceChangeCache): boolean;
+  const ProcName, ParamName, ParamType: string; OverrideMod, CallInherited,
+  CallInheritedOnlyInElse: boolean; SourceChanger: TSourceChangeCache;
+  LocalVarName: string): boolean;
 var
   AVLNode: TAVLTreeNode;
   NodeExt: TCodeTreeNodeExtension;
@@ -5175,21 +5192,22 @@ var
   SameType: boolean;
   Indent: Integer;
   IndentStep: LongInt;
-  LocalVar: String;
+  SrcVar: String;
 begin
   Result:=false;
   if (MemberNodeExts=nil) or (MemberNodeExts.Count=0) then exit(true);
   if (ParamName='') or (ParamType='') then exit;
   ClassNode:=nil;
   CleanDef:='procedure '+ProcName+'(:'+ParamType+')';
-  Def:='procedure '+ProcName+'('+ParamName+':'+ParamType+')';
+  Def:='procedure '+ProcName+'('+ParamName+':'+ParamType+');';
+  if OverrideMod then Def:=Def+'override;';
   ProcBody:='';
   AVLNode:=MemberNodeExts.FindLowest;
   e:=SourceChanger.BeautifyCodeOptions.LineEnd;
   SameType:=true;
   Indent:=0;
   IndentStep:=SourceChanger.BeautifyCodeOptions.Indent;
-  LocalVar:=ParamName;
+  SrcVar:=ParamName;
   while AVLNode<>nil do begin
     NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
     Node:=NodeExt.Node;
@@ -5201,11 +5219,17 @@ begin
       SameType:=CompareIdentifiers(PChar(aClassName),PChar(ParamType))=0;
       ProcBody:='procedure '+aClassName+'.'+ProcName+'('+ParamName+':'+ParamType+')'+e;
       if not SameType then begin
-        LocalVar:='aSrc';
-        if CompareIdentifiers(PChar(LocalVar),PChar(ParamName))=0 then
-          LocalVar:='aSource';
+        SrcVar:=LocalVarName;
+        if SrcVar='' then
+          SrcVar:='aSource';
+        if CompareIdentifiers(PChar(SrcVar),PChar(ParamName))=0 then begin
+          if CompareIdentifiers(PChar(SrcVar),'aSource')=0 then
+            SrcVar:='aSrc'
+          else
+            SrcVar:='aSource';
+        end;
         ProcBody:=ProcBody+'var'+e
-           +GetIndentStr(Indent+IndentStep)+LocalVar+':'+aClassName+';'+e;
+           +GetIndentStr(Indent+IndentStep)+SrcVar+':'+aClassName+';'+e;
       end;
       ProcBody:=ProcBody+'begin'+e;
       inc(Indent,IndentStep);
@@ -5218,11 +5242,11 @@ begin
             +GetIndentStr(Indent)+'if '+ParamName+' is '+aClassName+' then'+e
             +GetIndentStr(Indent)+'begin'+e;
         inc(Indent,IndentStep);
-        ProcBody:=ProcBody+GetIndentStr(Indent)+LocalVar+':='+aClassName+'('+ParamName+');'+e;
+        ProcBody:=ProcBody+GetIndentStr(Indent)+SrcVar+':='+aClassName+'('+ParamName+');'+e;
       end;
     end;
     // add assignment
-    ProcBody:=ProcBody+GetIndentStr(Indent)+NodeExt.Txt+':='+LocalVar+'.'+NodeExt.Txt+';'+e;
+    ProcBody:=ProcBody+GetIndentStr(Indent)+NodeExt.Txt+':='+SrcVar+'.'+NodeExt.Txt+';'+e;
     AVLNode:=MemberNodeExts.FindSuccessor(AVLNode);
   end;
   if not SameType then begin
@@ -5237,8 +5261,9 @@ begin
   end;
   // close procedure body
   ProcBody:=ProcBody+'end;';
-  // apply
+
   if not InitClassCompletion(ClassNode,SourceChanger) then exit;
+  ProcBody:=SourceChanger.BeautifyCodeOptions.BeautifyStatement(ProcBody,0);
   AddClassInsertion(CleanDef,Def,ProcName,ncpPublicProcs,nil,ProcBody);
   Result:=ApplyClassCompletion(true);
 end;

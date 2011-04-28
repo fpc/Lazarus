@@ -114,6 +114,8 @@ type
     function PositionInFuncResultName(ProcNode: TCodeTreeNode;
                                       CleanPos: integer): boolean;
     function ProcNodeHasParamList(ProcNode: TCodeTreeNode): boolean;
+    function GetProcParamList(ProcNode: TCodeTreeNode;
+                              Parse: boolean = true): TCodeTreeNode;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
     function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
@@ -2206,8 +2208,16 @@ begin
   // ToDo: ppu, dcu
 
   Result:=false;
-  if ProcNode.Desc=ctnProcedure then
+  if ProcNode=nil then exit;
+  if ProcNode.Desc=ctnProcedure then begin
     ProcNode:=ProcNode.FirstChild;
+    if ProcNode=nil then exit;
+  end;
+  if ProcNode.Desc<>ctnProcedureHead then exit;
+  if ProcNode.FirstChild<>nil then begin
+    Result:=ProcNode.FirstChild.Desc=ctnParameterList;
+    exit;
+  end;
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom; // read name
   while CurPos.Flag=cafWord do begin
@@ -2216,6 +2226,23 @@ begin
     ReadNextAtom;
   end;
   Result:=CurPos.Flag=cafRoundBracketOpen;
+end;
+
+function TPascalReaderTool.GetProcParamList(ProcNode: TCodeTreeNode;
+  Parse: boolean): TCodeTreeNode;
+begin
+  Result:=ProcNode;
+  if Result=nil then exit;
+  if Result.Desc=ctnProcedure then begin
+    Result:=Result.FirstChild;
+    if Result=nil then exit;
+  end;
+  if Result.Desc<>ctnProcedureHead then exit(nil);
+  if Parse then
+    BuildSubTreeForProcHead(Result);
+  Result:=Result.FirstChild;
+  if Result=nil then exit;
+  if Result.Desc<>ctnParameterList then exit(nil);
 end;
 
 procedure TPascalReaderTool.MoveCursorToUsesStart(UsesNode: TCodeTreeNode);

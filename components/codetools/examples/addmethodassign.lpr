@@ -29,8 +29,10 @@ program AddMethodAssign;
 
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree,
-  BasicCodeTools, SourceChanger, CodeTree, AssignExample1;
-  
+  BasicCodeTools, SourceChanger, CodeTree, FindDeclarationTool, AssignExample1;
+
+const
+  ConfigFilename = 'codetools.config';
 var
   Filename: string;
   Code: TCodeBuffer;
@@ -42,8 +44,15 @@ var
   NodeExt: TCodeTreeNodeExtension;
   NextAVLNode: TAVLTreeNode;
   ClassNode: TCodeTreeNode;
-  AncestorClassNode: TCodeTreeNode;
+  InheritedDeclContext: TFindContext;
+  ParamName: String;
+  ParamType: String;
+  ParamNode: TCodeTreeNode;
+  InheritedIsTPersistent: boolean;
+  InheritedClassNode: TCodeTreeNode;
 begin
+  CodeToolBoss.SimpleInit(ConfigFilename);
+
   // load the file
   Filename:=ExpandFileName(SetDirSeparators('scanexamples/assignexample1.pas'));
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
@@ -53,13 +62,14 @@ begin
   // parse the unit, check if in a class with an Assign method
   try
     MemberNodeExts:=nil;
-    if not CodeToolBoss.FindAssignMethod(Code,3,18,Tool,
-      ClassNode,AncestorClassNode,
-      AssignDeclNode,MemberNodeExts,AssignBodyNode) then
+    if not CodeToolBoss.FindAssignMethod(Code,3,18,
+      Tool,ClassNode,AssignDeclNode,MemberNodeExts,AssignBodyNode,
+      InheritedDeclContext) then
       raise Exception.Create('parser error');
 
     debugln(['Assign declaration found: ',AssignDeclNode<>nil]);
     debugln(['Assign body found: ',AssignBodyNode<>nil]);
+    debugln(['Inherited Assign found: ',InheritedDeclContext.Node<>nil]);
 
     // remove nodes which are written by a property
     if MemberNodeExts<>nil then begin
@@ -81,10 +91,32 @@ begin
       exit;
     end;
 
-    //
+    ParamName:='Source';
+    ParamType:='TObject';
+    InheritedIsTPersistent:=false;
+
+    // check if inherited exists, if it is TPersistent.Assign and use the
+    // inherited parameter name and type
+    if InheritedDeclContext.Node<>nil then begin
+      InheritedClassNode:=InheritedDeclContext.Tool.FindClassOrInterfaceNode(InheritedDeclContext.Node);
+      InheritedIsTPersistent:=(InheritedClassNode<>nil)
+        and (InheritedClassNode.Parent.Desc=ctnTypeDefinition)
+        and (CompareIdentifiers('TPersistent',@InheritedDeclContext.Tool.Src[InheritedClassNode.Parent.StartPos])=0);
+      ParamNode:=InheritedDeclContext.Tool.GetProcParamList(InheritedDeclContext.Node);
+      if ParamNode<>nil then begin
+        ParamNode:=ParamNode.FirstChild;
+        if ParamNode<>nil then begin
+          ParamName:=InheritedDeclContext.Tool.ExtractDefinitionName(ParamNode);
+          if (ParamNode.FirstChild<>nil) and (ParamNode.FirstChild.Desc=ctnIdentifier) then
+            ParamType:=GetIdentifier(@InheritedDeclContext.Tool.Src[ParamNode.FirstChild.StartPos]);
+        end;
+      end;
+    end;
+
+    // add assign method
     if AssignDeclNode=nil then begin
-      if not Tool.AddAssignMethod(MemberNodeExts,'Assign','Source','TObject',
-             true,false,
+      if not Tool.AddAssignMethod(MemberNodeExts,'Assign',ParamName,ParamType,
+             InheritedDeclContext.Node<>nil,true,InheritedIsTPersistent,
              CodeToolBoss.SourceChangeCache)
       then
         raise Exception.Create('AddAssignMethod failed');
