@@ -153,7 +153,7 @@ type
 {$endif}
 
 function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
-  lParam: LPARAM): UINT; stdcall;
+  lParam: LPARAM): UINT_PTR; stdcall;
 
 function SaveApplicationState: TApplicationState;
 procedure RestoreApplicationState(AState: TApplicationState);
@@ -477,7 +477,7 @@ end;
 }
 
 function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; wParam: WPARAM;
-  lParam: LPARAM): UINT; stdcall;
+  lParam: LPARAM): UINT_PTR; stdcall;
 var
   OpenFileNotify: LPOFNOTIFY;
   OpenFileName: Windows.POPENFILENAME;
@@ -698,7 +698,7 @@ begin
   {$endif}
 
     nMaxFile := FileNameBufferLen + 1; // Size in TCHARs
-    lpfnHook := @OpenFileDialogCallBack;
+    lpfnHook := LPOFNHOOKPROC(@OpenFileDialogCallBack);
     Flags := GetFlagsFromOptions(AOpenDialog.Options);
     New(DialogRec);
     // new initializes the filename fields, because ansistring and widestring

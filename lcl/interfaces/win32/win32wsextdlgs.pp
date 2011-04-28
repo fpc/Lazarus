@@ -99,7 +99,7 @@ implementation
 {$R *.res}
 
 function OpenPictureDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
-  lParam: LPARAM): UINT; stdcall;
+  lParam: LPARAM): UINT_PTR; stdcall;
 var
   OpenFileName: Windows.POPENFILENAME;
   DialogRec: POpenFileDialogRec;
@@ -162,7 +162,7 @@ begin
         Move(PChar(AnsiString(ResName))^, lpTemplateName^, Length(ResName));
       end;
       Flags := Flags or OFN_ENABLETEMPLATE;
-      lpfnHook := @OpenPictureDialogCallBack;
+      lpfnHook := LPOFNHOOKPROC(@OpenPictureDialogCallBack);
     end;
 end;
 
