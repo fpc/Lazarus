@@ -578,10 +578,6 @@ msgstr "GEMBASE 文件 (*.dml,*.gem)|*.DML;*.GEM"
 msgid "GW-TEL Script Files (*.gws)|*.gws"
 msgstr "GW-TEL Script 文件 (*.gws)|*.gws"
 
-#: syneditstrconst.syns_filterhp
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr "HP48 文件 (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-
 #: syneditstrconst.syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 msgstr "HP48 文件 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"

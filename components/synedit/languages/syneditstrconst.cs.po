@@ -574,10 +574,6 @@ msgstr "Soubory GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
 msgid "GW-TEL Script Files (*.gws)|*.gws"
 msgstr "Soubory GW-TEL Script (*.gws)|*.gws"
 
-#: syneditstrconst.syns_filterhp
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr "Soubory HP48 (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-
 #: syneditstrconst.syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 msgstr "Soubory HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"

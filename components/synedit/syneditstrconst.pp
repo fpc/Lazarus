@@ -306,7 +306,6 @@ resourcestring
   SYNS_FilterGalaxy             =  'Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt';
   SYNS_FilterPython             =  'Python Files (*.py)|*.py';
   SYNS_FilterSQL                =  'SQL Files (*.sql)|*.sql';
-  SYNS_FilterHP                 =  'HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP';
   SYNS_FilterTclTk              =  'Tcl/Tk Files (*.tcl)|*.tcl';
   SYNS_FilterRTF                =  'Rich Text Format (*.rtf)|*.rtf';
   SYNS_FilterBatch              =  'MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd';
@@ -399,10 +398,10 @@ resourcestring
   SYNS_emcStartColumnSelections    = 'Column Selection';
   SYNS_emcStartLineSelections      = 'Line Selection';
   SYNS_emcSelection_opt            = 'Mode,Begin,Continue';
-  SYNS_emcSelectWord     = 'Select Word';
-  SYNS_emcSelectLine     = 'Select Line';
-  SYNS_emcSelectLine_opt = '"Include spaces",no,yes';
-  SYNS_emcSelectPara = 'Select Paragraph';
+  SYNS_emcSelectWord               = 'Select Word';
+  SYNS_emcSelectLine               = 'Select Line';
+  SYNS_emcSelectLine_opt           = '"Include spaces",no,yes';
+  SYNS_emcSelectPara               = 'Select Paragraph';
   SYNS_emcStartDragMove            = 'Drag Selection';
   SYNS_emcPasteSelection           = 'Quick Paste Selection';
   SYNS_emcMouseLink                = 'Source Link';

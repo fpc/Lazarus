@@ -573,10 +573,6 @@ msgstr "קבצי GEMBASE  (*.dml,*.gem)|*.DML;*.GEM"
 msgid "GW-TEL Script Files (*.gws)|*.gws"
 msgstr "קבצי  GW-TEL Script  (*.gws)|*.gws"
 
-#: syneditstrconst.syns_filterhp
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr "קבצי  HP48  (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-
 #: syneditstrconst.syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 msgstr "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"

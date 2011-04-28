@@ -565,10 +565,6 @@ msgstr ""
 msgid "GW-TEL Script Files (*.gws)|*.gws"
 msgstr ""
 
-#: syneditstrconst.syns_filterhp
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr ""
-
 #: syneditstrconst.syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 msgstr ""
