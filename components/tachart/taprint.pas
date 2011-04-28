@@ -15,12 +15,12 @@ Authors: Alexander Klenin
 }
 unit TAPrint;
 
-{$mode objfpc}
+{$H+}
 
 interface
 
 uses
-  Printers, TADrawUtils;
+  Printers, TADrawerCanvas;
 
 type
 
