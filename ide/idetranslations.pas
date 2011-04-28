@@ -294,7 +294,7 @@ begin
     Dir+'components/codetools/languages/codetoolsstrconsts'+Ext,Lang,FallbackLang);
   // SynEdit
   TranslateUnitResourceStrings('SynEditStrConst',
-    Dir+'components/synedit/languages/synedit'+Ext,Lang,FallbackLang);
+    Dir+'components/synedit/languages/syneditstrconst'+Ext,Lang,FallbackLang);
   // SynMacroRecorder
   TranslateUnitResourceStrings('SynMacroRecorder',
     Dir+'components/synedit/languages/synmacrorecorder'+Ext,Lang,FallbackLang);

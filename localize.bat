@@ -52,22 +52,6 @@ tools\updatepofiles %Installer_RST% languages\installerstrconsts.po
 @set CodeTools_RST=components\codetools\units\%ArchOS%\CodeToolsStrConsts.rst
 tools\updatepofiles %CodeTools_RST% components\codetools\languages\codetoolsstrconsts.po
 
-@REM SynEdit
-@set SynEdit_RST=components\synedit\units\%ArchOS%\SynEditStrConst.rst
-tools\updatepofiles %SynEdit_RST% components\synedit\languages\synedit.po
-
-@REM SynDesign
-@set SynDesign_RST=components\synedit\units\%ArchOS%\syndesignstringconstants.rst
-tools\updatepofiles %SynDesign_RST% components\synedit\languages\syndesign.po
-
-@REM SynMacroRecorder
-@set SynMacroRec_RST=components\synedit\units\%ArchOS%\synmacrorecorder.rst
-tools\updatepofiles %SynMacroRec_RST% components\synedit\languages\synmacrorecorder.po
-
-@REM SynUniHighLighterShellScript
-@set SynUniHighLighterShellScript_RST=components\synedit\units\%ArchOS%\synhighlighterunixshellscript.rst
-tools\updatepofiles %SynUniHighLighterShellScript_RST% components\synedit\languages\synhighlighterunixshellscript.po
-
 @REM LCL
 @set LCL_RST=lcl\units\%ArchOS%\lclstrconsts.rst
 tools\updatepofiles %LCL_RST% lcl\languages\lclstrconsts.po

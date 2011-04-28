@@ -14317,7 +14317,7 @@ msgstr "Reël"
 #: lazarusidestrconsts.listhreadsname
 msgctxt "lazarusidestrconsts.listhreadsname"
 msgid "Name"
-msgstr ""
+msgstr "Naam"
 
 #: lazarusidestrconsts.listhreadssrc
 msgctxt "lazarusidestrconsts.listhreadssrc"
