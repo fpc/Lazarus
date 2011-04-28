@@ -650,18 +650,14 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure UTF8KeyPress(var Key: TUTF8Char); override;
     procedure KeyPress(var Key: Char); override;
-    {$IFDEF SYN_LAZARUS}
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
-    {$ENDIF}
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure ListCleared(Sender: TObject);
-    {$IFDEF SYN_LAZARUS}
     procedure FoldChanged(Index: integer);
     function GetTopView : Integer;
     procedure SetTopView(const AValue : Integer);
-    {$ENDIF}
     procedure Loaded; override;
     procedure MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
 {$IFDEF SYN_MBCSSUPPORT}
@@ -675,10 +671,10 @@ type
     procedure Paint; override;
     procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
       FirstCol, LastCol: integer); virtual;
-    {$IFDEF SYN_LAZARUS}
     procedure StartPaintBuffer(const ClipRect: TRect);
     procedure EndPaintBuffer(const ClipRect: TRect);
-    {$ENDIF}
+    function NextWordLogicalPos(WordEndForDelete : Boolean = false): TPoint;
+    function PrevWordLogicalPos: TPoint;
     procedure RecalcCharExtent;
     procedure RedoItem(Item: TSynEditUndoItem);
     procedure SetCaretXY(Value: TPoint); virtual;
@@ -728,7 +724,6 @@ type
                           ATextDrawer: TheTextDrawer): TSynGutter; virtual;
   public
     procedure FindMatchingBracket; virtual;
-    {$IFDEF SYN_LAZARUS}
     function FindMatchingBracket(PhysStartBracket: TPoint;
                                  StartIncludeNeighborChars, MoveCaret,
                                  SelectBrackets, OnlyVisible: Boolean
@@ -738,7 +733,6 @@ type
     procedure UnfoldAll;
     procedure FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolean = False);
     procedure EraseBackground(DC: HDC); override;
-    {$ENDIF}
 
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
@@ -778,7 +772,7 @@ type
     procedure GetWordBoundsAtRowCol(const XY: TPoint; var StartX, EndX: integer);
     function GetWordAtRowCol(XY: TPoint): string;
     function NextTokenPos: TPoint; virtual; deprecated; // use next word pos instead
-    function NextWordPos(WordEndForDelete : Boolean = false): TPoint; virtual;
+    function NextWordPos: TPoint; virtual;
     function PrevWordPos: TPoint; virtual;
     function IdentChars: TSynIdentChars;
     function IsIdentChar(const c: TUTF8Char): boolean;
@@ -2435,7 +2429,6 @@ begin
   //DebugLn('[TCustomSynEdit.KeyDown] END ',dbgs(Key),' ',dbgs(Shift));
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   {$IFDEF VerboseKeys}
@@ -2452,7 +2445,6 @@ begin
   UpdateCursor;
 end;
 
-{$ENDIF}
 
 procedure TCustomSynEdit.Loaded;
 begin
@@ -3125,7 +3117,6 @@ begin
   end;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.CodeFoldAction(iLine: integer);
 // iLine is 1 based as parameter
 begin
@@ -3173,7 +3164,6 @@ begin
   FFoldedLinesView.FoldAll(StartLevel, IgnoreNested);
   Invalidate;
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.PaintTextLines(AClip: TRect; FirstLine, LastLine,
   FirstCol, LastCol: integer);
@@ -3950,7 +3940,6 @@ begin
   ReAllocMem(TokenAccu.p,0);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.StartPaintBuffer(const ClipRect: TRect);
 {$IFDEF EnableDoubleBuf}
 var
@@ -3974,9 +3963,7 @@ begin
   Canvas:=BufferBitmap.Canvas;
   {$ENDIF}
 end;
-{$ENDIF}
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.EndPaintBuffer(const ClipRect: TRect);
 begin
   {$IFDEF EnableDoubleBuf}
@@ -3988,11 +3975,78 @@ begin
   {$ENDIF}
 end;
 
+function TCustomSynEdit.NextWordLogicalPos(WordEndForDelete: Boolean): TPoint;
+var
+  CX, CY, LineLen: integer;
+  Line: string;
+  LogCaret: TPoint;
+  DelSpaces : Boolean;
+begin
+  LogCaret:=LogicalCaretXY;
+  CX := LogCaret.X;
+  CY := LogCaret.Y;
+  // valid line?
+  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[CY - 1];
+    LineLen := Length(Line);
+
+    if CX >= LineLen then begin
+      // find first IdentChar in the next line
+      if CY < FTheLinesView.Count then begin
+        Line := FTheLinesView[CY];
+        Inc(CY);
+        if WordEndForDelete then
+          CX := Max(1, StrScanForCharInSet(Line, 1, [#1..#255] - TSynWhiteChars))
+        else
+          CX := Max(1, WordBreaker.NextWordStart(Line, 1, True));
+      end;
+    end else begin
+      if WordEndForDelete then begin
+        DelSpaces := WordBreaker.IsAtWordStart(Line, CX) or not WordBreaker.IsInWord(Line, CX);
+        CX := WordBreaker.NextBoundary(Line, CX);
+        if DelSpaces and(cx > 0) then
+          CX := StrScanForCharInSet(Line, CX, [#1..#255] - TSynWhiteChars);
+      end
+      else
+        CX := WordBreaker.NextWordStart(Line, CX);
+      // if one of those failed just position at the end of the line
+      if CX <= 0 then
+        CX := LineLen + 1;
+    end;
+  end;
+  Result := Point(CX, CY);
+end;
+
+function TCustomSynEdit.PrevWordLogicalPos: TPoint;
+var
+  CX, CY: integer;
+  Line: string;
+  LogCaret: TPoint;
+begin
+  LogCaret:=LogicalCaretXY;
+  CX := LogCaret.X;
+  CY := LogCaret.Y;
+  // valid line?
+  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
+    Line := FTheLinesView[CY - 1];
+    CX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
+    if CX <= 0 then
+      if CY > 1 then begin
+        // just position at the end of the previous line
+        Dec(CY);
+        Line := FTheLinesView[CY - 1];
+        CX := Length(Line) + 1;
+      end
+      else
+        CX := 1;
+  end;
+  Result := Point(CX, CY);
+end;
+
 procedure TCustomSynEdit.EraseBackground(DC: HDC);
 begin
   // we are painting everything ourselves, so not need to erase background
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.Update;
 begin
@@ -4916,7 +4970,6 @@ begin
   StatusChanged(scTextCleared);
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.FoldChanged(Index : integer);
 var
   i: Integer;
@@ -4947,7 +5000,6 @@ function TCustomSynEdit.GetTopView : Integer;
 begin
   Result := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.SetWordBlock(Value: TPoint);
 var
@@ -6209,8 +6261,7 @@ begin
 // word selection
       ecWordLeft, ecSelWordLeft, ecColSelWordLeft:
         begin
-          Caret := CaretXY;
-          CaretNew := PrevWordPos;
+          CaretNew := PrevWordLogicalPos;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
             CaretNew := Point(1 + Length(FTheLinesView[CY-1]), CY);
@@ -6219,11 +6270,10 @@ begin
         end;
       ecWordRight, ecSelWordRight, ecColSelWordRight:
         begin
-          Caret := CaretXY;
-          CaretNew := NextWordPos;
+          CaretNew := NextWordLogicalPos;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));
-          FCaret.LineCharPos := CaretNew;
+          FCaret.LineBytePos := CaretNew;
         end;
       ecSelectAll:
         begin
@@ -6302,11 +6352,11 @@ begin
               Helper := StringOfChar(' ', CaretX - 1 - Len);
               CaretX := 1 + Len;
             end;
-            WP := NextWordPos(True);
+            WP := NextWordLogicalPos(True);
           end else
             WP := Point(Len + 1, CaretY);
-          if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            FInternalBlockSelection.StartLineBytePos := PhysicalToLogicalPos(WP);
+          if (WP.X <> FCaret.BytePos) or (WP.Y <> FCaret.LinePos) then begin
+            FInternalBlockSelection.StartLineBytePos := WP;
             FInternalBlockSelection.EndLineBytePos := LogicalCaretXY;
             FInternalBlockSelection.ActiveSelectionMode := smNormal;
             FInternalBlockSelection.SetSelTextPrimitive(smNormal, nil);
@@ -6318,15 +6368,15 @@ begin
       ecDeleteLastWord, ecDeleteBOL:
         if not ReadOnly then begin
           if Command = ecDeleteLastWord then
-            WP := PrevWordPos
+            WP := PrevWordLogicalPos
           else
             WP := Point(1, CaretY);
-          if (WP.X <> CaretX) or (WP.Y <> CaretY) then begin
-            FInternalBlockSelection.StartLineBytePos := PhysicalToLogicalPos(WP);
+          if (WP.X <> FCaret.BytePos) or (WP.Y <> FCaret.LinePos) then begin
+            FInternalBlockSelection.StartLineBytePos := WP;
             FInternalBlockSelection.EndLineBytePos := LogicalCaretXY;
             FInternalBlockSelection.ActiveSelectionMode := smNormal;
             FInternalBlockSelection.SetSelTextPrimitive(smNormal, nil);
-            CaretXY := WP;
+            FCaret.LineBytePos := WP;
           end;
         end;
       ecDeleteLine:
@@ -8179,7 +8229,6 @@ begin
   {$ENDIF}
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.FindMatchingBracket(PhysStartBracket: TPoint;
   StartIncludeNeighborChars, MoveCaret, SelectBrackets, OnlyVisible: boolean
   ): TPoint;
@@ -8446,7 +8495,6 @@ begin
     end;
   end;
 end;
-{$ENDIF}
 
                                                                                  //L505 begin
 function TCustomSynEdit.GetHighlighterAttriAtRowCol(XY: TPoint;
@@ -8593,72 +8641,14 @@ begin
   Result := LogicalToPhysicalPos(Point(CX, CY));
 end;
 
-function TCustomSynEdit.NextWordPos(WordEndForDelete : Boolean = false): TPoint;
-var
-  CX, CY, LineLen: integer;
-  Line: string;
-  LogCaret: TPoint;
-  DelSpaces : Boolean;
+function TCustomSynEdit.NextWordPos: TPoint;
 begin
-  LogCaret:=LogicalCaretXY;
-  CX := LogCaret.X;
-  CY := LogCaret.Y;
-  // valid line?
-  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
-    Line := FTheLinesView[CY - 1];
-    LineLen := Length(Line);
-
-    if CX >= LineLen then begin
-      // find first IdentChar in the next line
-      if CY < FTheLinesView.Count then begin
-        Line := FTheLinesView[CY];
-        Inc(CY);
-        if WordEndForDelete then
-          CX := Max(1, StrScanForCharInSet(Line, 1, [#1..#255] - TSynWhiteChars))
-        else
-          CX := Max(1, WordBreaker.NextWordStart(Line, 1, True));
-      end;
-    end else begin
-      if WordEndForDelete then begin
-        DelSpaces := WordBreaker.IsAtWordStart(Line, CX) or not WordBreaker.IsInWord(Line, CX);
-        CX := WordBreaker.NextBoundary(Line, CX);
-        if DelSpaces and(cx > 0) then
-          CX := StrScanForCharInSet(Line, CX, [#1..#255] - TSynWhiteChars);
-      end
-      else
-        CX := WordBreaker.NextWordStart(Line, CX);
-      // if one of those failed just position at the end of the line
-      if CX <= 0 then
-        CX := LineLen + 1;
-    end;
-  end;
-  Result := LogicalToPhysicalPos(Point(CX, CY));
+  Result := LogicalToPhysicalPos(NextWordLogicalPos);
 end;
 
 function TCustomSynEdit.PrevWordPos: TPoint;
-var
-  CX, CY: integer;
-  Line: string;
-  LogCaret: TPoint;
 begin
-  LogCaret:=LogicalCaretXY;
-  CX := LogCaret.X;
-  CY := LogCaret.Y;
-  // valid line?
-  if (CY >= 1) and (CY <= FTheLinesView.Count) then begin
-    Line := FTheLinesView[CY - 1];
-    CX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
-    if CX <= 0 then
-      if CY > 1 then begin
-        // just position at the end of the previous line
-        Dec(CY);
-        Line := FTheLinesView[CY - 1];
-        CX := Length(Line) + 1;
-      end
-      else
-        CX := 1;
-  end;
-  Result := LogicalToPhysicalPos(Point(CX, CY));
+  Result := LogicalToPhysicalPos(PrevWordLogicalPos);
 end;
 
 function TCustomSynEdit.FindHookedCmdEvent(AHandlerProc: THookedCommandEvent):

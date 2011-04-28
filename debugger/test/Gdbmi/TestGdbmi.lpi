@@ -7,7 +7,7 @@
       <MainUnit Value="0"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <ActiveWindowIndexAtStart Value="1"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -26,6 +26,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="4">
@@ -54,15 +55,14 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestException"/>
         <EditorIndex Value="0"/>
-        <WindowIndex Value="1"/>
+        <WindowIndex Value="0"/>
         <TopLine Value="17"/>
-        <CursorPos X="1" Y="56"/>
+        <CursorPos X="1" Y="51"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
-          <EditorIndex Value="0"/>
-          <WindowIndex Value="0"/>
+          <WindowIndex Value="1"/>
           <TopLine Value="17"/>
-          <CursorPos X="1" Y="51"/>
+          <CursorPos X="1" Y="56"/>
         </ExtraEditor1>
         <UsageCount Value="72"/>
         <Loaded Value="True"/>
@@ -70,12 +70,10 @@
       <Unit2>
         <Filename Value="compilehelpers.pas"/>
         <UnitName Value="CompileHelpers"/>
-        <EditorIndex Value="7"/>
         <WindowIndex Value="1"/>
         <TopLine Value="29"/>
         <CursorPos X="1" Y="79"/>
         <UsageCount Value="34"/>
-        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="C:\FPC\SVN\trunc\rtl\objpas\classes\classesh.inc"/>
@@ -95,18 +93,17 @@
         <Filename Value="testbase.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestBase"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="5"/>
-        <WindowIndex Value="1"/>
-        <TopLine Value="616"/>
-        <CursorPos X="1" Y="652"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="102"/>
+        <CursorPos X="69" Y="129"/>
+        <IsLocked Value="True"/>
         <ExtraEditorCount Value="1"/>
         <ExtraEditor1>
-          <EditorIndex Value="5"/>
-          <WindowIndex Value="0"/>
-          <TopLine Value="102"/>
-          <CursorPos X="69" Y="129"/>
-          <IsLocked Value="True"/>
+          <IsVisibleTab Value="True"/>
+          <WindowIndex Value="1"/>
+          <TopLine Value="616"/>
+          <CursorPos X="1" Y="652"/>
         </ExtraEditor1>
         <UsageCount Value="66"/>
         <Loaded Value="True"/>
@@ -118,7 +115,7 @@
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="3255"/>
-        <CursorPos X="26" Y="3318"/>
+        <CursorPos X="18" Y="3281"/>
         <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit6>
@@ -132,22 +129,18 @@
       </Unit7>
       <Unit8>
         <Filename Value="A:\debugger\test\Gdbmi\gdblist.txt"/>
-        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="7" Y="42"/>
         <UsageCount Value="34"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit8>
       <Unit9>
         <Filename Value="A:\debugger\test\Gdbmi\fpclist.txt"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="18" Y="3"/>
         <UsageCount Value="34"/>
-        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="None"/>
       </Unit9>
       <Unit10>
@@ -161,12 +154,10 @@
       <Unit11>
         <Filename Value="..\..\..\test\testlpi.pas"/>
         <UnitName Value="TestLpi"/>
-        <EditorIndex Value="8"/>
         <WindowIndex Value="1"/>
         <TopLine Value="71"/>
         <CursorPos X="20" Y="129"/>
         <UsageCount Value="33"/>
-        <Loaded Value="True"/>
       </Unit11>
       <Unit12>
         <Filename Value="C:\FPC\SVN\trunc\packages\fcl-fpcunit\src\fpcunit.pp"/>
@@ -244,17 +235,15 @@
         <Filename Value="testwatches.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestWatches"/>
-        <EditorIndex Value="1"/>
         <WindowIndex Value="1"/>
         <TopLine Value="123"/>
         <CursorPos X="1" Y="134"/>
         <UsageCount Value="39"/>
-        <Loaded Value="True"/>
       </Unit21>
       <Unit22>
         <Filename Value="TestApps\WatchesPrg.pas"/>
         <UnitName Value="WatchesPrg"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="32" Y="39"/>
@@ -264,31 +253,25 @@
       <Unit23>
         <Filename Value="..\..\debugger.pp"/>
         <UnitName Value="Debugger"/>
-        <EditorIndex Value="2"/>
         <WindowIndex Value="1"/>
         <TopLine Value="5526"/>
         <CursorPos X="53" Y="5567"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit23>
       <Unit24>
         <Filename Value="..\..\debugutils.pp"/>
         <UnitName Value="DebugUtils"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="1"/>
         <TopLine Value="274"/>
         <CursorPos X="3" Y="302"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit24>
       <Unit25>
         <Filename Value="C:\FPC\SVN\trunc\rtl\inc\generic.inc"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="1"/>
         <TopLine Value="789"/>
         <CursorPos X="1" Y="827"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit25>
       <Unit26>
         <Filename Value="C:\FPC\SVN\trunc\rtl\i386\i386.inc"/>
@@ -299,135 +282,77 @@
       </Unit26>
       <Unit27>
         <Filename Value="C:\FPC\SVN\trunc\rtl\objpas\sysutils\sysstrh.inc"/>
-        <EditorIndex Value="6"/>
         <WindowIndex Value="1"/>
         <TopLine Value="200"/>
         <CursorPos X="10" Y="266"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit27>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="16" HistoryIndex="15">
       <Position1>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="128" Column="81" TopLine="72"/>
-      </Position1>
-      <Position2>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="137" Column="74" TopLine="72"/>
-      </Position2>
-      <Position3>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="76" Column="7" TopLine="73"/>
-      </Position3>
-      <Position4>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="84" Column="12" TopLine="60"/>
-      </Position4>
-      <Position5>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="108" Column="85" TopLine="73"/>
-      </Position5>
-      <Position6>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="84" Column="54" TopLine="76"/>
-      </Position6>
-      <Position7>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="114" Column="30" TopLine="76"/>
-      </Position7>
-      <Position8>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="52" Column="29" TopLine="18"/>
-      </Position8>
-      <Position9>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="85" Column="3" TopLine="83"/>
-      </Position9>
-      <Position10>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="150" Column="29" TopLine="102"/>
-      </Position10>
-      <Position11>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="83" Column="58" TopLine="48"/>
-      </Position11>
-      <Position12>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="52" Column="49" TopLine="52"/>
-      </Position12>
-      <Position13>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="85" Column="6" TopLine="51"/>
-      </Position13>
-      <Position14>
         <Filename Value="..\..\gdbmidebugger.pp"/>
         <Caret Line="6638" Column="36" TopLine="6618"/>
-      </Position14>
-      <Position15>
-        <Filename Value="testwatches.pas"/>
-        <Caret Line="146" Column="81" TopLine="114"/>
-      </Position15>
-      <Position16>
+      </Position1>
+      <Position2>
         <Filename Value="..\..\gdbmidebugger.pp"/>
         <Caret Line="8964" Column="91" TopLine="8900"/>
-      </Position16>
-      <Position17>
+      </Position2>
+      <Position3>
         <Filename Value="..\..\gdbmidebugger.pp"/>
         <Caret Line="3000" Column="33" TopLine="2967"/>
-      </Position17>
-      <Position18>
+      </Position3>
+      <Position4>
         <Filename Value="testbase.pas"/>
         <Caret Line="656" Column="6" TopLine="595"/>
-      </Position18>
-      <Position19>
+      </Position4>
+      <Position5>
         <Filename Value="testbase.pas"/>
         <Caret Line="637" Column="26" TopLine="595"/>
-      </Position19>
-      <Position20>
+      </Position5>
+      <Position6>
         <Filename Value="testbase.pas"/>
         <Caret Line="9" Column="52" TopLine="1"/>
-      </Position20>
-      <Position21>
+      </Position6>
+      <Position7>
         <Filename Value="testbase.pas"/>
         <Caret Line="640" Column="6" TopLine="610"/>
-      </Position21>
-      <Position22>
+      </Position7>
+      <Position8>
         <Filename Value="testbase.pas"/>
         <Caret Line="652" Column="1" TopLine="616"/>
-      </Position22>
-      <Position23>
+      </Position8>
+      <Position9>
         <Filename Value="testbase.pas"/>
         <Caret Line="686" Column="1" TopLine="616"/>
-      </Position23>
-      <Position24>
+      </Position9>
+      <Position10>
         <Filename Value="testbase.pas"/>
         <Caret Line="658" Column="13" TopLine="616"/>
-      </Position24>
-      <Position25>
+      </Position10>
+      <Position11>
         <Filename Value="testbase.pas"/>
         <Caret Line="652" Column="7" TopLine="616"/>
-      </Position25>
-      <Position26>
+      </Position11>
+      <Position12>
         <Filename Value="testbase.pas"/>
         <Caret Line="662" Column="42" TopLine="616"/>
-      </Position26>
-      <Position27>
+      </Position12>
+      <Position13>
         <Filename Value="testbase.pas"/>
         <Caret Line="656" Column="1" TopLine="616"/>
-      </Position27>
-      <Position28>
+      </Position13>
+      <Position14>
         <Filename Value="testbase.pas"/>
         <Caret Line="658" Column="1" TopLine="616"/>
-      </Position28>
-      <Position29>
+      </Position14>
+      <Position15>
         <Filename Value="testbase.pas"/>
         <Caret Line="659" Column="1" TopLine="616"/>
-      </Position29>
-      <Position30>
+      </Position15>
+      <Position16>
         <Filename Value="testbase.pas"/>
         <Caret Line="660" Column="1" TopLine="616"/>
-      </Position30>
+      </Position16>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
