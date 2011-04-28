@@ -6153,6 +6153,7 @@ msgid "Select Code Macro"
 msgstr "Vybrať makro kódu"
 
 #: lazarusidestrconsts.liscurrent
+msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Aktuálny"
 
@@ -6388,7 +6389,9 @@ msgid "Language Exceptions"
 msgstr "Výnimky jazyka"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlimitlinecountto
-msgid "Limit linecount to"
+#, fuzzy
+#| msgid "Limit linecount to"
+msgid "Limit line count to"
 msgstr "Obmedziť počet riadkov na"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmmodule
@@ -6441,10 +6444,13 @@ msgstr "Signály"
 msgid "Thread"
 msgstr "Vlákno"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmwindow
-msgctxt "lazarusidestrconsts.lisdebugoptionsfrmwindow"
-msgid "Window"
-msgstr "Okno"
+#: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
+msgid "Use event log colors"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmwindows
+msgid "Windows"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile
 msgid "Unable to load file"
@@ -7833,6 +7839,7 @@ msgid "Search where"
 msgstr "Kde hľadať"
 
 #: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
 msgid "Function"
 msgstr "Funkcia"
 
@@ -9019,6 +9026,10 @@ msgstr "Prepnúť zobrazenie Výsledky hľadania"
 #: lazarusidestrconsts.liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
 msgstr "Prepnúť zobrazenie Editora zdrojových kódov"
+
+#: lazarusidestrconsts.liskmtoggleviewthreads
+msgid "Toggle view Threads"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
 msgid "Toggle view Watches"
@@ -10686,6 +10697,11 @@ msgstr "Editor zdrojového kódu"
 msgid "Tab Order"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuviewthreads
+msgctxt "lazarusidestrconsts.lismenuviewthreads"
+msgid "Threads"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -11164,6 +11180,7 @@ msgid "readonly"
 msgstr "len na čítanie"
 
 #: lazarusidestrconsts.lisoipstate
+msgctxt "lazarusidestrconsts.lisoipstate"
 msgid "State"
 msgstr "Stav"
 
@@ -14385,6 +14402,49 @@ msgstr "Tento príkaz nemôže byť vytiahnutý.%sProsím vyberte nejaký kód p
 msgid "This will create a circle."
 msgstr ""
 
+#: lazarusidestrconsts.listhreads
+msgctxt "lazarusidestrconsts.listhreads"
+msgid "Threads"
+msgstr ""
+
+#: lazarusidestrconsts.listhreadscurrent
+msgctxt "lazarusidestrconsts.listhreadscurrent"
+msgid "Current"
+msgstr "Aktuálny"
+
+#: lazarusidestrconsts.listhreadsfunc
+msgctxt "lazarusidestrconsts.listhreadsfunc"
+msgid "Function"
+msgstr "Funkcia"
+
+#: lazarusidestrconsts.listhreadsgoto
+msgid "Goto"
+msgstr ""
+
+#: lazarusidestrconsts.listhreadsid
+msgid "Id"
+msgstr ""
+
+#: lazarusidestrconsts.listhreadsline
+msgctxt "lazarusidestrconsts.listhreadsline"
+msgid "Line"
+msgstr "Riadok"
+
+#: lazarusidestrconsts.listhreadsname
+msgctxt "lazarusidestrconsts.listhreadsname"
+msgid "Name"
+msgstr "Meno"
+
+#: lazarusidestrconsts.listhreadssrc
+msgctxt "lazarusidestrconsts.listhreadssrc"
+msgid "Source"
+msgstr "Zdrojový kód"
+
+#: lazarusidestrconsts.listhreadsstate
+msgctxt "lazarusidestrconsts.listhreadsstate"
+msgid "State"
+msgstr "Stav"
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr ""
@@ -16672,6 +16732,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecviewthreads
+msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies

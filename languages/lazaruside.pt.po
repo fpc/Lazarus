@@ -6149,6 +6149,7 @@ msgid "Select Code Macro"
 msgstr "Selecionar Código de Macro"
 
 #: lazarusidestrconsts.liscurrent
+msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Atual"
 
@@ -6383,7 +6384,9 @@ msgid "Language Exceptions"
 msgstr "Exceções de Idioma"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlimitlinecountto
-msgid "Limit linecount to"
+#, fuzzy
+#| msgid "Limit linecount to"
+msgid "Limit line count to"
 msgstr "Limitar contagem de linha em"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmmodule
@@ -6436,10 +6439,13 @@ msgstr "Sinais"
 msgid "Thread"
 msgstr "Thread"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmwindow
-msgctxt "lazarusidestrconsts.lisdebugoptionsfrmwindow"
-msgid "Window"
-msgstr "Janela"
+#: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
+msgid "Use event log colors"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmwindows
+msgid "Windows"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile
 msgid "Unable to load file"
@@ -7828,6 +7834,7 @@ msgid "Search where"
 msgstr "Localizar onde"
 
 #: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
 msgid "Function"
 msgstr "Função"
 
@@ -9014,6 +9021,10 @@ msgstr "Alternar exibição Resultados de Pesquisa"
 #: lazarusidestrconsts.liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
 msgstr "Alternar exibição Editor Código"
+
+#: lazarusidestrconsts.liskmtoggleviewthreads
+msgid "Toggle view Threads"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
 msgid "Toggle view Watches"
@@ -10665,6 +10676,11 @@ msgstr "Editor de Código"
 msgid "Tab Order"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuviewthreads
+msgctxt "lazarusidestrconsts.lismenuviewthreads"
+msgid "Threads"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -11139,6 +11155,7 @@ msgid "readonly"
 msgstr "somente leitura"
 
 #: lazarusidestrconsts.lisoipstate
+msgctxt "lazarusidestrconsts.lisoipstate"
 msgid "State"
 msgstr "Estado"
 
@@ -14359,6 +14376,49 @@ msgstr "Esta declaração não pode ser extraída.%sFavor selecionar algum códi
 msgid "This will create a circle."
 msgstr "Referência circular."
 
+#: lazarusidestrconsts.listhreads
+msgctxt "lazarusidestrconsts.listhreads"
+msgid "Threads"
+msgstr ""
+
+#: lazarusidestrconsts.listhreadscurrent
+msgctxt "lazarusidestrconsts.listhreadscurrent"
+msgid "Current"
+msgstr "Atual"
+
+#: lazarusidestrconsts.listhreadsfunc
+msgctxt "lazarusidestrconsts.listhreadsfunc"
+msgid "Function"
+msgstr "Função"
+
+#: lazarusidestrconsts.listhreadsgoto
+msgid "Goto"
+msgstr ""
+
+#: lazarusidestrconsts.listhreadsid
+msgid "Id"
+msgstr ""
+
+#: lazarusidestrconsts.listhreadsline
+msgctxt "lazarusidestrconsts.listhreadsline"
+msgid "Line"
+msgstr "Linha"
+
+#: lazarusidestrconsts.listhreadsname
+msgctxt "lazarusidestrconsts.listhreadsname"
+msgid "Name"
+msgstr "Nome"
+
+#: lazarusidestrconsts.listhreadssrc
+msgctxt "lazarusidestrconsts.listhreadssrc"
+msgid "Source"
+msgstr "Fonte"
+
+#: lazarusidestrconsts.listhreadsstate
+msgctxt "lazarusidestrconsts.listhreadsstate"
+msgid "State"
+msgstr "Estado"
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr "&Auto fechar em caso de sucesso"
@@ -16640,6 +16700,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecviewthreads
+msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies

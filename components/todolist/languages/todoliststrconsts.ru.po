@@ -39,7 +39,7 @@ msgstr "Экспорт"
 
 #: todoliststrconsts.listodogoto
 msgid "Goto"
-msgstr "Переход"
+msgstr "Перейти"
 
 #: todoliststrconsts.listodoldescription
 msgid "Description"

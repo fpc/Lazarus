@@ -6157,6 +6157,7 @@ msgid "Select Code Macro"
 msgstr "选择代码宏"
 
 #: lazarusidestrconsts.liscurrent
+msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "当前"
 
@@ -6392,7 +6393,9 @@ msgid "Language Exceptions"
 msgstr "语言异常"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlimitlinecountto
-msgid "Limit linecount to"
+#, fuzzy
+#| msgid "Limit linecount to"
+msgid "Limit line count to"
 msgstr "限制行数为"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmmodule
@@ -6445,10 +6448,13 @@ msgstr "信号"
 msgid "Thread"
 msgstr "线程"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmwindow
-msgctxt "lazarusidestrconsts.lisdebugoptionsfrmwindow"
-msgid "Window"
-msgstr "窗口"
+#: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
+msgid "Use event log colors"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmwindows
+msgid "Windows"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile
 msgid "Unable to load file"
@@ -7835,6 +7841,7 @@ msgid "Search where"
 msgstr "查找范围"
 
 #: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
 msgid "Function"
 msgstr "函数"
 
@@ -9021,6 +9028,10 @@ msgstr "切换到搜索结果视图"
 #: lazarusidestrconsts.liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
 msgstr "切换到源码编辑器视图"
+
+#: lazarusidestrconsts.liskmtoggleviewthreads
+msgid "Toggle view Threads"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
 msgid "Toggle view Watches"
@@ -10686,6 +10697,11 @@ msgstr "源代码编辑器"
 msgid "Tab Order"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuviewthreads
+msgctxt "lazarusidestrconsts.lismenuviewthreads"
+msgid "Threads"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -11166,6 +11182,7 @@ msgid "readonly"
 msgstr "只读"
 
 #: lazarusidestrconsts.lisoipstate
+msgctxt "lazarusidestrconsts.lisoipstate"
 msgid "State"
 msgstr "状态"
 
@@ -14387,6 +14404,49 @@ msgstr "语句无法分析.%s请选择一段代码用来分析 procedure/method.
 msgid "This will create a circle."
 msgstr ""
 
+#: lazarusidestrconsts.listhreads
+msgctxt "lazarusidestrconsts.listhreads"
+msgid "Threads"
+msgstr ""
+
+#: lazarusidestrconsts.listhreadscurrent
+msgctxt "lazarusidestrconsts.listhreadscurrent"
+msgid "Current"
+msgstr "当前"
+
+#: lazarusidestrconsts.listhreadsfunc
+msgctxt "lazarusidestrconsts.listhreadsfunc"
+msgid "Function"
+msgstr "函数"
+
+#: lazarusidestrconsts.listhreadsgoto
+msgid "Goto"
+msgstr ""
+
+#: lazarusidestrconsts.listhreadsid
+msgid "Id"
+msgstr ""
+
+#: lazarusidestrconsts.listhreadsline
+msgctxt "lazarusidestrconsts.listhreadsline"
+msgid "Line"
+msgstr "行"
+
+#: lazarusidestrconsts.listhreadsname
+msgctxt "lazarusidestrconsts.listhreadsname"
+msgid "Name"
+msgstr "名称"
+
+#: lazarusidestrconsts.listhreadssrc
+msgctxt "lazarusidestrconsts.listhreadssrc"
+msgid "Source"
+msgstr "源代码"
+
+#: lazarusidestrconsts.listhreadsstate
+msgctxt "lazarusidestrconsts.listhreadsstate"
+msgid "State"
+msgstr "状态"
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr ""
@@ -16674,6 +16734,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecviewthreads
+msgid "View Threads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies

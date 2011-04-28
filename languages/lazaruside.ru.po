@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-24 18:00+0300\n"
+"PO-Revision-Date: 2011-04-28 23:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6156,6 +6156,7 @@ msgid "Select Code Macro"
 msgstr "Выбрать макрос кода"
 
 #: lazarusidestrconsts.liscurrent
+msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Текущий"
 
@@ -6390,8 +6391,9 @@ msgid "Language Exceptions"
 msgstr "Исключения языка"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlimitlinecountto
-msgid "Limit linecount to"
-msgstr "Максимальное число строк"
+#| msgid "Limit linecount to"
+msgid "Limit line count to"
+msgstr "Ограничить число строк"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmmodule
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmmodule"
@@ -6441,12 +6443,15 @@ msgstr "Сигналы"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmthread
 msgid "Thread"
-msgstr "Тред"
+msgstr "Поток выполнения"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmwindow
-msgctxt "lazarusidestrconsts.lisdebugoptionsfrmwindow"
-msgid "Window"
-msgstr "Окно"
+#: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
+msgid "Use event log colors"
+msgstr "Включить цвета журнала событий"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmwindows
+msgid "Windows"
+msgstr "Окна"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile
 msgid "Unable to load file"
@@ -7832,6 +7837,7 @@ msgid "Search where"
 msgstr "Искать где"
 
 #: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
 msgid "Function"
 msgstr "Функция"
 
@@ -9021,6 +9027,10 @@ msgstr "Показать результаты поиска"
 #: lazarusidestrconsts.liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
 msgstr "Показать редактор исходного кода"
+
+#: lazarusidestrconsts.liskmtoggleviewthreads
+msgid "Toggle view Threads"
+msgstr "Показать окно потоков выполнения"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
 msgid "Toggle view Watches"
@@ -10665,6 +10675,11 @@ msgstr "Редактор исходного кода"
 msgid "Tab Order"
 msgstr "Порядок перехода"
 
+#: lazarusidestrconsts.lismenuviewthreads
+msgctxt "lazarusidestrconsts.lismenuviewthreads"
+msgid "Threads"
+msgstr "Потоки выполнения"
+
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
 msgid "ToDo List"
@@ -11140,6 +11155,7 @@ msgid "readonly"
 msgstr "только чтение"
 
 #: lazarusidestrconsts.lisoipstate
+msgctxt "lazarusidestrconsts.lisoipstate"
 msgid "State"
 msgstr "Состояние"
 
@@ -14360,6 +14376,49 @@ msgstr "Это выражение не может быть извлечено.%s
 msgid "This will create a circle."
 msgstr "Это действие приведёт к появлению цикла в привязках."
 
+#: lazarusidestrconsts.listhreads
+msgctxt "lazarusidestrconsts.listhreads"
+msgid "Threads"
+msgstr "Потоки выполнения"
+
+#: lazarusidestrconsts.listhreadscurrent
+msgctxt "lazarusidestrconsts.listhreadscurrent"
+msgid "Current"
+msgstr "Текущий"
+
+#: lazarusidestrconsts.listhreadsfunc
+msgctxt "lazarusidestrconsts.listhreadsfunc"
+msgid "Function"
+msgstr "Функция"
+
+#: lazarusidestrconsts.listhreadsgoto
+msgid "Goto"
+msgstr "Перейти"
+
+#: lazarusidestrconsts.listhreadsid
+msgid "Id"
+msgstr "ID"
+
+#: lazarusidestrconsts.listhreadsline
+msgctxt "lazarusidestrconsts.listhreadsline"
+msgid "Line"
+msgstr "Строка"
+
+#: lazarusidestrconsts.listhreadsname
+msgctxt "lazarusidestrconsts.listhreadsname"
+msgid "Name"
+msgstr "Имя"
+
+#: lazarusidestrconsts.listhreadssrc
+msgctxt "lazarusidestrconsts.listhreadssrc"
+msgid "Source"
+msgstr "Файл исходного кода"
+
+#: lazarusidestrconsts.listhreadsstate
+msgctxt "lazarusidestrconsts.listhreadsstate"
+msgid "State"
+msgstr "Состояние"
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr "&Автоматически закрывать в случае успеха"
@@ -16645,6 +16704,10 @@ msgstr "Показать вывод в терминал"
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
 msgstr "Показать порядок перехода"
+
+#: lazarusidestrconsts.srkmecviewthreads
+msgid "View Threads"
+msgstr "Показать потоки выполнения"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"
