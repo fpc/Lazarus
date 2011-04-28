@@ -3055,7 +3055,7 @@ msgstr "Componentes multi-selecionados deverm estar num formulário único."
 
 #: lazarusidestrconsts.fdmalignmenu
 msgid "Align ..."
-msgstr ""
+msgstr "Alinhamento ..."
 
 #: lazarusidestrconsts.fdmdeleteselection
 #| msgid "Delete selection"
@@ -3104,7 +3104,7 @@ msgstr "Salvar formulário como XML"
 
 #: lazarusidestrconsts.fdmscalemenu
 msgid "Scale ..."
-msgstr ""
+msgstr "Escala ..."
 
 #: lazarusidestrconsts.fdmscaleword
 msgid "Scale"
@@ -3117,7 +3117,7 @@ msgstr "Selecionar Tudo"
 
 #: lazarusidestrconsts.fdmsizemenu
 msgid "Size ..."
-msgstr ""
+msgstr "Tamanho ..."
 
 #: lazarusidestrconsts.fdmsizeword
 msgid "Size"
@@ -4528,18 +4528,17 @@ msgid "Change file"
 msgstr "Alterar arquivo"
 
 #: lazarusidestrconsts.lischangeparent
-#, fuzzy
 #| msgid "Change Parent..."
 msgid "Change Parent"
-msgstr "Alterar controle-pai ..."
+msgstr "Alterar controle-pai"
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
-msgstr ""
+msgstr "Alterar para / Unix"
 
 #: lazarusidestrconsts.lischangetowindows
 msgid "Change to Windows \\"
-msgstr ""
+msgstr "Alterar para \\ Windows"
 
 #: lazarusidestrconsts.lischaracter
 msgid "Character"
@@ -6284,11 +6283,11 @@ msgstr "Erro do Depurador%sOoops, o depurador entrou em uma condição de erro%s
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror
 msgid "Debugger Error"
-msgstr ""
+msgstr "Erro do Depurador"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackless
 msgid "Less"
-msgstr ""
+msgstr "Menos"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackmore
 msgctxt "lazarusidestrconsts.lisdebuggerfeedbackmore"
@@ -6307,7 +6306,7 @@ msgstr "Parar"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackwarning
 msgid "Debugger Warning"
-msgstr ""
+msgstr "Aviso do Depurador"
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -6441,11 +6440,11 @@ msgstr "Thread"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
-msgstr ""
+msgstr "Usar cores no registro de eventos"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"
-msgstr ""
+msgstr "Janelas"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile
 msgid "Unable to load file"
@@ -6771,7 +6770,7 @@ msgstr "%s não existe: %s"
 
 #: lazarusidestrconsts.lisdonotchange
 msgid "Do not change"
-msgstr ""
+msgstr "Não alterar"
 
 #: lazarusidestrconsts.lisdonotclosetheide
 msgid "Do not close the IDE"
@@ -7555,10 +7554,9 @@ msgid "File not text"
 msgstr "Arquivo não é texto"
 
 #: lazarusidestrconsts.lisfilesettings
-#, fuzzy
 #| msgid "File Settings ..."
 msgid "File Settings"
-msgstr "Configurações Arquivo ..."
+msgstr "Configurações Arquivo"
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
@@ -9007,7 +9005,7 @@ msgstr "Alternar exibição Inspetor de Objetos"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
 msgid "Toggle view Terminal Output"
-msgstr ""
+msgstr "Alternar exibição da Saída do Terminal"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "Toggle view Registers"
@@ -9023,7 +9021,7 @@ msgstr "Alternar exibição Editor Código"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
 msgid "Toggle view Threads"
-msgstr ""
+msgstr "Alternar exibição \"Threads\""
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
 msgid "Toggle view Watches"
@@ -9674,10 +9672,9 @@ msgid "Add breakpoint"
 msgstr "Adicionar ponto de parada"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
-#, fuzzy
 #| msgid "Add active unit to a package"
 msgid "Add active unit to a package ..."
-msgstr "Adicionar unidade ativa a um pacote"
+msgstr "Adicionar unidade ativa a um pacote ..."
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"
@@ -10179,10 +10176,9 @@ msgid "Pa&ckage"
 msgstr "Pa&cote"
 
 #: lazarusidestrconsts.lismenupackagegraph
-#, fuzzy
 #| msgid "Package Graph ..."
 msgid "Package Graph"
-msgstr "Gráfico de Pacotes ..."
+msgstr "Gráfico de Pacotes"
 
 #: lazarusidestrconsts.lismenupackagelinks
 msgid "Package links ..."
@@ -10622,11 +10618,10 @@ msgid "IDE speed buttons"
 msgstr "Botões IDE"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#, fuzzy
 #| msgid "Jump History ..."
 msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
-msgstr "Saltar para histórico ..."
+msgstr "Histórico de Saltos"
 
 #: lazarusidestrconsts.lismenuviewlocalvariables
 msgid "Local Variables"
@@ -10644,7 +10639,7 @@ msgstr "Inspetor de Objetos"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgid "Terminal Output"
-msgstr ""
+msgstr "Saída do Terminal"
 
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
@@ -10670,12 +10665,12 @@ msgstr "Editor de Código"
 
 #: lazarusidestrconsts.lismenuviewtaborder
 msgid "Tab Order"
-msgstr ""
+msgstr "Ordem Tabulação"
 
 #: lazarusidestrconsts.lismenuviewthreads
 msgctxt "lazarusidestrconsts.lismenuviewthreads"
 msgid "Threads"
-msgstr ""
+msgstr "Threads"
 
 #: lazarusidestrconsts.lismenuviewtodolist
 msgctxt "lazarusidestrconsts.lismenuviewtodolist"
@@ -10692,10 +10687,9 @@ msgid "Unit Dependencies"
 msgstr "Dependências da Unidade"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#, fuzzy
 #| msgid "Unit Information"
 msgid "Unit Information ..."
-msgstr "Informações da Unidade"
+msgstr "Informações da Unidade ..."
 
 #: lazarusidestrconsts.lismenuviewunits
 msgid "Units..."
@@ -10791,10 +10785,9 @@ msgid "Move \"%s\" one position up"
 msgstr "Mover \"%s\" uma posição acima"
 
 #: lazarusidestrconsts.lismovepage
-#, fuzzy
 #| msgid "Move Page ..."
 msgid "Move Page"
-msgstr "Mover Página ..."
+msgstr "Mover Página"
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -13786,7 +13779,7 @@ msgstr "Parar a depuração?"
 
 #: lazarusidestrconsts.lisstorepathdelimitersandas
 msgid "Store path delimiters \\ and / as"
-msgstr ""
+msgstr "Armazenar delimitadores de caminho \\ e / como"
 
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
@@ -13862,10 +13855,9 @@ msgid "Tab"
 msgstr "Tabulação"
 
 #: lazarusidestrconsts.listaborderof
-#, fuzzy
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
-msgstr "Ordem tabulação de"
+msgstr "Ordem tabulação de %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -14376,7 +14368,7 @@ msgstr "Referência circular."
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
 msgid "Threads"
-msgstr ""
+msgstr "Threads"
 
 #: lazarusidestrconsts.listhreadscurrent
 msgctxt "lazarusidestrconsts.listhreadscurrent"
@@ -14390,11 +14382,11 @@ msgstr "Função"
 
 #: lazarusidestrconsts.listhreadsgoto
 msgid "Goto"
-msgstr ""
+msgstr "Ir para"
 
 #: lazarusidestrconsts.listhreadsid
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #: lazarusidestrconsts.listhreadsline
 msgctxt "lazarusidestrconsts.listhreadsline"
@@ -15318,19 +15310,19 @@ msgstr "Decimal"
 
 #: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
-msgstr ""
+msgstr "Exibir tipo para os Registradores selecionados"
 
 #: lazarusidestrconsts.regdlghex
 msgid "Hex"
-msgstr ""
+msgstr "Hex"
 
 #: lazarusidestrconsts.regdlgoctal
 msgid "Octal"
-msgstr ""
+msgstr "Octal"
 
 #: lazarusidestrconsts.regdlgraw
 msgid "Raw"
-msgstr ""
+msgstr "Raw"
 
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
@@ -16692,15 +16684,15 @@ msgstr "Exibir formulários"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgid "View Terminal Output"
-msgstr ""
+msgstr "Exibir Saída do Terminal"
 
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
-msgstr ""
+msgstr "Exibir Ordem de Tabulação"
 
 #: lazarusidestrconsts.srkmecviewthreads
 msgid "View Threads"
-msgstr ""
+msgstr "Exibir Threads"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"
