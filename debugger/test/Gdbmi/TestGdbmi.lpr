@@ -5,7 +5,7 @@ program TestGdbmi;
 uses
   Interfaces, Forms, GuiTestRunner, CompileHelpers,
   TestGdbType, TestGDBMIControl,
-  TestBase, TestException, Testwatches;
+  TestBase, TestException, Testwatches, TestBreakPoint;
 
 {$R *.res}
 

@@ -56,6 +56,8 @@ begin
   CheckListBox1.Checked[j] := True;
   j := CheckListBox1.Items.Add('TTestWatch');
   CheckListBox1.Checked[j] := True;
+  j := CheckListBox1.Items.Add('TTestBreakPoint');
+  CheckListBox1.Checked[j] := True;
 
 end;
 

@@ -63,8 +63,8 @@ type
     procedure Flush;                                   // Flushes output buffer
     function  GetWaiting: Boolean; override;
     function  ReadLine(ATimeOut: Integer = -1): String; overload;
-    function  ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String; overload;
-    procedure SendCmdLn(const ACommand: String); overload;
+    function  ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String; virtual; overload;
+    procedure SendCmdLn(const ACommand: String); virtual; overload;
     procedure SendCmdLn(const ACommand: String; Values: array of const); overload;
     procedure SetLineEnds(ALineEnds: TStringDynArray);
     property ReadLineTimedOut: Boolean read FReadLineTimedOut;

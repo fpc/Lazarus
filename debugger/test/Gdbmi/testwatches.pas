@@ -54,7 +54,7 @@ type
     FWatches: TBaseWatches;
     FDbgOutPut: String;
     FDbgOutPutEnable: Boolean;
-    procedure DoDbgOutput(Sender: TObject; const AText: String); reintroduce;
+    procedure DoDbgOutput(Sender: TObject; const AText: String); override;
   public
     procedure DebugInteract(dbg: TGDBMIDebugger);
 
@@ -619,7 +619,6 @@ begin
     FWatches := TBaseWatches.Create(TBaseWatch);
     dbg := StartGDB(AppDir, TestExeName);
 
-    dbg.OnDbgOutput  := @DoDbgOutput;
     if (RUN_TEST_ONLY >= 0) or (RUN_GDB_TEST_ONLY >= 0) then begin
       DbgLog := False;
       if DbgForm = nil then begin

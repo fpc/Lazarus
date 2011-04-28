@@ -34,6 +34,8 @@ const
 
 type
 
+  TGDBMIDebuggerClass = class of TGDBMIDebugger;
+
   TCompilerInfo = record
         Name: string;
         ExeName: string;
@@ -179,7 +181,9 @@ type
     function GetLogActive: Boolean;
     procedure SetUp; override;
     procedure TearDown; override;
-    procedure DoDbgOutPut(Sender: TObject; const AText: String);
+    procedure DoDbgOutPut(Sender: TObject; const AText: String); virtual;
+    procedure InternalDbgOutPut(Sender: TObject; const AText: String);
+    function GdbClass: TGDBMIDebuggerClass; virtual;
     function StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
     procedure ClearTestErrors;
     procedure AddTestError(s: string; MinGdbVers: Integer = 0);
@@ -270,9 +274,20 @@ end;
 
 procedure TGDBTestCase.DoDbgOutPut(Sender: TObject; const AText: String);
 begin
+  //
+end;
+
+procedure TGDBTestCase.InternalDbgOutPut(Sender: TObject; const AText: String);
+begin
   if GetLogActive then begin
     writeln(FLogFile, AText);
   end;
+  DoDbgOutPut(Sender, AText);
+end;
+
+function TGDBTestCase.GdbClass: TGDBMIDebuggerClass;
+begin
+  Result := TGDBMIDebugger;
 end;
 
 function TGDBTestCase.GetCompilerInfo: TCompilerInfo;
@@ -330,7 +345,7 @@ end;
 
 function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
 begin
-  Result := TGDBMIDebugger.Create(DebuggerInfo.ExeName);
+  Result := GdbClass.Create(DebuggerInfo.ExeName);
   Result.Init;
   if Result.State = dsError then
     Fail(' Failed Init');
@@ -338,7 +353,7 @@ begin
   Result.FileName   := TestExeName;
   Result.Arguments := '';
   Result.ShowConsole := True;
-  Result.OnDbgOutput  := @DoDbgOutPut;
+  Result.OnDbgOutput  := @InternalDbgOutPut;
 end;
 
 procedure TGDBTestCase.ClearTestErrors;
