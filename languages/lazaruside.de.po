@@ -10275,10 +10275,6 @@ msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Wiederholen"
 
-#: lazarusidestrconsts.lismenurefactor
-msgid "Ref&actor"
-msgstr "Ref&aktorierung"
-
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
 msgstr "Aus Projekt entfernen ..."

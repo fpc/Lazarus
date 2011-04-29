@@ -50,3 +50,4 @@ msgstr "&Impostazioni registro"
 #: jcfideregister.format_settings_menu
 msgid "&Format Settings"
 msgstr "&Impostazioni formato"
+

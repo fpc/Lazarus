@@ -10179,10 +10179,6 @@ msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Opakovat změnu"
 
-#: lazarusidestrconsts.lismenurefactor
-msgid "Ref&actor"
-msgstr "Refaktorizace"
-
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
 msgstr "Odebrat z projektu..."

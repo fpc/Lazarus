@@ -74,3 +74,4 @@ msgstr "Dimensione memoria perduta: %d"
 #: heaptrcview.strtotalmemalloc
 msgid "Total Mem alloced: %d"
 msgstr "Totale memoria ALLOCata: %d"
+

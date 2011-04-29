@@ -10268,10 +10268,6 @@ msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "重做"
 
-#: lazarusidestrconsts.lismenurefactor
-msgid "Ref&actor"
-msgstr ""
-
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
 msgstr "从工程中移除 ..."

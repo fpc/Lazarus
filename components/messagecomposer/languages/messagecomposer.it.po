@@ -112,3 +112,4 @@ msgstr "Interfaccia del sorgente"
 #: messagecomposer.svaluevar
 msgid "Value (var)"
 msgstr "Valore (var)"
+

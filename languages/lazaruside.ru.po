@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-29 02:39+0300\n"
+"PO-Revision-Date: 2011-04-29 23:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -10249,10 +10249,6 @@ msgctxt "lazarusidestrconsts.lismenuredo"
 msgid "Redo"
 msgstr "Вернуть"
 
-#: lazarusidestrconsts.lismenurefactor
-msgid "Ref&actor"
-msgstr "Переработка &кода"
-
 #: lazarusidestrconsts.lismenuremovefromproject
 msgid "Remove from Project ..."
 msgstr "Убрать из проекта ..."
@@ -10375,7 +10371,7 @@ msgstr "Сортировать выделенное ..."
 
 #: lazarusidestrconsts.lismenusource
 msgid "S&ource"
-msgstr "Ко&д"
+msgstr "&Код"
 
 #: lazarusidestrconsts.lismenustepinto
 msgid "Step into"
