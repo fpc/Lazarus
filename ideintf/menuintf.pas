@@ -323,16 +323,14 @@ var
     mnuSource: TIDEMenuSection;
       itmSourceBlockActions: TIDEMenuSection;
       itmSourceCodeToolChecks: TIDEMenuSection;
+      itmSourceRefactor: TIDEMenuSection;
+        itmRefactorCodeTools: TIDEMenuSection;
+        itmRefactorAdvanced: TIDEMenuSection;
+        itmRefactorTools: TIDEMenuSection;
       itmSourceInsertions: TIDEMenuSection;
         itmSourceInsertCVSKeyWord: TIDEMenuSection;
         itmSourceInsertGeneral: TIDEMenuSection;
       itmSourceTools: TIDEMenuSection;
-
-    // refactor menu
-    mnuRefactor: TIDEMenuSection;
-      itmRefactorCodeTools: TIDEMenuSection;
-      itmRefactorAdvanced: TIDEMenuSection;
-      itmRefactorTools: TIDEMenuSection;
 
     // project menu
     mnuProject: TIDEMenuSection;

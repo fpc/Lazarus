@@ -285,7 +285,6 @@ type
     procedure mnuSourceUnitInfoClicked(Sender: TObject);
 
     // refactor menu
-    procedure mnuRefactorClicked(Sender: TObject);
     procedure mnuRefactorCompleteCodeClicked(Sender: TObject);
     procedure mnuRefactorUseUnitClicked(Sender: TObject);
     procedure mnuRefactorRenameIdentifierClicked(Sender: TObject);
@@ -662,7 +661,6 @@ type
     procedure SetupSearchMenu; override;
     procedure SetupViewMenu; override;
     procedure SetupSourceMenu; override;
-    procedure SetupRefactorMenu; override;
     procedure SetupProjectMenu; override;
     procedure SetupRunMenu; override;
     procedure SetupComponentsMenu; override;
@@ -2359,7 +2357,6 @@ begin
   SetupSearchMenu;
   SetupViewMenu;
   SetupSourceMenu;
-  SetupRefactorMenu;
   SetupProjectMenu;
   SetupRunMenu;
   SetupComponentsMenu;
@@ -2523,7 +2520,21 @@ begin
     itmSourceSyntaxCheck.OnClick := @mnuSourceSyntaxCheckClicked;
     itmSourceGuessUnclosedBlock.OnClick := @mnuSourceGuessUnclosedBlockClicked;
     itmSourceGuessMisplacedIFDEF.OnClick := @mnuSourceGuessMisplacedIFDEFClicked;
-
+    // Refactor
+    itmRefactorCompleteCode.OnClick:=@mnuRefactorCompleteCodeClicked;
+    itmRefactorUseUnit.OnClick:=@mnuRefactorUseUnitClicked;
+    itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
+    itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
+    itmRefactorInvertAssignment.OnClick:=@mnuRefactorInvertAssignmentClicked;
+    // itmRefactorAdvanced
+    itmRefactorShowAbstractMethods.OnClick:=@mnuRefactorShowAbstractMethodsClicked;
+    itmRefactorShowEmptyMethods.OnClick:=@mnuRefactorShowEmptyMethodsClicked;
+    itmRefactorShowUnusedUnits.OnClick:=@mnuRefactorShowUnusedUnitsClicked;
+    {$IFDEF EnableFindOverloads}
+    itmRefactorFindOverloads.OnClick:=@mnuRefactorFindOverloadsClicked;
+    {$ENDIF}
+    // itmRefactorTools
+    itmRefactorMakeResourceString.OnClick := @mnuRefactorMakeResourceStringClicked;
     // insert CVS keyword
     itmSourceInsertCVSAuthor.OnClick:=@mnuSourceInsertCVSAuthorClick;
     itmSourceInsertCVSDate.OnClick:=@mnuSourceInsertCVSDateClick;
@@ -2543,28 +2554,6 @@ begin
     itmSourceInsertGUID.OnClick:=@mnuSourceInsertGUID;
     // Tools
     itmSourceUnitInfo.OnClick := @mnuSourceUnitInfoClicked;
-  end;
-end;
-
-procedure TMainIDE.SetupRefactorMenu;
-begin
-  inherited SetupRefactorMenu;
-  mnuRefactor.OnClick:=@mnuRefactorClicked;
-  with MainIDEBar do begin
-    itmRefactorCompleteCode.OnClick:=@mnuRefactorCompleteCodeClicked;
-    itmRefactorUseUnit.OnClick:=@mnuRefactorUseUnitClicked;
-    itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
-    itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
-    itmRefactorInvertAssignment.OnClick:=@mnuRefactorInvertAssignmentClicked;
-    // itmRefactorAdvanced
-    itmRefactorShowAbstractMethods.OnClick:=@mnuRefactorShowAbstractMethodsClicked;
-    itmRefactorShowEmptyMethods.OnClick:=@mnuRefactorShowEmptyMethodsClicked;
-    itmRefactorShowUnusedUnits.OnClick:=@mnuRefactorShowUnusedUnitsClicked;
-    {$IFDEF EnableFindOverloads}
-    itmRefactorFindOverloads.OnClick:=@mnuRefactorFindOverloadsClicked;
-    {$ENDIF}
-    // itmRefactorTools
-    itmRefactorMakeResourceString.OnClick := @mnuRefactorMakeResourceStringClicked;
   end;
 end;
 
@@ -3857,46 +3846,7 @@ procedure TMainIDE.mnuSourceClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
-  Editable: Boolean;
-  SelAvail: Boolean;
-  SelEditable: Boolean;
-begin
-  GetCurrentUnit(ASrcEdit,AnUnitInfo);
-  Editable:=(ASrcEdit<>nil) and (not ASrcEdit.ReadOnly);
-  SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
-  SelEditable:=Editable and SelAvail;
-  with MainIDEBar do begin
-  //itmSourceBlockActions: TIDEMenuSection;
-    itmSourceCommentBlock.Enabled:=SelEditable;
-    itmSourceUncommentBlock.Enabled:=SelEditable;
-    itmSourceEncloseBlock.Enabled:=SelEditable;
-    itmSourceEncloseInIFDEF.Enabled:=SelEditable;
-  //itmSourceInsertions: TIDEMenuSection;
-    //itmSourceInsertCVSKeyWord: TIDEMenuSection;
-      itmSourceInsertCVSAuthor.Enabled:=Editable;
-      itmSourceInsertCVSDate.Enabled:=Editable;
-      itmSourceInsertCVSHeader.Enabled:=Editable;
-      itmSourceInsertCVSID.Enabled:=Editable;
-      itmSourceInsertCVSLog.Enabled:=Editable;
-      itmSourceInsertCVSName.Enabled:=Editable;
-      itmSourceInsertCVSRevision.Enabled:=Editable;
-      itmSourceInsertCVSSource.Enabled:=Editable;
-    //itmSourceInsertGeneral: TIDEMenuSection;
-      itmSourceInsertGPLNotice.Enabled:=Editable;
-      itmSourceInsertLGPLNotice.Enabled:=Editable;
-      itmSourceInsertModifiedLGPLNotice.Enabled:=Editable;
-      itmSourceInsertUsername.Enabled:=Editable;
-      itmSourceInsertDateTime.Enabled:=Editable;
-      itmSourceInsertChangeLogEntry.Enabled:=Editable;
-  end;
-end;
-
-{------------------------------------------------------------------------------}
-procedure TMainIDE.mnuRefactorClicked(Sender: TObject);
-var
-  ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
-  Editable, SelAvail, IdentFound, StringFound: Boolean;
+  Editable, SelEditable, SelAvail, IdentFound, StringFound: Boolean;
   CurrentUnitName: String;
   AvailUnits: TStringList;
   StartCode, EndCode: TCodeBuffer;
@@ -3904,15 +3854,12 @@ var
   NewX, NewY, NewTopLine: integer;
   CursorXY: TPoint;
 begin
-  Editable:=False;
-  SelAvail:=False;
-  IdentFound:=False;
-  StringFound:=False;
   AvailUnits:=nil;
   try
     if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then begin
-      Editable:=not ASrcEdit.ReadOnly;
-      SelAvail:=ASrcEdit.SelectionAvailable;
+//    GetCurrentUnit(ASrcEdit,AnUnitInfo);
+      Editable:=(ASrcEdit<>nil) and (not ASrcEdit.ReadOnly);
+      SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
 
       // Get Available Units count to enable UseProjUnit feature.
       AvailUnits:=GetAvailableUnits(ASrcEdit, CurrentUnitName);
@@ -3930,16 +3877,40 @@ begin
                                            EndCode,EndPos.X,EndPos.Y,true) then
         StringFound:=(StartCode<>EndCode) or (CompareCaret(StartPos,EndPos)<>0);
     end;
+    SelEditable:=Editable and SelAvail;
     with MainIDEBar do begin
-    //itmRefactorCodeTools
-      itmRefactorCompleteCode.Enabled:=Editable;
-      itmRefactorUseUnit.Enabled:=Editable and
-                                  Assigned(AvailUnits) and (AvailUnits.Count>0);
-      itmRefactorRenameIdentifier.Enabled:=Editable and IdentFound;
-      itmRefactorExtractProc.Enabled:=Editable and SelAvail;
-      itmRefactorInvertAssignment.Enabled:=Editable and SelAvail;
-    //itmRefactorAdvanced
-      itmRefactorMakeResourceString.Enabled:=Editable and StringFound;
+    //itmSourceBlockActions
+      itmSourceCommentBlock.Enabled:=SelEditable;
+      itmSourceUncommentBlock.Enabled:=SelEditable;
+      itmSourceEncloseBlock.Enabled:=SelEditable;
+      itmSourceEncloseInIFDEF.Enabled:=SelEditable;
+    //itmSourceInsertions
+      //itmSourceInsertCVSKeyWord
+        itmSourceInsertCVSAuthor.Enabled:=Editable;
+        itmSourceInsertCVSDate.Enabled:=Editable;
+        itmSourceInsertCVSHeader.Enabled:=Editable;
+        itmSourceInsertCVSID.Enabled:=Editable;
+        itmSourceInsertCVSLog.Enabled:=Editable;
+        itmSourceInsertCVSName.Enabled:=Editable;
+        itmSourceInsertCVSRevision.Enabled:=Editable;
+        itmSourceInsertCVSSource.Enabled:=Editable;
+      //itmSourceInsertGeneral
+        itmSourceInsertGPLNotice.Enabled:=Editable;
+        itmSourceInsertLGPLNotice.Enabled:=Editable;
+        itmSourceInsertModifiedLGPLNotice.Enabled:=Editable;
+        itmSourceInsertUsername.Enabled:=Editable;
+        itmSourceInsertDateTime.Enabled:=Editable;
+        itmSourceInsertChangeLogEntry.Enabled:=Editable;
+    //itmSourceRefactor
+      //itmRefactorCodeTools
+        itmRefactorCompleteCode.Enabled:=Editable;
+        itmRefactorUseUnit.Enabled:=Editable and
+                                    Assigned(AvailUnits) and (AvailUnits.Count>0);
+        itmRefactorRenameIdentifier.Enabled:=Editable and IdentFound;
+        itmRefactorExtractProc.Enabled:=Editable and SelAvail;
+        itmRefactorInvertAssignment.Enabled:=Editable and SelAvail;
+      //itmRefactorAdvanced
+        itmRefactorMakeResourceString.Enabled:=Editable and StringFound;
     end;
   finally
     AvailUnits.Free;

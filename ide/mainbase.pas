@@ -109,7 +109,6 @@ type
     procedure SetupSearchMenu; virtual;
     procedure SetupViewMenu; virtual;
     procedure SetupSourceMenu; virtual;
-    procedure SetupRefactorMenu; virtual;
     procedure SetupProjectMenu; virtual;
     procedure SetupRunMenu; virtual;
     procedure SetupComponentsMenu; virtual;
@@ -357,7 +356,6 @@ begin
     CreateMainMenuItem(mnuSearch,'Search',lisMenuSearch);
     CreateMainMenuItem(mnuView,'View',lisMenuView);
     CreateMainMenuItem(mnuSource,'Source',lisMenuSource);
-    CreateMainMenuItem(mnuRefactor,'Refactor',lisMenuRefactor);
     CreateMainMenuItem(mnuProject,'Project',lisMenuProject);
     CreateMainMenuItem(mnuRun,'Run',lisMenuRun);
     CreateMainMenuItem(mnuPackage,'Package',lisMenuPackage);
@@ -561,7 +559,32 @@ begin
     CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_comment');
     CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
+    // Refactor
+    CreateMenuSeparatorSection(mnuSource,itmSourceRefactor,'itmSourceRefactor');
+    CreateMenuSubSection(ParentMI,itmSourceRefactor,'itmSourceRefactor',uemRefactor);
+    SubParentMI:=itmSourceRefactor;
+      CreateMenuSeparatorSection(SubParentMI,itmRefactorCodeTools,'itmRefactorCodeTools');
+      ParentMI:=itmRefactorCodeTools;
+      CreateMenuItem(ParentMI,itmRefactorCompleteCode,'itmRefactorCompleteCode',lisMenuCompleteCode);
+      CreateMenuItem(ParentMI,itmRefactorUseUnit,'itmRefactorUseUnit',lisMenuUseProjectUnit);
+      CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
+      CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
+      CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
 
+      CreateMenuSeparatorSection(SubParentMI,itmRefactorAdvanced,'itmRefactorAdvanced');
+      ParentMI:=itmRefactorAdvanced;
+      CreateMenuItem(ParentMI,itmRefactorShowAbstractMethods,'itmShowAbstractMethods',srkmecAbstractMethods);
+      CreateMenuItem(ParentMI,itmRefactorShowEmptyMethods,'itmShowEmptyMethods',srkmecEmptyMethods);
+      CreateMenuItem(ParentMI,itmRefactorShowUnusedUnits,'itmShowUnusedUnits',srkmecUnusedUnits);
+      {$IFDEF EnableFindOverloads}
+      CreateMenuItem(ParentMI,itmRefactorFindOverloads,'itmFindOverloads',srkmecFindOverloadsCapt);
+      {$ENDIF}
+
+      CreateMenuSeparatorSection(SubParentMI,itmRefactorTools,'itmRefactorTools');
+      ParentMI:=itmRefactorTools;
+      CreateMenuItem(ParentMI,itmRefactorMakeResourceString,'itmRefactorMakeResourceString',
+                     lisMenuMakeResourceString,'menu_tool_make_resourcestring');
+    // CodeToolChecks
     CreateMenuSeparatorSection(mnuSource,itmSourceCodeToolChecks,'itmSourceCodeToolChecks');
     ParentMI:=itmSourceCodeToolChecks;
     CreateMenuItem(ParentMI,itmSourceSyntaxCheck,'itmSourceSyntaxCheck',lisMenuQuickSyntaxCheck, 'menu_tool_syntax_check');
@@ -572,9 +595,8 @@ begin
     ParentMI:=itmSourceInsertions;
     // *** insert text ***:
     CreateMenuSubSection(ParentMI,itmSourceInsertCVSKeyWord,'itmSourceInsertCVSKeyWord',lisMenuInsertCVSKeyword);
-    begin
+    SubParentMI:=itmSourceInsertCVSKeyWord;
       // insert CVS keyword sub menu items
-      SubParentMI:=itmSourceInsertCVSKeyWord;
       CreateMenuItem(SubParentMI,itmSourceInsertCVSAuthor,'itmSourceInsertCVSAuthor','Author');
       CreateMenuItem(SubParentMI,itmSourceInsertCVSDate,'itmSourceInsertCVSDate','Date');
       CreateMenuItem(SubParentMI,itmSourceInsertCVSHeader,'itmSourceInsertCVSHeader','Header');
@@ -583,12 +605,10 @@ begin
       CreateMenuItem(SubParentMI,itmSourceInsertCVSName,'itmSourceInsertCVSName','Name');
       CreateMenuItem(SubParentMI,itmSourceInsertCVSRevision,'itmSourceInsertCVSRevision','Revision');
       CreateMenuItem(SubParentMI,itmSourceInsertCVSSource,'itmSourceInsertCVSSource','Source');
-    end;
 
     CreateMenuSubSection(ParentMI,itmSourceInsertGeneral,'itmSourceInsertGeneral',lisMenuInsertGeneral);
-    begin
+    SubParentMI:=itmSourceInsertGeneral;
       // insert general text sub menu items
-      SubParentMI:=itmSourceInsertGeneral;
       CreateMenuItem(SubParentMI,itmSourceInsertGPLNotice,'itmSourceInsertGPLNotice',lisMenuInsertGPLNotice);
       CreateMenuItem(SubParentMI,itmSourceInsertLGPLNotice,'itmSourceInsertLGPLNotice',lisMenuInsertLGPLNotice);
       CreateMenuItem(SubParentMI,itmSourceInsertModifiedLGPLNotice,'itmSourceInsertModifiedLGPLNotice',lisMenuInsertModifiedLGPLNotice);
@@ -596,39 +616,10 @@ begin
       CreateMenuItem(SubParentMI,itmSourceInsertDateTime,'itmSourceInsertDateTime',lisMenuInsertDateTime);
       CreateMenuItem(SubParentMI,itmSourceInsertChangeLogEntry,'itmSourceInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
       CreateMenuItem(SubParentMI,itmSourceInsertGUID,'itmSourceInsertGUID',srkmecInsertGUID);
-    end;
+
     CreateMenuSeparatorSection(mnuSource,itmSourceTools,'itmSourceTools');
     ParentMI:=itmSourceTools;
     CreateMenuItem(ParentMI,itmSourceUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo, 'menu_view_unit_info');
-  end;
-end;
-
-procedure TMainIDEBase.SetupRefactorMenu;
-var
-  ParentMI: TIDEMenuSection;
-begin
-  with MainIDEBar do begin
-    CreateMenuSeparatorSection(mnuRefactor,itmRefactorCodeTools,'itmRefactorCodeTools');
-    ParentMI:=itmRefactorCodeTools;
-    CreateMenuItem(ParentMI,itmRefactorCompleteCode,'itmRefactorCompleteCode',lisMenuCompleteCode);
-    CreateMenuItem(ParentMI,itmRefactorUseUnit,'itmRefactorUseUnit',lisMenuUseProjectUnit);
-    CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
-    CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
-    CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
-
-    CreateMenuSeparatorSection(mnuRefactor,itmRefactorAdvanced,'itmRefactorAdvanced');
-    ParentMI:=itmRefactorAdvanced;
-    CreateMenuItem(ParentMI,itmRefactorShowAbstractMethods,'itmShowAbstractMethods',srkmecAbstractMethods);
-    CreateMenuItem(ParentMI,itmRefactorShowEmptyMethods,'itmShowEmptyMethods',srkmecEmptyMethods);
-    CreateMenuItem(ParentMI,itmRefactorShowUnusedUnits,'itmShowUnusedUnits',srkmecUnusedUnits);
-    {$IFDEF EnableFindOverloads}
-    CreateMenuItem(ParentMI,itmRefactorFindOverloads,'itmFindOverloads',srkmecFindOverloadsCapt);
-    {$ENDIF}
-
-    CreateMenuSeparatorSection(mnuRefactor,itmRefactorTools,'itmRefactorTools');
-    ParentMI:=itmRefactorTools;
-    CreateMenuItem(ParentMI,itmRefactorMakeResourceString,'itmRefactorMakeResourceString',
-                   lisMenuMakeResourceString,'menu_tool_make_resourcestring');
   end;
 end;
 
