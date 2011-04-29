@@ -657,6 +657,7 @@ procedure TDebugManager.mnuAddWatchClicked(Sender: TObject);
 var
   SE: TSourceEditor;
   WatchVar: String;
+  w: TIDEWatch;
 begin
   SE := SourceEditorManager.GetActiveSE;
 
@@ -668,8 +669,12 @@ begin
       WatchVar := SE.GetOperandAtCurrentCaret;
     if (WatchVar <> '') and SE.EditorComponent.Focused then
     begin
-      if (Watches.Find(WatchVar) <> nil) or (Watches.Add(WatchVar) <> nil)
+      w := Watches.Find(WatchVar);
+      if w = nil
+      then w := Watches.Add(WatchVar);
+      if (w <> nil)
       then begin
+        w.Enabled := True;
         ViewDebugDialog(ddtWatches, False);
         Exit;
       end;
