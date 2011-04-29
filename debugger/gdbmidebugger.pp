@@ -123,7 +123,9 @@ type
     FGDBOptions: String;
     FOverrideRTLCallingConvention: TGDBMIRTLCallingConvention;
     FTimeoutForEval: Integer;
+    FWarnOnTimeOut: Boolean;
     procedure SetTimeoutForEval(const AValue: Integer);
+    procedure SetWarnOnTimeOut(const AValue: Boolean);
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
@@ -134,6 +136,7 @@ type
     property ConsoleTty: String read FConsoleTty write FConsoleTty;
     {$ENDIF}
     property TimeoutForEval: Integer read FTimeoutForEval write SetTimeoutForEval;
+    property WarnOnTimeOut: Boolean  read FWarnOnTimeOut write SetWarnOnTimeOut;
   end;
 
   TGDBMIDebugger = class;
@@ -183,6 +186,7 @@ type
     FSeenStates: TGDBMIDebuggerCommandStates;
     FTheDebugger: TGDBMIDebugger; // Set during Execute
     FLastExecResult: TGDBMIExecResult;
+    function GetDebuggerProperties: TGDBMIDebuggerProperties;
     function GetDebuggerState: TDBGState;
     function GetTargetInfo: PGDBMITargetInfo;
     procedure SetKeepFinished(const AValue: Boolean);
@@ -201,6 +205,7 @@ type
     procedure DoOnCanceled;
     property SeenStates: TGDBMIDebuggerCommandStates read FSeenStates;
     property DebuggerState: TDBGState read GetDebuggerState;
+    property DebuggerProperties: TGDBMIDebuggerProperties read GetDebuggerProperties;
   protected
     // ExecuteCommand does execute direct. It does not use the queue
     function  ExecuteCommand(const ACommand: String;
@@ -412,6 +417,7 @@ resourcestring
     + 'Press "Stop" to end the debug session';
   gdbmiErrorOnRunCommandWithWarning = '%0:s%0:sIn addition to the Error the following '
     + 'warning was encountered:%0:s%0:s%1:s';
+  gdbmiTimeOutForCmd = 'Time-out for command: "%s"';
 
 implementation
 
@@ -3354,7 +3360,7 @@ begin
     {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
       // Make sure consule output will ot be mixed with gbd output
       {$IFDEF UNIX}
-        s := TGDBMIDebuggerProperties(FTheDebugger.GetProperties).ConsoleTty;
+        s := DebuggerProperties.ConsoleTty;
       {$ENDIF}
       {$IFDEF DBG_ENABLE_TERMINAL}
         FTheDebugger.FPseudoTerminal.Open;
@@ -4642,6 +4648,12 @@ begin
   then FTimeoutForEval := -1;
 end;
 
+procedure TGDBMIDebuggerProperties.SetWarnOnTimeOut(const AValue: Boolean);
+begin
+  if FWarnOnTimeOut = AValue then exit;
+  FWarnOnTimeOut := AValue;
+end;
+
 constructor TGDBMIDebuggerProperties.Create;
 begin
   FOverrideRTLCallingConvention := ccDefault;
@@ -4653,6 +4665,7 @@ begin
   {$ELSE darwin}
   FTimeoutForEval := -1;
   {$ENDIF}
+  FWarnOnTimeOut := True;
   inherited;
 end;
 
@@ -4665,6 +4678,7 @@ begin
   FConsoleTty := TGDBMIDebuggerProperties(Source).FConsoleTty;
   {$ENDIF}
   FTimeoutForEval := TGDBMIDebuggerProperties(Source).FTimeoutForEval;
+  FWarnOnTimeOut  := TGDBMIDebuggerProperties(Source).FWarnOnTimeOut;
 end;
 
 
@@ -8298,6 +8312,11 @@ begin
   Result := FTheDebugger.State;
 end;
 
+function TGDBMIDebuggerCommand.GetDebuggerProperties: TGDBMIDebuggerProperties;
+begin
+  Result := TGDBMIDebuggerProperties(FTheDebugger.GetProperties);
+end;
+
 function TGDBMIDebuggerCommand.GetTargetInfo: PGDBMITargetInfo;
 begin
   Result := @FTheDebugger.FTargetInfo;
@@ -8386,7 +8405,9 @@ function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   out AResult: TGDBMIExecResult; AFlags: TGDBMICommandFlags = [];
   ATimeOut: Integer = -1): Boolean;
 var
-  R: TGDBMIExecResult;
+  R, R2: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+  Result2: Boolean;
 begin
   AResult.Values := '';
   AResult.State := dsNone;
@@ -8401,20 +8422,46 @@ begin
   FLastExecResult := AResult;
 
   if ProcessResultTimedOut then begin
-    FTheDebugger.SendCmdLn('-data-evaluate-expression 1');
-    Result := ProcessResult(AResult, Min(ATimeOut, 1000));
+    Result2 := False;
+    FTheDebugger.SendCmdLn('-data-evaluate-expression 7');
+    // ProcessResult may either get the 1st or 2nd commands result (or nothing)
+    Result := ProcessResult(R, Min(ATimeOut, 1000));
+    if ProcessResultTimedOut then Result := False;    // will trigger: SetDebuggerState(dsError)
 
-    if ProcessResultTimedOut then begin
-      // still timed out
-      Result := False; // => dsError
-    end
-    else begin
-      MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
-             mtWarning, [mbOK], 0);
+    if Result then begin
+      // Received a result. This may be the Result of the 1st command
+      // "value=7" could be the result of the "data-eval 7"; but may also be the 1st cmds result
+      List := TGDBMINameValueList.Create(R);
+      Result := List.Values['value'] = '7';
+      // Check for 2nd result, just in case
+      Result2 := ProcessResult(R2, 500);
+      if ProcessResultTimedOut then Result2 := False;
+      If Result2 then begin
+        List := TGDBMINameValueList.Create(R2);
+        Result2 := List.Values['value'] = '7';
+      end;
+      FreeAndNil(List);
 
-      ProcessResult(R, 500); // catch the 2nd <gdb> prompt, if indeed any
-      if ProcessResultTimedOut then
+      if Result2 then begin
+        // Got both results after all
+        AResult := R;
+      end
+      else begin
         AResult.State := dsError;
+      end;
+    end;
+
+    // Result, Result2
+    // False,  False => SetDebuggerState(dsError);
+    // False,  True  => can not happen, still: SetDebuggerState(dsError);
+    // True,   False => Timeout; no Result for 1st Command
+    // True,   True  => Timeout; Recovered, Got both Results
+    if Result and not Result2 then begin
+      DoDbgEvent(ecDebugger, etDefault, Format(gdbmiTimeOutForCmd, [ACommand]));
+      // TODO: use feedback dialog
+      if DebuggerProperties.WarnOnTimeOut then
+        MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
+                   mtWarning, [mbOK], 0);
     end;
   end;
 
@@ -8424,6 +8471,7 @@ begin
     // or the Result Record was not a known one: 'done', 'running', 'exit', 'error'
     DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',ACommand,'" failed.');
     SetDebuggerState(dsError);
+    AResult.State := dsError;
   end;
 
   if (cfCheckError in AFlags) and (AResult.State = dsError)
@@ -8730,7 +8778,7 @@ var
   R: TGDBMIExecResult;
 begin
   if not ExecuteCommand('x/s ' + AExpression, AValues, R, [],
-                       TGDBMIDebuggerProperties(FTheDebugger.GetProperties).TimeoutForEval)
+                       DebuggerProperties.TimeoutForEval)
   then begin
     Result := '';
     Exit;
@@ -9036,7 +9084,7 @@ end;
 function TGDBMIDebuggerCommand.CheckHasType(TypeName: String;
   TypeFlag: TGDBMITargetFlag): TGDBMIExecResult;
 begin
-  if not ExecuteCommand('ptype '+TypeName, Result) then begin
+  if not ExecuteCommand('ptype %s', [TypeName], Result, [], DebuggerProperties.TimeoutForEval) then begin
     Result.State := dsError;
     exit;
   end;
@@ -10331,7 +10379,7 @@ begin
   // original
   frame := TGDBMIDebugger(FTheDebugger).FCurrentStackFrame;
   frameidx := 0;
-  DefaultTimeOut := TGDBMIDebuggerProperties(FTheDebugger.GetProperties).TimeoutForEval;
+  DefaultTimeOut := DebuggerProperties.TimeoutForEval;
   try
     repeat
       if TryExecute(S, frame = -1)
