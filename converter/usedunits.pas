@@ -56,6 +56,8 @@ type
     fUnitsToAddForLCL: TStringList;      // List of new units for LCL (not for Delphi).
     fUnitsToRemove: TStringList;         // List of units to remove.
     fUnitsToRename: TStringToStringTree; // Units to rename. Map old name -> new name.
+    fUnitsToRenameKeys: TStringList;     // List of keys of the above map.
+    fUnitsToRenameVals: TStringList;     // List of values of the above map.
     fUnitsToFixCase: TStringToStringTree;// Like rename but done for every target.
     fUnitsToComment: TStringList;        // List of units to be commented.
     fMissingUnits: TStringList;          // Units not found in search path.
@@ -75,10 +77,10 @@ type
     destructor Destroy; override;
     procedure CommentAutomatic(ACommentedUnits: TStringList);
   public
-    property MissingUnits: TStringList read fMissingUnits;
     property UnitsToRemove: TStringList read fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename;
     property UnitsToFixCase: TStringToStringTree read fUnitsToFixCase;
+    property MissingUnits: TStringList read fMissingUnits;
   end;
 
   { TMainUsedUnits }
@@ -166,6 +168,10 @@ begin
   fUnitsToAddForLCL:=TStringList.Create;
   fUnitsToRemove:=TStringList.Create;
   fUnitsToRename:=TStringToStringTree.Create(true);
+  fUnitsToRenameKeys:=TStringList.Create;
+  fUnitsToRenameKeys.CaseSensitive:=false;
+  fUnitsToRenameVals:=TStringList.Create;
+  fUnitsToRenameVals.CaseSensitive:=false;
   fUnitsToFixCase:=TStringToStringTree.Create(true);
   fUnitsToComment:=TStringList.Create;
   fMissingUnits:=TStringList.Create;
@@ -185,6 +191,8 @@ begin
   fMissingUnits.Free;
   fUnitsToComment.Free;
   fUnitsToFixCase.Free;
+  fUnitsToRenameVals.Free;
+  fUnitsToRenameKeys.Free;
   fUnitsToRename.Free;
   fUnitsToRemove.Free;
   fUnitsToAddForLCL.Free;
@@ -262,6 +270,8 @@ var
 begin
   if ANewName<>'' then begin
     fUnitsToRename[AOldName]:=ANewName;
+    fUnitsToRenameKeys.Add(AOldName);
+    fUnitsToRenameVals.Add(ANewName);
     IDEMessagesWindow.AddMsg(Format(lisConvDelphiReplacedUnitInUsesSection,
                                     [AOldName, ANewName]), '', -1);
     // If the unit is not found, open the package containing it.
@@ -328,26 +338,23 @@ var
   i, InsPos: Integer;
   s: string;
   EndChar: char;
-  RenameList: TStringList;
   UsesNode: TCodeTreeNode;
   ParentBlock: TCodeTreeNode;
 begin
   Result:=False;
   DelphiOnlyUnits:=TStringList.Create;
   LclOnlyUnits:=TStringList.Create;
-  RenameList:=TStringList.Create;
   try
     // Don't remove the unit names but add to Delphi block instead.
     for i:=0 to fUnitsToRemove.Count-1 do
-      if not MoveToDelphi(fUnitsToRemove[i]) then Exit; //TempRemoveUnits.Add(fUnitsToRemove[i]);
+      if not MoveToDelphi(fUnitsToRemove[i]) then Exit;
     // ... and don't comment the unit names either.
     for i:=0 to fUnitsToComment.Count-1 do
-      if not MoveToDelphi(fUnitsToComment[i]) then Exit; //TempRemoveUnits.Add(fUnitsToComment[i]);
+      if not MoveToDelphi(fUnitsToComment[i]) then Exit;
     // Add replacement units to LCL block.
-    fUnitsToRename.GetNames(RenameList);
-    for i:=0 to RenameList.Count-1 do begin
-      if not MoveToDelphi(RenameList[i]) then Exit; //TempRemoveUnits.Add(RenameList[i]);
-      LCLOnlyUnits.Add(fUnitsToRename[RenameList[i]]);
+    for i:=0 to fUnitsToRenameKeys.Count-1 do begin
+      if not MoveToDelphi(fUnitsToRenameKeys[i]) then Exit;
+      LCLOnlyUnits.Add(fUnitsToRename[fUnitsToRenameKeys[i]]);
     end;
     // Additional units for LCL (like Interfaces).
     LCLOnlyUnits.AddStrings(fUnitsToAddForLCL);
@@ -399,7 +406,7 @@ begin
     if not fCTLink.SrcCache.Replace(gtNewLine,gtNone,InsPos,InsPos,s) then exit;
     Result:=fCTLink.SrcCache.Apply;
   finally
-    RenameList.Free;
+//    RenameList.Free;
     LclOnlyUnits.Free;
     DelphiOnlyUnits.Free;
   end;
@@ -654,10 +661,24 @@ procedure TUsedUnitsTool.AddUnitIfNeeded(AUnitName: string);
 var
   i: Integer;
   UnitInFileName: String;
+  RenameValFound: Boolean;
 begin
+  RenameValFound:=false;
+  for i := 0 to fMainUsedUnits.fUnitsToRenameVals.Count-1 do
+    if Pos(AUnitName, fMainUsedUnits.fUnitsToRenameVals[i]) > 0 then begin
+      RenameValFound:=true;
+      Break;
+    end;
+  if not RenameValFound then
+    for i := 0 to fImplUsedUnits.fUnitsToRenameVals.Count-1 do
+      if Pos(AUnitName, fImplUsedUnits.fUnitsToRenameVals[i]) > 0 then begin
+        RenameValFound:=true;
+        Break;
+      end;
   if not ( fMainUsedUnits.fExistingUnits.Find(AUnitName, i) or
            fImplUsedUnits.fExistingUnits.Find(AUnitName, i) or
-           fMainUsedUnits.fUnitsToAdd.Find(AUnitName, i) ) then begin
+          (fMainUsedUnits.fUnitsToAdd.IndexOf(AUnitName) > -1) or RenameValFound)
+  then begin
     fMainUsedUnits.fUnitsToAdd.Add(AUnitName);
     IDEMessagesWindow.AddMsg('Added unit '+AUnitName+ ' to uses section', '', -1);
     // If the unit is not found, open the package containing it.
