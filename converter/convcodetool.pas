@@ -79,8 +79,6 @@ type
     fHasFormFile: boolean;
     fLowerCaseRes: boolean;
     fAddUnitEvent: TAddUnitEvent;
-    fDfmDirectiveStart: integer;
-    fDfmDirectiveEnd: integer;
     // Delphi Function names to replace with FCL/LCL functions.
     fDefinedProcNames: TStringList;
     // List of TFuncReplacement.
@@ -254,61 +252,53 @@ var
   ParamPos, ACleanPos: Integer;
   Key, LowKey, NewKey: String;
   s: string;
-  AlreadyIsLfm: Boolean;
 begin
   Result:=false;
-  AlreadyIsLfm:=false;
-  fDfmDirectiveStart:=-1;
-  fDfmDirectiveEnd:=-1;
   ACleanPos:=1;
   // find $R directive
   with fCTLink.CodeTool do
-    repeat
-      ACleanPos:=FindNextCompilerDirectiveWithName(Src, ACleanPos, 'R',
-                                                   Scanner.NestedComments, ParamPos);
-      if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
-      NewKey:='';
-      if (Src[ACleanPos]='{') and
-         (Src[ParamPos]='*') and (Src[ParamPos+1]='.') and (Src[ParamPos+5]='}')
-      then begin
-        Key:=copy(Src,ParamPos+2,3);
-        LowKey:=LowerCase(Key);
-        // Form file resource rename or lowercase:
-        if (LowKey='dfm') or (LowKey='xfm') then begin
-          if fCTLink.Settings.SupportDelphi then begin
-            // Use the same dfm file. Lowercase existing key.
-            if fCTLink.Settings.SameDfmFile and (Key<>LowKey) then
+  repeat
+    ACleanPos:=FindNextCompilerDirectiveWithName(Src, ACleanPos, 'R',
+                                                 Scanner.NestedComments, ParamPos);
+    if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
+    NewKey:='';
+    if (Src[ACleanPos]='{') and
+       (Src[ParamPos]='*') and (Src[ParamPos+1]='.') and (Src[ParamPos+5]='}')
+    then begin
+      Key:=copy(Src,ParamPos+2,3);
+      LowKey:=LowerCase(Key);
+      // Form file resource rename or lowercase:
+      if (LowKey='dfm') or (LowKey='xfm') then begin
+        if fCTLink.Settings.SupportDelphi then begin
+          // Use the same dfm file. Lowercase existing key.
+          if fCTLink.Settings.SameDfmFile then begin
+            if Key<>LowKey then
               NewKey:=LowKey;
-            // Later IFDEF will be added so that Delphi can still use .dfm.
-            fDfmDirectiveStart:=ACleanPos;
-            fDfmDirectiveEnd:=ParamPos+6;
           end
-          else       // Change .dfm to .lfm.
-            NewKey:='lfm';
+          else begin
+            // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
+            s:='{$IFNDEF FPC}'+LineEnding+
+               '  {$R *.dfm}'+LineEnding+
+               '{$ELSE}'+LineEnding+
+               '  {$R *.lfm}'+LineEnding+
+               '{$ENDIF}';
+            Result:=fCTLink.SrcCache.Replace(gtNone,gtNone,ACleanPos,ParamPos+6,s);
+          end;
         end
-        // If there already is .lfm, prevent adding IFDEF for .dfm / .lfm.
-        else if LowKey='lfm' then
-          AlreadyIsLfm:=true
-        // lowercase {$R *.RES} to {$R *.res}
-        else if (Key='RES') and fLowerCaseRes then
-          NewKey:=LowKey;
-        // Now change code.
-        if NewKey<>'' then
-          if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
+        else       // Change .dfm to .lfm.
+          NewKey:='lfm';
+      end
+      // lowercase {$R *.RES} to {$R *.res}
+      else if (Key='RES') and fLowerCaseRes then
+        NewKey:=LowKey;
+      // Change a single resource name.
+      if NewKey<>'' then begin
+        if not fCTLink.SrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then
+          exit;
       end;
-      ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
-    until false;
-  // if there is already .lfm file, don't add IFDEF for .dfm / .lfm.
-  if fCTLink.Settings.SupportDelphi and (fDfmDirectiveStart<>-1)
-  and not AlreadyIsLfm then begin
-    // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
-    s:='{$IFNDEF FPC}'+LineEnding+
-       '  {$R *.dfm}'+LineEnding+
-       '{$ELSE}'+LineEnding+
-       '  {$R *.lfm}'+LineEnding+
-       '{$ENDIF}';
-    Result:=fCTLink.SrcCache.Replace(gtNone,gtNone,fDfmDirectiveStart,fDfmDirectiveEnd,s);
-  end;
+    end;
+    ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
+  until false;
   Result:=true;
 end;
 
