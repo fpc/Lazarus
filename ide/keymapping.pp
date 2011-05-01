@@ -512,7 +512,7 @@ begin
   ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleLocals: SetResult(VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
-  ecViewPseudoTerminal: if HasConsoleSupport then SetResult(VK_T,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecViewPseudoTerminal: if HasConsoleSupport then SetResult(VK_O,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecViewThreads: SetResult(VK_T,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleRegisters: SetResult(VK_R,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
@@ -1573,7 +1573,7 @@ begin
   ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleLocals: SetResult(VK_L,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
-  ecViewPseudoTerminal: if HasConsoleSupport then SetResult(VK_T,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecViewPseudoTerminal: if HasConsoleSupport then SetResult(VK_O,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecViewThreads: SetResult(VK_T,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleCallStack: SetResult(VK_S,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleRegisters: SetResult(VK_R,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
