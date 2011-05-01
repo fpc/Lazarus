@@ -11,11 +11,11 @@ msgstr ""
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign method"
-msgstr ""
+msgstr "Добавить метод Assign"
 
 #: codystrconsts.crsaddassignmethod2
 msgid "Add Assign method ..."
-msgstr ""
+msgstr "Добавить метод Assign ..."
 
 #: codystrconsts.crsbyfpccfg
 msgid "by fpc.cfg"
