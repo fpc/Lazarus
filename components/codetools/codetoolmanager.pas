@@ -556,7 +556,9 @@ type
           out AssignDeclNode: TCodeTreeNode;
           var MemberNodeExts: TAVLTree; // tree of TCodeTreeNodeExtension, Node=var or property, Data=write property
           out AssignBodyNode: TCodeTreeNode;
-          out InheritedDeclContext: TFindContext): boolean;
+          out InheritedDeclContext: TFindContext;
+          ProcName: string = '' // default: Assign
+          ): boolean;
 
     // code templates
     function InsertCodeTemplate(Code: TCodeBuffer;
@@ -3907,8 +3909,8 @@ end;
 function TCodeToolManager.FindAssignMethod(Code: TCodeBuffer; X, Y: integer;
   out Tool: TCodeTool; out ClassNode: TCodeTreeNode;
   out AssignDeclNode: TCodeTreeNode; var MemberNodeExts: TAVLTree;
-  out AssignBodyNode: TCodeTreeNode; out InheritedDeclContext: TFindContext
-  ): boolean;
+  out AssignBodyNode: TCodeTreeNode; out InheritedDeclContext: TFindContext;
+  ProcName: string): boolean;
 var
   CodePos: TCodeXYPosition;
 begin
@@ -3926,7 +3928,7 @@ begin
   try
     Result:=FCurCodeTool.FindAssignMethod(CodePos,ClassNode,
            AssignDeclNode,MemberNodeExts,AssignBodyNode,
-           InheritedDeclContext);
+           InheritedDeclContext,ProcName);
   except
     on e: Exception do Result:=HandleException(e);
   end;

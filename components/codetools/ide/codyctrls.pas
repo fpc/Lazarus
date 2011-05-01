@@ -21,47 +21,52 @@
   Author: Mattias Gaertner
 
   Abstract:
-    The resource strings of the package.
+    LCL controls for Cody.
 }
-unit CodyStrConsts;
+unit CodyCtrls;
 
 {$mode objfpc}{$H+}
 
 interface
 
-resourcestring
-  crsNoProject = 'No project';
-  crsPleaseOpenAProjectFirst = 'Please open a project first.';
-  crsPPUFilesOfProject = 'PPU files of project "%s"';
-  crsUses = 'Uses';
-  lisCOGeneral = 'General';
-  crsUsedBy = 'Used by';
-  lisCOUsesPath = 'Uses path';
-  crsProjectHasNoMainSourceFile = 'Project has no main source file.';
-  crsMainSourceFile = 'Main source file: %s';
-  crsSizeOfPpuFile = 'Size of .ppu file';
-  crsSizeOfOFile = 'Size of .o file';
-  crsTotal = 'Total';
-  crsSearching = 'searching ...';
-  crsMissing = 'missing ...';
-  crsUnit = 'Unit';
-  crsPackage = 'Package';
-  crsKbytes = 'kbytes';
-  crsMbytes = 'Mbytes';
-  crsGbytes = 'Gbytes';
-  crsByFpcCfg = 'by fpc.cfg';
-  crsNoUnitSelected = 'No unit selected';
-  crsUnit2 = 'Unit: %s';
-  crsSource = 'Source: %s';
-  crsPPU = 'PPU: %s';
-  crsShowUsedPpuFiles = 'Show used .ppu files ...';
-  crsVirtualUnit = 'Virtual unit';
-  crsProjectOutput = 'Project output';
-  crsClose = '&Close';
-  crsAddAssignMethod = 'Add Assign method';
-  crsAddAssignMethod2 = 'Add Assign method ...';
+uses
+  Classes, SysUtils, ComCtrls, Controls;
+
+type
+
+  { TCodyTreeView }
+
+  TCodyTreeView = class(TTreeView)
+  public
+    procedure FreeNodeData;
+  end;
+
+procedure Register;
 
 implementation
+
+procedure Register;
+begin
+  RegisterComponents('LazControls',[TCodyTreeView]);
+end;
+
+{ TCodyTreeView }
+
+procedure TCodyTreeView.FreeNodeData;
+var
+  Node: TTreeNode;
+begin
+  BeginUpdate;
+  Node:=Items.GetFirstNode;
+  while Node<>nil do begin
+    if Node.Data<>nil then begin
+      TObject(Node.Data).Free;
+      Node.Data:=nil;
+    end;
+    Node:=Node.GetNext;
+  end;
+  EndUpdate;
+end;
 
 end.
 

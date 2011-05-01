@@ -9,6 +9,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: codystrconsts.crsaddassignmethod
+msgid "Add Assign method"
+msgstr ""
+
+#: codystrconsts.crsaddassignmethod2
+msgid "Add Assign method ..."
+msgstr ""
+
 #: codystrconsts.crsbyfpccfg
 msgid "by fpc.cfg"
 msgstr "por fpc.cfg"

@@ -160,7 +160,7 @@ type
            out CommentStart, CommentEnd: integer): boolean;
     function CreateMissingProcBodies: boolean;
     function ApplyChangesAndJumpToFirstNewProc(CleanPos: integer;
-           OldTopLine: integer;
+           OldTopLine: integer; AddMissingProcBodies: boolean;
            out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
     function NodeExtHasVisibilty(ANodeExt: TCodeTreeNodeExtension;
@@ -310,10 +310,11 @@ type
         out InheritedDeclContext: TFindContext;
         ProcName: string = '' // default is 'Assign'
         ): boolean;
-    function AddAssignMethod(MemberNodeExts: TAVLTree;
+    function AddAssignMethod(ClassNode: TCodeTreeNode; MemberNodeExts: TFPList;
         const ProcName, ParamName, ParamType: string;
         OverrideMod, CallInherited, CallInheritedOnlyInElse: boolean;
         SourceChanger: TSourceChangeCache;
+        out NewPos: TCodeXYPosition; out NewTopLine: integer;
         LocalVarName: string = '' // default aSource
         ): boolean;
 
@@ -1217,24 +1218,10 @@ begin
     end;
 
     {$IFDEF CTDEBUG}
-    DebugLn('TCodeCompletionCodeTool.CompleteCode Insert new variables and methods ... ');
-    {$ENDIF}
-    // insert all new variables and procs definitions
-    if not InsertAllNewClassParts then
-      RaiseException(ctsErrorDuringInsertingNewClassParts);
-
-    {$IFDEF CTDEBUG}
-    DebugLn('TCodeCompletionCodeTool.CompleteCode Insert new method bodies ... ');
-    {$ENDIF}
-    // insert all missing proc bodies
-    if not CreateMissingProcBodies then
-      RaiseException(ctsErrorDuringCreationOfNewProcBodies);
-
-    {$IFDEF CTDEBUG}
     DebugLn('TCodeCompletionCodeTool.CompleteCode Apply ... ');
     {$ENDIF}
     // apply the changes and jump to first new proc body
-    Result:=ApplyChangesAndJumpToFirstNewProc(CleanCursorPos,OldTopLine,
+    Result:=ApplyChangesAndJumpToFirstNewProc(CleanCursorPos,OldTopLine,true,
                                               NewPos,NewTopLine);
   finally
     FreeClassInsertionList;
@@ -5123,7 +5110,7 @@ function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
       Params.Identifier:=PChar(ProcName);
       Params.ContextNode:=ClassNode;
       if not FindIdentifierInContext(Params) then exit;
-      debugln(['FindInheritedAssign NewNode=',Params.NewNode.DescAsString]);
+      //debugln(['FindInheritedAssign NewNode=',Params.NewNode.DescAsString]);
       if Params.NewNode=nil then exit;
       if Params.NewNode.Desc<>ctnProcedure then exit;
       InheritedDeclContext:=CreateFindContext(Params);
@@ -5175,17 +5162,15 @@ begin
   FindInheritedAssign;
 end;
 
-function TCodeCompletionCodeTool.AddAssignMethod(MemberNodeExts: TAVLTree;
-  const ProcName, ParamName, ParamType: string; OverrideMod, CallInherited,
-  CallInheritedOnlyInElse: boolean; SourceChanger: TSourceChangeCache;
-  LocalVarName: string): boolean;
+function TCodeCompletionCodeTool.AddAssignMethod(ClassNode: TCodeTreeNode;
+  MemberNodeExts: TFPList; const ProcName, ParamName, ParamType: string;
+  OverrideMod, CallInherited, CallInheritedOnlyInElse: boolean;
+  SourceChanger: TSourceChangeCache; out NewPos: TCodeXYPosition;
+  out NewTopLine: integer; LocalVarName: string): boolean;
 var
-  AVLNode: TAVLTreeNode;
   NodeExt: TCodeTreeNodeExtension;
-  Node: TCodeTreeNode;
   CleanDef: String;
   Def: String;
-  ClassNode: TCodeTreeNode;
   aClassName: String;
   ProcBody: String;
   e: String;
@@ -5193,62 +5178,64 @@ var
   Indent: Integer;
   IndentStep: LongInt;
   SrcVar: String;
+  i: Integer;
 begin
   Result:=false;
-  if (MemberNodeExts=nil) or (MemberNodeExts.Count=0) then exit(true);
+  NewPos:=CleanCodeXYPosition;
+  NewTopLine:=-1;
+  if ClassNode=nil then exit;
   if (ParamName='') or (ParamType='') then exit;
-  ClassNode:=nil;
-  CleanDef:='procedure '+ProcName+'(:'+ParamType+')';
+  aClassName:=ExtractClassName(ClassNode,false);
+  CleanDef:=ProcName+'('+ParamType+');';
   Def:='procedure '+ProcName+'('+ParamName+':'+ParamType+');';
   if OverrideMod then Def:=Def+'override;';
-  ProcBody:='';
-  AVLNode:=MemberNodeExts.FindLowest;
+  SrcVar:=ParamName;
+  // create the proc header
+  SameType:=CompareIdentifiers(PChar(aClassName),PChar(ParamType))=0;
   e:=SourceChanger.BeautifyCodeOptions.LineEnd;
-  SameType:=true;
   Indent:=0;
   IndentStep:=SourceChanger.BeautifyCodeOptions.Indent;
-  SrcVar:=ParamName;
-  while AVLNode<>nil do begin
-    NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-    Node:=NodeExt.Node;
-    if ClassNode=nil then begin
-      // first assignment
-      // => get the classnode, create the proc header
-      ClassNode:=FindClassOrInterfaceNode(Node.Parent);
-      aClassName:=ExtractClassName(ClassNode,false);
-      SameType:=CompareIdentifiers(PChar(aClassName),PChar(ParamType))=0;
-      ProcBody:='procedure '+aClassName+'.'+ProcName+'('+ParamName+':'+ParamType+')'+e;
-      if not SameType then begin
-        SrcVar:=LocalVarName;
-        if SrcVar='' then
-          SrcVar:='aSource';
-        if CompareIdentifiers(PChar(SrcVar),PChar(ParamName))=0 then begin
-          if CompareIdentifiers(PChar(SrcVar),'aSource')=0 then
-            SrcVar:='aSrc'
-          else
-            SrcVar:='aSource';
-        end;
-        ProcBody:=ProcBody+'var'+e
-           +GetIndentStr(Indent+IndentStep)+SrcVar+':'+aClassName+';'+e;
-      end;
-      ProcBody:=ProcBody+'begin'+e;
-      inc(Indent,IndentStep);
-      if CallInherited and (not CallInheritedOnlyInElse) then
-        ProcBody:=ProcBody
-          +GetIndentStr(Indent)+'inherited '+ProcName+'('+ParamName+');'+e;
-      if not SameType then begin
-        // add a parameter check to the new procedure
-        ProcBody:=ProcBody
-            +GetIndentStr(Indent)+'if '+ParamName+' is '+aClassName+' then'+e
-            +GetIndentStr(Indent)+'begin'+e;
-        inc(Indent,IndentStep);
-        ProcBody:=ProcBody+GetIndentStr(Indent)+SrcVar+':='+aClassName+'('+ParamName+');'+e;
-      end;
+  ProcBody:='procedure '+aClassName+'.'+ProcName+'('+ParamName+':'+ParamType+');'+e;
+  if not SameType then begin
+    // add local variable
+    SrcVar:=LocalVarName;
+    if SrcVar='' then
+      SrcVar:='aSource';
+    if CompareIdentifiers(PChar(SrcVar),PChar(ParamName))=0 then begin
+      if CompareIdentifiers(PChar(SrcVar),'aSource')=0 then
+        SrcVar:='aSrc'
+      else
+        SrcVar:='aSource';
     end;
-    // add assignment
-    ProcBody:=ProcBody+GetIndentStr(Indent)+NodeExt.Txt+':='+SrcVar+'.'+NodeExt.Txt+';'+e;
-    AVLNode:=MemberNodeExts.FindSuccessor(AVLNode);
+    ProcBody:=ProcBody+'var'+e
+       +GetIndentStr(Indent+IndentStep)+SrcVar+':'+aClassName+';'+e;
   end;
+  ProcBody:=ProcBody+'begin'+e;
+  inc(Indent,IndentStep);
+
+  // call inherited
+  if CallInherited and (not CallInheritedOnlyInElse) then
+    ProcBody:=ProcBody
+      +GetIndentStr(Indent)+'inherited '+ProcName+'('+ParamName+');'+e;
+
+  if not SameType then begin
+    // add a parameter check to the new procedure
+    ProcBody:=ProcBody
+        +GetIndentStr(Indent)+'if '+ParamName+' is '+aClassName+' then'+e
+        +GetIndentStr(Indent)+'begin'+e;
+    inc(Indent,IndentStep);
+    ProcBody:=ProcBody+GetIndentStr(Indent)+SrcVar+':='+aClassName+'('+ParamName+');'+e;
+  end;
+
+  // add assignments
+  if MemberNodeExts<>nil then begin
+    for i:=0 to MemberNodeExts.Count-1 do begin
+      NodeExt:=TCodeTreeNodeExtension(MemberNodeExts[i]);
+      // add assignment
+      ProcBody:=ProcBody+GetIndentStr(Indent)+NodeExt.Txt+':='+SrcVar+'.'+NodeExt.Txt+';'+e;
+    end;
+  end;
+
   if not SameType then begin
     // close if block
     dec(Indent,IndentStep);
@@ -5265,7 +5252,8 @@ begin
   if not InitClassCompletion(ClassNode,SourceChanger) then exit;
   ProcBody:=SourceChanger.BeautifyCodeOptions.BeautifyStatement(ProcBody,0);
   AddClassInsertion(CleanDef,Def,ProcName,ncpPublicProcs,nil,ProcBody);
-  Result:=ApplyClassCompletion(true);
+  Result:=ApplyChangesAndJumpToFirstNewProc(ClassNode.StartPos,1,true,
+                   NewPos,NewTopLine);
 end;
 
 function TCodeCompletionCodeTool.GatherPublishedMethods(
@@ -6669,7 +6657,9 @@ var
       // remember one proc body to jump to after the completion
       FJumpToProcName:=ANodeExt.Txt;
       if System.Pos('.',FJumpToProcName)<1 then
-        FJumpToProcName:=UpperCaseStr(TheClassName)+'.'+FJumpToProcName;
+        FJumpToProcName:=TheClassName+'.'+FJumpToProcName;
+      if FJumpToProcName[length(FJumpToProcName)]<>';' then
+        FJumpToProcName:=FJumpToProcName+';';
       {$IFDEF CTDEBUG}
       DebugLn('CreateMissingProcBodies FJumpToProcName="',FJumpToProcName,'"');
       {$ENDIF}
@@ -7198,7 +7188,7 @@ begin
 end;
 
 function TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc(
-  CleanPos: integer; OldTopLine: integer;
+  CleanPos: integer; OldTopLine: integer; AddMissingProcBodies: boolean;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var
   OldCodeXYPos: TCodeXYPosition;
@@ -7208,16 +7198,29 @@ var
   ProcNode: TCodeTreeNode;
 begin
   Result:=false;
-  
-  CurClassName:=ExtractClassName(CodeCompleteClassNode,false);
 
-  // apply the changes and jump to first new proc body
-  if not CleanPosToCodePos(CleanPos,OldCodePos) then
-    RaiseException('TCodeCompletionCodeTool.CompleteCode Internal Error CleanPosToCodePos');
-  if not CleanPosToCaret(CleanPos,OldCodeXYPos) then
-    RaiseException('TCodeCompletionCodeTool.CompleteCode Internal Error CleanPosToCaret');
-  if not ASourceChangeCache.Apply then
-    RaiseException(ctsUnableToApplyChanges);
+  try
+    // extend class declaration
+    if not InsertAllNewClassParts then
+      RaiseException(ctsErrorDuringInsertingNewClassParts);
+
+    // create missing method bodies
+    if AddMissingProcBodies and (not CreateMissingProcBodies) then
+      RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+
+    CurClassName:=ExtractClassName(CodeCompleteClassNode,false);
+
+    // apply the changes and jump to first new proc body
+    if not CleanPosToCodePos(CleanPos,OldCodePos) then
+      RaiseException('TCodeCompletionCodeTool.CompleteCode Internal Error CleanPosToCodePos');
+    if not CleanPosToCaret(CleanPos,OldCodeXYPos) then
+      RaiseException('TCodeCompletionCodeTool.CompleteCode Internal Error CleanPosToCaret');
+    if not ASourceChangeCache.Apply then
+      RaiseException(ctsUnableToApplyChanges);
+
+  finally
+    FreeClassInsertionList;
+  end;
 
   if FJumpToProcName<>'' then begin
     {$IFDEF CTDEBUG}
@@ -7237,6 +7240,7 @@ begin
     FCodeCompleteClassNode:=FindClassNode(CursorNode,CurClassName,true,false);
     if CodeCompleteClassNode=nil then
       RaiseException('oops, I lost your class');
+    debugln(['TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc AAA2 ',FJumpToProcName]);
     ProcNode:=FindProcNode(CursorNode,FJumpToProcName,
                            [phpInUpperCase,phpIgnoreForwards]);
     if ProcNode=nil then
@@ -7544,14 +7548,8 @@ begin
       AVLNode:=NewMethods.FindSuccessor(AVLNode);
     end;
     
-    // extend class declaration
-    if not InsertAllNewClassParts then exit;
-
-    // create missing method bodies
-    if not CreateMissingProcBodies then exit;
-
     // apply changes
-    if not ApplyChangesAndJumpToFirstNewProc(CleanCursorPos,OldTopLine,
+    if not ApplyChangesAndJumpToFirstNewProc(CleanCursorPos,OldTopLine,true,
       NewPos,NewTopLine) then exit;
 
     Result:=true;

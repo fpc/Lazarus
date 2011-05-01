@@ -28,7 +28,7 @@ program AddMethodAssign;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree,
+  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree, CodeAtom,
   BasicCodeTools, SourceChanger, CodeTree, FindDeclarationTool, AssignExample1;
 
 const
@@ -50,6 +50,10 @@ var
   ParamNode: TCodeTreeNode;
   InheritedIsTPersistent: boolean;
   InheritedClassNode: TCodeTreeNode;
+  AssignMembers: TFPList;
+  NewPos: TCodeXYPosition;
+  NewTopline: integer;
+  i: Integer;
 begin
   CodeToolBoss.SimpleInit(ConfigFilename);
 
@@ -60,6 +64,7 @@ begin
     raise Exception.Create('loading failed '+Filename);
 
   // parse the unit, check if in a class with an Assign method
+  AssignMembers:=TFPList.Create;
   try
     MemberNodeExts:=nil;
     if not CodeToolBoss.FindAssignMethod(Code,3,18,
@@ -79,14 +84,15 @@ begin
         NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
         if NodeExt.Data<>nil then begin
           debugln(['skipping identifier ',NodeExt.Txt,' because it is written by a property']);
-          MemberNodeExts.FreeAndDelete(AVLNode);
         end else begin
           debugln('assigning identifier ',NodeExt.Txt,' ...');
+          AssignMembers.Add(NodeExt);
+          MemberNodeExts.Delete(AVLNode);
         end;
         AVLNode:=NextAVLNode;
       end;
     end;
-    if (MemberNodeExts=nil) or (MemberNodeExts.Count=0) then begin
+    if (AssignMembers.Count=0) then begin
       debugln('no assignable members found');
       exit;
     end;
@@ -115,9 +121,10 @@ begin
 
     // add assign method
     if AssignDeclNode=nil then begin
-      if not Tool.AddAssignMethod(MemberNodeExts,'Assign',ParamName,ParamType,
+      if not Tool.AddAssignMethod(ClassNode,AssignMembers,
+             'Assign',ParamName,ParamType,
              InheritedDeclContext.Node<>nil,true,InheritedIsTPersistent,
-             CodeToolBoss.SourceChangeCache)
+             CodeToolBoss.SourceChangeCache,NewPos,NewTopline)
       then
         raise Exception.Create('AddAssignMethod failed');
     end else begin
@@ -126,6 +133,9 @@ begin
 
   finally
     DisposeAVLTree(MemberNodeExts);
+    for i:=0 to AssignMembers.Count-1 do
+      TObject(AssignMembers[i]).Free;
+    FreeAndNil(AssignMembers);
   end;
   // write the new source:
   writeln('-----------------------------------');

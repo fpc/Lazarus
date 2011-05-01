@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="10"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
@@ -15,7 +15,7 @@
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="2">
+    <Files Count="4">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
         <HasRegisterProc Value="True"/>
@@ -25,6 +25,16 @@
         <Filename Value="codystrconsts.pas"/>
         <UnitName Value="CodyStrConsts"/>
       </Item2>
+      <Item3>
+        <Filename Value="addassignmethoddlg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="AddAssignMethodDlg"/>
+      </Item3>
+      <Item4>
+        <Filename Value="codyctrls.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="codyctrls"/>
+      </Item4>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>
