@@ -853,17 +853,21 @@ type
     FDisplayFormat: TWatchDisplayFormat;
     FTextValue: String;
     FTypeInfo: TGDBType;
+    FTypeInfoAutoDestroy: Boolean;
+    function GetTypeInfo: TGDBType;
   protected
     function DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger; const AExpression: String;
       const ADisplayFormat: TWatchDisplayFormat);
+    destructor Destroy; override;
     function DebugText: String; override;
     property Expression: String read FExpression;
     property EvalFlags: TDBGEvaluateFlags read FEvalFlags write FEvalFlags;
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
     property TextValue: String read FTextValue;
-    property TypeInfo: TGDBType read FTypeInfo;
+    property TypeInfo: TGDBType read GetTypeInfo;
+    property TypeInfoAutoDestroy: Boolean read FTypeInfoAutoDestroy write FTypeInfoAutoDestroy;
   end;
 
   { TGDBMIWatch }
@@ -9266,6 +9270,12 @@ end;
 
 { TGDBMIDebuggerCommandEvaluate }
 
+function TGDBMIDebuggerCommandEvaluate.GetTypeInfo: TGDBType;
+begin
+  Result := FTypeInfo;
+  FTypeInfoAutoDestroy := False;
+end;
+
 function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
   function MakePrintable(const AString: String): String;
@@ -10410,6 +10420,14 @@ begin
   FTextValue := '';
   FTypeInfo:=nil;
   FEvalFlags := [];
+  FTypeInfoAutoDestroy := True;
+end;
+
+destructor TGDBMIDebuggerCommandEvaluate.Destroy;
+begin
+  if FTypeInfoAutoDestroy
+  then FreeAndNil(FTypeInfo);
+  inherited Destroy;
 end;
 
 function TGDBMIDebuggerCommandEvaluate.DebugText: String;
