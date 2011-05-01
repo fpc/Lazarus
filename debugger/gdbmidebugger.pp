@@ -2749,7 +2749,9 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
         // create a dummy range, so we will not retry
         NewRange.Capacity := 1;
         NewRange.RangeStartAddr   := AFirstAddr.Value;
-        NewRange.RangeEndAddr     := Max(OrigLastAddress.Value, AFirstAddr.Value+1);
+        if OrigLastAddress.Value > AFirstAddr.Value+1
+        then NewRange.RangeEndAddr     := OrigLastAddress.Value
+        else NewRange.RangeEndAddr     := AFirstAddr.Value+1;
         NewRange.LastEntryEndAddr := AFirstAddr.Value+1;
         Itm.Addr := AFirstAddr.Value;
         Itm.Dump := ' ';
