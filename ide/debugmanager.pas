@@ -895,6 +895,10 @@ begin
         then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(nil, 0);
       end;
     end;
+    dsInit: begin
+      if FDialogs[ddtPseudoTerminal] <> nil then
+        TPseudoConsoleDlg(FDialogs[ddtPseudoTerminal]).Clear;
+    end;
   end;
 end;
 

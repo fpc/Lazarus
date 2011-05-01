@@ -23,6 +23,7 @@ type
   public
     { public declarations }
     procedure AddOutput(const AText: String);
+    procedure Clear;
   end;
 
 var
@@ -51,6 +52,11 @@ begin
   while Memo1.Lines.Count > 5000 do
     Memo1.Lines.Delete(0);
   Memo1.SelStart := length(Memo1.Text);
+end;
+
+procedure TPseudoConsoleDlg.Clear;
+begin
+  Memo1.Text := '';
 end;
 
 {$R *.lfm}
