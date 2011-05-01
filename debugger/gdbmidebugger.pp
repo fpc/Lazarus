@@ -4729,7 +4729,7 @@ procedure TGDBMIDebuggerProperties.SetTimeoutForEval(const AValue: Integer);
 begin
   if FTimeoutForEval = AValue then exit;
   FTimeoutForEval := AValue;
-  if (FTimeoutForEval <> -1) and (FTimeoutForEval < 250)
+  if (FTimeoutForEval <> -1) and (FTimeoutForEval < 100)
   then FTimeoutForEval := -1;
 end;
 
@@ -4746,7 +4746,7 @@ begin
   FConsoleTty := '';
   {$ENDIF}
   {$IFDEF darwin}
-  FTimeoutForEval := 2000;
+  FTimeoutForEval := 500;
   {$ELSE darwin}
   FTimeoutForEval := -1;
   {$ENDIF}
@@ -8489,10 +8489,67 @@ end;
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   out AResult: TGDBMIExecResult; AFlags: TGDBMICommandFlags = [];
   ATimeOut: Integer = -1): Boolean;
-var
-  R, R2: TGDBMIExecResult;
-  List: TGDBMINameValueList;
-  Result2: Boolean;
+
+  function RevorerTimeOut: Boolean;
+  var
+    R, R2: TGDBMIExecResult;
+    List: TGDBMINameValueList;
+    Got7: Boolean;
+  begin
+    Result := False;
+    List := nil;
+    try
+      AResult.State := dsError;
+      // send 2 commands: - if the "7" is received, it could be the original command
+      //                  - but if the "1" is received, after the "7" we know we are in sync
+      FTheDebugger.SendCmdLn('-data-evaluate-expression 7');
+      FTheDebugger.SendCmdLn('-data-evaluate-expression 1');
+
+      // Not expected to reach it's timeout, so we can use a high value.
+      if not ProcessResult(R, Max(2*ATimeOut, 2500))
+      then exit;
+
+      // Got either:  Result for origonal "ACommand" (could be "7" too)   OR   got "7"
+      List := TGDBMINameValueList.Create(R);
+      Got7 := List.Values['value'] = '7';
+
+      // Check next result,
+      if not ProcessResult(R2, 500)
+      then exit;
+
+      // Got either:  "7"  OR  "1"
+      // "1" => never got original result, but recovery was ok
+      // "7" again => maybe recovery, must be followed by a "1" then
+      List.Init(R2.Values);
+
+      if Got7 and (List.Values['value'] = '1')
+      then begin
+        // timeout, without value, but recovery
+        Result := True;
+        DoDbgEvent(ecDebugger, etDefault, Format(gdbmiTimeOutForCmd, [ACommand]));
+        // TODO: use feedback dialog
+        if DebuggerProperties.WarnOnTimeOut then
+          MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
+                     mtWarning, [mbOK], 0);
+      end
+      else
+      if List.Values['value'] = '7'
+      then begin
+        // Got a 2nd "7", check for a "1"
+        if not ProcessResult(R2, 500)
+        then exit;
+        List.Init(R2.Values);
+        if not(List.Values['value'] = '1')
+        then exit;
+        // full recovery, even got orig result
+        Result := True;
+        AResult := R;
+      end;
+    finally
+      FreeAndNil(List);
+    end;
+  end;
+
 begin
   AResult.Values := '';
   AResult.State := dsNone;
@@ -8506,49 +8563,8 @@ begin
   Result := ProcessResult(AResult, ATimeOut);
   FLastExecResult := AResult;
 
-  if ProcessResultTimedOut then begin
-    Result2 := False;
-    FTheDebugger.SendCmdLn('-data-evaluate-expression 7');
-    // ProcessResult may either get the 1st or 2nd commands result (or nothing)
-    Result := ProcessResult(R, Min(ATimeOut, 1000));
-    if ProcessResultTimedOut then Result := False;    // will trigger: SetDebuggerState(dsError)
-
-    if Result then begin
-      // Received a result. This may be the Result of the 1st command
-      // "value=7" could be the result of the "data-eval 7"; but may also be the 1st cmds result
-      List := TGDBMINameValueList.Create(R);
-      Result := List.Values['value'] = '7';
-      // Check for 2nd result, just in case
-      Result2 := ProcessResult(R2, 500);
-      if ProcessResultTimedOut then Result2 := False;
-      If Result2 then begin
-        List := TGDBMINameValueList.Create(R2);
-        Result2 := List.Values['value'] = '7';
-      end;
-      FreeAndNil(List);
-
-      if Result2 then begin
-        // Got both results after all
-        AResult := R;
-      end
-      else begin
-        AResult.State := dsError;
-      end;
-    end;
-
-    // Result, Result2
-    // False,  False => SetDebuggerState(dsError);
-    // False,  True  => can not happen, still: SetDebuggerState(dsError);
-    // True,   False => Timeout; no Result for 1st Command
-    // True,   True  => Timeout; Recovered, Got both Results
-    if Result and not Result2 then begin
-      DoDbgEvent(ecDebugger, etDefault, Format(gdbmiTimeOutForCmd, [ACommand]));
-      // TODO: use feedback dialog
-      if DebuggerProperties.WarnOnTimeOut then
-        MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
-                   mtWarning, [mbOK], 0);
-    end;
-  end;
+  if ProcessResultTimedOut then
+  Result := RevorerTimeOut;
 
   if not Result
   then begin
@@ -8733,6 +8749,7 @@ begin
     if FTheDebugger.ReadLineTimedOut
     then begin
       FProcessResultTimedOut := True;
+      Result := False;
       break;
     end;
   until not FTheDebugger.DebugProcessRunning;
