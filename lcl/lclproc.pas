@@ -2280,6 +2280,7 @@ var
   NewLen: Integer;
 begin
   NewLen := DebugNestLvl * DebugLnNestLvlIndent;
+  if NewLen < 0 then NewLen := 0;
   if (NewLen >= DebugLnMaxNestPrefixLen) then begin
     NewLen := DebugLnMaxNestPrefixLen;
     s := IntToStr(DebugNestLvl);
@@ -2344,6 +2345,7 @@ end;
 procedure DebugLnExit(const s: string);
 begin
   dec(DebugNestLvl);
+  if DebugNestLvl < 0 then DebugNestLvl := 0;
   DebugLnNestCreatePrefix;
   if not DebugNestAtBOL then
     DebugLn;
@@ -2354,6 +2356,7 @@ end;
 procedure DebugLnExit(Args: array of const);
 begin
   dec(DebugNestLvl);
+  if DebugNestLvl < 0 then DebugNestLvl := 0;
   DebugLnNestCreatePrefix;
   if not DebugNestAtBOL then
     DebugLn;
