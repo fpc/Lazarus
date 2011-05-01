@@ -994,6 +994,8 @@ const
   // The assumption is, that no single *source* statement starting before this range,
   //  will ever reach into the next statement (where the next statement already started / mixed addresses)
   DAssRangeOverFuncTreshold = 15;
+  // Never dis-assemble more bytes in a single go (actually, max-offset before requested addr)
+  DAssMaxRangeSize = 4096;
 type
 
   { TGDBMIDisassembleResultList }
@@ -1053,12 +1055,12 @@ type
 
     // Current SubList
     function IsFirstSubList: Boolean;
-    function CurrentFixedAddr: TDBGPtr; // Addr[0] - Offs[0]
+    function CurrentFixedAddr(AOffsLimit: Integer): TDBGPtr; // Addr[0] - Offs[0]
     // About the next SubList
     function NextStartAddr: TDBGPtr;
     function NextStartOffs: Integer;
     // Overall
-    function CountLinesAfterCounterAddr: Integer; // count up to Startof Current SubList
+    function CountLinesAfterCounterAddr: Integer; // count up to Start of Current SubList
 
     property CurrentIndex: Integer read FCurIdx;
     property NextIndex: Integer read FStartIdx;
@@ -1986,8 +1988,9 @@ begin
 
   // Does the next address look good?
   // And is AStartAddrHit ok
-  Result := ((NextIdx > FMaxIdx) or (FList.Item[NextIdx]^.Offset = 0))
-        and ( (not HasLocate) or ((FIndexOfLocateAddress < 0) or (FOffsetOfLocateAddress = 0)) );
+  //Result := ((NextIdx > FMaxIdx) or (FList.Item[NextIdx]^.Offset = 0))
+  //      and
+  Result := ( (not HasLocate) or ((FIndexOfLocateAddress < 0) or (FOffsetOfLocateAddress = 0)) );
 end;
 
 function TGDBMIDisassembleResultFunctionIterator.IsFirstSubList: Boolean;
@@ -2002,9 +2005,9 @@ begin
   Result := CurrentIndex - IndexOfCounterAddress - 1;
 end;
 
-function TGDBMIDisassembleResultFunctionIterator.CurrentFixedAddr: TDBGPtr;
+function TGDBMIDisassembleResultFunctionIterator.CurrentFixedAddr(AOffsLimit: Integer): TDBGPtr;
 begin
-  Result := FList.Item[CurrentIndex]^.Addr - FList.Item[CurrentIndex]^.Offset;
+  Result := FList.Item[CurrentIndex]^.Addr - Min(FList.Item[CurrentIndex]^.Offset, AOffsLimit);
 end;
 
 function TGDBMIDisassembleResultFunctionIterator.NextStartAddr: TDBGPtr;
@@ -2034,8 +2037,13 @@ begin
 end;
 
 function TGDBMIMemoryDumpResultList.GetItemTxt(Index: Integer): string;
+var
+  itm: PGDBMINameValue;
 begin
-  Result := PCLenToString(FNameValueList.Items[Index]^.Name, True);
+  itm := FNameValueList.Items[Index];
+  if itm <> nil
+  then Result := PCLenToString(itm^.Name, True)
+  else Result := '';
 end;
 
 procedure TGDBMIMemoryDumpResultList.PreParse;
@@ -2203,21 +2211,21 @@ begin
 end;
 
 function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
-type
-  TAddressValidity =
-    (avFoundFunction, avFoundRange, avFoundStatemnet,  // known address
-     avGuessed,                                        // guessed
-     avExternRequest,                                  // As requested by external caller
-     avPadded                                          // Padded, because address was not known for sure
-    );
-  TAddress = record
-    Value, GuessedValue: TDBGPtr;
-    Offset: Integer;
-    Validity: TAddressValidity;
-  end;
+  type
+    TAddressValidity =
+      (avFoundFunction, avFoundRange, avFoundStatement,  // known address
+       avGuessed,                                        // guessed
+       avExternRequest,                                  // As requested by external caller
+       avPadded                                          // Padded, because address was not known for sure
+      );
+    TAddress = record
+      Value, GuessedValue: TDBGPtr;
+      Offset: Integer;
+      Validity: TAddressValidity;
+    end;
 
-const
-  TrustedValidity = [avFoundFunction, avFoundRange, avFoundStatemnet];
+  const
+    TrustedValidity = [avFoundFunction, avFoundRange, avFoundStatement];
 
   function InitAddress(AValue: TDBGPtr; AValidity: TAddressValidity;
     AnOffset: Integer = -1): TAddress;
@@ -2226,6 +2234,15 @@ const
     Result.GuessedValue   := AValue;;
     Result.Offset   := AnOffset;
     Result.Validity := AValidity;
+  end;
+
+  procedure PadAddress(var AnAddr: TAddress; APad: Integer);
+  begin
+    {$PUSH}{$Q-}{$R-}// APad can be negative, but will be expanded to TDbgPtr (QWord)
+    AnAddr.Value    := AnAddr.Value + APad;
+    {$POP}
+    AnAddr.Validity := avPadded;
+    AnAddr.Offset   := -1;
   end;
 
   function DbgsAddr(const AnAddr: TAddress): string;
@@ -2247,12 +2264,10 @@ const
     WS := 0;
     if WithSrc
     then WS := 1;;
+    Result := AResultList;
     ExecuteCommand('-data-disassemble -s %u -e %u -- %d', [AStartAddr, AnEndAddr, WS], R);
-    if AResultList <> nil
-    then begin
-      Result := AResultList;
-      Result.Init(R);
-    end
+    if Result <> nil
+    then Result.Init(R)
     else Result := TGDBMIDisassembleResultList.Create(R);
     if ACutBeforeEndAddr and Result.HasSourceInfo
     then Result.SortByAddress;
@@ -2265,12 +2280,10 @@ const
   var
     R: TGDBMIExecResult;
   begin
+    Result := AResultList;
     ExecuteCommand('-data-read-memory %u x 1 1 %u', [AStartAddr, ACount], R);
-    if AResultList <> nil
-    then begin
-      Result := AResultList;
-      Result.Init(R);
-    end
+    if Result <> nil
+    then Result.Init(R)
     else Result := TGDBMIMemoryDumpResultList.Create(R);
   end;
 
@@ -2344,13 +2357,71 @@ const
     end;
   end;
 
+  procedure AdjustLastEntryEndAddr(const ARange: TDBGDisassemblerEntryRange;
+    const ADisAssList: TGDBMIDisassembleResultList);
+  var
+    i: Integer;
+    TmpAddr: TDBGPtr;
+  begin
+    if ARange.Count = 0 then exit;
+    TmpAddr := ARange.LastAddr;
+    i := 0;
+    while (i < ADisAssList.Count) and (ADisAssList.Item[i]^.Addr <= TmpAddr) do inc(i);
+    if i < ADisAssList.Count
+    then ARange.LastEntryEndAddr := ADisAssList.Item[i]^.Addr
+    else if ARange.LastEntryEndAddr <= ARange.RangeEndAddr
+    then ARange.LastEntryEndAddr := ARange.RangeEndAddr + 1;
+  end;
+
   procedure CopyToRange(const ADisAssList: TGDBMIDisassembleResultList;
     const ADestRange: TDBGDisassemblerEntryRange; AFromIndex, ACount: Integer;
-    const ASrcInfoDisAssList: TGDBMIDisassembleResultList = nil);
+    ASrcInfoDisAssList: TGDBMIDisassembleResultList = nil);
   var
     i, j, MinInSrc, MaxInSrc: Integer;
     ItmPtr, ItmPtr2, LastItem: PDisassemblerEntry;
   begin
+    if ASrcInfoDisAssList = ADisAssList
+    then ASrcInfoDisAssList := nil;
+    // Clean end of range
+    ItmPtr := ADisAssList.Item[AFromIndex];
+    i := ADestRange.Count;
+    while (i > 0) and (ADestRange.EntriesPtr[i-1]^.Addr >= ItmPtr^.Addr) do dec(i);
+    {$IFDEF DBG_VERBOSE}
+    if ADestRange.Count <> i then
+    debugln(['NOTICE, CopyToRange: Removing ',i,' entries from the end of Range. AFromIndex=',AFromIndex, ' ACount=', ACount, ' Range=',dbgs(ADestRange)]);
+    {$ENDIF}
+    ADestRange.Count := i;
+    if  i > 0 then begin
+      ItmPtr2 := ADestRange.EntriesPtr[i-1];
+      if ItmPtr2^.Dump <> '' then begin
+        {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
+        j := (ItmPtr^.Addr - ItmPtr2^.Addr) * 2;
+        {$POP}
+        {$IFDEF DBG_VERBOSE}
+        if length(ItmPtr2^.Dump) > j then
+        debugln(['NOTICE, CopyToRange: Shortening Dump at the end of Range. AFromIndex=',AFromIndex, ' ACount=', ACount, ' Range=',dbgs(ADestRange)]);
+        {$ENDIF}
+        if length(ItmPtr2^.Dump) > j then ItmPtr2^.Dump := copy(ItmPtr2^.Dump, 1, j);
+      end;
+    end;
+
+    if ADestRange.Count = 0
+    then ADestRange.RangeStartAddr := ADisAssList.Item[AFromIndex]^.Addr;
+
+    if ADestRange.RangeEndAddr < ADisAssList.Item[AFromIndex+ACount-1]^.Addr
+    then ADestRange.RangeEndAddr := ADisAssList.Item[AFromIndex+ACount-1]^.Addr;
+
+    if ADisAssList.Count > AFromIndex + ACount
+    then begin
+      if ADestRange.LastEntryEndAddr < ADisAssList.Item[AFromIndex+ACount]^.Addr
+      then ADestRange.LastEntryEndAddr := ADisAssList.Item[AFromIndex+ACount]^.Addr;
+    end
+    else
+      if ADestRange.LastEntryEndAddr <= ADestRange.RangeEndAddr
+      then ADestRange.LastEntryEndAddr := ADestRange.RangeEndAddr + 1;
+
+
+    // Append new items
     LastItem := nil;
     MinInSrc := 0;
     if ASrcInfoDisAssList <> nil
@@ -2415,7 +2486,9 @@ const
     s: String;
   begin
     Cnt := ARange.Count;
-    FromIndex := ARange.IndexOfAddrWithOffs(AFirstAddr)-1;
+    if ARange.FirstAddr > AFirstAddr
+    then FromIndex := -1
+    else FromIndex := ARange.IndexOfAddrWithOffs(AFirstAddr)-1;
     if FromIndex < -1
     then exit;
 
@@ -2441,7 +2514,7 @@ const
       if (Offs < 0) or (Offs >= AMemDump.Count)
       then Continue;
 
-      if NextItm <> nil
+      if (NextItm <> nil) //and (NextItm^.Addr > Addr)
       then Len := NextItm^.Addr - Addr
       else Len := AMemDump.Count - 1 - Offs;
       if Offs + Len >= AMemDump.Count
@@ -2514,7 +2587,7 @@ const
             debugln(['WARNING: Sublist not at offset 0 (filling gap in/before Src-Info): FromIdx=', DisAssIterator.CurrentIndex, ' NextIdx=', DisAssIterator.NextIndex,
                      ' SequenceNo=', DisAssIterator.SublistNumber, ' StartIdx=', DisAssIterator.IndexOfLocateAddress, ' StartOffs=', DisAssIterator.OffsetOfLocateAddress]);
             {$ENDIF}
-            DisAssListCurrentSub := ExecDisassmble(DisAssIterator.CurrentFixedAddr,
+            DisAssListCurrentSub := ExecDisassmble(DisAssIterator.CurrentFixedAddr(DAssMaxRangeSize),
               DisAssIterator.NextStartAddr, False, DisAssListCurrentSub, True);
           end;
 
@@ -2534,8 +2607,7 @@ const
     NewRange: TDBGDisassemblerEntryRange;
     OrigLastAddress, OrigFirstAddress: TAddress;
     TmpAddr: TDBGPtr;
-    BlockOk, GotFullDisAss, SkipDisAssInFirstLoop: Boolean;
-    s: String;
+    BlockOk, SkipDisAssInFirstLoop, ContinueAfterSource: Boolean;
     Itm: TDisassemblerEntry;
   begin
     Result := False;
@@ -2545,31 +2617,29 @@ const
     DisAssIterator := nil;
     OrigFirstAddress := AFirstAddr;
     OrigLastAddress := ALastAddr;
+    SkipDisAssInFirstLoop := False;
 
     NewRange := TDBGDisassemblerEntryRange.Create;
+    // set some values, wil be adjusted later (in CopyToRange
+    NewRange.RangeStartAddr := AFirstAddr.Value;
+    NewRange.RangeEndAddr   := ALastAddr.Value;
+    NewRange.LastEntryEndAddr := ALastAddr.Value;
 
     // No nice startingpoint found, just start to disassemble aprox 5 instructions before it
     // and hope that when we started in the middle of an instruction it get sorted out.
     // If so, the 4st for lines from the result must be discarded
     if not (AFirstAddr.Validity in TrustedValidity)
-    then begin
-      AFirstAddr.Value := AFirstAddr.Value - 5 * DAssBytesPerCommandMax;
-      AFirstAddr.Validity := avPadded;
-      AFirstAddr.Offset := -1;
-    end;
+    then PadAddress(AFirstAddr, - 5 * DAssBytesPerCommandMax);
 
     // Adjust ALastAddr
-    if ALastAddr.Value < AFirstAddr.Value
+    if ALastAddr.Value <= AFirstAddr.Value
     then begin
-      ALastAddr.Value := AFirstAddr.Value + 2 * DAssBytesPerCommandMax;
-      ALastAddr.Validity := avPadded;
+      ALastAddr.Value := AFirstAddr.Value;
+      PadAddress(ALastAddr, 2 * DAssBytesPerCommandMax);
     end
     else
     if not (ALastAddr.Validity in TrustedValidity)
-    then begin
-      ALastAddr.Value := ALastAddr.Value + 2 * DAssBytesPerCommandMax;
-      ALastAddr.Validity := avPadded;
-    end;
+    then PadAddress(ALastAddr, 2 * DAssBytesPerCommandMax);
 
     {$IFDEF DBG_VERBOSE}
     DebugLnEnter(['INFO: DoDisassembleRange for AFirstAddr =', DbgsAddr(AFirstAddr),
@@ -2580,14 +2650,13 @@ const
 
     // check if we have an overall source-info
     // we can only do that, if we know the offset of firstaddr (limit to DAssRangeOverFuncTreshold avg lines, should be enough)
+    // TODO: limit offset ONLY, if previous range known (already have disass)
     if (AFirstAddr.Offset >= 0)
     then DisAssListWithSrc := ExecDisassmble
           (AFirstAddr.Value - Min(AFirstAddr.Offset, DAssRangeOverFuncTreshold * DAssBytesPerCommandAvg),
            ALastAddr.Value, True);
-    GotFullDisAss := (DisAssListWithSrc <> nil) and (DisAssListWithSrc.Count > 0) and DisAssListWithSrc.HasSourceInfo;
-    SkipDisAssInFirstLoop := False;
 
-    if GotFullDisAss
+    if (DisAssListWithSrc <> nil) and (DisAssListWithSrc.Count > 0) and DisAssListWithSrc.HasSourceInfo
     then begin
       (* ***
          *** Add the full source info
@@ -2602,10 +2671,12 @@ const
       end;
 
       // Find out what comes after the disassembled source (need at least one statemnet, to determine end-add of last src-stmnt)
-      TmpAddr := DisAssListWithSrc.LastItem^.Addr + 2 * DAssBytesPerCommandAlign;
-      if ALastAddr.Value > TmpAddr
+      TmpAddr := DisAssListWithSrc.LastItem^.Addr;
+      ContinueAfterSource := OrigLastAddress.Value > TmpAddr;
+      if ContinueAfterSource
       then TmpAddr := ALastAddr.Value;
-      DisAssList := ExecDisassmble(DisAssListWithSrc.LastItem^.Addr, TmpAddr, False);
+      DisAssList := ExecDisassmble(DisAssListWithSrc.LastItem^.Addr,
+                                   TmpAddr + 2 * DAssBytesPerCommandAlign, False);
 
       // Add the known source list
       if DisAssList.Count < 2
@@ -2617,6 +2688,7 @@ const
       NewRange.Capacity := Max(NewRange.Capacity, NewRange.Count  + DisAssListWithSrc.Count);
       while not DisAssIterator.EOL
       do begin
+        if (dcsCanceled in SeenStates) then break;
         DisAssIterator.NextSubList(DisAssListCurrentSub);
         CopyToRange(DisAssListCurrentSub, NewRange, 0, DisAssListCurrentSub.Count); // Do not add the Sourcelist as last param, or it will get re-sorted
 
@@ -2630,31 +2702,28 @@ const
           DoDisassembleSourceless(DisAssListCurrentSub.LastItem^.Addr, DisAssIterator.NextStartAddr, NewRange, True);
         end;
       end;
+      i := DisAssIterator.CountLinesAfterCounterAddr;
 
       FreeAndNil(DisAssIterator);
       FreeAndNil(DisAssListWithSrc);
+      FreeAndNil(DisAssListCurrentSub);
       // Source Completly Added
 
-      // DisAssList contains data after source (from index = 1)
-      if DisAssList.Count < 2
+      if not ContinueAfterSource
       then begin
-        // nothing to continue
-        NewRange.RangeStartAddr := AFirstAddr.Value;
-        NewRange.RangeEndAddr := OrigLastAddress.Value; // we have/will have tried our best to get everything to this value. If we didn't then neither will we later
-        NewRange.LastEntryEndAddr := ALastAddr.Value;
+        AdjustLastEntryEndAddr(NewRange, DisAssList);
         FKnownRanges.AddRange(NewRange);  // NewRange is now owned by FKnownRanges
         NewRange := nil;
         FreeAndNil(DisAssList);
         exit;
       end;
 
-
       // continue with the DisAsslist for the remainder
-      GotFullDisAss := False;
       AFirstAddr.Validity := avFoundFunction; //  if we got source, then start is ok (original start is kept)
       DisAssStartIdx := 1;
       SkipDisAssInFirstLoop := True;
-      StopAfterNumLines := StopAfterNumLines - NewRange.Count;
+      if i > 0
+      then StopAfterNumLines := StopAfterNumLines - i;
       (* ***
          *** Finished adding the full source info
          ***
@@ -2680,8 +2749,8 @@ const
         // create a dummy range, so we will not retry
         NewRange.Capacity := 1;
         NewRange.RangeStartAddr   := AFirstAddr.Value;
-        NewRange.RangeEndAddr     := OrigLastAddress.Value;
-        NewRange.LastEntryEndAddr := OrigLastAddress.Value;
+        NewRange.RangeEndAddr     := Max(OrigLastAddress.Value, AFirstAddr.Value+1);
+        NewRange.LastEntryEndAddr := AFirstAddr.Value+1;
         Itm.Addr := AFirstAddr.Value;
         Itm.Dump := ' ';
         Itm.SrcFileLine := 0;
@@ -2702,7 +2771,7 @@ const
     if (ALastAddr.Validity = avPadded) or (DisAssList.LastItem^.Addr >= ALastAddr.Value)
     then begin
       ALastAddr.Value := DisAssList.LastItem^.Addr;
-      ALastAddr.Validity := avFoundStatemnet;
+      ALastAddr.Validity := avFoundStatement;
       dec(Cnt);
       DisAssList.Count := Cnt;
     end;
@@ -2714,28 +2783,28 @@ const
       while (DisAssStartIdx < 4) and (DisAssStartIdx + 1 < Cnt) and (DisAssList.Item[DisAssStartIdx+1]^.Addr <= OrigFirstAddress.Value)
       do inc(DisAssStartIdx);
       AFirstAddr.Value := DisAssList.Item[DisAssStartIdx]^.Addr;
-      AFirstAddr.Validity := avFoundStatemnet;
+      AFirstAddr.Validity := avFoundStatement;
     end;
 
 
     NewRange.Capacity := Max(NewRange.Capacity, NewRange.Count  + Cnt);
-    NewRange.RangeStartAddr := AFirstAddr.Value;
-    NewRange.RangeEndAddr := OrigLastAddress.Value; // we have/will have tried our best to get everything to this value. If we didn't then neither will we later
-    NewRange.LastEntryEndAddr := ALastAddr.Value;
 
     DisAssIterator := TGDBMIDisassembleResultFunctionIterator.Create
       (DisAssList, DisAssStartIdx, ALastAddr.Value, FStartAddr, StopAfterAddress);
 
     while not DisAssIterator.EOL
     do begin
+      if (dcsCanceled in SeenStates) then break;
       BlockOk := DisAssIterator.NextSubList(DisAssListCurrentSub);
 
-      if (DisAssIterator.CountLinesAfterCounterAddr > StopAfterNumLines)       // got enough lines
-      // only if the next block is good to go
-      and not ( (not BlockOk) or (DisAssListCurrentSub.Item[0]^.Offset <> 0) or (not GotFullDisAss) )
+      // Do we have enough lines (without the current block)?
+      if (DisAssIterator.CountLinesAfterCounterAddr > StopAfterNumLines)
       then begin
+        {$IFDEF DBG_VERBOSE}
+        DebugLnExit(['INFO: Got enough line in Iteration: CurrentIndex=', DisAssIterator.CurrentIndex]);
+        {$ENDIF}
         NewRange.LastEntryEndAddr := DisAssIterator.NextStartAddr;
-        NewRange.RangeEndAddr := DisAssIterator.NextStartAddr;
+        //AdjustLastEntryEndAddr(NewRange, DisAssList);
         break;
       end;
 
@@ -2748,61 +2817,32 @@ const
         {$ENDIF}
         // Current block starts with offset. Adjust and disassemble again
         // Try with source first, in case it returns dat without source
-        if GotFullDisAss
+        DisAssListWithSrc := ExecDisassmble(DisAssIterator.CurrentFixedAddr(DAssMaxRangeSize),
+          DisAssIterator.NextStartAddr, True, DisAssListWithSrc, True);
+        if (DisAssListWithSrc.Count > 0)
         then begin
-          //get the source-less code as reference
-          DisAssListCurrentSub := ExecDisassmble(DisAssIterator.CurrentFixedAddr,
-            DisAssIterator.NextStartAddr, False, DisAssListCurrentSub, True);
-          CopyToRange(DisAssListCurrentSub, NewRange, 0, DisAssListCurrentSub.Count, DisAssListWithSrc);
-          Result := Result or (DisAssListCurrentSub.Count > 0);
-          continue;
-        end
-        else begin
-          // Try source first
-          DisAssListWithSrc := ExecDisassmble(DisAssIterator.CurrentFixedAddr,
-            DisAssIterator.NextStartAddr, True, DisAssListWithSrc, True);
-          if (DisAssListWithSrc.Count > 0)
+          if DisAssListWithSrc.HasSourceInfo
+          then DisAssListWithSrc.SortByAddress;
+          if (not DisAssListWithSrc.HasSourceInfo)
+          or (DisAssListWithSrc.LastItem^.Addr > DisAssIterator.NextStartAddr - DAssBytesPerCommandAlign)
           then begin
-            if DisAssListWithSrc.HasSourceInfo
-            then DisAssListWithSrc.SortByAddress;
-            if (not DisAssListWithSrc.HasSourceInfo)
-            or (DisAssListWithSrc.LastItem^.Addr > DisAssIterator.NextStartAddr - DAssBytesPerCommandAlign)
-            then begin
-              // no source avail, but got data
-              // OR source and no gap
-              CopyToRange(DisAssListWithSrc, NewRange, 0, DisAssListWithSrc.Count);
-              Result := True;
-              continue;
-            end;
+            // no source avail, but got data
+            // OR source and no gap
+            CopyToRange(DisAssListWithSrc, NewRange, 0, DisAssListWithSrc.Count);
+            Result := True;
+            continue;
           end;
-
-          //get the source-less code as reference
-          DisAssListCurrentSub := ExecDisassmble(DisAssIterator.CurrentFixedAddr,
-            DisAssIterator.NextStartAddr, False, DisAssListCurrentSub, True);
-          CopyToRange(DisAssListCurrentSub, NewRange, 0, DisAssListCurrentSub.Count, DisAssListWithSrc);
-          Result := Result or (DisAssListCurrentSub.Count > 0);
-          continue;
         end;
+
+        //get the source-less code as reference
+        DisAssListCurrentSub := ExecDisassmble(DisAssIterator.CurrentFixedAddr(DAssMaxRangeSize),
+          DisAssIterator.NextStartAddr, False, DisAssListCurrentSub, True);
+        CopyToRange(DisAssListCurrentSub, NewRange, 0, DisAssListCurrentSub.Count, DisAssListWithSrc);
+        Result := Result or (DisAssListCurrentSub.Count > 0);
+        continue;
       end;
 
       // Todo: Check for wrong start stmnt offset
-      if not BlockOk
-      and (DisAssIterator.NextStartOffs <> 0)
-      then begin
-        // overlap into next proc
-        {$IFDEF DBG_VERBOSE}
-        debugln(['WARNING: FindProcEnd found an overlap (',DisAssIterator.NextStartOffs,') at block end: FromIdx=', DisAssIterator.CurrentIndex, ' NextIdx=', DisAssIterator.NextIndex,
-        ' SequenceNo=', DisAssIterator.SublistNumber, ' StartIdx=', DisAssIterator.IndexOfLocateAddress, ' StartOffs=', DisAssIterator.OffsetOfLocateAddress]);
-        {$ENDIF}
-        s := DisAssListCurrentSub.LastItem^.Dump;
-        s := copy(s, 1, Max(0, length(s) - DisAssIterator.NextStartOffs * 2));
-        if s = ''
-        then s := ' ';
-        DisAssListCurrentSub.LastItem^.Dump := s;
-        DisAssListCurrentSub.LastItem^.Statement := '';
-        BlockOk := True;
-      end;
-
       if BlockOk
       then begin
         // Got a good block
@@ -2811,17 +2851,17 @@ const
           // Try to get source-info (up to DisAssIterator.NextStartAddr)
           // Subtract offset from StartAddress, in case this is the first block
           //   (we may continue existing data, but src info must be retrieved in full, or may be incomplete)
-          // If we are in IsFirstSubList, we already tried
-          if (not GotFullDisAss)
-          and not(DisAssIterator.IsFirstSubList and SkipDisAssInFirstLoop)
-          then DisAssListWithSrc := ExecDisassmble(DisAssIterator.CurrentFixedAddr,
-            DisAssIterator.NextStartAddr, True, DisAssListWithSrc, True);
-          // We may have less lines with source, as we stripped padding at the end
-          if (DisAssListWithSrc <> nil) and DisAssListWithSrc.HasSourceInfo
+          if  not( DisAssIterator.IsFirstSubList and SkipDisAssInFirstLoop )
           then begin
-            CopyToRange(DisAssListCurrentSub, NewRange, 0, DisAssListCurrentSub.Count, DisAssListWithSrc);
-            Result := Result or (DisAssListCurrentSub.Count > 0);
-            continue;
+            DisAssListWithSrc := ExecDisassmble(DisAssIterator.CurrentFixedAddr(DAssMaxRangeSize),
+                DisAssIterator.NextStartAddr, True, DisAssListWithSrc, True);
+            // We may have less lines with source, as we stripped padding at the end
+            if (DisAssListWithSrc <> nil) and DisAssListWithSrc.HasSourceInfo
+            then begin
+              CopyToRange(DisAssListCurrentSub, NewRange, 0, DisAssListCurrentSub.Count, DisAssListWithSrc);
+              Result := Result or (DisAssListCurrentSub.Count > 0);
+              continue;
+            end;
           end;
         end;
         CopyToRange(DisAssListCurrentSub, NewRange, 0, DisAssListCurrentSub.Count);
@@ -2899,17 +2939,21 @@ const
     Rng: TDBGDisassemblerEntryRange;
     FirstAddr: TDBGPtr;
   begin
-    MemDump := nil;;
+    MemDump := nil;
     for i := 0 to length(FMemDumpsNeeded) - 1 do
     begin
+      if (dcsCanceled in SeenStates) then break;
       FirstAddr := FMemDumpsNeeded[i].FirstAddr;
       Rng := FRangeIterator.GetRangeForAddr(FirstAddr, True);
       if rng <> nil
       then MemDump := ExecMemDump(FirstAddr, FMemDumpsNeeded[i].LastAddr - FirstAddr, MemDump);
-      while (Rng <> nil) and (Rng.FirstAddr <= FMemDumpsNeeded[i].LastAddr) do
-      begin
-        AddMemDumpToRange(Rng, MemDump, FMemDumpsNeeded[i].FirstAddr, FMemDumpsNeeded[i].LastAddr);
-        Rng := FRangeIterator.NextRange;
+      if DebuggerState <> dsError
+      then begin
+        while (Rng <> nil) and (Rng.FirstAddr <= FMemDumpsNeeded[i].LastAddr) do
+        begin
+          AddMemDumpToRange(Rng, MemDump, FMemDumpsNeeded[i].FirstAddr, FMemDumpsNeeded[i].LastAddr);
+          Rng := FRangeIterator.NextRange;
+        end;
       end;
     end;
     FreeAndNil(MemDump);
@@ -2942,10 +2986,29 @@ begin
   and (TryStartAt.Value - RngBefore.EntriesPtr[RngBefore.Count - 1]^.Addr > FLinesBefore * DAssBytesPerCommandAvg)
   then RngBefore := nil;
   {$POP}
-  TryStartAt.GuessedValue := FStartAddr - FLinesBefore * DAssBytesPerCommandAvg;
+  TmpAddr := FStartAddr - Min(FLinesBefore * DAssBytesPerCommandAvg, DAssMaxRangeSize);
+  TryStartAt.GuessedValue := TmpAddr;
   AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
+  // check max size
+  if (TryStartAt.Value < FStartAddr - Min(FStartAddr, DAssMaxRangeSize))
+  then begin
+    {$IFDEF DBG_VERBOSE}
+    DebugLn(['INFO: Limit Range for Disass: FStartAddr=', FStartAddr, '  TryStartAt.Value=', TryStartAt.Value  ]);
+    {$ENDIF}
+    TryStartAt := InitAddress(TmpAddr, avGuessed);
+  end;
 
   // Guess Maximum, will adjust later
+  if TryStartAt.Value > FEndAddr then begin
+    if (RngBefore <> nil) then begin
+      GotCnt := RngBefore.IndexOfAddr(FEndAddr);
+      LastGotCnt := RngBefore.IndexOfAddr(TryStartAt.Value);
+      if (GotCnt >= 0) and (LastGotCnt >= 0) and (LastGotCnt > GotCnt) then
+        FLinesAfter := Max(FLinesAfter - (LastGotCnt - GotCnt), 1);
+    end;
+    FEndAddr := TryStartAt.Value; // WARNING: modifying FEndAddr
+  end;
+
   TryEndAt := InitAddress(FEndAddr + FLinesAfter * DAssBytesPerCommandAvg, avGuessed);
 
   // Read as many unknown ranges, until LinesAfter is met
@@ -2953,9 +3016,13 @@ begin
   while(True)
   do begin
     // check if we need any LinesAfter
+    if (dcsCanceled in SeenStates) then break;
     LastGotCnt:= GotCnt;
     GotCnt := 0;
     TmpAddr := FEndAddr;
+    if TryStartAt.Value > FEndAddr
+    then
+      TmpAddr := TryStartAt.Value;
     if RngBefore <> nil
     then begin
       TmpAddr := RngBefore.RangeEndAddr;
@@ -2973,10 +3040,11 @@ begin
     end;
     if LastGotCnt >= GotCnt
     then begin
-      debugln(['Disassembler: *** Failure to get any mor lines while scanning forward LastGotCnt=',LastGotCnt, ' now GotCnt=',GotCnt, ' Requested=',FLinesAfter]);
+      debugln(['Disassembler: *** Failure to get any more lines while scanning forward LastGotCnt=',LastGotCnt, ' now GotCnt=',GotCnt, ' Requested=',FLinesAfter]);
       break;
     end;
 
+    if (dcsCanceled in SeenStates) then break;
     RngAfter := FRangeIterator.NextRange;
     // adjust TryEndAt
     if (RngAfter <> nil) and (TryEndAt.Value >= RngAfter.RangeStartAddr)
@@ -2985,6 +3053,7 @@ begin
       TryEndAt.Validity := avFoundRange;
     end;
 
+    if (dcsCanceled in SeenStates) then break;
     // Try to disassemble the range
     if not DoDisassembleRange(TryStartAt, TryEndAt, TmpAddr, FLinesAfter-GotCnt)
     then begin
@@ -3011,6 +3080,7 @@ begin
   GotCnt := -1;
   while(True)
   do begin
+    if (dcsCanceled in SeenStates) then break;
     LastGotCnt:= GotCnt;
     if (RngAfter = nil)
     then begin
@@ -3018,18 +3088,19 @@ begin
       break;
     end;
 
-    GotCnt := RngAfter.IndexOfAddrWithOffs(FEndAddr);  // already known before
+    GotCnt := RngAfter.IndexOfAddrWithOffs(FStartAddr);  // already known before
     if GotCnt >= FLinesBefore
     then break;
     if LastGotCnt >= GotCnt
     then begin
-      debugln(['Disassembler: *** Failure to get any mor lines while scanning backward LastGotCnt=',LastGotCnt, ' now GotCnt=',GotCnt, ' Requested=',FLinesBefore]);
+      debugln(['Disassembler: *** Failure to get any more lines while scanning backward LastGotCnt=',LastGotCnt, ' now GotCnt=',GotCnt, ' Requested=',FLinesBefore]);
       break;
     end;
 
     TryEndAt := InitAddress(RngAfter.RangeStartAddr, avFoundRange);
+    TmpAddr := TryEndAt.Value - Min((FLinesBefore - GotCnt) * DAssBytesPerCommandAvg, DAssMaxRangeSize);
     TryStartAt := InitAddress(TryEndAt.Value - 1, avGuessed);
-    TryStartAt.GuessedValue := TryEndAt.Value - (FLinesBefore - GotCnt) * DAssBytesPerCommandAvg;
+    TryStartAt.GuessedValue := TmpAddr;
     // and adjust
     RngBefore := FRangeIterator.PreviousRange;
     {$PUSH}{$IFnDEF DBGMI_WITH_DISASS_OVERFLOW}{$Q-}{$R-}{$ENDIF} // Overflow is allowed to occur
@@ -3039,7 +3110,15 @@ begin
     then RngBefore := nil;
     {$POP}
     AdjustToRangeOrKnowFunctionStart(TryStartAt, RngBefore);
+    if (TryStartAt.Value < TryEndAt.Value - Min(TryEndAt.Value, DAssMaxRangeSize))
+    then begin
+      {$IFDEF DBG_VERBOSE}
+      DebugLn(['INFO: Limit Range for Disass: TryEndAt.Value=', TryEndAt.Value, '  TryStartAt.Value=', TryStartAt.Value  ]);
+      {$ENDIF}
+      TryStartAt := InitAddress(TmpAddr, avGuessed);
+    end;
 
+    if (dcsCanceled in SeenStates) then break;
     // Try to disassemble the range
     if not DoDisassembleRange(TryStartAt, TryEndAt, 0, -1)
     then begin

@@ -1328,6 +1328,7 @@ type
     function GetEntry(Index: Integer): TDisassemblerEntry;
     function GetEntryPtr(Index: Integer): PDisassemblerEntry;
     procedure SetCapacity(const AValue: Integer);
+    procedure SetCount(const AValue: Integer);
   public
     procedure Clear;
     function Append(const AnEntryPtr: PDisassemblerEntry): Integer;
@@ -1339,7 +1340,7 @@ type
     function IndexOfAddr(const AnAddr: TDbgPtr): Integer;
     function IndexOfAddrWithOffs(const AnAddr: TDbgPtr): Integer;
     function IndexOfAddrWithOffs(const AnAddr: TDbgPtr; out AOffs: Integer): Integer;
-    property Count: Integer read FCount;
+    property Count: Integer read FCount write SetCount;
     property Capacity: Integer read GetCapacity write SetCapacity;
     property Entries[Index: Integer]: TDisassemblerEntry read GetEntry;
     property EntriesPtr[Index: Integer]: PDisassemblerEntry read GetEntryPtr;
@@ -2056,7 +2057,7 @@ begin
     then fo := ADisassRange.EntriesPtr[0]^.Offset
     else fo := 0;
     with ADisassRange do
-      Result := Format('Range(%u)=[[ Cnt=%d, Capac=%d, First=%u, RFirst=%u, Last=%u, RLast=%u, REnd=%u, FirstOfs=%d ]]',
+      Result := Format('Range(%u)=[[ Cnt=%d, Capac=%d, [0].Addr=%u, RFirst=%u, [Cnt].Addr=%u, RLast=%u, REnd=%u, FirstOfs=%d ]]',
         [PtrUInt(ADisassRange), Count, Capacity, FirstAddr, RangeStartAddr, LastAddr, RangeEndAddr, LastEntryEndAddr, fo]);
   end;
 end;
@@ -6512,6 +6513,9 @@ destructor TIDEDisassembler.Destroy;
 var
   n: Integer;
 begin
+  if FMaster <> nil
+  then FMaster.OnChange := nil;
+  FMaster := nil;
   for n := FNotificationList.Count - 1 downto 0 do
     TDebuggerNotification(FNotificationList[n]).ReleaseReference;
 
@@ -6577,6 +6581,15 @@ begin
   then FCount := AValue - 1;
 end;
 
+procedure TDBGDisassemblerEntryRange.SetCount(const AValue: Integer);
+begin
+  if FCount = AValue then exit;
+  if AValue >= Capacity
+  then Capacity := AValue + Max(20, AValue div 4);
+
+  FCount := AValue;
+end;
+
 procedure TDBGDisassemblerEntryRange.Clear;
 begin
   SetCapacity(0);
@@ -6602,7 +6615,8 @@ begin
   begin
     // merge before
     i := AnotherRange.Count - 1;
-    while (i >= 0) and (AnotherRange.EntriesPtr[i]^.Addr >= RangeStartAddr)
+    a := FirstAddr;
+    while (i >= 0) and (AnotherRange.EntriesPtr[i]^.Addr >= a)
     do dec(i);
     inc(i);
     {$IFDEF DBG_VERBOSE}
@@ -6619,9 +6633,7 @@ begin
   end
   else begin
     // merge after
-    a:= RangeEndAddr;
-    if LastAddr > a
-    then a := LastAddr;
+    a:= LastAddr;
     i := 0;
     while (i < AnotherRange.Count) and (AnotherRange.EntriesPtr[i]^.Addr <= a)
     do inc(i);
@@ -6689,7 +6701,9 @@ begin
     then break;
     dec(Result);
   end;
-  AOffs := AnAddr - FEntries[Result].Addr;
+  If Result < 0
+  then AOffs := 0
+  else AOffs := AnAddr - FEntries[Result].Addr;
 end;
 
 { TDBGDisassemblerEntryMapIterator }
@@ -6765,6 +6779,8 @@ begin
   {$IFDEF DBG_VERBOSE}
   debugln(['INFO: TDBGDisassemblerEntryMap.AddRange ', dbgs(ARange), ' to map with count=', Count ]);
   {$ENDIF}
+  if ARange.Count = 0 then exit;
+
   MergeRng := GetRangeForAddr(ARange.RangeStartAddr, True);
   if MergeRng <> nil then begin
     // merge to end ( ARange.RangeStartAddr >= MergeRng.RangeStartAddr )

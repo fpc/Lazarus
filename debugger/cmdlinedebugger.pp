@@ -54,12 +54,12 @@ type
     FFlushAfterRead: Boolean;// Set if we should flush after finished reading
     FPeekOffset: Integer;    // Count the number of lines we have peeked
     FReadLineTimedOut: Boolean;
-    function GetDebugProcessRunning: Boolean;
     function WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer; overload;
     function WaitForHandles(const AHandles: array of Integer): Integer; overload;
   protected
+    function GetDebugProcessRunning: Boolean; virtual;
     procedure ProcessWhileWaitForHandles; virtual;
-    function  CreateDebugProcess(const AOptions: String): Boolean;
+    function  CreateDebugProcess(const AOptions: String): Boolean; virtual;
     procedure Flush;                                   // Flushes output buffer
     function  GetWaiting: Boolean; override;
     function  ReadLine(ATimeOut: Integer = -1): String; overload;
