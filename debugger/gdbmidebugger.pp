@@ -2801,7 +2801,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       if (DisAssIterator.CountLinesAfterCounterAddr > StopAfterNumLines)
       then begin
         {$IFDEF DBG_VERBOSE}
-        DebugLnExit(['INFO: Got enough line in Iteration: CurrentIndex=', DisAssIterator.CurrentIndex]);
+        DebugLn(['INFO: Got enough line in Iteration: CurrentIndex=', DisAssIterator.CurrentIndex]);
         {$ENDIF}
         NewRange.LastEntryEndAddr := DisAssIterator.NextStartAddr;
         //AdjustLastEntryEndAddr(NewRange, DisAssList);
