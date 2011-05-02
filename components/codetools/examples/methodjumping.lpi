@@ -8,6 +8,7 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
+      <UseAppBundle Value="False"/>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -38,12 +39,10 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="10"/>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

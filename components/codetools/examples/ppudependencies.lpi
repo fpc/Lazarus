@@ -8,6 +8,7 @@
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
+      <UseAppBundle Value="False"/>
     </General>
     <VersionInfo>
       <StringTable ProductVersion=""/>

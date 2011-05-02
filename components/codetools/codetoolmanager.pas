@@ -385,6 +385,9 @@ type
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer;
           out RevertableJump: boolean): boolean;
+    function FindProcDeclaration(Code: TCodeBuffer; CleanDef: string;
+          out Tool: TCodeTool; out Node: TCodeTreeNode;
+          Attr: TProcHeadAttributes = [phpWithoutSemicolon]): boolean;
 
     // find declaration
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
@@ -1788,6 +1791,38 @@ begin
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.JumpToMethod END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindProcDeclaration(Code: TCodeBuffer;
+  CleanDef: string; out Tool: TCodeTool; out Node: TCodeTreeNode;
+  Attr: TProcHeadAttributes): boolean;
+var
+  Paths: TStringList;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn(['TCodeToolManager.FindProcDeclaration A ',Code.Filename,' CleanDef=',CleanDef]);
+  {$ENDIF}
+  Tool:=nil;
+  Node:=nil;
+  if not InitCurCodeTool(Code) then exit;
+  Tool:=FCurCodeTool;
+  Paths:=TStringList.Create;
+  try
+    Paths.Add(CleanDef);
+    try
+      FCurCodeTool.BuildTree(lsrEnd);
+      Node:=FCurCodeTool.FindSubProcPath(Paths,Attr,false);
+      Result:=Node<>nil;
+    except
+      on e: Exception do Result:=HandleException(e);
+    end;
+  finally
+    Paths.Free;
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindProcDeclaration END ');
   {$ENDIF}
 end;
 

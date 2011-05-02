@@ -931,7 +931,7 @@ function TMethodJumpingCodeTool.FindSubProcPath(SubProcPath: TStrings;
     if (PathIndex>SubProcPath.Count) or (StartNode=nil) then exit;
     ProcHead:=SubProcPath[PathIndex];
     ProcNode:=FindProcNode(StartNode,ProcHead,Attr);
-    DebugLn('TMethodJumpingCodeTool.SearchSubProcPath A ProcHead="',ProcHead,'" Found=',dbgs(ProcNode<>nil));
+    //DebugLn('TMethodJumpingCodeTool.SearchSubProcPath A ProcHead="',ProcHead,'" Found=',dbgs(ProcNode<>nil));
     if ProcNode=nil then exit;
     if PathIndex=SubProcPath.Count-1 then begin
       Result:=ProcNode;

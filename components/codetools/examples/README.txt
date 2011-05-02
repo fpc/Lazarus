@@ -12,9 +12,8 @@ Then you must set the FPCDIR variable and start the example again. For example:
 Under linux:
   export FPCDIR=/home/username/freepascal/fpc
 
-For instance the FPC 2.2.0 source directory looks like this:
+For instance the FPC 2.4.2 source directory contains the following files:
   compiler
-  fv
   ide
   installer
   Makefile

@@ -4,10 +4,13 @@
     <Version Value="9"/>
     <General>
       <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
+      <Title Value="proctomethod"/>
       <UseAppBundle Value="False"/>
     </General>
     <BuildModes Count="1">
@@ -29,22 +32,17 @@
         <PackageName Value="CodeTools"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
-        <Filename Value="finddeclaration.lpr"/>
+        <Filename Value="proctomethod.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="finddeclaration"/>
+        <UnitName Value="proctomethod"/>
       </Unit0>
       <Unit1>
-        <Filename Value="scanexamples/simpleunit1.pas"/>
+        <Filename Value="scanexamples/procsandmethods1.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SimpleUnit1"/>
+        <UnitName Value="ProcsAndMethods1"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="scanexamples/overloadedfunction.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="OverloadedFunction"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
