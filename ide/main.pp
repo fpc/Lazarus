@@ -8923,7 +8923,7 @@ var
   SrcEdit: TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
-  debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(AnUnitInfo.PageIndex));
+  //debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(AnUnitInfo.PageIndex));
   {$ENDIF}
   Result:=mrCancel;
   if AEditor = nil then exit;
@@ -17437,7 +17437,7 @@ begin
         OverrideMethodName);
     {$IFDEF IDE_DEBUG}
     debugln('');
-    debugln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);
+    debugln('[TMainIDE.OnPropHookCreateMethod] ************2 ',dbgs(r),' ',AMethodName);
     {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
