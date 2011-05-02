@@ -3804,32 +3804,34 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
     end;
 
-    // try finding the stackframe
-    ExecuteCommand('-stack-info-depth', R);
-    List := TGDBMINameValueList.Create(R);
-    cnt := StrToIntDef(List.Values['depth'], -1);
-    FreeAndNil(List);
-    i := 0;
-    List := TGDBMINameValueList.Create(R);
-    repeat
-      if not ExecuteCommand('-stack-select-frame %u', [i], R)
-      or (R.State = dsError)
-      then break;
+    if FP <> 0 then begin
+      // try finding the stackframe
+      ExecuteCommand('-stack-info-depth', R);
+      List := TGDBMINameValueList.Create(R);
+      cnt := Min(StrToIntDef(List.Values['depth'], -1), 32); // do not search more than 32 deep, takes a lot of time
+      FreeAndNil(List);
+      i := 0;
+      List := TGDBMINameValueList.Create(R);
+      repeat
+        if not ExecuteCommand('-stack-select-frame %u', [i], R)
+        or (R.State = dsError)
+        then break;
 
-      if not ExecuteCommand('-data-evaluate-expression $fp', R)
-      or (R.State = dsError)
-      then break;
-      List.Init(R.Values);
-      if Fp = StrToQWordDef(List.Values['value'], 0) then begin
-        FTheDebugger.FCurrentStackFrame := i;
-        break;
-      end;
+        if not ExecuteCommand('-data-evaluate-expression $fp', R)
+        or (R.State = dsError)
+        then break;
+        List.Init(R.Values);
+        if Fp = StrToQWordDef(List.Values['value'], 0) then begin
+          FTheDebugger.FCurrentStackFrame := i;
+          break;
+        end;
 
-      inc(i);
-    until i >= cnt;
-    List.Free;
-	if FTheDebugger.FCurrentStackFrame <> i
-    then ExecuteCommand('-stack-select-frame %u', [FTheDebugger.FCurrentStackFrame], R);
+        inc(i);
+      until i >= cnt;
+      List.Free;
+	  if FTheDebugger.FCurrentStackFrame <> i
+      then ExecuteCommand('-stack-select-frame %u', [FTheDebugger.FCurrentStackFrame], R);
+    end;
   end;
 
   function GetExceptionInfo: TGDBMIExceptionInfo;
@@ -4195,7 +4197,10 @@ begin
 
   finally
     FCanKillNow := False;
-    FTheDebugger.QueueExecuteUnlock; // allow other commands from executing
+    // allow other commands to execute
+    // e.g. source-line-info, watches.. all triggered in proces stopped)
+    //TODO: prevent the next exec-command from running (or the order of SetLocation in Process Stopped is wrong)
+    FTheDebugger.QueueExecuteUnlock;
   end;
 
   if FDidKillNow
