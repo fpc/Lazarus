@@ -30,6 +30,7 @@ type
   strict private
     FBrushColor: TvColor;
     FCanvas: TvVectorialDocument;
+    FFontSize: Integer;
     FPenColor: TvColor;
   strict protected
     function GetFontAngle: Double; override;
@@ -70,7 +71,7 @@ type
 implementation
 
 uses
-  TAChartUtils, TAGeometry;
+  Math, TAChartUtils, TAGeometry;
 
 function ChartColorToVColor(AColor: TChartColor): TvColor;
 begin
@@ -244,7 +245,7 @@ end;
 
 procedure TFPVectorialDrawer.SetFont(AFont: TFPCustomFont);
 begin
-  // Not implemented.
+  FFontSize := IfThen(AFont.Size = 0, 10, AFont.Size);
 end;
 
 procedure TFPVectorialDrawer.SetPen(APen: TFPCustomPen);
@@ -261,8 +262,8 @@ end;
 
 function TFPVectorialDrawer.SimpleTextExtent(const AText: String): TPoint;
 begin
-  Result.X := Length(AText) * 8;
-  Result.Y := 8;
+  Result.X := FFontSize * Length(AText) * 2 div 3;
+  Result.Y := FFontSize;
 end;
 
 procedure TFPVectorialDrawer.SimpleTextOut(
