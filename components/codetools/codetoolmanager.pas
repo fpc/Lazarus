@@ -542,7 +542,7 @@ type
     // extract proc (creates a new procedure from code in selection)
     function CheckExtractProc(Code: TCodeBuffer;
           const StartPoint, EndPoint: TPoint;
-          out MethodPossible, SubProcSameLvlPossible: boolean;
+          out MethodPossible, SubProcPossible, SubProcSameLvlPossible: boolean;
           out MissingIdentifiers: TAVLTree; // tree of PCodeXYPosition
           VarTree: TAVLTree = nil  // tree of TExtractedProcVariable
           ): boolean;
@@ -3880,10 +3880,9 @@ begin
 end;
 
 function TCodeToolManager.CheckExtractProc(Code: TCodeBuffer; const StartPoint,
-  EndPoint: TPoint; out MethodPossible, SubProcSameLvlPossible: boolean;
-  out MissingIdentifiers: TAVLTree; // tree of PCodeXYPosition
-  VarTree: TAVLTree  // tree of TExtractedProcVariable
-  ): boolean;
+  EndPoint: TPoint; out MethodPossible, SubProcPossible,
+  SubProcSameLvlPossible: boolean; out MissingIdentifiers: TAVLTree;
+  VarTree: TAVLTree): boolean;
 var
   StartPos, EndPos: TCodeXYPosition;
 begin
@@ -3900,8 +3899,8 @@ begin
   EndPos.Code:=Code;
   try
     Result:=FCurCodeTool.CheckExtractProc(StartPos,EndPos,MethodPossible,
-                                     SubProcSameLvlPossible,MissingIdentifiers,
-                                     VarTree);
+                      SubProcPossible,SubProcSameLvlPossible,MissingIdentifiers,
+                      VarTree);
   except
     on e: Exception do Result:=HandleException(e);
   end;

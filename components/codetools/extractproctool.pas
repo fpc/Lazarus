@@ -37,7 +37,7 @@ unit ExtractProcTool;
 
 {$mode objfpc}{$H+}
 
-{off $define CTDEBUG}
+{$define CTDEBUG}
 
 interface
 
@@ -86,16 +86,16 @@ type
   protected
     function ScanNodesForVariables(const StartPos, EndPos: TCodeXYPosition;
         out BlockStartPos, BlockEndPos: integer; // the selection
-        out ProcNode: TCodeTreeNode;
+        out BlockNode: TCodeTreeNode;
         VarTree: TAVLTree;  // tree of TExtractedProcVariable
         IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
         MissingIdentifiers: TAVLTree // tree of PCodeXYPosition
         ): boolean;
     function InitExtractProc(const StartPos, EndPos: TCodeXYPosition;
-      out MethodPossible, SubProcSameLvlPossible: boolean): boolean;
+      out MethodPossible, SubProcPossible, SubProcSameLvlPossible: boolean): boolean;
   public
     function CheckExtractProc(const StartPos, EndPos: TCodeXYPosition;
-      out MethodPossible, SubProcSameLvlPossible: boolean;
+      out MethodPossible, SubProcPossible, SubProcSameLvlPossible: boolean;
       out MissingIdentifiers: TAVLTree; // tree of PCodeXYPosition
       VarTree: TAVLTree = nil  // tree of TExtractedProcVariable
       ): boolean;
@@ -176,8 +176,8 @@ end;
 { TExtractProcTool }
 
 function TExtractProcTool.InitExtractProc(const StartPos,
-  EndPos: TCodeXYPosition;
-  out MethodPossible, SubProcSameLvlPossible: boolean): boolean;
+  EndPos: TCodeXYPosition; out MethodPossible, SubProcPossible,
+  SubProcSameLvlPossible: boolean): boolean;
 var
   CleanStartPos, CleanEndPos: integer;
   CursorNode: TCodeTreeNode;
@@ -189,6 +189,7 @@ var
 begin
   Result:=false;
   MethodPossible:=false;
+  SubProcPossible:=false;
   SubProcSameLvlPossible:=false;
   {$IFDEF CTDebug}
   DebugLn('TExtractProcTool.InitExtractProc syntax and cursor check ..');
@@ -275,6 +276,7 @@ begin
   ProcLvl:=0;
   while ANode<>nil do begin
     if (ANode.Desc=ctnProcedure) then begin
+      SubProcPossible:=true;
       inc(ProcLvl);
       if NodeIsInAMethod(ANode) then begin
         MethodPossible:=true;
@@ -290,8 +292,9 @@ begin
 end;
 
 function TExtractProcTool.CheckExtractProc(const StartPos,
-  EndPos: TCodeXYPosition; out MethodPossible, SubProcSameLvlPossible: boolean;
-  out MissingIdentifiers: TAVLTree; VarTree: TAVLTree): boolean;
+  EndPos: TCodeXYPosition; out MethodPossible, SubProcPossible,
+  SubProcSameLvlPossible: boolean; out MissingIdentifiers: TAVLTree;
+  VarTree: TAVLTree): boolean;
 var
   BlockStartPos: integer;
   BlockEndPos: integer;
@@ -301,7 +304,8 @@ begin
   MissingIdentifiers:=nil;
   ActivateGlobalWriteLock;
   try
-    if not InitExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
+    if not InitExtractProc(StartPos,EndPos,MethodPossible,
+      SubProcPossible,SubProcSameLvlPossible)
     then exit;
     MissingIdentifiers:=CreateTreeOfPCodeXYPosition;
     if not ScanNodesForVariables(StartPos,EndPos,BlockStartPos,BlockEndPos,
@@ -322,7 +326,7 @@ const
   ShortProcFormat = [phpWithoutClassKeyword];
 var
   BlockStartPos, BlockEndPos: integer; // the selection
-  ProcNode: TCodeTreeNode; // the main proc node of the selection
+  MainBlockNode: TCodeTreeNode; // the main proc node of the selection, or main begin block of program
   VarTree: TAVLTree;
   ResultNode: TCodeTreeNode;
 
@@ -599,11 +603,21 @@ var
       {$IFDEF CTDebug}
       DebugLn('CreateProcNameParts A searching class name ..');
       {$ENDIF}
-      ProcClassName:=ExtractClassNameOfProcNode(ProcNode);
-      if ProcClassName='' then exit;
+      if (MainBlockNode=nil) or (MainBlockNode.Desc<>ctnProcedure) then begin
+        debugln(['CreateProcNameParts not in a procedure']);
+        exit;
+      end;
+      ProcClassName:=ExtractClassNameOfProcNode(MainBlockNode);
+      if ProcClassName='' then begin
+        debugln(['CreateProcNameParts not in a method']);
+        exit;
+      end;
       ProcClassNode:=FindClassNodeInUnit(ProcClassName,
                                          true,false,false,true);
-      if ProcClassNode=nil then exit;
+      if ProcClassNode=nil then begin
+        debugln(['CreateProcNameParts class not found ',ProcClassName]);
+        exit;
+      end;
       ProcClassName:=ExtractClassName(ProcClassNode,false);
     end;
     {$IFDEF CTDebug}
@@ -794,7 +808,11 @@ var
     
     eptSubProcedure:
       begin
-        BeginNode:=ProcNode.LastChild;
+        if MainBlockNode.Desc<>ctnProcedure then begin
+          debugln(['FindInsertPositionForProcBody subprocedure: not in a procedure']);
+          exit;
+        end;
+        BeginNode:=MainBlockNode.LastChild;
         while BeginNode.Desc<>ctnBeginBlock do
           BeginNode:=BeginNode.PriorBrother;
         InsertPos:=BeginNode.StartPos;
@@ -805,14 +823,14 @@ var
     eptSubProcedureSameLvl:
       begin
         // -> insert in front of old proc
-        InsertPos:=FindLineEndOrCodeInFrontOfPosition(ProcNode.StartPos);
-        Indent:=GetLineIndent(Src,ProcNode.StartPos);
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(MainBlockNode.StartPos);
+        Indent:=GetLineIndent(Src,MainBlockNode.StartPos);
       end;
 
     eptProcedure,eptProcedureWithInterface:
       begin
         // insert in front of top level proc
-        InsertNode:=ProcNode;
+        InsertNode:=MainBlockNode;
         ANode:=InsertNode;
         while (ANode<>nil) do begin
           if ANode.Desc=ctnProcedure then
@@ -843,8 +861,8 @@ var
     eptPublishedMethod,eptPrivateMethod,eptProtectedMethod,eptPublicMethod:
       begin
         // set default values
-        InsertPos:=FindLineEndOrCodeInFrontOfPosition(ProcNode.StartPos);
-        Indent:=GetLineIndent(Src,ProcNode.StartPos);
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(MainBlockNode.StartPos);
+        Indent:=GetLineIndent(Src,MainBlockNode.StartPos);
       end;
 
     else
@@ -1070,16 +1088,21 @@ var
   NewProcPath: TStrings;
   ProcClassNode: TCodeTreeNode;
   ProcCode: string;
+  SubProcPossible: boolean;
 begin
   Result:=false;
   {$IFDEF CTDebug}
   DebugLn(['ExtractProc A ProcName="',ProcName,'" ProcType=',ExtractProcTypeNames[ProcType],' FunctionResultVariableStartPos=',FunctionResultVariableStartPos]);
   {$ENDIF}
-  if not InitExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
+  if not InitExtractProc(StartPos,EndPos,MethodPossible,
+    SubProcPossible,SubProcSameLvlPossible)
   then exit;
   if (not MethodPossible) and (ProcType in [eptPrivateMethod,eptProtectedMethod,
     eptPublicMethod,eptPublishedMethod])
   then
+    exit;
+  if (not SubProcPossible)
+  and (ProcType in [eptSubProcedure,eptSubProcedureSameLvl]) then
     exit;
   if (not SubProcSameLvlPossible) and (ProcType=eptSubProcedureSameLvl) then
     exit;
@@ -1089,7 +1112,7 @@ begin
   NewProcPath:=nil;
   try
     if not ScanNodesForVariables(StartPos,EndPos,BlockStartPos,BlockEndPos,
-                                 ProcNode,VarTree,IgnoreIdentifiers,nil) then exit;
+                                 MainBlockNode,VarTree,IgnoreIdentifiers,nil) then exit;
     if not FindFunctionResultNode then exit;
     if not ReplaceSelectionWithCall then exit;
     if not DeleteMovedLocalVariables then exit;
@@ -1123,7 +1146,7 @@ end;
 
 function TExtractProcTool.ScanNodesForVariables(const StartPos,
   EndPos: TCodeXYPosition; out BlockStartPos, BlockEndPos: integer;
-  out ProcNode: TCodeTreeNode;
+  out BlockNode: TCodeTreeNode;
   VarTree: TAVLTree;  // tree of TExtractedProcVariable
   IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
   MissingIdentifiers: TAVLTree// tree of PCodeXYPosition
@@ -1279,11 +1302,11 @@ var
       if (Params.NewCodeTool=Self) and (Params.NewNode<>nil) then begin
         VarNode:=Params.NewNode;
         if (VarNode.Desc=ctnVarDefinition)
-        and (VarNode.HasAsParent(ProcNode)) then begin
+        and (VarNode.HasAsParent(BlockNode)) then begin
           // Now we know: VarNode is a variable defined in the main proc
           // or one of its sub procs
           ClosestProcNode:=VarNode.GetNodeOfType(ctnProcedure);
-          if ClosestProcNode=ProcNode then begin
+          if ClosestProcNode=BlockNode then begin
             // VarNode is a variable defined by the main proc
             IsParameter:=VarNode.GetNodeOfType(ctnProcedureHead)<>nil;
             ParameterType:=ptNone;
@@ -1350,12 +1373,11 @@ var
     Result:=false;
     ChildNode:=StartNode.FirstChild;
     while ChildNode<>nil do begin
-      if (ChildNode.Desc in [ctnBeginBlock,ctnAsmBlock])
-      and (ChildNode.Parent.Desc=ctnProcedure) then begin
+      if (ChildNode.Desc in [ctnBeginBlock,ctnAsmBlock]) then begin
         if not ScanSourceForVariables(ChildNode.StartPos,ChildNode.EndPos) then
           exit;
-      end;
-      if not ScanNodesForVariablesRecursive(ChildNode) then exit;
+      end else if not ScanNodesForVariablesRecursive(ChildNode) then
+        exit;
       ChildNode:=ChildNode.NextBrother;
     end;
     Result:=true;
@@ -1369,12 +1391,25 @@ begin
     if CaretToCleanPos(StartPos,BlockStartPos)<>0 then exit;
     if CaretToCleanPos(EndPos,BlockEndPos)<>0 then exit;
     BuildSubTree(BlockStartPos);
-    ProcNode:=FindDeepestNodeAtPos(BlockStartPos,true).GetNodeOfType(ctnProcedure);
+    BlockNode:=FindDeepestNodeAtPos(BlockStartPos,true);
+    while BlockNode<>nil do begin
+      if BlockNode.Desc in [ctnInitialization,ctnFinalization,ctnProcedure]
+      then break;
+      if (BlockNode.Desc=ctnBeginBlock)
+      and (BlockNode.Parent.Desc in AllSourceTypes) then
+        break;
+      BlockNode:=BlockNode.Parent;
+    end;
+
+    if BlockNode=nil then begin
+      debugln(['TExtractProcTool.ScanNodesForVariables invalid context ',FindDeepestNodeAtPos(BlockStartPos,false).DescAsString]);
+      exit;
+    end;
 
     // collect local variables to speed up search
-    ScanForLocalVariables(ProcNode);
+    ScanForLocalVariables(BlockNode);
 
-    if not ScanNodesForVariablesRecursive(ProcNode) then exit;
+    if not ScanNodesForVariablesRecursive(BlockNode) then exit;
   finally
     VarCandidates.Free;
     DeactivateGlobalWriteLock;

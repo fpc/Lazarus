@@ -66,6 +66,7 @@ type
   private
     FMethodPossible: boolean;
     FMissingIdentifiers: TAVLTree;
+    FSubProcPossible: boolean;
     FSubProcSameLvlPossible: boolean;
     FVariables: TAVLTree;
     procedure SetMissingIdentifiers(const AValue: TAVLTree);
@@ -79,6 +80,7 @@ type
     function GetFunctionNode: TCodeTreeNode;
 
     property MethodPossible: boolean read FMethodPossible write FMethodPossible;
+    property SubProcPossible: boolean read FSubProcPossible write FSubProcPossible;
     property SubProcSameLvlPossible: boolean read FSubProcSameLvlPossible write FSubProcSameLvlPossible;
     property MissingIdentifiers: TAVLTree read FMissingIdentifiers write SetMissingIdentifiers;
     property Variables: TAVLTree read FVariables write SetVariables;// tree of TExtractedProcVariable
@@ -107,6 +109,7 @@ var
   VarTree: TAVLTree;
   FuncNode: TCodeTreeNode;
   FunctionResultVariableStartPos: Integer;
+  SubProcPossible: boolean;
 begin
   Result:=mrCancel;
   if CompareCaret(BlockBegin,BlockEnd)<=0 then begin
@@ -122,7 +125,7 @@ begin
     VarTree:=CreateExtractProcVariableTree;
     // check if selected statements can be extracted
     if not CodeToolBoss.CheckExtractProc(Code,BlockBegin,BlockEnd,MethodPossible,
-      SubProcSameLvlPossible,MissingIdentifiers,VarTree)
+      SubProcPossible,SubProcSameLvlPossible,MissingIdentifiers,VarTree)
     then begin
       if CodeToolBoss.ErrorMessage='' then begin
         MessageDlg(lisInvalidSelection,
@@ -136,6 +139,7 @@ begin
     ExtractProcDialog:=TExtractProcDialog.Create(nil);
     try
       ExtractProcDialog.MethodPossible:=MethodPossible;
+      ExtractProcDialog.SubProcPossible:=SubProcPossible;
       ExtractProcDialog.SubProcSameLvlPossible:=SubProcSameLvlPossible;
       ExtractProcDialog.MissingIdentifiers:=MissingIdentifiers;
       ExtractProcDialog.UpdateAvailableTypes;
@@ -280,9 +284,11 @@ begin
     end;
     Add(lisProcedure);
     Add(lisProcedureWithInterface);
-    Add(lisSubProcedure);
-    if SubProcSameLvlPossible then
-      Add(lisSubProcedureOnSameLevel);
+    if SubProcPossible then begin
+      Add(lisSubProcedure);
+      if SubProcSameLvlPossible then
+        Add(lisSubProcedureOnSameLevel);
+    end;
     EndUpdate;
     TypeRadiogroup.ItemIndex:=Count-1;
   end;
