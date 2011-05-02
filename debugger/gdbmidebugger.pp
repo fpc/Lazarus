@@ -283,6 +283,7 @@ type
     FCurrentCommand: TGDBMIDebuggerCommand;
     FCommandQueueExecLock: Integer;
     FCommandProcessingLock: Integer;
+    FProcessingExeCmdLock: Integer;
 
     FMainAddr: TDbgPtr;
     FBreakAtMain: TDBGBreakPoint;
@@ -4156,84 +4157,89 @@ begin
   FNextExecQueued := False;
   //ContinueExecution := True;
 
-  FTheDebugger.QueueExecuteLock; // prevent other commands from executing
+  FTheDebugger.FProcessingExeCmdLock := FTheDebugger.FInExecuteCount;
   try
-    if not ExecuteCommand(FCommand, FResult)
+    FTheDebugger.QueueExecuteLock; // prevent other commands from executing
+    try
+      if not ExecuteCommand(FCommand, FResult)
+      then exit;
+
+      if (FResult.State = dsError) and assigned(FTheDebugger.OnFeedback) then begin
+        List := TGDBMINameValueList.Create(FResult);
+        s := List.Values['msg'];
+        FreeAndNil(List);
+        if FLogWarnings <> ''
+        then s2 := Format(gdbmiErrorOnRunCommandWithWarning, [LineEnding, FLogWarnings])
+        else s2 := '';
+        FLogWarnings := '';
+        if s <> '' then begin
+          case FTheDebugger.OnFeedback(self,
+                                       Format(gdbmiErrorOnRunCommand, [LineEnding, s]) + s2,
+                                       FResult.Values, ftError, [frOk, frStop]
+               ) of
+            frOk: FResult.State := dsPause;
+            frStop: begin
+                FTheDebugger.Stop;
+                FResult.State := dsStop;
+                exit;
+              end;
+          end;
+        end
+      end;
+      if (FResult.State <> dsNone)
+      then SetDebuggerState(FResult.State);
+
+      // if ContinueExecution will be true, the we ignore dsError..
+
+      // TODO: chack for cancelled
+
+      StoppedParams := '';
+      FCanKillNow := True;
+      if FResult.State = dsRun
+      then Result := ProcessRunning(StoppedParams);
+
+    finally
+      FCanKillNow := False;
+      // allow other commands to execute
+      // e.g. source-line-info, watches.. all triggered in proces stopped)
+      //TODO: prevent the next exec-command from running (or the order of SetLocation in Process Stopped is wrong)
+      FTheDebugger.QueueExecuteUnlock;
+    end;
+
+    if FDidKillNow
     then exit;
 
-    if (FResult.State = dsError) and assigned(FTheDebugger.OnFeedback) then begin
-      List := TGDBMINameValueList.Create(FResult);
-      s := List.Values['msg'];
-      FreeAndNil(List);
-      if FLogWarnings <> ''
-      then s2 := Format(gdbmiErrorOnRunCommandWithWarning, [LineEnding, FLogWarnings])
-      else s2 := '';
-      FLogWarnings := '';
-      if s <> '' then begin
-        case FTheDebugger.OnFeedback(self,
-                                     Format(gdbmiErrorOnRunCommand, [LineEnding, s]) + s2,
-                                     FResult.Values, ftError, [frOk, frStop]
-             ) of
-          frOk: FResult.State := dsPause;
-          frStop: begin
-              FTheDebugger.Stop;
-              FResult.State := dsStop;
-              exit;
-            end;
-        end;
-      end
+    ContinueExecution := False;
+    if StoppedParams <> ''
+    then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+    if ContinueExecution
+    then begin
+      // - The "old" behaviour was to queue a new exec-continue
+      //   Keep the old behaviour for now: eventually change this procedure "DoExecute" do run a loop, until no continuation is needed)
+      // - Queue is unlockes, so nothing should be queued after the continuation cmd
+      //   But make info available, if anything wants to queue
+      FNextExecQueued := True;
+      {$IFDEF DBGMI_QUEUE_DEBUG}
+      DebugLn(['CommandExecute: Internal queuing -exec-continue (ContinueExecution = True)']);
+      {$ENDIF}
+      FTheDebugger.FPauseWaitState := pwsNone;
+      NextExecCmdObj := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectContinue);
+      // Queue it, so we execute once this Cmd exits; do not execute recursive
+      FTheDebugger.QueueExecuteLock;
+      FTheDebugger.QueueCommand(NextExecCmdObj);
+      FTheDebugger.QueueExecuteUnlock;
     end;
-    if (FResult.State <> dsNone)
-    then SetDebuggerState(FResult.State);
 
-    // if ContinueExecution will be true, the we ignore dsError..
-
-    // TODO: chack for cancelled
-
-    StoppedParams := '';
-    FCanKillNow := True;
-    if FResult.State = dsRun
-    then Result := ProcessRunning(StoppedParams);
-
+    if (StoppedParams <> '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
+      debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams]);
+      //SetDebuggerState(dsError); // we cannot be running anymore
+    end;
+    if (StoppedParams = '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
+      debugln(['ERROR: Got NO stop params at all, but was running']);
+      //SetDebuggerState(dsError); // we cannot be running anymore
+    end;
   finally
-    FCanKillNow := False;
-    // allow other commands to execute
-    // e.g. source-line-info, watches.. all triggered in proces stopped)
-    //TODO: prevent the next exec-command from running (or the order of SetLocation in Process Stopped is wrong)
-    FTheDebugger.QueueExecuteUnlock;
-  end;
-
-  if FDidKillNow
-  then exit;
-
-  ContinueExecution := False;
-  if StoppedParams <> ''
-  then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
-  if ContinueExecution
-  then begin
-    // - The "old" behaviour was to queue a new exec-continue
-    //   Keep the old behaviour for now: eventually change this procedure "DoExecute" do run a loop, until no continuation is needed)
-    // - Queue is unlockes, so nothing should be queued after the continuation cmd
-    //   But make info available, if anything wants to queue
-    FNextExecQueued := True;
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    DebugLn(['CommandExecute: Internal queuing -exec-continue (ContinueExecution = True)']);
-    {$ENDIF}
-    FTheDebugger.FPauseWaitState := pwsNone;
-    NextExecCmdObj := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectContinue);
-    // Queue it, so we execute once this Cmd exits; do not execute recursive
-    FTheDebugger.QueueExecuteLock;
-    FTheDebugger.QueueCommand(NextExecCmdObj);
-    FTheDebugger.QueueExecuteUnlock;
-  end;
-
-  if (StoppedParams <> '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
-    debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams]);
-    //SetDebuggerState(dsError); // we cannot be running anymore
-  end;
-  if (StoppedParams = '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
-    debugln(['ERROR: Got NO stop params at all, but was running']);
-    //SetDebuggerState(dsError); // we cannot be running anymore
+    FTheDebugger.FProcessingExeCmdLock := -1;
   end;
 
 end;
@@ -4865,6 +4871,7 @@ begin
   FSourceNames.Duplicates := dupError;
   FSourceNames.CaseSensitive := False;
   FCommandQueueExecLock := 0;
+  FProcessingExeCmdLock := -1;
   FRunQueueOnUnlock := False;
 
 {$IFdef MSWindows}
@@ -5157,7 +5164,7 @@ end;
 procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
 var
   i, p: Integer;
-  CanRunQueue: Boolean;
+  QueueExeInExe, CanRunQueue: Boolean;
 begin
   p := ACommand.Priority;
   i := 0;
@@ -5186,16 +5193,20 @@ begin
       i := FCommandQueue.Add(ACommand);
   end;
 
+  QueueExeInExe := (FProcessingExeCmdLock > 0)
+               and (ACommand is TGDBMIDebuggerCommandExecute);
   // if other commands do run the queue,
   // make sure this command only runs after the CurrentCommand finished
   if ForceQueue then
     ACommand.QueueRunLevel := FInExecuteCount - 1;
+  if QueueExeInExe then
+    ACommand.QueueRunLevel := FProcessingExeCmdLock - 1;
 
   if (not CanRunQueue) or (FCommandQueueExecLock > 0)
-  or (FCommandProcessingLock > 0) or ForceQueue
+  or (FCommandProcessingLock > 0) or ForceQueue or QueueExeInExe
   then begin
     {$IFDEF DBGMI_QUEUE_DEBUG}
-    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos=', i, ' cnt=',FCommandQueue.Count-1, ' State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock, ' Forced=', dbgs(ForceQueue), ' Prior=',p, ': "', ACommand.DebugText,'"']);
+    debugln(['Queueing (Recurse-Count=', FInExecuteCount, ') at pos=', i, ' cnt=',FCommandQueue.Count-1, ' State=',DBGStateNames[State], ' Lock=',FCommandQueueExecLock, ' Forced=', dbgs(ForceQueue), ' ExeInExe=', dbgs(QueueExeInExe), ' Prior=',p, ': "', ACommand.DebugText,'"']);
     {$ENDIF}
     ACommand.DoQueued;
 
