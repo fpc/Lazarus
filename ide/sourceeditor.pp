@@ -579,7 +579,7 @@ type
   private
     FManager: TSourceEditorManager;
     FUpdateLock, FFocusLock: Integer;
-    FUpdateFlags: set of (ufPageNames, ufTabsAndPage, ufStatusBar, ufProjectFiles, ufFocusEditor);
+    FUpdateFlags: set of (ufPageNames, ufTabsAndPage, ufStatusBar, ufProjectFiles, ufFocusEditor, ufActiveEditorChanged);
     FPageIndex: Integer;
     fAutoFocusLock: integer;
     FIncrementalSearchPos: TPoint; // last set position
@@ -632,6 +632,7 @@ type
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
     procedure DragCanceled; override;
+    procedure DoActiveEditorChanged;
   protected
     States: TSourceNotebookStates;
     // hintwindow stuff
@@ -724,6 +725,9 @@ type
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
 
+    procedure IncUpdateLockInternal;
+    procedure DecUpdateLockInternal;
+
     // editor page history
     procedure HistorySetMostRecent(APage: TTabSheet);
     procedure HistoryAdd(APage: TTabSheet);
@@ -814,8 +818,7 @@ type
     FSourceWindowByFocusList: TFPList;
     FUpdateLock: Integer;
     FActiveEditorLock: Integer;
-    FShowWindowOnTop: Boolean;
-    FShowWindowOnTopFocus: Boolean;
+    FUpdateFlags: set of (ufMgrActiveEditorChanged, ufShowWindowOnTop, ufShowWindowOnTopFocus);
     procedure FreeSourceWindows;
     function GetActiveSourceWindowIndex: integer;
     function GetSourceWindowByLastFocused(Index: Integer): TSourceEditorWindowInterface;
@@ -878,6 +881,8 @@ type
     procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure IncUpdateLockInternal;
+    procedure DecUpdateLockInternal;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1555,7 +1560,7 @@ Begin
       clSelect          := FActiveEditSelectedBGColor;
       TextColor         := FActiveEditDefaultFGColor;
       TextSelectedColor := FActiveEditSelectedFGColor;
-      //writeln('TSourceNotebook.ccExecute A Color=',DbgS(Color),
+      //debugln('TSourceNotebook.ccExecute A Color=',DbgS(Color),
       // ' clSelect=',DbgS(clSelect),
       // ' TextColor=',DbgS(TextColor),
       // ' TextSelectedColor=',DbgS(TextSelectedColor),
@@ -2081,7 +2086,7 @@ begin
       if (FIgnoreCodeBufferLock <= 0) and (not FCodeBuffer.IsEqual(SynEditor.Lines))
       then begin
         {$IFDEF IDE_DEBUG}
-        debugln(' *** WARNING *** : TSourceEditor.SetCodeBuffer - loosing marks: ',Filename);
+        debugln(' *** WARNING *** : TSourceEditor.SetCodeBuffer - loosing marks: ',FCodeBuffer.Filename);
         {$ENDIF}
         for i := 0 to FSharedEditorList.Count - 1 do
           if assigned(SharedEditors[i].FEditPlugin) then
@@ -2740,7 +2745,7 @@ Begin
   {$ENDIF}
   IDEWindowCreators.ShowForm(SourceNotebook,true);
   if FEditor.IsVisible then begin
-    FEditor.SetFocus;
+    FEditor.SetFocus; // TODO: will cal EditorEnter, which does self.Activate  => maybe lock, and do here?
     FSharedValues.SetActiveSharedEditor(Self);
   end else begin
     {$IFDEF VerboseFocus}
@@ -3967,7 +3972,7 @@ var
   bmp: TCustomBitmap;
 Begin
   {$IFDEF IDE_DEBUG}
-  writeln('TSourceEditor.CreateEditor  A ');
+  debugln('TSourceEditor.CreateEditor  A ');
   {$ENDIF}
   if not assigned(FEditor) then Begin
     FVisible := False;
@@ -4227,7 +4232,7 @@ begin
                        FEditor.BlockBegin,FEditor.BlockEnd,
                        FEditor.BlockIndent,
                        NewSelection,NewCaretXY);
-  //writeln('TSourceEditor.EncloseSelection A NewCaretXY=',NewCaretXY.X,',',NewCaretXY.Y,
+  //debugln('TSourceEditor.EncloseSelection A NewCaretXY=',NewCaretXY.X,',',NewCaretXY.Y,
   //  ' "',NewSelection,'"');
   FEditor.SelText:=NewSelection;
   FEditor.LogicalCaretXY:=NewCaretXY;
@@ -4444,7 +4449,7 @@ end;
 Procedure TSourceEditor.EditorMouseMoved(Sender: TObject;
   Shift: TShiftState; X,Y: Integer);
 begin
-//  Writeln('MouseMove in Editor',X,',',Y);
+//  debugln('MouseMove in Editor',X,',',Y);
   if Assigned(OnMouseMove) then
     OnMouseMove(Self,Shift,X,Y);
 end;
@@ -4452,7 +4457,7 @@ end;
 procedure TSourceEditor.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
-//  Writeln('MouseWheel in Editor');
+//  debugln('MouseWheel in Editor');
   if Assigned(OnMouseWheel) then
     OnMouseWheel(Self, Shift, WheelDelta, MousePos, Handled)
 end;
@@ -4993,14 +4998,14 @@ var
   APage: TTabSheet;
 Begin
   {$IFDEF IDE_DEBUG}
-  writeln('[TSourceNotebook.CreateNotebook] START');
+  debugln('[TSourceNotebook.CreateNotebook] START');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] A ');
   {$ENDIF}
   FNotebook := TExtendedNotebook.Create(self);
   {$IFDEF IDE_DEBUG}
-  writeln('[TSourceNotebook.CreateNotebook] B');
+  debugln('[TSourceNotebook.CreateNotebook] B');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] B ');
@@ -5459,7 +5464,7 @@ begin
   if FUpdateLock = 0 then begin
     FPageIndex := Max(0, Min(FPageIndex, FNotebook.PageCount-1));
     if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
-      Manager.DoActiveEditorChanged;
+      DoActiveEditorChanged;
     // make sure the statusbar is updated
     Include(States, snNotbookPageChangedNeeded);
     FNotebook.PageIndex := FPageIndex;
@@ -5748,7 +5753,7 @@ function TSourceNotebook.NewSE(PageNum: Integer; NewPageNum: Integer = -1;
   ASharedEditor: TSourceEditor = nil; ATabCaption: String = ''): TSourceEditor;
 begin
   {$IFDEF IDE_DEBUG}
-  writeln('TSourceNotebook.NewSE A ');
+  debugln('TSourceNotebook.NewSE A ');
   {$ENDIF}
   if Pagenum < 0 then begin
     // add a new page right to the current
@@ -5763,14 +5768,14 @@ begin
     NotebookPage[PageNum].ReAlign;
   end;
   {$IFDEF IDE_DEBUG}
-  writeln('TSourceNotebook.NewSE B  ', PageIndex,',',PagesCount);
+  debugln(['TSourceNotebook.NewSE B  ', PageIndex,',',PageCount]);
   {$ENDIF}
   Result := TSourceEditor.Create(Self, NotebookPage[PageNum], ASharedEditor);
   Result.FPageName := NoteBookPages[Pagenum];
   AcceptEditor(Result);
   PageIndex := Pagenum;
   {$IFDEF IDE_DEBUG}
-  writeln('TSourceNotebook.NewSE end ');
+  debugln('TSourceNotebook.NewSE end ');
   {$ENDIF}
 end;
 
@@ -5862,14 +5867,14 @@ begin
   Result := FNotebook.GetCapabilities
 end;
 
-procedure TSourceNotebook.IncUpdateLock;
+procedure TSourceNotebook.IncUpdateLockInternal;
 begin
   if FUpdateLock = 0 then
     FUpdateFlags := [];
   inc(FUpdateLock);
 end;
 
-procedure TSourceNotebook.DecUpdateLock;
+procedure TSourceNotebook.DecUpdateLockInternal;
 begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then begin
@@ -5879,7 +5884,23 @@ begin
     if (ufStatusBar in FUpdateFlags)    then UpdateStatusBar;
     if (ufProjectFiles in FUpdateFlags) then UpdateProjectFiles;
     if (ufFocusEditor in FUpdateFlags)  then FocusEditor;
-    FUpdateFlags := [];
+    if (ufActiveEditorChanged in FUpdateFlags) then DoActiveEditorChanged;
+  FUpdateFlags := [];
+  end;
+end;
+
+procedure TSourceNotebook.IncUpdateLock;
+begin
+  Manager.IncUpdateLockInternal; // ensure mgr holds ActiveEditorChanged notificationback // TODO: make sure they are hlod in SourceNotebook instead, including SetAciveEditor....
+  IncUpdateLockInternal;
+end;
+
+procedure TSourceNotebook.DecUpdateLock;
+begin
+  try
+    DecUpdateLockInternal;
+  finally
+    Manager.DecUpdateLockInternal;
   end;
 end;
 
@@ -5964,6 +5985,16 @@ procedure TSourceNotebook.DragCanceled;
 begin
   inherited DragCanceled;
   FUpdateTabAndPageTimer.Enabled := True;
+end;
+
+procedure TSourceNotebook.DoActiveEditorChanged;
+begin
+  if FUpdateLock > 0 then begin
+    include(FUpdateFlags, ufActiveEditorChanged);
+    exit;
+  end;
+  exclude(FUpdateFlags, ufActiveEditorChanged);
+  Manager.DoActiveEditorChanged;
 end;
 
 procedure TSourceNotebook.BeginIncrementalFind;
@@ -6242,7 +6273,7 @@ begin
     Manager.ActiveEditor := NewEdit;
     Manager.ShowActiveWindowOnTop(True);
   end;
-  Manager.DoActiveEditorChanged;
+  DoActiveEditorChanged;
 end;
 
 procedure TSourceNotebook.ActivateHint(const ScreenPos: TPoint;
@@ -6473,8 +6504,9 @@ var
 Begin
   //create a new page
   {$IFDEF IDE_DEBUG}
-  writeln('[TSourceNotebook.NewFile] A ');
+  debugln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
+  // Debugger cause ProcessMessages, which could lead to entering methods in unexpected order
   DebugBoss.LockCommandProcessing;
   try
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
@@ -6483,11 +6515,11 @@ Begin
       s := Manager.FindUniquePageName(NewShortName, AShareEditor);
       Result := NewSE(-1, -1, AShareEditor, s);
       {$IFDEF IDE_DEBUG}
-      writeln('[TSourceNotebook.NewFile] B ');
+      debugln('[TSourceNotebook.NewFile] B ');
       {$ENDIF}
       Result.CodeBuffer:=ASource;
       {$IFDEF IDE_DEBUG}
-      writeln('[TSourceNotebook.NewFile] D ');
+      debugln('[TSourceNotebook.NewFile] D ');
       {$ENDIF}
       //debugln(['TSourceNotebook.NewFile ',NewShortName,' ',ASource.Filename]);
       Result.PageName:= s;
@@ -6502,7 +6534,7 @@ Begin
     DebugBoss.UnLockCommandProcessing;
   end;
   {$IFDEF IDE_DEBUG}
-  writeln('[TSourceNotebook.NewFile] end');
+  debugln('[TSourceNotebook.NewFile] end');
   {$ENDIF}
   CheckFont;
 end;
@@ -6514,7 +6546,7 @@ var
 begin
   (* Do not use DisableAutoSizing in here, if a new Editor is focused it needs immediate autosize (during handle creation) *)
   {$IFDEF IDE_DEBUG}
-  writeln('TSourceNotebook.CloseFile A  APageIndex=',APageIndex);
+  debugln(['TSourceNotebook.CloseFile A  APageIndex=',APageIndex]);
   {$ENDIF}
   TempEditor:=FindSourceEditorWithPageIndex(APageIndex);
   if TempEditor=nil then exit;
@@ -6525,9 +6557,9 @@ begin
   TempEditor.Free;
   TempEditor:=nil;
   // delete the page
-  //writeln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+  //debugln('TSourceNotebook.CloseFile B  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
   NoteBookDeletePage(APageIndex);
-  //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
+  //debugln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
   UpdateProjectFiles;
   UpdatePageNames;
   if WasSelected then
@@ -6546,7 +6578,7 @@ begin
   if IsVisible and (TempEditor <> nil) and (FUpdateLock = 0) then
     TempEditor.EditorComponent.SetFocus;
   {$IFDEF IDE_DEBUG}
-  writeln('TSourceNotebook.CloseFile END');
+  debugln('TSourceNotebook.CloseFile END');
   {$ENDIF}
 end;
 
@@ -6886,7 +6918,7 @@ Begin
   Exclude(States, snNotbookPageChangedNeeded);
   TempEditor:=GetActiveSE;
 
-  //writeln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
+  //debugln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
   if TempEditor <> nil then
   begin
     if not TempEditor.Visible then begin
@@ -6904,13 +6936,13 @@ Begin
     if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) then
     begin
       {$IFDEF VerboseFocus}
-      writeln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
+      debugln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
         TempEditor.EditorComponent.Name,' ',
         NoteBookPages[FindPageWithEditor(TempEditor)]);
       {$ENDIF}
       TempEditor.FocusEditor;
       {$IFDEF VerboseFocus}
-      writeln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
+      debugln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
         TempEditor.EditorComponent.Name,' ',
         NotebookPages[FindPageWithEditor(TempEditor)]);
       {$ENDIF}
@@ -6921,7 +6953,7 @@ Begin
        not TempEditor.HasExecutionMarks and
        (TempEditor.FileName <> '') then
       TempEditor.FillExecutionMarks;
-    Manager.DoActiveEditorChanged;
+    DoActiveEditorChanged;
   end;
 
   CheckCurrentCodeBufferChanged;
@@ -7582,6 +7614,11 @@ end;
 procedure TSourceEditorManagerBase.DoActiveEditorChanged;
 begin
   if FActiveEditorLock > 0 then exit;
+  if FUpdateLock > 0 then begin
+    include(FUpdateFlags, ufMgrActiveEditorChanged);
+    exit;
+  end;
+  exclude(FUpdateFlags, ufMgrActiveEditorChanged);
   FChangeNotifyLists[semEditorActivate].CallNotifyEvents(ActiveEditor);
 end;
 
@@ -7884,6 +7921,7 @@ constructor TSourceEditorManagerBase.Create(AOwner: TComponent);
 var
   i: TsemChangeReason;
 begin
+  FUpdateFlags := [];
   for i := low(TsemChangeReason) to high(TsemChangeReason) do
     FChangeNotifyLists[i] := TMethodList.Create;
   SrcEditorIntf.SourceEditorManagerIntf := Self;
@@ -7994,37 +8032,59 @@ begin
   end;
 end;
 
+procedure TSourceEditorManagerBase.IncUpdateLockInternal;
+begin
+  if FUpdateLock = 0 then begin
+    FUpdateFlags := [];
+    // Debugger cause ProcessMessages, which could lead to entering methods in unexpected order
+    DebugBoss.LockCommandProcessing;
+  end;
+  inc(FUpdateLock);
+end;
+
+procedure TSourceEditorManagerBase.DecUpdateLockInternal;
+begin
+  dec(FUpdateLock);
+  if FUpdateLock = 0 then begin
+    try
+      if (ufShowWindowOnTop in FUpdateFlags) then
+        ShowActiveWindowOnTop(ufShowWindowOnTopFocus in FUpdateFlags);
+      if (ufMgrActiveEditorChanged in FUpdateFlags) then
+        DoActiveEditorChanged;
+    finally
+      DebugBoss.UnLockCommandProcessing;
+    end;
+  end;
+end;
+
 procedure TSourceEditorManagerBase.IncUpdateLock;
 var
   i: Integer;
 begin
-  if FUpdateLock = 0 then begin
-    FShowWindowOnTop := False;
-    FShowWindowOnTopFocus := False;
-  end;
-  inc(FUpdateLock);
+  IncUpdateLockInternal;
   for i := 0 to SourceWindowCount - 1 do
-    TSourceNotebook(SourceWindows[i]).IncUpdateLock;
+    TSourceNotebook(SourceWindows[i]).IncUpdateLockInternal;
 end;
 
 procedure TSourceEditorManagerBase.DecUpdateLock;
 var
   i: Integer;
 begin
-  for i := 0 to SourceWindowCount - 1 do
-    TSourceNotebook(SourceWindows[i]).DecUpdateLock;
-  dec(FUpdateLock);
-  if (FUpdateLock = 0) and FShowWindowOnTop then
-    ShowActiveWindowOnTop(FShowWindowOnTopFocus);
+  try
+    for i := 0 to SourceWindowCount - 1 do
+      TSourceNotebook(SourceWindows[i]).DecUpdateLockInternal;
+  finally
+    DecUpdateLockInternal;
+  end;
 end;
 
 procedure TSourceEditorManagerBase.ShowActiveWindowOnTop(Focus: Boolean);
 begin
   if ActiveSourceWindow = nil then exit;
   if FUpdateLock > 0 then begin
-    FShowWindowOnTop := True;
+    include(FUpdateFlags, ufShowWindowOnTop);
     if Focus then
-      FShowWindowOnTopFocus := True;
+      include(FUpdateFlags, ufShowWindowOnTopFocus);
     exit;
   end;
   IDEWindowCreators.ShowForm(ActiveSourceWindow,true);
@@ -8689,7 +8749,7 @@ end;
 procedure TSourceEditorManager.OnCodeTemplateTokenNotFound(Sender: TObject;
   AToken: string; AnEditor: TCustomSynEdit; var Index: integer);
 begin
-  //writeln('TSourceNotebook.OnCodeTemplateTokenNotFound ',AToken,',',AnEditor.ReadOnly,',',DefaultCompletionForm.CurrentCompletionType=ctNone);
+  //debugln('TSourceNotebook.OnCodeTemplateTokenNotFound ',AToken,',',AnEditor.ReadOnly,',',DefaultCompletionForm.CurrentCompletionType=ctNone);
   if (AnEditor.ReadOnly=false) and
      (DefaultCompletionForm.CurrentCompletionType=ctNone)
   then begin
@@ -8928,7 +8988,7 @@ begin
   Result.OnDropFiles := @OnFilesDroping;
 
   for i := 1 to FUpdateLock do
-    Result.IncUpdateLock;
+    Result.IncUpdateLockInternal;
   FSourceWindowList.Add(Result);
   FSourceWindowList.Sort(TListSortCompare(@SortSourceWindows));
   FSourceWindowByFocusList.Add(Result);
