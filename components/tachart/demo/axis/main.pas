@@ -6,7 +6,8 @@ interface
 
 uses
   ComCtrls, ExtCtrls, Forms, TACustomSource, TAFuncSeries, TAGraph,
-  TASeries, TASources, TAStyles, TATools, TATransformations, TAChartAxis;
+  TAIntervalSources, TASeries, TASources, TAStyles, TATools, TATransformations,
+  TAChartAxis;
 
 type
 

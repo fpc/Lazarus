@@ -283,7 +283,7 @@ type
 implementation
 
 uses
-  LResources, Math, PropEdits, TAGeometry, TASources;
+  LResources, Math, PropEdits, TAGeometry, TAIntervalSources;
 
 type
   TAxisDataExtent = record

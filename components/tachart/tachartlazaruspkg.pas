@@ -11,7 +11,7 @@ uses
   TASeries, TASeriesEditor, TASubcomponentsEditor, TATools, TATransformations, 
   TATypes, TADrawUtils, TAMultiSeries, TALegend, TAStyles, TAFuncSeries, 
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
-  TADrawerCanvas, TADrawerSVG, LazarusPackageIntf;
+  TADrawerCanvas, TADrawerSVG, TAIntervalSources, LazarusPackageIntf;
 
 implementation
 
@@ -26,6 +26,7 @@ begin
   RegisterUnit('TAStyles', @TAStyles.Register); 
   RegisterUnit('TALegendPanel', @TALegendPanel.Register); 
   RegisterUnit('TANavigation', @TANavigation.Register); 
+  RegisterUnit('TAIntervalSources', @TAIntervalSources.Register); 
 end; 
 
 initialization

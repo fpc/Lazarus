@@ -230,8 +230,6 @@ procedure Exchange(var A, B: String); overload; inline;
 
 procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
 
-function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
-
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 
 function OrientToRad(AOrient: Integer): Double; inline;
@@ -273,76 +271,6 @@ const
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 begin
   Result := Bounds(ALeft, ATop, ASize.cx, ASize.cy);
-end;
-
-procedure CalculateIntervals(
-  AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
-var
-  extent, extentTmp, stepCount, scale, maxStepCount, m: Double;
-  i: Integer;
-const
-  GOOD_STEPS: array [1..3] of Double = (0.2, 0.5, 1.0);
-  BASE = 10;
-begin
-  extent := AMax - AMin;
-  AStep := 1;
-  AStart := AMin;
-  if extent <= 0 then exit;
-
-  maxStepCount := 0;
-  scale := 1.0;
-  for i := Low(GOOD_STEPS) to High(GOOD_STEPS) do begin
-    extentTmp := extent / GOOD_STEPS[i];
-    m := IntPower(BASE, Round(logn(BASE, extentTmp)));
-    while extentTmp * m > BASE do
-      m /= BASE;
-    while extentTmp * m <= 1 do
-      m *= BASE;
-    stepCount := extentTmp * m;
-    if stepCount > maxStepCount then begin
-      maxStepCount := stepCount;
-      scale := m;
-      AStep := GOOD_STEPS[i] / m;
-    end;
-  end;
-  case AxisScale of
-    asIncreasing: begin
-      // If 0 is in the interval, set it as a mark.
-      if InRange(0, AMin, AMax) then
-        AStart := 0
-      else
-        AStart := Round((AMin - AStep) * scale) / scale;
-      while AStart > AMin do AStart -= AStep;
-    end;
-    asDecreasing: begin
-      // If 0 is in the interval, set it as a mark.
-      if InRange(0, AMin, AMax) then
-        AStart := 0
-      else
-        AStart := Round((AMax + AStep) * scale) / scale;
-      while AStart < AMax do AStart += AStep;
-    end;
-    asLogIncreasing: begin
-      // FIXME: asLogIncreasing is still not implemented.
-      // The following is the same code for asIncreasing;
-      // If 0 is in the interval, set it as a mark.
-      if InRange(0, AMin, AMax) then
-        AStart := 0
-      else
-        AStart := Round((AMin - AStep) * scale) / scale;
-      while AStart > AMin do AStart -= AStep;
-    end;
-    asLogDecreasing: begin
-      // FIXME: asLogDecreasing is still not implemented.
-      // The following is the same code for asIncreasing;
-      // If 0 is in the interval, set it as a mark.
-      if InRange(0, AMin, AMax) then
-        AStart := 0
-      else
-        AStart := Round((AMax + AStep) * scale) / scale;
-      while AStart < AMax do AStart += AStep;
-    end;
-  end; {case AxisScale}
 end;
 
 function DoubleInterval(AStart, AEnd: Double): TDoubleInterval;
@@ -406,48 +334,6 @@ begin
   d := AHi - ALo;
   ALo -= d * ACoeff;
   AHi += d * ACoeff;
-end;
-
-function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
-const
-  INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
-  K = 1e-10;
-var
-  start, step, m, m1: Double;
-  markCount: Integer;
-begin
-  CalculateIntervals(AMin, AMax, INV_TO_SCALE[AInverted], start, step);
-  AMin -= step * K;
-  AMax += step * K;
-  if AInverted then
-    step := - step;
-  m := start;
-  markCount := 0;
-  while true do begin
-    if InRange(m, AMin, AMax) then
-      Inc(markCount)
-    else if markCount > 0 then
-      break;
-    m1 := m + step;
-    if m1 = m then break;
-    m := m1;
-  end;
-  SetLength(Result, markCount);
-  m := start;
-  markCount := 0;
-  while true do begin
-    if Abs(m / step) < K then
-      m := 0;
-    if InRange(m, AMin, AMax) then begin
-      Result[markCount] := m;
-      Inc(markCount);
-    end
-    else if markCount > 0 then
-      break;
-    m1 := m + step;
-    if m1 = m then break;
-    m := m1;
-  end;
 end;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
