@@ -326,9 +326,9 @@ type
     procedure MouseMove(APoint: TPoint); override;
   published
     property ActiveCursor;
+    property OnHint: TChartToolHintEvent read FOnHint write FOnHint;
     property UseDefaultHintText: Boolean
       read FUseDefaultHintText write FUseDefaultHintText default true;
-    property OnHint: TChartToolHintEvent read FOnHint write FOnHint;
   end;
 
   { TReticuleTool }

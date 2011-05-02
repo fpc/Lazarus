@@ -108,7 +108,7 @@ type
   { TBasicChartToolset }
 
   TBasicChartToolset = class(TComponent)
-  protected
+  public
     function Dispatch(
       AChart: TChart; AEventId: TChartToolEventId;
       AShift: TShiftState; APoint: TPoint): Boolean; virtual; abstract; overload;
@@ -413,7 +413,8 @@ begin
   end;
 end;
 
-procedure RegisterSeriesClass(ASeriesClass: TSeriesClass; const ACaption: string);
+procedure RegisterSeriesClass(
+  ASeriesClass: TSeriesClass; const ACaption: String);
 begin
   if SeriesClassRegistry.IndexOfObject(TObject(ASeriesClass)) < 0 then
     SeriesClassRegistry.AddObject(ACaption, TObject(ASeriesClass));
@@ -1031,11 +1032,8 @@ begin
 end;
 
 procedure TChart.PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
-var
-  drawer: IChartDrawer;
 begin
-  drawer := TCanvasDrawer.Create(ACanvas);
-  Draw(drawer, ARect);
+  Draw(TCanvasDrawer.Create(ACanvas), ARect);
 end;
 
 procedure TChart.PrepareAxis(ADrawer: IChartDrawer);
