@@ -2268,18 +2268,14 @@ begin
     WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
 
-  Widget := TQtWidget(hWnd);
-
-  if Widget <> nil then
+  if QtWidgetSet.IsValidHandle(hWnd) then
   begin
+    Widget := TQtWidget(hWnd);
     Result := Widget.Context;
     if Result = 0 then
       Result := HDC(QtDefaultContext);
-  end
-  else
-  begin
+  end else
     Result := HDC(QtScreenContext);
-  end;
 
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
