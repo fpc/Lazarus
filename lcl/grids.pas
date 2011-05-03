@@ -6462,7 +6462,6 @@ var
   OldRange: TRect;
   ForceReset: boolean;
 begin
-
   Result:=TryMoveSelection(Relative,DCol,DRow);
   if (not Result) then Exit;
 
@@ -6492,8 +6491,8 @@ begin
   if not ScrollToCell(DCol, DRow, ForceReset) then
     InvalidateMovement(DCol, DRow, OldRange);
 
-  SwapInt(DCol,FCol);
-  SwapInt(DRow,FRow);
+  FCol := DCol;
+  FRow := DRow;
 
   MoveSelection;
   SelectEditor;
@@ -6581,17 +6580,18 @@ begin
   if FixedGrid then
     exit;
 
-  dCol:=FCol*(1-Byte(not Relative))+DCol;
-  dRow:=FRow*(1-Byte(not Relative))+DRow;
+  if Relative then begin
+    Inc(DCol, FCol);
+    Inc(DRow, FRow);
+  end;
 
   CheckLimits(DCol, DRow);
 
   // Change on Focused cell?
-  if (Dcol=FCol) and (DRow=FRow) then begin
-    SelectCell(DCol,DRow);
-  end else begin
+  if (DCol=FCol) and (DRow=FRow) then
+    SelectCell(DCol,DRow)
+  else
     Result:=SelectCell(DCol,DRow);
-  end;
 end;
 
 procedure TCustomGrid.UnLockEditor;
