@@ -3185,11 +3185,10 @@ begin
       FGCache.TLColOff:=0;
     if OldTopLeft.y<>FTopLeft.y then
       FGCache.TLRowOff:=0;
-
-    doTopleftChange(False)
   end else
   if not (goSmoothScroll in Options) or wResetOffs then
     ResetOffset(True, True);
+  doTopleftChange(False);
 end;
 
 {Returns a valid TopLeft from a proposed TopLeft[DCol,DRow] which are
