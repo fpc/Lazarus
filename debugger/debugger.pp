@@ -1780,6 +1780,14 @@ type
     etWindowsMessageSent
   );
 
+  TDBGEventRec = packed record
+    case Boolean of
+      False: (
+       Category: Word;
+       EventType: Word);
+      True: (Ptr: Pointer);
+  end;
+
   TDBGFeedbackType = (ftWarning, ftError);
   TDBGFeedbackResult = (frOk, frStop);
   TDBGFeedbackResults = set of TDBGFeedbackResult;

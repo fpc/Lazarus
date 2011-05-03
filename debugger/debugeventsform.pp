@@ -33,7 +33,7 @@ unit DebugEventsForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls,
+  Classes, windows, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls,
   Debugger, DebuggerDlg, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
@@ -41,8 +41,10 @@ type
 
   TDbgEventsForm = class(TDebuggerDlg)
     imlMain: TImageList;
-    lstFilteredEvents: TListView;
-    procedure lstFilteredEventsResize(Sender: TObject);
+    tvFilteredEvents: TTreeView;
+    procedure tvFilteredEventsAdvancedCustomDrawItem(Sender: TCustomTreeView;
+      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
+      var PaintImages, DefaultDraw: Boolean);
   private
     FEvents: TStringList;
     FFilter: TDBGEventCategories;
@@ -60,12 +62,42 @@ implementation
 
 {$R *.lfm}
 
+type
+  TCustomTreeViewAccess = class(TCustomTreeView);
+
 { TDbgEventsForm }
 
-procedure TDbgEventsForm.lstFilteredEventsResize(Sender: TObject);
+procedure TDbgEventsForm.tvFilteredEventsAdvancedCustomDrawItem(
+  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
+var
+  Rec: TDBGEventRec;
+  NodeRect, TextRect: TRect;
+  TextY: Integer;
 begin
-  // workaround: ListColumn.AutoSize does not work properly
-  lstFilteredEvents.Column[0].Width := lstFilteredEvents.ClientWidth;
+  DefaultDraw := Stage <> cdPrePaint;
+  if DefaultDraw then Exit;
+
+  Rec.Ptr := Node.Data;
+
+  if cdsSelected in State then
+  begin
+    Sender.Canvas.Brush.Color := EnvironmentOptions.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Foreground;
+    Sender.Canvas.Font.Color := EnvironmentOptions.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Background;
+  end
+  else
+  begin
+    Sender.Canvas.Brush.Color := EnvironmentOptions.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Background;
+    Sender.Canvas.Font.Color := EnvironmentOptions.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Foreground;
+  end;
+
+  NodeRect := Node.DisplayRect(False);
+  TextRect := Node.DisplayRect(True);
+  TextY := (TextRect.Top + TextRect.Bottom - Sender.Canvas.TextHeight(Node.Text)) div 2;
+  Sender.Canvas.FillRect(NodeRect);
+  imlMain.Draw(Sender.Canvas, TCustomTreeViewAccess(Sender).Indent shr 2 + 1 - TCustomTreeViewAccess(Sender).ScrolledLeft, (NodeRect.Top + NodeRect.Bottom - imlMain.Height) div 2,
+      Node.ImageIndex, True);
+  Sender.Canvas.TextOut(TextRect.Left, TextY, Node.Text);
 end;
 
 procedure TDbgEventsForm.UpdateFilteredList;
@@ -82,32 +114,35 @@ const
 
 var
   i: Integer;
-  Item: TListItem;
+  Item: TTreeNode;
+  Rec: TDBGEventRec;
   Cat: TDBGEventCategory;
 begin
-  lstFilteredEvents.BeginUpdate;
+  tvFilteredEvents.BeginUpdate;
   try
-    lstFilteredEvents.Clear;
+    tvFilteredEvents.Items.Clear;
     for i := 0 to FEvents.Count -1 do
     begin
-      Cat := TDBGEventCategory(PtrUInt(FEvents.Objects[i]));
+      Rec.Ptr := FEvents.Objects[i];
+      Cat := TDBGEventCategory(Rec.Category);
 
       if Cat in FFilter then
       begin
-        Item := lstFilteredEvents.Items.Add;
-        Item.Caption := FEvents[i];
+        Item := tvFilteredEvents.Items.AddChild(nil, FEvents[i]);
+        Item.Data := FEvents.Objects[i];
         Item.ImageIndex := CategoryImages[Cat];
+        Item.SelectedIndex := CategoryImages[Cat];
       end;
     end;
   finally
-    lstFilteredEvents.EndUpdate;
+    tvFilteredEvents.EndUpdate;
   end;
   // To be a smarter and restore the active Item, we would have to keep a link
   //between the lstFilteredEvents item and FEvents index, and account items
   //removed from FEvents because of log limit.
   // Also, TopItem and GetItemAt(0,0) both return nil in gtk2.
-  if lstFilteredEvents.Items.Count <> 0 then
-    lstFilteredEvents.Items[lstFilteredEvents.Items.Count -1].MakeVisible(False);
+  if tvFilteredEvents.Items.Count <> 0 then
+    tvFilteredEvents.Items[tvFilteredEvents.Items.Count -1].MakeVisible;
 end;
 
 procedure TDbgEventsForm.SetEvents(const AEvents: TStrings);
@@ -144,7 +179,7 @@ end;
 procedure TDbgEventsForm.Clear;
 begin
   FEvents.Clear;
-  lstFilteredEvents.Clear;
+  tvFilteredEvents.Items.Clear;
 end;
 
 constructor TDbgEventsForm.Create(AOwner: TComponent);
@@ -162,25 +197,29 @@ end;
 
 procedure TDbgEventsForm.AddEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
 var
-  Item: TListItem;
+  Item: TTreeNode;
+  Rec: TDBGEventRec;
 begin
   if EnvironmentOptions.DebuggerEventLogCheckLineLimit then
   begin
-    lstFilteredEvents.BeginUpdate;
+    tvFilteredEvents.BeginUpdate;
     try
-      while lstFilteredEvents.Items.Count >= EnvironmentOptions.DebuggerEventLogLineLimit do
-        lstFilteredEvents.Items.Delete(0);
+      while tvFilteredEvents.Items.Count >= EnvironmentOptions.DebuggerEventLogLineLimit do
+        tvFilteredEvents.Items.Delete(tvFilteredEvents.Items[0]);
     finally
-      lstFilteredEvents.EndUpdate;
+      tvFilteredEvents.EndUpdate;
     end;
   end;
-  FEvents.AddObject(AText, TObject(PtrUInt(ACategory)));
+  Rec.Category := Ord(ACategory);
+  Rec.EventType := Ord(AEventType);
+  FEvents.AddObject(AText, TObject(Rec.Ptr));
   if ACategory in FFilter then
   begin
-    Item := lstFilteredEvents.Items.Add;
-    Item.Caption := AText;
-    Item.ImageIndex := Ord(ACategory);
-    Item.MakeVisible(False);
+    Item := tvFilteredEvents.Items.AddChild(nil, AText);
+    Item.ImageIndex := Rec.Category;
+    Item.SelectedIndex := Rec.Category;
+    Item.Data := Rec.Ptr;
+    Item.MakeVisible;
   end;
 end;
 

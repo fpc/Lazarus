@@ -211,7 +211,6 @@ type
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType; BringToFront: Boolean = true; Show: Boolean = true; DoDisableAutoSizing: boolean = false); override;
   end;
 
-
 implementation
 
 
@@ -754,6 +753,8 @@ begin
 end;
 
 procedure TDebugManager.DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
+var
+  Rec: TDBGEventRec;
 begin
   if Destroying then exit;
   if FDialogs[ddtEvents] <> nil
@@ -769,7 +770,9 @@ begin
       while FHiddenDebugEventsLog.Count >= EnvironmentOptions.DebuggerEventLogLineLimit do
         FHiddenDebugEventsLog.Delete(0);
     end;
-    FHiddenDebugEventsLog.AddObject(AText, TObject(PtrUint(ACategory)));
+    Rec.Category := Ord(ACategory);
+    Rec.EventType := Ord(AEventType);
+    FHiddenDebugEventsLog.AddObject(AText, TObject(Rec.Ptr));
   end;
 end;
 

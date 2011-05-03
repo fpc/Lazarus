@@ -6,21 +6,22 @@ inherited DbgEventsForm: TDbgEventsForm
   BorderStyle = bsSizeToolWin
   ClientHeight = 208
   ClientWidth = 577
-  object lstFilteredEvents: TListView[0]
+  object tvFilteredEvents: TTreeView[0]
     Left = 0
     Height = 208
     Top = 0
     Width = 577
     Align = alClient
-    Columns = <    
-      item
-        Width = 100
-      end>
-    ShowColumnHeaders = False
-    SmallImages = imlMain
+    DefaultItemHeight = 17
+    Images = imlMain
+    ReadOnly = True
+    RowSelect = True
+    ShowButtons = False
+    ShowLines = False
+    ShowRoot = False
     TabOrder = 0
-    ViewStyle = vsReport
-    OnResize = lstFilteredEventsResize
+    OnAdvancedCustomDrawItem = tvFilteredEventsAdvancedCustomDrawItem
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoToolTips, tvoThemedDraw]
   end
   object imlMain: TImageList[1]
     left = 199
