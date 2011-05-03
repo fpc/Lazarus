@@ -30,13 +30,6 @@ uses
   IDEOptionsIntf, EnvironmentOpts;
 
 type
-  TEventLogColor = record
-    Name: String;
-    Foreground: TColor;
-    Background: TColor;
-  end;
-  PEventLogColor = ^TEventLogColor;
-
   { TDebuggerEventLogOptionsFrame }
 
   TDebuggerEventLogOptionsFrame = class(TAbstractIDEOptionsEditor)
@@ -61,6 +54,7 @@ type
     procedure ColorTreeClick(Sender: TObject);
     procedure ForegroundColorBoxChange(Sender: TObject);
   private
+    FColors: array[TDBGEventType] of TDebuggerEventLogColor;
     class function GetCategoryStr(ACategory: TDBGEventCategory): String;
     procedure UpdateSelectedColor;
   public
@@ -78,22 +72,6 @@ implementation
 const
   COLOR_NODE_PREFIX = ' abc  ';
 
-  TestColors: array[0..12] of TEventLogColor = (
-    (Name: 'Default Color';        Foreground: clWindowText; Background: clWindow),
-    (Name: 'Breakpoint Evaluation';Foreground: clRed;        Background: clWindow),
-    (Name: 'Breakpoint Hit';       Foreground: clRed;        Background: clWindow),
-    (Name: 'Breakpoint Message';   Foreground: clRed;        Background: clWindow),
-    (Name: 'Breakpoint Stack Dump';Foreground: clRed;        Background: clWindow),
-    (Name: 'Exception Raised';     Foreground: clTeal;       Background: clWindow),
-    (Name: 'Module Load';          Foreground: clBlue;       Background: clWindow),
-    (Name: 'Module Unload';        Foreground: clBlue;       Background: clWindow),
-    (Name: 'Output Debug String';  Foreground: clNavy;       Background: clWindow),
-    (Name: 'Process Exit';         Foreground: clGray;       Background: clWindow),
-    (Name: 'Process Start';        Foreground: clGray;       Background: clWindow),
-    (Name: 'Thread Exit';          Foreground: clMaroon;     Background: clWindow),
-    (Name: 'Thread Start';         Foreground: clMaroon;     Background: clWindow)
-  );
-
 { TDebuggerEventLogOptionsFrame }
 
 procedure TDebuggerEventLogOptionsFrame.ColorTreeAdvancedCustomDrawItem(
@@ -105,7 +83,7 @@ var
   TextY, OldHeight: Integer;
   s: String;
 begin
-  DefaultDraw := (Node.Data = nil) or not (Stage = cdPostPaint);
+  DefaultDraw := Stage <> cdPostPaint;
   if DefaultDraw then
     Exit;
 
@@ -124,14 +102,14 @@ begin
   FullAbcWidth := Sender.Canvas.TextExtent(COLOR_NODE_PREFIX).cx;
   TextY := (NodeRect.Top + NodeRect.Bottom - Sender.Canvas.TextHeight(Node.Text)) div 2;
   Sender.Canvas.FillRect(NodeRect);
-  Sender.Canvas.TextOut(NodeRect.Left + FullAbcWidth, TextY, PEventLogColor(Node.Data)^.Name);
+  Sender.Canvas.TextOut(NodeRect.Left + FullAbcWidth, TextY, Node.Text);
 
   // Draw preview box - Background
-  Sender.Canvas.Brush.Color := PEventLogColor(Node.Data)^.Background;
+  Sender.Canvas.Brush.Color := FColors[TDBGEventType(Node.Index)].Background;
   Sender.Canvas.FillRect(NodeRect.Left + 2, NodeRect.Top + 2, NodeRect.Left+FullAbcWidth - 2, NodeRect.Bottom - 2);
 
   s := 'abc';
-  Sender.Canvas.Font.Color := PEventLogColor(Node.Data)^.Foreground;
+  Sender.Canvas.Font.Color := FColors[TDBGEventType(Node.Index)].Foreground;
   OldHeight := Sender.Canvas.Font.Height;
   Sender.Canvas.Font.Height := -(NodeRect.Bottom - NodeRect.Top - 7);
   TextY := (NodeRect.Top + NodeRect.Bottom - canvas.TextHeight(s)) div 2;
@@ -158,9 +136,9 @@ begin
   if Assigned(ColorTree.Selected) then
   begin
     if (Sender = ForegroundColorBox) then
-      PEventLogColor(ColorTree.Selected.Data)^.Foreground := ForeGroundColorBox.Selected;
+      FColors[TDBGEventType(ColorTree.Selected.Index)].Foreground := ForeGroundColorBox.Selected;
     if Sender = BackGroundColorBox then
-      PEventLogColor(ColorTree.Selected.Data)^.Background := BackGroundColorBox.Selected;
+      FColors[TDBGEventType(ColorTree.Selected.Index)].Background := BackGroundColorBox.Selected;
     ColorTree.Invalidate;
   end;
 end;
@@ -195,8 +173,8 @@ begin
   BackGroundColorBox.Enabled := Assigned(ColorTree.Selected);
   if Assigned(ColorTree.Selected) then
   begin
-    ForegroundColorBox.Selected := PEventLogColor(ColorTree.Selected.Data)^.Foreground;
-    BackgroundColorBox.Selected := PEventLogColor(ColorTree.Selected.Data)^.Background;
+    ForegroundColorBox.Selected := FColors[TDBGEventType(ColorTree.Selected.Index)].Foreground;
+    BackgroundColorBox.Selected := FColors[TDBGEventType(ColorTree.Selected.Index)].Background;
   end;
 end;
 
@@ -208,8 +186,7 @@ end;
 procedure TDebuggerEventLogOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   Category: TDBGEventCategory;
-  i: integer;
-  Node: TTreeNode;
+  i: TDBGEventType;
 begin
   // general
   gbGeneral.Caption := lisGeneral;
@@ -226,13 +203,8 @@ begin
   chkUseEventLogColors.Caption := lisDebugOptionsFrmUseEventLogColors;
   ForeGroundLabel.Caption := dlgForecolor;
   BackGroundLabel.Caption := dlgBackColor;
-  // TODO: colors
-  // add test colors to check functionality for now
-  for i := Low(TestColors) to High(TestColors) do
-  begin
-    Node := ColorTree.Items.Add(nil, TestColors[i].Name);
-    Node.Data := @TestColors[i];
-  end;
+  for i := Low(DebuggerDefaultColors) to High(DebuggerDefaultColors) do
+    ColorTree.Items.Add(nil, DBGEventNames[i]);
 end;
 
 procedure TDebuggerEventLogOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -242,6 +214,8 @@ procedure TDebuggerEventLogOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptio
     cbMessages.Checked[Ord(ACategory)] := AChecked;
   end;
 
+var
+  EventType: TDBGEventType;
 begin
   with AOptions as TEnvironmentOptions do
   begin
@@ -255,7 +229,11 @@ begin
     SetChecked(ecOutput, DebuggerEventLogShowOutput);
     SetChecked(ecWindows, DebuggerEventLogShowWindows);
     SetChecked(ecDebugger, DebuggerEventLogShowDebugger);
+    chkUseEventLogColors.Checked := DebuggerEventLogUseColors;
+    for EventType := Low(TDBGEventType) to High(TDBGEventType) do
+      FColors[EventType] := DebuggerEventLogColors[EventType];
   end;
+  //chkUseEventLogColorsChange(chkUseEventLogColors);
 end;
 
 procedure TDebuggerEventLogOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -265,6 +243,8 @@ procedure TDebuggerEventLogOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpti
     Result := cbMessages.Checked[Ord(ACategory)];
   end;
 
+var
+  EventType: TDBGEventType;
 begin
   with AOptions as TEnvironmentOptions do
   begin
@@ -278,6 +258,9 @@ begin
     DebuggerEventLogShowOutput := GetChecked(ecOutput);
     DebuggerEventLogShowWindows := GetChecked(ecWindows);
     DebuggerEventLogShowDebugger := GetChecked(ecDebugger);
+    DebuggerEventLogUseColors := chkUseEventLogColors.Checked;
+    for EventType := Low(TDBGEventType) to High(TDBGEventType) do
+      DebuggerEventLogColors[EventType] := FColors[EventType];
   end;
 end;
 

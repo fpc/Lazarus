@@ -37,7 +37,7 @@ uses
 {$ifdef Windows}
   ShlObj,
 {$endif}
-  Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileProcs, Dialogs,
+  Classes, SysUtils, TypInfo, Graphics, Controls, Forms, LCLProc, FileProcs, Dialogs,
   Laz_XMLCfg, LazConfigStorage,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
@@ -80,8 +80,32 @@ const
     '(None)','GNU debugger (gdb)', 'GNU debugger through SSH (gdb)'
   );
 
+type
+  TDebuggerEventLogColor = record
+    Foreground: TColor;
+    Background: TColor;
+  end;
 
-  { Naming }
+const
+  DebuggerDefaultColors: array[TDBGEventType] of TDebuggerEventLogColor = (
+{ etDefault              } (Foreground: clWindowText; Background: clWindow),
+{ etBreakpointEvaluation } (Foreground: clRed;        Background: clWindow),
+{ etBreakpointHit        } (Foreground: clRed;        Background: clWindow),
+{ etBreakpointMessage    } (Foreground: clRed;        Background: clWindow),
+{ etBreakpointStackDump  } (Foreground: clRed;        Background: clWindow),
+{ etExceptionRaised      } (Foreground: clTeal;       Background: clWindow),
+{ etModuleLoad           } (Foreground: clBlue;       Background: clWindow),
+{ etModuleUnload         } (Foreground: clBlue;       Background: clWindow),
+{ etOutputDebugString    } (Foreground: clNavy;       Background: clWindow),
+{ etProcessExit          } (Foreground: clGray;       Background: clWindow),
+{ etProcessStart         } (Foreground: clGray;       Background: clWindow),
+{ etThreadExit           } (Foreground: clMaroon;     Background: clWindow),
+{ etThreadStart          } (Foreground: clMaroon;     Background: clWindow),
+{ etWindowsMessagePosted } (Foreground: clWhite;      Background: clGray),
+{ etWindowsMessageSent   } (Foreground: clSkyBlue;    Background: clWindow)
+  );
+
+{ Naming }
 
 type
   TPascalExtType = (petNone, petPAS, petPP, petP);
@@ -261,6 +285,8 @@ type
     FDebuggerEventLogShowProcess: Boolean;
     FDebuggerEventLogShowThread: Boolean;
     FDebuggerEventLogShowWindows: Boolean;
+    FDebuggerEventLogUseColors: Boolean;
+    FDebuggerEventLogColors: array[TDBGEventType] of TDebuggerEventLogColor;
 
     // recent files and directories
     FRecentOpenFiles: TStringList;
@@ -295,7 +321,11 @@ type
     FNewFormTemplate: string;
     FNewUnitTemplate: string;
 
+    function GetDebuggerEventLogColors(AIndex: TDBGEventType
+      ): TDebuggerEventLogColor;
     procedure SetCompilerFilename(const AValue: string);
+    procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
+      const AValue: TDebuggerEventLogColor);
     procedure SetDebuggerSearchPath(const AValue: string);
     procedure SetMakeFilename(const AValue: string);
     procedure SetDebuggerFilename(const AValue: string);
@@ -476,6 +506,9 @@ type
     property DebuggerEventLogShowOutput: Boolean read FDebuggerEventLogShowOutput write FDebuggerEventLogShowOutput;
     property DebuggerEventLogShowWindows: Boolean read FDebuggerEventLogShowWindows write FDebuggerEventLogShowWindows;
     property DebuggerEventLogShowDebugger: Boolean read FDebuggerEventLogShowDebugger write FDebuggerEventLogShowDebugger;
+    property DebuggerEventLogUseColors: Boolean read FDebuggerEventLogUseColors write FDebuggerEventLogUseColors;
+    property DebuggerEventLogColors[AIndex: TDBGEventType]: TDebuggerEventLogColor read GetDebuggerEventLogColors write SetDebuggerEventLogColors;
+
     property CompilerMessagesFilename: string read FCompilerMessagesFilename
                                               write FCompilerMessagesFilename;
     property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory
@@ -767,6 +800,8 @@ begin
   FDebuggerFileHistory:=TStringList.Create;
   FDebuggerProperties := TStringList.Create;
   FDebuggerSearchPath:='';
+  FDebuggerEventLogColors:=DebuggerDefaultColors;
+
   TestBuildDirectory:=GetDefaultTestBuildDirectory;
   FTestBuildDirHistory:=TStringList.Create;
   CompilerMessagesFilename:='';
@@ -877,7 +912,8 @@ begin
 end;
 
 procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
-var XMLConfig: TXMLConfig;
+var
+  XMLConfig: TXMLConfig;
   FileVersion: integer;
   CurDebuggerClass: String;
   OldDebuggerType: TDebuggerType;
@@ -887,6 +923,7 @@ var XMLConfig: TXMLConfig;
   name: String;
   Rec: PIDEOptionsGroupRec;
   Cfg: TXMLOptionsStorage;
+  EventType: TDBGEventType;
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -1124,6 +1161,19 @@ begin
           Path+'Debugger/EventLogShowWindows', False);
         FDebuggerEventLogShowDebugger := XMLConfig.GetValue(
           Path+'Debugger/EventLogShowDebugger', True);
+        FDebuggerEventLogUseColors := XMLConfig.GetValue(
+          Path+'Debugger/EventLogUseColors', True);
+        for EventType := Low(TDBGEventType) to High(TDBGEventType) do
+        begin
+          FDebuggerEventLogColors[EventType].Background :=
+            XMLConfig.GetValue(Path+'Debugger/EventLogColors/' +
+            GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Background',
+            DebuggerDefaultColors[EventType].Background);
+          FDebuggerEventLogColors[EventType].Foreground :=
+            XMLConfig.GetValue(Path+'Debugger/EventLogColors/' +
+            GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Foreground',
+            DebuggerDefaultColors[EventType].Foreground);
+        end;
       end;
 
       // hints
@@ -1227,12 +1277,14 @@ begin
 end;
 
 procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
-var XMLConfig: TXMLConfig;
+var
+  XMLConfig: TXMLConfig;
   Path: String;
   i, j: Integer;
   name: String;
   Rec: PIDEOptionsGroupRec;
   Cfg: TXMLOptionsStorage;
+  EventType: TDBGEventType;
 
   procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
   var i:integer;
@@ -1423,6 +1475,19 @@ begin
             FDebuggerEventLogShowWindows, False);
         XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowDebugger',
             FDebuggerEventLogShowDebugger, True);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogUseColors',
+            FDebuggerEventLogUseColors, True);
+        for EventType := Low(TDBGEventType) to High(TDBGEventType) do
+        begin
+          XMLConfig.SetDeleteValue(Path+'Debugger/EventLogColors/' +
+            GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Background',
+              FDebuggerEventLogColors[EventType].Background,
+              DebuggerDefaultColors[EventType].Background);
+          XMLConfig.SetDeleteValue(Path+'Debugger/EventLogColors/' +
+            GetEnumName(TypeInfo(EventType), Ord(EventType)) + '/Foreground',
+              FDebuggerEventLogColors[EventType].Foreground,
+              DebuggerDefaultColors[EventType].Foreground);
+        end;
       end;
 
       // hints
@@ -1756,6 +1821,16 @@ begin
   if FCompilerFilename=AValue then exit;
   FCompilerFilename:=TrimFilename(AValue);
   FCompilerFilenameParsedStamp:=InvalidParseStamp;
+end;
+
+function TEnvironmentOptions.GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
+begin
+  Result := FDebuggerEventLogColors[AIndex];
+end;
+
+procedure TEnvironmentOptions.SetDebuggerEventLogColors(AIndex: TDBGEventType; const AValue: TDebuggerEventLogColor);
+begin
+  FDebuggerEventLogColors[AIndex] := AValue;
 end;
 
 procedure TEnvironmentOptions.SetDebuggerSearchPath(const AValue: string);
