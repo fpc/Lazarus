@@ -33,7 +33,7 @@ unit DebugEventsForm;
 interface
 
 uses
-  Classes, windows, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls,
   Debugger, DebuggerDlg, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
