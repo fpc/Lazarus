@@ -754,11 +754,10 @@ begin
     cx := x;
     cy := y;
   end;
-  
-  Pixmap := TQtPixmap.Create(@DCSize);
-  
+
   if Context.Parent <> nil then
   begin
+    Pixmap := TQtPixmap.Create(@DCSize);
     WinID := QWidget_winId(Context.Parent);
     try
       // if you have dual monitors then getDeviceSize return
@@ -779,6 +778,13 @@ begin
     if Context.vImage <> nil then
       RawImage_FromImage(Context.vImage.Handle)
     else
+    if Context.ParentPixmap <> nil then
+    begin
+      Image := QImage_create();
+      QPixmap_toImage(Context.ParentPixmap, Image);
+      RawImage_FromImage(Image);
+      QImage_destroy(Image);
+    end else
       Result := False;
   end;
 
