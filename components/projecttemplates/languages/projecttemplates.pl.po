@@ -11,6 +11,14 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
+#: projecttemplates.sbtncancel
+msgid "Cancel"
+msgstr ""
+
+#: projecttemplates.sbtnok
+msgid "&OK"
+msgstr ""
+
 #: projecttemplates.serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr "Nie udało się utworzyć katalogu \"%s\"."

@@ -11,14 +11,6 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: POLAND\n"
 
-#: frmtemplatevariables.sbtncancel
-msgid "Cancel"
-msgstr ""
-
-#: frmtemplatevariables.sbtnok
-msgid "OK"
-msgstr ""
-
 #: frmtemplatevariables.screateindir
 msgid "Create in &directory:"
 msgstr ""

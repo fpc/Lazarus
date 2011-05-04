@@ -9,14 +9,6 @@ msgstr ""
 "Last-Translator: Marcelo Borges de Paula\n"
 "Language-Team: \n"
 
-#: frmtemplatevariables.sbtncancel
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: frmtemplatevariables.sbtnok
-msgid "OK"
-msgstr "OK"
-
 #: frmtemplatevariables.screateindir
 msgid "Create in &directory:"
 msgstr "Criar no &diretório:"

@@ -9,14 +9,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: frmtemplatevariables.sbtncancel
-msgid "Cancel"
-msgstr "Отмена"
-
-#: frmtemplatevariables.sbtnok
-msgid "OK"
-msgstr "ОК"
-
 #: frmtemplatevariables.screateindir
 msgid "Create in &directory:"
 msgstr "Создать в &каталоге:"

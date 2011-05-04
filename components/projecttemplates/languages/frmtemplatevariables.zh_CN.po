@@ -12,14 +12,6 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: frmtemplatevariables.sbtncancel
-msgid "Cancel"
-msgstr ""
-
-#: frmtemplatevariables.sbtnok
-msgid "OK"
-msgstr ""
-
 #: frmtemplatevariables.screateindir
 msgid "Create in &directory:"
 msgstr ""

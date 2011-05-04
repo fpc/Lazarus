@@ -12,6 +12,14 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: projecttemplates.sbtncancel
+msgid "Cancel"
+msgstr ""
+
+#: projecttemplates.sbtnok
+msgid "&OK"
+msgstr ""
+
 #: projecttemplates.serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr "不能创建目录 \"%s\""

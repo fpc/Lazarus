@@ -9,6 +9,14 @@ msgstr ""
 "Last-Translator: Marcelo Borges de Paula\n"
 "Language-Team: \n"
 
+#: projecttemplates.sbtncancel
+msgid "Cancel"
+msgstr ""
+
+#: projecttemplates.sbtnok
+msgid "&OK"
+msgstr ""
+
 #: projecttemplates.serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
 msgstr "Impossível criar diretório \"%s\""

@@ -9,14 +9,6 @@ msgstr ""
 "Last-Translator: javivf <javivf@gmail.com>\n"
 "Language-Team: \n"
 
-#: frmtemplatevariables.sbtncancel
-msgid "Cancel"
-msgstr ""
-
-#: frmtemplatevariables.sbtnok
-msgid "OK"
-msgstr ""
-
 #: frmtemplatevariables.screateindir
 msgid "Create in &directory:"
 msgstr ""

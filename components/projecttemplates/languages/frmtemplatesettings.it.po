@@ -18,3 +18,4 @@ msgstr "&Cartella dei modelli:"
 #: frmtemplatesettings.stitle
 msgid "Project templates settings"
 msgstr "Impostazioni modelli progetto"
+
