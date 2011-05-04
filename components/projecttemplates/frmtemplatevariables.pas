@@ -58,8 +58,6 @@ resourcestring
   SCreateinDir    = 'Create in &directory:';
   SThisProject    = 'This project contains some additional variables. Please provide values for these variables.';
   STitle          = 'New project from template';
-  SbtnOK          = 'OK';
-  SbtnCancel      = 'Cancel';
 
 { TProjectVariablesForm }
 

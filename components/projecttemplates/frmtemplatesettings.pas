@@ -44,6 +44,8 @@ procedure TTemplateSettingsForm.FormCreate(Sender: TObject);
 begin
   Caption := STitle;
   Label1.Caption := SDirect;
+  ButtonPanel1.OKButton.Caption:=SbtnOK;
+  ButtonPanel1.CancelButton.Caption:=SbtnCancel;
 end;
 
 procedure TTemplateSettingsForm.OKButtonClick(Sender: TObject);

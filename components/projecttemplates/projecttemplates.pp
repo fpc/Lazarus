@@ -91,6 +91,9 @@ Const
   varprefixstr   = '__';     	// subtitution pattern is "__varname__"
   varpostfixstr  = '__';     
 
+resourcestring
+  SbtnOK          = '&OK';
+  SbtnCancel      = 'Cancel';
 
 Function SubstituteString(Const S : String; Variables : TStrings): String;
 Function SimpleFileCopy(Const Source,Dest : String) : Boolean;
