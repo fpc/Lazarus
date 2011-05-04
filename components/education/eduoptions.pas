@@ -43,8 +43,7 @@ resourcestring
   ersAddASpeedButtonToTheIDEToolbarToCreateANewProgram = 'Add a speed button '
     +'to the IDE toolbar to create a new program';
   ersAddMenuItem = 'Add menu item';
-  ersAddAMenuItemTheIDEToolbarToCreateANewProgram = 'Add a menu item the IDE '
-    +'toolbar to create a new program';
+  ersAddAnIDEMenuItemToCreateANewProgram = 'Add an IDE menu item to create a new program';
   ersAddToNewDialog = 'Add to %sNew ...%s dialog';
   ersAddAnEntryToTheNewDialogToCreateANewProgram = 'Add an entry to the %'
     +'sNew ...%s dialog to create a new program';
@@ -79,7 +78,7 @@ resourcestring
   ersRdGrpEventsCaption = 'Events';
 
   ersEduEnvOptsFrameTitle = 'General';
-  ersEduPropsEventsTitle = 'Properties & Events';
+  ersEduPropsEventsTitle = 'Properties and Events';
   ersEduCompPaletteTitle = 'Component palette';
   ersEduNewProgramTitle = 'New program';
   ersEduMenuTitle = 'Menus';

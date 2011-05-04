@@ -301,7 +301,7 @@ begin
   AddNewPrgMenuItmCheckBox.Caption:=ersAddMenuItem;
   AddNewPrgMenuItmCheckBox.ShowHint:=true;
   AddNewPrgMenuItmCheckBox.Hint:=
-    ersAddAMenuItemTheIDEToolbarToCreateANewProgram;
+    ersAddAnIDEMenuItemToCreateANewProgram;
 
   AddToNewDlgCheckBox.Caption:=Format(ersAddToNewDialog, ['"', '"']);
   AddToNewDlgCheckBox.ShowHint:=true;
