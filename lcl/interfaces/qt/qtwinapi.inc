@@ -2274,16 +2274,7 @@ begin
     Widget := TQtWidget(hWnd);
     Result := Widget.Context;
     if Result = 0 then
-    begin
-      B := QPainter_isActive(QtDefaultContext.Widget);
-      if B then
-        QPainter_end(QtDefaultContext.Widget);
-      QPixmap_grabWidget(QtDefaultContext.ParentPixmap, Widget.Widget,
-        0, 0, Widget.getWidth, Widget.getHeight);
-      if B then
-        QPainter_begin(QtDefaultContext.Widget, QtDefaultContext.ParentPixmap);
       Result := HDC(QtDefaultContext);
-    end;
   end else
     Result := HDC(QtScreenContext);
 
