@@ -2934,6 +2934,7 @@ begin
   DebugLn('  MaxTopLeft',dbgs(FGCache.MaxTopLeft));
   {$Endif}
   CalcScrollBarsRange;
+  updateScrollBarPos(ssBoth);
 end;
 
 procedure TCustomGrid.CreateParams(var Params: TCreateParams);
@@ -3185,10 +3186,11 @@ begin
       FGCache.TLColOff:=0;
     if OldTopLeft.y<>FTopLeft.y then
       FGCache.TLRowOff:=0;
+    doTopleftChange(False);
   end else
   if not (goSmoothScroll in Options) or wResetOffs then
     ResetOffset(True, True);
-  doTopleftChange(False);
+
 end;
 
 {Returns a valid TopLeft from a proposed TopLeft[DCol,DRow] which are
@@ -4431,6 +4433,13 @@ begin
 
   if AutoHorz then
     HsbVisible := HsbVisible and not AutoFillColumns;
+
+  // update new cached client values according to visibility
+  // of scrollbars
+  if HsbVisible then
+    FGCache.ClientHeight := ClientH - BarH;
+  if VsbVisible then
+    FGCache.ClientWidth := ClientW - BarW;
 
   {$ifdef dbgscroll}
   DebugLn('TCustomGrid.GetSBVisibility:');
