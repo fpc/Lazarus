@@ -2785,8 +2785,9 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
 
   procedure SetTargetInfo(const AFileType: String);
   var
-    FoundPtrSize: Boolean;
+    FoundPtrSize, UseWin64ABI: Boolean;
   begin
+    UseWin64ABI := False;
     // assume some defaults
     TargetInfo^.TargetPtrSize := GetIntValue('sizeof(%s)', [PointerTypeCast]);
     FoundPtrSize := (FLastExecResult.State <> dsError) and (TargetInfo^.TargetPtrSize > 0);
@@ -2805,13 +2806,17 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
       0..3: TargetInfo^.TargetCPU := 'x86';
       4: TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
       5: begin
+        TargetInfo^.TargetCPU := 'x86_64'; //TODO: should we check, PtrSize must be 8, but what if not?
+        UseWin64ABI := True;
+      end;
+      6: begin
          //mach-o-be
         TargetInfo^.TargetIsBE := True;
         if FTheDebugger.FGDBCPU <> ''
         then TargetInfo^.TargetCPU := FTheDebugger.FGDBCPU
         else TargetInfo^.TargetCPU := 'powerpc'; // guess
       end;
-      6: begin
+      7: begin
         //mach-o-le
         if FoundPtrSize then begin
           if FTheDebugger.FGDBPtrSize = TargetInfo^.TargetPtrSize
@@ -2829,10 +2834,10 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
           else TargetInfo^.TargetCPU := 'x86'; // guess
         end;
       end;
-      7: begin
+      8: begin
         TargetInfo^.TargetCPU := 'arm';
       end;
-      8: begin
+      9: begin
         TargetInfo^.TargetIsBE := True;
         TargetInfo^.TargetCPU := 'arm';
       end;
@@ -2864,7 +2869,13 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
           TargetInfo^.TargetRegisters[1] := '$edx';
           TargetInfo^.TargetRegisters[2] := '$ecx';
         end
-        else begin
+        else if UseWin64ABI
+        then begin
+          TargetInfo^.TargetRegisters[0] := '$rcx';
+          TargetInfo^.TargetRegisters[1] := '$rdx';
+          TargetInfo^.TargetRegisters[2] := '$r8';
+        end else
+        begin
           TargetInfo^.TargetRegisters[0] := '$rdi';
           TargetInfo^.TargetRegisters[1] := '$rsi';
           TargetInfo^.TargetRegisters[2] := '$rdx';
