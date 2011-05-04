@@ -30,7 +30,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="63">
+    <Files Count="65">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -284,6 +284,14 @@
         <Filename Value="ctxmlfixfragment.pas"/>
         <UnitName Value="CTXMLFixFragment"/>
       </Item63>
+      <Item64>
+        <Filename Value="ctunitgraph.pas"/>
+        <UnitName Value="ctunitgraph"/>
+      </Item64>
+      <Item65>
+        <Filename Value="changedeclarationtool.pas"/>
+        <UnitName Value="changedeclarationtool"/>
+      </Item65>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

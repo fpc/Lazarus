@@ -38,7 +38,8 @@ uses
   {$ELSE}
   Laz_DOM,
   {$ENDIF}
-  FileProcs, AVL_Tree, CodeTree, CodeAtom, CodeCache, CodeToolManager,
+  FileProcs, AVL_Tree, CTUnitGraph, CodeTree, CodeAtom, CodeCache,
+  CodeToolManager,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
   LazIDEIntf, InputHistory, SearchResultView, CodeHelp, ButtonPanel;
@@ -167,10 +168,12 @@ var
   LoadResult: TModalResult;
   Code: TCodeBuffer;
   ListOfPCodeXYPosition: TFPList;
+  Cache: TFindIdentifierReferenceCache;  // you must free Cache;
 begin
   Result:=mrCancel;
   ListOfPCodeXYPosition:=nil;
   TreeOfPCodeXYPosition:=nil;
+  Cache:=nil;
   try
     CleanUpFileList(Files);
 
@@ -189,7 +192,7 @@ begin
       CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
       if not CodeToolBoss.FindReferences(
         DeclarationCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,
-        Code, not SearchInComments, ListOfPCodeXYPosition) then
+        Code, not SearchInComments, ListOfPCodeXYPosition, Cache) then
       begin
         debugln('GatherIdentifierReferences unable to FindReferences in "',Code.Filename,'"');
         Result:=mrAbort;
@@ -211,6 +214,7 @@ begin
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     if Result<>mrOk then
       CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
+    Cache.Free;
   end;
 end;
 

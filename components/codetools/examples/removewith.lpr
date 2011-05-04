@@ -21,48 +21,55 @@
   Author: Mattias Gaertner
 
   Abstract:
-    The resource strings of the package.
+    Demonstration how to remove a with block.
 }
-unit CodyStrConsts;
+program RemoveWith;
 
 {$mode objfpc}{$H+}
 
-interface
+uses
+  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs, AVL_Tree, CodeAtom,
+  BasicCodeTools, SourceChanger, CodeTree, FindDeclarationTool, RemoveWith1;
 
-resourcestring
-  crsNoProject = 'No project';
-  crsPleaseOpenAProjectFirst = 'Please open a project first.';
-  crsPPUFilesOfProject = 'PPU files of project "%s"';
-  crsUses = 'Uses';
-  lisCOGeneral = 'General';
-  crsUsedBy = 'Used by';
-  lisCOUsesPath = 'Uses path';
-  crsProjectHasNoMainSourceFile = 'Project has no main source file.';
-  crsMainSourceFile = 'Main source file: %s';
-  crsSizeOfPpuFile = 'Size of .ppu file';
-  crsSizeOfOFile = 'Size of .o file';
-  crsTotal = 'Total';
-  crsSearching = 'searching ...';
-  crsMissing = 'missing ...';
-  crsUnit = 'Unit';
-  crsPackage = 'Package';
-  crsKbytes = 'kbytes';
-  crsMbytes = 'Mbytes';
-  crsGbytes = 'Gbytes';
-  crsByFpcCfg = 'by fpc.cfg';
-  crsNoUnitSelected = 'No unit selected';
-  crsUnit2 = 'Unit: %s';
-  crsSource = 'Source: %s';
-  crsPPU = 'PPU: %s';
-  crsShowUsedPpuFiles = 'Show used .ppu files ...';
-  crsVirtualUnit = 'Virtual unit';
-  crsProjectOutput = 'Project output';
-  crsClose = '&Close';
-  crsAddAssignMethod = 'Add Assign method';
-  crsAddAssignMethod2 = 'Add Assign method ...';
-  crsRemoveWithBlock = 'Remove With block';
+const
+  ConfigFilename = 'codetools.config';
+var
+  Filename: string;
+  Code: TCodeBuffer;
+  X: Integer;
+  Y: Integer;
+begin
+  if (ParamCount>=1) and (Paramcount<>3) then begin
+    writeln('Usage:');
+    writeln('  ',ParamStr(0));
+    writeln('  ',ParamStr(0),' <filename> <X> <Y>');
+    writeln('  ',ParamStr(0),' scanexamples/removewith1.pas 19 38');
+  end;
 
-implementation
+  CodeToolBoss.SimpleInit(ConfigFilename);
 
+  // load the file
+  Filename:='scanexamples/removewith1.pas';
+  X:=19;
+  Y:=38;
+  if Paramcount=3 then begin
+    Filename:=ParamStrUTF8(1);
+    X:=StrToIntDef(ParamStrUTF8(2),1);
+    Y:=StrToIntDef(ParamStrUTF8(3),1);
+  end;
+
+  Filename:=ExpandFileName(SetDirSeparators(Filename));
+  Code:=CodeToolBoss.LoadFile(Filename,false,false);
+  if Code=nil then
+    raise Exception.Create('loading failed: '+Filename);
+
+  // parse the unit
+  if not CodeToolBoss.RemoveWithBlock(Code,X,Y) then
+    raise Exception.Create('RemoveWithBlock failed');
+  // write the new source:
+  writeln('-----------------------------------');
+  writeln('New source:');
+  writeln(Code.Source);
+  writeln('-----------------------------------');
 end.
 

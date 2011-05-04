@@ -216,22 +216,37 @@ type
   end;
 
 
+function CompareCodeBuffers(NodeData1, NodeData2: pointer): integer;
+function CompareAnsistringWithCodeBuffer(AString, ABuffer: pointer): integer;
+function CompareIncludedByLink(NodeData1, NodeData2: pointer): integer;
+function ComparePAnsiStringWithIncludedByLink(Key, Data: pointer): integer;
+
+
 implementation
 
 
 function CompareCodeBuffers(NodeData1, NodeData2: pointer): integer;
-var CodeBuf1, CodeBuf2: TCodeBuffer;
+var
+  CodeBuf1: TCodeBuffer absolute NodeData1;
+  CodeBuf2: TCodeBuffer absolute NodeData2;
 begin
-  CodeBuf1:=TCodeBuffer(NodeData1);
-  CodeBuf2:=TCodeBuffer(NodeData2);
   Result:=CompareFilenames(CodeBuf1.Filename,CodeBuf2.Filename);
 end;
 
-function CompareIncludedByLink(NodeData1, NodeData2: pointer): integer;
-var Link1, Link2: TIncludedByLink;
+function CompareAnsistringWithCodeBuffer(AString, ABuffer: pointer): integer;
+var
+  Code: TCodeBuffer absolute ABuffer;
+  Filename: String;
 begin
-  Link1:=TIncludedByLink(NodeData1);
-  Link2:=TIncludedByLink(NodeData2);
+  Filename:=AnsiString(AString);
+  Result:=CompareFilenames(Filename,Code.Filename);
+end;
+
+function CompareIncludedByLink(NodeData1, NodeData2: pointer): integer;
+var
+  Link1: TIncludedByLink absolute NodeData1;
+  Link2: TIncludedByLink absolute NodeData2;
+begin
   Result:=CompareFilenames(Link1.IncludeFilename,Link2.IncludeFilename);
 end;
 

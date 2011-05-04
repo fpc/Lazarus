@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TEventsCodeTool enhances TExtractProcTool.
+    TEventsCodeTool enhances TChangeDeclarationTool.
     TEventsCodeTool provides functions to work with published methods in the
     source. It can gather a list of compatible methods, test if method exists,
     jump to the method body, create a method, complete all missing published
@@ -46,12 +46,12 @@ uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
   LinkScanner, AVL_Tree, TypInfo, CodeToolsStructs,
-  SourceChanger, FindDeclarationTool, ExtractProcTool;
+  SourceChanger, FindDeclarationTool, ChangeDeclarationTool;
 
 type
   { TEventsCodeTool }
 
-  TEventsCodeTool = class(TExtractProcTool)
+  TEventsCodeTool = class(TChangeDeclarationTool)
   private
     fGatheredCompatibleMethods: TAVLTree; // tree of PChar in Src
     SearchedExprList: TExprTypeList;

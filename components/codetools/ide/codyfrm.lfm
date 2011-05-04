@@ -1,0 +1,9 @@
+object CodyWindow: TCodyWindow
+  Left = 345
+  Height = 310
+  Top = 205
+  Width = 337
+  Caption = 'CodyWindow'
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+end

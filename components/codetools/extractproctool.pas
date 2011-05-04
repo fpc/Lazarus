@@ -106,6 +106,9 @@ type
       SourceChangeCache: TSourceChangeCache;
       FunctionResultVariableStartPos: integer = 0): boolean;
 
+    function RemoveWithBlock(const CursorPos: TCodeXYPosition;
+      SourceChangeCache: TSourceChangeCache): boolean;
+
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
   
@@ -1137,6 +1140,292 @@ begin
     NewProcPath.Free;
   end;
   Result:=true;
+end;
+
+function TExtractProcTool.RemoveWithBlock(const CursorPos: TCodeXYPosition;
+  SourceChangeCache: TSourceChangeCache): boolean;
+type
+  TWithVarCache = record
+    WithVarNode: TCodeTreeNode;
+    VarEndPos: integer;
+    WithVarExpr: TExpressionType;
+  end;
+  PWithVarCache = ^TWithVarCache;
+
+var
+  WithVarNode: TCodeTreeNode;
+  StatementNode: TCodeTreeNode;
+  WithIdentifiers: TAVLTree; // identifiers to change
+  WithVarCache: TFPList; // list of PWithVarCache
+  WithVarEndPos: LongInt;
+
+  procedure AddIdentifier(CleanPos: integer);
+  var
+    p: Pointer;
+  begin
+    p:=Pointer(CleanPos);
+    if WithIdentifiers=nil then WithIdentifiers:=TAVLTree.Create;
+    if WithIdentifiers.Find(p)<>nil then exit;
+    debugln(['AddIdentifier ',GetIdentifier(@Src[CleanPos])]);
+    WithIdentifiers.Add(p);
+  end;
+
+  function IdentifierDefinedByWith(CleanPos: integer;
+    WithVarNode: TCodeTreeNode): boolean;
+  var
+    i: Integer;
+    Cache: PWithVarCache;
+    Params: TFindDeclarationParams;
+  begin
+    Result:=false;
+
+    // check cache
+    if WithVarCache=nil then
+      WithVarCache:=TFPList.Create;
+    i:=WithVarCache.Count-1;
+    while (i>=0) and (PWithVarCache(WithVarCache[i])^.WithVarNode<>WithVarNode) do
+      dec(i);
+    if i>=0 then begin
+      Cache:=PWithVarCache(WithVarCache[i]);
+    end else begin
+      // resolve type of With variable
+      debugln(['IdentifierDefinedByWith NEW WithVar']);
+      New(Cache);
+      WithVarCache.Add(Cache);
+      Cache^.WithVarNode:=WithVarNode;
+      Cache^.WithVarExpr:=CleanExpressionType;
+      Cache^.VarEndPos:=FindEndOfTerm(WithVarNode.StartPos,false,true);
+      Params:=TFindDeclarationParams.Create;
+      try
+        Params.ContextNode:=WithVarNode;
+        Params.Flags:=[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChilds];
+        Cache^.WithVarExpr:=FindExpressionTypeOfTerm(WithVarNode.StartPos,-1,Params,true);
+        if (Cache^.WithVarExpr.Desc<>xtContext)
+        or (Cache^.WithVarExpr.Context.Node=nil)
+        or (not (Cache^.WithVarExpr.Context.Node.Desc
+                 in (AllClasses+[ctnEnumerationType])))
+        then begin
+          MoveCursorToCleanPos(Cache^.WithVarNode.StartPos);
+          RaiseException(ctsExprTypeMustBeClassOrRecord);
+        end;
+        debugln(['IdentifierDefinedByWith WithVarExpr=',ExprTypeToString(Cache^.WithVarExpr)]);
+      finally
+        Params.Free;
+      end;
+    end;
+
+    if CleanPos<=Cache^.VarEndPos then exit;
+
+    // search identifier in with var context
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.SetIdentifier(Self,@Src[CleanPos],nil);
+      Params.Flags:=[fdfSearchInAncestors];
+      Params.ContextNode:=Cache^.WithVarExpr.Context.Node;
+      Result:=Cache^.WithVarExpr.Context.Tool.FindIdentifierInContext(Params);
+      debugln(['IdentifierDefinedByWith Identifier=',GetIdentifier(@Src[CleanPos]),' FoundInWith=',Result,' WithVar="',dbgstr(Src,WithVarNode.StartPos,10),'"']);
+    finally
+      Params.Free;
+    end;
+  end;
+
+  procedure CheckIdentifierAtCursor;
+  var
+    IdentifierCleanPos: LongInt;
+    Node: TCodeTreeNode;
+  begin
+    IdentifierCleanPos:=CurPos.StartPos;
+    // search identifier in all WITH contexts
+    Node:=FindDeepestNodeAtPos(IdentifierCleanPos,true);
+    while Node<>nil do begin
+      if Node.Desc=ctnWithVariable then begin
+        if IdentifierDefinedByWith(IdentifierCleanPos,Node) then begin
+          if Node=WithVarNode then begin
+            // identifier uses the removing WITH
+            // ToDo: check if it resolves without the WITH to the same
+            AddIdentifier(IdentifierCleanPos);
+          end else begin
+            // identifier is defined in a sub With
+            break;
+          end;
+        end;
+        // next
+        if Node=WithVarNode then
+          break
+        else if (Node.PriorBrother<>nil)
+        and (Node.PriorBrother.Desc=ctnWithVariable)
+        and (Node.PriorBrother.FirstChild=nil) then
+          // e.g. with A,B do
+          Node:=Node.PriorBrother
+        else
+          Node:=Node.Parent;
+      end else
+        Node:=Node.Parent;
+    end;
+  end;
+
+  function NeedBrackets(StartPos, EndPos: integer): boolean;
+  begin
+    Result:=false;
+    MoveCursorToCleanPos(StartPos);
+    repeat
+      ReadNextAtom;
+      if WordIsTermOperator.DoItCaseInsensitive(Src,
+          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+      then exit(true);
+    until (CurPos.StartPos>=EndPos) or (CurPos.StartPos>SrcLen);
+  end;
+
+  function Replace: boolean;
+  var
+    AVLNode: TAVLTreeNode;
+    CleanPos: LongInt;
+    WithVar: String;
+    StartPos: LongInt;
+    EndPos: LongInt;
+    WithKeywordStartPos: Integer;
+    DoKeywordEndPos: Integer;
+    EndKeywordStartPos: LongInt;
+    EndKeywordEndPos: LongInt;
+  begin
+    SourceChangeCache.MainScanner:=Scanner;
+
+    if (WithVarNode.FirstChild<>nil)
+    and ((WithVarNode.PriorBrother=nil)
+       or (WithVarNode.PriorBrother.Desc<>ctnWithVariable)
+       or (WithVarNode.PriorBrother.FirstChild<>nil))
+    then begin
+      // remove With header and footer
+      // e.g. with A do
+      //      with A do begin end;
+      MoveCursorToNodeStart(WithVarNode.Prior);
+      WithKeywordStartPos:=0;
+      DoKeywordEndPos:=0;
+      EndKeywordStartPos:=0;
+      EndKeywordEndPos:=0;
+      repeat
+        ReadNextAtom;
+        if (WithKeywordStartPos=0) and (CurPos.StartPos>=WithVarNode.StartPos)
+        then begin
+          WithKeywordStartPos:=LastAtoms.GetValueAt(0).StartPos;
+        end;
+        if (DoKeywordEndPos=0) and (WithKeywordStartPos>0) and (UpAtomIs('DO'))
+        then begin
+          DoKeywordEndPos:=CurPos.EndPos;
+          ReadNextAtom;
+          if UpAtomIs('BEGIN') then begin
+            DoKeywordEndPos:=CurPos.EndPos;
+            ReadTilBlockEnd(false,false);
+            EndKeywordStartPos:=CurPos.StartPos;
+            EndKeywordEndPos:=CurPos.EndPos;
+            ReadNextAtom;
+            if CurPos.Flag=cafSemicolon then
+              EndKeywordEndPos:=CurPos.EndPos;
+          end;
+          break;
+        end;
+      until (CurPos.StartPos>SrcLen) or (CurPos.StartPos>StatementNode.EndPos);
+      WithKeywordStartPos:=FindLineEndOrCodeInFrontOfPosition(WithKeywordStartPos);
+      DoKeywordEndPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos);
+      if not SourceChangeCache.Replace(gtSpace,gtNone,WithKeywordStartPos,DoKeywordEndPos,'')
+      then exit(false);
+      if EndKeywordStartPos>0 then begin
+        EndKeywordStartPos:=FindLineEndOrCodeInFrontOfPosition(EndKeywordStartPos);
+        EndKeywordEndPos:=FindLineEndOrCodeAfterPosition(EndKeywordEndPos);
+        if not SourceChangeCache.Replace(gtSpace,gtNone,EndKeywordStartPos,EndKeywordEndPos,'')
+        then exit(false);
+      end;
+    end else begin
+      // remove only variable
+      // e.g. with A,B do
+      StartPos:=WithVarNode.StartPos;
+      EndPos:=WithVarEndPos;
+      if Src[EndPos]=',' then begin
+        inc(EndPos);
+      end else if (WithVarNode.PriorBrother<>nil)
+      and (WithVarNode.PriorBrother.Desc=ctnWithVariable)
+      and (WithVarNode.PriorBrother.FirstChild=nil) then begin
+        StartPos:=FindEndOfTerm(WithVarNode.PriorBrother.StartPos,true,true);
+        StartPos:=FindLineEndOrCodeAfterPosition(StartPos);
+      end;
+      EndPos:=FindLineEndOrCodeAfterPosition(EndPos,true);
+      StartPos:=FindLineEndOrCodeInFrontOfPosition(StartPos);
+      if not SourceChangeCache.Replace(gtSpace,gtNone,StartPos,EndPos,'') then
+        exit(false);
+    end;
+
+    if WithIdentifiers<>nil then begin
+      WithVar:=ExtractCode(WithVarNode.StartPos,WithVarEndPos,[]);
+      if NeedBrackets(WithVarNode.StartPos,WithVarEndPos) then
+        WithVar:='('+WithVar+')';
+      WithVar:=WithVar+'.';
+      //debugln(['Replace WithVar="',dbgstr(WithVar),'"']);
+
+      AVLNode:=WithIdentifiers.FindLowest;
+      while AVLNode<>nil do begin
+        CleanPos:=integer(AVLNode.Data);
+        //debugln(['Replace Prefix identifier: ',GetIdentifier(@Src[CleanPos])]);
+        if not SourceChangeCache.Replace(gtNone,gtNone,CleanPos,CleanPos,WithVar)
+        then
+          exit(false);
+        AVLNode:=WithIdentifiers.FindSuccessor(AVLNode);
+      end;
+    end;
+    Result:=SourceChangeCache.Apply;
+  end;
+
+var
+  CleanPos: integer;
+  LastAtom: TAtomPosition;
+  i: Integer;
+  Cache: PWithVarCache;
+begin
+  Result:=false;
+  WithIdentifiers:=nil;
+  WithVarCache:=nil;
+  BuildTreeAndGetCleanPos(CursorPos,CleanPos);
+  WithVarNode:=FindDeepestNodeAtPos(CleanPos,true);
+  if WithVarNode.Desc<>ctnWithVariable then begin
+    debugln(['TExtractProcTool.RemoveWithBlock cursor not at a with variable, but ',WithVarNode.DescAsString]);
+    exit;
+  end;
+  StatementNode:=WithVarNode;
+  while (StatementNode<>nil) and (StatementNode.FirstChild=nil) do
+    StatementNode:=StatementNode.NextBrother;
+  if StatementNode=nil then begin
+    debugln(['TExtractProcTool.RemoveWithBlock missing statement']);
+    exit;
+  end;
+  // parse block
+  WithVarEndPos:=FindEndOfTerm(WithVarNode.StartPos,false,true);
+  MoveCursorToCleanPos(WithVarEndPos);
+  ReadNextAtom;
+  try
+    repeat
+      LastAtom:=CurPos;
+      ReadNextAtom;
+      if AtomIsIdentifier(false) and (LastAtom.Flag<>cafPoint) then begin
+        LastAtom:=CurPos;
+        CheckIdentifierAtCursor;
+        // restore cursor
+        MoveCursorToAtomPos(LastAtom);
+      end;
+    until (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StatementNode.EndPos);
+    debugln(['TExtractProcTool.RemoveWithBlock Statement=',copy(Src,StatementNode.StartPos,StatementNode.EndPos-StatementNode.StartPos)]);
+
+    // replace
+    Result:=Replace;
+
+  finally
+    WithIdentifiers.Free;
+    if WithVarCache<>nil then begin
+      for i:=0 to WithVarCache.Count-1 do begin
+        Cache:=PWithVarCache(WithVarCache[i]);
+        Dispose(Cache);
+      end;
+      WithVarCache.Free;
+    end;
+  end;
 end;
 
 procedure TExtractProcTool.CalcMemSize(Stats: TCTMemStats);

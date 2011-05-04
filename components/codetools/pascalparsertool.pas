@@ -5032,7 +5032,7 @@ begin
     if not IsProcType then begin
       if not IsOperator then AtomIsIdentifier(true);
       ReadNextAtom;
-      if (CurPos.Flag=cafPoint) then begin
+      while (CurPos.Flag=cafPoint) do begin
         // read procedure name of a class method (the name after the . )
         ReadNextAtom;
         AtomIsIdentifier(true);

@@ -97,7 +97,7 @@ type
     function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: string;
         Attr: TProcHeadAttributes): TCodeTreeNode;
     function FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
-        Attr: TProcHeadAttributes = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers]
+        Attr: TProcHeadAttributes = [phpWithoutClassName,phpWithVarModifiers]
         ): TCodeTreeNode;
     function FindCorrespondingProcParamNode(ProcParamNode: TCodeTreeNode;
         Attr: TProcHeadAttributes = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers]
@@ -109,6 +109,7 @@ type
         ProcSpec: TProcedureSpecifier): boolean;
     procedure MoveCursorToProcName(ProcNode: TCodeTreeNode;
         SkipClassName: boolean);
+    procedure MoveCursorBehindProcName(ProcNode: TCodeTreeNode);
     function PositionInProcName(ProcNode: TCodeTreeNode;
                                 SkipClassName: boolean; CleanPos: integer): boolean;
     function PositionInFuncResultName(ProcNode: TCodeTreeNode;
@@ -884,6 +885,28 @@ begin
     end;
     ReadNextAtom;
   until not AtomIsIdentifier(false);
+end;
+
+procedure TPascalReaderTool.MoveCursorBehindProcName(ProcNode: TCodeTreeNode);
+begin
+  if (ProcNode.FirstChild<>nil)
+  and (ProcNode.FirstChild.Desc=ctnProcedureHead) then
+    ProcNode:=ProcNode.FirstChild;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  if AtomIsIdentifier(false) then begin
+    ReadNextAtom;
+    while CurPos.Flag=cafPoint do begin
+      ReadNextAtom;
+      if not AtomIsIdentifier(false) then exit;
+      ReadNextAtom;
+    end;
+  end else if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen,cafColon]
+  then begin
+  end else begin
+    // operator
+    ReadNextAtom;
+  end;
 end;
 
 function TPascalReaderTool.PositionInProcName(ProcNode: TCodeTreeNode;
@@ -2218,13 +2241,7 @@ begin
     Result:=ProcNode.FirstChild.Desc=ctnParameterList;
     exit;
   end;
-  MoveCursorToNodeStart(ProcNode);
-  ReadNextAtom; // read name
-  while CurPos.Flag=cafWord do begin
-    ReadNextAtom;
-    if CurPos.Flag<>cafPoint then break;
-    ReadNextAtom;
-  end;
+  MoveCursorBehindProcName(ProcNode);
   Result:=CurPos.Flag=cafRoundBracketOpen;
 end;
 

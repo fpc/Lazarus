@@ -234,7 +234,7 @@ type
                                 ) of object;
   TOnGetFABNestedComments = procedure(Sender: TObject; Code: TCodeBuffer;
                                       out NestedComments: boolean) of object;
-  TOnGetFABFile = procedure(Sender: TObject; const ExpandedFilename: string;
+  TOnLoadCTFile = procedure(Sender: TObject; const ExpandedFilename: string;
                             out Code: TCodeBuffer; var Abort: boolean) of object;
 
   TFABIndentationPolicy = record
@@ -351,7 +351,7 @@ type
     FOnGetExamples: TOnGetFABExamples;
     FCodePolicies: TAVLTree;// tree of TFABPolicies sorted for Code
     FOnGetNestedComments: TOnGetFABNestedComments;
-    FOnLoadFile: TOnGetFABFile;
+    FOnLoadFile: TOnLoadCTFile;
     FUseDefaultIndentForTypes: TFABBlockTypes;
     procedure ParseSource(const Src: string; StartPos, EndPos: integer;
       NestedComments: boolean;
@@ -398,7 +398,7 @@ type
                                               write FOnGetExamples;
     property OnGetNestedComments: TOnGetFABNestedComments
                            read FOnGetNestedComments write FOnGetNestedComments;
-    property OnLoadFile: TOnGetFABFile read FOnLoadFile write FOnLoadFile;
+    property OnLoadFile: TOnLoadCTFile read FOnLoadFile write FOnLoadFile;
     property UseDefaultIndentForTypes: TFABBlockTypes
                  read FUseDefaultIndentForTypes write FUseDefaultIndentForTypes;
   end;

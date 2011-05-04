@@ -77,6 +77,10 @@ msgstr "В проекте отсутствует главный файл исх�
 msgid "Project output"
 msgstr "Вывод проекта"
 
+#: codystrconsts.crsremovewithblock
+msgid "Remove With block"
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "поиск ..."

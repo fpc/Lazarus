@@ -4675,7 +4675,8 @@ begin
     
   ctnProcedure:
     begin
-      if (Node.SubDesc and ctnsForwardDeclaration)>0 then
+      if (Node.FirstChild<>nil)
+      and ((Node.FirstChild.SubDesc and ctnsForwardDeclaration)>0) then
         RaiseException('TFindDeclarationTool.CleanPosIsDeclarationIdentifier Node not expanded');
       MoveCursorToProcName(Node,true);
       Result:=InNodeIdentifier(CurPos.StartPos);

@@ -77,6 +77,10 @@ msgstr "Projeto não tem arquivo fonte principal."
 msgid "Project output"
 msgstr "Saída do Projeto"
 
+#: codystrconsts.crsremovewithblock
+msgid "Remove With block"
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "localizando ..."

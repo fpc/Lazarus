@@ -7,7 +7,8 @@ unit Cody;
 interface
 
 uses
-  PPUListDlg, CodyStrConsts, AddAssignMethodDlg, CodyCtrls, LazarusPackageIntf;
+  PPUListDlg, CodyStrConsts, AddAssignMethodDlg, CodyCtrls, CodyFrm, 
+  LazarusPackageIntf;
 
 implementation
 
@@ -16,6 +17,7 @@ begin
   RegisterUnit('PPUListDlg', @PPUListDlg.Register); 
   RegisterUnit('AddAssignMethodDlg', @AddAssignMethodDlg.Register); 
   RegisterUnit('CodyCtrls', @CodyCtrls.Register); 
+  RegisterUnit('CodyFrm', @CodyFrm.Register); 
 end; 
 
 initialization

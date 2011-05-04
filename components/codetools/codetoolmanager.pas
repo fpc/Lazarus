@@ -40,14 +40,15 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts, TypInfo,
+  Classes, SysUtils, contnrs, TypInfo, FileProcs, BasicCodeTools,
+  CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, FindOverloads, CodeBeautifier,
   FindDeclarationCache, DirectoryCacher, AVL_Tree,
   PPUCodeTools, LFMTrees, DirectivesTree,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
-  CodeTemplatesTool, ExtractProcTool;
+  CTUnitGraph, CodeTemplatesTool, ExtractProcTool;
 
 type
   TCodeToolManager = class;
@@ -138,11 +139,11 @@ type
     procedure AdjustErrorTopLine;
     procedure WriteError;
     procedure OnFABGetNestedComments(Sender: TObject; Code: TCodeBuffer; out
-      NestedComments: boolean);
+                                     NestedComments: boolean);
     procedure OnFABGetExamples(Sender: TObject; Code: TCodeBuffer;
       Step: integer; var CodeBuffers: TFPList; var ExpandedFilenames: TStrings);
-    procedure OnFABLoadFile(Sender: TObject; const ExpandedFilename: string;
-                            out Code: TCodeBuffer; var Abort: boolean);
+    procedure OnLoadFileForTool(Sender: TObject; const ExpandedFilename: string;
+                                out Code: TCodeBuffer; var Abort: boolean);
     function OnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     function OnGetDirectoryCache(const ADirectory: string): TCTDirectoryCache;
@@ -438,8 +439,10 @@ type
 
     // rename, remove identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
-          X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
-          var ListOfPCodeXYPosition: TFPList): boolean;
+          X, Y: integer; SearchInCode: TCodeBuffer; SkipComments: boolean;
+          var ListOfPCodeXYPosition: TFPList;
+          var Cache: TFindIdentifierReferenceCache  // you must free Cache
+          ): boolean;
     function FindUnitReferences(UnitCode, TargetCode: TCodeBuffer;
           SkipComments: boolean; var ListOfPCodeXYPosition: TFPList): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
@@ -448,6 +451,13 @@ type
           ChangeStrings: boolean): boolean;
     function RemoveIdentifierDefinition(Code: TCodeBuffer; X, Y: integer
           ): boolean; // e.g. remove the variable definition at X,Y
+    function RemoveWithBlock(Code: TCodeBuffer; X, Y: integer): boolean;
+    function ChangeParamList(Code: TCodeBuffer;
+       Changes: TObjectList; // list of TChangeParamListItem
+       var ProcPos: TCodeXYPosition; // if it is in this unit the proc declaration is changed and this position is cleared
+       TreeOfPCodeXYPosition: TAVLTree // positions in this unit are processed and removed from the tree
+       ): boolean;
+
 
     // resourcestring sections
     function GatherResourceStringSections(
@@ -611,6 +621,7 @@ type
                               var AnUnitName, AnUnitInFilename: string): string;
     function FindUnitSource(Code: TCodeBuffer;
                        const AnUnitName, AnUnitInFilename: string): TCodeBuffer;
+    function CreateUsesGraph: TUsesGraph;
 
     // resources
     property OnFindDefinePropertyForContext: TOnFindDefinePropertyForContext
@@ -862,7 +873,7 @@ begin
   Indenter:=TFullyAutomaticBeautifier.Create;
   Indenter.OnGetNestedComments:=@OnFABGetNestedComments;
   Indenter.OnGetExamples:=@OnFABGetExamples;
-  Indenter.OnLoadFile:=@OnFABLoadFile;
+  Indenter.OnLoadFile:=@OnLoadFileForTool;
   GlobalValues:=TExpressionEvaluator.Create;
   DirectoryCachePool:=TCTDirectoryCachePool.Create;
   DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
@@ -2265,16 +2276,13 @@ begin
   end;
 end;
 
-function TCodeToolManager.FindReferences(IdentifierCode: TCodeBuffer;
-  X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
-  var ListOfPCodeXYPosition: TFPList): boolean;
+function TCodeToolManager.FindReferences(IdentifierCode: TCodeBuffer; X,
+  Y: integer; SearchInCode: TCodeBuffer; SkipComments: boolean;
+  var ListOfPCodeXYPosition: TFPList; var Cache: TFindIdentifierReferenceCache
+  ): boolean;
 var
   CursorPos: TCodeXYPosition;
-  NewTool: TFindDeclarationTool;
-  NewNode: TCodeTreeNode;
-  NewPos: TCodeXYPosition;
   NewTopLine: integer;
-  PrivateDeclaration: Boolean;
   ImplementationNode: TCodeTreeNode;
 begin
   Result:=false;
@@ -2282,38 +2290,57 @@ begin
   DebugLn('TCodeToolManager.FindReferences A ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
   ListOfPCodeXYPosition:=nil;
-  if not InitCurCodeTool(IdentifierCode) then exit;
-  CursorPos.X:=X;
-  CursorPos.Y:=Y;
-  CursorPos.Code:=IdentifierCode;
-  try
-    Result:=FCurCodeTool.FindDeclaration(CursorPos,[fsfFindMainDeclaration],
-                                         NewTool,NewNode,NewPos,NewTopLine)
-  except
-    on e: Exception do HandleException(e);
+  if Cache=nil then;
+    Cache:=TFindIdentifierReferenceCache.Create;
+  if (Cache.SourcesChangeStep=SourceCache.ChangeStamp)
+  and (Cache.FilesChangeStep=FileStateCache.TimeStamp)
+  and (Cache.InitValuesChangeStep=DefineTree.ChangeStep) then begin
+    // all sources and values are the same => use cache
+  end else begin
+    Cache.Clear;
+    Cache.SourcesChangeStep:=SourceCache.ChangeStamp;
+    Cache.FilesChangeStep:=FileStateCache.TimeStamp;
+    Cache.InitValuesChangeStep:=DefineTree.ChangeStep;
+
+    if not InitCurCodeTool(IdentifierCode) then exit;
+    CursorPos.X:=X;
+    CursorPos.Y:=Y;
+    CursorPos.Code:=IdentifierCode;
+    try
+      Result:=FCurCodeTool.FindDeclaration(CursorPos,[fsfFindMainDeclaration],
+                       Cache.NewTool,Cache.NewNode,Cache.NewPos,NewTopLine);
+    except
+      on e: Exception do HandleException(e);
+    end;
+    if not Result then begin
+      debugln(['TCodeToolManager.FindReferences FCurCodeTool.FindDeclaration failed']);
+      exit;
+    end;
+    // check if scope can be limited
+    if Cache.NewTool<>nil then begin
+      Cache.IsPrivate:=(Cache.NewTool.GetSourceType in [ctnLibrary,ctnProgram]);
+      if not Cache.IsPrivate then begin
+        ImplementationNode:=Cache.NewTool.FindImplementationNode;
+        if (ImplementationNode<>nil)
+        and (Cache.NewNode.StartPos>=ImplementationNode.StartPos) then
+          Cache.IsPrivate:=true;
+      end;
+      if not Cache.IsPrivate then begin
+        if (Cache.NewNode.GetNodeOfTypes([ctnParameterList,ctnClassPrivate])<>nil) then
+          Cache.IsPrivate:=true;
+      end;
+    end;
   end;
-  if (not Result) or (NewNode=nil) then begin
+  if (not Result) or (Cache.NewNode=nil) then begin
     DebugLn('TCodeToolManager.FindReferences unable to FindDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
     exit;
   end;
   Result:=true;
-  // check if scope can be limited
-  PrivateDeclaration:=(NewTool.GetSourceType in [ctnLibrary,ctnProgram]);
-  if not PrivateDeclaration then begin
-    ImplementationNode:=NewTool.FindImplementationNode;
-    if (ImplementationNode<>nil) and (NewNode.StartPos>=ImplementationNode.StartPos)
-    then
-      PrivateDeclaration:=true;
-  end;
-  if not PrivateDeclaration then begin
-    if (NewNode.Parent<>nil) and (NewNode.Parent.Desc=ctnParameterList) then
-      PrivateDeclaration:=true;
-  end;
   if NewTopLine=0 then ;
-  if not InitCurCodeTool(TargetCode) then exit;
-  if PrivateDeclaration and (FCurCodeTool<>NewTool) then exit(true);
+  if not InitCurCodeTool(SearchInCode) then exit;
+  if Cache.IsPrivate and (FCurCodeTool<>Cache.NewTool) then exit(true);
 
-  CursorPos:=NewPos;
+  CursorPos:=Cache.NewPos;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindReferences B ',dbgs(FCurCodeTool.Scanner<>nil),' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' ',CursorPos.Code.Filename);
   {$ENDIF}
@@ -2324,7 +2351,7 @@ begin
     on e: Exception do HandleException(e);
   end;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindReferences END ');
+  DebugLn(['TCodeToolManager.FindReferences END ',Result]);
   {$ENDIF}
 end;
 
@@ -2450,6 +2477,43 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.RemoveIdentifierDefinition(CursorPos,SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RemoveWithBlock(Code: TCodeBuffer; X, Y: integer
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RemoveWithBlock A ',Code.Filename,' X=',X,' Y=',Y);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.RemoveWithBlock(CursorPos,SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.ChangeParamList(Code: TCodeBuffer;
+  Changes: TObjectList; var ProcPos: TCodeXYPosition;
+  TreeOfPCodeXYPosition: TAVLTree): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ChangeParamList A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.ChangeParamList(Changes,ProcPos,TreeOfPCodeXYPosition,
+                      SourceChangeCache);
   except
     on e: Exception do HandleException(e);
   end;
@@ -4359,6 +4423,14 @@ begin
   end;
 end;
 
+function TCodeToolManager.CreateUsesGraph: TUsesGraph;
+begin
+  Result:=TUsesGraph.Create;
+  Result.DirectoryCachePool:=DirectoryCachePool;
+  Result.OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
+  Result.OnLoadFile:=@OnLoadFileForTool;
+end;
+
 function TCodeToolManager.FindLFMFileName(Code: TCodeBuffer): string;
 var LinkIndex: integer;
   CurCode: TCodeBuffer;
@@ -4971,7 +5043,7 @@ begin
     OnGetIndenterExamples(Sender,Code,Step,CodeBuffers,ExpandedFilenames);
 end;
 
-procedure TCodeToolManager.OnFABLoadFile(Sender: TObject;
+procedure TCodeToolManager.OnLoadFileForTool(Sender: TObject;
   const ExpandedFilename: string; out Code: TCodeBuffer; var Abort: boolean);
 begin
   Code:=LoadFile(ExpandedFilename,true,false);

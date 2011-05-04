@@ -102,9 +102,7 @@ type
       These are: class, interface, proc, record, withstatement
       
       Because node caches can store information of used units, the cache must be
-      deleted every time a used unit is changed. Currently all node caches are
-      resetted every time the GlobalWriteLock increases.
-
+      deleted every time a used unit is changed.
   }
 const
   AllNodeCacheDescs =
@@ -201,7 +199,6 @@ type
     simple an TAVLTree of codetools. This allows to decide, wether the cache of
     a codetools must be rebuild.
   }
-
 
 
   //----------------------------------------------------------------------------

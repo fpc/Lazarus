@@ -7,7 +7,7 @@ unit CodeTools;
 interface
 
 uses
-  BasicCodeTools, CacheCodeTools, CCodeParserTool, CodeAtom, CodeBeautifier,
+  BasicCodeTools, CacheCodeTools, CCodeParserTool, CodeAtom, CodeBeautifier, 
   CodeCache, CodeCompletionTool, CodeGraph, CodeIndex, CodeTemplatesTool, 
   CodeToolManager, CodeToolMemManager, CodeToolsConfig, CodeToolsStrConsts, 
   CodeToolsStructs, CodeTree, CustomCodeTool, DefineTemplates, DirectivesTree, 
@@ -19,7 +19,7 @@ uses
   PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, 
   SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, laz2_xmlutils, 
   laz2_DOM, laz2_XMLWrite, laz2_XMLRead, CodeToolsCfgScript, CTXMLFixFragment, 
-  LazarusPackageIntf;
+  CTUnitGraph, ChangeDeclarationTool, LazarusPackageIntf;
 
 implementation
 

@@ -15,7 +15,7 @@
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="4">
+    <Files Count="5">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
         <HasRegisterProc Value="True"/>
@@ -33,8 +33,13 @@
       <Item4>
         <Filename Value="codyctrls.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="codyctrls"/>
+        <UnitName Value="CodyCtrls"/>
       </Item4>
+      <Item5>
+        <Filename Value="codyfrm.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="codyfrm"/>
+      </Item5>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>
