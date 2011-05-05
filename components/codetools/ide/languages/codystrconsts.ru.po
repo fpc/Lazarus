@@ -79,7 +79,7 @@ msgstr "Вывод проекта"
 
 #: codystrconsts.crsremovewithblock
 msgid "Remove With block"
-msgstr ""
+msgstr "Удалить блок With"
 
 #: codystrconsts.crssearching
 msgid "searching ..."
