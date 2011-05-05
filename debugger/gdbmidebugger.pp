@@ -336,7 +336,6 @@ type
     function  ConvertPascalExpression(var AExpression: String): Boolean;
     // ---
     procedure ClearSourceInfo;
-    procedure GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     procedure SelectStackFrame(AIndex: Integer);
 
@@ -545,6 +544,13 @@ type
     property  Result: TGDBMIExecResult read FResult;
     property  NextExecQueued: Boolean read FNextExecQueued;
     function  KillNow: Boolean;
+  end;
+
+  { TGDBMIDebuggerCommandKill }
+
+  TGDBMIDebuggerCommandKill = class(TGDBMIDebuggerCommand)
+  protected
+    function  DoExecute: Boolean; override;
   end;
 
   {%endregion    *^^^*  TGDBMIDebuggerCommands  *^^^*   }
@@ -1380,6 +1386,29 @@ begin
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
   Result := '"' + Result + '"';
+end;
+
+{ TGDBMIDebuggerCommandKill }
+
+function TGDBMIDebuggerCommandKill.DoExecute: Boolean;
+var
+  R: TGDBMIExecResult;
+  CmdRes: Boolean;
+begin
+  Result := True;
+  // not supported yet
+  // ExecuteCommand('-exec-abort');
+  CmdRes := ExecuteCommand('kill', [], [], 1500); // Hardcoded timeout
+  if CmdRes
+  then CmdRes := ExecuteCommand('info program', R, [], 1500); // Hardcoded timeout
+  if (not CmdRes)
+  or (Pos('not being run', R.Values) <= 0)
+  then begin
+    FTheDebugger.DebugProcess.Terminate(0);
+    SetDebuggerState(dsError); // failed to stop
+    exit;
+  end;
+  SetDebuggerState(dsStop);
 end;
 
 { TGDBMIDebuggerCommandChangeThread }
@@ -4289,10 +4318,16 @@ begin
   FTheDebugger.GDBPause(True);
   FTheDebugger.CancelAllQueued; // before ProcessStopped
   Result := ProcessRunning(StoppedParams);
+  if ProcessResultTimedOut then begin
+    // the uter Processrunning should stop, due to process no longer running
+    FTheDebugger.DebugProcess.Terminate(0);
+    Result := True;
+    exit;
+  end;
   if StoppedParams <> ''
   then ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
 
-  ExecuteCommand('kill');
+  ExecuteCommand('kill', [], 1500);
   Result := ExecuteCommand('info program', [], R);
   Result := Result and (Pos('not being run', R.Values) > 0);
   if Result
@@ -5671,21 +5706,8 @@ begin
   then GDBPause(True);
 
   CancelAllQueued;
-
-  // not supported yet
-  // ExecuteCommand('-exec-abort');
-  Result := ExecuteCommand('kill', [cfNoMiCommand], @GDBStopCallback, 0);
-end;
-
-procedure TGDBMIDebugger.GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
-var
-  R: TGDBMIExecResult;
-begin
-  // verify stop
-  if not ExecuteCommand('info program', [], [cfNoMICommand], R) then Exit;
-
-  if Pos('not being run', R.Values) > 0
-  then SetState(dsStop);
+  QueueCommand(TGDBMIDebuggerCommandKill.Create(Self));
+  Result := True;
 end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
