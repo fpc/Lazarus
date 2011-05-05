@@ -1022,9 +1022,6 @@ begin
     for j:=0 to Fitems.Count-1 do
       WriteItem(TPOFileItem(FItems[j]));
       
-    //if not DirectoryExistsUTF8(ExtractFileDir(AFilename)) then
-    //  ForceDirectoriesUTF8(ExtractFileDir(AFilename));
-      
     OutLst.SaveToFile(UTF8ToSys(AFilename));
     
   finally
