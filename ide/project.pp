@@ -5045,7 +5045,6 @@ begin
   Result:=POOutputDirectory;
   IDEMacros.SubstituteMacros(Result);
   Result:=TrimFilename(Result);
-  ConvertFromLPIFilename(Result);
 end;
 
 function TProject.GetAutoCreatedFormsList: TStrings;

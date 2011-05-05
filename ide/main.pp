@@ -4265,8 +4265,16 @@ begin
 
   if AProject.POOutputDirectory <> '' then begin
     POOutDir:=AProject.GetPOOutDirectory;
-    if POOutDir<>'' then
-      POFilename:=TrimFilename(AppendPathDelim(POOutDir)+ExtractFileName(POFilename));
+    if POOutDir<>'' then begin
+      if not DirPathExistsCached(POOutDir) then begin
+        Result:=ForceDirectoryInteractive(POOutDir,[]);
+        if Result in [mrCancel,mrAbort] then exit;
+        if Result<>mrOk then
+          POOutDir:=''; // e.g. ignore if failed to create dir
+      end;
+      if POOutDir<>'' then
+        POFilename:=AppendPathDelim(POOutDir)+ExtractFileName(POFilename);
+    end;
   end;
 
   POFileAgeValid:=false;
