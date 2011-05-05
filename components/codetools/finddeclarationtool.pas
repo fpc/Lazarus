@@ -7377,7 +7377,10 @@ begin
       Result.Desc:=xtChar
     else
       Result.Desc:=xtConstString;
-    MoveCursorToCleanPos(CurPos.EndPos);
+    if Src[CurPos.StartPos]='^' then
+      MoveCursorToCleanPos(CurPos.StartPos+2) // e.g. ^M
+    else
+      MoveCursorToCleanPos(CurPos.EndPos);
   end
   else if AtomIsNumber then begin
     // ordinal or real constant

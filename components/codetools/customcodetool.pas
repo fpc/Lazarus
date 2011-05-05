@@ -820,51 +820,60 @@ begin
 end;
 
 function TCustomCodeTool.AtomIsStringConstant: boolean;
+var
+  p: PChar;
 begin
-  Result:=(CurPos.StartPos<=SrcLen)
-      and (Src[CurPos.StartPos] in ['''','#']);
+  if CurPos.StartPos>SrcLen then exit(false);
+  p:=@Src[CurPos.StartPos];
+  Result:=(p^ in ['''','#']) or ((p^='^') and (p[1] in ['A'..'Z']));
 end;
 
 function TCustomCodeTool.AtomIsCharConstant: boolean;
-var i: integer;
-  p: LongInt;
+var
+  p: PChar;
 begin
   Result:=false;
-  p:=CurPos.StartPos;
-  if (p<=SrcLen) then begin
-    case Src[p] of
+  if (CurPos.StartPos<=SrcLen) then begin
+    p:=@Src[CurPos.StartPos];
+    case p^ of
     
     '#':
       begin
-        i:=p+1;
-        if (i<=SrcLen) then begin
-          if IsNumberChar[Src[i]] then begin
-            // decimal
-            while (i<=SrcLen) and (IsNumberChar[Src[i]]) do
-              inc(i);
-          end else if Src[i]='$' then begin
-            // hexadecimal
-            while (i<=SrcLen) and (IsHexNumberChar[Src[i]]) do
-              inc(i);
-          end;
-          if (i<=SrcLen)
-          and (not (Src[i] in ['''','#'])) then
-            Result:=true;
+        inc(p);
+        if IsNumberChar[p^] then begin
+          // decimal
+          while IsNumberChar[p^] do
+            inc(p);
+        end else if p^='$' then begin
+          // hexadecimal
+          while IsHexNumberChar[p^] do
+            inc(p);
         end;
       end;
 
     '''':
       begin
-        if (p+2<=SrcLen) and (Src[p+1]<>'''')
-        and (Src[p+2]='''') then begin
-          // a single char
-          if (p+2<SrcLen)
-          and (not (Src[p+3] in ['''','#'])) then
-            Result:=true;
+        inc(p);
+        if p^='''' then begin
+          // could be ''''
+          if (p[1]<>'''') or (p[2]<>'''') then exit;
+          inc(p,3);
+        end else begin
+          // could be 'a'
+          if p[1]<>'''' then exit;
+          inc(p,2);
         end;
       end;
-      
+
+    '^':
+      begin
+        if not (p[1] in ['A'..'Z']) then exit;
+        inc(p,2);
+      end;
+
     end;
+    // check that no second character is following
+    Result:=not (p^ in ['''','#','^']);
   end;
 end;
 
@@ -1093,6 +1102,7 @@ begin
       end;
     '''','#':
       begin
+        // string constant
         while true do begin
           case p^ of
           #0:
@@ -1138,6 +1148,12 @@ begin
                   inc(p);
                 end;
               end;
+            end;
+          '^':
+            begin
+              inc(p);
+              if not (p^ in ['A'..'Z']) then break;
+              inc(p);
             end;
           else
             break;
