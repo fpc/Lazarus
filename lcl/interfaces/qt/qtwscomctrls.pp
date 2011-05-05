@@ -188,18 +188,13 @@ type
 
   TQtWSToolButton = class(TWSToolButton)
   published
-{$ifdef WSToolBar}
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-{$endif}
   end;
 
   { TQtWSToolBar }
 
   TQtWSToolBar = class(TWSToolBar)
   published
-{$ifdef WSToolBar}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-{$endif}
   end;
 
   { TQtWSTrackBar }
@@ -226,6 +221,7 @@ type
 
 
 implementation
+
 const
   TickMarkToQtSliderTickPositionMap: array[TTickMark] of QSliderTickPosition =
   (
@@ -253,31 +249,23 @@ const
 {iaLeft} QListViewLeftToRight
   );
 
-{ TQtWSToolButton }
-
-{$ifdef WSToolBar}
-class function TQtWSToolButton.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
-var
-  QtToolButton: TQtToolButton;
-begin
-  QtToolButton := TQtToolButton.Create(AWinControl, AParams);
-  QtToolButton.AttachEvents;
-
-  Result := TLCLIntfHandle(QtToolButton);
-end;
-
 { TQtWSToolBar }
 
 class function TQtWSToolBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
-  QtToolBar: TQtToolBar;
+  QtToolBar: TQtCustomControl;
 begin
-  QtToolBar := TQtToolBar.Create(AWinControl, AParams);
+  {$note TToolBar implementation under LCL is wrong. TToolBar isn't
+  TCustomControl but TWinControl.
+  To avoid theoretical crashes we use TQtCustomControl here, but indeed it
+  should be TQtWidget - so no viewport.}
+  QtToolBar := TQtCustomControl.Create(AWinControl, AParams);
+  QtToolBar.setFrameShape(QFrameNoFrame);
+  QtToolBar.viewportNeeded;
+  QtToolBar.setFocusPolicy(QtTabFocus);
   QtToolBar.AttachEvents;
-
   Result := TLCLIntfHandle(QtToolBar);
 end;
-{$endif}
 
 { TQtWSTrackBar }
 
