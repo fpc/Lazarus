@@ -38,7 +38,7 @@ type
     FLabel: TLabelParams;
   end;
 
-  TPieMarkPositions = (pmpAround, pmpInside);
+  TPieMarkPositions = (pmpAround, pmpInside, pmpLeftRight);
 
   { TCustomPieSeries }
 
@@ -333,7 +333,12 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
   var
     i: Integer;
     p: TPointArray;
-    d: TPoint;
+
+    function Ofs(AAngle: Double): TPoint;
+    begin
+      Result := EndPoint(AAngle, Marks.Distance + LabelExtraDist(p, AAngle));
+    end;
+
   begin
     with ALabel do begin
       FCenter := FAttachment;
@@ -343,10 +348,13 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
       if RotateLabels then
         Marks.SetAdditionalAngle(AAngle);
       p := Marks.GetLabelPolygon(ADrawer, ADrawer.TextExtent(FText));
-      d := EndPoint(AAngle, Marks.Distance + LabelExtraDist(p, AAngle));
       case MarkPositions of
-        pmpAround: FCenter += d;
-        pmpInside: FCenter -= d;
+        pmpAround:
+          FCenter += Ofs(AAngle);
+        pmpInside:
+          FCenter -= Ofs(AAngle);
+        pmpLeftRight:
+          FCenter += Ofs(IfThen(InRange(AAngle, Pi / 2, 3 * Pi / 2), Pi, 0));
       end;
       for i := 0 to High(p) do
         ExpandRect(Result, p[i] + FCenter);
