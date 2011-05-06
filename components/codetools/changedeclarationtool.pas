@@ -111,6 +111,8 @@ type
     DefaultValue: TAtomPosition;
     HasComments: boolean;
     FooterCommentEndPos: integer;
+    Separator: integer; // the comma or semicolon to the next parameter
+    CommentAfterSeparator: TAtomPosition;
     FirstInGroup: integer; // index of first parameter i a group, e.g. a,b:c
     LastInGroup: integer;
 
@@ -119,6 +121,8 @@ type
     InsertBehind: TObjectList;// list of TChangeParamTransactionInsert
     constructor Create;
     destructor Destroy; override;
+    function GetFirstPos: integer;
+    function GetLastPos(WithSeparator: boolean): integer;
   end;
 
   { TChangeParamListTransactions }
@@ -159,6 +163,38 @@ destructor TChangeParamTransactionPos.Destroy;
 begin
   InsertBehind.Free;
   inherited Destroy;
+end;
+
+function TChangeParamTransactionPos.GetFirstPos: integer;
+begin
+  if HeaderCommentPos>0 then
+    Result:=HeaderCommentPos
+  else if Modifier.StartPos>0 then
+    Result:=Modifier.StartPos
+  else
+    Result:=Name.StartPos;
+end;
+
+function TChangeParamTransactionPos.GetLastPos(WithSeparator: boolean): integer;
+begin
+  Result:=0;
+  if WithSeparator then begin
+    if CommentAfterSeparator.EndPos>0 then
+      Result:=CommentAfterSeparator.EndPos
+    else if Separator>0 then
+      Result:=Separator;
+    if Result>0 then exit;
+  end;
+  if FooterCommentEndPos>0 then
+    Result:=FooterCommentEndPos
+  else if DefaultValue.EndPos>0 then
+    Result:=DefaultValue.EndPos
+  else if Typ.EndPos>0 then
+    Result:=Typ.EndPos
+  else if Name.EndPos>0 then
+    Result:=Name.EndPos
+  else
+    Result:=Modifier.EndPos;
 end;
 
 { TChangeParamListInfos }
@@ -251,6 +287,9 @@ var
   FirstInGroup: integer;
   i: LongInt;
   CloseBracket: Char;
+  StartPos: LongInt;
+  EndPos: Integer;
+  p: PChar;
 
   procedure ReadPrefixModifier;
   begin
@@ -304,6 +343,7 @@ begin
         ReadNextAtom;
         if CurPos.Flag<>cafComma then
           break;
+        CurParam.Separator:=CurPos.StartPos;
         // A group. Example: b,c:char;
         if FirstInGroup<0 then FirstInGroup:=ParamIndex;
         inc(ParamIndex);
@@ -337,6 +377,7 @@ begin
       end;
       if CurPos.Flag<>cafSemicolon then
         RaiseCharExpectedButAtomFound(CloseBracket);
+      CurParam.Separator:=CurPos.StartPos;
       inc(ParamIndex);
     end;
   until false;
@@ -344,7 +385,46 @@ begin
   // check for each parameter if it has comments
   for i:=0 to t.MaxPos-1 do begin
     CurParam:=t.OldNodes[i];
-    // ToDo:
+
+    // check if the param has a comment in front belonging to the param
+    if i=0 then
+      StartPos:=t.BracketOpenPos+1
+    else
+      StartPos:=t.OldNodes[i-1].GetLastPos(true);
+    EndPos:=CurParam.GetFirstPos;
+    while (StartPos<EndPos) and IsSpaceChar[Src[StartPos]] do inc(StartPos);
+    if StartPos<EndPos then begin
+      // there is a comment in front
+      CurParam.HeaderCommentPos:=StartPos;
+    end;
+
+    // check if the param has a comment behind, but in front of the next separator
+    StartPos:=CurParam.GetLastPos(false);
+    if CurParam.Separator>0 then
+      EndPos:=CurParam.Separator
+    else
+      EndPos:=t.BracketClosePos;
+    while (StartPos<EndPos) and IsSpaceChar[Src[EndPos-1]] do dec(EndPos);
+    if StartPos<EndPos then begin
+      // there is a comment behind param and in front of the next separator
+      CurParam.FooterCommentEndPos:=EndPos;
+    end;
+
+    // check if the param has a comment behind the next separator
+    if CurParam.Separator>0 then begin
+      StartPos:=CurParam.Separator;
+      p:=@Src[StartPos];
+      while p^ in [' ',#9] do inc(p);
+      if (p^='{') or ((p^='(') and (p[1]='*')) or ((p^='/') and (p[1]='/')) then
+      begin
+        // there is a comment after the separator and it belongs to this param
+        StartPos:=p-PChar(Src)+1;
+        CurParam.CommentAfterSeparator.StartPos:=StartPos;
+        EndPos:=FindCommentEnd(Src,StartPos,Scanner.NestedComments);
+        CurParam.CommentAfterSeparator.EndPos:=EndPos;
+      end;
+    end;
+
   end;
 end;
 
