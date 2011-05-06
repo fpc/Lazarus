@@ -418,6 +418,7 @@ resourcestring
   gdbmiErrorOnRunCommandWithWarning = '%0:s%0:sIn addition to the Error the following '
     + 'warning was encountered:%0:s%0:s%1:s';
   gdbmiTimeOutForCmd = 'Time-out for command: "%s"';
+  gdbmiFatalErrorOccured = 'Unrecoverable Error: "%s"';
 
 implementation
 
@@ -531,7 +532,7 @@ type
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnockQueueExecute; override;
-    function  ProcessRunning(var AStoppedParams: String): Boolean;
+    function  ProcessRunning(var AStoppedParams: String; AResult: TGDBMIExecResult): Boolean;
     function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
     {$IFDEF MSWindows}
     function FixThreadForSigTrap: Boolean;
@@ -3689,7 +3690,7 @@ begin
   // prevent lock
 end;
 
-function TGDBMIDebuggerCommandExecute.ProcessRunning(var AStoppedParams: String): Boolean;
+function TGDBMIDebuggerCommandExecute.ProcessRunning(var AStoppedParams: String; AResult: TGDBMIExecResult): Boolean;
 var
   InLogWarning: Boolean;
 
@@ -3734,9 +3735,47 @@ var
     end;
   end;
 
-  procedure DoResultRecord(const Line: String);
+  procedure DoResultRecord(Line: String);
+  var
+    ResultClass: String;
   begin
     DebugLn('[WARNING] Debugger: unexpected result-record: ', Line);
+
+    ResultClass := GetPart('^', ',', Line);
+    if Line = ''
+    then begin
+      if AResult.Values <> ''
+      then Include(AResult.Flags, rfNoMI);
+    end
+    else begin
+      AResult.Values := Line;
+    end;
+
+    //Result := True;
+    case StringCase(ResultClass, ['done', 'running', 'exit', 'error']) of
+      0: begin // done
+        AResult.State := dsIdle; // just indicate a ressult <> dsNone
+      end;
+      1: begin // running
+        AResult.State := dsRun;
+      end;
+      2: begin // exit
+        AResult.State := dsIdle;
+      end;
+      3: begin // error
+        DebugLn('TGDBMIDebugger.ProcessResult Error: ', Line);
+        // todo implement with values
+        if  (pos('msg=', Line) > 0)
+        and (pos('not being run', Line) > 0)
+        then AResult.State := dsStop
+        else AResult.State := dsError;
+      end;
+    else
+      //TODO: should that better be dsError ?
+      //Result := False;
+      AResult.State := dsIdle; // just indicate a ressult <> dsNone
+      DebugLn('[WARNING] Debugger: Unknown result class: ', ResultClass);
+    end;
   end;
 
   procedure DoConsoleStream(const Line: String);
@@ -3767,6 +3806,7 @@ var
   idx: Integer;
 begin
   Result := True;
+  AResult.State := dsNone;
   InLogWarning := False;
   FLogWarnings := '';
   while FTheDebugger.DebugProcessRunning do
@@ -4174,11 +4214,52 @@ end;
 {$ENDIF}
 
 function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
+
+  function HandleRunError(ARes: TGDBMIExecResult): Boolean;
+  var
+    s, s2: String;
+    List: TGDBMINameValueList;
+  begin
+    Result := False; // keep the error state
+    // check known errors
+    if (Pos('program is not being run', ARes.Values) > 0) then begin  // Should lead to dsStop
+      SetDebuggerState(dsError);
+      exit;
+    end;
+
+    if assigned(FTheDebugger.OnFeedback) then begin
+      List := TGDBMINameValueList.Create(ARes);
+      s := List.Values['msg'];
+      FreeAndNil(List);
+      if FLogWarnings <> ''
+      then s2 := Format(gdbmiErrorOnRunCommandWithWarning, [LineEnding, FLogWarnings])
+      else s2 := '';
+      FLogWarnings := '';
+      if s <> '' then begin
+        case FTheDebugger.OnFeedback(self,
+                                     Format(gdbmiErrorOnRunCommand, [LineEnding, s]) + s2,
+                                     ARes.Values, ftError, [frOk, frStop]
+             ) of
+          frOk: begin
+              ARes.State := dsPause;
+              Result := True;
+            end;
+          frStop: begin
+              FTheDebugger.Stop;
+              ARes.State := dsStop;
+              Result := True;
+              exit;
+            end;
+        end;
+      end
+    end;
+  end;
+
 var
-  StoppedParams, s, s2: String;
+  StoppedParams: String;
   ContinueExecution: Boolean;
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
-  List: TGDBMINameValueList;
+  R: TGDBMIExecResult;
 begin
   Result := True;
   FCanKillNow := False;
@@ -4193,28 +4274,12 @@ begin
       if not ExecuteCommand(FCommand, FResult)
       then exit;
 
-      if (FResult.State = dsError) and assigned(FTheDebugger.OnFeedback) then begin
-        List := TGDBMINameValueList.Create(FResult);
-        s := List.Values['msg'];
-        FreeAndNil(List);
-        if FLogWarnings <> ''
-        then s2 := Format(gdbmiErrorOnRunCommandWithWarning, [LineEnding, FLogWarnings])
-        else s2 := '';
-        FLogWarnings := '';
-        if s <> '' then begin
-          case FTheDebugger.OnFeedback(self,
-                                       Format(gdbmiErrorOnRunCommand, [LineEnding, s]) + s2,
-                                       FResult.Values, ftError, [frOk, frStop]
-               ) of
-            frOk: FResult.State := dsPause;
-            frStop: begin
-                FTheDebugger.Stop;
-                FResult.State := dsStop;
-                exit;
-              end;
-          end;
-        end
+      if (FResult.State = dsError) and (not HandleRunError(FResult)) then begin
+        DoDbgEvent(ecDebugger, etDefault, Format(gdbmiFatalErrorOccured, [FResult.Values]));
+        SetDebuggerState(dsError);
+        exit;
       end;
+
       if (FResult.State <> dsNone)
       then SetDebuggerState(FResult.State);
 
@@ -4224,8 +4289,9 @@ begin
 
       StoppedParams := '';
       FCanKillNow := True;
+      r.State := dsNone;
       if FResult.State = dsRun
-      then Result := ProcessRunning(StoppedParams);
+      then Result := ProcessRunning(StoppedParams, R);
 
     finally
       FCanKillNow := False;
@@ -4237,6 +4303,12 @@ begin
 
     if FDidKillNow
     then exit;
+
+    if (r.State = dsError) and (not HandleRunError(R)) then begin
+      DoDbgEvent(ecDebugger, etDefault, Format(gdbmiFatalErrorOccured, [R.Values]));
+      SetDebuggerState(dsError);
+      exit;
+    end;
 
     ContinueExecution := False;
     if StoppedParams <> ''
@@ -4317,7 +4389,7 @@ begin
 
   FTheDebugger.GDBPause(True);
   FTheDebugger.CancelAllQueued; // before ProcessStopped
-  Result := ProcessRunning(StoppedParams);
+  Result := ProcessRunning(StoppedParams, R);
   if ProcessResultTimedOut then begin
     // the uter Processrunning should stop, due to process no longer running
     FTheDebugger.DebugProcess.Terminate(0);
@@ -5037,6 +5109,10 @@ begin
   then begin
     ClearSourceInfo;
     FPauseWaitState := pwsNone;
+  end;
+  if (State = dsError) and (DebugProcessRunning) then begin
+    SendCmdLn('kill'); // try to kill the debugged process. bypass all queues.
+    DebugProcess.Terminate(0);
   end;
   if (OldState = dsPause) and (State = dsRun)
   then begin
