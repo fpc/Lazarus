@@ -3856,10 +3856,12 @@ var
 begin
   AvailUnits:=nil;
   try
+    Editable:=False;
+    SelAvail:=False;
     if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then begin
-//    GetCurrentUnit(ASrcEdit,AnUnitInfo);
-      Editable:=(ASrcEdit<>nil) and (not ASrcEdit.ReadOnly);
-      SelAvail:=(ASrcEdit<>nil) and (ASrcEdit.SelectionAvailable);
+      Assert(Assigned(ASrcEdit));
+      Editable:=not ASrcEdit.ReadOnly;
+      SelAvail:=ASrcEdit.SelectionAvailable;
 
       // Get Available Units count to enable UseProjUnit feature.
       AvailUnits:=GetAvailableUnits(ASrcEdit, CurrentUnitName);
@@ -3920,32 +3922,32 @@ end;
 procedure TMainIDE.mnuProjectClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
-  PartOfProj: Boolean;
+  AUnitInfo: TUnitInfo;
+  NotPartOfProj: Boolean;
 begin
-  PartOfProj:=False;
-  GetCurrentUnit(ASrcEdit,AnUnitInfo);
-  if Assigned(ASrcEdit) then
-    PartOfProj:=AnUnitInfo.IsPartOfProject;
-  MainIDEBar.itmProjectAddTo.Enabled:=not PartOfProj;
+  GetCurrentUnit(ASrcEdit,AUnitInfo);
+  NotPartOfProj:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
+  MainIDEBar.itmProjectAddTo.Enabled:=NotPartOfProj;
 end;
 
 procedure TMainIDE.mnuPackageClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
+  AUnitInfo: TUnitInfo;
   PkgFile: TPkgFile;
+  OpenPkgCurU, AddCurU: Boolean;
 begin
-  PkgFile:=nil;
-  GetCurrentUnit(ASrcEdit,AnUnitInfo);
-  if Assigned(ASrcEdit) then
-    PkgFile:=PackageGraph.FindFileInAllPackages(AnUnitInfo.Filename,true,
-                                            not AnUnitInfo.IsPartOfProject);
-  with MainIDEBar do begin
-    itmPkgOpenPackageOfCurUnit.Enabled:=Assigned(PkgFile);
-    itmPkgAddCurUnitToPkg.Enabled:=
-        (not AnUnitInfo.IsVirtual) and FileExistsUTF8(AnUnitInfo.Filename);
+  OpenPkgCurU:=False;
+  AddCurU:=False;
+  GetCurrentUnit(ASrcEdit,AUnitInfo);
+  if Assigned(ASrcEdit) then begin
+    PkgFile:=PackageGraph.FindFileInAllPackages(AUnitInfo.Filename,true,
+                                            not AUnitInfo.IsPartOfProject);
+    OpenPkgCurU:=Assigned(PkgFile);
+    AddCurU:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename);
   end;
+  MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=OpenPkgCurU;
+  MainIDEBar.itmPkgAddCurUnitToPkg.Enabled:=AddCurU;
 end;
 
 {------------------------------------------------------------------------------}
