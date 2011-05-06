@@ -4215,7 +4215,7 @@ end;
 
 function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
 
-  function HandleRunError(ARes: TGDBMIExecResult): Boolean;
+  function HandleRunError(var ARes: TGDBMIExecResult): Boolean;
   var
     s, s2: String;
     List: TGDBMINameValueList;
