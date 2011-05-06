@@ -51,7 +51,7 @@ type
 var
   ConvertAnsiToUTF8: TConvertEncodingFunction = nil;
   ConvertUTF8ToAnsi: TConvertEncodingFunction = nil;
-  
+
 function UTF8BOMToUTF8(const s: string): string; // UTF8 with BOM
 function ISO_8859_1ToUTF8(const s: string): string; // central europe
 function ISO_8859_2ToUTF8(const s: string): string; // eastern europe
@@ -66,6 +66,7 @@ function CP1257ToUTF8(const s: string): string; // baltic
 function CP1258ToUTF8(const s: string): string; // vietnam
 function CP437ToUTF8(const s: string): string;  // DOS central europe
 function CP850ToUTF8(const s: string): string;  // DOS western europe
+function CP852ToUTF8(const s: string): string;  // DOS central europe
 function CP866ToUTF8(const s: string): string;  // DOS and Windows console's cyrillic
 function CP874ToUTF8(const s: string): string;  // thai
 function KOI8ToUTF8(const s: string): string;  // russian cyrillic
@@ -88,6 +89,7 @@ function UTF8ToCP1257(const s: string): string; // baltic
 function UTF8ToCP1258(const s: string): string; // vietnam
 function UTF8ToCP437(const s: string): string;  // DOS central europe
 function UTF8ToCP850(const s: string): string;  // DOS western europe
+function UTF8ToCP852(const s: string): string;  // DOS central europe
 function UTF8ToCP866(const s: string): string;  // DOS and Windows console's cyrillic
 function UTF8ToCP874(const s: string): string;  // thai
 function UTF8ToKOI8(const s: string): string;  // russian cyrillic
@@ -3051,7 +3053,7 @@ const
     #226#130#171,       // #254
     #195#191            // #255
   );
-  
+
   ArrayCP437ToUTF8 : TCharToUTF8Table = (
     #0,                 // #0
     #1,                 // #1
@@ -3568,6 +3570,266 @@ const
     #194#178,           // #253
     #226#150#160,       // #254
     #194#160            // #255
+  );
+
+  // ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP852.TXT
+  ArrayCP852ToUTF8 : TCharToUTF8Table = (
+    #0,                 // #0
+    #1,                 // #1
+    #2,                 // #2
+    #3,                 // #3
+    #4,                 // #4
+    #5,                 // #5
+    #6,                 // #6
+    #7,                 // #7
+    #8,                 // #8
+    #9,                 // #9
+    #10,                // #10
+    #11,                // #11
+    #12,                // #12
+    #13,                // #13
+    #14,                // #14
+    #15,                // #15
+    #16,                // #16
+    #17,                // #17
+    #18,                // #18
+    #19,                // #19
+    #20,                // #20
+    #21,                // #21
+    #22,                // #22
+    #23,                // #23
+    #24,                // #24
+    #25,                // #25
+    #26,                // #26
+    #27,                // #27
+    #28,                // #28
+    #29,                // #29
+    #30,                // #30
+    #31,                // #31
+    ' ',                // ' '
+    '!',                // '!'
+    '"',                // '"'
+    '#',                // '#'
+    '$',                // '$'
+    '%',                // '%'
+    '&',                // '&'
+    '''',               // ''''
+    '(',                // '('
+    ')',                // ')'
+    '*',                // '*'
+    '+',                // '+'
+    ',',                // ','
+    '-',                // '-'
+    '.',                // '.'
+    '/',                // '/'
+    '0',                // '0'
+    '1',                // '1'
+    '2',                // '2'
+    '3',                // '3'
+    '4',                // '4'
+    '5',                // '5'
+    '6',                // '6'
+    '7',                // '7'
+    '8',                // '8'
+    '9',                // '9'
+    ':',                // ':'
+    ';',                // ';'
+    '<',                // '<'
+    '=',                // '='
+    '>',                // '>'
+    '?',                // '?'
+    '@',                // '@'
+    'A',                // 'A'
+    'B',                // 'B'
+    'C',                // 'C'
+    'D',                // 'D'
+    'E',                // 'E'
+    'F',                // 'F'
+    'G',                // 'G'
+    'H',                // 'H'
+    'I',                // 'I'
+    'J',                // 'J'
+    'K',                // 'K'
+    'L',                // 'L'
+    'M',                // 'M'
+    'N',                // 'N'
+    'O',                // 'O'
+    'P',                // 'P'
+    'Q',                // 'Q'
+    'R',                // 'R'
+    'S',                // 'S'
+    'T',                // 'T'
+    'U',                // 'U'
+    'V',                // 'V'
+    'W',                // 'W'
+    'X',                // 'X'
+    'Y',                // 'Y'
+    'Z',                // 'Z'
+    '[',                // '['
+    '\',                // '\'
+    ']',                // ']'
+    '^',                // '^'
+    '_',                // '_'
+    '`',                // '`'
+    'a',                // 'a'
+    'b',                // 'b'
+    'c',                // 'c'
+    'd',                // 'd'
+    'e',                // 'e'
+    'f',                // 'f'
+    'g',                // 'g'
+    'h',                // 'h'
+    'i',                // 'i'
+    'j',                // 'j'
+    'k',                // 'k'
+    'l',                // 'l'
+    'm',                // 'm'
+    'n',                // 'n'
+    'o',                // 'o'
+    'p',                // 'p'
+    'q',                // 'q'
+    'r',                // 'r'
+    's',                // 's'
+    't',                // 't'
+    'u',                // 'u'
+    'v',                // 'v'
+    'w',                // 'w'
+    'x',                // 'x'
+    'y',                // 'y'
+    'z',                // 'z'
+    '{',                // '{'
+    '|',                // '|'
+    '}',                // '}'
+    '~',                // '~'
+    #127,               // #127
+    #$c3#$87, // LATIN CAPITAL LETTER C WITH CEDILLA
+    #$c3#$bc, // LATIN SMALL LETTER U WITH DIAERESIS
+    #$c3#$a9, // LATIN SMALL LETTER E WITH ACUTE
+    #$c3#$a2, // LATIN SMALL LETTER A WITH CIRCUMFLEX
+    #$c3#$a4, // LATIN SMALL LETTER A WITH DIAERESIS
+#$c5#$af, // LATIN SMALL LETTER U WITH RING ABOVE
+#$c4#$87, // LATIN SMALL LETTER C WITH ACUTE
+#$c3#$a7, // LATIN SMALL LETTER C WITH CEDILLA
+#$c5#$82, // LATIN SMALL LETTER L WITH STROKE
+#$c3#$ab, // LATIN SMALL LETTER E WITH DIAERESIS
+#$c5#$90, // LATIN CAPITAL LETTER O WITH DOUBLE ACUTE
+#$c5#$91, // LATIN SMALL LETTER O WITH DOUBLE ACUTE
+#$c3#$ae, // LATIN SMALL LETTER I WITH CIRCUMFLEX
+#$c5#$b9, // LATIN CAPITAL LETTER Z WITH ACUTE
+#$c3#$84, // LATIN CAPITAL LETTER A WITH DIAERESIS
+#$c3#$84, // LATIN CAPITAL LETTER C WITH ACUTE
+#$c3#$89, // LATIN CAPITAL LETTER E WITH ACUTE
+#$c4#$b9, // LATIN CAPITAL LETTER L WITH ACUTE
+#$c4#$ba, // LATIN SMALL LETTER L WITH ACUTE
+#$c3#$b4, // LATIN SMALL LETTER O WITH CIRCUMFLEX
+#$c3#$b6, // LATIN SMALL LETTER O WITH DIAERESIS
+#$c4#$bd, // LATIN CAPITAL LETTER L WITH CARON
+#$c4#$be, // LATIN SMALL LETTER L WITH CARON
+#$c5#$9a, // LATIN CAPITAL LETTER S WITH ACUTE
+#$c5#$9b, // LATIN SMALL LETTER S WITH ACUTE
+#$c3#$96, // LATIN CAPITAL LETTER O WITH DIAERESIS
+#$c3#$9c, // LATIN CAPITAL LETTER U WITH DIAERESIS
+#$c5#$a4, // LATIN CAPITAL LETTER T WITH CARON
+#$c5#$a5, // LATIN SMALL LETTER T WITH CARON
+#$c5#$81, // LATIN CAPITAL LETTER L WITH STROKE
+#$c3#$97, // MULTIPLICATION SIGN
+#$c4#$8d, // LATIN SMALL LETTER C WITH CARON
+#$c3#$a1, // LATIN SMALL LETTER A WITH ACUTE
+#$c3#$ad, // LATIN SMALL LETTER I WITH ACUTE
+#$c3#$b3, // LATIN SMALL LETTER O WITH ACUTE
+#$c3#$ba, // LATIN SMALL LETTER U WITH ACUTE
+#$c4#$84, // LATIN CAPITAL LETTER A WITH OGONEK
+#$c4#$85, // LATIN SMALL LETTER A WITH OGONEK
+#$c5#$bd, // LATIN CAPITAL LETTER Z WITH CARON
+#$c5#$be, // LATIN SMALL LETTER Z WITH CARON
+#$c4#$98, // LATIN CAPITAL LETTER E WITH OGONEK
+#$c4#$99, // LATIN SMALL LETTER E WITH OGONEK
+#$c2#$ac, // NOT SIGN
+#$c5#$ba, // LATIN SMALL LETTER Z WITH ACUTE
+#$c4#$8c, // LATIN CAPITAL LETTER C WITH CARON
+#$c5#$9f, // LATIN SMALL LETTER S WITH CEDILLA
+#$c2#$ab, // LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+#$c2#$bb, // RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+#$e2#$96#$91, // LIGHT SHADE
+#$e2#$96#$92, // MEDIUM SHADE
+#$e2#$96#$93, // DARK SHADE
+#$e2#$96#$82, // BOX DRAWINGS LIGHT VERTICAL
+#$e2#$96#$a4, // BOX DRAWINGS LIGHT VERTICAL AND LEFT
+#$c3#$81, // LATIN CAPITAL LETTER A WITH ACUTE
+#$c3#$82, // LATIN CAPITAL LETTER A WITH CIRCUMFLEX
+#$c4#$9a, // LATIN CAPITAL LETTER E WITH CARON
+#$c5#$9e, // LATIN CAPITAL LETTER S WITH CEDILLA
+#$e2#$95#$a3, // BOX DRAWINGS DOUBLE VERTICAL AND LEFT
+#$e2#$95#$91, // BOX DRAWINGS DOUBLE VERTICAL
+#$e2#$95#$97, // BOX DRAWINGS DOUBLE DOWN AND LEFT
+#$e2#$95#$9d, // BOX DRAWINGS DOUBLE UP AND LEFT
+#$c5#$bb, // LATIN CAPITAL LETTER Z WITH DOT ABOVE
+#$c5#$bc, // LATIN SMALL LETTER Z WITH DOT ABOVE
+#$e2#$94#$90, // BOX DRAWINGS LIGHT DOWN AND LEFT
+#$e2#$94#$94, // BOX DRAWINGS LIGHT UP AND RIGHT
+#$e2#$94#$b4, // BOX DRAWINGS LIGHT UP AND HORIZONTAL
+#$e2#$94#$ac, // BOX DRAWINGS LIGHT DOWN AND HORIZONTAL
+#$e2#$94#$9c, // BOX DRAWINGS LIGHT VERTICAL AND RIGHT
+#$e2#$94#$80, // BOX DRAWINGS LIGHT HORIZONTAL
+#$e2#$94#$bc, // BOX DRAWINGS LIGHT VERTICAL AND HORIZONTAL
+#$c4#$82, // LATIN CAPITAL LETTER A WITH BREVE
+#$c4#$83, // LATIN SMALL LETTER A WITH BREVE
+#$e2#$94#$9a, // BOX DRAWINGS DOUBLE UP AND RIGHT
+#$e2#$94#$94, // BOX DRAWINGS DOUBLE DOWN AND RIGHT
+#$e2#$94#$a9, // BOX DRAWINGS DOUBLE UP AND HORIZONTAL
+#$e2#$94#$a6, // BOX DRAWINGS DOUBLE DOWN AND HORIZONTAL
+#$e2#$94#$a0, // BOX DRAWINGS DOUBLE VERTICAL AND RIGHT
+#$e2#$94#$90, // BOX DRAWINGS DOUBLE HORIZONTAL
+#$e2#$94#$ac, // BOX DRAWINGS DOUBLE VERTICAL AND HORIZONTAL
+#$c4#$a4, // CURRENCY SIGN
+#$c4#$91, // LATIN SMALL LETTER D WITH STROKE
+#$c4#$90, // LATIN CAPITAL LETTER D WITH STROKE
+#$c4#$8e, // LATIN CAPITAL LETTER D WITH CARON
+#$c3#$8b, // LATIN CAPITAL LETTER E WITH DIAERESIS
+#$c4#$8f, // LATIN SMALL LETTER D WITH CARON
+#$c5#$87, // LATIN CAPITAL LETTER N WITH CARON
+#$c3#$8d, // LATIN CAPITAL LETTER I WITH ACUTE
+#$c3#$8e, // LATIN CAPITAL LETTER I WITH CIRCUMFLEX
+#$c4#$9b, // LATIN SMALL LETTER E WITH CARON
+#$e2#$94#$98, // BOX DRAWINGS LIGHT UP AND LEFT
+#$e2#$94#$8c, // BOX DRAWINGS LIGHT DOWN AND RIGHT
+#$e2#$96#$88, // FULL BLOCK
+#$e2#$96#$84, // LOWER HALF BLOCK
+#$c5#$a2, // LATIN CAPITAL LETTER T WITH CEDILLA
+#$c5#$ae, // LATIN CAPITAL LETTER U WITH RING ABOVE
+#$e2#$96#$80, // UPPER HALF BLOCK
+#$c3#$93, // LATIN CAPITAL LETTER O WITH ACUTE
+#$c3#$9f, // LATIN SMALL LETTER SHARP S
+#$c3#$94, // LATIN CAPITAL LETTER O WITH CIRCUMFLEX
+#$c5#$83, // LATIN CAPITAL LETTER N WITH ACUTE
+#$c5#$84, // LATIN SMALL LETTER N WITH ACUTE
+#$c5#$88, // LATIN SMALL LETTER N WITH CARON
+#$c5#$a0, // LATIN CAPITAL LETTER S WITH CARON
+#$c5#$a1, // LATIN SMALL LETTER S WITH CARON
+#$c5#$94, // LATIN CAPITAL LETTER R WITH ACUTE
+#$c3#$9a, // LATIN CAPITAL LETTER U WITH ACUTE
+#$c5#$95, // LATIN SMALL LETTER R WITH ACUTE
+#$c5#$b0, // LATIN CAPITAL LETTER U WITH DOUBLE ACUTE
+#$c3#$bd, // LATIN SMALL LETTER Y WITH ACUTE
+#$c3#$9d, // LATIN CAPITAL LETTER Y WITH ACUTE
+#$c5#$a3, // LATIN SMALL LETTER T WITH CEDILLA
+#$c2#$b4, // ACUTE ACCENT
+#$c2#$ad, // SOFT HYPHEN
+#$cb#$9d, // DOUBLE ACUTE ACCENT
+#$cb#$9b, // OGONEK
+#$cb#$87, // CARON
+#$cb#$98, // BREVE
+#$c2#$a7, // SECTION SIGN
+#$c3#$b7, // DIVISION SIGN
+#$c2#$b8, // CEDILLA
+#$c2#$b0, // DEGREE SIGN
+#$c2#$a8, // DIAERESIS
+#$cb#$99, // DOT ABOVE
+#$c5#$b1, // LATIN SMALL LETTER U WITH DOUBLE ACUTE
+#$c5#$98, // LATIN CAPITAL LETTER R WITH CARON
+#$c5#$99, // LATIN SMALL LETTER R WITH CARON
+#$e2#$96#$a0, // BLACK SQUARE
+#$c2#$a0  // NO-BREAK SPACE
   );
 
   ArrayCP866ToUTF8 : TCharToUTF8Table = (
@@ -4415,6 +4677,11 @@ end;
 function CP850ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayCP850ToUTF8);
+end;
+
+function CP852ToUTF8(const s: string): string;
+begin
+  Result:=SingleByteToUTF8(s,ArrayCP852ToUTF8);
 end;
 
 function CP866ToUTF8(const s: string): string;
@@ -5313,6 +5580,143 @@ begin
   end;
 end;
 
+// ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP852.TXT
+function UnicodeToCP852(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..127: Result:=Unicode;
+  $00c7: Result:=$80; // LATIN CAPITAL LETTER C WITH CEDILLA
+  $00fc: Result:=$81; // LATIN SMALL LETTER U WITH DIAERESIS
+  $00e9: Result:=$82; // LATIN SMALL LETTER E WITH ACUTE
+  $00e2: Result:=$83; // LATIN SMALL LETTER A WITH CIRCUMFLEX
+  $00e4: Result:=$84; // LATIN SMALL LETTER A WITH DIAERESIS
+  $016f: Result:=$85; // LATIN SMALL LETTER U WITH RING ABOVE
+  $0107: Result:=$86; // LATIN SMALL LETTER C WITH ACUTE
+  $00e7: Result:=$87; // LATIN SMALL LETTER C WITH CEDILLA
+  $0142: Result:=$88; // LATIN SMALL LETTER L WITH STROKE
+  $00eb: Result:=$89; // LATIN SMALL LETTER E WITH DIAERESIS
+  $0150: Result:=$8a; // LATIN CAPITAL LETTER O WITH DOUBLE ACUTE
+  $0151: Result:=$8b; // LATIN SMALL LETTER O WITH DOUBLE ACUTE
+  $00ee: Result:=$8c; // LATIN SMALL LETTER I WITH CIRCUMFLEX
+  $0179: Result:=$8d; // LATIN CAPITAL LETTER Z WITH ACUTE
+  $00c4: Result:=$8e; // LATIN CAPITAL LETTER A WITH DIAERESIS
+  $0106: Result:=$8f; // LATIN CAPITAL LETTER C WITH ACUTE
+  $00c9: Result:=$90; // LATIN CAPITAL LETTER E WITH ACUTE
+  $0139: Result:=$91; // LATIN CAPITAL LETTER L WITH ACUTE
+  $013a: Result:=$92; // LATIN SMALL LETTER L WITH ACUTE
+  $00f4: Result:=$93; // LATIN SMALL LETTER O WITH CIRCUMFLEX
+  $00f6: Result:=$94; // LATIN SMALL LETTER O WITH DIAERESIS
+  $013d: Result:=$95; // LATIN CAPITAL LETTER L WITH CARON
+  $013e: Result:=$96; // LATIN SMALL LETTER L WITH CARON
+  $015a: Result:=$97; // LATIN CAPITAL LETTER S WITH ACUTE
+  $015b: Result:=$98; // LATIN SMALL LETTER S WITH ACUTE
+  $00d6: Result:=$99; // LATIN CAPITAL LETTER O WITH DIAERESIS
+  $00dc: Result:=$9a; // LATIN CAPITAL LETTER U WITH DIAERESIS
+  $0164: Result:=$9b; // LATIN CAPITAL LETTER T WITH CARON
+  $0165: Result:=$9c; // LATIN SMALL LETTER T WITH CARON
+  $0141: Result:=$9d; // LATIN CAPITAL LETTER L WITH STROKE
+  $00d7: Result:=$9e; // MULTIPLICATION SIGN
+  $010d: Result:=$9f; // LATIN SMALL LETTER C WITH CARON
+  $00e1: Result:=$a0; // LATIN SMALL LETTER A WITH ACUTE
+  $00ed: Result:=$a1; // LATIN SMALL LETTER I WITH ACUTE
+  $00f3: Result:=$a2; // LATIN SMALL LETTER O WITH ACUTE
+  $00fa: Result:=$a3; // LATIN SMALL LETTER U WITH ACUTE
+  $0104: Result:=$a4; // LATIN CAPITAL LETTER A WITH OGONEK
+  $0105: Result:=$a5; // LATIN SMALL LETTER A WITH OGONEK
+  $017d: Result:=$a6; // LATIN CAPITAL LETTER Z WITH CARON
+  $017e: Result:=$a7; // LATIN SMALL LETTER Z WITH CARON
+  $0118: Result:=$a8; // LATIN CAPITAL LETTER E WITH OGONEK
+  $0119: Result:=$a9; // LATIN SMALL LETTER E WITH OGONEK
+  $00ac: Result:=$aa; // NOT SIGN
+  $017a: Result:=$ab; // LATIN SMALL LETTER Z WITH ACUTE
+  $010c: Result:=$ac; // LATIN CAPITAL LETTER C WITH CARON
+  $015f: Result:=$ad; // LATIN SMALL LETTER S WITH CEDILLA
+  $00ab: Result:=$ae; // LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+  $00bb: Result:=$af; // RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+  $2591: Result:=$b0; // LIGHT SHADE
+  $2592: Result:=$b1; // MEDIUM SHADE
+  $2593: Result:=$b2; // DARK SHADE
+  $2502: Result:=$b3; // BOX DRAWINGS LIGHT VERTICAL
+  $2524: Result:=$b4; // BOX DRAWINGS LIGHT VERTICAL AND LEFT
+  $00c1: Result:=$b5; // LATIN CAPITAL LETTER A WITH ACUTE
+  $00c2: Result:=$b6; // LATIN CAPITAL LETTER A WITH CIRCUMFLEX
+  $011a: Result:=$b7; // LATIN CAPITAL LETTER E WITH CARON
+  $015e: Result:=$b8; // LATIN CAPITAL LETTER S WITH CEDILLA
+  $2563: Result:=$b9; // BOX DRAWINGS DOUBLE VERTICAL AND LEFT
+  $2551: Result:=$ba; // BOX DRAWINGS DOUBLE VERTICAL
+  $2557: Result:=$bb; // BOX DRAWINGS DOUBLE DOWN AND LEFT
+  $255d: Result:=$bc; // BOX DRAWINGS DOUBLE UP AND LEFT
+  $017b: Result:=$bd; // LATIN CAPITAL LETTER Z WITH DOT ABOVE
+  $017c: Result:=$be; // LATIN SMALL LETTER Z WITH DOT ABOVE
+  $2510: Result:=$bf; // BOX DRAWINGS LIGHT DOWN AND LEFT
+  $2514: Result:=$c0; // BOX DRAWINGS LIGHT UP AND RIGHT
+  $2534: Result:=$c1; // BOX DRAWINGS LIGHT UP AND HORIZONTAL
+  $252c: Result:=$c2; // BOX DRAWINGS LIGHT DOWN AND HORIZONTAL
+  $251c: Result:=$c3; // BOX DRAWINGS LIGHT VERTICAL AND RIGHT
+  $2500: Result:=$c4; // BOX DRAWINGS LIGHT HORIZONTAL
+  $253c: Result:=$c5; // BOX DRAWINGS LIGHT VERTICAL AND HORIZONTAL
+  $0102: Result:=$c6; // LATIN CAPITAL LETTER A WITH BREVE
+  $0103: Result:=$c7; // LATIN SMALL LETTER A WITH BREVE
+  $255a: Result:=$c8; // BOX DRAWINGS DOUBLE UP AND RIGHT
+  $2554: Result:=$c9; // BOX DRAWINGS DOUBLE DOWN AND RIGHT
+  $2569: Result:=$ca; // BOX DRAWINGS DOUBLE UP AND HORIZONTAL
+  $2566: Result:=$cb; // BOX DRAWINGS DOUBLE DOWN AND HORIZONTAL
+  $2560: Result:=$cc; // BOX DRAWINGS DOUBLE VERTICAL AND RIGHT
+  $2550: Result:=$cd; // BOX DRAWINGS DOUBLE HORIZONTAL
+  $256c: Result:=$ce; // BOX DRAWINGS DOUBLE VERTICAL AND HORIZONTAL
+  $00a4: Result:=$cf; // CURRENCY SIGN
+  $0111: Result:=$d0; // LATIN SMALL LETTER D WITH STROKE
+  $0110: Result:=$d1; // LATIN CAPITAL LETTER D WITH STROKE
+  $010e: Result:=$d2; // LATIN CAPITAL LETTER D WITH CARON
+  $00cb: Result:=$d3; // LATIN CAPITAL LETTER E WITH DIAERESIS
+  $010f: Result:=$d4; // LATIN SMALL LETTER D WITH CARON
+  $0147: Result:=$d5; // LATIN CAPITAL LETTER N WITH CARON
+  $00cd: Result:=$d6; // LATIN CAPITAL LETTER I WITH ACUTE
+  $00ce: Result:=$d7; // LATIN CAPITAL LETTER I WITH CIRCUMFLEX
+  $011b: Result:=$d8; // LATIN SMALL LETTER E WITH CARON
+  $2518: Result:=$d9; // BOX DRAWINGS LIGHT UP AND LEFT
+  $250c: Result:=$da; // BOX DRAWINGS LIGHT DOWN AND RIGHT
+  $2588: Result:=$db; // FULL BLOCK
+  $2584: Result:=$dc; // LOWER HALF BLOCK
+  $0162: Result:=$dd; // LATIN CAPITAL LETTER T WITH CEDILLA
+  $016e: Result:=$de; // LATIN CAPITAL LETTER U WITH RING ABOVE
+  $2580: Result:=$df; // UPPER HALF BLOCK
+  $00d3: Result:=$e0; // LATIN CAPITAL LETTER O WITH ACUTE
+  $00df: Result:=$e1; // LATIN SMALL LETTER SHARP S
+  $00d4: Result:=$e2; // LATIN CAPITAL LETTER O WITH CIRCUMFLEX
+  $0143: Result:=$e3; // LATIN CAPITAL LETTER N WITH ACUTE
+  $0144: Result:=$e4; // LATIN SMALL LETTER N WITH ACUTE
+  $0148: Result:=$e5; // LATIN SMALL LETTER N WITH CARON
+  $0160: Result:=$e6; // LATIN CAPITAL LETTER S WITH CARON
+  $0161: Result:=$e7; // LATIN SMALL LETTER S WITH CARON
+  $0154: Result:=$e8; // LATIN CAPITAL LETTER R WITH ACUTE
+  $00da: Result:=$e9; // LATIN CAPITAL LETTER U WITH ACUTE
+  $0155: Result:=$ea; // LATIN SMALL LETTER R WITH ACUTE
+  $0170: Result:=$eb; // LATIN CAPITAL LETTER U WITH DOUBLE ACUTE
+  $00fd: Result:=$ec; // LATIN SMALL LETTER Y WITH ACUTE
+  $00dd: Result:=$ed; // LATIN CAPITAL LETTER Y WITH ACUTE
+  $0163: Result:=$ee; // LATIN SMALL LETTER T WITH CEDILLA
+  $00b4: Result:=$ef; // ACUTE ACCENT
+  $00ad: Result:=$f0; // SOFT HYPHEN
+  $02dd: Result:=$f1; // DOUBLE ACUTE ACCENT
+  $02db: Result:=$f2; // OGONEK
+  $02c7: Result:=$f3; // CARON
+  $02d8: Result:=$f4; // BREVE
+  $00a7: Result:=$f5; // SECTION SIGN
+  $00f7: Result:=$f6; // DIVISION SIGN
+  $00b8: Result:=$f7; // CEDILLA
+  $00b0: Result:=$f8; // DEGREE SIGN
+  $00a8: Result:=$f9; // DIAERESIS
+  $02d9: Result:=$fa; // DOT ABOVE
+  $0171: Result:=$fb; // LATIN SMALL LETTER U WITH DOUBLE ACUTE
+  $0158: Result:=$fc; // LATIN CAPITAL LETTER R WITH CARON
+  $0159: Result:=$fd; // LATIN SMALL LETTER R WITH CARON
+  $25a0: Result:=$fe; // BLACK SQUARE
+  $00a0: Result:=$ff; // NO-BREAK SPACE
+  else Result:=-1;
+  end;
+end;
+
 function UnicodeToCP866(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -5620,6 +6024,11 @@ begin
   Result:=UTF8ToSingleByte(s,@UnicodeToCP850);
 end;
 
+function UTF8ToCP852(const s: string): string;
+begin
+  Result:=UTF8ToSingleByte(s,@UnicodeToCP852);
+end;
+
 function UTF8ToCP866(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToCP866);
@@ -5771,12 +6180,13 @@ begin
   List.Add('CP1258');
   List.Add('CP437');
   List.Add('CP850');
+  List.Add('CP852');
   List.Add('CP866');
   List.Add('CP874');
   List.Add('CP936');
   List.Add('CP950');
   List.Add('CP949');
-  List.Add('CP932');  
+  List.Add('CP932');
   List.Add('ISO-8859-1');
   List.Add('ISO-8859-2');
   List.Add('KOI-8');
@@ -5807,7 +6217,7 @@ function GuessEncoding(const s: string): string;
     end;
     Result:=true;
   end;
-  
+
   {$IFDEF VerboseIDEEncoding}
   function PosToStr(p: integer): string;
   var
@@ -5845,7 +6255,7 @@ begin
     Result:='';
     exit;
   end;
-  
+
   // try UTF-8 BOM (Byte Order Mark)
   if CompareI(@s[1],UTF8BOM,3) then begin
     Result:=EncodingUTF8BOM;
@@ -5873,7 +6283,7 @@ begin
     Result:=NormalizeEncoding(copy(s,p,EndPos-p));
     exit;
   end;
-  
+
   // try UTF-8 (this includes ASCII)
   p:=1;
   while (p<=l) do begin
@@ -5896,7 +6306,7 @@ begin
     Result:=EncodingUTF8;
     exit;
   end;
-  
+
   // use system encoding
   Result:=GetDefaultTextEncoding;
 
@@ -5926,7 +6336,7 @@ begin
     exit;
   end;
   //DebugLn(['ConvertEncoding ',AFrom,' ',ATo]);
-  
+
   if (AFrom=EncodingUTF8) then begin
     if ATo=EncodingUTF8BOM then begin Result:=UTF8ToUTF8BOM(s); exit; end;
     if ATo='iso88591' then begin Result:=UTF8ToISO_8859_1(s); exit; end;
@@ -5942,6 +6352,7 @@ begin
     if ATo='cp1258' then begin Result:=UTF8ToCP1258(s); exit; end;
     if ATo='cp437' then begin  Result:=UTF8ToCP437(s);  exit; end;
     if ATo='cp850' then begin  Result:=UTF8ToCP850(s);  exit; end;
+    if ATo='cp852' then begin  Result:=UTF8ToCP852(s);  exit; end;
     if ATo='cp866' then begin  Result:=UTF8ToCP866(s);  exit; end;
     if ATo='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
     if ATo = 'cp936' then
@@ -5987,6 +6398,7 @@ begin
     if AFrom='cp1258' then begin Result:=CP1258ToUTF8(s); exit; end;
     if AFrom='cp437' then begin  Result:=CP437ToUTF8(s);  exit; end;
     if AFrom='cp850' then begin  Result:=CP850ToUTF8(s);  exit; end;
+    if AFrom='cp852' then begin  Result:=CP852ToUTF8(s);  exit; end;
     if AFrom='cp866' then begin  Result:=CP866ToUTF8(s);  exit; end;
     if AFrom='cp874' then begin  Result:=CP874ToUTF8(s);  exit; end;
     if AFrom = 'cp936' then
@@ -6008,7 +6420,7 @@ begin
     begin
       Result := CP932ToUTF8(s);
       exit;
-    end;    
+    end;
     if AFrom='koi8' then begin  Result:=KOI8ToUTF8(s);  exit; end;
     if AFrom=EncodingUCS2LE then begin Result:=UCS2LEToUTF8(s); exit; end;
     if AFrom=EncodingUCS2BE then begin Result:=UCS2BEToUTF8(s); exit; end;
@@ -6022,7 +6434,7 @@ begin
     //ATo and AFrom <> EncodingUTF8. Need to do ANSI->UTF8->ANSI.
     //TempStr := s;
     Encoded := false;
-    
+
     //ANSI->UTF8
     if AFrom='iso88591' then begin
       Result:=ISO_8859_1ToUTF8(s);
@@ -6072,6 +6484,10 @@ begin
       Result:=CP850ToUTF8(s);
       Encoded := true;
     end
+    else if AFrom='cp852' then begin
+      Result:=CP852ToUTF8(s);
+      Encoded := true;
+    end
     else if AFrom='cp866' then begin
       Result:=CP866ToUTF8(s);
       Encoded := true;
@@ -6099,7 +6515,7 @@ begin
     begin
       Result  := CP932ToUTF8(s);
       Encoded := True;
-    end    
+    end
     else if AFrom='koi8' then begin
       Result:=KOI8ToUTF8(s);
       Encoded := true;
@@ -6108,7 +6524,7 @@ begin
       Result:=ConvertAnsiToUTF8(s);
       Encoded := true;
     end;
-    
+
     if Encoded = true then begin
       //UTF8->ANSI
       Encoded := false;
@@ -6160,6 +6576,10 @@ begin
         Result:=UTF8ToCP850(Result);
         Encoded := true;
       end
+      else if ATo='cp852' then begin
+        Result:=UTF8ToCP852(Result);
+        Encoded := true;
+      end
       else if ATo='cp866' then begin
         Result:=UTF8ToCP866(Result);
         Encoded := true;
@@ -6187,7 +6607,7 @@ begin
       begin
         Result  := UTF8ToCP932(Result);
         Encoded := True;
-      end      
+      end
       else if ATo='koi8' then begin
         Result:=UTF8ToKOI8(Result);
         Encoded := true;
@@ -6197,12 +6617,12 @@ begin
         Encoded := true;
       end;
     end;
-    
+
     //Exit if encoded succesfully.
     if Encoded = true then begin
       exit;
     end;
-    
+
   end;
 
   Result:=s;
