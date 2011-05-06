@@ -111,6 +111,7 @@ type
   published
     property Exploded;
     property FixedRadius;
+    property MarkPositions;
     property RotateLabels;
     property Source;
   end;

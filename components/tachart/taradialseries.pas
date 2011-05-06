@@ -38,9 +38,16 @@ type
     FLabel: TLabelParams;
   end;
 
+  TPieMarkPositions = (pmpAround, pmpInside);
+
   { TCustomPieSeries }
 
   TCustomPieSeries = class(TChartSeries)
+  private
+    FCenter: TPoint;
+    FMarkPositions: TPieMarkPositions;
+    FRadius: Integer;
+    FSlices: array of TPieSlice;
   private
     FExploded: Boolean;
     FFixedRadius: TChartDistance;
@@ -48,13 +55,10 @@ type
     procedure Measure(ADrawer: IChartDrawer);
     procedure SetExploded(AValue: Boolean);
     procedure SetFixedRadius(AValue: TChartDistance);
+    procedure SetMarkPositions(AValue: TPieMarkPositions);
     procedure SetRotateLabels(AValue: Boolean);
     function SliceColor(AIndex: Integer): TColor;
     function TryRadius(ADrawer: IChartDrawer): TRect;
-  private
-    FCenter: TPoint;
-    FRadius: Integer;
-    FSlices: array of TPieSlice;
   protected
     procedure AfterAdd; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
@@ -68,6 +72,8 @@ type
     property Exploded: Boolean read FExploded write SetExploded default false;
     property FixedRadius: TChartDistance
       read FFixedRadius write SetFixedRadius default 0;
+    property MarkPositions: TPieMarkPositions
+      read FMarkPositions write SetMarkPositions default pmpAround;
     property RotateLabels: Boolean
       read FRotateLabels write SetRotateLabels default false;
   end;
@@ -261,6 +267,13 @@ begin
   UpdateParentChart;
 end;
 
+procedure TCustomPieSeries.SetMarkPositions(AValue: TPieMarkPositions);
+begin
+  if FMarkPositions = AValue then exit;
+  FMarkPositions := AValue;
+  UpdateParentChart;
+end;
+
 procedure TCustomPieSeries.SetRotateLabels(AValue: Boolean);
 begin
   if FRotateLabels = AValue then exit;
@@ -320,6 +333,7 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
   var
     i: Integer;
     p: TPointArray;
+    d: TPoint;
   begin
     with ALabel do begin
       FCenter := FAttachment;
@@ -329,7 +343,11 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
       if RotateLabels then
         Marks.SetAdditionalAngle(AAngle);
       p := Marks.GetLabelPolygon(ADrawer, ADrawer.TextExtent(FText));
-      FCenter += EndPoint(AAngle, Marks.Distance + LabelExtraDist(p, AAngle));
+      d := EndPoint(AAngle, Marks.Distance + LabelExtraDist(p, AAngle));
+      case MarkPositions of
+        pmpAround: FCenter += d;
+        pmpInside: FCenter -= d;
+      end;
       for i := 0 to High(p) do
         ExpandRect(Result, p[i] + FCenter);
     end;
