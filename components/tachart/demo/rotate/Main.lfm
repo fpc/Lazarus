@@ -1,17 +1,17 @@
 object Form1: TForm1
   Left = 342
-  Height = 372
+  Height = 437
   Top = 152
   Width = 456
   Caption = 'Form1'
-  ClientHeight = 372
+  ClientHeight = 437
   ClientWidth = 456
   DefaultMonitor = dmDesktop
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
-    Height = 336
+    Height = 377
     Top = 0
     Width = 456
     AxisList = <    
@@ -60,11 +60,11 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 36
-    Top = 336
+    Height = 60
+    Top = 377
     Width = 456
     Align = alBottom
-    ClientHeight = 36
+    ClientHeight = 60
     ClientWidth = 456
     TabOrder = 1
     object cbRotateLine: TCheckBox
@@ -102,6 +102,32 @@ object Form1: TForm1
       Caption = 'Rotate area'
       OnChange = cbRotateAreaChange
       TabOrder = 3
+    end
+    object cbMarkPositions: TComboBox
+      Left = 104
+      Height = 21
+      Top = 31
+      Width = 100
+      ItemHeight = 13
+      ItemIndex = 0
+      Items.Strings = (
+        'Outside'
+        'Positive'
+        'Negative'
+        'Inside'
+      )
+      OnChange = cbMarkPositionsChange
+      Style = csDropDownList
+      TabOrder = 4
+      Text = 'Outside'
+    end
+    object lblMarkPositions: TLabel
+      Left = 8
+      Height = 14
+      Top = 31
+      Width = 69
+      Caption = 'Mark positions'
+      ParentColor = False
     end
   end
   object RandomChartSource1: TRandomChartSource

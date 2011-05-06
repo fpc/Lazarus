@@ -21,8 +21,11 @@ type
     Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
     cbRotateLine: TCheckBox;
+    cbMarkPositions: TComboBox;
+    lblMarkPositions: TLabel;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
+    procedure cbMarkPositionsChange(Sender: TObject);
     procedure cbNegativeChange(Sender: TObject);
     procedure cbRotateAreaChange(Sender: TObject);
     procedure cbRotateBarChange(Sender: TObject);
@@ -51,6 +54,12 @@ begin
 end;
 
 { TForm1 }
+
+procedure TForm1.cbMarkPositionsChange(Sender: TObject);
+begin
+  Chart1LineSeries1.MarkPositions :=
+    TLinearMarkPositions(cbMarkPositions.ItemIndex);
+end;
 
 procedure TForm1.cbNegativeChange(Sender: TObject);
 begin
