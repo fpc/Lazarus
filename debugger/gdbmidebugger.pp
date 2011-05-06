@@ -537,7 +537,7 @@ type
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnockQueueExecute; override;
-    function  ProcessRunning(var AStoppedParams: String; AResult: TGDBMIExecResult): Boolean;
+    function  ProcessRunning(var AStoppedParams: String; out AResult: TGDBMIExecResult): Boolean;
     function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
     {$IFDEF MSWindows}
     function FixThreadForSigTrap: Boolean;
@@ -3717,7 +3717,7 @@ begin
   // prevent lock
 end;
 
-function TGDBMIDebuggerCommandExecute.ProcessRunning(var AStoppedParams: String; AResult: TGDBMIExecResult): Boolean;
+function TGDBMIDebuggerCommandExecute.ProcessRunning(var AStoppedParams: String; out AResult: TGDBMIExecResult): Boolean;
 var
   InLogWarning: Boolean;
 
