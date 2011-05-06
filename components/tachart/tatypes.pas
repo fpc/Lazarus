@@ -575,8 +575,10 @@ begin
   if not Clipped then
     ADrawer.ClippingStop;
 
-  ADrawer.Pen := LinkPen;
-  ADrawer.Line(ADataPoint, ALabelCenter);
+  if LinkPen.Visible then begin;
+    ADrawer.Pen := LinkPen;
+    ADrawer.Line(ADataPoint, ALabelCenter);
+  end;
   ADrawer.Brush := LabelBrush;
   if IsMarginRequired then begin
     ADrawer.Pen := Frame;
