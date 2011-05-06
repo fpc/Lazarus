@@ -12,8 +12,8 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 448
+    Height = 40
+    Top = 438
     Width = 557
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -30,38 +30,40 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
     AnchorSideTop.Control = InheritedGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 184
-    Top = 258
+    Height = 144
+    Top = 288
     Width = 557
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'MembersGroupBox'
-    ClientHeight = 162
+    ClientHeight = 123
     ClientWidth = 549
     TabOrder = 1
     object MembersTreeView: TCodyTreeView
       Left = 0
-      Height = 162
+      Height = 123
       Top = 0
       Width = 549
       Align = alClient
-      DefaultItemHeight = 18
+      DefaultItemHeight = 19
       Images = ImageList1
+      ReadOnly = True
       TabOrder = 0
       OnMouseDown = MembersTreeViewMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
   object InheritedGroupBox: TGroupBox
     Left = 6
-    Height = 128
-    Top = 124
+    Height = 144
+    Top = 138
     Width = 557
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'InheritedGroupBox'
-    ClientHeight = 106
+    ClientHeight = 123
     ClientWidth = 549
     TabOrder = 2
     object InheritedLabel: TLabel
@@ -69,9 +71,9 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideTop.Control = InheritedEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 9
-      Width = 91
+      Height = 18
+      Top = 10
+      Width = 100
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       Caption = 'InheritedLabel'
@@ -83,10 +85,10 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideTop.Control = InheritedGroupBox
       AnchorSideRight.Control = InheritedGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 103
-      Height = 22
+      Left = 112
+      Height = 27
       Top = 6
-      Width = 440
+      Width = 431
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -99,9 +101,9 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideTop.Control = InheritedEdit
       AnchorSideTop.Side = asrBottom
       Left = 12
-      Height = 18
-      Top = 34
-      Width = 156
+      Height = 22
+      Top = 39
+      Width = 174
       BorderSpacing.Around = 6
       Caption = 'InhOverrideCheckBox'
       TabOrder = 1
@@ -111,9 +113,9 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideTop.Control = InhOverrideCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 12
-      Height = 18
-      Top = 58
-      Width = 126
+      Height = 22
+      Top = 67
+      Width = 140
       BorderSpacing.Around = 6
       Caption = 'InhCallCheckBox'
       TabOrder = 2
@@ -123,9 +125,9 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideTop.Control = InhCallCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 12
-      Height = 18
-      Top = 82
-      Width = 191
+      Height = 22
+      Top = 95
+      Width = 209
       BorderSpacing.Around = 6
       Caption = 'InhCallOnlyInElseCheckBox'
       TabOrder = 3
@@ -133,14 +135,14 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
   end
   object DeclGroupBox: TGroupBox
     Left = 6
-    Height = 112
+    Height = 126
     Top = 6
     Width = 557
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'DeclGroupBox'
-    ClientHeight = 90
+    ClientHeight = 105
     ClientWidth = 549
     TabOrder = 3
     object ParamTypeLabel: TLabel
@@ -148,9 +150,9 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideTop.Control = ParamTypeEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 65
-      Width = 104
+      Height = 18
+      Top = 76
+      Width = 115
       Caption = 'ParamTypeLabel'
       ParentColor = False
     end
@@ -159,9 +161,9 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ParamNameEdit
       AnchorSideTop.Side = asrBottom
-      Left = 116
-      Height = 22
-      Top = 62
+      Left = 127
+      Height = 27
+      Top = 72
       Width = 141
       BorderSpacing.Around = 6
       TabOrder = 0
@@ -172,9 +174,9 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ProcNameEdit
       AnchorSideTop.Side = asrBottom
-      Left = 121
-      Height = 22
-      Top = 34
+      Left = 135
+      Height = 27
+      Top = 39
       Width = 136
       BorderSpacing.Around = 6
       OnChange = ParamNameEditChange
@@ -186,9 +188,9 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideTop.Control = ParamNameEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 37
-      Width = 109
+      Height = 18
+      Top = 43
+      Width = 123
       Caption = 'ParamNameLabel'
       ParentColor = False
     end
@@ -196,8 +198,8 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideLeft.Control = ProcNameLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = DeclGroupBox
-      Left = 110
-      Height = 22
+      Left = 122
+      Height = 27
       Top = 6
       Width = 147
       BorderSpacing.Around = 6
@@ -210,9 +212,9 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideTop.Control = ProcNameEdit
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
-      Top = 9
-      Width = 98
+      Height = 18
+      Top = 10
+      Width = 110
       BorderSpacing.Left = 6
       Caption = 'ProcNameLabel'
       ParentColor = False
@@ -222,10 +224,10 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ProcNameEdit
       AnchorSideTop.Side = asrCenter
-      Left = 263
-      Height = 17
-      Top = 9
-      Width = 129
+      Left = 275
+      Height = 18
+      Top = 10
+      Width = 145
       Caption = 'ProcNameErrorLabel'
       Font.Color = clRed
       ParentColor = False
@@ -236,10 +238,10 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ParamNameEdit
       AnchorSideTop.Side = asrCenter
-      Left = 263
-      Height = 17
-      Top = 37
-      Width = 140
+      Left = 277
+      Height = 18
+      Top = 43
+      Width = 158
       Caption = 'ParamNameErrorLabel'
       Font.Color = clRed
       ParentColor = False
@@ -250,10 +252,10 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ParamTypeEdit
       AnchorSideTop.Side = asrCenter
-      Left = 263
-      Height = 17
-      Top = 65
-      Width = 135
+      Left = 274
+      Height = 18
+      Top = 76
+      Width = 150
       Caption = 'ParamTypeErrorLabel'
       Font.Color = clRed
       ParentColor = False
