@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, AVL_Tree, contnrs,
   FileProcs, CodeTree, CodeAtom, ExtractProcTool, FindDeclarationTool,
-  LinkScanner, SourceChanger;
+  BasicCodeTools, KeywordFuncLists, LinkScanner, SourceChanger;
 
 type
   TChangeParamListAction = (
@@ -66,6 +66,7 @@ type
 
   TChangeDeclarationTool = class(TExtractProcTool)
   private
+    procedure CDTParseParamList(ParentNode: TCodeTreeNode; Transactions: TObject);
     function ChangeParamListDeclaration(ParentNode: TCodeTreeNode;
       Changes: TObjectList; // list of TChangeParamListItem
       SourceChanger: TSourceChangeCache): boolean;
@@ -87,7 +88,7 @@ type
 
   TChangeParamTransactionInsert = class
   public
-    Src: string; // if Src='' then use Modifier+Name+Typ
+    Src: string; // if Src='' then use Modifier+Name+Typ+Value
     Modifier: string;
     Name: string;
     Typ: string;
@@ -102,6 +103,17 @@ type
   TChangeParamTransactionPos = class
   public
     Node: TCodeTreeNode; // old param node
+    // example: (var buf; {header} a,b:c; d:word=3 {footer}; ...)
+    HeaderCommentPos: integer;
+    Modifier: TAtomPosition; // ... (macpas varargs), const, var out, constref
+    Name: TAtomPosition; // '...' has no name
+    Typ: TAtomPosition;
+    DefaultValue: TAtomPosition;
+    HasComments: boolean;
+    FooterCommentEndPos: integer;
+    FirstInGroup: integer; // index of first parameter i a group, e.g. a,b:c
+    LastInGroup: integer;
+
     Delete: boolean;
     NewDefaultValue: string;
     InsertBehind: TObjectList;// list of TChangeParamTransactionInsert
@@ -116,6 +128,9 @@ type
     OldNodes: array of TChangeParamTransactionPos; // one for each old param node
     InsertFirst: TObjectList;// list of TChangeParamTransactionInsert
     Node: TCodeTreeNode; // ctnParameterList
+    BehindNamePos: integer;
+    BracketOpenPos: integer;
+    BracketClosePos: integer;
     constructor Create(ParamList: TCodeTreeNode);
     destructor Destroy; override;
     function MaxPos: integer;
@@ -227,6 +242,112 @@ end;
 
 { TChangeDeclarationTool }
 
+procedure TChangeDeclarationTool.CDTParseParamList(ParentNode: TCodeTreeNode;
+  Transactions: TObject);
+var
+  t: TChangeParamListTransactions;
+  ParamIndex: Integer;
+  CurParam: TChangeParamTransactionPos;
+  FirstInGroup: integer;
+  i: LongInt;
+  CloseBracket: Char;
+
+  procedure ReadPrefixModifier;
+  begin
+    // read parameter prefix modifier
+    if UpAtomIs('VAR') or UpAtomIs('CONST') or UpAtomIs('CONSTREF')
+    or (UpAtomIs('OUT') and (Scanner.CompilerMode in [cmOBJFPC,cmDELPHI,cmFPC]))
+    then begin
+      CurParam.Modifier:=CurPos;
+      ReadNextAtom;
+    end;
+  end;
+
+begin
+  t:=Transactions as TChangeParamListTransactions;
+  // parse param list
+  if ParentNode.Desc=ctnProcedureHead then
+    MoveCursorBehindProcName(ParentNode)
+  else if ParentNode.Desc=ctnProperty then
+    MoveCursorBehindPropName(ParentNode)
+  else
+    raise Exception.Create('TChangeDeclarationTool.ChangeParamListDeclaration kind not supported: '+ParentNode.DescAsString);
+  t.BehindNamePos:=LastAtoms.GetValueAt(0).EndPos;
+  // read bracket
+  if CurPos.Flag=cafRoundBracketOpen then
+    CloseBracket:=')'
+  else if CurPos.Flag=cafEdgedBracketOpen then
+    CloseBracket:=']'
+  else
+    exit; // no param list
+
+  t.BracketOpenPos:=CurPos.StartPos;
+  ParamIndex:=0;
+  ReadNextAtom;
+  repeat
+    CurParam:=t.OldNodes[ParamIndex];
+    FirstInGroup:=-1;
+    if AtomIs('...') then begin
+      // MacPas '...' VarArgs parameter
+      ReadNextAtom;
+      // parse end of parameter list
+      if (CurPos.StartPos>SrcLen)
+      or (Src[CurPos.StartPos]<>CloseBracket) then
+        RaiseCharExpectedButAtomFound(CloseBracket);
+      break;
+    end else begin
+      ReadPrefixModifier;
+      // read parameter name(s)
+      repeat
+        AtomIsIdentifier(true);
+        CurParam.Name:=CurPos;
+        ReadNextAtom;
+        if CurPos.Flag<>cafComma then
+          break;
+        // A group. Example: b,c:char;
+        if FirstInGroup<0 then FirstInGroup:=ParamIndex;
+        inc(ParamIndex);
+        CurParam:=t.OldNodes[ParamIndex];
+        ReadNextAtom;
+      until false;
+      if FirstInGroup>=0 then begin
+        for i:=FirstInGroup to ParamIndex do begin
+          t.OldNodes[i].FirstInGroup:=FirstInGroup;
+          t.OldNodes[i].LastInGroup:=ParamIndex;
+        end;
+      end;
+      // read parameter type
+      if CurPos.Flag=cafColon then begin
+        ReadNextAtom;
+        CurParam.Typ:=CurPos;
+        if not ReadParamType(true,false,[]) then exit;
+        CurParam.Typ.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+        if CurPos.Flag=cafEqual then begin
+          // read default value
+          ReadNextAtom;
+          CurParam.DefaultValue:=CurPos;
+          ReadConstant(true,false,[]);
+          CurParam.DefaultValue.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+        end;
+      end;
+      // close bracket or semicolon
+      if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
+        t.BracketClosePos:=CurPos.StartPos;
+        break;
+      end;
+      if CurPos.Flag<>cafSemicolon then
+        RaiseCharExpectedButAtomFound(CloseBracket);
+      inc(ParamIndex);
+    end;
+  until false;
+
+  // check for each parameter if it has comments
+  for i:=0 to t.MaxPos-1 do begin
+    CurParam:=t.OldNodes[i];
+    // ToDo:
+  end;
+end;
+
 function TChangeDeclarationTool.ChangeParamListDeclaration(
   ParentNode: TCodeTreeNode; Changes: TObjectList;
   SourceChanger: TSourceChangeCache): boolean;
@@ -249,8 +370,7 @@ begin
     ParamListNode:=nil;
   Transactions:=TChangeParamListTransactions.Create(ParamListNode);
   try
-    // ToDo: parse param list
-
+    CDTParseParamList(ParentNode,Transactions);
 
     for i:=0 to Changes.Count-1 do begin
       Change:=TChangeParamListItem(Changes[i]);

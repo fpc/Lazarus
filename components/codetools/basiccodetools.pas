@@ -53,6 +53,9 @@ function FindCommentEnd(const ASource: string; StartPos: integer;
 function IsCommentEnd(const ASource: string; EndPos: integer): boolean;
 function FindNextComment(const ASource: string;
     StartPos: integer; MaxPos: integer = 0): integer;
+procedure FindCommentsInRange(const Src: string; StartPos, EndPos: integer;
+    out FirstCommentStart, FirstAtomStart, LastCommentEnd, LastAtomEnd: integer;
+    NestedComments: boolean = false);
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirectiveWithName(const ASource: string;
@@ -1176,6 +1179,50 @@ begin
   if Result>MaxPos+1 then Result:=MaxPos+1;
 end;
 
+procedure FindCommentsInRange(const Src: string; StartPos, EndPos: integer;
+  out FirstCommentStart, FirstAtomStart, LastCommentEnd, LastAtomEnd: integer;
+  NestedComments: boolean);
+var
+  p: PChar;
+  i: integer;
+  AtomStart: integer;
+  SrcLen: Integer;
+begin
+  FirstCommentStart:=0;
+  FirstAtomStart:=0;
+  LastCommentEnd:=0;
+  LastAtomEnd:=0;
+  SrcLen:=length(Src);
+  if (StartPos<1) then StartPos:=1;
+  if StartPos>SrcLen then exit;
+  if EndPos>SrcLen then EndPos:=SrcLen+1;
+  i:=StartPos;
+  while i<EndPos do begin
+    p:=@Src[i];
+    // skip space
+    while IsSpaceChar[p^] do inc(p);
+    i:=p-PChar(Src)+1;
+    if i>=EndPos then exit;
+
+    if (p^='{') or ((p^='(') and (p[1]='*')) or ((p^='/') and (p[1]='/')) then
+    begin
+      // a comment
+      if FirstCommentStart=0 then
+        FirstCommentStart:=i;
+      i:=FindCommentEnd(Src,i,NestedComments);
+      if LastCommentEnd=0 then
+        LastCommentEnd:=i;
+    end else begin
+      // normal atom
+      if FirstAtomStart=0 then
+        FirstAtomStart:=i;
+      ReadRawNextPascalAtom(Src,i,AtomStart);
+      if LastAtomEnd=0 then
+        LastAtomEnd:=i;
+    end;
+  end;
+end;
+
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
   NestedComments: boolean): integer;
 var
@@ -1288,7 +1335,7 @@ end;
 
 function FindCommentEnd(const ASource: string; StartPos: integer;
   NestedComments: boolean): integer;
-// returns position after the comment end, e.g. after {
+// returns position after the comment end, e.g. after }
 var
   MaxPos, CommentLvl: integer;
 begin

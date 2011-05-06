@@ -70,6 +70,7 @@ type
                              InUpperCase, EmptyIfIndexed: boolean): string;
     function MoveCursorToPropType(PropNode: TCodeTreeNode): boolean;
     function MoveCursorToPropName(PropNode: TCodeTreeNode): boolean;
+    procedure MoveCursorBehindPropName(PropNode: TCodeTreeNode);
     function ExtractPropName(PropNode: TCodeTreeNode;
                              InUpperCase: boolean): string;
     function ExtractProperty(PropNode: TCodeTreeNode;
@@ -1020,6 +1021,22 @@ begin
     ReadNextAtom;
   end;
   Result:=CurPos.Flag=cafWord;
+end;
+
+procedure TPascalReaderTool.MoveCursorBehindPropName(PropNode: TCodeTreeNode);
+begin
+  if (PropNode=nil)
+  or ((PropNode.Desc<>ctnProperty) and (PropNode.Desc<>ctnGlobalProperty)) then
+    exit;
+  MoveCursorToNodeStart(PropNode);
+  ReadNextAtom;
+  if (PropNode.Desc=ctnProperty) then begin
+    if UpAtomIs('CLASS') then ReadNextAtom;
+    if (not UpAtomIs('PROPERTY')) then exit;
+    ReadNextAtom;
+  end;
+  if not AtomIsIdentifier(false) then exit;
+  ReadNextAtom;
 end;
 
 function TPascalReaderTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;

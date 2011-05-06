@@ -1167,21 +1167,6 @@ function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
    procedure Intf.Method = ImplementingMethodName;
    function CommitUrlCacheEntry; // only Delphi
    procedure MacProcName(c: char; ...); external;
-
- proc specifiers without parameters:
-   stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline
-
- proc specifiers with parameters:
-   message <id or number>;
-   external;
-   external <id>;
-   external name <id> delayed;
-   external <id or number> name <id>;
-   external <id or number> index <id>;
-   [alias: <string constant>]
-   [external name <string constant>]
-   [internconst:in_const_round, external name 'FPC_ROUND'];
-   dispid <id>;
 }
 var CloseBracket: char;
   Desc: TCodeTreeNodeDesc;

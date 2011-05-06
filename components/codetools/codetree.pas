@@ -164,11 +164,11 @@ const
   AllClassModifiers = [ctnClassAbstract, ctnClassSealed, ctnClassExternal];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection,
-      ctnLabelSection];
-  AllIdentifierDefinitions =
-     [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnGenericType];
+      ctnLabelSection,ctnPropertySection];
   AllSimpleIdentifierDefinitions =
      [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition];
+  AllIdentifierDefinitions = AllSimpleIdentifierDefinitions
+     +[ctnGenericType,ctnGlobalProperty];
   AllPascalTypes =
      AllClasses+
      [ctnGenericType,ctnSpecialize,
