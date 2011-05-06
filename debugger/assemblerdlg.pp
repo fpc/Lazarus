@@ -470,10 +470,14 @@ var
   R: TRect;
   n, X, Y, Line, W: Integer;
   S: String;
+  TextStyle: TTextStyle;
 begin
-
   R := pbAsm.ClientRect;
-//  pbAsm.Canvas.Brush.Color := clWindow;
+  TextStyle := pbAsm.Canvas.TextStyle;
+  TextStyle.Wordbreak := False;
+  TextStyle.SingleLine := True;
+  pbAsm.Canvas.TextStyle := TextStyle;
+
   pbAsm.Canvas.FillRect(R);
   Inc(R.Left, FGutterWidth);
 
