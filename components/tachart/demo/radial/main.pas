@@ -21,6 +21,7 @@ type
     ChartPiePieSeries1: TPieSeries;
     ChartToolset1: TChartToolset;
     cbRotate: TCheckBox;
+    cbMarkPositions: TComboBox;
     lblWords: TLabel;
     lblLabelAngle: TLabel;
     ListChartSource1: TListChartSource;
@@ -31,6 +32,7 @@ type
     seLabelAngle: TSpinEdit;
     tsPolar: TTabSheet;
     tsPie: TTabSheet;
+    procedure cbMarkPositionsChange(Sender: TObject);
     procedure cbRotateChange(Sender: TObject);
     procedure ChartPieMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -46,6 +48,12 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.cbMarkPositionsChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.MarkPositions :=
+    TPieMarkPositions(cbMarkPositions.ItemIndex);
+end;
 
 procedure TForm1.cbRotateChange(Sender: TObject);
 begin
