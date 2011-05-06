@@ -92,6 +92,7 @@ type
     property BarWidthStyle: TBarWidthStyle
       read FBarWidthStyle write SetBarWidthStyle default bwPercent;
     property Depth;
+    property MarkPositions;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clRed;
     property Source;
@@ -138,9 +139,9 @@ type
     procedure SetUseZeroLevel(AValue: Boolean);
     procedure SetZeroLevel(AValue: Double);
   protected
-    function GetLabelDirection(AIndex: Integer): TLabelDirection; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
+    function GetZeroLevel: Double; override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -158,6 +159,7 @@ type
     property ConnectType: TConnectType
       read FConnectType write SetConnectType default ctLine;
     property Depth;
+    property MarkPositions;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clWhite;
     property Source;
@@ -213,6 +215,7 @@ type
     property LinePen: TPen read FLinePen write SetLinePen;
     property LineType: TLineType
       read FLineType write SetLineType default ltFromPrevious;
+    property MarkPositions;
     property OnDrawPointer: TSeriesPointerDrawEvent
       read FOnDrawPointer write FOnDrawPointer;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
@@ -1098,15 +1101,6 @@ begin
     UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
 end;
 
-function TAreaSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
-const
-  DIR: array [Boolean, Boolean] of TLabelDirection =
-    ((ldTop, ldBottom), (ldRight, ldLeft));
-begin
-  Result :=
-    DIR[IsRotated, UseZeroLevel and (GetGraphPointY(AIndex) < ZeroLevel)];
-end;
-
 procedure TAreaSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   GetLegendItemsRect(AItems, AreaBrush);
@@ -1115,6 +1109,11 @@ end;
 function TAreaSeries.GetSeriesColor: TColor;
 begin
   Result := FAreaBrush.Color;
+end;
+
+function TAreaSeries.GetZeroLevel: Double;
+begin
+  Result := IfThen(UseZeroLevel, ZeroLevel, 0.0);
 end;
 
 function TAreaSeries.IsZeroLevelStored: boolean;

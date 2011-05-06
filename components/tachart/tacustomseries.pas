@@ -182,10 +182,15 @@ type
 
   TLabelDirection = (ldLeft, ldTop, ldRight, ldBottom);
 
+  TLinearMarkPositions = (lmpOutside, lmpPositive, lmpNegative, lmpInside);
+
   { TBasicPointSeries }
 
   TBasicPointSeries = class(TChartSeries)
   private
+    FMarkPositions: TLinearMarkPositions;
+    function GetLabelDirection(AIndex: Integer): TLabelDirection;
+    procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetUseReticule(AValue: Boolean);
 
   protected
@@ -196,9 +201,9 @@ type
     FUseReticule: Boolean;
 
     procedure DrawLabels(ADrawer: IChartDrawer);
-    function GetLabelDirection(AIndex: Integer): TLabelDirection; virtual;
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
+    function GetZeroLevel: Double; virtual;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     procedure UpdateGraphPoints(AIndex: Integer);
@@ -212,6 +217,8 @@ type
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       override;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
+    property MarkPositions: TLinearMarkPositions
+      read FMarkPositions write SetMarkPositions default lmpOutside;
   end;
 
 implementation
@@ -775,8 +782,16 @@ function TBasicPointSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
 const
   DIR: array [Boolean, Boolean] of TLabelDirection =
     ((ldTop, ldBottom), (ldRight, ldLeft));
+var
+  isNeg: Boolean;
 begin
-  Result := DIR[IsRotated, GetGraphPointY(AIndex) < 0];
+  case MarkPositions of
+    lmpOutside: isNeg := GetGraphPointY(AIndex) < GetZeroLevel;
+    lmpPositive: isNeg := false;
+    lmpNegative: isNeg := true;
+    lmpInside: isNeg := GetGraphPointY(AIndex) >= GetZeroLevel;
+  end;
+  Result := DIR[IsRotated, isNeg];
 end;
 
 procedure TBasicPointSeries.GetLegendItemsRect(
@@ -834,6 +849,11 @@ begin
   end;
 end;
 
+function TBasicPointSeries.GetZeroLevel: Double;
+begin
+  Result := 0.0;
+end;
+
 procedure TBasicPointSeries.MovePoint(
   var AIndex: Integer; const ANewPos: TPoint);
 var
@@ -877,6 +897,13 @@ begin
   else
     for i := FLoBound to FUpBound do
       FGraphPoints[i - FLoBound] := GetGraphPoint(i);
+end;
+
+procedure TBasicPointSeries.SetMarkPositions(AValue: TLinearMarkPositions);
+begin
+  if FMarkPositions = AValue then exit;
+  FMarkPositions := AValue;
+  UpdateParentChart;
 end;
 
 procedure TBasicPointSeries.SetUseReticule(AValue: Boolean);
