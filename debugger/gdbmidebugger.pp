@@ -186,7 +186,8 @@ type
     FSeenStates: TGDBMIDebuggerCommandStates;
     FTheDebugger: TGDBMIDebugger; // Set during Execute
     FLastExecResult: TGDBMIExecResult;
-    function GetDebuggerProperties: TGDBMIDebuggerProperties;
+    FLogWarnings: String;
+  function GetDebuggerProperties: TGDBMIDebuggerProperties;
     function GetDebuggerState: TDBGState;
     function GetTargetInfo: PGDBMITargetInfo;
     procedure SetKeepFinished(const AValue: Boolean);
@@ -417,6 +418,11 @@ resourcestring
     + 'Press "Stop" to end the debug session';
   gdbmiErrorOnRunCommandWithWarning = '%0:s%0:sIn addition to the Error the following '
     + 'warning was encountered:%0:s%0:s%1:s';
+  gdbmiBreakPointErrorOnRunCommand = 'The debugger encountered an error when trying to '
+    + 'run/step the application:%0:s%0:s%1:s%0:s%0:s'
+    + 'Press "Ok" to remove the breakpoints and continue debugging (paused), '
+    + 'and correct the problem, or choose an alternative run command%0:s'
+    + 'Press "Stop" to end the debug session';
   gdbmiTimeOutForCmd = 'Time-out for command: "%s"';
   gdbmiFatalErrorOccured = 'Unrecoverable Error: "%s"';
 
@@ -528,7 +534,6 @@ type
     FExecType: TGDBMIExecCommandType;
     FCommand: String;
     FCanKillNow, FDidKillNow: Boolean;
-    FLogWarnings: String;
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnockQueueExecute; override;
@@ -732,7 +737,6 @@ type
 
   TGDBMIBreakPoint = class(TDBGBreakPoint)
   private
-    FBreakID: Integer;
     FParsedExpression: String;
     FCurrentCmd: TGDBMIDebuggerCommandBreakPointBase;
     FUpdateFlags: TGDBMIBreakPointUpdateFlags;
@@ -742,16 +746,24 @@ type
     procedure DoCommandDestroyed(Sender: TObject);
     procedure DoCommandExecuted(Sender: TObject);
   protected
+    FBreakID: Integer;
     procedure DoEndUpdate; override;
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure MakeInvalid;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
   end;
 
+  { TGDBMIBreakPoints }
+
+  TGDBMIBreakPoints = class(TDBGBreakPoints)
+  protected
+    function FindById(AnId: Integer): TGDBMIBreakPoint;
+  end;
   {%endregion   ^^^^^  BreakPoints  ^^^^^   }
 
   {%region      *****  Register  *****   }
@@ -1387,6 +1399,21 @@ begin
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
   Result := '"' + Result + '"';
+end;
+
+{ TGDBMIBreakPoints }
+
+function TGDBMIBreakPoints.FindById(AnId: Integer): TGDBMIBreakPoint;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+  begin
+    Result := TGDBMIBreakPoint(Items[n]);
+    if  (Result.FBreakID = AnId)
+    then Exit;
+  end;
+  Result := nil;
 end;
 
 { TGDBMIDebuggerCommandKill }
@@ -4181,7 +4208,7 @@ function TGDBMIDebuggerCommandExecute.FixThreadForSigTrap: Boolean;
 var
   R: TGDBMIExecResult;
   List: TGDBMINameValueList;
-  S: string;
+  s, s2: string;
   n, ID1, ID2: Integer;
 begin
   Result := False;
@@ -4215,6 +4242,68 @@ end;
 
 function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
 
+  function HandleBreakPointError(var ARes: TGDBMIExecResult; AError: String): Boolean;
+  const
+    BreaKErrMsg = 'Cannot insert breakpoint ';
+  var
+    c, i: Integer;
+    bp: Array of Integer;
+    s, s2: string;
+    b: TGDBMIBreakPoint;
+  begin
+    Result := False;
+    s := AError;
+    c := 0;
+    i := pos(BreaKErrMsg, s);
+    while i > 0 do begin
+      s := copy(s, i+length(BreaKErrMsg), length(s));
+      i := 1;
+      while (i <= length(s)) and (s[i] in ['0'..'9']) do inc(i);
+      if i = 1 then exit;
+      SetLength(bp, c+1);
+      bp[c] := StrToIntDef(copy(s, 1, i-1), -1);
+      if bp[c] = -1 then exit;
+      inc(c);
+      i := pos(BreaKErrMsg, s);
+    end;
+    if c = 0 then exit;
+
+    Result := True;
+
+    if ARes.State = dsError
+    then begin
+      s := ARes.Values;
+      if FLogWarnings <> ''
+      then s2 := Format(gdbmiErrorOnRunCommandWithWarning, [LineEnding, FLogWarnings])
+      else s2 := '';
+      FLogWarnings := '';
+    end else begin
+      s := AError;
+      s2 := '';
+    end;
+
+    case FTheDebugger.OnFeedback(self,
+                                 Format(gdbmiBreakPointErrorOnRunCommand, [LineEnding, s]) + s2,
+                                 ARes.Values, ftError, [frOk, frStop]
+         ) of
+      frOk: begin
+          ARes.State := dsPause;
+          ProcessFrame;
+          for i := 0 to length(bp)-1 do begin
+            b := TGDBMIBreakPoints(FTheDebugger.BreakPoints).FindById(bp[i]);
+            if b <> nil
+            then b.MakeInvalid
+            else ExecuteCommand('-break-delete %d', [bp[i]], []);
+          end;
+        end;
+      frStop: begin
+          FTheDebugger.Stop;
+          ARes.State := dsStop;
+        end;
+    end;
+
+  end;
+
   function HandleRunError(var ARes: TGDBMIExecResult): Boolean;
   var
     s, s2: String;
@@ -4225,6 +4314,12 @@ function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
     if (Pos('program is not being run', ARes.Values) > 0) then begin  // Should lead to dsStop
       SetDebuggerState(dsError);
       exit;
+    end;
+    if (Pos('Cannot insert breakpoint', ARes.Values) > 0) or
+       (Pos('Cannot insert breakpoint', FLogWarnings) > 0)
+    then begin
+      Result := HandleBreakPointError(ARes, ARes.Values + FLogWarnings);
+      if Result then exit;
     end;
 
     if assigned(FTheDebugger.OnFeedback) then begin
@@ -4242,6 +4337,7 @@ function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
              ) of
           frOk: begin
               ARes.State := dsPause;
+              ProcessFrame;
               Result := True;
             end;
           frStop: begin
@@ -4256,7 +4352,7 @@ function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
   end;
 
 var
-  StoppedParams: String;
+  StoppedParams, RunWarnings: String;
   ContinueExecution: Boolean;
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
   R: TGDBMIExecResult;
@@ -4278,7 +4374,9 @@ begin
         DoDbgEvent(ecDebugger, etDefault, Format(gdbmiFatalErrorOccured, [FResult.Values]));
         SetDebuggerState(dsError);
         exit;
-      end;
+      end
+      else
+        RunWarnings := FLogWarnings;
 
       if (FResult.State <> dsNone)
       then SetDebuggerState(FResult.State);
@@ -4308,6 +4406,10 @@ begin
       DoDbgEvent(ecDebugger, etDefault, Format(gdbmiFatalErrorOccured, [R.Values]));
       SetDebuggerState(dsError);
       exit;
+    end;
+
+    if HandleBreakPointError(FResult, RunWarnings + LineEnding + FLogWarnings) then begin
+      if FResult.State = dsStop then exit;
     end;
 
     ContinueExecution := False;
@@ -4994,7 +5096,7 @@ end;
 
 function TGDBMIDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
-  Result := TDBGBreakPoints.Create(Self, TGDBMIBreakPoint);
+  Result := TGDBMIBreakPoints.Create(Self, TGDBMIBreakPoint);
 end;
 
 function TGDBMIDebugger.CreateCallStack: TDBGCallStack;
@@ -6497,6 +6599,15 @@ begin
       then ReleaseBreakpoint;
     end;
   end;
+end;
+
+procedure TGDBMIBreakPoint.MakeInvalid;
+begin
+  BeginUpdate;
+  ReleaseBreakPoint;
+  SetValid(vsInvalid);
+  Changed;
+  EndUpdate;
 end;
 
 procedure TGDBMIBreakPoint.SetBreakpoint;
@@ -8713,6 +8824,8 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATimeOut: Integer = -1): Boolean;
+var
+  InLogWarning: Boolean;
 
   function DoResultRecord(Line: String): Boolean;
   var
@@ -8791,12 +8904,20 @@ function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATime
   end;
 
   procedure DoLogStream(const Line: String);
+  const
+    LogWarning = '&"Warning:\n"';
   begin
     DebugLn('[Debugger] Log output: ', Line);
     if Line = '&"kill\n"'
     then AResult.State := dsStop
     else if LeftStr(Line, 8) = '&"Error '
     then AResult.State := dsError;
+    if copy(Line, 1, length(LogWarning)) = LogWarning
+    then InLogWarning := True;
+    if InLogWarning
+    then FLogWarnings := FLogWarnings + copy(Line, 3, length(Line)-5) + LineEnding;
+    if copy(Line, 1, length(LogWarning)) = '&"\n"'
+    then InLogWarning := False;
   end;
 
   procedure DoExecAsync(Line: String);
@@ -8843,6 +8964,8 @@ begin
   AResult.Values := '';
   AResult.Flags := [];
   AResult.State := dsNone;
+  InLogWarning := False;
+  FLogWarnings := '';
   repeat
     S := FTheDebugger.ReadLine(ATimeOut);
     if S = '(gdb) ' then Break;

@@ -49,6 +49,7 @@ object DbgFeedbackDlg: TDbgFeedbackDlg
       BorderSpacing.Around = 5
       Caption = 'lblMsg'
       ParentColor = False
+      WordWrap = True
     end
     object Memo1: TMemo
       Left = 5
