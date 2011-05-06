@@ -282,6 +282,7 @@ type
   private
     FCommandQueue: TList;
     FCurrentCommand: TGDBMIDebuggerCommand;
+    FCurrentRunCtrlCommand: TGDBMIDebuggerCommand;
     FCommandQueueExecLock: Integer;
     FCommandProcessingLock: Integer;
     FProcessingExeCmdLock: Integer;
@@ -525,9 +526,18 @@ type
     property Success: Boolean read FSuccess;
   end;
 
+  { TGDBMIDebuggerCommandRunCtrl }
+
+  TGDBMIDebuggerCommandRunCtrl = class(TGDBMIDebuggerCommand)
+  protected
+    procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); override;
+  public
+    destructor Destroy; override;
+  end;
+
   { TGDBMIDebuggerCommandExecute }
 
-  TGDBMIDebuggerCommandExecute = class(TGDBMIDebuggerCommand)
+  TGDBMIDebuggerCommandExecute = class(TGDBMIDebuggerCommandRunCtrl)
   private
     FNextExecQueued: Boolean;
     FResult: TGDBMIExecResult;
@@ -554,7 +564,7 @@ type
 
   { TGDBMIDebuggerCommandKill }
 
-  TGDBMIDebuggerCommandKill = class(TGDBMIDebuggerCommand)
+  TGDBMIDebuggerCommandKill = class(TGDBMIDebuggerCommandRunCtrl)
   protected
     function  DoExecute: Boolean; override;
   end;
@@ -1399,6 +1409,29 @@ begin
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
   Result := '"' + Result + '"';
+end;
+
+{ TGDBMIDebuggerCommandRunCtrl }
+
+procedure TGDBMIDebuggerCommandRunCtrl.DoStateChanged(OldState: TGDBMIDebuggerCommandState);
+begin
+  inherited DoStateChanged(OldState);
+  if State = dcsNone then exit;
+  if State = dcsQueued then begin
+    Assert(FTheDebugger.FCurrentRunCtrlCommand = nil, 'already RunCtrl command queued');
+    FTheDebugger.FCurrentRunCtrlCommand := self;
+  end
+  else begin
+    Assert((FTheDebugger.FCurrentRunCtrlCommand = nil) or (FTheDebugger.FCurrentRunCtrlCommand = self), 'wrong RunCtrl command queued');
+    FTheDebugger.FCurrentRunCtrlCommand := nil;
+  end;
+end;
+
+destructor TGDBMIDebuggerCommandRunCtrl.Destroy;
+begin
+  Assert((FTheDebugger.FCurrentRunCtrlCommand = nil) or (FTheDebugger.FCurrentRunCtrlCommand = self), 'wrong RunCtrl command queued');
+  FTheDebugger.FCurrentRunCtrlCommand := nil;
+  inherited Destroy;
 end;
 
 { TGDBMIBreakPoints }
@@ -3469,6 +3502,8 @@ var
 begin
   Result := True;
   FSuccess := False;
+  Assert(FTheDebugger.FCurrentRunCtrlCommand = nil, 'already RunCtrl command queued, while starting');
+  FTheDebugger.FCurrentRunCtrlCommand := nil;
 
   try
     if not (DebuggerState in [dsStop])
@@ -4208,7 +4243,7 @@ function TGDBMIDebuggerCommandExecute.FixThreadForSigTrap: Boolean;
 var
   R: TGDBMIExecResult;
   List: TGDBMINameValueList;
-  s, s2: string;
+  s: string;
   n, ID1, ID2: Integer;
 begin
   Result := False;
@@ -5154,6 +5189,7 @@ end;
 
 procedure TGDBMIDebugger.Done;
 begin
+  FCurrentRunCtrlCommand := nil;
   if State = dsDestroying
   then begin
     ClearCommandQueue;
@@ -5634,6 +5670,7 @@ end;
 function TGDBMIDebugger.GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
 begin
   Result := False;
+  if FCurrentRunCtrlCommand <> nil then exit;
 end;
 
 function TGDBMIDebugger.GDBPause(const AInternal: Boolean): Boolean;
@@ -5655,6 +5692,7 @@ end;
 function TGDBMIDebugger.GDBRun: Boolean;
 begin
   Result := False;
+  if FCurrentRunCtrlCommand <> nil then exit;
   case State of
     dsStop: begin
       Result := StartDebugging(ectContinue);
@@ -5674,6 +5712,7 @@ function TGDBMIDebugger.GDBRunTo(const ASource: String;
   const ALine: Integer): Boolean;
 begin
   Result := False;
+  if FCurrentRunCtrlCommand <> nil then exit;
   case State of
     dsStop: begin
       Result := StartDebugging(ectRunTo, [ASource, ALine]);
@@ -5771,6 +5810,7 @@ end;
 function TGDBMIDebugger.GDBStepInto: Boolean;
 begin
   Result := False;
+  if FCurrentRunCtrlCommand <> nil then exit;
   case State of
     dsStop: begin
       Result := StartDebugging;
@@ -5789,6 +5829,7 @@ end;
 function TGDBMIDebugger.GDBStepOverInstr: Boolean;
 begin
   Result := False;
+  if FCurrentRunCtrlCommand <> nil then exit;
   case State of
     dsStop: begin
       Result := StartDebugging;
@@ -5807,6 +5848,7 @@ end;
 function TGDBMIDebugger.GDBStepIntoInstr: Boolean;
 begin
   Result := False;
+  if FCurrentRunCtrlCommand <> nil then exit;
   case State of
     dsStop: begin
       Result := StartDebugging;
@@ -5825,6 +5867,7 @@ end;
 function TGDBMIDebugger.GDBStepOut: Boolean;
 begin
   Result := False;
+  if FCurrentRunCtrlCommand <> nil then exit;
   case State of
     dsStop: begin
       Result := StartDebugging;
@@ -5843,6 +5886,7 @@ end;
 function TGDBMIDebugger.GDBStepOver: Boolean;
 begin
   Result := False;
+  if FCurrentRunCtrlCommand <> nil then exit;
   case State of
     dsStop: begin
       Result := StartDebugging;
@@ -5974,6 +6018,7 @@ begin
   try
     FPauseWaitState := pwsNone;
     FInExecuteCount := 0;
+    FCurrentRunCtrlCommand := nil;
 
     Options := '-silent -i mi -nx';
 
