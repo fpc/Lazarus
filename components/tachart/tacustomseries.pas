@@ -165,7 +165,7 @@ type
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
     function Extent: TDoubleRect; virtual;
-    function FormattedMark(AIndex: Integer): String;
+    function FormattedMark(AIndex: Integer; AYIndex: Integer = 0): String;
     function IsEmpty: Boolean; override;
     function ListSource: TListChartSource;
     property Source: TCustomChartSource
@@ -192,7 +192,6 @@ type
     function GetLabelDirection(AIndex: Integer): TLabelDirection;
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetUseReticule(AValue: Boolean);
-
   protected
     FGraphPoints: array of TDoublePoint;
     FLoBound: Integer;
@@ -555,12 +554,12 @@ begin
   Result := Source.ExtentCumulative;
 end;
 
-function TChartSeries.FormattedMark(AIndex: integer): String;
+function TChartSeries.FormattedMark(AIndex, AYIndex: Integer): String;
 begin
   if Assigned(FOnGetMark) then
     FOnGetMark(Result, AIndex)
   else
-    Result := Source.FormatItem(Marks.Format, AIndex);
+    Result := Source.FormatItem(Marks.Format, AIndex, AYIndex);
 end;
 
 procedure TChartSeries.GetBounds(var ABounds: TDoubleRect);
@@ -767,14 +766,26 @@ var
 
 var
   g: TDoublePoint;
-  i: Integer;
+  i, si: Integer;
+  ld: TLabelDirection;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
   for i := 0 to Count - 1 do begin
     g := GetGraphPoint(i);
-    with ParentChart do
-      if IsPointInViewPort(g) then
-        DrawLabel(FormattedMark(i), GraphToImage(g), GetLabelDirection(i));
+    ld := GetLabelDirection(i);
+    for si := 0 to Source.YCount - 1 do begin
+      if si > 0 then
+        if IsRotated then
+          g.X += AxisToGraphY(Source[i]^.YList[si - 1])
+        else
+          g.Y += AxisToGraphY(Source[i]^.YList[si - 1]);
+      with ParentChart do
+        if
+          (Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si) and
+          IsPointInViewPort(g)
+        then
+          DrawLabel(FormattedMark(i, si), GraphToImage(g), ld);
+    end;
   end;
 end;
 

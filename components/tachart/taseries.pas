@@ -1089,7 +1089,6 @@ begin
       for i := 1 to n2 - 2 do
         ADrawer.DrawLineDepth(pts[i], pts[i + 1], Depth);
     ADrawer.Polygon(pts, 0, numPts);
-    DrawLabels(ADrawer);
   end;
   if AreaLinesPen.Style <> psClear then begin
     ADrawer.Pen := AreaLinesPen;
@@ -1099,6 +1098,7 @@ begin
       ADrawer.Line(ParentChart.GraphToImage(a), ParentChart.GraphToImage(b));
     end;
   end;
+  DrawLabels(ADrawer);
 end;
 
 function TAreaSeries.Extent: TDoubleRect;

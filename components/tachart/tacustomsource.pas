@@ -32,11 +32,15 @@ type
   // Like TColor, but avoiding dependency on Graphics.
   TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
 
-  TChartDataItem = record
+  { TChartDataItem }
+
+  TChartDataItem = object
+  public
     X, Y: Double;
     Color: TChartColor;
     Text: String;
     YList: TDoubleDynArray;
+    function GetY(AIndex: Integer): Double;
   end;
   PChartDataItem = ^TChartDataItem;
 
@@ -73,7 +77,8 @@ type
     function ExtentCumulative: TDoubleRect;
     function ExtentList: TDoubleRect;
     procedure FindBounds(AXMin, AXMax: Double; out ALB, AUB: Integer);
-    function FormatItem(const AFormat: String; AIndex: Integer): String;
+    function FormatItem(
+      const AFormat: String; AIndex, AYIndex: Integer): String;
     function IsSorted: Boolean; virtual;
     procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
@@ -128,6 +133,17 @@ begin
   AItem.Text := '';
   for i := 0 to High(AItem.YList) do
     AItem.YList[i] := 0;
+end;
+
+{ TChartDataItem }
+
+function TChartDataItem.GetY(AIndex: Integer): Double;
+begin
+  AIndex := EnsureRange(AIndex, 0, Length(YList));
+  if AIndex = 0 then
+    Result := Y
+  else
+    Result := YList[AIndex - 1];
 end;
 
 { TChartSourceBuffer }
@@ -357,19 +373,20 @@ begin
 end;
 
 function TCustomChartSource.FormatItem(
-  const AFormat: String; AIndex: Integer): String;
+  const AFormat: String; AIndex, AYIndex: Integer): String;
 const
   TO_PERCENT = 100;
 var
-  total, percent: Double;
+  total, percent, vy: Double;
 begin
   total := ValuesTotal;
+  if total = 0 then
+    percent := 0
+  else
+    percent := TO_PERCENT / total;
   with Item[AIndex]^ do begin
-    if total = 0 then
-      percent := 0
-    else
-      percent := Y / total * TO_PERCENT;
-    Result := Format(AFormat, [y, percent, Text, total, X]);
+    vy := GetY(AYIndex);
+    Result := Format(AFormat, [vy, vy * percent, Text, total, X]);
   end;
 end;
 
@@ -409,7 +426,7 @@ begin
     v := IfThen(AUseY, Item[i]^.Y, Item[i]^.X);
     if not InRange(v, AMin, AMax) then continue;
     AValues[cnt] := v;
-    ATexts[cnt] := FormatItem(AFormat, i);
+    ATexts[cnt] := FormatItem(AFormat, i, 0);
     cnt += 1;
   end;
   SetLength(AValues, cnt);

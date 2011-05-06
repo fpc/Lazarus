@@ -37,6 +37,7 @@ const
   DEF_MARGIN = 4;
   DEF_MARKS_DISTANCE = 20;
   DEF_POINTER_SIZE = 4;
+  MARKS_YINDEX_ALL = -1;
 
 type
   TCustomChart = class(TCustomControl)
@@ -130,12 +131,14 @@ type
   TGenericChartMarks = class(TChartElement)
   {$ENDIF}
   private
+    FYIndex: Integer;
     procedure AddMargins(ADrawer: IChartDrawer; var ASize: TPoint);
     function GetDistanceToCenter: Boolean;
     function LabelAngle: Double; inline;
     procedure PutLabelFontTo(ADrawer: IChartDrawer);
     procedure SetAttachment(AValue: TChartMarkAttachment);
     procedure SetDistanceToCenter(AValue: Boolean);
+    procedure SetYIndex(AValue: Integer);
   protected
     FAdditionalAngle: Double;
     FAttachment: TChartMarkAttachment;
@@ -194,6 +197,7 @@ type
     property Distance: TChartDistance read FDistance write SetDistance;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
     property Visible default true;
+    property YIndex: Integer read FYIndex write SetYIndex default 0;
   end;
 
   TChartLinkPen = class(TChartPen)
@@ -725,6 +729,13 @@ begin
   FStyle := AValue;
   if FStyle <> smsCustom then
     FFormat := SERIES_MARK_FORMATS[FStyle];
+  StyleChanged(Self);
+end;
+
+procedure TGenericChartMarks.SetYIndex(AValue: Integer);
+begin
+  if FYIndex = AValue then exit;
+  FYIndex := AValue;
   StyleChanged(Self);
 end;
 
