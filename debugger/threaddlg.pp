@@ -72,7 +72,7 @@ begin
     lvThreads.Items[i].SubItems[1] := Threads[i].ThreadName;
     lvThreads.Items[i].SubItems[2] := Threads[i].ThreadState;
     s := Threads[i].Source;
-    if s = '' then s := ';' + IntToHex(Threads[i].Address, 8);
+    if s = '' then s := ':' + IntToHex(Threads[i].Address, 8);
     lvThreads.Items[i].SubItems[3] := s;
     lvThreads.Items[i].SubItems[4] := IntToStr(Threads[i].Line);
     lvThreads.Items[i].SubItems[5] := Threads[i].GetFunctionWithArg;
