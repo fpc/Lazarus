@@ -230,6 +230,8 @@ type
     function ReplaceEx(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
                    DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer;
                    const Text: string): boolean;
+    function IndentBlock(FromPos, ToPos, IndentDiff: integer): boolean;
+    function IndentLine(LineStartPos, IndentDiff: integer): boolean;
     function Apply: boolean;
     function FindEntryInRange(FromPos, ToPos: integer): TSourceChangeCacheEntry;
     function FindEntryAtPos(APos: integer): TSourceChangeCacheEntry;
@@ -655,6 +657,100 @@ begin
   {$IFDEF VerboseSrcChanger}
   DebugLn('TSourceChangeCache.ReplaceEx SUCCESS IsDelete=',dbgs(NewEntry.IsDeleteOperation));
   {$ENDIF}
+end;
+
+function TSourceChangeCache.IndentBlock(FromPos, ToPos, IndentDiff: integer): boolean;
+// (un)indent all lines in FromPos..ToPos
+// If FromPos starts in the middle of a line the first line is not changed
+// If ToPos is in the indentation the last line is not changed
+var
+  p: LongInt;
+begin
+  if ToPos<1 then ToPos:=1;
+  if (IndentDiff=0) or (FromPos>=ToPos) then exit;
+  if MainScanner=nil then begin
+    debugln(['TSourceChangeCache.IndentBlock need MainScanner']);
+    exit(false);
+  end;
+  Src:=MainScanner.CleanedSrc;
+  SrcLen:=length(Src);
+  if FromPos>SrcLen then exit(true);
+  if ToPos>SrcLen then ToPos:=SrcLen+1;
+  // skip empty lines at start
+  while (FromPos<ToPos) and (Src[FromPos] in [#10,#13]) do inc(FromPos);
+  if (FromPos>1) and (not (Src[FromPos-1] in [#10,#13])) then begin
+    // FromPos is in the middle of a line => start in next line
+    while (FromPos<ToPos) and (not (Src[FromPos] in [#10,#13])) do inc(FromPos);
+    if FromPos>=ToPos then exit(true);
+  end;
+  if (ToPos<=SrcLen) and (Src[ToPos] in [' ',#9]) then begin
+    p:=ToPos;
+    while (p>=ToPos) and (Src[p] in [' ',#9]) do dec(p);
+    if (p=1) or (Src[p] in [#10,#13]) then begin
+      // ToPos in IndentDiff of last line => end in previous line
+      while (p>ToPos) and (Src[p-1] in [#10,#13]) do dec(p);
+      ToPos:=p;
+      if FromPos>=ToPos then exit(true);
+    end;
+  end;
+  //debugln(['TSourceChangeCache.IndentBlock Indent=',IndentDiff,' Src="',dbgstr(Src,FromPos,ToPos-FromPos),'"']);
+
+  p:=FromPos;
+  while p<ToPos do begin
+    if not IndentLine(p,IndentDiff) then exit(false);
+    // go to next line
+    while (p<ToPos) and (not (Src[p] in [#10,#13])) do inc(p);
+    // skip empty lines
+    while (p<ToPos) and (Src[p] in [#10,#13]) do inc(p);
+  end;
+
+  Result:=true;
+end;
+
+function TSourceChangeCache.IndentLine(LineStartPos, IndentDiff: integer
+  ): boolean;
+var
+  OldIndent: LongInt;
+  NewIndent: Integer;
+  p: LongInt;
+  Indent: Integer;
+  StartPos: LongInt;
+  IndentStr: String;
+  NextIndent: Integer;
+begin
+  if (IndentDiff=0) or (LineStartPos<1) then exit(true);
+  Src:=MainScanner.CleanedSrc;
+  SrcLen:=length(Src);
+  if LineStartPos>SrcLen then exit(true);
+  OldIndent:=GetLineIndentWithTabs(Src,LineStartPos,BeautifyCodeOptions.TabWidth);
+  NewIndent:=OldIndent+IndentDiff;
+  if NewIndent<0 then NewIndent:=0;
+  if OldIndent=NewIndent then exit(true);
+  //debugln(['TSourceChangeCache.IndentLine change indent OldIndent=',OldIndent,' NewIndent=',NewIndent]);
+
+  p:=LineStartPos;
+  // use as much of the old space as possible
+  Indent:=0;
+  while (p<=SrcLen) and (Indent<NewIndent) do begin
+    case Src[p] of
+    ' ':
+      inc(Indent);
+    #9:
+      begin
+        NextIndent:=Indent+BeautifyCodeOptions.TabWidth;
+        NextIndent:=NextIndent-(NextIndent mod BeautifyCodeOptions.TabWidth);
+        if NextIndent>NewIndent then break;
+        Indent:=NextIndent;
+      end;
+    end;
+    inc(p);
+  end;
+
+  StartPos:=p;
+  while (p<=SrcLen) and (Src[p] in [' ',#9]) do inc(p);
+  IndentStr:=GetIndentStr(NewIndent-Indent);
+
+  Result:=Replace(gtNone,gtNone,StartPos,p,IndentStr);
 end;
 
 function TSourceChangeCache.Replace(FrontGap, AfterGap: TGapTyp;

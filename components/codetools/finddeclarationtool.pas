@@ -57,7 +57,7 @@ interface
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowTriedUnits}
-{$DEFINE ShowExprEval}
+{ $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}

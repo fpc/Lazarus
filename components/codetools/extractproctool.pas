@@ -37,7 +37,7 @@ unit ExtractProcTool;
 
 {$mode objfpc}{$H+}
 
-{$define CTDEBUG}
+{ $define CTDEBUG}
 
 interface
 
@@ -1166,7 +1166,9 @@ var
     p:=Pointer(PtrUInt(CleanPos));
     if WithIdentifiers=nil then WithIdentifiers:=TAVLTree.Create;
     if WithIdentifiers.Find(p)<>nil then exit;
+    {$IFDEF CTDEBUG}
     debugln(['AddIdentifier ',GetIdentifier(@Src[CleanPos])]);
+    {$ENDIF}
     WithIdentifiers.Add(p);
   end;
 
@@ -1189,7 +1191,9 @@ var
       Cache:=PWithVarCache(WithVarCache[i]);
     end else begin
       // resolve type of With variable
+      {$IFDEF CTDEBUG}
       debugln(['IdentifierDefinedByWith NEW WithVar']);
+      {$ENDIF}
       New(Cache);
       WithVarCache.Add(Cache);
       Cache^.WithVarNode:=WithVarNode;
@@ -1208,7 +1212,9 @@ var
           MoveCursorToCleanPos(Cache^.WithVarNode.StartPos);
           RaiseException(ctsExprTypeMustBeClassOrRecord);
         end;
+        {$IFDEF CTDEBUG}
         debugln(['IdentifierDefinedByWith WithVarExpr=',ExprTypeToString(Cache^.WithVarExpr)]);
+        {$ENDIF}
       finally
         Params.Free;
       end;
@@ -1223,7 +1229,9 @@ var
       Params.Flags:=[fdfSearchInAncestors];
       Params.ContextNode:=Cache^.WithVarExpr.Context.Node;
       Result:=Cache^.WithVarExpr.Context.Tool.FindIdentifierInContext(Params);
+      {$IFDEF CTDEBUG}
       debugln(['IdentifierDefinedByWith Identifier=',GetIdentifier(@Src[CleanPos]),' FoundInWith=',Result,' WithVar="',dbgstr(Src,WithVarNode.StartPos,10),'"']);
+      {$ENDIF}
     finally
       Params.Free;
     end;
@@ -1287,6 +1295,8 @@ var
     DoKeywordEndPos: Integer;
     EndKeywordStartPos: LongInt;
     EndKeywordEndPos: LongInt;
+    IndentWith: LongInt;
+    IndentInnerWith: LongInt;
   begin
     SourceChangeCache.MainScanner:=Scanner;
 
@@ -1325,15 +1335,28 @@ var
           break;
         end;
       until (CurPos.StartPos>SrcLen) or (CurPos.StartPos>StatementNode.EndPos);
+      IndentWith:=GetLineIndentWithTabs(Src,WithKeywordStartPos,
+                              SourceChangeCache.BeautifyCodeOptions.TabWidth);
       WithKeywordStartPos:=FindLineEndOrCodeInFrontOfPosition(WithKeywordStartPos);
       DoKeywordEndPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos);
       if not SourceChangeCache.Replace(gtSpace,gtNone,WithKeywordStartPos,DoKeywordEndPos,'')
       then exit(false);
       if EndKeywordStartPos>0 then begin
-        EndKeywordStartPos:=FindLineEndOrCodeInFrontOfPosition(EndKeywordStartPos);
+        EndKeywordStartPos:=GetLineStartPosition(Src,EndKeywordStartPos);
+        while (EndKeywordStartPos>1) and (Src[EndKeywordStartPos-1] in [#10,#13]) do
+          dec(EndKeywordStartPos);
         EndKeywordEndPos:=FindLineEndOrCodeAfterPosition(EndKeywordEndPos);
         if not SourceChangeCache.Replace(gtSpace,gtNone,EndKeywordStartPos,EndKeywordEndPos,'')
         then exit(false);
+
+        // unindent
+        StartPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos,true,true);
+        IndentInnerWith:=GetLineIndentWithTabs(Src,StartPos,
+                                SourceChangeCache.BeautifyCodeOptions.TabWidth);
+        if IndentWith<IndentInnerWith then
+          if not SourceChangeCache.IndentBlock(DoKeywordEndPos,EndKeywordStartPos,
+            IndentWith-IndentInnerWith)
+          then exit(false);
       end;
     end else begin
       // remove only variable
@@ -1411,7 +1434,9 @@ begin
         MoveCursorToAtomPos(LastAtom);
       end;
     until (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StatementNode.EndPos);
+    {$IFDEF CTDEBUG}
     debugln(['TExtractProcTool.RemoveWithBlock Statement=',copy(Src,StatementNode.StartPos,StatementNode.EndPos-StatementNode.StartPos)]);
+    {$ENDIF}
 
     // replace
     Result:=Replace;

@@ -39,6 +39,7 @@ begin
     Name:='name of TSon1';
     with Son2 do begin
       Name:='name of TSon2';
+      //
     end;
   end;
 end;

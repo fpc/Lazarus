@@ -63,9 +63,10 @@ begin
   if Code=nil then
     raise Exception.Create('loading failed: '+Filename);
 
-  // parse the unit
+  // parse the unit and remove the with variable
   if not CodeToolBoss.RemoveWithBlock(Code,X,Y) then
     raise Exception.Create('RemoveWithBlock failed');
+
   // write the new source:
   writeln('-----------------------------------');
   writeln('New source:');
