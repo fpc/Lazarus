@@ -5616,7 +5616,9 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       end;
     end;
 
-    IsGetterFunc:=(Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
+    IsGetterFunc:=(Parts[ppParamList].StartPos>0)
+      or ((Parts[ppIndexWord].StartPos>0)
+          and not VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)))
       or (SysUtils.CompareText(AccessParamPrefix,
             LeftStr(AccessParam,length(AccessParamPrefix)))=0)
       or (CodeCompleteClassNode.Desc in AllClassInterfaces);
@@ -5645,7 +5647,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
     if ProcExistsInCodeCompleteClass(CleanAccessFunc) then exit;
 
     // check if read access variable exists
-    if (Parts[ppParamList].StartPos<1) and (Parts[ppIndexWord].StartPos<1)
+    if (Parts[ppParamList].StartPos<1)
     and (CodeCompleteClassNode.Desc in AllClassObjects)
     and VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then exit;
 
@@ -5772,12 +5774,14 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
     if ProcExistsInCodeCompleteClass(CleanAccessFunc) then exit;
 
     // check if write variable exists
-    if (Parts[ppParamList].StartPos<1) and (Parts[ppIndexWord].StartPos<1)
+    if (Parts[ppParamList].StartPos<1)
     and (CodeCompleteClassNode.Desc in AllClassObjects)
     and VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then exit;
 
     // complete class
-    if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
+    if (Parts[ppParamList].StartPos>0)
+    or ((Parts[ppIndexWord].StartPos>0)
+        and not VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)))
     or (SysUtils.CompareText(AccessParamPrefix,
             LeftStr(AccessParam,length(AccessParamPrefix)))=0)
     or (CodeCompleteClassNode.Desc in AllClassInterfaces) then
