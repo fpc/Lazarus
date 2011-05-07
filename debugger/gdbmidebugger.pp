@@ -376,7 +376,7 @@ type
     function  CreateCallStack: TDBGCallStack; override;
     function  CreateDisassembler: TDBGDisassembler; override;
     function  CreateWatches: TDBGWatches; override;
-    function  CreateThreads: TDBGThreads; override;
+    function  CreateThreads: TThreadsSupplier; override;
     function  GetSupportedCommands: TDBGCommands; override;
     function  GetTargetWidth: Byte; override;
     procedure InterruptTarget; virtual;
@@ -1150,15 +1150,15 @@ type
   TGDBMIDebuggerCommandThreads = class(TGDBMIDebuggerCommand)
   private
     FCurrentThreadId: Integer;
-    FThreads: Array of TDBGThreadEntry;
-    function GetThread(AnIndex: Integer): TDBGThreadEntry;
+    FThreads: Array of TThreadEntry;
+    function GetThread(AnIndex: Integer): TThreadEntry;
   protected
     function DoExecute: Boolean; override;
   public
     destructor Destroy; override;
     //function DebugText: String; override;
     function Count: Integer;
-    property Threads[AnIndex: Integer]: TDBGThreadEntry read GetThread;
+    property Threads[AnIndex: Integer]: TThreadEntry read GetThread;
     property CurrentThreadId: Integer read FCurrentThreadId;
   end;
 
@@ -1180,7 +1180,7 @@ type
 
   { TGDBMIThreads }
 
-  TGDBMIThreads = class(TDBGThreads)
+  TGDBMIThreads = class(TThreadsSupplier)
   private
     FGetThreadsCmdObj: TGDBMIDebuggerCommandThreads;
     FThreadsReqState: TGDBMIEvaluationState;
@@ -1477,15 +1477,15 @@ var
   Cmd: TGDBMIDebuggerCommandThreads;
   i: Integer;
 begin
-  if Slave = nil then exit;
+  if Monitor = nil then exit;
   Cmd := TGDBMIDebuggerCommandThreads(Sender);
 
-  Slave.Clear;
+  CurrentThreads.Clear;
   for i := 0 to Cmd.Count - 1 do
-    Slave.Add(Cmd.Threads[i]);
+    CurrentThreads.Add(Cmd.Threads[i]);
 
-  Slave.CurrentThreadId := Cmd.CurrentThreadId;
-  Finished;
+  CurrentThreads.SetValidity(ddsValid);
+  CurrentThreads.CurrentThreadId := Cmd.CurrentThreadId;
 end;
 
 procedure TGDBMIThreads.DoChangeThreadsDestroyed(Sender: TObject);
@@ -1498,17 +1498,16 @@ procedure TGDBMIThreads.DoChangeThreadsFinished(Sender: TObject);
 var
   Cmd: TGDBMIDebuggerCommandChangeThread;
 begin
-  if Slave = nil then exit;
+  if Monitor = nil then exit;
   Cmd := TGDBMIDebuggerCommandChangeThread(Sender);
 
   if not Cmd.Success then begin
-    Changed; // invalidate slave
+    Changed; // invalidate Monitor
     exit;
   end;
 
-  Slave.CurrentThreadId := Cmd.NewId;
-  Finished;
   Debugger.DoThreadChanged;
+  CurrentThreads.CurrentThreadId := Cmd.NewId;
 end;
 
 function TGDBMIThreads.GetDebugger: TGDBMIDebugger;
@@ -1566,12 +1565,13 @@ end;
 
 procedure TGDBMIThreads.DoStateChange(const AOldState: TDBGState);
 begin
-  if (Debugger = nil) or (Slave = nil) then Exit;
+  if (Debugger = nil) or (Monitor = nil) then Exit;
 
   if Debugger.State in [dsPause, dsStop]
   then begin
     CancelEvaluation;
     FThreadsReqState := esInvalid;
+    if CurrentThreads <> nil then CurrentThreads.SetValidity(ddsUnknown);
     Changed;
   end;
 end;
@@ -1609,7 +1609,7 @@ end;
 
 { TGDBMIDebuggerCommandThreads }
 
-function TGDBMIDebuggerCommandThreads.GetThread(AnIndex: Integer): TDBGThreadEntry;
+function TGDBMIDebuggerCommandThreads.GetThread(AnIndex: Integer): TThreadEntry;
 begin
   Result := FThreads[AnIndex];
 end;
@@ -1656,7 +1656,7 @@ begin
     end;
 
 
-    FThreads[i] := TDBGThreadEntry.Create(
+    FThreads[i] := TThreadEntry.Create(
       0, addr,
       Arguments,
       func, filename, fullname, line,
@@ -5135,7 +5135,7 @@ begin
   Result := TGDBMIWatches.Create(Self, TGDBMIWatch);
 end;
 
-function TGDBMIDebugger.CreateThreads: TDBGThreads;
+function TGDBMIDebugger.CreateThreads: TThreadsSupplier;
 begin
   Result := TGDBMIThreads.Create(Self);
 end;

@@ -1165,7 +1165,7 @@ var
   TheDialog: TThreadsDlg;
 begin
   TheDialog := TThreadsDlg(FDialogs[ddtThreads]);
-  TheDialog.Threads := FThreads;
+  TheDialog.ThreadsMonitor := FThreads;
 end;
 
 procedure TDebugManager.InitPseudoTerminal;
@@ -1248,7 +1248,7 @@ begin
   FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TIDEWatches.Create;
-  FThreads := TIDEThreads.Create;
+  FThreads := TThreadsMonitor.Create;
   FExceptions := TProjectExceptions.Create;
   FSignals := TIDESignals.Create;
   FLocals := TIDELocals.Create;
@@ -2261,7 +2261,7 @@ begin
   then begin
     TManagedBreakpoints(FBreakpoints).Master := nil;
     FWatches.Master := nil;
-    FThreads.Master := nil;
+    FThreads.Supplier := nil;
     FLocals.Master := nil;
     FLineInfo.Master := nil;
     FCallStack.Master := nil;
@@ -2273,7 +2273,7 @@ begin
   else begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
     FWatches.Master := FDebugger.Watches;
-    FThreads.Master := FDebugger.Threads;
+    FThreads.Supplier := FDebugger.Threads;
     FLocals.Master := FDebugger.Locals;
     FLineInfo.Master := FDebugger.LineInfo;
     FCallStack.Master := FDebugger.CallStack;

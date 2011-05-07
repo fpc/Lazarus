@@ -23,14 +23,14 @@ type
   private
     { private declarations }
     FThreadNotification: TIDEThreadsNotification;
-    FThreads: TIDEThreads;
-    procedure SetThreads(const AValue: TIDEThreads);
+    FThreadsMonitor: TThreadsMonitor;
+    procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
     procedure JumpToSource;
   public
     { public declarations }
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property Threads: TIDEThreads read FThreads write SetThreads;
+    property ThreadsMonitor: TThreadsMonitor read FThreadsMonitor write SetThreadsMonitor;
   end; 
 
 implementation
@@ -44,15 +44,17 @@ var
   i: Integer;
   s: String;
   Item: TListItem;
+  Threads: TThreads;
 begin
-  if FThreads = nil then begin
+  if FThreadsMonitor = nil then begin
     lvThreads.Clear;
     exit;
   end;
 
-  lvThreads.Items.Count := FThreads.Count;
+  Threads := FThreadsMonitor.CurrentThreads;
+  lvThreads.Items.Count := Threads.Count;
 
-  i := FThreads.Count;
+  i := Threads.Count;
   while lvThreads.Items.Count > i do lvThreads.Items.Delete(i);
   while lvThreads.Items.Count < i do begin
     Item := lvThreads.Items.Add;
@@ -64,7 +66,7 @@ begin
     Item.SubItems.add('');
   end;
 
-  for i := 0 to FThreads.Count - 1 do begin
+  for i := 0 to Threads.Count - 1 do begin
     if Threads[i].ThreadId = Threads.CurrentThreadId
     then lvThreads.Items[i].Caption := '*'
     else lvThreads.Items[i].Caption := '';
@@ -89,7 +91,7 @@ begin
   if Item = nil then exit;
   id := StrToIntDef(Item.SubItems[0], -1);
   if id < 0 then exit;
-  FThreads.ChangeCurrentThread(id);
+  FThreadsMonitor.ChangeCurrentThread(id);
 end;
 
 procedure TThreadsDlg.lvThreadsDblClick(Sender: TObject);
@@ -97,24 +99,24 @@ begin
   JumpToSource;
 end;
 
-procedure TThreadsDlg.SetThreads(const AValue: TIDEThreads);
+procedure TThreadsDlg.SetThreadsMonitor(const AValue: TThreadsMonitor);
 begin
-  if FThreads = AValue then exit;
-  if FThreads <> nil then FThreads.RemoveNotification(FThreadNotification);
-  FThreads := AValue;
-  if FThreads <> nil then FThreads.AddNotification(FThreadNotification);
-  ThreadsChanged(FThreads);
+  if FThreadsMonitor = AValue then exit;
+  if FThreadsMonitor <> nil then FThreadsMonitor.RemoveNotification(FThreadNotification);
+  FThreadsMonitor := AValue;
+  if FThreadsMonitor <> nil then FThreadsMonitor.AddNotification(FThreadNotification);
+  ThreadsChanged(FThreadsMonitor);
 end;
 
 procedure TThreadsDlg.JumpToSource;
 var
-  Entry: TDBGThreadEntry;
+  Entry: TThreadEntry;
   Filename: String;
   Item: TListItem;
 begin
   Item := lvThreads.Selected;
   if Item = nil then exit;
-  Entry := TDBGThreadEntry(Item.Data);
+  Entry := TThreadEntry(Item.Data);
   if Entry = nil then Exit;
 
   // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
@@ -154,7 +156,7 @@ end;
 
 destructor TThreadsDlg.Destroy;
 begin
-  SetThreads(nil);
+  SetThreadsMonitor(nil);
   FThreadNotification.OnChange := nil;
   FThreadNotification.ReleaseReference;
   inherited Destroy;
