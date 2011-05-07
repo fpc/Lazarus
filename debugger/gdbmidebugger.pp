@@ -6282,7 +6282,7 @@ begin
     TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).UpdateEnabled := True;
     TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).Enabled := Enabled;
   end;
-  if bufCondition in FUpdateFlags
+  if bufCondition in AFlags
   then begin
     TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).UpdateExpression := True;
     TGDBMIDebuggerCommandBreakUpdate(FCurrentCmd).Expression := FParsedExpression;
