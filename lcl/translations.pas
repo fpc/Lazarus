@@ -74,6 +74,7 @@ uses
 
 type
   TStringsType = (stLrt, stRst);
+  TTranslateUnitResult = (turOK, turNoLang, turNoFBLang, turEmptyParam);
 
 type
   { TPOFileItem }
@@ -148,8 +149,8 @@ var
 
 
 // translate resource strings for one unit
-procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
-  Lang, FallbackLang: string); overload;
+function TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
+  Lang, FallbackLang: string):TTranslateUnitResult; overload;
 function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean; overload;
 function TranslateUnitResourceStrings(const ResUnitName:string; po: TPOFile): boolean; overload;
@@ -386,16 +387,23 @@ begin
   end;
 end;
 
-procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
-  Lang, FallbackLang: string);
+function TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
+  Lang, FallbackLang: string):TTranslateUnitResult;
 begin
-  if (ResUnitName='') or (BaseFilename='') then exit;
-
-  //debugln('TranslateUnitResourceStrings BaseFilename="',BaseFilename,'"');
-  if (FallbackLang<>'') then
-    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
-  if (Lang<>'') then
-    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
+  Result:=turOK;                //Result: OK
+  if (ResUnitName='') or (BaseFilename='') then
+    Result:=turEmptyParam       //Result: empty Parameter
+  else begin
+    //debugln('TranslateUnitResourceStrings BaseFilename="',BaseFilename,'"');
+    if (FallbackLang<>'') and FileExistsUTF8(Format(BaseFilename,[FallbackLang])) then
+      TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]))
+    else
+      Result:=turNoFBLang;      //Result: missing FallbackLang file
+    if (Lang<>'') and FileExistsUTF8(Format(BaseFilename,[Lang])) then
+      TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]))
+    else
+      Result:=turNoLang;        //Result: missing Lang file
+  end;
 end;
 
 function TranslateResourceStrings(po: TPOFile): boolean;
