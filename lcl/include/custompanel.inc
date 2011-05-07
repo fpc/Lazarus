@@ -109,7 +109,9 @@ begin
   if Caption <> '' then
   begin
     TS := Canvas.TextStyle;
-    TS.Alignment:= Alignment;
+    TS.Alignment := BidiFlipAlignment(Self.Alignment, UseRightToLeftAlignment);
+    if BiDiMode<>bdLeftToRight then
+      TS.RightToLeft:= True;
     TS.Layout:= tlCenter;
     TS.Opaque:= false;
     TS.Clipping:= false;
