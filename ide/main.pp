@@ -11284,7 +11284,7 @@ begin
   if (EnvironmentOptions.TestBuildDirectory='')
   or (not DirPathExists(EnvironmentOptions.TestBuildDirectory)) then begin
     if (EnvironmentOptions.TestBuildDirectory<>'') then begin
-      MessageDlg(Format(lisTheTestDirectoryCouldNotBeFoundSeeEnvironmentOpt, [
+      MessageDlg(Format(lisTheTestDirectoryCouldNotBeFoundSeeIDEOpt, [
         #13, '"', EnvironmentOptions.TestBuildDirectory, '"', #13]), mtError, [
         mbCancel], 0);
       Result:=mrCancel;

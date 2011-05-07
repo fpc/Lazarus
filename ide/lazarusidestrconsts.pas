@@ -649,12 +649,12 @@ resourcestring
   lisisAlreadyPartOfTheProject = '%s is already part of the Project.';
   lisRemoveFromProject = 'Remove from project';
   lisCreateAProjectFirst = 'Create a project first!';
-  lisTheTestDirectoryCouldNotBeFoundSeeEnvironmentOpt = 'The Test Directory '
-    +'could not be found:%s%s%s%s%s(see environment options)';
+  lisTheTestDirectoryCouldNotBeFoundSeeIDEOpt = 'The Test Directory '
+    +'could not be found:%s%s%s%s%s(see IDE options)';
   lisBuildNewProject = 'Build new project';
   lisTheProjectMustBeSavedBeforeBuildingIfYouSetTheTest = 'The project must '
     +'be saved before building%sIf you set the Test Directory in the '
-    +'environment options,%syou can create new projects and build them at '
+    +'IDE options,%syou can create new projects and build them at '
     +'once.%sSave project?';
   lisProjectSuccessfullyBuilt = 'Project %s%s%s successfully built';
   lisExecutingCommandBefore = 'Executing command before';
@@ -1938,7 +1938,7 @@ resourcestring
   dlgCCOTestCompilingEmptyFile = 'Test: Compiling an empty file ...';
   lisCCOInvalidTestDir = 'Invalid Test Directory';
   lisCCOCheckTestDir = 'Please check the Test directory under %s'
-    +'Environment -> Environment Options -> Files -> Directory for building test projects';
+    +'Tools -> Options -> Files -> Directory for building test projects';
   lisCCOUnableToCreateTestFile = 'Unable to create Test File';
   lisCCOUnableToCreateTestPascalFile = 'Unable to create Test pascal file "%s".';
   dlgCCOTestToolCompilingEmptyFile = 'Test: Compiling an empty file';
@@ -2698,8 +2698,6 @@ resourcestring
   srkmecBuildLazarus              = 'Build lazarus';
   srkmecExtTool                   = 'External tool %d';
   srkmecCustomTool                = 'Custom tool %d';
-
-  // environment menu
   srkmecEnvironmentOptions        = 'IDE options';
   lisKMEditorOptions              = 'Editor options';
   lisKMEditCodeTemplates          = 'Edit Code Templates';
@@ -2922,7 +2920,7 @@ resourcestring
   lisOptionsChangedRecompilingCleanWithB = 'Options changed, recompiling '
     +'clean with -B';
   lisCompilerHintYouCanSetTheCompilerPath = 'Hint: you can set the compiler '
-    +'path in Environment->Environment options->Files->Compiler Path';
+    +'path in Tools -> Options-> Files -> Compiler Path';
   lisCompilerNOTELoadingOldCodetoolsOptionsFile = 'NOTE: loading old '
     +'codetools options file: ';
   lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults = 'NOTE: codetools '
@@ -3418,8 +3416,8 @@ resourcestring
     +'%s%sSee Project -> Project Options -> Application for settings.';
   lisDebuggerInvalid = 'Debugger invalid';
   lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger %s%s%'
-    +'s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger '
-    +'Options';
+    +'s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger '
+    +'options';
   lisUnableToRun = 'Unable to run';
   lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP = 'The destination '
     +'directory %s%s%s does not exist.%sPlease check the project target file '
@@ -4208,37 +4206,35 @@ resourcestring
   lisInvalidCompilerFilename = 'Invalid Compiler Filename';
   lisTheCurrentCompilerFilenameIsNotAValidExecutablePlease = 'The current '
     +'compiler filename %s%s%s%sis not a valid executable.%sPlease check '
-    +'Environment -> Environment Options -> Files';
+    +'Tools -> Options -> Files';
   lisFreePascalSourcesNotFound = 'Free Pascal Sources not found';
   lisTheFreePascalSourceDirectoryWasNotFoundSomeCodeFun = 'The Free Pascal '
     +'source directory was not found.%sSome code functions will not work.%sIt '
-    +'is recommended that you install it and set the path%sEnvironment -> '
-    +'Environment Options -> Files';
+    +'is recommended that you install it and set the path%sTools -> '
+    +'Options -> Files';
   lisInvalidFreePascalSourceDirectory = 'Invalid Free Pascal source directory';
   lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr2 = 'The current Free '
     +'Pascal source directory %s%s%s%sdoes not look correct.%sCheck '
-    +'Environment -> Environment Options -> Files';
+    +'Tools -> Options -> Files';
   lisLazarusDirectoryNotFound = 'Lazarus directory not found';
   lisTheCurrentLazarusDirectoryDoesNotLookCorrectWithou2 = 'The current '
     +'Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will '
-    +'not be able to create LCL applications.%sCheck Environment -> '
-    +'Environment Options -> Files';
+    +'not be able to create LCL applications.%sCheck Tools -> '
+    +'Options -> Files';
   lisTheCurrentLazarusDirectoryDoesNotLookCorrectWithou = 'The current '
     +'Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will '
     +'not be able to create LCL applications.%sChoose Ok to choose the '
-    +'default %s%s%s.%sOtherwise check Environment -> Environment Options -> '
+    +'default %s%s%s.%sOtherwise check Tools -> Options -> '
     +'Files';
   lisTheLazarusDirectoryWasNotFoundYouWillNotBeAbleToCr = 'The Lazarus '
     +'directory was not found.%sYou will not be able to create LCL '
-    +'applications.%sPlease check Environment -> Environment Options -> Files';
+    +'applications.%sPlease check Tools -> Options -> Files';
   lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr = 'The current Free '
     +'Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to '
-    +'choose the default %s%s%s.%sOtherwise check Environment -> Environment '
-    +'Options -> Files';
+    +'choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files';
   lisTheCurrentCompilerFilenameIsNotAValidExecutableCho = 'The current '
     +'compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to '
-    +'choose the default %s%s%s.%sOtherwise check Environment -> Environment '
-    +'Options -> Files';
+    +'choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files';
     
   // Help Options
   lisHlpOptsHelpOptions = 'Help Options';

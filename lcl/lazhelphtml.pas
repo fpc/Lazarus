@@ -335,7 +335,7 @@ begin
   if CommandLine='' then begin
     if (HelpDatabases<>nil)
     and (CompareText(HelpDatabases.ClassName,'TIDEHelpDatabases')=0) then
-      ErrMsg:=Format(hhsHelpNoHTMLBrowserFoundPleaseDefineOneInHelpConfigureHe,
+      ErrMsg:=Format(hhsHelpNoHTMLBrowserFoundPleaseDefineOne,
         [ #13])
     else
       ErrMsg:=hhsHelpNoHTMLBrowserFound;
