@@ -757,7 +757,7 @@ function TQtWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
 var
   QtRegion: TQtRegion;
 begin
-  QtRegion := TQtRegion.Create(True, X1, Y1, X2, Y2);
+  QtRegion := TQtRegion.Create(True, 0, 0, X2, Y2);
   if (X1 <> 0) or (Y1 <> 0) then
     QtRegion.translate(X1, Y1);
   Result := HRGN(QtRegion);
