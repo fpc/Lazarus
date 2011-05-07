@@ -2537,7 +2537,10 @@ begin
     end;
 
     if (dmsDebuggerObjectBroken in FManagerStates)
-    then FreeDebugger;
+    then begin
+      FreeDebugger;
+      FIsInitializingDebugger:= True; // been reset by FreeDebuger
+    end;
 
     // check if debugger is already created with the right type
     if (FDebugger <> nil)
