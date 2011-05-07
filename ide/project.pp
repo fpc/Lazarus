@@ -885,6 +885,7 @@ type
 
     // title
     function GetDefaultTitle: string;
+    function GetTitleOrName: string;
     function TitleIsDefault(Fuzzy: boolean = false): boolean;
     function IDAsString: string;
     function IDAsWord: string;
@@ -3038,6 +3039,12 @@ end;
 function TProject.GetDefaultTitle: string;
 begin
   Result:=ExtractFilenameOnly(ProjectInfoFile);
+end;
+
+function TProject.GetTitleOrName: string;
+begin
+  Result:=Title;
+  if Result='' then Result:=GetDefaultTitle;
 end;
 
 function TProject.TitleIsDefault(Fuzzy: boolean): boolean;

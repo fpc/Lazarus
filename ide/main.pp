@@ -1802,7 +1802,7 @@ begin
     // check project
     if SomethingOfProjectIsModified then begin
       MsgResult:=QuestionDlg(lisProjectChanged,
-        Format(lisSaveChangesToProject, [Project1.Title]), mtConfirmation,
+        Format(lisSaveChangesToProject, [Project1.GetTitleOrName]), mtConfirmation,
         [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
          mrAbort, lisDoNotCloseTheIDE],
         0);
@@ -4154,7 +4154,7 @@ begin
   // check project
   if SomethingOfProjectIsModified then begin
     DlgResult:=QuestionDlg(lisProjectChanged,
-      Format(lisSaveChangesToProject, [Project1.Title]), mtConfirmation,
+      Format(lisSaveChangesToProject, [Project1.GetTitleOrName]), mtConfirmation,
       [mrYes, lisMenuSave, mrNoToAll, lisDiscardChanges,
        mrAbort, lisDoNotCloseTheProject],
       0);
@@ -4233,13 +4233,9 @@ begin
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
-var
-  NewCaption: String;
 begin
-  NewCaption := Project1.Title;
-  if NewCaption = '' then
-    NewCaption := ExtractFilenameOnly(Project1.ProjectInfoFile);
-  DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [NewCaption]), [TProject, TProjectCompilerOptions], []);
+  DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]),
+    [TProject, TProjectCompilerOptions], []);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -8050,7 +8046,7 @@ begin
           AFilename := ChangeFileExt(AFilename, '.lpi');
       end;
       Ext := ExtractFileExt(AFilename);
-      SaveDialog.Title := Format(lisSaveProject, [Project1.Title, Ext]);
+      SaveDialog.Title := Format(lisSaveProject, [Project1.GetTitleOrName, Ext]);
       SaveDialog.FileName := AFilename;
       SaveDialog.Filter := '*' + Ext + '|' + '*' + Ext;
       SaveDialog.DefaultExt := ExtractFileExt(AFilename);
@@ -10352,7 +10348,7 @@ begin
   If Project1<>nil then begin
     if SomethingOfProjectIsModified then begin
       Result:=MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
-       [Project1.Title]),
+       [Project1.GetTitleOrName]),
         mtconfirmation, [mbYes, mbNo, mbAbort], 0);
       if Result=mrYes then begin
         Result:=DoSaveProject([]);
@@ -10587,7 +10583,7 @@ begin
   // close the old project
   if SomethingOfProjectIsModified then begin
     case IDEQuestionDialog(lisProjectChanged,
-      Format(lisSaveChangesToProject, [Project1.Title]),
+      Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
       mtconfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '')
     of
       mrYes: if DoSaveProject([])=mrAbort then begin
@@ -10945,7 +10941,7 @@ function TMainIDE.DoSaveProjectIfChanged: TModalResult;
 begin
   if SomethingOfProjectIsModified then begin
     if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
-      [Project1.Title]),
+      [Project1.GetTitleOrName]),
       mtconfirmation, [mbYes, mbNo, mbCancel], 0)=mrYes then
     begin
       if DoSaveProject([])=mrAbort then begin
@@ -11575,7 +11571,7 @@ begin
     if Project1.UseAppBundle and (Project1.MainUnitID>=0)
     and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
     then begin
-      Result:=CreateApplicationBundle(TargetExeName, Project1.Title);
+      Result:=CreateApplicationBundle(TargetExeName, Project1.GetTitleOrName);
       if not (Result in [mrOk,mrIgnore]) then exit;
       Result:=CreateAppBundleSymbolicLink(TargetExeName);
       if not (Result in [mrOk,mrIgnore]) then exit;
@@ -13143,9 +13139,7 @@ begin
   begin
     if Project1 <> nil then
     begin
-      ProjectName := Project1.Title;
-      if (ProjectName = '') and (Project1.ProjectInfoFile <> '') then
-        ProjectName := ExtractFileName(Project1.ProjectInfoFile);
+      ProjectName := Project1.GetTitleOrName;
       if ProjectName <> '' then
       begin
         if EnvironmentOptions.IDEProjectDirectoryInIdeTitle then
