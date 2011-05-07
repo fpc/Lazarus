@@ -1,4 +1,4 @@
-{%MainUnit ../lclintf.pp}
+{%MainUnit ../lclintf.pas}
 
 // Locates the default browser associated in the system
 function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;

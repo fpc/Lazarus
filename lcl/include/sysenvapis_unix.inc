@@ -1,4 +1,4 @@
-{%MainUnit ../lclintf.pp}
+{%MainUnit ../lclintf.pas}
 
 // Open a given URL with the default browser
 function OpenURL(AURL: String): Boolean;

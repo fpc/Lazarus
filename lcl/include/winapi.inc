@@ -1,4 +1,4 @@
-{%MainUnit ../lclintf.pp}
+{%MainUnit ../lclintf.pas}
 
 (******************************************************************************
   All Winapi related stuff goes here.
