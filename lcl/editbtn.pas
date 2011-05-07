@@ -101,6 +101,7 @@ type
     property AutoSelect;
     property Align;
     property Anchors;
+    property BidiMode;
     property BorderSpacing;
     property BorderStyle;
     property ButtonOnlyWhenFocused;
@@ -136,6 +137,7 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBidiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -209,6 +211,7 @@ type
     property Alignment;
     property Anchors;
     property AutoSelect;
+    property BidiMode;
     property BorderSpacing;
     property BorderStyle;
     property AutoSize;
@@ -218,6 +221,7 @@ type
     property Enabled;
     property Font;
     property MaxLength;
+    property ParentBidiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -284,6 +288,7 @@ type
     property Anchors;
     property AutoSize;
     property AutoSelect;
+    property BidiMode;
     property BorderSpacing;
     property BorderStyle;
     property Color;
@@ -292,6 +297,7 @@ type
     property Enabled;
     property Font;
     property MaxLength;
+    property ParentBidiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -378,6 +384,7 @@ type
     property Anchors;
     property AutoSize;
     property AutoSelect;
+    property BidiMode;
     property BorderSpacing;
     property BorderStyle;
     property Color;
@@ -405,6 +412,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnUTF8KeyPress;
+    property ParentBidiMode;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -454,6 +462,7 @@ type
     // Other properties
     property Align;
     property Anchors;
+    property BidiMode;
     property BorderSpacing;
     property BorderStyle;
     property AutoSize;
@@ -464,6 +473,7 @@ type
     property Enabled;
     property Font;
     property MaxLength;
+    property ParentBidiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -710,7 +720,10 @@ procedure TCustomEditButton.DoPositionButton;
 begin
   if FButton = nil then exit;
   FButton.Parent := Parent;
-  FButton.AnchorToCompanion(akLeft,0,Self);
+  if BiDiMode = bdLeftToRight then
+    FButton.AnchorToCompanion(akLeft,0,Self)
+  else
+    FButton.AnchorToCompanion(akRight,0,Self);
 end;
 
 procedure TCustomEditButton.WMSetFocus(var Message: TLMSetFocus);
