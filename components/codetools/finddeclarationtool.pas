@@ -57,7 +57,7 @@ interface
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowTriedUnits}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
@@ -7586,7 +7586,7 @@ begin
 
   // ToDo: search for an overloaded operator
 
-  if WordIsBooleanOperator.DoItUpperCase(Src,BinaryOperator.StartPos,
+  if WordIsBooleanOperator.DoItCaseInsensitive(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
   then begin
     // Boolean operators
@@ -7598,14 +7598,14 @@ begin
     // real division /
     Result.Desc:=xtConstReal;
   end
-  else if WordIsOrdNumberOperator.DoItUpperCase(Src,BinaryOperator.StartPos,
+  else if WordIsOrdNumberOperator.DoItCaseInsensitive(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
   then begin
     // ordinal number operator
     // or xor and mod div shl shr
     Result.Desc:=xtConstOrdInteger;
   end
-  else if WordIsNumberOperator.DoItUpperCase(Src,BinaryOperator.StartPos,
+  else if WordIsNumberOperator.DoItCaseInsensitive(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
   then begin
     // number operator (or string concatenating or set cut)
@@ -7645,9 +7645,13 @@ begin
       else
         Result.Desc:=xtConstOrdInteger;
     end;
-  end else
+  end else begin
     // ???
+    {$IFDEF ShowExprEval}
+    debugln(['TFindDeclarationTool.CalculateBinaryOperator unknown operator: ',GetAtom(BinaryOperator)]);
+    {$ENDIF}
     Result:=RightOperand;
+  end;
 end;
 
 function TFindDeclarationTool.IsParamExprListCompatibleToNodeList(
