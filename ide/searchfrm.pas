@@ -484,6 +484,8 @@ var
   NewMatchEndPos: PtrInt;
   Lines: String;
 begin
+  //debugln(['SearchInText TheFileName=',TheFileName,' SearchFor=',SearchFor,'" ReplaceText=',ReplaceText,'"']);
+
   if (Progress<>nil) and Progress.Abort then exit(mrAbort);
   Result:=mrOk;
 
@@ -691,7 +693,7 @@ begin
 end;//GetOptions
 
 function TSearchProgressForm.DoSearch: integer;
-// Search the text and then return the number of found items.
+// Search in all files and then return the number of found items.
 begin
   Result:= 0;
   PromptOnReplace:=true;
@@ -930,11 +932,11 @@ begin
     begin
       //only if file exists on disk
       SrcEdit := SourceEditorManagerIntf.UniqueSourceEditors[i];
-      if FilenameIsAbsolute(SrcEdit.FileName) and
-         FileExistsCached(SrcEdit.FileName) then
-      begin
-         TheFileList.Add(SrcEdit.FileName);
-      end;
+      if FilenameIsAbsolute(SrcEdit.FileName)
+        and (not FileExistsCached(SrcEdit.FileName))
+      then
+        continue;
+      TheFileList.Add(SrcEdit.FileName);
     end;
     SearchFileList:= TheFileList;
     DoSearchAndAddToSearchResults;
