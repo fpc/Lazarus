@@ -90,6 +90,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
     property Constraints;
@@ -125,6 +126,7 @@ Type
     property OnSelectionChange;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBiDiMode;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;
