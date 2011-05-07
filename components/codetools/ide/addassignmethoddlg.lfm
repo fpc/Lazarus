@@ -12,8 +12,8 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 438
+    Height = 35
+    Top = 443
     Width = 557
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -30,19 +30,19 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
     AnchorSideTop.Control = InheritedGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 144
+    Height = 149
     Top = 288
     Width = 557
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'MembersGroupBox'
-    ClientHeight = 123
+    ClientHeight = 128
     ClientWidth = 549
     TabOrder = 1
     object MembersTreeView: TCodyTreeView
       Left = 0
-      Height = 123
+      Height = 128
       Top = 0
       Width = 549
       Align = alClient
@@ -103,7 +103,7 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       Left = 12
       Height = 22
       Top = 39
-      Width = 174
+      Width = 176
       BorderSpacing.Around = 6
       Caption = 'InhOverrideCheckBox'
       TabOrder = 1
@@ -115,7 +115,7 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       Left = 12
       Height = 22
       Top = 67
-      Width = 140
+      Width = 142
       BorderSpacing.Around = 6
       Caption = 'InhCallCheckBox'
       TabOrder = 2
@@ -127,7 +127,7 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       Left = 12
       Height = 22
       Top = 95
-      Width = 209
+      Width = 211
       BorderSpacing.Around = 6
       Caption = 'InhCallOnlyInElseCheckBox'
       TabOrder = 3
@@ -166,6 +166,7 @@ object AddAssignMethodDialog: TAddAssignMethodDialog
       Top = 72
       Width = 141
       BorderSpacing.Around = 6
+      OnChange = ParamTypeEditChange
       TabOrder = 0
       Text = 'ParamTypeEdit'
     end

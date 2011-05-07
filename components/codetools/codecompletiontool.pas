@@ -7244,7 +7244,6 @@ begin
     FCodeCompleteClassNode:=FindClassNode(CursorNode,CurClassName,true,false);
     if CodeCompleteClassNode=nil then
       RaiseException('oops, I lost your class');
-    debugln(['TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc AAA2 ',FJumpToProcName]);
     ProcNode:=FindProcNode(CursorNode,FJumpToProcName,
                            [phpInUpperCase,phpIgnoreForwards]);
     if ProcNode=nil then

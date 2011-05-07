@@ -83,6 +83,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ParamNameEditChange(Sender: TObject);
+    procedure ParamTypeEditChange(Sender: TObject);
     procedure ProcNameEditChange(Sender: TObject);
   private
     FParamChanged: boolean;
@@ -332,6 +333,12 @@ begin
   IdleConnected:=true;
 end;
 
+procedure TAddAssignMethodDialog.ParamTypeEditChange(Sender: TObject);
+begin
+  FParamChanged:=true;
+  IdleConnected:=true;
+end;
+
 procedure TAddAssignMethodDialog.ProcNameEditChange(Sender: TObject);
 begin
   FProcNameEditChanged:=true;
@@ -352,6 +359,7 @@ procedure TAddAssignMethodDialog.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   IdleConnected:=false;
   Init(FCode,FX,FY,FProcNameEditChanged);
+  FProcNameEditChanged:=false;
 end;
 
 function TAddAssignMethodDialog.Init(NewCode: TCodeBuffer; NewX, NewY: integer;
@@ -432,29 +440,6 @@ begin
       and (FMemberNodeExts.Count>0);
     Caption:='Add Assign method to class '+FClassName;
 
-    // show some context information about the inherited method
-    InheritedGroupBox.Caption:='Inherited:';
-    InhOverrideCheckBox.Caption:='Override';
-    InhCallCheckBox.Caption:='Call inherited';
-    InhCallOnlyInElseCheckBox.Caption:='Call inherited only if wrong class';
-    InheritedEdit.ReadOnly:=true;
-    if FInheritedDeclContext.Node<>nil then begin
-      InheritedGroupBox.Enabled:=true;
-      InheritedLabel.Caption:='Method:';
-      InheritedEdit.Text:=FInheritedDeclContext.Tool.ExtractProcHead(
-        FInheritedDeclContext.Node,
-        [phpAddClassName,phpWithDefaultValues,phpWithParameterNames]);
-      InheritedEdit.Enabled:=true;
-      InhOverrideCheckBox.Checked:=true;
-      InhCallCheckBox.Checked:=true;
-      InhCallOnlyInElseCheckBox.Checked:=FInheritedIsTPersistent;
-    end else begin
-      InheritedGroupBox.Enabled:=false;
-      InheritedLabel.Caption:='There is no inherited method.';
-      InheritedEdit.Text:='';
-      InheritedEdit.Enabled:=false;
-    end;
-
     DeclGroupBox.Caption:='New method:';
     ProcNameLabel.Caption:='Method name:';
     if (NewProcName='') or (not IsValidIdent(NewProcName)) then
@@ -481,6 +466,30 @@ begin
       ParamTypeErrorLabel.Caption:='invalid identifier'
     else
       ParamTypeErrorLabel.Caption:='';
+
+    // show some context information about the inherited method
+    InheritedGroupBox.Caption:='Inherited:';
+    InhOverrideCheckBox.Caption:='Override';
+    InhCallCheckBox.Caption:='Call inherited';
+    InhCallOnlyInElseCheckBox.Caption:='Call inherited only if wrong class';
+    InheritedEdit.ReadOnly:=true;
+    if FInheritedDeclContext.Node<>nil then begin
+      InheritedGroupBox.Enabled:=true;
+      InheritedLabel.Caption:='Method:';
+      InheritedEdit.Text:=FInheritedDeclContext.Tool.ExtractProcHead(
+        FInheritedDeclContext.Node,
+        [phpAddClassName,phpWithDefaultValues,phpWithParameterNames]);
+      InheritedEdit.Enabled:=true;
+      InhOverrideCheckBox.Checked:=true;
+      InhCallCheckBox.Checked:=true;
+      InhCallOnlyInElseCheckBox.Enabled:=SysUtils.CompareText(FClassName,ParamTypeEdit.Text)<>0;
+      InhCallOnlyInElseCheckBox.Checked:=FInheritedIsTPersistent;
+    end else begin
+      InheritedGroupBox.Enabled:=false;
+      InheritedLabel.Caption:='There is no inherited method.';
+      InheritedEdit.Text:='';
+      InheritedEdit.Enabled:=false;
+    end;
 
     MembersGroupBox.Caption:='Select members to assign:';
     MembersTreeView.BeginUpdate;
