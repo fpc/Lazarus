@@ -2318,24 +2318,24 @@ function TQtWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 var
   QtDC: TQtDeviceContext;
   PaintDevice: QPaintDeviceH;
-  w: QWidgetH;
+  PaintEngine: QPaintEngineH;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetDeviceCaps] DC ' + dbghex(DC));
   {$endif}
 
   Result := 0;
+  if DC = 0 then
+    DC := HDC(QtScreenContext);
+
   if not IsValidDC(DC) then exit;
 
   QtDC := TQtDeviceContext(DC);
 
-  if QtDC.Parent <> nil
-  then
-    w := QtDC.Parent
-  else
-    w := QApplication_desktop;
-
-  PaintDevice := QWidget_to_QPaintDevice(w);
+  PaintEngine := QtDC.PaintEngine;
+  if PaintEngine = nil then
+    exit;
+  PaintDevice := QPaintEngine_paintDevice(PaintEngine);
 
   case Index of
     HORZSIZE:
