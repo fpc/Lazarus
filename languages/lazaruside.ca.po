@@ -4056,7 +4056,7 @@ msgid "Ambiguous compiler"
 msgstr ""
 
 #: lazarusidestrconsts.lisccochecktestdir
-msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
+msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
 msgstr ""
 
 #: lazarusidestrconsts.lisccocompilernotanexe
@@ -5508,7 +5508,9 @@ msgid "Compiler filename"
 msgstr "Nom del fitxer del compilador"
 
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
+msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Suggeriment: podeu triar la trajectòria del compilador en Entorn->Opcions d'entorn->Fitxers->Trajectòria del compilador"
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
@@ -13960,11 +13962,15 @@ msgid "The %s contains a star * character.%sLazarus uses this as normal characte
 msgstr ""
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
 msgstr "El nom del compilador actual %s%s%s%s no és un executable vàlid.%sEscolliu D'ACORD per seleccionar el predeterminat %s%s%s.%sSi no, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutableplease
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Tools -> Options -> Files"
 msgstr "El nom del compilador actual %s%s%s%sno és un executable vàlid.%s Si us plau, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
@@ -13972,23 +13978,33 @@ msgid "The current FPC has no config file. It will probably miss some units. Che
 msgstr ""
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
-msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
 msgstr "El directori actual del codi font del Free Pascal %s%s%s%sno sembla correcte%sEscolliu D'ACORD per seleccionar el predeterminat %s%s%s.%sSi no, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
-msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
+msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Tools -> Options -> Files"
 msgstr "El directori actual del codi font del Free Pascal %s%s%s%sno sembla correcte.%sComproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
-msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
 msgstr "El directori actual del Lazarus %s%s%s%sno sembla correcte.%sSense ell, no podreu crear aplicacions LCL.%sEscolliu D'ACORD per seleccionar el predeterminat %s%s%s.%sSi no, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
-msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
+msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Tools -> Options -> Files"
 msgstr "El directori actual del Lazarus %s%s%s%sno sembla correcte.%sSense ell, no podreu crear aplicacions LCL.%s Comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+#, fuzzy
+#| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgstr "El depurador %s%s%s%sno existeix o no es executable. %s%s%sMira Entorn -> Opcions del Depurador"
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
@@ -14086,7 +14102,9 @@ msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended
 msgstr "No s'ha trobat el compilador Free Pascal (nom de fitxer: %s).%sUs recomano que instal·leu el fpc."
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
-msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
+msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
 msgstr "No s'ha trobat el directori del codi font del Free Pascal.%sAlgunes funcions codificades no funcionaran.%sUs recomano que les instal·leu i poseu la trajectòria%SEntorn -> Opcions de l'entorn -> Fitxers"
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
@@ -14114,7 +14132,9 @@ msgid "The Lazarus directory contains the sources of the IDE and the package fil
 msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Tools -> Options -> Files"
 msgstr "No s'ha trobat el directori Lazarus.%sNo prodreu crear aplicacions LCL.%sSi us plau, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
@@ -14214,7 +14234,9 @@ msgid "The project information file %s%s%s%shas changed on disk."
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
-msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
+#, fuzzy
+#| msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
+msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "S'ha de desar el projecte abans de muntar de nou%sSi fiqueu el directori de les proves en les opcions de l'entorn,%spodeu crear projectes nous i muntar-los al mateix temps.%sVoleu desar el projecte?"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
@@ -14293,8 +14315,8 @@ msgstr ""
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr ""
 
-#: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
-msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
+#: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
+msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
 msgstr ""
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming

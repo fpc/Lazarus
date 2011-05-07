@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-29 23:44+0300\n"
+"PO-Revision-Date: 2011-05-07 20:07+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4072,8 +4072,9 @@ msgid "Ambiguous compiler"
 msgstr "Дублирующийся компилятор"
 
 #: lazarusidestrconsts.lisccochecktestdir
-msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
-msgstr "Проверьте тестовый каталог в %sОкружение -> Параметры окружения -> Файлы -> Каталог для сборки пробных проектов"
+#| msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
+msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
+msgstr "Проверьте каталог для сборки пробных проектов в %sСервис -> Параметры -> Файлы -> Каталог для сборки пробных проектов"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
@@ -5523,8 +5524,9 @@ msgid "Compiler filename"
 msgstr "Имя файла компилятора"
 
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
-msgstr "Подсказка: Вы можете задать путь компилятора в Окружение->Параметры окружения->Файлы->Путь компилятора"
+#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
+msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
+msgstr "Подсказка: Вы можете задать путь компилятора в Сервис -> Параметры -> Файлы -> Путь компилятора"
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -13970,36 +13972,43 @@ msgid "The %s contains a star * character.%sLazarus uses this as normal characte
 msgstr "%s содержит символ звёздочки *.%sLazarus интерпретирует его как обычный символ, не раскрывая в качестве маски файла."
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "Текущий компилятор %s%s%s.%sне является исполнимым файлом.%sВыберите ОК для использования каталога по умолчанию %s%s%s,%sили же проверьте Окружение-> Параметры окружения -> Файлы"
+#| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
+msgstr "Текущий компилятор %s%s%s%sне является исполнимым файлом.%sВыберите ОК для использования значения по умолчанию %s%s%s,%sили же проверьте Сервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutableplease
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
-msgstr "Текущий компилятор %s%s%s%s не является исполнимым файлом.%sПроверьте Окружение -> Параметры окружения -> Файлы"
+#| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Tools -> Options -> Files"
+msgstr "Текущий компилятор %s%s%s%sне является исполнимым файлом.%sПроверьте Сервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
 msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
 msgstr "Для используемого компилятора FPC отсутствует файл настройки. Вероятно, компилятор не сможет найти ряд модулей. Проверьте, что FPC установлен правильно."
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
-msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "Текущий каталог исходного кода FreePascal %s%s%s%sне выглядит корректно.%sВыберите ОК чтобы вернуть используемый по умолчанию %s%s%s,%s или же проверьте Окружение -> Параметры окружения -> Файлы"
+#| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
+msgstr "Текущий каталог исходного кода FreePascal %s%s%s%sне выглядит корректно.%sВыберите ОК, чтобы вернуть используемый по умолчанию %s%s%s,%sили же проверьте Сервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
-msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
-msgstr "Текущий каталог исходного кода FreePascal %s%s%s%sне выглядит корректно.%sПроверьте Окружение -> Параметры окружения -> Файлы"
+#| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
+msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Tools -> Options -> Files"
+msgstr "Текущий каталог исходного кода FreePascal %s%s%s%sне выглядит корректно.%sПроверьте Сервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
-msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
-msgstr "Текущий каталог Lazarus %s%s%s%sне выглядит корректно.%sБез него Вы не сможете создавать приложения LCL.%sВыберите ОК для использования каталога по умолчанию %s%s%s,%s или же проверьте Окружение -> Параметры окружения -> Файлы"
+#| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
+msgstr "Текущий каталог Lazarus %s%s%s%sне выглядит корректно.%sБез него вы не сможете создавать приложения LCL.%sВыберите ОК для использования каталога по умолчанию %s%s%s,%sили же проверьте Сервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
-msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
-msgstr "Текущий каталог Lazarus %s%s%s%sне выглядит корректно.%sБез него Вы не сможете создавать приложения LCL.%sПроверьте Окружение -> Параметры окружения -> Файлы"
+#| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
+msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Tools -> Options -> Files"
+msgstr "Текущий каталог Lazarus %s%s%s%sне выглядит корректно.%sБез него вы не сможете создавать приложения LCL.%sПроверьте Сервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
-msgstr "Отладчик %s%s%s%s не существует или не является исполнимым файлом.%s%sСмотрите Окружение -> Параметры отладчика"
+#| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
+msgstr "Отладчик %s%s%s%sне существует или не является исполнимым файлом.%s%sПроверьте Сервис -> Параметры -> Отладчик"
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
@@ -14096,8 +14105,9 @@ msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended
 msgstr "Компилятор FreePascal (имя файла: %s) не найден.%sВам рекомендуется установить fpc"
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
-msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
-msgstr "Каталог исходного кода FreePascal не найден.%sОтдельные действия с кодом не будут работать.%sРекомендуется установить его и установить путь%sОкружение -> Параметры окружения -> Файлы"
+#| msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
+msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
+msgstr "Каталог исходного кода FreePascal не найден.%sОтдельные действия с кодом не будут работать.%sРекомендуется установить его и установить путь%sСервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
@@ -14125,8 +14135,9 @@ msgid "The Lazarus directory contains the sources of the IDE and the package fil
 msgstr "Каталог Lazarus содержит исходный код IDE, а также файлы LCL и многих стандартных пакетов. Например, он содержит файл \"ide%slazarus.lpi\". Также в нём располагаются файлы переводов."
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
-msgstr "Каталог Lazarus не найден.%sВы не сможете создавать приложения LCL.Проверьте Environment -> Environment Options -> Files"
+#| msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Tools -> Options -> Files"
+msgstr "Каталог Lazarus не найден.%sВы не сможете создавать приложения LCL.%sПроверьте Сервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
@@ -14225,8 +14236,9 @@ msgid "The project information file %s%s%s%shas changed on disk."
 msgstr "Файл информации о проекте %s%s%s%sизменён на диске."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
-msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
-msgstr "Проект требуется сохранить до компиляции%sВыбор каталога для сборки пробных проектов в параметрах окружения%sпозволит создавать новые проекты и сразу собирать их.%sСохранить проект?"
+#| msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
+msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
+msgstr "Проект требуется сохранить перед компиляцией%sВыбор каталога для сборки пробных проектов в параметрах IDE%sпозволит создавать новые проекты и сразу собирать их.%sСохранить проект?"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
@@ -14304,9 +14316,9 @@ msgstr "Эти модули не были найдены:"
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Исходный код пакетов Free Pascal требуется для обеспечения работы функций навигации по коду и его завершения. Каталог с исходным кодом FPC содержит, например, файл \"%s\"."
 
-#: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
-msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
-msgstr "Пробный каталог не найден:%s%s%s%s%s(смотрите параметры окружения)"
+#: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
+msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
+msgstr "Каталог для сборки пробных проектов не найден:%s%s%s%s%s(проверьте параметры IDE)"
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."

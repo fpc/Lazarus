@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-02-19 19:16+0300\n"
+"PO-Revision-Date: 2011-05-07 19:49+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -25,10 +25,9 @@ msgstr "Ошибка при выполнении %s%s%s:%s%s"
 msgid "Unable to find a HTML browser."
 msgstr "Невозможно найти браузер HTML."
 
-#: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-#| msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgid "No HTML Browser found.%sPlease define one in Environment -> Options -> Help -> Help Options"
-msgstr "Не найдена программа просмотра справки.%sЗадайте её в меню Окружение -> Параметры -> Справка -> Параметры справки"
+#: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgstr "Браузер HTML не найден.%sЗадайте его в меню Сервис -> Параметры -> Параметры справки"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."

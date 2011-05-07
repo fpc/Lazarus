@@ -4075,7 +4075,9 @@ msgid "Ambiguous compiler"
 msgstr "Compilatore ambiguo"
 
 #: lazarusidestrconsts.lisccochecktestdir
-msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
+#, fuzzy
+#| msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
+msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
 msgstr "Controllare la cartella di test sotto %sAmbiente -> Opzioni ambiente -> Files -> Cartella per la build di progetti di prova"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
@@ -5526,7 +5528,9 @@ msgid "Compiler filename"
 msgstr "Nome file del compilatore"
 
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
+#, fuzzy
+#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
+msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Dritta: imposta il cammino del compilatore in Ambiente->Opzioni di ambiente->File->Percorso compilatore"
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
@@ -14000,11 +14004,15 @@ msgid "The %s contains a star * character.%sLazarus uses this as normal characte
 msgstr ""
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
 msgstr "Il nome file del compilatore corrente %s%s%s%snon è un eseguibile valido.%sScegliere Ok per usare il valore predefinito %s%s%s.%sAltrimenti controllare Ambiente -> Opzioni di ambiente -> File"
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutableplease
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Tools -> Options -> Files"
 msgstr "Il nome file del compilatore corrente %s%s%s%snon è un eseguibile valido.%sControllare Ambiente -> Opzioni di ambiente -> File"
 
 #: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
@@ -14012,23 +14020,33 @@ msgid "The current FPC has no config file. It will probably miss some units. Che
 msgstr ""
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
-msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
 msgstr "La cartella sorgenti del Free Pascal corrente %s%s%snon sembra corretta.%sScegliere Ok per impostare la predefinita %s%s%s.%sAltrimenti controllare Ambiente -> Opzioni di ambiente -> File"
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
-msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
+msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Tools -> Options -> Files"
 msgstr "La cartella dei sorgenti Free Pascal corrente %s%s%s%snon sembra corretta.%sControllare Ambiente -> Opzioni di ambiente -> File"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
-msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
+msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
 msgstr "La cartella Lazarus corrente %s%s%s%snon sembra corretta.%sSenza di essa non si potranno creare applicazioni LCL.%sScegliere Ok per impostare la predefinita %s%s%s.%sAltrimenti controllare Ambiente -> Opzioni di ambiente -> File"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
-msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
+msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Tools -> Options -> Files"
 msgstr "La cartella di Lazarus corrente %s%s%s%snon sembra corretta.%sSenza di essa non si potranno creare applicazioni LCL.%sControllare Ambiente -> Opzioni di ambiente -> file"
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+#, fuzzy
+#| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
+msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgstr "Il debugger %s%s%s%snon esiste o non è eseguibile.%s%sVedere Ambiente -> Opzioni di debug"
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
@@ -14126,7 +14144,9 @@ msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended
 msgstr "Il compilatore Free Pascal (nome file: %s) non è stato trovato.%sSi consiglia di installare fpc."
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
-msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
+msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
 msgstr "La cartella dei sorgenti di Free Pascal non è stata trovata.%sAlcuni comandi non funzioneranno.%sSi consiglia di installarli e di impostare il cammino in%sAmbiente -> Opzioni di ambiente -> File"
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
@@ -14154,7 +14174,9 @@ msgid "The Lazarus directory contains the sources of the IDE and the package fil
 msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
+#, fuzzy
+#| msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Tools -> Options -> Files"
 msgstr "La cartella di Lazarus non è stata trovata.%sNon si potranno creare applicazioni LCL.%sControllare Ambiente -> Opzioni di ambiente -> File"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
@@ -14254,7 +14276,9 @@ msgid "The project information file %s%s%s%shas changed on disk."
 msgstr "Il file informazioni di progetto%s%s%s%sè stato modificato sul disco."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
-msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
+#, fuzzy
+#| msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
+msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Il progetto deve essere salvato prima della costruzione%sSe si imposta la cartella di test nelle opzioni di ambiente,%ssi possono creare nuovi progetti e costruirli tutti insieme.%sSalvare il progetto? "
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
@@ -14333,9 +14357,9 @@ msgstr "Queste unit non sono state trovate:"
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr ""
 
-#: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
-msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
-msgstr "La cartella Test non è stata trovata:%s%s%s%s%s(vedi opzioni di ambiente)"
+#: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
+msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
+msgstr ""
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."

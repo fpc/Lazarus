@@ -25,11 +25,9 @@ msgstr "%s%s%s:%s%s çalıştırılırken hata"
 msgid "Unable to find a HTML browser."
 msgstr "HTML tarayıcı bulunamıyor."
 
-#: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-#, fuzzy
-#| msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgid "No HTML Browser found.%sPlease define one in Environment -> Options -> Help -> Help Options"
-msgstr "HTML tarayıcı bulunamadı. %s Yardım -> Yardımı Yapılandır -> Görüntüleyiciler'den bir tane tanımlayın"
+#: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."

@@ -25,11 +25,9 @@ msgstr "Feil ved kjøring av %s%s%s:%s%s"
 msgid "Unable to find a HTML browser."
 msgstr "Ikke istand til å finne en HTML-leser."
 
-#: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-#, fuzzy
-#| msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgid "No HTML Browser found.%sPlease define one in Environment -> Options -> Help -> Help Options"
-msgstr "Ingen HTML-leser funnet.%sdefiner en i Hjelp -> Konfigurer Hjelp -> Visere"
+#: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
+msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
+msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
