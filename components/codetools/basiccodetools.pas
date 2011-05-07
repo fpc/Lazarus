@@ -185,6 +185,7 @@ function SplitStringConstant(const StringConstant: string;
     const aLineBreak: string): string;
 procedure ImproveStringConstantStart(const ACode: string; var StartPos: integer);
 procedure ImproveStringConstantEnd(const ACode: string; var EndPos: integer);
+function HexStrToIntDef(p: PChar; Def: integer): integer;
 
 // search
 function SearchNextInText(Search: PChar; SearchLen: PtrInt;
@@ -4750,6 +4751,28 @@ begin
       end;
     end;
   until AtomEndPos>=EndPos;
+end;
+
+function HexStrToIntDef(p: PChar; Def: integer): integer;
+var
+  OldP: PChar;
+  i: Integer;
+begin
+  Result:=0;
+  OldP:=p;
+  while true do begin
+    case p^ of
+    '0'..'9': i:=ord(p^)-ord('0');
+    'A'..'Z': i:=ord(p^)-ord('A')+10;
+    'a'..'z': i:=ord(p^)-ord('a')+10;
+    else
+      exit;
+    end;
+    if Result>(High(Result) shr 4) then exit(Def);
+    Result:=(Result shl 4)+i;
+    inc(p);
+  end;
+  if OldP=p then exit(Def);
 end;
 
 function SearchNextInText(Search: PChar; SearchLen: PtrInt; Src: PChar;

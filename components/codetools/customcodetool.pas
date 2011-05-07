@@ -261,6 +261,7 @@ type
     procedure ReadNextAtom;
     procedure UndoReadNextAtom;
     procedure ReadPriorAtom;
+    procedure ReadAsStringConstant; // start at CurPos.StartPos
 
     // read blocks
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
@@ -1105,11 +1106,6 @@ begin
         // string constant
         while true do begin
           case p^ of
-          #0:
-            begin
-              CurPos.EndPos:=p-PChar(Src)+1;
-              if CurPos.EndPos>SrcLen then break;
-            end;
           '#':
             begin
               inc(p);
@@ -1130,20 +1126,13 @@ begin
               inc(p);
               while true do begin
                 case p^ of
-                #0:
-                  begin
-                    CurPos.EndPos:=p-PChar(Src)+1;
-                    if CurPos.EndPos>SrcLen then break;
-                  end;
                 '''':
                   begin
                     inc(p);
                     break;
                   end;
-
-                #10,#13:
+                #0,#10,#13:
                   break;
-
                 else
                   inc(p);
                 end;
@@ -1310,7 +1299,6 @@ begin
   end else begin
     CurPos:=NextPos;
     NextPos.StartPos:=-1;
-    exit;
   end;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
@@ -1691,6 +1679,67 @@ begin
         end;
       end;
   end;
+end;
+
+procedure TCustomCodeTool.ReadAsStringConstant;
+var
+  p: PChar;
+begin
+  CurPos.Flag:=cafNone;
+  NextPos.StartPos:=-1;
+  if CurPos.StartPos>SrcLen then begin
+    CurPos.EndPos:=CurPos.StartPos;
+    exit;
+  end;
+  p:=@Src[CurPos.StartPos];
+  // string constant
+  while true do begin
+    case p^ of
+    '#':
+      begin
+        inc(p);
+        if IsNumberChar[p^] then begin
+          // decimal
+          repeat
+            inc(p);
+          until not IsNumberChar[p^];
+        end else if p^='$' then begin
+          // hexadecimal
+          repeat
+            inc(p);
+          until not IsHexNumberChar[p^];
+        end;
+      end;
+    '''':
+      begin
+        inc(p);
+        while true do begin
+          case p^ of
+          '''':
+            begin
+              inc(p);
+              break;
+            end;
+
+          #0,#10,#13:
+            break;
+
+          else
+            inc(p);
+          end;
+        end;
+      end;
+    '^':
+      begin
+        inc(p);
+        if not (p^ in ['A'..'Z']) then break;
+        inc(p);
+      end;
+    else
+      break;
+    end;
+  end;
+  CurPos.EndPos:=p-PChar(Src)+1;
 end;
 
 procedure TCustomCodeTool.UndoReadNextAtom;

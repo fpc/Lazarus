@@ -1291,55 +1291,60 @@ end;
 function TPascalReaderTool.ReadStringConstantValue(StartPos: integer): string;
 // reads a string constant and returns the resulting string
 var
-  APos: Integer;
   Run: Integer;
-  NumberStart: Integer;
+  NumberStart: PChar;
   ResultLen: Integer;
   Number: Integer;
+  p: PChar;
 begin
   Result:='';
+  if StartPos>SrcLen then exit;
   // first read and calculate the resulting length, then copy the chars
   for Run:=1 to 2 do begin
-    APos:=StartPos;
     ResultLen:=0;
-    while APos<=SrcLen do begin
-      if Src[APos]='''' then begin
-        // read string
-        inc(APos);
-        while APos<=SrcLen do begin
-          if (Src[APos]='''') then begin
-            if (APos<SrcLen) and (Src[APos+1]='''') then begin
-              // a double ' means a single '
-              inc(ResultLen);
-              if Run=2 then Result[ResultLen]:='''';
-              inc(APos,2);
+    p:=@Src[StartPos];
+    while true do begin
+      case p^ of
+      '''':
+        begin
+          // read string
+          inc(p);
+          while true do begin
+            if p^='''' then begin
+              if p[1]='''' then begin
+                // a double ' means a single '
+                inc(ResultLen);
+                if Run=2 then Result[ResultLen]:='''';
+                inc(p,2);
+              end else begin
+                // a single ' means end of string constant
+                inc(p);
+                break;
+              end;
             end else begin
-              // a single ' means end of string constant
-              inc(APos);
-              break;
+              // normal char
+              inc(ResultLen);
+              if Run=2 then Result[ResultLen]:=p^;
+              inc(p);
             end;
-          end else begin
-            // normal char
-            inc(ResultLen);
-            if Run=2 then Result[ResultLen]:=Src[APos];
-            inc(APos);
           end;
         end;
-      end else if Src[APos]='#' then begin
-        // read char constant
-        inc(APos);
-        NumberStart:=APos;
-        if APos<=SrcLen then begin
-          if IsNumberChar[Src[APos]] then begin
+      '#':
+        begin
+          // read char constant
+          inc(p);
+          NumberStart:=p;
+          if IsNumberChar[p^] then begin
             // read decimal number
-            while (APos<=SrcLen) and IsNumberChar[Src[APos]] do
-              inc(APos);
-            Number:=StrToIntDef(copy(Src,NumberStart,APos-NumberStart),-1);
-          end else if Src[APos]='$' then begin
+            while IsNumberChar[p^] do
+              inc(p);
+            Number:=StrToIntDef(copy(Src,NumberStart-PChar(Src)+1,p-NumberStart),-1);
+          end else if p^='$' then begin
             // read hexnumber
-            while (APos<=SrcLen) and IsHexNumberChar[Src[APos]] do
-              inc(APos);
-            Number:=StrToIntDef(copy(Src,NumberStart,APos-NumberStart),-1);
+            inc(p);
+            while IsHexNumberChar[p^] do
+              inc(p);
+            Number:=HexStrToIntDef(NumberStart,-1);
           end else
             Number:=-1;
           // add special character
@@ -1347,8 +1352,19 @@ begin
           inc(ResultLen);
           if Run=2 then Result[ResultLen]:=chr(Number);
         end;
-      end else
+      '^':
+        begin
+          inc(p);
+          if p^ in ['A'..'Z'] then begin
+            inc(ResultLen);
+            if Run=2 then Result[ResultLen]:=chr(ord(p^)-ord('A'));
+          end else begin
+            break;
+          end;
+        end;
+      else
         break;
+      end;
     end;
     if Run=1 then SetLength(Result,ResultLen);
   end;
