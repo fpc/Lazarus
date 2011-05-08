@@ -6241,6 +6241,18 @@ msgstr "Autoriser tout"
 msgid "Copy to clipboard"
 msgstr "Copie vers le presse-papier"
 
+#: lazarusidestrconsts.lisdbgemexpression
+msgid "&Expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemnewvalue
+msgid "&New value:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemresult
+msgid "&Result:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr ""

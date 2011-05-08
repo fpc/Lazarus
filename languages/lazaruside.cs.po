@@ -6183,6 +6183,18 @@ msgstr "Povolit vše"
 msgid "Copy to clipboard"
 msgstr "Kopírovat do schránky"
 
+#: lazarusidestrconsts.lisdbgemexpression
+msgid "&Expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemnewvalue
+msgid "&New value:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemresult
+msgid "&Result:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr ""

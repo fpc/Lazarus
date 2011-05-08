@@ -6232,6 +6232,18 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lisdbgemexpression
+msgid "&Expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemnewvalue
+msgid "&New value:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemresult
+msgid "&Result:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr ""

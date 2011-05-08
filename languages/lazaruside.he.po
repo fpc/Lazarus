@@ -6201,6 +6201,18 @@ msgstr "אפשר הכל"
 msgid "Copy to clipboard"
 msgstr "העתק ללוח הזמני"
 
+#: lazarusidestrconsts.lisdbgemexpression
+msgid "&Expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemnewvalue
+msgid "&New value:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemresult
+msgid "&Result:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr ""

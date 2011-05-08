@@ -6207,6 +6207,18 @@ msgstr "Activar todos"
 msgid "Copy to clipboard"
 msgstr "Copiar al portapapeles"
 
+#: lazarusidestrconsts.lisdbgemexpression
+msgid "&Expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemnewvalue
+msgid "&New value:"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgemresult
+msgid "&Result:"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
 msgstr ""
