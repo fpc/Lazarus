@@ -67,6 +67,8 @@ type
   TChangeDeclarationTool = class(TExtractProcTool)
   private
     procedure CDTParseParamList(ParentNode: TCodeTreeNode; Transactions: TObject);
+    function ApplyParamListTransactions(Transactions: TObject;
+      SourceChanger: TSourceChangeCache): boolean;
     function ChangeParamListDeclaration(ParentNode: TCodeTreeNode;
       Changes: TObjectList; // list of TChangeParamListItem
       SourceChanger: TSourceChangeCache): boolean;
@@ -93,9 +95,9 @@ type
     Name: string;
     Typ: string;
     Value: string;
-    MergeAllowed: boolean;
+    CopyFromParamIndex: integer;
     constructor Create(aSrc, aModifier, aName, aType, aValue: string;
-                       aMergeAllowed: boolean = true);
+                       aCopyFrom: integer);
   end;
 
   { TChangeParamTransactionPos }
@@ -105,10 +107,10 @@ type
     Node: TCodeTreeNode; // old param node
     // example: (var buf; {header} a,b:c; d:word=3 {footer}; ...)
     HeaderCommentPos: integer;
-    Modifier: TAtomPosition; // ... (macpas varargs), const, var out, constref
-    Name: TAtomPosition; // '...' has no name
-    Typ: TAtomPosition;
-    DefaultValue: TAtomPosition;
+    Modifier: TAtomPosition; // optional: const, var out, constref
+    Name: TAtomPosition; // name or '...' (MacPas varargs)
+    Typ: TAtomPosition; // optional
+    DefaultValue: TAtomPosition; // optional
     HasComments: boolean;
     FooterCommentEndPos: integer;
     Separator: integer; // the comma or semicolon to the next parameter
@@ -129,9 +131,9 @@ type
 
   TChangeParamListTransactions = class
   public
+    Node: TCodeTreeNode; // ctnParameterList
     OldNodes: array of TChangeParamTransactionPos; // one for each old param node
     InsertFirst: TObjectList;// list of TChangeParamTransactionInsert
-    Node: TCodeTreeNode; // ctnParameterList
     BehindNamePos: integer;
     BracketOpenPos: integer;
     BracketClosePos: integer;
@@ -144,14 +146,14 @@ type
 { TChangeParamTransactionInsert }
 
 constructor TChangeParamTransactionInsert.Create(aSrc, aModifier, aName, aType,
-  aValue: string; aMergeAllowed: boolean);
+  aValue: string; aCopyFrom: integer);
 begin
   Src:=aSrc;
   Modifier:=aModifier;
   Name:=aName;
   Typ:=aType;
   Value:=aValue;
-  MergeAllowed:=aMergeAllowed;
+  CopyFromParamIndex:=aCopyFrom;
 end;
 
 constructor TChangeParamTransactionPos.Create;
@@ -191,10 +193,8 @@ begin
     Result:=DefaultValue.EndPos
   else if Typ.EndPos>0 then
     Result:=Typ.EndPos
-  else if Name.EndPos>0 then
-    Result:=Name.EndPos
   else
-    Result:=Modifier.EndPos;
+    Result:=Name.EndPos;
 end;
 
 { TChangeParamListInfos }
@@ -328,6 +328,7 @@ begin
     FirstInGroup:=-1;
     if AtomIs('...') then begin
       // MacPas '...' VarArgs parameter
+      CurParam.Name:=CurPos;
       ReadNextAtom;
       // parse end of parameter list
       if (CurPos.StartPos>SrcLen)
@@ -386,6 +387,11 @@ begin
   for i:=0 to t.MaxPos-1 do begin
     CurParam:=t.OldNodes[i];
 
+    // check if the param has a comment inside
+    StartPos:=CurParam.GetFirstPos;
+    EndPos:=CurParam.GetLastPos(false);
+    CurParam.HasComments:=FindNextComment(Src,StartPos,EndPos-1)>=EndPos;
+
     // check if the param has a comment in front belonging to the param
     if i=0 then
       StartPos:=t.BracketOpenPos+1
@@ -396,6 +402,7 @@ begin
     if StartPos<EndPos then begin
       // there is a comment in front
       CurParam.HeaderCommentPos:=StartPos;
+      CurParam.HasComments:=true;
     end;
 
     // check if the param has a comment behind, but in front of the next separator
@@ -408,6 +415,7 @@ begin
     if StartPos<EndPos then begin
       // there is a comment behind param and in front of the next separator
       CurParam.FooterCommentEndPos:=EndPos;
+      CurParam.HasComments:=true;
     end;
 
     // check if the param has a comment behind the next separator
@@ -428,6 +436,71 @@ begin
   end;
 end;
 
+function TChangeDeclarationTool.ApplyParamListTransactions(
+  Transactions: TObject; SourceChanger: TSourceChangeCache): boolean;
+var
+  t: TChangeParamListTransactions;
+  InsertCode: String;
+  i: Integer;
+  InsertParam: TChangeParamTransactionInsert;
+
+  function WholeParamListWillBeDeleted: boolean;
+  var
+    i: Integer;
+    CurParam: TChangeParamTransactionPos;
+  begin
+    Result:=false;
+    if t.InsertFirst.Count>0 then exit;
+    for i:=0 to t.MaxPos-1 do begin
+      CurParam:=t.OldNodes[i];
+      if CurParam.InsertBehind.Count>0 then exit;
+      if not CurParam.Delete then exit;
+    end;
+    Result:=true;
+  end;
+
+begin
+  Result:=false;
+  t:=Transactions as TChangeParamListTransactions;
+
+  if WholeParamListWillBeDeleted then begin
+    // delete whole param list
+    if (t.BracketOpenPos>0) and (t.BracketClosePos>0) then begin
+      if not SourceChanger.Replace(gtNone,gtNone,t.BracketOpenPos,t.BracketClosePos+1,'')
+      then
+        exit;
+    end;
+    exit(true);
+  end;
+
+  InsertCode:='';
+  if t.BracketOpenPos<1 then begin
+    // start a new param list
+    if t.Node.Desc=ctnProperty then
+      InsertCode:='['
+    else
+      InsertCode:='(';
+  end;
+
+  for i:=0 to t.InsertFirst.Count-1 do begin
+    InsertParam:=TChangeParamTransactionInsert(t.InsertFirst[i]);
+    if (InsertCode<>'') and (not (InsertCode[length(InsertCode)] in [';','(','[']))
+    then
+      InsertCode:=InsertCode+';';
+    if InsertParam.Src<>'' then
+      InsertCode:=InsertCode+InsertParam.Src
+    else begin
+      if InsertParam.Modifier<>'' then
+        InsertCode:=InsertCode+InsertParam.Modifier+' ';
+      InsertCode:=InsertCode+InsertParam.Name;
+      if InsertParam.Typ<>'' then
+        InsertCode:=InsertCode+':'+InsertParam.Typ;
+      if InsertParam.Value<>'' then
+        InsertCode:=InsertCode+'='+InsertParam.Value;
+    end;
+  end;
+end;
+
 function TChangeDeclarationTool.ChangeParamListDeclaration(
   ParentNode: TCodeTreeNode; Changes: TObjectList;
   SourceChanger: TSourceChangeCache): boolean;
@@ -436,6 +509,7 @@ var
   i: Integer;
   Change: TChangeParamListItem;
   Transactions: TChangeParamListTransactions;
+  Transaction: TChangeParamTransactionPos;
 begin
   Result:=false;
 
@@ -455,26 +529,32 @@ begin
     for i:=0 to Changes.Count-1 do begin
       Change:=TChangeParamListItem(Changes[i]);
       if (Change.Index<0) or (Change.Index>Transactions.MaxPos) then
-        raise Exception.Create('TChangeDeclarationTool.ChangeProcParamListDeclaration: index out of bounds');
+        raise Exception.Create('TChangeDeclarationTool.ChangeParamListDeclaration: index out of bounds');
       case Change.Action of
       cplaInsertNewParam:
         Transactions.Insert(Change.Index,
           TChangeParamTransactionInsert.Create('',Change.ParamModifier,
-                               Change.ParamName,Change.ParamType,Change.DefaultValue));
+                     Change.ParamName,Change.ParamType,Change.DefaultValue,-1));
 
       cplaDeleteParam:
-        Transactions.OldNodes[Change.Index].Delete:=true;
+        begin
+          Transaction:=Transactions.OldNodes[Change.Index];
+          if Transaction.Delete then
+            raise Exception.Create('TChangeDeclarationTool.ChangeParamListDeclaration: index already deleted');
+          Transaction.Delete:=true;
+        end;
 
       cplaMoveParam:
         begin
           if (Change.OldIndex<0) or (Change.OldIndex>Transactions.MaxPos) then
-            raise Exception.Create('TChangeDeclarationTool.ChangeProcParamListDeclaration: index out of bounds');
+            raise Exception.Create('TChangeDeclarationTool.ChangeParamListDeclaration: index out of bounds');
           if Change.OldIndex<>Change.Index then begin
-            Transactions.OldNodes[Change.OldIndex].Delete:=true;
-            // ToDo: check if param contains comments
-            //  if yes: copy with comments
-            //  if not: extract parts
-            raise Exception.Create('TChangeDeclarationTool.ChangeProcParamListDeclaration: ToDo: move');
+            Transaction:=Transactions.OldNodes[Change.OldIndex];
+            if Transaction.Delete then
+              raise Exception.Create('TChangeDeclarationTool.ChangeParamListDeclaration: index already deleted');
+            Transaction.Delete:=true;
+            Transactions.Insert(Change.Index,
+              TChangeParamTransactionInsert.Create('','','','','',Change.OldIndex));
           end;
         end;
 
@@ -484,12 +564,14 @@ begin
       end;
     end;
 
-    // ToDo: apply transactions
+    // ToDo: check default values
+    // ToDo: check '...' is last
 
+    // apply
+    Result:=ApplyParamListTransactions(Transactions,SourceChanger);
   finally
     Transactions.Free;
   end;
-  Result:=true;
 end;
 
 function TChangeDeclarationTool.ChangeParamListDeclarationAtPos(CleanPos: integer;
