@@ -101,6 +101,10 @@ begin
   tbWatch.Caption := lisWatch;
   tbInspect.Caption := lisInspect;
 
+  Label1.Caption := lisDBGEMExpression;
+  Label2.Caption := lisDBGEMResult;
+  lblNewValue.Caption := lisDBGEMNewValue;
+
   ToolBar1.Images := IDEImages.Images_16;
   tbInspect.ImageIndex := IDEImages.LoadImage(16, 'debugger_inspect');
   tbWatch.ImageIndex := IDEImages.LoadImage(16, 'debugger_watches');

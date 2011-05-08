@@ -4636,6 +4636,9 @@ resourcestring
   lisModify = '&Modify';
   lisWatch = '&Watch';
   lisInspect = '&Inspect';
+  lisDBGEMExpression = '&Expression:';
+  lisDBGEMResult = '&Result:';
+  lisDBGEMNewValue = '&New value:';
 
   // Breakpoint Properties Dialog
   lisBreakPointProperties = 'Breakpoint Properties';
