@@ -1402,6 +1402,33 @@ begin
   Result := '"' + Result + '"';
 end;
 
+function ParseModuleName(const S: String): String;
+begin
+  Result := StringReplace(S, '\\', '\', [rfReplaceAll]);
+end;
+
+function ParseLibraryLoaded(const S: String): String;
+const
+  DebugInfo: array[Boolean] of String = ('No Debug Info.', 'Has Debug Info.');
+var
+  List: TGDBMINameValueList;
+begin
+  // input: =library-loaded,id="C:\\Windows\\system32\\ntdll.dll",target-name="C:\\Windows\\system32\\ntdll.dll",host-name="C:\\Windows\\system32\\ntdll.dll",symbols-loaded="0",thread-group="i1"
+  List := TGDBMINameValueList.Create(S);
+  Result := Format('Module Load: "%s". %s', [ParseModuleName(List.Values['id']), DebugInfo[List.Values['symbols-loaded'] = '1']]);
+  List.Free;
+end;
+
+function ParseLibraryUnLoaded(const S: String): String;
+var
+  List: TGDBMINameValueList;
+begin
+  // input: =library-unloaded,id="C:\\Windows\\system32\\advapi32.dll",target-name="C:\\Windows\\system32\\advapi32.dll",host-name="C:\\Windows\\system32\\advapi32.dll",thread-group="i1"
+  List := TGDBMINameValueList.Create(S);
+  Result := Format('Module Unload: "%s".', [ParseModuleName(List.Values['id'])]);
+  List.Free;
+end;
+
 { TGDBMIBreakPoints }
 
 function TGDBMIBreakPoints.FindById(AnId: Integer): TGDBMIBreakPoint;
@@ -3752,11 +3779,13 @@ var
   begin
     S := GetPart(['='], [','], Line, False, False);
     case StringCase(S, [
-      'shlibs-added', 'library-loaded',
+      'shlibs-added',
+      'library-loaded',
       'library-unloaded',
       'shlibs-updated'], False, False) of
-      0..1: DoDbgEvent(ecModule, etModuleLoad, Line);
-      2: DoDbgEvent(ecModule, etModuleUnload, Line);
+      0: DoDbgEvent(ecModule, etModuleLoad, Line);
+      1: DoDbgEvent(ecModule, etModuleLoad, ParseLibraryLoaded(Line));
+      2: DoDbgEvent(ecModule, etModuleUnload, ParseLibraryUnloaded(Line));
       3: DoDbgEvent(ecModule, etDefault, Line);
     else
       DebugLn('[Debugger] Notify output: ', Line);
@@ -8964,8 +8993,8 @@ var
       'thread-created', 'thread-group-created',
       'thread-exited', 'thread-group-exited'], False, False)
     of
-      0: DoDbgEvent(ecModule, etModuleLoad, Line);
-      1: DoDbgEvent(ecModule, etModuleUnload, Line);
+      0: DoDbgEvent(ecModule, etModuleLoad, ParseLibraryLoaded(Line));
+      1: DoDbgEvent(ecModule, etModuleUnload, ParseLibraryUnloaded(Line));
       2..3: DoDbgEvent(ecThread, etThreadStart, Line);
       4..5: DoDbgEvent(ecThread, etThreadExit, Line);
     else
