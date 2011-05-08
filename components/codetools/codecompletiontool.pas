@@ -6204,7 +6204,8 @@ end;
   
 function TCodeCompletionCodeTool.InsertAllNewClassParts: boolean;
 var
-  PublishedKeyWordNeeded: boolean;
+  NewSectionKeyWordNeeded: boolean;
+  NewSection: TPascalClassSection;
 
   function GetTopMostPositionNode(Visibility: TPascalClassSection
     ): TCodeTreeNode;
@@ -6303,12 +6304,12 @@ var
         NewClassSectionInsertPos[Visibility]:=ANode.StartPos
       else
         NewClassSectionInsertPos[Visibility]:=ANode.FirstChild.EndPos;
-      if (not PublishedKeyWordNeeded)
-      and (CompareNodeIdentChars(ANode,'PUBLISHED')<>0) then begin
-        PublishedKeyWordNeeded:=true;
-        NewClassSectionInsertPos[pcsPublished]:=
+      if (not NewSectionKeyWordNeeded)
+      and (CompareNodeIdentChars(ANode, UpperCase(PascalClassSectionKeywords[NewSection]))<>0) then begin
+        NewSectionKeyWordNeeded:=true;
+        NewClassSectionInsertPos[NewSection]:=
           NewClassSectionInsertPos[Visibility];
-        NewClassSectionIndent[pcsPublished]:=
+        NewClassSectionIndent[NewSection]:=
           NewClassSectionIndent[Visibility];
       end;
     end else begin
@@ -6351,7 +6352,11 @@ begin
     Result:=true;
     exit;
   end;
-  PublishedKeyWordNeeded:=false;// 'published' keyword after first private section needed
+  NewSectionKeyWordNeeded:=false;// 'published'/'public' keyword after first private section needed
+  if CodeCompleteClassNode.Desc = ctnClass then
+    NewSection := pcsPublished
+  else
+    NewSection := pcsPublic;
 
   AddClassSection(pcsPrivate);
   InsertNewClassParts(ncpPrivateVars);
@@ -6361,16 +6366,24 @@ begin
   InsertNewClassParts(ncpProtectedVars);
   InsertNewClassParts(ncpProtectedProcs);
 
-  AddClassSection(pcsPublic);
+  if NewSectionKeyWordNeeded and (NewSection = pcsPublic) then begin
+    ASourceChangeCache.Replace(gtNewLine,gtNewLine,
+      NewClassSectionInsertPos[NewSection],
+      NewClassSectionInsertPos[NewSection],
+      GetIndentStr(NewClassSectionIndent[NewSection])+
+        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(PascalClassSectionKeywords[NewSection]));
+  end
+  else
+    AddClassSection(pcsPublic);
   InsertNewClassParts(ncpPublicVars);
   InsertNewClassParts(ncpPublicProcs);
 
-  if PublishedKeyWordNeeded then begin
+  if NewSectionKeyWordNeeded and (NewSection = pcsPublished) then begin
     ASourceChangeCache.Replace(gtNewLine,gtNewLine,
-      NewClassSectionInsertPos[pcsPublished],
-      NewClassSectionInsertPos[pcsPublished],
-      GetIndentStr(NewClassSectionIndent[pcsPublished])+
-        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('published'));
+      NewClassSectionInsertPos[NewSection],
+      NewClassSectionInsertPos[NewSection],
+      GetIndentStr(NewClassSectionIndent[NewSection])+
+        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(PascalClassSectionKeywords[NewSection]));
   end;
   InsertNewClassParts(ncpPublishedVars);
   InsertNewClassParts(ncpPublishedProcs);

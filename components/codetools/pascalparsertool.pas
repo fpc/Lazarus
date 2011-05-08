@@ -3765,9 +3765,12 @@ begin
       end;
     end;
   end else begin
-    // start the first class section (always published)
+    // start the first class section (always published/public)
     CreateChildNode;
-    CurNode.Desc:=ctnClassPublished;
+    if ClassDesc = ctnClass then
+      CurNode.Desc:=ctnClassPublished
+    else
+      CurNode.Desc:=ctnClassPublic;
     CurNode.StartPos:=LastAtoms.GetValueAt(0).EndPos;
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
