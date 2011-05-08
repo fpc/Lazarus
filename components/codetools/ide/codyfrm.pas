@@ -57,8 +57,8 @@ procedure RemoveWithBlockCmd(Sender: TObject);
 
   procedure ErrorNotInWithVar;
   begin
-    IDEMessageDialog('Error',
-      'Please place the cursor of the source editor on a With variable.',
+    IDEMessageDialog(crsCWError,
+      crsCWPleasePlaceTheCursorOfTheSourceEditorOnAWithVariab,
       mtError,[mbCancel]);
   end;
 

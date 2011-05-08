@@ -61,6 +61,9 @@ resourcestring
   crsAddAssignMethod = 'Add Assign method';
   crsAddAssignMethod2 = 'Add Assign method ...';
   crsRemoveWithBlock = 'Remove With block';
+  crsCWError = 'Error';
+  crsCWPleasePlaceTheCursorOfTheSourceEditorOnAWithVariab = 'Please place the '
+    +'cursor of the source editor on a With variable.';
 
 implementation
 
