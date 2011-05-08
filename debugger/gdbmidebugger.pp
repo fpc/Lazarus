@@ -308,6 +308,8 @@ type
     // Target info (move to record ?)
     FTargetInfo: TGDBMITargetInfo;
 
+    FThreadGroups: TStringList;
+
     procedure DoPseudoTerminalRead(Sender: TObject);
     // Implementation of external functions
     function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
@@ -391,6 +393,11 @@ type
     property  PauseWaitState: TGDBMIPauseWaitState read FPauseWaitState;
     property  DebuggerFlags: TGDBMIDebuggerFlags read FDebuggerFlags;
     procedure DoRelease; override;   // Destroy self (or schedule)
+
+    procedure AddThreadGroup(const S: String);
+    procedure RemoveThreadGroup(const S: String);
+    function ParseLibraryLoaded(const S: String): String;
+    function ParseLibraryUnLoaded(const S: String): String;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
@@ -1405,28 +1412,6 @@ end;
 function ParseModuleName(const S: String): String;
 begin
   Result := StringReplace(S, '\\', '\', [rfReplaceAll]);
-end;
-
-function ParseLibraryLoaded(const S: String): String;
-const
-  DebugInfo: array[Boolean] of String = ('No Debug Info.', 'Has Debug Info.');
-var
-  List: TGDBMINameValueList;
-begin
-  // input: =library-loaded,id="C:\\Windows\\system32\\ntdll.dll",target-name="C:\\Windows\\system32\\ntdll.dll",host-name="C:\\Windows\\system32\\ntdll.dll",symbols-loaded="0",thread-group="i1"
-  List := TGDBMINameValueList.Create(S);
-  Result := Format('Module Load: "%s". %s', [ParseModuleName(List.Values['id']), DebugInfo[List.Values['symbols-loaded'] = '1']]);
-  List.Free;
-end;
-
-function ParseLibraryUnLoaded(const S: String): String;
-var
-  List: TGDBMINameValueList;
-begin
-  // input: =library-unloaded,id="C:\\Windows\\system32\\advapi32.dll",target-name="C:\\Windows\\system32\\advapi32.dll",host-name="C:\\Windows\\system32\\advapi32.dll",thread-group="i1"
-  List := TGDBMINameValueList.Create(S);
-  Result := Format('Module Unload: "%s".', [ParseModuleName(List.Values['id'])]);
-  List.Free;
 end;
 
 { TGDBMIBreakPoints }
@@ -3784,8 +3769,8 @@ var
       'library-unloaded',
       'shlibs-updated'], False, False) of
       0: DoDbgEvent(ecModule, etModuleLoad, Line);
-      1: DoDbgEvent(ecModule, etModuleLoad, ParseLibraryLoaded(Line));
-      2: DoDbgEvent(ecModule, etModuleUnload, ParseLibraryUnloaded(Line));
+      1: DoDbgEvent(ecModule, etModuleLoad, FTheDebugger.ParseLibraryLoaded(Line));
+      2: DoDbgEvent(ecModule, etModuleUnload, FTheDebugger.ParseLibraryUnloaded(Line));
       3: DoDbgEvent(ecModule, etDefault, Line);
     else
       DebugLn('[Debugger] Notify output: ', Line);
@@ -4097,6 +4082,7 @@ begin
     Reason := List.Values['reason'];
     if (Reason = 'exited-normally')
     then begin
+      DoDbgEvent(ecProcess, etProcessExit, 'Process Exit: normally');
       SetDebuggerState(dsStop);
       Exit;
     end;
@@ -4104,6 +4090,7 @@ begin
     if Reason = 'exited'
     then begin
       FTheDebugger.SetExitCode(StrToIntDef(List.Values['exit-code'], 0));
+      DoDbgEvent(ecProcess, etProcessExit, 'Process Exit: ' + List.Values['exit-code']);
       SetDebuggerState(dsStop);
       Exit;
     end;
@@ -5112,6 +5099,7 @@ begin
   FCommandQueueExecLock := 0;
   FProcessingExeCmdLock := -1;
   FRunQueueOnUnlock := False;
+  FThreadGroups := TStringList.Create;
 
 {$IFdef MSWindows}
   InitWin32;
@@ -5177,6 +5165,7 @@ begin
   FreeAndNil(FCommandQueue);
   ClearSourceInfo;
   FreeAndNil(FSourceNames);
+  FreeAndNil(FThreadGroups);
   {$IFDEF DBG_ENABLE_TERMINAL}
   FreeAndNil(FPseudoTerminal);
   {$ENDIF}
@@ -5274,6 +5263,46 @@ begin
   then exit;
 
   inherited DoRelease;
+end;
+
+procedure TGDBMIDebugger.AddThreadGroup(const S: String);
+var
+  List: TGDBMINameValueList;
+begin
+  List := TGDBMINameValueList.Create(S);
+  FThreadGroups.Values[List.Values['id']] := List.Values['pid'];
+  List.Free;
+end;
+
+procedure TGDBMIDebugger.RemoveThreadGroup(const S: String);
+begin
+  // Some gdb info contains thread group which are already exited => don't remove them
+end;
+
+function TGDBMIDebugger.ParseLibraryLoaded(const S: String): String;
+const
+  DebugInfo: array[Boolean] of String = ('No Debug Info', 'Has Debug Info');
+var
+  List: TGDBMINameValueList;
+  ThreadGroup: String;
+begin
+  // input: =library-loaded,id="C:\\Windows\\system32\\ntdll.dll",target-name="C:\\Windows\\system32\\ntdll.dll",host-name="C:\\Windows\\system32\\ntdll.dll",symbols-loaded="0",thread-group="i1"
+  List := TGDBMINameValueList.Create(S);
+  ThreadGroup := List.Values['thread-group'];
+  Result := Format('Module Load: "%s". %s. Thread Group: %s (%s)', [ParseModuleName(List.Values['id']), DebugInfo[List.Values['symbols-loaded'] = '1'], ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
+  List.Free;
+end;
+
+function TGDBMIDebugger.ParseLibraryUnLoaded(const S: String): String;
+var
+  List: TGDBMINameValueList;
+  ThreadGroup: String;
+begin
+  // input: =library-unloaded,id="C:\\Windows\\system32\\advapi32.dll",target-name="C:\\Windows\\system32\\advapi32.dll",host-name="C:\\Windows\\system32\\advapi32.dll",thread-group="i1"
+  List := TGDBMINameValueList.Create(S);
+  ThreadGroup := List.Values['thread-group'];
+  Result := Format('Module Unload: "%s". Thread Group: %s (%s)', [ParseModuleName(List.Values['id']), ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
+  List.Free;
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -5703,6 +5732,7 @@ begin
   Result := False;
   case State of
     dsStop: begin
+      FThreadGroups.Clear;
       Result := StartDebugging(ectContinue);
     end;
     dsPause: begin
@@ -8973,7 +9003,7 @@ var
     EventText := GetPart(['*'], [','], Line, False, False);
     if EventText = 'running'
     then
-      DoDbgEvent(ecProcess, etProcessStart, Line)
+      DoDbgEvent(ecProcess, etProcessStart, 'Process Start: ' + FTheDebugger.FileName)
     else
       DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
   end;
@@ -8990,13 +9020,17 @@ var
     EventText := GetPart(['='], [','], Line, False, False);
     case StringCase(EventText, [
       'library-loaded', 'library-unloaded',
-      'thread-created', 'thread-group-created',
-      'thread-exited', 'thread-group-exited'], False, False)
+      'thread-group-started',
+      'thread-group-exited',
+      'thread-created',
+      'thread-exited'], False, False)
     of
-      0: DoDbgEvent(ecModule, etModuleLoad, ParseLibraryLoaded(Line));
-      1: DoDbgEvent(ecModule, etModuleUnload, ParseLibraryUnloaded(Line));
-      2..3: DoDbgEvent(ecThread, etThreadStart, Line);
-      4..5: DoDbgEvent(ecThread, etThreadExit, Line);
+      0: DoDbgEvent(ecModule, etModuleLoad, FTheDebugger.ParseLibraryLoaded(Line));
+      1: DoDbgEvent(ecModule, etModuleUnload, FTheDebugger.ParseLibraryUnloaded(Line));
+      2: FTheDebugger.AddThreadGroup(Line);
+      3: FTheDebugger.RemoveThreadGroup(Line);
+      4: DoDbgEvent(ecThread, etThreadStart, Line);
+      5: DoDbgEvent(ecThread, etThreadExit, Line);
     else
       DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
     end;
