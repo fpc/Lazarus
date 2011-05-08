@@ -2068,24 +2068,6 @@ const
     'DisableGroup'
     );
 
-  DBGEventNames: array[TDBGEventType] of string = (
- { etDefault              } 'Default Color',
- { etBreakpointEvaluation } 'Breakpoint Evaluation',
- { etBreakpointHit        } 'Breakpoint Hit',
- { etBreakpointMessage    } 'Breakpoint Message',
- { etBreakpointStackDump  } 'Breakpoint Stack Dump',
- { etExceptionRaised      } 'Exception Raised',
- { etModuleLoad           } 'Module Load',
- { etModuleUnload         } 'Module Unload',
- { etOutputDebugString    } 'Output Debug String',
- { etProcessExit          } 'Process Exit',
- { etProcessStart         } 'Process Start',
- { etThreadExit           } 'Thread Exit',
- { etThreadStart          } 'Thread Start',
- { etWindowsMessagePosted } 'Windows Message Posted',
- { etWindowsMessageSent   } 'Windows Message Sent');
-
-
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
 function DBGStateNameToState(const s: string): TDBGState;
 function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;

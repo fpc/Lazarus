@@ -3432,6 +3432,22 @@ resourcestring
   lisDeleteBreakPoint = 'Delete Breakpoint';
   lisViewBreakPointProperties = 'View Breakpoint Properties';
 
+  lisDBGENDefaultColor = 'Default Color';
+  lisDBGENBreakpointEvaluation = 'Breakpoint Evaluation';
+  lisDBGENBreakpointHit = 'Breakpoint Hit';
+  lisDBGENBreakpointMessage = 'Breakpoint Message';
+  lisDBGENBreakpointStackDump = 'Breakpoint Stack Dump';
+  lisDBGENExceptionRaised = 'Exception Raised';
+  lisDBGENModuleLoad = 'Module Load';
+  lisDBGENModuleUnload = 'Module Unload';
+  lisDBGENOutputDebugString = 'Output Debug String';
+  lisDBGENProcessExit = 'Process Exit';
+  lisDBGENProcessStart = 'Process Start';
+  lisDBGENThreadExit = 'Thread Exit';
+  lisDBGENThreadStart = 'Thread Start';
+  lisDBGENWindowsMessagePosted = 'Windows Message Posted';
+  lisDBGENWindowsMessageSent = 'Windows Message Sent';
+
   // disk diff dialog
   lisDiskDiffErrorReadingFile = 'Error reading file: %s';
   lisDiskDiffSomeFilesHaveChangedOnDisk = 'Some files have changed on disk:';
@@ -5270,7 +5286,7 @@ resourcestring
   lisDebuggerFeedbackStop = 'Stop';
   lisDebuggerFeedbackLess = 'Less';
   lisDebuggerFeedbackMore = 'More';
-  lisDebuggerFeedbackOk = 'Ok';
+  lisDebuggerFeedbackOk = 'OK';
 
   //Registers dialog
   regdlgDisplayTypeForSelectedRegisters = 'Display type for selected Registers';

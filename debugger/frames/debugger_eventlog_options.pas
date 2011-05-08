@@ -187,6 +187,7 @@ procedure TDebuggerEventLogOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDia
 var
   Category: TDBGEventCategory;
   i: TDBGEventType;
+  DBGEventNames: array[TDBGEventType] of string;
 begin
   // general
   gbGeneral.Caption := lisGeneral;
@@ -203,6 +204,23 @@ begin
   chkUseEventLogColors.Caption := lisDebugOptionsFrmUseEventLogColors;
   ForeGroundLabel.Caption := dlgForecolor;
   BackGroundLabel.Caption := dlgBackColor;
+
+  DBGEventNames[etDefault             ] := lisDBGENDefaultColor;
+  DBGEventNames[etBreakpointEvaluation] := lisDBGENBreakpointEvaluation;
+  DBGEventNames[etBreakpointHit       ] := lisDBGENBreakpointHit;
+  DBGEventNames[etBreakpointMessage   ] := lisDBGENBreakpointMessage;
+  DBGEventNames[etBreakpointStackDump ] := lisDBGENBreakpointStackDump;
+  DBGEventNames[etExceptionRaised     ] := lisDBGENExceptionRaised;
+  DBGEventNames[etModuleLoad          ] := lisDBGENModuleLoad;
+  DBGEventNames[etModuleUnload        ] := lisDBGENModuleUnload;
+  DBGEventNames[etOutputDebugString   ] := lisDBGENOutputDebugString;
+  DBGEventNames[etProcessExit         ] := lisDBGENProcessExit;
+  DBGEventNames[etProcessStart        ] := lisDBGENProcessStart;
+  DBGEventNames[etThreadExit          ] := lisDBGENThreadExit;
+  DBGEventNames[etThreadStart         ] := lisDBGENThreadStart;
+  DBGEventNames[etWindowsMessagePosted] := lisDBGENWindowsMessagePosted;
+  DBGEventNames[etWindowsMessageSent  ] := lisDBGENWindowsMessageSent;
+
   for i := Low(DebuggerDefaultColors) to High(DebuggerDefaultColors) do
     ColorTree.Items.Add(nil, DBGEventNames[i]);
 end;
