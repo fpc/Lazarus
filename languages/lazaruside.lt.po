@@ -6228,6 +6228,66 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.lisdbgenbreakpointevaluation
+msgid "Breakpoint Evaluation"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenbreakpointhit
+msgid "Breakpoint Hit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenbreakpointmessage
+msgid "Breakpoint Message"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenbreakpointstackdump
+msgid "Breakpoint Stack Dump"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgendefaultcolor
+msgid "Default Color"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenexceptionraised
+msgid "Exception Raised"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenmoduleload
+msgid "Module Load"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenmoduleunload
+msgid "Module Unload"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenoutputdebugstring
+msgid "Output Debug String"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenprocessexit
+msgid "Process Exit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenprocessstart
+msgid "Process Start"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenthreadexit
+msgid "Thread Exit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenthreadstart
+msgid "Thread Start"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenwindowsmessageposted
+msgid "Windows Message Posted"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgenwindowsmessagesent
+msgid "Windows Message Sent"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgitemdelete
 msgctxt "lazarusidestrconsts.lisdbgitemdelete"
 msgid "Delete"
@@ -6300,8 +6360,10 @@ msgid "More"
 msgstr "Daugiau"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.lisdebuggerfeedbackok"
-msgid "Ok"
+msgid "OK"
 msgstr "Tinka"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackstop

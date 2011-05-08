@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-07 20:07+0300\n"
+"PO-Revision-Date: 2011-05-08 19:13+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6233,6 +6233,66 @@ msgstr "Включить все"
 msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
 
+#: lazarusidestrconsts.lisdbgenbreakpointevaluation
+msgid "Breakpoint Evaluation"
+msgstr "Вычисление условия точки останова"
+
+#: lazarusidestrconsts.lisdbgenbreakpointhit
+msgid "Breakpoint Hit"
+msgstr "Достижение точки останова"
+
+#: lazarusidestrconsts.lisdbgenbreakpointmessage
+msgid "Breakpoint Message"
+msgstr "Сообщение точки останова"
+
+#: lazarusidestrconsts.lisdbgenbreakpointstackdump
+msgid "Breakpoint Stack Dump"
+msgstr "Вывод стека для точки останова"
+
+#: lazarusidestrconsts.lisdbgendefaultcolor
+msgid "Default Color"
+msgstr "Цвет по умолчанию"
+
+#: lazarusidestrconsts.lisdbgenexceptionraised
+msgid "Exception Raised"
+msgstr "Вызов исключения"
+
+#: lazarusidestrconsts.lisdbgenmoduleload
+msgid "Module Load"
+msgstr "Загрузка модуля"
+
+#: lazarusidestrconsts.lisdbgenmoduleunload
+msgid "Module Unload"
+msgstr "Выгрузка модуля"
+
+#: lazarusidestrconsts.lisdbgenoutputdebugstring
+msgid "Output Debug String"
+msgstr "Вывод строки отладки"
+
+#: lazarusidestrconsts.lisdbgenprocessexit
+msgid "Process Exit"
+msgstr "Выход из процесса"
+
+#: lazarusidestrconsts.lisdbgenprocessstart
+msgid "Process Start"
+msgstr "Запуск процесса"
+
+#: lazarusidestrconsts.lisdbgenthreadexit
+msgid "Thread Exit"
+msgstr "Выход из потока исполнения"
+
+#: lazarusidestrconsts.lisdbgenthreadstart
+msgid "Thread Start"
+msgstr "Запуск потока исполнения"
+
+#: lazarusidestrconsts.lisdbgenwindowsmessageposted
+msgid "Windows Message Posted"
+msgstr "Размещение сообщения Windows"
+
+#: lazarusidestrconsts.lisdbgenwindowsmessagesent
+msgid "Windows Message Sent"
+msgstr "Отправка сообщения Windows"
+
 #: lazarusidestrconsts.lisdbgitemdelete
 msgctxt "lazarusidestrconsts.lisdbgitemdelete"
 msgid "Delete"
@@ -6305,8 +6365,9 @@ msgid "More"
 msgstr "Больше"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackok
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.lisdebuggerfeedbackok"
-msgid "Ok"
+msgid "OK"
 msgstr "ОК"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackstop
