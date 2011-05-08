@@ -246,17 +246,17 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       TabOrder = 2
     end
     object edtEnableGroups: TEditButton
-      AnchorSideLeft.Control = chkActionBreak
+      AnchorSideLeft.Control = chkEvalExpression
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = chkActionBreak
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 131
+      Left = 119
       Height = 21
       Top = 29
-      Width = 274
+      Width = 286
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 80
+      BorderSpacing.Left = 20
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       ButtonWidth = 23
@@ -267,17 +267,17 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       TabOrder = 5
     end
     object edtDisableGroups: TEditButton
-      AnchorSideLeft.Control = chkActionBreak
+      AnchorSideLeft.Control = chkEvalExpression
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edtEnableGroups
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 131
+      Left = 119
       Height = 21
       Top = 56
-      Width = 274
+      Width = 286
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 80
+      BorderSpacing.Left = 20
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
       ButtonWidth = 23
@@ -316,18 +316,18 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       TabOrder = 4
     end
     object edtEvalExpression: TEdit
-      AnchorSideLeft.Control = chkActionBreak
+      AnchorSideLeft.Control = chkEvalExpression
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edtDisableGroups
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbActions
       AnchorSideRight.Side = asrBottom
-      Left = 131
+      Left = 119
       Height = 21
       Top = 83
-      Width = 297
+      Width = 309
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 80
+      BorderSpacing.Left = 20
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
@@ -335,18 +335,18 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       TabOrder = 7
     end
     object edtLogMessage: TEdit
-      AnchorSideLeft.Control = chkActionBreak
+      AnchorSideLeft.Control = chkEvalExpression
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edtEvalExpression
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbActions
       AnchorSideRight.Side = asrBottom
-      Left = 131
+      Left = 119
       Height = 21
       Top = 110
-      Width = 297
+      Width = 309
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 80
+      BorderSpacing.Left = 20
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
