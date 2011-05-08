@@ -17,6 +17,14 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
+#: codystrconsts.crscwerror
+msgid "Error"
+msgstr ""
+
+#: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
+msgid "Please place the cursor of the source editor on a With variable."
+msgstr ""
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr ""

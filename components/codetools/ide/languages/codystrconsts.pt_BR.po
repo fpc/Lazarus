@@ -25,6 +25,14 @@ msgstr "por fpc.cfg"
 msgid "&Close"
 msgstr "&Fechar"
 
+#: codystrconsts.crscwerror
+msgid "Error"
+msgstr ""
+
+#: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
+msgid "Please place the cursor of the source editor on a With variable."
+msgstr ""
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr "Gbytes"

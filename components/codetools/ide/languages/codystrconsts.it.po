@@ -26,6 +26,14 @@ msgstr "da fpc.cfg"
 msgid "&Close"
 msgstr "&Chiudi"
 
+#: codystrconsts.crscwerror
+msgid "Error"
+msgstr ""
+
+#: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
+msgid "Please place the cursor of the source editor on a With variable."
+msgstr ""
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr "Gbyte"

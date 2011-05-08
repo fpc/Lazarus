@@ -25,6 +25,14 @@ msgstr "в fpc.cfg"
 msgid "&Close"
 msgstr "&Закрыть"
 
+#: codystrconsts.crscwerror
+msgid "Error"
+msgstr "Ошибка"
+
+#: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
+msgid "Please place the cursor of the source editor on a With variable."
+msgstr "Расположите курсор редактора исходного кода на переменной блока With."
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr "ГБ"
