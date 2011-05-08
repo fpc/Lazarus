@@ -33,15 +33,19 @@ unit DebugEventsForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls,
-  Debugger, DebuggerDlg, LazarusIDEStrConsts, EnvironmentOpts;
+  Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls, ActnList,
+  StdActns, ClipBrd, Debugger, DebuggerDlg, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
   { TDbgEventsForm }
 
   TDbgEventsForm = class(TDebuggerDlg)
+    ActionList1: TActionList;
+    EditCopy1: TEditCopy;
     imlMain: TImageList;
     tvFilteredEvents: TTreeView;
+    procedure EditCopy1Execute(Sender: TObject);
+    procedure EditCopy1Update(Sender: TObject);
     procedure tvFilteredEventsAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
       var PaintImages, DefaultDraw: Boolean);
@@ -98,6 +102,18 @@ begin
   imlMain.Draw(Sender.Canvas, TCustomTreeViewAccess(Sender).Indent shr 2 + 1 - TCustomTreeViewAccess(Sender).ScrolledLeft, (NodeRect.Top + NodeRect.Bottom - imlMain.Height) div 2,
       Node.ImageIndex, True);
   Sender.Canvas.TextOut(TextRect.Left, TextY, Node.Text);
+end;
+
+procedure TDbgEventsForm.EditCopy1Execute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := tvFilteredEvents.Selected.Text;
+  Clipboard.Close;
+end;
+
+procedure TDbgEventsForm.EditCopy1Update(Sender: TObject);
+begin
+  EditCopy1.Enabled := Assigned(tvFilteredEvents.Selected);
 end;
 
 procedure TDbgEventsForm.UpdateFilteredList;

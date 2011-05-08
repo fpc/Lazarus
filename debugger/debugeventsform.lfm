@@ -254,4 +254,16 @@ inherited DbgEventsForm: TDbgEventsForm
       000600000001FFFFFF00FFFFFF00
     }
   end
+  object ActionList1: TActionList[2]
+    left = 216
+    top = 64
+    object EditCopy1: TEditCopy
+      Category = 'Edit'
+      Caption = '&Copy'
+      Hint = 'Copy'
+      OnExecute = EditCopy1Execute
+      OnUpdate = EditCopy1Update
+      ShortCut = 16451
+    end
+  end
 end
