@@ -3783,7 +3783,8 @@ begin
   {$endif}
 
   Result := 0;
-
+  if not IsValidHandle(Handle) then
+    exit;
   APos := QtPoint(0,0);
   QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
 
