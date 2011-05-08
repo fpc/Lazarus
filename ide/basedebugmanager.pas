@@ -83,7 +83,7 @@ type
     function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
   protected
     FDestroying: boolean;
-    FCallStack: TIDECallStack;
+    FCallStack: TCallStackMonitor;
     FDisassembler: TIDEDisassembler;
     FExceptions: TIDEExceptions;
     FSignals: TIDESignals;
@@ -171,7 +171,7 @@ type
     property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
     property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
-    property CallStack: TIDECallStack read FCallStack;
+    property CallStack: TCallStackMonitor read FCallStack;
     property Disassembler: TIDEDisassembler read FDisassembler;
     property Locals: TIDELocals read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;

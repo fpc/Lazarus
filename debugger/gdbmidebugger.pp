@@ -295,9 +295,11 @@ type
     FInExecuteCount: Integer;
     FRunQueueOnUnlock: Boolean;
     FDebuggerFlags: TGDBMIDebuggerFlags;
-    FCurrentStackFrame: Integer; // TODO: move to Stack-object
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
     FReleaseLock: Integer;
+
+    // Internal Current values
+    FCurrentStackFrame, FCurrentThreadId: Integer;
 
     // GDB info (move to ?)
     FGDBVersion: String;
@@ -335,12 +337,10 @@ type
     procedure LockRelease;
     procedure UnlockRelease;
 
-    procedure CallStackSetCurrent(AIndex: Integer);
     function  ConvertPascalExpression(var AExpression: String): Boolean;
     // ---
     procedure ClearSourceInfo;
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
-    procedure SelectStackFrame(AIndex: Integer);
 
     // All ExecuteCommand functions are wrappers for the real (full) implementation
     // ExecuteCommandFull is never called directly
@@ -375,7 +375,7 @@ type
     function  CreateLocals: TDBGLocals; override;
     function  CreateLineInfo: TDBGLineInfo; override;
     function  CreateRegisters: TDBGRegisters; override;
-    function  CreateCallStack: TDBGCallStack; override;
+    function  CreateCallStack: TCallStackSupplier; override;
     function  CreateDisassembler: TDBGDisassembler; override;
     function  CreateWatches: TDBGWatches; override;
     function  CreateThreads: TThreadsSupplier; override;
@@ -387,6 +387,7 @@ type
     procedure ClearCommandQueue;
     procedure DoState(const OldState: TDBGState); override;
     procedure DoThreadChanged;
+    procedure DoCallStackChanged;
     property  TargetPID: Integer read FTargetInfo.TargetPID;
     property  TargetPtrSize: Byte read FTargetInfo.TargetPtrSize;
     property  TargetFlags: TGDBMITargetFlags read FTargetInfo.TargetFlags write FTargetInfo.TargetFlags;
@@ -943,31 +944,31 @@ type
 
   {%region      *****  Stack  *****   }
 
-  { TGDBMIDebuggerCommandStackFrames }
 
   TGDBMINameValueListArray = array of TGDBMINameValueList;
 
-  TGDBMIDebuggerCommandStackFrames = class(TGDBMIDebuggerCommand)
-  private
-    FArgs: TGDBMINameValueListArray;
-    FFrames: TGDBMINameValueListArray;
-    FIndex: Integer;
-    FCount: Integer;
+  { TGDBMIDebuggerCommandStack }
+
+  TGDBMIDebuggerCommandStack = class(TGDBMIDebuggerCommand)
+  protected
+    FCallstack: TCurrentCallStack;
+    function  SelectThread: Boolean;
+    procedure UnSelectThread;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCurrentCallStack);
+    property Callstack: TCurrentCallStack read FCallstack;
+  end;
+
+  { TGDBMIDebuggerCommandStackFrames }
+
+  TGDBMIDebuggerCommandStackFrames = class(TGDBMIDebuggerCommandStack)
   protected
     function DoExecute: Boolean; override;
-  public
-    constructor Create(AOwner: TGDBMIDebugger; AIndex, ACount: Integer);
-    destructor  Destroy; override;
-    function DebugText: String; override;
-    property Index: Integer read FIndex write FIndex;
-    property Count: Integer read FCount write FCount;
-    property Args: TGDBMINameValueListArray read FArgs;
-    property Frames: TGDBMINameValueListArray read FFrames;
   end;
 
   { TGDBMIDebuggerCommandStackDepth }
 
-  TGDBMIDebuggerCommandStackDepth = class(TGDBMIDebuggerCommand)
+  TGDBMIDebuggerCommandStackDepth = class(TGDBMIDebuggerCommandStack)
   private
     FDepth: Integer;
   protected
@@ -977,29 +978,38 @@ type
     property Depth: Integer read FDepth;
   end;
 
+  { TGDBMIDebuggerCommandStackSetCurrent }
+
+  TGDBMIDebuggerCommandStackSetCurrent = class(TGDBMIDebuggerCommandStack)
+  private
+    FNewCurrent: Integer;
+  protected
+    function DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCurrentCallStack; ANewCurrent: Integer);
+    function DebugText: String; override;
+    property NewCurrent: Integer read FNewCurrent;
+  end;
+
   { TGDBMICallStack }
 
-  TGDBMICallStack = class(TDBGCallStack)
+  TGDBMICallStack = class(TCallStackSupplier)
   private
-    FFramesEvalCmdObj: TGDBMIDebuggerCommandStackFrames;
-    FDepthEvalCmdObj: TGDBMIDebuggerCommandStackDepth;
-    FInEvalDepth: Boolean;
-    FInEvalFrames: Boolean;
-    function InternalCreateEntry(AIndex: Integer; AArgInfo, AFrameInfo: TGDBMINameValueList): TCallStackEntry;
+    FCommandList: TList;
     procedure DoDepthCommandExecuted(Sender: TObject);
-    procedure DoFramesCommandExecuted(Sender: TObject);
-    procedure DoDepthCommandDestroyed(Sender: TObject);
-    procedure DoFramesCommandDestroyed(Sender: TObject);
+    //procedure DoFramesCommandExecuted(Sender: TObject);
+    procedure DoSetIndexCommandExecuted(Sender: TObject);
+    procedure DoCommandDestroyed(Sender: TObject);
   protected
-    procedure Clear; override;
-    function CheckCount: Boolean; override;
-    function CreateStackEntry(AIndex: Integer): TCallStackEntry; override;
-    procedure PrepareEntries(AIndex, ACount: Integer); override;
-
-    function GetCurrent: Integer; override;
-    procedure SetCurrent(AValue: Integer); override;
+    procedure Clear;
+    procedure RequestCount(ACallstack: TCurrentCallStack); override;
+    procedure RequestCurrent(ACallstack: TCurrentCallStack); override;
+    procedure RequestEntries(ACallstack: TCurrentCallStack); override;
+    procedure UpdateCurrentIndex; override;
     procedure DoThreadChanged;
   public
+    constructor Create(const ADebugger: TDebugger);
+    destructor Destroy; override;
   end;
 
   {%endregion   ^^^^^  Stack  ^^^^^   }
@@ -1414,6 +1424,50 @@ begin
   Result := StringReplace(S, '\\', '\', [rfReplaceAll]);
 end;
 
+{ TGDBMIDebuggerCommandStackSetCurrent }
+
+function TGDBMIDebuggerCommandStackSetCurrent.DoExecute: Boolean;
+begin
+  Result := True;
+  ExecuteCommand('-stack-select-frame %d', [FNewCurrent], []);
+end;
+
+constructor TGDBMIDebuggerCommandStackSetCurrent.Create(AOwner: TGDBMIDebugger;
+  ACallstack: TCurrentCallStack; ANewCurrent: Integer);
+begin
+  inherited Create(AOwner, ACallstack);
+  FNewCurrent := ANewCurrent;
+end;
+
+function TGDBMIDebuggerCommandStackSetCurrent.DebugText: String;
+begin
+  Result := Format('%s: NewCurrent=%d', [ClassName, FNewCurrent]);
+end;
+
+function TGDBMIDebuggerCommandStack.SelectThread: Boolean;
+var
+  R: TGDBMIExecResult;
+begin
+  Result := True;
+  if FCallstack.ThreadId = FTheDebugger.FCurrentThreadId then exit;
+  Result := ExecuteCommand('-thread-select %d', [FCallstack.ThreadId], R);
+  Result := Result and (R.State <> dsError);
+end;
+
+procedure TGDBMIDebuggerCommandStack.UnSelectThread;
+var
+  R: TGDBMIExecResult;
+begin
+  ExecuteCommand('-thread-select %d', [FTheDebugger.FCurrentThreadId], R);
+end;
+
+constructor TGDBMIDebuggerCommandStack.Create(AOwner: TGDBMIDebugger;
+  ACallstack: TCurrentCallStack);
+begin
+  inherited Create(AOwner);
+  FCallstack := ACallstack;
+end;
+
 { TGDBMIBreakPoints }
 
 function TGDBMIBreakPoints.FindById(AnId: Integer): TGDBMIBreakPoint;
@@ -1462,6 +1516,7 @@ begin
   FSuccess := ExecuteCommand('-thread-select %d', [FNewId], R);
   if FSuccess then
     FSuccess := R.State <> dsError;
+  FTheDebugger.FCurrentThreadId := FNewId;
 end;
 
 constructor TGDBMIDebuggerCommandChangeThread.Create(AOwner: TGDBMIDebugger; ANewId: Integer);
@@ -4075,9 +4130,12 @@ var
   ExceptionInfo: TGDBMIExceptionInfo;
 begin
   Result := False;
-  FTheDebugger.FCurrentStackFrame :=  0;
-
   List := TGDBMINameValueList.Create(AParams);
+
+  FTheDebugger.FCurrentStackFrame :=  0;
+  FTheDebugger.FCurrentThreadId := StrToIntDef(List.Values['thread-id'], -1);
+  FTheDebugger.Threads.CurrentThreads.CurrentThreadId := FTheDebugger.FCurrentThreadId;
+
   try
     Reason := List.Values['reason'];
     if (Reason = 'exited-normally')
@@ -4254,6 +4312,8 @@ begin
   end;
 
   Result := ExecuteCommand('-thread-select %d', [ID2], []);
+  FTheDebugger.FCurrentThreadId := ID2;
+  FTheDebugger.Threads.CurrentThreads.CurrentThreadId := FTheDebugger.FCurrentThreadId;
 end;
 {$ENDIF}
 
@@ -4648,31 +4708,37 @@ var
   i, cnt: longint;
 begin
   Result := True;
+  FDepth := -1;
+  try
+    if not SelectThread then exit;
 
-  ExecuteCommand('-stack-info-depth', R);
-  List := TGDBMINameValueList.Create(R);
-  cnt := StrToIntDef(List.Values['depth'], -1);
-  FreeAndNil(List);
-  if cnt = -1 then
-  begin
-    { In case of error some stackframes still can be accessed.
-      Trying to find out how many...
-      We try maximum 40 frames, because sometimes a corrupt stack and a bug in
-      gdb may cooperate, so that -stack-info-depth X returns always X }
-    i:=0;
-    repeat
-      inc(i);
-      ExecuteCommand('-stack-info-depth %d', [i], R);
-      List := TGDBMINameValueList.Create(R);
-      cnt := StrToIntDef(List.Values['depth'], -1);
-      FreeAndNil(List);
-      if (cnt = -1) then begin
-        // no valid stack-info-depth found, so the previous was the last valid one
-        cnt:=i - 1;
-      end;
-    until (cnt<i) or (i=40);
+    ExecuteCommand('-stack-info-depth', R);
+    List := TGDBMINameValueList.Create(R);
+    cnt := StrToIntDef(List.Values['depth'], -1);
+    FreeAndNil(List);
+    if cnt = -1 then
+    begin
+      { In case of error some stackframes still can be accessed.
+        Trying to find out how many...
+        We try maximum 40 frames, because sometimes a corrupt stack and a bug in
+        gdb may cooperate, so that -stack-info-depth X returns always X }
+      i:=0;
+      repeat
+        inc(i);
+        ExecuteCommand('-stack-info-depth %d', [i], R);
+        List := TGDBMINameValueList.Create(R);
+        cnt := StrToIntDef(List.Values['depth'], -1);
+        FreeAndNil(List);
+        if (cnt = -1) then begin
+          // no valid stack-info-depth found, so the previous was the last valid one
+          cnt:=i - 1;
+        end;
+      until (cnt<i) or (i=40);
+    end;
+    FDepth := cnt;
+  finally
+    UnSelectThread;
   end;
-  FDepth := cnt;
 end;
 
 function TGDBMIDebuggerCommandStackDepth.DebugText: String;
@@ -4683,6 +4749,67 @@ end;
 { TGDBMIDebuggerCommandStackFrames }
 
 function TGDBMIDebuggerCommandStackFrames.DoExecute: Boolean;
+var
+  CurStartIdx: Integer;
+  It: TMapIterator;
+
+  procedure FreeList(var AList: TGDBMINameValueListArray);
+  var
+    i : Integer;
+  begin
+    for i := low(AList) to high(AList) do
+      AList[i].Free;
+  end;
+
+  procedure UpdateEntry(AnEntry: TCallStackEntry; AArgInfo, AFrameInfo : TGDBMINameValueList);
+  var
+    n, e: Integer;
+    Arguments: TStringList;
+    List: TGDBMINameValueList;
+    Arg: PGDBMINameValue;
+    addr: TDbgPtr;
+    func, filename, fullname, line : String;
+  begin
+    Arguments := TStringList.Create;
+
+    if (AArgInfo <> nil) and (AArgInfo.Count > 0)
+    then begin
+      List := TGDBMINameValueList.Create('');
+      for n := 0 to AArgInfo.Count - 1 do
+      begin
+        Arg := AArgInfo.Items[n];
+        List.Init(Arg^.Name);
+        Arguments.Add(List.Values['name'] + '=' + DeleteEscapeChars(List.Values['value']));
+      end;
+      FreeAndNil(List);
+    end;
+
+    addr := 0;
+    func := '';
+    filename := '';
+    fullname := '';
+    line := '';
+    if AFrameInfo <> nil
+    then begin
+      Val(AFrameInfo.Values['addr'], addr, e);
+      if e=0 then ;
+      func := AFrameInfo.Values['func'];
+      filename := ConvertGdbPathAndFile(AFrameInfo.Values['file']);
+      fullname := ConvertGdbPathAndFile(AFrameInfo.Values['fullname']);
+      line := AFrameInfo.Values['line'];
+    end;
+
+    AnEntry.Init(
+      addr,
+      Arguments,
+      func,
+      filename,
+      fullname,
+      StrToIntDef(line, 0)
+    );
+
+    Arguments.Free;
+  end;
 
   procedure PrepareArgs(var ADest: TGDBMINameValueListArray; AStart, AStop: Integer;
                         const ACmd, APath1, APath2: String);
@@ -4721,51 +4848,80 @@ function TGDBMIDebuggerCommandStackFrames.DoExecute: Boolean;
       then begin
         if APath2 <> ''
         then SubList.SetPath(APath2);
-        ADest[lvl-FIndex] := SubList;
+        ADest[lvl-CurStartIdx] := SubList;
       end
       else SubList.Free;
     end;
     ResultList.Free;
   end;
 
-var
-  endidx: Integer;
-begin
-  Result := True;
-  endidx := FIndex + FCount - 1;
-  SetLength(FArgs, FCount);
-  PrepareArgs(FArgs, FIndex, endidx, '-stack-list-arguments 1 %d %d', 'stack-args', 'args');
-
-  SetLength(FFrames, FCount);
-  PrepareArgs(FFrames, FIndex, endidx, '-stack-list-frames %d %d', 'stack', '');
-end;
-
-constructor TGDBMIDebuggerCommandStackFrames.Create(AOwner: TGDBMIDebugger; AIndex,
-  ACount: Integer);
-begin
-  inherited Create(AOwner);
-  FIndex := AIndex;
-  FCount := ACount;
-end;
-
-destructor TGDBMIDebuggerCommandStackFrames.Destroy;
-  procedure FreeList(var AList: TGDBMINameValueListArray);
+  procedure ExecForRange(AStartIdx, AEndIdx: Integer);
   var
-    i : Integer;
+    Args: TGDBMINameValueListArray;
+    Frames: TGDBMINameValueListArray;
+    e: TCallStackEntry;
   begin
-    for i := low(AList) to high(AList) do
-      AList[i].Free;
+    CurStartIdx := AStartIdx;
+    SetLength(Args, AEndIdx-AStartIdx+1);
+    PrepareArgs(Args, AStartIdx, AEndIdx, '-stack-list-arguments 1 %d %d', 'stack-args', 'args');
+
+    SetLength(Frames, AEndIdx-AStartIdx+1);
+    PrepareArgs(Frames, AStartIdx, AEndIdx, '-stack-list-frames %d %d', 'stack', '');
+
+    if not It.Locate(AStartIdx)
+    then if not It.EOM
+    then IT.Next;
+    while it.Valid and (not It.EOM) do begin
+      e := TCallStackEntry(It.DataPtr^);
+      if e.Index > AEndIdx then break;
+      UpdateEntry(e, Args[e.Index-AStartIdx], Frames[e.Index-AStartIdx]);
+      It.Next;
+    end;
+
+    FreeList(Args);
+    FreeList(Frames);
   end;
 
+var
+  StartIdx, EndIdx: Integer;
 begin
-  inherited Destroy;
-  FreeList(FArgs);
-  FreeList(FFrames);
-end;
+  Result := True;
+  It := TMapIterator.Create(FCallstack.RawEntries);
+  try
+    //if It.Locate(AIndex)
+    StartIdx := Max(FCallstack.LowestUnknown, 0);
+    EndIdx   := FCallstack.HighestUnknown;
+    while EndIdx >= StartIdx do begin
+      {$IFDEF DBG_VERBOSE}
+      debugln(['Callstach.Frames A StartIdx=',StartIdx, ' EndIdx=',EndIdx]);
+      {$ENDIF}
+      // search for existing blocks in the middle
+      if not It.Locate(StartIdx)
+      then if not It.EOM
+      then IT.Next;
+      StartIdx := TCallStackEntry(It.DataPtr^).Index;
+      EndIdx := StartIdx;
+      It.Next;
+      while (not It.EOM) and (TCallStackEntry(It.DataPtr^).Index = EndIdx+1) do begin
+        inc(EndIdx);
+        It.Next;
+      end;
 
-function TGDBMIDebuggerCommandStackFrames.DebugText: String;
-begin
-  Result := Format('%s: Index=%d Count=%d', [ClassName, FIndex, FCount]);
+      {$IFDEF DBG_VERBOSE}
+      debugln(['Callstach.Frames B StartIdx=',StartIdx, ' EndIdx=',EndIdx]);
+      {$ENDIF}
+      ExecForRange(StartIdx, EndIdx);
+
+      if FCallstack.LowestUnknown < StartIdx
+      then StartIdx := FCallstack.LowestUnknown
+      else StartIdx := EndIdx + 1;
+      if FCallstack.HighestUnknown > EndIdx
+      then EndIdx := FCallstack.HighestUnknown;
+    end;
+  finally
+    IT.Free;
+    FCallstack.DoEntriesUpdated;
+  end;
 end;
 
 { TGDBMILineInfo }
@@ -5008,17 +5164,6 @@ end;
 { TGDBMIDebugger }
 { =========================================================================== }
 
-procedure TGDBMIDebugger.CallStackSetCurrent(AIndex: Integer);
-begin
-  if FCurrentStackFrame = AIndex then Exit;
-  FCurrentStackFrame := AIndex;
-  SelectStackFrame(FCurrentStackFrame);
-
-  TGDBMICallstack(CallStack).CurrentChanged;
-  TGDBMILocals(Locals).Changed;
-  TGDBMIWatches(Watches).Changed;
-end;
-
 class function TGDBMIDebugger.Caption: String;
 begin
   Result := 'GNU debugger (gdb)';
@@ -5117,7 +5262,7 @@ begin
   Result := TGDBMIBreakPoints.Create(Self, TGDBMIBreakPoint);
 end;
 
-function TGDBMIDebugger.CreateCallStack: TDBGCallStack;
+function TGDBMIDebugger.CreateCallStack: TCallStackSupplier;
 begin
   Result := TGDBMICallStack.Create(Self);
 end;
@@ -5253,6 +5398,12 @@ begin
   TGDBMICallstack(CallStack).DoThreadChanged;
   TGDBMILocals(Locals).Changed;
   TGDBMIRegisters(Registers).Changed;
+  TGDBMIWatches(Watches).Changed;
+end;
+
+procedure TGDBMIDebugger.DoCallStackChanged;
+begin
+  TGDBMILocals(Locals).Changed;
   TGDBMIWatches(Watches).Changed;
 end;
 
@@ -6385,11 +6536,6 @@ begin
   if IsText then R := R + '"';
   AExpression := R;
   Result := True;
-end;
-
-procedure TGDBMIDebugger.SelectStackFrame(AIndex: Integer);
-begin
-  ExecuteCommand('-stack-select-frame %d', [AIndex], [cfIgnoreError]);
 end;
 
 function TGDBMIDebugger.StartDebugging(AContinueCommand: TGDBMIExecCommandType): Boolean;
@@ -7618,235 +7764,127 @@ end;
 { =========================================================================== }
 
 procedure TGDBMICallStack.DoDepthCommandExecuted(Sender: TObject);
-begin
-  FDepthEvalCmdObj := nil;
-  SetCount(TGDBMIDebuggerCommandStackDepth(Sender).Depth);
-  if not FInEvalDepth
-  then Changed;
-end;
-
-function TGDBMICallStack.CheckCount: Boolean;
-begin
-  Result := False; // no valid count available
-  if (Debugger = nil) or (Debugger.State <> dsPause) or (FDepthEvalCmdObj <> nil)
-  then exit;
-
-  FInEvalDepth := True;
-  FDepthEvalCmdObj := TGDBMIDebuggerCommandStackDepth.Create(TGDBMIDebugger(Debugger));
-  FDepthEvalCmdObj.OnExecuted := @DoDepthCommandExecuted;
-  FDepthEvalCmdObj.OnDestroy   := @DoDepthCommandDestroyed;
-  FDepthEvalCmdObj.Priority := GDCMD_PRIOR_STACK;
-  TGDBMIDebugger(Debugger).QueueCommand(FDepthEvalCmdObj);
-  (* DoDepthCommandExecuted may be called immediately at this point *)
-  FInEvalDepth := False;
-  Result := FDepthEvalCmdObj = nil; // count is good
-end;
-
-procedure TGDBMICallStack.DoDepthCommandDestroyed(Sender: TObject);
-begin
-  if FDepthEvalCmdObj = Sender
-  then FDepthEvalCmdObj := nil;
-end;
-
-procedure TGDBMICallStack.DoFramesCommandDestroyed(Sender: TObject);
-begin
-  if FFramesEvalCmdObj = Sender
-  then FFramesEvalCmdObj := nil;
-end;
-
-function TGDBMICallStack.InternalCreateEntry(AIndex: Integer; AArgInfo, AFrameInfo : TGDBMINameValueList) : TCallStackEntry;
 var
-  n, e: Integer;
-  Arguments: TStringList;
-  List: TGDBMINameValueList;
-  Arg: PGDBMINameValue;
-  addr: TDbgPtr;
-  func, filename, fullname, line : String;
+  Cmd: TGDBMIDebuggerCommandStackDepth;
 begin
-  Arguments := TStringList.Create;
+  FCommandList.Remove(Sender);
+  Cmd := TGDBMIDebuggerCommandStackDepth(Sender);
+  if Cmd.Depth < 0 then begin
+    Cmd.Callstack.SetCountValidity(ddsInvalid);
+  end else begin
+    Cmd.Callstack.Count := Cmd.Depth;
+    Cmd.Callstack.SetCountValidity(ddsValid);
+  end;
+end;
 
-  if (AArgInfo <> nil) and (AArgInfo.Count > 0)
+procedure TGDBMICallStack.RequestCount(ACallstack: TCurrentCallStack);
+var
+  DepthEvalCmdObj: TGDBMIDebuggerCommandStackDepth;
+begin
+  if (Debugger = nil) or (Debugger.State <> dsPause)
   then begin
-    List := TGDBMINameValueList.Create('');
-    for n := 0 to AArgInfo.Count - 1 do
-    begin
-      Arg := AArgInfo.Items[n];
-      List.Init(Arg^.Name);
-      Arguments.Add(List.Values['name'] + '=' + DeleteEscapeChars(List.Values['value']));
-    end;
-    FreeAndNil(List);
+    ACallstack.SetCountValidity(ddsInvalid);
+    exit;
   end;
 
-  addr := 0;
-  func := '';
-  filename := '';
-  fullname := '';
-  line := '';
-  if AFrameInfo <> nil
-  then begin
-    Val(AFrameInfo.Values['addr'], addr, e);
-    if e=0 then ;
-    func := AFrameInfo.Values['func'];
-    filename := ConvertGdbPathAndFile(AFrameInfo.Values['file']);
-    fullname := ConvertGdbPathAndFile(AFrameInfo.Values['fullname']);
-    line := AFrameInfo.Values['line'];
-  end;
+  DepthEvalCmdObj := TGDBMIDebuggerCommandStackDepth.Create(TGDBMIDebugger(Debugger), ACallstack);
+  DepthEvalCmdObj.OnExecuted := @DoDepthCommandExecuted;
+  DepthEvalCmdObj.OnDestroy   := @DoCommandDestroyed;
+  DepthEvalCmdObj.Priority := GDCMD_PRIOR_STACK;
+  FCommandList.Add(DepthEvalCmdObj);
+  TGDBMIDebugger(Debugger).QueueCommand(DepthEvalCmdObj);
+  (* DoDepthCommandExecuted may be called immediately at this point *)
+end;
 
-  Result := TCallStackEntry.Create(
-    AIndex,
-    addr,
-    Arguments,
-    func,
-    filename,
-    fullname,
-    StrToIntDef(line, 0)
-  );
+procedure TGDBMICallStack.RequestCurrent(ACallstack: TCurrentCallStack);
+begin
+  if ACallstack.ThreadId = TGDBMIDebugger(Debugger).FCurrentThreadId
+  then ACallstack.CurrentIndex := TGDBMIDebugger(Debugger).FCurrentStackFrame
+  else ACallstack.CurrentIndex := 0; // will be used, if thread is changed
+  ACallstack.SetCurrentValidity(ddsValid);
+end;
 
-  Arguments.Free;
+procedure TGDBMICallStack.RequestEntries(ACallstack: TCurrentCallStack);
+var
+  FramesEvalCmdObj: TGDBMIDebuggerCommandStackFrames;
+begin
+  if (Debugger = nil) or (Debugger.State <> dsPause) then Exit;
+
+  FramesEvalCmdObj := TGDBMIDebuggerCommandStackFrames.Create(TGDBMIDebugger(Debugger), ACallstack);
+  //FramesEvalCmdObj.OnExecuted := @DoFramesCommandExecuted;
+  FramesEvalCmdObj.OnDestroy  := @DoCommandDestroyed;
+  FramesEvalCmdObj.Priority := GDCMD_PRIOR_STACK;
+  FCommandList.Add(FramesEvalCmdObj);
+  TGDBMIDebugger(Debugger).QueueCommand(FramesEvalCmdObj);
+  (* DoFramesCommandExecuted may be called immediately at this point *)
+end;
+
+procedure TGDBMICallStack.DoCommandDestroyed(Sender: TObject);
+begin
+  FCommandList.Remove(Sender);
 end;
 
 procedure TGDBMICallStack.Clear;
-begin
-  if FDepthEvalCmdObj <> nil
-  then begin
-    FDepthEvalCmdObj.OnExecuted := nil;
-    FDepthEvalCmdObj.OnDestroy := nil;
-    FDepthEvalCmdObj.Cancel;
-  end;
-  FDepthEvalCmdObj := nil;
-
-  if FFramesEvalCmdObj <> nil
-  then begin
-    FFramesEvalCmdObj.OnExecuted := nil;
-    FFramesEvalCmdObj.OnDestroy := nil;
-    FFramesEvalCmdObj.Cancel;
-  end;
-  FFramesEvalCmdObj := nil;
-  inherited Clear;
-end;
-
-function TGDBMICallStack.CreateStackEntry(AIndex: Integer): TCallStackEntry;
 var
-  R: TGDBMIExecResult;
-  ArgList, FrameList: TGDBMINameValueList;
+  i: Integer;
 begin
-  if Debugger = nil then Exit;
-  {$IFDEF DBGMI_QUEUE_DEBUG}
-  debugln('WARNING: TGDBMICallStack.CreateStackEntry called');
-  {$ENDIF}
-
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
-                                          [AIndex], [cfIgnoreError], R);
-  // TODO: check what to display on error
-
-  if R.State <> dsError
-  then ArgList := TGDBMINameValueList.Create(R, ['stack-args', 'frame', 'args'])
-  else ArgList := nil;
-
-
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %0:d %0:d',
-                                          [AIndex], [cfIgnoreError], R);
-
-  if R.State <> dsError
-  then FrameList := TGDBMINameValueList.Create(R, ['stack', 'frame'])
-  else FrameList := nil;
-
-  Result := InternalCreateEntry(AIndex, ArgList, FrameList);
-
-  FreeAndNil(ArgList);
-  FreeAndNil(FrameList);
-end;
-
-function TGDBMICallStack.GetCurrent: Integer;
-begin
-  Result := TGDBMIDebugger(Debugger).FCurrentStackFrame;
-end;
-
-procedure TGDBMICallStack.DoFramesCommandExecuted(Sender: TObject);
-var
-  i, idx, endidx: Integer;
-  Cmd: TGDBMIDebuggerCommandStackFrames;
-begin
-  if FFramesEvalCmdObj = Sender
-  then FFramesEvalCmdObj := nil;
-
-  Cmd := TGDBMIDebuggerCommandStackFrames(Sender);
-  endidx := Cmd.Index + Cmd.Count - 1;
-
-  idx := 0;
-  for i := Cmd.Index to endidx do
-  begin
-    InternalSetEntry(i, InternalCreateEntry(i, Cmd.Args[idx], Cmd.Frames[idx]));
-    inc(idx);
-  end;
-
-  if not FInEvalFrames
-  then Changed;
-end;
-
-procedure TGDBMICallStack.PrepareEntries(AIndex, ACount: Integer);
-const MergeOffset = 3;
-var
-  i, idx: Integer;
-begin
-  if (Debugger = nil) or (Debugger.State <> dsPause) or (ACount <= 0) then Exit;
-
-  // create temporary evaluating entries, prevent requesting same frames again
-  idx := 0;
-  for i := AIndex to AIndex + ACount - 1 do
-  begin
-    InternalSetEntry(i, TCallStackEntry.Create(i, 0, nil, '', '', '', 0, cseRequested));
-    inc(idx);
-  end;
-
-  if FFramesEvalCmdObj <> nil then begin
-    if FFramesEvalCmdObj.State = dcsQueued then begin
-      if (AIndex < FFramesEvalCmdObj.Index) and
-         (AIndex + ACount - 1 >= FFramesEvalCmdObj.Index - MergeOffset)
-      then begin
-        // merge before or replace
-        debugln(['TGDBMICallStack.PrepareEntries MERGE BEFORE AIndex=', AIndex, ' ACount=', ACount, ' Cmd.Index=', FFramesEvalCmdObj.Index, ' Cmd.Count=', FFramesEvalCmdObj.Count,
-          '  NewCount=', Max(AIndex + ACount, FFramesEvalCmdObj.Index + FFramesEvalCmdObj.Count) - AIndex ]);
-        FFramesEvalCmdObj.Index := AIndex;
-        FFramesEvalCmdObj.Count :=
-          Max(AIndex + ACount, FFramesEvalCmdObj.Index + FFramesEvalCmdObj.Count) - AIndex;
-        exit;
-      end
-      else
-      if (AIndex + ACount <= FFramesEvalCmdObj.Index + FFramesEvalCmdObj.Count + MergeOffset)
-      then begin
-        // after or inside
-        debugln(['TGDBMICallStack.PrepareEntries MERGE AFTER AIndex=', AIndex, ' ACount=', ACount, ' Cmd.Index=', FFramesEvalCmdObj.Index, ' Cmd.Count=', FFramesEvalCmdObj.Count,
-          ' NewCount=', Max(AIndex + ACount, FFramesEvalCmdObj.Index + FFramesEvalCmdObj.Count) - FFramesEvalCmdObj.Index ]);
-        FFramesEvalCmdObj.Count :=
-          Max(AIndex + ACount, FFramesEvalCmdObj.Index + FFramesEvalCmdObj.Count)
-          - FFramesEvalCmdObj.Index;
-        exit;
-      end;
+  for i := 0 to FCommandList.Count-1 do
+    with TGDBMIDebuggerCommandStack(FCommandList[i]) do begin
+      OnExecuted := nil;
+      OnDestroy := nil;
+      Cancel;
     end;
-  end;
-
-
-  FInEvalFrames := True;
-  // Todo: keep the old reference too, so it can be canceled
-  FFramesEvalCmdObj := TGDBMIDebuggerCommandStackFrames.Create(TGDBMIDebugger(Debugger), AIndex, ACount);
-  FFramesEvalCmdObj.OnExecuted := @DoFramesCommandExecuted;
-  FFramesEvalCmdObj.OnDestroy  := @DoFramesCommandDestroyed;
-  FFramesEvalCmdObj.Priority := GDCMD_PRIOR_STACK;
-  TGDBMIDebugger(Debugger).QueueCommand(FFramesEvalCmdObj);
-  (* DoFramesCommandExecuted may be called immediately at this point *)
-  FInEvalFrames := False;
+  FCommandList.Clear;
 end;
 
-procedure TGDBMICallStack.SetCurrent(AValue: Integer);
+procedure TGDBMICallStack.DoSetIndexCommandExecuted(Sender: TObject);
 begin
-  TGDBMIDebugger(Debugger).CallStackSetCurrent(AValue);
+  TGDBMIDebugger(Debugger).FCurrentStackFrame := TGDBMIDebuggerCommandStackSetCurrent(Sender).NewCurrent;
+  TGDBMIDebugger(Debugger).DoCallStackChanged;
+  TGDBMIDebuggerCommandStackSetCurrent(Sender).Callstack.CurrentIndex := TGDBMIDebuggerCommandStackSetCurrent(Sender).NewCurrent;
+end;
+
+procedure TGDBMICallStack.UpdateCurrentIndex;
+var
+  tid, idx: Integer;
+  IndexCmd: TGDBMIDebuggerCommandStackSetCurrent;
+  cs: TCurrentCallStack;
+begin
+  if (Debugger = nil) or (Debugger.State <> dsPause) then begin
+    exit;
+  end;
+
+  tid := Debugger.Threads.Monitor.CurrentThreads.CurrentThreadId;
+  cs := TCurrentCallStack(CurrentCallStackList.EntriesForThreads[tid]);
+  idx := cs.NewCurrentIndex;
+  if TGDBMIDebugger(Debugger).FCurrentStackFrame = idx then Exit;
+
+  IndexCmd := TGDBMIDebuggerCommandStackSetCurrent.Create(TGDBMIDebugger(Debugger), cs, idx);
+  IndexCmd.OnExecuted  := @DoSetIndexCommandExecuted;
+  IndexCmd.OnDestroy  := @DoCommandDestroyed;
+  IndexCmd.Priority := GDCMD_PRIOR_STACK;
+  FCommandList.Add(IndexCmd);
+  TGDBMIDebugger(Debugger).QueueCommand(IndexCmd);
+  (* DoFramesCommandExecuted may be called immediately at this point *)
 end;
 
 procedure TGDBMICallStack.DoThreadChanged;
 begin
+  TGDBMIDebugger(Debugger).FCurrentStackFrame := -1;
+  UpdateCurrentIndex;
+end;
+
+constructor TGDBMICallStack.Create(const ADebugger: TDebugger);
+begin
+  FCommandList := TList.Create;
+  inherited Create(ADebugger);
+end;
+
+destructor TGDBMICallStack.Destroy;
+begin
+  inherited Destroy;
   Clear;
-  Changed;
+  FreeAndNil(FCommandList);
 end;
 
 { =========================================================================== }

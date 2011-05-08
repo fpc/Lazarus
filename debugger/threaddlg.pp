@@ -22,7 +22,7 @@ type
     procedure ThreadsChanged(Sender: TObject);
   private
     { private declarations }
-    FThreadNotification: TIDEThreadsNotification;
+    FThreadNotification: TThreadsNotification;
     FThreadsMonitor: TThreadsMonitor;
     procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
     procedure JumpToSource;
@@ -149,7 +149,7 @@ begin
   tbCurrent.Caption := lisThreadsCurrent;
   tbGoto.Caption := lisThreadsGoto;
 
-  FThreadNotification := TIDEThreadsNotification.Create;
+  FThreadNotification := TThreadsNotification.Create;
   FThreadNotification.AddReference;
   FThreadNotification.OnChange  := @ThreadsChanged;
 end;

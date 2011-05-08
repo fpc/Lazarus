@@ -172,7 +172,9 @@ type
   TDebuggerChangeNotification = class(TDebuggerNotification)
   private
     FOnChange: TNotifyEvent;
-  public
+    FOnCurrent: TNotifyEvent;
+  protected
+    property OnCurrent: TNotifyEvent read FOnCurrent write FOnCurrent;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -201,6 +203,7 @@ type
     function GetItem(AIndex: Integer): TDebuggerChangeNotification; reintroduce;
   public
     procedure NotifyChange(Sender: TObject);
+    procedure NotifyCurrent(Sender: TObject);
     property Items[AIndex: Integer]: TDebuggerChangeNotification read GetItem; default;
   end;
 
@@ -212,6 +215,9 @@ type
   TIDEWatches = class;
   TIDELocals = class;
   TIDELineInfo = class;
+  TCallStack = class;
+  TCallStackMonitor = class;
+  TCallStackSupplier = class;
   TThreadsMonitor = class;
   TThreadsSupplier = class;
   TDebugger = class;
@@ -1121,11 +1127,15 @@ type
  * TCallStackEntry needs to stay a readonly object so its data can be shared  *
  ******************************************************************************}
 
-  TCallStack = class;
+  { TCallStackNotification }
+
+  TCallStackNotification = class(TDebuggerChangeNotification)
+  public
+    property OnChange;
+    property OnCurrent;
+  end;
 
   { TCallStackEntry }
-
-  TCallStackEntryState = (cseValid, cseRequested, cseInvalid);
 
   TCallStackEntry = class(TObject)
   private
@@ -1137,7 +1147,7 @@ type
     FArguments: TStrings;
     FSource: String;
     FFullFileName: String;
-    FState: TCallStackEntryState;
+    FState: TDebuggerDataState;
     function GetArgumentCount: Integer;
     function GetArgumentName(const AnIndex: Integer): String;
     function GetArgumentValue(const AnIndex: Integer): String;
@@ -1148,9 +1158,13 @@ type
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const ASource: String; const AFullFileName: String;
-                       const ALine: Integer; AState: TCallStackEntryState = cseValid);
+                       const ALine: Integer; AState: TDebuggerDataState = ddsValid);
     constructor CreateCopy(const ASource: TCallStackEntry);
     destructor Destroy; override;
+    procedure Init(const AnAdress: TDbgPtr;
+                   const AnArguments: TStrings; const AFunctionName: String;
+                   const ASource: String; const AFullFileName: String;
+                   const ALine: Integer; AState: TDebuggerDataState = ddsValid);
     function GetFunctionWithArg: String;
     function IsCurrent: Boolean;
     procedure MakeCurrent;
@@ -1163,7 +1177,7 @@ type
     property Line: Integer read FLine;
     property Source: String read GetSource;
     property FullFileName: String read GetFullFileName;
-    property State: TCallStackEntryState read FState write FState;
+    property State: TDebuggerDataState read FState write FState;
   end;
 
   { TCallStack }
@@ -1171,102 +1185,135 @@ type
   TCallStack = class(TObject)
   private
     FCount: Integer;
+    FLowestUnknown, FHighestUnknown: Integer;
+    FThreadId: Integer;
+    FCurrent: Integer;
     function IndexError(AIndex: Integer): TCallStackEntry;
     function GetEntry(AIndex: Integer): TCallStackEntry;
   protected
-    function CheckCount: Boolean; virtual;
+    FEntries: TMap;        // list of created entries
     procedure Clear; virtual;
-    function GetCurrent: Integer; virtual;
-    function InternalGetEntry(AIndex: Integer): TCallStackEntry; virtual;
+    function GetCount: Integer; virtual;
+    function  GetCurrent: Integer; virtual;
     procedure SetCurrent(AValue: Integer); virtual;
     procedure SetCount(ACount: Integer); virtual;
-  public
-    function Count: Integer;
-    destructor Destroy; override;
-    procedure PrepareRange(AIndex, ACount: Integer); virtual;
-    property CurrentIndex: Integer read GetCurrent write SetCurrent;
-    property Entries[AIndex: Integer]: TCallStackEntry read GetEntry;
-  end;
-
-  TCallStackList = class
-  public
-  //  function Count: Integer;
-  //  property Entries[const AThreadId: Integer]: TCallStack read GetEntry; default;
-  end;
-
-  TCurrentCallStack = class(TCallStack)
-  end;
-
-  TCurrentCallStackList = class(TCallStackList)
-  end;
-
-  { TIDECallStackNotification }
-
-  TIDECallStackNotification = class(TDebuggerNotification)
-  private
-    FOnChange: TNotifyEvent;
-    FOnCurrent: TNotifyEvent;
-  public
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnCurrent: TNotifyEvent read FOnCurrent write FOnCurrent;
-  end;
-
-  { TIDECallStack }
-  TDBGCallStack = class;
-
-  TIDECallStack = class(TCallStack)
-  private
-    FMaster: TDBGCallStack;
-    FNotificationList: TList;
-    procedure CallStackChanged(Sender: TObject);
-    procedure CallStackClear(Sender: TObject);
-    procedure CallStackCurrent(Sender: TObject);
-    procedure SetMaster(const AMaster: TDBGCallStack);
-  protected
-    procedure NotifyChange;
-    procedure NotifyCurrent;
-    function CheckCount: Boolean; override;
-    function GetCurrent: Integer; override;
-    function InternalGetEntry(AIndex: Integer): TCallStackEntry; override;
-    procedure SetCurrent(AValue: Integer); override;
+    procedure DoEntriesCreated; virtual;
+    property LowestUnknown: Integer read FLowestUnknown;
+    property HighestUnknown: Integer read FHighestUnknown;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddNotification(const ANotification: TIDECallStackNotification);
-    procedure RemoveNotification(const ANotification: TIDECallStackNotification);
-    procedure PrepareRange(AIndex, ACount: Integer); override;
-    property Master: TDBGCallStack read FMaster write SetMaster;
+    procedure PrepareRange(AIndex, ACount: Integer); virtual;
+    procedure ChangeCurrentIndex(ANewIndex: Integer); virtual;
+    property Count: Integer read GetCount write SetCount;
+    property CurrentIndex: Integer read GetCurrent write SetCurrent;
+    property Entries[AIndex: Integer]: TCallStackEntry read GetEntry;
+    property ThreadId: Integer read FThreadId write FThreadId;
   end;
 
-  { TDBGCallStack }
+  { TCallStackList }
 
-  TDBGCallStack = class(TCallStack)
+  TCallStackList = class
   private
-    FDebugger: TDebugger;  // reference to our debugger
-    FEntries: TMap;        // list of created entries
-    FOldState: TDBGState;
-    FOnChange: TNotifyEvent;
-    FOnClear: TNotifyEvent;
-    FOnCurrent: TNotifyEvent;
+    FList: TList;
+    function GetEntry(const AIndex: Integer): TCallStack;
   protected
-    function  CreateStackEntry(AIndex: Integer): TCallStackEntry; virtual;
+    function  GetEntryForThread(const AThreadId: Integer): TCallStack; virtual;
+    procedure Add(ACallStack: TCallStack);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Count: Integer; // Count of already requested CallStacks (via ThreadId)
+    property Entries[const AIndex: Integer]: TCallStack read GetEntry; default;
+    property EntriesForThreads[const AThreadId: Integer]: TCallStack read GetEntryForThread;
+  end;
+
+  { TCurrentCallStack }
+
+  TCurrentCallStack = class(TCallStack)
+  private
+    FMonitor: TCallStackMonitor;
+    FCountValidity: TDebuggerDataState;
+    FCurrentValidity: TDebuggerDataState;
+    FNewCurrentIndex: Integer;
+    FPreparing: Boolean;
+  protected
+    function  GetCount: Integer; override;
+    procedure SetCurrent(AValue: Integer); override;
+    function GetCurrent: Integer; override;
+  public
+    constructor Create(AMonitor: TCallStackMonitor);
+    procedure PrepareRange(AIndex, ACount: Integer); override;
+    procedure ChangeCurrentIndex(ANewIndex: Integer); override;
+    procedure DoEntriesCreated; override;
+    procedure DoEntriesUpdated;
+    property LowestUnknown;
+    property HighestUnknown;
+    property RawEntries: TMap read FEntries;
+    property NewCurrentIndex: Integer read FNewCurrentIndex;
+  public
+    procedure SetCountValidity(AValidity: TDebuggerDataState);
+    procedure SetCurrentValidity(AValidity: TDebuggerDataState);
+  end;
+
+  { TCurrentCallStackList }
+
+  TCurrentCallStackList = class(TCallStackList)
+  private
+    FMonitor: TCallStackMonitor;
+  protected
+    function GetEntryForThread(const AThreadId: Integer): TCallStack; override;
+  public
+    constructor Create(AMonitor: TCallStackMonitor);
+  end;
+
+  { TCallStackMonitor }
+
+  TCallStackMonitor = class(TDebuggerDataMonitor)
+  private
+    FCurrentCallStackList: TCurrentCallStackList;
+    FNotificationList: TDebuggerChangeNotificationList;
+    procedure CallStackClear(Sender: TObject);
+    function  GetSupplier: TCallStackSupplier;
+    procedure SetSupplier(const AValue: TCallStackSupplier);
+  protected
+    procedure RequestCount(ACallstack: TCallStack);
+    procedure RequestCurrent(ACallstack: TCallStack);
+    procedure RequestEntries(ACallstack: TCallStack);
+    procedure UpdateCurrentIndex;
+    procedure DoNewSupplier; override;
+    procedure NotifyChange; // (sender)
+    procedure NotifyCurrent;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddNotification(const ANotification: TCallStackNotification);
+    procedure RemoveNotification(const ANotification: TCallStackNotification);
+    property CurrentCallStackList: TCurrentCallStackList read FCurrentCallStackList;
+    property Supplier: TCallStackSupplier read GetSupplier write SetSupplier;
+  end;
+
+  { TCallStackSupplier }
+
+  TCallStackSupplier = class(TDebuggerDataSupplier)
+  private
+    //FOnChange: TNotifyEvent;
+    //FOnCurrent: TNotifyEvent;
+    function GetCurrentCallStackList: TCurrentCallStackList;
+    function GetMonitor: TCallStackMonitor;
+    procedure SetMonitor(const AValue: TCallStackMonitor);
+  protected
+    procedure RequestCount(ACallstack: TCurrentCallStack); virtual;
+    procedure RequestCurrent(ACallstack: TCurrentCallStack); virtual;
+    procedure RequestEntries(ACallstack: TCurrentCallStack); virtual;
     procedure CurrentChanged;
     procedure Changed;
-    function  CheckCount: Boolean; override;
-    procedure Clear; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
-    function  InternalGetEntry(AIndex: Integer): TCallStackEntry; override;
-    procedure InternalSetEntry(AIndex: Integer; AEntry: TCallStackEntry);
-    procedure PrepareEntries(AStartIndex, AEndIndex: Integer); virtual;
-    property Debugger: TDebugger read FDebugger;
+    procedure UpdateCurrentIndex; virtual;
   public
-    constructor Create(const ADebugger: TDebugger);
-    destructor Destroy; override;
-  public
-    procedure PrepareRange(AIndex, ACount: Integer); override;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnClear: TNotifyEvent read FOnClear write FOnClear;
-    property OnCurrent: TNotifyEvent read FOnCurrent write FOnCurrent;
+    property Monitor: TCallStackMonitor read GetMonitor write SetMonitor;
+    property CurrentCallStackList: TCurrentCallStackList read GetCurrentCallStackList;
   end;
   {%endregion   ^^^^^  Callstack  ^^^^^   }
 
@@ -1472,9 +1519,12 @@ type
  ******************************************************************************
  ******************************************************************************}
 
-  { TIDEThreadsNotification }
+  { TThreadsNotification }
 
-  TIDEThreadsNotification = class(TDebuggerChangeNotification)
+  TThreadsNotification = class(TDebuggerChangeNotification)
+  public
+    property OnChange; // fires for all changes (incl OnCurrent)
+    property OnCurrent;
   end;
 
   { TThreadEntry }
@@ -1491,7 +1541,7 @@ type
                        const ALine: Integer;
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: String;
-                       AState: TCallStackEntryState = cseValid);
+                       AState: TDebuggerDataState = ddsValid);
     constructor CreateCopy(const ASource: TThreadEntry);
     property ThreadId: Integer read FThreadId;
     property ThreadName: String read FThreadName;
@@ -1542,13 +1592,14 @@ type
   protected
     procedure DoNewSupplier; override;
     procedure Changed;
+    procedure CurrentChanged;
     procedure RequestData;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure AddNotification(const ANotification: TIDEThreadsNotification);
-    procedure RemoveNotification(const ANotification: TIDEThreadsNotification);
+    procedure AddNotification(const ANotification: TThreadsNotification);
+    procedure RemoveNotification(const ANotification: TThreadsNotification);
     procedure ChangeCurrentThread(ANewId: Integer);
     property  CurrentThreads: TCurrentThreads read FCurrentThreads;
     property  Supplier: TThreadsSupplier read GetSupplier write SetSupplier;
@@ -1902,7 +1953,7 @@ type
     FShowConsole: Boolean;
     FSignals: TDBGSignals;
     FState: TDBGState;
-    FCallStack: TDBGCallStack;
+    FCallStack: TCallStackSupplier;
     FWatches: TDBGWatches;
     FThreads: TThreadsSupplier;
     FOnCurrent: TDBGCurrentLineEvent;
@@ -1927,7 +1978,7 @@ type
     function  CreateLocals: TDBGLocals; virtual;
     function  CreateLineInfo: TDBGLineInfo; virtual;
     function  CreateRegisters: TDBGRegisters; virtual;
-    function  CreateCallStack: TDBGCallStack; virtual;
+    function  CreateCallStack: TCallStackSupplier; virtual;
     function  CreateDisassembler: TDBGDisassembler; virtual;
     function  CreateWatches: TDBGWatches; virtual;
     function  CreateThreads: TThreadsSupplier; virtual;
@@ -1993,7 +2044,7 @@ type
   public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
-    property CallStack: TDBGCallStack read FCallStack;
+    property CallStack: TCallStackSupplier read FCallStack;
     property Disassembler: TDBGDisassembler read FDisassembler;
     property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
     property DebuggerEnvironment: TStrings read FDebuggerEnvironment
@@ -2155,6 +2206,190 @@ begin
   Result:=bpaStop;
 end;
 
+procedure TCurrentCallStack.SetCurrent(AValue: Integer);
+begin
+  inherited SetCurrent(AValue);
+  FMonitor.NotifyCurrent;
+end;
+
+function TCurrentCallStack.GetCurrent: Integer;
+begin
+  case FCurrentValidity of
+    ddsUnknown:   begin
+        Result := -1;
+        FCurrentValidity := ddsRequested;
+        FMonitor.RequestCurrent(self);
+        if FCurrentValidity = ddsValid then
+          Result := inherited GetCurrent;
+      end;
+    ddsRequested: Result := -1;
+    ddsValid:     Result := inherited GetCurrent;
+    ddsInvalid:   Result := -1;
+  end;
+end;
+
+constructor TCurrentCallStack.Create(AMonitor: TCallStackMonitor);
+begin
+  FMonitor := AMonitor;
+  FPreparing := False;
+  FCountValidity := ddsUnknown;
+  FCurrentValidity := ddsUnknown;
+  inherited Create;
+end;
+
+function TCurrentCallStack.GetCount: Integer;
+begin
+  case FCountValidity of
+    ddsUnknown:   begin
+        Result := 0;
+        FCountValidity := ddsRequested;
+        FMonitor.RequestCount(self);
+        if FCountValidity = ddsValid then
+          Result := inherited GetCount;
+      end;
+    ddsRequested: Result := 0;
+    ddsValid:     Result := inherited GetCount;
+    ddsInvalid:   Result := 0;
+  end;
+end;
+
+procedure TCurrentCallStack.PrepareRange(AIndex, ACount: Integer);
+var
+  It: TMapIterator;
+  EndIndex: Integer;
+begin
+  It := TMapIterator.Create(FEntries);
+  if It.Locate(AIndex)
+  then repeat
+    // start searching for the first unavailable
+    Inc(AIndex);
+    Dec(ACount);
+    It.Next;
+  until It.EOM or (ACount <= 0) or (TCallStackEntry(It.DataPtr^).Index <> AIndex);
+
+  if ACount > 1
+  then begin
+    EndIndex := AIndex + ACount - 1;
+    if It.Locate(EndIndex)
+    then repeat
+      // start searching for the last unavailable
+      Dec(EndIndex);
+      Dec(ACount);
+      It.Previous;
+    until It.BOM or (ACount <= 0) or (TCallStackEntry(It.DataPtr^).Index <> EndIndex);
+  end;
+  It.Free;
+  if ACount <= 0 then Exit;
+
+  FPreparing := True;
+  while ACount > 0 do begin
+    Entries[AIndex];
+    inc(AIndex);
+    dec(ACount);
+  end;
+  FPreparing := False;
+  DoEntriesCreated;
+end;
+
+procedure TCurrentCallStack.ChangeCurrentIndex(ANewIndex: Integer);
+begin
+  FNewCurrentIndex := ANewIndex;
+  FMonitor.UpdateCurrentIndex;
+end;
+
+procedure TCurrentCallStack.DoEntriesCreated;
+begin
+  if not FPreparing
+  then FMonitor.RequestEntries(Self);
+end;
+
+procedure TCurrentCallStack.DoEntriesUpdated;
+begin
+  FLowestUnknown := -1;
+  FHighestUnknown := -1;
+  FMonitor.NotifyChange;
+end;
+
+procedure TCurrentCallStack.SetCountValidity(AValidity: TDebuggerDataState);
+begin
+  if FCountValidity = AValidity then exit;
+  FCountValidity := AValidity;
+  FMonitor.NotifyChange;
+end;
+
+procedure TCurrentCallStack.SetCurrentValidity(AValidity: TDebuggerDataState);
+begin
+  if FCurrentValidity = AValidity then exit;
+  FCurrentValidity := AValidity;
+  FMonitor.NotifyCurrent;
+end;
+
+{ TCurrentCallStackList }
+
+constructor TCurrentCallStackList.Create(AMonitor: TCallStackMonitor);
+begin
+  FMonitor := AMonitor;
+  inherited Create;
+end;
+
+function TCurrentCallStackList.GetEntryForThread(const AThreadId: Integer): TCallStack;
+begin
+  Result := inherited GetEntryForThread(AThreadId);
+  if Result = nil then begin
+    Result := TCurrentCallStack.Create(FMonitor);
+    Result.ThreadId := AThreadId;
+    Add(Result);
+  end;
+end;
+
+{ TCallStackList }
+
+function TCallStackList.GetEntry(const AIndex: Integer): TCallStack;
+begin
+  Result := TCallStack(FList[AIndex]);
+end;
+
+function TCallStackList.GetEntryForThread(const AThreadId: Integer): TCallStack;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while (i >= 0) and (TCallStack(FList[i]).ThreadId <> AThreadId) do dec(i);
+  if i >= 0
+  then Result := TCallStack(FList[i])
+  else Result := nil;
+end;
+
+procedure TCallStackList.Add(ACallStack: TCallStack);
+begin
+  FList.Add(ACallStack);
+end;
+
+constructor TCallStackList.Create;
+begin
+  FList := TList.Create;
+end;
+
+destructor TCallStackList.Destroy;
+begin
+  inherited Destroy;
+  Clear;
+  FreeAndNil(FList);
+end;
+
+procedure TCallStackList.Clear;
+begin
+  while FList.Count > 0 do begin
+    TObject(FList[0]).Free;
+    FList.Delete(0);
+  end;
+end;
+
+function TCallStackList.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
 { TDebuggerDataSupplier }
 
 procedure TDebuggerDataSupplier.SetMonitor(const AValue: TDebuggerDataMonitor);
@@ -2213,7 +2448,7 @@ end;
 procedure TCurrentThreads.SetCurrentThreadId(const AValue: Integer);
 begin
   inherited SetCurrentThreadId(AValue);
-  FMonitor.Changed; // TODO ChangedSelection
+  FMonitor.CurrentChanged; // TODO ChangedSelection
 end;
 
 constructor TCurrentThreads.Create(AMonitor: TThreadsMonitor);
@@ -2305,6 +2540,12 @@ begin
   FNotificationList.NotifyChange(Self);
 end;
 
+procedure TThreadsMonitor.CurrentChanged;
+begin
+  FNotificationList.NotifyChange(Self);
+  FNotificationList.NotifyCurrent(Self);
+end;
+
 constructor TThreadsMonitor.Create;
 begin
   inherited;
@@ -2325,12 +2566,12 @@ begin
   FCurrentThreads.Clear;
 end;
 
-procedure TThreadsMonitor.AddNotification(const ANotification: TIDEThreadsNotification);
+procedure TThreadsMonitor.AddNotification(const ANotification: TThreadsNotification);
 begin
   FNotificationList.Add(ANotification);
 end;
 
-procedure TThreadsMonitor.RemoveNotification(const ANotification: TIDEThreadsNotification);
+procedure TThreadsMonitor.RemoveNotification(const ANotification: TThreadsNotification);
 begin
   FNotificationList.Remove(ANotification);
 end;
@@ -2354,8 +2595,18 @@ var
 begin
   i := Count;
   while NextDownIndex(i) do
-    if Assigned(Items[i]) then
+    if Assigned(Items[i].OnChange) then
       Items[i].OnChange(Sender);
+end;
+
+procedure TDebuggerChangeNotificationList.NotifyCurrent(Sender: TObject);
+var
+  i: LongInt;
+begin
+  i := Count;
+  while NextDownIndex(i) do
+    if Assigned(Items[i].OnCurrent) then
+      Items[i].OnCurrent(Sender);
 end;
 
 { TDebuggerNotificationList }
@@ -2414,7 +2665,7 @@ constructor TThreadEntry.Create(const AIndex: Integer; const AnAdress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const ASource: String;
   const AFullFileName: String; const ALine: Integer; const AThreadId: Integer;
   const AThreadName: String; const AThreadState: String;
-  AState: TCallStackEntryState);
+  AState: TDebuggerDataState);
 begin
   inherited Create(AIndex, AnAdress, AnArguments, AFunctionName, ASource,
                    AFullFileName, ALine, AState);
@@ -2594,9 +2845,9 @@ begin
   Result := TDBGBreakPoints.Create(Self, TDBGBreakPoint);
 end;
 
-function TDebugger.CreateCallStack: TDBGCallStack;
+function TDebugger.CreateCallStack: TCallStackSupplier;
 begin
-  Result := TDBGCallStack.Create(Self);
+  Result := TCallStackSupplier.Create(Self);
 end;
 
 function TDebugger.CreateDisassembler: TDBGDisassembler;
@@ -5254,7 +5505,7 @@ end;
 constructor TCallStackEntry.Create(const AIndex: Integer;
   const AnAdress: TDbgPtr; const AnArguments: TStrings;
   const AFunctionName: String; const ASource: String; const AFullFileName: String;
-  const ALine: Integer; AState: TCallStackEntryState = cseValid);
+  const ALine: Integer; AState: TDebuggerDataState = ddsValid);
 begin
   inherited Create;
   FIndex := AIndex;
@@ -5280,6 +5531,20 @@ destructor TCallStackEntry.Destroy;
 begin
   inherited;
   FreeAndNil(FArguments);
+end;
+
+procedure TCallStackEntry.Init(const AnAdress: TDbgPtr;
+  const AnArguments: TStrings; const AFunctionName: String; const ASource: String;
+  const AFullFileName: String; const ALine: Integer; AState: TDebuggerDataState);
+begin
+  FAdress := AnAdress;
+  if AnArguments <> nil
+  then FArguments.Assign(AnArguments);
+  FFunctionName := AFunctionName;
+  FSource := ASource;
+  FFullFileName := AFullFileName;
+  FLine := ALine;
+  FState := AState;
 end;
 
 function TCallStackEntry.GetFunctionWithArg: String;
@@ -5330,7 +5595,7 @@ end;
 
 function TCallStackEntry.GetFullFileName: String;
 begin
-  if FState = cseValid
+  if FState = ddsValid
   then Result := FFullFileName
   else Result := '';
 end;
@@ -5338,15 +5603,16 @@ end;
 function TCallStackEntry.GetFunctionName: String;
 begin
   case FState of
-    cseValid:     Result := FFunctionName;
-    cseRequested: Result := '<evaluating>';
-    cseInvalid:   Result := '<unknown>';
+    ddsValid:     Result := FFunctionName;
+    ddsInvalid:   Result := '<invalid>';
+    ddsRequested: Result := '<evaluating>';
+    ddsUnknown:   Result := '<unknown>';
   end;
 end;
 
 function TCallStackEntry.GetSource: String;
 begin
-  if FState = cseValid
+  if FState = ddsValid
   then Result := FSource
   else Result := '';
 end;
@@ -5355,235 +5621,7 @@ end;
 { TCallStack }
 { =========================================================================== }
 
-function TCallStack.CheckCount: Boolean;
-begin
-  Result := False;
-end;
-
 procedure TCallStack.Clear;
-begin
-  FCount := -1;
-end;
-
-function TCallStack.Count: Integer;
-begin
-  if (FCount = -1) and not CheckCount
-  then Result := 0
-  else Result := FCount;
-end;
-
-destructor TCallStack.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
-function TCallStack.GetCurrent: Integer;
-begin
-  Result := -1;
-end;
-
-function TCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
-begin
-  if (AIndex < 0)
-  or (AIndex >= Count) then IndexError(Aindex);
-
-  Result := InternalGetEntry(AIndex);
-end;
-
-function TCallStack.IndexError(AIndex: Integer): TCallStackEntry;
-begin
-  Result:=nil;
-  raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
-end;
-
-function TCallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
-begin
-  Result := nil;
-end;
-
-procedure TCallStack.PrepareRange(AIndex, ACount: Integer);
-begin
-end;
-
-procedure TCallStack.SetCount(ACount: Integer);
-  procedure Error;
-  begin
-    raise EInvalidOperation.CreateFmt('Illegal count (%d < 0)', [ACount]);
-  end;
-
-begin
-  if ACount < 0 then Error;
-  FCount := ACount;
-end;
-
-procedure TCallStack.SetCurrent(AValue: Integer);
-begin
-end;
-
-
-{ =========================================================================== }
-{ TIDECallStack }
-{ =========================================================================== }
-
-procedure TIDECallStack.AddNotification(const ANotification: TIDECallStackNotification);
-begin
-  FNotificationList.Add(ANotification);
-  ANotification.AddReference;
-end;
-
-constructor TIDECallStack.Create;
-begin
-  FNotificationList := TList.Create;
-  inherited Create;
-end;
-
-destructor TIDECallStack.Destroy;
-var
-  n: Integer;
-begin
-  for n := FNotificationList.Count - 1 downto 0 do
-    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
-
-  inherited;
-
-  FreeAndNil(FNotificationList);
-end;
-
-procedure TIDECallStack.SetMaster(const AMaster: TDBGCallStack);
-var
-  DoNotify: Boolean;
-begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := nil;
-    FMaster.OnClear := nil;
-    FMaster.OnCurrent := nil;
-    DoNotify := FMaster.Count <> 0;
-  end
-  else DoNotify := False;
-
-  FMaster := AMaster;
-
-  if FMaster = nil
-  then begin
-    SetCount(0);
-  end
-  else begin
-    FMaster.OnChange := @CallStackChanged;
-    FMaster.OnClear := @CallStackClear;
-    FMaster.OnCurrent := @CallStackCurrent;
-    DoNotify := DoNotify or (FMaster.Count <> 0);
-  end;
-
-  if DoNotify
-  then NotifyChange;
-end;
-
-function TIDECallStack.CheckCount: Boolean;
-begin
-  Result := Master <> nil;
-  if Result
-  then SetCount(Master.Count);
-end;
-
-function TIDECallStack.GetCurrent: Integer;
-begin
-  if Master = nil
-  then Result := -1
-  else Result := Master.CurrentIndex;
-end;
-
-function TIDECallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
-begin
-  Assert(FMaster <> nil);
-  Result := FMaster.Entries[AIndex];
-end;
-
-procedure TIDECallStack.SetCurrent(AValue: Integer);
-begin
-  if Master = nil then Exit;
-  Master.CurrentIndex := AValue;
-end;
-
-procedure TIDECallStack.PrepareRange(AIndex, ACount: Integer);
-begin
-  if FMaster <> nil
-  then FMaster.PrepareRange(AIndex, ACount)
-  else inherited PrepareRange(AIndex, ACount);
-end;
-
-procedure TIDECallStack.CallStackChanged(Sender: TObject);
-begin
-  // Clear it first to force the count update
-  Clear;
-  NotifyChange;
-end;
-
-procedure TIDECallStack.CallStackClear(Sender: TObject);
-begin
-  // Don't clear, set it to 0 so there are no entries shown
-  SetCount(0);
-  NotifyChange;
-end;
-
-procedure TIDECallStack.CallStackCurrent(Sender: TObject);
-begin
-  NotifyCurrent;
-end;
-
-procedure TIDECallStack.NotifyChange;
-var
-  n: Integer;
-  Notification: TIDECallStackNotification;
-begin
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TIDECallStackNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnChange)
-    then Notification.FOnChange(Self);
-  end;
-end;
-
-procedure TIDECallStack.NotifyCurrent;
-var
-  n: Integer;
-  Notification: TIDECallStackNotification;
-begin
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TIDECallStackNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnCurrent)
-    then Notification.FOnCurrent(Self);
-  end;
-end;
-
-procedure TIDECallStack.RemoveNotification(const ANotification: TIDECallStackNotification);
-begin
-  FNotificationList.Remove(ANotification);
-  ANotification.ReleaseReference;
-end;
-
-
-{ =========================================================================== }
-{ TDBGCallStack }
-{ =========================================================================== }
-
-procedure TDBGCallStack.Changed;
-begin
-  if Assigned(FOnChange) then FOnChange(Self);
-end;
-
-function TDBGCallStack.CheckCount: Boolean;
-begin
-  Result := (FDebugger <> nil)
-        and (FDebugger.State = dsPause);
-  if Result then SetCount(0);
-end;
-
-procedure TDBGCallStack.Clear;
 var
   Iterator: TMapIterator;
 begin
@@ -5596,108 +5634,259 @@ begin
   Iterator.Free;
   FEntries.Clear;
 
-  inherited Clear;
+  FCount := -1;
 end;
 
-constructor TDBGCallStack.Create(const ADebugger: TDebugger);
+function TCallStack.GetCount: Integer;
 begin
-  FDebugger := ADebugger;
-  FOldState := FDebugger.State;
-  FEntries:= TMap.Create(its4, SizeOf(TCallStackEntry));
-  inherited Create;
+  Result := FCount;
 end;
 
-function TDBGCallStack.CreateStackEntry(AIndex: Integer): TCallStackEntry;
+destructor TCallStack.Destroy;
 begin
-  Result := nil;
-end;
-
-procedure TDBGCallStack.CurrentChanged;
-begin
-  if Assigned(FOnCurrent) then FOnCurrent(Self);
-end;
-
-destructor TDBGCallStack.Destroy;
-begin
+  Clear;
   inherited Destroy;
   FreeAndNil(FEntries);
 end;
 
-procedure TDBGCallStack.DoStateChange(const AOldState: TDBGState);
+function TCallStack.GetCurrent: Integer;
+begin
+  Result := FCurrent;
+end;
+
+function TCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
+begin
+  if (AIndex < 0)
+  or (AIndex >= Count) then IndexError(Aindex);
+
+  Result := nil;
+  if FEntries.GetData(AIndex, Result) then Exit;
+
+  Result := TCallStackEntry.Create(AIndex, 0, nil, '', '', '', 0, ddsRequested);
+  if Result = nil then Exit;
+  FEntries.Add(AIndex, Result);
+  Result.FOwner := Self;
+
+  if (FLowestUnknown < 0) or (FLowestUnknown > AIndex)
+  then FLowestUnknown := AIndex;
+  if (FHighestUnknown < AIndex)
+  then FHighestUnknown := AIndex;
+
+  DoEntriesCreated;
+end;
+
+function TCallStack.IndexError(AIndex: Integer): TCallStackEntry;
+begin
+  Result:=nil;
+  raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
+end;
+
+procedure TCallStack.PrepareRange(AIndex, ACount: Integer);
+begin
+end;
+
+procedure TCallStack.ChangeCurrentIndex(ANewIndex: Integer);
+begin
+  //
+end;
+
+procedure TCallStack.SetCount(ACount: Integer);
+begin
+  if FCount = ACount then exit;
+  FCount := ACount;
+end;
+
+procedure TCallStack.DoEntriesCreated;
+begin
+  //
+end;
+
+constructor TCallStack.Create;
+begin
+  FCount := -1;
+  FThreadId := -1;
+  FCurrent := -1;
+  FLowestUnknown :=  -1;
+  FHighestUnknown := -1;
+  FEntries:= TMap.Create(its4, SizeOf(TCallStackEntry));
+  inherited;
+end;
+
+procedure TCallStack.SetCurrent(AValue: Integer);
+begin
+  FCurrent := AValue;
+end;
+
+
+{ =========================================================================== }
+{ TCallStackMonitor }
+{ =========================================================================== }
+
+procedure TCallStackMonitor.AddNotification(const ANotification: TCallStackNotification);
+begin
+  FNotificationList.Add(ANotification);
+end;
+
+constructor TCallStackMonitor.Create;
+begin
+  FNotificationList := TDebuggerChangeNotificationList.Create;
+  FCurrentCallStackList := TCurrentCallStackList.Create(Self);
+  inherited Create;
+end;
+
+destructor TCallStackMonitor.Destroy;
+begin
+  FNotificationList.Clear;
+  inherited;
+  FreeAndNil(FNotificationList);
+  FreeAndNil(FCurrentCallStackList);
+end;
+
+procedure TCallStackMonitor.SetSupplier(const AValue: TCallStackSupplier);
+begin
+  inherited Supplier := AValue;
+end;
+
+procedure TCallStackMonitor.RequestCount(ACallstack: TCallStack);
+begin
+  if (Supplier <> nil) and (ACallstack is TCurrentCallStack)
+  then Supplier.RequestCount(TCurrentCallStack(ACallstack));
+end;
+
+procedure TCallStackMonitor.RequestCurrent(ACallstack: TCallStack);
+begin
+  if (Supplier <> nil) and (ACallstack is TCurrentCallStack)
+  then Supplier.RequestCurrent(TCurrentCallStack(ACallstack));
+end;
+
+procedure TCallStackMonitor.RequestEntries(ACallstack: TCallStack);
+begin
+  if (Supplier <> nil) and (ACallstack is TCurrentCallStack)
+  then Supplier.RequestEntries(TCurrentCallStack(ACallstack));
+end;
+
+procedure TCallStackMonitor.UpdateCurrentIndex;
+begin
+  if Supplier <> nil then Supplier.UpdateCurrentIndex;
+  NotifyCurrent;
+end;
+
+procedure TCallStackMonitor.DoNewSupplier;
+begin
+  inherited DoNewSupplier;
+  NotifyChange;
+end;
+
+procedure TCallStackMonitor.CallStackClear(Sender: TObject);
+begin
+  // Don't clear, set it to 0 so there are no entries shown
+  //SetCount(0);
+  NotifyChange;
+end;
+
+function TCallStackMonitor.GetSupplier: TCallStackSupplier;
+begin
+  Result := TCallStackSupplier(inherited Supplier);
+end;
+
+procedure TCallStackMonitor.NotifyChange;
+begin
+  FNotificationList.NotifyChange(Self);
+end;
+
+procedure TCallStackMonitor.NotifyCurrent;
+begin
+  FNotificationList.NotifyCurrent(Self);
+end;
+
+procedure TCallStackMonitor.RemoveNotification(const ANotification: TCallStackNotification);
+begin
+  FNotificationList.Remove(ANotification);
+end;
+
+
+{ =========================================================================== }
+{ TCallStackSupplier }
+{ =========================================================================== }
+
+procedure TCallStackSupplier.Changed;
+begin
+  Monitor.NotifyChange;
+end;
+
+function TCallStackSupplier.GetMonitor: TCallStackMonitor;
+begin
+  Result := TCallStackMonitor(inherited Monitor);
+end;
+
+function TCallStackSupplier.GetCurrentCallStackList: TCurrentCallStackList;
+begin
+  if Monitor <> nil
+  then Result := Monitor.CurrentCallStackList
+  else Result := nil;
+end;
+
+procedure TCallStackSupplier.SetMonitor(const AValue: TCallStackMonitor);
+begin
+  inherited Monitor := AValue;
+end;
+
+procedure TCallStackSupplier.RequestCount(ACallstack: TCurrentCallStack);
+begin
+  ACallstack.SetCountValidity(ddsInvalid);
+end;
+
+procedure TCallStackSupplier.RequestCurrent(ACallstack: TCurrentCallStack);
+begin
+  ACallstack.SetCurrentValidity(ddsInvalid);
+end;
+
+procedure TCallStackSupplier.RequestEntries(ACallstack: TCurrentCallStack);
+var
+  e: TCallStackEntry;
+  It: TMapIterator;
+begin
+  It := TMapIterator.Create(ACallstack.FEntries);
+
+  if not It.Locate(ACallstack.LowestUnknown )
+  then if not It.EOM
+  then It.Next;
+
+  while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index < ACallstack.HighestUnknown)
+  do begin
+    e := TCallStackEntry(It.DataPtr^);
+    if e.State = ddsRequested then e.State := ddsInvalid;
+    It.Next;
+  end;
+  It.Free;
+
+  Monitor.NotifyChange;
+end;
+
+procedure TCallStackSupplier.CurrentChanged;
+begin
+  Monitor.NotifyCurrent;
+end;
+
+procedure TCallStackSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if FDebugger.State = dsPause
   then begin
+    CurrentCallStackList.Clear;
     Changed;
   end
   else begin
     if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
     then begin
-      Clear;
-      if Assigned(FOnClear) then FOnClear(Self);
+      CurrentCallStackList.Clear;
+      Monitor.CallStackClear(Self);
     end;
   end;
 end;
 
-function TDBGCallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
+procedure TCallStackSupplier.UpdateCurrentIndex;
 begin
-  Result := nil;
-  if FEntries.GetData(AIndex, Result) then Exit;
-
-  Result := CreateStackEntry(AIndex);
-  if Result = nil then Exit;
-  FEntries.Add(AIndex, Result);
-  Result.FOwner := Self;
-end;
-
-procedure TDBGCallStack.InternalSetEntry(AIndex: Integer; AEntry: TCallStackEntry);
-var
-  Dummy: TCallStackEntry;
-begin
-  if FEntries.GetData(AIndex, Dummy) then begin
-    //debugln(['TDBGCallStack.InternalSetEntry: replacing existing entry ', Dummy.Line]);
-    FEntries.Delete(AIndex);
-    Dummy.Free;
-  end;
-  AEntry.FOwner := Self;
-  FEntries.Add(AIndex, AEntry);
-end;
-
-procedure TDBGCallStack.PrepareEntries(AStartIndex, AEndIndex: Integer);
-begin
-end;
-
-procedure TDBGCallStack.PrepareRange(AIndex, ACount: Integer);
-var
-  It: TMapIterator;
-  EndIndex: Integer;
-begin
-  It := TMapIterator.Create(FEntries);
-
-  if It.Locate(AIndex)
-  then repeat
-    // start searching for the first unavailable
-    Inc(AIndex);
-    Dec(ACount);
-    It.Next;
-  until It.EOM or (ACount <= 0) or (TCallStackEntry(It.DataPtr^).Index <> AIndex);
-
-
-  if ACount > 1
-  then begin
-    EndIndex := AIndex + ACount - 1;
-    if It.Locate(EndIndex)
-    then repeat
-      // start searching for the last unavailable
-      Dec(EndIndex);
-      Dec(ACount);
-      It.Previous;
-    until It.BOM or (ACount <= 0) or (TCallStackEntry(It.DataPtr^).Index <> EndIndex);
-  end;
-
-  It.Free;
-
-  if ACount <= 0 then Exit;
-  PrepareEntries(AIndex, ACount);
+  //
 end;
 
 (******************************************************************************)

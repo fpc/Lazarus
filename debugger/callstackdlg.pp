@@ -100,25 +100,30 @@ type
     procedure actShowClick(Sender: TObject);
   private
     FBreakPoints: TIDEBreakPoints;
-    FCallStack: TIDECallStack;
-    FCallStackNotification: TIDECallStackNotification;
+    FCallStackMonitor: TCallStackMonitor;
+    FCallStackNotification: TCallStackNotification;
+    FThreadNotification: TThreadsNotification;
     FBreakpointsNotification: TIDEBreakPointsNotification;
+    FThreadsMonitor: TThreadsMonitor;
     FViewCount: Integer;
     FViewLimit: Integer;
     FViewStart: Integer;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
+    FInUpdateView: Boolean;
     function GetImageIndex(Entry: TCallStackEntry): Integer;
     procedure SetBreakPoints(const AValue: TIDEBreakPoints);
+    procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
     procedure SetViewLimit(const AValue: Integer);
     procedure SetViewStart(AStart: Integer);
     procedure SetViewMax;
     procedure BreakPointChanged(const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
     procedure CallStackChanged(Sender: TObject);
     procedure CallStackCurrent(Sender: TObject);
+    procedure ThreadsCurrent(Sender: TObject);
     procedure GotoIndex(AIndex: Integer);
     function  GetCurrentEntry: TCallStackEntry;
     function  GetFunction(const Entry: TCallStackEntry): string;
-    procedure SetCallStack(const AValue: TIDECallStack);
+    procedure SetCallStackMonitor(const AValue: TCallStackMonitor);
     procedure UpdateView;
     procedure JumpToSource;
     procedure CopyToClipBoard;
@@ -128,12 +133,14 @@ type
     procedure DoEndUpdate; override;
     procedure DisableAllActions;
     procedure EnableAllActions;
+    function  GetSelectedCallstack: TCallStack;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     property BreakPoints: TIDEBreakPoints read FBreakPoints write SetBreakPoints;
-    property CallStack: TIDECallStack read FCallStack write SetCallStack;
+    property CallStackMonitor: TCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
+    property ThreadsMonitor: TThreadsMonitor read FThreadsMonitor write SetThreadsMonitor;
     property ViewLimit: Integer read FViewLimit write SetViewLimit;
   end;
 
@@ -157,7 +164,7 @@ var
 constructor TCallStackDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCallStackNotification := TIDECallStackNotification.Create;
+  FCallStackNotification := TCallStackNotification.Create;
   FCallStackNotification.AddReference;
   FCallStackNotification.OnChange := @CallStackChanged;
   FCallStackNotification.OnCurrent := @CallStackCurrent;
@@ -168,9 +175,14 @@ begin
   FBreakpointsNotification.OnUpdate := @BreakPointChanged;
   FBreakpointsNotification.OnRemove := @BreakPointChanged;
 
+  FThreadNotification := TThreadsNotification.Create;
+  FThreadNotification.AddReference;
+  FThreadNotification.OnCurrent  := @ThreadsCurrent;
+
   FViewLimit := 10;
   FViewCount := 10;
   FViewStart := 0;
+  FInUpdateView := False;
   actViewLimit.Caption := popLimit10.Caption;
   actToggleBreakPoint.ShortCut:= IDECommandList.FindIDECommand(ecToggleBreakPoint).AsShortCut;
 end;
@@ -232,20 +244,22 @@ var
   First, Count: Integer;
   Source: String;
 begin
-  if not ToolButtonPower.Down then exit;
+  if (not ToolButtonPower.Down) or FInUpdateView then exit;
   BeginUpdate;
   try
-    if (CallStack = nil) or (CallStack.Count=0)
+    FInUpdateView := True; // ignore change triggered by count, if there is a change event, then Count will be updated already
+    if (GetSelectedCallstack = nil) or (GetSelectedCallstack.Count=0)
     then begin
       txtGoto.Text:= '0';
       lvCallStack.Items.Clear;
       exit;
     end;
+    FInUpdateView := False;
 
     First := FViewStart;
-    if First + FViewLimit <= CallStack.Count
+    if First + FViewLimit <= GetSelectedCallstack.Count
     then Count := FViewLimit
-    else Count := CallStack.Count - First;
+    else Count := GetSelectedCallstack.Count - First;
 
     // Reuse entries, so add and remove only
     // Remove unneded
@@ -262,11 +276,13 @@ begin
       Item.SubItems.Add('');
     end;
 
-    CallStack.PrepareRange(First, Count);
+    FInUpdateView := True;
+    GetSelectedCallstack.PrepareRange(First, Count);
+    FInUpdateView := False;
     for n := 0 to Count - 1 do
     begin
       Item := lvCallStack.Items[n];
-      Entry := CallStack.Entries[First + n];
+      Entry := GetSelectedCallstack.Entries[First + n];
       if Entry = nil
       then begin
         Item.Caption := '';
@@ -289,6 +305,7 @@ begin
     end;
     
   finally
+    FInUpdateView := False;
     EndUpdate;
   end;
 end;
@@ -301,9 +318,13 @@ begin
   FBreakpointsNotification.OnRemove := nil;
   FBreakpointsNotification.ReleaseReference;
 
-  SetCallstack(nil);
+  SetCallStackMonitor(nil);
   FCallStackNotification.OnChange := nil;
   FCallStackNotification.ReleaseReference;
+
+  SetThreadsMonitor(nil);
+  FThreadNotification.OnCurrent := nil;
+  FThreadNotification.ReleaseReference;
   inherited Destroy;
 end;
 
@@ -335,21 +356,29 @@ begin
     (aclActions.Actions[i] as TAction).Enabled := True;
 end;
 
+function TCallStackDlg.GetSelectedCallstack: TCallStack;
+begin
+  if (CallStackMonitor = nil) or (ThreadsMonitor = nil)
+  then Result := nil
+  else Result := CallStackMonitor.CurrentCallStackList.EntriesForThreads
+                 [ThreadsMonitor.CurrentThreads.CurrentThreadId];
+end;
+
 function TCallStackDlg.GetCurrentEntry: TCallStackEntry;
 var
   CurItem: TListItem;
   idx: Integer;
 begin
   Result := nil;
-  if Callstack = nil then Exit;
+  if GetSelectedCallstack = nil then Exit;
   
   CurItem := lvCallStack.Selected;
   if CurItem = nil then Exit;
 
   idx := FViewStart + CurItem.Index;
-  if idx >= CallStack.Count then Exit;
+  if idx >= GetSelectedCallstack.Count then Exit;
 
-  Result := CallStack.Entries[idx];
+  Result := GetSelectedCallstack.Entries[idx];
 end;
 
 procedure TCallStackDlg.JumpToSource;
@@ -386,12 +415,13 @@ var
 begin
   Clipboard.Clear;
   
-  if (CallStack=nil) or (CallStack.Count=0) then exit;
+  if (GetSelectedCallstack=nil) or (GetSelectedCallstack.Count=0) then exit;
   
   S := '';
-  for n:= 0 to CallStack.Count-1 do
+  // GetSelectedCallstack.PrepareRange();
+  for n:= 0 to GetSelectedCallstack.Count-1 do
   begin
-    Entry:=CallStack.Entries[n];
+    Entry:=GetSelectedCallstack.Entries[n];
     if Entry <> nil
     then S := S + format('#%d %s at %s:%d', [n, GetFunction(Entry), Entry.Source, Entry.Line])
     else S := S + format('#%d ????', [n]);
@@ -412,8 +442,8 @@ begin
     if (Item <> nil) and (BreakPoints <> nil) then
     begin
       idx := FViewStart + Item.Index;
-      if idx >= CallStack.Count then Exit;
-      Entry := CallStack.Entries[idx];
+      if idx >= GetSelectedCallstack.Count then Exit;
+      Entry := GetSelectedCallstack.Entries[idx];
       FileName := Entry.Source;
       if (FileName = '') or not DebugBoss.GetFullFilename(FileName, False) then
         Exit;
@@ -439,6 +469,11 @@ begin
   FViewCount := TMenuItem(Sender).Tag;
   ViewLimit := FViewCount;
   actViewLimit.Caption := TMenuItem(Sender).Caption;
+end;
+
+procedure TCallStackDlg.ThreadsCurrent(Sender: TObject);
+begin
+  CallStackChanged(nil);
 end;
 
 procedure TCallStackDlg.ToolButtonPowerClick(Sender: TObject);
@@ -475,7 +510,7 @@ begin
     Entry := GetCurrentEntry;
     if Entry = nil then Exit;
 
-    CallStack.CurrentIndex := Entry.Index;
+    GetSelectedCallstack.ChangeCurrentIndex(Entry.Index);
   finally
     EnableAllActions;
   end;
@@ -490,8 +525,8 @@ procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);
 begin
   try
     DisableAllActions;
-    if CallStack <> nil
-    then SetViewStart(CallStack.Count - FViewLimit)
+    if GetSelectedCallstack <> nil
+    then SetViewStart(GetSelectedCallstack.Count - FViewLimit)
     else SetViewStart(0);
   finally
     EnableAllActions;
@@ -549,9 +584,9 @@ begin
   for i := 0 to lvCallStack.Items.Count - 1 do
   begin
     idx := FViewStart + lvCallStack.Items[i].Index;
-    if idx >= CallStack.Count then
+    if idx >= GetSelectedCallstack.Count then
       Continue;
-    Entry := CallStack.Entries[idx];
+    Entry := GetSelectedCallstack.Entries[idx];
     if Entry <> nil then
       lvCallStack.Items[i].ImageIndex := GetImageIndex(Entry)
     else
@@ -639,12 +674,12 @@ end;
 
 procedure TCallStackDlg.SetViewStart(AStart: Integer);
 begin
-  if CallStack = nil then Exit;
+  if GetSelectedCallstack = nil then Exit;
   ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
 
-  if (AStart > CallStack.Count - FViewLimit)
-  then AStart := CallStack.Count - FViewLimit;
+  if (AStart > GetSelectedCallstack.Count - FViewLimit)
+  then AStart := GetSelectedCallstack.Count - FViewLimit;
   if AStart < 0 then AStart := 0;
   if FViewStart = AStart then Exit;
   
@@ -655,30 +690,30 @@ end;
 
 procedure TCallStackDlg.SetViewMax;
 begin
-//  If CallStack = nil
+//  If GetSelectedCallstack = nil
 //  then lblViewCnt.Caption:= '0'
-//  else lblViewCnt.Caption:= IntToStr(CallStack.Count);
+//  else lblViewCnt.Caption:= IntToStr(GetSelectedCallstack.Count);
 end;
 
-procedure TCallStackDlg.SetCallStack(const AValue: TIDECallStack);
+procedure TCallStackDlg.SetCallStackMonitor(const AValue: TCallStackMonitor);
 begin
-  if FCallStack = AValue then Exit;
+  if FCallStackMonitor = AValue then Exit;
 
   BeginUpdate;
   try
-    if FCallStack <> nil
+    if FCallStackMonitor <> nil
     then begin
-      FCallStack.RemoveNotification(FCallStackNotification);
+      FCallStackMonitor.RemoveNotification(FCallStackNotification);
     end;
 
-    FCallStack := AValue;
+    FCallStackMonitor := AValue;
 
-    if FCallStack <> nil
+    if FCallStackMonitor <> nil
     then begin
-      FCallStack.AddNotification(FCallStackNotification);
+      FCallStackMonitor.AddNotification(FCallStackNotification);
     end;
 
-    CallStackChanged(FCallStack);
+    CallStackChanged(nil);
   finally
     EndUpdate;
   end;
@@ -689,11 +724,11 @@ begin
   ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
   if FViewLimit = AValue then Exit;
-  if (CallStack <> nil)
-  and (FViewStart + FViewLimit >= CallStack.Count)
+  if (GetSelectedCallstack <> nil)
+  and (FViewStart + FViewLimit >= GetSelectedCallstack.Count)
   and (AValue > FViewLimit)
   then begin
-    FViewStart := CallStack.Count - AValue;
+    FViewStart := GetSelectedCallstack.Count - AValue;
     if FViewStart < 0 then FViewStart := 0;
   end;
   FViewLimit := AValue;
@@ -718,6 +753,15 @@ begin
   UpdateView;
 end;
 
+procedure TCallStackDlg.SetThreadsMonitor(const AValue: TThreadsMonitor);
+begin
+  if FThreadsMonitor = AValue then exit;
+  if FThreadsMonitor <> nil then FThreadsMonitor.RemoveNotification(FThreadNotification);
+  FThreadsMonitor := AValue;
+  if FThreadsMonitor <> nil then FThreadsMonitor.AddNotification(FThreadNotification);
+  ThreadsCurrent(FThreadsMonitor);
+end;
+
 function TCallStackDlg.GetFunction(const Entry: TCallStackEntry): string;
 begin
   Result := Entry.GetFunctionWithArg;
@@ -726,7 +770,7 @@ end;
 procedure TCallStackDlg.GotoIndex(AIndex: Integer);
 begin
   if AIndex < 0 then Exit;
-  if AIndex >= FCallstack.Count then Exit;
+  if AIndex >= GetSelectedCallstack.Count then Exit;
   
 
 end;

@@ -921,7 +921,7 @@ var
   NewSource: TCodeBuffer;
   Editor: TSourceEditor;
   SrcLine: Integer;
-  i: Integer;
+  i, TId: Integer;
   StackEntry: TCallStackEntry;
   FocusEditor: Boolean;
   InIgnore: Boolean;
@@ -937,10 +937,12 @@ begin
   if SrcLine < 1
   then begin
     // jump to the deepest stack frame with debugging info
+    // TODO: Only below the frame supplied by debugger
     i:=0;
-    while (i < FDebugger.CallStack.Count) do
+    TId := Threads.CurrentThreads.CurrentThreadId;
+    while (i < CallStack.CurrentCallStackList.EntriesForThreads[TId].Count) do
     begin
-      StackEntry := FDebugger.CallStack.Entries[i];
+      StackEntry := CallStack.CurrentCallStackList.EntriesForThreads[TId].Entries[i];
       if StackEntry.Line > 0
       then begin
         SrcLine := StackEntry.Line;
@@ -1219,8 +1221,9 @@ var
   TheDialog: TCallStackDlg;
 begin
   TheDialog := TCallStackDlg(FDialogs[ddtCallStack]);
-  TheDialog.CallStack := FCallStack;
+  TheDialog.CallStackMonitor := FCallStack;
   TheDialog.BreakPoints := FBreakPoints;
+  TheDialog.ThreadsMonitor := FThreads;
 end;
 
 procedure TDebugManager.InitEvaluateDlg;
@@ -1253,7 +1256,7 @@ begin
   FSignals := TIDESignals.Create;
   FLocals := TIDELocals.Create;
   FLineInfo := TIDELineInfo.Create;
-  FCallStack := TIDECallStack.Create;
+  FCallStack := TCallStackMonitor.Create;
   FDisassembler := TIDEDisassembler.Create;
   FRegisters := TIDERegisters.Create;
 
@@ -2264,7 +2267,7 @@ begin
     FThreads.Supplier := nil;
     FLocals.Master := nil;
     FLineInfo.Master := nil;
-    FCallStack.Master := nil;
+    FCallStack.Supplier := nil;
     FDisassembler.Master := nil;
     FExceptions.Master := nil;
     FSignals.Master := nil;
@@ -2276,7 +2279,7 @@ begin
     FThreads.Supplier := FDebugger.Threads;
     FLocals.Master := FDebugger.Locals;
     FLineInfo.Master := FDebugger.LineInfo;
-    FCallStack.Master := FDebugger.CallStack;
+    FCallStack.Supplier := FDebugger.CallStack;
     FDisassembler.Master := FDebugger.Disassembler;
     FExceptions.Master := FDebugger.Exceptions;
     FSignals.Master := FDebugger.Signals;
