@@ -8,7 +8,7 @@ object ReplaceFuncsForm: TReplaceFuncsForm
   ClientWidth = 928
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 34
@@ -36,6 +36,7 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     Top = 0
     Width = 766
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ColumnClickSorts = True
     Columns = <    
       item
         Title.Caption = 'Category'
