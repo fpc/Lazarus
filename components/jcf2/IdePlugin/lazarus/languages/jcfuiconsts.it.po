@@ -20,33 +20,16 @@ msgid "Find more information on the web at: %s"
 msgstr "Trova altre informazioni sul web a: %s"
 
 #: jcfuiconsts.lisaboutthisprogramisopensource
-msgid ""
-"This program is open source software. It is released under the Mozilla "
-"Public Licence (MPL).  http://www.mozilla.org/MPL"
-msgstr ""
-"Questo programma è open source. E' rilasciato sotto la Licenza Pubblica "
-"Mozilla (MPL). http://www.mozilla.org/MPL"
+msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
+msgstr "Questo programma è open source. E' rilasciato sotto la Licenza Pubblica Mozilla (MPL). http://www.mozilla.org/MPL"
 
 #: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
-msgid ""
-"This program is still under development. In spite of thorough testing and "
-"removal of reported bugs, no guarantees are given. Please make backups, or "
-"better yet use a source control system."
-msgstr ""
-"Questo programma è ancora in fase di sviluppo. Nonostante l'esteso controllo "
-"e rimozione dei bug riportati, non è fornita alcuna garanzia del suo "
-"corretto funzionamento. Fate regolari backup, o meglio ancora usate un "
-"software di controllo versione."
+msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
+msgstr "Questo programma è ancora in fase di sviluppo. Nonostante l'esteso controllo e rimozione dei bug riportati, non è fornita alcuna garanzia del suo corretto funzionamento. Fate regolari backup, o meglio ancora usate un software di controllo versione."
 
 #: jcfuiconsts.lisaboutversion
-msgid ""
-"Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make "
-"readable the layout of any Delphi Object-Pascal source code.%s%sCopyright "
-"Anthony Steele 1999-2008"
-msgstr ""
-"Versione $VERSION$%s$DATE$%s%sQuesto programma tenta di standardizzare e "
-"rendere leggibile il codice sorgente Delphi o Object-pascal.%s%sCopyright "
-"Anthony Steele 1999-2008"
+msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
+msgstr "Versione $VERSION$%s$DATE$%s%sQuesto programma tenta di standardizzare e rendere leggibile il codice sorgente Delphi o Object-pascal.%s%sCopyright Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign
 msgid "Align"
@@ -801,12 +784,8 @@ msgid "&Var declarations"
 msgstr "Dichiarazioni di &variabili"
 
 #: jcfuiconsts.listhesettingsfiledoesnotexist
-msgid ""
-"The settings file \"%s\" does not exist.%sThe formatter will work better if it "
-"is configured to use a valid settings file"
-msgstr ""
-"Il file impostazioni \"%s\" non esiste.%sIl formattatore funzionerà meglio se "
-"potrà usare un file impostazioni valido."
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "Il file impostazioni \"%s\" non esiste.%sIl formattatore funzionerà meglio se potrà usare un file impostazioni valido."
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"
@@ -915,3 +894,4 @@ msgstr "Avvertimenti"
 #: jcfuiconsts.liswarningswarningson
 msgid "&Warnings On"
 msgstr "&Avvertimenti abilitati"
+

@@ -28,3 +28,4 @@ msgstr "H2Pas ..."
 #: h2passtrconsts.h2ph2pastool
 msgid "H2PasTool"
 msgstr "H2PasTool"
+

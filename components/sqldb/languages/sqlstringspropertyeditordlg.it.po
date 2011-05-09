@@ -31,8 +31,11 @@ msgstr ""
 msgid ""
 "Syntax error in SQL statement:\n"
 "%s\n"
-msgstr "Errore di sintassi nel comando SQL:\n %s\n"
+msgstr ""
+"Errore di sintassi nel comando SQL:\n"
+" %s\n"
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"
 msgstr "Codice SQL"
+

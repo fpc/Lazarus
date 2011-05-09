@@ -22,3 +22,4 @@ msgstr "Traccia dello stack:"
 #: leakinfo.rsstacktrace
 msgid "Stack trace"
 msgstr "Traccia dello stack"
+

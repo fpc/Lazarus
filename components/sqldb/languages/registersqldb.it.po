@@ -34,3 +34,4 @@ msgstr "Inserire qui i comandi SQL"
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"
 msgstr "Modifica di %s in corso"
+

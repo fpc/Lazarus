@@ -131,17 +131,13 @@ msgstr "Applico il dizionario dati al campo %s"
 msgid ""
 "Could not locate the database desktop application.\n"
 "Would you like to select it ?\n"
-msgstr ""
-"Non posso trovare l'applicazione desktop database. Vorreste selezionarla "
-"voi?"
+msgstr "Non posso trovare l'applicazione desktop database. Vorreste selezionarla voi?"
 
 #: ldd_consts.serrnodatadictactive
 msgid ""
 "No datadictionary active.\n"
 "Please set a data dictionary for the project\n"
-msgstr ""
-"Nessun dizionario dati attivo. Prego impostare un dizionario dati per il "
-"progetto"
+msgstr "Nessun dizionario dati attivo. Prego impostare un dizionario dati per il progetto"
 
 #: ldd_consts.serrselectdd
 msgid "Please select a known data dictionary"
@@ -210,3 +206,4 @@ msgstr "Attenzione: il dizionario dati non definisce il campo %s"
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
 msgstr "Conteggio selezione errato: %d"
+

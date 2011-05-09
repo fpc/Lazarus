@@ -82,3 +82,4 @@ msgstr "Esportati %d record con successo."
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
 msgstr "Esportazione di %d record"
+

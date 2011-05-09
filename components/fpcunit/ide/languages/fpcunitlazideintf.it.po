@@ -16,27 +16,16 @@ msgid "FPCUnit Console Test Application"
 msgstr "Applicazione console di test FPCUnit"
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
-msgid ""
-"FPCUnit Console Test Application%sAn application to run FPCUnit test cases "
-"in console mode.%sThe application source is automatically maintained by "
-"Lazarus."
-msgstr ""
-"Applicazione console di test FPCUnit%sUna applicazione per far girare dei "
-"test su FPCUnit in modo console.%sIl sorgente dell'applicazione è mantenuto "
-"automaticamente da Lazarus."
+msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgstr "Applicazione console di test FPCUnit%sUna applicazione per far girare dei test su FPCUnit in modo console.%sIl sorgente dell'applicazione è mantenuto automaticamente da Lazarus."
 
 #: fpcunitlazideintf.sfpcuntestapp
 msgid "FPCUnit Test Application"
 msgstr "Applicazione di test FPCUnit"
 
 #: fpcunitlazideintf.sfpcuntestappdesc
-msgid ""
-"FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe "
-"application source is automatically maintained by Lazarus."
-msgstr ""
-"Applicazione di test FPCUnit%sUna applicazione per far girare dei test su "
-"FPCUnit.%sIl sorgente dell'applicazione è mantenuto automaticamente da "
-"Lazarus."
+msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgstr "Applicazione di test FPCUnit%sUna applicazione per far girare dei test su FPCUnit.%sIl sorgente dell'applicazione è mantenuto automaticamente da Lazarus."
 
 #: fpcunitlazideintf.sfpcuntestcase
 msgid "FPCUnit Test Case"
@@ -49,3 +38,4 @@ msgstr "Caso di test FPCUnit%sUna unit che contiene un caso di test FPCUnit."
 #: fpcunitlazideintf.swriteyourowntest
 msgid "Write your own test"
 msgstr "Scrivi il tuo test"
+

@@ -16,66 +16,40 @@ msgid "Apache Module"
 msgstr "Modulo Apache"
 
 #: weblazideintf.rsapachemodule2
-msgid ""
-"Apache module%sAn Apache loadable module in Free Pascal using webmodules. "
-"The main library file is automatically maintained by Lazarus."
-msgstr ""
-"Modulo Apache%sUn modulo caricabile da Apache scritto in Free Pascal Free "
-"Pascal usando moduli web. Il file delle libreria principale è mantenuto "
-"automaticamente da Lazarus."
+msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr "Modulo Apache%sUn modulo caricabile da Apache scritto in Free Pascal Free Pascal usando moduli web. Il file delle libreria principale è mantenuto automaticamente da Lazarus."
 
 #: weblazideintf.rscgiapplicati
 msgid "CGI Application"
 msgstr "Applicazione CGI"
 
 #: weblazideintf.rscgiapplicati2
-msgid ""
-"CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal "
-"using webmodules. The program source is automatically maintained by Lazarus."
-msgstr ""
-"Applicazione CGI%sUn programma CGI (Common Gateway Interface) scritta in "
-"Free Pascal usando moduli web. Il sorgente del programma è mantenuto "
-"automaticamente da Lazarus"
+msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr "Applicazione CGI%sUn programma CGI (Common Gateway Interface) scritta in Free Pascal usando moduli web. Il sorgente del programma è mantenuto automaticamente da Lazarus"
 
 #: weblazideintf.rscustomcgiapp
 msgid "Custom CGI Application"
 msgstr "Applicazione CGI personalizzata"
 
 #: weblazideintf.rscustomcgiapp2
-msgid ""
-"Custom CGI Application%sA CGI (Common Gateway Interface) program in Free "
-"Pascal. The program source is automatically maintained by Lazarus."
-msgstr ""
-"Applicazione CGI personalizzata%sUn programma CGI (Common Gateway Interface) "
-"scritto in Free Pascal. Il sorgente del programma è mantenuto "
-"automaticamente da Lazarus"
+msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgstr "Applicazione CGI personalizzata%sUn programma CGI (Common Gateway Interface) scritto in Free Pascal. Il sorgente del programma è mantenuto automaticamente da Lazarus"
 
 #: weblazideintf.rscustomfastcg
 msgid "Custom FastCGI Application"
 msgstr "Applicazione FastCGI personalizzata"
 
 #: weblazideintf.rscustomfastcg2
-msgid ""
-"Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in "
-"Free Pascal. The program source is automatically maintained by Lazarus."
-msgstr ""
-"Applicazione CGI personalizzata%sUn programma FastCGI (Common Gateway "
-"Interface) scritto in Free Pascal. Il sorgente del programma è mantenuto "
-"automaticamente da Lazarus."
+msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgstr "Applicazione CGI personalizzata%sUn programma FastCGI (Common Gateway Interface) scritto in Free Pascal. Il sorgente del programma è mantenuto automaticamente da Lazarus."
 
 #: weblazideintf.rsfastcgiappli
 msgid "FastCGI Application"
 msgstr "Applicazione FastCGI"
 
 #: weblazideintf.rsfastcgiappli2
-msgid ""
-"FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free "
-"Pascal using webmodules. The program source is automatically maintained by "
-"Lazarus."
-msgstr ""
-"Applicazione FastCGI%sUn programma FastCGI (Common Gateway Interface) "
-"scritto in Free Pascal usando moduli web. Il sorgente del programma è "
-"mantenuto automaticamente da Lazarus."
+msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr "Applicazione FastCGI%sUn programma FastCGI (Common Gateway Interface) scritto in Free Pascal usando moduli web. Il sorgente del programma è mantenuto automaticamente da Lazarus."
 
 #: weblazideintf.rshtmlwebmodul
 msgid "HTML Web Module"
@@ -92,3 +66,4 @@ msgstr "Modulo Web"
 #: weblazideintf.rswebmoduleada
 msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgstr "Modulo web%sUn modulo dati per applicazioni web (HTTP)."
+
