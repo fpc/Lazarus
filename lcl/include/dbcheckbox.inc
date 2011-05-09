@@ -53,17 +53,17 @@ begin
   FDataLink.ReadOnly:=AValue;
 end;
 
-procedure TDBCheckBox.SetValueCheck(const AValue: string);
+procedure TDBCheckBox.SetValueChecked(const AValue: string);
 begin
-  if FValueCheck=AValue then exit;
-  FValueCheck:=AValue;
+  if FValueChecked=AValue then exit;
+  FValueChecked:=AValue;
   DataChange(Self);
 end;
 
-procedure TDBCheckBox.SetValueUncheck(const AValue: string);
+procedure TDBCheckBox.SetValueUnchecked(const AValue: string);
 begin
-  if FValueUncheck=AValue then exit;
-  FValueUncheck:=AValue;
+  if FValueUnchecked=AValue then exit;
+  FValueUnchecked:=AValue;
   DataChange(Self);
 end;
 
@@ -121,9 +121,9 @@ begin
       Result:=cbUnchecked;
   end else begin
     FieldText:=UpperCase(DatalinkField.AsString);
-    if FindWord(FieldText,UpperCase(FValueCheck)) then
+    if FindWord(FieldText,UpperCase(FValueChecked)) then
       Result:=cbChecked
-    else if FindWord(FieldText,UpperCase(FValueUncheck)) then
+    else if FindWord(FieldText,UpperCase(FValueUnchecked)) then
       Result:=cbUnchecked
     else
       Result:=cbGrayed;
@@ -156,9 +156,9 @@ begin
       FDataLink.Field.AsBoolean:=Checked
     else begin
       if Checked then
-        NewFieldText:=FValueCheck
+        NewFieldText:=FValueChecked
       else
-        NewFieldText:=FValueUncheck;
+        NewFieldText:=FValueUnchecked;
       // ToDo: use Field.Text
       FDataLink.Field.AsString:=Trim(NewFieldText);
     end;
@@ -196,8 +196,8 @@ end;
 constructor TDBCheckBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FValueCheck:='True';
-  FValueUncheck:='False';
+  FValueChecked:='True';
+  FValueUnchecked:='False';
 
   ControlStyle:=ControlStyle+[csReplicatable];
   State:=cbUnchecked;

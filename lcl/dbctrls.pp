@@ -583,8 +583,8 @@ Type
   TDBCheckBox = class(TCustomCheckBox)
   private
     FDataLink: TFieldDataLink;
-    FValueCheck: string;
-    FValueUncheck: string;
+    FValueChecked: string;
+    FValueUnchecked: string;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -592,8 +592,8 @@ Type
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetReadOnly(const AValue: Boolean);
-    procedure SetValueCheck(const AValue: string);
-    procedure SetValueUncheck(const AValue: string);
+    procedure SetValueChecked(const AValue: string);
+    procedure SetValueUnchecked(const AValue: string);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     function GetFieldCheckState: TCheckBoxState; virtual;
@@ -645,8 +645,8 @@ Type
     property ShowHint;
     property TabOrder;
     property TabStop;
-    property ValueChecked: string read FValueCheck write SetValueCheck;
-    property ValueUnchecked: string read FValueUncheck write SetValueUncheck;
+    property ValueChecked: string read FValueChecked write SetValueChecked;
+    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked;
     property Visible;
   end;
   
