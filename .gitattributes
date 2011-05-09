@@ -4884,6 +4884,8 @@ lcl/images/lcl_dbnav_images.bat svneol=native#text/x-msdos-program
 lcl/images/lcl_dbnav_images_list.txt svneol=native#text/plain
 lcl/images/lcl_edbtnimg.bat svneol=native#text/x-msdos-program
 lcl/images/lcl_edbtnimg_list.txt svneol=native#text/plain
+lcl/images/sortasc.png -text
+lcl/images/sortdesc.png -text
 lcl/images/wince/build.bat svneol=native#text/x-msdos-program
 lcl/images/wince/wincedialog_cancel.png -text
 lcl/images/wince/wincedialog_ok.PNG -text
