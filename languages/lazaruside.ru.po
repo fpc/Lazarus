@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-08 20:01+0300\n"
+"PO-Revision-Date: 2011-05-09 20:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2581,7 +2581,7 @@ msgstr "Использовать дисплей"
 
 #: lazarusidestrconsts.dlgrunouseroverrides
 msgid "User overrides"
-msgstr "Пользовательские замены"
+msgstr "Пользовательские перекрытия"
 
 #: lazarusidestrconsts.dlgrunovalue
 msgctxt "lazarusidestrconsts.dlgrunovalue"
@@ -4386,7 +4386,7 @@ msgstr "Неименованные константы"
 
 #: lazarusidestrconsts.lisceunsortedmembers
 msgid "Unsorted members"
-msgstr "Несортированные члены"
+msgstr "Несортированные элементы"
 
 #: lazarusidestrconsts.lisceunsortedvisibility
 msgid "Unsorted visibility"
@@ -11353,27 +11353,7 @@ msgstr "или"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
-msgstr "Переопределить язык. Например, --language=de. Возможные значения смотрите в каталоге languages."
-
-#: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr "%sпереопределить компилятор по умолчанию, например, ppc386 ppcx64 ppcppc и т. д. Значение по умолчанию хранится в environmentoptions.xml"
-
-#: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
-msgstr "%sпереопределить режим сборки проекта."
-
-#: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%sпереопределить целевое семейство процессоров проекта, например, i386 x86_64 powerpc powerpc_64 и т. д. Значение по умолчанию: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%sпереопределить операционную систему проекта, например, win32 linux. Значение по умолчанию: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sпереопределить библиотеку виджетов проекта, например, gtk gtk2 qt win32 carbon. Значение по умолчанию: %s"
+msgstr "Перекрыть язык. Например, --language=de. Возможные значения смотрите в каталоге languages."
 
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
@@ -13390,7 +13370,7 @@ msgstr "Запуск до курсора не удался"
 
 #: lazarusidestrconsts.lissamabstractmethodsnotyetoverridden
 msgid "Abstract methods - not yet overridden"
-msgstr "Абстрактные методы - ещё не замещены"
+msgstr "Абстрактные методы - ещё не перекрыты"
 
 #: lazarusidestrconsts.lissamabstractmethodsof
 msgid "Abstract methods of %s"
@@ -13414,11 +13394,11 @@ msgstr "Абстрактных методов не найдено"
 
 #: lazarusidestrconsts.lissamoverrideallselected
 msgid "Override all selected"
-msgstr "Заместить все выделенные"
+msgstr "Перекрыть все выделенные"
 
 #: lazarusidestrconsts.lissamoverridefirstselected
 msgid "Override first selected"
-msgstr "Заместить первый выделенный"
+msgstr "Перекрыть первый выделенный"
 
 #: lazarusidestrconsts.lissamselectnone
 msgid "Select none"
@@ -13426,15 +13406,15 @@ msgstr "Снять выделение"
 
 #: lazarusidestrconsts.lissamthereareabstractmethodstooverrideselectthemethodsf
 msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
-msgstr "Имеется %s абстрактных методов, подлежащих замещению.%sВыберите методы, для которых должны быть созданы заглушки:"
+msgstr "Имеется %s абстрактных методов, подлежащих перекрытию.%sВыберите методы, для которых должны быть созданы заглушки:"
 
 #: lazarusidestrconsts.lissamtherearenoabstractmethodslefttooverride
 msgid "There are no abstract methods left to override."
-msgstr "Абстрактные методы, подлежащие замещению, отсутствуют."
+msgstr "Абстрактные методы, подлежащие перекрытию, отсутствуют."
 
 #: lazarusidestrconsts.lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
 msgid "This method can not be overridden because it is defined in the current class"
-msgstr "Этот метод не может быть замещён, так как он определён в текущем классе"
+msgstr "Этот метод не может быть перекрыт, так как он определён в текущем классе"
 
 #: lazarusidestrconsts.lissamunabletoshowabstractmethodsofthecurrentclassbecaus
 msgid "Unable to show abstract methods of the current class, because"

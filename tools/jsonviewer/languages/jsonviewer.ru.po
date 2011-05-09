@@ -44,7 +44,7 @@ msgstr ""
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."
-msgstr "Член с именем \"%s\" уже имеется."
+msgstr "Элемент с именем \"%s\" уже имеется."
 
 #: msgjsonviewer.selement
 msgid "Element nr. %d"
@@ -68,11 +68,11 @@ msgstr "Буфер обмена не содержит корректных да�
 
 #: msgjsonviewer.snewmember
 msgid "New object member"
-msgstr "Новый член объекта"
+msgstr "Новый элемент объекта"
 
 #: msgjsonviewer.snewmembername
 msgid "Enter a name for the new member (type: %s)"
-msgstr "Введите имя нового члена (тип: %s)"
+msgstr "Введите имя нового элемента (тип: %s)"
 
 #: msgjsonviewer.snomorematches
 msgid "No nodes match the criterium"
@@ -84,7 +84,7 @@ msgstr "пустое"
 
 #: msgjsonviewer.sobject
 msgid "Object (%d members)"
-msgstr "Объект (%d членов)"
+msgstr "Объект (%d элементов)"
 
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
@@ -208,7 +208,7 @@ msgstr "&Вставить"
 
 #: TMAINFORM.APASTE.HINT
 msgid "Paste JSON data in clipboard as new member"
-msgstr "Вставить данные JSON в буфер обмена как новый член"
+msgstr "Вставить данные JSON в буфер обмена как новый элемент"
 
 #: TMAINFORM.APASTEASDOCUMENT.CAPTION
 msgid "Paste as new document"
@@ -285,7 +285,7 @@ msgstr "&Значения"
 
 #: TMAINFORM.MISORTMEMBERS.CAPTION
 msgid "Sort object members"
-msgstr "Сортировать члены объекта"
+msgstr "Сортировать элементы объекта"
 
 #: TMAINFORM.MISTRICT.CAPTION
 msgid "&Strict JSON"

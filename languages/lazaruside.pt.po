@@ -11358,26 +11358,6 @@ msgstr "ou"
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Sobrepor idioma. Por exemplo --language=de. Veja os valores possíveis no diretório \"languages\"."
 
-#: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr "%ssobrepor o compilador padrão. ex. ppc386 ppcx64 ppcppc etc. padrão é armazenado em \"environmentoptions.xml\""
-
-#: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
-msgstr "%ssobrepõe o modo de construção do projeto."
-
-#: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%ssobrepor a cpu do projeto. ex. i386 x86_64 powerpc powerpc_64 etc. padrão: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%ssobrepor o sistema operacional do projeto. ex. win32 linux. padrão: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%ssobregarrega o \"widgetset\" do projeto. ex. gtk gtk2 qt win32 carbon. padrão: %s"
-
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Sobrescrever arquivo?"

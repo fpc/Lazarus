@@ -11368,26 +11368,6 @@ msgstr "arba"
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Viršesnė kalba. Pavyzdžiui: --language=de. Galimas vertes galite sužinoti žvilgtelėję į kalbų aplanką."
 
-#: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr "%snaudoti kitą, nei numatyta, kompiliatorių. Pvz. ppc386 ppcx64 ppcppc ir pan. Numatytasis bus įrašytas failan „environmentoptions.xml“"
-
-#: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
-msgstr ""
-
-#: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%sprojektui naudoti kitą procesorių. Pvz. i386 x86_64 powerpc powerpc_64 ir pan. Numatytasis: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%sprojektui naudoti kitą operacinę sistemą. Pvz. linux win32. Numatytoji: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sprojekte naudoti kitą valdiklių tipą. Pvz.. gtk gtk2 qt win32 carbon. Numatytasis: %s"
-
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Perrašyti failą?"

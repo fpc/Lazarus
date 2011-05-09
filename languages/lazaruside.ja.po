@@ -11385,26 +11385,6 @@ msgstr "or"
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "言語をオーバーライド。例--language=de。可能な値はlanguagesディレクトリを参照のこと。"
 
-#: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr "%sデフォルトコンパイラをオーバーライド。例：ppc386 ppcx64 ppcppc など。デフォルトはenvironmentoptions.xmlに保管されています"
-
-#: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
-msgstr "%sプロジェクト構築モードをオーバーライド"
-
-#: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%sプロジェクトcpuをオーバーライド。例：i386 x86_64 powerpc powerpc_64 など。デフォルト: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%sプロジェクトOSをオーバーライド。例：win32 linux。デフォルト: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sプロジェクトウィジェットセットをオーバーライド。例： gtk gtk2 qt win32 carbon。デフォルト: %s"
-
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "ファイルを上書きしますか?"

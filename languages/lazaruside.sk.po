@@ -11384,26 +11384,6 @@ msgstr "alebo"
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Prepísať jazyk. Napríklad --language=de. Pre možné hodnoty pozrite súbory v adresári languages."
 
-#: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
-msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
-msgstr "%sprepíše predvolený prekladač. napr. ppc386 ppcx64 ppcppc atď. predvolené je uložené v environmentoptions.xml"
-
-#: lazarusidestrconsts.lisoverridetheprojectbuildmode
-msgid "%soverride the project build mode."
-msgstr ""
-
-#: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
-msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
-msgstr "%sprepisuje CPU projektu. napr. i386 x86_64 powerpc powerpc_64 atď. predvolené: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
-msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
-msgstr "%sprepisuje operačný systém projektu. napr. win32 linux. predvolené: %s"
-
-#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
-msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
-msgstr "%sprepisuje widgetset projektu. napr. gtk gtk2 qt win32 carbon. predvolené: %s"
-
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Prepísať súbor?"

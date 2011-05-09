@@ -17,9 +17,113 @@ msgstr "Добавить метод Assign"
 msgid "Add Assign method ..."
 msgstr "Добавить метод Assign ..."
 
+#: codystrconsts.crsbtncancel
+msgid "Cancel"
+msgstr "Отмена"
+
+#: codystrconsts.crsbtnok
+msgid "&OK"
+msgstr "&ОК"
+
 #: codystrconsts.crsbyfpccfg
 msgid "by fpc.cfg"
 msgstr "в fpc.cfg"
+
+#: codystrconsts.crscamaddassignmethodtoclass
+msgid "Add Assign method to class %s"
+msgstr "Добавление метода Assign в класс %s"
+
+#: codystrconsts.crscamcallinherited
+msgid "Call inherited"
+msgstr "Вызывать унаследованный"
+
+#: codystrconsts.crscamcallinheritedonlyifwrongclass
+msgid "Call inherited only if wrong class"
+msgstr "Вызывать унаследованный только для неподходящего класса"
+
+#: codystrconsts.crscamcursorisnotinapascalclassdeclaration
+msgid "cursor is not in a pascal class declaration"
+msgstr "курсор не находится на объявлении класса Паскаля"
+
+#: codystrconsts.crscamexistsalready
+msgid "exists already"
+msgstr "уже существует"
+
+#: codystrconsts.crscaminherited
+msgid "Inherited:"
+msgstr "Унаследованный:"
+
+#: codystrconsts.crscaminvalididentifier
+msgid "invalid identifier"
+msgstr "неверный идентификатор"
+
+#: codystrconsts.crscammethod
+msgid "Method:"
+msgstr "Метод:"
+
+#: codystrconsts.crscammethodname
+msgid "Method name:"
+msgstr "Имя метода:"
+
+#: codystrconsts.crscamnewmethod
+msgid "New method:"
+msgstr "Новый метод:"
+
+#: codystrconsts.crscamoverride
+msgid "Override"
+msgstr "Перекрыть"
+
+#: codystrconsts.crscamparametername
+msgid "Parameter name:"
+msgstr "Имя параметра:"
+
+#: codystrconsts.crscamparametertype
+msgid "Parameter type:"
+msgstr "Тип параметра:"
+
+#: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
+msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
+msgstr "Перед вызовом функции \"Добавить метод Assign\" следует расположить курсор редактора исходного кода на объявлении класса Паскаля."
+
+#: codystrconsts.crscamprivate
+msgid "private"
+msgstr "секция private"
+
+#: codystrconsts.crscamproperty
+msgid "%s property"
+msgstr "%s, свойство"
+
+#: codystrconsts.crscamprotected
+msgid "protected"
+msgstr "секция protected"
+
+#: codystrconsts.crscampublic
+msgid "public"
+msgstr "секция public"
+
+#: codystrconsts.crscampublished
+msgid "published"
+msgstr "секция published"
+
+#: codystrconsts.crscamselectmemberstoassign
+msgid "Select members to assign:"
+msgstr "Выбор элементов для присвоения:"
+
+#: codystrconsts.crscamthereisnoinheritedmethod
+msgid "There is no inherited method."
+msgstr "Унаследованный метод отсутствует."
+
+#: codystrconsts.crscamvar
+msgid "%s var"
+msgstr "%s, переменная"
+
+#: codystrconsts.crscamvisibility
+msgid "?visibility?"
+msgstr "?видимость?"
+
+#: codystrconsts.crscamwrittenbyproperty
+msgid "%s, written by property %s"
+msgstr "%s, записывается свойством %s"
 
 #: codystrconsts.crsclose
 msgid "&Close"

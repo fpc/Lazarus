@@ -18,9 +18,113 @@ msgstr ""
 msgid "Add Assign method ..."
 msgstr ""
 
+#: codystrconsts.crsbtncancel
+msgid "Cancel"
+msgstr ""
+
+#: codystrconsts.crsbtnok
+msgid "&OK"
+msgstr ""
+
 #: codystrconsts.crsbyfpccfg
 msgid "by fpc.cfg"
 msgstr "da fpc.cfg"
+
+#: codystrconsts.crscamaddassignmethodtoclass
+msgid "Add Assign method to class %s"
+msgstr ""
+
+#: codystrconsts.crscamcallinherited
+msgid "Call inherited"
+msgstr ""
+
+#: codystrconsts.crscamcallinheritedonlyifwrongclass
+msgid "Call inherited only if wrong class"
+msgstr ""
+
+#: codystrconsts.crscamcursorisnotinapascalclassdeclaration
+msgid "cursor is not in a pascal class declaration"
+msgstr ""
+
+#: codystrconsts.crscamexistsalready
+msgid "exists already"
+msgstr ""
+
+#: codystrconsts.crscaminherited
+msgid "Inherited:"
+msgstr ""
+
+#: codystrconsts.crscaminvalididentifier
+msgid "invalid identifier"
+msgstr ""
+
+#: codystrconsts.crscammethod
+msgid "Method:"
+msgstr ""
+
+#: codystrconsts.crscammethodname
+msgid "Method name:"
+msgstr ""
+
+#: codystrconsts.crscamnewmethod
+msgid "New method:"
+msgstr ""
+
+#: codystrconsts.crscamoverride
+msgid "Override"
+msgstr ""
+
+#: codystrconsts.crscamparametername
+msgid "Parameter name:"
+msgstr ""
+
+#: codystrconsts.crscamparametertype
+msgid "Parameter type:"
+msgstr ""
+
+#: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
+msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
+msgstr ""
+
+#: codystrconsts.crscamprivate
+msgid "private"
+msgstr ""
+
+#: codystrconsts.crscamproperty
+msgid "%s property"
+msgstr ""
+
+#: codystrconsts.crscamprotected
+msgid "protected"
+msgstr ""
+
+#: codystrconsts.crscampublic
+msgid "public"
+msgstr ""
+
+#: codystrconsts.crscampublished
+msgid "published"
+msgstr ""
+
+#: codystrconsts.crscamselectmemberstoassign
+msgid "Select members to assign:"
+msgstr ""
+
+#: codystrconsts.crscamthereisnoinheritedmethod
+msgid "There is no inherited method."
+msgstr ""
+
+#: codystrconsts.crscamvar
+msgid "%s var"
+msgstr ""
+
+#: codystrconsts.crscamvisibility
+msgid "?visibility?"
+msgstr ""
+
+#: codystrconsts.crscamwrittenbyproperty
+msgid "%s, written by property %s"
+msgstr ""
 
 #: codystrconsts.crsclose
 msgid "&Close"
