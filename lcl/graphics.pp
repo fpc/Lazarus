@@ -522,7 +522,7 @@ type
     procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetHeight(Avalue: Integer);
     procedure SetName(AValue: string); override;
-    procedure SetOrientation(AValue: Integer);
+    procedure SetOrientation(AValue: Integer);{$IFNDEF VER2_4}override;{$ENDIF}
     procedure SetPitch(Value: TFontPitch);
     procedure SetSize(AValue: integer); override;
     procedure SetStyle(Value: TFontStyles);
