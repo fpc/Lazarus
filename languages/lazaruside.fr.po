@@ -11376,6 +11376,26 @@ msgstr "ou"
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Outrepasser le langage. Par exemple --language=de. Pour les valeurs possibles voir dans le dossier languages."
 
+#: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
+msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgstr "%sredefinie le compilateur par défaut. par exemple, ppc386 ppcx64 ppcppc etc par défaut est stocké dans environmentoptions.xml"
+
+#: lazarusidestrconsts.lisoverridetheprojectbuildmode
+msgid "%soverride the project build mode."
+msgstr ""
+
+#: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
+msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+msgstr "%sredefinie la CPU du projet. Par exemple, i386 x86_64 powerpc powerpc_64 etc. défaut: %s"
+
+#: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
+msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+msgstr "%sredefinie l'OS du projet. Par exemple, win32 linux. défaut: %s"
+
+#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
+msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+msgstr "%sredefinie le widgetset du projet. Par exemple, gtk gtk2 qt win32 carbon. défaut: %s"
+
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Ecraser le fichier ?"

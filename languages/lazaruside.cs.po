@@ -11275,6 +11275,26 @@ msgstr "nebo"
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Vybrat jazyk. Na příklad --language=cz. Pro možné varianty se podívejte na soubory ve složce jazyků."
 
+#: lazarusidestrconsts.lisoverridethedefaultcompileregppc386ppcx64ppcppcetcd
+msgid "%soverride the default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in environmentoptions.xml"
+msgstr "%spřepíše výchozí překladač. např. ppc386 ppcx64 ppcppc aj. výchozí je uložen v environmentoptions.xml"
+
+#: lazarusidestrconsts.lisoverridetheprojectbuildmode
+msgid "%soverride the project build mode."
+msgstr "%spřepíše sestavovací mód projektu."
+
+#: lazarusidestrconsts.lisoverridetheprojectcpuegi386x86_64powerpcpowerpc_64
+msgid "%soverride the project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s"
+msgstr "%spřepíše cpu projektu. např. i386 x86_64 powerpc powerpc_64 aj. výchozí: %s"
+
+#: lazarusidestrconsts.lisoverridetheprojectoperatingsystemegwin32linuxdefau
+msgid "%soverride the project operating system. e.g. win32 linux. default: %s"
+msgstr "%přepíše operační systém projektu. např. win32 linux. výchozí: %s"
+
+#: lazarusidestrconsts.lisoverridetheprojectwidgetseteggtkgtk2qtwin32carbond
+msgid "%soverride the project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s"
+msgstr "%spřepíše sadu widgetů projektu. např. gtk gtk2 qt win32 carbon. výchozí: %s"
+
 #: lazarusidestrconsts.lisoverwritefile
 msgid "Overwrite file?"
 msgstr "Přepsat soubor?"
