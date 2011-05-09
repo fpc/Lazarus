@@ -41,14 +41,7 @@ type
     procedure FreeNodeData;
   end;
 
-procedure Register;
-
 implementation
-
-procedure Register;
-begin
-  RegisterComponents('LazControls',[TCodyTreeView]);
-end;
 
 { TCodyTreeView }
 

@@ -34,7 +34,7 @@ uses
   Graphics, Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree, ExtCtrls,
   ComCtrls,
   // IDEIntf
-  IDECommands, MenuIntf, ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
+  ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   PackageIntf,
   // codetools
   BasicCodeTools, FileProcs, CodyStrConsts, CodeToolManager, CodeCache,
@@ -148,8 +148,6 @@ procedure ShowPPUList(Sender: TObject);
 function ComparePPUListItems(Item1, Item2: Pointer): integer;
 function CompareUnitNameWithPPUListItem(TheUnitName, Item: Pointer): integer;
 
-procedure Register;
-
 implementation
 
 {$R *.lfm}
@@ -186,22 +184,6 @@ var
 begin
   un:=PChar(AnsiString(TheUnitName));
   Result:=CompareIdentifiers(un,PChar(li.TheUnitName));
-end;
-
-procedure Register;
-var
-  CmdCategory: TIDECommandCategory;
-  PPUListCommand: TIDECommand;
-begin
-  CmdCategory:=IDECommandList.FindCategoryByName('ProjectMenu');
-  if CmdCategory=nil then
-    raise Exception.Create('cody: PPUListDlg.Register: command category ProjectMenu not found');
-  PPUListCommand:=RegisterIDECommand(CmdCategory, 'ShowPPUList',
-    crsShowUsedPpuFiles,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowPPUList);
-  RegisterIDEMenuCommand(itmProjectWindowSection, 'PPUList', crsShowUsedPpuFiles
-    ,
-    nil,nil,PPUListCommand);
 end;
 
 { TPPUListItem }

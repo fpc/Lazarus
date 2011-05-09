@@ -34,7 +34,7 @@ uses
   // codetools
   CodeToolManager, CodeCache,
   // IDEIntf
-  LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf, IDEDialogs,
+  LazIDEIntf, SrcEditorIntf, IDEDialogs,
   // cody
   CodyStrConsts;
 
@@ -48,8 +48,6 @@ var
   CodyWindow: TCodyWindow;
 
 procedure RemoveWithBlockCmd(Sender: TObject);
-
-procedure Register;
 
 implementation
 
@@ -83,21 +81,6 @@ begin
       ErrorNotInWithVar;
     exit;
   end;
-end;
-
-procedure Register;
-var
-  CmdCategory: TIDECommandCategory;
-  RemoveWithBlockCommand: TIDECommand;
-begin
-  CmdCategory:=IDECommandList.FindCategoryByName('CodeTools');
-  if CmdCategory=nil then
-    raise Exception.Create('cody: CodyFrm.Register: command category CodeTools not found');
-  RemoveWithBlockCommand:=RegisterIDECommand(CmdCategory, 'RemoveWithBlock',
-    crsRemoveWithBlock,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@RemoveWithBlockCmd);
-  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'RemoveWithBlock',
-    crsRemoveWithBlock, nil, nil, RemoveWithBlockCommand);
 end;
 
 {$R *.lfm}

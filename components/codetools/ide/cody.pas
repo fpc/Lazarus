@@ -8,16 +8,13 @@ interface
 
 uses
   PPUListDlg, CodyStrConsts, AddAssignMethodDlg, CodyCtrls, CodyFrm, 
-  LazarusPackageIntf;
+  CodyRegistration, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('PPUListDlg', @PPUListDlg.Register); 
-  RegisterUnit('AddAssignMethodDlg', @AddAssignMethodDlg.Register); 
-  RegisterUnit('CodyCtrls', @CodyCtrls.Register); 
-  RegisterUnit('CodyFrm', @CodyFrm.Register); 
+  RegisterUnit('CodyRegistration', @CodyRegistration.Register); 
 end; 
 
 initialization

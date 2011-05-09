@@ -36,7 +36,7 @@ uses
   CodeCache, CodeToolManager, FileProcs, PascalParserTool,
   BasicCodeTools, CodeAtom, CodeTree, FindDeclarationTool,
   // IDEIntf
-  IDEDialogs, IDECommands, MenuIntf, LazIDEIntf, SrcEditorIntf,
+  IDEDialogs, LazIDEIntf, SrcEditorIntf,
   // Cody
   CodyCtrls, CodyStrConsts;
 
@@ -111,29 +111,12 @@ type
   end;
 
 
-procedure Register;
-
 procedure ShowAddAssignMethodDialog(Sender: TObject);
 
 function CompareAAMDItemsByName(Item1, Item2: Pointer): integer;
 function CompareAnsistringWithAAMDItemName(AnAnsistring, Item: Pointer): integer;
 
 implementation
-
-procedure Register;
-var
-  CmdCategory: TIDECommandCategory;
-  AddAssignMethodCommand: TIDECommand;
-begin
-  CmdCategory:=IDECommandList.FindCategoryByName('CodeTools');
-  if CmdCategory=nil then
-    raise Exception.Create('cody: AddAssignMethodDlg.Register: command category CodeTools not found');
-  AddAssignMethodCommand:=RegisterIDECommand(CmdCategory, 'AddAssignMethod',
-    crsAddAssignMethod,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowAddAssignMethodDialog);
-  RegisterIDEMenuCommand(SrcEditSubMenuSource, 'AddAssignMethod',
-    crsAddAssignMethod2,nil,nil,AddAssignMethodCommand);
-end;
 
 procedure ShowAddAssignMethodDialog(Sender: TObject);
 
