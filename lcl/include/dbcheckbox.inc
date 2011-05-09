@@ -67,28 +67,66 @@ begin
   DataChange(Self);
 end;
 
+//check if Word is equal to S or is one of the ; delimitted words in s
+//whitespace between Word and delimiter is ignored (Delphi behavior)
+function FindWord(const Word, S: String): Boolean;
+var
+  I, J, L: Integer;
+  C: Char;
+begin
+  I := Pos(Word, S);
+  Result := I > 0;
+  if Result then
+  begin
+    //forward
+    J := I + Length(Word);
+    L := Length(S);
+    while Result and (J < L) do
+    begin
+      C := S[J];
+      if C = ';' then
+        Break;
+      Result := C = ' ';
+      Inc(J);
+    end;
+    //backward
+    Dec(I);
+    while Result and (I > 0) do
+    begin
+      C := S[I];
+      if C = ';' then
+        Break;
+      Result := C = ' ';
+      Dec(I);
+    end;
+  end;
+end;
+
 function TDBCheckBox.GetFieldCheckState: TCheckBoxState;
 var
   FieldText: string;
+  DataLinkField: TField;
 begin
-  if FDatalink.Field=nil then begin
+  DataLinkField := FDataLink.Field;
+  if DatalinkField=nil then begin
     Result:=cbUnchecked;
     exit;
   end;
-  if FDataLink.Field.IsNull then
+  if DataLinkField.IsNull then
     Result:=cbGrayed
-  else if FDataLink.Field.DataType = ftBoolean then begin
-    if FDataLink.Field.AsBoolean then
+  else if DataLinkField.DataType = ftBoolean then begin
+    if DataLinkField.AsBoolean then
       Result:=cbChecked
     else
       Result:=cbUnchecked;
   end else begin
-    Result:=cbGrayed;
-    FieldText:=FDatalink.Field.AsString;
-    if AnsiSameText(FValueCheck,FieldText) then
+    FieldText:=UpperCase(DatalinkField.AsString);
+    if FindWord(FieldText,UpperCase(FValueCheck)) then
       Result:=cbChecked
-    else if AnsiSameText(FValueUncheck,FieldText) then
-      Result:=cbUnchecked;
+    else if FindWord(FieldText,UpperCase(FValueUncheck)) then
+      Result:=cbUnchecked
+    else
+      Result:=cbGrayed;
   end;
 end;
 
