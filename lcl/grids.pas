@@ -365,6 +365,7 @@ type
     FAlignment: ^TAlignment;
     FFont: TFont;
     FImageIndex: Integer;
+    FOldImageIndex: Integer;
     FImageLayout: TButtonLayout;
     FIsDefaultTitleFont: boolean;
     FLayout: ^TTextLayout;
@@ -3249,21 +3250,27 @@ begin
       end;
     end
     else begin
-      FSortOrder := soAscending;            // Ascending order to start with.
+      FSortOrder := soAscending;          // Ascending order to start with.
       // Remove glyph from previous column.
       ColOfs := FSortColumn - FFixedCols;
       if (ColOfs > -1) and (ColOfs < FColumns.Count ) then
-        FColumns[ColOfs].Title.ImageIndex := -1;
+        with FColumns[ColOfs].Title do
+          ImageIndex := FOldImageIndex;
     end;
     FSortColumn := index;
-    ColOfs := index - FFixedCols;           // For accessing FColumns[].
-    // Show the right sort glyph.
+    // Show the sort glyph only if clicked column has a TGridColumn defined.
+    ColOfs := index - FFixedCols;
     if (ColOfs > -1) and (ColOfs < FColumns.Count)
     and (FAscImgInd < TitleImageList.Count)
     and (FDescImgInd < TitleImageList.Count) then
-      case FSortOrder of
-        soAscending:  FColumns[ColOfs].Title.ImageIndex := FAscImgInd;
-        soDescending: FColumns[ColOfs].Title.ImageIndex := FDescImgInd;
+      with FColumns[ColOfs].Title do begin
+        // Save previous ImageIndex of the clicked column.
+        if (ImageIndex <> FAscImgInd) and (ImageIndex <> FDescImgInd) then
+          FOldImageIndex := ImageIndex;
+        case FSortOrder of                // Show the right sort glyph.
+          soAscending:  ImageIndex := FAscImgInd;
+          soDescending: ImageIndex := FDescImgInd;
+        end;
       end;
     Sort(True, index, FFixedRows, RowCount-1);
   end;
@@ -10064,6 +10071,7 @@ begin
   FillTitleDefaultFont;
   FFont.OnChange := @FontChanged;
   FImageIndex := -1;
+  FOldImageIndex := -1;
   FImageLayout := blGlyphRight;
 end;
 
