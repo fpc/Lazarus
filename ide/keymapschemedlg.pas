@@ -84,7 +84,6 @@ begin
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 
   with SchemeRadiogroup.Items do begin
-    BeginUpdate;
     Clear;
     // keep order of TKeyMapScheme
     Add(lisKMLazarusDefault);
@@ -92,7 +91,6 @@ begin
     Add(lisKMMacOSXApple);
     Add(lisKMMacOSXLaz);
     // do not add custom
-    EndUpdate;
   end;
 end;
 
