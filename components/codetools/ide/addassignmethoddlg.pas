@@ -139,8 +139,8 @@ procedure ShowAddAssignMethodDialog(Sender: TObject);
 
   procedure ErrorNotInClass;
   begin
-    IDEMessageDialog('Error','Please position the cursor of the source editor'
-      +' in a pascal class declaration before invoking "Add Assign method".',
+    IDEMessageDialog(crsCWError,
+      crsCAMPleasePositionTheCursorOfTheSourceEditorInAPascalC,
       mtError,[mbCancel]);
   end;
 
@@ -209,7 +209,6 @@ begin
   ImgIDVariable := Imagelist1.AddLazarusResource('ce_variable');
   ImgIDProperty := Imagelist1.AddLazarusResource('ce_property');
 
-  ButtonPanel1.OKButton.OnClick:=@OkButtonClick;
   ProcNameEdit.Text:=FProcName;
 end;
 
@@ -438,44 +437,46 @@ begin
 
     ButtonPanel1.OKButton.Enabled:=Result and (FMemberNodeExts<>nil)
       and (FMemberNodeExts.Count>0);
-    Caption:='Add Assign method to class '+FClassName;
+    ButtonPanel1.OKButton.Caption:=crsBTNOK;
+    ButtonPanel1.CancelButton.Caption:=crsBTNCancel;
+    Caption:=Format(crsCAMAddAssignMethodToClass, [FClassName]);
 
-    DeclGroupBox.Caption:='New method:';
-    ProcNameLabel.Caption:='Method name:';
+    DeclGroupBox.Caption:=crsCAMNewMethod;
+    ProcNameLabel.Caption:=crsCAMMethodName;
     if (NewProcName='') or (not IsValidIdent(NewProcName)) then
-      ProcNameErrorLabel.Caption:='invalid identifier'
+      ProcNameErrorLabel.Caption:=crsCAMInvalidIdentifier
     else if not Result then
-      ProcNameErrorLabel.Caption:='cursor is not in a pascal class declaration'
+      ProcNameErrorLabel.Caption:=crsCAMCursorIsNotInAPascalClassDeclaration
     else if FAssignDeclNode<>nil then
-      ProcNameErrorLabel.Caption:='exists already'
+      ProcNameErrorLabel.Caption:=crsCAMExistsAlready
     else
       ProcNameErrorLabel.Caption:='';
 
-    ParamNameLabel.Caption:='Parameter name:';
+    ParamNameLabel.Caption:=crsCAMParameterName;
     if UseInheritedParam then
       ParamNameEdit.Text:=FInheritedParamName;
     if (ParamNameEdit.Text='') or not IsValidIdent(ParamNameEdit.Text) then
-      ParamNameErrorLabel.Caption:='invalid identifier'
+      ParamNameErrorLabel.Caption:=crsCAMInvalidIdentifier
     else
       ParamNameErrorLabel.Caption:='';
 
-    ParamTypeLabel.Caption:='Parameter type:';
+    ParamTypeLabel.Caption:=crsCAMParameterType;
     if UseInheritedParam then
       ParamTypeEdit.Text:=FInheritedParamType;
     if (ParamTypeEdit.Text='') or not IsValidIdent(ParamTypeEdit.Text) then
-      ParamTypeErrorLabel.Caption:='invalid identifier'
+      ParamTypeErrorLabel.Caption:=crsCAMInvalidIdentifier
     else
       ParamTypeErrorLabel.Caption:='';
 
     // show some context information about the inherited method
-    InheritedGroupBox.Caption:='Inherited:';
-    InhOverrideCheckBox.Caption:='Override';
-    InhCallCheckBox.Caption:='Call inherited';
-    InhCallOnlyInElseCheckBox.Caption:='Call inherited only if wrong class';
+    InheritedGroupBox.Caption:=crsCAMInherited;
+    InhOverrideCheckBox.Caption:=crsCAMOverride;
+    InhCallCheckBox.Caption:=crsCAMCallInherited;
+    InhCallOnlyInElseCheckBox.Caption:=crsCAMCallInheritedOnlyIfWrongClass;
     InheritedEdit.ReadOnly:=true;
     if FInheritedDeclContext.Node<>nil then begin
       InheritedGroupBox.Enabled:=true;
-      InheritedLabel.Caption:='Method:';
+      InheritedLabel.Caption:=crsCAMMethod;
       InheritedEdit.Text:=FInheritedDeclContext.Tool.ExtractProcHead(
         FInheritedDeclContext.Node,
         [phpAddClassName,phpWithDefaultValues,phpWithParameterNames]);
@@ -486,12 +487,12 @@ begin
       InhCallOnlyInElseCheckBox.Checked:=FInheritedIsTPersistent;
     end else begin
       InheritedGroupBox.Enabled:=false;
-      InheritedLabel.Caption:='There is no inherited method.';
+      InheritedLabel.Caption:=crsCAMThereIsNoInheritedMethod;
       InheritedEdit.Text:='';
       InheritedEdit.Enabled:=false;
     end;
 
-    MembersGroupBox.Caption:='Select members to assign:';
+    MembersGroupBox.Caption:=crsCAMSelectMembersToAssign;
     MembersTreeView.BeginUpdate;
     MembersTreeView.Items.Clear;
     if FMemberNodeExts<>nil then begin
@@ -515,19 +516,19 @@ begin
         else
           Item.Selected:=true;
         case Item.Visibility of
-        ctnClassPrivate: s:='private';
-        ctnClassProtected: s:='protected';
-        ctnClassPublic: s:='public';
-        ctnClassPublished: s:='published';
-        else s:='?visibility?';
+        ctnClassPrivate: s:=crsCAMPrivate;
+        ctnClassProtected: s:=crsCAMProtected;
+        ctnClassPublic: s:=crsCAMPublic;
+        ctnClassPublished: s:=crsCAMPublished;
+        else s:=crsCAMVisibility;
         end;
         if Item.Desc=ctnVarDefinition then
-          s:=s+' var'
+          s:=Format(crsCAMVar, [s])
         else
-          s:=s+' property';
+          s:=Format(crsCAMProperty, [s]);
         s:=s+' '+Item.Name;
         if Item.WrittenByProperty<>'' then
-          s:=s+', written by property '+Item.WrittenByProperty;
+          s:=Format(crsCAMWrittenByProperty, [s, Item.WrittenByProperty]);
         FItems.Add(Item);
         TVNode:=MembersTreeView.Items.AddObject(nil,s,Item);
         TVNode.ImageIndex:=-1;

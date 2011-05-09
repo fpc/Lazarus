@@ -61,9 +61,40 @@ resourcestring
   crsAddAssignMethod = 'Add Assign method';
   crsAddAssignMethod2 = 'Add Assign method ...';
   crsRemoveWithBlock = 'Remove With block';
+
   crsCWError = 'Error';
   crsCWPleasePlaceTheCursorOfTheSourceEditorOnAWithVariab = 'Please place the '
     +'cursor of the source editor on a With variable.';
+
+  crsCAMPleasePositionTheCursorOfTheSourceEditorInAPascalC = 'Please position '
+    +'the cursor of the source editor in a pascal class declaration before '
+    +'invoking "Add Assign method".';
+  crsCAMAddAssignMethodToClass = 'Add Assign method to class %s';
+  crsCAMNewMethod = 'New method:';
+  crsCAMMethodName = 'Method name:';
+  crsCAMInvalidIdentifier = 'invalid identifier';
+  crsCAMCursorIsNotInAPascalClassDeclaration = 'cursor is not in a pascal '
+    +'class declaration';
+  crsCAMExistsAlready = 'exists already';
+  crsCAMParameterName = 'Parameter name:';
+  crsCAMParameterType = 'Parameter type:';
+  crsCAMInherited = 'Inherited:';
+  crsCAMOverride = 'Override';
+  crsCAMCallInherited = 'Call inherited';
+  crsCAMCallInheritedOnlyIfWrongClass = 'Call inherited only if wrong class';
+  crsCAMMethod = 'Method:';
+  crsCAMThereIsNoInheritedMethod = 'There is no inherited method.';
+  crsCAMSelectMembersToAssign = 'Select members to assign:';
+  crsCAMPrivate = 'private';
+  crsCAMProtected = 'protected';
+  crsCAMPublic = 'public';
+  crsCAMPublished = 'published';
+  crsCAMVisibility = '?visibility?';
+  crsCAMVar = '%s var';
+  crsCAMProperty = '%s property';
+  crsCAMWrittenByProperty = '%s, written by property %s';
+  crsBTNOK = '&OK';
+  crsBTNCancel = 'Cancel';
 
 implementation
 
