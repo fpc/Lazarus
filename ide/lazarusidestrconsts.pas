@@ -4771,6 +4771,16 @@ resourcestring
   lisDoNotCompileDependencies = 'do not compile dependencies';
   lisBuildIDEWithPackages = 'build IDE with packages';
   lisShowVersionAndExit = 'show version and exit';
+  lisOverrideTheProjectOperatingSystemEGWin32LinuxDefau = '%soverride the '
+    +'project operating system. e.g. win32 linux. default: %s';
+  lisOverrideTheProjectWidgetsetEGGtkGtk2QtWin32CarbonD = '%soverride the '
+    +'project widgetset. e.g. gtk gtk2 qt win32 carbon. default: %s';
+  lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64 = '%soverride the '
+    +'project cpu. e.g. i386 x86_64 powerpc powerpc_64 etc. default: %s';
+  lisOverrideTheDefaultCompilerEGPpc386Ppcx64PpcppcEtcD = '%soverride the '
+    +'default compiler. e.g. ppc386 ppcx64 ppcppc etc. default is stored in '
+    +'environmentoptions.xml';
+  lisOverrideTheProjectBuildMode = '%soverride the project build mode.';
   lisNo = 'No';
   lisProjectChangedOnDisk = 'Project changed on disk';
   lisTheProjectInformationFileHasChangedOnDisk = 'The project information '
