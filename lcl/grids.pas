@@ -405,7 +405,7 @@ type
     property Caption: TCaption read GetCaption write SetCaption stored IsCaptionStored;
     property Color: TColor read GetColor write SetColor stored IsColorStored;
     property Font: TFont read GetFont write SetFont stored IsFontStored;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex default 0;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property ImageLayout: TButtonLayout read FImageLayout write SetImageLayout default blGlyphRight;
     property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
   end;
@@ -633,8 +633,11 @@ type
     FFlat: Boolean;
     FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
     FSortOrder: TSortOrder;
+    FSortColumn: Integer;
     FTitleImageList: TImageList;
     FTitleStyle: TTitleStyle;
+    FAscImgInd: Integer;
+    FDescImgInd: Integer;
     FOnCompareCells: TOnCompareCells;
     FGridLineStyle: TPenStyle;
     FGridLineWidth: Integer;
@@ -686,6 +689,7 @@ type
     FStrictSort: boolean;
     FIgnoreClick: boolean;
     FAllowOutboundEvents: boolean;
+    FColumnClickSorts: boolean;
     FHeaderHotZones: TGridZoneSet;
     FHeaderPushZones: TGridZoneSet;
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
@@ -705,6 +709,7 @@ type
     procedure SetAlternateColor(const AValue: TColor);
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetBorderColor(const AValue: TColor);
+    procedure SetColumnClickSorts(const AValue: boolean);
     procedure SetColumns(const AValue: TGridColumns);
     procedure SetEditorOptions(const AValue: Integer);
     procedure SetEditorBorderStyle(const AValue: TBorderStyle);
@@ -994,6 +999,7 @@ type
     property BorderColor: TColor read FBorderColor write SetBorderColor default cl3DDKShadow;
     property Col: Integer read FCol write SetCol;
     property ColCount: Integer read GetColCount write SetColCount default 5;
+    property ColumnClickSorts: boolean read FColumnClickSorts write SetColumnClickSorts default false;
     property Columns: TGridColumns read GetColumns write SetColumns stored IsColumnsStored;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
     property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth default DEFCOLWIDTH;
@@ -1256,7 +1262,6 @@ type
     property VisibleColCount;
     property VisibleRowCount;
 
-
     property OnBeforeSelection;
     property OnClick;
     property OnColRowDeleted: TgridOperationEvent read FOnColRowDeleted write FOnColRowDeleted;
@@ -1316,6 +1321,7 @@ type
     property BorderStyle;
     property Color;
     property ColCount;
+    property ColumnClickSorts;
     property Columns;
     //property Constraints;
     property DefaultColWidth;
@@ -1514,6 +1520,7 @@ type
     property BorderStyle;
     property Color;
     property ColCount;
+    property ColumnClickSorts;
     property Columns;
     property Constraints;
     property DefaultColWidth;
@@ -3223,7 +3230,43 @@ begin
 end;
 
 procedure TCustomGrid.HeaderClick(IsColumn: Boolean; index: Integer);
+var
+  ColOfs: Integer;
 begin
+  if IsColumn and FColumnClickSorts then begin
+    // Prepare glyph images if not done already.
+    if FTitleImageList = nil then
+      FTitleImageList := TImageList.Create(Self);
+    if FAscImgInd = -1 then begin
+      FAscImgInd := TitleImageList.AddLazarusResource('sortasc');
+      FDescImgInd := TitleImageList.AddLazarusResource('sortdesc');
+    end;
+    // Determine the sort order.
+    if index = FSortColumn then begin
+      case FSortOrder of        // Same column clicked again -> invert the order.
+        soAscending:  FSortOrder:=soDescending;
+        soDescending: FSortOrder:=soAscending;
+      end;
+    end
+    else begin
+      FSortOrder := soAscending;            // Ascending order to start with.
+      // Remove glyph from previous column.
+      ColOfs := FSortColumn - FFixedCols;
+      if (ColOfs > -1) and (ColOfs < FColumns.Count ) then
+        FColumns[ColOfs].Title.ImageIndex := -1;
+    end;
+    FSortColumn := index;
+    ColOfs := index - FFixedCols;           // For accessing FColumns[].
+    // Show the right sort glyph.
+    if (ColOfs > -1) and (ColOfs < FColumns.Count)
+    and (FAscImgInd < TitleImageList.Count)
+    and (FDescImgInd < TitleImageList.Count) then
+      case FSortOrder of
+        soAscending:  FColumns[ColOfs].Title.ImageIndex := FAscImgInd;
+        soDescending: FColumns[ColOfs].Title.ImageIndex := FDescImgInd;
+      end;
+    Sort(True, index, FFixedRows, RowCount-1);
+  end;
 end;
 
 procedure TCustomGrid.HeaderSized(IsColumn: Boolean; index: Integer);
@@ -4733,6 +4776,12 @@ begin
   FBorderColor:=AValue;
   if BorderStyle<>bsNone then
     Invalidate;
+end;
+
+procedure TCustomGrid.SetColumnClickSorts(const AValue: boolean);
+begin
+  if FColumnClickSorts=AValue then exit;
+  FColumnClickSorts:=AValue;
 end;
 
 procedure TCustomGrid.SetColumns(const AValue: TGridColumns);
@@ -8115,6 +8164,9 @@ begin
   ResetHotCell;
   ResetPushedCell;
   FSortOrder := soAscending;
+  FSortColumn:=-1;
+  FAscImgInd:=-1;
+  FDescImgInd:=-1;
 
   // Default bitmaps for cbsCheckedColumn
   FUnCheckedBitmap := LoadResBitmapImage('dbgriduncheckedcb');
@@ -10011,6 +10063,7 @@ begin
   FFont := TFont.Create;
   FillTitleDefaultFont;
   FFont.OnChange := @FontChanged;
+  FImageIndex := -1;
   FImageLayout := blGlyphRight;
 end;
 
@@ -11197,5 +11250,8 @@ begin
   inherited WSRegisterClass;
   Done := True;
 end;
+
+initialization
+  {$I lcl_grid_images.lrs}
 
 end.
