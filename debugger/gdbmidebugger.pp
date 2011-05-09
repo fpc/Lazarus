@@ -345,7 +345,6 @@ type
     // All ExecuteCommand functions are wrappers for the real (full) implementation
     // ExecuteCommandFull is never called directly
     function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
@@ -5462,14 +5461,6 @@ var
   R: TGDBMIExecResult;
 begin
   Result := ExecuteCommandFull(ACommand, [], AFlags, nil, 0, R);
-end;
-
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt): Boolean;
-var
-  R: TGDBMIExecResult;
-begin
-  Result := ExecuteCommandFull(ACommand, [], AFlags, ACallback, ATag, R);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
