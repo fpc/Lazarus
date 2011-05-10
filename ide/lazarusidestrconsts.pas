@@ -143,6 +143,15 @@ resourcestring
   lisProjectMacroUnitPath = 'macro ProjectUnitPath';
   lisConfigDirectory = 'Lazarus config directory';
 
+  lisPkgMacroPackageDirectoryParameterIsPackageID = 'Package directory. '
+    +'Parameter is package ID';
+  lisPkgMacroPackageSourceSearchPathParameterIsPackageID = 'Package source '
+    +'search path. Parameter is package ID';
+  lisPkgMacroPackageUnitSearchPathParameterIsPackageID = 'Package unit search '
+    +'path. Parameter is package ID';
+  lisPkgMacroPackageIncludeFilesSearchPathParameterIsPackageID = 'Package '
+    +'include files search path. Parameter is package ID';
+
   // main bar menu
   lisMenuFile = '&File';
   lisMenuEdit = '&Edit';

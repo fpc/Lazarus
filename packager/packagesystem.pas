@@ -654,16 +654,16 @@ begin
   FItems:=TFPList.Create;
   FLazarusBasePackages:=TFPList.Create;
   if GlobalMacroList<>nil then begin
-    GlobalMacroList.Add(TTransferMacro.Create('PKGDIR','',
-      'package directory. parameter is package id.',@MacroFunctionPkgDir,[]));
-    GlobalMacroList.Add(TTransferMacro.Create('PKGSRCPATH','',
-      'package source search path. parameter is package id.',
+    GlobalMacroList.Add(TTransferMacro.Create('PkgDir','',
+      lisPkgMacroPackageDirectoryParameterIsPackageID, @MacroFunctionPkgDir, []));
+    GlobalMacroList.Add(TTransferMacro.Create('PkgSrcPath','',
+      lisPkgMacroPackageSourceSearchPathParameterIsPackageID,
       @MacroFunctionPkgSrcPath,[]));
-    GlobalMacroList.Add(TTransferMacro.Create('PKGUNITATH','',
-      'package unit search path. parameter is package id.',
+    GlobalMacroList.Add(TTransferMacro.Create('PkgUnitPath','',
+      lisPkgMacroPackageUnitSearchPathParameterIsPackageID,
       @MacroFunctionPkgUnitPath,[]));
-    GlobalMacroList.Add(TTransferMacro.Create('PKGINCPATH','',
-      'package include files search path. parameter is package id.',
+    GlobalMacroList.Add(TTransferMacro.Create('PkgIncPath','',
+      lisPkgMacroPackageIncludeFilesSearchPathParameterIsPackageID,
       @MacroFunctionPkgIncPath,[]));
   end;
 end;

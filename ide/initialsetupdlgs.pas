@@ -833,9 +833,9 @@ begin
   Handled:=true;
   if CompareText(MacroName,'ENV')=0 then
     s:=GetEnvironmentVariableUTF8(MacroName)
-  else if CompareText(MacroName,'PrimaryConfiPath')=0 then
+  else if CompareText(MacroName,'PrimaryConfigPath')=0 then
     s:=GetPrimaryConfigPath
-  else if CompareText(MacroName,'SecondaryConfiPath')=0 then
+  else if CompareText(MacroName,'SecondaryConfigPath')=0 then
     s:=GetSecondaryConfigPath
   else if CompareText(MacroName,'FPCVer')=0 then begin
     if FPCVer<>'' then

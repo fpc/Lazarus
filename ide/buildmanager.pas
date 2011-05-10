@@ -326,7 +326,7 @@ begin
                       lisPathOfTheMakeUtility, @MacroFuncMake, []));
   GlobalMacroList.Add(TTransferMacro.Create('IDEBuildOptions','',
                       lisIDEBuildOptions, @MacroFuncIDEBuildOptions, []));
-  GlobalMacroList.Add(TTransferMacro.Create('PrimaryConfiPath','',
+  GlobalMacroList.Add(TTransferMacro.Create('PrimaryConfigPath','',
                       lisPrimaryConfigPath, @MacroFuncPrimaryConfigPath, []));
   GlobalMacroList.Add(TTransferMacro.Create('SecondaryConfigPath','',
                     lisSecondaryConfigPath, @MacroFuncSecondaryConfigPath, []));
