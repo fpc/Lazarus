@@ -449,7 +449,7 @@ begin
     s:=AProject.Title
   else
     s:=ExtractFileNameOnly(AProject.ProjectInfoFile);
-  Caption:=Format(crsPPUFilesOfProject, [dbgstr(s)]);
+  Caption:=Format(crsPPUFilesOfProject, [s]);
 
   // ScopeLabel
   MainUnit:=AProject.MainFile;
