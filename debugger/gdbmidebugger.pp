@@ -394,10 +394,12 @@ type
     property  DebuggerFlags: TGDBMIDebuggerFlags read FDebuggerFlags;
     procedure DoRelease; override;   // Destroy self (or schedule)
 
+    procedure DoNotifyAsync(Line: String);
     procedure AddThreadGroup(const S: String);
     procedure RemoveThreadGroup(const S: String);
     function ParseLibraryLoaded(const S: String): String;
     function ParseLibraryUnLoaded(const S: String): String;
+    function ParseThread(const S, EventText: String): String;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
@@ -3812,25 +3814,6 @@ var
     DebugLn('[Debugger] Status output: ', Line);
   end;
 
-  procedure DoNotifyAsync(var Line: String);
-  var
-    S: String;
-  begin
-    S := GetPart(['='], [','], Line, False, False);
-    case StringCase(S, [
-      'shlibs-added',
-      'library-loaded',
-      'library-unloaded',
-      'shlibs-updated'], False, False) of
-      0: DoDbgEvent(ecModule, etModuleLoad, Line);
-      1: DoDbgEvent(ecModule, etModuleLoad, FTheDebugger.ParseLibraryLoaded(Line));
-      2: DoDbgEvent(ecModule, etModuleUnload, FTheDebugger.ParseLibraryUnloaded(Line));
-      3: DoDbgEvent(ecModule, etDefault, Line);
-    else
-      DebugLn('[Debugger] Notify output: ', Line);
-    end;
-  end;
-
   procedure DoResultRecord(Line: String);
   var
     ResultClass: String;
@@ -3919,7 +3902,7 @@ begin
         '&': DoLogStream(S);
         '*': if DoExecAsync(S) then Continue;
         '+': DoStatusAsync(S);
-        '=': DoNotifyAsync(S);
+        '=': FTheDebugger.DoNotifyAsync(S);
       else
         // since target output isn't prefixed (yet?)
         // one of our known commands could be part of it.
@@ -5453,6 +5436,48 @@ begin
   ThreadGroup := List.Values['thread-group'];
   Result := Format('Module Unload: "%s". Thread Group: %s (%s)', [ParseModuleName(List.Values['id']), ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
   List.Free;
+end;
+
+function TGDBMIDebugger.ParseThread(const S, EventText: String): String;
+var
+  List: TGDBMINameValueList;
+  ThreadGroup: String;
+begin
+  if EventText = 'thread-created' then
+    Result := 'Thread Start: '
+  else
+    Result := 'Thread Exit: ';
+  List := TGDBMINameValueList.Create(S);
+  ThreadGroup := List.Values['group-id'];
+  Result := Result + Format('Thread ID: %s. Thread Group: %s (%s)', [List.Values['id'], ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
+  List.Free;
+end;
+
+procedure TGDBMIDebugger.DoNotifyAsync(Line: String);
+var
+  EventText: String;
+begin
+  EventText := GetPart(['='], [','], Line, False, False);
+  case StringCase(EventText, [
+    'shlibs-added',
+    'library-loaded',
+    'library-unloaded',
+    'shlibs-updated',
+    'thread-group-started',
+    'thread-group-exited',
+    'thread-created',
+    'thread-exited'], False, False) of
+    0: DoDbgEvent(ecModule, etModuleLoad, Line);
+    1: DoDbgEvent(ecModule, etModuleLoad, ParseLibraryLoaded(Line));
+    2: DoDbgEvent(ecModule, etModuleUnload, ParseLibraryUnloaded(Line));
+    3: DoDbgEvent(ecModule, etDefault, Line);
+    4: AddThreadGroup(Line);
+    5: RemoveThreadGroup(Line);
+    6: DoDbgEvent(ecThread, etThreadStart, ParseThread(Line, EventText));
+    7: DoDbgEvent(ecThread, etThreadExit, ParseThread(Line, EventText));
+  else
+    DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
+  end;
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -9042,29 +9067,6 @@ var
     DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
   end;
 
-  procedure DoNotifyAsync(Line: String);
-  var
-    EventText: String;
-  begin
-    EventText := GetPart(['='], [','], Line, False, False);
-    case StringCase(EventText, [
-      'library-loaded', 'library-unloaded',
-      'thread-group-started',
-      'thread-group-exited',
-      'thread-created',
-      'thread-exited'], False, False)
-    of
-      0: DoDbgEvent(ecModule, etModuleLoad, FTheDebugger.ParseLibraryLoaded(Line));
-      1: DoDbgEvent(ecModule, etModuleUnload, FTheDebugger.ParseLibraryUnloaded(Line));
-      2: FTheDebugger.AddThreadGroup(Line);
-      3: FTheDebugger.RemoveThreadGroup(Line);
-      4: DoDbgEvent(ecThread, etThreadStart, Line);
-      5: DoDbgEvent(ecThread, etThreadExit, Line);
-    else
-      DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
-    end;
-  end;
-
 var
   S: String;
 begin
@@ -9087,7 +9089,7 @@ begin
       '&': DoLogStream(S);
       '*': DoExecAsync(S);
       '+': DoStatusAsync(S);
-      '=': DoNotifyAsync(S);
+      '=': FTheDebugger.DoNotifyAsync(S);
     else
       DebugLn('[WARNING] Debugger: Unknown record: ', S);
     end;
