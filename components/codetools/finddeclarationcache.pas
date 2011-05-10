@@ -270,7 +270,7 @@ type
   TCodeTreeNodeStackEntry = TCodeTreeNode;
 
   TCodeTreeNodeStack = record
-    Fixedtems: array[0..9] of TCodeTreeNodeStackEntry;
+    FixedItems: array[0..9] of TCodeTreeNodeStackEntry;
     DynItems: TFPList; // list of TCodeTreeNodeStackEntry
     StackPtr: integer;
   end;
@@ -1188,19 +1188,19 @@ end;
 function GetNodeStackEntry(NodeStack: PCodeTreeNodeStack;
   Index: integer): TCodeTreeNodeStackEntry;
 begin
-  if Index<=High(NodeStack^.Fixedtems) then begin
-    Result:=NodeStack^.Fixedtems[Index];
+  if Index<=High(NodeStack^.FixedItems) then begin
+    Result:=NodeStack^.FixedItems[Index];
   end else begin
     Result:=TCodeTreeNodeStackEntry(
-                       NodeStack^.DynItems[Index-High(NodeStack^.Fixedtems)-1]);
+                       NodeStack^.DynItems[Index-High(NodeStack^.FixedItems)-1]);
   end;
 end;
 
 procedure AddNodeToStack(NodeStack: PCodeTreeNodeStack;
   NewNode: TCodeTreeNode);
 begin
-  if (NodeStack^.StackPtr<=High(NodeStack^.Fixedtems)) then begin
-    NodeStack^.Fixedtems[NodeStack^.StackPtr]:=NewNode;
+  if (NodeStack^.StackPtr<=High(NodeStack^.FixedItems)) then begin
+    NodeStack^.FixedItems[NodeStack^.StackPtr]:=NewNode;
   end else begin
     if NodeStack^.DynItems=nil then begin
       NodeStack^.DynItems:=TFPList.Create;
@@ -1217,10 +1217,10 @@ begin
   Result:=true;
   i:=0;
   while i<NodeStack^.StackPtr do begin
-    if i<=High(NodeStack^.Fixedtems) then begin
-      if NodeStack^.Fixedtems[i]=Node then exit;
+    if i<=High(NodeStack^.FixedItems) then begin
+      if NodeStack^.FixedItems[i]=Node then exit;
     end else begin
-      if NodeStack^.DynItems[i-High(NodeStack^.Fixedtems)-1]=Pointer(Node) then
+      if NodeStack^.DynItems[i-High(NodeStack^.FixedItems)-1]=Pointer(Node) then
         exit;
     end;
     inc(i);
