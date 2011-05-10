@@ -9592,7 +9592,9 @@ msgid "Value"
 msgstr "Vertė"
 
 #: lazarusidestrconsts.lislogmessage
-msgid "Log message"
+#, fuzzy
+#| msgid "Log message"
+msgid "Log Message"
 msgstr "Registruoti pranešimą"
 
 #: lazarusidestrconsts.lislogo
@@ -12113,6 +12115,22 @@ msgstr "Modulis"
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "Virtualus modulis"
+
+#: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
+msgid "Package directory. Parameter is package ID"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
+msgid "Package include files search path. Parameter is package ID"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
+msgid "Package source search path. Parameter is package ID"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
+msgid "Package unit search path. Parameter is package ID"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 msgid "%sAdding new Dependency for package %s: package %s%s"

@@ -9598,7 +9598,7 @@ msgid "Value"
 msgstr "值"
 
 #: lazarusidestrconsts.lislogmessage
-msgid "Log message"
+msgid "Log Message"
 msgstr ""
 
 #: lazarusidestrconsts.lislogo
@@ -12131,6 +12131,22 @@ msgstr "单元"
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "虚单元"
+
+#: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
+msgid "Package directory. Parameter is package ID"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
+msgid "Package include files search path. Parameter is package ID"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
+msgid "Package source search path. Parameter is package ID"
+msgstr ""
+
+#: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
+msgid "Package unit search path. Parameter is package ID"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 msgid "%sAdding new Dependency for package %s: package %s%s"

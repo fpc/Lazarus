@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-10 01:55+0300\n"
+"PO-Revision-Date: 2011-05-11 03:09+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4074,7 +4074,7 @@ msgstr "Дублирующийся компилятор"
 #: lazarusidestrconsts.lisccochecktestdir
 #| msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
-msgstr "Проверьте каталог для сборки пробных проектов в %sСервис -> Параметры -> Файлы -> Каталог для сборки пробных проектов"
+msgstr "Проверьте каталог для сборки пробных проектов в меню %sСервис -> Параметры -> Файлы -> Каталог для сборки пробных проектов"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
@@ -4127,7 +4127,7 @@ msgstr "Неверный путь поиска"
 
 #: lazarusidestrconsts.lisccoinvalidtestdir
 msgid "Invalid Test Directory"
-msgstr "Неверный тестовый каталог"
+msgstr "Неверный каталог для сборки пробных проектов"
 
 #: lazarusidestrconsts.lisccomissingunit
 msgid "Missing unit"
@@ -6455,7 +6455,7 @@ msgstr "Обрабатывается программой"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmid
 msgid "ID"
-msgstr "ID"
+msgstr "Идентификатор"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmignoretheseexceptions
 msgid "Ignore these exceptions"
@@ -7240,7 +7240,7 @@ msgstr "Каталог Lazarus \"%s\" не найден."
 
 #: lazarusidestrconsts.lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
-msgstr "Каталог проб \"%s\" не найден."
+msgstr "Каталог для сборки пробных проектов \"%s\" не найден."
 
 #: lazarusidestrconsts.liseonoteonlyabsolutepathsaresupportednow
 msgid "NOTE: only absolute paths are supported now"
@@ -9174,7 +9174,7 @@ msgstr "Включаемый файл Lazarus"
 
 #: lazarusidestrconsts.lislazaruslanguageid
 msgid "Lazarus language ID (e.g. en, de, br, fi)"
-msgstr "ID языка Lazarus (пример: en, de, br, fi)"
+msgstr "Идентификатор языка Lazarus (пример: en, de, br, fi)"
 
 #: lazarusidestrconsts.lislazaruslanguagename
 msgid "Lazarus language name (e.g. english, deutsch)"
@@ -9591,7 +9591,8 @@ msgid "Value"
 msgstr "Значение"
 
 #: lazarusidestrconsts.lislogmessage
-msgid "Log message"
+#| msgid "Log message"
+msgid "Log Message"
 msgstr "Сообщение в журнал"
 
 #: lazarusidestrconsts.lislogo
@@ -9676,7 +9677,7 @@ msgstr "Параметры преобразований"
 
 #: lazarusidestrconsts.lismakeresstrcustomidentifier
 msgid "Custom identifier"
-msgstr "Пользовательский ID"
+msgstr "Пользовательский идентификатор"
 
 #: lazarusidestrconsts.lismakeresstrdialogidentifier
 msgctxt "lazarusidestrconsts.lismakeresstrdialogidentifier"
@@ -12099,6 +12100,26 @@ msgstr "Модуль"
 msgid "Virtual Unit"
 msgstr "Виртуальный модуль"
 
+#: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
+#| msgid "Package directory. Parameter is package ID."
+msgid "Package directory. Parameter is package ID"
+msgstr "Каталог пакета. Параметром является идентификатор пакета"
+
+#: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
+#| msgid "Package include files search path. Parameter is package ID."
+msgid "Package include files search path. Parameter is package ID"
+msgstr "Путь поиска включаемых файлов пакета. Параметром является идентификатор пакета"
+
+#: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
+#| msgid "Package source search path. Parameter is package ID."
+msgid "Package source search path. Parameter is package ID"
+msgstr "Путь поиска файлов исходного кода пакета. Параметром является идентификатор пакета"
+
+#: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
+#| msgid "Package unit search path. Parameter is package ID."
+msgid "Package unit search path. Parameter is package ID"
+msgstr "Путь поиска модулей пакета. Параметром является идентификатор пакета"
+
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 msgid "%sAdding new Dependency for package %s: package %s%s"
 msgstr "%sДобавление новой зависимости пакета %s: пакет %s%s"
@@ -13942,7 +13963,7 @@ msgstr "Порядок перехода для %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
-msgstr "Семейство процессоров:"
+msgstr "Семейство процессоров"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 #| msgid "Target file name: (empty = use unit output directory)"
@@ -13986,7 +14007,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
-msgstr "Каталог проб"
+msgstr "Каталог для сборки пробных проектов"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -14478,7 +14499,7 @@ msgstr "Перейти"
 
 #: lazarusidestrconsts.listhreadsid
 msgid "Id"
-msgstr "ID"
+msgstr "Идентификатор"
 
 #: lazarusidestrconsts.listhreadsline
 msgctxt "lazarusidestrconsts.listhreadsline"
@@ -14522,27 +14543,27 @@ msgstr "Название (оставьте пустым для значения 
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
-msgstr "Функция: добавить разделитель путей"
+msgstr "Функция: добавление разделителя пути"
 
 #: lazarusidestrconsts.listmfunctionchomppathdelimiter
 msgid "Function: chomp path delimiter"
-msgstr "Функция: убрать разделитель путей"
+msgstr "Функция: удаление разделителя пути"
 
 #: lazarusidestrconsts.listmfunctionextractfileextension
 msgid "Function: extract file extension"
-msgstr "Функция: извлечь расширение файла"
+msgstr "Функция: извлечение расширения файла"
 
 #: lazarusidestrconsts.listmfunctionextractfilenameextension
 msgid "Function: extract file name+extension"
-msgstr "Функция: извлечь имя файла с расширением"
+msgstr "Функция: извлечение имени файла с расширением"
 
 #: lazarusidestrconsts.listmfunctionextractfilenameonly
 msgid "Function: extract file name only"
-msgstr "Функция: извлечь только имя файла"
+msgstr "Функция: извлечение только имени файла"
 
 #: lazarusidestrconsts.listmfunctionextractfilepath
 msgid "Function: extract file path"
-msgstr "Функция: извлечь путь файла"
+msgstr "Функция: извлечение пути к файлу"
 
 #: lazarusidestrconsts.listmunknownmacro
 msgid "(unknown macro: %s)"
@@ -14628,7 +14649,7 @@ msgstr "Заменить %s%s%s%s на %s%s%s в этом месте?"
 
 #: lazarusidestrconsts.lisuesearching
 msgid "Searching: %s"
-msgstr "Ищу: %s"
+msgstr "Поиск: %s"
 
 #: lazarusidestrconsts.lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
