@@ -86,9 +86,9 @@ implementation
 
 type
 
-  { TChangeParamTransactionInsert }
+  { TChgPrmInsertNew }
 
-  TChangeParamTransactionInsert = class
+  TChgPrmInsertNew = class
   public
     Src: string; // if Src='' then use Modifier+Name+Typ+Value
     Modifier: string;
@@ -100,9 +100,9 @@ type
                        aCopyFrom: integer);
   end;
 
-  { TChangeParamTransactionPos }
+  { TChgPrmModify }
 
-  TChangeParamTransactionPos = class
+  TChgPrmModify = class
   public
     Node: TCodeTreeNode; // old param node
     // example: (var buf; {header} a,b:c; d:word=3 {footer}; ...)
@@ -121,7 +121,7 @@ type
     Delete: boolean;
     ChangeDefaultValue: boolean;
     NewDefaultValue: string;
-    InsertBehind: TObjectList;// list of TChangeParamTransactionInsert
+    InsertBehind: TObjectList;// list of TChgPrmInsertNew
     constructor Create;
     destructor Destroy; override;
     function GetFirstPos: integer;
@@ -133,20 +133,20 @@ type
   TChangeParamListTransactions = class
   public
     Node: TCodeTreeNode; // ctnParameterList
-    OldNodes: array of TChangeParamTransactionPos; // one for each old param node
-    InsertFirst: TObjectList;// list of TChangeParamTransactionInsert
+    OldNodes: array of TChgPrmModify; // one for each old param node
+    InsertFirst: TObjectList;// list of TChgPrmInsertNew
     BehindNamePos: integer;
     BracketOpenPos: integer;
     BracketClosePos: integer;
     constructor Create(ParamList: TCodeTreeNode);
     destructor Destroy; override;
     function MaxPos: integer;
-    procedure Insert(Index: integer; Insertion: TChangeParamTransactionInsert);
+    procedure Insert(Index: integer; Insertion: TChgPrmInsertNew);
   end;
 
 { TChangeParamTransactionInsert }
 
-constructor TChangeParamTransactionInsert.Create(aSrc, aModifier, aName, aType,
+constructor TChgPrmInsertNew.Create(aSrc, aModifier, aName, aType,
   aValue: string; aCopyFrom: integer);
 begin
   Src:=aSrc;
@@ -157,18 +157,18 @@ begin
   CopyFromParamIndex:=aCopyFrom;
 end;
 
-constructor TChangeParamTransactionPos.Create;
+constructor TChgPrmModify.Create;
 begin
   InsertBehind:=TObjectList.create(true);
 end;
 
-destructor TChangeParamTransactionPos.Destroy;
+destructor TChgPrmModify.Destroy;
 begin
   InsertBehind.Free;
   inherited Destroy;
 end;
 
-function TChangeParamTransactionPos.GetFirstPos: integer;
+function TChgPrmModify.GetFirstPos: integer;
 begin
   if HeaderCommentPos>0 then
     Result:=HeaderCommentPos
@@ -178,7 +178,7 @@ begin
     Result:=Name.StartPos;
 end;
 
-function TChangeParamTransactionPos.GetLastPos(WithSeparator: boolean): integer;
+function TChgPrmModify.GetLastPos(WithSeparator: boolean): integer;
 begin
   Result:=0;
   if WithSeparator then begin
@@ -206,7 +206,7 @@ begin
 end;
 
 procedure TChangeParamListTransactions.Insert(Index: integer;
-  Insertion: TChangeParamTransactionInsert);
+  Insertion: TChgPrmInsertNew);
 begin
   if Index=0 then
     InsertFirst.Add(Insertion)
@@ -226,7 +226,7 @@ begin
     ParamNode:=Node.FirstChild;
     i:=0;
     while ParamNode<>nil do begin
-      OldNodes[i]:=TChangeParamTransactionPos.Create;
+      OldNodes[i]:=TChgPrmModify.Create;
       OldNodes[i].Node:=ParamNode;
       ParamNode:=ParamNode.NextBrother;
     end;
@@ -284,7 +284,7 @@ procedure TChangeDeclarationTool.CDTParseParamList(ParentNode: TCodeTreeNode;
 var
   t: TChangeParamListTransactions;
   ParamIndex: Integer;
-  CurParam: TChangeParamTransactionPos;
+  CurParam: TChgPrmModify;
   FirstInGroup: integer;
   i: LongInt;
   CloseBracket: Char;
@@ -445,11 +445,12 @@ var
   InsertPos: Integer;
   ReplaceStartPos: Integer;
   ReplaceEndPos: Integer;
+  LastParam: TObject; // the last param of the new list: TChgPrmModify or TChgPrmInsertNew
 
   function WholeParamListWillBeDeleted: boolean;
   var
     i: Integer;
-    CurParam: TChangeParamTransactionPos;
+    CurParam: TChgPrmModify;
   begin
     Result:=false;
     if t.InsertFirst.Count>0 then exit;
@@ -461,11 +462,34 @@ var
     Result:=true;
   end;
 
-  procedure InsertParam(Insertion: TChangeParamTransactionInsert;
-    FrontParam: TChangeParamTransactionPos);
+  function GetLastParam: TObject;
+  var
+    i: Integer;
+    CurParam: TChgPrmModify;
+  begin
+    for i:=t.MaxPos-1 downto 0 do begin
+      CurParam:=t.OldNodes[i];
+      if CurParam.InsertBehind.Count>0 then begin
+        Result:=CurParam.InsertBehind[CurParam.InsertBehind.Count-1];
+        exit;
+      end;
+      if not CurParam.Delete then begin
+        Result:=CurParam;
+        exit;
+      end;
+    end;
+    if t.InsertFirst.Count>0 then begin
+      Result:=t.InsertFirst[t.InsertFirst.Count-1];
+      exit;
+    end;
+    Result:=nil;
+  end;
+
+  procedure InsertParam(Insertion: TChgPrmInsertNew;
+    FrontParam: TChgPrmModify);
   { Insert a new or moved parameter }
   var
-    SrcParam: TChangeParamTransactionPos;
+    SrcParam: TChgPrmModify;
   begin
     if ReplaceStartPos=0 then begin
       ReplaceStartPos:=InsertPos;
@@ -479,10 +503,36 @@ var
     else if Insertion.CopyFromParamIndex>=0 then begin
       // copy source including comments
       SrcParam:=t.OldNodes[Insertion.CopyFromParamIndex];
+      { Examples:
+        var a: char; //about a
+        var a,b,c: word = 3; //comment
+      }
+
+      if SrcParam.FirstInGroup>=0 then begin
+        { example: var a: char; // comment about a
+          => copy with all comments }
+        if (LastParam=SrcParam) and (SrcParam.CommentAfterSeparator.StartPos>0)
+        then begin
+          // copy without separator
+          InsertCode:=InsertCode+ExtractCode(SrcParam.GetFirstPos,SrcParam.GetLastPos(false),[]);
+          InsertCode:=InsertCode+ExtractCode(SrcParam.CommentAfterSeparator.StartPos,
+             SrcParam.CommentAfterSeparator.EndPos,[]);
+        end else begin
+          // copy completely
+          InsertCode:=InsertCode+ExtractCode(SrcParam.GetFirstPos,SrcParam.GetLastPos(true),[]);
+        end;
+      end else begin
+        { example: var (*1*)a,b,c:word = 3; // comment
+          => copy var (*1*) a:word = 3;
+               or var b:word = 3;
+               or var c:word = 3; }
+
+
+      end;
       // ToDo: remove separator
       // ToDo: a,//
       // ToDo: a;//
-      InsertCode:=ExtractCode(SrcParam.GetFirstPos,SrcParam.GetLastPos(true),[]);
+      InsertCode:=InsertCode+ExtractCode(SrcParam.GetFirstPos,SrcParam.GetLastPos(true),[]);
     end else begin
       if Insertion.Modifier<>'' then
         InsertCode:=InsertCode+Insertion.Modifier+' ';
@@ -494,7 +544,7 @@ var
     end;
   end;
 
-  procedure ChangeParam(aParam: TChangeParamTransactionPos);
+  procedure ChangeParam(aParam: TChgPrmModify);
   var
     i: Integer;
     Code: String;
@@ -538,7 +588,7 @@ var
       end;
     end;
     for i:=0 to aParam.InsertBehind.Count-1 do
-      InsertParam(TChangeParamTransactionInsert(aParam.InsertBehind[i]),aParam);
+      InsertParam(TChgPrmInsertNew(aParam.InsertBehind[i]),aParam);
   end;
 
 var
@@ -556,6 +606,8 @@ begin
     end;
     exit(true);
   end;
+
+  LastParam:=GetLastParam;
 
   InsertCode:='';
   InsertPos:=0;
@@ -576,7 +628,7 @@ begin
   end;
 
   for i:=0 to t.InsertFirst.Count-1 do
-    InsertParam(TChangeParamTransactionInsert(t.InsertFirst[i]),nil);
+    InsertParam(TChgPrmInsertNew(t.InsertFirst[i]),nil);
   for i:=0 to t.MaxPos-1 do
     ChangeParam(t.OldNodes[i]);
 
@@ -603,9 +655,9 @@ var
   FoundDefaultValue: boolean;
   Transactions: TChangeParamListTransactions;
 
-  procedure CheckInsert(Insertion: TChangeParamTransactionInsert);
+  procedure CheckInsert(Insertion: TChgPrmInsertNew);
   var
-    SrcParam: TChangeParamTransactionPos;
+    SrcParam: TChgPrmModify;
     HasDefaultValue: Boolean;
   begin
     // check that '...' (MacPas vararg) is last
@@ -631,7 +683,7 @@ var
       raise EInvalidOperation.Create('TChangeDeclarationTool.ChangeParamListDeclaration: after a parameter with default value all parameters must have default values');
   end;
 
-  procedure CheckParam(aParam: TChangeParamTransactionPos);
+  procedure CheckParam(aParam: TChgPrmModify);
   var
     i: Integer;
     HasDefaultValue: Boolean;
@@ -654,14 +706,14 @@ var
       end;
     end;
     for i:=0 to aParam.InsertBehind.Count-1 do
-      CheckInsert(TChangeParamTransactionInsert(aParam.InsertBehind[i]));
+      CheckInsert(TChgPrmInsertNew(aParam.InsertBehind[i]));
   end;
 
 var
   ParamListNode: TCodeTreeNode;
   i: Integer;
   Change: TChangeParamListItem;
-  Transaction: TChangeParamTransactionPos;
+  Transaction: TChgPrmModify;
 begin
   Result:=false;
 
@@ -685,7 +737,7 @@ begin
       case Change.Action of
       cplaInsertNewParam:
         Transactions.Insert(Change.Index,
-          TChangeParamTransactionInsert.Create('',Change.ParamModifier,
+          TChgPrmInsertNew.Create('',Change.ParamModifier,
                      Change.ParamName,Change.ParamType,Change.DefaultValue,-1));
 
       cplaDeleteParam:
@@ -706,7 +758,7 @@ begin
               raise EInvalidOperation.Create('TChangeDeclarationTool.ChangeParamListDeclaration: index '+dbgs(Change.OldIndex)+' already deleted');
             Transaction.Delete:=true;
             Transactions.Insert(Change.Index,
-              TChangeParamTransactionInsert.Create('','','','','',Change.OldIndex));
+              TChgPrmInsertNew.Create('','','','','',Change.OldIndex));
           end;
         end;
 
@@ -730,7 +782,7 @@ begin
     FoundVarArgs:=false;
     FoundDefaultValue:=false;
     for i:=0 to Transactions.InsertFirst.Count-1 do
-      CheckInsert(TChangeParamTransactionInsert(Transactions.InsertFirst[i]));
+      CheckInsert(TChgPrmInsertNew(Transactions.InsertFirst[i]));
     for i:=0 to Transactions.MaxPos-1 do
       CheckParam(Transactions.OldNodes[i]);
 
