@@ -97,7 +97,7 @@ type
     FURL: string;
     FWithSubDirectories: boolean;
     function GetChildCount: integer;
-    function GetChilds(Index: integer): TExternHelpItem;
+    function GetChildren(Index: integer): TExternHelpItem;
     procedure SetFilename(const AValue: string);
     procedure SetName(const AValue: string);
     procedure SetStoreIn(const AValue: string);
@@ -124,7 +124,7 @@ type
     property URL: string read FURL write SetURL;
     property StoreIn: string read FStoreIn write SetStoreIn;
     property ChildCount: integer read GetChildCount;
-    property Children[Index: integer]: TExternHelpItem read GetChilds;
+    property Children[Index: integer]: TExternHelpItem read GetChildren;
     property ChangeStep: integer read FChangeStep;
   end;
 
@@ -1206,7 +1206,7 @@ begin
   Result:=fChilds.Count;
 end;
 
-function TExternHelpItem.GetChilds(Index: integer): TExternHelpItem;
+function TExternHelpItem.GetChildren(Index: integer): TExternHelpItem;
 begin
   Result:=TExternHelpItem(fChilds[Index]);
 end;

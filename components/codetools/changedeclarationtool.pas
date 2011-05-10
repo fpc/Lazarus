@@ -463,6 +463,7 @@ var
 
   procedure InsertParam(Insertion: TChangeParamTransactionInsert;
     FrontParam: TChangeParamTransactionPos);
+  { Insert a new or moved parameter }
   var
     SrcParam: TChangeParamTransactionPos;
   begin
