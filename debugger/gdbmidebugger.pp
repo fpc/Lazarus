@@ -3867,14 +3867,26 @@ var
 
   procedure DoLogStream(const Line: String);
   const
-    LogWarning = '&"Warning:\n"';
+    LogWarning = 'warning:';
+  var
+    Warning: String;
   begin
     DebugLn('[Debugger] Log output: ', Line);
-    if copy(Line, 1, length(LogWarning)) = LogWarning then
+    Warning := Line;
+    if Copy(Warning, 1, 2) = '&"' then
+      Delete(Warning, 1, 2);
+    if Copy(Warning, Length(Warning) - 2, 3) = '\n"' then
+      Delete(Warning, Length(Warning) - 2, 3);
+    if LowerCase(Copy(Warning, 1, Length(LogWarning))) = LogWarning then
+    begin
       InLogWarning := True;
+      Delete(Warning, 1, Length(LogWarning));
+      Warning := Trim(Warning);
+      DoDbgEvent(ecOutput, etOutputDebugString, Warning);
+    end;
     if InLogWarning then
-      FLogWarnings := FLogWarnings + copy(Line, 3, length(Line)-5) + LineEnding;
-    if copy(Line, 1, length(LogWarning)) = '&"\n"' then
+      FLogWarnings := FLogWarnings + Warning + LineEnding;
+    if Copy(Line, 1, 5) = '&"\n"' then
       InLogWarning := False;
   end;
 
