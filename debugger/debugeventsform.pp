@@ -158,7 +158,10 @@ begin
   //removed from FEvents because of log limit.
   // Also, TopItem and GetItemAt(0,0) both return nil in gtk2.
   if tvFilteredEvents.Items.Count <> 0 then
-    tvFilteredEvents.Items[tvFilteredEvents.Items.Count -1].MakeVisible;
+  begin
+    tvFilteredEvents.Items[tvFilteredEvents.Items.Count - 1].MakeVisible;
+    tvFilteredEvents.Selected := tvFilteredEvents.Items[tvFilteredEvents.Items.Count - 1];
+  end;
 end;
 
 procedure TDbgEventsForm.SetEvents(const AEvents: TStrings);
@@ -236,6 +239,7 @@ begin
     Item.SelectedIndex := Rec.Category;
     Item.Data := Rec.Ptr;
     Item.MakeVisible;
+    tvFilteredEvents.Selected := Item;
   end;
 end;
 
