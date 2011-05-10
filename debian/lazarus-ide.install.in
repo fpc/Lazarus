@@ -5,6 +5,4 @@
 /usr/lib/lazarus/${VERSION}/languages
 /usr/lib/lazarus/${VERSION}/startlazarus
 /usr/share/applications
-/usr/share/man/man1/lazarus-ide-${VERSION}.1
-/usr/share/man/man1/startlazarus-${VERSION}.1
 /usr/share/pixmaps

@@ -27,6 +27,7 @@ FPCTARGET=$(CPU_TARGET)-linux
 DEB_VERSION:=$(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
 DEB_UPSTREAM_VERSION:=$(shell echo $(DEB_VERSION) | cut -f 1 -d -)
 DEB_UPSTREAM_MAIN_VERSION:=$(shell echo ${DEB_UPSTREAM_VERSION} | sed -e 's/^\([0-9\.]*\).*/\1/')
+DEB_BUILD=$(lastword $(subst -, ,${DEB_VERSION}))
 ifndef PACKAGESUFFIX
 export PACKAGESUFFIX=-${DEB_UPSTREAM_MAIN_VERSION}
 endif
@@ -167,9 +168,6 @@ install-arch-stamp:
 	${MKDIR} $(INSTALL_DIR)/usr/share/applications
 	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(INSTALL_DIR)/usr/share/pixmaps/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.xpm
 	sed -e 's/Lazarus.*/& (${DEB_UPSTREAM_MAIN_VERSION})/' -e 's/Exec=startlazarus/&-${DEB_UPSTREAM_MAIN_VERSION}/' $(CURDIR)/install/lazarus.desktop > $(INSTALL_DIR)/usr/share/applications/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.desktop
-	# Install man pages
-	$(MAKE) -C install/man installman $(INSTALLOPTS) INSTALL_PREFIX=$(INSTALL_DIR)/usr/share
-	for s in 1 2 3 4 5 6 7 8 9 ; do test -d ${INSTALL_DIR}/usr/share/man/man$${s} && for f in ${INSTALL_DIR}/usr/share/man/man$${s}/*.? ; do n=`basename $${f}` ; ${MV} $${f} `dirname $${f}`/$${n%%.*}-${DEB_UPSTREAM_MAIN_VERSION}."$${n#*.}" ; done ; done || true
 	# Install configuration files
 	${MKDIR} $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}
 	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/environmentoptions.xml -o $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}/environmentoptions.xml
@@ -188,10 +186,20 @@ install-arch-stamp:
 	    sed -e "s/$${PACKAGE}/&${PACKAGESUFFIX}/g" $${PACKAGE} > ../$${PACKAGE}${PACKAGESUFFIX}/usr/share/lintian/overrides/$${PACKAGE}${PACKAGESUFFIX} ; \
 	  fi ; \
 	done
+ifeq (${DEB_BUILD},0)
+	# We are building upstream debs, install override files for build = 0
+	set -x -e ; cd debian ; for PACKAGE in `sed -n -e 's/Package: \(.*\)/\1/p' control` ; do \
+	  if [ -d $${PACKAGE} ] ; \
+	  then \
+	    ${MKDIR} $${PACKAGE}/usr/share/lintian/overrides ; \
+	    echo "$${PACKAGE}: debian-revision-should-not-be-zero" >> $${PACKAGE}/usr/share/lintian/overrides/$${PACKAGE} ; \
+	  fi ; \
+	done
+endif
 	find ${INSTALL_DIR} -empty -delete
 	touch install-arch-stamp
 
-arrange-arch: install-arch arrange-arch-stamp
+arrange-arch: install-arch arrange-arch-stamp install-man
 arrange-arch-stamp:
 	dh_testdir
 	dh_testroot
@@ -201,6 +209,15 @@ arrange-arch-stamp:
 build-indep: patch
 install-indep:
 	touch install-indep-stamp
+
+install-man: install-man-stamp
+install-man-stamp:
+	# Install man pages
+	$(MAKE) -C install/man installman $(INSTALLOPTS)
+	for s in ${INSTALL_DIR}/usr/man/man[1-9] ; do cd $${s} && for f in *.[1-9] ; do ${MV} $${f} $${f%%.*}-${DEB_UPSTREAM_MAIN_VERSION}."$${f#*.}" ; done ; done || true
+	dh_installman -s
+	${RM} ${INSTALL_DIR}/usr/man
+	touch install-man-stamp
 
 ###################
 # Documentation
@@ -285,6 +302,16 @@ binary-indep: clean-patched build-doc install-doc install-source debian-files
 	    sed -e "s/$${PACKAGE}/&${PACKAGESUFFIX}/g" $${PACKAGE} > ../$${PACKAGE}${PACKAGESUFFIX}/usr/share/lintian/overrides/$${PACKAGE}${PACKAGESUFFIX} ; \
 	  fi ; \
 	done
+ifeq (${DEB_BUILD},0)
+	# We are building upstream debs, install override files for build = 0
+	set -x -e ; cd debian ; for PACKAGE in `sed -n -e 's/Package: \(.*\)/\1/p' control` ; do \
+	  if [ -d $${PACKAGE} ] ; \
+	  then \
+	    ${MKDIR} $${PACKAGE}/usr/share/lintian/overrides ; \
+	    echo "$${PACKAGE}: debian-revision-should-not-be-zero" >> $${PACKAGE}/usr/share/lintian/overrides/$${PACKAGE} ; \
+	  fi ; \
+	done
+endif
 	dh_compress -i -X.pdf
 	dh_fixperms -i
 	dh_installdebconf -i
@@ -303,7 +330,6 @@ binary-arch: arrange-arch
 	dh_installexamples -a
 	dh_installmenu
 	fpc-depends
-	dh_installman -s
 	dh_strip -s
 	dh_compress -a
 	dh_fixperms -a

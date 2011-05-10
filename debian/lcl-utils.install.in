@@ -1,8 +1,3 @@
 /etc/lazarus-${VERSION}
 /usr/lib/lazarus/${VERSION}/lazbuild
 /usr/lib/lazarus/${VERSION}/tools
-/usr/share/man/man1/lazbuild-${VERSION}.1
-/usr/share/man/man1/lazres-${VERSION}.1
-/usr/share/man/man1/lrstolfm-${VERSION}.1
-/usr/share/man/man1/svn2revisioninc-${VERSION}.1
-/usr/share/man/man1/updatepofiles-${VERSION}.1
