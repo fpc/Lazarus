@@ -38,7 +38,7 @@ unit Debugger;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, math,
+  TypInfo, Classes, SysUtils, Laz_XMLCfg, math,
   LCLProc, IDEProcs, DebugUtils, maps;
 
 type
@@ -280,14 +280,21 @@ type
     );
   TIDEBreakPointActions = set of TIDEBreakPointAction;
 
+  TDBGBreakPointKind = (
+    bpkSource,  // source breakpoint
+    bpkAddress  // address breakpoint
+  );
+
   { TBaseBreakPoint }
 
   TBaseBreakPoint = class(TDelayedUdateItem)
   private
+    FAddress: TDBGPtr;
     FEnabled: Boolean;
     FExpression: String;
     FHitCount: Integer;
     FBreakHitCount: Integer;
+    FKind: TDBGBreakPointKind;
     FLine: Integer;
     FSource: String;
     FValid: TValidState;
@@ -300,21 +307,26 @@ type
     procedure DoEnableChange; virtual;
     procedure DoHit(const ACount: Integer; var AContinue: Boolean); virtual;
     procedure SetHitCount(const AValue: Integer);
+    procedure DoKindChange; virtual;
     procedure SetValid(const AValue: TValidState);
   protected
     // virtual properties
+    function GetAddress: TDBGPtr; virtual;
     function GetBreakHitCount: Integer; virtual;
     function GetEnabled: Boolean; virtual;
     function GetExpression: String; virtual;
     function GetHitCount: Integer; virtual;
+    function GetKind: TDBGBreakPointKind; virtual;
     function GetLine: Integer; virtual;
     function GetSource: String; virtual;
     function GetValid: TValidState; virtual;
 
+    procedure SetAddress(const AValue: TDBGPtr); virtual;
     procedure SetBreakHitCount(const AValue: Integer); virtual;
     procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetExpression(const AValue: String); virtual;
     procedure SetInitialEnabled(const AValue: Boolean); virtual;
+    procedure SetKind(const AValue: TDBGBreakPointKind); virtual;
   public
     constructor Create(ACollection: TCollection); override;
     procedure SetLocation(const ASource: String; const ALine: Integer); virtual;// PublicProtectedFix ide/debugmanager.pas(867,32) Error: identifier idents no member "SetLocation"
@@ -323,8 +335,10 @@ type
     property Expression: String read GetExpression write SetExpression;
     property HitCount: Integer read GetHitCount;
     property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
+    property Kind: TDBGBreakPointKind read GetKind write SetKind;
     // TDBGBreakPoint: Line is the line-number as stored in the debug info
     // TIDEBreakPoint: Line is the location in the Source (potentially modified Source)
+    property Address: TDBGPtr read GetAddress write SetAddress;
     property Line: Integer read GetLine;
     property Source: String read GetSource;
     property Valid: TValidState read GetValid;
@@ -385,6 +399,7 @@ type
                       const OnGetGroup: TOnGetGroupByName); virtual;
     procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string;
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
+    procedure SetAddress(const AValue: TDBGPtr); override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
     procedure ResetMaster;
   public
@@ -432,14 +447,19 @@ type
     property OnRemove: TIDEBreakPointsEvent read FOnRemove write FonRemove;
   end;
 
+  { TBaseBreakPoints }
+
   TBaseBreakPoints = class(TCollection)
   private
   protected
   public
     constructor Create(const ABreakPointClass: TBaseBreakPointClass);
-    function Add(const ASource: String; const ALine: Integer): TBaseBreakPoint;
+    function Add(const ASource: String; const ALine: Integer): TBaseBreakPoint; overload;
+    function Add(const AAddress: TDBGPtr): TBaseBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer): TBaseBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TBaseBreakPoint): TBaseBreakPoint; overload;
+    function Find(const AAddress: TDBGPtr): TBaseBreakPoint; overload;
+    function Find(const AAddress: TDBGPtr; const AIgnore: TBaseBreakPoint): TBaseBreakPoint; overload;
     // no items property needed, it is "overridden" anyhow
   end;
 
@@ -459,9 +479,12 @@ type
   public
     constructor Create(const ABreakPointClass: TIDEBreakPointClass);
     destructor Destroy; override;
-    function Add(const ASource: String; const ALine: Integer): TIDEBreakPoint;
+    function Add(const ASource: String; const ALine: Integer): TIDEBreakPoint; overload;
+    function Add(const AAddress: TDBGPtr): TIDEBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer): TIDEBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TIDEBreakPoint): TIDEBreakPoint; overload;
+    function Find(const AAddress: TDBGPtr): TIDEBreakPoint; overload;
+    function Find(const AAddress: TDBGPtr; const AIgnore: TIDEBreakPoint): TIDEBreakPoint; overload;
     procedure AddNotification(const ANotification: TIDEBreakPointsNotification);
     procedure RemoveNotification(const ANotification: TIDEBreakPointsNotification);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -475,6 +498,8 @@ type
                                                          write SetItem; default;
   end;
 
+  { TDBGBreakPoints }
+
   TDBGBreakPoints = class(TBaseBreakPoints)
   private
     FDebugger: TDebugger;  // reference to our debugger
@@ -484,14 +509,16 @@ type
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  Debugger: TDebugger read FDebugger;
   public
-    function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint;
     constructor Create(const ADebugger: TDebugger;
                        const ABreakPointClass: TDBGBreakPointClass);
+    function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint; overload;
+    function Add(const AAddress: TDBGPtr): TDBGBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer): TDBGBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
+    function Find(const AAddress: TDBGPtr): TDBGBreakPoint; overload;
+    function Find(const AAddress: TDBGPtr; const AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
 
-    property Items[const AnIndex: Integer]: TDBGBreakPoint read GetItem
-                                                              write SetItem; default;
+    property Items[const AnIndex: Integer]: TDBGBreakPoint read GetItem write SetItem; default;
   end;
 
 
@@ -3319,6 +3346,34 @@ end;
   TBaseBreakPoint
   =========================================================================== }
 
+function TBaseBreakPoint.GetAddress: TDBGPtr;
+begin
+  Result := FAddress;
+end;
+
+function TBaseBreakPoint.GetKind: TDBGBreakPointKind;
+begin
+  Result := FKind;
+end;
+
+procedure TBaseBreakPoint.SetKind(const AValue: TDBGBreakPointKind);
+begin
+  if FKind <> AValue
+  then begin
+    FKind := AValue;
+    DoKindChange;
+  end;
+end;
+
+procedure TBaseBreakPoint.SetAddress(const AValue: TDBGPtr);
+begin
+  if FAddress <> AValue then
+  begin
+    FAddress := AValue;
+    Changed;
+  end;
+end;
+
 procedure TBaseBreakPoint.AssignLocationTo(Dest: TPersistent);
 var
   DestBreakPoint: TBaseBreakPoint absolute Dest;
@@ -3333,6 +3388,8 @@ begin
   // updatelock is set in source.assignto
   if Dest is TBaseBreakPoint
   then begin
+    DestBreakPoint.SetKind(FKind);
+    DestBreakPoint.SetAddress(FAddress);
     AssignLocationTo(DestBreakPoint);
     DestBreakPoint.SetBreakHitCount(FBreakHitCount);
     DestBreakPoint.SetExpression(FExpression);
@@ -3344,6 +3401,7 @@ end;
 
 constructor TBaseBreakPoint.Create(ACollection: TCollection);
 begin
+  FAddress := 0;
   FSource := '';
   FLine := -1;
   FValid := vsUnknown;
@@ -3352,6 +3410,7 @@ begin
   FBreakHitCount := 0;
   FExpression := '';
   FInitialEnabled := False;
+  FKind := bpkSource;
   inherited Create(ACollection);
 end;
 
@@ -3444,6 +3503,11 @@ begin
     FHitCount := AValue;
     Changed;
   end;
+end;
+
+procedure TBaseBreakPoint.DoKindChange;
+begin
+  Changed;
 end;
 
 procedure TBaseBreakPoint.SetInitialEnabled(const AValue: Boolean);
@@ -3725,6 +3789,8 @@ var
 begin
   FLoading:=true;
   try
+    Kind:=TDBGBreakPointKind(GetEnumValueDef(TypeInfo(TDBGBreakPointKind),XMLConfig.GetValue(Path+'Kind/Value',''),0));
+    Address:=XMLConfig.GetValue(Path+'Address/Value',0);
     GroupName:=XMLConfig.GetValue(Path+'Group/Name','');
     Group:=OnGetGroup(GroupName);
     Expression:=XMLConfig.GetValue(Path+'Expression/Value','');
@@ -3742,8 +3808,7 @@ begin
       if XMLConfig.GetValue(
           Path+'Actions/'+DBGBreakPointActionNames[CurAction],
           CurAction in [bpaStop])
-      then
-        Include(NewActions,CurAction);
+      then Include(NewActions,CurAction);
     Actions:=NewActions;
     LoadGroupList(FDisableGroupList,Path+'DisableGroups/');
     LoadGroupList(FEnableGroupList,Path+'EnableGroups/');
@@ -3791,6 +3856,8 @@ var
   Filename: String;
   CurAction: TIDEBreakPointAction;
 begin
+  AConfig.SetDeleteValue(APath+'Kind/Value',GetEnumName(TypeInfo(TDBGBreakPointKind), Ord(Kind)), '');
+  AConfig.SetDeleteValue(APath+'Address/Value',Address,0);
   if Group <> nil
   then AConfig.SetDeleteValue(APath+'Group/Name',Group.Name,'');
 
@@ -3814,6 +3881,12 @@ begin
   end;
   SaveGroupList(FDisableGroupList, APath + 'DisableGroups/');
   SaveGroupList(FEnableGroupList, APath + 'EnableGroups/');
+end;
+
+procedure TIDEBreakPoint.SetAddress(const AValue: TDBGPtr);
+begin
+  inherited SetAddress(AValue);
+  if FMaster<>nil then FMaster.SetAddress(Address);
 end;
 
 procedure TIDEBreakPoint.SetLocation(const ASource: String; const ALine: Integer);
@@ -3968,6 +4041,12 @@ begin
   NotifyAdd(Result);
 end;
 
+function TIDEBreakPoints.Add(const AAddress: TDBGPtr): TIDEBreakPoint;
+begin
+  Result := TIDEBreakPoint(inherited Add(AAddress));
+  NotifyAdd(Result);
+end;
+
 procedure TIDEBreakPoints.AddNotification(
   const ANotification: TIDEBreakPointsNotification);
 begin
@@ -4004,6 +4083,16 @@ function TIDEBreakPoints.Find(const ASource: String;
   const ALine: Integer; const AIgnore: TIDEBreakPoint): TIDEBreakPoint;
 begin
   Result := TIDEBreakPoint(inherited Find(ASource, ALine, AIgnore));
+end;
+
+function TIDEBreakPoints.Find(const AAddress: TDBGPtr): TIDEBreakPoint;
+begin
+  Result := TIDEBreakPoint(inherited Find(AAddress));
+end;
+
+function TIDEBreakPoints.Find(const AAddress: TDBGPtr; const AIgnore: TIDEBreakPoint): TIDEBreakPoint;
+begin
+  Result := TIDEBreakPoint(inherited Find(AAddress, AIgnore));
 end;
 
 procedure TIDEBreakPoints.SetMaster(const AValue: TDBGBreakPoints);
@@ -4090,12 +4179,22 @@ begin
     LoadBreakPoint.LoadFromXMLConfig(XMLConfig,
       Path+'Item'+IntToStr(i+1)+'/',OnLoadFilename,OnGetGroup);
 
-    BreakPoint := Find(LoadBreakPoint.Source, LoadBreakPoint.Line, LoadBreakPoint);
+    case LoadBreakPoint.Kind of
+      bpkSource:
+        begin
+          BreakPoint := Find(LoadBreakPoint.Source, LoadBreakPoint.Line, LoadBreakPoint);
+          if BreakPoint = nil then
+            BreakPoint := Add(LoadBreakPoint.Source, LoadBreakPoint.Line);
+        end;
+      bpkAddress:
+        begin
+          BreakPoint := Find(LoadBreakPoint.Address, LoadBreakPoint);
+          if BreakPoint = nil then
+            BreakPoint := Add(LoadBreakPoint.Address);
+        end;
+    end;
 
-    if BreakPoint = nil
-    then BreakPoint := Add(LoadBreakPoint.Source, LoadBreakPoint.Line);
     BreakPoint.Assign(LoadBreakPoint);
-
     FreeAndNil(LoadBreakPoint)
   end;
 end;
@@ -4145,6 +4244,11 @@ begin
   Result := TDBGBreakPoint(inherited Add(ASource, ALine));
 end;
 
+function TDBGBreakPoints.Add(const AAddress: TDBGPtr): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(inherited Add(AAddress));
+end;
+
 constructor TDBGBreakPoints.Create (const ADebugger: TDebugger; const ABreakPointClass: TDBGBreakPointClass );
 begin
   FDebugger := ADebugger;
@@ -4169,6 +4273,16 @@ begin
   Result := TDBGBreakPoint(inherited Find(ASource, ALine, AIgnore));
 end;
 
+function TDBGBreakPoints.Find(const AAddress: TDBGPtr): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(inherited Find(AAddress));
+end;
+
+function TDBGBreakPoints.Find(const AAddress: TDBGPtr; const AIgnore: TDBGBreakPoint): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(inherited Find(AAddress, nil));
+end;
+
 function TDBGBreakPoints.GetItem (const AnIndex: Integer ): TDBGBreakPoint;
 begin
   Result := TDBGBreakPoint(inherited GetItem(AnIndex));
@@ -4186,7 +4300,15 @@ end;
 function TBaseBreakPoints.Add(const ASource: String; const ALine: Integer): TBaseBreakPoint;
 begin
   Result := TBaseBreakPoint(inherited Add);
+  Result.SetKind(bpkSource);
   Result.SetLocation(ASource, ALine);
+end;
+
+function TBaseBreakPoints.Add(const AAddress: TDBGPtr): TBaseBreakPoint;
+begin
+  Result := TBaseBreakPoint(inherited Add);
+  Result.SetKind(bpkAddress);
+  Result.SetAddress(AAddress);
 end;
 
 constructor TBaseBreakPoints.Create(const ABreakPointClass: TBaseBreakPointClass);
@@ -4206,9 +4328,30 @@ begin
   for n := 0 to Count - 1 do
   begin
     Result := TBaseBreakPoint(GetItem(n));
-    if  (Result.Line = ALine)
+    if  (Result.Kind = bpkSource)
+    and (Result.Line = ALine)
     and (AIgnore <> Result)
     and (CompareFilenames(Result.Source, ASource) = 0)
+    then Exit;
+  end;
+  Result := nil;
+end;
+
+function TBaseBreakPoints.Find(const AAddress: TDBGPtr): TBaseBreakPoint;
+begin
+  Result := Find(AAddress, nil);
+end;
+
+function TBaseBreakPoints.Find(const AAddress: TDBGPtr; const AIgnore: TBaseBreakPoint): TBaseBreakPoint;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+  begin
+    Result := TBaseBreakPoint(GetItem(n));
+    if  (Result.Kind = bpkAddress)
+    and (Result.Address = AAddress)
+    and (AIgnore <> Result)
     then Exit;
   end;
   Result := nil;
