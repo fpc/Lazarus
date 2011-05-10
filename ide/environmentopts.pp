@@ -89,10 +89,10 @@ type
 const
   DebuggerDefaultColors: array[TDBGEventType] of TDebuggerEventLogColor = (
 { etDefault              } (Foreground: clWindowText; Background: clWindow),
-{ etBreakpointEvaluation } (Foreground: clRed;        Background: clWindow),
+{ etBreakpointEvaluation } (Foreground: $8080FF;      Background: clWindow),
 { etBreakpointHit        } (Foreground: clRed;        Background: clWindow),
-{ etBreakpointMessage    } (Foreground: clRed;        Background: clWindow),
-{ etBreakpointStackDump  } (Foreground: clRed;        Background: clWindow),
+{ etBreakpointMessage    } (Foreground: $0000D9;      Background: clWindow),
+{ etBreakpointStackDump  } (Foreground: $2080FF;      Background: clWindow),
 { etExceptionRaised      } (Foreground: clTeal;       Background: clWindow),
 { etModuleLoad           } (Foreground: clBlue;       Background: clWindow),
 { etModuleUnload         } (Foreground: clBlue;       Background: clWindow),
