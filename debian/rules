@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 # debian/rules for Lazarus
 
+DEB_PACKAGE_NAME = lazarus
 DEB_DH_BUILDDEB_ARGS := -- -Z bzip2
 export DH_ALWAYS_EXCLUDE := COPYING:LICENSE
 export LANG:=C
@@ -33,8 +34,10 @@ endif
 CURDIR:=$(shell pwd)
 BUILD_DIR=$(CURDIR)/debian/build
 INSTALL_DIR=$(CURDIR)/debian/tmp
-DOC_DIR=${INSTALL_DIR}/usr/share/doc/lazarus/${DEB_UPSTREAM_MAIN_VERSION}
-SRC_DIR=$(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}
+BIN_DIR=${INSTALL_DIR}/usr/bin
+LIB_DIR=${INSTALL_DIR}/usr/lib/${DEB_PACKAGE_NAME}/${DEB_UPSTREAM_MAIN_VERSION}
+DOC_DIR=${INSTALL_DIR}/usr/share/doc/${DEB_PACKAGE_NAME}/${DEB_UPSTREAM_MAIN_VERSION}
+SRC_DIR=${INSTALL_DIR}/usr/lib/${DEB_PACKAGE_NAME}/${DEB_UPSTREAM_MAIN_VERSION}
 # Get utils
 ifndef MKDIR
 MKDIR=mkdir -p
@@ -136,32 +139,32 @@ install-arch-stamp:
 	dh_testroot
 	dh_installdirs
 	# create all necessary directories
-	install -d $(INSTALL_DIR)/usr/bin
-	install -d $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/tools
+	${MKDIR} ${BIN_DIR}
+	${MKDIR} ${LIB_DIR}/tools
 	# Install the IDE & its accessories
-	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION} \
+	${CP} -t ${LIB_DIR} \
 		$(CURDIR)/lazarus-gtk2 \
 		$(CURDIR)/lazbuild \
 		$(CURDIR)/startlazarus \
 		$(CURDIR)/languages
-	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/tools \
+	${CP} -t ${LIB_DIR}/tools \
 		$(CURDIR)/tools/lazres \
 		$(CURDIR)/tools/lrstolfm \
 		$(CURDIR)/tools/svn2revisioninc \
 		$(CURDIR)/tools/updatepofiles
 	# Install the library files
-	find -name debian -prune -or '(' -name lib -or -name units ')' -print | xargs ${CP} --parents -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}
+	find -name debian -prune -or '(' -name lib -or -name units ')' -print | xargs ${CP} --parents -t ${LIB_DIR}
 	# Remove READM.txt files from output directories
-	find $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION} '(' -name '*.or' -or -wholename '*/lib/README.txt' ')' -delete
+	find ${LIB_DIR} '(' -name '*.or' -or -wholename '*/lib/README.txt' ')' -delete
 	# Mark package as manually compilable and install them
 	for package in `find -name '*.lpk'` ; \
 	do \
-		${MKDIR} `dirname "$(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/$${package}"` ; \
-		sed -e 's@\(\W*\)<CompilerOptions>.*@\1<AutoUpdate Value="Manually"/>\n&@' "$${package}" > "$(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/$${package}" ; \
+		${MKDIR} `dirname "${LIB_DIR}/$${package}"` ; \
+		sed -e 's@\(\W*\)<CompilerOptions>.*@\1<AutoUpdate Value="Manually"/>\n&@' "$${package}" > "${LIB_DIR}/$${package}" ; \
 	done
 	# copy icons and menu entries for the GNOME menu
-	install -d $(INSTALL_DIR)/usr/share/pixmaps
-	install -d $(INSTALL_DIR)/usr/share/applications
+	${MKDIR} $(INSTALL_DIR)/usr/share/pixmaps
+	${MKDIR} $(INSTALL_DIR)/usr/share/applications
 	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(INSTALL_DIR)/usr/share/pixmaps/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.xpm
 	sed -e 's/Lazarus.*/& (${DEB_UPSTREAM_MAIN_VERSION})/' -e 's/Exec=startlazarus/&-${DEB_UPSTREAM_MAIN_VERSION}/' $(CURDIR)/install/lazarus.desktop > $(INSTALL_DIR)/usr/share/applications/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.desktop
 	# Install man pages
@@ -172,8 +175,8 @@ install-arch-stamp:
 	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/environmentoptions.xml -o $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}/environmentoptions.xml
 	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/helpoptions.xml -o $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}/helpoptions.xml
 	# Install contributer list
-	install -d $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/docs
-	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/docs \
+	${MKDIR} ${LIB_DIR}/docs
+	${CP} -t ${LIB_DIR}/docs \
 		$(CURDIR)/docs/Contributors.txt \
 		$(CURDIR)/docs/contributors.utf8 \
 		$(CURDIR)/docs/acknowledgements.txt
