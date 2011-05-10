@@ -126,7 +126,7 @@ build-arch: debian-files configure build-arch-stamp
 build-arch-stamp:
 	@echo "--- Building"
 	dh_testdir
-	$(MAKE) lcl packager/registration ideintf bigidecomponents examples $(BUILDOPTS)
+	$(MAKE) packager/registration lcl ideintf bigidecomponents examples $(BUILDOPTS)
 	$(MAKE) bigide USESVN2REVISIONINC=0 $(BUILDOPTS)
 	${MV} $(CURDIR)/lazarus $(CURDIR)/lazarus-gtk2
 	$(MAKE) lazbuilder $(BUILDOPTS)
