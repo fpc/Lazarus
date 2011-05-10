@@ -7,8 +7,9 @@ lazarus (0.9.31-0) unstable; urgency=low
 lazarus (0.9.30-2) unstable; urgency=low
 
   * Added lclbase.lpk to lcl-units package. (Closes upstream bug#18656)
+  * Fixed issue preventing using ~ in Debian version. (Closes: Bug#622665)
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Fri, 12 Apr 2011 12:24:00 +0200
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Fri, 03 May 2011 19:28:00 +0200
 
 lazarus (0.9.30-1) unstable; urgency=low
 

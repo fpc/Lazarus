@@ -209,7 +209,7 @@ Architecture: i386 powerpc sparc amd64 armel
 Depends: ${misc:Depends}, ${shlibs:Depends}, ${fpc-abi:Depends}, lcl-gtk2${PACKAGESUFFIX} (= ${binary:Version}) | lcl-gtk${PACKAGESUFFIX} (= ${binary:Version}) | lcl-qt${PACKAGESUFFIX} (= ${binary:Version})
 Recommends: lazarus-ide${PACKAGESUFFIX}, fpc
 Suggests: gdb
-Provides: lcl-units, lcl-${source:Upstream-Version}, lcl-${source:Version}
+Provides: lcl-units, lcl-${source:Upstream-Version}
 Breaks: lcl-units (<< 0.9.28.2), lazarus-ide${PACKAGESUFFIX} (<= 0.9.28.2-2)
 Replaces: lcl-units (<< 0.9.28.2), lazarus-ide${PACKAGESUFFIX} (<= 0.9.28.2-2)
 Description: Lazarus Components Library - Backend independent components
