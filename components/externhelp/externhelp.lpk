@@ -50,36 +50,36 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
-    <CustomOptions Childs="ExternHelp">
-      <_ExternHelp Childs="Count/Item1/Item2/Item3">
+    <CustomOptions Children="ExternHelp">
+      <_ExternHelp Children="Count/Item1/Item2/Item3">
         <_Count Value="3"/>
-        <_Item1 Childs="Filename/Name/URL">
-          <_Filename Childs="Value">
+        <_Item1 Children="Filename/Name/URL">
+          <_Filename Children="Value">
             <_Value Value="$(FPCSrcDir)/rtl/win32/windows.pp"/>
           </_Filename>
           <_Name Value="Windows"/>
-          <_URL Childs="Value">
+          <_URL Children="Value">
             <_Value Value="http://social.msdn.microsoft.com/Search/en-us?query=$(Identifier)"/>
           </_URL>
         </_Item1>
-        <_Item2 Childs="Filename/Name/URL">
-          <_Filename Childs="Value">
+        <_Item2 Children="Filename/Name/URL">
+          <_Filename Children="Value">
             <_Value Value="$(FPCSrcDir)/packages/postgres/src/"/>
           </_Filename>
           <_Name Value="PostgreSQL"/>
-          <_URL Childs="Value">
+          <_URL Children="Value">
             <_Value Value="http://search.postgresql.org/search?q=$(Identifier)"/>
           </_URL>
         </_Item2>
-        <_Item3 Childs="Filename/Name/URL/WithSubDirectories">
-          <_Filename Childs="Value">
+        <_Item3 Children="Filename/Name/URL/WithSubDirectories">
+          <_Filename Children="Value">
             <_Value Value="$(FPCSrcDir)/packages/gtk2/"/>
           </_Filename>
           <_Name Value="Gtk2"/>
-          <_URL Childs="Value">
+          <_URL Children="Value">
             <_Value Value="http://www.google.com/custom?domains=library.gnome.org&amp;sitesearch=library.gnome.org&amp;q=$(Identifier)"/>
           </_URL>
-          <_WithSubDirectories Childs="Value">
+          <_WithSubDirectories Children="Value">
             <_Value Value="True"/>
           </_WithSubDirectories>
         </_Item3>

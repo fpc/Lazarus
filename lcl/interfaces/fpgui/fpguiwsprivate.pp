@@ -938,7 +938,7 @@ begin
   if (fpgmsg.Sender is TfpgMenuBar) then begin
     //Invalidate clientRectCache to force LCL to recalibrate
     //the available space in the form after a menubar visibility change.
-    //Childs are needed to invalidate for TLabel and others custom draw.
+    //Children are needed to invalidate for TLabel and others custom draw.
     FLCLObject.InvalidateClientRectCache(true);
   end;
   Inherited;

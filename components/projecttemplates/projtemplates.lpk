@@ -76,8 +76,8 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
-    <CustomOptions Childs="ExternHelp">
-      <_ExternHelp Childs="Count"/>
+    <CustomOptions Children="ExternHelp">
+      <_ExternHelp Children="Count"/>
     </CustomOptions>
   </Package>
 </CONFIG>

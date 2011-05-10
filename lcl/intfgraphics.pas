@@ -312,7 +312,7 @@ type
   public
     Parent: TArrayNode;
     Value: integer;
-    Childs: PArrayNode;
+    Children: PArrayNode;
     StartValue: integer;
     Capacity: integer;
     Data: Pointer;
@@ -4498,11 +4498,11 @@ procedure TArrayNode.DeleteChilds;
 var
   i: Integer;
 begin
-  if Childs<>nil then begin
+  if Children<>nil then begin
     for i:=0 to Capacity-1 do
-      Childs[i].Free;
-    FreeMem(Childs);
-    Childs:=nil;
+      Children[i].Free;
+    FreeMem(Children);
+    Children:=nil;
     Capacity:=0;
   end;
 end;
@@ -4510,7 +4510,7 @@ end;
 procedure TArrayNode.UnbindFromParent;
 begin
   if Parent<>nil then begin
-    Parent.Childs[Value-Parent.StartValue]:=nil;
+    Parent.Children[Value-Parent.StartValue]:=nil;
     Parent:=nil;
   end;
 end;
@@ -4524,7 +4524,7 @@ begin
   NewNode.Value:=ChildValue;
   NewNode.Parent:=Self;
   Index:=ChildValue-StartValue;
-  Childs[Index]:=NewNode;
+  Children[Index]:=NewNode;
 end;
 
 function TArrayNode.GetChildNode(ChildValue: integer; CreateIfNotExists: boolean
@@ -4540,10 +4540,10 @@ begin
     Expand(ChildValue);
     Index:=ChildValue-StartValue;
   end;
-  Result:=Childs[Index];
+  Result:=Children[Index];
   if (Result=nil) and CreateIfNotExists then begin
     CreateChildNode(ChildValue);
-    Result:=Childs[Index];
+    Result:=Children[Index];
   end;
 end;
 
@@ -4558,7 +4558,7 @@ var
   OldSize: Integer;
 begin
   //DebugLn('TArrayNode.Expand A ',ValueToInclude,' Capacity=',Capacity,' StartValue=',StartValue);
-  if Childs=nil then begin
+  if Children=nil then begin
     NewStartValue:=ValueToInclude;
     NewCapacity:=4;
   end else begin
@@ -4585,12 +4585,12 @@ begin
   NewSize:=SizeOf(Pointer)*NewCapacity;
   GetMem(NewChilds,NewSize);
   FillChar(NewChilds^,NewSize,0);
-  if Childs<>nil then begin
+  if Children<>nil then begin
     OldSize:=SizeOf(Pointer)*Capacity;
-    System.Move(Childs^,NewChilds[StartValue-NewStartValue],OldSize);
-    FreeMem(Childs);
+    System.Move(Children^,NewChilds[StartValue-NewStartValue],OldSize);
+    FreeMem(Children);
   end;
-  Childs:=NewChilds;
+  Children:=NewChilds;
   StartValue:=NewStartValue;
   Capacity:=NewCapacity;
 end;
@@ -4603,8 +4603,8 @@ begin
   if Parent=nil then exit;
   i:=Value-Parent.StartValue-1;
   while (i>=0) do begin
-    if Parent.Childs[i]<>nil then begin
-      Result:=Parent.Childs[i];
+    if Parent.Children[i]<>nil then begin
+      Result:=Parent.Children[i];
       exit;
     end;
     dec(i);
@@ -4619,8 +4619,8 @@ begin
   if Parent=nil then exit;
   i:=Value-Parent.StartValue+1;
   while (i<Parent.Capacity) do begin
-    if Parent.Childs[i]<>nil then begin
-      Result:=Parent.Childs[i];
+    if Parent.Children[i]<>nil then begin
+      Result:=Parent.Children[i];
       exit;
     end;
     inc(i);
@@ -4659,8 +4659,8 @@ begin
   if Capacity=0 then exit;
   i:=0;
   while i<Capacity do begin
-    if Childs[i]<>nil then begin
-      Result:=Childs[i];
+    if Children[i]<>nil then begin
+      Result:=Children[i];
       exit;
     end;
     inc(i);
@@ -4675,8 +4675,8 @@ begin
   if Capacity=0 then exit;
   i:=Capacity-1;
   while i>=0 do begin
-    if Childs[i]<>nil then begin
-      Result:=Childs[i];
+    if Children[i]<>nil then begin
+      Result:=Children[i];
       exit;
     end;
     dec(i);
@@ -4721,10 +4721,10 @@ var
   i: Integer;
   ChildNode: TArrayNode;
 begin
-  if Childs<>nil then begin
+  if Children<>nil then begin
     if Capacity<=0 then R('Capacity too small');
     for i:=0 to Capacity-1 do begin
-      ChildNode:=Childs[i];
+      ChildNode:=Children[i];
       if ChildNode<>nil then begin
         if ChildNode.Value<>i+StartValue then
           R('Value wrong');

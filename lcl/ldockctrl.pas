@@ -127,7 +127,7 @@ type
     property Parent: TLazDockConfigNode read FParent write SetParent;
     property Sides[Side: TAnchorKind]: string read GetSides write SetSides;
     property ChildCount: Integer read GetChildCount;
-    property Childs[Index: integer]: TLazDockConfigNode read GetChilds; default;
+    property Children[Index: integer]: TLazDockConfigNode read GetChilds; default;
   published
     property TheType: TLDConfigNodeType read FTheType write SetTheType
                                                       default ldcntControl;
@@ -1085,9 +1085,9 @@ begin
   PagesNode:=PageNode.Parent;
   PageNodeIndex:=PagesNode.IndexOf(PageNode.Name);
   if PageNodeIndex>0 then
-    NeighbourNode:=PagesNode.Childs[PageNodeIndex-1].Childs[0]
+    NeighbourNode:=PagesNode.Children[PageNodeIndex-1].Children[0]
   else
-    NeighbourNode:=PagesNode.Childs[PageNodeIndex+1].Childs[0];
+    NeighbourNode:=PagesNode.Children[PageNodeIndex+1].Children[0];
   NeighbourControl:=Manager.FindControlByDockerName(NeighbourNode.Name);
   if NeighbourControl=nil then begin
     DebugLn(['TCustomLazControlDocker.DockAsPage NeighbourControl not found "',NeighbourNode.Name,'"']);
@@ -1853,7 +1853,7 @@ function TCustomLazControlDocker.GetLayoutFromControl: TLazDockConfigNode;
     if AControl is TCustomForm then
       Result.WindowState:=TCustomForm(AControl).WindowState;
 
-    // Childs
+    // Children
     if (AControl is TWinControl) then begin
       // check if children need nodes
       NeedChildNodes:=(AControl is TLazDockPages)
@@ -2609,7 +2609,7 @@ var
       // anchored to the other side of DeletingNode
       OppositeSide:=OppositeAnchor[Side];
       for i:=0 to DeletingNode.Parent.ChildCount-1 do begin
-        Sibling:=DeletingNode.Parent.Childs[i];
+        Sibling:=DeletingNode.Parent.Children[i];
         if CompareText(Sibling.Sides[OppositeSide],SplitterNode.Name)=0 then
           Sibling.Sides[OppositeSide]:=DeletingNode.Sides[OppositeSide];
       end;
@@ -2650,7 +2650,7 @@ var
         
       // 2. anchor all siblings using LeftSplitter to now use RightSplitter
       for i:=0 to DeletingNode.Parent.ChildCount-1 do begin
-        Sibling:=DeletingNode.Parent.Childs[i];
+        Sibling:=DeletingNode.Parent.Children[i];
         if Sibling=DeletingNode then continue;
         if CompareText(Sibling.Sides[akLeft],LeftSplitter.Name)=0 then
           Sibling.Sides[akLeft]:=RightSplitter.Name;
@@ -2713,12 +2713,12 @@ var
     if ParentNode=nil then RaiseGDBException('');
     if (PagesNode.TheType<>ldcntPages) then RaiseGDBException('');
     if PagesNode.ChildCount<>1 then RaiseGDBException('');
-    PageNode:=PagesNode.Childs[0];
+    PageNode:=PagesNode.Children[0];
     PagesBounds:=PagesNode.Bounds;
     OffsetX:=PagesBounds.Left;
     OffsetY:=PagesBounds.Top;
     for i:=0 to PageNode.ChildCount-1 do begin
-      Child:=PageNode.Childs[i];
+      Child:=PageNode.Children[i];
       // changes parent of child
       Child.Parent:=ParentNode;
       // move children to place where PagesNode was
@@ -2754,7 +2754,7 @@ var
     FormBounds:=FormNode.Bounds;
     OffsetX:=FormBounds.Left;
     OffsetY:=FormBounds.Top;
-    Child:=FormNode.Childs[0];
+    Child:=FormNode.Children[0];
     // changes parent of child
     Child.Parent:=FormNode.Parent;
     Child.WindowState:=FormNode.WindowState;
@@ -2789,7 +2789,7 @@ var
     // remove unneeded children
     i:=Node.ChildCount-1;
     while i>=0 do begin
-      Child:=Node.Childs[i];
+      Child:=Node.Children[i];
       RemoveEmptyNodes(Child);// beware: this can delete more than one child
       dec(i);
       if i>=Node.ChildCount then i:=Node.ChildCount-1;
@@ -2873,7 +2873,7 @@ var
       end;
       // check children
       for i:=0 to Node.ChildCount-1 do
-        if not Check(Node.Childs[i]) then exit(false);
+        if not Check(Node.Children[i]) then exit(false);
       Result:=true;
     end;
   
@@ -2920,7 +2920,7 @@ var
     begin
       ParentNode:=Node.Parent;
       for i:=0 to ParentNode.ChildCount-1 do begin
-        Result:=ParentNode.Childs[i];
+        Result:=ParentNode.Children[i];
         if CompareText(Result.Name,DockerName)=0 then continue;
         if Result.TheType=ldcntControl then
           exit;
@@ -2949,13 +2949,13 @@ var
       PageIndex:=PagesNode.IndexOf(PageNode.Name);
       if (PageIndex>0)
       and (PagesNode[PageIndex-1].ChildCount=1) then begin
-        Result:=PagesNode[PageIndex-1].Childs[0];
+        Result:=PagesNode[PageIndex-1].Children[0];
         if Result.TheType=ldcntControl then exit;
       end;
       // check if right page has only one control
       if (PageIndex<PagesNode.ChildCount-1)
       and (PagesNode[PageIndex+1].ChildCount=1) then begin
-        Result:=PagesNode[PageIndex+1].Childs[0];
+        Result:=PagesNode[PageIndex+1].Children[0];
         if Result.TheType=ldcntControl then exit;
       end;
       Result:=nil;
@@ -2971,7 +2971,7 @@ var
       and (CompareText(Node.Name,DockerName)<>0) then
         exit(Node);
       for i:=0 to Node.ChildCount-1 do begin
-        Result:=FindOtherNodeWithControl(Node.Childs[i]);
+        Result:=FindOtherNodeWithControl(Node.Children[i]);
         if Result<>nil then exit;
       end;
     end;
@@ -3166,7 +3166,7 @@ function TCustomLazDockingManager.ConfigIsCompatible(
       if Node.Sides[Side1]='' then exit;
       if Node.Sides[Side2]='' then exit;
       for i:=0 to Node.Parent.ChildCount-1 do begin
-        Child:=Node.Parent.Childs[i];
+        Child:=Node.Parent.Children[i];
         if Child=Node then continue;
         if (CompareText(Node.Sides[Side1],Child.Sides[Side1])=0)
         and (CompareText(Node.Sides[Side2],Child.Sides[Side2])=0) then begin
@@ -3217,8 +3217,8 @@ function TCustomLazDockingManager.ConfigIsCompatible(
         if not CheckHasParent then exit;
         if not CheckHasChilds then exit;
         for i:=0 to Node.ChildCount-1 do
-          if Node.Childs[i].TheType<>ldcntPage then begin
-            Error('Childs[i].TheType<>ldcntPage');
+          if Node.Children[i].TheType<>ldcntPage then begin
+            Error('Children[i].TheType<>ldcntPage');
             exit;
           end;
         if not CheckAllSidesAnchored then exit;
@@ -3269,7 +3269,7 @@ function TCustomLazDockingManager.ConfigIsCompatible(
 
     // check children
     for i:=0 to Node.ChildCount-1 do
-      if not CheckNode(Node.Childs[i]) then exit;
+      if not CheckNode(Node.Children[i]) then exit;
 
     Result:=true;
   end;
@@ -3380,7 +3380,7 @@ var
   i: Integer;
 begin
   if FChilds=nil then exit;
-  for i:=ChildCount-1 downto 0 do Childs[i].Free;
+  for i:=ChildCount-1 downto 0 do Children[i].Free;
   FChilds.Clear;
 end;
 
@@ -3403,7 +3403,7 @@ begin
       FSides[a]:=Src.FSides[a];
     FTheType:=Src.FTheType;
     for i:=0 to Src.ChildCount-1 do begin
-      SrcChild:=Src.Childs[i];
+      SrcChild:=Src.Children[i];
       NewChild:=TLazDockConfigNode.Create(Self);
       NewChild.Assign(SrcChild);
     end;
@@ -3419,7 +3419,7 @@ begin
   if WithRoot and (CompareText(Name,AName)=0) then exit(Self);
   if FChilds<>nil then
     for i:=0 to FChilds.Count-1 do begin
-      Result:=Childs[i];
+      Result:=Children[i];
       if CompareText(Result.Name,AName)=0 then exit;
       if Recursive then begin
         Result:=Result.FindByName(AName,true,false);
@@ -3433,7 +3433,7 @@ function TLazDockConfigNode.IndexOf(const AName: string): Integer;
 begin
   if FChilds<>nil then begin
     Result:=FChilds.Count-1;
-    while (Result>=0) and (CompareText(Childs[Result].Name,AName)<>0) do
+    while (Result>=0) and (CompareText(Children[Result].Name,AName)<>0) do
       dec(Result);
   end else begin
     Result:=-1;
@@ -3471,7 +3471,7 @@ begin
   Result:=nil;
   ParentNode:=Parent;
   for i:=0 to ParentNode.ChildCount-1 do begin
-    Child:=ParentNode.Childs[i];
+    Child:=ParentNode.Children[i];
     if Child=Self then continue;
     if IgnoreSplitters
     and (Child.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown]) then
@@ -3520,9 +3520,9 @@ begin
     Config.SetDeleteValue(Path+'Sides/'+AnchorNames[a]+'/Name',Sides[a],'');
 
   // children
-  Config.SetDeleteValue(Path+'Childs/Count',ChildCount,0);
+  Config.SetDeleteValue(Path+'Children/Count',ChildCount,0);
   for i:=0 to ChildCount-1 do begin
-    Child:=Childs[i];
+    Child:=Children[i];
     SubPath:=Path+'Child'+IntToStr(i+1)+'/';
     Child.SaveToConfig(Config,SubPath);
   end;
@@ -3552,7 +3552,7 @@ begin
     Sides[a]:=Config.GetValue(Path+'Sides/'+AnchorNames[a]+'/Name','');
 
   // children
-  NewChildCount:=Config.GetValue(Path+'Childs/Count',0);
+  NewChildCount:=Config.GetValue(Path+'Children/Count',0);
   for i:=0 to NewChildCount-1 do begin
     SubPath:=Path+'Child'+IntToStr(i+1)+'/';
     NewChildName:=Config.GetValue(SubPath+'Name/Value','');
@@ -3575,7 +3575,7 @@ procedure TLazDockConfigNode.WriteDebugReport;
     DbgOut(' Type=',GetEnumName(TypeInfo(TLDConfigNodeType),ord(ANode.TheType)));
     DbgOut(' Bounds='+dbgs(ANode.Bounds));
     DbgOut(' ClientBounds='+dbgs(ANode.ClientBounds));
-    DbgOut(' Childs='+dbgs(ANode.ChildCount));
+    DbgOut(' Children='+dbgs(ANode.ChildCount));
     DbgOut(' WindowState='+WindowStateToStr(ANode.WindowState));
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       s:=ANode.Sides[a];
@@ -3749,7 +3749,7 @@ var
         end;
         if Node.Parent<>nil then begin
           for i:=0 to Node.Parent.ChildCount-1 do begin
-            Sibling:=Node.Parent.Childs[i];
+            Sibling:=Node.Parent.Children[i];
             if CompareText(Sibling.Sides[OppositeAnchor[Side]],Node.Name)=0 then
               Improve(Sibling);
           end;
@@ -3783,13 +3783,13 @@ var
     if Node.TheType=ldcntPages then begin
       // maximum size of all pages
       for i:=0 to Node.ChildCount-1 do begin
-        ChildMinSize:=GetMinSize(Node.Childs[i]);
+        ChildMinSize:=GetMinSize(Node.Children[i]);
         Result.X:=Max(Result.X,ChildMinSize.X);
         Result.Y:=Max(Result.Y,ChildMinSize.Y);
       end;
     end else begin
       for i:=0 to Node.ChildCount-1 do begin
-        Child:=Node.Childs[i];
+        Child:=Node.Children[i];
         ChildSize:=GetMinSize(Child);
         Result.X:=Max(Result.X,GetMinPos(Child,akLeft)+ChildSize.X);
         Result.Y:=Max(Result.Y,GetMinPos(Child,akTop)+ChildSize.Y);
@@ -3846,7 +3846,7 @@ var
     w(ARect.Left+1,ARect.Top,Node.Name,ARect.Right);
     
     for i := 0 to Node.ChildCount-1 do begin
-      Child:=Node.Childs[i];
+      Child:=Node.Children[i];
       ChildRect.Left:=ARect.Left+1+GetMinPos(Child,akLeft);
       ChildRect.Top:=ARect.Top+1+GetMinPos(Child,akTop);
       ChildSize:=GetMinSize(Child);

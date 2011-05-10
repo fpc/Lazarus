@@ -174,7 +174,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function GetComponents(RootComponent: TComponent; AddRoot: boolean = true): TFPList;
-    property Childs: TFPList read FChilds;
+    property Children: TFPList read FChilds;
     property Root: TComponent read FRoot;
   end;
 
@@ -784,7 +784,7 @@ var
   OldRoot: TComponent;
 begin
   //debugln(['TComponentChildCollector.AddChildComponent ',DbgSName(Child)]);
-  Childs.Add(Child);
+  Children.Add(Child);
   OldRoot := Root;
   try
     if csInline in Child.ComponentState then
@@ -809,12 +809,12 @@ end;
 function TComponentChildCollector.GetComponents(RootComponent: TComponent;
   AddRoot: boolean): TFPList;
 begin
-  Childs.Clear;
+  Children.Clear;
   if AddRoot then
-    Childs.Add(RootComponent);
+    Children.Add(RootComponent);
   FRoot:=RootComponent;
   TCTComponentAccess(RootComponent).GetChildren(@AddChildComponent,FRoot);
-  Result:=Childs;
+  Result:=Children;
 end;
 
 end.

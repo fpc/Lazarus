@@ -446,7 +446,7 @@ var
   ScrollOffset: TPoint;
   ChildBounds: TRect;
   Found: Boolean;
-  Childs: TFPList;
+  Children: TFPList;
   Offset: TPoint;
 begin
   Result:=Root;
@@ -455,14 +455,14 @@ begin
     Offset:=GetComponentOriginOnForm(Result);
     //DebugLn(['TDesignerMediator.ComponentAtPos Parent=',DbgSName(Result),' Offset=',dbgs(Offset)]);
     OffsetRect(ClientArea,Offset.X,Offset.Y);
-    Childs:=TFPList.Create;
+    Children:=TFPList.Create;
     try
-      GetChilds(Result,Childs);
+      GetChilds(Result,Children);
       //DebugLn(['TDesignerMediator.ComponentAtPos Result=',DbgSName(Result),' ChildCount=',children.Count,' ClientArea=',dbgs(ClientArea)]);
       Found:=false;
       // iterate backwards (z-order)
-      for i:=Childs.Count-1 downto 0 do begin
-        Child:=TComponent(Childs[i]);
+      for i:=Children.Count-1 downto 0 do begin
+        Child:=TComponent(Children[i]);
         //DebugLn(['TDesignerMediator.ComponentAtPos Child ',DbgSName(Child)]);
         if (MinClass<>nil) and (not Child.InheritsFrom(MinClass)) then
           continue;
@@ -483,7 +483,7 @@ begin
       end;
       if not Found then exit;
     finally
-      Childs.Free;
+      Children.Free;
     end;
   end;
 end;

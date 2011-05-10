@@ -1115,7 +1115,7 @@ begin
     else
       ContainerMenuIndex:=GetContainerIndex(false);
     {$IFDEF VerboseMenuIntf}
-    debugln('TIDEMenuSection.UpdateMenuStructure Childs Name="',Name,'" Invalid=',dbgs(FInvalidChildStartIndex),'..',dbgs(FInvalidChildEndIndex),' Count=',dbgs(Count));
+    debugln('TIDEMenuSection.UpdateMenuStructure Children Name="',Name,'" Invalid=',dbgs(FInvalidChildStartIndex),'..',dbgs(FInvalidChildEndIndex),' Count=',dbgs(Count));
     {$ENDIF}
 
     // update TopSeparator

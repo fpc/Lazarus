@@ -196,7 +196,7 @@ procedure TMyWidgetMediator.Paint;
         then begin
           for i:=0 to AWidget.ChildCount-1 do begin
             SaveHandleState;
-            Child:=AWidget.Childs[i];
+            Child:=AWidget.Children[i];
             // clip child area
             MoveWindowOrgEx(Handle,Child.Left,Child.Top);
             if IntersectClipRect(Handle,0,0,Child.Width,Child.Height)<>NullRegion then

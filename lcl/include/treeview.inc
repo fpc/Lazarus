@@ -195,9 +195,9 @@ end;
 
 procedure TTreeNodeExpandedState.Clear;
 begin
-  if Childs<>nil then begin
-    Childs.FreeAndClear;
-    FreeThenNil(Childs);
+  if Children<>nil then begin
+    Children.FreeAndClear;
+    FreeThenNil(Children);
   end;
 end;
 
@@ -214,9 +214,9 @@ begin
   ChildNode:=FirstTreeNode;
   while ChildNode<>nil do begin
     if ChildNode.Expanded then begin
-      if Childs=nil then Childs:=TAvgLvlTree.Create(@CompareExpandedNodes);
+      if Children=nil then Children:=TAvgLvlTree.Create(@CompareExpandedNodes);
       NewExpandedNode:=TTreeNodeExpandedState.Create(ChildNode.GetFirstChild);
-      Childs.Add(NewExpandedNode);
+      Children.Add(NewExpandedNode);
     end;
     ChildNode:=ChildNode.GetNextSibling;
   end;
@@ -228,11 +228,11 @@ var
   ANode: TAvgLvlTreeNode;
   ChildNodeText: String;
 begin
-  if Childs=nil then exit;
+  if Children=nil then exit;
   ChildNode:=FirstTreeNode;
   while ChildNode<>nil do begin
     ChildNodeText:=ChildNode.Text;
-    ANode:=Childs.FindKey(PChar(ChildNodeText),@CompareTextWithExpandedNode);
+    ANode:=Children.FindKey(PChar(ChildNodeText),@CompareTextWithExpandedNode);
     ChildNode.Expanded:=ANode<>nil;
     if ANode<>nil then
       TTreeNodeExpandedState(ANode.Data).Apply(ChildNode.GetFirstChild);

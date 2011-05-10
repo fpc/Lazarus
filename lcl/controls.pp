@@ -1514,7 +1514,7 @@ type
 
       cesScaleChilds, cssScaleChilds
         Scale children, keep space between them fixed.
-        Childs are resized to their normal/adviced size. If there is some space
+        Children are resized to their normal/adviced size. If there is some space
         left in the client area of the parent, then the children are scaled to
         fill the space. You can set maximum Constraints. Then the other children
         are scaled more.
@@ -1528,7 +1528,7 @@ type
 
       cesHomogenousChildGrowth, cssHomogenousChildDecrease
         Enlarge children equally.
-        Childs are resized to their normal/adviced size. If there is some space
+        Children are resized to their normal/adviced size. If there is some space
         left in the client area of the parent, then the remaining space is
         distributed equally to each child.
         For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
@@ -1541,7 +1541,7 @@ type
 
       cesHomogenousSpaceGrowth
         Enlarge space between children equally.
-        Childs are resized to their normal/adviced size. If there is some space
+        Children are resized to their normal/adviced size. If there is some space
         left in the client area of the parent, then the space between the children
         is expanded.
         For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and

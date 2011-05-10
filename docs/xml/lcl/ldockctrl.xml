@@ -572,9 +572,9 @@
         <short>
           <var>ChildCount</var> - the number of child nodes</short>
       </element>
-      <element name="TLazDockConfigNode.Childs">
+      <element name="TLazDockConfigNode.Children">
         <short>
-          <var>Childs</var> - the child nodes in an indexed list</short>
+          <var>Children</var> - the child nodes in an indexed list</short>
       </element>
       <element name="TLazDockConfigNode.TheType">
         <short>

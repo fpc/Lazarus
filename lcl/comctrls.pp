@@ -2832,7 +2832,7 @@ type
 
   TTreeNodeExpandedState = class
     NodeText: string;
-    Childs: TAvgLvlTree;
+    Children: TAvgLvlTree;
     constructor Create(FirstTreeNode: TTreeNode);
     constructor Create(TreeView: TCustomTreeView);
     destructor Destroy; override;
