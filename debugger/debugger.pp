@@ -2998,7 +2998,7 @@ procedure TDebugger.DoException(const AExceptionType: TDBGExceptionType;
   const AExceptionClass: String; AExceptionAddress: TDBGPtr; const AExceptionText: String; out AContinue: Boolean);
 begin
   if AExceptionType = deInternal then
-    DoDbgEvent(ecDebugger, etExceptionRaised, Format('Exception class "%s" at $%x with message "%s"', [AExceptionClass, AExceptionAddress, AExceptionText]));
+    DoDbgEvent(ecDebugger, etExceptionRaised, Format('Exception class "%s" at $%.' + IntToStr(TargetWidth div 4) + 'x with message "%s"', [AExceptionClass, AExceptionAddress, AExceptionText]));
   if Assigned(FOnException) then
     FOnException(Self, AExceptionType, AExceptionClass, AExceptionText, AContinue)
   else

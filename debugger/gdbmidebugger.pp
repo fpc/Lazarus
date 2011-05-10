@@ -249,7 +249,9 @@ type
     function  GetPtrValue(const AExpression: String; const AValues: array of const; ConvertNegative: Boolean = False): TDbgPtr;
     function  CheckHasType(TypeName: String; TypeFlag: TGDBMITargetFlag): TGDBMIExecResult;
     function  PointerTypeCast: string;
-    procedure ProcessFrame(const AFrame: String = '');
+    function FrameToLocation(const AFrame: String = ''): TDBGLocationRec;
+    procedure ProcessFrame(const ALocation: TDBGLocationRec); overload;
+    procedure ProcessFrame(const AFrame: String = ''); overload;
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
     property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
     property  LastExecResult: TGDBMIExecResult read FLastExecResult;
@@ -395,6 +397,7 @@ type
     procedure DoRelease; override;   // Destroy self (or schedule)
 
     procedure DoNotifyAsync(Line: String);
+    procedure DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; Location: TDBGLocationRec);
     procedure AddThreadGroup(const S: String);
     procedure RemoveThreadGroup(const S: String);
     function ParseLibraryLoaded(const S: String): String;
@@ -1418,11 +1421,6 @@ begin
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
   Result := '"' + Result + '"';
-end;
-
-function ParseModuleName(const S: String): String;
-begin
-  Result := StringReplace(S, '\\', '\', [rfReplaceAll]);
 end;
 
 { TGDBMIDebuggerCommandStackSetCurrent }
@@ -4110,6 +4108,7 @@ var
   BreakPoint: TGDBMIBreakPoint;
   CanContinue: Boolean;
   ExceptionInfo: TGDBMIExceptionInfo;
+  Location: TDBGLocationRec;
 begin
   Result := False;
   List := TGDBMINameValueList.Create(AParams);
@@ -4196,6 +4195,8 @@ begin
       if BreakPoint <> nil
       then begin
         CanContinue := False;
+        Location := FrameToLocation(List.Values['frame']);
+        FTheDebugger.DoDbgBreakpointEvent(BreakPoint, Location);
         BreakPoint.Hit(CanContinue);
         if CanContinue
         then begin
@@ -4205,7 +4206,7 @@ begin
         end
         else begin
           SetDebuggerState(dsPause);
-          ProcessFrame(List.Values['frame']);
+          ProcessFrame(Location);
         end;
       end;
       // The temp-at-start breakpoint is not checked. Ignore it
@@ -5422,7 +5423,7 @@ begin
   // input: =library-loaded,id="C:\\Windows\\system32\\ntdll.dll",target-name="C:\\Windows\\system32\\ntdll.dll",host-name="C:\\Windows\\system32\\ntdll.dll",symbols-loaded="0",thread-group="i1"
   List := TGDBMINameValueList.Create(S);
   ThreadGroup := List.Values['thread-group'];
-  Result := Format('Module Load: "%s". %s. Thread Group: %s (%s)', [ParseModuleName(List.Values['id']), DebugInfo[List.Values['symbols-loaded'] = '1'], ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
+  Result := Format('Module Load: "%s". %s. Thread Group: %s (%s)', [ConvertGdbPathAndFile(List.Values['id']), DebugInfo[List.Values['symbols-loaded'] = '1'], ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
   List.Free;
 end;
 
@@ -5434,7 +5435,7 @@ begin
   // input: =library-unloaded,id="C:\\Windows\\system32\\advapi32.dll",target-name="C:\\Windows\\system32\\advapi32.dll",host-name="C:\\Windows\\system32\\advapi32.dll",thread-group="i1"
   List := TGDBMINameValueList.Create(S);
   ThreadGroup := List.Values['thread-group'];
-  Result := Format('Module Unload: "%s". Thread Group: %s (%s)', [ParseModuleName(List.Values['id']), ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
+  Result := Format('Module Unload: "%s". Thread Group: %s (%s)', [ConvertGdbPathAndFile(List.Values['id']), ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
   List.Free;
 end;
 
@@ -5478,6 +5479,18 @@ begin
   else
     DebugLn('[WARNING] Debugger: Unexpected async-record: ', Line);
   end;
+end;
+
+procedure TGDBMIDebugger.DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; Location: TDBGLocationRec);
+var
+  SrcName: String;
+begin
+  SrcName := Location.SrcFullName;
+  if SrcName = '' then
+    SrcName := Location.SrcFile;
+  if SrcName = '' then
+    SrcName := ABreakpoint.Source;
+  DoDbgEvent(ecBreakpoint, etBreakpointHit, Format('Breakpoint at $%.' + IntToStr(TargetPtrSize * 2) + 'x: %s line %d', [Location.Address, SrcName, Location.SrcLine]));
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -9552,12 +9565,11 @@ begin
   else Result := '^char';
 end;
 
-procedure TGDBMIDebuggerCommand.ProcessFrame(const AFrame: String);
+function TGDBMIDebuggerCommand.FrameToLocation(const AFrame: String): TDBGLocationRec;
 var
   S: String;
   e: Integer;
   Frame: TGDBMINameValueList;
-  Location: TDBGLocationRec;
 begin
   // Do we have a frame ?
   if AFrame = ''
@@ -9566,17 +9578,28 @@ begin
 
   Frame := TGDBMINameValueList.Create(S);
 
-  Location.Address := 0;
-  Val(Frame.Values['addr'], Location.Address, e);
+  Result.Address := 0;
+  Val(Frame.Values['addr'], Result.Address, e);
   if e=0 then ;
-  Location.FuncName := Frame.Values['func'];
-  Location.SrcFile := ConvertGdbPathAndFile(Frame.Values['file']);
-  Location.SrcFullName := ConvertGdbPathAndFile(Frame.Values['fullname']);
-  Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
+  Result.FuncName := Frame.Values['func'];
+  Result.SrcFile := ConvertGdbPathAndFile(Frame.Values['file']);
+  Result.SrcFullName := ConvertGdbPathAndFile(Frame.Values['fullname']);
+  Result.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
   Frame.Free;
+end;
 
-  FTheDebugger.DoCurrent(Location);
+procedure TGDBMIDebuggerCommand.ProcessFrame(const ALocation: TDBGLocationRec);
+begin
+  FTheDebugger.DoCurrent(ALocation);
+end;
+
+procedure TGDBMIDebuggerCommand.ProcessFrame(const AFrame: String);
+var
+  Location: TDBGLocationRec;
+begin
+  Location := FrameToLocation(AFrame);
+  ProcessFrame(Location);
 end;
 
 procedure TGDBMIDebuggerCommand.DoDbgEvent(const ACategory: TDBGEventCategory;
