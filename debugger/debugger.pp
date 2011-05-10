@@ -275,7 +275,8 @@ type
   TIDEBreakPointAction = (
     bpaStop,
     bpaEnableGroup,
-    bpaDisableGroup
+    bpaDisableGroup,
+    bpaLogMessage
     );
   TIDEBreakPointActions = set of TIDEBreakPointAction;
 
@@ -341,11 +342,11 @@ type
     FEnableGroupList: TList;
     FGroup: TIDEBreakPointGroup;
     FLoading: Boolean;
+    FLogMessage: String;
   protected
     procedure AssignLocationTo(Dest: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     procedure DoChanged; override;
-
     function GetHitCount: Integer; override;
     function GetValid: TValidState; override;
     procedure SetBreakHitCount(const AValue: Integer); override;
@@ -367,9 +368,11 @@ type
     function GetActions: TIDEBreakPointActions; virtual;
     function GetGroup: TIDEBreakPointGroup; virtual;
     function GetAutoContinueTime: Cardinal; virtual;
+    function GetLogMessage: String; virtual;
     procedure SetActions(const AValue: TIDEBreakPointActions); virtual;
     procedure SetGroup(const AValue: TIDEBreakPointGroup); virtual;
     procedure SetAutoContinueTime(const AValue: Cardinal); virtual;
+    procedure SetLogMessage(const AValue: String); virtual;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -389,6 +392,7 @@ type
     property AutoContinueTime: Cardinal read GetAutoContinueTime write SetAutoContinueTime;
     property Group: TIDEBreakPointGroup read GetGroup write SetGroup;
     property Loading: Boolean read FLoading;
+    property LogMessage: String read GetLogMessage write SetLogMessage;
   end;
   TIDEBreakPointClass = class of TIDEBreakPoint;
 
@@ -402,6 +406,7 @@ type
   protected
     procedure DoChanged; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
+    procedure DoLogMessage(const AMessage: String); virtual;
     property  Debugger: TDebugger read GetDebugger;
   public
     constructor Create(ACollection: TCollection); override;
@@ -2116,7 +2121,8 @@ const
   DBGBreakPointActionNames: array[TIDEBreakPointAction] of string = (
     'Stop',
     'EnableGroup',
-    'DisableGroup'
+    'DisableGroup',
+    'LogMessage'
     );
 
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
@@ -3495,6 +3501,20 @@ begin
   Changed;
 end;
 
+procedure TIDEBreakPoint.SetLogMessage(const AValue: String);
+begin
+  if FLogMessage <> AValue then
+  begin
+    FLogMessage := AValue;
+    Changed;
+  end;
+end;
+
+function TIDEBreakPoint.GetLogMessage: String;
+begin
+  Result := FLogMessage;
+end;
+
 procedure TIDEBreakPoint.AssignLocationTo(Dest: TPersistent);
 var
   DestBreakPoint: TBaseBreakPoint absolute Dest;
@@ -3512,6 +3532,7 @@ begin
   then begin
     TIDEBreakPoint(Dest).Actions := FActions;
     TIDEBreakPoint(Dest).AutoContinueTime := FAutoContinueTime;
+    TIDEBreakPoint(Dest).LogMessage := FLogMessage;
   end;
 
   if (Collection <> nil) and (TIDEBreakPoints(Collection).FMaster <> nil)
@@ -3642,9 +3663,11 @@ begin
   Changed;
 end;
 
-procedure TIDEBreakPoint.DoHit (const ACount: Integer; var AContinue: Boolean );
+procedure TIDEBreakPoint.DoHit(const ACount: Integer; var AContinue: Boolean );
 begin
   inherited DoHit(ACount, AContinue);
+  if bpaLogMessage in Actions
+  then FMaster.DoLogMessage(FLogMessage);
   if bpaEnableGroup in Actions
   then EnableGroups;
   if bpaDisableGroup in Actions
@@ -3713,6 +3736,7 @@ begin
     InitialEnabled:=XMLConfig.GetValue(Path+'InitialEnabled/Value',true);
     Enabled:=FInitialEnabled;
     FLine:=XMLConfig.GetValue(Path+'Line/Value',-1);
+    FLogMessage:=XMLConfig.GetValue(Path+'LogMessage/Value','');
     NewActions:=[];
     for CurAction:=Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
       if XMLConfig.GetValue(
@@ -3780,6 +3804,7 @@ begin
   AConfig.SetDeleteValue(APath+'Source/Value',Filename,'');
   AConfig.SetDeleteValue(APath+'InitialEnabled/Value',InitialEnabled,true);
   AConfig.SetDeleteValue(APath+'Line/Value',Line,-1);
+  AConfig.SetDeleteValue(APath+'LogMessage/Value',LogMessage,'');
 
   for CurAction := Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
   begin
@@ -3889,6 +3914,8 @@ begin
   if BreakHitcount > 0
   then ACanContinue := cnt < BreakHitcount;
   DoHit(cnt, ACanContinue);
+  if Assigned(FSlave)
+  then FSlave.DoHit(cnt, ACanContinue);
   Debugger.DoBreakpointHit(Self, ACanContinue)
 end;
 
@@ -3912,6 +3939,11 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TDBGBreakPoint.DoLogMessage(const AMessage: String);
+begin
+  Debugger.DoDbgEvent(ecBreakpoint, etBreakpointMessage, 'Breakpoint Message: ' + AMessage);
 end;
 
 function TDBGBreakPoint.GetDebugger: TDebugger;

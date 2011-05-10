@@ -45,6 +45,7 @@ type
       const ABreakpoint: TIDEBreakPoint);
     procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
       const ABreakpoint: TIDEBreakPoint);
+    procedure chkLogMessageChange(Sender: TObject);
   private
     FBreakpointsNotification : TIDEBreakPointsNotification;
     FBreakpoint: TIDEBreakPoint;
@@ -66,6 +67,11 @@ procedure TBreakPropertyDlg.BreakPointUpdate(
   const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
 begin
   UpdateInfo;
+end;
+
+procedure TBreakPropertyDlg.chkLogMessageChange(Sender: TObject);
+begin
+  edtLogMessage.Enabled := chkLogMessage.Checked;
 end;
 
 procedure TBreakPropertyDlg.btnHelpClick(Sender: TObject);
@@ -104,8 +110,9 @@ begin
   if chkDisableGroups.Checked then Include(Actions, bpaDisableGroup);
   if chkEnableGroups.Checked then Include(Actions, bpaEnableGroup);
 //  if chkEvalExpression.Checked then Include(Actions, bpaEValExpression);
-//  if chkLogMessage.Checked then Include(Actions, bpaLogMessage);
+  if chkLogMessage.Checked then Include(Actions, bpaLogMessage);
   FBreakpoint.Actions := Actions;
+  FBreakpoint.LogMessage := edtLogMessage.Text;
 
   InputHistories.HistoryLists.GetList('BreakPointExpression', True).Add(edtCondition.Text);
 end;
@@ -144,7 +151,8 @@ begin
   chkDisableGroups.Checked := bpaDisableGroup in Actions;
   chkEnableGroups.Checked := bpaEnableGroup in Actions;
 //  chkEvalExpression.Checked := bpaEValExpression in Actions;
-//  chkLogMessage.Checked := bpaLogMessage in Actions;
+  chkLogMessage.Checked := bpaLogMessage in Actions;
+  edtLogMessage.Text := FBreakpoint.LogMessage;
 end;
 
 constructor TBreakPropertyDlg.Create(AOwner: TComponent; ABreakPoint: TIDEBreakPoint);

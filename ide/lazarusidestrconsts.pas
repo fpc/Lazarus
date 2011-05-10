@@ -4624,6 +4624,7 @@ resourcestring
   lisBreak = 'Break';
   lisEnableGroup = 'Enable Group';
   lisDisableGroup = 'Disable Group';
+  lisLogMessage = 'Log Message';
   lisAutoContinue = 'Auto Continue';
   lisDisabled = 'Disabled';
   lisInvalidOff = 'Invalid (Off)';
@@ -4647,7 +4648,6 @@ resourcestring
   lisMS = '(ms)';
   lisActions = 'Actions:';
   lisEvalExpression = 'Eval expression';
-  lisLogMessage = 'Log message';
 
   // Debug Output Dialog
   lisCopyAllOutputClipboard = 'Copy all output to clipboard';
