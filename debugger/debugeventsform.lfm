@@ -6,6 +6,7 @@ inherited DbgEventsForm: TDbgEventsForm
   BorderStyle = bsSizeToolWin
   ClientHeight = 208
   ClientWidth = 577
+  PopupMenu = PopupMenu1
   object tvFilteredEvents: TTreeView[0]
     Left = 0
     Height = 208
@@ -264,6 +265,41 @@ inherited DbgEventsForm: TDbgEventsForm
       OnExecute = EditCopy1Execute
       OnUpdate = EditCopy1Update
       ShortCut = 16451
+    end
+    object actClear: TAction
+      Caption = 'actClear'
+      OnExecute = actClearExecute
+    end
+    object actSave: TAction
+      Caption = 'actSave'
+      OnExecute = actSaveExecute
+    end
+    object actAddComment: TAction
+      Caption = 'actAddComment'
+      OnExecute = actAddCommentExecute
+    end
+    object actOptions: TAction
+      Caption = 'actOptions'
+      OnExecute = actOptionsExecute
+    end
+  end
+  object PopupMenu1: TPopupMenu[3]
+    left = 65
+    top = 39
+    object MenuItem1: TMenuItem
+      Action = actClear
+    end
+    object MenuItem2: TMenuItem
+      Action = actSave
+    end
+    object MenuItem3: TMenuItem
+      Action = actAddComment
+    end
+    object MenuItem4: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem5: TMenuItem
+      Action = actOptions
     end
   end
 end

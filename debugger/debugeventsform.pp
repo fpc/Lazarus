@@ -34,16 +34,32 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls, ActnList,
-  StdActns, ClipBrd, Debugger, DebuggerDlg, LazarusIDEStrConsts, EnvironmentOpts;
+  StdActns, ClipBrd, Menus, Dialogs, FileUtil, Debugger, DebuggerDlg,
+  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEOptionsIntf,
+  IDEImagesIntf, LazIDEIntf, debugger_eventlog_options;
 
 type
   { TDbgEventsForm }
 
   TDbgEventsForm = class(TDebuggerDlg)
+    actClear: TAction;
+    actAddComment: TAction;
+    actOptions: TAction;
+    actSave: TAction;
     ActionList1: TActionList;
     EditCopy1: TEditCopy;
     imlMain: TImageList;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    PopupMenu1: TPopupMenu;
     tvFilteredEvents: TTreeView;
+    procedure actAddCommentExecute(Sender: TObject);
+    procedure actClearExecute(Sender: TObject);
+    procedure actOptionsExecute(Sender: TObject);
+    procedure actSaveExecute(Sender: TObject);
     procedure EditCopy1Execute(Sender: TObject);
     procedure EditCopy1Update(Sender: TObject);
     procedure tvFilteredEventsAdvancedCustomDrawItem(Sender: TCustomTreeView;
@@ -109,6 +125,48 @@ begin
   Clipboard.Open;
   Clipboard.AsText := tvFilteredEvents.Selected.Text;
   Clipboard.Close;
+end;
+
+procedure TDbgEventsForm.actClearExecute(Sender: TObject);
+begin
+  Clear;
+end;
+
+procedure TDbgEventsForm.actOptionsExecute(Sender: TObject);
+begin
+  LazarusIDE.DoOpenIDEOptions(TDebuggerEventLogOptionsFrame);
+end;
+
+procedure TDbgEventsForm.actAddCommentExecute(Sender: TObject);
+var
+  S: String;
+begin
+  S := '';
+  if InputQuery(lisMenuViewDebugEvents, lisEventsLogAddComment, S) then
+    AddEvent(ecDebugger, etDefault, S);
+end;
+
+procedure TDbgEventsForm.actSaveExecute(Sender: TObject);
+var
+  SaveDialog: TSaveDialog;
+  AFilename: String;
+begin
+  SaveDialog := TSaveDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(SaveDialog);
+    SaveDialog.Title   := lisMVSaveMessagesToFileTxt;
+    SaveDialog.Options := SaveDialog.Options + [ofPathMustExist];
+    if SaveDialog.Execute then
+    begin
+      AFilename := CleanAndExpandFilename(SaveDialog.Filename);
+      if ExtractFileExt(AFilename) = '' then
+        AFilename := AFilename + '.txt';
+      FEvents.SaveToFile(AFilename);
+    end;
+    InputHistories.StoreFileDialogSettings(SaveDialog);
+  finally
+    SaveDialog.Free;
+  end;
 end;
 
 procedure TDbgEventsForm.EditCopy1Update(Sender: TObject);
@@ -205,7 +263,13 @@ constructor TDbgEventsForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Caption := lisMenuViewDebugEvents;
+  actClear.Caption := lisEventLogClear;
+  actSave.Caption := lisEventLogSaveToFile;
+  actAddComment.Caption := lisEventsLogAddComment;
+  actOptions.Caption := lisEventLogOptions;
   FEvents := TStringList.Create;
+  PopupMenu1.Images := IDEImages.Images_16;
+  actOptions.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
 end;
 
 destructor TDbgEventsForm.Destroy;
