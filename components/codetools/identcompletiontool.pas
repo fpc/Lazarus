@@ -50,7 +50,7 @@ uses
   Classes, SysUtils, FileProcs, CodeTree, CodeAtom, CustomCodeTool,
   CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools, LinkScanner,
   AVL_Tree, CodeToolMemManager, DefineTemplates,
-  SourceChanger, FindDeclarationTool, PascalParserTool;
+  SourceChanger, FindDeclarationTool, PascalReaderTool, PascalParserTool;
   
 
 type
@@ -91,6 +91,12 @@ type
     iliHasParamList,
     iliIsReadOnlyValid,
     iliIsReadOnly,
+    iliAreHintModifiersValid,
+    iliIsDeprecated,
+    iliIsPlatform,
+    iliIsExperimental,
+    iliIsUnimplemented,
+    iliIsLibrary,
     iliAtCursor // the item is the identifier at the completion
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
@@ -143,6 +149,7 @@ type
     function IsProcNodeWithParams: boolean;
     function IsPropertyWithParams: boolean;
     function IsPropertyReadOnly: boolean;
+    function GetHintModifiers: TPascalHintModifiers;
     function CheckHasChilds: boolean;
     function CanBeAssigned: boolean;
     procedure UpdateBaseContext;
@@ -2775,12 +2782,12 @@ var
   ANode: TCodeTreeNode;
 begin
   if not (iliHasParamListValid in Flags) then begin
+    Include(Flags,iliHasParamListValid);
     ANode:=Node;
     if (ANode<>nil) and Tool.PropertyNodeHasParamList(ANode) then
       Include(Flags,iliHasParamList)
     else
       Exclude(Flags,iliHasParamList);
-    Include(Flags,iliHasParamListValid)
   end;
   Result:=iliHasParamList in Flags;
 end;
@@ -2790,15 +2797,40 @@ var
   ANode: TCodeTreeNode;
 begin
   if not (iliIsReadOnlyValid in Flags) then begin
+    Include(Flags,iliIsReadOnlyValid);
     ANode:=Node;
     if (ANode<>nil) and Tool.PropertyHasSpecifier(ANode,'read',false)
     and not Tool.PropertyHasSpecifier(ANode,'write',false) then
       Include(Flags,iliIsReadOnly)
     else
       Exclude(Flags,iliIsReadOnly);
-    Include(Flags,iliIsReadOnlyValid)
   end;
   Result:=iliIsReadOnly in Flags;
+end;
+
+function TIdentifierListItem.GetHintModifiers: TPascalHintModifiers;
+var
+  ANode: TCodeTreeNode;
+begin
+  if not (iliAreHintModifiersValid in Flags) then begin
+    Include(Flags,iliAreHintModifiersValid);
+    ANode:=Node;
+    if ANode<>nil then begin
+      Result:=Tool.GetHintModifiers(ANode);
+      if phmDeprecated in Result then Include(Flags,iliIsDeprecated);
+      if phmPlatform in Result then Include(Flags,iliIsPlatform);
+      if phmLibrary in Result then Include(Flags,iliIsLibrary);
+      if phmUnimplemented in Result then Include(Flags,iliIsUnimplemented);
+      if phmExperimental in Result then Include(Flags,iliIsExperimental);
+    end;
+  end else begin
+    Result:=[];
+    if iliIsDeprecated in Flags then Include(Result,phmDeprecated);
+    if iliIsPlatform in Flags then Include(Result,phmPlatform);
+    if iliIsLibrary in Flags then Include(Result,phmLibrary);
+    if iliIsUnimplemented in Flags then Include(Result,phmUnimplemented);
+    if iliIsExperimental in Flags then Include(Result,phmExperimental);
+  end;
 end;
 
 function TIdentifierListItem.CheckHasChilds: boolean;

@@ -105,7 +105,7 @@ const
   ctnMethodMap          = 51; // child of visibility section or AllClassInterfaces
   
   ctnProcedure          = 60;  // children: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
-  ctnProcedureHead      = 61;  // children: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnResultType
+  ctnProcedureHead      = 61;  // children: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnIdentifier
   ctnParameterList      = 62;  // children: ctnVarDefinition
 
   ctnIdentifier         = 70;
@@ -134,6 +134,7 @@ const
   ctnGenericParams      = 93;
   ctnGenericParameter   = 94;
   ctnConstant           = 95;
+  ctnHintModifier       = 96; // deprecated, platform, unimplemented, library, experimental
 
   ctnBeginBlock         =100;
   ctnAsmBlock           =101;
@@ -417,6 +418,7 @@ begin
   ctnGenericParams: Result:='Generic Type Params';
   ctnGenericParameter: Result:='Generic Type Parameter';
   ctnConstant: Result:='Constant';
+  ctnHintModifier: Result:='Hint Modifier';
 
   ctnWithVariable: Result:='With Variable';
   ctnWithStatement: Result:='With Statement';

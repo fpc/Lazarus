@@ -42,6 +42,14 @@ uses
   SourceChanger, LinkScanner, AVL_Tree;
 
 type
+  TPascalHintModifier = (
+    phmDeprecated,
+    phmPlatform,
+    phmLibrary,
+    phmUnimplemented,
+    phmExperimental
+    );
+  TPascalHintModifiers = set of TPascalHintModifier;
 
   { TPascalReaderTool }
 
@@ -64,6 +72,7 @@ type
         StartPos, MinPos, MaxPos, MaxLen: integer): string;
     function ReadStringConstantValue(StartPos: integer): string;
     function GetNodeIdentifier(Node: TCodeTreeNode): PChar;
+    function GetHintModifiers(Node: TCodeTreeNode): TPascalHintModifiers;
 
     // properties
     function ExtractPropType(PropNode: TCodeTreeNode;
@@ -792,27 +801,41 @@ procedure TPascalReaderTool.MoveCursorToFirstProcSpecifier(
 // CurPos will stand on the first proc specifier or on a semicolon
 begin
   //DebugLn(['TPascalReaderTool.MoveCursorToFirstProcSpecifier ',ProcNode.DescAsString,' ',ProcNode.StartPos]);
-  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then begin
+  if (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedureHead) then
+    ProcNode:=ProcNode.FirstChild;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedureHead) then begin
     SaveRaiseException('Internal Error in'
       +' TPascalParserTool.MoveCursorFirstProcSpecifier: '
       +' (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)');
   end;
-  if ProcNode.FirstChild=nil then exit;
-  MoveCursorToNodeStart(ProcNode.FirstChild);
-  ReadNextAtom;
-  if AtomIsIdentifier(false) then begin
-    // read name
+  if (ProcNode.LastChild<>nil) and (ProcNode.LastChild.Desc=ctnIdentifier) then
+  begin
+    // jump behind function result type
+    MoveCursorToCleanPos(ProcNode.LastChild.EndPos);
     ReadNextAtom;
-    if (CurPos.Flag=cafPoint) then begin
-      // read method name
+  end else if (ProcNode.FirstChild<>nil)
+    and (ProcNode.FirstChild.Desc=ctnParameterList)
+  then begin
+    // jump behind parameter list
+    MoveCursorToCleanPos(ProcNode.FirstChild.EndPos);
+    ReadNextAtom;
+  end else begin
+    MoveCursorToNodeStart(ProcNode);
+    ReadNextAtom;
+    if AtomIsIdentifier(false) then begin
+      // read name
       ReadNextAtom;
+      if (CurPos.Flag=cafPoint) then begin
+        // read method name
+        ReadNextAtom;
+        ReadNextAtom;
+      end;
+    end;
+    if (CurPos.Flag=cafRoundBracketOpen) then begin
+      // read paramlist
+      ReadTilBracketClose(false);
       ReadNextAtom;
     end;
-  end;
-  if (CurPos.Flag=cafRoundBracketOpen) then begin
-    // read paramlist
-    ReadTilBracketClose(false);
-    ReadNextAtom;
   end;
   if (CurPos.Flag=cafColon) then begin
     // read function result type
@@ -1382,6 +1405,82 @@ begin
   ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,
   ctnEnumIdentifier,ctnIdentifier:
     Result:=@Src[Node.StartPos];
+  end;
+end;
+
+function TPascalReaderTool.GetHintModifiers(Node: TCodeTreeNode
+  ): TPascalHintModifiers;
+
+  function IsHintModifier: boolean;
+  begin
+    if CurPos.Flag<>cafWord then exit(false);
+    Result:=true;
+    if UpAtomIs('PLATFORM') then
+      Include(GetHintModifiers,phmPlatform)
+    else if UpAtomIs('UNIMPLEMENTED') then
+      Include(GetHintModifiers,phmUnimplemented)
+    else if UpAtomIs('LIBRARY') then
+      Include(GetHintModifiers,phmLibrary)
+    else if UpAtomIs('EXPERIMENTAL') then
+      Include(GetHintModifiers,phmExperimental)
+    else if UpAtomIs('DEPRECATED') then
+      Include(GetHintModifiers,phmDeprecated)
+    else
+      Result:=false;
+  end;
+
+begin
+  Result:=[];
+  if Node=nil then exit;
+  case Node.Desc of
+
+  ctnProgram,ctnPackage,ctnLibrary,ctnUnit:
+    begin
+      MoveCursorToNodeStart(Node);
+      ReadNextAtom;
+      if not (UpAtomIs('PROGRAM') or UpAtomIs('PACKAGE') or UpAtomIs('LIBRARY')
+        or UpAtomIs('UNIT')) then exit;
+      ReadNextAtom;// name
+      while IsHintModifier do ReadNextAtom;
+    end;
+
+  ctnProcedure,ctnProcedureType,ctnProcedureHead:
+    begin
+      if Node.Desc<>ctnProcedureHead then begin
+        Node:=Node.FirstChild;
+        if Node=nil then exit;
+      end;
+      MoveCursorToFirstProcSpecifier(Node);
+      // ToDo:
+    end;
+
+  ctnProperty:
+    begin
+      Node:=Node.LastChild;
+      while Node<>nil do begin
+        if Node.Desc=ctnHintModifier then begin
+          MoveCursorToNodeStart(Node);
+          ReadNextAtom;
+          IsHintModifier;
+        end;
+        Node:=Node.PriorBrother;
+      end;
+    end;
+
+  ctnVarDefinition,ctnConstant,ctnTypeDefinition,ctnGenericType:
+    begin
+      Node:=FindTypeNodeOfDefinition(Node);
+      if Node=nil then exit;
+      while (Node<>nil) do begin
+        if Node.Desc=ctnHintModifier then begin
+          MoveCursorToNodeStart(Node);
+          ReadNextAtom;
+          IsHintModifier;
+        end;
+        Node:=Node.NextBrother;
+      end;
+    end;
+
   end;
 end;
 

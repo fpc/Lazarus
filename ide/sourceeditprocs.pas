@@ -224,6 +224,7 @@ var
   SubNode: TCodeTreeNode;
   IsReadOnly: boolean;
   ImageIndex: longint;
+  HintModifiers: TPascalHintModifiers;
 begin
   ForegroundColor := ColorToRGB(ACanvas.Font.Color);
   Result.X := 0;
@@ -233,7 +234,7 @@ begin
     IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[Index];
     if IdentItem=nil then begin
       if not MeasureOnly then
-        ACanvas.TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools');
+        ACanvas.TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools or misuse of PaintCompletionItem');
       exit;
     end;
     BackgroundColor:=ColorToRGB(ACanvas.Brush.Color);
@@ -342,6 +343,12 @@ begin
       if x>MaxX then exit;
     end;
     ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
+
+    if ImageIndex<0 then begin
+      HintModifiers:=IdentItem.GetHintModifiers;
+      if HintModifiers<>[] then
+        ImageIndex:=IDEImages.LoadImage(16,'ce_property_readonly');
+    end;
 
     // paint icon
     if ImageIndex>=0 then begin
