@@ -980,7 +980,9 @@ msgid "Down"
 msgstr "Dolů"
 
 #: lazarusidestrconsts.dlgedadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "Přidat..."
 
 #: lazarusidestrconsts.dlgedback
@@ -1030,7 +1032,9 @@ msgid "Display"
 msgstr "Zobrazení"
 
 #: lazarusidestrconsts.dlgededit
-msgid "Edit..."
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
 msgstr "Upravit..."
 
 #: lazarusidestrconsts.dlgedfiles
@@ -2165,7 +2169,9 @@ msgid "Other actions using the same button"
 msgstr "Jiné akce použitím stejného tlačítka"
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+#, fuzzy
+#| msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
 msgstr "Můžou být spouštěny v závislosti na modifikační klávese, nastavení předání řízení, jednoduché/dvojité, stisknuto/povoleno, ..."
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
@@ -2610,7 +2616,9 @@ msgid "Search terminated by user."
 msgstr "Hledání přerušeno uživatelem."
 
 #: lazarusidestrconsts.dlgsearchcaption
-msgid "Searching..."
+#, fuzzy
+#| msgid "Searching..."
+msgid "Searching ..."
 msgstr "Hledání..."
 
 #: lazarusidestrconsts.dlgsearchpaths
@@ -3496,6 +3504,10 @@ msgstr "Přidat balíček do projektu"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Přidat závorky parametru"
+
+#: lazarusidestrconsts.lisaddress
+msgid "Address:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5698,7 +5710,9 @@ msgid "* Converting file %s *"
 msgstr "* Převádění souboru %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files... ***"
+#, fuzzy
+#| msgid "*** Converting unit files... ***"
+msgid "*** Converting unit files ... ***"
 msgstr "*** Převádění souborů jednotek... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -5722,7 +5736,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "Selhal převod jednotky%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files... ***"
+#, fuzzy
+#| msgid "*** Find all unit files... ***"
+msgid "*** Find all unit files ... ***"
 msgstr "*** Najít všechny soubory jednotek... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -5774,7 +5790,9 @@ msgid "* Repairing form file %s *"
 msgstr "* Oprava formulářového souboru %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files... ***"
+#, fuzzy
+#| msgid "*** Repairing form files... ***"
+msgid "*** Repairing form files ... ***"
 msgstr "*** Opravování formulářového souboru... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6182,6 +6200,11 @@ msgstr "Povolit vše"
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
 msgstr "Kopírovat do schránky"
+
+#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdbgemexpression
 msgid "&Expression:"
@@ -7359,6 +7382,26 @@ msgstr "Vyhodnotit výraz"
 msgid "E&valuate"
 msgstr "&Vyhodnocení"
 
+#: lazarusidestrconsts.liseventlogclear
+msgid "Clear Events"
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr "Každé n-té číslo řádku:"
@@ -8208,7 +8251,9 @@ msgid "Index"
 msgstr "Index"
 
 #: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted..."
+#, fuzzy
+#| msgid "Aborted..."
+msgid "Aborted ..."
 msgstr "Přerušeno..."
 
 #: lazarusidestrconsts.lisinfobuildcaption
@@ -8216,11 +8261,15 @@ msgid "Compile Project"
 msgstr "Kompilovat projekt"
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-msgid "Compiling..."
+#, fuzzy
+#| msgid "Compiling..."
+msgid "Compiling ..."
 msgstr "Překládání..."
 
 #: lazarusidestrconsts.lisinfobuilderror
-msgid "Error..."
+#, fuzzy
+#| msgid "Error..."
+msgid "Error ..."
 msgstr "Chyba..."
 
 #: lazarusidestrconsts.lisinfobuilderrors
@@ -8250,7 +8299,9 @@ msgid "Project:"
 msgstr "Projekt:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success..."
+#, fuzzy
+#| msgid "Success..."
+msgid "Success ..."
 msgstr "Úspěch..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
@@ -9309,8 +9360,10 @@ msgid "None"
 msgstr "Žádné"
 
 #: lazarusidestrconsts.lislazbuildok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "Ok"
+msgid "OK"
 msgstr "Ok"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
@@ -9875,7 +9928,9 @@ msgid "Install/Uninstall packages ..."
 msgstr "Instalovat/Odinstalovat balíčky..."
 
 #: lazarusidestrconsts.lismenueditor
-msgid "Menu Editor..."
+#, fuzzy
+#| msgid "Menu Editor..."
+msgid "Menu Editor ..."
 msgstr "Editor menu..."
 
 #: lazarusidestrconsts.lismenueditorcancel
@@ -9888,7 +9943,9 @@ msgid "Create Submenu"
 msgstr "Vytvořit podmenu"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-msgid "Delete From Template..."
+#, fuzzy
+#| msgid "Delete From Template..."
+msgid "Delete From Template ..."
 msgstr "Odstranit ze šablony..."
 
 #: lazarusidestrconsts.lismenueditordeleteitem
@@ -9900,7 +9957,9 @@ msgid "Handle OnClick Event"
 msgstr "Obsloužit událost OnClick"
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-msgid "Insert From Template..."
+#, fuzzy
+#| msgid "Insert From Template..."
+msgid "Insert From Template ..."
 msgstr "Vložit z šablony..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
@@ -9924,11 +9983,15 @@ msgid "Move Up (or left)"
 msgstr "Posunout nahoru (nebo vlevo)"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-msgid "New Template Description..."
+#, fuzzy
+#| msgid "New Template Description..."
+msgid "New Template Description ..."
 msgstr "Nový popis šablony..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-msgid "Save As Template..."
+#, fuzzy
+#| msgid "Save As Template..."
+msgid "Save As Template ..."
 msgstr "Uložit jako šablonu..."
 
 #: lazarusidestrconsts.lismenueditorselectmenu
@@ -9944,7 +10007,9 @@ msgid "Template Preview"
 msgstr "Náhled šablony"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
-msgid "Enclose in $IFDEF..."
+#, fuzzy
+#| msgid "Enclose in $IFDEF..."
+msgid "Enclose in $IFDEF ..."
 msgstr "Uzavřít v $IFDEF..."
 
 #: lazarusidestrconsts.lismenuencloseselection
@@ -10277,7 +10342,9 @@ msgid "&Replace ..."
 msgstr "&Nahradit..."
 
 #: lazarusidestrconsts.lismenureportingbug
-msgid "Reporting a bug..."
+#, fuzzy
+#| msgid "Reporting a bug..."
+msgid "Reporting a bug ..."
 msgstr "Nahlásit závadu..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -10617,7 +10684,9 @@ msgid "Debug output"
 msgstr "Ladící výstup"
 
 #: lazarusidestrconsts.lismenuviewforms
-msgid "Forms..."
+#, fuzzy
+#| msgid "Forms..."
+msgid "Forms ..."
 msgstr "Formuláře..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
@@ -10701,7 +10770,9 @@ msgid "Unit Information ..."
 msgstr "Informace jednotky"
 
 #: lazarusidestrconsts.lismenuviewunits
-msgid "Units..."
+#, fuzzy
+#| msgid "Units..."
+msgid "Units ..."
 msgstr "Jednotky..."
 
 #: lazarusidestrconsts.lismenuviewwatches
@@ -12738,6 +12809,10 @@ msgstr "Program%sProgram Free Pascalu. Zdroj programu je automaticky spravován 
 msgid "Program detected"
 msgstr "Zjištěn program"
 
+#: lazarusidestrconsts.lisprogramnotfound
+msgid "Program %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Zdrojový soubor programu musí mít pascalovkou příponu jako .pas, .pp nebo .lpr"
@@ -13379,7 +13454,9 @@ msgid "Save all messages to file"
 msgstr "Uložit všechna hlášení do souboru"
 
 #: lazarusidestrconsts.lissaveallmodified
-msgid "save all modified files"
+#, fuzzy
+#| msgid "save all modified files"
+msgid "Save all modified files"
 msgstr "Uložit všechny upravené soubory"
 
 #: lazarusidestrconsts.lissaveandexitdialog
@@ -13399,7 +13476,9 @@ msgid "Save changes to project %s?"
 msgstr "Uložit změny projektu %s?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-msgid "save current editor file"
+#, fuzzy
+#| msgid "save current editor file"
+msgid "Save current editor file"
 msgstr "uložit aktuální editovaný soubor"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
@@ -13713,7 +13792,9 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "Zdroj a cíl jsou stejné:%s%s"
 
 #: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source breakpoint"
+#, fuzzy
+#| msgid "&Source Breakpoint..."
+msgid "&Source Breakpoint ..."
 msgstr "&Zdrojový bod přerušení"
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
@@ -13870,6 +13951,10 @@ msgstr "Tab"
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Pořadí záložek"
+
+#: lazarusidestrconsts.listaddressbreakpoint
+msgid "&Address Breakpoint ..."
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -14777,7 +14862,9 @@ msgid "Unable to find file %s%s%s."
 msgstr "Nelze nalézt soubor %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+#, fuzzy
+#| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "Nelze najít soubor %s%s%s.%sPokud patří do Vašeho projektu, zkontrolujte cestu hledání v %sProjekt -> Volby překladače... -> Cesty->Ostatní soubory jednotek. Pokud tento soubor patří do balíčku, zkontrolujte příslušné volby překladače balíčku. Pokud tento soubor patří do Lazarusu, ujistěte se čistým přeložením. Pokud soubor patří do FPC, zkontrolujte fpc.cfg. Pokud si nejste jistí, použijte Projekt -> Volby překladače... -> Test"
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15156,7 +15243,10 @@ msgid "Copy version information to clipboard"
 msgstr "Zkopírovat informace o verzi do schránky"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-msgid "View Breakpoint Properties"
+#, fuzzy
+#| msgid "Breakpoint Properties..."
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
 msgstr "Zobrazit vlastnosti Bodu přerušení"
 
 #: lazarusidestrconsts.lisviewprojectunits
@@ -15282,6 +15372,10 @@ msgstr "Pracovní složka pro sestavení"
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
 msgstr "Pracovní složka pro spuštění"
+
+#: lazarusidestrconsts.lisworkingdirectorynotfound
+msgid "Working directory %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
@@ -16854,7 +16948,9 @@ msgid "Encoding"
 msgstr "Kódování"
 
 #: lazarusidestrconsts.uemevaluatemodify
-msgid "&Evaluate/Modify..."
+#, fuzzy
+#| msgid "&Evaluate/Modify..."
+msgid "&Evaluate/Modify ..."
 msgstr "&Vyhodnocení/Upravení..."
 
 #: lazarusidestrconsts.uemfinddeclaration
@@ -16870,7 +16966,9 @@ msgid "Highlighter"
 msgstr "Zvýrazňovač"
 
 #: lazarusidestrconsts.ueminspect
-msgid "&Inspect..."
+#, fuzzy
+#| msgid "&Inspect..."
+msgid "&Inspect ..."
 msgstr "&Zkoumat..."
 
 #: lazarusidestrconsts.ueminvertassignment

@@ -980,7 +980,9 @@ msgid "Down"
 msgstr "下へ"
 
 #: lazarusidestrconsts.dlgedadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "追加..."
 
 #: lazarusidestrconsts.dlgedback
@@ -1034,7 +1036,9 @@ msgid "Display"
 msgstr "表示"
 
 #: lazarusidestrconsts.dlgededit
-msgid "Edit..."
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
 msgstr "編集..."
 
 #: lazarusidestrconsts.dlgedfiles
@@ -2173,7 +2177,9 @@ msgid "Other actions using the same button"
 msgstr "同じボタンを用いる他の動作"
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+#, fuzzy
+#| msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
 msgstr "これらはSingle/Double, Up/Down...などのモディファイアキーに応じて実行されます。"
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
@@ -2630,7 +2636,9 @@ msgid "Search terminated by user."
 msgstr "検索がユーザによって終了"
 
 #: lazarusidestrconsts.dlgsearchcaption
-msgid "Searching..."
+#, fuzzy
+#| msgid "Searching..."
+msgid "Searching ..."
 msgstr "検索中..."
 
 #: lazarusidestrconsts.dlgsearchpaths
@@ -3534,6 +3542,10 @@ msgstr "パッケージをプロジェクトに追加"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "パラメータの括弧を追加"
+
+#: lazarusidestrconsts.lisaddress
+msgid "Address:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5746,7 +5758,9 @@ msgid "* Converting file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files... ***"
+#, fuzzy
+#| msgid "*** Converting unit files... ***"
+msgid "*** Converting unit files ... ***"
 msgstr "*** ユニットファイルを変換中... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -5770,7 +5784,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "変換に失敗したユニット%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files... ***"
+#, fuzzy
+#| msgid "*** Find all unit files... ***"
+msgid "*** Find all unit files ... ***"
 msgstr "*** すべてのユニットファイルを検索... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -5824,7 +5840,9 @@ msgid "* Repairing form file %s *"
 msgstr "フォームファイル %sを修復中"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files... ***"
+#, fuzzy
+#| msgid "*** Repairing form files... ***"
+msgid "*** Repairing form files ... ***"
 msgstr "***フォームファイルを修復中...***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6233,6 +6251,11 @@ msgstr "すべて有効に"
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
 msgstr "クリップボードにコピー"
+
+#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdbgemexpression
 msgid "&Expression:"
@@ -7412,6 +7435,26 @@ msgstr "式を評価"
 msgid "E&valuate"
 msgstr "評価(&v)"
 
+#: lazarusidestrconsts.liseventlogclear
+msgid "Clear Events"
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr "すべてのn番目の行番号"
@@ -8263,7 +8306,9 @@ msgid "Index"
 msgstr "索引"
 
 #: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted..."
+#, fuzzy
+#| msgid "Aborted..."
+msgid "Aborted ..."
 msgstr "中止しました.."
 
 #: lazarusidestrconsts.lisinfobuildcaption
@@ -8271,11 +8316,15 @@ msgid "Compile Project"
 msgstr "プロジェクトをコンパイル"
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-msgid "Compiling..."
+#, fuzzy
+#| msgid "Compiling..."
+msgid "Compiling ..."
 msgstr "コンパイル中.."
 
 #: lazarusidestrconsts.lisinfobuilderror
-msgid "Error..."
+#, fuzzy
+#| msgid "Error..."
+msgid "Error ..."
 msgstr "エラー..."
 
 #: lazarusidestrconsts.lisinfobuilderrors
@@ -8305,7 +8354,9 @@ msgid "Project:"
 msgstr "プロジェクト："
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success..."
+#, fuzzy
+#| msgid "Success..."
+msgid "Success ..."
 msgstr "成功 ..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
@@ -9368,8 +9419,10 @@ msgid "None"
 msgstr "なし"
 
 #: lazarusidestrconsts.lislazbuildok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "Ok"
+msgid "OK"
 msgstr "Ok"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
@@ -9947,7 +10000,9 @@ msgid "Install/Uninstall packages ..."
 msgstr "パッケージをインストールもしくはアンインストール ..."
 
 #: lazarusidestrconsts.lismenueditor
-msgid "Menu Editor..."
+#, fuzzy
+#| msgid "Menu Editor..."
+msgid "Menu Editor ..."
 msgstr "メニュー エディタ..."
 
 #: lazarusidestrconsts.lismenueditorcancel
@@ -9960,7 +10015,9 @@ msgid "Create Submenu"
 msgstr "サブメニューを作成"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-msgid "Delete From Template..."
+#, fuzzy
+#| msgid "Delete From Template..."
+msgid "Delete From Template ..."
 msgstr "テンプレートから削除"
 
 #: lazarusidestrconsts.lismenueditordeleteitem
@@ -9972,7 +10029,9 @@ msgid "Handle OnClick Event"
 msgstr "OnClickイベントを操作"
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-msgid "Insert From Template..."
+#, fuzzy
+#| msgid "Insert From Template..."
+msgid "Insert From Template ..."
 msgstr "テンプレートから挿入"
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
@@ -9996,11 +10055,15 @@ msgid "Move Up (or left)"
 msgstr "上（または左）に移動"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-msgid "New Template Description..."
+#, fuzzy
+#| msgid "New Template Description..."
+msgid "New Template Description ..."
 msgstr "新規のテンプレートの説明..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-msgid "Save As Template..."
+#, fuzzy
+#| msgid "Save As Template..."
+msgid "Save As Template ..."
 msgstr "テンプレートとして保存"
 
 #: lazarusidestrconsts.lismenueditorselectmenu
@@ -10016,7 +10079,7 @@ msgid "Template Preview"
 msgstr "テンプレートプレビュー"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
-msgid "Enclose in $IFDEF..."
+msgid "Enclose in $IFDEF ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuencloseselection
@@ -10365,7 +10428,9 @@ msgid "&Replace ..."
 msgstr "置換(&R)"
 
 #: lazarusidestrconsts.lismenureportingbug
-msgid "Reporting a bug..."
+#, fuzzy
+#| msgid "Reporting a bug..."
+msgid "Reporting a bug ..."
 msgstr "不具合(バグ)を報告..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -10713,7 +10778,9 @@ msgid "Debug output"
 msgstr "デバッグ出力"
 
 #: lazarusidestrconsts.lismenuviewforms
-msgid "Forms..."
+#, fuzzy
+#| msgid "Forms..."
+msgid "Forms ..."
 msgstr "フォーム..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
@@ -10801,7 +10868,9 @@ msgid "Unit Information ..."
 msgstr "ユニットの情報を表示"
 
 #: lazarusidestrconsts.lismenuviewunits
-msgid "Units..."
+#, fuzzy
+#| msgid "Units..."
+msgid "Units ..."
 msgstr "ユニット..."
 
 #: lazarusidestrconsts.lismenuviewwatches
@@ -12856,6 +12925,10 @@ msgstr "プログラム%s freepascalプログラム。プログラムソース�
 msgid "Program detected"
 msgstr "プログラムが削除されました。"
 
+#: lazarusidestrconsts.lisprogramnotfound
+msgid "Program %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "プログラムソースは .pas, .ppあるいは.lprのようなpascal拡張子をもたなければなりません"
@@ -13501,7 +13574,9 @@ msgid "Save all messages to file"
 msgstr "すべてのメッセージをファイルに保存"
 
 #: lazarusidestrconsts.lissaveallmodified
-msgid "save all modified files"
+#, fuzzy
+#| msgid "save all modified files"
+msgid "Save all modified files"
 msgstr "すべての変更されたファイルを保存"
 
 #: lazarusidestrconsts.lissaveandexitdialog
@@ -13521,7 +13596,9 @@ msgid "Save changes to project %s?"
 msgstr "プロジェクトの変更を保存しますか?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-msgid "save current editor file"
+#, fuzzy
+#| msgid "save current editor file"
+msgid "Save current editor file"
 msgstr "現在のエディタファイルを保存"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
@@ -13835,7 +13912,9 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "出所(Source)と行き先が同じです:%s%s"
 
 #: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source breakpoint"
+#, fuzzy
+#| msgid "&Source Breakpoint..."
+msgid "&Source Breakpoint ..."
 msgstr "ソースのブレークポイント(&S)"
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
@@ -13992,6 +14071,10 @@ msgstr "タブ"
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "次のタブ順序"
+
+#: lazarusidestrconsts.listaddressbreakpoint
+msgid "&Address Breakpoint ..."
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -14898,7 +14981,9 @@ msgid "Unable to find file %s%s%s."
 msgstr "が見つかりません。"
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+#, fuzzy
+#| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "ファイル%s%s%sが見つかりません。%sもしそれがあなたのプロジェクトに属しているのであれば、%sプロジェクト→コンパイラオプション→検索パス→その他のファイルで検索パスをチェックしてください。もしこのファイルがパッケージに属しているのであれば、適切なパッケージコンパイラオプションをチェックしてください。もしこのファイルがlazarusに属しているのであれば、コンパイルがきれいに進むか確認してください。もしこのファイルがFPCに属しているのであれば、fpc.cfgをチェックしてください。もしよくわからなければ、プロジェクト→コンパイラオプション→テストでチェックしてください。"
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15285,7 +15370,10 @@ msgid "Copy version information to clipboard"
 msgstr "バージョン情報をクリップボードにコピー"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-msgid "View Breakpoint Properties"
+#, fuzzy
+#| msgid "Breakpoint Properties..."
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
 msgstr "ブレークポイントのプロパティを表示"
 
 #: lazarusidestrconsts.lisviewprojectunits
@@ -15411,6 +15499,10 @@ msgstr "構築の際の作業ディレクトリ"
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
 msgstr "実行の際の作業ディレクトリ"
+
+#: lazarusidestrconsts.lisworkingdirectorynotfound
+msgid "Working directory %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
@@ -16989,7 +17081,9 @@ msgid "Encoding"
 msgstr "エンコード中"
 
 #: lazarusidestrconsts.uemevaluatemodify
-msgid "&Evaluate/Modify..."
+#, fuzzy
+#| msgid "&Evaluate/Modify..."
+msgid "&Evaluate/Modify ..."
 msgstr "評価/修正(&E)"
 
 #: lazarusidestrconsts.uemfinddeclaration
@@ -17005,7 +17099,9 @@ msgid "Highlighter"
 msgstr "強調表示"
 
 #: lazarusidestrconsts.ueminspect
-msgid "&Inspect..."
+#, fuzzy
+#| msgid "&Inspect..."
+msgid "&Inspect ..."
 msgstr "検査(&I)"
 
 #: lazarusidestrconsts.ueminvertassignment

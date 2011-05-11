@@ -982,7 +982,9 @@ msgid "Down"
 msgstr "Down"
 
 #: lazarusidestrconsts.dlgedadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "Pridať..."
 
 #: lazarusidestrconsts.dlgedback
@@ -1034,7 +1036,9 @@ msgid "Display"
 msgstr "Zobraziť"
 
 #: lazarusidestrconsts.dlgededit
-msgid "Edit..."
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
 msgstr "Upraviť ..."
 
 #: lazarusidestrconsts.dlgedfiles
@@ -2173,7 +2177,7 @@ msgid "Other actions using the same button"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
@@ -2630,7 +2634,9 @@ msgid "Search terminated by user."
 msgstr "Hľadanie prerušené používateľom."
 
 #: lazarusidestrconsts.dlgsearchcaption
-msgid "Searching..."
+#, fuzzy
+#| msgid "Searching..."
+msgid "Searching ..."
 msgstr "Hľadanie ..."
 
 #: lazarusidestrconsts.dlgsearchpaths
@@ -3533,6 +3539,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddress
+msgid "Address:"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
@@ -5746,7 +5756,7 @@ msgid "* Converting file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files... ***"
+msgid "*** Converting unit files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -5770,7 +5780,7 @@ msgid "Failed to convert unit%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files... ***"
+msgid "*** Find all unit files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -5822,7 +5832,7 @@ msgid "* Repairing form file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files... ***"
+msgid "*** Repairing form files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6231,6 +6241,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgemexpression
@@ -7411,6 +7426,26 @@ msgstr ""
 msgid "E&valuate"
 msgstr ""
 
+#: lazarusidestrconsts.liseventlogclear
+msgid "Clear Events"
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr "Každé n-té číslo riadka:"
@@ -8262,7 +8297,9 @@ msgid "Index"
 msgstr "Index"
 
 #: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted..."
+#, fuzzy
+#| msgid "Aborted..."
+msgid "Aborted ..."
 msgstr "Zrušené..."
 
 #: lazarusidestrconsts.lisinfobuildcaption
@@ -8270,11 +8307,15 @@ msgid "Compile Project"
 msgstr "Preloži projekt"
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-msgid "Compiling..."
+#, fuzzy
+#| msgid "Compiling..."
+msgid "Compiling ..."
 msgstr "Prekladanie ..."
 
 #: lazarusidestrconsts.lisinfobuilderror
-msgid "Error..."
+#, fuzzy
+#| msgid "Error..."
+msgid "Error ..."
 msgstr "Chyba ..."
 
 #: lazarusidestrconsts.lisinfobuilderrors
@@ -8304,7 +8345,9 @@ msgid "Project:"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success..."
+#, fuzzy
+#| msgid "Success..."
+msgid "Success ..."
 msgstr "Úspešné ..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
@@ -9367,8 +9410,10 @@ msgid "None"
 msgstr "Nič"
 
 #: lazarusidestrconsts.lislazbuildok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "Ok"
+msgid "OK"
 msgstr "Ok"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
@@ -9944,7 +9989,7 @@ msgid "Install/Uninstall packages ..."
 msgstr "Konfigurovať inštalované balíčky ..."
 
 #: lazarusidestrconsts.lismenueditor
-msgid "Menu Editor..."
+msgid "Menu Editor ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcancel
@@ -9957,7 +10002,9 @@ msgid "Create Submenu"
 msgstr "Vytvoriť podmenu"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-msgid "Delete From Template..."
+#, fuzzy
+#| msgid "Delete From Template..."
+msgid "Delete From Template ..."
 msgstr "Zmazať zo šablóny ..."
 
 #: lazarusidestrconsts.lismenueditordeleteitem
@@ -9969,7 +10016,9 @@ msgid "Handle OnClick Event"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-msgid "Insert From Template..."
+#, fuzzy
+#| msgid "Insert From Template..."
+msgid "Insert From Template ..."
 msgstr "Vložiť zo šablóny ..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
@@ -9993,11 +10042,15 @@ msgid "Move Up (or left)"
 msgstr "Posunúť hore (alebo vľavo)"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-msgid "New Template Description..."
+#, fuzzy
+#| msgid "New Template Description..."
+msgid "New Template Description ..."
 msgstr "Popis novej šablóny ..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-msgid "Save As Template..."
+#, fuzzy
+#| msgid "Save As Template..."
+msgid "Save As Template ..."
 msgstr "Uložiť ako šablónu ..."
 
 #: lazarusidestrconsts.lismenueditorselectmenu
@@ -10013,7 +10066,7 @@ msgid "Template Preview"
 msgstr "Ukážka šablóny"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
-msgid "Enclose in $IFDEF..."
+msgid "Enclose in $IFDEF ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuencloseselection
@@ -10362,7 +10415,9 @@ msgid "&Replace ..."
 msgstr "Na&hradiť ..."
 
 #: lazarusidestrconsts.lismenureportingbug
-msgid "Reporting a bug..."
+#, fuzzy
+#| msgid "Reporting a bug..."
+msgid "Reporting a bug ..."
 msgstr "Hlásenie chyby ..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -10710,7 +10765,9 @@ msgid "Debug output"
 msgstr "Výstup ladenia"
 
 #: lazarusidestrconsts.lismenuviewforms
-msgid "Forms..."
+#, fuzzy
+#| msgid "Forms..."
+msgid "Forms ..."
 msgstr "Formuláre ..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
@@ -10798,7 +10855,9 @@ msgid "Unit Information ..."
 msgstr "Zobraziť info o jednotke"
 
 #: lazarusidestrconsts.lismenuviewunits
-msgid "Units..."
+#, fuzzy
+#| msgid "Units..."
+msgid "Units ..."
 msgstr "Jednotky ..."
 
 #: lazarusidestrconsts.lismenuviewwatches
@@ -12853,6 +12912,10 @@ msgstr "Program%sFreePascal program. Súbor programu je automaticky spravovaný 
 msgid "Program detected"
 msgstr "Program zistený"
 
+#: lazarusidestrconsts.lisprogramnotfound
+msgid "Program %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Zdrojový kód programu musí mať príponu Pascalu ako .pas, .pp or .lpr"
@@ -13498,7 +13561,9 @@ msgid "Save all messages to file"
 msgstr "Uložiť všetky správy do súboru"
 
 #: lazarusidestrconsts.lissaveallmodified
-msgid "save all modified files"
+#, fuzzy
+#| msgid "save all modified files"
+msgid "Save all modified files"
 msgstr "uložiť všetky zmenené súbory"
 
 #: lazarusidestrconsts.lissaveandexitdialog
@@ -13518,7 +13583,9 @@ msgid "Save changes to project %s?"
 msgstr "Uložiť zmeny do projektu %s?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-msgid "save current editor file"
+#, fuzzy
+#| msgid "save current editor file"
+msgid "Save current editor file"
 msgstr "uložiť aktuálny súbor editora"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
@@ -13832,7 +13899,9 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "Zdroj a cieľ sú rovnaké: %s%s"
 
 #: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source breakpoint"
+#, fuzzy
+#| msgid "&Source Breakpoint..."
+msgid "&Source Breakpoint ..."
 msgstr "&Zdrojový bod prerušenia"
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
@@ -13989,6 +14058,10 @@ msgstr "Tabulátor"
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Poradie pre tabulátor"
+
+#: lazarusidestrconsts.listaddressbreakpoint
+msgid "&Address Breakpoint ..."
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -14895,7 +14968,9 @@ msgid "Unable to find file %s%s%s."
 msgstr "Nemožno nájsť súbor %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+#, fuzzy
+#| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "Nemožno nájsť súbor %s%s%s.%sAk patrí do Vášho projektu, skontrolujte cestu hľadaní v %sProjekt->Voľby prekladača ...->Cesty ->Ostatné súbory jednotiek. Ak tento súbor patrí do balíčka, skontrolujte príslušné voľby prekladača balíčka. Ak tento súbor patrí do Lazara, overte vyčistenie prekladu. Ak súbor patrí do FPC, potom skontrolujte fpc.cfg. Ak si nie ste istí, použite Projekt->Voľby prekladača ...-> Test"
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15280,7 +15355,8 @@ msgid "Copy version information to clipboard"
 msgstr "Kopírovať informácie o verzii do schránky"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-msgid "View Breakpoint Properties"
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisviewprojectunits
@@ -15406,6 +15482,10 @@ msgstr "Pracovný adresár pre budovanie"
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
 msgstr "Pracovný adresár pre spustenie"
+
+#: lazarusidestrconsts.lisworkingdirectorynotfound
+msgid "Working directory %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
@@ -16986,7 +17066,7 @@ msgid "Encoding"
 msgstr "Kódovanie"
 
 #: lazarusidestrconsts.uemevaluatemodify
-msgid "&Evaluate/Modify..."
+msgid "&Evaluate/Modify ..."
 msgstr ""
 
 #: lazarusidestrconsts.uemfinddeclaration
@@ -17002,7 +17082,7 @@ msgid "Highlighter"
 msgstr "Zvýrazňovač"
 
 #: lazarusidestrconsts.ueminspect
-msgid "&Inspect..."
+msgid "&Inspect ..."
 msgstr ""
 
 #: lazarusidestrconsts.ueminvertassignment

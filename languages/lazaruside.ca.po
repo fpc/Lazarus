@@ -977,7 +977,9 @@ msgid "Down"
 msgstr "Avall"
 
 #: lazarusidestrconsts.dlgedadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "Afegeix"
 
 #: lazarusidestrconsts.dlgedback
@@ -1029,7 +1031,9 @@ msgid "Display"
 msgstr "Visualitza a pantalla"
 
 #: lazarusidestrconsts.dlgededit
-msgid "Edit..."
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
 msgstr "Edita"
 
 #: lazarusidestrconsts.dlgedfiles
@@ -2168,7 +2172,7 @@ msgid "Other actions using the same button"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
@@ -2623,7 +2627,9 @@ msgid "Search terminated by user."
 msgstr "L'usuari ha finalitzat la recerca."
 
 #: lazarusidestrconsts.dlgsearchcaption
-msgid "Searching..."
+#, fuzzy
+#| msgid "Searching..."
+msgid "Searching ..."
 msgstr "Cercant..."
 
 #: lazarusidestrconsts.dlgsearchpaths
@@ -3524,6 +3530,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddress
+msgid "Address:"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
@@ -5731,7 +5741,7 @@ msgid "* Converting file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files... ***"
+msgid "*** Converting unit files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -5755,7 +5765,7 @@ msgid "Failed to convert unit%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files... ***"
+msgid "*** Find all unit files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -5807,7 +5817,7 @@ msgid "* Repairing form file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files... ***"
+msgid "*** Repairing form files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6216,6 +6226,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgemexpression
@@ -7392,6 +7407,26 @@ msgstr ""
 msgid "E&valuate"
 msgstr ""
 
+#: lazarusidestrconsts.liseventlogclear
+msgid "Clear Events"
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr ""
@@ -8239,7 +8274,7 @@ msgid "Index"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted..."
+msgid "Aborted ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildcaption
@@ -8247,11 +8282,11 @@ msgid "Compile Project"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-msgid "Compiling..."
+msgid "Compiling ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuilderror
-msgid "Error..."
+msgid "Error ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuilderrors
@@ -8281,7 +8316,7 @@ msgid "Project:"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success..."
+msgid "Success ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildwarning
@@ -9342,8 +9377,10 @@ msgid "None"
 msgstr "Cap"
 
 #: lazarusidestrconsts.lislazbuildok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "Ok"
+msgid "OK"
 msgstr "D'acord"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
@@ -9917,7 +9954,7 @@ msgid "Install/Uninstall packages ..."
 msgstr "Configura els paquets intal·lats ..."
 
 #: lazarusidestrconsts.lismenueditor
-msgid "Menu Editor..."
+msgid "Menu Editor ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcancel
@@ -9930,7 +9967,9 @@ msgid "Create Submenu"
 msgstr "Crea submenú"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-msgid "Delete From Template..."
+#, fuzzy
+#| msgid "Delete From Template..."
+msgid "Delete From Template ..."
 msgstr "Elimina desde la plantilla..."
 
 #: lazarusidestrconsts.lismenueditordeleteitem
@@ -9942,7 +9981,9 @@ msgid "Handle OnClick Event"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-msgid "Insert From Template..."
+#, fuzzy
+#| msgid "Insert From Template..."
+msgid "Insert From Template ..."
 msgstr "Insereix desde la plantilla..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
@@ -9966,11 +10007,15 @@ msgid "Move Up (or left)"
 msgstr "Mou Dalt (o a l'esquerra)"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-msgid "New Template Description..."
+#, fuzzy
+#| msgid "New Template Description..."
+msgid "New Template Description ..."
 msgstr "Nova descripció de plantilla ..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-msgid "Save As Template..."
+#, fuzzy
+#| msgid "Save As Template..."
+msgid "Save As Template ..."
 msgstr "Desa com a plantilla..."
 
 #: lazarusidestrconsts.lismenueditorselectmenu
@@ -9986,7 +10031,7 @@ msgid "Template Preview"
 msgstr "Vista preliminar de la plantilla"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
-msgid "Enclose in $IFDEF..."
+msgid "Enclose in $IFDEF ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuencloseselection
@@ -10333,7 +10378,7 @@ msgid "&Replace ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenureportingbug
-msgid "Reporting a bug..."
+msgid "Reporting a bug ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -10681,7 +10726,9 @@ msgid "Debug output"
 msgstr "Sortida de depuració"
 
 #: lazarusidestrconsts.lismenuviewforms
-msgid "Forms..."
+#, fuzzy
+#| msgid "Forms..."
+msgid "Forms ..."
 msgstr "Formes..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
@@ -10767,7 +10814,9 @@ msgid "Unit Information ..."
 msgstr "Mostra la informació de les unitats"
 
 #: lazarusidestrconsts.lismenuviewunits
-msgid "Units..."
+#, fuzzy
+#| msgid "Units..."
+msgid "Units ..."
 msgstr "Unitats..."
 
 #: lazarusidestrconsts.lismenuviewwatches
@@ -12816,6 +12865,10 @@ msgstr "Programa%sUn programa FreePascal. El Lazarus manté automàticament el f
 msgid "Program detected"
 msgstr "S'ha detectat el programa"
 
+#: lazarusidestrconsts.lisprogramnotfound
+msgid "Program %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "El codi font del programa ha de tenir una extensió pascal com .pas, .pp o .lpr"
@@ -13461,7 +13514,9 @@ msgid "Save all messages to file"
 msgstr "Desa tots els missatges al fitxer"
 
 #: lazarusidestrconsts.lissaveallmodified
-msgid "save all modified files"
+#, fuzzy
+#| msgid "save all modified files"
+msgid "Save all modified files"
 msgstr "desa tots els fitxers modificats"
 
 #: lazarusidestrconsts.lissaveandexitdialog
@@ -13481,7 +13536,9 @@ msgid "Save changes to project %s?"
 msgstr "Voleu desar els canvis del projecte %s?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-msgid "save current editor file"
+#, fuzzy
+#| msgid "save current editor file"
+msgid "Save current editor file"
 msgstr "desa el fitxer editor actual"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
@@ -13795,7 +13852,7 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "Font i destinació son el mateix:%s%s"
 
 #: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source breakpoint"
+msgid "&Source Breakpoint ..."
 msgstr ""
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
@@ -13949,6 +14006,10 @@ msgstr "Tabulador"
 
 #: lazarusidestrconsts.listaborderof
 msgid "Tab Order of %s"
+msgstr ""
+
+#: lazarusidestrconsts.listaddressbreakpoint
+msgid "&Address Breakpoint ..."
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
@@ -14856,7 +14917,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "No es pot trobar el fitxer %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15239,7 +15300,8 @@ msgid "Copy version information to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-msgid "View Breakpoint Properties"
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisviewprojectunits
@@ -15364,6 +15426,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
+msgstr ""
+
+#: lazarusidestrconsts.lisworkingdirectorynotfound
+msgid "Working directory %s not found"
 msgstr ""
 
 #: lazarusidestrconsts.liswriteerror
@@ -16937,7 +17003,7 @@ msgid "Encoding"
 msgstr ""
 
 #: lazarusidestrconsts.uemevaluatemodify
-msgid "&Evaluate/Modify..."
+msgid "&Evaluate/Modify ..."
 msgstr ""
 
 #: lazarusidestrconsts.uemfinddeclaration
@@ -16953,7 +17019,7 @@ msgid "Highlighter"
 msgstr ""
 
 #: lazarusidestrconsts.ueminspect
-msgid "&Inspect..."
+msgid "&Inspect ..."
 msgstr ""
 
 #: lazarusidestrconsts.ueminvertassignment

@@ -978,7 +978,9 @@ msgid "Down"
 msgstr "למטה"
 
 #: lazarusidestrconsts.dlgedadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "הוסף ..."
 
 #: lazarusidestrconsts.dlgedback
@@ -1030,7 +1032,9 @@ msgid "Display"
 msgstr "הצג"
 
 #: lazarusidestrconsts.dlgededit
-msgid "Edit..."
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
 msgstr "עריכה ..."
 
 #: lazarusidestrconsts.dlgedfiles
@@ -2168,7 +2172,9 @@ msgid "Other actions using the same button"
 msgstr "פעולה אחרת משתמשת באותו לחצן"
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+#, fuzzy
+#| msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
 msgstr "הם יכולים להתבצע כתלות במקשי השינוי, הגדרות שאריתיות, יחיד/כפול, למעלה/למטה..."
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
@@ -2617,7 +2623,9 @@ msgid "Search terminated by user."
 msgstr "החיפוש בוטל על ידי המשתמש."
 
 #: lazarusidestrconsts.dlgsearchcaption
-msgid "Searching..."
+#, fuzzy
+#| msgid "Searching..."
+msgid "Searching ..."
 msgstr "מחפש ..."
 
 #: lazarusidestrconsts.dlgsearchpaths
@@ -3506,6 +3514,10 @@ msgstr "הוסף חבילה לפרוייקט"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "הוסף סוגריים של פרמטר"
+
+#: lazarusidestrconsts.lisaddress
+msgid "Address:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5714,7 +5726,9 @@ msgid "* Converting file %s *"
 msgstr "* ממיר קובץ %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files... ***"
+#, fuzzy
+#| msgid "*** Converting unit files... ***"
+msgid "*** Converting unit files ... ***"
 msgstr "*** ממיר קבצי יחידה... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -5738,7 +5752,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "לא הצליח להמיר יחידה %s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files... ***"
+#, fuzzy
+#| msgid "*** Find all unit files... ***"
+msgid "*** Find all unit files ... ***"
 msgstr "*** מצא את כל קבצי היחידה... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -5792,7 +5808,9 @@ msgid "* Repairing form file %s *"
 msgstr "מתקן מקובץ %s"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files... ***"
+#, fuzzy
+#| msgid "*** Repairing form files... ***"
+msgid "*** Repairing form files ... ***"
 msgstr "*** מתקן מקבצים... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6200,6 +6218,11 @@ msgstr "אפשר הכל"
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
 msgstr "העתק ללוח הזמני"
+
+#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisdbgemexpression
 msgid "&Expression:"
@@ -7379,6 +7402,26 @@ msgstr "חשב את הביטוי"
 msgid "E&valuate"
 msgstr "חשב"
 
+#: lazarusidestrconsts.liseventlogclear
+msgid "Clear Events"
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr "כל שורה שמספרה הוא n:"
@@ -8228,7 +8271,9 @@ msgid "Index"
 msgstr "אינדקס"
 
 #: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted..."
+#, fuzzy
+#| msgid "Aborted..."
+msgid "Aborted ..."
 msgstr "מבוטל ..."
 
 #: lazarusidestrconsts.lisinfobuildcaption
@@ -8236,11 +8281,15 @@ msgid "Compile Project"
 msgstr "הדר פרויקט"
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-msgid "Compiling..."
+#, fuzzy
+#| msgid "Compiling..."
+msgid "Compiling ..."
 msgstr "מהדר..."
 
 #: lazarusidestrconsts.lisinfobuilderror
-msgid "Error..."
+#, fuzzy
+#| msgid "Error..."
+msgid "Error ..."
 msgstr "שגיאה..."
 
 #: lazarusidestrconsts.lisinfobuilderrors
@@ -8270,7 +8319,9 @@ msgid "Project:"
 msgstr "פרוייקט:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success..."
+#, fuzzy
+#| msgid "Success..."
+msgid "Success ..."
 msgstr "הצלחה ..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
@@ -9335,8 +9386,10 @@ msgid "None"
 msgstr "ללא"
 
 #: lazarusidestrconsts.lislazbuildok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "Ok"
+msgid "OK"
 msgstr "אשר"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
@@ -9912,7 +9965,9 @@ msgid "Install/Uninstall packages ..."
 msgstr "התקן/הסר חבילות ..."
 
 #: lazarusidestrconsts.lismenueditor
-msgid "Menu Editor..."
+#, fuzzy
+#| msgid "Menu Editor..."
+msgid "Menu Editor ..."
 msgstr "עורך תפריטים"
 
 #: lazarusidestrconsts.lismenueditorcancel
@@ -9925,7 +9980,9 @@ msgid "Create Submenu"
 msgstr "צור תפריט משנה"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-msgid "Delete From Template..."
+#, fuzzy
+#| msgid "Delete From Template..."
+msgid "Delete From Template ..."
 msgstr "מחק מהתבנית ..."
 
 #: lazarusidestrconsts.lismenueditordeleteitem
@@ -9937,7 +9994,9 @@ msgid "Handle OnClick Event"
 msgstr "טפל בארוע OnClick"
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-msgid "Insert From Template..."
+#, fuzzy
+#| msgid "Insert From Template..."
+msgid "Insert From Template ..."
 msgstr "הכנס מתבנית ..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
@@ -9961,11 +10020,15 @@ msgid "Move Up (or left)"
 msgstr "הזז למעלה (או לשמאל)"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-msgid "New Template Description..."
+#, fuzzy
+#| msgid "New Template Description..."
+msgid "New Template Description ..."
 msgstr "תאור תבנית חדש..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-msgid "Save As Template..."
+#, fuzzy
+#| msgid "Save As Template..."
+msgid "Save As Template ..."
 msgstr "שמור כתבנית ..."
 
 #: lazarusidestrconsts.lismenueditorselectmenu
@@ -9981,7 +10044,9 @@ msgid "Template Preview"
 msgstr "תצוגה מקדימה של תבניות"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
-msgid "Enclose in $IFDEF..."
+#, fuzzy
+#| msgid "Enclose in $IFDEF..."
+msgid "Enclose in $IFDEF ..."
 msgstr "תחום ב $IFDEF..."
 
 #: lazarusidestrconsts.lismenuencloseselection
@@ -10328,7 +10393,9 @@ msgid "&Replace ..."
 msgstr "החלף&"
 
 #: lazarusidestrconsts.lismenureportingbug
-msgid "Reporting a bug..."
+#, fuzzy
+#| msgid "Reporting a bug..."
+msgid "Reporting a bug ..."
 msgstr "דיווח באגים ..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -10672,7 +10739,9 @@ msgid "Debug output"
 msgstr "פלט ניפוי השגיאות"
 
 #: lazarusidestrconsts.lismenuviewforms
-msgid "Forms..."
+#, fuzzy
+#| msgid "Forms..."
+msgid "Forms ..."
 msgstr "טפסים ..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
@@ -10758,7 +10827,9 @@ msgid "Unit Information ..."
 msgstr "מידע על היחידה"
 
 #: lazarusidestrconsts.lismenuviewunits
-msgid "Units..."
+#, fuzzy
+#| msgid "Units..."
+msgid "Units ..."
 msgstr "יחידות..."
 
 #: lazarusidestrconsts.lismenuviewwatches
@@ -12808,6 +12879,10 @@ msgstr "התוכנה %s היא תוכנת freepascal. קוד התוכנה מנו
 msgid "Program detected"
 msgstr "תוכנית התגלתה"
 
+#: lazarusidestrconsts.lisprogramnotfound
+msgid "Program %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "קובץ קוד המקור של תוכנה חייב להכיל סיומות כדוגמת .pas, .pp או .lpr"
@@ -13454,7 +13529,9 @@ msgid "Save all messages to file"
 msgstr "שמור את כל ההודעות לקובץ"
 
 #: lazarusidestrconsts.lissaveallmodified
-msgid "save all modified files"
+#, fuzzy
+#| msgid "save all modified files"
+msgid "Save all modified files"
 msgstr "שמור את כל הקבצים ששונו"
 
 #: lazarusidestrconsts.lissaveandexitdialog
@@ -13474,7 +13551,9 @@ msgid "Save changes to project %s?"
 msgstr "לשמור שינויים לפרויקט %s?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-msgid "save current editor file"
+#, fuzzy
+#| msgid "save current editor file"
+msgid "Save current editor file"
 msgstr "שמור את הקובץ הנוכחי שבעורך"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
@@ -13789,7 +13868,9 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "המקור והיעד זהים: %s%s"
 
 #: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source breakpoint"
+#, fuzzy
+#| msgid "&Source Breakpoint..."
+msgid "&Source Breakpoint ..."
 msgstr "נקודת עצירה בקוד"
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
@@ -13947,6 +14028,10 @@ msgstr "לשונית"
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "סדר לשוניות של "
+
+#: lazarusidestrconsts.listaddressbreakpoint
+msgid "&Address Breakpoint ..."
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -14852,7 +14937,9 @@ msgid "Unable to find file %s%s%s."
 msgstr "לא ניתן למצוא את הקובץ %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+#, fuzzy
+#| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "לא ניתן למצוא את הקובץ s%s%s.%s אם הקובץ שייך לפרויקט, יש לבדוק את נתיב החיפוש ב%s פרויקט->מהדר->אפשרויות...->נתיבי חיפוש->קבצי יחידות אחרים. אם קובץ זה שייך לחבילה, יש לבדוק את אפשרויות המהדר בחבילה. אם הקובץ שייך ללזרוס, יש לנקות את הקבצים המהודרים. במידה והקובץ שייך ל FPC, אז יש לבדוק את ההגדרות ב fpc.cfg. במידה ואתה לא בטוח, בדוק את פרוייקט->אפשרויות מהדר ...->בדיקה"
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15233,7 +15320,10 @@ msgid "Copy version information to clipboard"
 msgstr "העתק את הגרסה ללוח הזמני"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-msgid "View Breakpoint Properties"
+#, fuzzy
+#| msgid "Breakpoint Properties..."
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
 msgstr "הצג תכונות נקודת עצירה"
 
 #: lazarusidestrconsts.lisviewprojectunits
@@ -15359,6 +15449,10 @@ msgstr "תיקיית עבודה לבנייה"
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
 msgstr "תיקיית עבודה לריצה"
+
+#: lazarusidestrconsts.lisworkingdirectorynotfound
+msgid "Working directory %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
@@ -16937,7 +17031,9 @@ msgid "Encoding"
 msgstr "קידוד"
 
 #: lazarusidestrconsts.uemevaluatemodify
-msgid "&Evaluate/Modify..."
+#, fuzzy
+#| msgid "&Evaluate/Modify..."
+msgid "&Evaluate/Modify ..."
 msgstr "הער&ך/שנה"
 
 #: lazarusidestrconsts.uemfinddeclaration
@@ -16953,7 +17049,9 @@ msgid "Highlighter"
 msgstr "מדגש"
 
 #: lazarusidestrconsts.ueminspect
-msgid "&Inspect..."
+#, fuzzy
+#| msgid "&Inspect..."
+msgid "&Inspect ..."
 msgstr "פ&קח"
 
 #: lazarusidestrconsts.ueminvertassignment

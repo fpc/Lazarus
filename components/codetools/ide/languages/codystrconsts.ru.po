@@ -143,7 +143,7 @@ msgstr "ГБ"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert file at cursor ..."
-msgstr ""
+msgstr "Вставить содержимое файла в месте расположения курсора ..."
 
 #: codystrconsts.crskbytes
 msgid "kbytes"

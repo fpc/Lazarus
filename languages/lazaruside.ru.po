@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-11 03:09+0300\n"
+"PO-Revision-Date: 2011-05-12 02:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -991,8 +991,9 @@ msgid "Down"
 msgstr "Вниз"
 
 #: lazarusidestrconsts.dlgedadd
-msgid "Add..."
-msgstr "Добавить..."
+#| msgid "Add..."
+msgid "Add ..."
+msgstr "Добавить ..."
 
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
@@ -1042,8 +1043,9 @@ msgid "Display"
 msgstr "Отображение"
 
 #: lazarusidestrconsts.dlgededit
-msgid "Edit..."
-msgstr "Редактировать..."
+#| msgid "Edit..."
+msgid "Edit ..."
+msgstr "Редактировать ..."
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor files"
@@ -2192,7 +2194,8 @@ msgid "Other actions using the same button"
 msgstr "Другие действия по той же кнопке мыши"
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+#| msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
 msgstr "Эти действия могут быть выполнены в зависимости от нажатия клавиш-модификаторов и других установленных для них параметров"
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
@@ -2646,8 +2649,9 @@ msgid "Search terminated by user."
 msgstr "Поиск прерван пользователем."
 
 #: lazarusidestrconsts.dlgsearchcaption
-msgid "Searching..."
-msgstr "Поиск..."
+#| msgid "Searching..."
+msgid "Searching ..."
+msgstr "Поиск ..."
 
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
@@ -3541,6 +3545,10 @@ msgstr "Добавить пакет к проекту"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Добавлять скобки для параметров"
+
+#: lazarusidestrconsts.lisaddress
+msgid "Address:"
+msgstr "Адрес:"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5746,8 +5754,9 @@ msgid "* Converting file %s *"
 msgstr "* Преобразование файла %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files... ***"
-msgstr "*** Преобразование файлов модулей... ***"
+#| msgid "*** Converting unit files... ***"
+msgid "*** Converting unit files ... ***"
+msgstr "*** Преобразование файлов модулей ... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
 msgid "Delphi package main source (.dpk) file not found for package%s%s"
@@ -5770,8 +5779,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "Не удалось преобразовать модуль%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files... ***"
-msgstr "*** Поиск всех файлов модулей... ***"
+#| msgid "*** Find all unit files... ***"
+msgid "*** Find all unit files ... ***"
+msgstr "*** Поиск всех файлов модулей ... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
@@ -5823,8 +5833,9 @@ msgid "* Repairing form file %s *"
 msgstr "* Исправление файла формы %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files... ***"
-msgstr "*** Исправление файлов форм... ***"
+#| msgid "*** Repairing form files... ***"
+msgid "*** Repairing form files ... ***"
+msgstr "*** Исправление файлов форм ... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
 msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
@@ -6232,6 +6243,12 @@ msgstr "Включить все"
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
+
+#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+#| msgid "Breakpoint Properties..."
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
+msgstr "Параметры точки останова ..."
 
 #: lazarusidestrconsts.lisdbgemexpression
 msgid "&Expression:"
@@ -6968,15 +6985,15 @@ msgstr "Добавляемый глобальный путь к исходном
 
 #: lazarusidestrconsts.lisedtdefprojectincpath
 msgid "Project IncPath"
-msgstr "Путь вкл.проекта"
+msgstr "Путь поиска включаемых файлов проекта"
 
 #: lazarusidestrconsts.lisedtdefprojectsrcpath
 msgid "Project SrcPath"
-msgstr "Путь к исходному коду проекта"
+msgstr "Путь поиска файлов исходного кода проекта"
 
 #: lazarusidestrconsts.lisedtdefprojectunitpath
 msgid "Project UnitPath"
-msgstr "Пути к модулям проекта"
+msgstr "Путь поиска модулей проекта"
 
 #: lazarusidestrconsts.lisedtdefsallprojects
 msgid "All projects"
@@ -7187,7 +7204,7 @@ msgstr "Введите язык перевода"
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
-msgstr "Переменная окружения, имя как параметр"
+msgstr "Переменная окружения; параметром является имя"
 
 #: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
 msgid "Jump from message to source line on double click (otherwise: single click)"
@@ -7408,6 +7425,28 @@ msgstr "Вычислить выражение"
 msgid "E&valuate"
 msgstr "&Вычислить"
 
+#: lazarusidestrconsts.liseventlogclear
+msgid "Clear Events"
+msgstr "Очистить события"
+
+#: lazarusidestrconsts.liseventlogoptions
+#| msgid "Event Log Options..."
+msgid "Event Log Options ..."
+msgstr "Параметры журнала событий ..."
+
+#: lazarusidestrconsts.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr "Сохранить события в файл"
+
+#: lazarusidestrconsts.liseventslogaddcomment
+#| msgid "Add Comment..."
+msgid "Add Comment ..."
+msgstr "Добавить комментарий ..."
+
+#: lazarusidestrconsts.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr "Добавление комментария"
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr "Каждый n-ный номер строки:"
@@ -7474,7 +7513,7 @@ msgstr "Развернуть все модули"
 
 #: lazarusidestrconsts.lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
-msgstr "Полное имя файла в данном редакторе"
+msgstr "Полное имя файла в текущем редакторе"
 
 #: lazarusidestrconsts.lisexport
 msgid "Export ..."
@@ -7568,7 +7607,7 @@ msgstr "Файл %s%s%s%sне похож на текстовый.%sВсё рав
 
 #: lazarusidestrconsts.lisfileextensionofprograms
 msgid "File extension of programs"
-msgstr "Расширение файла программы"
+msgstr "Расширение файлов программ"
 
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
@@ -8257,20 +8296,23 @@ msgid "Index"
 msgstr "Индекс"
 
 #: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted..."
-msgstr "Прервано..."
+#| msgid "Aborted..."
+msgid "Aborted ..."
+msgstr "Прервано ..."
 
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr "Компиляция проекта"
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-msgid "Compiling..."
-msgstr "Компиляция..."
+#| msgid "Compiling..."
+msgid "Compiling ..."
+msgstr "Компиляция ..."
 
 #: lazarusidestrconsts.lisinfobuilderror
-msgid "Error..."
-msgstr "Ошибка..."
+#| msgid "Error..."
+msgid "Error ..."
+msgstr "Ошибка ..."
 
 #: lazarusidestrconsts.lisinfobuilderrors
 msgid "Errors:"
@@ -8299,8 +8341,9 @@ msgid "Project:"
 msgstr "Проект:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success..."
-msgstr "Успешно..."
+#| msgid "Success..."
+msgid "Success ..."
+msgstr "Успешно ..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
 msgid "Warnings:"
@@ -9363,8 +9406,9 @@ msgid "None"
 msgstr "Нет"
 
 #: lazarusidestrconsts.lislazbuildok
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "Ok"
+msgid "OK"
 msgstr "ОК"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
@@ -9730,7 +9774,7 @@ msgstr "Строки с тем же значением:"
 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
-msgstr "Макс. %d"
+msgstr "Максимум %d"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
@@ -9934,8 +9978,9 @@ msgid "Install/Uninstall packages ..."
 msgstr "Установить/удалить пакеты ..."
 
 #: lazarusidestrconsts.lismenueditor
-msgid "Menu Editor..."
-msgstr "Редактор меню..."
+#| msgid "Menu Editor..."
+msgid "Menu Editor ..."
+msgstr "Редактор меню ..."
 
 #: lazarusidestrconsts.lismenueditorcancel
 msgctxt "lazarusidestrconsts.lismenueditorcancel"
@@ -9947,8 +9992,9 @@ msgid "Create Submenu"
 msgstr "Создать подменю"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-msgid "Delete From Template..."
-msgstr "Удалить шаблон формы..."
+#| msgid "Delete From Template..."
+msgid "Delete From Template ..."
+msgstr "Удалить из шаблона ..."
 
 #: lazarusidestrconsts.lismenueditordeleteitem
 msgid "Delete Item"
@@ -9959,8 +10005,9 @@ msgid "Handle OnClick Event"
 msgstr "Обработать событие OnClick"
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-msgid "Insert From Template..."
-msgstr "Вставить шаблон формы..."
+#| msgid "Insert From Template..."
+msgid "Insert From Template ..."
+msgstr "Вставить из шаблона ..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
 msgid "Insert New Item (after)"
@@ -9983,12 +10030,14 @@ msgid "Move Up (or left)"
 msgstr "Переместить вверх (или налево)"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-msgid "New Template Description..."
-msgstr "Новое описание шаблона..."
+#| msgid "New Template Description..."
+msgid "New Template Description ..."
+msgstr "Новое описание шаблона ..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-msgid "Save As Template..."
-msgstr "Сохранить как шаблон..."
+#| msgid "Save As Template..."
+msgid "Save As Template ..."
+msgstr "Сохранить как шаблон ..."
 
 #: lazarusidestrconsts.lismenueditorselectmenu
 msgid "Select Menu:"
@@ -10003,8 +10052,9 @@ msgid "Template Preview"
 msgstr "Просмотр шаблона"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
-msgid "Enclose in $IFDEF..."
-msgstr "Заключить в $IFDEF..."
+#| msgid "Enclose in $IFDEF..."
+msgid "Enclose in $IFDEF ..."
+msgstr "Заключить в $IFDEF ..."
 
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
@@ -10012,7 +10062,7 @@ msgstr "Заключить выделенное в ..."
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
-msgstr "Вычислить/Изменить..."
+msgstr "Вычислить/Изменить ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -10343,8 +10393,9 @@ msgid "&Replace ..."
 msgstr "&Заменить ..."
 
 #: lazarusidestrconsts.lismenureportingbug
-msgid "Reporting a bug..."
-msgstr "Сообщить об ошибке..."
+#| msgid "Reporting a bug..."
+msgid "Reporting a bug ..."
+msgstr "Сообщить об ошибке ..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC source directory"
@@ -10688,8 +10739,9 @@ msgid "Debug output"
 msgstr "Вывод отладчика"
 
 #: lazarusidestrconsts.lismenuviewforms
-msgid "Forms..."
-msgstr "Формы..."
+#| msgid "Forms..."
+msgid "Forms ..."
+msgstr "Формы ..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 #| msgid "View IDE speed buttons"
@@ -10772,8 +10824,9 @@ msgid "Unit Information ..."
 msgstr "Сведения о модуле ..."
 
 #: lazarusidestrconsts.lismenuviewunits
-msgid "Units..."
-msgstr "Модули..."
+#| msgid "Units..."
+msgid "Units ..."
+msgstr "Модули ..."
 
 #: lazarusidestrconsts.lismenuviewwatches
 msgid "Watches"
@@ -12825,6 +12878,10 @@ msgstr "Программа%sПрограмма Free Pascal. Исходный к�
 msgid "Program detected"
 msgstr "Обнаружена программа"
 
+#: lazarusidestrconsts.lisprogramnotfound
+msgid "Program %s not found"
+msgstr "Программа %s не найдена"
+
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Исходный код программы должен иметь расширение Паскаля, например, .pas, .pp или .lpr"
@@ -12956,7 +13013,7 @@ msgstr "Имя файла проекта"
 
 #: lazarusidestrconsts.lisprojectincpath
 msgid "Project Include Path"
-msgstr "Пути включений проекта"
+msgstr "Путь поиска включаемых файлов проекта"
 
 #: lazarusidestrconsts.lisprojectinfofiledetected
 msgid "Project info file detected"
@@ -13000,7 +13057,7 @@ msgstr "Проект %s вызвал класс исключения '%s' с с�
 
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"
-msgstr "Путь к исходному коду проекта"
+msgstr "Путь поиска файлов исходного кода проекта"
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
 #| msgid "Project %s%s%s successfully built. :)"
@@ -13013,7 +13070,7 @@ msgstr "модуль проекта"
 
 #: lazarusidestrconsts.lisprojectunitpath
 msgid "Project Unit Path"
-msgstr "Пути к модулям проекта"
+msgstr "Путь поиска модулей проекта"
 
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
@@ -13070,7 +13127,7 @@ msgstr "Метка каталога с исходным кодом проект�
 
 #: lazarusidestrconsts.lispromptforvalue
 msgid "Prompt for value"
-msgstr "Подсказка по значению"
+msgstr "Запрос значения"
 
 #: lazarusidestrconsts.lisproperties
 #| msgid "Properties (replace or delete)"
@@ -13099,7 +13156,7 @@ msgstr "Опубликованный метод"
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
-msgstr "Каталог публикации проекта"
+msgstr "Каталог опубликования проекта"
 
 #: lazarusidestrconsts.lispublprojinvalidexcludefilter
 msgid "Invalid Exclude filter"
@@ -13470,8 +13527,9 @@ msgid "Save all messages to file"
 msgstr "Сохранить все сообщения в файл"
 
 #: lazarusidestrconsts.lissaveallmodified
-msgid "save all modified files"
-msgstr "сохранить все измененные файлы"
+#| msgid "save all modified files"
+msgid "Save all modified files"
+msgstr "Сохранить все изменённые файлы"
 
 #: lazarusidestrconsts.lissaveandexitdialog
 msgid "Save and exit dialog"
@@ -13490,8 +13548,9 @@ msgid "Save changes to project %s?"
 msgstr "Сохранить изменения в проект %s?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-msgid "save current editor file"
-msgstr "сохранить текущий файл редактора"
+#| msgid "save current editor file"
+msgid "Save current editor file"
+msgstr "Сохранить файл в текущем редакторе"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
@@ -13804,8 +13863,9 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "Источник и назначение одинаковы:%s%s"
 
 #: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source breakpoint"
-msgstr "&Точка останова в исходном коде"
+#| msgid "&Source Breakpoint..."
+msgid "&Source Breakpoint ..."
+msgstr "Точка останова в &исходном коде ..."
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
 msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
@@ -13961,6 +14021,11 @@ msgstr "Таб"
 msgid "Tab Order of %s"
 msgstr "Порядок перехода для %s"
 
+#: lazarusidestrconsts.listaddressbreakpoint
+#| msgid "&Address Breakpoint..."
+msgid "&Address Breakpoint ..."
+msgstr "Точка останова по &адресу ..."
+
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
 msgstr "Семейство процессоров"
@@ -13985,7 +14050,7 @@ msgstr "Имя исполнимого файла с параметрами"
 #: lazarusidestrconsts.listargetos
 msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
-msgstr "Операционная система"
+msgstr "Целевая ОС"
 
 #: lazarusidestrconsts.listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
@@ -14860,7 +14925,8 @@ msgid "Unable to find file %s%s%s."
 msgstr "Невозможно найти файл %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+#| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "Невозможно найти файл %s%s%s.%sЕсли он принадлежит вашему проекту, проверьте пути поиска в%sПроект -> Параметры компилятора -> Пути -> Другие модули. Если он принадлежит пакету, проверьте соответствующие параметры компиляции пакета. Если этот файл принадлежит Lazarus, удостоверьтесь, что компилируете его после очистки. Если файл принадлежит FPC, проверьте fpc.cfg. Если не уверены, вызовите Проект -> Параметры компилятора -> Тест"
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15244,8 +15310,10 @@ msgid "Copy version information to clipboard"
 msgstr "Копировать информацию о версии в буфер обмена"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-msgid "View Breakpoint Properties"
-msgstr "Показать параметры точки останова"
+#| msgid "Breakpoint Properties..."
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
+msgstr "Параметры точки останова ..."
 
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
@@ -15361,7 +15429,7 @@ msgstr "Список наблюдений"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
-msgstr "Слово под курсором в этом редакторе"
+msgstr "Слово под курсором в текущем редакторе"
 
 #: lazarusidestrconsts.lisworkingdirectoryforbuilding
 msgid "Working directory for building"
@@ -15370,6 +15438,10 @@ msgstr "Рабочий каталог для сборки"
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
 msgstr "Рабочий каталог для запуска"
+
+#: lazarusidestrconsts.lisworkingdirectorynotfound
+msgid "Working directory %s not found"
+msgstr "Рабочий каталог %s не найден"
 
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
@@ -16950,8 +17022,9 @@ msgid "Encoding"
 msgstr "Кодировка"
 
 #: lazarusidestrconsts.uemevaluatemodify
-msgid "&Evaluate/Modify..."
-msgstr "&Вычислить/Изменить..."
+#| msgid "&Evaluate/Modify..."
+msgid "&Evaluate/Modify ..."
+msgstr "&Вычислить/Изменить ..."
 
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
@@ -16966,8 +17039,9 @@ msgid "Highlighter"
 msgstr "Подсветка синтаксиса"
 
 #: lazarusidestrconsts.ueminspect
-msgid "&Inspect..."
-msgstr "&Просмотреть..."
+#| msgid "&Inspect..."
+msgid "&Inspect ..."
+msgstr "&Просмотреть ..."
 
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"

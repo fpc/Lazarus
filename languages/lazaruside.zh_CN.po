@@ -980,7 +980,9 @@ msgid "Down"
 msgstr "下移"
 
 #: lazarusidestrconsts.dlgedadd
-msgid "Add..."
+#, fuzzy
+#| msgid "Add..."
+msgid "Add ..."
 msgstr "添加..."
 
 #: lazarusidestrconsts.dlgedback
@@ -1032,7 +1034,9 @@ msgid "Display"
 msgstr "显示"
 
 #: lazarusidestrconsts.dlgededit
-msgid "Edit..."
+#, fuzzy
+#| msgid "Edit..."
+msgid "Edit ..."
 msgstr "编辑..."
 
 #: lazarusidestrconsts.dlgedfiles
@@ -2177,7 +2181,7 @@ msgid "Other actions using the same button"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
@@ -2634,7 +2638,9 @@ msgid "Search terminated by user."
 msgstr "用户中止搜索."
 
 #: lazarusidestrconsts.dlgsearchcaption
-msgid "Searching..."
+#, fuzzy
+#| msgid "Searching..."
+msgid "Searching ..."
 msgstr "查找..."
 
 #: lazarusidestrconsts.dlgsearchpaths
@@ -3537,6 +3543,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddress
+msgid "Address:"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
@@ -5750,7 +5760,7 @@ msgid "* Converting file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files... ***"
+msgid "*** Converting unit files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -5774,7 +5784,7 @@ msgid "Failed to convert unit%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files... ***"
+msgid "*** Find all unit files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -5826,7 +5836,7 @@ msgid "* Repairing form file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files... ***"
+msgid "*** Repairing form files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6235,6 +6245,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgemexpression
@@ -7415,6 +7430,26 @@ msgstr ""
 msgid "E&valuate"
 msgstr ""
 
+#: lazarusidestrconsts.liseventlogclear
+msgid "Clear Events"
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr ""
@@ -8264,7 +8299,9 @@ msgid "Index"
 msgstr "索引"
 
 #: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted..."
+#, fuzzy
+#| msgid "Aborted..."
+msgid "Aborted ..."
 msgstr "中止..."
 
 #: lazarusidestrconsts.lisinfobuildcaption
@@ -8272,11 +8309,15 @@ msgid "Compile Project"
 msgstr "编译工程"
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-msgid "Compiling..."
+#, fuzzy
+#| msgid "Compiling..."
+msgid "Compiling ..."
 msgstr "编译..."
 
 #: lazarusidestrconsts.lisinfobuilderror
-msgid "Error..."
+#, fuzzy
+#| msgid "Error..."
+msgid "Error ..."
 msgstr "错误..."
 
 #: lazarusidestrconsts.lisinfobuilderrors
@@ -8306,7 +8347,9 @@ msgid "Project:"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success..."
+#, fuzzy
+#| msgid "Success..."
+msgid "Success ..."
 msgstr "成功..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
@@ -9369,8 +9412,10 @@ msgid "None"
 msgstr "无"
 
 #: lazarusidestrconsts.lislazbuildok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "Ok"
+msgid "OK"
 msgstr "确定"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
@@ -9946,7 +9991,7 @@ msgid "Install/Uninstall packages ..."
 msgstr "配置已安装的包 ..."
 
 #: lazarusidestrconsts.lismenueditor
-msgid "Menu Editor..."
+msgid "Menu Editor ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorcancel
@@ -9959,7 +10004,9 @@ msgid "Create Submenu"
 msgstr "创建子菜单"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-msgid "Delete From Template..."
+#, fuzzy
+#| msgid "Delete From Template..."
+msgid "Delete From Template ..."
 msgstr "删除窗体模板..."
 
 #: lazarusidestrconsts.lismenueditordeleteitem
@@ -9971,7 +10018,9 @@ msgid "Handle OnClick Event"
 msgstr "处理 OnClick 事件"
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-msgid "Insert From Template..."
+#, fuzzy
+#| msgid "Insert From Template..."
+msgid "Insert From Template ..."
 msgstr "从模板插入..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
@@ -9995,11 +10044,15 @@ msgid "Move Up (or left)"
 msgstr "上移 (或左移)"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-msgid "New Template Description..."
+#, fuzzy
+#| msgid "New Template Description..."
+msgid "New Template Description ..."
 msgstr "新建模板描述..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-msgid "Save As Template..."
+#, fuzzy
+#| msgid "Save As Template..."
+msgid "Save As Template ..."
 msgstr "保存为模板..."
 
 #: lazarusidestrconsts.lismenueditorselectmenu
@@ -10015,7 +10068,7 @@ msgid "Template Preview"
 msgstr "预览模板"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
-msgid "Enclose in $IFDEF..."
+msgid "Enclose in $IFDEF ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuencloseselection
@@ -10364,7 +10417,9 @@ msgid "&Replace ..."
 msgstr "替换(&R) ..."
 
 #: lazarusidestrconsts.lismenureportingbug
-msgid "Reporting a bug..."
+#, fuzzy
+#| msgid "Reporting a bug..."
+msgid "Reporting a bug ..."
 msgstr "报告 bug..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -10712,7 +10767,9 @@ msgid "Debug output"
 msgstr "调试输出"
 
 #: lazarusidestrconsts.lismenuviewforms
-msgid "Forms..."
+#, fuzzy
+#| msgid "Forms..."
+msgid "Forms ..."
 msgstr "窗体..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
@@ -10798,7 +10855,9 @@ msgid "Unit Information ..."
 msgstr "查看单元信息"
 
 #: lazarusidestrconsts.lismenuviewunits
-msgid "Units..."
+#, fuzzy
+#| msgid "Units..."
+msgid "Units ..."
 msgstr "单元..."
 
 #: lazarusidestrconsts.lismenuviewwatches
@@ -12855,6 +12914,10 @@ msgstr "Program%s一个 freepascal 程序. 程序文件将被 Lazarus 自动维�
 msgid "Program detected"
 msgstr "检测到程序"
 
+#: lazarusidestrconsts.lisprogramnotfound
+msgid "Program %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "程序源代码必须有一个 pascal 后缀,例如 .pas, .pp 或者 .lpr"
@@ -13500,7 +13563,9 @@ msgid "Save all messages to file"
 msgstr "保存所有消息到文件"
 
 #: lazarusidestrconsts.lissaveallmodified
-msgid "save all modified files"
+#, fuzzy
+#| msgid "save all modified files"
+msgid "Save all modified files"
 msgstr "保存所有更改的文件"
 
 #: lazarusidestrconsts.lissaveandexitdialog
@@ -13520,7 +13585,9 @@ msgid "Save changes to project %s?"
 msgstr "保存更改到工程 %s?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-msgid "save current editor file"
+#, fuzzy
+#| msgid "save current editor file"
+msgid "Save current editor file"
 msgstr "保存当前编辑器的文件"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
@@ -13834,7 +13901,9 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "源和目标名字相同:%s%s"
 
 #: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source breakpoint"
+#, fuzzy
+#| msgid "&Source Breakpoint..."
+msgid "&Source Breakpoint ..."
 msgstr "源码断点(&S)"
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
@@ -13991,6 +14060,10 @@ msgstr ""
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Tab 键顺序"
+
+#: lazarusidestrconsts.listaddressbreakpoint
+msgid "&Address Breakpoint ..."
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -14897,7 +14970,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "无法找到文件 %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15282,7 +15355,8 @@ msgid "Copy version information to clipboard"
 msgstr "复制版本信息到剪贴板"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-msgid "View Breakpoint Properties"
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisviewprojectunits
@@ -15408,6 +15482,10 @@ msgstr "程序构建的工作目录"
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
 msgstr "程序运行的工作目录"
+
+#: lazarusidestrconsts.lisworkingdirectorynotfound
+msgid "Working directory %s not found"
+msgstr ""
 
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
@@ -16988,7 +17066,7 @@ msgid "Encoding"
 msgstr "编码"
 
 #: lazarusidestrconsts.uemevaluatemodify
-msgid "&Evaluate/Modify..."
+msgid "&Evaluate/Modify ..."
 msgstr ""
 
 #: lazarusidestrconsts.uemfinddeclaration
@@ -17004,7 +17082,7 @@ msgid "Highlighter"
 msgstr "高亮"
 
 #: lazarusidestrconsts.ueminspect
-msgid "&Inspect..."
+msgid "&Inspect ..."
 msgstr ""
 
 #: lazarusidestrconsts.ueminvertassignment

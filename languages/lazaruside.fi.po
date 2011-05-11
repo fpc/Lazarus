@@ -970,7 +970,7 @@ msgid "Down"
 msgstr "Alas"
 
 #: lazarusidestrconsts.dlgedadd
-msgid "Add..."
+msgid "Add ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgedback
@@ -1022,7 +1022,7 @@ msgid "Display"
 msgstr "Näkymä"
 
 #: lazarusidestrconsts.dlgededit
-msgid "Edit..."
+msgid "Edit ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgedfiles
@@ -2161,7 +2161,7 @@ msgid "Other actions using the same button"
 msgstr "Muut toiminnot jotka käyttävät samaa nappia"
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
+msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
@@ -2616,7 +2616,9 @@ msgid "Search terminated by user."
 msgstr "Käyttäjä keskeytti hakemisen"
 
 #: lazarusidestrconsts.dlgsearchcaption
-msgid "Searching..."
+#, fuzzy
+#| msgid "Searching..."
+msgid "Searching ..."
 msgstr "Etsitään..."
 
 #: lazarusidestrconsts.dlgsearchpaths
@@ -3516,6 +3518,10 @@ msgstr ""
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Lisää parametrin sulkeet"
+
+#: lazarusidestrconsts.lisaddress
+msgid "Address:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5722,7 +5728,7 @@ msgid "* Converting file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-msgid "*** Converting unit files... ***"
+msgid "*** Converting unit files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
@@ -5746,7 +5752,7 @@ msgid "Failed to convert unit%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-msgid "*** Find all unit files... ***"
+msgid "*** Find all unit files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -5798,7 +5804,7 @@ msgid "* Repairing form file %s *"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-msgid "*** Repairing form files... ***"
+msgid "*** Repairing form files ... ***"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
@@ -6207,6 +6213,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgemexpression
@@ -7383,6 +7394,26 @@ msgstr ""
 msgid "E&valuate"
 msgstr ""
 
+#: lazarusidestrconsts.liseventlogclear
+msgid "Clear Events"
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr ""
+
+#: lazarusidestrconsts.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr ""
+
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
 msgstr "Rivinumeroiden näyttöväli:"
@@ -8234,7 +8265,7 @@ msgid "Index"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted..."
+msgid "Aborted ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildcaption
@@ -8242,11 +8273,13 @@ msgid "Compile Project"
 msgstr "Tietoja projektin käännöksestä"
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-msgid "Compiling..."
+#, fuzzy
+#| msgid "Compiling..."
+msgid "Compiling ..."
 msgstr "Käännetään..."
 
 #: lazarusidestrconsts.lisinfobuilderror
-msgid "Error..."
+msgid "Error ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuilderrors
@@ -8276,7 +8309,9 @@ msgid "Project:"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success..."
+#, fuzzy
+#| msgid "Success..."
+msgid "Success ..."
 msgstr "Kääntäminen onnistui..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
@@ -9336,7 +9371,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildok
 msgctxt "lazarusidestrconsts.lislazbuildok"
-msgid "Ok"
+msgid "OK"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
@@ -9904,7 +9939,9 @@ msgid "Install/Uninstall packages ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditor
-msgid "Menu Editor..."
+#, fuzzy
+#| msgid "Menu Editor..."
+msgid "Menu Editor ..."
 msgstr "Valikkomuokkain ..."
 
 #: lazarusidestrconsts.lismenueditorcancel
@@ -9917,7 +9954,7 @@ msgid "Create Submenu"
 msgstr "Luo alivalikko"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-msgid "Delete From Template..."
+msgid "Delete From Template ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditordeleteitem
@@ -9929,7 +9966,9 @@ msgid "Handle OnClick Event"
 msgstr "Siirry käsittelemään tämän kohdan OnClick-tapahtumaa"
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-msgid "Insert From Template..."
+#, fuzzy
+#| msgid "Insert From Template..."
+msgid "Insert From Template ..."
 msgstr "Lisää valmiista malleista..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
@@ -9953,11 +9992,11 @@ msgid "Move Up (or left)"
 msgstr "Siirrä ylöspäin (tai vasemmallepäin)"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-msgid "New Template Description..."
+msgid "New Template Description ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-msgid "Save As Template..."
+msgid "Save As Template ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorselectmenu
@@ -9973,7 +10012,7 @@ msgid "Template Preview"
 msgstr "Mallin esikatselu"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
-msgid "Enclose in $IFDEF..."
+msgid "Enclose in $IFDEF ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuencloseselection
@@ -10318,7 +10357,7 @@ msgid "&Replace ..."
 msgstr "Etsi ja korvaa..."
 
 #: lazarusidestrconsts.lismenureportingbug
-msgid "Reporting a bug..."
+msgid "Reporting a bug ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -10664,7 +10703,9 @@ msgid "Debug output"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewforms
-msgid "Forms..."
+#, fuzzy
+#| msgid "Forms..."
+msgid "Forms ..."
 msgstr "Lomakkeet..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
@@ -10750,7 +10791,9 @@ msgid "Unit Information ..."
 msgstr "Näytä käännösyksikön (Unit) tietoja"
 
 #: lazarusidestrconsts.lismenuviewunits
-msgid "Units..."
+#, fuzzy
+#| msgid "Units..."
+msgid "Units ..."
 msgstr "Käännösyksiköt eli unitit ..."
 
 #: lazarusidestrconsts.lismenuviewwatches
@@ -12795,6 +12838,10 @@ msgstr "Ohjelma%s Freepascal ohjelma. Ohjelmatiedosto hyödyntää lazarusta."
 msgid "Program detected"
 msgstr "Tunnistettiin ohjelmaksi"
 
+#: lazarusidestrconsts.lisprogramnotfound
+msgid "Program %s not found"
+msgstr ""
+
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Ohjelman lähdekoodin tiedosto tarkennin pitää olla .pas, .pp tai .lpr"
@@ -13438,7 +13485,7 @@ msgid "Save all messages to file"
 msgstr "Tallenna kaikki kääntäjän viestit tiedostoon"
 
 #: lazarusidestrconsts.lissaveallmodified
-msgid "save all modified files"
+msgid "Save all modified files"
 msgstr ""
 
 #: lazarusidestrconsts.lissaveandexitdialog
@@ -13458,7 +13505,7 @@ msgid "Save changes to project %s?"
 msgstr "Tallennetaanko %s -projektiin tehdyt muutokset?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-msgid "save current editor file"
+msgid "Save current editor file"
 msgstr ""
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
@@ -13772,7 +13819,7 @@ msgid "Source and Destination are the same:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source breakpoint"
+msgid "&Source Breakpoint ..."
 msgstr ""
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
@@ -13926,6 +13973,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listaborderof
 msgid "Tab Order of %s"
+msgstr ""
+
+#: lazarusidestrconsts.listaddressbreakpoint
+msgid "&Address Breakpoint ..."
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
@@ -14819,7 +14870,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "Ei löydetä tiedostoa %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15204,7 +15255,8 @@ msgid "Copy version information to clipboard"
 msgstr "Kopio versiotieto leikepöydälle"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-msgid "View Breakpoint Properties"
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisviewprojectunits
@@ -15329,6 +15381,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
+msgstr ""
+
+#: lazarusidestrconsts.lisworkingdirectorynotfound
+msgid "Working directory %s not found"
 msgstr ""
 
 #: lazarusidestrconsts.liswriteerror
@@ -16906,7 +16962,7 @@ msgid "Encoding"
 msgstr "Merkistön koodaus"
 
 #: lazarusidestrconsts.uemevaluatemodify
-msgid "&Evaluate/Modify..."
+msgid "&Evaluate/Modify ..."
 msgstr ""
 
 #: lazarusidestrconsts.uemfinddeclaration
@@ -16922,7 +16978,7 @@ msgid "Highlighter"
 msgstr "Syntaksin korostus"
 
 #: lazarusidestrconsts.ueminspect
-msgid "&Inspect..."
+msgid "&Inspect ..."
 msgstr ""
 
 #: lazarusidestrconsts.ueminvertassignment
