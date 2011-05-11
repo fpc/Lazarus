@@ -4602,6 +4602,7 @@ resourcestring
   lisDbgAllItemDisableHint  = 'Disable all';
   lisDbgAllItemDelete       = 'Delete all';
   lisDbgAllItemDeleteHint   = 'Delete all';
+  lisDbgBreakpointPropertiesHint = 'Breakpoint Properties...';
 
   // Call Stack Dialog
   lisShow = 'Show';
@@ -5311,6 +5312,12 @@ resourcestring
   regdlgOctal = 'Octal';
   regdlgBinary = 'Binary';
   regdlgRaw = 'Raw';
+
+  // Event log dialog
+  lisEventLogOptions = 'Event Log Options...';
+  lisEventLogClear = 'Clear Events';
+  lisEventLogSaveToFile = 'Save Events to File';
+  lisEventsLogAddComment = 'Add Comment...';
 
 implementation
 
