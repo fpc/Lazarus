@@ -210,7 +210,7 @@ resourcestring
   lisKMEncloseSelection   = 'Enclose selection';
   lisMenuEncloseSelection = 'Enclose selection ...';
   lisEncloseInIFDEF     = 'Enclose in $IFDEF';
-  lisMenuEncloseInIFDEF = 'Enclose in $IFDEF...';
+  lisMenuEncloseInIFDEF = 'Enclose in $IFDEF ...';
   lisMenuCommentSelection = 'Comment selection';
   lisMenuUncommentSelection = 'Uncomment selection';
   lisMenuToggleComment = 'Toggle comment';
@@ -283,8 +283,8 @@ resourcestring
   lisMenuViewComponents = '&Components';
   lisMenuJumpTo = 'Jump to';
   lisMenuJumpToImplementation = 'Jump to implementation';
-  lisMenuViewUnits = 'Units...';
-  lisMenuViewForms = 'Forms...';
+  lisMenuViewUnits = 'Units ...';
+  lisMenuViewForms = 'Forms ...';
   lisMenuViewUnitDependencies = 'Unit Dependencies';
   lisKMViewUnitInfo = 'View Unit Info';
   lisMenuViewUnitInfo = 'Unit Information ...';
@@ -432,7 +432,7 @@ resourcestring
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
   
   lisMenuOnlineHelp = 'Online Help';
-  lisMenuReportingBug = 'Reporting a bug...';
+  lisMenuReportingBug = 'Reporting a bug ...';
   lisReportingBugURL = 'http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report';
   lisKMConfigureHelp = 'Configure Help';
   lisKMContextSensitiveHelp = 'Context sensitive help';
@@ -712,11 +712,11 @@ resourcestring
   lisUnableToFindFile = 'Unable to find file %s%s%s.';
   lisUnableToFindFileCheckSearchPathInProjectCompilerOption = 'Unable to find '
     +'file %s%s%s.%sIf it belongs to your project, check search path '
-    +'in%sProject->Compiler Options...->Search Paths->Other Unit Files.'
+    +'in%sProject -> Compiler Options -> Search Paths -> Other Unit Files.'
     +' If this file belongs to a package, check the appropriate package compiler'
     +' options. If this file belongs to lazarus, make sure compiling clean.'
     +' If the file belongs to FPC then check fpc.cfg.'
-    +' If unsure, check Project -> CompilerOptions ... -> Test';
+    +' If unsure, check Project -> CompilerOptions -> Test';
   lisNOTECouldNotCreateDefineTemplateForFreePascal = 'NOTE: Could not create '
     +'Define Template for Free Pascal Sources';
   lisClassNotFound = 'Class not found';
@@ -787,16 +787,16 @@ resourcestring
   lisInfoBuildWarning = 'Warnings:';
   lisInfoBuildProject   = 'Project:';
   listInfoBuildCompiling = 'Compiling:';
-  lisInfoBuildComplile = 'Compiling...';
+  lisInfoBuildComplile = 'Compiling ...';
   lisFPCTooOld = 'FPC too old';
   lisTheProjectUsesTheNewFPCResourcesWhichRequiresAtLea = 'The project uses '
     +'the new FPC resources, which requires at least FPC 2.4';
-  lisInfoBuildError = 'Error...';
+  lisInfoBuildError = 'Error ...';
   lisCreateDirectory = 'Create directory?';
   lisTheOutputDirectoryIsMissing = 'The output directory %s%s%s is missing.';
   lisCreateIt = 'Create it';
-  lisInfoBuildSuccess = 'Success...';
-  lisInfoBuildAbort = 'Aborted...';
+  lisInfoBuildSuccess = 'Success ...';
+  lisInfoBuildAbort = 'Aborted ...';
   lisInfoBuildCaption = 'Compile Project';
   lisInfoBuildMakeAbort = 'Abort';
   lisInfoBuildNote = 'Notes:';
@@ -998,7 +998,7 @@ resourcestring
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
   
   // Search dialog
-  dlgSearchCaption = 'Searching...';
+  dlgSearchCaption = 'Searching ...';
   dlgSearchAbort = 'Search terminated by user.';
   dlgSeachDirectoryNotFound = 'Search directory "%s" not found.';
   lissMatches = 'Matches';
@@ -1394,7 +1394,7 @@ resourcestring
   dlgMouseOptModCtrl  = 'Ctrl';
   dlgMouseOptBtnDel  = 'Delete';
   dlgMouseOptOtherAct  = 'Other actions using the same button';
-  dlgMouseOptOtherActHint  = 'They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down...';
+  dlgMouseOptOtherActHint  = 'They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ...';
   dlgMouseOptOtherActToggle = 'Filter Mod-Keys';
   dlgMouseOptBtnUdp  = 'Change';
   dlgMouseOptBtnAdd  = 'Add';
@@ -1514,8 +1514,8 @@ resourcestring
   dlgTimeSecondUnit = 'sec';
   dlgEdCodeTempl = 'Code templates';
   dlgTplFName = 'Template file name';
-  dlgEdAdd = 'Add...';
-  dlgEdEdit = 'Edit...';
+  dlgEdAdd = 'Add ...';
+  dlgEdEdit = 'Edit ...';
   dlgEdDelete = 'Delete';
   dlgIndentCodeTo = 'Indent code to';
   //dlgCodeToolsTab = 'Code Tools';
@@ -2286,9 +2286,9 @@ resourcestring
   lisDisableI18NForLFM = 'Disable I18N for LFM';
   uemDebugWord = 'Debug';
   uemToggleBreakpoint = '&Toggle Breakpoint';
-  uemEvaluateModify = '&Evaluate/Modify...';
+  uemEvaluateModify = '&Evaluate/Modify ...';
   uemAddWatchAtCursor = 'Add &Watch At Cursor';
-  uemInspect = '&Inspect...';
+  uemInspect = '&Inspect ...';
   uemRunToCursor='&Run to Cursor';
   uemViewCallStack = 'View Call Stack';
   uemMovePageLeft='Move page left';
@@ -2864,7 +2864,7 @@ resourcestring
   lisLazBuildUpdateRevInc = 'Update revision.inc';
   lisLazBuildCommonSettings = 'Common Settings';
   lisLazBuildConfirmBuild = 'Confirm before build';
-  lisLazBuildOk = 'Ok';
+  lisLazBuildOk = 'OK';
   lisPERemoveFiles = 'Remove files';
   lisLazBuildAdd = 'Add';
   lisLazBuildNewProf = 'Add New Profile';
@@ -3439,7 +3439,7 @@ resourcestring
   lisDisableBreakPoint = 'Disable Breakpoint';
   lisEnableBreakPoint = 'Enable Breakpoint';
   lisDeleteBreakPoint = 'Delete Breakpoint';
-  lisViewBreakPointProperties = 'Breakpoint Properties...';
+  lisViewBreakPointProperties = 'Breakpoint Properties ...';
 
   lisDBGENDefaultColor = 'Default Color';
   lisDBGENBreakpointEvaluation = 'Breakpoint Evaluation';
@@ -4124,12 +4124,12 @@ resourcestring
   lisCmpLstInheritance = 'Inheritance';
 
   // menu editor
-  lisMenuEditor = 'Menu Editor...';
+  lisMenuEditor = 'Menu Editor ...';
   lisMenuEditorMenuEditor = 'Menu Editor';
   lisMenuEditorSelectMenu = 'Select Menu:';
   lisMenuEditorSelectTemplate = 'Select Template:';
   lisMenuEditorTemplatePreview = 'Template Preview';
-  lisMenuEditorNewTemplateDescription = 'New Template Description...';
+  lisMenuEditorNewTemplateDescription = 'New Template Description ...';
   lisMenuEditorCancel = 'Cancel';
   lisMenuEditorInsertNewItemAfter = 'Insert New Item (after)';
   lisMenuEditorInsertNewItemBefore = 'Insert New Item (before)';
@@ -4138,9 +4138,9 @@ resourcestring
   lisMenuEditorHandleOnClickEvent = 'Handle OnClick Event';
   lisMenuEditorMoveUp = 'Move Up (or left)';
   lisMenuEditorMoveDown = 'Move Down (or right)';
-  lisMenuEditorInsertFromTemplate = 'Insert From Template...';
-  lisMenuEditorSaveAsTemplate = 'Save As Template...';
-  lisMenuEditorDeleteFromTemplate = 'Delete From Template...';
+  lisMenuEditorInsertFromTemplate = 'Insert From Template ...';
+  lisMenuEditorSaveAsTemplate = 'Save As Template ...';
+  lisMenuEditorDeleteFromTemplate = 'Delete From Template ...';
 
   // Standard File menu
   lisMenuTemplateDescriptionStandardFileMenu = 'Standard File Menu';
@@ -4602,7 +4602,7 @@ resourcestring
   lisDbgAllItemDisableHint  = 'Disable all';
   lisDbgAllItemDelete       = 'Delete all';
   lisDbgAllItemDeleteHint   = 'Delete all';
-  lisDbgBreakpointPropertiesHint = 'Breakpoint Properties...';
+  lisDbgBreakpointPropertiesHint = 'Breakpoint Properties ...';
 
   // Call Stack Dialog
   lisShow = 'Show';
@@ -4622,8 +4622,8 @@ resourcestring
   lisCondition = 'Condition';
   lisPassCount = 'Pass Count';
   lisGroup = 'Group';
-  lisSourceBreakpoint = '&Source Breakpoint...';
-  listAddressBreakpoint = '&Address Breakpoint...';
+  lisSourceBreakpoint = '&Source Breakpoint ...';
+  listAddressBreakpoint = '&Address Breakpoint ...';
   lisEnableAll = '&Enable All';
   lisDeleteAll = '&Delete All';
   lisDisableAllInSameSource = 'Disable All in same source';
@@ -5134,10 +5134,10 @@ resourcestring
   lisConvDelphiConvertDelphiUnit = 'Convert Delphi unit';
   lisConvDelphiConvertDelphiProject = 'Convert Delphi project';
   lisConvDelphiConvertDelphiPackage = 'Convert Delphi package';
-  lisConvDelphiFindAllUnitFiles = '*** Find all unit files... ***';
-  lisConvDelphiRepairingFormFiles = '*** Repairing form files... ***';
+  lisConvDelphiFindAllUnitFiles = '*** Find all unit files ... ***';
+  lisConvDelphiRepairingFormFiles = '*** Repairing form files ... ***';
   lisConvDelphiRepairingFormFile = '* Repairing form file %s *';
-  lisConvDelphiConvertingUnitFiles = '*** Converting unit files... ***';
+  lisConvDelphiConvertingUnitFiles = '*** Converting unit files ... ***';
   lisConvDelphiConvertingFile = '* Converting file %s *';
   lisConvDelphiFixingUsedUnits = '* Fixing used units for file %s *';
   lisConvDelphiErrorCanTFindUnit = '%s(%s,%s) Error: Can''t find unit %s';
@@ -5314,10 +5314,11 @@ resourcestring
   regdlgRaw = 'Raw';
 
   // Event log dialog
-  lisEventLogOptions = 'Event Log Options...';
+  lisEventLogOptions = 'Event Log Options ...';
   lisEventLogClear = 'Clear Events';
   lisEventLogSaveToFile = 'Save Events to File';
-  lisEventsLogAddComment = 'Add Comment...';
+  lisEventsLogAddComment = 'Add Comment ...';
+  lisEventsLogAddComment2 = 'Add Comment';
 
 implementation
 

@@ -142,7 +142,7 @@ var
   S: String;
 begin
   S := '';
-  if InputQuery(lisMenuViewDebugEvents, lisEventsLogAddComment, S) then
+  if InputQuery(lisMenuViewDebugEvents, lisEventsLogAddComment2, S) then
     AddEvent(ecDebugger, etDefault, S);
 end;
 

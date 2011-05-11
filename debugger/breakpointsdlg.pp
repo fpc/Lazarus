@@ -348,7 +348,7 @@ begin
   lvBreakPoints.Columns[5].Caption:= lisPassCount;
   lvBreakPoints.Columns[6].Caption:= lisGroup;
   actShow.Caption := lisShow;
-  popAdd.Caption:= dlgEdAdd;
+  popAdd.Caption:= lisLazBuildAdd;
   actAddSourceBP.Caption := lisSourceBreakpoint;
   actAddAddressBP.Caption := listAddressBreakpoint;
 end;
