@@ -17217,7 +17217,7 @@ the comparision is case sensitive.
       </element>
       <element name="TTreeNode.GetTextPath">
         <short>
-          <var>GetTextPath</var> - returns a string containing the path to the current node</short>
+          <var>GetTextPath</var> - returns a string containing the path to the current node delimited by slash</short>
       </element>
       <element name="TTreeNodes.SelectOnlyThis.Node">
         <short>Select Only This Node</short>
