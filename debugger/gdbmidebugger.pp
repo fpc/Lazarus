@@ -689,6 +689,7 @@ type
     FExpression: string;
     FReplaceId: Integer;
 
+    FAddr: TDBGPtr;
     FBreakID: Integer;
     FHitCnt: Integer;
     FValid: Boolean;
@@ -708,6 +709,7 @@ type
     property Expression: string read FExpression write FExpression;
     property ReplaceId: Integer read FReplaceId write FReplaceId;
     // result values
+    property Addr: TDBGPtr read FAddr;
     property BreakID: Integer read FBreakID;
     property HitCnt: Integer read FHitCnt;
     property Valid: Boolean read FValid;
@@ -6720,7 +6722,7 @@ begin
   if FReplaceId <> 0
   then ExecBreakDelete(FReplaceId);
 
-  FValid := ExecBreakInsert(FKind, FAddress, FSource, FLine, FEnabled, FBreakID, FHitCnt, FAddress);
+  FValid := ExecBreakInsert(FKind, FAddress, FSource, FLine, FEnabled, FBreakID, FHitCnt, FAddr);
   if not FValid then Exit;
 
   if (FExpression <> '') and not (dcsCanceled in SeenStates)
@@ -6734,7 +6736,7 @@ begin
     ExecBreakDelete(FBreakID);
     FBreakID := 0;
     FValid := False;
-    FAddress := 0;
+    FAddr := 0;
     FHitCnt := 0;
   end;
 end;
@@ -7020,7 +7022,7 @@ begin
     and (TGDBMIDebugger(Debugger).FBreakAtMain = nil)
     then begin
       // Check if this BP is at the same location as the temp break
-      if TGDBMIDebuggerCommandBreakInsert(Sender).Address = TGDBMIDebugger(Debugger).FMainAddr
+      if TGDBMIDebuggerCommandBreakInsert(Sender).Addr = TGDBMIDebugger(Debugger).FMainAddr
       then TGDBMIDebugger(Debugger).FBreakAtMain := Self;
     end;
 
