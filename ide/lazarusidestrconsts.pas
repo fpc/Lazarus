@@ -108,8 +108,8 @@ resourcestring
   lisPromptForValue = 'Prompt for value';
   lisProjectFilename = 'Project filename';
   lisProjectDirectory = 'Project directory';
-  lisSaveCurrentEditorFile = 'save current editor file';
-  lisSaveAllModified = 'save all modified files';
+  lisSaveCurrentEditorFile = 'Save current editor file';
+  lisSaveAllModified = 'Save all modified files';
   lisTargetFilenameOfProject = 'Target filename of project';
   lisTargetFilenamePlusParams = 'Target filename + params';
   lisTestDirectory = 'Test directory';
