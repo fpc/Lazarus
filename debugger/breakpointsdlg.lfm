@@ -135,8 +135,10 @@ inherited BreakpointsDlg: TBreakpointsDlg
     object popAdd: TMenuItem
       Caption = 'Add...'
       object popAddSourceBP: TMenuItem
-        Caption = '&Source breakpoint'
-        Enabled = False
+        Action = actAddSourceBP
+      end
+      object popAddAddressBP: TMenuItem
+        Action = actAddAddressBP
       end
     end
     object N1: TMenuItem
@@ -223,6 +225,17 @@ inherited BreakpointsDlg: TBreakpointsDlg
     object actProperties: TAction
       Caption = 'actProperties'
       OnExecute = popPropertiesClick
+    end
+    object actAddSourceBP: TAction
+      Category = 'Add'
+      Caption = 'actAddSourceBP'
+      OnExecute = actAddSourceBPExecute
+      ShortCut = 45
+    end
+    object actAddAddressBP: TAction
+      Category = 'Add'
+      Caption = 'actAddAddressBP'
+      OnExecute = actAddAddressBPExecute
     end
   end
 end

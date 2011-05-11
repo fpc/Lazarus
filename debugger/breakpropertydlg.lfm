@@ -1,6 +1,6 @@
 inherited BreakPropertyDlg: TBreakPropertyDlg
   Left = 249
-  Height = 371
+  Height = 398
   Top = 187
   Width = 450
   HorzScrollBar.Page = 386
@@ -11,7 +11,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Breakpoint Properties'
-  ClientHeight = 371
+  ClientHeight = 398
   ClientWidth = 450
   Constraints.MinWidth = 450
   Position = poScreenCenter
@@ -30,7 +30,6 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
   end
   object lblLine: TLabel[1]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = edtLine
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 16
@@ -118,7 +117,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     Width = 60
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
-    TabOrder = 3
+    TabOrder = 2
     Text = 'edtAutocontinueMS'
   end
   object edtCounter: TEdit[8]
@@ -135,27 +134,10 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
-    TabOrder = 2
+    TabOrder = 1
     Text = 'edtCounter'
   end
-  object edtLine: TEdit[9]
-    AnchorSideLeft.Control = lblAutoContinue
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = edtFilename
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
-    Left = 140
-    Height = 23
-    Top = 35
-    Width = 60
-    BorderSpacing.Left = 24
-    BorderSpacing.Around = 6
-    Color = clBtnFace
-    ReadOnly = True
-    TabOrder = 1
-    Text = 'edtLine'
-  end
-  object edtFilename: TEdit[10]
+  object edtFilename: TEdit[9]
     AnchorSideLeft.Control = lblAutoContinue
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
@@ -173,7 +155,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     TabOrder = 0
     Text = 'edtFilename'
   end
-  object cmbGroup: TComboBox[11]
+  object cmbGroup: TComboBox[10]
     AnchorSideLeft.Control = lblAutoContinue
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = edtAutocontinueMS
@@ -188,10 +170,10 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
     ItemHeight = 15
-    TabOrder = 4
+    TabOrder = 3
     Text = 'cmbGroup'
   end
-  object gbActions: TGroupBox[12]
+  object gbActions: TGroupBox[11]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = cmbGroup
     AnchorSideTop.Side = asrBottom
@@ -207,7 +189,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     Caption = 'Actions'
     ClientHeight = 147
     ClientWidth = 434
-    TabOrder = 5
+    TabOrder = 4
     object chkActionBreak: TCheckBox
       AnchorSideLeft.Control = gbActions
       AnchorSideTop.Control = gbActions
@@ -354,12 +336,11 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       TabOrder = 8
     end
   end
-  object ButtonPanel: TButtonPanel[13]
+  object ButtonPanel: TButtonPanel[12]
     AnchorSideTop.Control = gbActions
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 14
+    Height = 41
     Top = 351
     Width = 438
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -374,11 +355,11 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
     CancelButton.Caption = 'Cancel'
-    TabOrder = 6
+    TabOrder = 5
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
   end
-  object edtCondition: TComboBox[14]
+  object edtCondition: TComboBox[13]
     AnchorSideLeft.Control = lblAutoContinue
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = edtLine
@@ -393,7 +374,22 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
     ItemHeight = 15
-    TabOrder = 7
+    TabOrder = 6
     Text = 'edtCondition'
+  end
+  object edtLine: TSpinEdit[14]
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtFilename
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 140
+    Height = 23
+    Top = 35
+    Width = 60
+    BorderSpacing.Left = 24
+    BorderSpacing.Around = 6
+    MaxValue = 999999
+    TabOrder = 7
   end
 end

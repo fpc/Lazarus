@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType, ActnList, MainBase,
-  IDEImagesIntf;
+  IDEImagesIntf, SourceEditor;
 
 type
   TBreakPointsDlgState = (
@@ -51,6 +51,8 @@ type
   { TBreakPointsDlg }
 
   TBreakPointsDlg = class(TDebuggerDlg)
+    actAddSourceBP: TAction;
+    actAddAddressBP: TAction;
     actProperties: TAction;
     actToggleCurrentEnable: TAction;
     actDeleteAllInSrc: TAction;
@@ -64,6 +66,7 @@ type
     actDisableAllInSrc: TAction;
     ActionList1: TActionList;
     lvBreakPoints: TListView;
+    popAddAddressBP: TMenuItem;
     N0: TMenuItem;
     popShow: TMenuItem;
     mnuPopup: TPopupMenu;
@@ -91,6 +94,8 @@ type
     ToolButtonEnableAll: TToolButton;
     ToolButtonDisableAll: TToolButton;
     ToolButtonTrashAll: TToolButton;
+    procedure actAddAddressBPExecute(Sender: TObject);
+    procedure actAddSourceBPExecute(Sender: TObject);
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
     procedure BreakpointsDlgCREATE(Sender: TObject);
@@ -344,7 +349,8 @@ begin
   lvBreakPoints.Columns[6].Caption:= lisGroup;
   popShow.Caption:= lisShow;
   popAdd.Caption:= dlgEdAdd;
-  popAddSourceBP.Caption:= lisSourceBreakpoint;
+  actAddSourceBP.Caption:= lisSourceBreakpoint;
+  actAddAddressBP.Caption := listAddressBreakpoint;
 end;
 
 procedure TBreakPointsDlg.actEnableSelectedExecute(Sender: TObject);
@@ -381,6 +387,33 @@ begin
   finally
     lvBreakPointsSelectItem(nil, nil, False);
   end;
+end;
+
+procedure TBreakPointsDlg.actAddSourceBPExecute(Sender: TObject);
+var
+  NewBreakpoint: TIDEBreakPoint;
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit := SourceEditorManager.GetActiveSE;
+  if SrcEdit <> nil then
+    NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CurrentCursorYLine)
+  else
+    NewBreakpoint := BreakPoints.Add('', 0);
+  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
+    UpdateAll
+  else
+    NewBreakpoint.Free;
+end;
+
+procedure TBreakPointsDlg.actAddAddressBPExecute(Sender: TObject);
+var
+  NewBreakpoint: TIDEBreakPoint;
+begin
+  NewBreakpoint := BreakPoints.Add(0);
+  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
+    UpdateAll
+  else
+    NewBreakpoint.Free;
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
@@ -433,7 +466,7 @@ begin
   if Handled then
     Key := 0
   else
-    inherited;;
+    inherited;
   lvBreakPointsSelectItem(nil, nil, False);
 end;
 
@@ -692,6 +725,8 @@ var
 begin
   for i := 0 to ActionList1.ActionCount - 1 do
     (ActionList1.Actions[i] as TAction).Enabled := False;
+  actAddSourceBP.Enabled := True;
+  actAddAddressBP.Enabled := True;
 end;
 
 procedure TBreakPointsDlg.UpdateItem(const AnItem: TListItem;
@@ -709,17 +744,26 @@ begin
   // state
   AnItem.Caption := GetBreakPointStateDescription(ABreakpoint);
   
-  // filename
-  Filename:=ABreakpoint.Source;
-  if BaseDirectory<>'' then
-    Filename:=CreateRelativePath(Filename,BaseDirectory);
-  AnItem.SubItems[0] := Filename;
-  
-  // line
-  if ABreakpoint.Line > 0
-  then AnItem.SubItems[1] := IntToStr(ABreakpoint.Line)
-  else AnItem.SubItems[1] := '';
-  
+  // filename/address
+  case ABreakpoint.Kind of
+    bpkSource:
+      begin
+        Filename:=ABreakpoint.Source;
+        if BaseDirectory<>'' then
+          Filename:=CreateRelativePath(Filename,BaseDirectory);
+        AnItem.SubItems[0] := Filename;
+        // line
+        if ABreakpoint.Line > 0
+        then AnItem.SubItems[1] := IntToStr(ABreakpoint.Line)
+        else AnItem.SubItems[1] := '';
+      end;
+    bpkAddress:
+      begin
+        // todo: how to define digits count? 8 or 16 depends on gdb pointer size for platform
+        AnItem.SubItems[0] := '$' + IntToHex(ABreakpoint.Address, 8);
+      end;
+  end;
+
   // expression
   AnItem.SubItems[2] := ABreakpoint.Expression;
   
@@ -809,8 +853,8 @@ begin
   CurItem:=lvBreakPoints.Selected;
   if CurItem=nil then exit;
   CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
-
-  MainIDE.DoJumpToSourcePosition(CurBreakPoint.Source, 0, CurBreakPoint.Line, 0, True);
+  if CurBreakPoint.Kind = bpkSource then
+    MainIDE.DoJumpToSourcePosition(CurBreakPoint.Source, 0, CurBreakPoint.Line, 0, True);
 end;
 
 procedure TBreakPointsDlg.ShowProperties;

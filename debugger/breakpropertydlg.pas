@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLProc,
-  ExtCtrls, StdCtrls, Buttons, ButtonPanel, EditBtn,
+  ExtCtrls, StdCtrls, Buttons, ButtonPanel, EditBtn, Spin,
   IDEHelpIntf,
   DebuggerDlg, Debugger, BaseDebugManager, LazarusIDEStrConsts, InputHistory;
 
@@ -24,13 +24,13 @@ type
     cmbGroup: TComboBox;
     edtCondition: TComboBox;
     edtEvalExpression: TEdit;
+    edtLine: TSpinEdit;
     edtLogMessage: TEdit;
     edtEnableGroups: TEditButton;
     edtDisableGroups: TEditButton;
     edtAutocontinueMS: TEdit;
     edtCounter: TEdit;
     edtFilename: TEdit;
-    edtLine: TEdit;
     gbActions: TGroupBox;
     lblMS: TLabel;
     lblFileName: TLabel;
@@ -93,9 +93,17 @@ begin
   if FBreakpoint = nil then Exit;
 
   FBreakpointsNotification.OnUpdate := nil;
-  // filename
-  // line
-  FBreakpoint.SetLocation(edtFilename.Text, StrToIntDef(edtLine.Text, 1));
+  case FBreakpoint.Kind of
+    bpkSource:
+      begin
+        // filename + line
+        FBreakpoint.SetLocation(edtFilename.Text, edtLine.Value);
+      end;
+    bpkAddress:
+      begin
+        FBreakpoint.SetAddress(StrToQWordDef(edtFilename.Text, 0));
+      end;
+  end;
   // expression
   FBreakpoint.Expression := edtCondition.Text;
   // hitcount
@@ -128,12 +136,21 @@ var
   Actions: TIDEBreakPointActions;
 begin
   if FBreakpoint = nil then Exit;
-  // filename
-  edtFilename.text := FBreakpoint.Source;
-  // line
-  if FBreakpoint.Line > 0
-  then edtLine.Text := IntToStr(FBreakpoint.Line)
-  else edtLine.Text := '';
+  case FBreakpoint.Kind of
+    bpkSource:
+      begin
+        // filename
+        edtFilename.Text := FBreakpoint.Source;
+        // line
+        if FBreakpoint.Line > 0
+        then edtLine.Value := FBreakpoint.Line
+        else edtLine.Value := 0;
+      end;
+    bpkAddress:
+      begin
+        edtFilename.Text := '$' + IntToHex(FBreakpoint.Address, 8); // todo: 8/16 depends on platform
+      end;
+  end;
   // expression
   edtCondition.Text := FBreakpoint.Expression;
   // hitcount
@@ -160,8 +177,21 @@ begin
   inherited Create(AOwner);
 
   Caption := lisBreakPointProperties;
-  lblFileName.Caption := lisPEFilename;
-  lblLine.Caption := lisLine;
+  case ABreakPoint.Kind of
+    bpkSource:
+      begin
+        lblFileName.Caption := lisPEFilename;
+        lblLine.Caption := lisLine;
+      end;
+    bpkAddress:
+      begin
+        lblFileName.Caption := lisAddress;
+        lblLine.Visible := False;
+        edtLine.Visible := False;
+        edtFilename.ReadOnly := False;
+        edtFilename.Color := clDefault;
+      end;
+  end;
   lblCondition.Caption := lisCondition + ':';
   lblHitCount.Caption := lisHitCount + ':';
   lblAutoContinue.Caption := lisAutoContinueAfter;

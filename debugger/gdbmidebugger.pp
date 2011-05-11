@@ -670,8 +670,9 @@ type
   TGDBMIDebuggerCommandBreakPointBase = class(TGDBMIDebuggerCommand)
   protected
     function ExecBreakDelete(ABreakId: Integer): Boolean;
-    function ExecBreakInsert(ASource: string; ALine: Integer; AEnabled: Boolean;
-                             out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
+    function ExecBreakInsert(AKind: TDBGBreakPointKind; AAddress: TDBGPtr;
+        ASource: string; ALine: Integer; AEnabled: Boolean;
+        out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
     function ExecBreakEnabled(ABreakId: Integer; AnEnabled: Boolean): Boolean;
     function ExecBreakCondition(ABreakId: Integer; AnExpression: string): Boolean;
   end;
@@ -680,13 +681,14 @@ type
 
   TGDBMIDebuggerCommandBreakInsert = class(TGDBMIDebuggerCommandBreakPointBase)
   private
+    FKind: TDBGBreakPointKind;
+    FAddress: TDBGPtr;
     FSource: string;
     FLine: Integer;
     FEnabled: Boolean;
     FExpression: string;
     FReplaceId: Integer;
 
-    FAddr: TDBGPtr;
     FBreakID: Integer;
     FHitCnt: Integer;
     FValid: Boolean;
@@ -694,8 +696,12 @@ type
     function DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger; ASource: string; ALine: Integer;
-                       AEnabled: Boolean; AnExpression: string; AReplaceId: Integer);
+                       AEnabled: Boolean; AnExpression: string; AReplaceId: Integer); overload;
+    constructor Create(AOwner: TGDBMIDebugger; AAddress: TDBGPtr;
+                       AEnabled: Boolean; AnExpression: string; AReplaceId: Integer); overload;
     function DebugText: String; override;
+    property Kind: TDBGBreakPointKind read FKind write FKind;
+    property Address: TDBGPtr read FAddress write FAddress;
     property Source: string read FSource write FSource;
     property Line: Integer read FLine write FLine;
     property Enabled: Boolean read FEnabled write FEnabled;
@@ -703,7 +709,6 @@ type
     property ReplaceId: Integer read FReplaceId write FReplaceId;
     // result values
     property BreakID: Integer read FBreakID;
-    property Addr: TDBGPtr read FAddr;
     property HitCnt: Integer read FHitCnt;
     property Valid: Boolean read FValid;
   end;
@@ -765,6 +770,7 @@ type
     procedure DoExpressionChange; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure MakeInvalid;
+    procedure SetAddress(const AValue: TDBGPtr); override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -5497,12 +5503,21 @@ procedure TGDBMIDebugger.DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; Locat
 var
   SrcName: String;
 begin
-  SrcName := Location.SrcFullName;
-  if SrcName = '' then
-    SrcName := Location.SrcFile;
-  if SrcName = '' then
-    SrcName := ABreakpoint.Source;
-  DoDbgEvent(ecBreakpoint, etBreakpointHit, Format('Breakpoint at $%.' + IntToStr(TargetPtrSize * 2) + 'x: %s line %d', [Location.Address, SrcName, Location.SrcLine]));
+  case ABreakPoint.Kind of
+    bpkSource:
+      begin
+        SrcName := Location.SrcFullName;
+        if SrcName = '' then
+          SrcName := Location.SrcFile;
+        if SrcName = '' then
+          SrcName := ABreakpoint.Source;
+        DoDbgEvent(ecBreakpoint, etBreakpointHit, Format('Source Breakpoint at $%.' + IntToStr(TargetPtrSize * 2) + 'x: %s line %d', [Location.Address, SrcName, Location.SrcLine]));
+      end;
+    bpkAddress:
+      begin
+        DoDbgEvent(ecBreakpoint, etBreakpointHit, Format('Address Breakpoint at $%.' + IntToStr(TargetPtrSize * 2) + 'x', [Location.Address]));
+      end;
+  end;
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -6639,8 +6654,8 @@ begin
   Result := ExecuteCommand('-break-delete %d', [ABreakID], []);
 end;
 
-function TGDBMIDebuggerCommandBreakPointBase.ExecBreakInsert(ASource: string; ALine: Integer;
-  AEnabled: Boolean; out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
+function TGDBMIDebuggerCommandBreakPointBase.ExecBreakInsert(AKind: TDBGBreakPointKind; AAddress: TDBGPtr;
+  ASource: string; ALine: Integer; AEnabled: Boolean; out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
 var
   R: TGDBMIExecResult;
   ResultList: TGDBMINameValueList;
@@ -6649,11 +6664,21 @@ begin
   ABreakId := 0;
   AHitCnt := 0;
   AnAddr := 0;
-  If (ASource = '') or (ALine < 0) then exit;
-
-  if dfForceBreak in FTheDebugger.FDebuggerFlags
-  then Result := ExecuteCommand('-break-insert -f %s:%d', [ExtractFileName(ASource), ALine], R)
-  else Result := ExecuteCommand('-break-insert %s:%d',    [ExtractFileName(ASource), ALine], R);
+  case AKind of
+    bpkSource:
+      begin
+        if (ASource = '') or (ALine < 0) then exit;
+        if dfForceBreak in FTheDebugger.FDebuggerFlags
+        then Result := ExecuteCommand('-break-insert -f %s:%d', [ExtractFileName(ASource), ALine], R)
+        else Result := ExecuteCommand('-break-insert %s:%d',    [ExtractFileName(ASource), ALine], R);
+      end;
+    bpkAddress:
+      begin
+        if dfForceBreak in FTheDebugger.FDebuggerFlags
+        then Result := ExecuteCommand('-break-insert -f *%u', [AAddress], R)
+        else Result := ExecuteCommand('-break-insert *%u',    [AAddress], R);
+      end;
+  end;
 
   ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
   ABreakID := StrToIntDef(ResultList.Values['number'], 0);
@@ -6695,7 +6720,7 @@ begin
   if FReplaceId <> 0
   then ExecBreakDelete(FReplaceId);
 
-  FValid := ExecBreakInsert(FSource, FLine, FEnabled, FBreakID, FHitCnt, FAddr);
+  FValid := ExecBreakInsert(FKind, FAddress, FSource, FLine, FEnabled, FBreakID, FHitCnt, FAddress);
   if not FValid then Exit;
 
   if (FExpression <> '') and not (dcsCanceled in SeenStates)
@@ -6709,7 +6734,7 @@ begin
     ExecBreakDelete(FBreakID);
     FBreakID := 0;
     FValid := False;
-    FAddr := 0;
+    FAddress := 0;
     FHitCnt := 0;
   end;
 end;
@@ -6718,8 +6743,21 @@ constructor TGDBMIDebuggerCommandBreakInsert.Create(AOwner: TGDBMIDebugger; ASou
   ALine: Integer; AEnabled: Boolean; AnExpression: string; AReplaceId: Integer);
 begin
   inherited Create(AOwner);
+  FKind := bpkSource;
   FSource := ASource;
   FLine := ALine;
+  FEnabled := AEnabled;
+  FExpression := AnExpression;
+  FReplaceId := AReplaceId;
+end;
+
+constructor TGDBMIDebuggerCommandBreakInsert.Create(AOwner: TGDBMIDebugger;
+  AAddress: TDBGPtr; AEnabled: Boolean; AnExpression: string;
+  AReplaceId: Integer);
+begin
+  inherited Create(AOwner);
+  FKind := bpkAddress;
+  FAddress := AAddress;
   FEnabled := AEnabled;
   FExpression := AnExpression;
   FReplaceId := AReplaceId;
@@ -6873,6 +6911,15 @@ begin
   EndUpdate;
 end;
 
+procedure TGDBMIBreakPoint.SetAddress(const AValue: TDBGPtr);
+begin
+  if (Address = AValue) then exit;
+  inherited;
+  if (Debugger = nil) then Exit;
+  if TGDBMIDebugger(Debugger).State in [dsPause, dsRun]
+  then SetBreakpoint;
+end;
+
 procedure TGDBMIBreakPoint.SetBreakpoint;
 begin
   if Debugger = nil then Exit;
@@ -6894,8 +6941,18 @@ begin
     if (FCurrentCmd is TGDBMIDebuggerCommandBreakInsert) and (FCurrentCmd.State = dcsQueued)
     then begin
       // update the current object
-      TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Source  := Source;
-      TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Line    := Line;
+      TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Kind := Kind;
+      case Kind of
+        bpkSource:
+          begin
+            TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Source := Source;
+            TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Line := Line;
+          end;
+        bpkAddress:
+          begin
+            TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Address := Address;
+          end;
+      end;
       TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Enabled := Enabled;
       TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Expression := FParsedExpression;
       exit;
@@ -6918,8 +6975,12 @@ begin
   end;
 
   FUpdateFlags := [];
-  FCurrentCmd:= TGDBMIDebuggerCommandBreakInsert.Create(TGDBMIDebugger(Debugger),
-    Source, Line , Enabled, FParsedExpression, FBreakID);
+  case Kind of
+    bpkSource:
+      FCurrentCmd := TGDBMIDebuggerCommandBreakInsert.Create(TGDBMIDebugger(Debugger), Source, Line, Enabled, FParsedExpression, FBreakID);
+    bpkAddress:
+      FCurrentCmd := TGDBMIDebuggerCommandBreakInsert.Create(TGDBMIDebugger(Debugger), Address, Enabled, FParsedExpression, FBreakID);
+  end;
   FBreakID := 0; // will be replaced => no longer valid
   FCurrentCmd.OnDestroy  := @DoCommandDestroyed;
   FCurrentCmd.OnExecuted  := @DoCommandExecuted;
@@ -6959,7 +7020,7 @@ begin
     and (TGDBMIDebugger(Debugger).FBreakAtMain = nil)
     then begin
       // Check if this BP is at the same location as the temp break
-      if TGDBMIDebuggerCommandBreakInsert(Sender).Addr = TGDBMIDebugger(Debugger).FMainAddr
+      if TGDBMIDebuggerCommandBreakInsert(Sender).Address = TGDBMIDebugger(Debugger).FMainAddr
       then TGDBMIDebugger(Debugger).FBreakAtMain := Self;
     end;
 
