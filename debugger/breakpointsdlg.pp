@@ -53,6 +53,7 @@ type
   TBreakPointsDlg = class(TDebuggerDlg)
     actAddSourceBP: TAction;
     actAddAddressBP: TAction;
+    actShow: TAction;
     actProperties: TAction;
     actToggleCurrentEnable: TAction;
     actDeleteAllInSrc: TAction;
@@ -98,12 +99,11 @@ type
     procedure actAddSourceBPExecute(Sender: TObject);
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
+    procedure actShowExecute(Sender: TObject);
     procedure BreakpointsDlgCREATE(Sender: TObject);
     procedure lvBreakPointsClick(Sender: TObject);
     procedure lvBreakPointsColumnClick(Sender: TObject; Column: TListColumn);
     procedure lvBreakPointsDBLCLICK(Sender: TObject);
-    procedure lvBreakPointsKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure lvBreakPointsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure popDeleteAllSameSourceCLICK(Sender: TObject);
     procedure popDisableAllSameSourceCLICK(Sender: TObject);
@@ -114,7 +114,6 @@ type
     procedure popDisableAllClick(Sender: TObject);
     procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
-    procedure popShowClick(Sender: TObject);
   private
     FBaseDirectory: string;
     FBreakPoints: TIDEBreakPoints;
@@ -309,6 +308,7 @@ begin
   actDeleteAll.ImageIndex := IDEImages.LoadImage(16, 'menu_clean');
 
   actProperties.Caption:= liswlProperties;
+  actProperties.Hint := lisDbgBreakpointPropertiesHint;
   actProperties.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
 
   actToggleCurrentEnable.Caption:= liswlEnabled;
@@ -347,9 +347,9 @@ begin
   lvBreakPoints.Columns[4].Caption:= lisLazBuildABOAction;
   lvBreakPoints.Columns[5].Caption:= lisPassCount;
   lvBreakPoints.Columns[6].Caption:= lisGroup;
-  popShow.Caption:= lisShow;
+  actShow.Caption := lisShow;
   popAdd.Caption:= dlgEdAdd;
-  actAddSourceBP.Caption:= lisSourceBreakpoint;
+  actAddSourceBP.Caption := lisSourceBreakpoint;
   actAddAddressBP.Caption := listAddressBreakpoint;
 end;
 
@@ -369,6 +369,11 @@ begin
   finally
     lvBreakPointsSelectItem(nil, nil, False);
   end;
+end;
+
+procedure TBreakPointsDlg.actShowExecute(Sender: TObject);
+begin
+  JumpToCurrentBreakPoint;
 end;
 
 procedure TBreakPointsDlg.actDisableSelectedExecute(Sender: TObject);
@@ -427,49 +432,6 @@ begin
   JumpToCurrentBreakPoint;
 end;
 
-procedure TBreakPointsDlg.lvBreakPointsKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-var
-  Handled : Boolean;
-  xyScreenPos : TPoint;
-begin
-  Handled := true;
-
-  if shift= [ssAlt] then
-  begin
-    case key of
-      VK_F10:
-        begin // <ALT-F10> default behaviour: open context menu
-          xyScreenPos.x:=left+width div 2;
-          xyScreenPos.y:=top+  height div 2;
-          mnuPopup.PopUp(xyScreenPos.x,xyScreenPos.y);
-        end;
-    else
-      Handled := false;
-    end;
-  end
-  else
-  if shift=[] then
-  begin
-    case key of
-      VK_RETURN:
-        ShowProperties;
-      VK_D:
-        DeleteSelectedBreakpoints;
-    else
-      Handled := false;
-    end;
-  end
-  else
-    Handled := false;
-
-  if Handled then
-    Key := 0
-  else
-    inherited;
-  lvBreakPointsSelectItem(nil, nil, False);
-end;
-
 procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 var
@@ -483,9 +445,9 @@ begin
 
   ItemSelected := lvBreakPoints.Selected <> nil;
   if ItemSelected then
-    CurBreakPoint:=TIDEBreakPoint(lvBreakPoints.Selected.Data)
+    CurBreakPoint := TIDEBreakPoint(lvBreakPoints.Selected.Data)
   else
-    CurBreakPoint:=nil;
+    CurBreakPoint := nil;
   SelCanEnable := False;
   SelCanDisable := False;
   AllCanEnable := False;
@@ -517,7 +479,7 @@ begin
   actDeleteAllInSrc.Enabled := ItemSelected;
 
   actProperties.Enabled := ItemSelected;
-  popShow.Enabled := ItemSelected;
+  actShow.Enabled := ItemSelected;
 end;
 
 procedure TBreakPointsDlg.popDeleteAllSameSourceCLICK(Sender: TObject);
@@ -619,11 +581,6 @@ begin
   finally
     lvBreakPointsSelectItem(nil, nil, False);
   end;
-end;
-
-procedure TBreakPointsDlg.popShowClick(Sender: TObject);
-begin
-  JumpToCurrentBreakPoint;
 end;
 
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);

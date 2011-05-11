@@ -58,7 +58,6 @@ inherited BreakpointsDlg: TBreakpointsDlg
     OnClick = lvBreakPointsClick
     OnColumnClick = lvBreakPointsColumnClick
     OnDblClick = lvBreakPointsDBLCLICK
-    OnKeyDown = lvBreakPointsKeyDown
     OnSelectItem = lvBreakPointsSelectItem
   end
   object ToolBar1: TToolBar[1]
@@ -124,10 +123,8 @@ inherited BreakpointsDlg: TBreakpointsDlg
     left = 24
     top = 40
     object popShow: TMenuItem
-      Caption = 'Show'
+      Action = actShow
       Default = True
-      ShortCut = 16470
-      OnClick = popShowClick
     end
     object N0: TMenuItem
       Caption = '-'
@@ -185,6 +182,7 @@ inherited BreakpointsDlg: TBreakpointsDlg
     object actToggleCurrentEnable: TAction
       Caption = 'actToggleCurrentEnable'
       OnExecute = popEnabledClick
+      ShortCut = 16462
     end
     object actEnableSelected: TAction
       Caption = 'actEnableSelected'
@@ -197,6 +195,7 @@ inherited BreakpointsDlg: TBreakpointsDlg
     object actDeleteSelected: TAction
       Caption = 'actDeleteSelected'
       OnExecute = popDeleteClick
+      ShortCut = 46
     end
     object actEnableAll: TAction
       Caption = 'actEnableAll'
@@ -225,6 +224,7 @@ inherited BreakpointsDlg: TBreakpointsDlg
     object actProperties: TAction
       Caption = 'actProperties'
       OnExecute = popPropertiesClick
+      ShortCut = 13
     end
     object actAddSourceBP: TAction
       Category = 'Add'
@@ -236,6 +236,11 @@ inherited BreakpointsDlg: TBreakpointsDlg
       Category = 'Add'
       Caption = 'actAddAddressBP'
       OnExecute = actAddAddressBPExecute
+    end
+    object actShow: TAction
+      Caption = 'actShow'
+      OnExecute = actShowExecute
+      ShortCut = 16470
     end
   end
 end
