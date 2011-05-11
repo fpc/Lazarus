@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils,
   IDECommands, MenuIntf,
-  CodyFrm, CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg;
+  LResources, CodyFrm, CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg;
 
 procedure Register;
 
@@ -47,6 +47,7 @@ var
   AddAssignMethodCommand: TIDECommand;
   RemoveWithBlockCommand: TIDECommand;
   InsertFileAtCursorCommand: TIDECommand;
+  TVIconRes: TLResource;
 begin
   CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
   if CmdCatFileMenu=nil then
@@ -87,6 +88,8 @@ begin
     crsRemoveWithBlock, nil, nil, RemoveWithBlockCommand);
 
   // components
+  TVIconRes:=LazarusResources.Find('TTreeView');
+  LazarusResources.Add(TCodyTreeView.ClassName,TVIconRes.ValueType,TVIconRes.Value);
   RegisterComponents('LazControls',[TCodyTreeView]);
 end;
 
