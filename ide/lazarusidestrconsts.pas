@@ -3439,7 +3439,7 @@ resourcestring
   lisDisableBreakPoint = 'Disable Breakpoint';
   lisEnableBreakPoint = 'Enable Breakpoint';
   lisDeleteBreakPoint = 'Delete Breakpoint';
-  lisViewBreakPointProperties = 'View Breakpoint Properties';
+  lisViewBreakPointProperties = 'Breakpoint Properties...';
 
   lisDBGENDefaultColor = 'Default Color';
   lisDBGENBreakpointEvaluation = 'Breakpoint Evaluation';
@@ -4621,7 +4621,8 @@ resourcestring
   lisCondition = 'Condition';
   lisPassCount = 'Pass Count';
   lisGroup = 'Group';
-  lisSourceBreakpoint = '&Source breakpoint';
+  lisSourceBreakpoint = '&Source Breakpoint...';
+  listAddressBreakpoint = '&Address Breakpoint...';
   lisEnableAll = '&Enable All';
   lisDeleteAll = '&Delete All';
   lisDisableAllInSameSource = 'Disable All in same source';
@@ -4655,6 +4656,7 @@ resourcestring
   // Breakpoint Properties Dialog
   lisBreakPointProperties = 'Breakpoint Properties';
   lisLine = 'Line:';
+  lisAddress = 'Address:';
   lisAutoContinueAfter = 'Auto continue after:';
   lisMS = '(ms)';
   lisActions = 'Actions:';
