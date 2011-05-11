@@ -486,8 +486,12 @@ end;
 
 procedure TManagedBreakPoint.UpdateSourceMark;
 begin
+  if SourceMark = nil then Exit;
+  SourceMark.IncChangeLock;
+  SourceMark.Line := Line;
   UpdateSourceMarkImage;
   UpdateSourceMarkLineColor;
+  SourceMark.DecChangeLock;
 end;
 
 
