@@ -3489,6 +3489,8 @@ resourcestring
   // external tools
   lisExtToolFailedToRunTool = 'Failed to run tool';
   lisExtToolUnableToRunTheTool = 'Unable to run the tool %s%s%s:%s%s';
+  lisProgramNotFound = 'Program %s not found';
+  lisWorkingDirectoryNotFound = 'Working directory %s not found';
   lisExtToolExternalTools = 'External tools';
   lisExtToolRemove = 'Remove';
   lisTheseSettingsAreStoredWithTheProject = 'These settings are stored with '

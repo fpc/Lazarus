@@ -41,7 +41,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms,
   Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel,
-  LazConfigStorage, FileUtil, UTF8Process,
+  LazConfigStorage, FileProcs, UTF8Process,
   IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
   CompOptsIntf, ProjectIntf,
   EnvironmentOpts,
@@ -293,7 +293,6 @@ var
   TheProcess: TProcessUTF8;
   Abort, ErrorOccurred: boolean;
   NewFilename: String;
-  Btns: TMsgDlgButtons;
   TheOutputFilter: TOutputFilter;
 begin
   Result:=mrCancel;
@@ -307,21 +306,30 @@ begin
   if (not Macros.SubstituteStr(Filename)) then exit;
   if (not Macros.SubstituteStr(WorkingDir)) then exit;
   if (not Macros.SubstituteStr(Params)) then exit;
-  if ShowAbort then
-    Btns:=[mbIgnore,mbAbort]
-  else
-    Btns:=[mbCancel];
+
+  // expand working directory
+  WorkingDir:=TrimAndExpandDirectory(WorkingDir);
+  if (WorkingDir<>'')
+  and (not DirPathExists(WorkingDir)) then begin
+    Result:=IDEMessageDialogAb(lisExtToolFailedToRunTool,
+      Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
+        Format(lisWorkingDirectoryNotFound, [WorkingDir])]),
+      mtError,[mbCancel],ShowAbort);
+    CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
+        Format(lisWorkingDirectoryNotFound, [WorkingDir])]);
+    exit;
+  end;
+
+  // expand file name
   if not FilenameIsAbsolute(Filename) then begin
     NewFilename:=FindProgram(Filename,GetCurrentDirUTF8,false);
     if NewFilename='' then begin
-      Result:=MessageDlg(lisExtToolFailedToRunTool,
+      Result:=IDEMessageDialogAb(lisExtToolFailedToRunTool,
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
-          'Program '+Filename+' not found']),
-        mtError,Btns,0);
-      if Result=mrIgnore then Result:=mrCancel;
-
+          Format(lisProgramNotFound, [Filename])]),
+        mtError,[mbCancel],ShowAbort);
       CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13,
-          'Program '+Filename+' not found']);
+          Format(lisProgramNotFound, [Filename])]);
       exit;
     end;
     Filename:=NewFilename;
@@ -413,11 +421,10 @@ begin
     on e: Exception do begin
       DebugLn('TExternalToolList.Run ',lisExtToolFailedToRunTool, ' ', E.Message);
       DumpExceptionBackTrace;
-      Result:=IDEMessageDialog(lisExtToolFailedToRunTool,
+      Result:=IDEMessageDialogAb(lisExtToolFailedToRunTool,
         Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
           ),
-        mtError,Btns,'');
-      if Result=mrIgnore then Result:=mrCancel;
+        mtError,[mbCancel],ShowAbort);
       CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]);
     end;
   end;
@@ -505,6 +512,7 @@ begin
 end;
 
 { TExternalToolDialog }
+
 constructor TExternalToolDialog.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
