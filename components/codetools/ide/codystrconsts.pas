@@ -55,6 +55,7 @@ resourcestring
   crsSource = 'Source: %s';
   crsPPU = 'PPU: %s';
   crsShowUsedPpuFiles = 'Show used .ppu files ...';
+  crsInsertFileAtCursor = 'Insert file at cursor ...';
   crsVirtualUnit = 'Virtual unit';
   crsProjectOutput = 'Project output';
   crsClose = '&Close';

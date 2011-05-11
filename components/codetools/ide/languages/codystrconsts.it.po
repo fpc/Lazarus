@@ -142,6 +142,10 @@ msgstr ""
 msgid "Gbytes"
 msgstr "Gbyte"
 
+#: codystrconsts.crsinsertfileatcursor
+msgid "Insert file at cursor ..."
+msgstr ""
+
 #: codystrconsts.crskbytes
 msgid "kbytes"
 msgstr "Kbyte"

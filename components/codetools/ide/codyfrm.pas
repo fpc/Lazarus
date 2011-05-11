@@ -27,27 +27,40 @@ unit CodyFrm;
 
 {$mode objfpc}{$H+}
 
+{$R *.lfm}
+
 interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   // codetools
-  CodeToolManager, CodeCache,
+  FileProcs, CodeToolManager, SourceLog, CodeCache,
   // IDEIntf
   LazIDEIntf, SrcEditorIntf, IDEDialogs,
   // cody
   CodyStrConsts;
 
 type
+
+  { TCody }
+
+  TCody = class
+  public
+    procedure DecodeLoaded(Sender: TSourceLog; const Filename: string;
+                           var Source, DiskEncoding, MemEncoding: string);
+  end;
+
   TCodyWindow = class(TForm)
   private
   public
   end;
 
 var
+  Cody: TCody;
   CodyWindow: TCodyWindow;
 
 procedure RemoveWithBlockCmd(Sender: TObject);
+procedure InsertFileAtCursor(Sender: TObject);
 
 implementation
 
@@ -83,7 +96,65 @@ begin
   end;
 end;
 
-{$R *.lfm}
+procedure InsertFileAtCursor(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  Filter: String;
+  Filename: String;
+  Code: TCodeBuffer;
+  SrcEdit: TSourceEditorInterface;
+begin
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+  if SrcEdit=nil then exit;
+
+  OpenDialog:=TOpenDialog.Create(nil);
+  Code:=nil;
+  try
+    InitIDEFileDialog(OpenDialog);
+    OpenDialog.Title:='Select file to insert at cursor';
+    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+    Filter:='Pascal' + ' (*.pas;*.pp)|*.pas;*.pp';
+    Filter:=Filter+'|'+'All files' + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    OpenDialog.Filter:=Filter;
+    if not OpenDialog.Execute then exit;
+    Filename:=OpenDialog.FileName;
+    if not FileIsText(Filename) then begin
+      if IDEMessageDialog('Warning','The file seems to be a binary. Proceed?',
+        mtConfirmation,[mbOk,mbCancel])<>mrOK then exit;
+    end;
+    Code:=TCodeBuffer.Create;
+    Code.Filename:=Filename;
+    Code.OnDecodeLoaded:=@Cody.DecodeLoaded;
+    if not Code.LoadFromFile(Filename) then begin
+      IDEMessageDialog('Error','Unable to load file "'+Filename+'"'#13
+      +Code.LastError,
+        mtError,[mbCancel]);
+      exit;
+    end;
+
+    SrcEdit.Selection:=Code.Source;
+  finally
+    OpenDialog.Free;
+    Code.Free;
+  end;
+end;
+
+{ TCody }
+
+procedure TCody.DecodeLoaded(Sender: TSourceLog; const Filename: string;
+  var Source, DiskEncoding, MemEncoding: string);
+begin
+  //debugln(['TCody.DecodeLoaded ',Filename]);
+  if (Sender is TCodeBuffer)
+  and Assigned(CodeToolBoss.SourceCache.OnDecodeLoaded) then
+    CodeToolBoss.SourceCache.OnDecodeLoaded(TCodeBuffer(Sender),Filename,
+      Source,DiskEncoding,MemEncoding);
+end;
+
+initialization
+  Cody:=TCody.Create;
+finalization
+  FreeAndNil(Cody);
 
 end.
 

@@ -40,32 +40,47 @@ implementation
 
 procedure Register;
 var
-  CmdCategory: TIDECommandCategory;
+  CmdCatProjectMenu: TIDECommandCategory;
+  CmdCatCodeTools: TIDECommandCategory;
+  CmdCatFileMenu: TIDECommandCategory;
   PPUListCommand: TIDECommand;
   AddAssignMethodCommand: TIDECommand;
   RemoveWithBlockCommand: TIDECommand;
+  InsertFileAtCursorCommand: TIDECommand;
 begin
-  CmdCategory:=IDECommandList.FindCategoryByName('ProjectMenu');
-  if CmdCategory=nil then
-    raise Exception.Create('cody: PPUListDlg.Register: command category ProjectMenu not found');
+  CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
+  if CmdCatFileMenu=nil then
+    raise Exception.Create('cody: command category FileMenu not found');
+  CmdCatProjectMenu:=IDECommandList.FindCategoryByName('ProjectMenu');
+  if CmdCatProjectMenu=nil then
+    raise Exception.Create('cody: command category ProjectMenu not found');
+  CmdCatCodeTools:=IDECommandList.FindCategoryByName('CodeTools');
+  if CmdCatCodeTools=nil then
+    raise Exception.Create('cody: command category CodeTools not found');
+
+  // insert file at cursor
+  InsertFileAtCursorCommand:=RegisterIDECommand(CmdCatFileMenu,
+    'InsertFileAtCursor',crsInsertFileAtCursor,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@InsertFileAtCursor);
+  RegisterIDEMenuCommand(SrcEditSubMenuSource,'InsertFileAtCursor',
+    crsInsertFileAtCursor,nil,nil,InsertFileAtCursorCommand);
+
   // show ppu list of project
-  PPUListCommand:=RegisterIDECommand(CmdCategory, 'ShowPPUList',
+  PPUListCommand:=RegisterIDECommand(CmdCatProjectMenu, 'ShowPPUList',
     crsShowUsedPpuFiles,
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowPPUList);
   RegisterIDEMenuCommand(itmProjectWindowSection,'PPUList',crsShowUsedPpuFiles,
     nil,nil,PPUListCommand);
 
-  CmdCategory:=IDECommandList.FindCategoryByName('CodeTools');
-  if CmdCategory=nil then
-    raise Exception.Create('cody: AddAssignMethodDlg.Register: command category CodeTools not found');
   // add Assign method
-  AddAssignMethodCommand:=RegisterIDECommand(CmdCategory, 'AddAssignMethod',
+  AddAssignMethodCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddAssignMethod',
     crsAddAssignMethod,
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowAddAssignMethodDialog);
   RegisterIDEMenuCommand(SrcEditSubMenuSource, 'AddAssignMethod',
     crsAddAssignMethod2,nil,nil,AddAssignMethodCommand);
+
   // remove With block
-  RemoveWithBlockCommand:=RegisterIDECommand(CmdCategory, 'RemoveWithBlock',
+  RemoveWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'RemoveWithBlock',
     crsRemoveWithBlock,
     CleanIDEShortCut,CleanIDEShortCut,nil,@RemoveWithBlockCmd);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'RemoveWithBlock',

@@ -141,6 +141,10 @@ msgstr "Расположите курсор редактора исходног�
 msgid "Gbytes"
 msgstr "ГБ"
 
+#: codystrconsts.crsinsertfileatcursor
+msgid "Insert file at cursor ..."
+msgstr ""
+
 #: codystrconsts.crskbytes
 msgid "kbytes"
 msgstr "кБ"

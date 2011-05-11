@@ -129,6 +129,7 @@ type
     procedure EncodeSaving(const AFilename: string; var ASource: string); virtual;
   public
     Data: Pointer;
+    LastError: string;
     function LineCount: integer;
     function GetLine(Index: integer): string; // 0-based
     function GetLineLength(Index: integer): integer; // 0-based
@@ -789,7 +790,8 @@ var
   fs: TFileStream;
   p: Integer;
 begin
-  Result := True;
+  Result := False;
+  LastError:='';
   try
     fs := TFileStream.Create(UTF8ToSys(Filename), fmOpenRead or fmShareDenyNone);
     try
@@ -817,8 +819,10 @@ begin
     finally
       fs.Free;
     end;
+    Result := True;
   except
-    Result := False;
+    on E: Exception do
+      LastError:=E.Message;
   end;
 end;
 
@@ -841,17 +845,16 @@ begin
   DebugLn(['TSourceLog.SaveToFile Self=',DbgS(Self),' ',Filename,' Size=',length(Source)]);
   CTDumpStack;
   {$ENDIF}
-  Result := True;
+  Result := False;
+  LastError:='';
   try
     // keep filename case on disk
     TheFilename := FindDiskFilename(Filename);
-    if FileExistsUTF8(TheFilename) then
-    begin
+    if FileExistsUTF8(TheFilename) then begin
       InvalidateFileStateCache(TheFilename);
       fs := TFileStream.Create(UTF8ToSys(TheFilename), fmOpenWrite or fmShareDenyNone);
       fs.Size := 0;
-    end
-    else begin
+    end else begin
       InvalidateFileStateCache; // invalidate all (samba shares)
       fs := TFileStream.Create(UTF8ToSys(TheFilename), fmCreate);
     end;
@@ -867,8 +870,10 @@ begin
     finally
       fs.Free;
     end;
+    Result := True;
   except
-    Result := False;
+    on E: Exception do
+      LastError:=E.Message;
   end;
 end;
 
