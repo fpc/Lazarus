@@ -188,6 +188,7 @@ procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
 
 var
   DebugBoss: TBaseDebugManager;
+  DebuggerOptions: TDebuggerOptions = nil;
 
 implementation
 
@@ -231,7 +232,7 @@ end;
 
 class function TDebuggerOptions.GetInstance: TAbstractIDEOptions;
 begin
-  Result := nil;
+  Result := DebuggerOptions;
 end;
 
 initialization

@@ -113,7 +113,7 @@ end;
 
 class function TDebuggerSignalsOptions.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := nil;
+  Result := TDebuggerOptions;
 end;
 
 initialization

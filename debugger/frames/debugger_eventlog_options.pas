@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Graphics, Forms, StdCtrls, Spin, CheckLst,
   ComCtrls, LCLType, LCLIntf, ColorBox, Debugger, LazarusIDEStrConsts,
-  IDEOptionsIntf, EnvironmentOpts;
+  IDEOptionsIntf, EnvironmentOpts, BaseDebugManager;
 
 type
   { TDebuggerEventLogOptionsFrame }
@@ -235,7 +235,7 @@ procedure TDebuggerEventLogOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptio
 var
   EventType: TDBGEventType;
 begin
-  with AOptions as TEnvironmentOptions do
+  with EnvironmentOptions do
   begin
     chkClearLogOnRun.Checked := DebuggerEventLogClearOnRun;
     chkLimitLinecount.Checked := DebuggerEventLogCheckLineLimit;
@@ -264,7 +264,7 @@ procedure TDebuggerEventLogOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpti
 var
   EventType: TDBGEventType;
 begin
-  with AOptions as TEnvironmentOptions do
+  with EnvironmentOptions do
   begin
     DebuggerEventLogClearOnRun := chkClearLogOnRun.Checked;
     DebuggerEventLogCheckLineLimit := chkLimitLinecount.Checked;
@@ -284,7 +284,7 @@ end;
 
 class function TDebuggerEventLogOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TEnvironmentOptions;
+  Result := TDebuggerOptions;
 end;
 
 initialization

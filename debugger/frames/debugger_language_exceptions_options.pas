@@ -195,7 +195,7 @@ end;
 
 class function TDebuggerLanguageExceptionsOptions.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := nil;
+  Result := TDebuggerOptions;
 end;
 
 initialization

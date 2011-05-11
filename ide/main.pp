@@ -1305,6 +1305,8 @@ begin
   CodeExplorerOptions.OnAfterWrite := @DoCodeExplorerOptionsAfterWrite;
   CodeExplorerOptions.Load;
 
+  DebuggerOptions := TDebuggerOptions.Create;
+
   MainBuildBoss.SetupInputHistories;
   CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
 
@@ -1511,6 +1513,7 @@ begin
   FreeThenNil(CodeExplorerOptions);
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
+  FreeThenNil(DebuggerOptions);
   IDEWindowCreators.OnShowForm:=nil;
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(IDECommandScopes);

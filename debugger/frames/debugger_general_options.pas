@@ -312,9 +312,9 @@ end;
 procedure TDebuggerGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   ClearDbgProperties;
-  with AOptions as TEnvironmentOptions do
+  with EnvironmentOptions do
   begin
-    TEnvironmentOptions(AOptions).ObjectInspectorOptions.AssignTo(PropertyGrid);
+    ObjectInspectorOptions.AssignTo(PropertyGrid);
     FOldDebuggerPathAndParams := DebuggerFilename;
     cmbDebuggerPath.Text := FOldDebuggerPathAndParams;
     FetchDebuggerClass;
@@ -326,7 +326,7 @@ procedure TDebuggerGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptio
 var
   i: Integer;
 begin
-  with AOptions as TEnvironmentOptions do
+  with EnvironmentOptions do
   begin
     DebuggerFilename := cmbDebuggerPath.Text;
     DebuggerFileHistory.Assign(cmbDebuggerPath.Items);
@@ -346,7 +346,7 @@ end;
 
 class function TDebuggerGeneralOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TEnvironmentOptions;
+  Result := TDebuggerOptions;
 end;
 
 initialization
