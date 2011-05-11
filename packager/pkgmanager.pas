@@ -1525,13 +1525,13 @@ begin
 
   // package macros
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PkgDir',nil,@PackageGraph.MacroFunctionCTPkgDir);
+    'PKGDIR',nil,@PackageGraph.MacroFunctionCTPkgDir);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PkgSrcPath',nil,@PackageGraph.MacroFunctionCTPkgSrcPath);
+    'PKGSRCPATH',nil,@PackageGraph.MacroFunctionCTPkgSrcPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PkgUnitPath',nil,@PackageGraph.MacroFunctionCTPkgUnitPath);
+    'PKGUNITPATH',nil,@PackageGraph.MacroFunctionCTPkgUnitPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
-    'PkgIncPath',nil,@PackageGraph.MacroFunctionCTPkgIncPath);
+    'PKGINCPATH',nil,@PackageGraph.MacroFunctionCTPkgIncPath);
     
   LazPackageDescriptors:=TLazPackageDescriptors.Create;
   LazPackageDescriptors.AddDefaultPackageDescriptors;
