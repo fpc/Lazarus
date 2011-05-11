@@ -135,6 +135,7 @@ type
     Node: TCodeTreeNode; // ctnParameterList
     OldNodes: array of TChgPrmModify; // one for each old param node
     InsertFirst: TObjectList;// list of TChgPrmInsertNew
+    Changes: TObjectList;
     BehindNamePos: integer;
     BracketOpenPos: integer;
     BracketClosePos: integer;
@@ -142,6 +143,7 @@ type
     destructor Destroy; override;
     function MaxPos: integer;
     procedure Insert(Index: integer; Insertion: TChgPrmInsertNew);
+    procedure CreateChanges;
   end;
 
 { TChangeParamTransactionInsert }
@@ -214,6 +216,21 @@ begin
     OldNodes[Index-1].InsertBehind.Add(Insertion);
 end;
 
+procedure TChangeParamListTransactions.CreateChanges;
+var
+  i, j: Integer;
+begin
+  FreeAndNil(Changes);
+  Changes:=TObjectList.create(false);
+  for i:=0 to InsertFirst.Count-1 do
+    Changes.Add(InsertFirst[i]);
+  for i:=0 to length(OldNodes)-1 do begin
+    Changes.Add(OldNodes[i]);
+    for j:=0 to OldNodes[i].InsertBehind.Count-1 do
+      Changes.Add(OldNodes[i].InsertBehind[j]);
+  end;
+end;
+
 constructor TChangeParamListTransactions.Create(ParamList: TCodeTreeNode);
 var
   ParamNode: TCodeTreeNode;
@@ -237,10 +254,11 @@ destructor TChangeParamListTransactions.Destroy;
 var
   i: Integer;
 begin
+  FreeAndNil(Changes);
   for i:=0 to length(OldNodes)-1 do
     FreeAndNil(OldNodes[i]);
   SetLength(OldNodes,0);
-  InsertFirst.Free;
+  FreeAndNil(InsertFirst);
   inherited Destroy;
 end;
 
@@ -445,51 +463,58 @@ var
   InsertPos: Integer;
   ReplaceStartPos: Integer;
   ReplaceEndPos: Integer;
-  LastParam: TObject; // the last param of the new list: TChgPrmModify or TChgPrmInsertNew
+  LastChgPos: integer;
 
-  function WholeParamListWillBeDeleted: boolean;
+  function GetLastChgPos: integer;
   var
     i: Integer;
-    CurParam: TChgPrmModify;
+  begin
+    Result:=-1;
+    for i:=0 to t.Changes.Count-1 do begin
+      if (t.Changes[i] is TChgPrmInsertNew)
+      or ((t.Changes[i] is TChgPrmModify)
+          and (not TChgPrmModify(t.Changes[i]).Delete))
+      then
+        Result:=i
+    end;
+  end;
+
+  function GetOldGroupIndex(ChgPos: integer): integer;
+  var
+    InsertNew: TChgPrmInsertNew;
+  begin
+    Result:=-1;
+    if (ChgPos<0) or (ChgPos>=t.Changes.Count) then exit;
+    if t.Changes[ChgPos] is TChgPrmModify then begin
+      Result:=TChgPrmModify(t.Changes[ChgPos]).FirstInGroup;
+    end else if t.Changes[ChgPos] is TChgPrmInsertNew then begin
+      InsertNew:=TChgPrmInsertNew(t.Changes[ChgPos]);
+      if InsertNew.CopyFromParamIndex<0 then exit;
+      Result:=t.OldNodes[InsertNew.CopyFromParamIndex].FirstInGroup;
+    end;
+  end;
+
+  function IsGroupedWithNext(ChgPos: integer): boolean;
+  var
+    Grp1: integer;
   begin
     Result:=false;
-    if t.InsertFirst.Count>0 then exit;
-    for i:=0 to t.MaxPos-1 do begin
-      CurParam:=t.OldNodes[i];
-      if CurParam.InsertBehind.Count>0 then exit;
-      if not CurParam.Delete then exit;
-    end;
-    Result:=true;
+    Grp1:=GetOldGroupIndex(ChgPos);
+    if Grp1<0 then exit;
+    Result:=Grp1=GetOldGroupIndex(ChgPos+1);
   end;
 
-  function GetLastParam: TObject;
-  var
-    i: Integer;
-    CurParam: TChgPrmModify;
+  function ExtractCode(FromPos, ToPos: integer): string;
   begin
-    for i:=t.MaxPos-1 downto 0 do begin
-      CurParam:=t.OldNodes[i];
-      if CurParam.InsertBehind.Count>0 then begin
-        Result:=CurParam.InsertBehind[CurParam.InsertBehind.Count-1];
-        exit;
-      end;
-      if not CurParam.Delete then begin
-        Result:=CurParam;
-        exit;
-      end;
-    end;
-    if t.InsertFirst.Count>0 then begin
-      Result:=t.InsertFirst[t.InsertFirst.Count-1];
-      exit;
-    end;
-    Result:=nil;
+    Result:=copy(Src,FromPos,ToPos-FromPos);
   end;
 
-  procedure InsertParam(Insertion: TChgPrmInsertNew;
-    FrontParam: TChgPrmModify);
-  { Insert a new or moved parameter }
+  procedure InsertParam(Insertion: TChgPrmInsertNew; ChgPos: integer);
+  // Insert a new or moved parameter
   var
     SrcParam: TChgPrmModify;
+    StartPos: LongInt;
+    EndPos: LongInt;
   begin
     if ReplaceStartPos=0 then begin
       ReplaceStartPos:=InsertPos;
@@ -499,41 +524,62 @@ var
     then
       InsertCode:=InsertCode+';';
     if Insertion.Src<>'' then
+      // add directly
       InsertCode:=InsertCode+Insertion.Src
     else if Insertion.CopyFromParamIndex>=0 then begin
-      // copy source including comments
+      // copy an existing parameter (the deletion is done by the replace)
+      //  Try to copy comments and groups
+      //  For example:
+      //    var {%H-}a: char = 3; //about a
+      //    var a,b,c: word; //comment
       SrcParam:=t.OldNodes[Insertion.CopyFromParamIndex];
-      { Examples:
-        var a: char; //about a
-        var a,b,c: word = 3; //comment
-      }
 
-      if SrcParam.FirstInGroup>=0 then begin
-        { example: var a: char; // comment about a
-          => copy with all comments }
-        if (LastParam=SrcParam) and (SrcParam.CommentAfterSeparator.StartPos>0)
-        then begin
-          // copy without separator
-          InsertCode:=InsertCode+ExtractCode(SrcParam.GetFirstPos,SrcParam.GetLastPos(false),[]);
-          InsertCode:=InsertCode+ExtractCode(SrcParam.CommentAfterSeparator.StartPos,
-             SrcParam.CommentAfterSeparator.EndPos,[]);
+      if IsGroupedWithNext(ChgPos-1) then begin
+        // grouped with parameter in front: ..., a...
+        InsertCode:=InsertCode+',';
+        StartPos:=SrcParam.Name.StartPos;
+        if SrcParam.Modifier.StartPos<1 then
+          StartPos:=SrcParam.GetFirstPos;
+        if IsGroupedWithNext(ChgPos) then begin
+          // grouped with parameter in front and behind: ..., a, ...
+          EndPos:=SrcParam.Name.EndPos;
+          if SrcParam.Typ.StartPos<1 then
+            EndPos:=SrcParam.GetLastPos(false);
+          InsertCode:=InsertCode+ExtractCode(StartPos,EndPos);
         end else begin
-          // copy completely
-          InsertCode:=InsertCode+ExtractCode(SrcParam.GetFirstPos,SrcParam.GetLastPos(true),[]);
+          // last parameter in a group: ..., a: word;
+          if ChgPos=t.Changes.Count-1 then begin
+            // copy without separator
+            InsertCode:=InsertCode+ExtractCode(StartPos,SrcParam.GetLastPos(false));
+            InsertCode:=InsertCode+ExtractCode(SrcParam.CommentAfterSeparator.StartPos,
+               SrcParam.CommentAfterSeparator.EndPos);
+          end else begin
+            // copy with separator
+            InsertCode:=InsertCode+ExtractCode(StartPos,SrcParam.GetLastPos(true));
+          end;
         end;
       end else begin
-        { example: var (*1*)a,b,c:word = 3; // comment
-          => copy var (*1*) a:word = 3;
-               or var b:word = 3;
-               or var c:word = 3; }
-
-
+        // not grouped in front
+        StartPos:=SrcParam.GetFirstPos;
+        if IsGroupedWithNext(ChgPos) then begin
+          // first parameter in a group: var a,
+          // ToDo: copy comment behind name
+          InsertCode:=InsertCode+ExtractCode(StartPos,SrcParam.Name.EndPos);
+        end else begin
+          // not grouped => copy completely
+          if ChgPos=t.Changes.Count-1 then begin
+            // copy without separator
+            InsertCode:=InsertCode+ExtractCode(StartPos,SrcParam.GetLastPos(false));
+            InsertCode:=InsertCode+ExtractCode(SrcParam.CommentAfterSeparator.StartPos,
+               SrcParam.CommentAfterSeparator.EndPos);
+          end else begin
+            // copy with separator
+            InsertCode:=InsertCode+ExtractCode(StartPos,SrcParam.GetLastPos(true));
+          end;
+        end;
       end;
-      // ToDo: remove separator
-      // ToDo: a,//
-      // ToDo: a;//
-      InsertCode:=InsertCode+ExtractCode(SrcParam.GetFirstPos,SrcParam.GetLastPos(true),[]);
     end else begin
+      // new parameter (not copied)
       if Insertion.Modifier<>'' then
         InsertCode:=InsertCode+Insertion.Modifier+' ';
       InsertCode:=InsertCode+Insertion.Name;
@@ -544,19 +590,19 @@ var
     end;
   end;
 
-  procedure ChangeParam(aParam: TChgPrmModify);
+  procedure ChangeParam(aParam: TChgPrmModify; ChgPos: integer);
   var
-    i: Integer;
     Code: String;
     p: LongInt;
   begin
     if aParam.Delete then begin
       if ReplaceStartPos<1 then begin
-        ReplaceStartPos:=aParam.GetFirstPos;
-        ReplaceEndPos:=aParam.GetLastPos(true);
         // ToDo: delete the last parameter => delete separator from previous parameter
-        // ToDo: delete space
+        // ToDo: delete space in front
+        ReplaceStartPos:=aParam.GetFirstPos;
       end;
+      ReplaceEndPos:=aParam.GetLastPos(true);
+      // ToDo: delete space behind
     end else begin
       // keep this parameter at this place
       if ReplaceStartPos>0 then begin
@@ -570,7 +616,7 @@ var
         InsertCode:='';
       end;
       if aParam.ChangeDefaultValue then begin
-        // ToDo: keep modifier, name and type and change default value
+        // keep modifier, name and type and change default value
         if aParam.DefaultValue.StartPos>0 then begin
           // replace the default value
           Code:=aParam.NewDefaultValue;
@@ -587,8 +633,6 @@ var
         end;
       end;
     end;
-    for i:=0 to aParam.InsertBehind.Count-1 do
-      InsertParam(TChgPrmInsertNew(aParam.InsertBehind[i]),aParam);
   end;
 
 var
@@ -596,8 +640,10 @@ var
 begin
   Result:=false;
   t:=Transactions as TChangeParamListTransactions;
+  t.CreateChanges;
 
-  if WholeParamListWillBeDeleted then begin
+  LastChgPos:=GetLastChgPos;
+  if LastChgPos<0 then begin
     // delete whole param list
     if (t.BracketOpenPos>0) and (t.BracketClosePos>0) then begin
       if not SourceChanger.Replace(gtNone,gtNone,t.BracketOpenPos,t.BracketClosePos+1,'')
@@ -606,8 +652,6 @@ begin
     end;
     exit(true);
   end;
-
-  LastParam:=GetLastParam;
 
   InsertCode:='';
   InsertPos:=0;
@@ -627,10 +671,12 @@ begin
     InsertPos:=t.BracketOpenPos+1;
   end;
 
-  for i:=0 to t.InsertFirst.Count-1 do
-    InsertParam(TChgPrmInsertNew(t.InsertFirst[i]),nil);
-  for i:=0 to t.MaxPos-1 do
-    ChangeParam(t.OldNodes[i]);
+  for i:=0 to t.Changes.Count-1 do begin
+    if t.Changes[i] is TChgPrmInsertNew then
+      InsertParam(TChgPrmInsertNew(t.Changes[i]),i)
+    else if t.Changes[i] is TChgPrmModify then
+      ChangeParam(TChgPrmModify(t.Changes[i]),i);
+  end;
 
   if t.BracketOpenPos<1 then begin
     // end a new param list
