@@ -10476,6 +10476,8 @@ begin
 end;
 
 procedure TFindDeclarationParams.PrettifyResult;
+var
+  Node: TCodeTreeNode;
 begin
   // adjust result for nicer position
   if (NewNode<>nil) then begin
@@ -10483,20 +10485,35 @@ begin
     if NewCodeTool<>nil then
       NewCodeTool.CheckNodeTool(NewNode);
     {$ENDIF}
-    if (NewNode.Desc=ctnProcedure)
-    and (NewNode.FirstChild<>nil)
-    and (NewNode.FirstChild.Desc=ctnProcedureHead) then begin
-      // Instead of jumping to the procedure keyword,
-      // jump to the procedure name
-      NewNode:=NewNode.FirstChild;
-      NewCleanPos:=NewNode.StartPos;
-    end;
-    if (NewNode.Desc=ctnGenericType)
-    and (NewNode.FirstChild<>nil) then begin
-      // Instead of jumping to the generic keyword,
-      // jump to the name
-      NewNode:=NewNode.FirstChild;
-      NewCleanPos:=NewNode.StartPos;
+    case NewNode.Desc of
+    ctnProcedure:
+      if (NewNode.FirstChild<>nil)
+      and (NewNode.FirstChild.Desc=ctnProcedureHead) then begin
+        // Instead of jumping to the procedure keyword,
+        // jump to the procedure name
+        NewNode:=NewNode.FirstChild;
+        NewCleanPos:=NewNode.StartPos;
+      end;
+    ctnProcedureHead:
+      begin
+        // instead of jumping to the name, jump to the result variable/type
+        Node:=NewNode.FirstChild;
+        while Node<>nil do begin
+          if Node.Desc in [ctnVarDefinition,ctnIdentifier] then begin
+            NewNode:=Node;
+            NewCleanPos:=NewNode.StartPos;
+            break;
+          end;
+          Node:=Node.NextBrother;
+        end;
+      end;
+    ctnGenericType:
+      if (NewNode.FirstChild<>nil) then begin
+        // Instead of jumping to the generic keyword,
+        // jump to the name
+        NewNode:=NewNode.FirstChild;
+        NewCleanPos:=NewNode.StartPos;
+      end;
     end;
   end;
 end;
