@@ -43,7 +43,6 @@ type
   TTestDisAss = class(TTestCase)
   protected
     FCallStack: TCallStackMonitor;
-    FDisassembler: TIDEDisassembler;
     FExceptions: TIDEExceptions;
     FSignals: TIDESignals;
     //FBreakPoints: TIDEBreakPoints;
@@ -376,11 +375,11 @@ var
     //FreeAndNil(FBreakPoints);
     //FreeAndNil(FBreakPointGroups);
     FreeAndNil(FCallStack);
-    FreeAndNil(FDisassembler);
     FreeAndNil(FExceptions);
     FreeAndNil(FSignals);
     FreeAndNil(FLocals);
     FreeAndNil(FLineInfo);
+    FreeAndNil(FRegisters);
   end;
 
   procedure Test(Name: String;Addr: TDBGPtr; MinBefore, MinAfter: Integer);
