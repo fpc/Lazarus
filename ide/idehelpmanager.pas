@@ -889,7 +889,7 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
 
   procedure CreateFPCKeywordsHelpDB;
   begin
-    FFPCKeywordsHelpDB:=HelpDatabases.CreateHelpDatabase(lihcFCLUnits,
+    FFPCKeywordsHelpDB:=HelpDatabases.CreateHelpDatabase('SimpleDemoForFPCKeyWordHelpDB',
                                             TSimpleFPCKeywordHelpDatabase,true);
   end;
 
