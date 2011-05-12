@@ -4269,7 +4269,7 @@ begin
     end;
   finally
     List.Free;
-    TGDBMICallstack(FTheDebugger.CallStack).DoThreadChanged; // update the current-index
+    FTheDebugger.CallStack.CurrentCallStackList.EntriesForThreads[FTheDebugger.FCurrentThreadId].CurrentIndex := FTheDebugger.FCurrentStackFrame;
   end;
 end;
 
