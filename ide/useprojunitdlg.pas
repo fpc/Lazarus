@@ -57,16 +57,16 @@ type
 
   end; 
 
-  function GetAvailableUnits(SrcEdit: TSourceEditor;
-                             out CurrentUnitName: String): TStringList;
-  function ShowUseProjUnitDialog: TModalResult;
+function GetAvailableUnits(SrcEdit: TSourceEditor; out CurrentUnitName: String;
+                           IgnoreErrors: boolean): TStringList;
+function ShowUseProjUnitDialog: TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function GetAvailableUnits(SrcEdit: TSourceEditor;
-                           out CurrentUnitName: String): TStringList;
+function GetAvailableUnits(SrcEdit: TSourceEditor; out CurrentUnitName: String;
+  IgnoreErrors: boolean): TStringList;
 var
   MainUsedUnits, ImplUsedUnits: TStrings;
   ProjFile: TUnitInfo;
@@ -79,9 +79,13 @@ begin
     if SrcEdit=nil then exit;
     Assert(Assigned(SrcEdit.CodeBuffer));
     if not CodeToolBoss.FindUsedUnitNames(SrcEdit.CodeBuffer,
-                                          MainUsedUnits,ImplUsedUnits) then begin
-      DebugLn(['ShowUseProjUnitDialog CodeToolBoss.FindUsedUnitNames failed']);
-      LazarusIDE.DoJumpToCodeToolBossError;
+                                          MainUsedUnits,ImplUsedUnits)
+    then begin
+      if not IgnoreErrors then
+      begin
+        DebugLn(['ShowUseProjUnitDialog CodeToolBoss.FindUsedUnitNames failed']);
+        LazarusIDE.DoJumpToCodeToolBossError;
+      end;
       exit;
     end;
     Result:=TStringList.Create;  // Result TStringList must be freed by caller.
@@ -92,17 +96,15 @@ begin
       CurrentUnitName:=TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
     else
       CurrentUnitName:='';
-    DebugLn('ShowUseProjUnitDialog: CurrentUnitName before loop = '+CurrentUnitName);
+    //DebugLn('ShowUseProjUnitDialog: CurrentUnitName before loop = '+CurrentUnitName);
     // Add available unit names to Result.
     ProjFile:=Project1.FirstPartOfProject;
     while ProjFile<>nil do begin
       s:=ProjFile.Unit_Name;
       if s=CurrentUnitName then begin      // current unit
-///
-        if SrcEdit.GetProjectFile is TUnitInfo then   // Debug!
+        {if SrcEdit.GetProjectFile is TUnitInfo then   // Debug!
           DebugLn('ShowUseProjUnitDialog: CurrentUnitName in loop = ' +
-                      TUnitInfo(SrcEdit.GetProjectFile).Unit_Name);
-///
+                      TUnitInfo(SrcEdit.GetProjectFile).Unit_Name);}
         s:='';
       end;
       if (ProjFile<>Project1.MainUnitInfo) and (s<>'') then
@@ -129,7 +131,7 @@ begin
   // get cursor position
   SrcEdit:=SourceEditorManager.ActiveEditor;
   try
-    AvailUnits:=GetAvailableUnits(SrcEdit, CurrentUnitName);
+    AvailUnits:=GetAvailableUnits(SrcEdit, CurrentUnitName, false);
     if AvailUnits=nil then
       exit(mrCancel);
     if AvailUnits.Count>0 then begin
