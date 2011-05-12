@@ -964,6 +964,8 @@ end;
 function TPascalReaderTool.PositionInFuncResultName(ProcNode: TCodeTreeNode;
   CleanPos: integer): boolean;
 // true if position between ) and :
+var
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   if ProcNode=nil then exit;
@@ -976,6 +978,15 @@ begin
   and (ProcNode.Parent.Desc=ctnProcedureHead)
   and (CleanPos>=ProcNode.StartPos) and (CleanPos<=ProcNode.EndPos) then begin
     exit(true);
+  end;
+  if ProcNode.Desc=ctnProcedureHead then begin
+    Node:=ProcNode.FirstChild;
+    while (Node<>nil) and (Node.Desc<>ctnIdentifier) do begin
+      if (Node.Desc=ctnIdentifier)
+      and (CleanPos>=Node.StartPos) and (CleanPos<=Node.EndPos) then
+        exit(true);
+      Node:=Node.NextBrother;
+    end;
   end;
   // read behind parameter list
   if ProcNode.Desc<>ctnProcedureHead then exit;

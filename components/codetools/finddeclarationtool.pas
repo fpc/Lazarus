@@ -2177,6 +2177,11 @@ begin
 
     if Node.Desc = ctnGenericName then Node := Node.Parent;
     case Node.Desc of
+    ctnIdentifier:
+      if Assigned(Node.Parent) and (Node.Parent.Desc = ctnProcedureHead) then
+        // function result
+        Result := 'var Result: ' + ExtractNode(Node, []);
+
     ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
     ctnEnumIdentifier, ctnGenericType:
       begin
@@ -2394,12 +2399,13 @@ begin
   SkipForward:=fdfSkipClassForward in Params.Flags;
   Include(Params.Flags,fdfFindVariable);
   ExprType:=FindExpressionTypeOfTerm(StartPos,EndPos,Params,false);
-  if (ExprType.Desc<>xtContext) then begin
+  if (ExprType.Desc=xtContext) then
+    Params.SetResult(ExprType.Context)
+  else
     Params.SetResult(CleanFindContext);
-  end;
   if SkipForward and (Params.NewNode<>nil) then
     Params.NewCodeTool.FindNonForwardClass(Params);
-  {$IFDEF CTDEBUG}
+  {$IFDEF ShowExprEval}
   DbgOut('[TFindDeclarationTool.FindDeclarationOfIdentAtParam] Ident=',
     '"',GetIdentifier(Params.Identifier),'" ');
   if Params.NewNode<>nil then
@@ -6618,6 +6624,7 @@ var
     ProcNode: TCodeTreeNode;
     IdentFound: boolean;
     OldFlags: TFindDeclarationFlags;
+    ResultNode: TCodeTreeNode;
   begin
     // for example  'AnObject[3]'
     
@@ -6649,16 +6656,27 @@ var
         if (ProcNode<>nil) then begin
           if IsIdentifierEndOfVariable
           and (fdfFindVariable in StartFlags) then begin
-            ExprType.Desc:=xtContext;
-            ExprType.Context.Node:=ProcNode.FirstChild;
+            BuildSubTreeForProcHead(ProcNode);
+            ResultNode:=ProcNode.FirstChild.FirstChild;
+            while (ResultNode<>nil) do begin
+              if ResultNode.Desc in [ctnVarDefinition,ctnIdentifier] then begin
+                // procedure: none
+                // operator: ctnVarDefinition,ctnIdentifier
+                // function: ctnIdentifier
+                ExprType.Desc:=xtContext;
+                ExprType.Context.Node:=ProcNode.FirstChild;
+                exit;
+              end;
+              ResultNode:=ResultNode.NextBrother;
+            end;
           end else begin
             OldFlags:=Params.Flags;
             Params.Flags:=Params.Flags+[fdfFunctionResult,fdfFindChilds];
             ExprType.Desc:=xtContext;
             ExprType.Context:=FindBaseTypeOfNode(Params,ProcNode);
             Params.Flags:=OldFlags;
+            exit;
           end;
-          exit;
         end;
       end;
     end;
