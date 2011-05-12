@@ -130,29 +130,36 @@ type
 
   TCommentStyle = (CommentNone, CommentTP, CommentOldTP, CommentDelphi);
 
-  TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC, cmMacPas, cmISO);
+  TCompilerMode = (
+    cmFPC,
+    cmDELPHI,
+    cmGPC,
+    cmTP,
+    cmOBJFPC,
+    cmMacPas,
+    cmISO);
   TCompilerModeSwitch = (
     cmsClass,
-    cmsObjpas,              
-    cmsResult,              
-    cmsString_pchar,        
-    cmsCvar_support,        
-    cmsNested_comment,      
-    cmsTp_procvar,          
-    cmsMac_procvar,         
-    cmsRepeat_forward,      
-    cmsPointer_2_procedure,                                 
-    cmsAutoderef,           
-    cmsInitfinal,           
-    cmsAdd_pointer,         
-    cmsDefault_ansistring,  
-    cmsOut,                 
-    cmsDefault_para,        
-    cmsHintdirective,       
-    cmsDuplicate_names,     
-    cmsProperty,            
-    cmsDefault_inline,      
-    cmsExcept,              
+    cmsObjpas,
+    cmsResult,
+    cmsString_pchar,
+    cmsCvar_support,
+    cmsNested_comment,
+    cmsTp_procvar,
+    cmsMac_procvar,
+    cmsRepeat_forward,
+    cmsPointer_2_procedure,
+    cmsAutoderef,
+    cmsInitfinal,
+    cmsAdd_pointer,
+    cmsDefault_ansistring,
+    cmsOut,
+    cmsDefault_para,
+    cmsHintdirective,
+    cmsDuplicate_names,
+    cmsProperty,
+    cmsDefault_inline,
+    cmsExcept,
     cmsObjectiveC1,
     cmsObjectiveC2,
     cmsNestedProcVars,
@@ -160,7 +167,27 @@ type
     cmsAdvancedRecords
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
+const
+  DefaultCompilerModeSwitches: array[TCompilerMode] of TCompilerModeSwitches = (
+    // cmFPC
+    [cmsResult,cmsProperty,cmsNested_comment,cmsCvar_support],
+    // cmDELPHI
+    [cmsDefault_ansistring,cmsResult,cmsAdvancedRecords,cmsProperty,
+     cmsCvar_support],
+    // cmGPC
+    [],
+    // cmTP
+    [cmsResult,cmsTp_procvar],
+    // cmOBJFPC
+    [cmsDefault_ansistring,cmsResult,cmsProperty,cmsNested_comment,
+     cmsCvar_support],
+    // cmMacPas
+    [cmsMac_procvar,cmsProperty],
+    // cmISO
+    []
+    );
 
+type
   TPascalCompiler = (pcFPC, pcDelphi);
   
   TLSSkippingDirective = (
@@ -262,7 +289,7 @@ type
     FMainSourceFilename: string;
     FMainCode: pointer;
     FScanTill: TLinkScannerRange;
-    FNestedComments: boolean;
+    FNestedComments: boolean; // for speed reasons keep this is flag redundant with the CompilerModeSwitches
     FStates: TLinkScannerStates;
     // global write lock
     FOnSetGlobalWriteLock: TOnSetWriteLock;
@@ -748,6 +775,8 @@ begin
   FIncludeStack:=TFPList.Create;
   FPascalCompiler:=pcFPC;
   FNestedComments:=true;
+  FCompilerMode:=cmFPC;
+  FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
 end;
 
 procedure TLinkScanner.DecCommentLevel;
@@ -1255,8 +1284,9 @@ begin
   ScannedRange:=lsrNone;
   CommentStyle:=CommentNone;
   CommentLevel:=0;
-  CompilerMode:=cmFPC;
+  FNestedComments:=false;
   PascalCompiler:=pcFPC;
+  CompilerMode:=cmFPC;
   IfLevel:=0;
   FSkippingDirectives:=lssdNone;
   //DebugLn('TLinkScanner.Scan D --------');
@@ -1274,13 +1304,11 @@ begin
 
   // compiler mode
   for cm:=Low(TCompilerMode) to High(TCompilerMode) do
-    if FInitValues.IsDefined(CompilerModeVars[cm]) then
+    if FInitValues.IsDefined(CompilerModeVars[cm]) then begin
       CompilerMode:=cm;
+      break;
+    end;
 
-  // nested comments
-  FNestedComments:=false;
-  if ((PascalCompiler=pcFPC) and (CompilerMode in [cmFPC,cmOBJFPC])) then
-    FNestedComments:=true;
   //DebugLn(['TLinkScanner.Scan ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' ',CompilerModeNames[CompilerMode],' FNestedComments=',FNestedComments]);
     
   //DebugLn(Values.AsString);
@@ -2486,6 +2514,7 @@ begin
     for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
       if FInitValues.IsDefined(CompilerModeVars[AMode]) then begin
         CompilerMode:=AMode;
+        break;
       end;
   end else begin
     ModeValid:=false;
@@ -3544,9 +3573,8 @@ procedure TLinkScanner.SetCompilerMode(const AValue: TCompilerMode);
 begin
   if FCompilerMode=AValue then exit;
   FCompilerMode:=AValue;
-  FNestedComments:=(PascalCompiler=pcFPC)
-                   and (FCompilerMode in [cmFPC,cmOBJFPC]);
-  FCompilerModeSwitches:=[];
+  FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
+  FNestedComments:=cmsNested_comment in CompilerModeSwitches;
 end;
 
 function TLinkScanner.GetIgnoreMissingIncludeFiles: boolean;

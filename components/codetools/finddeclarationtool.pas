@@ -2434,7 +2434,8 @@ begin
       Node:=Node.Parent;
     end;
   end;
-  if (CompareIdentifiers(Identifier,'Result')=0) then begin
+  if (cmsResult in FLastCompilerModeSwitches)
+  and (CompareIdentifiers(Identifier,'Result')=0) then begin
     Node:=ContextNode;
     while (Node<>nil) do begin
       if NodeIsFunction(Node) then
@@ -6649,7 +6650,8 @@ var
           ExprType.Context:=CreateFindContext(Params);
           IdentFound:=true;
         end;
-      end else if CompareSrcIdentifiers(CurAtom.StartPos,'RESULT') then begin
+      end else if (cmsResult in FLastCompilerModeSwitches)
+      and CompareSrcIdentifiers(CurAtom.StartPos,'RESULT') then begin
         // RESULT has a special meaning in a function
         // -> check if in a function
         ProcNode:=ExprType.Context.Node.GetNodeOfType(ctnProcedure);
