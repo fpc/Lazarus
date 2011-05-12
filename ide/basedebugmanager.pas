@@ -91,7 +91,7 @@ type
     FBreakPointGroups: TIDEBreakPointGroups;
     FLocals: TIDELocals;
     FLineInfo: TIDELineInfo;
-    FWatches: TIDEWatches;
+    FWatches: TWatchesMonitor;
     FThreads: TThreadsMonitor;
     FRegisters: TIDERegisters;
     FManagerStates: TDebugManagerStates;
@@ -157,7 +157,7 @@ type
                                      ): TModalResult; virtual; abstract;
 
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
-    function ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult; virtual; abstract;
+    function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult; virtual; abstract;
 
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType;
                               BringToFront: Boolean = True; Show: Boolean = true;
@@ -177,7 +177,7 @@ type
     property LineInfo: TIDELineInfo read FLineInfo;
     property Registers: TIDERegisters read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
-    property Watches: TIDEWatches read FWatches;
+    property Watches: TWatchesMonitor read FWatches;
     property Threads: TThreadsMonitor read FThreads;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
     property Debugger: TDebugger read GetDebugger;

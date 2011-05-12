@@ -62,9 +62,9 @@ type
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
   private
-    FWatch: TIDEWatch;
+    FWatch: TWatch;
   public
-    constructor Create(AOWner: TComponent; const AWatch: TIDEWatch; const AWatchExpression: String = ''); overload;
+    constructor Create(AOWner: TComponent; const AWatch: TWatch; const AWatchExpression: String = ''); overload;
     destructor Destroy; override;
   end;
   
@@ -87,7 +87,7 @@ const
 begin
   if FWatch = nil
   then begin
-    FWatch := DebugBoss.Watches.Add(txtExpression.Text);
+    FWatch := DebugBoss.Watches.CurrentWatches.Add(txtExpression.Text);
   end
   else begin
     FWatch.Expression := txtExpression.Text;
@@ -106,7 +106,7 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TIDEWatch;
+constructor TWatchPropertyDlg.Create(AOwner: TComponent; const AWatch: TWatch;
   const AWatchExpression: String = '');
 const
   DispFormatToStyle: Array [TWatchDisplayFormat] of Integer =

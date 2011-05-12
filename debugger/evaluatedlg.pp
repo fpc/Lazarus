@@ -237,12 +237,12 @@ end;
 procedure TEvaluateDlg.tbWatchClick(Sender: TObject);
 var
   S: String;
-  Watch: TIDEWatch;
+  Watch: TCurrentWatch;
 begin
   S := cmbExpression.Text;
-  if DebugBoss.Watches.Find(S) = nil
+  if DebugBoss.Watches.CurrentWatches.Find(S) = nil
   then begin
-    Watch := DebugBoss.Watches.Add(S);
+    Watch := DebugBoss.Watches.CurrentWatches.Add(S);
     Watch.Enabled := True;
   end;
   DebugBoss.ViewDebugDialog(ddtWatches);

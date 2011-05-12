@@ -378,7 +378,7 @@ type
     function  CreateRegisters: TDBGRegisters; override;
     function  CreateCallStack: TCallStackSupplier; override;
     function  CreateDisassembler: TDBGDisassembler; override;
-    function  CreateWatches: TDBGWatches; override;
+    function  CreateWatches: TWatchesSupplier; override;
     function  CreateThreads: TThreadsSupplier; override;
     function  GetSupportedCommands: TDBGCommands; override;
     function  GetTargetWidth: Byte; override;
@@ -885,6 +885,12 @@ type
 
   {%region      *****  Watches  *****   }
 
+  TGDBMIDebuggerParentFrameCache = record
+      ThreadId: Integer;
+      ParentFPList: Array of Integer; // TODO per thread
+    end;
+    PGDBMIDebuggerParentFrameCache = ^TGDBMIDebuggerParentFrameCache;
+
   { TGDBMIDebuggerCommandEvaluate }
 
   TGDBMIDebuggerCommandEvaluate = class(TGDBMIDebuggerCommand)
@@ -892,15 +898,20 @@ type
     FEvalFlags: TDBGEvaluateFlags;
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
+    FWatchValue: TCurrentWatchValue;
     FTextValue: String;
     FTypeInfo: TGDBType;
+    FValidity: TDebuggerDataState;
     FTypeInfoAutoDestroy: Boolean;
+    FThreadChanged, FStackFrameChanged: Boolean;
     function GetTypeInfo: TGDBType;
   protected
     function DoExecute: Boolean; override;
+    function SelectContext: Boolean;
+    procedure UnSelectContext;
   public
-    constructor Create(AOwner: TGDBMIDebugger; const AExpression: String;
-      const ADisplayFormat: TWatchDisplayFormat);
+    constructor Create(AOwner: TGDBMIDebugger; AExpression: String; ADisplayFormat: TWatchDisplayFormat);
+    constructor Create(AOwner: TGDBMIDebugger; AWatchValue: TCurrentWatchValue);
     destructor Destroy; override;
     function DebugText: String; override;
     property Expression: String read FExpression;
@@ -911,45 +922,22 @@ type
     property TypeInfoAutoDestroy: Boolean read FTypeInfoAutoDestroy write FTypeInfoAutoDestroy;
   end;
 
-  { TGDBMIWatch }
-
-  TGDBMIWatch = class(TDBGWatch)
-  private
-    FEvaluatedState: TGDBMIEvaluationState;
-    FEvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
-    FInEvaluationNeeded: Boolean;
-    FValue: String;
-    FTypeInfo: TGDBType;
-    procedure EvaluationNeeded;
-    procedure CancelEvaluation;
-    procedure ClearOwned;
-    procedure DoEvaluationFinished(Sender: TObject);
-    procedure DoEvaluationDestroyed(Sender: TObject);
-  protected
-    procedure DoEnableChange; override;
-    procedure DoExpressionChange; override;
-    procedure DoDisplayFormatChanged; override;
-    procedure DoChange; override;
-    procedure DoStateChange(const AOldState: TDBGState); override;
-    function  GetValue: String; override;
-    function  GetTypeInfo: TDBGType; override;
-    function  GetValid: TValidState; override;
-  public
-    constructor Create(ACollection: TCollection); override;
-    destructor Destroy; override;
-    procedure Invalidate;
-  end;
-
-
   { TGDBMIWatches }
 
-  TGDBMIWatches = class(TDBGWatches)
+  TGDBMIWatches = class(TWatchesSupplier)
   private
+    FCommandList: TList;
+    FParentFPList: Array of TGDBMIDebuggerParentFrameCache;
+    procedure DoEvaluationDestroyed(Sender: TObject);
   protected
-    FParentFPList: Array of Integer;
+    function  GetParentFPList(AThreadId: Integer): PGDBMIDebuggerParentFrameCache;
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Changed;
+    procedure Clear;
+    procedure RequestData(AWatchValue: TCurrentWatchValue); override;
   public
+    constructor Create(const ADebugger: TDebugger);
+    destructor Destroy; override;
   end;
 
   {%endregion   ^^^^^  Watches  ^^^^^   }
@@ -963,6 +951,7 @@ type
   TGDBMIDebuggerCommandStack = class(TGDBMIDebuggerCommand)
   protected
     FCallstack: TCurrentCallStack;
+    FThreadChanged: Boolean;
     function  SelectThread: Boolean;
     procedure UnSelectThread;
   public
@@ -1455,7 +1444,9 @@ var
   R: TGDBMIExecResult;
 begin
   Result := True;
+  FThreadChanged := False;
   if FCallstack.ThreadId = FTheDebugger.FCurrentThreadId then exit;
+  FThreadChanged := True;
   Result := ExecuteCommand('-thread-select %d', [FCallstack.ThreadId], R);
   Result := Result and (R.State <> dsError);
 end;
@@ -1464,6 +1455,7 @@ procedure TGDBMIDebuggerCommandStack.UnSelectThread;
 var
   R: TGDBMIExecResult;
 begin
+  if not FThreadChanged then exit;
   ExecuteCommand('-thread-select %d', [FTheDebugger.FCurrentThreadId], R);
 end;
 
@@ -4277,6 +4269,7 @@ begin
     end;
   finally
     List.Free;
+    TGDBMICallstack(FTheDebugger.CallStack).DoThreadChanged; // update the current-index
   end;
 end;
 
@@ -5294,9 +5287,9 @@ begin
   Result := TGDBMIRegisters.Create(Self);
 end;
 
-function TGDBMIDebugger.CreateWatches: TDBGWatches;
+function TGDBMIDebugger.CreateWatches: TWatchesSupplier;
 begin
-  Result := TGDBMIWatches.Create(Self, TGDBMIWatch);
+  Result := TGDBMIWatches.Create(Self);
 end;
 
 function TGDBMIDebugger.CreateThreads: TThreadsSupplier;
@@ -5400,13 +5393,11 @@ begin
   TGDBMICallstack(CallStack).DoThreadChanged;
   TGDBMILocals(Locals).Changed;
   TGDBMIRegisters(Registers).Changed;
-  TGDBMIWatches(Watches).Changed;
 end;
 
 procedure TGDBMIDebugger.DoCallStackChanged;
 begin
   TGDBMILocals(Locals).Changed;
-  TGDBMIWatches(Watches).Changed;
 end;
 
 procedure TGDBMIDebugger.DoRelease;
@@ -7675,174 +7666,26 @@ begin
 end;
 
 { =========================================================================== }
-{ TGDBMIWatch }
-{ =========================================================================== }
-
-constructor TGDBMIWatch.Create(ACollection: TCollection);
-begin
-  FEvaluatedState := esInvalid;
-  FEvaluationCmdObj := nil;
-  inherited;
-end;
-
-destructor TGDBMIWatch.Destroy;
-begin
-  CancelEvaluation;
-  FreeAndNil(FTypeInfo);
-  inherited;
-end;
-
-procedure TGDBMIWatch.DoEnableChange;
-begin
-  inherited;
-end;
-
-procedure TGDBMIWatch.DoExpressionChange;
-begin
-  CancelEvaluation;
-  inherited;
-end;
-
-procedure TGDBMIWatch.DoDisplayFormatChanged;
-begin
-  CancelEvaluation;
-  inherited;
-end;
-
-procedure TGDBMIWatch.DoChange;
-begin
-  Changed;
-end;
-
-procedure TGDBMIWatch.DoStateChange(const AOldState: TDBGState);
-begin
-  if Debugger = nil then Exit;
-
-  if Debugger.State in [dsPause, dsStop]
-  then begin
-    ClearOwned;
-    CancelEvaluation;
-    if (Debugger.State = dsPause) or (AOldState in [dsRun, dsPause])
-    then Changed;
-  end;
-end;
-
-procedure TGDBMIWatch.Invalidate;
-begin
-  ClearOwned;
-  CancelEvaluation;
-end;
-
-procedure TGDBMIWatch.DoEvaluationFinished(Sender: TObject);
-begin
-  ClearOwned;
-  FValue := TGDBMIDebuggerCommandEvaluate(Sender).TextValue;
-  FTypeInfo := TGDBMIDebuggerCommandEvaluate(Sender).TypeInfo;
-  FEvaluationCmdObj := nil;
-  FEvaluatedState := esValid;
-  // Do not recursively call, whoever is requesting the watch
-  if not FInEvaluationNeeded
-  then Changed;
-end;
-
-procedure TGDBMIWatch.DoEvaluationDestroyed(Sender: TObject);
-begin
-  if FEvaluationCmdObj = Sender
-  then FEvaluationCmdObj := nil;
-end;
-
-procedure TGDBMIWatch.EvaluationNeeded;
-var
-  ForceQueue: Boolean;
-begin
-  if FEvaluatedState in [esValid, esRequested] then Exit;
-  if Debugger = nil then Exit;
-
-  if (Debugger.State = dsPause)
-  and Enabled
-  then begin
-    BeginUpdate; // aviod change early trigger bt SetValid
-    try
-      FInEvaluationNeeded := True;
-      FEvaluatedState := esRequested;
-      ClearOwned;
-      SetValid(vsValid);
-      FEvaluationCmdObj := TGDBMIDebuggerCommandEvaluate.Create
-        (TGDBMIDebugger(Debugger), Expression, DisplayFormat);
-      FEvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
-      FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
-      FEvaluationCmdObj.Properties := [dcpCancelOnRun];
-      // If a ExecCmd is running, then defer exec until the exec cmd is done
-      ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
-                and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-                and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
-      TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj, ForceQueue);
-      (* DoEvaluationFinished may be called immediately at this point *)
-      FInEvaluationNeeded := False;
-    finally
-      EndUpdate;
-    end;
-  end
-  else begin
-    SetValid(vsUnknown);
-  end;
-end;
-
-procedure TGDBMIWatch.CancelEvaluation;
-begin
-  FEvaluatedState := esInvalid;
-  if FEvaluationCmdObj <> nil
-  then begin
-    FEvaluationCmdObj.OnExecuted := nil;
-    FEvaluationCmdObj.OnDestroy := nil;
-    FEvaluationCmdObj.Cancel;
-  end;
-  FEvaluationCmdObj := nil;
-end;
-
-procedure TGDBMIWatch.ClearOwned;
-begin
-  FreeAndNil(FTypeInfo);
-  FValue:='';
-end;
-
-function TGDBMIWatch.GetValue: String;
-begin
-  if  (Debugger <> nil)
-  and (Debugger.State in [dsPause])
-  and Enabled
-  then begin
-    EvaluationNeeded;
-    case FEvaluatedState of
-      esInvalid:   Result := inherited GetValue;
-      esRequested: Result := '<evaluating>';
-      esValid:     Result := FValue;
-    end;
-  end
-  else Result := inherited GetValue;
-end;
-
-function TGDBMIWatch.GetTypeInfo: TDBGType;
-begin
-  if  (Debugger <> nil)
-  and (Debugger.State in [dsPause])
-  and Enabled
-  then begin
-    EvaluationNeeded;
-    Result := FTypeInfo;
-  end
-  else Result := inherited GetTypeInfo;
-end;
-
-function TGDBMIWatch.GetValid: TValidState;
-begin
-  EvaluationNeeded;
-  Result := inherited GetValid;
-end;
-
-{ =========================================================================== }
 { TGDBMIWatches }
 { =========================================================================== }
+
+procedure TGDBMIWatches.DoEvaluationDestroyed(Sender: TObject);
+begin
+  FCommandList.Remove(Sender);
+end;
+
+function TGDBMIWatches.GetParentFPList(AThreadId: Integer): PGDBMIDebuggerParentFrameCache;
+var
+  i: Integer;
+begin
+  for i := 0 to high(FParentFPList) do
+    if FParentFPList[i].ThreadId = AThreadId
+    then exit(@FParentFPList[i]);
+  i := Length(FParentFPList);
+  SetLength(FParentFPList, i + 1);
+  FParentFPList[i].ThreadId := AThreadId;
+  Result := @FParentFPList[i];
+end;
 
 procedure TGDBMIWatches.DoStateChange(const AOldState: TDBGState);
 begin
@@ -7851,13 +7694,60 @@ begin
 end;
 
 procedure TGDBMIWatches.Changed;
-var
-  n: Integer;
 begin
   SetLength(FParentFPList, 0);
-  for n := 0 to Count - 1 do
-    TGDBMIWatch(Items[n]).Invalidate;
-  inherited Changed;
+  if CurrentWatches <> nil
+  then CurrentWatches.ClearValues;
+end;
+
+procedure TGDBMIWatches.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to FCommandList.Count-1 do
+    with TGDBMIDebuggerCommandStack(FCommandList[i]) do begin
+      OnExecuted := nil;
+      OnDestroy := nil;
+      Cancel;
+    end;
+  FCommandList.Clear;
+end;
+
+procedure TGDBMIWatches.RequestData(AWatchValue: TCurrentWatchValue);
+var
+  ForceQueue: Boolean;
+  EvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
+begin
+  if (Debugger = nil) or not(Debugger.State = dsPause) then begin
+    AWatchValue.Validity := ddsInvalid;
+    Exit;
+  end;
+
+  EvaluationCmdObj := TGDBMIDebuggerCommandEvaluate.Create
+    (TGDBMIDebugger(Debugger), AWatchValue);
+  //EvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
+  EvaluationCmdObj.OnDestroy    := @DoEvaluationDestroyed;
+  EvaluationCmdObj.Properties := [dcpCancelOnRun];
+  // If a ExecCmd is running, then defer exec until the exec cmd is done
+  ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
+            and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+  FCommandList.Add(EvaluationCmdObj);
+  TGDBMIDebugger(Debugger).QueueCommand(EvaluationCmdObj, ForceQueue);
+  (* DoEvaluationFinished may be called immediately at this point *)
+end;
+
+constructor TGDBMIWatches.Create(const ADebugger: TDebugger);
+begin
+  FCommandList := TList.Create;
+  inherited Create(ADebugger);
+end;
+
+destructor TGDBMIWatches.Destroy;
+begin
+  inherited Destroy;
+  Clear;
+  FreeAndNil(FCommandList);
 end;
 
 
@@ -7959,7 +7849,7 @@ begin
 
   tid := Debugger.Threads.Monitor.CurrentThreads.CurrentThreadId;
   cs := TCurrentCallStack(CurrentCallStackList.EntriesForThreads[tid]);
-  idx := cs.NewCurrentIndex;
+  idx := cs.NewCurrentIndex;  // NEW-CURRENT
   if TGDBMIDebugger(Debugger).FCurrentStackFrame = idx then Exit;
 
   IndexCmd := TGDBMIDebuggerCommandStackSetCurrent.Create(TGDBMIDebugger(Debugger), cs, idx);
@@ -7972,9 +7862,28 @@ begin
 end;
 
 procedure TGDBMICallStack.DoThreadChanged;
+var
+  tid, idx: Integer;
+  IndexCmd: TGDBMIDebuggerCommandStackSetCurrent;
+  cs: TCurrentCallStack;
 begin
+  if (Debugger = nil) or (Debugger.State <> dsPause) then begin
+    exit;
+  end;
+
   TGDBMIDebugger(Debugger).FCurrentStackFrame := -1;
-  UpdateCurrentIndex;
+  tid := Debugger.Threads.Monitor.CurrentThreads.CurrentThreadId;
+  cs := TCurrentCallStack(CurrentCallStackList.EntriesForThreads[tid]);
+  idx := cs.CurrentIndex;  // CURRENT
+  if idx < 0 then idx := 0;
+
+  IndexCmd := TGDBMIDebuggerCommandStackSetCurrent.Create(TGDBMIDebugger(Debugger), cs, idx);
+  IndexCmd.OnExecuted  := @DoSetIndexCommandExecuted;
+  IndexCmd.OnDestroy  := @DoCommandDestroyed;
+  IndexCmd.Priority := GDCMD_PRIOR_STACK;
+  FCommandList.Add(IndexCmd);
+  TGDBMIDebugger(Debugger).QueueCommand(IndexCmd);
+  (* DoFramesCommandExecuted may be called immediately at this point *)
 end;
 
 constructor TGDBMICallStack.Create(const ADebugger: TDebugger);
@@ -10319,10 +10228,16 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
     R: TGDBMIExecResult;
     List: TGDBMINameValueList;
     ParentFp, Fp: String;
-    i, aFrame: Integer;
+    i, aFrame, ThreadId: Integer;
+    FrameCache: PGDBMIDebuggerParentFrameCache;
   begin
-    if aFrameIdx < Length(TGDBMIWatches(FTheDebugger.Watches).FParentFPList) then begin
-      aFrame := TGDBMIWatches(FTheDebugger.Watches).FParentFPList[aFrameIdx];
+    if FWatchValue <> nil
+    then ThreadId := FWatchValue.ThreadId
+    else ThreadId := FTheDebugger.FCurrentThreadId;
+    FrameCache := TGDBMIWatches(FTheDebugger.Watches).GetParentFPList(ThreadId);
+
+    if aFrameIdx < Length(FrameCache^.ParentFPList) then begin
+      aFrame := FrameCache^.ParentFPList[aFrameIdx];
       if aFrame = -1
       then exit(False);
 
@@ -10334,13 +10249,13 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
       Exit(True);
     end;
 
-    i := length(TGDBMIWatches(FTheDebugger.Watches).FParentFPList);
-    SetLength(TGDBMIWatches(FTheDebugger.Watches).FParentFPList, i + 1);
-    TGDBMIWatches(FTheDebugger.Watches).FParentFPList[i] := -1; // assume failure
+    i := length(FrameCache^.ParentFPList);
+    SetLength(FrameCache^.ParentFPList, i + 1);
+    FrameCache^.ParentFPList[i] := -1; // assume failure
     inc(aFrameIdx);
 
     if i > 0
-    then aFrame := TGDBMIWatches(FTheDebugger.Watches).FParentFPList[i-1]
+    then aFrame := FrameCache^.ParentFPList[i-1]
     else aFrame := TGDBMIDebugger(FTheDebugger).FCurrentStackFrame;
 
     if not ExecuteCommand('-data-evaluate-expression parentfp', R)
@@ -10371,7 +10286,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
     until ParentFP = Fp;
     List.Free;
 
-    TGDBMIWatches(FTheDebugger.Watches).FParentFPList[i] := aFrame;
+    FrameCache^.ParentFPList[i] := aFrame;
     Result := True;
   end;
 
@@ -10752,12 +10667,14 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
       then begin
         exit;
         FTextValue := '<Canceled>';
+        FValidity := ddsInvalid;
       end;
       ResultList := TGDBMINameValueList.Create(LastExecResult.Values);
       FTextValue := ResultList.Values['msg'];
       if FTextValue = ''
       then  FTextValue := '<Error>';
       FreeAndNil(ResultList);
+      FValidity := ddsError;
     end;
 
     function PrepareExpr(var expr: string; NoAddressOp: Boolean = False): boolean;
@@ -10923,63 +10840,119 @@ var
   Expr: TGDBMIExpression;
   frame, frameidx: Integer;
 begin
-  FTextValue:='';
-  FTypeInfo:=nil;
-
-
-  S := StripExprNewlines(FExpression);
-
-  if S = '' then Exit(false);
-  if S[1] = '!'
-  then begin
-    //TESTING...
-    Delete(S, 1, 1);
-    Expr := TGDBMIExpression.Create(S);
-    FTextValue := Expr.DumpExpression;
-    FTextValue := FTextValue + LineEnding;
-    Expr.Evaluate(Self, S, FTypeInfo);
-    FreeAndNil(FTypeInfo);
-    FTextValue := FTextValue + S;
-    Expr.Free;
-    Exit(True);
+  if not SelectContext then begin
+    FTextValue:='<Error>';
+    FValidity := ddsError;
+    exit;
   end;
-
-  ResultList := TGDBMINameValueList.Create('');
-  // original
-  frame := TGDBMIDebugger(FTheDebugger).FCurrentStackFrame;
-  frameidx := 0;
-  DefaultTimeOut := DebuggerProperties.TimeoutForEval;
   try
-    repeat
-      if TryExecute(S, frame = -1)
-      then Break;
-      FreeAndNil(FTypeInfo);
-      if (dcsCanceled in SeenStates)
-      then break;
-    until not SelectParentFrame(frameidx);
+    FTextValue:='';
+    FTypeInfo:=nil;
 
-  finally
-    DefaultTimeOut := -1;
-    if frameidx <> 0
+
+    S := StripExprNewlines(FExpression);
+
+    if S = '' then Exit(false);
+    if S[1] = '!'
     then begin
-      // Restore current frame
-      ExecuteCommand('-stack-select-frame %u', [frame], []);
+      //TESTING...
+      Delete(S, 1, 1);
+      Expr := TGDBMIExpression.Create(S);
+      FTextValue := Expr.DumpExpression;
+      FTextValue := FTextValue + LineEnding;
+      Expr.Evaluate(Self, S, FTypeInfo);
+      FreeAndNil(FTypeInfo);
+      FTextValue := FTextValue + S;
+      Expr.Free;
+      Exit(True);
     end;
-    FreeAndNil(ResultList);
+
+    ResultList := TGDBMINameValueList.Create('');
+    // original
+    frame := TGDBMIDebugger(FTheDebugger).FCurrentStackFrame;
+    frameidx := 0;
+    DefaultTimeOut := DebuggerProperties.TimeoutForEval;
+    try
+      repeat
+        if TryExecute(S, frame = -1)
+        then Break;
+        FreeAndNil(FTypeInfo);
+        if (dcsCanceled in SeenStates)
+        then break;
+      until not SelectParentFrame(frameidx);
+
+    finally
+      DefaultTimeOut := -1;
+      if frameidx <> 0
+      then begin
+        // Restore current frame
+        ExecuteCommand('-stack-select-frame %u', [frame], []);
+      end;
+      FreeAndNil(ResultList);
+    end;
+    Result := True;
+  finally
+    UnSelectContext;
+    if FWatchValue <> nil then begin
+      FWatchValue.SetValue(FTextValue);
+      FWatchValue.SetTypeInfo(TypeInfo);
+      FWatchValue.Validity := FValidity;
+    end;
   end;
-  Result := True;
 end;
 
-constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
-  const AExpression: String; const ADisplayFormat: TWatchDisplayFormat);
+function TGDBMIDebuggerCommandEvaluate.SelectContext: Boolean;
+var
+  R: TGDBMIExecResult;
+begin
+  Result := True;
+  FThreadChanged := False;
+  FStackFrameChanged := False;
+  if FWatchValue = nil then exit;
+
+  if FWatchValue.ThreadId <> FTheDebugger.FCurrentThreadId then begin
+    FThreadChanged := True;
+    Result := ExecuteCommand('-thread-select %d', [FWatchValue.ThreadId], R);
+    Result := Result and (R.State <> dsError);
+  end;
+  if not Result then exit;
+
+  if (FWatchValue.StackFrame <> FTheDebugger.FCurrentStackFrame) or FThreadChanged then begin
+    FStackFrameChanged := True;
+    Result := ExecuteCommand('-stack-select-frame %d', [FWatchValue.StackFrame], R);
+    Result := Result and (R.State <> dsError);
+  end;
+end;
+
+procedure TGDBMIDebuggerCommandEvaluate.UnSelectContext;
+var
+  R: TGDBMIExecResult;
+begin
+  if FThreadChanged
+  then ExecuteCommand('-thread-select %d', [FTheDebugger.FCurrentThreadId], R);
+  if FStackFrameChanged
+  then ExecuteCommand('-stack-select-frame %d', [FTheDebugger.FCurrentStackFrame], R);
+end;
+
+constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger; AExpression: String;
+  ADisplayFormat: TWatchDisplayFormat);
 begin
   inherited Create(AOwner);
+  FWatchValue := nil;
   FExpression := AExpression;
   FDisplayFormat := ADisplayFormat;
   FTextValue := '';
   FTypeInfo:=nil;
   FEvalFlags := [];
   FTypeInfoAutoDestroy := True;
+  FValidity := ddsValid;
+end;
+
+constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
+  AWatchValue: TCurrentWatchValue);
+begin
+  Create(AOwner, AWatchValue.Watch.Expression, AWatchValue.DisplayFormat);
+  FWatchValue := AWatchValue;
 end;
 
 destructor TGDBMIDebuggerCommandEvaluate.Destroy;

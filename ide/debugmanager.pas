@@ -206,7 +206,7 @@ type
                         const ASourceMark: TSourceMark): TModalResult; override;
 
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
-    function ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult; override;
+    function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult; override;
 
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType; BringToFront: Boolean = true; Show: Boolean = true; DoDisableAutoSizing: boolean = false); override;
   end;
@@ -660,7 +660,7 @@ procedure TDebugManager.mnuAddWatchClicked(Sender: TObject);
 var
   SE: TSourceEditor;
   WatchVar: String;
-  w: TIDEWatch;
+  w: TCurrentWatch;
 begin
   SE := SourceEditorManager.GetActiveSE;
 
@@ -672,9 +672,9 @@ begin
       WatchVar := SE.GetOperandAtCurrentCaret;
     if (WatchVar <> '') and SE.EditorComponent.Focused then
     begin
-      w := Watches.Find(WatchVar);
+      w := Watches.CurrentWatches.Find(WatchVar);
       if w = nil
-      then w := Watches.Add(WatchVar);
+      then w := Watches.CurrentWatches.Add(WatchVar);
       if (w <> nil)
       then begin
         w.Enabled := True;
@@ -1163,7 +1163,9 @@ var
   TheDialog: TWatchesDlg;
 begin
   TheDialog := TWatchesDlg(FDialogs[ddtWatches]);
-  TheDialog.Watches := FWatches;
+  TheDialog.WatchesMonitor := FWatches;
+  TheDialog.ThreadsMonitor := FThreads;
+  TheDialog.CallStackMonitor := FCallStack;
 end;
 
 procedure TDebugManager.InitThreadsDlg;
@@ -1254,7 +1256,7 @@ begin
   FDebugger := nil;
   FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
-  FWatches := TIDEWatches.Create;
+  FWatches := TWatchesMonitor.Create;
   FThreads := TThreadsMonitor.Create;
   FExceptions := TProjectExceptions.Create;
   FSignals := TIDESignals.Create;
@@ -2251,7 +2253,7 @@ begin
   Result := TBreakPropertyDlg.Create(Self, ABreakpoint).ShowModal;
 end;
 
-function TDebugManager.ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult;
+function TDebugManager.ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult;
 begin
   Result := TWatchPropertyDlg.Create(Self, AWatch, AWatchExpression).ShowModal;
 end;
@@ -2267,7 +2269,7 @@ begin
   if FDebugger = nil
   then begin
     TManagedBreakpoints(FBreakpoints).Master := nil;
-    FWatches.Master := nil;
+    FWatches.Supplier := nil;
     FThreads.Supplier := nil;
     FLocals.Master := nil;
     FLineInfo.Master := nil;
@@ -2279,7 +2281,7 @@ begin
   end
   else begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
-    FWatches.Master := FDebugger.Watches;
+    FWatches.Supplier := FDebugger.Watches;
     FThreads.Supplier := FDebugger.Threads;
     FLocals.Master := FDebugger.Locals;
     FLineInfo.Master := FDebugger.LineInfo;

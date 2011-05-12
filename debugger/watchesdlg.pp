@@ -103,27 +103,41 @@ type
     procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
   private
-    FWatches: TIDEWatches;
-    FWatchesNotification: TIDEWatchesNotification;
+    function GetWatches: TCurrentWatches;
+    procedure ContextChanged(Sender: TObject);
+  private
+    FCallStackMonitor: TCallStackMonitor;
+    FThreadsMonitor: TThreadsMonitor;
+    FWatchesMonitor: TWatchesMonitor;
+    FWatchesNotification: TWatchesNotification;
+    FThreadsNotification: TThreadsNotification;
+    FCallstackNotification: TCallStackNotification;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded: Boolean;
     FStateFlags: TWatchesDlgStateFlags;
-    function GetSelected: TIDEWatch;
-    procedure SetWatches(const AValue: TIDEWatches);
-    procedure WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
-    procedure WatchUpdate(const ASender: TIDEWatches; const AWatch: TIDEWatch);
-    procedure WatchRemove(const ASender: TIDEWatches; const AWatch: TIDEWatch);
+    function GetSelected: TCurrentWatch;
+    function  GetThreadId: Integer;
+    function GetStackframe: Integer;
+    procedure SetCallStackMonitor(const AValue: TCallStackMonitor);
+    procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
+    procedure SetWatchesMonitor(const AValue: TWatchesMonitor);
+    procedure WatchAdd(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
+    procedure WatchUpdate(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
+    procedure WatchRemove(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
 
-    procedure UpdateItem(const AItem: TListItem; const AWatch: TIDEWatch);
+    procedure UpdateItem(const AItem: TListItem; const AWatch: TCurrentWatch);
     procedure UpdateAll;
     procedure DisableAllActions;
+    property Watches: TCurrentWatches read GetWatches;
   protected
     procedure DoEndUpdate; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property Watches: TIDEWatches read FWatches write SetWatches;
+    property WatchesMonitor: TWatchesMonitor read FWatchesMonitor write SetWatchesMonitor;
+    property ThreadsMonitor: TThreadsMonitor read FThreadsMonitor write SetThreadsMonitor;
+    property CallStackMonitor: TCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
   end;
 
 
@@ -136,12 +150,21 @@ implementation
 constructor TWatchesDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FWatchesNotification := TIDEWatchesNotification.Create;
+  FWatchesNotification := TWatchesNotification.Create;
   FWatchesNotification.AddReference;
   FWatchesNotification.OnAdd := @WatchAdd;
   FWatchesNotification.OnUpdate := @WatchUpdate;
   FWatchesNotification.OnRemove := @WatchRemove;
   FStateFlags := [];
+
+  FThreadsNotification := TThreadsNotification.Create;
+  FThreadsNotification.AddReference;
+  FThreadsNotification.OnCurrent := @ContextChanged;
+
+  FCallstackNotification := TCallStackNotification.Create;
+  FCallstackNotification.AddReference;
+  FCallstackNotification.OnCurrent  := @ContextChanged;
+
 
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
@@ -196,42 +219,98 @@ end;
 destructor TWatchesDlg.Destroy;
 begin
   //DebugLn('TWatchesDlg.Destroy ',DbgSName(Self));
-  SetWatches(nil);
+  SetWatchesMonitor(nil);
   FWatchesNotification.OnAdd := nil;
   FWatchesNotification.OnUpdate := nil;
   FWatchesNotification.OnRemove := nil;
   FWatchesNotification.ReleaseReference;
+  FThreadsNotification.OnCurrent := nil;
+  FThreadsNotification.ReleaseReference;
+  FCallstackNotification.OnCurrent := nil;
+  FCallstackNotification.ReleaseReference;
   inherited Destroy;
 end;
           
-function TWatchesDlg.GetSelected: TIDEWatch;
+function TWatchesDlg.GetSelected: TCurrentWatch;
 var
   Item: TListItem;
 begin
   Item := lvWatches.Selected;
   if Item = nil
   then Result := nil
-  else Result := TIDEWatch(Item.Data);
+  else Result := TCurrentWatch(Item.Data);
 end;
 
-procedure TWatchesDlg.SetWatches(const AValue: TIDEWatches);
+function TWatchesDlg.GetThreadId: Integer;
 begin
-  if FWatches = AValue then Exit;
+  Result := -1;
+  if (FThreadsMonitor = nil) then exit;
+  Result := FThreadsMonitor.CurrentThreads.CurrentThreadId;
+end;
+
+function TWatchesDlg.GetStackframe: Integer;
+begin
+  Result := -1;
+  if (FCallStackMonitor = nil) then exit;
+  Result := FCallStackMonitor.CurrentCallStackList.EntriesForThreads[GetThreadId].CurrentIndex;
+end;
+
+procedure TWatchesDlg.SetCallStackMonitor(const AValue: TCallStackMonitor);
+begin
+  if FCallStackMonitor = AValue then exit;
+  BeginUpdate;
+  try
+    if FCallStackMonitor <> nil
+    then FCallStackMonitor.RemoveNotification(FCallstackNotification);
+
+    FCallStackMonitor := AValue;
+
+    if FCallStackMonitor <> nil
+    then FCallStackMonitor.AddNotification(FCallstackNotification);
+
+    UpdateAll;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TWatchesDlg.SetThreadsMonitor(const AValue: TThreadsMonitor);
+begin
+  if FThreadsMonitor = AValue then exit;
+  BeginUpdate;
+  try
+    if FThreadsMonitor <> nil
+    then FThreadsMonitor.RemoveNotification(FThreadsNotification);
+
+    FThreadsMonitor := AValue;
+
+    if FThreadsMonitor <> nil
+    then FThreadsMonitor.AddNotification(FThreadsNotification);
+
+    UpdateAll;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TWatchesDlg.SetWatchesMonitor(const AValue: TWatchesMonitor);
+begin
+  if FWatchesMonitor = AValue then Exit;
 
   BeginUpdate;
   try
     lvWatches.Items.Clear;
 
-    if FWatches <> nil
+    if FWatchesMonitor <> nil
     then begin
-      FWatches.RemoveNotification(FWatchesNotification);
+      FWatchesMonitor.RemoveNotification(FWatchesNotification);
     end;
 
-    FWatches:=AValue;
+    FWatchesMonitor:=AValue;
 
-    if FWatches <> nil
+    if FWatchesMonitor <> nil
     then begin
-      FWatches.AddNotification(FWatchesNotification);
+      FWatchesMonitor.AddNotification(FWatchesNotification);
       UpdateAll;
     end;
     
@@ -243,14 +322,14 @@ end;
 procedure TWatchesDlg.lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
 var
   ItemSelected: Boolean;
-  Watch: TIDEWatch;
+  Watch: TCurrentWatch;
   SelCanEnable, SelCanDisable: Boolean;
   AllCanEnable, AllCanDisable: Boolean;
   i: Integer;
 begin
   ItemSelected := lvWatches.Selected <> nil;
   if ItemSelected then
-    Watch:=TIDEWatch(lvWatches.Selected.Data)
+    Watch:=TCurrentWatch(lvWatches.Selected.Data)
   else
     Watch:=nil;
   SelCanEnable := False;
@@ -261,11 +340,11 @@ begin
     if lvWatches.Items[i].Data = nil then
       continue;
     if lvWatches.Items[i].Selected then begin
-      SelCanEnable := SelCanEnable or not TIDEWatch(lvWatches.Items[i].Data).Enabled;
-      SelCanDisable := SelCanDisable or TIDEWatch(lvWatches.Items[i].Data).Enabled;
+      SelCanEnable := SelCanEnable or not TCurrentWatch(lvWatches.Items[i].Data).Enabled;
+      SelCanDisable := SelCanDisable or TCurrentWatch(lvWatches.Items[i].Data).Enabled;
     end;
-    AllCanEnable := AllCanEnable or not TIDEWatch(lvWatches.Items[i].Data).Enabled;
-    AllCanDisable := AllCanDisable or TIDEWatch(lvWatches.Items[i].Data).Enabled;
+    AllCanEnable := AllCanEnable or not TCurrentWatch(lvWatches.Items[i].Data).Enabled;
+    AllCanDisable := AllCanDisable or TCurrentWatch(lvWatches.Items[i].Data).Enabled;
   end;
 
   actToggleCurrentEnable.Enabled := ItemSelected;
@@ -299,10 +378,6 @@ end;
 
 procedure TWatchesDlg.FormShow(Sender: TObject);
 begin
-  if UpdateCount > 0 then begin
-    FUpdateAllNeeded := True;
-    exit;
-  end;
   UpdateAll;
 end;
 
@@ -330,6 +405,11 @@ begin
   end;
 end;
 
+procedure TWatchesDlg.ContextChanged(Sender: TObject);
+begin
+  UpdateAll;
+end;
+
 procedure TWatchesDlg.actEnableSelectedExecute(Sender: TObject);
 var
   n: Integer;
@@ -341,7 +421,7 @@ begin
     begin
       Item := lvWatches.Items[n];
       if Item.Selected then
-        TIDEWatch(Item.Data).Enabled := True;
+        TCurrentWatch(Item.Data).Enabled := True;
     end;
   finally
     lvWatchesSelectItem(nil, nil, False);
@@ -359,7 +439,7 @@ begin
     begin
       Item := lvWatches.Items[n];
       if Item.Selected then
-        TIDEWatch(Item.Data).Enabled := False;
+        TCurrentWatch(Item.Data).Enabled := False;
     end;
   finally
     lvWatchesSelectItem(nil, nil, False);
@@ -400,10 +480,17 @@ begin
   try
     DisableAllActions;
     for n := lvWatches.Items.Count - 1 downto 0 do
-      TIDEWatch(lvWatches.Items[n].Data).Free;
+      TCurrentWatch(lvWatches.Items[n].Data).Free;
   finally
     lvWatchesSelectItem(nil, nil, False);
   end;
+end;
+
+function TWatchesDlg.GetWatches: TCurrentWatches;
+begin
+  if FWatchesMonitor <> nil
+  then Result := FWatchesMonitor.CurrentWatches
+  else Result := nil;
 end;
 
 procedure TWatchesDlg.DoEndUpdate;
@@ -417,7 +504,7 @@ end;
 
 procedure TWatchesDlg.popDeleteClick(Sender: TObject);
 var
-  Item: TIDEWatch;
+  Item: TCurrentWatch;
 begin
   Include(FStateFlags, wdsfNeedDeleteCurrent);
   if (wdsfUpdating in FStateFlags) then exit;
@@ -445,7 +532,7 @@ begin
     begin
       Item := lvWatches.Items[n];
       if Item.Data <> nil
-      then TIDEWatch(Item.Data).Enabled := False;
+      then TCurrentWatch(Item.Data).Enabled := False;
     end;
   finally
     lvWatchesSelectItem(nil, nil, False);
@@ -463,7 +550,7 @@ begin
     begin
       Item := lvWatches.Items[n];
       if Item.Data <> nil
-      then TIDEWatch(Item.Data).Enabled := True;
+      then TCurrentWatch(Item.Data).Enabled := True;
     end;
   finally
     lvWatchesSelectItem(nil, nil, False);
@@ -472,7 +559,7 @@ end;
 
 procedure TWatchesDlg.popEnabledClick(Sender: TObject);
 var
-  Watch: TIDEWatch;
+  Watch: TCurrentWatch;
 begin
   try
     DisableAllActions;
@@ -495,7 +582,7 @@ begin
   end;
 end;
 
-procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TIDEWatch);
+procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TCurrentWatch);
   function ClearMultiline(const AValue: ansistring): ansistring;
   var
     j: SizeInt;
@@ -530,10 +617,12 @@ begin
 // Expression
 // Result
   if (not ToolButtonPower.Down) or (not Visible) then exit;
+  if (FThreadsMonitor = nil) or (FCallStackMonitor = nil) then exit;
+  if GetStackframe < 0 then exit; // TODO need dedicated validity property
 
   include(FStateFlags, wdsfUpdating);
   AItem.Caption := AWatch.Expression;
-  AItem.SubItems[0] := ClearMultiline(AWatch.Value);
+  AItem.SubItems[0] := ClearMultiline(AWatch.Values[GetThreadId, GetStackframe].Value);
   exclude(FStateFlags, wdsfUpdating);
   if wdsfNeedDeleteCurrent in FStateFlags then
     popDeleteClick(nil);
@@ -545,13 +634,17 @@ procedure TWatchesDlg.UpdateAll;
 var
   i, l: Integer;
 begin
-  l := FWatches.Count;
+  if UpdateCount > 0 then begin
+    FUpdateAllNeeded := True;
+    exit;
+  end;
+  l := Watches.Count;
   i := 0;
   while i < l do begin
-    WatchUpdate(FWatches, FWatches.Items[i]);
-    if l <> FWatches.Count then begin
-      i := Max(0, i - Max(0, FWatches.Count - l));
-      l := FWatches.Count;
+    WatchUpdate(Watches, Watches.Items[i]);
+    if l <> Watches.Count then begin
+      i := Max(0, i - Max(0, Watches.Count - l));
+      l := Watches.Count;
     end;
     inc(i);
   end;
@@ -565,10 +658,10 @@ begin
     (ActionList1.Actions[i] as TAction).Enabled := False;
 end;
 
-procedure TWatchesDlg.WatchAdd(const ASender: TIDEWatches; const AWatch: TIDEWatch);
+procedure TWatchesDlg.WatchAdd(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
 var
   Item: TListItem;
-  Watch: TIDEWatch;
+  Watch: TCurrentWatch;
 begin
   Item := lvWatches.Items.FindData(AWatch);
   if Item = nil
@@ -586,7 +679,7 @@ begin
   lvWatchesSelectItem(nil, nil, False);
 end;
 
-procedure TWatchesDlg.WatchUpdate(const ASender: TIDEWatches; const AWatch: TIDEWatch);
+procedure TWatchesDlg.WatchUpdate(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
 var
   Item: TListItem;
 begin
@@ -600,7 +693,7 @@ begin
   lvWatchesSelectItem(nil, nil, False);
 end;
 
-procedure TWatchesDlg.WatchRemove(const ASender: TIDEWatches; const AWatch: TIDEWatch);
+procedure TWatchesDlg.WatchRemove(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
 begin
   lvWatches.Items.FindData(AWatch).Free;
   lvWatchesSelectItem(nil, nil, False);

@@ -212,7 +212,11 @@ type
   TIDEBreakPoints = class;
   TIDEBreakPointGroup = class;
   TIDEBreakPointGroups = class;
-  TIDEWatches = class;
+  TCurrentWatch = class;
+  TCurrentWatches = class;
+  TWatch = class;
+  TWatchesMonitor = class;
+  TWatchesSupplier = class;
   TIDELocals = class;
   TIDELineInfo = class;
   TCallStack = class;
@@ -226,7 +230,12 @@ type
   TOnLoadFilenameFromConfig = procedure(var Filename: string) of object;
   TOnGetGroupByName = function(const GroupName: string): TIDEBreakPointGroup of object;
 
-  TDebuggerDataState = (ddsUnknown, ddsRequested, ddsValid, ddsInvalid);
+  TDebuggerDataState = (ddsUnknown,                    //
+                        ddsRequested, ddsEvaluating,   //
+                        ddsValid,                      // Got a valid value
+                        ddsInvalid,                    // Does not have a value
+                        ddsError                       // Error, but got some Value to display (e.g. error msg)
+                       );
 
   { TDebuggerDataMonitor }
 
@@ -744,173 +753,251 @@ const
 
 type
 
-  { TBaseWatch }
+  TWatchesEvent =
+       procedure(const ASender: TCurrentWatches; const AWatch: TCurrentWatch) of object;
 
-  TBaseWatch = class(TDelayedUdateItem)
+  TWatchesNotification = class(TDebuggerNotification)
+  private
+    FOnAdd:    TWatchesEvent;
+    FOnUpdate: TWatchesEvent;//Item will be nil in case all items need to be updated
+    FOnRemove: TWatchesEvent;
+  public
+    property OnAdd:    TWatchesEvent read FOnAdd    write FOnAdd;
+    property OnUpdate: TWatchesEvent read FOnUpdate write FOnUpdate;
+    property OnRemove: TWatchesEvent read FOnRemove write FonRemove;
+  end;
+
+  { TWatchesNotificationList }
+
+  TWatchesNotificationList = class(TDebuggerNotificationList)
+  private
+    function GetItem(AIndex: Integer): TWatchesNotification;
+  public
+    procedure NotifyAdd(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
+    procedure NotifyUpdate(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
+    procedure NotifyRemove(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
+    property Items[AIndex: Integer]: TWatchesNotification read GetItem; default;
+  end;
+
+
+  { TWatchValue }
+
+  TWatchValue = class
+  private
+    FDisplayFormat: TWatchDisplayFormat;
+    FStackFrame: Integer;
+    FThreadId: Integer;
+    FValidity: TDebuggerDataState;
+    FWatch: TWatch;
+    function GetTypeInfo: TDBGType;
+    function GetValue: String;
+    procedure SetValidity(const AValue: TDebuggerDataState);
+  protected
+    FTypeInfo: TDBGType;
+    FValue: String;
+    procedure RequestData; virtual;
+    procedure ValidityChanged; virtual;
+  public
+    constructor Create(AOwnerWatch: TWatch);
+    constructor Create(AOwnerWatch: TWatch;
+                       const AThreadId: Integer;
+                       const AStackFrame: Integer;
+                       const ADisplayFormat: TWatchDisplayFormat);
+    destructor Destroy; override;
+    procedure Assign(AnOther: TWatchValue);
+    property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
+    property ThreadId: Integer read FThreadId;
+    property StackFrame: Integer read FStackFrame;
+    property Watch: TWatch read FWatch;
+  public
+    property Validity: TDebuggerDataState read FValidity write SetValidity;
+    property Value: String read GetValue;
+    property TypeInfo: TDBGType read GetTypeInfo;
+  end;
+
+  { TWatchValueList }
+
+  TWatchValueList = class
+  private
+    FList: TList;
+    FWatch: TWatch;
+    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer;
+                     const ADisplayFormat: TWatchDisplayFormat): TWatchValue;
+  protected
+    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
+                         const ADisplayFormat: TWatchDisplayFormat): TWatchValue; virtual;
+  public
+    procedure Assign(AnOther: TWatchValueList);
+    constructor Create(AOwnerWatch: TWatch);
+    destructor Destroy; override;
+    procedure Clear;
+    property Entries[const AThreadId: Integer; const AStackFrame: Integer;
+                     const ADisplayFormat: TWatchDisplayFormat]: TWatchValue
+             read GetEntry; default;
+    property Watch: TWatch read FWatch;
+  end;
+
+  { TWatch }
+
+  TWatch = class(TDelayedUdateItem)
   private
     FEnabled: Boolean;
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
-    FValid: TValidState;
+    FValueList: TWatchValueList;
     function GetEnabled: Boolean;
+    function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
+    function GetValueEx(const AThreadId: Integer; const AStackFrame: Integer;
+                    const ADisplayFormat: TWatchDisplayFormat): TWatchValue;
   protected
     procedure AssignTo(Dest: TPersistent); override;
+    function CreateValueList: TWatchValueList; virtual;
     procedure DoEnableChange; virtual;
     procedure DoExpressionChange; virtual;
     procedure DoDisplayFormatChanged; virtual;
-    procedure SetValid(const AValue: TValidState);
-
   protected
     // virtual properties
     function GetExpression: String; virtual;
     function GetDisplayFormat: TWatchDisplayFormat; virtual;
-    function GetValid: TValidState; virtual;
-    function GetValue: String; virtual;
-    function GetTypeInfo: TDBGType; virtual;
 
     procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetExpression(const AValue: String); virtual;
     procedure SetDisplayFormat(const AValue: TWatchDisplayFormat); virtual;
   public
     constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    procedure ClearValues;
   public
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
     property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat write SetDisplayFormat;
-    property Valid: TValidState read GetValid;
-    property Value: String read GetValue;
-    property TypeInfo: TDBGType read GetTypeInfo;
+  public
+    property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
+             read GetValue;
+    property ValuesEx[const AThreadId: Integer; const AStackFrame: Integer;
+                    const ADisplayFormat: TWatchDisplayFormat]: TWatchValue
+             read GetValueEx;
   end;
-  TBaseWatchClass = class of TBaseWatch;
+  TBaseWatchClass = class of TWatch;
 
-  { TIDEWatch }
-  TDBGWatch = class;
+  { TCurrentWatchValue }
 
-  TIDEWatch = class(TBaseWatch)
-  private
-    FMaster: TDBGWatch;
+  TCurrentWatchValue = class(TWatchValue)
   protected
-    procedure AssignTo(Dest: TPersistent); override;
+    procedure RequestData; override;
+    procedure ValidityChanged; override;
+  public
+    procedure SetTypeInfo(const AValue: TDBGType);
+    procedure SetValue(const AValue: String);
+  end;
+
+  { TCurrentWatchValueList }
+
+  TCurrentWatchValueList = class(TWatchValueList)
+  protected
+    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
+      const ADisplayFormat: TWatchDisplayFormat): TWatchValue; override;
+  end;
+
+  { TCurrentWatch }
+
+  TCurrentWatch = class(TWatch)
+  protected
+    function CreateValueList: TWatchValueList; override;
     procedure DoChanged; override;
-    function GetValid: TValidState; override;
-    function GetValue: String; override;
-    function GetTypeInfo: TDBGType; override;
-    procedure SetEnabled(const AValue: Boolean); override;
-    procedure SetExpression(const AValue: String); override;
-    procedure SetDisplayFormat(const AValue: TWatchDisplayFormat); override;
+    procedure RequestData(AWatchValue: TCurrentWatchValue);
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    procedure ResetMaster;
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig;
                                 const APath: string); virtual;
     procedure SaveToXMLConfig(const AConfig: TXMLConfig;
                               const APath: string); virtual;
   end;
-  TIDEWatchClass = class of TIDEWatch;
+  TIDEWatchClass = class of TCurrentWatch;
 
-  { TDBGWatch }
+  { TWatches }
 
-  TDBGWatch = class(TBaseWatch)
-  private
-    FSlave: TBaseWatch;
-    function GetDebugger: TDebugger;
-    procedure SetSlave(const ASlave : TBaseWatch);
-  protected
-    procedure DoChanged; override;
-    procedure DoChange; virtual;
-    procedure DoStateChange(const AOldState: TDBGState); virtual;
-    property Debugger: TDebugger read GetDebugger;
-  public
-    constructor Create(ACollection: TCollection); override;
-    destructor Destroy; override;
-    property Slave: TBaseWatch read FSlave write SetSlave;
-  end;
-  TDBGWatchClass = class of TDBGWatch;
-
-
-  { TBaseWatches }
-
-  TIDEWatchesEvent =
-       procedure(const ASender: TIDEWatches; const AWatch: TIDEWatch) of object;
-
-  TIDEWatchesNotification = class(TDebuggerNotification)
-  private
-    FOnAdd:    TIDEWatchesEvent;
-    FOnUpdate: TIDEWatchesEvent;//Item will be nil in case all items need to be updated
-    FOnRemove: TIDEWatchesEvent;
-  public
-    property OnAdd:    TIDEWatchesEvent read FOnAdd    write FOnAdd;
-    property OnUpdate: TIDEWatchesEvent read FOnUpdate write FOnUpdate;
-    property OnRemove: TIDEWatchesEvent read FOnRemove write FonRemove;
-  end;
-
-  TBaseWatches = class(TCollection)
+  TWatches = class(TCollection)
   private
   protected
   public
     constructor Create(const AWatchClass: TBaseWatchClass);
-    function Add(const AExpression: String): TBaseWatch;
-    function Find(const AExpression: String): TBaseWatch;
+    function Add(const AExpression: String): TWatch;
+    function Find(const AExpression: String): TWatch;
     // no items property needed, it is "overridden" anyhow
+    procedure ClearValues;
   end;
 
-  { TIDEWatches }
-  TDBGWatches = class;
+  { TCurrentWatches }
 
-  TIDEWatches = class(TBaseWatches)
+  TCurrentWatches = class(TWatches)
   private
-    FNotificationList: TList;
-    FMaster: TDBGWatches;
+    FMonitor: TWatchesMonitor;
     procedure WatchesChanged(Sender: TObject);
-    procedure SetMaster(const AMaster: TDBGWatches);
   protected
-    function GetItem(const AnIndex: Integer): TIDEWatch;
-    procedure SetItem(const AnIndex: Integer; const AValue: TIDEWatch);
+    function GetItem(const AnIndex: Integer): TCurrentWatch;
+    procedure SetItem(const AnIndex: Integer; const AValue: TCurrentWatch);
   protected
-    procedure NotifyAdd(const AWatch: TIDEWatch); virtual;    // called when a watch is added
-    procedure NotifyRemove(const AWatch: TIDEWatch); virtual; // called by watch when destructed
+    procedure NotifyAdd(const AWatch: TCurrentWatch); virtual;    // called when a watch is added
+    procedure NotifyRemove(const AWatch: TCurrentWatch); virtual; // called by watch when destructed
     procedure Update(Item: TCollectionItem); override;
+    procedure RequestData(AWatchValue: TCurrentWatchValue);
+  public
+    constructor Create(AMonitor: TWatchesMonitor);
+    // Watch
+    function Add(const AExpression: String): TCurrentWatch;
+    function Find(const AExpression: String): TCurrentWatch;
+    // IDE
+    procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+    procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+  public
+    property Items[const AnIndex: Integer]: TCurrentWatch read GetItem
+                                                      write SetItem; default;
+  end;
+
+  { TWatchesMonitor }
+
+  TWatchesMonitor = class(TDebuggerDataMonitor)
+  private
+    FNotificationList: TWatchesNotificationList;
+    FCurrentWatches: TCurrentWatches;
+    function  GetSupplier: TWatchesSupplier;
+    procedure SetSupplier(const AValue: TWatchesSupplier);
+  protected
+    //procedure NotifyChange
+    procedure NotifyAdd(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
+    procedure NotifyRemove(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
+    procedure NotifyUpdate(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
+    procedure RequestData(AWatchValue: TCurrentWatchValue);
   public
     constructor Create;
     destructor Destroy; override;
-    // Watch
-    function Add(const AExpression: String): TIDEWatch;
-    function Find(const AExpression: String): TIDEWatch;
-    // IDE
-    procedure AddNotification(const ANotification: TIDEWatchesNotification);
-    procedure RemoveNotification(const ANotification: TIDEWatchesNotification);
-    procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string); virtual;
-    procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string); virtual;
-    property Master: TDBGWatches read FMaster write SetMaster;
+    procedure AddNotification(const ANotification: TWatchesNotification);
+    procedure RemoveNotification(const ANotification: TWatchesNotification);
+    property CurrentWatches: TCurrentWatches read FCurrentWatches;
+    property Supplier: TWatchesSupplier read GetSupplier write SetSupplier;
   public
-    property Items[const AnIndex: Integer]: TIDEWatch read GetItem
-                                                      write SetItem; default;
+    procedure Clear;
+    procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+    procedure SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
   end;
 
-  { TDBGWatches }
+  { TWatchesSupplier }
 
-  TDBGWatches = class(TBaseWatches)
+  TWatchesSupplier = class(TDebuggerDataSupplier)
   private
-    FDebugger: TDebugger;  // reference to our debugger
-    FOnChange: TNotifyEvent;
-    function  GetItem(const AnIndex: Integer): TDBGWatch;
-    procedure SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
+    function GetCurrentWatches: TCurrentWatches;
+    function GetMonitor: TWatchesMonitor;
+    procedure SetMonitor(const AValue: TWatchesMonitor);
   protected
+    procedure RequestData(AWatchValue: TCurrentWatchValue); virtual;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
-    procedure Update(Item: TCollectionItem); override;
-    property  Debugger: TDebugger read FDebugger;
   public
-    constructor Create(const ADebugger: TDebugger;
-                       const AWatchClass: TDBGWatchClass);
-    // Watch
-    function Add(const AExpression: String): TDBGWatch;
-    function Find(const AExpression: String): TDBGWatch;
-  public
-    property Items[const AnIndex: Integer]: TDBGWatch read GetItem
-                                                      write SetItem; default;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Monitor: TWatchesMonitor read GetMonitor write SetMonitor;
+    property CurrentWatches: TCurrentWatches read GetCurrentWatches;
   end;
+
   {%endregion   ^^^^^  Watches  ^^^^^   }
 
 {%region Locals ***************************************************************
@@ -1336,8 +1423,6 @@ type
 
   TCallStackSupplier = class(TDebuggerDataSupplier)
   private
-    //FOnChange: TNotifyEvent;
-    //FOnCurrent: TNotifyEvent;
     function GetCurrentCallStackList: TCurrentCallStackList;
     function GetMonitor: TCallStackMonitor;
     procedure SetMonitor(const AValue: TCallStackMonitor);
@@ -1992,7 +2077,7 @@ type
     FSignals: TDBGSignals;
     FState: TDBGState;
     FCallStack: TCallStackSupplier;
-    FWatches: TDBGWatches;
+    FWatches: TWatchesSupplier;
     FThreads: TThreadsSupplier;
     FOnCurrent: TDBGCurrentLineEvent;
     FOnException: TDBGExceptionEvent;
@@ -2018,7 +2103,7 @@ type
     function  CreateRegisters: TDBGRegisters; virtual;
     function  CreateCallStack: TCallStackSupplier; virtual;
     function  CreateDisassembler: TDBGDisassembler; virtual;
-    function  CreateWatches: TDBGWatches; virtual;
+    function  CreateWatches: TWatchesSupplier; virtual;
     function  CreateThreads: TThreadsSupplier; virtual;
     function  CreateSignals: TDBGSignals; virtual;
     function  CreateExceptions: TDBGExceptions; virtual;
@@ -2101,7 +2186,7 @@ type
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
     property Waiting: Boolean read GetWaiting;                                   // Set when the debugger is wating for a command to complete
-    property Watches: TDBGWatches read FWatches;                                 // list of all watches etc
+    property Watches: TWatchesSupplier read FWatches;                                 // list of all watches etc
     property Threads: TThreadsSupplier read FThreads;
     property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
     // Events
@@ -2246,6 +2331,340 @@ begin
   Result:=bpaStop;
 end;
 
+procedure TCurrentWatchValue.SetTypeInfo(const AValue: TDBGType);
+begin
+if FTypeInfo<> nil then
+  FreeAndNil(FTypeInfo);
+  FTypeInfo := AValue;
+end;
+
+procedure TCurrentWatchValue.SetValue(const AValue: String);
+begin
+  FValue := AValue;
+end;
+
+procedure TCurrentWatchValue.RequestData;
+begin
+  TCurrentWatch(FWatch).RequestData(self);
+end;
+
+procedure TCurrentWatchValue.ValidityChanged;
+begin
+  inherited;
+  TCurrentWatches(TCurrentWatch(FWatch).Collection).Update(FWatch);
+end;
+
+{ TCurrentWatchValueList }
+
+function TCurrentWatchValueList.CreateEntry(const AThreadId: Integer;
+  const AStackFrame: Integer; const ADisplayFormat: TWatchDisplayFormat): TWatchValue;
+begin
+  Result := TCurrentWatchValue.Create(FWatch, AThreadId, AStackFrame, ADisplayFormat);
+end;
+
+{ TWatchValueList }
+
+function TWatchValueList.GetEntry(const AThreadId: Integer; const AStackFrame: Integer;
+                     const ADisplayFormat: TWatchDisplayFormat): TWatchValue;
+var
+  i: Integer;
+begin
+  i := FList.Count - 1;
+  while i >= 0 do begin
+    Result := TWatchValue(FList[i]);
+    if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
+       (Result.DisplayFormat = ADisplayFormat)
+    then
+      exit;
+    dec(i);
+  end;
+  Result := CreateEntry(AThreadId, AStackFrame, ADisplayFormat);
+  FList.Add(Result);
+  Result.RequestData;
+end;
+
+function TWatchValueList.CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
+  const ADisplayFormat: TWatchDisplayFormat): TWatchValue;
+begin
+  Result := nil;
+end;
+
+procedure TWatchValueList.Assign(AnOther: TWatchValueList);
+var
+  i: Integer;
+  v: TWatchValue;
+begin
+  Clear;
+  for i := 0 to AnOther.FList.Count - 1 do begin
+    v := TWatchValue.Create(FWatch);
+    v.Assign(TWatchValue(AnOther.FList[i]));
+    FList.Add(v);
+  end;
+end;
+
+constructor TWatchValueList.Create(AOwnerWatch: TWatch);
+begin
+  FList := TList.Create;
+  FWatch := AOwnerWatch;
+  inherited Create;
+end;
+
+destructor TWatchValueList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+  FreeAndNil(FList);
+end;
+
+procedure TWatchValueList.Clear;
+begin
+  while FList.Count > 0 do begin
+    TObject(FList[0]).Free;
+    FList.Delete(0);
+  end;;
+end;
+
+{ TWatchValue }
+
+function TWatchValue.GetValue: String;
+begin
+  if not FWatch.Enabled then begin
+    Result := '<disabled>';
+    exit;
+  end;
+  case FValidity of
+    ddsUnknown:   begin
+        Result := '<evaluating>';
+        RequestData;
+        if FValidity in [ddsValid, ddsInvalid, ddsError]
+        then Result := GetValue;
+      end;
+    ddsRequested, ddsEvaluating: Result := '<evaluating>';
+    ddsValid:                    Result := FValue;
+    ddsInvalid:                  Result := '<invalid>';
+    ddsError:                    Result := '<Error: '+FValue+'>';
+  end;
+
+end;
+
+function TWatchValue.GetTypeInfo: TDBGType;
+begin
+  if not FWatch.Enabled then begin
+    Result := nil;
+    exit;
+  end;
+  case FValidity of
+    ddsUnknown: begin
+      Result := nil;
+      RequestData;
+      if FValidity in [ddsValid, ddsInvalid, ddsError]
+      then Result := GetTypeInfo;
+    end;
+    ddsRequested,
+    ddsEvaluating: Result := nil;
+    ddsValid:      Result := FTypeInfo;
+    ddsInvalid,
+    ddsError:      Result := nil;
+  end;
+end;
+
+procedure TWatchValue.SetValidity(const AValue: TDebuggerDataState);
+begin
+  if FValidity = AValue then exit;
+  FValidity := AValue;
+  ValidityChanged;
+end;
+
+procedure TWatchValue.RequestData;
+begin
+  FValidity := ddsInvalid;
+end;
+
+procedure TWatchValue.ValidityChanged;
+begin
+  //
+end;
+
+constructor TWatchValue.Create(AOwnerWatch: TWatch);
+begin
+  inherited Create;
+  FValidity := ddsUnknown;
+  FWatch := AOwnerWatch;
+end;
+
+constructor TWatchValue.Create(AOwnerWatch: TWatch; const AThreadId: Integer;
+  const AStackFrame: Integer; const ADisplayFormat: TWatchDisplayFormat);
+begin
+  Create(AOwnerWatch);
+  FThreadId := AThreadId;
+  FStackFrame := AStackFrame;
+  FDisplayFormat := ADisplayFormat;
+end;
+
+destructor TWatchValue.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FTypeInfo);
+end;
+
+procedure TWatchValue.Assign(AnOther: TWatchValue);
+begin
+  FreeAndNil(FTypeInfo);
+  FValue := AnOther.FValue;
+  FValidity := AnOther.FValidity;
+  //FTypeInfo := AnOther.FTypeInfo.cre;
+  FThreadId := AnOther.FThreadId;
+  FStackFrame := AnOther.FStackFrame;
+  FDisplayFormat := AnOther.FDisplayFormat;
+end;
+
+{ TWatchesSupplier }
+
+function TWatchesSupplier.GetCurrentWatches: TCurrentWatches;
+begin
+  if Monitor <> nil
+  then Result := Monitor.CurrentWatches
+  else Result := nil;
+end;
+
+function TWatchesSupplier.GetMonitor: TWatchesMonitor;
+begin
+  Result := TWatchesMonitor(inherited Monitor);
+end;
+
+procedure TWatchesSupplier.SetMonitor(const AValue: TWatchesMonitor);
+begin
+  inherited Monitor := AValue;
+end;
+
+procedure TWatchesSupplier.RequestData(AWatchValue: TCurrentWatchValue);
+begin
+  AWatchValue.SetValidity(ddsInvalid);
+end;
+
+procedure TWatchesSupplier.DoStateChange(const AOldState: TDBGState);
+begin
+  if FDebugger.State in [dsPause, dsStop, dsInit]
+  then begin
+    CurrentWatches.ClearValues;
+    Monitor.NotifyUpdate(CurrentWatches, nil);
+  end;
+end;
+
+{ TWatchesMonitor }
+
+function TWatchesMonitor.GetSupplier: TWatchesSupplier;
+begin
+  Result := TWatchesSupplier(inherited Supplier);
+end;
+
+procedure TWatchesMonitor.SetSupplier(const AValue: TWatchesSupplier);
+begin
+  inherited Supplier := AValue;
+end;
+
+procedure TWatchesMonitor.NotifyAdd(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
+begin
+  FNotificationList.NotifyAdd(AWatches, AWatch);
+end;
+
+procedure TWatchesMonitor.NotifyRemove(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
+begin
+  FNotificationList.NotifyRemove(AWatches, AWatch);
+end;
+
+procedure TWatchesMonitor.NotifyUpdate(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
+begin
+  FNotificationList.NotifyUpdate(AWatches, AWatch);
+end;
+
+procedure TWatchesMonitor.RequestData(AWatchValue: TCurrentWatchValue);
+begin
+  if Supplier <> nil
+  then Supplier.RequestData(AWatchValue)
+  else AWatchValue.SetValidity(ddsInvalid);
+end;
+
+constructor TWatchesMonitor.Create;
+begin
+  FNotificationList := TWatchesNotificationList.Create;
+  FCurrentWatches := TCurrentWatches.Create(Self);
+  inherited;
+end;
+
+destructor TWatchesMonitor.Destroy;
+begin
+  FNotificationList.Clear;
+  inherited Destroy;
+  FreeAndNil(FCurrentWatches);
+  FreeAndNil(FNotificationList);
+end;
+
+procedure TWatchesMonitor.AddNotification(const ANotification: TWatchesNotification);
+begin
+  FNotificationList.Add(ANotification);
+end;
+
+procedure TWatchesMonitor.RemoveNotification(const ANotification: TWatchesNotification);
+begin
+  FNotificationList.Remove(ANotification);
+end;
+
+procedure TWatchesMonitor.Clear;
+begin
+  FCurrentWatches.Clear;
+end;
+
+procedure TWatchesMonitor.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+begin
+  FCurrentWatches.LoadFromXMLConfig(AConfig, APath);
+end;
+
+procedure TWatchesMonitor.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+begin
+  FCurrentWatches.SaveToXMLConfig(AConfig, APath);
+end;
+
+{ TWatchesNotificationList }
+
+function TWatchesNotificationList.GetItem(AIndex: Integer): TWatchesNotification;
+begin
+  Result := TWatchesNotification(FList[AIndex]);
+end;
+
+procedure TWatchesNotificationList.NotifyAdd(const ASender: TCurrentWatches;
+  const AWatch: TCurrentWatch);
+var
+  i: LongInt;
+begin
+  i := Count;
+  while NextDownIndex(i) do
+    if Assigned(Items[i].OnAdd) then
+      Items[i].OnAdd(ASender, AWatch);
+end;
+
+procedure TWatchesNotificationList.NotifyUpdate(const ASender: TCurrentWatches;
+  const AWatch: TCurrentWatch);
+var
+  i: LongInt;
+begin
+  i := Count;
+  while NextDownIndex(i) do
+    if Assigned(Items[i].OnUpdate) then
+      Items[i].OnUpdate(ASender, AWatch);
+end;
+
+procedure TWatchesNotificationList.NotifyRemove(const ASender: TCurrentWatches;
+  const AWatch: TCurrentWatch);
+var
+  i: LongInt;
+begin
+  i := Count;
+  while NextDownIndex(i) do
+    if Assigned(Items[i].OnRemove) then
+      Items[i].OnRemove(ASender, AWatch);
+end;
+
 procedure TCurrentCallStack.SetCurrent(AValue: Integer);
 begin
   inherited SetCurrent(AValue);
@@ -2262,9 +2681,9 @@ begin
         if FCurrentValidity = ddsValid then
           Result := inherited GetCurrent;
       end;
-    ddsRequested: Result := -1;
-    ddsValid:     Result := inherited GetCurrent;
-    ddsInvalid:   Result := -1;
+    ddsRequested, ddsEvaluating: Result := -1;
+    ddsValid:                    Result := inherited GetCurrent;
+    ddsInvalid, ddsError:        Result := -1;
   end;
 end;
 
@@ -2287,9 +2706,9 @@ begin
         if FCountValidity = ddsValid then
           Result := inherited GetCount;
       end;
-    ddsRequested: Result := 0;
-    ddsValid:     Result := inherited GetCount;
-    ddsInvalid:   Result := 0;
+    ddsRequested, ddsEvaluating: Result := 0;
+    ddsValid:                    Result := inherited GetCount;
+    ddsInvalid, ddsError:        Result := 0;
   end;
 end;
 
@@ -2506,9 +2925,9 @@ begin
         FDataValidity := ddsRequested;
         FMonitor.RequestData;
       end;
-    ddsRequested: Result := 0;
-    ddsValid:     Result := inherited Count;
-    ddsInvalid:   Result := 0;
+    ddsRequested, ddsEvaluating: Result := 0;
+    ddsValid:                    Result := inherited Count;
+    ddsInvalid, ddsError:        Result := 0;
   end;
 end;
 
@@ -2925,9 +3344,9 @@ begin
   Result := TDBGSignals.Create(Self, TDBGSignal);
 end;
 
-function TDebugger.CreateWatches: TDBGWatches;
+function TDebugger.CreateWatches: TWatchesSupplier;
 begin
-  Result := TDBGWatches.Create(Self, TDBGWatch);
+  Result := TWatchesSupplier.Create(Self);
 end;
 
 function TDebugger.CreateThreads: TThreadsSupplier;
@@ -2961,7 +3380,7 @@ begin
   FRegisters.FDebugger := nil;
   FCallStack.FDebugger := nil;
   FDisassembler.FDebugger := nil;
-  FWatches.FDebugger := nil;
+  FWatches.Debugger := nil;
   FThreads.Debugger := nil;
 
   FreeAndNil(FExceptions);
@@ -4762,90 +5181,95 @@ end;
 (******************************************************************************)
 
 { =========================================================================== }
-{ TBaseWatch }
+{ TWatch }
 { =========================================================================== }
 
-procedure TBaseWatch.AssignTo(Dest: TPersistent);
+procedure TWatch.AssignTo(Dest: TPersistent);
 begin
-  if Dest is TBaseWatch
+  if Dest is TWatch
   then begin
-    TBaseWatch(Dest).SetExpression(FExpression);
-    TBaseWatch(Dest).SetEnabled(FEnabled);
-    TBaseWatch(Dest).SetDisplayFormat(FDisplayFormat);
+    TWatch(Dest).SetExpression(FExpression);
+    TWatch(Dest).SetEnabled(FEnabled);
+    TWatch(Dest).SetDisplayFormat(FDisplayFormat);
   end
   else inherited;
 end;
 
-constructor TBaseWatch.Create(ACollection: TCollection);
+function TWatch.CreateValueList: TWatchValueList;
+begin
+  Result := TWatchValueList.Create(Self);
+end;
+
+constructor TWatch.Create(ACollection: TCollection);
 begin
   FEnabled := False;
-  FValid := vsUnknown;
+  FValueList := CreateValueList;
   inherited Create(ACollection);
 end;
 
+destructor TWatch.Destroy;
+begin
+  FValueList.Clear;
+  inherited Destroy;
+  FreeAndNil(FValueList);
+end;
 
-procedure TBaseWatch.DoEnableChange;
+procedure TWatch.ClearValues;
+begin
+  FValueList.Clear;
+  TCurrentWatches(Collection).Update(Self);
+end;
+
+
+procedure TWatch.DoEnableChange;
 begin
   Changed;
 end;
 
-procedure TBaseWatch.DoExpressionChange;
+procedure TWatch.DoExpressionChange;
 begin
   Changed;
 end;
 
-procedure TBaseWatch.DoDisplayFormatChanged;
+procedure TWatch.DoDisplayFormatChanged;
 begin
   Changed;
 end;
 
-function TBaseWatch.GetEnabled: Boolean;
+function TWatch.GetEnabled: Boolean;
 begin
   Result := FEnabled;
 end;
 
-function TBaseWatch.GetDisplayFormat: TWatchDisplayFormat;
+function TWatch.GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
+begin
+  Result := FValueList[AThreadId, AStackFrame, FDisplayFormat];
+end;
+
+function TWatch.GetValueEx(const AThreadId: Integer; const AStackFrame: Integer;
+                    const ADisplayFormat: TWatchDisplayFormat): TWatchValue;
+begin
+  Result := FValueList[AThreadId, AStackFrame, ADisplayFormat];
+end;
+
+function TWatch.GetDisplayFormat: TWatchDisplayFormat;
 begin
   Result := FDisplayFormat;
 end;
 
-procedure TBaseWatch.SetDisplayFormat(const AValue: TWatchDisplayFormat);
+procedure TWatch.SetDisplayFormat(const AValue: TWatchDisplayFormat);
 begin
   if AValue = FDisplayFormat then exit;
   FDisplayFormat := AValue;
   DoDisplayFormatChanged;
 end;
 
-function TBaseWatch.GetExpression: String;
+function TWatch.GetExpression: String;
 begin
   Result := FExpression;
 end;
 
-function TBaseWatch.GetValid: TValidState;
-begin
-  Result := FValid;
-end;
-
-function TBaseWatch.GetValue: String;
-begin
-  if not Enabled
-  then Result := '<disabled>'
-  else begin
-    case Valid of
-      vsValid:   Result := '<valid>';
-      vsInvalid: Result := '<invalid>';
-    else
-    {vsUnknown:}Result := '<unknown>';
-    end;
-  end;
-end;
-
-function TBaseWatch.GetTypeInfo: TDBGType;
-begin
-  Result:=nil;
-end;
-
-procedure TBaseWatch.SetEnabled(const AValue: Boolean);
+procedure TWatch.SetEnabled(const AValue: Boolean);
 begin
   if FEnabled <> AValue
   then begin
@@ -4854,112 +5278,52 @@ begin
   end;
 end;
 
-procedure TBaseWatch.SetExpression(const AValue: String);
+procedure TWatch.SetExpression(const AValue: String);
 begin
   if AValue <> FExpression
   then begin
     FExpression := AValue;
+    FValueList.Clear;
     DoExpressionChange;
   end;
 end;
 
-procedure TBaseWatch.SetValid(const AValue: TValidState);
-begin
-  if FValid <> AValue
-  then begin
-    FValid := AValue;
-    Changed;
-  end;
-end;
-
 { =========================================================================== }
-{ TIDEWatch }
+{ TCurrentWatch }
 { =========================================================================== }
 
-procedure TIDEWatch.AssignTo(Dest: TPersistent);
+function TCurrentWatch.CreateValueList: TWatchValueList;
 begin
-  inherited AssignTo(Dest);
-  if (TIDEWatches(Collection).FMaster <> nil)
-  and (Dest is TDBGWatch)
-  then begin
-    Assert(FMaster=nil, 'TManagedWatch.AssignTo already has a master');
-    if FMaster<>nil then FMaster.Slave := nil;
-    FMaster := TDBGWatch(Dest);
-    FMaster.Slave := Self;
-  end;
+  Result := TCurrentWatchValueList.Create(Self);
 end;
 
-procedure TIDEWatch.DoChanged;
+procedure TCurrentWatch.DoChanged;
 begin
-  if (FMaster <> nil)
-  and (FMaster.Slave = nil)
-  then FMaster := nil;
-
   inherited DoChanged;
+  if Collection <> nil
+  then TCurrentWatches(Collection).Update(Self);
 end;
 
-function TIDEWatch.GetValid: TValidState;
+procedure TCurrentWatch.RequestData(AWatchValue: TCurrentWatchValue);
 begin
-  if FMaster = nil
-  then Result := inherited GetValid
-  else Result := FMaster.Valid;
+  if Collection <> nil
+  then TCurrentWatches(Collection).RequestData(AWatchValue)
+  else AWatchValue.SetValidity(ddsInvalid);
 end;
 
-function TIDEWatch.GetValue: String;
-begin
-  if FMaster = nil
-  then Result := inherited GetValue
-  else Result := FMaster.Value;
-end;
-
-function TIDEWatch.GetTypeInfo: TDBGType;
-begin
-  if FMaster = nil
-  then Result := inherited GetTypeInfo
-  else Result := FMaster.TypeInfo;
-end;
-
-procedure TIDEWatch.SetEnabled(const AValue: Boolean);
-begin
-  if Enabled = AValue then Exit;
-  inherited SetEnabled(AValue);
-  if FMaster <> nil then FMaster.Enabled := AValue;
-end;
-
-procedure TIDEWatch.SetExpression(const AValue: String);
-begin
-  if AValue = Expression then Exit;
-  inherited SetExpression(AValue);
-  if FMaster <> nil then FMaster.Expression := AValue;
-end;
-
-procedure TIDEWatch.SetDisplayFormat(const AValue: TWatchDisplayFormat);
-begin
-  if AValue = DisplayFormat then Exit;
-  inherited SetDisplayFormat(AValue);
-  if FMaster <> nil then FMaster.DisplayFormat := AValue;
-end;
-
-procedure TIDEWatch.ResetMaster;
-begin
-  if FMaster <> nil then FMaster.Slave := nil;
-  FMaster := nil;
-end;
-
-constructor TIDEWatch.Create(ACollection: TCollection);
+constructor TCurrentWatch.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
 end;
 
-destructor TIDEWatch.Destroy;
+destructor TCurrentWatch.Destroy;
 begin
-  ResetMaster;
-  if (TIDEWatches(Collection) <> nil)
-  then TIDEWatches(Collection).NotifyRemove(Self);
+  if (TCurrentWatches(Collection) <> nil)
+  then TCurrentWatches(Collection).NotifyRemove(Self);
   inherited Destroy;
 end;
 
-procedure TIDEWatch.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TCurrentWatch.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
 var
   i: Integer;
 begin
@@ -4973,7 +5337,7 @@ begin
   else DisplayFormat := wdfDefault;
 end;
 
-procedure TIDEWatch.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TCurrentWatch.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
 begin
   AConfig.SetDeleteValue(APath + 'Expression/Value', Expression, '');
   AConfig.SetDeleteValue(APath + 'Enabled/Value', Enabled, true);
@@ -4981,70 +5345,22 @@ begin
     TWatchDisplayFormatNames[DisplayFormat], TWatchDisplayFormatNames[wdfDefault]);
 end;
 
-
 { =========================================================================== }
-{ TDBGWatch }
-{ =========================================================================== }
-
-constructor TDBGWatch.Create(ACollection: TCollection);
-begin
-  FSlave := nil;
-  inherited Create(ACollection);
-end;
-
-destructor TDBGWatch.Destroy;
-var
-  SW: TBaseWatch;
-begin
-  SW := FSlave;
-  FSlave := nil;
-  if SW <> nil
-  then SW.DoChanged; // in case UpDateCount was 0
-  inherited Destroy;
-end;
-
-procedure TDBGWatch.DoChanged;
-begin
-  inherited DoChanged;
-  if FSlave <> nil
-  then FSlave.Changed;
-end;
-
-procedure TDBGWatch.DoChange;
-begin
-end;
-
-procedure TDBGWatch.DoStateChange(const AOldState: TDBGState);
-begin
-end;
-
-function TDBGWatch.GetDebugger: TDebugger;
-begin
-  Result := TDBGWatches(Collection).FDebugger;
-end;
-
-procedure TDBGWatch.SetSlave(const ASlave : TBaseWatch);
-begin
-  Assert((FSlave = nil) or (ASlave = nil), 'TDBGWatch.SetSlave already has a slave');
-  FSlave := ASlave;
-end;
-
-{ =========================================================================== }
-{ TBaseWatches }
+{ TWatches }
 { =========================================================================== }
 
-function TBaseWatches.Add(const AExpression: String): TBaseWatch;
+function TWatches.Add(const AExpression: String): TWatch;
 begin
-  Result := TBaseWatch(inherited Add);
+  Result := TWatch(inherited Add);
   Result.Expression := AExpression;
 end;
 
-constructor TBaseWatches.Create(const AWatchClass: TBaseWatchClass);
+constructor TWatches.Create(const AWatchClass: TBaseWatchClass);
 begin
   inherited Create(AWatchClass);
 end;
 
-function TBaseWatches.Find(const AExpression: String): TBaseWatch;
+function TWatches.Find(const AExpression: String): TWatch;
 var
   n: Integer;
   S: String;
@@ -5052,149 +5368,85 @@ begin
   S := UpperCase(AExpression);
   for n := 0 to Count - 1 do
   begin
-    Result := TBaseWatch(GetItem(n));
+    Result := TWatch(GetItem(n));
     if UpperCase(Result.Expression) = S
     then Exit;
   end;
   Result := nil;
 end;
 
-{ =========================================================================== }
-{ TIDEWatches }
-{ =========================================================================== }
-
-function TIDEWatches.Add(const AExpression: String): TIDEWatch;
-begin
-  // if this is modified, then also update LoadFromXMLConfig
-  Result := TIDEWatch(inherited Add(AExpression));
-  NotifyAdd(Result);
-end;
-
-procedure TIDEWatches.AddNotification(const ANotification: TIDEWatchesNotification);
-begin
-  FNotificationList.Add(ANotification);
-  ANotification.AddReference;
-end;
-
-constructor TIDEWatches.Create;
-begin
-  FMaster := nil;
-  FNotificationList := TList.Create;
-  inherited Create(TIDEWatch);
-end;
-
-destructor TIDEWatches.Destroy;
+procedure TWatches.ClearValues;
 var
   n: Integer;
 begin
-  if Master <> nil then FMaster.OnChange := nil;
-
-  for n := FNotificationList.Count - 1 downto 0 do
-    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
-
-  inherited;
-
-  FreeAndNil(FNotificationList);
+  for n := 0 to Count - 1 do
+    TWatch(GetItem(n)).ClearValues;
 end;
 
+{ =========================================================================== }
+{ TCurrentWatches }
+{ =========================================================================== }
 
-function TIDEWatches.Find(const AExpression: String): TIDEWatch;
+function TCurrentWatches.Add(const AExpression: String): TCurrentWatch;
 begin
-  Result := TIDEWatch(inherited Find(AExpression));
+  // if this is modified, then also update LoadFromXMLConfig
+  Result := TCurrentWatch(inherited Add(AExpression));
+  NotifyAdd(Result);
 end;
 
-procedure TIDEWatches.WatchesChanged(Sender: TObject);
+constructor TCurrentWatches.Create(AMonitor: TWatchesMonitor);
+begin
+  FMonitor := AMonitor;
+  inherited Create(TCurrentWatch);
+end;
+
+function TCurrentWatches.Find(const AExpression: String): TCurrentWatch;
+begin
+  Result := TCurrentWatch(inherited Find(AExpression));
+end;
+
+procedure TCurrentWatches.WatchesChanged(Sender: TObject);
 begin
   Changed;
 end;
 
-procedure TIDEWatches.SetMaster(const AMaster: TDBGWatches);
-var
-  n: Integer;
+function TCurrentWatches.GetItem(const AnIndex: Integer): TCurrentWatch;
 begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then FMaster.OnChange := nil;
-
-  FMaster := AMaster;
-  if FMaster = nil
-  then begin
-    for n := 0 to Count - 1 do
-      Items[n].ResetMaster;
-  end
-  else begin
-    FMaster.Assign(Self);
-    FMaster.OnChange := @WatchesChanged;
-  end;
+  Result := TCurrentWatch(inherited GetItem(AnIndex));
 end;
 
-function TIDEWatches.GetItem(const AnIndex: Integer): TIDEWatch;
-begin
-  Result := TIDEWatch(inherited GetItem(AnIndex));
-end;
-
-procedure TIDEWatches.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TCurrentWatches.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
 var
   NewCount: Integer;
   i: Integer;
-  Watch: TIDEWatch;
+  Watch: TCurrentWatch;
 begin
   Clear;
   NewCount := AConfig.GetValue(APath + 'Count', 0);
   for i := 0 to NewCount-1 do
   begin
     // Call inherited Add, so NotifyAdd can be send, after the Watch was loaded
-    Watch := TIDEWatch(inherited Add(''));
+    Watch := TCurrentWatch(inherited Add(''));
     Watch.LoadFromXMLConfig(AConfig, Format('%sItem%d/', [APath, i + 1]));
     NotifyAdd(Watch);
   end;
 end;
 
-procedure TIDEWatches.NotifyAdd(const AWatch: TIDEWatch);
-var
-  n: Integer;
-  Notification: TIDEWatchesNotification;
-  W: TDBGWatch;
+procedure TCurrentWatches.NotifyAdd(const AWatch: TCurrentWatch);
 begin
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TIDEWatchesNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnAdd)
-    then Notification.FOnAdd(Self, AWatch);
-  end;
-
-  if FMaster <> nil
-  then begin
-    W := FMaster.Add(AWatch.Expression);
-    W.Assign(AWatch);
-  end;
+  FMonitor.NotifyAdd(Self, AWatch);
 end;
 
-procedure TIDEWatches.NotifyRemove(const AWatch: TIDEWatch);
-var
-  n: Integer;
-  Notification: TIDEWatchesNotification;
+procedure TCurrentWatches.NotifyRemove(const AWatch: TCurrentWatch);
 begin
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TIDEWatchesNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnRemove)
-    then Notification.FOnRemove(Self, AWatch);
-  end;
+  FMonitor.NotifyRemove(Self, AWatch);
 end;
 
-procedure TIDEWatches.RemoveNotification(const ANotification: TIDEWatchesNotification);
-begin
-  FNotificationList.Remove(ANotification);
-  ANotification.ReleaseReference;
-end;
-
-procedure TIDEWatches.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TCurrentWatches.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
 var
   Cnt: Integer;
   i: Integer;
-  Watch: TIDEWatch;
+  Watch: TCurrentWatch;
 begin
   Cnt := Count;
   AConfig.SetDeleteValue(APath + 'Count', Cnt, 0);
@@ -5205,85 +5457,34 @@ begin
   end;
 end;
 
-procedure TIDEWatches.SetItem(const AnIndex: Integer; const AValue: TIDEWatch);
+procedure TCurrentWatches.SetItem(const AnIndex: Integer; const AValue: TCurrentWatch);
 begin
   inherited SetItem(AnIndex, AValue);
 end;
 
-procedure TIDEWatches.Update(Item: TCollectionItem);
+procedure TCurrentWatches.Update(Item: TCollectionItem);
 var
-  n, m, c: Integer;
-  Notification: TIDEWatchesNotification;
+  m, c: Integer;
 begin
-  // Note: Item will be nil in case all items need to be updated
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TIDEWatchesNotification(FNotificationList[n]);
-    if not Assigned(Notification.FOnUpdate) then Continue;
-
-    if Item = nil
-    then begin
-      m := 0;
-      c := Count;
-      while m < c do begin;
-        Notification.FOnUpdate(Self, Items[m]);
-        if c <> Count then begin
-          m := Max(0, m - Max(0, Count - c));
-          c := Count;
-        end;
-        inc(m);
+  if Item <> nil then begin
+    FMonitor.NotifyUpdate(Self, TCurrentWatch(Item));
+  end else begin
+    m := 0;
+    c := Count;
+    while m < c do begin
+      FMonitor.NotifyUpdate(Self, Items[m]);
+      if c <> Count then begin
+        m := Max(0, m - Max(0, Count - c));
+        c := Count;
       end;
-    end
-    else begin
-      Notification.FOnUpdate(Self, TIDEWatch(Item));
+      inc(m);
     end;
   end;
 end;
 
-{ =========================================================================== }
-{ TDBGWatches }
-{ =========================================================================== }
-
-function TDBGWatches.Add(const AExpression: String): TDBGWatch;
+procedure TCurrentWatches.RequestData(AWatchValue: TCurrentWatchValue);
 begin
-  Result := TDBGWatch(inherited Add(AExpression));
-end;
-
-constructor TDBGWatches.Create(const ADebugger: TDebugger; const AWatchClass: TDBGWatchClass);
-begin
-  FDebugger := ADebugger;
-  inherited Create(AWatchClass);
-end;
-
-procedure TDBGWatches.DoStateChange(const AOldState: TDBGState);
-var
-  n: Integer;
-begin
-  for n := 0 to Count - 1 do
-    GetItem(n).DoStateChange(AOldState);
-end;
-
-function TDBGWatches.Find(const AExpression: String): TDBGWatch;
-begin
-  Result := TDBGWatch(inherited Find(AExpression));
-end;
-
-function TDBGWatches.GetItem(const AnIndex: Integer): TDBGWatch;
-begin
-  Result := TDBGWatch(inherited GetItem(AnIndex));
-end;
-
-procedure TDBGWatches.SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
-begin
-  inherited SetItem(AnIndex, AValue);
-end;
-
-procedure TDBGWatches.Update(Item: TCollectionItem);
-begin
-  inherited Update(Item);
-  // notyfy only if collection is changed
-  if (Item = nil) and Assigned(FOnChange)
-  then FOnChange(Self);
+  FMonitor.RequestData(AWatchValue);
 end;
 
 
@@ -5814,9 +6015,10 @@ function TCallStackEntry.GetFunctionName: String;
 begin
   case FState of
     ddsValid:     Result := FFunctionName;
+    ddsError:     Result := '<Error: '+FFunctionName+'>';
     ddsInvalid:   Result := '<invalid>';
-    ddsRequested: Result := '<evaluating>';
-    ddsUnknown:   Result := '<unknown>';
+    ddsRequested, ddsEvaluating: Result := '<evaluating>';
+    ddsUnknown:                  Result := '<unknown>';
   end;
 end;
 
