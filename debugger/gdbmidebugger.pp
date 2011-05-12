@@ -956,7 +956,6 @@ type
 
   {%region      *****  Stack  *****   }
 
-
   TGDBMINameValueListArray = array of TGDBMINameValueList;
 
   { TGDBMIDebuggerCommandStack }
@@ -10745,14 +10744,30 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
   function TryExecute(AnExpression: string; StoreError: Boolean): Boolean;
 
+    procedure ParseLastError;
+    var
+      ResultList: TGDBMINameValueList;
+    begin
+      if (dcsCanceled in SeenStates)
+      then begin
+        exit;
+        FTextValue := '<Canceled>';
+      end;
+      ResultList := TGDBMINameValueList.Create(LastExecResult.Values);
+      FTextValue := ResultList.Values['msg'];
+      if FTextValue = ''
+      then  FTextValue := '<Error>';
+      FreeAndNil(ResultList);
+    end;
+
     function PrepareExpr(var expr: string; NoAddressOp: Boolean = False): boolean;
     begin
       FTypeInfo := GetGDBTypeInfo(expr, defFullTypeInfo in FEvalFlags);
       Result := FTypeInfo <> nil;
-      if (not Result) and StoreError
-      then FTextValue := '<error>';
-      if not Result
-      then exit;
+      if (not Result) then begin
+        ParseLastError;
+        exit;
+      end;
 
       if NoAddressOp
       then expr := QuoteExpr(expr)
@@ -10869,6 +10884,10 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
             Result := ExecuteCommand('-data-read-memory %s x 1 1 %u', [AnExpression, Size], R);
             Result := Result and (R.State <> dsError);
           end;
+          if (not Result) then begin
+            ParseLastError;
+            exit;
+          end;
           MemDump := TGDBMIMemoryDumpResultList.Create(R);
           FTextValue := MemDump.AsText(0, MemDump.Count, TargetInfo^.TargetPtrSize*2);
           MemDump.Free;
@@ -10877,14 +10896,10 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
         begin
           Result := False;
           FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags, [gtcfExprEvaluate], FDisplayFormat);
-          if (dcsCanceled in SeenStates)
-          then exit;
 
-          if FTypeInfo = nil
+          if (FTypeInfo = nil) or (dcsCanceled in SeenStates)
           then begin
-            ResultList := TGDBMINameValueList.Create(LastExecResult.Values);
-            FTextValue := ResultList.Values['msg'];
-            FreeAndNil(ResultList);
+            ParseLastError;
             exit;
           end;
           if FTypeInfo.HasExprEvaluatedAsText then begin
@@ -10896,7 +10911,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
           end;
 
           debugln('############# Not expected to be here');
-          FTextValue := 'ERROR';
+          FTextValue := '<ERROR>';
         end;
     end;
 
