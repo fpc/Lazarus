@@ -460,7 +460,7 @@ function TChangeDeclarationTool.ApplyParamListTransactions(
 var
   t: TChangeParamListTransactions;
   InsertCode: String;
-  InsertPos: Integer;
+  InsertPos: Integer; // behind the last kept parameter
   ReplaceStartPos: Integer;
   ReplaceEndPos: Integer;
   LastChgPos: integer;
@@ -601,6 +601,7 @@ var
         // ToDo: delete space in front
         ReplaceStartPos:=aParam.GetFirstPos;
       end;
+      // extend the deletion range
       ReplaceEndPos:=aParam.GetLastPos(true);
       // ToDo: delete space behind
     end else begin

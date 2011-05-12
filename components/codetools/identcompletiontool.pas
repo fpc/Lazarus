@@ -91,7 +91,7 @@ type
     iliHasParamList,
     iliIsReadOnlyValid,
     iliIsReadOnly,
-    iliAreHintModifiersValid,
+    iliHintModifiersValid,
     iliIsDeprecated,
     iliIsPlatform,
     iliIsExperimental,
@@ -2812,8 +2812,9 @@ function TIdentifierListItem.GetHintModifiers: TPascalHintModifiers;
 var
   ANode: TCodeTreeNode;
 begin
-  if not (iliAreHintModifiersValid in Flags) then begin
-    Include(Flags,iliAreHintModifiersValid);
+  Result:=[];
+  if not (iliHintModifiersValid in Flags) then begin
+    Include(Flags,iliHintModifiersValid);
     ANode:=Node;
     if ANode<>nil then begin
       Result:=Tool.GetHintModifiers(ANode);
@@ -2824,7 +2825,6 @@ begin
       if phmExperimental in Result then Include(Flags,iliIsExperimental);
     end;
   end else begin
-    Result:=[];
     if iliIsDeprecated in Flags then Include(Result,phmDeprecated);
     if iliIsPlatform in Flags then Include(Result,phmPlatform);
     if iliIsLibrary in Flags then Include(Result,phmLibrary);
