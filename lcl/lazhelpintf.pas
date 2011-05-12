@@ -998,7 +998,7 @@ begin
   if (ListOfPascalHelpContextList=nil)
   or (ListOfPascalHelpContextList.Count=0) then exit;
   // add the registered nodes
-  debugln('THelpDatabase.GetNodesForPascalContexts A ID="',ID,'" ListOfPascalHelpContextList.Count=',dbgs(ListOfPascalHelpContextList.Count));
+  //debugln('THelpDatabase.GetNodesForPascalContexts A ID="',ID,'" ListOfPascalHelpContextList.Count=',dbgs(ListOfPascalHelpContextList.Count));
   if FSearchItems<>nil then begin
     // check every pascal context
     for j:=0 to ListOfPascalHelpContextList.Count-1 do begin

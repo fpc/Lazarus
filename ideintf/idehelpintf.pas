@@ -126,6 +126,8 @@ var
     // and can be overidden by a package like turbopoweriprodsgn.lpk
   CreateIDEHTMLProvider: TCreateIDEHTMLProviderEvent = nil;// will be set by the IDE
 
+var
+  FPCKeyWordHelpPrefix: string = 'FPCKeyword_';
 
 implementation
 

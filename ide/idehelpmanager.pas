@@ -57,7 +57,6 @@ type
   private
     FKeywordPrefixNode: THelpNode;
   public
-    constructor Create(TheOwner: TComponent); override;
     function GetNodesForKeyword(const HelpKeyword: string;
                         var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
                         ): TShowHelpResult; override;
@@ -270,25 +269,18 @@ end;
 
 { TSimpleFPCKeywordHelpDatabase }
 
-constructor TSimpleFPCKeywordHelpDatabase.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  KeywordPrefix:='FPCKeyword_';
-end;
-
 function TSimpleFPCKeywordHelpDatabase.GetNodesForKeyword(
   const HelpKeyword: string; var ListOfNodes: THelpNodeQueryList;
   var ErrMsg: string): TShowHelpResult;
 var
-  Path: String;
   KeyWord: String;
 begin
   Result:=shrHelpNotFound;
   if (csDesigning in ComponentState) then exit;
-  if (KeywordPrefix<>'')
-  and (LeftStr(HelpKeyword,length(KeywordPrefix))=KeywordPrefix) then begin
+  if (FPCKeyWordHelpPrefix<>'')
+  and (LeftStr(HelpKeyword,length(FPCKeyWordHelpPrefix))=FPCKeyWordHelpPrefix) then begin
     // HelpKeyword starts with KeywordPrefix
-    KeyWord:=copy(HelpKeyword,length(KeywordPrefix)+1,length(HelpKeyword));
+    KeyWord:=copy(HelpKeyword,length(FPCKeyWordHelpPrefix)+1,length(HelpKeyword));
     // test: testfcpkeyword
     if KeyWord='testfcpkeyword' then begin
       // this help database knows this keyword
@@ -296,9 +288,7 @@ begin
       //    show the user a dialog to choose
       if FKeywordPrefixNode=nil then
         FKeywordPrefixNode:=THelpNode.CreateURL(Self,'','');
-      Path:=copy(HelpKeyword,length(KeywordPrefix)+1,length(HelpKeyword));
-      FKeywordPrefixNode.Title:='Pascal keyword '+Path;
-      FKeywordPrefixNode.URL:='file://'+Path;
+      FKeywordPrefixNode.Title:='Pascal keyword '+KeyWord;
       CreateNodeQueryListAndAdd(FKeywordPrefixNode,nil,ListOfNodes,true);
       Result:=shrSuccess;
     end;
@@ -315,7 +305,7 @@ begin
   Result:=shrHelpNotFound;
   if not (Query is THelpQueryKeyword) then exit;
   KeywordQuery:=THelpQueryKeyword(Query);
-  KeyWord:=copy(KeywordQuery.Keyword,length(KeywordPrefix)+1,length(KeywordQuery.Keyword));
+  KeyWord:=copy(KeywordQuery.Keyword,length(FPCKeyWordHelpPrefix)+1,length(KeywordQuery.Keyword));
   debugln(['TSimpleFPCKeywordHelpDatabase.ShowHelp Keyword=',Keyword]);
 end;
 
