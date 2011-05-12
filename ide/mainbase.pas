@@ -559,14 +559,14 @@ begin
     CreateMenuItem(ParentMI,itmSourceToggleComment,'itmSourceToggleComment',lisMenuToggleComment, 'menu_comment');
     CreateMenuItem(ParentMI,itmSourceEncloseBlock,'itmSourceEncloseBlock',lisMenuEncloseSelection);
     CreateMenuItem(ParentMI,itmSourceEncloseInIFDEF,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
+    CreateMenuItem(ParentMI,itmSourceCompleteCode,'itmSourceCompleteCode',lisMenuCompleteCode);
+    CreateMenuItem(ParentMI,itmSourceUseUnit,'itmSourceUseUnit',lisMenuUseProjectUnit);
     // Refactor
     CreateMenuSeparatorSection(mnuSource,itmSourceRefactor,'itmSourceRefactor');
     CreateMenuSubSection(ParentMI,itmSourceRefactor,'itmSourceRefactor',uemRefactor);
     SubParentMI:=itmSourceRefactor;
       CreateMenuSeparatorSection(SubParentMI,itmRefactorCodeTools,'itmRefactorCodeTools');
       ParentMI:=itmRefactorCodeTools;
-      CreateMenuItem(ParentMI,itmRefactorCompleteCode,'itmRefactorCompleteCode',lisMenuCompleteCode);
-      CreateMenuItem(ParentMI,itmRefactorUseUnit,'itmRefactorUseUnit',lisMenuUseProjectUnit);
       CreateMenuItem(ParentMI,itmRefactorRenameIdentifier,'itmRefactorRenameIdentifier',lisMenuRenameIdentifier);
       CreateMenuItem(ParentMI,itmRefactorExtractProc,'itmRefactorExtractProc',lisMenuExtractProc);
       CreateMenuItem(ParentMI,itmRefactorInvertAssignment,'itmInvertAssignment',uemInvertAssignment);
@@ -908,6 +908,8 @@ begin
     itmSourceToggleComment.Command:=GetCommand(ecToggleComment);
     itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
     itmSourceEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
+    itmSourceCompleteCode.Command:=GetCommand(ecCompleteCode);
+    itmSourceUseUnit.Command:=GetCommand(ecUseProjectUnit);
 
     itmSourceSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);
     itmSourceGuessUnclosedBlock.Command:=GetCommand(ecGuessUnclosedBlock);
@@ -933,8 +935,6 @@ begin
     itmSourceUnitInfo.Command:=GetCommand(ecViewUnitInfo);
 
     // refactor menu
-    itmRefactorCompleteCode.Command:=GetCommand(ecCompleteCode);
-    itmRefactorUseUnit.Command:=GetCommand(ecUseProjectUnit);
     itmRefactorRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
     itmRefactorExtractProc.Command:=GetCommand(ecExtractProc);
     itmRefactorInvertAssignment.Command:=GetCommand(ecInvertAssignment);

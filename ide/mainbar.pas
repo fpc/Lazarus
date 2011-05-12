@@ -206,6 +206,8 @@ type
         itmSourceToggleComment: TIDEMenuCommand;
         itmSourceEncloseBlock: TIDEMenuCommand;
         itmSourceEncloseInIFDEF: TIDEMenuCommand;
+        itmSourceCompleteCode: TIDEMenuCommand;
+        itmSourceUseUnit: TIDEMenuCommand;
       //itmSourceCodeToolChecks: TIDEMenuSection;
         itmSourceSyntaxCheck: TIDEMenuCommand;
         itmSourceGuessUnclosedBlock: TIDEMenuCommand;
@@ -235,8 +237,6 @@ type
     // refactor menu
     //mnuRefactor: TIDEMenuSection;
       //itmRefactorCodeTools: TIDEMenuSection;
-        itmRefactorCompleteCode: TIDEMenuCommand;
-        itmRefactorUseUnit: TIDEMenuCommand;
         itmRefactorRenameIdentifier: TIDEMenuCommand;
         itmRefactorExtractProc: TIDEMenuCommand;
         itmRefactorInvertAssignment: TIDEMenuCommand;

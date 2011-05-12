@@ -1445,15 +1445,16 @@ begin
         (AParent, 'EncloseSelection',lisMenuEncloseSelection);
     SrcEditMenuEncloseInIFDEF := RegisterIDEMenuCommand
         (AParent,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
-    SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand(AParent,'ShowUnitInfo', lisMenuViewUnitInfo);
+    SrcEditMenuCompleteCode := RegisterIDEMenuCommand
+        (AParent,'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand
+        (AParent,'ShowUnitInfo', lisMenuViewUnitInfo);
   {%endregion}
 
   {%region *** Refactoring Section ***}
     SrcEditSubMenuRefactor:=RegisterIDESubMenu(SourceEditorMenuRoot,
                                                'Refactoring',uemRefactor);
     AParent:=SrcEditSubMenuRefactor;
-    SrcEditMenuCompleteCode := RegisterIDEMenuCommand
-        (AParent,'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
     SrcEditMenuRenameIdentifier := RegisterIDEMenuCommand
         (AParent, 'RenameIdentifier',lisMenuRenameIdentifier, nil, @ExecuteIdeMenuClick);
     SrcEditMenuExtractProc := RegisterIDEMenuCommand

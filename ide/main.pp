@@ -261,6 +261,8 @@ type
     procedure mnuSourceToggleCommentClicked(Sender: TObject);
     procedure mnuSourceEncloseBlockClicked(Sender: TObject);
     procedure mnuSourceEncloseInIFDEFClicked(Sender: TObject);
+    procedure mnuSourceCompleteCodeClicked(Sender: TObject);
+    procedure mnuSourceUseUnitClicked(Sender: TObject);
     procedure mnuSourceSyntaxCheckClicked(Sender: TObject);
     procedure mnuSourceGuessUnclosedBlockClicked(Sender: TObject);
     procedure mnuSourceGuessMisplacedIFDEFClicked(Sender: TObject);
@@ -285,8 +287,6 @@ type
     procedure mnuSourceUnitInfoClicked(Sender: TObject);
 
     // refactor menu
-    procedure mnuRefactorCompleteCodeClicked(Sender: TObject);
-    procedure mnuRefactorUseUnitClicked(Sender: TObject);
     procedure mnuRefactorRenameIdentifierClicked(Sender: TObject);
     procedure mnuRefactorExtractProcClicked(Sender: TObject);
     procedure mnuRefactorInvertAssignmentClicked(Sender: TObject);
@@ -2519,13 +2519,13 @@ begin
     itmSourceToggleComment.OnClick:=@mnuSourceToggleCommentClicked;
     itmSourceEncloseBlock.OnClick:=@mnuSourceEncloseBlockClicked;
     itmSourceEncloseInIFDEF.OnClick:=@mnuSourceEncloseInIFDEFClicked;
+    itmSourceCompleteCode.OnClick:=@mnuSourceCompleteCodeClicked;
+    itmSourceUseUnit.OnClick:=@mnuSourceUseUnitClicked;
     // CodeTool Checks
     itmSourceSyntaxCheck.OnClick := @mnuSourceSyntaxCheckClicked;
     itmSourceGuessUnclosedBlock.OnClick := @mnuSourceGuessUnclosedBlockClicked;
     itmSourceGuessMisplacedIFDEF.OnClick := @mnuSourceGuessMisplacedIFDEFClicked;
     // Refactor
-    itmRefactorCompleteCode.OnClick:=@mnuRefactorCompleteCodeClicked;
-    itmRefactorUseUnit.OnClick:=@mnuRefactorUseUnitClicked;
     itmRefactorRenameIdentifier.OnClick:=@mnuRefactorRenameIdentifierClicked;
     itmRefactorExtractProc.OnClick:=@mnuRefactorExtractProcClicked;
     itmRefactorInvertAssignment.OnClick:=@mnuRefactorInvertAssignmentClicked;
@@ -3889,6 +3889,9 @@ begin
       itmSourceUncommentBlock.Enabled:=SelEditable;
       itmSourceEncloseBlock.Enabled:=SelEditable;
       itmSourceEncloseInIFDEF.Enabled:=SelEditable;
+      itmSourceCompleteCode.Enabled:=Editable;
+      itmSourceUseUnit.Enabled:=Editable and
+                                  Assigned(AvailUnits) and (AvailUnits.Count>0);
     //itmSourceInsertions
       //itmSourceInsertCVSKeyWord
         itmSourceInsertCVSAuthor.Enabled:=Editable;
@@ -3908,9 +3911,6 @@ begin
         itmSourceInsertChangeLogEntry.Enabled:=Editable;
     //itmSourceRefactor
       //itmRefactorCodeTools
-        itmRefactorCompleteCode.Enabled:=Editable;
-        itmRefactorUseUnit.Enabled:=Editable and
-                                    Assigned(AvailUnits) and (AvailUnits.Count>0);
         itmRefactorRenameIdentifier.Enabled:=Editable and IdentFound;
         itmRefactorExtractProc.Enabled:=Editable and SelAvail;
         itmRefactorInvertAssignment.Enabled:=Editable and SelAvail;
@@ -17982,12 +17982,12 @@ begin
   DoSourceEditorCommand(ecInsertCVSSource);
 end;
 
-procedure TMainIDE.mnuRefactorCompleteCodeClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
 end;
 
-procedure TMainIDE.mnuRefactorUseUnitClicked(Sender: TObject);
+procedure TMainIDE.mnuSourceUseUnitClicked(Sender: TObject);
 begin
   DoSourceEditorCommand(ecUseProjectUnit);
 end;
