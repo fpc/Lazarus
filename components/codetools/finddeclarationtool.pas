@@ -2202,7 +2202,7 @@ begin
                 Result:=Result+' = '
               else
                 Result:=Result+': ';
-              Result := Result + ExtractNode(TypeNode, []);
+              Result := Result + ExtractNode(TypeNode, [phpCommentsToSpace]);
             end;
           ctnClass, ctnClassInterface, ctnDispinterface,
           ctnObject, ctnRecordType,
@@ -2214,7 +2214,7 @@ begin
             end;
           ctnConstant:
             begin
-              NodeStr:=' = '+ExtractNode(TypeNode,[]);
+              NodeStr:=' = '+ExtractNode(TypeNode,[phpCommentsToSpace]);
               Result:=Result+copy(NodeStr,1,50);
             end;
           end;
@@ -2225,7 +2225,7 @@ begin
               DebugLn('TFindDeclarationTool.FindSmartHint const without subnode "',ExtractNode(Node,[]),'"');
               NodeStr:=ExtractCode(Node.StartPos
                                  +GetIdentLen(@Src[Node.StartPos]),
-                                 Node.EndPos,[]);
+                                 Node.EndPos,[phpCommentsToSpace]);
               Result:=Result+copy(NodeStr,1,50);
             end;
           end;
@@ -2239,7 +2239,7 @@ begin
 
         Result:=Result+ExtractProcHead(Node,
           [phpAddClassName,phpWithStart,phpWithVarModifiers,phpWithParameterNames,
-           phpWithDefaultValues,phpWithResultType,phpWithOfObject]);
+           phpWithDefaultValues,phpWithResultType,phpWithOfObject,phpCommentsToSpace]);
       end;
 
     ctnProperty,
