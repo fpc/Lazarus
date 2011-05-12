@@ -132,8 +132,7 @@ type
 
   TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC, cmMacPas, cmISO);
   TCompilerModeSwitch = (
-    cmsDefault,          
-    cmsClass,               
+    cmsClass,
     cmsObjpas,              
     cmsResult,              
     cmsString_pchar,        
@@ -160,6 +159,7 @@ type
     cmsNonLocalGoto,
     cmsAdvancedRecords
     );
+  TCompilerModeSwitches = set of TCompilerModeSwitch;
 
   TPascalCompiler = (pcFPC, pcDelphi);
   
@@ -327,12 +327,11 @@ type
     FSkippingDirectives: TLSSkippingDirective;
     FSkipIfLevel: integer;
     FCompilerMode: TCompilerMode;
-    FCompilerModeSwitch: TCompilerModeSwitch;
+    FCompilerModeSwitches: TCompilerModeSwitches;
     FPascalCompiler: TPascalCompiler;
     FMacros: PSourceLinkMacro;
     FMacroCount, fMacroCapacity: integer;
     procedure SetCompilerMode(const AValue: TCompilerMode);
-    procedure SetCompilerModeSwitch(const AValue: TCompilerModeSwitch);
     procedure SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
     function InternalIfDirective: boolean;
     
@@ -497,8 +496,8 @@ type
     property NestedComments: boolean read FNestedComments;
     property CompilerMode: TCompilerMode
                                        read FCompilerMode write SetCompilerMode;
-    property CompilerModeSwitch: TCompilerModeSwitch
-                           read FCompilerModeSwitch write SetCompilerModeSwitch;
+    property CompilerModeSwitches: TCompilerModeSwitches
+                         read FCompilerModeSwitches write FCompilerModeSwitches;
     property PascalCompiler: TPascalCompiler
                                      read FPascalCompiler write FPascalCompiler;
     property ScanTill: TLinkScannerRange read FScanTill write SetScanTill;
@@ -537,7 +536,7 @@ const
      );
 
   CompilerModeSwitchNames: array[TCompilerModeSwitch] of shortstring=(
-        'Default', 'CLASS', 'OBJPAS', 'RESULT', 'PCHARTOSTRING', 'CVAR',
+        'CLASS', 'OBJPAS', 'RESULT', 'PCHARTOSTRING', 'CVAR',
         'NESTEDCOMMENTS', 'CLASSICPROCVARS', 'MACPROCVARS', 'REPEATFORWARD',
         'POINTERTOPROCVAR', 'AUTODEREF', 'INITFINAL', 'POINTERARITHMETICS',
         'ANSISTRINGS', 'OUT', 'DEFAULTPARAMETERS', 'HINTDIRECTIVE',
@@ -2519,12 +2518,14 @@ begin
     if CompareUpToken(CompilerModeSwitchNames[ModeSwitch],Src,ValStart,SrcPos)
     then begin
       Result:=true;
-      CompilerModeSwitch:=ModeSwitch;
-      break;
+      if (SrcPos<=SrcLen) and (Src[SrcPos]='-') then
+        Exclude(FCompilerModeSwitches,ModeSwitch)
+      else
+        Include(FCompilerModeSwitches,ModeSwitch);
+      exit;
     end;
   end;
-  if not Result then
-    RaiseExceptionFmt(ctsInvalidModeSwitch,[copy(Src,ValStart,SrcPos-ValStart)]);
+  RaiseExceptionFmt(ctsInvalidModeSwitch,[copy(Src,ValStart,SrcPos-ValStart)]);
 end;
 
 function TLinkScanner.ThreadingDirective: boolean;
@@ -3545,18 +3546,12 @@ begin
   FCompilerMode:=AValue;
   FNestedComments:=(PascalCompiler=pcFPC)
                    and (FCompilerMode in [cmFPC,cmOBJFPC]);
-  FCompilerModeSwitch:=cmsDefault;
+  FCompilerModeSwitches:=[];
 end;
 
 function TLinkScanner.GetIgnoreMissingIncludeFiles: boolean;
 begin
   Result:=lssIgnoreMissingIncludeFiles in FStates;
-end;
-
-procedure TLinkScanner.SetCompilerModeSwitch(const AValue: TCompilerModeSwitch);
-begin
-  if FCompilerModeSwitch=AValue then exit;
-  FCompilerModeSwitch:=AValue;
 end;
 
 function TLinkScanner.InternalIfDirective: boolean;

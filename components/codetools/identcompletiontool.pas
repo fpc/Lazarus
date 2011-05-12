@@ -1362,7 +1362,7 @@ begin
   if (Scanner.CompilerMode=cmMacPas)
   and (Scanner.PascalCompiler=pcFPC) then
     AddSystemUnit('MacPas');
-  if (Scanner.CompilerModeSwitch=cmsObjectiveC1) then begin
+  if (cmsObjectiveC1 in Scanner.CompilerModeSwitches) then begin
     AddSystemUnit('ObjC');
     AddSystemUnit('ObjCBase');
   end;

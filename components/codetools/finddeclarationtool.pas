@@ -1932,7 +1932,7 @@ begin
   or ((Scanner.CompilerMode=cmMacPas)
     and (Scanner.PascalCompiler=pcFPC)
     and (CompareIdentifiers(PChar(Result),'MacPas')=0))
-  or ((Scanner.CompilerModeSwitch=cmsObjectiveC1)
+  or ((cmsObjectiveC1 in Scanner.CompilerModeSwitches)
     and ((CompareIdentifiers(PChar(Result),'ObjC')=0)
         or (CompareIdentifiers(PChar(Result),'ObjCBase')=0)))
   then begin
@@ -6204,13 +6204,13 @@ begin
       if Result and Params.IsFinal then exit;
     end;
     if (CurUnitType>sutObjCBase)
-    and (Scanner.CompilerModeSwitch=cmsObjectiveC1) then begin
+    and (cmsObjectiveC1 in Scanner.CompilerModeSwitches) then begin
       // try hidden used fpc unit 'objcbase'
       Result:=FindIdentifierInUsedUnit('ObjCBase',Params);
       if Result and Params.IsFinal then exit;
     end;
     if (CurUnitType>sutObjC)
-    and (Scanner.CompilerModeSwitch=cmsObjectiveC1) then begin
+    and (cmsObjectiveC1 in Scanner.CompilerModeSwitches) then begin
       // try hidden used fpc unit 'objc'
       Result:=FindIdentifierInUsedUnit('ObjC',Params);
       if Result and Params.IsFinal then exit;

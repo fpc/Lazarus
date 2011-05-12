@@ -131,7 +131,7 @@ type
   protected
     // parsing
     FLastCompilerMode: TCompilerMode;
-    FLastCompilerModeSwitch: TCompilerModeSwitch;
+    FLastCompilerModeSwitches: TCompilerModeSwitches;
     procedure FetchScannerSource(Range: TLinkScannerRange); override;
     // sections
     function KeyWordFuncSection: boolean;
@@ -4532,9 +4532,9 @@ begin
     //debugln(['TPascalParserTool.FetchScannerSource link scanner has changed ',MainFilename]);
     FLastScannerChangeStep:=Scanner.ChangeStep;
     AllChanged:=(FLastCompilerMode<>Scanner.CompilerMode)
-             or (FLastCompilerModeSwitch<>Scanner.CompilerModeSwitch);
+             or (FLastCompilerModeSwitches<>Scanner.CompilerModeSwitches);
     FLastCompilerMode:=Scanner.CompilerMode;
-    FLastCompilerModeSwitch:=Scanner.CompilerModeSwitch;
+    FLastCompilerModeSwitches:=Scanner.CompilerModeSwitches;
     NewSrc:=Scanner.CleanedSrc;
     NewSrcLen:=length(NewSrc);
     if AllChanged then begin
