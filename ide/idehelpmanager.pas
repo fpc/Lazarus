@@ -150,7 +150,6 @@ type
     procedure mnuHelpReportBugClicked(Sender: TObject);
   private
     FFCLHelpDBPath: THelpBaseURLObject;
-    FFPCKeywordsHelpDB: THelpDatabase;
     FMainHelpDB: THelpDatabase;
     FMainHelpDBPath: THelpBasePathObject;
     FRTLHelpDB: THelpDatabase;
@@ -197,7 +196,6 @@ type
     property MainHelpDBPath: THelpBasePathObject read FMainHelpDBPath;
     property RTLHelpDB: THelpDatabase read FRTLHelpDB;
     property RTLHelpDBPath: THelpBaseURLObject read FRTLHelpDBPath;
-    property FPCKeywordsHelpDB: THelpDatabase read FFPCKeywordsHelpDB;
   end;
 
   { THelpSelectorDialog }
@@ -889,8 +887,10 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
 
   procedure CreateFPCKeywordsHelpDB;
   begin
-    FFPCKeywordsHelpDB:=HelpDatabases.CreateHelpDatabase('SimpleDemoForFPCKeyWordHelpDB',
+    {$IFDEF EnableSimpleFPCKeyWordHelpDB}
+    HelpDatabases.CreateHelpDatabase('SimpleDemoForFPCKeyWordHelpDB',
                                             TSimpleFPCKeywordHelpDatabase,true);
+    {$ENDIF}
   end;
 
 begin
@@ -952,7 +952,6 @@ begin
   FreeThenNil(FMainHelpDBPath);
   FreeThenNil(FRTLHelpDBPath);
   FreeThenNil(FFCLHelpDBPath);
-  FreeThenNil(FFPCKeywordsHelpDB);
   HelpBoss:=nil;
   LazarusHelp:=nil;
   inherited Destroy;
