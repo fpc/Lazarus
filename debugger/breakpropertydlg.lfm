@@ -1,7 +1,7 @@
 inherited BreakPropertyDlg: TBreakPropertyDlg
-  Left = 249
-  Height = 398
-  Top = 187
+  Left = 620
+  Height = 424
+  Top = 132
   Width = 450
   HorzScrollBar.Page = 386
   VertScrollBar.Page = 366
@@ -11,7 +11,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Breakpoint Properties'
-  ClientHeight = 398
+  ClientHeight = 424
   ClientWidth = 450
   Constraints.MinWidth = 450
   Position = poScreenCenter
@@ -180,14 +180,14 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 165
+    Height = 194
     Top = 180
     Width = 438
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Actions'
-    ClientHeight = 147
+    ClientHeight = 176
     ClientWidth = 434
     TabOrder = 4
     object chkActionBreak: TCheckBox
@@ -225,7 +225,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Disable groups'
-      TabOrder = 2
+      TabOrder = 3
     end
     object edtEnableGroups: TEditButton
       AnchorSideLeft.Control = chkEvalExpression
@@ -246,7 +246,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Enabled = False
       MaxLength = 0
       NumGlyphs = 1
-      TabOrder = 5
+      TabOrder = 2
     end
     object edtDisableGroups: TEditButton
       AnchorSideLeft.Control = chkEvalExpression
@@ -267,7 +267,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Enabled = False
       MaxLength = 0
       NumGlyphs = 1
-      TabOrder = 6
+      TabOrder = 4
     end
     object chkEvalExpression: TCheckBox
       AnchorSideLeft.Control = gbActions
@@ -281,7 +281,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Right = 6
       Caption = 'Eval expression'
       Enabled = False
-      TabOrder = 3
+      TabOrder = 5
     end
     object chkLogMessage: TCheckBox
       AnchorSideLeft.Control = gbActions
@@ -295,7 +295,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Right = 6
       Caption = 'Log message'
       OnChange = chkLogMessageChange
-      TabOrder = 4
+      TabOrder = 7
     end
     object edtEvalExpression: TEdit
       AnchorSideLeft.Control = chkEvalExpression
@@ -314,7 +314,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       Enabled = False
-      TabOrder = 7
+      TabOrder = 6
     end
     object edtLogMessage: TEdit
       AnchorSideLeft.Control = chkEvalExpression
@@ -335,13 +335,55 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Enabled = False
       TabOrder = 8
     end
+    object chkLogCallStack: TCheckBox
+      AnchorSideLeft.Control = gbActions
+      AnchorSideTop.Control = edtLogCallStack
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 19
+      Top = 149
+      Width = 91
+      BorderSpacing.Left = 6
+      Caption = 'Log call stack'
+      OnChange = chkLogCallStackChange
+      TabOrder = 9
+    end
+    object edtLogCallStack: TSpinEdit
+      AnchorSideLeft.Control = chkEvalExpression
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edtLogMessage
+      AnchorSideTop.Side = asrBottom
+      Left = 125
+      Height = 23
+      Top = 147
+      Width = 50
+      BorderSpacing.Left = 20
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Enabled = False
+      MaxValue = 1024
+      TabOrder = 10
+    end
+    object lblLogCallStackLimit: TLabel
+      AnchorSideLeft.Control = edtLogCallStack
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edtLogCallStack
+      AnchorSideTop.Side = asrCenter
+      Left = 181
+      Height = 16
+      Top = 150
+      Width = 109
+      BorderSpacing.Left = 6
+      Caption = 'lblLogCallStackLimit'
+      ParentColor = False
+    end
   end
   object ButtonPanel: TButtonPanel[12]
     AnchorSideTop.Control = gbActions
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 41
-    Top = 351
+    Height = 38
+    Top = 380
     Width = 438
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'

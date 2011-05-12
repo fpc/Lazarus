@@ -16,6 +16,7 @@ type
 
   TBreakPropertyDlg = class(TDebuggerDlg)
     ButtonPanel: TButtonPanel;
+    chkLogCallStack: TCheckBox;
     chkEnableGroups: TCheckBox;
     chkDisableGroups: TCheckBox;
     chkEvalExpression: TCheckBox;
@@ -32,6 +33,7 @@ type
     edtCounter: TEdit;
     edtFilename: TEdit;
     gbActions: TGroupBox;
+    lblLogCallStackLimit: TLabel;
     lblMS: TLabel;
     lblFileName: TLabel;
     lblLine: TLabel;
@@ -39,12 +41,14 @@ type
     lblHitCount: TLabel;
     lblGroup: TLabel;
     lblAutoContinue: TLabel;
+    edtLogCallStack: TSpinEdit;
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure BreakPointRemove(const ASender: TIDEBreakPoints;
       const ABreakpoint: TIDEBreakPoint);
     procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
       const ABreakpoint: TIDEBreakPoint);
+    procedure chkLogCallStackChange(Sender: TObject);
     procedure chkLogMessageChange(Sender: TObject);
   private
     FBreakpointsNotification : TIDEBreakPointsNotification;
@@ -67,6 +71,11 @@ procedure TBreakPropertyDlg.BreakPointUpdate(
   const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
 begin
   UpdateInfo;
+end;
+
+procedure TBreakPropertyDlg.chkLogCallStackChange(Sender: TObject);
+begin
+  edtLogCallStack.Enabled := chkLogCallStack.Checked;
 end;
 
 procedure TBreakPropertyDlg.chkLogMessageChange(Sender: TObject);
@@ -119,6 +128,7 @@ begin
   if chkEnableGroups.Checked then Include(Actions, bpaEnableGroup);
 //  if chkEvalExpression.Checked then Include(Actions, bpaEValExpression);
   if chkLogMessage.Checked then Include(Actions, bpaLogMessage);
+  if chkLogCallStack.Checked then Include(Actions, bpaLogCallStack);
   FBreakpoint.Actions := Actions;
   FBreakpoint.LogMessage := edtLogMessage.Text;
 
@@ -170,6 +180,8 @@ begin
 //  chkEvalExpression.Checked := bpaEValExpression in Actions;
   chkLogMessage.Checked := bpaLogMessage in Actions;
   edtLogMessage.Text := FBreakpoint.LogMessage;
+  chkLogCallStack.Checked := bpaLogCallStack in Actions;
+  edtLogCallStack.Value := FBreakpoint.LogCallStackLimit;
 end;
 
 constructor TBreakPropertyDlg.Create(AOwner: TComponent; ABreakPoint: TIDEBreakPoint);
@@ -203,6 +215,8 @@ begin
   chkDisableGroups.Caption := lisDisableGroup;
   chkEvalExpression.Caption := lisEvalExpression;
   chkLogMessage.Caption := lisLogMessage;
+  chkLogCallStack.Caption := lisLogCallStack;
+  lblLogCallStackLimit.Caption := lisLogCallStackLimit;
   edtCondition.Items.Assign(InputHistories.HistoryLists.GetList('BreakPointExpression', True));
 
   FBreakpoint := ABreakPoint;

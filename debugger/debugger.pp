@@ -276,7 +276,8 @@ type
     bpaStop,
     bpaEnableGroup,
     bpaDisableGroup,
-    bpaLogMessage
+    bpaLogMessage,
+    bpaLogCallStack
     );
   TIDEBreakPointActions = set of TIDEBreakPointAction;
 
@@ -357,6 +358,7 @@ type
     FGroup: TIDEBreakPointGroup;
     FLoading: Boolean;
     FLogMessage: String;
+    FLogCallStackLimit: Integer;
   protected
     procedure AssignLocationTo(Dest: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
@@ -383,10 +385,12 @@ type
     function GetGroup: TIDEBreakPointGroup; virtual;
     function GetAutoContinueTime: Cardinal; virtual;
     function GetLogMessage: String; virtual;
+    function GetLogCallStackLimit: Integer;
     procedure SetActions(const AValue: TIDEBreakPointActions); virtual;
     procedure SetGroup(const AValue: TIDEBreakPointGroup); virtual;
     procedure SetAutoContinueTime(const AValue: Cardinal); virtual;
     procedure SetLogMessage(const AValue: String); virtual;
+    procedure SetLogCallStackLimit(const AValue: Integer);
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -408,6 +412,7 @@ type
     property Group: TIDEBreakPointGroup read GetGroup write SetGroup;
     property Loading: Boolean read FLoading;
     property LogMessage: String read GetLogMessage write SetLogMessage;
+    property LogCallStackLimit: Integer read GetLogCallStackLimit write SetLogCallStackLimit;
   end;
   TIDEBreakPointClass = class of TIDEBreakPoint;
 
@@ -422,6 +427,7 @@ type
     procedure DoChanged; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     procedure DoLogMessage(const AMessage: String); virtual;
+    procedure DoLogCallStack(const Limit: Integer); virtual;
     property  Debugger: TDebugger read GetDebugger;
   public
     constructor Create(ACollection: TCollection); override;
@@ -2149,7 +2155,8 @@ const
     'Stop',
     'EnableGroup',
     'DisableGroup',
-    'LogMessage'
+    'LogMessage',
+    'LogCallStack'
     );
 
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
@@ -3579,6 +3586,20 @@ begin
   Result := FLogMessage;
 end;
 
+function TIDEBreakPoint.GetLogCallStackLimit: Integer;
+begin
+  Result := FLogCallStackLimit;
+end;
+
+procedure TIDEBreakPoint.SetLogCallStackLimit(const AValue: Integer);
+begin
+  if FLogCallStackLimit <> AValue then
+  begin
+    FLogCallStackLimit := AValue;
+    Changed;
+  end;
+end;
+
 procedure TIDEBreakPoint.AssignLocationTo(Dest: TPersistent);
 var
   DestBreakPoint: TBaseBreakPoint absolute Dest;
@@ -3597,6 +3618,7 @@ begin
     TIDEBreakPoint(Dest).Actions := FActions;
     TIDEBreakPoint(Dest).AutoContinueTime := FAutoContinueTime;
     TIDEBreakPoint(Dest).LogMessage := FLogMessage;
+    TIDEBreakPoint(Dest).LogCallStackLimit := FLogCallStackLimit;
   end;
 
   if (Collection <> nil) and (TIDEBreakPoints(Collection).FMaster <> nil)
@@ -3732,6 +3754,8 @@ begin
   inherited DoHit(ACount, AContinue);
   if bpaLogMessage in Actions
   then FMaster.DoLogMessage(FLogMessage);
+  if bpaLogCallStack in Actions
+  then FMaster.DoLogCallStack(FLogCallStackLimit);
   if bpaEnableGroup in Actions
   then EnableGroups;
   if bpaDisableGroup in Actions
@@ -3803,6 +3827,7 @@ begin
     Enabled:=FInitialEnabled;
     FLine:=XMLConfig.GetValue(Path+'Line/Value',-1);
     FLogMessage:=XMLConfig.GetValue(Path+'LogMessage/Value','');
+    FLogCallStackLimit:=XMLConfig.GetValue(Path+'LogCallStackLimit/Value',0);
     NewActions:=[];
     for CurAction:=Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
       if XMLConfig.GetValue(
@@ -3872,6 +3897,7 @@ begin
   AConfig.SetDeleteValue(APath+'InitialEnabled/Value',InitialEnabled,true);
   AConfig.SetDeleteValue(APath+'Line/Value',Line,-1);
   AConfig.SetDeleteValue(APath+'LogMessage/Value',LogMessage,'');
+  AConfig.SetDeleteValue(APath+'LogCallStackLimit/Value',LogCallStackLimit,0);
 
   for CurAction := Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
   begin
@@ -4017,6 +4043,15 @@ end;
 procedure TDBGBreakPoint.DoLogMessage(const AMessage: String);
 begin
   Debugger.DoDbgEvent(ecBreakpoint, etBreakpointMessage, 'Breakpoint Message: ' + AMessage);
+end;
+
+procedure TDBGBreakPoint.DoLogCallStack(const Limit: Integer);
+begin
+  if Limit = 0 then
+    Debugger.DoDbgEvent(ecBreakpoint, etBreakpointMessage, 'Breakpoint Call Stack: Log all stack frames')
+  else
+    Debugger.DoDbgEvent(ecBreakpoint, etBreakpointMessage, Format('Breakpoint Call Stack: Log %d stack frames', [Limit]));
+  Debugger.DoDbgEvent(ecBreakpoint, etBreakpointStackDump, '    TODO: unimplemented');
 end;
 
 function TDBGBreakPoint.GetDebugger: TDebugger;
