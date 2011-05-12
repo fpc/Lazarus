@@ -112,6 +112,16 @@ function PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType;
   Highlighter: TSrcIDEHighlighter; MeasureOnly: Boolean): TPoint;
+
+const
+  HintModifierImage: array[TPascalHintModifier] of String = (
+ { phmDeprecated    } 'ce_deprecated',
+ { phmPlatform      } 'ce_platform',
+ { phmLibrary       } 'ce_library',
+ { phmUnimplemented } 'ce_unimplemented',
+ { phmExperimental  } 'ce_experimental'
+  );
+
 var
   BGRed: Integer;
   BGGreen: Integer;
@@ -225,6 +235,7 @@ var
   IsReadOnly: boolean;
   ImageIndex: longint;
   HintModifiers: TPascalHintModifiers;
+  HintModifier: TPascalHintModifier;
 begin
   ForegroundColor := ColorToRGB(ACanvas.Font.Color);
   Result.X := 0;
@@ -344,10 +355,14 @@ begin
     end;
     ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
 
-    if ImageIndex<0 then begin
-      HintModifiers:=IdentItem.GetHintModifiers;
-      if HintModifiers<>[] then
-        ImageIndex:=IDEImages.LoadImage(16,'ce_property_readonly');
+    if ImageIndex <= 0 then
+    begin
+      HintModifiers := IdentItem.GetHintModifiers;
+      for HintModifier in HintModifiers do
+      begin
+        ImageIndex := IDEImages.LoadImage(16, HintModifierImage[HintModifier]);
+        break;
+      end;
     end;
 
     // paint icon
