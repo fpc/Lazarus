@@ -137,6 +137,14 @@ msgstr ""
 msgid "Please place the cursor of the source editor on a With variable."
 msgstr ""
 
+#: codystrconsts.crsdeclarevariable
+msgid "Declare Variable"
+msgstr ""
+
+#: codystrconsts.crsdeclarevariable2
+msgid "Declare Variable ..."
+msgstr ""
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr "Gbytes"

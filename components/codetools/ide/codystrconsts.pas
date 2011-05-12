@@ -96,6 +96,8 @@ resourcestring
   crsCAMWrittenByProperty = '%s, written by property %s';
   crsBTNOK = '&OK';
   crsBTNCancel = 'Cancel';
+  crsDeclareVariable = 'Declare Variable';
+  crsDeclareVariable2 = 'Declare Variable ...';
 
 implementation
 

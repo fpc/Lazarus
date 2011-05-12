@@ -791,6 +791,8 @@ type
         var NewFilename: string; const NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; override;
     function DoNewOther: TModalResult;
+    procedure CreateFileDialogFilterForSourceEditorFiles(Filter: string;
+         out AllEditorExt, AllFilter: string);
 
     function DoSaveEditorFile(PageIndex:integer;
                               Flags: TSaveFlags): TModalResult; override;
@@ -2786,8 +2788,6 @@ var
   OpenFlags: TOpenFlags;
   Filter: String;
   AllEditorExt: String;
-  SrcEdit: TSourceEditor;
-  Ext: String;
   AllFilter: String;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
@@ -2802,35 +2802,17 @@ begin
       + '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
       + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
       + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
-    AllFilter:='|'+TFileDialog.ExtractAllFilterMasks(Filter)+';*.inc';
 
     // append a filter for all file types of the open files in the source editor
-    AllEditorExt:='|';
-    for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
-      SrcEdit:=SourceEditorManager.SourceEditors[i];
-      Ext:=ExtractFileExt(SrcEdit.FileName);
-      if Ext<>'' then begin
-        Ext:='*'+Ext;
-        if (TFileDialog.FindMaskInFilter(AllFilter,Ext)>0)
-        or (TFileDialog.FindMaskInFilter(AllEditorExt,Ext)>0) then continue;
-        //debugln(['TMainIDE.mnuOpenClicked AllEditorExt=',AllEditorExt,' Ext=',Ext,' AllFilter=',AllFilter]);
-        if AllEditorExt<>'|' then
-          AllEditorExt:=AllEditorExt+';';
-        AllEditorExt:=AllEditorExt+Ext;
-      end;
-    end;
-    if AllEditorExt<>'|' then begin
-      System.Delete(AllEditorExt,1,1);
-      AllFilter:=AllFilter+';'+AllEditorExt;
+    CreateFileDialogFilterForSourceEditorFiles(Filter,AllEditorExt,AllFilter);
+    if AllEditorExt<>'' then
       Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorExt + ')|' +
         AllEditorExt;
-    end;
 
     // append an any file filter *.*
     Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
 
     // prepend an all filter
-    System.Delete(AllFilter,1,1);
     Filter:=  lisLazarusFile + ' ('+AllFilter+')|' + AllFilter + '|' + Filter;
     OpenDialog.Filter := Filter;
 
@@ -5380,6 +5362,9 @@ var
   PkgDefaultDirectory: String;
   OldUnitName: String;
   IsPascal: Boolean;
+  Filter: String;
+  AllEditorExt: string;
+  AllFilter: string;
 begin
   if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount>0) then
     SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)
@@ -5418,6 +5403,29 @@ begin
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
     SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
+
+    Filter := lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp';
+    if (SaveAsFileExt='.lpi') then
+      Filter:=Filter+ '|' + lisLazarusProject + ' (*.lpi)|*.lpi';
+    if (SaveAsFileExt='.lfm') or (SaveAsFileExt='.dfm') then
+      Filter:=Filter+ '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm';
+    if (SaveAsFileExt='.lpk') then
+      Filter:=Filter+ '|' + lisLazarusPackage + ' (*.lpk)|*.lpk';
+    if (SaveAsFileExt='.lpr') then
+      Filter:=Filter+ '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
+    // append a filter for all editor files
+    CreateFileDialogFilterForSourceEditorFiles(Filter,AllEditorExt,AllFilter);
+    if AllEditorExt<>'' then
+      Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorExt + ')|' +
+        AllEditorExt;
+
+    // append an any file filter *.*
+    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+
+    // prepend an all filter
+    Filter:=  lisLazarusFile + ' ('+AllFilter+')|' + AllFilter + '|' + Filter;
+    SaveDialog.Filter := Filter;
+
     // if this is a project file, start in project directory
     if (AnUnitInfo=nil)
     or (AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
@@ -8663,6 +8671,34 @@ begin
                lisSorryThisTypeIsNotYetImplemented,
       mtInformation,[mbOk],0);
   end;
+end;
+
+procedure TMainIDE.CreateFileDialogFilterForSourceEditorFiles(Filter: string;
+  out AllEditorExt, AllFilter: string);
+var
+  i: Integer;
+  SrcEdit: TSourceEditor;
+  Ext: String;
+begin
+  AllFilter:='|'+TFileDialog.ExtractAllFilterMasks(Filter)+';*.inc';
+  AllEditorExt:='|';
+  for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
+    SrcEdit:=SourceEditorManager.SourceEditors[i];
+    Ext:=ExtractFileExt(SrcEdit.FileName);
+    if Ext<>'' then begin
+      Ext:='*'+Ext;
+      if (TFileDialog.FindMaskInFilter(AllFilter,Ext)>0)
+      or (TFileDialog.FindMaskInFilter(AllEditorExt,Ext)>0) then continue;
+      if AllEditorExt<>'|' then
+        AllEditorExt:=AllEditorExt+';';
+      AllEditorExt:=AllEditorExt+Ext;
+    end;
+  end;
+  if AllEditorExt<>'|' then begin
+    System.Delete(AllEditorExt,1,1);
+    AllFilter:=AllFilter+';'+AllEditorExt;
+  end;
+  System.Delete(AllFilter,1,1);
 end;
 
 function TMainIDE.DoSaveEditorFile(PageIndex:integer;

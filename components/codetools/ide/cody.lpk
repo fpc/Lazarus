@@ -15,7 +15,7 @@
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
         <UnitName Value="PPUListDlg"/>
@@ -41,6 +41,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="CodyRegistration"/>
       </Item6>
+      <Item7>
+        <Filename Value="declarevardlg.pas"/>
+        <UnitName Value="declarevardlg"/>
+      </Item7>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>
@@ -69,5 +73,8 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

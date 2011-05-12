@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    LCL controls for Cody.
+    Registering menu items, shortcuts and components in the Lazarus IDE.
 }
 unit CodyRegistration;
 
@@ -32,7 +32,8 @@ interface
 uses
   Classes, SysUtils,
   IDECommands, MenuIntf,
-  LResources, CodyFrm, CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg;
+  LResources, CodyFrm, CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
+  DeclareVarDlg;
 
 procedure Register;
 
@@ -47,6 +48,7 @@ var
   AddAssignMethodCommand: TIDECommand;
   RemoveWithBlockCommand: TIDECommand;
   InsertFileAtCursorCommand: TIDECommand;
+  //DeclareVariableCommand: TIDECommand;
   TVIconRes: TLResource;
 begin
   CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
@@ -73,11 +75,18 @@ begin
   RegisterIDEMenuCommand(itmProjectWindowSection,'PPUList',crsShowUsedPpuFiles,
     nil,nil,PPUListCommand);
 
+  // declare variable
+  {DeclareVariableCommand:=RegisterIDECommand(CmdCatCodeTools, 'DeclareVariable',
+    crsDeclareVariable,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowDeclareVariableDialog);
+  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'DeclareVariable',
+    crsDeclareVariable2, nil, nil, DeclareVariableCommand);}
+
   // add Assign method
   AddAssignMethodCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddAssignMethod',
     crsAddAssignMethod,
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowAddAssignMethodDialog);
-  RegisterIDEMenuCommand(SrcEditSubMenuSource, 'AddAssignMethod',
+  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'AddAssignMethod',
     crsAddAssignMethod2,nil,nil,AddAssignMethodCommand);
 
   // remove With block

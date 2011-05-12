@@ -1,0 +1,126 @@
+object CodyDeclareVarDialog: TCodyDeclareVarDialog
+  Left = 275
+  Height = 172
+  Top = 250
+  Width = 367
+  Caption = 'CodyDeclareVarDialog'
+  ClientHeight = 172
+  ClientWidth = 367
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 126
+    Width = 355
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 120
+    Top = 0
+    Width = 367
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 120
+    ClientWidth = 367
+    TabOrder = 1
+    object WhereLabel: TLabel
+      AnchorSideTop.Control = WhereComboBox
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = WhereComboBox
+      Left = 46
+      Height = 18
+      Top = 11
+      Width = 78
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'WhereLabel'
+      ParentColor = False
+    end
+    object WhereComboBox: TComboBox
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 130
+      Height = 29
+      Top = 6
+      Width = 231
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      ItemHeight = 0
+      TabOrder = 0
+      Text = 'WhereComboBox'
+    end
+    object NameLabel: TLabel
+      AnchorSideTop.Control = NameEdit
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = NameEdit
+      Left = 49
+      Height = 18
+      Top = 45
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'NameLabel'
+      ParentColor = False
+    end
+    object NameEdit: TEdit
+      AnchorSideLeft.Control = WhereComboBox
+      AnchorSideTop.Control = WhereComboBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 130
+      Height = 27
+      Top = 41
+      Width = 231
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      TabOrder = 1
+      Text = 'NameEdit'
+    end
+    object TypeLabel: TLabel
+      AnchorSideTop.Control = TypeEdit
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = TypeEdit
+      Left = 58
+      Height = 18
+      Top = 78
+      Width = 66
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 6
+      Caption = 'TypeLabel'
+      ParentColor = False
+    end
+    object TypeEdit: TEdit
+      AnchorSideLeft.Control = WhereComboBox
+      AnchorSideTop.Control = NameEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 130
+      Height = 27
+      Top = 74
+      Width = 231
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      TabOrder = 2
+      Text = 'TypeEdit'
+    end
+  end
+end

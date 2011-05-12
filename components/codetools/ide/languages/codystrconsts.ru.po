@@ -137,6 +137,14 @@ msgstr "Ошибка"
 msgid "Please place the cursor of the source editor on a With variable."
 msgstr "Расположите курсор редактора исходного кода на переменной блока With."
 
+#: codystrconsts.crsdeclarevariable
+msgid "Declare Variable"
+msgstr ""
+
+#: codystrconsts.crsdeclarevariable2
+msgid "Declare Variable ..."
+msgstr ""
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr "ГБ"
