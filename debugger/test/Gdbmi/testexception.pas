@@ -73,6 +73,7 @@ begin
     TestEquals(TstName+' Got msg',   'abc', FGotExceptMsg, 050300);
     dbg.Stop;
   finally
+    CleanGdb;
     dbg.Free;
   end;
 
@@ -91,6 +92,7 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
+    CleanGdb;
     dbg.Free;
   end;
 
@@ -109,6 +111,7 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
+    CleanGdb;
     dbg.Free;
   end;
 
@@ -127,6 +130,7 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
+    CleanGdb;
     dbg.Free;
   end;
 
@@ -145,6 +149,7 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
+    CleanGdb;
     dbg.Free;
   end;
 
@@ -163,6 +168,7 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
+    CleanGdb;
     dbg.Free;
   end;
 
@@ -186,6 +192,7 @@ begin
     TestEquals(TstName+' Got msg',   'abc', FGotExceptMsg, 050300);
     dbg.Stop;
   finally
+    CleanGdb;
     dbg.Free;
   end;
 

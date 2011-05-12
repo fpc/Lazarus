@@ -2544,7 +2544,7 @@ end;
 
 procedure TWatchesSupplier.DoStateChange(const AOldState: TDBGState);
 begin
-  if FDebugger.State in [dsPause, dsStop, dsInit]
+  if (Debugger.State in [dsPause, dsStop, dsInit]) and (CurrentWatches <> nil)
   then begin
     CurrentWatches.ClearValues;
     Monitor.NotifyUpdate(CurrentWatches, nil);
@@ -2985,7 +2985,8 @@ end;
 procedure TThreadsMonitor.DoNewSupplier;
 begin
   inherited DoNewSupplier;
-  CurrentThreads.SetValidity(ddsUnknown);
+  if CurrentThreads <> nil
+  then CurrentThreads.SetValidity(ddsUnknown);
 end;
 
 procedure TThreadsMonitor.RequestData;
@@ -6272,26 +6273,31 @@ begin
   end;
   It.Free;
 
-  Monitor.NotifyChange;
+  if Monitor <> nil
+  then Monitor.NotifyChange;
 end;
 
 procedure TCallStackSupplier.CurrentChanged;
 begin
-  Monitor.NotifyCurrent;
+  if Monitor <> nil
+  then Monitor.NotifyCurrent;
 end;
 
 procedure TCallStackSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if FDebugger.State = dsPause
   then begin
-    CurrentCallStackList.Clear;
+    if CurrentCallStackList <> nil
+    then CurrentCallStackList.Clear;
     Changed;
   end
   else begin
     if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
     then begin
-      CurrentCallStackList.Clear;
-      Monitor.CallStackClear(Self);
+      if CurrentCallStackList <> nil
+      then CurrentCallStackList.Clear;
+      if Monitor <> nil
+      then Monitor.CallStackClear(Self);
     end;
   end;
 end;

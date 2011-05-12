@@ -41,6 +41,18 @@ type
   { TTestDisAss }
 
   TTestDisAss = class(TTestCase)
+  protected
+    FCallStack: TCallStackMonitor;
+    FDisassembler: TIDEDisassembler;
+    FExceptions: TIDEExceptions;
+    FSignals: TIDESignals;
+    //FBreakPoints: TIDEBreakPoints;
+    //FBreakPointGroups: TIDEBreakPointGroups;
+    FLocals: TIDELocals;
+    FLineInfo: TIDELineInfo;
+    FWatches: TWatchesMonitor;
+    FThreads: TThreadsMonitor;
+    FRegisters: TIDERegisters;
   published
     procedure RangeMap;
     procedure Disassemble;
@@ -323,9 +335,52 @@ var
     Gdb := TTestBrkGDBMIDebugger.Create('');
     IdeDisAss := TIDEDisassembler.Create;
     IdeDisAss.Master := Gdb.Disassembler;
+
+    FWatches := TWatchesMonitor.Create;
+    FThreads := TThreadsMonitor.Create;
+    FExceptions := TIDEExceptions.Create;
+    FSignals := TIDESignals.Create;
+    FLocals := TIDELocals.Create;
+    FLineInfo := TIDELineInfo.Create;
+    FCallStack := TCallStackMonitor.Create;
+    FRegisters := TIDERegisters.Create;
+
+    //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
+    FWatches.Supplier := Gdb.Watches;
+    FThreads.Supplier := Gdb.Threads;
+    FLocals.Master := Gdb.Locals;
+    FLineInfo.Master := Gdb.LineInfo;
+    FCallStack.Supplier := Gdb.CallStack;
+    FExceptions.Master := Gdb.Exceptions;
+    FSignals.Master := Gdb.Signals;
+    FRegisters.Master := Gdb.Registers;
+
     Gdb.TestSetState(dsPause);
     Gdb.TestIsFailed := False;;
     Gdb.TestFailMemDump := False;
+
+  end;
+  procedure CleanGdb;
+  begin
+    FWatches.Supplier := nil;
+    FThreads.Supplier := nil;
+    //FLocals.Master := nil;
+    //FLineInfo.Master := nil;
+    FCallStack.Supplier := nil;
+    //FExceptions.Master := nil;
+    //FSignals.Master := nil;
+    //FRegisters.Master := nil;
+
+    FreeAndNil(FWatches);
+    FreeAndNil(FThreads);
+    //FreeAndNil(FBreakPoints);
+    //FreeAndNil(FBreakPointGroups);
+    FreeAndNil(FCallStack);
+    FreeAndNil(FDisassembler);
+    FreeAndNil(FExceptions);
+    FreeAndNil(FSignals);
+    FreeAndNil(FLocals);
+    FreeAndNil(FLineInfo);
   end;
 
   procedure Test(Name: String;Addr: TDBGPtr; MinBefore, MinAfter: Integer);
@@ -413,6 +468,7 @@ begin
     end;
     IdeDisAss.PrepareRange($30100, 10, 20);
     Test('no src, multi block, overlap of 4', $30100, 10, 19);
+    CleanGdb;
     {%endregion}
   {%endregion NO SOURCE}
 
@@ -428,6 +484,7 @@ begin
   IdeDisAss.PrepareRange($30100, 10, 20);
   Test('src, 1 block', $30100, 10, 19);
   TestSrc('src, 1 block', $30100-400, $30100+400);
+  CleanGdb;
   {%endregion}
 
   {%region 2 block, part src}
@@ -444,6 +501,7 @@ begin
   IdeDisAss.PrepareRange($30100, 10, 20);
   Test('part-src, 1 block', $30100, 10, 19);
   TestSrc('part-src, 1 block', $30100-8, $30100+400);
+  CleanGdb;
   {%endregion}
 
 
@@ -455,6 +513,7 @@ begin
   Gdb.TestFailMemDump := True;
   IdeDisAss.PrepareRange($10100, 10, 20);
   // just enough, if it din't crash => go error state.
+  CleanGdb;
   {%endregion}
 end;//xxxxxxxxxxxx
   FreeAndNil(IdeDisAss);

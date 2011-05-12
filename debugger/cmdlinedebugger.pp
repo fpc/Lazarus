@@ -307,7 +307,7 @@ end;
 destructor TCmdLineDebugger.Destroy;
 begin
   if (FDbgProcess <> nil) and (FDbgProcess.Running)
-  then FDbgProcess.Terminate(0);
+  then FDbgProcess.Terminate(0); //TODO: set state ?
   
   inherited;
   

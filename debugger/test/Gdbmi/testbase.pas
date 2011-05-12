@@ -170,6 +170,19 @@ type
 
   TGDBTestCase = class(TTestCase)
   private
+    // stuff for the debugger
+    FCallStack: TCallStackMonitor;
+    FDisassembler: TIDEDisassembler;
+    FExceptions: TIDEExceptions;
+    FSignals: TIDESignals;
+    //FBreakPoints: TIDEBreakPoints;
+    //FBreakPointGroups: TIDEBreakPointGroups;
+    FLocals: TIDELocals;
+    FLineInfo: TIDELineInfo;
+    FWatches: TWatchesMonitor;
+    FThreads: TThreadsMonitor;
+    FRegisters: TIDERegisters;
+  private
     FParent: TGDBTestsuite;
     FTestErrors, FIgnoredErrors, FUnexpectedSuccess: String;
     FCurrentPrgName, FCurrentExename: String;
@@ -185,6 +198,7 @@ type
     procedure InternalDbgOutPut(Sender: TObject; const AText: String);
     function GdbClass: TGDBMIDebuggerClass; virtual;
     function StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
+    procedure CleanGdb;
     procedure ClearTestErrors;
     procedure AddTestError(s: string; MinGdbVers: Integer = 0);
     procedure AddTestSuccess(s: string; MinGdbVers: Integer = 0);
@@ -203,6 +217,18 @@ type
     property DebuggerInfo: TDebuggerInfo read GetDebuggerInfo;
     property SymbolType: TSymbolType read GetSymbolType;
     property CompilerInfo: TCompilerInfo read GetCompilerInfo;
+  public
+    //property BreakPoints: TIDEBreakPoints read FBreakpoints;   // A list of breakpoints for the current project
+    //property BreakPointGroups: TIDEBreakPointGroups read FBreakPointGroups;
+    property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
+    property CallStack: TCallStackMonitor read FCallStack;
+    property Disassembler: TIDEDisassembler read FDisassembler;
+    property Locals: TIDELocals read FLocals;
+    property LineInfo: TIDELineInfo read FLineInfo;
+    property Registers: TIDERegisters read FRegisters;
+    property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
+    property Watches: TWatchesMonitor read FWatches;
+    property Threads: TThreadsMonitor read FThreads;
   end;
 
 
@@ -345,7 +371,31 @@ end;
 
 function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
 begin
+  //FBreakPoints := TManagedBreakPoints.Create(Self);
+  //FBreakPointGroups := TIDEBreakPointGroups.Create;
+  FWatches := TWatchesMonitor.Create;
+  FThreads := TThreadsMonitor.Create;
+  FExceptions := TIDEExceptions.Create;
+  FSignals := TIDESignals.Create;
+  FLocals := TIDELocals.Create;
+  FLineInfo := TIDELineInfo.Create;
+  FCallStack := TCallStackMonitor.Create;
+  FDisassembler := TIDEDisassembler.Create;
+  FRegisters := TIDERegisters.Create;
+
   Result := GdbClass.Create(DebuggerInfo.ExeName);
+
+  //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
+  FWatches.Supplier := Result.Watches;
+  FThreads.Supplier := Result.Threads;
+  FLocals.Master := Result.Locals;
+  FLineInfo.Master := Result.LineInfo;
+  FCallStack.Supplier := Result.CallStack;
+  FDisassembler.Master := Result.Disassembler;
+  FExceptions.Master := Result.Exceptions;
+  FSignals.Master := Result.Signals;
+  FRegisters.Master := Result.Registers;
+
   Result.Init;
   if Result.State = dsError then
     Fail(' Failed Init');
@@ -354,6 +404,33 @@ begin
   Result.Arguments := '';
   Result.ShowConsole := True;
   Result.OnDbgOutput  := @InternalDbgOutPut;
+
+end;
+
+procedure TGDBTestCase.CleanGdb;
+begin
+  //TManagedBreakpoints(FBreakpoints).Master := nil;
+  FWatches.Supplier := nil;
+  FThreads.Supplier := nil;
+  FLocals.Master := nil;
+  FLineInfo.Master := nil;
+  FCallStack.Supplier := nil;
+  FDisassembler.Master := nil;
+  FExceptions.Master := nil;
+  FSignals.Master := nil;
+  FRegisters.Master := nil;
+
+  FreeAndNil(FWatches);
+  FreeAndNil(FThreads);
+  //FreeAndNil(FBreakPoints);
+  //FreeAndNil(FBreakPointGroups);
+  FreeAndNil(FCallStack);
+  FreeAndNil(FDisassembler);
+  FreeAndNil(FExceptions);
+  FreeAndNil(FSignals);
+  FreeAndNil(FLocals);
+  FreeAndNil(FLineInfo);
+  FreeAndNil(FRegisters);
 end;
 
 procedure TGDBTestCase.ClearTestErrors;

@@ -25,33 +25,11 @@ const
 *)
 
 type
-
-  { TTestWatch }
-
-  TTestWatch = class(TBaseWatch)
-  private
-    FHasMultiValue: Boolean;
-    FHasValue: Boolean;
-    FMaster: TDBGWatch;
-    FValue: String;
-    FTypeInfo: TDBGType;
-  protected
-    procedure DoChanged; override;
-    function GetTypeInfo: TDBGType; override;
-    procedure SetDisplayFormat(const AValue: TWatchDisplayFormat); override;
-  public
-    constructor Create(AOwner: TBaseWatches; AMaster: TDBGWatch);
-    property Master: TDBGWatch read FMaster;
-    property HasMultiValue: Boolean read FHasMultiValue;
-    property HasValue: Boolean read FHasValue;
-    property Value: String read FValue;
-  end;
-
   { TTestWatches }
 
   TTestWatches = class(TGDBTestCase)
   private
-    FWatches: TBaseWatches;
+    FWatches: TcurrentWatches;
     FDbgOutPut: String;
     FDbgOutPutEnable: Boolean;
     procedure DoDbgOutput(Sender: TObject; const AText: String); override;
@@ -473,50 +451,6 @@ const
 
 
 
-{ TTestWatch }
-
-procedure TTestWatch.DoChanged;
-var
-  v: String;
-begin
-  if FMaster = nil then exit;
-  if (FMaster.Valid = vsValid) then begin
-    DbgLog := True;
-    v := FMaster.Value;
-    if v <> '<evaluating>' then begin // TODO: need better check
-      if FHasValue and (FValue <> v) then begin
-        FHasMultiValue := True;
-        FValue := FValue + LineEnding + v;
-      end
-      else
-        FValue := v;
-      FHasValue := True;
-
-      FTypeInfo := Master.TypeInfo;
-    end;
-  end;
-end;
-
-function TTestWatch.GetTypeInfo: TDBGType;
-begin
-  Result := FTypeInfo;
-end;
-
-procedure TTestWatch.SetDisplayFormat(const AValue: TWatchDisplayFormat);
-begin
-  inherited SetDisplayFormat(AValue);
-  FMaster.DisplayFormat := AValue;
-end;
-
-constructor TTestWatch.Create(AOwner: TBaseWatches; AMaster: TDBGWatch);
-begin
-  inherited Create(AOwner);
-  Expression := AMaster.Expression;
-  FMaster := AMaster;
-  FMaster.Slave := Self;
-  FMaster.Enabled := True;
-end;
-
 { TTestWatches }
 
 procedure TTestWatches.DoDbgOutput(Sender: TObject; const AText: String);
@@ -553,23 +487,24 @@ procedure TTestWatches.TestWatches;
     Result := False;
   end;
 
-  procedure TestWatch(Name: String; AWatch: TTestWatch; Data: TWatchExpectation; WatchValue: String = '');
+  procedure TestWatch(Name: String; AWatch: TCurrentWatch; Data: TWatchExpectation; WatchValue: String = '');
   const KindName: array [TDBGSymbolKind] of string =
      ('skClass', 'skRecord', 'skEnum', 'skSet', 'skProcedure', 'skFunction', 'skSimple', 'skPointer', 'skVariant');
   var
     rx: TRegExpr;
     s: String;
     flag: Boolean;
+    WV: TWatchValue;
   begin
     rx := nil;
 
     Name := Name + ' ' + Data.Exp + ' (' + TWatchDisplayFormatNames[Data.Fmt] + ')';
     flag := AWatch <> nil;
     if flag then begin;
-      AWatch.Master.Value; // trigger read
-      flag := flag and TestTrue  (Name+ ' (HasValue)',   AWatch.HasValue);
-      flag := flag and TestFalse (Name+ ' (One Value)',  AWatch.HasMultiValue);
-      s := AWatch.Value;
+      WV := AWatch.Values[1, 0];// trigger read
+      flag := flag and TestTrue  (Name+ ' (HasValue)',   WV.Validity = ddsValid);
+      //flag := flag and TestFalse (Name+ ' (One Value)',  AWatch.HasMultiValue);
+      s := WV.Value;
     end
     else
       s := WatchValue;
@@ -583,19 +518,19 @@ procedure TTestWatches.TestWatches;
     end;
 
     flag := (AWatch <> nil) and (Data.TpNm <> '');
-    if flag then flag := TestTrue(Name + ' has typeinfo',  AWatch.TypeInfo <> nil);
-    if flag then flag := TestEquals(Name + ' kind',  KindName[Data.Kind], KindName[AWatch.TypeInfo.Kind]);
+    if flag then flag := TestTrue(Name + ' has typeinfo',  WV.TypeInfo <> nil);
+    if flag then flag := TestEquals(Name + ' kind',  KindName[Data.Kind], KindName[WV.TypeInfo.Kind]);
     if flag then begin
       if fTpMtch  in Data.Flgs
       then begin
         FreeAndNil(rx);
-        s := AWatch.TypeInfo.TypeName;
+        s := WV.TypeInfo.TypeName;
         rx := TRegExpr.Create;
         rx.ModifierI := true;
         rx.Expression := Data.TpNm;
-        TestTrue(Name + ' TypeName matches '+Data.TpNm+' but was '+AWatch.TypeInfo.TypeName,  rx.Exec(s))
+        TestTrue(Name + ' TypeName matches '+Data.TpNm+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s))
       end
-      else TestEquals(Name + ' TypeName',  LowerCase(Data.TpNm), LowerCase(AWatch.TypeInfo.TypeName));
+      else TestEquals(Name + ' TypeName',  LowerCase(Data.TpNm), LowerCase(WV.TypeInfo.TypeName));
     end;
     FreeAndNil(rx);
   end;
@@ -604,7 +539,7 @@ var
   TestExeName: string;
   dbg: TGDBMIDebugger;
   i: Integer;
-  WList: Array of TTestWatch;
+  WList: Array of TCurrentWatch;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch')] then exit;
 
@@ -616,8 +551,8 @@ begin
   end;
 
   try
-    FWatches := TBaseWatches.Create(TBaseWatch);
     dbg := StartGDB(AppDir, TestExeName);
+    FWatches := Watches.CurrentWatches;
 
     if (RUN_TEST_ONLY >= 0) or (RUN_GDB_TEST_ONLY >= 0) then begin
       DbgLog := False;
@@ -647,14 +582,18 @@ begin
     SetLength(WList, high(ExpectBrk1NoneNil)+1);
     if RUN_TEST_ONLY >= 0 then begin
       i := RUN_TEST_ONLY;
-      WList[i] := TTestWatch.Create(FWatches, dbg.Watches.Add(ExpectBrk1NoneNil[i].Exp));
+      WList[i] := TCurrentWatch.Create(FWatches);
+      WList[i].Expression := ExpectBrk1NoneNil[i].Exp;
       WList[i].DisplayFormat := ExpectBrk1NoneNil[i].Fmt;
+      WList[i].enabled := True;
     end
     else
       for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do begin
         if not SkipTest(ExpectBrk1NoneNil[i]) then begin
-          WList[i] := TTestWatch.Create(FWatches, dbg.Watches.Add(ExpectBrk1NoneNil[i].Exp));
+          WList[i] := TCurrentWatch.Create(FWatches);
+          WList[i].Expression := ExpectBrk1NoneNil[i].Exp;
           WList[i].DisplayFormat := ExpectBrk1NoneNil[i].Fmt;
+          WList[i].enabled := True;
         end;
       end;
 
@@ -705,8 +644,8 @@ begin
 
     dbg.Stop;
   finally
+    CleanGdb;
     dbg.Free;
-    FreeAndNil(FWatches);
 
     if (DbgMemo <> nil) and (TestErrors <> '') then DbgMemo.Lines.Add(TestErrors);
     //debugln(FailText)

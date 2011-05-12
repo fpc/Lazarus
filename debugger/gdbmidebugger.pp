@@ -1545,12 +1545,15 @@ begin
   if Monitor = nil then exit;
   Cmd := TGDBMIDebuggerCommandThreads(Sender);
 
-  CurrentThreads.Clear;
-  for i := 0 to Cmd.Count - 1 do
-    CurrentThreads.Add(Cmd.Threads[i]);
+  if CurrentThreads <> nil
+  then begin
+    CurrentThreads.Clear;
+    for i := 0 to Cmd.Count - 1 do
+      CurrentThreads.Add(Cmd.Threads[i]);
 
-  CurrentThreads.SetValidity(ddsValid);
-  CurrentThreads.CurrentThreadId := Cmd.CurrentThreadId;
+    CurrentThreads.SetValidity(ddsValid);
+    CurrentThreads.CurrentThreadId := Cmd.CurrentThreadId;
+  end;
 end;
 
 procedure TGDBMIThreads.DoChangeThreadsDestroyed(Sender: TObject);
@@ -1572,7 +1575,8 @@ begin
   end;
 
   Debugger.DoThreadChanged;
-  CurrentThreads.CurrentThreadId := Cmd.NewId;
+  if CurrentThreads <> nil
+  then CurrentThreads.CurrentThreadId := Cmd.NewId;
 end;
 
 function TGDBMIThreads.GetDebugger: TGDBMIDebugger;
@@ -5323,8 +5327,10 @@ begin
   LockRelease;
   try
     CancelAllQueued;
-    if State = dsRun then GDBPause(True);
-    ExecuteCommand('-gdb-exit', []);
+    if (DebugProcess <> nil) and DebugProcess.Running then begin
+      if State = dsRun then GDBPause(True);
+      ExecuteCommand('-gdb-exit', []);
+    end;
     inherited Done;
   finally
     UnlockRelease;

@@ -117,6 +117,7 @@ begin
     //TestTrue('gone next line 4', i <> FCurLine);
 
   finally
+    CleanGdb;
     dbg.Free;
   end;
   AssertTestErrors;
