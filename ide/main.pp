@@ -85,7 +85,7 @@ uses
   ProjectResources, Project, ProjectDefs, NewProjectDlg, 
   PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
-  IDEContextHelpEdit, IDEHelpIntf, HelpManager, CodeHelp, HelpOptions,
+  IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
   // designer
   JITForms, ComponentPalette, ComponentList, ComponentReg, FormEditingIntf,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,

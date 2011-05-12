@@ -235,19 +235,19 @@ function ShowTableOfContents(var ErrMsg: string): TShowHelpResult;
 
 // help by ID
 function ShowHelpOrErrorForContext(HelpDatabaseID: THelpDatabaseID;
-  HelpContext: THelpContext): TShowHelpResult;
+  HelpContext: THelpContext): TShowHelpResult; overload;
 function ShowHelpForContext(HelpDatabaseID: THelpDatabaseID;
-  HelpContext: THelpContext; var ErrMsg: string): TShowHelpResult;
+  HelpContext: THelpContext; var ErrMsg: string): TShowHelpResult; overload;
 function ShowHelpForContext(HelpContext: THelpContext; var ErrMsg: string
-  ): TShowHelpResult;
+  ): TShowHelpResult; overload;
 
-// help by keyword
+// help by keyword (an arbitrary keyword, not a fpc keyword)
 function ShowHelpOrErrorForKeyword(HelpDatabaseID: THelpDatabaseID;
   const HelpKeyword: string): TShowHelpResult;
 function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
-  const HelpKeyword: string; var ErrMsg: string): TShowHelpResult;
+  const HelpKeyword: string; var ErrMsg: string): TShowHelpResult; overload;
 function ShowHelpForKeyword(const HelpKeyword: string; var ErrMsg: string
-  ): TShowHelpResult;
+  ): TShowHelpResult; overload;
 
 // help for pascal sources
 function ShowHelpForPascalContexts(const Filename: string;
@@ -272,6 +272,7 @@ function ShowHelp(const URL, Title, MimeType: string;
 function ShowHelpOrError(const URL, Title, MimeType: string
   ): TShowHelpResult;
 
+function dbgs(HelpResult: TShowHelpResult): string; overload;
 
 implementation
 
@@ -410,6 +411,23 @@ begin
   ErrMsg:='';
   Result:=ShowHelp(URL,Title,MimeType,ErrMsg);
   HelpManager.ShowError(Result,ErrMsg);
+end;
+
+function dbgs(HelpResult: TShowHelpResult): string;
+const
+  ResultNames: array[TShowHelpResult] of shortstring = (
+    'shrNone',
+    'shrSuccess',
+    'shrCancel',
+    'shrDatabaseNotFound',
+    'shrContextNotFound',
+    'shrViewerNotFound',
+    'shrHelpNotFound',
+    'shrViewerError',
+    'shrSelectorError'
+    );
+begin
+  Result:=ResultNames[HelpResult];
 end;
 
 { THelpQuery }

@@ -26,7 +26,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit HelpManager;
+unit IDEHelpManager;
 
 {$mode objfpc}{$H+}
 
@@ -50,6 +50,21 @@ uses
   IDEContextHelpEdit, IDEWindowHelp;
 
 type
+
+  { TSimpleFPCKeywordHelpDatabase }
+
+  TSimpleFPCKeywordHelpDatabase = class(THTMLHelpDatabase)
+  private
+    FKeywordPrefixNode: THelpNode;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    function GetNodesForKeyword(const HelpKeyword: string;
+                        var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
+                        ): TShowHelpResult; override;
+    function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
+                      QueryItem: THelpQueryItem;
+                      var ErrMsg: string): TShowHelpResult; override;
+  end;
 
   TLIHProviders = class;
 
@@ -136,6 +151,7 @@ type
     procedure mnuHelpReportBugClicked(Sender: TObject);
   private
     FFCLHelpDBPath: THelpBaseURLObject;
+    FFPCKeywordsHelpDB: THelpDatabase;
     FMainHelpDB: THelpDatabase;
     FMainHelpDBPath: THelpBasePathObject;
     FRTLHelpDB: THelpDatabase;
@@ -148,7 +164,6 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure UpdateFPCDocsHTMLDirectory;
 
     procedure ConnectMainBarEvents; override;
     procedure LoadHelpOptions; override;
@@ -156,7 +171,7 @@ type
 
     procedure ShowLazarusHelpStartPage;
     procedure ShowIDEHelpForContext(HelpContext: THelpContext);
-    procedure ShowIDEHelpForKeyword(const Keyword: string);
+    procedure ShowIDEHelpForKeyword(const Keyword: string); // an arbitrary keyword, not a fpc keyword
 
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
@@ -183,6 +198,7 @@ type
     property MainHelpDBPath: THelpBasePathObject read FMainHelpDBPath;
     property RTLHelpDB: THelpDatabase read FRTLHelpDB;
     property RTLHelpDBPath: THelpBaseURLObject read FRTLHelpDBPath;
+    property FPCKeywordsHelpDB: THelpDatabase read FFPCKeywordsHelpDB;
   end;
 
   { THelpSelectorDialog }
@@ -250,6 +266,57 @@ end;
 function CompareURLWithLIHProviderStream(URL, Stream: Pointer): integer;
 begin
   Result:=CompareStr(AnsiString(URL),TLIHProviderStream(Stream).URL);
+end;
+
+{ TSimpleFPCKeywordHelpDatabase }
+
+constructor TSimpleFPCKeywordHelpDatabase.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  KeywordPrefix:='FPCKeyword_';
+end;
+
+function TSimpleFPCKeywordHelpDatabase.GetNodesForKeyword(
+  const HelpKeyword: string; var ListOfNodes: THelpNodeQueryList;
+  var ErrMsg: string): TShowHelpResult;
+var
+  Path: String;
+  KeyWord: String;
+begin
+  Result:=shrHelpNotFound;
+  if (csDesigning in ComponentState) then exit;
+  if (KeywordPrefix<>'')
+  and (LeftStr(HelpKeyword,length(KeywordPrefix))=KeywordPrefix) then begin
+    // HelpKeyword starts with KeywordPrefix
+    KeyWord:=copy(HelpKeyword,length(KeywordPrefix)+1,length(HelpKeyword));
+    // test: testfcpkeyword
+    if KeyWord='testfcpkeyword' then begin
+      // this help database knows this keyword
+      // => add a node, so that if there are several possibilities the IDE can
+      //    show the user a dialog to choose
+      if FKeywordPrefixNode=nil then
+        FKeywordPrefixNode:=THelpNode.CreateURL(Self,'','');
+      Path:=copy(HelpKeyword,length(KeywordPrefix)+1,length(HelpKeyword));
+      FKeywordPrefixNode.Title:='Pascal keyword '+Path;
+      FKeywordPrefixNode.URL:='file://'+Path;
+      CreateNodeQueryListAndAdd(FKeywordPrefixNode,nil,ListOfNodes,true);
+      Result:=shrSuccess;
+    end;
+  end;
+end;
+
+function TSimpleFPCKeywordHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
+  NewNode: THelpNode; QueryItem: THelpQueryItem; var ErrMsg: string
+  ): TShowHelpResult;
+var
+  KeywordQuery: THelpQueryKeyword;
+  KeyWord: String;
+begin
+  Result:=shrHelpNotFound;
+  if not (Query is THelpQueryKeyword) then exit;
+  KeywordQuery:=THelpQueryKeyword(Query);
+  KeyWord:=copy(KeywordQuery.Keyword,length(KeywordPrefix)+1,length(KeywordQuery.Keyword));
+  debugln(['TSimpleFPCKeywordHelpDatabase.ShowHelp Keyword=',Keyword]);
 end;
 
 { TSimpleHTMLControl }
@@ -830,11 +897,18 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
     HTMLHelp.RegisterItem(DirItem);
   end;
 
+  procedure CreateFPCKeywordsHelpDB;
+  begin
+    FFPCKeywordsHelpDB:=HelpDatabases.CreateHelpDatabase(lihcFCLUnits,
+                                            TSimpleFPCKeywordHelpDatabase,true);
+  end;
+
 begin
   CreateMainIDEHelpDB;
   CreateRTLHelpDB;
   CreateFCLHelpDB;
   CreateFPCMessagesHelpDB;
+  CreateFPCKeywordsHelpDB;
 end;
 
 procedure TIDEHelpManager.RegisterDefaultIDEHelpViewers;
@@ -888,112 +962,10 @@ begin
   FreeThenNil(FMainHelpDBPath);
   FreeThenNil(FRTLHelpDBPath);
   FreeThenNil(FFCLHelpDBPath);
+  FreeThenNil(FFPCKeywordsHelpDB);
   HelpBoss:=nil;
   LazarusHelp:=nil;
   inherited Destroy;
-end;
-
-procedure TIDEHelpManager.UpdateFPCDocsHTMLDirectory;
-
-  function IsFPCDocsHTMDirectory(Directory: string): boolean;
-  var
-    RefFilename: String;
-  begin
-    Result:=false;
-    if Directory='' then exit;
-    RefFilename:=AppendPathDelim(TrimFilename(Directory))
-                                 +'ref'+PathDelim+'ref.kwd';
-    Result:=FileExistsUTF8(RefFilename);
-    //DebugLn(['IsFPCDocsHTMDirectory RefFilename="',RefFilename,'" Result=',Result]);
-  end;
-  
-  function TryDirectory(const Directory: string): boolean;
-  var
-    NewDir: String;
-  begin
-    NewDir:=TrimAndExpandDirectory(Directory);
-    if not IsFPCDocsHTMDirectory(NewDir) then exit(false);
-    HelpOpts.FPCDocsHTMLDirectory:=NewDir;
-    DebugLn(['TryDirectory Changing FPCDocsHTMLDirectory to "',HelpOpts.FPCDocsHTMLDirectory,'"']);
-    SaveHelpOptions;
-    Result:=true;
-  end;
-  
-  function TryDirectoryMask(const Directory: string): boolean;
-  var
-    DirMask: String;
-    CurDir: String;
-    FileInfo: TSearchRec;
-    NewDir: String;
-  begin
-    Result:=false;
-    DirMask:=TrimFilename(Directory);
-    CurDir:=ExtractFilePath(DirMask);
-    if FindFirstUTF8(DirMask,faDirectory,FileInfo)=0 then begin
-      repeat
-        // skip special files
-        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
-          continue;
-        if ((FileInfo.Attr and faDirectory)>0) then begin
-          NewDir:=CurDir+FileInfo.Name;
-          if TryDirectory(NewDir) then
-            exit(true);
-        end;
-      until FindNextUTF8(FileInfo)<>0;
-    end;
-    FindCloseUTF8(FileInfo);
-  end;
-  
-  function SearchInCommonInstallDir: boolean;
-  var
-    SystemPPU: String;
-    p: LongInt;
-    FPCInstallDir: String;
-    FPCVersion: String;
-    CurUnitName: String;
-  begin
-    Result:=false;
-    { Linux:
-        normally fpc ppu are installed in
-          /somewhere/lib/fpc/$fpcversion/units/$fpctarget/
-        and the docs are installed in
-          /somewhere/share/doc/fpcdocs-$fpcversion/
-      }
-    CurUnitName:='system.ppu';
-    SystemPPU:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
-                                                    '',CurUnitName);
-    DebugLn(['SearchInCommonInstallDir SystemPPU=',SystemPPU]);
-    // SystemPPU is now e.g. /usr/lib/fpc/2.0.4/units/i386-linux/rtl/system.ppu
-    if SystemPPU='' then exit;
-    p:=System.Pos(PathDelim+'fpc'+PathDelim,SystemPPU);
-    if p<1 then exit;
-    FPCInstallDir:=copy(SystemPPU,1,p);// FPCInstallDir is now e.g. /usr/lib/
-    FPCVersion:=copy(SystemPPU,p+5,length(SystemPPU));
-    p:=System.Pos(PathDelim,FPCVersion);
-    FPCVersion:=copy(FPCVersion,1,p-1);// FPCVersion is now e.g. 2.0.4
-    DebugLn(['SearchInCommonInstallDir FPCInstallDir="',FPCInstallDir,'" FPCVersion="',FPCVersion,'"']);
-    // try first with the current fpc version
-    if (FPCVersion<>'') then begin
-      if TryDirectory(FPCInstallDir
-                      +SetDirSeparators('../share/doc/fpdocs-'+FPCVersion))
-      then exit;
-      if TryDirectory(FPCInstallDir+SetDirSeparators('doc/fpdocs-'+FPCVersion))
-      then exit;
-    end;
-    // try any fpc version
-    if TryDirectoryMask(FPCInstallDir
-                        +SetDirSeparators('../share/doc/fpdocs-*'))
-    then exit;
-    if TryDirectoryMask(FPCInstallDir+SetDirSeparators('doc/fpdocs-*')) then
-      exit;
-  end;
-  
-begin
-  if IsFPCDocsHTMDirectory(HelpOpts.GetEffectiveFPCDocsHTMLDirectory) then exit;
-  // search the docs at common places
-  if SearchInCommonInstallDir then exit;
-  if TryDirectoryMask('/usr/share/doc/fpdocs-*') then exit;
-  if TryDirectoryMask('/usr/local/share/doc/fpdocs-*') then exit;
 end;
 
 procedure TIDEHelpManager.ConnectMainBarEvents;
@@ -1034,61 +1006,12 @@ end;
 function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
   const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
   
-  function ShowHelpForFPCKeyWord(const KeyWord: string): TShowHelpResult;
-  var
-    RefFilename: String;
-    i: Integer;
-    List: TStrings;
-    Line: string;
-    FileStartPos: Integer;
-    FileEndPos: LongInt;
-    HTMLFilename: String;
-  begin
-    Result:=shrHelpNotFound;
-    if Keyword='' then exit;
-    UpdateFPCDocsHTMLDirectory;
-    RefFilename:=HelpOpts.GetEffectiveFPCDocsHTMLDirectory;
-    if (RefFilename='') then exit;
-    RefFilename:=AppendPathDelim(RefFilename)+'ref'+PathDelim+'ref.kwd';
-    if not FileExistsUTF8(RefFilename) then begin
-      DebugLn(['ShowHelpForFPCKeyWord file not found RefFilename="',RefFilename,'"']);
-      exit;
-    end;
-    List:=nil;
-    try
-      if LoadStringListFromFile(RefFilename,'FPC keyword list',List)<>mrOk then
-        exit;
-      for i:=0 to List.Count-1 do begin
-        // example: integer=refsu5.html#keyword:integer
-        Line:=List[i];
-        if (length(Line)>length(KeyWord))
-        and (Line[length(KeyWord)+1]='=')
-        and (SysUtils.CompareText(KeyWord,copy(Line,1,length(KeyWord)))=0) then
-        begin
-          FileStartPos:=length(KeyWord)+2;
-          FileEndPos:=FileStartPos;
-          while (FileEndPos<=length(Line)) and (Line[FileEndPos]<>'#') do
-            inc(FileEndPos);
-          HTMLFilename:=copy(Line,FileStartPos,FileEndPos-FileStartPos);
-          HTMLFilename:=HelpOpts.GetEffectiveFPCDocsHTMLDirectory+'ref'
-                        +PathDelim+HTMLFilename;
-          Result:=ShowHelpFileOrError(HTMLFilename,
-                              'FPC help for keyword "'+KeyWord+'"',
-                              'text/html');
-          break;
-        end;
-      end;
-    finally
-      List.Free;
-    end;
-  end;
-  
   function CollectKeyWords(CodeBuffer: TCodeBuffer): TShowHelpResult;
-  // true: help found
   var
     p: Integer;
     IdentStart, IdentEnd: integer;
     KeyWord: String;
+    ErrorMsg: String;
   begin
     Result:=shrHelpNotFound;
     p:=0;
@@ -1097,10 +1020,13 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     GetIdentStartEndAtPosition(CodeBuffer.Source,p,IdentStart,IdentEnd);
     if IdentEnd<=IdentStart then exit;
     KeyWord:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
-    Result:=ShowHelpForFPCKeyWord(KeyWord);
+    ErrorMsg:='';
+    Result:=ShowHelpForKeyword('','FPCKeyword_'+Keyword,ErrorMsg);
+    if Result=shrHelpNotFound then exit;
+    HelpManager.ShowError(Result,ErrMsg);
   end;
 
-  procedure CollectDeclarations(CodeBuffer: TCodeBuffer);
+  function CollectDeclarations(CodeBuffer: TCodeBuffer): TShowHelpResult;
   var
     NewList: TPascalHelpContextList;
     PascalHelpContextLists: TList;
@@ -1108,6 +1034,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     CurCodePos: PCodeXYPosition;
     i: Integer;
   begin
+    Result:=shrHelpNotFound;
     ListOfPCodeXYPosition:=nil;
     PascalHelpContextLists:=nil;
     try
@@ -1159,9 +1086,9 @@ begin
   if mrOk<>LoadCodeBuffer(CodeBuffer,FileName,[lbfCheckIfText],false) then
     exit;
     
-  Result:=CollectKeyWords(CodeBuffer);
+  Result:=CollectDeclarations(CodeBuffer);
   if Result=shrSuccess then exit;
-  CollectDeclarations(CodeBuffer);
+  Result:=CollectKeyWords(CodeBuffer);
 end;
 
 function TIDEHelpManager.ConvertCodePosToPascalHelpContext(

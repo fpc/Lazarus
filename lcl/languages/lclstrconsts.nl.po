@@ -647,11 +647,15 @@ msgid "%s: Already registered"
 msgstr "%s: Al vastgelegd"
 
 #: lclstrconsts.rshelpcontextnotfound
-msgid "Help Context not found"
+#, fuzzy
+#| msgid "Help Context not found"
+msgid "A help database was found for this topic, but this topic was not found"
 msgstr "Help Context niet gevonden"
 
 #: lclstrconsts.rshelpdatabasenotfound
-msgid "Help Database not found"
+#, fuzzy
+#| msgid "Help Database not found"
+msgid "There is no help database installed for this topic"
 msgstr "Help Database niet gevonden"
 
 #: lclstrconsts.rshelperror
@@ -691,11 +695,15 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Geen help gevonden voor regel %d, kolom %d van %s. "
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help nodes available"
+#, fuzzy
+#| msgid "No help nodes available"
+msgid "No help entries available for this topic"
 msgstr "Geen help nodes beschikbaar"
 
 #: lclstrconsts.rshelpnotfound
-msgid "Help not found"
+#, fuzzy
+#| msgid "Help not found"
+msgid "No help found for this topic"
 msgstr "Help niet gevonden"
 
 #: lclstrconsts.rshelpnotregistered
@@ -715,7 +723,9 @@ msgid "Help Viewer Error"
 msgstr "Help Viewer Fout"
 
 #: lclstrconsts.rshelpviewernotfound
-msgid "Help Viewer not found"
+#, fuzzy
+#| msgid "Help Viewer not found"
+msgid "No viewer was found for this type of help content"
 msgstr "Help Viewer niet gevonden"
 
 #: lclstrconsts.rshighlightcolorcaption

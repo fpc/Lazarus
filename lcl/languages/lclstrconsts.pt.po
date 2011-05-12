@@ -646,11 +646,15 @@ msgid "%s: Already registered"
 msgstr "%s: já registrado"
 
 #: lclstrconsts.rshelpcontextnotfound
-msgid "Help Context not found"
+#, fuzzy
+#| msgid "Help Context not found"
+msgid "A help database was found for this topic, but this topic was not found"
 msgstr "Ajuda contextual não encontrada"
 
 #: lclstrconsts.rshelpdatabasenotfound
-msgid "Help Database not found"
+#, fuzzy
+#| msgid "Help Database not found"
+msgid "There is no help database installed for this topic"
 msgstr "Banco de dados de ajuda não encontrado"
 
 #: lclstrconsts.rshelperror
@@ -690,11 +694,15 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Nenhuma ajuda encontrada para a linha %d, coluna %d de %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-msgid "No help nodes available"
+#, fuzzy
+#| msgid "No help nodes available"
+msgid "No help entries available for this topic"
 msgstr "Nenhum nó de ajuda disponível"
 
 #: lclstrconsts.rshelpnotfound
-msgid "Help not found"
+#, fuzzy
+#| msgid "Help not found"
+msgid "No help found for this topic"
 msgstr "Ajuda não encontrada"
 
 #: lclstrconsts.rshelpnotregistered
@@ -714,7 +722,9 @@ msgid "Help Viewer Error"
 msgstr "Erro no visualizador de ajuda"
 
 #: lclstrconsts.rshelpviewernotfound
-msgid "Help Viewer not found"
+#, fuzzy
+#| msgid "Help Viewer not found"
+msgid "No viewer was found for this type of help content"
 msgstr "Visualizador de ajuda não encontrado"
 
 #: lclstrconsts.rshighlightcolorcaption

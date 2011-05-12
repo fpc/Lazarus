@@ -395,12 +395,12 @@
         <UnitName Value="AboutFrm"/>
       </Unit48>
       <Unit49>
-        <Filename Value="helpmanager.pas"/>
+        <Filename Value="idehelpmanager.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="HelpSelectorDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="HelpManager"/>
+        <UnitName Value="IDEHelpManager"/>
       </Unit49>
       <Unit50>
         <Filename Value="../designer/askcompnamedlg.pas"/>

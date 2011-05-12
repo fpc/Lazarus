@@ -401,12 +401,12 @@ resourceString
     +'Database %s%s%s.';
   rsHelpHelpContextNotFound = 'Help context %s not found.';
   rsHelpNoHelpFoundForSource = 'No help found for line %d, column %d of %s.';
-  rsHelpNoHelpNodesAvailable = 'No help nodes available';
+  rsHelpNoHelpNodesAvailable = 'No help entries available for this topic';
   rsHelpError = 'Help Error';
-  rsHelpDatabaseNotFound = 'Help Database not found';
-  rsHelpContextNotFound = 'Help Context not found';
-  rsHelpViewerNotFound = 'Help Viewer not found';
-  rsHelpNotFound = 'Help not found';
+  rsHelpDatabaseNotFound = 'There is no help database installed for this topic';
+  rsHelpContextNotFound = 'A help database was found for this topic, but this topic was not found';
+  rsHelpViewerNotFound = 'No viewer was found for this type of help content';
+  rsHelpNotFound = 'No help found for this topic';
   rsHelpViewerError = 'Help Viewer Error';
   rsHelpSelectorError = 'Help Selector Error';
   rsUnknownErrorPleaseReportThisBug = 'Unknown Error, please report this bug';
