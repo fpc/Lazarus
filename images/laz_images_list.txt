@@ -136,10 +136,14 @@ states/state_warning.png
 codeexplorer/ce_class.png
 codeexplorer/ce_const.png
 codeexplorer/ce_default.png
+codeexplorer/ce_deprecated.png
+codeexplorer/ce_experimental.png
 codeexplorer/ce_finalization.png
 codeexplorer/ce_implementation.png
 codeexplorer/ce_initialization.png
 codeexplorer/ce_interface.png
+codeexplorer/ce_library.png
+codeexplorer/ce_platform.png
 codeexplorer/ce_procedure.png
 codeexplorer/ce_function.png
 codeexplorer/ce_program.png
@@ -147,6 +151,7 @@ codeexplorer/ce_property.png
 codeexplorer/ce_property_readonly.png
 codeexplorer/ce_section.png
 codeexplorer/ce_type.png
+codeexplorer/ce_unimplemented.png
 codeexplorer/ce_unit.png
 codeexplorer/ce_variable.png
 codeexplorer/show_source.png

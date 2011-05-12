@@ -4292,17 +4292,22 @@ images/btn_downarrow.png -text
 images/codeexplorer/ce_class.png -text
 images/codeexplorer/ce_const.png -text
 images/codeexplorer/ce_default.png -text
+images/codeexplorer/ce_deprecated.png -text
+images/codeexplorer/ce_experimental.png -text
 images/codeexplorer/ce_finalization.png -text
 images/codeexplorer/ce_function.png -text
 images/codeexplorer/ce_implementation.png -text
 images/codeexplorer/ce_initialization.png -text
 images/codeexplorer/ce_interface.png -text
+images/codeexplorer/ce_library.png -text
+images/codeexplorer/ce_platform.png -text
 images/codeexplorer/ce_procedure.png -text
 images/codeexplorer/ce_program.png -text
 images/codeexplorer/ce_property.png -text
 images/codeexplorer/ce_property_readonly.png -text svneol=unset#image/png
 images/codeexplorer/ce_section.png -text svneol=unset#image/png
 images/codeexplorer/ce_type.png -text
+images/codeexplorer/ce_unimplemented.png -text
 images/codeexplorer/ce_unit.png -text
 images/codeexplorer/ce_variable.png -text
 images/codeexplorer/show_category.png -text
