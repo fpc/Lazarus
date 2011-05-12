@@ -4797,7 +4797,7 @@ var
   Event: QLCLMessageEventH;
 begin
   Result := 0;
-  if HandleWnd <> 0 then
+  if (HandleWnd <> 0) and (Widget.Widget <> nil) then
   begin
     Event := QLCLMessageEvent_create(QEventLCLMessage, Msg, wParam, lParam, 0);
     try
