@@ -224,8 +224,8 @@ begin
   lblGroup.Caption := lisGroup + ':';
   gbActions.Caption := lisActions;
   chkActionBreak.Caption := lisBreak;
-  chkEnableGroups.Caption := lisEnableGroup;
-  chkDisableGroups.Caption := lisDisableGroup;
+  chkEnableGroups.Caption := lisEnableGroups;
+  chkDisableGroups.Caption := lisDisableGroups;
   chkEvalExpression.Caption := lisEvalExpression;
   chkLogMessage.Caption := lisLogMessage;
   chkLogCallStack.Caption := lisLogCallStack;

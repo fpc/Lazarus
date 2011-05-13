@@ -4635,8 +4635,8 @@ resourcestring
   lisDeleteAllBreakpoints = 'Delete all breakpoints?';
   lisDeleteAllBreakpoints2 = 'Delete all breakpoints in file %s%s%s?';
   lisBreak = 'Break';
-  lisEnableGroup = 'Enable Group';
-  lisDisableGroup = 'Disable Group';
+  lisEnableGroups = 'Enable Groups';
+  lisDisableGroups = 'Disable Groups';
   lisLogMessage = 'Log Message';
   lisLogCallStack = 'Log Call Stack';
   lisLogCallStackLimit = '(frames limit. 0 - no limits)';
