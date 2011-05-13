@@ -556,7 +556,7 @@ begin
     if result>0 then result:=-1;
   end;
   if assigned(OnCompareCells) then
-    OnCompareCells(Self, ACol,ARow,BCol,BRow, soAscending, Result);
+    OnCompareCells(Self, ACol,ARow,BCol,BRow, Result);
 end;
 
 procedure TSemaphorGrid.DeleteColumn(j:integer);

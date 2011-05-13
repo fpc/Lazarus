@@ -54,7 +54,7 @@ type
     ContextTree: TTreeView;
     procedure ActionGridHeaderClick(Sender: TObject; IsColumn: Boolean; Index: Integer);
     procedure ActionGridCompareCells(Sender: TObject; ACol, ARow, BCol, BRow: Integer;
-      ASortOrder: TSortOrder; var Result: integer);
+      var Result: integer);
     procedure ActionGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure ActionGridMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -145,7 +145,7 @@ begin
 end;
 
 procedure TEditorMouseOptionsAdvFrame.ActionGridCompareCells(Sender: TObject; ACol, ARow, BCol,
-  BRow: Integer; ASortOrder: TSortOrder; var Result: integer);
+  BRow: Integer; var Result: integer);
   function CompareCol(i : Integer) : Integer;
   var
     j: Integer;

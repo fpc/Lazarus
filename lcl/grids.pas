@@ -291,7 +291,7 @@ type
 
   TOnCompareCells =
     procedure (Sender: TObject; ACol, ARow, BCol,BRow: Integer;
-               ASortOrder: TSortOrder; var Result: integer) of object;
+               var Result: integer) of object;
 
   TSelectEditorEvent =
     procedure(Sender: TObject; aCol, aRow: Integer;
@@ -6040,7 +6040,7 @@ function TCustomGrid.DoCompareCells(Acol, ARow, Bcol, BRow: Integer): Integer;
 begin
   result := 0;
   if Assigned(OnCompareCells) then
-    OnCompareCells(Self, ACol, ARow, BCol, BRow, FSortOrder, Result);
+    OnCompareCells(Self, ACol, ARow, BCol, BRow, Result);
 end;
 
 procedure TCustomGrid.DoCopyToClipboard;
