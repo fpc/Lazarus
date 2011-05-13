@@ -131,6 +131,7 @@ begin
   if chkLogCallStack.Checked then Include(Actions, bpaLogCallStack);
   FBreakpoint.Actions := Actions;
   FBreakpoint.LogMessage := edtLogMessage.Text;
+  FBreakpoint.LogCallStackLimit := edtLogCallStack.Value;
 
   InputHistories.HistoryLists.GetList('BreakPointExpression', True).Add(edtCondition.Text);
 end;

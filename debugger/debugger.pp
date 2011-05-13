@@ -4466,12 +4466,40 @@ begin
 end;
 
 procedure TDBGBreakPoint.DoLogCallStack(const Limit: Integer);
+const
+  Spacing = '    ';
+var
+  CallStack: TCallStack;
+  I, Count: Integer;
+  Entry: TCallStackEntry;
+  StackString: String;
 begin
+  Debugger.SetState(dsPause);
+  CallStack := Debugger.CallStack.CurrentCallStackList.EntriesForThreads[Debugger.Threads.CurrentThreads.CurrentThreadId];
   if Limit = 0 then
-    Debugger.DoDbgEvent(ecBreakpoint, etBreakpointMessage, 'Breakpoint Call Stack: Log all stack frames')
+  begin
+    Debugger.DoDbgEvent(ecBreakpoint, etBreakpointMessage, 'Breakpoint Call Stack: Log all stack frames');
+    Count := CallStack.Count;
+    CallStack.PrepareRange(0, Count);
+  end
   else
+  begin
     Debugger.DoDbgEvent(ecBreakpoint, etBreakpointMessage, Format('Breakpoint Call Stack: Log %d stack frames', [Limit]));
-  Debugger.DoDbgEvent(ecBreakpoint, etBreakpointStackDump, '    TODO: unimplemented');
+    Count := Min(CallStack.Count, Limit);
+    CallStack.PrepareRange(0, Count);
+  end;
+
+  for I := 0 to Count - 1 do
+  begin
+    Entry := CallStack.Entries[I];
+    StackString := Spacing + Entry.Source;
+    if StackString = '' then // we do not have a source file => just show an adress
+      StackString := ':' + IntToHex(Entry.Address, 8);
+    StackString := StackString + ' ' + Entry.GetFunctionWithArg;
+    StackString := StackString + ' line ' + IntToStr(Entry.Line);
+
+    Debugger.DoDbgEvent(ecBreakpoint, etBreakpointStackDump, StackString);
+  end;
 end;
 
 function TDBGBreakPoint.GetDebugger: TDebugger;
