@@ -6666,7 +6666,7 @@ var
                 // operator: ctnVarDefinition,ctnIdentifier
                 // function: ctnIdentifier
                 ExprType.Desc:=xtContext;
-                ExprType.Context.Node:=ProcNode.FirstChild;
+                ExprType.Context.Node:=ResultNode;
                 exit;
               end;
               ResultNode:=ResultNode.NextBrother;
@@ -10476,8 +10476,6 @@ begin
 end;
 
 procedure TFindDeclarationParams.PrettifyResult;
-var
-  Node: TCodeTreeNode;
 begin
   // adjust result for nicer position
   if (NewNode<>nil) then begin
@@ -10493,19 +10491,6 @@ begin
         // jump to the procedure name
         NewNode:=NewNode.FirstChild;
         NewCleanPos:=NewNode.StartPos;
-      end;
-    ctnProcedureHead:
-      begin
-        // instead of jumping to the name, jump to the result variable/type
-        Node:=NewNode.FirstChild;
-        while Node<>nil do begin
-          if Node.Desc in [ctnVarDefinition,ctnIdentifier] then begin
-            NewNode:=Node;
-            NewCleanPos:=NewNode.StartPos;
-            break;
-          end;
-          Node:=Node.NextBrother;
-        end;
       end;
     ctnGenericType:
       if (NewNode.FirstChild<>nil) then begin
