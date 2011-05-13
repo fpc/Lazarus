@@ -4037,6 +4037,7 @@ begin
   then begin
     TIDEBreakPoint(Dest).Actions := FActions;
     TIDEBreakPoint(Dest).AutoContinueTime := FAutoContinueTime;
+    TIDEBreakPoint(Dest).Group := FGroup;
     TIDEBreakPoint(Dest).LogMessage := FLogMessage;
     TIDEBreakPoint(Dest).LogCallStackLimit := FLogCallStackLimit;
   end;
@@ -4984,13 +4985,14 @@ var
   OldGroup: TIDEBreakPointGroup;
 begin
   Clear;
-  NewCount:=XMLConfig.GetValue(Path+'Count',0);
-  for i:=0 to NewCount-1 do begin
-    NewGroup:=TIDEBreakPointGroup(inherited Add);
+  NewCount := XMLConfig.GetValue(Path+'Count', 0);
+  for i := 0 to NewCount - 1 do
+  begin
+    NewGroup := TIDEBreakPointGroup(inherited Add);
     NewGroup.LoadFromXMLConfig(XMLConfig,
                                Path+'Item'+IntToStr(i+1)+'/');
-    OldGroup:=FindGroupByName(NewGroup.Name,NewGroup);
-    if OldGroup<>nil then
+    OldGroup := FindGroupByName(NewGroup.Name, NewGroup);
+    if OldGroup <> nil then
       NewGroup.Free;
   end;
 end;
@@ -5004,17 +5006,17 @@ var
 begin
   Cnt:=Count;
   XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
-  for i:=0 to Cnt-1 do begin
-    CurGroup:=Items[i];
+  for i := 0 to Cnt - 1 do
+  begin
+    CurGroup := Items[i];
     CurGroup.SaveToXMLConfig(XMLConfig,
                              Path+'Item'+IntToStr(i+1)+'/');
   end;
 end;
 
-function TIDEBreakPointGroups.GetGroupByName(const GroupName: string
-  ): TIDEBreakPointGroup;
+function TIDEBreakPointGroups.GetGroupByName(const GroupName: string): TIDEBreakPointGroup;
 begin
-  Result:=FindGroupByName(GroupName,nil);
+  Result := FindGroupByName(GroupName, nil);
 end;
 
 function TIDEBreakPointGroups.FindGroupByName(const GroupName: string;
@@ -5022,15 +5024,15 @@ function TIDEBreakPointGroups.FindGroupByName(const GroupName: string;
 var
   i: Integer;
 begin
-  i:=Count-1;
-  while i>=0 do begin
-    Result:=Items[i];
-    if (AnsiCompareText(Result.Name,GroupName)=0)
-    and (Ignore<>Result) then
-      exit;
-    dec(i);
+  i := Count - 1;
+  while i >= 0 do
+  begin
+    Result := Items[i];
+    if (AnsiCompareText(Result.Name, GroupName) = 0) and (Ignore <> Result) then
+      Exit;
+    Dec(i);
   end;
-  Result:=nil;
+  Result := nil;
 end;
 
 function TIDEBreakPointGroups.IndexOfGroupWithName(const GroupName: string;

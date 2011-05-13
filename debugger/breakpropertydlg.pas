@@ -98,6 +98,8 @@ end;
 procedure TBreakPropertyDlg.btnOKClick(Sender: TObject);
 var
   Actions: TIDEBreakPointActions;
+  GroupName: String;
+  NewGroup: TIDEBreakPointGroup;
 begin
   if FBreakpoint = nil then Exit;
 
@@ -120,7 +122,14 @@ begin
   //auto continue
   FBreakpoint.AutoContinueTime := StrToIntDef(edtAutocontinueMS.Text, FBreakpoint.AutoContinueTime);
   // group
-  FBreakpoint.Group := DebugBoss.BreakPointGroups.GetGroupByName(cmbGroup.Text);
+  GroupName := cmbGroup.Text;
+  NewGroup := DebugBoss.BreakPointGroups.GetGroupByName(GroupName);
+  if not Assigned(NewGroup) and (GroupName <> '') then
+  begin
+    NewGroup := TIDEBreakPointGroup(DebugBoss.BreakPointGroups.Add);
+    NewGroup.Name := GroupName;
+  end;
+  FBreakpoint.Group := NewGroup;
   // actions
   Actions := [];
   if chkActionBreak.Checked then Include(Actions, bpaStop);
@@ -145,6 +154,7 @@ end;
 procedure TBreakPropertyDlg.UpdateInfo;
 var
   Actions: TIDEBreakPointActions;
+  I: Integer;
 begin
   if FBreakpoint = nil then Exit;
   case FBreakpoint.Kind of
@@ -169,6 +179,8 @@ begin
   // auto continue
   edtAutocontinueMS.Text := IntToStr(FBreakpoint.AutoContinueTime);
   // group
+  for I := 0 to DebugBoss.BreakPointGroups.Count - 1 do
+    cmbGroup.Items.Add(DebugBoss.BreakPointGroups[I].Name);
   if FBreakpoint.Group = nil
   then cmbGroup.Text := ''
   else cmbGroup.Text := FBreakpoint.Group.Name;
