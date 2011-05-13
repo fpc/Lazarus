@@ -6,16 +6,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 
 #: projecttemplates.sbtncancel
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: projecttemplates.sbtnok
 msgid "&OK"
-msgstr ""
+msgstr "&OK"
 
 #: projecttemplates.serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""

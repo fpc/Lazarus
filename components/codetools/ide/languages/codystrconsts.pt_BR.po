@@ -11,23 +11,23 @@ msgstr ""
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign method"
-msgstr ""
+msgstr "Adicionar método \"Assign\""
 
 #: codystrconsts.crsaddassignmethod2
 msgid "Add Assign method ..."
-msgstr ""
+msgstr "Adicionar método \"Assign\" ..."
 
 #: codystrconsts.crsaddcallinherited
 msgid "Add call inherited"
-msgstr ""
+msgstr "Adicionar chamada \"inherited\""
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: codystrconsts.crsbtnok
 msgid "&OK"
-msgstr ""
+msgstr "&OK"
 
 #: codystrconsts.crsbyfpccfg
 msgid "by fpc.cfg"
@@ -35,99 +35,99 @@ msgstr "por fpc.cfg"
 
 #: codystrconsts.crscamaddassignmethodtoclass
 msgid "Add Assign method to class %s"
-msgstr ""
+msgstr "Adicionar método \"Assign\" à classe %s"
 
 #: codystrconsts.crscamcallinherited
 msgid "Call inherited"
-msgstr ""
+msgstr "Chamar \"inherited\""
 
 #: codystrconsts.crscamcallinheritedonlyifwrongclass
 msgid "Call inherited only if wrong class"
-msgstr ""
+msgstr "Chamar \"inherited\" apenas se classe incorreta"
 
 #: codystrconsts.crscamcursorisnotinapascalclassdeclaration
 msgid "cursor is not in a pascal class declaration"
-msgstr ""
+msgstr "cursor não está em uma declaração de classe pascal"
 
 #: codystrconsts.crscamexistsalready
 msgid "exists already"
-msgstr ""
+msgstr "já existente"
 
 #: codystrconsts.crscaminherited
 msgid "Inherited:"
-msgstr ""
+msgstr "Herdado:"
 
 #: codystrconsts.crscaminvalididentifier
 msgid "invalid identifier"
-msgstr ""
+msgstr "identificador inválido"
 
 #: codystrconsts.crscammethod
 msgid "Method:"
-msgstr ""
+msgstr "Método:"
 
 #: codystrconsts.crscammethodname
 msgid "Method name:"
-msgstr ""
+msgstr "Nome do método:"
 
 #: codystrconsts.crscamnewmethod
 msgid "New method:"
-msgstr ""
+msgstr "Novo método:"
 
 #: codystrconsts.crscamoverride
 msgid "Override"
-msgstr ""
+msgstr "Sobrecarga"
 
 #: codystrconsts.crscamparametername
 msgid "Parameter name:"
-msgstr ""
+msgstr "Nome do parâmetro:"
 
 #: codystrconsts.crscamparametertype
 msgid "Parameter type:"
-msgstr ""
+msgstr "Tipo do parâmetro:"
 
 #: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
 msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
-msgstr ""
+msgstr "Favor posicionar o cursor do editor de código em uma declaração de classe pascal antes de chamar \"Adicionar método Assign\"."
 
 #: codystrconsts.crscamprivate
 msgid "private"
-msgstr ""
+msgstr "private"
 
 #: codystrconsts.crscamproperty
 msgid "%s property"
-msgstr ""
+msgstr "propriedade %s"
 
 #: codystrconsts.crscamprotected
 msgid "protected"
-msgstr ""
+msgstr "protected"
 
 #: codystrconsts.crscampublic
 msgid "public"
-msgstr ""
+msgstr "public"
 
 #: codystrconsts.crscampublished
 msgid "published"
-msgstr ""
+msgstr "published"
 
 #: codystrconsts.crscamselectmemberstoassign
 msgid "Select members to assign:"
-msgstr ""
+msgstr "Selecionar membros para atribuição:"
 
 #: codystrconsts.crscamthereisnoinheritedmethod
 msgid "There is no inherited method."
-msgstr ""
+msgstr "Não existe nenhum método herdado."
 
 #: codystrconsts.crscamvar
 msgid "%s var"
-msgstr ""
+msgstr "var %s"
 
 #: codystrconsts.crscamvisibility
 msgid "?visibility?"
-msgstr ""
+msgstr "?visibilidade?"
 
 #: codystrconsts.crscamwrittenbyproperty
 msgid "%s, written by property %s"
-msgstr ""
+msgstr "%s, escrito pela propriedade %s"
 
 #: codystrconsts.crsclose
 msgid "&Close"
@@ -163,19 +163,19 @@ msgstr ""
 
 #: codystrconsts.crscwerror
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 #: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
 msgid "Please place the cursor of the source editor on a With variable."
-msgstr ""
+msgstr "Favor posicionar o cursor do editor de código em uma variável \"With\""
 
 #: codystrconsts.crsdeclarevariable
 msgid "Declare Variable"
-msgstr ""
+msgstr "Declarar Variável"
 
 #: codystrconsts.crsdeclarevariable2
 msgid "Declare Variable ..."
-msgstr ""
+msgstr "Declarar Variável ..."
 
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
@@ -183,7 +183,7 @@ msgstr "Gbytes"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert file at cursor ..."
-msgstr ""
+msgstr "Inserir arquivo na posição do cursor ..."
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -235,17 +235,16 @@ msgstr "Saída do Projeto"
 
 #: codystrconsts.crsremovewithblock
 msgid "Remove With block"
-msgstr ""
+msgstr "Remover bloco \"With\""
 
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "localizando ..."
 
 #: codystrconsts.crsshowusedppufiles
-#, fuzzy
 #| msgid "Show used .ppu files"
 msgid "Show used .ppu files ..."
-msgstr "Exibir arquivos .ppu usados"
+msgstr "Exibir arquivos .ppu usados ..."
 
 #: codystrconsts.crssizeofofile
 msgid "Size of .o file"

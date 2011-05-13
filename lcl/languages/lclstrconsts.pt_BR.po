@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
@@ -27,7 +27,7 @@ msgstr "Impossível encontrar um navegador \"HTML\"."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr ""
+msgstr "Nenhum navegador HTML encontrado.%sFavor definir um em Ferramentas -> Opções -> Ajuda -> Opções de Ajuda"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
@@ -645,16 +645,14 @@ msgid "%s: Already registered"
 msgstr "%s: já registrado"
 
 #: lclstrconsts.rshelpcontextnotfound
-#, fuzzy
 #| msgid "Help Context not found"
 msgid "A help database was found for this topic, but this topic was not found"
-msgstr "Ajuda contextual não encontrada"
+msgstr "Um banco de dados de ajuda foi encontrado, mas este tópico não foi encontrado"
 
 #: lclstrconsts.rshelpdatabasenotfound
-#, fuzzy
 #| msgid "Help Database not found"
 msgid "There is no help database installed for this topic"
-msgstr "Banco de dados de ajuda não encontrado"
+msgstr "Não há nenhum banco de dados de ajuda instalado para este tópico"
 
 #: lclstrconsts.rshelperror
 msgid "Help Error"
@@ -693,16 +691,14 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Nenhuma ajuda encontrada para a linha %d, coluna %d de %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#, fuzzy
 #| msgid "No help nodes available"
 msgid "No help entries available for this topic"
-msgstr "Nenhum nó de ajuda disponível"
+msgstr "Nenhuma entrada de ajuda disponível para este tópico"
 
 #: lclstrconsts.rshelpnotfound
-#, fuzzy
 #| msgid "Help not found"
 msgid "No help found for this topic"
-msgstr "Ajuda não encontrada"
+msgstr "Nenhuma ajuda encontrada para este tópico"
 
 #: lclstrconsts.rshelpnotregistered
 msgid "%s: Not registered"
@@ -721,10 +717,9 @@ msgid "Help Viewer Error"
 msgstr "Erro no visualizador de ajuda"
 
 #: lclstrconsts.rshelpviewernotfound
-#, fuzzy
 #| msgid "Help Viewer not found"
 msgid "No viewer was found for this type of help content"
-msgstr "Visualizador de ajuda não encontrado"
+msgstr "Nenhum visualizador foi encontrado para este tipo de conteúdo de ajuda"
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"

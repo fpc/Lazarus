@@ -990,10 +990,9 @@ msgid "Down"
 msgstr "Abaixo"
 
 #: lazarusidestrconsts.dlgedadd
-#, fuzzy
 #| msgid "Add..."
 msgid "Add ..."
-msgstr "Adicionar..."
+msgstr "Adicionar ..."
 
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
@@ -1044,10 +1043,9 @@ msgid "Display"
 msgstr "Exibir"
 
 #: lazarusidestrconsts.dlgededit
-#, fuzzy
 #| msgid "Edit..."
 msgid "Edit ..."
-msgstr "Editar..."
+msgstr "Editar ..."
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor files"
@@ -2191,10 +2189,9 @@ msgid "Other actions using the same button"
 msgstr "Outras ações usando o mesmo botão"
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-#, fuzzy
 #| msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
 msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
-msgstr "Eles podem ser executados dependendo das teclas modificadores, configurações \"Falltrough\", Simples/Duplo, Acima/Abaixo..."
+msgstr "Eles podem ser executados dependendo das teclas modificadores, configurações \"Falltrough\", Simples/Duplo, Acima/Abaixo ..."
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
 msgid "Filter Mod-Keys"
@@ -2644,10 +2641,9 @@ msgid "Search terminated by user."
 msgstr "Procura terminada pelo usuário."
 
 #: lazarusidestrconsts.dlgsearchcaption
-#, fuzzy
 #| msgid "Searching..."
 msgid "Searching ..."
-msgstr "Procurando..."
+msgstr "Procurando ..."
 
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
@@ -3546,7 +3542,7 @@ msgstr "Adicionar parênteses parâmetros"
 
 #: lazarusidestrconsts.lisaddress
 msgid "Address:"
-msgstr ""
+msgstr "Endereço:"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -4077,10 +4073,9 @@ msgid "Ambiguous compiler"
 msgstr "Compilador ambíguo"
 
 #: lazarusidestrconsts.lisccochecktestdir
-#, fuzzy
 #| msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
-msgstr "Favor verificar o diretório Teste em %sAmbiente -> Opções Ambiente -> Arquivos -> Diretório para contrução de projetos teste"
+msgstr "Favor verificar o diretório Teste em %sFerramentas -> Opções -> Ambiente -> Arquivos -> Diretório para criação de projetos de teste"
 
 #: lazarusidestrconsts.lisccocompilernotanexe
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
@@ -5531,10 +5526,9 @@ msgid "Compiler filename"
 msgstr "Nome de arquivo do compilador"
 
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-#, fuzzy
 #| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
-msgstr "Dica: Você pode definir o caminho do compilador em Ambiente->Opções de Ambiente->Arquivos->Caminho do Compilador"
+msgstr "Dica: Você pode definir o caminho do compilador em Ferramentas -> Opções -> Ambiente -> Arquivos -> Caminho do Compilador"
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -5752,10 +5746,9 @@ msgid "* Converting file %s *"
 msgstr "* Convertendo arquivo %s *"
 
 #: lazarusidestrconsts.lisconvdelphiconvertingunitfiles
-#, fuzzy
 #| msgid "*** Converting unit files... ***"
 msgid "*** Converting unit files ... ***"
-msgstr "*** Convertendo arquivos unidades... ***"
+msgstr "*** Convertendo arquivos unidades ... ***"
 
 #: lazarusidestrconsts.lisconvdelphidelphipackagemainsourcedpkfilenotfoundforpackage
 msgid "Delphi package main source (.dpk) file not found for package%s%s"
@@ -5778,10 +5771,9 @@ msgid "Failed to convert unit%s%s%s"
 msgstr "Falha ao converter unidade%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifindallunitfiles
-#, fuzzy
 #| msgid "*** Find all unit files... ***"
 msgid "*** Find all unit files ... ***"
-msgstr "*** Localizar todos arquivos unidade ***"
+msgstr "*** Localizar todos arquivos unidade ... ***"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
 msgid "Fixed character case of unit \"%s\" to \"%s\"."
@@ -5833,10 +5825,9 @@ msgid "* Repairing form file %s *"
 msgstr "* Reparando arquivo formulário %s *"
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfiles
-#, fuzzy
 #| msgid "*** Repairing form files... ***"
 msgid "*** Repairing form files ... ***"
-msgstr "*** Reparando arquivos formulários... ***"
+msgstr "*** Reparando arquivos formulários ... ***"
 
 #: lazarusidestrconsts.lisconvdelphireplacedunitinusessection
 msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
@@ -6248,79 +6239,79 @@ msgstr "Copiar para Área Transferência"
 #: lazarusidestrconsts.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
-msgstr ""
+msgstr "Propriedades dos Pontos de Parada ..."
 
 #: lazarusidestrconsts.lisdbgemexpression
 msgid "&Expression:"
-msgstr ""
+msgstr "&Expressão:"
 
 #: lazarusidestrconsts.lisdbgemnewvalue
 msgid "&New value:"
-msgstr ""
+msgstr "&Novo valor:"
 
 #: lazarusidestrconsts.lisdbgemresult
 msgid "&Result:"
-msgstr ""
+msgstr "&Resultado:"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
-msgstr ""
+msgstr "Avaliação no Ponto de Parada"
 
 #: lazarusidestrconsts.lisdbgenbreakpointhit
 msgid "Breakpoint Hit"
-msgstr ""
+msgstr "Acerto no Ponto de Parada"
 
 #: lazarusidestrconsts.lisdbgenbreakpointmessage
 msgid "Breakpoint Message"
-msgstr ""
+msgstr "Mensagem no Ponto de Parada"
 
 #: lazarusidestrconsts.lisdbgenbreakpointstackdump
 msgid "Breakpoint Stack Dump"
-msgstr ""
+msgstr "Despejo da Pilha no Ponto de Parada"
 
 #: lazarusidestrconsts.lisdbgendefaultcolor
 msgid "Default Color"
-msgstr ""
+msgstr "Cor Padrão"
 
 #: lazarusidestrconsts.lisdbgenexceptionraised
 msgid "Exception Raised"
-msgstr ""
+msgstr "Exceção Elevada"
 
 #: lazarusidestrconsts.lisdbgenmoduleload
 msgid "Module Load"
-msgstr ""
+msgstr "Carregamento de Módulo"
 
 #: lazarusidestrconsts.lisdbgenmoduleunload
 msgid "Module Unload"
-msgstr ""
+msgstr "Descarregamento de Módulo"
 
 #: lazarusidestrconsts.lisdbgenoutputdebugstring
 msgid "Output Debug String"
-msgstr ""
+msgstr "\"String\" de Saída de Depuração"
 
 #: lazarusidestrconsts.lisdbgenprocessexit
 msgid "Process Exit"
-msgstr ""
+msgstr "Término de Processo"
 
 #: lazarusidestrconsts.lisdbgenprocessstart
 msgid "Process Start"
-msgstr ""
+msgstr "Início de Processo"
 
 #: lazarusidestrconsts.lisdbgenthreadexit
 msgid "Thread Exit"
-msgstr ""
+msgstr "Término  de \"Thread\""
 
 #: lazarusidestrconsts.lisdbgenthreadstart
 msgid "Thread Start"
-msgstr ""
+msgstr "Início de \"Thread\""
 
 #: lazarusidestrconsts.lisdbgenwindowsmessageposted
 msgid "Windows Message Posted"
-msgstr ""
+msgstr "Mensagem Windows Postada"
 
 #: lazarusidestrconsts.lisdbgenwindowsmessagesent
 msgid "Windows Message Sent"
-msgstr ""
+msgstr "Mensagem Windows Enviada"
 
 #: lazarusidestrconsts.lisdbgitemdelete
 msgctxt "lazarusidestrconsts.lisdbgitemdelete"
@@ -6394,11 +6385,10 @@ msgid "More"
 msgstr "Mais"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackok
-#, fuzzy
 #| msgid "Ok"
 msgctxt "lazarusidestrconsts.lisdebuggerfeedbackok"
 msgid "OK"
-msgstr "Ok"
+msgstr "OK"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackstop
 msgctxt "lazarusidestrconsts.lisdebuggerfeedbackstop"
@@ -6484,7 +6474,6 @@ msgid "Language Exceptions"
 msgstr "Exceções de Idioma"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlimitlinecountto
-#, fuzzy
 #| msgid "Limit linecount to"
 msgid "Limit line count to"
 msgstr "Limitar contagem de linha em"
@@ -6792,9 +6781,9 @@ msgstr "Desativar Ponto de Parada"
 msgid "Disabled"
 msgstr "Desativado"
 
-#: lazarusidestrconsts.lisdisablegroups
-msgid "Disable Groups"
-msgstr ""
+#: lazarusidestrconsts.lisdisablegroup
+msgid "Disable Group"
+msgstr "Desativar Grupo"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -7170,9 +7159,9 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Ativo"
 
-#: lazarusidestrconsts.lisenablegroups
-msgid "Enable Groups"
-msgstr ""
+#: lazarusidestrconsts.lisenablegroup
+msgid "Enable Group"
+msgstr "Ativar Grupo"
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -7429,23 +7418,23 @@ msgstr "A&valiar"
 
 #: lazarusidestrconsts.liseventlogclear
 msgid "Clear Events"
-msgstr ""
+msgstr "Limpar Eventos"
 
 #: lazarusidestrconsts.liseventlogoptions
 msgid "Event Log Options ..."
-msgstr ""
+msgstr "Opções do Registro de Eventos ..."
 
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
-msgstr ""
+msgstr "Salvar Eventos para Arquivo"
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."
-msgstr ""
+msgstr "Adicionar Comentário ..."
 
 #: lazarusidestrconsts.liseventslogaddcomment2
 msgid "Add Comment"
-msgstr ""
+msgstr "Adicionar Comentário"
 
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number:"
@@ -8297,26 +8286,23 @@ msgid "Index"
 msgstr "Índice"
 
 #: lazarusidestrconsts.lisinfobuildabort
-#, fuzzy
 #| msgid "Aborted..."
 msgid "Aborted ..."
-msgstr "Abortado..."
+msgstr "Abortado ..."
 
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr "Compilar Projeto"
 
 #: lazarusidestrconsts.lisinfobuildcomplile
-#, fuzzy
 #| msgid "Compiling..."
 msgid "Compiling ..."
-msgstr "Compilando..."
+msgstr "Compilando ..."
 
 #: lazarusidestrconsts.lisinfobuilderror
-#, fuzzy
 #| msgid "Error..."
 msgid "Error ..."
-msgstr "Erro..."
+msgstr "Erro ..."
 
 #: lazarusidestrconsts.lisinfobuilderrors
 msgid "Errors:"
@@ -8345,10 +8331,9 @@ msgid "Project:"
 msgstr "Projeto:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
-#, fuzzy
 #| msgid "Success..."
 msgid "Success ..."
-msgstr "Sucesso..."
+msgstr "Sucesso ..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
 msgid "Warnings:"
@@ -9408,11 +9393,10 @@ msgid "None"
 msgstr "Nenhum"
 
 #: lazarusidestrconsts.lislazbuildok
-#, fuzzy
 #| msgid "Ok"
 msgctxt "lazarusidestrconsts.lislazbuildok"
 msgid "OK"
-msgstr "Ok"
+msgstr "OK"
 
 #: lazarusidestrconsts.lislazbuildoptimizedide
 msgid "Optimized IDE"
@@ -9637,16 +9621,7 @@ msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Valor"
 
-#: lazarusidestrconsts.lislogcallstack
-msgid "Log Call Stack"
-msgstr ""
-
-#: lazarusidestrconsts.lislogcallstacklimit
-msgid "(frames limit. 0 - no limits)"
-msgstr ""
-
 #: lazarusidestrconsts.lislogmessage
-#, fuzzy
 #| msgid "Log message"
 msgid "Log Message"
 msgstr "Mensagem registro"
@@ -9938,7 +9913,7 @@ msgstr "Converter unidade Delphi para Lazarus ..."
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #| msgid "Convert binary DFM file to text LFM and check syntax ..."
 msgid "Convert binary DFM to text LFM + check syntax ..."
-msgstr "Converter DFN binário para LFM texto + verificar sintaxe ..."
+msgstr "Converter DFM binário para LFM texto + verificar sintaxe ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
 msgid "Convert encoding of projects/packages ..."
@@ -9990,10 +9965,9 @@ msgid "Install/Uninstall packages ..."
 msgstr "Instalar/Desinstalar pacotes ..."
 
 #: lazarusidestrconsts.lismenueditor
-#, fuzzy
 #| msgid "Menu Editor..."
 msgid "Menu Editor ..."
-msgstr "Editor Menu..."
+msgstr "Editor Menu ..."
 
 #: lazarusidestrconsts.lismenueditorcancel
 msgctxt "lazarusidestrconsts.lismenueditorcancel"
@@ -10005,10 +9979,9 @@ msgid "Create Submenu"
 msgstr "Criar Submenu"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-#, fuzzy
 #| msgid "Delete From Template..."
 msgid "Delete From Template ..."
-msgstr "Excluir do Modelo..."
+msgstr "Excluir do Modelo ..."
 
 #: lazarusidestrconsts.lismenueditordeleteitem
 msgid "Delete Item"
@@ -10019,10 +9992,9 @@ msgid "Handle OnClick Event"
 msgstr "Manipulador Evento \"OnClick\""
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-#, fuzzy
 #| msgid "Insert From Template..."
 msgid "Insert From Template ..."
-msgstr "Inserir do Modelo..."
+msgstr "Inserir do Modelo ..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
 msgid "Insert New Item (after)"
@@ -10045,16 +10017,14 @@ msgid "Move Up (or left)"
 msgstr "Mover Acima (ou esquerda)"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-#, fuzzy
 #| msgid "New Template Description..."
 msgid "New Template Description ..."
-msgstr "Nova Descrição de Modelo..."
+msgstr "Nova Descrição do Modelo ..."
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-#, fuzzy
 #| msgid "Save As Template..."
 msgid "Save As Template ..."
-msgstr "Salvar Como Modelo..."
+msgstr "Salvar Modelo Como ..."
 
 #: lazarusidestrconsts.lismenueditorselectmenu
 msgid "Select Menu:"
@@ -10069,10 +10039,9 @@ msgid "Template Preview"
 msgstr "Visualizar Modelo"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
-#, fuzzy
 #| msgid "Enclose in $IFDEF..."
 msgid "Enclose in $IFDEF ..."
-msgstr "Circundar $IFDEF..."
+msgstr "Circundar $IFDEF ..."
 
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
@@ -10413,10 +10382,9 @@ msgid "&Replace ..."
 msgstr "&Substituir ..."
 
 #: lazarusidestrconsts.lismenureportingbug
-#, fuzzy
 #| msgid "Reporting a bug..."
 msgid "Reporting a bug ..."
-msgstr "Reportar uma falha (\"bug\")..."
+msgstr "Reportar uma falha (\"bug\") ..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC source directory"
@@ -10759,10 +10727,9 @@ msgid "Debug output"
 msgstr "Saída da Depuração"
 
 #: lazarusidestrconsts.lismenuviewforms
-#, fuzzy
 #| msgid "Forms..."
 msgid "Forms ..."
-msgstr "Formulários..."
+msgstr "Formulários ..."
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 #| msgid "View IDE speed buttons"
@@ -10845,10 +10812,9 @@ msgid "Unit Information ..."
 msgstr "Informações da Unidade ..."
 
 #: lazarusidestrconsts.lismenuviewunits
-#, fuzzy
 #| msgid "Units..."
 msgid "Units ..."
-msgstr "Unidades..."
+msgstr "Unidades ..."
 
 #: lazarusidestrconsts.lismenuviewwatches
 msgid "Watches"
@@ -12175,19 +12141,19 @@ msgstr "Unidade Virtual"
 
 #: lazarusidestrconsts.lispkgmacropackagedirectoryparameterispackageid
 msgid "Package directory. Parameter is package ID"
-msgstr ""
+msgstr "Diretório Pacotes. Parâmetro é a ID do pacote"
 
 #: lazarusidestrconsts.lispkgmacropackageincludefilessearchpathparameterispackageid
 msgid "Package include files search path. Parameter is package ID"
-msgstr ""
+msgstr "Caminho de busca de arquivos de inclusão de Pacotes. Parâmetro é a ID do pacote"
 
 #: lazarusidestrconsts.lispkgmacropackagesourcesearchpathparameterispackageid
 msgid "Package source search path. Parameter is package ID"
-msgstr ""
+msgstr "Caminho de busca de fonte de Pacote. Parâmetro é a ID do pacote"
 
 #: lazarusidestrconsts.lispkgmacropackageunitsearchpathparameterispackageid
 msgid "Package unit search path. Parameter is package ID"
-msgstr ""
+msgstr "Caminho de busca de unidade de Pacote. Parâmetro é a ID do pacote"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
 msgid "%sAdding new Dependency for package %s: package %s%s"
@@ -12896,7 +12862,7 @@ msgstr "Programa detectado"
 
 #: lazarusidestrconsts.lisprogramnotfound
 msgid "Program %s not found"
-msgstr ""
+msgstr "Programa %s não encontrado"
 
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
@@ -13543,10 +13509,9 @@ msgid "Save all messages to file"
 msgstr "Salvar todas as mensagens para arquivo"
 
 #: lazarusidestrconsts.lissaveallmodified
-#, fuzzy
 #| msgid "save all modified files"
 msgid "Save all modified files"
-msgstr "salvar todos os arquivos alterados"
+msgstr "Salvar todos os arquivos alterados"
 
 #: lazarusidestrconsts.lissaveandexitdialog
 msgid "Save and exit dialog"
@@ -13565,10 +13530,9 @@ msgid "Save changes to project %s?"
 msgstr "Salvar alterações no projeto \"%s\"?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-#, fuzzy
 #| msgid "save current editor file"
 msgid "Save current editor file"
-msgstr "salvar o arquivo atual do editor"
+msgstr "Salvar o arquivo atual do editor"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
@@ -13881,10 +13845,9 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "Fonte e Destino são os mesmos:%s%s"
 
 #: lazarusidestrconsts.lissourcebreakpoint
-#, fuzzy
 #| msgid "&Source Breakpoint..."
 msgid "&Source Breakpoint ..."
-msgstr "&Ponto de parada Fonte"
+msgstr "&Ponto de parada Fonte ..."
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
 msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
@@ -14042,7 +14005,7 @@ msgstr "Ordem tabulação de %s"
 
 #: lazarusidestrconsts.listaddressbreakpoint
 msgid "&Address Breakpoint ..."
-msgstr ""
+msgstr "&Endereço do Ponto de Parada ..."
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -14149,50 +14112,43 @@ msgid "The %s contains a star * character.%sLazarus uses this as normal characte
 msgstr "O %s contém um asterisco (*).%sLazarus usa este como um caractere normal e não o expande como uma máscara de arquivo."
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
-#, fuzzy
 #| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "O nome de arquivo atual do compilador %s%s%s%s não é um executável válido.%sClique Ok para escolher o padrão %s%s%s.%sCaso contrário verifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O nome de arquivo atual do compilador %s%s%s%s não é um executável válido.%sClique Ok para escolher o padrão %s%s%s.%sCaso contrário verifique Ferramentas -> Opções -> Ambiente -> Arquivos"
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutableplease
-#, fuzzy
 #| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Tools -> Options -> Files"
-msgstr "O nome de arquivo atual do compilador %s%s%s%snão é um executável válido.%sFavor verificar Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O nome de arquivo atual do compilador %s%s%s%snão é um executável válido.%sFavor verificar Ferramentas -> Opções -> Ambiente -> Arquivos"
 
 #: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
 msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
 msgstr "O FPC atual não tem um arquivo de configuração. Ele irá provavelmente perder algumas unidades. Verificar sua inslatação do FPC."
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
-#, fuzzy
 #| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "O diretório atual do fonte do Free Pascal %s%s%s%snão parece correto.%sClique Ok para escolher o padrão %s%s%s.%sCaso contrário verifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O diretório atual do fonte do Free Pascal %s%s%s%snão parece correto.%sClique Ok para escolher o padrão %s%s%s.%sCaso contrário verifique Ferramentas -> Opções -> Ambiente -> Arquivos"
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
-#, fuzzy
 #| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Tools -> Options -> Files"
-msgstr "O diretório atual do fonte do Free Pascal %s%s%s%snão parece correto.%sVerifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O diretório atual do fonte do Free Pascal %s%s%s%snão parece correto.%sVerifique Ferramentas -> Opções -> Ambiente -> Arquivos"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
-#, fuzzy
 #| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "O diretório atual do Lazarus %s%s%s%snão parece correto.%sSem ele você não poderá criar aplicações LCL.%sClique Ok para escolher o padrão %s%s%s.%sCaso contrário verifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O diretório atual do Lazarus %s%s%s%snão parece correto.%sSem ele você não poderá criar aplicações LCL.%sClique Ok para escolher o padrão %s%s%s.%sCaso contrário verifique Ferramentas -> Opções -> Ambiente -> Arquivos"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
-#, fuzzy
 #| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Tools -> Options -> Files"
-msgstr "O diretório atual do Lazarus %s%s%s%snão parece correto.%sSem ele você não poderá criar aplicações LCL.%sVerifique Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O diretório atual do Lazarus %s%s%s%snão parece correto.%sSem ele você não poderá criar aplicações LCL.%sVerifique Ferramentas -> Opções -> Ambiente -> Arquivos"
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-#, fuzzy
 #| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
-msgstr "O depurador %s%s%s%snão existe ou não é executável.%s%sVeja Ambiente -> Opções do Depurador"
+msgstr "O depurador %s%s%s%snão existe ou não é executável.%s%sVeja Ferramentas -> Opções -> Depurador"
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
@@ -14289,10 +14245,9 @@ msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended
 msgstr "O compilador Free Pascal (nome do arquivo: %s) não foi encontrado.%sRecomenda-se que você instale o fpc."
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
-#, fuzzy
 #| msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
-msgstr "O diretório do fonte Free Pascal não foi encontrado.%sAlgumas funções não funcionarão.%sRecomenda-se que você instale e configure o caminho%sAmbiente -> Opções de Ambiente -> Arquivos"
+msgstr "O diretório do fonte Free Pascal não foi encontrado.%sAlgumas funções não funcionarão.%sRecomenda-se que você instale e configure o caminho%sFerramentas -> Opções -> Ambiente -> Arquivos"
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
@@ -14319,10 +14274,9 @@ msgid "The Lazarus directory contains the sources of the IDE and the package fil
 msgstr "O diretório Lazarus contém os fontes da IDE e os arquivos de pacotes da LCL e muitos pacotes padrão. Por exemplo, ele contém o arquivo \"ide%slazarus.lpi\". Os arquivos de traduções estão localizados lá também."
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-#, fuzzy
 #| msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Tools -> Options -> Files"
-msgstr "O diretório Lazarus não foi encontrado.%sVocê não poderá criar aplicações LCL.%sFavor verificar Ambiente -> Opções de Ambiente -> Arquivos"
+msgstr "O diretório Lazarus não foi encontrado.%sVocê não poderá criar aplicações LCL.%sFavor verificar Ferramentas -> Opções -> Ambiente -> Arquivos"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
@@ -14421,10 +14375,9 @@ msgid "The project information file %s%s%s%shas changed on disk."
 msgstr "O arquivo de informações do projeto %s%s%s%sfoi alterado no disco."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
-#, fuzzy
 #| msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
-msgstr "O projeto deve ser salvo antes de construir%sSe você definir o diretório de Teste nas opções de ambiente,%svocê poderá criar novos projetos e contruí-los imediatamente.%sSalvar projeto?"
+msgstr "O projeto deve ser salvo antes de construir%sSe você definir o diretório de Teste nas opções da IDE,%svocê poderá criar novos projetos e contruí-los imediatamente.%sSalvar projeto?"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
@@ -14504,7 +14457,7 @@ msgstr "Os fontes dos pacotes Free Pascal são requeridos para navegação e com
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
-msgstr ""
+msgstr "O diretório de Teste não pode ser encontrado:%s%s%s%s%s(veja opções IDE)"
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
@@ -14952,10 +14905,9 @@ msgid "Unable to find file %s%s%s."
 msgstr "Impossível localizar o arquivo %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-#, fuzzy
 #| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
-msgstr "Impossível localizar arquivo %s%s%s.%sSe ele pertence ao seu projeto, verifique caminho de busca em%sProjeto->Opções Compilador...->Caminhos de Busca->Outros Arquivos Unidade. Se ele pertence a um pacote, verifique as opções de compilador do pacote apropriadas. Se ele pertence ao Lazarus, tenha certeza de uma compilação limpa. Se ele pertence ao FPC, verifique \"fpc.cfg\". Se não tiver certeza, verifique Projeto -> Opções Compilador... -> Teste"
+msgstr "Impossível localizar arquivo %s%s%s.%sSe ele pertence ao seu projeto, verifique caminho de busca em%sProjeto -> Opções de Projeto ... -> Opções do Compilador -> Caminhos -> Outros Arquivos de Unidade. Se ele pertence a um pacote, verifique as opções de compilador de pacotes apropriadas. Se ele pertence ao Lazarus, tenha certeza de uma compilação limpa. Se ele pertence ao FPC, verifique \"fpc.cfg\". Se não tiver certeza, verifique Projeto -> Opções Compilador... -> Teste"
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
 msgid "Unable to find %s in LFM Stream."
@@ -15337,11 +15289,10 @@ msgid "Copy version information to clipboard"
 msgstr "Copiar informações de versão para Área de Transferência"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-#, fuzzy
 #| msgid "Breakpoint Properties..."
 msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
 msgid "Breakpoint Properties ..."
-msgstr "Exibir Propriedades Pontos de Paradas"
+msgstr "Propriedades Pontos de Paradas ..."
 
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
@@ -15469,7 +15420,7 @@ msgstr "Diretório de trabalho para execução"
 
 #: lazarusidestrconsts.lisworkingdirectorynotfound
 msgid "Working directory %s not found"
-msgstr ""
+msgstr "Diretório de trabalho %s não encontrado"
 
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
@@ -17047,10 +16998,9 @@ msgid "Encoding"
 msgstr "Codificação"
 
 #: lazarusidestrconsts.uemevaluatemodify
-#, fuzzy
 #| msgid "&Evaluate/Modify..."
 msgid "&Evaluate/Modify ..."
-msgstr "&Avaliar/Modificar..."
+msgstr "&Avaliar/Modificar ..."
 
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
@@ -17065,10 +17015,9 @@ msgid "Highlighter"
 msgstr "Realçador"
 
 #: lazarusidestrconsts.ueminspect
-#, fuzzy
 #| msgid "&Inspect..."
 msgid "&Inspect ..."
-msgstr "&Inspecionar..."
+msgstr "&Inspecionar ..."
 
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"
