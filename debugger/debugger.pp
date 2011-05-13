@@ -4169,9 +4169,10 @@ begin
   Changed;
 end;
 
-procedure TIDEBreakPoint.DoHit(const ACount: Integer; var AContinue: Boolean );
+procedure TIDEBreakPoint.DoHit(const ACount: Integer; var AContinue: Boolean);
 begin
   inherited DoHit(ACount, AContinue);
+  AContinue := AContinue or not (bpaStop in Actions);
   if bpaLogMessage in Actions
   then FMaster.DoLogMessage(FLogMessage);
   if bpaLogCallStack in Actions
