@@ -17,6 +17,10 @@ msgstr "Добавить метод Assign"
 msgid "Add Assign method ..."
 msgstr "Добавить метод Assign ..."
 
+#: codystrconsts.crsaddcallinherited
+msgid "Add call inherited"
+msgstr ""
+
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
 msgstr "Отмена"

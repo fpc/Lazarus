@@ -107,7 +107,7 @@ type
     function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: string;
         Attr: TProcHeadAttributes): TCodeTreeNode;
     function FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
-        Attr: TProcHeadAttributes = [phpWithoutClassName,phpWithVarModifiers]
+        Attr: TProcHeadAttributes = [phpWithoutClassKeyword,phpWithoutClassName]
         ): TCodeTreeNode;
     function FindCorrespondingProcParamNode(ProcParamNode: TCodeTreeNode;
         Attr: TProcHeadAttributes = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers]

@@ -560,6 +560,7 @@ components/codetools/ide/codyfrm.lfm svneol=native#text/plain
 components/codetools/ide/codyfrm.pas svneol=native#text/plain
 components/codetools/ide/codyregistration.pas svneol=native#text/plain
 components/codetools/ide/codystrconsts.pas svneol=native#text/pascal
+components/codetools/ide/codyutils.pas svneol=native#text/pascal
 components/codetools/ide/declarevardlg.lfm svneol=native#text/plain
 components/codetools/ide/declarevardlg.pas svneol=native#text/pascal
 components/codetools/ide/languages/codystrconsts.it.po svneol=native#text/plain

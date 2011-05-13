@@ -8,7 +8,7 @@ interface
 
 uses
   PPUListDlg, CodyStrConsts, AddAssignMethodDlg, CodyCtrls, CodyFrm, 
-  CodyRegistration, DeclareVarDlg, LazarusPackageIntf;
+  CodyRegistration, DeclareVarDlg, CodyUtils, LazarusPackageIntf;
 
 implementation
 

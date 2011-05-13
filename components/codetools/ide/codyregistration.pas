@@ -32,8 +32,8 @@ interface
 uses
   Classes, SysUtils,
   IDECommands, MenuIntf,
-  LResources, CodyFrm, CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
-  DeclareVarDlg;
+  LResources, CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
+  CodyUtils;
 
 procedure Register;
 
@@ -50,6 +50,7 @@ var
   InsertFileAtCursorCommand: TIDECommand;
   //DeclareVariableCommand: TIDECommand;
   TVIconRes: TLResource;
+  AddCallInheritedCommand: TIDECommand;
 begin
   CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
   if CmdCatFileMenu=nil then
@@ -74,6 +75,13 @@ begin
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowPPUList);
   RegisterIDEMenuCommand(itmProjectWindowSection,'PPUList',crsShowUsedPpuFiles,
     nil,nil,PPUListCommand);
+
+  // add call inherited
+  AddCallInheritedCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddCallInherited',
+    crsAddCallInherited,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@AddCallInherited);
+  RegisterIDEMenuCommand(SrcEditSubMenuSource, 'AddCallInherited',
+    crsAddCallInherited, nil, nil, AddCallInheritedCommand);
 
   // declare variable
   {DeclareVariableCommand:=RegisterIDECommand(CmdCatCodeTools, 'DeclareVariable',

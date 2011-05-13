@@ -98,6 +98,7 @@ resourcestring
   crsBTNCancel = 'Cancel';
   crsDeclareVariable = 'Declare Variable';
   crsDeclareVariable2 = 'Declare Variable ...';
+  crsAddCallInherited = 'Add call inherited';
 
 implementation
 
