@@ -3257,7 +3257,6 @@ begin
         with FColumns[ColOfs].Title do
           ImageIndex := FOldImageIndex;
     end;
-    FSortColumn := index;
     // Show the sort glyph only if clicked column has a TGridColumn defined.
     ColOfs := index - FFixedCols;
     if (ColOfs > -1) and (ColOfs < FColumns.Count)
@@ -3265,13 +3264,14 @@ begin
     and (FDescImgInd < TitleImageList.Count) then
       with FColumns[ColOfs].Title do begin
         // Save previous ImageIndex of the clicked column.
-        if (ImageIndex <> FAscImgInd) and (ImageIndex <> FDescImgInd) then
+        if (index <> FSortColumn) then
           FOldImageIndex := ImageIndex;
         case FSortOrder of                // Show the right sort glyph.
           soAscending:  ImageIndex := FAscImgInd;
           soDescending: ImageIndex := FDescImgInd;
         end;
       end;
+    FSortColumn := index;
     Sort(True, index, FFixedRows, RowCount-1);
   end;
 end;
