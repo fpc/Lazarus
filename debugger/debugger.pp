@@ -5591,8 +5591,10 @@ end;
 
 function TWatches.Add(const AExpression: String): TWatch;
 begin
+  BeginUpdate;
   Result := TWatch(inherited Add);
   Result.Expression := AExpression;
+  EndUpdate;
 end;
 
 constructor TWatches.Create(const AWatchClass: TBaseWatchClass);
