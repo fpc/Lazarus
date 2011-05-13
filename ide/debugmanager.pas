@@ -251,12 +251,15 @@ type
     property SourceMark: TSourceMark read FSourceMark write SetSourceMark;
   end;
 
+  { TManagedBreakPoints }
+
   TManagedBreakPoints = class(TIDEBreakPoints)
   private
     FManager: TDebugManager;
   protected
     procedure NotifyAdd(const ABreakPoint: TIDEBreakPoint); override;
     procedure NotifyRemove(const ABreakPoint: TIDEBreakPoint); override;
+    procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(const AManager: TDebugManager);
   end;
@@ -317,6 +320,13 @@ begin
 
   TManagedBreakPoint(ABreakpoint).SourceMark.Free;
 
+  if Project1 <> nil
+  then Project1.Modified := True;
+end;
+
+procedure TManagedBreakPoints.Update(Item: TCollectionItem);
+begin
+  inherited Update(Item);
   if Project1 <> nil
   then Project1.Modified := True;
 end;
