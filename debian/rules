@@ -62,7 +62,7 @@ ifndef LAZBUILD
 LAZBUILD=${CURDIR}/lazbuild
 endif
 # Set default compilation options
-BUILDOPTS=
+BUILDOPTS=USESVN2REVISIONINC=0
 INSTALLOPTS=INSTALL_PREFIX=$(INSTALL_DIR)/usr
 # Configure patch system
 include /usr/share/quilt/quilt.make
@@ -126,11 +126,8 @@ build-arch: debian-files configure build-arch-stamp
 build-arch-stamp:
 	@echo "--- Building"
 	dh_testdir
-	$(MAKE) packager/registration lcl ideintf bigidecomponents examples $(BUILDOPTS)
-	$(MAKE) bigide USESVN2REVISIONINC=0 $(BUILDOPTS)
+	${MAKE} all ${BUILDOPTS}
 	${MV} $(CURDIR)/lazarus $(CURDIR)/lazarus-gtk2
-	$(MAKE) lazbuilder $(BUILDOPTS)
-	$(MAKE) tools $(BUILDOPTS)
 	touch build-arch-stamp
 
 install-arch: build-arch install-arch-stamp
