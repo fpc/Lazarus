@@ -177,7 +177,7 @@ type
     FSignals: TIDESignals;
     //FBreakPoints: TIDEBreakPoints;
     //FBreakPointGroups: TIDEBreakPointGroups;
-    FLocals: TIDELocals;
+    FLocals: TLocalsMonitor;
     FLineInfo: TIDELineInfo;
     FWatches: TWatchesMonitor;
     FThreads: TThreadsMonitor;
@@ -223,7 +223,7 @@ type
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
     property CallStack: TCallStackMonitor read FCallStack;
     property Disassembler: TIDEDisassembler read FDisassembler;
-    property Locals: TIDELocals read FLocals;
+    property Locals: TLocalsMonitor read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
     property Registers: TIDERegisters read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
@@ -377,7 +377,7 @@ begin
   FThreads := TThreadsMonitor.Create;
   FExceptions := TIDEExceptions.Create;
   FSignals := TIDESignals.Create;
-  FLocals := TIDELocals.Create;
+  FLocals := TLocalsMonitor.Create;
   FLineInfo := TIDELineInfo.Create;
   FCallStack := TCallStackMonitor.Create;
   FDisassembler := TIDEDisassembler.Create;
@@ -388,7 +388,7 @@ begin
   //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
   FWatches.Supplier := Result.Watches;
   FThreads.Supplier := Result.Threads;
-  FLocals.Master := Result.Locals;
+  FLocals.Supplier := Result.Locals;
   FLineInfo.Master := Result.LineInfo;
   FCallStack.Supplier := Result.CallStack;
   FDisassembler.Master := Result.Disassembler;
@@ -412,7 +412,7 @@ begin
   //TManagedBreakpoints(FBreakpoints).Master := nil;
   FWatches.Supplier := nil;
   FThreads.Supplier := nil;
-  FLocals.Master := nil;
+  FLocals.Supplier := nil;
   FLineInfo.Master := nil;
   FCallStack.Supplier := nil;
   FDisassembler.Master := nil;

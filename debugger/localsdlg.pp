@@ -40,13 +40,25 @@ uses
   ComCtrls, Debugger, DebuggerDlg;
 
 type
+
+  { TLocalsDlg }
+
   TLocalsDlg = class(TDebuggerDlg)
     lvLocals: TListView;
   private
-    FLocals: TIDELocals;
-    FLocalsNotification: TIDELocalsNotification;
+    FCallStackMonitor: TCallStackMonitor;
+    FLocalsMonitor: TLocalsMonitor;
+    FLocalsNotification: TLocalsNotification;
+    FThreadsMonitor: TThreadsMonitor;
+    FThreadsNotification: TThreadsNotification;
+    FCallstackNotification: TCallStackNotification;
+    procedure ContextChanged(Sender: TObject);
     procedure LocalsChanged(Sender: TObject);
-    procedure SetLocals(const AValue: TIDELocals);
+    procedure SetCallStackMonitor(const AValue: TCallStackMonitor);
+    procedure SetLocals(const AValue: TLocalsMonitor);
+    procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
+    function  GetThreadId: Integer;
+    function GetStackframe: Integer;
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
@@ -54,7 +66,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property Locals: TIDELocals read FLocals write SetLocals;
+    property LocalsMonitor: TLocalsMonitor read FLocalsMonitor write SetLocals;
+    property ThreadsMonitor: TThreadsMonitor read FThreadsMonitor write SetThreadsMonitor;
+    property CallStackMonitor: TCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
   end;
 
 
@@ -70,9 +84,18 @@ uses
 constructor TLocalsDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FLocalsNotification := TIDELocalsNotification.Create;
+  FLocalsNotification := TLocalsNotification.Create;
   FLocalsNotification.AddReference;
   FLocalsNotification.OnChange := @LocalsChanged;
+
+  FThreadsNotification := TThreadsNotification.Create;
+  FThreadsNotification.AddReference;
+  FThreadsNotification.OnCurrent := @ContextChanged;
+
+  FCallstackNotification := TCallStackNotification.Create;
+  FCallstackNotification.AddReference;
+  FCallstackNotification.OnCurrent   := @ContextChanged;
+
   Caption:= lisLocals;
   lvLocals.Columns[0].Caption:= lisLocalsDlgName;
   lvLocals.Columns[1].Caption:= lisLocalsDlgValue;
@@ -83,7 +106,16 @@ begin
   SetLocals(nil);
   FLocalsNotification.OnChange := nil;
   FLocalsNotification.ReleaseReference;
+  FThreadsNotification.OnCurrent := nil;
+  FThreadsNotification.ReleaseReference;
+  FCallstackNotification.OnCurrent := nil;
+  FCallstackNotification.ReleaseReference;
   inherited Destroy;
+end;
+
+procedure TLocalsDlg.ContextChanged(Sender: TObject);
+begin
+  LocalsChanged(nil);
 end;
 
 procedure TLocalsDlg.LocalsChanged(Sender: TObject);
@@ -92,17 +124,30 @@ var
   List: TStringList;
   Item: TListItem;
   S: String;
+  Locals: TLocals;
 begin                                        
+  if (FThreadsMonitor = nil) or (FCallStackMonitor = nil) then begin
+    lvLocals.Items.Clear;
+    exit;
+  end;
+  if GetStackframe < 0 then begin // TODO need dedicated validity property
+    lvLocals.Items.Clear;
+    exit;
+  end;
+
   List := TStringList.Create;
   try
     BeginUpdate;
     try
-      if FLocals = nil
+      if FLocalsMonitor <> nil
+      then Locals := LocalsMonitor.CurrentLocalsList[GetThreadId, GetStackframe]
+      else Locals := nil;
+      if Locals = nil
       then begin
         lvLocals.Items.Clear;
         Exit;
       end;
-    
+
       //Get existing items
       for n := 0 to lvLocals.Items.Count - 1 do
       begin
@@ -113,20 +158,20 @@ begin
       end;
 
       // add/update entries
-      for n := 0 to FLocals.Count - 1 do
+      for n := 0 to Locals.Count - 1 do
       begin
-        idx := List.IndexOf(Uppercase(FLocals.Names[n]));
+        idx := List.IndexOf(Uppercase(Locals.Names[n]));
         if idx = -1
         then begin
           // New entry
           Item := lvLocals.Items.Add;
-          Item.Caption := FLocals.Names[n];
-          Item.SubItems.Add(FLocals.Values[n]);
+          Item.Caption := Locals.Names[n];
+          Item.SubItems.Add(Locals.Values[n]);
         end
         else begin
           // Existing entry
           Item := TListItem(List.Objects[idx]);
-          Item.SubItems[0] := FLocals.Values[n];
+          Item.SubItems[0] := Locals.Values[n];
           List.Delete(idx);
         end;
       end;
@@ -143,28 +188,80 @@ begin
   end;
 end;
 
-procedure TLocalsDlg.SetLocals(const AValue: TIDELocals);
+procedure TLocalsDlg.SetCallStackMonitor(const AValue: TCallStackMonitor);
 begin
-  if FLocals = AValue then Exit;
-
+  if FCallStackMonitor = AValue then exit;
   BeginUpdate;
   try
-    if FLocals <> nil
-    then begin
-      FLocals.RemoveNotification(FLocalsNotification);
-    end;
+    if FCallStackMonitor <> nil
+    then FCallStackMonitor.RemoveNotification(FCallstackNotification);
 
-    FLocals := AValue;
+    FCallStackMonitor := AValue;
 
-    if FLocals <> nil
-    then begin
-      FLocals.AddNotification(FLocalsNotification);
-    end;
-    
-    LocalsChanged(FLocals);
+    if FCallStackMonitor <> nil
+    then FCallStackMonitor.AddNotification(FCallstackNotification);
+
+    LocalsChanged(nil);
   finally
     EndUpdate;
   end;
+end;
+
+procedure TLocalsDlg.SetLocals(const AValue: TLocalsMonitor);
+begin
+  if FLocalsMonitor = AValue then Exit;
+
+  BeginUpdate;
+  try
+    if FLocalsMonitor <> nil
+    then begin
+      FLocalsMonitor.RemoveNotification(FLocalsNotification);
+    end;
+
+    FLocalsMonitor := AValue;
+
+    if FLocalsMonitor <> nil
+    then begin
+      FLocalsMonitor.AddNotification(FLocalsNotification);
+    end;
+    
+    LocalsChanged(FLocalsMonitor);
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TLocalsDlg.SetThreadsMonitor(const AValue: TThreadsMonitor);
+begin
+  if FThreadsMonitor = AValue then exit;
+  BeginUpdate;
+  try
+    if FThreadsMonitor <> nil
+    then FThreadsMonitor.RemoveNotification(FThreadsNotification);
+
+    FThreadsMonitor := AValue;
+
+    if FThreadsMonitor <> nil
+    then FThreadsMonitor.AddNotification(FThreadsNotification);
+
+    LocalsChanged(nil);
+  finally
+    EndUpdate;
+  end;
+end;
+
+function TLocalsDlg.GetThreadId: Integer;
+begin
+  Result := -1;
+  if (FThreadsMonitor = nil) then exit;
+  Result := FThreadsMonitor.CurrentThreads.CurrentThreadId;
+end;
+
+function TLocalsDlg.GetStackframe: Integer;
+begin
+  Result := -1;
+  if (FCallStackMonitor = nil) then exit;
+  Result := FCallStackMonitor.CurrentCallStackList.EntriesForThreads[GetThreadId].CurrentIndex;
 end;
 
 procedure TLocalsDlg.DoBeginUpdate;

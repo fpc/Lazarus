@@ -373,7 +373,7 @@ type
 
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
-    function  CreateLocals: TDBGLocals; override;
+    function  CreateLocals: TLocalsSupplier; override;
     function  CreateLineInfo: TDBGLineInfo; override;
     function  CreateRegisters: TDBGRegisters; override;
     function  CreateCallStack: TCallStackSupplier; override;
@@ -388,7 +388,6 @@ type
     procedure ClearCommandQueue;
     procedure DoState(const OldState: TDBGState); override;
     procedure DoThreadChanged;
-    procedure DoCallStackChanged;
     property  TargetPID: Integer read FTargetInfo.TargetPID;
     property  TargetPtrSize: Byte read FTargetInfo.TargetPtrSize;
     property  TargetFlags: TGDBMITargetFlags read FTargetInfo.TargetFlags write FTargetInfo.TargetFlags;
@@ -580,36 +579,26 @@ type
 
   TGDBMIDebuggerCommandLocals = class(TGDBMIDebuggerCommand)
   private
-    FResult: TStringList;
+    FLocals: TCurrentLocals;
   protected
     function DoExecute: Boolean; override;
   public
-    constructor Create(AOwner: TGDBMIDebugger);
-    destructor Destroy; override;
+    constructor Create(AOwner: TGDBMIDebugger; ALocals: TCurrentLocals);
     function DebugText: String; override;
-    property Result: TStringList read FResult;
   end;
 
   { TGDBMILocals }
 
-  TGDBMILocals = class(TDBGLocals)
+  TGDBMILocals = class(TLocalsSupplier)
   private
-    FEvaluatedState: TGDBMIEvaluationState;
-    FEvaluationCmdObj: TGDBMIDebuggerCommandLocals;
-    FInLocalsNeeded: Boolean;
-    FLocals: TStringList;
-    procedure LocalsNeeded;
-    procedure CancelEvaluation;
+    FCommandList: TList;
+    procedure CancelEvaluation; deprecated;
     procedure DoEvaluationDestroyed(Sender: TObject);
-    procedure DoEvaluationFinished(Sender: TObject);
   protected
-    procedure DoStateChange(const AOldState: TDBGState); override;
-    procedure Invalidate;
-    function GetCount: Integer; override;
-    function GetName(const AnIndex: Integer): String; override;
-    function GetValue(const AnIndex: Integer): String; override;
+    procedure CancelAllCommands;
+    procedure RequestData(ALocals: TCurrentLocals); override;
   public
-    procedure Changed; override;
+    procedure Changed;
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
   end;
@@ -1160,7 +1149,7 @@ type
 
   {%endregion   ^^^^^  Disassembler  ^^^^^   }
 
-  {%region      *****  Register  *****   }
+  {%region      *****  Threads  *****   }
 
   { TGDBMIDebuggerCommandThreads }
 
@@ -1221,7 +1210,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
   end;
 
-  {%endregion   ^^^^^  Register  ^^^^^   }
+  {%endregion   ^^^^^  Threads  ^^^^^   }
 
   {%region       *****  TGDBMIExpression  *****   }
 
@@ -5271,7 +5260,7 @@ begin
   Result := TGDBMIDisassembler.Create(Self);
 end;
 
-function TGDBMIDebugger.CreateLocals: TDBGLocals;
+function TGDBMIDebugger.CreateLocals: TLocalsSupplier;
 begin
   Result := TGDBMILocals.Create(Self);
 end;
@@ -5397,13 +5386,7 @@ end;
 procedure TGDBMIDebugger.DoThreadChanged;
 begin
   TGDBMICallstack(CallStack).DoThreadChanged;
-  TGDBMILocals(Locals).Changed;
   TGDBMIRegisters(Registers).Changed;
-end;
-
-procedure TGDBMIDebugger.DoCallStackChanged;
-begin
-  TGDBMILocals(Locals).Changed;
 end;
 
 procedure TGDBMIDebugger.DoRelease;
@@ -7197,7 +7180,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
         else Value := '''' + GetText(addr) + '''';
       end;
 
-      FResult.Add(Name + '=' + Value);
+      FLocals.Add(Name, Value);
     end;
     FreeAndNil(List);
     FreeAndNil(LocList);
@@ -7208,6 +7191,7 @@ var
   List: TGDBMINameValueList;
 begin
   Result := True;
+  FLocals.Clear;
   // args
   ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
     [FTheDebugger.FCurrentStackFrame], R);
@@ -7226,18 +7210,13 @@ begin
     AddLocals(List.Values['locals']);
     FreeAndNil(List);
   end;
+  FLocals.SetDataValidity(ddsValid);
 end;
 
-constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebugger);
+constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebugger; ALocals: TCurrentLocals);
 begin
   inherited Create(AOwner);
-  FResult := TStringList.Create;
-end;
-
-destructor TGDBMIDebuggerCommandLocals.Destroy;
-begin
-  inherited Destroy;
-  FreeAndNil(FResult);
+  FLocals := ALocals;
 end;
 
 function TGDBMIDebuggerCommandLocals.DebugText: String;
@@ -7251,134 +7230,62 @@ end;
 
 procedure TGDBMILocals.Changed;
 begin
-  Invalidate;
-  inherited Changed;
+  if Monitor <> nil
+  then Monitor.Clear;
 end;
 
 constructor TGDBMILocals.Create(const ADebugger: TDebugger);
 begin
-  FLocals := TStringList.Create;
-  FLocals.Sorted := True;
-  FEvaluatedState := esInvalid;
-  FEvaluationCmdObj := nil;
+  FCommandList := TList.Create;
   inherited;
 end;
 
 destructor TGDBMILocals.Destroy;
 begin
-  CancelEvaluation;
+  CancelAllCommands;
   inherited;
-  FreeAndNil(FLocals);
+  FreeAndNil(FCommandList);
 end;
 
-procedure TGDBMILocals.DoStateChange(const AOldState: TDBGState);
+procedure TGDBMILocals.CancelAllCommands;
+var
+  i: Integer;
 begin
-  if  (Debugger <> nil)
-  and (Debugger.State = dsPause)
-  then begin
-    DoChange;
-  end
-  else begin
-    Invalidate;
-  end;
+  for i := 0 to FCommandList.Count-1 do
+    with TGDBMIDebuggerCommandStack(FCommandList[i]) do begin
+      OnExecuted := nil;
+      OnDestroy := nil;
+      Cancel;
+    end;
+  FCommandList.Clear;
 end;
 
-procedure TGDBMILocals.Invalidate;
+procedure TGDBMILocals.RequestData(ALocals: TCurrentLocals);
+var
+  ForceQueue: Boolean;
+  EvaluationCmdObj: TGDBMIDebuggerCommandLocals;
 begin
-  FEvaluatedState := esInvalid;
-  CancelEvaluation;
-  FLocals.Clear;
-end;
+  if (Debugger = nil) or (Debugger.State <> dsPause) then Exit;
 
-function TGDBMILocals.GetCount: Integer;
-begin
-  if  (Debugger <> nil)
-  and (Debugger.State = dsPause)
-  then begin
-    LocalsNeeded;
-    if FEvaluatedState = esValid
-    then Result := FLocals.Count
-    else Result := 0;
-  end
-  else Result := 0;
-end;
-
-function TGDBMILocals.GetName(const AnIndex: Integer): String;
-begin
-  if  (Debugger <> nil)
-  and (Debugger.State = dsPause)
-  then begin
-    LocalsNeeded;
-    Result := FLocals.Names[AnIndex];
-  end
-  else Result := '';
-end;
-
-function TGDBMILocals.GetValue(const AnIndex: Integer): String;
-begin
-  if  (Debugger <> nil)
-  and (Debugger.State = dsPause)
-  then begin
-    LocalsNeeded;
-    Result := FLocals[AnIndex];
-    Result := GetPart('=', '', Result);
-  end
-  else Result := '';
+  EvaluationCmdObj := TGDBMIDebuggerCommandLocals.Create(TGDBMIDebugger(Debugger), ALocals);
+  EvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
+  EvaluationCmdObj.Priority := GDCMD_PRIOR_LOCALS;
+  EvaluationCmdObj.Properties := [dcpCancelOnRun];
+  ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
+            and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
+            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
+  FCommandList.add(EvaluationCmdObj);
+  TGDBMIDebugger(Debugger).QueueCommand(EvaluationCmdObj, ForceQueue);
+  (* DoEvaluationFinished may be called immediately at this point *)
 end;
 
 procedure TGDBMILocals.DoEvaluationDestroyed(Sender: TObject);
 begin
-  if FEvaluationCmdObj = Sender
-  then FEvaluationCmdObj := nil;
-end;
-
-procedure TGDBMILocals.DoEvaluationFinished(Sender: TObject);
-var
-  Cmd: TGDBMIDebuggerCommandLocals;
-begin
-  FLocals.Clear;
-  FEvaluatedState := esValid;
-  FEvaluationCmdObj := nil;
-  Cmd := TGDBMIDebuggerCommandLocals(Sender);
-  FLocals.Assign(Cmd.Result);
-  // Do not recursively call, whoever is requesting the locals
-  if not FInLocalsNeeded
-  then inherited Changed;
-end;
-
-procedure TGDBMILocals.LocalsNeeded;
-var
-  ForceQueue: Boolean;
-begin
-  if Debugger = nil then Exit;
-  if FEvaluatedState in [esRequested, esValid] then Exit;
-
-  FLocals.Clear;
-  FInLocalsNeeded := True;
-  FEvaluatedState := esRequested;
-  FEvaluationCmdObj := TGDBMIDebuggerCommandLocals.Create(TGDBMIDebugger(Debugger));
-  FEvaluationCmdObj.OnExecuted := @DoEvaluationFinished;
-  FEvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
-  FEvaluationCmdObj.Priority := GDCMD_PRIOR_LOCALS;
-  FEvaluationCmdObj.Properties := [dcpCancelOnRun];
-  ForceQueue := (TGDBMIDebugger(Debugger).FCurrentCommand <> nil)
-            and (TGDBMIDebugger(Debugger).FCurrentCommand is TGDBMIDebuggerCommandExecute)
-            and (not TGDBMIDebuggerCommandExecute(TGDBMIDebugger(Debugger).FCurrentCommand).NextExecQueued);
-  TGDBMIDebugger(Debugger).QueueCommand(FEvaluationCmdObj, ForceQueue);
-  (* DoEvaluationFinished may be called immediately at this point *)
-  FInLocalsNeeded := False;
+  FCommandList.Remove(Sender);
 end;
 
 procedure TGDBMILocals.CancelEvaluation;
 begin
-  FEvaluatedState := esInvalid;
-  if FEvaluationCmdObj <> nil
-  then begin
-    FEvaluationCmdObj.OnExecuted := nil;;
-    FEvaluationCmdObj.OnDestroy := nil;;
-    FEvaluationCmdObj.Cancel;
-  end;
-  FEvaluationCmdObj := nil;
 end;
 
 {%endregion   ^^^^^  BreakPoints  ^^^^^  }
@@ -7839,7 +7746,6 @@ end;
 procedure TGDBMICallStack.DoSetIndexCommandExecuted(Sender: TObject);
 begin
   TGDBMIDebugger(Debugger).FCurrentStackFrame := TGDBMIDebuggerCommandStackSetCurrent(Sender).NewCurrent;
-  TGDBMIDebugger(Debugger).DoCallStackChanged;
   TGDBMIDebuggerCommandStackSetCurrent(Sender).Callstack.CurrentIndex := TGDBMIDebuggerCommandStackSetCurrent(Sender).NewCurrent;
 end;
 

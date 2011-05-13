@@ -217,7 +217,9 @@ type
   TWatch = class;
   TWatchesMonitor = class;
   TWatchesSupplier = class;
-  TIDELocals = class;
+  TLocalsMonitor = class;
+  TLocalsSupplier = class;
+  TCurrentLocals = class;
   TIDELineInfo = class;
   TCallStack = class;
   TCallStackMonitor = class;
@@ -1008,69 +1010,112 @@ type
  ******************************************************************************
  ******************************************************************************}
 
-  { TBaseLocals }
+  TLocalsNotification = class(TDebuggerChangeNotification)
+  public
+    property OnChange;
+  end;
 
-  TBaseLocals = class(TObject)
+  { TLocals }
+
+  TLocals = class(TObject)
   private
+    function GetName(const AnIndex: Integer): String;
+    function GetValue(const AnIndex: Integer): String;
   protected
-    function GetName(const AnIndex: Integer): String; virtual;
-    function GetValue(const AnIndex: Integer): String; virtual;
+    FLocals: TStringList;
+    FStackFrame: Integer;
+    FThreadId: Integer;
   public
     constructor Create;
+    destructor Destroy; override;
     function Count: Integer; virtual;
   public
     property Names[const AnIndex: Integer]: String read GetName;
     property Values[const AnIndex: Integer]: String read GetValue;
+    property ThreadId: Integer read FThreadId;
+    property StackFrame: Integer read FStackFrame;
   end;
 
-  { TIDELocals }
+  { TLocalsList }
 
-  { TIDELocalsNotification }
-  TDBGLocals = class;
-
-  TIDELocalsNotification = class(TDebuggerNotification)
+  TLocalsList = class
   private
-    FOnChange: TNotifyEvent;
-  public
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  end;
-
-  TIDELocals = class(TBaseLocals)
-  private
-    FNotificationList: TList;
-    FMaster: TDBGLocals;
-    procedure LocalsChanged(Sender: TObject);
-    procedure SetMaster(const AMaster: TDBGLocals);
+    FList: TList;
+    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals;
   protected
-    procedure NotifyChange;
-    function GetName(const AnIndex: Integer): String; override;
-    function GetValue(const AnIndex: Integer): String; override;
+    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals; virtual;
+  public
+    //procedure Assign(AnOther: TWatchValueList);
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TLocals
+             read GetEntry; default;
+  end;
+
+  { TCurrentLocals }
+
+  TCurrentLocals = class(TLocals)
+  private
+    FMonitor: TLocalsMonitor;
+    FDataValidity: TDebuggerDataState;
+  public
+    constructor Create(AMonitor: TLocalsMonitor; AThreadId, AStackFrame: Integer);
+    function Count: Integer; override;
+    procedure Clear;
+    procedure Add(const AName, AValue: String);
+    procedure SetDataValidity(AValidity: TDebuggerDataState);
+  end;
+
+  { TCurrentLocalsList }
+
+  TCurrentLocalsList = class(TLocalsList)
+  private
+    FMonitor: TLocalsMonitor;
+  protected
+    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals;
+      override;
+  public
+    constructor Create(AMonitor: TLocalsMonitor);
+  end;
+
+  { TLocalsMonitor }
+
+  TLocalsMonitor = class(TDebuggerDataMonitor)
+  private
+    FCurrentLocalsList: TCurrentLocalsList;
+    FNotificationList: TDebuggerChangeNotificationList;
+    function GetSupplier: TLocalsSupplier;
+    procedure SetSupplier(const AValue: TLocalsSupplier);
+  protected
+    procedure NotifyChange(ALocals: TCurrentLocals);
+    procedure DoNewSupplier; override;
+    procedure RequestData(ALocals: TCurrentLocals);
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddNotification(const ANotification: TIDELocalsNotification);
-    procedure RemoveNotification(const ANotification: TIDELocalsNotification);
-    function Count: Integer; override;
-    property Master: TDBGLocals read FMaster write SetMaster;
+    procedure Clear;
+    procedure AddNotification(const ANotification: TLocalsNotification);
+    procedure RemoveNotification(const ANotification: TLocalsNotification);
+    property  CurrentLocalsList: TCurrentLocalsList read FCurrentLocalsList;
+    property  Supplier: TLocalsSupplier read GetSupplier write SetSupplier;
   end;
 
-  { TDBGLocals }
+  { TLocalsSupplier }
 
-  TDBGLocals = class(TBaseLocals)
+  TLocalsSupplier = class(TDebuggerDataSupplier)
   private
-    FDebugger: TDebugger;  // reference to our debugger
-    FOnChange: TNotifyEvent;
+    function GetCurrentLocalsList: TCurrentLocalsList;
+    function GetMonitor: TLocalsMonitor;
+    procedure SetMonitor(const AValue: TLocalsMonitor);
   protected
-    procedure Changed; virtual;
-    procedure DoChange;
-    procedure DoStateChange(const AOldState: TDBGState); virtual;
-    function GetCount: Integer; virtual;
-    property Debugger: TDebugger read FDebugger;
+    procedure RequestData(ALocals: TCurrentLocals); virtual;
   public
-    function Count: Integer; override;
-    constructor Create(const ADebugger: TDebugger);
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
+    property  CurrentLocalsList: TCurrentLocalsList read GetCurrentLocalsList;
+    property  Monitor: TLocalsMonitor read GetMonitor write SetMonitor;
   end;
+
   {%endregion   ^^^^^  Locals  ^^^^^   }
 
 
@@ -2068,7 +2113,7 @@ type
     FExternalDebugger: String;
     //FExceptions: TDBGExceptions;
     FFileName: String;
-    FLocals: TDBGLocals;
+    FLocals: TLocalsSupplier;
     FLineInfo: TDBGLineInfo;
     FOnConsoleOutput: TDBGOutputEvent;
     FOnFeedback: TDBGFeedbackEvent;
@@ -2098,7 +2143,7 @@ type
     procedure SetFileName(const AValue: String);
   protected
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
-    function  CreateLocals: TDBGLocals; virtual;
+    function  CreateLocals: TLocalsSupplier; virtual;
     function  CreateLineInfo: TDBGLineInfo; virtual;
     function  CreateRegisters: TDBGRegisters; virtual;
     function  CreateCallStack: TCallStackSupplier; virtual;
@@ -2177,7 +2222,7 @@ type
     property ExitCode: Integer read FExitCode;
     property ExternalDebugger: String read FExternalDebugger;                    // The name of the debugger executable
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
-    property Locals: TDBGLocals read FLocals;                                    // list of all localvars etc
+    property Locals: TLocalsSupplier read FLocals;                                    // list of all localvars etc
     property LineInfo: TDBGLineInfo read FLineInfo;                              // list of all source LineInfo
     property Registers: TDBGRegisters read FRegisters;                           // list of all registers
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
@@ -2331,6 +2376,168 @@ begin
   Result:=bpaStop;
 end;
 
+{ TCurrentLocalsList }
+
+function TCurrentLocalsList.CreateEntry(const AThreadId: Integer;
+  const AStackFrame: Integer): TLocals;
+begin
+  Result := TCurrentLocals.Create(FMonitor, AThreadId, AStackFrame);
+end;
+
+constructor TCurrentLocalsList.Create(AMonitor: TLocalsMonitor);
+begin
+  FMonitor := AMonitor;
+  inherited Create;
+end;
+
+{ TLocalsList }
+
+function TLocalsList.GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals;
+var
+  i: Integer;
+begin
+  i := FList.Count - 1;
+  while i >= 0 do begin
+    Result := TLocals(FList[i]);
+    if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame)
+    then exit;
+    dec(i);
+  end;
+  Result := CreateEntry(AThreadId, AStackFrame);
+  if Result = nil then exit;
+  FList.Add(Result);
+end;
+
+function TLocalsList.CreateEntry(const AThreadId: Integer;
+  const AStackFrame: Integer): TLocals;
+begin
+  Result := nil;
+end;
+
+constructor TLocalsList.Create;
+begin
+  FList := TList.Create;
+  inherited Create;
+end;
+
+destructor TLocalsList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+  FList.Free;
+end;
+
+procedure TLocalsList.Clear;
+begin
+  while FList.Count > 0 do begin
+    TObject(FList[0]).Free;
+    FList.Delete(0);
+  end;
+end;
+
+{ TLocalsSupplier }
+
+function TLocalsSupplier.GetCurrentLocalsList: TCurrentLocalsList;
+begin
+  if Monitor <> nil
+  then Result := Monitor.CurrentLocalsList
+  else Result := nil;
+end;
+
+function TLocalsSupplier.GetMonitor: TLocalsMonitor;
+begin
+  Result := TLocalsMonitor(inherited Monitor);
+end;
+
+procedure TLocalsSupplier.SetMonitor(const AValue: TLocalsMonitor);
+begin
+  inherited Monitor := AValue;
+end;
+
+procedure TLocalsSupplier.RequestData(ALocals: TCurrentLocals);
+begin
+  ALocals.SetDataValidity(ddsInvalid)
+end;
+
+procedure TLocalsSupplier.DoStateChange(const AOldState: TDBGState);
+begin
+  if FDebugger.State = dsPause
+  then begin
+    if Monitor<> nil
+    then Monitor.Clear;
+  end
+  else begin
+    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
+    then begin
+      if Monitor<> nil
+      then Monitor.Clear;
+    end;
+  end;
+end;
+
+{ TLocalsMonitor }
+
+function TLocalsMonitor.GetSupplier: TLocalsSupplier;
+begin
+  Result := TLocalsSupplier(inherited Supplier);
+end;
+
+procedure TLocalsMonitor.SetSupplier(const AValue: TLocalsSupplier);
+begin
+  inherited Supplier := AValue;
+end;
+
+procedure TLocalsMonitor.NotifyChange(ALocals: TCurrentLocals);
+begin
+  FNotificationList.NotifyChange(ALocals);
+end;
+
+procedure TLocalsMonitor.DoNewSupplier;
+begin
+  inherited DoNewSupplier;
+  NotifyChange(nil);
+end;
+
+procedure TLocalsMonitor.RequestData(ALocals: TCurrentLocals);
+begin
+  if Supplier <> nil
+  then Supplier.RequestData(ALocals)
+  else ALocals.SetDataValidity(ddsInvalid);
+end;
+
+constructor TLocalsMonitor.Create;
+begin
+  inherited;
+  FNotificationList := TDebuggerChangeNotificationList.Create;
+  FCurrentLocalsList := TCurrentLocalsList.Create(Self);
+end;
+
+destructor TLocalsMonitor.Destroy;
+begin
+  FNotificationList.Clear;
+  inherited Destroy;
+  FreeAndNil(FCurrentLocalsList);
+  FreeAndNil(FNotificationList);
+end;
+
+procedure TLocalsMonitor.Clear;
+begin
+  FCurrentLocalsList.Clear;
+  NotifyChange(nil);
+end;
+
+procedure TLocalsMonitor.AddNotification(const ANotification: TLocalsNotification);
+begin
+  FNotificationList.Add(ANotification);
+end;
+
+procedure TLocalsMonitor.RemoveNotification(const ANotification: TLocalsNotification);
+begin
+  FNotificationList.Remove(ANotification);
+end;
+
+{ TCurrentWatchValue }
+
 procedure TCurrentWatchValue.SetTypeInfo(const AValue: TDBGType);
 begin
 if FTypeInfo<> nil then
@@ -2379,6 +2586,7 @@ begin
     dec(i);
   end;
   Result := CreateEntry(AThreadId, AStackFrame, ADisplayFormat);
+  if Result = nil then exit;
   FList.Add(Result);
   Result.RequestData;
 end;
@@ -3320,9 +3528,9 @@ begin
   Result := TDBGExceptions.Create(Self, TDBGException);
 end;
 
-function TDebugger.CreateLocals: TDBGLocals;
+function TDebugger.CreateLocals: TLocalsSupplier;
 begin
-  Result := TDBGLocals.Create(Self);
+  Result := TLocalsSupplier.Create(Self);
 end;
 
 function TDebugger.CreateLineInfo: TDBGLineInfo;
@@ -5529,162 +5737,80 @@ end;
 (******************************************************************************)
 
 { =========================================================================== }
-{ TBaseLocals }
+{ TLocals }
 { =========================================================================== }
 
-function TBaseLocals.Count: Integer;
+function TLocals.Count: Integer;
 begin
-  Result := 0;
+  Result := FLocals.Count;
 end;
 
-constructor TBaseLocals.Create;
+constructor TLocals.Create;
 begin
+  FLocals := TStringList.Create;
   inherited Create;
 end;
 
-function TBaseLocals.GetName(const AnIndex: Integer): String;
+destructor TLocals.Destroy;
 begin
-  Result := '';
+  inherited Destroy;
+  FreeAndNil(FLocals);
 end;
 
-function TBaseLocals.GetValue(const AnIndex: Integer): String;
+function TLocals.GetName(const AnIndex: Integer): String;
 begin
-  Result := '';
+  Result := FLocals.Names[AnIndex];
+end;
+
+function TLocals.GetValue(const AnIndex: Integer): String;
+begin
+  Result := FLocals[AnIndex];
+  Result := GetPart('=', '', Result);
 end;
 
 { =========================================================================== }
-{ TIDELocals }
+{ TCurrentLocals }
 { =========================================================================== }
 
-procedure TIDELocals.AddNotification(const ANotification: TIDELocalsNotification);
+constructor TCurrentLocals.Create(AMonitor: TLocalsMonitor; AThreadId, AStackFrame: Integer);
 begin
-  FNotificationList.Add(ANotification);
-  ANotification.AddReference;
-end;
-
-constructor TIDELocals.Create;
-begin
-  FNotificationList := TList.Create;
+  FMonitor := AMonitor;
+  FDataValidity := ddsUnknown;
+  FThreadId := AThreadId;
+  FStackFrame := AStackFrame;
   inherited Create;
 end;
 
-destructor TIDELocals.Destroy;
-var
-  n: Integer;
+function TCurrentLocals.Count: Integer;
 begin
-  for n := FNotificationList.Count - 1 downto 0 do
-    TDebuggerNotification(FNotificationList[n]).ReleaseReference;
-
-  inherited;
-
-  FreeAndNil(FNotificationList);
-end;
-
-procedure TIDELocals.LocalsChanged(Sender: TObject);
-begin
-  NotifyChange;
-end;
-
-procedure TIDELocals.SetMaster(const AMaster: TDBGLocals);
-var
-  DoNotify: Boolean;
-begin
-  if FMaster = AMaster then Exit;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := nil;
-    DoNotify := FMaster.Count <> 0;
-  end
-  else DoNotify := False;
-
-  FMaster := AMaster;
-
-  if FMaster <> nil
-  then begin
-    FMaster.OnChange := @LocalsChanged;
-    DoNotify := DoNotify or (FMaster.Count <> 0);
-  end;
-
-  if DoNotify
-  then NotifyChange;
-end;
-
-procedure TIDELocals.NotifyChange;
-var
-  n: Integer;
-  Notification: TIDELocalsNotification;
-begin
-  for n := 0 to FNotificationList.Count - 1 do
-  begin
-    Notification := TIDELocalsNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnChange)
-    then Notification.FOnChange(Self);
+  case FDataValidity of
+    ddsUnknown:   begin
+        Result := 0;
+        FDataValidity := ddsRequested;
+        FMonitor.RequestData(Self);
+        if FDataValidity = ddsValid then Result := inherited Count;
+      end;
+    ddsRequested, ddsEvaluating: Result := 0;
+    ddsValid:                    Result := inherited Count;
+    ddsInvalid, ddsError:        Result := 0;
   end;
 end;
 
-function TIDELocals.GetName(const AnIndex: Integer): String;
+procedure TCurrentLocals.Clear;
 begin
-  if Master = nil
-  then Result := inherited GetName(AnIndex)
-  else Result := Master.Names[AnIndex];
+  FLocals.Clear;
 end;
 
-function TIDELocals.GetValue(const AnIndex: Integer): String;
+procedure TCurrentLocals.Add(const AName, AValue: String);
 begin
-  if Master = nil
-  then Result := inherited GetValue(AnIndex)
-  else Result := Master.Values[AnIndex];
+  FLocals.Add(AName + '=' + AValue);
 end;
 
-procedure TIDELocals.RemoveNotification(const ANotification: TIDELocalsNotification);
+procedure TCurrentLocals.SetDataValidity(AValidity: TDebuggerDataState);
 begin
-  FNotificationList.Remove(ANotification);
-  ANotification.ReleaseReference;
-end;
-
-function TIDELocals.Count: Integer;
-begin
-  if Master = nil
-  then Result := 0
-  else Result := Master.Count;
-end;
-
-{ =========================================================================== }
-{ TDBGLocals }
-{ =========================================================================== }
-
-function TDBGLocals.Count: Integer;
-begin
-  if  (FDebugger <> nil)
-  and (FDebugger.State = dsPause)
-  then Result := GetCount
-  else Result := 0;
-end;
-
-constructor TDBGLocals.Create(const ADebugger: TDebugger);
-begin
-  inherited Create;
-  FDebugger := ADebugger;
-end;
-
-procedure TDBGLocals.DoChange;
-begin
-  if Assigned(FOnChange) then FOnChange(Self);
-end;
-
-procedure TDBGLocals.DoStateChange(const AOldState: TDBGState);
-begin
-end;
-
-procedure TDBGLocals.Changed;
-begin
-  DoChange;
-end;
-
-function TDBGLocals.GetCount: Integer;
-begin
-  Result := 0;
+  if FDataValidity = AValidity then exit;
+  FDataValidity := AValidity;
+  FMonitor.NotifyChange(Self);
 end;
 
 (******************************************************************************)

@@ -1199,7 +1199,9 @@ var
   TheDialog: TLocalsDlg;
 begin
   TheDialog := TLocalsDlg(FDialogs[ddtLocals]);
-  TheDialog.Locals := FLocals;
+  TheDialog.LocalsMonitor := FLocals;
+  TheDialog.ThreadsMonitor := FThreads;
+  TheDialog.CallStackMonitor := FCallStack;
 end;
 
 procedure TDebugManager.InitRegistersDlg;
@@ -1270,7 +1272,7 @@ begin
   FThreads := TThreadsMonitor.Create;
   FExceptions := TProjectExceptions.Create;
   FSignals := TIDESignals.Create;
-  FLocals := TIDELocals.Create;
+  FLocals := TLocalsMonitor.Create;
   FLineInfo := TIDELineInfo.Create;
   FCallStack := TCallStackMonitor.Create;
   FDisassembler := TIDEDisassembler.Create;
@@ -2281,7 +2283,7 @@ begin
     TManagedBreakpoints(FBreakpoints).Master := nil;
     FWatches.Supplier := nil;
     FThreads.Supplier := nil;
-    FLocals.Master := nil;
+    FLocals.Supplier := nil;
     FLineInfo.Master := nil;
     FCallStack.Supplier := nil;
     FDisassembler.Master := nil;
@@ -2293,7 +2295,7 @@ begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
     FWatches.Supplier := FDebugger.Watches;
     FThreads.Supplier := FDebugger.Threads;
-    FLocals.Master := FDebugger.Locals;
+    FLocals.Supplier := FDebugger.Locals;
     FLineInfo.Master := FDebugger.LineInfo;
     FCallStack.Supplier := FDebugger.CallStack;
     FDisassembler.Master := FDebugger.Disassembler;

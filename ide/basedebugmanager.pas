@@ -89,7 +89,7 @@ type
     FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
     FBreakPointGroups: TIDEBreakPointGroups;
-    FLocals: TIDELocals;
+    FLocals: TLocalsMonitor;
     FLineInfo: TIDELineInfo;
     FWatches: TWatchesMonitor;
     FThreads: TThreadsMonitor;
@@ -173,7 +173,7 @@ type
     property Exceptions: TIDEExceptions read FExceptions;      // A list of exceptions we should ignore
     property CallStack: TCallStackMonitor read FCallStack;
     property Disassembler: TIDEDisassembler read FDisassembler;
-    property Locals: TIDELocals read FLocals;
+    property Locals: TLocalsMonitor read FLocals;
     property LineInfo: TIDELineInfo read FLineInfo;
     property Registers: TIDERegisters read FRegisters;
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of

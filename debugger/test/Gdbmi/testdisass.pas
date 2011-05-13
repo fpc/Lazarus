@@ -47,7 +47,7 @@ type
     FSignals: TIDESignals;
     //FBreakPoints: TIDEBreakPoints;
     //FBreakPointGroups: TIDEBreakPointGroups;
-    FLocals: TIDELocals;
+    FLocals: TLocalsMonitor;
     FLineInfo: TIDELineInfo;
     FWatches: TWatchesMonitor;
     FThreads: TThreadsMonitor;
@@ -339,7 +339,7 @@ var
     FThreads := TThreadsMonitor.Create;
     FExceptions := TIDEExceptions.Create;
     FSignals := TIDESignals.Create;
-    FLocals := TIDELocals.Create;
+    FLocals := TLocalsMonitor.Create;
     FLineInfo := TIDELineInfo.Create;
     FCallStack := TCallStackMonitor.Create;
     FRegisters := TIDERegisters.Create;
@@ -347,7 +347,7 @@ var
     //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
     FWatches.Supplier := Gdb.Watches;
     FThreads.Supplier := Gdb.Threads;
-    FLocals.Master := Gdb.Locals;
+    FLocals.Supplier := Gdb.Locals;
     FLineInfo.Master := Gdb.LineInfo;
     FCallStack.Supplier := Gdb.CallStack;
     FExceptions.Master := Gdb.Exceptions;
