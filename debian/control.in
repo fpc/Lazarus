@@ -66,8 +66,8 @@ Description: IDE for Free Pascal - LCL Sources Code
  In short, Lazarus is a free RAD tool for Free Pascal using its Lazarus
  Component Library (LCL).
  .
- This package contains lazarus source code necessary for the IDE code tool to
- run (retrieving declarations and navigating in code).
+ This package contains lazarus latest version source code necessary for the IDE
+ code tool to work properly (retrieving declarations and navigating in code).
 
 Package: lazarus-ide${PACKAGESUFFIX}
 Architecture: i386 powerpc sparc amd64 armel
@@ -374,7 +374,7 @@ Description: IDE for Free Pascal - SDK metapackage
 Package: lazarus-src
 Architecture: all
 Depends: ${misc:Depends}, lazarus-src${PACKAGESUFFIX} (= ${binary:Version})
-Description: IDE for Free Pascal - LCL Sources Code
+Description: IDE for Free Pascal - LCL Sources Code metapackage
  Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
  on Windows, Linux, Mac OS X, FreeBSD and more.
@@ -391,8 +391,9 @@ Description: IDE for Free Pascal - LCL Sources Code
  In short, Lazarus is a free RAD tool for Free Pascal using its Lazarus
  Component Library (LCL).
  .
- This package contains lazarus source code necessary for the IDE code tool to
- run (retrieving declarations and navigating in code).
+ This metapackage depends on package that contains lazarus latest version source
+ code necessary for the IDE code tool to work properly (retrieving declarations
+ and navigating in code).
 
 Package: lazarus-ide
 Architecture: i386 powerpc sparc amd64 armel
@@ -419,7 +420,7 @@ Description: IDE for Free Pascal - Common IDE files metapackage
 Package: lazarus-ide-gtk2
 Architecture: any
 Depends: ${misc:Depends}, lazarus-ide-gtk2${PACKAGESUFFIX} (= ${binary:Version})
-Description: IDE for Free Pascal - IDE build on top of GTK+ backend
+Description: IDE for Free Pascal - IDE build on top of GTK+ backend metapackage
  Lazarus is an IDE to create (graphical and console) applications with Free
  Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs
  on Windows, Linux, Mac OS X, FreeBSD and more.
@@ -436,7 +437,8 @@ Description: IDE for Free Pascal - IDE build on top of GTK+ backend
  In short, Lazarus is a free RAD tool for Free Pascal using its Lazarus
  Component Library (LCL).
  .
- This package contains the lazarus IDE build on top of GTK+ backend.
+ This metapackage depends on package that contains the latest version of lazarus
+ IDE build on top of GTK+ backend.
 
 Package: lazarus-ide-qt4
 Architecture: any
