@@ -117,23 +117,23 @@ begin
   Code:=nil;
   try
     InitIDEFileDialog(OpenDialog);
-    OpenDialog.Title:='Select file to insert at cursor';
+    OpenDialog.Title:=crsCUSelectFileToInsertAtCursor;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-    Filter:='Pascal' + ' (*.pas;*.pp)|*.pas;*.pp';
-    Filter:=Filter+'|'+'All files' + ' (' + FileMask + ')|' + FileMask;
+    Filter:=crsCUPascalPasPpPasPp;
+    Filter:=Format(crsCUAllFiles, [Filter, FileMask, FileMask]);
     OpenDialog.Filter:=Filter;
     if not OpenDialog.Execute then exit;
     Filename:=OpenDialog.FileName;
     if not FileIsText(Filename) then begin
-      if IDEMessageDialog('Warning','The file seems to be a binary. Proceed?',
+      if IDEMessageDialog(crsCUWarning, crsCUTheFileSeemsToBeABinaryProceed,
         mtConfirmation,[mbOk,mbCancel])<>mrOK then exit;
     end;
     Code:=TCodeBuffer.Create;
     Code.Filename:=Filename;
     Code.OnDecodeLoaded:=@Cody.DecodeLoaded;
     if not Code.LoadFromFile(Filename) then begin
-      IDEMessageDialog('Error','Unable to load file "'+Filename+'"'#13
-      +Code.LastError,
+      IDEMessageDialog(crsCWError, Format(crsCUUnableToLoadFile, [Filename, #13
+        , Code.LastError]),
         mtError,[mbCancel]);
       exit;
     end;
@@ -150,7 +150,7 @@ procedure AddCallInherited(Sender: TObject);
   procedure ErrorNotInMethod;
   begin
     IDEMessageDialog(crsCWError,
-      'Please place the cursor of the source editor in an implementation of an overridden method.',
+      crsCUPleasePlaceTheCursorOfTheSourceEditorInAnImplement,
       mtError,[mbCancel]);
   end;
 

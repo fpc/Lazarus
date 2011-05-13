@@ -96,9 +96,20 @@ resourcestring
   crsCAMWrittenByProperty = '%s, written by property %s';
   crsBTNOK = '&OK';
   crsBTNCancel = 'Cancel';
+
   crsDeclareVariable = 'Declare Variable';
   crsDeclareVariable2 = 'Declare Variable ...';
   crsAddCallInherited = 'Add call inherited';
+
+  crsCUSelectFileToInsertAtCursor = 'Select file to insert at cursor';
+  crsCUPascalPasPpPasPp = 'Pascal (*.pas;*.pp)|*.pas;*.pp';
+  crsCUAllFiles = '%s|All files (%s)|%s';
+  crsCUWarning = 'Warning';
+  crsCUTheFileSeemsToBeABinaryProceed = 'The file seems to be a binary. '
+    +'Proceed?';
+  crsCUUnableToLoadFile = 'Unable to load file "%s"%s%s';
+  crsCUPleasePlaceTheCursorOfTheSourceEditorInAnImplement = 'Please place the '
+    +'cursor of the source editor in an implementation of an overridden method.';
 
 implementation
 
