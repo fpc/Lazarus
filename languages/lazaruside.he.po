@@ -6768,9 +6768,9 @@ msgstr "נטרל נקודת עצירה"
 msgid "Disabled"
 msgstr "מבוטל"
 
-#: lazarusidestrconsts.lisdisablegroup
-msgid "Disable Group"
-msgstr "בטל קבוצה"
+#: lazarusidestrconsts.lisdisablegroups
+msgid "Disable Groups"
+msgstr ""
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -7146,9 +7146,9 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "מאופשר"
 
-#: lazarusidestrconsts.lisenablegroup
-msgid "Enable Group"
-msgstr "אפשר קבוצה"
+#: lazarusidestrconsts.lisenablegroups
+msgid "Enable Groups"
+msgstr ""
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -9615,6 +9615,14 @@ msgstr "שם"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "ערך"
+
+#: lazarusidestrconsts.lislogcallstack
+msgid "Log Call Stack"
+msgstr ""
+
+#: lazarusidestrconsts.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr ""
 
 #: lazarusidestrconsts.lislogmessage
 #, fuzzy

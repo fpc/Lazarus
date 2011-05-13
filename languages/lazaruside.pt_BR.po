@@ -6792,9 +6792,9 @@ msgstr "Desativar Ponto de Parada"
 msgid "Disabled"
 msgstr "Desativado"
 
-#: lazarusidestrconsts.lisdisablegroup
-msgid "Disable Group"
-msgstr "Desativar Grupo"
+#: lazarusidestrconsts.lisdisablegroups
+msgid "Disable Groups"
+msgstr ""
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -7170,9 +7170,9 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Ativo"
 
-#: lazarusidestrconsts.lisenablegroup
-msgid "Enable Group"
-msgstr "Ativar Grupo"
+#: lazarusidestrconsts.lisenablegroups
+msgid "Enable Groups"
+msgstr ""
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -9636,6 +9636,14 @@ msgstr "Nome"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Valor"
+
+#: lazarusidestrconsts.lislogcallstack
+msgid "Log Call Stack"
+msgstr ""
+
+#: lazarusidestrconsts.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr ""
 
 #: lazarusidestrconsts.lislogmessage
 #, fuzzy

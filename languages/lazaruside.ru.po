@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-12 02:24+0300\n"
+"PO-Revision-Date: 2011-05-14 01:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6790,9 +6790,9 @@ msgstr "Отключить точку останова"
 msgid "Disabled"
 msgstr "Отключено"
 
-#: lazarusidestrconsts.lisdisablegroup
-msgid "Disable Group"
-msgstr "Отключить группу"
+#: lazarusidestrconsts.lisdisablegroups
+msgid "Disable Groups"
+msgstr "Отключить группы"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -7168,9 +7168,9 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Включить"
 
-#: lazarusidestrconsts.lisenablegroup
-msgid "Enable Group"
-msgstr "Включить группу"
+#: lazarusidestrconsts.lisenablegroups
+msgid "Enable Groups"
+msgstr "Включить группы"
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -9633,6 +9633,14 @@ msgstr "Имя"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Значение"
+
+#: lazarusidestrconsts.lislogcallstack
+msgid "Log Call Stack"
+msgstr "Записать стек вызовов"
+
+#: lazarusidestrconsts.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr "(число фреймов. 0 - без ограничений)"
 
 #: lazarusidestrconsts.lislogmessage
 #| msgid "Log message"

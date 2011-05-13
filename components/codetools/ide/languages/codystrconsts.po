@@ -125,6 +125,34 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
+#: codystrconsts.crscuallfiles
+msgid "%s|All files (%s)|%s"
+msgstr ""
+
+#: codystrconsts.crscupascalpaspppaspp
+msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
+msgstr ""
+
+#: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
+msgid "Please place the cursor of the source editor in an implementation of an overridden method."
+msgstr ""
+
+#: codystrconsts.crscuselectfiletoinsertatcursor
+msgid "Select file to insert at cursor"
+msgstr ""
+
+#: codystrconsts.crscuthefileseemstobeabinaryproceed
+msgid "The file seems to be a binary. Proceed?"
+msgstr ""
+
+#: codystrconsts.crscuunabletoloadfile
+msgid "Unable to load file \"%s\"%s%s"
+msgstr ""
+
+#: codystrconsts.crscuwarning
+msgid "Warning"
+msgstr ""
+
 #: codystrconsts.crscwerror
 msgid "Error"
 msgstr ""

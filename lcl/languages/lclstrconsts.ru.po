@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-07 19:49+0300\n"
+"PO-Revision-Date: 2011-05-14 01:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -646,16 +646,14 @@ msgid "%s: Already registered"
 msgstr "%s: уже зарегистрирован"
 
 #: lclstrconsts.rshelpcontextnotfound
-#, fuzzy
 #| msgid "Help Context not found"
 msgid "A help database was found for this topic, but this topic was not found"
-msgstr "Контекст справки не найден"
+msgstr "База данных справки была найдена для данной темы, но не содержит её"
 
 #: lclstrconsts.rshelpdatabasenotfound
-#, fuzzy
 #| msgid "Help Database not found"
 msgid "There is no help database installed for this topic"
-msgstr "База данных справки не найдена"
+msgstr "База данных справки для данной темы не установлена"
 
 #: lclstrconsts.rshelperror
 msgid "Help Error"
@@ -694,16 +692,14 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Не найдено справки для строки %d, столбца %d из %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#, fuzzy
 #| msgid "No help nodes available"
 msgid "No help entries available for this topic"
-msgstr "Доступные узлы справки отсутствуют"
+msgstr "Доступные элементы справки для данной темы отсутствуют"
 
 #: lclstrconsts.rshelpnotfound
-#, fuzzy
 #| msgid "Help not found"
 msgid "No help found for this topic"
-msgstr "Справка не найдена"
+msgstr "Справка для данной темы не найдена"
 
 #: lclstrconsts.rshelpnotregistered
 msgid "%s: Not registered"
@@ -722,10 +718,9 @@ msgid "Help Viewer Error"
 msgstr "Ошибка программы просмотра справки"
 
 #: lclstrconsts.rshelpviewernotfound
-#, fuzzy
 #| msgid "Help Viewer not found"
 msgid "No viewer was found for this type of help content"
-msgstr "Программа просмотра справки не найдена"
+msgstr "Программа просмотра справки для данного типа её содержимого не найдена"
 
 #: lclstrconsts.rshighlightcolorcaption
 msgid "Highlight"
@@ -1212,7 +1207,7 @@ msgstr "Формат Tagged Image File"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
-msgstr "Не могу загрузить шрифт по умолчанию"
+msgstr "Невозможно загрузить шрифт по умолчанию"
 
 #: lclstrconsts.rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"

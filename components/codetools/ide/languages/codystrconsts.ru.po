@@ -19,7 +19,7 @@ msgstr "Добавить метод Assign ..."
 
 #: codystrconsts.crsaddcallinherited
 msgid "Add call inherited"
-msgstr ""
+msgstr "Добавить вызов унаследованного метода"
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -133,6 +133,34 @@ msgstr "%s, записывается свойством %s"
 msgid "&Close"
 msgstr "&Закрыть"
 
+#: codystrconsts.crscuallfiles
+msgid "%s|All files (%s)|%s"
+msgstr "%s|Все файлы (%s)|%s"
+
+#: codystrconsts.crscupascalpaspppaspp
+msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
+msgstr "Файлы Паскаля (*.pas;*.pp)|*.pas;*.pp"
+
+#: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
+msgid "Please place the cursor of the source editor in an implementation of an overridden method."
+msgstr "Расположите курсор редактора исходного кода в реализации перекрываемого метода."
+
+#: codystrconsts.crscuselectfiletoinsertatcursor
+msgid "Select file to insert at cursor"
+msgstr "Выбор файла для вставки в месте расположения курсора"
+
+#: codystrconsts.crscuthefileseemstobeabinaryproceed
+msgid "The file seems to be a binary. Proceed?"
+msgstr "Вероятно, файл является двоичным. Продолжить?"
+
+#: codystrconsts.crscuunabletoloadfile
+msgid "Unable to load file \"%s\"%s%s"
+msgstr "Невозможно загрузить файл \"%s\"%s%s"
+
+#: codystrconsts.crscuwarning
+msgid "Warning"
+msgstr "Предупреждение"
+
 #: codystrconsts.crscwerror
 msgid "Error"
 msgstr "Ошибка"
@@ -143,11 +171,11 @@ msgstr "Расположите курсор редактора исходног�
 
 #: codystrconsts.crsdeclarevariable
 msgid "Declare Variable"
-msgstr ""
+msgstr "Объявить переменную"
 
 #: codystrconsts.crsdeclarevariable2
 msgid "Declare Variable ..."
-msgstr ""
+msgstr "Объявить переменную ..."
 
 #: codystrconsts.crsgbytes
 msgid "Gbytes"

@@ -6790,9 +6790,9 @@ msgstr ""
 msgid "Disabled"
 msgstr "Zakázané"
 
-#: lazarusidestrconsts.lisdisablegroup
-msgid "Disable Group"
-msgstr "Zakázať skupinu"
+#: lazarusidestrconsts.lisdisablegroups
+msgid "Disable Groups"
+msgstr ""
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -7168,9 +7168,9 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Povolené"
 
-#: lazarusidestrconsts.lisenablegroup
-msgid "Enable Group"
-msgstr "Povoliť skupinu"
+#: lazarusidestrconsts.lisenablegroups
+msgid "Enable Groups"
+msgstr ""
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -9639,6 +9639,14 @@ msgstr "Meno"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Hodnota"
+
+#: lazarusidestrconsts.lislogcallstack
+msgid "Log Call Stack"
+msgstr ""
+
+#: lazarusidestrconsts.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr ""
 
 #: lazarusidestrconsts.lislogmessage
 msgid "Log Message"

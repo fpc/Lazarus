@@ -6787,9 +6787,9 @@ msgstr "Išjungti stabdos tašką"
 msgid "Disabled"
 msgstr "Pasyvus"
 
-#: lazarusidestrconsts.lisdisablegroup
-msgid "Disable Group"
-msgstr "Pasyvinti grupę"
+#: lazarusidestrconsts.lisdisablegroups
+msgid "Disable Groups"
+msgstr ""
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -7165,9 +7165,9 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Veiksnus"
 
-#: lazarusidestrconsts.lisenablegroup
-msgid "Enable Group"
-msgstr "Aktyvinti grupę"
+#: lazarusidestrconsts.lisenablegroups
+msgid "Enable Groups"
+msgstr ""
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -9637,6 +9637,14 @@ msgstr "Pavadinimas"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Vertė"
+
+#: lazarusidestrconsts.lislogcallstack
+msgid "Log Call Stack"
+msgstr ""
+
+#: lazarusidestrconsts.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr ""
 
 #: lazarusidestrconsts.lislogmessage
 #, fuzzy

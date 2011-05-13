@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-03-11 00:57+0300\n"
+"PO-Revision-Date: 2011-05-14 01:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -630,11 +630,11 @@ msgstr "модификатор nodefault определён дважды"
 
 #: codetoolsstrconsts.ctsnonodefoundatcursor
 msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "не найдено записей паскаля у курсора (т.е. необрабатываемый код)"
+msgstr "не найдено конструкций Паскаля у курсора (т.е. необрабатываемый код)"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
-msgstr "не найдено кода паскаля (первый элемент - %s)"
+msgstr "не найдено кода Паскаля (первый элемент - %s)"
 
 #: codetoolsstrconsts.ctsnoscanneravailable
 msgid "No scanner available"

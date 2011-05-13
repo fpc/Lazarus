@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-04-29 01:36+0300\n"
+"PO-Revision-Date: 2011-05-14 01:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -616,7 +616,7 @@ msgstr "Файлы Modula-3 (*.m3)|*.m3"
 
 #: syneditstrconst.syns_filterpascal
 msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
-msgstr "Файлы паскаля (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
+msgstr "Файлы Паскаля (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
 
 #: syneditstrconst.syns_filterperl
 msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"

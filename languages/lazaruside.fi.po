@@ -6758,8 +6758,8 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
-#: lazarusidestrconsts.lisdisablegroup
-msgid "Disable Group"
+#: lazarusidestrconsts.lisdisablegroups
+msgid "Disable Groups"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
@@ -7136,8 +7136,8 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Sallittu"
 
-#: lazarusidestrconsts.lisenablegroup
-msgid "Enable Group"
+#: lazarusidestrconsts.lisenablegroups
+msgid "Enable Groups"
 msgstr ""
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
@@ -9595,6 +9595,14 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Arvo"
+
+#: lazarusidestrconsts.lislogcallstack
+msgid "Log Call Stack"
+msgstr ""
+
+#: lazarusidestrconsts.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr ""
 
 #: lazarusidestrconsts.lislogmessage
 msgid "Log Message"
