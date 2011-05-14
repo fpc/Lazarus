@@ -911,6 +911,7 @@ procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
     TokenEnd: integer;
     LastToken: String;
     Indent: LongInt;
+    XY: TPoint;
   begin
     TokenEnd:=1;
     BracketLevel:=0;
@@ -966,8 +967,10 @@ procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
     NewCode:=copy(NewCode,Indent+1,length(NewCode));
     // insert
     ASynEdit.BeginUndoBlock;
-    ASynEdit.BlockBegin:=Point(X,Y);
-    ASynEdit.BlockEnd:=Point(X,Y);
+    XY:=Point(X,Y);
+    ASynEdit.BlockBegin:=XY;
+    ASynEdit.BlockEnd:=XY;
+    ASynEdit.LogicalCaretXY:=XY;
     ASynEdit.SelText:=NewCode;
     ASynEdit.EndUndoBlock;
   end;

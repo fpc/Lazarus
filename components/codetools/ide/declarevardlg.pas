@@ -63,7 +63,7 @@ procedure ShowDeclareVariableDialog(Sender: TObject);
 var
   CodyDeclareVarDialog: TCodyDeclareVarDialog;
 begin
-  // ParseTilCursor(Tool,CleanPos,Node);
+  //ParseTilCursor(Tool,CleanPos,Node);
   dbgs(3);
 
   ShowMessage('Not implemented yet');
