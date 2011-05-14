@@ -64,6 +64,9 @@ resourcestring
   crsRemoveWithBlock = 'Remove With block';
 
   crsCWError = 'Error';
+  crsPleasePlaceTheCursorOfTheSourceEditorAtAnIdentifie = 'Please place the '
+    +'cursor of the source editor at an identifier in a statement.%sFor '
+    +'example on the MyVar in%sMyVar:=3;';
   crsCWPleasePlaceTheCursorOfTheSourceEditorOnAWithVariab = 'Please place the '
     +'cursor of the source editor on a With variable.';
 

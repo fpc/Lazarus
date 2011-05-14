@@ -1533,6 +1533,7 @@ end;
 
 procedure GetIdentStartEndAtPosition(const Source: string; Position: integer;
   out IdentStart, IdentEnd: integer);
+// on success: IdentStart<IdentEnd
 begin
   IdentStart:=Position;
   IdentEnd:=Position;

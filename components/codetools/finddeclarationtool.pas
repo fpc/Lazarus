@@ -7623,7 +7623,10 @@ begin
   then begin
     // ordinal number operator
     // or xor and mod div shl shr
-    Result.Desc:=xtConstOrdInteger;
+    if LeftOperand.Desc in xtAllBooleanTypes then
+      Result.Desc:=xtBoolean
+    else
+      Result.Desc:=xtConstOrdInteger;
   end
   else if WordIsNumberOperator.DoItCaseInsensitive(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)

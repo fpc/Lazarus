@@ -218,6 +218,10 @@ msgstr "Pacchetto"
 msgid "Please open a project first."
 msgstr "Aprire un progetto prima."
 
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example on the MyVar in%sMyVar:=3;"
+msgstr ""
+
 #: codystrconsts.crsppu
 msgid "PPU: %s"
 msgstr ""

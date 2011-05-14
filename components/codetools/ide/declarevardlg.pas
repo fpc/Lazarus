@@ -21,7 +21,9 @@
   Author: Mattias Gaertner
 
   Abstract:
-    LCL controls for Cody.
+    A dialog to create a variable declaration.
+    It uses the identifier in the source editor to guess the name and type, so
+    that the user needs only to choose where to create the var.
 }
 unit DeclareVarDlg;
 
@@ -32,8 +34,10 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls, ExtCtrls,
-  FileProcs, CodeToolManager, CodeCache, FindDeclarationTool,
-  CodeCompletionTool, CodyUtils;
+  IDEDialogs,
+  FileProcs, CodeToolManager, FindDeclarationTool, CodeTree,
+  KeywordFuncLists, BasicCodeTools, CodeCompletionTool,
+  CodyUtils, CodyStrConsts;
 
 type
 
@@ -41,13 +45,10 @@ type
 
   TCodyDeclareVarDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
-    NameEdit: TEdit;
-    NameLabel: TLabel;
     Panel1: TPanel;
     TypeEdit: TEdit;
     TypeLabel: TLabel;
-    WhereComboBox: TComboBox;
-    WhereLabel: TLabel;
+    WhereRadioGroup: TRadioGroup;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -57,22 +58,99 @@ type
 
 procedure ShowDeclareVariableDialog(Sender: TObject);
 
+function CheckCreateVarFromIdentifierInSrcEdit: boolean;
+
 implementation
 
 procedure ShowDeclareVariableDialog(Sender: TObject);
 var
   CodyDeclareVarDialog: TCodyDeclareVarDialog;
 begin
-  //ParseTilCursor(Tool,CleanPos,Node);
-  dbgs(3);
+  if not CheckCreateVarFromIdentifierInSrcEdit then exit;
+  ShowMessage('Declare Variable dialog is not implemented yet');
 
-  ShowMessage('Not implemented yet');
   CodyDeclareVarDialog:=TCodyDeclareVarDialog.Create(nil);
   try
     CodyDeclareVarDialog.ShowModal;
   finally
     CodyDeclareVarDialog.Free;
   end;
+end;
+
+function CheckCreateVarFromIdentifierInSrcEdit: boolean;
+
+  procedure ErrorNotAtAnIdentifier;
+  begin
+    IDEMessageDialog(crsCWError,
+      Format(crsPleasePlaceTheCursorOfTheSourceEditorAtAnIdentifie, [#13, #13]),
+      mtError,[mbCancel]);
+  end;
+
+var
+  Tool: TCodeTool;
+  CleanPos: integer;
+  CursorNode: TCodeTreeNode;
+  Handled: boolean;
+  BlockNode: TCodeTreeNode;
+  Node: TCodeTreeNode;
+  IdentStart: integer;
+  IdentEnd: integer;
+  Identifier: String;
+begin
+  Result:=false;
+  if (ParseTilCursor(Tool,CleanPos,CursorNode,Handled,true)<>cupeSuccess)
+  and not Handled then begin
+    ErrorNotAtAnIdentifier;
+    exit;
+  end;
+
+  // check if in a statement
+  BlockNode:=nil;
+  Node:=CursorNode;
+  while (Node<>nil) do begin
+    if Node.Desc=ctnBeginBlock then
+      BlockNode:=Node;
+    Node:=Node.Parent;
+  end;
+  if BlockNode=nil then begin
+    // not in a statement
+    debugln(['CheckCreateVarFromIdentifierInSrcEdit not on a statement']);
+    ErrorNotAtAnIdentifier;
+    exit;
+  end;
+
+  // check if a keyword
+  GetIdentStartEndAtPosition(Tool.Src,CleanPos, IdentStart, IdentEnd);
+  if IdentStart>=IdentEnd then begin
+    // not on a word
+    debugln(['CheckCreateVarFromIdentifierInSrcEdit not on a word']);
+    ErrorNotAtAnIdentifier;
+    exit;
+  end;
+  Identifier:=GetIdentifier(@Tool.Src[IdentStart]);
+  if WordIsKeyWord.DoItCaseInsensitive(Identifier) then
+  begin
+    // a keyword
+    debugln(['CheckCreateVarFromIdentifierInSrcEdit "',Identifier,'" is a keyword']);
+    IDEMessageDialog(crsCWError,'The "'+Identifier+'" is a keyword.',mtError,[mbCancel]);
+    exit;
+  end;
+
+  // ToDo: check context
+  // examples:
+  //   identifier:=<something>
+  //   aclass.identifier:=<something>
+  //   <something>:=aclass.identifier
+  //   <something>:=<something>+aclass.identifier
+  //   <proc>(,,aclass.identifier)
+
+  // ToDo: check where the identifier is already defined
+  // ToDo: check if the identifier is a sub identifier (e.g. A.identifier)
+  // ToDo: check if it is the target of an assignment and guess the type
+  // ToDo: check if it is the source of an assignment and guess the type
+  // ToDo: check if it is a parameter and guess the type
+  // ToDo: create the list of possible locations and notes
+
 end;
 
 {$R *.lfm}
@@ -82,8 +160,7 @@ end;
 procedure TCodyDeclareVarDialog.FormCreate(Sender: TObject);
 begin
   Caption:='Declare a new variable';
-  WhereLabel.Caption:='Where';
-  NameLabel.Caption:='Name';
+  WhereRadioGroup.Caption:='Where';
   TypeEdit.Caption:='Type';
 end;
 

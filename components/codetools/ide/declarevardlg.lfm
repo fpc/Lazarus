@@ -1,20 +1,20 @@
 object CodyDeclareVarDialog: TCodyDeclareVarDialog
   Left = 275
-  Height = 172
+  Height = 298
   Top = 250
-  Width = 367
+  Width = 408
   Caption = 'CodyDeclareVarDialog'
-  ClientHeight = 172
-  ClientWidth = 367
+  ClientHeight = 298
+  ClientWidth = 408
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 126
-    Width = 355
+    Height = 42
+    Top = 250
+    Width = 396
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
@@ -28,99 +28,65 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
   end
   object Panel1: TPanel
     Left = 0
-    Height = 120
+    Height = 244
     Top = 0
-    Width = 367
+    Width = 408
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 120
-    ClientWidth = 367
+    ClientHeight = 244
+    ClientWidth = 408
     TabOrder = 1
-    object WhereLabel: TLabel
-      AnchorSideTop.Control = WhereComboBox
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = WhereComboBox
-      Left = 46
-      Height = 18
-      Top = 11
-      Width = 78
-      Anchors = [akTop, akRight]
-      BorderSpacing.Right = 6
-      Caption = 'WhereLabel'
-      ParentColor = False
-    end
-    object WhereComboBox: TComboBox
-      AnchorSideTop.Control = Panel1
-      AnchorSideRight.Control = Panel1
-      AnchorSideRight.Side = asrBottom
-      Left = 130
-      Height = 29
-      Top = 6
-      Width = 231
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      ItemHeight = 0
-      TabOrder = 0
-      Text = 'WhereComboBox'
-    end
-    object NameLabel: TLabel
-      AnchorSideTop.Control = NameEdit
-      AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = NameEdit
-      Left = 49
-      Height = 18
-      Top = 45
-      Width = 75
-      Anchors = [akTop, akRight]
-      BorderSpacing.Right = 6
-      Caption = 'NameLabel'
-      ParentColor = False
-    end
-    object NameEdit: TEdit
-      AnchorSideLeft.Control = WhereComboBox
-      AnchorSideTop.Control = WhereComboBox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = Panel1
-      AnchorSideRight.Side = asrBottom
-      Left = 130
-      Height = 27
-      Top = 41
-      Width = 231
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      TabOrder = 1
-      Text = 'NameEdit'
-    end
     object TypeLabel: TLabel
+      AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = TypeEdit
       AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = TypeEdit
-      Left = 58
+      Left = 6
       Height = 18
-      Top = 78
-      Width = 66
-      Anchors = [akTop, akRight]
+      Top = 221
+      Width = 71
+      BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'TypeLabel'
       ParentColor = False
     end
     object TypeEdit: TEdit
-      AnchorSideLeft.Control = WhereComboBox
-      AnchorSideTop.Control = NameEdit
+      AnchorSideLeft.Control = TypeLabel
+      AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 130
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 83
       Height = 27
-      Top = 74
-      Width = 231
-      Anchors = [akTop, akLeft, akRight]
+      Top = 217
+      Width = 319
+      Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
-      TabOrder = 2
+      TabOrder = 0
       Text = 'TypeEdit'
+    end
+    object WhereRadioGroup: TRadioGroup
+      AnchorSideBottom.Control = TypeEdit
+      Left = 6
+      Height = 205
+      Top = 6
+      Width = 396
+      Align = alTop
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      AutoFill = True
+      BorderSpacing.Around = 6
+      Caption = 'WhereRadioGroup'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      TabOrder = 1
     end
   end
 end

@@ -52,7 +52,6 @@ uses
   AVL_Tree, CodeToolMemManager, DefineTemplates,
   SourceChanger, FindDeclarationTool, PascalReaderTool, PascalParserTool;
   
-
 type
   TIdentCompletionTool = class;
   TIdentifierHistoryList = class;
