@@ -180,7 +180,6 @@ inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbColors
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = gbColors
       AnchorSideBottom.Side = asrBottom
       Left = 252
       Height = 22
@@ -188,7 +187,7 @@ inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
       Width = 272
       DefaultColorColor = clWhite
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
-      Anchors = [akTop, akLeft, akRight, akBottom]
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Right = 6
