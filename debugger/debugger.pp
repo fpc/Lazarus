@@ -4345,6 +4345,8 @@ begin
 end;
 
 destructor TIDEBreakPoint.Destroy;
+var
+  Grp: TIDEBreakPointGroup;
 begin
   if FMaster <> nil
   then begin
@@ -4355,8 +4357,10 @@ begin
   if (TIDEBreakPoints(Collection) <> nil)
   then TIDEBreakPoints(Collection).NotifyRemove(Self);
 
-  if FGroup <> nil
-  then FGroup.Remove(Self);
+  Grp := FGroup;
+  FGroup := nil;
+  if Grp <> nil
+  then Grp.Remove(Self);
 
   ClearAllGroupLists;
 
