@@ -32,7 +32,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls, ExtCtrls,
-  FileProcs, CodeToolManager, CodeCache, FindDeclarationTool, CodeCompletionTool;
+  FileProcs, CodeToolManager, CodeCache, FindDeclarationTool,
+  CodeCompletionTool, CodyUtils;
 
 type
 
@@ -62,6 +63,9 @@ procedure ShowDeclareVariableDialog(Sender: TObject);
 var
   CodyDeclareVarDialog: TCodyDeclareVarDialog;
 begin
+  // ParseTilCursor(Tool,CleanPos,Node);
+  dbgs(3);
+
   ShowMessage('Not implemented yet');
   CodyDeclareVarDialog:=TCodyDeclareVarDialog.Create(nil);
   try

@@ -100,7 +100,8 @@ type
     LastSplitPos: integer; // last position where splitting is allowed
     LastSrcLineStart: integer;// last line start, not added by splitting
     CurAtomType, LastAtomType: TAtomType;
-    CurPos, AtomStart, AtomEnd, SrcLen, CurIndent, HiddenIndent: integer;
+    CurPos, AtomStart, AtomEnd, SrcLen: integer;
+    HiddenIndent: integer; // the next indent is the sum of the current line indent plus HiddenIndent
     CommentLvl: integer;
     CommentStartPos: array of integer;
     Src: string;
@@ -150,7 +151,7 @@ type
     function BeautifyStatementLeftAligned(const AStatement: string;
         IndentSize: integer): string;
     function BeautifyStatement(const AStatement: string; IndentSize: integer;
-        BeautifyFlags: TBeautifyCodeFlags): string;
+        BeautifyFlags: TBeautifyCodeFlags; InsertX: integer = 1): string;
     function AddClassAndNameToProc(const AProcCode, AClassName,
         AMethodName: string): string;
     function BeautifyWord(const AWord: string; WordPolicy: TWordPolicy): string;
@@ -1532,8 +1533,10 @@ begin
 end;
 
 function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
-  IndentSize: integer; BeautifyFlags: TBeautifyCodeFlags): string;
-var CurAtom: string;
+  IndentSize: integer; BeautifyFlags: TBeautifyCodeFlags; InsertX: integer
+  ): string;
+var
+  CurAtom: string;
   OldIndent: Integer;
   OldAtomStart: LongInt;
 begin
@@ -1549,17 +1552,21 @@ begin
     Src:=AStatement;
     SrcLen:=length(Src);
     if IndentSize>=LineLength-10 then IndentSize:=LineLength-10;
-    CurIndent:=IndentSize;
-    HiddenIndent:=0;
-    if bcfDoNotIndentFirstLine in CurFlags then begin
-      Result:='';
-      HiddenIndent:=CurIndent;
-    end else
-      Result:=GetIndentStr(CurIndent);
+    if IndentSize<0 then IndentSize:=0;
+    Result:='';
+    if (bcfDoNotIndentFirstLine in CurFlags) then begin
+      HiddenIndent:=IndentSize;
+      CurLineLen:=0;
+      if InsertX>0 then inc(CurLineLen,InsertX-1);
+    end else begin
+      HiddenIndent:=0;
+      Result:=GetIndentStr(IndentSize);
+      CurLineLen:=IndentSize;
+      if InsertX>0 then inc(CurLineLen,InsertX-1);
+    end;
     CurPos:=1;
     LastSplitPos:=-1;
     LastSrcLineStart:=1;
-    CurLineLen:=length(Result);
     LastAtomType:=atNone;
     CommentLvl:=0;
     // read atoms

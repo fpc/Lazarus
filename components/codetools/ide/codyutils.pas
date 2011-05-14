@@ -221,7 +221,7 @@ begin
       end;
 
       NewCode:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-        NewCode,Indent,[bcfDoNotIndentFirstLine]);
+        NewCode,Indent,[bcfDoNotIndentFirstLine],GetPosInLine(Tool.Src,CleanPos));
       CodeToolBoss.SourceChangeCache.MainScanner:=Tool.Scanner;
       if not CodeToolBoss.SourceChangeCache.Replace(Gap,Gap,CleanPos,CleanPos,NewCode)
       then begin

@@ -37,36 +37,51 @@ unit CodeContextForm;
 interface
 
 uses
-  Classes, SysUtils, Types, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, LCLType, LCLIntf,
-  SynEdit, SynEditKeyCmds,
+  Classes, SysUtils, Types, contnrs, LCLProc, LResources, Forms, Controls,
+  Graphics, Dialogs, LCLType, LCLIntf, Themes, Buttons, SynEdit, SynEditKeyCmds,
   BasicCodeTools, KeywordFuncLists, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
-  SrcEditorIntf,
-  IDEProcs, LazarusIDEStrConsts;
+  SourceChanger, SrcEditorIntf, IDEProcs, LazarusIDEStrConsts;
 
 type
+
+  { TCodeContextItem }
+
+  TCodeContextItem = class
+  public
+    Code: string;
+    Hint: string;
+    CopyAllButton: TSpeedButton;
+    destructor Destroy; override;
+  end;
 
   { TCodeContextFrm }
 
   TCodeContextFrm = class(THintWindow)
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
+    procedure CopyAllBtnClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormPaint(Sender: TObject);
     procedure FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
-    FHints: TStrings;
+    FHints: TObjectList; // list of TCodeContextItem
     FLastParameterIndex: integer;
     FParamListBracketOpenCodeXYPos: TCodeXYPosition;
     FProcNameCodeXYPos: TCodeXYPosition;
     FSourceEditorTopIndex: integer;
+    FBtnWidth: integer;
     procedure CreateHints(const CodeContexts: TCodeContextInfo);
     procedure ClearMarksInHints;
+    function GetHints(Index: integer): TCodeContextItem;
     procedure MarkCurrentParameterInHints(ParameterIndex: integer); // 0 based
     procedure CalculateHintsBounds(const CodeContexts: TCodeContextInfo);
     procedure DrawHints(var MaxWidth, MaxHeight: Integer; Draw: boolean);
+    procedure CompleteParameters(DeclCode: string);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -78,6 +93,7 @@ type
                                             read FParamListBracketOpenCodeXYPos;
     property SourceEditorTopIndex: integer read FSourceEditorTopIndex;
     property LastParameterIndex: integer read FLastParameterIndex;
+    property Hints[Index: integer]: TCodeContextItem read GetHints;
   end;
 
 var
@@ -86,7 +102,6 @@ var
 function ShowCodeContext(Code: TCodeBuffer): boolean;
 
 implementation
-uses Themes;
 
 type
   TWinControlAccess = class(TWinControl);
@@ -114,6 +129,14 @@ begin
   end;
 end;
 
+{ TCodeContextItem }
+
+destructor TCodeContextItem.Destroy;
+begin
+  FreeAndNil(CopyAllButton);
+  inherited Destroy;
+end;
+
 { TCodeContextFrm }
 
 procedure TCodeContextFrm.ApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -122,9 +145,27 @@ begin
   UpdateHints;
 end;
 
+procedure TCodeContextFrm.CopyAllBtnClick(Sender: TObject);
+var
+  i: LongInt;
+  Item: TCodeContextItem;
+begin
+  i:=FHints.Count-1;
+  while (i>=0) do begin
+    Item:=Hints[i];
+    if Item.CopyAllButton=Sender then begin
+      //debugln(['TCodeContextFrm.CopyAllBtnClick Hint="',Item.Code,'"']);
+      CompleteParameters(Item.Code);
+      exit;
+    end;
+    dec(i);
+  end;
+end;
+
 procedure TCodeContextFrm.FormCreate(Sender: TObject);
 begin
-  FHints:=TStringList.Create;
+  FBtnWidth:=16;
+  FHints:=TObjectList.Create(true);
   Application.AddOnIdleHandler(@ApplicationIdle);
 end;
 
@@ -355,31 +396,35 @@ var
   s: String;
   p: Integer;
   CurContext: TCodeContextInfoItem;
+  Btn: TSpeedButton;
+  j: Integer;
+  Code: String;
+  Item: TCodeContextItem;
 begin
   FHints.Clear;
   if (CodeContexts=nil) or (CodeContexts.Count=0) then exit;
   for i:=0 to CodeContexts.Count-1 do begin
     CurContext:=CodeContexts[i];
     CurExprType:=CurContext.Expr;
-    s:=ExpressionTypeDescNames[CurExprType.Desc];
+    Code:=ExpressionTypeDescNames[CurExprType.Desc];
     if CurExprType.Context.Node<>nil then begin
       CodeNode:=CurExprType.Context.Node;
       CodeTool:=CurExprType.Context.Tool;
       case CodeNode.Desc of
       ctnProcedure:
         begin
-          s:=CodeTool.ExtractProcHead(CodeNode,
+          Code:=CodeTool.ExtractProcHead(CodeNode,
               [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
                phpWithResultType]);
         end;
       ctnProperty:
         begin
           if CodeTool.PropertyNodeHasParamList(CodeNode) then begin
-            s:=CodeTool.ExtractProperty(CodeNode,
+            Code:=CodeTool.ExtractProperty(CodeNode,
                 [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
                  phpWithResultType]);
           end else if not CodeTool.PropNodeIsTypeLess(CodeNode) then begin
-            s:=CodeTool.ExtractPropName(CodeNode,false);
+            Code:=CodeTool.ExtractPropName(CodeNode,false);
             FindBaseType(CodeTool,CodeNode,s);
           end else begin
             // ignore properties without type
@@ -388,34 +433,52 @@ begin
         end;
       ctnVarDefinition:
         begin
-          s:=CodeTool.ExtractDefinitionName(CodeNode);
-          if not FindBaseType(CodeTool,CodeNode,s) then
+          Code:=CodeTool.ExtractDefinitionName(CodeNode);
+          if not FindBaseType(CodeTool,CodeNode,Code) then
             continue; // ignore normal variables
         end;
       end;
     end else if CurContext.Params<>nil then begin
       // compiler function
-      s:=CurContext.ProcName+'('+CurContext.Params.DelimitedText+')';
+      Code:=CurContext.ProcName+'('+CurContext.Params.DelimitedText+')';
       if CurContext.ResultType<>'' then
-        s:=s+':'+CurContext.ResultType;
+        Code:=Code+':'+CurContext.ResultType;
     end;
     // insert spaces
-    for p:=length(s)-1 downto 1 do begin
-      if (s[p] in [',',';',':']) and (s[p+1]<>' ') then
-        System.Insert(' ',s,p+1);
+    for p:=length(Code)-1 downto 1 do begin
+      if (Code[p] in [',',';',':']) and (Code[p+1]<>' ') then
+        System.Insert(' ',Code,p+1);
     end;
+    Code:=Trim(Code);
+    s:=Code;
     // mark the mark characters
     for p:=length(s) downto 1 do
       if s[p]='\' then
         System.Insert('\',s,p+1);
-    s:=Trim(s);
-    if FHints.IndexOf(s)<0 then
-      FHints.Add(s);
+    // add hint if not already exists
+    j:=FHints.Count-1;
+    while (j>=0) and (CompareText(Hints[j].Code,Code)<>0) do
+      dec(j);
+    if j<0 then begin
+      Item:=TCodeContextItem.Create;
+      Item.Code:=Code;
+      Item.Hint:=s;
+      Btn:=TSpeedButton.Create(Self);
+      Item.CopyAllButton:=Btn;
+      Btn.Name:='CopyAllSpeedButton'+IntToStr(i+1);
+      Btn.OnClick:=@CopyAllBtnClick;
+      Btn.Visible:=false;
+      Btn.Parent:=Self;
+      FHints.Add(Item);
+    end;
   end;
-  if FHints.Count=0 then
-    FHints.Add(lisNoHints);
+  if FHints.Count=0 then begin
+    Item:=TCodeContextItem.Create;
+    Item.Code:='';
+    Item.Hint:=lisNoHints;
+    FHints.Add(Item);
+  end;
   MarkCurrentParameterInHints(CodeContexts.ParameterIndex-1);
-  //DebugLn('TCodeContextFrm.UpdateHints ',FHints.Text);
 end;
 
 procedure TCodeContextFrm.ClearMarksInHints;
@@ -424,9 +487,11 @@ var
   i: Integer;
   s: string;
   p: Integer;
+  Item: TCodeContextItem;
 begin
   for i:=0 to FHints.Count-1 do begin
-    s:=FHints[i];
+    Item:=Hints[i];
+    s:=Item.Hint;
     p:=1;
     while p<length(s) do begin
       if s[p]<>'\' then
@@ -437,8 +502,13 @@ begin
         System.Delete(s,p,2); // remove mark
       end;
     end;
-    FHints[i]:=s;
+    Item.Hint:=s;
   end;
+end;
+
+function TCodeContextFrm.GetHints(Index: integer): TCodeContextItem;
+begin
+  Result:=TCodeContextItem(FHints[Index]);
 end;
 
 procedure TCodeContextFrm.MarkCurrentParameterInHints(ParameterIndex: integer);
@@ -554,11 +624,14 @@ procedure TCodeContextFrm.MarkCurrentParameterInHints(ParameterIndex: integer);
   
 var
   i: Integer;
+  Item: TCodeContextItem;
 begin
   //DebugLn('TCodeContextFrm.MarkCurrentParameterInHints FLastParameterIndex=',dbgs(FLastParameterIndex),' ParameterIndex=',dbgs(ParameterIndex));
   ClearMarksInHints;
-  for i:=0 to FHints.Count-1 do
-    FHints[i]:=MarkCurrentParameterInHint(FHints[i]);
+  for i:=0 to FHints.Count-1 do begin
+    Item:=Hints[i];
+    Item.Hint:=MarkCurrentParameterInHint(Item.Hint);
+  end;
   FLastParameterIndex:=ParameterIndex;
   Invalidate;
 end;
@@ -617,12 +690,12 @@ end;
 procedure TCodeContextFrm.DrawHints(var MaxWidth, MaxHeight: Integer;
   Draw: boolean);
 var
-  HorizontalSpace: Integer;
+  LeftSpace, RightSpace: Integer;
   VerticalSpace: Integer;
   BackgroundColor, TextGrayColor, TextColor, PenColor: TColor;
   TextGrayStyle, TextStyle: TFontStyles;
 
-  procedure DrawHint(const Line: string; var AHintRect: TRect);
+  procedure DrawHint(Index: integer; var AHintRect: TRect);
   var
     ATextRect: TRect;
     TokenStart: Integer;
@@ -633,15 +706,25 @@ var
     UsedWidth: Integer; // maximum right token position
     LineHeight: Integer; // current line height
     LastTokenEnd: LongInt;
+    Line: string;
+    Item: TCodeContextItem;
   begin
-    ATextRect:=Rect(AHintRect.Left+HorizontalSpace,
+    Item:=Hints[Index];
+    Line:=Item.Hint;
+    ATextRect:=Rect(AHintRect.Left+LeftSpace,
                     AHintRect.Top+VerticalSpace,
-                    AHintRect.Right-HorizontalSpace,
+                    AHintRect.Right-RightSpace,
                     AHintRect.Bottom-VerticalSpace);
     UsedWidth:=0;
     LineHeight:=0;
     TokenPos:=Point(ATextRect.Left,ATextRect.Top);
     TokenEnd:=1;
+    if Draw and (Item.CopyAllButton<>nil) then begin
+      // move button at end of first line
+      Item.CopyAllButton.SetBounds(
+        AHintRect.Right-RightSpace,AHintRect.Top,FBtnWidth,FBtnWidth);
+      Item.CopyAllButton.Visible:=true;
+    end;
     while (TokenEnd<=length(Line)) do begin
       LastTokenEnd:=TokenEnd;
       ReadRawNextPascalAtom(Line,TokenEnd,TokenStart);
@@ -728,7 +811,7 @@ var
     end;
 
     if (not Draw) and (UsedWidth>0) then
-      AHintRect.Right:=UsedWidth+HorizontalSpace;
+      AHintRect.Right:=UsedWidth+RightSpace;
     AHintRect.Bottom:=TokenPos.Y+LineHeight+VerticalSpace;
   end;
   
@@ -749,7 +832,8 @@ begin
     TextStyle:=[fsBold];
     PenColor:=clBlack;
   end;
-  HorizontalSpace:=2;
+  LeftSpace:=2;
+  RightSpace:=2+FBtnWidth;
   VerticalSpace:=2;
 
   if Draw then begin
@@ -767,7 +851,7 @@ begin
   for i:=0 to FHints.Count-1 do begin
     if Draw and (NewMaxHeight>=MaxHeight) then break;
     CurHintRect:=Rect(0,NewMaxHeight,MaxWidth,MaxHeight);
-    DrawHint(FHints[i],CurHintRect);
+    DrawHint(i,CurHintRect);
     //DebugLn('TCodeContextFrm.DrawHints i=',dbgs(i),' CurTextRect=',dbgs(CurTextRect),' CurRect=',dbgs(CurRect),' s="',s,'"');
     if CurHintRect.Right>NewMaxWidth then
       NewMaxWidth:=CurHintRect.Right;
@@ -776,6 +860,9 @@ begin
   // for fractionals add some space
   inc(NewMaxWidth,2);
   inc(NewMaxHeight,2);
+  // add space for the copy all button
+  inc(NewMaxWidth,16);
+
   if Draw then begin
     // fill rest of form
     if NewMaxHeight<MaxHeight then
@@ -789,6 +876,189 @@ begin
       MaxWidth:=NewMaxWidth;
     if NewMaxHeight<MaxHeight then
       MaxHeight:=NewMaxHeight;
+  end;
+end;
+
+procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
+// add the parameter names in the source editor
+
+  function ReadNextAtom(ASynEdit: TSynEdit; var TokenLine, TokenEnd: integer;
+    out TokenStart: integer): string;
+  var
+    Line: string;
+  begin
+    while TokenLine<=ASynEdit.Lines.Count do begin
+      Line:=ASynEdit.Lines[TokenLine-1];
+      ReadRawNextPascalAtom(Line,TokenEnd,TokenStart);
+      if TokenStart<TokenEnd then begin
+        Result:=copy(Line,TokenStart,TokenEnd-TokenStart);
+        exit;
+      end;
+      inc(TokenLine);
+      TokenEnd:=1;
+    end;
+    TokenStart:=TokenEnd;
+    Result:='';
+  end;
+
+  procedure AddParameters(ASynEdit: TSynEdit; Y, X: integer; AddComma: boolean;
+    StartIndex: integer);
+  var
+    NewCode: String;
+    TokenStart: Integer;
+    BracketLevel: Integer;
+    ParameterIndex: Integer;
+    TokenEnd: integer;
+    LastToken: String;
+    Indent: LongInt;
+  begin
+    TokenEnd:=1;
+    BracketLevel:=0;
+    ParameterIndex:=-1;
+    NewCode:='';
+    LastToken:='';
+    repeat
+      ReadRawNextPascalAtom(DeclCode,TokenEnd,TokenStart);
+      if TokenEnd=TokenStart then break;
+      case DeclCode[TokenStart] of
+      '(','[':
+        begin
+          inc(BracketLevel);
+          if BracketLevel=1 then
+            ParameterIndex:=0;
+        end;
+      ')',']':
+        begin
+          dec(BracketLevel);
+          if BracketLevel=0 then begin
+            // closing bracket found
+            break;
+          end;
+        end;
+      ',',':':
+        if BracketLevel=1 then begin
+          if (LastToken<>'') and (IsIdentStartChar[LastToken[1]])
+          and (ParameterIndex>=StartIndex) then begin
+            // add parameter
+            if AddComma then
+              NewCode:=NewCode+',';
+            NewCode:=NewCode+LastToken;
+            AddComma:=true;
+          end;
+          if DeclCode[TokenStart]=',' then
+            inc(ParameterIndex);
+        end;
+      ';':
+        if BracketLevel=1 then
+          inc(ParameterIndex);
+      else
+
+      end;
+      LastToken:=copy(DeclCode,TokenStart,TokenEnd-TokenStart);
+    until false;
+    if NewCode='' then exit;
+    // format insertion
+    Indent:=GetLineIndentWithTabs(ASynEdit.Lines[Y-1],X,ASynEdit.TabWidth);
+    if Y<>FParamListBracketOpenCodeXYPos.Y then
+      dec(Indent,CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.Indent);
+    NewCode:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+      NewCode,Indent,[],X);
+    NewCode:=copy(NewCode,Indent+1,length(NewCode));
+    // insert
+    ASynEdit.BeginUndoBlock;
+    ASynEdit.BlockBegin:=Point(X,Y);
+    ASynEdit.BlockEnd:=Point(X,Y);
+    ASynEdit.SelText:=NewCode;
+    ASynEdit.EndUndoBlock;
+  end;
+
+var
+  SrcEdit: TSourceEditorInterface;
+  BracketPos: TPoint;
+  ASynEdit: TSynEdit;
+  Line: string;
+  TokenLine, TokenEnd, TokenStart: LongInt;
+  LastTokenLine, LastTokenEnd: LongInt;
+  BracketLevel: Integer;
+  ParameterIndex: Integer;
+  Token: String;
+  LastToken: String;
+  NeedComma: Boolean;
+begin
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+  if (SrcEdit=nil) or (SrcEdit.CodeToolsBuffer<>ProcNameCodeXYPos.Code) then
+    exit;
+  BracketPos:=Point(ParamListBracketOpenCodeXYPos.X,
+                    ParamListBracketOpenCodeXYPos.Y);
+  // find out, if cursor is in procedure call and where
+  ASynEdit:=SrcEdit.EditorControl as TSynEdit;
+
+  Line:=ASynEdit.Lines[BracketPos.Y-1];
+  if (length(Line)<BracketPos.X) or (not (Line[BracketPos.X] in ['(','[']))
+  then begin
+    // bracket lost -> something changed -> hints became invalid
+    exit;
+  end;
+
+  // parse the code
+  TokenLine:=BracketPos.Y;
+  TokenEnd:=BracketPos.X;
+  //debugln(['TCodeContextFrm.CompleteParameters START BracketPos=',dbgs(BracketPos)]);
+  TokenStart:=TokenEnd;
+  BracketLevel:=0;
+  ParameterIndex:=-1;
+  Token:='';
+  repeat
+    LastTokenLine:=TokenLine;
+    LastTokenEnd:=TokenEnd;
+    LastToken:=Token;
+    Token:=ReadNextAtom(ASynEdit,TokenLine,TokenEnd,TokenStart);
+    //debugln(['TCodeContextFrm.CompleteParameters Token="',Token,'" ParameterIndex=',ParameterIndex]);
+    if TokenEnd=TokenStart then break;
+    case Token[1] of
+    '(','[':
+      begin
+        inc(BracketLevel);
+        if BracketLevel=1 then
+          ParameterIndex:=0;
+      end;
+    ')',']':
+      begin
+        dec(BracketLevel);
+        if BracketLevel=0 then begin
+          // closing bracket found
+          NeedComma:=(LastToken<>',') and (LastToken<>'(') and (LastToken<>'[');
+          if NeedComma then inc(ParameterIndex);
+          //debugln(['TCodeContextFrm.CompleteParameters y=',LastTokenLine,' x=',LastTokenEnd,' ParameterIndex=',ParameterIndex]);
+          AddParameters(ASynEdit,LastTokenLine,LastTokenEnd,NeedComma,ParameterIndex);
+          break;
+        end;
+      end;
+    ',':
+      if BracketLevel=1 then inc(ParameterIndex);
+    ';':
+      break; // missing close bracket => cursor behind procedure call
+    else
+      if IsIdentStartChar[Token[1]] then begin
+        if CompareIdentifiers(PChar(Token),'end')=0 then
+          break;// missing close bracket => cursor behind procedure call
+      end;
+    end;
+  until false;
+
+end;
+
+procedure TCodeContextFrm.Notification(AComponent: TComponent;
+  Operation: TOperation);
+var
+  i: Integer;
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then
+  begin
+    for i:=0 to FHints.Count-1 do
+      if Hints[i].CopyAllButton=AComponent then
+        Hints[i].CopyAllButton:=nil;
   end;
 end;
 

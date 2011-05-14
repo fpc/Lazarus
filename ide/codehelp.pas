@@ -2413,8 +2413,8 @@ begin
     if not CodeToolBoss.InitCurCodeTool(Code) then exit;
     try
       // find declaration
-      if not CodeToolBoss.CurCodeTool.FindDeclaration(CursorPos,DefaultFindSmartHintFlags,
-        CTTool,CTNode,XYPos,aTopLine)
+      if not CodeToolBoss.CurCodeTool.FindDeclaration(CursorPos,
+        DefaultFindSmartHintFlags,CTTool,CTNode,XYPos,aTopLine)
       then
         exit;
 

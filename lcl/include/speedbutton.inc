@@ -348,7 +348,7 @@ function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
     if FState = bsHot then
       Result := tbPushButtonHot
     else
-      Result := tbPushButtonNormal
+      Result := tbPushButtonNormal;
   end;
 
   function ToolButtonPart: TThemedToolBar;
@@ -364,7 +364,7 @@ function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
         if FMouseInControl then
           Result := ttbButtonCheckedHot
         else
-          Result := ttbButtonChecked
+          Result := ttbButtonChecked;
       end
       else
       begin
@@ -373,7 +373,7 @@ function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
         if FState = bsHot then
           Result := ttbButtonHot
         else
-          Result := ttbButtonNormal
+          Result := ttbButtonNormal;
       end;
     end;
   end;
