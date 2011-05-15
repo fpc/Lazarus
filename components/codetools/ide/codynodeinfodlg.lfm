@@ -1,0 +1,53 @@
+object CodyNodeInfoDialog: TCodyNodeInfoDialog
+  Left = 275
+  Height = 467
+  Top = 250
+  Width = 581
+  Caption = 'CodyNodeInfoDialog'
+  ClientHeight = 467
+  ClientWidth = 581
+  OnCreate = FormCreate
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 419
+    Width = 569
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 0
+    ShowButtons = [pbClose]
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 413
+    Top = 0
+    Width = 581
+    ActivePage = ReportTabSheet
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object ReportTabSheet: TTabSheet
+      Caption = 'ReportTabSheet'
+      ClientHeight = 380
+      ClientWidth = 577
+      object ReportMemo: TMemo
+        Left = 0
+        Height = 380
+        Top = 0
+        Width = 577
+        Align = alClient
+        Lines.Strings = (
+          'ReportMemo'
+        )
+        TabOrder = 0
+      end
+    end
+  end
+end

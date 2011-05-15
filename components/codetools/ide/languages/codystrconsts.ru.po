@@ -133,6 +133,10 @@ msgstr "%s, записывается свойством %s"
 msgid "&Close"
 msgstr "&Закрыть"
 
+#: codystrconsts.crscodenodeinformation
+msgid "Code Node Information"
+msgstr ""
+
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
 msgstr "%s|Все файлы (%s)|%s"
@@ -241,9 +245,17 @@ msgstr "Вывод проекта"
 msgid "Remove With block"
 msgstr "Удалить блок With"
 
+#: codystrconsts.crsreport
+msgid "Report"
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "поиск ..."
+
+#: codystrconsts.crsshowcodetoolsnodeinfo
+msgid "Show CodeTools node info ..."
+msgstr ""
 
 #: codystrconsts.crsshowusedppufiles
 #| msgid "Show used .ppu files"

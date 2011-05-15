@@ -170,7 +170,7 @@ type
       4. 'longint' identifier node points points to its range.
       
       FindBaseTypeOfNode will search this chain, and on success will create
-      TBaseTypeCache(s). All four nodes will point directly to the range.
+      TBaseTypeCache(s). The All four nodes will point directly to the range.
 
   }
 
@@ -179,9 +179,11 @@ type
   TBaseTypeCache = class
   private
   public
-    NewNode: TCodeTreeNode;
-    NewTool: TPascalParserTool;
-    Next: TBaseTypeCache; // used for mem manager
+    BaseNode: TCodeTreeNode; // final base type
+    BaseTool: TPascalParserTool;
+    NextNode: TCodeTreeNode; // next node on path to the BaseNode
+    NextTool: TPascalParserTool;
+    NextCache: TBaseTypeCache; // used for mem manager
     Owner: TCodeTreeNode;
     procedure BindToOwner(NewOwner: TCodeTreeNode);
     procedure UnbindFromOwner;
@@ -266,21 +268,28 @@ type
 
   //----------------------------------------------------------------------------
   // stacks for circle checking
+const
+  CodeTreeNodeFixedItemCount = 12;
 type
-  TCodeTreeNodeStackEntry = TCodeTreeNode;
+  TCodeTreeNodeStackEntry = record
+    Tool: TPascalParserTool;
+    Node: TCodeTreeNode;
+  end;
+  PCodeTreeNodeStackEntry = ^TCodeTreeNodeStackEntry;
 
   TCodeTreeNodeStack = record
-    FixedItems: array[0..9] of TCodeTreeNodeStackEntry;
-    DynItems: TFPList; // list of TCodeTreeNodeStackEntry
+    FixedItems: array[0..CodeTreeNodeFixedItemCount-1] of TCodeTreeNodeStackEntry;
+    DynItems: PCodeTreeNodeStackEntry;
     StackPtr: integer;
+    Capacity: integer; // size of  DynItems in entries
   end;
   PCodeTreeNodeStack = ^TCodeTreeNodeStack;
 
   procedure InitializeNodeStack(NodeStack: PCodeTreeNodeStack);
   function GetNodeStackEntry(NodeStack: PCodeTreeNodeStack;
-    Index: integer): TCodeTreeNodeStackEntry;
+    Index: integer): PCodeTreeNodeStackEntry;
   procedure AddNodeToStack(NodeStack: PCodeTreeNodeStack;
-    NewNode: TCodeTreeNode);
+    NewTool: TPascalParserTool; NewNode: TCodeTreeNode);
   function NodeExistsInStack(NodeStack: PCodeTreeNodeStack;
     Node: TCodeTreeNode): boolean;
   procedure FinalizeNodeStack(NodeStack: PCodeTreeNodeStack);
@@ -1181,33 +1190,40 @@ end;
 
 procedure InitializeNodeStack(NodeStack: PCodeTreeNodeStack);
 begin
-  NodeStack^.StackPtr:=0;
+  NodeStack^.StackPtr:=-1;
   NodeStack^.DynItems:=nil;
+  NodeStack^.Capacity:=0;
 end;
 
 function GetNodeStackEntry(NodeStack: PCodeTreeNodeStack;
-  Index: integer): TCodeTreeNodeStackEntry;
+  Index: integer): PCodeTreeNodeStackEntry;
 begin
-  if Index<=High(NodeStack^.FixedItems) then begin
-    Result:=NodeStack^.FixedItems[Index];
+  if Index<CodeTreeNodeFixedItemCount then begin
+    Result:=@NodeStack^.FixedItems[Index];
   end else begin
-    Result:=TCodeTreeNodeStackEntry(
-                       NodeStack^.DynItems[Index-High(NodeStack^.FixedItems)-1]);
+    Result:=@NodeStack^.DynItems[Index-CodeTreeNodeFixedItemCount];
   end;
 end;
 
 procedure AddNodeToStack(NodeStack: PCodeTreeNodeStack;
-  NewNode: TCodeTreeNode);
+  NewTool: TPascalParserTool; NewNode: TCodeTreeNode);
+var
+  Entry: PCodeTreeNodeStackEntry;
+  i: Integer;
 begin
-  if (NodeStack^.StackPtr<=High(NodeStack^.FixedItems)) then begin
-    NodeStack^.FixedItems[NodeStack^.StackPtr]:=NewNode;
-  end else begin
-    if NodeStack^.DynItems=nil then begin
-      NodeStack^.DynItems:=TFPList.Create;
-    end;
-    NodeStack^.DynItems.Add(NewNode);
-  end;
   inc(NodeStack^.StackPtr);
+  if NodeStack^.StackPtr<CodeTreeNodeFixedItemCount then begin
+    Entry:=@NodeStack^.FixedItems[NodeStack^.StackPtr];
+  end else begin
+    i:=NodeStack^.StackPtr-CodeTreeNodeFixedItemCount;
+    if NodeStack^.Capacity<=i then begin
+      inc(NodeStack^.Capacity,CodeTreeNodeFixedItemCount);
+      ReAllocMem(NodeStack^.DynItems,NodeStack^.Capacity*SizeOf(TCodeTreeNodeStackEntry));
+    end;
+    Entry:=@NodeStack^.DynItems[i];
+  end;
+  Entry^.Tool:=NewTool;
+  Entry^.Node:=NewNode;
 end;
 
 function NodeExistsInStack(NodeStack: PCodeTreeNodeStack;
@@ -1216,11 +1232,11 @@ var i: integer;
 begin
   Result:=true;
   i:=0;
-  while i<NodeStack^.StackPtr do begin
-    if i<=High(NodeStack^.FixedItems) then begin
-      if NodeStack^.FixedItems[i]=Node then exit;
+  while i<=NodeStack^.StackPtr do begin
+    if i<CodeTreeNodeFixedItemCount then begin
+      if NodeStack^.FixedItems[i].Node=Node then exit;
     end else begin
-      if NodeStack^.DynItems[i-High(NodeStack^.FixedItems)-1]=Pointer(Node) then
+      if NodeStack^.DynItems[i-CodeTreeNodeFixedItemCount].Node=Node then
         exit;
     end;
     inc(i);
@@ -1230,7 +1246,8 @@ end;
 
 procedure FinalizeNodeStack(NodeStack: PCodeTreeNodeStack);
 begin
-  NodeStack^.DynItems.Free;
+  if NodeStack^.DynItems=nil then exit;
+  ReAllocMem(NodeStack^.DynItems,0);
 end;
 
 
@@ -1243,7 +1260,7 @@ begin
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add Entry to Free list
-    BaseTypeCache.Next:=TBaseTypeCache(FFirstFree);
+    BaseTypeCache.NextCache:=TBaseTypeCache(FFirstFree);
     TBaseTypeCache(FFirstFree):=BaseTypeCache;
     inc(FFreeCount);
   end else begin
@@ -1260,7 +1277,7 @@ procedure TBaseTypeCacheMemManager.FreeFirstItem;
 var BaseTypeCache: TBaseTypeCache;
 begin
   BaseTypeCache:=TBaseTypeCache(FFirstFree);
-  TBaseTypeCache(FFirstFree):=BaseTypeCache.Next;
+  TBaseTypeCache(FFirstFree):=BaseTypeCache.NextCache;
   BaseTypeCache.Free;
 end;
 
@@ -1270,7 +1287,7 @@ begin
   if FFirstFree<>nil then begin
     // take from free list
     Result:=TBaseTypeCache(FFirstFree);
-    TBaseTypeCache(FFirstFree):=Result.Next;
+    TBaseTypeCache(FFirstFree):=Result.NextCache;
     Result.BindToOwner(AnOwner);
     dec(FFreeCount);
   end else begin

@@ -2539,10 +2539,10 @@ var
   CodePos: TCodeXYPosition;
 begin
   if CleanPosToCaret(CleanPos,CodePos) then begin
+    Result:='';
     if WithFilename then
-      Result:=CodePos.Code.Filename+',y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X)
-    else
-      Result:='y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X);
+      Result:=ExtractRelativepath(ExtractFilePath(MainFilename),CodePos.Code.Filename)+',';
+    Result:=Result+'y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X);
   end else
     Result:='y=?,x=?,c='+IntToStr(CleanPos)+'('+dbgstr(copy(Src,CleanPos-5,5)+'|'+copy(Src,CleanPos,5))+')';
 end;
@@ -2555,7 +2555,7 @@ begin
   if not CleanPosToCaret(CleanPos,CodePos) then
     Result:='(?)'
   else begin
-    if (BasePos.Code=nil) or (not FilenameIsAbsolute(BasePos.COde.Filename)) then
+    if (BasePos.Code=nil) or (not FilenameIsAbsolute(BasePos.Code.Filename)) then
       Result:=CodePos.Code.Filename
     else if (CodePos.Code<>BasePos.Code) then
       Result:=CreateRelativePath(CodePos.Code.Filename,

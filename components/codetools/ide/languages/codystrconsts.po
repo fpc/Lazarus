@@ -125,6 +125,10 @@ msgstr ""
 msgid "&Close"
 msgstr ""
 
+#: codystrconsts.crscodenodeinformation
+msgid "Code Node Information"
+msgstr ""
+
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
 msgstr ""
@@ -233,8 +237,16 @@ msgstr ""
 msgid "Remove With block"
 msgstr ""
 
+#: codystrconsts.crsreport
+msgid "Report"
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
+msgstr ""
+
+#: codystrconsts.crsshowcodetoolsnodeinfo
+msgid "Show CodeTools node info ..."
 msgstr ""
 
 #: codystrconsts.crsshowusedppufiles

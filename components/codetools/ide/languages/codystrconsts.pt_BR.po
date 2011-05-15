@@ -133,6 +133,10 @@ msgstr "%s, escrito pela propriedade %s"
 msgid "&Close"
 msgstr "&Fechar"
 
+#: codystrconsts.crscodenodeinformation
+msgid "Code Node Information"
+msgstr ""
+
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
 msgstr ""
@@ -241,9 +245,17 @@ msgstr "Saída do Projeto"
 msgid "Remove With block"
 msgstr "Remover bloco \"With\""
 
+#: codystrconsts.crsreport
+msgid "Report"
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "localizando ..."
+
+#: codystrconsts.crsshowcodetoolsnodeinfo
+msgid "Show CodeTools node info ..."
+msgstr ""
 
 #: codystrconsts.crsshowusedppufiles
 #| msgid "Show used .ppu files"

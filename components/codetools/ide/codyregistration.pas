@@ -33,7 +33,7 @@ uses
   Classes, SysUtils,
   IDECommands, MenuIntf,
   LResources, CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
-  CodyUtils;
+  CodyUtils, CodyNodeInfoDlg;
 
 procedure Register;
 
@@ -51,6 +51,7 @@ var
   //DeclareVariableCommand: TIDECommand;
   TVIconRes: TLResource;
   AddCallInheritedCommand: TIDECommand;
+  ShowCodeNodeInfoCommand: TIDECommand;
 begin
   CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
   if CmdCatFileMenu=nil then
@@ -61,6 +62,8 @@ begin
   CmdCatCodeTools:=IDECommandList.FindCategoryByName('CodeTools');
   if CmdCatCodeTools=nil then
     raise Exception.Create('cody: command category CodeTools not found');
+
+  // Source menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // insert file at cursor
   InsertFileAtCursorCommand:=RegisterIDECommand(CmdCatFileMenu,
@@ -89,6 +92,15 @@ begin
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowDeclareVariableDialog);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'DeclareVariable',
     crsDeclareVariable2, nil, nil, DeclareVariableCommand);}
+
+  // Show CodeTools node info
+  ShowCodeNodeInfoCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowCodeNodeInfo',
+    crsShowCodeToolsNodeInfo,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowCodeNodeInfoDialog);
+  RegisterIDEMenuCommand(SrcEditSubMenuSource, 'ShowCodeNodeInfo',
+    crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
+
+  // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // add Assign method
   AddAssignMethodCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddAssignMethod',

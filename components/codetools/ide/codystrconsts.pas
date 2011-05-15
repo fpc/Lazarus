@@ -60,6 +60,7 @@ resourcestring
   crsProjectOutput = 'Project output';
   crsClose = '&Close';
   crsAddAssignMethod = 'Add Assign method';
+  crsShowCodeToolsNodeInfo = 'Show CodeTools node info ...';
   crsAddAssignMethod2 = 'Add Assign method ...';
   crsRemoveWithBlock = 'Remove With block';
 
@@ -113,6 +114,8 @@ resourcestring
   crsCUUnableToLoadFile = 'Unable to load file "%s"%s%s';
   crsCUPleasePlaceTheCursorOfTheSourceEditorInAnImplement = 'Please place the '
     +'cursor of the source editor in an implementation of an overridden method.';
+  crsCodeNodeInformation = 'Code Node Information';
+  crsReport = 'Report';
 
 implementation
 

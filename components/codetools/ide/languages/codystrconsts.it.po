@@ -134,6 +134,10 @@ msgstr ""
 msgid "&Close"
 msgstr "&Chiudi"
 
+#: codystrconsts.crscodenodeinformation
+msgid "Code Node Information"
+msgstr ""
+
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
 msgstr ""
@@ -242,9 +246,17 @@ msgstr "Output del progetto"
 msgid "Remove With block"
 msgstr ""
 
+#: codystrconsts.crsreport
+msgid "Report"
+msgstr ""
+
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "Ricerca in corso..."
+
+#: codystrconsts.crsshowcodetoolsnodeinfo
+msgid "Show CodeTools node info ..."
+msgstr ""
 
 #: codystrconsts.crsshowusedppufiles
 #, fuzzy
