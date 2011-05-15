@@ -212,9 +212,10 @@ type
   TIDEBreakPoints = class;
   TIDEBreakPointGroup = class;
   TIDEBreakPointGroups = class;
+  TWatch = class;
+  TWatches = class;
   TCurrentWatch = class;
   TCurrentWatches = class;
-  TWatch = class;
   TWatchesMonitor = class;
   TWatchesSupplier = class;
   TLocalsMonitor = class;
@@ -267,7 +268,47 @@ type
     destructor  Destroy; override;
   end;
 
-(******************************************************************************)
+  { TDebuggerDataSnapShot }
+
+  TDebuggerDataSnapShot = class
+  public
+    destructor Destroy; override;
+  public
+    DataObject: TObject;
+    SnapShotId: Pointer;
+  end;
+
+  { TDebuggerDataSnapShotList }
+
+  TDebuggerDataSnapShotList = class
+  private
+    FList: TList;
+    function GetSnapShot(AnID: Pointer): TObject;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure AddSnapShot(AnID: Pointer; AnObject: TObject);
+    procedure RemoveSnapShot(AnID: Pointer);
+    property  SnapShot[AnID: Pointer]: TObject read GetSnapShot;
+  end;
+
+  { TDebuggerDataMonitorEx }
+
+  TDebuggerDataMonitorEx = class(TDebuggerDataMonitor)
+  private
+    FSnapshots: TDebuggerDataSnapShotList;
+  protected
+    function CreateSnapshot: TObject; virtual;
+    function GetSnapshotObj(AnID: Pointer): TObject; virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure NewSnapshot(AnID: Pointer);
+    procedure RemoveSnapshot(AnID: Pointer);
+  end;
+
+{$region Breakpoints **********************************************************}
 (******************************************************************************)
 (**                                                                          **)
 (**   B R E A K P O I N T S                                                  **)
@@ -601,9 +642,10 @@ type
                                             read GetItem write SetItem; default;
   end;
 
+{%endregion   ^^^^^  Breakpoints  ^^^^^   }
 
 
-(******************************************************************************)
+{$region Debug Info ***********************************************************}
 (******************************************************************************)
 (**                                                                          **)
 (**   D E B U G   I N F O R M A T I O N                                      **)
@@ -721,6 +763,7 @@ type
     property Members: TStrings read FMembers;
     property Result: TDBGType read FResult;
   end;
+{%endregion   ^^^^^  Debug Info  ^^^^^   }
 
 {%region Watches **************************************************************
  ******************************************************************************
@@ -756,7 +799,7 @@ const
 type
 
   TWatchesEvent =
-       procedure(const ASender: TCurrentWatches; const AWatch: TCurrentWatch) of object;
+       procedure(const ASender: TWatches; const AWatch: TWatch) of object;
 
   TWatchesNotification = class(TDebuggerNotification)
   private
@@ -780,7 +823,6 @@ type
     procedure NotifyRemove(const ASender: TCurrentWatches; const AWatch: TCurrentWatch);
     property Items[AIndex: Integer]: TWatchesNotification read GetItem; default;
   end;
-
 
   { TWatchValue }
 
@@ -826,6 +868,7 @@ type
     FWatch: TWatch;
     function GetEntry(const AThreadId: Integer; const AStackFrame: Integer;
                      const ADisplayFormat: TWatchDisplayFormat): TWatchValue;
+    function GetEntryByIdx(AnIndex: integer): TWatchValue;
   protected
     function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
                          const ADisplayFormat: TWatchDisplayFormat): TWatchValue; virtual;
@@ -833,7 +876,10 @@ type
     procedure Assign(AnOther: TWatchValueList);
     constructor Create(AOwnerWatch: TWatch);
     destructor Destroy; override;
+    procedure Add(AnEntry: TWatchValue);
     procedure Clear;
+    function Count: Integer;
+    property EntriesByIdx[AnIndex: integer]: TWatchValue read GetEntryByIdx;
     property Entries[const AThreadId: Integer; const AStackFrame: Integer;
                      const ADisplayFormat: TWatchDisplayFormat]: TWatchValue
              read GetEntry; default;
@@ -883,9 +929,28 @@ type
   end;
   TBaseWatchClass = class of TWatch;
 
+  { TWatches }
+
+  TWatches = class(TCollection)
+  private
+    function GetItem(const AnIndex: Integer): TWatch;
+    procedure SetItem(const AnIndex: Integer; const AValue: TWatch);
+  protected
+  public
+    constructor Create;
+    constructor Create(const AWatchClass: TBaseWatchClass);
+    function Add(const AExpression: String): TWatch;
+    function Find(const AExpression: String): TWatch;
+    property Items[const AnIndex: Integer]: TWatch read GetItem write SetItem; default;
+    procedure ClearValues;
+  end;
+
   { TCurrentWatchValue }
 
   TCurrentWatchValue = class(TWatchValue)
+  private
+    FSnapShot: TWatchValue;
+    procedure SetSnapShot(const AValue: TWatchValue);
   protected
     FFreeNotificationList: TMethodList;
     procedure RequestData; override;
@@ -895,6 +960,7 @@ type
     destructor Destroy; override;
     procedure AddFreeeNotification(ANotification: TNotifyEvent);
     procedure RemoveFreeeNotification(ANotification: TNotifyEvent);
+    property SnapShot: TWatchValue read FSnapShot write SetSnapShot;
   public
     procedure SetTypeInfo(const AValue: TDBGType);
     procedure SetValue(const AValue: String);
@@ -903,18 +969,26 @@ type
   { TCurrentWatchValueList }
 
   TCurrentWatchValueList = class(TWatchValueList)
+  private
+    FSnapShot: TWatchValueList;
+    procedure SetSnapShot(const AValue: TWatchValueList);
   protected
     function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
       const ADisplayFormat: TWatchDisplayFormat): TWatchValue; override;
+    property SnapShot: TWatchValueList read FSnapShot write SetSnapShot;
   end;
 
   { TCurrentWatch }
 
   TCurrentWatch = class(TWatch)
+  private
+    FSnapShot: TWatch;
+    procedure SetSnapShot(const AValue: TWatch);
   protected
     function CreateValueList: TWatchValueList; override;
     procedure DoChanged; override;
     procedure RequestData(AWatchValue: TCurrentWatchValue);
+    property SnapShot: TWatch read FSnapShot write SetSnapShot;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -925,24 +999,13 @@ type
   end;
   TIDEWatchClass = class of TCurrentWatch;
 
-  { TWatches }
-
-  TWatches = class(TCollection)
-  private
-  protected
-  public
-    constructor Create(const AWatchClass: TBaseWatchClass);
-    function Add(const AExpression: String): TWatch;
-    function Find(const AExpression: String): TWatch;
-    // no items property needed, it is "overridden" anyhow
-    procedure ClearValues;
-  end;
-
   { TCurrentWatches }
 
   TCurrentWatches = class(TWatches)
   private
     FMonitor: TWatchesMonitor;
+    FSnapShot: TWatches;
+    procedure SetSnapShot(const AValue: TWatches);
     procedure WatchesChanged(Sender: TObject);
   protected
     function GetItem(const AnIndex: Integer): TCurrentWatch;
@@ -952,6 +1015,7 @@ type
     procedure NotifyRemove(const AWatch: TCurrentWatch); virtual; // called by watch when destructed
     procedure Update(Item: TCollectionItem); override;
     procedure RequestData(AWatchValue: TCurrentWatchValue);
+    property SnapShot: TWatches read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TWatchesMonitor);
     // Watch
@@ -967,10 +1031,11 @@ type
 
   { TWatchesMonitor }
 
-  TWatchesMonitor = class(TDebuggerDataMonitor)
+  TWatchesMonitor = class(TDebuggerDataMonitorEx)
   private
     FNotificationList: TWatchesNotificationList;
     FCurrentWatches: TCurrentWatches;
+    function GetSnapshot(AnID: Pointer): TWatches;
     function  GetSupplier: TWatchesSupplier;
     procedure SetSupplier(const AValue: TWatchesSupplier);
   protected
@@ -979,12 +1044,14 @@ type
     procedure NotifyRemove(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
     procedure NotifyUpdate(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
     procedure RequestData(AWatchValue: TCurrentWatchValue);
+    function CreateSnapshot: TObject; override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure AddNotification(const ANotification: TWatchesNotification);
     procedure RemoveNotification(const ANotification: TWatchesNotification);
     property CurrentWatches: TCurrentWatches read FCurrentWatches;
+    property Snapshots[AnID: Pointer]: TWatches read GetSnapshot;
     property Supplier: TWatchesSupplier read GetSupplier write SetSupplier;
   public
     procedure Clear;
@@ -1005,6 +1072,7 @@ type
     procedure InternalRequestData(AWatchValue: TCurrentWatchValue); virtual;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
   public
+    constructor Create(const ADebugger: TDebugger);
     property Monitor: TWatchesMonitor read GetMonitor write SetMonitor;
     property CurrentWatches: TCurrentWatches read GetCurrentWatches;
   end;
@@ -1035,7 +1103,10 @@ type
     FStackFrame: Integer;
     FThreadId: Integer;
   public
+    procedure Assign(AnOther: TLocals);
     constructor Create;
+    constructor Create(AThreadId, AStackFrame: Integer);
+    constructor CreateCopy(const ASource: TLocals);
     destructor Destroy; override;
     function Count: Integer; virtual;
   public
@@ -1051,13 +1122,17 @@ type
   private
     FList: TList;
     function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals;
+    function GetEntryByIdx(const AnIndex: Integer): TLocals;
   protected
     function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals; virtual;
+    procedure Add(AnEntry: TLocals);
   public
-    //procedure Assign(AnOther: TWatchValueList);
     constructor Create;
     destructor Destroy; override;
+    procedure Assign(AnOther: TLocalsList);
     procedure Clear;
+    function Count: Integer;
+    property EntriesByIdx[const AnIndex: Integer]: TLocals read GetEntryByIdx;
     property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TLocals
              read GetEntry; default;
   end;
@@ -1068,6 +1143,10 @@ type
   private
     FMonitor: TLocalsMonitor;
     FDataValidity: TDebuggerDataState;
+    FSnapShot: TLocals;
+    procedure SetSnapShot(const AValue: TLocals);
+  protected
+    property SnapShot: TLocals read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TLocalsMonitor; AThreadId, AStackFrame: Integer);
     function Count: Integer; override;
@@ -1081,25 +1160,29 @@ type
   TCurrentLocalsList = class(TLocalsList)
   private
     FMonitor: TLocalsMonitor;
+    FSnapShot: TLocalsList;
+    procedure SetSnapShot(const AValue: TLocalsList);
   protected
-    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals;
-      override;
+    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals; override;
+    property SnapShot: TLocalsList read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TLocalsMonitor);
   end;
 
   { TLocalsMonitor }
 
-  TLocalsMonitor = class(TDebuggerDataMonitor)
+  TLocalsMonitor = class(TDebuggerDataMonitorEx)
   private
     FCurrentLocalsList: TCurrentLocalsList;
     FNotificationList: TDebuggerChangeNotificationList;
+    function GetSnapshot(AnID: Pointer): TLocalsList;
     function GetSupplier: TLocalsSupplier;
     procedure SetSupplier(const AValue: TLocalsSupplier);
   protected
     procedure NotifyChange(ALocals: TCurrentLocals);
     procedure DoNewSupplier; override;
     procedure RequestData(ALocals: TCurrentLocals);
+    function CreateSnapshot: TObject; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1107,6 +1190,7 @@ type
     procedure AddNotification(const ANotification: TLocalsNotification);
     procedure RemoveNotification(const ANotification: TLocalsNotification);
     property  CurrentLocalsList: TCurrentLocalsList read FCurrentLocalsList;
+    property  Snapshots[AnID: Pointer]: TLocalsList read GetSnapshot;
     property  Supplier: TLocalsSupplier read GetSupplier write SetSupplier;
   end;
 
@@ -1363,25 +1447,26 @@ type
 
   TCallStack = class(TObject)
   private
-    FCount: Integer;
-    FLowestUnknown, FHighestUnknown: Integer;
     FThreadId: Integer;
     FCurrent: Integer;
-    function IndexError(AIndex: Integer): TCallStackEntry;
-    function GetEntry(AIndex: Integer): TCallStackEntry;
+    FList: TList;
   protected
-    FEntries: TMap;        // list of created entries
-    procedure Clear; virtual;
-    function GetCount: Integer; virtual;
+    function IndexError(AIndex: Integer): TCallStackEntry;
+
     function  GetCurrent: Integer; virtual;
     procedure SetCurrent(AValue: Integer); virtual;
+
+    procedure Clear; virtual;
+    function  GetCount: Integer; virtual;
     procedure SetCount(ACount: Integer); virtual;
-    procedure DoEntriesCreated; virtual;
-    property LowestUnknown: Integer read FLowestUnknown;
-    property HighestUnknown: Integer read FHighestUnknown;
+    function  GetEntry(AIndex: Integer): TCallStackEntry; virtual;
+    procedure AddEntry(AnEntry: TCallStackEntry); virtual; // must be added in correct order
+    procedure AssignEntriesTo(AnOther: TCallStack); virtual;
   public
     constructor Create;
+    constructor CreateCopy(const ASource: TCallStack);
     destructor Destroy; override;
+    procedure Assign(AnOther: TCallStack);
     procedure PrepareRange(AIndex, ACount: Integer); virtual;
     procedure ChangeCurrentIndex(ANewIndex: Integer); virtual;
     property Count: Integer read GetCount write SetCount;
@@ -1402,6 +1487,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Assign(AnOther: TCallStackList);
     procedure Clear;
     function Count: Integer; // Count of already requested CallStacks (via ThreadId)
     property Entries[const AIndex: Integer]: TCallStack read GetEntry; default;
@@ -1417,20 +1503,34 @@ type
     FCurrentValidity: TDebuggerDataState;
     FNewCurrentIndex: Integer;
     FPreparing: Boolean;
+    FSnapShot: TCallStack;
+    FEntries: TMap;        // list of created entries
+    FCount: Integer;
+    FLowestUnknown, FHighestUnknown: Integer;
+    procedure SetSnapShot(const AValue: TCallStack);
   protected
-    function  GetCount: Integer; override;
+    function  GetCurrent: Integer; override;
     procedure SetCurrent(AValue: Integer); override;
-    function GetCurrent: Integer; override;
+
+    procedure Clear; override;
+    function  GetCount: Integer; override;
+    procedure SetCount(ACount: Integer); override;
+    function GetEntry(AIndex: Integer): TCallStackEntry; override;
+    procedure AddEntry(AnEntry: TCallStackEntry); override;
+    procedure AssignEntriesTo(AnOther: TCallStack); override;
   public
     constructor Create(AMonitor: TCallStackMonitor);
+    destructor Destroy; override;
+    procedure Assign(AnOther: TCallStack);
     procedure PrepareRange(AIndex, ACount: Integer); override;
     procedure ChangeCurrentIndex(ANewIndex: Integer); override;
-    procedure DoEntriesCreated; override;
+    procedure DoEntriesCreated;
     procedure DoEntriesUpdated;
-    property LowestUnknown;
-    property HighestUnknown;
+    property LowestUnknown: Integer read FLowestUnknown;
+    property HighestUnknown: Integer read FHighestUnknown;
     property RawEntries: TMap read FEntries;
     property NewCurrentIndex: Integer read FNewCurrentIndex;
+    property SnapShot: TCallStack read FSnapShot write SetSnapShot;
   public
     procedure SetCountValidity(AValidity: TDebuggerDataState);
     procedure SetCurrentValidity(AValidity: TDebuggerDataState);
@@ -1441,19 +1541,23 @@ type
   TCurrentCallStackList = class(TCallStackList)
   private
     FMonitor: TCallStackMonitor;
+    FSnapShot: TCallStackList;
+    procedure SetSnapShot(const AValue: TCallStackList);
   protected
     function GetEntryForThread(const AThreadId: Integer): TCallStack; override;
+    property SnapShot: TCallStackList read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TCallStackMonitor);
   end;
 
   { TCallStackMonitor }
 
-  TCallStackMonitor = class(TDebuggerDataMonitor)
+  TCallStackMonitor = class(TDebuggerDataMonitorEx)
   private
     FCurrentCallStackList: TCurrentCallStackList;
     FNotificationList: TDebuggerChangeNotificationList;
     procedure CallStackClear(Sender: TObject);
+    function GetSnapshot(AnID: Pointer): TCallStackList;
     function  GetSupplier: TCallStackSupplier;
     procedure SetSupplier(const AValue: TCallStackSupplier);
   protected
@@ -1462,14 +1566,16 @@ type
     procedure RequestEntries(ACallstack: TCallStack);
     procedure UpdateCurrentIndex;
     procedure DoNewSupplier; override;
-    procedure NotifyChange; // (sender)
-    procedure NotifyCurrent;
+    function  CreateSnapshot: TObject; override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure AddNotification(const ANotification: TCallStackNotification);
     procedure RemoveNotification(const ANotification: TCallStackNotification);
+    procedure NotifyChange; // (sender)
+    procedure NotifyCurrent;
     property CurrentCallStackList: TCurrentCallStackList read FCurrentCallStackList;
+    property Snapshots[AnID: Pointer]: TCallStackList read GetSnapshot;
     property Supplier: TCallStackSupplier read GetSupplier write SetSupplier;
   end;
 
@@ -1739,7 +1845,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Count: Integer; virtual;
-    procedure Clear;
+    procedure Clear; virtual;
     procedure Add(AThread: TThreadEntry);
     property Entries[const AnIndex: Integer]: TThreadEntry read GetEntry; default;
     property CurrentThreadId: Integer read FCurrentThreadId write SetCurrentThreadId;
@@ -1751,26 +1857,32 @@ type
   private
     FMonitor: TThreadsMonitor;
     FDataValidity: TDebuggerDataState;
+    FSnapShot: TThreads;
     procedure SetCurrentThreadId(const AValue: Integer); override;
+    procedure SetSnapShot(const AValue: TThreads);
+  protected
+    property SnapShot: TThreads read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TThreadsMonitor);
     function  Count: Integer; override;
+    procedure Clear; override;
     procedure SetValidity(AValidity: TDebuggerDataState);
   end;
 
   { TThreadsMonitor }
 
-  TThreadsMonitor = class(TDebuggerDataMonitor)
+  TThreadsMonitor = class(TDebuggerDataMonitorEx)
   private
     FCurrentThreads: TCurrentThreads;
     FNotificationList: TDebuggerChangeNotificationList;
+    function GetSnapshot(AnID: Pointer): TThreads;
     function GetSupplier: TThreadsSupplier;
     procedure SetSupplier(const AValue: TThreadsSupplier);
   protected
     procedure DoNewSupplier; override;
     procedure Changed;
-    procedure CurrentChanged;
     procedure RequestData;
+    function  CreateSnapshot: TObject; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1778,7 +1890,9 @@ type
     procedure AddNotification(const ANotification: TThreadsNotification);
     procedure RemoveNotification(const ANotification: TThreadsNotification);
     procedure ChangeCurrentThread(ANewId: Integer);
+    procedure CurrentChanged;
     property  CurrentThreads: TCurrentThreads read FCurrentThreads;
+    property  Snapshots[AnID: Pointer]: TThreads read GetSnapshot;
     property  Supplier: TThreadsSupplier read GetSupplier write SetSupplier;
   end;
 
@@ -1792,7 +1906,6 @@ type
   protected
     procedure ChangeCurrentThread(ANewId: Integer); virtual;
     procedure RequestMasterData; virtual;
-    procedure Changed;
   public
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  CurrentThreads: TCurrentThreads read GetCurrentThreads;
@@ -1801,7 +1914,82 @@ type
 
 {%endregion   ^^^^^  Threads  ^^^^^   }
 
-(******************************************************************************)
+{%region   *****  Snapshots  *****   }
+
+  TSnapshotNotification = class(TDebuggerChangeNotification)
+  public
+    property OnChange; // fires for all changes (incl OnCurrent)
+    property OnCurrent;
+  end;
+
+  { TSnapshot }
+
+  TSnapshot = class
+  private
+    FLocation: TDBGLocationRec;
+    FTimeStamp: TDateTime;
+    function GetLocationAsText: String;
+  public
+    constructor Create;
+    property TimeStamp: TDateTime read FTimeStamp;
+    property Location: TDBGLocationRec read FLocation write FLocation;
+    property LocationAsText: String read GetLocationAsText;
+  end;
+
+  { TSnapshotManager }
+
+  TSnapshotManager = class
+  private
+    FDebugger: TDebugger;
+    FNotificationList: TDebuggerChangeNotificationList;
+    FLocals: TLocalsMonitor;
+    FWatches: TWatchesMonitor;
+    FCallStack: TCallStackMonitor;
+    FThreads: TThreadsMonitor;
+    FCurrentState: TDBGState;
+    FCurrentSnapshot: TSnapshot; // snapshot fo rcurrent pause. Not yet in list
+  private
+    FActive: Boolean;
+    FHistoryCapacity: Integer;
+    FHistoryIndex: Integer;
+    FHistoryList: TList;
+    FHistorySelected: Boolean;
+    function GetHistoryEntry(AIndex: Integer): TSnapshot;
+    procedure SetActive(const AValue: Boolean);
+    procedure SetHistoryIndex(const AValue: Integer);
+    procedure SetHistorySelected(AValue: Boolean);
+  protected
+    procedure ClearHistory;
+    procedure CreateHistoryEntry;
+    procedure RemoveHistoryEntry(AIndex: Integer);
+    procedure RemoveHistoryEntryFromMonitors(AnEntry: TSnapshot);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddNotification(const ANotification: TSnapshotNotification);
+    procedure RemoveNotification(const ANotification: TSnapshotNotification);
+    procedure DoStateChange(const AOldState: TDBGState);
+    property Active: Boolean read FActive write SetActive;
+  public
+    function SelectedId: Pointer;
+    function SelectedEntry: TSnapshot;
+    procedure Clear;
+  public
+    function HistoryCount: Integer;
+    property HistoryIndex: Integer read FHistoryIndex write SetHistoryIndex;
+    property HistoryEntries[AIndex: Integer]: TSnapshot read GetHistoryEntry;
+    property HistoryCapacity: Integer read FHistoryCapacity write FHistoryCapacity;
+    property HistorySelected: Boolean read FHistorySelected write SetHistorySelected;
+  public
+    property Locals: TLocalsMonitor read FLocals write FLocals;
+    property Watches: TWatchesMonitor read FWatches write FWatches;
+    property CallStack: TCallStackMonitor read FCallStack write FCallStack;
+    property Threads: TThreadsMonitor read FThreads write FThreads;
+    property Debugger: TDebugger read FDebugger write FDebugger;
+  end;
+{%endregion   ^^^^^  Snapshots  ^^^^^   }
+
+{%region Signals / Exceptions *************************************************}
 (******************************************************************************)
 (**                                                                          **)
 (**   S I G N A L S  and  E X C E P T I O N S                                **)
@@ -2018,6 +2206,7 @@ type
     property Items[const AIndex: Integer]: TIDEException read GetItem
                                                         write SetItem; default;
   end;
+{%endregion   ^^^^^  Signals / Exceptions  ^^^^^   }
 
 (******************************************************************************)
 (******************************************************************************)
@@ -2214,6 +2403,7 @@ type
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
                           out ADump, AStatement, AFile: String; out ALine: Integer): Boolean; deprecated;
+    function GetLocation: TDBGLocationRec; virtual;
     procedure LockCommandProcessing; virtual;
     procedure UnLockCommandProcessing; virtual;
     procedure AddNotifyEvent(AReason: TDebuggerNotifyReason; AnEvent: TNotifyEvent);
@@ -2385,12 +2575,337 @@ begin
   Result:=bpaStop;
 end;
 
+{ TDebuggerDataSnapShot }
+
+destructor TDebuggerDataSnapShot.Destroy;
+begin
+  inherited Destroy;
+  DataObject.Free;
+end;
+
+function TSnapshot.GetLocationAsText: String;
+begin
+  if FLocation.SrcFile <> ''
+  then Result := FLocation.SrcFile + ' ' + IntToStr(FLocation.SrcLine)
+  else Result := ':' + IntToHex(FLocation.Address, 8);
+  if FLocation.FuncName <> ''
+  then Result := FLocation.FuncName + ' (' + Result + ')';
+end;
+
+constructor TSnapshot.Create;
+begin
+  FTimeStamp := Now;
+end;
+
+{ TSnapshotManager }
+
+function TSnapshotManager.GetHistoryEntry(AIndex: Integer): TSnapshot;
+begin
+  Result := TSnapshot(FHistoryList[AIndex]);
+end;
+
+procedure TSnapshotManager.SetActive(const AValue: Boolean);
+begin
+  if FActive = AValue then exit;
+  FActive := AValue;
+
+  if Active then begin
+    if FCurrentState = dsPause
+    then CreateHistoryEntry;
+  end
+  else begin
+    FLocals.CurrentLocalsList.SnapShot := nil;
+    FWatches.CurrentWatches.SnapShot := nil;
+    FCallStack.CurrentCallStackList.SnapShot := nil;
+    FThreads.CurrentThreads.SnapShot := nil;
+    if FCurrentSnapshot <> nil
+    then RemoveHistoryEntryFromMonitors(FCurrentSnapshot);
+    FreeAndNil(FCurrentSnapshot);
+  end;
+end;
+
+procedure TSnapshotManager.SetHistoryindex(const AValue: Integer);
+begin
+  if FHistoryindex = AValue then exit;
+  FHistoryindex := AValue;
+  FNotificationList.NotifyCurrent(Self);
+end;
+
+procedure TSnapshotManager.SetHistorySelected(AValue: Boolean);
+begin
+  if HistoryCount = 0 then AValue := False;
+  if FHistorySelected = AValue then exit;
+  FHistorySelected := AValue;
+  FNotificationList.NotifyCurrent(Self);
+end;
+
+procedure TSnapshotManager.ClearHistory;
+begin
+  while FHistoryList.Count > 0 do RemoveHistoryEntry(0);
+  HistorySelected := False;
+end;
+
+procedure TSnapshotManager.CreateHistoryEntry;
+var
+  t: LongInt;
+begin
+  FreeAndNil(FCurrentSnapshot); // should be nil already
+  FCurrentSnapshot := TSnapshot.Create;
+  FCurrentSnapshot.Location := Debugger.GetLocation;
+
+  FThreads.NewSnapshot(FCurrentSnapshot);
+  FCallStack.NewSnapshot(FCurrentSnapshot);
+  FLocals.NewSnapshot(FCurrentSnapshot);
+  FWatches.NewSnapshot(FCurrentSnapshot);
+
+  // acces them , so they will be present
+  t := FThreads.CurrentThreads.CurrentThreadId;
+  FCallStack.CurrentCallStackList.EntriesForThreads[t];
+end;
+
+procedure TSnapshotManager.RemoveHistoryEntry(AIndex: Integer);
+var
+  Snap: TSnapshot;
+begin
+  Snap := HistoryEntries[AIndex];
+  FHistoryList.Delete(AIndex);
+  RemoveHistoryEntryFromMonitors(Snap);
+  Snap.Free;
+  if HistoryCount = 0
+  then HistorySelected := False;
+end;
+
+procedure TSnapshotManager.RemoveHistoryEntryFromMonitors(AnEntry: TSnapshot);
+begin
+  FThreads.RemoveSnapshot(AnEntry);
+  FCallStack.RemoveSnapshot(AnEntry);
+  FLocals.RemoveSnapshot(AnEntry);
+  FWatches.RemoveSnapshot(AnEntry);
+end;
+
+constructor TSnapshotManager.Create;
+begin
+  FNotificationList := TDebuggerChangeNotificationList.Create;
+  FActive := True;
+  FHistorySelected := False;
+  FHistoryList := TList.Create;
+  FHistoryCapacity := 25;
+  inherited Create;
+end;
+
+destructor TSnapshotManager.Destroy;
+begin
+  FNotificationList.Clear;
+  ClearHistory;
+  inherited Destroy;
+  FreeAndNil(FHistoryList);
+  FreeAndNil(FNotificationList);
+  FreeAndNil(FCurrentSnapshot);
+end;
+
+procedure TSnapshotManager.AddNotification(const ANotification: TSnapshotNotification);
+begin
+  FNotificationList.Add(ANotification);
+end;
+
+procedure TSnapshotManager.RemoveNotification(const ANotification: TSnapshotNotification);
+begin
+  FNotificationList.Remove(ANotification);
+end;
+
+procedure TSnapshotManager.DoStateChange(const AOldState: TDBGState);
+begin
+  if FDebugger = nil then exit;
+  FCurrentState := Debugger.State;
+
+  if FDebugger.State = dsPause then begin
+    if FActive then CreateHistoryEntry;
+    HistorySelected := False;
+  end
+  else begin
+    if FCurrentSnapshot <> nil then begin
+      FHistoryIndex := FHistoryList.Add(FCurrentSnapshot);
+      FCurrentSnapshot := nil;;
+      while HistoryCount > HistoryCapacity do RemoveHistoryEntry(0);
+      FNotificationList.NotifyChange(Self);
+      if HistorySelected
+      then FNotificationList.NotifyCurrent(Self);
+    end;
+  end;
+  if (FDebugger.State = dsInit) then begin
+    Clear;
+  end;
+end;
+
+function TSnapshotManager.SelectedId: Pointer;
+begin
+  if (HistoryIndex < 0) or (HistoryIndex >= HistoryCount) or (not FHistorySelected)
+  then Result := nil
+  else Result := HistoryEntries[HistoryIndex];
+end;
+
+function TSnapshotManager.SelectedEntry: TSnapshot;
+begin
+  if (HistoryIndex < 0) or (HistoryIndex >= HistoryCount) or (not FHistorySelected)
+  then Result := nil
+  else Result := HistoryEntries[HistoryIndex];
+end;
+
+procedure TSnapshotManager.Clear;
+begin
+  if HistoryCount = 0 then exit;
+  ClearHistory;
+  FNotificationList.NotifyChange(Self);
+  FNotificationList.NotifyCurrent(Self);
+end;
+
+function TSnapshotManager.HistoryCount: Integer;
+begin
+  Result := FHistoryList.Count;
+end;
+
+{ TDebuggerDataMonitorEx }
+
+function TDebuggerDataMonitorEx.CreateSnapshot: TObject;
+begin
+  Result := nil;
+end;
+
+function TDebuggerDataMonitorEx.GetSnapshotObj(AnID: Pointer): TObject;
+begin
+  Result := FSnapshots.SnapShot[AnID];
+end;
+
+constructor TDebuggerDataMonitorEx.Create;
+begin
+  FSnapshots := TDebuggerDataSnapShotList.Create;
+  inherited Create;
+end;
+
+destructor TDebuggerDataMonitorEx.Destroy;
+begin
+  FSnapshots.Clear;
+  inherited Destroy;
+  FreeAndNil(FSnapshots);
+end;
+
+procedure TDebuggerDataMonitorEx.NewSnapshot(AnID: Pointer);
+var
+  S: TObject;
+begin
+  S := CreateSnapshot;
+  FSnapshots.AddSnapShot(AnID, S);
+end;
+
+procedure TDebuggerDataMonitorEx.RemoveSnapshot(AnID: Pointer);
+begin
+  FSnapshots.RemoveSnapShot(AnID);
+end;
+
+{ TDebuggerDataSnapShotList }
+
+function TDebuggerDataSnapShotList.GetSnapShot(AnID: Pointer): TObject;
+var
+  i: Integer;
+begin
+  i := FList.Count - 1;
+  while i >= 0 do begin
+    Result := TObject(FList[i]);
+    if TDebuggerDataSnapShot(Result).SnapShotId = AnID
+    then exit(TDebuggerDataSnapShot(Result).DataObject);
+    dec(i);
+  end;
+  Result := nil;
+end;
+
+constructor TDebuggerDataSnapShotList.Create;
+begin
+  inherited Create;
+  FList := TList.Create;
+end;
+
+destructor TDebuggerDataSnapShotList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+  FreeAndNil(FList);
+end;
+
+procedure TDebuggerDataSnapShotList.Clear;
+begin
+  while FList.Count > 0 do begin
+    TDebuggerDataSnapShot(FList[0]).Free;
+    FList.Delete(0);
+  end;
+end;
+
+procedure TDebuggerDataSnapShotList.AddSnapShot(AnID: Pointer; AnObject: TObject);
+var
+  NewSn: TDebuggerDataSnapShot;
+begin
+  NewSn := TDebuggerDataSnapShot.Create;
+  NewSn.SnapShotId := AnID;
+  NewSn.DataObject := AnObject;
+  FList.Add(NewSn);
+end;
+
+procedure TDebuggerDataSnapShotList.RemoveSnapShot(AnID: Pointer);
+var
+  R: TDebuggerDataSnapShot;
+  i: Integer;
+begin
+  i := FList.Count - 1;
+  while i >= 0 do begin
+    R := TDebuggerDataSnapShot(FList[i]);
+    if TDebuggerDataSnapShot(R).SnapShotId = AnID
+    then break;
+    dec(i);
+  end;
+  if i >= 0 then begin
+    FList.Delete(i);
+    R.Free;
+  end;
+end;
+
 { TCurrentLocalsList }
+
+procedure TCurrentLocalsList.SetSnapShot(const AValue: TLocalsList);
+var
+  i: Integer;
+  R: TLocals;
+begin
+  assert((FSnapShot=nil) or (AValue=nil), 'TCurrentLocalsList already have snapshot');
+  if FSnapShot = AValue then exit;
+  FSnapShot := AValue;
+
+  if FSnapShot = nil then begin
+    for i := 0 to Count-1 do
+      TCurrentLocals(EntriesByIdx[i]).SnapShot := nil;
+  end else begin
+    //FSnapShot.Assign(Self);
+    FSnapShot.Clear;
+    for i := 0 to Count-1 do begin
+      R := TLocals.Create;
+      FSnapShot.Add(R);
+      TCurrentLocals(EntriesByIdx[i]).SnapShot := R;
+    end;
+
+  end;
+end;
 
 function TCurrentLocalsList.CreateEntry(const AThreadId: Integer;
   const AStackFrame: Integer): TLocals;
+var
+  R: TLocals;
 begin
   Result := TCurrentLocals.Create(FMonitor, AThreadId, AStackFrame);
+  Add(Result);
+  if FSnapShot <> nil
+  then begin
+    R := TLocals.Create(AThreadId, AStackFrame);
+    FSnapShot.Add(R);
+    TCurrentLocals(Result).SnapShot := R;
+  end;
 end;
 
 constructor TCurrentLocalsList.Create(AMonitor: TLocalsMonitor);
@@ -2413,14 +2928,33 @@ begin
     dec(i);
   end;
   Result := CreateEntry(AThreadId, AStackFrame);
-  if Result = nil then exit;
-  FList.Add(Result);
+end;
+
+function TLocalsList.GetEntryByIdx(const AnIndex: Integer): TLocals;
+begin
+  Result := TLocals(FList[AnIndex]);
 end;
 
 function TLocalsList.CreateEntry(const AThreadId: Integer;
   const AStackFrame: Integer): TLocals;
 begin
   Result := nil;
+end;
+
+procedure TLocalsList.Add(AnEntry: TLocals);
+begin
+  assert(((Self is TCurrentLocalsList) and (AnEntry is TCurrentLocals)) or ((not(Self is TCurrentLocalsList)) and not(AnEntry is TCurrentLocals)),
+         'TLocalsList.Add: entry and list differ (current and none current)');
+  FList.add(AnEntry);
+end;
+
+procedure TLocalsList.Assign(AnOther: TLocalsList);
+var
+  i: Integer;
+begin
+  Clear;
+  for i := 0 to AnOther.FList.Count-1 do
+    FList.Add(TLocals.CreateCopy(TLocals(AnOther.FList[i])));
 end;
 
 constructor TLocalsList.Create;
@@ -2442,6 +2976,11 @@ begin
     TObject(FList[0]).Free;
     FList.Delete(0);
   end;
+end;
+
+function TLocalsList.Count: Integer;
+begin
+  Result := FList.Count;
 end;
 
 { TLocalsSupplier }
@@ -2470,12 +3009,16 @@ end;
 
 procedure TLocalsSupplier.DoStateChange(const AOldState: TDBGState);
 begin
+  if (Debugger = nil) or (CurrentLocalsList = nil) then Exit;
+
   if FDebugger.State = dsPause
   then begin
     if Monitor<> nil
     then Monitor.Clear;
   end
   else begin
+    CurrentLocalsList.SnapShot := nil;
+
     if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
     then begin
       if Monitor<> nil
@@ -2489,6 +3032,11 @@ end;
 function TLocalsMonitor.GetSupplier: TLocalsSupplier;
 begin
   Result := TLocalsSupplier(inherited Supplier);
+end;
+
+function TLocalsMonitor.GetSnapshot(AnID: Pointer): TLocalsList;
+begin
+  Result := TLocalsList(GetSnapshotObj(AnID));
 end;
 
 procedure TLocalsMonitor.SetSupplier(const AValue: TLocalsSupplier);
@@ -2512,6 +3060,12 @@ begin
   if Supplier <> nil
   then Supplier.RequestData(ALocals)
   else ALocals.SetDataValidity(ddsInvalid);
+end;
+
+function TLocalsMonitor.CreateSnapshot: TObject;
+begin
+  Result := TLocalsList.Create;
+  CurrentLocalsList.SnapShot := TLocalsList(Result);
 end;
 
 constructor TLocalsMonitor.Create;
@@ -2549,7 +3103,6 @@ end;
 
 procedure TCurrentWatchValue.SetTypeInfo(const AValue: TDBGType);
 begin
-if FTypeInfo<> nil then
   FreeAndNil(FTypeInfo);
   FTypeInfo := AValue;
 end;
@@ -2557,6 +3110,15 @@ end;
 procedure TCurrentWatchValue.SetValue(const AValue: String);
 begin
   FValue := AValue;
+end;
+
+procedure TCurrentWatchValue.SetSnapShot(const AValue: TWatchValue);
+begin
+  assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatchValue already have snapshot');
+  if FSnapShot = AValue then exit;
+  FSnapShot := AValue;
+  if FSnapShot <> nil
+  then FSnapShot.Assign(self);
 end;
 
 procedure TCurrentWatchValue.RequestData;
@@ -2568,6 +3130,8 @@ procedure TCurrentWatchValue.ValidityChanged;
 begin
   inherited;
   TCurrentWatches(TCurrentWatch(FWatch).Collection).Update(FWatch);
+  if FSnapShot <> nil
+  then FSnapShot.Assign(self);
 end;
 
 constructor TCurrentWatchValue.Create;
@@ -2595,10 +3159,44 @@ end;
 
 { TCurrentWatchValueList }
 
+procedure TCurrentWatchValueList.SetSnapShot(const AValue: TWatchValueList);
+var
+  R: TWatchValue;
+  i: Integer;
+begin
+  assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatchValueList already have snapshot');
+  if FSnapShot = AValue then exit;
+  FSnapShot := AValue;
+
+  if FSnapShot = nil then begin
+    for i := 0 to Count - 1 do
+      TCurrentWatchValue(EntriesByIdx[i]).SnapShot := nil;
+  end
+  else begin
+    // Assign
+    FSnapShot.Clear;
+    for i := 0 to Count - 1 do begin
+      R := TWatchValue.Create(FSnapShot.FWatch);
+      R.Assign(EntriesByIdx[i]);
+      FSnapShot.Add(R);
+      TCurrentWatchValue(EntriesByIdx[i]).SnapShot := R;
+    end;
+  end;
+
+end;
+
 function TCurrentWatchValueList.CreateEntry(const AThreadId: Integer;
   const AStackFrame: Integer; const ADisplayFormat: TWatchDisplayFormat): TWatchValue;
+var
+  R: TWatchValue;
 begin
   Result := TCurrentWatchValue.Create(FWatch, AThreadId, AStackFrame, ADisplayFormat);
+  Add(Result);
+  if FSnapShot <> nil then begin
+    R := TWatchValue.Create(FSnapShot.FWatch);
+    FSnapShot.Add(R);
+    TCurrentWatchValue(Result).SnapShot := R;
+  end;
 end;
 
 { TWatchValueList }
@@ -2618,8 +3216,11 @@ begin
     dec(i);
   end;
   Result := CreateEntry(AThreadId, AStackFrame, ADisplayFormat);
-  if Result = nil then exit;
-  FList.Add(Result);
+end;
+
+function TWatchValueList.GetEntryByIdx(AnIndex: integer): TWatchValue;
+begin
+  Result := TWatchValue(FList[AnIndex]);
 end;
 
 function TWatchValueList.CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
@@ -2643,6 +3244,9 @@ end;
 
 constructor TWatchValueList.Create(AOwnerWatch: TWatch);
 begin
+  assert(AOwnerWatch <> nil, 'TWatchValueList.Create without owner');
+  assert(((Self is TCurrentWatchValueList) and (AOwnerWatch is TCurrentWatch)) or ((not(Self is TCurrentWatchValueList)) and not(AOwnerWatch is TCurrentWatch)),
+         'TWatchValueList.Create: Watch and list differ (current and none current)');
   FList := TList.Create;
   FWatch := AOwnerWatch;
   inherited Create;
@@ -2655,12 +3259,22 @@ begin
   FreeAndNil(FList);
 end;
 
+procedure TWatchValueList.Add(AnEntry: TWatchValue);
+begin
+  Flist.Add(AnEntry);
+end;
+
 procedure TWatchValueList.Clear;
 begin
   while FList.Count > 0 do begin
     TObject(FList[0]).Free;
     FList.Delete(0);
   end;;
+end;
+
+function TWatchValueList.Count: Integer;
+begin
+  Result := FList.Count;
 end;
 
 { TWatchValue }
@@ -2677,7 +3291,7 @@ begin
         FValidity := ddsRequested;
         RequestData;
         if FValidity in [ddsValid, ddsInvalid, ddsError]
-        then Result := GetValue;
+        then Result := GetValue();
       end;
     ddsRequested, ddsEvaluating: Result := '<evaluating>';
     ddsValid:                    Result := FValue;
@@ -2699,7 +3313,7 @@ begin
       FValidity := ddsRequested;
       RequestData;
       if FValidity in [ddsValid, ddsInvalid, ddsError]
-      then Result := GetTypeInfo;
+      then Result := GetTypeInfo();
     end;
     ddsRequested,
     ddsEvaluating: Result := nil;
@@ -2728,14 +3342,17 @@ end;
 
 constructor TWatchValue.Create;
 begin
+  assert(FWatch <> nil, 'TwatchValue without owner');
+  assert(((Self is TCurrentWatchValue) and (FWatch is TCurrentWatch)) or ((not(Self is TCurrentWatchValue)) and not(FWatch is TCurrentWatch)),
+         'TWatchValue.Create: Watch and self differ (current and none current)');
   inherited Create;
 end;
 
 constructor TWatchValue.Create(AOwnerWatch: TWatch);
 begin
-  Create;
   FValidity := ddsUnknown;
   FWatch := AOwnerWatch;
+  Create;
 end;
 
 constructor TWatchValue.Create(AOwnerWatch: TWatch; const AThreadId: Integer;
@@ -2799,11 +3416,27 @@ procedure TWatchesSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) or (CurrentWatches = nil) then Exit;
   FNotifiedState := Debugger.State;
-  if (Debugger.State in [dsPause, dsStop, dsInit]) 
+
+  if FDebugger.State = dsPause
   then begin
     CurrentWatches.ClearValues;
     Monitor.NotifyUpdate(CurrentWatches, nil);
+  end
+  else begin
+    CurrentWatches.SnapShot := nil;
+
+    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
+    then begin
+      CurrentWatches.ClearValues;
+      Monitor.NotifyUpdate(CurrentWatches, nil);
+    end;
   end;
+end;
+
+constructor TWatchesSupplier.Create(const ADebugger: TDebugger);
+begin
+  inherited Create(ADebugger);
+  FNotifiedState := dsNone;
 end;
 
 { TWatchesMonitor }
@@ -2811,6 +3444,11 @@ end;
 function TWatchesMonitor.GetSupplier: TWatchesSupplier;
 begin
   Result := TWatchesSupplier(inherited Supplier);
+end;
+
+function TWatchesMonitor.GetSnapshot(AnID: Pointer): TWatches;
+begin
+  Result := TWatches(GetSnapshotObj(AnID));
 end;
 
 procedure TWatchesMonitor.SetSupplier(const AValue: TWatchesSupplier);
@@ -2838,6 +3476,12 @@ begin
   if Supplier <> nil
   then Supplier.RequestData(AWatchValue)
   else AWatchValue.SetValidity(ddsInvalid);
+end;
+
+function TWatchesMonitor.CreateSnapshot: TObject;
+begin
+  Result := TWatches.Create;
+  CurrentWatches.SnapShot := TWatches(Result);
 end;
 
 constructor TWatchesMonitor.Create;
@@ -2930,25 +3574,69 @@ function TCurrentCallStack.GetCurrent: Integer;
 begin
   case FCurrentValidity of
     ddsUnknown:   begin
-        Result := -1;
+        Result := 0;
         FCurrentValidity := ddsRequested;
         FMonitor.RequestCurrent(self);
         if FCurrentValidity = ddsValid then
-          Result := inherited GetCurrent;
+          Result := inherited GetCurrent();
       end;
-    ddsRequested, ddsEvaluating: Result := -1;
+    ddsRequested, ddsEvaluating: Result := 0;
     ddsValid:                    Result := inherited GetCurrent;
-    ddsInvalid, ddsError:        Result := -1;
+    ddsInvalid, ddsError:        Result := 0;
   end;
+end;
+
+procedure TCurrentCallStack.Clear;
+var
+  Iterator: TMapIterator;
+begin
+  Iterator:= TMapIterator.Create(FEntries);
+  while not Iterator.EOM do
+  begin
+    TObject(Iterator.DataPtr^).Free;
+    Iterator.Next;
+  end;
+  Iterator.Free;
+  FEntries.Clear;
+
+  FCount := -1;
 end;
 
 constructor TCurrentCallStack.Create(AMonitor: TCallStackMonitor);
 begin
+  FCount := 0;
+  FEntries:= TMap.Create(its4, SizeOf(TCallStackEntry));
   FMonitor := AMonitor;
   FPreparing := False;
   FCountValidity := ddsUnknown;
   FCurrentValidity := ddsUnknown;
+  FLowestUnknown :=  -1;
+  FHighestUnknown := -1;
   inherited Create;
+end;
+
+destructor TCurrentCallStack.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+  FreeAndNil(FEntries);
+end;
+
+procedure TCurrentCallStack.Assign(AnOther: TCallStack);
+begin
+  inherited Assign(AnOther);
+  FCount := AnOther.Count;
+end;
+
+procedure TCurrentCallStack.SetSnapShot(const AValue: TCallStack);
+begin
+  assert((FSnapShot=nil) or (AValue=nil), 'TCurrentCallStack already have snapshot');
+  if FSnapShot = AValue then exit;
+
+  if (FSnapShot <> nil) and (AValue = nil)
+  then FSnapShot.Assign(Self);
+
+  FSnapShot := AValue;
 end;
 
 function TCurrentCallStack.GetCount: Integer;
@@ -2959,12 +3647,60 @@ begin
         FCountValidity := ddsRequested;
         FMonitor.RequestCount(self);
         if FCountValidity = ddsValid then
-          Result := inherited GetCount;
+          Result := FCount;
       end;
     ddsRequested, ddsEvaluating: Result := 0;
-    ddsValid:                    Result := inherited GetCount;
+    ddsValid:                    Result := FCount;
     ddsInvalid, ddsError:        Result := 0;
   end;
+end;
+
+procedure TCurrentCallStack.SetCount(ACount: Integer);
+begin
+  if FCount = ACount then exit;
+  FCount := ACount;
+  FMonitor.NotifyChange;
+end;
+
+function TCurrentCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
+begin
+  if (AIndex < 0)
+  or (AIndex >= Count) then IndexError(Aindex);
+
+  Result := nil;
+  if FEntries.GetData(AIndex, Result) then Exit;
+
+  Result := TCallStackEntry.Create(AIndex, 0, nil, '', '', '', 0, ddsRequested);
+  if Result = nil then Exit;
+  FEntries.Add(AIndex, Result);
+  Result.FOwner := Self;
+
+  if (FLowestUnknown < 0) or (FLowestUnknown > AIndex)
+  then FLowestUnknown := AIndex;
+  if (FHighestUnknown < AIndex)
+  then FHighestUnknown := AIndex;
+
+  DoEntriesCreated;
+end;
+
+procedure TCurrentCallStack.AddEntry(AnEntry: TCallStackEntry);
+begin
+  FEntries.Add(AnEntry.Index, AnEntry);
+  AnEntry.FOwner := Self;
+end;
+
+procedure TCurrentCallStack.AssignEntriesTo(AnOther: TCallStack);
+var
+  It: TMapIterator;
+begin
+  It := TMapIterator.Create(FEntries);
+  It.First;
+  while (not IT.EOM)
+  do begin
+    AnOther.AddEntry(TCallStackEntry.CreateCopy(TCallStackEntry(It.DataPtr^)));
+    It.Next;
+  end;
+  It.Free;
 end;
 
 procedure TCurrentCallStack.PrepareRange(AIndex, ACount: Integer);
@@ -3046,13 +3782,46 @@ begin
   inherited Create;
 end;
 
+procedure TCurrentCallStackList.SetSnapShot(const AValue: TCallStackList);
+var
+  R: TCallStack;
+  i: Integer;
+begin
+  assert((FSnapShot=nil) or (AValue=nil), 'Callstack already have snapshot');
+  if FSnapShot = AValue then exit;
+  FSnapShot := AValue;
+
+  if FSnapShot = nil then begin
+    for i := 0 to Count - 1 do
+      TCurrentCallStack(Entries[i]).SnapShot := nil;
+  end
+  else begin
+    // Assign
+    FSnapShot.Clear;
+    for i := 0 to Count - 1 do begin
+      R := TCallStack.Create;
+      R.ThreadId := Entries[i].ThreadId;
+      FSnapShot.Add(R);
+      TCurrentCallStack(Entries[i]).SnapShot := R;
+    end;
+  end;
+end;
+
 function TCurrentCallStackList.GetEntryForThread(const AThreadId: Integer): TCallStack;
+var
+  R: TCallStack;
 begin
   Result := inherited GetEntryForThread(AThreadId);
   if Result = nil then begin
     Result := TCurrentCallStack.Create(FMonitor);
     Result.ThreadId := AThreadId;
     Add(Result);
+    if FSnapShot <> nil then begin
+      R := TCallStack.Create;
+      R.ThreadId := AThreadId;
+      FSnapShot.Add(R);
+      TCurrentCallStack(Result).SnapShot := R;
+    end;
   end;
 end;
 
@@ -3076,7 +3845,18 @@ end;
 
 procedure TCallStackList.Add(ACallStack: TCallStack);
 begin
+  assert(((Self is TCurrentCallStackList) and (ACallStack is TCurrentCallStack)) or ((not(Self is TCurrentCallStackList)) and not(ACallStack is TCurrentCallStack)),
+         'TCallStackList.Add: entry and list differ (current and none current)');
   FList.Add(ACallStack);
+end;
+
+procedure TCallStackList.Assign(AnOther: TCallStackList);
+var
+  i: Integer;
+begin
+  Clear;
+  for i := 0 to AnOther.FList.Count-1 do
+    FList.Add(TCallStack.CreateCopy(TCallStack(AnOther.FList[i])));
 end;
 
 constructor TCallStackList.Create;
@@ -3154,7 +3934,13 @@ end;
 procedure TCurrentThreads.SetValidity(AValidity: TDebuggerDataState);
 begin
   if FDataValidity = AValidity then exit;
+
+  // Assign snapshot, if old data wasn't final
+  if (FDataValidity in [ddsUnknown, ddsEvaluating, ddsRequested]) and (FSnapShot <> nil)
+  then FSnapShot.Assign(self);
+
   FDataValidity := AValidity;
+
   if FDataValidity = ddsUnknown then Clear;
   FMonitor.Changed;
 end;
@@ -3163,6 +3949,15 @@ procedure TCurrentThreads.SetCurrentThreadId(const AValue: Integer);
 begin
   inherited SetCurrentThreadId(AValue);
   FMonitor.CurrentChanged; // TODO ChangedSelection
+end;
+
+procedure TCurrentThreads.SetSnapShot(const AValue: TThreads);
+begin
+  assert((FSnapShot=nil) or (AValue=nil), 'Threads already have snapshot');
+  if FSnapShot = AValue then exit;
+  FSnapShot := AValue;
+  if FSnapShot <> nil
+  then FSnapShot.Assign(self);
 end;
 
 constructor TCurrentThreads.Create(AMonitor: TThreadsMonitor);
@@ -3179,11 +3974,18 @@ begin
         Result := 0;
         FDataValidity := ddsRequested;
         FMonitor.RequestData;
+        if FDataValidity = ddsValid then Result := inherited Count();
       end;
     ddsRequested, ddsEvaluating: Result := 0;
     ddsValid:                    Result := inherited Count;
     ddsInvalid, ddsError:        Result := 0;
   end;
+end;
+
+procedure TCurrentThreads.Clear;
+begin
+  FDataValidity := ddsUnknown;
+  inherited Clear;
 end;
 
 { TThreadsSupplier }
@@ -3215,14 +4017,23 @@ begin
   //
 end;
 
-procedure TThreadsSupplier.Changed;
-begin
-  If Monitor <> nil then CurrentThreads.SetValidity(ddsUnknown);
-end;
-
 procedure TThreadsSupplier.DoStateChange(const AOldState: TDBGState);
 begin
-  //
+  if (Debugger = nil) or (CurrentThreads = nil) then Exit;
+
+  if Debugger.State in [dsPause]
+  then begin
+    CurrentThreads.SetValidity(ddsUnknown);
+  end
+  else begin
+    CurrentThreads.SnapShot := nil;
+
+    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
+    then begin
+      if Monitor <> nil
+      then Monitor.Clear;
+    end;
+  end;
 end;
 
 { TThreadsMonitor }
@@ -3230,6 +4041,11 @@ end;
 function TThreadsMonitor.GetSupplier: TThreadsSupplier;
 begin
   Result := TThreadsSupplier(inherited Supplier);
+end;
+
+function TThreadsMonitor.GetSnapshot(AnID: Pointer): TThreads;
+begin
+  Result := TThreads(GetSnapshotObj(AnID));
 end;
 
 procedure TThreadsMonitor.SetSupplier(const AValue: TThreadsSupplier);
@@ -3248,6 +4064,12 @@ procedure TThreadsMonitor.RequestData;
 begin
   if Supplier <> nil
   then Supplier.RequestMasterData;
+end;
+
+function TThreadsMonitor.CreateSnapshot: TObject;
+begin
+  Result := TThreads.Create;
+  CurrentThreads.SnapShot := TThreads(Result);
 end;
 
 procedure TThreadsMonitor.Changed;
@@ -3279,6 +4101,7 @@ end;
 procedure TThreadsMonitor.Clear;
 begin
   FCurrentThreads.Clear;
+  Changed;
 end;
 
 procedure TThreadsMonitor.AddNotification(const ANotification: TThreadsNotification);
@@ -3416,6 +4239,7 @@ var
   i: Integer;
 begin
   Clear;
+  FCurrentThreadId := AOther.FCurrentThreadId;
   for i := 0 to AOther.FList.Count-1 do
     FList.Add(TThreadEntry.CreateCopy(TThreadEntry(AOther.FList[i])));
 end;
@@ -3658,6 +4482,12 @@ end;
 function TDebugger.Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr; out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
 begin
   Result := ReqCmd(dcDisassemble, [AAddr, ABackward, @ANextAddr, @ADump, @AStatement, @AFile, @ALine]);
+end;
+
+function TDebugger.GetLocation: TDBGLocationRec;
+begin
+  Result.Address := 0;
+  Result.SrcLine := 0;
 end;
 
 procedure TDebugger.LockCommandProcessing;
@@ -5479,9 +6309,10 @@ procedure TWatch.AssignTo(Dest: TPersistent);
 begin
   if Dest is TWatch
   then begin
-    TWatch(Dest).SetExpression(FExpression);
-    TWatch(Dest).SetEnabled(FEnabled);
-    TWatch(Dest).SetDisplayFormat(FDisplayFormat);
+    TWatch(Dest).FExpression := FExpression;
+    TWatch(Dest).FEnabled := FEnabled;
+    TWatch(Dest).FDisplayFormat := FDisplayFormat;
+    TWatch(Dest).FValueList.Assign(FValueList);
   end
   else inherited;
 end;
@@ -5493,6 +6324,8 @@ end;
 
 constructor TWatch.Create(ACollection: TCollection);
 begin
+  assert(((Self is TCurrentWatch) and (ACollection is TCurrentWatches)) or ((not(Self is TCurrentWatch)) and not(ACollection is TCurrentWatches)),
+         'Twatch.Create: Watch and collection differ (current and none current)');
   FEnabled := False;
   FValueList := CreateValueList;
   inherited Create(ACollection);
@@ -5583,6 +6416,19 @@ end;
 { TCurrentWatch }
 { =========================================================================== }
 
+procedure TCurrentWatch.SetSnapShot(const AValue: TWatch);
+begin
+  assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatch already have snapshot');
+  if FSnapShot = AValue then exit;
+  FSnapShot := AValue;
+  if FSnapShot = nil then begin
+    TCurrentWatchValueList(FValueList).SnapShot := nil;
+  end else begin
+    FSnapShot.Assign(self);
+    TCurrentWatchValueList(FValueList).SnapShot := FSnapShot.FValueList;
+  end;
+end;
+
 function TCurrentWatch.CreateValueList: TWatchValueList;
 begin
   Result := TCurrentWatchValueList.Create(Self);
@@ -5648,6 +6494,21 @@ begin
   EndUpdate;
 end;
 
+function TWatches.GetItem(const AnIndex: Integer): TWatch;
+begin
+  Result := TWatch(inherited Items[AnIndex]);
+end;
+
+procedure TWatches.SetItem(const AnIndex: Integer; const AValue: TWatch);
+begin
+  inherited Items[AnIndex] := AValue;
+end;
+
+constructor TWatches.Create;
+begin
+  Create(TWatch);
+end;
+
 constructor TWatches.Create(const AWatchClass: TBaseWatchClass);
 begin
   inherited Create(AWatchClass);
@@ -5681,9 +6542,15 @@ end;
 { =========================================================================== }
 
 function TCurrentWatches.Add(const AExpression: String): TCurrentWatch;
+var
+  R: TWatch;
 begin
   // if this is modified, then also update LoadFromXMLConfig
   Result := TCurrentWatch(inherited Add(AExpression));
+  if FSnapShot <> nil then begin
+    R := FSnapShot.Add(AExpression);
+    Result.SnapShot := R;
+  end;
   NotifyAdd(Result);
 end;
 
@@ -5701,6 +6568,30 @@ end;
 procedure TCurrentWatches.WatchesChanged(Sender: TObject);
 begin
   Changed;
+end;
+
+procedure TCurrentWatches.SetSnapShot(const AValue: TWatches);
+var
+  R: TWatch;
+  i: Integer;
+begin
+  assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatches already have snapshot');
+  if FSnapShot = AValue then exit;
+  FSnapShot := AValue;
+
+  if FSnapShot = nil then begin
+    for i := 0 to Count - 1 do
+      Items[i].SnapShot := nil;
+  end
+  else begin
+    // FSnapShot.Assign(Self);
+    FSnapShot.Clear;
+    for i := 0 to Count - 1 do begin
+      R := FSnapShot.Add('');
+      R.Assign(Items[i]);
+      Items[i].SnapShot := R;
+    end;
+  end;
 end;
 
 function TCurrentWatches.GetItem(const AnIndex: Integer): TCurrentWatch;
@@ -5804,6 +6695,19 @@ begin
   inherited Create;
 end;
 
+constructor TLocals.Create(AThreadId, AStackFrame: Integer);
+begin
+  Create;
+  FThreadId := AThreadId;
+  FStackFrame := AStackFrame;
+end;
+
+constructor TLocals.CreateCopy(const ASource: TLocals);
+begin
+  Create;
+  Assign(ASource);
+end;
+
 destructor TLocals.Destroy;
 begin
   inherited Destroy;
@@ -5821,9 +6725,25 @@ begin
   Result := GetPart('=', '', Result);
 end;
 
+procedure TLocals.Assign(AnOther: TLocals);
+begin
+  FThreadId := AnOther.FThreadId;
+  FStackFrame := AnOther.FStackFrame;
+  FLocals.Assign(AnOther.FLocals);
+end;
+
 { =========================================================================== }
 { TCurrentLocals }
 { =========================================================================== }
+
+procedure TCurrentLocals.SetSnapShot(const AValue: TLocals);
+begin
+  assert((FSnapShot=nil) or (AValue=nil), 'TCurrentLocals already have snapshot');
+  if FSnapShot = AValue then exit;
+  FSnapShot := AValue;
+  if FSnapShot <> nil
+  then FSnapShot.Assign(Self);
+end;
 
 constructor TCurrentLocals.Create(AMonitor: TLocalsMonitor; AThreadId, AStackFrame: Integer);
 begin
@@ -5841,7 +6761,7 @@ begin
         Result := 0;
         FDataValidity := ddsRequested;
         FMonitor.RequestData(Self);
-        if FDataValidity = ddsValid then Result := inherited Count;
+        if FDataValidity = ddsValid then Result := inherited Count();
       end;
     ddsRequested, ddsEvaluating: Result := 0;
     ddsValid:                    Result := inherited Count;
@@ -5862,6 +6782,10 @@ end;
 procedure TCurrentLocals.SetDataValidity(AValidity: TDebuggerDataState);
 begin
   if FDataValidity = AValidity then exit;
+
+  if (FDataValidity in [ddsUnknown, ddsEvaluating, ddsRequested]) and (FSnapShot <> nil)
+  then FSnapShot.Assign(Self);
+
   FDataValidity := AValidity;
   FMonitor.NotifyChange(Self);
 end;
@@ -6246,30 +7170,23 @@ end;
 
 procedure TCallStack.Clear;
 var
-  Iterator: TMapIterator;
+  i: Integer;
 begin
-  Iterator:= TMapIterator.Create(FEntries);
-  while not Iterator.EOM do
-  begin
-    TObject(Iterator.DataPtr^).Free;
-    Iterator.Next;
-  end;
-  Iterator.Free;
-  FEntries.Clear;
-
-  FCount := -1;
+  for i := 0 to FList.Count - 1 do
+    TObject(FList[i]).Free;
+  FList.Clear;
 end;
 
 function TCallStack.GetCount: Integer;
 begin
-  Result := FCount;
+  Result := FList.Count;
 end;
 
 destructor TCallStack.Destroy;
 begin
   Clear;
   inherited Destroy;
-  FreeAndNil(FEntries);
+  FreeAndNil(FList);
 end;
 
 function TCallStack.GetCurrent: Integer;
@@ -6282,20 +7199,23 @@ begin
   if (AIndex < 0)
   or (AIndex >= Count) then IndexError(Aindex);
 
-  Result := nil;
-  if FEntries.GetData(AIndex, Result) then Exit;
+  Result := TCallStackEntry(FList[AIndex]);
+end;
 
-  Result := TCallStackEntry.Create(AIndex, 0, nil, '', '', '', 0, ddsRequested);
-  if Result = nil then Exit;
-  FEntries.Add(AIndex, Result);
-  Result.FOwner := Self;
+procedure TCallStack.AddEntry(AnEntry: TCallStackEntry);
+begin
+  // must be added in correct order
+  Flist.Add(AnEntry);
+  AnEntry.FOwner := Self;
+end;
 
-  if (FLowestUnknown < 0) or (FLowestUnknown > AIndex)
-  then FLowestUnknown := AIndex;
-  if (FHighestUnknown < AIndex)
-  then FHighestUnknown := AIndex;
-
-  DoEntriesCreated;
+procedure TCallStack.AssignEntriesTo(AnOther: TCallStack);
+var
+  i: Integer;
+begin
+  for i := 0 to FList.Count-1 do begin
+    AnOther.AddEntry(TCallStackEntry.CreateCopy(TCallStackEntry(FList[i])));
+  end;
 end;
 
 function TCallStack.IndexError(AIndex: Integer): TCallStackEntry;
@@ -6310,29 +7230,35 @@ end;
 
 procedure TCallStack.ChangeCurrentIndex(ANewIndex: Integer);
 begin
-  //
+  CurrentIndex := ANewIndex;
 end;
 
 procedure TCallStack.SetCount(ACount: Integer);
 begin
-  if FCount = ACount then exit;
-  FCount := ACount;
+  // can not set count
+  assert(False, 'TCallStack.SetCount should not be called')
 end;
 
-procedure TCallStack.DoEntriesCreated;
+procedure TCallStack.Assign(AnOther: TCallStack);
 begin
-  //
+  Clear;
+  ThreadId := AnOther.ThreadId;
+  FCurrent := AnOther.FCurrent;
+  AnOther.AssignEntriesTo(Self);
 end;
 
 constructor TCallStack.Create;
 begin
-  FCount := -1;
   FThreadId := -1;
   FCurrent := -1;
-  FLowestUnknown :=  -1;
-  FHighestUnknown := -1;
-  FEntries:= TMap.Create(its4, SizeOf(TCallStackEntry));
+  FList := TList.Create;
   inherited;
+end;
+
+constructor TCallStack.CreateCopy(const ASource: TCallStack);
+begin
+  Create;
+  Assign(ASource);
 end;
 
 procedure TCallStack.SetCurrent(AValue: Integer);
@@ -6407,6 +7333,11 @@ begin
   NotifyChange;
 end;
 
+function TCallStackMonitor.GetSnapshot(AnID: Pointer): TCallStackList;
+begin
+  Result := TCallStackList(GetSnapshotObj(AnID));
+end;
+
 function TCallStackMonitor.GetSupplier: TCallStackSupplier;
 begin
   Result := TCallStackSupplier(inherited Supplier);
@@ -6420,6 +7351,12 @@ end;
 procedure TCallStackMonitor.NotifyCurrent;
 begin
   FNotificationList.NotifyCurrent(Self);
+end;
+
+function TCallStackMonitor.CreateSnapshot: TObject;
+begin
+  Result := TCallStackList.Create;
+  CurrentCallStackList.SnapShot := TCallStackList(Result);
 end;
 
 procedure TCallStackMonitor.RemoveNotification(const ANotification: TCallStackNotification);
@@ -6495,19 +7432,20 @@ end;
 
 procedure TCallStackSupplier.DoStateChange(const AOldState: TDBGState);
 begin
+  if (Debugger = nil) or (CurrentCallStackList = nil) then Exit;
+
   if FDebugger.State = dsPause
   then begin
-    if CurrentCallStackList <> nil
-    then CurrentCallStackList.Clear;
+    CurrentCallStackList.Clear;
     Changed;
   end
   else begin
+    CurrentCallStackList.SnapShot := nil;
+
     if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
     then begin
-      if CurrentCallStackList <> nil
-      then CurrentCallStackList.Clear;
-      if Monitor <> nil
-      then Monitor.CallStackClear(Self);
+      CurrentCallStackList.Clear;
+      Monitor.CallStackClear(Self);
     end;
   end;
 end;

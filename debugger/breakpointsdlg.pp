@@ -587,7 +587,7 @@ procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
 begin
   try
     DisableAllActions;
-    DeleteSelectedBreakpoints
+    DeleteSelectedBreakpoints;
   finally
     lvBreakPointsSelectItem(nil, nil, False);
   end;

@@ -56,7 +56,7 @@ uses
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
-  InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg,
+  InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg, HistoryDlg,
   GDBMIDebugger, SSHGDBMIDebugger, ProcessDebugger,
   BaseDebugManager;
 
@@ -135,6 +135,7 @@ type
     procedure InitRegistersDlg;
     procedure InitAssemblerDlg;
     procedure InitInspectDlg;
+    procedure InitHistoryDlg;
 
     procedure FreeDebugger;
     procedure ResetDebugger;
@@ -218,7 +219,7 @@ const
   DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
     nmiwDbgOutput, nmiwDbgEvents,  nmiwBreakPoints, nmiwWatches, nmiwLocals,
     nmiwCallStack, nmiwEvaluate, nmiwRegisters, nmiwAssembler, nmiwInspect,
-    nmiwPseudoTerminal, nmiwThreads
+    nmiwPseudoTerminal, nmiwThreads, nmiHistory
   );
 
 type
@@ -657,6 +658,7 @@ begin
       ecInspect           : ViewDebugDialog(ddtInspect);
       ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
       ecViewThreads       : ViewDebugDialog(ddtThreads);
+      ecViewHistory       : ViewDebugDialog(ddtHistory);
     end;
   end;
 end;
@@ -882,6 +884,8 @@ begin
   and (FDialogs[ddtInspect] <> nil)
   then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
 
+  FSnapshots.DoStateChange(OldState);
+
   case FDebugger.State of
     dsError: begin
     {$ifdef VerboseDebugger}
@@ -1073,7 +1077,7 @@ const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
     TCallStackDlg, TEvaluateDlg, TRegistersDlg, TAssemblerDlg, TIDEInspectDlg,
-    TPseudoConsoleDlg, TThreadsDlg
+    TPseudoConsoleDlg, TThreadsDlg, THistoryDialog
   );
 var
   CurDialog: TDebuggerDlg;
@@ -1103,6 +1107,7 @@ begin
       ddtInspect:     InitInspectDlg;
       ddtPseudoTerminal: InitPseudoTerminal;
       ddtThreads:     InitThreadsDlg;
+      ddtHistory:     InitHistoryDlg;
     end;
   end
   else begin
@@ -1176,6 +1181,7 @@ begin
   TheDialog.WatchesMonitor := FWatches;
   TheDialog.ThreadsMonitor := FThreads;
   TheDialog.CallStackMonitor := FCallStack;
+  TheDialog.SnapshotManager := FSnapshots;
 end;
 
 procedure TDebugManager.InitThreadsDlg;
@@ -1184,6 +1190,7 @@ var
 begin
   TheDialog := TThreadsDlg(FDialogs[ddtThreads]);
   TheDialog.ThreadsMonitor := FThreads;
+  TheDialog.SnapshotManager := FSnapshots;
 end;
 
 procedure TDebugManager.InitPseudoTerminal;
@@ -1202,6 +1209,7 @@ begin
   TheDialog.LocalsMonitor := FLocals;
   TheDialog.ThreadsMonitor := FThreads;
   TheDialog.CallStackMonitor := FCallStack;
+  TheDialog.SnapshotManager := FSnapshots;
 end;
 
 procedure TDebugManager.InitRegistersDlg;
@@ -1234,6 +1242,14 @@ begin
     TheDialog.Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
 end;
 
+procedure TDebugManager.InitHistoryDlg;
+var
+  TheDialog: THistoryDialog;
+begin
+  TheDialog := THistoryDialog(FDialogs[ddtHistory]);
+  TheDialog.SnapshotManager := FSnapshots;
+end;
+
 procedure TDebugManager.InitCallStackDlg;
 var
   TheDialog: TCallStackDlg;
@@ -1242,6 +1258,7 @@ begin
   TheDialog.CallStackMonitor := FCallStack;
   TheDialog.BreakPoints := FBreakPoints;
   TheDialog.ThreadsMonitor := FThreads;
+  TheDialog.SnapshotManager := FSnapshots;
 end;
 
 procedure TDebugManager.InitEvaluateDlg;
@@ -1278,6 +1295,12 @@ begin
   FDisassembler := TIDEDisassembler.Create;
   FRegisters := TIDERegisters.Create;
 
+  FSnapshots := TSnapshotManager.Create;
+  FSnapshots.Threads := FThreads;
+  FSnapshots.CallStack := FCallStack;
+  FSnapshots.Watches := FWatches;
+  FSnapshots.Locals := FLocals;
+
   FUserSourceFiles := TStringList.Create;
   FIgnoreSourceFiles := TStringList.Create;
 
@@ -1306,6 +1329,7 @@ begin
 
   SetDebugger(nil);
 
+  FreeAndNil(FSnapshots);
   FreeAndNil(FWatches);
   FreeAndNil(FThreads);
   FreeAndNil(FBreakPoints);
@@ -1365,6 +1389,8 @@ begin
       itmViewPseudoTerminal.OnClick := @mnuViewDebugDialogClick;
       itmViewPseudoTerminal.Tag := Ord(ddtPseudoTerminal);
     end;
+    itmViewDbgHistory.OnClick := @mnuViewDebugDialogClick;
+    itmViewDbgHistory.Tag := Ord(ddtHistory);
 
     itmRunMenuResetDebugger.OnClick := @mnuResetDebuggerClicked;
 
@@ -1414,6 +1440,7 @@ begin
     itmViewThreads.Command:=GetCommand(ecViewThreads);
     if itmViewPseudoTerminal <> nil then
       itmViewPseudoTerminal.Command:=GetCommand(ecViewPseudoTerminal);
+    itmViewDbgHistory.Command:=GetCommand(ecViewHistory);
 
     itmRunMenuInspect.Command:=GetCommand(ecInspect);
     itmRunMenuEvaluate.Command:=GetCommand(ecEvaluate);
@@ -2016,6 +2043,7 @@ begin
     ecToggleLocals:      ViewDebugDialog(ddtLocals);
     ecViewPseudoTerminal: ViewDebugDialog(ddtPseudoTerminal);
     ecViewThreads:       ViewDebugDialog(ddtThreads);
+    ecViewHistory:       ViewDebugDialog(ddtHistory);
   else
     Handled := False;
   end;
@@ -2290,6 +2318,7 @@ begin
     FExceptions.Master := nil;
     FSignals.Master := nil;
     FRegisters.Master := nil;
+    FSnapshots.Debugger := nil;
   end
   else begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
@@ -2302,6 +2331,7 @@ begin
     FExceptions.Master := FDebugger.Exceptions;
     FSignals.Master := FDebugger.Signals;
     FRegisters.Master := FDebugger.Registers;
+    FSnapshots.Debugger := FDebugger;
   end;
 end;
 

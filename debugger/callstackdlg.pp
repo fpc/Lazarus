@@ -102,8 +102,10 @@ type
     FBreakPoints: TIDEBreakPoints;
     FCallStackMonitor: TCallStackMonitor;
     FCallStackNotification: TCallStackNotification;
+    FSnapshotManager: TSnapshotManager;
     FThreadNotification: TThreadsNotification;
     FBreakpointsNotification: TIDEBreakPointsNotification;
+    FSnapshotNotification: TSnapshotNotification;
     FThreadsMonitor: TThreadsMonitor;
     FViewCount: Integer;
     FViewLimit: Integer;
@@ -112,6 +114,7 @@ type
     FInUpdateView: Boolean;
     function GetImageIndex(Entry: TCallStackEntry): Integer;
     procedure SetBreakPoints(const AValue: TIDEBreakPoints);
+    procedure SetSnapshotManager(const AValue: TSnapshotManager);
     procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
     procedure SetViewLimit(const AValue: Integer);
     procedure SetViewStart(AStart: Integer);
@@ -120,6 +123,7 @@ type
     procedure CallStackChanged(Sender: TObject);
     procedure CallStackCurrent(Sender: TObject);
     procedure ThreadsCurrent(Sender: TObject);
+    procedure SnapshotChanged(Sender: TObject);
     procedure GotoIndex(AIndex: Integer);
     function  GetCurrentEntry: TCallStackEntry;
     function  GetFunction(const Entry: TCallStackEntry): string;
@@ -133,6 +137,8 @@ type
     procedure DoEndUpdate; override;
     procedure DisableAllActions;
     procedure EnableAllActions;
+    function  GetSelectedSnapshot: TSnapshot;
+    function  GetSelectedThreads(Snap: TSnapshot): TThreads;
     function  GetSelectedCallstack: TCallStack;
   public
     constructor Create(AOwner: TComponent); override;
@@ -141,6 +147,7 @@ type
     property BreakPoints: TIDEBreakPoints read FBreakPoints write SetBreakPoints;
     property CallStackMonitor: TCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
     property ThreadsMonitor: TThreadsMonitor read FThreadsMonitor write SetThreadsMonitor;
+    property SnapshotManager: TSnapshotManager read FSnapshotManager write SetSnapshotManager;
     property ViewLimit: Integer read FViewLimit write SetViewLimit;
   end;
 
@@ -178,6 +185,11 @@ begin
   FThreadNotification := TThreadsNotification.Create;
   FThreadNotification.AddReference;
   FThreadNotification.OnCurrent  := @ThreadsCurrent;
+
+  FSnapshotNotification := TSnapshotNotification.Create;
+  FSnapshotNotification.AddReference;
+  FSnapshotNotification.OnChange   := @SnapshotChanged;
+  FSnapshotNotification.OnCurrent   := @SnapshotChanged;
 
   FViewLimit := 10;
   FViewCount := 10;
@@ -243,10 +255,17 @@ var
   Entry: TCallStackEntry;
   First, Count: Integer;
   Source: String;
+  Snap: TSnapshot;
 begin
   if (not ToolButtonPower.Down) or FInUpdateView then exit;
   BeginUpdate;
+  lvCallStack.BeginUpdate;
   try
+    Snap := GetSelectedSnapshot;
+    if Snap <> nil
+    then Caption:= lisMenuViewCallStack + ' (' + Snap.LocationAsText + ')'
+    else Caption:= lisMenuViewCallStack;
+
     FInUpdateView := True; // ignore change triggered by count, if there is a change event, then Count will be updated already
     if (GetSelectedCallstack = nil) or (GetSelectedCallstack.Count=0)
     then begin
@@ -256,10 +275,15 @@ begin
     end;
     FInUpdateView := False;
 
-    First := FViewStart;
-    if First + FViewLimit <= GetSelectedCallstack.Count
-    then Count := FViewLimit
-    else Count := GetSelectedCallstack.Count - First;
+    if Snap <> nil then begin
+      First := 0;
+      Count := GetSelectedCallstack.Count;
+    end else begin
+      First := FViewStart;
+      if First + FViewLimit <= GetSelectedCallstack.Count
+      then Count := FViewLimit
+      else Count := GetSelectedCallstack.Count - First;
+    end;
 
     // Reuse entries, so add and remove only
     // Remove unneded
@@ -306,6 +330,7 @@ begin
     
   finally
     FInUpdateView := False;
+    lvCallStack.EndUpdate;
     EndUpdate;
   end;
 end;
@@ -325,6 +350,11 @@ begin
   SetThreadsMonitor(nil);
   FThreadNotification.OnCurrent := nil;
   FThreadNotification.ReleaseReference;
+
+  SetSnapshotManager(nil);
+  FSnapshotNotification.OnChange := nil;
+  FSnapshotNotification.OnCurrent := nil;
+  FSnapshotNotification.ReleaseReference;
   inherited Destroy;
 end;
 
@@ -351,17 +381,56 @@ end;
 procedure TCallStackDlg.EnableAllActions;
 var
   i: Integer;
+  Snap: TSnapshot;
 begin
   for i := 0 to aclActions.ActionCount - 1 do
     (aclActions.Actions[i] as TAction).Enabled := True;
+  Snap := GetSelectedSnapshot;
+  if snap <> nil then begin
+    actViewLimit.Enabled := False;
+    actViewMore.Enabled := False;
+  end;
+  ToolButtonPower.Enabled := Snap = nil;
+end;
+
+function TCallStackDlg.GetSelectedSnapshot: TSnapshot;
+begin
+  Result := nil;
+  if (SnapshotManager <> nil) and (SnapshotManager.HistorySelected)
+  then Result := SnapshotManager.SelectedEntry;
+end;
+
+function TCallStackDlg.GetSelectedThreads(Snap: TSnapshot): TThreads;
+begin
+  if FThreadsMonitor = nil then exit(nil);
+  if Snap = nil
+  then Result := FThreadsMonitor.CurrentThreads
+  else Result := FThreadsMonitor.Snapshots[Snap];
 end;
 
 function TCallStackDlg.GetSelectedCallstack: TCallStack;
+var
+  Snap: TSnapshot;
+  Threads: TThreads;
+  tid: LongInt;
 begin
   if (CallStackMonitor = nil) or (ThreadsMonitor = nil)
-  then Result := nil
-  else Result := CallStackMonitor.CurrentCallStackList.EntriesForThreads
-                 [ThreadsMonitor.CurrentThreads.CurrentThreadId];
+  then begin
+    Result := nil;
+    exit;
+  end;
+
+  Snap := GetSelectedSnapshot;
+  Threads := GetSelectedThreads(Snap);
+  // There should always be a thread object
+  Assert(Threads<>nil, 'TCallStackDlg.GetSelectedCallstack missing thread object');
+  if Threads <> nil
+  then tid := Threads.CurrentThreadId
+  else tid := 1;
+
+  if (Snap <> nil)
+  then Result := CallStackMonitor.Snapshots[Snap].EntriesForThreads[tid]
+  else Result := CallStackMonitor.CurrentCallStackList.EntriesForThreads[tid];
 end;
 
 function TCallStackDlg.GetCurrentEntry: TCallStackEntry;
@@ -471,6 +540,11 @@ begin
   actViewLimit.Caption := TMenuItem(Sender).Caption;
 end;
 
+procedure TCallStackDlg.SnapshotChanged(Sender: TObject);
+begin
+  CallStackChanged(nil);
+end;
+
 procedure TCallStackDlg.ThreadsCurrent(Sender: TObject);
 begin
   CallStackChanged(nil);
@@ -511,6 +585,8 @@ begin
     if Entry = nil then Exit;
 
     GetSelectedCallstack.ChangeCurrentIndex(Entry.Index);
+    if GetSelectedSnapshot <> nil
+    then CallStackMonitor.NotifyCurrent; // TODO: move to snapshot callstack object
   finally
     EnableAllActions;
   end;
@@ -750,6 +826,15 @@ begin
   then begin
     FBreakPoints.AddNotification(FBreakpointsNotification);
   end;
+  UpdateView;
+end;
+
+procedure TCallStackDlg.SetSnapshotManager(const AValue: TSnapshotManager);
+begin
+  if FSnapshotManager = AValue then exit;
+  if FSnapshotManager <> nil then FSnapshotManager.RemoveNotification(FSnapshotNotification);
+  FSnapshotManager := AValue;
+  if FSnapshotManager <> nil then FSnapshotManager.AddNotification(FSnapshotNotification);
   UpdateView;
 end;
 

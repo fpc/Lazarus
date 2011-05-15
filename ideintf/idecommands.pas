@@ -187,6 +187,7 @@ const
   ecToggleDebugEvents       = ecFirstLazarus + 327;
   ecViewPseudoTerminal      = ecFirstLazarus + 328;
   ecViewThreads             = ecFirstLazarus + 329;
+  ecViewHistory             = ecFirstLazarus + 450;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;
@@ -254,6 +255,8 @@ const
   ecStepIntoContext         = ecFirstLazarus + 422;
   ecStepOverContext         = ecFirstLazarus + 423;
   ecBuildAdvancedLazarus    = ecFirstLazarus + 424;
+
+  // 450++ : used for ecViewHistory (debugger)
 
   // project menu
   ecNewProject              = ecFirstLazarus + 500;

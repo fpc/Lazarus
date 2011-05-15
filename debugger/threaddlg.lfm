@@ -36,6 +36,7 @@ inherited ThreadsDlg: TThreadsDlg
         Caption = 'Function'
         Width = 300
       end>
+    ReadOnly = True
     RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport

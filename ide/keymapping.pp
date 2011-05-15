@@ -519,6 +519,7 @@ begin
   ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebugEvents: SetResult(VK_V,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewHistory: SetResult(VK_H,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
@@ -1580,6 +1581,7 @@ begin
   ecToggleAssembler: SetResult(VK_D,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebugEvents: SetResult(VK_V,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleDebuggerOut: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewHistory: SetResult(VK_H,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecViewUnitDependencies: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewUnitInfo: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F,[ssMeta,ssAlt],VK_UNKNOWN,[]);
@@ -2086,6 +2088,7 @@ begin
     ecToggleCallStack         : Result:= srkmecToggleCallStack;
     ecToggleRegisters         : Result:= srkmecToggleRegisters;
     ecToggleAssembler         : Result:= srkmecToggleAssembler;
+    ecViewHistory             : Result:= srkmecViewHistory;
     ecViewUnitDependencies    : Result:= srkmecViewUnitDependencies;
     ecViewUnitInfo            : Result:= srkmecViewUnitInfo;
     ecViewAnchorEditor        : Result:= srkmecViewAnchorEditor;
@@ -2758,6 +2761,7 @@ begin
   AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler, ecToggleAssembler);
   AddDefault(C, 'Toggle view Event Log', lisKMToggleViewDebugEvents, ecToggleDebugEvents);
   AddDefault(C, 'Toggle view Debugger Output', lisKMToggleViewDebuggerOutput, ecToggleDebuggerOut);
+  AddDefault(C, 'Toggle view Debug History', lisKMToggleViewHistory, ecViewHistory);
   AddDefault(C, 'View Unit Dependencies', lisMenuViewUnitDependencies, ecViewUnitDependencies);
   AddDefault(C, 'View Unit Info', lisKMViewUnitInfo, ecViewUnitInfo);
   AddDefault(C, 'Toggle between Unit and Form', lisKMToggleBetweenUnitAndForm, ecToggleFormUnit);

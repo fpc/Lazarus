@@ -95,6 +95,7 @@ type
     nmiwInspect,
     nmiwPseudoTerminal,
     nmiwThreads,
+    nmiHistory,
     // extra
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
@@ -142,6 +143,7 @@ const
     'Inspect',
     'PseudoTerminal',
     'Threads',
+    'DbgHistory',
     // extra
     'SearchResults',
     'AnchorEditor',

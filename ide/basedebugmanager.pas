@@ -56,7 +56,8 @@ type
     ddtAssembler,
     ddtInspect,
     ddtPseudoTerminal,
-    ddtThreads
+    ddtThreads,
+    ddtHistory
     );
 
   { TBaseDebugManager }
@@ -94,6 +95,7 @@ type
     FWatches: TWatchesMonitor;
     FThreads: TThreadsMonitor;
     FRegisters: TIDERegisters;
+    FSnapshots: TSnapshotManager;
     FManagerStates: TDebugManagerStates;
     function  FindDebuggerClass(const Astring: String): TDebuggerClass;
     function  GetState: TDBGState; virtual; abstract;
@@ -179,6 +181,7 @@ type
     property Signals: TIDESignals read FSignals;               // A list of actions for signals we know of
     property Watches: TWatchesMonitor read FWatches;
     property Threads: TThreadsMonitor read FThreads;
+    property Snapshots: TSnapshotManager read FSnapshots;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
     property Debugger: TDebugger read GetDebugger;
     {$ENDIF}

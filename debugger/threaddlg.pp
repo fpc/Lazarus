@@ -5,8 +5,8 @@ unit ThreadDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  Debugger, DebuggerDlg, LazarusIDEStrConsts, BaseDebugManager, MainBase;
+  Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, LazarusIDEStrConsts,
+  BaseDebugManager, MainBase, IDEImagesIntf;
 
 type
 
@@ -21,16 +21,23 @@ type
     procedure tbCurrentClick(Sender: TObject);
     procedure ThreadsChanged(Sender: TObject);
   private
-    { private declarations }
+    FSnapshotManager: TSnapshotManager;
     FThreadNotification: TThreadsNotification;
+    FSnapshotNotification: TSnapshotNotification;
     FThreadsMonitor: TThreadsMonitor;
+    imgCurrentLine: Integer;
+    procedure SetSnapshotManager(const AValue: TSnapshotManager);
+    procedure SnapshotChanged(Sender: TObject);
     procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
     procedure JumpToSource;
+    function  GetSelectedSnapshot: TSnapshot;
+    function GetSelectedThreads(Snap: TSnapshot): TThreads;
   public
     { public declarations }
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     property ThreadsMonitor: TThreadsMonitor read FThreadsMonitor write SetThreadsMonitor;
+    property SnapshotManager: TSnapshotManager read FSnapshotManager write SetSnapshotManager;
   end; 
 
 implementation
@@ -45,14 +52,28 @@ var
   s: String;
   Item: TListItem;
   Threads: TThreads;
+  Snap: TSnapshot;
 begin
   if FThreadsMonitor = nil then begin
     lvThreads.Clear;
     exit;
   end;
 
-  Threads := FThreadsMonitor.CurrentThreads;
-  lvThreads.Items.Count := Threads.Count;
+  Snap := GetSelectedSnapshot;
+  Threads := GetSelectedThreads(Snap);
+  if (Snap <> nil)
+  then begin
+    Caption:= lisThreads + ' ('+ Snap.LocationAsText +')';
+  end
+  else begin
+    Caption:= lisThreads;
+  end;
+
+  if Threads = nil then begin
+    lvThreads.Clear;
+    // Todo: display "no info available"
+    exit;
+  end;
 
   i := Threads.Count;
   while lvThreads.Items.Count > i do lvThreads.Items.Delete(i);
@@ -67,9 +88,10 @@ begin
   end;
 
   for i := 0 to Threads.Count - 1 do begin
+    lvThreads.Items[i].Caption := '';
     if Threads[i].ThreadId = Threads.CurrentThreadId
-    then lvThreads.Items[i].Caption := '*'
-    else lvThreads.Items[i].Caption := '';
+    then lvThreads.Items[i].ImageIndex := imgCurrentLine
+    else lvThreads.Items[i].ImageIndex := -1;
     lvThreads.Items[i].SubItems[0] := IntToStr(Threads[i].ThreadId);
     lvThreads.Items[i].SubItems[1] := Threads[i].ThreadName;
     lvThreads.Items[i].SubItems[2] := Threads[i].ThreadState;
@@ -86,17 +108,39 @@ procedure TThreadsDlg.tbCurrentClick(Sender: TObject);
 var
   Item: TListItem;
   id: LongInt;
+  Threads: TThreads;
 begin
   Item := lvThreads.Selected;
   if Item = nil then exit;
   id := StrToIntDef(Item.SubItems[0], -1);
   if id < 0 then exit;
-  FThreadsMonitor.ChangeCurrentThread(id);
+  if GetSelectedSnapshot = nil
+  then FThreadsMonitor.ChangeCurrentThread(id)
+  else begin
+    Threads := GetSelectedThreads(GetSelectedSnapshot);
+    if Threads <> nil
+    then Threads.CurrentThreadId := id;
+    FThreadsMonitor.CurrentChanged;
+  end;
 end;
 
 procedure TThreadsDlg.lvThreadsDblClick(Sender: TObject);
 begin
   JumpToSource;
+end;
+
+procedure TThreadsDlg.SnapshotChanged(Sender: TObject);
+begin
+  ThreadsChanged(nil);
+end;
+
+procedure TThreadsDlg.SetSnapshotManager(const AValue: TSnapshotManager);
+begin
+  if FSnapshotManager = AValue then exit;
+  if FSnapshotManager <> nil then FSnapshotManager.RemoveNotification(FSnapshotNotification);
+  FSnapshotManager := AValue;
+  if FSnapshotManager <> nil then FSnapshotManager.AddNotification(FSnapshotNotification);
+  ThreadsChanged(FSnapshotManager);
 end;
 
 procedure TThreadsDlg.SetThreadsMonitor(const AValue: TThreadsMonitor);
@@ -136,6 +180,20 @@ begin
     DebugBoss.UnLockCommandProcessing;
   end;end;
 
+function TThreadsDlg.GetSelectedSnapshot: TSnapshot;
+begin
+  Result := nil;
+  if (SnapshotManager <> nil) and (SnapshotManager.HistorySelected)
+  then Result := SnapshotManager.SelectedEntry;
+end;
+
+function TThreadsDlg.GetSelectedThreads(Snap: TSnapshot): TThreads;
+begin
+  if Snap = nil
+  then Result := FThreadsMonitor.CurrentThreads
+  else Result := FThreadsMonitor.Snapshots[Snap];
+end;
+
 constructor TThreadsDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -152,6 +210,14 @@ begin
   FThreadNotification := TThreadsNotification.Create;
   FThreadNotification.AddReference;
   FThreadNotification.OnChange  := @ThreadsChanged;
+
+  FSnapshotNotification := TSnapshotNotification.Create;
+  FSnapshotNotification.AddReference;
+  FSnapshotNotification.OnChange   := @SnapshotChanged;
+  FSnapshotNotification.OnCurrent  := @SnapshotChanged;
+
+  imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
+  lvThreads.SmallImages := IDEImages.Images_16;
 end;
 
 destructor TThreadsDlg.Destroy;
@@ -159,6 +225,10 @@ begin
   SetThreadsMonitor(nil);
   FThreadNotification.OnChange := nil;
   FThreadNotification.ReleaseReference;
+  SetSnapshotManager(nil);
+  FSnapshotNotification.OnChange := nil;
+  FSnapshotNotification.OnCurrent := nil;
+  FSnapshotNotification.ReleaseReference;
   inherited Destroy;
 end;
 

@@ -313,6 +313,7 @@ resourcestring
   lisMenuViewRegisters = 'Registers';
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewThreads = 'Threads';
+  lisMenuViewHistory = 'History';
   lisMenuViewAssembler = 'Assembler';
   lisDbgAsmCopyToClipboard = 'Copy to clipboard';
   lisMenuViewDebugOutput = 'Debug output';
@@ -2612,6 +2613,7 @@ resourcestring
   srkmecToggleDebuggerOut         = 'View debugger output';
   srkmecToggleLocals              = 'View local variables';
   srkmecViewThreads               = 'View Threads';
+  srkmecViewHistory               = 'View History';
   srkmecViewPseudoTerminal        = 'View Terminal Output';
   srkmecTogglecallStack           = 'View call stack';
   srkmecToggleRegisters           = 'View registers';
@@ -2759,6 +2761,7 @@ resourcestring
   lisKMToggleViewBreakpoints = 'Toggle view Breakpoints';
   lisKMToggleViewLocalVariables = 'Toggle view Local Variables';
   lisKMToggleViewThreads = 'Toggle view Threads';
+  lisKMToggleViewHistory = 'Toggle view History';
   lisKMToggleViewPseudoTerminal = 'Toggle view Terminal Output';
   lisKMToggleViewCallStack = 'Toggle view Call Stack';
   lisKMToggleViewRegisters = 'Toggle view Registers';
@@ -4709,6 +4712,15 @@ resourcestring
   lisThreadsFunc = 'Function';
   lisThreadsCurrent = 'Current';
   lisThreadsGoto = 'Goto';
+
+  // HistoryDlg
+  histdlgFormName   = 'History';
+  histdlgColumnCur  = '';
+  histdlgColumnTime = 'Time';
+  histdlgColumnLoc  = 'Location';
+  histdlgBtnPowerHint = 'Switch on/off automatic snapshots';
+  histdlgBtnEnableHint = 'Toggle view snapshot or current';
+  histdlgBtnClearHint = 'Clear all snapshots';
 
   // Exception Dialog
   lisExceptionDialog = 'Debugger Exception Notification';

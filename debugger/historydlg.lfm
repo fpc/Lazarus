@@ -1,0 +1,71 @@
+inherited HistoryDialog: THistoryDialog
+  Left = 1060
+  Top = 216
+  Width = 422
+  BorderStyle = bsSizeToolWin
+  Caption = 'HistoryDialog'
+  ClientWidth = 422
+  object lvHistory: TListView[0]
+    Left = 0
+    Height = 214
+    Top = 26
+    Width = 422
+    Align = alClient
+    Columns = <    
+      item
+        Width = 25
+      end    
+      item
+        Width = 120
+      end    
+      item
+        Width = 250
+      end>
+    ReadOnly = True
+    RowSelect = True
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnDblClick = lvHistoryDblClick
+  end
+  object ToolBar1: TToolBar[1]
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 422
+    Caption = 'ToolBar1'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    Wrapable = False
+    object tbHistorySelected: TToolButton
+      Left = 24
+      Top = 2
+      AllowAllUp = True
+      Caption = 'tbHistorySelected'
+      OnClick = tbHistorySelectedClick
+      Style = tbsCheck
+    end
+    object tbPower: TToolButton
+      Left = 1
+      Top = 2
+      AllowAllUp = True
+      Caption = 'tbPower'
+      Down = True
+      OnClick = tbPowerClick
+      Style = tbsCheck
+    end
+    object tbClear: TToolButton
+      Left = 55
+      Top = 2
+      Caption = 'tbClear'
+      OnClick = tbClearClick
+    end
+    object ToolButton1: TToolButton
+      Left = 47
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+  end
+end

@@ -193,6 +193,7 @@ type
           itmViewDebugOutput: TIDEMenuCommand;
           itmViewDebugEvents: TIDEMenuCommand;
           itmViewPseudoTerminal: TIDEMenuCommand;
+          itmViewDbgHistory: TIDEMenuCommand;
         //itmViewIDEInternalsWindows: TIDEMenuSection;
           itmViewPackageLinks: TIDEMenuCommand;
           itmViewFPCInfo: TIDEMenuCommand;

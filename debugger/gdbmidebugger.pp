@@ -302,6 +302,7 @@ type
 
     // Internal Current values
     FCurrentStackFrame, FCurrentThreadId: Integer;
+    FCurrentLocation: TDBGLocationRec;
 
     // GDB info (move to ?)
     FGDBVersion: String;
@@ -412,6 +413,7 @@ type
 
     procedure Init; override;         // Initializes external debugger
     procedure Done; override;         // Kills external debugger
+    function GetLocation: TDBGLocationRec; override;
 
     //LockCommandProcessing is more than just QueueExecuteLock
     //LockCommandProcessing also takes care to run the queue, if unlocked and not already running
@@ -1190,8 +1192,6 @@ type
   TGDBMIThreads = class(TThreadsSupplier)
   private
     FGetThreadsCmdObj: TGDBMIDebuggerCommandThreads;
-    FThreadsReqState: TGDBMIEvaluationState;
-
     FChangeThreadsCmdObj: TGDBMIDebuggerCommandChangeThread;
 
     function GetDebugger: TGDBMIDebugger;
@@ -1208,7 +1208,6 @@ type
   public
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
-    procedure DoStateChange(const AOldState: TDBGState); override;
   end;
 
   {%endregion   ^^^^^  Threads  ^^^^^   }
@@ -1559,12 +1558,9 @@ begin
   if Monitor = nil then exit;
   Cmd := TGDBMIDebuggerCommandChangeThread(Sender);
 
-  if not Cmd.Success then begin
-    Changed; // invalidate Monitor
-    exit;
-  end;
-
   Debugger.DoThreadChanged;
+  if not Cmd.Success
+  then exit;
   if CurrentThreads <> nil
   then CurrentThreads.CurrentThreadId := Cmd.NewId;
 end;
@@ -1578,12 +1574,10 @@ procedure TGDBMIThreads.ThreadsNeeded;
 var
   ForceQueue: Boolean;
 begin
-  if FThreadsReqState in [esValid, esRequested] then Exit;
   if Debugger = nil then Exit;
 
   if (Debugger.State = dsPause)
   then begin
-    FThreadsReqState := esRequested;
     FGetThreadsCmdObj := TGDBMIDebuggerCommandThreads.Create(Debugger);
     FGetThreadsCmdObj.OnExecuted  := @DoThreadsFinished;
     FGetThreadsCmdObj.OnDestroy    := @DoThreadsDestroyed;
@@ -1600,7 +1594,6 @@ end;
 
 procedure TGDBMIThreads.CancelEvaluation;
 begin
-  FThreadsReqState := esInvalid;
   if FGetThreadsCmdObj <> nil
   then begin
     FGetThreadsCmdObj.OnExecuted := nil;
@@ -1613,26 +1606,12 @@ end;
 constructor TGDBMIThreads.Create(const ADebugger: TDebugger);
 begin
   inherited;
-  FThreadsReqState := esInvalid;
 end;
 
 destructor TGDBMIThreads.Destroy;
 begin
   CancelEvaluation;
   inherited Destroy;
-end;
-
-procedure TGDBMIThreads.DoStateChange(const AOldState: TDBGState);
-begin
-  if (Debugger = nil) or (Monitor = nil) then Exit;
-
-  if Debugger.State in [dsPause, dsStop]
-  then begin
-    CancelEvaluation;
-    FThreadsReqState := esInvalid;
-    if CurrentThreads <> nil then CurrentThreads.SetValidity(ddsUnknown);
-    Changed;
-  end;
 end;
 
 procedure TGDBMIThreads.RequestMasterData;
@@ -3984,6 +3963,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
 	  if FTheDebugger.FCurrentStackFrame <> i
       then ExecuteCommand('-stack-select-frame %u', [FTheDebugger.FCurrentStackFrame], R);
     end;
+    FTheDebugger.FCurrentLocation := Result;
   end;
 
   function GetExceptionInfo: TGDBMIExceptionInfo;
@@ -4120,6 +4100,7 @@ begin
 
   FTheDebugger.FCurrentStackFrame :=  0;
   FTheDebugger.FCurrentThreadId := StrToIntDef(List.Values['thread-id'], -1);
+  FTheDebugger.FCurrentLocation := FrameToLocation(List.Values['frame']);
   FTheDebugger.Threads.CurrentThreads.CurrentThreadId := FTheDebugger.FCurrentThreadId;
 
   try
@@ -4201,6 +4182,7 @@ begin
       then begin
         CanContinue := False;
         Location := FrameToLocation(List.Values['frame']);
+        FTheDebugger.FCurrentLocation := Location;
         FTheDebugger.DoDbgBreakpointEvent(BreakPoint, Location);
         BreakPoint.Hit(CanContinue);
         if CanContinue
@@ -5325,6 +5307,11 @@ begin
   finally
     UnlockRelease;
   end;
+end;
+
+function TGDBMIDebugger.GetLocation: TDBGLocationRec;
+begin
+  Result := FCurrentLocation;
 end;
 
 procedure TGDBMIDebugger.LockCommandProcessing;
@@ -9488,6 +9475,7 @@ end;
 procedure TGDBMIDebuggerCommand.ProcessFrame(const ALocation: TDBGLocationRec);
 begin
   FTheDebugger.DoCurrent(ALocation);
+  FTheDebugger.FCurrentLocation := ALocation;
 end;
 
 procedure TGDBMIDebuggerCommand.ProcessFrame(const AFrame: String);
@@ -9579,6 +9567,9 @@ end;
 
 procedure TGDBMIDebuggerCommand.Cancel;
 begin
+  {$IFDEF DBGMI_QUEUE_DEBUG}
+  DebugLn(['Canceling: "', DebugText,'"']);
+  {$ENDIF}
   FTheDebugger.UnQueueCommand(Self);
   DoCancel;
   DoOnCanceled;
