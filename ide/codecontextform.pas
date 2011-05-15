@@ -37,7 +37,7 @@ unit CodeContextForm;
 interface
 
 uses
-  Classes, SysUtils, Types, contnrs, LCLProc, LResources, Forms, Controls,
+  Classes, SysUtils, Types, LCLProc, LResources, Forms, Controls,
   Graphics, Dialogs, LCLType, LCLIntf, Themes, Buttons, SynEdit, SynEditKeyCmds,
   BasicCodeTools, KeywordFuncLists, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
@@ -66,7 +66,7 @@ type
     procedure FormPaint(Sender: TObject);
     procedure FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
-    FHints: TObjectList; // list of TCodeContextItem
+    FHints: TFPList; // list of TCodeContextItem
     FLastParameterIndex: integer;
     FParamListBracketOpenCodeXYPos: TCodeXYPosition;
     FProcNameCodeXYPos: TCodeXYPosition;
@@ -79,6 +79,7 @@ type
     procedure CalculateHintsBounds(const CodeContexts: TCodeContextInfo);
     procedure DrawHints(var MaxWidth, MaxHeight: Integer; Draw: boolean);
     procedure CompleteParameters(DeclCode: string);
+    procedure ClearHints;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -165,12 +166,13 @@ end;
 procedure TCodeContextFrm.FormCreate(Sender: TObject);
 begin
   FBtnWidth:=16;
-  FHints:=TObjectList.Create(true);
+  FHints:=TFPList.Create;
   Application.AddOnIdleHandler(@ApplicationIdle);
 end;
 
 procedure TCodeContextFrm.FormDestroy(Sender: TObject);
 begin
+  ClearHints;
   FreeAndNil(FHints);
 end;
 
@@ -401,7 +403,7 @@ var
   Code: String;
   Item: TCodeContextItem;
 begin
-  FHints.Clear;
+  ClearHints;
   if (CodeContexts=nil) or (CodeContexts.Count=0) then exit;
   for i:=0 to CodeContexts.Count-1 do begin
     CurContext:=CodeContexts[i];
@@ -1051,6 +1053,17 @@ begin
 
 end;
 
+procedure TCodeContextFrm.ClearHints;
+var
+  i: Integer;
+begin
+  for i:=0 to FHints.Count-1 do
+    FreeAndNil(Hints[i].CopyAllButton);
+  for i:=0 to FHints.Count-1 do
+    TObject(FHints[i]).Free;
+  FHints.Clear;
+end;
+
 procedure TCodeContextFrm.Notification(AComponent: TComponent;
   Operation: TOperation);
 var
@@ -1059,9 +1072,10 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then
   begin
-    for i:=0 to FHints.Count-1 do
-      if Hints[i].CopyAllButton=AComponent then
-        Hints[i].CopyAllButton:=nil;
+    if FHints<>nil then
+      for i:=0 to FHints.Count-1 do
+        if Hints[i].CopyAllButton=AComponent then
+          Hints[i].CopyAllButton:=nil;
   end;
 end;
 
