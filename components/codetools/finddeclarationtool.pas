@@ -643,10 +643,11 @@ type
     function FindStartOfTerm(EndPos: integer; InType: boolean): integer;
     function NodeTermInType(Node: TCodeTreeNode): boolean;
     function FindExpressionTypeOfTerm(StartPos, EndPos: integer;
-      Params: TFindDeclarationParams; WithAsOperator: boolean): TExpressionType;
+      Params: TFindDeclarationParams; WithAsOperator: boolean;
+      AliasType: PFindContext = nil): TExpressionType;
     function FindEndOfExpression(StartPos: integer): integer; // read all operands and operators
     function ReadOperandTypeAtCursor(Params: TFindDeclarationParams;
-      MaxEndPos: integer = -1): TExpressionType;
+      MaxEndPos: integer = -1; AliasType: PFindContext = nil): TExpressionType;
     function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
       Params: TFindDeclarationParams): TExpressionType;
     function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
@@ -803,9 +804,10 @@ type
 
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
-      Node: TCodeTreeNode; NodeStack: PCodeTreeNodeStack = nil): TFindContext;
+      Node: TCodeTreeNode; AliasType: PFindContext = nil;
+      NodeStack: PCodeTreeNodeStack = nil): TFindContext;
     function ConvertNodeToExpressionType(Node: TCodeTreeNode;
-      Params: TFindDeclarationParams): TExpressionType;
+      Params: TFindDeclarationParams; AliasType: PFindContext = nil): TExpressionType;
 
     function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
       out ListOfPCodeXYPosition: TFPList;
@@ -877,7 +879,8 @@ function ExprTypeToString(const ExprType: TExpressionType): string;
 function CreateExpressionType(const Desc, SubDesc: TExpressionTypeDesc;
   const Context: TFindContext): TExpressionType;
 
-function FindContextToString(const FindContext: TFindContext): string;
+function FindContextToString(const FindContext: TFindContext): string; overload;
+function FindContextToString(const FindContext: PFindContext): string; overload;
 function CreateFindContext(NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode): TFindContext;
 function CreateFindContext(Params: TFindDeclarationParams): TFindContext;
@@ -1105,7 +1108,16 @@ begin
         Result:=Result+' File="'+FindContext.Tool.MainFilename+'"';
       end;
     end;
-  end;
+  end else
+    Result:='nil';
+end;
+
+function FindContextToString(const FindContext: PFindContext): string;
+begin
+  if FindContext=nil then
+    Result:='-'
+  else
+    Result:=FindContextToString(FindContext^);
 end;
 
 function CreateFindContext(NewTool: TFindDeclarationTool;
@@ -3317,7 +3329,7 @@ begin
 end;
 
 function TFindDeclarationTool.FindBaseTypeOfNode(
-  Params: TFindDeclarationParams; Node: TCodeTreeNode;
+  Params: TFindDeclarationParams; Node: TCodeTreeNode; AliasType: PFindContext;
   NodeStack: PCodeTreeNodeStack): TFindContext;
 var
   MyNodeStack: TCodeTreeNodeStack;
@@ -3469,9 +3481,9 @@ var
     OldFlags: TFindDeclarationFlags;
     AliasContext: TFindContext;
     Cache: TBaseTypeCache;
-    UseAlias: Boolean;
   begin
-    UseAlias:=false;
+    if (NodeStack<>nil) and (NodeStack<>@MyNodeStack) then exit; // will be handled by caller
+
     if (Context.Node<>nil) and (Context.Node.Desc in [ctnProcedure,ctnProcedureHead])
     and (fdfFunctionResult in Params.Flags) then begin
       // a proc -> if this is a function then return the Context type
@@ -3483,9 +3495,10 @@ var
         OldFlags:=Params.Flags;
         Exclude(Params.Flags,fdfFunctionResult);
         //debugln(['TFindDeclarationTool.FindBaseTypeOfNode searching for function Context type: ',Context.Tool.ExtractNode(DummyNode,[])]);
-        Context:=Context.Tool.FindBaseTypeOfNode(Params,ResultNode);
-        UseAlias:=false; // aliasing has been done
+        Context:=Context.Tool.FindBaseTypeOfNode(Params,ResultNode,AliasType);
+        AliasType:=nil;  // aliasing has been done
         Params.Flags:=OldFlags;
+        exit;
       end;
     end;
     if (Context.Node=nil) and (fdfExceptionOnNotFound in Params.Flags) then begin
@@ -3499,7 +3512,7 @@ var
       end;
       RaiseBaseTypeOfNotFound;
     end;
-    if UseAlias then begin
+    if AliasType<>nil then begin
       // follow the base type chain to the first type
       // for example: var d: TDateTime;  use TDateTime, instead of Double.
       AliasContext.Node:=Node;
@@ -3509,7 +3522,7 @@ var
           {$IF defined(ShowExprEval) or defined(ShowTriedBaseContexts)}
           debugln(['TFindDeclarationTool.FindBaseTypeOfNode.CheckResult using alias ',AliasContext.Tool.ExtractDefinitionName(AliasContext.Node),' instead of base type ',Context.Node.DescAsString]);
           {$ENDIF}
-          Context:=AliasContext;
+          AliasType^:=AliasContext;
           exit;
         end;
         if AliasContext.Node.Cache is TBaseTypeCache then begin
@@ -3532,6 +3545,7 @@ var
   IsPredefined: boolean;
   OldStartFlags: TFindDeclarationFlags;
 begin
+  if AliasType<>nil then AliasType^:=CleanFindContext;
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   //debugln(['TFindDeclarationTool.FindBaseTypeOfNode Flags=[',dbgs(Params.Flags),'] CacheValid=',Node.Cache is TBaseTypeCache]);
   if (Node<>nil) and (Node.Cache is TBaseTypeCache) then begin
@@ -3572,7 +3586,7 @@ begin
         {$IFDEF ShowTriedBaseContexts}
         DebugLn(['[TFindDeclarationTool.FindBaseTypeOfNode] continuing in ',Result.Tool.MainFilename]);
         {$ENDIF}
-        Result:=Result.Tool.FindBaseTypeOfNode(Params,Result.Node,NodeStack);
+        Result:=Result.Tool.FindBaseTypeOfNode(Params,Result.Node,AliasType,NodeStack);
         break;
       end;
 
@@ -5368,6 +5382,7 @@ type
   TExprStack = array[0..4] of TOperandAndOperator;
 var
   CurExprType: TExpressionType;
+  CurAliasType: TFindContext;
   ExprStack: TExprStack;
   StackPtr: integer;
   
@@ -5448,10 +5463,10 @@ begin
   MoveCursorToCleanPos(StartPos);
   repeat
     // read operand
-    CurExprType:=ReadOperandTypeAtCursor(Params,EndPos);
+    CurExprType:=ReadOperandTypeAtCursor(Params,EndPos,@CurAliasType);
     {$IFDEF ShowExprEval}
-    DebugLn('[TFindDeclarationTool.FindExpressionResultType] Operand: ',
-      ExprTypeToString(CurExprType));
+    DebugLn(['[TFindDeclarationTool.FindExpressionResultType] Operand: ',
+      ExprTypeToString(CurExprType),' Alias=',FindContextToString(CurAliasType)]);
     {$ENDIF}
     // put operand on stack
     inc(StackPtr);
@@ -6414,8 +6429,8 @@ begin
 end;
 
 function TFindDeclarationTool.FindExpressionTypeOfTerm(StartPos,
-  EndPos: integer; Params: TFindDeclarationParams; WithAsOperator: boolean
-  ): TExpressionType;
+  EndPos: integer; Params: TFindDeclarationParams; WithAsOperator: boolean;
+  AliasType: PFindContext): TExpressionType;
 { examples
   1. A.B
   2. A().B
@@ -6529,7 +6544,9 @@ var
   var BehindFuncAtomType: TVariableAtomType;
   begin
     if IsIdentEndOfVar=iieovUnknown then begin
-      if CurAtom.Flag=cafWord then begin
+      if CurAtom.StartPos>=EndPos then begin
+        IsIdentEndOfVar:=iieovYes;
+      end else if CurAtom.Flag=cafWord then begin
         MoveCursorToCleanPos(CurAtom.EndPos);
         ReadNextAtom;
         if AtomIsChar('(') then begin
@@ -6563,6 +6580,7 @@ var
   var
     ProcNode, FuncResultNode: TCodeTreeNode;
     AtEnd: Boolean;
+    CurAliasType: PFindContext;
   begin
     //DebugLn(['ResolveBaseTypeOfIdentifier ',ExprType.Context.Node<>nil]);
     if (ExprType.Context.Node=nil) then exit;
@@ -6579,16 +6597,19 @@ var
       exit;
     end;
 
+    CurAliasType:=nil;
+    if AtEnd then CurAliasType:=AliasType;
+
     // find base type
     Exclude(Params.Flags,fdfFunctionResult);
     Include(Params.Flags,fdfEnumIdentifier);
     {$IFDEF ShowExprEval}
-    DebugLn('  ResolveBaseTypeOfIdentifier BEFORE ExprType=',ExprTypeToString(ExprType));
+    DebugLn(['  ResolveBaseTypeOfIdentifier BEFORE ExprType=',ExprTypeToString(ExprType),' Alias=',CurAliasType<>nil]);
     {$ENDIF}
     ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
-                               ExprType.Context.Node,Params);
+                               ExprType.Context.Node,Params,CurAliasType);
     {$IFDEF ShowExprEval}
-    DebugLn('  ResolveBaseTypeOfIdentifier AFTER ExprType=',ExprTypeToString(ExprType));
+    DebugLn(['  ResolveBaseTypeOfIdentifier AFTER ExprType=',ExprTypeToString(ExprType),' Alias=',FindContextToString(CurAliasType)]);
     {$ENDIF}
     if (ExprType.Desc=xtContext)
     and (ExprType.Context.Node.Desc in [ctnProcedure,ctnProcedureHead]) then
@@ -6598,7 +6619,7 @@ var
       if ProcNode.Desc=ctnProcedureHead then
         ProcNode:=ProcNode.Parent;
       ExprType.Context.Tool.BuildSubTreeForProcHead(ProcNode.FirstChild,
-                                                    FuncResultNode);
+                                                   FuncResultNode);
       {$IFDEF ShowExprEval}
       DebugLn(['  ResolveBaseTypeOfIdentifier IsFunction/operator=',FuncResultNode<>nil,' IsConstructor=',ExprType.Context.Tool.NodeIsConstructor(ProcNode),' IsIdentifierEndOfVariable=',IsIdentifierEndOfVariable,' fdfFunctionResult in StartFlags=',fdfFunctionResult in StartFlags]);
       {$ENDIF}
@@ -6606,14 +6627,14 @@ var
       then begin
         // it is function or a constructor
         // -> use the result type instead of the function
-        if IsIdentifierEndOfVariable then begin
+        if AtEnd then begin
           // this function identifier is the end of the variable
           if not (fdfFunctionResult in StartFlags) then
             exit;
         end;
         Include(Params.Flags,fdfFunctionResult);
         ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
-                           ProcNode,Params);
+                                            ProcNode,Params,CurAliasType);
       end;
     end;
   end;
@@ -7131,13 +7152,15 @@ var
   
 begin
   Result:=CleanExpressionType;
+  if AliasType<>nil then AliasType^:=CleanFindContext;
   StartFlags:=Params.Flags;
   StartContext.Tool:=Self;
   StartContext.Node:=Params.ContextNode;
   {$IFDEF ShowExprEval}
-  DebugLn('[TFindDeclarationTool.FindExpressionTypeOfTerm]',
+  DebugLn(['[TFindDeclarationTool.FindExpressionTypeOfTerm] START',
     ' Flags=[',dbgs(Params.Flags),']',
-    ' StartContext=',StartContext.Node.DescAsString,'=',dbgstr(copy(StartContext.Tool.Src,StartContext.Node.StartPos,15))
+    ' StartContext=',StartContext.Node.DescAsString,'=',dbgstr(StartContext.Tool.Src,StartContext.Node.StartPos,15),
+    ' Alias=',AliasType<>nil]
   );
   {$ENDIF}
   {$IFDEF CheckNodeTool}
@@ -7146,14 +7169,14 @@ begin
 
   if not InitAtomQueue then exit;
   {$IFDEF ShowExprEval}
-  DebugLn(['TFindDeclarationTool.FindExpressionTypeOfTerm Expression="',copy(Src,StartPos,EndPos-StartPos),'"']);
+  DebugLn(['  FindExpressionTypeOfTerm AFTER INIT Expression="',dbgstr(Src,StartPos,EndPos-StartPos),'"']);
   {$ENDIF}
   ExprType.Desc:=xtContext;
   ExprType.SubDesc:=xtNone;
   ExprType.Context:=StartContext;
   repeat
     {$IFDEF ShowExprEval}
-    DebugLn('  FindExpressionTypeOfTerm CurAtomType=',
+    DebugLn('  FindExpressionTypeOfTerm ATOM CurAtomType=',
       VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"',
       ' ExprType=',ExprTypeToString(ExprType));
     {$ENDIF}
@@ -7205,40 +7228,39 @@ begin
 end;
 
 function TFindDeclarationTool.ConvertNodeToExpressionType(Node: TCodeTreeNode;
-  Params: TFindDeclarationParams): TExpressionType;
+  Params: TFindDeclarationParams; AliasType: PFindContext): TExpressionType;
   
-  procedure ConvertIdentifierAtCursor;
+  procedure ConvertIdentifierAtCursor(Tool: TFindDeclarationTool);
   begin
-    if WordIsPredefinedIdentifier.DoItCaseInsensitive(Src,CurPos.StartPos,
-      CurPos.EndPos-CurPos.StartPos) then
+    if WordIsPredefinedIdentifier.DoItCaseInsensitive(Tool.Src,Tool.CurPos.StartPos,
+      Tool.CurPos.EndPos-Tool.CurPos.StartPos) then
     begin
       // predefined identifiers
-      ConvertNodeToExpressionType:=FindExpressionTypeOfPredefinedIdentifier(
-                                                        CurPos.StartPos,Params);
+      ConvertNodeToExpressionType:=Tool.FindExpressionTypeOfPredefinedIdentifier(
+                                                    Tool.CurPos.StartPos,Params);
     end;
   end;
   
 var
   BaseContext: TFindContext;
   OldInput: TFindDeclarationInput;
+  Tool: TFindDeclarationTool;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
+  if AliasType<>nil then AliasType^:=CleanFindContext;
   {$IFDEF ShowExprEval}
   DebugLn(['[TFindDeclarationTool.ConvertNodeToExpressionType] A',
-  ' Node=',Node.DescAsString,' "',dbgstr(copy(ExtractNode(Node,[]),1,30)),'" Flags=[',dbgs(Params.Flags),']']);
+  ' Node=',Node.DescAsString,' "',dbgstr(copy(ExtractNode(Node,[]),1,30)),'" Flags=[',dbgs(Params.Flags),'] Alias=',AliasType<>nil]);
   {$ENDIF}
-  BaseContext:=FindBaseTypeOfNode(Params,Node);
+  BaseContext:=FindBaseTypeOfNode(Params,Node,AliasType);
   Node:=BaseContext.Node;
-  if BaseContext.Tool<>Self then begin
-    Result:=BaseContext.Tool.ConvertNodeToExpressionType(Node,Params);
-    exit;
-  end;
+  Tool:=BaseContext.Tool;
   Result:=CleanExpressionType;
   Result.Desc:=xtContext;
-  Result.Context:=CreateFindContext(Self,Node);
+  Result.Context:=BaseContext;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.ConvertNodeToExpressionType] B',
-  ' Expr=',ExprTypeToString(Result));
+  ' Expr=',ExprTypeToString(Result),' Alias=',FindContextToString(AliasType));
   {$ENDIF}
   case Node.Desc of
   ctnRangeType:
@@ -7247,15 +7269,15 @@ begin
 
       // ToDo: ppu, dcu files
 
-      MoveCursorToNodeStart(Node);
+      Tool.MoveCursorToNodeStart(Node);
 
       // ToDo: check for circles
 
       Params.Save(OldInput);
       Params.ContextNode:=Node;
-      Result:=ReadOperandTypeAtCursor(Params);
+      Result:=Tool.ReadOperandTypeAtCursor(Params);
       Params.Load(OldInput,true);
-      Result.Context:=CreateFindContext(Self,Node);
+      Result.Context:=CreateFindContext(Tool,Node);
     end;
     
   ctnConstDefinition:
@@ -7264,21 +7286,21 @@ begin
 
       // ToDo: ppu, dcu files
 
-      MoveCursorToNodeStart(Node);
+      Tool.MoveCursorToNodeStart(Node);
 
-      ReadNextAtom;
-      if not AtomIsIdentifier(false) then exit;
-      ReadNextAtom;
+      Tool.ReadNextAtom;
+      if not Tool.AtomIsIdentifier(false) then exit;
+      Tool.ReadNextAtom;
       if not (CurPos.Flag in [cafEqual,cafColon]) then exit;
-      ReadNextAtom;
+      Tool.ReadNextAtom;
 
       // ToDo: check for circles
 
       Params.Save(OldInput);
       Params.ContextNode:=Node;
-      Result:=ReadOperandTypeAtCursor(Params);
+      Result:=Tool.ReadOperandTypeAtCursor(Params);
       Params.Load(OldInput,true);
-      Result.Context:=CreateFindContext(Self,Node);
+      Result.Context:=CreateFindContext(Tool,Node);
     end;
     
   ctnIdentifier:
@@ -7286,9 +7308,9 @@ begin
 
       // ToDo: ppu, dcu files
 
-      MoveCursorToNodeStart(Node);
-      ReadNextAtom;
-      ConvertIdentifierAtCursor;
+      Tool.MoveCursorToNodeStart(Node);
+      Tool.ReadNextAtom;
+      ConvertIdentifierAtCursor(Tool);
     end;
     
   ctnProperty,ctnGlobalProperty:
@@ -7296,8 +7318,8 @@ begin
 
       // ToDo: ppu, dcu files
 
-      if MoveCursorToPropName(Node) then
-        ConvertIdentifierAtCursor;
+      if Tool.MoveCursorToPropName(Node) then
+        ConvertIdentifierAtCursor(Tool);
     end;
     
   ctnConstant:
@@ -7305,23 +7327,24 @@ begin
 
       // ToDo: ppu, dcu files
 
-      MoveCursorToNodeStart(Node);
+      Tool.MoveCursorToNodeStart(Node);
       Params.Save(OldInput);
       Params.ContextNode:=Node;
-      Result:=ReadOperandTypeAtCursor(Params);
+      Result:=Tool.ReadOperandTypeAtCursor(Params);
       Params.Load(OldInput,true);
-      Result.Context:=CreateFindContext(Self,Node);
+      Result.Context:=CreateFindContext(Tool,Node);
     end;
   end;
 
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.ConvertNodeToExpressionType] END',
-  ' Expr=',ExprTypeToString(Result));
+  ' Expr=',ExprTypeToString(Result),' Alias=',FindContextToString(AliasType));
   {$ENDIF}
 end;
 
 function TFindDeclarationTool.ReadOperandTypeAtCursor(
-  Params: TFindDeclarationParams; MaxEndPos: integer): TExpressionType;
+  Params: TFindDeclarationParams; MaxEndPos: integer; AliasType: PFindContext
+  ): TExpressionType;
 { internally used by FindExpressionResultType
   after reading, the cursor will be on the next atom
 }
@@ -7367,6 +7390,7 @@ var
   OldFlags: TFindDeclarationFlags;
 begin
   Result:=CleanExpressionType;
+  if AliasType<>nil then AliasType^:=CleanFindContext;
 
   if CurPos.StartPos=CurPos.EndPos then ReadNextAtom;
   // read unary operators which have no effect on the type: +, -, not
@@ -7385,7 +7409,7 @@ begin
       EndPos:=MaxEndPos;
     OldFlags:=Params.Flags;
     Params.Flags:=(Params.Flags*fdfGlobals)+[fdfFunctionResult];
-    Result:=FindExpressionTypeOfTerm(SubStartPos,EndPos,Params,true);
+    Result:=FindExpressionTypeOfTerm(SubStartPos,EndPos,Params,true,AliasType);
     Params.Flags:=OldFlags;
     MoveCursorToCleanPos(EndPos);
   end
@@ -7423,7 +7447,7 @@ begin
         EndPos:=MaxEndPos;
       OldFlags:=Params.Flags;
       Params.Flags:=(Params.Flags*fdfGlobals)-[fdfFunctionResult];
-      Result:=FindExpressionTypeOfTerm(SubStartPos,EndPos,Params,true);
+      Result:=FindExpressionTypeOfTerm(SubStartPos,EndPos,Params,true,AliasType);
       Params.Flags:=OldFlags;
       MoveCursorToCleanPos(EndPos);
     end else begin
@@ -7454,6 +7478,8 @@ begin
     DbgOut(' Context.Node=',Result.Context.Node.DescAsString)
   else
     DbgOut(' Context.Node=nil');
+  if AliasType<>nil then
+    DbgOut(' Alias=',FindContextToString(AliasType));
   DebugLn('');
   {$ENDIF}
 end;
