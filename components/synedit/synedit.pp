@@ -617,7 +617,7 @@ type
     function DoHandleMouseAction(AnActionList: TSynEditMouseActions;
                                  AnInfo: TSynEditMouseActionInfo): Boolean;
 
-    procedure Resize; override;
+    procedure DoOnResize; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const Value: TCaption); override;
     function GetLines: TStrings; override;
@@ -4709,7 +4709,7 @@ begin
   //DebugLn('[TCustomSynEdit.WMSetFocus] END');
 end;
 
-procedure TCustomSynEdit.Resize;
+procedure TCustomSynEdit.DoOnResize;
 begin
   inherited;
   if (not HandleAllocated) or ((ClientWidth = FOldWidth) and (ClientHeight = FOldHeight)) then exit;
