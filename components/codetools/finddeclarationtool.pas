@@ -369,8 +369,8 @@ type
   //----------------------------------------------------------------------------
   // TTypeCompatibility is the result of a compatibility check
   TTypeCompatibility = (
-    tcExact,        // exactly same type
-    tcCompatible,   // type can be auto converted
+    tcExact,        // exactly same type, can be used for var parameters
+    tcCompatible,   // type can be auto converted, can not be used for var parameters
     tcIncompatible  // type is incompatible
     );
   TTypeCompatibilityList = ^TTypeCompatibility;
@@ -6708,14 +6708,15 @@ var
       // search ...
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
       {$IFDEF ShowExprEval}
-      DebugLn(['  ResolveIdentifier Ident="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(copy(ExprType.Context.Tool.Src,Params.ContextNode.StartPos,15)),'" ',dbgs(Params.Flags)]);
+      DebugLn(['  ResolveIdentifier SubIdent="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(copy(ExprType.Context.Tool.Src,Params.ContextNode.StartPos,15)),'" ',dbgs(Params.Flags)]);
       {$ENDIF}
       if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
-        if not Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
+        if IsIdentifierEndOfVariable and (fdfFunctionResult in StartFlags)
+        and Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
+          // it's a constructor -> keep the class
+        end else begin
           ExprType.Desc:=xtContext;
           ExprType.Context:=CreateFindContext(Params);
-        end else begin
-          // it's a constructor -> keep the class
         end;
         Params.Load(OldInput,true);
       end else begin
@@ -7732,11 +7733,13 @@ begin
     {$ENDIF}
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
-    if ParamCompatibility=tcIncompatible then begin
+    if (ParamCompatibility=tcIncompatible)
+    or ((ParamCompatibility=tcCompatible)
+        and MoveCursorToParameterSpecifier(ParamNode)
+        and (UpAtomIs('VAR') or UpAtomIs('OUT') or UpAtomIs('CONSTREF')))
+    then begin
       Result:=tcIncompatible;
       exit;
-    end else if ParamCompatibility=tcCompatible then begin
-      Result:=tcCompatible;
     end;
     ParamNode:=ParamNode.NextBrother;
     inc(i);
@@ -8477,7 +8480,7 @@ function TFindDeclarationTool.IsBaseCompatible(const TargetType,
 var TargetNode, ExprNode: TCodeTreeNode;
 begin
   {$IFDEF ShowExprEval}
-  DebugLn('[TFindDeclarationTool.IsBaseCompatible] B ',
+  DebugLn('[TFindDeclarationTool.IsBaseCompatible] START ',
   ' TargetType=',ExprTypeToString(TargetType),
   ' ExpressionType=',ExprTypeToString(ExpressionType));
   {$ENDIF}
@@ -8512,11 +8515,11 @@ begin
           
           ctnClass, ctnClassInterface, ctnDispinterface, ctnObject, ctnRecordType,
           ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
-            // check, if ExpressionType.Context is descend of TargetContext
+            // check, if ExpressionType.Context descends from TargetContext
             if ContextIsDescendOf(ExpressionType.Context,
                                   TargetType.Context,Params)
             then
-              Result:=tcCompatible;
+              Result:=tcExact;
               
           ctnRangedArrayType,ctnOpenArrayType:
             // ToDo: check range and type of arrayfields

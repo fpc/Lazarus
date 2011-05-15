@@ -1170,7 +1170,6 @@ function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
    procedure MacProcName(c: char; ...); external;
 }
 var CloseBracket: char;
-  Desc: TCodeTreeNodeDesc;
   Node: TCodeTreeNode;
 
   procedure ReadPrefixModifier;
@@ -1179,13 +1178,11 @@ var CloseBracket: char;
     if UpAtomIs('VAR') or UpAtomIs('CONST') or UpAtomIs('CONSTREF')
     or (UpAtomIs('OUT') and (Scanner.CompilerMode in [cmOBJFPC,cmDELPHI,cmFPC]))
     then begin
-      Desc:=ctnVarDefinition;
       if not Extract then
         ReadNextAtom
       else
         ExtractNextAtom(phpWithVarModifiers in Attr,Attr);
-    end else
-      Desc:=ctnVarDefinition;
+    end;
   end;
   
   procedure ReadDefaultValue;
@@ -1235,6 +1232,10 @@ begin
           else
             exit;
         end;
+        CreateChildNode;
+        CurNode.Desc:=ctnVarArgs;
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
         ReadNextAtom;
         // parse end of parameter list
         if (CurPos.StartPos>SrcLen)
@@ -1250,7 +1251,7 @@ begin
           if not AtomIsIdentifier(ExceptionOnError) then exit;
           if (phpCreateNodes in Attr) then begin
             CreateChildNode;
-            CurNode.Desc:=Desc;
+            CurNode.Desc:=ctnVarDefinition;
           end;
           if not Extract then
             ReadNextAtom

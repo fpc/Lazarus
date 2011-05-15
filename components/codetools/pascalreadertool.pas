@@ -184,6 +184,7 @@ type
                                       CleanPos: integer): boolean;
     function MoveCursorToParameterSpecifier(DefinitionNode: TCodeTreeNode
                                             ): boolean;
+    function GetFirstGroupVarNode(VarNode: TCodeTreeNode): TCodeTreeNode;
     function FindEndOfWithVar(WithVarNode: TCodeTreeNode): integer;
     function NodeIsIdentifierInInterface(Node: TCodeTreeNode): boolean;
     function NodeCanHaveForwardType(TypeNode: TCodeTreeNode): boolean;
@@ -2055,12 +2056,11 @@ function TPascalReaderTool.MoveCursorToParameterSpecifier(
   DefinitionNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
-  if (DefinitionNode=nil) or (DefinitionNode.Parent=nil)
-  or (DefinitionNode.Parent.Desc<>ctnProcedureHead) then exit;
+  if (DefinitionNode=nil) or (DefinitionNode.Desc<>ctnVarDefinition)
+  or (DefinitionNode.Parent=nil)
+  or (DefinitionNode.Parent.Desc<>ctnParameterList) then exit;
   // find first variable node of this type (e.g. var a,b,c,d: integer)
-  while (DefinitionNode.PriorBrother<>nil)
-  and (DefinitionNode.PriorBrother.FirstChild=nil) do
-    DefinitionNode:=DefinitionNode.PriorBrother;
+  DefinitionNode:=GetFirstGroupVarNode(DefinitionNode);
   if DefinitionNode.PriorBrother<>nil then
     MoveCursorToCleanPos(DefinitionNode.PriorBrother.EndPos)
   else
@@ -2068,7 +2068,20 @@ begin
   ReadNextAtom;
   while (CurPos.StartPos<DefinitionNode.StartPos) do ReadNextAtom;
   UndoReadNextAtom;
-  Result:=UpAtomIs('CONST') or UpAtomIs('VAR') or UpAtomIs('OUT');
+  Result:=CurPos.Flag=cafWord;
+end;
+
+function TPascalReaderTool.GetFirstGroupVarNode(VarNode: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  Result:=VarNode;
+  if (VarNode=nil) or (VarNode.Desc<>ctnVarDefinition) then exit;
+  while VarNode<>nil do begin
+    VarNode:=VarNode.PriorBrother;
+    if (VarNode=nil) or (VarNode.Desc<>ctnVarDefinition)
+    or (VarNode.FirstChild<>nil) then exit;
+    Result:=VarNode;
+  end;
 end;
 
 function TPascalReaderTool.FindEndOfWithVar(WithVarNode: TCodeTreeNode

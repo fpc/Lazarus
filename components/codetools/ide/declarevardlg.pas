@@ -136,6 +136,9 @@ begin
     exit;
   end;
 
+  // ToDo: check if in a comment
+
+
   // ToDo: check context
   // examples:
   //   identifier:=<something>
@@ -143,6 +146,7 @@ begin
   //   <something>:=aclass.identifier
   //   <something>:=<something>+aclass.identifier
   //   <proc>(,,aclass.identifier)
+  //   for identifier in <something>
 
   // ToDo: check where the identifier is already defined
   // ToDo: check if the identifier is a sub identifier (e.g. A.identifier)
