@@ -924,7 +924,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure Changed;
     procedure Clear;
-    procedure RequestData(AWatchValue: TCurrentWatchValue); override;
+    procedure InternalRequestData(AWatchValue: TCurrentWatchValue); override;
   public
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
@@ -7627,7 +7627,7 @@ begin
   FCommandList.Clear;
 end;
 
-procedure TGDBMIWatches.RequestData(AWatchValue: TCurrentWatchValue);
+procedure TGDBMIWatches.InternalRequestData(AWatchValue: TCurrentWatchValue);
 var
   ForceQueue: Boolean;
   EvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;

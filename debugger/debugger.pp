@@ -996,11 +996,13 @@ type
 
   TWatchesSupplier = class(TDebuggerDataSupplier)
   private
+    FNotifiedState: TDBGState;
     function GetCurrentWatches: TCurrentWatches;
     function GetMonitor: TWatchesMonitor;
     procedure SetMonitor(const AValue: TWatchesMonitor);
   protected
-    procedure RequestData(AWatchValue: TCurrentWatchValue); virtual;
+    procedure RequestData(AWatchValue: TCurrentWatchValue);
+    procedure InternalRequestData(AWatchValue: TCurrentWatchValue); virtual;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
   public
     property Monitor: TWatchesMonitor read GetMonitor write SetMonitor;
@@ -2618,7 +2620,6 @@ begin
   Result := CreateEntry(AThreadId, AStackFrame, ADisplayFormat);
   if Result = nil then exit;
   FList.Add(Result);
-  Result.RequestData;
 end;
 
 function TWatchValueList.CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
@@ -2784,12 +2785,21 @@ end;
 
 procedure TWatchesSupplier.RequestData(AWatchValue: TCurrentWatchValue);
 begin
+  if FNotifiedState = dsPause
+  then InternalRequestData(AWatchValue)
+  else AWatchValue.SetValidity(ddsInvalid);
+end;
+
+procedure TWatchesSupplier.InternalRequestData(AWatchValue: TCurrentWatchValue);
+begin
   AWatchValue.SetValidity(ddsInvalid);
 end;
 
 procedure TWatchesSupplier.DoStateChange(const AOldState: TDBGState);
 begin
-  if (Debugger.State in [dsPause, dsStop, dsInit]) and (CurrentWatches <> nil)
+  if (Debugger = nil) or (CurrentWatches = nil) then Exit;
+  FNotifiedState := Debugger.State;
+  if (Debugger.State in [dsPause, dsStop, dsInit]) 
   then begin
     CurrentWatches.ClearValues;
     Monitor.NotifyUpdate(CurrentWatches, nil);
