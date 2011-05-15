@@ -28,7 +28,7 @@ unit QtCaret;
 
 interface
 
-{off $DEFINE VerboseQtCaret}
+{$DEFINE VerboseQtCaret}
 
 {$I qtdefines.inc}
 
@@ -427,8 +427,7 @@ begin
   ' Y=',Value.Y,' OldX=',FPos.X,' OldY=',FPos.Y,' Dirty=',FCaretDirty);
   {$ENDIF}
 
-  if not QtWidgetSet.IsValidHandle(HWND(FWidget)) or (FWidget.Widget = nil)
-  or (FWidget.Context=0) then
+  if not QtWidgetSet.IsValidHandle(HWND(FWidget)) or (FWidget.Widget = nil) then
   begin
     // oops, our caret is dirty here.
     FCaretDirtyPos := FPos;
