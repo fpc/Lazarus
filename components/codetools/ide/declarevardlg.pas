@@ -34,9 +34,9 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls, ExtCtrls,
-  IDEDialogs,
+  IDEDialogs, LazIDEIntf,
   FileProcs, CodeToolManager, FindDeclarationTool, CodeTree,
-  KeywordFuncLists, BasicCodeTools, CodeCompletionTool,
+  KeywordFuncLists, BasicCodeTools, CodeCompletionTool, CodeAtom,
   CodyUtils, CodyStrConsts;
 
 type
@@ -104,57 +104,69 @@ begin
     exit;
   end;
 
-  // check if in a statement
-  BlockNode:=nil;
-  Node:=CursorNode;
-  while (Node<>nil) do begin
-    if Node.Desc=ctnBeginBlock then
-      BlockNode:=Node;
-    Node:=Node.Parent;
+  Handled:=false;
+  try
+    try
+      // check if in a statement
+      BlockNode:=nil;
+      Node:=CursorNode;
+      while (Node<>nil) do begin
+        if Node.Desc=ctnBeginBlock then
+          BlockNode:=Node;
+        Node:=Node.Parent;
+      end;
+      if BlockNode=nil then begin
+        // not in a statement
+        debugln(['CheckCreateVarFromIdentifierInSrcEdit not on a statement']);
+        ErrorNotAtAnIdentifier;
+        exit;
+      end;
+
+      // check if a keyword
+      GetIdentStartEndAtPosition(Tool.Src,CleanPos, IdentStart, IdentEnd);
+      if IdentStart>=IdentEnd then begin
+        // not on a word
+        debugln(['CheckCreateVarFromIdentifierInSrcEdit not on a word']);
+        ErrorNotAtAnIdentifier;
+        exit;
+      end;
+      Identifier:=GetIdentifier(@Tool.Src[IdentStart]);
+      if WordIsKeyWord.DoItCaseInsensitive(Identifier) then
+      begin
+        // a keyword
+        debugln(['CheckCreateVarFromIdentifierInSrcEdit "',Identifier,'" is a keyword']);
+        IDEMessageDialog(crsCWError,'The "'+Identifier+'" is a keyword.',mtError,[mbCancel]);
+        exit;
+      end;
+
+      // ToDo: check context
+      // examples:
+      //   identifier:=<something>
+      //   aclass.identifier:=<something>
+      //   <something>:=aclass.identifier
+      //   <something>:=<something>+aclass.identifier
+      //   <proc>(,,aclass.identifier)
+      //   for identifier in <something>
+
+      // ToDo: check where the identifier is already defined
+      // ToDo: check if the identifier is a sub identifier (e.g. A.identifier)
+      // ToDo: check if it is the target of an assignment and guess the type
+      // ToDo: check if it is the source of an assignment and guess the type
+      // ToDo: check if it is a parameter and guess the type
+      // ToDo: create the list of possible locations and notes
+
+    except
+      on e: Exception do CodeToolBoss.HandleException(e);
+    end;
+  finally
+    // syntax error or not in a method
+    if not Handled then begin
+      if CodeToolBoss.ErrorMessage<>'' then
+        LazarusIDE.DoJumpToCodeToolBossError
+      else
+        ErrorNotAtAnIdentifier;
+    end;
   end;
-  if BlockNode=nil then begin
-    // not in a statement
-    debugln(['CheckCreateVarFromIdentifierInSrcEdit not on a statement']);
-    ErrorNotAtAnIdentifier;
-    exit;
-  end;
-
-  // check if a keyword
-  GetIdentStartEndAtPosition(Tool.Src,CleanPos, IdentStart, IdentEnd);
-  if IdentStart>=IdentEnd then begin
-    // not on a word
-    debugln(['CheckCreateVarFromIdentifierInSrcEdit not on a word']);
-    ErrorNotAtAnIdentifier;
-    exit;
-  end;
-  Identifier:=GetIdentifier(@Tool.Src[IdentStart]);
-  if WordIsKeyWord.DoItCaseInsensitive(Identifier) then
-  begin
-    // a keyword
-    debugln(['CheckCreateVarFromIdentifierInSrcEdit "',Identifier,'" is a keyword']);
-    IDEMessageDialog(crsCWError,'The "'+Identifier+'" is a keyword.',mtError,[mbCancel]);
-    exit;
-  end;
-
-  // ToDo: check if in a comment
-
-
-  // ToDo: check context
-  // examples:
-  //   identifier:=<something>
-  //   aclass.identifier:=<something>
-  //   <something>:=aclass.identifier
-  //   <something>:=<something>+aclass.identifier
-  //   <proc>(,,aclass.identifier)
-  //   for identifier in <something>
-
-  // ToDo: check where the identifier is already defined
-  // ToDo: check if the identifier is a sub identifier (e.g. A.identifier)
-  // ToDo: check if it is the target of an assignment and guess the type
-  // ToDo: check if it is the source of an assignment and guess the type
-  // ToDo: check if it is a parameter and guess the type
-  // ToDo: create the list of possible locations and notes
-
 end;
 
 {$R *.lfm}

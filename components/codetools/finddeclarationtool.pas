@@ -638,12 +638,12 @@ type
     // expressions, operands, variables
     function GetCurrentAtomType: TVariableAtomType;
     function FindEndOfTerm(StartPos: integer;
-      ExceptionIfNoVariableStart, WithAsOperator: boolean): integer;
+      ExceptionIfNoVariableStart, WithAsOperator: boolean): integer; // read one operand
     function FindStartOfTerm(EndPos: integer; InType: boolean): integer;
     function NodeTermInType(Node: TCodeTreeNode): boolean;
     function FindExpressionTypeOfTerm(StartPos, EndPos: integer;
       Params: TFindDeclarationParams; WithAsOperator: boolean): TExpressionType;
-    function FindEndOfExpression(StartPos: integer): integer;
+    function FindEndOfExpression(StartPos: integer): integer; // read all operands and operators
     function ReadOperandTypeAtCursor(
       Params: TFindDeclarationParams; MaxEndPos: integer = -1): TExpressionType;
     function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
@@ -10505,6 +10505,10 @@ begin
         NewNode:=NewNode.FirstChild;
         NewCleanPos:=NewNode.StartPos;
       end;
+    ctnProperty:
+      // jump to the name of the property
+      if NewCodeTool.MoveCursorToPropName(NewNode) then
+        NewCleanPos:=NewCodeTool.CurPos.StartPos;
     end;
   end;
 end;
