@@ -165,7 +165,7 @@ type
     
     fdfCollect,             // return every reachable identifier
     fdfTopLvlResolving,     // set, when searching for an identifier of the
-                            //   top lvl variable
+                            //   top lvl variable. Calling DoOnIdentifierFound.
     fdfDoNotCache           // result will not be cached
     );
   TFindDeclarationFlags = set of TFindDeclarationFlag;
@@ -645,8 +645,8 @@ type
     function FindExpressionTypeOfTerm(StartPos, EndPos: integer;
       Params: TFindDeclarationParams; WithAsOperator: boolean): TExpressionType;
     function FindEndOfExpression(StartPos: integer): integer; // read all operands and operators
-    function ReadOperandTypeAtCursor(
-      Params: TFindDeclarationParams; MaxEndPos: integer = -1): TExpressionType;
+    function ReadOperandTypeAtCursor(Params: TFindDeclarationParams;
+      MaxEndPos: integer = -1): TExpressionType;
     function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
       Params: TFindDeclarationParams): TExpressionType;
     function CalculateBinaryOperator(LeftOperand, RightOperand: TExpressionType;
@@ -3319,7 +3319,9 @@ end;
 function TFindDeclarationTool.FindBaseTypeOfNode(
   Params: TFindDeclarationParams; Node: TCodeTreeNode;
   NodeStack: PCodeTreeNodeStack): TFindContext;
-  
+var
+  MyNodeStack: TCodeTreeNodeStack;
+
   procedure RaiseForwardClassNameLess;
   begin
     RaiseException('[TFindDeclarationTool.FindBaseTypeOfNode] '
@@ -3353,9 +3355,6 @@ function TFindDeclarationTool.FindBaseTypeOfNode(
                       [GetIdentifier(Params.Identifier)]);
   end;
 
-var
-  MyNodeStack: TCodeTreeNodeStack;
-
   procedure RaiseForwardNotResolved(ClassIdentNode: TCodeTreeNode);
   begin
     RaiseExceptionFmt(ctsForwardClassDefinitionNotResolved,
@@ -3378,43 +3377,44 @@ var
     NameNode: TCodeTreeNode;
     TestContext: TFindContext;
     IdentStart: LongInt;
+    SubParams: TFindDeclarationParams;
   begin
     IsPredefined:=false;
-    Params:=TFindDeclarationParams.Create;
+    SubParams:=TFindDeclarationParams.Create;
     try
       IdentStart:=CleanPos;
       {$IFDEF ShowTriedBaseContexts}
       debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier Identifier=',GetIdentifier(@Src[IdentStart])]);
       {$ENDIF}
-      Params.SetIdentifier(Self,@Src[IdentStart],nil);
-      Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                    +(fdfGlobals*Params.Flags);
-      Params.ContextNode:=StartNode.Parent;
-      if (Params.ContextNode.Desc in AllIdentifierDefinitions) then begin
+      SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
+      SubParams.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
+                    +(fdfGlobals*SubParams.Flags);
+      SubParams.ContextNode:=StartNode.Parent;
+      if (SubParams.ContextNode.Desc in AllIdentifierDefinitions) then begin
         // pascal allows things like 'var a: a;' -> skip var definition
-        Include(Params.Flags,fdfIgnoreCurContextNode);
+        Include(SubParams.Flags,fdfIgnoreCurContextNode);
       end;
-      if Params.ContextNode.Desc=ctnParameterList then
+      if SubParams.ContextNode.Desc=ctnParameterList then
         // skip search in parameter list
-        Params.ContextNode:=Params.ContextNode.Parent;
-      if Params.ContextNode.Desc=ctnProcedureHead then
+        SubParams.ContextNode:=SubParams.ContextNode.Parent;
+      if SubParams.ContextNode.Desc=ctnProcedureHead then
         // skip search in proc parameters
-        Params.ContextNode:=Params.ContextNode.Parent;
-      TypeFound:=FindIdentifierInContext(Params);
-      if TypeFound and (Params.NewNode.Desc in [ctnUseUnit,ctnUsesSection])
-      and (Params.NewCodeTool=Self)
+        SubParams.ContextNode:=SubParams.ContextNode.Parent;
+      TypeFound:=FindIdentifierInContext(SubParams);
+      if TypeFound and (SubParams.NewNode.Desc in [ctnUseUnit,ctnUsesSection])
+      and (SubParams.NewCodeTool=Self)
       then begin
-        NameNode:=Params.NewNode;
-        Params.NewNode:=nil;
+        NameNode:=SubParams.NewNode;
+        SubParams.NewNode:=nil;
         {$IFDEF ShowTriedBaseContexts}
         debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier is a unit, getting tool...']);
         {$ENDIF}
-        Params.NewCodeTool:=FindCodeToolForUnitIdentifier(
+        SubParams.NewCodeTool:=FindCodeToolForUnitIdentifier(
                               NameNode,GetIdentifier(@Src[IdentStart]),true);
-        Params.NewCodeTool.BuildTree(lsrImplementationStart);
-        Params.NewNode:=Params.NewCodeTool.Tree.Root;
+        SubParams.NewCodeTool.BuildTree(lsrImplementationStart);
+        SubParams.NewNode:=SubParams.NewCodeTool.Tree.Root;
       end;
-      if TypeFound and (Params.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
+      if TypeFound and (SubParams.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
       then begin
         // identifier is a unit
         // => check for AUnitName.typename
@@ -3428,14 +3428,14 @@ var
         debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier searching identifier "',GetIdentifier(@Src[IdentStart]),'" in unit ...']);
         {$ENDIF}
         AtomIsIdentifier(true);
-        Params.SetIdentifier(Self,@Src[IdentStart],nil);
-        Params.Flags:=[fdfExceptionOnNotFound];
-        TypeFound:=Params.NewCodeTool.FindIdentifierInInterface(Self,Params);
+        SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
+        SubParams.Flags:=[fdfExceptionOnNotFound];
+        TypeFound:=SubParams.NewCodeTool.FindIdentifierInInterface(Self,SubParams);
       end;
       if TypeFound then begin
         // only types allowed here
-        TestContext.Tool:=Params.NewCodeTool;
-        TestContext.Node:=Params.NewNode;
+        TestContext.Tool:=SubParams.NewCodeTool;
+        TestContext.Node:=SubParams.NewNode;
         if not (TestContext.Node.Desc in [ctnTypeDefinition,ctnGenericParameter]) then
         begin
           // not a type
@@ -3459,7 +3459,66 @@ var
       // ToDo: resolve sub classes
 
     finally
-      Params.Free;
+      SubParams.Free;
+    end;
+  end;
+
+  procedure CheckResult(var Context: TFindContext);
+  var
+    ResultNode: TCodeTreeNode;
+    OldFlags: TFindDeclarationFlags;
+    AliasContext: TFindContext;
+    Cache: TBaseTypeCache;
+    UseAlias: Boolean;
+  begin
+    UseAlias:=false;
+    if (Context.Node<>nil) and (Context.Node.Desc in [ctnProcedure,ctnProcedureHead])
+    and (fdfFunctionResult in Params.Flags) then begin
+      // a proc -> if this is a function then return the Context type
+      //debugln(['TFindDeclarationTool.FindBaseTypeOfNode checking function Context: ',Context.Tool.ExtractNode(Context.Node,[])]);
+      Context.Tool.BuildSubTreeForProcHead(Context.Node,ResultNode);
+      if (ResultNode<>nil) then begin
+        // a function or an overloaded operator
+        // search further for the base type of the function Context type
+        OldFlags:=Params.Flags;
+        Exclude(Params.Flags,fdfFunctionResult);
+        //debugln(['TFindDeclarationTool.FindBaseTypeOfNode searching for function Context type: ',Context.Tool.ExtractNode(DummyNode,[])]);
+        Context:=Context.Tool.FindBaseTypeOfNode(Params,ResultNode);
+        UseAlias:=false; // aliasing has been done
+        Params.Flags:=OldFlags;
+      end;
+    end;
+    if (Context.Node=nil) and (fdfExceptionOnNotFound in Params.Flags) then begin
+      if (Context.Tool<>nil) and (Params.Identifier<>nil) then begin
+
+        // ToDo ppu, dcu
+
+        if (not Params.IdentifierTool.IsPCharInSrc(Params.Identifier)) then
+          RaiseInternalError;
+        Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
+      end;
+      RaiseBaseTypeOfNotFound;
+    end;
+    if UseAlias then begin
+      // follow the base type chain to the first type
+      // for example: var d: TDateTime;  use TDateTime, instead of Double.
+      AliasContext.Node:=Node;
+      AliasContext.Tool:=Self;
+      while AliasContext.Node<>nil do begin
+        if AliasContext.Node.Desc in [ctnTypeDefinition,ctnGenericType] then begin
+          {$IF defined(ShowExprEval) or defined(ShowTriedBaseContexts)}
+          debugln(['TFindDeclarationTool.FindBaseTypeOfNode.CheckResult using alias ',AliasContext.Tool.ExtractDefinitionName(AliasContext.Node),' instead of base type ',Context.Node.DescAsString]);
+          {$ENDIF}
+          Context:=AliasContext;
+          exit;
+        end;
+        if AliasContext.Node.Cache is TBaseTypeCache then begin
+          Cache:=TBaseTypeCache(AliasContext.Node.Cache);
+          AliasContext.Node:=Cache.NextNode;
+          AliasContext.Tool:=TFindDeclarationTool(Cache.NextTool);
+        end else
+          break;
+      end;
     end;
   end;
 
@@ -3474,6 +3533,14 @@ var
   OldStartFlags: TFindDeclarationFlags;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
+  //debugln(['TFindDeclarationTool.FindBaseTypeOfNode Flags=[',dbgs(Params.Flags),'] CacheValid=',Node.Cache is TBaseTypeCache]);
+  if (Node<>nil) and (Node.Cache is TBaseTypeCache) then begin
+    // base type already cached
+    Result:=CreateFindContext(TBaseTypeCache(Node.Cache));
+    CheckResult(Result);
+    exit;
+  end;
+
   Result.Node:=Node;
   Result.Tool:=Self;
   OldStartFlags:=Params.Flags;
@@ -3489,7 +3556,7 @@ begin
         if NodeStack^.StackPtr>=0 then
           AddNodeToStack(NodeStack,Result.Tool,Result.Node);
         Result:=CreateFindContext(TBaseTypeCache(Result.Node.Cache));
-        exit;
+        break;
       end;
       {$IFDEF ShowTriedBaseContexts}
       DebugLn('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',Result.Tool.CleanPosToStr(Result.Node.StartPos,true),' Flags=[',dbgs(Params.Flags),']');
@@ -3612,7 +3679,7 @@ begin
         if Result.Node.Parent=nil then
           break;
         SearchIdentifier(Result.Node,Result.Node.StartPos,IsPredefined,Result);
-        if IsPredefined then exit;
+        if IsPredefined then break;
       end else
       if (Result.Node.Desc=ctnProperty)
       or (Result.Node.Desc=ctnGlobalProperty) then begin
@@ -3620,12 +3687,12 @@ begin
         if MoveCursorToPropType(Result.Node) then begin
           // property has a type
           SearchIdentifier(Result.Node,CurPos.StartPos,IsPredefined,Result);
-          if IsPredefined then exit;
+          if IsPredefined then break;
         end else if (Result.Node.Desc=ctnProperty) then begin
           // property has no type
           // -> search ancestor property
           Params.Save(OldInput);
-          if not MoveCursorToPropName(Result.Node) then exit;
+          if not MoveCursorToPropName(Result.Node) then break;
           OldPos:=CurPos.StartPos;
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
           Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors]
@@ -3677,18 +3744,6 @@ begin
         break;
     end;
 
-    if (Result.Node=nil) and (fdfExceptionOnNotFound in Params.Flags) then begin
-      if (Result.Tool<>nil) and (Params.Identifier<>nil) then begin
-
-        // ToDo ppu, dcu
-
-        if (not Params.IdentifierTool.IsPCharInSrc(Params.Identifier)) then
-          RaiseInternalError;
-        Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
-      end;
-      RaiseBaseTypeOfNotFound;
-    end;
-
     Params.Flags:=OldStartFlags;
   finally
     if NodeStack=@MyNodeStack then begin
@@ -3697,21 +3752,9 @@ begin
       // free node stack
       FinalizeNodeStack(NodeStack);
     end;
-
-    if (Result.Node<>nil) and (Result.Node.Desc in [ctnProcedure,ctnProcedureHead])
-    and (fdfFunctionResult in Params.Flags) then begin
-      // a proc -> if this is a function then return the result type
-      //debugln(['TFindDeclarationTool.FindBaseTypeOfNode checking function result: ',Result.Tool.ExtractNode(Result.Node,[])]);
-      Result.Tool.BuildSubTreeForProcHead(Result.Node,TestContext.Node);
-      if (TestContext.Node<>nil) then begin
-        // a function or an overloaded operator
-        // search further for the base type of the function result type
-        Exclude(Params.Flags,fdfFunctionResult);
-        //debugln(['TFindDeclarationTool.FindBaseTypeOfNode searching for function result type: ',Result.Tool.ExtractNode(DummyNode,[])]);
-        Result:=Result.Tool.FindBaseTypeOfNode(Params,TestContext.Node);
-      end;
-    end;
   end;
+
+  CheckResult(Result);
 
   {$IFDEF ShowFoundIdentifier}
   Debugln(['[TFindDeclarationTool.FindBaseTypeOfNode] END Node=',Node.DescAsString,' Result=',Result.Node.DescAsString]);
@@ -5393,9 +5436,9 @@ var
   OldFlags: TFindDeclarationFlags;
 begin
   {$IFDEF ShowExprEval}
-  DebugLn('[TFindDeclarationTool.FindExpressionResultType] Start',
-  ' Pos=',dbgs(StartPos),'-',dbgs(EndPos),
-  '="',copy(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString);
+  DebugLn(['[TFindDeclarationTool.FindExpressionResultType] Start',
+  ' Pos=',StartPos,'-',EndPos,
+  '="',dbgstr(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString]);
   {$ENDIF}
   Result:=CleanExpressionType;
   OldFlags:=Params.Flags;
@@ -6370,9 +6413,9 @@ begin
   Result:=not (Node.Desc in AllPascalStatements);
 end;
 
-function TFindDeclarationTool.FindExpressionTypeOfTerm(
-  StartPos, EndPos: integer;  Params: TFindDeclarationParams;
-  WithAsOperator: boolean): TExpressionType;
+function TFindDeclarationTool.FindExpressionTypeOfTerm(StartPos,
+  EndPos: integer; Params: TFindDeclarationParams; WithAsOperator: boolean
+  ): TExpressionType;
 { examples
   1. A.B
   2. A().B
@@ -6519,57 +6562,58 @@ var
   }
   var
     ProcNode, FuncResultNode: TCodeTreeNode;
+    AtEnd: Boolean;
   begin
     //DebugLn(['ResolveBaseTypeOfIdentifier ',ExprType.Context.Node<>nil]);
-    if (ExprType.Context.Node<>nil) then begin
-      // check if at the end of the variable
-      if IsIdentifierEndOfVariable and (fdfFindVariable in StartFlags) then
-        // the variable is wanted, not its type
-        exit;
-      if (not IsIdentifierEndOfVariable)
-      and (ExprType.Context.Node.Desc=ctnProperty)
-      and ExprType.Context.Tool.PropertyNodeHasParamList(ExprType.Context.Node)
-      then begin
-        // the parameter list is resolved with the [] operators
-        exit;
-      end;
+    if (ExprType.Context.Node=nil) then exit;
+    AtEnd:=IsIdentifierEndOfVariable;
+    // check if at the end of the variable
+    if AtEnd and (fdfFindVariable in StartFlags) then
+      // the variable is wanted, not its type
+      exit;
+    if (not AtEnd)
+    and (ExprType.Context.Node.Desc=ctnProperty)
+    and ExprType.Context.Tool.PropertyNodeHasParamList(ExprType.Context.Node)
+    then begin
+      // the parameter list is resolved with the [] operators
+      exit;
+    end;
 
-      // find base type
-      Exclude(Params.Flags,fdfFunctionResult);
-      Include(Params.Flags,fdfEnumIdentifier);
+    // find base type
+    Exclude(Params.Flags,fdfFunctionResult);
+    Include(Params.Flags,fdfEnumIdentifier);
+    {$IFDEF ShowExprEval}
+    DebugLn('  ResolveBaseTypeOfIdentifier BEFORE ExprType=',ExprTypeToString(ExprType));
+    {$ENDIF}
+    ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
+                               ExprType.Context.Node,Params);
+    {$IFDEF ShowExprEval}
+    DebugLn('  ResolveBaseTypeOfIdentifier AFTER ExprType=',ExprTypeToString(ExprType));
+    {$ENDIF}
+    if (ExprType.Desc=xtContext)
+    and (ExprType.Context.Node.Desc in [ctnProcedure,ctnProcedureHead]) then
+    begin
+      // check if this is a function
+      ProcNode:=ExprType.Context.Node;
+      if ProcNode.Desc=ctnProcedureHead then
+        ProcNode:=ProcNode.Parent;
+      ExprType.Context.Tool.BuildSubTreeForProcHead(ProcNode.FirstChild,
+                                                    FuncResultNode);
       {$IFDEF ShowExprEval}
-      DebugLn('  ResolveBaseTypeOfIdentifier BEFORE ExprType=',ExprTypeToString(ExprType));
+      DebugLn(['  ResolveBaseTypeOfIdentifier IsFunction/operator=',FuncResultNode<>nil,' IsConstructor=',ExprType.Context.Tool.NodeIsConstructor(ProcNode),' IsIdentifierEndOfVariable=',IsIdentifierEndOfVariable,' fdfFunctionResult in StartFlags=',fdfFunctionResult in StartFlags]);
       {$ENDIF}
-      ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
-                                                  ExprType.Context.Node,Params);
-      {$IFDEF ShowExprEval}
-      DebugLn('  ResolveBaseTypeOfIdentifier AFTER ExprType=',ExprTypeToString(ExprType));
-      {$ENDIF}
-      if (ExprType.Desc=xtContext)
-      and (ExprType.Context.Node.Desc in [ctnProcedure,ctnProcedureHead]) then
-      begin
-        // check if this is a function
-        ProcNode:=ExprType.Context.Node;
-        if ProcNode.Desc=ctnProcedureHead then
-          ProcNode:=ProcNode.Parent;
-        ExprType.Context.Tool.BuildSubTreeForProcHead(ProcNode.FirstChild,
-                                                      FuncResultNode);
-        {$IFDEF ShowExprEval}
-        DebugLn(['  ResolveBaseTypeOfIdentifier IsFunction/operator=',FuncResultNode<>nil,' IsConstructor=',ExprType.Context.Tool.NodeIsConstructor(ProcNode),' IsIdentifierEndOfVariable=',IsIdentifierEndOfVariable,' fdfFunctionResult in StartFlags=',fdfFunctionResult in StartFlags]);
-        {$ENDIF}
-        if (FuncResultNode<>nil) or ExprType.Context.Tool.NodeIsConstructor(ProcNode)
-        then begin
-          // it is function or a constructor
-          // -> use the result type instead of the function
-          if IsIdentifierEndOfVariable then begin
-            // this function identifier is the end of the variable
-            if not (fdfFunctionResult in StartFlags) then
-              exit;
-          end;
-          Include(Params.Flags,fdfFunctionResult);
-          ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
-                             ProcNode,Params);
+      if (FuncResultNode<>nil) or ExprType.Context.Tool.NodeIsConstructor(ProcNode)
+      then begin
+        // it is function or a constructor
+        // -> use the result type instead of the function
+        if IsIdentifierEndOfVariable then begin
+          // this function identifier is the end of the variable
+          if not (fdfFunctionResult in StartFlags) then
+            exit;
         end;
+        Include(Params.Flags,fdfFunctionResult);
+        ExprType:=ExprType.Context.Tool.ConvertNodeToExpressionType(
+                           ProcNode,Params);
       end;
     end;
   end;
@@ -6701,19 +6745,22 @@ var
     NewNode: TCodeTreeNode;
   begin
     if (ExprType.Context.Node=nil) then exit;
+    {$IFDEF ShowExprEval}
+    debugln(['  ResolveChilds']);
+    {$ENDIF}
     ResolveBaseTypeOfIdentifier;
     if (ExprType.Context.Node=nil) then exit;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
       // unit name => interface
       {$IFDEF ShowExprEval}
-      debugln(['ResolveChilds unit -> interface node']);
+      debugln(['  ResolveChilds unit -> interface node']);
       {$ENDIF}
       ExprType.Context.Node:=ExprType.Context.Tool.GetInterfaceNode;
     end
     else if (ExprType.Context.Node.Desc=ctnUseUnit) then begin
       // uses unit name => interface of used unit
       {$IFDEF ShowExprEval}
-      debugln(['ResolveChilds used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
+      debugln(['  ResolveChilds used unit -> interface node ',dbgstr(ExprType.Context.Tool.ExtractNode(ExprType.Context.Node,[]))]);
       {$ENDIF}
       aTool:=ExprType.Context.Tool;
       aTool.MoveCursorToCleanPos(ExprType.Context.Node.StartPos);
@@ -6796,6 +6843,9 @@ var
     // for example:
     //   1. 'PInt = ^integer'  pointer type
     //   2. a^  dereferencing
+    {$IFDEF ShowExprEval}
+    debugln(['  ResolveUp']);
+    {$ENDIF}
     if (not (NextAtomType in [vatSpace,vatPoint,vatUp,vatAS,vatEdgedBracketOpen]))
     or ((ExprType.Context.Node=nil) and (ExprType.Desc<>xtPointer))
     then begin
@@ -6857,6 +6907,9 @@ var
     end;
   
   begin
+    {$IFDEF ShowExprEval}
+    debugln(['  ResolveEdgedBracketOpen']);
+    {$ENDIF}
     if not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
       vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen])
     or ((ExprType.Context.Node=nil)
@@ -6892,9 +6945,7 @@ var
           // => search 'TVarRec'
           Params.Save(OldInput);
           Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
-                         fdfExceptionOnNotFound]
-                        +fdfGlobals*Params.Flags
-                        -[fdfTopLvlResolving];
+                         fdfExceptionOnNotFound,fdfFindChilds];
           // special identifier for TVarRec
           Params.SetIdentifier(Self,'tvarrec',nil);
           Params.ContextNode:=ExprType.Context.Node;
@@ -7174,7 +7225,7 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   {$IFDEF ShowExprEval}
   DebugLn(['[TFindDeclarationTool.ConvertNodeToExpressionType] A',
-  ' Node=',Node.DescAsString,' "',dbgstr(copy(ExtractNode(Node,[]),1,30)),'"']);
+  ' Node=',Node.DescAsString,' "',dbgstr(copy(ExtractNode(Node,[]),1,30)),'" Flags=[',dbgs(Params.Flags),']']);
   {$ENDIF}
   BaseContext:=FindBaseTypeOfNode(Params,Node);
   Node:=BaseContext.Node;
@@ -7245,8 +7296,7 @@ begin
 
       // ToDo: ppu, dcu files
 
-      ExtractPropType(Node,false,true);
-      if CurPos.Flag<>cafEdgedBracketOpen then
+      if MoveCursorToPropName(Node) then
         ConvertIdentifierAtCursor;
     end;
     

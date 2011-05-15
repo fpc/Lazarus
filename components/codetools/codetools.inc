@@ -33,6 +33,8 @@
 
 {off $DEFINE VerboseUpdateNeeded}
 
+{off $DEFINE CheckNodeTool}
+
 {$inline on}
 
 // end.
