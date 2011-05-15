@@ -894,6 +894,7 @@ type
     FTypeInfoAutoDestroy: Boolean;
     FThreadChanged, FStackFrameChanged: Boolean;
     function GetTypeInfo: TGDBType;
+    procedure DoWatchFreed(Sender: TObject);
   protected
     function DoExecute: Boolean; override;
     function SelectContext: Boolean;
@@ -9640,6 +9641,12 @@ begin
   FTypeInfoAutoDestroy := False;
 end;
 
+procedure TGDBMIDebuggerCommandEvaluate.DoWatchFreed(Sender: TObject);
+begin
+  FWatchValue := nil;
+  Cancel;
+end;
+
 function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
   function MakePrintable(const AString: String): String;
@@ -10865,10 +10872,13 @@ constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger;
 begin
   Create(AOwner, AWatchValue.Watch.Expression, AWatchValue.DisplayFormat);
   FWatchValue := AWatchValue;
+  FWatchValue.AddFreeeNotification(@DoWatchFreed);
 end;
 
 destructor TGDBMIDebuggerCommandEvaluate.Destroy;
 begin
+  if FWatchValue <> nil
+  then FWatchValue.RemoveFreeeNotification(@DoWatchFreed);
   if FTypeInfoAutoDestroy
   then FreeAndNil(FTypeInfo);
   inherited Destroy;
@@ -10876,7 +10886,9 @@ end;
 
 function TGDBMIDebuggerCommandEvaluate.DebugText: String;
 begin
-  Result := Format('%s: %s', [ClassName, FExpression]);
+  if FWatchValue <> nil
+  then Result := Format('%s: %s Thread=%d, Frame=%d', [ClassName, FExpression, FWatchValue.ThreadId, FWatchValue.StackFrame])
+  else Result := Format('%s: %s', [ClassName, FExpression]);
 end;
 
 initialization

@@ -800,11 +800,12 @@ type
     procedure RequestData; virtual;
     procedure ValidityChanged; virtual;
   public
-    constructor Create(AOwnerWatch: TWatch);
+    constructor Create; virtual;  overload;
+    constructor Create(AOwnerWatch: TWatch);  overload;
     constructor Create(AOwnerWatch: TWatch;
                        const AThreadId: Integer;
                        const AStackFrame: Integer;
-                       const ADisplayFormat: TWatchDisplayFormat);
+                       const ADisplayFormat: TWatchDisplayFormat);  overload;
     destructor Destroy; override;
     procedure Assign(AnOther: TWatchValue);
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
@@ -886,8 +887,14 @@ type
 
   TCurrentWatchValue = class(TWatchValue)
   protected
+    FFreeNotificationList: TMethodList;
     procedure RequestData; override;
     procedure ValidityChanged; override;
+  public
+    constructor Create; override; overload;
+    destructor Destroy; override;
+    procedure AddFreeeNotification(ANotification: TNotifyEvent);
+    procedure RemoveFreeeNotification(ANotification: TNotifyEvent);
   public
     procedure SetTypeInfo(const AValue: TDBGType);
     procedure SetValue(const AValue: String);
@@ -2561,6 +2568,29 @@ begin
   TCurrentWatches(TCurrentWatch(FWatch).Collection).Update(FWatch);
 end;
 
+constructor TCurrentWatchValue.Create;
+begin
+  FFreeNotificationList := TMethodList.Create;
+  inherited Create;
+end;
+
+destructor TCurrentWatchValue.Destroy;
+begin
+  FFreeNotificationList.CallNotifyEvents(Self);
+  inherited Destroy;
+  FreeAndNil(FFreeNotificationList);
+end;
+
+procedure TCurrentWatchValue.AddFreeeNotification(ANotification: TNotifyEvent);
+begin
+  FFreeNotificationList.Add(TMethod(ANotification));
+end;
+
+procedure TCurrentWatchValue.RemoveFreeeNotification(ANotification: TNotifyEvent);
+begin
+  FFreeNotificationList.Remove(TMethod(ANotification));
+end;
+
 { TCurrentWatchValueList }
 
 function TCurrentWatchValueList.CreateEntry(const AThreadId: Integer;
@@ -2643,6 +2673,7 @@ begin
   case FValidity of
     ddsUnknown:   begin
         Result := '<evaluating>';
+        FValidity := ddsRequested;
         RequestData;
         if FValidity in [ddsValid, ddsInvalid, ddsError]
         then Result := GetValue;
@@ -2664,6 +2695,7 @@ begin
   case FValidity of
     ddsUnknown: begin
       Result := nil;
+      FValidity := ddsRequested;
       RequestData;
       if FValidity in [ddsValid, ddsInvalid, ddsError]
       then Result := GetTypeInfo;
@@ -2693,9 +2725,14 @@ begin
   //
 end;
 
-constructor TWatchValue.Create(AOwnerWatch: TWatch);
+constructor TWatchValue.Create;
 begin
   inherited Create;
+end;
+
+constructor TWatchValue.Create(AOwnerWatch: TWatch);
+begin
+  Create;
   FValidity := ddsUnknown;
   FWatch := AOwnerWatch;
 end;
