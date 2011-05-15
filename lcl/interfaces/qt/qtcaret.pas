@@ -28,6 +28,8 @@ unit QtCaret;
 
 interface
 
+{off $DEFINE VerboseQtCaret}
+
 {$I qtdefines.inc}
 
 uses
@@ -377,6 +379,9 @@ begin
   {$ENDIF}
   if FWidget <> AWidget then
   begin
+    {$IFDEF VerboseQtCaret}
+    writeln('TEmulatedCaret.Show Widget changed IsValid=',IsValid);
+    {$ENDIF}
     Hide;
     SetWidget(AWidget);
     if FCaretDirty and (AWidget <> nil) then
@@ -399,6 +404,7 @@ begin
   Result := IsValid;
   FVisible := Result;
   SetPos(FPos);
+  //writeln('TEmulatedCaret.Show END Result=',Result,' IsValid=',IsValid,' Handle=',QtWidgetSet.IsValidHandle(HWND(FWidget)),' FPixmap=',FPixmap<>nil,' FWidget.Context=',FWidget.Context<>0);
 end;
 
 function TEmulatedCaret.Hide: Boolean;
@@ -418,7 +424,7 @@ procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
 begin
   {$IFDEF VerboseQtCaret}
   writeln('TEmulatedCaret.SetPos FWidget=',dbghex(PtrUInt(FWidget)),' X=',Value.X,
-  ' Y=',Value.Y,' OldX=',FPos.X,' OldY=',FPos.Y);
+  ' Y=',Value.Y,' OldX=',FPos.X,' OldY=',FPos.Y,' Dirty=',FCaretDirty);
   {$ENDIF}
 
   if not QtWidgetSet.IsValidHandle(HWND(FWidget)) or (FWidget.Widget = nil) then
