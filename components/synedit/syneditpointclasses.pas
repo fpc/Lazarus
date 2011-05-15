@@ -31,7 +31,7 @@ unit SynEditPointClasses;
 
 {$I synedit.inc}
 
-{$DEFINE SynCaretDebug}
+{off $DEFINE SynCaretDebug}
 
 interface
 

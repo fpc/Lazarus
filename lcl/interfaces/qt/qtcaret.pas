@@ -28,7 +28,7 @@ unit QtCaret;
 
 interface
 
-{$DEFINE VerboseQtCaret}
+{off $DEFINE VerboseQtCaret}
 
 {$I qtdefines.inc}
 
@@ -384,7 +384,8 @@ begin
     {$ENDIF}
     Hide;
     SetWidget(AWidget);
-    if FCaretDirty and (AWidget <> nil) then
+    if (FCaretDirty or (FPixmap=nil))
+    and (AWidget <> nil) and (FWidget.Context<>0) then
     begin
       CreateCaret(FWidget, nil, FLastValidWidth, FLastValidHeight);
       if (FCaretDirtyPos.X > 0) or (FCaretDirtyPos.Y > 0) then
