@@ -5397,7 +5397,6 @@ lcl/interfaces/gtk2/tests/checkbuttononfixed.lpr svneol=native#text/plain
 lcl/interfaces/gtk2/tests/stutter.pas svneol=native#text/plain
 lcl/interfaces/lcl.lpk svneol=native#text/plain
 lcl/interfaces/lcl.pas svneol=native#text/plain
-lcl/interfaces/lclintfcompile.pas svneol=native#text/plain
 lcl/interfaces/nogui/Makefile svneol=native#text/plain
 lcl/interfaces/nogui/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/nogui/Makefile.fpc svneol=native#text/plain
