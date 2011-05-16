@@ -682,7 +682,8 @@ type
     function FindSetOfEnumerationType(EnumNode: TCodeTreeNode): TCodeTreeNode;
     function FindPointerOfIdentifier(TypeNode: TCodeTreeNode): TCodeTreeNode;
     function FindExprTypeAsString(const ExprType: TExpressionType;
-      TermCleanPos: integer; Params: TFindDeclarationParams): string;
+      TermCleanPos: integer; Params: TFindDeclarationParams;
+      AliasType: PFindContext = nil): string;
   protected
     function CheckSrcIdentifier(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
@@ -698,7 +699,7 @@ type
       var IsForward: boolean): boolean;
     function FindNonForwardClass(Params: TFindDeclarationParams): boolean;
     function FindExpressionResultType(Params: TFindDeclarationParams;
-      StartPos, EndPos: integer): TExpressionType;
+      StartPos, EndPos: integer; AliasType: PFindContext = nil): TExpressionType;
     function FindCodeToolForUsedUnit(UnitNameAtom,
       UnitInFileAtom: TAtomPosition;
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
@@ -5322,7 +5323,8 @@ end;
 {$ENDIF}
 
 function TFindDeclarationTool.FindExpressionResultType(
-  Params: TFindDeclarationParams; StartPos, EndPos: integer): TExpressionType;
+  Params: TFindDeclarationParams; StartPos, EndPos: integer;
+  AliasType: PFindContext): TExpressionType;
 {
 - operators
     - mixing ansistring and shortstring gives ansistring
@@ -5377,16 +5379,19 @@ function TFindDeclarationTool.FindExpressionResultType(
 type
   TOperandAndOperator = record
     Operand: TExpressionType;
+    AliasType: TFindContext;
     theOperator: TAtomPosition;
     OperatorLvl: integer;
   end;
+  POperandAndOperator = ^TOperandAndOperator;
   TExprStack = array[0..4] of TOperandAndOperator;
 var
   CurExprType: TExpressionType;
-  CurAliasType: TFindContext;
+  CurAliasType: PFindContext;
+  AliasTypeStorage: TFindContext;
   ExprStack: TExprStack;
   StackPtr: integer;
-  
+
   procedure ExecuteStack(Complete: boolean);
   { Executes the operand+operator stack
     Examples:
@@ -5450,13 +5455,20 @@ var
 
 var
   OldFlags: TFindDeclarationFlags;
+  StackEntry: POperandAndOperator;
 begin
   {$IFDEF ShowExprEval}
   DebugLn(['[TFindDeclarationTool.FindExpressionResultType] Start',
   ' Pos=',StartPos,'-',EndPos,
-  '="',dbgstr(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString]);
+  '="',dbgstr(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString,' Alias=',AliasType<>nil]);
   {$ENDIF}
   Result:=CleanExpressionType;
+  if AliasType<>nil then begin
+    CurAliasType:=@AliasTypeStorage;
+    AliasType^:=CleanFindContext;
+  end else begin
+    CurAliasType:=nil;
+  end;
   OldFlags:=Params.Flags;
   Exclude(Params.Flags,fdfFindVariable);
   // read the expression from left to right and calculate the type
@@ -5464,7 +5476,7 @@ begin
   MoveCursorToCleanPos(StartPos);
   repeat
     // read operand
-    CurExprType:=ReadOperandTypeAtCursor(Params,EndPos,@CurAliasType);
+    CurExprType:=ReadOperandTypeAtCursor(Params,EndPos,CurAliasType);
     {$IFDEF ShowExprEval}
     DebugLn(['[TFindDeclarationTool.FindExpressionResultType] Operand: ',
       ExprTypeToString(CurExprType),' Alias=',FindContextToString(CurAliasType)]);
@@ -5473,9 +5485,14 @@ begin
     inc(StackPtr);
     if StackPtr>High(ExprStack) then
       RaiseInternalErrorStack;
-    ExprStack[StackPtr].Operand:=CurExprType;
-    ExprStack[StackPtr].theOperator.StartPos:=-1;
-    ExprStack[StackPtr].OperatorLvl:=5;
+    StackEntry:=@ExprStack[StackPtr];
+    StackEntry^.Operand:=CurExprType;
+    if CurAliasType<>nil then
+      StackEntry^.AliasType:=CurAliasType^
+    else
+      StackEntry^.AliasType:=CleanFindContext;
+    StackEntry^.theOperator.StartPos:=-1;
+    StackEntry^.OperatorLvl:=5;
     // read operator
     ReadNextAtom;
     {$IFDEF ShowExprEval}
@@ -5487,6 +5504,8 @@ begin
       // -> execute complete stack
       ExecuteStack(true);
       Result:=ExprStack[StackPtr].Operand;
+      if AliasType<>nil then
+        AliasType^:=ExprStack[StackPtr].AliasType;
       Params.Flags:=OldFlags;
       exit;
     end;
@@ -9376,9 +9395,11 @@ var
   EdgedBracketsStartPos: integer;
   SetNode: TCodeTreeNode;
   SetTool: TFindDeclarationTool;
+  AliasType: TFindContext;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
   Result:='';
+  AliasType:=CleanFindContext;
   if IsTermEdgedBracket(TermPos,EdgedBracketsStartPos) then begin
     // check for constant sets: [enum]
     MoveCursorToCleanPos(EdgedBracketsStartPos);
@@ -9416,10 +9437,11 @@ begin
     Params.ContextNode:=CursorNode;
     Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                    fdfTopLvlResolving,fdfFunctionResult];
-    ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
+    ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos,
+                                       @AliasType);
   end;
 
-  Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+  Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params,@AliasType);
 end;
 
 function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
@@ -10045,7 +10067,7 @@ end;
 
 function TFindDeclarationTool.FindExprTypeAsString(
   const ExprType: TExpressionType; TermCleanPos: integer;
-  Params: TFindDeclarationParams): string;
+  Params: TFindDeclarationParams; AliasType: PFindContext): string;
 
   procedure RaiseTermNotSimple;
   begin
@@ -10060,9 +10082,19 @@ var
   ANode: TCodeTreeNode;
 begin
   {$IFDEF ShowExprEval}
-  DebugLn('TFindDeclarationTool.FindExprTypeAsString ExprTypeToString=',
-    ExprTypeToString(ExprType));
+  DebugLn('TFindDeclarationTool.FindExprTypeAsString ExprType=',
+    ExprTypeToString(ExprType),' Alias=',FindContextToString(AliasType));
   {$ENDIF}
+  Result:='';
+  if (AliasType<>nil) and (AliasType^.Node<>nil) then begin
+    case AliasType^.Node.Desc of
+    ctnTypeDefinition:
+      Result:=GetIdentifier(
+                          @AliasType^.Tool.Src[AliasType^.Node.StartPos]);
+    end;
+    if Result<>'' then exit;
+  end;
+
   case ExprType.Desc of
     xtNone:
       RaiseTermNotSimple;
@@ -10228,8 +10260,8 @@ begin
     xtNil:
       RaiseTermNotSimple;
   else
-    DebugLn('TCodeCompletionCodeTool.FindExprTypeAsString ExprTypeToString=',
-      ExprTypeToString(ExprType));
+    DebugLn('TCodeCompletionCodeTool.FindExprTypeAsString ExprType=',
+      ExprTypeToString(ExprType),' Alias=',FindContextToString(AliasType));
     RaiseTermNotSimple;
   end;
 end;
