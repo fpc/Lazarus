@@ -973,6 +973,10 @@ procedure TCodeContextFrm.CompleteParameters(DeclCode: string);
     NewCode:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
       NewCode,Indent,[],X);
     NewCode:=copy(NewCode,Indent+1,length(NewCode));
+    if NewCode='' then begin
+      ShowMessage(lisAllParametersOfThisFunctionAreAlreadySetAtThisCall);
+      exit;
+    end;
     // insert
     ASynEdit.BeginUndoBlock;
     XY:=Point(X,Y);
