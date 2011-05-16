@@ -156,7 +156,8 @@ type
                                           out Directory: string);
     procedure PackageFileLoaded(Sender: TObject);
     procedure OnCheckInstallPackageList(PkgIDList: TObjectList; out Ok: boolean);
-    function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
+    function LoadDependencyList(FirstDependency: TPkgDependency;
+                                Quiet: boolean): TModalResult;
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
   private
@@ -301,9 +302,9 @@ type
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage;
                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
-    //function CheckInstallPackageList(PkgIDList: TObjectList): boolean;
-    function DoInstallPackages(PkgIdList: TObjectList; AddExisting, RebuildIDE, Quiet: boolean;
-                               CheckList: boolean = true): TModalResult;
+    function CheckInstallPackageList(PkgIDList: TObjectList): boolean; override;
+    function InstallPackages(PkgIdList: TObjectList;
+                               Flags: TPkgInstallInIDEFlags = []): TModalResult; override;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags;
@@ -405,6 +406,7 @@ procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
 var
   RebuildIDE: Boolean;
   PkgIDList: TObjectList;
+  Flags: TPkgInstallInIDEFlags;
 begin
   RebuildIDE:=false;
   PkgIDList:=nil;
@@ -413,7 +415,9 @@ begin
       @OnCheckInstallPackageList,PkgIDList,RebuildIDE)<>mrOk
     then exit;
 
-    DoInstallPackages(PkgIDList,false,RebuildIDE,false,true);
+    Flags:=[piiifSkipChecks,piiifClear];
+    if RebuildIDE then Include(Flags,piiifRebuildIDE);
+    InstallPackages(PkgIDList,[]);
   finally
     PkgIDList.Free;
   end;
@@ -475,57 +479,12 @@ end;
 
 procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TObjectList;
   out Ok: boolean);
-var
-  NewFirstAutoInstallDependency: TPkgDependency;
-  PkgList: TFPList;
-  i: Integer;
-  APackage: TLazPackage;
-  ADependency: TPkgDependency;
-  NextDependency: TPkgDependency;
 begin
-  Ok:=false;
-  PkgList:=nil;
-  try
-    // create new auto install dependency PkgIDList
-    ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
-                              pdlRequires,Self,true);
-
-    // remove all top level runtime packages from the list
-    // Note: it's ok if a designtime package uses a runtime package
-    ADependency:=NewFirstAutoInstallDependency;
-    while ADependency<>nil do begin
-      NextDependency:=ADependency.NextRequiresDependency;
-      if (ADependency.RequiredPackage<>nil)
-      and (ADependency.RequiredPackage.PackageType=lptRunTime) then begin
-        // top level dependency on runtime package => delete
-        DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
-      end;
-      ADependency:=NextDependency;
-    end;
-
-    // get all required packages
-    if LoadDependencyList(NewFirstAutoInstallDependency)<>mrOk then exit;
-
-    PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
-
-    // try save all modified packages
-    for i:=0 to PkgList.Count-1 do begin
-      APackage:=TLazPackage(PkgList[i]);
-      if (not APackage.AutoCreated)
-      and (APackage.IsVirtual or APackage.Modified) then begin
-        if DoSavePackage(APackage,[])<>mrOk then exit;
-      end;
-    end;
-
-    Ok:=true;
-  finally
-    FreeDependencyList(NewFirstAutoInstallDependency,pdlRequires);
-    PkgList.Free;
-  end;
+  Ok:=CheckInstallPackageList(PkgIDList);
 end;
 
-function TPkgManager.LoadDependencyList(FirstDependency: TPkgDependency
-  ): TModalResult;
+function TPkgManager.LoadDependencyList(FirstDependency: TPkgDependency;
+  Quiet: boolean): TModalResult;
 var
   CurDependency: TPkgDependency;
   OpenResult: TLoadPackageResult;
@@ -536,9 +495,10 @@ begin
   while CurDependency<>nil do begin
     OpenResult:=PackageGraph.OpenDependency(CurDependency,false);
     if OpenResult<>lprSuccess then begin
-      IDEMessageDialog(lisCCOErrorCaption,
-        Format(lisUnableToLoadPackage, ['"', CurDependency.AsString, '"']),
-        mtError,[mbCancel]);
+      if not Quiet then
+        IDEMessageDialog(lisCCOErrorCaption,
+          Format(lisUnableToLoadPackage, ['"', CurDependency.AsString, '"']),
+          mtError,[mbCancel]);
       exit;
     end;
     CurDependency:=CurDependency.NextRequiresDependency;
@@ -2018,7 +1978,7 @@ begin
         begin
           // install
           AProject.AutoOpenDesignerFormsDisabled:=true;
-          DoInstallPackages(PkgList,true,true,false);
+          InstallPackages(PkgList,[piiifRebuildIDE]);
           Result:=mrAbort;
         end else begin
           // do not warn again
@@ -3708,8 +3668,58 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoInstallPackages(PkgIdList: TObjectList; AddExisting,
-  RebuildIDE, Quiet: boolean; CheckList: boolean): TModalResult;
+function TPkgManager.CheckInstallPackageList(PkgIDList: TObjectList): boolean;
+var
+  NewFirstAutoInstallDependency: TPkgDependency;
+  PkgList: TFPList;
+  i: Integer;
+  APackage: TLazPackage;
+  ADependency: TPkgDependency;
+  NextDependency: TPkgDependency;
+begin
+  Result:=false;
+  PkgList:=nil;
+  try
+    // create new auto install dependency PkgIDList
+    ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
+                              pdlRequires,Self,true);
+
+    // load all required packages
+    if LoadDependencyList(NewFirstAutoInstallDependency,false)<>mrOk then exit;
+
+    // remove all top level runtime packages from the list
+    // Note: it's ok if a designtime package uses a runtime package
+    ADependency:=NewFirstAutoInstallDependency;
+    while ADependency<>nil do begin
+      NextDependency:=ADependency.NextRequiresDependency;
+      if (ADependency.RequiredPackage<>nil)
+      and (ADependency.RequiredPackage.PackageType=lptRunTime) then begin
+        // top level dependency on runtime package => delete
+        DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
+      end;
+      ADependency:=NextDependency;
+    end;
+
+    PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
+
+    // try save all modified packages
+    for i:=0 to PkgList.Count-1 do begin
+      APackage:=TLazPackage(PkgList[i]);
+      if (not APackage.AutoCreated)
+      and (APackage.IsVirtual or APackage.Modified) then begin
+        if DoSavePackage(APackage,[])<>mrOk then exit;
+      end;
+    end;
+
+    Result:=true;
+  finally
+    FreeDependencyList(NewFirstAutoInstallDependency,pdlRequires);
+    PkgList.Free;
+  end;
+end;
+
+function TPkgManager.InstallPackages(PkgIdList: TObjectList;
+  Flags: TPkgInstallInIDEFlags): TModalResult;
 
   procedure CreateChangeReport(
     OldDependencyList, NewDependencyList: TPkgDependency; Report: TStrings);
@@ -3763,7 +3773,6 @@ function TPkgManager.DoInstallPackages(PkgIdList: TObjectList; AddExisting,
 var
   NewFirstAutoInstallDependency: TPkgDependency;
   BuildIDEFlags: TBuildLazarusFlags;
-  ok: boolean;
   Report: TStringList;
   PkgList: TFPList;
   RequiredPackage: TLazPackage;
@@ -3774,7 +3783,7 @@ begin
   NewFirstAutoInstallDependency:=nil;
   PkgList:=nil;
   try
-    if AddExisting then
+    if not (piiifClear in Flags) then
     begin
       // add existing install packages to list
       NewFirstAutoInstallDependency:=PackageGraph.FirstAutoInstallDependency;
@@ -3785,10 +3794,10 @@ begin
       end;
     end;
 
-    if CheckList then
+    if not (piiifSkipChecks in Flags) then
     begin
-      OnCheckInstallPackageList(PkgIDList,ok);
-      if not ok then exit(mrCancel);
+      if not CheckInstallPackageList(PkgIDList) then
+        exit(mrCancel);
     end;
 
     // create new auto install dependency PkgIDList
@@ -3798,7 +3807,7 @@ begin
     PackageGraph.SortDependencyListTopologically(NewFirstAutoInstallDependency,
                                                  false);
 
-    if not Quiet then
+    if not (piiifQuiet in Flags) then
     begin
       // tell the user, which packages will stay, which will be removed and
       // which will be newly installed
@@ -3818,7 +3827,7 @@ begin
     try
       // get all required packages
       //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick GetAllRequiredPackages for ',DependencyListAsString(NewFirstAutoInstallDependency,pdlRequires));
-      if LoadDependencyList(NewFirstAutoInstallDependency)<>mrOk then exit(mrCancel);
+      if LoadDependencyList(NewFirstAutoInstallDependency,false)<>mrOk then exit(mrCancel);
       PackageGraph.GetAllRequiredPackages(NewFirstAutoInstallDependency,PkgList);
 
       // mark packages for installation
@@ -3860,7 +3869,8 @@ begin
                     blfWithoutCompilingIDE];
     if MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags)<>mrOk then exit(mrCancel);
 
-    if RebuildIDE then begin
+    if piiifRebuildIDE in Flags then
+    begin
       // rebuild Lazarus
       if MainIDE.DoBuildLazarus(BuildIDEFlags)<>mrOk then exit(mrCancel);
     end;

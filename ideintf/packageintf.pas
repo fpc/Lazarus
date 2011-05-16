@@ -23,7 +23,7 @@ unit PackageIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, LazConfigStorage, AvgLvlTree,
+  Classes, SysUtils, contnrs, LCLProc, Forms, LazConfigStorage, AvgLvlTree,
   NewItemIntf, CompOptsIntf, IDEOptionsIntf;
   
 const
@@ -241,6 +241,11 @@ type
 
     // package editors
     function GetPackageOfEditorItem(Sender: TObject): TIDEPackage; virtual; abstract;
+
+    // install
+    function CheckInstallPackageList(PkgIDList: TObjectList): boolean; virtual; abstract;
+    function InstallPackages(PkgIdList: TObjectList;
+                  Flags: TPkgInstallInIDEFlags = []): TModalResult; virtual; abstract;
 
     // events
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
