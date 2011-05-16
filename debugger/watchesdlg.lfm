@@ -31,11 +31,11 @@ inherited WatchesDlg: TWatchesDlg
       end>
     MultiSelect = True
     PopupMenu = mnuPopup
+    ReadOnly = True
     RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvWatchesDblClick
-    OnKeyDown = lvWatchesKeyDown
     OnSelectItem = lvWatchesSelectItem
   end
   object ToolBar1: TToolBar[1]
@@ -162,6 +162,10 @@ inherited WatchesDlg: TWatchesDlg
     object actAddWatch: TAction
       Caption = 'actAddWatch'
       OnExecute = popAddClick
+      SecondaryShortCuts.Strings = (
+        'ins'
+      )
+      ShortCut = 16449
     end
     object actEnableSelected: TAction
       Caption = 'actEnableSelected'
@@ -174,6 +178,10 @@ inherited WatchesDlg: TWatchesDlg
     object actDeleteSelected: TAction
       Caption = 'actDeleteSelected'
       OnExecute = popDeleteClick
+      SecondaryShortCuts.Strings = (
+        'del'
+      )
+      ShortCut = 16452
     end
     object actEnableAll: TAction
       Caption = 'actEnableAll'
@@ -190,6 +198,10 @@ inherited WatchesDlg: TWatchesDlg
     object actProperties: TAction
       Caption = 'actProperties'
       OnExecute = popPropertiesClick
+      SecondaryShortCuts.Strings = (
+        'enter'
+      )
+      ShortCut = 16453
     end
   end
 end

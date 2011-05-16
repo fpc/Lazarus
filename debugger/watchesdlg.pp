@@ -92,8 +92,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
-    procedure lvWatchesKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
     procedure popAddClick(Sender: TObject);
     procedure popPropertiesClick(Sender: TObject);
@@ -521,21 +519,6 @@ begin
     end;
   finally
     lvWatchesSelectItem(nil, nil, False);
-  end;
-end;
-
-procedure TWatchesDlg.lvWatchesKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if GetSelectedSnapshot <> nil then exit;
-  case Key of
-    //delete key pressed: delete selected item
-    VK_DELETE: popDeleteClick(Sender);
-
-    //insert key pressed: add new item
-    VK_INSERT: popAddClick(Sender);
-    else
-      inherited;
   end;
 end;
 
