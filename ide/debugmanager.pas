@@ -195,6 +195,7 @@ type
                       EvalFlags: TDBGEvaluateFlags = []): Boolean; override;
     function Modify(const AExpression, ANewValue: String): Boolean; override;
 
+    procedure EvaluateModify(const AExpression: String); override;
     procedure Inspect(const AExpression: String); override;
 
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
@@ -2152,6 +2153,14 @@ begin
         and (FDebugger <> nil)
         and (dcModify in FDebugger.Commands)
         and FDebugger.Modify(AExpression, ANewValue)
+end;
+
+procedure TDebugManager.EvaluateModify(const AExpression: String);
+begin
+  if Destroying then Exit;
+  ViewDebugDialog(ddtEvaluate);
+  if FDialogs[ddtEvaluate] <> nil then
+    TEvaluateDlg(FDialogs[ddtEvaluate]).FindText := AExpression;
 end;
 
 procedure TDebugManager.Inspect(const AExpression: String);

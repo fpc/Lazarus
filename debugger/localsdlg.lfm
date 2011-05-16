@@ -25,8 +25,69 @@ inherited LocalsDlg: TLocalsDlg
         Caption = 'Value'
       end>
     MultiSelect = True
+    PopupMenu = PopupMenu1
+    ReadOnly = True
     RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport
+  end
+  object ActionList1: TActionList[1]
+    left = 152
+    top = 80
+    object actInspect: TAction
+      Category = 'main'
+      Caption = 'actInspect'
+      OnExecute = actInspectExecute
+      OnUpdate = actInspectUpdate
+      ShortCut = 16457
+    end
+    object actWath: TAction
+      Category = 'main'
+      Caption = 'actWath'
+      OnExecute = actWathExecute
+      OnUpdate = actInspectUpdate
+      ShortCut = 16471
+    end
+    object actEvaluate: TAction
+      Category = 'main'
+      Caption = 'actEvaluate'
+      OnExecute = actEvaluateExecute
+      OnUpdate = actInspectUpdate
+      ShortCut = 16469
+    end
+    object actCopyName: TAction
+      Category = 'copy'
+      Caption = 'actCopyName'
+      OnExecute = actCopyNameExecute
+      OnUpdate = actInspectUpdate
+    end
+    object actCopyValue: TAction
+      Category = 'copy'
+      Caption = 'actCopyValue'
+      OnExecute = actCopyValueExecute
+      OnUpdate = actInspectUpdate
+    end
+  end
+  object PopupMenu1: TPopupMenu[2]
+    left = 38
+    top = 75
+    object MenuItem1: TMenuItem
+      Action = actInspect
+    end
+    object MenuItem2: TMenuItem
+      Action = actWath
+    end
+    object MenuItem3: TMenuItem
+      Action = actEvaluate
+    end
+    object MenuItem4: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem5: TMenuItem
+      Action = actCopyName
+    end
+    object MenuItem6: TMenuItem
+      Action = actCopyValue
+    end
   end
 end

@@ -149,6 +149,8 @@ type
     function Modify(const AExpression: String; const ANewValue: String): Boolean; virtual; abstract; // Modify the given expression, returns true if valid
 
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
+
+    procedure EvaluateModify(const AExpression: String); virtual; abstract;
     procedure Inspect(const AExpression: String); virtual; abstract;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;

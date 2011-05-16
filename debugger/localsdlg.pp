@@ -36,15 +36,34 @@ unit LocalsDlg;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, Debugger, DebuggerDlg;
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ClipBrd,
+  ComCtrls, ActnList, Menus, BaseDebugManager, Debugger, DebuggerDlg;
 
 type
 
   { TLocalsDlg }
 
   TLocalsDlg = class(TDebuggerDlg)
+    actInspect: TAction;
+    actEvaluate: TAction;
+    actCopyName: TAction;
+    actCopyValue: TAction;
+    actWath: TAction;
+    ActionList1: TActionList;
     lvLocals: TListView;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    PopupMenu1: TPopupMenu;
+    procedure actCopyNameExecute(Sender: TObject);
+    procedure actCopyValueExecute(Sender: TObject);
+    procedure actEvaluateExecute(Sender: TObject);
+    procedure actInspectExecute(Sender: TObject);
+    procedure actInspectUpdate(Sender: TObject);
+    procedure actWathExecute(Sender: TObject);
   private
     FCallStackMonitor: TCallStackMonitor;
     FLocalsMonitor: TLocalsMonitor;
@@ -111,6 +130,11 @@ begin
   Caption:= lisLocals;
   lvLocals.Columns[0].Caption:= lisLocalsDlgName;
   lvLocals.Columns[1].Caption:= lisLocalsDlgValue;
+  actInspect.Caption := lisInspect;
+  actWath.Caption := lisWatch;
+  actEvaluate.Caption := lisEvaluateModify;
+  actCopyName.Caption := lisLocalsDlgCopyName;
+  actCopyValue.Caption := lisLocalsDlgCopyValue;
 end;
 
 destructor TLocalsDlg.Destroy;
@@ -132,6 +156,49 @@ end;
 procedure TLocalsDlg.SnapshotChanged(Sender: TObject);
 begin
   LocalsChanged(nil);
+end;
+
+procedure TLocalsDlg.actInspectUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := Assigned(lvLocals.Selected);
+end;
+
+procedure TLocalsDlg.actWathExecute(Sender: TObject);
+var
+  S: String;
+  Watch: TCurrentWatch;
+begin
+  S := lvLocals.Selected.Caption;
+  if DebugBoss.Watches.CurrentWatches.Find(S) = nil then
+  begin
+    Watch := DebugBoss.Watches.CurrentWatches.Add(S);
+    Watch.Enabled := True;
+  end;
+  DebugBoss.ViewDebugDialog(ddtWatches);
+end;
+
+procedure TLocalsDlg.actInspectExecute(Sender: TObject);
+begin
+  DebugBoss.Inspect(lvLocals.Selected.Caption);
+end;
+
+procedure TLocalsDlg.actEvaluateExecute(Sender: TObject);
+begin
+  DebugBoss.EvaluateModify(lvLocals.Selected.Caption);
+end;
+
+procedure TLocalsDlg.actCopyNameExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := lvLocals.Selected.Caption;
+  Clipboard.Close;
+end;
+
+procedure TLocalsDlg.actCopyValueExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := lvLocals.Selected.SubItems[0];
+  Clipboard.Close;
 end;
 
 procedure TLocalsDlg.SetSnapshotManager(const AValue: TSnapshotManager);

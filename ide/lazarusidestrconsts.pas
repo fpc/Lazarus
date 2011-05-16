@@ -4700,6 +4700,9 @@ resourcestring
   lisLocalsDlgName = 'Name';
   lisLocalsDlgValue = 'Value';
   lisLocalsNotEvaluated = 'Locals not evaluated';
+  lisEvaluateModify = '&Evaluate/Modify';
+  lisLocalsDlgCopyName = '&Copy Name';
+  lisLocalsDlgCopyValue = 'C&opy Value';
 
   // Registers Dialog
   lisRegisters = 'Registers';
