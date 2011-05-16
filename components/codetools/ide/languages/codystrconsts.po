@@ -205,6 +205,10 @@ msgstr ""
 msgid "No unit selected"
 msgstr ""
 
+#: codystrconsts.crsoptions
+msgid "Options"
+msgstr ""
+
 #: codystrconsts.crspackage
 msgid "Package"
 msgstr ""
@@ -231,6 +235,10 @@ msgstr ""
 
 #: codystrconsts.crsprojectoutput
 msgid "Project output"
+msgstr ""
+
+#: codystrconsts.crsrefresh
+msgid "Refresh"
 msgstr ""
 
 #: codystrconsts.crsremovewithblock

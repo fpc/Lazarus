@@ -535,6 +535,7 @@ const
   CommandCategoryCustomName = 'Custom';
   CommandCategoryTextEditingName = 'text editing commands';
   CommandCategoryViewName = 'ViewMenu';
+  CommandCategoryCodeTools = 'CodeTools';
 
 // register a new IDE command category (i.e. set of commands)
 function RegisterIDECommandCategory(Parent: TIDECommandCategory;

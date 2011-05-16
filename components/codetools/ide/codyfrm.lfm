@@ -1,9 +1,48 @@
 object CodyWindow: TCodyWindow
   Left = 345
-  Height = 310
+  Height = 304
   Top = 205
-  Width = 337
+  Width = 272
   Caption = 'CodyWindow'
+  ClientHeight = 304
+  ClientWidth = 272
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '0.9.31'
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 272
+    Caption = 'ToolBar1'
+    TabOrder = 0
+    object RefreshToolButton: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'RefreshToolButton'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object OptionsToolButton: TToolButton
+      Left = 24
+      Top = 2
+      Caption = 'OptionsToolButton'
+      ParentShowHint = False
+      ShowHint = True
+    end
+  end
+  object TreeView1: TTreeView
+    Left = 0
+    Height = 278
+    Top = 26
+    Width = 272
+    Align = alClient
+    DefaultItemHeight = 19
+    TabOrder = 1
+  end
+  object ImageList1: TImageList
+    left = 98
+    top = 54
+  end
 end

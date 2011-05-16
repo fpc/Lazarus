@@ -30,10 +30,10 @@ unit CodyRegistration;
 interface
 
 uses
-  Classes, SysUtils,
-  IDECommands, MenuIntf,
-  LResources, CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
-  CodyUtils, CodyNodeInfoDlg;
+  Classes, SysUtils, LResources, Controls,
+  IDECommands, MenuIntf, IDEWindowIntf,
+  CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
+  CodyUtils, CodyNodeInfoDlg, CodyFrm;
 
 procedure Register;
 
@@ -52,6 +52,8 @@ var
   TVIconRes: TLResource;
   AddCallInheritedCommand: TIDECommand;
   ShowCodeNodeInfoCommand: TIDECommand;
+  CmdCatView: TIDECommandCategory;
+  ViewCodyWindowCommand: TIDECommand;
 begin
   CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
   if CmdCatFileMenu=nil then
@@ -59,9 +61,13 @@ begin
   CmdCatProjectMenu:=IDECommandList.FindCategoryByName('ProjectMenu');
   if CmdCatProjectMenu=nil then
     raise Exception.Create('cody: command category ProjectMenu not found');
-  CmdCatCodeTools:=IDECommandList.FindCategoryByName('CodeTools');
+  CmdCatCodeTools:=IDECommandList.FindCategoryByName(CommandCategoryCodeTools);
   if CmdCatCodeTools=nil then
-    raise Exception.Create('cody: command category CodeTools not found');
+    raise Exception.Create('cody: command category '+CommandCategoryCodeTools+' not found');
+  CmdCatView:=IDECommandList.FindCategoryByName(CommandCategoryViewName);
+  if CmdCatView=nil then
+    raise Exception.Create('cody: command category '+CommandCategoryViewName+' not found');
+
 
   // Source menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -93,12 +99,6 @@ begin
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'DeclareVariable',
     crsDeclareVariable2, nil, nil, DeclareVariableCommand);}
 
-  // Show CodeTools node info
-  ShowCodeNodeInfoCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowCodeNodeInfo',
-    crsShowCodeToolsNodeInfo,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowCodeNodeInfoDialog);
-  RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'ShowCodeNodeInfo',
-    crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -116,10 +116,32 @@ begin
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'RemoveWithBlock',
     crsRemoveWithBlock, nil, nil, RemoveWithBlockCommand);
 
-  // components
+  // IDE internals menu - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  // Show CodeTools node info
+  ShowCodeNodeInfoCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowCodeNodeInfo',
+    crsShowCodeToolsNodeInfo,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowCodeNodeInfoDialog);
+  RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'ShowCodeNodeInfo',
+    crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
+
+
+  // View menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ViewCodyWindowCommand:=RegisterIDECommand(CmdCatView, 'Cody',
+    'Cody', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowCodyWindow);
+  RegisterIDEMenuCommand(itmViewMainWindows, 'ViewCody',
+    'Cody', nil, nil, ViewCodyWindowCommand);
+
+
+  // Components - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   TVIconRes:=LazarusResources.Find('TTreeView');
   LazarusResources.Add(TCodyTreeView.ClassName,TVIconRes.ValueType,TVIconRes.Value);
   RegisterComponents('LazControls',[TCodyTreeView]);
+
+  // Windows - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  CodyWindowCreator:=IDEWindowCreators.Add('CodyWindow',@CreateCodyWindow,nil,
+    '80%','50%','+18%','+25%','CodeExplorer',alBottom);
+
 end;
 
 end.

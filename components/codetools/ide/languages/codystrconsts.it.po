@@ -214,6 +214,10 @@ msgstr "Nessun progetto"
 msgid "No unit selected"
 msgstr "Nessuna unit selezionata"
 
+#: codystrconsts.crsoptions
+msgid "Options"
+msgstr ""
+
 #: codystrconsts.crspackage
 msgid "Package"
 msgstr "Pacchetto"
@@ -241,6 +245,10 @@ msgstr "Il progetto non ha un sorgente principale."
 #: codystrconsts.crsprojectoutput
 msgid "Project output"
 msgstr "Output del progetto"
+
+#: codystrconsts.crsrefresh
+msgid "Refresh"
+msgstr ""
 
 #: codystrconsts.crsremovewithblock
 msgid "Remove With block"

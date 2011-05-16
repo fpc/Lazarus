@@ -213,6 +213,10 @@ msgstr "Проект отсутствует"
 msgid "No unit selected"
 msgstr "Модуль не выбран"
 
+#: codystrconsts.crsoptions
+msgid "Options"
+msgstr ""
+
 #: codystrconsts.crspackage
 msgid "Package"
 msgstr "Пакет"
@@ -240,6 +244,10 @@ msgstr "В проекте отсутствует главный файл исх�
 #: codystrconsts.crsprojectoutput
 msgid "Project output"
 msgstr "Вывод проекта"
+
+#: codystrconsts.crsrefresh
+msgid "Refresh"
+msgstr ""
 
 #: codystrconsts.crsremovewithblock
 msgid "Remove With block"

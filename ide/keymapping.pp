@@ -2617,7 +2617,7 @@ begin
   AddDefault(C, 'Toggle marker 9', lisKMToggleMarker9, ecToggleMarker9);
 
   // codetools
-  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,IDECmdScopeSrcEditOnly)];
+  C:=Categories[AddCategory(CommandCategoryCodeTools,srkmCatCodeTools,IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Code template completion', srkmecAutoCompletion, ecAutoCompletion);
   AddDefault(C, 'Word completion', srkmecWordCompletion, ecWordCompletion);
   AddDefault(C, 'Complete code', srkmecCompletecode, ecCompleteCode);

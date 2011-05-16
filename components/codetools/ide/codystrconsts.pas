@@ -116,6 +116,8 @@ resourcestring
     +'cursor of the source editor in an implementation of an overridden method.';
   crsCodeNodeInformation = 'Code Node Information';
   crsReport = 'Report';
+  crsOptions = 'Options';
+  crsRefresh = 'Refresh';
 
 implementation
 

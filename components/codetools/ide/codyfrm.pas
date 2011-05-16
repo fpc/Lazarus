@@ -33,25 +33,77 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Buttons, ComCtrls,
   // codetools
   //FileProcs, CodeToolManager, SourceLog, CodeCache, EventCodeTool,
   //LinkScanner, PascalParserTool, CodeTree,
   // IDEIntf
-  //LazIDEIntf, SrcEditorIntf, IDEDialogs,
+  LazIDEIntf, IDEWindowIntf,
   // cody
   CodyStrConsts;
 
 type
 
+  { TCodyWindow }
+
   TCodyWindow = class(TForm)
+    ImageList1: TImageList;
+    ToolBar1: TToolBar;
+    RefreshToolButton: TToolButton;
+    OptionsToolButton: TToolButton;
+    TreeView1: TTreeView;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
+    ImgIDRefresh: Integer;
+    ImgIDOptions: Integer;
   public
   end;
 
 var
-  CodyWindow: TCodyWindow;
+  CodyWindow: TCodyWindow = nil;
+  CodyWindowCreator: TIDEWindowCreator; // set by CodyRegistration.Register
+
+procedure ShowCodyWindow(Sender: TObject);
+procedure CreateCodyWindow(Sender: TObject; aFormName: string;
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
 implementation
+
+procedure ShowCodyWindow(Sender: TObject);
+begin
+  IDEWindowCreators.ShowForm(CodyWindowCreator.FormName,true);
+end;
+
+procedure CreateCodyWindow(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+begin
+  IDEWindowCreators.CreateForm(AForm,TCodyWindow,DoDisableAutoSizing,
+    LazarusIDE.OwningComponent);
+  AForm.Name:=aFormName;
+end;
+
+{ TCodyWindow }
+
+procedure TCodyWindow.FormCreate(Sender: TObject);
+begin
+  if CodyWindow=nil then CodyWindow:=Self;
+  Caption:='Cody';
+
+  ImgIDRefresh := Imagelist1.AddLazarusResource('laz_refresh');
+  ImgIDOptions := Imagelist1.AddLazarusResource('menu_environment_options');
+  ToolBar1.Images:=ImageList1;
+  OptionsToolButton.Hint:=crsOptions;
+  OptionsToolButton.ImageIndex:=ImgIDOptions;
+  RefreshToolButton.Hint:=crsRefresh;
+  RefreshToolButton.ImageIndex:=ImgIDRefresh;
+end;
+
+procedure TCodyWindow.FormDestroy(Sender: TObject);
+begin
+
+  if CodyWindow=Self then CodyWindow:=nil;
+end;
 
 
 end.
