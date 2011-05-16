@@ -727,7 +727,8 @@ begin
   include(FStateFlags, wdsfUpdating);
   AItem.Caption := AWatch.Expression;
   WatchValue := AWatch.Values[GetThreadId, GetStackframe];
-  if WatchValue <> nil
+  if (WatchValue <> nil) and
+     ( (GetSelectedSnapshot = nil) or not(WatchValue.Validity in [ddsUnknown, ddsEvaluating, ddsRequested]) )
   then AItem.SubItems[0] := ClearMultiline(WatchValue.Value)
   else AItem.SubItems[0] := '<not evaluated>';
   exclude(FStateFlags, wdsfUpdating);

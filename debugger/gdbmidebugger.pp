@@ -387,6 +387,7 @@ type
     function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     procedure ClearCommandQueue;
+    function  GetIsIdle: Boolean; override;
     procedure DoState(const OldState: TDBGState); override;
     procedure DoThreadChanged;
     property  TargetPID: Integer read FTargetInfo.TargetPID;
@@ -5609,6 +5610,10 @@ begin
     FInExecuteCount := SavedInExecuteCount;
     FCurrentCommand := NestedCurrentCmd;
   end;
+
+  if (FCommandQueue.Count = 0) and assigned(OnIdle)
+  then OnIdle(Self);
+
 end;
 
 procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
@@ -6400,6 +6405,11 @@ begin
     TGDBMIDebuggerCommand(FCommandQueue[i]).Free;
   end;
   FCommandQueue.Clear;
+end;
+
+function TGDBMIDebugger.GetIsIdle: Boolean;
+begin
+  Result := FCommandQueue.Count = 0;
 end;
 
 procedure TGDBMIDebugger.ClearSourceInfo;

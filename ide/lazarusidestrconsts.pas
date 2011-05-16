@@ -4692,10 +4692,14 @@ resourcestring
   lisRecordStruct = 'Record/Structure';
   lisMemoryDump = 'Memory Dump';
 
+  // Callstack
+  lisCallStackNotEvaluated = 'Stack not evaluated';
+
   // Locals Dialog
   lisLocals = 'Locals';
   lisLocalsDlgName = 'Name';
   lisLocalsDlgValue = 'Value';
+  lisLocalsNotEvaluated = 'Locals not evaluated';
 
   // Registers Dialog
   lisRegisters = 'Registers';
@@ -4712,6 +4716,7 @@ resourcestring
   lisThreadsFunc = 'Function';
   lisThreadsCurrent = 'Current';
   lisThreadsGoto = 'Goto';
+  lisThreadsNotEvaluated = 'Threads not evaluated';
 
   // HistoryDlg
   histdlgFormName   = 'History';

@@ -184,6 +184,9 @@ begin
       if Locals = nil
       then begin
         lvLocals.Items.Clear;
+        Item := lvLocals.Items.Add;
+        Item.Caption := '';
+        Item.SubItems.add(lisLocalsNotEvaluated);
         Exit;
       end;
 

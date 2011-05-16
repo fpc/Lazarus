@@ -69,9 +69,15 @@ begin
     Caption:= lisThreads;
   end;
 
-  if Threads = nil then begin
+  if (Threads = nil) or ((Snap <> nil) and (Threads.Count=0)) then begin
     lvThreads.Clear;
-    // Todo: display "no info available"
+    Item := lvThreads.Items.Add;
+    Item.SubItems.add('');
+    Item.SubItems.add('');
+    Item.SubItems.add('');
+    Item.SubItems.add(lisThreadsNotEvaluated);
+    Item.SubItems.add('');
+    Item.SubItems.add('');
     exit;
   end;
 

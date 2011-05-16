@@ -256,6 +256,7 @@ var
   First, Count: Integer;
   Source: String;
   Snap: TSnapshot;
+  CStack: TCallStack;
 begin
   if (not ToolButtonPower.Down) or FInUpdateView then exit;
   BeginUpdate;
@@ -267,22 +268,35 @@ begin
     else Caption:= lisMenuViewCallStack;
 
     FInUpdateView := True; // ignore change triggered by count, if there is a change event, then Count will be updated already
-    if (GetSelectedCallstack = nil) or (GetSelectedCallstack.Count=0)
+    CStack := GetSelectedCallstack;
+    FInUpdateView := False;
+
+    if (CStack = nil) or ((Snap <> nil) and (CStack.Count = 0)) then begin
+      lvCallStack.Items.Clear;
+      Item := lvCallStack.Items.Add;
+      Item.SubItems.Add('');
+      Item.SubItems.Add(lisCallStackNotEvaluated);
+      Item.SubItems.Add('');
+      Item.SubItems.Add('');
+      exit;
+    end;
+
+    if (CStack.Count=0)
     then begin
       txtGoto.Text:= '0';
       lvCallStack.Items.Clear;
       exit;
     end;
-    FInUpdateView := False;
+
 
     if Snap <> nil then begin
       First := 0;
-      Count := GetSelectedCallstack.Count;
+      Count := CStack.Count;
     end else begin
       First := FViewStart;
-      if First + FViewLimit <= GetSelectedCallstack.Count
+      if First + FViewLimit <= CStack.Count
       then Count := FViewLimit
-      else Count := GetSelectedCallstack.Count - First;
+      else Count := CStack.Count - First;
     end;
 
     // Reuse entries, so add and remove only
@@ -301,12 +315,12 @@ begin
     end;
 
     FInUpdateView := True;
-    GetSelectedCallstack.PrepareRange(First, Count);
+    CStack.PrepareRange(First, Count);
     FInUpdateView := False;
     for n := 0 to Count - 1 do
     begin
       Item := lvCallStack.Items[n];
-      Entry := GetSelectedCallstack.Entries[First + n];
+      Entry := CStack.Entries[First + n];
       if Entry = nil
       then begin
         Item.Caption := '';
@@ -653,16 +667,18 @@ procedure TCallStackDlg.BreakPointChanged(const ASender: TIDEBreakPoints;
 var
   i, idx: Integer;
   Entry: TCallStackEntry;
+  Stack: TCallStack;
 begin
-  if BreakPoints = nil then
+  Stack := GetSelectedCallstack;
+  if (BreakPoints = nil) or (Stack = nil) then
     Exit;
 
   for i := 0 to lvCallStack.Items.Count - 1 do
   begin
     idx := FViewStart + lvCallStack.Items[i].Index;
-    if idx >= GetSelectedCallstack.Count then
+    if idx >= Stack.Count then
       Continue;
-    Entry := GetSelectedCallstack.Entries[idx];
+    Entry := Stack.Entries[idx];
     if Entry <> nil then
       lvCallStack.Items[i].ImageIndex := GetImageIndex(Entry)
     else

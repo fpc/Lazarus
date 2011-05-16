@@ -65,6 +65,7 @@ type
   { TDebugManager }
 
   TDebugManager = class(TBaseDebugManager)
+    procedure DebuggerIdle(Sender: TObject);
   private
     procedure BreakAutoContinueTimer(Sender: TObject);
     procedure OnRunTimer(Sender: TObject);
@@ -611,6 +612,11 @@ function TDebugManager.DebuggerFeedback(Sender: TObject; const AText, AInfo: Str
   AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
 begin
   Result := ExecuteFeedbackDialog(AText, AInfo, AType, AButtons);
+end;
+
+procedure TDebugManager.DebuggerIdle(Sender: TObject);
+begin
+  FSnapshots.DoDebuggerIdle;
 end;
 
 procedure TDebugManager.BreakAutoContinueTimer(Sender: TObject);
@@ -1806,6 +1812,7 @@ begin
     FDebugger.OnException     := @DebuggerException;
     FDebugger.OnConsoleOutput := @DebuggerConsoleOutput;
     FDebugger.OnFeedback      := @DebuggerFeedback;
+    FDebugger.OnIdle           := @DebuggerIdle;
 
     if FDebugger.State = dsNone
     then begin

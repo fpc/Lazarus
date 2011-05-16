@@ -1937,6 +1937,8 @@ type
   end;
 
   { TSnapshotManager }
+  TSnapshotManagerRequestedFlags = set of
+    (smrThreads, smrCallStackCnt, smrCallStack, smrLocals, smrWatches);
 
   TSnapshotManager = class
   private
@@ -1948,6 +1950,7 @@ type
     FThreads: TThreadsMonitor;
     FCurrentState: TDBGState;
     FCurrentSnapshot: TSnapshot; // snapshot fo rcurrent pause. Not yet in list
+    FRequestsDone: TSnapshotManagerRequestedFlags;
   private
     FActive: Boolean;
     FHistoryCapacity: Integer;
@@ -1969,6 +1972,7 @@ type
     procedure AddNotification(const ANotification: TSnapshotNotification);
     procedure RemoveNotification(const ANotification: TSnapshotNotification);
     procedure DoStateChange(const AOldState: TDBGState);
+    procedure DoDebuggerIdle;
     property Active: Boolean read FActive write SetActive;
   public
     function SelectedId: Pointer;
@@ -2315,6 +2319,7 @@ type
     FLineInfo: TDBGLineInfo;
     FOnConsoleOutput: TDBGOutputEvent;
     FOnFeedback: TDBGFeedbackEvent;
+    FOnIdle: TNotifyEvent;
     FRegisters: TDBGRegisters;
     FShowConsole: Boolean;
     FSignals: TDBGSignals;
@@ -2363,6 +2368,7 @@ type
     function  GetSupportedCommands: TDBGCommands; virtual;
     function  GetTargetWidth: Byte; virtual;
     function  GetWaiting: Boolean; virtual;
+    function  GetIsIdle: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand;
                              const AParams: array of const): Boolean;
                              virtual; abstract; // True if succesful
@@ -2433,6 +2439,7 @@ type
     property Watches: TWatchesSupplier read FWatches;                                 // list of all watches etc
     property Threads: TThreadsSupplier read FThreads;
     property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
+    property IsIdle: Boolean read GetIsIdle;                                     // Nothing queued
     // Events
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput
@@ -2443,6 +2450,7 @@ type
     property OnBreakPointHit: TDebuggerBreakPointHitEvent read FOnBreakPointHit write FOnBreakPointHit;   // Fires when the program is paused at a breakpoint
     property OnConsoleOutput: TDBGOutputEvent read FOnConsoleOutput write FOnConsoleOutput;  // Passes Application Console Output
     property OnFeedback: TDBGFeedbackEvent read FOnFeedback write FOnFeedback;
+    property OnIdle: TNotifyEvent read FOnIdle write FOnIdle;                    // Called if all outstanding requests are processed (queue empty)
   end;
   TDebuggerClass = class of TDebugger;
 
@@ -2719,6 +2727,7 @@ begin
   FCurrentState := Debugger.State;
 
   if FDebugger.State = dsPause then begin
+    FRequestsDone := [];
     if FActive then CreateHistoryEntry;
     HistorySelected := False;
   end
@@ -2734,6 +2743,48 @@ begin
   end;
   if (FDebugger.State = dsInit) then begin
     Clear;
+  end;
+end;
+
+procedure TSnapshotManager.DoDebuggerIdle;
+var
+  i, j, k: LongInt;
+  w: TCurrentWatches;
+begin
+  if FCurrentState <> dsPause then exit;
+  if not(smrThreads in FRequestsDone) then begin
+    include(FRequestsDone, smrThreads);
+    FThreads.CurrentThreads.Count;
+    if not Debugger.IsIdle then exit;
+  end;
+  if not(smrCallStackCnt in FRequestsDone) then begin
+    include(FRequestsDone, smrCallStackCnt);
+    i := FThreads.CurrentThreads.CurrentThreadId;
+    FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
+    if not Debugger.IsIdle then exit;
+  end;
+  if not(smrCallStack in FRequestsDone) then begin
+    include(FRequestsDone, smrCallStack);
+    i := FThreads.CurrentThreads.CurrentThreadId;
+    k := FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
+    if k > 0
+    then FCallStack.CurrentCallStackList.EntriesForThreads[i].PrepareRange(0, Min(5, k));
+    if not Debugger.IsIdle then exit;
+  end;
+  if not(smrLocals in FRequestsDone) then begin
+    include(FRequestsDone, smrLocals);
+    i := FThreads.CurrentThreads.CurrentThreadId;
+    j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
+    FLocals.CurrentLocalsList.Entries[i, j].Count;
+    if not Debugger.IsIdle then exit;
+  end;
+  if not(smrWatches in FRequestsDone) then begin
+    include(FRequestsDone, smrWatches);
+    i := FThreads.CurrentThreads.CurrentThreadId;
+    j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
+    w := FWatches.CurrentWatches;
+    for k := 0 to w.Count - 1 do w[k].Values[i, j].Value;
+    if not Debugger.IsIdle then exit;
   end;
 end;
 
@@ -4605,6 +4656,11 @@ begin
     end;
   end;
   FCurEnvironment.Assign(FEnvironment);
+end;
+
+function TDebugger.GetIsIdle: Boolean;
+begin
+  Result := False;
 end;
 
 function TDebugger.Evaluate(const AExpression: String; var AResult: String;
