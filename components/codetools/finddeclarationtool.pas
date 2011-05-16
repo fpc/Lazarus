@@ -3527,6 +3527,7 @@ var
         end;
         if AliasContext.Node.Cache is TBaseTypeCache then begin
           Cache:=TBaseTypeCache(AliasContext.Node.Cache);
+          if AliasContext.Node=Cache.NextNode then break;
           AliasContext.Node:=Cache.NextNode;
           AliasContext.Tool:=TFindDeclarationTool(Cache.NextTool);
         end else
