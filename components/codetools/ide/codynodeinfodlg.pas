@@ -78,6 +78,7 @@ procedure TCodyNodeInfoDialog.FormCreate(Sender: TObject);
 begin
   Caption:=crsCodeNodeInformation;
   ReportTabSheet.Caption:=crsReport;
+  ButtonPanel1.CloseButton.Caption:=crsClose;
 
   UpdateReport;
 end;
