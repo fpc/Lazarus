@@ -3843,6 +3843,8 @@ begin
   try
     Editable:=False;
     SelAvail:=False;
+    IdentFound:=False;
+    StringFound:=False;
     if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then begin
       Assert(Assigned(ASrcEdit));
       Editable:=not ASrcEdit.ReadOnly;
