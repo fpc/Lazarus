@@ -97,7 +97,7 @@ begin
   ShowCodeNodeInfoCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowCodeNodeInfo',
     crsShowCodeToolsNodeInfo,
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowCodeNodeInfoDialog);
-  RegisterIDEMenuCommand(SrcEditSubMenuSource, 'ShowCodeNodeInfo',
+  RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'ShowCodeNodeInfo',
     crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
