@@ -3124,6 +3124,31 @@ msgstr "Orden-Z"
 msgid "On Both Sides"
 msgstr "En ambos Lados"
 
+#: lazarusidestrconsts.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumnloc
+msgid "Location"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumntime
+msgid "Time"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr ""
+
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr "0 = no, 1 = dibujar líneas divisorias solo para el nivel superior, 2 = dibujar líneas para los dos primeros niveles, ..."
@@ -3525,6 +3550,11 @@ msgstr "Añadir los parentesis del parámetro"
 msgid "Address:"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr "Añadir a la ruta de búsqueda de archivos de inclusión?"
@@ -3635,6 +3665,10 @@ msgstr "Permitir Llamadas de Función"
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Permitir búsqueda para múltiples líneas"
+
+#: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
+msgid "All parameters of this function are already set at this call. Nothing to add."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
@@ -3999,6 +4033,10 @@ msgstr "Número de Construcción"
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Llamada a %s para crear Makefile desde %s falló."
+
+#: lazarusidestrconsts.liscallstacknotevaluated
+msgid "Stack not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -7407,6 +7445,10 @@ msgstr "Evaluar expresión"
 msgid "E&valuate"
 msgstr "E&valuar"
 
+#: lazarusidestrconsts.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr ""
+
 #: lazarusidestrconsts.liseventlogclear
 msgid "Clear Events"
 msgstr ""
@@ -8658,6 +8700,14 @@ msgstr "Tecla (o 2 teclas en secuencia)"
 msgid "Abort building"
 msgstr "Abortar construcción"
 
+#: lazarusidestrconsts.liskmaddbpaddress
+msgid "Add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.liskmaddbpsource
+msgid "Add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr "Añadir punto de observación"
@@ -9095,6 +9145,10 @@ msgstr "Cambiar vista a Salida del depurador"
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
 msgstr "Cambiar vista a Editor de documentación"
+
+#: lazarusidestrconsts.liskmtoggleviewhistory
+msgid "Toggle view History"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
@@ -9606,6 +9660,14 @@ msgstr "La carga de %s falló"
 msgid "Locals"
 msgstr "Locales"
 
+#: lazarusidestrconsts.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr ""
+
+#: lazarusidestrconsts.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgname
 msgctxt "lazarusidestrconsts.lislocalsdlgname"
 msgid "Name"
@@ -9615,6 +9677,10 @@ msgstr "Nombre"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Valor"
+
+#: lazarusidestrconsts.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
@@ -9782,10 +9848,6 @@ msgstr "Abortar Construcción"
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
 msgstr "Acerca de FPC"
-
-#: lazarusidestrconsts.lismenuaddbpsource
-msgid "Source breakpoint"
-msgstr "Punto de interrupción en código fuente"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -10740,6 +10802,11 @@ msgstr "Depurar salida"
 #| msgid "Forms..."
 msgid "Forms ..."
 msgstr "Formularios..."
+
+#: lazarusidestrconsts.lismenuviewhistory
+msgctxt "lazarusidestrconsts.lismenuviewhistory"
+msgid "History"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
@@ -14016,10 +14083,6 @@ msgstr "Tab"
 msgid "Tab Order of %s"
 msgstr "Orden de tabulación de"
 
-#: lazarusidestrconsts.listaddressbreakpoint
-msgid "&Address Breakpoint ..."
-msgstr ""
-
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
 msgstr "CPU objetivo"
@@ -14577,6 +14640,10 @@ msgstr "Línea"
 msgctxt "lazarusidestrconsts.listhreadsname"
 msgid "Name"
 msgstr "Nombre"
+
+#: lazarusidestrconsts.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.listhreadssrc
 msgctxt "lazarusidestrconsts.listhreadssrc"
@@ -15909,6 +15976,14 @@ msgstr "abortar construcción"
 msgid "Abstract methods ..."
 msgstr "Métodos abstractos ..."
 
+#: lazarusidestrconsts.srkmecaddbpaddress
+msgid "add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecaddbpsource
+msgid "add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Añadir punto de salto"
@@ -16871,6 +16946,10 @@ msgstr "Ver componentes"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Ver formularios"
+
+#: lazarusidestrconsts.srkmecviewhistory
+msgid "View History"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgid "View Terminal Output"

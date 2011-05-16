@@ -3118,6 +3118,31 @@ msgstr "סדר - יורד"
 msgid "On Both Sides"
 msgstr "בשני הצדדים"
 
+#: lazarusidestrconsts.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumnloc
+msgid "Location"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumntime
+msgid "Time"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr ""
+
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr "לא = 0, שרטט קווי חלוקה רק עבור הרמה העליונה = 1, שרטט קווים לשתי הרמות הראשונות - 2, ..."
@@ -3519,6 +3544,11 @@ msgstr "הוסף סוגריים של פרמטר"
 msgid "Address:"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr "להוסיף לנתיב החיפוש של קבצי \"כלול\""
@@ -3629,6 +3659,10 @@ msgstr "אפשר קריאות של פונקציות"
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "אפשר חיפוש בשורות מרובות"
+
+#: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
+msgid "All parameters of this function are already set at this call. Nothing to add."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
@@ -3994,6 +4028,10 @@ msgstr "מספר הבניה"
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "קריאת s% ליצירת makefile מ s% נכשלה."
+
+#: lazarusidestrconsts.liscallstacknotevaluated
+msgid "Stack not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -7402,6 +7440,10 @@ msgstr "חשב את הביטוי"
 msgid "E&valuate"
 msgstr "חשב"
 
+#: lazarusidestrconsts.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr ""
+
 #: lazarusidestrconsts.liseventlogclear
 msgid "Clear Events"
 msgstr ""
@@ -8654,6 +8696,14 @@ msgstr "מפתח (או סדרה של שני מפתחות)"
 msgid "Abort building"
 msgstr "בטל בנייה"
 
+#: lazarusidestrconsts.liskmaddbpaddress
+msgid "Add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.liskmaddbpsource
+msgid "Add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr "הוסף משגיח"
@@ -9091,6 +9141,10 @@ msgstr "החלף (הצג/הסתר) פלט מנפה השגיאות"
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
 msgstr "החלף (הצג/הסתר) עורך התיעוד"
+
+#: lazarusidestrconsts.liskmtoggleviewhistory
+msgid "Toggle view History"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
@@ -9606,6 +9660,14 @@ msgstr "טעינת s% נכשלה"
 msgid "Locals"
 msgstr "מקומיים"
 
+#: lazarusidestrconsts.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr ""
+
+#: lazarusidestrconsts.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgname
 msgctxt "lazarusidestrconsts.lislocalsdlgname"
 msgid "Name"
@@ -9615,6 +9677,10 @@ msgstr "שם"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "ערך"
+
+#: lazarusidestrconsts.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
@@ -9782,10 +9848,6 @@ msgstr "בטל בנייה"
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
 msgstr "אודות FPC"
-
-#: lazarusidestrconsts.lismenuaddbpsource
-msgid "Source breakpoint"
-msgstr "נקודת עצירה בקוד"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -10751,6 +10813,11 @@ msgstr "פלט ניפוי השגיאות"
 #| msgid "Forms..."
 msgid "Forms ..."
 msgstr "טפסים ..."
+
+#: lazarusidestrconsts.lismenuviewhistory
+msgctxt "lazarusidestrconsts.lismenuviewhistory"
+msgid "History"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 #| msgid "View IDE speed buttons"
@@ -14037,10 +14104,6 @@ msgstr "לשונית"
 msgid "Tab Order of %s"
 msgstr "סדר לשוניות של "
 
-#: lazarusidestrconsts.listaddressbreakpoint
-msgid "&Address Breakpoint ..."
-msgstr ""
-
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
 msgstr "מעבד היעד"
@@ -14596,6 +14659,10 @@ msgstr "שורה"
 msgctxt "lazarusidestrconsts.listhreadsname"
 msgid "Name"
 msgstr "שם"
+
+#: lazarusidestrconsts.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.listhreadssrc
 msgctxt "lazarusidestrconsts.listhreadssrc"
@@ -15927,6 +15994,14 @@ msgstr "בטל בנייה"
 msgid "Abstract methods ..."
 msgstr "מתודה מופשטת ..."
 
+#: lazarusidestrconsts.srkmecaddbpaddress
+msgid "add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecaddbpsource
+msgid "add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "הוסף נקודת קפיצה"
@@ -16889,6 +16964,10 @@ msgstr "הצג רכיבים"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "הצג טפסים"
+
+#: lazarusidestrconsts.srkmecviewhistory
+msgid "View History"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgid "View Terminal Output"

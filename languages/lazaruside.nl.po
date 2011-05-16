@@ -3136,6 +3136,31 @@ msgstr ""
 msgid "On Both Sides"
 msgstr ""
 
+#: lazarusidestrconsts.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumnloc
+msgid "Location"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumntime
+msgid "Time"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr ""
+
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr ""
@@ -3536,6 +3561,11 @@ msgstr ""
 msgid "Address:"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr ""
@@ -3646,6 +3676,10 @@ msgstr ""
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Sta het zoeken naar meerdere lijnen toe"
+
+#: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
+msgid "All parameters of this function are already set at this call. Nothing to add."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
@@ -4011,6 +4045,10 @@ msgstr "Bouw Number"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
+msgstr ""
+
+#: lazarusidestrconsts.liscallstacknotevaluated
+msgid "Stack not evaluated"
 msgstr ""
 
 #: lazarusidestrconsts.liscancel
@@ -7411,6 +7449,10 @@ msgstr ""
 msgid "E&valuate"
 msgstr ""
 
+#: lazarusidestrconsts.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr ""
+
 #: lazarusidestrconsts.liseventlogclear
 msgid "Clear Events"
 msgstr ""
@@ -8651,6 +8693,14 @@ msgstr ""
 msgid "Abort building"
 msgstr ""
 
+#: lazarusidestrconsts.liskmaddbpaddress
+msgid "Add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.liskmaddbpsource
+msgid "Add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr ""
@@ -9087,6 +9137,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
+msgstr ""
+
+#: lazarusidestrconsts.liskmtoggleviewhistory
+msgid "Toggle view History"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
@@ -9599,6 +9653,14 @@ msgstr ""
 msgid "Locals"
 msgstr ""
 
+#: lazarusidestrconsts.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr ""
+
+#: lazarusidestrconsts.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgname
 msgctxt "lazarusidestrconsts.lislocalsdlgname"
 msgid "Name"
@@ -9608,6 +9670,10 @@ msgstr "Naam"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Waarde"
+
+#: lazarusidestrconsts.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
@@ -9773,10 +9839,6 @@ msgstr "Bouwen afbreken"
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
 msgstr ""
-
-#: lazarusidestrconsts.lismenuaddbpsource
-msgid "Source breakpoint"
-msgstr "Broncode breekpunt"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -10742,6 +10804,11 @@ msgstr "Debugger output"
 #| msgid "Forms..."
 msgid "Forms ..."
 msgstr "Forms..."
+
+#: lazarusidestrconsts.lismenuviewhistory
+msgctxt "lazarusidestrconsts.lismenuviewhistory"
+msgid "History"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 #, fuzzy
@@ -14026,10 +14093,6 @@ msgstr "Tab"
 msgid "Tab Order of %s"
 msgstr "Tab volgorde van"
 
-#: lazarusidestrconsts.listaddressbreakpoint
-msgid "&Address Breakpoint ..."
-msgstr ""
-
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
 msgstr "Doel processor"
@@ -14584,6 +14647,10 @@ msgstr "Regel"
 msgctxt "lazarusidestrconsts.listhreadsname"
 msgid "Name"
 msgstr "Naam"
+
+#: lazarusidestrconsts.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.listhreadssrc
 msgctxt "lazarusidestrconsts.listhreadssrc"
@@ -15912,6 +15979,14 @@ msgstr "Bouw afbreken"
 msgid "Abstract methods ..."
 msgstr ""
 
+#: lazarusidestrconsts.srkmecaddbpaddress
+msgid "add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecaddbpsource
+msgid "add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Springpunt toevoegen"
@@ -16874,6 +16949,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Toon Forms"
+
+#: lazarusidestrconsts.srkmecviewhistory
+msgid "View History"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgid "View Terminal Output"

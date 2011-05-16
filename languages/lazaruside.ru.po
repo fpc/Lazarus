@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-14 01:25+0300\n"
+"PO-Revision-Date: 2011-05-17 03:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3149,6 +3149,31 @@ msgstr "Z-порядок"
 msgid "On Both Sides"
 msgstr "С обеих сторон"
 
+#: lazarusidestrconsts.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr "Очистить все снимки"
+
+#: lazarusidestrconsts.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr "Переключить отображение между снимком и текущим состоянием"
+
+#: lazarusidestrconsts.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr "Включить/выключить автоматические снимки"
+
+#: lazarusidestrconsts.histdlgcolumnloc
+msgid "Location"
+msgstr "Расположение"
+
+#: lazarusidestrconsts.histdlgcolumntime
+msgid "Time"
+msgstr "Время"
+
+#: lazarusidestrconsts.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr "История"
+
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr "0 = не отображать, 1 = отображать только для верхнего уровня, 2 = отображать для первых двух уровней и т.д."
@@ -3550,6 +3575,11 @@ msgstr "Добавлять скобки для параметров"
 msgid "Address:"
 msgstr "Адрес:"
 
+#: lazarusidestrconsts.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr "Точка останова по &адресу ..."
+
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr "Добавить к путям поиска включаемых файлов?"
@@ -3659,6 +3689,10 @@ msgstr "Разрешить вызовы функций"
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Разрешить поиск для нескольких строк"
+
+#: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
+msgid "All parameters of this function are already set at this call. Nothing to add."
+msgstr "Все параметры в вызове данной функции уже определены. Добавлять нечего."
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
@@ -4023,6 +4057,10 @@ msgstr "Номер сборки"
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Вызов %s для создания Makefile из %s не удался."
+
+#: lazarusidestrconsts.liscallstacknotevaluated
+msgid "Stack not evaluated"
+msgstr "Стек не определён"
 
 #: lazarusidestrconsts.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -7425,6 +7463,10 @@ msgstr "Вычислить выражение"
 msgid "E&valuate"
 msgstr "&Вычислить"
 
+#: lazarusidestrconsts.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr "&Вычислить/Изменить"
+
 #: lazarusidestrconsts.liseventlogclear
 msgid "Clear Events"
 msgstr "Очистить события"
@@ -8674,6 +8716,14 @@ msgstr "Клавиша (или двухклавишная комбинация)"
 msgid "Abort building"
 msgstr "Прервать сборку"
 
+#: lazarusidestrconsts.liskmaddbpaddress
+msgid "Add address breakpoint"
+msgstr "Добавить точку останова по адресу"
+
+#: lazarusidestrconsts.liskmaddbpsource
+msgid "Add source breakpoint"
+msgstr "Добавить точку останова в исходном коде"
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr "Добавить наблюдение"
@@ -9113,6 +9163,10 @@ msgstr "Показать вывод отладчика"
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
 msgstr "Показать редактор документации"
+
+#: lazarusidestrconsts.liskmtoggleviewhistory
+msgid "Toggle view History"
+msgstr "Показать историю"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
@@ -9622,7 +9676,15 @@ msgstr "Загрузка %s не удалась."
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
-msgstr "Локальные"
+msgstr "Локальные переменные"
+
+#: lazarusidestrconsts.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr "Копировать &имя"
+
+#: lazarusidestrconsts.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr "Копировать &значение"
 
 #: lazarusidestrconsts.lislocalsdlgname
 msgctxt "lazarusidestrconsts.lislocalsdlgname"
@@ -9633,6 +9695,10 @@ msgstr "Имя"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Значение"
+
+#: lazarusidestrconsts.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr "Локальные переменные не определены"
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
@@ -9799,10 +9865,6 @@ msgstr "Прервать сборку"
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
 msgstr "Информация о компиляторе FPC"
-
-#: lazarusidestrconsts.lismenuaddbpsource
-msgid "Source breakpoint"
-msgstr "Точка останова в исходном коде"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -10750,6 +10812,11 @@ msgstr "Вывод отладчика"
 #| msgid "Forms..."
 msgid "Forms ..."
 msgstr "Формы ..."
+
+#: lazarusidestrconsts.lismenuviewhistory
+msgctxt "lazarusidestrconsts.lismenuviewhistory"
+msgid "History"
+msgstr "История"
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 #| msgid "View IDE speed buttons"
@@ -14029,11 +14096,6 @@ msgstr "Таб"
 msgid "Tab Order of %s"
 msgstr "Порядок перехода для %s"
 
-#: lazarusidestrconsts.listaddressbreakpoint
-#| msgid "&Address Breakpoint..."
-msgid "&Address Breakpoint ..."
-msgstr "Точка останова по &адресу ..."
-
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
 msgstr "Семейство процессоров"
@@ -14294,7 +14356,7 @@ msgstr "Требуемый для исполнения Application Bundle %s%sн
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
-msgstr "Запускающее приложение %s%s%s%не существует или не является исполнимым файлом.%s%sСмотрите Запуск -> Параметры запуска... -> Локальные"
+msgstr "Запускающее приложение %s%s%s%sне существует или не является исполнимым файлом.%s%sСмотрите Запуск -> Параметры запуска -> Локальные"
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 #| msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file ide%slazarus.lpi. The translation files are located there too."
@@ -14583,6 +14645,10 @@ msgstr "Строка"
 msgctxt "lazarusidestrconsts.listhreadsname"
 msgid "Name"
 msgstr "Имя"
+
+#: lazarusidestrconsts.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr "Потоки исполнения не определены"
 
 #: lazarusidestrconsts.listhreadssrc
 msgctxt "lazarusidestrconsts.listhreadssrc"
@@ -15915,6 +15981,14 @@ msgstr "Прервать сборку"
 msgid "Abstract methods ..."
 msgstr "Абстрактные методы ..."
 
+#: lazarusidestrconsts.srkmecaddbpaddress
+msgid "add address breakpoint"
+msgstr "добавить точку останова по адресу"
+
+#: lazarusidestrconsts.srkmecaddbpsource
+msgid "add source breakpoint"
+msgstr "добавить точку останова в исходном коде"
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Добавить точку перехода"
@@ -16878,6 +16952,10 @@ msgstr "Показать список компонентов"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Показать формы"
+
+#: lazarusidestrconsts.srkmecviewhistory
+msgid "View History"
+msgstr "Показать историю"
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgid "View Terminal Output"

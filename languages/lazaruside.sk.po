@@ -3143,6 +3143,31 @@ msgstr ""
 msgid "On Both Sides"
 msgstr ""
 
+#: lazarusidestrconsts.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumnloc
+msgid "Location"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumntime
+msgid "Time"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr ""
+
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr ""
@@ -3545,6 +3570,11 @@ msgstr ""
 msgid "Address:"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr ""
@@ -3655,6 +3685,10 @@ msgstr "Povoliť Function Calls"
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Dovoliť hľadanie na viacerých riadkoch"
+
+#: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
+msgid "All parameters of this function are already set at this call. Nothing to add."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
@@ -4021,6 +4055,10 @@ msgstr "Číslo vybudovania"
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Volanie %s na vytvorenie Makefile z %s zlyhalo."
+
+#: lazarusidestrconsts.liscallstacknotevaluated
+msgid "Stack not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -7426,6 +7464,10 @@ msgstr ""
 msgid "E&valuate"
 msgstr ""
 
+#: lazarusidestrconsts.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr ""
+
 #: lazarusidestrconsts.liseventlogclear
 msgid "Clear Events"
 msgstr ""
@@ -8678,6 +8720,14 @@ msgstr "Kláves (alebo postupnosť dvoch)"
 msgid "Abort building"
 msgstr "Zrušiť budovanie"
 
+#: lazarusidestrconsts.liskmaddbpaddress
+msgid "Add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.liskmaddbpsource
+msgid "Add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr "Pridať pozorovanie"
@@ -9115,6 +9165,10 @@ msgstr "Prepnúť zobrazenie Výstup debugera"
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
 msgstr "Prepnúť zobrazenie Editor dokumentácie"
+
+#: lazarusidestrconsts.liskmtoggleviewhistory
+msgid "Toggle view History"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
@@ -9630,6 +9684,14 @@ msgstr "načítanie %s zlyhalo."
 msgid "Locals"
 msgstr ""
 
+#: lazarusidestrconsts.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr ""
+
+#: lazarusidestrconsts.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgname
 msgctxt "lazarusidestrconsts.lislocalsdlgname"
 msgid "Name"
@@ -9639,6 +9701,10 @@ msgstr "Meno"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Hodnota"
+
+#: lazarusidestrconsts.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
@@ -9804,10 +9870,6 @@ msgstr "Zrušiť budovanie"
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
 msgstr ""
-
-#: lazarusidestrconsts.lismenuaddbpsource
-msgid "Source breakpoint"
-msgstr "Bod prerušenia zdrojového kódu"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -10777,6 +10839,11 @@ msgstr "Výstup ladenia"
 #| msgid "Forms..."
 msgid "Forms ..."
 msgstr "Formuláre ..."
+
+#: lazarusidestrconsts.lismenuviewhistory
+msgctxt "lazarusidestrconsts.lismenuviewhistory"
+msgid "History"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 #, fuzzy
@@ -14067,10 +14134,6 @@ msgstr "Tabulátor"
 msgid "Tab Order of %s"
 msgstr "Poradie pre tabulátor"
 
-#: lazarusidestrconsts.listaddressbreakpoint
-msgid "&Address Breakpoint ..."
-msgstr ""
-
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
 msgstr "Cieľový CPU"
@@ -14625,6 +14688,10 @@ msgstr "Riadok"
 msgctxt "lazarusidestrconsts.listhreadsname"
 msgid "Name"
 msgstr "Meno"
+
+#: lazarusidestrconsts.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.listhreadssrc
 msgctxt "lazarusidestrconsts.listhreadssrc"
@@ -15961,6 +16028,14 @@ msgstr "zrušiť budovanie"
 msgid "Abstract methods ..."
 msgstr ""
 
+#: lazarusidestrconsts.srkmecaddbpaddress
+msgid "add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecaddbpsource
+msgid "add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Pridať bod skoku"
@@ -16923,6 +16998,10 @@ msgstr "Zobraziť komponenty"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Zobraziť formuláre"
+
+#: lazarusidestrconsts.srkmecviewhistory
+msgid "View History"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgid "View Terminal Output"

@@ -3138,6 +3138,31 @@ msgstr ""
 msgid "On Both Sides"
 msgstr ""
 
+#: lazarusidestrconsts.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumnloc
+msgid "Location"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumntime
+msgid "Time"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr ""
+
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr ""
@@ -3540,6 +3565,11 @@ msgstr ""
 msgid "Address:"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr ""
@@ -3650,6 +3680,10 @@ msgstr ""
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Ijinkan pencarian untuk multipel baris"
+
+#: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
+msgid "All parameters of this function are already set at this call. Nothing to add."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
@@ -4015,6 +4049,10 @@ msgstr "Angka Buatan"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
+msgstr ""
+
+#: lazarusidestrconsts.liscallstacknotevaluated
+msgid "Stack not evaluated"
 msgstr ""
 
 #: lazarusidestrconsts.liscancel
@@ -7419,6 +7457,10 @@ msgstr ""
 msgid "E&valuate"
 msgstr ""
 
+#: lazarusidestrconsts.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr ""
+
 #: lazarusidestrconsts.liseventlogclear
 msgid "Clear Events"
 msgstr ""
@@ -8661,6 +8703,14 @@ msgstr ""
 msgid "Abort building"
 msgstr "Batalkan pembuatan"
 
+#: lazarusidestrconsts.liskmaddbpaddress
+msgid "Add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.liskmaddbpsource
+msgid "Add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr "Tambah pengawasan"
@@ -9098,6 +9148,10 @@ msgstr "Toggle lihat Output Debugger"
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
 msgstr "Toggle lihat Editor Dokumentasi"
+
+#: lazarusidestrconsts.liskmtoggleviewhistory
+msgid "Toggle view History"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
@@ -9609,6 +9663,14 @@ msgstr ""
 msgid "Locals"
 msgstr ""
 
+#: lazarusidestrconsts.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr ""
+
+#: lazarusidestrconsts.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgname
 msgctxt "lazarusidestrconsts.lislocalsdlgname"
 msgid "Name"
@@ -9618,6 +9680,10 @@ msgstr "Nama"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Nilai"
+
+#: lazarusidestrconsts.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
@@ -9783,10 +9849,6 @@ msgstr "Batalkan Pembangunan"
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
 msgstr ""
-
-#: lazarusidestrconsts.lismenuaddbpsource
-msgid "Source breakpoint"
-msgstr "Sumber breakpoint"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -10754,6 +10816,11 @@ msgstr "Output Debug"
 #| msgid "Forms..."
 msgid "Forms ..."
 msgstr "Forms..."
+
+#: lazarusidestrconsts.lismenuviewhistory
+msgctxt "lazarusidestrconsts.lismenuviewhistory"
+msgid "History"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 #, fuzzy
@@ -14038,10 +14105,6 @@ msgstr "Tab"
 msgid "Tab Order of %s"
 msgstr "Urutan Tab dari"
 
-#: lazarusidestrconsts.listaddressbreakpoint
-msgid "&Address Breakpoint ..."
-msgstr ""
-
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
 msgstr "Target CPU"
@@ -14596,6 +14659,10 @@ msgstr "Baris"
 msgctxt "lazarusidestrconsts.listhreadsname"
 msgid "Name"
 msgstr "Nama"
+
+#: lazarusidestrconsts.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.listhreadssrc
 msgctxt "lazarusidestrconsts.listhreadssrc"
@@ -15924,6 +15991,14 @@ msgstr "batalkan pembangunan"
 msgid "Abstract methods ..."
 msgstr ""
 
+#: lazarusidestrconsts.srkmecaddbpaddress
+msgid "add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecaddbpsource
+msgid "add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Tambahkan titik lompat"
@@ -16886,6 +16961,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Lihat form"
+
+#: lazarusidestrconsts.srkmecviewhistory
+msgid "View History"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgid "View Terminal Output"

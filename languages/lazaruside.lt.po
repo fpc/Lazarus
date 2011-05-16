@@ -3137,6 +3137,31 @@ msgstr "Z eilė"
 msgid "On Both Sides"
 msgstr "Abiejose pusėse"
 
+#: lazarusidestrconsts.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumnloc
+msgid "Location"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgcolumntime
+msgid "Time"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr ""
+
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
 msgstr "Jei 0, tai skyriklio linijos brėžiamos nebus; jei 1, tai linijos bus brėžiamos tik viršutiniame lygyje; jei 2, tai linijos bus brėžiamos pirmiems dviems lygiams;..."
@@ -3539,6 +3564,11 @@ msgstr "Pridėti parametro skliaustelius"
 msgid "Address:"
 msgstr ""
 
+#: lazarusidestrconsts.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
 msgstr ""
@@ -3649,6 +3679,10 @@ msgstr "Leisti kreiptis į funkciją"
 #: lazarusidestrconsts.lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
 msgstr "Ar galima keletos eilučių paieška"
+
+#: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
+msgid "All parameters of this function are already set at this call. Nothing to add."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
@@ -4020,6 +4054,10 @@ msgstr "Darymo numeris"
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Besikreipiant į %s, kad pagal %s būtų sukurtas Makefile, įvyko klaida."
+
+#: lazarusidestrconsts.liscallstacknotevaluated
+msgid "Stack not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -7422,6 +7460,10 @@ msgstr "Apskaičiuoti reiškinį"
 msgid "E&valuate"
 msgstr "Ap&skaičiuoti"
 
+#: lazarusidestrconsts.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr ""
+
 #: lazarusidestrconsts.liseventlogclear
 msgid "Clear Events"
 msgstr ""
@@ -8673,6 +8715,14 @@ msgstr "Klavišas (arba dviejų klavišų seka)"
 msgid "Abort building"
 msgstr "Nutraukti darymą"
 
+#: lazarusidestrconsts.liskmaddbpaddress
+msgid "Add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.liskmaddbpsource
+msgid "Add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr "Pridėti stebimąjį"
@@ -9110,6 +9160,10 @@ msgstr "Keisti „Derintuvės išvestis“ matomumą"
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
 msgstr "Keisti „Dokumentacijos rengyklė“ matomumą"
+
+#: lazarusidestrconsts.liskmtoggleviewhistory
+msgid "Toggle view History"
+msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
@@ -9628,6 +9682,14 @@ msgstr "Nepavyko įkelti %s."
 msgid "Locals"
 msgstr "Vietiniai kintamieji"
 
+#: lazarusidestrconsts.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr ""
+
+#: lazarusidestrconsts.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgname
 msgctxt "lazarusidestrconsts.lislocalsdlgname"
 msgid "Name"
@@ -9637,6 +9699,10 @@ msgstr "Pavadinimas"
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
 msgid "Value"
 msgstr "Vertė"
+
+#: lazarusidestrconsts.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
@@ -9804,10 +9870,6 @@ msgstr "Nutraukti darymą"
 #: lazarusidestrconsts.lismenuaboutfpc
 msgid "About FPC"
 msgstr ""
-
-#: lazarusidestrconsts.lismenuaddbpsource
-msgid "Source breakpoint"
-msgstr "Stabdos taškas pirminiame kode"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -10772,6 +10834,11 @@ msgstr "Derinimo išvestis"
 #| msgid "Forms..."
 msgid "Forms ..."
 msgstr "Formos…"
+
+#: lazarusidestrconsts.lismenuviewhistory
+msgctxt "lazarusidestrconsts.lismenuviewhistory"
+msgid "History"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
 #| msgid "View IDE speed buttons"
@@ -14060,10 +14127,6 @@ msgstr "Tab"
 msgid "Tab Order of %s"
 msgstr "Vieta tabuliatoriaus eilėje"
 
-#: lazarusidestrconsts.listaddressbreakpoint
-msgid "&Address Breakpoint ..."
-msgstr ""
-
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
 msgstr "Skirtas procesoriui"
@@ -14621,6 +14684,10 @@ msgstr "Eilutė"
 msgctxt "lazarusidestrconsts.listhreadsname"
 msgid "Name"
 msgstr "Pavadinimas"
+
+#: lazarusidestrconsts.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr ""
 
 #: lazarusidestrconsts.listhreadssrc
 msgctxt "lazarusidestrconsts.listhreadssrc"
@@ -15957,6 +16024,14 @@ msgstr "nutraukti darymą"
 msgid "Abstract methods ..."
 msgstr ""
 
+#: lazarusidestrconsts.srkmecaddbpaddress
+msgid "add address breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecaddbpsource
+msgid "add source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
 msgstr "Pridėti peršokimo tašką"
@@ -16920,6 +16995,10 @@ msgstr "Rodyti komponentes"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Rodyti formas"
+
+#: lazarusidestrconsts.srkmecviewhistory
+msgid "View History"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecviewpseudoterminal
 msgid "View Terminal Output"

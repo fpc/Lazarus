@@ -135,7 +135,7 @@ msgstr "&Закрыть"
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
-msgstr ""
+msgstr "Сведения об элементе кода"
 
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
@@ -215,7 +215,7 @@ msgstr "Модуль не выбран"
 
 #: codystrconsts.crsoptions
 msgid "Options"
-msgstr ""
+msgstr "Параметры"
 
 #: codystrconsts.crspackage
 msgid "Package"
@@ -247,7 +247,7 @@ msgstr "Вывод проекта"
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"
-msgstr ""
+msgstr "Обновить"
 
 #: codystrconsts.crsremovewithblock
 msgid "Remove With block"
@@ -255,7 +255,7 @@ msgstr "Удалить блок With"
 
 #: codystrconsts.crsreport
 msgid "Report"
-msgstr ""
+msgstr "Отчёт"
 
 #: codystrconsts.crssearching
 msgid "searching ..."
@@ -263,7 +263,7 @@ msgstr "поиск ..."
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools node info ..."
-msgstr ""
+msgstr "Показать сведения об элементе CodeTools ..."
 
 #: codystrconsts.crsshowusedppufiles
 #| msgid "Show used .ppu files"
