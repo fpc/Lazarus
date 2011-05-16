@@ -96,6 +96,9 @@ procedure TIDEInfoDialog.GatherParameters(sl: TStrings);
 var
   i: Integer;
 begin
+  sl.Add('Working directory='+GetCurrentDirUTF8);
+  sl.Add('Application.ExeName='+Application.ExeName);
+  sl.Add('');
   sl.add('Parameters:');
   for i:=0 to Paramcount do
     sl.Add(ParamStrUTF8(i));
