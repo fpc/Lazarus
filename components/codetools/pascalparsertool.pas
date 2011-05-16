@@ -3128,7 +3128,7 @@ begin
       end;
     end else
       ReadNextAtom;
-    if CurPos.Flag<>cafSemicolon then
+    if not (CurPos.Flag in [cafSemicolon,cafRoundBracketClose]) then
       RaiseCharExpectedButAtomFound(';');
     EndChildNode;
   end else
@@ -4251,7 +4251,7 @@ function TPascalParserTool.KeyWordFuncTypeRecordCase: boolean;
          j: integer;
          k: record end;
          case y: integer of
-           0: (a: integer);
+           0: (a: integer deprecated);
            1,2,3: (b: array[char] of char; c: char);
            3: ( d: record
                      case byte of
@@ -4354,6 +4354,7 @@ begin
           debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase ParseType failed']);
           exit;
         end;
+        ReadHintModifier;
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode; // close variable definition
       end;
