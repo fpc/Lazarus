@@ -73,6 +73,8 @@ type
     procedure mnuViewDebugDialogClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender: TObject);
     procedure mnuAddWatchClicked(Sender: TObject);
+    procedure mnuAddBpAddress(Sender: TObject);
+    procedure mnuAddBpSource(Sender: TObject);
 
     // Debugger events
     procedure DebuggerBreakPointHit(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
@@ -618,6 +620,29 @@ end;
 procedure TDebugManager.DebuggerIdle(Sender: TObject);
 begin
   FSnapshots.DoDebuggerIdle;
+end;
+
+procedure TDebugManager.mnuAddBpAddress(Sender: TObject);
+var
+  NewBreakpoint: TIDEBreakPoint;
+begin
+  NewBreakpoint := BreakPoints.Add(0);
+  if ShowBreakPointProperties(NewBreakpoint) <> mrOk then
+    NewBreakpoint.Free;
+end;
+
+procedure TDebugManager.mnuAddBpSource(Sender: TObject);
+var
+  NewBreakpoint: TIDEBreakPoint;
+  SrcEdit: TSourceEditor;
+begin
+  SrcEdit := SourceEditorManager.GetActiveSE;
+  if SrcEdit <> nil then
+    NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CurrentCursorYLine)
+  else
+    NewBreakpoint := BreakPoints.Add('', 0);
+  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) <> mrOk then
+    NewBreakpoint.Free;
 end;
 
 procedure TDebugManager.BreakAutoContinueTimer(Sender: TObject);
@@ -1406,7 +1431,9 @@ begin
     itmRunMenuEvaluate.OnClick := @mnuViewDebugDialogClick;
     itmRunMenuEvaluate.Tag := Ord(ddtEvaluate);
     itmRunMenuAddWatch.OnClick := @mnuAddWatchClicked;
-//    itmRunMenuAddBpSource.OnClick := @;
+
+    itmRunMenuAddBpSource.OnClick  := @mnuAddBpSource;
+    itmRunMenuAddBpAddress.OnClick  := @mnuAddBpAddress;
 
     // TODO: add capacibilities to DebuggerClass
     // and disable unsuported items
@@ -1452,6 +1479,8 @@ begin
     itmRunMenuInspect.Command:=GetCommand(ecInspect);
     itmRunMenuEvaluate.Command:=GetCommand(ecEvaluate);
     itmRunMenuAddWatch.Command:=GetCommand(ecAddWatch);
+    itmRunMenuAddBpSource.Command:=GetCommand(ecAddBpSource);
+    itmRunMenuAddBpAddress.Command:=GetCommand(ecAddBpAddress);
   end;
 end;
 
@@ -1531,6 +1560,10 @@ begin
             and (dcEvaluate in FDebugger.Commands);
     // Add watch
     itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
+
+    // Add Breakpoint
+    itmRunMenuAddBpSource.Enabled := True;
+    itmRunMenuAddBpAddress.Enabled := True;
 
     // TODO: add capacibilities to DebuggerClass
     // menu view

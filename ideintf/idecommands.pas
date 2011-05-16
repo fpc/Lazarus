@@ -255,6 +255,8 @@ const
   ecStepIntoContext         = ecFirstLazarus + 422;
   ecStepOverContext         = ecFirstLazarus + 423;
   ecBuildAdvancedLazarus    = ecFirstLazarus + 424;
+  ecAddBpSource             = ecFirstLazarus + 425;
+  ecAddBpAddress            = ecFirstLazarus + 426;
 
   // 450++ : used for ecViewHistory (debugger)
 

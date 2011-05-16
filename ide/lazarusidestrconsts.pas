@@ -394,7 +394,6 @@ resourcestring
   lisMenuEvaluate = 'Evaluate/Modify ...';
   lisMenuAddWatch= 'Add watch ...';
   lisMenuAddBreakpoint = 'Add breakpoint';
-  lisMenuAddBpSource = 'Source breakpoint';
 
   lisInspectDialog = 'Debug Inspector';
   lisInspectData = 'Data';
@@ -4626,7 +4625,7 @@ resourcestring
   lisPassCount = 'Pass Count';
   lisGroup = 'Group';
   lisSourceBreakpoint = '&Source Breakpoint ...';
-  listAddressBreakpoint = '&Address Breakpoint ...';
+  lisAddressBreakpoint = '&Address Breakpoint ...';
   lisEnableAll = '&Enable All';
   lisDeleteAll = '&Delete All';
   lisDisableAllInSameSource = 'Disable All in same source';

@@ -350,7 +350,7 @@ begin
   actShow.Caption := lisShow;
   popAdd.Caption:= lisLazBuildAdd;
   actAddSourceBP.Caption := lisSourceBreakpoint;
-  actAddAddressBP.Caption := listAddressBreakpoint;
+  actAddAddressBP.Caption := lisAddressBreakpoint;
 end;
 
 procedure TBreakPointsDlg.actEnableSelectedExecute(Sender: TObject);

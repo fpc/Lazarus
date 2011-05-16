@@ -301,6 +301,7 @@ type
         itmRunMenuAddWatch: TIDEMenuCommand;
         //itmRunMenuAddBreakpoint: TIDEMenuSection;
           itmRunMenuAddBpSource: TIDEMenuCommand;
+          itmRunMenuAddBpAddress: TIDEMenuCommand;
 
     // components menu
     //mnuComponents: TIDEMenuSection;
