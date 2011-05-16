@@ -389,10 +389,12 @@ resourcestring
   lisKMInspect = 'Inspect';
   lisKMEvaluateModify = 'Evaluate/Modify';
   lisKMAddWatch = 'Add watch';
+  lisKMAddBpSource = 'Add source breakpoint';
+  lisKMAddBpAddress = 'Add address breakpoint';
   lisMenuConfigBuildFile = 'Configure Build+Run File ...';
   lisMenuInspect = 'Inspect ...';
   lisMenuEvaluate = 'Evaluate/Modify ...';
-  lisMenuAddWatch= 'Add watch ...';
+  lisMenuAddWatch = 'Add watch ...';
   lisMenuAddBreakpoint = 'Add breakpoint';
 
   lisInspectDialog = 'Debug Inspector';
@@ -2702,6 +2704,8 @@ resourcestring
   srkmecInspect                   = 'inspect';
   srkmecEvaluate                  = 'evaluate/modify';
   srkmecAddWatch                  = 'add watch';
+  srkmecAddBpSource               = 'add source breakpoint';
+  srkmecAddBpAddress              = 'add address breakpoint';
 
   // tools menu
   srkmecExtToolSettings           = 'External tools settings';

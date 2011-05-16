@@ -568,6 +568,8 @@ begin
   ecInspect: SetResult(VK_F5,[ssAlt],VK_UNKNOWN,[]);
   ecEvaluate: SetResult(VK_F7,[ssCtrl],VK_UNKNOWN,[]);
   ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_UNKNOWN,[]);
+  ecAddBpSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpAddress: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // components menu
   ecNewPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1007,6 +1009,8 @@ begin
   ecInspect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEvaluate: SetResult(VK_F4,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddWatch: SetResult(VK_F7,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpAddress: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // components menu
   ecNewPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1628,6 +1632,8 @@ begin
   ecInspect: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEvaluate: SetResult(VK_E,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecAddWatch: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpAddress: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // components menu
   ecNewPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1792,6 +1798,8 @@ begin
   ecInspect: SetResult(VK_F5,[ssAlt],VK_UNKNOWN,[]);
   ecEvaluate: SetResult(VK_F7,[ssCtrl],VK_F7,[ssCtrl,ssMeta]);
   ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_F5,[ssCtrl,ssMeta]);
+  ecAddBpSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpAddress: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   end;
 end;
 
@@ -2167,6 +2175,8 @@ begin
     ecInspect                 : Result:= srkmecInspect;
     ecEvaluate                : Result:= srkmecEvaluate;
     ecAddWatch                : Result:= srkmecAddWatch;
+    ecAddBpSource             : Result:= srkmecAddBpSource;
+    ecAddBpAddress            : Result:= srkmecAddBpAddress;
 
     // components menu
     ecNewPackage              : Result:= lisKMNewPackage;
@@ -2813,6 +2823,8 @@ begin
   AddDefault(C, 'Inspect', lisKMInspect, ecInspect);
   AddDefault(C, 'Evaluate/Modify', lisKMEvaluateModify, ecEvaluate);
   AddDefault(C, 'Add watch', lisKMAddWatch, ecAddWatch);
+  AddDefault(C, 'Add source breakpoint', lisKMAddBpSource, ecAddBpSource);
+  AddDefault(C, 'Add address breakpoint', lisKMAddBpAddress, ecAddBpAddress);
 
   // components menu
   C:=Categories[AddCategory('Components',srkmCatPackageMenu,nil)];
