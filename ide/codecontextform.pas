@@ -710,6 +710,7 @@ var
     LastTokenEnd: LongInt;
     Line: string;
     Item: TCodeContextItem;
+    y: LongInt;
   begin
     Item:=Hints[Index];
     Line:=Item.Hint;
@@ -721,12 +722,6 @@ var
     LineHeight:=0;
     TokenPos:=Point(ATextRect.Left,ATextRect.Top);
     TokenEnd:=1;
-    if Draw and (Item.CopyAllButton<>nil) then begin
-      // move button at end of first line
-      Item.CopyAllButton.SetBounds(
-        AHintRect.Right-RightSpace,AHintRect.Top,FBtnWidth,FBtnWidth);
-      Item.CopyAllButton.Visible:=true;
-    end;
     while (TokenEnd<=length(Line)) do begin
       LastTokenEnd:=TokenEnd;
       ReadRawNextPascalAtom(Line,TokenEnd,TokenStart);
@@ -815,6 +810,15 @@ var
     if (not Draw) and (UsedWidth>0) then
       AHintRect.Right:=UsedWidth+RightSpace;
     AHintRect.Bottom:=TokenPos.Y+LineHeight+VerticalSpace;
+
+    if Draw and (Item.CopyAllButton<>nil) then begin
+      // move button at end of first line
+      y:=ATextRect.Top;
+      if LineHeight>FBtnWidth then
+        inc(y,(LineHeight-FBtnWidth) div 2);
+      Item.CopyAllButton.SetBounds(AHintRect.Right-RightSpace,y,FBtnWidth,FBtnWidth);
+      Item.CopyAllButton.Visible:=true;
+    end;
   end;
   
 var
