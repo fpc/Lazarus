@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="IDEIntf">
+    <module name="PackageIntf">
+      <element name="TPackageEditingInterface.CheckInstallPackageList">
+        <short>Use this function to do some sanity checks for the newly installed packages</short>
+        <descr>PkgIDList is a list of TLazPackageID</descr>
+      </element>
+      <element name="TPackageEditingInterface.InstallPackages">
+        <short>Install new packages into the IDE</short>
+        <descr>PkgIDList is a list of TLazPackageID</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

@@ -297,6 +297,7 @@
         <UnitName Value="compoptsintf"/>
       </Item68>
     </Files>
+    <LazDoc Paths="docs"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>

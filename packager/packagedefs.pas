@@ -764,7 +764,7 @@ type
     property AddToProjectUsesSection: boolean read FAddToProjectUsesSection
                                               write SetAddToProjectUsesSection;
     property Author: string read FAuthor write SetAuthor;
-    property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
+    property AutoCreated: boolean read FAutoCreated write SetAutoCreated; // do not save
     property AutoIncrementVersionOnBuild: boolean
                                            read GetAutoIncrementVersionOnBuild
                                            write SetAutoIncrementVersionOnBuild;

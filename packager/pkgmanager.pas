@@ -302,7 +302,8 @@ type
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage;
                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
-    function CheckInstallPackageList(PkgIDList: TObjectList): boolean; override;
+    function CheckInstallPackageList(PkgIDList: TObjectList;
+                          Flags: TPkgInstallInIDEFlags = []): boolean; override;
     function InstallPackages(PkgIdList: TObjectList;
                                Flags: TPkgInstallInIDEFlags = []): TModalResult; override;
     procedure DoTranslatePackage(APackage: TLazPackage);
@@ -3668,7 +3669,8 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.CheckInstallPackageList(PkgIDList: TObjectList): boolean;
+function TPkgManager.CheckInstallPackageList(PkgIDList: TObjectList;
+  Flags: TPkgInstallInIDEFlags): boolean;
 var
   NewFirstAutoInstallDependency: TPkgDependency;
   PkgList: TFPList;
@@ -3676,6 +3678,7 @@ var
   APackage: TLazPackage;
   ADependency: TPkgDependency;
   NextDependency: TPkgDependency;
+  SaveFlags: TPkgSaveFlags;
 begin
   Result:=false;
   PkgList:=nil;
@@ -3685,7 +3688,7 @@ begin
                               pdlRequires,Self,true);
 
     // load all required packages
-    if LoadDependencyList(NewFirstAutoInstallDependency,false)<>mrOk then exit;
+    if LoadDependencyList(NewFirstAutoInstallDependency,piiifQuiet in Flags)<>mrOk then exit;
 
     // remove all top level runtime packages from the list
     // Note: it's ok if a designtime package uses a runtime package
@@ -3707,7 +3710,8 @@ begin
       APackage:=TLazPackage(PkgList[i]);
       if (not APackage.AutoCreated)
       and (APackage.IsVirtual or APackage.Modified) then begin
-        if DoSavePackage(APackage,[])<>mrOk then exit;
+        SaveFlags:=[];
+        if DoSavePackage(APackage,SaveFlags)<>mrOk then exit;
       end;
     end;
 

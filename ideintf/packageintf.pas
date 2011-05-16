@@ -243,7 +243,8 @@ type
     function GetPackageOfEditorItem(Sender: TObject): TIDEPackage; virtual; abstract;
 
     // install
-    function CheckInstallPackageList(PkgIDList: TObjectList): boolean; virtual; abstract;
+    function CheckInstallPackageList(PkgIDList: TObjectList;
+                 Flags: TPkgInstallInIDEFlags = []): boolean; virtual; abstract;
     function InstallPackages(PkgIdList: TObjectList;
                   Flags: TPkgInstallInIDEFlags = []): TModalResult; virtual; abstract;
 
