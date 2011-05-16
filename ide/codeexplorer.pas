@@ -175,6 +175,7 @@ type
     fObserverCatNodes: array[TCEObserverCategory] of TTreeNode;
     fObserverCatOverflow: array[TCEObserverCategory] of boolean;
     fObserverNode: TTreeNode;
+    fSurroundingsNode: TTreeNode;
     FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
     FOnShowOptions: TNotifyEvent;
@@ -223,6 +224,7 @@ type
                             CodeNode: TCodeTreeNode; StartPos, EndPos: integer;
                             ObserverState: TCodeObserverStatementState);
     procedure FindObserverTodos(Tool: TCodeTool);
+    procedure CreateSurroundings(Tool: TCodeTool);
     procedure SetCodeFilter(const AValue: string);
     procedure SetCurrentPage(const AValue: TCodeExplorerPage);
     procedure SetDirectivesFilter(const AValue: string);
@@ -1288,7 +1290,7 @@ var
   Data: TViewNodeData;
   ObsTVNode: TTreeNode;
   NodeText: String;
-  NodeImageIndCex: LongInt;
+  NodeImageIndex: LongInt;
   TVNode: TTreeNode;
   ProcNode: TCodeTreeNode;
   OldPos: LongInt;
@@ -1353,12 +1355,12 @@ var
               phpWithoutClassName])]);
             Tool.MoveCursorToCleanPos(OldPos);
           end;
-          NodeImageIndCex:=ImgIDConst;
+          NodeImageIndex:=ImgIDConst;
           TVNode:=CodeTreeview.Items.AddChild(ObsTVNode,NodeText);
           TVNode.Data:=Data;
           TVNode.Text:=NodeText;
-          TVNode.ImageIndex:=NodeImageIndCex;
-          TVNode.SelectedIndex:=NodeImageIndCex;
+          TVNode.ImageIndex:=NodeImageIndex;
+          TVNode.SelectedIndex:=NodeImageIndex;
         end;
       end;
     end;
@@ -1432,12 +1434,12 @@ begin
                 phpWithoutClassName])]);
               Tool.MoveCursorToCleanPos(OldPos);
             end;
-            NodeImageIndCex:=ImgIDConst;
+            NodeImageIndex:=ImgIDConst;
             TVNode:=CodeTreeview.Items.AddChild(ObsTVNode,NodeText);
             TVNode.Data:=Data;
             TVNode.Text:=NodeText;
-            TVNode.ImageIndex:=NodeImageIndCex;
-            TVNode.SelectedIndex:=NodeImageIndCex;
+            TVNode.ImageIndex:=NodeImageIndex;
+            TVNode.SelectedIndex:=NodeImageIndex;
           end;
         end;
       end;
@@ -1600,6 +1602,43 @@ begin
     end;
     p:=CommentEndPos;
   until p>SrcLen;
+end;
+
+procedure TCodeExplorerView.CreateSurroundings(Tool: TCodeTool);
+var
+  CodeNode: TCodeTreeNode;
+  Data: TViewNodeData;
+  TVNode: TTreeNode;
+begin
+  {$IFNDEF EnableCESurroundings}
+  exit;
+  {$ENDIF}
+  if fSurroundingsNode = nil then
+  begin
+    fSurroundingsNode:=CodeTreeview.Items.Add(nil, 'Surroundings');
+    Data:=TViewNodeData.Create(Tool.Tree.Root);
+    Data.Desc:=ctnNone;
+    Data.StartPos:=Tool.SrcLen;
+    fSurroundingsNode.Data:=Data;
+    fSurroundingsNode.ImageIndex:=ImgIDSection;
+    fSurroundingsNode.SelectedIndex:=ImgIDSection;
+  end;
+  // add all top lvl sections
+  CodeNode:=Tool.Tree.Root;
+  while CodeNode<>nil do begin
+    Data:=TViewNodeData.Create(CodeNode);
+    Data.Desc:=CodeNode.Desc;
+    Data.SubDesc:=ctnsNone;
+    Data.StartPos:=CodeNode.StartPos;
+    Data.EndPos:=CodeNode.EndPos;
+    TVNode:=CodeTreeview.Items.AddChild(fSurroundingsNode,CodeNode.DescAsString);
+    TVNode.Data:=Data;
+    TVNode.ImageIndex:=GetCodeNodeImage(Tool,CodeNode);
+    TVNode.SelectedIndex:=TVNode.ImageIndex;
+
+    CodeNode:=CodeNode.NextBrother;
+  end;
+  fSurroundingsNode.Expand(true);
 end;
 
 procedure TCodeExplorerView.SetCodeFilter(const AValue: string);
@@ -1898,14 +1937,18 @@ begin
       fObserverNode:=nil;
       for f:=low(TCEObserverCategory) to high(TCEObserverCategory) do
         fObserverCatNodes[f]:=nil;
+      fSurroundingsNode:=nil;
 
       CodeTreeview.Items.Clear;
       if (ACodeTool<>nil) and (ACodeTool.Tree<>nil) and (ACodeTool.Tree.Root<>nil)
       then begin
         CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
-        if (Mode = cemCategory) and
-           (cecCodeObserver in CodeExplorerOptions.Categories) then
-          CreateObservations(ACodeTool);
+        if (Mode = cemCategory) then
+        begin
+          if (cecCodeObserver in CodeExplorerOptions.Categories) then
+            CreateObservations(ACodeTool);
+          CreateSurroundings(ACodeTool);
+        end;
       end;
 
       fSortCodeTool:=ACodeTool;
@@ -2205,6 +2248,9 @@ begin
   if (CodeTreeview=nil) then exit;
   TVNode:=CodeTreeview.Items.GetFirstNode;
   while TVNode<>nil do begin
+    if TVNode.Parent=nil then begin
+      if (TVNode=fObserverNode) or (TVNode=fSurroundingsNode) then break;
+    end;
     NodeData:=TViewNodeData(TVNode.Data);
     if (NodeData<>nil) and (NodeData.StartPos>0)
     and (NodeData.EndPos>=NodeData.StartPos) then begin
