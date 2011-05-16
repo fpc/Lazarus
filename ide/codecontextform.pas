@@ -470,6 +470,8 @@ begin
       Btn.Name:='CopyAllSpeedButton'+IntToStr(i+1);
       Btn.OnClick:=@CopyAllBtnClick;
       Btn.Visible:=false;
+      Btn.LoadGlyphFromLazarusResource('laz_copy');
+      Btn.Flat:=true;
       Btn.Parent:=Self;
       FHints.Add(Item);
     end;
