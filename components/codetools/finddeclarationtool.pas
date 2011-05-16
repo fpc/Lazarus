@@ -9462,7 +9462,12 @@ begin
                                        @AliasType);
   end;
 
-  Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params,@AliasType);
+  if AliasType.Node<>nil then begin
+    ExprType:=CleanExpressionType;
+    ExprType.Desc:=xtContext;
+    ExprType.Context:=AliasType;
+  end;
+  Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
 end;
 
 function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
