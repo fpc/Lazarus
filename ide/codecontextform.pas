@@ -818,7 +818,7 @@ var
       y:=ATextRect.Top;
       if LineHeight>FBtnWidth then
         inc(y,(LineHeight-FBtnWidth) div 2);
-      Item.CopyAllButton.SetBounds(AHintRect.Right-RightSpace,y,FBtnWidth,FBtnWidth);
+      Item.CopyAllButton.SetBounds(AHintRect.Right-RightSpace-1,y,FBtnWidth,FBtnWidth);
       Item.CopyAllButton.Visible:=true;
     end;
   end;
