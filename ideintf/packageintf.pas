@@ -187,6 +187,14 @@ const
     );
 
 type
+  TPkgInstallInIDEFlag = (
+    piiifQuiet,
+    piiifClear, // replace, clear the old list
+    piiifRebuildIDE,
+    piiifSkipChecks
+    );
+  TPkgInstallInIDEFlags = set of TPkgInstallInIDEFlag;
+
   TPkgIntfOwnerSearchFlag = (
     piosfExcludeOwned, // file must not be marked as part of project/package
     piosfIncludeSourceDirectories

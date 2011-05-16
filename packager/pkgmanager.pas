@@ -45,7 +45,7 @@ uses
   {$ENDIF}
   // FCL, LCL
   TypInfo, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
-  InterfaceBase, StringHashList, Translations, LResources,
+  contnrs, InterfaceBase, StringHashList, Translations, LResources,
   // codetools
   CodeToolsCfgScript, CodeToolsConfig, CodeToolManager, CodeCache,
   BasicCodeTools, FileProcs, Laz_XMLCfg,
@@ -155,7 +155,7 @@ type
     procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
                                           out Directory: string);
     procedure PackageFileLoaded(Sender: TObject);
-    procedure OnCheckInstallPackageList(PkgIDList: TFPList; out Ok: boolean);
+    procedure OnCheckInstallPackageList(PkgIDList: TObjectList; out Ok: boolean);
     function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
@@ -301,7 +301,8 @@ type
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage;
                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
-    function DoInstallPackages(PkgIdList: TFPList; AddExisting, RebuildIDE, Quiet: boolean;
+    //function CheckInstallPackageList(PkgIDList: TObjectList): boolean;
+    function DoInstallPackages(PkgIdList: TObjectList; AddExisting, RebuildIDE, Quiet: boolean;
                                CheckList: boolean = true): TModalResult;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
@@ -403,7 +404,7 @@ end;
 procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
 var
   RebuildIDE: Boolean;
-  PkgIDList: TFPList;
+  PkgIDList: TObjectList;
 begin
   RebuildIDE:=false;
   PkgIDList:=nil;
@@ -414,7 +415,7 @@ begin
 
     DoInstallPackages(PkgIDList,false,RebuildIDE,false,true);
   finally
-    if PkgIDList<>nil then FreeListObjects(PkgIDList,true);
+    PkgIDList.Free;
   end;
 end;
 
@@ -472,7 +473,7 @@ begin
   DoCallNotifyHandler(pihtPackageFileLoaded,Sender);
 end;
 
-procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TFPList;
+procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TObjectList;
   out Ok: boolean);
 var
   NewFirstAutoInstallDependency: TPkgDependency;
@@ -1991,7 +1992,7 @@ var
   i: Integer;
   PkgFile: TPkgFile;
   Msg: String;
-  PkgList: TFPList;
+  PkgList: TObjectList;
 begin
   Result:=mrOk;
   MissingUnits:=PackageGraph.FindNotInstalledRegisterUnits(nil,
@@ -2000,7 +2001,7 @@ begin
     if Interactive then begin 
       Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti, [#13,
         #13, #13, #13, #13, #13, #13, #13, #13]);
-      PkgList:=TFPList.Create;
+      PkgList:=TObjectList.Create(false);
       try
         for i:=0 to MissingUnits.Count-1 do begin
           PkgFile:=TPkgFile(MissingUnits[i]);
@@ -3707,7 +3708,7 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoInstallPackages(PkgIdList: TFPList; AddExisting,
+function TPkgManager.DoInstallPackages(PkgIdList: TObjectList; AddExisting,
   RebuildIDE, Quiet: boolean; CheckList: boolean): TModalResult;
 
   procedure CreateChangeReport(

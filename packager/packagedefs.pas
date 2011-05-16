@@ -45,8 +45,8 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, LResources, Graphics, Forms, FileProcs, FileUtil,
-  AVL_Tree, LazConfigStorage,
+  Classes, SysUtils, contnrs, LCLProc, LCLType, LResources, Graphics, Forms,
+  FileProcs, FileUtil, AVL_Tree, LazConfigStorage,
   CodeToolsCfgScript, DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf, IDEOptionsIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, 
@@ -899,7 +899,7 @@ procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
 procedure SavePkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
   First: TPkgDependency; ListType: TPkgDependencyList;
   UsePathDelim: TPathDelimSwitch);
-procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TFPList;
+procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TObjectList;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages: boolean);
 procedure DeleteDependencyInList(ADependency: TPkgDependency;
@@ -1055,7 +1055,7 @@ begin
   XMLConfig.SetDeleteValue(ThePath+'Count',i,0);
 end;
 
-procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TFPList;
+procedure ListPkgIDToDependencyList(ListOfTLazPackageID: TObjectList;
   var First: TPkgDependency; ListType: TPkgDependencyList; Owner: TObject;
   HoldPackages: boolean);
 var

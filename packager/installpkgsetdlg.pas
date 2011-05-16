@@ -38,7 +38,7 @@ unit InstallPkgSetDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Graphics, Dialogs,
   KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls,
   AVL_Tree, Laz_XMLCfg,
   PackageIntf, IDEImagesIntf, IDEHelpIntf,
@@ -47,7 +47,7 @@ uses
 
 type
   TOnCheckInstallPackageList =
-                          procedure(PkgIDs: TFPList; out Ok: boolean) of object;
+                      procedure(PkgIDs: TObjectList; out Ok: boolean) of object;
 
   { TInstallPkgSetDialog }
 
@@ -84,7 +84,7 @@ type
     procedure SaveAndExitButtonClick(Sender: TObject);
     procedure UninstallButtonClick(Sender: TObject);
   private
-    FNewInstalledPackages: TFPList;
+    FNewInstalledPackages: TObjectList;
     FOldInstalledPackages: TPkgDependency;
     FOnCheckInstallPackageList: TOnCheckInstallPackageList;
     fPackages: TAVLTree;// tree of TLazPackageID (all available packages and links)
@@ -116,10 +116,10 @@ type
     procedure AddToInstall;
     procedure AddToUninstall;
   public
-    function GetNewInstalledPackages: TFPList;
+    function GetNewInstalledPackages: TObjectList;
     property OldInstalledPackages: TPkgDependency read FOldInstalledPackages
                                                   write SetOldInstalledPackages;
-    property NewInstalledPackages: TFPList read FNewInstalledPackages;
+    property NewInstalledPackages: TObjectList read FNewInstalledPackages;
     property RebuildIDE: boolean read FRebuildIDE write FRebuildIDE;
     property OnCheckInstallPackageList: TOnCheckInstallPackageList
                read FOnCheckInstallPackageList write FOnCheckInstallPackageList;
@@ -127,7 +127,7 @@ type
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
   CheckInstallPackageList: TOnCheckInstallPackageList;
-  var NewInstalledPackages: TFPList; // list of TLazPackageID (must be freed)
+  var NewInstalledPackages: TObjectList; // list of TLazPackageID (must be freed)
   var RebuildIDE: boolean): TModalResult;
 
 implementation
@@ -136,7 +136,7 @@ implementation
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
   CheckInstallPackageList: TOnCheckInstallPackageList;
-  var NewInstalledPackages: TFPList; // list of TLazPackageID
+  var NewInstalledPackages: TObjectList; // list of TLazPackageID
   var RebuildIDE: boolean): TModalResult;
 var
   InstallPkgSetDialog: TInstallPkgSetDialog;
@@ -186,7 +186,7 @@ begin
   CancelButton.Caption:=dlgCancel;
 
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
-  FNewInstalledPackages:=TFPList.Create;
+  FNewInstalledPackages:=TObjectList.Create;
   
   PkgInfoMemo.Clear;
 end;
@@ -462,11 +462,7 @@ begin
 end;
 
 procedure TInstallPkgSetDialog.ClearNewInstalledPackages;
-var
-  i: Integer;
 begin
-  for i:=0 to FNewInstalledPackages.Count-1 do
-    TObject(FNewInstalledPackages[i]).Free;
   FNewInstalledPackages.Clear;
 end;
 
@@ -618,7 +614,7 @@ end;
 
 procedure TInstallPkgSetDialog.LoadPackageListFromFile(const AFilename: string);
   
-  function PkgNameExists(List: TFPList; ID: TLazPackageID): boolean;
+  function PkgNameExists(List: TObjectList; ID: TLazPackageID): boolean;
   var
     i: Integer;
     LazPackageID: TLazPackageID;
@@ -639,7 +635,7 @@ var
   i: Integer;
   LazPackageID: TLazPackageID;
   NewCount: LongInt;
-  NewList: TFPList;
+  NewList: TObjectList;
   ID: String;
 begin
   NewList:=nil;
@@ -658,7 +654,7 @@ begin
         // ignore doubles
         if PkgNameExists(NewList,LazPackageID) then continue;
         // add
-        if NewList=nil then NewList:=TFPList.Create;
+        if NewList=nil then NewList:=TObjectList.Create(true);
         NewList.Add(LazPackageID);
         LazPackageID:=TLazPackageID.Create;
       end;
@@ -702,11 +698,11 @@ var
   NewPackageID: TLazPackageID;
   j: LongInt;
   APackage: TLazPackage;
-  Additions: TFPList;
+  Additions: TObjectList;
   TVNode: TTreeNode;
   PkgName: String;
 begin
-  Additions:=TFPList.Create;
+  Additions:=TObjectList.Create(false);
   NewPackageID:=TLazPackageID.Create;
   try
     for i:=0 to AvailableTreeView.Items.TopLvlCount-1 do begin
@@ -819,7 +815,6 @@ begin
     for i:=0 to Deletions.Count-1 do begin
       DelPackageID:=TLazPackageID(Deletions[i]);
       j:=IndexOfNewInstalledPackageID(DelPackageID);
-      TObject(FNewInstalledPackages[j]).Free;
       FNewInstalledPackages.Delete(j);
     end;
 
@@ -836,12 +831,12 @@ begin
   end;
 end;
 
-function TInstallPkgSetDialog.GetNewInstalledPackages: TFPList;
+function TInstallPkgSetDialog.GetNewInstalledPackages: TObjectList;
 var
   i: Integer;
   NewPackageID: TLazPackageID;
 begin
-  Result:=TFPList.Create;
+  Result:=TObjectList.Create(true);
   for i:=0 to FNewInstalledPackages.Count-1 do begin
     NewPackageID:=TLazPackageID.Create;
     NewPackageID.AssignID(TLazPackageID(FNewInstalledPackages[i]));
