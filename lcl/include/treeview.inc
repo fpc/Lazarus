@@ -2960,19 +2960,20 @@ var Node: TTreeNode;
 begin
   Result := False;
   if FTreeNodes.Count>0 then begin
+    BeginUpdate;
     if not assigned(SortProc) then SortProc := @DefaultTreeViewSort;
     FTreeNodes.SortTopLevelNodes(SortProc);
 
     Node := FTreeNodes.GetFirstNode;
     while Node <> nil do begin
-      if Node.HasChildren then Node.CustomSort(SortProc);
+      if (Node.GetFirstChild<>nil) then Node.CustomSort(SortProc);
       Node := Node.GetNext;
     end;
     Items.ClearCache;
     FStates:= FStates+[tvsTopsNeedsUpdate, tvsTopItemNeedsUpdate,
-                       tvsBottomItemNeedsUpdate,
-                       tvsScrollbarChanged,tvsMaxRightNeedsUpdate];
+                       tvsBottomItemNeedsUpdate,tvsScrollbarChanged];
     Invalidate;
+    EndUpdate;
   end;
 end;
 
