@@ -177,25 +177,25 @@ begin
 
   FBreakpointsNotification := TIDEBreakPointsNotification.Create;
   FBreakpointsNotification.AddReference;
-  FBreakpointsNotification.OnAdd :=@BreakPointChanged;
+  FBreakpointsNotification.OnAdd := @BreakPointChanged;
   FBreakpointsNotification.OnUpdate := @BreakPointChanged;
   FBreakpointsNotification.OnRemove := @BreakPointChanged;
 
   FThreadNotification := TThreadsNotification.Create;
   FThreadNotification.AddReference;
-  FThreadNotification.OnCurrent  := @ThreadsCurrent;
+  FThreadNotification.OnCurrent := @ThreadsCurrent;
 
   FSnapshotNotification := TSnapshotNotification.Create;
   FSnapshotNotification.AddReference;
-  FSnapshotNotification.OnChange   := @SnapshotChanged;
-  FSnapshotNotification.OnCurrent   := @SnapshotChanged;
+  FSnapshotNotification.OnChange := @SnapshotChanged;
+  FSnapshotNotification.OnCurrent := @SnapshotChanged;
 
   FViewLimit := 10;
   FViewCount := 10;
   FViewStart := 0;
   FInUpdateView := False;
   actViewLimit.Caption := popLimit10.Caption;
-  actToggleBreakPoint.ShortCut:= IDECommandList.FindIDECommand(ecToggleBreakPoint).AsShortCut;
+  actToggleBreakPoint.ShortCut := IDECommandList.FindIDECommand(ecToggleBreakPoint).AsShortCut;
 end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
@@ -689,18 +689,20 @@ procedure TCallStackDlg.FormCreate(Sender: TObject);
 var
   i: integer;
 begin
-  Caption:= lisMenuViewCallStack;
+  Caption := lisMenuViewCallStack;
   ToolButtonPower.Caption := lisDbgWinPower;
   ToolButtonPower.Hint := lisDbgWinPowerHint;
-  ToolButtonShow.Caption:= lisShow;
-  ToolButtonCurrent.Caption:= lisCurrent;
   for i:= 0 to mnuLimit.Items.Count-1 do
     mnuLimit.Items[i].Caption:= Format(lisMaxS, [mnuLimit.Items[i].Tag]);
-  ToolButtonMore.Caption:= lisMore;
-  ToolButtonTop.Caption:= lisTop;
-  ToolButtonBottom.Caption:= lisBottom;
-  ToolButtonGoto.Caption:=lisGotoSelectedSourceLine;
-  ToolButtonCopyAll.Caption:= lisCopyAll;
+  actViewMore.Caption := lisMore;
+  actViewTop.Caption := lisTop;
+  actViewBottom.Caption := lisBottom;
+  actViewGoto.Caption := lisGotoSelectedSourceLine;
+  actShow.Caption := lisMenuViewSource;
+  actToggleBreakPoint.Caption := uemToggleBreakpoint;
+  actSetCurrent.Caption := lisCurrent;
+  actCopyAll.Caption := lisCopyAll;
+
   lvCallStack.Columns[1].Caption:= lisIndex;
   lvCallStack.Columns[2].Caption:= lisCEOModeSource;
   lvCallStack.Columns[3].Caption:= dlgAddHiAttrGroupLine;
@@ -723,12 +725,6 @@ begin
   imgNoSourceLine := IDEImages.LoadImage(16, 'debugger_nosource_line');
   imgBreakPoint := IDEImages.LoadImage(16, 'ActiveBreakPoint');
   imgCurrentLineAtBreakPoint := IDEImages.LoadImage(16, 'debugger_current_line_breakpoint');
-
-  popShow.Caption:= lisShow;
-  popToggle.Caption:= uemToggleBreakpoint;
-  popSetAsCurrent.Caption:= lisCurrent;
-  popCopyAll.Caption:= lisCopyAll;
-
 end;
 
 procedure TCallStackDlg.lvCallStackClick(Sender: TObject);

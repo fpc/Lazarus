@@ -2287,7 +2287,7 @@ resourcestring
   uemShowLineNumbers = 'Show Line Numbers';
   lisDisableI18NForLFM = 'Disable I18N for LFM';
   uemDebugWord = 'Debug';
-  uemToggleBreakpoint = '&Toggle Breakpoint';
+  uemToggleBreakpoint = 'Toggle &Breakpoint';
   uemEvaluateModify = '&Evaluate/Modify ...';
   uemAddWatchAtCursor = 'Add &Watch At Cursor';
   uemInspect = '&Inspect ...';
@@ -4611,7 +4611,6 @@ resourcestring
   lisDbgBreakpointPropertiesHint = 'Breakpoint Properties ...';
 
   // Call Stack Dialog
-  lisShow = 'Show';
   lisCurrent = 'Current';
   lisMaxS = 'Max %d';
   lisMore = 'More';
