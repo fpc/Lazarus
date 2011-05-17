@@ -1227,7 +1227,7 @@ type
 //    property FlatScrollBars;
     property Font;
 //    property FullDrag;
-//    property GridLines;
+    property GridLines;
     property HideSelection;
 //    property HotTrack;
 //    property HotTrackStyles;
