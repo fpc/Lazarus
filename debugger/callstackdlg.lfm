@@ -43,7 +43,6 @@ inherited CallStackDlg: TCallStackDlg
     ViewStyle = vsReport
     OnClick = lvCallStackClick
     OnDblClick = lvCallStackDBLCLICK
-    OnKeyPress = lvCallStackKeyPress
   end
   object ToolBar1: TToolBar[1]
     Left = 0
@@ -196,6 +195,10 @@ inherited CallStackDlg: TCallStackDlg
     object actShow: TAction
       Caption = 'Show'
       OnExecute = actShowClick
+      SecondaryShortCuts.Strings = (
+        'enter'
+      )
+      ShortCut = 16470
     end
     object actSetCurrent: TAction
       Caption = 'Current'
@@ -233,6 +236,7 @@ inherited CallStackDlg: TCallStackDlg
     object actToggleBreakPoint: TAction
       Caption = 'Toggle Breakpoint'
       OnExecute = actToggleBreakPointExecute
+      ShortCut = 116
     end
   end
   object mnuLimit: TPopupMenu[4]
