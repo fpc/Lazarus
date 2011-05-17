@@ -6058,7 +6058,7 @@ var
   OldInput: TFindDeclarationInput;
 begin
   Result:=false;
-  debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ',VarConstNode.DescAsString]);
+  //debugln(['TFindDeclarationTool.FindIdentifierInTypeOfConstant ',VarConstNode.DescAsString]);
   TypeNode:=VarConstNode.FirstChild;
   if TypeNode=nil then exit;
   if TypeNode.Desc=ctnIdentifier then begin
@@ -7853,19 +7853,19 @@ begin
 
   // check each parameter for compatibility
   
-  { $IFDEF ShowExprEval}
+  {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
     ' ExprParamList=[',TargetExprParamList.AsString,']');
-  { $ENDIF}
+  {$ENDIF}
   ParamNode:=FirstSourceParameterNode;
   i:=0;
   while (ParamNode<>nil) and (i<TargetExprParamList.Count) do begin
     SourceExprType:=ConvertNodeToExpressionType(ParamNode,Params);
     ParamCompatibility:=IsCompatible(TargetExprParamList.Items[i],
                                      SourceExprType,Params);
-    { $IFDEF ShowExprEval}
+    {$IFDEF ShowExprEval}
     DebugLn(['[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] B ',i,' Source=[',ExprTypeToString(SourceExprType),'] Target=[',ExprTypeToString(TargetExprParamList.Items[i]),'] Result=',TypeCompatibilityNames[ParamCompatibility]]);
-    { $ENDIF}
+    {$ENDIF}
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
     if ParamCompatibility=tcIncompatible then begin
