@@ -136,6 +136,7 @@ type
     TreePopupmenu: TPopupMenu;
     procedure CodeExplorerViewCreate(Sender: TObject);
     procedure CodeExplorerViewDestroy(Sender: TObject);
+    procedure CodeFilterEditExit(Sender: TObject);
     procedure CodeTreeviewDblClick(Sender: TObject);
     procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
@@ -225,6 +226,7 @@ type
                             ObserverState: TCodeObserverStatementState);
     procedure FindObserverTodos(Tool: TCodeTool);
     procedure CreateSurroundings(Tool: TCodeTool);
+    procedure DeleteTVNode(TVNode: TTreeNode);
     procedure SetCodeFilter(const AValue: string);
     procedure SetCurrentPage(const AValue: TCodeExplorerPage);
     procedure SetDirectivesFilter(const AValue: string);
@@ -237,6 +239,7 @@ type
     procedure ApplyCodeFilter;
     procedure ApplyDirectivesFilter;
     function CompareCodeNodes(Node1, Node2: TTreeNode): integer;
+    function FilterNode(ANode: TTreeNode; const TheFilter: string): boolean;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -254,7 +257,6 @@ type
     procedure CurrentCodeBufferChanged;
     procedure CodeFilterChanged;
     procedure DirectivesFilterChanged;
-    function FilterNode(ANode: TTreeNode; const TheFilter: string): boolean;
     function FilterFits(const NodeText, TheFilter: string): boolean; virtual;
     function GetCurrentTreeView: TCustomTreeView;
   public
@@ -307,7 +309,8 @@ type
     Path: string;
     Params: string;
     ImplementationNode: TViewNodeData;
-    constructor Create(CodeNode: TCodeTreeNode);
+    SortChildren: boolean; // sort for TVNode text (optional) and StartPos, EndPos
+    constructor Create(CodeNode: TCodeTreeNode; SortTheChildren: boolean = true);
     destructor Destroy; override;
     procedure CreateParams(ACodeTool: TCodeTool);
   end;
@@ -421,13 +424,15 @@ end;
 
 { TViewNodeData }
 
-constructor TViewNodeData.Create(CodeNode: TCodeTreeNode);
+constructor TViewNodeData.Create(CodeNode: TCodeTreeNode;
+  SortTheChildren: boolean);
 begin
   CTNode:=CodeNode;
   Desc:=CodeNode.Desc;
   SubDesc:=CodeNode.SubDesc;
   StartPos:=CodeNode.StartPos;
   EndPos:=CodeNode.EndPos;
+  SortChildren:=SortTheChildren;
 end;
 
 destructor TViewNodeData.Destroy;
@@ -517,6 +522,12 @@ begin
     CodeExplorerView:=nil;
 end;
 
+procedure TCodeExplorerView.CodeFilterEditExit(Sender: TObject);
+begin
+  if CodeFilterEdit.Text='' then
+    CodeFilterEdit.Text:=lisCEFilter;
+end;
+
 procedure TCodeExplorerView.CodeTreeviewDblClick(Sender: TObject);
 begin
   JumpToSelection;
@@ -574,7 +585,12 @@ begin
   and (fsModal in Screen.ActiveCustomForm.FormState) then
     exit;
   if not IsVisible then exit;
-  if Active then exit;
+  Exclude(FFlags,cevCheckOnIdle);
+  case CurrentPage of
+  cepNone: ;
+  cepCode: if (CurrentPage<>cepCode) or CodeTreeview.Focused then exit;
+  cepDirectives: if (CurrentPage<>cepDirectives) or DirectivesTreeView.Focused then exit;
+  end;
   Refresh(true);
 end;
 
@@ -684,6 +700,7 @@ function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;
   CodeNode: TCodeTreeNode): string;
 begin
   Result:='?';
+
   try
     case CodeNode.Desc of
 
@@ -885,7 +902,7 @@ begin
         ctnUseUnit:         Category:=cecUses;
         ctnTypeDefinition,ctnGenericType:  Category:=cecTypes;
         ctnVarDefinition:   Category:=cecVariables;
-        ctnConstDefinition: Category:=cecConstants;
+        ctnConstDefinition,ctnEnumIdentifier: Category:=cecConstants;
         ctnProcedure:       Category:=cecProcedures;
         ctnProperty:        Category:=cecProperties;
         end;
@@ -898,7 +915,7 @@ begin
               NodeText:=CodeExplorerLocalizedString(Category);
               NodeImageIndex:=GetCodeNodeImage(ACodeTool,CodeNode.Parent);
               fCategoryNodes[Category]:=CodeTreeview.Items.AddChildObject(nil,
-                                                               NodeText,NodeData);
+                                                             NodeText,NodeData);
               fCategoryNodes[Category].ImageIndex:=NodeImageIndex;
               fCategoryNodes[Category].SelectedIndex:=NodeImageIndex;
             end;
@@ -911,7 +928,7 @@ begin
       end else begin
         // not a top level node
       end;
-      //DebugLn(['TCodeExplorerView.CreateNodes ',CodeNode.DescAsString,' ShowNode=',ShowNode,' ShowChilds=',ShowChilds]);
+      //DebugLn(['TCodeExplorerView.CreateIdentifierNodes ',CodeNode.DescAsString,' ShowNode=',ShowNode,' ShowChilds=',ShowChilds]);
     end;
     
     if ShowNode then begin
@@ -967,7 +984,7 @@ begin
 
     ViewNode:=ParentViewNode;
     if ShowNode then begin
-      NodeData:=TViewNodeData.Create(CodeNode);
+      NodeData:=TViewNodeData.Create(CodeNode,false);
       NodeText:=GetDirectiveNodeDescription(ADirectivesTool,CodeNode);
       NodeImageIndex:=GetDirectiveNodeImage(CodeNode);
       if InFrontViewNode<>nil then
@@ -1278,7 +1295,6 @@ begin
     fObserverCatNodes[f].Data:=Data;
     fObserverCatNodes[f].ImageIndex:=ImgIDHint;
     fObserverCatNodes[f].SelectedIndex:=ImgIDHint;
-    fObserverNode.Expanded:=true;
   end;
   Result:=fObserverCatNodes[f];
 end;
@@ -1584,7 +1600,7 @@ begin
         fObserverCatOverflow[cefcToDos]:=true;
         break;
       end else begin
-        Data:=TViewNodeData.Create(Tool.Tree.Root);
+        Data:=TViewNodeData.Create(Tool.Tree.Root,false);
         Data.Desc:=ctnConstant;
         Data.SubDesc:=ctnsNone;
         Data.StartPos:=p;
@@ -1616,7 +1632,7 @@ begin
   if fSurroundingsNode = nil then
   begin
     fSurroundingsNode:=CodeTreeview.Items.Add(nil, 'Surroundings');
-    Data:=TViewNodeData.Create(Tool.Tree.Root);
+    Data:=TViewNodeData.Create(Tool.Tree.Root,false);
     Data.Desc:=ctnNone;
     Data.StartPos:=Tool.SrcLen;
     fSurroundingsNode.Data:=Data;
@@ -1626,7 +1642,7 @@ begin
   // add all top lvl sections
   CodeNode:=Tool.Tree.Root;
   while CodeNode<>nil do begin
-    Data:=TViewNodeData.Create(CodeNode);
+    Data:=TViewNodeData.Create(CodeNode,false);
     Data.Desc:=CodeNode.Desc;
     Data.SubDesc:=ctnsNone;
     Data.StartPos:=CodeNode.StartPos;
@@ -1639,6 +1655,34 @@ begin
     CodeNode:=CodeNode.NextBrother;
   end;
   fSurroundingsNode.Expand(true);
+end;
+
+procedure TCodeExplorerView.DeleteTVNode(TVNode: TTreeNode);
+var
+  c: TCodeExplorerCategory;
+  oc: TCEObserverCategory;
+begin
+  if TVNode=nil then exit;
+  if TVNode.Data<>nil then begin
+    TObject(TVNode.Data).Free;
+    TVNode.Data:=nil;
+  end;
+  if TVNode.Parent=nil then begin
+    if TVNode=fObserverNode then
+      fObserverNode:=nil
+    else if TVNode=fSurroundingsNode then
+      fSurroundingsNode:=nil
+    else begin
+      for c:=low(fCategoryNodes) to high(fCategoryNodes) do
+        if fCategoryNodes[c]=TVNode then
+          fCategoryNodes[c]:=nil;
+    end;
+  end else if TVNode=fObserverNode then begin
+    for oc:=low(fObserverCatNodes) to high(fObserverCatNodes) do
+      if fObserverCatNodes[oc]=TVNode then
+        fObserverCatNodes[oc]:=nil;
+  end;
+  TVNode.Delete;
 end;
 
 procedure TCodeExplorerView.SetCodeFilter(const AValue: string);
@@ -1695,11 +1739,10 @@ var
   ANode: TTreeNode;
   TheFilter: String;
 begin
-  TheFilter:=CodeFilterEdit.Text;
+  TheFilter:=GetCodeFilter;
+  //DebugLn(['TCodeExplorerView.ApplyCodeFilter ====================="',TheFilter,'"']);
   FLastCodeFilter:=TheFilter;
   CodeTreeview.BeginUpdate;
-  CodeTreeview.Options:=CodeTreeview.Options+[tvoAllowMultiselect];
-  //DebugLn(['TCodeExplorerView.ApplyCodeFilter =====================']);
   ANode:=CodeTreeview.Items.GetFirstNode;
   while ANode<>nil do begin
     FilterNode(ANode,TheFilter);
@@ -1803,27 +1846,27 @@ procedure TCodeExplorerView.RefreshCode(OnlyVisible: boolean);
     TVNode:=CodeTreeview.Items.GetFirstNode;
     while TVNode<>nil do begin
       NextTVNode:=TVNode.GetNext;
-      DeleteNode:=false;
-      DeleteNextNode:=false;
-      if (NextTVNode<>nil)
-      and (CompareTextIgnoringSpace(TVNode.Text,NextTVNode.Text,false)=0) then
+      if NextTVNode=nil then break;
+      if (TVNode.Parent<>nil) and (NextTVNode.Parent=TVNode.Parent) then
       begin
-        Data:=TViewNodeData(TVNode.Data);
-        NextData:=TViewNodeData(NextTVNode.Data);
-        if IsForward(Data) then
-          DeleteNode:=true;
-        if IsForward(NextData) then
-          DeleteNextNode:=true;
-      end;
-      if DeleteNextNode then begin
-        TViewNodeData(NextTVNode.Data).Free;
-        NextTVNode.Data:=nil;
-        NextTVNode.Delete;
-        NextTVNode:=TVNode;
-      end else if DeleteNode then begin
-        TViewNodeData(TVNode.Data).Free;
-        TVNode.Data:=nil;
-        TVNode.Delete;
+        DeleteNode:=false;
+        DeleteNextNode:=false;
+        if (CompareTextIgnoringSpace(TVNode.Text,NextTVNode.Text,false)=0) then
+        begin
+          Data:=TViewNodeData(TVNode.Data);
+          NextData:=TViewNodeData(NextTVNode.Data);
+          if IsForward(Data) then
+            DeleteNode:=true;
+          if IsForward(NextData) then
+            DeleteNextNode:=true;
+        end;
+        if DeleteNextNode then begin
+          DeleteTVNode(NextTVNode);
+          NextTVNode:=TVNode;
+        end else if DeleteNode then begin
+          NextTVNode:=TVNode.GetNextSkipChildren;
+          DeleteTVNode(TVNode);
+        end;
       end;
       TVNode:=NextTVNode;
     end;
@@ -1840,6 +1883,8 @@ var
   NewXY: TPoint;
   OnlyXYChanged: Boolean;
   CurFollowNode: Boolean;
+  TVNode: TTreeNode;
+  TheFilter: String;
 begin
   if (FUpdateCount>0)
   or (OnlyVisible and ((CurrentPage<>cepCode) or (not IsVisible))) then begin
@@ -1868,6 +1913,7 @@ begin
     fLastCodeTool:=ACodeTool;
 
     // check for changes in the codetool
+    TheFilter:=GetCodeFilter;
     OnlyXYChanged:=false;
     if (ACodeTool=nil) then begin
       if (FCodeFilename='') then begin
@@ -1876,7 +1922,9 @@ begin
       end;
       //debugln(['TCodeExplorerView.RefreshCode no tool']);
     end else begin
-      if not FLastCodeValid then begin
+      if CompareText(FLastCodeFilter,TheFilter)<>0 then begin
+        // debugln(['TCodeExplorerView.RefreshCode filter changed']);
+      end else if not FLastCodeValid then begin
         //debugln(['TCodeExplorerView.RefreshCode last code not valid'])
       end else if ACodeTool.MainFilename<>FCodeFilename then begin
         //debugln(['TCodeExplorerView.RefreshCode File changed ',ACodeTool.MainFilename,' ',FCodeFilename])
@@ -1911,6 +1959,7 @@ begin
       FLastMode:=Mode;
       fLastCodeOptionsChangeStep:=CodeExplorerOptions.ChangeStep;
       FLastCodeXY:=SrcEdit.CursorTextXY;
+      FLastCodeFilter:=TheFilter;
       // remember the codetools ChangeStep
       if ACodeTool<>nil then begin
         FCodeFilename:=ACodeTool.MainFilename;
@@ -1951,8 +2000,17 @@ begin
         end;
       end;
 
+      // sort nodes
       fSortCodeTool:=ACodeTool;
-      CodeTreeview.CustomSort(@CompareCodeNodes);
+      TVNode:=CodeTreeview.Items.GetFirstNode;
+      while TVNode<>nil do begin
+        if (TVNode.GetFirstChild<>nil)
+        and (TObject(TVNode.Data) is TViewNodeData)
+        and TViewNodeData(TVNode.Data).SortChildren then begin
+          TVNode.CustomSort(@CompareCodeNodes);
+        end;
+        TVNode:=TVNode.GetNext;
+      end;
 
       DeleteDuplicates(ACodeTool);
 
@@ -1961,12 +2019,13 @@ begin
         AutoExpandNodes;
 
       BuildCodeSortedForStartPos;
+      // clear references to the TCodeTreeNode to avoid dangling pointers
       ClearCTNodes(CodeTreeview);
 
       ApplyCodeFilter;
 
       if OldExpanded<>nil then
-        OldExpanded.Apply(CodeTreeView);
+        OldExpanded.Apply(CodeTreeView,false);
 
       if CurFollowNode then
         SelectCodePosition(Code,FLastCodeXY.X,FLastCodeXY.Y);
@@ -2273,13 +2332,20 @@ procedure TCodeExplorerView.CodeFilterChanged;
 var
   TheFilter: String;
 begin
-  TheFilter:=CodeFilterEdit.Text;
+  TheFilter:=GetCodeFilter;
   if FLastCodeFilter=TheFilter then exit;
   if (FUpdateCount>0) or (CurrentPage<>cepCode) then begin
     Include(FFlags,cevCodeRefreshNeeded);
     exit;
   end;
-  ApplyCodeFilter;
+  if (FLastCodeFilter='')
+  or (System.Pos(lowercase(FLastCodeFilter),lowercase(TheFilter))>0)
+  then begin
+    // longer filter => just delete nodes
+    ApplyCodeFilter;
+  end else begin
+    CheckOnIdle;
+  end;
 end;
 
 procedure TCodeExplorerView.DirectivesFilterChanged;
@@ -2299,19 +2365,20 @@ function TCodeExplorerView.FilterNode(ANode: TTreeNode;
   const TheFilter: string): boolean;
 var
   ChildNode: TTreeNode;
-  HasVisibleChilds: Boolean;
+  NextNode: TTreeNode;
 begin
   if ANode=nil then exit(false);
   ChildNode:=ANode.GetFirstChild;
-  HasVisibleChilds:=false;
   while ChildNode<>nil do begin
-    if FilterNode(ChildNode,TheFilter) then
-      HasVisibleChilds:=true;
-    ChildNode:=ChildNode.GetNextSibling;
+    NextNode:=ChildNode.GetNextSibling;
+    FilterNode(ChildNode,TheFilter);
+    ChildNode:=NextNode;
   end;
-  ANode.Expanded:=HasVisibleChilds;
-  ANode.MultiSelected:=FilterFits(ANode.Text,TheFilter);
-  Result:=ANode.Expanded or ANode.MultiSelected;
+  Result:=(ANode.Parent<>nil) and (ANode.GetFirstChild=nil)
+          and (not FilterFits(ANode.Text,TheFilter));
+  //debugln(['TCodeExplorerView.FilterNode "',ANode.Text,'" Parent=',ANode.Parent<>nil,' Child=',ANode.GetFirstChild<>nil,' Filter=',FilterFits(ANode.Text,TheFilter),' Result=',Result]);
+  if Result then
+    DeleteTVNode(ANode);
 end;
 
 function TCodeExplorerView.FilterFits(const NodeText, TheFilter: string): boolean;
@@ -2323,6 +2390,8 @@ var
 begin
   if TheFilter='' then begin
     Result:=true;
+  end else if NodeText='' then begin
+    Result:=false;
   end else begin
     Src:=PChar(NodeText);
     PFilter:=PChar(TheFilter);

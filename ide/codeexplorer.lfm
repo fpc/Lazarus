@@ -16,23 +16,24 @@ object CodeExplorerView: TCodeExplorerView
     Height = 515
     Top = 2
     Width = 220
-    ActivePage = DirectivesPage
+    ActivePage = CodePage
     Align = alClient
     BorderSpacing.Top = 2
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     OnPageChanged = MainNotebookPageChanged
     object CodePage: TTabSheet
       Caption = 'CodePage'
-      ClientHeight = 482
-      ClientWidth = 216
+      ClientHeight = 488
+      ClientWidth = 218
       object CodeTreeview: TTreeView
         Left = 0
-        Height = 454
+        Height = 460
         Top = 28
-        Width = 216
+        Width = 218
         Align = alClient
         BorderSpacing.Top = 1
+        DefaultItemHeight = 19
         HideSelection = False
         Images = Imagelist1
         PopupMenu = TreePopupmenu
@@ -48,12 +49,12 @@ object CodeExplorerView: TCodeExplorerView
         Left = 0
         Height = 27
         Top = 0
-        Width = 216
+        Width = 218
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 27
-        ClientWidth = 216
+        ClientWidth = 218
         TabOrder = 1
         object CodeFilterEdit: TEdit
           AnchorSideLeft.Control = CodeTreeviewButtonPanel
@@ -62,9 +63,10 @@ object CodeExplorerView: TCodeExplorerView
           Left = 0
           Height = 27
           Top = 0
-          Width = 147
+          Width = 149
           Anchors = [akTop, akLeft, akRight]
           OnChange = CodeFilterEditChange
+          OnExit = CodeFilterEditExit
           TabOrder = 0
           Text = 'CodeFilterEdit'
         end
@@ -72,7 +74,7 @@ object CodeExplorerView: TCodeExplorerView
           AnchorSideRight.Control = CodeModeSpeedButton
           AnchorSideBottom.Control = CodeFilterEdit
           AnchorSideBottom.Side = asrBottom
-          Left = 147
+          Left = 149
           Height = 26
           Hint = 'Refresh CodeExplorer'
           Top = 1
@@ -87,7 +89,7 @@ object CodeExplorerView: TCodeExplorerView
           AnchorSideRight.Control = CodeOptionsSpeedButton
           AnchorSideBottom.Control = CodeRefreshSpeedButton
           AnchorSideBottom.Side = asrBottom
-          Left = 170
+          Left = 172
           Height = 26
           Top = 1
           Width = 23
@@ -102,7 +104,7 @@ object CodeExplorerView: TCodeExplorerView
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = CodeRefreshSpeedButton
           AnchorSideBottom.Side = asrBottom
-          Left = 193
+          Left = 195
           Height = 26
           Hint = 'Options for CodeExplorer'
           Top = 1
@@ -117,25 +119,25 @@ object CodeExplorerView: TCodeExplorerView
     end
     object DirectivesPage: TTabSheet
       Caption = 'DirectivesPage'
-      ClientHeight = 482
-      ClientWidth = 216
+      ClientHeight = 488
+      ClientWidth = 218
       object DirTreeviewButtonPanel: TPanel
         Left = 0
         Height = 27
         Top = 0
-        Width = 216
+        Width = 218
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 27
-        ClientWidth = 216
+        ClientWidth = 218
         TabOrder = 0
         object DirectivesFilterEdit: TEdit
           AnchorSideRight.Control = DirRefreshSpeedButton
           Left = 0
           Height = 27
           Top = 0
-          Width = 170
+          Width = 172
           Anchors = [akTop, akLeft, akRight]
           OnChange = DirectivesFilterEditChange
           TabOrder = 0
@@ -145,7 +147,7 @@ object CodeExplorerView: TCodeExplorerView
           AnchorSideRight.Control = DirOptionsSpeedButton
           AnchorSideBottom.Control = DirectivesFilterEdit
           AnchorSideBottom.Side = asrBottom
-          Left = 170
+          Left = 172
           Height = 26
           Hint = 'Refresh CodeExplorer'
           Top = 1
@@ -161,7 +163,7 @@ object CodeExplorerView: TCodeExplorerView
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = DirRefreshSpeedButton
           AnchorSideBottom.Side = asrBottom
-          Left = 193
+          Left = 195
           Height = 26
           Hint = 'Options for CodeExplorer'
           Top = 1
@@ -177,9 +179,9 @@ object CodeExplorerView: TCodeExplorerView
         AnchorSideTop.Control = DirTreeviewButtonPanel
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 454
+        Height = 460
         Top = 28
-        Width = 216
+        Width = 218
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Top = 1
