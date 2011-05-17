@@ -348,7 +348,7 @@ resourcestring
   lisMenuBuild = 'Build';
   lisMenuQuickCompile = 'Quick compile';
   lisMenuAbortBuild = 'Abort Build';
-  lisMenuProjectRun = 'Run';
+  lisMenuProjectRun = '&Run';
   lisBFAlwaysBuildBeforeRun = 'Always Build before Run';
   lisBFWorkingDirectoryLeaveEmptyForFilePath2 = 'Working Directory (Leave '
     +'empty for file path)';
@@ -360,17 +360,17 @@ resourcestring
 
   lisBFRunCommand = 'Run Command';
   lisMenuPause = 'Pause';
-  lisMenuShowExecutionPoint = 'Show execution point';
-  lisMenuStepInto = 'Step into';
-  lisMenuStepOver = 'Step over';
+  lisMenuShowExecutionPoint = 'S&how execution point';
+  lisMenuStepInto = 'Step in&to';
+  lisMenuStepOver = '&Step over';
   lisMenuStepIntoInstr = 'Step into instruction';
   lisMenuStepIntoInstrHint = 'Step into instruction';
   lisMenuStepOverInstr = 'Step over instruction';
   lisMenuStepOverInstrHint = 'Step over instruction';
   lisMenuStepIntoContext = 'Step into (Context)';
   lisMenuStepOverContext = 'Step over (Context)';
-  lisMenuStepOut = 'Step out';
-  lisMenuRunToCursor = 'Run to cursor';
+  lisMenuStepOut = 'Step o&ut';
+  lisMenuRunToCursor = 'Run to &cursor';
   lisKMStopProgram = 'Stop program';
   lisMenuStop = 'Stop';
   lisContinue = 'Continue';
@@ -382,7 +382,7 @@ resourcestring
   lisMenuResetDebugger = 'Reset debugger';
   lisKMCompilerOptions = 'Compiler options';
   lisMenuCompilerOptions = 'Compiler Options ...';
-  lisMenuRunParameters = 'Run Parameters ...';
+  lisMenuRunParameters = 'Run &Parameters ...';
   lisMenuBuildFile = 'Build File';
   lisMenuRunFile = 'Run File';
   lisKMConfigBuildFile = 'Config %sBuild File%s';
@@ -392,10 +392,10 @@ resourcestring
   lisKMAddBpSource = 'Add source breakpoint';
   lisKMAddBpAddress = 'Add address breakpoint';
   lisMenuConfigBuildFile = 'Configure Build+Run File ...';
-  lisMenuInspect = 'Inspect ...';
-  lisMenuEvaluate = 'Evaluate/Modify ...';
-  lisMenuAddWatch = 'Add watch ...';
-  lisMenuAddBreakpoint = 'Add breakpoint';
+  lisMenuInspect = '&Inspect ...';
+  lisMenuEvaluate = 'E&valuate/Modify ...';
+  lisMenuAddWatch = 'Add &Watch ...';
+  lisMenuAddBreakpoint = 'Add &Breakpoint';
 
   lisInspectDialog = 'Debug Inspector';
   lisInspectData = 'Data';
