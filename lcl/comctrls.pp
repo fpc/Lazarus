@@ -2171,6 +2171,7 @@ type
     function GetLastChild: TTreeNode;
     function GetLastSubChild: TTreeNode;
     function GetNext: TTreeNode;
+    function GetNextSkipChildren: TTreeNode;
     function GetNextChild(AValue: TTreeNode): TTreeNode;
     function GetNextExpanded: TTreeNode;
     function GetNextMultiSelected: TTreeNode;
@@ -2838,8 +2839,8 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure CreateChildNodes(FirstTreeNode: TTreeNode);
-    procedure Apply(FirstTreeNode: TTreeNode);
-    procedure Apply(TreeView: TCustomTreeView);
+    procedure Apply(FirstTreeNode: TTreeNode; CollapseToo: boolean = true);
+    procedure Apply(TreeView: TCustomTreeView; CollapseToo: boolean = true);
   end;
 
 

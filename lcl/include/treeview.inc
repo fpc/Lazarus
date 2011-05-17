@@ -222,7 +222,8 @@ begin
   end;
 end;
 
-procedure TTreeNodeExpandedState.Apply(FirstTreeNode: TTreeNode);
+procedure TTreeNodeExpandedState.Apply(FirstTreeNode: TTreeNode;
+  CollapseToo: boolean);
 var
   ChildNode: TTreeNode;
   ANode: TAvgLvlTreeNode;
@@ -233,16 +234,20 @@ begin
   while ChildNode<>nil do begin
     ChildNodeText:=ChildNode.Text;
     ANode:=Children.FindKey(PChar(ChildNodeText),@CompareTextWithExpandedNode);
-    ChildNode.Expanded:=ANode<>nil;
+    if ANode<>nil then
+      ChildNode.Expanded:=true
+    else if CollapseToo then
+      ChildNode.Expanded:=false;
     if ANode<>nil then
       TTreeNodeExpandedState(ANode.Data).Apply(ChildNode.GetFirstChild);
     ChildNode:=ChildNode.GetNextSibling;
   end;
 end;
 
-procedure TTreeNodeExpandedState.Apply(TreeView: TCustomTreeView);
+procedure TTreeNodeExpandedState.Apply(TreeView: TCustomTreeView;
+  CollapseToo: boolean);
 begin
-  Apply(TreeView.Items.GetFirstNode);
+  Apply(TreeView.Items.GetFirstNode,CollapseToo);
 end;
 
 { TTreeNode }
@@ -921,13 +926,15 @@ end;
 function TTreeNode.GetNext: TTreeNode;
 begin
   Result:=GetFirstChild;
-  if Result=nil then begin
-    // no children, search next
-    Result:=Self;
-    while (Result<>nil) and (Result.FNextBrother=nil) do
-      Result:=Result.Parent;
-    if Result<>nil then Result:=Result.FNextBrother;
-  end;
+  if Result=nil then Result:=GetNextSkipChildren;
+end;
+
+function TTreeNode.GetNextSkipChildren: TTreeNode;
+begin
+  Result:=Self;
+  while (Result<>nil) and (Result.FNextBrother=nil) do
+    Result:=Result.Parent;
+  if Result<>nil then Result:=Result.FNextBrother;
 end;
 
 function TTreeNode.GetPrev: TTreeNode;
