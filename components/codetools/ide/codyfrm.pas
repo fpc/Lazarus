@@ -32,7 +32,7 @@ unit CodyFrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileProcs, LResources, Forms, Controls, Graphics, Dialogs,
   Buttons, ComCtrls,
   // codetools
   //FileProcs, CodeToolManager, SourceLog, CodeCache, EventCodeTool,
@@ -42,6 +42,8 @@ uses
   // cody
   CodyStrConsts;
 
+const
+  CodyWindowName = 'CodyWindow';
 type
 
   { TCodyWindow }
@@ -78,6 +80,10 @@ end;
 procedure CreateCodyWindow(Sender: TObject; aFormName: string;
   var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 begin
+  if CompareText(aFormName,CodyWindowName)<>0 then begin
+    debugln(['ERROR: CreateCodyWindow: there is already a form with this name']);
+    exit;
+  end;
   IDEWindowCreators.CreateForm(AForm,TCodyWindow,DoDisableAutoSizing,
     LazarusIDE.OwningComponent);
   AForm.Name:=aFormName;

@@ -139,7 +139,7 @@ begin
   RegisterComponents('LazControls',[TCodyTreeView]);
 
   // Windows - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  CodyWindowCreator:=IDEWindowCreators.Add('CodyWindow',@CreateCodyWindow,nil,
+  CodyWindowCreator:=IDEWindowCreators.Add(CodyWindowName,@CreateCodyWindow,nil,
     '80%','50%','+18%','+25%','CodeExplorer',alBottom);
 
 end;

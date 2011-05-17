@@ -3232,6 +3232,7 @@ var
 begin
   if FAlign = Value then exit;
   //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',AlignNames[FAlign],' New=',AlignNames[Value],' ',Anchors<>AnchorAlign[FAlign]]);
+  DisableAutoSizing;
   OldAlign := FAlign;
   FAlign := Value;
   for a:=low(TAnchorKind) to High(TAnchorKind) do
@@ -3240,12 +3241,15 @@ begin
     AnchorSide[a].Control:=nil;
     AnchorSide[a].Side:=asrTop;
   end;
-  // if anchors were on default then change them to new default
+  // if anchors had default values then change them to new default values
   // This is done for Delphi compatibility.
   if (Anchors = AnchorAlign[OldAlign]) and (Anchors <> AnchorAlign[FAlign]) then
-    Anchors := AnchorAlign[FAlign]
-  else
-    RequestAlign;
+    Anchors := AnchorAlign[FAlign];
+  {$IFDEF EnableExplicitBounds}
+  if not (csLoading in ComponentState) then
+    BoundsRect:=BaseBounds;
+  {$ENDIF}
+  EnableAutoSizing;
 end;
 
 {------------------------------------------------------------------------------
