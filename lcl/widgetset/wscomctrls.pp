@@ -586,6 +586,8 @@ begin
   if Done then exit;
   WSRegisterStatusBar;
   RegisterPropertyToSkip(TStatusBar, 'Font', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TStatusBar, 'TabOrder', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TStatusBar, 'TabStop', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TStatusBar, 'UseSystemFont', 'VCL compatibility property', '');
 //  if not WSRegisterStatusBar then
 //    RegisterWSComponent(TStatusBar, TWSStatusBar);
@@ -612,6 +614,8 @@ begin
   RegisterPropertyToSkip(TPageControl, 'Style', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TPageControl, 'HotTrack', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TPageControl, 'MultiLine', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TPageControl, 'TabWidth', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TPageControl, 'TabHeight', 'VCL compatibility property', '');
 //  if not WSRegisterPageControl then
 //    RegisterWSComponent(TPageControl, TWSPageControl);
   Done := True;

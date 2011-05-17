@@ -703,6 +703,11 @@ const
 begin
   if Done then exit;
   WSRegisterCustomMemo;
+  RegisterPropertyToSkip(TCustomMemo, 'AlignWithMargins', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomMemo, 'BevelInner', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomMemo, 'BevelOuter', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomMemo, 'BevelEdges', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomMemo, 'Margins', 'VCL compatibility property', '');
 //  if not WSRegisterCustomMemo then
 //    RegisterWSComponent(TCustomMemo, TWSCustomMemo);
   Done := True;
@@ -740,6 +745,7 @@ begin
   if Done then exit;
   WSRegisterCustomCheckBox;
   RegisterPropertyToSkip(TCustomCheckBox, 'Alignment', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomCheckBox, 'WordWrap', 'VCL compatibility property', '');
 //  if not WSRegisterCustomCheckBox then
 //    RegisterWSComponent(TCustomCheckBox, TWSCustomCheckBox);
   Done := True;

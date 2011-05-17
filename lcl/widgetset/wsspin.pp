@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Spin,
+  Spin, LResources,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSStdCtrls, WSFactory;
 
@@ -83,13 +83,14 @@ class procedure TWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit:
 begin
 end;
 
-  { WidgetSetRegistration }
+{ WidgetSetRegistration }
 
 procedure RegisterCustomFloatSpinEdit;
 const
   Done: Boolean = False;
 begin
   if Done then exit;
+  RegisterPropertyToSkip(TCustomFloatSpinEdit, 'MaxLength', 'VCL compatibility property', '');
   if not WSRegisterCustomFloatSpinEdit then
     RegisterWSComponent(TCustomFloatSpinEdit, TWSCustomFloatSpinEdit);
   Done := True;

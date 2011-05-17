@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  LCLProc, Controls, ExtCtrls, Classes, ImgList, Graphics,
+  LCLProc, Controls, ExtCtrls, Classes, ImgList, Graphics, LResources,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSStdCtrls, WSFactory;
 
@@ -495,6 +495,12 @@ const
 begin
   if Done then exit;
   WSRegisterCustomPanel;
+  RegisterPropertyToSkip(TCustomPanel, 'VerticalAlignment', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomPanel, 'ExplicitWidth', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomPanel, 'ShowCaption', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomPanel, 'ParentBackground', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomPanel, 'BevelEdges', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomPanel, 'BevelKind', 'VCL compatibility property', '');
 //  if not WSRegisterCustomPanel then
 //    RegisterWSComponent(TCustomPanel, TWSCustomPanel);
   Done := True;
