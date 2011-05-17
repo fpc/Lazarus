@@ -114,8 +114,8 @@ const
   ctnOpenArrayType      = 72;
   ctnOfConstType        = 73;
   ctnRecordType         = 74;
-  ctnRecordCase         = 75;
-  ctnRecordVariant      = 76;
+  ctnRecordCase         = 75; // children: ctnVarDefinition plus 0..n ctnRecordVariant
+  ctnRecordVariant      = 76; // children: 0..n ctnVarDefinition plus may be a ctnRecordCase
   ctnProcedureType      = 77;
   ctnSetType            = 78;
   ctnRangeType          = 79;

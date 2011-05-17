@@ -1830,18 +1830,16 @@ end;
 
 function TPascalReaderTool.ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode
   ): string;
+//  case a:b.c of
+//  case a:(b,c) of
+var
+  VarNode: TCodeTreeNode;
 begin
-  MoveCursorToNodeStart(RecordCaseNode);
-  ReadNextAtom;// case
-  ReadNextAtom;// identifier
-  ReadNextAtom;// :
-  if AtomIsChar(':') then begin
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-    Result:=GetAtom;
-  end else begin
-    Result:='';
-  end;
+  Result:='';
+  VarNode:=RecordCaseNode.FirstChild;
+  if VarNode=nil then exit;
+  if VarNode.FirstChild<>nil then
+    Result:=ExtractNode(RecordCaseNode.FirstChild,[]);
 end;
 
 function TPascalReaderTool.GetSourceType: TCodeTreeNodeDesc;

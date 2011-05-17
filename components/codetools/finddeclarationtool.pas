@@ -609,8 +609,6 @@ type
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInUsedUnit(const AnUnitName: string;
       Params: TFindDeclarationParams): boolean;
-    function FindIdentifierInRecordCase(RecordCaseNode: TCodeTreeNode;
-      Params: TFindDeclarationParams): boolean;
     function FindIdentifierInTypeOfConstant(VarConstNode: TCodeTreeNode;
       Params: TFindDeclarationParams): boolean;
   protected
@@ -3210,10 +3208,7 @@ begin
 
         ctnRecordCase:
           begin
-            if FindIdentifierInRecordCase(ContextNode,Params)
-            and CheckResult(true,true) then
-              exit;
-            // search in variants
+            // search in variable and variants
             MoveContextNodeToChilds;
           end;
           
@@ -6048,32 +6043,6 @@ begin
                  -[fdfExceptionOnNotFound];
     Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
     Params.Flags:=OldFlags;
-  end;
-end;
-
-function TFindDeclarationTool.FindIdentifierInRecordCase(
-  RecordCaseNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
-var
-  IdentPos: LongInt;
-begin
-  Result:=false;
-  MoveCursorToNodeStart(RecordCaseNode);
-  ReadNextAtom;// case
-  ReadNextAtom;// identifier
-  IdentPos:=CurPos.StartPos;
-  ReadNextAtom;
-  if AtomIsChar(':')
-  and ((fdfCollect in Params.Flags)
-       or CompareSrcIdentifiers(IdentPos,Params.Identifier))
-  then begin
-    // identifier found
-    {$IFDEF ShowTriedContexts}
-    DebugLn('[TFindDeclarationTool.FindIdentifierInRecordCase]  found="',GetIdentifier(Params.Identifier),'" Src=',GetIdentifier(@Src[IdentPos]));
-    {$ENDIF}
-    Params.SetResult(Self,RecordCaseNode,IdentPos);
-    Result:=true;
-  end else begin
-    // proceed the search normally ...
   end;
 end;
 

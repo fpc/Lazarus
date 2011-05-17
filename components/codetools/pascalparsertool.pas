@@ -4299,6 +4299,8 @@ begin
     case a:(b,c) of
   }
   AtomIsIdentifier(true);
+  CreateChildNode;
+  CurNode.Desc:=ctnVarDefinition;
   {$IFDEF VerboseRecordCase}
   debugln(['TPascalParserTool.KeyWordFuncTypeRecordCase case name="',GetAtom,'"']);
   {$ENDIF}
@@ -4331,14 +4333,22 @@ begin
     end else begin
       // identifier
       AtomIsIdentifier(true);
+      CreateChildNode;
+      CurNode.Desc:=ctnIdentifier;
+      CurNode.EndPos:=CurPos.EndPos;
       ReadNextAtom;
       if CurPos.Flag=cafPoint then begin
         ReadNextAtom; // unit.type
         AtomIsIdentifier(true);
+        CurNode.EndPos:=CurPos.EndPos;
         ReadNextAtom;
       end;
+      EndChildNode; // close ctnIdentifier
     end;
   end;
+  // close ctnVarDefinition
+  CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+  EndChildNode;
   if not UpAtomIs('OF') then // read 'of'
     RaiseStringExpectedButAtomFound('"of"');
   // read all variants
