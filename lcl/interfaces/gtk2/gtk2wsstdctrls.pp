@@ -1363,7 +1363,8 @@ begin
   g_object_set_data(G_OBJECT(renderer), 'widgetinfo', AWidgetInfo);
   gtk_cell_layout_clear(PGtkCellLayout(AWidget));
   gtk_cell_layout_pack_start(PGtkCellLayout(AWidget), renderer, True);
-  gtk_cell_layout_set_attributes(PGtkCellLayout(AWidget), renderer, ['text', 0, nil]);
+  if not (ACustomComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable]) then
+    gtk_cell_layout_set_attributes(PGtkCellLayout(AWidget), renderer, ['text', 0, nil]);
   gtk_cell_layout_set_cell_data_func(PGtkCellLayout(AWidget), renderer,
     @LCLIntfCellRenderer_CellDataFunc, AWidgetInfo, nil);
 end;
@@ -1782,11 +1783,10 @@ begin
     csDropDown,
     csSimple:
       NeedEntry := True;
-    csDropDownList:
-      NeedEntry := False;
+    csDropDownList,
     csOwnerDrawFixed,
     csOwnerDrawVariable:
-      NeedEntry := not ACustomComboBox.ReadOnly;
+      NeedEntry := False;
   end;
   if gtk_is_combo_box_entry(p) = NeedEntry then Exit;
   ReCreateCombo(ACustomComboBox, NeedEntry, WidgetInfo);
@@ -1805,6 +1805,9 @@ begin
     Entry := GTK_BIN(WidgetInfo^.CoreWidget)^.child;
     if ACustomComboBox.Style in [csDropDown, csSimple] then
       gtk_entry_set_editable(PGtkEntry(Entry), not NewReadOnly)
+    else
+    if ACustomComboBox.Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+      ReCreateCombo(ACustomCombobox, False, WidgetInfo)
     else
     if (PGtkEntry(Entry)^.flag0 and $1) = Ord(NewReadOnly) then
       ReCreateCombo(ACustomCombobox, not NewReadOnly, WidgetInfo);
@@ -1960,11 +1963,10 @@ begin
     csDropDown,
     csSimple:
       NeedEntry := True;
-    csDropDownList:
-      NeedEntry := False;
+    csDropDownList,
     csOwnerDrawFixed,
     csOwnerDrawVariable:
-      NeedEntry := not ACustomComboBox.ReadOnly;
+      NeedEntry := False;
   end;
   if NeedEntry then
     ComboWidget := gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL (ListStore), 0)
