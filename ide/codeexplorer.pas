@@ -42,8 +42,8 @@ uses
   Classes, SysUtils, types, LCLProc, LCLType, Forms, Controls, Graphics,
   Dialogs, Buttons, ComCtrls, Menus, AvgLvlTree, StdCtrls, ExtCtrls,
   // CodeTools
-  BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom, CodeCache,
-  CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,
+  FileProcs, BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom,
+  CodeCache, CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,
   PascalParserTool,
   // IDE Intf
   LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf,
@@ -169,6 +169,7 @@ type
     fLastCodeOptionsChangeStep: integer;
     FLastCodeValid: boolean;
     FLastCodeXY: TPoint;
+    FLastCode: TCodeBuffer;
     FLastDirectivesChangeStep: integer;
     FLastDirectivesFilter: string;
     FLastMode: TCodeExplorerMode;
@@ -634,12 +635,13 @@ end;
 
 procedure TCodeExplorerView.RefreshMenuItemClick(Sender: TObject);
 begin
+  FLastCodeChangeStep:=CTInvalidChangeStamp;
   Refresh(true);
 end;
 
 procedure TCodeExplorerView.CodeRefreshSpeedButtonClick(Sender: TObject);
 begin
-  Refresh(true);
+  RefreshMenuItemClick(Sender);
 end;
 
 procedure TCodeExplorerView.RenameMenuItemClick(Sender: TObject);
@@ -714,7 +716,7 @@ begin
       Result:=ACodeTool.ExtractDefinitionName(CodeNode);
 
     ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
-    ctnInterface,ctnCPPClass:
+    ctnClassInterface,ctnCPPClass:
       Result:='('+ACodeTool.ExtractClassInheritance(CodeNode,[])+')';
 
     ctnEnumIdentifier:
@@ -1621,14 +1623,52 @@ begin
 end;
 
 procedure TCodeExplorerView.CreateSurroundings(Tool: TCodeTool);
+
+  function CTNodeIsEnclosing(CTNOdE: TCodeTreeNode; p: integer): boolean;
+  var
+    NextCTNode: TCodeTreeNode;
+  begin
+    Result:=false;
+    if (p<CTNode.StartPos) or (p>CTNode.EndPos) then exit;
+    if (p=CTNode.EndPos) then begin
+      NextCTNode:=CTNode.NextSkipChilds;
+      if (NextCTNode<>nil) and (NextCTNode.StartPos<=p) then exit;
+    end;
+    Result:=true;
+  end;
+
+  procedure CreateSubNodes(TVNode: TTreeNode; p: integer);
+  var
+    Data: TViewNodeData;
+    CTNode: TCodeTreeNode;
+    ChildCTNode: TCodeTreeNode;
+    ChildData: TViewNodeData;
+    ChildTVNode: TTreeNode;
+  begin
+    Data:=TViewNodeData(TVNode.Data);
+    CTNode:=Data.CTNode;
+    ChildCTNode:=CTNode.FirstChild;
+    while ChildCTNode<>nil do begin
+      if CTNodeIsEnclosing(ChildCTNode,p) then begin
+        ChildData:=TViewNodeData.Create(ChildCTNode,false);
+        ChildTVNode:=CodeTreeview.Items.AddChildObject(
+                     TVNode,GetCodeNodeDescription(Tool,ChildCTNode),ChildData);
+        ChildTVNode.ImageIndex:=GetCodeNodeImage(Tool,ChildCTNode);
+        ChildTVNode.SelectedIndex:=ChildTVNode.ImageIndex;
+        CreateSubNodes(ChildTVNode,p);
+        ChildTVNode.Expanded:=true;
+      end;
+      ChildCTNode:=ChildCTNode.NextBrother;
+    end;
+  end;
+
 var
   CodeNode: TCodeTreeNode;
   Data: TViewNodeData;
   TVNode: TTreeNode;
+  CurPos: TCodeXYPosition;
+  p: integer;
 begin
-  {$IFNDEF EnableCESurroundings}
-  exit;
-  {$ENDIF}
   if fSurroundingsNode = nil then
   begin
     fSurroundingsNode:=CodeTreeview.Items.Add(nil, 'Surroundings');
@@ -1639,22 +1679,27 @@ begin
     fSurroundingsNode.ImageIndex:=ImgIDSection;
     fSurroundingsNode.SelectedIndex:=ImgIDSection;
   end;
+
+  CurPos.Code:=FLastCode;
+  CurPos.X:=FLastCodeXY.X;
+  CurPos.Y:=FLastCodeXY.Y;
+  fLastCodeTool.CaretToCleanPos(CurPos,p);
+
   // add all top lvl sections
   CodeNode:=Tool.Tree.Root;
   while CodeNode<>nil do begin
     Data:=TViewNodeData.Create(CodeNode,false);
-    Data.Desc:=CodeNode.Desc;
-    Data.SubDesc:=ctnsNone;
-    Data.StartPos:=CodeNode.StartPos;
-    Data.EndPos:=CodeNode.EndPos;
-    TVNode:=CodeTreeview.Items.AddChild(fSurroundingsNode,CodeNode.DescAsString);
-    TVNode.Data:=Data;
+    TVNode:=CodeTreeview.Items.AddChildObject(
+                       fSurroundingsNode,GetCodeNodeDescription(Tool,CodeNode),Data);
     TVNode.ImageIndex:=GetCodeNodeImage(Tool,CodeNode);
     TVNode.SelectedIndex:=TVNode.ImageIndex;
+    if CTNodeIsEnclosing(CodeNode,p) then
+      CreateSubNodes(TVNode,p);
+    TVNode.Expanded:=true;
 
     CodeNode:=CodeNode.NextBrother;
   end;
-  fSurroundingsNode.Expand(true);
+  fSurroundingsNode.Expanded:=true;
 end;
 
 procedure TCodeExplorerView.DeleteTVNode(TVNode: TTreeNode);
@@ -1808,7 +1853,11 @@ procedure TCodeExplorerView.RefreshCode(OnlyVisible: boolean);
   var
     TVNode: TTreeNode;
     Data: TViewNodeData;
+    ShowInterfaceImplementation: Boolean;
   begin
+    ShowInterfaceImplementation:=(Mode <> cemCategory)
+      or (not (cecSurrounding in CodeExplorerOptions.Categories));
+    if not ShowInterfaceImplementation then exit;
     TVNode:=CodeTreeview.Items.GetFirstNode;
     while TVNode<>nil do begin
       Data:=TViewNodeData(TVNode.Data);
@@ -1911,6 +1960,7 @@ begin
     if ACodeTool=nil then exit;
 
     fLastCodeTool:=ACodeTool;
+    FLastCode:=Code;
 
     // check for changes in the codetool
     TheFilter:=GetCodeFilter;
@@ -1996,7 +2046,8 @@ begin
         begin
           if (cecCodeObserver in CodeExplorerOptions.Categories) then
             CreateObservations(ACodeTool);
-          CreateSurroundings(ACodeTool);
+          if (cecSurrounding in CodeExplorerOptions.Categories) then
+            CreateSurroundings(ACodeTool);
         end;
       end;
 

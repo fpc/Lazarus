@@ -239,7 +239,7 @@ begin
     else if CollapseToo then
       ChildNode.Expanded:=false;
     if ANode<>nil then
-      TTreeNodeExpandedState(ANode.Data).Apply(ChildNode.GetFirstChild);
+      TTreeNodeExpandedState(ANode.Data).Apply(ChildNode.GetFirstChild,CollapseToo);
     ChildNode:=ChildNode.GetNextSibling;
   end;
 end;

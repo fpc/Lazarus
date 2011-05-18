@@ -487,7 +487,7 @@ type
                                       out EndCursorPos: integer;
                                       out EndCode: Pointer): boolean;
 
-    property ChangeStep: integer read FChangeStep;
+    property ChangeStep: integer read FChangeStep; // see CTInvalidChangeStamp
 
     // global write lock
     procedure ActivateGlobalWriteLock;
@@ -768,7 +768,7 @@ begin
   inherited Create;
   FInitValues:=TExpressionEvaluator.Create;
   Values:=TExpressionEvaluator.Create;
-  FChangeStep:=0;
+  FChangeStep:=CTInvalidChangeStamp;
   FSourceChangeSteps:=TFPList.Create;
   FMainCode:=nil;
   FMainSourceFilename:='';

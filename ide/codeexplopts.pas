@@ -62,7 +62,8 @@ type
     cecConstants,
     cecProperties,
     cecProcedures,
-    cecCodeObserver
+    cecCodeObserver,
+    cecSurrounding
     );
   TCodeExplorerCategories = set of TCodeExplorerCategory;
 
@@ -87,7 +88,7 @@ type
 const
   FirstCodeExplorerCategory = cecUses;
   DefaultCodeExplorerCategories = [cecUses,
-                              cecTypes,cecVariables,cecConstants,cecProcedures];
+               cecTypes,cecVariables,cecConstants,cecProcedures];
   cefcAll = [low(TCEObserverCategory)..high(TCEObserverCategory)];
   DefaultCodeObserverCategories = [
     cefcLongProcs,
@@ -226,7 +227,8 @@ const
     'Constants',
     'Properties',
     'Procedures',
-    'CodeObserver'
+    'CodeObserver',
+    'Surrounding'
     );
   CodeObserverCategoryNames: array[TCEObserverCategory] of string = (
     'LongProcs',
@@ -288,6 +290,7 @@ begin
   cecProcedures: Result:=lisCEProcedures;
   cecProperties: Result:=lisCEProperties;
   cecCodeObserver: Result:=lisCodeObserver;
+  cecSurrounding: Result:=lisCESurrounding;
   else Result:='?';
   end;
 end;

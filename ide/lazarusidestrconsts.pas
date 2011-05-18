@@ -4381,6 +4381,7 @@ resourcestring
   lisCEProcedures = 'Procedures';
   lisCEProperties = 'Properties';
   lisCodeObserver = 'Code Observer';
+  lisCESurrounding = 'Surrounding';
   dlgCOMoveLevelDown = 'Move level down';
   dlgCOMoveLevelUp = 'Move level up';
   dlgCOMoveDown = 'Move down';
