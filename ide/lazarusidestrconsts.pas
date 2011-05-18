@@ -4363,6 +4363,7 @@ resourcestring
   lisNewAncestors = 'New Ancestors';
   lisCEModeShowCategories = 'Show Categories';
   lisCEModeShowSourceNodes = 'Show Source Nodes';
+  lisCESurroundings = 'Surroundings';
   lisCEIn = '%s in %s';
   lisCEOUpdate = 'Update';
   lisCEORefreshAutomatically = 'Refresh automatically';

@@ -1644,18 +1644,38 @@ procedure TCodeExplorerView.CreateSurroundings(Tool: TCodeTool);
     ChildCTNode: TCodeTreeNode;
     ChildData: TViewNodeData;
     ChildTVNode: TTreeNode;
+    AddChilds: Boolean;
+    Add: Boolean;
+    ParentTVNode: TTreeNode;
   begin
     Data:=TViewNodeData(TVNode.Data);
     CTNode:=Data.CTNode;
     ChildCTNode:=CTNode.FirstChild;
-    while ChildCTNode<>nil do begin
+    while ChildCTNode<>nil do
+    begin
+      AddChilds:=false;
+      Add:=false;
       if CTNodeIsEnclosing(ChildCTNode,p) then begin
+        AddChilds:=true;
+        Add:=true;
+      end else if (CTNode.Desc=ctnProcedure)
+      and (ChildCTNode.Desc<>ctnProcedureHead) then begin
+        Add:=true
+      end;
+
+      ParentTVNode:=TVNode;
+      if Add then
+      begin
         ChildData:=TViewNodeData.Create(ChildCTNode,false);
         ChildTVNode:=CodeTreeview.Items.AddChildObject(
                      TVNode,GetCodeNodeDescription(Tool,ChildCTNode),ChildData);
         ChildTVNode.ImageIndex:=GetCodeNodeImage(Tool,ChildCTNode);
         ChildTVNode.SelectedIndex:=ChildTVNode.ImageIndex;
-        CreateSubNodes(ChildTVNode,p);
+        ParentTVNode:=ChildTVNode;
+      end;
+      if AddChilds then
+      begin
+        CreateSubNodes(ParentTVNode,p);
         ChildTVNode.Expanded:=true;
       end;
       ChildCTNode:=ChildCTNode.NextBrother;
@@ -1671,7 +1691,7 @@ var
 begin
   if fSurroundingsNode = nil then
   begin
-    fSurroundingsNode:=CodeTreeview.Items.Add(nil, 'Surroundings');
+    fSurroundingsNode:=CodeTreeview.Items.Add(nil, lisCESurroundings);
     Data:=TViewNodeData.Create(Tool.Tree.Root,false);
     Data.Desc:=ctnNone;
     Data.StartPos:=Tool.SrcLen;
