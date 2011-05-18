@@ -37,8 +37,8 @@ type
     fHelpConnection: TLHelpConnection;
     fChmsFilePath: String;
     function GetHelpEXE: String;
-    function DBFindViewer(HelpDB: THelpDatabase; const MimeType: string;
-      var ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
+    function DBFindViewer({%H-}HelpDB: THelpDatabase; {%H-}const MimeType: string;
+      var {%H-}ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
     function GetHelpLabel: String;
     procedure SetChmsFilePath(const AValue: String);
   protected

@@ -8,7 +8,7 @@ uses
   Classes, SysUtils,
   Dialogs, FileUtil,
   LazHelpIntf, HelpIntfs,
-  IDEHelpIntf, LazHelpHTML, MacroIntf;
+  IDEHelpIntf, MacroIntf;
 
 const
   sFPCLangRef = 'FPC Language Reference';
@@ -27,10 +27,10 @@ type
     destructor Destroy; override;
     procedure LoadKeywordList(Path: string);
     function GetNodesForKeyword(const HelpKeyword: string;
-                        var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
+                        var ListOfNodes: THelpNodeQueryList; var {%H-}ErrMsg: string
                         ): TShowHelpResult; override;
-    function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
-                      QueryItem: THelpQueryItem;
+    function ShowHelp(Query: THelpQuery; {%H-}BaseNode, NewNode: THelpNode;
+                      {%H-}QueryItem: THelpQueryItem;
                       var ErrMsg: string): TShowHelpResult; override;
   end;
 
