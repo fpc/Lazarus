@@ -6661,7 +6661,7 @@ var
             ProcNode:=ProcNode.Parent;
           end;
           if (ProcNode<>nil)
-          and ExprType.Context.Tool.FindClassOfMethod(ProcNode,Params,
+          and StartContext.Tool.FindClassOfMethod(ProcNode,Params,
                                                     not IsIdentifierEndOfVariable)
           then begin
             ExprType.Desc:=xtContext;
