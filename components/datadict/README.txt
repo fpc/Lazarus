@@ -3,18 +3,18 @@ This package contains data dictionary support for the Lazarus IDE.
 
 When installed in the IDE, several things happen:
 
-- A 'Data Dictionary' item appears under the project menu. 
+- A 'Data Dictionary' item appears under the 'Project' menu. 
   This has a submenu with 3 items:
   + 'Set...'
     This will set the data dictionary for the current application
   + 'Open'
-    This will open the seleted data dictionary in the database desktop.
+    This will open the selected data dictionary in the database desktop.
   + 'Configure'
     This will show the data dictionary configuration dialog:
     - It allows to set the path where data dictionaries are stored
     - It allows to select the location of the database desktop
 
-- A 'Database desktop' menu item is registered unders tools. It will start
+- A 'Database desktop' menu item is registered under 'Tools'. It will start
   the 'database desktop'.
 
 - A context menu item is created in the Form Designer: 'Data Dictionary'
