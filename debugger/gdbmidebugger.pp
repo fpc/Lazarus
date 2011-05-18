@@ -70,8 +70,8 @@ type
 
   // The internal ExecCommand of the new Commands (object queue)
   TGDBMICommandFlag = (
-    cfCheckState,
-    cfCheckError
+    cfCheckState, // Copy CmdResult to DebuggerState, EXCEPT dsError,dsNone (e.g copy dsRun, dsPause, dsStop, dsIdle)
+    cfCheckError  // Copy CmdResult to DebuggerState, ONLY if dsError
   );
   TGDBMICommandFlags = set of TGDBMICommandFlag;
 
@@ -523,6 +523,17 @@ type
                        const ATag: PtrInt);
     function  DebugText: String; override;
     property  Result: TGDBMIExecResult read FResult;
+  end;
+
+  { TGDBMIDebuggerCommandInitDebugger }
+
+  TGDBMIDebuggerCommandInitDebugger = class(TGDBMIDebuggerCommand)
+  private
+    FSuccess: Boolean;
+  protected
+    function  DoExecute: Boolean; override;
+  public
+    property Success: Boolean read FSuccess;
   end;
 
   { TGDBMIDebuggerCommandStartDebugging }
@@ -1407,6 +1418,65 @@ begin
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
   Result := '"' + Result + '"';
+end;
+
+{ TGDBMIDebuggerCommandInitDebugger }
+
+function TGDBMIDebuggerCommandInitDebugger.DoExecute: Boolean;
+  function ParseGDBVersionMI: Boolean;
+  var
+    R: TGDBMIExecResult;
+    S: String;
+    List: TGDBMINameValueList;
+  begin
+    Result := ExecuteCommand('-gdb-version', R);
+    Result := Result and (R.Values <> '');
+    if (not Result) then exit;
+
+    List := TGDBMINameValueList.Create(R);
+
+    FTheDebugger.FGDBVersion := List.Values['version'];
+    S := List.Values['target'];
+
+    FTheDebugger.FGDBCPU := GetPart('', '-', S);
+    GetPart('-', '-', S); // strip vendor
+    FTheDebugger.FGDBOS := GetPart(['-'], ['-', ''], S);
+
+    List.Free;
+
+    if FTheDebugger.FGDBVersion <> ''
+    then exit;
+
+    // maybe a none MI result
+    S := GetPart(['configured as \"'], ['\"'], R.Values, False, False);
+    if Pos('--target=', S) <> 0 then
+      S := GetPart('--target=', '', S);
+    FTheDebugger.FGDBCPU := GetPart('', '-', S);
+    GetPart('-', '-', S); // strip vendor
+    FTheDebugger.FGDBOS := GetPart('-', '-', S);
+
+    FTheDebugger.FGDBVersion := GetPart(['('], [')'], R.Values, False, False);
+    if FTheDebugger.FGDBVersion <> '' then Exit;
+
+    FTheDebugger.FGDBVersion := GetPart(['gdb '], [#10, #13], R.Values, True, False);
+    if FTheDebugger.FGDBVersion <> '' then Exit;
+
+    Result := False;
+  end;
+
+var
+  R: TGDBMIExecResult;
+begin
+  Result := True;
+  FSuccess := ExecuteCommand('-gdb-set confirm off', R);
+  FSuccess := FSuccess and (r.State <> dsError);
+  if (not FSuccess) then exit;
+  // for win32, turn off a new console otherwise breaking gdb will fail
+  // ignore the error on other platforms
+  FSuccess := ExecuteCommand('-gdb-set new-console off', R);
+  if (not FSuccess) then exit;
+
+  ParseGDBVersionMI;
 end;
 
 { TGDBMIDebuggerCommandStackSetCurrent }
@@ -6161,56 +6231,6 @@ begin
 end;
 
 procedure TGDBMIDebugger.Init;
-  function ParseGDBVersionMI: Boolean;
-  var
-    R: TGDBMIExecResult;
-    S: String;
-    List: TGDBMINameValueList;
-  begin
-    if not ExecuteCommand('-gdb-version', [], [], R)
-    then Exit(False);
-
-    if R.Values = '' then Exit(False);
-
-    List := TGDBMINameValueList.Create(R);
-
-    FGDBVersion := List.Values['version'];
-    S := List.Values['target'];
-
-    FGDBCPU := GetPart('', '-', S);
-    GetPart('-', '-', S); // strip vendor
-    FGDBOS := GetPart(['-'], ['-', ''], S);
-
-    List.Free;
-
-    Result := FGDBVersion <> '';
-  end;
-
-  procedure ParseGDBVersion;
-  var
-    R: TGDBMIExecResult;
-    S: String;
-  begin
-    FGDBVersion := '';
-    FGDBOS := '';
-    FGDBCPU := '';
-
-    if not ExecuteCommand('-gdb-version', [], [cfNoMiCommand], R) // No MI since the output is no MI
-    then Exit;
-
-    S := GetPart(['configured as \"'], ['\"'], R.Values, False, False);
-    if Pos('--target=', S) <> 0 then
-      S := GetPart('--target=', '', S);
-    FGDBCPU := GetPart('', '-', S);
-    GetPart('-', '-', S); // strip vendor
-    FGDBOS := GetPart('-', '-', S);
-
-    FGDBVersion := GetPart(['('], [')'], R.Values, False, False);
-    if FGDBVersion <> '' then Exit;
-
-    FGDBVersion := GetPart(['gdb '], [#10, #13], R.Values, True, False);
-    if FGDBVersion <> '' then Exit;
-  end;
 
   procedure CheckGDBVersion;
   begin
@@ -6224,14 +6244,15 @@ procedure TGDBMIDebugger.Init;
       Include(FDebuggerFlags, dfImplicidTypes);
     end;
   end;
+
 var
   Options: String;
+  Cmd: TGDBMIDebuggerCommandInitDebugger;
 begin
   LockRelease;
   try
     FPauseWaitState := pwsNone;
     FInExecuteCount := 0;
-
     Options := '-silent -i mi -nx';
 
     if Length(TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options) > 0
@@ -6242,18 +6263,22 @@ begin
       if not ParseInitialization
       then begin
         SetState(dsError);
-        Exit;
+      end
+      else begin
+        Cmd := TGDBMIDebuggerCommandInitDebugger.Create(Self);
+        Cmd.KeepFinished := True;
+        QueueCommand(Cmd);
+        if not Cmd.Success then begin
+          Cmd.Cancel;
+          Cmd.KeepFinished := False;
+          SetState(dsError);
+        end
+        else begin
+          Cmd.KeepFinished := False;
+          CheckGDBVersion;
+          inherited Init;
+        end;
       end;
-
-      ExecuteCommand('-gdb-set confirm off', []);
-      // for win32, turn off a new console otherwise breaking gdb will fail
-      // ignore the error on other platforms
-      ExecuteCommand('-gdb-set new-console off', [cfIgnoreError]);
-
-      if not ParseGDBVersionMI then ParseGDBVersion;
-      CheckGDBVersion;
-
-      inherited Init;
     end
     else begin
       if DebugProcess = nil
@@ -6262,7 +6287,7 @@ begin
       SetState(dsError);
     end;
 
-    FGDBPtrSize := CpuNameToPtrSize(FGDBCPU);
+    FGDBPtrSize := CpuNameToPtrSize(FGDBCPU); // will be set in StartDebugging
   finally
     UnlockRelease;
   end;
@@ -6302,6 +6327,9 @@ procedure TGDBMIDebugger.InterruptTarget;
   end;
 {$ENDIF}
 begin
+  {$IFDEF DBGMI_QUEUE_DEBUG}
+  DebugLn(['TGDBMIDebugger.InterruptTarget: TargetPID=', TargetPID]);
+  {$ENDIF}
   if TargetPID = 0 then Exit;
 {$IFDEF UNIX}
   FpKill(TargetPID, SIGINT);
@@ -6319,6 +6347,9 @@ begin
   or not TryNT
   then begin
     // We have no other choice than trying this
+    {$IFDEF DBGMI_QUEUE_DEBUG}
+    DebugLn(['TGDBMIDebugger.InterruptTarget: Send CTRL_BREAK_EVENT']);
+    {$ENDIF}
     GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, TargetPID);
     Exit;
   end;
