@@ -78,8 +78,9 @@ procedure TLangRefHelpDatabase.LoadKeywordList(Path: string);
 begin
   if Path = '' then
   begin
-    Path := { TODO : FixSlash }('$(LazarusDir)/docs/html/');
+    Path := '$(LazarusDir)';
     IDEMacros.SubstituteMacros(Path);
+    Path := AppendPathDelim(Path) + 'docs' + PathDelim + 'html';
   end;
   Path := AppendPathDelim(Path);
 
@@ -122,6 +123,7 @@ begin
     if SameText(KeyWord, 'for') or SameText(KeyWord, 'in') then
     begin
       i := FKeyWordsList.IndexOfName('forin');
+      if i < 0 then Exit;
       KeywordNode := THelpNode.CreateURL(Self,KeyWord,'ref.chm://ref/' + FKeyWordsList.ValueFromIndex[i]);
       KeywordNode.Title := 'Pascal keyword "for..in"';
       FKeywordNodes.Add(KeywordNode);
