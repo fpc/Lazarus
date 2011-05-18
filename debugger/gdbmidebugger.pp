@@ -9328,8 +9328,10 @@ begin
           AReq^.Result.Kind := ptprkSimple;
         end;
       end
-      else
+      else begin
+        AReq^.Result.GdbDescription := R.Values;
         AReq^.Error := R.Values;
+      end;
       AReq := AReq^.Next;
     end;
   end;

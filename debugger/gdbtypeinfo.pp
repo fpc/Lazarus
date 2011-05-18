@@ -1318,7 +1318,7 @@ var
       ResultList: TGDBMINameValueList;
     begin
       ResultList := TGDBMINameValueList.Create(AGdbDesc);
-      FExprEvaluatedAsText := ResultList.Values['value'];
+      FExprEvaluatedAsText := ResultList.Values[AField];
       FHasExprEvaluatedAsText := True;
       //FTextValue := DeleteEscapeChars(FTextValue);
       ResultList.Free;
@@ -1359,6 +1359,7 @@ var
       exit;
     end;
 
+    // TODO: set Validity = error
     ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'msg');
     Result := True;
   end;
