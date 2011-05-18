@@ -352,8 +352,6 @@ Type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    // we need to override the Items Write method for db aware.
-    procedure SetItems(Values : TStrings); override;
 
     function GetReadOnly: Boolean;
     procedure SetReadOnly(Value: Boolean);
@@ -370,6 +368,8 @@ Type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
+    // we need to override the Items Write method for db aware.
+    procedure SetItems(Values : TStrings); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
