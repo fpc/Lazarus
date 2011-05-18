@@ -796,7 +796,7 @@ begin
   if EnvironmentOptions<>nil then exit;
   EnvironmentOptions:=TEnvironmentOptions.Create;
   with EnvironmentOptions do begin
-    CreateEnvironmentConfig;
+    CreateConfig;
     Load(false);
     if Application.HasOption('language') then begin
       debugln('TLazBuildApplication.Init overriding language with command line: ',

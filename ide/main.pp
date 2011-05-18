@@ -1255,7 +1255,7 @@ begin
     OnBeforeRead := @DoEnvironmentOptionsBeforeRead;
     OnBeforeWrite := @DoEnvironmentOptionsBeforeWrite;
     OnAfterWrite := @DoEnvironmentOptionsAfterWrite;
-    SetLazarusDefaultFilename;
+    CreateConfig;
     Load(false);
     if Application.HasOption('language') then
     begin

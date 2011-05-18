@@ -348,7 +348,7 @@ type
     procedure Load(OnlyDesktop:boolean);
     procedure Save(OnlyDesktop:boolean);
     property Filename: string read FFilename write SetFilename;
-    procedure CreateEnvironmentConfig;
+    procedure CreateConfig;
     procedure GetDefaultFPCSourceDirectory;
     function IsDebuggerClassDefined: boolean;
     function GetTestBuildDirectory: string;
@@ -887,7 +887,7 @@ begin
   inherited DoAfterWrite(Restore);
 end;
 
-procedure TEnvironmentOptions.CreateEnvironmentConfig;
+procedure TEnvironmentOptions.CreateConfig;
 var
   ConfFileName: string;
 begin
