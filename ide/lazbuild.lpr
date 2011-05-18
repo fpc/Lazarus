@@ -59,10 +59,10 @@ type
     fInitResult: boolean;
     fWidgetsetOverride: String;
     // external tools
-    procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
+    procedure OnExtToolFreeOutputFilter({%H-}OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
-                                         var Abort: boolean);
+                                         var {%H-}Abort: boolean);
 
     // global package functions
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
@@ -74,7 +74,7 @@ type
     
     // project
     procedure OnProjectChangeInfoFile(TheProject: TProject);
-    procedure OnProjectGetTestDirectory(TheProject: TProject; out
+    procedure OnProjectGetTestDirectory({%H-}TheProject: TProject; out
       TestDir: string);
 
     // dialogs
@@ -796,7 +796,7 @@ begin
   if EnvironmentOptions<>nil then exit;
   EnvironmentOptions:=TEnvironmentOptions.Create;
   with EnvironmentOptions do begin
-    SetLazarusDefaultFilename;
+    CreateEnvironmentConfig;
     Load(false);
     if Application.HasOption('language') then begin
       debugln('TLazBuildApplication.Init overriding language with command line: ',
@@ -809,8 +809,9 @@ begin
     TExternalToolList(ExternalTools).OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
     if CompilerOverride<>'' then
       CompilerFilename:=CompilerOverride;
+    //debugln(['TLazBuildApplication.LoadEnvironmentOptions LazarusDirectory="',LazarusDirectory,'"']);
     if LazarusDirOverride<>'' then
-      LazarusDirectory:=Lazarusdiroverride;
+      LazarusDirectory:=LazarusDirOverride;
   end;
 end;
 

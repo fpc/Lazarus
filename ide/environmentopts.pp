@@ -348,7 +348,7 @@ type
     procedure Load(OnlyDesktop:boolean);
     procedure Save(OnlyDesktop:boolean);
     property Filename: string read FFilename write SetFilename;
-    procedure SetLazarusDefaultFilename;
+    procedure CreateEnvironmentConfig;
     procedure GetDefaultFPCSourceDirectory;
     function IsDebuggerClassDefined: boolean;
     function GetTestBuildDirectory: string;
@@ -887,7 +887,7 @@ begin
   inherited DoAfterWrite(Restore);
 end;
 
-procedure TEnvironmentOptions.SetLazarusDefaultFilename;
+procedure TEnvironmentOptions.CreateEnvironmentConfig;
 var
   ConfFileName: string;
 begin
