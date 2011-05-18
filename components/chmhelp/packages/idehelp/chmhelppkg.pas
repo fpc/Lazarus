@@ -7,7 +7,7 @@ unit ChmHelpPkg;
 interface
 
 uses
-  LazChmHelp, LazarusPackageIntf;
+  LazChmHelp, ChmLangRef, LazarusPackageIntf;
 
 implementation
 

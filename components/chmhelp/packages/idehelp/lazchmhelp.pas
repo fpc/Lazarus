@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazHelpIntf, HelpIntfs, LazConfigStorage,
-  PropEdits, LHelpControl, Controls;
+  PropEdits, LHelpControl, Controls, ChmLangRef;
   
 type
   
@@ -40,6 +40,7 @@ type
     function DBFindViewer(HelpDB: THelpDatabase; const MimeType: string;
       var ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
     function GetHelpLabel: String;
+    procedure SetChmsFilePath(const AValue: String);
   protected
     function GetFileNameAndURL(RawUrl: String; out FileName: String; out URL: String): Boolean;
     procedure SetHelpEXE(AValue: String);
@@ -62,8 +63,7 @@ type
   published
     property HelpEXE: String read GetHelpEXE write SetHelpEXE;
     property HelpLabel: String read GetHelpLabel write SetHelpLabel;
-    property HelpFilesPath: String read fChmsFilePath write fChmsFilePath;
-
+    property HelpFilesPath: String read fChmsFilePath write SetChmsFilePath;
   end;
   
   procedure Register;
@@ -112,6 +112,14 @@ begin
   Result := fHelpLabel;
 end;
 
+procedure TChmHelpViewer.SetChmsFilePath(const AValue: String);
+begin
+  if fChmsFilePath = AValue then Exit;
+  fChmsFilePath := IncludeTrailingBackslash(AValue);
+  if Assigned(LangRefHelpDatabase) then
+    LangRefHelpDatabase.LoadKeywordList(fChmsFilePath);
+end;
+
 function TChmHelpViewer.GetHelpEXE: String;
 begin
   if fHelpExe <> '' then
@@ -125,7 +133,7 @@ end;
 function TChmHelpViewer.GetFileNameAndURL(RawUrl:String; out FileName: String; out URL: String
   ): Boolean;
 var
-fPos: Integer;
+  fPos: Integer;
 begin
   Result := False;
 
@@ -158,7 +166,6 @@ var
   LHelpProject: String;
   WS: String;
   LastWasEOL: Boolean;
-  EOLP: Integer;
   BufC: Char;
   Buffer: array[0..511] of char;
   BufP: Integer;
@@ -319,16 +326,16 @@ end;
 
 function TChmHelpViewer.SupportsMimeType(const AMimeType: string): boolean;
 begin
-  REsult := inherited;
+  Result := inherited;
 end;
 
 function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
   ): TShowHelpResult;
 var
-FileName: String;
-Url: String;
-Res: TLHelpResponse;
-DocsDir: String;
+  FileName: String;
+  Url: String;
+  Res: TLHelpResponse;
+  DocsDir: String;
 begin
   if Pos('file://', Node.URL) = 1 then
   begin
@@ -350,20 +357,20 @@ begin
   begin
     DocsDir := FixSlash('$(LazarusDir)/docs/html/');
     IDEMacros.SubstituteMacros(DocsDir);
-    if not FileExistsUTF8(DocsDir+FileName) then
-    begin
-      Result := shrDatabaseNotFound;
-      ErrMsg := FileName +' not found. Please put the chm help files in '+ LineEnding
-                         +DocsDir+  LineEnding
-                         +' or set the path to lcl.chm rtl.chm fcl.chm with "HelpFilesPath" in '
-                         +' Environment Options -> Help -> Help Options ->'+LineEnding
-                         +' under HelpViewers - CHMHelpViewer';
-      Exit;
-    end;
-
   end
   else
     DocsDir := fChmsFilePath;
+
+  if not FileExistsUTF8(DocsDir+FileName) then
+  begin
+    Result := shrDatabaseNotFound;
+    ErrMsg := FileName +' not found. Please put the chm help files in '+ LineEnding
+                       +DocsDir+  LineEnding
+                       +' or set the path to lcl.chm rtl.chm fcl.chm with "HelpFilesPath" in '
+                       +' Environment Options -> Help -> Help Options ->'+LineEnding
+                       +' under HelpViewers - CHMHelpViewer';
+    Exit;
+  end;
 
   FileName := IncludeTrailingPathDelimiter(DocsDir)+FileName;
 
@@ -419,12 +426,14 @@ var
 begin
   ChmHelp := TChmHelpViewer.Create(nil);
   HelpViewers.RegisterViewer(ChmHelp);
+  RegisterLangRefHelpDatabase;
+  LangRefHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
 end;
 
 initialization
   RegisterPropertyEditor(TypeInfo(AnsiString),
-    TCHmHelpViewer,'HelpEXE',TFileNamePropertyEditor);
+    TChmHelpViewer,'HelpEXE',TFileNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString),
-    TCHmHelpViewer,'HelpFilesPath',TFileNamePropertyEditor);
+    TChmHelpViewer,'HelpFilesPath',TDirectoryPropertyEditor);
 end.
 

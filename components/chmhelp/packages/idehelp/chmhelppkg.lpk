@@ -3,21 +3,30 @@
   <Package Version="3">
     <Name Value="ChmHelpPkg"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="10"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Version Minor="1"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="lazchmhelp.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="LazChmHelp"/>
       </Item1>
+      <Item2>
+        <Filename Value="chmlangref.pas"/>
+        <UnitName Value="ChmLangRef"/>
+      </Item2>
     </Files>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="5">
