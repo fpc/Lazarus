@@ -2805,7 +2805,7 @@ begin
 
     // append a filter for all file types of the open files in the source editor
     CreateFileDialogFilterForSourceEditorFiles(Filter,AllEditorExt,AllFilter);
-    if AllEditorExt<>'' then
+    if (AllEditorExt<>'|') then
       Filter:=Filter+ '|' + lisEditorFileTypes + ' (' + AllEditorExt + ')|' +
         AllEditorExt;
 
