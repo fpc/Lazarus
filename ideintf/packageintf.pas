@@ -218,6 +218,7 @@ type
                             const AMethod: TMethod);
     procedure DoCallNotifyHandler(HandlerType: TPkgIntfHandlerType; Sender: TObject);
   public
+    destructor Destroy; override;
     function DoOpenPackageWithName(const APackageName: string;
                          Flags: TPkgOpenFlags;
                          ShowAbort: boolean): TModalResult; virtual; abstract;
@@ -674,6 +675,15 @@ procedure TPackageEditingInterface.DoCallNotifyHandler(
   HandlerType: TPkgIntfHandlerType; Sender: TObject);
 begin
   FHandlers[HandlerType].CallNotifyEvents(Sender);
+end;
+
+destructor TPackageEditingInterface.Destroy;
+var
+  h: TPkgIntfHandlerType;
+begin
+  for h:=Low(FHandlers) to high(FHandlers) do
+    FreeAndNil(FHandlers[h]);
+  inherited Destroy;
 end;
 
 procedure TPackageEditingInterface.RemoveAllHandlersOfObject(AnObject: TObject);
