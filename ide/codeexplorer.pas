@@ -177,7 +177,7 @@ type
     fObserverCatNodes: array[TCEObserverCategory] of TTreeNode;
     fObserverCatOverflow: array[TCEObserverCategory] of boolean;
     fObserverNode: TTreeNode;
-    fSurroundingsNode: TTreeNode;
+    fSurroundingNode: TTreeNode;
     FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
     FOnShowOptions: TNotifyEvent;
@@ -226,7 +226,7 @@ type
                             CodeNode: TCodeTreeNode; StartPos, EndPos: integer;
                             ObserverState: TCodeObserverStatementState);
     procedure FindObserverTodos(Tool: TCodeTool);
-    procedure CreateSurroundings(Tool: TCodeTool);
+    procedure CreateSurrounding(Tool: TCodeTool);
     procedure DeleteTVNode(TVNode: TTreeNode);
     procedure SetCodeFilter(const AValue: string);
     procedure SetCurrentPage(const AValue: TCodeExplorerPage);
@@ -1622,7 +1622,7 @@ begin
   until p>SrcLen;
 end;
 
-procedure TCodeExplorerView.CreateSurroundings(Tool: TCodeTool);
+procedure TCodeExplorerView.CreateSurrounding(Tool: TCodeTool);
 
   function CTNodeIsEnclosing(CTNOdE: TCodeTreeNode; p: integer): boolean;
   var
@@ -1689,15 +1689,15 @@ var
   CurPos: TCodeXYPosition;
   p: integer;
 begin
-  if fSurroundingsNode = nil then
+  if fSurroundingNode = nil then
   begin
-    fSurroundingsNode:=CodeTreeview.Items.Add(nil, lisCESurroundings);
+    fSurroundingNode:=CodeTreeview.Items.Add(nil, lisCESurrounding);
     Data:=TViewNodeData.Create(Tool.Tree.Root,false);
     Data.Desc:=ctnNone;
     Data.StartPos:=Tool.SrcLen;
-    fSurroundingsNode.Data:=Data;
-    fSurroundingsNode.ImageIndex:=ImgIDSection;
-    fSurroundingsNode.SelectedIndex:=ImgIDSection;
+    fSurroundingNode.Data:=Data;
+    fSurroundingNode.ImageIndex:=ImgIDSection;
+    fSurroundingNode.SelectedIndex:=ImgIDSection;
   end;
 
   CurPos.Code:=FLastCode;
@@ -1710,7 +1710,7 @@ begin
   while CodeNode<>nil do begin
     Data:=TViewNodeData.Create(CodeNode,false);
     TVNode:=CodeTreeview.Items.AddChildObject(
-                       fSurroundingsNode,GetCodeNodeDescription(Tool,CodeNode),Data);
+                       fSurroundingNode,GetCodeNodeDescription(Tool,CodeNode),Data);
     TVNode.ImageIndex:=GetCodeNodeImage(Tool,CodeNode);
     TVNode.SelectedIndex:=TVNode.ImageIndex;
     if CTNodeIsEnclosing(CodeNode,p) then
@@ -1719,7 +1719,7 @@ begin
 
     CodeNode:=CodeNode.NextBrother;
   end;
-  fSurroundingsNode.Expanded:=true;
+  fSurroundingNode.Expanded:=true;
 end;
 
 procedure TCodeExplorerView.DeleteTVNode(TVNode: TTreeNode);
@@ -1735,8 +1735,8 @@ begin
   if TVNode.Parent=nil then begin
     if TVNode=fObserverNode then
       fObserverNode:=nil
-    else if TVNode=fSurroundingsNode then
-      fSurroundingsNode:=nil
+    else if TVNode=fSurroundingNode then
+      fSurroundingNode:=nil
     else begin
       for c:=low(fCategoryNodes) to high(fCategoryNodes) do
         if fCategoryNodes[c]=TVNode then
@@ -2056,7 +2056,7 @@ begin
       fObserverNode:=nil;
       for f:=low(TCEObserverCategory) to high(TCEObserverCategory) do
         fObserverCatNodes[f]:=nil;
-      fSurroundingsNode:=nil;
+      fSurroundingNode:=nil;
 
       CodeTreeview.Items.Clear;
       if (ACodeTool<>nil) and (ACodeTool.Tree<>nil) and (ACodeTool.Tree.Root<>nil)
@@ -2067,7 +2067,7 @@ begin
           if (cecCodeObserver in CodeExplorerOptions.Categories) then
             CreateObservations(ACodeTool);
           if (cecSurrounding in CodeExplorerOptions.Categories) then
-            CreateSurroundings(ACodeTool);
+            CreateSurrounding(ACodeTool);
         end;
       end;
 
@@ -2379,7 +2379,7 @@ begin
   TVNode:=CodeTreeview.Items.GetFirstNode;
   while TVNode<>nil do begin
     if TVNode.Parent=nil then begin
-      if (TVNode=fObserverNode) or (TVNode=fSurroundingsNode) then break;
+      if (TVNode=fObserverNode) or (TVNode=fSurroundingNode) then break;
     end;
     NodeData:=TViewNodeData(TVNode.Data);
     if (NodeData<>nil) and (NodeData.StartPos>0)

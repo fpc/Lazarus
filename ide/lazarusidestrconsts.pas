@@ -4363,7 +4363,7 @@ resourcestring
   lisNewAncestors = 'New Ancestors';
   lisCEModeShowCategories = 'Show Categories';
   lisCEModeShowSourceNodes = 'Show Source Nodes';
-  lisCESurroundings = 'Surroundings';
+  lisCESurrounding = 'Surrounding';
   lisCEIn = '%s in %s';
   lisCEOUpdate = 'Update';
   lisCEORefreshAutomatically = 'Refresh automatically';
@@ -4382,7 +4382,6 @@ resourcestring
   lisCEProcedures = 'Procedures';
   lisCEProperties = 'Properties';
   lisCodeObserver = 'Code Observer';
-  lisCESurrounding = 'Surrounding';
   dlgCOMoveLevelDown = 'Move level down';
   dlgCOMoveLevelUp = 'Move level up';
   dlgCOMoveDown = 'Move down';
