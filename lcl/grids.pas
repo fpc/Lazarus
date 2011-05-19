@@ -86,6 +86,7 @@ type
     goRowMoving,          // Ya
     goColMoving,          // Ya
     goEditing,            // Ya
+    goAutoAddRows,        // JuMa
     goTabs,               // Ya
     goRowSelect,          // Ya
     goAlwaysShowEditor,   // Ya
@@ -697,6 +698,7 @@ type
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
     FSavedCursor: TCursor;
     FSizing: TSizingRec;
+    FRowAutoInserted: Boolean;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CancelSelection;
@@ -6407,6 +6409,8 @@ begin
         end;
       end;
   end;
+  if FEditorKey then
+    FRowAutoInserted:=False;
   {$ifdef dbgGrid}DebugLn('Grid.KeyDown END Key=',IntToStr(Key));{$endif}
 end;
 
@@ -6602,6 +6606,7 @@ var
   CInc,RInc: Integer;
   NCol,NRow: Integer;
   SelOk: Boolean;
+  i: Integer;
 begin
   // Reference
   if not Relative then begin
@@ -6610,8 +6615,24 @@ begin
     DCol:=NCol-FCol;
     DRow:=NRow-FRow;
   end else begin
-    NCol:=FCol + DCol;
-    NRow:=FRow + DRow;
+    NCol:=FCol+DCol;
+    NRow:=FRow+DRow;
+    if (goEditing in options) and (goAutoAddRows in options) then begin
+      if (DRow=1) and (NRow>=RowCount) then begin
+        // If the last row has data, add a new row.
+        if not FRowAutoInserted then
+          for i:=FixedCols to ColCount-1 do
+            if GetCells(i, FRow)<>'' then begin
+              RowCount:=RowCount+1;
+              FRowAutoInserted:=True;
+              Break;
+            end;
+      end
+      else if FRowAutoInserted and (DRow=-1) then begin
+        RowCount:=RowCount-1;
+        FRowAutoInserted:=False;
+      end;
+    end;
   end;
 
   Checklimits(NCol, NRow);
@@ -7896,6 +7917,7 @@ begin
     Cfg.SetValue(Path+'goRowMoving/value', goRowMoving in options);
     Cfg.SetValue(Path+'goColMoving/value', goColMoving in options);
     Cfg.SetValue(Path+'goEditing/value', goEditing in options);
+    Cfg.SetValue(Path+'goAutoAddRows/value', goAutoAddRows in options);
     Cfg.SetValue(Path+'goTabs/value', goTabs in options);
     Cfg.SetValue(Path+'goRowSelect/value', goRowSelect in options);
     Cfg.SetValue(Path+'goAlwaysShowEditor/value', goAlwaysShowEditor in options);
@@ -8039,6 +8061,7 @@ begin
       GetValue('goRowMoving',goRowMoving);
       GetValue('goColMoving',goColMoving);
       GetValue('goEditing',goEditing);
+      GetValue('goAutoAddRows',goAutoAddRows);
       GetValue('goRowSelect',goRowSelect);
       GetValue('goTabs',goTabs);
       GetValue('goAlwaysShowEditor',goAlwaysShowEditor);
@@ -9096,6 +9119,7 @@ procedure TCustomDrawGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
   if Assigned(OnSetEditText) then
     OnSetEditText(Self, aCol, aRow, Value);
+  inherited SetEditText(aCol, aRow, Value);
 end;
 
 procedure TCustomDrawGrid.SizeChanged(OldColCount, OldRowCount: Integer);
