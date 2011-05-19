@@ -3245,10 +3245,8 @@ begin
   // This is done for Delphi compatibility.
   if (Anchors = AnchorAlign[OldAlign]) and (Anchors <> AnchorAlign[FAlign]) then
     Anchors := AnchorAlign[FAlign];
-  {$IFDEF EnableExplicitBounds}
   if not (csLoading in ComponentState) then
     BoundsRect:=BaseBounds;
-  {$ENDIF}
   EnableAutoSizing;
 end;
 
