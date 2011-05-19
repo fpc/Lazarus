@@ -717,6 +717,7 @@ begin
   end;
   NodesListBox.Items.Assign(List);
   List.Free;
+  if NodesListBox.Count > 0 then NodesListBox.ItemIndex := 0;
 end;
 
 constructor THelpSelectorDialog.Create(TheOwner: TComponent);
@@ -1010,9 +1011,9 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     if IdentEnd<=IdentStart then exit;
     KeyWord:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
     ErrorMsg:='';
-    Result:=ShowHelpForKeyword('','FPCKeyword_'+Keyword,ErrorMsg);
+    Result:=ShowHelpForKeyword('',FPCKeyWordHelpPrefix+Keyword,ErrorMsg);
     if Result=shrHelpNotFound then exit;
-    HelpManager.ShowError(Result,ErrMsg);
+    HelpManager.ShowError(Result,ErrorMsg);
   end;
 
   function CollectDeclarations(CodeBuffer: TCodeBuffer): TShowHelpResult;

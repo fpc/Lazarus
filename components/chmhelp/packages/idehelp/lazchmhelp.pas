@@ -115,7 +115,7 @@ end;
 procedure TChmHelpViewer.SetChmsFilePath(const AValue: String);
 begin
   if fChmsFilePath = AValue then Exit;
-  fChmsFilePath := IncludeTrailingBackslash(AValue);
+  fChmsFilePath := AppendPathDelim(AValue);
   if Assigned(LangRefHelpDatabase) then
     LangRefHelpDatabase.LoadKeywordList(fChmsFilePath);
 end;

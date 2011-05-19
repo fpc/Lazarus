@@ -21,13 +21,14 @@ type
   private
     FKeywordNodes: TList;
     FKeyWordsList: TStringList;
+    FDocsDir: string;
     procedure ClearKeywordNodes;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure LoadKeywordList(Path: string);
+    procedure LoadKeywordList(const Path: string);
     function GetNodesForKeyword(const HelpKeyword: string;
-                        var ListOfNodes: THelpNodeQueryList; var {%H-}ErrMsg: string
+                        var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
                         ): TShowHelpResult; override;
     function ShowHelp(Query: THelpQuery; {%H-}BaseNode, NewNode: THelpNode;
                       {%H-}QueryItem: THelpQueryItem;
@@ -40,6 +41,8 @@ var
   LangRefHelpDatabase: TLangRefHelpDatabase = nil;
 
 implementation
+
+uses chmreader, chmsitemap;
 
 procedure RegisterLangRefHelpDatabase;
 begin
@@ -74,20 +77,50 @@ begin
   inherited Destroy;
 end;
 
-procedure TLangRefHelpDatabase.LoadKeywordList(Path: string);
+procedure TLangRefHelpDatabase.LoadKeywordList(const Path: string);
+var
+  chm: TChmFileList;
+  fchm: TChmReader;
+  SM: TChmSiteMap;
+  X, Y: Integer;
+  s: string;
 begin
-  if Path = '' then
+  FDocsDir := Path;
+  if FDocsDir = '' then
   begin
-    Path := '$(LazarusDir)';
-    IDEMacros.SubstituteMacros(Path);
-    Path := AppendPathDelim(Path) + 'docs' + PathDelim + 'html';
+    FDocsDir := '$(LazarusDir)';
+    IDEMacros.SubstituteMacros(FDocsDir);
+    FDocsDir := AppendPathDelim(FDocsDir) + 'docs' + PathDelim + 'html';
   end;
-  Path := AppendPathDelim(Path);
+  FDocsDir := AppendPathDelim(FDocsDir);
 
-  if FileExistsUTF8(Path + 'ref.kwd') then
+  FKeyWordsList.Clear;
+  if FileExistsUTF8(FDocsDir + 'ref.chm') then
   begin
-    FKeyWordsList.LoadFromFile(Utf8ToSys(Path + 'ref.kwd'));
-  end else FKeyWordsList.Clear;
+    chm := TChmFileList.Create(Utf8ToSys(FDocsDir + 'ref.chm'));
+    try
+      if chm.Count = 0 then Exit;
+      fchm := chm.Chm[0];
+      SM := fChm.GetIndexSitemap;
+      if SM <> nil then
+      begin
+        for X := 0 to SM.Items.Count - 1 do
+        begin
+          s := SM.Items.Item[X].Text;
+          if SM.Items.Item[X].Children.Count = 0 then
+            FKeyWordsList.Add(s + '=' + SM.Items.Item[X].Local)
+          else
+            with SM.Items.Item[X].Children do
+              for Y := 0 to Count - 1 do
+                FKeyWordsList.Add(s + '=' + Item[Y].Local)
+        end;
+        SM.Free;
+      end;
+      fchm.Free;
+    finally
+      chm.Free;
+    end;
+  end;
 end;
 
 function TLangRefHelpDatabase.GetNodesForKeyword(const HelpKeyword: string;
@@ -102,6 +135,17 @@ begin
   if (FPCKeyWordHelpPrefix<>'')
   and (LeftStr(HelpKeyword,length(FPCKeyWordHelpPrefix))=FPCKeyWordHelpPrefix) then
   begin
+    if FKeyWordsList.Count = 0 then LoadKeywordList(FDocsDir);
+    if FKeyWordsList.Count = 0 then
+    begin
+      Result := shrDatabaseNotFound;
+      ErrMsg := Format('ref.chm not found. Please put ref.chm help file in '+ LineEnding
+                         + '%s' +  LineEnding
+                         +'or set the path to it with "HelpFilesPath" in '
+                         +' Environment Options -> Help -> Help Options ->' + LineEnding
+                         +'under Viewers - CHM Help Viewer', [FDocsDir]);
+      Exit;
+    end;
     // HelpKeyword starts with KeywordPrefix
     KeyWord := Copy(HelpKeyword, Length(FPCKeyWordHelpPrefix) + 1, Length(HelpKeyword));
     ClearKeywordNodes;
@@ -110,7 +154,7 @@ begin
       if SameText(FKeyWordsList.Names[i], KeyWord) then
       begin
         Inc(n);
-        KeywordNode := THelpNode.CreateURL(Self,KeyWord,'ref.chm://ref/' + FKeyWordsList.ValueFromIndex[i]);
+        KeywordNode := THelpNode.CreateURL(Self,KeyWord,'ref.chm://' + FKeyWordsList.ValueFromIndex[i]);
         KeywordNode.Title := Format('Pascal keyword "%s"', [KeyWord]);
         if n > 1 then
           KeywordNode.Title := KeywordNode.Title + ' (' + IntToStr(n) + ')';
@@ -124,8 +168,8 @@ begin
     begin
       i := FKeyWordsList.IndexOfName('forin');
       if i < 0 then Exit;
-      KeywordNode := THelpNode.CreateURL(Self,KeyWord,'ref.chm://ref/' + FKeyWordsList.ValueFromIndex[i]);
-      KeywordNode.Title := 'Pascal keyword "for..in"';
+      KeywordNode := THelpNode.CreateURL(Self,KeyWord,'ref.chm://' + FKeyWordsList.ValueFromIndex[i]);
+      KeywordNode.Title := Format('Pascal keyword "%s"', ['for..in']);
       FKeywordNodes.Add(KeywordNode);
       CreateNodeQueryListAndAdd(KeywordNode, nil, ListOfNodes, True);
     end;
