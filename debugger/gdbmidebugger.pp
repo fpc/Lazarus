@@ -352,7 +352,6 @@ type
 
     // All ExecuteCommand functions are wrappers for the real (full) implementation
     // ExecuteCommandFull is never called directly
-    function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; var AResult: TGDBMIExecResult): Boolean; overload;
     function  ExecuteCommandFull(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: PtrInt; var AResult: TGDBMIExecResult): Boolean; overload;
@@ -551,6 +550,21 @@ type
     function  DoExecute: Boolean; override;
   public
     property Success: Boolean read FSuccess;
+  end;
+
+  { TGDBMIDebuggerCommandChangeFilename }
+
+  TGDBMIDebuggerCommandChangeFilename = class(TGDBMIDebuggerCommand)
+  private
+    FErrorMsg: String;
+    FSuccess: Boolean;
+    FFileName: String;
+  protected
+    function  DoExecute: Boolean; override;
+  public
+    constructor Create(AOwner: TGDBMIDebugger; AFileName: String);
+    property Success: Boolean read FSuccess;
+    property ErrorMsg: String read FErrorMsg;
   end;
 
   { TGDBMIDebuggerCommandStartDebugging }
@@ -1434,6 +1448,70 @@ begin
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
   Result := '"' + Result + '"';
+end;
+
+{ TGDBMIDebuggerCommandChangeFilename }
+
+function TGDBMIDebuggerCommandChangeFilename.DoExecute: Boolean;
+
+  procedure ClearBreakpoint(var ABreakID: Integer);
+  begin
+    if DebuggerState = dsError then Exit;
+    if ABreakID = -1 then Exit;
+    ExecuteCommand('-break-delete %d', [ABreakID], [cfCheckError]);
+    ABreakID := -1;
+  end;
+
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+begin
+  Result := True;
+  FSuccess := False;
+  //Cleanup our own breakpoints
+  ClearBreakpoint(FTheDebugger.FExceptionBreakID);
+  ClearBreakpoint(FTheDebugger.FBreakErrorBreakID);
+  ClearBreakpoint(FTheDebugger.FRunErrorBreakID);
+  if DebuggerState = dsError then Exit;
+
+  FSuccess := ExecuteCommand('-file-exec-and-symbols %s', [FFileName], R);
+  if not FSuccess then exit;
+
+  if  (R.State = dsError) and (FFileName <> '')
+  then begin
+    List := TGDBMINameValueList.Create(R);
+    FErrorMsg := DeleteEscapeChars((List.Values['msg']));
+    List.Free;
+    FSuccess := False;
+    Exit;
+  end;
+
+  if FFileName = ''
+  then exit;
+
+  if tfHasSymbols in TargetInfo^.TargetFlags
+  then begin
+    // Force setting language
+    // Setting extensions dumps GDB (bug #508)
+    FSuccess := ExecuteCommand('-gdb-set language pascal', [], [cfCheckError]);
+    FSuccess := FSuccess and (DebuggerState <> dsError);
+(*
+    ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
+    if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
+    ExecuteCommand('-gdb-set extension-language .lrs pascal', False);
+    ExecuteCommand('-gdb-set extension-language .dpr pascal', False);
+    ExecuteCommand('-gdb-set extension-language .pas pascal', False);
+    ExecuteCommand('-gdb-set extension-language .pp pascal', False);
+    ExecuteCommand('-gdb-set extension-language .inc pascal', False);
+*)
+  end;
+end;
+
+constructor TGDBMIDebuggerCommandChangeFilename.Create(AOwner: TGDBMIDebugger;
+  AFileName: String);
+begin
+  FFileName := AFileName;
+  inherited Create(AOwner);
 end;
 
 { TGDBMIDebuggerCommandInitDebugger }
@@ -5228,60 +5306,28 @@ begin
 end;
 
 function TGDBMIDebugger.ChangeFileName: Boolean;
-  procedure ClearBreakpoint(var ABreakID: Integer);
-  begin
-    if ABreakID = -1 then Exit;
-    ExecuteCommand('-break-delete %d', [ABreakID], [cfIgnoreError]);
-    ABreakID := -1;
-  end;
 var
   S: String;
-  R: TGDBMIExecResult;
-  List: TGDBMINameValueList;
+  Cmd: TGDBMIDebuggerCommandChangeFilename;
 begin
   Result := False;
-
-  //Cleanup our own breakpoints
-  ClearBreakpoint(FExceptionBreakID);
-  ClearBreakpoint(FBreakErrorBreakID);
-  ClearBreakpoint(FRunErrorBreakID);
-
-
   S := ConvertToGDBPath(UTF8ToSys(FileName));
-  if not ExecuteCommand('-file-exec-and-symbols %s', [S], [cfIgnoreError], R) then Exit;
-  if  (R.State = dsError)
-  and (FileName <> '')
-  then begin
-    List := TGDBMINameValueList.Create(R);
-    MessageDlg('Debugger', Format('Failed to load file: %s', [DeleteEscapeChars((List.Values['msg']))]), mtError, [mbOK], 0);
-    List.Free;
+
+  Cmd := TGDBMIDebuggerCommandChangeFilename.Create(Self, S);
+  Cmd.KeepFinished := True;
+  QueueCommand(Cmd);
+  // if filename = '', then command may be queued
+  if (FileName <> '') and (not Cmd.Success) then begin
+    MessageDlg('Debugger', Format('Failed to load file: %s', [Cmd.ErrorMsg]), mtError, [mbOK], 0);
+    Cmd.Cancel;
+    Cmd.KeepFinished := False;
     SetState(dsStop);
-    Exit;
-  end;
-  if not (inherited ChangeFileName) then Exit;
-  if State = dsError then Exit;
-  if FileName = ''
-  then begin
-    Result := True;
-    Exit;
+  end
+  else begin
+    Cmd.KeepFinished := False;
   end;
 
-  if tfHasSymbols in FTargetInfo.TargetFlags
-  then begin
-    // Force setting language
-    // Setting extensions dumps GDB (bug #508)
-    if not ExecuteCommand('-gdb-set language pascal', []) then exit;
-    if State=dsError then exit;
-(*
-    ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
-    if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
-    ExecuteCommand('-gdb-set extension-language .lrs pascal', False);
-    ExecuteCommand('-gdb-set extension-language .dpr pascal', False);
-    ExecuteCommand('-gdb-set extension-language .pas pascal', False);
-    ExecuteCommand('-gdb-set extension-language .pp pascal', False);
-    ExecuteCommand('-gdb-set extension-language .inc pascal', False);
-*)
-  end;
+  if not (inherited ChangeFileName) then Exit;
   Result:=true;
 end;
 
@@ -5388,7 +5434,7 @@ begin
     CancelAllQueued;
     if (DebugProcess <> nil) and DebugProcess.Running then begin
       if State = dsRun then GDBPause(True);
-      ExecuteCommand('-gdb-exit', []);
+      ExecuteCommand('-gdb-exit', [], []);
     end;
     inherited Done;
   finally
@@ -5588,14 +5634,6 @@ begin
         DoDbgEvent(ecBreakpoint, etBreakpointHit, Format('Address Breakpoint at $%.' + IntToStr(TargetPtrSize * 2) + 'x', [Location.Address]));
       end;
   end;
-end;
-
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  const AFlags: TGDBMICmdFlags): Boolean;
-var
-  R: TGDBMIExecResult;
-begin
-  Result := ExecuteCommandFull(ACommand, [], AFlags, nil, 0, R);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -6680,7 +6718,7 @@ end;
 
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);
 begin
-  ExecuteCommand(ACommand, [cfIgnoreError]);
+  ExecuteCommand(ACommand, [], [cfIgnoreError]);
 end;
 
 {%region      *****  BreakPoints  *****  }
