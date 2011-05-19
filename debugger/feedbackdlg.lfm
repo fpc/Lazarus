@@ -5,7 +5,7 @@ object DbgFeedbackDlg: TDbgFeedbackDlg
   Width = 605
   AutoSize = True
   BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
+  BorderStyle = bsSizeToolWin
   Caption = 'DbgFeedbackDlg'
   ClientHeight = 212
   ClientWidth = 605

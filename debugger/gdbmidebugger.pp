@@ -185,14 +185,22 @@ type
     FState : TGDBMIDebuggerCommandState;
     FSeenStates: TGDBMIDebuggerCommandStates;
     FTheDebugger: TGDBMIDebugger; // Set during Execute
+    FLastExecCommand: String;
     FLastExecResult: TGDBMIExecResult;
     FLogWarnings: String;
-  function GetDebuggerProperties: TGDBMIDebuggerProperties;
+    function GetDebuggerProperties: TGDBMIDebuggerProperties;
     function GetDebuggerState: TDBGState;
     function GetTargetInfo: PGDBMITargetInfo;
     procedure SetKeepFinished(const AValue: Boolean);
   protected
     procedure SetDebuggerState(const AValue: TDBGState);
+    procedure SetDebuggerErrorState(const AMsg: String; const AInfo: String = '');
+    function  ErrorStateMessage: String; virtual;
+    function  ErrorStateInfo: String; virtual;
+    property  DebuggerState: TDBGState read GetDebuggerState;
+    property  DebuggerProperties: TGDBMIDebuggerProperties read GetDebuggerProperties;
+    property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
+  protected
     procedure SetState(NewState: TGDBMIDebuggerCommandState);
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
     procedure DoFree; virtual;
@@ -204,9 +212,8 @@ type
     procedure DoOnExecuted;
     procedure DoCancel; virtual;
     procedure DoOnCanceled;
-    property SeenStates: TGDBMIDebuggerCommandStates read FSeenStates;
-    property DebuggerState: TDBGState read GetDebuggerState;
-    property DebuggerProperties: TGDBMIDebuggerProperties read GetDebuggerProperties;
+    property  SeenStates: TGDBMIDebuggerCommandStates read FSeenStates;
+    property  QueueRunLevel: Integer read FQueueRunLevel write FQueueRunLevel;  // if queue is nested
   protected
     // ExecuteCommand does execute direct. It does not use the queue
     function  ExecuteCommand(const ACommand: String;
@@ -249,15 +256,13 @@ type
     function  GetPtrValue(const AExpression: String; const AValues: array of const; ConvertNegative: Boolean = False): TDbgPtr;
     function  CheckHasType(TypeName: String; TypeFlag: TGDBMITargetFlag): TGDBMIExecResult;
     function  PointerTypeCast: string;
-    function FrameToLocation(const AFrame: String = ''): TDBGLocationRec;
+    function  FrameToLocation(const AFrame: String = ''): TDBGLocationRec;
     procedure ProcessFrame(const ALocation: TDBGLocationRec); overload;
     procedure ProcessFrame(const AFrame: String = ''); overload;
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
-    property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
     property  LastExecResult: TGDBMIExecResult read FLastExecResult;
     property  DefaultTimeOut: Integer read FDefaultTimeOut write FDefaultTimeOut;
     property  ProcessResultTimedOut: Boolean read FProcessResultTimedOut;
-    property  QueueRunLevel: Integer read FQueueRunLevel write FQueueRunLevel;  // if queue is nested
   public
     constructor Create(AOwner: TGDBMIDebugger);
     destructor Destroy; override;
@@ -362,6 +367,7 @@ type
     function  StartDebugging(AContinueCommand: TGDBMIDebuggerCommand = nil): Boolean;
 
   protected
+    FErrorHandlingFlags: set of (ehfDeferReadWriteError, ehfGotReadError, ehfGotWriteError);
     {$IFDEF MSWindows}
     FPauseRequestInThreadID: Cardinal;
     {$ENDIF}
@@ -389,6 +395,8 @@ type
     procedure ClearCommandQueue;
     function  GetIsIdle: Boolean; override;
     procedure DoState(const OldState: TDBGState); override;
+    procedure DoReadError; override;
+    procedure DoWriteError; override;
     procedure DoThreadChanged;
     property  TargetPID: Integer read FTargetInfo.TargetPID;
     property  TargetPtrSize: Byte read FTargetInfo.TargetPtrSize;
@@ -440,6 +448,15 @@ resourcestring
     + 'Press "Stop" to end the debug session';
   gdbmiTimeOutForCmd = 'Time-out for command: "%s"';
   gdbmiFatalErrorOccured = 'Unrecoverable Error: "%s"';
+  gdbmiErrorStateGenericInfo = 'Error in: %1:s %0:s';
+  gdbmiErrorStateInfoCommandError =
+      '%0:sThe GDB command:%0:s"%1:s"%0:sreturned the error:%0:s"%2:s"%0:s';
+  gdbmiErrorStateInfoCommandNoResult =
+      '%0:sThe GDB command:%0:s"%1:s"%0:sdid not return any result%0:s';
+  gdbmiErrorStateInfoFailedWrite = '%0:sCould not send a command to GDB%0:s';
+  gdbmiErrorStateInfoFailedRead = '%0:sCould not read output from GDB.%0:s';
+  gdbmiErrorStateInfoGDBGone = '%0:sThe GDB process is no longer running.%0:s';
+
 
 implementation
 
@@ -1351,7 +1368,6 @@ type
   { TGDBStringIterator }
 
   TGDBStringIterator=class
-  private
   protected
     FDataSize: Integer;
     FReadPointer: Integer;
@@ -5442,6 +5458,20 @@ begin
   inherited DoState(OldState);
 end;
 
+procedure TGDBMIDebugger.DoReadError;
+begin
+  include(FErrorHandlingFlags, ehfGotReadError);
+  if not(ehfDeferReadWriteError in FErrorHandlingFlags)
+  then inherited DoReadError;
+end;
+
+procedure TGDBMIDebugger.DoWriteError;
+begin
+  include(FErrorHandlingFlags, ehfGotWriteError);
+  if not(ehfDeferReadWriteError in FErrorHandlingFlags)
+  then inherited DoWriteError;
+end;
+
 procedure TGDBMIDebugger.DoThreadChanged;
 begin
   TGDBMICallstack(CallStack).DoThreadChanged;
@@ -6252,6 +6282,7 @@ begin
   LockRelease;
   try
     FPauseWaitState := pwsNone;
+    FErrorHandlingFlags := [];
     FInExecuteCount := 0;
     Options := '-silent -i mi -nx';
 
@@ -8704,6 +8735,35 @@ begin
   FTheDebugger.SetState(AValue);
 end;
 
+procedure TGDBMIDebuggerCommand.SetDebuggerErrorState(const AMsg: String;
+  const AInfo: String);
+begin
+  FTheDebugger.SetErrorState(AMsg, AInfo);
+end;
+
+function TGDBMIDebuggerCommand.ErrorStateMessage: String;
+begin
+  Result := '';
+  if ehfGotWriteError in FTheDebugger.FErrorHandlingFlags
+  then Result := Result + Format(gdbmiErrorStateInfoFailedWrite, [LineEnding])
+  else
+  if ehfGotReadError in FTheDebugger.FErrorHandlingFlags
+  then Result := Result + Format(gdbmiErrorStateInfoFailedRead, [LineEnding]);
+
+  if not FTheDebugger.DebugProcessRunning
+  then Result := Result + Format(gdbmiErrorStateInfoGDBGone, [LineEnding]);
+end;
+
+function TGDBMIDebuggerCommand.ErrorStateInfo: String;
+begin
+  Result := Format(gdbmiErrorStateGenericInfo, [LineEnding, DebugText]);
+  if FLastExecResult.Values = ''
+  then Result := Format(gdbmiErrorStateInfoCommandNoResult, [LineEnding, FLastExecCommand])
+  else Result := Format(gdbmiErrorStateInfoCommandError, [LineEnding, FLastExecCommand, FLastExecResult.Values]);
+  if not FTheDebugger.DebugProcessRunning
+  then Result := Result + Format(gdbmiErrorStateInfoGDBGone, [LineEnding]);
+end;
+
 procedure TGDBMIDebuggerCommand.SetState(NewState: TGDBMIDebuggerCommandState);
 var
   OldState: TGDBMIDebuggerCommandState;
@@ -8846,29 +8906,42 @@ begin
   AResult.Values := '';
   AResult.State := dsNone;
   AResult.Flags := [];
+  FLastExecCommand := ACommand;
 
   if (ATimeOut = -1) and (DefaultTimeOut > 0)
   then ATimeOut := DefaultTimeOut;
 
-  FTheDebugger.SendCmdLn(ACommand);
+  try
+    FTheDebugger.FErrorHandlingFlags := FTheDebugger.FErrorHandlingFlags
+      + [ehfDeferReadWriteError] - [ehfGotReadError, ehfGotWriteError];
 
-  Result := ProcessResult(AResult, ATimeOut);
-  FLastExecResult := AResult;
+    FTheDebugger.SendCmdLn(ACommand);
+    if ehfGotWriteError in FTheDebugger.FErrorHandlingFlags then begin
+      ProcessResult(AResult, 50); // not expecting anything
+      Result := False;
+    end
+    else begin
+      Result := ProcessResult(AResult, ATimeOut);
+      FLastExecResult := AResult;
 
-  if ProcessResultTimedOut then
-  Result := RevorerTimeOut;
+      if ProcessResultTimedOut then
+      Result := RevorerTimeOut;
+    end;
+  finally
+    Exclude(FTheDebugger.FErrorHandlingFlags, ehfDeferReadWriteError);
+  end;
 
   if not Result
   then begin
     // either gdb did not return a Result Record: "^xxxx,"
     // or the Result Record was not a known one: 'done', 'running', 'exit', 'error'
     DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',ACommand,'" failed.');
-    SetDebuggerState(dsError);
+    SetDebuggerErrorState(ErrorStateMessage, ErrorStateInfo);
     AResult.State := dsError;
   end;
 
   if (cfCheckError in AFlags) and (AResult.State = dsError)
-  then SetDebuggerState(AResult.State);
+  then SetDebuggerErrorState(ErrorStateMessage, ErrorStateInfo);
 
   if (cfCheckState in AFlags) and not (AResult.State in [dsError, dsNone])
   then SetDebuggerState(AResult.State);

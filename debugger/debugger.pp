@@ -2310,6 +2310,8 @@ type
     FCurEnvironment: TStrings;
     FDisassembler: TDBGDisassembler;
     FEnvironment: TStrings;
+    FErrorStateInfo: String;
+    FErrorStateMessage: String;
     FExceptions: TDBGExceptions;
     FExitCode: Integer;
     FExternalDebugger: String;
@@ -2374,6 +2376,7 @@ type
                              virtual; abstract; // True if succesful
     procedure SetExitCode(const AValue: Integer);
     procedure SetState(const AValue: TDBGState);
+    procedure SetErrorState(const AMsg: String; const AInfo: String = '');
     procedure DoRelease; virtual;
   public
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
@@ -2440,6 +2443,8 @@ type
     property Threads: TThreadsSupplier read FThreads;
     property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
     property IsIdle: Boolean read GetIsIdle;                                     // Nothing queued
+    property ErrorStateMessage: String read FErrorStateMessage;
+    property ErrorStateInfo: String read FErrorStateInfo;
     // Events
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput
@@ -4725,6 +4730,8 @@ end;
 procedure TDebugger.Init;
 begin
   FExitCode := 0;
+  FErrorStateMessage := '';
+  FErrorStateInfo := '';
   SetState(dsIdle);
 end;
 
@@ -4859,6 +4866,15 @@ begin
     FWatches.DoStateChange(OldState);
     DoState(OldState);
   end;
+end;
+
+procedure TDebugger.SetErrorState(const AMsg: String; const AInfo: String = '');
+begin
+  if FErrorStateMessage = ''
+  then FErrorStateMessage := AMsg;
+  if FErrorStateInfo = ''
+  then FErrorStateInfo := AInfo;
+  SetState(dsError);
 end;
 
 procedure TDebugger.DoRelease;

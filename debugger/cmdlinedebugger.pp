@@ -57,6 +57,8 @@ type
     function WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer; overload;
     function WaitForHandles(const AHandles: array of Integer): Integer; overload;
   protected
+    procedure DoReadError; virtual;
+    procedure DoWriteError; virtual;
     function GetDebugProcessRunning: Boolean; virtual;
     procedure ProcessWhileWaitForHandles; virtual;
     function  CreateDebugProcess(const AOptions: String): Boolean; virtual;
@@ -264,6 +266,16 @@ begin
   Result := WaitForHandles(AHandles, t);
 end;
 
+procedure TCmdLineDebugger.DoReadError;
+begin
+  SetState(dsError);
+end;
+
+procedure TCmdLineDebugger.DoWriteError;
+begin
+  SetState(dsError);
+end;
+
 procedure TCmdLineDebugger.ProcessWhileWaitForHandles;
 begin
   // nothing
@@ -417,7 +429,7 @@ begin
     if (WaitSet = 0) and not FReadLineTimedOut
     then begin
       SmartWriteln('[TCmdLineDebugger.Getoutput] Error waiting ');
-      SetState(dsError);
+      DoReadError;
       Break;
     end;
 
@@ -477,7 +489,7 @@ begin
   end
   else begin
     DebugLn('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
-    SetState(dsError);
+    DoWriteError;
   end;
 end;
 
