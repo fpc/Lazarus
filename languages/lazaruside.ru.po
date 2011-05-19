@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-17 03:21+0300\n"
+"PO-Revision-Date: 2011-05-19 04:10+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4417,6 +4417,14 @@ msgstr "Сообщения смотрителя кода"
 msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr "Стиль"
+
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr "Вложенный код"
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr "Вложенный код"
 
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
@@ -9867,8 +9875,9 @@ msgid "About FPC"
 msgstr "Информация о компиляторе FPC"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
-msgstr "Добавить точку останова"
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
+msgstr "Добавить &точку останова"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
 #| msgid "Add active unit to a package"
@@ -9884,8 +9893,9 @@ msgid "Add editor file to Project"
 msgstr "Добавить файл редактора в проект"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
-msgstr "Добавить наблюдение..."
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
+msgstr "Добавить &наблюдение ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in selection"
@@ -10131,8 +10141,9 @@ msgid "Enclose selection ..."
 msgstr "Заключить выделенное в ..."
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
-msgstr "Вычислить/Изменить ..."
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
+msgstr "&Вычислить/Изменить ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -10260,8 +10271,10 @@ msgid "Current username"
 msgstr "Текущее имя пользователя"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
-msgstr "Просмотреть ..."
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
+msgstr "&Просмотреть ..."
 
 #: lazarusidestrconsts.lismenujumpback
 msgid "Jump back"
@@ -10415,9 +10428,10 @@ msgid "Project Options ..."
 msgstr "Параметры проекта ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
-msgstr "Запустить"
+msgid "&Run"
+msgstr "&Запустить"
 
 #: lazarusidestrconsts.lismenupublishproject
 msgid "Publish Project ..."
@@ -10484,6 +10498,7 @@ msgid "Revert"
 msgstr "Возвратить"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "&Запуск"
 
@@ -10492,12 +10507,14 @@ msgid "Run File"
 msgstr "Запустить файл"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
-msgstr "Параметры запуска ..."
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
+msgstr "П&араметры запуска ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
-msgstr "Запустить до курсора"
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
+msgstr "Запустить до &курсора"
 
 #: lazarusidestrconsts.lismenusave
 #| msgid "Save"
@@ -10559,8 +10576,9 @@ msgid "Set a free bookmark"
 msgstr "Установить свободную закладку"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
-msgstr "Показать точку исполнения"
+#| msgid "Show execution point"
+msgid "S&how execution point"
+msgstr "Показать точку &исполнения"
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
@@ -10571,8 +10589,9 @@ msgid "S&ource"
 msgstr "&Код"
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
-msgstr "Шаг со входом"
+#| msgid "Step into"
+msgid "Step in&to"
+msgstr "Шаг со в&ходом"
 
 #: lazarusidestrconsts.lismenustepintocontext
 msgid "Step into (Context)"
@@ -10589,12 +10608,14 @@ msgid "Step into instruction"
 msgstr "Шаг со входом в инструкцию"
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
-msgstr "Шаг с выходом"
+#| msgid "Step out"
+msgid "Step o&ut"
+msgstr "Шаг с в&ыходом"
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
-msgstr "Шаг в обход"
+#| msgid "Step over"
+msgid "&Step over"
+msgstr "Шаг в &обход"
 
 #: lazarusidestrconsts.lismenustepovercontext
 msgid "Step over (Context)"
@@ -13767,10 +13788,6 @@ msgstr "Установить значение"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Краткое:"
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
-msgstr "Показать"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17126,6 +17143,7 @@ msgstr "Подсветка синтаксиса"
 
 #: lazarusidestrconsts.ueminspect
 #| msgid "&Inspect..."
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "&Просмотреть ..."
 
@@ -17231,7 +17249,8 @@ msgid "&Toggle Bookmark"
 msgstr "П&ереключить закладку"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+#| msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr "П&ереключить точку останова"
 
 #: lazarusidestrconsts.uemviewcallstack

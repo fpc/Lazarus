@@ -4417,6 +4417,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr "スタイル"
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr "ToDos"
@@ -9883,7 +9891,9 @@ msgid "About FPC"
 msgstr "FPCについて"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "ブレークポイントを追加"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9901,7 +9911,9 @@ msgid "Add editor file to Project"
 msgstr "プロジェクトに編集中のファイルを追加"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "監視追加"
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10157,7 +10169,9 @@ msgid "Enclose selection ..."
 msgstr "選択部分を囲む ..."
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "評価/変更 ..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10288,7 +10302,10 @@ msgid "Current username"
 msgstr "現在のユーザー名"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "インスペクト ..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10449,8 +10466,10 @@ msgid "Project Options ..."
 msgstr "プロジェクトオプション ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "実行"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10520,6 +10539,7 @@ msgid "Revert"
 msgstr "元に戻す"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "実行(&R)"
 
@@ -10528,11 +10548,15 @@ msgid "Run File"
 msgstr "ファイルを実行"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "実行パラメーター ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "カーソル位置まで実行"
 
 #: lazarusidestrconsts.lismenusave
@@ -10597,7 +10621,9 @@ msgid "Set a free bookmark"
 msgstr "自由なブックマークをつける"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+#, fuzzy
+#| msgid "Show execution point"
+msgid "S&how execution point"
 msgstr "実行ポイントを表示"
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10609,7 +10635,9 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "トレース実行"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10627,11 +10655,15 @@ msgid "Step into instruction"
 msgstr "ステップイン命令"
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+#, fuzzy
+#| msgid "Step out"
+msgid "Step o&ut"
 msgstr "ステップアウト"
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "ステップオーバー"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13816,10 +13848,6 @@ msgstr "値をセット"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Short:"
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
-msgstr "表示"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17188,6 +17216,7 @@ msgstr "強調表示"
 #: lazarusidestrconsts.ueminspect
 #, fuzzy
 #| msgid "&Inspect..."
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "検査(&I)"
 
@@ -17293,7 +17322,9 @@ msgid "&Toggle Bookmark"
 msgstr "ブックマークを切り替え(&T)"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+#, fuzzy
+#| msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr "ブレークポイントを切り替え(&T)"
 
 #: lazarusidestrconsts.uemviewcallstack

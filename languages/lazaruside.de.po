@@ -4430,6 +4430,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr "Stil"
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr "Zu Erledigendes"
@@ -9894,7 +9902,9 @@ msgid "About FPC"
 msgstr "Über FPC"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "Neuer Haltepunkt"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9912,7 +9922,9 @@ msgid "Add editor file to Project"
 msgstr "Datei im Editor ins Projekt aufnehmen"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "Überwachung hinzufügen..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10166,7 +10178,9 @@ msgid "Enclose selection ..."
 msgstr "Auswahl einschließen ..."
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "Prüfen/Ändern ..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10297,7 +10311,10 @@ msgid "Current username"
 msgstr "Aktueller Benutzername"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "Inspizieren ..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10456,8 +10473,10 @@ msgid "Project Options ..."
 msgstr "Projekteinstellungen ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "Start"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10526,6 +10545,7 @@ msgid "Revert"
 msgstr "Wiederherstellen"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "Sta&rt"
 
@@ -10534,11 +10554,15 @@ msgid "Run File"
 msgstr "Datei ausführen"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "Startparameter ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "Start bis Cursor"
 
 #: lazarusidestrconsts.lismenusave
@@ -10601,7 +10625,9 @@ msgid "Set a free bookmark"
 msgstr "Freies Lesezeichen setzen"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+#, fuzzy
+#| msgid "Show execution point"
+msgid "S&how execution point"
 msgstr "Ausführungspunkt anzeigen"
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10613,7 +10639,9 @@ msgid "S&ource"
 msgstr "Quelltext"
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "Einen Schritt hinein"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10631,11 +10659,15 @@ msgid "Step into instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+#, fuzzy
+#| msgid "Step out"
+msgid "Step o&ut"
 msgstr "Hinausgehen"
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "Einen Schritt weiter"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13824,10 +13856,6 @@ msgstr "Wert festlegen"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Kurz:"
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
-msgstr "Zeigen"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17202,6 +17230,7 @@ msgstr "Highlighter"
 #: lazarusidestrconsts.ueminspect
 #, fuzzy
 #| msgid "&Inspect..."
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "Prüfen..."
 
@@ -17307,7 +17336,9 @@ msgid "&Toggle Bookmark"
 msgstr "Lese&zeichen umschalten"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+#, fuzzy
+#| msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr "Haltepunkt umschal&ten"
 
 #: lazarusidestrconsts.uemviewcallstack

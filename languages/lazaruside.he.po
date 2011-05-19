@@ -4387,6 +4387,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr "סגנון"
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr "לעשות"
@@ -9850,7 +9858,9 @@ msgid "About FPC"
 msgstr "אודות FPC"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "הוסף נקודת עצירה"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9868,7 +9878,9 @@ msgid "Add editor file to Project"
 msgstr "הוסף את קבצי העורך לפרויקט"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "הוסף משגיח ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10124,7 +10136,9 @@ msgid "Enclose selection ..."
 msgstr "צרף את הבחירה"
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "הערכה/שינוי ..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10255,7 +10269,10 @@ msgid "Current username"
 msgstr "שם המשתמש הנוכחי"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "פקח ..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10415,8 +10432,10 @@ msgid "Project Options ..."
 msgstr "אפשרויות פרויקט ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "הרץ"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10485,6 +10504,7 @@ msgid "Revert"
 msgstr "שחזר"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "ה&רץ"
 
@@ -10493,11 +10513,15 @@ msgid "Run File"
 msgstr "הרץ קובץ"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "הרץ פרמטרים ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "רוץ עד לסמן"
 
 #: lazarusidestrconsts.lismenusave
@@ -10560,7 +10584,9 @@ msgid "Set a free bookmark"
 msgstr "קבע סימניה חופשית"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+#, fuzzy
+#| msgid "Show execution point"
+msgid "S&how execution point"
 msgstr "הראה נקודת ביצוע"
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10572,7 +10598,9 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "קפוץ לתוך"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10590,11 +10618,15 @@ msgid "Step into instruction"
 msgstr "צעד לתוך ההוראה"
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+#, fuzzy
+#| msgid "Step out"
+msgid "Step o&ut"
 msgstr "קפוץ החוצה"
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "קפוץ מעבר ל"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13771,10 +13803,6 @@ msgstr "קבע ערך"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "קצר:"
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
-msgstr "הראה"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17138,6 +17166,7 @@ msgstr "מדגש"
 #: lazarusidestrconsts.ueminspect
 #, fuzzy
 #| msgid "&Inspect..."
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "פ&קח"
 
@@ -17243,7 +17272,9 @@ msgid "&Toggle Bookmark"
 msgstr "החלף סימניה"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+#, fuzzy
+#| msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr "החלף נקודת עצירה"
 
 #: lazarusidestrconsts.uemviewcallstack

@@ -4372,6 +4372,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr ""
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr ""
@@ -9797,7 +9805,9 @@ msgid "About FPC"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "Durma noktası ekle"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9815,7 +9825,9 @@ msgid "Add editor file to Project"
 msgstr "Projeye düzenleyici dosyası ekle"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "İzleme ekle ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10061,7 +10073,9 @@ msgid "Enclose selection ..."
 msgstr "Seçimi kuşat"
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "Değerlendir/Değiştir ..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10192,7 +10206,10 @@ msgid "Current username"
 msgstr "Şu anki kullanıcı adı"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "İncele ..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10353,8 +10370,10 @@ msgid "Project Options ..."
 msgstr "Proje Seçenekleri ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "Çalıştır"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10424,6 +10443,7 @@ msgid "Revert"
 msgstr "Eskiye Döndür"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "Çalıştı&r"
 
@@ -10432,11 +10452,15 @@ msgid "Run File"
 msgstr "Dosyayı Çalıştır"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "Çalıştırma Parametreleri ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "İmlece kadar çalıştır"
 
 #: lazarusidestrconsts.lismenusave
@@ -10501,7 +10525,7 @@ msgid "Set a free bookmark"
 msgstr "Serbest bir yer imi belirle"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+msgid "S&how execution point"
 msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10513,7 +10537,9 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "İçeri adım"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10531,11 +10557,13 @@ msgid "Step into instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+msgid "Step o&ut"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "Üzerinden adım"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13701,10 +13729,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
-msgstr ""
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
@@ -17036,8 +17060,9 @@ msgid "Highlighter"
 msgstr ""
 
 #: lazarusidestrconsts.ueminspect
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
-msgstr ""
+msgstr "İncele ..."
 
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"
@@ -17141,7 +17166,7 @@ msgid "&Toggle Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.uemviewcallstack

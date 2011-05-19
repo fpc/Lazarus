@@ -4399,6 +4399,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr ""
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr ""
@@ -9836,7 +9844,9 @@ msgid "About FPC"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "Додати точку зупину"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9854,7 +9864,9 @@ msgid "Add editor file to Project"
 msgstr "Додати файл редактора до проекту"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "Додати спостереження..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10108,7 +10120,9 @@ msgid "Enclose selection ..."
 msgstr "Задужкувати виділення в ..."
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "Обчислити/Змінити..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10239,7 +10253,10 @@ msgid "Current username"
 msgstr "Поточне ім'я користувача"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "Слідкувати за ..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10398,8 +10415,10 @@ msgid "Project Options ..."
 msgstr "Параметри проекту ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "Виконати"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10467,6 +10486,7 @@ msgid "Revert"
 msgstr "Зворотній експорт"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "&Виконати"
 
@@ -10475,11 +10495,15 @@ msgid "Run File"
 msgstr "Виконати файл"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "Параметри виконання ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "Виконати до курсора"
 
 #: lazarusidestrconsts.lismenusave
@@ -10544,7 +10568,7 @@ msgid "Set a free bookmark"
 msgstr "Встановити вільну закладку"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+msgid "S&how execution point"
 msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10556,7 +10580,9 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "На крок із входом"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10574,11 +10600,13 @@ msgid "Step into instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+msgid "Step o&ut"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "На крок в обхід"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13758,10 +13786,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
-msgstr ""
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
@@ -17113,8 +17137,9 @@ msgid "Highlighter"
 msgstr ""
 
 #: lazarusidestrconsts.ueminspect
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
-msgstr ""
+msgstr "Слідкувати за ..."
 
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"
@@ -17218,7 +17243,7 @@ msgid "&Toggle Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.uemviewcallstack

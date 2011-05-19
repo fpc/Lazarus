@@ -4414,6 +4414,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr "Stilius"
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr "ToDo darbai"
@@ -9872,7 +9880,9 @@ msgid "About FPC"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "Padėti stabdos tašką"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9890,7 +9900,9 @@ msgid "Add editor file to Project"
 msgstr "Rengyklės failą įdėti į projektą"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "Pridėti stebimąjį…"
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10145,7 +10157,9 @@ msgid "Enclose selection ..."
 msgstr "Apgaubti pažymėtąjį…"
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "Įvertinti/Modifikuoti…"
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10276,7 +10290,10 @@ msgid "Current username"
 msgstr "Dabartinis naudotojo vardas"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "Inspektuoti…"
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10436,8 +10453,10 @@ msgid "Project Options ..."
 msgstr "Projekto parinktys…"
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "Startuoti"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10506,6 +10525,7 @@ msgid "Revert"
 msgstr "Atstatyti"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "&Startuoti"
 
@@ -10514,11 +10534,15 @@ msgid "Run File"
 msgstr "Startuoti failą"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "Startavimo parametrai…"
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "Startuoti iki žymeklio"
 
 #: lazarusidestrconsts.lismenusave
@@ -10581,7 +10605,9 @@ msgid "Set a free bookmark"
 msgstr "Padėti laisvą žymę"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+#, fuzzy
+#| msgid "Show execution point"
+msgid "S&how execution point"
 msgstr "Rodyti vykdymo tašką"
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10593,7 +10619,9 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "Žengti gilyn"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10611,11 +10639,15 @@ msgid "Step into instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+#, fuzzy
+#| msgid "Step out"
+msgid "Step o&ut"
 msgstr "Žengti laukan"
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "Žengti virš"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13796,10 +13828,6 @@ msgstr "Nustatyti vertę"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Trumpai:"
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
-msgstr "Rodyti"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17169,6 +17197,7 @@ msgstr "Sintaksės paryškinimas"
 #: lazarusidestrconsts.ueminspect
 #, fuzzy
 #| msgid "&Inspect..."
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "&Inspektuoti..."
 
@@ -17274,7 +17303,9 @@ msgid "&Toggle Bookmark"
 msgstr "Į%jungti/išjungti žymę"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+#, fuzzy
+#| msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr "Įjungti ar išjungti stabd&os tašką"
 
 #: lazarusidestrconsts.uemviewcallstack

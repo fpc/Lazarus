@@ -4415,6 +4415,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr "Štýl"
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr ""
@@ -9872,7 +9880,9 @@ msgid "About FPC"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "Pridať bod prerušenia"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9890,7 +9900,9 @@ msgid "Add editor file to Project"
 msgstr "Pridať z editora do projektu"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "Pridať pozorovanie ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10144,7 +10156,9 @@ msgid "Enclose selection ..."
 msgstr "Uzavrieť výber ..."
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "Vyskúšať/Upraviť ..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10275,7 +10289,10 @@ msgid "Current username"
 msgstr "Meno aktuálneho používateľa"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "Skontrolovať ..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10436,8 +10453,10 @@ msgid "Project Options ..."
 msgstr "Voľby projektu ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "Spustiť"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10507,6 +10526,7 @@ msgid "Revert"
 msgstr "Obnoviť"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "Sp&ustiť"
 
@@ -10515,11 +10535,15 @@ msgid "Run File"
 msgstr "Spustiť súbor"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "Parametre spustenia ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "Spustiť po kurzor"
 
 #: lazarusidestrconsts.lismenusave
@@ -10584,7 +10608,7 @@ msgid "Set a free bookmark"
 msgstr "Nastav voľnú záložku"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+msgid "S&how execution point"
 msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10596,7 +10620,9 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "Krok dnu"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10614,11 +10640,13 @@ msgid "Step into instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+msgid "Step o&ut"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "Krok cez"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13803,10 +13831,6 @@ msgstr ""
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Krátky:"
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
-msgstr "Zobraziť"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17169,8 +17193,9 @@ msgid "Highlighter"
 msgstr "Zvýrazňovač"
 
 #: lazarusidestrconsts.ueminspect
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
-msgstr ""
+msgstr "Skontrolovať ..."
 
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"
@@ -17274,7 +17299,7 @@ msgid "&Toggle Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.uemviewcallstack

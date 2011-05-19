@@ -4373,6 +4373,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr "Styl"
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr "K dokončení"
@@ -9820,7 +9828,9 @@ msgid "About FPC"
 msgstr "O FPC"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "Přidat bod přerušení"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9838,7 +9848,9 @@ msgid "Add editor file to Project"
 msgstr "Přidat editovaný soubor do projektu"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "Přidat sledování ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10087,7 +10099,9 @@ msgid "Enclose selection ..."
 msgstr "Obklopit výběr"
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "Vyhodnocení/Upravení..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10214,7 +10228,10 @@ msgid "Current username"
 msgstr "Aktuální uživatelské jméno"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "Zkoumat..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10365,8 +10382,10 @@ msgid "Project Options ..."
 msgstr "Volby projektu ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "Spustit"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10434,6 +10453,7 @@ msgid "Revert"
 msgstr "Navrátit"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "&Spustit"
 
@@ -10442,11 +10462,15 @@ msgid "Run File"
 msgstr "Spustit soubor"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "Spustit s parametry..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "Spustit po ukazatel"
 
 #: lazarusidestrconsts.lismenusave
@@ -10507,7 +10531,9 @@ msgid "Set a free bookmark"
 msgstr "Nastavit volnou záložku"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+#, fuzzy
+#| msgid "Show execution point"
+msgid "S&how execution point"
 msgstr "Ukázat bod vykonávání"
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10519,7 +10545,9 @@ msgid "S&ource"
 msgstr "Zdroje"
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "Vejít do"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10537,11 +10565,15 @@ msgid "Step into instruction"
 msgstr "Krok do instrukce"
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+#, fuzzy
+#| msgid "Step out"
+msgid "Step o&ut"
 msgstr "Vejít do"
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "Přejít přes"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13696,10 +13728,6 @@ msgstr "Nastavit hodnotu"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Krátky:"
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
-msgstr "Ukázat"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17055,6 +17083,7 @@ msgstr "Zvýrazňovač"
 #: lazarusidestrconsts.ueminspect
 #, fuzzy
 #| msgid "&Inspect..."
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "&Zkoumat..."
 
@@ -17160,7 +17189,9 @@ msgid "&Toggle Bookmark"
 msgstr "&Přepnout záložku"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+#, fuzzy
+#| msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr "&Přepnout záložku"
 
 #: lazarusidestrconsts.uemviewcallstack

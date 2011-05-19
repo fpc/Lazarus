@@ -4418,6 +4418,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr "Styl"
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr ""
@@ -9861,7 +9869,9 @@ msgid "About FPC"
 msgstr "O FPC"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "Dodaj pułapkę"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9879,7 +9889,9 @@ msgid "Add editor file to Project"
 msgstr "Dodaj plik do projektu"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "Dodaj czujkę ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10130,7 +10142,9 @@ msgid "Enclose selection ..."
 msgstr "Otocz zaznaczenie ..."
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "Sprawdź/Modyfikuj ..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10261,7 +10275,10 @@ msgid "Current username"
 msgstr "Nazwa użytkownika"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "Badaj ..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10422,8 +10439,10 @@ msgid "Project Options ..."
 msgstr "Opcje projektu..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "Uruchom"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10493,6 +10512,7 @@ msgid "Revert"
 msgstr "Przywróć"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "&Uruchom"
 
@@ -10501,11 +10521,15 @@ msgid "Run File"
 msgstr "Uruchom plik"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "Parametry uruchamiania"
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "Dojdź do kursora"
 
 #: lazarusidestrconsts.lismenusave
@@ -10570,7 +10594,7 @@ msgid "Set a free bookmark"
 msgstr "Ustaw wolną zakładkę"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+msgid "S&how execution point"
 msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10582,7 +10606,9 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "Wejdź do"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10600,11 +10626,13 @@ msgid "Step into instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+msgid "Step o&ut"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "Przejdź przez"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13781,10 +13809,6 @@ msgstr ""
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr ""
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
-msgstr "Pokaż"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17119,8 +17143,9 @@ msgid "Highlighter"
 msgstr "Podświetlanie"
 
 #: lazarusidestrconsts.ueminspect
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
-msgstr ""
+msgstr "Badaj ..."
 
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"
@@ -17224,7 +17249,9 @@ msgid "&Toggle Bookmark"
 msgstr "&Ustaw zakładkę"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+#, fuzzy
+#| msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr "&Zastaw pułapkę"
 
 #: lazarusidestrconsts.uemviewcallstack

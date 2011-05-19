@@ -4402,6 +4402,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr ""
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr ""
@@ -9837,7 +9845,9 @@ msgid "About FPC"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "Afegeix un punt de ruptura"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9855,7 +9865,9 @@ msgid "Add editor file to Project"
 msgstr "Afegeix el fitxer de l'editor al Projecte"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "Afegeix control ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10109,7 +10121,9 @@ msgid "Enclose selection ..."
 msgstr "Tanca la selecció ..."
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "Avalua/Modifica ..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10240,7 +10254,10 @@ msgid "Current username"
 msgstr "Nom d'usuari actual"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "Inspecciona ..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10399,8 +10416,10 @@ msgid "Project Options ..."
 msgstr "Opcions del projecte ..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "Executa"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10468,6 +10487,7 @@ msgid "Revert"
 msgstr "Reverteix"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "E&xecuta"
 
@@ -10476,11 +10496,15 @@ msgid "Run File"
 msgstr "Executa el fitxer"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "Paràmetres de l'execució ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "Executa al cursor"
 
 #: lazarusidestrconsts.lismenusave
@@ -10545,7 +10569,7 @@ msgid "Set a free bookmark"
 msgstr "Estableix un marcador lliure"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+msgid "S&how execution point"
 msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10557,7 +10581,9 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "Pas a pas per instruccions"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10575,11 +10601,13 @@ msgid "Step into instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+msgid "Step o&ut"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "Pas a pas per funcions"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13755,10 +13783,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
-msgstr ""
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
@@ -17106,8 +17130,9 @@ msgid "Highlighter"
 msgstr ""
 
 #: lazarusidestrconsts.ueminspect
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
-msgstr ""
+msgstr "Inspecciona ..."
 
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"
@@ -17211,7 +17236,7 @@ msgid "&Toggle Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.uemviewcallstack

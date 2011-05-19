@@ -4419,6 +4419,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr "样式"
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr ""
@@ -9874,7 +9882,9 @@ msgid "About FPC"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+#, fuzzy
+#| msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr "添加断点"
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9892,7 +9902,9 @@ msgid "Add editor file to Project"
 msgstr "添加代码编辑器中的文件到工程"
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+#, fuzzy
+#| msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr "添加观察点..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10146,7 +10158,9 @@ msgid "Enclose selection ..."
 msgstr "封装所选 ..."
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+#, fuzzy
+#| msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr "赋值/更改 ..."
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10277,7 +10291,10 @@ msgid "Current username"
 msgstr "当前用户名"
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+#, fuzzy
+#| msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr "查看..."
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10438,8 +10455,10 @@ msgid "Project Options ..."
 msgstr "工程选项..."
 
 #: lazarusidestrconsts.lismenuprojectrun
+#, fuzzy
+#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr "运行"
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10509,6 +10528,7 @@ msgid "Revert"
 msgstr "重新打开"
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "运行(&R)"
 
@@ -10517,11 +10537,15 @@ msgid "Run File"
 msgstr "运行文件"
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+#, fuzzy
+#| msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr "带参数运行..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+#, fuzzy
+#| msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr "运行到光标处"
 
 #: lazarusidestrconsts.lismenusave
@@ -10586,7 +10610,7 @@ msgid "Set a free bookmark"
 msgstr "设置一个自由书签"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+msgid "S&how execution point"
 msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10598,7 +10622,9 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+#, fuzzy
+#| msgid "Step into"
+msgid "Step in&to"
 msgstr "单步进入"
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10616,11 +10642,13 @@ msgid "Step into instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+msgid "Step o&ut"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+#, fuzzy
+#| msgid "Step over"
+msgid "&Step over"
 msgstr "下一步"
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13805,10 +13833,6 @@ msgstr "设为值"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "快捷键:"
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
-msgstr "显示"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -17169,8 +17193,9 @@ msgid "Highlighter"
 msgstr "高亮"
 
 #: lazarusidestrconsts.ueminspect
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
-msgstr ""
+msgstr "查看..."
 
 #: lazarusidestrconsts.ueminvertassignment
 msgid "Invert Assignment"
@@ -17274,7 +17299,9 @@ msgid "&Toggle Bookmark"
 msgstr "切换书签(&T)"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+#, fuzzy
+#| msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr "切换断点(&T)"
 
 #: lazarusidestrconsts.uemviewcallstack

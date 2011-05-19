@@ -4358,6 +4358,14 @@ msgctxt "lazarusidestrconsts.liscestylegroup"
 msgid "Style"
 msgstr ""
 
+#: lazarusidestrconsts.liscesurrounding
+msgid "Surrounding"
+msgstr ""
+
+#: lazarusidestrconsts.liscesurroundings
+msgid "Surroundings"
+msgstr ""
+
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr ""
@@ -9777,7 +9785,7 @@ msgid "About FPC"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-msgid "Add breakpoint"
+msgid "Add &Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddcurunittopkg
@@ -9793,7 +9801,7 @@ msgid "Add editor file to Project"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddwatch
-msgid "Add watch ..."
+msgid "Add &Watch ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
@@ -10029,7 +10037,7 @@ msgid "Enclose selection ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuevaluate
-msgid "Evaluate/Modify ..."
+msgid "E&valuate/Modify ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
@@ -10156,7 +10164,8 @@ msgid "Current username"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinspect
-msgid "Inspect ..."
+msgctxt "lazarusidestrconsts.lismenuinspect"
+msgid "&Inspect ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenujumpback
@@ -10312,7 +10321,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuprojectrun
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
-msgid "Run"
+msgid "&Run"
 msgstr ""
 
 #: lazarusidestrconsts.lismenupublishproject
@@ -10380,6 +10389,7 @@ msgid "Revert"
 msgstr ""
 
 #: lazarusidestrconsts.lismenurun
+msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "تشغيل"
 
@@ -10388,11 +10398,11 @@ msgid "Run File"
 msgstr ""
 
 #: lazarusidestrconsts.lismenurunparameters
-msgid "Run Parameters ..."
+msgid "Run &Parameters ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuruntocursor
-msgid "Run to cursor"
+msgid "Run to &cursor"
 msgstr ""
 
 #: lazarusidestrconsts.lismenusave
@@ -10453,7 +10463,7 @@ msgid "Set a free bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "Show execution point"
+msgid "S&how execution point"
 msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
@@ -10465,7 +10475,7 @@ msgid "S&ource"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
-msgid "Step into"
+msgid "Step in&to"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepintocontext
@@ -10483,11 +10493,11 @@ msgid "Step into instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step out"
+msgid "Step o&ut"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepover
-msgid "Step over"
+msgid "&Step over"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepovercontext
@@ -13631,10 +13641,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
-msgstr ""
-
-#: lazarusidestrconsts.lisshow
-msgid "Show"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
@@ -16960,6 +16966,7 @@ msgid "Highlighter"
 msgstr ""
 
 #: lazarusidestrconsts.ueminspect
+msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr ""
 
@@ -17065,7 +17072,7 @@ msgid "&Toggle Bookmark"
 msgstr ""
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+msgid "Toggle &Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.uemviewcallstack
