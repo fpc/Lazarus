@@ -2674,6 +2674,8 @@ begin
   // acces them , so they will be present
   t := FThreads.CurrentThreads.CurrentThreadId;
   FCallStack.CurrentCallStackList.EntriesForThreads[t];
+
+  DoDebuggerIdle;
 end;
 
 procedure TSnapshotManager.RemoveHistoryEntry(AIndex: Integer);
@@ -2756,6 +2758,9 @@ var
   i, j, k: LongInt;
   w: TCurrentWatches;
 begin
+  if not FActive then exit;
+  if not Debugger.IsIdle then exit;
+
   if FCurrentState <> dsPause then exit;
   if not(smrThreads in FRequestsDone) then begin
     include(FRequestsDone, smrThreads);
