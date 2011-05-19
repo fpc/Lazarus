@@ -155,18 +155,28 @@ type
   EDBGExceptions = class(EDebuggerException);
 
 type
+
+  { TRefCountedObject }
+
+  TRefCountedObject = class(TObject)
+  private
+    FRefCount: Integer;
+  protected
+    procedure DoFree; virtual;
+    property  RefCount: Integer read FRefCount;
+  public
+    constructor Create;
+    destructor  Destroy; override;
+    procedure AddReference;
+    procedure ReleaseReference;
+  end;
+
 { ---------------------------------------------------------<br>
   TDebuggerNotification is a reference counted baseclass
   for handling notifications for locals, watches, breakpoints etc.<br>
   ---------------------------------------------------------}
-  TDebuggerNotification = class(TObject)
-  private
-    FRefCount: Integer;
-  public
-    procedure AddReference;
-    constructor Create;
-    destructor Destroy; override;
-    procedure ReleaseReference;
+
+  TDebuggerNotification = class(TRefCountedObject)
   end;
 
   TDebuggerChangeNotification = class(TDebuggerNotification)
@@ -4348,27 +4358,32 @@ begin
 end;
 
 { =========================================================================== }
-{ TDebuggerNotification }
+{ TRefCountedObject }
 { =========================================================================== }
 
-procedure TDebuggerNotification.AddReference;
+procedure TRefCountedObject.AddReference;
 begin
   Inc(FRefcount);
 end;
 
-constructor TDebuggerNotification.Create;
+procedure TRefCountedObject.DoFree;
+begin
+  Self.Free;
+end;
+
+constructor TRefCountedObject.Create;
 begin
   FRefCount := 0;
   inherited;
 end;
 
-destructor TDebuggerNotification.Destroy;
+destructor TRefCountedObject.Destroy;
 begin
   Assert(FRefcount = 0, 'Destroying referenced object');
   inherited;
 end;
 
-procedure TDebuggerNotification.ReleaseReference;
+procedure TRefCountedObject.ReleaseReference;
 begin
   Dec(FRefCount);
   if FRefCount = 0 then Free;

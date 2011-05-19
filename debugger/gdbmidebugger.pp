@@ -147,9 +147,11 @@ type
     ( dcsNone,         // Initial State
       dcsQueued,       // [None] => Queued behind other commands
       dcsExecuting,    // [None, Queued] => currently running
-      // Final States, those lead to the object being freed, unless KeepFinished = True
+      // Final States, those lead to the object being freed, unless it still is referenced (Add/Release-Reference)
       dcsFinished,     // [Executing] => Finished Execution
-      dcsCanceled      // [Queued] => Never Executed
+      dcsCanceled,     // [Queued] => Never Executed
+      // Flags, for Seenstates
+      dcsInternalRefReleased // The internal reference has been released
     );
   TGDBMIDebuggerCommandStates = set of TGDBMIDebuggerCommandState;
 
@@ -169,15 +171,12 @@ type
       ectReturn            // -exec-return (step out immediately, skip execution)
     );
 
-  TGDBMIDebuggerCommand = class
+  TGDBMIDebuggerCommand = class(TRefCountedObject)
   private
     FDefaultTimeOut: Integer;
     FOnCancel: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     FOnExecuted: TNotifyEvent;
-    FKeepFinished: Boolean;
-    FFreeLock: Integer;
-    FFreeRequested: Boolean;
     FPriority: Integer;
     FProcessResultTimedOut: Boolean;
     FProperties: TGDBMIDebuggerCommandProperts;
@@ -191,7 +190,6 @@ type
     function GetDebuggerProperties: TGDBMIDebuggerProperties;
     function GetDebuggerState: TDBGState;
     function GetTargetInfo: PGDBMITargetInfo;
-    procedure SetKeepFinished(const AValue: Boolean);
   protected
     procedure SetDebuggerState(const AValue: TDBGState);
     procedure SetDebuggerErrorState(const AMsg: String; const AInfo: String = '');
@@ -203,9 +201,6 @@ type
   protected
     procedure SetState(NewState: TGDBMIDebuggerCommandState);
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
-    procedure DoFree; virtual;
-    procedure LockFree;
-    procedure UnlockFree;
     procedure DoLockQueueExecute; virtual;
     procedure DoUnockQueueExecute; virtual;
     function  DoExecute: Boolean; virtual; abstract;
@@ -278,7 +273,6 @@ type
     property  OnExecuted: TNotifyEvent read FOnExecuted write FOnExecuted;
     property  OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property  OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
-    property  KeepFinished: Boolean read FKeepFinished write SetKeepFinished;
     property  Priority: Integer read FPriority write FPriority;
     property  Properties: TGDBMIDebuggerCommandProperts read FProperties write FProperties;
   end;
@@ -5314,17 +5308,17 @@ begin
   S := ConvertToGDBPath(UTF8ToSys(FileName));
 
   Cmd := TGDBMIDebuggerCommandChangeFilename.Create(Self, S);
-  Cmd.KeepFinished := True;
+  Cmd.AddReference;
   QueueCommand(Cmd);
   // if filename = '', then command may be queued
   if (FileName <> '') and (not Cmd.Success) then begin
     MessageDlg('Debugger', Format('Failed to load file: %s', [Cmd.ErrorMsg]), mtError, [mbOK], 0);
     Cmd.Cancel;
-    Cmd.KeepFinished := False;
+    Cmd.ReleaseReference;
     SetState(dsStop);
   end
   else begin
-    Cmd.KeepFinished := False;
+    Cmd.ReleaseReference;
   end;
 
   if not (inherited ChangeFileName) then Exit;
@@ -5659,13 +5653,13 @@ var
   CommandObj: TGDBMIDebuggerSimpleCommand;
 begin
   CommandObj := TGDBMIDebuggerSimpleCommand.Create(Self, ACommand, AValues, AFlags, ACallback, ATag);
-  CommandObj.KeepFinished := True;
+  CommandObj.AddReference;
   QueueCommand(CommandObj);
   Result := CommandObj.State in [dcsExecuting, dcsFinished];
   if Result
   then
     AResult := CommandObj.Result;
-  CommandObj.KeepFinished := False;
+  CommandObj.ReleaseReference;
 end;
 
 procedure TGDBMIDebugger.RunQueue;
@@ -5700,14 +5694,14 @@ begin
       DebugLnEnter(['Executing (Recurse-Count=', FInExecuteCount-1, ') queued= ', FCommandQueue.Count, ' CmdPrior=', Cmd.Priority,' CmdMinRunLvl=', Cmd.QueueRunLevel, ' : "', Cmd.DebugText,'" State=',DBGStateNames[State],' PauseWaitState=',ord(FPauseWaitState) ]);
       {$ENDIF}
       // cmd may be canceled while executed => don't loose it while working with it
-      Cmd.LockFree;
+      Cmd.AddReference;
       NestedCurrentCmdTmp := FCurrentCommand;
       FCurrentCommand := Cmd;
       // excute, has it's own try-except block => so we don't have one here
       R := Cmd.Execute;
       Cmd.DoFinished;
       FCurrentCommand := NestedCurrentCmdTmp;
-      Cmd.UnlockFree;
+      Cmd.ReleaseReference;
       {$IFDEF DBGMI_QUEUE_DEBUG}
       DebugLnExit('Exec done');
       {$ENDIF}
@@ -5930,7 +5924,7 @@ var
 begin
   NewEntryMap := TDBGDisassemblerEntryMap.Create(itu8, SizeOf(TDBGDisassemblerEntryRange));
   CmdObj := TGDBMIDebuggerCommandDisassembe.Create(Self, NewEntryMap, AAddr, AAddr, -1, 2);
-  CmdObj.KeepFinished := True;
+  CmdObj.AddReference;
   CmdObj.Priority := GDCMD_PRIOR_IMMEDIATE;
   QueueCommand(CmdObj);
   Result := CmdObj.State in [dcsExecuting, dcsFinished];
@@ -5959,7 +5953,7 @@ begin
   if not Result
   then CmdObj.Cancel;
 
-  CmdObj.KeepFinished := False;
+  CmdObj.ReleaseReference;
   FreeAndNil(NewEntryMap);
 end;
 
@@ -5996,7 +5990,7 @@ var
 begin
   CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression, wdfDefault);
   CommandObj.EvalFlags := EvalFlags;
-  CommandObj.KeepFinished := True;
+  CommandObj.AddReference;
   CommandObj.Priority := GDCMD_PRIOR_IMMEDIATE; // try run imediately
   QueueCommand(CommandObj);
   Result := CommandObj.State in [dcsExecuting, dcsFinished];
@@ -6004,7 +5998,7 @@ begin
   ATypeInfo := CommandObj.TypeInfo;
   if EvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo]
   then FreeAndNil(ATypeInfo);
-  CommandObj.KeepFinished := False;
+  CommandObj.ReleaseReference;
 end;
 
 function TGDBMIDebugger.GDBModify(const AExpression, ANewValue: String): Boolean;
@@ -6335,15 +6329,15 @@ begin
       end
       else begin
         Cmd := TGDBMIDebuggerCommandInitDebugger.Create(Self);
-        Cmd.KeepFinished := True;
+        Cmd.AddReference;
         QueueCommand(Cmd);
         if not Cmd.Success then begin
           Cmd.Cancel;
-          Cmd.KeepFinished := False;
+          Cmd.ReleaseReference;
           SetState(dsError);
         end
         else begin
-          Cmd.KeepFinished := False;
+          Cmd.ReleaseReference;
           CheckGDBVersion;
           inherited Init;
         end;
@@ -6690,12 +6684,12 @@ var
 begin
   // We expect to be run immediately, no queue
   Cmd := TGDBMIDebuggerCommandStartDebugging.Create(Self, AContinueCommand);
-  Cmd.KeepFinished := True;
+  Cmd.AddReference;
   QueueCommand(Cmd);
   Result := Cmd.Success;
   if not Result
   then Cmd.Cancel;
-  Cmd.KeepFinished := False;
+  Cmd.ReleaseReference;
 end;
 
 {$IFDEF DBG_ENABLE_TERMINAL}
@@ -8745,14 +8739,6 @@ end;
 
 { TGDBMIDebuggerCommand }
 
-procedure TGDBMIDebuggerCommand.SetKeepFinished(const AValue: Boolean);
-begin
-  if FKeepFinished = AValue then exit;
-  FKeepFinished := AValue;
-  if (not FKeepFinished) and FFreeRequested
-  then DoFree;
-end;
-
 function TGDBMIDebuggerCommand.GetDebuggerState: TDBGState;
 begin
   Result := FTheDebugger.State;
@@ -8812,33 +8798,16 @@ begin
   FState := NewState;
   Include(FSeenStates, NewState);
   DoStateChanged(OldState);
-  if State in [dcsFinished, dcsCanceled]
-  then DoFree;
+  if (State in [dcsFinished, dcsCanceled]) and not(dcsInternalRefReleased in FSeenStates)
+  then begin
+    Include(FSeenStates, dcsInternalRefReleased);
+    ReleaseReference; //internal reference
+  end;
 end;
 
 procedure TGDBMIDebuggerCommand.DoStateChanged(OldState: TGDBMIDebuggerCommandState);
 begin
   // nothing
-end;
-
-procedure TGDBMIDebuggerCommand.DoFree;
-begin
-  FFreeRequested := True;
-  if KeepFinished or (FFreeLock > 0)
-  then exit;
-  Self.Free;
-end;
-
-procedure TGDBMIDebuggerCommand.LockFree;
-begin
-  inc(FFreeLock);
-end;
-
-procedure TGDBMIDebuggerCommand.UnlockFree;
-begin
-  dec(FFreeLock);
-  if (FFreeLock = 0) and FFreeRequested
-  then DoFree;
 end;
 
 procedure TGDBMIDebuggerCommand.DoLockQueueExecute;
@@ -9651,12 +9620,10 @@ begin
   FQueueRunLevel := -1;
   FState := dcsNone;
   FTheDebugger := AOwner;
-  FKeepFinished := False;
-  FFreeRequested := False;
   FDefaultTimeOut := -1;
-  FFreeLock := 0;
   FPriority := 0;
   FProperties := [];
+  AddReference; // internal reference
 end;
 
 destructor TGDBMIDebuggerCommand.Destroy;
@@ -9684,7 +9651,7 @@ var
 begin
   // Set the state first, so DoExecute can set an error-state
   SetState(dcsExecuting);
-  LockFree;
+  AddReference;
   DoLockQueueExecute;
   try
     Result := DoExecute;
@@ -9716,7 +9683,7 @@ begin
   end;
   // No re-raise in the except block. So no try-finally required
   DoUnockQueueExecute;
-  UnlockFree;
+  ReleaseReference;
 end;
 
 procedure TGDBMIDebuggerCommand.Cancel;
