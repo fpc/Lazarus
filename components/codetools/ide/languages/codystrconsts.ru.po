@@ -226,7 +226,9 @@ msgid "Please open a project first."
 msgstr "Сначала необходимо открыть проект."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
-msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example on the MyVar in%sMyVar:=3;"
+#, fuzzy
+#| msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example on the MyVar in%sMyVar:=3;"
+msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr "Расположите курсор редактора исходного кода на идентификаторе или операторе.%sНапример, на MyVar в%sMyVar:=3;"
 
 #: codystrconsts.crsppu

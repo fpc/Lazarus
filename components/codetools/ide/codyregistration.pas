@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LResources, Controls,
   IDECommands, MenuIntf, IDEWindowIntf,
   CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
-  CodyUtils, CodyNodeInfoDlg, CodyFrm;
+  CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg;
 
 procedure Register;
 
@@ -48,7 +48,7 @@ var
   AddAssignMethodCommand: TIDECommand;
   RemoveWithBlockCommand: TIDECommand;
   InsertFileAtCursorCommand: TIDECommand;
-  //DeclareVariableCommand: TIDECommand;
+  DeclareVariableCommand: TIDECommand;
   TVIconRes: TLResource;
   AddCallInheritedCommand: TIDECommand;
   ShowCodeNodeInfoCommand: TIDECommand;
@@ -93,11 +93,11 @@ begin
     crsAddCallInherited, nil, nil, AddCallInheritedCommand);
 
   // declare variable
-  {DeclareVariableCommand:=RegisterIDECommand(CmdCatCodeTools, 'DeclareVariable',
+  DeclareVariableCommand:=RegisterIDECommand(CmdCatCodeTools, 'DeclareVariable',
     crsDeclareVariable,
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowDeclareVariableDialog);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'DeclareVariable',
-    crsDeclareVariable2, nil, nil, DeclareVariableCommand);}
+    crsDeclareVariable2, nil, nil, DeclareVariableCommand);
 
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

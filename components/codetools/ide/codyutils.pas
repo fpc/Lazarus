@@ -66,7 +66,7 @@ procedure AddCallInherited(Sender: TObject);
 
 function ParseTilCursor(out Tool: TCodeTool; out CleanPos: integer;
    out Node: TCodeTreeNode; out ErrorHandled: boolean;
-   JumpToError: boolean): TCUParseError;
+   JumpToError: boolean; CodePos: PCodeXYPosition = nil): TCUParseError;
 
 implementation
 
@@ -248,7 +248,7 @@ end;
 
 function ParseTilCursor(out Tool: TCodeTool; out CleanPos: integer;
   out Node: TCodeTreeNode; out ErrorHandled: boolean;
-  JumpToError: boolean): TCUParseError;
+  JumpToError: boolean; CodePos: PCodeXYPosition): TCUParseError;
 var
   SrcEdit: TSourceEditorInterface;
   CursorPos: TCodeXYPosition;
@@ -257,19 +257,22 @@ begin
   CleanPos:=0;
   Node:=nil;
   ErrorHandled:=false;
+  if CodePos<>nil then CodePos^:=CleanCodeXYPosition;
   SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit=nil then begin
     debugln(['CodyUtils.ParseTilCursor: no source editor']);
     exit(cupeNoSrcEditor);
   end;
   CursorPos.Code:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
+  CursorPos.X:=SrcEdit.CursorTextXY.X;
+  CursorPos.Y:=SrcEdit.CursorTextXY.Y;
+  if CodePos<>nil then
+    CodePos^:=CursorPos;
   try
     if not CodeToolBoss.InitCurCodeTool(CursorPos.Code) then
       exit(cupeMainCodeNotFound);
     try
       Tool:=CodeToolBoss.CurCodeTool;
-      CursorPos.X:=SrcEdit.CursorTextXY.X;
-      CursorPos.Y:=SrcEdit.CursorTextXY.Y;
       Result:=cupeParseError;
       Tool.BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanPos,
                                    [btSetIgnoreErrorPos]);

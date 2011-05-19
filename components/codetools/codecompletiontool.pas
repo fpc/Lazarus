@@ -318,6 +318,16 @@ type
         LocalVarName: string = '' // default aSource
         ): boolean;
 
+    // guess type of an undeclared identifier
+    function GuessTypeOfIdentifier(CursorPos: TCodeXYPosition;
+        out IsKeyword: boolean;
+        out ExistingDefinition: TFindContext; // next existing definition
+        out ListOfPFindContext: TFPList; // possible classes
+        out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier
+    function DeclareVariable(InsertPos: TCodeXYPosition;
+        const VariableName, NewType, NewUnitName: string;
+        SourceChangeCache: TSourceChangeCache): boolean;
+
     // custom class completion
     function InitClassCompletion(const AClassName: string;
                                  SourceChangeCache: TSourceChangeCache): boolean;
@@ -1029,10 +1039,14 @@ begin
 
   if (VariableTypeUnitName<>'') then begin
     if not AddUnitToMainUsesSection(VariableTypeUnitName,'',SourceChangeCache)
-    then
+    then begin
+      debugln(['TCodeCompletionCodeTool.AddLocalVariable AddUnitToMainUsesSection failed']);
       exit;
-  end else begin
-    if not SourceChangeCache.Apply then exit;
+    end;
+  end;
+  if not SourceChangeCache.Apply then begin
+    debugln(['TCodeCompletionCodeTool.AddLocalVariable SourceChangeCache.Apply failed']);
+    exit;
   end;
 
   // adjust cursor position
@@ -5254,6 +5268,126 @@ begin
   AddClassInsertion(CleanDef,Def,ProcName,ncpPublicProcs,nil,ProcBody);
   Result:=ApplyChangesAndJumpToFirstNewProc(ClassNode.StartPos,1,true,
                    NewPos,NewTopLine);
+end;
+
+function TCodeCompletionCodeTool.GuessTypeOfIdentifier(
+  CursorPos: TCodeXYPosition; out IsKeyword: boolean;
+  out ExistingDefinition: TFindContext; out ListOfPFindContext: TFPList;
+  out NewExprType: TExpressionType; out NewType: string): boolean;
+{ examples:
+   identifier:=<something>
+   aclass.identifier:=<something>
+   <something>:=aclass.identifier
+   <something>:=<something>+aclass.identifier
+   <proc>(,,aclass.identifier)
+   for identifier in <something>
+
+ checks where the identifier is already defined
+ checks if it is the target of an assignment and guess the type
+ ToDo: checks if the identifier is a sub identifier (e.g. A.identifier)
+ ToDo: checks if it is the target of an assignment and guess the type
+ ToDo: checks if it is the source of an for in and guess the type
+ ToDo: checks if it is a parameter and guess the type
+ ToDo: creates the list of possible locations and notes
+}
+var
+  CleanCursorPos: integer;
+  Params: TFindDeclarationParams;
+  CursorNode: TCodeTreeNode;
+  IdentifierAtom: TAtomPosition;
+  TermAtom: TAtomPosition;
+begin
+  Result:=false;
+  IsKeyword:=false;
+  ExistingDefinition:=CleanFindContext;
+  ListOfPFindContext:=nil;
+  NewExprType:=CleanExpressionType;
+  NewType:='';
+  BuildTreeAndGetCleanPos(CursorPos, CleanCursorPos);
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+
+  // find identifier name
+  GetIdentStartEndAtPosition(Src,CleanCursorPos,
+    IdentifierAtom.StartPos,IdentifierAtom.EndPos);
+  debugln('TCodeCompletionCodeTool.GuessTypeOfIdentifier A Atom=',GetAtom(IdentifierAtom),' "',dbgstr(Src,CleanCursorPos,10),'"');
+  if IdentifierAtom.StartPos=IdentifierAtom.EndPos then exit;
+  Result:=true;
+
+  MoveCursorToAtomPos(IdentifierAtom);
+  if AtomIsKeyWord then begin
+    debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier is keyword: ',GetAtom]);
+    IsKeyword:=true;
+    exit;
+  end;
+
+  // search identifier
+  ActivateGlobalWriteLock;
+  Params:=TFindDeclarationParams.Create;
+  try
+    {$IFDEF CTDEBUG}
+    DebugLn('  GuessTypeOfIdentifier: check if variable is already defined ...');
+    {$ENDIF}
+    // check if identifier exists
+    Result:=IdentifierIsDefined(IdentifierAtom,CursorNode,Params);
+    if Result then begin
+      // identifier is already defined
+      ExistingDefinition.Tool:=Params.NewCodeTool;
+      ExistingDefinition.Node:=Params.NewNode;
+      debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier identifier already defined at ',FindContextToString(ExistingDefinition)]);
+    end;
+
+    // find assignment operator
+    MoveCursorToAtomPos(IdentifierAtom);
+    ReadNextAtom;
+    if AtomIs(':=') then begin
+      // is assignment
+      //AssignmentOperator:=CurPos;
+
+      // find term
+      ReadNextAtom;
+      TermAtom.StartPos:=CurPos.StartPos;
+      TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
+      if TermAtom.StartPos=TermAtom.EndPos then begin
+        debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier nothing behind := operator']);
+        exit;
+      end;
+      debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier guessing type of assignment :="',dbgstr(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"']);
+
+      // find type of term
+      NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params,NewExprType);
+      debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier Assignment type=',NewType]);
+      Result:=true;
+    end else begin
+      debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier can not guess type']);
+      exit;
+    end;
+
+  finally
+    Params.Free;
+    DeactivateGlobalWriteLock;
+  end;
+end;
+
+function TCodeCompletionCodeTool.DeclareVariable(InsertPos: TCodeXYPosition;
+  const VariableName, NewType, NewUnitName: string;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  NewPos: TCodeXYPosition;
+  NewTopLine: integer;
+begin
+  Result:=false;
+  debugln(['TCodeCompletionCodeTool.DeclareVariable InsertPos=',dbgs(InsertPos),' Name="',VariableName,'" Type="',NewType,'" Unit=',NewUnitName]);
+  BuildTreeAndGetCleanPos(InsertPos,CleanCursorPos);
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  SourceChangeCache.MainScanner:=Scanner;
+  if CursorNode.GetNodeOfType(ctnBeginBlock)<>nil then begin
+    Result:=AddLocalVariable(CleanCursorPos, 1,
+      VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache);
+  end else begin
+    debugln(['TCodeCompletionCodeTool.DeclareVariable destination not supported: ',CursorNode.DescAsString]);
+  end;
 end;
 
 function TCodeCompletionCodeTool.GatherPublishedMethods(

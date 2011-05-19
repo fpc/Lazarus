@@ -36,7 +36,7 @@ uses
   ButtonPanel, StdCtrls, ExtCtrls,
   IDEDialogs, LazIDEIntf,
   FileProcs, CodeToolManager, FindDeclarationTool, CodeTree,
-  KeywordFuncLists, BasicCodeTools, CodeCompletionTool, CodeAtom,
+  KeywordFuncLists, BasicCodeTools, CodeAtom,
   CodyUtils, CodyStrConsts;
 
 type
@@ -49,16 +49,24 @@ type
     TypeEdit: TEdit;
     TypeLabel: TLabel;
     WhereRadioGroup: TRadioGroup;
+    procedure OKButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
   public
+    CodePos: TCodeXYPosition;
+    Tool: TCodeTool;
+    Identifier: string;
+    RecommendedType: string;
+    UnitOfType: string;
+    function Run: boolean;
   end;
 
 
 procedure ShowDeclareVariableDialog(Sender: TObject);
 
-function CheckCreateVarFromIdentifierInSrcEdit: boolean;
+function CheckCreateVarFromIdentifierInSrcEdit(out CodePos: TCodeXYPosition;
+  out Tool: TCodeTool; out NewIdentifier, NewType, NewUnitName: string): boolean;
 
 implementation
 
@@ -66,18 +74,17 @@ procedure ShowDeclareVariableDialog(Sender: TObject);
 var
   CodyDeclareVarDialog: TCodyDeclareVarDialog;
 begin
-  if not CheckCreateVarFromIdentifierInSrcEdit then exit;
-  ShowMessage('Declare Variable dialog is not implemented yet');
-
   CodyDeclareVarDialog:=TCodyDeclareVarDialog.Create(nil);
   try
-    CodyDeclareVarDialog.ShowModal;
+    CodyDeclareVarDialog.Run;
   finally
     CodyDeclareVarDialog.Free;
   end;
 end;
 
-function CheckCreateVarFromIdentifierInSrcEdit: boolean;
+function CheckCreateVarFromIdentifierInSrcEdit(
+  out CodePos: TCodeXYPosition; out Tool: TCodeTool;
+  out NewIdentifier, NewType, NewUnitName: string): boolean;
 
   procedure ErrorNotAtAnIdentifier;
   begin
@@ -87,78 +94,58 @@ function CheckCreateVarFromIdentifierInSrcEdit: boolean;
   end;
 
 var
-  Tool: TCodeTool;
   CleanPos: integer;
   CursorNode: TCodeTreeNode;
   Handled: boolean;
-  BlockNode: TCodeTreeNode;
-  Node: TCodeTreeNode;
-  IdentStart: integer;
-  IdentEnd: integer;
-  Identifier: String;
+  IsKeyword: boolean;
+  ExistingDefinition: TFindContext;
+  ListOfPFindContext: TFPList;
+  NewExprType: TExpressionType;
 begin
   Result:=false;
-  if (ParseTilCursor(Tool,CleanPos,CursorNode,Handled,true)<>cupeSuccess)
+  NewType:='';
+  NewIdentifier:='';
+  NewUnitName:='';
+  CodePos:=CleanCodeXYPosition;
+  Tool:=nil;
+  if (ParseTilCursor(Tool,CleanPos,CursorNode,Handled,true,@CodePos)<>cupeSuccess)
   and not Handled then begin
     ErrorNotAtAnIdentifier;
     exit;
   end;
 
   Handled:=false;
+  ListOfPFindContext:=nil;
   try
     try
-      // check if in a statement
-      BlockNode:=nil;
-      Node:=CursorNode;
-      while (Node<>nil) do begin
-        if Node.Desc=ctnBeginBlock then
-          BlockNode:=Node;
-        Node:=Node.Parent;
-      end;
-      if BlockNode=nil then begin
-        // not in a statement
-        debugln(['CheckCreateVarFromIdentifierInSrcEdit not on a statement']);
-        ErrorNotAtAnIdentifier;
+      if not CodeToolBoss.GuessTypeOfIdentifier(CodePos.Code,CodePos.X,CodePos.Y,
+        IsKeyword,ExistingDefinition,ListOfPFindContext,NewExprType,NewType)
+      then begin
+        debugln(['CheckCreateVarFromIdentifierInSrcEdit GuessTypeOfIdentifier failed']);
         exit;
       end;
 
-      // check if a keyword
-      GetIdentStartEndAtPosition(Tool.Src,CleanPos, IdentStart, IdentEnd);
-      if IdentStart>=IdentEnd then begin
-        // not on a word
-        debugln(['CheckCreateVarFromIdentifierInSrcEdit not on a word']);
-        ErrorNotAtAnIdentifier;
-        exit;
-      end;
-      Identifier:=GetIdentifier(@Tool.Src[IdentStart]);
-      if WordIsKeyWord.DoItCaseInsensitive(Identifier) then
-      begin
-        // a keyword
-        debugln(['CheckCreateVarFromIdentifierInSrcEdit "',Identifier,'" is a keyword']);
-        IDEMessageDialog(crsCWError,'The "'+Identifier+'" is a keyword.',mtError,[mbCancel]);
+      NewIdentifier:=GetIdentifier(@Tool.Src[GetIdentStartPosition(Tool.Src,CleanPos)]);
+      if IsKeyword then begin
+        Handled:=true;
+        IDEMessageDialog('Error','"'+NewIdentifier+'" is a keyword.',mtError,[mbCancel]);
         exit;
       end;
 
-      // ToDo: check context
-      // examples:
-      //   identifier:=<something>
-      //   aclass.identifier:=<something>
-      //   <something>:=aclass.identifier
-      //   <something>:=<something>+aclass.identifier
-      //   <proc>(,,aclass.identifier)
-      //   for identifier in <something>
+      // check if newtype is a variable and if it is in another unit
+      if (NewExprType.Desc=xtContext) then begin
+        if NewExprType.Context.Tool<>Tool then
+          NewUnitName:=NewExprType.Context.Tool.GetSourceName;
+      end;
 
-      // ToDo: check where the identifier is already defined
-      // ToDo: check if the identifier is a sub identifier (e.g. A.identifier)
-      // ToDo: check if it is the target of an assignment and guess the type
-      // ToDo: check if it is the source of an assignment and guess the type
-      // ToDo: check if it is a parameter and guess the type
-      // ToDo: create the list of possible locations and notes
-
+      Handled:=true;
+      Result:=true;
     except
       on e: Exception do CodeToolBoss.HandleException(e);
     end;
   finally
+    FreeListOfPFindContext(ListOfPFindContext);
+    //debugln(['CheckCreateVarFromIdentifierInSrcEdit Handled=',Handled,' CTError=',CodeToolBoss.ErrorMessage]);
     // syntax error or not in a method
     if not Handled then begin
       if CodeToolBoss.ErrorMessage<>'' then
@@ -178,11 +165,48 @@ begin
   Caption:='Declare a new variable';
   WhereRadioGroup.Caption:='Where';
   TypeEdit.Caption:='Type';
+  ButtonPanel1.OKButton.OnClick:=@OKButtonClick;
+end;
+
+procedure TCodyDeclareVarDialog.OKButtonClick(Sender: TObject);
+var
+  NewType: TCaption;
+begin
+  NewType:=Trim(TypeEdit.Text);
+  if NewType='' then begin
+    IDEMessageDialog('Error','Please specify a type',mtError,[mbCancel]);
+    exit;
+  end;
+  if CompareTextIgnoringSpace(NewType,RecommendedType,false)<>0 then begin
+    debugln(['TCodyDeclareVarDialog.OKButtonClick using custom type "',NewType,'"']);
+    UnitOfType:='';
+  end;
+  if not CodeToolBoss.DeclareVariable(CodePos.Code,CodePos.X,CodePos.Y,
+    Identifier,RecommendedType,UnitOfType)
+  then begin
+    LazarusIDE.DoJumpToCodeToolBossError;
+    ModalResult:=mrCancel;
+    exit;
+  end;
+  ModalResult:=mrOk;
 end;
 
 procedure TCodyDeclareVarDialog.FormDestroy(Sender: TObject);
 begin
 
+end;
+
+function TCodyDeclareVarDialog.Run: boolean;
+begin
+  Result:=false;
+  if not CheckCreateVarFromIdentifierInSrcEdit(CodePos,Tool,Identifier,
+    RecommendedType,UnitOfType)
+  then exit;
+  Caption:='Declare variable "'+Identifier+'"';
+  TypeEdit.Text:=RecommendedType;
+  WhereRadioGroup.Items.Add('Local variable');
+  WhereRadioGroup.ItemIndex:=0;
+  Result:=ShowModal=mrOk;
 end;
 
 end.

@@ -510,6 +510,13 @@ type
           const VirtualToOverride: boolean;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
+    function GuessTypeOfIdentifier(Code: TCodeBuffer; X,Y: integer;
+          out ItsAKeyword: boolean;
+          out ExistingDefinition: TFindContext; // next existing definition
+          out ListOfPFindContext: TFPList; // possible classes
+          out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier or syntax error
+    function DeclareVariable(Code: TCodeBuffer; X,Y: integer;
+          const VariableName, NewType, NewUnitName: string): boolean;
     function FindRedefinitions(Code: TCodeBuffer;
           out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
     function RemoveRedefinitions(Code: TCodeBuffer;
@@ -3610,6 +3617,50 @@ begin
     NewCode:=NewPos.Code;
     NewX:=NewPos.X;
     NewY:=NewPos.Y;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GuessTypeOfIdentifier(Code: TCodeBuffer; X,
+  Y: integer; out ItsAKeyword: boolean; out ExistingDefinition: TFindContext;
+  out ListOfPFindContext: TFPList; out NewExprType: TExpressionType;
+  out NewType: string): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn(['TCodeToolManager.GuessTypeOfIdentifier A ',Code.Filename,' X=',X,' Y=',Y]);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.GuessTypeOfIdentifier(CursorPos,ItsAKeyword,
+              ExistingDefinition,ListOfPFindContext,NewExprType,NewType);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.DeclareVariable(Code: TCodeBuffer; X, Y: integer;
+  const VariableName, NewType, NewUnitName: string): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn(['TCodeToolManager.DeclareVariable A ',Code.Filename,' X=',X,' Y=',Y]);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.DeclareVariable(CursorPos,VariableName,
+                                         NewType,NewUnitName,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
