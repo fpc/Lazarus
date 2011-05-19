@@ -199,7 +199,7 @@ type
     property  DebuggerProperties: TGDBMIDebuggerProperties read GetDebuggerProperties;
     property  TargetInfo: PGDBMITargetInfo read GetTargetInfo;
   protected
-    procedure SetState(NewState: TGDBMIDebuggerCommandState);
+    procedure SetCommandState(NewState: TGDBMIDebuggerCommandState);
     procedure DoStateChanged(OldState: TGDBMIDebuggerCommandState); virtual;
     procedure DoLockQueueExecute; virtual;
     procedure DoUnockQueueExecute; virtual;
@@ -8788,7 +8788,7 @@ begin
   then Result := Result + Format(gdbmiErrorStateInfoGDBGone, [LineEnding]);
 end;
 
-procedure TGDBMIDebuggerCommand.SetState(NewState: TGDBMIDebuggerCommandState);
+procedure TGDBMIDebuggerCommand.SetCommandState(NewState: TGDBMIDebuggerCommandState);
 var
   OldState: TGDBMIDebuggerCommandState;
 begin
@@ -9635,12 +9635,12 @@ end;
 
 procedure TGDBMIDebuggerCommand.DoQueued;
 begin
-  SetState(dcsQueued);
+  SetCommandState(dcsQueued);
 end;
 
 procedure TGDBMIDebuggerCommand.DoFinished;
 begin
-  SetState(dcsFinished);
+  SetCommandState(dcsFinished);
 end;
 
 function TGDBMIDebuggerCommand.Execute: Boolean;
@@ -9650,7 +9650,7 @@ var
   Report: string;
 begin
   // Set the state first, so DoExecute can set an error-state
-  SetState(dcsExecuting);
+  SetCommandState(dcsExecuting);
   AddReference;
   DoLockQueueExecute;
   try
@@ -9694,7 +9694,7 @@ begin
   FTheDebugger.UnQueueCommand(Self);
   DoCancel;
   DoOnCanceled;
-  SetState(dcsCanceled);
+  SetCommandState(dcsCanceled);
 end;
 
 function TGDBMIDebuggerCommand.DebugText: String;
