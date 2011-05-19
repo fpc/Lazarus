@@ -645,6 +645,7 @@ type
     FDefColWidth, FDefRowHeight: Integer;
     FCol,FRow, FFixedCols, FFixedRows: Integer;
     FOnEditButtonClick: TNotifyEvent;
+    FOnButtonClick: TOnSelectEvent;
     FOnPickListSelect: TNotifyEvent;
     FOnCheckboxToggled: TToggledCheckboxEvent;
     FOnPrepareCanvas: TOnPrepareCanvasEvent;
@@ -1064,7 +1065,9 @@ type
     property OnCompareCells: TOnCompareCells read FOnCompareCells write FOnCompareCells;
     property OnPrepareCanvas: TOnPrepareCanvasEvent read FOnPrepareCanvas write FOnPrepareCanvas;
     property OnDrawCell: TOnDrawCell read FOnDrawCell write FOnDrawCell;
-    property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick;
+    // Deprecated in favor of OnButtonClick.
+    property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick; deprecated;
+    property OnButtonClick: TOnSelectEvent read FOnButtonClick write FOnButtonClick;
     property OnPickListSelect: TNotifyEvent read FOnPickListSelect write FOnPickListSelect;
     property OnSelection: TOnSelectEvent read fOnSelection write fOnSelection;
     property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
@@ -1275,7 +1278,8 @@ type
     property OnDragDrop;
     property OnDragOver;
     property OnDrawCell;
-    property OnEditButtonClick;
+    property OnEditButtonClick; deprecated;
+    property OnButtonClick;
     property OnEndDock;
     property OnEndDrag;
     property OnEnter;
@@ -1374,7 +1378,8 @@ type
     property OnDragDrop;
     property OnDragOver;
     property OnDrawCell;
-    property OnEditButtonClick;
+    property OnEditButtonClick; deprecated;
+    property OnButtonClick;
     property OnEditingDone;
     property OnEndDock;
     property OnEndDrag;
@@ -1574,7 +1579,8 @@ type
     property OnDragOver;
     property OnDblClick;
     property OnDrawCell;
-    property OnEditButtonClick;
+    property OnEditButtonClick; deprecated;
+    property OnButtonClick;
     property OnEditingDone;
     property OnEndDock;
     property OnEndDrag;
@@ -3764,7 +3770,7 @@ end;
 
 procedure TCustomGrid.EditButtonClicked(Sender: TObject);
 begin
-  if Assigned(OnEditButtonClick) then begin
+  if Assigned(OnEditButtonClick) or Assigned(OnButtonClick) then begin
     if Sender=FButtonEditor then
       DoEditButtonClick(FButtonEditor.Col, FButtonEditor.Row)
     else
@@ -5840,7 +5846,7 @@ begin
         if fGridState=gsHeaderClicking then
           HeaderClick(True, FGCache.ClickCell.X)
         else
-        if Assigned(OnEditButtonClick) then
+        if Assigned(OnEditButtonClick) or Assigned(OnButtonClick) then
           DoEditButtonClick(Cur.X, Cur.Y);
       end;
 
@@ -6060,7 +6066,10 @@ begin
   try
     FCol:=ACol;
     FRow:=ARow;
-    OnEditButtonClick(Self);
+    if Assigned(OnEditButtonClick) then
+      OnEditButtonClick(Self);
+    if Assigned(OnButtonClick) then
+      OnButtonClick(Self, ACol, ARow);
   finally
     if (FCol=ACol) and (FRow=ARow) then
     begin
