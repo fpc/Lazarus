@@ -5,26 +5,20 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
 
 1 ) Start Lazarus
 
-2 ) Install Packages:
+2 ) Install Package:
 
     In the Components Menu choose "Open Package File"
-    Browse to the lazarus/components/chmhelp/packages/help/ directory and 
-    open "lhelpcontrolpkg.lpk"
+    Browse to the lazarus/components/chmhelp/packages/idehelp directory and
+    open "chmhelppkg.lpk"
 
-    You do not need to directly install this package.
-
-    With the lhelpcontrolpkg package still open, in the Components Menu choose 
-   "Open Package File". Browse to the lazarus/components/chmhelp/packages/idehelp 
-    directory and open chmhelppkg.lpk
-
-3 ) Now click "Install" this will automatically install the first package we opened.
+3 ) Now click "Install".
 
 4 ) Restart Lazarus(if it didn't automatically)
 
 5 ) Open the lhelp project in lazarus/components/chmhelp/lhelp/lhelp.lpi
     Compile lhelp.
 
-5 ) Configure the paths for the lhelp:
+6 ) Configure the paths for the lhelp:
 
     From the Help menu choose "Configure Help"
     Change to the "Viewers" tab and select "CHM Help Viewer"
@@ -35,11 +29,13 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
 
     HelpFilesPath:
     This is the directory that contains the lcl.chm fcl.chm and rtl.chm files.
+    You can compile these files yourself or download them from the
+    www.freepascal.org download page.
 
     HelpLabel Name and Tag do not need to be altered.
-    The HelpLabel is the name of the named pipe that lazarus will use to comunicate with lhelp.
+    The HelpLabel is the name of the named pipe that lazarus will use to communicate with lhelp.
 
-6 ) Configure the DataBases
+7 ) Configure the DataBases
 
     Choose the DataBases tab.
 
@@ -50,7 +46,7 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
     LCLUnits:
     this should be "lcl.chm://"
 
-    NOTE if you have only a single lcl-fcl-rtl.chm file then then paths become:
+    NOTE if you have only a single lcl-fcl-rtl.chm file then paths become:
     "lcl-fcl-rtl.chm://rtl/"
     "lcl-fcl-rtl.chm://fcl/"
     "lcl-fcl-rtl.chm://lcl/"
