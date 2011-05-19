@@ -4417,10 +4417,6 @@ msgstr "Estilo"
 msgid "Surrounding"
 msgstr ""
 
-#: lazarusidestrconsts.liscesurroundings
-msgid "Surroundings"
-msgstr ""
-
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr "Para Fazer (ToDos)"

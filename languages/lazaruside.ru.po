@@ -4422,10 +4422,6 @@ msgstr "Стиль"
 msgid "Surrounding"
 msgstr "Вложенный код"
 
-#: lazarusidestrconsts.liscesurroundings
-msgid "Surroundings"
-msgstr "Вложенный код"
-
 #: lazarusidestrconsts.liscetodos
 msgid "ToDos"
 msgstr "Элементы ToDo"
