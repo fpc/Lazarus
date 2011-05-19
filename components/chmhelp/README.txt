@@ -20,7 +20,8 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
 
 6 ) Configure the paths for the lhelp:
 
-    From the Help menu choose "Configure Help"
+    From the Tools menu choose "Options"
+    Change to Help / Help options.
     Change to the "Viewers" tab and select "CHM Help Viewer"
 
     HelpEXE:
@@ -29,8 +30,7 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
 
     HelpFilesPath:
     This is the directory that contains the lcl.chm fcl.chm and rtl.chm files.
-    You can compile these files yourself or download them from the
-    www.freepascal.org download page.
+    You can download them from the download page of www.lazarus.freepascal.org.
 
     HelpLabel Name and Tag do not need to be altered.
     The HelpLabel is the name of the named pipe that lazarus will use to communicate with lhelp.
