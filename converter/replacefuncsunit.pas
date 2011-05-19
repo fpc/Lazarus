@@ -100,11 +100,7 @@ type
     procedure DeleteRow1Click(Sender: TObject);
     procedure GridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
       aState: TGridDrawState);
-    procedure GridEditingDone(Sender: TObject);
-    procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer; const Value: string);
     procedure OKButtonClick(Sender: TObject);
-  private
-    IsLasRow: Boolean;
   public
     function FromFuncListToUI(aFuncsAndCateg: TFuncsAndCategories): boolean;
     function FromUIToFuncList(aFuncsAndCateg: TFuncsAndCategories): boolean;
@@ -393,7 +389,6 @@ begin
   ButtonPanel.OKButton.Caption := lisOk;
   ButtonPanel.HelpButton.Caption := lisMenuHelp;
   ButtonPanel.CancelButton.Caption := dlgCancel;
-  IsLasRow:=false;
 end;
 
 procedure TReplaceFuncsForm.CategoryListBoxClickCheck(Sender: TObject);
@@ -433,26 +428,6 @@ begin
   i:=CategoryListBox.Items.IndexOf(Categ);
   if (i<>-1) and not CategoryListBox.Checked[i] then
     SGrid.Canvas.Font.Color:= clGrayText;
-end;
-
-// Add rows automatically to the end of the grid
-//  using OnSetEditText and OnEditingDone handlers and IsLasRow flag.
-procedure TReplaceFuncsForm.GridEditingDone(Sender: TObject);
-var
-  sg: TStringGrid;
-begin
-  if IsLasRow then begin
-    sg:=Sender as TStringGrid;
-    sg.RowCount:=sg.RowCount+1;
-    IsLasRow:=false;
-  end;
-end;
-
-procedure TReplaceFuncsForm.GridSetEditText(Sender: TObject; ACol,
-  ARow: Integer; const Value: string);
-begin
-  if ARow = (Sender as TStringGrid).RowCount-1 then
-    IsLasRow:=Value<>'';
 end;
 
 procedure TReplaceFuncsForm.OKButtonClick(Sender: TObject);

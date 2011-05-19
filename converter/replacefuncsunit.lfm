@@ -59,7 +59,7 @@ object ReplaceFuncsForm: TReplaceFuncsForm
         Width = 90
       end>
     FixedCols = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goSmoothScroll]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goAutoAddRows, goSmoothScroll]
     PopupMenu = PopupMenu1
     RowCount = 2
     TabOrder = 1

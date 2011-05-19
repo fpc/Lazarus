@@ -48,12 +48,9 @@ type
     procedure PopupMenu1Popup(Sender: TObject);
     procedure InsertRow1Click(Sender: TObject);
     procedure DeleteRow1Click(Sender: TObject);
-    procedure GridEditingDone(Sender: TObject);
-    procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer;
-      const Value: string);
     procedure btnOKClick(Sender: TObject);
   private
-    IsLasRow: Boolean;
+
   public
 
   end; 
@@ -291,7 +288,6 @@ begin
   ButtonPanel.OKButton.Caption := lisOk;
   ButtonPanel.HelpButton.Caption := lisMenuHelp;
   ButtonPanel.CancelButton.Caption := dlgCancel;
-  IsLasRow:=false;
 end;
 
 procedure TReplaceForm.PopupMenu1Popup(Sender: TObject);
@@ -312,26 +308,6 @@ end;
 procedure TReplaceForm.DeleteRow1Click(Sender: TObject);
 begin
   Grid.DeleteColRow(False, Grid.Row);
-end;
-
-// Add rows automatically to the end of the grid
-//  using OnSetEditText and OnEditingDone handlers and IsLasRow flag.
-procedure TReplaceForm.GridEditingDone(Sender: TObject);
-var
-  sg: TStringGrid;
-begin
-  if IsLasRow then begin
-    sg:=Sender as TStringGrid;
-    sg.RowCount:=sg.RowCount+1;
-    IsLasRow:=false;
-  end;
-end;
-
-procedure TReplaceForm.GridSetEditText(Sender: TObject; ACol,
-  ARow: Integer; const Value: string);
-begin
-  if ARow = (Sender as TStringGrid).RowCount-1 then
-    IsLasRow:=Value<>'';
 end;
 
 procedure TReplaceForm.btnOKClick(Sender: TObject);

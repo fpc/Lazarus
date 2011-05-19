@@ -27,12 +27,10 @@ object ReplaceForm: TReplaceForm
         Width = 215
       end>
     FixedCols = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goSmoothScroll]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goAutoAddRows, goSmoothScroll]
     PopupMenu = PopupMenu1
     RowCount = 2
     TabOrder = 0
-    OnEditingDone = GridEditingDone
-    OnSetEditText = GridSetEditText
     ColWidths = (
       214
       215
