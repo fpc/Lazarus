@@ -141,6 +141,7 @@ function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
 var
   InstallPkgSetDialog: TInstallPkgSetDialog;
 begin
+  NewInstalledPackages:=nil;
   InstallPkgSetDialog:=TInstallPkgSetDialog.Create(nil);
   try
     InstallPkgSetDialog.OldInstalledPackages:=OldInstalledPackages;
@@ -186,7 +187,7 @@ begin
   CancelButton.Caption:=dlgCancel;
 
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
-  FNewInstalledPackages:=TObjectList.Create;
+  FNewInstalledPackages:=TObjectList.Create(true);
   
   PkgInfoMemo.Clear;
 end;
@@ -669,10 +670,7 @@ begin
     finally
       XMLConfig.Free;
       LazPackageID.Free;
-      if NewList<>nil then begin
-        for i:=0 to NewList.Count-1 do TObject(NewList[i]).Free;
-        NewList.Free;
-      end;
+      NewList.Free;
     end;
   except
     on E: Exception do begin
@@ -770,14 +768,14 @@ var
   i: Integer;
   OldPackageID: TLazPackageID;
   APackage: TLazPackage;
-  Deletions: TFPList;
+  Deletions: TObjectList;
   DelPackageID: TLazPackageID;
   j: LongInt;
   TVNode: TTreeNode;
   PkgName: String;
 begin
   OldPackageID := nil;
-  Deletions:=TFPList.Create;
+  Deletions:=TObjectList.Create(true);
   try
     for i:=0 to InstallTreeView.Items.TopLvlCount-1 do begin
       TVNode:=InstallTreeView.Items.TopLvlItems[i];
@@ -822,11 +820,6 @@ begin
     UpdateButtonStates;
   finally
     OldPackageID.Free;
-    for i:=0 to Deletions.Count-1 do begin
-      DelPackageID:=TLazPackageID(Deletions[i]);
-      DelPackageID.Free;
-    end;
-    Deletions.Clear;
     Deletions.Free;
   end;
 end;

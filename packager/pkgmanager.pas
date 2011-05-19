@@ -305,7 +305,7 @@ type
     function CheckInstallPackageList(PkgIDList: TObjectList;
                           Flags: TPkgInstallInIDEFlags = []): boolean; override;
     function InstallPackages(PkgIdList: TObjectList;
-                               Flags: TPkgInstallInIDEFlags = []): TModalResult; override;
+                              Flags: TPkgInstallInIDEFlags = []): TModalResult; override;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags;
@@ -418,7 +418,7 @@ begin
 
     Flags:=[piiifSkipChecks,piiifClear];
     if RebuildIDE then Include(Flags,piiifRebuildIDE);
-    InstallPackages(PkgIDList,[]);
+    InstallPackages(PkgIDList,Flags);
   finally
     PkgIDList.Free;
   end;
@@ -3782,6 +3782,7 @@ var
   RequiredPackage: TLazPackage;
   i: Integer;
   CurDependency: TPkgDependency;
+  OldID: TLazPackageID;
 begin
   Result:=mrCancel;
   NewFirstAutoInstallDependency:=nil;
@@ -3792,8 +3793,17 @@ begin
       // add existing install packages to list
       NewFirstAutoInstallDependency:=PackageGraph.FirstAutoInstallDependency;
       while NewFirstAutoInstallDependency<>nil do begin
-        if NewFirstAutoInstallDependency.RequiredPackage<>nil then
-          PkgIdList.Add(NewFirstAutoInstallDependency.RequiredPackage);
+        if NewFirstAutoInstallDependency.RequiredPackage<>nil then begin
+          i:=PkgIdList.Count-1;
+          while (i>=0)
+          and (TLazPackageID(PkgIdList[i]).Compare(NewFirstAutoInstallDependency.RequiredPackage)<>0)
+          do dec(i);
+          if i<0 then begin
+            OldID:=TLazPackageID.Create;
+            OldID.AssignID(NewFirstAutoInstallDependency.RequiredPackage);
+            PkgIdList.Add(OldID);
+          end;
+        end;
         NewFirstAutoInstallDependency:=NewFirstAutoInstallDependency.NextRequiresDependency;
       end;
     end;
