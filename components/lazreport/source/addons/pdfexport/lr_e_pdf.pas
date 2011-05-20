@@ -216,14 +216,46 @@ procedure TfrTNPDFExportFilter.ShowPicture(View: TfrPictureView; x, y, h,
     w: integer);
 var
   PRImage: TPRImage;
+  r: Double;
+  L: Integer;
 begin
 
   if View.Picture.Graphic is TJpegImage then
     PRImage := TPRJpegImage.Create(PRPanel)
   else
     PRImage := TPRImage.Create(PRPanel);
+
   PRImage.Parent := PRPanel;
-  PRImage.Stretch := True;
+
+  if view.Stretched then
+  begin
+    if (View.Flags and flPictRatio<>0) and
+       (View.Picture.Width>0) and (View.Picture.Height>0) then
+    begin
+      r  := View.Picture.Width/View.Picture.Height;
+      if (w/h) < r then
+      begin
+        L := h;
+        h := Round(w/r);
+        if (View.Flags and flPictCenter<>0) then
+          y := y + (L-h) div 2;
+      end
+      else
+      begin
+        L := w;
+        w := Round(h*r);
+        if (View.Flags and flPictCenter<>0) then
+          x := x + (L-w) div 2;
+      end;
+    end;
+  end
+  else
+  if (View.Flags and flPictCenter<>0) then begin
+     x := x + (w - View.Picture.Width) div 2 - 1;
+     y := y + (h - View.Picture.Height) div 2 - 1;
+  end;
+
+  PRImage.Stretch := View.Stretched;
   PRImage.SharedName := View.SharedName;
   PRImage.SharedImage := (View.SharedName<>'');
 
