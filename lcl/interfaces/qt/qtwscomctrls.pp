@@ -294,6 +294,10 @@ var
 
   end;
 begin
+
+  if not WSCheckHandleAllocated(ATrackBar, 'ApplyChanges') then
+    Exit;
+
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
 
   QtTrackBar.BeginUpdate;
@@ -335,6 +339,9 @@ class function  TQtWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): int
 var
   QtTrackBar: TQtTrackBar;
 begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ATrackBar, 'GetPosition') then
+    Exit;
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
   Result := QtTrackBar.getSliderPosition;
 end;
@@ -343,6 +350,8 @@ class procedure TQtWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; cons
 var
   QtTrackBar: TQtTrackBar;
 begin
+  if not WSCheckHandleAllocated(ATrackBar, 'SetPosition') then
+    Exit;
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
   QtTrackBar.BeginUpdate;
   try
