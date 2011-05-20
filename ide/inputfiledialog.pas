@@ -556,7 +556,7 @@ end;
 
 constructor TInputFileDialog.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner, 1);
   Position:=poScreenCenter;
   Width:=500;
   
