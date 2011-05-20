@@ -4638,6 +4638,7 @@ resourcestring
   lisNotImplementedYet2 = 'Not implemented yet.';
   lisDeleteAllSelectedBreakpoints = 'Delete all selected breakpoints?';
   lisDeleteBreakpointAtLine = 'Delete breakpoint at%s"%s" line %d?';
+  lisDeleteBreakpointForAddress = 'Delete breakpoint for address %s?';
   lisDeleteAllBreakpoints = 'Delete all breakpoints?';
   lisDeleteAllBreakpoints2 = 'Delete all breakpoints in file %s%s%s?';
   lisBreak = 'Break';
