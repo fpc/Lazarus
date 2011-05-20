@@ -6606,6 +6606,10 @@ msgstr "Odstranit Bod přerušení"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Smazat bod přerušení na%s\"%s\"řádku %d?"
 
+#: lazarusidestrconsts.lisdeletebreakpointforaddress
+msgid "Delete breakpoint for address %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
 msgstr "Smazat sestavovací makro %s%s%s?"

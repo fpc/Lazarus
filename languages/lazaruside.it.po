@@ -6663,6 +6663,10 @@ msgstr "Cancella breakpoints"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Cancellare il breakpoint %s\"%s\" rigo %d?"
 
+#: lazarusidestrconsts.lisdeletebreakpointforaddress
+msgid "Delete breakpoint for address %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
 msgstr "Cancello la macro di build %s%s%s?"

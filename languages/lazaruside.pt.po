@@ -6651,6 +6651,10 @@ msgstr "Excluir Ponto de parada"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Excluir ponto de parada na%s\"%s\" linha %d?"
 
+#: lazarusidestrconsts.lisdeletebreakpointforaddress
+msgid "Delete breakpoint for address %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
 msgstr "Excluir construção macro %s%s%s?"

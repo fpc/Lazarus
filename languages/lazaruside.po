@@ -6569,6 +6569,10 @@ msgstr ""
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeletebreakpointforaddress
+msgid "Delete breakpoint for address %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
 msgstr ""

@@ -6624,6 +6624,10 @@ msgstr "מחק נקודת עצירה"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "מחק נקודת עצירה ב s%s% בשורה d%?"
 
+#: lazarusidestrconsts.lisdeletebreakpointforaddress
+msgid "Delete breakpoint for address %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
 msgstr "למחוק את מאקרו הבניה %s%s%s?"

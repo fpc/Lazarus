@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-19 04:10+0300\n"
+"PO-Revision-Date: 2011-05-21 01:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6647,6 +6647,10 @@ msgstr "Удалить точку останова"
 #: lazarusidestrconsts.lisdeletebreakpointatline
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Удалить точку останова в%s\"%s\" на строке %d?"
+
+#: lazarusidestrconsts.lisdeletebreakpointforaddress
+msgid "Delete breakpoint for address %s?"
+msgstr "Удалить точку останова по адресу %s?"
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"

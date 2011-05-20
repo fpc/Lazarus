@@ -6657,6 +6657,10 @@ msgstr "ブレークポイントを削除"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "%d行の%s\"%s\"にあるブレークポイントを削除しますか？"
 
+#: lazarusidestrconsts.lisdeletebreakpointforaddress
+msgid "Delete breakpoint for address %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
 msgstr "構築マクロ %s%s%s を削除しますか？"

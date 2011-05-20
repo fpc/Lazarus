@@ -6659,6 +6659,10 @@ msgstr "Haltepunkt löschen"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Haltepunkt bei %s»%s«, Zeile %d löschen?"
 
+#: lazarusidestrconsts.lisdeletebreakpointforaddress
+msgid "Delete breakpoint for address %s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
 msgstr "Erstellmakro %s%s%s löschen?"
