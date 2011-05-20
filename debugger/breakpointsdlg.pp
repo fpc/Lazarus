@@ -771,8 +771,10 @@ begin
   if lvBreakPoints.SelCount = 1 then
   begin
     CurBreakPoint:=TIDEBreakPoint(Item.Data);
-    Msg := Format(lisDeleteBreakpointAtLine, [#13, CurBreakPoint.Source,
-      CurBreakPoint.Line]);
+    case CurBreakPoint.Kind of
+      bpkSource: Msg := Format(lisDeleteBreakpointAtLine, [#13, CurBreakPoint.Source, CurBreakPoint.Line]);
+      bpkAddress: Msg := Format(lisDeleteBreakpointForAddress, ['$' + IntToHex(CurBreakPoint.Address, 8)]);
+    end;
   end
   else
     Msg := lisDeleteAllSelectedBreakpoints;
