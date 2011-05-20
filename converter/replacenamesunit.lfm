@@ -8,7 +8,7 @@ object ReplaceForm: TReplaceForm
   ClientWidth = 433
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Grid: TStringGrid
     Left = 0
     Height = 421
@@ -17,6 +17,7 @@ object ReplaceForm: TReplaceForm
     Align = alClient
     AutoFillColumns = True
     ColCount = 2
+    ColumnClickSorts = True
     Columns = <    
       item
         Title.Caption = 'Delphi name'

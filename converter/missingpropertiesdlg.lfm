@@ -729,6 +729,7 @@ object FixLFMDialog: TFixLFMDialog
       Align = alTop
       AutoFillColumns = True
       ColCount = 2
+      ColumnClickSorts = True
       Columns = <      
         item
           Title.Caption = 'Delphi Property'
@@ -774,6 +775,7 @@ object FixLFMDialog: TFixLFMDialog
       Align = alClient
       AutoFillColumns = True
       ColCount = 2
+      ColumnClickSorts = True
       Columns = <      
         item
           Title.Caption = 'Delphi Type'
