@@ -166,8 +166,9 @@ begin
     Tool:=TPPUTool.Create(NormalizedFilename);
     fItems.Add(Tool);
   end;
-  if not Tool.NeedsUpdate(Parts) then exit;
-  if not Tool.Load(Parts) then exit;
+  if Tool.NeedsUpdate(Parts) then begin
+    if not Tool.Load(Parts) then exit;
+  end;
   Result:=Tool;
 end;
 
