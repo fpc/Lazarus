@@ -61,6 +61,7 @@ type
     TypeEdit: TEdit;
     TypeLabel: TLabel;
     WhereRadioGroup: TRadioGroup;
+    procedure HelpButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -193,6 +194,7 @@ begin
   WhereRadioGroup.Caption:='Where';
   TypeEdit.Caption:='Type';
   ButtonPanel1.OKButton.OnClick:=@OKButtonClick;
+  ButtonPanel1.HelpButton.OnClick:=@HelpButtonClick;
 end;
 
 procedure TCodyDeclareVarDialog.OKButtonClick(Sender: TObject);
@@ -213,6 +215,11 @@ begin
     exit;
   end;
   ModalResult:=mrOk;
+end;
+
+procedure TCodyDeclareVarDialog.HelpButtonClick(Sender: TObject);
+begin
+  OpenCodyHelp('#Declare_Variable');
 end;
 
 procedure TCodyDeclareVarDialog.FormDestroy(Sender: TObject);

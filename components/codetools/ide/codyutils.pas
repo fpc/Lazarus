@@ -30,9 +30,9 @@ unit CodyUtils;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Controls,
+  Classes, SysUtils, Dialogs, Controls, LCLIntf,
   // IDEIntf
-  IDEDialogs, LazIDEIntf, SrcEditorIntf,
+  IDEDialogs, LazIDEIntf, SrcEditorIntf, IDEHelpIntf,
   // codetools
   CodeAtom, FileProcs, CodeToolManager, CodeCache, SourceLog, BasicCodeTools,
   EventCodeTool, LinkScanner, PascalParserTool, CodeTree, SourceChanger,
@@ -67,6 +67,7 @@ procedure AddCallInherited(Sender: TObject);
 function ParseTilCursor(out Tool: TCodeTool; out CleanPos: integer;
    out Node: TCodeTreeNode; out ErrorHandled: boolean;
    JumpToError: boolean; CodePos: PCodeXYPosition = nil): TCUParseError;
+procedure OpenCodyHelp(Path: string);
 
 implementation
 
@@ -291,6 +292,14 @@ begin
       LazarusIDE.DoJumpToCodeToolBossError;
     end;
   end;
+end;
+
+procedure OpenCodyHelp(Path: string);
+var
+  BasePath: String;
+begin
+  BasePath:='http://wiki.lazarus.freepascal.org/Cody';
+  OpenURL(BasePath+Path);
 end;
 
 { TCody }
