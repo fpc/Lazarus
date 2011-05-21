@@ -786,6 +786,7 @@ type
     procedure DoCacheItem;
   public
     procedure SetDataIndex(ADataIndex: Integer);
+    procedure SetOwner(AOwner: TListItems);
   end;
 
   { TListItemsEnumerator }

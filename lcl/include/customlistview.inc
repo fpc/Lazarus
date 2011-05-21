@@ -469,7 +469,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.SetItems(const AValue : TListItems);
 begin
-end; 
+end;
 
 {------------------------------------------------------------------------------}
 {   TCustomListView SetItemVisible                                             }
@@ -1045,16 +1045,18 @@ procedure TCustomListView.SetOwnerData(const AValue: Boolean);
 begin
   if FOwnerData=AValue then exit;
   FOwnerData:=AValue;
+  FOwnerDataItem.SetOwner(nil);
   Items.Free;
   if AValue then
   begin
     FSelectedIdx:=-1;
-    Items:=TOwnerDataListItems.Create(Self);
+    FListItems:=TOwnerDataListItems.Create(Self);
   end else
-    Items:=TListItems.Create(Self);
+    FListItems:=TListItems.Create(Self);
 
   if HandleAllocated then 
     TWSCustomListViewClass(WidgetSetClass).SetOwnerData(Self, AValue);
+  FOwnerDataItem.SetOwner(FListItems);
 end;
 
 procedure TCustomListView.SetProperty(const ALvpOrd: Integer;

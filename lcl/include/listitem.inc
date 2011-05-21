@@ -809,6 +809,15 @@ begin
   end;
 end;
 
+procedure TOwnerDataListItem.SetOwner(AOwner: TListItems);
+begin
+  FOwner:=AOwner;
+  FFlags := [];
+  FStates := [];
+  FImageIndex := -1;
+  FreeAndNil(FSubItems);
+end;
+
 function TOwnerDataListItem.GetSubItems: TStrings; 
 begin
   if not FCached then DoCacheItem;
