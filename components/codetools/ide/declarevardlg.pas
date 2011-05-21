@@ -32,14 +32,26 @@ unit DeclareVarDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls, ExtCtrls,
+  Classes, SysUtils, LCLProc, contnrs, LResources, Forms, Controls, Graphics,
+  Dialogs, ButtonPanel, StdCtrls, ExtCtrls,
   IDEDialogs, LazIDEIntf,
   FileProcs, CodeToolManager, FindDeclarationTool, CodeTree,
   KeywordFuncLists, BasicCodeTools, CodeAtom,
   CodyUtils, CodyStrConsts;
 
 type
+
+  { TCodyDeclareVarTarget }
+
+  TCodyDeclareVarTarget = class
+  public
+    Tool: TFindDeclarationTool;
+    NodeDesc: TCodeTreeNodeDesc;
+    NodeStartPos: TCodeXYPosition;
+    Visibility: TCodeTreeNodeDesc;
+    Caption: string;
+    constructor Create(const Context: TFindContext);
+  end;
 
   { TCodyDeclareVarDialog }
 
@@ -59,6 +71,7 @@ type
     Identifier: string;
     RecommendedType: string;
     UnitOfType: string;
+    Targets: TObjectList; // list of TCodyDeclareVarTarget
     function Run: boolean;
   end;
 
@@ -66,7 +79,8 @@ type
 procedure ShowDeclareVariableDialog(Sender: TObject);
 
 function CheckCreateVarFromIdentifierInSrcEdit(out CodePos: TCodeXYPosition;
-  out Tool: TCodeTool; out NewIdentifier, NewType, NewUnitName: string): boolean;
+  out Tool: TCodeTool; out NewIdentifier, NewType, NewUnitName: string;
+  out PossibleContexts: TFPList): boolean;
 
 implementation
 
@@ -84,7 +98,9 @@ end;
 
 function CheckCreateVarFromIdentifierInSrcEdit(
   out CodePos: TCodeXYPosition; out Tool: TCodeTool;
-  out NewIdentifier, NewType, NewUnitName: string): boolean;
+  out NewIdentifier, NewType, NewUnitName: string;
+  out PossibleContexts: TFPList // list of PFindContext
+  ): boolean;
 
   procedure ErrorNotAtAnIdentifier;
   begin
@@ -99,8 +115,8 @@ var
   Handled: boolean;
   IsKeyword: boolean;
   ExistingDefinition: TFindContext;
-  ListOfPFindContext: TFPList;
   NewExprType: TExpressionType;
+  IsSubIdentifier: boolean;
 begin
   Result:=false;
   NewType:='';
@@ -108,6 +124,8 @@ begin
   NewUnitName:='';
   CodePos:=CleanCodeXYPosition;
   Tool:=nil;
+  PossibleContexts:=nil;
+
   if (ParseTilCursor(Tool,CleanPos,CursorNode,Handled,true,@CodePos)<>cupeSuccess)
   and not Handled then begin
     ErrorNotAtAnIdentifier;
@@ -115,11 +133,11 @@ begin
   end;
 
   Handled:=false;
-  ListOfPFindContext:=nil;
   try
     try
       if not CodeToolBoss.GuessTypeOfIdentifier(CodePos.Code,CodePos.X,CodePos.Y,
-        IsKeyword,ExistingDefinition,ListOfPFindContext,NewExprType,NewType)
+        IsKeyword,IsSubIdentifier,ExistingDefinition,PossibleContexts,
+        NewExprType,NewType)
       then begin
         debugln(['CheckCreateVarFromIdentifierInSrcEdit GuessTypeOfIdentifier failed']);
         exit;
@@ -144,7 +162,6 @@ begin
       on e: Exception do CodeToolBoss.HandleException(e);
     end;
   finally
-    FreeListOfPFindContext(ListOfPFindContext);
     //debugln(['CheckCreateVarFromIdentifierInSrcEdit Handled=',Handled,' CTError=',CodeToolBoss.ErrorMessage]);
     // syntax error or not in a method
     if not Handled then begin
@@ -156,12 +173,22 @@ begin
   end;
 end;
 
+{ TCodyDeclareVarTarget }
+
+constructor TCodyDeclareVarTarget.Create(const Context: TFindContext);
+begin
+  Tool:=Context.Tool;
+  NodeDesc:=Context.Node.Desc;
+  Context.Tool.CleanPosToCaret(Context.Node.StartPos,NodeStartPos);
+end;
+
 {$R *.lfm}
 
 { TCodyDeclareVarDialog }
 
 procedure TCodyDeclareVarDialog.FormCreate(Sender: TObject);
 begin
+  Targets:=TObjectList.create(true);
   Caption:='Declare a new variable';
   WhereRadioGroup.Caption:='Where';
   TypeEdit.Caption:='Type';
@@ -171,6 +198,8 @@ end;
 procedure TCodyDeclareVarDialog.OKButtonClick(Sender: TObject);
 var
   NewType: TCaption;
+  Target: TCodyDeclareVarTarget;
+  OldChange: boolean;
 begin
   NewType:=Trim(TypeEdit.Text);
   if NewType='' then begin
@@ -181,31 +210,103 @@ begin
     debugln(['TCodyDeclareVarDialog.OKButtonClick using custom type "',NewType,'"']);
     UnitOfType:='';
   end;
-  if not CodeToolBoss.DeclareVariable(CodePos.Code,CodePos.X,CodePos.Y,
-    Identifier,RecommendedType,UnitOfType)
-  then begin
-    LazarusIDE.DoJumpToCodeToolBossError;
-    ModalResult:=mrCancel;
+  if WhereRadioGroup.ItemIndex<0 then begin
+    IDEMessageDialog('Error','Please specify a location',mtError,[mbCancel]);
     exit;
+  end;
+  Target:=TCodyDeclareVarTarget(Targets[WhereRadioGroup.ItemIndex]);
+
+  OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
+  try
+    LazarusIDE.OpenEditorsOnCodeToolChange:=true;
+    if not CodeToolBoss.DeclareVariable(Target.NodeStartPos.Code,
+      Target.NodeStartPos.X,Target.NodeStartPos.Y,
+      Identifier,RecommendedType,UnitOfType,Target.Visibility)
+    then begin
+      LazarusIDE.DoJumpToCodeToolBossError;
+      ModalResult:=mrCancel;
+      exit;
+    end;
+  finally
+    LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
   end;
   ModalResult:=mrOk;
 end;
 
 procedure TCodyDeclareVarDialog.FormDestroy(Sender: TObject);
 begin
-
+  Targets.Free;
 end;
 
 function TCodyDeclareVarDialog.Run: boolean;
+
+  procedure AddClassTarget(Context: TFindContext; Visibility: TCodeTreeNodeDesc);
+  var
+    Target: TCodyDeclareVarTarget;
+    s: String;
+  begin
+    case Visibility of
+    ctnClassPrivate: s:='Private';
+    ctnClassProtected: s:='Protected';
+    ctnClassPublic: s:='Public';
+    ctnClassPublished: s:='Published';
+    else exit;
+    end;
+    Target:=TCodyDeclareVarTarget.Create(Context);
+    Target.Visibility:=Visibility;
+    s:=s+' member of '+Context.Node.DescAsString+' '+
+      Context.Tool.ExtractClassName(Context.Node,false,true);
+    Target.Caption:=s;
+    Targets.Add(Target);
+  end;
+
+var
+  PossibleContexts: TFPList;
+  Target: TCodyDeclareVarTarget;
+  Context: TFindContext;
+  i: Integer;
 begin
   Result:=false;
-  if not CheckCreateVarFromIdentifierInSrcEdit(CodePos,Tool,Identifier,
-    RecommendedType,UnitOfType)
-  then exit;
+  PossibleContexts:=nil;
+  Targets.Clear;
+  try
+    if not CheckCreateVarFromIdentifierInSrcEdit(CodePos,Tool,Identifier,
+      RecommendedType,UnitOfType,PossibleContexts)
+    then exit;
+
+    // ToDo: target interface
+    // ToDo: target implementation
+    // ToDo: target global (program)
+
+    if PossibleContexts<>nil then begin
+      for i:=0 to PossibleContexts.Count-1 do begin
+        Context:=PFindContext(PossibleContexts[i])^;
+        if Context.Node.Desc=ctnProcedure then begin
+          Target:=TCodyDeclareVarTarget.Create(Context);
+          Target.Caption:='Local variable of '+Context.Tool.ExtractProcName(Context.Node,[]);
+          Targets.Add(Target);
+        end else if Context.Node.Desc in AllClassObjects then begin
+          AddClassTarget(Context,ctnClassPrivate);
+          AddClassTarget(Context,ctnClassProtected);
+          AddClassTarget(Context,ctnClassPublic);
+          AddClassTarget(Context,ctnClassPublished);
+        end;
+      end;
+    end;
+  finally
+    FreeListOfPFindContext(PossibleContexts);
+  end;
+
   Caption:='Declare variable "'+Identifier+'"';
+  TypeLabel.Caption:='Type';
   TypeEdit.Text:=RecommendedType;
-  WhereRadioGroup.Items.Add('Local variable');
+
+  for i:=0 to Targets.Count-1 do begin
+    Target:=TCodyDeclareVarTarget(Targets[i]);
+    WhereRadioGroup.Items.Add(Target.Caption);
+  end;
   WhereRadioGroup.ItemIndex:=0;
+
   Result:=ShowModal=mrOk;
 end;
 

@@ -263,6 +263,8 @@ begin
     debugln(['CodyUtils.ParseTilCursor: no source editor']);
     exit(cupeNoSrcEditor);
   end;
+  if not LazarusIDE.BeginCodeTools then exit;
+
   CursorPos.Code:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
   CursorPos.X:=SrcEdit.CursorTextXY.X;
   CursorPos.Y:=SrcEdit.CursorTextXY.Y;

@@ -511,12 +511,13 @@ type
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
     function GuessTypeOfIdentifier(Code: TCodeBuffer; X,Y: integer;
-          out ItsAKeyword: boolean;
+          out ItsAKeyword, IsSubIdentifier: boolean;
           out ExistingDefinition: TFindContext; // next existing definition
           out ListOfPFindContext: TFPList; // possible classes
           out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier or syntax error
     function DeclareVariable(Code: TCodeBuffer; X,Y: integer;
-          const VariableName, NewType, NewUnitName: string): boolean;
+          const VariableName, NewType, NewUnitName: string;
+          Visibility: TCodeTreeNodeDesc): boolean;
     function FindRedefinitions(Code: TCodeBuffer;
           out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
     function RemoveRedefinitions(Code: TCodeBuffer;
@@ -3623,7 +3624,8 @@ begin
 end;
 
 function TCodeToolManager.GuessTypeOfIdentifier(Code: TCodeBuffer; X,
-  Y: integer; out ItsAKeyword: boolean; out ExistingDefinition: TFindContext;
+  Y: integer; out ItsAKeyword, IsSubIdentifier: boolean;
+  out ExistingDefinition: TFindContext;
   out ListOfPFindContext: TFPList; out NewExprType: TExpressionType;
   out NewType: string): boolean;
 var
@@ -3639,14 +3641,16 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.GuessTypeOfIdentifier(CursorPos,ItsAKeyword,
-              ExistingDefinition,ListOfPFindContext,NewExprType,NewType);
+              IsSubIdentifier,ExistingDefinition,ListOfPFindContext,
+              NewExprType,NewType);
   except
     on e: Exception do Result:=HandleException(e);
   end;
 end;
 
 function TCodeToolManager.DeclareVariable(Code: TCodeBuffer; X, Y: integer;
-  const VariableName, NewType, NewUnitName: string): boolean;
+  const VariableName, NewType, NewUnitName: string;
+  Visibility: TCodeTreeNodeDesc): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -3660,7 +3664,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.DeclareVariable(CursorPos,VariableName,
-                                         NewType,NewUnitName,SourceChangeCache);
+                              NewType,NewUnitName,Visibility,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

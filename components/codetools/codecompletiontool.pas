@@ -320,12 +320,13 @@ type
 
     // guess type of an undeclared identifier
     function GuessTypeOfIdentifier(CursorPos: TCodeXYPosition;
-        out IsKeyword: boolean;
+        out IsKeyword, IsSubIdentifier: boolean;
         out ExistingDefinition: TFindContext; // next existing definition
         out ListOfPFindContext: TFPList; // possible classes
         out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier
     function DeclareVariable(InsertPos: TCodeXYPosition;
         const VariableName, NewType, NewUnitName: string;
+        Visibility: TCodeTreeNodeDesc;
         SourceChangeCache: TSourceChangeCache): boolean;
 
     // custom class completion
@@ -5271,7 +5272,7 @@ begin
 end;
 
 function TCodeCompletionCodeTool.GuessTypeOfIdentifier(
-  CursorPos: TCodeXYPosition; out IsKeyword: boolean;
+  CursorPos: TCodeXYPosition; out IsKeyword, IsSubIdentifier: boolean;
   out ExistingDefinition: TFindContext; out ListOfPFindContext: TFPList;
   out NewExprType: TExpressionType; out NewType: string): boolean;
 { examples:
@@ -5283,12 +5284,12 @@ function TCodeCompletionCodeTool.GuessTypeOfIdentifier(
    for identifier in <something>
 
  checks where the identifier is already defined
+ checks if the identifier is a sub identifier (e.g. A.identifier)
+ creates the list of possible locations and notes
  checks if it is the target of an assignment and guess the type
- ToDo: checks if the identifier is a sub identifier (e.g. A.identifier)
  ToDo: checks if it is the target of an assignment and guess the type
  ToDo: checks if it is the source of an for in and guess the type
  ToDo: checks if it is a parameter and guess the type
- ToDo: creates the list of possible locations and notes
 }
 var
   CleanCursorPos: integer;
@@ -5299,6 +5300,7 @@ var
 begin
   Result:=false;
   IsKeyword:=false;
+  IsSubIdentifier:=false;
   ExistingDefinition:=CleanFindContext;
   ListOfPFindContext:=nil;
   NewExprType:=CleanExpressionType;
@@ -5322,18 +5324,29 @@ begin
 
   // search identifier
   ActivateGlobalWriteLock;
-  Params:=TFindDeclarationParams.Create;
   try
-    {$IFDEF CTDEBUG}
-    DebugLn('  GuessTypeOfIdentifier: check if variable is already defined ...');
-    {$ENDIF}
-    // check if identifier exists
-    Result:=IdentifierIsDefined(IdentifierAtom,CursorNode,Params);
+    Params:=TFindDeclarationParams.Create;
+    try
+      {$IFDEF CTDEBUG}
+      DebugLn('  GuessTypeOfIdentifier: check if variable is already defined ...');
+      {$ENDIF}
+      // check if identifier exists
+      Result:=IdentifierIsDefined(IdentifierAtom,CursorNode,Params);
+    finally
+      Params.Free;
+    end;
     if Result then begin
       // identifier is already defined
       ExistingDefinition.Tool:=Params.NewCodeTool;
       ExistingDefinition.Node:=Params.NewNode;
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier identifier already defined at ',FindContextToString(ExistingDefinition)]);
+    end;
+
+    if not FindIdentifierContextsAtStatement(IdentifierAtom.StartPos,
+      IsSubIdentifier,ListOfPFindContext)
+    then begin
+      debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier FindIdentifierContextsAtStatement failed']);
+      exit;
     end;
 
     // find assignment operator
@@ -5354,7 +5367,12 @@ begin
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier guessing type of assignment :="',dbgstr(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"']);
 
       // find type of term
-      NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params,NewExprType);
+      Params:=TFindDeclarationParams.Create;
+      try
+        NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params,NewExprType);
+      finally
+        Params.Free;
+      end;
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier Assignment type=',NewType]);
       Result:=true;
     end else begin
@@ -5363,31 +5381,69 @@ begin
     end;
 
   finally
-    Params.Free;
     DeactivateGlobalWriteLock;
   end;
 end;
 
 function TCodeCompletionCodeTool.DeclareVariable(InsertPos: TCodeXYPosition;
   const VariableName, NewType, NewUnitName: string;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  Visibility: TCodeTreeNodeDesc; SourceChangeCache: TSourceChangeCache
+  ): boolean;
 var
   CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
   NewPos: TCodeXYPosition;
   NewTopLine: integer;
+  Node: TCodeTreeNode;
+  ClassPart: TNewClassPart;
 begin
   Result:=false;
   debugln(['TCodeCompletionCodeTool.DeclareVariable InsertPos=',dbgs(InsertPos),' Name="',VariableName,'" Type="',NewType,'" Unit=',NewUnitName]);
   BuildTreeAndGetCleanPos(InsertPos,CleanCursorPos);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   SourceChangeCache.MainScanner:=Scanner;
-  if CursorNode.GetNodeOfType(ctnBeginBlock)<>nil then begin
-    Result:=AddLocalVariable(CleanCursorPos, 1,
-      VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache);
-  end else begin
-    debugln(['TCodeCompletionCodeTool.DeclareVariable destination not supported: ',CursorNode.DescAsString]);
+  Node:=CursorNode;
+  while Node<>nil do begin
+    if Node.Desc=ctnBeginBlock then begin
+      // local variable
+      Result:=AddLocalVariable(Node.StartPos, 1,
+        VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache);
+      exit;
+    end else if Node.Desc=ctnProcedure then begin
+      // local variable
+      if (Node.LastChild<>nil) and (Node.LastChild.Desc=ctnBeginBlock) then begin
+        Result:=AddLocalVariable(Node.LastChild.StartPos, 1,
+          VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache);
+        exit;
+      end else
+        exit;
+    end else if Node.Desc in AllClassObjects then begin
+      // class member
+      // initialize class for code completion
+      InitClassCompletion(Node,SourceChangeCache);
+      // check if variable already exists
+      if VarExistsInCodeCompleteClass(UpperCaseStr(VariableName)) then begin
+        debugln(['TCodeCompletionCodeTool.DeclareVariable member already exists: ',VariableName,' Class=',ExtractClassName(Node,false)]);
+        exit;
+      end;
+      ClassPart:=ncpPublishedVars;
+      case Visibility of
+      ctnClassPrivate: ClassPart:=ncpPrivateVars;
+      ctnClassProtected: ClassPart:=ncpProtectedVars;
+      ctnClassPublic: ClassPart:=ncpPublicVars;
+      end;
+      AddClassInsertion(UpperCaseStr(VariableName),
+                        VariableName+':'+NewType+';',VariableName,ClassPart);
+      if not InsertAllNewClassParts then
+        RaiseException(ctsErrorDuringInsertingNewClassParts);
+      // apply the changes
+      if not SourceChangeCache.Apply then
+        RaiseException(ctsUnableToApplyChanges);
+      exit;
+    end;
+    Node:=Node.Parent;
   end;
+  debugln(['TCodeCompletionCodeTool.DeclareVariable destination not supported: ',CursorNode.DescAsString]);
 end;
 
 function TCodeCompletionCodeTool.GatherPublishedMethods(

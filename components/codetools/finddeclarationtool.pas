@@ -811,6 +811,8 @@ type
     function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
       out ListOfPCodeXYPosition: TFPList;
       Flags: TFindDeclarationListFlags): boolean;
+    function FindIdentifierContextsAtStatement(CleanPos: integer;
+      out IsSubIdentifier: boolean; out ListOfPFindContext: TFPList): boolean;
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
       out ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean
       ): boolean; // without interfaces
@@ -3908,6 +3910,93 @@ begin
     NodeList.Free;
     DeactivateGlobalWriteLock;
   end;
+end;
+
+function TFindDeclarationTool.FindIdentifierContextsAtStatement(CleanPos: integer;
+  out IsSubIdentifier: boolean; out ListOfPFindContext: TFPList): boolean;
+var
+  Params: TFindDeclarationParams;
+  CursorNode: TCodeTreeNode;
+  Node: TCodeTreeNode;
+  Context: TFindContext;
+  WithNode: TCodeTreeNode;
+  ExprType: TExpressionType;
+begin
+  Result:=false;
+  IsSubIdentifier:=false;
+  ListOfPFindContext:=nil;
+  CursorNode:=FindDeepestNodeAtPos(CleanPos,true);
+  if not (CursorNode.Desc in AllPascalStatements) then begin
+    debugln(['TFindDeclarationTool.FindIdentifierContextsAtStatement CursorNode.Desc=',CursorNode.DescAsString]);
+    exit;
+  end;
+  // check expression in front
+  MoveCursorToCleanPos(CleanPos);
+  ReadPriorAtom;
+  if CurPos.Flag=cafPoint then begin
+    // sub identifier
+    // for example A.Identifier
+    IsSubIdentifier:=true;
+    // search the context of A and add it to the ListOfPFindContext
+    Params:=TFindDeclarationParams.Create;
+    try
+      Params.ContextNode:=CursorNode;
+      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                     fdfTopLvlResolving,fdfFunctionResult];
+      ExprType:=FindExpressionTypeOfTerm(-1,CleanPos,Params,false);
+    finally
+      Params.Free;
+    end;
+    if ExprType.Desc=xtContext then
+      AddFindContext(ListOfPFindContext,ExprType.Context);
+  end else begin
+    // not a sub identifier
+    BuildSubTree(CursorNode);
+    CursorNode:=FindDeepestNodeAtPos(CursorNode,CleanPos,true);
+    Node:=CursorNode;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnWithStatement:
+        begin
+          // add all With contexts
+          WithNode:=Node.Parent;
+          while WithNode<>nil do begin
+            if WithNode.Desc<>ctnWithVariable then break;
+            Params:=TFindDeclarationParams.Create;
+            try
+              Params.ContextNode:=WithNode;
+              Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors,
+                fdfSearchInParentNodes,fdfFunctionResult,fdfIgnoreCurContextNode,
+                fdfFindChilds];
+              ExprType:=FindExpressionResultType(Params,WithNode.StartPos,-1);
+              if ExprType.Desc=xtContext then
+                AddFindContext(ListOfPFindContext,ExprType.Context);
+            finally
+              Params.Free;
+            end;
+            WithNode:=WithNode.PriorBrother;
+          end;
+        end;
+      ctnProcedure:
+        begin
+          // add procedure context
+          Context.Node:=Node;
+          Context.Tool:=Self;
+          AddFindContext(ListOfPFindContext,Context);
+          if NodeIsMethodBody(Node) then begin
+            // add class context
+            Context.Node:=FindClassNodeForMethodBody(Node,true,false);
+            if Context.Node<>nil then begin
+              Context.Tool:=Self;
+              AddFindContext(ListOfPFindContext,Context);
+            end;
+          end;
+        end;
+      end;
+      Node:=Node.Parent;
+    end;
+  end;
+  Result:=true;
 end;
 
 function TFindDeclarationTool.FindClassAndAncestors(ClassNode: TCodeTreeNode;
