@@ -1640,7 +1640,7 @@ var
 begin
   Result:=false;
   NewContext:=CleanFindContext;
-  //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
+  DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
   if PropertyPath='' then exit;
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
@@ -1669,7 +1669,10 @@ begin
       Identifier:=GetNextIdentifier;
       IsLastProperty:=StartPos>length(PropertyPath);
       //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Context=',Context.Node.DescAsString,' Identifier=',Identifier);
-      if Identifier='' then exit;
+      if Identifier='' then begin
+        NewContext:=Context;
+        exit(true);
+      end;
       if Context.Node.Desc=ctnSetType then begin
         // set
         if not IsLastProperty then exit;
@@ -1729,7 +1732,7 @@ begin
             and Context.Tool.PropNodeIsTypeLess(Context.Node) then
               IsTypeLess:=true;
             if not IsTypeLess then break;
-            //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath has not type, searching next ...']);
+            //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath has no type, searching next ...']);
             Params.SetIdentifier(Self,PChar(Pointer(Identifier)),nil);
             Params.ContextNode:=Context.Tool.FindClassOrInterfaceNode(Context.Node);
             if Params.ContextNode=nil then

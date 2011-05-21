@@ -156,6 +156,7 @@ var
   TopLine: integer;
   NewCode: TCodeBuffer;
   Path: String;
+  AComponent: TComponent;
 begin
   Result:=false;
   Filename:='';
@@ -184,9 +185,13 @@ begin
     exit;
   end;
 
-  Path:=UnitControl.ClassName;
-  if UnitControl<>AControl then
-    Path:=Path+'.'+AControl.Name;
+  Path:='';
+  AComponent:=AControl;
+  while (AComponent<>nil) and (AComponent<>UnitControl) do begin
+    Path:='.'+AComponent.Name+Path;
+    AComponent:=AComponent.Owner;
+  end;
+  Path:=UnitControl.ClassName+Path;
   if not CodeToolBoss.FindDeclarationOfPropertyPath(Code,Path,NewCode,X,Y,TopLine)
   then begin
     debugln(['FindDeclarationOfIDEControl path ',Path,' not found in unit ',Code.Filename]);
