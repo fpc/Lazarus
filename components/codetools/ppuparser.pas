@@ -582,6 +582,8 @@ function PPUCpuToStr(w: longint): string;
 function PPUFlagsToStr(flags: longint): string;
 function PPUTimeToStr(t: longint): string;
 
+function PPUEntryName(Entry: byte): string;
+
 implementation
 
 function reverse_byte(b: byte): byte;
@@ -867,6 +869,91 @@ begin
   Result := L0(Year)+'/'+L0(Month)+'/'+L0(Day)+' '+L0(Hour)+':'+L0(min)+':'+L0(sec);
 end;
 
+function PPUEntryName(Entry: byte): string;
+begin
+  case Entry of
+  iberror:             Result:='iberror';
+  ibstartdefs:         Result:='ibstartdefs';
+  ibenddefs:           Result:='ibenddefs';
+  ibstartsyms:         Result:='ibstartsyms';
+  ibendsyms:           Result:='ibendsyms';
+  ibendinterface:      Result:='ibendinterface';
+  ibendimplementation: Result:='ibendimplementation';
+  ibendbrowser:        Result:='ibendbrowser';
+  ibend:               Result:='ibend';
+  {general}
+  ibmodulename:           Result:='ibmodulename';
+  ibsourcefiles:          Result:='ibsourcefiles';
+  ibloadunit:             Result:='ibloadunit';
+  ibinitunit:             Result:='ibinitunit';
+  iblinkunitofiles:       Result:='iblinkunitofiles';
+  iblinkunitstaticlibs:   Result:='iblinkunitstaticlibs';
+  iblinkunitsharedlibs:   Result:='iblinkunitsharedlibs';
+  iblinkotherofiles:      Result:='iblinkotherofiles';
+  iblinkotherstaticlibs:  Result:='iblinkotherstaticlibs';
+  iblinkothersharedlibs:  Result:='iblinkothersharedlibs';
+  ibImportSymbols:        Result:='ibImportSymbols';
+  ibsymref:               Result:='ibsymref';
+  ibdefref:               Result:='ibdefref';
+  ibendsymtablebrowser:   Result:='ibendsymtablebrowser';
+  ibbeginsymtablebrowser: Result:='ibbeginsymtablebrowser';
+  ibusedmacros:           Result:='ibusedmacros';
+  ibderefdata:            Result:='ibderefdata';
+  ibexportedmacros:       Result:='ibexportedmacros';
+  ibderefmap:             Result:='ibderefmap';
+  {syms}
+  ibtypesym:        Result:='ibtypesym';
+  ibprocsym:        Result:='ibprocsym';
+  ibstaticvarsym:   Result:='ibstaticvarsym';
+  ibconstsym:       Result:='ibconstsym';
+  ibenumsym:        Result:='ibenumsym';
+  ibtypedconstsym:  Result:='ibtypedconstsym';
+  ibabsolutevarsym: Result:='ibabsolutevarsym';
+  ibpropertysym:    Result:='ibpropertysym';
+  ibfieldvarsym:    Result:='ibfieldvarsym';
+  ibunitsym:        Result:='ibunitsym';
+  iblabelsym:       Result:='iblabelsym';
+  ibsyssym:         Result:='ibsyssym';
+  ibrttisym:        Result:='ibrttisym';
+  iblocalvarsym:    Result:='iblocalvarsym';
+  ibparavarsym:     Result:='ibparavarsym';
+  ibmacrosym:       Result:='ibmacrosym';
+  {definitions}
+  iborddef:         Result:='iborddef';
+  ibpointerdef:     Result:='ibpointerdef';
+  ibarraydef:       Result:='ibarraydef';
+  ibprocdef:        Result:='ibprocdef';
+  ibshortstringdef: Result:='ibshortstringdef';
+  ibrecorddef:      Result:='ibrecorddef';
+  ibfiledef:        Result:='ibfiledef';
+  ibformaldef:      Result:='ibformaldef';
+  ibobjectdef:      Result:='ibobjectdef';
+  ibenumdef:        Result:='ibenumdef';
+  ibsetdef:         Result:='ibsetdef';
+  ibprocvardef:     Result:='ibprocvardef';
+  ibfloatdef:       Result:='ibfloatdef';
+  ibclassrefdef:    Result:='ibclassrefdef';
+  iblongstringdef:  Result:='iblongstringdef';
+  ibansistringdef:  Result:='ibansistringdef';
+  ibwidestringdef:  Result:='ibwidestringdef';
+  ibvariantdef:     Result:='ibvariantdef';
+  ibundefineddef:   Result:='ibundefineddef';
+  ibunicodestringdef: Result:='ibunicodestringdef';
+  {implementation/ObjData}
+  ibnodetree:       Result:='ibnodetree';
+  ibasmsymbols:     Result:='ibasmsymbols';
+  ibresources:      Result:='ibresources';
+  ibcreatedobjtypes:Result:='ibcreatedobjtypes';
+  ibwpofile:        Result:='ibwpofile';
+  ibmoduleoptions:  Result:='ibmoduleoptions';
+
+  ibmainname:       Result:='ibmainname';
+  { target-specific things }
+  iblinkotherframeworks: Result:='iblinkotherframeworks';
+  else Result:='unknown('+IntToStr(Entry)+')';
+  end;
+end;
+
 { EPPUParserError }
 
 constructor EPPUParserError.Create(ASender: TPPU; const AMessage: string);
@@ -973,7 +1060,9 @@ var
 begin
   repeat
     EntryNr:=ReadEntry;
-    //DebugLn(['TPPU.ReadInterface EntryNr=',EntryNr]);
+    {$IFDEF VerbosePPUParser}
+    DebugLn(['TPPU.ReadInterface EntryNr=',EntryNr,'=',PPUEntryName(EntryNr)]);
+    {$ENDIF}
     case EntryNr of
     
     ibmodulename:
@@ -1517,15 +1606,23 @@ begin
 end;
 
 function TPPU.ReadEntry: byte;
+
+  procedure ErrorInvalidTypeID;
+  begin
+    Error('Invalid entry type-id '+IntToStr(FEntry.id));
+  end;
+
 begin
   FEntryPos:=0;
   FEntryStart:=FDataPos;
   ReadData(FEntry,SizeOf(FEntry));
   if fChangeEndian then
     FEntry.size:=SwapEndian(FEntry.size);
-  //DebugLn(['TPPU.ReadEntry ',FEntry.Nr,' ',FDataPos]);
+  {$IFDEF VerbosePPUParser}
+  DebugLn(['TPPU.ReadEntry nr=',FEntry.Nr,'=',PPUEntryName(FEntry.nr),' streampos=',FDataPos,' type-id=',FEntry.id]);
+  {$ENDIF}
   if not (FEntry.id in [mainentryid,subentryid]) then
-    Error('Invalid entry id '+IntToStr(FEntry.id));
+    ErrorInvalidTypeID;
   Result:=FEntry.nr;
   if FEntryBufSize<FEntry.size then begin
     FEntryBufSize:=FEntryBufSize*2;
@@ -1702,12 +1799,20 @@ function TPPU.ReadEntryShortstring: shortstring;
 var
   l: byte;
   s: shortstring;
+
+  procedure ErrorOutOfBytes;
+  begin
+    Error('TPPU.ReadEntryShortstring: out of bytes. needed='+IntToStr(l)+', found='+IntToStr(FEntry.size-FEntryPos));
+  end;
+
 begin
   l:=ReadEntryByte;
   s[0]:=chr(l);
-  if FEntryPos+l>FEntry.size then
-    Error('TPPU.ReadEntryShortstring: out of bytes ');
-  System.Move(Pointer(FEntryBuf+FEntryPos)^,s[1],l);
+  if l>0 then begin
+    if FEntryPos+l>FEntry.size then
+      ErrorOutOfBytes;
+    System.Move(Pointer(FEntryBuf+FEntryPos)^,s[1],l);
+  end;
   Result:=s;
   inc(FEntryPos,l);
 end;
@@ -1786,9 +1891,9 @@ procedure TPPU.ReadUsedUnits;
 {$IFDEF VerbosePPUParser}
 var
   AUnitName: ShortString;
-  CRC: LongInt;
-  IntfCRC: cardinal;
-  IndirectCRC: cardinal;
+  CRC: DWord;
+  IntfCRC: DWord;
+  IndirectCRC: DWord;
 {$ENDIF}
 begin
   while not EndOfEntry do begin
