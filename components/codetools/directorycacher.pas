@@ -221,6 +221,8 @@ type
     function FindCompiledUnitInCompletePath(const Directory: string;
                                             var AnUnitname: string;
                                             AnyCase: boolean = false): string;
+    function FindCompiledUnitInPath(const BaseDirectory, UnitPath, AnUnitname: string;
+                                    AnyCase: boolean = false): string; // result is not cached!
     property FileTimeStamp: cardinal read FFileTimeStamp;
     property ConfigTimeStamp: cardinal read FConfigTimeStamp;
     property OnGetString: TCTDirCacheGetString read FOnGetString write FOnGetString;
@@ -840,7 +842,7 @@ begin
         break;
     end;
     if cmp<>0 then exit;
-    // m is now on a filename with the right unit name, but maybe no the right
+    // m is now on a filename with the right unit name, but maybe not the right
     // extension
     // go to the first filename with the right unit name
     while (m>0)
@@ -1069,8 +1071,6 @@ function TCTDirectoryCache.FindCompiledUnitInCompletePath(
 var
   UnitPath: string;
   UnitSrc: TCTDirectoryUnitSources;
-  CurDir: String;
-  SearchCase: TCTSearchFileCase;
 begin
   Result:='';
   if AnyCase then
@@ -1087,16 +1087,9 @@ begin
   end else begin
     // not found in cache -> search
 
-    CurDir:=Directory;
-
-    if AnyCase then
-      SearchCase:=ctsfcAllCase
-    else
-      SearchCase:=ctsfcLoUpCase;
-
     // search in unit path
     UnitPath:=Strings[ctdcsUnitPath];
-    Result:=SearchPascalFileInPath(AnUnitname+'.ppu',CurDir,UnitPath,';',SearchCase);
+    Result:=Pool.FindCompiledUnitInPath(Directory,UnitPath,AnUnitname,AnyCase);
     //debugln(['TCTDirectoryCache.FindCompiledUnitInCompletePath CurDir="',CurDir,'" UnitPath="',UnitPath,'" AnUnitname="',AnUnitname,'" Result=',Result]);
     if Result='' then begin
       // search in unit set
@@ -1383,6 +1376,45 @@ var
 begin
   Cache:=GetCache(Directory,true,false);
   Result:=Cache.FindCompiledUnitInCompletePath(AnUnitname,AnyCase);
+end;
+
+function TCTDirectoryCachePool.FindCompiledUnitInPath(const BaseDirectory,
+  UnitPath, AnUnitname: string; AnyCase: boolean): string;
+var
+  StartPos: Integer;
+  l: Integer;
+  p: Integer;
+  CurPath: String;
+  Cache: TCTDirectoryCache;
+  ShortFilename: String;
+  SearchCase: TCTSearchFileCase;
+  Base: String;
+begin
+  Result:='';
+  Base:=AppendPathDelim(TrimFilename(BaseDirectory));
+  // search in search path
+  StartPos:=1;
+  l:=length(UnitPath);
+  ShortFilename:=AnUnitname+'.ppu';
+  if AnyCase then
+    SearchCase:=ctsfcAllCase
+  else
+    SearchCase:=ctsfcLoUpCase;
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (UnitPath[p]<>';') do inc(p);
+    CurPath:=TrimFilename(copy(UnitPath,StartPos,p-StartPos));
+    if CurPath<>'' then begin
+      if not FilenameIsAbsolute(CurPath) then
+        CurPath:=Base+CurPath;
+      if FilenameIsAbsolute(CurPath) then begin
+        Cache:=GetCache(CurPath,true,false);
+        Result:=Cache.FindFile(ShortFilename,SearchCase);
+        if Result<>'' then exit;
+      end;
+    end;
+    StartPos:=p+1;
+  end;
 end;
 
 { TCTDirectoryListing }
