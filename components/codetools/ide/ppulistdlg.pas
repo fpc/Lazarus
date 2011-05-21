@@ -813,13 +813,16 @@ begin
                                                          BaseDir,AnUnitName);
       if (Item.PPUFile='') and (OutputDir<>'') then begin
         // fallback: search in output directory
-        Item.PPUFile:=SearchPascalFileInDir(AnUnitName+'.ppu',OutputDir,
-                                            ctsfcLoUpCase);
+        Item.PPUFile:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInPath(
+          OutputDir,'.',AnUnitName,false);
       end;
       Item.OFile:=ChangeFileExt(Item.PPUFile,'.o');
-      if not FileExistsCached(Item.PPUFile) then
-        Item.PPUFile:=PPUFileNotFound
-      else
+      if not FileExistsCached(Item.PPUFile) then begin
+        if Item.PPUFile<>'' then begin
+          debugln(['TPPUListDialog.OnIdle warning: ppu file gone from disk: ',Item.PPUFile]);
+        end;
+        Item.PPUFile:=PPUFileNotFound;
+      end else
         Item.PPUFileSize:=FileSize(Item.PPUFile);
       if not FileExistsCached(Item.OFile) then
         Item.OFile:=PPUFileNotFound
@@ -855,6 +858,8 @@ begin
         end else begin
           debugln(['TPPUListDialog.OnIdle failed loading ',Item.PPUFile]);
         end;
+      end else begin
+        //debugln(['TPPUListDialog.OnIdle PPU not found of ',AnUnitName]);
       end;
       if (not Scanned) and (Item.SrcFile<>'') then begin
         //debugln(['TPPUListDialog.OnIdle search used units of source "',Item.SrcFile,'"']);

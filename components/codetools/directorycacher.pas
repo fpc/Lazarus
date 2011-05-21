@@ -290,7 +290,7 @@ var
   p1: PChar absolute Data1;
   p2: PChar absolute Data2;
 begin
-  while (FPUpChars[p1^]=FPUpChars[p2^]) and (p1^<>#0) and (MaxCount>0) do begin
+  while (MaxCount>0) and  (FPUpChars[p1^]=FPUpChars[p2^]) and (p1^<>#0) do begin
     inc(p1);
     inc(p2);
     dec(MaxCount);
@@ -1084,17 +1084,19 @@ begin
     end else begin
       // unit not found
     end;
+    //debugln(['TCTDirectoryCache.FindCompiledUnitInCompletePath Cached AnUnitname="',AnUnitname,'" Result="',Result,'"']);
   end else begin
     // not found in cache -> search
 
     // search in unit path
     UnitPath:=Strings[ctdcsUnitPath];
     Result:=Pool.FindCompiledUnitInPath(Directory,UnitPath,AnUnitname,AnyCase);
-    //debugln(['TCTDirectoryCache.FindCompiledUnitInCompletePath CurDir="',CurDir,'" UnitPath="',UnitPath,'" AnUnitname="',AnUnitname,'" Result=',Result]);
+    //debugln(['TCTDirectoryCache.FindCompiledUnitInCompletePath CurDir="',Directory,'" UnitPath="',UnitPath,'" AnUnitname="',AnUnitname,'" Result=',Result]);
     if Result='' then begin
       // search in unit set
       Result:=FindCompiledUnitInUnitSet(AnUnitname);
     end;
+    //if (Result='') then debugln(['TCTDirectoryCache.FindCompiledUnitInCompletePath CurDir="',Directory,'" UnitPath="',UnitPath,'" AnUnitname="',AnUnitname,'" Result=',Result]);
 
     AddToCache(UnitSrc,AnUnitname,Result);
   end;
@@ -1410,7 +1412,10 @@ begin
       if FilenameIsAbsolute(CurPath) then begin
         Cache:=GetCache(CurPath,true,false);
         Result:=Cache.FindFile(ShortFilename,SearchCase);
-        if Result<>'' then exit;
+        if Result<>'' then begin
+          Result:=AppendPathDelim(CurPath)+Result;
+          exit;
+        end;
       end;
     end;
     StartPos:=p+1;
