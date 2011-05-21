@@ -1071,17 +1071,24 @@ end;
 
 procedure TfrPreviewForm.SaveBtnClick(Sender: TObject);
 var
-  i: Integer;
-  s: String;
+  i, AIndex: Integer;
+  s,t,fe: String;
 begin
   if EMFPages = nil then Exit;
+  AIndex := 1;
+  fe := ExtractFileExt(SaveDialog.FileName);
   s := sRepFile + ' (*.frp)|*.frp';
   for i := 0 to frFiltersCount-1 do
+  begin
     s := s + '|' + frFilters[i].FilterDesc + '|' + frFilters[i].FilterExt;
+    t := ExtractFileExt(frFilters[i].FilterExt);
+    if (AIndex=1) and (Comparetext(t, fe)=0) then
+      AIndex := i + 2;
+  end;
   with SaveDialog do
   begin
     Filter := s;
-    FilterIndex := 1;
+    FilterIndex := AIndex;
     if Execute then
       if FilterIndex = 1 then
         SaveToFile(FileName)

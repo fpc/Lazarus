@@ -937,6 +937,7 @@ type
     PrintToDefault, DoublePass: WordBool;
     FinalPass                 : Boolean;
     FileName                  : String;
+    ExportFilename            : string;   // filename used when exporting a report
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -8828,6 +8829,8 @@ begin
     {$IFDEF DebugLR}
     DebugLn('2 TfrPreviewForm.visible=%s',[BooLToStr(p.Visible)]);
     {$ENDIF}
+    if ExportFilename<>'' then
+      p.SaveDialog.FileName := ExportFilename;
     p.Show_Modal(Self);
   end;
   {$IFDEF DebugLR}
