@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, contnrs, LResources, Forms, Controls, Graphics,
   Dialogs, ButtonPanel, StdCtrls, ExtCtrls,
-  IDEDialogs, LazIDEIntf,
+  IDEDialogs, LazIDEIntf, SrcEditorIntf,
   FileProcs, CodeToolManager, FindDeclarationTool, CodeTree,
   KeywordFuncLists, BasicCodeTools, CodeAtom,
   CodyUtils, CodyStrConsts;
@@ -198,8 +198,6 @@ end;
 procedure TCodyDeclareVarDialog.OKButtonClick(Sender: TObject);
 var
   NewType: TCaption;
-  Target: TCodyDeclareVarTarget;
-  OldChange: boolean;
 begin
   NewType:=Trim(TypeEdit.Text);
   if NewType='' then begin
@@ -213,22 +211,6 @@ begin
   if WhereRadioGroup.ItemIndex<0 then begin
     IDEMessageDialog('Error','Please specify a location',mtError,[mbCancel]);
     exit;
-  end;
-  Target:=TCodyDeclareVarTarget(Targets[WhereRadioGroup.ItemIndex]);
-
-  OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
-  try
-    LazarusIDE.OpenEditorsOnCodeToolChange:=true;
-    if not CodeToolBoss.DeclareVariable(Target.NodeStartPos.Code,
-      Target.NodeStartPos.X,Target.NodeStartPos.Y,
-      Identifier,RecommendedType,UnitOfType,Target.Visibility)
-    then begin
-      LazarusIDE.DoJumpToCodeToolBossError;
-      ModalResult:=mrCancel;
-      exit;
-    end;
-  finally
-    LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
   end;
   ModalResult:=mrOk;
 end;
@@ -265,6 +247,9 @@ var
   Target: TCodyDeclareVarTarget;
   Context: TFindContext;
   i: Integer;
+  OldChange: boolean;
+  OldSrcEdit: TSourceEditorInterface;
+  NewType: String;
 begin
   Result:=false;
   PossibleContexts:=nil;
@@ -273,10 +258,6 @@ begin
     if not CheckCreateVarFromIdentifierInSrcEdit(CodePos,Tool,Identifier,
       RecommendedType,UnitOfType,PossibleContexts)
     then exit;
-
-    // ToDo: target interface
-    // ToDo: target implementation
-    // ToDo: target global (program)
 
     if PossibleContexts<>nil then begin
       for i:=0 to PossibleContexts.Count-1 do begin
@@ -308,6 +289,32 @@ begin
   WhereRadioGroup.ItemIndex:=0;
 
   Result:=ShowModal=mrOk;
+  if Result then begin
+    NewType:=Trim(TypeEdit.Text);
+    Target:=TCodyDeclareVarTarget(Targets[WhereRadioGroup.ItemIndex]);
+
+    OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
+    try
+      OldSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+      LazarusIDE.OpenEditorsOnCodeToolChange:=true;
+      if not CodeToolBoss.DeclareVariable(Target.NodeStartPos.Code,
+        Target.NodeStartPos.X,Target.NodeStartPos.Y,
+        Identifier,NewType,UnitOfType,Target.Visibility)
+      then begin
+        debugln(['TCodyDeclareVarDialog.Run Error']);
+        LazarusIDE.DoJumpToCodeToolBossError;
+        ModalResult:=mrCancel;
+        exit;
+      end;
+      if Target.NodeStartPos.Code<>CodePos.Code then begin
+        // declaration was in another unit => switch back to cursor
+        //debugln(['TCodyDeclareVarDialog.OKButtonClick switching back to ',OldSrcEdit.FileName]);
+        SourceEditorManagerIntf.ActiveEditor:=OldSrcEdit;
+      end;
+    finally
+      LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
+    end;
+  end;
 end;
 
 end.

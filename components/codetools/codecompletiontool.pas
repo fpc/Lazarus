@@ -5439,7 +5439,7 @@ begin
       // apply the changes
       if not SourceChangeCache.Apply then
         RaiseException(ctsUnableToApplyChanges);
-      exit;
+      exit(true);
     end;
     Node:=Node.Parent;
   end;
