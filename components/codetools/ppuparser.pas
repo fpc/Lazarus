@@ -542,6 +542,7 @@ type
     procedure ReadUsedUnits;
     procedure ReadModuleOptions;
     procedure ReadLinkContainer(Nr: byte);
+    procedure ReadResources;
     procedure ReadImportSymbols;
     procedure ReadDerefData;
     procedure ReadDerefMap;
@@ -1096,8 +1097,11 @@ begin
 
     iblinkunitofiles,iblinkunitstaticlibs,iblinkunitsharedlibs,
     iblinkotherofiles,iblinkotherstaticlibs,iblinkothersharedlibs,
-    ibresources,iblinkotherframeworks:
+    iblinkotherframeworks:
       ReadLinkContainer(EntryNr);
+
+    ibresources:
+      ReadResources;
       
     ibImportSymbols:
       ReadImportSymbols;
@@ -1619,7 +1623,7 @@ begin
   if fChangeEndian then
     FEntry.size:=SwapEndian(FEntry.size);
   {$IFDEF VerbosePPUParser}
-  DebugLn(['TPPU.ReadEntry nr=',FEntry.Nr,'=',PPUEntryName(FEntry.nr),' streampos=',FDataPos,' type-id=',FEntry.id]);
+  //DebugLn(['TPPU.ReadEntry nr=',FEntry.Nr,'=',PPUEntryName(FEntry.nr),' streampos=',FDataPos,' type-id=',FEntry.id]);
   {$ENDIF}
   if not (FEntry.id in [mainentryid,subentryid]) then
     ErrorInvalidTypeID;
@@ -2002,21 +2006,33 @@ begin
       Desc:='Link other static lib: ';
     iblinkothersharedlibs :
       Desc:='Link other shared lib: ';
-    ibresources :
-      Desc:='Resource file: ';
     iblinkotherframeworks:
       Desc:='Link framework: ';
     end;
     Desc:=Desc+Filename;
     if (Flags and link_always)<>0 then
-     Desc:=Desc+' always';
+      Desc:=Desc+' always';
     if (Flags and link_static)<>0 then
-     Desc:=Desc+' static';
+      Desc:=Desc+' static';
     if (Flags and link_smart)<>0 then
-     Desc:=Desc+' smart';
+      Desc:=Desc+' smart';
     if (Flags and link_shared)<>0 then
-     Desc:=Desc+' shared';
+      Desc:=Desc+' shared';
     DebugLn(['TPPU.ReadLinkContainer ',Desc]);
+    {$ENDIF}
+  end;
+end;
+
+procedure TPPU.ReadResources;
+{$IFDEF VerbosePPUParser}
+var
+  Filename: ShortString;
+{$ENDIF}
+begin
+  while not EndOfEntry do begin
+    {$IFDEF VerbosePPUParser}Filename:={$ENDIF}ReadEntryShortstring;
+    {$IFDEF VerbosePPUParser}
+    DebugLn(['TPPU.ReadResources file: '+Filename]);
     {$ENDIF}
   end;
 end;
