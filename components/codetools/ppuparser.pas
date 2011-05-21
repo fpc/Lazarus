@@ -123,6 +123,7 @@ const
   ibmoduleoptions   = 85; // svn rev 14767  ppu version 114
 
   ibmainname       = 90;  // svn rev 10406
+  ibsymtableoptions = 91; // svn rev 17328  ppu version 128
   { target-specific things }
   iblinkotherframeworks = 100; // svn rev 8344
 
@@ -548,6 +549,7 @@ type
     procedure ReadDerefMap;
     procedure ReadDereference;
     procedure ReadPosInfo;
+    procedure ReadSymTableOptions;
     procedure ReadDefinitions;
     procedure ReadSymbols;
     procedure ReadNodeTree;
@@ -949,6 +951,7 @@ begin
   ibmoduleoptions:  Result:='ibmoduleoptions';
 
   ibmainname:       Result:='ibmainname';
+  ibsymtableoptions:Result:='ibsymtableoptions';
   { target-specific things }
   iblinkotherframeworks: Result:='iblinkotherframeworks';
   else Result:='unknown('+IntToStr(Entry)+')';
@@ -974,6 +977,9 @@ begin
     ReadInterfaceHeader
   else
     SkipUntilEntry(ibendinterface);
+
+  if Version>=128 then
+    ReadSymTableOptions;
 
   // interface definitions
   if ppInterfaceDefinitions in Parts then
@@ -1002,6 +1008,8 @@ begin
 
   // Implementation Definitions and Symbols
   if (FHeader.flags and uf_local_symtable)<>0 then begin
+    if Version>=128 then
+      ReadSymTableOptions;
     if ppImplementationDefinitions in Parts then
       ReadDefinitions
     else
@@ -1225,9 +1233,10 @@ var
   proctypeoption: tproctypeoption;
   CurEntryStart: LongInt;
 begin
-  if ReadEntry<>ibstartdefs then
+  EntryNr:=ReadEntry;
+  if EntryNr<>ibstartdefs then
   begin
-    Error('missing definitions');
+    Error('expected ibstartdefs, but found '+PPUEntryName(EntryNr));
   end;
   repeat
     EntryNr:=ReadEntry;
@@ -1294,6 +1303,8 @@ begin
           {$IFDEF VerbosePPUParser} debugln(['  ProcInfoOptions : ',dword(procinfooptions)]);{$ENDIF}
         end;
         // parast
+        if Version>=128 then
+          ReadSymTableOptions;
         ReadDefinitions;
         ReadSymbols;
         // localst
@@ -1607,6 +1618,17 @@ begin
   {$IFDEF VerbosePPUParser}
   debugln(dbgs(fileindex),' (',dbgs(line),',',dbgs(column),')');
   {$ENDIF}
+end;
+
+procedure TPPU.ReadSymTableOptions;
+var
+  Nr: Byte;
+  s: DWord;
+begin
+  Nr:=ReadEntry;
+  if Nr<>ibsymtableoptions then
+    Error('expected ibsymtableoptions, but found '+PPUEntryName(Nr));
+  ReadEntrySmallSet(s);
 end;
 
 function TPPU.ReadEntry: byte;
