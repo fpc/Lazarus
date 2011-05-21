@@ -191,6 +191,7 @@ type
     procedure InsertItem(AIndex: Integer);
     procedure UpdateItem(AIndex: Integer);
     procedure UpdateItems;
+    procedure Invalidate(Rect: PRect = nil); override;
   end;
 
   TCarbonListView = class;
@@ -943,6 +944,16 @@ begin
   for i:=0 to GetItemsCount-1 do UpdateItem(i);
 
   CheckNeedsScrollBars;
+end;
+
+procedure TCarbonDataBrowser.Invalidate(Rect: PRect);
+begin
+  UpdateItems;
+  OSError(UpdateDataBrowserItems(Widget, kDataBrowserNoItem, 1, nil,
+      kDataBrowserItemNoProperty, kDataBrowserNoItem),
+    Self, 'UpdateItem', 'UpdateDataBrowserItems');
+
+  inherited Invalidate(Rect);
 end;
 
 procedure TCarbonDataBrowser.ClearItems;
@@ -1793,7 +1804,7 @@ end;
 procedure TCarbonListView.SetItemsCount(ACount: Integer); 
 begin
   if not FOwnerData then Exit;
-  
+
   RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 0, nil, kDataBrowserItemNoProperty);
   OSError(
      AddDataBrowserItems( Widget, kDataBrowserNoItem, ACount, nil, kDataBrowserItemNoProperty),
