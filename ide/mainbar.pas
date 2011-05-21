@@ -40,7 +40,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, LCLProc, StdCtrls, Forms, Controls, Buttons, Menus,
-  ComCtrls, ExtCtrls, Dialogs,
+  ComCtrls, ExtCtrls, Dialogs, LMessages,
   // IDEIntf
   ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf,
   EnvironmentOpts, LazarusIDEStrConsts;
@@ -360,13 +360,18 @@ type
     GlobalMouseSpeedButton: TSpeedButton;
   private
     FOldWindowState: TWindowState;
+    FOnActive: TNotifyEvent;
     procedure NewUFDefaultClick(Sender: TObject);
     procedure NewUnitFormPopupMenuPopup(Sender: TObject);
+  protected
+    procedure DoActive;
+    procedure WndProc(var Message: TLMessage); override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure HideIDE;
     procedure UnhideIDE;
     procedure CreatePopupMenus(TheOwner: TComponent);
+    property OnActive: TNotifyEvent read FOnActive write FOnActive;
   end;
 
 var
@@ -439,6 +444,19 @@ begin
   // remove unneeded items
   while NewUFSetDefaultMenuItem.Count>Index do
     NewUFSetDefaultMenuItem.Items[NewUFSetDefaultMenuItem.Count-1].Free;
+end;
+
+procedure TMainIDEBar.DoActive;
+begin
+  if Assigned(FOnActive) then
+    FOnActive(Self);
+end;
+
+procedure TMainIDEBar.WndProc(var Message: TLMessage);
+begin
+  inherited WndProc(Message);
+  if (Message.Msg=LM_ACTIVATE) and (Message.Result=0) then
+    DoActive;
 end;
 
 constructor TMainIDEBar.Create(TheOwner: TComponent);

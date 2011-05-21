@@ -173,6 +173,7 @@ type
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure OnApplicationActivate(Sender: TObject);
+    procedure OnApplicationDeActivate(Sender: TObject);
     procedure OnApplicationKeyDown(Sender: TObject;
                                    var Key: Word; Shift: TShiftState);
     procedure OnApplicationDropFiles(Sender: TObject; const FileNames: array of String);
@@ -182,6 +183,7 @@ type
     procedure OnRemoteControlTimer(Sender: TObject);
     procedure OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
     procedure OIChangedTimerTimer(Sender: TObject);
+    procedure OnMainBarActive(Sender: TObject);
 
     // file menu
     procedure mnuFileClicked(Sender: TObject);
@@ -624,6 +626,7 @@ type
     FDisplayState: TDisplayState;
     FLastFormActivated: TCustomForm;// used to find the last form so you can
                                     // display the correct tab
+    FApplicationIsActivate: boolean;
     FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
     FRemoteControlTimer: TTimer;
@@ -1365,6 +1368,7 @@ begin
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
   MainIDEBar.OnDestroy:=@OnMainBarDestroy;
+  MainIDEBar.OnActive:=@OnMainBarActive;
 
   MainIDEBar.Constraints.MaxHeight:=110;
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
@@ -1379,6 +1383,7 @@ begin
 
   HiddenWindowsOnRun:=TList.Create;
 
+  LastActivatedWindows:=TList.Create;
   // menu
   MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
   try
@@ -1437,6 +1442,7 @@ begin
   Application.AddOnUserInputHandler(@OnApplicationUserInput);
   Application.AddOnIdleHandler(@OnApplicationIdle);
   Application.AddOnActivateHandler(@OnApplicationActivate);
+  Application.AddOnDeActivateHandler(@OnApplicationDeActivate);
   Application.AddOnKeyDownHandler(@OnApplicationKeyDown);
   Application.AddOnDropFilesHandler(@OnApplicationDropFiles);
   Application.AddOnQueryEndSessionHandler(@OnApplicationQueryEndSession);
@@ -1451,6 +1457,7 @@ begin
   SetupStartProject;                   // Now load a project
   DoShowMessagesView(false);           // reopen extra windows
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
+  FApplicationIsActivate:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
 
@@ -1501,6 +1508,7 @@ begin
   FreeThenNil(DebugBoss);
   FreeThenNil(TheCompiler);
   FreeThenNil(HiddenWindowsOnRun);
+  FreeThenNil(LastActivatedWindows);
   FreeThenNil(IDEMsgScanners);
   FreeThenNil(TheOutputFilter);
   FreeThenNil(GlobalMacroList);
@@ -16884,6 +16892,44 @@ begin
     SetupRemoteControl;
   if Screen.GetCurrentModalForm=nil then
     PkgBoss.OpenHiddenModifiedPackages;
+end;
+
+procedure TMainIDE.OnApplicationDeActivate(Sender: TObject);
+var
+  i: Integer;
+  AForm: TCustomForm;
+begin
+  if EnvironmentOptions.SingleTaskBarButton and FApplicationIsActivate
+    and (MainIDEBar.WindowState=wsNormal) then
+  begin
+    for i:=Screen.CustomFormCount-1 downto 0 do
+    begin
+      AForm:=Screen.CustomFormsZOrdered[i];
+      if (AForm.Parent=nil) and (AForm<>MainIDEBar) and (AForm.IsVisible)
+      and (AForm.Designer=nil) and (not (csDesigning in AForm.ComponentState))
+      and not (fsModal in AForm.FormState) then
+        LastActivatedWindows.Add(AForm);
+    end;
+    FApplicationIsActivate:=false;
+  end;
+end;
+
+procedure TMainIDE.OnMainBarActive(Sender: TObject);
+var
+  AForm: TCustomForm;
+begin
+   if EnvironmentOptions.SingleTaskBarButton and not FApplicationIsActivate
+   and (MainIDEBar.WindowState=wsNormal) then
+  begin
+    FApplicationIsActivate:=true;
+    while LastActivatedWindows.Count>0 do
+    begin
+      AForm:=TCustomForm(LastActivatedWindows[0]);
+      if Assigned(AForm) and AForm.IsVisible then
+        AForm.BringToFront;
+      LastActivatedWindows.Delete(0);
+    end;
+  end;
 end;
 
 procedure TMainIDE.OnApplicationActivate(Sender: TObject);

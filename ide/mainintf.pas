@@ -133,6 +133,7 @@ type
     HiddenWindowsOnRun: TList; // list of forms, that were automatically hidden
                                // and will be shown when debugged program stops
 
+    LastActivatedWindows: TList;
     property ToolStatus: TIDEToolStatus read GetToolStatus;
 
     constructor Create(TheOwner: TComponent); override;
