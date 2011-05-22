@@ -85,12 +85,16 @@ type
 
   TPPUListDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
+    LinkedFilesTreeView: TTreeView;
+    PageControl1: TPageControl;
+    UnitsTabSheet: TTabSheet;
+    LinkedFilesTabSheet: TTabSheet;
     ScopeLabel: TLabel;
     Splitter1: TSplitter;
     InfoTabSheet: TTabSheet;
     PPUFileLabel: TLabel;
     SourceFileLabel: TLabel;
-    LinkedFilesTabSheet: TTabSheet;
+    UnitLinkedFilesTabSheet: TTabSheet;
     UnitLinkedFilesStringGrid: TStringGrid;
     UsesPathStringGrid: TStringGrid;
     UsesPathTabSheet: TTabSheet;
@@ -118,6 +122,7 @@ type
     FSearchingItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
     FItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
     FSort: array[1..3] of TPPUListSortRec;
+    FLinkedFiles: TAvgLvlTree; // tree of TPPULinkedFile sorted for ID, file, flags
     procedure SetProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
 
@@ -132,7 +137,7 @@ type
 
     procedure UpdateAll;
 
-    // grid
+    // units grid
     procedure UpdateUnitsGrid;
     function CompareUnits({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
     procedure JumpToUnit(TheUnitName: string);
@@ -140,6 +145,9 @@ type
     // units info
     procedure FillUnitsInfo(AnUnitName: string);
     function FindUsesPath(UsingUnit, UsedUnit: TPPUListItem): TFPList;
+
+    // linked files
+    procedure UpdateLinkedFilesTreeView;
 
     function DoubleAsPercentage(const d: double): string;
     function BytesToStr(b: int64): string;
@@ -152,6 +160,7 @@ type
 procedure ShowPPUList(Sender: TObject);
 function ComparePPUListItems(Item1, Item2: Pointer): integer;
 function CompareUnitNameWithPPUListItem(TheUnitName, Item: Pointer): integer;
+function ComparePPULinkedFiles(Item1, Item2: Pointer): integer;
 
 implementation
 
@@ -191,6 +200,20 @@ begin
   Result:=CompareIdentifiers(un,PChar(li.TheUnitName));
 end;
 
+function ComparePPULinkedFiles(Item1, Item2: Pointer): integer;
+var
+  File1: TPPULinkedFile absolute Item1;
+  File2: TPPULinkedFile absolute Item2;
+begin
+  if File1.ID<File2.ID then exit(1)
+  else if File1.ID>File2.ID then exit(-1);
+  Result:=CompareFilenames(File1.Filename,File2.Filename);
+  if Result<>0 then exit;
+  if File1.Flags<File2.Flags then exit(1)
+  else if File1.Flags>File2.Flags then exit(-1);
+  Result:=0;
+end;
+
 { TPPUListItem }
 
 destructor TPPUListItem.Destroy;
@@ -223,9 +246,13 @@ procedure TPPUListDialog.FormCreate(Sender: TObject);
 begin
   FSearchingItems:=TAvgLvlTree.Create(@ComparePPUListItems);
   FItems:=TAvgLvlTree.Create(@ComparePPUListItems);
+  FLinkedFiles:=TAvgLvlTree.Create(@ComparePPULinkedFiles);
+
   FSort[1].Category:=plsOSize;
   FSort[2].Category:=plsName;
   FSort[3].Category:=plsPPUSize;
+
+  UnitsTabSheet.Caption:='Units';
 
   // UnitsStringGrid header
   UnitsStringGrid.Columns[0].Title.Caption:=crsUnit;
@@ -246,12 +273,14 @@ begin
   UsesPathTabSheet.Caption:=lisCOUsesPath;
   UsesPathStringGrid.Columns[0].Title.Caption:=crsUnit;
 
-  LinkedFilesTabSheet.Caption:=crsLinkedFiles;
+  UnitLinkedFilesTabSheet.Caption:=crsLinkedFiles;
   UnitLinkedFilesStringGrid.Columns[0].Title.Caption:=crsType;
   UnitLinkedFilesStringGrid.Columns[1].Title.Caption:=crsFile;
   UnitLinkedFilesStringGrid.Columns[2].Title.Caption:=crsFlags;
 
   UnitPageControl.PageIndex:=0;
+
+  LinkedFilesTabSheet.Caption:=crsLinkedFiles;
 
   ButtonPanel1.HelpButton.Caption:=crsHelp;
   ButtonPanel1.CloseButton.Caption:=crsClose;
@@ -264,6 +293,8 @@ begin
   FreeAndNil(FSearchingItems);
   FItems.FreeAndClear;
   FreeAndNil(FItems);
+  FLinkedFiles.FreeAndClear;
+  FreeAndNil(FLinkedFiles);
 end;
 
 procedure TPPUListDialog.UnitsStringGridMouseDown(Sender: TObject;
@@ -806,6 +837,76 @@ begin
   end;
 end;
 
+procedure TPPUListDialog.UpdateLinkedFilesTreeView;
+
+  function GetLinkedFilesCategoryNode(ID: byte): TTreeNode;
+  var
+    i: Integer;
+  begin
+    for i:=0 to LinkedFilesTreeView.Items.TopLvlCount-1 do begin
+      Result:=LinkedFilesTreeView.Items.TopLvlItems[i];
+      if {%H-}PtrUInt(Result.Data)=ID then exit;
+    end;
+    Result:=nil;
+  end;
+
+  function CreateCategoryNode(ID: byte): TTreeNode;
+  begin
+    Result:=LinkedFilesTreeView.Items.AddObject(nil,PPUEntryName(ID),{%H-}Pointer(ID));
+  end;
+
+var
+  Node: TAvgLvlTreeNode;
+  Item: TPPUListItem;
+  LinkedFile: TPPULinkedFile;
+  NewLinkedFile: TPPULinkedFile;
+  CategoryNode: TTreeNode;
+  s: String;
+  i: Integer;
+begin
+  LinkedFilesTreeView.BeginUpdate;
+  try
+    LinkedFilesTreeView.Items.Clear;
+    FLinkedFiles.FreeAndClear;
+
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      Item:=TPPUListItem(Node.Data);
+      if Item.LinkedFiles<>nil then begin
+        for i:=0 to Item.LinkedFiles.Count-1 do begin
+          LinkedFile:=TPPULinkedFile(Item.LinkedFiles[i]);
+          if FLinkedFiles.Find(LinkedFile)=nil then begin
+            NewLinkedFile:=TPPULinkedFile.Create;
+            NewLinkedFile.ID:=LinkedFile.ID;
+            NewLinkedFile.Filename:=LinkedFile.Filename;
+            NewLinkedFile.Flags:=LinkedFile.Flags;
+            FLinkedFiles.Add(NewLinkedFile);
+          end;
+        end;
+      end;
+      Node:=FItems.FindSuccessor(Node);
+    end;
+
+
+    // create category nodes
+    for i:=iblinkunitofiles to iblinkothersharedlibs do
+      CreateCategoryNode(i);
+    CreateCategoryNode(iblinkotherframeworks);
+
+    Node:=FLinkedFiles.FindLowest;
+    while Node<>nil do begin
+      LinkedFile:=TPPULinkedFile(Node.Data);
+      CategoryNode:=GetLinkedFilesCategoryNode(LinkedFile.ID);
+      s:=LinkedFile.Filename+' ['+PPULinkContainerFlagToStr(LinkedFile.Flags)+']';
+      LinkedFilesTreeView.Items.AddChildObject(CategoryNode,s,LinkedFile);
+      Node:=FLinkedFiles.FindSuccessor(Node);
+    end;
+
+  finally
+    LinkedFilesTreeView.EndUpdate;
+  end;
+end;
+
 procedure TPPUListDialog.OnIdle(Sender: TObject; var Done: Boolean);
 const
   MaxNonIdleTime = (1/86400)/2;
@@ -926,6 +1027,7 @@ begin
   end;
 
   UpdateUnitsGrid;
+  UpdateLinkedFilesTreeView;
 
   if FSearchingItems.Count=0 then
     IdleConnected:=false;
