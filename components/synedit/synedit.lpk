@@ -19,9 +19,18 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Originally based on the Synedit project at http://sourceforge.net/projects/synedit, it was ported to LCL and heavily extended by the Lazarus developers.
+    <Description Value="SynEdit is a line-based editing component with support for syntax-highlighting.
+
+Originally based on the Synedit project at http://sourceforge.net/projects/synedit, it was ported to LCL and heavily extended by the Lazarus developers.
 "/>
-    <License Value="LGPL-2
+    <License Value="MPL-1.1 or GPL-2 at the users choice
+
+SynEdit and all it's units are subject to the Mozilla Public License Version 1.1 (the &quot;License&quot;); you may not use these files except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+
+Software distributed under the License is distributed on an &quot;AS IS&quot; basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language governing rights and limitations under the License.
+
+Alternatively, the contents of these files may be used under the terms of the GNU General Public License Version 2 or later (the &quot;GPL&quot;), in which case the provisions of the GPL are applicable instead of those above.
+If you wish to allow use of your version of these files only under the terms of the GPL and not to allow others to use your version of this file under the MPL, indicate your decision by deleting the provisions above and replace them with the notice and other provisions required by the GPL. If you do not delete the provisions above, a recipient may use your version of this file under either the MPL or the GPL.
 "/>
     <Version Major="1"/>
     <Files Count="77">
