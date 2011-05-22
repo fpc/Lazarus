@@ -217,6 +217,7 @@ type
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
+    class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;
   end;
 
   { TGtk2WSCustomTreeView }
@@ -374,6 +375,19 @@ begin
   gtk_range_set_value(Range, NewPosition);
   // unlock Range
   Dec(WidgetInfo^.ChangeLock);
+end;
+
+class procedure TGtk2WSTrackBar.SetOrientation(
+  const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation);
+begin
+  if not WSCheckHandleAllocated(ATrackBar, 'SetOrientation') then
+    Exit;
+  ATrackBar.Hide;
+  try
+    RecreateWnd(ATrackBar);
+  finally
+    ATrackBar.Show;
+  end;
 end;
 
 { TGtk2WSProgressBar }
