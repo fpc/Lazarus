@@ -43,6 +43,7 @@ type
     Splitter: TSplitter;
     SVNCommitMsgMemo: TMemo;
     SVNFileListView: TListView;
+    procedure CancelButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -72,6 +73,9 @@ type
 
 procedure ShowSVNStatusFrm(ARepoPath: string);
 
+var
+  SVNStatusFrm: TSVNStatusFrm;
+
 implementation
 
 {$R *.lfm}
@@ -80,16 +84,13 @@ uses
   SVNDiffForm, SVNCommitForm;
 
 procedure ShowSVNStatusFrm(ARepoPath: string);
-var
-  SVNStatusFrm: TSVNStatusFrm;
 begin
-  SVNStatusFrm := TSVNStatusFrm.Create(nil);
+  if not Assigned(SVNStatusFrm) then
+    SVNStatusFrm := TSVNStatusFrm.Create(nil);
   SVNStatusFrm.ChangeCursor(crHourGlass);
 
   SVNStatusFrm.RepositoryPath:=ARepoPath;
-  SVNStatusFrm.ShowModal;
-
-  SVNStatusFrm.Free;
+  SVNStatusFrm.Show;
 end;
 
 { TSVNStatusFrm }
@@ -227,6 +228,7 @@ begin
 
   ShowSVNCommitFrm(CmdLine);
   DeleteFile(FileName);
+  Close;
 end;
 
 procedure TSVNStatusFrm.PatchButtonClick(Sender: TObject);
@@ -429,8 +431,6 @@ procedure TSVNStatusFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction
 var
   Config: TConfigStorage;
   count: integer;
-  i: integer;
-  s: string;
 begin
   if SVNCommitMsgMemo.Text <> '' then
   begin
@@ -447,10 +447,18 @@ begin
   end;
 end;
 
+procedure TSVNStatusFrm.CancelButtonClick(Sender: TObject);
+begin
+  Close;
+end;
+
 procedure TSVNStatusFrm.FormDestroy(Sender: TObject);
 begin
   SVNStatus.Free;
 end;
+
+finalization
+  FreeAndNil(SVNStatusFrm);
 
 end.
 

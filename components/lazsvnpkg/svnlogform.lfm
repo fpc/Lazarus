@@ -10,7 +10,7 @@ object SVNLogFrm: TSVNLogFrm
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = SVNLogLimit
@@ -45,7 +45,6 @@ object SVNLogFrm: TSVNLogFrm
       item
         Width = 546
       end>
-    ItemIndex = -1
     RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport
@@ -84,7 +83,6 @@ object SVNLogFrm: TSVNLogFrm
       item
         Width = 546
       end>
-    ItemIndex = -1
     PopupMenu = SVNActionsPopupMenu
     RowSelect = True
     TabOrder = 2
@@ -97,6 +95,7 @@ object SVNLogFrm: TSVNLogFrm
     Width = 714
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
+    OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
     HelpButton.Enabled = False

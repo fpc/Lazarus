@@ -81,6 +81,7 @@ type
     procedure mnuOpenPrevRevisionClick(Sender: TObject);
     procedure mnuOpenRevisionClick(Sender: TObject);
     procedure mnuShowDiffClick(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -103,6 +104,9 @@ type
 
 procedure ShowSVNLogFrm(ARepoPath: string);
 
+var
+  SVNLogFrm: TSVNLogFrm;
+
 implementation
 
 {$R *.lfm}
@@ -111,15 +115,12 @@ uses
   SVNDiffForm, SVNClasses;
 
 procedure ShowSVNLogFrm(ARepoPath: string);
-var
-  SVNLogFrm: TSVNLogFrm;
 begin
-  SVNLogFrm := TSVNLogFrm.Create(nil);
+  if not Assigned(SVNLogFrm) then
+    SVNLogFrm := TSVNLogFrm.Create(nil);
 
   SVNLogFrm.RepositoryPath:=ARepoPath;
-  SVNLogFrm.ShowModal;
-
-  SVNLogFrm.Free;
+  SVNLogFrm.Show;
 end;
 
 { TSVNLogItem }
@@ -293,7 +294,6 @@ end;
 procedure TSVNLogFrm.mnuShowDiffClick(Sender: TObject);
 var
   Path: string;
-  i: integer;
   Revision: integer;
 begin
   if Assigned(SVNActionsListView.Selected) and Assigned(LogListView.Selected) then
@@ -306,6 +306,11 @@ begin
     else
       ShowMessage(rsOnlyModifiedItemsCanBeDiffed);
   end;
+end;
+
+procedure TSVNLogFrm.OKButtonClick(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TSVNLogFrm.mnuOpenRevisionClick(Sender: TObject);
@@ -518,6 +523,9 @@ begin
   UpdateLogListView;
   ChangeCursor(crDefault);
 end;
+
+finalization
+  FreeAndNil(SVNLogFrm);
 
 end.
 

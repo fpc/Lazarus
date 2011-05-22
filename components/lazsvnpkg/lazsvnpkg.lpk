@@ -5,7 +5,7 @@
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Darius Blaszyk"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="10"/>
       <SearchPaths>
         <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/ideintf/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/components/lazsvnpkg/lib/$(TargetCPU)-$(TargetOS);$(LazarusDir)/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS);$(LazarusDir)/components/synedit/units/$(TargetCPU)-$(TargetOS)"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
@@ -87,23 +87,29 @@
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="DesignTime"/>
-    <RequiredPkgs Count="5">
+    <RequiredPkgs Count="7">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCLBase"/>
       </Item1>
       <Item2>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="LCLBase"/>
       </Item2>
       <Item3>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="IDEIntf"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="SynEdit"/>
       </Item4>
       <Item5>
+        <PackageName Value="CodeTools"/>
+      </Item5>
+      <Item6>
+        <PackageName Value="LCL"/>
+      </Item6>
+      <Item7>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item5>
+      </Item7>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

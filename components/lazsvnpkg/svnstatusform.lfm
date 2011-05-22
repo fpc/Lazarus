@@ -10,11 +10,11 @@ object SVNStatusFrm: TSVNStatusFrm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 365
+    Height = 34
+    Top = 368
     Width = 726
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&Commit'
@@ -27,14 +27,15 @@ object SVNStatusFrm: TSVNStatusFrm
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
     CancelButton.Caption = 'Cancel'
+    CancelButton.OnClick = CancelButtonClick
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowGlyphs = [pbOK, pbCancel, pbClose]
   end
   object SVNFileListView: TListView
     Left = 6
-    Height = 178
-    Top = 181
+    Height = 189
+    Top = 173
     Width = 726
     Align = alClient
     BorderSpacing.Left = 6
@@ -44,39 +45,39 @@ object SVNStatusFrm: TSVNStatusFrm
     Columns = <    
       item
         AutoSize = True
-        Width = 10
+        Width = 722
       end    
       item
         AutoSize = True
-        Width = 10
+        Width = 15
       end    
       item
         AutoSize = True
-        Width = 10
+        Width = 15
       end    
       item
         AutoSize = True
-        Width = 10
+        Width = 15
       end    
       item
         AutoSize = True
-        Width = 10
+        Width = 15
       end    
       item
         AutoSize = True
-        Width = 10
+        Width = 15
       end    
       item
         AutoSize = True
-        Width = 10
+        Width = 15
       end    
       item
         AutoSize = True
-        Width = 10
+        Width = 15
       end    
       item
         AutoSize = True
-        Width = 628
+        Width = 15
       end>
     PopupMenu = PopupMenu1
     RowSelect = True
@@ -90,7 +91,7 @@ object SVNStatusFrm: TSVNStatusFrm
   object SVNCommitMsgMemo: TMemo
     Left = 6
     Height = 135
-    Top = 41
+    Top = 33
     Width = 726
     Align = alTop
     BorderSpacing.Left = 6
@@ -103,19 +104,19 @@ object SVNStatusFrm: TSVNStatusFrm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 176
+    Top = 168
     Width = 738
     Align = alTop
     ResizeAnchor = akTop
   end
   object SVNCommitMsgHistoryComboBox: TComboBox
     Left = 6
-    Height = 29
+    Height = 21
     Top = 6
     Width = 726
     Align = alTop
     BorderSpacing.Around = 6
-    ItemHeight = 0
+    ItemHeight = 13
     OnChange = SVNCommitMsgHistoryComboBoxChange
     TabOrder = 4
   end

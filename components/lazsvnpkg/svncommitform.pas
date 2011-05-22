@@ -17,6 +17,7 @@ type
     SVNCommitMemo: TMemo;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
   private
     { private declarations }
     FSVNCommandLine: string;
@@ -28,6 +29,9 @@ type
 
 procedure ShowSVNCommitFrm(ACmdLine: string);
 
+var
+  SVNCommitFrm: TSVNCommitFrm;
+
 implementation
 
 {$R *.lfm}
@@ -36,15 +40,12 @@ uses
   SVNClasses;
 
 procedure ShowSVNCommitFrm(ACmdLine: string);
-var
-  SVNCommitFrm: TSVNCommitFrm;
 begin
-  SVNCommitFrm := TSVNCommitFrm.Create(nil);
+  if not Assigned(SVNCommitFrm) then
+    SVNCommitFrm := TSVNCommitFrm.Create(nil);
 
   SVNCommitFrm.SVNCommandLine:=ACmdLine;
-  SVNCommitFrm.ShowModal;
-
-  SVNCommitFrm.Free;
+  SVNCommitFrm.Show;
 end;
 
 { TSVNCommitFrm }
@@ -52,6 +53,11 @@ end;
 procedure TSVNCommitFrm.FormShow(Sender: TObject);
 begin
   Application.QueueAsyncCall(@Execute, 0);
+end;
+
+procedure TSVNCommitFrm.OKButtonClick(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TSVNCommitFrm.Execute(Data: PtrInt);
@@ -63,6 +69,9 @@ procedure TSVNCommitFrm.FormCreate(Sender: TObject);
 begin
   Caption := rsLazarusSVNCommit;
 end;
+
+finalization
+  FreeAndNil(SVNCommitFrm);
 
 end.
 

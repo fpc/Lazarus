@@ -3,128 +3,56 @@ object SVNUpdateFrm: TSVNUpdateFrm
   Height = 300
   Top = 209
   Width = 640
-  HelpContext = 0
   Caption = 'SVNUpdateFrm'
-  ChildSizing.LeftRightSpacing = 0
-  ChildSizing.TopBottomSpacing = 0
-  ChildSizing.HorizontalSpacing = 0
-  ChildSizing.VerticalSpacing = 0
-  ChildSizing.ControlsPerLine = 0
   ClientHeight = 300
   ClientWidth = 640
-  Font.Height = 0
-  Font.Style = []
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object SVNUpdateListView: TListView
     Left = 6
-    Height = 240
+    Height = 248
     Top = 6
     Width = 628
-    HelpContext = 0
     Align = alClient
-    BorderSpacing.Left = 0
-    BorderSpacing.Top = 0
-    BorderSpacing.Right = 0
-    BorderSpacing.Bottom = 0
     BorderSpacing.Around = 6
-    BorderSpacing.CellAlignHorizontal = ccaFill
-    BorderSpacing.CellAlignVertical = ccaFill
     Columns = <    
       item
-        AutoSize = False
         Width = 75
       end    
       item
-        AutoSize = False
         Width = 553
       end>
     PopupMenu = UpdatePopupMenu
     RowSelect = True
     ScrollBars = ssAutoBoth
-    SortColumn = 0
-    SortType = stNone
     TabOrder = 0
     ViewStyle = vsReport
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 48
-    Top = 252
+    Height = 34
+    Top = 260
     Width = 628
-    HelpContext = 0
-    Align = alBottom
-    AutoSize = True
-    ButtonOrder = boDefault
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.OnClick = ShowLogButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 1
-    DefaultButton = pbOK
-    ShowButtons = [pbOK]
-    object ShowLogButton: TBitBtn
-      Left = 78
-      Height = 34
-      Top = 8
-      Width = 131
-      HelpContext = 0
-      Align = alLeft
-      AutoSize = True
-      BorderSpacing.Left = 0
-      BorderSpacing.Top = 0
-      BorderSpacing.Right = 0
-      BorderSpacing.Bottom = 0
-      BorderSpacing.Around = 6
-      BorderSpacing.CellAlignHorizontal = ccaFill
-      BorderSpacing.CellAlignVertical = ccaFill
-      Caption = 'ShowLogButton'
-      Glyph.Data = {
-        36040000424D3604000000000000360000002800000010000000100000000100
-        20000000000000040000640000006400000000000000000000000000000080B1
-        64FF858A88FF858A88FF858A88FF858A88FF858A88FF858A88FF858A88FF858A
-        88FF858A88FF858A88FF858A88FF695857FF801960007FAB200000000000858A
-        88FFEEEEEEFFB2B2B2FFB2B2B2FFB2B2B2FFB2B2B2FFB2B2B2FFB2B2B2FFB2B2
-        B2FFB1B1B1FFB2B2B2FFB2B2B2FF858A88FFDE04CA000B007C0048346B00858A
-        88FFFFFFFFFFECECECFFEBEBEBFFEAEAEAFFEAEAEAFFE9E9E9FFEBEBEBFFEAEA
-        EAFFEBEBEBFFECECECFFB2B2B2FF858A88FF0100CA000000000070030000858A
-        88FFFFFFFFFFDBDBDBFFCBCBCBFFC4C4C4FF000000FF02598FFF636363FF8C8C
-        8CFFCACACAFFDADADAFFB2B2B2FF858A88FFCA00000019000000504B2600858A
-        88FFFFFFFFFFECECECFFECECECFFE9E9E9FF02598FFF26424CFF36576BFF0259
-        8FFF9D9D9DFFD6D6D6FFAEAEAEFF858A88FF09000000F817600000000000858A
-        88FFFFFFFFFFDBDBDBFFCCCCCCFFCBCBCBFF757575FF395B70FF8AABC2FF5585
-        A3FF02598FFF8F8F8FFF868686FF858A88FF401860007BAB200000000000858A
-        88FFFFFFFFFFECECECFFECECECFFECECECFFEBEBEBFF02598FFFC4E5EDFF649F
-        C8FF5787A4FF02598FFF717171FF858A88FFDE04CA000A007C0048346B00858A
-        88FFFFFFFFFFDBDBDBFFCCCCCCFFCCCCCCFFCCCCCCFFB7B7B7FF02598FFFC5E6
-        EDFF68A6CEFF5784A0FF02598FFF858A88FF0300CA000000000030020000858A
-        88FFFFFFFFFFECECECFFECECECFFECECECFFECECECFFECECECFFD3D3D3FF0259
-        8FFFC6EAEEFF69AACFFF5683A0FF02598FFFA3121D0019000000504B2600858A
-        88FFFFFFFFFFDBDBDBFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFB7B7
-        B7FF02598FFFC7EBEFFF6AACD2FF5787A4FF02598FFF93246A0000000000858A
-        88FFFFFFFFFFECECECFFECECECFFECECECFFECECECFFECECECFFECECECFFECEC
-        ECFFD3D3D3FF02598FFFC7EBEFFF6AACD2FF5481A0FF02598FFF00000000858A
-        88FFEBEBEBFF00A0C4FFBCBCBCFF00A0C4FFB8B8B8FF00A0C4FFB8B8B8FF00A0
-        C4FFB8B8B8FF00A0C4FF02598FFFC6EAEEFF71ADCFFF02598FFF48346B00858A
-        88FF00A0C4FF3DB1EBFF00A0C4FF3DB1EBFF00A0C4FF3DB1EBFF00A0C4FF3DB1
-        EBFF00A0C4FF3DB1EBFF00A0C4FF02598FFF02598FFF01203400F00000005737
-        360000A0C4FFC6E8F9FF00A0C4FFC6E8F9FF00A0C4FFC6E8F9FF00A0C4FFC6E8
-        F9FF00A0C4FFC6E8F9FF00A0C4FF00000000CC00000019000000504B2600E0B0
-        4A00A32EC80000A0C4FF002B340000A0C4FF012BC80000A0C4FF002B340000A0
-        C4FF962B340000A0C4FF35518200F815600009000000781560000000000078F6
-        25000100CA00000000000000000000000000CC0000001900000048346B00A815
-        60000900000028156000A000000038000000C015600073AB2000
-      }
-      NumGlyphs = 0
-      OnClick = ShowLogButtonClick
-      TabOrder = 4
-    end
+    ShowButtons = [pbOK, pbHelp]
   end
   object UpdatePopupMenu: TPopupMenu
     left = 40
     top = 64
     object mnuShowDiff: TMenuItem
       Caption = 'New Item1'
-      RightJustify = False
-      ShowAlwaysCheckable = False
       OnClick = mnuShowDiffClick
     end
   end

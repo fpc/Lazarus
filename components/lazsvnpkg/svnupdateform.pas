@@ -33,7 +33,6 @@ type
   TSVNUpdateFrm = class(TForm)
     mnuShowDiff: TMenuItem;
     UpdatePopupMenu: TPopupMenu;
-    ShowLogButton: TBitBtn;
     ButtonPanel: TButtonPanel;
     SVNUpdateListView: TListView;
     procedure FormCreate(Sender: TObject);
@@ -54,6 +53,9 @@ type
 
 procedure ShowSVNUpdateFrm(ARepoPath: string);
 
+var
+  SVNUpdateFrm: TSVNUpdateFrm;
+
 implementation
 
 {$R *.lfm}
@@ -64,15 +66,12 @@ uses
 { TSVNUpdateFrm }
 
 procedure ShowSVNUpdateFrm(ARepoPath: string);
-var
-  SVNUpdateFrm: TSVNUpdateFrm;
 begin
-  SVNUpdateFrm := TSVNUpdateFrm.Create(nil);
+  if not Assigned(SVNUpdateFrm) then
+    SVNUpdateFrm := TSVNUpdateFrm.Create(nil);
 
   SVNUpdateFrm.RepositoryPath := ARepoPath;
-  SVNUpdateFrm.ShowModal;
-
-  SVNUpdateFrm.Free;
+  SVNUpdateFrm.Show;
 end;
 
 procedure TSVNUpdateFrm.FormCreate(Sender: TObject);
@@ -82,7 +81,8 @@ begin
   //SetColumn(SVNUpdateListView, 2, 100,'Mime type');
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
-  ShowLogButton.Caption := rsShowLog;
+  ButtonPanel.HelpButton.Caption := rsShowLog;
+  ButtonPanel.HelpButton.LoadGlyphFromLazarusResource('tsynsyncroedit');
   mnuShowDiff.Caption:=rsShowDiff;
 end;
 
@@ -208,6 +208,12 @@ begin
   AProcess.Free;
   MemStream.Free;
 end;
+
+initialization
+  {$I ../../images/bookmark.lrs}
+
+finalization
+  FreeAndNil(SVNUpdateFrm);
 
 end.
 
