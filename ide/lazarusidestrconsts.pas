@@ -1222,17 +1222,13 @@ resourcestring
   lisShowStatusBarInObjectInspector = 'Show status bar';
   lisShowInfoBoxInObjectInspector = 'Show information box';
   dlgEnvColors = 'Colors';
-  dlgEnvBackupHelpNote =
-    'Notes: Project files are all files in the project directory';
+  dlgEnvBackupHelpNote = 'Notes: Project files are all files in the project directory';
   lisEnvOptDlgInvalidCompilerFilename = 'Invalid compiler filename';
-  lisEnvOptDlgInvalidCompilerFilenameMsg =
-    'The compiler file "%s" is not an executable.';
+  lisEnvOptDlgInvalidCompilerFilenameMsg = 'The compiler file "%s" is not an executable.';
   lisEnvOptDlgInvalidMakeFilename = 'Invalid make filename';
-  lisEnvOptDlgInvalidMakeFilenameMsg =
-    'The make file "%s" is not an executable.';
+  lisEnvOptDlgInvalidMakeFilenameMsg = 'The make file "%s" is not an executable.';
   lisEnvOptDlgInvalidDebuggerFilename = 'Invalid debugger filename';
-  lisEnvOptDlgInvalidDebuggerFilenameMsg =
-    'The debugger file "%s" is not an executable.';
+  lisEnvOptDlgInvalidDebuggerFilenameMsg = 'The debugger file "%s" is not an executable.';
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
   lisDirectoryNotFound = 'Directory %s%s%s not found.';
   lisRemoveFromSearchPath = 'Remove from search path';
@@ -1461,8 +1457,7 @@ resourcestring
   dlgLang = 'Language';
   dlgEditSchemDefaults = 'Scheme globals';
   lis0No1DrawDividerLinesOnlyForTopLevel2DrawLinesForFi = '0 = no, 1 = draw '
-    +'divider lines only for top level, 2 = draw lines for first two '
-    +'levels, ...';
+    +'divider lines only for top level, 2 = draw lines for first two levels, ...';
   dlgClrScheme = 'Color Scheme';
   dlgFileExts = 'File extensions';
   dlgSetElementDefault = 'Set element to default';
