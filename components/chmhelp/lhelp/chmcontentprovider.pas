@@ -986,8 +986,7 @@ var
   FileIndex: Integer;
   LoadTOC: Boolean;
   CurCHM: TChmReader;
-  ContextURL,
-  ContextTitle: String;
+  ContextURL: String;
 begin
   Result := False;
   fFile := Copy(AUrl,8, Length(AURL));
@@ -1016,7 +1015,7 @@ begin
   // AContext will override the url if it is found
   if AContext <> -1 then
   begin
-    ContextURL := CurCHM.LookupTopicByID(AContext, ContextTitle);
+    ContextURL := CurCHM.GetContextUrl(AContext);
     if (Length(ContextURL) > 0) and not (ContextURL[1] in ['/', '\']) then
       Insert('/', ContextURL , 1);
     if Length(ContextURL) > 0 then
