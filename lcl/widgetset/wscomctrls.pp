@@ -195,6 +195,7 @@ type
   published
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); virtual;
     class function GetPosition(const ATrackBar: TCustomTrackBar): integer; virtual;
+    class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); virtual;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); virtual;
     class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); virtual;
   end;
@@ -567,6 +568,12 @@ end;
 class function  TWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 begin
   Result := 0;
+end;
+
+class procedure TWSTrackBar.SetOrientation(const ATrackBar: TCustomTrackBar;
+  const AOrientation: TTrackBarOrientation);
+begin
+  RecreateWnd(ATrackBar);
 end;
 
 class procedure TWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);

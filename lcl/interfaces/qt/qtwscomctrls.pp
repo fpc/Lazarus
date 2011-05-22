@@ -205,6 +205,7 @@ type
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
+    class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;
   end;
 
   { TQtWSCustomTreeView }
@@ -279,20 +280,20 @@ begin
   Result := TLCLIntfHandle(QtTrackBar);
 end;
 
+function TrackBarReversed(const ATrackBar: TCustomTrackBar;
+  const AQtTrackBar: TQtTrackBar): Boolean;
+begin
+  Result :=
+    ((ATrackBar.Orientation = trHorizontal) and
+    (AQtTrackbar.getInvertedAppereance <> ATrackBar.Reversed))
+    or
+    ((ATrackBar.Orientation = trVertical) and
+    (AQtTrackbar.getInvertedAppereance <> not ATrackBar.Reversed))
+end;
+
 class procedure TQtWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
   QtTrackBar: TQtTrackBar;
-
-  function TrackBarReversed: Boolean;
-  begin
-    Result :=
-      ((ATrackBar.Orientation = trHorizontal) and
-      (QtTrackbar.getInvertedAppereance <> ATrackBar.Reversed))
-      or
-      ((ATrackBar.Orientation = trVertical) and
-      (QtTrackbar.getInvertedAppereance <> not ATrackBar.Reversed))
-
-  end;
 begin
 
   if not WSCheckHandleAllocated(ATrackBar, 'ApplyChanges') then
@@ -318,7 +319,7 @@ begin
 
     if (QtTrackBar.getOrientation <>
       TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation])
-      or TrackBarReversed then
+      or TrackBarReversed(ATrackBar, QtTrackBar) then
     begin
       QtTrackBar.Hide;
       QtTrackBar.setOrientation(TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation]);
@@ -356,6 +357,35 @@ begin
   QtTrackBar.BeginUpdate;
   try
     QtTrackBar.setSliderPosition(NewPosition);
+  finally
+    QtTrackBar.EndUpdate;
+  end;
+end;
+
+class procedure TQtWSTrackBar.SetOrientation(const ATrackBar: TCustomTrackBar;
+  const AOrientation: TTrackBarOrientation);
+var
+  QtTrackBar: TQtTrackBar;
+begin
+  if not WSCheckHandleAllocated(ATrackBar, 'SetOrientation') then
+    Exit;
+  QtTrackBar := TQtTrackBar(ATrackBar.Handle);
+  QtTrackBar.BeginUpdate;
+  try
+    if (QtTrackBar.getOrientation <>
+      TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation])
+      or TrackBarReversed(ATrackBar, QtTrackBar) then
+    begin
+      QtTrackBar.Hide;
+      QtTrackBar.setOrientation(TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation]);
+      if ATrackBar.Orientation = trHorizontal then
+        QtTrackBar.setInvertedAppereance(ATrackBar.Reversed)
+      else
+        {make it delphi and msdn compatibile when vertical then 0 = top}
+        QtTrackBar.setInvertedAppereance(not ATrackBar.Reversed);
+      QtTrackBar.setInvertedControls(False);
+      QtTrackBar.Show;
+    end;
   finally
     QtTrackBar.EndUpdate;
   end;

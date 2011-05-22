@@ -132,9 +132,8 @@ begin
       OldWidth:=Width;
       OldHeight:=Height;
       SetBounds(Left,Top,OldHeight,OldWidth);
-      // TODO: Remove RecreateWnd
       if HandleAllocated then
-        RecreateWnd(Self);
+        TWSTrackBarClass(WidgetSetClass).SetOrientation(Self, FOrientation);
     end;
   end;
 end;
