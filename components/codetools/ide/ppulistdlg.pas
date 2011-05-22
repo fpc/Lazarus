@@ -38,7 +38,8 @@ uses
   PackageIntf,
   // codetools
   BasicCodeTools, FileProcs, CodyStrConsts, CodeToolManager, CodeCache,
-  PPUParser, PPUCodeTools, DefineTemplates;
+  PPUParser, PPUCodeTools, DefineTemplates,
+  CodyUtils;
 
 const
   PPUFileNotFound = ' ';
@@ -106,6 +107,7 @@ type
       var {%H-}CanSelect: Boolean);
     procedure UnitStringGridMouseDown(Sender: TObject;
       {%H-}Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure HelpButtonClick(Sender: TObject);
   private
     FMainItem: TPPUListItem;
     FProject: TLazProject;
@@ -324,6 +326,11 @@ begin
       JumpToUnit(AnUnitName);
     end;
   end;
+end;
+
+procedure TPPUListDialog.HelpButtonClick(Sender: TObject);
+begin
+  OpenCodyHelp('#PPU_files_of_project');
 end;
 
 procedure TPPUListDialog.FormClose(Sender: TObject;

@@ -1,7 +1,7 @@
 object PPUListDialog: TPPUListDialog
-  Left = 275
+  Left = 276
   Height = 531
-  Top = 250
+  Top = 249
   Width = 740
   Caption = 'PPUListDialog'
   ClientHeight = 531
@@ -13,22 +13,20 @@ object PPUListDialog: TPPUListDialog
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 485
+    Height = 42
+    Top = 483
     Width = 728
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
-    OKButton.Enabled = False
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
-    HelpButton.Enabled = False
+    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
     CancelButton.Caption = 'Cancel'
-    CancelButton.Enabled = False
     TabOrder = 0
-    ShowButtons = [pbClose]
+    ShowButtons = [pbClose, pbHelp]
   end
   object UnitsStringGrid: TStringGrid
     Left = 6
@@ -106,18 +104,18 @@ object PPUListDialog: TPPUListDialog
   end
   object UnitGroupBox: TGroupBox
     Left = 6
-    Height = 188
+    Height = 186
     Top = 291
     Width = 728
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'UnitGroupBox'
-    ClientHeight = 167
+    ClientHeight = 165
     ClientWidth = 720
     TabOrder = 3
     object UnitPageControl: TPageControl
       Left = 0
-      Height = 167
+      Height = 165
       Top = 0
       Width = 720
       ActivePage = UsesTabSheet
@@ -150,11 +148,11 @@ object PPUListDialog: TPPUListDialog
       end
       object UsesTabSheet: TTabSheet
         Caption = 'UsesTabSheet'
-        ClientHeight = 134
+        ClientHeight = 132
         ClientWidth = 716
         object UsesStringGrid: TStringGrid
           Left = 0
-          Height = 134
+          Height = 132
           Top = 0
           Width = 716
           Align = alClient

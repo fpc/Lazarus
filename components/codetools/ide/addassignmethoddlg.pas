@@ -38,7 +38,7 @@ uses
   // IDEIntf
   IDEDialogs, LazIDEIntf, SrcEditorIntf,
   // Cody
-  CodyCtrls, CodyStrConsts;
+  CodyCtrls, CodyStrConsts, CodyUtils;
 
 type
 
@@ -80,6 +80,7 @@ type
     procedure MembersTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
     procedure OkButtonClick(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ParamNameEditChange(Sender: TObject);
@@ -275,6 +276,11 @@ begin
     FreeAndNil(FAssignMembers);
   end;
   ModalResult:=mrOk;
+end;
+
+procedure TAddAssignMethodDialog.HelpButtonClick(Sender: TObject);
+begin
+  OpenCodyHelp('#Add_Assign_method');
 end;
 
 procedure TAddAssignMethodDialog.MembersTreeViewMouseDown(Sender: TObject;
