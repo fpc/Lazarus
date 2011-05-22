@@ -45,6 +45,10 @@ resourcestring
   crsSearching = 'searching ...';
   crsMissing = 'missing ...';
   crsUnit = 'Unit';
+  crsLinkedFiles = 'Linked files';
+  crsType = 'Type';
+  crsFile = 'File';
+  crsFlags = 'Flags';
   crsPackage = 'Package';
   crsKbytes = 'kbytes';
   crsMbytes = 'Mbytes';

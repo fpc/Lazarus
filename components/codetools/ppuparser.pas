@@ -37,7 +37,7 @@ unit PPUParser;
 interface
 
 uses
-  Classes, SysUtils, FileProcs;
+  Classes, SysUtils, FileProcs, contnrs;
 
 const
   PPUIsEndianBig = {$IFDEF ENDIAN_BIG}True{$ELSE}False{$ENDIF};
@@ -497,6 +497,13 @@ type
     constructor Create(ASender: TPPU; const AMessage: string);
   end;
 
+  TPPULinkedFile = class
+  public
+    ID: byte; // see iblinkunitofiles, iblink...
+    Filename: string;
+    Flags: Longint;
+  end;
+
   { TPPU }
 
   TPPU = class
@@ -515,6 +522,8 @@ type
     FData: Pointer;
     FDataPos: integer;
     FDataSize: integer;
+    FInterfaceHeaderPos: integer; // start of the interface header entries
+    FImplementationHeaderPos: integer; // start of the implementation header entries
     FMainUsesSectionPos: integer;// start of the ibloadunit entry
     FImplementationUsesSectionPos: integer;// start of the ibloadunit entry
     FInitProcPos: integer;// start of the ibprocdef entry
@@ -574,6 +583,7 @@ type
     procedure DumpHeader(const Prefix: string = '');
     procedure GetMainUsesSectionNames(var List: TStrings);
     procedure GetImplementationUsesSectionNames(var List: TStrings);
+    procedure GetLinkedFiles(var ListOfTPPULinkedFile: TObjectList);
     function GetInitProcName: string;
     function GetFinalProcName: string;
     property Version: integer read FVersion;
@@ -584,6 +594,8 @@ function PPUTargetToStr(w: longint): string;
 function PPUCpuToStr(w: longint): string;
 function PPUFlagsToStr(flags: longint): string;
 function PPUTimeToStr(t: longint): string;
+
+function PPULinkContainerFlagToStr(Flags: longint): string;
 
 function PPUEntryName(Entry: byte): string;
 
@@ -872,6 +884,27 @@ begin
   Result := L0(Year)+'/'+L0(Month)+'/'+L0(Day)+' '+L0(Hour)+':'+L0(min)+':'+L0(sec);
 end;
 
+function PPULinkContainerFlagToStr(Flags: longint): string;
+const
+  { link options }
+  link_none    = $0;
+  link_always  = $1;
+  link_static  = $2;
+  link_smart   = $4;
+  link_shared  = $8;
+begin
+  Result:='';
+  if (Flags and link_always)<>0 then
+    Result:=Result+'always,';
+  if (Flags and link_static)<>0 then
+    Result:=Result+'static,';
+  if (Flags and link_smart)<>0 then
+    Result:=Result+'smart,';
+  if (Flags and link_shared)<>0 then
+    Result:=Result+'shared,';
+  if Result<>'' then Result:=copy(Result,1,length(Result)-1);
+end;
+
 function PPUEntryName(Entry: byte): string;
 begin
   case Entry of
@@ -1067,6 +1100,7 @@ var
   IsUsed: Boolean;
   {$ENDIF}
 begin
+  FInterfaceHeaderPos:=FDataPos;
   repeat
     EntryNr:=ReadEntry;
     {$IFDEF VerbosePPUParser}
@@ -1149,6 +1183,7 @@ procedure TPPU.ReadImplementationHeader;
 var
   EntryNr: Byte;
 begin
+  FImplementationHeaderPos:=FDataPos;
   repeat
     EntryNr:=ReadEntry;
     case EntryNr of
@@ -1997,13 +2032,6 @@ end;
 
 procedure TPPU.ReadLinkContainer(Nr: byte);
 {$IFDEF VerbosePPUParser}
-const
-  { link options }
-  link_none    = $0;
-  link_always  = $1;
-  link_static  = $2;
-  link_smart   = $4;
-  link_shared  = $8;
 var
   Desc: String;
 var
@@ -2031,15 +2059,7 @@ begin
     iblinkotherframeworks:
       Desc:='Link framework: ';
     end;
-    Desc:=Desc+Filename;
-    if (Flags and link_always)<>0 then
-      Desc:=Desc+' always';
-    if (Flags and link_static)<>0 then
-      Desc:=Desc+' static';
-    if (Flags and link_smart)<>0 then
-      Desc:=Desc+' smart';
-    if (Flags and link_shared)<>0 then
-      Desc:=Desc+' shared';
+    Desc:=Desc+Filename+' '+PPULinkContainerFlagToStr(Flags);
     DebugLn(['TPPU.ReadLinkContainer ',Desc]);
     {$ENDIF}
   end;
@@ -2202,7 +2222,9 @@ begin
   FDataSize:=0;
   FDataPos:=0;
 
+  FInterfaceHeaderPos:=0;
   FMainUsesSectionPos:=0;
+  FImplementationHeaderPos:=0;
   FImplementationUsesSectionPos:=0;
   FInitProcPos:=0;
   FFinalProcPos:=0;
@@ -2266,6 +2288,45 @@ end;
 procedure TPPU.GetImplementationUsesSectionNames(var List: TStrings);
 begin
   GetUsesSection(FImplementationUsesSectionPos,List);
+end;
+
+procedure TPPU.GetLinkedFiles(var ListOfTPPULinkedFile: TObjectList);
+var
+  EntryNr: Byte;
+  Item: TPPULinkedFile;
+  Filename: String;
+  Flags: LongInt;
+begin
+  if FInterfaceHeaderPos=0 then exit;
+  SetDataPos(FInterfaceHeaderPos);
+  repeat
+    EntryNr:=ReadEntry;
+    case EntryNr of
+    iblinkunitofiles,iblinkunitstaticlibs,iblinkunitsharedlibs,
+    iblinkotherofiles,iblinkotherstaticlibs,iblinkothersharedlibs,
+    iblinkotherframeworks:
+      begin
+        while not EndOfEntry do begin
+          Filename:=ReadEntryShortstring;
+          Flags:=ReadEntryLongint;
+          //debugln(['TPPU.GetLinkedFiles ',PPUEntryName(EntryNr),' ',Filename]);
+          if ListOfTPPULinkedFile=nil then
+            ListOfTPPULinkedFile:=TObjectList.Create(true);
+          Item:=TPPULinkedFile.Create;
+          Item.ID:=EntryNr;
+          Item.Filename:=Filename;
+          Item.Flags:=Flags;
+          ListOfTPPULinkedFile.Add(Item);
+        end;
+      end;
+
+    ibendinterface:
+      break;
+
+    else
+      FEntryPos:=FEntry.size;
+    end;
+  until false;
 end;
 
 function TPPU.GetInitProcName: string;

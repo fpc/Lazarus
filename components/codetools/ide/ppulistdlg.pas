@@ -30,9 +30,9 @@ unit PPUListDlg;
 interface
 
 uses
-  Classes, SysUtils, math, LCLProc, FileUtil, LResources, Forms, Controls,
-  Graphics, Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree, ExtCtrls,
-  ComCtrls,
+  Classes, SysUtils, contnrs, math, LCLProc, FileUtil, LResources, Forms,
+  Controls, Graphics, Dialogs, ButtonPanel, Grids, StdCtrls, AvgLvlTree,
+  ExtCtrls, ComCtrls,
   // IDEIntf
   ProjectIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   PackageIntf,
@@ -74,6 +74,7 @@ type
     OFileSize: int64;
     UsesUnits: TStrings; // =nil means uses section not yet scanned
     UsedByUnits: TStrings;
+    LinkedFiles: TObjectList; // list of TPPULinkedFile
     PackageName: string;
     destructor Destroy; override;
     function UsesCount: integer;
@@ -89,6 +90,8 @@ type
     InfoTabSheet: TTabSheet;
     PPUFileLabel: TLabel;
     SourceFileLabel: TLabel;
+    LinkedFilesTabSheet: TTabSheet;
+    UnitLinkedFilesStringGrid: TStringGrid;
     UsesPathStringGrid: TStringGrid;
     UsesPathTabSheet: TTabSheet;
     UsedByStringGrid: TStringGrid;
@@ -194,6 +197,7 @@ destructor TPPUListItem.Destroy;
 begin
   FreeAndNil(UsesUnits);
   FreeAndNil(UsedByUnits);
+  FreeAndNil(LinkedFiles);
   inherited Destroy;
 end;
 
@@ -232,14 +236,22 @@ begin
   UnitsStringGrid.Columns[5].Title.Caption:=crsPackage;
 
   InfoTabSheet.Caption:=lisCOGeneral;
-  UsesTabSheet.Caption:=crsUses;
-  UsedByTabSheet.Caption:=crsUsedBy;
-  UnitPageControl.PageIndex:=0;
-  UsesPathTabSheet.Caption:=lisCOUsesPath;
 
+  UsesTabSheet.Caption:=crsUses;
   UsesStringGrid.Columns[0].Title.Caption:=crsUnit;
+
+  UsedByTabSheet.Caption:=crsUsedBy;
   UsedByStringGrid.Columns[0].Title.Caption:=crsUnit;
+
+  UsesPathTabSheet.Caption:=lisCOUsesPath;
   UsesPathStringGrid.Columns[0].Title.Caption:=crsUnit;
+
+  LinkedFilesTabSheet.Caption:=crsLinkedFiles;
+  UnitLinkedFilesStringGrid.Columns[0].Title.Caption:=crsType;
+  UnitLinkedFilesStringGrid.Columns[1].Title.Caption:=crsFile;
+  UnitLinkedFilesStringGrid.Columns[2].Title.Caption:=crsFlags;
+
+  UnitPageControl.PageIndex:=0;
 
   ButtonPanel1.CloseButton.Caption:=crsClose;
 
@@ -691,6 +703,8 @@ var
   UsesUnitName: string;
   UsedByUnitName: string;
   UsesPath: TFPList;
+  LinkedFile: TPPULinkedFile;
+  Grid: TStringGrid;
 begin
   Item:=FindUnit(AnUnitName);
   if Item=nil then begin
@@ -733,6 +747,20 @@ begin
       end;
     finally
       UsesPath.Free;
+    end;
+
+    // linked files
+    Grid:=UnitLinkedFilesStringGrid;
+    if Item.LinkedFiles<>nil then begin
+      Grid.RowCount:=1+Item.LinkedFiles.Count;
+      for i:=0 to Item.LinkedFiles.Count-1 do begin
+        LinkedFile:=TPPULinkedFile(Item.LinkedFiles[i]);
+        Grid.Cells[0,i+1]:=PPUEntryName(LinkedFile.ID);
+        Grid.Cells[1,i+1]:=LinkedFile.Filename;
+        Grid.Cells[2,i+1]:=PPULinkContainerFlagToStr(LinkedFile.Flags);
+      end;
+    end else begin
+      Grid.RowCount:=1;
     end;
   end;
 end;
@@ -852,11 +880,13 @@ begin
           //debugln(['TPPUListDialog.OnIdle parsed ppu "',Item.PPUFile,'"']);
           MainUsesSection:=nil;
           ImplementationUsesSection:=nil;
+          FreeAndNil(Item.LinkedFiles);
           try
             PPUTool.PPU.GetMainUsesSectionNames(MainUsesSection);
             AddUses(Item,MainUsesSection);
             PPUTool.PPU.GetImplementationUsesSectionNames(ImplementationUsesSection);
             AddUses(Item,ImplementationUsesSection);
+            PPUTool.PPU.GetLinkedFiles(Item.LinkedFiles);
             Scanned:=true;
           finally
             MainUsesSection.Free;

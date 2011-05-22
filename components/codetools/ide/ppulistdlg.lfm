@@ -118,9 +118,9 @@ object PPUListDialog: TPPUListDialog
       Height = 165
       Top = 0
       Width = 720
-      ActivePage = UsesTabSheet
+      ActivePage = LinkedFilesTabSheet
       Align = alClient
-      TabIndex = 1
+      TabIndex = 4
       TabOrder = 0
       object InfoTabSheet: TTabSheet
         Caption = 'InfoTabSheet'
@@ -174,11 +174,11 @@ object PPUListDialog: TPPUListDialog
       end
       object UsedByTabSheet: TTabSheet
         Caption = 'UsedByTabSheet'
-        ClientHeight = 134
+        ClientHeight = 132
         ClientWidth = 716
         object UsedByStringGrid: TStringGrid
           Left = 0
-          Height = 134
+          Height = 132
           Top = 0
           Width = 716
           Align = alClient
@@ -187,24 +187,24 @@ object PPUListDialog: TPPUListDialog
           Columns = <          
             item
               Title.Caption = 'Unit'
-              Width = 716
+              Width = 714
             end>
           FixedCols = 0
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
           TabOrder = 0
           OnMouseDown = UnitStringGridMouseDown
           ColWidths = (
-            716
+            714
           )
         end
       end
       object UsesPathTabSheet: TTabSheet
         Caption = 'UsesPathTabSheet'
-        ClientHeight = 134
+        ClientHeight = 132
         ClientWidth = 716
         object UsesPathStringGrid: TStringGrid
           Left = 0
-          Height = 134
+          Height = 132
           Top = 0
           Width = 716
           Align = alClient
@@ -213,13 +213,47 @@ object PPUListDialog: TPPUListDialog
           Columns = <          
             item
               Title.Caption = 'Unit'
-              Width = 716
+              Width = 714
             end>
           FixedCols = 0
           TabOrder = 0
           OnMouseDown = UnitStringGridMouseDown
           ColWidths = (
-            716
+            714
+          )
+        end
+      end
+      object LinkedFilesTabSheet: TTabSheet
+        Caption = 'LinkedFilesTabSheet'
+        ClientHeight = 132
+        ClientWidth = 716
+        object UnitLinkedFilesStringGrid: TStringGrid
+          Left = 0
+          Height = 132
+          Top = 0
+          Width = 716
+          Align = alClient
+          AutoFillColumns = True
+          ColCount = 3
+          Columns = <          
+            item
+              Title.Caption = 'Type'
+              Width = 238
+            end          
+            item
+              Title.Caption = 'File'
+              Width = 238
+            end          
+            item
+              Title.Caption = 'Flags'
+              Width = 238
+            end>
+          FixedCols = 0
+          TabOrder = 0
+          ColWidths = (
+            238
+            238
+            238
           )
         end
       end

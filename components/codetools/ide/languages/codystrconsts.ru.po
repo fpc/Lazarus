@@ -181,6 +181,14 @@ msgstr "Объявить переменную"
 msgid "Declare Variable ..."
 msgstr "Объявить переменную ..."
 
+#: codystrconsts.crsfile
+msgid "File"
+msgstr ""
+
+#: codystrconsts.crsflags
+msgid "Flags"
+msgstr ""
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr "ГБ"
@@ -192,6 +200,10 @@ msgstr "Вставить содержимое файла в месте расп�
 #: codystrconsts.crskbytes
 msgid "kbytes"
 msgstr "кБ"
+
+#: codystrconsts.crslinkedfiles
+msgid "Linked files"
+msgstr ""
 
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
@@ -286,6 +298,10 @@ msgstr "Файл исходного кода: %s"
 #: codystrconsts.crstotal
 msgid "Total"
 msgstr "Всего"
+
+#: codystrconsts.crstype
+msgid "Type"
+msgstr ""
 
 #: codystrconsts.crsunit
 msgid "Unit"

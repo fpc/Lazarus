@@ -173,6 +173,14 @@ msgstr ""
 msgid "Declare Variable ..."
 msgstr ""
 
+#: codystrconsts.crsfile
+msgid "File"
+msgstr ""
+
+#: codystrconsts.crsflags
+msgid "Flags"
+msgstr ""
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr ""
@@ -183,6 +191,10 @@ msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
+msgstr ""
+
+#: codystrconsts.crslinkedfiles
+msgid "Linked files"
 msgstr ""
 
 #: codystrconsts.crsmainsourcefile
@@ -275,6 +287,10 @@ msgstr ""
 
 #: codystrconsts.crstotal
 msgid "Total"
+msgstr ""
+
+#: codystrconsts.crstype
+msgid "Type"
 msgstr ""
 
 #: codystrconsts.crsunit
