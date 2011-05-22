@@ -476,11 +476,6 @@ begin
       Application.QueueAsyncCall(TDataEvent(@LateOpenURL), PtrUInt(StrItem));
       Break;
     end;
-  //we reset the context because at this point the file has been loaded and the
-  //context shown
-  fContext := -1;
-    
-
 end;
 
 procedure THelpForm.StartServer(ServerName: String);
@@ -589,6 +584,9 @@ procedure THelpForm.LateOpenURL ( Url: PStringItem ) ;
 begin
   if OpenURL(URL^.FString, fContext) = ord(srSuccess) then
     AddRecentFile(URL^.FString);
+  //we reset the context because at this point the file has been loaded and the
+  //context shown
+  fContext := -1;
 
   Dispose(Url);
   RefreshState;

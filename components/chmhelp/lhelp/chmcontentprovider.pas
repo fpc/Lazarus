@@ -985,6 +985,9 @@ var
   fPos: Integer;
   FileIndex: Integer;
   LoadTOC: Boolean;
+  CurCHM: TChmReader;
+  ContextURL,
+  ContextTitle: String;
 begin
   Result := False;
   fFile := Copy(AUrl,8, Length(AURL));
@@ -1003,16 +1006,27 @@ begin
   else
     Exit;
 
+  CurCHM := fChms.Chm[FileIndex];
+
   if LoadTOC and (FileIndex = 0) then
   begin
-    QueueFillToc(fChms.Chm[FileIndex]);
+    QueueFillToc(CurCHM);
   end;
 
+  // AContext will override the url if it is found
+  if AContext <> -1 then
+  begin
+    ContextURL := CurCHM.LookupTopicByID(AContext, ContextTitle);
+    if (Length(ContextURL) > 0) and not (ContextURL[1] in ['/', '\']) then
+      Insert('/', ContextURL , 1);
+    if Length(ContextURL) > 0 then
+      fURL := ContextURL;
+  end;
 
   if fURL <> '' then
-    DoLoadUri(MakeURI(fURL, fChms.Chm[FileIndex]))
+    DoLoadUri(MakeURI(fURL, CurCHM))
   else
-    DoLoadUri(MakeURI(fChms.Chm[FileIndex].DefaultPage, fChms.Chm[FileIndex]));
+    DoLoadUri(MakeURI(CurCHM.DefaultPage, CurCHM));
   Result := True;
 
   fChms.OnOpenNewFile := @NewChmOpened;
