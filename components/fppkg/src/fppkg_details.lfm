@@ -1,0 +1,146 @@
+object PkgDetailsForm: TPkgDetailsForm
+  Left = 282
+  Height = 357
+  Top = 225
+  Width = 384
+  Caption = 'PkgDetailsForm'
+  ClientHeight = 357
+  ClientWidth = 384
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object NameLabel: TLabel
+    Left = 6
+    Height = 17
+    Top = 6
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'NameLabel'
+    Font.Height = -13
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object DescriptionMemo: TMemo
+    Left = 6
+    Height = 90
+    Top = 29
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Lines.Strings = (
+      'DescriptionMemo'
+    )
+    ReadOnly = True
+    TabOrder = 0
+  end
+  object AuthorLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 131
+    Width = 372
+    Align = alTop
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'AuthorLabel'
+    ParentColor = False
+  end
+  object VersionLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 151
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'VersionLabel'
+    ParentColor = False
+  end
+  object LicenseLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 171
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'LicenseLabel'
+    ParentColor = False
+  end
+  object HomepageURLLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 191
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'HomepageURLLabel'
+    ParentColor = False
+  end
+  object DownloadURLLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 211
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'DownloadURLLabel'
+    ParentColor = False
+  end
+  object FileNameLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 231
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'FileNameLabel'
+    ParentColor = False
+  end
+  object EmailLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 251
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'EmailLabel'
+    ParentColor = False
+  end
+  object OSLabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 271
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'OSLabel'
+    ParentColor = False
+  end
+  object CPULabel: TLabel
+    Left = 6
+    Height = 14
+    Top = 291
+    Width = 372
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'CPULabel'
+    ParentColor = False
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 317
+    Width = 372
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 1
+    ShowButtons = [pbClose]
+  end
+end

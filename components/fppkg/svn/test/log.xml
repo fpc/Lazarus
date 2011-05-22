@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<log>
+	<logentry revision="10660">
+		<author>vincents</author>
+		<date>2007-02-20T10:57:42.928052Z</date>
+		<paths>
+			<path action="M">/trunk/ide/Makefile</path>
+			<path action="A">/trunk/components/tachart/Makefile.fpc</path>
+			<path action="A">/trunk/components/tachart/tagraph.lrs</path>
+			<path action="M">/trunk/ide/lazarus.pp</path>
+			<path action="M">/trunk/components/Makefile</path>
+			<path action="M">/trunk/components/tachart/TAGraph.pas</path>
+			<path action="M">/trunk/ide/Makefile.fpc</path>
+			<path action="A">/trunk/components/tachart/Makefile</path>
+			<path action="M">/trunk/components/Makefile.fpc</path>
+			<path action="M">/trunk/components/tachart/tachartlazaruspkg.lpk</path>
+			<path action="M">/trunk/docs/xml/lcl/lclintf.xml</path>
+		</paths>
+		<msg>TAChart: added icon, added to make bigide</msg>
+	</logentry>
+	<logentry revision="10661">
+		<author>vincents</author>
+		<date>2007-02-20T11:24:55.592011Z</date>
+		<paths>
+			<path copyfrom-path="/trunk/components/tachart/TAGraph.pas" copyfrom-rev="10660" action="A">/trunk/components/tagraph.pas</path>
+			<path action="D">/trunk/components/tachart/TAGraph.pas</path>
+		</paths>
+		<msg>lowercase</msg>
+	</logentry>
+	<logentry revision="10662">
+		<author>vincents</author>
+		<date>2007-02-20T11:26:46.869961Z</date>
+		<paths>
+			<path action="D">/trunk/components/tagraph.pas</path>
+			<path copyfrom-path="/trunk/components/tagraph.pas" copyfrom-rev="10661" action="A">/trunk/components/tachart/tagraph.pas</path>
+		</paths>
+		<msg>tachart: fixed wrong move</msg>
+	</logentry>
+	<logentry revision="10663">
+		<author>vincents</author>
+		<date>2007-02-20T11:31:09.651670Z</date>
+		<paths>
+			<path action="D">/trunk/components/tachart/TAEngine.pas</path>
+			<path copyfrom-path="/trunk/components/tachart/TAEngine.pas" copyfrom-rev="10662" action="A">/trunk/components/tachart/taengine.pas</path>
+			<path action="M">/trunk/components/tachart/tachartlazaruspkg.lpk</path>
+			<path action="D">/trunk/components/tachart/TASeries.pas</path>
+			<path copyfrom-path="/trunk/components/tachart/TASeries.pas" copyfrom-rev="10662" action="A">/trunk/components/tachart/taseries.pas</path>
+		</paths>
+		<msg>tachart: user lowercase unit filenames</msg>
+	</logentry>
+	<logentry revision="10664">
+		<author>vincents</author>
+		<date>2007-02-20T21:57:51.761388Z</date>
+		<paths>
+			<path action="M">/trunk/lcl/interfaces/win32/win32callback.inc</path>
+		</paths>
+		<msg>win32 interface: fix showing contextmenu for listviews (bug 8331)</msg>
+	</logentry>
+	<logentry revision="10665">
+		<author>vincents</author>
+		<date>2007-02-20T23:18:34.679005Z</date>
+		<paths>
+			<path action="M">/trunk/lcl/interfaces/win32/win32winapi.inc</path>
+		</paths>
+		<msg>win32 interface: made LCLIntf.Rectangle and TCanvas.Rectangle compatible with Windows.Rectangle winapi function (bug 8342)</msg>
+	</logentry>
+</log>

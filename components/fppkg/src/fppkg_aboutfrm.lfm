@@ -1,0 +1,50 @@
+object FppkgAboutForm: TFppkgAboutForm
+  Left = 169
+  Height = 240
+  Top = 567
+  Width = 320
+  Caption = 'FppkgAboutForm'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnCreate = FormCreate
+  ParentBiDiMode = False
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 200
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 0
+    ShowButtons = [pbClose]
+  end
+  object Memo1: TMemo
+    Left = 6
+    Height = 188
+    Top = 6
+    Width = 308
+    Align = alClient
+    BorderSpacing.Around = 6
+    Lines.Strings = (
+      'fppkg is the freepascal package manager'
+      ''
+      'The lazarus package manager is a graphical frontend for '
+      'fppkg with some extensions to interface with Lazarus and '
+      'support Lazarus packages. '
+      ''
+      'Originally written by Darius Blaszyk'
+      ''
+      'License: GPL'
+    )
+    ReadOnly = True
+    TabOrder = 1
+  end
+end

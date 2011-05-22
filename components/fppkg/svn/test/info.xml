@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<info>
+    <entry kind="dir" path="." revision="10685">
+        <url>svn+ssh://www.freepascal.org/FPC/svn/lazarus/trunk</url>
+        <repository>
+            <root>svn+ssh://www.freepascal.org/FPC/svn/lazarus</root>
+            <uuid>4005530d-fff6-0310-9dd1-cebe43e6787f</uuid>
+        </repository>
+        <wc-info>
+            <schedule>normal</schedule>
+        </wc-info>
+        <commit revision="10680">
+            <author>jesus</author>
+            <date>2007-02-25T22:55:08.029980Z</date>
+        </commit>
+    </entry>
+</info>
+

@@ -1,0 +1,624 @@
+object OptionsForm: TOptionsForm
+  Left = 797
+  Height = 539
+  Top = 217
+  Width = 474
+  Caption = 'OptionsForm'
+  ClientHeight = 539
+  ClientWidth = 474
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.31'
+  object FPMakePageControl: TPageControl
+    Left = 0
+    Height = 493
+    Top = 0
+    Width = 474
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 0
+    object ConfigTabSheet: TTabSheet
+      Caption = 'Config'
+      ClientHeight = 467
+      ClientWidth = 466
+      Enabled = False
+      object CheckBox1: TCheckBox
+        Left = 6
+        Height = 17
+        Top = 86
+        Width = 454
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'Force installation to global (system-wide) directory'
+        TabOrder = 0
+      end
+      object GroupBox1: TGroupBox
+        Left = 6
+        Height = 74
+        Top = 6
+        Width = 454
+        Align = alTop
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Compiler configuration'
+        ClientHeight = 56
+        ClientWidth = 450
+        TabOrder = 1
+        object CompilerConfigCheckBox: TCheckBox
+          Left = 6
+          Height = 17
+          Top = 6
+          Width = 438
+          Align = alTop
+          BorderSpacing.Around = 6
+          Caption = 'Set compiler configuration to use'
+          TabOrder = 0
+        end
+        object Button1: TButton
+          AnchorSideTop.Control = CompilerConfigCheckBox
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = GroupBox1
+          AnchorSideRight.Side = asrBottom
+          Left = 424
+          Height = 21
+          Top = 29
+          Width = 20
+          Anchors = [akTop, akRight]
+          BorderSpacing.Around = 6
+          Caption = '...'
+          OnClick = Button1Click
+          TabOrder = 1
+        end
+        object CompilerConfigEdit: TEdit
+          AnchorSideLeft.Control = GroupBox1
+          AnchorSideTop.Control = CompilerConfigCheckBox
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = Button1
+          Left = 6
+          Height = 21
+          Top = 29
+          Width = 412
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Around = 6
+          TabOrder = 2
+          Text = 'CompilerConfigEdit'
+        end
+      end
+      object CheckBox2: TCheckBox
+        Left = 6
+        Height = 17
+        Top = 109
+        Width = 454
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'Force installation also if the package is already installed'
+        TabOrder = 2
+      end
+      object CheckBox3: TCheckBox
+        Left = 6
+        Height = 17
+        Top = 132
+        Width = 454
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'Recovery mode, use always internal fpmkunit'
+        TabOrder = 3
+      end
+      object CheckBox4: TCheckBox
+        Left = 6
+        Height = 17
+        Top = 155
+        Width = 454
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'Do not stop on broken packages'
+        TabOrder = 4
+      end
+      object CompilerOptionsGroupBox: TGroupBox
+        Left = 6
+        Height = 75
+        Top = 178
+        Width = 454
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'Compiler options'
+        ClientHeight = 57
+        ClientWidth = 450
+        TabOrder = 5
+        object CompilerConfigCheckBox1: TCheckBox
+          Left = 6
+          Height = 17
+          Top = 6
+          Width = 438
+          Align = alTop
+          BorderSpacing.Around = 6
+          Caption = 'Pass extra options to the compiler'
+          TabOrder = 0
+        end
+        object CompilerOptionsButton: TButton
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Side = asrBottom
+          Left = 424
+          Height = 21
+          Top = 29
+          Width = 20
+          Anchors = [akTop, akRight]
+          BorderSpacing.Around = 6
+          Caption = '...'
+          OnClick = Button1Click
+          TabOrder = 1
+        end
+        object CompilerOptionsEdit: TEdit
+          AnchorSideTop.Side = asrBottom
+          Left = 6
+          Height = 21
+          Top = 29
+          Width = 412
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Around = 6
+          TabOrder = 2
+          Text = 'CompilerOptionsEdit'
+        end
+      end
+      object CheckBox5: TCheckBox
+        Left = 6
+        Height = 17
+        Top = 259
+        Width = 454
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'Do not read the default configuration files'
+        TabOrder = 6
+      end
+      object CompilerOptionsGroupBox1: TGroupBox
+        Left = 6
+        Height = 74
+        Top = 282
+        Width = 454
+        Align = alTop
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Prefix'
+        ClientHeight = 56
+        ClientWidth = 450
+        TabOrder = 7
+        object CompilerConfigCheckBox2: TCheckBox
+          Left = 6
+          Height = 17
+          Top = 6
+          Width = 438
+          Align = alTop
+          BorderSpacing.Around = 6
+          Caption = 'Specify the prefix'
+          TabOrder = 0
+        end
+        object CompilerOptionsEdit1: TEdit
+          Left = 6
+          Height = 21
+          Top = 29
+          Width = 438
+          Align = alTop
+          BorderSpacing.Around = 6
+          TabOrder = 1
+          Text = 'PrefixEdit'
+        end
+      end
+      object CheckBox6: TCheckBox
+        Left = 6
+        Height = 17
+        Top = 362
+        Width = 454
+        Align = alTop
+        BorderSpacing.Around = 6
+        Caption = 'Skip the rebuild of depending packages after installation'
+        TabOrder = 8
+      end
+      object Label1: TLabel
+        Left = 7
+        Height = 14
+        Top = 389
+        Width = 154
+        Caption = 'Specify the compiler-executable'
+        ParentColor = False
+      end
+      object Edit1: TEdit
+        AnchorSideLeft.Control = Label1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CheckBox6
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CompilerOptionsButton1
+        Left = 167
+        Height = 21
+        Top = 385
+        Width = 267
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 9
+        Text = 'Edit1'
+      end
+      object Label2: TLabel
+        Left = 7
+        Height = 14
+        Top = 417
+        Width = 176
+        Caption = 'Specify the target cpu to compile for'
+        ParentColor = False
+      end
+      object Label3: TLabel
+        Left = 6
+        Height = 14
+        Top = 443
+        Width = 242
+        Caption = 'Specify the target operating system to compile for'
+        ParentColor = False
+      end
+      object CompilerOptionsButton1: TButton
+        AnchorSideTop.Control = CheckBox6
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = ConfigTabSheet
+        AnchorSideRight.Side = asrBottom
+        Left = 440
+        Height = 21
+        Top = 385
+        Width = 20
+        Anchors = [akTop, akRight]
+        BorderSpacing.Around = 6
+        Caption = '...'
+        OnClick = Button1Click
+        TabOrder = 10
+      end
+      object ComboBox1: TComboBox
+        AnchorSideLeft.Control = Label2
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = Edit1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CompilerOptionsButton1
+        Left = 189
+        Height = 21
+        Top = 412
+        Width = 245
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 13
+        TabOrder = 11
+        Text = 'ComboBox1'
+      end
+      object ComboBox2: TComboBox
+        AnchorSideLeft.Control = Label3
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ComboBox1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = CompilerOptionsButton1
+        Left = 254
+        Height = 21
+        Top = 439
+        Width = 180
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 13
+        TabOrder = 12
+        Text = 'ComboBox2'
+      end
+    end
+    object TabSheet1: TTabSheet
+      Caption = 'Messages'
+      ClientHeight = 467
+      ClientWidth = 466
+      object VerbosityCheckGroup: TCheckGroup
+        Left = 6
+        Height = 81
+        Top = 6
+        Width = 454
+        Align = alTop
+        AutoFill = True
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Verbosity'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 2
+        Columns = 2
+        Items.Strings = (
+          'Error'
+          'Warning'
+          'Info'
+          'Commands'
+          'Debug'
+          'Progress'
+        )
+        TabOrder = 0
+        Data = {
+          06000000020202020202
+        }
+      end
+    end
+    object UserInterfaceTabSheet: TTabSheet
+      Caption = 'User interface'
+      ClientHeight = 467
+      ClientWidth = 466
+      object VisibleColumnsListBox: TListBox
+        AnchorSideLeft.Control = UserInterfaceTabSheet
+        AnchorSideTop.Control = VisibleColumnsLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = lblMiddle
+        AnchorSideBottom.Control = UserInterfaceTabSheet
+        AnchorSideBottom.Side = asrBottom
+        Left = 6
+        Height = 435
+        Top = 26
+        Width = 209
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 18
+        BorderSpacing.Bottom = 6
+        ItemHeight = 0
+        MultiSelect = True
+        TabOrder = 0
+      end
+      object VisibleColumnsLabel: TLabel
+        AnchorSideLeft.Control = UserInterfaceTabSheet
+        AnchorSideTop.Control = UserInterfaceTabSheet
+        Left = 6
+        Height = 14
+        Top = 6
+        Width = 71
+        BorderSpacing.Around = 6
+        Caption = 'Visible columns'
+        ParentColor = False
+      end
+      object AddToVisibleColumnsButton: TSpeedButton
+        AnchorSideLeft.Control = lblMiddle
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = VisibleColumnsListBox
+        Left = 221
+        Height = 24
+        Top = 26
+        Width = 24
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF004DA1560647994FB8FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF0053A95CD94DA156F747994F38FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF005DB868CF71BE7BFF7AC183FF5BAA64FF47994FFF419149FF3B8842FF3580
+          3BFF2F7835FF2A702FFF256929FF216324FF1D5E20FFFFFFFF00FFFFFF0065C3
+          71C47BC886FF9CD5A5FF98D3A1FF94D09DFF90CE98FF8BCB93FF87C98EFF82C6
+          89FF7EC384FF7AC180FF76BE7CFF72BD78FF216324FFFFFFFF00FFFFFF0068C7
+          74C97FCC8AFFA2D8ABFF9ED6A7FF9AD4A3FF96D29FFF93CF9AFF8ECC95FF89CA
+          90FF85C78BFF81C587FF7DC282FF78C07EFF256929FFFFFFFF00FFFFFF00FFFF
+          FF0068C774D180CD8BFF7CC987FF5DB868FF58B162FF53A95CFF4DA156FF4799
+          4FFF419149FF3B8842FF35803BFF2F7835FF2A702FFFFFFFFF00FFFFFF00FFFF
+          FF00FFFFFF0068C774DB65C371F7FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF0068C7740668C774BBFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+        }
+        NumGlyphs = 0
+        OnClick = AddToVisibleColumnsButtonClick
+      end
+      object RemoveFromVisibleColumnsButton: TSpeedButton
+        AnchorSideLeft.Control = AddToVisibleColumnsButton
+        AnchorSideTop.Control = AddToVisibleColumnsButton
+        AnchorSideTop.Side = asrBottom
+        Left = 221
+        Height = 24
+        Top = 56
+        Width = 24
+        BorderSpacing.Top = 6
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00216324B81D5E2006FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF002A702F38256929F7216324D9FFFFFF00FFFFFF00FFFFFF00FFFFFF0061BE
+          6DFF5DB868FF58B162FF53A95CFF4DA156FF47994FFF419149FF3B8842FF3580
+          3BFF3F8845FF59A15EFF448B49FF216324CFFFFFFF00FFFFFF00FFFFFF0065C3
+          71FFA0D7A9FF9CD5A5FF98D3A1FF94D09DFF90CE98FF8BCB93FF87C98EFF82C6
+          89FF7EC384FF7AC180FF76BE7CFF458C4AFF216324C4FFFFFF00FFFFFF0068C7
+          74FFA5DAAEFFA2D8ABFF9ED6A7FF9AD4A3FF96D29FFF93CF9AFF8ECC95FF89CA
+          90FF85C78BFF81C587FF7DC282FF4A9150FF256929C9FFFFFF00FFFFFF0068C7
+          74FF68C774FF65C371FF61BE6DFF5DB868FF58B162FF53A95CFF4DA156FF4799
+          4FFF419149FF5AA362FF559D5CFF2F7835D1FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00419149F73B8842DBFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF0047994FBB41914906FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+        }
+        NumGlyphs = 0
+        OnClick = RemoveFromVisibleColumnsButtonClick
+      end
+      object AvailableColumnsLabel: TLabel
+        AnchorSideLeft.Control = AvailableColumnsListBox
+        AnchorSideTop.Control = UserInterfaceTabSheet
+        Left = 252
+        Height = 14
+        Top = 6
+        Width = 85
+        BorderSpacing.Top = 6
+        Caption = 'Available columns'
+        ParentColor = False
+      end
+      object AvailableColumnsListBox: TListBox
+        AnchorSideLeft.Control = lblMiddle
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = AvailableColumnsLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = UserInterfaceTabSheet
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = UserInterfaceTabSheet
+        AnchorSideBottom.Side = asrBottom
+        Left = 252
+        Height = 435
+        Top = 26
+        Width = 208
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Left = 18
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
+        ItemHeight = 0
+        MultiSelect = True
+        TabOrder = 1
+      end
+      object lblMiddle: TLabel
+        AnchorSideLeft.Control = UserInterfaceTabSheet
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = UserInterfaceTabSheet
+        AnchorSideTop.Side = asrCenter
+        Left = 233
+        Height = 1
+        Top = 233
+        Width = 1
+        ParentColor = False
+      end
+    end
+    object GlobalTabSheet: TTabSheet
+      Caption = 'Global settings'
+      ClientHeight = 467
+      ClientWidth = 466
+      object GlobalListView: TListView
+        Left = 0
+        Height = 467
+        Top = 0
+        Width = 466
+        Align = alClient
+        Columns = <        
+          item
+            AutoSize = True
+            Caption = 'Name'
+            Width = 462
+          end        
+          item
+            AutoSize = True
+            Caption = 'Value'
+            Width = 41
+          end>
+        ReadOnly = True
+        RowSelect = True
+        TabOrder = 0
+        ViewStyle = vsReport
+      end
+    end
+    object CompilerTabSheet: TTabSheet
+      Caption = 'Compiler settings'
+      ClientHeight = 467
+      ClientWidth = 466
+      object CompilerListView: TListView
+        Left = 0
+        Height = 467
+        Top = 0
+        Width = 466
+        Align = alClient
+        Columns = <        
+          item
+            AutoSize = True
+            Caption = 'Name'
+            Width = 462
+          end        
+          item
+            AutoSize = True
+            Caption = 'Value'
+            Width = 41
+          end>
+        ReadOnly = True
+        RowSelect = True
+        TabOrder = 0
+        ViewStyle = vsReport
+      end
+    end
+    object FPMakeTabSheet: TTabSheet
+      Caption = 'FPMake settings'
+      ClientHeight = 467
+      ClientWidth = 466
+      object FPMakeListView: TListView
+        Left = 0
+        Height = 467
+        Top = 0
+        Width = 466
+        Align = alClient
+        Columns = <        
+          item
+            AutoSize = True
+            Caption = 'Name'
+            Width = 462
+          end        
+          item
+            AutoSize = True
+            Caption = 'Value'
+            Width = 41
+          end>
+        ReadOnly = True
+        RowSelect = True
+        TabOrder = 0
+        ViewStyle = vsReport
+      end
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 499
+    Width = 462
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    CancelButton.OnClick = CancelButtonClick
+    TabOrder = 1
+    DefaultButton = pbCancel
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object OpenDialog: TOpenDialog
+    DefaultExt = '.*.cfg'
+    Filter = 'Configuration files|*.cfg'
+    left = 376
+    top = 48
+  end
+end
