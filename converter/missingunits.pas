@@ -122,9 +122,10 @@ begin
   Result:=mrCancel;
   // A title text containing filename.
   if (AMainMissingUnits.Count + AImplMissingUnits.Count) = 1 then
-    UnitsTitle:=lisUnitNotFound+' '+AMainUnitName
+    s:=lisUnitNotFoundInProject
   else
-    UnitsTitle:=lisUnitsNotFound2+' '+AMainUnitName;
+    s:=lisUnitsNotFoundInProject;
+  UnitsTitle:=Format(s, [AMainUnitName]);
 
   UNFDialog:=TMissingUnitsDialog.Create(nil);
   with UNFDialog do begin

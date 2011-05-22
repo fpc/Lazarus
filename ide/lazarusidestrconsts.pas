@@ -481,8 +481,8 @@ resourcestring
   lisMissingUnitsInfo1b = '1) Use the units only for Delphi.';
   lisMissingUnitsInfo2 = '2) Search for units. Found paths are added to project settings.';
   lisMissingUnitsInfo3 = '3) Abort now, install packages or fix paths and try again.';
-  lisUnitNotFound = 'A unit not found in';
-  lisUnitsNotFound2 = 'Units not found in';
+  lisUnitNotFoundInProject = 'A unit not found in project %s';
+  lisUnitsNotFoundInProject = 'Units not found in project %s';
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs and write lrs file.';
   lisProjectPath = 'Project Path:';
   lisProjectPathHint = 'Directory where project''s main file must be';
