@@ -379,14 +379,19 @@ end;
 
 class procedure TGtk2WSTrackBar.SetOrientation(
   const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation);
+var
+  B: Boolean;
 begin
   if not WSCheckHandleAllocated(ATrackBar, 'SetOrientation') then
     Exit;
-  ATrackBar.Hide;
+  B := ATrackBar.Visible;
+  if B then
+    ATrackBar.Hide;
   try
     RecreateWnd(ATrackBar);
   finally
-    ATrackBar.Show;
+    if B then
+      ATrackBar.Show;
   end;
 end;
 

@@ -73,6 +73,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
@@ -2438,6 +2439,24 @@ begin
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
+end;
+
+class procedure TGtk2WSScrollBar.SetKind(const AScrollBar: TCustomScrollBar;
+  const AIsHorizontal: Boolean);
+var
+  B: Boolean;
+begin
+  if not AScrollBar.HandleAllocated then
+    exit;
+  B := AScrollBar.Visible;
+  if B then
+    AScrollBar.Hide;
+  try
+    RecreateWnd(AScrollBar);
+  finally
+    if B then
+      AScrollBar.Show;
+  end;
 end;
 
 class procedure TGtk2WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);

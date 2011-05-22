@@ -47,6 +47,7 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
@@ -314,6 +315,41 @@ begin
   Result := TLCLIntfHandle(QtScrollbar);
 end;
 
+class procedure TQtWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar;
+  const AIsHorizontal: Boolean);
+var
+  QtScrollBar: TQtScrollBar;
+begin
+  if not WSCheckHandleAllocated(AScrollBar, 'SetKind') then
+    Exit;
+  QtScrollBar := TQtScrollBar(AScrollBar.Handle);
+  QtScrollBar.BeginUpdate;
+  try
+    case AScrollBar.Kind of
+      sbHorizontal:
+      begin
+        if QtScrollBar.getOrientation <> QtHorizontal then
+          QtScrollBar.SetOrientation(QtHorizontal);
+        if QtScrollBar.getInvertedAppereance then
+          QtScrollBar.setInvertedAppereance(False);
+        if QtScrollbar.getInvertedControls then
+          QtScrollBar.setInvertedControls(False);
+      end;
+      sbVertical:
+      begin
+        if QtScrollBar.getOrientation <> QtVertical then
+          QtScrollBar.SetOrientation(QtVertical);
+        if QtScrollBar.getInvertedAppereance then
+          QtScrollBar.setInvertedAppereance(False);
+        if not QtScrollbar.getInvertedControls then
+          QtScrollBar.setInvertedControls(True);
+      end;
+    end;
+  finally
+    QtScrollbar.EndUpdate;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomScrollBar.SetParams
   Params:  None
@@ -323,6 +359,8 @@ class procedure TQtWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
   QtScrollBar: TQtScrollBar;
 begin
+  if not WSCheckHandleAllocated(AScrollBar, 'SetParams') then
+    Exit;
   QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
 
   QtScrollBar.BeginUpdate;

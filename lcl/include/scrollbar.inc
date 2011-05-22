@@ -86,13 +86,12 @@ begin
   OldHeight:=Height;
   Constraints.UpdateInterfaceConstraints;
 
-  // TODO: Remove RecreateWnd
-  if HandleAllocated
-  then RecreateWnd(Self);
-
   // switch width and height, but not when loading, because we assume that
   // the lfm contains a consistent combination of kind and (width, height)
   if (csLoading in ComponentState) then Exit;
+
+  if HandleAllocated then
+    TWSScrollBarClass(WidgetSetClass).SetKind(Self, FKind = sbHorizontal);
 
   SetBounds(Left,Top,OldHeight,OldWidth);
 end;

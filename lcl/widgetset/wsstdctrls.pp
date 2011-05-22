@@ -54,6 +54,7 @@ type
   TWSScrollBar = class(TWSWinControl)
   published
     class procedure SetParams(const AScrollBar: TCustomScrollBar); virtual;
+    class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); virtual;
   end;
   TWSScrollBarClass = class of TWSScrollBar;
 
@@ -276,6 +277,12 @@ uses
 
 class procedure TWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 begin
+end;
+
+class procedure TWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar;
+  const AIsHorizontal: Boolean);
+begin
+  RecreateWnd(AScrollBar);
 end;
 
 { TWSCustomListBox }
