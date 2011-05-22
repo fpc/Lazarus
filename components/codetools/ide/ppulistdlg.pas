@@ -253,6 +253,7 @@ begin
 
   UnitPageControl.PageIndex:=0;
 
+  ButtonPanel1.HelpButton.Caption:=crsHelp;
   ButtonPanel1.CloseButton.Caption:=crsClose;
 
   IDEDialogLayoutList.ApplyLayout(Self);

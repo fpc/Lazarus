@@ -426,6 +426,7 @@ begin
 
     ButtonPanel1.OKButton.Enabled:=Result and (FMemberNodeExts<>nil)
       and (FMemberNodeExts.Count>0);
+    ButtonPanel1.HelpButton.Caption:=crsHelp;
     ButtonPanel1.OKButton.Caption:=crsBTNOK;
     ButtonPanel1.CancelButton.Caption:=crsBTNCancel;
     Caption:=Format(crsCAMAddAssignMethodToClass, [FClassName]);

@@ -62,6 +62,7 @@ resourcestring
   crsInsertFileAtCursor = 'Insert file at cursor ...';
   crsVirtualUnit = 'Virtual unit';
   crsProjectOutput = 'Project output';
+  crsHelp = '&Help';
   crsClose = '&Close';
   crsAddAssignMethod = 'Add Assign method';
   crsShowCodeToolsNodeInfo = 'Show CodeTools node info ...';
