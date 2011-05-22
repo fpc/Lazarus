@@ -141,7 +141,7 @@ begin
   GridGroupBox.Caption := dlgEnvGrid;
   GuideLinesGroupBox.Caption := dlgEnvLGuideLines;
   FormEditMiscGroupBox.Caption := dlgEnvMisc;
-  DesignerColorsGroupBox.Caption := dlgEnvColors;
+  DesignerColorsGroupBox.Caption := dlgColors;
   SetupGridGroupBox;
   SetupGuideLinesGroupBox;
   SetupMiscGroupBox;

@@ -1221,7 +1221,6 @@ resourcestring
   lisShowGutterInObjectInspector = 'Show gutter';
   lisShowStatusBarInObjectInspector = 'Show status bar';
   lisShowInfoBoxInObjectInspector = 'Show information box';
-  dlgEnvColors = 'Colors';
   dlgEnvBackupHelpNote = 'Notes: Project files are all files in the project directory';
   lisEnvOptDlgInvalidCompilerFilename = 'Invalid compiler filename';
   lisEnvOptDlgInvalidCompilerFilenameMsg = 'The compiler file "%s" is not an executable.';
@@ -1249,7 +1248,6 @@ resourcestring
   dlgEdDisplay = 'Display';
   lisEOTabWidths = 'Tab widths';
   dlgKeyMapping = 'Key Mappings';
-  dlgEdColor = 'Colors';
   dlgKeyMappingErrors = 'Key mapping errors';
   dlgEdBack = 'Back';
   dlgReport = 'Report';
@@ -1466,6 +1464,7 @@ resourcestring
   dlgUseSchemeDefaults = 'Use (and edit) global scheme settings';
   dlgUseSchemeLocal    = 'Use local scheme settings';
   dlgColor = 'Color';
+  dlgColors = 'Colors';
   dlgColorNotModified = 'Not modified';
 
   dlgForecolor = 'Foreground';

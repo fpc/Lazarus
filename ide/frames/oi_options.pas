@@ -159,7 +159,7 @@ const
 
 procedure TOIOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  ObjectInspectorColorsGroupBox.Caption := dlgEnvColors;
+  ObjectInspectorColorsGroupBox.Caption := dlgColors;
   OIMiscGroupBox.Caption := dlgOIMiscellaneous;
   OIOptionsGroupBox.Caption := dlgOIOptions;
   ObjectInspectorSpeedSettingsGroupBox.Caption := dlgOISpeedSettings;

@@ -200,7 +200,7 @@ begin
     cbMessages.Items.Add(GetCategoryStr(Category));
 
   // colors
-  gbColors.Caption := dlgEnvColors;
+  gbColors.Caption := dlgColors;
   chkUseEventLogColors.Caption := lisDebugOptionsFrmUseEventLogColors;
   ForeGroundLabel.Caption := dlgForecolor;
   BackGroundLabel.Caption := dlgBackColor;

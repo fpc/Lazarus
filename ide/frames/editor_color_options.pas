@@ -1293,7 +1293,7 @@ end;
 
 function TEditorColorOptionsFrame.GetTitle: String;
 begin
-  Result := dlgEdColor;
+  Result := dlgColors;
 end;
 
 procedure TEditorColorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
