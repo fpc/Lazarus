@@ -3000,6 +3000,7 @@ docs/xml/lcl/alllclunits.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/arrow.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/asyncprocess.xml svneol=native#text/plain
 docs/xml/lcl/avglvltree.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/barchart.xml svneol=native#text/plain
 docs/xml/lcl/buttonpanel.xml svneol=native#text/plain
 docs/xml/lcl/buttons.xml svneol=native#text/xml
 docs/xml/lcl/calendar.xml svneol=LF#text/xml eol=lf
