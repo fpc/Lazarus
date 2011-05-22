@@ -698,6 +698,11 @@ msgstr ""
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Colors"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr ""
@@ -998,13 +1003,6 @@ msgstr "Subdirectori"
 msgid "Code templates"
 msgstr "Plantilles del codi"
 
-#: lazarusidestrconsts.dlgedcolor
-#, fuzzy
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Color"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr ""
@@ -1185,11 +1183,6 @@ msgstr "Nota: Els fitxers del projecte son tots els fitxers del directori del pr
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Còpia de seguretat"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Colors"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15251,11 +15244,9 @@ msgstr ""
 msgid "Unit name contains ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "Unitat no trobada"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15269,8 +15260,8 @@ msgstr "trajectòria de les unitats"
 msgid "Unit paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found in"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunsigned

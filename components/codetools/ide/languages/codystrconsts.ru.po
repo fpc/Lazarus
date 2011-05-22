@@ -183,15 +183,19 @@ msgstr "Объявить переменную ..."
 
 #: codystrconsts.crsfile
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: codystrconsts.crsflags
 msgid "Flags"
-msgstr ""
+msgstr "Флаги"
 
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr "ГБ"
+
+#: codystrconsts.crshelp
+msgid "&Help"
+msgstr "&Справка"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert file at cursor ..."
@@ -203,7 +207,7 @@ msgstr "кБ"
 
 #: codystrconsts.crslinkedfiles
 msgid "Linked files"
-msgstr ""
+msgstr "Скомпонованные файлы"
 
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
@@ -301,7 +305,7 @@ msgstr "Всего"
 
 #: codystrconsts.crstype
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: codystrconsts.crsunit
 msgid "Unit"

@@ -696,6 +696,11 @@ msgstr ""
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr ""
@@ -994,11 +999,6 @@ msgstr ""
 msgid "Code templates"
 msgstr ""
 
-#: lazarusidestrconsts.dlgedcolor
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr ""
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr ""
@@ -1177,11 +1177,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Yedek"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr ""
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15179,11 +15174,9 @@ msgstr ""
 msgid "Unit name contains ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "Birim bulunamadı"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15197,11 +15190,9 @@ msgstr ""
 msgid "Unit paths"
 msgstr "Birim yolları"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#, fuzzy
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "Birimler bulunamadı"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

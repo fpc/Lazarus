@@ -698,6 +698,11 @@ msgstr ""
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Warna"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr ""
@@ -998,13 +1003,6 @@ msgstr "Sub direktori"
 msgid "Code templates"
 msgstr "Template kode"
 
-#: lazarusidestrconsts.dlgedcolor
-#, fuzzy
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Warna"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr ""
@@ -1185,11 +1183,6 @@ msgstr "Catatan: File Proyek adalah semua file dalam direktori proyek"
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Backup"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Warna"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15273,11 +15266,9 @@ msgstr "Nama unit dimulai dengan ..."
 msgid "Unit name contains ..."
 msgstr "Nama unit berisi ..."
 
-#: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "Unit tidak ditemukan"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15291,11 +15282,9 @@ msgstr "path unit"
 msgid "Unit paths"
 msgstr "Path Unit"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#, fuzzy
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "Unit tidak ditemukan"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

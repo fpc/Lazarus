@@ -701,6 +701,11 @@ msgstr "(ערוך צבע)"
 msgid "Not modified"
 msgstr "לא השתנה"
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "צבעים"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "פרמטרים של שורת הפקודה"
@@ -999,12 +1004,6 @@ msgstr "תת תיקייה"
 msgid "Code templates"
 msgstr "תבניות קוד"
 
-#: lazarusidestrconsts.dlgedcolor
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "צבעים"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 #| msgid "Complete blocks"
 msgid "Add close statement for pascal blocks"
@@ -1186,11 +1185,6 @@ msgstr "הערה: קבצי הפרויקט הם כל הקבצים הנמצאים 
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "גבוי"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "צבעים"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15275,9 +15269,9 @@ msgstr "שם היחידה מתחיל ב ..."
 msgid "Unit name contains ..."
 msgstr "שם היחידה מכיל ..."
 
-#: lazarusidestrconsts.lisunitnotfound
-msgid "A unit not found in"
-msgstr "לא נמצאה יחידה"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15291,9 +15285,9 @@ msgstr "נתיב היחידה"
 msgid "Unit paths"
 msgstr "נתיבי היחידה"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found in"
-msgstr "היחידה לא נמצאה ב"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

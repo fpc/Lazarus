@@ -693,6 +693,11 @@ msgstr ""
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Кольори"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr ""
@@ -993,13 +998,6 @@ msgstr "Підтека"
 msgid "Code templates"
 msgstr "Кодові шаблони"
 
-#: lazarusidestrconsts.dlgedcolor
-#, fuzzy
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Колір"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr ""
@@ -1180,11 +1178,6 @@ msgstr "ЗАУВАЖЕННЯ: Файлами проектів вважаютьс
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Резервування"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Кольори"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15254,11 +15247,9 @@ msgstr "Назва модуля починається з ..."
 msgid "Unit name contains ..."
 msgstr "Назва модуля включає ..."
 
-#: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "Модул не знайдений"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15272,11 +15263,9 @@ msgstr "шлях до модуля"
 msgid "Unit paths"
 msgstr "Шляхи до модулів"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#, fuzzy
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "Модулі не знайдені"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

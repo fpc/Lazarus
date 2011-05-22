@@ -703,6 +703,11 @@ msgstr "(Barva editoru)"
 msgid "Not modified"
 msgstr "Nezměněn"
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Barvy"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Parametry příkazové řádky"
@@ -1001,11 +1006,6 @@ msgstr "Podadresář"
 msgid "Code templates"
 msgstr "Šablony kódu"
 
-#: lazarusidestrconsts.dlgedcolor
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Barvy"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr "Doplnit ukončovací příkaz pascalového bloku"
@@ -1186,11 +1186,6 @@ msgstr "Poznámky: Soubory projektu jsou všechny soubory v adresáři projektu"
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Záloha"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Barvy"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15200,9 +15195,9 @@ msgstr "Jméno jednotky začíná s..."
 msgid "Unit name contains ..."
 msgstr "Jméno jednotky obsahuje..."
 
-#: lazarusidestrconsts.lisunitnotfound
-msgid "A unit not found in"
-msgstr "Jednotka nenalezena v"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15216,9 +15211,9 @@ msgstr "cesta jednotky"
 msgid "Unit paths"
 msgstr "Cesty jednotky"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found in"
-msgstr "Jednotky nenalezeny v"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

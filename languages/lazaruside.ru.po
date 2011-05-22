@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-21 01:57+0300\n"
+"PO-Revision-Date: 2011-05-22 20:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -712,6 +712,11 @@ msgstr "(Изменить цвет)"
 msgid "Not modified"
 msgstr "Исходный"
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Цвета"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Параметры командной строки"
@@ -1011,11 +1016,6 @@ msgstr "Подкаталог"
 msgid "Code templates"
 msgstr "Шаблоны кода"
 
-#: lazarusidestrconsts.dlgedcolor
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Цвет"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 #| msgid "Complete blocks"
 msgid "Add close statement for pascal blocks"
@@ -1205,11 +1205,6 @@ msgstr "Внимание, файлы проекта - все файлы в ег�
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Резервирование"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Цвета"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15252,10 +15247,9 @@ msgstr "Имя модуля начинается с ..."
 msgid "Unit name contains ..."
 msgstr "Имя модуля содержит ..."
 
-#: lazarusidestrconsts.lisunitnotfound
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "Модуль не найден в"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr "Не найден модуль в проекте %s"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15269,10 +15263,9 @@ msgstr "пути к модулям"
 msgid "Unit paths"
 msgstr "Пути к модулям"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "Модули не найдены в"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr "Не найдены модули в проекте %s"
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

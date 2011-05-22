@@ -712,6 +712,11 @@ msgstr "(Edytuj kolor)"
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Kolory"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Parametry linii poleceń"
@@ -1012,11 +1017,6 @@ msgstr "Podkatalog"
 msgid "Code templates"
 msgstr "Szablony źródeł"
 
-#: lazarusidestrconsts.dlgedcolor
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Kolor"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 #, fuzzy
 #| msgid "Complete blocks"
@@ -1199,11 +1199,6 @@ msgstr "Informacja: plikami projektu są wszystkie pliki w jego katalogu"
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Kopia zapasowa"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Kolory"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15258,11 +15253,9 @@ msgstr ""
 msgid "Unit name contains ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "Nie znaleziono modułu"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15276,11 +15269,9 @@ msgstr "ściażka modułów"
 msgid "Unit paths"
 msgstr "Ścieżki do modułów"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#, fuzzy
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "Nie znaleziono modułów"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

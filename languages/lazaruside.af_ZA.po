@@ -698,6 +698,11 @@ msgstr ""
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Kleure"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr ""
@@ -994,13 +999,6 @@ msgstr ""
 msgid "Code templates"
 msgstr ""
 
-#: lazarusidestrconsts.dlgedcolor
-#, fuzzy
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Kleur"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr ""
@@ -1179,11 +1177,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr ""
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Kleure"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15116,8 +15109,8 @@ msgstr ""
 msgid "Unit name contains ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisunitnotfound
-msgid "A unit not found in"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
@@ -15132,8 +15125,8 @@ msgstr ""
 msgid "Unit paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found in"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunsigned

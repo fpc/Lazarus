@@ -698,6 +698,11 @@ msgstr ""
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Kleuren"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr ""
@@ -998,13 +1003,6 @@ msgstr "Subdirectorie"
 msgid "Code templates"
 msgstr "Broncode templates"
 
-#: lazarusidestrconsts.dlgedcolor
-#, fuzzy
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Kleur"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr ""
@@ -1185,11 +1183,6 @@ msgstr "Toelichting: Project bestanden zijn alle bestanden in de project directo
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Backup"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Kleuren"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15261,11 +15254,9 @@ msgstr "Unit naam begint met ..."
 msgid "Unit name contains ..."
 msgstr "Unit naam bevat ..."
 
-#: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "Unit niet gevonden"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15279,11 +15270,9 @@ msgstr "Unitpad"
 msgid "Unit paths"
 msgstr "Unit paden"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#, fuzzy
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "Units niet gevonden"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

@@ -691,6 +691,11 @@ msgstr ""
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Värit"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Komentorivin parametrit"
@@ -987,10 +992,6 @@ msgstr "Alikansio"
 msgid "Code templates"
 msgstr "Koodilyhenteet"
 
-#: lazarusidestrconsts.dlgedcolor
-msgid "Colors"
-msgstr "Värit"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr "Lisää Pascal:n lauserakenteiden lopputekstit."
@@ -1169,11 +1170,6 @@ msgstr "Huomaa: Projektin tiedostot ovat kaikki tiedostot projektikansiossa"
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Varmistus"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Värit"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -10274,6 +10270,7 @@ msgid "Open recent package"
 msgstr "Avaa esillä ollut komponenttipaketti"
 
 #: lazarusidestrconsts.lismenuopenrecentproject
+msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Avaa esillä ollut projekti"
 
@@ -10722,6 +10719,7 @@ msgid "IDE speed buttons"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewjumphistory
+msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
 msgstr "Näytä hyppy historia ..."
 
@@ -13159,6 +13157,7 @@ msgid "Open Project"
 msgstr "Avaa Projekti"
 
 #: lazarusidestrconsts.lispwopenrecentproject
+msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Avaa edellinen projekti"
 
@@ -15083,9 +15082,9 @@ msgstr ""
 msgid "Unit name contains ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisunitnotfound
-msgid "A unit not found in"
-msgstr "Käännösyksikköä ei löydetty:"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15099,9 +15098,9 @@ msgstr ""
 msgid "Unit paths"
 msgstr ""
 
-#: lazarusidestrconsts.lisunitsnotfound2
-msgid "Units not found in"
-msgstr "Käännösyksikköjä ei löydetty:"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

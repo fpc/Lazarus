@@ -707,6 +707,11 @@ msgstr "(Modifie la couleur)"
 msgid "Not modified"
 msgstr "non modifié"
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Couleurs"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Paramètres de ligne de commande"
@@ -1009,12 +1014,6 @@ msgstr "Sous-répertoire"
 msgid "Code templates"
 msgstr "Modèles de code"
 
-#: lazarusidestrconsts.dlgedcolor
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Couleurs"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr "Ajoute close aux blocs en pascal"
@@ -1196,11 +1195,6 @@ msgstr "Note : les fichiers du projet sont tous ceux figurant dans son répertoi
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Sauvegarde"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Couleurs"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15302,10 +15296,9 @@ msgstr "Le nom d'unité commence par..."
 msgid "Unit name contains ..."
 msgstr "Nom d'unité contient ..."
 
-#: lazarusidestrconsts.lisunitnotfound
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "Une unité non trouvée dans"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15319,10 +15312,9 @@ msgstr "Chemin des unités"
 msgid "Unit paths"
 msgstr "Chemin des unités"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "Unités non trouvé dans"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

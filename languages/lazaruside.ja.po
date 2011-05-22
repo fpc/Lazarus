@@ -699,6 +699,11 @@ msgstr "（編集色）"
 msgid "Not modified"
 msgstr "未修正"
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "色"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "コマンドライン引数"
@@ -1001,13 +1006,6 @@ msgstr "サブディレクトリ"
 msgid "Code templates"
 msgstr "コードテンプレート"
 
-#: lazarusidestrconsts.dlgedcolor
-#, fuzzy
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "色"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 #, fuzzy
 #| msgid "Complete blocks"
@@ -1190,11 +1188,6 @@ msgstr "注意:プロジェクトファイルはプロジェクトディレク�
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "バックアップ"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "色"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15321,11 +15314,9 @@ msgstr "ユニット名が次から始まります"
 msgid "Unit name contains ..."
 msgstr "ユニット名が次を含みます"
 
-#: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "ユニットが見つかりません"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15339,11 +15330,9 @@ msgstr "ユニットパス"
 msgid "Unit paths"
 msgstr "ユニットパス"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#, fuzzy
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "ユニットが見つかりません"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

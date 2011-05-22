@@ -701,6 +701,11 @@ msgstr ""
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "颜色"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "命令行参数"
@@ -1001,13 +1006,6 @@ msgstr "子目录"
 msgid "Code templates"
 msgstr "代码模板"
 
-#: lazarusidestrconsts.dlgedcolor
-#, fuzzy
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "颜色"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
 msgstr ""
@@ -1188,11 +1186,6 @@ msgstr "注意: 工程文件是所有文件在一个工程目录下"
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "备份"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "颜色"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15304,11 +15297,9 @@ msgstr ""
 msgid "Unit name contains ..."
 msgstr "单元名包含 ..."
 
-#: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "单元没有发现"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15322,11 +15313,9 @@ msgstr "单元路径"
 msgid "Unit paths"
 msgstr "单元路径"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#, fuzzy
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "单元没有找到"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"

@@ -703,6 +703,11 @@ msgstr "(Keisti spalvą)"
 msgid "Not modified"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolors
+msgctxt "lazarusidestrconsts.dlgcolors"
+msgid "Colors"
+msgstr "Spalvos"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Komandinės eilutės parametrai"
@@ -1003,12 +1008,6 @@ msgstr "Poaplankis"
 msgid "Code templates"
 msgstr "Kodo šablonai"
 
-#: lazarusidestrconsts.dlgedcolor
-#| msgid "Syntax highlight"
-msgctxt "lazarusidestrconsts.dlgedcolor"
-msgid "Colors"
-msgstr "Spalvos"
-
 #: lazarusidestrconsts.dlgedcompleteblocks
 #| msgid "Complete blocks"
 msgid "Add close statement for pascal blocks"
@@ -1190,11 +1189,6 @@ msgstr "Pastaba: projekto failai - visi failai, esantys projekto aplanke"
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
 msgstr "Atsarginė kopija"
-
-#: lazarusidestrconsts.dlgenvcolors
-msgctxt "lazarusidestrconsts.dlgenvcolors"
-msgid "Colors"
-msgstr "Spalvos"
 
 #: lazarusidestrconsts.dlgenvfiles
 msgid "Files"
@@ -15306,10 +15300,9 @@ msgstr "Modulio pavadinimas prasideda…"
 msgid "Unit name contains ..."
 msgstr "Modulio pavadinime yra…"
 
-#: lazarusidestrconsts.lisunitnotfound
-#| msgid "Unit not found"
-msgid "A unit not found in"
-msgstr "Modulis nerastas, ieškota čia:"
+#: lazarusidestrconsts.lisunitnotfoundinproject
+msgid "A unit not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15323,10 +15316,9 @@ msgstr "kelias iki modulio"
 msgid "Unit paths"
 msgstr "Modulių keliai"
 
-#: lazarusidestrconsts.lisunitsnotfound2
-#| msgid "Units not found"
-msgid "Units not found in"
-msgstr "Moduliai nerasti, ieškota čia:"
+#: lazarusidestrconsts.lisunitsnotfoundinproject
+msgid "Units not found in project %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"
