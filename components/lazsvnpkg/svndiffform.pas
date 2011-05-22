@@ -31,7 +31,6 @@ type
   { TSVNDiffFrm }
 
   TSVNDiffFrm = class(TForm)
-    SaveButton: TBitBtn;
     ButtonPanel: TButtonPanel;
     SaveDialog: TSaveDialog;
     SVNDiffMemo: TMemo;
@@ -100,8 +99,9 @@ end;
 
 procedure TSVNDiffFrm.FormCreate(Sender: TObject);
 begin
-  SaveButton.Enabled := False;
-  SaveButton.Caption := rsSave;
+  ButtonPanel.HelpButton.Enabled := False;
+  ButtonPanel.HelpButton.Caption := rsSave;
+  ButtonPanel.HelpButton.LoadGlyphFromLazarusResource('laz_save');
 end;
 
 procedure TSVNDiffFrm.SaveButtonClick(Sender: TObject);
@@ -130,7 +130,7 @@ begin
   chdir(FRepoBaseDir);
   CmdLineToMemo(SVNExecutable + ' diff ' + FSwitches + FileNames + ' --non-interactive',
                 SVNDiffMemo);
-  SaveButton.Enabled := True;
+  ButtonPanel.HelpButton.Enabled := True;
 end;
 
 destructor TSVNDiffFrm.Destroy;
@@ -138,6 +138,9 @@ begin
   FFileList.Free;
   inherited Destroy;
 end;
+
+initialization
+   {$I ../../images/laz_images.lrs}
 
 end.
 
