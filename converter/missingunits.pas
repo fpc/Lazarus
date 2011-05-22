@@ -62,12 +62,8 @@ type
     SearchButton: TBitBtn;
     AbortButton: TBitBtn;
     MissingUnitsInfoLabel: TLabel;
-    procedure AbortButtonClick(Sender: TObject);
-    procedure CommentButtonClick(Sender: TObject);
     procedure SaveMenuItemClick(Sender: TObject);
-    procedure SearchButtonClick(Sender: TObject);
     procedure SelectMenuItemClick(Sender: TObject);
-    procedure SkipButtonClick(Sender: TObject);
     procedure UnselectMenuItemClick(Sender: TObject);
   private
 
@@ -195,27 +191,6 @@ begin
     ShowMessage(Format('Unit list is saved to file %s.', [fn]));
   end;
 end;
-
-procedure TMissingUnitsDialog.CommentButtonClick(Sender: TObject);
-begin
-
-end;
-
-procedure TMissingUnitsDialog.SearchButtonClick(Sender: TObject);
-begin
-
-end;
-
-procedure TMissingUnitsDialog.SkipButtonClick(Sender: TObject);
-begin
-
-end;
-
-procedure TMissingUnitsDialog.AbortButtonClick(Sender: TObject);
-begin
-
-end;
-
 
 end.
 

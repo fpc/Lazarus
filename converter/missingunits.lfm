@@ -27,7 +27,6 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Caption = 'Comment'
     Default = True
     ModalResult = 1
-    OnClick = CommentButtonClick
     TabOrder = 0
   end
   object SearchButton: TBitBtn
@@ -38,7 +37,6 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Anchors = [akBottom]
     Caption = 'Search'
     ModalResult = 6
-    OnClick = SearchButtonClick
     TabOrder = 1
   end
   object AbortButton: TBitBtn
@@ -50,7 +48,6 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Caption = 'Abort'
     Kind = bkAbort
     ModalResult = 3
-    OnClick = AbortButtonClick
     TabOrder = 2
   end
   object ChoicesLabel: TLabel
@@ -110,7 +107,6 @@ object MissingUnitsDialog: TMissingUnitsDialog
     Anchors = [akBottom]
     Caption = 'Skip'
     ModalResult = 5
-    OnClick = SkipButtonClick
     TabOrder = 4
   end
   object PopupMenu1: TPopupMenu
