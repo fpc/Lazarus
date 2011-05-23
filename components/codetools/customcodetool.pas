@@ -223,7 +223,7 @@ type
         out Caret:TCodeXYPosition; out NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToStr(CleanPos: integer; WithFilename: boolean = false): string;
     function CleanPosToRelativeStr(CleanPos: integer;
-        const BasePos: TCodeXYPosition): string;
+        const BaseFilename: string): string;
     procedure GetCleanPosInfo(CodePosInFront, CleanPos: integer;
         ResolveComments: boolean; out SameArea: TAtomPosition);
     procedure GetLineInfo(ACleanPos: integer;
@@ -2548,18 +2548,18 @@ begin
 end;
 
 function TCustomCodeTool.CleanPosToRelativeStr(CleanPos: integer;
-  const BasePos: TCodeXYPosition): string;
+  const BaseFilename: string): string;
 var
   CodePos: TCodeXYPosition;
 begin
   if not CleanPosToCaret(CleanPos,CodePos) then
     Result:='(?)'
   else begin
-    if (BasePos.Code=nil) or (not FilenameIsAbsolute(BasePos.Code.Filename)) then
+    if (BaseFilename='') or (not FilenameIsAbsolute(BaseFilename)) then
       Result:=CodePos.Code.Filename
-    else if (CodePos.Code<>BasePos.Code) then
+    else if CompareFilenames(CodePos.Code.Filename,BaseFilename)<>0 then
       Result:=CreateRelativePath(CodePos.Code.Filename,
-                                 ExtractFilePath(BasePos.Code.Filename))
+                                 ExtractFilePath(BaseFilename))
     else
       Result:='';
     Result:=Result+'('+IntToStr(CodePos.Y)+','+IntToStr(CodePos.X)+')';

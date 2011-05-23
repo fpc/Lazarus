@@ -33,7 +33,6 @@
     - guess for in
     - guess parameter
     - guess <i>:=expression
-    - Fix bug: adding a public variable is added after a method
     - Extend uses section when adding to a class
     - Fix bug: adding types with comments
 }
@@ -73,6 +72,7 @@ type
     TypeEdit: TEdit;
     TypeLabel: TLabel;
     WhereRadioGroup: TRadioGroup;
+    RedefineLabel: TLabel;
     procedure HelpButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -93,6 +93,7 @@ procedure ShowDeclareVariableDialog(Sender: TObject);
 
 function CheckCreateVarFromIdentifierInSrcEdit(out CodePos: TCodeXYPosition;
   out Tool: TCodeTool; out NewIdentifier, NewType, NewUnitName: string;
+  out ExistingDefinition: TFindContext;
   out PossibleContexts: TFPList): boolean;
 
 implementation
@@ -112,6 +113,7 @@ end;
 function CheckCreateVarFromIdentifierInSrcEdit(
   out CodePos: TCodeXYPosition; out Tool: TCodeTool;
   out NewIdentifier, NewType, NewUnitName: string;
+  out ExistingDefinition: TFindContext;
   out PossibleContexts: TFPList // list of PFindContext
   ): boolean;
 
@@ -127,7 +129,6 @@ var
   CursorNode: TCodeTreeNode;
   Handled: boolean;
   IsKeyword: boolean;
-  ExistingDefinition: TFindContext;
   NewExprType: TExpressionType;
   IsSubIdentifier: boolean;
 begin
@@ -137,6 +138,7 @@ begin
   NewUnitName:='';
   CodePos:=CleanCodeXYPosition;
   Tool:=nil;
+  ExistingDefinition:=CleanFindContext;
   PossibleContexts:=nil;
 
   if (ParseTilCursor(Tool,CleanPos,CursorNode,Handled,true,@CodePos)<>cupeSuccess)
@@ -269,14 +271,23 @@ var
   OldChange: boolean;
   OldSrcEdit: TSourceEditorInterface;
   NewType: String;
+  ExistingDefinition: TFindContext;
 begin
   Result:=false;
   PossibleContexts:=nil;
   Targets.Clear;
   try
     if not CheckCreateVarFromIdentifierInSrcEdit(CodePos,Tool,Identifier,
-      RecommendedType,UnitOfType,PossibleContexts)
+      RecommendedType,UnitOfType,ExistingDefinition,PossibleContexts)
     then exit;
+
+    if ExistingDefinition.Node<>nil then begin
+      RedefineLabel.Visible:=true;
+      RedefineLabel.Caption:='Already defined at '+ExistingDefinition.Tool.CleanPosToRelativeStr(
+        ExistingDefinition.Node.StartPos,CodePos.Code.Filename);
+    end else begin
+      RedefineLabel.Visible:=false;
+    end;
 
     if PossibleContexts<>nil then begin
       for i:=0 to PossibleContexts.Count-1 do begin

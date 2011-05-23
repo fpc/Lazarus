@@ -1,7 +1,7 @@
 object CodyDeclareVarDialog: TCodyDeclareVarDialog
-  Left = 275
+  Left = 291
   Height = 298
-  Top = 250
+  Top = 243
   Width = 408
   Caption = 'CodyDeclareVarDialog'
   ClientHeight = 298
@@ -12,8 +12,8 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 252
+    Height = 42
+    Top = 250
     Width = 396
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -28,12 +28,12 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
   end
   object Panel1: TPanel
     Left = 0
-    Height = 246
+    Height = 244
     Top = 0
     Width = 408
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 246
+    ClientHeight = 244
     ClientWidth = 408
     TabOrder = 1
     object TypeLabel: TLabel
@@ -42,8 +42,8 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 18
-      Top = 223
-      Width = 66
+      Top = 221
+      Width = 71
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'TypeLabel'
@@ -57,10 +57,10 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
-      Left = 78
+      Left = 83
       Height = 27
-      Top = 219
-      Width = 324
+      Top = 217
+      Width = 319
       Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -70,8 +70,8 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
     object WhereRadioGroup: TRadioGroup
       AnchorSideBottom.Control = TypeEdit
       Left = 6
-      Height = 207
-      Top = 6
+      Height = 181
+      Top = 30
       Width = 396
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -87,6 +87,16 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
       TabOrder = 1
+    end
+    object RedefineLabel: TLabel
+      Left = 6
+      Height = 18
+      Top = 6
+      Width = 396
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'RedefineLabel'
+      ParentColor = False
     end
   end
 end

@@ -2023,6 +2023,7 @@ var
   var
     p: LongInt;
     Msg: String;
+    f: String;
   begin
     ReadTilBracketCloseOrUnexpected:=false;
     if not ExceptionOnNotFound then exit;
@@ -2036,9 +2037,13 @@ var
     siEdgedBracketOpen: Msg:='bracket ] not found';
     siRecord: Msg:='record end not found';
     end;
-    if CurPos.StartPos<=SrcLen then
-      Msg:=Msg+', found unexpected '+GetAtom
-        +' at '+CleanPosToRelativeStr(CurPos.StartPos,ErrorNicePosition);
+    if CurPos.StartPos<=SrcLen then begin
+      if ErrorNicePosition.Code<>nil then
+        f:=ErrorNicePosition.Code.Filename
+      else
+        f:='';
+      Msg:=Msg+', found unexpected '+GetAtom+' at '+CleanPosToRelativeStr(CurPos.StartPos,f);
+    end;
     SaveRaiseException(Msg,not CleanPosToCaret(p,ErrorNicePosition));
   end;
 
