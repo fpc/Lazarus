@@ -600,7 +600,7 @@ begin
   Node:=CfgCache.Units.Tree.FindLowest;
   while Node<>nil do begin
     Item:=PStringToStringTreeItem(Node.Data);
-    if Item^.Value<>'' then
+    if (Item^.Value<>'') and (CompareFileExt(Item^.Value,'.ppu',false)=0) then
       CheckFileAge(Item^.Value);
     Node:=CfgCache.Units.Tree.FindSuccessor(Node);
   end;
