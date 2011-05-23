@@ -268,7 +268,7 @@ begin
   if fChms = nil then
   begin
     try
-      fChms := TChmFileList.Create(AFile);
+      fChms := TChmFileList.Create(Utf8ToSys(AFile));
       if Not(fChms.Chm[0].IsValidFile) then begin
         FreeAndNil(fChms);
         //DoError(INVALID_FILE_TYPE);
