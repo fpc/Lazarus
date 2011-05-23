@@ -133,7 +133,7 @@ begin
   ViewCodyWindowCommand:=RegisterIDECommand(CmdCatView, 'Cody',
     'Cody', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowCodyWindow);
   RegisterIDEMenuCommand(itmViewMainWindows, 'ViewCody',
-    'Cody', nil, nil, ViewCodyWindowCommand);
+    'Cody', nil, nil, ViewCodyWindowCommand)
   {$IFNDEF EnableCodyExperiments}
    .Visible:=false
   {$ENDIF};
