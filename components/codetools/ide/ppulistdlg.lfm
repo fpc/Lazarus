@@ -54,7 +54,7 @@ object PPUListDialog: TPPUListDialog
       object UnitsStringGrid: TStringGrid
         Left = 6
         Height = 209
-        Top = 11
+        Top = 6
         Width = 724
         Align = alTop
         AutoFillColumns = True
@@ -110,25 +110,25 @@ object PPUListDialog: TPPUListDialog
         Cursor = crVSplit
         Left = 0
         Height = 5
-        Top = 0
+        Top = 221
         Width = 736
         Align = alTop
         ResizeAnchor = akTop
       end
       object UnitGroupBox: TGroupBox
         Left = 6
-        Height = 182
-        Top = 226
+        Height = 176
+        Top = 232
         Width = 724
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'UnitGroupBox'
-        ClientHeight = 161
+        ClientHeight = 155
         ClientWidth = 716
         TabOrder = 2
         object UnitPageControl: TPageControl
           Left = 0
-          Height = 161
+          Height = 155
           Top = 0
           Width = 716
           ActivePage = UnitLinkedFilesTabSheet
@@ -239,11 +239,11 @@ object PPUListDialog: TPPUListDialog
           end
           object UnitLinkedFilesTabSheet: TTabSheet
             Caption = 'UnitLinkedFilesTabSheet'
-            ClientHeight = 128
+            ClientHeight = 122
             ClientWidth = 712
             object UnitLinkedFilesStringGrid: TStringGrid
               Left = 0
-              Height = 128
+              Height = 122
               Top = 0
               Width = 712
               Align = alClient

@@ -153,6 +153,7 @@ type
     procedure JumpToUnit(TheUnitName: string);
 
     // units info
+    procedure UpdateUnitsInfo;
     procedure FillUnitsInfo(AnUnitName: string);
     function FindUsesPath(UsingUnit, UsedUnit: TPPUDlgListItem): TFPList;
 
@@ -754,6 +755,17 @@ begin
   end;
 end;
 
+procedure TPPUListDialog.UpdateUnitsInfo;
+var
+  AnUnitName: String;
+begin
+  if (UnitsStringGrid.Row<2) or (UnitsStringGrid.Row>=UnitsStringGrid.RowCount) then
+    AnUnitName:=''
+  else
+    AnUnitName:=UnitsStringGrid.Cells[0,UnitsStringGrid.Row];
+  FillUnitsInfo(AnUnitName);
+end;
+
 procedure TPPUListDialog.FillUnitsInfo(AnUnitName: string);
 var
   Item: TPPUDlgListItem;
@@ -1083,8 +1095,10 @@ begin
   UpdateUnitsGrid;
   UpdateLinkedFilesTreeView;
 
-  if FSearchingItems.Count=0 then
+  if FSearchingItems.Count=0 then begin
     IdleConnected:=false;
+    UpdateUnitsInfo;
+  end;
 end;
 
 procedure TPPUListDialog.AddUses(SrcItem: TPPUDlgListItem; UsedUnits: TStrings);
