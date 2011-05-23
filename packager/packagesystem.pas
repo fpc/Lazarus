@@ -288,7 +288,10 @@ type
                   Complete, MainPPUExists, ShowAbort: boolean): TModalResult;
     function LoadPackageCompiledState(APackage: TLazPackage;
                                 IgnoreErrors, ShowAbort: boolean): TModalResult;
-    function CheckCompileNeedDueToDependencies(FirstDependency: TPkgDependency;
+    function CheckCompileNeedDueToFPCUnits(TheOwner: TObject;
+                          StateFileAge: longint): boolean;
+    function CheckCompileNeedDueToDependencies(TheOwner: TObject;
+                          FirstDependency: TPkgDependency;
                           SkipDesignTimePackages: boolean; StateFileAge: longint
                           ): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
@@ -1165,8 +1168,14 @@ var
   Cnt: Integer;
   i: Integer;
   APackage: TLazPackage;
-  PkgDirs: String;
   SrcDir: String;
+
+  function SrcDirInPath(Dirs: String): boolean;
+  begin
+    Result:=FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
+                                 PChar(Dirs),length(Dirs))<>nil;
+  end;
+
 begin
   if not FilenameIsAbsolute(TheFilename) then exit;
   Cnt:=Count;
@@ -1175,13 +1184,10 @@ begin
     APackage:=Packages[i];
     if APackage.IsVirtual and (not APackage.AutoCreated) then continue;
     // source directories + unit path without inherited paths + base directory + output directory
-    PkgDirs:=APackage.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false);
-    PkgDirs:=MergeSearchPaths(PkgDirs,APackage.SourceDirectories.CreateSearchPathFromAllFiles);
-    PkgDirs:=MergeSearchPaths(PkgDirs,APackage.GetOutputDirectory);
-    PkgDirs:=MergeSearchPaths(PkgDirs,APackage.Directory);
-    //debugln(['TLazPackageGraph.FindPossibleOwnersOfUnit ',APackage.Name,' ',PkgDirs]);
-    if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
-      PChar(PkgDirs),length(PkgDirs))<>nil
+    if SrcDirInPath(APackage.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false))
+    or SrcDirInPath(APackage.SourceDirectories.CreateSearchPathFromAllFiles)
+    or SrcDirInPath(APackage.GetOutputDirectory)
+    or SrcDirInPath(APackage.Directory)
     then
       OwnerList.Add(APackage);
   end;
@@ -3102,7 +3108,56 @@ begin
   Result:=mrOk;
 end;
 
-function TLazPackageGraph.CheckCompileNeedDueToDependencies(
+function TLazPackageGraph.CheckCompileNeedDueToFPCUnits(TheOwner: TObject;
+  StateFileAge: longint): boolean;
+var
+  AProject: TLazProject;
+  Pkg: TLazPackage;
+  ID: String;
+  Dir: string;
+  UnitSetID: String;
+  HasChanged: boolean;
+  Cache: TFPCUnitSetCache;
+  CfgCache: TFPCTargetConfigCache;
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  Filename: String;
+begin
+  Result:=false;
+  if TheOwner=nil then exit;
+  if TheOwner is TLazPackage then begin
+    Pkg:=TLazPackage(TheOwner);
+    if Pkg.IsVirtual then exit;
+    Dir:=Pkg.DirectoryExpanded;
+    ID:=Pkg.Name;
+  end else if TheOwner is TLazProject then begin
+    AProject:=TLazProject(TheOwner);
+    Dir:=ExtractFilePath(AProject.ProjectInfoFile);
+    ID:=ExtractFileName(AProject.ProjectInfoFile);
+  end else
+    exit;
+  if (Dir='') or (not FilenameIsAbsolute(Dir)) then
+    exit;
+  UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory(Dir);
+  if UnitSetID='' then exit;
+  Cache:=CodeToolBoss.FPCDefinesCache.FindUnitSetWithID(UnitSetID,HasChanged,false);
+  if Cache=nil then exit;
+  CfgCache:=Cache.GetConfigCache(false);
+  if CfgCache=nil then exit;
+  if CfgCache.Units=nil then exit;
+  Node:=CfgCache.Units.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    Filename:=Item^.Value;
+    if FileAgeCached(Filename)>StateFileAge then begin
+      debugln(['TLazPackageGraph.CheckCompileNeedDueToFPCUnits FPC unit "',Filename,'" is newer than state file of ',ID]);
+      exit(true);
+    end;
+    Node:=CfgCache.Units.Tree.FindSuccessor(Node);
+  end;
+end;
+
+function TLazPackageGraph.CheckCompileNeedDueToDependencies(TheOwner: TObject;
   FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
   StateFileAge: longint): TModalResult;
 
@@ -3119,6 +3174,10 @@ var
 begin
   Dependency:=FirstDependency;
   if Dependency=nil then begin
+    // no dependencies
+    // => check FPC units
+    if CheckCompileNeedDueToFPCUnits(TheOwner,StateFileAge) then
+      exit(mrYes);
     Result:=mrNo;
     exit;
   end;
@@ -3142,8 +3201,8 @@ begin
           end;
           if StateFileAge<RequiredPackage.LastCompile[o].StateFileDate then begin
             DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
-              RequiredPackage.IDAsString,' State file is newer than ',
-              'State file ',GetOwnerID);
+              RequiredPackage.IDAsString,
+              ' State file is newer than state file of ',GetOwnerID);
             exit;
           end;
         end;
@@ -3270,7 +3329,7 @@ var
   OldValue: string;
   NewValue: string;
   o: TPkgOutputDir;
-  stats: PPkgLastCompileStats;
+  Stats: PPkgLastCompileStats;
   SrcPPUFile: String;
 begin
   Result:=mrYes;
@@ -3284,14 +3343,14 @@ begin
   if APackage.AutoUpdate=pupManually then exit(mrNo);
 
   o:=APackage.GetOutputDirType;
-  stats:=@APackage.LastCompile[o];
+  Stats:=@APackage.LastCompile[o];
   //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
-  if (stats^.CompilerFilename<>CompilerFilename)
-  or (ExtractFPCParamsForBuildAll(stats^.Params)
+  if (Stats^.CompilerFilename<>CompilerFilename)
+  or (ExtractFPCParamsForBuildAll(Stats^.Params)
       <>ExtractFPCParamsForBuildAll(CompilerParams))
-  or ((stats^.CompilerFileDate>0)
+  or ((Stats^.CompilerFileDate>0)
       and FileExistsCached(CompilerFilename)
-      and (FileAgeCached(CompilerFilename)<>stats^.CompilerFileDate))
+      and (FileAgeCached(CompilerFilename)<>Stats^.CompilerFileDate))
   then begin
     NeedBuildAllFlag:=true;
     ConfigChanged:=true;
@@ -3301,7 +3360,7 @@ begin
   StateFilename:=APackage.GetStateFilename;
   Result:=LoadPackageCompiledState(APackage,false,true);
   if Result<>mrOk then exit;
-  if not stats^.StateFileLoaded then begin
+  if not Stats^.StateFileLoaded then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  No state file for ',APackage.IDAsString);
     ConfigChanged:=true;
     exit(mrYes);
@@ -3311,7 +3370,7 @@ begin
 
   // check compiler and params
   LastParams:=APackage.GetLastCompilerParams(o);
-  if stats^.ViaMakefile then begin
+  if Stats^.ViaMakefile then begin
     // the package was compiled via Makefile
     CurPaths:=nil;
     LastPaths:=nil;
@@ -3361,10 +3420,10 @@ begin
     ConfigChanged:=true;
     exit(mrYes);
   end;
-  if (not stats^.ViaMakefile)
-  and (CompilerFilename<>stats^.CompilerFilename) then begin
+  if (not Stats^.ViaMakefile)
+  and (CompilerFilename<>Stats^.CompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler filename changed for ',APackage.IDAsString);
-    DebugLn('  Old="',stats^.CompilerFilename,'"');
+    DebugLn('  Old="',Stats^.CompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
     exit(mrYes);
   end;
@@ -3373,8 +3432,8 @@ begin
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
   end;
-  if (not stats^.ViaMakefile)
-  and (FileAgeCached(CompilerFilename)<>stats^.CompilerFileDate) then begin
+  if (not Stats^.ViaMakefile)
+  and (FileAgeCached(CompilerFilename)<>Stats^.CompilerFileDate) then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler file changed for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
     exit(mrYes);
@@ -3389,7 +3448,7 @@ begin
       exit(mrYes);
     end;
     // check main source ppu file
-    if stats^.MainPPUExists then begin
+    if Stats^.MainPPUExists then begin
       SrcPPUFile:=APackage.GetSrcPPUFilename;
       if not FileExistsCached(SrcPPUFile) then begin
         DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  main ppu file missing of ',APackage.IDAsString,': ',SrcPPUFile);
@@ -3405,15 +3464,15 @@ begin
   // quick compile is possible
   NeedBuildAllFlag:=false;
 
-  if not stats^.Complete then begin
+  if not Stats^.Complete then begin
     DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compile was incomplete for ',APackage.IDAsString);
     exit(mrYes);
   end;
 
   if CheckDependencies then begin
     // check all required packages
-    Result:=CheckCompileNeedDueToDependencies(APackage.FirstRequiredDependency,
-                                           SkipDesignTimePackages,StateFileAge);
+    Result:=CheckCompileNeedDueToDependencies(APackage,
+          APackage.FirstRequiredDependency,SkipDesignTimePackages,StateFileAge);
     if Result<>mrNo then begin
       DependenciesChanged:=true;
       exit;

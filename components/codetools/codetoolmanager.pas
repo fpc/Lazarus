@@ -302,9 +302,9 @@ type
                                       UseCache: boolean = false): string;
     function FindUnitInUnitSet(const Directory, AUnitName: string): string;
     function GetUnitSetIDForDirectory(const Directory: string;
-                                      UseCache: boolean = false): string;
+                                      UseCache: boolean = true): string;
     function GetFPCUnitPathForDirectory(const Directory: string;
-                                        UseCache: boolean = false): string;// unit paths reported by FPC
+                                        UseCache: boolean = true): string;// unit paths reported by FPC
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  out FPCVersion, FPCRelease, FPCPatch: integer);
 

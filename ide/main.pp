@@ -11291,7 +11291,7 @@ begin
   NeedBuildAllFlag:=false;
 
   // check all required packages
-  Result:=PackageGraph.CheckCompileNeedDueToDependencies(
+  Result:=PackageGraph.CheckCompileNeedDueToDependencies(AProject,
                                 AProject.FirstRequiredDependency,
                                 not (pfUseDesignTimePackages in AProject.Flags),
                                 StateFileAge);
