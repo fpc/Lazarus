@@ -1016,7 +1016,8 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     HelpManager.ShowError(Result,ErrorMsg);
   end;
 
-  function CollectDeclarations(CodeBuffer: TCodeBuffer): TShowHelpResult;
+  function CollectDeclarations(CodeBuffer: TCodeBuffer;
+    out Complete: boolean): TShowHelpResult;
   var
     NewList: TPascalHelpContextList;
     PascalHelpContextLists: TList;
@@ -1024,6 +1025,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     CurCodePos: PCodeXYPosition;
     i: Integer;
   begin
+    Complete:=false;
     Result:=shrHelpNotFound;
     ListOfPCodeXYPosition:=nil;
     PascalHelpContextLists:=nil;
@@ -1048,10 +1050,12 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
         if PascalHelpContextLists=nil then exit;
 
         // invoke help system
+        Complete:=true;
         debugln('TIDEHelpManager.ShowHelpForSourcePosition D PascalHelpContextLists.Count=',dbgs(PascalHelpContextLists.Count));
         Result:=ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
-      end else begin
+      end else if CodeToolBoss.ErrorCode<>nil then begin
         MainIDEInterface.DoJumpToCodeToolBossError;
+        Complete:=True;
       end;
     finally
       FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
@@ -1065,6 +1069,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
 
 var
   CodeBuffer: TCodeBuffer;
+  Complete: boolean;
 begin
   debugln('TIDEHelpManager.ShowHelpForSourcePosition A Filename=',Filename,' ',dbgs(CodePos));
   Result:=shrHelpNotFound;
@@ -1075,9 +1080,9 @@ begin
   // get code buffer for Filename
   if mrOk<>LoadCodeBuffer(CodeBuffer,FileName,[lbfCheckIfText],false) then
     exit;
-    
-  Result:=CollectDeclarations(CodeBuffer);
-  if Result=shrSuccess then exit;
+
+  Result:=CollectDeclarations(CodeBuffer,Complete);
+  if Complete then exit;
   Result:=CollectKeyWords(CodeBuffer);
 end;
 
