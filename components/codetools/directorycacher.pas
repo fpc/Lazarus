@@ -103,18 +103,22 @@ type
     FileTimeStamp: cardinal;
   end;
 
+  TCTDirectoryListingTime = longint;
+  PCTDirectoryListingTime = ^TCTDirectoryListingTime;
+
   { TCTDirectoryListing }
 
   TCTDirectoryListing = class
   public
     FileTimeStamp: cardinal;
-    Names: PChar; // all filenames separated with #0
-    NameCount: integer; // number of filenames
-    NamesLength: PtrInt; // length of Names in bytes
-    NameStarts: PInteger; // offsets in 'Names'
+    Files: PChar; // all filenames: each: time:TCTDirectoryListingTime+filename+#0
+    Count: integer; // number of filenames
+    Size: PtrInt; // length of Names in bytes
+    Starts: PInteger; // offsets in 'Names'
     destructor Destroy; override;
     procedure Clear;
     function CalcMemSize: PtrUInt;
+    function GetFilename(Index: integer): PChar;
   end;
   
   TCTOnIterateFile = procedure(const Filename: string) of object;
@@ -492,13 +496,21 @@ begin
 end;
 
 procedure TCTDirectoryCache.UpdateListing;
+type
+  TWorkFileInfo = record
+    FileName: string;
+    Time: TCTDirectoryListingTime;
+  end;
+  PWorkFileInfo = ^TWorkFileInfo;
+
 var
-  WorkingListing: PAnsiString;
+  WorkingListing: PWorkFileInfo;
   WorkingListingCapacity, WorkingListingCount: integer;
+  WorkingItem: PWorkFileInfo;
   FileInfo: TSearchRec;
   TotalLen: Integer;
   i: Integer;
-  p: Integer;
+  p: PChar;
   CurFilenameLen: Integer;
   NewCapacity: Integer;
 begin
@@ -530,12 +542,14 @@ begin
             NewCapacity:=WorkingListingCapacity*2
           else
             NewCapacity:=8;
-          ReAllocMem(WorkingListing,SizeOf(Pointer)*NewCapacity);
+          ReAllocMem(WorkingListing,SizeOf(TWorkFileInfo)*NewCapacity);
           FillChar(WorkingListing[WorkingListingCount],
-                   SizeOf(Pointer)*(NewCapacity-WorkingListingCapacity),0);
+                   SizeOf(TWorkFileInfo)*(NewCapacity-WorkingListingCapacity),0);
           WorkingListingCapacity:=NewCapacity;
         end;
-        WorkingListing[WorkingListingCount]:=FileInfo.Name;
+        WorkingItem:=@WorkingListing[WorkingListingCount];
+        WorkingItem^.Time:=FileInfo.Time;
+        WorkingItem^.FileName:=FileInfo.Name;
         inc(WorkingListingCount);
       until FindNextUTF8(FileInfo)<>0;
     end;
@@ -550,25 +564,30 @@ begin
     // create listing
     TotalLen:=0;
     for i:=0 to WorkingListingCount-1 do
-      inc(TotalLen,length(WorkingListing[i])+1);
-    GetMem(FListing.Names,TotalLen);
-    FListing.NamesLength:=TotalLen;
-    FListing.NameCount:=WorkingListingCount;
-    GetMem(FListing.NameStarts,SizeOf(PChar)*WorkingListingCount);
-    p:=0;
+      inc(TotalLen,length(WorkingListing[i].FileName)+1+SizeOf(TCTDirectoryListingTime));
+    GetMem(FListing.Files,TotalLen);
+    FListing.Size:=TotalLen;
+    FListing.Count:=WorkingListingCount;
+    GetMem(FListing.Starts,SizeOf(PChar)*WorkingListingCount);
+    p:=FListing.Files;
     for i:=0 to WorkingListingCount-1 do begin
-      CurFilenameLen:=length(WorkingListing[i]);
+      FListing.Starts[i]:=p-FListing.Files;
+      WorkingItem:=@WorkingListing[i];
+      // time
+      PCTDirectoryListingTime(p)^:=WorkingItem^.Time;
+      inc(p,SizeOf(TCTDirectoryListingTime));
+      // filename
+      CurFilenameLen:=length(WorkingItem^.FileName);
       if CurFilenameLen>0 then begin
-        FListing.NameStarts[i]:=p;
-        System.Move(WorkingListing[i][1],FListing.Names[p],CurFilenameLen);
+        System.Move(WorkingItem^.FileName[1],p^,CurFilenameLen);
         inc(p,CurFilenameLen);
       end;
-      FListing.Names[p]:=#0;
+      p^:=#0;
       inc(p);
     end;
   finally
     for i:=0 to WorkingListingCount-1 do
-      WorkingListing[i]:='';
+      WorkingListing[i].FileName:='';
     ReAllocMem(WorkingListing,0);
   end;
 end;
@@ -770,17 +789,19 @@ var
   m: Integer;
   cmp: LongInt;
   CurFilename: PChar;
+  Files: PChar;
 begin
   Result:='';
   if ShortFilename='' then exit;
   if Directory<>'' then begin
     UpdateListing;
-    if (FListing.Names=nil) then exit;
+    Files:=FListing.Files;
+    if Files=nil then exit;
     l:=0;
-    r:=FListing.NameCount-1;
+    r:=FListing.Count-1;
     while r>=l do begin
       m:=(l+r) shr 1;
-      CurFilename:=@FListing.Names[FListing.NameStarts[m]];
+      CurFilename:=@Files[FListing.Starts[m]+SizeOf(TCTDirectoryListingTime)];
       case FileCase of
       ctsfcDefault:
         {$IFDEF CaseInsensitiveFilenames}
@@ -809,6 +830,8 @@ end;
 
 function TCTDirectoryCache.FindUnitSource(const AUnitName: string;
   AnyCase: boolean): string;
+const
+  NameOffset = SizeOf(TCTDirectoryListingTime);
 var
   l: Integer;
   r: Integer;
@@ -816,6 +839,7 @@ var
   cmp: LongInt;
   CurFilename: PChar;
   CurFilenameLen: LongInt;
+  Files: PChar;
 begin
   Result:='';
   //if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) {and (System.Pos('packager',directory)>0)} then
@@ -823,16 +847,17 @@ begin
   if AUnitName='' then exit;
   if Directory<>'' then begin
     UpdateListing;
-    if (FListing.Names=nil) then exit;
+    Files:=FListing.Files;
+    if Files=nil then exit;
     // binary search the nearest filename
     //if (CompareText(AUnitName,'AddFileToAPackageDlg')=0) and (System.Pos('packager',directory)>0) then
     //  WriteListing;
     
     l:=0;
-    r:=FListing.NameCount-1;
+    r:=FListing.Count-1;
     while r>=l do begin
       m:=(l+r) shr 1;
-      CurFilename:=@FListing.Names[FListing.NameStarts[m]];
+      CurFilename:=@Files[FListing.Starts[m]+NameOffset];
       cmp:=ComparePCharUnitNameWithFilename(Pointer(AUnitName),CurFilename);
       if cmp>0 then
         l:=m+1
@@ -847,12 +872,12 @@ begin
     // go to the first filename with the right unit name
     while (m>0)
     and (ComparePCharUnitNameWithFilename(Pointer(AUnitName),
-                      @FListing.Names[FListing.NameStarts[m-1]])=0)
+                                     @Files[FListing.Starts[m-1]+NameOffset])=0)
     do
       dec(m);
     // -> now find a filename with correct case and extension
-    while m<FListing.NameCount do begin
-      CurFilename:=@FListing.Names[FListing.NameStarts[m]];
+    while m<FListing.Count do begin
+      CurFilename:=@Files[FListing.Starts[m]+NameOffset];
       // check if filename has the right AUnitName
       if (ComparePCharUnitNameWithFilename(Pointer(AUnitName),CurFilename)<>0)
       then
@@ -1115,9 +1140,9 @@ var
   i: Integer;
   Filename: PChar;
 begin
-  writeln('TCTDirectoryCache.WriteListing Count=',FListing.NameCount,' TextLen=',FListing.NamesLength);
-  for i:=0 to FListing.NameCount-1 do begin
-    Filename:=@FListing.Names[FListing.NameStarts[i]];
+  writeln('TCTDirectoryCache.WriteListing Count=',FListing.Count,' Size=',FListing.Size);
+  for i:=0 to FListing.Count-1 do begin
+    Filename:=@FListing.Files[FListing.Starts[i]+SizeOf(TCTDirectoryListingTime)];
     writeln(i,' "',Filename,'"');
   end;
 end;
@@ -1432,20 +1457,34 @@ end;
 
 procedure TCTDirectoryListing.Clear;
 begin
-  if NameStarts<>nil then begin
-    FreeMem(NameStarts);
-    NameStarts:=nil;
-    NamesLength:=0;
-    FreeMem(Names);
-    Names:=nil;
-    NameCount:=0;
+  if Starts<>nil then begin
+    FreeMem(Starts);
+    Starts:=nil;
+    Size:=0;
+    FreeMem(Files);
+    Files:=nil;
+    Count:=0;
   end;
 end;
 
 function TCTDirectoryListing.CalcMemSize: PtrUInt;
 begin
   Result:=PtrUInt(InstanceSize)
-    +PtrUInt(NamesLength);
+    +SizeOf(Pointer)*Count  // Starts
+    +PtrUInt(Size); // Files
+end;
+
+function TCTDirectoryListing.GetFilename(Index: integer): PChar;
+
+  procedure RaiseIndexOutOfBounds;
+  begin
+    raise Exception.Create('TCTDirectoryListing.GetFilename: Index out of bounds');
+  end;
+
+begin
+  if (Index<0) or (Index>=Count) then
+    RaiseIndexOutOfBounds;
+  Result:=@Files[Starts[Index]+SizeOf(TCTDirectoryListingTime)];
 end;
 
 { TUnitFileNameLink }

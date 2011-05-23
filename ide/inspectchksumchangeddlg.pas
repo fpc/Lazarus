@@ -236,8 +236,8 @@ begin
   // search in directory for all files that could be sources or ppu files of this unit
   DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(Dir,true,false);
   if (DirCache=nil) or (DirCache.Listing=nil) then exit;
-  for i:=0 to DirCache.Listing.NameCount-1 do begin
-    Filename:=PChar(@DirCache.Listing.Names[DirCache.Listing.NameStarts[i]]);
+  for i:=0 to DirCache.Listing.Count-1 do begin
+    Filename:=DirCache.Listing.GetFilename(i);
     Ext:=lowercase(ExtractFileExt(Filename));
     if ((Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu'))
     and (SysUtils.CompareText(anUnitName,ExtractFileNameOnly(Filename))=0)
