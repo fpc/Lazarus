@@ -111,7 +111,8 @@ type
   TCTDirectoryListing = class
   public
     FileTimeStamp: cardinal;
-    Files: PChar; // all filenames: each: time:TCTDirectoryListingTime+filename+#0
+    Files: PChar; { all filenames: each: time:TCTDirectoryListingTime+filename+#0
+                    sorted: first case insensitive then sensitive }
     Count: integer; // number of filenames
     Size: PtrInt; // length of Names in bytes
     Starts: PInteger; // offsets in 'Names'
@@ -119,6 +120,7 @@ type
     procedure Clear;
     function CalcMemSize: PtrUInt;
     function GetFilename(Index: integer): PChar;
+    function GetTime(Index: integer): TCTDirectoryListingTime;
   end;
   
   TCTOnIterateFile = procedure(const Filename: string) of object;
@@ -153,11 +155,14 @@ type
     procedure CalcMemSize(Stats: TCTMemStats);
     procedure Reference;
     procedure Release;
+    function IndexOfFileCaseInsensitive(ShortFilename: PChar): integer;
+    function IndexOfFileCaseSensitive(ShortFilename: PChar): integer;
     function FindUnitLink(const AUnitName: string): string;
     function FindUnitInUnitSet(const AUnitName: string): string;
     function FindCompiledUnitInUnitSet(const AUnitName: string): string;
     function FindFile(const ShortFilename: string;
                       const FileCase: TCTSearchFileCase): string;
+    function FileAge(const ShortFilename: string): TCTDirectoryListingTime;
     function FindUnitSource(const AUnitName: string; AnyCase: boolean): string;
     function FindUnitSourceInCleanSearchPath(const AUnitName,
                                   SearchPath: string; AnyCase: boolean): string;
@@ -209,6 +214,8 @@ type
                        UseCache: boolean = true): string;
     procedure IncreaseFileTimeStamp;
     procedure IncreaseConfigTimeStamp;
+    function FileExists(Filename: string): boolean;
+    function FileAge(Filename: string): TCTDirectoryListingTime;
     function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
     function FindUnitInUnitSet(const Directory, AUnitName: string): string;
     function FindCompiledUnitInUnitSet(const Directory, AUnitName: string): string;
@@ -257,6 +264,22 @@ function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
 
 
 implementation
+
+type
+  TWorkFileInfo = record
+    FileName: string;
+    Time: TCTDirectoryListingTime;
+  end;
+  PWorkFileInfo = ^TWorkFileInfo;
+  PPWorkFileInfo = ^PWorkFileInfo;
+
+function CompareWorkFileInfos(Data1, Data2: Pointer): integer;
+var
+  Info1: PWorkFileInfo absolute Data1;
+  Info2: PWorkFileInfo absolute Data2;
+begin
+  Result:=ComparePCharFirstCaseInsThenCase(PChar(Info1^.Filename),PChar(Info2^.Filename));
+end;
 
 function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
 begin
@@ -496,13 +519,6 @@ begin
 end;
 
 procedure TCTDirectoryCache.UpdateListing;
-type
-  TWorkFileInfo = record
-    FileName: string;
-    Time: TCTDirectoryListingTime;
-  end;
-  PWorkFileInfo = ^TWorkFileInfo;
-
 var
   WorkingListing: PWorkFileInfo;
   WorkingListingCapacity, WorkingListingCount: integer;
@@ -513,6 +529,7 @@ var
   p: PChar;
   CurFilenameLen: Integer;
   NewCapacity: Integer;
+  SortMap: PPWorkFileInfo;
 begin
   if (FListing<>nil) and (FListing.FileTimeStamp=Pool.FileTimeStamp) then exit;
   if FListing=nil then
@@ -521,13 +538,14 @@ begin
   FListing.FileTimeStamp:=Pool.FileTimeStamp;
   if Directory='' then exit;// virtual directory
   
-  // Note: do not add a 'if not DirectoryExistsUTF8 then exit'. This will not
-  // work on automounted directories. You must use FindFirstUTF8.
+  // Note: do not add a 'if not DirectoryExistsUTF8 then exit'.
+  // This will not work on automounted directories. You must use FindFirstUTF8.
 
   // read the directory
   WorkingListing:=nil;
   WorkingListingCapacity:=0;
   WorkingListingCount:=0;
+  SortMap:=nil;
   try
     if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
@@ -558,8 +576,10 @@ begin
     if WorkingListingCount=0 then exit;
 
     // sort the files
-    MergeSort(PPointer(WorkingListing),WorkingListingCount,
-              @ComparePCharFirstCaseInsThenCase);
+    GetMem(SortMap,WorkingListingCount*SizeOf(Pointer));
+    for i:=0 to WorkingListingCount-1 do
+      SortMap[i]:=@WorkingListing[i];
+    MergeSort(PPointer(SortMap),WorkingListingCount,@CompareWorkFileInfos);
 
     // create listing
     TotalLen:=0;
@@ -572,7 +592,7 @@ begin
     p:=FListing.Files;
     for i:=0 to WorkingListingCount-1 do begin
       FListing.Starts[i]:=p-FListing.Files;
-      WorkingItem:=@WorkingListing[i];
+      WorkingItem:=SortMap[i];
       // time
       PCTDirectoryListingTime(p)^:=WorkingItem^.Time;
       inc(p,SizeOf(TCTDirectoryListingTime));
@@ -586,6 +606,7 @@ begin
       inc(p);
     end;
   finally
+    ReAllocMem(SortMap,0);
     for i:=0 to WorkingListingCount-1 do
       WorkingListing[i].FileName:='';
     ReAllocMem(WorkingListing,0);
@@ -717,6 +738,68 @@ begin
   if FRefCount=0 then Free;
 end;
 
+function TCTDirectoryCache.IndexOfFileCaseInsensitive(
+  ShortFilename: PChar): integer;
+var
+  Files: PChar;
+  l: Integer;
+  r: Integer;
+  m: Integer;
+  CurFilename: PChar;
+  cmp: Integer;
+begin
+  UpdateListing;
+  Files:=FListing.Files;
+  if Files=nil then exit(-1);
+  l:=0;
+  r:=FListing.Count-1;
+  while r>=l do begin
+    m:=(l+r) shr 1;
+    CurFilename:=@Files[FListing.Starts[m]+SizeOf(TCTDirectoryListingTime)];
+    cmp:=ComparePCharCaseInsensitive(ShortFilename,CurFilename);// pointer type cast avoids #0 check
+    if cmp>0 then
+      l:=m+1
+    else if cmp<0 then
+      r:=m-1
+    else begin
+      Result:=m;
+      exit;
+    end;
+  end;
+  Result:=-1;
+end;
+
+function TCTDirectoryCache.IndexOfFileCaseSensitive(ShortFilename: PChar
+  ): integer;
+var
+  Files: PChar;
+  l: Integer;
+  r: Integer;
+  m: Integer;
+  CurFilename: PChar;
+  cmp: Integer;
+begin
+  UpdateListing;
+  Files:=FListing.Files;
+  if Files=nil then exit(-1);
+  l:=0;
+  r:=FListing.Count-1;
+  while r>=l do begin
+    m:=(l+r) shr 1;
+    CurFilename:=@Files[FListing.Starts[m]+SizeOf(TCTDirectoryListingTime)];
+    cmp:=ComparePCharFirstCaseInsThenCase(ShortFilename,CurFilename);// pointer type cast avoids #0 check
+    if cmp>0 then
+      l:=m+1
+    else if cmp<0 then
+      r:=m-1
+    else begin
+      Result:=m;
+      exit;
+    end;
+  end;
+  Result:=-1;
+end;
+
 function TCTDirectoryCache.FindUnitLink(const AUnitName: string): string;
 var
   Node: TAVLTreeNode;
@@ -784,48 +867,54 @@ function TCTDirectoryCache.FindFile(const ShortFilename: string;
   end;
   
 var
-  l: Integer;
-  r: Integer;
-  m: Integer;
-  cmp: LongInt;
-  CurFilename: PChar;
-  Files: PChar;
+  i: Integer;
 begin
   Result:='';
   if ShortFilename='' then exit;
   if Directory<>'' then begin
-    UpdateListing;
-    Files:=FListing.Files;
-    if Files=nil then exit;
-    l:=0;
-    r:=FListing.Count-1;
-    while r>=l do begin
-      m:=(l+r) shr 1;
-      CurFilename:=@Files[FListing.Starts[m]+SizeOf(TCTDirectoryListingTime)];
-      case FileCase of
-      ctsfcDefault:
-        {$IFDEF CaseInsensitiveFilenames}
-        cmp:=ComparePCharCaseInsensitive(Pointer(ShortFilename),CurFilename);// pointer type cast avoids #0 check
-        {$ELSE}
-        cmp:=ComparePCharCaseSensitive(Pointer(ShortFilename),CurFilename);
-        {$ENDIF}
-      ctsfcAllCase,ctsfcLoUpCase:
-        cmp:=ComparePCharCaseInsensitive(Pointer(ShortFilename),CurFilename);
-      else RaiseDontKnow;
-      end;
-      if cmp>0 then
-        l:=m+1
-      else if cmp<0 then
-        r:=m-1
-      else begin
-        Result:=CurFilename;
+    case FileCase of
+    ctsfcDefault:
+      {$IFDEF CaseInsensitiveFilenames}
+      i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
+      {$ELSE}
+      begin
+        i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));
+        // just return the parameter
+        if i>=0 then
+          Result:=ShortFilename;
         exit;
       end;
+      {$ENDIF}
+    ctsfcAllCase,ctsfcLoUpCase:
+      i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));
+    else RaiseDontKnow;
     end;
+    if i>=0 then
+      Result:=FListing.GetFilename(i);
   end else begin
     // this is a virtual directory
     Result:=Pool.FindVirtualFile(ShortFilename);
   end;
+end;
+
+function TCTDirectoryCache.FileAge(const ShortFilename: string
+  ): TCTDirectoryListingTime;
+var
+  i: Integer;
+begin
+  Result:=-1;
+  if ShortFilename='' then exit;
+  if Directory='' then begin
+    // this is a virtual directory
+    exit;
+  end;
+  {$IFDEF CaseInsensitiveFilenames}
+  i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
+  {$ELSE}
+  i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));
+  {$ENDIF}
+  if i>=0 then
+    Result:=FListing.GetTime(i);
 end;
 
 function TCTDirectoryCache.FindUnitSource(const AUnitName: string;
@@ -1252,6 +1341,50 @@ begin
     FConfigTimeStamp:=Low(FConfigTimeStamp);
 end;
 
+function TCTDirectoryCachePool.FileExists(Filename: string): boolean;
+var
+  Directory: String;
+  Cache: TCTDirectoryCache;
+  ShortFilename: String;
+begin
+  Filename:=TrimFilename(Filename);
+  if Filename='' then exit(false);
+  if FilenameIsAbsolute(Filename) then begin
+    ShortFilename:=ExtractFilename(Filename);
+    if (ShortFilename<>'') and (ShortFilename<>'.') and (ShortFilename<>'..')
+    then begin
+      Directory:=ExtractFilePath(Filename);
+      Cache:=GetCache(Directory,true,false);
+      Result:=Cache.FindFile(ShortFilename,ctsfcDefault)<>'';
+      exit;
+    end;
+  end;
+  // fallback
+  Result:=FileStateCache.FileExistsCached(Filename);
+end;
+
+function TCTDirectoryCachePool.FileAge(Filename: string
+  ): TCTDirectoryListingTime;
+var
+  Directory: String;
+  Cache: TCTDirectoryCache;
+  ShortFilename: String;
+begin
+  Filename:=TrimFilename(Filename);
+  if (Filename<>'') and FilenameIsAbsolute(Filename) then begin
+    ShortFilename:=ExtractFilename(Filename);
+    if (ShortFilename<>'') and (ShortFilename<>'.') and (ShortFilename<>'..')
+    then begin
+      Directory:=ExtractFilePath(Filename);
+      Cache:=GetCache(Directory,true,false);
+      Result:=Cache.FileAge(ShortFilename);
+      exit;
+    end;
+  end;
+  // fallback
+  Result:=FileStateCache.FileAgeCached(Filename);
+end;
+
 function TCTDirectoryCachePool.FindUnitInUnitLinks(const Directory,
   AUnitName: string): string;
   
@@ -1485,6 +1618,19 @@ begin
   if (Index<0) or (Index>=Count) then
     RaiseIndexOutOfBounds;
   Result:=@Files[Starts[Index]+SizeOf(TCTDirectoryListingTime)];
+end;
+
+function TCTDirectoryListing.GetTime(Index: integer): TCTDirectoryListingTime;
+
+  procedure RaiseIndexOutOfBounds;
+  begin
+    raise Exception.Create('TCTDirectoryListing.GetFilename: Index out of bounds');
+  end;
+
+begin
+  if (Index<0) or (Index>=Count) then
+    RaiseIndexOutOfBounds;
+  Result:=PCTDirectoryListingTime(@Files[Starts[Index]])^;
 end;
 
 { TUnitFileNameLink }

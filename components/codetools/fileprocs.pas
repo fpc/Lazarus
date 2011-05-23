@@ -238,12 +238,17 @@ type
     property TimeStamp: int64 read FTimeStamp;
   end;
 
+type
+  TOnFileExistsCached = function(Filename: string): boolean of object;
+  TOnFileAgeCached = function(Filename: string): longint of object;
 var
   FileStateCache: TFileStateCache = nil;
+  OnFileExistsCached: TOnFileExistsCached = nil; // set by unit CodeToolManager
+  OnFileAgeCached: TOnFileAgeCached = nil; // set by unit CodeToolManager
 
-function FileExistsCached(const Filename: string): boolean;
-function DirPathExistsCached(const Filename: string): boolean;
-function DirectoryIsWritableCached(const DirectoryName: string): boolean;
+function FileExistsCached(const AFilename: string): boolean;
+function DirPathExistsCached(const AFilename: string): boolean;
+function DirectoryIsWritableCached(const ADirectoryName: string): boolean;
 function FileIsExecutableCached(const AFilename: string): boolean;
 function FileIsReadableCached(const AFilename: string): boolean;
 function FileIsWritableCached(const AFilename: string): boolean;
@@ -3084,19 +3089,22 @@ begin
   Result:=ComparePointers(Addr,PCTLineInfoCacheItem(Item)^.Addr);
 end;
 
-function FileExistsCached(const Filename: string): boolean;
+function FileExistsCached(const AFilename: string): boolean;
 begin
-  Result:=FileStateCache.FileExistsCached(Filename);
+  if OnFileExistsCached<>nil then
+    Result:=OnFileExistsCached(AFilename)
+  else
+    Result:=FileStateCache.FileExistsCached(AFilename);
 end;
 
-function DirPathExistsCached(const Filename: string): boolean;
+function DirPathExistsCached(const AFilename: string): boolean;
 begin
-  Result:=FileStateCache.DirPathExistsCached(Filename);
+  Result:=FileStateCache.DirPathExistsCached(AFilename);
 end;
 
-function DirectoryIsWritableCached(const DirectoryName: string): boolean;
+function DirectoryIsWritableCached(const ADirectoryName: string): boolean;
 begin
-  Result:=FileStateCache.DirectoryIsWritableCached(DirectoryName);
+  Result:=FileStateCache.DirectoryIsWritableCached(ADirectoryName);
 end;
 
 function FileIsExecutableCached(const AFilename: string): boolean;
@@ -3121,7 +3129,10 @@ end;
 
 function FileAgeCached(const AFileName: string): Longint;
 begin
-  Result:=FileStateCache.FileAgeCached(AFilename);
+  if OnFileAgeCached<>nil then
+    Result:=OnFileAgeCached(AFilename)
+  else
+    Result:=FileStateCache.FileAgeCached(AFilename);
 end;
 
 function FileAgeToStr(aFileAge: longint): string;

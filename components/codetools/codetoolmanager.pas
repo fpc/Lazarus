@@ -889,6 +889,8 @@ begin
   DirectoryCachePool.OnGetUnitFromSet:=@DirectoryCachePoolGetUnitFromSet;
   DirectoryCachePool.OnGetCompiledUnitFromSet:=@DirectoryCachePoolGetCompiledUnitFromSet;
   DirectoryCachePool.OnIterateFPCUnitsFromSet:=@DirectoryCachePoolIterateFPCUnitsFromSet;
+  OnFileExistsCached:=@DirectoryCachePool.FileExists;
+  OnFileAgeCached:=@DirectoryCachePool.FileAge;
   DefineTree.DirectoryCachePool:=DirectoryCachePool;
   FPCDefinesCache:=TFPCDefinesCache.Create(nil);
   PPUCache:=TPPUTools.Create;
@@ -945,6 +947,10 @@ begin
   if DefaultConfigCodeCache=SourceCache then
     DefaultConfigCodeCache:=nil;
   FreeAndNil(SourceCache);
+  if OnFileExistsCached=@DirectoryCachePool.FileExists then
+    OnFileExistsCached:=nil;
+  if OnFileAgeCached=@DirectoryCachePool.FileAge then
+    OnFileAgeCached:=nil;
   FreeAndNil(DirectoryCachePool);
   FreeAndNil(FPCDefinesCache);
   {$IFDEF CTDEBUG}
