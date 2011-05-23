@@ -24,6 +24,18 @@
     A dialog to create a variable declaration.
     It uses the identifier in the source editor to guess the name and type, so
     that the user needs only to choose where to create the var.
+
+  ToDo:
+    - Test sub contexts. For example MyObject.Identifier
+    - Hide targets depending on already defined identifier:
+      - if identifier is already defined locally, give a error message
+      - if identifier is already defined in class, remove class as target
+    - guess for in
+    - guess parameter
+    - guess <i>:=expression
+    - Fix bug: adding a public variable is added after a method
+    - Fix bug: local variable is added behind nested proc
+    - Extend uses section when adding to a class
 }
 unit DeclareVarDlg;
 

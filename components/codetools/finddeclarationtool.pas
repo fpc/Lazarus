@@ -7420,7 +7420,7 @@ begin
 
       // ToDo: ppu, dcu files
 
-      if Tool.MoveCursorToPropName(Node) then
+      if Tool.MoveCursorToPropType(Node) then
         ConvertIdentifierAtCursor(Tool);
     end;
     
