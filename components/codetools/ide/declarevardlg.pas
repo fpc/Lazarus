@@ -26,9 +26,6 @@
     that the user needs only to choose where to create the var.
 
   ToDo:
-    - Hide targets depending on already defined identifier:
-      - if identifier is already defined locally, give a error message
-      - if identifier is already defined in class, remove class as target
     - guess for in
     - guess parameter
     - guess <i>:=expression

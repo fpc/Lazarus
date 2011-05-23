@@ -5299,6 +5299,8 @@ var
   i: Integer;
   Context: PFindContext;
   Section: TCodeTreeNode;
+  ExistingNodeInProc: Boolean;
+  Keep: Boolean;
 begin
   Result:=false;
   IsKeyword:=false;
@@ -5359,10 +5361,29 @@ begin
         if Section.Desc in AllDefinitionSections then break;
         Section:=Section.Parent;
       end;
+      ExistingNodeInProc:=ExistingDefinition.Node.HasParentOfType(ctnProcedure);
       if Section<>nil then begin
         for i:=ListOfPFindContext.Count-1 downto 0 do begin
           Context:=PFindContext(ListOfPFindContext[i]);
+          Keep:=true;
+          if ExistingNodeInProc then begin
+            if (Context^.Tool<>ExistingDefinition.Tool)
+            or (Context^.Node.StartPos<=ExistingDefinition.Node.StartPos) then
+              Keep:=false; // existing is local var => delete all outside
+          end;
 
+          if Keep
+          and (Context^.Tool=ExistingDefinition.Tool)
+          and (((ExistingDefinition.Node=Context^.Node)
+              or ExistingDefinition.Node.HasAsParent(Context^.Node)))
+          then begin
+            // context is outside or same as existing context
+            // (e.g. identifier is already defined in the class) => delete
+            Keep:=false;
+          end;
+          if Keep then continue;
+          Dispose(Context);
+          ListOfPFindContext.Delete(i);
         end;
       end;
     end;
