@@ -9,6 +9,10 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
@@ -51,7 +55,7 @@
       </Item8>
       <Item9>
         <Filename Value="codynodeinfodlg.pas"/>
-        <UnitName Value="codynodeinfodlg"/>
+        <UnitName Value="CodyNodeInfoDlg"/>
       </Item9>
     </Files>
     <LazDoc Paths="doc"/>
