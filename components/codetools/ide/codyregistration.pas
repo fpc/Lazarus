@@ -98,7 +98,7 @@ begin
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowDeclareVariableDialog);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'DeclareVariable',
     crsDeclareVariable2, nil, nil, DeclareVariableCommand)
-    {$IFNDEF EnableCodyDeclareVar}
+    {$IFNDEF EnableCodyExperiments}
      .Visible:=false
     {$ENDIF};
 
@@ -134,6 +134,9 @@ begin
     'Cody', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowCodyWindow);
   RegisterIDEMenuCommand(itmViewMainWindows, 'ViewCody',
     'Cody', nil, nil, ViewCodyWindowCommand);
+  {$IFNDEF EnableCodyExperiments}
+   .Visible:=false
+  {$ENDIF};
 
 
   // Components - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -43,9 +43,9 @@ object PPUListDialog: TPPUListDialog
     Height = 447
     Top = 30
     Width = 740
-    ActivePage = LinkedFilesTabSheet
+    ActivePage = UnitsTabSheet
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     object UnitsTabSheet: TTabSheet
       Caption = 'UnitsTabSheet'
@@ -88,12 +88,12 @@ object PPUListDialog: TPPUListDialog
           end        
           item
             Title.Caption = 'Package'
-            Width = 124
+            Width = 122
           end>
         DefaultColWidth = 150
         FixedCols = 0
         FixedRows = 2
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goThumbTracking, goColSpanning, goDblClickAutoSize, goSmoothScroll]
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goThumbTracking, goColSpanning, goDblClickAutoSize, goSmoothScroll]
         TabOrder = 0
         OnMouseDown = UnitsStringGridMouseDown
         OnSelectCell = UnitsStringGridSelectCell
@@ -103,7 +103,7 @@ object PPUListDialog: TPPUListDialog
           120
           120
           120
-          124
+          122
         )
       end
       object Splitter1: TSplitter
@@ -123,8 +123,8 @@ object PPUListDialog: TPPUListDialog
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'UnitGroupBox'
-        ClientHeight = 182
-        ClientWidth = 724
+        ClientHeight = 161
+        ClientWidth = 716
         TabOrder = 2
         object UnitPageControl: TPageControl
           Left = 0
@@ -137,8 +137,8 @@ object PPUListDialog: TPPUListDialog
           TabOrder = 0
           object InfoTabSheet: TTabSheet
             Caption = 'InfoTabSheet'
-            ClientHeight = 134
-            ClientWidth = 716
+            ClientHeight = 128
+            ClientWidth = 712
             object SourceFileLabel: TLabel
               Left = 9
               Height = 18
@@ -161,78 +161,79 @@ object PPUListDialog: TPPUListDialog
           end
           object UsesTabSheet: TTabSheet
             Caption = 'UsesTabSheet'
-            ClientHeight = 132
-            ClientWidth = 716
+            ClientHeight = 128
+            ClientWidth = 712
             object UsesStringGrid: TStringGrid
               Left = 0
-              Height = 132
+              Height = 128
               Top = 0
-              Width = 716
+              Width = 712
               Align = alClient
               AutoFillColumns = True
               ColCount = 1
               Columns = <              
                 item
                   Title.Caption = 'Unit'
-                  Width = 716
+                  Width = 710
                 end>
               FixedCols = 0
-              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goThumbTracking, goSmoothScroll]
               TabOrder = 0
               OnMouseDown = UnitStringGridMouseDown
               ColWidths = (
-                716
+                710
               )
             end
           end
           object UsedByTabSheet: TTabSheet
             Caption = 'UsedByTabSheet'
-            ClientHeight = 132
-            ClientWidth = 716
+            ClientHeight = 128
+            ClientWidth = 712
             object UsedByStringGrid: TStringGrid
               Left = 0
-              Height = 132
+              Height = 128
               Top = 0
-              Width = 716
+              Width = 712
               Align = alClient
               AutoFillColumns = True
               ColCount = 1
               Columns = <              
                 item
                   Title.Caption = 'Unit'
-                  Width = 716
+                  Width = 710
                 end>
               FixedCols = 0
-              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goThumbTracking, goSmoothScroll]
               TabOrder = 0
               OnMouseDown = UnitStringGridMouseDown
               ColWidths = (
-                716
+                710
               )
             end
           end
           object UsesPathTabSheet: TTabSheet
             Caption = 'UsesPathTabSheet'
-            ClientHeight = 132
-            ClientWidth = 716
+            ClientHeight = 128
+            ClientWidth = 712
             object UsesPathStringGrid: TStringGrid
               Left = 0
-              Height = 132
+              Height = 128
               Top = 0
-              Width = 716
+              Width = 712
               Align = alClient
               AutoFillColumns = True
               ColCount = 1
               Columns = <              
                 item
                   Title.Caption = 'Unit'
-                  Width = 716
+                  Width = 710
                 end>
               FixedCols = 0
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goSmoothScroll]
               TabOrder = 0
               OnMouseDown = UnitStringGridMouseDown
               ColWidths = (
-                716
+                710
               )
             end
           end
@@ -251,21 +252,22 @@ object PPUListDialog: TPPUListDialog
               Columns = <              
                 item
                   Title.Caption = 'Type'
-                  Width = 237
+                  Width = 236
                 end              
                 item
                   Title.Caption = 'File'
-                  Width = 237
+                  Width = 236
                 end              
                 item
                   Title.Caption = 'Flags'
                   Width = 238
                 end>
               FixedCols = 0
+              Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goThumbTracking, goColSpanning, goSmoothScroll]
               TabOrder = 0
               ColWidths = (
-                237
-                237
+                236
+                236
                 238
               )
             end
@@ -286,6 +288,7 @@ object PPUListDialog: TPPUListDialog
         DefaultItemHeight = 19
         ReadOnly = True
         TabOrder = 0
+        OnDblClick = LinkedFilesTreeViewDblClick
         Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end

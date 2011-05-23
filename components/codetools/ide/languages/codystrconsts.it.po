@@ -190,6 +190,10 @@ msgstr ""
 msgid "Flags"
 msgstr ""
 
+#: codystrconsts.crsframeworks
+msgid "Frameworks"
+msgstr ""
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr "Gbyte"
@@ -232,6 +236,18 @@ msgstr "Nessuna unit selezionata"
 
 #: codystrconsts.crsoptions
 msgid "Options"
+msgstr ""
+
+#: codystrconsts.crsotherobjectfiles
+msgid "Other object files"
+msgstr ""
+
+#: codystrconsts.crsothersharedlibraries
+msgid "Other shared libraries"
+msgstr ""
+
+#: codystrconsts.crsotherstaticlibraries
+msgid "Other static libraries"
 msgstr ""
 
 #: codystrconsts.crspackage
@@ -315,6 +331,22 @@ msgstr ""
 #: codystrconsts.crsunit2
 msgid "Unit: %s"
 msgstr "Unit: %s"
+
+#: codystrconsts.crsunitobjectfiles
+msgid "Unit object files"
+msgstr ""
+
+#: codystrconsts.crsunits
+msgid "Units"
+msgstr ""
+
+#: codystrconsts.crsunitsharedlibraries
+msgid "Unit shared libraries"
+msgstr ""
+
+#: codystrconsts.crsunitstaticlibraries
+msgid "Unit static libraries"
+msgstr ""
 
 #: codystrconsts.crsusedby
 msgid "Used by"

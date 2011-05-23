@@ -599,6 +599,8 @@ function PPULinkContainerFlagToStr(Flags: longint): string;
 
 function PPUEntryName(Entry: byte): string;
 
+function ComparePPULinkedFiles(Item1, Item2: Pointer): integer;
+
 implementation
 
 function reverse_byte(b: byte): byte;
@@ -989,6 +991,20 @@ begin
   iblinkotherframeworks: Result:='iblinkotherframeworks';
   else Result:='unknown('+IntToStr(Entry)+')';
   end;
+end;
+
+function ComparePPULinkedFiles(Item1, Item2: Pointer): integer;
+var
+  File1: TPPULinkedFile absolute Item1;
+  File2: TPPULinkedFile absolute Item2;
+begin
+  if File1.ID<File2.ID then exit(1)
+  else if File1.ID>File2.ID then exit(-1);
+  Result:=CompareFilenames(File1.Filename,File2.Filename);
+  if Result<>0 then exit;
+  if File1.Flags<File2.Flags then exit(1)
+  else if File1.Flags>File2.Flags then exit(-1);
+  Result:=0;
 end;
 
 { EPPUParserError }

@@ -62,9 +62,9 @@ type
     pltUses
     );
 
-  { TPPUListItem }
+  { TPPUDlgListItem }
 
-  TPPUListItem = class
+  TPPUDlgListItem = class
   public
     TheUnitName: string;
     SrcFile: string;
@@ -79,6 +79,15 @@ type
     destructor Destroy; override;
     function UsesCount: integer;
     function UsedByCount: integer;
+  end;
+
+  { TPPUDlgLinkedFile }
+
+  TPPUDlgLinkedFile = class(TPPULinkedFile)
+  public
+    Units: TStrings;
+    constructor Create;
+    destructor Destroy; override;
   end;
 
   { TPPUListDialog }
@@ -108,6 +117,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure LinkedFilesTreeViewDblClick(Sender: TObject);
     procedure UnitsStringGridMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure UnitsStringGridSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
@@ -116,24 +126,24 @@ type
       {%H-}Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure HelpButtonClick(Sender: TObject);
   private
-    FMainItem: TPPUListItem;
+    FMainItem: TPPUDlgListItem;
     FProject: TLazProject;
     FIdleConnected: boolean;
-    FSearchingItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
-    FItems: TAvgLvlTree; // tree of TPPUListItem sorted for TheUnitName
+    FSearchingItems: TAvgLvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
+    FItems: TAvgLvlTree; // tree of TPPUDlgListItem sorted for TheUnitName
     FSort: array[1..3] of TPPUListSortRec;
-    FLinkedFiles: TAvgLvlTree; // tree of TPPULinkedFile sorted for ID, file, flags
+    FDlgLinkedFiles: TAvgLvlTree; // tree of TPPUDlgLinkedFile sorted for ID, file, flags
     procedure SetProject(const AValue: TLazProject);
     procedure SetIdleConnected(const AValue: boolean);
 
     // scan
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
-    procedure AddUses(SrcItem: TPPUListItem; UsedUnits: TStrings);
+    procedure AddUses(SrcItem: TPPUDlgListItem; UsedUnits: TStrings);
 
-    function FindUnit(AnUnitName: string): TPPUListItem;
+    function FindUnit(AnUnitName: string): TPPUDlgListItem;
     function FindUnitInList(AnUnitName: string; List: TStrings): integer;
-    function FindUnitOfListitem(List: TStrings; Index: integer): TPPUListItem;
-    function FindPackageOfUnit(Item: TPPUListItem): string;
+    function FindUnitOfListitem(List: TStrings; Index: integer): TPPUDlgListItem;
+    function FindPackageOfUnit(Item: TPPUDlgListItem): string;
 
     procedure UpdateAll;
 
@@ -144,7 +154,7 @@ type
 
     // units info
     procedure FillUnitsInfo(AnUnitName: string);
-    function FindUsesPath(UsingUnit, UsedUnit: TPPUListItem): TFPList;
+    function FindUsesPath(UsingUnit, UsedUnit: TPPUDlgListItem): TFPList;
 
     // linked files
     procedure UpdateLinkedFilesTreeView;
@@ -154,13 +164,12 @@ type
   public
     property AProject: TLazProject read FProject write SetProject;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
-    property MainItem: TPPUListItem read FMainItem;
+    property MainItem: TPPUDlgListItem read FMainItem;
   end;
 
 procedure ShowPPUList(Sender: TObject);
 function ComparePPUListItems(Item1, Item2: Pointer): integer;
 function CompareUnitNameWithPPUListItem(TheUnitName, Item: Pointer): integer;
-function ComparePPULinkedFiles(Item1, Item2: Pointer): integer;
 
 implementation
 
@@ -185,38 +194,38 @@ end;
 
 function ComparePPUListItems(Item1, Item2: Pointer): integer;
 var
-  li1: TPPUListItem absolute Item1;
-  li2: TPPUListItem absolute Item2;
+  li1: TPPUDlgListItem absolute Item1;
+  li2: TPPUDlgListItem absolute Item2;
 begin
   Result:=CompareIdentifiers(PChar(li1.TheUnitName),PChar(li2.TheUnitName));
 end;
 
 function CompareUnitNameWithPPUListItem(TheUnitName, Item: Pointer): integer;
 var
-  li: TPPUListItem absolute Item;
+  li: TPPUDlgListItem absolute Item;
   un: PChar;
 begin
   un:=PChar(AnsiString(TheUnitName));
   Result:=CompareIdentifiers(un,PChar(li.TheUnitName));
 end;
 
-function ComparePPULinkedFiles(Item1, Item2: Pointer): integer;
-var
-  File1: TPPULinkedFile absolute Item1;
-  File2: TPPULinkedFile absolute Item2;
+{ TPPUDlgLinkedFile }
+
+constructor TPPUDlgLinkedFile.Create;
 begin
-  if File1.ID<File2.ID then exit(1)
-  else if File1.ID>File2.ID then exit(-1);
-  Result:=CompareFilenames(File1.Filename,File2.Filename);
-  if Result<>0 then exit;
-  if File1.Flags<File2.Flags then exit(1)
-  else if File1.Flags>File2.Flags then exit(-1);
-  Result:=0;
+  inherited Create;
+  Units:=TStringList.Create;
 end;
 
-{ TPPUListItem }
+destructor TPPUDlgLinkedFile.Destroy;
+begin
+  FreeAndNil(Units);
+  inherited Destroy;
+end;
 
-destructor TPPUListItem.Destroy;
+{ TPPUDlgListItem }
+
+destructor TPPUDlgListItem.Destroy;
 begin
   FreeAndNil(UsesUnits);
   FreeAndNil(UsedByUnits);
@@ -224,7 +233,7 @@ begin
   inherited Destroy;
 end;
 
-function TPPUListItem.UsesCount: integer;
+function TPPUDlgListItem.UsesCount: integer;
 begin
   if UsesUnits=nil then
     Result:=0
@@ -232,7 +241,7 @@ begin
     Result:=UsesUnits.Count;
 end;
 
-function TPPUListItem.UsedByCount: integer;
+function TPPUDlgListItem.UsedByCount: integer;
 begin
   if UsedByUnits=nil then
     Result:=0
@@ -246,13 +255,15 @@ procedure TPPUListDialog.FormCreate(Sender: TObject);
 begin
   FSearchingItems:=TAvgLvlTree.Create(@ComparePPUListItems);
   FItems:=TAvgLvlTree.Create(@ComparePPUListItems);
-  FLinkedFiles:=TAvgLvlTree.Create(@ComparePPULinkedFiles);
+  FDlgLinkedFiles:=TAvgLvlTree.Create(@ComparePPULinkedFiles);
 
   FSort[1].Category:=plsOSize;
   FSort[2].Category:=plsName;
   FSort[3].Category:=plsPPUSize;
 
-  UnitsTabSheet.Caption:='Units';
+  PageControl1.PageIndex:=0;
+
+  UnitsTabSheet.Caption:=crsUnits;
 
   // UnitsStringGrid header
   UnitsStringGrid.Columns[0].Title.Caption:=crsUnit;
@@ -293,8 +304,21 @@ begin
   FreeAndNil(FSearchingItems);
   FItems.FreeAndClear;
   FreeAndNil(FItems);
-  FLinkedFiles.FreeAndClear;
-  FreeAndNil(FLinkedFiles);
+  FDlgLinkedFiles.FreeAndClear;
+  FreeAndNil(FDlgLinkedFiles);
+end;
+
+procedure TPPUListDialog.LinkedFilesTreeViewDblClick(Sender: TObject);
+var
+  Node: TTreeNode;
+  TheUnitName: string;
+begin
+  Node:=LinkedFilesTreeView.Selected;
+  if Node=nil then exit;
+  if Node.Data=nil then begin
+    TheUnitName:=Node.Text;
+    JumpToUnit(TheUnitName);
+  end;
 end;
 
 procedure TPPUListDialog.UnitsStringGridMouseDown(Sender: TObject;
@@ -402,16 +426,16 @@ begin
 end;
 
 function TPPUListDialog.FindUnitOfListitem(List: TStrings; Index: integer
-  ): TPPUListItem;
+  ): TPPUDlgListItem;
 begin
-  Result:=TPPUListItem(List.Objects[Index]);
+  Result:=TPPUDlgListItem(List.Objects[Index]);
   if Result<>nil then exit;
   Result:=FindUnit(List[Index]);
   if Result<>nil then
     List.Objects[Index]:=Result;
 end;
 
-function TPPUListDialog.FindPackageOfUnit(Item: TPPUListItem): string;
+function TPPUListDialog.FindPackageOfUnit(Item: TPPUDlgListItem): string;
 var
   BaseDir: String;
   PPUDir: String;
@@ -487,7 +511,7 @@ procedure TPPUListDialog.UpdateAll;
 var
   s: String;
   MainUnit: TLazProjectFile;
-  Item: TPPUListItem;
+  Item: TPPUDlgListItem;
 begin
   if AProject=nil then exit;
 
@@ -508,7 +532,7 @@ begin
     ScopeLabel.Caption:=crsProjectHasNoMainSourceFile;
   end else begin
     ScopeLabel.Caption:=Format(crsMainSourceFile, [MainUnit.Filename]);
-    Item:=TPPUListItem.Create;
+    Item:=TPPUDlgListItem.Create;
     FMainItem:=Item;
     Item.TheUnitName:=ExtractFileName(MainUnit.Filename);
     Item.SrcFile:=MainUnit.Filename;
@@ -540,7 +564,7 @@ procedure TPPUListDialog.UpdateUnitsGrid;
 var
   Grid: TStringGrid;
   Node: TAvgLvlTreeNode;
-  Item: TPPUListItem;
+  Item: TPPUDlgListItem;
   Row: Integer;
   s: String;
   TotalPPUBytes, TotalOBytes: int64;
@@ -555,7 +579,7 @@ begin
     TotalPPUBytes:=0;
     TotalOBytes:=0;
     while Node<>nil do begin
-      Item:=TPPUListItem(Node.Data);
+      Item:=TPPUDlgListItem(Node.Data);
       if Item.PPUFileSize>0 then
         inc(TotalPPUBytes,Item.PPUFileSize);
       if Item.OFileSize>0 then
@@ -578,7 +602,7 @@ begin
     Row:=2;
     Node:=SortedItems.FindLowest;
     while Node<>nil do begin
-      Item:=TPPUListItem(Node.Data);
+      Item:=TPPUDlgListItem(Node.Data);
       Grid.Cells[0,Row]:=Item.TheUnitName;
 
       // .ppu size
@@ -669,8 +693,8 @@ function TPPUListDialog.CompareUnits(Tree: TAvgLvlTree; Data1, Data2: Pointer
   end;
 
 var
-  Item1: TPPUListItem absolute Data1;
-  Item2: TPPUListItem absolute Data2;
+  Item1: TPPUDlgListItem absolute Data1;
+  Item2: TPPUDlgListItem absolute Data2;
   i: Integer;
 begin
   Result:=0;
@@ -723,14 +747,16 @@ begin
   for i:=2 to UnitsStringGrid.RowCount-1 do begin
     if SysUtils.CompareText(UnitsStringGrid.Cells[0,i],TheUnitName)<>0 then
       continue;
+    PageControl1.PageIndex:=0;
     UnitsStringGrid.Row:=i;
+    UnitsStringGrid.Col:=0;
     exit;
   end;
 end;
 
 procedure TPPUListDialog.FillUnitsInfo(AnUnitName: string);
 var
-  Item: TPPUListItem;
+  Item: TPPUDlgListItem;
   i: Integer;
   UsesUnitName: string;
   UsedByUnitName: string;
@@ -775,7 +801,7 @@ begin
     try
       UsesPathStringGrid.RowCount:=UsesPath.Count+1;
       for i:=0 to UsesPath.Count-1 do begin
-        UsesPathStringGrid.Cells[0,i+1]:=TPPUListItem(UsesPath[i]).TheUnitName;
+        UsesPathStringGrid.Cells[0,i+1]:=TPPUDlgListItem(UsesPath[i]).TheUnitName;
       end;
     finally
       UsesPath.Free;
@@ -797,17 +823,17 @@ begin
   end;
 end;
 
-function TPPUListDialog.FindUsesPath(UsingUnit, UsedUnit: TPPUListItem): TFPList;
+function TPPUListDialog.FindUsesPath(UsingUnit, UsedUnit: TPPUDlgListItem): TFPList;
 { Search a path from UsingUnit to UsedUnit
-  Result is a list of TPPUListItem
+  Result is a list of TPPUDlgListItem
 }
 var
   Visited: TAvgLvlTree;
 
-  function Search(Item: TPPUListItem; Path: TFPList): boolean;
+  function Search(Item: TPPUDlgListItem; Path: TFPList): boolean;
   var
     i: Integer;
-    ParentUnit: TPPUListItem;
+    ParentUnit: TPPUDlgListItem;
   begin
     Result:=false;
     if Visited.Find(Item)<>nil then exit;
@@ -851,55 +877,83 @@ procedure TPPUListDialog.UpdateLinkedFilesTreeView;
   end;
 
   function CreateCategoryNode(ID: byte): TTreeNode;
+  var
+    Desc: String;
   begin
-    Result:=LinkedFilesTreeView.Items.AddObject(nil,PPUEntryName(ID),{%H-}Pointer(ID));
+    case ID of
+    iblinkunitofiles:
+      Desc:=crsUnitObjectFiles;
+    iblinkunitstaticlibs :
+      Desc:=crsUnitStaticLibraries;
+    iblinkunitsharedlibs :
+      Desc:=crsUnitSharedLibraries;
+    iblinkotherofiles :
+      Desc:=crsOtherObjectFiles;
+    iblinkotherstaticlibs :
+      Desc:=crsOtherStaticLibraries;
+    iblinkothersharedlibs :
+      Desc:=crsOtherSharedLibraries;
+    iblinkotherframeworks:
+      Desc:=crsFrameworks;
+    else
+      Desc:=PPUEntryName(ID);
+    end;
+    Result:=LinkedFilesTreeView.Items.AddObject(nil,Desc,{%H-}Pointer(ID));
   end;
 
 var
-  Node: TAvgLvlTreeNode;
-  Item: TPPUListItem;
-  LinkedFile: TPPULinkedFile;
-  NewLinkedFile: TPPULinkedFile;
+  PPUNode, DlgLinkedFileNode: TAvgLvlTreeNode;
+  Item: TPPUDlgListItem;
+  PPULinkedFile: TPPULinkedFile;
+  DlgLinkedFile: TPPUDlgLinkedFile;
   CategoryNode: TTreeNode;
   s: String;
   i: Integer;
+  TVNode: TTreeNode;
 begin
   LinkedFilesTreeView.BeginUpdate;
   try
     LinkedFilesTreeView.Items.Clear;
-    FLinkedFiles.FreeAndClear;
+    FDlgLinkedFiles.FreeAndClear;
 
-    Node:=FItems.FindLowest;
-    while Node<>nil do begin
-      Item:=TPPUListItem(Node.Data);
+    // collect all linked files
+    PPUNode:=FItems.FindLowest;
+    while PPUNode<>nil do begin
+      Item:=TPPUDlgListItem(PPUNode.Data);
       if Item.LinkedFiles<>nil then begin
         for i:=0 to Item.LinkedFiles.Count-1 do begin
-          LinkedFile:=TPPULinkedFile(Item.LinkedFiles[i]);
-          if FLinkedFiles.Find(LinkedFile)=nil then begin
-            NewLinkedFile:=TPPULinkedFile.Create;
-            NewLinkedFile.ID:=LinkedFile.ID;
-            NewLinkedFile.Filename:=LinkedFile.Filename;
-            NewLinkedFile.Flags:=LinkedFile.Flags;
-            FLinkedFiles.Add(NewLinkedFile);
+          PPULinkedFile:=TPPULinkedFile(Item.LinkedFiles[i]);
+          DlgLinkedFileNode:=FDlgLinkedFiles.Find(PPULinkedFile);
+          if DlgLinkedFileNode<>nil then
+            DlgLinkedFile:=TPPUDlgLinkedFile(DlgLinkedFileNode.Data)
+          else begin
+            DlgLinkedFile:=TPPUDlgLinkedFile.Create;
+            DlgLinkedFile.ID:=PPULinkedFile.ID;
+            DlgLinkedFile.Filename:=PPULinkedFile.Filename;
+            DlgLinkedFile.Flags:=PPULinkedFile.Flags;
+            FDlgLinkedFiles.Add(DlgLinkedFile);
           end;
+          if DlgLinkedFile.Units.IndexOf(Item.TheUnitName)<0 then
+            DlgLinkedFile.Units.Add(Item.TheUnitName);
         end;
       end;
-      Node:=FItems.FindSuccessor(Node);
+      PPUNode:=FItems.FindSuccessor(PPUNode);
     end;
-
 
     // create category nodes
     for i:=iblinkunitofiles to iblinkothersharedlibs do
       CreateCategoryNode(i);
     CreateCategoryNode(iblinkotherframeworks);
 
-    Node:=FLinkedFiles.FindLowest;
-    while Node<>nil do begin
-      LinkedFile:=TPPULinkedFile(Node.Data);
-      CategoryNode:=GetLinkedFilesCategoryNode(LinkedFile.ID);
-      s:=LinkedFile.Filename+' ['+PPULinkContainerFlagToStr(LinkedFile.Flags)+']';
-      LinkedFilesTreeView.Items.AddChildObject(CategoryNode,s,LinkedFile);
-      Node:=FLinkedFiles.FindSuccessor(Node);
+    DlgLinkedFileNode:=FDlgLinkedFiles.FindLowest;
+    while DlgLinkedFileNode<>nil do begin
+      DlgLinkedFile:=TPPUDlgLinkedFile(DlgLinkedFileNode.Data);
+      CategoryNode:=GetLinkedFilesCategoryNode(DlgLinkedFile.ID);
+      s:=DlgLinkedFile.Filename+' ['+PPULinkContainerFlagToStr(DlgLinkedFile.Flags)+']';
+      TVNode:=LinkedFilesTreeView.Items.AddChildObject(CategoryNode,s,DlgLinkedFile);
+      for i:=0 to DlgLinkedFile.Units.Count-1 do
+        LinkedFilesTreeView.Items.AddChild(TVNode,DlgLinkedFile.Units[i]);
+      DlgLinkedFileNode:=FDlgLinkedFiles.FindSuccessor(DlgLinkedFileNode);
     end;
 
   finally
@@ -913,7 +967,7 @@ const
 var
   StartTime: TDateTime;
   Node: TAvgLvlTreeNode;
-  Item: TPPUListItem;
+  Item: TPPUDlgListItem;
   AnUnitName: String;
   InFilename: String;
   Code: TCodeBuffer;
@@ -931,7 +985,7 @@ begin
 
   while FSearchingItems.Count>0 do begin
     Node:=FSearchingItems.Root;
-    Item:=TPPUListItem(Node.Data);
+    Item:=TPPUDlgListItem(Node.Data);
     FSearchingItems.Delete(Node);
     AnUnitName:=Item.TheUnitName;
 
@@ -1033,11 +1087,11 @@ begin
     IdleConnected:=false;
 end;
 
-procedure TPPUListDialog.AddUses(SrcItem: TPPUListItem; UsedUnits: TStrings);
+procedure TPPUListDialog.AddUses(SrcItem: TPPUDlgListItem; UsedUnits: TStrings);
 var
   i: Integer;
   AnUnitName: string;
-  UsedUnit: TPPUListItem;
+  UsedUnit: TPPUDlgListItem;
 begin
   if UsedUnits=nil then exit;
   //debugln(['TPPUListDialog.AddUses Src=',SrcItem.TheUnitName,' UsedUnits="',UsedUnits.DelimitedText,'"']);
@@ -1047,7 +1101,7 @@ begin
     UsedUnit:=FindUnitOfListitem(UsedUnits,i);
     if UsedUnit=nil then begin
       // new unit
-      UsedUnit:=TPPUListItem.Create;
+      UsedUnit:=TPPUDlgListItem.Create;
       UsedUnit.TheUnitName:=AnUnitName;
       FItems.Add(UsedUnit);
       FSearchingItems.Add(UsedUnit);
@@ -1062,7 +1116,7 @@ begin
   end;
 end;
 
-function TPPUListDialog.FindUnit(AnUnitName: string): TPPUListItem;
+function TPPUListDialog.FindUnit(AnUnitName: string): TPPUDlgListItem;
 var
   Node: TAvgLvlTreeNode;
 begin
@@ -1070,7 +1124,7 @@ begin
   if Node=nil then
     Result:=nil
   else
-    Result:=TPPUListItem(Node.Data);
+    Result:=TPPUDlgListItem(Node.Data);
 end;
 
 end.

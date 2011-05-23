@@ -45,6 +45,7 @@ resourcestring
   crsSearching = 'searching ...';
   crsMissing = 'missing ...';
   crsUnit = 'Unit';
+  crsUnits = 'Units';
   crsLinkedFiles = 'Linked files';
   crsType = 'Type';
   crsFile = 'File';
@@ -58,6 +59,13 @@ resourcestring
   crsUnit2 = 'Unit: %s';
   crsSource = 'Source: %s';
   crsPPU = 'PPU: %s';
+  crsUnitObjectFiles = 'Unit object files';
+  crsUnitStaticLibraries = 'Unit static libraries';
+  crsUnitSharedLibraries = 'Unit shared libraries';
+  crsOtherObjectFiles = 'Other object files';
+  crsOtherStaticLibraries = 'Other static libraries';
+  crsOtherSharedLibraries = 'Other shared libraries';
+  crsFrameworks = 'Frameworks';
   crsShowUsedPpuFiles = 'Show used .ppu files ...';
   crsInsertFileAtCursor = 'Insert file at cursor ...';
   crsVirtualUnit = 'Virtual unit';

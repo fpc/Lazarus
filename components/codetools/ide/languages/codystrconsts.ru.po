@@ -189,6 +189,10 @@ msgstr "Файл"
 msgid "Flags"
 msgstr "Флаги"
 
+#: codystrconsts.crsframeworks
+msgid "Frameworks"
+msgstr ""
+
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
 msgstr "ГБ"
@@ -232,6 +236,18 @@ msgstr "Модуль не выбран"
 #: codystrconsts.crsoptions
 msgid "Options"
 msgstr "Параметры"
+
+#: codystrconsts.crsotherobjectfiles
+msgid "Other object files"
+msgstr ""
+
+#: codystrconsts.crsothersharedlibraries
+msgid "Other shared libraries"
+msgstr ""
+
+#: codystrconsts.crsotherstaticlibraries
+msgid "Other static libraries"
+msgstr ""
 
 #: codystrconsts.crspackage
 msgid "Package"
@@ -314,6 +330,22 @@ msgstr "Модуль"
 #: codystrconsts.crsunit2
 msgid "Unit: %s"
 msgstr "Модуль: %s"
+
+#: codystrconsts.crsunitobjectfiles
+msgid "Unit object files"
+msgstr ""
+
+#: codystrconsts.crsunits
+msgid "Units"
+msgstr ""
+
+#: codystrconsts.crsunitsharedlibraries
+msgid "Unit shared libraries"
+msgstr ""
+
+#: codystrconsts.crsunitstaticlibraries
+msgid "Unit static libraries"
+msgstr ""
 
 #: codystrconsts.crsusedby
 msgid "Used by"
