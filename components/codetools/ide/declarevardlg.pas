@@ -34,8 +34,8 @@
     - guess parameter
     - guess <i>:=expression
     - Fix bug: adding a public variable is added after a method
-    - Fix bug: local variable is added behind nested proc
     - Extend uses section when adding to a class
+    - Fix bug: adding types with comments
 }
 unit DeclareVarDlg;
 
@@ -307,7 +307,9 @@ begin
   end;
   WhereRadioGroup.ItemIndex:=0;
 
+  // show dialog as modal form
   Result:=ShowModal=mrOk;
+
   if Result then begin
     NewType:=Trim(TypeEdit.Text);
     Target:=TCodyDeclareVarTarget(Targets[WhereRadioGroup.ItemIndex]);

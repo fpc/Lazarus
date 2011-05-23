@@ -633,8 +633,7 @@ end;
 function TCodeCompletionCodeTool.NodeExtIsVariable(
   ANodeExt: TCodeTreeNodeExtension): boolean;
 begin
-  Result:=(ANodeExt.Flags=ord(ncpPrivateVars))
-       or (ANodeExt.Flags=ord(ncpPublishedVars));
+  Result:=TNewClassPart(ANodeExt.Flags) in NewClassPartVars;
 end;
 
 function TCodeCompletionCodeTool.NodeExtHasVisibilty(
@@ -5332,14 +5331,14 @@ begin
       {$ENDIF}
       // check if identifier exists
       Result:=IdentifierIsDefined(IdentifierAtom,CursorNode,Params);
+      if Result then begin
+        // identifier is already defined
+        ExistingDefinition.Tool:=Params.NewCodeTool;
+        ExistingDefinition.Node:=Params.NewNode;
+        debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier identifier already defined at ',FindContextToString(ExistingDefinition)]);
+      end;
     finally
       Params.Free;
-    end;
-    if Result then begin
-      // identifier is already defined
-      ExistingDefinition.Tool:=Params.NewCodeTool;
-      ExistingDefinition.Node:=Params.NewNode;
-      debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier identifier already defined at ',FindContextToString(ExistingDefinition)]);
     end;
 
     if not FindIdentifierContextsAtStatement(IdentifierAtom.StartPos,
@@ -5436,6 +5435,12 @@ begin
                         VariableName+':'+NewType+';',VariableName,ClassPart);
       if not InsertAllNewClassParts then
         RaiseException(ctsErrorDuringInsertingNewClassParts);
+      if (NewUnitName<>'')
+      and (not AddUnitToMainUsesSection(NewUnitName,'',SourceChangeCache)) then
+      begin
+        debugln(['TCodeCompletionCodeTool.DeclareVariable AddUnitToMainUsesSection for new class memeber failed']);
+        exit;
+      end;
       // apply the changes
       if not SourceChangeCache.Apply then
         RaiseException(ctsUnableToApplyChanges);
@@ -6243,7 +6248,7 @@ begin
         cpipAlphabetically:
           begin
             while ANode<>nil do begin
-              if (IsVariable) then begin
+              if IsVariable then begin
                 // the insertion is a new variable
                 if (ANode.Desc<>ctnVarDefinition)
                 or (CompareNodeIdentChars(ANode,ANodeExt.Txt)<0) then
@@ -6282,14 +6287,13 @@ begin
           // cpipLast
           begin
             while ANode<>nil do begin
-              if (IsVariable) then begin
+              if IsVariable then begin
                 // the insertion is a variable
                 if (ANode.Desc<>ctnVarDefinition) then
                   break;
               end else begin
                 // the insertion is a method
-                if (not ASourceChangeCache.BeautifyCodeOptions
-                   .MixMethodsAndProperties)
+                if (not ASourceChangeCache.BeautifyCodeOptions.MixMethodsAndProperties)
                 and (ANode.Desc=ctnProperty) then
                   break;
               end;
