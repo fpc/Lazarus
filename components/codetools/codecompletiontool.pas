@@ -5296,6 +5296,9 @@ var
   CursorNode: TCodeTreeNode;
   IdentifierAtom: TAtomPosition;
   TermAtom: TAtomPosition;
+  i: Integer;
+  Context: PFindContext;
+  Section: TCodeTreeNode;
 begin
   Result:=false;
   IsKeyword:=false;
@@ -5341,11 +5344,27 @@ begin
       Params.Free;
     end;
 
+    // find all possible contexts
     if not FindIdentifierContextsAtStatement(IdentifierAtom.StartPos,
       IsSubIdentifier,ListOfPFindContext)
     then begin
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier FindIdentifierContextsAtStatement failed']);
       exit;
+    end;
+
+    // remove contexts conflicting with the already defined identifier
+    if (ExistingDefinition.Node<>nil) and (ListOfPFindContext<>nil) then begin
+      Section:=ExistingDefinition.Node;
+      while Section<>nil do begin
+        if Section.Desc in AllDefinitionSections then break;
+        Section:=Section.Parent;
+      end;
+      if Section<>nil then begin
+        for i:=ListOfPFindContext.Count-1 downto 0 do begin
+          Context:=PFindContext(ListOfPFindContext[i]);
+
+        end;
+      end;
     end;
 
     // find assignment operator

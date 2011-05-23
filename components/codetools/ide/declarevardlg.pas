@@ -26,7 +26,6 @@
     that the user needs only to choose where to create the var.
 
   ToDo:
-    - Test sub contexts. For example MyObject.Identifier
     - Hide targets depending on already defined identifier:
       - if identifier is already defined locally, give a error message
       - if identifier is already defined in class, remove class as target
@@ -35,6 +34,9 @@
     - guess <i>:=expression
     - Extend uses section when adding to a class
     - Fix bug: adding types with comments
+    - Target implementation
+    - Target interface
+    - Target program
 }
 unit DeclareVarDlg;
 
@@ -306,6 +308,12 @@ begin
     end;
   finally
     FreeListOfPFindContext(PossibleContexts);
+  end;
+
+  if Targets.Count=0 then begin
+    IDEMessageDialog('Already defined',
+      'The identifier "'+Identifier+'" is already defined.',mtError,[mbCancel]);
+    exit;
   end;
 
   Caption:='Declare variable "'+Identifier+'"';
