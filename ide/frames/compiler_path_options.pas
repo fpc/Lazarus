@@ -62,7 +62,6 @@ type
     procedure DoLoadSave(Sender: TObject);
   protected
     procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
-    function GetTargetFilename: string;
     procedure UpdateTargetFileLabel;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -227,58 +226,35 @@ begin
 end;
 
 procedure TCompilerPathOptionsFrame.DoShowOptions(Sender: TObject);
-var
-  Options: TBaseCompilerOptions;
 begin
-  Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
-  try
-    Options.BaseDirectory:=FCompilerOpts.BaseDirectory;
-    DoSaveSettings(Options);
-    Options.TargetFilename:=GetTargetFilename;
-    ShowCompilerOptionsDialog(FDialog, Options);
-  finally
-    Options.Free;
-  end;
+  DoSaveSettings(FCompilerOpts);
+  ShowCompilerOptionsDialog(FDialog, FCompilerOpts);
 end;
 
 procedure TCompilerPathOptionsFrame.DoCheck(Sender: TObject);
-var
-  Options: TBaseCompilerOptions;
 begin
-  Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
-  try
-    Options.BaseDirectory:=FCompilerOpts.BaseDirectory;
-    DoSaveSettings(Options);
-    if Assigned(TestCompilerOptions) then
-    begin
-      btnCheck.Enabled := False;
-      try
-        TestCompilerOptions(Options);
-      finally
-        btnCheck.Enabled := True;
-      end;
+  DoSaveSettings(FCompilerOpts);
+  if Assigned(TestCompilerOptions) then
+  begin
+    btnCheck.Enabled := False;
+    try
+      TestCompilerOptions(FCompilerOpts);
+    finally
+      btnCheck.Enabled := True;
     end;
-  finally
-    Options.Free;
   end;
 end;
 
 procedure TCompilerPathOptionsFrame.DoLoadSave(Sender: TObject);
 var
-  Options: TBaseCompilerOptions;
   ImportExportResult: TImportExportOptionsResult;
 begin
-  Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
-  try
-    DoSaveSettings(Options);
-    if (MainIDEInterface.DoImExportCompilerOptions(Options, ImportExportResult) = mrOK) and
-       (ImportExportResult = ieorImport) then
-    begin
-      if Assigned(OnLoadIDEOptions) then
-        OnLoadIDEOptions(Self, Options);
-    end;
-  finally
-    Options.Free;
+  DoSaveSettings(FCompilerOpts);
+  if (MainIDEInterface.DoImExportCompilerOptions(FCompilerOpts, ImportExportResult) = mrOK) and
+     (ImportExportResult = ieorImport) then
+  begin
+    if Assigned(OnLoadIDEOptions) then
+      OnLoadIDEOptions(Self, FCompilerOpts);
   end;
 end;
 
@@ -286,12 +262,6 @@ procedure TCompilerPathOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions
 begin
   if Assigned(OnSaveIDEOptions) then
     OnSaveIDEOptions(Self, AOptions);
-end;
-
-function TCompilerPathOptionsFrame.GetTargetFilename: string;
-begin
-  if FCompilerOpts is TProjectCompilerOptions then
-    Result:=ProjTargetFileEdit.Text;
 end;
 
 procedure TCompilerPathOptionsFrame.UpdateTargetFileLabel;
@@ -782,7 +752,7 @@ begin
     ProjTargetFileEdit.Visible:=true;
     ProjTargetFileLabel.Visible:=true;
     ProjTargetFileEdit.Text:=TProjectCompilerOptions(AOptions).TargetFilename;
-    ProjTargetApplyConventionsCheckBox.Checked:=TProjectCompilerOptions(AOptions).TargetFilenameAppplyConventions;
+    ProjTargetApplyConventionsCheckBox.Checked:=TProjectCompilerOptions(AOptions).TargetFilenameApplyConventions;
     ProjTargetApplyConventionsCheckBox.Visible:=true;
     LCLWidgetTypeLabel.Visible:=true;;
     UpdateTargetFileLabel;
@@ -810,7 +780,7 @@ procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions)
 begin
   if AOptions is TProjectCompilerOptions then begin
     TProjectCompilerOptions(AOptions).TargetFilename:=ProjTargetFileEdit.Text;
-    TProjectCompilerOptions(AOptions).TargetFilenameAppplyConventions:=ProjTargetApplyConventionsCheckBox.Checked;
+    TProjectCompilerOptions(AOptions).TargetFilenameApplyConventions:=ProjTargetApplyConventionsCheckBox.Checked;
   end;
 
   with AOptions as TBaseCompilerOptions do

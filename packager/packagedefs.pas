@@ -409,6 +409,7 @@ type
     procedure SetSrcPath(const AValue: string); override;
   public
     constructor Create(ThePackage: TLazPackage);
+    procedure AssignOptions(Source: TObject); override;
     function GetOwnerName: string; override;
     function GetBaseCompilerOptions: TBaseCompilerOptions; override;
   public
@@ -562,6 +563,7 @@ type
     FAutoCreated: boolean;
     FAutoInstall: TPackageInstallType;
     FAutoUpdate: TPackageUpdatePolicy;
+    FOptionsBackup: TLazPackage;
     FCompilerOptions: TPkgCompilerOptions;
     FComponents: TFPList; // TFPList of TPkgComponent
     FDefineTemplates: TLazPackageDefineTemplates;
@@ -652,11 +654,14 @@ type
     function GetRemovedCount: integer; override;
     function GetRemovedPkgFiles(Index: integer): TLazPackageFile; override;
   public
+    procedure AssignOptions(Source: TPersistent); override;
     constructor Create;
     destructor Destroy; override;
     // IDE options
     class function GetGroupCaption: string; override;
     class function GetInstance: TAbstractIDEOptions; override;
+    procedure BackupOptions;
+    procedure RestoreOptions;
     // modified
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -800,6 +805,7 @@ type
     property Macros: TTransferMacroList read FMacros;
     property MainUnit: TPkgFile read FMainUnit;
     property Missing: boolean read FMissing write FMissing;
+    property OptionsBackup: TLazPackage read FOptionsBackup;
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
     property PackageType: TLazPackageType read FPackageType
                                           write SetPackageType;
@@ -937,7 +943,7 @@ procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
   XMLConfig: TXMLConfig);
 
 var
-  CurPackage: TLazPackage; // don't use it - only for options dialog
+  Package1: TLazPackage; // don't use it - only for options dialog
 
 implementation
 
@@ -2112,7 +2118,8 @@ begin
       if Macro<>nil then
       begin
         s:=GetCTCSVariableAsString(Macro);
-        //debugln(['TLazPackage.OnMacroListSubstitution Pkg=',Name,' Macro=',MacroName,' Value="',s,'"']);
+        //if MacroName='MyPackageOptions' then
+        //  debugln(['TLazPackage.OnMacroListSubstitution Pkg=',Name,' Macro=',MacroName,' Value="',s,'"']);
         Handled:=true;
         exit;
       end;
@@ -2205,6 +2212,35 @@ end;
 function TLazPackage.GetRemovedPkgFiles(Index: integer): TLazPackageFile;
 begin
   Result:=GetRemovedFiles(Index);
+end;
+
+procedure TLazPackage.AssignOptions(Source: TPersistent);
+var
+  aSource: TLazPackage;
+begin
+  inherited AssignOptions(Source);
+  if Source is TLazPackage then
+  begin
+    aSource:=TLazPackage(Source);
+    UserReadOnly:=aSource.UserReadOnly;
+    Translated:=aSource.Translated;
+    StorePathDelim:=aSource.StorePathDelim;
+    // ToDo: PublishOptions.AssignOptions(aSource.PublishOptions);
+    Provides.Assign(aSource.Provides);
+    POOutputDirectory:=aSource.POOutputDirectory;
+    PackageType:=aSource.PackageType;
+    OutputStateFile:=aSource.OutputStateFile;
+    License:=aSource.License;
+    LazDocPaths:=aSource.LazDocPaths;
+    IconFile:=aSource.IconFile;
+    UsageOptions.AssignOptions(aSource.UsageOptions);
+    EnableI18N:=aSource.EnableI18N;
+    Description:=aSource.Description;
+    AutoUpdate:=aSource.AutoUpdate;
+    AutoIncrementVersionOnBuild:=aSource.AutoIncrementVersionOnBuild;
+    Author:=aSource.Author;
+    AddToProjectUsesSection:=aSource.AddToProjectUsesSection;
+  end;
 end;
 
 function TLazPackage.GetRemovedFiles(Index: integer): TPkgFile;
@@ -2489,6 +2525,7 @@ destructor TLazPackage.Destroy;
 begin
   Include(FFlags,lpfDestroying);
   Clear;
+  FreeAndNil(FOptionsBackup);
   FreeAndNil(fPublishOptions);
   FreeAndNil(FProvides);
   FreeAndNil(FDefineTemplates);
@@ -2509,7 +2546,25 @@ end;
 
 class function TLazPackage.GetInstance: TAbstractIDEOptions;
 begin
-  Result := CurPackage;
+  Result := Package1;
+end;
+
+procedure TLazPackage.BackupOptions;
+begin
+  if FOptionsBackup=nil then
+    FOptionsBackup:=TLazPackage.Create;
+  FOptionsBackup.AssignOptions(Self);
+  if lpfModified in FFlags then
+  FOptionsBackup.FFlags:=FOptionsBackup.FFlags-[lpfModified]+[lpfModified]*FFlags;
+  FOptionsBackup.CompilerOptions.Modified:=CompilerOptions.Modified
+end;
+
+procedure TLazPackage.RestoreOptions;
+begin
+  if FOptionsBackup=nil then exit;
+  AssignOptions(FOptionsBackup);
+  FFlags:=FFlags-[lpfModified]+[lpfModified]*FOptionsBackup.FFlags;
+  CompilerOptions.Modified:=FOptionsBackup.CompilerOptions.Modified
 end;
 
 procedure TLazPackage.BeginUpdate;
@@ -3832,7 +3887,7 @@ end;
 
 class function TPkgCompilerOptions.GetInstance: TAbstractIDEOptions;
 begin
-  Result := CurPackage.CompilerOptions;
+  Result := Package1.CompilerOptions;
 end;
 
 function TPkgCompilerOptions.IsActive: boolean;
@@ -3969,6 +4024,15 @@ constructor TPkgAdditionalCompilerOptions.Create(ThePackage: TLazPackage);
 begin
   inherited Create(ThePackage);
   FLazPackage:=ThePackage;
+end;
+
+procedure TPkgAdditionalCompilerOptions.AssignOptions(Source: TObject);
+begin
+  inherited AssignOptions(Source);
+  if Source is TPkgAdditionalCompilerOptions then begin
+    //Src:=TPkgAdditionalCompilerOptions(Source);
+    // nothing to do
+  end;
 end;
 
 function TPkgAdditionalCompilerOptions.GetOwnerName: string;

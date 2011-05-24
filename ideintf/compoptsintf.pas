@@ -306,7 +306,7 @@ type
 
     // target:
     property TargetFilename: String read fTargetFilename write SetTargetFilename;
-    property TargetFilenameAppplyConventions: boolean read FTargetFilenameAppplyConventions write SetTargetFilenameAppplyConventions;
+    property TargetFilenameApplyConventions: boolean read FTargetFilenameAppplyConventions write SetTargetFilenameAppplyConventions;
 
     // parsing:
     property SyntaxMode: string read FSyntaxMode write SetSyntaxMode;

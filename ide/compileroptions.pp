@@ -622,6 +622,7 @@ type
     constructor Create(TheOwner: TObject);
     destructor Destroy; override;
     procedure Clear;
+    procedure AssignOptions(Source: TObject); virtual;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 AdjustPathDelims: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -1318,7 +1319,7 @@ begin
   { Target }
   p:=Path+'Target/';
   TargetFilename := f(aXMLConfig.GetValue(p+'Filename/Value', ''));
-  TargetFilenameAppplyConventions := aXMLConfig.GetValue(p+'Filename/ApplyConventions', true);
+  TargetFilenameApplyConventions := aXMLConfig.GetValue(p+'Filename/ApplyConventions', true);
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
@@ -1534,7 +1535,7 @@ begin
   { Target }
   p:=Path+'Target/';
   aXMLConfig.SetDeleteValue(p+'Filename/Value', f(TargetFilename),'');
-  aXMLConfig.SetDeleteValue(p+'Filename/ApplyConventions', TargetFilenameAppplyConventions,true);
+  aXMLConfig.SetDeleteValue(p+'Filename/ApplyConventions', TargetFilenameApplyConventions,true);
 
   { SearchPaths }
   p:=Path+'SearchPaths/';
@@ -1778,7 +1779,7 @@ begin
     Result:=CreateAbsolutePath(OutFilename,UnitOutDir);
   end;
   Result:=TrimFilename(Result);
-  if TargetFilenameAppplyConventions then begin
+  if TargetFilenameApplyConventions then begin
     AppendDefaultExt;
     PrependDefaultType;
   end;
@@ -2780,6 +2781,8 @@ begin
   // append custom options as last, so they can override
   if not (ccloNoMacroParams in Flags) then
   begin
+    //debugln(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self)]);
+    //DumpStack;
     CurCustomOptions:=GetCustomOptions(coptParsed);
     if CurCustomOptions<>'' then
       switches := switches+' '+CurCustomOptions;
@@ -2989,7 +2992,7 @@ begin
 
   // Target
   TargetFilename := CompOpts.TargetFilename;
-  TargetFilenameAppplyConventions := CompOpts.TargetFilenameAppplyConventions;
+  TargetFilenameApplyConventions := CompOpts.TargetFilenameApplyConventions;
 
   // Search Paths
   StorePathDelim := CompOpts.StorePathDelim;
@@ -3355,6 +3358,23 @@ begin
   LibraryPath:='';
   LinkerOptions:='';
   ObjectPath:='';
+end;
+
+procedure TAdditionalCompilerOptions.AssignOptions(Source: TObject);
+var
+  Src: TAdditionalCompilerOptions;
+begin
+  if not (Source is TAdditionalCompilerOptions) then
+    raise Exception.Create('TAdditionalCompilerOptions.AssignOptions: Can not copy from '+DbgSName(Source));
+  Src:=TAdditionalCompilerOptions(Source);
+  UnitPath:=Src.UnitPath;
+  IncludePath:=Src.IncludePath;
+  SrcPath:=Src.SrcPath;
+  ObjectPath:=Src.ObjectPath;
+  LibraryPath:=Src.LibraryPath;
+  LinkerOptions:=Src.LinkerOptions;
+  CustomOptions:=Src.CustomOptions;
+  BaseDirectory:=Src.BaseDirectory;
 end;
 
 procedure TAdditionalCompilerOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;

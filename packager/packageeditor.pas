@@ -318,6 +318,8 @@ type
   private
     FItems: TList; // list of TPackageEditorForm
     FOnAddToProject: TOnAddPkgToProject;
+    FOnAfterWritePackage: TIDEOptionsWriteEvent;
+    FOnBeforeReadPackage: TNotifyEvent;
     FOnCompilePackage: TOnCompilePackage;
     FOnCreateNewFile: TOnCreateNewPkgFile;
     FOnCreatePkgMakefile: TOnCreatePkgMakefile;
@@ -369,41 +371,45 @@ type
     function CreateMakefile(APackage: TLazPackage): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
+    property OnAddToProject: TOnAddPkgToProject read FOnAddToProject
+                                                write FOnAddToProject;
+    property OnAfterWritePackage: TIDEOptionsWriteEvent read FOnAfterWritePackage
+                                               write FOnAfterWritePackage;
+    property OnBeforeReadPackage: TNotifyEvent read FOnBeforeReadPackage
+                                               write FOnBeforeReadPackage;
+    property OnCompilePackage: TOnCompilePackage read FOnCompilePackage
+                                                 write FOnCompilePackage;
+    property OnCreateMakefile: TOnCreatePkgMakefile read FOnCreatePkgMakefile
+                                                     write FOnCreatePkgMakefile;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
                                                   write FOnCreateNewFile;
-    property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
-    property OnOpenPkgFile: TOnOpenPkgFile read FOnOpenPkgFile
-                                           write FOnOpenPkgFile;
-    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage
-                                           write FOnOpenPackage;
+    property OnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles
+                     read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
+    property OnFreeEditor: TOnFreePkgEditor read FOnFreeEditor
+                                            write FOnFreeEditor;
     property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
                                                      write FOnGetIDEFileInfo;
     property OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo
                        read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
-    property OnFreeEditor: TOnFreePkgEditor read FOnFreeEditor
-                                            write FOnFreeEditor;
-    property OnSavePackage: TOnSavePackage read FOnSavePackage
-                                           write FOnSavePackage;
-    property OnRevertPackage: TOnRevertPackage read FOnRevertPackage
-                                               write FOnRevertPackage;
-    property OnPublishPackage: TOnPublishPackage read FOnPublishPackage
-                                               write FOnPublishPackage;
-    property OnCompilePackage: TOnCompilePackage read FOnCompilePackage
-                                                 write FOnCompilePackage;
     property OnInstallPackage: TOnInstallPackage read FOnInstallPackage
                                                  write FOnInstallPackage;
+    property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
+    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage
+                                           write FOnOpenPackage;
+    property OnOpenPkgFile: TOnOpenPkgFile read FOnOpenPkgFile
+                                           write FOnOpenPkgFile;
+    property OnPublishPackage: TOnPublishPackage read FOnPublishPackage
+                                               write FOnPublishPackage;
+    property OnRevertPackage: TOnRevertPackage read FOnRevertPackage
+                                               write FOnRevertPackage;
+    property OnSavePackage: TOnSavePackage read FOnSavePackage
+                                           write FOnSavePackage;
     property OnUninstallPackage: TOnUninstallPackage read FOnUninstallPackage
                                                  write FOnUninstallPackage;
     property OnViewPackageSource: TOnViewPackageSource read FOnViewPackageSource
                                                  write FOnViewPackageSource;
     property OnViewPackageToDos: TOnViewPackageToDos read FOnViewPackageToDos
                                                  write FOnViewPackageToDos;
-    property OnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles
-                     read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
-    property OnAddToProject: TOnAddPkgToProject read FOnAddToProject
-                                                write FOnAddToProject;
-    property OnCreateMakefile: TOnCreatePkgMakefile read FOnCreatePkgMakefile
-                                                     write FOnCreatePkgMakefile;
   end;
   
 var
@@ -917,7 +923,9 @@ const
     [ioesReadOnly]
   );
 begin
-  CurPackage := LazPackage;
+  Package1 := LazPackage;
+  Package1.OnBeforeRead:=PackageEditors.OnBeforeReadPackage;
+  Package1.OnAfterWrite:=PackageEditors.OnAfterWritePackage;
   LazarusIDE.DoOpenIDEOptions(nil,
     Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]),
     [TLazPackage, TPkgCompilerOptions], Settings[LazPackage.ReadOnly]);

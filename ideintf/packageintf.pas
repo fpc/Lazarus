@@ -95,6 +95,7 @@ type
     procedure UpdateIDAsString;
     procedure VersionChanged(Sender: TObject); virtual;
   public
+    procedure AssignOptions(Source: TPersistent); virtual;
     constructor Create;
     destructor Destroy; override;
     function StringToID(const s: string): boolean;
@@ -128,6 +129,7 @@ type
     function GetRemovedCount: integer; virtual; abstract;
     function GetRemovedPkgFiles(Index: integer): TLazPackageFile; virtual; abstract;
   public
+    procedure AssignOptions(Source: TPersistent); override;
     function IsVirtual: boolean; virtual; abstract;
     function ReadOnly: boolean; virtual; abstract;
     constructor Create;
@@ -577,6 +579,20 @@ begin
   UpdateIDAsString;
 end;
 
+procedure TLazPackageID.AssignOptions(Source: TPersistent);
+var
+  aSource: TLazPackageID;
+begin
+  if Source is TLazPackageID then
+  begin
+    aSource:=TLazPackageID(Source);
+    aSource.FVersion.Assign(FVersion);
+    Name:=aSource.FName;
+    UpdateIDAsString;
+  end else
+    raise Exception.Create('TLazPackageID.AssignOptions: can not copy from '+DbgSName(Source));
+end;
+
 function TLazPackageID.StringToID(const s: string): boolean;
 var
   IdentEndPos: Integer;
@@ -637,6 +653,20 @@ begin
 end;
 
 { TIDEPackage }
+
+procedure TIDEPackage.AssignOptions(Source: TPersistent);
+var
+  aSource: TIDEPackage;
+begin
+  inherited AssignOptions(Source);
+  if Source is TIDEPackage then
+  begin
+    aSource:=TIDEPackage(Source);
+    LazCompilerOptions.Assign(aSource.LazCompilerOptions);
+    // ToDo:
+    //FCustomOptions:=aSource.FCustomOptions;
+  end;
+end;
 
 constructor TIDEPackage.Create;
 begin

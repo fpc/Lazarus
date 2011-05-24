@@ -72,33 +72,35 @@ type
   TPkgManager = class(TBasePkgManager)
     // events - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // package editor
+    function OnPackageEditorAddToProject(Sender: TObject; APackage: TLazPackage;
+                                     OnlyTestIfPossible: boolean): TModalResult;
     function OnPackageEditorCompilePackage(Sender: TObject;
                           APackage: TLazPackage;
                           CompileClean, CompileRequired: boolean): TModalResult;
-    function OnPackageEditorCreateMakefile(Sender: TObject;
-                                           APackage: TLazPackage): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
                                        Params: TAddToPkgResult): TModalResult;
+    function OnPackageEditorCreateMakefile(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
     function OnPackageEditorDeleteAmbiguousFiles(Sender: TObject;
       APackage: TLazPackage; const Filename: string): TModalResult;
-    function OnPackageEditorAddToProject(Sender: TObject; APackage: TLazPackage;
-                                     OnlyTestIfPossible: boolean): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
+    function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
+                                        ): TModalResult;
+    function OnPackageEditorOpenPkgFile(Sender: TObject; PkgFile: TPkgFile
+                                        ): TModalResult;
     function OnPackageEditorPublishPackage(Sender: TObject;
       APackage: TLazPackage): TModalResult;
     function OnPackageEditorRevertPackage(Sender: TObject; APackage: TLazPackage
       ): TModalResult;
-    function OnPackageEditorUninstallPackage(Sender: TObject;
-                                           APackage: TLazPackage): TModalResult;
-    function OnPackageEditorOpenPkgFile(Sender: TObject; PkgFile: TPkgFile
-                                        ): TModalResult;
-    function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
-                                        ): TModalResult;
     function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
                                         SaveAs: boolean): TModalResult;
+    function OnPackageEditorUninstallPackage(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
     function OnPackageEditorViewPkgSource(Sender: TObject;
                                           APackage: TLazPackage): TModalResult;
+    procedure OnAfterWritePackage(Sender: TObject; Restore: boolean);
+    procedure OnBeforeReadPackage(Sender: TObject);
     procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
                               const AFilename: string; var TheUnitName: string;
@@ -570,6 +572,23 @@ begin
         lisPkgThisFileIsNotInAnyLoadedPackage, mtInformation, [mbCancel])
   else
     DoOpenPackageFile(PkgFile.LazPackage.Filename,[pofAddToRecent],false);
+end;
+
+procedure TPkgManager.OnAfterWritePackage(Sender: TObject; Restore: boolean);
+var
+  APackage: TLazPackage absolute Sender;
+begin
+  //debugln(['TPkgManager.OnAfterWritePackage ',DbgSName(APackage),' Restore=',Restore]);
+  if Restore then
+    APackage.RestoreOptions;
+end;
+
+procedure TPkgManager.OnBeforeReadPackage(Sender: TObject);
+var
+  APackage: TLazPackage absolute Sender;
+begin
+  //debugln(['TPkgManager.OnBeforeReadPackage ',DbgSName(APackage)]);
+  APackage.BackupOptions;
 end;
 
 function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
@@ -1479,6 +1498,8 @@ begin
   PackageEditors.OnPublishPackage:=@OnPackageEditorPublishPackage;
   PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
   PackageEditors.OnAddToProject:=@OnPackageEditorAddToProject;
+  PackageEditors.OnBeforeReadPackage:=@OnBeforeReadPackage;
+  PackageEditors.OnAfterWritePackage:=@OnAfterWritePackage;
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
   PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSource;
