@@ -510,6 +510,8 @@ type
     procedure SetUnitOutputDir(const AValue: string); override;
     procedure SetConditionals(const AValue: string); override;
     procedure SetLCLWidgetType(const AValue: string); override;
+    function SubstituteProjectMacros(const s: string;
+                                     PlatformIndependent: boolean): string;
   public
     constructor Create(const AOwner: TObject); override;
     destructor Destroy; override;
@@ -742,6 +744,7 @@ type
     FAllEditorsInfoMap: TMap;
     FAutoCreateForms: boolean;
     FEnableI18NForLFM: boolean;
+    FMacroEngine: TTransferMacroList;
     FMacroValues: TProjectBuildMacros;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
@@ -829,6 +832,9 @@ type
     procedure UpdateSourceDirectories;
     procedure EditorInfoAdd(EdInfo: TUnitEditorInfo);
     procedure EditorInfoRemove(EdInfo: TUnitEditorInfo);
+    procedure OnMacroEngineSubstitution(TheMacro: TTransferMacro;
+      const MacroName: string; var s: string;
+      const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
   protected
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
@@ -1057,6 +1063,7 @@ type
                                           write FLastCompilerFilename;
     property LastCompilerParams: string read FLastCompilerParams
                                         write FLastCompilerParams;
+    property MacroEngine: TTransferMacroList read FMacroEngine;
     property MacroValues: TProjectBuildMacros read FMacroValues;
     property MainFilename: String read GetMainFilename;
     property MainProject: boolean read FMainProject write SetMainProject;
@@ -2544,6 +2551,9 @@ begin
   FAllEditorsInfoMap := TMap.Create(ituPtrSize, SizeOf(TObject));
   FBookmarks := TProjectBookmarkList.Create;
 
+  FMacroEngine:=TTransferMacroList.Create;
+  FMacroEngine.MarkUnhandledMacros:=false;
+  FMacroEngine.OnSubstitution:=@OnMacroEngineSubstitution;
   FBuildModes:=TProjectBuildModes.Create(nil);
   FBuildModes.LazProject:=Self;
   FBuildModesBackup:=TProjectBuildModes.Create(nil);
@@ -2582,6 +2592,7 @@ begin
   Clear;
   FreeAndNil(FBuildModesBackup);
   FreeAndNil(FBuildModes);
+  FreeAndNil(FMacroEngine);
   FreeAndNil(FAllEditorsInfoMap);
   FreeAndNil(FAllEditorsInfoList);
   FreeThenNil(FResources);
@@ -5446,6 +5457,55 @@ begin
     FAllEditorsInfoMap.Delete(EdInfo.EditorComponent);
 end;
 
+procedure TProject.OnMacroEngineSubstitution(TheMacro: TTransferMacro;
+  const MacroName: string; var s: string; const Data: PtrInt; var Handled,
+  Abort: boolean; Depth: integer);
+var
+  Values: TCTCfgScriptVariables;
+  Macro: PCTCfgScriptVariable;
+var
+  NewValue: String;
+begin
+  if Data=CompilerOptionMacroPlatformIndependent then
+  begin
+    NewValue:=GetMakefileMacroValue(MacroName);
+    if NewValue<>'' then begin
+      s:=NewValue;
+      Handled:=true;
+      exit;
+    end;
+  end;
+
+  // check build macros
+  if (MacroName<>'') and IsValidIdent(MacroName) then
+  begin
+    Values:=GetBuildMacroValues(CompilerOptions,true);
+    if Values<>nil then begin
+      Macro:=Values.GetVariable(PChar(MacroName));
+      if Macro<>nil then
+      begin
+        s:=GetCTCSVariableAsString(Macro);
+        //debugln(['TProject.OnMacroEngineSubstitution Macro=',MacroName,' Value="',s,'"']);
+        Handled:=true;
+        exit;
+      end;
+    end;
+  end;
+
+  // check local macros
+  {if CompareText(MacroName,'PkgOutDir')=0 then begin
+    Handled:=true;
+    if Data=CompilerOptionMacroNormal then
+      s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir)
+    else
+      s:=CompilerOptions.ParsedOpts.GetParsedPIValue(pcosOutputDir);
+  end
+  else if CompareText(MacroName,'PkgDir')=0 then begin
+    Handled:=true;
+    s:=FDirectory;
+  end;}
+end;
+
 function TProject.SearchFile(const ShortFilename: string;
   SearchFlags: TSearchIDEFileFlags): TUnitInfo;
 var
@@ -5866,6 +5926,17 @@ begin
   //debugln(['TProjectCompilerOptions.SetLCLWidgetType END Macro=',LazProject.ActiveBuildMode.MacroValues.Values['LCLWidgetType'],' Prop=',LCLWidgetType]);
 end;
 
+function TProjectCompilerOptions.SubstituteProjectMacros(const s: string;
+  PlatformIndependent: boolean): string;
+begin
+  Result:=s;
+  if LazProject=nil then exit;
+  if PlatformIndependent then
+    LazProject.MacroEngine.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
+  else
+    LazProject.MacroEngine.SubstituteStr(Result,CompilerOptionMacroNormal);
+end;
+
 procedure TProjectCompilerOptions.Assign(Source: TPersistent);
 var
   ProjCompOptions: TProjectCompilerOptions;
@@ -5943,6 +6014,7 @@ begin
   end;
   if AOwner <> nil
   then FProject := AOwner as TProject;
+  ParsedOpts.OnLocalSubstitute:=@SubstituteProjectMacros;
 end;
 
 destructor TProjectCompilerOptions.Destroy;

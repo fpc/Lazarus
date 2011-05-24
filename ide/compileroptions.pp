@@ -2777,7 +2777,7 @@ begin
     end;
   end;
 
-  // custom options
+  // append custom options as last, so they can override
   if not (ccloNoMacroParams in Flags) then
   begin
     CurCustomOptions:=GetCustomOptions(coptParsed);

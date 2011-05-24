@@ -1803,6 +1803,7 @@ begin
       end;
       MainMacroValues.CfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
     end else if DefaultCfgVars<>nil then begin
+      // there is no project => use defaults
       Result:=DefaultCfgVars;
       if DefaultCfgVarsBuildMacroStamp=BuildMacroChangeStamp then
         exit;
