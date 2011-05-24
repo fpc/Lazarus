@@ -7667,16 +7667,17 @@ begin
       end else
         debugln(['TFPCTargetConfigCache.Update WARNING: compiler is broken: '+Compiler+' '+ExtraOptions]);
       // store the list of tried and read cfg files
-      for i:=0 to CfgFiles.Count-1 do begin
-        Filename:=CfgFiles[i];
-        if Filename='' then continue;
-        CfgFileExists:=Filename[1]='+';
-        Filename:=copy(Filename,2,length(Filename));
-        CfgFileDate:=0;
-        if CfgFileExists then
-          CfgFileDate:=FileAgeCached(Filename);
-        ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
-      end;
+      if CfgFiles<>nil then
+        for i:=0 to CfgFiles.Count-1 do begin
+          Filename:=CfgFiles[i];
+          if Filename='' then continue;
+          CfgFileExists:=Filename[1]='+';
+          Filename:=copy(Filename,2,length(Filename));
+          CfgFileDate:=0;
+          if CfgFileExists then
+            CfgFileDate:=FileAgeCached(Filename);
+          ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
+        end;
       // gather all units in all unit search paths
       if (UnitPaths<>nil) and (UnitPaths.Count>0) then
         Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress)
