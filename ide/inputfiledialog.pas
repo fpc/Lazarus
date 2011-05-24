@@ -12,7 +12,7 @@
 
  *****************************************************************************
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -135,9 +135,9 @@ begin
     CurEdit:=GetInputEdit(i);
     CurEdit.Text:=CurEdit.Text;
     if not FilenameIsValidForFileIndex(CurEdit.Text,i) then begin
-      if MessageDlg('Invalid file',
-        'The file "'+CurEdit.Text+'"'#13
-        +'is invalid for the '+GetGroupBox(i).Caption,mtInformation,
+      if MessageDlg(lisA2PInvalidFile,
+        Format(lisCodeToolsDefsValueIsInvalid, [GetGroupBox(i).Caption, #13,
+          CurEdit.Text]), mtInformation,
         [mbCancel,mbAbort],0)=mrAbort
       then
         ModalResult:=mrCancel
@@ -169,7 +169,7 @@ begin
   if OpenDialog=nil then OpenDialog:=TOpenDialog.Create(Self);
   with OpenDialog do begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    Title:='Select '+GetGroupBox(FileIndex).Caption;
+    Title:=GetGroupBox(FileIndex).Caption;
     if (not Execute) then exit;
     InputHistories.StoreFileDialogSettings(OpenDialog);
     AFilename:=Filename;

@@ -657,7 +657,7 @@ begin
     Caption:=lisCodeToolsDefsCreateDefinesForFreePascalCompiler;
     FileCount:=1;
 
-    FileTitles[0]:='compiler path';
+    FileTitles[0]:=lisCodeToolsDefscompilerPath;
     FileDescs[0]:=Format(
       lisCodeToolsDefsThePathToTheFreePascalCompilerForExample, [#13,
        '"', GetDefaultCompilerFilename, '"', '"', '"']);
@@ -706,9 +706,9 @@ begin
     FileNames[0]:='~/fpc_sources/2.4.1/fpc';
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
-    FileTitles[1]:=lisCodeToolsDefscompilerPath;
-    FileDescs[1]:='The path to the free pascal compiler for this source.'#13
-                  +'Used to autocreate macros.';
+    FileTitles[1]:=lisCodeToolsDefsCompilerPath;
+    FileDescs[1]:=Format(
+      lisCodeToolsDefsThePathToTheFreePascalCompilerForThisSourceUsedToA, [#13]);
     FileNames[1]:=DefaultCompiler;
     FileFlags[1]:=[iftFilename];
 

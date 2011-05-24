@@ -3000,7 +3000,7 @@ resourcestring
   lisCodeToolsDefsProjectDirectory = 'Project directory';
   lisCodeToolsDefsTheFreePascalProjectDirectory = 'The Free Pascal project '
     +'directory.';
-  lisCodeToolsDefscompilerPath = 'compiler path';
+  lisCodeToolsDefscompilerPath = 'Compiler path';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForThisProject = 'The path to '
     +'the free pascal compiler for this project. Only required if you set the '
     +'FPC SVN source below. Used to autocreate macros.';
@@ -3010,6 +3010,9 @@ resourcestring
     +'debugging.';
   lisCodeToolsDefsCreateDefinesForFreePascalCompiler = 'Create Defines for '
     +'Free Pascal Compiler';
+  lisCodeToolsDefsThePathToTheFreePascalCompilerForThisSourceUsedToA = 'The path to '
+    +'the free pascal compiler for this source.%sUsed to autocreate macros.';
+  lisCodeToolsDefsValueIsInvalid = '%s:%svalue "%s" is invalid.';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForExample = 'The '
     +'path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s '
     +'or %s/usr/local/bin/fpc @/etc/fpc.cfg%s.';
