@@ -201,6 +201,9 @@ type
     property Age: longint read FAge;
   end;
 
+  TOnChangeFileStateTimeStamp = procedure(Sender: TObject;
+                                          const AFilename: string) of object;
+
   { TFileStateCache }
 
   TFileStateCache = class
@@ -208,7 +211,7 @@ type
     FFiles: TAVLTree; // tree of TFileStateCacheItem
     FTimeStamp: int64;
     FLockCount: integer;
-    FChangeTimeStampHandler: array of TNotifyEvent;
+    FChangeTimeStampHandler: array of TOnChangeFileStateTimeStamp;
     procedure SetFlag(AFile: TFileStateCacheItem;
                       AFlag: TFileStateCacheItemFlag; NewValue: boolean);
   public
@@ -231,8 +234,8 @@ type
     function Check(const Filename: string; AFlag: TFileStateCacheItemFlag;
                    out AFile: TFileStateCacheItem; var FlagIsSet: boolean): boolean;
     procedure WriteDebugReport;
-    procedure AddChangeTimeStampHandler(const Handler: TNotifyEvent);
-    procedure RemoveChangeTimeStampHandler(const Handler: TNotifyEvent);
+    procedure AddChangeTimeStampHandler(const Handler: TOnChangeFileStateTimeStamp);
+    procedure RemoveChangeTimeStampHandler(const Handler: TOnChangeFileStateTimeStamp);
     function CalcMemSize: PtrUint;
   public
     property TimeStamp: int64 read FTimeStamp;
@@ -3246,14 +3249,14 @@ begin
   if AFilename='' then begin
     // invalidate all
     CTIncreaseChangeStamp64(FTimeStamp);
-    for i:=0 to length(FChangeTimeStampHandler)-1 do
-      FChangeTimeStampHandler[i](Self);
   end else begin
     // invalidate single file
     AFile:=FindFile(AFilename,false);
     if AFile<>nil then
       AFile.FTestedFlags:=[];
   end;
+  for i:=0 to length(FChangeTimeStampHandler)-1 do
+    FChangeTimeStampHandler[i](Self,AFilename);
   //debugln('TFileStateCache.IncreaseTimeStamp FTimeStamp=',dbgs(FTimeStamp));
 end;
 
@@ -3407,14 +3410,15 @@ begin
   debugln(FFiles.ReportAsString);
 end;
 
-procedure TFileStateCache.AddChangeTimeStampHandler(const Handler: TNotifyEvent);
+procedure TFileStateCache.AddChangeTimeStampHandler(
+  const Handler: TOnChangeFileStateTimeStamp);
 begin
   SetLength(FChangeTimeStampHandler,length(FChangeTimeStampHandler)+1);
   FChangeTimeStampHandler[length(FChangeTimeStampHandler)-1]:=Handler;
 end;
 
 procedure TFileStateCache.RemoveChangeTimeStampHandler(
-  const Handler: TNotifyEvent);
+  const Handler: TOnChangeFileStateTimeStamp);
 var
   i: Integer;
 begin

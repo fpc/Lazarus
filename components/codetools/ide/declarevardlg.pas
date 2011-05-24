@@ -34,6 +34,8 @@
     - Target implementation
     - Target interface
     - Target program
+    - copy to clipboard
+    - paste from clipboard
 }
 unit DeclareVarDlg;
 

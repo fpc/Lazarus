@@ -143,6 +143,7 @@ type
     procedure SetStrings(const AStringType: TCTDirCacheString;
       const AValue: string);
     procedure ClearUnitLinks;
+    procedure ClearListing;
     procedure UpdateListing;
     function GetUnitSourceCacheValue(const UnitSrc: TCTDirectoryUnitSources;
                            const Search: string; var Filename: string): boolean;
@@ -202,7 +203,8 @@ type
     FOnGetUnitFromSet: TCTGetUnitFromSet;
     FOnIterateFPCUnitsFromSet: TCTIterateFPCUnitsFromSet;
     procedure DoRemove(ACache: TCTDirectoryCache);
-    procedure OnFileStateCacheChangeTimeStamp(Sender: TObject);
+    procedure OnFileStateCacheChangeTimeStamp(Sender: TObject;
+                                              const AFilename: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -518,6 +520,11 @@ begin
   FUnitLinksTree:=nil
 end;
 
+procedure TCTDirectoryCache.ClearListing;
+begin
+  FListing.Clear;
+end;
+
 procedure TCTDirectoryCache.UpdateListing;
 var
   WorkingListing: PWorkFileInfo;
@@ -534,7 +541,7 @@ begin
   if (FListing<>nil) and (FListing.FileTimeStamp=Pool.FileTimeStamp) then exit;
   if FListing=nil then
     FListing:=TCTDirectoryListing.Create;
-  FListing.Clear;
+  ClearListing;
   FListing.FileTimeStamp:=Pool.FileTimeStamp;
   if Directory='' then exit;// virtual directory
   
@@ -1243,9 +1250,20 @@ begin
   FDirectories.Remove(ACache);
 end;
 
-procedure TCTDirectoryCachePool.OnFileStateCacheChangeTimeStamp(Sender: TObject);
+procedure TCTDirectoryCachePool.OnFileStateCacheChangeTimeStamp(
+  Sender: TObject; const AFilename: string);
+var
+  Dir: String;
+  Cache: TCTDirectoryCache;
 begin
-  IncreaseFileTimeStamp;
+  if AFilename='' then
+    IncreaseFileTimeStamp
+  else if FilenameIsAbsolute(AFilename) then begin
+    Dir:=ExtractFileName(AFilename);
+    Cache:=GetCache(Dir,false,false);
+    if Cache=nil then exit;
+    Cache.ClearListing;
+  end;
 end;
 
 constructor TCTDirectoryCachePool.Create;
