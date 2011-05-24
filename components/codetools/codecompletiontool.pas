@@ -5337,6 +5337,7 @@ var
   Section: TCodeTreeNode;
   ExistingNodeInProc: Boolean;
   Keep: Boolean;
+  InAtomEndPos: Integer;
 begin
   Result:=false;
   IsKeyword:=false;
@@ -5450,7 +5451,40 @@ begin
       end;
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier Assignment type=',NewType]);
       Result:=true;
-    end else begin
+    end;
+
+    if not Result then begin
+      MoveCursorToAtomPos(IdentifierAtom);
+      // find 'in' operator
+      ReadNextAtom;
+      if UpAtomIs('IN') then begin
+        InAtomEndPos:=CurPos.EndPos;
+
+        // find 'for' keyword
+        MoveCursorToCleanPos(IdentifierAtom.StartPos);
+        ReadPriorAtom;
+        if not UpAtomIs('FOR') then exit;
+
+        // find term
+        MoveCursorToCleanPos(InAtomEndPos);
+        ReadNextAtom;
+        TermAtom.StartPos:=CurPos.StartPos;
+        TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
+
+        debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier guessing type of for-in list "',dbgstr(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"']);
+        // find type of term
+        Params:=TFindDeclarationParams.Create;
+        try
+          NewType:=FindForInTypeAsString(TermAtom,CursorNode,Params,NewExprType);
+        finally
+          Params.Free;
+        end;
+        debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier For-In type=',NewType]);
+        Result:=true;
+      end;
+    end;
+
+    if not Result then begin
       debugln(['TCodeCompletionCodeTool.GuessTypeOfIdentifier can not guess type']);
       exit;
     end;

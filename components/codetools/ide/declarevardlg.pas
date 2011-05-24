@@ -26,7 +26,6 @@
     that the user needs only to choose where to create the var.
 
   ToDo:
-    - guess for in
     - guess parameter
     - guess j:=<i>
     - Extend uses section when adding to a class
