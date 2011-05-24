@@ -7191,15 +7191,20 @@ var
     ProcNode: TCodeTreeNode;
     ClassOfMethodContext: TFindContext;
     HasIdentifier: Boolean;
+    Context: TFindContext;
   begin
     // for example: inherited A;
     // inherited skips the class and begins to search in the ancestor class
-    if (ExprType.Context.Node<>StartNode) or (ExprType.Context.Node=nil)
-    then begin
+    if ExprType.Desc=xtNone then
+      Context:=CreateFindContext(Self,StartNode)
+    else
+      Context:=ExprType.Context;
+
+    if (Context.Node<>StartNode) or (Context.Node=nil) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseIllegalQualifierFound;
     end;
-    if (not NodeIsInAMethod(ExprType.Context.Node)) then begin
+    if (not NodeIsInAMethod(Context.Node)) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseException(ctsInheritedKeywordOnlyAllowedInMethods);
     end;
@@ -7221,11 +7226,11 @@ var
     {$ENDIF}
 
     // find ancestor of class of method
-    ProcNode:=ExprType.Context.Node.GetNodeOfType(ctnProcedure);
+    ProcNode:=Context.Node.GetNodeOfType(ctnProcedure);
     Params.Save(OldInput);
     Params.Flags:=[fdfExceptionOnNotFound]
                   +fdfGlobals*Params.Flags;
-    ExprType.Context.Tool.FindClassOfMethod(ProcNode,Params,true);
+    Context.Tool.FindClassOfMethod(ProcNode,Params,true);
     ClassOfMethodContext:=CreateFindContext(Params);
 
     // find class ancestor
@@ -7234,6 +7239,7 @@ var
     ClassOfMethodContext.Tool.FindAncestorOfClass(ClassOfMethodContext.Node,
                                                   Params,true);
 
+    ExprType.Desc:=xtContext;
     if HasIdentifier then begin
       // search identifier only in class ancestor
       Params.Load(OldInput,false);

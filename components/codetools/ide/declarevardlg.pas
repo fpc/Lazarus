@@ -28,9 +28,10 @@
   ToDo:
     - guess for in
     - guess parameter
-    - guess <i>:=expression
+    - guess j:=<i>
     - Extend uses section when adding to a class
     - Fix bug: adding types with comments
+    - Fix bug: insert at beginning of proc, if identifier is in sub proc
     - Target implementation
     - Target interface
     - Target program
