@@ -2020,13 +2020,14 @@ end;
 
 function TUnitInfo.ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
 begin
-  Result:=(Source<>nil) and (Source.FileOnDiskHasChanged);
+  Result:=(Source<>nil) and Source.FileOnDiskHasChanged;
+  //if Result then debugln(['TUnitInfo.ChangedOnDisk ',Filename,' FileAgeCached=',FileAgeCached(Source.Filename)]);
   if Result
   and (not CompareOnlyLoadSaveTime)
   and FIgnoreFileDateOnDiskValid
   and (FIgnoreFileDateOnDisk=Source.FileDateOnDisk) then
     Result:=false;
-  if (not IsVirtual) and FileExistsUTF8(Filename) then
+  if (not IsVirtual) and FileExistsCached(Filename) then
     FileReadOnly:=not FileIsWritableCached(Filename)
   else
     FileReadOnly:=false;

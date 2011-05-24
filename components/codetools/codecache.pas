@@ -1066,6 +1066,7 @@ begin
       Modified:=false;
     end;
   end;
+  //debugln(['TCodeBuffer.SaveToFile FileOnDiskHasChanged=',FileOnDiskHasChanged,' LoadDate=',LoadDate,' FileAgeCached=',FileAgeCached(Filename)]);
 end;
 
 function TCodeBuffer.Reload: boolean;
