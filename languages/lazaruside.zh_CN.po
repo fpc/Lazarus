@@ -5104,7 +5104,9 @@ msgid "CodeTools Defines Preview"
 msgstr "代码工具自定义预览"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
-msgid "compiler path"
+#, fuzzy
+#| msgid "compiler path"
+msgid "Compiler path"
 msgstr "编译器路径"
 
 #: lazarusidestrconsts.liscodetoolsdefsconvertnode
@@ -5415,6 +5417,10 @@ msgstr "free pascal 编译器路径.%s 例如 %s/usr/bin/%s -n%s 或者 %s/usr/l
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "为工程设置的 free pascal 编译器路径.只在当你设置了 FPC SVN 源代码时需要. 使用自动创建的宏."
 
+#: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
+msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "工程目录是 %s ,%s 包含 .dpr, dpk 文件的目录."
@@ -5438,6 +5444,10 @@ msgstr "值为文件路径"
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
 msgstr "值为文本文件"
+
+#: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
+msgid "%s:%svalue \"%s\" is invalid."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"

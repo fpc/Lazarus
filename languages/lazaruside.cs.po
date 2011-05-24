@@ -5060,7 +5060,9 @@ msgid "CodeTools Defines Preview"
 msgstr "Náhled definic CodeTools"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
-msgid "compiler path"
+#, fuzzy
+#| msgid "compiler path"
+msgid "Compiler path"
 msgstr "Cesta překladače"
 
 #: lazarusidestrconsts.liscodetoolsdefsconvertnode
@@ -5371,6 +5373,10 @@ msgstr "Cesta k překladači Free Pascal.%s Například %s/usr/bin/%s -n%s nebo 
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "Cesta překladače Free Pascal pro tento projekt. Vyžadováno jen pokud je nastaven FPC SVN zdroj níže. Použité pro automatické vytvoření maker."
 
+#: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
+msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "Adresář projektu %s,%skterý obsahuje soubor .dpr, dpk."
@@ -5394,6 +5400,10 @@ msgstr "Hodnota jako cesty souboru"
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
 msgstr "Hodnota jako text"
+
+#: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
+msgid "%s:%svalue \"%s\" is invalid."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"

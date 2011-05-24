@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-22 20:19+0300\n"
+"PO-Revision-Date: 2011-05-25 03:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5101,8 +5101,9 @@ msgid "CodeTools Defines Preview"
 msgstr "Просмотр определений CodeTools"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
-msgid "compiler path"
-msgstr "путь к компилятору"
+#| msgid "compiler path"
+msgid "Compiler path"
+msgstr "Путь к компилятору"
 
 #: lazarusidestrconsts.liscodetoolsdefsconvertnode
 msgid "Convert node"
@@ -5114,11 +5115,11 @@ msgstr "Создать определения для каталога %s"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalcompiler
 msgid "Create Defines for Free Pascal Compiler"
-msgstr "Создать определения для компилятора FreePascal"
+msgstr "Создать определения для компилятора Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr "Создать определения для исходного кода  FreePascal из SVN"
+msgstr "Создать определения для исходного кода Free Pascal из SVN"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
@@ -5146,11 +5147,11 @@ msgstr "Удалить элемент"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr "Главный каталог %s,%sгде Borland установил все исходные коды %s.%sНапример: C:/Programme/Borland/Delphi%s"
+msgstr "Главный каталог %s,%sгде Borland установила весь исходный код %s.%sНапример: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr "Главный каталог %s,%sгде Borland установил все исходные коды %s,%sиспользуемые проектом %s.%sНапример: C:/Programme/Borland/Delphi%s"
+msgstr "Главный каталог %s,%sгде Borland установила весь исходный код %s,%sиспользуемый проектом %s.%sНапример: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdescription
 msgid "Description:"
@@ -5200,7 +5201,7 @@ msgstr "Выход без сохранения"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
-msgstr "Каталог исходного кода  FreePascal из SVN"
+msgstr "Каталог исходного кода FreePascal из SVN"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
 msgid "If"
@@ -5256,15 +5257,15 @@ msgstr "Вставить шаблон проекта Delphi 7"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalcompilert
 msgid "Insert Free Pascal Compiler Template"
-msgstr "Вставить шаблон компилятора FreePascal"
+msgstr "Вставить шаблон компилятора Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalprojectte
 msgid "Insert Free Pascal Project Template"
-msgstr "Вставить шаблон проекта FreePascal"
+msgstr "Вставить шаблон проекта Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
 msgid "Insert Free Pascal SVN Source Template"
-msgstr "Вставить шаблон SVN-кода FreePascal "
+msgstr "Вставить шаблон SVN-кода Free Pascal "
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
 msgid "Insert Kylix 3 Compiler Template"
@@ -5308,11 +5309,11 @@ msgstr "Неверный предыдущий элемент"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: /home/user/kylix%s"
-msgstr "Главный каталог %s,%sгде Borland установил все исходные коды %s.%sНапример: /home/user/kylix%s"
+msgstr "Главный каталог %s,%sгде Borland установила весь исходный код %s.%sНапример: /home/user/kylix%s"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
-msgstr "Главный каталог %s,%sгде Borland установил все исходные коды %s,%sиспользуемые проектом %s.%sНапример: /home/user/kylix%s"
+msgstr "Главный каталог %s,%sгде Borland установила весь исходный код %s,%sиспользуемый проектом %s.%sНапример: /home/user/kylix%s"
 
 #: lazarusidestrconsts.liscodetoolsdefslazarusdirectory
 msgid "Lazarus Directory"
@@ -5390,15 +5391,15 @@ msgstr "Выделить элемент:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
 msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
-msgstr "Каталог исходного кода  FreePascal из SVN. Не обязателен. Улучшит поиск объявлений и отладку."
+msgstr "Каталог исходного кода Free Pascal из SVN. Не обязателен. Улучшит поиск объявлений и отладку."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
 msgid "The Free Pascal project directory."
-msgstr "Каталог проекта FreePascal."
+msgstr "Каталог проекта Free Pascal."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
-msgstr "Каталог исходного кода  FreePascal из SVN."
+msgstr "Каталог исходного кода Free Pascal из SVN."
 
 #: lazarusidestrconsts.liscodetoolsdefsthelazarusmaindirectory
 msgid "The Lazarus main directory."
@@ -5406,15 +5407,19 @@ msgstr "Главный каталог Lazarus."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
-msgstr "Путь к компилятору FreePascal.%s Например, %s/usr/bin%s -n%s или %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+msgstr "Путь к компилятору Free Pascal.%s Например, %s/usr/bin%s -n%s или %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
-msgstr "Путь к компилятору FreePascal для данного проекта. Требуется только при заполненном поле \"Каталог исходного кода FreePascal из SVN\" ниже. Используется для автоматического создания макросов."
+msgstr "Путь к компилятору Free Pascal для данного проекта. Требуется только при заполненном поле \"Каталог исходного кода Free Pascal из SVN\" ниже. Используется для автоматического создания макросов."
+
+#: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
+msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgstr "Путь к компилятору Free Pascal для данного исходного кода.%sИспользуется для автоматического создания макросов."
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
-msgstr "Каталог %s проекта,%sсодержащий файлы .dpr, dpk."
+msgstr "Каталог проекта %s,%sсодержащий файлы .dpr, dpk."
 
 #: lazarusidestrconsts.liscodetoolsdefsundefine
 msgid "Undefine"
@@ -5435,6 +5440,10 @@ msgstr "Значение как пути к файлам"
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
 msgstr "Значение как текст"
+
+#: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
+msgid "%s:%svalue \"%s\" is invalid."
+msgstr "%s:%sзначение \"%s\" некорректно."
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
@@ -7125,7 +7134,7 @@ msgstr "Имя файла программы:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
 msgid "Scan output for Free Pascal Compiler messages"
-msgstr "Поиск сообщений компилятора FreePascal в выводе"
+msgstr "Поиск сообщений компилятора Free Pascal в выводе"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputformakemessages
 msgid "Scan output for make messages"
@@ -7915,7 +7924,7 @@ msgstr "Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
-msgstr "Компилятор FreePascal не найден"
+msgstr "Компилятор Free Pascal не найден"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
 #| msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
@@ -7932,7 +7941,7 @@ msgstr "Файл исходного кода FreePascal"
 
 #: lazarusidestrconsts.lisfreepascalsourcesnotfound
 msgid "Free Pascal Sources not found"
-msgstr "Не найден исходный код FreePascal"
+msgstr "Не найден исходный код Free Pascal"
 
 #: lazarusidestrconsts.lisfrforwardsearch
 msgid "Forwar&d search"
@@ -8575,7 +8584,7 @@ msgstr "Неверный фильтр"
 
 #: lazarusidestrconsts.lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
-msgstr "Неверный каталог исходого кода FreePascal"
+msgstr "Неверный каталог исходого кода Free Pascal"
 
 #: lazarusidestrconsts.lisinvalidlinecolumninmessage
 msgid "Invalid line, column in message%s%s"
@@ -11236,7 +11245,7 @@ msgstr "Неверный идентификатор Паскаля"
 
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
-msgstr "ЗАМЕТКА: Невозможно создать шаблон определений из исходного кода FreePascal"
+msgstr "ЗАМЕТКА: Невозможно создать шаблон определений из исходного кода Free Pascal"
 
 #: lazarusidestrconsts.lisnotecouldnotcreatedefinetemplateforlazarussources
 msgid "NOTE: Could not create Define Template for Lazarus Sources"
@@ -12773,7 +12782,7 @@ msgstr "Пакет %s%s%s установлен, но не был найден к
 
 #: lazarusidestrconsts.lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
 msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
-msgstr "RTL - библиотека времени выполнения (Run-Time Library) - является основой всех программ FreePascal."
+msgstr "RTL - библиотека времени выполнения (Run-Time Library) - является основой всех программ Free Pascal."
 
 #: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
 msgid "This is the default package. Used only for components without a package. These components are outdated."
@@ -14229,12 +14238,12 @@ msgstr "Для используемого компилятора FPC отсут�
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
 #| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "Текущий каталог исходного кода FreePascal %s%s%s%sне выглядит корректно.%sВыберите ОК, чтобы вернуть используемый по умолчанию %s%s%s,%sили же проверьте Сервис -> Параметры -> Файлы"
+msgstr "Текущий каталог исходного кода Free Pascal %s%s%s%sне выглядит корректно.%sВыберите ОК, чтобы вернуть используемый по умолчанию %s%s%s,%sили же проверьте Сервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 #| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Tools -> Options -> Files"
-msgstr "Текущий каталог исходного кода FreePascal %s%s%s%sне выглядит корректно.%sПроверьте Сервис -> Параметры -> Файлы"
+msgstr "Текущий каталог исходного кода Free Pascal %s%s%s%sне выглядит корректно.%sПроверьте Сервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
 #| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
@@ -14343,12 +14352,12 @@ msgstr "Исполнимый файл компилятора Free Pascal обы�
 
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
-msgstr "Компилятор FreePascal (имя файла: %s) не найден.%sВам рекомендуется установить fpc"
+msgstr "Компилятор Free Pascal (имя файла: %s) не найден.%sВам рекомендуется установить FPC."
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
 #| msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
-msgstr "Каталог исходного кода FreePascal не найден.%sОтдельные действия с кодом не будут работать.%sРекомендуется установить его и установить путь%sСервис -> Параметры -> Файлы"
+msgstr "Каталог исходного кода Free Pascal не найден.%sОтдельные действия с кодом не будут работать.%sРекомендуется установить его и установить путь%sСервис -> Параметры -> Файлы"
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"

@@ -5102,7 +5102,9 @@ msgid "CodeTools Defines Preview"
 msgstr "コードツール定義プレビュー"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
-msgid "compiler path"
+#, fuzzy
+#| msgid "compiler path"
+msgid "Compiler path"
 msgstr "コンパイラパス"
 
 #: lazarusidestrconsts.liscodetoolsdefsconvertnode
@@ -5413,6 +5415,10 @@ msgstr "free pascalコンパイラのパス。%s%s例： %s/usr/bin/%s -n%s あ�
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "このプロジェクトのfree pascalコンパイラのパス。以下のFPC SVNソースをセットした場合にのみ要求さsed to autocreate macros.）。"
 
+#: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
+msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr " %s のプロジェクトディレクトリ。 %s そこに .dpr, dpk ファイルがあります。"
@@ -5436,6 +5442,10 @@ msgstr "ファイルパスとしての値"
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
 msgstr "テキストとしての値"
+
+#: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
+msgid "%s:%svalue \"%s\" is invalid."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"

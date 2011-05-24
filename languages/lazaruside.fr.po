@@ -5114,7 +5114,9 @@ msgid "CodeTools Defines Preview"
 msgstr "Définitions des Outils de code"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
-msgid "compiler path"
+#, fuzzy
+#| msgid "compiler path"
+msgid "Compiler path"
 msgstr "Chemin du compilateur"
 
 #: lazarusidestrconsts.liscodetoolsdefsconvertnode
@@ -5425,6 +5427,10 @@ msgstr "Le chemin du compilateur Free Pascal.%s Par exemple %s/usr/bin/%s -n%s o
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "Le chemin du compilateur de Free Pascal pour ce projet. Seulement requis si vous placiz la source de FPC SVN ci-dessous. Utilisé pour l'auto-création de macros."
 
+#: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
+msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "Le répertoire projet %s,%squi contient les fichiers .dpr, .dpk."
@@ -5448,6 +5454,10 @@ msgstr "Valeur en chemins fichier"
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
 msgstr "Valeur en texte"
+
+#: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
+msgid "%s:%svalue \"%s\" is invalid."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"

@@ -5100,7 +5100,9 @@ msgid "CodeTools Defines Preview"
 msgstr "CodeTools apibrėžčių peržiūra"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
-msgid "compiler path"
+#, fuzzy
+#| msgid "compiler path"
+msgid "Compiler path"
 msgstr "Kompiliatoriaus programa"
 
 #: lazarusidestrconsts.liscodetoolsdefsconvertnode
@@ -5411,6 +5413,10 @@ msgstr "Free Pascal kompiliatoriaus programa su keliu iki jos.%sPavyzdžiui: %s/
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "Šio projekto Free Pascal kompiliatoriaus programa su keliu iki jos. Būtina įrašyti jei žemiau nurodysit FPC SVN pirminio kodo aplanką. Šis įrašas naudojamas automatiškai kuriant makrokomandas."
 
+#: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
+msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "%s projekto aplankas,%skuriame yra .dpr ir .dpk failai."
@@ -5434,6 +5440,10 @@ msgstr "Vertė failų kelių pavidalu"
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
 msgstr "Vertė teksto pavidalu"
+
+#: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
+msgid "%s:%svalue \"%s\" is invalid."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"

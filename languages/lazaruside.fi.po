@@ -5039,7 +5039,7 @@ msgid "CodeTools Defines Preview"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
-msgid "compiler path"
+msgid "Compiler path"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsconvertnode
@@ -5350,6 +5350,10 @@ msgstr ""
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr ""
 
+#: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
+msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr ""
@@ -5372,6 +5376,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
+msgstr ""
+
+#: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
+msgid "%s:%svalue \"%s\" is invalid."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable

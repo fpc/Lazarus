@@ -5073,7 +5073,9 @@ msgid "CodeTools Defines Preview"
 msgstr "הגדרת תצוגה מקדימה ע\"י CodeTools"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
-msgid "compiler path"
+#, fuzzy
+#| msgid "compiler path"
+msgid "Compiler path"
 msgstr "נתיב המהדר"
 
 #: lazarusidestrconsts.liscodetoolsdefsconvertnode
@@ -5384,6 +5386,10 @@ msgstr "הנתיב למהדר fpc. למשל/usr/bin/%s -n%s or %s/usr/local/bin/
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "הנתיב למהדר fpc עבור פרוייקט זה. דרוש רק אם הגדרת את קבצי קוד המקור של FPC SVN שלהלן. משמש ליצירה אוטומטית של מאקרו."
 
+#: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
+msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "תיקיית הפרוייקט s%, שמכילה את קבצי dpr .dpk."
@@ -5407,6 +5413,10 @@ msgstr "ערך כנתיבי קובץ"
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
 msgstr "ערך כטקסט"
+
+#: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
+msgid "%s:%svalue \"%s\" is invalid."
+msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
