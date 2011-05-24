@@ -13,6 +13,14 @@ msgstr ""
 msgid "Add call inherited"
 msgstr ""
 
+#: codystrconsts.crsalreadydefined
+msgid "Already defined"
+msgstr ""
+
+#: codystrconsts.crsalreadydefinedat
+msgid "Already defined at %s"
+msgstr ""
+
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
 msgstr ""
@@ -173,6 +181,10 @@ msgstr ""
 msgid "Declare Variable ..."
 msgstr ""
 
+#: codystrconsts.crsdeclarevariable3
+msgid "Declare variable \"%s\""
+msgstr ""
+
 #: codystrconsts.crsfile
 msgid "File"
 msgstr ""
@@ -205,12 +217,20 @@ msgstr ""
 msgid "Linked files"
 msgstr ""
 
+#: codystrconsts.crslocalvariableof
+msgid "Local variable of %s"
+msgstr ""
+
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
 msgstr ""
 
 #: codystrconsts.crsmbytes
 msgid "Mbytes"
+msgstr ""
+
+#: codystrconsts.crsmemberof
+msgid "%s member of %s %s"
 msgstr ""
 
 #: codystrconsts.crsmissing
@@ -253,6 +273,14 @@ msgstr ""
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr ""
 
+#: codystrconsts.crspleasespecifyalocation
+msgid "Please specify a location"
+msgstr ""
+
+#: codystrconsts.crspleasespecifyatype
+msgid "Please specify a type"
+msgstr ""
+
 #: codystrconsts.crsppu
 msgid "PPU: %s"
 msgstr ""
@@ -261,12 +289,28 @@ msgstr ""
 msgid "PPU files of project \"%s\""
 msgstr ""
 
+#: codystrconsts.crsprivate
+msgid "Private"
+msgstr ""
+
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
 msgstr ""
 
 #: codystrconsts.crsprojectoutput
 msgid "Project output"
+msgstr ""
+
+#: codystrconsts.crsprotected
+msgid "Protected"
+msgstr ""
+
+#: codystrconsts.crspublic
+msgid "Public"
+msgstr ""
+
+#: codystrconsts.crspublished
+msgid "Published"
 msgstr ""
 
 #: codystrconsts.crsrefresh
@@ -303,6 +347,10 @@ msgstr ""
 
 #: codystrconsts.crssource
 msgid "Source: %s"
+msgstr ""
+
+#: codystrconsts.crstheidentifierisalreadydefined
+msgid "The identifier \"%s\" is already defined."
 msgstr ""
 
 #: codystrconsts.crstotal
@@ -347,6 +395,10 @@ msgstr ""
 
 #: codystrconsts.crsvirtualunit
 msgid "Virtual unit"
+msgstr ""
+
+#: codystrconsts.crswhere
+msgid "Where"
 msgstr ""
 
 #: codystrconsts.liscogeneral

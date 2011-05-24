@@ -30,8 +30,6 @@
     - guess parameter
     - guess j:=<i>
     - Extend uses section when adding to a class
-    - Fix bug: adding types with comments
-    - Fix bug: insert at beginning of proc, if identifier is in sub proc
     - Target implementation
     - Target interface
     - Target program
@@ -206,9 +204,6 @@ end;
 procedure TCodyDeclareVarDialog.FormCreate(Sender: TObject);
 begin
   Targets:=TObjectList.create(true);
-  Caption:='Declare a new variable';
-  WhereRadioGroup.Caption:='Where';
-  TypeEdit.Caption:='Type';
   ButtonPanel1.OKButton.OnClick:=@OKButtonClick;
   ButtonPanel1.HelpButton.OnClick:=@HelpButtonClick;
 end;
@@ -219,7 +214,7 @@ var
 begin
   NewType:=Trim(TypeEdit.Text);
   if NewType='' then begin
-    IDEMessageDialog('Error','Please specify a type',mtError,[mbCancel]);
+    IDEMessageDialog(crsCWError, crsPleaseSpecifyAType, mtError, [mbCancel]);
     exit;
   end;
   if CompareTextIgnoringSpace(NewType,RecommendedType,false)<>0 then begin
@@ -227,7 +222,8 @@ begin
     UnitOfType:='';
   end;
   if WhereRadioGroup.ItemIndex<0 then begin
-    IDEMessageDialog('Error','Please specify a location',mtError,[mbCancel]);
+    IDEMessageDialog(crsCWError, crsPleaseSpecifyALocation, mtError, [mbCancel
+      ]);
     exit;
   end;
   ModalResult:=mrOk;
@@ -251,16 +247,16 @@ function TCodyDeclareVarDialog.Run: boolean;
     s: String;
   begin
     case Visibility of
-    ctnClassPrivate: s:='Private';
-    ctnClassProtected: s:='Protected';
-    ctnClassPublic: s:='Public';
-    ctnClassPublished: s:='Published';
+    ctnClassPrivate: s:=crsPrivate;
+    ctnClassProtected: s:=crsProtected;
+    ctnClassPublic: s:=crsPublic;
+    ctnClassPublished: s:=crsPublished;
     else exit;
     end;
     Target:=TCodyDeclareVarTarget.Create(Context);
     Target.Visibility:=Visibility;
-    s:=s+' member of '+Context.Node.DescAsString+' '+
-      Context.Tool.ExtractClassName(Context.Node,false,true);
+    s:=Format(crsMemberOf, [s, Context.Node.DescAsString, Context.Tool.
+      ExtractClassName(Context.Node, false, true)]);
     Target.Caption:=s;
     Targets.Add(Target);
   end;
@@ -285,8 +281,9 @@ begin
 
     if ExistingDefinition.Node<>nil then begin
       RedefineLabel.Visible:=true;
-      RedefineLabel.Caption:='Already defined at '+ExistingDefinition.Tool.CleanPosToRelativeStr(
-        ExistingDefinition.Node.StartPos,CodePos.Code.Filename);
+      RedefineLabel.Caption:=Format(crsAlreadyDefinedAt, [ExistingDefinition.
+        Tool.CleanPosToRelativeStr(
+        ExistingDefinition.Node.StartPos, CodePos.Code.Filename)]);
     end else begin
       RedefineLabel.Visible:=false;
     end;
@@ -296,7 +293,8 @@ begin
         Context:=PFindContext(PossibleContexts[i])^;
         if Context.Node.Desc=ctnProcedure then begin
           Target:=TCodyDeclareVarTarget.Create(Context);
-          Target.Caption:='Local variable of '+Context.Tool.ExtractProcName(Context.Node,[]);
+          Target.Caption:=Format(crsLocalVariableOf, [Context.Tool.
+            ExtractProcName(Context.Node, [])]);
           Targets.Add(Target);
         end else if Context.Node.Desc in AllClassObjects then begin
           AddClassTarget(Context,ctnClassPrivate);
@@ -311,15 +309,17 @@ begin
   end;
 
   if Targets.Count=0 then begin
-    IDEMessageDialog('Already defined',
-      'The identifier "'+Identifier+'" is already defined.',mtError,[mbCancel]);
+    IDEMessageDialog(crsAlreadyDefined,
+      Format(crsTheIdentifierIsAlreadyDefined, [Identifier]), mtError, [mbCancel
+        ]);
     exit;
   end;
 
-  Caption:='Declare variable "'+Identifier+'"';
-  TypeLabel.Caption:='Type';
+  Caption:=Format(crsDeclareVariable3, [Identifier]);
+  TypeLabel.Caption:=crsType;
   TypeEdit.Text:=RecommendedType;
 
+  WhereRadioGroup.Caption:=crsWhere;
   for i:=0 to Targets.Count-1 do begin
     Target:=TCodyDeclareVarTarget(Targets[i]);
     WhereRadioGroup.Items.Add(Target.Caption);
@@ -339,7 +339,8 @@ begin
       LazarusIDE.OpenEditorsOnCodeToolChange:=true;
       if not CodeToolBoss.DeclareVariable(Target.NodeStartPos.Code,
         Target.NodeStartPos.X,Target.NodeStartPos.Y,
-        Identifier,NewType,UnitOfType,Target.Visibility)
+        Identifier,NewType,UnitOfType,Target.Visibility,
+        CodePos.Code,CodePos.X,CodePos.Y)
       then begin
         debugln(['TCodyDeclareVarDialog.Run Error']);
         LazarusIDE.DoJumpToCodeToolBossError;

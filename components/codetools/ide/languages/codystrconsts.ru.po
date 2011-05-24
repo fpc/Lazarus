@@ -21,6 +21,14 @@ msgstr "Добавить метод Assign ..."
 msgid "Add call inherited"
 msgstr "Добавить вызов унаследованного метода"
 
+#: codystrconsts.crsalreadydefined
+msgid "Already defined"
+msgstr ""
+
+#: codystrconsts.crsalreadydefinedat
+msgid "Already defined at %s"
+msgstr ""
+
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
 msgstr "Отмена"
@@ -181,6 +189,10 @@ msgstr "Объявить переменную"
 msgid "Declare Variable ..."
 msgstr "Объявить переменную ..."
 
+#: codystrconsts.crsdeclarevariable3
+msgid "Declare variable \"%s\""
+msgstr ""
+
 #: codystrconsts.crsfile
 msgid "File"
 msgstr "Файл"
@@ -213,6 +225,10 @@ msgstr "кБ"
 msgid "Linked files"
 msgstr "Скомпонованные файлы"
 
+#: codystrconsts.crslocalvariableof
+msgid "Local variable of %s"
+msgstr ""
+
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
 msgstr "Главный файл исходного кода: %s"
@@ -220,6 +236,10 @@ msgstr "Главный файл исходного кода: %s"
 #: codystrconsts.crsmbytes
 msgid "Mbytes"
 msgstr "МБ"
+
+#: codystrconsts.crsmemberof
+msgid "%s member of %s %s"
+msgstr ""
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -262,6 +282,14 @@ msgstr "Сначала необходимо открыть проект."
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr "Расположите курсор редактора исходного кода на идентификаторе в операторе.%sНапример:%sMyVar:=3;"
 
+#: codystrconsts.crspleasespecifyalocation
+msgid "Please specify a location"
+msgstr ""
+
+#: codystrconsts.crspleasespecifyatype
+msgid "Please specify a type"
+msgstr ""
+
 #: codystrconsts.crsppu
 msgid "PPU: %s"
 msgstr "PPU: %s"
@@ -270,6 +298,10 @@ msgstr "PPU: %s"
 msgid "PPU files of project \"%s\""
 msgstr "Файлы PPU проекта \"%s\""
 
+#: codystrconsts.crsprivate
+msgid "Private"
+msgstr ""
+
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
 msgstr "В проекте отсутствует главный файл исходного кода."
@@ -277,6 +309,18 @@ msgstr "В проекте отсутствует главный файл исх�
 #: codystrconsts.crsprojectoutput
 msgid "Project output"
 msgstr "Вывод проекта"
+
+#: codystrconsts.crsprotected
+msgid "Protected"
+msgstr ""
+
+#: codystrconsts.crspublic
+msgid "Public"
+msgstr ""
+
+#: codystrconsts.crspublished
+msgid "Published"
+msgstr ""
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"
@@ -314,6 +358,10 @@ msgstr "Размер файла .ppu"
 #: codystrconsts.crssource
 msgid "Source: %s"
 msgstr "Файл исходного кода: %s"
+
+#: codystrconsts.crstheidentifierisalreadydefined
+msgid "The identifier \"%s\" is already defined."
+msgstr ""
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -358,6 +406,10 @@ msgstr "Использует"
 #: codystrconsts.crsvirtualunit
 msgid "Virtual unit"
 msgstr "Виртуальный модуль"
+
+#: codystrconsts.crswhere
+msgid "Where"
+msgstr ""
 
 #: codystrconsts.liscogeneral
 msgid "General"

@@ -48,6 +48,7 @@ resourcestring
   crsUnits = 'Units';
   crsLinkedFiles = 'Linked files';
   crsType = 'Type';
+  crsWhere = 'Where';
   crsFile = 'File';
   crsFlags = 'Flags';
   crsPackage = 'Package';
@@ -78,9 +79,21 @@ resourcestring
   crsRemoveWithBlock = 'Remove With block';
 
   crsCWError = 'Error';
+  crsPleaseSpecifyAType = 'Please specify a type';
+  crsPleaseSpecifyALocation = 'Please specify a location';
   crsPleasePlaceTheCursorOfTheSourceEditorAtAnIdentifie = 'Please place the '
     +'cursor of the source editor at an identifier in a statement.%sFor '
     +'example:%sMyVar:=3;';
+  crsDeclareVariable3 = 'Declare variable "%s"';
+  crsAlreadyDefined = 'Already defined';
+  crsLocalVariableOf = 'Local variable of %s';
+  crsAlreadyDefinedAt = 'Already defined at %s';
+  crsPrivate = 'Private';
+  crsProtected = 'Protected';
+  crsPublic = 'Public';
+  crsPublished = 'Published';
+  crsMemberOf = '%s member of %s %s';
+  crsTheIdentifierIsAlreadyDefined = 'The identifier "%s" is already defined.';
   crsCWPleasePlaceTheCursorOfTheSourceEditorOnAWithVariab = 'Please place the '
     +'cursor of the source editor on a With variable.';
 

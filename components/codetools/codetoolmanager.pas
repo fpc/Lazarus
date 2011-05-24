@@ -517,7 +517,9 @@ type
           out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier or syntax error
     function DeclareVariable(Code: TCodeBuffer; X,Y: integer;
           const VariableName, NewType, NewUnitName: string;
-          Visibility: TCodeTreeNodeDesc): boolean;
+          Visibility: TCodeTreeNodeDesc;
+          MaxPosCode: TCodeBuffer = nil; MaxPosX: integer = 0; MaxPosY: integer = 0
+          ): boolean;
     function FindRedefinitions(Code: TCodeBuffer;
           out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
     function RemoveRedefinitions(Code: TCodeBuffer;
@@ -3656,21 +3658,25 @@ end;
 
 function TCodeToolManager.DeclareVariable(Code: TCodeBuffer; X, Y: integer;
   const VariableName, NewType, NewUnitName: string;
-  Visibility: TCodeTreeNodeDesc): boolean;
+  Visibility: TCodeTreeNodeDesc; MaxPosCode: TCodeBuffer; MaxPosX: integer;
+  MaxPosY: integer): boolean;
 var
-  CursorPos: TCodeXYPosition;
+  CursorPos, MaxPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
   DebugLn(['TCodeToolManager.DeclareVariable A ',Code.Filename,' X=',X,' Y=',Y]);
   {$ENDIF}
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
+  CursorPos.Code:=Code;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
-  CursorPos.Code:=Code;
+  MaxPos.Code:=MaxPosCode;
+  MaxPos.X:=MaxPosX;
+  MaxPos.Y:=MaxPosY;
   try
     Result:=FCurCodeTool.DeclareVariable(CursorPos,VariableName,
-                              NewType,NewUnitName,Visibility,SourceChangeCache);
+                       NewType,NewUnitName,Visibility,MaxPos,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

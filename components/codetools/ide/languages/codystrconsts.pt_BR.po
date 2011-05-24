@@ -21,6 +21,14 @@ msgstr "Adicionar método \"Assign\" ..."
 msgid "Add call inherited"
 msgstr "Adicionar chamada \"inherited\""
 
+#: codystrconsts.crsalreadydefined
+msgid "Already defined"
+msgstr ""
+
+#: codystrconsts.crsalreadydefinedat
+msgid "Already defined at %s"
+msgstr ""
+
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
 msgstr "Cancelar"
@@ -181,6 +189,10 @@ msgstr "Declarar Variável"
 msgid "Declare Variable ..."
 msgstr "Declarar Variável ..."
 
+#: codystrconsts.crsdeclarevariable3
+msgid "Declare variable \"%s\""
+msgstr ""
+
 #: codystrconsts.crsfile
 msgid "File"
 msgstr ""
@@ -213,6 +225,10 @@ msgstr "kbytes"
 msgid "Linked files"
 msgstr ""
 
+#: codystrconsts.crslocalvariableof
+msgid "Local variable of %s"
+msgstr ""
+
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
 msgstr "Arquivo fonte principal: %s"
@@ -220,6 +236,10 @@ msgstr "Arquivo fonte principal: %s"
 #: codystrconsts.crsmbytes
 msgid "Mbytes"
 msgstr "Mbytes"
+
+#: codystrconsts.crsmemberof
+msgid "%s member of %s %s"
+msgstr ""
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -261,6 +281,14 @@ msgstr "Favor abrir um projeto primeiro."
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr ""
 
+#: codystrconsts.crspleasespecifyalocation
+msgid "Please specify a location"
+msgstr ""
+
+#: codystrconsts.crspleasespecifyatype
+msgid "Please specify a type"
+msgstr ""
+
 #: codystrconsts.crsppu
 msgid "PPU: %s"
 msgstr "PPU: %s"
@@ -269,6 +297,10 @@ msgstr "PPU: %s"
 msgid "PPU files of project \"%s\""
 msgstr "Arquivos PPU do projeto \"%s\""
 
+#: codystrconsts.crsprivate
+msgid "Private"
+msgstr ""
+
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
 msgstr "Projeto não tem arquivo fonte principal."
@@ -276,6 +308,18 @@ msgstr "Projeto não tem arquivo fonte principal."
 #: codystrconsts.crsprojectoutput
 msgid "Project output"
 msgstr "Saída do Projeto"
+
+#: codystrconsts.crsprotected
+msgid "Protected"
+msgstr ""
+
+#: codystrconsts.crspublic
+msgid "Public"
+msgstr ""
+
+#: codystrconsts.crspublished
+msgid "Published"
+msgstr ""
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"
@@ -313,6 +357,10 @@ msgstr "Tamanho do arquivo .ppu"
 #: codystrconsts.crssource
 msgid "Source: %s"
 msgstr "Fonte: %s"
+
+#: codystrconsts.crstheidentifierisalreadydefined
+msgid "The identifier \"%s\" is already defined."
+msgstr ""
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -357,6 +405,10 @@ msgstr "\"Uses\""
 #: codystrconsts.crsvirtualunit
 msgid "Virtual unit"
 msgstr "Unidade Virtual"
+
+#: codystrconsts.crswhere
+msgid "Where"
+msgstr ""
 
 #: codystrconsts.liscogeneral
 msgid "General"

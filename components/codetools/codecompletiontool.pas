@@ -177,7 +177,8 @@ type
     function AddLocalVariable(CleanCursorPos: integer; OldTopLine: integer;
                        VariableName, VariableType, VariableTypeUnitName: string;
                        out NewPos: TCodeXYPosition; out NewTopLine: integer;
-                       SourceChangeCache: TSourceChangeCache): boolean;
+                       SourceChangeCache: TSourceChangeCache;
+                       MaxCleanPos: integer = 0): boolean;
     procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
                           out NewPos: TCodeXYPosition; out NewTopLine: integer);
     function AddVariable(CursorNode: TCodeTreeNode;
@@ -326,7 +327,7 @@ type
         out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier
     function DeclareVariable(InsertPos: TCodeXYPosition;
         const VariableName, NewType, NewUnitName: string;
-        Visibility: TCodeTreeNodeDesc;
+        Visibility: TCodeTreeNodeDesc; MaxPos: TCodeXYPosition;
         SourceChangeCache: TSourceChangeCache): boolean;
 
     // custom class completion
@@ -969,11 +970,11 @@ begin
   Result:=TermAtom.EndPos>TermAtom.StartPos;
 end;
 
-function TCodeCompletionCodeTool.AddLocalVariable(
-  CleanCursorPos: integer; OldTopLine: integer;
-  VariableName, VariableType, VariableTypeUnitName: string;
-  out NewPos: TCodeXYPosition;
-  out NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
+function TCodeCompletionCodeTool.AddLocalVariable(CleanCursorPos: integer;
+  OldTopLine: integer; VariableName, VariableType,
+  VariableTypeUnitName: string; out NewPos: TCodeXYPosition;
+  out NewTopLine: integer; SourceChangeCache: TSourceChangeCache;
+  MaxCleanPos: integer): boolean;
 var
   CursorNode, BeginNode, VarSectionNode, VarNode: TCodeTreeNode;
   Indent, InsertPos: integer;
@@ -1001,11 +1002,16 @@ begin
     DebugLn('TCodeCompletionCodeTool.AddLocalVariable - Not in Begin Block');
     exit;
   end;
+  if MaxCleanPos<1 then MaxCleanPos:=SrcLen+1;
 
-  // find last 'var' section node
+  // find last 'var' section node in front of MaxCleanPos
   VarSectionNode:=BeginNode;
-  while (VarSectionNode<>nil) and (VarSectionNode.Desc<>ctnVarSection) do
+  while (VarSectionNode<>nil) do begin
+    if (VarSectionNode.Desc=ctnVarSection)
+    and (VarSectionNode.EndPos<=MaxCleanPos) then
+      break;
     VarSectionNode:=VarSectionNode.PriorBrother;
+  end;
 
   InsertTxt:=VariableName+':'+VariableType+';';
   //DebugLn('TCodeCompletionCodeTool.AddLocalVariable C ',InsertTxt,' ');
@@ -1013,6 +1019,7 @@ begin
   if (VarSectionNode<>nil) and (VarSectionNode.FirstChild<>nil) then begin
     // there is already a var section
     // -> append variable
+    //debugln(['TCodeCompletionCodeTool.AddLocalVariable insert into existing var section']);
     VarNode:=VarSectionNode.FirstChild;
     // search last variable in var section
     while (VarNode.NextBrother<>nil) do
@@ -1024,11 +1031,40 @@ begin
   end else begin
     // there is no var section yet
     // -> create a new var section and append variable
-    Indent:=GetLineIndent(Src,BeginNode.StartPos);
+    if BeginNode.StartPos>MaxCleanPos then begin
+      Node:=BeginNode;
+      while (Node<>nil) and (not (Node.Desc in AllDefinitionSections)) do
+        Node:=Node.PriorBrother;
+      if Node<>nil then begin
+        // there is a type/const section in front
+        // => put the var section below
+        //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section below '+Node.DescAsString]);
+        InsertPos:=Node.EndPos;
+        Indent:=GetLineIndent(Src,Node.StartPos);
+      end else begin
+        // there is no var/type/const section in front
+        // => insert at first possible position
+        Node:=BeginNode.Parent.FirstChild;
+        if Node.Desc in [ctnProcedureHead,ctnUsesSection] then begin
+          // insert behind uses section / procedure header
+          //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section below '+Node.DescAsString]);
+          InsertPos:=Node.EndPos;
+        end else begin
+          // insert behind section keyword
+          //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section at start of '+BeginNode.Parent.DescAsString]);
+          InsertPos:=Node.StartPos;
+        end;
+        Indent:=GetLineIndent(Src,InsertPos);
+      end;
+    end else begin
+      // default: add the var section directly in front of the begin
+      //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section in front of begin block']);
+      InsertPos:=BeginNode.StartPos;
+      Indent:=GetLineIndent(Src,InsertPos);
+    end;
     InsertTxt:='var'+SourceChangeCache.BeautifyCodeOptions.LineEnd
                +GetIndentStr(Indent+SourceChangeCache.BeautifyCodeOptions.Indent)
                +InsertTxt;
-    InsertPos:=BeginNode.StartPos;
   end;
   
   // insert new code
@@ -5426,8 +5462,8 @@ end;
 
 function TCodeCompletionCodeTool.DeclareVariable(InsertPos: TCodeXYPosition;
   const VariableName, NewType, NewUnitName: string;
-  Visibility: TCodeTreeNodeDesc; SourceChangeCache: TSourceChangeCache
-  ): boolean;
+  Visibility: TCodeTreeNodeDesc; MaxPos: TCodeXYPosition;
+  SourceChangeCache: TSourceChangeCache): boolean;
 var
   CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
@@ -5435,24 +5471,28 @@ var
   NewTopLine: integer;
   Node: TCodeTreeNode;
   ClassPart: TNewClassPart;
+  MaxCleanPos: integer;
 begin
   Result:=false;
   debugln(['TCodeCompletionCodeTool.DeclareVariable InsertPos=',dbgs(InsertPos),' Name="',VariableName,'" Type="',NewType,'" Unit=',NewUnitName]);
   BuildTreeAndGetCleanPos(InsertPos,CleanCursorPos);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  CaretToCleanPos(MaxPos,MaxCleanPos);
   SourceChangeCache.MainScanner:=Scanner;
   Node:=CursorNode;
   while Node<>nil do begin
     if Node.Desc=ctnBeginBlock then begin
       // local variable
       Result:=AddLocalVariable(Node.StartPos, 1,
-        VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache);
+        VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache,
+        MaxCleanPos);
       exit;
     end else if Node.Desc=ctnProcedure then begin
       // local variable
       if (Node.LastChild<>nil) and (Node.LastChild.Desc=ctnBeginBlock) then begin
         Result:=AddLocalVariable(Node.LastChild.StartPos, 1,
-          VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache);
+          VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache,
+          MaxCleanPos);
         exit;
       end else
         exit;
