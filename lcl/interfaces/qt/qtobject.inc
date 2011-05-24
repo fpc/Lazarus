@@ -538,17 +538,9 @@ begin
     QEventShow,
     QEventHide:
       begin
-        // invalidate widgetAt cache if needed
+        // invalidate widgetAt cache.
         if QObject_isWidgetType(Sender) and IsValidWidgetAtCachePointer then
-        begin
-          QWidget_geometry(QWidgetH(Sender), @R);
-          Pt.x := 0;
-          Pt.y := 0;
-          QWidget_mapToGlobal(QWidgetH(Sender), @Pt, @Pt);
-          R := Rect(Pt.X, Pt.Y, Pt.X + (R.Right - R.Left), Pt.Y + (R.Bottom - R.Top));
-          if PtInRect(R, GetWidgetAtCachePoint) then
-            InvalidateWidgetAtCache;
-        end;
+          InvalidateWidgetAtCache;
       end;
     LCLQt_Destroy:
       begin
