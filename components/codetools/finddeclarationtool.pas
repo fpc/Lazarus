@@ -6530,7 +6530,7 @@ var
   LastAtomType: TVariableAtomType;
   CurAtom, NextAtom: TAtomPosition;
   CurAtomBracketEndPos: integer;
-  StartContext: TFindContext;
+  StartNode: TCodeTreeNode;
   OldInput: TFindDeclarationInput;
   StartFlags: TFindDeclarationFlags;
   IsIdentEndOfVar: TIsIdentEndOfVar;
@@ -6666,7 +6666,7 @@ var
   begin
     //DebugLn(['ResolveBaseTypeOfIdentifier ',ExprType.Context.Node<>nil]);
     if ExprType.Desc=xtNone then
-      Context:=StartContext
+      Context:=CreateFindContext(Self,StartNode)
     else
       Context:=ExprType.Context;
 
@@ -6742,19 +6742,18 @@ var
     IsStart:=ExprType.Desc=xtNone;
     if IsStart then begin
       // start context
-      if (StartContext.Node.Desc in AllPascalStatements) then begin
+      if (StartNode.Desc in AllPascalStatements) then begin
         if CompareSrcIdentifiers(CurAtom.StartPos,'SELF') then begin
           // SELF in a method is the object itself
           // -> check if in a method or nested proc of a method
-          ProcNode:=StartContext.Node;
+          ProcNode:=StartNode;
           while (ProcNode<>nil) do begin
             if (ProcNode.Desc=ctnProcedure) and NodeIsMethodBody(ProcNode) then
               break;
             ProcNode:=ProcNode.Parent;
           end;
           if (ProcNode<>nil)
-          and StartContext.Tool.FindClassOfMethod(ProcNode,Params,
-                                                    not IsIdentifierEndOfVariable)
+          and FindClassOfMethod(ProcNode,Params,not IsIdentifierEndOfVariable)
           then begin
             ExprType.Desc:=xtContext;
             ExprType.Context:=CreateFindContext(Params);
@@ -6764,7 +6763,7 @@ var
         and CompareSrcIdentifiers(CurAtom.StartPos,'RESULT') then begin
           // RESULT has a special meaning in a function
           // -> check if in a function
-          ProcNode:=StartContext.Node.GetNodeOfType(ctnProcedure);
+          ProcNode:=StartNode.GetNodeOfType(ctnProcedure);
           if (ProcNode<>nil) then begin
             if IsIdentifierEndOfVariable
             and (fdfFindVariable in StartFlags) then begin
@@ -6777,6 +6776,7 @@ var
                   // function: ctnIdentifier
                   ExprType.Desc:=xtContext;
                   ExprType.Context.Node:=ResultNode;
+                  ExprType.Context.Tool:=Self;
                   exit;
                 end;
                 ResultNode:=ResultNode.NextBrother;
@@ -6801,11 +6801,11 @@ var
       Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
                     +(fdfGlobals*Params.Flags);
       if IsStart then
-        Context:=StartContext
+        Context:=CreateFindContext(Self,StartNode)
       else
         Context:=ExprType.Context;
       Params.ContextNode:=Context.Node;
-      if Context.Node=StartContext.Node then begin
+      if Context.Node=StartNode then begin
         // there is no special context -> search in parent contexts too
         Params.Flags:=Params.Flags+[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
       end else begin
@@ -6903,7 +6903,7 @@ var
     end
     else if (Scanner.CompilerMode=cmDELPHI) and (ExprType.Desc=xtContext)
     and (ExprType.Context.Node.Desc=ctnPointerType)
-    and (ExprType.Context.Node<>StartContext.Node) then begin
+    and (ExprType.Context.Node<>StartNode) then begin
       // Delphi knows . as shortcut for ^.
       // -> check for pointer type
       // left side of expression has defined a special context
@@ -6951,7 +6951,8 @@ var
     // 'as' is a type cast, so the left side is irrelevant
     // -> context is default context
     ExprType.Desc:=xtContext;
-    ExprType.Context:=StartContext;
+    ExprType.Context.Tool:=Self;
+    ExprType.Context.Node:=StartNode;
   end;
   
   procedure ResolveUp;
@@ -6974,7 +6975,7 @@ var
       // the compiler type pointer resolves to a pointer
       exit;
     end;
-    if (ExprType.Context.Node<>StartContext.Node) then begin
+    if (ExprType.Context.Node<>StartNode) then begin
       // left side of expression has defined a special context
       // => this '^' is a dereference
       if (not
@@ -7193,7 +7194,7 @@ var
   begin
     // for example: inherited A;
     // inherited skips the class and begins to search in the ancestor class
-    if (ExprType.Context.Node<>StartContext.Node) or (ExprType.Context.Node=nil)
+    if (ExprType.Context.Node<>StartNode) or (ExprType.Context.Node=nil)
     then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseIllegalQualifierFound;
@@ -7255,8 +7256,7 @@ var
 begin
   Result:=CleanExpressionType;
   StartFlags:=Params.Flags;
-  StartContext.Tool:=Self;
-  StartContext.Node:=Params.ContextNode;
+  StartNode:=Params.ContextNode;
   {$IFDEF ShowExprEval}
   DebugLn(['[TFindDeclarationTool.FindExpressionTypeOfTerm] START',
     ' Flags=[',dbgs(Params.Flags),']',
@@ -7265,7 +7265,7 @@ begin
   );
   {$ENDIF}
   {$IFDEF CheckNodeTool}
-  StartContext.Tool.CheckNodeTool(StartContext.Node);
+  CheckNodeTool(StartNode);
   {$ENDIF}
 
   if not InitAtomQueue then exit;
