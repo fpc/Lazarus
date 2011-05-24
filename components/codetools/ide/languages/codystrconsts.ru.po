@@ -191,7 +191,7 @@ msgstr "Флаги"
 
 #: codystrconsts.crsframeworks
 msgid "Frameworks"
-msgstr ""
+msgstr "Платформы"
 
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
@@ -239,15 +239,15 @@ msgstr "Параметры"
 
 #: codystrconsts.crsotherobjectfiles
 msgid "Other object files"
-msgstr ""
+msgstr "Прочие объектные файлы"
 
 #: codystrconsts.crsothersharedlibraries
 msgid "Other shared libraries"
-msgstr ""
+msgstr "Прочие динамические библиотеки"
 
 #: codystrconsts.crsotherstaticlibraries
 msgid "Other static libraries"
-msgstr ""
+msgstr "Прочие статические библиотеки"
 
 #: codystrconsts.crspackage
 msgid "Package"
@@ -333,19 +333,19 @@ msgstr "Модуль: %s"
 
 #: codystrconsts.crsunitobjectfiles
 msgid "Unit object files"
-msgstr ""
+msgstr "Объектные файлы модулей"
 
 #: codystrconsts.crsunits
 msgid "Units"
-msgstr ""
+msgstr "Модули"
 
 #: codystrconsts.crsunitsharedlibraries
 msgid "Unit shared libraries"
-msgstr ""
+msgstr "Динамические библиотеки модулей"
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"
-msgstr ""
+msgstr "Статические библиотеки модулей"
 
 #: codystrconsts.crsusedby
 msgid "Used by"
