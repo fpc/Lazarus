@@ -518,7 +518,7 @@ type
     function DeclareVariable(Code: TCodeBuffer; X,Y: integer;
           const VariableName, NewType, NewUnitName: string;
           Visibility: TCodeTreeNodeDesc;
-          MaxPosCode: TCodeBuffer = nil; MaxPosX: integer = 0; MaxPosY: integer = 0
+          LvlPosCode: TCodeBuffer = nil; LvlPosX: integer = 0; LvlPosY: integer = 0
           ): boolean;
     function FindRedefinitions(Code: TCodeBuffer;
           out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
@@ -3658,10 +3658,10 @@ end;
 
 function TCodeToolManager.DeclareVariable(Code: TCodeBuffer; X, Y: integer;
   const VariableName, NewType, NewUnitName: string;
-  Visibility: TCodeTreeNodeDesc; MaxPosCode: TCodeBuffer; MaxPosX: integer;
-  MaxPosY: integer): boolean;
+  Visibility: TCodeTreeNodeDesc;
+  LvlPosCode: TCodeBuffer; LvlPosX: integer; LvlPosY: integer): boolean;
 var
-  CursorPos, MaxPos: TCodeXYPosition;
+  CursorPos, LvlPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
   DebugLn(['TCodeToolManager.DeclareVariable A ',Code.Filename,' X=',X,' Y=',Y]);
@@ -3671,12 +3671,12 @@ begin
   CursorPos.Code:=Code;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
-  MaxPos.Code:=MaxPosCode;
-  MaxPos.X:=MaxPosX;
-  MaxPos.Y:=MaxPosY;
+  LvlPos.Code:=LvlPosCode;
+  LvlPos.X:=LvlPosX;
+  LvlPos.Y:=LvlPosY;
   try
     Result:=FCurCodeTool.DeclareVariable(CursorPos,VariableName,
-                       NewType,NewUnitName,Visibility,MaxPos,SourceChangeCache);
+                       NewType,NewUnitName,Visibility,SourceChangeCache,LvlPos);
   except
     on e: Exception do Result:=HandleException(e);
   end;

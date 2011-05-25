@@ -115,12 +115,6 @@ const
 type
   TCodeCompletionCodeTool = class;
 
-  TOnGetNewVariableLocation = function(Tool: TCodeCompletionCodeTool;
-                           const VariableName: string;
-                           var VariableType, VariableUnitName: string;
-                           IsMethod: boolean; NewLocation: TNewVarLocation
-                           ): boolean;
-                           
   { TCodeCompletionCodeTool }
 
   TCodeCompletionCodeTool = class(TMethodJumpingCodeTool)
@@ -131,7 +125,6 @@ type
     FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
     FirstInsert: TCodeTreeNodeExtension; // list of insert requests
-    FOnGetNewVariableLocation: TOnGetNewVariableLocation;
     FSetPropertyVariablename: string;
     FJumpToProcName: string;
     NewClassSectionIndent: array[TPascalClassSection] of integer;
@@ -178,14 +171,9 @@ type
                        VariableName, VariableType, VariableTypeUnitName: string;
                        out NewPos: TCodeXYPosition; out NewTopLine: integer;
                        SourceChangeCache: TSourceChangeCache;
-                       MaxCleanPos: integer = 0): boolean;
+                       CleanLevelPos: integer = 0): boolean;
     procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
                           out NewPos: TCodeXYPosition; out NewTopLine: integer);
-    function AddVariable(CursorNode: TCodeTreeNode;
-                      CleanCursorPos,OldTopLine: integer;
-                      const VariableName, NewType, NewUnitName: string;
-                      out NewPos: TCodeXYPosition; out NewTopLine: integer;
-                      SourceChangeCache: TSourceChangeCache): boolean;
     procedure AddNeededUnitToMainUsesSection(AnUnitName: PChar);
     function CompleteClass(AClassNode: TCodeTreeNode;
                            CleanCursorPos, OldTopLine: integer;
@@ -327,8 +315,10 @@ type
         out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier
     function DeclareVariable(InsertPos: TCodeXYPosition;
         const VariableName, NewType, NewUnitName: string;
-        Visibility: TCodeTreeNodeDesc; MaxPos: TCodeXYPosition;
-        SourceChangeCache: TSourceChangeCache): boolean;
+        Visibility: TCodeTreeNodeDesc;
+        SourceChangeCache: TSourceChangeCache;
+        LevelPos: TCodeXYPosition  // optional
+        ): boolean;
 
     // custom class completion
     function InitClassCompletion(const AClassName: string;
@@ -353,8 +343,6 @@ type
     property AddInheritedCodeToOverrideMethod: boolean
                                         read FAddInheritedCodeToOverrideMethod
                                         write FAddInheritedCodeToOverrideMethod;
-    property OnGetNewVariableLocation: TOnGetNewVariableLocation
-                 read FOnGetNewVariableLocation write FOnGetNewVariableLocation;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
@@ -974,93 +962,126 @@ function TCodeCompletionCodeTool.AddLocalVariable(CleanCursorPos: integer;
   OldTopLine: integer; VariableName, VariableType,
   VariableTypeUnitName: string; out NewPos: TCodeXYPosition;
   out NewTopLine: integer; SourceChangeCache: TSourceChangeCache;
-  MaxCleanPos: integer): boolean;
+  CleanLevelPos: integer): boolean;
+// if CleanLevelPos<1 then CleanLevelPos:=CleanCursorPos
+// CleanLevelPos selects the target node, e.g. a ctnProcedure
 var
-  CursorNode, BeginNode, VarSectionNode, VarNode: TCodeTreeNode;
+  CursorNode, VarSectionNode, VarNode: TCodeTreeNode;
   Indent, InsertPos: integer;
   InsertTxt: string;
   OldCodePos: TCodePosition;
   Node: TCodeTreeNode;
+  ParentNode: TCodeTreeNode;
+  OtherSectionNode: TCodeTreeNode;
+  HeaderNode: TCodeTreeNode;
 begin
-  //DebugLn('TCodeCompletionCodeTool.AddLocalVariable START ');
+  //DebugLn('TCodeCompletionCodeTool.AddLocalVariable START CleanCursorPos=',CleanPosToStr(CleanCursorPos),' CleanLevelPos=',CleanPosToStr(CleanLevelPos));
   Result:=false;
-  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then begin
     RaiseException('TCodeCompletionCodeTool.AddLocalVariable Internal Error: '
       +'CleanPosToCodePos');
   end;
+  if CleanLevelPos<1 then CleanLevelPos:=CleanCursorPos;
 
-  // find parent block node at cursor
-  BeginNode:=nil;
-  Node:=CursorNode;
+  // find the level and find sections in front
+  Node:=Tree.Root;
+  VarSectionNode:=nil;
+  OtherSectionNode:=nil;
+  HeaderNode:=nil;
+  ParentNode:=nil;
   while Node<>nil do begin
-    if Node.Desc=ctnBeginBlock then
-      BeginNode:=Node;
-    Node:=Node.Parent;
+    if Node.StartPos>CleanCursorPos then break;
+    CursorNode:=Node;
+    if Node.Desc in [ctnProcedureHead,ctnUsesSection] then
+      HeaderNode:=Node
+    else if Node.Desc=ctnVarSection then
+      VarSectionNode:=Node
+    else if Node.Desc in AllDefinitionSections then
+      OtherSectionNode:=Node;
+    if (Node.StartPos<=CleanLevelPos)
+    and ((Node.EndPos>CleanLevelPos)
+      or ((Node.EndPos=CleanLevelPos)
+         and ((Node.NextBrother=nil) or (Node.NextBrother.StartPos>CleanLevelPos))))
+    then begin
+      VarSectionNode:=nil;
+      OtherSectionNode:=nil;
+      HeaderNode:=nil;
+      if Node.Desc in [ctnInterface,ctnImplementation,ctnProgram,ctnLibrary,
+        ctnPackage,ctnProcedure]
+      then begin
+        // this node can have a var section
+        ParentNode:=Node;
+      end else if Node.Desc=ctnUnit then begin
+        // the grand children can have a var section
+      end else begin
+        break;
+      end;
+      Node:=Node.FirstChild;
+    end else
+      Node:=Node.NextBrother;
   end;
-  if (BeginNode=nil) or (BeginNode.Parent=nil) then begin
-    DebugLn('TCodeCompletionCodeTool.AddLocalVariable - Not in Begin Block');
-    exit;
-  end;
-  if MaxCleanPos<1 then MaxCleanPos:=SrcLen+1;
 
-  // find last 'var' section node in front of MaxCleanPos
-  VarSectionNode:=BeginNode;
-  while (VarSectionNode<>nil) do begin
-    if (VarSectionNode.Desc=ctnVarSection)
-    and (VarSectionNode.EndPos<=MaxCleanPos) then
-      break;
-    VarSectionNode:=VarSectionNode.PriorBrother;
+  if ParentNode=nil then begin
+    // no target for a var
+    RaiseException('TCodeCompletionCodeTool.AddLocalVariable Internal Error: '
+      +'invalid target for a var');
   end;
 
   InsertTxt:=VariableName+':'+VariableType+';';
-  //DebugLn('TCodeCompletionCodeTool.AddLocalVariable C ',InsertTxt,' ');
+  //DebugLn(['TCodeCompletionCodeTool.AddLocalVariable C InsertTxt="',InsertTxt,'" ParentNode=',ParentNode.DescAsString,' HeaderNode=',HeaderNode.DescAsString,' OtherSectionNode=',OtherSectionNode.DescAsString,' VarSectionNode=',VarSectionNode.DescAsString,' CursorNode=',CursorNode.DescAsString]);
 
-  if (VarSectionNode<>nil) and (VarSectionNode.FirstChild<>nil) then begin
+  if (VarSectionNode<>nil) then begin
     // there is already a var section
     // -> append variable
     //debugln(['TCodeCompletionCodeTool.AddLocalVariable insert into existing var section']);
-    VarNode:=VarSectionNode.FirstChild;
-    // search last variable in var section
-    while (VarNode.NextBrother<>nil) do
-      VarNode:=VarNode.NextBrother;
-    Indent:=GetLineIndent(Src,VarNode.StartPos);
-    if PositionsInSameLine(Src,VarSectionNode.StartPos,VarNode.StartPos) then
-      inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
-    InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
+    VarNode:=VarSectionNode.LastChild;
+    if VarNode<>nil then begin
+      Indent:=GetLineIndent(Src,VarNode.StartPos);
+      if PositionsInSameLine(Src,VarSectionNode.StartPos,VarNode.StartPos) then
+        inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
+      InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
+    end else begin
+      Indent:=GetLineIndent(Src,VarSectionNode.StartPos);
+      MoveCursorToNodeStart(VarSectionNode);
+      ReadNextAtom;
+      InsertPos:=CurPos.EndPos;
+    end;
   end else begin
     // there is no var section yet
     // -> create a new var section and append variable
-    if BeginNode.StartPos>MaxCleanPos then begin
-      Node:=BeginNode;
-      while (Node<>nil) and (not (Node.Desc in AllDefinitionSections)) do
-        Node:=Node.PriorBrother;
-      if Node<>nil then begin
-        // there is a type/const section in front
-        // => put the var section below
-        //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section below '+Node.DescAsString]);
-        InsertPos:=Node.EndPos;
-        Indent:=GetLineIndent(Src,Node.StartPos);
+    if OtherSectionNode<>nil then begin
+      // there is a type/const section in front
+      // => put the var section below
+      //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section below '+OtherSectionNode.DescAsString]);
+      InsertPos:=OtherSectionNode.EndPos;
+      Indent:=GetLineIndent(Src,OtherSectionNode.StartPos);
+    end else begin
+      // there is no var/type/const section in front
+      if (ParentNode.Desc=ctnProcedure) and (HeaderNode=nil) then
+        HeaderNode:=ParentNode.FirstChild;
+      if (HeaderNode=nil)
+      and (ParentNode.FirstChild<>nil)
+      and (ParentNode.FirstChild.Desc=ctnUsesSection) then
+        HeaderNode:=ParentNode.FirstChild;
+
+      if CursorNode.Desc in [ctnBeginBlock,ctnAsmBlock] then begin
+        // add the var section directly in front of the begin
+        //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section in front of begin block']);
+        InsertPos:=CursorNode.StartPos;
+        Indent:=GetLineIndent(Src,InsertPos);
+      end else if HeaderNode<>nil then begin
+        // put the var section below the header
+        //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section below '+HeaderNode.DescAsString]);
+        InsertPos:=HeaderNode.EndPos;
+        Indent:=GetLineIndent(Src,InsertPos);
       end else begin
-        // there is no var/type/const section in front
-        // => insert at first possible position
-        Node:=BeginNode.Parent.FirstChild;
-        if Node.Desc in [ctnProcedureHead,ctnUsesSection] then begin
-          // insert behind uses section / procedure header
-          //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section below '+Node.DescAsString]);
-          InsertPos:=Node.EndPos;
-        end else begin
-          // insert behind section keyword
-          //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section at start of '+BeginNode.Parent.DescAsString]);
-          InsertPos:=Node.StartPos;
-        end;
+        // insert behind section keyword
+        //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section at start of '+ParentNode.DescAsString]);
+        MoveCursorToNodeStart(ParentNode);
+        ReadNextAtom;
+        InsertPos:=CurPos.EndPos;
         Indent:=GetLineIndent(Src,InsertPos);
       end;
-    end else begin
-      // default: add the var section directly in front of the begin
-      //debugln(['TCodeCompletionCodeTool.AddLocalVariable start a new var section in front of begin block']);
-      InsertPos:=BeginNode.StartPos;
-      Indent:=GetLineIndent(Src,InsertPos);
     end;
     InsertTxt:='var'+SourceChangeCache.BeautifyCodeOptions.LineEnd
                +GetIndentStr(Indent+SourceChangeCache.BeautifyCodeOptions.Indent)
@@ -1102,39 +1123,6 @@ begin
   if NewTopLine<OldTopLine then
     NewTopLine:=OldTopLine;
   //DebugLn('TCodeCompletionCodeTool.AdjustCursor END NewPos: Line=',NewPos.Y,' Col=',NewPos.X,' NewTopLine=',NewTopLine);
-end;
-
-function TCodeCompletionCodeTool.AddVariable(CursorNode: TCodeTreeNode;
-  CleanCursorPos, OldTopLine: integer;
-  const VariableName, NewType, NewUnitName: string;
-  out NewPos: TCodeXYPosition;
-  out NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
-var
-  VarLocation: TNewVarLocation;
-  IsMethod: Boolean;
-  VarType: String;
-  VarTypeUnitName: String;
-begin
-  //debugln(['TCodeCompletionCodeTool.AddVariable CursorNode=',CursorNode.DescAsString,
-  //  ' VariableName="',VariableName,'" NewType="',NewType,'" NewUnitName="',NewUnitName,'"']);
-  // ask for location of new variable
-  VarLocation:=ncpvLocal;
-  VarType:=NewType;
-  VarTypeUnitName:=NewUnitName;
-  if Assigned(OnGetNewVariableLocation) then begin
-    IsMethod:=NodeIsInAMethod(CursorNode);
-    if not OnGetNewVariableLocation(Self,VariableName,VarType,VarTypeUnitName,
-                                    IsMethod,VarLocation) then exit;
-  end;
-
-  // all needed parameters found
-  Result:=true;
-  // add local variable
-  if not AddLocalVariable(CleanCursorPos, OldTopLine,
-    VariableName, VarType, VarTypeUnitName,
-    NewPos, NewTopLine, SourceChangeCache)
-  then
-    RaiseException('CompleteLocalVariableAssignment Internal error: AddLocalVariable');
 end;
 
 procedure TCodeCompletionCodeTool.AddNeededUnitToMainUsesSection(
@@ -1446,7 +1434,7 @@ begin
   if (ExprType.Desc=xtContext)
   and (ExprType.Context.Tool<>nil) then
     MissingUnit:=GetUnitForUsesSection(ExprType.Context.Tool);
-  Result:=AddVariable(CursorNode,CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
+  Result:=AddLocalVariable(CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
                       NewType,MissingUnit,NewPos,NewTopLine,SourceChangeCache);
 end;
 
@@ -1843,7 +1831,7 @@ begin
   and (ExprType.Context.Tool<>nil) then
     MissingUnit:=GetUnitForUsesSection(ExprType.Context.Tool);
 
-  Result:=AddVariable(CursorNode,CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
+  Result:=AddLocalVariable(CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
                       NewType,MissingUnit,NewPos,NewTopLine,SourceChangeCache);
 end;
 
@@ -1974,7 +1962,7 @@ begin
     DeactivateGlobalWriteLock;
   end;
 
-  Result:=AddVariable(CursorNode,CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
+  Result:=AddLocalVariable(CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
                    NewType,MissingUnitName,NewPos,NewTopLine,SourceChangeCache);
 end;
 
@@ -5322,8 +5310,8 @@ function TCodeCompletionCodeTool.GuessTypeOfIdentifier(
  checks if the identifier is a sub identifier (e.g. A.identifier)
  creates the list of possible locations and notes
  checks if it is the target of an assignment and guess the type
+ checks if it is the source of an for in and guess the type
  ToDo: checks if it is the target of an assignment and guess the type
- ToDo: checks if it is the source of an for in and guess the type
  ToDo: checks if it is a parameter and guess the type
 }
 var
@@ -5496,8 +5484,8 @@ end;
 
 function TCodeCompletionCodeTool.DeclareVariable(InsertPos: TCodeXYPosition;
   const VariableName, NewType, NewUnitName: string;
-  Visibility: TCodeTreeNodeDesc; MaxPos: TCodeXYPosition;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  Visibility: TCodeTreeNodeDesc; SourceChangeCache: TSourceChangeCache;
+  LevelPos: TCodeXYPosition): boolean;
 var
   CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
@@ -5505,32 +5493,17 @@ var
   NewTopLine: integer;
   Node: TCodeTreeNode;
   ClassPart: TNewClassPart;
-  MaxCleanPos: integer;
+  LevelCleanPos: integer;
 begin
   Result:=false;
   debugln(['TCodeCompletionCodeTool.DeclareVariable InsertPos=',dbgs(InsertPos),' Name="',VariableName,'" Type="',NewType,'" Unit=',NewUnitName]);
   BuildTreeAndGetCleanPos(InsertPos,CleanCursorPos);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-  CaretToCleanPos(MaxPos,MaxCleanPos);
+  CaretToCleanPos(LevelPos,LevelCleanPos);
   SourceChangeCache.MainScanner:=Scanner;
   Node:=CursorNode;
   while Node<>nil do begin
-    if Node.Desc=ctnBeginBlock then begin
-      // local variable
-      Result:=AddLocalVariable(Node.StartPos, 1,
-        VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache,
-        MaxCleanPos);
-      exit;
-    end else if Node.Desc=ctnProcedure then begin
-      // local variable
-      if (Node.LastChild<>nil) and (Node.LastChild.Desc=ctnBeginBlock) then begin
-        Result:=AddLocalVariable(Node.LastChild.StartPos, 1,
-          VariableName,NewType,NewUnitName,NewPos,NewTopLine,SourceChangeCache,
-          MaxCleanPos);
-        exit;
-      end else
-        exit;
-    end else if Node.Desc in AllClassObjects then begin
+    if Node.Desc in AllClassObjects then begin
       // class member
       // initialize class for code completion
       InitClassCompletion(Node,SourceChangeCache);
@@ -5562,7 +5535,8 @@ begin
     end;
     Node:=Node.Parent;
   end;
-  debugln(['TCodeCompletionCodeTool.DeclareVariable destination not supported: ',CursorNode.DescAsString]);
+  Result:=AddLocalVariable(CleanCursorPos,1,VariableName,NewType,NewUnitName,
+                           NewPos,NewTopLine,SourceChangeCache,LevelCleanPos);
 end;
 
 function TCodeCompletionCodeTool.GatherPublishedMethods(

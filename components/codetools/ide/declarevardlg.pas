@@ -29,9 +29,6 @@
     - guess parameter
     - guess j:=<i>
     - Extend uses section when adding to a class
-    - Target implementation
-    - Target interface
-    - Target program
     - copy to clipboard
     - paste from clipboard
 }
@@ -269,6 +266,7 @@ var
   OldSrcEdit: TSourceEditorInterface;
   NewType: String;
   ExistingDefinition: TFindContext;
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   PossibleContexts:=nil;
@@ -300,6 +298,16 @@ begin
           AddClassTarget(Context,ctnClassProtected);
           AddClassTarget(Context,ctnClassPublic);
           AddClassTarget(Context,ctnClassPublished);
+        end else if Context.Node.Desc=ctnImplementation then begin
+          Target:=TCodyDeclareVarTarget.Create(Context);
+          Target.Caption:='In implementation';
+          Targets.Add(Target);
+          Node:=Context.Node.PriorBrother;
+          if (Node<>nil) and (Node.Desc=ctnInterface) then begin
+            Target:=TCodyDeclareVarTarget.Create(CreateFindContext(Context.Tool,Node));
+            Target.Caption:='In interface';
+            Targets.Add(Target);
+          end;
         end;
       end;
     end;
@@ -336,10 +344,10 @@ begin
     try
       OldSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
       LazarusIDE.OpenEditorsOnCodeToolChange:=true;
-      if not CodeToolBoss.DeclareVariable(Target.NodeStartPos.Code,
-        Target.NodeStartPos.X,Target.NodeStartPos.Y,
+      if not CodeToolBoss.DeclareVariable(
+        CodePos.Code,CodePos.X,CodePos.Y,
         Identifier,NewType,UnitOfType,Target.Visibility,
-        CodePos.Code,CodePos.X,CodePos.Y)
+        Target.NodeStartPos.Code,Target.NodeStartPos.X,Target.NodeStartPos.Y)
       then begin
         debugln(['TCodyDeclareVarDialog.Run Error']);
         LazarusIDE.DoJumpToCodeToolBossError;

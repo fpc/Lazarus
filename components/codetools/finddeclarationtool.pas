@@ -3995,6 +3995,12 @@ begin
             end;
           end;
         end;
+      ctnImplementation:
+        begin
+          Context.Node:=Node;
+          Context.Tool:=Self;
+          AddFindContext(ListOfPFindContext,Context);
+        end;
       end;
       Node:=Node.Parent;
     end;
