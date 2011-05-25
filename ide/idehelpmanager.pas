@@ -884,6 +884,15 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,
                    '$(FPCSrcDir)/packages/fcl-base/src','*.pp;*.pas',true);
     HTMLHelp.RegisterItem(DirItem);
+
+    // fpc 2.4.4+ FCL source directory
+    FPDocNode:=THelpNode.CreateURL(HTMLHelp,
+                   'FCL - Free Pascal Component Library Units',
+                   'file://index.html');
+    DirItem:=THelpDBISourceDirectories.Create(FPDocNode,'$(FPCSrcDir)/packages',
+      'fcl-base/src;fcl-db/src;fcl-extra/src;fcl-process/src;fcl-web/src;paszlib/src',
+      '*.pp;*.pas',true);
+    HTMLHelp.RegisterItem(DirItem);
   end;
 
   procedure CreateFPCKeywordsHelpDB;
