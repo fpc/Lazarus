@@ -1801,7 +1801,6 @@ resourcestring
   dlgCOAsIs = 'As-Is';
   dlgSyntaxOptions = 'Syntax options';
   dlgAssemblerDefault = 'Default';
-  dlgDelphi2Ext = 'Delphi 2 Extensions';
   dlgCOCOps = 'C Style Operators (*=, +=, /= and -=)';
   dlgAssertCode = 'Include Assertion Code';
   dlgLabelGoto = 'Allow LABEL and GOTO';
@@ -2839,12 +2838,6 @@ resourcestring
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
     +'s was not found.%sThis tool is needed to build lazarus.%s';
   lisCompileIDEWithoutLinking = 'Compile IDE (without linking)';
-  lisComponent = 'Component';
-  lisCodeTools = 'CodeTools';
-  lisSynEdit = 'SynEdit';
-  lisIDEIntf = 'IDE Interface';
-  lisJITForm = 'JIT Form';
-  lisPkgReg = 'Package Registration';
   lisIDE = 'IDE';
   lisExamples = 'Examples';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
