@@ -75,6 +75,11 @@ ResourceString
   ctsUnexpectedKeyword = 'unexpected keyword "%s"';
   ctsNoPascalCodeFound = 'no pascal code found (first token is %s)';
   ctsStringConstant = 'string constant';
+  crsClosingBracketNotFound = 'closing bracket not found';
+  crsBracketNotFound = 'bracket ) not found';
+  crsBracketNotFound2 = 'bracket ] not found';
+  crsRecordEndNotFound = 'record end not found';
+  crsFoundUnexpectedAt = '%s, found unexpected %s at %s';
   ctsAnonymDefinitionsAreNotAllowed = 'Anonymous %s definitions are not allowed';
   ctsNestedDefinitionsAreNotAllowed = 'Nested %s definitions are not allowed';
   ctsEndForRecordNotFound = 'end for record not found';

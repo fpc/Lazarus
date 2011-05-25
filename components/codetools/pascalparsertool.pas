@@ -685,7 +685,8 @@ begin
           // section was not parsed => reopen it
           MoveCursorToCleanPos(Node.StartPos);
           // skip keyword starting the section
-          if Node.Desc in [ctnInterface,ctnImplementation] then
+          if Node.Desc in [ctnInterface,ctnImplementation]
+          then
             ReadNextAtom;
           {$IFDEF VerboseUpdateNeeded}
           debugln(['TPascalParserTool.BuildTree scan section ',Node.DescAsString,' from start. First atom=',GetAtom]);
@@ -703,25 +704,19 @@ begin
             Node.EndPos:=-1;
             MoveCursorToCleanPos(Node.StartPos);
           end else begin
-            // place cursor behind last child node
-            while (Node.LastChild<>nil) and (Node.LastChild.EndPos<1) do
-              Node:=Node.LastChild;
-            Node.EndPos:=-1;
+            // for example: Node=ctnInterface, Node.LastChild=ctnTypeSection
+            // Note: the half parsed section was behind this one and was deleted
             if Node.LastChild<>nil then begin
               {$IFDEF VerboseUpdateNeeded}
-              debugln(['TPascalParserTool.BuildTree scan at end of ',Node.LastChild.DescAsString]);
+              debugln(['TPascalParserTool.BuildTree scan after ',Node.LastChild.DescAsString]);
               {$ENDIF}
               MoveCursorToCleanPos(Node.LastChild.EndPos);
-            end else if Node.EndPos>0 then begin
-              {$IFDEF VerboseUpdateNeeded}
-              debugln(['TPascalParserTool.BuildTree scan at end of ',Node.DescAsString]);
-              {$ENDIF}
-              MoveCursorToCleanPos(Node.EndPos);
             end else begin
               {$IFDEF VerboseUpdateNeeded}
               debugln(['TPascalParserTool.BuildTree scan at start of ',Node.DescAsString]);
               {$ENDIF}
               MoveCursorToCleanPos(Node.StartPos);
+              ReadNextAtom;
             end;
           end;
         end;
@@ -729,7 +724,8 @@ begin
         {$IFDEF VerboseUpdateNeeded}
         debugln(['TPascalParserTool.BuildTree CurNode=',CurNode.DescAsString,' cursor="',dbgstr(copy(Src,CurPos.StartPos,40)),'"']);
         {$ENDIF}
-        if not (CurNode.Desc in (AllCodeSections+[ctnUsesSection])) then
+        if not (CurNode.Desc in (AllCodeSections+[ctnUsesSection]))
+        then
           // FetchScannerSource failed
           RaiseCatchableException('TPascalParserTool.BuildTree inconsistency');
       end;
@@ -2032,17 +2028,18 @@ var
     p:=GetTopPos;
     CleanPosToCaret(p,ErrorNicePosition);
     case Top of
-    siNone: Msg:='closing bracket not found';
-    siRoundBracketOpen: Msg:='bracket ) not found';
-    siEdgedBracketOpen: Msg:='bracket ] not found';
-    siRecord: Msg:='record end not found';
+    siNone: Msg:=crsClosingBracketNotFound;
+    siRoundBracketOpen: Msg:=crsBracketNotFound;
+    siEdgedBracketOpen: Msg:=crsBracketNotFound2;
+    siRecord: Msg:=crsRecordEndNotFound;
     end;
     if CurPos.StartPos<=SrcLen then begin
       if ErrorNicePosition.Code<>nil then
         f:=ErrorNicePosition.Code.Filename
       else
         f:='';
-      Msg:=Msg+', found unexpected '+GetAtom+' at '+CleanPosToRelativeStr(CurPos.StartPos,f);
+      Msg:=Format(crsFoundUnexpectedAt, [Msg, GetAtom, CleanPosToRelativeStr(
+        CurPos.StartPos, f)]);
     end;
     SaveRaiseException(Msg,not CleanPosToCaret(p,ErrorNicePosition));
   end;

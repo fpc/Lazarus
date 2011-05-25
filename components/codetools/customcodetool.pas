@@ -2840,9 +2840,8 @@ begin
       repeat
         while Node.NextBrother<>nil do
           Tree.DeleteNode(Node.NextBrother);
-        if Node.Parent=nil then break;
         Node:=Node.Parent;
-      until false;
+      until Node=nil;
       Tree.DeleteNode(StartNode);
     end;
   end;
