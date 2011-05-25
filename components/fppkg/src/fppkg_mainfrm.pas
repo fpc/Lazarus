@@ -49,7 +49,7 @@ uses
   // Package Handler components
   pkghandler, laz_pkghandler, laz_pkgcommands, pkgcommands,
   //downloader
-  pkgfphttp, pkglnet;
+  pkgfphttp;
 
 type
   TFppkgConfigOptions = record
@@ -579,7 +579,7 @@ begin
           cfgfile := GetAppConfigFile(False, False);
         ForceDirectories(ExtractFilePath(cfgfile));
         //make sure the downloader is FPC native
-        //GlobalOptions.Downloader := 'FPC';
+        GlobalOptions.Downloader := 'FPC';
         GlobalOptions.SaveGlobalToFile(cfgfile);
         GeneratedConfig := True;
       end;
@@ -590,7 +590,7 @@ begin
   begin
     GlobalOptions.LoadGlobalFromFile(cfgfile);
     //make sure the downloader is FPC native
-    //GlobalOptions.Downloader := 'FPC';
+    GlobalOptions.Downloader := 'FPC';
     if GlobalOptions.SaveInifileChanges and (not UseGlobalConfig or IsSuperUser) then
       GlobalOptions.SaveGlobalToFile(cfgfile);
   end;

@@ -8,7 +8,7 @@
       <Version Value="10"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="..\svn;..\src;..\lnet"/>
+        <OtherUnitFiles Value="..\svn;..\src"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
@@ -21,7 +21,6 @@
     </CompilerOptions>
     <Description Value="A lazarus packagemanager based on FPC's fppkg"/>
     <License Value="GPL"/>
-    <Version Release="1"/>
     <Files Count="1">
       <Item1>
         <Filename Value="lazpackagemanagerintf.pas"/>
@@ -29,6 +28,10 @@
         <UnitName Value="LazPackageManagerIntf"/>
       </Item1>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="..\languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>

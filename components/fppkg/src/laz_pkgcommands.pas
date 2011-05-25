@@ -203,7 +203,7 @@ begin
 
   M := AvailableMirrors.FindMirror(P.Mirror);
 
-  if M.Protocol <> 'SVN' then
+  if not Assigned(M) or (M.Protocol <> 'SVN') then
   begin
     ArchiveFile:=PackageLocalArchive(P);
     if not FileExists(ArchiveFile) then

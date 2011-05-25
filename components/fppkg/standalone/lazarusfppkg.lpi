@@ -16,7 +16,7 @@
     </General>
     <i18n>
       <EnableI18N Value="True"/>
-      <OutDir Value="..\lang"/>
+      <OutDir Value="..\languages"/>
     </i18n>
     <VersionInfo>
       <StringTable ProductVersion=""/>
@@ -87,7 +87,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="..\src;..\svn;..\lnet"/>
+      <OtherUnitFiles Value="..\src;..\svn"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
