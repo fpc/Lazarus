@@ -38,7 +38,7 @@ uses
   LCLProc, Forms, Controls, GraphType, StringHashList, ButtonPanel,
   Graphics, StdCtrls, Buttons, Menus, LCLType, ExtCtrls, LCLIntf,
   Dialogs, Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps,
-  StringsPropEditDlg, ColumnDlg, FileUtil, ObjInspStrConsts,
+  StringsPropEditDlg, ColumnDlg, FileUtil, FileCtrl, ObjInspStrConsts,
   CollectionPropEditForm, PropEditUtils;
 
 const
@@ -6254,6 +6254,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TComponent), nil, '', TComponentPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileNameEdit, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideLeft', THiddenPropertyEditor);

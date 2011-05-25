@@ -443,6 +443,7 @@ begin
 
     for i := 0 to MaskStrings.Count - 1 do
     begin
+      if MaskStrings.IndexOf(MaskStrings[i]) < i then Continue; // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
       SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + MaskStrings.Strings[i];
 
       FindResult := FindFirstUTF8(SearchStr, faAnyFile, DirInfo);
@@ -478,7 +479,8 @@ begin
             // Mark if it is a directory (ObjectData <> nil)
             if IsDirectory then ObjectData := AResult
             else ObjectData := nil;
-            AResult.AddObject(DirInfo.Name, ObjectData)
+            if AResult.IndexOf(DirInfo.Name) < 0 then // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
+              AResult.AddObject(DirInfo.Name, ObjectData)
           end else
             Files.Add ( TFileItem.Create(DirInfo));
         end;
@@ -502,6 +504,8 @@ begin
 
     for i:=0 to Files.Count-1 do begin
       FileItem:=TFileItem(Files[i]);
+      if (i > 0) and (TFileItem(Files[i]).Name = TFileItem(Files[i - 1]).Name) then
+        Continue; // cause Files is sorted // From patch from bug 17761: TShellListView Mask: duplicated items if mask is " *.ext;*.ext "
       if FileItem.isFolder then
         AResult.AddObject(FileItem.Name, ObjectData)
       else

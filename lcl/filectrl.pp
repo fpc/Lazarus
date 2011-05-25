@@ -564,10 +564,11 @@ begin
 
   ParserState := 0;
   Position := 1;
+  AFilter := AFilter + '|'; // to prevent ignoring of last filter
 
   for i := 1 to Length(AFilter) do
   begin
-    if Copy(AFilter, i, 1) = '|' then
+    if AFilter[i] = '|' then
     begin
       case ParserState of
       0:
