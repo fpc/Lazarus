@@ -211,7 +211,7 @@ type
   
 
   { THelpDBISourceDirectory
-    Help registration item for a source directory.
+    Help registration item for source directory.
     As THelpDBISourceFile, except that Filename is a directory and
     the item is valid for all source files fitting the FileMask.
     FileMask can be for example '*.pp;*.pas;*.inc'
@@ -225,7 +225,7 @@ type
     FFileMask: string;
     FWithSubDirectories: boolean;
   public
-    constructor Create(TheNode: THelpNode; const TheFilename,
+    constructor Create(TheNode: THelpNode; const Directory,
                        TheFileMask: string; Recursive: boolean);
     function FileMatches(const AFilename: string): boolean; override;
   published
@@ -233,7 +233,30 @@ type
     property WithSubDirectories: boolean read FWithSubDirectories
                                          write FWithSubDirectories;
   end;
-  
+
+
+  { THelpDBISourceDirectories
+    Help registration item for source directories.
+    As THelpDBISourceDirectory, except that Filename are directories separated
+    by semicolon and the item is valid for all source files fitting the FileMask.
+    FileMask can be for example '*.pp;*.pas;*.inc'
+
+    For example: A package providing help for all its source files registers
+    a THelpDBISourceDirectory. Node points to the fpdoc main page.
+    }
+
+  THelpDBISourceDirectories = class(THelpDBISourceDirectory)
+  private
+    FBaseDirectory: string;
+  public
+    constructor Create(TheNode: THelpNode; const BaseDir, Directories,
+                       TheFileMask: string; Recursive: boolean);
+    function FileMatches(const AFilename: string): boolean; override;
+    function GetFullFilename: string; override;
+    function GetBasePath: string; override;
+  published
+    property BaseDirectory: string read FBaseDirectory write FBaseDirectory;
+  end;
 
   { THelpDBIClass
     Help registration item for a class.
@@ -782,7 +805,104 @@ begin
   List.Add(ANode,QueryItem);
 end;
 
+{ THelpDBISourceDirectories }
 
+constructor THelpDBISourceDirectories.Create(TheNode: THelpNode; const BaseDir,
+  Directories, TheFileMask: string; Recursive: boolean);
+begin
+  inherited Create(TheNode,Directories,TheFileMask,Recursive);
+  FBaseDirectory:=BaseDir;
+end;
+
+function THelpDBISourceDirectories.FileMatches(const AFilename: string
+  ): boolean;
+var
+  SearchPath: String;
+var
+  EndPos: Integer;
+var
+  StartPos: Integer;
+var
+  Dir: String;
+begin
+  Result:=false;
+  //debugln('THelpDBISourceDirectories.FileMatches AFilename="',AFilename,'" FFilename="',FFilename,'"');
+  if (FFilename='') or (AFilename='') then exit;
+  SearchPath:=GetFullFilename;
+  if SearchPath='' then begin
+    {$IFNDEF DisableChecks}
+    DebugLn(['WARNING: THelpDBISourceDirectory.FileMatches ',DbgSName(Self),' Filename="',Filename,'" -> ""']);
+    {$ENDIF}
+    exit;
+  end;
+  EndPos:=1;
+  while EndPos<=length(SearchPath) do begin
+    StartPos:=EndPos;
+    while (EndPos<=length(SearchPath)) and (SearchPath[EndPos]<>';') do
+      inc(EndPos);
+    Dir:=copy(SearchPath,StartPos,EndPos-StartPos);
+    inc(EndPos);
+    //debugln(['THelpDBISourceDirectories.FileMatches TheDirectory="',Dir,'" WithSubDirectories=',WithSubDirectories]);
+    if WithSubDirectories then begin
+      if not FileIsInPath(AFilename,Dir) then continue;
+    end else begin
+      if not FileIsInDirectory(AFilename,Dir) then continue;
+    end;
+    //debugln('THelpDBISourceDirectories.FileMatches FileMask="',FileMask,'"');
+    if (FileMask='')
+    or MatchesMaskList(ExtractFilename(AFilename),FileMask) then
+      exit(true);
+  end;
+end;
+
+function THelpDBISourceDirectories.GetFullFilename: string;
+var
+  ExpFilename: String;
+var
+  EndPos: Integer;
+var
+  StartPos: Integer;
+var
+  Dir: String;
+var
+  BaseDir: String;
+begin
+  ExpFilename:=FFilename;
+  //DebugLn(['THelpDBISourceDirectories.GetFullFilename ExpFilename="',ExpFilename,'" HelpDatabases=',DbgSName(HelpDatabases)]);
+  if (HelpDatabases<>nil) then
+    HelpDatabases.SubstituteMacros(ExpFilename);
+  //DebugLn(['THelpDBISourceFile.GetFullFilename substituted ',ExpFilename]);
+  EndPos:=1;
+  Result:='';
+  BaseDir:='';
+  while EndPos<=length(ExpFilename) do begin
+    StartPos:=EndPos;
+    while (EndPos<=length(ExpFilename)) and (ExpFilename[EndPos]<>';') do
+      inc(EndPos);
+    Dir:=TrimFilename(copy(ExpFilename,StartPos,EndPos-StartPos));
+    if Dir<>'' then begin
+      if not FilenameIsAbsolute(Dir) then begin
+        if BaseDir='' then
+          BaseDir:=AppendPathDelim(GetBasePath);
+        Dir:=BaseDir+Dir;
+      end;
+      if Result<>'' then Result:=Result+';';
+      Result:=Result+Dir;
+    end;
+    inc(EndPos);
+  end;
+end;
+
+function THelpDBISourceDirectories.GetBasePath: string;
+begin
+  if BaseDirectory='' then
+    Result:=inherited GetBasePath
+  else begin
+    Result:=BaseDirectory;
+    if (HelpDatabases<>nil) then
+      HelpDatabases.SubstituteMacros(Result);
+  end;
+end;
 
 { THelpDatabase }
 
@@ -2269,7 +2389,7 @@ begin
     Result:=ExpFilename
   else begin
     BaseDir:=GetBasePath;
-    Result:=BaseDir+ExpFilename;
+    Result:=AppendPathDelim(BaseDir)+ExpFilename;
   end;
 end;
 
@@ -2285,9 +2405,9 @@ end;
 { THelpDBISourceDirectory }
 
 constructor THelpDBISourceDirectory.Create(TheNode: THelpNode;
-  const TheFilename, TheFileMask: string; Recursive: boolean);
+  const Directory, TheFileMask: string; Recursive: boolean);
 begin
-  inherited Create(TheNode,TheFilename);
+  inherited Create(TheNode,Directory);
   FFileMask:=SetDirSeparators(TheFileMask);
   WithSubDirectories:=Recursive;
 end;
