@@ -440,6 +440,7 @@ type
 
     property Columns: TDBGridColumns read GetColumns write SetColumns;
     property GridStatus: TDBGridStatus read FGridStatus write FGridStatus;
+    property Datalink: TComponentDataLink read FDatalink;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property Options: TDBGridOptions read FOptions write SetOptions default
               [dgColumnResize, dgColumnMove, dgTitles, dgIndicator, dgRowLines,
