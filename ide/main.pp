@@ -16934,10 +16934,12 @@ begin
     while LastActivatedWindows.Count>0 do
     begin
       AForm:=TCustomForm(LastActivatedWindows[0]);
-      if Assigned(AForm) and AForm.IsVisible then
+      if Assigned(AForm) and (not (CsDestroying in AForm.ComponentState)) and
+      AForm.IsVisible then
         AForm.BringToFront;
       LastActivatedWindows.Delete(0);
     end;
+    MainIDEBar.BringToFront;
   end;
 end;
 
