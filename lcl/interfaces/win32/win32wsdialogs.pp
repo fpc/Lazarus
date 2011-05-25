@@ -701,7 +701,7 @@ begin
   {$endif}
 
     nMaxFile := FileNameBufferLen + 1; // Size in TCHARs
-    lpfnHook := LPOFNHOOKPROC(@OpenFileDialogCallBack);
+    lpfnHook := Windows.LPOFNHOOKPROC(@OpenFileDialogCallBack);
     Flags := GetFlagsFromOptions(AOpenDialog.Options);
     New(DialogRec);
     // new initializes the filename fields, because ansistring and widestring
