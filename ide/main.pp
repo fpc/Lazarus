@@ -16915,12 +16915,22 @@ end;
 
 procedure TMainIDE.OnMainBarActive(Sender: TObject);
 var
+  i, FormCount: integer;
   AForm: TCustomForm;
 begin
    if EnvironmentOptions.SingleTaskBarButton and not FApplicationIsActivate
    and (MainIDEBar.WindowState=wsNormal) then
   begin
     FApplicationIsActivate:=true;
+    FormCount:=0;
+    for i:=Screen.CustomFormCount-1 downto 0 do
+    begin
+      AForm:=Screen.CustomForms[i];
+      if (AForm.Parent=nil) and (AForm<>MainIDEBar) and (AForm.IsVisible)
+      and (AForm.Designer=nil) and (not (csDesigning in AForm.ComponentState))
+      and not (fsModal in AForm.FormState) then inc(FormCount);
+    end;
+    if FormCount<>LastActivatedWindows.Count then LastActivatedWindows.Clear;
     while LastActivatedWindows.Count>0 do
     begin
       AForm:=TCustomForm(LastActivatedWindows[0]);
