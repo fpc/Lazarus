@@ -586,7 +586,7 @@ begin
   if Source is TLazPackageID then
   begin
     aSource:=TLazPackageID(Source);
-    aSource.FVersion.Assign(FVersion);
+    FVersion.Assign(aSource.Version);
     Name:=aSource.FName;
     UpdateIDAsString;
   end else

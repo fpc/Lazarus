@@ -18,6 +18,7 @@
     </CompilerOptions>
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
+    <Version Major="1" Minor="1"/>
     <Files Count="9">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
