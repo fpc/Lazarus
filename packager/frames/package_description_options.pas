@@ -68,6 +68,7 @@ begin
   DescriptionMemo.Text := LazPackage.Description;
   AuthorEdit.Text := LazPackage.Author;
   LicenseMemo.Text := LazPackage.License;
+  //debugln(['TPackageDescriptionOptionsFrame.ReadSettings ',lazpa]);
   VersionMajorSpinEdit.Value := LazPackage.Version.Major;
   VersionMinorSpinEdit.Value := LazPackage.Version.Minor;
   VersionReleaseSpinEdit.Value := LazPackage.Version.Release;

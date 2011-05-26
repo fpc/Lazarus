@@ -6193,7 +6193,7 @@ begin
   SubDirTempl.AddChild(TDefineTemplate.Create('src path addition',
     Format(ctsAddsDirToSourcePath,['ide']),
     SrcPathMacroName,
-    d(LazarusSrcDir+'/ide;'+SrcPath)
+    d(LazarusSrcDir+'/ide;'+LazarusSrcDir+'/packager;'+SrcPath)
     ,da_Define));
   // <LazarusSrcDir>/packager/registration
   SubDirTempl:=TDefineTemplate.Create('Registration',
