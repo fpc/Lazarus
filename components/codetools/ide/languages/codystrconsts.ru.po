@@ -239,7 +239,7 @@ msgstr "МБ"
 
 #: codystrconsts.crsmemberof
 msgid "%s member of %s %s"
-msgstr "Элемент %s в %s %s"
+msgstr "Элемент секции %s в %s %s"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
