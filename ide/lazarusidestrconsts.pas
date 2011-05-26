@@ -95,7 +95,7 @@ resourcestring
   lisCompilerFilename = 'Compiler filename';
   lisWordAtCursorInCurrentEditor = 'Word at cursor in current editor';
   lisExpandedFilenameOfCurrentEditor = 'Expanded filename of current editor file';
-  lisFreePascalSourceDirectory = 'Freepascal source directory';
+  lisFreePascalSourceDirectory = 'Free Pascal source directory';
   lisLazarusDirectory = 'Lazarus directory';
   lisLazarusLanguageID = 'Lazarus language ID (e.g. en, de, br, fi)';
   lisLazarusLanguageName = 'Lazarus language name (e.g. english, deutsch)';
@@ -700,7 +700,7 @@ resourcestring
   lisUnableToBackupFileTo = 'Unable to backup file %s%s%s to %s%s%s!';
   lisFileNotLowercase = 'File not lowercase';
   lisTheUnitIsNotLowercaseTheFreePascalCompiler = 'The unit filename %s%s%s is '
-    +'not lowercase.%sThe FreePascal compiler does not search for all cases.'
+    +'not lowercase.%sThe Free Pascal compiler does not search for all cases.'
     +' It is recommended to use lowercase filename.%s%sRename file lowercase?';
   lisDeleteAmbiguousFile = 'Delete ambiguous file?';
   lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
@@ -828,7 +828,7 @@ resourcestring
   lisLazarusFile = 'Lazarus file';
   lisPascalUnit = 'Pascal unit';
   lisPascalSourceFile = 'Pascal source file';
-  lisFreePascalSourceFile = 'FreePascal source file';
+  lisFreePascalSourceFile = 'Free Pascal source file';
   lisDebugUnableToLoadFile = 'Unable to load file';
   lisDebugUnableToLoadFile2 = 'Unable to load file %s%s%s.';
   lisOpenProjectFile = 'Open Project File';
@@ -1887,7 +1887,7 @@ resourcestring
     +'config file';
   lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa = 'Warning: The '
     +'additional compiler config file has the same name, as one of the '
-    +'standard config filenames the FreePascal compiler is looking for. This '
+    +'standard config filenames the Free Pascal compiler is looking for. This '
     +'can result in ONLY parsing the additional config and skipping the '
     +'standard config.';
   lisCOClickOKIfAreSureToDoThat = '%s%sClick OK if you are sure to do that.';
@@ -1934,7 +1934,7 @@ resourcestring
   lisCCOCompilerNotAnExe = 'The compiler "%s" is not an executable file.%s'
     +'Details: %s';
   lisCCOAmbiguousCompiler = 'Ambiguous compiler';
-  lisCCOSeveralCompilers = 'There are several FreePascal Compilers in your path.%s%s%s'
+  lisCCOSeveralCompilers = 'There are several Free Pascal Compilers in your path.%s%s%s'
     +'Maybe you forgot to delete an old compiler?';
   dlgCCOTestCheckingFPCConfigs = 'Test: Checking fpc configs ...';
   lisCCONoCfgFound = 'no fpc.cfg found';
@@ -2995,7 +2995,7 @@ resourcestring
     +'directory.';
   lisCodeToolsDefscompilerPath = 'Compiler path';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForThisProject = 'The path to '
-    +'the free pascal compiler for this project. Only required if you set the '
+    +'the Free Pascal compiler for this project. Only required if you set the '
     +'FPC SVN source below. Used to autocreate macros.';
   lisCodeToolsDefsFPCSVNSourceDirectory = 'FPC SVN source directory';
   lisCodeToolsDefsTheFreePascalCVSSourceDirectory = 'The Free Pascal SVN '
@@ -3004,10 +3004,10 @@ resourcestring
   lisCodeToolsDefsCreateDefinesForFreePascalCompiler = 'Create Defines for '
     +'Free Pascal Compiler';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForThisSourceUsedToA = 'The path to '
-    +'the free pascal compiler for this source.%sUsed to autocreate macros.';
+    +'the Free Pascal compiler for this source.%sUsed to autocreate macros.';
   lisCodeToolsDefsValueIsInvalid = '%s:%svalue "%s" is invalid.';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForExample = 'The '
-    +'path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s '
+    +'path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s '
     +'or %s/usr/local/bin/fpc @/etc/fpc.cfg%s.';
   lisCodeToolsDefsCreateDefinesForFreePascalSVNSources = 'Create Defines for '
     +'Free Pascal SVN Sources';
@@ -3779,7 +3779,7 @@ resourcestring
     +'The Run-Time Library is the basis of all Free Pascal programs.';
   lisPkgSysTheFCLFreePascalComponentLibraryProvidesTheBase =
       'The FCL - '
-    +'FreePascal Component Library provides the base classes for object pascal.';
+    +'Free Pascal Component Library provides the base classes for Object Pascal.';
   lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase = 'The LCL - Lazarus '
     +'Component Library contains all base components for form editing.';
   lisPkgSysSynEditTheEditorComponentUsedByLazarus = 'SynEdit - the editor '
@@ -4491,7 +4491,7 @@ resourcestring
   lisDebugOptionsFrmEnterExceptionName = 'Enter the name of the exception';
   lisDebugOptionsFrmDuplicateExceptionName = 'Duplicate Exception name';
   dlgDebugOptionsPathEditorDlgCaption = 'Path Editor';
-  lisHFMHelpForFreePascalCompilerMessage = 'Help for FreePascal Compiler '
+  lisHFMHelpForFreePascalCompilerMessage = 'Help for Free Pascal Compiler '
     +'message';
   lisRelativePaths = 'Relative paths';
   lisLazBuildSaveSettings = 'Save settings';
