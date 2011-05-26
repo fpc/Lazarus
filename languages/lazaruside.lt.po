@@ -876,10 +876,6 @@ msgstr "Numatytas rengyklės šriftas"
 msgid "Default Value"
 msgstr "Numatyta vertė"
 
-#: lazarusidestrconsts.dlgdelphi2ext
-msgid "Delphi 2 Extensions"
-msgstr "Delphi 2 plėtiniai"
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Pašalinti šabloną"
@@ -4203,7 +4199,9 @@ msgid "relative unit path found in fpc cfg: %s"
 msgstr "„fpc.cfg“ faile rastas reliatyvus modulio kelias: %s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+#, fuzzy
+#| msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr "Kelyje aptikti keli Free Pascal kompiliatoriai.%s%s%sGalbūt užmiršot ištrinti senąjį kompiliatorių?"
 
 #: lazarusidestrconsts.lisccoskip
@@ -5067,10 +5065,6 @@ msgstr "Klaida"
 msgid "Token:"
 msgstr "Leksema:"
 
-#: lazarusidestrconsts.liscodetools
-msgid "CodeTools"
-msgstr "CodeTools"
-
 #: lazarusidestrconsts.liscodetoolsdefsaction
 msgid "Action: %s"
 msgstr "Veiksmas: %s"
@@ -5406,15 +5400,19 @@ msgid "The Lazarus main directory."
 msgstr "Lazarus pagrindinis aplankas."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+#, fuzzy
+#| msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "Free Pascal kompiliatoriaus programa su keliu iki jos.%sPavyzdžiui: %s/usr/bin/%s -n%s arba %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#, fuzzy
+#| msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "Šio projekto Free Pascal kompiliatoriaus programa su keliu iki jos. Būtina įrašyti jei žemiau nurodysit FPC SVN pirminio kodo aplanką. Šis įrašas naudojamas automatiškai kuriant makrokomandas."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
-msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgid "The path to the Free Pascal compiler for this source.%sUsed to autocreate macros."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
@@ -5619,10 +5617,6 @@ msgstr "Niekada"
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
 msgstr ""
-
-#: lazarusidestrconsts.liscomponent
-msgid "Component"
-msgstr "Komponentė"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 msgid "Component name \"%s\" is a pascal keyword."
@@ -6119,7 +6113,9 @@ msgid "%s (various)"
 msgstr "%s (įvairūs argumentai)"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
-msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+#, fuzzy
+#| msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "Perspėjimas: papildomo kompiliatoriaus nustatymų failo pavadinimas yra toks pat, kaip ir ieškomo Free Pascal standartinio nustatymų failo. Dėl to, praleidžiant standartinį nustatymų failą, bus analizuojamas TIK papildomas nustatymų failas."
 
 #: lazarusidestrconsts.liscpopenpackage
@@ -7928,11 +7924,15 @@ msgid "Free Pascal program using TCustomApplication to easily check command line
 msgstr "Free Pascal programa, naudojanti TCustomApplication, skirta lengvam komandinės eilutės parinkčių tikrinimui, išskirtinių situacijų apdorojimui ir kt. Programos pirminiu kodu automatiškai rūpinsis Lazarus."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Freepascal source directory"
+#, fuzzy
+#| msgid "Freepascal source directory"
+msgid "Free Pascal source directory"
 msgstr "Free Pascal pirminio kodo aplankas"
 
 #: lazarusidestrconsts.lisfreepascalsourcefile
-msgid "FreePascal source file"
+#, fuzzy
+#| msgid "FreePascal source file"
+msgid "Free Pascal source file"
 msgstr "Free Pascal pirminio kodo failas"
 
 #: lazarusidestrconsts.lisfreepascalsourcesnotfound
@@ -8056,7 +8056,9 @@ msgid "Hexadecimal"
 msgstr "Šešioliktainis"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
-msgid "Help for FreePascal Compiler message"
+#, fuzzy
+#| msgid "Help for FreePascal Compiler message"
+msgid "Help for Free Pascal Compiler message"
 msgstr "Informacija apie Free Pascal Compiler pranešimą"
 
 #: lazarusidestrconsts.lishidemessageviadirective
@@ -8191,10 +8193,6 @@ msgstr ""
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
 msgstr ""
-
-#: lazarusidestrconsts.lisideintf
-msgid "IDE Interface"
-msgstr "IKA interfeisas"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -8666,10 +8664,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Peršokimų praeitis"
-
-#: lazarusidestrconsts.lisjitform
-msgid "JIT Form"
-msgstr "JITForm"
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
@@ -10508,8 +10502,9 @@ msgstr "&Pakeisti…"
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy
-#| msgid "Reporting a bug..."
-msgid "Reporting a bug ..."
+#| msgid "Reporting a bug ..."
+msgctxt "lazarusidestrconsts.lismenureportingbug"
+msgid "Reporting a bug"
 msgstr "Pranešti apie ydą…"
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -12753,10 +12748,6 @@ msgstr "Naudoti modulį"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Dėmesio: failas %s%s%s%s jau priklauso šiam projektui."
 
-#: lazarusidestrconsts.lispkgreg
-msgid "Package Registration"
-msgstr "Paketo registracija"
-
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Negalima registruoti komponenčių be modulio"
@@ -12802,7 +12793,9 @@ msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/pr
 msgstr "SynEdit - Lazarus naudojama redagavimo komponentė. http://sourceforge.net/projects/synedit/"
 
 #: lazarusidestrconsts.lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
-msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+#, fuzzy
+#| msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+msgid "The FCL - Free Pascal Component Library provides the base classes for Object Pascal."
 msgstr "FCL - Free Pascal komponenčių biblioteka, pateikia visas objektinio paskalio bazines klases."
 
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
@@ -14137,10 +14130,6 @@ msgstr "Identifikatorius %s%s%s klaidingas."
 msgid "Override system variable"
 msgstr "Kurti viršesnį sistemos kintamąjį"
 
-#: lazarusidestrconsts.lissynedit
-msgid "SynEdit"
-msgstr "SynEdit"
-
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "Sintaksės veiksena"
@@ -14637,7 +14626,9 @@ msgid "The unit has this name"
 msgstr "Modulio pavadinimas yra šis"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+#, fuzzy
+#| msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr "Failo pavadinime %s%s%s yra ne vien tik mažosios raidės.%s Free Pascal atsižvelgia į raidžių dydį, todėl patartina failo pavadinime naudoti vien tik mažąsias raides.%s%sFailą pervadinti mažosiomis raidėmis?"
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
@@ -16657,6 +16648,7 @@ msgid "Replace text"
 msgstr "Pakeisti tekstą"
 
 #: lazarusidestrconsts.srkmecreportingbug
+msgctxt "lazarusidestrconsts.srkmecreportingbug"
 msgid "Reporting a bug"
 msgstr "Pranešti apie klaidą programoje"
 

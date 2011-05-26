@@ -874,10 +874,6 @@ msgstr "初期エディタ フォント"
 msgid "Default Value"
 msgstr "デフォルト値"
 
-#: lazarusidestrconsts.dlgdelphi2ext
-msgid "Delphi 2 Extensions"
-msgstr "Delphi 2 拡張構文"
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "テンプレートを削除"
@@ -4205,7 +4201,9 @@ msgid "relative unit path found in fpc cfg: %s"
 msgstr "fpc cfgに相対ユニットパスが見つかりました: %s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+#, fuzzy
+#| msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr "複数のFreePascalコンパイラがあなたのpathにあります。%s%s%s古いコンパイラを削除し忘れたのでは？"
 
 #: lazarusidestrconsts.lisccoskip
@@ -5069,10 +5067,6 @@ msgstr "エラー"
 msgid "Token:"
 msgstr "トークン:"
 
-#: lazarusidestrconsts.liscodetools
-msgid "CodeTools"
-msgstr "コードツール"
-
 #: lazarusidestrconsts.liscodetoolsdefsaction
 msgid "Action: %s"
 msgstr "アクション: %s"
@@ -5408,15 +5402,19 @@ msgid "The Lazarus main directory."
 msgstr "Lazarusのメインディレクトリ"
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+#, fuzzy
+#| msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "free pascalコンパイラのパス。%s%s例： %s/usr/bin/%s -n%s あるいは %s/usr/local/bin/fpc @/etc/fpc.cfg%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#, fuzzy
+#| msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "このプロジェクトのfree pascalコンパイラのパス。以下のFPC SVNソースをセットした場合にのみ要求さsed to autocreate macros.）。"
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
-msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgid "The path to the Free Pascal compiler for this source.%sUsed to autocreate macros."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
@@ -5621,10 +5619,6 @@ msgstr "しない(ない)"
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
 msgstr "右だけ展開"
-
-#: lazarusidestrconsts.liscomponent
-msgid "Component"
-msgstr "コンピーネント"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 msgid "Component name \"%s\" is a pascal keyword."
@@ -6129,7 +6123,9 @@ msgid "%s (various)"
 msgstr "%s (様々)"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
-msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+#, fuzzy
+#| msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "警告：追加コンパイラ設定ファイルの名前がFreePascalが探している標準コンパイラ設定ファイルの一つと同じです。これでは追加設定のみを読み込み、標準設定を無視することになってしまいます。"
 
 #: lazarusidestrconsts.liscpopenpackage
@@ -7941,11 +7937,15 @@ msgid "Free Pascal program using TCustomApplication to easily check command line
 msgstr "コマンドラインオプションを簡単にチェックし、例外を扱うなどのためのTCustomApplicationを用いたfreepascalプログラム。プログラムファイルはlazarusにより自動的に維持管理されます。"
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Freepascal source directory"
+#, fuzzy
+#| msgid "Freepascal source directory"
+msgid "Free Pascal source directory"
 msgstr "FreePascalソースディレクトリ"
 
 #: lazarusidestrconsts.lisfreepascalsourcefile
-msgid "FreePascal source file"
+#, fuzzy
+#| msgid "FreePascal source file"
+msgid "Free Pascal source file"
 msgstr "FreePascalソースファイル"
 
 #: lazarusidestrconsts.lisfreepascalsourcesnotfound
@@ -8069,7 +8069,9 @@ msgid "Hexadecimal"
 msgstr "16進法"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
-msgid "Help for FreePascal Compiler message"
+#, fuzzy
+#| msgid "Help for FreePascal Compiler message"
+msgid "Help for Free Pascal Compiler message"
 msgstr "FreePascalコンパイラメッセージのヘルプ"
 
 #: lazarusidestrconsts.lishidemessageviadirective
@@ -8204,10 +8206,6 @@ msgstr "IDEに関する情報"
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
 msgstr "警告：ユニット名無効%s, パッケージ=%s"
-
-#: lazarusidestrconsts.lisideintf
-msgid "IDE Interface"
-msgstr "IDEインターフェース"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -8679,10 +8677,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "移動履歴"
-
-#: lazarusidestrconsts.lisjitform
-msgid "JIT Form"
-msgstr "JITフォーム"
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
@@ -10521,8 +10515,9 @@ msgstr "置換(&R)"
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy
-#| msgid "Reporting a bug..."
-msgid "Reporting a bug ..."
+#| msgid "Reporting a bug ..."
+msgctxt "lazarusidestrconsts.lismenureportingbug"
+msgid "Reporting a bug"
 msgstr "不具合(バグ)を報告..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -12775,10 +12770,6 @@ msgstr "ユニットを使用"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "警告：ファイル%s%s%s%sは現在のプロジェクトに属しています。"
 
-#: lazarusidestrconsts.lispkgreg
-msgid "Package Registration"
-msgstr "パッケージ登録"
-
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "ユニット無しではコンポーネントを登録できません"
@@ -12824,7 +12815,9 @@ msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/pr
 msgstr "SynEdit - Lazarusに用いられているエディタコンポーネント. http://sourceforge.net/projects/synedit/"
 
 #: lazarusidestrconsts.lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
-msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+#, fuzzy
+#| msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+msgid "The FCL - Free Pascal Component Library provides the base classes for Object Pascal."
 msgstr "FCL - FreePascal Component Libraryはobject pascalの基本クラスを提供します。"
 
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
@@ -14156,10 +14149,6 @@ msgstr "%s%s%s は無効な識別子です"
 msgid "Override system variable"
 msgstr "システム変数をオーバーライド"
 
-#: lazarusidestrconsts.lissynedit
-msgid "SynEdit"
-msgstr "SynEdit"
-
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "構文モード"
@@ -14653,7 +14642,9 @@ msgid "The unit has this name"
 msgstr "ユニットは、この名前を持っています。"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+#, fuzzy
+#| msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr "このユニットファイル名%s%s%sは小文字ではありません。%sFreePascalコンパイラは大文字小文字を区別して検索しません。小文字のファイル名を用いることが推奨されます。%s%s小文字に名称変更しますか？"
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
@@ -16672,6 +16663,7 @@ msgid "Replace text"
 msgstr "テキストを置換"
 
 #: lazarusidestrconsts.srkmecreportingbug
+msgctxt "lazarusidestrconsts.srkmecreportingbug"
 msgid "Reporting a bug"
 msgstr "バグを報告中"
 

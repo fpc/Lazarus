@@ -874,10 +874,6 @@ msgstr "默认的编辑器字体"
 msgid "Default Value"
 msgstr "默认值"
 
-#: lazarusidestrconsts.dlgdelphi2ext
-msgid "Delphi 2 Extensions"
-msgstr "Delphi 2 扩展名"
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "删除模板"
@@ -4207,7 +4203,9 @@ msgid "relative unit path found in fpc cfg: %s"
 msgstr "相对单元路径找到在 fpc cfg: %s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+#, fuzzy
+#| msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr "有多个FPC编译器在路径%s%s%s中，可能你忘记删除旧的编译器."
 
 #: lazarusidestrconsts.lisccoskip
@@ -5071,10 +5069,6 @@ msgstr "错误"
 msgid "Token:"
 msgstr "标志:"
 
-#: lazarusidestrconsts.liscodetools
-msgid "CodeTools"
-msgstr "代码工具"
-
 #: lazarusidestrconsts.liscodetoolsdefsaction
 msgid "Action: %s"
 msgstr "动作: %s"
@@ -5410,15 +5404,19 @@ msgid "The Lazarus main directory."
 msgstr "Lazarus 主目录."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+#, fuzzy
+#| msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "free pascal 编译器路径.%s 例如 %s/usr/bin/%s -n%s 或者 %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#, fuzzy
+#| msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "为工程设置的 free pascal 编译器路径.只在当你设置了 FPC SVN 源代码时需要. 使用自动创建的宏."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
-msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgid "The path to the Free Pascal compiler for this source.%sUsed to autocreate macros."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
@@ -5623,10 +5621,6 @@ msgstr "从不"
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
 msgstr ""
-
-#: lazarusidestrconsts.liscomponent
-msgid "Component"
-msgstr "组件"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 msgid "Component name \"%s\" is a pascal keyword."
@@ -6124,7 +6118,9 @@ msgid "%s (various)"
 msgstr ""
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
-msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+#, fuzzy
+#| msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "警告: 附加的的编译器配置文件与 Free Pascal 查找的标准配置文件有相同的名字,这样可能导致标准配置文件被跳过而直接读附加的文件."
 
 #: lazarusidestrconsts.liscpopenpackage
@@ -7934,11 +7930,15 @@ msgid "Free Pascal program using TCustomApplication to easily check command line
 msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Freepascal source directory"
+#, fuzzy
+#| msgid "Freepascal source directory"
+msgid "Free Pascal source directory"
 msgstr "Free pascal 源代码目录"
 
 #: lazarusidestrconsts.lisfreepascalsourcefile
-msgid "FreePascal source file"
+#, fuzzy
+#| msgid "FreePascal source file"
+msgid "Free Pascal source file"
 msgstr "Free Pascal 源代码文件"
 
 #: lazarusidestrconsts.lisfreepascalsourcesnotfound
@@ -8062,7 +8062,9 @@ msgid "Hexadecimal"
 msgstr "十六进制"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
-msgid "Help for FreePascal Compiler message"
+#, fuzzy
+#| msgid "Help for FreePascal Compiler message"
+msgid "Help for Free Pascal Compiler message"
 msgstr "关于 FreePascal 编译器消息的帮助"
 
 #: lazarusidestrconsts.lishidemessageviadirective
@@ -8197,10 +8199,6 @@ msgstr ""
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
 msgstr ""
-
-#: lazarusidestrconsts.lisideintf
-msgid "IDE Interface"
-msgstr "IDE 界面"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -8671,10 +8669,6 @@ msgstr ""
 #: lazarusidestrconsts.lisjhjumphistory
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
-msgstr ""
-
-#: lazarusidestrconsts.lisjitform
-msgid "JIT Form"
 msgstr ""
 
 #: lazarusidestrconsts.liskeep
@@ -10510,8 +10504,9 @@ msgstr "替换(&R) ..."
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy
-#| msgid "Reporting a bug..."
-msgid "Reporting a bug ..."
+#| msgid "Reporting a bug ..."
+msgctxt "lazarusidestrconsts.lismenureportingbug"
+msgid "Reporting a bug"
 msgstr "报告 bug..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -12760,10 +12755,6 @@ msgstr "使用单元"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "警告: 文件 %s%s%s%s属于当前工程."
 
-#: lazarusidestrconsts.lispkgreg
-msgid "Package Registration"
-msgstr "包注册"
-
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "没有单元无法注册组件"
@@ -12809,7 +12800,9 @@ msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/pr
 msgstr "SynEdit - Lazarus 所使用的编辑器组件. http://sourceforge.net/projects/synedit/"
 
 #: lazarusidestrconsts.lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
-msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+#, fuzzy
+#| msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+msgid "The FCL - Free Pascal Component Library provides the base classes for Object Pascal."
 msgstr "FCL - (FreePascal Component Library) FreePascal 组件库提供了 object pascal 的基本类."
 
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
@@ -14141,10 +14134,6 @@ msgstr "%s%s%s 无效的标识符"
 msgid "Override system variable"
 msgstr "替换系统变量"
 
-#: lazarusidestrconsts.lissynedit
-msgid "SynEdit"
-msgstr "SynEdit"
-
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "语法模式"
@@ -14638,7 +14627,7 @@ msgid "The unit has this name"
 msgstr ""
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr ""
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
@@ -16653,8 +16642,9 @@ msgid "Replace text"
 msgstr "替换文本"
 
 #: lazarusidestrconsts.srkmecreportingbug
+msgctxt "lazarusidestrconsts.srkmecreportingbug"
 msgid "Reporting a bug"
-msgstr ""
+msgstr "报告 bug..."
 
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"

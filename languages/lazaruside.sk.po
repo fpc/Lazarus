@@ -876,10 +876,6 @@ msgstr "Predvolený font editora"
 msgid "Default Value"
 msgstr "Predvolená hodnota"
 
-#: lazarusidestrconsts.dlgdelphi2ext
-msgid "Delphi 2 Extensions"
-msgstr "Rozšírenia Delphi 2"
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Zmazať šablónu"
@@ -4203,7 +4199,7 @@ msgid "relative unit path found in fpc cfg: %s"
 msgstr "nájdená relatívna cesta jednotky v fpc cfg: %s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr ""
 
 #: lazarusidestrconsts.lisccoskip
@@ -5067,10 +5063,6 @@ msgstr "Chyba"
 msgid "Token:"
 msgstr "Token:"
 
-#: lazarusidestrconsts.liscodetools
-msgid "CodeTools"
-msgstr "CodeTools"
-
 #: lazarusidestrconsts.liscodetoolsdefsaction
 msgid "Action: %s"
 msgstr "Akcia: %s"
@@ -5406,15 +5398,19 @@ msgid "The Lazarus main directory."
 msgstr "Základný adresár Lazarus."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+#, fuzzy
+#| msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "Cesta k prekladaču Free Pascal.%s Napríklad %s/usr/bin/%s -n%s alebo %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#, fuzzy
+#| msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "Cesta prekladača Free Pascal pre tento projekt. Vyžadované len ak nastavíte FPC SVN zdroj nižšie. Použité pre makrá autocreate."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
-msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgid "The path to the Free Pascal compiler for this source.%sUsed to autocreate macros."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
@@ -5619,10 +5615,6 @@ msgstr ""
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
 msgstr ""
-
-#: lazarusidestrconsts.liscomponent
-msgid "Component"
-msgstr "Komponent"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 msgid "Component name \"%s\" is a pascal keyword."
@@ -6120,7 +6112,9 @@ msgid "%s (various)"
 msgstr "%s (rôzne)"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
-msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+#, fuzzy
+#| msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "Upozornenie: Dodatočný konfiguračný súbor prekladača má rovnaké meno ako jeden zo štandardných mien konfiguračných súborov prekladača FreePascal. Toto môže mať za následok spracovanie dodatočného konfiguračného súboru a preskočenie štandardného."
 
 #: lazarusidestrconsts.liscpopenpackage
@@ -7932,11 +7926,15 @@ msgid "Free Pascal program using TCustomApplication to easily check command line
 msgstr "Program FreePascal používajúci TCustomApplication pre ľahšie zisťovanie volieb príkazového riadka, obsluhu výnimiek, atď. Súbor programu je automaticky spravovaný Lazarom."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Freepascal source directory"
+#, fuzzy
+#| msgid "Freepascal source directory"
+msgid "Free Pascal source directory"
 msgstr "Adresár zdrojov FreePascal"
 
 #: lazarusidestrconsts.lisfreepascalsourcefile
-msgid "FreePascal source file"
+#, fuzzy
+#| msgid "FreePascal source file"
+msgid "Free Pascal source file"
 msgstr "Súbor zdrojového kódu FreePascalu"
 
 #: lazarusidestrconsts.lisfreepascalsourcesnotfound
@@ -8060,7 +8058,9 @@ msgid "Hexadecimal"
 msgstr "Šestnástkovo"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
-msgid "Help for FreePascal Compiler message"
+#, fuzzy
+#| msgid "Help for FreePascal Compiler message"
+msgid "Help for Free Pascal Compiler message"
 msgstr "Pomoc pre správu FreePascal Compiler"
 
 #: lazarusidestrconsts.lishidemessageviadirective
@@ -8195,10 +8195,6 @@ msgstr ""
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
 msgstr ""
-
-#: lazarusidestrconsts.lisideintf
-msgid "IDE Interface"
-msgstr "Rozhranie IDE"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -8670,10 +8666,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr ""
-
-#: lazarusidestrconsts.lisjitform
-msgid "JIT Form"
-msgstr "JIT Formulár"
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
@@ -10508,8 +10500,9 @@ msgstr "Na&hradiť ..."
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy
-#| msgid "Reporting a bug..."
-msgid "Reporting a bug ..."
+#| msgid "Reporting a bug ..."
+msgctxt "lazarusidestrconsts.lismenureportingbug"
+msgid "Reporting a bug"
 msgstr "Hlásenie chyby ..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -12758,10 +12751,6 @@ msgstr "Použiť jednotku"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Upozornenie: Súbor %s%s%s%spatrí do aktuálneho projektu."
 
-#: lazarusidestrconsts.lispkgreg
-msgid "Package Registration"
-msgstr "Registrácia balíčka"
-
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Nemožno registrovať komponent bez jednotky"
@@ -12807,7 +12796,9 @@ msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/pr
 msgstr "SynEdit - komponent editora použitý Lazarom. http://sourceforge.net/projects/synedit/"
 
 #: lazarusidestrconsts.lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
-msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+#, fuzzy
+#| msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+msgid "The FCL - Free Pascal Component Library provides the base classes for Object Pascal."
 msgstr "FCL - FreePascal Component Library poskytuje základné triedy pre Object Pascal."
 
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
@@ -14139,10 +14130,6 @@ msgstr "%s%s%s nie je platný identifikátor."
 msgid "Override system variable"
 msgstr "Prepísať systémovú premennú"
 
-#: lazarusidestrconsts.lissynedit
-msgid "SynEdit"
-msgstr "SynEdit"
-
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "Mód syntaxe"
@@ -14636,7 +14623,9 @@ msgid "The unit has this name"
 msgstr ""
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+#, fuzzy
+#| msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr "Meno súboru jednotky %s%s%s nie je malými písmenami.%sPrekladač FreePascal nehľadá všetky veľkosti. Je lepšie použiť mena súborov s malými písmenami.%s%sPremenovať súbor malými písmenami?"
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
@@ -16653,8 +16642,9 @@ msgid "Replace text"
 msgstr "Nahradiť text"
 
 #: lazarusidestrconsts.srkmecreportingbug
+msgctxt "lazarusidestrconsts.srkmecreportingbug"
 msgid "Reporting a bug"
-msgstr ""
+msgstr "Hlásenie chyby ..."
 
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"

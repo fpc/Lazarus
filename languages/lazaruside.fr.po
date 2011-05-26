@@ -880,10 +880,6 @@ msgstr "Fonte par défaut pour l'éditeur"
 msgid "Default Value"
 msgstr "Valeur par défaut"
 
-#: lazarusidestrconsts.dlgdelphi2ext
-msgid "Delphi 2 Extensions"
-msgstr "Extensions Delphi 2"
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Supprimer le modèle de code"
@@ -4216,7 +4212,9 @@ msgid "relative unit path found in fpc cfg: %s"
 msgstr "Chemin relatif de l'unité trouvé dans fpc cfg:%s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+#, fuzzy
+#| msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr "Il y a plusieurs FreePascal Compilateurs dans votre chemin. %s%s%s Peut-être avez-vous oublié de supprimer un vieux compilateur ?"
 
 #: lazarusidestrconsts.lisccoskip
@@ -5081,10 +5079,6 @@ msgstr "Erreur"
 msgid "Token:"
 msgstr "Jeton:"
 
-#: lazarusidestrconsts.liscodetools
-msgid "CodeTools"
-msgstr "Outils de code"
-
 #: lazarusidestrconsts.liscodetoolsdefsaction
 msgid "Action: %s"
 msgstr "Action : %s"
@@ -5420,15 +5414,19 @@ msgid "The Lazarus main directory."
 msgstr "Le répertoire principal de Lazarus"
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+#, fuzzy
+#| msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "Le chemin du compilateur Free Pascal.%s Par exemple %s/usr/bin/%s -n%s ou %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#, fuzzy
+#| msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "Le chemin du compilateur de Free Pascal pour ce projet. Seulement requis si vous placiz la source de FPC SVN ci-dessous. Utilisé pour l'auto-création de macros."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
-msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgid "The path to the Free Pascal compiler for this source.%sUsed to autocreate macros."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
@@ -5633,10 +5631,6 @@ msgstr "Jamais"
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
 msgstr "Etendre à droite seulement"
-
-#: lazarusidestrconsts.liscomponent
-msgid "Component"
-msgstr "Composant"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 msgid "Component name \"%s\" is a pascal keyword."
@@ -6132,7 +6126,9 @@ msgid "%s (various)"
 msgstr "%s (divers)"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
-msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+#, fuzzy
+#| msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "Avertissement: le fichier additionnel de configuration du compilateur porte le même nom qu'un des fichiers standards utilisés par le compilateur FreePascal. La conséquence risque d'être que SEUL le fichier additionnel sera utilisé tandis que le fichier standard sera ignoré."
 
 #: lazarusidestrconsts.liscpopenpackage
@@ -7942,11 +7938,15 @@ msgid "Free Pascal program using TCustomApplication to easily check command line
 msgstr "Programme freepascal employant TCustomApplication pour vérifier facilement les options en ligne de commande, manipulation des exceptions, etc. Le fichier de programme est automatiquement maintenu par Lazarus."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Freepascal source directory"
+#, fuzzy
+#| msgid "Freepascal source directory"
+msgid "Free Pascal source directory"
 msgstr "Répertoire des sources FreePascal"
 
 #: lazarusidestrconsts.lisfreepascalsourcefile
-msgid "FreePascal source file"
+#, fuzzy
+#| msgid "FreePascal source file"
+msgid "Free Pascal source file"
 msgstr "Fichier source FreePascal"
 
 #: lazarusidestrconsts.lisfreepascalsourcesnotfound
@@ -8070,7 +8070,9 @@ msgid "Hexadecimal"
 msgstr "Hexadécimal"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
-msgid "Help for FreePascal Compiler message"
+#, fuzzy
+#| msgid "Help for FreePascal Compiler message"
+msgid "Help for Free Pascal Compiler message"
 msgstr "Aide pour les messages du compilateur FreePascal"
 
 #: lazarusidestrconsts.lishidemessageviadirective
@@ -8205,10 +8207,6 @@ msgstr "Information à propos de l'IDE"
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
 msgstr "ATTENTION:nom d'unité non valide  %s, paquet=%s"
-
-#: lazarusidestrconsts.lisideintf
-msgid "IDE Interface"
-msgstr "Interface EDI"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -8682,10 +8680,6 @@ msgstr "Je me demande comment vous avez fait cela: Erreur dans le répertoire de
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Historique des déplacements"
-
-#: lazarusidestrconsts.lisjitform
-msgid "JIT Form"
-msgstr "Fiche JIT"
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
@@ -10512,8 +10506,9 @@ msgstr "&Remplacer"
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy
-#| msgid "Reporting a bug..."
-msgid "Reporting a bug ..."
+#| msgid "Reporting a bug ..."
+msgctxt "lazarusidestrconsts.lismenureportingbug"
+msgid "Reporting a bug"
 msgstr "Signaler un bogue ..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -12760,10 +12755,6 @@ msgstr "Utiliser l'unité"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Avertissement: le fichier %s%s%s%sappartient au présent projet."
 
-#: lazarusidestrconsts.lispkgreg
-msgid "Package Registration"
-msgstr "Enregistrement d'un paquet"
-
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Ne peut enregistrer des composants sans unité"
@@ -12809,7 +12800,9 @@ msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/pr
 msgstr "SynEdit - l'éditeur de composants utilisé par Lazarus. http://sourceforge.net/projects/synedit/"
 
 #: lazarusidestrconsts.lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
-msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+#, fuzzy
+#| msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+msgid "The FCL - Free Pascal Component Library provides the base classes for Object Pascal."
 msgstr "la FCL (FreePascal Component Library) fournit les classes de base pour le Pascal objet."
 
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
@@ -14140,10 +14133,6 @@ msgstr "%s%s%s n'est pas un identificateur valide."
 msgid "Override system variable"
 msgstr "Surcharger une variable système"
 
-#: lazarusidestrconsts.lissynedit
-msgid "SynEdit"
-msgstr "SynEdit"
-
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "Mode syntaxe"
@@ -14637,7 +14626,9 @@ msgid "The unit has this name"
 msgstr "L'unité a ce nom"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+#, fuzzy
+#| msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr "Le nom de l'unité %s%s%s n'est pas en minuscules.%sLe compilateur FreePascal ne recherche pas dans tous les cas. Il est recommandé d'utiliser un nom de fichier en minuscules.%s%s Renommer le fichier en minuscules ?"
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
@@ -16654,6 +16645,7 @@ msgid "Replace text"
 msgstr "Texte à remplacer"
 
 #: lazarusidestrconsts.srkmecreportingbug
+msgctxt "lazarusidestrconsts.srkmecreportingbug"
 msgid "Reporting a bug"
 msgstr "Signaler un bogue"
 

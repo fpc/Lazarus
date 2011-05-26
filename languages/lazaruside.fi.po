@@ -862,10 +862,6 @@ msgstr "Editorin oletuskirjasin"
 msgid "Default Value"
 msgstr "Oletusarvo"
 
-#: lazarusidestrconsts.dlgdelphi2ext
-msgid "Delphi 2 Extensions"
-msgstr ""
-
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
 msgstr "Poistetaanko koodilyhenne "
@@ -2136,7 +2132,7 @@ msgstr "Rivinumerot"
 #: lazarusidestrconsts.dlgmouseoptnodemain
 msgctxt "lazarusidestrconsts.dlgmouseoptnodemain"
 msgid "Text"
-msgstr ""
+msgstr "Teksti"
 
 #: lazarusidestrconsts.dlgmouseoptnodeselect
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
@@ -2163,7 +2159,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmsgs
 msgctxt "lazarusidestrconsts.dlgmsgs"
 msgid "Messages"
-msgstr ""
+msgstr "Viestit"
 
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
@@ -2316,7 +2312,7 @@ msgstr "Oletus"
 #: lazarusidestrconsts.dlgpasstringkeywordsoptnone
 msgctxt "lazarusidestrconsts.dlgpasstringkeywordsoptnone"
 msgid "None"
-msgstr ""
+msgstr "Ei yhtään"
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptstring
 msgid "Only \"String\""
@@ -4140,7 +4136,9 @@ msgid "relative unit path found in fpc cfg: %s"
 msgstr "suhteellinen käännösyksikköjen polku löytyi FPC:n asetuksista: %s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+#, fuzzy
+#| msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr "Polussa on monta Free Pascal kääntäjää.%s%s%sEhkä unohdit poistaa vanhan kääntäjän?"
 
 #: lazarusidestrconsts.lisccoskip
@@ -4890,7 +4888,7 @@ msgstr ""
 #: lazarusidestrconsts.liscodehelpinherited
 msgctxt "lazarusidestrconsts.liscodehelpinherited"
 msgid "Inherited"
-msgstr ""
+msgstr "Periytynyt"
 
 #: lazarusidestrconsts.liscodehelpinsertalink
 msgid "Insert a link ..."
@@ -5000,10 +4998,6 @@ msgstr "Virhe"
 
 #: lazarusidestrconsts.liscodetempltoken
 msgid "Token:"
-msgstr ""
-
-#: lazarusidestrconsts.liscodetools
-msgid "CodeTools"
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsaction
@@ -5339,15 +5333,15 @@ msgid "The Lazarus main directory."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
-msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgid "The path to the Free Pascal compiler for this source.%sUsed to autocreate macros."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
@@ -5418,7 +5412,7 @@ msgstr ""
 #: lazarusidestrconsts.liscodetoolsoptsnone
 msgctxt "lazarusidestrconsts.liscodetoolsoptsnone"
 msgid "None"
-msgstr ""
+msgstr "Ei yhtään"
 
 #: lazarusidestrconsts.liscodetoolsoptsnumber
 msgid "Number"
@@ -5550,10 +5544,6 @@ msgstr "Ei koskaan"
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
 msgstr "Laajenna vain oikealle"
-
-#: lazarusidestrconsts.liscomponent
-msgid "Component"
-msgstr "Komponentti"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 msgid "Component name \"%s\" is a pascal keyword."
@@ -6047,7 +6037,7 @@ msgid "%s (various)"
 msgstr ""
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
-msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr ""
 
 #: lazarusidestrconsts.liscpopenpackage
@@ -7847,11 +7837,11 @@ msgid "Free Pascal program using TCustomApplication to easily check command line
 msgstr "Free Pascal ohjelma joka käyttää TCustomApplication luokkaa. Sillä on helppo tarkastaa komentoriviltä annetut parametrit ja poikkeukset. Lazarus pitää yllä ohjelman koodia automaattisesti."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Freepascal source directory"
+msgid "Free Pascal source directory"
 msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalsourcefile
-msgid "FreePascal source file"
+msgid "Free Pascal source file"
 msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalsourcesnotfound
@@ -7975,7 +7965,9 @@ msgid "Hexadecimal"
 msgstr ""
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
-msgid "Help for FreePascal Compiler message"
+#, fuzzy
+#| msgid "Help for FreePascal Compiler message"
+msgid "Help for Free Pascal Compiler message"
 msgstr "Free Pascal kääntäjän viestien ohje"
 
 #: lazarusidestrconsts.lishidemessageviadirective
@@ -8110,10 +8102,6 @@ msgstr "Tietoja kehitysympäristöstä"
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
 msgstr ""
-
-#: lazarusidestrconsts.lisideintf
-msgid "IDE Interface"
-msgstr "Kehitysympäristön rajapinta"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -8577,10 +8565,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Hyppyhistoria"
-
-#: lazarusidestrconsts.lisjitform
-msgid "JIT Form"
-msgstr ""
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
@@ -9375,7 +9359,7 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildnone
 msgctxt "lazarusidestrconsts.lislazbuildnone"
 msgid "None"
-msgstr ""
+msgstr "Ei yhtään"
 
 #: lazarusidestrconsts.lislazbuildok
 msgctxt "lazarusidestrconsts.lislazbuildok"
@@ -10355,7 +10339,10 @@ msgid "&Replace ..."
 msgstr "Etsi ja korvaa ..."
 
 #: lazarusidestrconsts.lismenureportingbug
-msgid "Reporting a bug ..."
+#, fuzzy
+#| msgid "Reporting a bug ..."
+msgctxt "lazarusidestrconsts.lismenureportingbug"
+msgid "Reporting a bug"
 msgstr "Virheen raportointi"
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
@@ -12559,10 +12546,6 @@ msgstr "Käytä käännösyksikköä"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Varoitus: Tiedosto %s%s%s%skuuluu jo projektiin."
 
-#: lazarusidestrconsts.lispkgreg
-msgid "Package Registration"
-msgstr "Paketin rekisteröinti"
-
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Ei voi rekisteröidä komponenttia ilman käännösyksikköä"
@@ -12608,7 +12591,7 @@ msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/pr
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
-msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+msgid "The FCL - Free Pascal Component Library provides the base classes for Object Pascal."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
@@ -13127,7 +13110,7 @@ msgstr ""
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
 msgid "The unitname is used when the IDE extends uses clauses."
-msgstr ""
+msgstr "Käännösyksikön nimeä käytetään kun Lazarus laajentaa uses-lauseketta."
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgctxt "lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni"
@@ -13182,7 +13165,7 @@ msgstr ""
 #: lazarusidestrconsts.lisregisters
 msgctxt "lazarusidestrconsts.lisregisters"
 msgid "Registers"
-msgstr ""
+msgstr "Rekisterit"
 
 #: lazarusidestrconsts.lisregistersdlgname
 msgctxt "lazarusidestrconsts.lisregistersdlgname"
@@ -13926,10 +13909,6 @@ msgstr "%s%s%s ei ole laillinen tunniste"
 msgid "Override system variable"
 msgstr ""
 
-#: lazarusidestrconsts.lissynedit
-msgid "SynEdit"
-msgstr ""
-
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr ""
@@ -14403,7 +14382,7 @@ msgid "The unit has this name"
 msgstr "Käännösyksiköllä on tämä nimi"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr ""
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
@@ -16408,6 +16387,7 @@ msgid "Replace text"
 msgstr "Etsi ja korvaa"
 
 #: lazarusidestrconsts.srkmecreportingbug
+msgctxt "lazarusidestrconsts.srkmecreportingbug"
 msgid "Reporting a bug"
 msgstr "Ohjelmavirheen raportointi"
 

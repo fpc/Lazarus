@@ -23,11 +23,11 @@ msgstr "Добавить вызов унаследованного метода"
 
 #: codystrconsts.crsalreadydefined
 msgid "Already defined"
-msgstr ""
+msgstr "Идентификатор уже объявлен"
 
 #: codystrconsts.crsalreadydefinedat
 msgid "Already defined at %s"
-msgstr ""
+msgstr "Уже объявлена (%s)"
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -191,7 +191,7 @@ msgstr "Объявить переменную ..."
 
 #: codystrconsts.crsdeclarevariable3
 msgid "Declare variable \"%s\""
-msgstr ""
+msgstr "Объявление переменной \"%s\""
 
 #: codystrconsts.crsfile
 msgid "File"
@@ -227,7 +227,7 @@ msgstr "Скомпонованные файлы"
 
 #: codystrconsts.crslocalvariableof
 msgid "Local variable of %s"
-msgstr ""
+msgstr "Локальная переменная в %s"
 
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
@@ -239,7 +239,7 @@ msgstr "МБ"
 
 #: codystrconsts.crsmemberof
 msgid "%s member of %s %s"
-msgstr ""
+msgstr "Элемент %s в %s %s"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -284,11 +284,11 @@ msgstr "Расположите курсор редактора исходног�
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
-msgstr ""
+msgstr "Укажите расположение"
 
 #: codystrconsts.crspleasespecifyatype
 msgid "Please specify a type"
-msgstr ""
+msgstr "Укажите тип"
 
 #: codystrconsts.crsppu
 msgid "PPU: %s"
@@ -300,7 +300,7 @@ msgstr "Файлы PPU проекта \"%s\""
 
 #: codystrconsts.crsprivate
 msgid "Private"
-msgstr ""
+msgstr "Private"
 
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
@@ -312,15 +312,15 @@ msgstr "Вывод проекта"
 
 #: codystrconsts.crsprotected
 msgid "Protected"
-msgstr ""
+msgstr "Protected"
 
 #: codystrconsts.crspublic
 msgid "Public"
-msgstr ""
+msgstr "Public"
 
 #: codystrconsts.crspublished
 msgid "Published"
-msgstr ""
+msgstr "Published"
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"
@@ -361,7 +361,7 @@ msgstr "Файл исходного кода: %s"
 
 #: codystrconsts.crstheidentifierisalreadydefined
 msgid "The identifier \"%s\" is already defined."
-msgstr ""
+msgstr "Идентификатор \"%s\" уже объявлен."
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -409,7 +409,7 @@ msgstr "Виртуальный модуль"
 
 #: codystrconsts.crswhere
 msgid "Where"
-msgstr ""
+msgstr "Расположение"
 
 #: codystrconsts.liscogeneral
 msgid "General"

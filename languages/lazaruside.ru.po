@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-25 03:34+0300\n"
+"PO-Revision-Date: 2011-05-26 03:56+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -884,10 +884,6 @@ msgstr "Шрифт редактора по умолчанию"
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Значение по умолчанию"
-
-#: lazarusidestrconsts.dlgdelphi2ext
-msgid "Delphi 2 Extensions"
-msgstr "Расширения Delphi 2"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -4207,8 +4203,9 @@ msgid "relative unit path found in fpc cfg: %s"
 msgstr "fpc.cfg содержит относительный путь к модулям: %s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
-msgstr "В ваших путях имеется несколько компиляторов FreePascal.%s%s%sВозможно, вы забыли удалить старый компилятор."
+#| msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgstr "В ваших путях имеется несколько компиляторов Free Pascal.%s%s%sВозможно, вы забыли удалить старый компилятор?"
 
 #: lazarusidestrconsts.lisccoskip
 msgid "Skip"
@@ -5068,10 +5065,6 @@ msgstr "Ошибка"
 msgid "Token:"
 msgstr "Элемент:"
 
-#: lazarusidestrconsts.liscodetools
-msgid "CodeTools"
-msgstr "CodeTools"
-
 #: lazarusidestrconsts.liscodetoolsdefsaction
 msgid "Action: %s"
 msgstr "Действие: %s"
@@ -5406,15 +5399,18 @@ msgid "The Lazarus main directory."
 msgstr "Главный каталог Lazarus."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+#| msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "Путь к компилятору Free Pascal.%s Например, %s/usr/bin%s -n%s или %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#| msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "Путь к компилятору Free Pascal для данного проекта. Требуется только при заполненном поле \"Каталог исходного кода Free Pascal из SVN\" ниже. Используется для автоматического создания макросов."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
-msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+#| msgid "The path to the free pascal compiler for this source.%sUsed to autocreate macros."
+msgid "The path to the Free Pascal compiler for this source.%sUsed to autocreate macros."
 msgstr "Путь к компилятору Free Pascal для данного исходного кода.%sИспользуется для автоматического создания макросов."
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
@@ -5618,10 +5614,6 @@ msgstr "Никогда"
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
 msgstr "Удлинять только вправо"
-
-#: lazarusidestrconsts.liscomponent
-msgid "Component"
-msgstr "Компонент"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 msgid "Component name \"%s\" is a pascal keyword."
@@ -6123,8 +6115,9 @@ msgid "%s (various)"
 msgstr "%s (другое)"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
-msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
-msgstr "Внимание: дополнительный файл настройки компилятора имеет то же имя, что и один из стандартных файлов настройки компилятора FreePascal. Это приведёт к использованию дополнительного файла и пропуску стандартного."
+#| msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgstr "Внимание: дополнительный файл настройки компилятора имеет то же имя, что и один из стандартных файлов настройки компилятора Free Pascal. Это приведёт к использованию дополнительного файла и пропуску стандартного."
 
 #: lazarusidestrconsts.liscpopenpackage
 msgid "Open Package %s"
@@ -7932,12 +7925,14 @@ msgid "Free Pascal program using TCustomApplication to easily check command line
 msgstr "Программа Free Pascal, использующая TCustomApplication для лёгкой проверки параметров командной строки, обработки исключений и т. д. Исходный код программы автоматически поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
-msgid "Freepascal source directory"
-msgstr "Каталог исходного кода FreePascal"
+#| msgid "Freepascal source directory"
+msgid "Free Pascal source directory"
+msgstr "Каталог исходного кода Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalsourcefile
-msgid "FreePascal source file"
-msgstr "Файл исходного кода FreePascal"
+#| msgid "FreePascal source file"
+msgid "Free Pascal source file"
+msgstr "Файл исходного кода Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalsourcesnotfound
 msgid "Free Pascal Sources not found"
@@ -8060,8 +8055,9 @@ msgid "Hexadecimal"
 msgstr "Шестнадцатеричное"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
-msgid "Help for FreePascal Compiler message"
-msgstr "Справка по сообщениям компилятора FreePascal"
+#| msgid "Help for FreePascal Compiler message"
+msgid "Help for Free Pascal Compiler message"
+msgstr "Справка по сообщению компилятора Free Pascal"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
@@ -8195,10 +8191,6 @@ msgstr "Информация об IDE"
 #: lazarusidestrconsts.lisideinfowarningunitnameinvalidpackage
 msgid "WARNING: unit name invalid %s, package=%s"
 msgstr "ПРЕДУПРЕЖДЕНИЕ: некорректное имя модуля %s, пакет %s"
-
-#: lazarusidestrconsts.lisideintf
-msgid "IDE Interface"
-msgstr "Интерфейс IDE"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -8666,10 +8658,6 @@ msgstr "Интересно, как вам удалось добиться так
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "История переходов"
-
-#: lazarusidestrconsts.lisjitform
-msgid "JIT Form"
-msgstr "JIT Form"
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
@@ -10481,9 +10469,10 @@ msgid "&Replace ..."
 msgstr "&Заменить ..."
 
 #: lazarusidestrconsts.lismenureportingbug
-#| msgid "Reporting a bug..."
-msgid "Reporting a bug ..."
-msgstr "Сообщить об ошибке ..."
+#| msgid "Reporting a bug ..."
+msgctxt "lazarusidestrconsts.lismenureportingbug"
+msgid "Reporting a bug"
+msgstr "Сообщить об ошибке"
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC source directory"
@@ -12720,10 +12709,6 @@ msgstr "Использовать модуль"
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgstr "Внимание: Файл %s%s%s%sпринадлежит текущему проекту."
 
-#: lazarusidestrconsts.lispkgreg
-msgid "Package Registration"
-msgstr "Регистрация пакетов"
-
 #: lazarusidestrconsts.lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Невозможно зарегистрировать компоненты без модуля"
@@ -12769,8 +12754,9 @@ msgid "SynEdit - the editor component used by Lazarus. http://sourceforge.net/pr
 msgstr "SynEdit - компонент редактора, используемый Lazarus. http://sourceforge.net/projects/synedit/"
 
 #: lazarusidestrconsts.lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
-msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
-msgstr "FCL - библиотека компонентов FreePascal - обеспечивает базовые классы для Объектного Паскаля."
+#| msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
+msgid "The FCL - Free Pascal Component Library provides the base classes for Object Pascal."
+msgstr "FCL - библиотека компонентов Free Pascal - предоставляет базовые классы Объектного Паскаля."
 
 #: lazarusidestrconsts.lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
@@ -14096,10 +14082,6 @@ msgstr "%s%s%s не является корректным идентификат
 msgid "Override system variable"
 msgstr "Перекрыть системную переменную"
 
-#: lazarusidestrconsts.lissynedit
-msgid "SynEdit"
-msgstr "SynEdit"
-
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
 msgstr "Режим синтаксиса"
@@ -14587,8 +14569,9 @@ msgid "The unit has this name"
 msgstr "Это имя уже имеет модуль"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
-msgstr "Имя файла %s%s%s модуля не в нижнем регистре.%sКомпилятор FreePascal не проводит поиск для всех вариантов. Рекомендуется использовать имя в нижнем регистре.%s%sПереименовать файл в нижний регистр?"
+#| msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgstr "Имя файла %s%s%s модуля не в нижнем регистре.%sКомпилятор Free Pascal не проводит поиск для всех вариантов. Рекомендуется использовать имя в нижнем регистре.%s%sПереименовать файл в нижний регистр?"
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -16603,6 +16586,7 @@ msgid "Replace text"
 msgstr "Заменить текст"
 
 #: lazarusidestrconsts.srkmecreportingbug
+msgctxt "lazarusidestrconsts.srkmecreportingbug"
 msgid "Reporting a bug"
 msgstr "Сообщить об ошибке"
 
