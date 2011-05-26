@@ -1,5 +1,10 @@
 msgid ""
 msgstr ""
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Project-Id-Version: lazaruside\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2011-05-24 23:55+0200\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,11 +15,11 @@ msgstr "Можу лише призупинитись, коли записую"
 
 #: synmacrorecorder.scannotplay
 msgid "Cannot playback macro when recording"
-msgstr "Не можу скасувати макрос, під час запису"
+msgstr "Не можу відтворити макрос під час запису"
 
 #: synmacrorecorder.scannotrecord
 msgid "Cannot record macro when recording"
-msgstr "Не можу писати макрос, під час запису"
+msgstr "Не можу писати макрос під час запису"
 
 #: synmacrorecorder.scannotresume
 msgid "Can only resume when paused"

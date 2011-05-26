@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr "Закладки"
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr "Маркер Зміни"
+
+#: syndesignstringconstants.syndscodefolding
+msgid "Code Folding"
+msgstr "Згортання Коду"
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr "Номери Рядків"
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr "Огляд Ліній"
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr "Роздільник"
+

@@ -1,24 +1,29 @@
 msgid ""
 msgstr ""
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Project-Id-Version: lazaruside\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2011-05-25 15:03+0200\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
-msgstr ""
+msgstr "Asp"
 
 #: syneditstrconst.syns_attrassembler
 msgid "Assembler"
-msgstr ""
+msgstr "Асемблер"
 
 #: syneditstrconst.syns_attrattributename
 msgid "Attribute Name"
-msgstr ""
+msgstr "Назва Атрибуту"
 
 #: syneditstrconst.syns_attrattributevalue
 msgid "Attribute Value"
-msgstr ""
+msgstr "Значення Атрибуту"
 
 #: syneditstrconst.syns_attrblock
 msgid "Block"
@@ -26,7 +31,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrbrackets
 msgid "Brackets"
-msgstr ""
+msgstr "Дужки"
 
 #: syneditstrconst.syns_attrcaselabel
 msgid "Case label"
@@ -34,11 +39,11 @@ msgstr ""
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
-msgstr ""
+msgstr "Секція CDATA"
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
-msgstr ""
+msgstr "Символ"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
@@ -58,51 +63,51 @@ msgstr ""
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
-msgstr ""
+msgstr "Клас"
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"
-msgstr ""
+msgstr "Коментар"
 
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
-msgstr ""
+msgstr "Умова"
 
 #: syneditstrconst.syns_attrdatatype
 msgid "Data type"
-msgstr ""
+msgstr "Тип даних"
 
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
-msgstr ""
+msgstr "Пакунки за замовчуванням"
 
 #: syneditstrconst.syns_attrdir
 msgid "Direction"
-msgstr ""
+msgstr "Напрямок"
 
 #: syneditstrconst.syns_attrdirective
 msgid "Directive"
-msgstr ""
+msgstr "Директива"
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
-msgstr ""
+msgstr "Секція DOCTYPE"
 
 #: syneditstrconst.syns_attrdocumentation
 msgid "Documentation"
-msgstr ""
+msgstr "Документація"
 
 #: syneditstrconst.syns_attrelementname
 msgid "Element Name"
-msgstr ""
+msgstr "Назва Елемента"
 
 #: syneditstrconst.syns_attrembedsql
 msgid "Embedded SQL"
-msgstr ""
+msgstr "Вбудований SQL"
 
 #: syneditstrconst.syns_attrembedtext
 msgid "Embedded text"
-msgstr ""
+msgstr "Вбудований текст"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
@@ -114,27 +119,27 @@ msgstr ""
 
 #: syneditstrconst.syns_attrevent
 msgid "Event"
-msgstr ""
+msgstr "Подія"
 
 #: syneditstrconst.syns_attrexception
 msgid "Exception"
-msgstr ""
+msgstr "Виняток"
 
 #: syneditstrconst.syns_attrfloat
 msgid "Float"
-msgstr ""
+msgstr "Плаваюча Точка"
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
-msgstr ""
+msgstr "Форма"
 
 #: syneditstrconst.syns_attrfunction
 msgid "Function"
-msgstr ""
+msgstr "Функція"
 
 #: syneditstrconst.syns_attrhexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "Шістнадцятковий"
 
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
@@ -142,47 +147,47 @@ msgstr ""
 
 #: syneditstrconst.syns_attridedirective
 msgid "IDE Directive"
-msgstr ""
+msgstr "Директива IDE"
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
-msgstr ""
+msgstr "Ідентифікатор"
 
 #: syneditstrconst.syns_attrillegalchar
 msgid "Illegal char"
-msgstr ""
+msgstr "Недозволений символ"
 
 #: syneditstrconst.syns_attrinclude
 msgid "Include"
-msgstr ""
+msgstr "Включити"
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
-msgstr ""
+msgstr "Непрямий"
 
 #: syneditstrconst.syns_attrinternalfunction
 msgid "Internal function"
-msgstr ""
+msgstr "Внутрішня функція"
 
 #: syneditstrconst.syns_attrinvalidsymbol
 msgid "Invalid symbol"
-msgstr ""
+msgstr "Невірний символ"
 
 #: syneditstrconst.syns_attrkey
 msgid "Key"
-msgstr ""
+msgstr "Клавіша"
 
 #: syneditstrconst.syns_attrlabel
 msgid "Label"
-msgstr ""
+msgstr "Мітка"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
-msgstr ""
+msgstr "Порівняти Доданий рядок"
 
 #: syneditstrconst.syns_attrlinechanged
 msgid "Diff Changed Line"
-msgstr ""
+msgstr "Порівняти Змінений рядок"
 
 #: syneditstrconst.syns_attrlinecontext
 msgid "Diff Context Line"
@@ -190,27 +195,27 @@ msgstr ""
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
-msgstr ""
+msgstr "Порівняти Видалений рядок"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
-msgstr ""
+msgstr "Макрос"
 
 #: syneditstrconst.syns_attrmarker
 msgid "Marker"
-msgstr ""
+msgstr "Маркер"
 
 #: syneditstrconst.syns_attrmathmode
 msgid "Math Mode"
-msgstr ""
+msgstr "Математичний Режим"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
-msgstr ""
+msgstr "Повідомлення"
 
 #: syneditstrconst.syns_attrmiscellaneous
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Різне"
 
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
@@ -222,7 +227,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
-msgstr ""
+msgstr "Порівняти Новий Файл"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
@@ -238,19 +243,19 @@ msgstr ""
 
 #: syneditstrconst.syns_attroctal
 msgid "Octal"
-msgstr ""
+msgstr "Вісімковий"
 
 #: syneditstrconst.syns_attroperator
 msgid "Operator"
-msgstr ""
+msgstr "Оператор"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
-msgstr ""
+msgstr "Порівняти Оригінальний Файл"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
-msgstr ""
+msgstr "Зарезервоване слово (PL/SQL)"
 
 #: syneditstrconst.syns_attrpragma
 msgid "Pragma"
@@ -258,7 +263,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrpreprocessor
 msgid "Preprocessor"
-msgstr ""
+msgstr "Препроцесор"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
@@ -266,7 +271,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
-msgstr ""
+msgstr "Визначник"
 
 #: syneditstrconst.syns_attrregister
 msgid "Register"
@@ -274,87 +279,87 @@ msgstr ""
 
 #: syneditstrconst.syns_attrreservedword
 msgid "Reserved word"
-msgstr ""
+msgstr "Зарезервоване слово"
 
 #: syneditstrconst.syns_attrroundbracket
 msgid "Round Bracket"
-msgstr ""
+msgstr "Кругла Дужка"
 
 #: syneditstrconst.syns_attrrpl
 msgid "Rpl"
-msgstr ""
+msgstr "Rpl"
 
 #: syneditstrconst.syns_attrrplcomment
 msgid "Rpl comment"
-msgstr ""
+msgstr "Коментар Rpl"
 
 #: syneditstrconst.syns_attrrplkey
 msgid "Rpl key"
-msgstr ""
+msgstr "Ключ Rpl"
 
 #: syneditstrconst.syns_attrsasm
 msgid "SASM"
-msgstr ""
+msgstr "SASM"
 
 #: syneditstrconst.syns_attrsasmcomment
 msgid "SASM Comment"
-msgstr ""
+msgstr "Коментар SASM"
 
 #: syneditstrconst.syns_attrsasmkey
 msgid "SASM Key"
-msgstr ""
+msgstr "Ключ SASM"
 
 #: syneditstrconst.syns_attrsecondreservedword
 msgid "Second reserved word"
-msgstr ""
+msgstr "Друге зарезервоване слово"
 
 #: syneditstrconst.syns_attrsection
 msgid "Section"
-msgstr ""
+msgstr "Секція"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
-msgstr ""
+msgstr "Пробіл"
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
-msgstr ""
+msgstr "Спеціальна Змінна"
 
 #: syneditstrconst.syns_attrsqlkey
 msgid "SQL keyword"
-msgstr ""
+msgstr "Ключове слово SQL"
 
 #: syneditstrconst.syns_attrsqlplus
 msgid "SQL*Plus command"
-msgstr ""
+msgstr "Команда SQL*Plus"
 
 #: syneditstrconst.syns_attrsquarebracket
 msgid "Square Bracket"
-msgstr ""
+msgstr "Квадратна Дужка"
 
 #: syneditstrconst.syns_attrstring
 msgid "String"
-msgstr ""
+msgstr "Рядок"
 
 #: syneditstrconst.syns_attrsymbol
 msgid "Symbol"
-msgstr ""
+msgstr "Символ"
 
 #: syneditstrconst.syns_attrsyntaxerror
 msgid "SyntaxError"
-msgstr ""
+msgstr "СинтаксПомилка"
 
 #: syneditstrconst.syns_attrsystem
 msgid "System functions and variables"
-msgstr ""
+msgstr "Системні функції та змінні"
 
 #: syneditstrconst.syns_attrsystemvalue
 msgid "System value"
-msgstr ""
+msgstr "Системне значення"
 
 #: syneditstrconst.syns_attrtablename
 msgid "Table Name"
-msgstr ""
+msgstr "Назва Таблиці"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
@@ -362,43 +367,41 @@ msgstr ""
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
-msgstr ""
+msgstr "Команда TeX"
 
 #: syneditstrconst.syns_attrtext
 msgid "Text"
-msgstr ""
+msgstr "Текст"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
-msgstr ""
+msgstr "Текст в Математичному Режимі"
 
 #: syneditstrconst.syns_attrunknownword
 msgid "Unknown word"
-msgstr ""
+msgstr "Невідоме слово"
 
 #: syneditstrconst.syns_attruser
 msgid "User functions and variables"
-msgstr ""
+msgstr "Функції та змінні користувача"
 
 #: syneditstrconst.syns_attruserfunction
 msgid "User functions"
-msgstr ""
+msgstr "Функції користувача"
 
 #: syneditstrconst.syns_attrvalue
 msgid "Value"
-msgstr ""
+msgstr "Значення"
 
 #: syneditstrconst.syns_attrvariable
 msgid "Variable"
-msgstr ""
+msgstr "Змінна"
 
 #: syneditstrconst.syns_attrwhitespace
 msgid "Whitespace"
-msgstr ""
+msgstr "Пробіл"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#, fuzzy
-#| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Комбінацію \"%s\" вже присвоєно іншій команді редактора. (%s)"
 
@@ -408,11 +411,11 @@ msgstr "Комбінація вже існує"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
 msgid "Toggle Breakpoint"
-msgstr ""
+msgstr "Поміняти Точку Зипинки"
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
-msgstr ""
+msgstr "Згорнути Код"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
@@ -420,11 +423,11 @@ msgstr ""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
-msgstr ""
+msgstr "Згорнути Меню"
 
 #: syneditstrconst.syns_emccodefoldexpand
 msgid "Unfold Code"
-msgstr ""
+msgstr "Розгорнути Код"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,All"
@@ -432,7 +435,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
-msgstr ""
+msgstr "Спливаюче Меню"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
@@ -448,7 +451,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
-msgstr ""
+msgstr "Без Дії"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
@@ -460,39 +463,39 @@ msgstr ""
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
-msgstr ""
+msgstr "Вибрати Рядок"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr ""
+msgstr "\"включити пробіли\",no,yes"
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
-msgstr ""
+msgstr "Вибрати Параграф"
 
 #: syneditstrconst.syns_emcselectword
 msgid "Select Word"
-msgstr ""
+msgstr "Вибрати Слово"
 
 #: syneditstrconst.syns_emcstartcolumnselections
 msgid "Column Selection"
-msgstr ""
+msgstr "Вибір Стовпчика"
 
 #: syneditstrconst.syns_emcstartdragmove
 msgid "Drag Selection"
-msgstr ""
+msgstr "Вибір Перетягування"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
-msgstr ""
+msgstr "Вибір Рядка"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
-msgstr ""
+msgstr "Вибір"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
-msgstr ""
+msgstr "Команда IDE"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
@@ -540,7 +543,7 @@ msgstr "Звіти CPM (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 
 #: syneditstrconst.syns_filtercpp
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
-msgstr ""
+msgstr "Файли C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 
 #: syneditstrconst.syns_filtercss
 msgid "Cascading Stylesheets (*.css)|*.css"
@@ -696,5 +699,5 @@ msgstr "<ніякі>"
 
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
-msgstr ""
+msgstr "Без_Заголовка"
 

@@ -3,6 +3,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2011-05-25 15:41+0200\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -68,7 +73,7 @@ msgstr "Панель інструментів"
 
 #: objinspstrconsts.cactionlisteditorsearchcategory
 msgid "Search"
-msgstr ""
+msgstr "Пошук"
 
 #: objinspstrconsts.cactionlisteditorunknowncategory
 msgid "(Unknown)"
@@ -104,7 +109,7 @@ msgstr "Редактор CheckListBox"
 
 #: objinspstrconsts.clbdeletehint
 msgid "Delete the Item"
-msgstr ""
+msgstr "Видалити Елемент"
 
 #: objinspstrconsts.clbdeletequest
 msgid "Delete the Item %d \"%s\"?"
@@ -113,7 +118,7 @@ msgstr "Видалити елемент %d \"%s\"?"
 #: objinspstrconsts.clbdown
 msgctxt "objinspstrconsts.clbdown"
 msgid "Down"
-msgstr ""
+msgstr "Вниз"
 
 #: objinspstrconsts.clbmodify
 msgid "Modify the Item"
@@ -122,7 +127,7 @@ msgstr "Змінити пункт"
 #: objinspstrconsts.clbup
 msgctxt "objinspstrconsts.clbup"
 msgid "Up"
-msgstr ""
+msgstr "Вверх"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -166,11 +171,9 @@ msgid "FieldDefs"
 msgstr ""
 
 #: objinspstrconsts.fesformcaption
-#, fuzzy
-#| msgid "New fileld"
 msgctxt "objinspstrconsts.fesformcaption"
 msgid "New field"
-msgstr "Діалог"
+msgstr "Нове поле"
 
 #: objinspstrconsts.feskeyfield
 msgid "&Key fields:"
@@ -203,7 +206,7 @@ msgstr ""
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
 msgid "OK"
-msgstr ""
+msgstr "Гаразд"
 
 #: objinspstrconsts.fespersistentcompname
 msgid "Co&mponent Name:"
@@ -215,16 +218,16 @@ msgstr ""
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
-msgstr ""
+msgstr "&Розмір:"
 
 #: objinspstrconsts.festype
 msgid "&Type:"
-msgstr ""
+msgstr "&Тип:"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
-msgstr ""
+msgstr "Додати"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
@@ -256,43 +259,43 @@ msgstr ""
 
 #: objinspstrconsts.lisoem1
 msgid "OEM 1"
-msgstr ""
+msgstr "OEM 1"
 
 #: objinspstrconsts.lisoem2
 msgid "OEM 2"
-msgstr ""
+msgstr "OEM 2"
 
 #: objinspstrconsts.lisoem3
 msgid "OEM 3"
-msgstr ""
+msgstr "OEM 3"
 
 #: objinspstrconsts.lisoem4
 msgid "OEM 4"
-msgstr ""
+msgstr "OEM 4"
 
 #: objinspstrconsts.lisoem5
 msgid "OEM 5"
-msgstr ""
+msgstr "OEM 5"
 
 #: objinspstrconsts.lisoem6
 msgid "OEM 6"
-msgstr ""
+msgstr "OEM 6"
 
 #: objinspstrconsts.lisoem7
 msgid "OEM 7"
-msgstr ""
+msgstr "OEM 7"
 
 #: objinspstrconsts.lisoem8
 msgid "OEM 8"
-msgstr ""
+msgstr "OEM 8"
 
 #: objinspstrconsts.lisoemcomma
 msgid "OEM comma"
-msgstr ""
+msgstr "OEM кома"
 
 #: objinspstrconsts.lisoemminus
 msgid "OEM minus"
-msgstr ""
+msgstr "OEM мінус"
 
 #: objinspstrconsts.lisoemperiod
 msgid "OEM period"
@@ -300,7 +303,7 @@ msgstr ""
 
 #: objinspstrconsts.lisoemplus
 msgid "OEM plus"
-msgstr ""
+msgstr "OEM плюс"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
@@ -334,12 +337,12 @@ msgstr "Додати"
 #: objinspstrconsts.oicoleditdelete
 msgctxt "objinspstrconsts.oicoleditdelete"
 msgid "Delete"
-msgstr ""
+msgstr "Видалити"
 
 #: objinspstrconsts.oicoleditdown
 msgctxt "objinspstrconsts.oicoleditdown"
 msgid "Down"
-msgstr ""
+msgstr "Вниз"
 
 #: objinspstrconsts.oicoleditediting
 msgid "Editing"
@@ -348,7 +351,7 @@ msgstr ""
 #: objinspstrconsts.oicoleditup
 msgctxt "objinspstrconsts.oicoleditup"
 msgid "Up"
-msgstr ""
+msgstr "Вверх"
 
 #: objinspstrconsts.ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -367,8 +370,6 @@ msgid "Action&List Editor..."
 msgstr ""
 
 #: objinspstrconsts.oisactionlisteditor
-#, fuzzy
-#| msgid "Action List Editor"
 msgid "ActionList Editor"
 msgstr "Редактор списку дій"
 
@@ -394,7 +395,7 @@ msgstr "Все"
 
 #: objinspstrconsts.oisallfiles
 msgid "All files"
-msgstr ""
+msgstr "Всі файли"
 
 #: objinspstrconsts.oisarray
 msgid "Array"
@@ -461,7 +462,7 @@ msgstr "Підтвердити видалення"
 #: objinspstrconsts.oiscopycomponents
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr ""
+msgstr "&Копіювати"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -478,7 +479,7 @@ msgstr ""
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr ""
+msgstr "Ви&різати"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -544,7 +545,7 @@ msgstr "Дійсний"
 
 #: objinspstrconsts.oishelp
 msgid "&Help"
-msgstr ""
+msgstr "&Довідка"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."
@@ -632,7 +633,7 @@ msgstr ""
 
 #: objinspstrconsts.oisnew
 msgid "&New"
-msgstr ""
+msgstr "&Новий"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
@@ -980,7 +981,7 @@ msgstr "&Відкрити..."
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
 msgid "Open"
-msgstr ""
+msgstr "Відкрити"
 
 #: objinspstrconsts.oistdactfileopenshortcut
 msgid "Ctrl+O"
@@ -1048,31 +1049,31 @@ msgstr ""
 
 #: objinspstrconsts.oistdactsearchfindhint
 msgid "Find"
-msgstr ""
+msgstr "Знайти"
 
 #: objinspstrconsts.oistdactsearchfindnextheadline
 msgid "Find &Next"
-msgstr ""
+msgstr "Знайти &Далі"
 
 #: objinspstrconsts.oistdactsearchfindnexthint
 msgid "Find next"
-msgstr ""
+msgstr "Знайти далі"
 
 #: objinspstrconsts.oistdactsearchfindnextshortcut
 msgid "F3"
-msgstr ""
+msgstr "F3"
 
 #: objinspstrconsts.oistdactsearchfindshortcut
 msgid "Ctrl+F"
-msgstr ""
+msgstr "Ctrl+F"
 
 #: objinspstrconsts.oistdactsearchreplaceheadline
 msgid "&Replace"
-msgstr ""
+msgstr "За&мінити"
 
 #: objinspstrconsts.oistdactsearchreplacehint
 msgid "Replace"
-msgstr ""
+msgstr "Замінити"
 
 #: objinspstrconsts.oistestdialog
 msgid "Test dialog..."
@@ -1142,7 +1143,7 @@ msgstr ""
 
 #: objinspstrconsts.pefilter
 msgid "Filter"
-msgstr ""
+msgstr "Фільтр"
 
 #: objinspstrconsts.pefiltereditor
 msgid "Filter editor"
@@ -1179,7 +1180,7 @@ msgstr ""
 #: objinspstrconsts.rscdleft
 msgctxt "objinspstrconsts.rscdleft"
 msgid "Left"
-msgstr ""
+msgstr "Вліво"
 
 #: objinspstrconsts.rscdmovedown
 msgid "Move down"
@@ -1192,12 +1193,12 @@ msgstr ""
 #: objinspstrconsts.rscdok
 msgctxt "objinspstrconsts.rscdok"
 msgid "OK"
-msgstr ""
+msgstr "Гаразд"
 
 #: objinspstrconsts.rscdright
 msgctxt "objinspstrconsts.rscdright"
 msgid "Right"
-msgstr ""
+msgstr "Вправо"
 
 #: objinspstrconsts.rscdvisible
 msgid "Visible"
@@ -1205,7 +1206,7 @@ msgstr ""
 
 #: objinspstrconsts.rscdwidth
 msgid "Width"
-msgstr ""
+msgstr "Ширина"
 
 #: objinspstrconsts.sccshceditsections
 msgid "Sections Editor ..."
@@ -1222,7 +1223,7 @@ msgstr ""
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Застосувати"
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1305,7 +1306,7 @@ msgstr ""
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Застосувати"
 
 #: objinspstrconsts.sccslvedtcaption
 msgid "ListView Items Editor"
@@ -1348,12 +1349,12 @@ msgstr ""
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
 msgid "New Item"
-msgstr ""
+msgstr "Новий Елемент"
 
 #: objinspstrconsts.sccslvedtnewsubitem
 msgctxt "objinspstrconsts.sccslvedtnewsubitem"
 msgid "New SubItem"
-msgstr ""
+msgstr "Новий Піделемент"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor..."
@@ -1370,7 +1371,7 @@ msgstr ""
 #: objinspstrconsts.sccssgedtapply
 msgctxt "objinspstrconsts.sccssgedtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Застосувати"
 
 #: objinspstrconsts.sccssgedtcaption
 msgid "StringGrid Editor"
@@ -1395,7 +1396,7 @@ msgstr ""
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
 msgid "Open"
-msgstr ""
+msgstr "Відкрити"
 
 #: objinspstrconsts.sccssgedtsave
 msgctxt "objinspstrconsts.sccssgedtsave"
@@ -1415,7 +1416,7 @@ msgstr ""
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
-msgstr ""
+msgstr "Застосувати"
 
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
@@ -1429,7 +1430,7 @@ msgstr "Видалити"
 #: objinspstrconsts.sccstredtgrplcaption
 msgctxt "objinspstrconsts.sccstredtgrplcaption"
 msgid "Items"
-msgstr ""
+msgstr "Елементи"
 
 #: objinspstrconsts.sccstredtgrprcaption
 msgctxt "objinspstrconsts.sccstredtgrprcaption"
@@ -1439,7 +1440,7 @@ msgstr ""
 #: objinspstrconsts.sccstredtitem
 msgctxt "objinspstrconsts.sccstredtitem"
 msgid "Item"
-msgstr ""
+msgstr "Елемент"
 
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
@@ -1457,21 +1458,21 @@ msgstr ""
 
 #: objinspstrconsts.sccstredtlabeltext
 msgid "Text:"
-msgstr ""
+msgstr "Текст:"
 
 #: objinspstrconsts.sccstredtload
 msgid "Load"
-msgstr ""
+msgstr "Завантажити"
 
 #: objinspstrconsts.sccstredtnewitem
 msgctxt "objinspstrconsts.sccstredtnewitem"
 msgid "New Item"
-msgstr ""
+msgstr "Новий Елемент"
 
 #: objinspstrconsts.sccstredtnewsubitem
 msgctxt "objinspstrconsts.sccstredtnewsubitem"
 msgid "New SubItem"
-msgstr ""
+msgstr "Новий Піделемент"
 
 #: objinspstrconsts.sccstredtopendialog
 msgctxt "objinspstrconsts.sccstredtopendialog"
@@ -1481,24 +1482,24 @@ msgstr "Відкрити"
 #: objinspstrconsts.sccstredtsave
 msgctxt "objinspstrconsts.sccstredtsave"
 msgid "Save"
-msgstr ""
+msgstr "Зберегти"
 
 #: objinspstrconsts.sccstredtsavedialog
 msgctxt "objinspstrconsts.sccstredtsavedialog"
 msgid "Save"
-msgstr ""
+msgstr "Зберегти"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "Кнопка захоплення"
 
 #: objinspstrconsts.srkm_alt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: objinspstrconsts.srkm_ctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: objinspstrconsts.srvk_accept
 msgid "Accept"
@@ -1510,7 +1511,7 @@ msgstr ""
 
 #: objinspstrconsts.srvk_back
 msgid "Backspace"
-msgstr ""
+msgstr "Backspace"
 
 #: objinspstrconsts.srvk_cancel
 msgctxt "objinspstrconsts.srvk_cancel"
@@ -1546,19 +1547,19 @@ msgstr "Видалити"
 #: objinspstrconsts.srvk_down
 msgctxt "objinspstrconsts.srvk_down"
 msgid "Down"
-msgstr ""
+msgstr "Вниз"
 
 #: objinspstrconsts.srvk_end
 msgid "End"
-msgstr ""
+msgstr "End"
 
 #: objinspstrconsts.srvk_escape
 msgid "Escape"
-msgstr ""
+msgstr "Escape"
 
 #: objinspstrconsts.srvk_execute
 msgid "Execute"
-msgstr ""
+msgstr "Виконати"
 
 #: objinspstrconsts.srvk_final
 msgid "Final"
@@ -1566,7 +1567,7 @@ msgstr ""
 
 #: objinspstrconsts.srvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Китайська"
 
 #: objinspstrconsts.srvk_help
 msgctxt "objinspstrconsts.srvk_help"
@@ -1575,7 +1576,7 @@ msgstr "Допомога"
 
 #: objinspstrconsts.srvk_home
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 #: objinspstrconsts.srvk_insert
 msgctxt "objinspstrconsts.srvk_insert"
@@ -1588,28 +1589,28 @@ msgstr ""
 
 #: objinspstrconsts.srvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Кенійська"
 
 #: objinspstrconsts.srvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Японська"
 
 #: objinspstrconsts.srvk_lbutton
 msgid "Mouse Button Left"
-msgstr ""
+msgstr "Ліва кнопка миші"
 
 #: objinspstrconsts.srvk_left
 msgctxt "objinspstrconsts.srvk_left"
 msgid "Left"
-msgstr ""
+msgstr "Вліво"
 
 #: objinspstrconsts.srvk_lwin
 msgid "Left Windows Key"
-msgstr ""
+msgstr "Ліва кнопка Win"
 
 #: objinspstrconsts.srvk_mbutton
 msgid "Mouse Button Middle"
-msgstr ""
+msgstr "Середня кнопка миші"
 
 #: objinspstrconsts.srvk_menu
 msgid "Menu"
@@ -1638,7 +1639,7 @@ msgstr ""
 
 #: objinspstrconsts.srvk_numlock
 msgid "Numlock"
-msgstr ""
+msgstr "Numlock"
 
 #: objinspstrconsts.srvk_numpad
 msgid "Numpad %d"
@@ -1646,7 +1647,7 @@ msgstr ""
 
 #: objinspstrconsts.srvk_pause
 msgid "Pause key"
-msgstr ""
+msgstr "Кнопка Pause"
 
 #: objinspstrconsts.srvk_print
 msgid "Print"
@@ -1659,20 +1660,20 @@ msgstr "Попередній"
 
 #: objinspstrconsts.srvk_rbutton
 msgid "Mouse Button Right"
-msgstr ""
+msgstr "Права кнопка миші"
 
 #: objinspstrconsts.srvk_return
 msgid "Return"
-msgstr ""
+msgstr "Enter"
 
 #: objinspstrconsts.srvk_right
 msgctxt "objinspstrconsts.srvk_right"
 msgid "Right"
-msgstr ""
+msgstr "Вправо"
 
 #: objinspstrconsts.srvk_rwin
 msgid "Right Windows Key"
-msgstr ""
+msgstr "Права кнопка Win"
 
 #: objinspstrconsts.srvk_scroll
 msgid "Scroll"
@@ -1684,7 +1685,7 @@ msgstr ""
 
 #: objinspstrconsts.srvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Shift"
 
 #: objinspstrconsts.srvk_snapshot
 msgid "Snapshot"
@@ -1700,7 +1701,7 @@ msgstr ""
 
 #: objinspstrconsts.srvk_tab
 msgid "Tab"
-msgstr ""
+msgstr "Tab"
 
 #: objinspstrconsts.srvk_unknown
 msgctxt "objinspstrconsts.srvk_unknown"
@@ -1710,7 +1711,7 @@ msgstr "Невідомий"
 #: objinspstrconsts.srvk_up
 msgctxt "objinspstrconsts.srvk_up"
 msgid "Up"
-msgstr ""
+msgstr "Вверх"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
@@ -1726,7 +1727,7 @@ msgstr ""
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr ""
+msgstr "Нова Кнопка"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
@@ -1738,25 +1739,25 @@ msgstr ""
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr ""
+msgstr "Новий Роздільник"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "Додати вкладку"
 
 #: objinspstrconsts.tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "Видалити вкладку"
 
 #: objinspstrconsts.tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "Вставити вкладку"
 
 #: objinspstrconsts.tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "Перемістити вкладку вліво"
 
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
-msgstr ""
+msgstr "Перемістити вкладку вправо"
 

@@ -1,0 +1,309 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: msgjsonviewer.sarray
+msgid "Array (%d elements)"
+msgstr "Масив (%d елементів)"
+
+#: msgjsonviewer.scancelclose
+msgid "Do not close the window"
+msgstr "Не закривати вікно"
+
+#: msgjsonviewer.scancelpaste
+msgid "Do not paste the new data"
+msgstr "Не вставляти нові дані"
+
+#: msgjsonviewer.scaption
+msgctxt "msgjsonviewer.scaption"
+msgid "JSON Viewer"
+msgstr "Переглядач JSON"
+
+#: msgjsonviewer.sdiscard
+msgid "Discard changes"
+msgstr "Відхилити зміни"
+
+#: msgjsonviewer.sdocumentmodified
+msgid "JSON document modified"
+msgstr "Документ JSON був змінений"
+
+#: msgjsonviewer.sdocumentmodifiedaction
+msgid ""
+"The JSON data was changed but not saved.\n"
+"What do want to do ?\n"
+msgstr ""
+"Дані JSON були змінені, але не збережені.\n"
+"Що треба зробити ?\n"
+
+#: msgjsonviewer.sduplicatemembername
+msgid "Duplicate member name \"%s\"."
+msgstr ""
+
+#: msgjsonviewer.selement
+msgid "Element nr. %d"
+msgstr "Елемент номер %d"
+
+#: msgjsonviewer.sempty
+msgid "Empty document"
+msgstr "Порожній документ"
+
+#: msgjsonviewer.serrcreatingconfigdir
+msgid "Could not create the configuration files directory \"s\""
+msgstr ""
+
+#: msgjsonviewer.serrinvalidvalue
+msgid "Invalid value or wrong type: \"%s\""
+msgstr ""
+
+#: msgjsonviewer.serrnovalidjsonclipboard
+msgid "The clipboard does not contain valid JSON data"
+msgstr ""
+
+#: msgjsonviewer.snewmember
+msgid "New object member"
+msgstr "Новий член об'єкту"
+
+#: msgjsonviewer.snewmembername
+msgid "Enter a name for the new member (type: %s)"
+msgstr ""
+
+#: msgjsonviewer.snomorematches
+msgid "No nodes match the criterium"
+msgstr ""
+
+#: msgjsonviewer.snull
+msgid "null"
+msgstr "порожньо"
+
+#: msgjsonviewer.sobject
+msgid "Object (%d members)"
+msgstr "Об'єкт (%d членів)"
+
+#: msgjsonviewer.ssavedata
+msgid "Save the changes"
+msgstr "Зберегти зміни"
+
+#: TMAINFORM.ACOPY.CAPTION
+msgid "&Copy"
+msgstr "&Копіювати"
+
+#: TMAINFORM.ACOPY.HINT
+msgid "Copy selected node to clipboard as JSON"
+msgstr ""
+
+#: TMAINFORM.ACUT.CAPTION
+msgid "C&ut"
+msgstr "Ви&різати"
+
+#: TMAINFORM.ACUT.HINT
+msgid "Cut selected node to clipboard as JSON"
+msgstr ""
+
+#: TMAINFORM.ADELETEVALUE.CAPTION
+msgid "&Delete value"
+msgstr ""
+
+#: TMAINFORM.ADELETEVALUE.HINT
+msgid "Delete the selected value"
+msgstr ""
+
+#: TMAINFORM.AEXPANDALL.CAPTION
+msgid "E&xpand all nodes"
+msgstr "Роз&горнути всі вузли"
+
+#: TMAINFORM.AEXPANDALL.HINT
+msgid "Expand all nodes in the document"
+msgstr "Розгорнути всі вузли в документі"
+
+#: TMAINFORM.AEXPANDCURRENTCONTAINER.CAPTION
+msgid "Expand &current object/array"
+msgstr "Розгорнути по&точний об'єкт/масив"
+
+#: TMAINFORM.AEXPANDCURRENTCONTAINER.HINT
+msgid "Expand all nodes in the current object/array"
+msgstr "Розгорнути всі вузли в поточному об'єкті/масиві"
+
+#: TMAINFORM.AFIND.CAPTION
+msgid "&Find"
+msgstr "&Знайти"
+
+#: TMAINFORM.AFINDNEXT.CAPTION
+msgid "Find &next occurrence"
+msgstr ""
+
+#: TMAINFORM.ANEW.CAPTION
+msgid "&New"
+msgstr "&Новий"
+
+#: TMAINFORM.ANEW.HINT
+msgid "Create new JSON document"
+msgstr ""
+
+#: TMAINFORM.ANEWARRAY.CAPTION
+msgid "New &Array"
+msgstr "Новий &Масив"
+
+#: TMAINFORM.ANEWARRAY.HINT
+msgid "Add a new JSON array"
+msgstr ""
+
+#: TMAINFORM.ANEWBOOLEANVALUE.CAPTION
+msgid "New &boolean value"
+msgstr ""
+
+#: TMAINFORM.ANEWBOOLEANVALUE.HINT
+msgid "Add a new boolean value"
+msgstr ""
+
+#: TMAINFORM.ANEWNULLVALUE.CAPTION
+msgid "New N&ull value"
+msgstr ""
+
+#: TMAINFORM.ANEWNULLVALUE.HINT
+msgid "Add a new null value"
+msgstr ""
+
+#: TMAINFORM.ANEWNUMBERVALUE.CAPTION
+msgid "&New numerical Value"
+msgstr ""
+
+#: TMAINFORM.ANEWNUMBERVALUE.HINT
+msgid "Add a new number value"
+msgstr ""
+
+#: TMAINFORM.ANEWOBJECT.CAPTION
+msgid "New &Object"
+msgstr "Новий &Об'єкт"
+
+#: TMAINFORM.ANEWOBJECT.HINT
+msgid "Add a new JSON object"
+msgstr ""
+
+#: TMAINFORM.ANEWSTRINGVALUE.CAPTION
+msgid "New &string value"
+msgstr ""
+
+#: TMAINFORM.ANEWSTRINGVALUE.HINT
+msgid "Add a new string value"
+msgstr ""
+
+#: TMAINFORM.AOPEN.CAPTION
+msgid "&Open"
+msgstr "Від&крити"
+
+#: TMAINFORM.AOPEN.HINT
+msgid "Open JSON document from file"
+msgstr ""
+
+#: TMAINFORM.APASTE.CAPTION
+msgid "&Paste"
+msgstr "&Вставити"
+
+#: TMAINFORM.APASTE.HINT
+msgid "Paste JSON data in clipboard as new member"
+msgstr ""
+
+#: TMAINFORM.APASTEASDOCUMENT.CAPTION
+msgid "Paste as new document"
+msgstr ""
+
+#: TMAINFORM.APASTEASDOCUMENT.HINT
+msgid "Paste JSON data in clipboard as new document"
+msgstr ""
+
+#: TMAINFORM.AQUIT.CAPTION
+msgid "&Quit"
+msgstr "Ви&хід"
+
+#: TMAINFORM.AQUIT.HINT
+msgid "Exit the program"
+msgstr "Вийти з програми"
+
+#: TMAINFORM.ASAVE.CAPTION
+msgid "&Save"
+msgstr "&Зберегти"
+
+#: TMAINFORM.ASAVE.HINT
+msgid "Save the JSON document to file"
+msgstr ""
+
+#: TMAINFORM.ASAVEAS.CAPTION
+msgid "Save &as"
+msgstr "Зберегти &як"
+
+#: TMAINFORM.ASAVEAS.HINT
+msgid "Save JSON document with a new name"
+msgstr ""
+
+#: TMAINFORM.MAINFORM.CAPTION
+msgctxt "TMAINFORM.MAINFORM.CAPTION"
+msgid "JSON Viewer"
+msgstr "Переглядач JSON"
+
+#: TMAINFORM.MEDIT.CAPTION
+msgid "&Edit"
+msgstr "&Редагувати"
+
+#: TMAINFORM.MENUITEM1.CAPTION
+msgctxt "TMAINFORM.MENUITEM1.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MENUITEM2.CAPTION
+msgctxt "TMAINFORM.MENUITEM2.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MENUITEM3.CAPTION
+msgctxt "TMAINFORM.MENUITEM3.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MENUITEM8.CAPTION
+msgctxt "TMAINFORM.MENUITEM8.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: TMAINFORM.MFILE.CAPTION
+msgid "&File"
+msgstr "&Файл"
+
+#: TMAINFORM.MIDOCUMENT.CAPTION
+msgid "&New document with object"
+msgstr ""
+
+#: TMAINFORM.MIINSERT.CAPTION
+msgid "&Values"
+msgstr "&Значення"
+
+#: TMAINFORM.MISORTMEMBERS.CAPTION
+msgid "Sort object members"
+msgstr "Сортувати елементи об'єкта"
+
+#: TMAINFORM.MISTRICT.CAPTION
+msgid "&Strict JSON"
+msgstr ""
+
+#: TMAINFORM.MOPTIONS.CAPTION
+msgid "&Options"
+msgstr "&Параметри"
+
+#: TMAINFORM.TBJSON.CAPTION
+msgid "TBJSON"
+msgstr "TBJSON"
+
+#: TMAINFORM.TOOLBUTTON1.CAPTION
+msgid "ToolButton1"
+msgstr "ToolButton1"
+
+#: TMAINFORM.TOOLBUTTON4.CAPTION
+msgid "ToolButton4"
+msgstr "ToolButton4"
+
