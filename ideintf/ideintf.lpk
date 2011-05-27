@@ -7,6 +7,7 @@
     <CompilerOptions>
       <Version Value="10"/>
       <SearchPaths>
+        <IncludeFiles Value="images"/>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
@@ -22,7 +23,7 @@
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LPGL2"/>
     <Version Major="1"/>
-    <Files Count="68">
+    <Files Count="69">
       <Item1>
         <Filename Value="actionseditor.lfm"/>
         <Type Value="LFM"/>
@@ -294,8 +295,12 @@
       </Item67>
       <Item68>
         <Filename Value="compoptsintf.pas"/>
-        <UnitName Value="compoptsintf"/>
+        <UnitName Value="CompOptsIntf"/>
       </Item68>
+      <Item69>
+        <Filename Value="images/ideintf_images.lrs"/>
+        <Type Value="LRS"/>
+      </Item69>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

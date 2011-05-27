@@ -161,7 +161,6 @@ designer/anchor_left_right.png
 designer/anchor_right.png
 designer/anchor_top.png
 designer/anchor_top_bottom.png
-designer/delete_selection.png
 designer/align.png
 designer/mirror_horizontal.png
 designer/mirror_vertical.png

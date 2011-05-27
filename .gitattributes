@@ -4260,10 +4260,12 @@ ideintf/idetextconverter.pas svneol=native#text/plain
 ideintf/idewindowintf.pas svneol=native#text/plain
 ideintf/imagelisteditor.lfm svneol=native#text/plain
 ideintf/imagelisteditor.pp svneol=native#text/pascal
+ideintf/images/delete_selection.png -text
 ideintf/images/ideintf_images.lrs svneol=native#text/plain
 ideintf/images/laz_copy.png -text svneol=unset#image/png
 ideintf/images/laz_cut.png -text svneol=unset#image/png
 ideintf/images/laz_paste.png -text svneol=unset#image/png
+ideintf/images/oi_options.png -text svneol=unset#image/png
 ideintf/images/propertygrid/issue_carbon.png -text svneol=unset#image/png
 ideintf/images/propertygrid/issue_fpgui.png -text svneol=unset#image/png
 ideintf/images/propertygrid/issue_gtk.png -text svneol=unset#image/png
@@ -4544,7 +4546,6 @@ images/designer/anchor_left_right.png -text svneol=unset#image/png
 images/designer/anchor_right.png -text svneol=unset#image/png
 images/designer/anchor_top.png -text svneol=unset#image/png
 images/designer/anchor_top_bottom.png -text svneol=unset#image/png
-images/designer/delete_selection.png -text
 images/designer/mirror_horizontal.png -text
 images/designer/mirror_vertical.png -text
 images/designer/scale.png -text

@@ -3905,7 +3905,7 @@ begin
      ,@OnShowComponentTreePopupMenuItemClick,FShowComponentTree,true,true);
   ShowComponentTreePopupMenuItem.ShowAlwaysCheckable:=true;
   AddPopupMenuItem(ShowOptionsPopupMenuItem,nil
-     ,'ShowOptionsPopupMenuItem',oisOptions,'', 'menu_environment_options'
+     ,'ShowOptionsPopupMenuItem',oisOptions,'', 'oi_options'
      ,@OnShowOptionsPopupMenuItemClick,false,true,FOnShowOptions<>nil);
 
   // combobox at top (filled with available persistents)
