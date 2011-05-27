@@ -2051,6 +2051,8 @@ begin
         Params.ContextNode:=GatherContext.Node;
         Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
         Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
+        if (Params.ContextNode.Desc=ctnInterface) and StartInSubContext then
+          Include(Params.Flags,fdfIgnoreUsedUnits);
         if not StartInSubContext then
           Include(Params.Flags,fdfSearchInParentNodes);
         if Params.ContextNode.Desc in AllClasses then
