@@ -935,13 +935,14 @@ var
   ImgList: TCustomImageList;
   ImgIndex: integer;
 begin
-  if (FToolBar<>nil) then begin
-    PreferredWidth:=0;
-    PreferredHeight:=0;
+  if Assigned(FToolBar) then
+  begin
+    PreferredWidth := 0;
+    PreferredHeight := 0;
 
     // calculate text size
-    TextSize.cx:=0;
-    TextSize.cy:=0;
+    TextSize.cx := 0;
+    TextSize.cy := 0;
     if (Style in [tbsButton,tbsDropDown,tbsCheck]) and (FToolBar.ShowCaptions) and
        //Allow hide caption only in list mode
        ((FToolBar.List and ShowCaption) or not FToolBar.List) then
@@ -957,37 +958,47 @@ begin
     end;
 
     // calculate icon size
-    IconSize:=Point(0,0);
-    if (Style in [tbsButton,tbsDropDown,tbsCheck]) then
+    IconSize := Point(0,0);
+    if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
     begin
-      GetCurrentIcon(ImgList,ImgIndex);
-      if (ImgList <> nil) then
+      GetCurrentIcon(ImgList, ImgIndex);
+      if Assigned(ImgList) then
       begin
         IconSize := Point(ImgList.Width, ImgList.Height);
         if IconSize.y <= 0 then IconSize.X := 0;
       end;
     end;
     // calculate text and icon position
-    TextPos:=Point(0,0);
-    IconPos:=Point(0,0);
-    if TextSize.cx>0 then begin
-      if IconSize.X>0 then begin
-        if FToolBar.List then begin
+    TextPos := Point(0, 0);
+    IconPos := Point(0, 0);
+    if TextSize.cx > 0 then
+    begin
+      if IconSize.X > 0 then
+      begin
+        if FToolBar.List then
+        begin
           // icon left of text
-          TextPos.X:=IconPos.X+IconSize.X+2;
-        end else begin
+          TextPos.X := IconPos.X + IconSize.X + 2;
+        end
+        else
+        begin
           // icon above text
-          TextPos.Y:=IconPos.Y+IconSize.Y+2;
+          TextPos.Y := IconPos.Y + IconSize.Y + 2;
         end;
-      end else begin
+      end
+      else
+      begin
         // only text
       end;
-    end else if IconSize.x>0 then begin
+    end
+    else
+    if IconSize.x > 0 then
+    begin
       // only icon
     end;
     
-    PreferredWidth:=Max(IconPos.X+IconSize.X,TextPos.X+TextSize.cx);
-    PreferredHeight:=Max(IconPos.Y+IconSize.Y,TextPos.Y+TextSize.cy);
+    PreferredWidth := Max(IconPos.X + IconSize.X, TextPos.X + TextSize.cx);
+    PreferredHeight := Max(IconPos.Y + IconSize.Y, TextPos.Y + TextSize.cy);
     //DebugLn(['TToolButton.CalculatePreferredSize Preferred=',PreferredWidth,',',PreferredHeight,' Icon=',IconPos.X,'+',IconSize.X,' Text=',TextPos.X,'+',TextSize.cx]);
     //DebugLn(['TToolButton.CalculatePreferredSize Preferred=',PreferredWidth,',',PreferredHeight,' Icon=',IconPos.Y,'+',IconSize.Y,' Text=',TextPos.Y,'+',TextSize.cy]);
 
