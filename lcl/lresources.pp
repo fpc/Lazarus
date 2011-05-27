@@ -1574,7 +1574,10 @@ begin
     r1:=TLResource(FList[i]);
     r2:=TLResource(FList[i+1]);
     if (AnsiCompareText(r1.Name,r2.Name)=0) and (r1.ValueType=r2.ValueType) then
+    begin
       DebugLn(['TLResourceList.Sort ',i,' DUPLICATE RESOURCE FOUND: ',r1.Name,':',r1.ValueType]);
+      //DumpStack;
+    end;
   end;
   {$ENDIF}
 end;

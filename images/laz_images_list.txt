@@ -7,13 +7,10 @@ actions/arrow_down.png
 actions/arrow_left.png
 actions/arrow_right.png
 actions/arrow_up.png
-actions/laz_copy.png
-actions/laz_cut.png
 actions/laz_delete.png
 actions/laz_edit.png
 actions/laz_highlighter.png
 actions/laz_open.png
-actions/laz_paste.png
 actions/laz_refresh.png
 actions/laz_save.png
 actions/laz_set_color_default.png
@@ -188,7 +185,6 @@ debugger/debugger_disable.png
 debugger/debugger_disable_all.png
 debugger/debugger_enable.png
 debugger/debugger_enable_all.png
-debugger/debugger_event_log.png
 debugger/debugger_power.png
 debugger/debugger_power_grey.png
 debugger/debugger_breakpoints.png
@@ -202,6 +198,7 @@ debugger/debugger_output.png
 debugger/debugger_show_execution_point.png
 debugger/debugger_source_line.png
 debugger/debugger_watches.png
+debugger/debugger_event_log.png
 packages/pkg_add.png
 packages/pkg_graph.png
 packages/pkg_inherited.png
@@ -228,14 +225,6 @@ packages/pkg_text.png
 packages/pkg_unit.png
 packages/pkg_hierarchical.png
 packages/pkg_sortalphabetically.png
-propertygrid/issue_fpgui.png
-propertygrid/issue_carbon.png
-propertygrid/issue_gtk.png
-propertygrid/issue_gtk2.png
-propertygrid/issue_nogui.png
-propertygrid/issue_qt.png
-propertygrid/issue_win32.png
-propertygrid/issue_wince.png
 codetoolsdefines/da_block.png
 codetoolsdefines/da_define.png
 codetoolsdefines/da_definerecurse.png

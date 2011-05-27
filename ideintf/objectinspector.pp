@@ -5331,7 +5331,7 @@ begin
 end;
 
 initialization
-  {$I objectinspector_img.lrs}
+  {$I images/ideintf_images.lrs}
   
 finalization
 
