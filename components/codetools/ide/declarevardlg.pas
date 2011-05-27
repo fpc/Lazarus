@@ -304,6 +304,7 @@ var
   NewType: String;
   ExistingDefinition: TFindContext;
   Node: TCodeTreeNode;
+  Clip: TCodyClipboardDeclareVar;
 begin
   Result:=false;
   PossibleContexts:=nil;
@@ -384,7 +385,18 @@ begin
 
     if Target.Tool=nil then begin
       // on clipboard
-      // ToDo
+      Clip:=TCodyClipboardDeclareVar.Create;
+      try
+        Clip.AsText:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+          'var '+Identifier+':'+NewType,0)+';';
+        Clip.SetSourcePos(CodePos);
+        Clip.VarName:=Identifier;
+        Clip.VarType:=NewType;
+        Clip.TheUnitName:=UnitOfType;
+        Cody.WriteToClipboard(Clip);
+      finally
+        Clip.Free;
+      end;
       exit;
     end;
 
@@ -412,6 +424,9 @@ begin
     end;
   end;
 end;
+
+initialization
+  Cody.RegisterClipboardFormat(TCodyClipboardDeclareVar);
 
 end.
 

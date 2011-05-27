@@ -48,8 +48,8 @@ type
     AsText: string;
     procedure WriteString(MemStream: TMemoryStream; const s: string);
     function ReadString(MemStream: TMemoryStream): string;
-    procedure WriteToStream({%H-}MemStream: TMemoryStream); virtual;
-    procedure ReadFromStream({%H-}MemStream: TMemoryStream); virtual;
+    procedure WriteToStream(MemStream: TMemoryStream); virtual; abstract;
+    procedure ReadFromStream(MemStream: TMemoryStream); virtual; abstract;
     procedure Execute; virtual;
   end;
   TCodyClipboardFormat = class of TCodyClipboardData;
@@ -83,8 +83,8 @@ type
     class function ClipboardFormatId: TClipboardFormat;
     function CanReadFromClipboard(AClipboard: TClipboard): Boolean;
     function ReadFromClipboard(AClipboard: TClipboard): boolean;
-    function WriteToClipboard(AClipboard: TClipboard;
-                              Data: TCodyClipboardData): Boolean;
+    function WriteToClipboard(Data: TCodyClipboardData;
+                              AClipboard: TClipboard = nil): Boolean;
     procedure RegisterClipboardFormat(ccFormat: TCodyClipboardFormat);
     function FindClipboardFormat(aName: string): TCodyClipboardFormat;
     function ClipboardFormatCount: integer;
@@ -357,7 +357,6 @@ end;
 
 procedure TCodyClipboardSrcData.WriteToStream(MemStream: TMemoryStream);
 begin
-  inherited WriteToStream(MemStream);
   WriteString(MemStream,SourceFilename);
   MemStream.Write(SourceX,4);
   MemStream.Write(SourceY,4);
@@ -365,7 +364,6 @@ end;
 
 procedure TCodyClipboardSrcData.ReadFromStream(MemStream: TMemoryStream);
 begin
-  inherited ReadFromStream(MemStream);
   SourceFilename:=ReadString(MemStream);
   MemStream.Read(SourceX,4);
   MemStream.Read(SourceY,4);
@@ -412,16 +410,6 @@ begin
     SetLength(Result,l);
     MemStream.Read(Result[1],l);
   end;
-end;
-
-procedure TCodyClipboardData.WriteToStream(MemStream: TMemoryStream);
-begin
-
-end;
-
-procedure TCodyClipboardData.ReadFromStream(MemStream: TMemoryStream);
-begin
-
 end;
 
 procedure TCodyClipboardData.Execute;
@@ -510,12 +498,13 @@ begin
   end;
 end;
 
-function TCody.WriteToClipboard(AClipboard: TClipboard; Data: TCodyClipboardData
+function TCody.WriteToClipboard(Data: TCodyClipboardData; AClipboard: TClipboard
   ): Boolean;
 var
   MemStream: TMemoryStream;
   ID: ShortString;
 begin
+  if AClipboard=nil then AClipboard:=Clipboard;
   AClipboard.AsText:=Data.AsText;
   if not AClipboard.HasFormat(CF_TEXT) then
     raise Exception.Create('Write to clipboard failed');
