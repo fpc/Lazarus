@@ -3487,6 +3487,9 @@ var
 
     if (Context.Node<>nil) and (Context.Node.Desc in [ctnProcedure,ctnProcedureHead])
     and (fdfFunctionResult in Params.Flags) then begin
+      // Note: do not resolve a constructor here
+      //       because TMyClass.Create should return TMyClass
+      //       and not TObject, where the Create is defined
       // a proc -> if this is a function then return the Context type
       //debugln(['TFindDeclarationTool.FindBaseTypeOfNode checking function Context: ',Context.Tool.ExtractNode(Context.Node,[])]);
       Context.Tool.BuildSubTreeForProcHead(Context.Node,ResultNode);
@@ -6562,6 +6565,11 @@ var
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,['.',GetAtom]);
   end;
 
+  procedure RaiseClassDeclarationNotFound(Tool: TFindDeclarationTool);
+  begin
+    Tool.RaiseExceptionFmt(ctsClassSNotFound, [Tool.GetAtom]);
+  end;
+
   function InitAtomQueue: boolean;
   
     procedure RaiseInternalError;
@@ -6694,8 +6702,7 @@ var
     if AtEnd then CurAliasType:=AliasType;
 
     // find base type
-    Exclude(Params.Flags,fdfFunctionResult);
-    Include(Params.Flags,fdfEnumIdentifier);
+    Params.Flags:=Params.Flags+[fdfEnumIdentifier]-[fdfFunctionResult,fdfFindChilds];
     {$IFDEF ShowExprEval}
     DebugLn(['  FindExpressionTypeOfTerm ResolveBaseTypeOfIdentifier BEFORE ExprType=',ExprTypeToString(ExprType),' Alias=',CurAliasType<>nil]);
     {$ENDIF}
@@ -6712,13 +6719,12 @@ var
       if ProcNode.Desc=ctnProcedureHead then
         ProcNode:=ProcNode.Parent;
       ExprType.Context.Tool.BuildSubTreeForProcHead(ProcNode.FirstChild,
-                                                   FuncResultNode);
+                                                    FuncResultNode);
       {$IFDEF ShowExprEval}
-      DebugLn(['  FindExpressionTypeOfTerm ResolveBaseTypeOfIdentifier IsFunction/operator=',FuncResultNode<>nil,' IsConstructor=',ExprType.Context.Tool.NodeIsConstructor(ProcNode),' IsIdentifierEndOfVariable=',IsIdentifierEndOfVariable,' fdfFunctionResult in StartFlags=',fdfFunctionResult in StartFlags]);
+      DebugLn(['  FindExpressionTypeOfTerm ResolveBaseTypeOfIdentifier IsFunction=',FuncResultNode<>nil,' IsIdentifierEndOfVariable=',IsIdentifierEndOfVariable,' fdfFunctionResult in StartFlags=',fdfFunctionResult in StartFlags]);
       {$ENDIF}
-      if (FuncResultNode<>nil) or ExprType.Context.Tool.NodeIsConstructor(ProcNode)
-      then begin
-        // it is function or a constructor
+      if (FuncResultNode<>nil) then begin
+        // it is function
         // -> use the result type instead of the function
         if AtEnd then begin
           // this function identifier is the end of the variable
@@ -6740,12 +6746,14 @@ var
     ResultNode: TCodeTreeNode;
     IsStart: Boolean;
     Context: TFindContext;
+    IsEnd: Boolean;
   begin
     // for example  'AnObject[3]'
     
     // check special identifiers 'Result' and 'Self'
     IdentFound:=false;
     IsStart:=ExprType.Desc=xtNone;
+    IsEnd:=IsIdentifierEndOfVariable;
     if IsStart then begin
       // start context
       if (StartNode.Desc in AllPascalStatements) then begin
@@ -6759,7 +6767,7 @@ var
             ProcNode:=ProcNode.Parent;
           end;
           if (ProcNode<>nil)
-          and FindClassOfMethod(ProcNode,Params,not IsIdentifierEndOfVariable)
+          and FindClassOfMethod(ProcNode,Params,not IsEnd)
           then begin
             ExprType.Desc:=xtContext;
             ExprType.Context:=CreateFindContext(Params);
@@ -6771,8 +6779,7 @@ var
           // -> check if in a function
           ProcNode:=StartNode.GetNodeOfType(ctnProcedure);
           if (ProcNode<>nil) then begin
-            if IsIdentifierEndOfVariable
-            and (fdfFindVariable in StartFlags) then begin
+            if IsEnd and (fdfFindVariable in StartFlags) then begin
               BuildSubTreeForProcHead(ProcNode);
               ResultNode:=ProcNode.FirstChild.FirstChild;
               while (ResultNode<>nil) do begin
@@ -6820,8 +6827,7 @@ var
       end;
 
       // check identifier for overloaded procs
-      if (IsIdentifierEndOfVariable
-          and (fdfIgnoreOverloadedProcs in StartFlags))
+      if (IsEnd and (fdfIgnoreOverloadedProcs in StartFlags))
       then
         Include(Params.Flags,fdfIgnoreOverloadedProcs);
 
@@ -6831,13 +6837,22 @@ var
       DebugLn(['  FindExpressionTypeOfTerm ResolveIdentifier SubIdent="',GetIdentifier(Params.Identifier),'" ContextNode="',Params.ContextNode.DescAsString,'" "',dbgstr(Context.Tool.Src,Params.ContextNode.StartPos,15),'" ',dbgs(Params.Flags)]);
       {$ENDIF}
       if Context.Tool.FindIdentifierInContext(Params) then begin
-        if IsIdentifierEndOfVariable and (fdfFunctionResult in StartFlags)
-        and Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
-          // it's a constructor -> keep the class
-        end else begin
-          ExprType.Desc:=xtContext;
-          ExprType.Context:=CreateFindContext(Params);
+        ExprType.Desc:=xtContext;
+        if Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
+          // identifier is a constructor
+          if (Context.Node.Desc in AllClassObjects) then begin
+            if (not IsEnd) or (not (fdfFindVariable in StartFlags)) then begin
+              // examples:
+              //   TMyClass.Create.
+              //   :=TMyClass.Create;
+              // use this class (the constructor can be defined in the ancestor)
+              ExprType.Context:=Context;
+              Params.Load(OldInput,true);
+              exit;
+            end;
+          end;
         end;
+        ExprType.Context:=CreateFindContext(Params);
         Params.Load(OldInput,true);
       end else begin
         // predefined identifier
@@ -7284,7 +7299,7 @@ begin
   {$IFDEF ShowExprEval}
   DebugLn(['[TFindDeclarationTool.FindExpressionTypeOfTerm] START',
     ' Flags=[',dbgs(Params.Flags),']',
-    ' StartContext=',StartContext.Node.DescAsString,'=',dbgstr(StartContext.Tool.Src,StartContext.Node.StartPos,15),
+    ' StartContext=',StartNode.DescAsString,'=',dbgstr(Src,StartNode.StartPos,15),
     ' Alias=',AliasType<>nil]
   );
   {$ENDIF}
