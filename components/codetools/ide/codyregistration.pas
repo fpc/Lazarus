@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Controls,
-  IDECommands, MenuIntf, IDEWindowIntf,
+  IDECommands, MenuIntf, IDEWindowIntf, SrcEditorIntf,
   CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
   CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg;
 
@@ -148,6 +148,8 @@ begin
   CodyWindowCreator:=IDEWindowCreators.Add(CodyWindowName,@CreateCodyWindow,nil,
     '80%','50%','+18%','+25%','CodeExplorer',alBottom);
 
+  // Global handlers - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  SourceEditorManagerIntf.RegisterCopyPasteEvent(@Cody.SrcEditCopyPaste);
 end;
 
 end.

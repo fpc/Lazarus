@@ -30,7 +30,7 @@ unit CodyUtils;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Controls, LCLIntf, Clipbrd, LCLType,
+  Classes, SysUtils, Dialogs, Controls, LCLIntf, Clipbrd, LCLType, LResources,
   // IDEIntf
   IDEDialogs, LazIDEIntf, SrcEditorIntf, IDEHelpIntf,
   // codetools
@@ -50,7 +50,7 @@ type
     function ReadString(MemStream: TMemoryStream): string;
     procedure WriteToStream(MemStream: TMemoryStream); virtual; abstract;
     procedure ReadFromStream(MemStream: TMemoryStream); virtual; abstract;
-    procedure Execute; virtual;
+    procedure Execute({%H-}SrcEdit: TSourceEditorInterface; {%H-}LogXY: TPoint); virtual;
   end;
   TCodyClipboardFormat = class of TCodyClipboardData;
 
@@ -82,7 +82,8 @@ type
     // clipboard
     class function ClipboardFormatId: TClipboardFormat;
     function CanReadFromClipboard(AClipboard: TClipboard): Boolean;
-    function ReadFromClipboard(AClipboard: TClipboard): boolean;
+    function ReadFromClipboard(AClipboard: TClipboard;
+        SrcEdit: TSourceEditorInterface; LogXY: TPoint; AText: string): boolean;
     function WriteToClipboard(Data: TCodyClipboardData;
                               AClipboard: TClipboard = nil): Boolean;
     procedure RegisterClipboardFormat(ccFormat: TCodyClipboardFormat);
@@ -90,6 +91,9 @@ type
     function ClipboardFormatCount: integer;
     property ClipboardFormats[Index: integer]: TCodyClipboardFormat
                                                        read GetClipboardFormats;
+    procedure SrcEditCopyPaste(SrcEdit: TSourceEditorInterface;
+      var AText: String; var {%H-}AMode: TSemSelectionMode; ALogStartPos: TPoint;
+      var AnAction: TSemCopyPasteAction);
   end;
 
 var
@@ -358,15 +362,15 @@ end;
 procedure TCodyClipboardSrcData.WriteToStream(MemStream: TMemoryStream);
 begin
   WriteString(MemStream,SourceFilename);
-  MemStream.Write(SourceX,4);
-  MemStream.Write(SourceY,4);
+  WriteLRSInteger(MemStream,SourceY);
+  WriteLRSInteger(MemStream,SourceX);
 end;
 
 procedure TCodyClipboardSrcData.ReadFromStream(MemStream: TMemoryStream);
 begin
   SourceFilename:=ReadString(MemStream);
-  MemStream.Read(SourceX,4);
-  MemStream.Read(SourceY,4);
+  SourceY:=ReadLRSInteger(MemStream);
+  SourceX:=ReadLRSInteger(MemStream);
 end;
 
 { TCodyClipboardData }
@@ -386,7 +390,7 @@ begin
     b:=255;
     MemStream.Write(b,1);
     l:=length(s);
-    MemStream.Write(l,4);
+    WriteLRSInteger(MemStream,l);
     MemStream.Write(s[1],l);
   end;
 end;
@@ -404,15 +408,16 @@ begin
     if Result<>'' then
       MemStream.Read(Result[1],b);
   end else begin
-    l:=0;
-    MemStream.Read(l,4);
+    l:=ReadLRSInteger(MemStream);
     if l<=0 then exit;
     SetLength(Result,l);
     MemStream.Read(Result[1],l);
   end;
+  debugln(['TCodyClipboardData.ReadString Result="',Result,'"']);
 end;
 
-procedure TCodyClipboardData.Execute;
+procedure TCodyClipboardData.Execute(SrcEdit: TSourceEditorInterface;
+  LogXY: TPoint);
 begin
   raise Exception.Create('not implemented yet: '+ClassName+'.Execute');
 end;
@@ -461,7 +466,8 @@ begin
   Result := AClipboard.HasFormat(ClipboardFormatId);
 end;
 
-function TCody.ReadFromClipboard(AClipboard: TClipboard): boolean;
+function TCody.ReadFromClipboard(AClipboard: TClipboard;
+  SrcEdit: TSourceEditorInterface; LogXY: TPoint; AText: string): boolean;
 
   procedure InvalidStream;
   begin
@@ -482,6 +488,7 @@ begin
   try
     Result:=AClipboard.GetFormat(ClipboardFormatId,MemStream);
     ID:='';
+    MemStream.Position:=0;
     if MemStream.Read(ID[0],1)<>1 then
       InvalidStream;
     if MemStream.Read(ID[1],ord(ID[0]))<>ord(ID[0]) then
@@ -490,8 +497,9 @@ begin
     if aFormat=nil then
       InvalidStream;
     Data:=aFormat.Create;
+    Data.AsText:=AText;
     Data.ReadFromStream(MemStream);
-    Data.Execute;
+    Data.Execute(SrcEdit,LogXY);
   finally
     Data.Free;
     MemStream.Free;
@@ -503,6 +511,7 @@ function TCody.WriteToClipboard(Data: TCodyClipboardData; AClipboard: TClipboard
 var
   MemStream: TMemoryStream;
   ID: ShortString;
+  s: string;
 begin
   if AClipboard=nil then AClipboard:=Clipboard;
   AClipboard.AsText:=Data.AsText;
@@ -510,9 +519,14 @@ begin
     raise Exception.Create('Write to clipboard failed');
   MemStream:=TMemoryStream.Create;
   try
-    ID:=AClipboard.ClassName;
+    ID:=Data.ClassName;
     MemStream.Write(ID[0],length(ID)+1);
     Data.WriteToStream(MemStream);
+    MemStream.Position:=0;
+    SetLength(s,MemStream.Size);
+    MemStream.Read(s[1],length(s));
+    debugln(['TCody.WriteToClipboard Stream=',dbgstr(s)]);
+    MemStream.Position:=0;
     Result:=AClipboard.AddFormat(ClipboardFormatId,MemStream);
   finally
     MemStream.Free;
@@ -540,6 +554,25 @@ end;
 function TCody.ClipboardFormatCount: integer;
 begin
   Result:=FClipboardFormats.Count;
+end;
+
+procedure TCody.SrcEditCopyPaste(SrcEdit: TSourceEditorInterface;
+  var AText: String; var AMode: TSemSelectionMode; ALogStartPos: TPoint;
+  var AnAction: TSemCopyPasteAction);
+var
+  AClipBoard: TClipboard;
+begin
+  // ToDo: use the right clipboard
+  AClipBoard:=Clipboard;
+  try
+    if not ReadFromClipboard(AClipBoard,SrcEdit,ALogStartPos,AText) then exit;
+  except
+    on E: Exception do begin
+      IDEMessageDialog('Error','Unable to paste Cody data.'#13+E.Message,
+        mtError,[mbCancel]);
+    end;
+  end;
+  AnAction:=semcaAbort;
 end;
 
 initialization

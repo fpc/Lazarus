@@ -253,6 +253,23 @@ type
     semEditorStatus     // any status change of the editor (Caret, Selection, topline, ...)
   );
 
+  TSemSelectionMode = (
+    semsmNormal,
+    semsmLine,
+    semsmColumn,
+    semsmCurrent);
+  TSemCopyPasteAction = (
+    semcaContinue,  // normal paste with specials like folding
+    semcaPlainText, // paste as normal text, ignore folding and other specials
+    semcaAbort      // cancel, use this if you handled the paste yourself
+    );
+  // ToDo: use the right clipboard
+  TSemCopyPasteEvent = procedure(Sender: TSourceEditorInterface;
+    var AText: String; var AMode: TSemSelectionMode; ALogStartPos: TPoint;
+    var AnAction: TSemCopyPasteAction) of object;
+
+  { TSourceEditorManagerInterface }
+
   TSourceEditorManagerInterface = class(TComponent)
   protected
     function GetActiveSourceWindow: TSourceEditorWindowInterface; virtual; abstract;
@@ -312,6 +329,8 @@ type
   public
     procedure RegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); virtual; abstract;
     procedure UnRegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); virtual; abstract;
+    procedure RegisterCopyPasteEvent(AHandler: TSemCopyPasteEvent); virtual; abstract;
+    procedure UnRegisterCopyPasteEvent(AHandler: TSemCopyPasteEvent); virtual; abstract;
   public
     // source marklings
     function MarklingProducerCount: integer; virtual; abstract;

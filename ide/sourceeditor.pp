@@ -808,6 +808,10 @@ type
     property NotebookPages: TStrings read GetNotebookPages;
   end;
 
+  TSrcEditMangerHandlerType = (
+    semhtCopyPaste
+    );
+
   { TSourceEditorManagerBase }
   (* Implement all Methods with the Interface types *)
 
@@ -826,6 +830,7 @@ type
   protected
     fProducers: TFPList; // list of TSourceMarklingProducer
     FChangeNotifyLists: Array [TsemChangeReason] of TMethodList;
+    FHandlers: array[TSrcEditMangerHandlerType] of TMethodList;
     function  GetActiveSourceWindow: TSourceEditorWindowInterface; override;
     procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface); override;
     function  GetSourceWindows(Index: integer): TSourceEditorWindowInterface; override;
@@ -888,6 +893,8 @@ type
     destructor Destroy; override;
     procedure RegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); override;
     procedure UnRegisterChangeEvent(AReason: TsemChangeReason; AHandler: TNotifyEvent); override;
+    procedure RegisterCopyPasteEvent(AHandler: TSemCopyPasteEvent); override;
+    procedure UnRegisterCopyPasteEvent(AHandler: TSemCopyPasteEvent); override;
     // producers
     function MarklingProducerCount: integer; override;
     procedure RegisterMarklingProducer(aProducer: TSourceMarklingProducer); override;
@@ -4333,7 +4340,24 @@ var
   NewIndent: TFABIndentationPolicy;
   Indent: LongInt;
   NewSrc: string;
+  i: Integer;
+  SemMode: TSemSelectionMode;
+  SemAction: TSemCopyPasteAction;
 begin
+  if Assigned(Manager) then begin
+    // call handlers
+    i:=Manager.FHandlers[semhtCopyPaste].Count;
+    while Manager.FHandlers[semhtCopyPaste].NextDownIndex(i) do begin
+      SemMode:=TSemSelectionMode(AMode);
+      SemAction:=TSemCopyPasteAction(AnAction);
+      TSemCopyPasteEvent(Manager.FHandlers[semhtCopyPaste][i])(Self,AText,
+        SemMode,ALogStartPos,SemAction);
+      AMode:=TSynSelectionMode(SemMode);
+      AnAction:=TSynCopyPasteAction(SemAction);
+      if AnAction=scaAbort then exit;
+    end;
+  end;
+
   if AMode<>smNormal then exit;
   if SyncroLockCount > 0 then exit;
   if not CodeToolsOpts.IndentOnPaste then exit;
@@ -7920,10 +7944,13 @@ end;
 constructor TSourceEditorManagerBase.Create(AOwner: TComponent);
 var
   i: TsemChangeReason;
+  h: TSrcEditMangerHandlerType;
 begin
   FUpdateFlags := [];
   for i := low(TsemChangeReason) to high(TsemChangeReason) do
     FChangeNotifyLists[i] := TMethodList.Create;
+  for h:=low(FHandlers) to high(FHandlers) do
+    FHandlers[h] := TMethodList.Create;
   SrcEditorIntf.SourceEditorManagerIntf := Self;
   FSourceWindowList := TFPList.Create;
   FSourceWindowByFocusList := TFPList.Create;
@@ -7938,6 +7965,7 @@ destructor TSourceEditorManagerBase.Destroy;
 var
   i: integer;
   cr: TsemChangeReason;
+  h: TSrcEditMangerHandlerType;
 begin
   for i:=MarklingProducerCount-1 downto 0 do
     MarklingProducers[i].Free;
@@ -7950,7 +7978,9 @@ begin
   FreeAndNil(FSourceWindowList);
   FreeAndNil(FSourceWindowByFocusList);
   for cr := low(TsemChangeReason) to high(TsemChangeReason) do
-    FChangeNotifyLists[cr].Free;;
+    FreeAndNil(FChangeNotifyLists[cr]);
+  for h:=low(FHandlers) to high(FHandlers) do
+    FreeAndNil(FHandlers[h]);
   inherited Destroy;
 end;
 
@@ -7964,6 +7994,18 @@ procedure TSourceEditorManagerBase.UnRegisterChangeEvent(
   AReason: TsemChangeReason; AHandler: TNotifyEvent);
 begin
   FChangeNotifyLists[AReason].Remove(TMethod(AHandler));
+end;
+
+procedure TSourceEditorManagerBase.RegisterCopyPasteEvent(
+  AHandler: TSemCopyPasteEvent);
+begin
+  FHandlers[semhtCopyPaste].Add(TMethod(AHandler));
+end;
+
+procedure TSourceEditorManagerBase.UnRegisterCopyPasteEvent(
+  AHandler: TSemCopyPasteEvent);
+begin
+  FHandlers[semhtCopyPaste].Remove(TMethod(AHandler));
 end;
 
 function TSourceEditorManagerBase.MarklingProducerCount: integer;

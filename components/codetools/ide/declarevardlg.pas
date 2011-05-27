@@ -29,7 +29,6 @@
     - guess parameter
     - guess j:=<i>
     - Extend uses section when adding to a class
-    - copy to clipboard
     - paste from clipboard
 }
 unit DeclareVarDlg;
@@ -69,7 +68,7 @@ type
     TheUnitName: string;
     procedure WriteToStream(MemStream: TMemoryStream); override;
     procedure ReadFromStream(MemStream: TMemoryStream); override;
-    procedure Execute; override;
+    procedure Execute(SrcEdit: TSourceEditorInterface; {%H-}LogXY: TPoint); override;
   end;
 
   { TCodyDeclareVarDialog }
@@ -214,9 +213,12 @@ begin
   TheUnitName:=ReadString(MemStream);
 end;
 
-procedure TCodyClipboardDeclareVar.Execute;
+procedure TCodyClipboardDeclareVar.Execute(SrcEdit: TSourceEditorInterface;
+  LogXY: TPoint);
 begin
-  inherited Execute;
+  debugln(['TCodyClipboardDeclareVar.Execute ']);
+
+  SrcEdit.Selection:=AsText;
 end;
 
 { TCodyDeclareVarTarget }
