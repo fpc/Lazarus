@@ -371,7 +371,7 @@ type
     procedure ClearFoundMethods;
     function CollectMethods(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
-    //procedure CheckCompilerDirective;
+    function IsInCompilerDirective(CursorPos: TCodeXYPosition): boolean;
   public
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
                             var IdentifierList: TIdentifierList;
@@ -1942,6 +1942,86 @@ begin
   end;
 end;
 
+function TIdentCompletionTool.IsInCompilerDirective(CursorPos: TCodeXYPosition
+  ): boolean;
+
+  procedure Key(const DirectiveName: string);
+  var
+    NewItem: TIdentifierListItem;
+  begin
+    NewItem:=TIdentifierListItem.Create(
+        icompExact,false,0,
+        CurrentIdentifierList.CreateIdentifier(DirectiveName),
+        1000,nil,nil,ctnNone);
+    include(NewItem.Flags,iliKeyword);
+    CurrentIdentifierList.Add(NewItem);
+  end;
+
+var
+  Line: String;
+  p: Integer;
+  EndPos: Integer;
+  InnerStart: Integer;
+begin
+  Result:=false;
+  Line:=CursorPos.Code.GetLine(CursorPos.Y-1);
+  p:=1;
+  while p<=length(Line) do begin
+    p:=FindNextCompilerDirective(Line,p,Scanner.NestedComments);
+    if p>length(Line) then exit;
+    EndPos:=FindCommentEnd(Line,p,Scanner.NestedComments);
+    if (CursorPos.X>p) and (CursorPos.X<EndPos) then begin
+      // in a directive
+      Result:=true;
+      InnerStart:=p;
+      if Line[InnerStart]='{' then inc(InnerStart,2)
+      else inc(InnerStart,3);
+      //debugln(['TIdentCompletionTool.IsInCompilerDirective InnerStart=',InnerStart,' X=',CursorPos.X]);
+      if InnerStart=CursorPos.X then begin
+        Key('ALIGN');
+        Key('ALIGNASSERTIONS');
+        Key('BOOLEVAL');
+        Key('DEFINE');
+        Key('DEBUGINFO');
+        Key('ELIFC');
+        Key('ELSE');
+        Key('ELSEC');
+        Key('ELSEIF');
+        Key('ENDC');
+        Key('ENDIF');
+        Key('EXTENDEDSYNTAX');
+        Key('IFC');
+        Key('IFDEF');
+        Key('IFEND');
+        Key('IFNDEF');
+        Key('IFOPT');
+        Key('INCLUDE');
+        Key('INCLUDEPATH');
+        Key('IFEND');
+        Key('IOCHECKS');
+        Key('LOCALSYMBOLS');
+        Key('LONGSTRINGS');
+        Key('MODE');
+        Key('MODESWITCH');
+        Key('MACRO');
+        Key('OPENSTRINGS');
+        Key('OVERFLOWCHECKS');
+        Key('RANGECHECKS');
+        Key('REFERENCEINFO');
+        Key('SETC');
+        Key('STACKFRAMES');
+        Key('THREADING');
+        Key('TYPEADDRESS');
+        Key('TYPEINFO');
+        Key('UNDEF');
+        Key('VARSTRINGCHECKS');
+      end;
+      exit;
+    end;
+    p:=EndPos;
+  end;
+end;
+
 function TIdentCompletionTool.GatherIdentifiers(
   const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList;
   BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
@@ -2005,8 +2085,7 @@ begin
   try
     InitCollectIdentifiers(CursorPos,IdentifierList);
     IdentStartXY:=FindIdentifierStartPos(CursorPos);
-
-    //CheckCompilerDirective;
+    if IsInCompilerDirective(IdentStartXY) then exit(true);
 
     ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
