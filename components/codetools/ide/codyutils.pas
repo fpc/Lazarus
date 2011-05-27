@@ -30,7 +30,7 @@ unit CodyUtils;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Controls, LCLIntf,
+  Classes, SysUtils, Dialogs, Controls, LCLIntf, Clipbrd, LCLType,
   // IDEIntf
   IDEDialogs, LazIDEIntf, SrcEditorIntf, IDEHelpIntf,
   // codetools
@@ -40,12 +40,56 @@ uses
   CodyStrConsts;
 
 type
+
+  { TCodyClipboardData }
+
+  TCodyClipboardData = class
+  public
+    AsText: string;
+    procedure WriteString(MemStream: TMemoryStream; const s: string);
+    function ReadString(MemStream: TMemoryStream): string;
+    procedure WriteToStream({%H-}MemStream: TMemoryStream); virtual;
+    procedure ReadFromStream({%H-}MemStream: TMemoryStream); virtual;
+    procedure Execute; virtual;
+  end;
+  TCodyClipboardFormat = class of TCodyClipboardData;
+
+  { TCodyClipboardSrcData }
+
+  TCodyClipboardSrcData = class(TCodyClipboardData)
+  public
+    SourceFilename: string;
+    SourceX: integer;
+    SourceY: integer;
+    procedure SetSourcePos(const SrcPos: TCodeXYPosition);
+    procedure WriteToStream(MemStream: TMemoryStream); override;
+    procedure ReadFromStream(MemStream: TMemoryStream); override;
+  end;
+
   { TCody }
 
   TCody = class
+  private
+    FClipboardFormats: TFPList;
+    function GetClipboardFormats(Index: integer): TCodyClipboardFormat;
   public
+    constructor Create;
+    destructor Destroy; override;
+
     procedure DecodeLoaded(Sender: TSourceLog; const Filename: string;
                            var Source, DiskEncoding, MemEncoding: string);
+
+    // clipboard
+    class function ClipboardFormatId: TClipboardFormat;
+    function CanReadFromClipboard(AClipboard: TClipboard): Boolean;
+    function ReadFromClipboard(AClipboard: TClipboard): boolean;
+    function WriteToClipboard(AClipboard: TClipboard;
+                              Data: TCodyClipboardData): Boolean;
+    procedure RegisterClipboardFormat(ccFormat: TCodyClipboardFormat);
+    function FindClipboardFormat(aName: string): TCodyClipboardFormat;
+    function ClipboardFormatCount: integer;
+    property ClipboardFormats[Index: integer]: TCodyClipboardFormat
+                                                       read GetClipboardFormats;
   end;
 
 var
@@ -302,7 +346,106 @@ begin
   OpenURL(BasePath+Path);
 end;
 
+{ TCodyClipboardSrcData }
+
+procedure TCodyClipboardSrcData.SetSourcePos(const SrcPos: TCodeXYPosition);
+begin
+  SourceFilename:=SrcPos.Code.Filename;
+  SourceX:=SrcPos.X;
+  SourceY:=SrcPos.Y;
+end;
+
+procedure TCodyClipboardSrcData.WriteToStream(MemStream: TMemoryStream);
+begin
+  inherited WriteToStream(MemStream);
+  WriteString(MemStream,SourceFilename);
+  MemStream.Write(SourceX,4);
+  MemStream.Write(SourceY,4);
+end;
+
+procedure TCodyClipboardSrcData.ReadFromStream(MemStream: TMemoryStream);
+begin
+  inherited ReadFromStream(MemStream);
+  SourceFilename:=ReadString(MemStream);
+  MemStream.Read(SourceX,4);
+  MemStream.Read(SourceY,4);
+end;
+
+{ TCodyClipboardData }
+
+procedure TCodyClipboardData.WriteString(MemStream: TMemoryStream;
+  const s: string);
+var
+  b: byte;
+  l: Integer;
+begin
+  if length(s)<255 then begin
+    b:=length(s);
+    MemStream.Write(b,1);
+    if b>0 then
+      MemStream.Write(s[1],b);
+  end else begin
+    b:=255;
+    MemStream.Write(b,1);
+    l:=length(s);
+    MemStream.Write(l,4);
+    MemStream.Write(s[1],l);
+  end;
+end;
+
+function TCodyClipboardData.ReadString(MemStream: TMemoryStream): string;
+var
+  b: byte;
+  l: integer;
+begin
+  Result:='';
+  b:=0;
+  if MemStream.Read(b,1)<>1 then exit;
+  if b<255 then begin
+    SetLength(Result,b);
+    if Result<>'' then
+      MemStream.Read(Result[1],b);
+  end else begin
+    l:=0;
+    MemStream.Read(l,4);
+    if l<=0 then exit;
+    SetLength(Result,l);
+    MemStream.Read(Result[1],l);
+  end;
+end;
+
+procedure TCodyClipboardData.WriteToStream(MemStream: TMemoryStream);
+begin
+
+end;
+
+procedure TCodyClipboardData.ReadFromStream(MemStream: TMemoryStream);
+begin
+
+end;
+
+procedure TCodyClipboardData.Execute;
+begin
+  raise Exception.Create('not implemented yet: '+ClassName+'.Execute');
+end;
+
 { TCody }
+
+function TCody.GetClipboardFormats(Index: integer): TCodyClipboardFormat;
+begin
+  Result:=TCodyClipboardFormat(FClipboardFormats[Index]);
+end;
+
+constructor TCody.Create;
+begin
+  FClipboardFormats:=TFPList.Create;
+end;
+
+destructor TCody.Destroy;
+begin
+  FreeAndNil(FClipboardFormats);
+  inherited Destroy;
+end;
 
 procedure TCody.DecodeLoaded(Sender: TSourceLog; const Filename: string;
   var Source, DiskEncoding, MemEncoding: string);
@@ -312,6 +455,102 @@ begin
   and Assigned(CodeToolBoss.SourceCache.OnDecodeLoaded) then
     CodeToolBoss.SourceCache.OnDecodeLoaded(TCodeBuffer(Sender),Filename,
       Source,DiskEncoding,MemEncoding);
+end;
+
+class function TCody.ClipboardFormatId: TClipboardFormat;
+const
+  CodyClipboardMimeType = 'Application/X-Laz-Cody';
+var
+  ID: TClipboardFormat = 0;
+begin
+  if ID = 0 then
+    ID := ClipboardRegisterFormat(CodyClipboardMimeType);
+  Result := ID;
+end;
+
+function TCody.CanReadFromClipboard(AClipboard: TClipboard): Boolean;
+begin
+  Result := AClipboard.HasFormat(ClipboardFormatId);
+end;
+
+function TCody.ReadFromClipboard(AClipboard: TClipboard): boolean;
+
+  procedure InvalidStream;
+  begin
+    raise Exception.Create('The Cody clipboard data is invalid');
+  end;
+
+var
+  MemStream: TMemoryStream;
+  ID: ShortString;
+  aFormat: TCodyClipboardFormat;
+  Data: TCodyClipboardData;
+begin
+  Result:=false;
+  if not AClipboard.HasFormat(ClipboardFormatId) then exit;
+  Result:=true;
+  MemStream:=TMemoryStream.Create;
+  Data:=nil;
+  try
+    Result:=AClipboard.GetFormat(ClipboardFormatId,MemStream);
+    ID:='';
+    if MemStream.Read(ID[0],1)<>1 then
+      InvalidStream;
+    if MemStream.Read(ID[1],ord(ID[0]))<>ord(ID[0]) then
+      InvalidStream;
+    aFormat:=FindClipboardFormat(ID);
+    if aFormat=nil then
+      InvalidStream;
+    Data:=aFormat.Create;
+    Data.ReadFromStream(MemStream);
+    Data.Execute;
+  finally
+    Data.Free;
+    MemStream.Free;
+  end;
+end;
+
+function TCody.WriteToClipboard(AClipboard: TClipboard; Data: TCodyClipboardData
+  ): Boolean;
+var
+  MemStream: TMemoryStream;
+  ID: ShortString;
+begin
+  AClipboard.AsText:=Data.AsText;
+  if not AClipboard.HasFormat(CF_TEXT) then
+    raise Exception.Create('Write to clipboard failed');
+  MemStream:=TMemoryStream.Create;
+  try
+    ID:=AClipboard.ClassName;
+    MemStream.Write(ID[0],length(ID)+1);
+    Data.WriteToStream(MemStream);
+    Result:=AClipboard.AddFormat(ClipboardFormatId,MemStream);
+  finally
+    MemStream.Free;
+  end;
+end;
+
+procedure TCody.RegisterClipboardFormat(ccFormat: TCodyClipboardFormat);
+begin
+  if FindClipboardFormat(ccFormat.ClassName)<>nil then
+    raise Exception.Create('cody clipboard format "'+ccFormat.ClassName+'" is already registered');
+  FClipboardFormats.Add(ccFormat);
+end;
+
+function TCody.FindClipboardFormat(aName: string): TCodyClipboardFormat;
+var
+  i: Integer;
+begin
+  for i:=0 to ClipboardFormatCount-1 do begin
+    Result:=ClipboardFormats[i];
+    if SysUtils.CompareText(Result.ClassName,aName)=0 then exit;
+  end;
+  Result:=nil;
+end;
+
+function TCody.ClipboardFormatCount: integer;
+begin
+  Result:=FClipboardFormats.Count;
 end;
 
 initialization

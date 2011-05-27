@@ -213,6 +213,14 @@ msgstr "ГБ"
 msgid "&Help"
 msgstr "&Справка"
 
+#: codystrconsts.crsinimplementation
+msgid "In implementation"
+msgstr ""
+
+#: codystrconsts.crsininterface
+msgid "In interface"
+msgstr ""
+
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert file at cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."

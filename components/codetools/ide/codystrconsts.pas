@@ -86,6 +86,8 @@ resourcestring
     +'example:%sMyVar:=3;';
   crsDeclareVariable3 = 'Declare variable "%s"';
   crsAlreadyDefined = 'Already defined';
+  crsInInterface = 'In interface';
+  crsInImplementation = 'In implementation';
   crsLocalVariableOf = 'Local variable of %s';
   crsAlreadyDefinedAt = 'Already defined at %s';
   crsPrivate = 'Private';

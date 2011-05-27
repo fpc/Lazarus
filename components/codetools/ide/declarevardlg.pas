@@ -60,6 +60,18 @@ type
     constructor Create(const Context: TFindContext);
   end;
 
+  { TCodyClipboardDeclareVar }
+
+  TCodyClipboardDeclareVar = class(TCodyClipboardSrcData)
+  public
+    VarName: string;
+    VarType: string;
+    TheUnitName: string;
+    procedure WriteToStream(MemStream: TMemoryStream); override;
+    procedure ReadFromStream(MemStream: TMemoryStream); override;
+    procedure Execute; override;
+  end;
+
   { TCodyDeclareVarDialog }
 
   TCodyDeclareVarDialog = class(TForm)
@@ -184,13 +196,38 @@ begin
   end;
 end;
 
+{ TCodyClipboardDeclareVar }
+
+procedure TCodyClipboardDeclareVar.WriteToStream(MemStream: TMemoryStream);
+begin
+  inherited WriteToStream(MemStream);
+  WriteString(MemStream,VarName);
+  WriteString(MemStream,VarType);
+  WriteString(MemStream,TheUnitName);
+end;
+
+procedure TCodyClipboardDeclareVar.ReadFromStream(MemStream: TMemoryStream);
+begin
+  inherited ReadFromStream(MemStream);
+  VarName:=ReadString(MemStream);
+  VarType:=ReadString(MemStream);
+  TheUnitName:=ReadString(MemStream);
+end;
+
+procedure TCodyClipboardDeclareVar.Execute;
+begin
+  inherited Execute;
+end;
+
 { TCodyDeclareVarTarget }
 
 constructor TCodyDeclareVarTarget.Create(const Context: TFindContext);
 begin
   Tool:=Context.Tool;
-  NodeDesc:=Context.Node.Desc;
-  Context.Tool.CleanPosToCaret(Context.Node.StartPos,NodeStartPos);
+  if Context.Node<>nil then begin
+    NodeDesc:=Context.Node.Desc;
+    Context.Tool.CleanPosToCaret(Context.Node.StartPos,NodeStartPos);
+  end;
 end;
 
 {$R *.lfm}
@@ -300,12 +337,12 @@ begin
           AddClassTarget(Context,ctnClassPublished);
         end else if Context.Node.Desc=ctnImplementation then begin
           Target:=TCodyDeclareVarTarget.Create(Context);
-          Target.Caption:='In implementation';
+          Target.Caption:=crsInImplementation;
           Targets.Add(Target);
           Node:=Context.Node.PriorBrother;
           if (Node<>nil) and (Node.Desc=ctnInterface) then begin
             Target:=TCodyDeclareVarTarget.Create(CreateFindContext(Context.Tool,Node));
-            Target.Caption:='In interface';
+            Target.Caption:=crsInInterface;
             Targets.Add(Target);
           end;
         end;
@@ -321,6 +358,11 @@ begin
         ]);
     exit;
   end;
+
+  // add target for clipboard
+  Target:=TCodyDeclareVarTarget.Create(CleanFindContext);
+  Target.Caption:='On clipboard';
+  Targets.Add(Target);
 
   Caption:=Format(crsDeclareVariable3, [Identifier]);
   TypeLabel.Caption:=crsType;
@@ -339,6 +381,12 @@ begin
   if Result then begin
     NewType:=Trim(TypeEdit.Text);
     Target:=TCodyDeclareVarTarget(Targets[WhereRadioGroup.ItemIndex]);
+
+    if Target.Tool=nil then begin
+      // on clipboard
+      // ToDo
+      exit;
+    end;
 
     OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
     try

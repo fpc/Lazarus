@@ -214,6 +214,14 @@ msgstr "Gbyte"
 msgid "&Help"
 msgstr ""
 
+#: codystrconsts.crsinimplementation
+msgid "In implementation"
+msgstr ""
+
+#: codystrconsts.crsininterface
+msgid "In interface"
+msgstr ""
+
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert file at cursor ..."
 msgstr ""
