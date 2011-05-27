@@ -879,7 +879,7 @@ begin
     StartPos:=EndPos;
     while (EndPos<=length(ExpFilename)) and (ExpFilename[EndPos]<>';') do
       inc(EndPos);
-    Dir:=TrimFilename(copy(ExpFilename,StartPos,EndPos-StartPos));
+    Dir:=TrimFilename(SetDirSeparators(copy(ExpFilename,StartPos,EndPos-StartPos)));
     if Dir<>'' then begin
       if not FilenameIsAbsolute(Dir) then begin
         if BaseDir='' then
@@ -2384,7 +2384,7 @@ begin
   if (HelpDatabases<>nil) then
     HelpDatabases.SubstituteMacros(ExpFilename);
   //DebugLn(['THelpDBISourceFile.GetFullFilename substituted ',ExpFilename]);
-  ExpFilename:=TrimFilename(ExpFilename);
+  ExpFilename:=TrimFilename(SetDirSeparators(ExpFilename));
   if FilenameIsAbsolute(ExpFilename) then
     Result:=ExpFilename
   else begin
