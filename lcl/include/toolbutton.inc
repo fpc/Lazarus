@@ -174,18 +174,18 @@ procedure TToolButton.Paint;
     // on windows 7 divider can't be less than 4 pixels
     if FToolBar.IsVertical then
     begin
-      if (ARect.Bottom - ARect.Top) > 4 then
+      if (ARect.Bottom - ARect.Top) > 5 then
       begin
-        ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 2;
-        ARect.Bottom := ARect.Top + 4;
+        ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 3;
+        ARect.Bottom := ARect.Top + 5;
       end;
     end
     else
     begin
-      if (ARect.Right - ARect.Left) > 4 then
+      if (ARect.Right - ARect.Left) > 5 then
       begin
-        ARect.Left := (ARect.Left + ARect.Right) div 2 - 2;
-        ARect.Right := ARect.Left + 4;
+        ARect.Left := (ARect.Left + ARect.Right) div 2 - 3;
+        ARect.Right := ARect.Left + 5;
       end;
     end;
     ThemeServices.DrawElement(Canvas.GetUpdatedHandle([csBrushValid, csPenValid]),
@@ -202,12 +202,12 @@ procedure TToolButton.Paint;
     begin
       if FToolBar.IsVertical then
       begin
-        if (ARect.Bottom - ARect.Top) > 8 then
+        if (ARect.Bottom - ARect.Top) > 10 then
         begin
-          ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 4;
-          ARect.Bottom := ARect.Top + 4;
+          ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 5;
+          ARect.Bottom := ARect.Top + 5;
           DrawDivider(Details, ARect);
-          OffsetRect(ARect, 0, 4);
+          OffsetRect(ARect, 0, 5);
           DrawDivider(Details, ARect);
         end
         else
@@ -215,12 +215,12 @@ procedure TToolButton.Paint;
       end
       else
       begin
-        if (ARect.Right - ARect.Left) > 8 then
+        if (ARect.Right - ARect.Left) > 10 then
         begin
-          ARect.Left := (ARect.Left + ARect.Right) div 2 - 4;
-          ARect.Right := ARect.Left + 4;
+          ARect.Left := (ARect.Left + ARect.Right) div 2 - 5;
+          ARect.Right := ARect.Left + 5;
           DrawDivider(Details, ARect);
-          OffsetRect(ARect, 4, 0);
+          OffsetRect(ARect, 5, 0);
           DrawDivider(Details, ARect);
         end
         else
@@ -1014,10 +1014,16 @@ begin
     end
     else
     if Style = tbsDivider then
-      PreferredWidth := 4
+      if FToolBar.IsVertical then
+        PreferredHeight := 5
+      else
+        PreferredWidth := 5
     else
     if Style = tbsSeparator then
-      PreferredWidth := 8;
+      if FToolBar.IsVertical then
+        PreferredHeight := 10
+      else
+        PreferredWidth := 10;
   end;
   //DebugLn(['TToolButton.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,',',PreferredHeight,' Caption=',Caption]);
 end;

@@ -1680,7 +1680,8 @@ type
   TToolBar = class(TToolWindow)
   private
     FButtonHeight: Integer;
-    FRealizedButtonHeight: integer;
+    FRealizedButtonHeight,
+    FRealizedButtonWidth: integer;
     FButtons: TList;
     FButtonWidth: Integer;
     FDisabledImageChangeLink: TChangeLink;
@@ -1746,7 +1747,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RepositionButton(Index: Integer);
     procedure RepositionButtons(Index: Integer);
-    function WrapButtons(UseWidth: integer;
+    function WrapButtons(UseSize: integer;
                          out NewWidth, NewHeight: Integer;
                          Simulate: boolean): Boolean;
     procedure CNDropDownClosed(var Message: TLMessage); message CN_DROPDOWNCLOSED;
