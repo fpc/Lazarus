@@ -190,14 +190,14 @@ begin
 
     if btn in FShowButtons
     then begin
-      aButton.Visible := True;
       if csDesigning in ComponentState then
         aButton.ControlStyle:=aButton.ControlStyle-[csNoDesignVisible];
+      aButton.Visible := True;
     end
     else begin
-      aButton.Visible := False;
       if csDesigning in ComponentState then
         aButton.ControlStyle:=aButton.ControlStyle+[csNoDesignVisible];
+      aButton.Visible := False;
     end;
   end;
 
