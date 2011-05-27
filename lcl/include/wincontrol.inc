@@ -8065,14 +8065,13 @@ var
 begin
   // find if at the click place we have a control and if so then pass the message
   // to it
-
   // don't check csDesigning here - let a child control to check it
   if (Message.Result <> 0) then
     Exit;
 
   if Message.XPos <> -1 then
   begin
-    // don't allow disabled and don't search wincontrols - they recieve their
+    // don't allow disabled and don't search wincontrols - they receive their
     // message themself
     Child := ControlAtPos(ScreenToClient(SmallPointToPoint(Message.Pos)), []);
     if Assigned(Child) then

@@ -1509,9 +1509,9 @@ var
   Info: PWidgetInfo;
   Old: TObject;
   Mess: TLMessage;
-  {$IFDEF VerboseMouseBugfix}
+  { $IFDEF VerboseMouseBugfix}
   AWinControl: TWinControl;
-  {$ENDIF}
+  { $ENDIF}
 begin
   Result := CallBackDefaultReturn;
 
@@ -1534,6 +1534,15 @@ begin
 
   ResetDefaultIMContext;
   UpdateMouseCaptureControl;
+
+  //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage Result=',dbgs(Result));
+  {$IFDEF Gtk2CallMouseDownBeforeContext}
+  if DeliverMouseDownMessage(Widget, Event, TWinControl(Data))<>0 then begin
+    //debugln(['[gtkMouseBtnPress] DeliverMouseDownMessage handled, stopping event']);
+    g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
+    exit(false);
+  end;
+  {$ENDIF}
 
   if not (csDesigning in TComponent(Data).ComponentState) then
   begin
@@ -1603,8 +1612,12 @@ begin
       g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
     end;
   end;
+  {$IFDEF Gtk2CallMouseDownBeforeContext}
+  {$ELSE}
   //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage Result=',dbgs(Result));
   DeliverMouseDownMessage(Widget, Event, TWinControl(Data));
+  {$ENDIF}
+  //debugln(['gtkMouseBtnPress END Control=',DbgSName(TObject(Data))]);
 end;
 
 
@@ -1614,8 +1627,8 @@ end;
 
   Translate a gdk mouse press event into a LCL mouse down message and send it.
 -------------------------------------------------------------------------------}
-procedure DeliverMouseDownMessage(widget: PGtkWidget; event : pgdkEventButton;
-  AWinControl: TWinControl);
+function DeliverMouseDownMessage(widget: PGtkWidget; event : pgdkEventButton;
+  AWinControl: TWinControl): PtrInt;
 const
   LastModifierKeys: TShiftState = [];
   WHEEL_DELTA : array[Boolean] of Integer = (-120, 120);
@@ -1739,7 +1752,7 @@ var
   end;
 
 begin
-
+  Result := 0;
   EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
   ShiftState := GTKEventStateToShiftState(Event^.State);
 
@@ -1769,7 +1782,7 @@ begin
 
     // send the message directly to the LCL
     NotifyApplicationUserInput(MessE.Msg);
-    DeliverMessage(AWinControl, MessE);
+    Result:=DeliverMessage(AWinControl, MessE);
   end
   else
   begin
@@ -1800,7 +1813,7 @@ begin
     MessI.Result:=0;
     // send the message directly to the LCL
     NotifyApplicationUserInput(MessI.Msg);
-    DeliverMessage(AWinControl, MessI);
+    Result := DeliverMessage(AWinControl, MessI);
   end;
 end;
 
