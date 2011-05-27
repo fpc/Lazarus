@@ -21,15 +21,15 @@ type
   end;
 
   TForm1 = class(TForm)
-    PropGridGroupbox: TGROUPBOX;
-    SetCompAsOIRootButton: TBUTTON;
-    SetOIRootFormButton: TBUTTON;
-    OIGroupbox: TGROUPBOX;
+    PropGridGroupbox: TGroupBox;
+    SetCompAsOIRootButton: TButton;
+    SetOIRootFormButton: TButton;
+    OIGroupbox: TGroupBox;
     PropertyGrid: TOIPropertyGrid;
-    procedure Form1CREATE(Sender: TObject);
-    procedure Form1DESTROY(Sender: TObject);
-    procedure SetCompAsOIRootButtonCLICK(Sender: TObject);
-    procedure SetOIRootFormButtonCLICK(Sender: TObject);
+    procedure Form1Create(Sender: TObject);
+    procedure Form1Destroy(Sender: TObject);
+    procedure SetCompAsOIRootButtonClick(Sender: TObject);
+    procedure SetOIRootFormButtonClick(Sender: TObject);
   private
     procedure SetObjectInspectorRoot(AComponent: TComponent);
   public
@@ -45,7 +45,7 @@ implementation
 
 { TForm1 }
 
-procedure TForm1.Form1CREATE(Sender: TObject);
+procedure TForm1.Form1Create(Sender: TObject);
 begin
   // create the PropertyEditorHook (the interface to the properties)
   ThePropertyEditorHook:=TPropertyEditorHook.Create;
@@ -75,7 +75,7 @@ begin
   SetObjectInspectorRoot(Self);
 end;
 
-procedure TForm1.Form1DESTROY(Sender: TObject);
+procedure TForm1.Form1Destroy(Sender: TObject);
 begin
   // TheObjectInspector is owned by the Application and therefore destroyed
   // automatically
@@ -83,12 +83,12 @@ begin
   ARootComponent.Free;
 end;
 
-procedure TForm1.SetCompAsOIRootButtonCLICK(Sender: TObject);
+procedure TForm1.SetCompAsOIRootButtonClick(Sender: TObject);
 begin
   SetObjectInspectorRoot(ARootComponent);
 end;
 
-procedure TForm1.SetOIRootFormButtonCLICK(Sender: TObject);
+procedure TForm1.SetOIRootFormButtonClick(Sender: TObject);
 begin
   SetObjectInspectorRoot(Self);
 end;
@@ -113,8 +113,7 @@ begin
   FAnInteger:=AValue;
 end;
 
-initialization
-  {$I mainunit.lrs}
+{$R *.lfm}
 
 end.
 

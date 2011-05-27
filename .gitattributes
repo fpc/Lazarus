@@ -3702,7 +3702,6 @@ examples/notebku.pp svneol=native#text/pascal
 examples/notebooktest.lpi svneol=native#text/plain
 examples/notebooktest.pp svneol=native#text/pascal
 examples/objectinspector/mainunit.lfm svneol=native#text/plain
-examples/objectinspector/mainunit.lrs svneol=native#text/pascal
 examples/objectinspector/mainunit.pas svneol=native#text/pascal
 examples/objectinspector/oiexample.lpi svneol=native#text/plain
 examples/objectinspector/oiexample.lpr svneol=native#text/pascal
