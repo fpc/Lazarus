@@ -8,7 +8,7 @@ inherited frDesignerForm: TfrDesignerForm
   VertScrollBar.Page = 413
   VertScrollBar.Range = 149
   Caption = 'Designer'
-  ClientHeight = 414
+  ClientHeight = 411
   ClientWidth = 695
   KeyPreview = True
   Menu = MainMenu1
@@ -25,8 +25,8 @@ inherited frDesignerForm: TfrDesignerForm
   WindowState = wsMaximized
   object StatusBar1: TStatusBar[0]
     Left = 0
-    Height = 23
-    Top = 391
+    Height = 17
+    Top = 394
     Width = 695
     Panels = <    
       item
@@ -1914,10 +1914,10 @@ inherited frDesignerForm: TfrDesignerForm
         object C3: TComboBox
           Tag = 8
           Left = 161
-          Height = 21
+          Height = 29
           Top = 2
           Width = 67
-          ItemHeight = 13
+          ItemHeight = 0
           Items.Strings = (
             '5'
             '6'
@@ -1946,16 +1946,15 @@ inherited frDesignerForm: TfrDesignerForm
         object C2: TComboBox
           Tag = 7
           Left = 1
-          Height = 21
+          Height = 29
           Top = 2
           Width = 155
-          ItemHeight = 15
+          ItemHeight = 0
           OnChange = DoClick
           OnDrawItem = C2DrawItem
           OnGetItems = C2GetItems
           ParentFont = False
           Sorted = True
-          Style = csOwnerDrawFixed
           TabOrder = 1
         end
       end
@@ -2417,21 +2416,21 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object frDock2: TPanel[2]
     Left = 0
-    Height = 308
+    Height = 311
     Top = 83
     Width = 27
     Align = alLeft
-    ClientHeight = 308
+    ClientHeight = 311
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 1
     object Panel4: TPanel
       Left = 1
-      Height = 306
+      Height = 309
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 306
+      ClientHeight = 309
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 0
@@ -2735,11 +2734,11 @@ inherited frDesignerForm: TfrDesignerForm
     end
     object panForDlg: TPanel
       Left = 1
-      Height = 306
+      Height = 309
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 306
+      ClientHeight = 309
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 1
@@ -2806,7 +2805,7 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object Tab1: TTabControl[3]
     Left = 27
-    Height = 308
+    Height = 311
     Top = 83
     Width = 641
     Align = alClient
@@ -2820,11 +2819,13 @@ inherited frDesignerForm: TfrDesignerForm
     TabStop = False
     object ScrollBox1: TScrollBox
       Left = 2
-      Height = 276
+      Height = 279
       Top = 30
       Width = 637
+      HorzScrollBar.Page = 633
+      VertScrollBar.Page = 275
       Align = alClient
-      ClientHeight = 272
+      ClientHeight = 275
       ClientWidth = 633
       Color = clGray
       ParentColor = False
@@ -4136,12 +4137,12 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object frDock4: TPanel[4]
     Left = 668
-    Height = 308
+    Height = 311
     Top = 83
     Width = 27
     Align = alRight
     Anchors = [akTop, akRight]
-    ClientHeight = 308
+    ClientHeight = 311
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 3
