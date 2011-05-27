@@ -2308,7 +2308,7 @@ begin
   DebugLn('TCodeToolManager.FindReferences A ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
   ListOfPCodeXYPosition:=nil;
-  if Cache=nil then;
+  if Cache=nil then
     Cache:=TFindIdentifierReferenceCache.Create;
   if (Cache.SourcesChangeStep=SourceCache.ChangeStamp)
   and (Cache.FilesChangeStep=FileStateCache.TimeStamp)

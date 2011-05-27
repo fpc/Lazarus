@@ -168,7 +168,7 @@ var
   LoadResult: TModalResult;
   Code: TCodeBuffer;
   ListOfPCodeXYPosition: TFPList;
-  Cache: TFindIdentifierReferenceCache;  // you must free Cache;
+  Cache: TFindIdentifierReferenceCache;
 begin
   Result:=mrCancel;
   ListOfPCodeXYPosition:=nil;
