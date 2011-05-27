@@ -975,13 +975,13 @@ var
   OtherSectionNode: TCodeTreeNode;
   HeaderNode: TCodeTreeNode;
 begin
-  //DebugLn('TCodeCompletionCodeTool.AddLocalVariable START CleanCursorPos=',CleanPosToStr(CleanCursorPos),' CleanLevelPos=',CleanPosToStr(CleanLevelPos));
   Result:=false;
+  if CleanLevelPos<1 then CleanLevelPos:=CleanCursorPos;
+  //DebugLn('TCodeCompletionCodeTool.AddLocalVariable START CleanCursorPos=',CleanPosToStr(CleanCursorPos),' CleanLevelPos=',CleanPosToStr(CleanLevelPos));
   if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then begin
     RaiseException('TCodeCompletionCodeTool.AddLocalVariable Internal Error: '
       +'CleanPosToCodePos');
   end;
-  if CleanLevelPos<1 then CleanLevelPos:=CleanCursorPos;
 
   // find the level and find sections in front
   Node:=Tree.Root;
@@ -1003,13 +1003,13 @@ begin
       or ((Node.EndPos=CleanLevelPos)
          and ((Node.NextBrother=nil) or (Node.NextBrother.StartPos>CleanLevelPos))))
     then begin
-      VarSectionNode:=nil;
-      OtherSectionNode:=nil;
-      HeaderNode:=nil;
       if Node.Desc in [ctnInterface,ctnImplementation,ctnProgram,ctnLibrary,
         ctnPackage,ctnProcedure]
       then begin
         // this node can have a var section
+        VarSectionNode:=nil;
+        OtherSectionNode:=nil;
+        HeaderNode:=nil;
         ParentNode:=Node;
       end else if Node.Desc=ctnUnit then begin
         // the grand children can have a var section
