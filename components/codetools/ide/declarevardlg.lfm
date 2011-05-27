@@ -1,11 +1,11 @@
 object CodyDeclareVarDialog: TCodyDeclareVarDialog
   Left = 291
-  Height = 298
+  Height = 331
   Top = 243
-  Width = 408
+  Width = 410
   Caption = 'CodyDeclareVarDialog'
-  ClientHeight = 298
-  ClientWidth = 408
+  ClientHeight = 331
+  ClientWidth = 410
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
@@ -13,8 +13,8 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 42
-    Top = 250
-    Width = 396
+    Top = 283
+    Width = 398
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
@@ -28,13 +28,13 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
   end
   object Panel1: TPanel
     Left = 0
-    Height = 244
+    Height = 277
     Top = 0
-    Width = 408
+    Width = 410
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 244
-    ClientWidth = 408
+    ClientHeight = 277
+    ClientWidth = 410
     TabOrder = 1
     object TypeLabel: TLabel
       AnchorSideLeft.Control = Panel1
@@ -42,7 +42,7 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 18
-      Top = 221
+      Top = 254
       Width = 71
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -59,8 +59,8 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
       AnchorSideBottom.Side = asrBottom
       Left = 83
       Height = 27
-      Top = 217
-      Width = 319
+      Top = 250
+      Width = 321
       Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -70,9 +70,9 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
     object WhereRadioGroup: TRadioGroup
       AnchorSideBottom.Control = TypeEdit
       Left = 6
-      Height = 181
+      Height = 214
       Top = 30
-      Width = 396
+      Width = 398
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoFill = True
@@ -92,7 +92,7 @@ object CodyDeclareVarDialog: TCodyDeclareVarDialog
       Left = 6
       Height = 18
       Top = 6
-      Width = 396
+      Width = 398
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'RedefineLabel'
