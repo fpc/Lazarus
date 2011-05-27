@@ -4328,7 +4328,6 @@ images/LazarusForm.ico -text svneol=unset#image/x-icon
 images/LazarusProject.ico -text svneol=unset#image/x-icon
 images/LazarusSource.bmp -text svneol=unset#image/bmp
 images/LazarusSource.ico -text svneol=unset#image/x-icon
-images/README.txt svneol=native#text/plain
 images/actions/arrow_down.png -text svneol=unset#image/png
 images/actions/arrow_left.png -text svneol=unset#image/png
 images/actions/arrow_right.png -text svneol=unset#image/png
