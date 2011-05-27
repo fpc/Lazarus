@@ -1247,8 +1247,8 @@ end;
 function TSynClipboardStream.WriteToClipboard(AClipboard: TClipboard): Boolean;
 begin
   if FIsPlainText and (FText <> '') then begin
-    Clipboard.AsText:= FText;
-    if not Clipboard.HasFormat(CF_TEXT) then
+    AClipboard.AsText:= FText;
+    if not AClipboard.HasFormat(CF_TEXT) then
       raise ESynEditError.Create('Clipboard copy operation failed: HasFormat');
   end;
   Result := AClipboard.AddFormat(ClipboardFormatId, FMemStream.Memory^, FMemStream.Size);
