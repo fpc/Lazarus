@@ -7053,6 +7053,10 @@ begin
 end;
 
 function TCodeCompletionCodeTool.CreateMissingProcBodies: boolean;
+const
+  ProcAttrDefToBody = [phpWithStart,
+               phpAddClassname,phpWithVarModifiers,
+               phpWithParameterNames,phpWithResultType,phpWithCallingSpecs];
 var
   TheClassName: string;
    
@@ -7096,9 +7100,7 @@ var
     if (TheNodeExt.ExtTxt1='') and (TheNodeExt.ExtTxt3='') then begin
       ANode:=TheNodeExt.Node;
       if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-        ProcCode:=ExtractProcHead(ANode,[phpWithStart,
-             phpAddClassname,phpWithVarModifiers,
-             phpWithParameterNames,phpWithResultType,phpWithCallingSpecs]);
+        ProcCode:=ExtractProcHead(ANode,ProcAttrDefToBody);
         TheNodeExt.ExtTxt3:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                      ProcCode,Indent,true);
       end;
@@ -7177,12 +7179,21 @@ var
     end;
   end;
 
+  procedure AddNodeExtToTree(var TreeOfNodeExt: TAVLTree;
+    DefNodeExt: TCodeTreeNodeExtension);
+  begin
+    if TreeOfNodeExt=nil then
+      TreeOfNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+    TreeOfNodeExt.Add(DefNodeExt);
+  end;
+
   function CheckForChangedProcs(out ProcsCopied: boolean): boolean;
   var
     BodyAVLNode: TAVLTreeNode;
     BodyNodeExt: TCodeTreeNodeExtension;
     BodiesWithoutDefs: TAVLTree;
     DefsWithoutBodies: TAVLTree;
+    UpdateDefsToBodies: TAVLTree;
     DefAVLNode: TAVLTreeNode;
     DefNodeExt: TCodeTreeNodeExtension;
     InsertPos: LongInt;
@@ -7190,6 +7201,7 @@ var
     BodyProcHeadNode: TCodeTreeNode;
     InsertEndPos: LongInt;
     ProcCode: String;
+    NewProcCode: String;
   begin
     Result:=true;
     ProcsCopied:=false;
@@ -7197,51 +7209,77 @@ var
 
     BodiesWithoutDefs:=nil;
     DefsWithoutBodies:=nil;
+    UpdateDefsToBodies:=nil;
     try
       // collect all bodies without a definition
       BodyAVLNode:=ProcBodyNodes.FindLowest;
       while BodyAVLNode<>nil do begin
         BodyNodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
         if ClassProcs.Find(BodyNodeExt)=nil then begin
-          if BodiesWithoutDefs=nil then
-            BodiesWithoutDefs:=TAVLTree.Create(@CompareCodeTreeNodeExt);
-          BodiesWithoutDefs.Add(BodyNodeExt);
+          AddNodeExtToTree(BodiesWithoutDefs,BodyNodeExt);
         end;
         BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
       end;
-      if BodiesWithoutDefs=nil then exit;
 
       // collect all definitions without a body
       DefAVLNode:=ClassProcs.FindLowest;
       while DefAVLNode<>nil do begin
         DefNodeExt:=TCodeTreeNodeExtension(DefAVLNode.Data);
-        DefAVLNode:=ClassProcs.FindSuccessor(DefAVLNode);
         if (ProcBodyNodes.Find(DefNodeExt)=nil)
         and (not ProcNodeHasSpecifier(DefNodeExt.Node,psABSTRACT)) then begin
-          // move proc definition from ClassProcs to DefsWithoutBodies
-          if DefsWithoutBodies=nil then
-            DefsWithoutBodies:=TAVLTree.Create(@CompareCodeTreeNodeExt);
-          DefsWithoutBodies.Add(DefNodeExt);
+          // this proc def has no body
+          AddNodeExtToTree(DefsWithoutBodies,DefNodeExt);
         end;
+        DefAVLNode:=ClassProcs.FindSuccessor(DefAVLNode);
       end;
-      if DefsWithoutBodies=nil then exit;
-      if BodiesWithoutDefs.Count<>DefsWithoutBodies.Count then exit;
+      if (DefsWithoutBodies<>nil) and (BodiesWithoutDefs<>nil)
+      and (BodiesWithoutDefs.Count=DefsWithoutBodies.Count) then begin
 
-      // there is the same amount of bodies without a def and defs without bodies
-      // => try to create a mapping from defs to bodies
-      if DefsWithoutBodies.Count=1 then begin
-        // only one method def changed
-        BodyNodeExt:=TCodeTreeNodeExtension(BodiesWithoutDefs.FindLowest.Data);
-        DefNodeExt:=TCodeTreeNodeExtension(DefsWithoutBodies.FindLowest.Data);
-        DefNodeExt.Data:=BodyNodeExt;
-      end else begin
-        // no mapping found
-        debugln(CleanPosToStr(ANode.FirstChild.StartPos)+' warning: procedure has no definition in the class');
-        exit;
+        // there is the same amount of bodies without a def and defs without bodies
+        // => try to create a mapping from defs to bodies
+        if DefsWithoutBodies.Count=1 then begin
+          // only one method def changed
+          BodyNodeExt:=TCodeTreeNodeExtension(BodiesWithoutDefs.FindLowest.Data);
+          DefNodeExt:=TCodeTreeNodeExtension(DefsWithoutBodies.FindLowest.Data);
+          DefNodeExt.Data:=BodyNodeExt;
+          AddNodeExtToTree(UpdateDefsToBodies,DefNodeExt);
+        end else begin
+          // no mapping found
+          debugln(CleanPosToStr(ANode.FirstChild.StartPos)+' warning: procedure has no definition in the class');
+          exit;
+        end;
+      end else if (DefsWithoutBodies=nil) and (BodiesWithoutDefs=nil) then begin
+        // all defs match 1:1 to bodies
+        // check if secondary attributes (proc type, param names) need update
+        DefAVLNode:=ClassProcs.FindLowest;
+        while DefAVLNode<>nil do begin
+          DefNodeExt:=TCodeTreeNodeExtension(DefAVLNode.Data);
+          if (DefNodeExt.Data=nil)
+          and (not ProcNodeHasSpecifier(DefNodeExt.Node,psABSTRACT)) then begin
+            BodyAVLNode:=ProcBodyNodes.Find(DefNodeExt);
+            if (BodyAVLNode<>nil) then begin
+              BodyNodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
+              NewProcCode:=ExtractProcHead(DefNodeExt.Node,ProcAttrDefToBody);
+              ProcCode:=ExtractProcHead(BodyNodeExt.Node,ProcAttrDefToBody);
+              //debugln(['CheckForChangedProcs  Def="',NewProcCode,'"']);
+              //debugln(['CheckForChangedProcs Body="',ProcCode,'"']);
+              if CompareTextIgnoringSpace(ProcCode,NewProcCode,true)<>0 then
+              begin
+                {$IFDEF CTDEBUG}
+                debugln(['CheckForChangedProcs Update Def="',NewProcCode,'"']);
+                {$ENDIF}
+                DefNodeExt.Data:=BodyNodeExt;
+                BodyNodeExt.Data:=DefNodeExt;
+                AddNodeExtToTree(UpdateDefsToBodies,DefNodeExt);
+              end;
+            end;
+          end;
+          DefAVLNode:=ClassProcs.FindSuccessor(DefAVLNode);
+        end;
       end;
 
       // replace body proc head(s) with class proc head(s)
-      DefAVLNode:=DefsWithoutBodies.FindLowest;
+      DefAVLNode:=UpdateDefsToBodies.FindLowest;
       while DefAVLNode<>nil do begin
         DefNodeExt:=TCodeTreeNodeExtension(DefAVLNode.Data);
         BodyNodeExt:=TCodeTreeNodeExtension(DefNodeExt.Data);
@@ -7250,9 +7288,7 @@ var
         InsertPos:=BodyNodeExt.Node.StartPos;
         InsertEndPos:=BodyProcHeadNode.EndPos;
         Indent:=GetLineIndent(Src,InsertPos);
-        ProcCode:=ExtractProcHead(DefNodeExt.Node,[phpWithStart,
-             phpAddClassname,phpWithVarModifiers,
-             phpWithParameterNames,phpWithResultType,phpWithCallingSpecs]);
+        ProcCode:=ExtractProcHead(DefNodeExt.Node,ProcAttrDefToBody);
         ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                      ProcCode,Indent,false);
         {$IFDEF CTDEBUG}
@@ -7261,9 +7297,10 @@ var
         ProcsCopied:=true;
         if not ASourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertEndPos,ProcCode) then
           exit(false);
-        DefAVLNode:=DefsWithoutBodies.FindSuccessor(DefAVLNode);
+        DefAVLNode:=UpdateDefsToBodies.FindSuccessor(DefAVLNode);
       end;
     finally
+      UpdateDefsToBodies.Free;
       BodiesWithoutDefs.Free;
       DefsWithoutBodies.Free;
     end;
