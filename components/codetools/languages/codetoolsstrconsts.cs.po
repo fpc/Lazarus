@@ -602,6 +602,10 @@ msgstr "Zdroje Lazarusu"
 msgid "method name"
 msgstr "jméno metody"
 
+#: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+msgid "Method signature %s not found in class"
+msgstr ""
+
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "definice typu metody nenalezena"

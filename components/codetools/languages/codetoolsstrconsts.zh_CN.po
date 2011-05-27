@@ -604,6 +604,10 @@ msgstr "Lazarus 源代码"
 msgid "method name"
 msgstr "method 名称"
 
+#: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+msgid "Method signature %s not found in class"
+msgstr ""
+
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "未找到 methond 类型定义"

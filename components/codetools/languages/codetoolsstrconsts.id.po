@@ -602,6 +602,10 @@ msgstr "Sumber Lazarus"
 msgid "method name"
 msgstr "nama method"
 
+#: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+msgid "Method signature %s not found in class"
+msgstr ""
+
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "definisi tipe method tidak ditemukan"

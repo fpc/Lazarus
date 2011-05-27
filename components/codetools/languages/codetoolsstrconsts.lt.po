@@ -603,6 +603,10 @@ msgstr "Lazarus pirminis kodas"
 msgid "method name"
 msgstr "metodo pavadinimas"
 
+#: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+msgid "Method signature %s not found in class"
+msgstr ""
+
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "nerasta metodo tipo apibrėžtis"

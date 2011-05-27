@@ -129,6 +129,7 @@ type
                               Parse: boolean = true): TCodeTreeNode;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
+    function GetMethodOfBody(Node: TCodeTreeNode): TCodeTreeNode;
     function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
     function NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsDestructor(ProcNode: TCodeTreeNode): boolean;
@@ -1917,6 +1918,13 @@ begin
     Result:=true;
     exit;
   end;
+end;
+
+function TPascalReaderTool.GetMethodOfBody(Node: TCodeTreeNode): TCodeTreeNode;
+begin
+  Result:=Node;
+  while (Result<>nil) and not NodeIsMethodBody(Result) do
+    Result:=Result.Parent;
 end;
 
 function TPascalReaderTool.NodeIsFunction(ProcNode: TCodeTreeNode): boolean;

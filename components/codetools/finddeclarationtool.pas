@@ -7193,14 +7193,16 @@ var
   end;
 
   procedure ResolveINHERITED;
+  // for example: inherited A; inherited;
+  // inherited skips the class and begins to search in the ancestor class
   var
     ProcNode: TCodeTreeNode;
-    ClassOfMethodContext: TFindContext;
+    ClassNodeOfMethod: TCodeTreeNode;
     HasIdentifier: Boolean;
     Context: TFindContext;
+  var
+    DefProcNode: TCodeTreeNode;
   begin
-    // for example: inherited A;
-    // inherited skips the class and begins to search in the ancestor class
     if ExprType.Desc=xtNone then
       Context:=CreateFindContext(Self,StartNode)
     else
@@ -7210,7 +7212,8 @@ var
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseIllegalQualifierFound;
     end;
-    if (not NodeIsInAMethod(Context.Node)) then begin
+    ProcNode:=GetMethodOfBody(Context.Node);
+    if ProcNode=nil then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseException(ctsInheritedKeywordOnlyAllowedInMethods);
     end;
@@ -7231,38 +7234,47 @@ var
       ' CurAtom="',copy(Src,CurAtom.StartPos,CurAtom.EndPos-CurAtom.StartPos),'"');
     {$ENDIF}
 
-    // find ancestor of class of method
-    ProcNode:=Context.Node.GetNodeOfType(ctnProcedure);
+    // find class of method
     Params.Save(OldInput);
     Params.Flags:=[fdfExceptionOnNotFound]
                   +fdfGlobals*Params.Flags;
-    Context.Tool.FindClassOfMethod(ProcNode,Params,true);
-    ClassOfMethodContext:=CreateFindContext(Params);
+    FindClassOfMethod(ProcNode,Params,true);
+    ClassNodeOfMethod:=Params.NewNode;
 
     // find class ancestor
     Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
                   +fdfGlobals*Params.Flags;
-    ClassOfMethodContext.Tool.FindAncestorOfClass(ClassOfMethodContext.Node,
-                                                  Params,true);
+    FindAncestorOfClass(ClassNodeOfMethod,Params,true);
 
     ExprType.Desc:=xtContext;
-    if HasIdentifier then begin
-      // search identifier only in class ancestor
-      Params.Load(OldInput,false);
-      Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
-      Params.ContextNode:=Params.NewNode;
-      Params.Flags:=Params.Flags-[fdfSearchInParentNodes]
-                                +[fdfExceptionOnNotFound,fdfSearchInAncestors];
-      Params.NewCodeTool.FindIdentifierInContext(Params);
-      ExprType.Context:=CreateFindContext(Params);
-      Params.Load(OldInput,true);
-
-      ResolveBaseTypeOfIdentifier;
-    end else begin
+    ExprType.Context:=CreateFindContext(Params);
+    if (not HasIdentifier) then begin
       // the keyword 'inherited' is the last atom
-      // return the ancestor class context
-      ExprType.Context:=CreateFindContext(Params);
-    end;
+      if StartFlags*[fdfFindChilds,fdfFindVariable]=[fdfFindVariable] then begin
+        // for example: inherited; search the method, not the context
+        DefProcNode:=FindCorrespondingProcNode(ProcNode);
+        if DefProcNode=nil then begin
+          MoveCursorToProcName(ProcNode,true);
+          RaiseExceptionFmt(ctsMethodSignatureSNotFoundInClass, [GetAtom]);
+        end;
+        MoveCursorToProcName(DefProcNode,true);
+      end else begin
+        // for example: inherited |
+        // return the ancestor class context
+        exit;
+      end;
+    end else
+      MoveCursorToCleanPos(CurAtom.StartPos);
+
+    // search identifier only in class ancestor
+    Params.Load(OldInput,false);
+    Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
+    Params.ContextNode:=ExprType.Context.Node;
+    Params.Flags:=Params.Flags-[fdfSearchInParentNodes]
+                              +[fdfExceptionOnNotFound,fdfSearchInAncestors];
+    ExprType.Context.Tool.FindIdentifierInContext(Params);
+    ExprType.Context:=CreateFindContext(Params);
+    Params.Load(OldInput,true);
   end;
   
 begin

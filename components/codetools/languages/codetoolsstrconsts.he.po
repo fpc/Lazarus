@@ -601,6 +601,10 @@ msgstr "הקוד של לזארוס"
 msgid "method name"
 msgstr "שם מתודה"
 
+#: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+msgid "Method signature %s not found in class"
+msgstr ""
+
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "ההגדרה של סוג המתודה לא נמצאה"

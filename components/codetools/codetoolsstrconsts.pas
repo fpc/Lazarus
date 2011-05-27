@@ -96,6 +96,7 @@ ResourceString
     '; expected after "%s" property specifier, but %s found';
   ctsUnknownSectionKeyword = 'unknown section keyword %s found';
   ctsIllegalQualifier = 'illegal qualifier %s found';
+  ctsMethodSignatureSNotFoundInClass = 'Method signature %s not found in class';
   ctsUnexpectedEndOfSource = 'unexpected end of source';
   ctsEndofSourceExpectedButAtomFound = 'expected end., but %s found';
   ctsPointStartAt = '. start at ';
@@ -147,6 +148,30 @@ ResourceString
   ctsQualifierExpectedButAtomFound = 'qualifier expected but %s found';
   ctsIncompatibleTypesGotExpected = 'incompatibles types: expected "%s" but got "%s"';
   ctsDefaultPropertyNotFound = 'default property not found';
+  ctsFunctionGetEnumeratorNotFoundInThisClass = 'function GetEnumerator not '
+    +'found in this class';
+  ctsFunctionGetEnumeratorNotFoundInThisClass2 = 'function GetEnumerator not '
+    +'found in this class';
+  ctsResultTypeOfFunctionGetEnumeratorNotFound = 'result type of function '
+    +'GetEnumerator not found';
+  ctsPropertyCurrentNotFound = 'property Current not found';
+  ctsEnumerationType = 'enumeration type';
+  ctsType = 'type';
+  ctsExpectedStatementButFound = 'expected statement, but found %s';
+  ctsUnexpectedKeyword2 = 'unexpected keyword %s';
+  ctsBeginAtWithoutEnd = 'begin at %s without end';
+  ctsThenExpectedButFound = 'then expected, but %s found';
+  ctsExpectedButFound = 'expected (, but found %s';
+  ctsExpectedIdentifierButFound = 'expected identifier, but found %s';
+  ctsExpectedButFound2 = 'expected ), but found %s';
+  ctsMissing = 'missing :=';
+  ctsExpectedButFound3 = 'expected :=, but %s found';
+  ctsCharacterConstantOutOfRange = 'character constant out of range';
+  ctsOperatorExpectedButFound = 'operator expected but %s found';
+  ctsOperandExpectedButFound = 'operand expected but %s found';
+  ctsOperandExpectedButFound2 = 'operand expected, but %s found';
+  ctsInvalidOperator = 'invalid operator %s';
+  ctsOperatorExpectedButFound2 = 'operator expected, but %s found';
 
   // codecompletion
   ctsPropertySpecifierAlreadyDefined = 'property specifier already defined: %s';
@@ -269,32 +294,10 @@ ResourceString
   ctsInsufficientMemory = 'insufficient memory';
   ctsFileHasCircularSymLink = '%s has a circular symbolic link';
   ctsFileIsNotExecutable = '%s is not executable';
+
+  // misc
   ctsSrcPathForCompiledUnits = 'src path for compiled units';
   ctsTCodeToolManagerConsistencyCheck = 'TCodeToolManager.ConsistencyCheck=%d';
-  ctsFunctionGetEnumeratorNotFoundInThisClass = 'function GetEnumerator not '
-    +'found in this class';
-  ctsFunctionGetEnumeratorNotFoundInThisClass2 = 'function GetEnumerator not '
-    +'found in this class';
-  ctsResultTypeOfFunctionGetEnumeratorNotFound = 'result type of function '
-    +'GetEnumerator not found';
-  ctsPropertyCurrentNotFound = 'property Current not found';
-  ctsEnumerationType = 'enumeration type';
-  ctsType = 'type';
-  ctsExpectedStatementButFound = 'expected statement, but found %s';
-  ctsUnexpectedKeyword2 = 'unexpected keyword %s';
-  ctsBeginAtWithoutEnd = 'begin at %s without end';
-  ctsThenExpectedButFound = 'then expected, but %s found';
-  ctsExpectedButFound = 'expected (, but found %s';
-  ctsExpectedIdentifierButFound = 'expected identifier, but found %s';
-  ctsExpectedButFound2 = 'expected ), but found %s';
-  ctsMissing = 'missing :=';
-  ctsExpectedButFound3 = 'expected :=, but %s found';
-  ctsCharacterConstantOutOfRange = 'character constant out of range';
-  ctsOperatorExpectedButFound = 'operator expected but %s found';
-  ctsOperandExpectedButFound = 'operand expected but %s found';
-  ctsOperandExpectedButFound2 = 'operand expected, but %s found';
-  ctsInvalidOperator = 'invalid operator %s';
-  ctsOperatorExpectedButFound2 = 'operator expected, but %s found';
 
 implementation
 

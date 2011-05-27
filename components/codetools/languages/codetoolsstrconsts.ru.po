@@ -600,6 +600,10 @@ msgstr "Исходный код Lazarus"
 msgid "method name"
 msgstr "имя метода"
 
+#: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
+msgid "Method signature %s not found in class"
+msgstr ""
+
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
 msgstr "не найдено описание типа метода"
