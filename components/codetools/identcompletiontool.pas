@@ -371,6 +371,7 @@ type
     procedure ClearFoundMethods;
     function CollectMethods(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
+    //procedure CheckCompilerDirective;
   public
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
                             var IdentifierList: TIdentifierList;
@@ -2004,6 +2005,9 @@ begin
   try
     InitCollectIdentifiers(CursorPos,IdentifierList);
     IdentStartXY:=FindIdentifierStartPos(CursorPos);
+
+    //CheckCompilerDirective;
+
     ParseSourceTillCollectionStart(IdentStartXY,CleanCursorPos,CursorNode,
                                    IdentStartPos,IdentEndPos);
     if CleanCursorPos=0 then ;

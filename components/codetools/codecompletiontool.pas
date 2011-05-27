@@ -7216,6 +7216,7 @@ var
       while BodyAVLNode<>nil do begin
         BodyNodeExt:=TCodeTreeNodeExtension(BodyAVLNode.Data);
         if ClassProcs.Find(BodyNodeExt)=nil then begin
+          // this bdy has no def
           AddNodeExtToTree(BodiesWithoutDefs,BodyNodeExt);
         end;
         BodyAVLNode:=ProcBodyNodes.FindSuccessor(BodyAVLNode);
@@ -7279,6 +7280,7 @@ var
       end;
 
       // replace body proc head(s) with class proc head(s)
+      if UpdateDefsToBodies=nil then exit;
       DefAVLNode:=UpdateDefsToBodies.FindLowest;
       while DefAVLNode<>nil do begin
         DefNodeExt:=TCodeTreeNodeExtension(DefAVLNode.Data);
