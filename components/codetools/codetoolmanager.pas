@@ -515,11 +515,13 @@ type
           out ExistingDefinition: TFindContext; // next existing definition
           out ListOfPFindContext: TFPList; // possible classes
           out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier or syntax error
-    function DeclareVariable(Code: TCodeBuffer; X,Y: integer;
+    function DeclareVariableNearBy(Code: TCodeBuffer; X,Y: integer;
           const VariableName, NewType, NewUnitName: string;
           Visibility: TCodeTreeNodeDesc;
           LvlPosCode: TCodeBuffer = nil; LvlPosX: integer = 0; LvlPosY: integer = 0
           ): boolean;
+    function DeclareVariableAt(Code: TCodeBuffer; X,Y: integer;
+          const VariableName, NewType, NewUnitName: string): boolean;
     function FindRedefinitions(Code: TCodeBuffer;
           out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
     function RemoveRedefinitions(Code: TCodeBuffer;
@@ -3656,15 +3658,15 @@ begin
   end;
 end;
 
-function TCodeToolManager.DeclareVariable(Code: TCodeBuffer; X, Y: integer;
-  const VariableName, NewType, NewUnitName: string;
-  Visibility: TCodeTreeNodeDesc;
-  LvlPosCode: TCodeBuffer; LvlPosX: integer; LvlPosY: integer): boolean;
+function TCodeToolManager.DeclareVariableNearBy(Code: TCodeBuffer; X,
+  Y: integer; const VariableName, NewType, NewUnitName: string;
+  Visibility: TCodeTreeNodeDesc; LvlPosCode: TCodeBuffer; LvlPosX: integer;
+  LvlPosY: integer): boolean;
 var
   CursorPos, LvlPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
-  DebugLn(['TCodeToolManager.DeclareVariable A ',Code.Filename,' X=',X,' Y=',Y]);
+  DebugLn(['TCodeToolManager.DeclareVariableNearBy A ',Code.Filename,' X=',X,' Y=',Y]);
   {$ENDIF}
   Result:=false;
   if not InitCurCodeTool(Code) then exit;
@@ -3675,8 +3677,29 @@ begin
   LvlPos.X:=LvlPosX;
   LvlPos.Y:=LvlPosY;
   try
-    Result:=FCurCodeTool.DeclareVariable(CursorPos,VariableName,
+    Result:=FCurCodeTool.DeclareVariableNearBy(CursorPos,VariableName,
                        NewType,NewUnitName,Visibility,SourceChangeCache,LvlPos);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.DeclareVariableAt(Code: TCodeBuffer; X, Y: integer;
+  const VariableName, NewType, NewUnitName: string): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn(['TCodeToolManager.DeclareVariableNearBy A ',Code.Filename,' X=',X,' Y=',Y]);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.Code:=Code;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  try
+    Result:=FCurCodeTool.DeclareVariableAt(CursorPos,VariableName,
+                                         NewType,NewUnitName,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

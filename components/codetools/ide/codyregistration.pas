@@ -97,10 +97,7 @@ begin
     crsDeclareVariable,
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowDeclareVariableDialog);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'DeclareVariable',
-    crsDeclareVariable2, nil, nil, DeclareVariableCommand)
-    {$IFNDEF EnableCodyExperiments}
-     .Visible:=false
-    {$ENDIF};
+    crsDeclareVariable2, nil, nil, DeclareVariableCommand);
 
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

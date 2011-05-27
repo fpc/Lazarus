@@ -313,12 +313,15 @@ type
         out ExistingDefinition: TFindContext; // next existing definition
         out ListOfPFindContext: TFPList; // possible classes
         out NewExprType: TExpressionType; out NewType: string): boolean; // false = not at an identifier
-    function DeclareVariable(InsertPos: TCodeXYPosition;
+    function DeclareVariableNearBy(InsertPos: TCodeXYPosition;
         const VariableName, NewType, NewUnitName: string;
         Visibility: TCodeTreeNodeDesc;
         SourceChangeCache: TSourceChangeCache;
         LevelPos: TCodeXYPosition  // optional
         ): boolean;
+    function DeclareVariableAt(CursorPos: TCodeXYPosition;
+        const VariableName, NewType, NewUnitName: string;
+        SourceChangeCache: TSourceChangeCache): boolean;
 
     // custom class completion
     function InitClassCompletion(const AClassName: string;
@@ -5482,8 +5485,8 @@ begin
   end;
 end;
 
-function TCodeCompletionCodeTool.DeclareVariable(InsertPos: TCodeXYPosition;
-  const VariableName, NewType, NewUnitName: string;
+function TCodeCompletionCodeTool.DeclareVariableNearBy(
+  InsertPos: TCodeXYPosition; const VariableName, NewType, NewUnitName: string;
   Visibility: TCodeTreeNodeDesc; SourceChangeCache: TSourceChangeCache;
   LevelPos: TCodeXYPosition): boolean;
 var
@@ -5496,7 +5499,9 @@ var
   LevelCleanPos: integer;
 begin
   Result:=false;
-  debugln(['TCodeCompletionCodeTool.DeclareVariable InsertPos=',dbgs(InsertPos),' Name="',VariableName,'" Type="',NewType,'" Unit=',NewUnitName]);
+  {$IFDEF CTDEBUG}
+  debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy InsertPos=',dbgs(InsertPos),' Name="',VariableName,'" Type="',NewType,'" Unit=',NewUnitName]);
+  {$ENDIF}
   BuildTreeAndGetCleanPos(InsertPos,CleanCursorPos);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CaretToCleanPos(LevelPos,LevelCleanPos);
@@ -5509,7 +5514,7 @@ begin
       InitClassCompletion(Node,SourceChangeCache);
       // check if variable already exists
       if VarExistsInCodeCompleteClass(UpperCaseStr(VariableName)) then begin
-        debugln(['TCodeCompletionCodeTool.DeclareVariable member already exists: ',VariableName,' Class=',ExtractClassName(Node,false)]);
+        debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy member already exists: ',VariableName,' Class=',ExtractClassName(Node,false)]);
         exit;
       end;
       ClassPart:=ncpPublishedVars;
@@ -5525,7 +5530,7 @@ begin
       if (NewUnitName<>'')
       and (not AddUnitToMainUsesSection(NewUnitName,'',SourceChangeCache)) then
       begin
-        debugln(['TCodeCompletionCodeTool.DeclareVariable AddUnitToMainUsesSection for new class memeber failed']);
+        debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy AddUnitToMainUsesSection for new class memeber failed']);
         exit;
       end;
       // apply the changes
@@ -5537,6 +5542,122 @@ begin
   end;
   Result:=AddLocalVariable(CleanCursorPos,1,VariableName,NewType,NewUnitName,
                            NewPos,NewTopLine,SourceChangeCache,LevelCleanPos);
+end;
+
+function TCodeCompletionCodeTool.DeclareVariableAt(CursorPos: TCodeXYPosition;
+  const VariableName, NewType, NewUnitName: string;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  NewCode: String;
+  FrontGap: TGapTyp;
+  AfterGap: TGapTyp;
+  InsertPos: Integer;
+  Indent: Integer;
+  Node: TCodeTreeNode;
+  NeedSection: Boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  debugln(['TCodeCompletionCodeTool.DeclareVariableAt CursorPos=',dbgs(CursorPos),' Name="',VariableName,'" Type="',NewType,'" Unit=',NewUnitName]);
+  {$ENDIF}
+  BuildTreeAndGetCleanPos(CursorPos,CleanCursorPos);
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  SourceChangeCache.MainScanner:=Scanner;
+  InsertPos:=CleanCursorPos;
+  Indent:=0;
+  FrontGap:=gtNewLine;
+  AfterGap:=gtNewLine;
+  {$IFDEF CTDEBUG}
+  debugln(['TCodeCompletionCodeTool.DeclareVariableAt CursorNode=',CursorNode.DescAsString]);
+  {$ENDIF}
+  NewCode:=VariableName+':'+NewType+';';
+  NeedSection:=false;
+  if CursorNode.Desc=ctnVarDefinition then begin
+    // insert in front of another var
+    CursorNode:=GetFirstGroupVarNode(CursorNode);
+    InsertPos:=CursorNode.StartPos;
+    Indent:=GetLineIndent(Src,InsertPos);
+  end else if CursorNode.Desc in (AllClassBaseSections
+    +[ctnVarSection,ctnRecordType,ctnClassClassVar])
+  then begin
+    // insert into a var section
+    if (CursorNode.FirstChild=nil)
+    or (CursorNode.FirstChild.StartPos>InsertPos) then begin
+      MoveCursorToNodeStart(CursorNode);
+      ReadNextAtom;
+      if (CurPos.EndPos<CursorNode.EndPos)
+      and ((CursorNode.FirstChild=nil) or (CursorNode.FirstChild.StartPos>CurPos.EndPos))
+      and (InsertPos<CurPos.EndPos) then
+        InsertPos:=CurPos.EndPos;
+    end;
+    if CursorNode.FirstChild<>nil then
+      Indent:=GetLineIndent(Src,CursorNode.FirstChild.StartPos)
+    else
+      Indent:=GetLineIndent(Src,CursorNode.StartPos)
+              +SourceChangeCache.BeautifyCodeOptions.Indent;
+  end else if CursorNode.Desc in [ctnProcedure,ctnInterface,ctnImplementation,
+    ctnProgram,ctnLibrary,ctnPackage]
+  then begin
+    Node:=CursorNode.FirstChild;
+    // make sure to insert behind uses section and proc header
+    if (Node<>nil) and (Node.Desc in [ctnUsesSection,ctnProcedureHead]) then
+    begin
+      if (Node<>nil) and (InsertPos<Node.EndPos) then
+        InsertPos:=Node.EndPos;
+    end;
+    // find node in front
+    while (Node<>nil) and (Node.NextBrother<>nil)
+    and (Node.NextBrother.StartPos<InsertPos) do
+      Node:=Node.NextBrother;
+    if (Node<>nil) and (Node.Desc=ctnVarSection) then begin
+      // append to a var section
+      if Node.LastChild<>nil then
+        Indent:=GetLineIndent(Src,Node.LastChild.StartPos)
+      else
+        Indent:=GetLineIndent(Src,Node.StartPos)
+                +SourceChangeCache.BeautifyCodeOptions.Indent;
+    end else begin
+      // start a new var section
+      NeedSection:=true;
+      if Node<>nil then
+        Indent:=GetLineIndent(Src,Node.StartPos)
+      else if CursorNode.FirstChild<>nil then
+        Indent:=GetLineIndent(Src,CursorNode.FirstChild.StartPos)
+      else
+        Indent:=GetLineIndent(Src,CursorNode.StartPos);
+    end;
+  end else begin
+    // default: add the variable at cursor
+    NeedSection:=true;
+  end;
+  if NeedSection then
+    NewCode:='var'+SourceChangeCache.BeautifyCodeOptions.LineEnd
+      +GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)+NewCode;
+  NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(NewCode,
+    Indent,[bcfIndentExistingLineBreaks]);
+
+  SourceChangeCache.BeginUpdate;
+  try
+    if (NewUnitName<>'') then begin
+      if not AddUnitToMainUsesSection(NewUnitName,'',SourceChangeCache) then begin
+        debugln(['TCodeCompletionCodeTool.DeclareVariableAt AddUnitToMainUsesSection failed']);
+        exit;
+      end;
+    end;
+    {$IFDEF VerboseCompletionAdds}
+    debugln(['TCodeCompletionCodeTool.DeclareVariableAt NewCode="',dbgstr(NewCode),'"']);
+    {$ENDIF}
+    if not SourceChangeCache.Replace(FrontGap,AfterGap,InsertPos,InsertPos,NewCode)
+    then exit;
+    Result:=true;
+  finally
+    if not Result then
+      SourceChangeCache.Clear;
+    if not SourceChangeCache.EndUpdate then
+      Result:=false;
+  end;
 end;
 
 function TCodeCompletionCodeTool.GatherPublishedMethods(

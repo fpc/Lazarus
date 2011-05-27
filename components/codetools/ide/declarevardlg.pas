@@ -28,8 +28,6 @@
   ToDo:
     - guess parameter
     - guess j:=<i>
-    - Extend uses section when adding to a class
-    - paste from clipboard
 }
 unit DeclareVarDlg;
 
@@ -41,7 +39,7 @@ uses
   Classes, SysUtils, LCLProc, contnrs, LResources, Forms, Controls, Graphics,
   Dialogs, ButtonPanel, StdCtrls, ExtCtrls,
   IDEDialogs, LazIDEIntf, SrcEditorIntf,
-  FileProcs, CodeToolManager, FindDeclarationTool, CodeTree,
+  FileProcs, CodeToolManager, FindDeclarationTool, CodeTree, CodeCache,
   KeywordFuncLists, BasicCodeTools, CodeAtom,
   CodyUtils, CodyStrConsts;
 
@@ -215,10 +213,27 @@ end;
 
 procedure TCodyClipboardDeclareVar.Execute(SrcEdit: TSourceEditorInterface;
   LogXY: TPoint);
+var
+  OldChange: Boolean;
+  Code: TCodeBuffer;
 begin
-  debugln(['TCodyClipboardDeclareVar.Execute ']);
+  //debugln(['TCodyClipboardDeclareVar.Execute ']);
+  if not LazarusIDE.BeginCodeTools then exit;
 
-  SrcEdit.Selection:=AsText;
+  Code:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
+
+  OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
+  try
+    LazarusIDE.OpenEditorsOnCodeToolChange:=true;
+    if not CodeToolBoss.DeclareVariableAt(Code,LogXY.X,LogXY.Y,
+      VarName,VarType,TheUnitName)
+    then begin
+      debugln(['TCodyClipboardDeclareVar.Execute Error']);
+      LazarusIDE.DoJumpToCodeToolBossError;
+    end;
+  finally
+    LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
+  end;
 end;
 
 { TCodyDeclareVarTarget }
@@ -382,6 +397,8 @@ begin
   Result:=ShowModal=mrOk;
 
   if Result then begin
+    if not LazarusIDE.BeginCodeTools then exit;
+
     NewType:=Trim(TypeEdit.Text);
     Target:=TCodyDeclareVarTarget(Targets[WhereRadioGroup.ItemIndex]);
 
@@ -406,7 +423,7 @@ begin
     try
       OldSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
       LazarusIDE.OpenEditorsOnCodeToolChange:=true;
-      if not CodeToolBoss.DeclareVariable(
+      if not CodeToolBoss.DeclareVariableNearBy(
         CodePos.Code,CodePos.X,CodePos.Y,
         Identifier,NewType,UnitOfType,Target.Visibility,
         Target.NodeStartPos.Code,Target.NodeStartPos.X,Target.NodeStartPos.Y)

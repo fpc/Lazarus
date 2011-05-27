@@ -2476,7 +2476,10 @@ end;
 function TCustomCodeTool.CaretToCleanPos(const Caret: TCodeXYPosition;
   out CleanPos: integer): integer;
 begin
-  CleanPos:=0;
+  if Caret.Code=nil then begin
+    CleanPos:=0;
+    exit(-2);
+  end;
   //DebugLn(['TCustomCodeTool.CaretToCleanPos A ',Caret.Code.Filename,' ',Caret.Y,',',Caret.X,' ',Caret.Code.SourceLength]);
   Caret.Code.LineColToPosition(Caret.Y,Caret.X,CleanPos);
   //DebugLn(['TCustomCodeTool.CaretToCleanPos B ',CleanPos,',',Caret.Y,',',Caret.X,' ',dbgstr(copy(Caret.Code.Source,CleanPos-20,20)),'|',dbgstr(copy(Caret.Code.Source,CleanPos,20))]);

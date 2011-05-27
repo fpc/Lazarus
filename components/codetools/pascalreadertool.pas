@@ -1804,14 +1804,9 @@ end;
 
 function TPascalReaderTool.ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode
   ): boolean;
-var p: integer;
 begin
-  Result:=false;
-  if ANode=nil then exit;
-  p:=ANode.StartPos;
-  while (p<ANode.EndPos) and (IsIdentChar[Src[p]]) do inc(p);
-  if (p=ANode.StartPos) then exit;
-  Result:=true;
+  Result:=(ANode<>nil) and (ANode.StartPos<ANode.EndPos)
+    and (IsIdentStartChar[Src[ANode.StartPos]]);
 end;
 
 function TPascalReaderTool.IsClassNode(Node: TCodeTreeNode): boolean;

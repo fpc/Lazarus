@@ -413,7 +413,7 @@ begin
     SetLength(Result,l);
     MemStream.Read(Result[1],l);
   end;
-  debugln(['TCodyClipboardData.ReadString Result="',Result,'"']);
+  //debugln(['TCodyClipboardData.ReadString Result="',Result,'"']);
 end;
 
 procedure TCodyClipboardData.Execute(SrcEdit: TSourceEditorInterface;
@@ -511,7 +511,6 @@ function TCody.WriteToClipboard(Data: TCodyClipboardData; AClipboard: TClipboard
 var
   MemStream: TMemoryStream;
   ID: ShortString;
-  s: string;
 begin
   if AClipboard=nil then AClipboard:=Clipboard;
   AClipboard.AsText:=Data.AsText;
@@ -522,10 +521,6 @@ begin
     ID:=Data.ClassName;
     MemStream.Write(ID[0],length(ID)+1);
     Data.WriteToStream(MemStream);
-    MemStream.Position:=0;
-    SetLength(s,MemStream.Size);
-    MemStream.Read(s[1],length(s));
-    debugln(['TCody.WriteToClipboard Stream=',dbgstr(s)]);
     MemStream.Position:=0;
     Result:=AClipboard.AddFormat(ClipboardFormatId,MemStream);
   finally
