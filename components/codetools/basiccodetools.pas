@@ -1407,23 +1407,36 @@ end;
 
 function LineEndCount(const Txt: string; StartPos, EndPos: integer; out
   LengthOfLastLine: integer): integer;
-var i, LastLineEndPos: integer;
+var
+  l: Integer;
+  p, LineStart: PChar;
 begin
   Result:=0;
-  if EndPos>length(Txt) then EndPos:=length(Txt)+1;
-  i:=StartPos;
-  LastLineEndPos:=i;
-  while i<EndPos do begin
-    if (Txt[i] in [#10,#13]) then begin
-      inc(Result);
-      inc(i);
-      if (i<EndPos) and (Txt[i] in [#10,#13]) and (Txt[i-1]<>Txt[i]) then
-        inc(i);
-      LastLineEndPos:=i;
-    end else
-      inc(i);
-  end;
-  LengthOfLastLine:=EndPos-LastLineEndPos;
+  LengthOfLastLine:=0;
+  l:=length(Txt);
+  if l=0 then exit;
+  if StartPos>l then exit;
+  if EndPos>l then EndPos:=l+1;
+  if StartPos>=EndPos then exit;
+  p:=@Txt[StartPos];
+  LineStart:=p;
+  repeat
+    if p^ in [#0,#10,#13] then begin
+      if p-PChar(Txt)+1>=EndPos then
+        break;
+      if p^<>#0 then begin
+        inc(Result);
+        if (p[1] in [#10,#13]) and (p^<>p[1]) and (p-PChar(Txt)+1<EndPos) then
+          inc(p,2)
+        else
+          inc(p);
+        LineStart:=p;
+        continue;
+      end;
+    end;
+    inc(p);
+  until false;
+  LengthOfLastLine:=EndPos-(LineStart-PChar(Txt)+1);
 end;
 
 function EmptyCodeLineCount(const Source: string; StartPos, EndPos: integer;
