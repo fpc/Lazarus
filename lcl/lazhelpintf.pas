@@ -818,11 +818,8 @@ function THelpDBISourceDirectories.FileMatches(const AFilename: string
   ): boolean;
 var
   SearchPath: String;
-var
   EndPos: Integer;
-var
   StartPos: Integer;
-var
   Dir: String;
 begin
   Result:=false;
@@ -858,13 +855,9 @@ end;
 function THelpDBISourceDirectories.GetFullFilename: string;
 var
   ExpFilename: String;
-var
   EndPos: Integer;
-var
   StartPos: Integer;
-var
   Dir: String;
-var
   BaseDir: String;
 begin
   ExpFilename:=FFilename;
