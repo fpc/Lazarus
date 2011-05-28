@@ -1636,8 +1636,8 @@ procedure TCodeBrowserView.WorkUpdateUnit(AnUnit: TCodeBrowserUnit);
       Link:=Tool.Scanner.Links[i];
       CodeBuf:=TCodeBuffer(Link.Code);
       if CodeBuf<>LastCode then begin
-        inc(LineCnt,LineEndCount(CodeBuf.Source));
-        inc(ByteCnt,length(CodeBuf.Source));
+        inc(LineCnt,CodeBuf.LineCount);
+        inc(ByteCnt,CodeBuf.SourceLength);
         LastCode:=CodeBuf;
       end;
     end;

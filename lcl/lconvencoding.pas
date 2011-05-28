@@ -6246,8 +6246,8 @@ function GuessEncoding(const s: string): string;
 
 var
   l: Integer;
-  p: Integer;
-  EndPos: LongInt;
+  p: PChar;
+  EndPos: PChar;
   i: LongInt;
 begin
   l:=length(s);
@@ -6255,63 +6255,64 @@ begin
     Result:='';
     exit;
   end;
+  p:=PChar(s);
 
   // try UTF-8 BOM (Byte Order Mark)
-  if CompareI(@s[1],UTF8BOM,3) then begin
+  if CompareI(p,UTF8BOM,3) then begin
     Result:=EncodingUTF8BOM;
     exit;
   end;
 
   // try ucs-2le BOM FF FE (ToDo: nowadays this BOM is UTF16LE)
-  if (length(s)>=2) and (s[1]=#$FF) and (s[2]=#$FE) then begin
+  if (p^=#$FF) and (p[1]=#$FE) then begin
     Result:=EncodingUCS2LE;
     exit;
   end;
 
   // try ucs-2be BOM FE FF (ToDo: nowadays this BOM is UTF16BE)
-  if (length(s)>=2) and (s[1]=#$FE) and (s[2]=#$FF) then begin
+  if (p^=#$FE) and (p[1]=#$FF) then begin
     Result:=EncodingUCS2BE;
     exit;
   end;
 
   // try {%encoding eee}
-  if CompareI(@s[1],'{%encoding ',11) then begin
-    p:=12;
-    while (p<=l) and (s[p] in [' ',#9]) do inc(p);
+  if CompareI(p,'{%encoding ',11) then begin
+    inc(p,length('{%encoding '));
+    while (p^ in [' ',#9]) do inc(p);
     EndPos:=p;
-    while (EndPos<=l) and (not (s[EndPos] in ['}',' ',#9])) do inc(EndPos);
-    Result:=NormalizeEncoding(copy(s,p,EndPos-p));
+    while not (EndPos^ in ['}',' ',#9,#0]) do inc(EndPos);
+    Result:=NormalizeEncoding(copy(s,p-PChar(s)+1,EndPos-p));
     exit;
   end;
 
   // try UTF-8 (this includes ASCII)
-  p:=1;
-  while (p<=l) do begin
-    if ord(s[p])<128 then begin
+  p:=PChar(s);
+  repeat
+    if ord(p^)<128 then begin
       // ASCII
+      if (p^=#0) and (p-PChar(s)>=l) then begin
+        Result:=EncodingUTF8;
+        exit;
+      end;
       inc(p);
     end else begin
-      i:=UTF8CharacterStrictLength(@s[p]);
+      i:=UTF8CharacterStrictLength(p);
       //DebugLn(['GuessEncoding ',i,' ',DbgStr(s[p])]);
       if i=0 then begin
         {$IFDEF VerboseIDEEncoding}
-        DebugLn(['GuessEncoding non UTF-8 found at ',PosToStr(p),' ',dbgstr(copy(s,p-10,20))]);
+        DebugLn(['GuessEncoding non UTF-8 found at ',PosToStr(p-PChar(s)+1),' ',dbgstr(copy(s,p-PChar(s)-10,20))]);
         {$ENDIF}
         break;
       end;
       inc(p,i);
     end;
-  end;
-  if p>l then begin
-    Result:=EncodingUTF8;
-    exit;
-  end;
+  until false;
 
   // use system encoding
   Result:=GetDefaultTextEncoding;
 
   if NormalizeEncoding(Result)=EncodingUTF8 then begin
-    // the system encoding is UTF-8, but it is not UTF-8
+    // the system encoding is UTF-8, but the text is not UTF-8
     // use ISO-8859-1 instead. This encoding has a full 1:1 mapping to unicode,
     // so no character is lost during conversion back and forth.
     Result:='ISO-8859-1';
