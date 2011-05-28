@@ -93,6 +93,7 @@ type
 
   TKeyWordFunctionList = class(TBaseKeyWordFunctionList)
   public
+    function DoIdentifier(Identifier: PChar): boolean;
     function DoItCaseSensitive(const AKeyWord: shortstring): boolean;
     function DoItCaseInsensitive(const AKeyWord: shortstring): boolean;
     function DoItCaseInsensitive(const ASource: string;
@@ -171,6 +172,7 @@ var
 
 function UpperCaseStr(const s: string): string;
 function IsUpperCaseStr(const s: string): boolean;
+function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
 
 function CalcMemSize: PtrUInt;
 
@@ -205,6 +207,46 @@ begin
   i:=1;
   while (i<=l) and (UpChars[s[i]]=s[i]) do inc(i);
   Result:=i>l;
+end;
+
+function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
+begin
+  if (Identifier1<>nil) then begin
+    if (Identifier2<>nil) then begin
+      while (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) do begin
+        if (IsIdentChar[Identifier1[0]]) then begin
+          inc(Identifier1);
+          inc(Identifier2);
+        end else begin
+          Result:=0; // for example  'aaA;' 'aAa;'
+          exit;
+        end;
+      end;
+      if (IsIdentChar[Identifier1[0]]) then begin
+        if (IsIdentChar[Identifier2[0]]) then begin
+          if UpChars[Identifier1[0]]>UpChars[Identifier2[0]] then
+            Result:=-1 // for example  'aab' 'aaa'
+          else
+            Result:=1; // for example  'aaa' 'aab'
+        end else begin
+          Result:=-1; // for example  'aaa' 'aa;'
+        end;
+      end else begin
+        if (IsIdentChar[Identifier2[0]]) then
+          Result:=1 // for example  'aa;' 'aaa'
+        else
+          Result:=0; // for example  'aa;' 'aa,'
+      end;
+    end else begin
+      Result:=-1; // for example  'aaa' nil
+    end;
+  end else begin
+    if (Identifier2<>nil) then begin
+      Result:=1; // for example  nil 'bbb'
+    end else begin
+      Result:=0; // for example  nil nil
+    end;
+  end;
 end;
 
 function CalcMemSize: PtrUInt;
@@ -321,6 +363,8 @@ procedure TBaseKeyWordFunctionList.AddExtended(const AKeyWord: shortstring;
   const AFunction: TKeyWordFunction; const ADataFunction: TKeyWordDataFunction
     );
 begin
+  if length(AKeyWord)>=255 then
+    raise Exception.Create('TBaseKeyWordFunctionList.AddExtended keyword too big');
   FSorted:=false;
   if FCount=FCapacity then begin
     FCapacity:=FCapacity*2+10;
@@ -329,6 +373,7 @@ begin
   FillChar(FItems[FCount],SizeOF(TBaseKeyWordFunctionListItem),0);
   with FItems[FCount] do begin
     KeyWord:=AKeyWord;
+    KeyWord[length(KeyWord)+1]:=#0;
     DoIt:=AFunction;
     DoDataFunction:=ADataFunction;
   end;
@@ -465,6 +510,30 @@ begin
 end;
 
 { TKeyWordFunctionList }
+
+function TKeyWordFunctionList.DoIdentifier(Identifier: PChar): boolean;
+var i: integer;
+begin
+  if not FSorted then Sort;
+  i:=KeyWordToHashIndex(Identifier);
+  if i>=0 then begin
+    i:=FBucketStart[i];
+    if i>=0 then begin
+      repeat
+        if CompareIdentifiers(PChar(@FItems[i].KeyWord[1]),Identifier)=0 then begin
+          if Assigned(FItems[i].DoIt) then
+            Result:=FItems[i].DoIt()
+          else
+            Result:=DefaultKeyWordFunction();
+          exit;
+        end;
+        if FItems[i].IsLast then break;
+        inc(i);
+      until false;
+    end;
+  end;
+  Result:=DefaultKeyWordFunction();
+end;
 
 function TKeyWordFunctionList.DoItCaseSensitive(const AKeyWord: shortstring
   ): boolean;
@@ -665,7 +734,7 @@ begin
     i:=FBucketStart[i];
     if i>=0 then begin
       repeat
-        if AnsiCompareText(FItems[i].KeyWord,AKeyWord)=0
+        if CompareText(FItems[i].KeyWord,AKeyWord)=0
         then begin
           if Assigned(FItems[i].DoIt) then
             Result:=FItems[i].DoIt()

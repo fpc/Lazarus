@@ -522,8 +522,7 @@ begin
       if CurPos.Flag=cafSemicolon then begin
         ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
       end else begin
-        if IsKeyWordCallingConvention.DoItCaseInsensitive(Src,
-           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+        if IsKeyWordCallingConvention.DoIdentifier(@Src[CurPos.StartPos])
         then begin
           ExtractNextAtom([phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[],
                           Attr);
@@ -2356,7 +2355,7 @@ begin
   end;
   // read specifiers
   while not (CurPos.Flag in [cafSemicolon,cafNone]) do begin
-    if WordIsPropertySpecifier.DoItCaseInsensitive(@Src[CurPos.StartPos])
+    if WordIsPropertySpecifier.DoIdentifier(@Src[CurPos.StartPos])
     then begin
       if AtomIs(s) then exit(true);
     end else if CurPos.Flag=cafEdgedBracketOpen then begin
