@@ -199,7 +199,7 @@ type
     procedure WriteAllFileNames;
     procedure WriteDebugReport;
     function CalcMemSize(Stats: TCTMemStats): PtrUInt;
-    procedure IncreaseChangeStamp;
+    procedure IncreaseChangeStamp; inline;
   public
     property ExpirationTimeInDays: integer
           read FExpirationTimeInDays write FExpirationTimeInDays;
@@ -986,8 +986,7 @@ end;
 
 procedure TCodeCache.IncreaseChangeStamp;
 begin
-  debugln(['TCodeCache.IncreaseChangeStamp ']);
-  CTDumpStack;
+  //debugln(['TCodeCache.IncreaseChangeStamp ']);
   CTIncreaseChangeStamp64(FChangeStamp);
 end;
 
@@ -1140,6 +1139,7 @@ end;
 
 procedure TCodeBuffer.DoSourceChanged;
 begin
+  //debugln(['TCodeBuffer.DoSourceChanged ',Filename]);
   inherited DoSourceChanged;
   if FCodeCache<>nil then
     FCodeCache.IncreaseChangeStamp;

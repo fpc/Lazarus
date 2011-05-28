@@ -520,6 +520,7 @@ begin
   end;
   FModified:=true;
   IncreaseChangeStep;
+  DoSourceChanged;
 end;
 
 procedure TSourceLog.Delete(Pos, Len: integer);
@@ -545,6 +546,7 @@ begin
   end;
   FModified:=true;
   IncreaseChangeStep;
+  DoSourceChanged;
 end;
 
 procedure TSourceLog.Replace(Pos, Len: integer; const Txt: string);
@@ -582,6 +584,7 @@ begin
   end;
   FModified:=true;
   IncreaseChangeStep;
+  DoSourceChanged;
 end;
 
 procedure TSourceLog.Move(Pos, Len, MoveTo: integer);
@@ -612,6 +615,7 @@ begin
   end;
   FModified:=true;
   IncreaseChangeStep;
+  DoSourceChanged;
 end;
 
 function TSourceLog.AddMarker(Position: integer; SomeData: Pointer
@@ -844,7 +848,7 @@ end;
 
 procedure TSourceLog.DoSourceChanged;
 begin
-
+  //debugln(['TSourceLog.DoSourceChanged ']);
 end;
 
 function TSourceLog.SaveToFile(const Filename: string): boolean;
