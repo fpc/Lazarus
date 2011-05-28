@@ -902,6 +902,7 @@ begin
     if (HelpDatabases<>nil) then
       HelpDatabases.SubstituteMacros(Result);
   end;
+  Result:=TrimFilename(SetDirSeparators(Result));
 end;
 
 { THelpDatabase }
@@ -2398,8 +2399,8 @@ begin
   if BasePathObject=nil then
     Result:=''
   else
-    Result:=AppendPathDelim(
-               HelpDatabases.GetBaseDirectoryForBasePathObject(BasePathObject));
+    Result:=AppendPathDelim(TrimFilename(SetDirSeparators(
+             HelpDatabases.GetBaseDirectoryForBasePathObject(BasePathObject))));
 end;
 
 { THelpDBISourceDirectory }
