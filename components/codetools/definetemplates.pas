@@ -3714,7 +3714,7 @@ end;
 constructor TDefineTree.Create;
 begin
   inherited Create;
-  FChangeStep:=CTInvalidChangeStamp;
+  IncreaseChangeStep;
   FFirstDefineTemplate:=nil;
   FCache:=TAVLTree.Create(@CompareDirectoryDefines);
   FDefineStrings:=TStringTree.Create;
@@ -7162,7 +7162,7 @@ end;
 
 constructor TFPCTargetConfigCache.Create(AOwner: TComponent);
 begin
-  FChangeStamp:=CTInvalidChangeStamp;
+  CTIncreaseChangeStamp(FChangeStamp); // set to not 0
   inherited Create(AOwner);
   ConfigFiles:=TFPCConfigFileStateList.Create;
   if Owner is TFPCTargetConfigCaches then
@@ -7771,7 +7771,7 @@ end;
 
 constructor TFPCTargetConfigCaches.Create(AOwner: TComponent);
 begin
-  FChangeStamp:=CTInvalidChangeStamp;
+  CTIncreaseChangeStamp(FChangeStamp); // set to not 0
   inherited Create(AOwner);
   fItems:=TAVLTree.Create(@CompareFPCTargetConfigCacheItems);
 end;
@@ -8060,7 +8060,7 @@ begin
   inherited Create(AOwner);
   Files:=TStringList.Create;
   Valid:=false;
-  FChangeStamp:=CTInvalidChangeStamp;
+  CTIncreaseChangeStamp(FChangeStamp); // set to not 0
   if Owner is TFPCSourceCaches then
     Caches:=TFPCSourceCaches(Owner);
 end;
@@ -8213,7 +8213,7 @@ end;
 
 constructor TFPCSourceCaches.Create(AOwner: TComponent);
 begin
-  FChangeStamp:=CTInvalidChangeStamp;
+  CTIncreaseChangeStamp(FChangeStamp); // set to not 0
   inherited Create(AOwner);
   fItems:=TAVLTree.Create(@CompareFPCSourceCacheItems);
 end;
@@ -8667,7 +8667,7 @@ end;
 constructor TFPCUnitSetCache.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FChangeStamp:=CTInvalidChangeStamp;
+  CTIncreaseChangeStamp(FChangeStamp); // set ot not 0
   FCaches:=TheOwner as TFPCDefinesCache;
   fUnitToSourceTree:=TStringToStringTree.Create(false);
   fSrcDuplicates:=TStringToStringTree.Create(false);

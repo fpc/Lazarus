@@ -1270,8 +1270,8 @@ end;
 constructor TCTDirectoryCachePool.Create;
 begin
   FDirectories:=TAVLTree.Create(@CompareCTDirectoryCaches);
-  FFileTimeStamp:=CTInvalidChangeStamp;
-  FConfigTimeStamp:=CTInvalidChangeStamp;
+  IncreaseFileTimeStamp;
+  IncreaseConfigTimeStamp;
   if FileStateCache<>nil then
     FileStateCache.AddChangeTimeStampHandler(@OnFileStateCacheChangeTimeStamp);
 end;

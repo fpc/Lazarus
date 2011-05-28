@@ -124,6 +124,7 @@ type
     function IndexOfChangeHook(AChangeHook: TOnSourceChange): integer;
   protected
     procedure IncreaseChangeStep; virtual;
+    procedure DoSourceChanged; virtual;
     procedure DecodeLoaded(const AFilename: string;
                         var ASource, ADiskEncoding, AMemEncoding: string); virtual;
     procedure EncodeSaving(const AFilename: string; var ASource: string); virtual;
@@ -139,7 +140,7 @@ type
        read GetItems write SetItems; default;
     function Count: integer; // # Items
     property SourceLength: integer read fSrcLen;
-    procedure ClearEntries;
+    function ClearEntries: boolean;
     property ChangeStep: integer read FChangeStep;
     property Markers[Index: integer]: TSourceLogMarker read GetMarkers;
     function MarkerCount: integer;
@@ -398,9 +399,11 @@ begin
     Result:=FSrcLen;
 end;
 
-procedure TSourceLog.ClearEntries;
+function TSourceLog.ClearEntries: boolean;
 var i: integer;
 begin
+  if (Count=0) and (FLog.Count=0) then exit(false);
+  Result:=true;
   for i:=0 to Count-1 do Items[i].Free;
   FLog.Clear;
 end;
@@ -408,14 +411,16 @@ end;
 procedure TSourceLog.Clear;
 var i: integer;
   m: TSourceLogMarker;
+  SourceChanged: Boolean;
 begin
-  ClearEntries;
+  ClearEntries; // ignore if entries change
   // markers are owned by someone else, do not free them
   for i:=0 to FMarkers.Count-1 do begin
     m:=Markers[i];
     if m.Position>1 then
       m.Deleted:=true;
   end;
+  SourceChanged:=FSource<>'';
   FSource:='';
   FSrcLen:=0;
   FModified:=false;
@@ -424,10 +429,12 @@ begin
     FLineRanges:=nil;
   end;
   FLineCount:=-1;
-  IncreaseChangeStep;
   Data:=nil;
   FReadOnly:=false;
+  IncreaseChangeStep;
   NotifyHooks(nil);
+  if SourceChanged then
+    DoSourceChanged;
 end;
 
 function TSourceLog.GetItems(Index: integer): TSourceLogEntry;
@@ -833,6 +840,11 @@ begin
   else
     FChangeStep:=low(FChangeStep);
   //DebugLn('[TSourceLog.IncreaseChangeStep] ',FChangeStep,',',DbgS(Self));
+end;
+
+procedure TSourceLog.DoSourceChanged;
+begin
+
 end;
 
 function TSourceLog.SaveToFile(const Filename: string): boolean;

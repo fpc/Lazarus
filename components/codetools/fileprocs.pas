@@ -3206,7 +3206,6 @@ end;
 constructor TFileStateCache.Create;
 begin
   FFiles:=TAVLTree.Create(@CompareFileStateItems);
-  FTimeStamp:=CTInvalidChangeStamp64;
   CTIncreaseChangeStamp64(FTimeStamp); // one higher than default for new files
 end;
 

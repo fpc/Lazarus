@@ -2305,17 +2305,37 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindReferences A ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  if Cache=nil then
+    DebugLn('TCodeToolManager.FindReferences A ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y),' SearchInCode=',SearchInCode.Filename)
+  else
+    debugln(['TCodeToolManager.FindReferences A SearchInCode=',SearchInCode.Filename]);
   {$ENDIF}
   ListOfPCodeXYPosition:=nil;
   if Cache=nil then
     Cache:=TFindIdentifierReferenceCache.Create;
   if (Cache.SourcesChangeStep=SourceCache.ChangeStamp)
+  and (Cache.SourcesChangeStep<>CTInvalidChangeStamp64)
   and (Cache.FilesChangeStep=FileStateCache.TimeStamp)
-  and (Cache.InitValuesChangeStep=DefineTree.ChangeStep) then begin
+  and (Cache.FilesChangeStep<>CTInvalidChangeStamp64)
+  and (Cache.InitValuesChangeStep=DefineTree.ChangeStep)
+  and (Cache.InitValuesChangeStep<>CTInvalidChangeStamp)
+  and (Cache.IdentifierCode=IdentifierCode) and (Cache.X=X) and (Cache.Y=Y)
+  then begin
+    //debugln(['TCodeToolManager.FindReferences cache valid']);
     // all sources and values are the same => use cache
+    Result:=true;
   end else begin
+    //debugln(['TCodeToolManager.FindReferences cache not valid']);
+    {debugln(['TCodeToolManager.FindReferences IdentifierCode=',Cache.IdentifierCode=IdentifierCode,
+      ' X=',Cache.X=X,' Y=',Cache.Y=Y,
+      ' SourcesChangeStep=',Cache.SourcesChangeStep=SourceCache.ChangeStamp,',',Cache.SourcesChangeStep=CTInvalidChangeStamp64,
+      ' FilesChangeStep=',Cache.FilesChangeStep=FileStateCache.TimeStamp,',',Cache.FilesChangeStep=CTInvalidChangeStamp64,
+      ' InitValuesChangeStep=',Cache.InitValuesChangeStep=DefineTree.ChangeStep,',',Cache.InitValuesChangeStep=CTInvalidChangeStamp,
+      '']);}
     Cache.Clear;
+    Cache.IdentifierCode:=IdentifierCode;
+    Cache.X:=X;
+    Cache.Y:=Y;
     Cache.SourcesChangeStep:=SourceCache.ChangeStamp;
     Cache.FilesChangeStep:=FileStateCache.TimeStamp;
     Cache.InitValuesChangeStep:=DefineTree.ChangeStep;
@@ -2356,11 +2376,14 @@ begin
   Result:=true;
   if NewTopLine=0 then ;
   if not InitCurCodeTool(SearchInCode) then exit;
-  if Cache.IsPrivate and (FCurCodeTool<>Cache.NewTool) then exit(true);
+  if Cache.IsPrivate and (FCurCodeTool<>Cache.NewTool) then begin
+    //debugln(['TCodeToolManager.FindReferences identifier is not reachable from this unit => skipping search']);
+    exit(true);
+  end;
 
   CursorPos:=Cache.NewPos;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindReferences B ',dbgs(FCurCodeTool.Scanner<>nil),' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' ',CursorPos.Code.Filename);
+  DebugLn('TCodeToolManager.FindReferences Searching ',dbgs(FCurCodeTool.Scanner<>nil),' for reference to x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' ',CursorPos.Code.Filename);
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindReferences(CursorPos,SkipComments,

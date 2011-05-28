@@ -768,7 +768,7 @@ begin
   inherited Create;
   FInitValues:=TExpressionEvaluator.Create;
   Values:=TExpressionEvaluator.Create;
-  FChangeStep:=CTInvalidChangeStamp;
+  IncreaseChangeStep;
   FSourceChangeSteps:=TFPList.Create;
   FMainCode:=nil;
   FMainSourceFilename:='';

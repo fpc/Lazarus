@@ -69,7 +69,7 @@ type
     procedure SetScanner(const Value: TLinkScanner);
     procedure SetIsDeleted(const NewValue: boolean);
   protected
-    procedure IncreaseChangeStep; override;
+    procedure DoSourceChanged; override;
     procedure DecodeLoaded(const AFilename: string;
                     var ASource, ADiskEncoding, AMemEncoding: string); override;
     procedure EncodeSaving(const AFilename: string; var ASource: string); override;
@@ -298,7 +298,6 @@ begin
   inherited Create;
   FItems:=TAVLTree.Create(@CompareCodeBuffers);
   FIncludeLinks:=TAVLTree.Create(@CompareIncludedByLink);
-  FChangeStamp:=CTInvalidChangeStamp64;
 end;
 
 destructor TCodeCache.Destroy;
@@ -987,6 +986,8 @@ end;
 
 procedure TCodeCache.IncreaseChangeStamp;
 begin
+  debugln(['TCodeCache.IncreaseChangeStamp ']);
+  CTDumpStack;
   CTIncreaseChangeStamp64(FChangeStamp);
 end;
 
@@ -1137,9 +1138,9 @@ begin
   end;
 end;
 
-procedure TCodeBuffer.IncreaseChangeStep;
+procedure TCodeBuffer.DoSourceChanged;
 begin
-  inherited IncreaseChangeStep;
+  inherited DoSourceChanged;
   if FCodeCache<>nil then
     FCodeCache.IncreaseChangeStamp;
 end;
