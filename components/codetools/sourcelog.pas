@@ -674,8 +674,9 @@ begin
   SrcStart:=PChar(FSource);
   SrcEnd:=SrcStart+FSrcLen;
   p:=SrcStart;
-  while (p<SrcEnd) do begin
+  repeat
     if (not (p^ in [#10,#13])) then begin
+      if (p^=#0) and (p>=SrcEnd) then break;
       inc(p);
     end else begin
       // new line
@@ -691,7 +692,7 @@ begin
         inc(p);
       FLineRanges[line].StartPos:=p-SrcStart+1;
     end;
-  end;
+  until false;
   FLineRanges[line].EndPos:=fSrcLen+1;
   FLineCount:=line;
   if not (FSource[FSrcLen] in [#10,#13]) then
