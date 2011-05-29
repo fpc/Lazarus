@@ -38,7 +38,7 @@ uses
   LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Forms, Controls,
   // codetools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
-  CodeToolsCfgScript, Laz_XMLCfg, CodeToolsStructs,
+  FileProcs, CodeToolsCfgScript, Laz_XMLCfg, CodeToolsStructs,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf,
@@ -837,7 +837,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
     NewFilename: string;
   begin
     NewFilename:=AmbiguousFilename+'.ambiguous';
-    if not RenameFileUTF8(AmbiguousFilename,NewFilename) then
+    if not FileProcs.RenameFileUTF8(AmbiguousFilename,NewFilename) then
     begin
       Result:=IDEMessageDialog(lisErrorRenamingFile,
        Format(lisUnableToRenameAmbiguousFileTo, ['"', AmbiguousFilename, '"',
@@ -1234,7 +1234,7 @@ begin
       dec(i);
       while i>=1 do begin
         repeat
-          if not RenameFileUTF8(BackupFilename+IntToStr(i),
+          if not FileProcs.RenameFileUTF8(BackupFilename+IntToStr(i),
              BackupFilename+IntToStr(i+1)) then
           begin
             ACaption:=lisRenameFileFailed;

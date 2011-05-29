@@ -82,7 +82,7 @@ uses
   BaseUnix,
 {$ENDIF}
   Classes, SysUtils, Process, UTF8Process,
-  LCLProc, FileUtil, Forms, Controls, Dialogs,
+  LCLProc, FileProcs, Forms, Controls, Dialogs,
   LazConf, Splash;
   
 type
@@ -154,21 +154,23 @@ begin
           Result := mrAbort;
           exit;
         end;
-      if not RenameFileUTF8(CurFilename, BackupFileName) then begin
+      if not FileProcs.RenameFileUTF8(CurFilename, BackupFileName) then begin
         MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
           [CurFilename, BackupFileName, SysErrorMessageUTF8(GetLastOSError)]),
           mtError, [mbOK], 0);
         Result := mrAbort;
         exit;
       end;
+      InvalidateFileStateCache;
     end;
-    if not RenameFileUTF8(NewFileName, CurFilename) then begin
+    if not FileProcs.RenameFileUTF8(NewFileName, CurFilename) then begin
       MessageDlg(format('Can''t rename "%s" to "%s"'#13'%s',
         [NewFileName, CurFilename, SysErrorMessageUTF8(GetLastOSError)]),
         mtError, [mbOK], 0);
       Result := mrAbort;
       exit;
     end;
+    InvalidateFileStateCache;
   end;
   Result:=mrOk;
 end;

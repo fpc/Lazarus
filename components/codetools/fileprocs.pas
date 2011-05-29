@@ -619,6 +619,7 @@ end;
 function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
 begin
   Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
+  InvalidateFileStateCache(Filename);
 end;
 
 function FileGetAttrUTF8(const FileName: String): Longint;
@@ -629,16 +630,21 @@ end;
 function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
 begin
   Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
+  InvalidateFileStateCache(Filename);
 end;
 
 function DeleteFileUTF8(const FileName: String): Boolean;
 begin
   Result:=SysUtils.DeleteFile(UTF8ToSys(Filename));
+  if Result then
+    InvalidateFileStateCache;
 end;
 
 function RenameFileUTF8(const OldName, NewName: String): Boolean;
 begin
   Result:=SysUtils.RenameFile(UTF8ToSys(OldName),UTF8ToSys(NewName));
+  if Result then
+    InvalidateFileStateCache;
 end;
 
 function FileSearchUTF8(const Name, DirList: String): String;

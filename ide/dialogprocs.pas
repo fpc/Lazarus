@@ -140,7 +140,7 @@ begin
     exit;
   end;
   repeat
-    if RenameFileUTF8(SrcFilename,DestFilename) then begin
+    if FileProcs.RenameFileUTF8(SrcFilename,DestFilename) then begin
       break;
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;

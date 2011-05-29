@@ -1465,7 +1465,7 @@ begin
   // if not a symlink => rename old file, create empty new file
   if not FileIsSymlink(Filename) and
      not FileIsLocked(Filename) and
-     RenameFileUTF8(Filename, BackupFilename) then
+     FileProcs.RenameFileUTF8(Filename, BackupFilename) then
   begin
     // create empty file
     FHandle := FileCreate(UTF8ToSys(FileName));
