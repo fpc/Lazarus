@@ -82,7 +82,7 @@ uses
   BaseUnix,
 {$ENDIF}
   Classes, SysUtils, Process, UTF8Process,
-  LCLProc, FileProcs, Forms, Controls, Dialogs,
+  LCLProc, FileProcs, FileUtil, Forms, Controls, Dialogs,
   LazConf, Splash;
   
 type
