@@ -88,6 +88,8 @@ resourcestring
   crsAlreadyDefined = 'Already defined';
   crsInInterface = 'In interface';
   crsInImplementation = 'In implementation';
+  crsDVIsAKeyword = '"%s" is a keyword.';
+  crsOnClipboard = 'On clipboard';
   crsLocalVariableOf = 'Local variable of %s';
   crsAlreadyDefinedAt = 'Already defined at %s';
   crsPrivate = 'Private';

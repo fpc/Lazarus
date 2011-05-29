@@ -166,7 +166,8 @@ begin
       NewIdentifier:=GetIdentifier(@Tool.Src[GetIdentStartPosition(Tool.Src,CleanPos)]);
       if IsKeyword then begin
         Handled:=true;
-        IDEMessageDialog('Error','"'+NewIdentifier+'" is a keyword.',mtError,[mbCancel]);
+        IDEMessageDialog(crsCWError, Format(crsDVIsAKeyword, [NewIdentifier]),
+          mtError, [mbCancel]);
         exit;
       end;
 
@@ -379,7 +380,7 @@ begin
 
   // add target for clipboard
   Target:=TCodyDeclareVarTarget.Create(CleanFindContext);
-  Target.Caption:='On clipboard';
+  Target.Caption:=crsOnClipboard;
   Targets.Add(Target);
 
   Caption:=Format(crsDeclareVariable3, [Identifier]);
@@ -392,6 +393,10 @@ begin
     WhereRadioGroup.Items.Add(Target.Caption);
   end;
   WhereRadioGroup.ItemIndex:=0;
+
+  ButtonPanel1.HelpButton.Caption:=crsHelp;
+  ButtonPanel1.OKButton.Caption:=crsBTNOK;
+  ButtonPanel1.CancelButton.Caption:=crsBTNCancel;
 
   // show dialog as modal form
   Result:=ShowModal=mrOk;
