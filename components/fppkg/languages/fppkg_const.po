@@ -1,0 +1,99 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: fppkg_const.rsaboutform
+msgid "About form"
+msgstr ""
+
+#: fppkg_const.rsarchivesdirectory
+msgid "Archives directory"
+msgstr ""
+
+#: fppkg_const.rsbuilddirectory
+msgid "Build directory"
+msgstr ""
+
+#: fppkg_const.rscompiler
+msgid "Compiler"
+msgstr ""
+
+#: fppkg_const.rscompilerconfigdirectory
+msgid "Compiler config directory"
+msgstr ""
+
+#: fppkg_const.rscompilertarget
+msgid "Compiler target"
+msgstr ""
+
+#: fppkg_const.rscompilerversion
+msgid "Compiler version"
+msgstr ""
+
+#: fppkg_const.rscustomfpmakeoptions
+msgid "Custom fpmake options"
+msgstr ""
+
+#: fppkg_const.rsdefaultcompilerconfig
+msgid "Default compiler config"
+msgstr ""
+
+#: fppkg_const.rsdownloader
+msgid "Downloader"
+msgstr ""
+
+#: fppkg_const.rsfpmakecompilerconfig
+msgid "fpmake compiler config"
+msgstr ""
+
+#: fppkg_const.rsfppkgoptions
+msgid "fppkg options"
+msgstr ""
+
+#: fppkg_const.rsfppkgsfailedresultds
+msgid "Fppkg %s failed: Result %d%s%s"
+msgstr ""
+
+#: fppkg_const.rsfreepascalpackagemanagerforlazarus
+msgid "Free Pascal package manager for Lazarus"
+msgstr ""
+
+#: fppkg_const.rsglobalinstalldir
+msgid "Global install dir"
+msgstr ""
+
+#: fppkg_const.rsglobalprefix
+msgid "Global prefix"
+msgstr ""
+
+#: fppkg_const.rslocalinstalldir
+msgid "Local install dir"
+msgstr ""
+
+#: fppkg_const.rslocalprefix
+msgid "Local prefix"
+msgstr ""
+
+#: fppkg_const.rslocalrepository
+msgid "Local repository"
+msgstr ""
+
+#: fppkg_const.rsnofppkgexecutablefound
+msgid "No fppkg executable found"
+msgstr ""
+
+#: fppkg_const.rsoptions
+msgid "Options"
+msgstr ""
+
+#: fppkg_const.rsremotemirrorsurl
+msgid "Remote mirrors URL"
+msgstr ""
+
+#: fppkg_const.rsremoterepository
+msgid "Remote repository"
+msgstr ""
+
+#: fppkg_const.rsshowlazaruspackagemanager
+msgid "Show Lazarus package manager"
+msgstr ""
+

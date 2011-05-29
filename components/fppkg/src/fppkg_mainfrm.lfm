@@ -1,7 +1,7 @@
 object FppkgForm: TFppkgForm
-  Left = 573
+  Left = 506
   Height = 600
-  Top = 214
+  Top = 208
   Width = 800
   Caption = 'FppkgForm'
   ClientHeight = 580

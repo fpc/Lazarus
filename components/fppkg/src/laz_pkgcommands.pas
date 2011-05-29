@@ -201,7 +201,9 @@ begin
   P:=AvailableRepository.PackageByName(PackageName);
   BuildDir:=PackageBuildPath(P);
 
+  {$ifdef SVNProtocol}
   M := AvailableMirrors.FindMirror(P.Mirror);
+  {$endif}
 
   if not Assigned(M) or (M.Protocol <> 'SVN') then
   begin

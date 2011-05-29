@@ -881,6 +881,7 @@ components/fppkg/images/install.png -text
 components/fppkg/images/lazarus_pkg.png -text
 components/fppkg/images/package_manager.png -text
 components/fppkg/images/update.png -text
+components/fppkg/languages/fppkg_const.po svneol=native#text/plain
 components/fppkg/readme.txt svneol=native#text/plain
 components/fppkg/src/fppkg_aboutfrm.lfm svneol=native#text/plain
 components/fppkg/src/fppkg_aboutfrm.pas svneol=native#text/plain
