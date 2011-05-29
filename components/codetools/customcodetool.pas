@@ -391,7 +391,7 @@ constructor TCustomCodeTool.Create;
 begin
   inherited Create;
   Tree:=TCodeTree.Create;
-  KeyWordFuncList:=TKeyWordFunctionList.Create;
+  KeyWordFuncList:=TKeyWordFunctionList.Create('TCustomCodeTool.KeyWordFuncList');
   BuildDefaultKeyWordFunctions;
   WordIsKeyWordFuncList:=WordIsKeyWord;
   LastAtoms:=TAtomRing.Create;

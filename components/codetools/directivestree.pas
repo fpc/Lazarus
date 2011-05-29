@@ -596,7 +596,7 @@ var
   c: Char;
 begin
   if FDefaultDirectiveFuncList=nil then begin
-    FDefaultDirectiveFuncList:=TKeyWordFunctionList.Create;
+    FDefaultDirectiveFuncList:=TKeyWordFunctionList.Create('TCompilerDirectivesTree.DefaultDirectiveFuncList');
     with FDefaultDirectiveFuncList do begin
       for c:='A' to 'Z' do begin
         if CompilerSwitchesNames[c]<>'' then begin

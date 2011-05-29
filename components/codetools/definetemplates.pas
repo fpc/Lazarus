@@ -3719,13 +3719,13 @@ begin
   FCache:=TAVLTree.Create(@CompareDirectoryDefines);
   FDefineStrings:=TStringTree.Create;
 
-  FMacroFunctions:=TKeyWordFunctionList.Create;
+  FMacroFunctions:=TKeyWordFunctionList.Create('TDefineTree.Create.MacroFunctions');
   FMacroFunctions.AddExtended('Ext',nil,@MacroFuncExtractFileExt);
   FMacroFunctions.AddExtended('PATH',nil,@MacroFuncExtractFilePath);
   FMacroFunctions.AddExtended('NAME',nil,@MacroFuncExtractFileName);
   FMacroFunctions.AddExtended('NAMEONLY',nil,@MacroFuncExtractFileNameOnly);
   
-  FMacroVariables:=TKeyWordFunctionList.Create;
+  FMacroVariables:=TKeyWordFunctionList.Create('TDefineTree.Create.MacroVariables');
 end;
 
 destructor TDefineTree.Destroy;

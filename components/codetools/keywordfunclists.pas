@@ -56,9 +56,11 @@ type
 
   TBaseKeyWordFunctionList = class
   private
+    FHasOnlyIdentifiers: boolean;
     FItems: PKeyWordFunctionListItem;
     FCount: integer;
     FCapacity: integer;
+    FName: string;
     FSorted: boolean;
     FBucketStart: {$ifdef FPC}^{$else}array of {$endif}integer;
     FMaxHashIndex: integer;
@@ -69,6 +71,8 @@ type
     function KeyWordToHashIndex(Start: PChar; Len: integer): integer;
   public
     DefaultKeyWordFunction: TKeyWordFunction;
+    constructor Create(const aName: string = '');
+    destructor Destroy;  override;
     procedure Clear;
     procedure Add(const AKeyWord: shortstring;
                   const AFunction: TKeyWordFunction);
@@ -84,9 +88,9 @@ type
     function Count: integer;
     function GetItem(Index: integer): TBaseKeyWordFunctionListItem;
     function IndexOf(const AKeyWord: shortstring): integer;
-    constructor Create;
-    destructor Destroy;  override;
     function CalcMemSize: PtrUInt;
+    property HasOnlyIdentifiers: boolean read FHasOnlyIdentifiers;
+    property Name: string read FName write FName;
   end;
 
   { TKeyWordFunctionList }
@@ -264,12 +268,14 @@ end;
 
 { TBaseKeyWordFunctionList }
 
-constructor TBaseKeyWordFunctionList.Create;
+constructor TBaseKeyWordFunctionList.Create(const aName: string);
 begin
   inherited Create;
+  FName:=aName;
   FSorted:=true;
   FMaxHashIndex:=-1;
   DefaultKeyWordFunction:={$ifdef FPC}@{$endif}AllwaysFalse;
+  FHasOnlyIdentifiers:=true;
 end;
 
 destructor TBaseKeyWordFunctionList.Destroy;
@@ -301,6 +307,7 @@ begin
   end;
   FMaxHashIndex:=-1;  
   FSorted:=true;
+  FHasOnlyIdentifiers:=true;
 end;
 
 function TBaseKeyWordFunctionList.KeyWordToHashIndex(
@@ -378,6 +385,8 @@ begin
     DoDataFunction:=ADataFunction;
   end;
   inc(FCount);
+  if (AKeyWord='') or not IsValidIdent(AKeyWord) then
+    FHasOnlyIdentifiers:=false;
 end;
 
 procedure TBaseKeyWordFunctionList.Add(List: TBaseKeyWordFunctionList);
@@ -512,8 +521,20 @@ end;
 { TKeyWordFunctionList }
 
 function TKeyWordFunctionList.DoIdentifier(Identifier: PChar): boolean;
+
+  procedure RaiseNonIdentifiers;
+  var
+    i: Integer;
+  begin
+    debugln(['RaiseNonIdentifiers DoIdentifier does not work on this list. Name=',Name]);
+    for i:=0 to FMaxHashIndex do
+      debugln(['  ',i,'=',FItems[i].KeyWord]);
+    RaiseCatchableException('TKeyWordFunctionList.DoIdentifier');
+  end;
+
 var i: integer;
 begin
+  if not FHasOnlyIdentifiers then RaiseNonIdentifiers;
   if not FSorted then Sort;
   i:=KeyWordToHashIndex(Identifier);
   if i>=0 then begin
@@ -822,7 +843,7 @@ begin
 
   KeyWordLists:=TFPList.Create;
   
-  IsKeyWordMethodSpecifier:=TKeyWordFunctionList.Create;
+  IsKeyWordMethodSpecifier:=TKeyWordFunctionList.Create('IsKeyWordMethodSpecifier');
   KeyWordLists.Add(IsKeyWordMethodSpecifier);
   with IsKeyWordMethodSpecifier do begin
     Add('ABSTRACT'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -855,7 +876,7 @@ begin
     Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;
+  IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create('IsKeyWordProcedureSpecifier');
   KeyWordLists.Add(IsKeyWordProcedureSpecifier);
   with IsKeyWordProcedureSpecifier do begin
     Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -893,7 +914,7 @@ begin
     Add('WEAKEXTERNAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
+  IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create('IsKeyWordProcedureTypeSpecifier');
   KeyWordLists.Add(IsKeyWordProcedureTypeSpecifier);
   with IsKeyWordProcedureTypeSpecifier do begin
     Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -916,7 +937,7 @@ begin
     Add('IS'           ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  IsKeyWordCallingConvention:=TKeyWordFunctionList.Create;
+  IsKeyWordCallingConvention:=TKeyWordFunctionList.Create('IsKeyWordCallingConvention');
   KeyWordLists.Add(IsKeyWordCallingConvention);
   with IsKeyWordCallingConvention do begin
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -928,7 +949,7 @@ begin
     // Note: 'inline' and 'is nested' are not a calling specifiers
   end;
 
-  IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;
+  IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create('IsKeyWordProcedureBracketSpecifier');
   KeyWordLists.Add(IsKeyWordProcedureBracketSpecifier);
   with IsKeyWordProcedureBracketSpecifier do begin
     Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -941,7 +962,7 @@ begin
     Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  IsKeyWordSection:=TKeyWordFunctionList.Create;
+  IsKeyWordSection:=TKeyWordFunctionList.Create('IsKeyWordSection');
   KeyWordLists.Add(IsKeyWordSection);
   with IsKeyWordSection do begin
     Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -954,7 +975,7 @@ begin
     Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  IsKeyWordInConstAllowed:=TKeyWordFunctionList.Create;
+  IsKeyWordInConstAllowed:=TKeyWordFunctionList.Create('IsKeyWordInConstAllowed');
   KeyWordLists.Add(IsKeyWordInConstAllowed);
   with IsKeyWordInConstAllowed do begin
     Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -973,7 +994,7 @@ begin
     Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsKeyWord:=TKeyWordFunctionList.Create;
+  WordIsKeyWord:=TKeyWordFunctionList.Create('WordIsKeyWord');
   KeyWordLists.Add(WordIsKeyWord);
   with WordIsKeyWord do begin
     //Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
@@ -1048,7 +1069,7 @@ begin
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsDelphiKeyWord:=TKeyWordFunctionList.Create;
+  WordIsDelphiKeyWord:=TKeyWordFunctionList.Create('WordIsDelphiKeyWord');
   KeyWordLists.Add(WordIsDelphiKeyWord);
   with WordIsDelphiKeyWord do begin
     Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1115,7 +1136,7 @@ begin
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  WordIsMacPasKeyWord:=TKeyWordFunctionList.Create;
+  WordIsMacPasKeyWord:=TKeyWordFunctionList.Create('WordIsMacPasKeyWord');
   KeyWordLists.Add(WordIsMacPasKeyWord);
   with WordIsMacPasKeyWord do begin
     //Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
@@ -1190,7 +1211,7 @@ begin
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  AllKeyWords:=TKeyWordFunctionList.Create;
+  AllKeyWords:=TKeyWordFunctionList.Create('AllKeyWords');
   KeyWordLists.Add(AllKeyWords);
   AllKeyWords.Add(WordIsKeyWord);
   with AllKeyWords do begin
@@ -1200,7 +1221,7 @@ begin
     Add('OUT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  IsWordBuiltInFunc:=TKeyWordFunctionList.Create;
+  IsWordBuiltInFunc:=TKeyWordFunctionList.Create('IsWordBuiltInFunc');
   KeyWordLists.Add(IsWordBuiltInFunc);
   with IsWordBuiltInFunc do begin
     Add('LOW'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1234,7 +1255,7 @@ begin
     Add('OBJCSELECTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsTermOperator:=TKeyWordFunctionList.Create;
+  WordIsTermOperator:=TKeyWordFunctionList.Create('WordIsTermOperator');
   KeyWordLists.Add(WordIsTermOperator);
   with WordIsTermOperator do begin
     Add('+',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1253,7 +1274,7 @@ begin
     Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsPropertySpecifier:=TKeyWordFunctionList.Create;
+  WordIsPropertySpecifier:=TKeyWordFunctionList.Create('WordIsPropertySpecifier');
   KeyWordLists.Add(WordIsPropertySpecifier);
   with WordIsPropertySpecifier do begin
     Add('INDEX',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1266,7 +1287,7 @@ begin
     Add('DISPID',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsBlockKeyWord:=TKeyWordFunctionList.Create;
+  WordIsBlockKeyWord:=TKeyWordFunctionList.Create('WordIsBlockKeyWord');
   KeyWordLists.Add(WordIsBlockKeyWord);
   with WordIsBlockKeyWord do begin
     Add('ASM',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1285,7 +1306,7 @@ begin
     Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  EndKeyWordFuncList:=TKeyWordFunctionList.Create;
+  EndKeyWordFuncList:=TKeyWordFunctionList.Create('EndKeyWordFuncList');
   KeyWordLists.Add(EndKeyWordFuncList);
   with EndKeyWordFuncList do begin
     Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1295,7 +1316,7 @@ begin
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  PackedTypesKeyWordFuncList:=TKeyWordFunctionList.Create;
+  PackedTypesKeyWordFuncList:=TKeyWordFunctionList.Create('PackedTypesKeyWordFuncList');
   KeyWordLists.Add(PackedTypesKeyWordFuncList);
   with PackedTypesKeyWordFuncList do begin
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1305,7 +1326,7 @@ begin
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  BitPackedTypesKeyWordFuncList:=TKeyWordFunctionList.Create;
+  BitPackedTypesKeyWordFuncList:=TKeyWordFunctionList.Create('BitPackedTypesKeyWordFuncList');
   KeyWordLists.Add(BitPackedTypesKeyWordFuncList);
   with BitPackedTypesKeyWordFuncList do begin
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1315,7 +1336,7 @@ begin
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  GenericTypesKeyWordFuncList:=TKeyWordFunctionList.Create;
+  GenericTypesKeyWordFuncList:=TKeyWordFunctionList.Create('GenericTypesKeyWordFuncList');
   KeyWordLists.Add(GenericTypesKeyWordFuncList);
   with GenericTypesKeyWordFuncList do begin
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1325,7 +1346,7 @@ begin
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  BlockStatementStartKeyWordFuncList:=TKeyWordFunctionList.Create;
+  BlockStatementStartKeyWordFuncList:=TKeyWordFunctionList.Create('BlockStatementStartKeyWordFuncList');
   KeyWordLists.Add(BlockStatementStartKeyWordFuncList);
   with BlockStatementStartKeyWordFuncList do begin
     Add('BEGIN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1335,7 +1356,7 @@ begin
     Add('CASE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  UnexpectedKeyWordInBeginBlock:=TKeyWordFunctionList.Create;
+  UnexpectedKeyWordInBeginBlock:=TKeyWordFunctionList.Create('UnexpectedKeyWordInBeginBlock');
   KeyWordLists.Add(UnexpectedKeyWordInBeginBlock);
   with UnexpectedKeyWordInBeginBlock do begin
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1359,7 +1380,7 @@ begin
     Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  UnexpectedKeyWordInAsmBlock:=TKeyWordFunctionList.Create;
+  UnexpectedKeyWordInAsmBlock:=TKeyWordFunctionList.Create('UnexpectedKeyWordInAsmBlock');
   KeyWordLists.Add(UnexpectedKeyWordInAsmBlock);
   with UnexpectedKeyWordInAsmBlock do begin
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1382,7 +1403,7 @@ begin
     Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  UnexpectedKeyWordInBrackets:=TKeyWordFunctionList.Create;
+  UnexpectedKeyWordInBrackets:=TKeyWordFunctionList.Create('UnexpectedKeyWordInBrackets');
   KeyWordLists.Add(UnexpectedKeyWordInBrackets);
   with UnexpectedKeyWordInBrackets do begin
     Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1400,7 +1421,7 @@ begin
     Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  WordIsLogicalBlockStart:=TKeyWordFunctionList.Create;
+  WordIsLogicalBlockStart:=TKeyWordFunctionList.Create('WordIsLogicalBlockStart');
   KeyWordLists.Add(WordIsLogicalBlockStart);
   with WordIsLogicalBlockStart do begin
     Add('(',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1433,7 +1454,7 @@ begin
     Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsLogicalBlockEnd:=TKeyWordFunctionList.Create;
+  WordIsLogicalBlockEnd:=TKeyWordFunctionList.Create('WordIsLogicalBlockEnd');
   KeyWordLists.Add(WordIsLogicalBlockEnd);
   with WordIsLogicalBlockEnd do begin
     Add(')',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1446,14 +1467,14 @@ begin
     Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  WordIsLogicalBlockMiddle:=TKeyWordFunctionList.Create;
+  WordIsLogicalBlockMiddle:=TKeyWordFunctionList.Create('WordIsLogicalBlockMiddle');
   KeyWordLists.Add(WordIsLogicalBlockMiddle);
   with WordIsLogicalBlockMiddle do begin
     Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  WordIsBlockStatementStart:=TKeyWordFunctionList.Create;
+  WordIsBlockStatementStart:=TKeyWordFunctionList.Create('WordIsBlockStatementStart');
   KeyWordLists.Add(WordIsBlockStatementStart);
   with WordIsBlockStatementStart do begin
     Add('(',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1467,7 +1488,7 @@ begin
     Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  WordIsBlockStatementEnd:=TKeyWordFunctionList.Create;
+  WordIsBlockStatementEnd:=TKeyWordFunctionList.Create('WordIsBlockStatementEnd');
   KeyWordLists.Add(WordIsBlockStatementEnd);
   with WordIsBlockStatementEnd do begin
     Add(')',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1477,14 +1498,14 @@ begin
     Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  WordIsBlockStatementMiddle:=TKeyWordFunctionList.Create;
+  WordIsBlockStatementMiddle:=TKeyWordFunctionList.Create('WordIsBlockStatementMiddle');
   KeyWordLists.Add(WordIsBlockStatementMiddle);
   with WordIsBlockStatementMiddle do begin
     Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  WordIsBinaryOperator:=TKeyWordFunctionList.Create;
+  WordIsBinaryOperator:=TKeyWordFunctionList.Create('WordIsBinaryOperator');
   KeyWordLists.Add(WordIsBinaryOperator);
   with WordIsBinaryOperator do begin
     Add('+'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1509,14 +1530,14 @@ begin
     Add('AS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsLvl1Operator:=TKeyWordFunctionList.Create;
+  WordIsLvl1Operator:=TKeyWordFunctionList.Create('WordIsLvl1Operator');
   KeyWordLists.Add(WordIsLvl1Operator);
   with WordIsLvl1Operator do begin
     Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('@'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsLvl2Operator:=TKeyWordFunctionList.Create;
+  WordIsLvl2Operator:=TKeyWordFunctionList.Create('WordIsLvl2Operator');
   KeyWordLists.Add(WordIsLvl2Operator);
   with WordIsLvl2Operator do begin
     Add('*'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1529,7 +1550,7 @@ begin
     Add('AS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsLvl3Operator:=TKeyWordFunctionList.Create;
+  WordIsLvl3Operator:=TKeyWordFunctionList.Create('WordIsLvl3Operator');
   KeyWordLists.Add(WordIsLvl3Operator);
   with WordIsLvl3Operator do begin
     Add('+'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1538,7 +1559,7 @@ begin
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsLvl4Operator:=TKeyWordFunctionList.Create;
+  WordIsLvl4Operator:=TKeyWordFunctionList.Create('WordIsLvl4Operator');
   KeyWordLists.Add(WordIsLvl4Operator);
   with WordIsLvl4Operator do begin
     Add('=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1551,7 +1572,7 @@ begin
     Add('IS',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsBooleanOperator:=TKeyWordFunctionList.Create;
+  WordIsBooleanOperator:=TKeyWordFunctionList.Create('WordIsBooleanOperator');
   KeyWordLists.Add(WordIsBooleanOperator);
   with WordIsBooleanOperator do begin
     Add('=' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1564,7 +1585,7 @@ begin
     Add('IS',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsOrdNumberOperator:=TKeyWordFunctionList.Create;
+  WordIsOrdNumberOperator:=TKeyWordFunctionList.Create('WordIsOrdNumberOperator');
   KeyWordLists.Add(WordIsOrdNumberOperator);
   with WordIsOrdNumberOperator do begin
     Add('OR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1576,7 +1597,7 @@ begin
     Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsNumberOperator:=TKeyWordFunctionList.Create;
+  WordIsNumberOperator:=TKeyWordFunctionList.Create('WordIsNumberOperator');
   KeyWordLists.Add(WordIsNumberOperator);
   with WordIsNumberOperator do begin
     Add('+' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1584,7 +1605,7 @@ begin
     Add('*' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
-  WordIsPredefinedFPCIdentifier:=TKeyWordFunctionList.Create;
+  WordIsPredefinedFPCIdentifier:=TKeyWordFunctionList.Create('WordIsPredefinedFPCIdentifier');
   KeyWordLists.Add(WordIsPredefinedFPCIdentifier);
   with WordIsPredefinedFPCIdentifier do begin
     Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1625,7 +1646,7 @@ begin
   // functions
   WordIsPredefinedFPCIdentifier.Add(IsWordBuiltInFunc);
   
-  WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;
+  WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create('WordIsPredefinedDelphiIdentifier');
   KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);
   with WordIsPredefinedDelphiIdentifier do begin
     Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);

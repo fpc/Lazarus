@@ -1563,7 +1563,8 @@ begin
       else if pphIsType in ParseAttr then
         IsSpecifier:=IsKeyWordProcedureTypeSpecifier.DoIdentifier(@Src[CurPos.StartPos])
       else
-        IsSpecifier:=IsKeyWordProcedureSpecifier.DoIdentifier(@Src[CurPos.StartPos]);
+        IsSpecifier:=IsKeyWordProcedureSpecifier.DoItCaseInsensitive(Src,
+                                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
     end else
       IsSpecifier:=false;
     if IsSpecifier then begin
@@ -1784,7 +1785,9 @@ begin
       end;
     end;
     if CurPos.StartPos>SrcLen then break;
-    if not WordIsTermOperator.DoIdentifier(@Src[CurPos.StartPos]) then begin
+    if not WordIsTermOperator.DoItCaseInsensitive(Src,CurPos.StartPos,
+      CurPos.EndPos-CurPos.StartPos)
+    then begin
       // not a operator
       break;
     end;
@@ -2282,7 +2285,8 @@ begin
   //DebugLn('[TPascalParserTool.DoAtom] A ',DbgS(CurKeyWordFuncList));
   if (CurPos.StartPos<=SrcLen) and (CurPos.EndPos>CurPos.StartPos) then begin
     if IsIdentStartChar[Src[CurPos.StartPos]] then
-      Result:=KeyWordFuncList.DoIdentifier(@Src[CurPos.StartPos])
+      Result:=KeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
+                                                  CurPos.EndPos-CurPos.StartPos)
     else begin
       if Src[CurPos.StartPos] in ['(','['] then
         ReadTilBracketClose(true);
@@ -2659,7 +2663,8 @@ function TPascalParserTool.ReadTilBlockStatementEnd(
 begin
   if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
     Result:=ReadTilBracketClose(ExceptionOnNotFound)
-  else if WordIsBlockStatementStart.DoIdentifier(@Src[CurPos.StartPos])
+  else if WordIsBlockStatementStart.DoItCaseInsensitive(Src,CurPos.StartPos,
+    CurPos.EndPos-CurPos.StartPos)
   then
     Result:=ReadTilBlockEnd(false,false)
   else

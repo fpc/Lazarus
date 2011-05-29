@@ -352,7 +352,7 @@ procedure BuildBlockKeyWordFuncList;
 var BlockWord: TBlockKeyword;
 begin
   if BlockKeywordFuncList=nil then begin
-    BlockKeywordFuncList:=TKeyWordFunctionList.Create;
+    BlockKeywordFuncList:=TKeyWordFunctionList.Create('StdCodeTools.BlockKeywordFuncList');
     for BlockWord:=Low(TBlockKeyword) to High(TBlockKeyword) do
       with BlockKeywordFuncList do
         Add(BlockKeywords[BlockWord],{$ifdef FPC}@{$endif}AllwaysTrue);

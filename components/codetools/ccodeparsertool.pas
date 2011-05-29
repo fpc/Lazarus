@@ -424,14 +424,14 @@ begin
   if KeyWordLists<>nil then exit;
   KeyWordLists:=TFPList.Create;
   
-  IsCCodeFunctionModifier:=TKeyWordFunctionList.Create;
+  IsCCodeFunctionModifier:=TKeyWordFunctionList.Create('IsCCodeFunctionModifier');
   KeyWordLists.Add(IsCCodeFunctionModifier);
   with IsCCodeFunctionModifier do begin
     Add('static'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('inline'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
-  IsCCodeCustomOperator:=TKeyWordFunctionList.Create;
+  IsCCodeCustomOperator:=TKeyWordFunctionList.Create('IsCCodeCustomOperator');
   KeyWordLists.Add(IsCCodeCustomOperator);
   with IsCCodeCustomOperator do begin
     Add('+'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1183,7 +1183,7 @@ end;
 procedure TCCodeParserTool.InitKeyWordList;
 begin
   if FDefaultTokenList=nil then begin
-    FDefaultTokenList:=TKeyWordFunctionList.Create;
+    FDefaultTokenList:=TKeyWordFunctionList.Create('TCCodeParserTool.DefaultTokenList');
     with FDefaultTokenList do begin
       Add('#',{$ifdef FPC}@{$endif}DirectiveToken);
       Add('extern',{$ifdef FPC}@{$endif}ExternToken);
