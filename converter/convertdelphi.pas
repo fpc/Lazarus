@@ -470,6 +470,7 @@ begin
   fPascalBuffer:=nil;
   Result:=LoadCodeBuffer(fPascalBuffer,fLazUnitFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk],true);
+  if Result<>mrOk then exit;
   // Create a shared link for codetools.
   Assert(fCTLink=Nil, 'fCTLink should be Nil in CopyAndLoadFile');
   fCTLink:=TCodeToolLink.Create(fPascalBuffer);
@@ -1209,7 +1210,8 @@ begin
     fMainUnitConverter.LazFileExt:=ExtractFileExt(fOrigPFilename)
   else
     fMainUnitConverter.LazFileExt:='.lpr';
-  fMainUnitConverter.CopyAndLoadFile;
+  Result:=fMainUnitConverter.CopyAndLoadFile;
+  if Result<>mrOk then exit;
   if LazProject.MainUnitInfo=nil then begin
     // add .lpr file to project as main unit
     MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fPascalBuffer);
@@ -1368,6 +1370,7 @@ var
     Converter.fUnitInfo:=AUnitInfo;
     ConvUnits.Add(Converter);
     Result:=Converter.CopyAndLoadFile;
+    if Result<>mrOK then exit;
     Result:=Converter.CheckFailed(Result);
     if Result<>mrOK then exit;
     Result:=Converter.ConvertUnitFile;
@@ -1569,9 +1572,11 @@ begin
       Converter:=TConvertDelphiUnit.Create(Self, PkgFile.Filename,[]);
       ConvUnits.Add(Converter);
       Result:=Converter.CopyAndLoadFile;
+      if Result<>mrOK then exit;
       Result:=Converter.CheckFailed(Result);
       if Result<>mrOK then Break;
       Result:=Converter.ConvertUnitFile;
+      if Result<>mrOK then exit;
       Result:=Converter.CheckFailed(Result);
       if Result<>mrOK then Break;
     end;
