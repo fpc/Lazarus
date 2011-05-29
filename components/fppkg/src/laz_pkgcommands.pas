@@ -203,7 +203,6 @@ begin
 
   {$ifdef SVNProtocol}
   M := AvailableMirrors.FindMirror(P.Mirror);
-  {$endif}
 
   if not Assigned(M) or (M.Protocol <> 'SVN') then
   begin
@@ -226,6 +225,7 @@ begin
       end;
   end
   else
+  {$endif}
     { Create builddir }
     if not DirectoryExists(BuildDir) then
       ExecuteSvnCommand('export ' + M.URL + P.FileName + ' "' + BuildDir + '"');
