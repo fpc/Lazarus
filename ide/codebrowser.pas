@@ -328,6 +328,9 @@ type
     procedure ExpandCollapseAllNodesInTreeView(NodeType: TExpandableNodeType;
                                                Expand: boolean);
     procedure CopyNode(TVNode: TTreeNode; NodeType: TCopyNodeType);
+    function GetCodeTool(AnUnit: TCodeBrowserUnit): TStandardCodeTool;
+    procedure GetNodeDescription(Tool: TStandardCodeTool;
+      CTNode: TCodeTreeNode; out Description, Identifier: string);
     function GetSelectedUnit: TCodeBrowserUnit;
     function GetSelectedPackage: TLazPackage;
     function GetCurUnitInSrcEditor(out FileOwner: TObject;
@@ -1826,6 +1829,100 @@ begin
   StatusBar1.SimpleText:=s;
 end;
 
+function TCodeBrowserView.GetCodeTool(AnUnit: TCodeBrowserUnit): TStandardCodeTool;
+begin
+  //DebugLn(['TCodeBrowserView.GetCodeTool ',AnUnit.CodeTool<>nil,' ',AnUnit.CodeBuffer<>nil]);
+  Result:=AnUnit.CodeTool;
+  if Result<>nil then exit;
+  if AnUnit.CodeBuffer=nil then exit;
+  Result:=CodeToolBoss.GetCodeToolForSource(AnUnit.CodeBuffer,true,false)
+              as TCodeTool;
+  AnUnit.CodeTool:=Result;
+  //DebugLn(['TCodeBrowserView.GetCodeTool END ',AnUnit.Filename,' ',Result<>nil]);
+end;
+
+procedure TCodeBrowserView.GetNodeDescription(Tool: TStandardCodeTool;
+  CTNode: TCodeTreeNode; out Description, Identifier: string);
+
+  function Shorten(const s: string): string;
+  const
+    MAX_LEN=100;
+  begin
+    Result:=DbgStr(s);
+    if Length(Result)>MAX_LEN then
+      Result:=LeftStr(Result, MAX_LEN)+'...';
+  end;
+
+const
+  NodeFlags = [];
+var
+  Inheritance: String;
+begin
+  case CTNode.Desc of
+  ctnProcedure:
+    begin
+      Identifier:=Tool.ExtractProcHead(CTNode,ProcIdentifierFlags);
+      Description:=Tool.ExtractProcHead(CTNode,ProcDescFlags);
+    end;
+  ctnVarDefinition:
+    begin
+      Identifier:=Tool.ExtractDefinitionName(CTNode);
+      Description:='var '+Identifier
+                 +' : '+Shorten(Tool.ExtractDefinitionNodeType(CTNode));
+    end;
+  ctnConstDefinition:
+    begin
+      Identifier:=Tool.ExtractDefinitionName(CTNode);
+      Description:='const '+Shorten(Tool.ExtractNode(CTNode,NodeFlags));
+    end;
+  ctnTypeDefinition,ctnGenericType:
+    begin
+      Identifier:=Tool.ExtractDefinitionName(CTNode);
+      Description:='type '+Identifier;
+      if CTNode.FirstChild<>nil then begin
+        case CTNode.FirstChild.Desc of
+        ctnClass,ctnClassInterface,ctnObject,
+        ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
+        ctnCPPClass:
+          begin
+            case CTNode.FirstChild.Desc of
+            ctnClassInterface:
+              Description:=Description+' = interface';
+            ctnObject:
+              Description:=Description+' = object';
+            ctnObjCClass:
+              Description:=Description+' = objcclass';
+            ctnObjCCategory:
+              Description:=Description+' = objccategory';
+            ctnObjCProtocol:
+              Description:=Description+' = objcprotocol';
+            ctnCPPClass:
+              Description:=Description+' = cppclass';
+            else
+              Description:=Description+' = class';
+            end;
+            Inheritance:=Tool.ExtractClassInheritance(CTNode.FirstChild,[]);
+            if Inheritance<>'' then
+              Description:=Description+'('+Inheritance+')';
+          end;
+        ctnRecordType:
+          Description:=Description+' = record';
+        end;
+      end;
+    end;
+  ctnProperty:
+    begin
+      Identifier:=Tool.ExtractPropName(CTNode,false);
+      Description:='property '+Shorten(Tool.ExtractProperty(CTNode,PropDescFlags));
+    end;
+  ctnEnumIdentifier:
+    begin
+      Identifier:=Tool.ExtractIdentifier(CTNode.StartPos);
+      Description:='enum '+Identifier;
+    end;
+  end;
+end;
+
 procedure TCodeBrowserView.UpdateTreeView;
 var
   ShowPackages: boolean;
@@ -1841,17 +1938,6 @@ var
   LevelFilterText: array[TCodeBrowserLevel] of string;
   LevelFilterType: array[TCodeBrowserLevel] of TCodeBrowserTextFilter;
 
-  function GetCodeTool(AnUnit: TCodeBrowserUnit): TStandardCodeTool;
-  begin
-    //DebugLn(['GetCodeTool ',AnUnit.CodeTool<>nil,' ',AnUnit.CodeBuffer<>nil]);
-    Result:=AnUnit.CodeTool;
-    if Result<>nil then exit;
-    if AnUnit.CodeBuffer=nil then exit;
-    Result:=CodeToolBoss.GetCodeToolForSource(AnUnit.CodeBuffer,true,false)
-                as TCodeTool;
-    //DebugLn(['GetCodeTool END ',Result<>nil]);
-  end;
-  
   function IdentifierFitsFilter(LvlType: TCodeBrowserLevel;
     const Identifier: string): boolean;
   begin
@@ -1873,137 +1959,50 @@ var
 
   procedure AddUnitNodes(SrcUnit: TCodeBrowserUnit; var DestUnit: TObject);
   var
-    Tool: TStandardCodeTool;
+    CTTool: TStandardCodeTool;
     
-    procedure AddUnit;
-    begin
-      if DestUnit=nil then
-        DestUnit:=TCodeBrowserUnit.Create('');
-    end;
-    
-    function Shorten(const s: string): string;
-    const
-      MAX_LEN=100;
-    begin
-      Result:=DbgStr(s);
-      if Length(Result)>MAX_LEN then
-        Result:=LeftStr(Result, MAX_LEN)+'...';
-    end;
-
-    procedure GetNodeDescription(CTNode: TCodeTreeNode;
-      out Description, Identifier: string);
-    const
-      NodeFlags = [];
+    procedure AddChildNode(ParentBrowserNode: TCodeBrowserNode;
+      CTNode: TCodeTreeNode);
     var
-      Inheritance: String;
+      NewChildNode: TCodeBrowserNode;
+      ChildDescription, ChildIdentifier: string;
+      NewCodePos: TCodePosition;
     begin
-      case CTNode.Desc of
-      ctnProcedure:
-        begin
-          Identifier:=Tool.ExtractProcHead(CTNode,ProcIdentifierFlags);
-          Description:=Tool.ExtractProcHead(CTNode,ProcDescFlags);
-        end;
-      ctnVarDefinition:
-        begin
-          Identifier:=Tool.ExtractDefinitionName(CTNode);
-          Description:='var '+Identifier
-                     +' : '+Shorten(Tool.ExtractDefinitionNodeType(CTNode));
-        end;
-      ctnConstDefinition:
-        begin
-          Identifier:=Tool.ExtractDefinitionName(CTNode);
-          Description:='const '+Shorten(Tool.ExtractNode(CTNode,NodeFlags));
-        end;
-      ctnTypeDefinition,ctnGenericType:
-        begin
-          Identifier:=Tool.ExtractDefinitionName(CTNode);
-          Description:='type '+Identifier;
-          if CTNode.FirstChild<>nil then begin
-            case CTNode.FirstChild.Desc of
-            ctnClass,ctnClassInterface,ctnObject,
-            ctnObjCClass,ctnObjCCategory,ctnObjCProtocol,
-            ctnCPPClass:
-              begin
-                case CTNode.FirstChild.Desc of
-                ctnClassInterface:
-                  Description:=Description+' = interface';
-                ctnObject:
-                  Description:=Description+' = object';
-                ctnObjCClass:
-                  Description:=Description+' = objcclass';
-                ctnObjCCategory:
-                  Description:=Description+' = objccategory';
-                ctnObjCProtocol:
-                  Description:=Description+' = objcprotocol';
-                ctnCPPClass:
-                  Description:=Description+' = cppclass';
-                else
-                  Description:=Description+' = class';
-                end;
-                Inheritance:=Tool.ExtractClassInheritance(CTNode.FirstChild,[]);
-                if Inheritance<>'' then
-                  Description:=Description+'('+Inheritance+')';
-              end;
-            ctnRecordType:
-              Description:=Description+' = record';
-            end;
-          end;
-        end;
-      ctnProperty:
-        begin
-          Identifier:=Tool.ExtractPropName(CTNode,false);
-          Description:='property '+Shorten(Tool.ExtractProperty(CTNode,PropDescFlags));
-        end;
-      ctnEnumIdentifier:
-        begin
-          Identifier:=Tool.ExtractIdentifier(CTNode.StartPos);
-          Description:='enum '+Identifier;
+      //DebugLn(['AddChildNode ',ChildCTNode.DescAsString,' ',ChildDescription]);
+      if (CTNode.Parent.Desc=ctnClassPrivate) and (not ShowPrivate) then
+        exit;
+      if (CTNode.Parent.Desc=ctnClassProtected) and (not ShowProtected)
+      then
+        exit;
+      GetNodeDescription(CTTool,CTNode,ChildDescription,ChildIdentifier);
+
+      if IdentifierFitsFilter(cblIdentifiers,ChildIdentifier) then begin
+        NewChildNode:=ParentBrowserNode.AddNode(ChildDescription,ChildIdentifier);
+        if NewChildNode<>nil then begin
+          NewChildNode.Desc:=CTNode.Desc;
+          CTTool.CleanPosToCodePos(CTNode.StartPos,NewCodePos);
+          NewChildNode.CodePos:=NewCodePos;
         end;
       end;
     end;
-    
+
     procedure AddIdentifierNode(CTNode: TCodeTreeNode);
     var
       NewNode: TCodeBrowserNode;
       ChildCTNode: TCodeTreeNode;
-
-      procedure AddChildNode;
-      var
-        NewChildNode: TCodeBrowserNode;
-        ChildDescription, ChildIdentifier: string;
-        NewCodePos: TCodePosition;
-      begin
-        //DebugLn(['AddChildNode ',ChildCTNode.DescAsString,' ',ChildDescription]);
-        if (ChildCTNode.Parent.Desc=ctnClassPrivate) and (not ShowPrivate) then
-          exit;
-        if (ChildCTNode.Parent.Desc=ctnClassProtected) and (not ShowProtected)
-        then
-          exit;
-        GetNodeDescription(ChildCTNode,ChildDescription,ChildIdentifier);
-        
-        if IdentifierFitsFilter(cblIdentifiers,ChildIdentifier) then begin
-          NewChildNode:=NewNode.AddNode(ChildDescription,ChildIdentifier);
-          if NewChildNode<>nil then begin
-            NewChildNode.Desc:=ChildCTNode.Desc;
-            Tool.CleanPosToCodePos(ChildCTNode.StartPos,NewCodePos);
-            NewChildNode.CodePos:=NewCodePos;
-          end;
-        end;
-      end;
-      
-    var
       Description, Identifier: string;
       CurUnit: TCodeBrowserUnit;
       NewCodePos: TCodePosition;
     begin
       if not ShowIdentifiers then exit;
-      AddUnit;
+      if DestUnit=nil then
+        DestUnit:=TCodeBrowserUnit.Create('');
       CurUnit:=TCodeBrowserUnit(DestUnit);
       //DebugLn(['AddIdentifierNode ',CTNode.DescAsString,' Description="',Description,'"']);
-      GetNodeDescription(CTNode,Description,Identifier);
+      GetNodeDescription(CTTool,CTNode,Description,Identifier);
       NewNode:=CurUnit.AddNode(Description,Identifier);
       NewNode.Desc:=CTNode.Desc;
-      Tool.CleanPosToCodePos(CTNode.StartPos,NewCodePos);
+      CTTool.CleanPosToCodePos(CTNode.StartPos,NewCodePos);
       NewNode.CodePos:=NewCodePos;
       //DebugLn(['AddIdentifierNode Code=',NewNode.FCodePos.Code<>nil,' P=',NewNode.FCodePos.P]);
       
@@ -2018,7 +2017,7 @@ var
           if ChildCTNode.Desc in
           [ctnProcedure,ctnVarDefinition,ctnProperty,ctnEnumIdentifier]
           then begin
-            AddChildNode;
+            AddChildNode(NewNode,ChildCTNode);
           end;
           if ChildCTNode.Desc=ctnProcedureHead then
             ChildCTNode:=ChildCTNode.NextSkipChilds
@@ -2039,19 +2038,19 @@ var
   begin
     if SrcUnit=nil then exit;
     //DebugLn(['AddUnitNodes SrcUnit.Filename="',SrcUnit.Filename,'"']);
-    Tool:=GetCodeTool(SrcUnit);
-    if Tool=nil then exit;
-    if Tool.Tree=nil then exit;
+    CTTool:=GetCodeTool(SrcUnit);
+    if CTTool=nil then exit;
+    if CTTool.Tree=nil then exit;
     
-    CTNode:=Tool.Tree.Root;
+    CTNode:=CTTool.Tree.Root;
     while CTNode<>nil do begin
       //DebugLn(['AddUnitNodes ',CTNode.DescAsString]);
       case CTNode.Desc of
       ctnProcedure:
-        if not Tool.NodeIsMethodBody(CTNode) then
+        if not CTTool.NodeIsMethodBody(CTNode) then
           AddIdentifierNode(CTNode);
       ctnVarDefinition,ctnConstDefinition,ctnTypeDefinition,ctnGenericType:
-        if not Tool.NodeIsForwardDeclaration(CTNode) then
+        if not CTTool.NodeIsForwardDeclaration(CTNode) then
           AddIdentifierNode(CTNode);
       end;
 
@@ -2164,7 +2163,7 @@ var
       Node:=SrcList.UnitLists.FindLowest;
       while Node<>nil do begin
         SubList:=TCodeBrowserUnitList(Node.Data);
-        AddUnitLists(SubList,DestParentList);// DestParentList because: as sibling not child!
+        AddUnitLists(SubList,DestParentList);// DestParentList because: as sibling not as child!
         Node:=SrcList.UnitLists.FindSuccessor(Node);
       end;
     end;

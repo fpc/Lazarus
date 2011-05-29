@@ -110,8 +110,8 @@ type
     FOwner: string;
     FParentList: TCodeBrowserUnitList;
     FScannedUnits: integer;
-    FUnitLists: TAVLTree;
-    FUnits: TAVLTree;
+    FUnitLists: TAVLTree; // tree of TCodeBrowserUnitList
+    FUnits: TAVLTree; // tree of TCodeBrowserUnit
     FUnitsValid: boolean;
     fClearing: boolean;
     procedure SetOwner(const AValue: string);
