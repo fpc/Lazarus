@@ -185,6 +185,10 @@ msgstr ""
 msgid "Declare variable \"%s\""
 msgstr ""
 
+#: codystrconsts.crsdvisakeyword
+msgid "\"%s\" is a keyword."
+msgstr ""
+
 #: codystrconsts.crsfile
 msgid "File"
 msgstr ""
@@ -251,6 +255,10 @@ msgstr ""
 
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
+msgstr ""
+
+#: codystrconsts.crsonclipboard
+msgid "On clipboard"
 msgstr ""
 
 #: codystrconsts.crsoptions

@@ -193,6 +193,10 @@ msgstr "Объявить переменную ..."
 msgid "Declare variable \"%s\""
 msgstr "Объявление переменной \"%s\""
 
+#: codystrconsts.crsdvisakeyword
+msgid "\"%s\" is a keyword."
+msgstr "\"%s\" является ключевым словом."
+
 #: codystrconsts.crsfile
 msgid "File"
 msgstr "Файл"
@@ -215,11 +219,11 @@ msgstr "&Справка"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
-msgstr ""
+msgstr "В секции Implementation"
 
 #: codystrconsts.crsininterface
 msgid "In interface"
-msgstr ""
+msgstr "В секции Interface"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert file at cursor ..."
@@ -260,6 +264,10 @@ msgstr "Проект отсутствует"
 #: codystrconsts.crsnounitselected
 msgid "No unit selected"
 msgstr "Модуль не выбран"
+
+#: codystrconsts.crsonclipboard
+msgid "On clipboard"
+msgstr "В буфере обмена"
 
 #: codystrconsts.crsoptions
 msgid "Options"
