@@ -10228,19 +10228,6 @@ begin
     xtContext:
       begin
         FindContext:=ExprType.Context;
-        if not (FindContext.Node.Desc in AllIdentifierDefinitions) then
-        begin
-          if (FindContext.Node.Parent<>nil)
-          and (FindContext.Node.Parent.Desc in AllIdentifierDefinitions) then
-          begin
-            FindContext.Node:=FindContext.Node.Parent;
-          end else begin
-            Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                           fdfTopLvlResolving,fdfFunctionResult];
-            FindContext:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
-                                                         ExprType.Context.Node);
-          end;
-        end;
 
         // ToDo: PPU, DCU
 
@@ -10266,12 +10253,21 @@ begin
             Result:=GetIdentifier(
                        @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
 
-        ctnEnumerationType:
+        ctnEnumIdentifier:
           if (FindContext.Node.Parent<>nil)
-          and (FindContext.Node.Parent.Desc=ctnTypeDefinition)
+          and (FindContext.Node.Parent.Desc=ctnEnumerationType)
+          and (FindContext.Node.Parent.Parent<>nil)
+          and (FindContext.Node.Parent.Parent.Desc=ctnTypeDefinition)
           then
             Result:=GetIdentifier(
-                     @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
+                     @FindContext.Tool.Src[FindContext.Node.Parent.Parent.StartPos]);
+
+        ctnEnumerationType:
+          if (FindContext.Node.Parent.Parent<>nil)
+          and (FindContext.Node.Parent.Parent.Desc=ctnTypeDefinition)
+          then
+            Result:=GetIdentifier(
+                     @FindContext.Tool.Src[FindContext.Node.Parent.Parent.StartPos]);
 
         ctnProperty,ctnGlobalProperty:
           begin

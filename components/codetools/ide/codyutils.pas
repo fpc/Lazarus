@@ -335,7 +335,7 @@ begin
   try
     try
       // todo: check node and cursor
-
+      //Range:=trTillCursor;
       if Delete then begin
 
       end;
