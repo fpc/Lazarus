@@ -342,8 +342,8 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: codystrconsts.crsremovewithblock
-msgid "Remove With block"
+#: codystrconsts.crsremoveawithblock
+msgid "Remove a \"With\" block"
 msgstr ""
 
 #: codystrconsts.crsreport

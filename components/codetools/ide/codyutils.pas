@@ -108,7 +108,7 @@ type
     cupeSuccess
     );
 
-procedure RemoveWithBlockCmd(Sender: TObject);
+procedure RemoveAWithBlockCmd(Sender: TObject);
 procedure InsertFileAtCursor(Sender: TObject);
 procedure AddCallInherited(Sender: TObject);
 
@@ -119,7 +119,7 @@ procedure OpenCodyHelp(Path: string);
 
 implementation
 
-procedure RemoveWithBlockCmd(Sender: TObject);
+procedure RemoveAWithBlockCmd(Sender: TObject);
 
   procedure ErrorNotInWithVar;
   begin

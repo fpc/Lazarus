@@ -342,9 +342,9 @@ msgstr "Published"
 msgid "Refresh"
 msgstr "Обновить"
 
-#: codystrconsts.crsremovewithblock
-msgid "Remove With block"
-msgstr "Удалить блок With"
+#: codystrconsts.crsremoveawithblock
+msgid "Remove a \"With\" block"
+msgstr ""
 
 #: codystrconsts.crsreport
 msgid "Report"

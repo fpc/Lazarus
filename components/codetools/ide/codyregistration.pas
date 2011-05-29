@@ -46,7 +46,7 @@ var
   CmdCatFileMenu: TIDECommandCategory;
   PPUListCommand: TIDECommand;
   AddAssignMethodCommand: TIDECommand;
-  RemoveWithBlockCommand: TIDECommand;
+  RemoveAWithBlockCommand: TIDECommand;
   InsertFileAtCursorCommand: TIDECommand;
   DeclareVariableCommand: TIDECommand;
   TVIconRes: TLResource;
@@ -110,11 +110,11 @@ begin
     crsAddAssignMethod2,nil,nil,AddAssignMethodCommand);
 
   // remove With block
-  RemoveWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'RemoveWithBlock',
-    crsRemoveWithBlock,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@RemoveWithBlockCmd);
-  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'RemoveWithBlock',
-    crsRemoveWithBlock, nil, nil, RemoveWithBlockCommand);
+  RemoveAWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'RemoveAWithBlock',
+    crsRemoveAWithBlock,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@RemoveAWithBlockCmd);
+  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'RemoveAWithBlock',
+    crsRemoveAWithBlock, nil, nil, RemoveAWithBlockCommand);
 
   // IDE internals menu - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

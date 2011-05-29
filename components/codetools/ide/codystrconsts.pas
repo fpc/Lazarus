@@ -76,7 +76,7 @@ resourcestring
   crsAddAssignMethod = 'Add Assign method';
   crsShowCodeToolsNodeInfo = 'Show CodeTools node info ...';
   crsAddAssignMethod2 = 'Add Assign method ...';
-  crsRemoveWithBlock = 'Remove With block';
+  crsRemoveAWithBlock = 'Remove a "With" block';
 
   crsCWError = 'Error';
   crsPleaseSpecifyAType = 'Please specify a type';

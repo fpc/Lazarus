@@ -2087,8 +2087,8 @@ var
     //DebugLn(['AddUnits SrcList.Owner="',SrcList.Owner,'" HasUnits=',SrcList.Units<>nil]);
     if SrcList.Units=nil then exit;
     OldDestParentList:=DestParentList;
-    Node:=SrcList.Units.FindLowest;
     NewUnit:=nil;
+    Node:=SrcList.Units.FindLowest;
     while Node<>nil do begin
       CurUnit:=TCodeBrowserUnit(Node.Data);
       if (CurUnit.Filename='')

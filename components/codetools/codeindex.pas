@@ -70,7 +70,7 @@ type
 
   TCodeBrowserUnit = class
   private
-    FChildNodes: TAVLTree;
+    FChildNodes: TAVLTree; // tree of TCodeBrowserNode
     FCodeBuffer: TCodeBuffer;
     FCodeTool: TStandardCodeTool;
     FCodeTreeChangeStep: integer;
