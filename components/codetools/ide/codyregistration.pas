@@ -54,6 +54,8 @@ var
   ShowCodeNodeInfoCommand: TIDECommand;
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
+  CopyDeclarationToClipboardCommand: TIDECommand;
+  CutDeclarationToClipboardCommand: TIDECommand;
 begin
   CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
   if CmdCatFileMenu=nil then
@@ -108,6 +110,20 @@ begin
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowAddAssignMethodDialog);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'AddAssignMethod',
     crsAddAssignMethod2,nil,nil,AddAssignMethodCommand);
+
+  // Copy declaration to clipboard
+  CopyDeclarationToClipboardCommand:=RegisterIDECommand(CmdCatCodeTools,
+    'CopyDeclarationToClipboard', crsCopyDeclarationToClipboard,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@CopyDeclarationToClipboard);
+  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'CopyDeclarationToClipboard',
+    crsCopyDeclarationToClipboard,nil,nil,CopyDeclarationToClipboardCommand){$IFNDEF EnableCodyExperiments}.Visible:=false{$ENDIF};
+
+  // Cut declaration to clipboard
+  CutDeclarationToClipboardCommand:=RegisterIDECommand(CmdCatCodeTools,
+    'CutDeclarationToClipboard', crsCutDeclarationToClipboard,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@CutDeclarationToClipboard);
+  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'CutDeclarationToClipboard',
+    crsCutDeclarationToClipboard,nil,nil,CutDeclarationToClipboardCommand){$IFNDEF EnableCodyExperiments}.Visible:=false{$ENDIF};
 
   // remove With block
   RemoveAWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'RemoveAWithBlock',

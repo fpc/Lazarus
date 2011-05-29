@@ -111,10 +111,17 @@ type
 procedure RemoveAWithBlockCmd(Sender: TObject);
 procedure InsertFileAtCursor(Sender: TObject);
 procedure AddCallInherited(Sender: TObject);
+procedure CopyDeclarationToClipboard(Sender: TObject);
+procedure CutDeclarationToClipboard(Sender: TObject);
+procedure CutCopyDeclarationToClipboard(Delete: boolean);
 
 function ParseTilCursor(out Tool: TCodeTool; out CleanPos: integer;
    out Node: TCodeTreeNode; out ErrorHandled: boolean;
    JumpToError: boolean; CodePos: PCodeXYPosition = nil): TCUParseError;
+function ParseUnit(out Tool: TCodeTool; out CleanPos: integer;
+   out Node: TCodeTreeNode; out ErrorHandled: boolean;
+   JumpToError: boolean; CodePos: PCodeXYPosition = nil;
+   TilCursor: boolean = false): TCUParseError;
 procedure OpenCodyHelp(Path: string);
 
 implementation
@@ -295,9 +302,67 @@ begin
   end;
 end;
 
+procedure CopyDeclarationToClipboard(Sender: TObject);
+begin
+  CutCopyDeclarationToClipboard(false);
+end;
+
+procedure CutDeclarationToClipboard(Sender: TObject);
+begin
+  CutCopyDeclarationToClipboard(true);
+end;
+
+procedure CutCopyDeclarationToClipboard(Delete: boolean);
+
+  procedure ErrorNotInADeclaration;
+  begin
+    IDEMessageDialog(crsCWError,
+      crsPleasePlaceTheCursorOfTheSourceEditorOnAnIdentifie,
+      mtError,[mbCancel]);
+  end;
+
+var
+  Tool: TCodeTool;
+  CleanPos: integer;
+  CursorNode: TCodeTreeNode;
+  Handled: boolean;
+begin
+  if (ParseTilCursor(Tool,CleanPos,CursorNode,Handled,true)<>cupeSuccess)
+  and not Handled then begin
+    ErrorNotInADeclaration;
+    exit;
+  end;
+  try
+    try
+      // todo: check node and cursor
+
+      if Delete then begin
+
+      end;
+    except
+      on e: Exception do CodeToolBoss.HandleException(e);
+    end;
+  finally
+    // syntax error or not in a method
+    if not Handled then begin
+      if CodeToolBoss.ErrorMessage<>'' then
+        LazarusIDE.DoJumpToCodeToolBossError
+      else
+        ErrorNotInADeclaration;
+    end;
+  end;
+end;
+
 function ParseTilCursor(out Tool: TCodeTool; out CleanPos: integer;
   out Node: TCodeTreeNode; out ErrorHandled: boolean;
   JumpToError: boolean; CodePos: PCodeXYPosition): TCUParseError;
+begin
+  Result:=ParseUnit(Tool,CleanPos,Node,ErrorHandled,JumpToError,CodePos,true);
+end;
+
+function ParseUnit(out Tool: TCodeTool; out CleanPos: integer;
+  out Node: TCodeTreeNode; out ErrorHandled: boolean; JumpToError: boolean;
+  CodePos: PCodeXYPosition; TilCursor: boolean): TCUParseError;
 var
   SrcEdit: TSourceEditorInterface;
   CursorPos: TCodeXYPosition;
@@ -325,8 +390,12 @@ begin
     try
       Tool:=CodeToolBoss.CurCodeTool;
       Result:=cupeParseError;
-      Tool.BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanPos,
-                                   [btSetIgnoreErrorPos]);
+      //Range:=trTillRange;
+      if TilCursor then
+        Tool.BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanPos,
+                                    [btSetIgnoreErrorPos])
+      else
+        Tool.BuildTreeAndGetCleanPos(trTillRange,lsrEnd,CursorPos,CleanPos,[]);
       Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
       if Node=nil then
         exit(cupeCursorNotInCode);

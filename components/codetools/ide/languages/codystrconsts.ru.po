@@ -145,6 +145,10 @@ msgstr "&Закрыть"
 msgid "Code Node Information"
 msgstr "Сведения об элементе кода"
 
+#: codystrconsts.crscopydeclarationtoclipboard
+msgid "Copy declaration to clipboard"
+msgstr ""
+
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
 msgstr "%s|Все файлы (%s)|%s"
@@ -160,6 +164,10 @@ msgstr "Расположите курсор редактора исходног�
 #: codystrconsts.crscuselectfiletoinsertatcursor
 msgid "Select file to insert at cursor"
 msgstr "Выбор файла для вставки в месте расположения курсора"
+
+#: codystrconsts.crscutdeclarationtoclipboard
+msgid "Cut declaration to clipboard"
+msgstr ""
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
 msgid "The file seems to be a binary. Proceed?"
@@ -297,6 +305,10 @@ msgstr "Сначала необходимо открыть проект."
 #| msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example on the MyVar in%sMyVar:=3;"
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr "Расположите курсор редактора исходного кода на идентификаторе в операторе.%sНапример:%sMyVar:=3;"
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
+msgid "Please place the cursor of the source editor on an identifier of a declaration."
+msgstr ""
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"

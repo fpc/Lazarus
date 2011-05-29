@@ -137,6 +137,10 @@ msgstr ""
 msgid "Code Node Information"
 msgstr ""
 
+#: codystrconsts.crscopydeclarationtoclipboard
+msgid "Copy declaration to clipboard"
+msgstr ""
+
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
 msgstr ""
@@ -151,6 +155,10 @@ msgstr ""
 
 #: codystrconsts.crscuselectfiletoinsertatcursor
 msgid "Select file to insert at cursor"
+msgstr ""
+
+#: codystrconsts.crscutdeclarationtoclipboard
+msgid "Cut declaration to clipboard"
 msgstr ""
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
@@ -287,6 +295,10 @@ msgstr ""
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
+msgstr ""
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
+msgid "Please place the cursor of the source editor on an identifier of a declaration."
 msgstr ""
 
 #: codystrconsts.crspleasespecifyalocation

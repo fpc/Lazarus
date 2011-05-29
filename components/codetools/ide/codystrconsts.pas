@@ -76,9 +76,13 @@ resourcestring
   crsAddAssignMethod = 'Add Assign method';
   crsShowCodeToolsNodeInfo = 'Show CodeTools node info ...';
   crsAddAssignMethod2 = 'Add Assign method ...';
+  crsCopyDeclarationToClipboard = 'Copy declaration to clipboard';
+  crsCutDeclarationToClipboard = 'Cut declaration to clipboard';
   crsRemoveAWithBlock = 'Remove a "With" block';
 
   crsCWError = 'Error';
+  crsPleasePlaceTheCursorOfTheSourceEditorOnAnIdentifie = 'Please place the '
+    +'cursor of the source editor on an identifier of a declaration.';
   crsPleaseSpecifyAType = 'Please specify a type';
   crsPleaseSpecifyALocation = 'Please specify a location';
   crsPleasePlaceTheCursorOfTheSourceEditorAtAnIdentifie = 'Please place the '
