@@ -556,6 +556,7 @@ components/codetools/ide/addassignmethoddlg.lfm svneol=native#text/plain
 components/codetools/ide/addassignmethoddlg.pas svneol=native#text/plain
 components/codetools/ide/cody.lpk svneol=native#text/plain
 components/codetools/ide/cody.pas svneol=native#text/pascal
+components/codetools/ide/codycopydeclaration.pas svneol=native#text/plain
 components/codetools/ide/codyctrls.pas svneol=native#text/plain
 components/codetools/ide/codyfrm.lfm svneol=native#text/plain
 components/codetools/ide/codyfrm.pas svneol=native#text/plain

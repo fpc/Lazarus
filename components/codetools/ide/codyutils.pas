@@ -111,9 +111,6 @@ type
 procedure RemoveAWithBlockCmd(Sender: TObject);
 procedure InsertFileAtCursor(Sender: TObject);
 procedure AddCallInherited(Sender: TObject);
-procedure CopyDeclarationToClipboard(Sender: TObject);
-procedure CutDeclarationToClipboard(Sender: TObject);
-procedure CutCopyDeclarationToClipboard(Delete: boolean);
 
 function ParseTilCursor(out Tool: TCodeTool; out CleanPos: integer;
    out Node: TCodeTreeNode; out ErrorHandled: boolean;
@@ -298,57 +295,6 @@ begin
         LazarusIDE.DoJumpToCodeToolBossError
       else
         ErrorNotInMethod;
-    end;
-  end;
-end;
-
-procedure CopyDeclarationToClipboard(Sender: TObject);
-begin
-  CutCopyDeclarationToClipboard(false);
-end;
-
-procedure CutDeclarationToClipboard(Sender: TObject);
-begin
-  CutCopyDeclarationToClipboard(true);
-end;
-
-procedure CutCopyDeclarationToClipboard(Delete: boolean);
-
-  procedure ErrorNotInADeclaration;
-  begin
-    IDEMessageDialog(crsCWError,
-      crsPleasePlaceTheCursorOfTheSourceEditorOnAnIdentifie,
-      mtError,[mbCancel]);
-  end;
-
-var
-  Tool: TCodeTool;
-  CleanPos: integer;
-  CursorNode: TCodeTreeNode;
-  Handled: boolean;
-begin
-  if (ParseTilCursor(Tool,CleanPos,CursorNode,Handled,true)<>cupeSuccess)
-  and not Handled then begin
-    ErrorNotInADeclaration;
-    exit;
-  end;
-  try
-    try
-      // todo: check node and cursor
-      //Range:=trTillCursor;
-      if Delete then begin
-
-      end;
-    except
-      on e: Exception do CodeToolBoss.HandleException(e);
-    end;
-  finally
-    // syntax error or not in a method
-    if not Handled then begin
-      if CodeToolBoss.ErrorMessage<>'' then
-        LazarusIDE.DoJumpToCodeToolBossError
-      else
-        ErrorNotInADeclaration;
     end;
   end;
 end;

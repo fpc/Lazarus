@@ -19,7 +19,7 @@
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
     <Version Major="1" Minor="1"/>
-    <Files Count="9">
+    <Files Count="10">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
         <UnitName Value="PPUListDlg"/>
@@ -57,6 +57,10 @@
         <Filename Value="codynodeinfodlg.pas"/>
         <UnitName Value="CodyNodeInfoDlg"/>
       </Item9>
+      <Item10>
+        <Filename Value="codycopydeclaration.pas"/>
+        <UnitName Value="codycopydeclaration"/>
+      </Item10>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>

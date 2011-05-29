@@ -66,7 +66,7 @@ type
     TheUnitName: string;
     procedure WriteToStream(MemStream: TMemoryStream); override;
     procedure ReadFromStream(MemStream: TMemoryStream); override;
-    procedure Execute(SrcEdit: TSourceEditorInterface; {%H-}LogXY: TPoint); override;
+    procedure Execute(SrcEdit: TSourceEditorInterface; LogXY: TPoint); override;
   end;
 
   { TCodyDeclareVarDialog }

@@ -261,6 +261,7 @@ type
     procedure ReadNextAtom;
     procedure UndoReadNextAtom;
     procedure ReadPriorAtom;
+    procedure ReadPriorAtomSafe(CleanPos: integer);
     procedure ReadAsStringConstant; // start at CurPos.StartPos
 
     // read blocks
@@ -1681,6 +1682,45 @@ begin
   end;
 end;
 
+procedure TCustomCodeTool.ReadPriorAtomSafe(CleanPos: integer);
+var
+  Node: TCodeTreeNode;
+begin
+  // find a clean pos in front
+  Node:=FindDeepestNodeAtPos(CleanPos,false);
+  repeat
+    repeat
+      if Node=nil then begin
+        MoveCursorToCleanPos(0);
+        exit;
+      end;
+      if Node.EndPos<CleanPos then begin
+        MoveCursorToCleanPos(Node.EndPos);
+        break;
+      end else if Node.StartPos<CleanPos then begin
+        MoveCursorToCleanPos(Node.StartPos);
+        break;
+      end;
+      Node:=Node.Prior;
+    until false;
+    ReadNextAtom;
+    if CurPos.StartPos<CleanPos then
+      exit;
+    // first atom of node is behind CleanPos => try prior node
+    Node:=Node.Prior;
+  until false;
+  if CurPos.EndPos>=CleanPos then begin
+    exit;
+  end;
+  repeat
+    ReadNextAtom;
+    if CurPos.EndPos>=CleanPos then begin
+      UndoReadNextAtom;
+      exit;
+    end;
+  until false;
+end;
+
 procedure TCustomCodeTool.ReadAsStringConstant;
 var
   p: PChar;
@@ -2676,7 +2716,7 @@ end;
 function TCustomCodeTool.FindLineEndOrCodeAfterPosition(StartPos: integer;
   SkipEmptyLines: boolean; IncludeLineEnd: boolean): integer;
 { Searches a nice position in the cleaned source after StartPos.
-  It will skip any space or comments (not directives) till next
+  It will skip any space and comments (not directives) till next
   line end or compiler directive or code or include file end.
 }
 var

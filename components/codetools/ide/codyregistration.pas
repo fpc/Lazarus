@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LResources, Controls,
   IDECommands, MenuIntf, IDEWindowIntf, SrcEditorIntf,
   CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
-  CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg;
+  CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration;
 
 procedure Register;
 
