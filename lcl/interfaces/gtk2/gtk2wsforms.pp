@@ -735,6 +735,8 @@ begin
       TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
     g_signal_connect(Scrolled^.vscrollbar, 'change-value',
       TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+    g_signal_connect(Scrolled, 'scroll-event',
+      TGCallback(@Gtk2ScrolledWindowScrollCB), WidgetInfo);
   end;
 end;
 

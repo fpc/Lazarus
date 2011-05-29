@@ -2700,6 +2700,50 @@ begin
   Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
 end;
 
+function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow; AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
+var
+  Msg: TLMVScroll;
+  AValue: Double;
+  Range: PGtkRange;
+begin
+  case AEvent^.direction of
+    GDK_SCROLL_UP,
+    GDK_SCROLL_DOWN: Msg.Msg := LM_VSCROLL;
+    GDK_SCROLL_LEFT,
+    GDK_SCROLL_RIGHT: Msg.Msg := LM_HSCROLL;
+  end;
+
+  case Msg.Msg of
+    LM_VSCROLL: Range := GTK_RANGE(AScrollWindow^.vscrollbar);
+    LM_HSCROLL: Range := GTK_RANGE(AScrollWindow^.hscrollbar);
+  end;
+
+  AValue :=  power(Range^.adjustment^.page_size, 2 / 3);
+
+  if (AEvent^.direction = GDK_SCROLL_UP) or
+     (AEvent^.direction = GDK_SCROLL_LEFT)
+  then
+    AValue := -AValue;
+
+  AValue := gtk_range_get_value(Range) + AValue;
+
+  AValue := Max(AValue, Range^.adjustment^.lower);
+  AValue := Min(AValue, Range^.adjustment^.upper - Range^.adjustment^.page_size);
+
+  with Msg do
+  begin
+    Pos := Round(AValue);
+    if Pos < High(SmallPos) then
+      SmallPos := Pos
+    else
+      SmallPos := High(SmallPos);
+
+    ScrollBar := HWND(PtrUInt(Range));
+    ScrollCode := SB_THUMBPOSITION;
+  end;
+  Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
+end;
+
 {------------------------------------------------------------------------------
   Function: GTKKeySnooper
   Params:  Widget: The widget for which this event is fired
