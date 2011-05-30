@@ -397,6 +397,8 @@ end;
 
 function TEditorKeymappingOptionsFrame.KeyMappingRelationToString(
   KeyRelation: TKeyCommandRelation): String;
+const
+  MaxLength = 60;
 
   function AddBrakets(S: String): String;
   begin
@@ -406,7 +408,9 @@ function TEditorKeymappingOptionsFrame.KeyMappingRelationToString(
 begin
   with KeyRelation do
   begin
-    Result := UTF8Copy(LocalizedName, 1, 40);
+    Result := LocalizedName;
+    if UTF8Length(Result)>MaxLength then
+      Result := UTF8Copy(LocalizedName, 1, MaxLength)+'...';
     if Result <> '' then
       Result := Result + '  ';
     if (ShortcutA.Key1 = VK_UNKNOWN) and (ShortcutB.Key1 = VK_UNKNOWN) then
