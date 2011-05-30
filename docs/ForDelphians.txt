@@ -1,4 +1,7 @@
-This text is for people knowing Delphi and it describes the differences
+This text is for people knowing Delphi and it describes the differences.
+
+The online document is more uptodate:
+http://wiki.lazarus.freepascal.org/Lazarus_Documentation#Coming_from_Delphi
 
 
 Delphi -> Lazarus
