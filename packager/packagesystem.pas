@@ -154,6 +154,7 @@ type
     function Count: integer; // number of Packages
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
+    procedure UpdatePkgOutputDir(APackage: TLazPackage);
     function Updating: boolean;
     procedure RebuildDefineTemplates;
     function MacroFunctionPkgDir(const s: string; const Data: PtrInt;
@@ -707,6 +708,38 @@ begin
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
     if Assigned(OnEndUpdate) then OnEndUpdate(Self,fChanged);
+  end;
+end;
+
+procedure TLazPackageGraph.UpdatePkgOutputDir(APackage: TLazPackage);
+var
+  StateFilename: String;
+  OutputDir: String;
+  NewOutputDir: String;
+begin
+  if (APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride='') then
+  begin
+    OutputDir:=APackage.GetOutputDirectory(false);
+    if not DirectoryIsWritableCached(OutputDir) then
+    begin
+      // the package uses the default output directory, but the default is
+      // not writable.
+      // => check the alternative
+      if Assigned(OnGetWritablePkgOutputDirectory) then begin
+        NewOutputDir:=OutputDir;
+        OnGetWritablePkgOutputDirectory(APackage, NewOutputDir);
+        if (NewOutputDir<>OutputDir) and (NewOutputDir<>'') then begin
+          StateFilename:=APackage.GetStateFilename(NewOutputDir);
+          if FileExistsCached(StateFilename) then begin
+            // the alternative output directory contains a state file
+            // this means the user has compiled his own version
+            // => use the alternative output directory
+            APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=
+              NewOutputDir;
+          end;
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -2981,8 +3014,6 @@ var
   StateFileAge: Integer;
   i: Integer;
   CurFile: TPkgFile;
-  NewOutputDir: String;
-  OutputDir: String;
   LastParams: String;
   LastPaths: TStringList;
   CurPaths: TStringList;
@@ -3007,29 +3038,7 @@ begin
   then
     NeedBuildAllFlag:=true;
 
-  if (APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride='') then
-  begin
-    OutputDir:=APackage.GetOutputDirectory(false);
-    if not DirectoryIsWritableCached(OutputDir) then
-    begin
-      // the package uses the default output directory, but the default is
-      // not writable.
-      // => check the alternative
-      if Assigned(OnGetWritablePkgOutputDirectory) then begin
-        NewOutputDir:=OutputDir;
-        OnGetWritablePkgOutputDirectory(APackage,NewOutputDir);
-        if (NewOutputDir<>OutputDir) and (NewOutputDir<>'') then begin
-          StateFilename:=APackage.GetStateFilename(NewOutputDir);
-          if FileExistsCached(StateFilename) then begin
-            // the alternative output directory contains a state file
-            // this means the user has compiled his own version
-            // => use the alternative output directory
-            APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
-          end;
-        end;
-      end;
-    end;
-  end;
+  UpdatePkgOutputDir(APackage);
 
   // check state file
   StateFilename:=APackage.GetStateFilename;
@@ -3232,6 +3241,7 @@ begin
 
     SrcFilename:=APackage.GetSrcFilename;
     CompilerFilename:=APackage.GetCompilerFilename;
+    UpdatePkgOutputDir(APackage);
     // Note: use absolute paths, because some external tools resolve symlinked directories
     CompilerParams:=APackage.CompilerOptions.MakeOptionsString(Globals,
             APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths])

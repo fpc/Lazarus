@@ -2727,6 +2727,7 @@ begin
         CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
     end else
       CurOutputDir:='';
+    debugln(['TBaseCompilerOptions.MakeOptionsString UnitOutputDirectory="',UnitOutputDirectory,'" CurOutputDir="',CurOutputDir,'"']);
     if CurOutputDir<>'' then
       switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
   end;
@@ -3435,9 +3436,12 @@ end;
 
 procedure TParsedCompilerOptions.SetOutputDirectoryOverride(const AValue: string
   );
+var
+  NewDir: String;
 begin
-  if FOutputDirectoryOverride=AValue then exit;
-  FOutputDirectoryOverride:=AValue;
+  NewDir:=AppendPathDelim(TrimFilename(AValue));
+  if FOutputDirectoryOverride=NewDir then exit;
+  FOutputDirectoryOverride:=NewDir;
   if InvalidateParseOnChange then
     IncreaseCompilerParseStamp;// the output dir is used by other packages
   if FOutputDirectoryOverride<>'' then
