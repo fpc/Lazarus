@@ -147,7 +147,7 @@ msgstr "Сведения об элементе кода"
 
 #: codystrconsts.crscopydeclarationtoclipboard
 msgid "Copy declaration to clipboard"
-msgstr ""
+msgstr "Копировать объявление в буфер обмена"
 
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
@@ -167,7 +167,7 @@ msgstr "Выбор файла для вставки в месте располо
 
 #: codystrconsts.crscutdeclarationtoclipboard
 msgid "Cut declaration to clipboard"
-msgstr ""
+msgstr "Вырезать объявление в буфер обмена"
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
 msgid "The file seems to be a binary. Proceed?"
@@ -308,7 +308,7 @@ msgstr "Расположите курсор редактора исходног�
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
 msgid "Please place the cursor of the source editor on an identifier of a declaration."
-msgstr ""
+msgstr "Расположите курсор редактора исходного кода на идентификаторе в объявлении."
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
@@ -356,7 +356,7 @@ msgstr "Обновить"
 
 #: codystrconsts.crsremoveawithblock
 msgid "Remove a \"With\" block"
-msgstr ""
+msgstr "Удалить блок \"With\""
 
 #: codystrconsts.crsreport
 msgid "Report"
