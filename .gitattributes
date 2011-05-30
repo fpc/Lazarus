@@ -2976,6 +2976,7 @@ docs/INSTALL.txt svneol=native#text/plain
 docs/LCLMessages.txt svneol=native#text/plain
 docs/LazarusIDEInternals.pdf -text svneol=unset#application/pdf
 docs/RemoteDebugging.txt svneol=native#text/plain
+docs/SVN.txt svneol=native#text/plain
 docs/acknowledgements.txt svneol=native#text/plain
 docs/booth/ProdProgEntwMitOpenSourceSystems2007.odp -text
 docs/contributors.utf8 svneol=native#text/plain

@@ -1,0 +1,34 @@
+Your svn ~/.subversion/config should contain these entries:
+
+*.sh = svn:eol-style=native;svn:mime-type=text/plain;svn:executable
+*.lfm = svn:eol-style=native;svn:mime-type=text/plain
+*.lrs = svn:eol-style=native;svn:mime-type=text/pascal
+*.lpk = svn:eol-style=native;svn:mime-type=text/plain
+*.lpi = svn:eol-style=native;svn:mime-type=text/plain
+*.lpr = svn:eol-style=native;svn:mime-type=text/pascal
+*.lpl = svn:eol-style=native;svn:mime-type=text/plain
+*.po = svn:eol-style=native;svn:mime-type=text/plain
+*.p = svn:eol-style=native;svn:mime-type=text/pascal
+*.pp = svn:eol-style=native;svn:mime-type=text/pascal
+*.pas = svn:eol-style=native;svn:mime-type=text/pascal
+*.txt = svn:eol-style=native;svn:mime-type=text/plain
+Makefile = svn:eol-style=native;svn:mime-type=text/pascal
+Makefile.fpc = svn:eol-style=native;svn:mime-type=text/pascal
+Makefile.compiled = svn:eol-style=native;svn:mime-type=text/pascal
+
+You may add the following:
+*.inc = svn:eol-style=native;svn:mime-type=text/pascal
+*.xml = svn:eol-style=native;svn:mime-type=text/plain
+
+List all branches:
+svn ls http://svn.freepascal.org/svn/lazarus/branches
+
+List all tags:
+svn ls http://svn.freepascal.org/svn/lazarus/tags
+
+Checkout a fixes branch:
+svn co http://svn.freepascal.org/svn/lazarus/branches/fixes_0_9_30 lazarus
+
+Switching an existing to another branch:
+svn switch http://svn.freepascal.org/svn/lazarus/branches/fixes_0_9_30
+
