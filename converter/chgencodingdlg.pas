@@ -325,11 +325,11 @@ begin
           if Buf<>nil then begin
             //DebugLn(['TChgEncodingDialog.GetFiles Filename=',CurFilename,' Encoding=',NormalizeEncoding(Buf.DiskEncoding)]);
             CurEncoding:=NormalizeEncoding(Buf.DiskEncoding);
-            if CurEncoding=NewEncoding then continue;
+            if CurEncoding=NewEncoding then
+              continue;
             if (CurEncoding=EncodingUTF8) and (not UTF8FilesCheckBox.Checked) then
               continue;
-            if (CurEncoding<>EncodingUTF8)
-            and (not NonUTF8FilesCheckBox.Checked) then
+            if (CurEncoding<>EncodingUTF8) and (not NonUTF8FilesCheckBox.Checked) then
               continue;
             Tree[CurFilename]:=Buf.DiskEncoding;
           end else begin
