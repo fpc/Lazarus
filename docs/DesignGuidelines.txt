@@ -27,6 +27,8 @@ Include files:
 
 Packages:
 - should have an .lpl entry in packager/globallinks/
+  You can use "./tools/lplupdate -c" to find missing/outdated lpl files.
+- must have all fields in "Description"
 
 Dialogs (modal forms):
 - Close on Escape (if key not used otherwise)

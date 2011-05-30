@@ -2976,7 +2976,6 @@ docs/IDEWindowHelpTree.xml svneol=native#text/plain
 docs/INSTALL.txt svneol=native#text/plain
 docs/LCLMessages.txt svneol=native#text/plain
 docs/LazarusIDEInternals.pdf -text svneol=unset#application/pdf
-docs/Packages.txt svneol=native#text/plain
 docs/RemoteDebugging.txt svneol=native#text/plain
 docs/acknowledgements.txt svneol=native#text/plain
 docs/booth/ProdProgEntwMitOpenSourceSystems2007.odp -text
