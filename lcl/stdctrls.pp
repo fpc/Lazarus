@@ -548,6 +548,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure AddItem(const Item: String; AnObject: TObject);
     procedure Click; override; // make it public
     procedure Clear; virtual;
     procedure ClearSelection;

@@ -568,6 +568,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TCustomListBox.AddItem(const Item: String; AnObject: TObject);
+begin
+  Items.AddObject(Item, AnObject);
+end;
+
 function TCustomListBox.GetItemIndex: integer;
 begin
   if HandleAllocated then
