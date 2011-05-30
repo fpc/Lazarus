@@ -12,7 +12,7 @@ version=1.0.1
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 includedir=.
-options= -MObjFPC -Sci -O1 -gl -vewni -l -gh -gt -gl -dVerboseIndenter -dQT_NATIVE_DIALOGS -dWithSynOverviewGutter
+options= -MObjFPC -Sci -O1 -gl -vewni -l -gh -gt -gl -dQT_NATIVE_DIALOGS -dWithSynOverviewGutter
 
 [target]
 units=codetools.pas

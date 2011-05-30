@@ -2,12 +2,12 @@
   This source is only used to compile and install the package.
  }
 
-unit educationlaz; 
+unit EducationLaz; 
 
 interface
 
 uses
-  EduEnvOptsFrame, EduOptions, EduPkgSystem, EduCompPalette, EduMenu,
+    EduEnvOptsFrame, EduOptions, EduPkgSystem, EduCompPalette, EduMenu, 
   EduNewProgram, EduPropsEvents, EduOIPages, EduOptionsDlg, EduSpeedButtons, 
   LazarusPackageIntf;
 
