@@ -3863,12 +3863,12 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): boolean;
 
-  function DoFillTriangle : Boolean;
+  function DoFillTriangle: Boolean;
   begin
     Result := (Mode and GRADIENT_FILL_TRIANGLE) = GRADIENT_FILL_TRIANGLE;
   end;
 
-  function DoFillVRect : Boolean;
+  function DoFillVRect: Boolean;
   begin
     Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
   end;
@@ -3925,14 +3925,14 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     Result := False;
   end;
 
-  function FillRectMesh(Mesh : tagGradientRect) : boolean;
+  function FillRectMesh(Mesh: tagGradientRect) : boolean;
   var
-    TL,BR : tagTRIVERTEX;
-    StartColor, EndColor : TColorRef;
-    I, Swap : Longint;
-    SwapColors : Boolean;
-    UseBrush : hBrush;
-    Steps, MaxSteps: Int64;
+    TL,BR: tagTRIVERTEX;
+    StartColor, EndColor, SwapColor: TQColor;
+    Swap: Longint;
+    SwapColors: Boolean;
+    Grad: QGradientH;
+    Brush: QBrushH;
   begin
     with Mesh do
     begin
@@ -3955,45 +3955,24 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
         BR.Y := TL.Y;
         TL.Y := Swap;
       end;
-      StartColor := RGB(TL.Red shr 8, TL.Green  shr 8, TL.Blue shr 8);
-      EndColor := RGB(BR.Red shr 8, BR.Green shr 8, BR.Blue shr 8);
+      ColorRefToTQColor(RGB(TL.Red shr 8, TL.Green shr 8, TL.Blue shr 8), StartColor);
+      ColorRefToTQColor(RGB(BR.Red shr 8, BR.Green shr 8, BR.Blue shr 8), EndColor);
       if SwapColors then
       begin
-        Swap := StartColor;
+        SwapColor := StartColor;
         StartColor := EndColor;
-        EndColor := Swap;
+        EndColor := SwapColor;
       end;
-      UseBrush := 0;
-      MaxSteps := GetDeviceCaps(DC, BITSPIXEL);
-      if MaxSteps >= 32 then
-        MaxSteps := $FFFFFFFF
-      else
-      if MaxSteps >= 4 then
-        MaxSteps := 1 shl MaxSteps
-      else
-        MaxSteps := 256;
       if DoFillVRect then
-      begin
-        Steps := Min(BR.Y - TL.Y, MaxSteps);
-        for I := 0 to Steps - 1 do
-        begin
-          GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
-            LCLIntf.FillRect(DC, Rect(TL.X, TL.Y + I, BR.X, TL.Y + I + 1),
-              UseBrush);
-        end;
-      end
+        Grad := QLinearGradient_create(TL.X, TL.Y, TL.X, BR.Y)
       else
-      begin
-        Steps := Min(BR.X - TL.X, MaxSteps);
-        for i := 0 to  Steps - 1 do
-        begin
-          GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
-          LCLIntf.FillRect(DC, Rect(TL.X + I, TL.Y, TL.X + I + 1, BR.Y),
-            UseBrush);
-        end;
-      end;
-      If UseBrush <> 0 then
-        LCLIntf.DeleteObject(UseBrush);
+        Grad := QLinearGradient_create(TL.X, TL.Y, BR.X, TL.Y);
+      QGradient_setColorAt(Grad, 0, @StartColor);
+      QGradient_setColorAt(Grad, 1, @EndColor);
+      Brush := QBrush_create(Grad);
+      TQtDeviceContext(DC).fillRect(TL.X, TL.Y, BR.X - TL.X, BR.Y - TL.Y, Brush);
+      QGradient_destroy(Grad);
+      QBrush_destroy(Brush);
     end;
   end;
 
@@ -4028,7 +4007,7 @@ begin
     begin
       if DoFillTriangle then
       begin
-        If Not FillTriMesh(PGradientTriangle(Meshes)[I]) then
+        if not FillTriMesh(PGradientTriangle(Meshes)[I]) then
           exit;
       end
       else

@@ -575,8 +575,8 @@ begin
  Result := WidgetSet.GetWindowOrgEx(dc, P);
 end;
 
-function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
-  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean;
+function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices: Longint;
+  Meshes: Pointer; NumMeshes: Longint; Mode: Longint): Boolean;
 begin
   Result := WidgetSet.GradientFill(DC, Vertices, NumVertices, Meshes, NumMeshes, Mode);
 end;
