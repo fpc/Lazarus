@@ -384,6 +384,7 @@ type
     procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
     procedure drawPixmap(p: PQtPoint; pm: QPixmapH; sr: PRect);
     procedure drawPolyLine(P: PPoint; NumPts: Integer);
+    procedure drawPolygon(P: PPoint; NumPts: Integer; FillRule: QtFillRule = QtOddEvenFill);
     procedure eraseRect(ARect: PRect);
     procedure fillRect(ARect: PRect; ABrush: QBrushH); overload;
     procedure fillRect(x, y, w, h: Integer; ABrush: QBrushH); overload;
@@ -2552,6 +2553,26 @@ begin
   QtPoints[NumPts - 1] := QtPoint(LastPoint.X, LastPoint.Y);
 
   QPainter_drawPolyline(Widget, QtPoints, NumPts);
+  FreeMem(QtPoints);
+end;
+
+procedure TQtDeviceContext.drawPolygon(P: PPoint; NumPts: Integer;
+  FillRule: QtFillRule);
+var
+  QtPoints: PQtPoint;
+  i: integer;
+  LastPoint: TPoint;
+begin
+  GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
+  for i := 0 to NumPts - 2 do
+    QtPoints[i] := QtPoint(P[i].x, P[i].y);
+
+  LastPoint := P[NumPts - 1];
+  if NumPts > 1 then
+    LastPoint := GetLineLastPixelPos(P[NumPts - 2], LastPoint);
+  QtPoints[NumPts - 1] := QtPoint(LastPoint.X, LastPoint.Y);
+
+  QPainter_drawPolygon(Widget, QtPoints, NumPts, FillRule);
   FreeMem(QtPoints);
 end;
 

@@ -3863,66 +3863,73 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): boolean;
 
-  function DoFillTriangle: Boolean;
+  function DoFillTriangle: Boolean; inline;
   begin
     Result := (Mode and GRADIENT_FILL_TRIANGLE) = GRADIENT_FILL_TRIANGLE;
   end;
 
-  function DoFillVRect: Boolean;
+  function DoFillVRect: Boolean; inline;
   begin
     Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
   end;
 
-  procedure GetGradientBrush(BeginColor, EndColor : TColorRef; Position,
-    TotalSteps : Longint; var GradientBrush : hBrush);
+  function VertexToColor(AVertex: tagTRIVERTEX): TQColor;
   var
-    R1, G1, B1 : Integer;
-    R2, G2, B2 : Integer;
-    NewBrush : TLogBrush;
+    TheAlpha: Byte;
   begin
-    GetRGBIntValues(BeginColor,R1,G1,B1);
-    GetRGBIntValues(EndColor,R2,G2,B2);
-
-    R1 := R1 + (Position*(R2 - R1) div TotalSteps);
-    G1 := G1 + (Position*(G2 - G1) div TotalSteps);
-    B1 := B1 + (Position*(B2 - B1) div TotalSteps);
-
-    with NewBrush do
-    begin
-      lbStyle := BS_SOLID;
-      lbColor := RGB(R1,G1,B1);
-    end;
-
-    if GradientBrush <> 0 then
-      LCLIntf.DeleteObject(GradientBrush);
-    GradientBrush := LCLIntf.CreateBrushIndirect(NewBrush);
+    TheAlpha := AVertex.Alpha shr 8;
+    if TheAlpha = 0 then
+      TheAlpha := 255;
+    with AVertex do
+      QColor_fromRgb(@Result, Red shr 8, Green shr 8, Blue shr 8, TheAlpha);
   end;
 
-  function FillTriMesh(Mesh : tagGradientTriangle) : Boolean;
-  {var
-    V1, V2, V3 : tagTRIVERTEX;
-    C1, C2, C3 : TColorRef;
+  function FillTriMesh(Mesh: tagGradientTriangle) : Boolean;
+  var
+    V1, V2, V3: tagTRIVERTEX;
+    C: TQColor;
+    Points: array[0..2] of TPoint;
+    Grad: QLinearGradientH;
+    Brush: QBrushH;
   begin
-    With Mesh do begin
-      Result := (Vertex1 < NumVertices) and (Vertex2 >= 0) and
+    with Mesh do
+    begin
+      Result :=
+        (Vertex1 < NumVertices) and (Vertex2 >= 0) and
         (Vertex2 < NumVertices) and (Vertex2 >= 0) and
         (Vertex3 < NumVertices) and (Vertex3 >= 0);
 
-      If (Vertex1 = Vertex2) or (Vertex1 = Vertex3) or
-        (Vertex2 = Vertex3) or not Result
-      then
-        exit;
+      if (Vertex1 = Vertex2) or
+        (Vertex1 = Vertex3) or
+        (Vertex2 = Vertex3) or not Result then
+        Exit;
+      Result := False;
 
+      // todo: how to create a triangle gradient using QLinearGradient?
+{
       V1 := Vertices[Vertex1];
       V2 := Vertices[Vertex2];
       V3 := Vertices[Vertex3];
-
-      //Check to make sure they are in reasonable positions..
-
-      //then what??
-    end;}
-  begin
-    Result := False;
+      Grad := QLinearGradient_create(V1.x, V1.y, V2.x, V2.y);
+      C := VertexToColor(V1);
+      QGradient_setColorAt(Grad, 0, @C);
+      C := VertexToColor(V2);
+      QGradient_setColorAt(Grad, 0.5, @C);
+      C := VertexToColor(V3);
+      QGradient_setColorAt(Grad, 1, @C);
+      Brush := QBrush_create(Grad);
+      QPainter_setBrush(TQtDeviceContext(DC).Widget, Brush);
+      Points[0].x := V1.x;
+      Points[0].y := V1.y;
+      Points[1].x := V2.x;
+      Points[1].y := V2.y;
+      Points[2].x := V3.x;
+      Points[2].y := V3.y;
+      TQtDeviceContext(DC).drawPolygon(@Points, 3);
+      QGradient_destroy(Grad);
+      QBrush_destroy(Brush);
+}
+    end;
   end;
 
   function FillRectMesh(Mesh: tagGradientRect) : boolean;
@@ -3955,8 +3962,8 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
         BR.Y := TL.Y;
         TL.Y := Swap;
       end;
-      ColorRefToTQColor(RGB(TL.Red shr 8, TL.Green shr 8, TL.Blue shr 8), StartColor);
-      ColorRefToTQColor(RGB(BR.Red shr 8, BR.Green shr 8, BR.Blue shr 8), EndColor);
+      StartColor := VertexToColor(TL);
+      EndColor := VertexToColor(BR);
       if SwapColors then
       begin
         SwapColor := StartColor;
