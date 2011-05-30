@@ -277,69 +277,73 @@ begin
 
   // find files
   IncludeFilterRegExpr:=TRegExpr.Create;
-  Expr:=FileFilterCombobox.Text;
-  if not RegExprCheckBox.Checked then
-    Expr:=SimpleSyntaxToRegExpr(Expr);
-  ok:=false;
   try
-    IncludeFilterRegExpr.Expression:=Expr;
-    ok:=true;
-  except
-    on E: Exception do begin
-      DebugLn('Invalid Include File Expression ',Expr,' ',E.Message);
-      MessageDlg('Error in regular expression',
-        E.Message,mtError,[mbCancel],0);
+    Expr:=FileFilterCombobox.Text;
+    if not RegExprCheckBox.Checked then
+      Expr:=SimpleSyntaxToRegExpr(Expr);
+    ok:=false;
+    try
+      IncludeFilterRegExpr.Expression:=Expr;
+      ok:=true;
+    except
+      on E: Exception do begin
+        DebugLn('Invalid Include File Expression ',Expr,' ',E.Message);
+        MessageDlg('Error in regular expression',
+          E.Message,mtError,[mbCancel],0);
+      end;
     end;
-  end;
-  if not ok then exit;
+    if not ok then exit;
 
-  NewEncoding:=NormalizeEncoding(NewEncodingComboBox.Text);
-  Tree:=TFilenameToStringTree.Create(FilenamesCaseSensitive);
-  p:=1;
-  repeat
-    Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
-    if p>length(SearchPath) then break;
-    Dir:=AppendPathDelim(Dir);
-    DebugLn(['TChgEncodingDialog.GetFiles Dir=',Dir]);
-    if FindFirstUTF8(Dir+FileMask,faAnyFile,FileInfo)=0 then begin
-      repeat
-        // check if special file
-        //DebugLn(['TChgEncodingDialog.GetFiles ',FileInfo.Name,' ... ']);
-        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
-          continue;
-        CurFilename:=Dir+FileInfo.Name;
-        if Tree.Contains(CurFilename) then continue;
-        if not IncludeFilterRegExpr.Exec(CurFilename) then begin
-          DebugLn(['TChgEncodingDialog.GetFiles not matching filter: ',CurFilename]);
-          continue;
-        end;
-        if not FileIsTextCached(CurFilename) then begin
-          DebugLn(['TChgEncodingDialog.GetFiles not a text file: ',CurFilename]);
-          continue;
-        end;
-
-        if (FileInfo.Attr and faDirectory)>0 then begin
-          // skip directory
-        end else begin
-          Buf:=CodeToolBoss.LoadFile(CurFilename,true,false);
-          if Buf<>nil then begin
-            //DebugLn(['TChgEncodingDialog.GetFiles Filename=',CurFilename,' Encoding=',NormalizeEncoding(Buf.DiskEncoding)]);
-            CurEncoding:=NormalizeEncoding(Buf.DiskEncoding);
-            if CurEncoding=NewEncoding then
-              continue;
-            if (CurEncoding=EncodingUTF8) and (not UTF8FilesCheckBox.Checked) then
-              continue;
-            if (CurEncoding<>EncodingUTF8) and (not NonUTF8FilesCheckBox.Checked) then
-              continue;
-            Tree[CurFilename]:=Buf.DiskEncoding;
-          end else begin
-            DebugLn(['TChgEncodingDialog.UpdatePreview read error: ',CurFilename]);
+    NewEncoding:=NormalizeEncoding(NewEncodingComboBox.Text);
+    Tree:=TFilenameToStringTree.Create(FilenamesCaseSensitive);
+    p:=1;
+    repeat
+      Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
+      if p>length(SearchPath) then break;
+      Dir:=AppendPathDelim(Dir);
+      DebugLn(['TChgEncodingDialog.GetFiles Dir=',Dir]);
+      if FindFirstUTF8(Dir+FileMask,faAnyFile,FileInfo)=0 then begin
+        repeat
+          // check if special file
+          //DebugLn(['TChgEncodingDialog.GetFiles ',FileInfo.Name,' ... ']);
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+            continue;
+          CurFilename:=Dir+FileInfo.Name;
+          if Tree.Contains(CurFilename) then continue;
+          if not IncludeFilterRegExpr.Exec(CurFilename) then begin
+            DebugLn(['TChgEncodingDialog.GetFiles not matching filter: ',CurFilename]);
+            continue;
           end;
-        end;
-      until FindNextUTF8(FileInfo)<>0;
-    end;
-    FindCloseUTF8(FileInfo);
-  until false;
+          if not FileIsTextCached(CurFilename) then begin
+            DebugLn(['TChgEncodingDialog.GetFiles not a text file: ',CurFilename]);
+            continue;
+          end;
+
+          if (FileInfo.Attr and faDirectory)>0 then begin
+            // skip directory
+          end else begin
+            Buf:=CodeToolBoss.LoadFile(CurFilename,true,false);
+            if Buf<>nil then begin
+              //DebugLn(['TChgEncodingDialog.GetFiles Filename=',CurFilename,' Encoding=',NormalizeEncoding(Buf.DiskEncoding)]);
+              CurEncoding:=NormalizeEncoding(Buf.DiskEncoding);
+              if CurEncoding=NewEncoding then
+                continue;
+              if (CurEncoding=EncodingUTF8) and (not UTF8FilesCheckBox.Checked) then
+                continue;
+              if (CurEncoding<>EncodingUTF8) and (not NonUTF8FilesCheckBox.Checked) then
+                continue;
+              Tree[CurFilename]:=Buf.DiskEncoding;
+            end else begin
+              DebugLn(['TChgEncodingDialog.UpdatePreview read error: ',CurFilename]);
+            end;
+          end;
+        until FindNextUTF8(FileInfo)<>0;
+      end;
+      FindCloseUTF8(FileInfo);
+    until false;
+  finally
+    IncludeFilterRegExpr.Free;
+  end;
 end;
 
 procedure TChgEncodingDialog.UpdatePreview;
