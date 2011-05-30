@@ -3891,6 +3891,8 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     Points: array[0..2] of TPoint;
     Grad: QLinearGradientH;
     Brush: QBrushH;
+    P: TQtPoint;
+    Path: QPainterPathH;
   begin
     with Mesh do
     begin
@@ -3903,13 +3905,13 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
         (Vertex1 = Vertex3) or
         (Vertex2 = Vertex3) or not Result then
         Exit;
-      Result := False;
 
-      // todo: how to create a triangle gradient using QLinearGradient?
-{
       V1 := Vertices[Vertex1];
       V2 := Vertices[Vertex2];
       V3 := Vertices[Vertex3];
+
+      // todo: how to create a triangle gradient using QLinearGradient?
+      //Grad := QConicalGradient_create(V2.x, V2.y, 0);
       Grad := QLinearGradient_create(V1.x, V1.y, V2.x, V2.y);
       C := VertexToColor(V1);
       QGradient_setColorAt(Grad, 0, @C);
@@ -3918,17 +3920,15 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
       C := VertexToColor(V3);
       QGradient_setColorAt(Grad, 1, @C);
       Brush := QBrush_create(Grad);
-      QPainter_setBrush(TQtDeviceContext(DC).Widget, Brush);
-      Points[0].x := V1.x;
-      Points[0].y := V1.y;
-      Points[1].x := V2.x;
-      Points[1].y := V2.y;
-      Points[2].x := V3.x;
-      Points[2].y := V3.y;
-      TQtDeviceContext(DC).drawPolygon(@Points, 3);
+      Path := QPainterPath_create();
+      QPainterPath_moveTo(Path, V1.x, V1.y);
+      QPainterPath_lineTo(Path, V2.x, V2.y);
+      QPainterPath_lineTo(Path, V3.x, V3.y);
+      QPainterPath_lineTo(Path, V1.X, V1.y);
+      QPainter_fillPath(TQtDeviceContext(DC).Widget, Path, Brush);
       QGradient_destroy(Grad);
       QBrush_destroy(Brush);
-}
+      QPainterPath_destroy(Path);
     end;
   end;
 
@@ -3943,10 +3943,12 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   begin
     with Mesh do
     begin
-      Result := (UpperLeft < NumVertices) and (UpperLeft >= 0) and
+      Result :=
+        (UpperLeft < NumVertices) and (UpperLeft >= 0) and
         (LowerRight < NumVertices) and (LowerRight >= 0);
       if (LowerRight = UpperLeft) or not Result then
-        exit;
+        Exit;
+
       TL := Vertices[UpperLeft];
       BR := Vertices[LowerRight];
       SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
