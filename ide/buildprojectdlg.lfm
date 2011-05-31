@@ -1,19 +1,22 @@
 object BuildProjectDialog: TBuildProjectDialog
   Left = 275
-  Height = 317
+  Height = 492
   Top = 250
-  Width = 367
+  Width = 537
   Caption = 'BuildProjectDialog'
-  ClientHeight = 317
-  ClientWidth = 367
+  ClientHeight = 492
+  ClientWidth = 537
+  OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnResize = FormResize
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 271
-    Width = 355
+    Height = 42
+    Top = 444
+    Width = 525
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
@@ -25,117 +28,153 @@ object BuildProjectDialog: TBuildProjectDialog
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object Panel1: TPanel
-    Left = 0
-    Height = 265
-    Top = 0
-    Width = 367
-    Align = alClient
-    BevelOuter = bvNone
-    ChildSizing.EnlargeHorizontal = crsScaleChilds
-    ChildSizing.EnlargeVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ClientHeight = 265
-    ClientWidth = 367
+  object ProjOutCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ProjOutMaskComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 10
+    Height = 22
+    Top = 12
+    Width = 148
+    BorderSpacing.Left = 10
+    Caption = 'ProjOutCheckBox'
+    Checked = True
+    OnChange = ProjOutCheckBoxChange
+    State = cbChecked
     TabOrder = 1
-    object ProjectGroupBox: TGroupBox
-      Left = 6
-      Height = 157
-      Top = 6
-      Width = 421
-      BorderSpacing.Around = 6
-      Caption = 'ProjectGroupBox'
-      ClientHeight = 138
-      ClientWidth = 417
+  end
+  object ProjSrcCheckBox: TCheckBox
+    AnchorSideLeft.Control = ProjOutCheckBox
+    AnchorSideTop.Control = ProjSrcMaskComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 10
+    Height = 22
+    Top = 45
+    Width = 144
+    Caption = 'ProjSrcCheckBox'
+    Checked = True
+    OnChange = ProjSrcCheckBoxChange
+    State = cbChecked
+    TabOrder = 2
+  end
+  object PkgOutCheckBox: TCheckBox
+    AnchorSideLeft.Control = ProjOutCheckBox
+    AnchorSideTop.Control = PkgOutMaskComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 10
+    Height = 22
+    Top = 78
+    Width = 145
+    Caption = 'PkgOutCheckBox'
+    Checked = True
+    OnChange = PkgOutCheckBoxChange
+    State = cbChecked
+    TabOrder = 3
+  end
+  object PkgSrcCheckBox: TCheckBox
+    AnchorSideLeft.Control = ProjOutCheckBox
+    AnchorSideTop.Control = PkgSrcMaskComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 10
+    Height = 22
+    Top = 111
+    Width = 141
+    Caption = 'PkgSrcCheckBox'
+    Checked = True
+    OnChange = PkgSrcCheckBoxChange
+    State = cbChecked
+    TabOrder = 4
+  end
+  object ProjOutMaskComboBox: TComboBox
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = ButtonPanel1
+    AnchorSideRight.Side = asrBottom
+    Left = 241
+    Height = 27
+    Top = 10
+    Width = 280
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 10
+    ItemHeight = 0
+    OnChange = ProjOutMaskComboBoxChange
+    TabOrder = 9
+    Text = 'ProjOutMaskComboBox'
+  end
+  object ProjSrcMaskComboBox: TComboBox
+    AnchorSideLeft.Control = ProjOutMaskComboBox
+    AnchorSideTop.Control = ProjOutMaskComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ProjOutMaskComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 241
+    Height = 27
+    Top = 43
+    Width = 280
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    ItemHeight = 0
+    OnChange = ProjOutMaskComboBoxChange
+    TabOrder = 5
+    Text = 'ProjSrcMaskComboBox'
+  end
+  object PkgOutMaskComboBox: TComboBox
+    AnchorSideLeft.Control = ProjOutMaskComboBox
+    AnchorSideTop.Control = ProjSrcMaskComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ProjOutMaskComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 241
+    Height = 27
+    Top = 76
+    Width = 280
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    ItemHeight = 0
+    OnChange = ProjOutMaskComboBoxChange
+    TabOrder = 6
+    Text = 'PkgOutMaskComboBox'
+  end
+  object PkgSrcMaskComboBox: TComboBox
+    AnchorSideLeft.Control = ProjOutMaskComboBox
+    AnchorSideTop.Control = PkgOutMaskComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ProjOutMaskComboBox
+    AnchorSideRight.Side = asrBottom
+    Left = 241
+    Height = 27
+    Top = 109
+    Width = 280
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    ItemHeight = 0
+    OnChange = ProjOutMaskComboBoxChange
+    TabOrder = 7
+    Text = 'PkgSrcMaskComboBox'
+  end
+  object PreviewGroupBox: TGroupBox
+    AnchorSideTop.Control = PkgSrcMaskComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 292
+    Top = 146
+    Width = 525
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 4
+    BorderSpacing.Around = 6
+    Caption = 'PreviewGroupBox'
+    ClientHeight = 271
+    ClientWidth = 517
+    TabOrder = 8
+    object FilesTreeView: TTreeView
+      Left = 0
+      Height = 271
+      Top = 0
+      Width = 517
+      Align = alClient
+      DefaultItemHeight = 19
       TabOrder = 0
-      object ProjClearOutDirButton: TButton
-        AnchorSideLeft.Control = ProjectGroupBox
-        AnchorSideTop.Control = ProjectGroupBox
-        Left = 6
-        Height = 29
-        Top = 6
-        Width = 156
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'ProjClearOutDirButton'
-        TabOrder = 0
-      end
-      object ProjClearSrcDirsButton: TButton
-        AnchorSideLeft.Control = ProjectGroupBox
-        AnchorSideTop.Control = ProjClearOutDirButton
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 29
-        Top = 41
-        Width = 160
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'ProjClearSrcDirsButton'
-        TabOrder = 1
-      end
-      object ProjClearSrcDirMaskLabel: TLabel
-        AnchorSideLeft.Control = ProjClearSrcDirsButton
-        AnchorSideTop.Control = ProjClearSrcDirsButton
-        AnchorSideTop.Side = asrBottom
-        Left = 6
-        Height = 18
-        Top = 76
-        Width = 169
-        Caption = 'ProjClearSrcDirMaskLabel'
-        ParentColor = False
-      end
-      object ProjClearSrcDirMaskEdit: TEdit
-        Left = 205
-        Height = 27
-        Top = 95
-        Width = 80
-        TabOrder = 2
-        Text = 'ProjClearSrcDirMaskEdit'
-      end
-    end
-    object DependenciesGroupBox: TGroupBox
-      Left = 6
-      Height = 90
-      Top = 169
-      Width = 421
-      BorderSpacing.Around = 6
-      Caption = 'DependenciesGroupBox'
-      ClientHeight = 71
-      ClientWidth = 417
-      Constraints.MinHeight = 30
-      TabOrder = 1
-      object PkgClearOutDirsButton: TButton
-        Left = 106
-        Height = 25
-        Top = 3
-        Width = 75
-        Caption = 'PkgClearOutDirsButton'
-        TabOrder = 0
-      end
-      object PkgClearSrcDirsButton: TButton
-        Left = 152
-        Height = 25
-        Top = 34
-        Width = 75
-        Caption = 'PkgClearSrcDirsButton'
-        TabOrder = 1
-      end
-      object PkgClearSrcDirsMaskLabel: TLabel
-        Left = 242
-        Height = 18
-        Top = 43
-        Width = 175
-        Caption = 'PkgClearSrcDirsMaskLabel'
-        ParentColor = False
-      end
-      object PkgClearSrcDirsMaskEdit: TEdit
-        Left = 285
-        Height = 27
-        Top = 27
-        Width = 80
-        TabOrder = 2
-        Text = 'PkgClearSrcDirsMaskEdit'
-      end
     end
   end
 end

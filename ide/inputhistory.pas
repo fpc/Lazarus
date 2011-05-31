@@ -36,7 +36,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, FileProcs, DiffPatch, IDEProcs, AvgLvlTree,
-  SynEditTypes, Laz_XMLCfg, LazConf, Dialogs, LCLProc, IDEDialogs;
+  SynEditTypes, Laz_XMLCfg, LazConf, Dialogs, LCLProc,
+  IDEDialogs, ProjectIntf;
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}
@@ -56,6 +57,7 @@ const
   hlLaunchingApplication = 'LaunchingApplication';
   hlCmdLineParameters = 'CommandLineParameters';
   hlWorkingDirectory = 'WorkingDirectory';
+  hlCleanBuildFileMask = 'CleanBuildFileMask';
 
 type
   TFileDialogSettings = record
@@ -191,6 +193,8 @@ type
 
   TInputHistories = class
   private
+    FCleanOutputFileMask: string;
+    FCleanSourcesFileMask: string;
     FDiffFlags: TTextDiffFlags;
     FDiffText2: string;
     FDiffText2OnlySelection: boolean;
@@ -285,7 +289,9 @@ type
     // filedialogs
     property FileDialogSettings: TFileDialogSettings
       read FFileDialogSettings write FFileDialogSettings;
-      
+    property CleanOutputFileMask: string read FCleanOutputFileMask write FCleanOutputFileMask;
+    property CleanSourcesFileMask: string read FCleanSourcesFileMask write FCleanSourcesFileMask;
+
     // various history lists
     property HistoryLists: THistoryLists read FHistoryLists;
     
@@ -463,6 +469,8 @@ begin
   FFPCConfigCache.Clear;
   FLastConvertDelphiProject:='';
   FLastConvertDelphiUnit:='';
+  FCleanOutputFileMask:=DefaultProjectCleanOutputFileMask;
+  FCleanSourcesFileMask:=DefaultProjectCleanSourcesFileMask;
   fFileEncodings.Clear;
   FIgnores.Clear;
 end;
@@ -516,6 +524,10 @@ begin
     MaxHistory:=XMLConfig.GetValue(Path+'FileDialog/MaxHistory',20);
     LoadRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
   end;
+  FCleanOutputFileMask:=XMLConfig.GetValue(Path+'Clean/OutputFilemask',
+                                           DefaultProjectCleanOutputFileMask);
+  FCleanSourcesFileMask:=XMLConfig.GetValue(Path+'Clean/SourcesFilemask',
+                                           DefaultProjectCleanSourcesFileMask);
   // history lists
   FHistoryLists.LoadFromXMLConfig(XMLConfig,Path+'HistoryLists/');
   // diff dialog
@@ -584,6 +596,10 @@ begin
     XMLConfig.SetDeleteValue(Path+'FileDialog/MaxHistory',MaxHistory,20);
     SaveRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
   end;
+  XMLConfig.SetDeleteValue(Path+'Clean/OutputFilemask',FCleanOutputFileMask,
+                                           DefaultProjectCleanOutputFileMask);
+  XMLConfig.SetDeleteValue(Path+'Clean/SourcesFilemask',FCleanSourcesFileMask,
+                                           DefaultProjectCleanSourcesFileMask);
   // history lists
   FHistoryLists.SaveToXMLConfig(XMLConfig,Path+'HistoryLists/');
   // diff dialog

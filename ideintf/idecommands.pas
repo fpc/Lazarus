@@ -187,7 +187,7 @@ const
   ecToggleDebugEvents       = ecFirstLazarus + 327;
   ecViewPseudoTerminal      = ecFirstLazarus + 328;
   ecViewThreads             = ecFirstLazarus + 329;
-  ecViewHistory             = ecFirstLazarus + 450;
+  ecViewHistory             = ecFirstLazarus + 460;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;
@@ -233,32 +233,33 @@ const
   ecCompile                 = ecFirstLazarus + 400;
   ecBuild                   = ecFirstLazarus + 401;
   ecQuickCompile            = ecFirstLazarus + 402;
-  ecAbortBuild              = ecFirstLazarus + 403;
-  ecRun                     = ecFirstLazarus + 404;
-  ecPause                   = ecFirstLazarus + 405;
-  ecStepInto                = ecFirstLazarus + 406;
-  ecStepOver                = ecFirstLazarus + 407;
-  ecRunToCursor             = ecFirstLazarus + 408;
-  ecStopProgram             = ecFirstLazarus + 409;
-  ecResetDebugger           = ecFirstLazarus + 410;
-  ecBuildLazarus            = ecFirstLazarus + 411;
-  ecBuildFile               = ecFirstLazarus + 412;
-  ecRunFile                 = ecFirstLazarus + 413;
-  ecConfigBuildFile         = ecFirstLazarus + 414;
-  ecInspect                 = ecFirstLazarus + 415;
-  ecEvaluate                = ecFirstLazarus + 416;
-  ecAddWatch                = ecFirstLazarus + 417;
-  ecShowExecutionPoint      = ecFirstLazarus + 418;
-  ecStepOut                 = ecFirstLazarus + 419;
-  ecStepIntoInstr           = ecFirstLazarus + 420;
-  ecStepOverInstr           = ecFirstLazarus + 421;
-  ecStepIntoContext         = ecFirstLazarus + 422;
-  ecStepOverContext         = ecFirstLazarus + 423;
-  ecBuildAdvancedLazarus    = ecFirstLazarus + 424;
-  ecAddBpSource             = ecFirstLazarus + 425;
-  ecAddBpAddress            = ecFirstLazarus + 426;
+  ecCleanCompile            = ecFirstLazarus + 403;
+  ecAbortBuild              = ecFirstLazarus + 404;
+  ecRun                     = ecFirstLazarus + 410;
+  ecPause                   = ecFirstLazarus + 411;
+  ecStepInto                = ecFirstLazarus + 412;
+  ecStepOver                = ecFirstLazarus + 413;
+  ecRunToCursor             = ecFirstLazarus + 414;
+  ecStopProgram             = ecFirstLazarus + 415;
+  ecResetDebugger           = ecFirstLazarus + 416;
+  ecBuildLazarus            = ecFirstLazarus + 420;
+  ecBuildAdvancedLazarus    = ecFirstLazarus + 421;
+  ecBuildFile               = ecFirstLazarus + 431;
+  ecRunFile                 = ecFirstLazarus + 432;
+  ecConfigBuildFile         = ecFirstLazarus + 433;
+  ecInspect                 = ecFirstLazarus + 440;
+  ecEvaluate                = ecFirstLazarus + 441;
+  ecAddWatch                = ecFirstLazarus + 442;
+  ecShowExecutionPoint      = ecFirstLazarus + 443;
+  ecStepOut                 = ecFirstLazarus + 444;
+  ecStepIntoInstr           = ecFirstLazarus + 445;
+  ecStepOverInstr           = ecFirstLazarus + 446;
+  ecStepIntoContext         = ecFirstLazarus + 447;
+  ecStepOverContext         = ecFirstLazarus + 448;
+  ecAddBpSource             = ecFirstLazarus + 449;
+  ecAddBpAddress            = ecFirstLazarus + 450;
 
-  // 450++ : used for ecViewHistory (debugger)
+  // 460++ : used for ecViewHistory (debugger)
 
   // project menu
   ecNewProject              = ecFirstLazarus + 500;

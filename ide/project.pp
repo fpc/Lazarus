@@ -862,7 +862,7 @@ type
     destructor Destroy; override;
     class function GetInstance: TAbstractIDEOptions; override;
     class function GetGroupCaption: string; override;
-    procedure Clear;
+    procedure Clear; override;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     procedure UnitModified(AnUnitInfo: TUnitInfo);
@@ -2730,6 +2730,10 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                            ActiveWindowIndexAtStart,-1);
     aConfig.SetDeleteValue('SkipCheckLCLInterfaces/Value',
                            FSkipCheckLCLInterfaces,false);
+    aConfig.SetDeleteValue(Path+'Build/CleanOutputFileMask/Value',
+                 CleanOutputFileMask,DefaultProjectCleanOutputFileMask);
+    aConfig.SetDeleteValue(Path+'Build/CleanSourcesFileMask/Value',
+                 CleanSourcesFileMask,DefaultProjectCleanSourcesFileMask);
 
     if (not (pfSaveOnlyProjectUnits in Flags))
     and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
@@ -2839,7 +2843,7 @@ begin
         SaveFlags(XMLConfig,Path);
         xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
                                  ProjectSessionStorageNames[SessionStorage],
-                                 ProjectSessionStorageNames[pssInProjectInfo]);
+                                 ProjectSessionStorageNames[DefaultProjectSessionStorage]);
 
         // properties
         xmlconfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
@@ -2874,7 +2878,7 @@ begin
         // save the Publish Options
         PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/',fCurStorePathDelim);
 
-        // save the Run Parameter Options
+        // save the Run and Build parameter options
         RunParameterOptions.Save(xmlconfig,Path,fCurStorePathDelim);
 
         // save dependencies
@@ -3266,6 +3270,10 @@ var
     FSkipCheckLCLInterfaces:=xmlconfig.GetValue(
        Path+'SkipCheckLCLInterfaces/Value',false);
     FJumpHistory.LoadFromXMLConfig(xmlconfig,Path+'');
+    CleanOutputFileMask:=xmlconfig.GetValue(Path+'Build/CleanOutputFileMask/Value',
+                 DefaultProjectCleanOutputFileMask);
+    CleanSourcesFileMask:=xmlconfig.GetValue(Path+'Build/CleanSourcesFileMask/Value',
+                 DefaultProjectCleanSourcesFileMask);
 
     // load custom session data
     LoadStringToStringTree(xmlconfig,CustomSessionData,Path+'CustomSessionData/');
@@ -3369,7 +3377,7 @@ begin
       
       SessionStorage:=StrToProjectSessionStorage(
                         XMLConfig.GetValue(Path+'General/SessionStorage/Value',
-                                 ProjectSessionStorageNames[pssInProjectInfo]));
+                     ProjectSessionStorageNames[DefaultProjectSessionStorage]));
       //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
       // load properties
@@ -3419,7 +3427,7 @@ begin
       LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
                           FFirstRequiredDependency,pdlRequires,Self,true,false);
 
-      // load the Run Parameter Options
+      // load the Run and Build parameter Options
       RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
 
       // load the Publish Options
@@ -3676,6 +3684,7 @@ procedure TProject.Clear;
 var i:integer;
 begin
   BeginUpdate(true);
+  inherited Clear;
 
   // break and free removed dependencies
   while FFirstRemovedDependency<>nil do

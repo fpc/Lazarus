@@ -143,7 +143,6 @@ type
     procedure SetStrings(const AStringType: TCTDirCacheString;
       const AValue: string);
     procedure ClearUnitLinks;
-    procedure UpdateListing;
     function GetUnitSourceCacheValue(const UnitSrc: TCTDirectoryUnitSources;
                            const Search: string; var Filename: string): boolean;
     procedure AddToCache(const UnitSrc: TCTDirectoryUnitSources;
@@ -171,8 +170,10 @@ type
     function FindCompiledUnitInCompletePath(const AnUnitname: string;
                                             AnyCase: boolean): string;
     procedure IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
+    procedure UpdateListing;
     procedure WriteListing;
     procedure Invalidate; inline;
+    procedure GetFiles(var Files: TStrings);
   public
     property Directory: string read FDirectory;
     property RefCount: integer read FRefCount;
@@ -1241,6 +1242,20 @@ end;
 procedure TCTDirectoryCache.Invalidate;
 begin
   FListing.FileTimeStamp:=CTInvalidChangeStamp;
+end;
+
+procedure TCTDirectoryCache.GetFiles(var Files: TStrings);
+var
+  ListedFiles: PChar;
+  i: Integer;
+begin
+  if Files=nil then
+    Files:=TStringList.Create;
+  if Directory='' then exit;
+  UpdateListing;
+  ListedFiles:=FListing.Files;
+  for i:=0 to FListing.Count do
+    Files.Add(PChar(@ListedFiles[FListing.Starts[i]+SizeOf(TCTDirectoryListingTime)]));
 end;
 
 { TCTDirectoryCachePool }

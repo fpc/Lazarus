@@ -79,7 +79,7 @@ uses
   // protocol
   IDEProtocol,
   // compile
-  Compiler, CompilerOptions, CheckCompilerOpts,
+  Compiler, CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
   ApplicationBundle, ImExportCompilerOpts, InfoBuild,
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg, 
@@ -318,6 +318,7 @@ type
     procedure mnuCompileProjectClicked(Sender: TObject);
     procedure mnuBuildProjectClicked(Sender: TObject);
     procedure mnuQuickCompileProjectClicked(Sender: TObject);
+    procedure mnuCleanCompileProjectClicked(Sender: TObject);
     procedure mnuAbortBuildProjectClicked(Sender: TObject);
     procedure mnuRunProjectClicked(Sender: TObject);
     procedure mnuPauseProjectClicked(Sender: TObject);
@@ -2600,6 +2601,7 @@ begin
     itmRunMenuCompile.OnClick := @mnuCompileProjectClicked;
     itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
     itmRunMenuQuickCompile.OnClick := @mnuQuickCompileProjectClicked;
+    itmRunMenuCleanCompile.OnClick := @mnuCleanCompileProjectClicked;
     itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
     itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
@@ -3214,6 +3216,7 @@ begin
     end;
 
   ecBuild: DoBuildProject(crBuild, [pbfCleanCompile, pbfCompileDependenciesClean]);
+  ecCleanCompile: mnuCleanCompileProjectClicked(nil);
   ecQuickCompile: DoQuickCompile;
   ecAbortBuild: DoAbortBuild;
 
@@ -4346,6 +4349,12 @@ end;
 procedure TMainIDE.mnuQuickCompileProjectClicked(Sender: TObject);
 begin
   DoQuickCompile;
+end;
+
+procedure TMainIDE.mnuCleanCompileProjectClicked(Sender: TObject);
+begin
+  if ShowBuildProjectDialog(Project1)<>mrOk then exit;
+  DoBuildProject(crCompile,[]);
 end;
 
 Procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);

@@ -347,6 +347,7 @@ resourcestring
   lisBFBuildCommand = 'Build Command';
   lisMenuBuild = 'Build';
   lisMenuQuickCompile = 'Quick compile';
+  lisMenuCleanCompile = 'Clean compile';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = '&Run';
   lisBFAlwaysBuildBeforeRun = 'Always Build before Run';
@@ -2681,6 +2682,7 @@ resourcestring
   srkmecCompile                   = 'compile program/project';
   srkmecBuild                     = 'build program/project';
   srkmecQuickCompile              = 'quick compile, no linking';
+  srkmecCleanCompile              = 'clean up and compile';
   srkmecAbortBuild                = 'abort build';
   srkmecRun                       = 'run program';
   srkmecPause                     = 'pause program';
@@ -2772,6 +2774,7 @@ resourcestring
   lisKMCompileProjectProgram = 'Compile project/program';
   lisKMBuildProjectProgram = 'Build project/program';
   lisKMQuickCompileNoLinking = 'Quick compile, no linking';
+  lisKMCleanCompile = 'Clean up and compile project/program';
   lisKMAbortBuilding = 'Abort building';
   lisKMRunProgram = 'Run program';
   lisKMPauseProgram = 'Pause program';
@@ -5337,6 +5340,13 @@ resourcestring
   lisEventLogSaveToFile = 'Save Events to File';
   lisEventsLogAddComment = 'Add Comment ...';
   lisEventsLogAddComment2 = 'Add Comment';
+  lisCleanUpAndBuildProject = 'Clean up and build project';
+  lisProjectOutputDirectory = 'Project output directory';
+  lisProjectSourceDirectories = 'Project source directories';
+  lisPackageOutputDirectories = 'Package output directories';
+  lisPackageSourceDirectories = 'Package source directories';
+  lisTheseFilesWillBeDeleted = 'These files will be deleted:';
+  lisBuildProject = 'Build project';
 
 implementation
 

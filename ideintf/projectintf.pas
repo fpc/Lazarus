@@ -231,9 +231,7 @@ type
     procedure(CompOpts: TLazCompilerOptions) of object;
 var
   CheckCompOptsAndMainSrcForNewUnitEvent: TCheckCompOptsAndMainSrcForNewUnitEvent; // set by the IDE
-
 type
-  TLazProject = class;
 
   { TProjectDescriptor - Template for initializing new projects }
 
@@ -260,6 +258,13 @@ type
     );
   TProjectSessionStorages = set of TProjectSessionStorage;
 
+const
+  DefaultProjectCleanOutputFileMask = '*';
+  DefaultProjectCleanSourcesFileMask = '*.ppu;*.ppl;*.o;*.or;*.a;*.so;*.dll';
+  DefaultProjectSessionStorage = pssInProjectInfo;
+
+type
+  TLazProject = class;
   { TProjectDescriptor
     - to show an option dialog to the user override the DoInitDescriptor
     - to initialize project compiler settings and paths override InitProject
@@ -329,6 +334,8 @@ type
 
   TLazProject = class(TAbstractIDEProjectOptions)
   private
+    FCleanOutputFileMask: string;
+    FCleanSourcesFileMask: string;
     FCustomData: TStringToStringTree;
     FCustomSessionData: TStringToStringTree;
     FExecutableType: TProjectExecutableType;
@@ -338,6 +345,8 @@ type
     FTitle: String;
     FSessionStorage: TProjectSessionStorage;
     FLazDocPaths: string;
+    procedure SetCleanOutputFileMask(const AValue: string);
+    procedure SetCleanSourcesFileMask(const AValue: string);
     procedure SetLazDocPaths(const AValue: string);
   protected
     FLazCompilerOptions: TLazCompilerOptions;
@@ -359,6 +368,7 @@ type
   public
     constructor Create(ProjectDescription: TProjectDescriptor); virtual;
     destructor Destroy; override;
+    procedure Clear; virtual;
     function CreateProjectFile(const Filename: string
                                ): TLazProjectFile; virtual; abstract;
     procedure AddFile(ProjectFile: TLazProjectFile;
@@ -399,6 +409,8 @@ type
                        // project session data (not units, data),
                        // units have their own SessionModified
     property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
+    property CleanOutputFileMask: string read FCleanOutputFileMask write SetCleanOutputFileMask; // saved in session
+    property CleanSourcesFileMask: string read FCleanSourcesFileMask write SetCleanSourcesFileMask; // saved in session
     property CustomData: TStringToStringTree read FCustomData;
     property CustomSessionData: TStringToStringTree read FCustomSessionData;
   end;
@@ -976,6 +988,20 @@ begin
   Modified:=true;
 end;
 
+procedure TLazProject.SetCleanOutputFileMask(const AValue: string);
+begin
+  if FCleanOutputFileMask=AValue then exit;
+  FCleanOutputFileMask:=AValue;
+  SessionModified:=true;
+end;
+
+procedure TLazProject.SetCleanSourcesFileMask(const AValue: string);
+begin
+  if FCleanSourcesFileMask=AValue then exit;
+  FCleanSourcesFileMask:=AValue;
+  SessionModified:=true;
+end;
+
 function TLazProject.GetModified: boolean;
 begin
   Result:=fModified;
@@ -998,7 +1024,9 @@ end;
 constructor TLazProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create;
-  FSessionStorage:=pssInProjectInfo;
+  FSessionStorage:=DefaultProjectSessionStorage;
+  FCleanOutputFileMask:=DefaultProjectCleanOutputFileMask;
+  FCleanSourcesFileMask:=DefaultProjectCleanSourcesFileMask;
   FCustomData:=TStringToStringTree.Create(true);
   FCustomSessionData:=TStringToStringTree.Create(true);
 end;
@@ -1008,6 +1036,18 @@ begin
   FreeAndNil(FCustomData);
   FreeAndNil(FCustomSessionData);
   inherited Destroy;
+end;
+
+procedure TLazProject.Clear;
+begin
+  FCleanOutputFileMask:=DefaultProjectCleanOutputFileMask;
+  FCleanSourcesFileMask:=DefaultProjectCleanSourcesFileMask;
+  FCustomData.Clear;
+  FCustomSessionData.Clear;
+  FExecutableType:=petNone;
+  FTitle:='';
+  FSessionStorage:=DefaultProjectSessionStorage;
+  FLazDocPaths:='';
 end;
 
 function TLazProject.ShortDescription: string;
