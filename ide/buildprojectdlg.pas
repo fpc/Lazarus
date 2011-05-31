@@ -496,7 +496,8 @@ begin
         and (not Quiet) then begin
           Result:=IDEQuestionDialog(lisDeleteFileFailed,
             Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
-            mtError,[mrRetry,mrCancel,mrNo,'Skip',mrNoToAll,'Skip errors']);
+            mtError,
+            [mrRetry, mrCancel, mrNo, lisCCOSkip, mrNoToAll, lisSkipErrors]);
           if Result=mrNoToAll then begin
             Quiet:=true;
             break;

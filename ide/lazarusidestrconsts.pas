@@ -3581,6 +3581,7 @@ resourcestring
     +'the package, otherwise other packages can get problems using this '
     +'package.%s%sDelete ambiguous file?';
   lisPkgMangUnableToDeleteFile = 'Unable to delete file %s%s%s.';
+  lisSkipErrors = 'Skip errors';
   lisDeleteAllTheseFiles = 'Delete all these files?';
   lisPkgMangUnsavedPackage = 'Unsaved package';
   lisFpcmakeFailed = 'fpcmake failed';

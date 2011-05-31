@@ -1254,7 +1254,7 @@ begin
   if Directory='' then exit;
   UpdateListing;
   ListedFiles:=FListing.Files;
-  for i:=0 to FListing.Count do
+  for i:=0 to FListing.Count-1 do
     Files.Add(PChar(@ListedFiles[FListing.Starts[i]+SizeOf(TCTDirectoryListingTime)]));
 end;
 
