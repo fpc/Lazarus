@@ -4364,7 +4364,7 @@ begin
 
   if ShowBuildProjectDialog(Project1)<>mrOk then exit;
 
-  DoBuildProject(crCompile,[]);
+  DoBuildProject(crBuild,[]);
 end;
 
 Procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
