@@ -2823,6 +2823,15 @@ var
     end;
   end;
 
+  function SearchDefault: boolean;
+  begin
+    Result:=false;
+    if (not (fdfIgnoreUsedUnits in Params.Flags))
+    and FindIdentifierInHiddenUsedUnits(Params) then begin
+      Result:=CheckResult(true,false);
+    end;
+  end;
+
   function SearchInSourceName: boolean;
   // returns: true if ok to exit
   //          false if search should continue
@@ -2843,10 +2852,6 @@ var
       Result:=CheckResult(true,true);
       if not (fdfCollect in Params.Flags) then
         exit;
-    end;
-    if (not (fdfIgnoreUsedUnits in Params.Flags))
-    and FindIdentifierInHiddenUsedUnits(Params) then begin
-      Result:=CheckResult(true,false);
     end;
   end;
   
@@ -3223,6 +3228,9 @@ begin
         {$IFDEF ShowTriedContexts}
         DebugLn('[TFindDeclarationTool.FindIdentifierInContext] IgnoreCurContext ');
         {$ENDIF}
+      end;
+      if LastContextNode=Tree.Root then begin
+        if SearchDefault then exit;
       end;
       if LastContextNode=ContextNode then begin
         // same context -> search in prior context
