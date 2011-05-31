@@ -368,7 +368,7 @@ begin
   MaskList:=TMaskList.Create(aFileMask,';');
   try
     if MaskList.Count=0 then exit;
-    Cache.GetFiles(Files);
+    Cache.GetFiles(Files,false);
 
     //debugln(['TBuildProjectDialog.AddDirectory AllFiles="',Files.Text,'"']);
     // filter files

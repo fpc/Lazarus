@@ -188,7 +188,7 @@ type
     procedure UpdateListing;
     procedure WriteListing;
     procedure Invalidate; inline;
-    procedure GetFiles(var Files: TStrings);
+    procedure GetFiles(var Files: TStrings; IncludeDirs: boolean = true);
   public
     property Directory: string read FDirectory;
     property RefCount: integer read FRefCount;
@@ -1302,18 +1302,23 @@ begin
   FListing.FileTimeStamp:=CTInvalidChangeStamp;
 end;
 
-procedure TCTDirectoryCache.GetFiles(var Files: TStrings);
+procedure TCTDirectoryCache.GetFiles(var Files: TStrings; IncludeDirs: boolean);
 var
   ListedFiles: PChar;
   i: Integer;
+  p: PChar;
 begin
   if Files=nil then
     Files:=TStringList.Create;
   if Directory='' then exit;
   UpdateListing;
   ListedFiles:=FListing.Files;
-  for i:=0 to FListing.Count-1 do
-    Files.Add(PChar(@ListedFiles[FListing.Starts[i]+NameOffset]));
+  for i:=0 to FListing.Count-1 do begin
+    p:=@ListedFiles[FListing.Starts[i]];
+    if IncludeDirs
+    or ((PCTDirectoryListingHeader(p)^.Attr and faDirectory)=0) then
+      Files.Add(PChar(p+NameOffset));
+  end;
 end;
 
 { TCTDirectoryCachePool }
