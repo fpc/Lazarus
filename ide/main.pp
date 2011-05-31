@@ -4353,7 +4353,17 @@ end;
 
 procedure TMainIDE.mnuCleanCompileProjectClicked(Sender: TObject);
 begin
+  if Project1.MainUnitInfo=nil then begin
+    // this project has no source to compile
+    IDEMessageDialog(lisCanNotCompileProject,
+      lisTheProjectHasNoMainSourceFile, mtError, [mbCancel], '');
+    exit;
+  end;
+
+  if PrepareForCompile<>mrOk then exit;
+
   if ShowBuildProjectDialog(Project1)<>mrOk then exit;
+
   DoBuildProject(crCompile,[]);
 end;
 
