@@ -28,13 +28,22 @@ unit BuildProjectDlg;
 interface
 
 uses
-  Classes, SysUtils, Math, FileProcs, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, ExtCtrls, StdCtrls, ComCtrls, Masks,
-  CodeToolManager, DirectoryCacher,
+  Classes, SysUtils, Math, AVL_Tree, FileProcs, Forms, Controls, Graphics,
+  Dialogs, ButtonPanel, ExtCtrls, StdCtrls, ComCtrls, Masks,
+  // codetools
+  CodeToolManager, DirectoryCacher, CodeToolsStructs,
+  // IDEIntf
   IDEDialogs, IDEImagesIntf,
-  PackageDefs, PackageSystem, InputHistory, LazarusIDEStrConsts, Project;
+  // IDE
+  PackageDefs, PackageSystem, InputHistory, LazarusIDEStrConsts, Project,
+  DialogProcs;
 
 type
+  TBuildProjectDialogItem = class
+  public
+    Filename: string;
+  end;
+
   { TBuildProjectDialog }
 
   TBuildProjectDialog = class(TForm)
@@ -49,6 +58,7 @@ type
     ProjOutMaskComboBox: TComboBox;
     ProjSrcCheckBox: TCheckBox;
     ProjSrcMaskComboBox: TComboBox;
+    procedure ButtonPanel1OKButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -67,6 +77,7 @@ type
   private
     FProject: TProject;
     FUpdateNeeded: boolean;
+    procedure ClearFilesTreeView;
     procedure UpdateFilesTreeView(Immediately: boolean = false);
     procedure AddProjOutDirectory;
     procedure AddProjSrcDirectories;
@@ -74,6 +85,8 @@ type
     procedure AddPkgSrcDirectory;
     procedure AddDirectory(aTVPath, aDirectory, aFileMask: string);
     procedure AddDirectories(aTVPath, aSearchPath, aFileMask: string);
+    function GetAllFilesFromTree: TFilenameToStringTree;
+    function DeleteFiles: TModalResult;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   public
     procedure Init(AProject: TProject);
@@ -115,10 +128,14 @@ begin
   FilesTreeView.Images:=IDEImages.Images_16;
   ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
   ImageIndexFile := IDEImages.LoadImage(16, 'laz_delete');
+
+  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
+  ButtonPanel1.OKButton.ModalResult:=mrNone;
 end;
 
 procedure TBuildProjectDialog.FormDestroy(Sender: TObject);
 begin
+  ClearFilesTreeView;
   FProject:=nil;
   IdleConnected:=false;
 end;
@@ -144,6 +161,12 @@ begin
   StoreCombo(PkgOutMaskComboBox);
   StoreCombo(PkgSrcMaskComboBox);
   InputHistories.HistoryLists.GetList(hlCleanBuildFileMask,true).Assign(ProjOutMaskComboBox.Items);
+end;
+
+procedure TBuildProjectDialog.ButtonPanel1OKButtonClick(Sender: TObject);
+begin
+  if DeleteFiles<>mrOk then exit;
+  ModalResult:=mrOk;
 end;
 
 procedure TBuildProjectDialog.FormResize(Sender: TObject);
@@ -203,6 +226,19 @@ begin
   UpdateFilesTreeView(true);
 end;
 
+procedure TBuildProjectDialog.ClearFilesTreeView;
+var
+  Node: TTreeNode;
+begin
+  Node:=FilesTreeView.Items.GetFirstNode;
+  while Node<>nil do begin
+    if (Node.Data<>nil) then
+      TObject(Node.Data).Free;
+    Node:=Node.GetNext;
+  end;
+  FilesTreeView.Items.Clear;
+end;
+
 procedure TBuildProjectDialog.UpdateFilesTreeView(Immediately: boolean);
 
   function CreateTVChildCounts(TVNode: TTreeNode): integer;
@@ -235,7 +271,7 @@ begin
   FUpdateNeeded:=false;
 
   FilesTreeView.BeginUpdate;
-  FilesTreeView.Items.Clear;
+  ClearFilesTreeView;
   if FProject<>nil then begin
     if ProjOutCheckBox.Checked then AddProjOutDirectory;
     if ProjSrcCheckBox.Checked then AddProjSrcDirectories;
@@ -316,8 +352,10 @@ var
   TVNode: TTreeNode;
   ParentTVNode: TTreeNode;
   i: Integer;
+  Item: TBuildProjectDialogItem;
 begin
   //debugln(['TBuildProjectDialog.AddDirectory aTVPath="',aTVPath,'" aDirectory="',aDirectory,'" aFileMask="',aFileMask,'"']);
+  aDirectory:=ChompPathDelim(aDirectory);
   if (aDirectory='') or (aFileMask='')
   or (not FilenameIsAbsolute(aDirectory))
   or (not DirPathExistsCached(aDirectory))
@@ -373,8 +411,11 @@ begin
     ParentTVNode:=TVNode;
 
     // add files
+    aDirectory:=AppendPathDelim(aDirectory);
     for i:=0 to TVFiles.Count-1 do begin
-      TVNode:=FilesTreeView.Items.AddChild(ParentTVNode,TVFiles[i]);
+      Item:=TBuildProjectDialogItem.Create;
+      Item.Filename:=aDirectory+TVFiles[i];
+      TVNode:=FilesTreeView.Items.AddChildObject(ParentTVNode,TVFiles[i],Item);
       TVNode.ImageIndex:=ImageIndexFile;
       TVNode.SelectedIndex:=ImageIndexFile;
     end;
@@ -396,6 +437,82 @@ begin
     Directory:=TrimFilename(GetNextDelimitedItem(aSearchPath,';',p));
     if FilenameIsAbsolute(Directory) then
       AddDirectory(aTVPath,Directory,aFileMask);
+  end;
+end;
+
+function TBuildProjectDialog.GetAllFilesFromTree: TFilenameToStringTree;
+var
+  Node: TTreeNode;
+begin
+  Result:=TFilenameToStringTree.Create(false);
+  Node:=FilesTreeView.Items.GetFirstNode;
+  while Node<>nil do begin
+    if (Node.Data<>nil) and (TObject(Node.Data) is TBuildProjectDialogItem) then
+      Result[TBuildProjectDialogItem(Node.Data).Filename]:='1';
+    Node:=Node.GetNext;
+  end;
+end;
+
+function TBuildProjectDialog.DeleteFiles: TModalResult;
+var
+  Files: TFilenameToStringTree;
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  MaskList: TMaskList;
+  Filename: String;
+  SourceFiles: TStringList;
+  Quiet: Boolean;
+begin
+  Files:=GetAllFilesFromTree;
+  MaskList:=TMaskList.Create('*.pas;*.pp;*.p;*.inc;*.lpr;*.lpi;*.lps;*.lpk',';');
+  SourceFiles:=TStringList.Create;
+  try
+    // warn before deleting sources
+    Node:=Files.Tree.FindLowest;
+    while Node<>nil do begin
+      Item:=PStringToStringTreeItem(Node.Data);
+      Filename:=Item^.Name;
+      if MaskList.Matches(ExtractFilename(Filename)) then
+        SourceFiles.Add(Filename);
+      Node:=Files.Tree.FindSuccessor(Node);
+    end;
+    if SourceFiles.Count>0 then begin
+      Result:=IDEMessageDialog('Warning',
+        'Really delete '+IntToStr(SourceFiles.Count)+' source files'#13#13
+        +copy(SourceFiles.Text,1,1000),mtWarning,[mbYes,mbNo]);
+      if Result<>mrYes then exit(mrCancel);
+    end;
+
+    // delete
+    Node:=Files.Tree.FindLowest;
+    Quiet:=false;
+    while Node<>nil do begin
+      Item:=PStringToStringTreeItem(Node.Data);
+      Node:=Files.Tree.FindSuccessor(Node);
+      Filename:=Item^.Name;
+      //debugln(['TBuildProjectDialog.DeleteFiles ',Filename,' ',FileExistsUTF8(Filename)]);
+      repeat
+        if FileExistsUTF8(Filename) and (not DeleteFileUTF8(Filename))
+        and (not Quiet) then begin
+          Result:=IDEQuestionDialog(lisDeleteFileFailed,
+            Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
+            mtError,[mrRetry,mrCancel,mrNo,'Skip',mrNoToAll,'Skip errors']);
+          if Result=mrNoToAll then begin
+            Quiet:=true;
+            break;
+          end;
+          if Result=mrNo then break;
+          if Result<>mrRetry then exit(mrCancel);
+        end else break;
+      until false;
+    end;
+
+    Result:=mrOk;
+  finally
+    InvalidateFileStateCache;
+    SourceFiles.Free;
+    MaskList.Free;
+    Files.Free;
   end;
 end;
 

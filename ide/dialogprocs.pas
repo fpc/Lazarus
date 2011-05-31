@@ -599,9 +599,9 @@ begin
     Result:=mrOk;
     if not FileExistsUTF8(Filename) then exit;
     if not DeleteFileUTF8(Filename) then begin
-      Result:=IDEMessageDialog(lisDeleteFileFailed,
+      Result:=IDEMessageDialogAb(lisDeleteFileFailed,
         Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
-        mtError,[mbCancel,mbRetry]);
+        mtError,[mbCancel,mbRetry]+ErrorButtons-[mbAbort],mbAbort in ErrorButtons);
       if Result<>mrRetry then exit;
     end;
   until false;

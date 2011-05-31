@@ -144,7 +144,7 @@ type
 
   TFilenameToStringTree = class(TStringToStringTree)
   public
-    constructor Create(CaseInsensitive: boolean);
+    constructor Create(CaseInsensitive: boolean); // false = system default
   end;
 
   { TStringTree }
