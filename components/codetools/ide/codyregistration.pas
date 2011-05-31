@@ -46,7 +46,7 @@ var
   CmdCatFileMenu: TIDECommandCategory;
   PPUListCommand: TIDECommand;
   AddAssignMethodCommand: TIDECommand;
-  RemoveAWithBlockCommand: TIDECommand;
+  ExplodeAWithBlockCommand: TIDECommand;
   InsertFileAtCursorCommand: TIDECommand;
   DeclareVariableCommand: TIDECommand;
   TVIconRes: TLResource;
@@ -125,12 +125,12 @@ begin
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'CutDeclarationToClipboard',
     crsCutDeclarationToClipboard,nil,nil,CutDeclarationToClipboardCommand){$IFNDEF EnableCodyExperiments}.Visible:=false{$ENDIF};
 
-  // remove With block
-  RemoveAWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'RemoveAWithBlock',
-    crsRemoveAWithBlock,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@RemoveAWithBlockCmd);
-  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'RemoveAWithBlock',
-    crsRemoveAWithBlock, nil, nil, RemoveAWithBlockCommand);
+  // explode a With block
+  ExplodeAWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'ExplodeAWithBlock',
+    crsExplodeAWithBlock,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@ExplodeAWithBlockCmd);
+  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'ExplodeAWithBlock',
+    crsExplodeAWithBlock, nil, nil, ExplodeAWithBlockCommand);
 
   // IDE internals menu - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

@@ -205,6 +205,10 @@ msgstr ""
 msgid "\"%s\" is a keyword."
 msgstr ""
 
+#: codystrconsts.crsexplodeawithblock
+msgid "Explode a \"With\" block"
+msgstr ""
+
 #: codystrconsts.crsfile
 msgid "File"
 msgstr ""
@@ -351,10 +355,6 @@ msgstr ""
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"
-msgstr ""
-
-#: codystrconsts.crsremoveawithblock
-msgid "Remove a \"With\" block"
 msgstr ""
 
 #: codystrconsts.crsreport

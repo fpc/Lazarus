@@ -78,7 +78,7 @@ resourcestring
   crsAddAssignMethod2 = 'Add Assign method ...';
   crsCopyDeclarationToClipboard = 'Copy declaration to clipboard';
   crsCutDeclarationToClipboard = 'Cut declaration to clipboard';
-  crsRemoveAWithBlock = 'Remove a "With" block';
+  crsExplodeAWithBlock = 'Explode a "With" block';
 
   crsCWError = 'Error';
   crsPleasePlaceTheCursorOfTheSourceEditorOnAnIdentifie = 'Please place the '

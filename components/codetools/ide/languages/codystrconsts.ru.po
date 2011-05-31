@@ -205,6 +205,10 @@ msgstr "Объявление переменной \"%s\""
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" является ключевым словом."
 
+#: codystrconsts.crsexplodeawithblock
+msgid "Explode a \"With\" block"
+msgstr ""
+
 #: codystrconsts.crsfile
 msgid "File"
 msgstr "Файл"
@@ -353,10 +357,6 @@ msgstr "Published"
 #: codystrconsts.crsrefresh
 msgid "Refresh"
 msgstr "Обновить"
-
-#: codystrconsts.crsremoveawithblock
-msgid "Remove a \"With\" block"
-msgstr "Удалить блок \"With\""
 
 #: codystrconsts.crsreport
 msgid "Report"
