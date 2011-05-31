@@ -17,7 +17,7 @@
     <Description Value="The FCL - FreePascal Component Library provides the base classes for object pascal."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="8">
+    <Files Count="9">
       <Item1>
         <Filename Value="lazaruspackageintf.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -58,6 +58,12 @@
         <Type Value="Main Unit"/>
         <UnitName Value="fcllaz"/>
       </Item8>
+      <Item9>
+        <Filename Value="servicemanager.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="ServiceManager"/>
+      </Item9>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <UsageOptions>
@@ -66,6 +72,5 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
-    <Provides Count="1"/>
   </Package>
 </CONFIG>
