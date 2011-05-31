@@ -105,13 +105,24 @@ type
 
   TCTDirectoryListingTime = longint;
   PCTDirectoryListingTime = ^TCTDirectoryListingTime;
+  TCTDirectoryListingAttr = longint;
+  PCTDirectoryListingAttr = ^TCTDirectoryListingAttr;
+  TCTDirectoryListingSize = int64;
+  PCTDirectoryListingSize = ^TCTDirectoryListingSize;
+
+  TCTDirectoryListingHeader = packed record
+    Time: TCTDirectoryListingTime;
+    Attr: TCTDirectoryListingAttr;
+    Size: TCTDirectoryListingSize;
+  end;
+  PCTDirectoryListingHeader = ^TCTDirectoryListingHeader;
 
   { TCTDirectoryListing }
 
   TCTDirectoryListing = class
   public
     FileTimeStamp: integer;
-    Files: PChar; { all filenames: each: time:TCTDirectoryListingTime+filename+#0
+    Files: PChar; { all filenames: each: time:TCTDirectoryListingHeader+filename+#0
                     sorted: first case insensitive then sensitive }
     Count: integer; // number of filenames
     Size: PtrInt; // length of Names in bytes
@@ -121,6 +132,8 @@ type
     function CalcMemSize: PtrUInt;
     function GetFilename(Index: integer): PChar;
     function GetTime(Index: integer): TCTDirectoryListingTime;
+    function GetAttr(Index: integer): TCTDirectoryListingAttr;
+    function GetSize(Index: integer): TCTDirectoryListingSize;
   end;
   
   TCTOnIterateFile = procedure(const Filename: string) of object;
@@ -162,6 +175,8 @@ type
     function FindFile(const ShortFilename: string;
                       const FileCase: TCTSearchFileCase): string;
     function FileAge(const ShortFilename: string): TCTDirectoryListingTime;
+    function FileAttr(const ShortFilename: string): TCTDirectoryListingAttr;
+    function FileSize(const ShortFilename: string): TCTDirectoryListingSize;
     function FindUnitSource(const AUnitName: string; AnyCase: boolean): string;
     function FindUnitSourceInCleanSearchPath(const AUnitName,
                                   SearchPath: string; AnyCase: boolean): string;
@@ -219,6 +234,8 @@ type
     procedure IncreaseConfigTimeStamp; inline;
     function FileExists(Filename: string): boolean;
     function FileAge(Filename: string): TCTDirectoryListingTime;
+    function FileAttr(Filename: string): TCTDirectoryListingAttr;
+    function FileSize(Filename: string): TCTDirectoryListingSize;
     function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
     function FindUnitInUnitSet(const Directory, AUnitName: string): string;
     function FindCompiledUnitInUnitSet(const Directory, AUnitName: string): string;
@@ -268,10 +285,12 @@ function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
 
 implementation
 
+const
+  NameOffset = SizeOf(TCTDirectoryListingHeader);
 type
   TWorkFileInfo = record
+    Header: TCTDirectoryListingHeader;
     FileName: string;
-    Time: TCTDirectoryListingTime;
   end;
   PWorkFileInfo = ^TWorkFileInfo;
   PPWorkFileInfo = ^PWorkFileInfo;
@@ -562,14 +581,16 @@ begin
           if WorkingListingCapacity>0 then
             NewCapacity:=WorkingListingCapacity*2
           else
-            NewCapacity:=8;
+            NewCapacity:=64;
           ReAllocMem(WorkingListing,SizeOf(TWorkFileInfo)*NewCapacity);
           FillChar(WorkingListing[WorkingListingCount],
                    SizeOf(TWorkFileInfo)*(NewCapacity-WorkingListingCapacity),0);
           WorkingListingCapacity:=NewCapacity;
         end;
         WorkingItem:=@WorkingListing[WorkingListingCount];
-        WorkingItem^.Time:=FileInfo.Time;
+        WorkingItem^.Header.Time:=FileInfo.Time;
+        WorkingItem^.Header.Attr:=FileInfo.Attr;
+        WorkingItem^.Header.Size:=FileInfo.Size;
         WorkingItem^.FileName:=FileInfo.Name;
         inc(WorkingListingCount);
       until FindNextUTF8(FileInfo)<>0;
@@ -587,7 +608,7 @@ begin
     // create listing
     TotalLen:=0;
     for i:=0 to WorkingListingCount-1 do
-      inc(TotalLen,length(WorkingListing[i].FileName)+1+SizeOf(TCTDirectoryListingTime));
+      inc(TotalLen,length(WorkingListing[i].FileName)+1+SizeOf(TCTDirectoryListingHeader));
     GetMem(FListing.Files,TotalLen);
     FListing.Size:=TotalLen;
     FListing.Count:=WorkingListingCount;
@@ -596,9 +617,8 @@ begin
     for i:=0 to WorkingListingCount-1 do begin
       FListing.Starts[i]:=p-FListing.Files;
       WorkingItem:=SortMap[i];
-      // time
-      PCTDirectoryListingTime(p)^:=WorkingItem^.Time;
-      inc(p,SizeOf(TCTDirectoryListingTime));
+      PCTDirectoryListingHeader(p)^:=WorkingItem^.Header;
+      inc(p,SizeOf(TCTDirectoryListingHeader));
       // filename
       CurFilenameLen:=length(WorkingItem^.FileName);
       if CurFilenameLen>0 then begin
@@ -758,7 +778,7 @@ begin
   r:=FListing.Count-1;
   while r>=l do begin
     m:=(l+r) shr 1;
-    CurFilename:=@Files[FListing.Starts[m]+SizeOf(TCTDirectoryListingTime)];
+    CurFilename:=@Files[FListing.Starts[m]+NameOffset];
     cmp:=ComparePCharCaseInsensitive(ShortFilename,CurFilename);// pointer type cast avoids #0 check
     if cmp>0 then
       l:=m+1
@@ -789,7 +809,7 @@ begin
   r:=FListing.Count-1;
   while r>=l do begin
     m:=(l+r) shr 1;
-    CurFilename:=@Files[FListing.Starts[m]+SizeOf(TCTDirectoryListingTime)];
+    CurFilename:=@Files[FListing.Starts[m]+NameOffset];
     cmp:=ComparePCharFirstCaseInsThenCase(ShortFilename,CurFilename);// pointer type cast avoids #0 check
     if cmp>0 then
       l:=m+1
@@ -920,10 +940,48 @@ begin
     Result:=FListing.GetTime(i);
 end;
 
+function TCTDirectoryCache.FileAttr(const ShortFilename: string
+  ): TCTDirectoryListingAttr;
+var
+  i: Integer;
+begin
+  Result:=0;
+  if ShortFilename='' then exit;
+  if Directory='' then begin
+    // this is a virtual directory
+    exit;
+  end;
+  {$IFDEF CaseInsensitiveFilenames}
+  i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
+  {$ELSE}
+  i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));
+  {$ENDIF}
+  if i>=0 then
+    Result:=FListing.GetAttr(i);
+end;
+
+function TCTDirectoryCache.FileSize(const ShortFilename: string
+  ): TCTDirectoryListingSize;
+var
+  i: Integer;
+begin
+  Result:=-1;
+  if ShortFilename='' then exit;
+  if Directory='' then begin
+    // this is a virtual directory
+    exit;
+  end;
+  {$IFDEF CaseInsensitiveFilenames}
+  i:=IndexOfFileCaseInsensitive(Pointer(ShortFilename));// pointer type cast avoids #0 check
+  {$ELSE}
+  i:=IndexOfFileCaseSensitive(Pointer(ShortFilename));
+  {$ENDIF}
+  if i>=0 then
+    Result:=FListing.GetSize(i);
+end;
+
 function TCTDirectoryCache.FindUnitSource(const AUnitName: string;
   AnyCase: boolean): string;
-const
-  NameOffset = SizeOf(TCTDirectoryListingTime);
 var
   l: Integer;
   r: Integer;
@@ -1234,7 +1292,7 @@ var
 begin
   writeln('TCTDirectoryCache.WriteListing Count=',FListing.Count,' Size=',FListing.Size);
   for i:=0 to FListing.Count-1 do begin
-    Filename:=@FListing.Files[FListing.Starts[i]+SizeOf(TCTDirectoryListingTime)];
+    Filename:=@FListing.Files[FListing.Starts[i]+NameOffset];
     writeln(i,' "',Filename,'"');
   end;
 end;
@@ -1255,7 +1313,7 @@ begin
   UpdateListing;
   ListedFiles:=FListing.Files;
   for i:=0 to FListing.Count-1 do
-    Files.Add(PChar(@ListedFiles[FListing.Starts[i]+SizeOf(TCTDirectoryListingTime)]));
+    Files.Add(PChar(@ListedFiles[FListing.Starts[i]+NameOffset]));
 end;
 
 { TCTDirectoryCachePool }
@@ -1411,6 +1469,50 @@ begin
   end;
   // fallback
   Result:=FileStateCache.FileAgeCached(Filename);
+end;
+
+function TCTDirectoryCachePool.FileAttr(Filename: string
+  ): TCTDirectoryListingAttr;
+var
+  Directory: String;
+  Cache: TCTDirectoryCache;
+  ShortFilename: String;
+begin
+  Filename:=TrimFilename(Filename);
+  if (Filename<>'') and FilenameIsAbsolute(Filename) then begin
+    ShortFilename:=ExtractFilename(Filename);
+    if (ShortFilename<>'') and (ShortFilename<>'.') and (ShortFilename<>'..')
+    then begin
+      Directory:=ExtractFilePath(Filename);
+      Cache:=GetCache(Directory,true,false);
+      Result:=Cache.FileAttr(ShortFilename);
+      exit;
+    end;
+  end;
+  // fallback
+  Result:=0;
+end;
+
+function TCTDirectoryCachePool.FileSize(Filename: string
+  ): TCTDirectoryListingSize;
+var
+  Directory: String;
+  Cache: TCTDirectoryCache;
+  ShortFilename: String;
+begin
+  Filename:=TrimFilename(Filename);
+  if (Filename<>'') and FilenameIsAbsolute(Filename) then begin
+    ShortFilename:=ExtractFilename(Filename);
+    if (ShortFilename<>'') and (ShortFilename<>'.') and (ShortFilename<>'..')
+    then begin
+      Directory:=ExtractFilePath(Filename);
+      Cache:=GetCache(Directory,true,false);
+      Result:=Cache.FileSize(ShortFilename);
+      exit;
+    end;
+  end;
+  // fallback
+  Result:=-1;
 end;
 
 function TCTDirectoryCachePool.FindUnitInUnitLinks(const Directory,
@@ -1645,20 +1747,46 @@ function TCTDirectoryListing.GetFilename(Index: integer): PChar;
 begin
   if (Index<0) or (Index>=Count) then
     RaiseIndexOutOfBounds;
-  Result:=@Files[Starts[Index]+SizeOf(TCTDirectoryListingTime)];
+  Result:=@Files[Starts[Index]+NameOffset];
 end;
 
 function TCTDirectoryListing.GetTime(Index: integer): TCTDirectoryListingTime;
 
   procedure RaiseIndexOutOfBounds;
   begin
-    raise Exception.Create('TCTDirectoryListing.GetFilename: Index out of bounds');
+    raise Exception.Create('TCTDirectoryListing.GetTime: Index out of bounds');
   end;
 
 begin
   if (Index<0) or (Index>=Count) then
     RaiseIndexOutOfBounds;
-  Result:=PCTDirectoryListingTime(@Files[Starts[Index]])^;
+  Result:=PCTDirectoryListingHeader(@Files[Starts[Index]])^.Time;
+end;
+
+function TCTDirectoryListing.GetAttr(Index: integer): TCTDirectoryListingAttr;
+
+  procedure RaiseIndexOutOfBounds;
+  begin
+    raise Exception.Create('TCTDirectoryListing.GetAttr: Index out of bounds');
+  end;
+
+begin
+  if (Index<0) or (Index>=Count) then
+    RaiseIndexOutOfBounds;
+  Result:=PCTDirectoryListingHeader(@Files[Starts[Index]])^.Attr;
+end;
+
+function TCTDirectoryListing.GetSize(Index: integer): TCTDirectoryListingSize;
+
+  procedure RaiseIndexOutOfBounds;
+  begin
+    raise Exception.Create('TCTDirectoryListing.GetSize: Index out of bounds');
+  end;
+
+begin
+  if (Index<0) or (Index>=Count) then
+    RaiseIndexOutOfBounds;
+  Result:=PCTDirectoryListingHeader(@Files[Starts[Index]])^.Size;
 end;
 
 { TUnitFileNameLink }
