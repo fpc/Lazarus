@@ -260,7 +260,7 @@ type
 
 const
   DefaultProjectCleanOutputFileMask = '*';
-  DefaultProjectCleanSourcesFileMask = '*.ppu;*.ppl;*.o;*.or;*.a;*.so;*.dll';
+  DefaultProjectCleanSourcesFileMask = '*.ppu;*.ppl;*.o;*.or';
   DefaultProjectSessionStorage = pssInProjectInfo;
 
 type
