@@ -39,6 +39,9 @@ interface
 
 uses
   LazarusPackageIntf,
+{$ifdef mswindows}
+  ServiceManager,
+{$endif}
   Classes, SysUtils, Process, DB, BufDataset, SimpleIPC, XMLConf, EventLog;
 
 procedure Register;
@@ -75,6 +78,13 @@ begin
   RegisterComponents('System',[TEventLog]);
 end;
 
+{$ifdef mswindows}
+procedure RegisterServiceManager;
+begin
+  RegisterComponents('System',[TServiceManager]);
+end;
+{$endif mswindows}
+
 procedure Register;
 begin
   RegisterUnit('DB',@RegisterDB);
@@ -82,6 +92,9 @@ begin
   RegisterUnit('SimpleIPC', @RegisterSimpleIPC);
   RegisterUnit('XMLConf',@RegisterXMLConf);
   RegisterUnit('EventLog',@RegisterEventLog);
+{$ifdef mswindows}
+  RegisterUnit('ServiceManager',@RegisterServiceManager);
+{$endif mswindows}
 end;
 
 end.

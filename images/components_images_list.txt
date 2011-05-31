@@ -88,6 +88,7 @@ components/tsavepicturedialog.png
 components/tscrollbar.png
 components/tscrollbox.png
 components/tselectdirectorydialog.png
+components/tservicemanager.png
 components/tshape.png
 components/tshelllistview.png
 components/tshelltreeview.png
