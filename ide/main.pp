@@ -318,7 +318,7 @@ type
     procedure mnuCompileProjectClicked(Sender: TObject);
     procedure mnuBuildProjectClicked(Sender: TObject);
     procedure mnuQuickCompileProjectClicked(Sender: TObject);
-    procedure mnuCleanCompileProjectClicked(Sender: TObject);
+    procedure mnuCleanUpCompiledProjectClicked(Sender: TObject);
     procedure mnuAbortBuildProjectClicked(Sender: TObject);
     procedure mnuRunProjectClicked(Sender: TObject);
     procedure mnuPauseProjectClicked(Sender: TObject);
@@ -2601,7 +2601,7 @@ begin
     itmRunMenuCompile.OnClick := @mnuCompileProjectClicked;
     itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
     itmRunMenuQuickCompile.OnClick := @mnuQuickCompileProjectClicked;
-    itmRunMenuCleanCompile.OnClick := @mnuCleanCompileProjectClicked;
+    itmRunMenuCleanUpCompiled.OnClick := @mnuCleanUpCompiledProjectClicked;
     itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
     itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
@@ -3216,7 +3216,7 @@ begin
     end;
 
   ecBuild: DoBuildProject(crBuild, [pbfCleanCompile, pbfCompileDependenciesClean]);
-  ecCleanCompile: mnuCleanCompileProjectClicked(nil);
+  ecCleanUpCompiled: mnuCleanUpCompiledProjectClicked(nil);
   ecQuickCompile: DoQuickCompile;
   ecAbortBuild: DoAbortBuild;
 
@@ -4351,7 +4351,7 @@ begin
   DoQuickCompile;
 end;
 
-procedure TMainIDE.mnuCleanCompileProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuCleanUpCompiledProjectClicked(Sender: TObject);
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has no source to compile

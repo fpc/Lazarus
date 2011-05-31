@@ -671,7 +671,7 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuCompile,'itmRunMenuCompile',lisMenuCompile,'menu_build');
     CreateMenuItem(ParentMI,itmRunMenuBuild,'itmRunMenuBuild',lisMenuBuild,'menu_build_all');
     CreateMenuItem(ParentMI,itmRunMenuQuickCompile,'itmRunMenuQuickCompile',lisMenuQuickCompile,'menu_quick_compile');
-    CreateMenuItem(ParentMI,itmRunMenuCleanCompile,'itmRunMenuCleanCompile',lisMenuCleanCompile,'menu_build');
+    CreateMenuItem(ParentMI,itmRunMenuCleanUpCompiled,'itmRunMenuCleanUpCompiled',lisMenuCleanUpCompiled,'menu_build');
     CreateMenuItem(ParentMI,itmRunMenuAbortBuild,'itmRunMenuAbortBuild',lisMenuAbortBuild,'menu_abort_build');
 
     CreateMenuSeparatorSection(mnuRun,itmRunnning,'itmRunnning');

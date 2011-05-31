@@ -233,7 +233,7 @@ const
   ecCompile                 = ecFirstLazarus + 400;
   ecBuild                   = ecFirstLazarus + 401;
   ecQuickCompile            = ecFirstLazarus + 402;
-  ecCleanCompile            = ecFirstLazarus + 403;
+  ecCleanUpCompiled         = ecFirstLazarus + 403;
   ecAbortBuild              = ecFirstLazarus + 404;
   ecRun                     = ecFirstLazarus + 410;
   ecPause                   = ecFirstLazarus + 411;

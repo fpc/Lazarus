@@ -279,7 +279,7 @@ type
         itmRunMenuCompile: TIDEMenuCommand;
         itmRunMenuBuild: TIDEMenuCommand;
         itmRunMenuQuickCompile: TIDEMenuCommand;
-        itmRunMenuCleanCompile: TIDEMenuCommand;
+        itmRunMenuCleanUpCompiled: TIDEMenuCommand;
         itmRunMenuAbortBuild: TIDEMenuCommand;
       //itmRunnning: TIDEMenuSection;
         itmRunMenuRun: TIDEMenuCommand;

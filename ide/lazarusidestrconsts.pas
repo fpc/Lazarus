@@ -347,7 +347,7 @@ resourcestring
   lisBFBuildCommand = 'Build Command';
   lisMenuBuild = 'Build';
   lisMenuQuickCompile = 'Quick compile';
-  lisMenuCleanCompile = 'Clean compile';
+  lisMenuCleanUpCompiled = 'Clean up build files';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = '&Run';
   lisBFAlwaysBuildBeforeRun = 'Always Build before Run';
@@ -2682,7 +2682,7 @@ resourcestring
   srkmecCompile                   = 'compile program/project';
   srkmecBuild                     = 'build program/project';
   srkmecQuickCompile              = 'quick compile, no linking';
-  srkmecCleanCompile              = 'clean up and compile';
+  srkmecCleanUpCompiled           = 'clean up build files';
   srkmecAbortBuild                = 'abort build';
   srkmecRun                       = 'run program';
   srkmecPause                     = 'pause program';
@@ -2774,7 +2774,7 @@ resourcestring
   lisKMCompileProjectProgram = 'Compile project/program';
   lisKMBuildProjectProgram = 'Build project/program';
   lisKMQuickCompileNoLinking = 'Quick compile, no linking';
-  lisKMCleanCompile = 'Clean up and compile project/program';
+  lisKMCleanUpCompiled = 'Clean up build files';
   lisKMAbortBuilding = 'Abort building';
   lisKMRunProgram = 'Run program';
   lisKMPauseProgram = 'Pause program';
