@@ -1502,7 +1502,7 @@ begin
     AddToProjectUsesSection:=false;
 
     // add requirements
-    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
+    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result,true));
 
     // register files
     {$I pkgfileslcl.inc}
@@ -1553,7 +1553,7 @@ begin
     AddToProjectUsesSection:=false;
 
     // add requirements
-    AddRequiredDependency(LCLBasePackage.CreateDependencyWithOwner(Result));
+    AddRequiredDependency(LCLBasePackage.CreateDependencyWithOwner(Result,true));
 
     // add issues files
     AddFile('interfaces/carbon/issues.xml','carbon-issues.xml',pftIssues,[],cpBase);
@@ -1668,8 +1668,8 @@ begin
     AddToProjectUsesSection:=false;
 
     // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
-    AddRequiredDependency(IDEIntfPackage.CreateDependencyWithOwner(Result));
+    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result,true));
+    AddRequiredDependency(IDEIntfPackage.CreateDependencyWithOwner(Result,true));
 
     // add units
     AddFile('synedit.pp','SynEdit',pftUnit,[],cpBase);
@@ -1790,7 +1790,7 @@ begin
     AddToProjectUsesSection:=false;
 
     // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
+    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result,true));
 
     // add units
     AddFile('dividerbevel.pas','DividerBevel',pftUnit,[],cpBase);
@@ -1832,7 +1832,7 @@ begin
     AddToProjectUsesSection:=false;
 
     // add requirements
-    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
+    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result,true));
 
     // add units
     AddFile('basiccodetools.pas','BasicCodeTools',pftUnit,[],cpBase);
@@ -1914,7 +1914,7 @@ begin
     AddToProjectUsesSection:=false;
 
     // add requirements
-    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
+    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result,true));
 
     // add units
     AddFile('actionseditor.pas','ActionsEditor',pftUnit,[],cpBase);

@@ -741,7 +741,8 @@ type
     procedure RemoveRemovedDependency(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
-    function CreateDependencyWithOwner(NewOwner: TObject): TPkgDependency;
+    function CreateDependencyWithOwner(NewOwner: TObject;
+                               WithMinVersion: boolean = false): TPkgDependency;
     function Requires(APackage: TLazPackage): boolean;
     procedure GetAllRequiredPackages(var List: TFPList; WithSelf: boolean);
     // components
@@ -3432,14 +3433,15 @@ begin
   Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
 end;
 
-function TLazPackage.CreateDependencyWithOwner(
-  NewOwner: TObject): TPkgDependency;
+function TLazPackage.CreateDependencyWithOwner(NewOwner: TObject;
+  WithMinVersion: boolean): TPkgDependency;
 begin
   Result:=TPkgDependency.Create;
   with Result do begin
     Owner:=NewOwner;
     PackageName:=Self.Name;
-    MinVersion.Assign(Version);
+    if WithMinVersion then
+      MinVersion.Assign(Version);
     Flags:=[pdfMinVersion];
   end;
 end;
