@@ -802,7 +802,7 @@ begin
 //  AddPackageDependency('LCL');
   // ToDo: make an option to add NoGUI to Project.CompilerOptions.LCLWidgetType.
   if fProjPack is TProject then
-    PkgBoss.AddDefaultDependencies(fProjPack as TProject);
+    PkgBoss.OpenProjectDependencies(fProjPack as TProject,true);
   CustomDefinesChanged;
 
   SetCompilerModeForDefineTempl(CustomDefines);

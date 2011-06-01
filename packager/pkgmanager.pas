@@ -248,7 +248,6 @@ type
                                   Interactive: boolean): TModalResult; override;
     function CanOpenDesignerForm(AnUnitInfo: TUnitInfo; 
                                  Interactive: boolean): TModalResult; override;
-    procedure AddDefaultDependencies(AProject: TProject); override;
     function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function AddProjectDependency(AProject: TProject;
@@ -1860,11 +1859,6 @@ begin
   end else
     Result:=mrOk;
   PkgLinks.SaveUserLinks;
-end;
-
-procedure TPkgManager.AddDefaultDependencies(AProject: TProject);
-begin
-  OpenProjectDependencies(AProject,true);
 end;
 
 function TPkgManager.AddProjectDependency(AProject: TProject;

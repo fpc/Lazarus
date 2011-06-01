@@ -10450,7 +10450,7 @@ begin
       if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
 
       // add and load default required packages
-      PkgBoss.AddDefaultDependencies(Project1);
+      PkgBoss.OpenProjectDependencies(Project1,true);
 
       // rebuild codetools defines
       MainBuildBoss.SetBuildTargetProject1(false);
@@ -10986,7 +10986,7 @@ begin
     IncreaseCompilerParseStamp;
 
     // add and load default required packages
-    PkgBoss.AddDefaultDependencies(Project1);
+    PkgBoss.OpenProjectDependencies(Project1,true);
 
     Result:=DoCompleteLoadingProjectInfo;
     if Result<>mrOk then exit;

@@ -1,9 +1,9 @@
-object BuildProjectDialog: TBuildProjectDialog
+object CleanBuildProjectDialog: TCleanBuildProjectDialog
   Left = 275
   Height = 492
   Top = 250
   Width = 537
-  Caption = 'BuildProjectDialog'
+  Caption = 'CleanBuildProjectDialog'
   ClientHeight = 492
   ClientWidth = 537
   OnClose = FormClose
@@ -171,7 +171,6 @@ object BuildProjectDialog: TBuildProjectDialog
     ClientWidth = 517
     TabOrder = 8
     object FilesTreeView: TTreeView
-      AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 238
       Top = 0

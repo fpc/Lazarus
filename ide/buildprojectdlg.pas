@@ -45,9 +45,9 @@ type
     Filename: string;
   end;
 
-  { TBuildProjectDialog }
+  { TCleanBuildProjectDialog }
 
-  TBuildProjectDialog = class(TForm)
+  TCleanBuildProjectDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
     DeleteButton: TButton;
     PkgOutCheckBox: TCheckBox;
@@ -103,22 +103,22 @@ implementation
 
 function ShowBuildProjectDialog(AProject: TProject): TModalResult;
 var
-  BuildProjectDialog: TBuildProjectDialog;
+  CleanBuildProjectDialog: TCleanBuildProjectDialog;
 begin
-  BuildProjectDialog:=TBuildProjectDialog.Create(nil);
+  CleanBuildProjectDialog:=TCleanBuildProjectDialog.Create(nil);
   try
-    BuildProjectDialog.Init(AProject);
-    Result:=BuildProjectDialog.ShowModal;
+    CleanBuildProjectDialog.Init(AProject);
+    Result:=CleanBuildProjectDialog.ShowModal;
   finally
-    BuildProjectDialog.Free;
+    CleanBuildProjectDialog.Free;
   end;
 end;
 
 {$R *.lfm}
 
-{ TBuildProjectDialog }
+{ TCleanBuildProjectDialog }
 
-procedure TBuildProjectDialog.FormCreate(Sender: TObject);
+procedure TCleanBuildProjectDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisCleanUpAndBuildProject;
 
@@ -139,14 +139,14 @@ begin
   ButtonPanel1.OKButton.ModalResult:=mrNone;
 end;
 
-procedure TBuildProjectDialog.FormDestroy(Sender: TObject);
+procedure TCleanBuildProjectDialog.FormDestroy(Sender: TObject);
 begin
   ClearFilesTreeView;
   FProject:=nil;
   IdleConnected:=false;
 end;
 
-procedure TBuildProjectDialog.FormClose(Sender: TObject;
+procedure TCleanBuildProjectDialog.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 
   procedure StoreCombo(AComboBox: TComboBox);
@@ -169,18 +169,18 @@ begin
   InputHistories.HistoryLists.GetList(hlCleanBuildFileMask,true).Assign(ProjOutMaskComboBox.Items);
 end;
 
-procedure TBuildProjectDialog.ButtonPanel1OKButtonClick(Sender: TObject);
+procedure TCleanBuildProjectDialog.ButtonPanel1OKButtonClick(Sender: TObject);
 begin
   if DeleteFiles<>mrOk then exit;
   ModalResult:=mrOk;
 end;
 
-procedure TBuildProjectDialog.DeleteButtonClick(Sender: TObject);
+procedure TCleanBuildProjectDialog.DeleteButtonClick(Sender: TObject);
 begin
   DeleteFiles;
 end;
 
-procedure TBuildProjectDialog.FilesTreeViewMouseDown(Sender: TObject;
+procedure TCleanBuildProjectDialog.FilesTreeViewMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Node: TTreeNode;
@@ -201,7 +201,7 @@ begin
   end;
 end;
 
-procedure TBuildProjectDialog.FormResize(Sender: TObject);
+procedure TCleanBuildProjectDialog.FormResize(Sender: TObject);
 var
   r: Integer;
 begin
@@ -211,36 +211,36 @@ begin
   ProjOutMaskComboBox.Left:=r+10;
 end;
 
-procedure TBuildProjectDialog.PkgOutCheckBoxChange(Sender: TObject);
+procedure TCleanBuildProjectDialog.PkgOutCheckBoxChange(Sender: TObject);
 begin
   PkgOutMaskComboBox.Enabled:=PkgOutCheckBox.Checked;
   UpdateFilesTreeView;
 end;
 
-procedure TBuildProjectDialog.PkgSrcCheckBoxChange(Sender: TObject);
+procedure TCleanBuildProjectDialog.PkgSrcCheckBoxChange(Sender: TObject);
 begin
   PkgSrcMaskComboBox.Enabled:=PkgSrcCheckBox.Checked;
   UpdateFilesTreeView;
 end;
 
-procedure TBuildProjectDialog.ProjOutCheckBoxChange(Sender: TObject);
+procedure TCleanBuildProjectDialog.ProjOutCheckBoxChange(Sender: TObject);
 begin
   ProjOutMaskComboBox.Enabled:=ProjOutCheckBox.Checked;
   UpdateFilesTreeView;
 end;
 
-procedure TBuildProjectDialog.ProjOutMaskComboBoxChange(Sender: TObject);
+procedure TCleanBuildProjectDialog.ProjOutMaskComboBoxChange(Sender: TObject);
 begin
   UpdateFilesTreeView;
 end;
 
-procedure TBuildProjectDialog.ProjSrcCheckBoxChange(Sender: TObject);
+procedure TCleanBuildProjectDialog.ProjSrcCheckBoxChange(Sender: TObject);
 begin
   ProjSrcMaskComboBox.Enabled:=ProjSrcCheckBox.Checked;
   UpdateFilesTreeView;
 end;
 
-procedure TBuildProjectDialog.SetIdleConnected(const AValue: boolean);
+procedure TCleanBuildProjectDialog.SetIdleConnected(const AValue: boolean);
 begin
   if FIdleConnected=AValue then exit;
   FIdleConnected:=AValue;
@@ -250,7 +250,7 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
-procedure TBuildProjectDialog.OnIdle(Sender: TObject; var Done: Boolean);
+procedure TCleanBuildProjectDialog.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   if FProject=nil then exit;
   if not FUpdateNeeded then exit;
@@ -258,7 +258,7 @@ begin
   UpdateFilesTreeView(true);
 end;
 
-procedure TBuildProjectDialog.ClearFilesTreeView;
+procedure TCleanBuildProjectDialog.ClearFilesTreeView;
 var
   Node: TTreeNode;
 begin
@@ -271,7 +271,7 @@ begin
   FilesTreeView.Items.Clear;
 end;
 
-procedure TBuildProjectDialog.UpdateFilesTreeView(Immediately: boolean);
+procedure TCleanBuildProjectDialog.UpdateFilesTreeView(Immediately: boolean);
 
   function CreateTVChildCounts(TVNode: TTreeNode): integer;
   var
@@ -318,21 +318,21 @@ begin
   FilesTreeView.EndUpdate;
 end;
 
-procedure TBuildProjectDialog.AddProjOutDirectory;
+procedure TCleanBuildProjectDialog.AddProjOutDirectory;
 begin
   AddDirectory('Project output directory',
     FProject.CompilerOptions.GetUnitOutputDirectory(false),
     ProjOutMaskComboBox.Text);
 end;
 
-procedure TBuildProjectDialog.AddProjSrcDirectories;
+procedure TCleanBuildProjectDialog.AddProjSrcDirectories;
 begin
   AddDirectories('Project output directory',
     FProject.SourceDirectories.CreateSearchPathFromAllFiles,
     ProjSrcMaskComboBox.Text);
 end;
 
-procedure TBuildProjectDialog.AddPkgOutDirectories;
+procedure TCleanBuildProjectDialog.AddPkgOutDirectories;
 var
   List: TFPList;
   i: Integer;
@@ -352,7 +352,7 @@ begin
   end;
 end;
 
-procedure TBuildProjectDialog.AddPkgSrcDirectory;
+procedure TCleanBuildProjectDialog.AddPkgSrcDirectory;
 var
   List: TFPList;
   i: Integer;
@@ -372,7 +372,7 @@ begin
   end;
 end;
 
-procedure TBuildProjectDialog.AddDirectory(aTVPath, aDirectory,
+procedure TCleanBuildProjectDialog.AddDirectory(aTVPath, aDirectory,
   aFileMask: string);
 var
   Cache: TCTDirectoryCache;
@@ -464,7 +464,7 @@ begin
   end;
 end;
 
-procedure TBuildProjectDialog.AddDirectories(aTVPath, aSearchPath,
+procedure TCleanBuildProjectDialog.AddDirectories(aTVPath, aSearchPath,
   aFileMask: string);
 var
   Directory: String;
@@ -478,7 +478,7 @@ begin
   end;
 end;
 
-function TBuildProjectDialog.GetAllFilesFromTree: TFilenameToStringTree;
+function TCleanBuildProjectDialog.GetAllFilesFromTree: TFilenameToStringTree;
 var
   Node: TTreeNode;
   Item: TBuildProjectDialogItem;
@@ -496,7 +496,7 @@ begin
   end;
 end;
 
-function TBuildProjectDialog.DeleteFiles: TModalResult;
+function TCleanBuildProjectDialog.DeleteFiles: TModalResult;
 var
   Files: TFilenameToStringTree;
   Node: TAVLTreeNode;
@@ -561,7 +561,7 @@ begin
   end;
 end;
 
-procedure TBuildProjectDialog.Init(AProject: TProject);
+procedure TCleanBuildProjectDialog.Init(AProject: TProject);
 var
   List: THistoryList;
 begin

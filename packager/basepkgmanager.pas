@@ -89,7 +89,6 @@ type
     // project
     function OpenProjectDependencies(AProject: TProject;
                        ReportMissing: boolean): TModalResult; virtual; abstract;
-    procedure AddDefaultDependencies(AProject: TProject); virtual; abstract;
     function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
     function AddProjectDependency(AProject: TProject;
