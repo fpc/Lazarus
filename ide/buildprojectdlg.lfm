@@ -174,7 +174,10 @@ object BuildProjectDialog: TBuildProjectDialog
       Width = 517
       Align = alClient
       DefaultItemHeight = 19
+      ReadOnly = True
       TabOrder = 0
+      OnMouseDown = FilesTreeViewMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
 end

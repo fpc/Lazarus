@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Math, AVL_Tree, FileProcs, Forms, Controls, Graphics,
-  Dialogs, ButtonPanel, ExtCtrls, StdCtrls, ComCtrls, Masks,
+  Dialogs, ButtonPanel, ExtCtrls, StdCtrls, ComCtrls, Masks, LCLIntf,
   // codetools
   CodeToolManager, DirectoryCacher, CodeToolsStructs,
   // IDEIntf
@@ -41,6 +41,7 @@ uses
 type
   TBuildProjectDialogItem = class
   public
+    IsDirectory: boolean;
     Filename: string;
   end;
 
@@ -59,6 +60,8 @@ type
     ProjSrcCheckBox: TCheckBox;
     ProjSrcMaskComboBox: TComboBox;
     procedure ButtonPanel1OKButtonClick(Sender: TObject);
+    procedure FilesTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -167,6 +170,27 @@ procedure TBuildProjectDialog.ButtonPanel1OKButtonClick(Sender: TObject);
 begin
   if DeleteFiles<>mrOk then exit;
   ModalResult:=mrOk;
+end;
+
+procedure TBuildProjectDialog.FilesTreeViewMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Node: TTreeNode;
+  Item: TBuildProjectDialogItem;
+  Filename: String;
+begin
+  Node:=FilesTreeView.GetNodeAt(X,Y);
+  if Node=nil then exit;
+  if (Button=mbLeft) and (ssDouble in Shift) and (Node.Data<>nil) then begin
+    Item:=TBuildProjectDialogItem(Node.Data);
+    Filename:=Item.Filename;
+    if Item.IsDirectory then exit;
+    Filename:=ExtractFilePath(Filename);
+    Filename:=ChompPathDelim(Filename);
+    debugln(['TBuildProjectDialog.FilesTreeViewMouseDown Filename="',Filename,'"']);
+    if FilenameIsAbsolute(Filename) then
+      OpenURL('file://'+StringReplace(Filename,'\','/',[rfReplaceAll]));
+  end;
 end;
 
 procedure TBuildProjectDialog.FormResize(Sender: TObject);
@@ -406,6 +430,12 @@ begin
       TVNode:=FilesTreeView.Items.AddChild(ParentTVNode,NodeText)
     else if (CompareFilenames(TVNode.Text,NodeText)<>0) then
       TVNode:=FilesTreeView.Items.Add(TVNode,NodeText);
+    if TVNode.Data=nil then begin
+      Item:=TBuildProjectDialogItem.Create;
+      Item.IsDirectory:=true;
+      Item.Filename:=aDirectory;
+      TVNode.Data:=Item;
+    end;
     TVNode.ImageIndex:=ImageIndexDirectory;
     TVNode.SelectedIndex:=ImageIndexDirectory;
     ParentTVNode:=TVNode;
@@ -443,12 +473,17 @@ end;
 function TBuildProjectDialog.GetAllFilesFromTree: TFilenameToStringTree;
 var
   Node: TTreeNode;
+  Item: TBuildProjectDialogItem;
 begin
   Result:=TFilenameToStringTree.Create(false);
   Node:=FilesTreeView.Items.GetFirstNode;
   while Node<>nil do begin
     if (Node.Data<>nil) and (TObject(Node.Data) is TBuildProjectDialogItem) then
-      Result[TBuildProjectDialogItem(Node.Data).Filename]:='1';
+    begin
+      Item:=TBuildProjectDialogItem(Node.Data);
+      if not Item.IsDirectory then
+        Result[Item.Filename]:='1';
+    end;
     Node:=Node.GetNext;
   end;
 end;

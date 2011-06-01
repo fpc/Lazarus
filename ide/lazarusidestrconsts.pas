@@ -347,7 +347,7 @@ resourcestring
   lisBFBuildCommand = 'Build Command';
   lisMenuBuild = 'Build';
   lisMenuQuickCompile = 'Quick compile';
-  lisMenuCleanUpCompiled = 'Clean up build files';
+  lisMenuCleanUpCompiled = 'Clean up build files ...';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = '&Run';
   lisBFAlwaysBuildBeforeRun = 'Always Build before Run';
