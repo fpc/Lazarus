@@ -834,7 +834,6 @@ resourcestring
   lisClickHereToBrowseTheFileHint = 'Click here to browse the file';
   lisProjectWizard = 'Project Wizard';
   lisQuitLazarus = 'Quit Lazarus';
-  lisCreateNewProject = 'Create new project';
   lisOpenPackageFile = 'Open Package File';
   lisSaveSpace = 'Save ';
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
