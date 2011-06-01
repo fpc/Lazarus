@@ -6,7 +6,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
-msgstr ""
+msgstr "Käytä valmista ehdotelmaa"
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
@@ -532,7 +532,7 @@ msgstr "Näytä sulje-painike välilehdellä"
 
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
-msgstr "Värikaavio"
+msgstr "Väriehdotelma"
 
 #: lazarusidestrconsts.dlgcmacro
 msgid "C Style Macros (global)"
@@ -1419,7 +1419,7 @@ msgstr "Lomake-editori"
 
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From Cursor"
-msgstr "Kohdistimen osoittama kohta"
+msgstr "Kursorin osoittama kohta"
 
 #: lazarusidestrconsts.dlgfropts
 msgctxt "lazarusidestrconsts.dlgfropts"
@@ -1654,7 +1654,7 @@ msgstr "Hyppely (esim. metodeihin)"
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep cursor X position"
-msgstr "Yritä pysyä samalla kohtaa eri riveillä (x-paikka)"
+msgstr "Säilytä kursorin X-koordinaatti"
 
 #: lazarusidestrconsts.dlgkeymapping
 msgid "Key Mappings"
@@ -1662,11 +1662,11 @@ msgstr "Näppäinkomennot"
 
 #: lazarusidestrconsts.dlgkeymappingerrors
 msgid "Key mapping errors"
-msgstr ""
+msgstr "Näppäinkartan virheet"
 
 #: lazarusidestrconsts.dlgkeymappingscheme
 msgid "Key Mapping Scheme"
-msgstr ""
+msgstr "Näppäinkartan ehdotelma"
 
 #: lazarusidestrconsts.dlgkeywordpolicy
 msgid "Keyword policy"
@@ -1674,7 +1674,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlglabelgoto
 msgid "Allow LABEL and GOTO"
-msgstr ""
+msgstr "Salli LABEL ja GOTO"
 
 #: lazarusidestrconsts.dlglang
 msgctxt "lazarusidestrconsts.dlglang"
@@ -2154,7 +2154,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptpriorlabel
 msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
 msgid "Priority"
-msgstr ""
+msgstr "Ensisijaisuus"
 
 #: lazarusidestrconsts.dlgmsgs
 msgctxt "lazarusidestrconsts.dlgmsgs"
@@ -2167,7 +2167,7 @@ msgstr "Monivalinta"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
 msgid "Find editor for jump targets:"
-msgstr ""
+msgstr "Etsi hyppykohteen editori:"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
@@ -2175,7 +2175,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwinaccessorderedit
 msgid "Most recent focused editor for this file"
-msgstr ""
+msgstr "Tämän tiedoston viimeisin aktiivinen editori"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorderwin
 msgid "Editor (for file) in most recent focused window"
@@ -3442,11 +3442,11 @@ msgstr "Kiitokset"
 
 #: lazarusidestrconsts.lisaction
 msgid "Action:"
-msgstr ""
+msgstr "Toiminta:"
 
 #: lazarusidestrconsts.lisactions
 msgid "Actions:"
-msgstr ""
+msgstr "Toiminnat:"
 
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
@@ -3454,23 +3454,23 @@ msgstr "Salli etsintäoperandit (mm * ja ?)"
 
 #: lazarusidestrconsts.lisactive
 msgid "Active"
-msgstr ""
+msgstr "Aktiivinen"
 
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
-msgstr ""
+msgstr "Aktiivinen suodatin"
 
 #: lazarusidestrconsts.lisadddirectory
 msgid "Add directory"
-msgstr ""
+msgstr "Lisää hakemisto"
 
 #: lazarusidestrconsts.lisaddfilesofdirectory
 msgid "Add files of directory"
-msgstr ""
+msgstr "Lisää tiedostoja hakemistoon"
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
-msgstr ""
+msgstr "Paketeilta perittyjä kääntäjän lisä-optioita"
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
@@ -3486,15 +3486,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagerequirement
 msgid "Add package requirement?"
-msgstr ""
+msgstr "Lisää pakettiriippuvuus?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject
 msgid "Add package %s to project?"
-msgstr ""
+msgstr "Lisää paketti %s projektiin?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
-msgstr ""
+msgstr "Lisää paketti projektiin"
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
@@ -3502,7 +3502,7 @@ msgstr "Lisää parametrin sulkeet"
 
 #: lazarusidestrconsts.lisaddress
 msgid "Address:"
-msgstr ""
+msgstr "Osoite:"
 
 #: lazarusidestrconsts.lisaddressbreakpoint
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
@@ -4183,11 +4183,11 @@ msgstr "Väärä polkuerotin"
 
 #: lazarusidestrconsts.liscecategories
 msgid "Categories"
-msgstr ""
+msgstr "Ryhmät"
 
 #: lazarusidestrconsts.liscecomplexitygroup
 msgid "Complexity"
-msgstr ""
+msgstr "Monimutkaisuus"
 
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
@@ -4195,11 +4195,11 @@ msgstr "Vakiot"
 
 #: lazarusidestrconsts.lisceemptyblocks
 msgid "Empty blocks"
-msgstr ""
+msgstr "Tyhjät lohkot"
 
 #: lazarusidestrconsts.lisceemptyclasssections
 msgid "Empty class sections"
-msgstr ""
+msgstr "Luokkien tyhjät alueet"
 
 #: lazarusidestrconsts.lisceemptygroup
 msgid "Empty constructs"
@@ -4211,11 +4211,11 @@ msgstr "Tyhjät aliohjelmat"
 
 #: lazarusidestrconsts.liscefilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(Suodatin)"
 
 #: lazarusidestrconsts.liscefollowcursor
 msgid "Follow cursor"
-msgstr ""
+msgstr "Seuraa kursoria"
 
 #: lazarusidestrconsts.liscein
 msgctxt "lazarusidestrconsts.liscein"
@@ -4678,7 +4678,7 @@ msgstr "Ylimääräisten tiedostojen poisto"
 
 #: lazarusidestrconsts.liscldircleansubdirectories
 msgid "Clean sub directories"
-msgstr "Poista tiedostot myös alikansioista"
+msgstr "Siivoa alihakemistot"
 
 #: lazarusidestrconsts.liscldirkeepalltextfiles
 msgid "Keep all text files"
@@ -4686,19 +4686,19 @@ msgstr "Säilytä kaikki tekstitiedostot"
 
 #: lazarusidestrconsts.liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
-msgstr "Säilytettävien tiedostojen tiedostopäätteet"
+msgstr "Säilytä suodattimen mukaiset tiedostot"
 
 #: lazarusidestrconsts.liscldirremovefilesmatchingfilter
 msgid "Remove files matching filter"
-msgstr "Poistettavien tiedostojen tiedostopäätteet"
+msgstr "Poista suodattimen mukaiset tiedostot"
 
 #: lazarusidestrconsts.liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
-msgstr ""
+msgstr "Yksinkertainen kielioppi (esim. * eikä .*)"
 
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
-msgstr ""
+msgstr "Siivoa Lazaruksen lähdekoodi"
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -4706,11 +4706,11 @@ msgstr "Siivotaanko käännösyksikköjen polku?"
 
 #: lazarusidestrconsts.liscleardirectory
 msgid "Clear Directory?"
-msgstr ""
+msgstr "Tyhjennä hakemisto?"
 
 #: lazarusidestrconsts.lisclearkeymapping
 msgid "Clear Key Mapping"
-msgstr ""
+msgstr "Tyhjennä näppäinkartta"
 
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
@@ -6929,19 +6929,19 @@ msgstr "Valitse näppäinkaavio"
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
-msgstr ""
+msgstr "Kaikki paketit"
 
 #: lazarusidestrconsts.lisedtdefcurrentproject
 msgid "Current Project"
-msgstr ""
+msgstr "Nykyinen projekti"
 
 #: lazarusidestrconsts.lisedtdefcurrentprojectdirectory
 msgid "Current Project Directory"
-msgstr ""
+msgstr "Nykyisen projektin hakemisto"
 
 #: lazarusidestrconsts.lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
-msgstr ""
+msgstr "Globaalin lähdehakemiston lisäys"
 
 #: lazarusidestrconsts.lisedtdefprojectincpath
 msgid "Project IncPath"
@@ -6949,15 +6949,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisedtdefprojectsrcpath
 msgid "Project SrcPath"
-msgstr ""
+msgstr "Projektin lähdekoodin polku"
 
 #: lazarusidestrconsts.lisedtdefprojectunitpath
 msgid "Project UnitPath"
-msgstr ""
+msgstr "Projektin käännösyksiköiden polku"
 
 #: lazarusidestrconsts.lisedtdefsallprojects
 msgid "All projects"
-msgstr ""
+msgstr "Kaikki projektit"
 
 #: lazarusidestrconsts.lisedtdefsetfpcmodetodelphi
 msgid "set FPC mode to DELPHI"
@@ -7225,7 +7225,7 @@ msgstr ""
 #: lazarusidestrconsts.liseotabwidths
 msgctxt "lazarusidestrconsts.liseotabwidths"
 msgid "Tab widths"
-msgstr ""
+msgstr "Liuskojen leveydet"
 
 #: lazarusidestrconsts.liserrinvalidoption
 msgid "Invalid option at position %d: \"%s\""
@@ -7390,7 +7390,7 @@ msgstr "Arvioi/Muuta"
 
 #: lazarusidestrconsts.liseventlogclear
 msgid "Clear Events"
-msgstr ""
+msgstr "Tyhjennä tapahtumat"
 
 #: lazarusidestrconsts.liseventlogoptions
 msgid "Event Log Options ..."
@@ -7652,19 +7652,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfilter
 msgid "Filter"
-msgstr ""
+msgstr "Suodatin"
 
 #: lazarusidestrconsts.lisfilter2
 msgid "(filter)"
-msgstr ""
+msgstr "(suodatin)"
 
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
-msgstr ""
+msgstr "Suodatin: %s"
 
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
-msgstr ""
+msgstr "Suodatinryhmät"
 
 #: lazarusidestrconsts.lisfindfilecasesensitive
 msgid "&Case sensitive"
@@ -7684,11 +7684,11 @@ msgstr "Sisällytetään myös alikansiot "
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
 msgid "&Multiline pattern"
-msgstr ""
+msgstr "Monirivinen malli"
 
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
-msgstr ""
+msgstr "Vain tekstitiedostot"
 
 #: lazarusidestrconsts.lisfindfileregularexpressions
 msgid "&Regular expressions"
@@ -7724,11 +7724,11 @@ msgstr "Etsi näppäinyhdistelmä"
 
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
-msgstr ""
+msgstr "Etsi puuttuva käännösyksikkö"
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
-msgstr ""
+msgstr "Ensimmäinen"
 
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
@@ -7736,7 +7736,7 @@ msgstr "LFM tiedoston korjaus"
 
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
-msgstr ""
+msgstr "Liukuluku"
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -7744,19 +7744,19 @@ msgstr "Kaikesta huolimatta nimetään näin"
 
 #: lazarusidestrconsts.lisform
 msgid "Form"
-msgstr ""
+msgstr "Lomake"
 
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
-msgstr ""
+msgstr "Muotoiluvirhe"
 
 #: lazarusidestrconsts.lisformloaderror
 msgid "Form load error"
-msgstr ""
+msgstr "Lomakkeen latausvirhe"
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
-msgstr ""
+msgstr "Versio %s löytyi, odotettiin versiota %s"
 
 #: lazarusidestrconsts.lisfpccfgismissing
 msgid "fpc.cfg is missing."
@@ -7818,7 +7818,7 @@ msgstr "Etsi komponenttipaletista komponentti"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
-msgstr ""
+msgstr "Kehys"
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -7938,11 +7938,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
-msgstr ""
+msgstr "Ryhmä"
 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
-msgstr ""
+msgstr "Kasvata suurimpaan"
 
 #: lazarusidestrconsts.lishashelp
 msgid "Has Help"
@@ -7962,7 +7962,7 @@ msgstr "Ohjeen valinta"
 
 #: lazarusidestrconsts.lishexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "Heksadesimaali"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 #, fuzzy
@@ -8230,7 +8230,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
-msgstr ""
+msgstr "Lisää suodatin"
 
 #: lazarusidestrconsts.lisincludepath
 msgid "include path"
@@ -8266,7 +8266,7 @@ msgstr "Käännetään ..."
 
 #: lazarusidestrconsts.lisinfobuilderror
 msgid "Error ..."
-msgstr ""
+msgstr "Virhe ..."
 
 #: lazarusidestrconsts.lisinfobuilderrors
 msgid "Errors:"
@@ -8292,7 +8292,7 @@ msgstr "Huomioita:"
 
 #: lazarusidestrconsts.lisinfobuildproject
 msgid "Project:"
-msgstr ""
+msgstr "Projekti:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success ..."
@@ -8304,7 +8304,7 @@ msgstr "Varoituksia:"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
-msgstr ""
+msgstr "Tietoja"
 
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
@@ -10221,7 +10221,7 @@ msgstr "Avaa ..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
-msgstr "Avaa kohdistimen osoittama tiedosto"
+msgstr "Avaa kursorin osoittama tiedosto"
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open loaded package ..."
@@ -13136,15 +13136,15 @@ msgstr "Avaa edellinen projekti"
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"
-msgstr ""
+msgstr "Luo paikallinen muuttuja"
 
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
-msgstr ""
+msgstr "Nopeat korjaukset"
 
 #: lazarusidestrconsts.lisquickfixremoveunit
 msgid "Quick fix: Remove unit"
-msgstr ""
+msgstr "Nopea korjaus: poista käännösyksikkö"
 
 #: lazarusidestrconsts.lisquickfixsearchidentifier
 msgid "Search identifier"
@@ -13179,7 +13179,7 @@ msgstr "Arvo"
 
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
-msgstr ""
+msgstr "Säännöllinen lauseke"
 
 #: lazarusidestrconsts.lisrelativepaths
 msgid "Relative paths"
@@ -13641,7 +13641,7 @@ msgstr "Näytä lisätietojaosa"
 
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
-msgstr ""
+msgstr "Näytä paketit"
 
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
@@ -13661,7 +13661,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowunits
 msgid "Show units"
-msgstr ""
+msgstr "Näytä käännösyksiköt"
 
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
@@ -13681,7 +13681,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple Syntax"
-msgstr ""
+msgstr "Yksinkertainen kielioppi"
 
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
@@ -16224,7 +16224,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmeclinebreak
 msgid "Break line and move cursor"
-msgstr "Rivinvaihto"
+msgstr "Rivinvaihto ja siirrä kursoria"
 
 #: lazarusidestrconsts.srkmeclineend
 msgid "Move cursor to line end"
@@ -16304,7 +16304,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecopenfileatcursor
 msgid "Open file at cursor"
-msgstr "Avaa kohdistimen osoittama tiedosto"
+msgstr "Avaa kursorin osoittama tiedosto"
 
 #: lazarusidestrconsts.srkmecoverwritemode
 msgid "Overwrite Mode"
@@ -16980,7 +16980,7 @@ msgstr "Muutettu"
 
 #: lazarusidestrconsts.uemopenfileatcursor
 msgid "&Open file at cursor"
-msgstr "&Avaa kohdistimen osoittama tiedosto"
+msgstr "&Avaa kursorin osoittama tiedosto"
 
 #: lazarusidestrconsts.uempaste
 msgctxt "lazarusidestrconsts.uempaste"
@@ -17002,7 +17002,7 @@ msgstr "Vain luettavissa"
 
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
-msgstr "Uudelleen järjestä"
+msgstr "Uudelleen järjestele"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"
