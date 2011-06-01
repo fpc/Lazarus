@@ -526,6 +526,7 @@ resourcestring
   lisTypes = 'Types (not removed if no replacement)';
   lisReplaceRemoveUnknown = 'Fix unknown properties and types';
   lisReplacementFuncs = 'Replacement functions';
+  lisFilesHaveRightEncoding = '*** All found files already have the right encoding ***';
 
   lisUnableToLoadOldResourceFileTheResourceFileIs = 'Unable to load old '
     +'resource file.%sThe resource file is the first include file in the%'
@@ -2172,7 +2173,6 @@ resourcestring
   lisShowIdentifiers = 'Show identifiers';
   lisFilter = 'Filter';
   lisRegularExpression = 'Regular expression';
-  lisUpdatePreview = 'Update preview';
   lisInvalidFilter = 'Invalid filter';
   lisInvalidExpression = 'Invalid expression:%s%s%s%s';
   lisExcludeFilter2 = 'Exclude filter';
