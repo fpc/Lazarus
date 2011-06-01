@@ -49,6 +49,7 @@ type
 
   TBuildProjectDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
+    DeleteButton: TButton;
     PkgOutCheckBox: TCheckBox;
     PkgOutMaskComboBox: TComboBox;
     PkgSrcCheckBox: TCheckBox;
@@ -60,6 +61,7 @@ type
     ProjSrcCheckBox: TCheckBox;
     ProjSrcMaskComboBox: TComboBox;
     procedure ButtonPanel1OKButtonClick(Sender: TObject);
+    procedure DeleteButtonClick(Sender: TObject);
     procedure FilesTreeViewMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -126,7 +128,8 @@ begin
   PkgSrcCheckBox.Caption:=lisPackageSourceDirectories;
   PreviewGroupBox.Caption:=lisTheseFilesWillBeDeleted;
 
-  ButtonPanel1.OKButton.Caption:=lisBuildProject;
+  ButtonPanel1.OKButton.Caption:=lisCleanUpAndBuild;
+  DeleteButton.Caption:=dlgMouseOptBtnDel;
 
   FilesTreeView.Images:=IDEImages.Images_16;
   ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
@@ -170,6 +173,11 @@ procedure TBuildProjectDialog.ButtonPanel1OKButtonClick(Sender: TObject);
 begin
   if DeleteFiles<>mrOk then exit;
   ModalResult:=mrOk;
+end;
+
+procedure TBuildProjectDialog.DeleteButtonClick(Sender: TObject);
+begin
+  DeleteFiles;
 end;
 
 procedure TBuildProjectDialog.FilesTreeViewMouseDown(Sender: TObject;
@@ -546,6 +554,7 @@ begin
     Result:=mrOk;
   finally
     InvalidateFileStateCache;
+    UpdateFilesTreeView;
     SourceFiles.Free;
     MaskList.Free;
     Files.Free;

@@ -153,23 +153,27 @@ object BuildProjectDialog: TBuildProjectDialog
     Text = 'PkgSrcMaskComboBox'
   end
   object PreviewGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PkgSrcMaskComboBox
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = DeleteButton
     Left = 6
-    Height = 292
+    Height = 259
     Top = 146
     Width = 525
-    Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 4
     BorderSpacing.Around = 6
     Caption = 'PreviewGroupBox'
-    ClientHeight = 271
+    ClientHeight = 238
     ClientWidth = 517
     TabOrder = 8
     object FilesTreeView: TTreeView
+      AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 271
+      Height = 238
       Top = 0
       Width = 517
       Align = alClient
@@ -179,5 +183,20 @@ object BuildProjectDialog: TBuildProjectDialog
       OnMouseDown = FilesTreeViewMouseDown
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
+  end
+  object DeleteButton: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 422
+    Height = 27
+    Top = 411
+    Width = 109
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'DeleteButton'
+    OnClick = DeleteButtonClick
+    TabOrder = 10
   end
 end

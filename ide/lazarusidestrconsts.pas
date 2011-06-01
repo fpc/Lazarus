@@ -5347,6 +5347,7 @@ resourcestring
   lisPackageOutputDirectories = 'Package output directories';
   lisPackageSourceDirectories = 'Package source directories';
   lisTheseFilesWillBeDeleted = 'These files will be deleted:';
+  lisCleanUpAndBuild = 'Clean up and build';
   lisBuildProject = 'Build project';
 
 implementation
