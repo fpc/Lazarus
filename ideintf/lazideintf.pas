@@ -162,6 +162,7 @@ type
   protected
     FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
     fOwningComponent: TComponent;
+    LastActivatedWindows: TList;
 
     function GetActiveProject: TLazProject; virtual; abstract;
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);
@@ -396,6 +397,7 @@ var
   CurResult: TModalResult;
 begin
   Result:=mrOk;
+  LastActivatedWindows.Clear;               // IDE windows may change.
   i:=FLazarusIDEHandlers[HandlerType].Count;
   while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do begin
     CurResult:=TLazProjectChangedFunction(FLazarusIDEHandlers[HandlerType][i])(Self,AProject);
