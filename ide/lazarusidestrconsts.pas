@@ -560,8 +560,7 @@ resourcestring
   lisUnableToAddResourceHeaderCommentToResourceFile = 'Unable to add resource '
     +'header comment to resource file %s%s%s%s.%sProbably a syntax error.';
   lisUnableToAddResourceTFORMDATAToResourceFileProbably = 'Unable to add '
-    +'resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax '
-    +'error.';
+    +'resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error.';
   lisUnableToCreateFile2 = 'Unable to create file %s%s%s';
   lisContinueWithoutLoadingForm = 'Continue without loading form';
   lisCancelLoadingUnit = 'Cancel loading unit';
@@ -609,8 +608,7 @@ resourcestring
   lisSourceDirectoryDoesNotExist = 'Source directory %s%s%s does not exist.';
   lisUnableToCreateDirectory = 'Unable to create directory %s%s%s.';
   lisUnableToCopyFileTo = 'Unable to copy file %s%s%s%sto %s%s%s';
-  lisSorryThisTypeIsNotYetImplemented = 'Sorry, this type is not yet '
-    +'implemented';
+  lisSorryThisTypeIsNotYetImplemented = 'Sorry, this type is not yet implemented';
   lisFileHasChangedSave = 'File %s%s%s has changed. Save?';
   lisUnitHasChangedSave = 'Unit %s%s%s has changed. Save?';
   lisSourceOfPageHasChangedSave = 'Source of page %s%s%s has changed. Save?';
@@ -638,13 +636,11 @@ resourcestring
   lisFileDoesNotLookLikeATextFileOpenItAnyway = 'File %s%s%s%sdoes not look '
     +'like a text file.%sOpen it anyway?';
   lisInvalidCommand = 'Invalid command';
-  lisTheCommandAfterIsNotExecutable = 'The command after %s%s%s is not '
-    +'executable.';
+  lisTheCommandAfterIsNotExecutable = 'The command after %s%s%s is not executable.';
   lisInvalidDestinationDirectory = 'Invalid destination directory';
   lisDestinationDirectoryIsInvalidPleaseChooseAComplete = 'Destination '
     +'directory %s%s%s is invalid.%sPlease choose a complete path.';
-  lisUnableToCleanUpDestinationDirectory = 'Unable to clean up destination '
-    +'directory';
+  lisUnableToCleanUpDestinationDirectory = 'Unable to clean up destination directory';
   lisCommandAfterInvalid = 'Command after invalid';
   lisTheCommandAfterPublishingIsInvalid = 'The command after publishing is '
     +'invalid:%s%s%s%s';
@@ -652,8 +648,7 @@ resourcestring
     +'sPlease check permissions.';
   lisCommandAfterPublishingModule = 'Command after publishing module';
   lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith = 'Unable to add %s '
-    +'to project, because there is already a unit with the same name in the '
-    +'Project.';
+    +'to project, because there is already a unit with the same name in the Project.';
   lisAddToProject = 'Add %s to project?';
   lisTheFile = 'The file %s%s%s';
   lisAddToUnitSearchPath = 'Add to unit search path?';
@@ -684,10 +679,8 @@ resourcestring
   lisUnableToReadTheProjectInfoFile = 'Unable to read the project info file%s%'
     +'s%s%s.';
   lisStrangeLpiFile = 'Strange lpi file';
-  lisTheFileDoesNotLookLikeALpiFile = 'The file %s does not look like a lpi '
-    +'file.';
-  lisUnableToReadTheProjectInfoFile2 = 'Unable to read the project info file%'
-    +'s%s%s%s.';
+  lisTheFileDoesNotLookLikeALpiFile = 'The file %s does not look like a lpi file.';
+  lisUnableToReadTheProjectInfoFile2 = 'Unable to read the project info file%s%s%s%s.';
   lisAmbiguousUnitFound2 = 'Ambiguous unit found';
   lisTheUnitExistsTwiceInTheUnitPathOfThe = 'The unit %s exists twice in the '
     +'unit path of the %s:';
