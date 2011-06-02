@@ -859,7 +859,7 @@ class procedure TGtk2WSWinControl.PaintTo(const AWinControl: TWinControl;
 var
   DC: TGtkDeviceContext absolute ADC;
 
-  procedure PaintWindow(AWindow: PGdkWindow; AOffset: TPoint);
+  procedure PaintWindow(AWindow: PGdkWindow);
   var
     W, H: gint;
     Pixbuf: PGdkPixbuf;
@@ -867,7 +867,7 @@ var
     gdk_window_get_size(AWindow, @W, @H);
     // for some reason gdk_window_copy_area does not work
     Pixbuf := gdk_pixbuf_get_from_drawable(nil, AWindow, nil,
-      AOffset.X, AOffset.Y, 0, 0, W, H);
+      0, 0, 0, 0, W, H);
     gdk_pixbuf_render_to_drawable(Pixbuf, DC.Drawable, DC.GC, 0, 0, X, Y,
       -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
     gdk_pixbuf_unref(Pixbuf);
@@ -879,10 +879,9 @@ var
     AWindow: PGdkWindow;
   begin
     AWindow := GetControlWindow(AWidget);
-    AOffset := Point(AWidget^.allocation.x, AWidget^.allocation.y);
 
     if AWindow <> nil then
-      PaintWindow(AWindow, AOffset);
+      PaintWindow(AWindow);
   end;
 
 begin
