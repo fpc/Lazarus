@@ -3466,7 +3466,7 @@ msgstr "Lisää hakemisto"
 
 #: lazarusidestrconsts.lisaddfilesofdirectory
 msgid "Add files of directory"
-msgstr "Lisää tiedostoja hakemistoon"
+msgstr "Lisää hakemiston tiedostot"
 
 #: lazarusidestrconsts.lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
@@ -3772,7 +3772,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
-msgstr "Tuo koodin (kuten esim. olion) täydennysmahdollisuudet automaattisesti esiin pisteen jälkeen"
+msgstr "Tuo automaattisesti esiin pisteen jälkeen"
 
 #: lazarusidestrconsts.lisautomaticallyonlinebreak
 msgid "line break"
@@ -4694,7 +4694,7 @@ msgstr "Poista suodattimen mukaiset tiedostot"
 
 #: lazarusidestrconsts.liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
-msgstr "Yksinkertainen kielioppi (esim. * eikä .*)"
+msgstr "Yksinkertainen kielioppi (kuten * eikä .*)"
 
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
