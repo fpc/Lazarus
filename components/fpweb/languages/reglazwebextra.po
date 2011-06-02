@@ -1,6 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: reglazwebextra.rshttpappli
+msgid "HTTP server Application"
+msgstr ""
+
+#: reglazwebextra.rshttpappli2
+msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr ""
+
 #: reglazwebextra.rswebdataprovi
 msgid "Web DataProvider Module"
 msgstr ""

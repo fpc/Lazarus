@@ -28,7 +28,7 @@
 HTML editing functionality by Alexei Lagunov"/>
     <License Value="LGPL"/>
     <Version Minor="9"/>
-    <Files Count="43">
+    <Files Count="44">
       <Item1>
         <Filename Value="reglazwebextra.pp"/>
         <HasRegisterProc Value="True"/>
@@ -211,23 +211,30 @@ HTML editing functionality by Alexei Lagunov"/>
         <Filename Value="fpwebnewhtmltagtdunit.lfm"/>
         <Type Value="LFM"/>
       </Item43>
+      <Item44>
+        <Filename Value="frmnewhttpapp.pp"/>
+        <UnitName Value="frmnewhttpapp"/>
+      </Item44>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="sqldblaz"/>
+        <PackageName Value="LCLBase"/>
       </Item1>
       <Item2>
-        <PackageName Value="weblaz"/>
+        <PackageName Value="sqldblaz"/>
       </Item2>
       <Item3>
+        <PackageName Value="weblaz"/>
+      </Item3>
+      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item3>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>

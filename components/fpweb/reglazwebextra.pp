@@ -77,6 +77,23 @@ Type
     Property SourceFileName : String Read FSFN;
  end;
 
+  { THTTPApplicationDescriptor }
+  THTTPApplicationDescriptor = class(TProjectDescriptor)
+  private
+    FThreaded,
+    fReg : Boolean;
+    FDir,
+    FLoc : String;
+    FPort : Integer;
+    function GetOPtions: TModalResult;
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+  end;
+
 Procedure Register;
 
 resourcestring
@@ -90,17 +107,22 @@ resourcestring
   rsWEBExtDirect2 = 'WEB Ext.Direct Module%sA datamodule to dispatch Ext.'
     +'Direct requests in WEB (HTTP) applications using TJSONRPCHandler '
     +'components.';
+  rsHTTPAppli = 'HTTP server Application';
+  rsHTTPAppli2 = 'HTTP server Application. Complete HTTP Server '
+    +'program in Free Pascal using webmodules. The program source '
+    +'is automatically maintained by Lazarus.';
 
 Var
    FileDescriptorWebProviderDataModule: TFileDescWebProviderDataModule;
-   FileDescriptorJSONRPCModule : TFileDescWebJSONRPCModule;
+   ProjectDescriptorHTTPApplication : THTTPApplicationDescriptor;
+     FileDescriptorJSONRPCModule : TFileDescWebJSONRPCModule;
    FileDescriptorExtDirectModule : TFileDescExtDirectModule;
    AChecker : TJSSyntaxChecker;
 
 implementation
 
-uses propedits,FormEditingIntf, frmrpcmoduleoptions,
-     sqlstringspropertyeditordlg, registersqldb;
+uses propedits,FormEditingIntf, frmrpcmoduleoptions,frmnewhttpapp,
+     sqlstringspropertyeditordlg, registersqldb, weblazideintf;
 
 Procedure Register;
 
@@ -127,7 +149,114 @@ begin
    RegisterPropertyEditor(TStrings.ClassInfo, TSQLDBWebDataProvider,  'InsertSQL', TSQLStringsPropertyEditor);
    RegisterPropertyEditor(TStrings.ClassInfo, TSQLDBWebDataProvider,  'DeleteSQL', TSQLStringsPropertyEditor);
    RegisterPropertyEditor(TStrings.ClassInfo, TSQLDBWebDataProvider,  'UpdateSQL', TSQLStringsPropertyEditor);
+   ProjectDescriptorHTTPApplication:=THTTPApplicationDescriptor.Create;
+   RegisterProjectDescriptor(ProjectDescriptorHTTPApplication);
+end;
 
+{ THTTPApplicationDescriptor }
+
+constructor THTTPApplicationDescriptor.Create;
+begin
+  inherited Create;
+  Name:='FPHTTPApplication';
+end;
+
+function THTTPApplicationDescriptor.GetLocalizedName: string;
+begin
+  Result:=rsHTTPAppli;
+end;
+
+function THTTPApplicationDescriptor.GetLocalizedDescription: string;
+begin
+  Result:=rsHTTPAppli2;
+end;
+
+function THTTPApplicationDescriptor.GetOPtions : TModalResult;
+
+begin
+  With TNewHTTPApplicationForm.Create(Application) do
+    try
+      Result:=ShowModal;
+      if Result=mrOK then
+        begin
+        FThreaded:=Threaded;
+        FPort:=Port;
+        FReg:=ServeFiles;
+        if Freg then
+          begin
+          FLoc:=Location;
+          FDir:=Directory;
+          end;
+        end;
+    finally
+      Free;
+    end;
+end;
+function THTTPApplicationDescriptor.InitProject(AProject: TLazProject
+  ): TModalResult;
+
+Var
+  S : string;
+  le: string;
+  NewSource: String;
+  MainFile: TLazProjectFile;
+
+begin
+  inherited InitProject(AProject);
+  Result:=GetOptions;
+  if Result<>mrOK then
+    Exit;
+  MainFile:=AProject.CreateProjectFile('httpproject1.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  // create program source
+  le:=LineEnding;
+  NewSource:='program httpproject1;'+le
+    +le
+    +'{$mode objfpc}{$H+}'+le
+    +le
+    +'uses'+le;
+  if FReg then
+    NewSource:=NewSource+'  fpwebfile,'+le;
+  NewSource:=NewSource
+    +'  fphttpapp;'+le
+    +le
+    +'begin'+le;
+  if Freg then
+    begin
+    S:=Format('  RegisterFileLocation(''%s'',''%s'');',[FLoc,FDir]);
+    NewSource:=NewSource+S+le
+    end;
+  NewSource:=NewSource
+    +'  Application.Title:=''httpproject1'';'+le
+    +Format('  Application.Port:=%d;'+le,[FPort]);
+  if FThreaded then
+    NewSource:=NewSource+'  Application.Threaded:=True;'+le;
+  NewSource:=NewSource
+    +'  Application.Initialize;'+le
+    +'  Application.Run;'+le
+    +'end.'+le
+    +le;
+  AProject.MainFile.SetSourceText(NewSource);
+
+  // add
+  AProject.AddPackageDependency('FCL');
+  AProject.AddPackageDependency('WebLaz');
+  AProject.AddPackageDependency('LazWebExtra');
+
+  // compiler options
+  AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
+  Result:= mrOK;
+end;
+
+function THTTPApplicationDescriptor.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
+begin
+  LazarusIDE.DoNewEditorFile(FileDescriptorWebModule,'','',
+                         [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+  Result:= mrOK;
 end;
 
 { TFileDescWebProviderDataModule }

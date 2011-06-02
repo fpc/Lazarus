@@ -1,0 +1,101 @@
+object NewHTTPApplicationForm: TNewHTTPApplicationForm
+  Left = 521
+  Height = 310
+  Top = 280
+  Width = 384
+  Caption = 'New HTTP server application'
+  ClientHeight = 310
+  ClientWidth = 384
+  OnCreate = FormCreate
+  LCLVersion = '0.9.31'
+  object DEDocumentroot: TDirectoryEdit
+    Left = 40
+    Height = 22
+    Top = 128
+    Width = 272
+    DialogTitle = 'Select directory'
+    ShowHidden = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    Enabled = False
+    MaxLength = 0
+    TabOrder = 0
+  end
+  object CBRegisterFiles: TCheckBox
+    Left = 16
+    Height = 21
+    Top = 14
+    Width = 228
+    Caption = 'Register location to serve files from'
+    OnChange = CBRegisterFilesChange
+    TabOrder = 1
+  end
+  object SEPort: TSpinEdit
+    Left = 40
+    Height = 22
+    Top = 192
+    Width = 98
+    MaxValue = 65355
+    TabOrder = 2
+    Value = 8080
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 270
+    Width = 372
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object LSEPort: TLabel
+    Left = 22
+    Height = 15
+    Top = 160
+    Width = 153
+    Caption = 'Port to listen for requests:'
+    FocusControl = SEPort
+    ParentColor = False
+  end
+  object ELocation: TEdit
+    Left = 40
+    Height = 22
+    Top = 72
+    Width = 80
+    Enabled = False
+    TabOrder = 4
+  end
+  object LELocation: TLabel
+    Left = 40
+    Height = 15
+    Top = 48
+    Width = 52
+    Caption = 'Location:'
+    FocusControl = ELocation
+    ParentColor = False
+  end
+  object LDEDocumentRoot: TLabel
+    Left = 40
+    Height = 15
+    Top = 104
+    Width = 52
+    Caption = '&Directory'
+    FocusControl = DEDocumentroot
+    ParentColor = False
+  end
+  object CBthreads: TCheckBox
+    Left = 24
+    Height = 21
+    Top = 232
+    Width = 213
+    Caption = 'Use threads to serve requests in'
+    TabOrder = 5
+  end
+end

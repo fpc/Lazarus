@@ -11,38 +11,35 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.5.1\n"
 
+#: reglazwebextra.rshttpappli
+msgid "HTTP server Application"
+msgstr ""
+
+#: reglazwebextra.rshttpappli2
+msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr ""
+
 #: reglazwebextra.rswebdataprovi
 msgid "Web DataProvider Module"
 msgstr "Modulo web DataProvider"
 
 #: reglazwebextra.rswebdataprovi2
-msgid ""
-"WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) "
-"applications using WebDataProvider components."
-msgstr ""
-"Modulo web DataProvider%sUn modulo dati per gestire richieste di dati da "
-"applicazioni WEB (HTTP) usando componenti WebDataProvider."
+msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr "Modulo web DataProvider%sUn modulo dati per gestire richieste di dati da applicazioni WEB (HTTP) usando componenti WebDataProvider."
 
 #: reglazwebextra.rswebextdirect
 msgid "Web Ext.Direct Module"
 msgstr "Modulo web Ext.Direct"
 
 #: reglazwebextra.rswebextdirect2
-msgid ""
-"WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB "
-"(HTTP) applications using TJSONRPCHandler components."
-msgstr ""
-"Modulo web Ext.Direct%sUn modulo dati per inviare richireste Ext.Direct "
-"nelle applicazioni WEB (HTTP) usando componenti TJSONRPCHandler."
+msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Modulo web Ext.Direct%sUn modulo dati per inviare richireste Ext.Direct nelle applicazioni WEB (HTTP) usando componenti TJSONRPCHandler."
 
 #: reglazwebextra.rswebjsonrpcmo
 msgid "Web JSON-RPC Module"
 msgstr "Modulo web JSON-RPC"
 
 #: reglazwebextra.rswebjsonrpcmo2
-msgid ""
-"WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB "
-"(HTTP) applications using TJSONRPCHandler components."
-msgstr ""
-"Modulo web JSON-RPC%sUn modulo dati per inviare richieste JSON-RPC nelle "
-"applicazioni WEB (HTTP) usando componenti TJSONRPCHandler."
+msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Modulo web JSON-RPC%sUn modulo dati per inviare richieste JSON-RPC nelle applicazioni WEB (HTTP) usando componenti TJSONRPCHandler."
+

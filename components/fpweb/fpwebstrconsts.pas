@@ -116,6 +116,12 @@ resourcestring
   SHTMLInputFormAlign        = 'Align';
   SHTMLInputFormAccessKey    = 'Access key';
 
+  sHTTPPort = '&Port to listen for requests:';
+  sNewHTTPApp = 'New HTTP application';
+  sRegisterFiles = '&Register location to serve files from';
+  sDocumentLocation = '&Location';
+  sDocumentRoot = '&Directory';
+  sUseThreads = 'Use &threads to serve requests in';
 
 implementation
 

@@ -23,6 +23,14 @@ msgstr "Erzeuge neue CSS-Datei..."
 msgid "Enter your classes/style definitions here"
 msgstr ""
 
+#: fpwebstrconsts.sdocumentlocation
+msgid "&Location"
+msgstr ""
+
+#: fpwebstrconsts.sdocumentroot
+msgid "&Directory"
+msgstr ""
+
 #: fpwebstrconsts.senteryoutext
 msgctxt "fpwebstrconsts.senteryoutext"
 msgid "Enter your text..."
@@ -166,6 +174,10 @@ msgstr ""
 
 #: fpwebstrconsts.shtmltitle
 msgid "Html &title - <title>"
+msgstr ""
+
+#: fpwebstrconsts.shttpport
+msgid "&Port to listen for requests:"
 msgstr ""
 
 #: fpwebstrconsts.sjsfile
@@ -414,5 +426,17 @@ msgstr "Dateiname einfügen"
 
 #: fpwebstrconsts.snewhtmlfileprops
 msgid "New Html file properties"
+msgstr ""
+
+#: fpwebstrconsts.snewhttpapp
+msgid "New HTTP application"
+msgstr ""
+
+#: fpwebstrconsts.sregisterfiles
+msgid "&Register location to serve files from"
+msgstr ""
+
+#: fpwebstrconsts.susethreads
+msgid "Use &threads to serve requests in"
 msgstr ""
 

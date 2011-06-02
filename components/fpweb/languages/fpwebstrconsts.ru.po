@@ -23,6 +23,14 @@ msgstr "Создать новый файл CSS..."
 msgid "Enter your classes/style definitions here"
 msgstr "Введите здесь объявления классов/стилей"
 
+#: fpwebstrconsts.sdocumentlocation
+msgid "&Location"
+msgstr ""
+
+#: fpwebstrconsts.sdocumentroot
+msgid "&Directory"
+msgstr ""
+
 #: fpwebstrconsts.senteryoutext
 msgctxt "fpwebstrconsts.senteryoutext"
 msgid "Enter your text..."
@@ -168,6 +176,10 @@ msgstr "Свойства тега: %s"
 #: fpwebstrconsts.shtmltitle
 msgid "Html &title - <title>"
 msgstr "&Заголовок Html - <title>"
+
+#: fpwebstrconsts.shttpport
+msgid "&Port to listen for requests:"
+msgstr ""
 
 #: fpwebstrconsts.sjsfile
 msgid "Javascript file"
@@ -420,4 +432,16 @@ msgstr "Вставить имя файла"
 #: fpwebstrconsts.snewhtmlfileprops
 msgid "New Html file properties"
 msgstr "Свойства нового файла HTML"
+
+#: fpwebstrconsts.snewhttpapp
+msgid "New HTTP application"
+msgstr ""
+
+#: fpwebstrconsts.sregisterfiles
+msgid "&Register location to serve files from"
+msgstr ""
+
+#: fpwebstrconsts.susethreads
+msgid "Use &threads to serve requests in"
+msgstr ""
 
