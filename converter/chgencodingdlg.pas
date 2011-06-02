@@ -188,7 +188,7 @@ begin
     Encoding:=Item^.Value;
     DebugLn(['TChgEncodingDialog.ApplyButtonClick Filename=',Filename,' Encoding=',Encoding]);
     Buf:=CodeToolBoss.LoadFile(Filename,true,false);
-    if not Buf.ReadOnly then begin
+    if (Buf<>nil) and (not Buf.ReadOnly) then begin
       OldEncoding:=Buf.DiskEncoding;
       SrcEdit:=SourceEditorManagerIntf.SourceEditorIntfWithFilename(Filename);
       HasChanged:=true;
