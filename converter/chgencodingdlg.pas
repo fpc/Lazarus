@@ -287,9 +287,9 @@ begin
 
     NewEncoding:=NormalizeEncoding(NewEncodingComboBox.Text);
     p:=1;
-    repeat
+    while (p<=length(SearchPath)) do begin
       Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
-      if p>length(SearchPath) then break;
+      if Dir='' then continue;
       Dir:=AppendPathDelim(Dir);
       DebugLn(['TChgEncodingDialog.GetFiles Dir=',Dir]);
       if FindFirstUTF8(Dir+FileMask,faAnyFile,FileInfo)=0 then
@@ -311,7 +311,7 @@ begin
           end else begin
             Buf:=CodeToolBoss.LoadFile(CurFilename,true,false);
             if Buf<>nil then begin
-              //DebugLn(['TChgEncodingDialog.GetFiles Filename=',CurFilename,' Encoding=',NormalizeEncoding(Buf.DiskEncoding)]);
+              DebugLn(['TChgEncodingDialog.GetFiles Filename=',CurFilename,' Encoding=',NormalizeEncoding(Buf.DiskEncoding)]);
               CurEncoding:=NormalizeEncoding(Buf.DiskEncoding);
               Result:=True;
               if CurEncoding=NewEncoding then
@@ -329,7 +329,7 @@ begin
       finally
         FindCloseUTF8(FileInfo);
       end;
-    until false;
+    end;
   finally
     IncludeFilterRegExpr.Free;
   end;
