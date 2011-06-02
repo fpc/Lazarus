@@ -2022,7 +2022,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptheadcontext
 msgid "Context"
-msgstr ""
+msgstr "Asiayhteys"
 
 #: lazarusidestrconsts.dlgmouseoptheadcount
 msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
@@ -3267,11 +3267,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
-msgstr ""
+msgstr "Supista tai laajenna tiedostonimeä"
 
 #: lazarusidestrconsts.lisa2pshowall
 msgid "Show all"
-msgstr ""
+msgstr "Näytä kaikki"
 
 #: lazarusidestrconsts.lisa2pswitchpaths
 msgid "Switch Paths"
@@ -5645,7 +5645,7 @@ msgstr "sisältää"
 
 #: lazarusidestrconsts.liscontextsensitive
 msgid "Context sensitive"
-msgstr "tilanteesta riippuva"
+msgstr "Tilanteesta riippuva"
 
 #: lazarusidestrconsts.liscontinue
 msgctxt "lazarusidestrconsts.liscontinue"
@@ -7458,19 +7458,19 @@ msgstr "Ohjelman suoritus on pysäytetty"
 
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
-msgstr ""
+msgstr "Ohjelmat"
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
-msgstr ""
+msgstr "Laajenna kaikki luokat"
 
 #: lazarusidestrconsts.lisexpandallpackages
 msgid "Expand all packages"
-msgstr ""
+msgstr "Laajenna kaikki paketit"
 
 #: lazarusidestrconsts.lisexpandallunits
 msgid "Expand all units"
-msgstr ""
+msgstr "Laajenna kaikki käännösyksiköt"
 
 #: lazarusidestrconsts.lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
@@ -7478,15 +7478,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexport
 msgid "Export ..."
-msgstr ""
+msgstr "Vie ..."
 
 #: lazarusidestrconsts.lisexportlist
 msgid "Export list"
-msgstr ""
+msgstr "Vie luettelo"
 
 #: lazarusidestrconsts.lisexpression
 msgid "Expression:"
-msgstr ""
+msgstr "Ilmaisu:"
 
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
@@ -7494,12 +7494,12 @@ msgstr "Laajennetaanko käännösyksikköjen polkua?"
 
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
-msgstr "Tee aliohjelma"
+msgstr "Erota"
 
 #: lazarusidestrconsts.lisextractprocedure
 msgctxt "lazarusidestrconsts.lisextractprocedure"
 msgid "Extract Procedure"
-msgstr ""
+msgstr "Erota aliohjelma"
 
 #: lazarusidestrconsts.lisexttoolexternaltools
 msgid "External tools"
@@ -8507,7 +8507,7 @@ msgstr "Kelvoton (Päällä)"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
-msgstr "Kelvoton Pascal tunniste"
+msgstr "Kelvoton Pascal-tunniste"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
@@ -8523,7 +8523,7 @@ msgstr "Vääränlainen projektitiedoston nimi"
 
 #: lazarusidestrconsts.lisinvalidpublishingdirectory
 msgid "Invalid publishing Directory"
-msgstr "Kelvoton julkaistu hakemisto"
+msgstr "Kelvoton julkaisuhakemisto"
 
 #: lazarusidestrconsts.lisinvalidselection
 msgid "Invalid selection"
@@ -8684,7 +8684,7 @@ msgstr "Konfiguroi avustus"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
-msgstr ""
+msgstr "Tilannekohtainen ohje"
 
 #: lazarusidestrconsts.liskmconvertdelphipackagetolazaruspackage
 msgid "Convert Delphi package to Lazarus package"
@@ -8724,7 +8724,7 @@ msgstr "Muokkaa koodimalleja"
 
 #: lazarusidestrconsts.liskmeditcontextsensitivehelp
 msgid "Edit context sensitive help"
-msgstr ""
+msgstr "Muokkaa tilannekohtaista ohjetta"
 
 #: lazarusidestrconsts.liskmeditoroptions
 msgctxt "lazarusidestrconsts.liskmeditoroptions"
@@ -9542,19 +9542,19 @@ msgstr "Kirjasto%sFree Pascal kirjasto (.dll windows:ssa, .so linux:ssa, .dylib 
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
-msgstr ""
+msgstr "kirjastopolku"
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
-msgstr ""
+msgstr "Rivi:"
 
 #: lazarusidestrconsts.lislinelength
 msgid "Line/Length"
-msgstr ""
+msgstr "Rivi/Pituus"
 
 #: lazarusidestrconsts.lislink
 msgid "Link:"
-msgstr ""
+msgstr "Linkki:"
 
 #: lazarusidestrconsts.lislinkeroptions
 msgid "linker options"
@@ -9574,20 +9574,20 @@ msgstr ""
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
-msgstr ""
+msgstr "Paikalliset"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
-msgstr ""
+msgstr "Kopioi nimi"
 
 #: lazarusidestrconsts.lislocalsdlgcopyvalue
 msgid "C&opy Value"
-msgstr ""
+msgstr "Kopioi arvo"
 
 #: lazarusidestrconsts.lislocalsdlgname
 msgctxt "lazarusidestrconsts.lislocalsdlgname"
 msgid "Name"
-msgstr ""
+msgstr "Nimi"
 
 #: lazarusidestrconsts.lislocalsdlgvalue
 msgctxt "lazarusidestrconsts.lislocalsdlgvalue"
@@ -9688,7 +9688,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismakeresstrconversionoptions
 msgid "Conversion Options"
-msgstr ""
+msgstr "Muunnoksen optiot"
 
 #: lazarusidestrconsts.lismakeresstrcustomidentifier
 msgid "Custom identifier"
@@ -9697,23 +9697,23 @@ msgstr ""
 #: lazarusidestrconsts.lismakeresstrdialogidentifier
 msgctxt "lazarusidestrconsts.lismakeresstrdialogidentifier"
 msgid "Identifier"
-msgstr "Tunniste (mm muuttuja)"
+msgstr "Tunniste"
 
 #: lazarusidestrconsts.lismakeresstridentifierlength
 msgid "Identifier length:"
-msgstr ""
+msgstr "Tunnisteen pituus:"
 
 #: lazarusidestrconsts.lismakeresstridentifierprefix
 msgid "Identifier prefix:"
-msgstr ""
+msgstr "Tunnisteen etuliite:"
 
 #: lazarusidestrconsts.lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
-msgstr ""
+msgstr "Liitä aakkosjärjestyksessä"
 
 #: lazarusidestrconsts.lismakeresstrinsertcontexttsensitive
 msgid "Insert context sensitive"
-msgstr ""
+msgstr "Liitä tilannekohtainen"
 
 #: lazarusidestrconsts.lismakeresstrinvalidresourcestringsect
 msgid "Invalid Resourcestring section"
@@ -9873,7 +9873,7 @@ msgstr "Ohjeen asetukset ..."
 
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
-msgstr ""
+msgstr "Tilannekohtainen ohje"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi package to Lazarus package ..."
@@ -9902,11 +9902,11 @@ msgstr "Kopioi"
 
 #: lazarusidestrconsts.lismenucreatefpdocfiles
 msgid "Create FPDoc files"
-msgstr ""
+msgstr "Luo FPDoc tiedostot"
 
 #: lazarusidestrconsts.lismenucreatepofile
 msgid "Create .po files"
-msgstr ""
+msgstr "Luo .po tiedostot"
 
 #: lazarusidestrconsts.lismenucut
 msgctxt "lazarusidestrconsts.lismenucut"
@@ -9920,7 +9920,7 @@ msgstr ""
 #: lazarusidestrconsts.lismenudiff
 msgctxt "lazarusidestrconsts.lismenudiff"
 msgid "Diff ..."
-msgstr "Eroavuudet"
+msgstr "Eroavuudet ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"
@@ -9932,11 +9932,11 @@ msgstr "Koodimallit ..."
 
 #: lazarusidestrconsts.lismenueditcontexthelp
 msgid "Edit context sensitive Help"
-msgstr ""
+msgstr "Muokkaa tilannekohtaista ohjetta"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
 msgid "Install/Uninstall packages ..."
-msgstr ""
+msgstr "Asenna/Poista paketteja ..."
 
 #: lazarusidestrconsts.lismenueditor
 msgid "Menu Editor ..."
@@ -10021,7 +10021,7 @@ msgstr "Arvioi/Muuta ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
-msgstr "Tee valitusta lohkosta aliohjelma ..."
+msgstr "Erota aliohjelma ..."
 
 #: lazarusidestrconsts.lismenufile
 msgid "&File"
@@ -11873,7 +11873,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lispecollapsedirectory
 msgid "Collapse directory"
-msgstr ""
+msgstr "Supista hakemisto"
 
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
@@ -11881,15 +11881,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lispedirectories
 msgid "Directories"
-msgstr ""
+msgstr "Hakemistot"
 
 #: lazarusidestrconsts.lispeeditvirtualunit
 msgid "Edit Virtual Unit"
-msgstr ""
+msgstr "Muokkaa virtuaalista käännösyksikköä"
 
 #: lazarusidestrconsts.lispeexpanddirectory
 msgid "Expand directory"
-msgstr ""
+msgstr "Laajenna hakemisto"
 
 #: lazarusidestrconsts.lispefilename
 msgid "Filename:"
@@ -11897,27 +11897,27 @@ msgstr "Tiedostonimi:"
 
 #: lazarusidestrconsts.lispefixfilescase
 msgid "Fix Files Case"
-msgstr ""
+msgstr "Korjaa tiedostojen kirjainkoko"
 
 #: lazarusidestrconsts.lispeinvalidunitfilename
 msgid "Invalid unit filename"
-msgstr ""
+msgstr "Kelvoton käännösyksikön tiedostonimi"
 
 #: lazarusidestrconsts.lispeinvalidunitname
 msgid "Invalid unitname"
-msgstr ""
+msgstr "Kelvoton käännösyksikön nimi"
 
 #: lazarusidestrconsts.lispemissingfilesofpackage
 msgid "Missing files of package %s"
-msgstr ""
+msgstr "Paketin %s puuttuvat tiedostot"
 
 #: lazarusidestrconsts.lispemovefiledown
 msgid "Move file down"
-msgstr ""
+msgstr "Siirrä tiedosto alas"
 
 #: lazarusidestrconsts.lispemovefileup
 msgid "Move file up"
-msgstr ""
+msgstr "Siirrä tiedosto ylös"
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
@@ -11926,39 +11926,39 @@ msgstr ""
 #: lazarusidestrconsts.lispenofilesmissingallfilesexist
 msgctxt "lazarusidestrconsts.lispenofilesmissingallfilesexist"
 msgid "No files missing. All files exist."
-msgstr ""
+msgstr "Ei puuttuvia tiedostoja. Kaikki löytyvät."
 
 #: lazarusidestrconsts.lisperemovefiles
 msgid "Remove files"
-msgstr ""
+msgstr "Poista tiedostot"
 
 #: lazarusidestrconsts.lisperemoveselectedfiles
 msgid "Remove selected files"
-msgstr ""
+msgstr "Poista valitut tiedostot"
 
 #: lazarusidestrconsts.lisperevertpackage
 msgid "Revert package"
-msgstr ""
+msgstr "Palauta paketti"
 
 #: lazarusidestrconsts.lispesavepackageas
 msgid "Save package as"
-msgstr ""
+msgstr "Tallenna paketti nimellä"
 
 #: lazarusidestrconsts.lispeshowdirectoryhierarchy
 msgid "Show directory hierarchy"
-msgstr ""
+msgstr "Näytä hakemistorakenne"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
 msgid "Show missing files"
-msgstr ""
+msgstr "Näytä puuttuvat tiedostot"
 
 #: lazarusidestrconsts.lispesortfiles
 msgid "Sort files"
-msgstr ""
+msgstr "Järjestä tiedostot"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
 msgid "Sort files alphabetically"
-msgstr ""
+msgstr "Järjestä tiedostot aakkosjärjestykseen"
 
 #: lazarusidestrconsts.lispethefileiscurrentlynotintheincludepathofthepackagea
 msgid "The file \"%s\" is currently not in the include path of the package.%sAdd \"%s\" to the include path?"
@@ -12026,7 +12026,7 @@ msgstr "Julkaise paketti"
 
 #: lazarusidestrconsts.lispkgeditrevertpackage
 msgid "Revert package?"
-msgstr "Kumoa paketti?"
+msgstr "Palauta paketti?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
@@ -13323,7 +13323,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
-msgstr ""
+msgstr "Paluuarvo :="
 
 #: lazarusidestrconsts.lisresult2
 msgid "Result:"
@@ -13335,7 +13335,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
-msgstr ""
+msgstr "Palauttaminen epäonnistui"
 
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
@@ -16040,7 +16040,7 @@ msgstr "arvioi/muuta"
 
 #: lazarusidestrconsts.srkmecextractproc
 msgid "Extract procedure"
-msgstr "Tee valitusta lohkosta aliohjelma"
+msgstr "Erota aliohjelma"
 
 #: lazarusidestrconsts.srkmecexttool
 msgid "External tool %d"
@@ -16060,7 +16060,7 @@ msgstr "Etsi lohkon toinen pää"
 
 #: lazarusidestrconsts.srkmecfindblockstart
 msgid "Find block start"
-msgstr ""
+msgstr "Etsi lohkon alku"
 
 #: lazarusidestrconsts.srkmecfinddeclaration
 msgid "Find declaration"
@@ -16216,11 +16216,11 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecinspect
 msgid "inspect"
-msgstr ""
+msgstr "tutki"
 
 #: lazarusidestrconsts.srkmecinvertassignment
 msgid "Invert assignment"
-msgstr ""
+msgstr "Käännä asettaminen"
 
 #: lazarusidestrconsts.srkmeclinebreak
 msgid "Break line and move cursor"
@@ -16232,7 +16232,7 @@ msgstr "Siirrä kursori rivin loppuun"
 
 #: lazarusidestrconsts.srkmeclineselect
 msgid "Line selection mode"
-msgstr ""
+msgstr "Rivin valintamoodi"
 
 #: lazarusidestrconsts.srkmeclinestart
 msgid "Move cursor to line start"
@@ -16240,7 +16240,7 @@ msgstr "Siirrä kursori rivin alkuun"
 
 #: lazarusidestrconsts.srkmeclinetextstart
 msgid "Move cursor to text start in line"
-msgstr ""
+msgstr "Siirrä kursori rivillä olevan tekstin alkuun"
 
 #: lazarusidestrconsts.srkmeclockeditor
 msgid "Lock Editor"
@@ -16260,19 +16260,19 @@ msgstr "Siirry vasemmalla olevalle välilehdelle"
 
 #: lazarusidestrconsts.srkmecmoveeditorleftmost
 msgid "Move editor leftmost"
-msgstr ""
+msgstr "Siirrä editori vasempaan reunaan"
 
 #: lazarusidestrconsts.srkmecmoveeditornewwindow
 msgid "Move editor to new window"
-msgstr ""
+msgstr "Siirrä editori uuteen ikkunaan"
 
 #: lazarusidestrconsts.srkmecmoveeditornextwindow
 msgid "Move editor to next free window"
-msgstr ""
+msgstr "Siirrä editori seuraavaan vapaaseen ikkunaan"
 
 #: lazarusidestrconsts.srkmecmoveeditorprevwindow
 msgid "Move editor to prior free window"
-msgstr ""
+msgstr "Siirrä editori edelliseen vapaaseen ikkunaan"
 
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
@@ -16280,11 +16280,11 @@ msgstr "Siirry oikealla olevalle välilehdelle"
 
 #: lazarusidestrconsts.srkmecmoveeditorrightmost
 msgid "Move editor rightmost"
-msgstr ""
+msgstr "Siirrä editori oikeaan reunaan"
 
 #: lazarusidestrconsts.srkmecnextbookmark
 msgid "Next Bookmark"
-msgstr ""
+msgstr "Seuraava kirjanmerkki"
 
 #: lazarusidestrconsts.srkmecnexteditor
 msgid "Go to next editor"
@@ -16292,15 +16292,15 @@ msgstr "Mene seuraavalle välilehdelle"
 
 #: lazarusidestrconsts.srkmecnextsharededitor
 msgid "Go to next editor with same Source"
-msgstr ""
+msgstr "Siirry seuraavaan samansisältöiseen editoriin"
 
 #: lazarusidestrconsts.srkmecnextwindow
 msgid "Go to next window"
-msgstr ""
+msgstr "Siirry seuraavaan ikkunaan"
 
 #: lazarusidestrconsts.srkmecnormalselect
 msgid "Normal selection mode"
-msgstr ""
+msgstr "Normaali valintamoodi"
 
 #: lazarusidestrconsts.srkmecopenfileatcursor
 msgid "Open file at cursor"
@@ -16308,31 +16308,31 @@ msgstr "Avaa kursorin osoittama tiedosto"
 
 #: lazarusidestrconsts.srkmecoverwritemode
 msgid "Overwrite Mode"
-msgstr ""
+msgstr "Ylikirjoitusmoodi"
 
 #: lazarusidestrconsts.srkmecpagebottom
 msgid "Move cursor to bottom of page"
-msgstr ""
+msgstr "Siirrä kursori sivun loppuun"
 
 #: lazarusidestrconsts.srkmecpagedown
 msgid "Move cursor down one page"
-msgstr ""
+msgstr "Siirrä kursori sivu alas"
 
 #: lazarusidestrconsts.srkmecpageleft
 msgid "Move cursor left one page"
-msgstr ""
+msgstr "Siirrä kursori sivu vasemmalle"
 
 #: lazarusidestrconsts.srkmecpageright
 msgid "Move cursor right one page"
-msgstr ""
+msgstr "Siirrä kursori sivu oikealle"
 
 #: lazarusidestrconsts.srkmecpagetop
 msgid "Move cursor to top of page"
-msgstr ""
+msgstr "Siirrä kursori sivun alkuun"
 
 #: lazarusidestrconsts.srkmecpageup
 msgid "Move cursor up one page"
-msgstr ""
+msgstr "Siirrä kursori sivu ylös"
 
 #: lazarusidestrconsts.srkmecpaste
 msgid "Paste clipboard to current position"
@@ -16340,11 +16340,11 @@ msgstr "Liitä leikepöydältä"
 
 #: lazarusidestrconsts.srkmecpause
 msgid "pause program"
-msgstr ""
+msgstr "keskeytä ohjelma"
 
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
-msgstr ""
+msgstr "Edellinen kirjanmerkki"
 
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
@@ -16352,19 +16352,19 @@ msgstr "Mene edelliselle välilehdelle"
 
 #: lazarusidestrconsts.srkmecprevsharededitor
 msgid "Go to prior editor with same Source"
-msgstr ""
+msgstr "Siirry edelliseen samansisältöiseen editoriin"
 
 #: lazarusidestrconsts.srkmecprevwindow
 msgid "Go to prior window"
-msgstr ""
+msgstr "Siirry edelliseen ikkunaan"
 
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
-msgstr ""
+msgstr "nopea käännös, ei linkkausta"
 
 #: lazarusidestrconsts.srkmecquit
 msgid "Quit"
-msgstr ""
+msgstr "Poistu"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -16414,23 +16414,23 @@ msgstr "Tallenna"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
-msgstr ""
+msgstr "Rullaa alas yksi rivi"
 
 #: lazarusidestrconsts.srkmecscrollleft
 msgid "Scroll left one char"
-msgstr ""
+msgstr "Rullaa vasemmalle yksi merkki"
 
 #: lazarusidestrconsts.srkmecscrollright
 msgid "Scroll right one char"
-msgstr ""
+msgstr "Rullaa oikealle yksi merkki"
 
 #: lazarusidestrconsts.srkmecscrollup
 msgid "Scroll up one line"
-msgstr ""
+msgstr "Rullaa ylös yksi rivi"
 
 #: lazarusidestrconsts.srkmecseldown
 msgid "Select Down"
-msgstr ""
+msgstr "Valitse alas"
 
 #: lazarusidestrconsts.srkmecselectall
 msgctxt "lazarusidestrconsts.srkmecselectall"
@@ -16439,15 +16439,15 @@ msgstr "Valitse kaikki"
 
 #: lazarusidestrconsts.srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
-msgstr ""
+msgstr "Muunna valinnan tabulaattorit välilyönneiksi"
 
 #: lazarusidestrconsts.srkmecseleditorbottom
 msgid "Select to absolute end"
-msgstr ""
+msgstr "Valitse aivan loppuun asti"
 
 #: lazarusidestrconsts.srkmecseleditortop
 msgid "Select to absolute beginning"
-msgstr ""
+msgstr "Valitse aivan alkuun asti"
 
 #: lazarusidestrconsts.srkmecselgotoxy
 msgid "Select Goto XY"
@@ -16459,39 +16459,39 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecsellineend
 msgid "Select Line End"
-msgstr ""
+msgstr "Valitse rivin loppu"
 
 #: lazarusidestrconsts.srkmecsellinestart
 msgid "Select Line Start"
-msgstr ""
+msgstr "Valitse rivin alku"
 
 #: lazarusidestrconsts.srkmecsellinetextstart
 msgid "Select to text start in line"
-msgstr ""
+msgstr "Valitse rivillä tekstin alkuun"
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"
-msgstr ""
+msgstr "Valitse alimmainen sivu"
 
 #: lazarusidestrconsts.srkmecselpagedown
 msgid "Select Page Down"
-msgstr ""
+msgstr "Valitse sivu alas"
 
 #: lazarusidestrconsts.srkmecselpageleft
 msgid "Select Page Left"
-msgstr ""
+msgstr "Valitse sivu vasemmalle"
 
 #: lazarusidestrconsts.srkmecselpageright
 msgid "Select Page Right"
-msgstr ""
+msgstr "Valitse sivu oikealle"
 
 #: lazarusidestrconsts.srkmecselpagetop
 msgid "Select Page Top"
-msgstr ""
+msgstr "Valitse ylimmäinen sivu"
 
 #: lazarusidestrconsts.srkmecselpageup
 msgid "Select Page Up"
-msgstr ""
+msgstr "Valitse sivu ylös"
 
 #: lazarusidestrconsts.srkmecselright
 msgid "SelRight"
@@ -16499,20 +16499,20 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
-msgstr ""
+msgstr "Valitse ylös"
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgid "Select Word Left"
-msgstr ""
+msgstr "Valitse sana vasemmalle"
 
 #: lazarusidestrconsts.srkmecselwordright
 msgid "Select Word Right"
-msgstr ""
+msgstr "Valitse sana oikealle"
 
 #: lazarusidestrconsts.srkmecsetfreebookmark
 msgctxt "lazarusidestrconsts.srkmecsetfreebookmark"
 msgid "Set a free Bookmark"
-msgstr ""
+msgstr "Aseta vapaa kirjanmerkki"
 
 #: lazarusidestrconsts.srkmecsetmarker
 msgid "Set Marker %d"
@@ -16528,25 +16528,25 @@ msgstr "Näytä abstraktit metodit"
 
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
-msgstr ""
+msgstr "Näytä koodin konteksti"
 
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
-msgstr ""
+msgstr "näytä suorituskohta"
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
-msgstr ""
+msgstr "Pysäytä ohjelma"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellend
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
 msgid "Goto last pos in cell"
-msgstr ""
+msgstr "Siirry solun viimeiseen asemaan"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellhome
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellhome"
 msgid "Goto first pos in cell"
-msgstr ""
+msgstr "Siirry solun ensimmäiseen asemaan"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellselect
 msgid "Select Cell"
@@ -16650,7 +16650,7 @@ msgstr "Näytä keskeytyskohdat"
 
 #: lazarusidestrconsts.srkmectogglecallstack
 msgid "View call stack"
-msgstr ""
+msgstr "Näytä kutsupino"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
