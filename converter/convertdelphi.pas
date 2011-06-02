@@ -33,7 +33,7 @@ interface
 
 uses
   // LCL+FCL
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LResources,
+  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LResources, LConvEncoding,
   FileUtil, contnrs, IniFiles, AVL_Tree,
   // codetools
   CodeToolManager, DefineTemplates, CodeAtom, CodeCache, LinkScanner,
@@ -98,7 +98,7 @@ type
     fSettings: TConvertSettings;
     function GetDfmFileName: string;
     function CopyAndLoadFile: TModalResult;
-    function FixLfmFilename(ADfmFilename: string): TModalResult;
+    function FixLfmFilenameAndLoad(ADfmFilename: string): TModalResult;
     function ConvertUnitFile: TModalResult;
     function ConvertFormFile: TModalResult;
     function AskUnitPathFromUser: TModalResult;
@@ -452,6 +452,9 @@ begin
 end;
 
 function TConvertDelphiUnit.CopyAndLoadFile: TModalResult;
+var
+//  CurEncoding: String;
+  Changed: Boolean;
 begin
   IDEMessagesWindow.AddMsg(Format(lisConvDelphiConvertingFile,
                                   [fOrigUnitFilename]), '', -1);
@@ -471,6 +474,13 @@ begin
   Result:=LoadCodeBuffer(fPascalBuffer,fLazUnitFilename,
                          [lbfCheckIfText,lbfUpdateFromDisk],true);
   if Result<>mrOk then exit;
+  // Change encoding to UTF-8
+{  CurEncoding:=GuessEncoding(fPascalBuffer.Source); //fPascalBuffer.DiskEncoding;
+  if CurEncoding<>EncodingUTF8 then begin
+    fPascalBuffer.Source:=ConvertEncoding(fPascalBuffer.Source, CurEncoding, EncodingUTF8);
+    fPascalBuffer.DiskEncoding:=EncodingUTF8;
+    fPascalBuffer.MemEncoding:=EncodingUTF8;
+  end; }
   // Create a shared link for codetools.
   Assert(fCTLink=Nil, 'fCTLink should be Nil in CopyAndLoadFile');
   fCTLink:=TCodeToolLink.Create(fPascalBuffer);
@@ -484,9 +494,13 @@ begin
   end;
 end;
 
-function TConvertDelphiUnit.FixLfmFilename(ADfmFilename: string): TModalResult;
+function TConvertDelphiUnit.FixLfmFilenameAndLoad(ADfmFilename: string): TModalResult;
 var
   LfmFilename: string;     // Lazarus .LFM file name.
+  DFMConverter: TDFMConverter;
+  TempLFMBuffer: TCodeBuffer;
+//  CurEncoding: String;
+  Changed: Boolean;
 begin
   Result:=mrOK;
   fLFMBuffer:=nil;
@@ -516,8 +530,32 @@ begin
   end;
   // convert .dfm file to .lfm file (without context type checking)
   if FileExistsUTF8(LfmFilename) then begin
-    Result:=ConvertDfmToLfm(LfmFilename);
-    if Result<>mrOk then exit;
+    DFMConverter:=TDFMConverter.Create(IDEMessagesWindow);
+    try
+      Result:=DFMConverter.ConvertDfmToLfm(LfmFilename);
+      if Result<>mrOk then exit;
+    finally
+      DFMConverter.Free;
+    end;
+    // Change encoding to UTF-8
+    if fSettings.FixEncoding then begin
+      Result:=LoadCodeBuffer(TempLFMBuffer,LfmFilename,
+                             [lbfCheckIfText,lbfUpdateFromDisk],true);
+      // Note: EnUnicode is meant to be a temporary solution.
+      // LCL has other functions for char encoding.
+      TempLFMBuffer.Source:=EnUnicode(TempLFMBuffer.Source, Changed);
+      if Changed then
+        IDEMessagesWindow.AddMsg(lisConvDelphiChangedEncodingToUTF8, '', -1);
+//      TempLFMBuffer.SaveToFile(ChangeFileExt(TempLFMBuffer.Filename, '_utf8.lfm'));
+      TempLFMBuffer.Save;
+{      CurEncoding:=GuessEncoding(TempLFMBuffer.Source);
+      if CurEncoding<>EncodingUTF8 then begin
+        ShowMessage('Encoding = ' + CurEncoding);
+        TempLFMBuffer.Source:=ConvertEncoding(TempLFMBuffer.Source, CurEncoding, EncodingUTF8);
+        TempLFMBuffer.DiskEncoding:=EncodingUTF8;
+        TempLFMBuffer.MemEncoding:=EncodingUTF8;
+      end; }
+    end;
     // Read form file code in.
     if not fSettings.SameDfmFile then begin
       Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
@@ -550,7 +588,7 @@ var
 begin
   // Get DFM file name and close it in editor.
   DfmFilename:=GetDfmFileName;
-  Result:=FixLfmFilename(DfmFilename);
+  Result:=FixLfmFilenameAndLoad(DfmFilename);
   if Result<>mrOk then exit;
   // Fix include file names.
   Result:=FixIncludeFiles;

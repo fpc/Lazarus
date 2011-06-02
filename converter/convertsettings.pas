@@ -58,6 +58,7 @@ type
     // Actual user settings.
     fBackupFiles: boolean;
     fKeepFileOpen: boolean;
+    fFixEncoding: boolean;
     fMultiPlatform: boolean;
     fSupportDelphi: boolean;
     fSameDfmFile: boolean;
@@ -109,6 +110,7 @@ type
 
     property BackupFiles: boolean read fBackupFiles;
     property KeepFileOpen: boolean read fKeepFileOpen;
+    property FixEncoding: boolean read fFixEncoding;
     property MultiPlatform: boolean read fMultiPlatform;
     property SupportDelphi: boolean read fSupportDelphi;
     property SameDfmFile: boolean read fSameDfmFile;
@@ -129,6 +131,7 @@ type
 
   TConvertSettingsForm = class(TForm)
     CoordOffsComboBox: TComboBox;
+    FixEncodingCheckBox: TCheckBox;
     UnitReplaceComboBox: TComboBox;
     MultiPlatformCheckBox: TCheckBox;
     SameDfmCheckBox: TCheckBox;
@@ -540,6 +543,7 @@ begin
       // Settings --> UI. Loaded from ConfigSettings earlier.
       BackupCheckBox.Checked          :=fBackupFiles;
       KeepFileOpenCheckBox.Checked    :=fKeepFileOpen;
+      FixEncodingCheckBox.Checked     :=fFixEncoding;
       MultiPlatformCheckBox.Checked   :=fMultiPlatform;
       SupportDelphiCheckBox.Checked   :=fSupportDelphi;
       SameDfmCheckBox.Checked         :=fSameDfmFile;
@@ -555,11 +559,12 @@ begin
         // UI --> Settings. Will be saved to ConfigSettings later.
         fBackupFiles     :=BackupCheckBox.Checked;
         fKeepFileOpen    :=KeepFileOpenCheckBox.Checked;
+        fFixEncoding     :=FixEncodingCheckBox.Checked;
         fMultiPlatform   :=MultiPlatformCheckBox.Checked;
         fSupportDelphi   :=SupportDelphiCheckBox.Checked;
         fSameDfmFile     :=SameDfmCheckBox.Checked;
         fUnitsReplaceMode:=TReplaceModeLong(UnitReplaceComboBox.ItemIndex);
-        fPropReplaceMode:=TReplaceModeLong(UnknownPropsComboBox.ItemIndex);
+        fPropReplaceMode :=TReplaceModeLong(UnknownPropsComboBox.ItemIndex);
         fTypeReplaceMode :=TReplaceModeAllow(TypeReplaceComboBox.ItemIndex);
         fFuncReplaceMode :=TReplaceModeShort(FuncReplaceComboBox.ItemIndex);
         fCoordOffsMode   :=TReplaceModeShort(CoordOffsComboBox.ItemIndex);

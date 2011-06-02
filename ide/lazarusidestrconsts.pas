@@ -5154,6 +5154,7 @@ resourcestring
   lisConvDelphiConvertingUnitFiles = '*** Converting unit files ... ***';
   lisConvDelphiConvertingFile = '* Converting file %s *';
   lisConvDelphiFixingUsedUnits = '* Fixing used units for file %s *';
+  lisConvDelphiChangedEncodingToUTF8 = 'Changed encoding to UTF-8';
   lisConvDelphiErrorCanTFindUnit = '%s(%s,%s) Error: Can''t find unit %s';
   lisConvDelphiAllSubDirsScanned = 'All sub-directories will be scanned for unit files';
   lisConvDelphiMissingIncludeFile = '%s(%s,%s) missing include file';
