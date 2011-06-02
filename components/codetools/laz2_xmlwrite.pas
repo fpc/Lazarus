@@ -348,7 +348,7 @@ begin
     '"': Sender.wrtStr(QuotStr);
     '&': Sender.wrtStr(AmpStr);
     '<': Sender.wrtStr(ltStr);
-    // Escape whitespace using CharRefs to be consistent with W3 spec ง 3.3.3
+    // Escape whitespace using CharRefs to be consistent with W3 spec ยง 3.3.3
     #0..#15: Sender.wrtStr('&#x'+HexChr[ord(s[idx])]+';');
     #16..#31: Sender.wrtStr('&#x1'+HexChr[ord(s[idx])-16]+';');
   else
