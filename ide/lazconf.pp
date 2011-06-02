@@ -108,7 +108,7 @@ function GetLibraryPrefix(TargetOS: string = ''): string;
 function MakeStandardLibFilename(TargetOS, Filename: string): string;
 
 // returns the standard file extension for compiled units (e.g '.ppu')
-function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
+function GetDefaultCompiledUnitExt({%H-}FPCVersion, {%H-}FPCRelease: integer): string;
 
 function OSLocksExecutables: boolean;
 
