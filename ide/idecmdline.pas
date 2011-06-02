@@ -98,6 +98,13 @@ begin
        end
     else
       begin
+        // pass these parameters to Lazarus
+
+        if LeftStr(Param,length(PrimaryConfPathOptShort))=PrimaryConfPathOptShort
+        then begin
+          SetPrimaryConfigPath(copy(Param,length(PrimaryConfPathOptShort)+1,length(Param)));
+        end;
+
         // Do not add file to the parameter list
         if not (Copy(Param,1,1) = '-') and (FileExistsUTF8(ExpandFileNameUTF8(Param))) then
           begin

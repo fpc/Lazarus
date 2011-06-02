@@ -246,7 +246,7 @@ var
   MsgResult: TModalResult;
   StartPath: String;
 begin
-  WaitForLazarus;
+  WaitForLazarus; // if startlazarus was started by lazarus, wait for it to halt
   try
     StartPath:=ExpandFileNameUTF8(ParamStrUTF8(0));
     if FileIsSymlink(StartPath) then
@@ -262,7 +262,7 @@ begin
   end;
   DefaultDir:=AppendPathDelim(DefaultDir);
   CustomDir:=AppendPathDelim(GetPrimaryConfigPath) + 'bin' + PathDelim;
-
+  debugln(['TLazarusManager.Run DefaultDir="',DefaultDir,'" CustomDir="',CustomDir,'"']);
   repeat
     Restart := false;
     if FShowSplashOption then
