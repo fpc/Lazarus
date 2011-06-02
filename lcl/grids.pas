@@ -99,7 +99,8 @@ type
     goFixedRowNumbering,  // Ya
     goScrollKeepVisible,  // keeps focused cell visible while scrolling
     goHeaderHotTracking,  // Header cells change look when mouse is over them
-    goHeaderPushedLook    // Header cells looks pushed when clicked
+    goHeaderPushedLook,   // Header cells looks pushed when clicked
+    goSelectionActive     // Setting grid.Selection moves also cell cursor
   );
   TGridOptions = set of TGridOption;
 
@@ -4993,6 +4994,8 @@ begin
 end;
 
 procedure TCustomGrid.SetSelection(const AValue: TGridRect);
+var
+  OldSelectActive: boolean;
 begin
   if goRangeSelect in Options then
   with AValue do begin
@@ -5002,6 +5005,15 @@ begin
       fRange:=NormalizarRect(aValue);
       if fRange.Right>=ColCount then fRange.Right:=ColCount-1;
       if fRange.Bottom>=RowCount then fRange.Bottom:=RowCount-1;
+      if fRange.Left<FixedCols then fRange.Left := FixedCols;
+      if fRange.Top<FixedRows then fRange.Top := FixedRows;
+      if goSelectionActive in Options then begin
+        OldSelectActive := FSelectActive;
+        FPivot := FRange.TopLeft;
+        FSelectActive := True;
+        MoveExtend(false, FRange.Right, FRange.Bottom);
+        FSelectActive := OldSelectActive;
+      end;
       Invalidate;
     end;
   end;
