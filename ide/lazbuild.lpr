@@ -428,18 +428,6 @@ begin
     exit;
   end;
 
-  // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
-  // but not the IDE
-  CurResult:=BuildLazarus(BuildLazProfiles,
-                          EnvironmentOptions.ExternalTools,GlobalMacroList,
-                          '',EnvironmentOptions.CompilerFilename,
-                          EnvironmentOptions.MakeFilename,
-                          Flags+[blfWithoutCompilingIDE,blfWithoutLinkingIDE]);
-  if CurResult<>mrOk then begin
-    DebugLn('TLazBuildApplication.BuildLazarusIDE: Building standard components (LCL, SynEdit, CodeTools) failed.');
-    exit;
-  end;
-  
   // compile auto install static packages
   if not CompileAutoInstallPackages then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: Compile AutoInstall Packages failed.');
@@ -463,7 +451,7 @@ begin
                           EnvironmentOptions.ExternalTools,GlobalMacroList,
                           PkgOptions,EnvironmentOptions.CompilerFilename,
                           EnvironmentOptions.MakeFilename,
-                          Flags+[blfUseMakeIDECfg,blfOnlyIDE]
+                          Flags+[blfUseMakeIDECfg,blfOnlyIDE,blfReplaceExe]
                           );
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');

@@ -68,7 +68,8 @@ type
     blfOnlyIDE,             // skip all but IDE
     blfDontClean,           // ignore clean up
     blfWithStaticPackages,  // build with IDE static design time packages
-    blfUseMakeIDECfg        // use idemake.cfg
+    blfUseMakeIDECfg,       // use idemake.cfg
+    blfReplaceExe           // ignore OSLocksExecutables and do not create lazarus.new.exe
     );
   TBuildLazarusFlags = set of TBuildLazarusFlag;
 
@@ -410,6 +411,7 @@ var
   CrossCompiling: Boolean;
   CurTargetFilename: String;
   BundleDir: String;
+  ExeLocked: Boolean;
 begin
   Result:=mrOk;
   Options:=Profiles.Current;
@@ -472,6 +474,9 @@ begin
     if NewTargetOS='' then NewTargetOS:=DefaultTargetOS;
     if NewTargetCPU='' then NewTargetCPU:=DefaultTargetCPU;
     CrossCompiling:=(CompareText(NewTargetOS,DefaultTargetOS)<>0) or (CompareText(NewTargetCPU,DefaultTargetCPU)<>0);
+    ExeLocked:=OSLocksExecutables and (not (blfReplaceExe in Flags))
+               and (not CrossCompiling);
+
     //DebugLn(['CreateBuildLazarusOptions NewTargetOS=',NewTargetOS,' NewTargetCPU=',NewTargetCPU]);
     if (Options.TargetDirectory<>'') then begin
       // Case 1. the user has set a target directory
@@ -485,7 +490,7 @@ begin
       debugln('CreateBuildLazarusOptions Options.TargetDirectory=',NewTargetDirectory);
       Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
       if Result<>mrOk then exit;
-      if OSLocksExecutables and not CrossCompiling then begin
+      if ExeLocked then begin
         // Allow for the case where this corresponds to the current executable
         NewTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
         if FileExistsUTF8(AppendPathDelim(NewTargetDirectory)+NewTargetFilename) then
@@ -529,7 +534,7 @@ begin
             if Result<>mrOk then exit;
           end else begin
             // the lazarus directory is writable
-            if OSLocksExecutables then begin
+            if ExeLocked then begin
               // Case 4. the current executable is locked
               // => use a different output name
               NewTargetFilename:='lazarus.new'+GetExecutableExt(NewTargetOS);
