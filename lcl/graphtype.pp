@@ -1284,6 +1284,7 @@ procedure TRawImage.ExtractRect(const ARect: TRect; out ADst: TRawImage);
     SrcLineStarts, DstLineStarts: TRawImageLineStarts;
     SrcStartPos, SrcEndPos, DstStartPos: TRawImagePosition;
     Shift0, Shift1: Byte;
+    DstW1: Word;
     SrcPos: PByte;
     DstPos: PByte;
     ByteCount: PtrUInt;
@@ -1351,7 +1352,8 @@ procedure TRawImage.ExtractRect(const ARect: TRect; out ADst: TRawImage);
           // dst[byte|bit]: 12 11 10 07 06 05 04 03 :
           for x := 0 to ByteCount - 1 do
           begin
-            DstPos^ := (SrcPos[0] shr Shift0) or (SrcPos[1] shl Shift1);
+            DstW1 := SrcPos[0] shl Shift0;
+            DstPos^ := Byte(DstW1 or (SrcPos[1] shr Shift1));
             inc(SrcPos);
             inc(DstPos);
           end;
@@ -1362,7 +1364,8 @@ procedure TRawImage.ExtractRect(const ARect: TRect; out ADst: TRawImage);
           // dst[byte|bit]: 04 03 02 01 00 17 16 15 :
           for x := 0 to ByteCount - 1 do
           begin
-            DstPos^ := (SrcPos[0] shl Shift0) or (SrcPos[1] shr Shift1);
+            DstW1 := SrcPos[0] shl Shift0;
+            DstPos^ := Byte(DstW1 or (SrcPos[1] shr Shift1));
             inc(SrcPos);
             inc(DstPos);
           end;
