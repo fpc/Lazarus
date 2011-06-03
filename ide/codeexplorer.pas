@@ -1637,19 +1637,16 @@ procedure TCodeExplorerView.CreateSurrounding(Tool: TCodeTool);
     Result:=true;
   end;
 
-  procedure CreateSubNodes(TVNode: TTreeNode; p: integer);
+  procedure CreateSubNodes(ParentTVNode: TTreeNode; CTNode: TCodeTreeNode;
+    p: integer);
   var
-    Data: TViewNodeData;
-    CTNode: TCodeTreeNode;
     ChildCTNode: TCodeTreeNode;
     ChildData: TViewNodeData;
     ChildTVNode: TTreeNode;
     AddChilds: Boolean;
     Add: Boolean;
-    ParentTVNode: TTreeNode;
+    CurParentTVNode: TTreeNode;
   begin
-    Data:=TViewNodeData(TVNode.Data);
-    CTNode:=Data.CTNode;
     ChildCTNode:=CTNode.FirstChild;
     while ChildCTNode<>nil do
     begin
@@ -1658,25 +1655,29 @@ procedure TCodeExplorerView.CreateSurrounding(Tool: TCodeTool);
       if CTNodeIsEnclosing(ChildCTNode,p) then begin
         AddChilds:=true;
         Add:=true;
+        if ChildCTNode.Desc in AllClasses then
+          Add:=false;
       end else if (CTNode.Desc=ctnProcedure)
       and (ChildCTNode.Desc<>ctnProcedureHead) then begin
         Add:=true
       end;
 
-      ParentTVNode:=TVNode;
+      CurParentTVNode:=ParentTVNode;
       if Add then
       begin
         ChildData:=TViewNodeData.Create(ChildCTNode,false);
         ChildTVNode:=CodeTreeview.Items.AddChildObject(
-                     TVNode,GetCodeNodeDescription(Tool,ChildCTNode),ChildData);
+                     ParentTVNode,GetCodeNodeDescription(Tool,ChildCTNode),ChildData);
         ChildTVNode.ImageIndex:=GetCodeNodeImage(Tool,ChildCTNode);
         ChildTVNode.SelectedIndex:=ChildTVNode.ImageIndex;
-        ParentTVNode:=ChildTVNode;
-      end;
+        CurParentTVNode:=ChildTVNode;
+      end else
+        ChildTVNode:=nil;
       if AddChilds then
       begin
-        CreateSubNodes(ParentTVNode,p);
-        ChildTVNode.Expanded:=true;
+        CreateSubNodes(CurParentTVNode,ChildCTNode,p);
+        if ChildTVNode<>nil then
+          ChildTVNode.Expanded:=true;
       end;
       ChildCTNode:=ChildCTNode.NextBrother;
     end;
@@ -1714,7 +1715,7 @@ begin
     TVNode.ImageIndex:=GetCodeNodeImage(Tool,CodeNode);
     TVNode.SelectedIndex:=TVNode.ImageIndex;
     if CTNodeIsEnclosing(CodeNode,p) then
-      CreateSubNodes(TVNode,p);
+      CreateSubNodes(TVNode,CodeNode,p);
     TVNode.Expanded:=true;
 
     CodeNode:=CodeNode.NextBrother;
