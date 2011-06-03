@@ -4097,6 +4097,14 @@ msgctxt "lazarusidestrconsts.liscaptiondiff"
 msgid "Diff"
 msgstr "差分"
 
+#: lazarusidestrconsts.liscbpfiles
+msgid "%s (%s files)"
+msgstr ""
+
+#: lazarusidestrconsts.liscbpreallydeletesourcefiles
+msgid "Really delete %s source files%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr "%sのクラスを変更"

@@ -4095,6 +4095,14 @@ msgctxt "lazarusidestrconsts.liscaptiondiff"
 msgid "Diff"
 msgstr "Rozdiely"
 
+#: lazarusidestrconsts.liscbpfiles
+msgid "%s (%s files)"
+msgstr ""
+
+#: lazarusidestrconsts.liscbpreallydeletesourcefiles
+msgid "Really delete %s source files%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
 msgstr "Zmeniť triedu %s"

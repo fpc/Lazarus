@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-04 01:22+0300\n"
+"PO-Revision-Date: 2011-06-04 02:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4099,6 +4099,14 @@ msgstr "Возможно только изменить класс TComponents."
 msgctxt "lazarusidestrconsts.liscaptiondiff"
 msgid "Diff"
 msgstr "Разница Diff"
+
+#: lazarusidestrconsts.liscbpfiles
+msgid "%s (%s files)"
+msgstr "%s (файлов: %s)"
+
+#: lazarusidestrconsts.liscbpreallydeletesourcefiles
+msgid "Really delete %s source files%s%s"
+msgstr "Удалить %s файлов исходного кода%s%s"
 
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"

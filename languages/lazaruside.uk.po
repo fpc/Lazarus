@@ -3986,6 +3986,10 @@ msgstr "Побудувати новий проект"
 msgid "Build Number"
 msgstr "Номер побудови"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr ""
@@ -4035,6 +4039,14 @@ msgstr "Можу змінити тільки клас TComponetns"
 msgctxt "lazarusidestrconsts.liscaptiondiff"
 msgid "Diff"
 msgstr "Порівнянти"
+
+#: lazarusidestrconsts.liscbpfiles
+msgid "%s (%s files)"
+msgstr ""
+
+#: lazarusidestrconsts.liscbpreallydeletesourcefiles
+msgid "Really delete %s source files%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
@@ -4374,7 +4386,7 @@ msgstr "Несортовані видимі"
 #: lazarusidestrconsts.lisceuses
 msgctxt "lazarusidestrconsts.lisceuses"
 msgid "Uses"
-msgstr ""
+msgstr "Uses"
 
 #: lazarusidestrconsts.liscevariables
 msgid "Variables"
@@ -4703,6 +4715,14 @@ msgstr "Простий синтаксис (напр., * замість .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Очистити коди Lazarus"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5697,6 +5717,10 @@ msgstr ""
 msgid "Categories:"
 msgstr "Категорії:"
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr ""
@@ -6071,10 +6095,6 @@ msgstr "Створити вузол Довідки"
 msgid "Create it"
 msgstr "Створити його"
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "Створити новий проект"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "Створити проект"
@@ -6146,6 +6166,10 @@ msgstr "Рядок курсора в цьому редакторі"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
+msgstr ""
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -7641,6 +7665,10 @@ msgstr "Не текстовий файл"
 msgid "File Settings"
 msgstr "Параметри Файлу"
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Файли в кодуванні ASCII або UTF-8"
@@ -8646,6 +8674,10 @@ msgstr ""
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "Класичний"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9812,6 +9844,10 @@ msgstr "Перевірити файл LFM в редакторі"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "Очистити теку ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11398,6 +11434,14 @@ msgstr "Назва пакунку вміщує ..."
 msgid "Package needs installation"
 msgstr "Потрібне встановлення пакунку"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Пакунки для встановлення в IDE"
@@ -11792,7 +11836,7 @@ msgstr "Неправильний тип пакунку"
 #: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
 msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
 msgid "FPDoc files path"
-msgstr ""
+msgstr "Шлях до файлів FPDoc"
 
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
@@ -11870,7 +11914,7 @@ msgstr "Перебіг"
 #: lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas
 msgctxt "lazarusidestrconsts.lispeapascalunitmusthavetheextensionpporpas"
 msgid "A pascal unit must have the extension .pp or .pas"
-msgstr ""
+msgstr "Модуль Паскаля повинен мати розширення .pp або .pas"
 
 #: lazarusidestrconsts.lispecollapsedirectory
 msgid "Collapse directory"
@@ -12960,12 +13004,20 @@ msgstr "макрос ProjectUnitPath"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr "Шлях Проекту:"
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
@@ -13684,6 +13736,10 @@ msgstr "Рівень"
 msgid "Simple Syntax"
 msgstr "Простий синтаксис"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr "Пропустити файл"
@@ -14347,6 +14403,10 @@ msgstr "Сталася помилка при копіюванні потоку �
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "Компоненту верхнього рівня не може бути видалено."
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15074,10 +15134,6 @@ msgstr "Непідписаний"
 msgid "Unused units"
 msgstr "Невикористані модулі"
 
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr ""
-
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr ""
@@ -15194,7 +15250,7 @@ msgstr ""
 #: lazarusidestrconsts.lisviewbreakpointproperties
 msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
 msgid "Breakpoint Properties ..."
-msgstr ""
+msgstr "Властивості Точки Зупинки ..."
 
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
@@ -15867,6 +15923,10 @@ msgstr "Побудувати lazarus"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Символ"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
