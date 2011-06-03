@@ -95,8 +95,8 @@ begin
   chkConfigFile.Caption := dlgUseFpcCfg + ' (If not checked: -n)';
   chkCustomConfigFile.Caption := dlgUseCustomConfig + ' (@)';
   edtConfigPath.Text := '';
-
   grpCustomOptions.Caption := lisCustomOptions2;
+  memCustomOptions.Hint:=lisCustomOptHint;
 end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

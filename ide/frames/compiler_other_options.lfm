@@ -3,6 +3,7 @@ inherited CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
   Width = 553
   ClientHeight = 486
   ClientWidth = 553
+  TabOrder = 0
   DesignLeft = 434
   DesignTop = 276
   object grpConfigFile: TGroupBox[0]
@@ -66,6 +67,8 @@ inherited CompilerOtherOptionsFrame: TCompilerOtherOptionsFrame
       Width = 537
       Align = alClient
       BorderSpacing.Around = 6
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
     end
   end

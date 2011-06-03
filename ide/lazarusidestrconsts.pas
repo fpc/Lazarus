@@ -1852,6 +1852,8 @@ resourcestring
   dlgUseFpcCfg = 'Use standard Compiler Config File (fpc.cfg)';
   dlgUseCustomConfig = 'Use additional Compiler Config File';
   lisCustomOptions2 = 'Custom options';
+  lisCustomOptHint = 'These options are passed directly to the compiler. Macros ' +
+                     'are replaced, line breaks are replaced with single spaces.';
   dlgCOConditionals = 'Conditionals';
   dlgStopAfterNrErr = 'Stop after number of errors:';
   dlgOtherUnitFiles = 'Other Unit Files (-Fu) (Delimiter is semicolon):';
