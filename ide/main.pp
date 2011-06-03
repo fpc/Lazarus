@@ -631,7 +631,7 @@ type
     FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
     FRemoteControlTimer: TTimer;
-    FRemoteControlFileValid: boolean;
+    FRemoteControlFileAge: integer;
 
     FIDECodeToolsDefines: TIDECodetoolsDefines;
 
@@ -1105,7 +1105,6 @@ implementation
 var
   SkipAutoLoadingLastProject: boolean = false;
   StartedByStartLazarus: boolean = false;
-  EnableRemoteControl: boolean = false;
   ShowSetupDialog: boolean = false;
 
 function FindDesignComponent(const aName: string): TComponent;
@@ -2273,7 +2272,8 @@ procedure TMainIDE.SetupRemoteControl;
 var
   Filename: String;
 begin
-  // delete old remote control file
+  debugln(['TMainIDE.SetupRemoteControl ']);
+  // delete old remote commands
   Filename:=GetRemoteControlFilename;
   if FileExistsUTF8(Filename) then
     DeleteFileUTF8(Filename);
@@ -11925,17 +11925,27 @@ procedure TMainIDE.DoExecuteRemoteControl;
     ProjectLoaded:=Project1<>nil;
     DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles ProjectLoaded=',ProjectLoaded]);
 
-    // open project
-    if (Files<>nil) and (Files.Count>0) then begin
+    // open project (only the last in the list)
+    AProjectFilename:='';
+    for i:=Files.Count-1 downto 0 do begin
       AProjectFilename:=Files[0];
       if (CompareFileExt(AProjectFilename,'.lpr',false)=0) then
         AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
       if (CompareFileExt(AProjectFilename,'.lpi',false)=0) then begin
+        // open a project
+        Files.Delete(i); // remove from the list
         AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
         if FileExistsUTF8(AProjectFilename) then begin
           DebugLn(['TMainIDE.DoExecuteRemoteControl.OpenFiles AProjectFilename="',AProjectFilename,'"']);
-          Files.Delete(0);
-          ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[])=mrOk);
+          if (Project1<>nil)
+          and (CompareFilenames(AProjectFilename,Project1.ProjectInfoFile)=0)
+          then begin
+            // project is already open => do not reopen
+            ProjectLoaded:=true;
+          end else begin
+            // open another project
+            ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[])=mrOk);
+          end;
         end;
       end;
     end;
@@ -11971,43 +11981,46 @@ var
   List: TStringList;
   Files: TStrings;
   i: Integer;
+  CmdShow: Boolean;
 begin
   Filename:=GetRemoteControlFilename;
-  if FileExistsUTF8(Filename) then begin
-    // the control file exists
-    if FRemoteControlFileValid then begin
-      List:=TStringList.Create;
-      Files:=nil;
+  if FileExistsUTF8(Filename) and (FRemoteControlFileAge<>FileAgeUTF8(Filename))
+  then begin
+    // the control file exists and has changed
+    List:=TStringList.Create;
+    Files:=nil;
+    try
+      // load and delete the file
       try
-        // load and delete the file
-        try
-          List.LoadFromFile(UTF8ToSys(Filename));
-        except
-          DebugLn(['TMainIDE.DoExecuteRemoteControl reading file failed: ',Filename]);
-        end;
-        DeleteFileUTF8(Filename);
-        FRemoteControlFileValid:=not FileExistsUTF8(Filename);
-        // execute
-        Files:=TStringList.Create;
-        for i:=0 to List.Count-1 do begin
-          if SysUtils.CompareText(copy(List[i],1,5),'open ')=0 then
-            Files.Add(copy(List[i],6,length(List[i])));
-        end;
-        if Files.Count>0 then begin
-          OpenFiles(Files);
-        end;
-      finally
-        List.Free;
-        Files.Free;
+        List.LoadFromFile(UTF8ToSys(Filename));
+      except
+        DebugLn(['TMainIDE.DoExecuteRemoteControl reading file failed: ',Filename]);
       end;
-    end else begin
-      // the last time there was an error (e.g. read/delete failed)
-      // do not waste time again
+      DeleteFileUTF8(Filename);
+      FRemoteControlFileAge:=-1;
+      // execute
+      Files:=TStringList.Create;
+      CmdShow:=false;
+      for i:=0 to List.Count-1 do begin
+        if SysUtils.CompareText(List[i],'show')=0 then
+          CmdShow:=true;
+        if SysUtils.CompareText(copy(List[i],1,5),'open ')=0 then
+          Files.Add(copy(List[i],6,length(List[i])));
+      end;
+      if CmdShow then begin
+        // if minimized then restore, bring IDE to front
+        Application.MainForm.ShowOnTop;
+      end;
+      if Files.Count>0 then begin
+        OpenFiles(Files);
+      end;
+    finally
+      List.Free;
+      Files.Free;
     end;
   end else begin
     // the control file does not exist
-    // => remember the good state
-    FRemoteControlFileValid:=true;
+    FRemoteControlFileAge:=-1;
   end;
 end;
 

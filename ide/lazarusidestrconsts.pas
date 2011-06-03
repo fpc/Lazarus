@@ -39,21 +39,6 @@ interface
 uses
   Classes, SysUtils;
 
-const
-  ShowSetupDialogOptLong='--setup';
-  PrimaryConfPathOptLong='--primary-config-path=';
-  PrimaryConfPathOptShort='--pcp=';
-  SecondaryConfPathOptLong='--secondary-config-path=';
-  SecondaryConfPathOptShort='--scp=';
-  NoSplashScreenOptLong='--no-splash-screen';
-  NoSplashScreenOptShort='--nsc';
-  StartedByStartLazarusOpt='--started-by-startlazarus';
-  SkipLastProjectOpt='--skip-last-project';
-  EnableRemoteControlOpt='--remote-control';
-  DebugLogOpt='--debug-log=';
-  LanguageOpt='--language=';
-  LazarusDirOpt ='--lazarusdir=';
-
 resourcestring
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
   lisErrNoOptionAllowed = 'Option at position %d does not allow an argument: %s';

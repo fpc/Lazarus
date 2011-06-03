@@ -1,4 +1,3 @@
-{  $Id:$  }
 {
  /***************************************************************************
                               idecmdline.pas
@@ -27,13 +26,11 @@
  ***************************************************************************
  
  Author: Ido Kanner
-}
 
-(*
   This unit manages the commandline utils that are used across Lazarus.
   It was created for avoding duplicates and easier access for commandline utils
   that are required by the IDE.
-*)
+}
 unit IDECmdLine;
 
 {$mode objfpc}{$H+}
@@ -42,6 +39,21 @@ interface
 
 uses 
   Classes, SysUtils, FileUtil, LazConf, LCLProc, LazarusIDEStrConsts;
+
+const
+  ShowSetupDialogOptLong='--setup';
+  PrimaryConfPathOptLong='--primary-config-path=';
+  PrimaryConfPathOptShort='--pcp=';
+  SecondaryConfPathOptLong='--secondary-config-path=';
+  SecondaryConfPathOptShort='--scp=';
+  NoSplashScreenOptLong='--no-splash-screen';
+  NoSplashScreenOptShort='--nsc';
+  StartedByStartLazarusOpt='--started-by-startlazarus';
+  SkipLastProjectOpt='--skip-last-project';
+  EnableRemoteControlOpt='--remote-control';
+  DebugLogOpt='--debug-log=';
+  LanguageOpt='--language=';
+  LazarusDirOpt ='--lazarusdir=';
 
 procedure ParseCommandLine(aCmdLineParams : TStrings; out IDEPid : Integer;
             out ShowSplashScreen: boolean);
@@ -63,8 +75,18 @@ procedure SetParamOptions(var SkipAutoLoadingLastProject,
 function ExtractCmdLineFilenames : TStrings;
 
 function GetLazarusDirectory : String;
-                              
-implementation 
+
+// remote control
+var
+  EnableRemoteControl: boolean = false;
+
+function SetupMainIDEInstance: boolean; // false if this is a secondary instance
+function GetPidFile: string;
+function IsLazarusPIDRunning(aPID: int64): boolean;
+function GetRemoteControlFilename: string;
+procedure CleanUpPIDFile;
+
+implementation
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid: Integer; out
   ShowSplashScreen: boolean);
@@ -226,6 +248,180 @@ end;
 function GetLazarusDirectory : String;
 begin
   Result := ExtractFileDir(ParamStrUTF8(0));
+end;
+
+function GetPidFile: string;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'pid.txt';
+end;
+
+function IsLazarusPIDRunning(aPID: int64): boolean;
+
+  function IsLinuxIDERunning: boolean;
+  var
+    sl: TStringList;
+    Filename: String;
+  begin
+    Result:=false;
+    Filename:='/proc/'+IntToStr(aPID)+'/cmdline';
+    if not FileExists(Filename) then exit;
+    sl:=TStringList.Create;
+    try
+      try
+        sl.LoadFromFile(Filename);
+        if sl.Count=0 then exit;
+        if Pos('lazarus',lowercase(sl[0]))<1 then exit;
+        Result:=true;
+      except
+      end;
+    finally
+      sl.Free;
+    end;
+  end;
+
+begin
+  Result:=false;
+  {$IFDEF Linux}
+  Result:=IsLinuxIDERunning;
+  {$ENDIF}
+end;
+
+function SetupMainIDEInstance: boolean;
+
+  procedure WritePIDFile(const Filename: string; aPID: int64);
+  var
+    Dir: String;
+    sl: TStringList;
+  begin
+    debugln(['WritePIDFile File="',Filename,'" PID=',aPID]);
+    sl:=TStringList.Create;
+    try
+      sl.Add(IntToStr(aPID));
+      try
+        Dir:=ChompPathDelim(ExtractFilePath(Filename));
+        if not DirectoryExistsUTF8(Dir) then begin
+          if not CreateDirUTF8(Dir) then
+            debugln(['WritePIDFile failed to create directory ',Dir]);
+          exit;
+        end;
+        sl.SaveToFile(UTF8ToSys(Filename));
+      except
+        on E: Exception do begin
+          debugln(['WritePIDFile "',Filename,'" failed:']);
+          debugln(E.Message);
+        end;
+      end;
+    finally
+      sl.Free;
+    end;
+  end;
+
+  function ReadPIDFile(const Filename: string; out ConfigPID: int64): boolean;
+  var
+    sl: TStringList;
+  begin
+    Result:=false;
+    ConfigPID:=-1;
+    debugln(['ReadPIDFile ',Filename]);
+    if not FileExistsUTF8(Filename) then exit;
+    sl:=TStringList.Create;
+    try
+      try
+        sl.LoadFromFile(UTF8ToSys(Filename));
+        ConfigPID:=StrToInt64(sl[0]);
+        Result:=true;
+        debugln(['ReadPIDFile ConfigPID=',ConfigPID]);
+      except
+        on E: Exception do begin
+          debugln(['ReadPIDFile "',Filename,'" failed:']);
+          debugln(E.Message);
+        end;
+      end;
+    finally
+      sl.Free;
+    end;
+  end;
+
+  procedure SendCmdlineActionsToMainInstance;
+  var
+    sl: TStringList;
+    Param: String;
+    Filename: String;
+    i: Integer;
+  begin
+    sl:=TStringList.Create;
+    try
+      sl.Add('Show');
+      for i:=1 to Paramcount do begin
+        Param:=ParamStrUTF8(i);
+        if (Param='') or (Param[1]='-') then continue;
+        sl.Add('Open '+Param);
+      end;
+      Filename:=GetRemoteControlFilename;
+      try
+        debugln(['SendCmdlineActionsToMainInstance Commands="',sl.Text,'"']);
+        sl.SaveToFile(UTF8ToSys(Filename));
+      except
+        on E: Exception do begin
+          debugln(['SendCmdlineActionsToMainInstance failed to write ',Filename]);
+          debugln(E.Message);
+        end;
+      end;
+    finally
+      sl.Free;
+    end;
+  end;
+
+var
+  PIDFilename: String;
+  MyPID, ConfigPID: int64;
+  PIDRead: Boolean;
+begin
+  Result:=true;
+  if not EnableRemoteControl then exit;
+
+  // check if another IDE (of this user and same configuration) is already
+  // running. Request it to handle the show and handle the command line
+  // parameters (e.g. open files). And if successful return false.
+  // Otherwise become the main instance.
+  PIDFilename:=GetPidFile;
+  MyPID:=GetProcessID;
+  ConfigPID:=-1;
+  PIDRead:=ReadPIDFile(PIDFilename,ConfigPID);
+  if PIDRead and (ConfigPID<>MyPID) then begin
+    // there is a pid file from another instance
+    if not IsLazarusPIDRunning(ConfigPID) then begin
+      // clean up
+      DeleteFileUTF8(PIDFilename);
+      PIDRead:=false;
+    end;
+  end;
+  if not FileExistsUTF8(PIDFilename) then begin
+    // try to become the main instance
+    WritePIDFile(PIDFilename,MyPID);
+    PIDRead:=false;
+  end;
+  if not PIDRead then
+    PIDRead:=ReadPIDFile(PIDFilename,ConfigPID);
+  if ConfigPID=MyPID then begin
+    // this is the main instance
+    exit;
+  end;
+  // this is a second instance
+  Result:=false;
+
+  SendCmdlineActionsToMainInstance;
+end;
+
+function GetRemoteControlFilename: string;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'ideremotecontrol.txt';
+end;
+
+procedure CleanUpPIDFile;
+begin
+  if EnableRemoteControl then
+    DeleteFileUTF8(GetRemoteControlFilename);
 end;
 
 end.

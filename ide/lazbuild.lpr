@@ -34,7 +34,7 @@ uses
   // IDE
   IDEProcs, InitialSetupDlgs, OutputFilter, CompilerOptions, ApplicationBundle,
   TransferMacros, EnvironmentOpts, IDETranslations, LazarusIDEStrConsts,
-  ExtToolDialog,
+  IDECmdLine, ExtToolDialog,
   MiscOptions, Project, LazConf, PackageDefs, PackageLinks, PackageSystem,
   BuildLazDialog, BuildProfileManager, BuildManager, BaseBuildManager;
   

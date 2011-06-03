@@ -51,7 +51,7 @@ uses
   SysUtils,
   Interfaces,
   Forms, LCLProc,
-  LazConf,
+  LazConf, IDECmdLine,
   Splash,
   Main,
   AboutFrm,
@@ -95,6 +95,7 @@ begin
   OnGetApplicationName:=@GetLazarusApplicationName;
   Application.Initialize;
   TMainIDE.ParseCmdLineOptions;
+  if not SetupMainIDEInstance then exit;
   if Application.Terminated then exit;
 
   // Show splashform
@@ -119,9 +120,11 @@ begin
       Application.Run;
     except
       debugln('lazarus.pp - unhandled exception');
+      CleanUpPIDFile;
       Halt;
     end;
   end;
+  CleanUpPIDFile;
   if (SplashForm<>nil) then begin
     SplashForm.Free;
     SplashForm:=nil;
