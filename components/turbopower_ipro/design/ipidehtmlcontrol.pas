@@ -247,12 +247,8 @@ end;
 
 procedure TLazIPHtmlControl.GetPreferredControlSize(out AWidth, AHeight: integer);
 begin
-  with GetContentSize do
-  begin
-    AWidth := Max(0,Min(cx,10000));
-    AHeight := Max(0,Min(cy,10000));
-  end;
-  debugln(['TLazIPHtmlControl.GetPreferredControlSize Width=',AWidth,' Height=',AHeight]);
+  inherited GetPreferredSize(AWidth, AHeight);
+  //debugln(['TLazIPHtmlControl.GetPreferredControlSize Width=',AWidth,' Height=',AHeight]);
 end;
 
 end.

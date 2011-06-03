@@ -3390,6 +3390,8 @@ type
     procedure SetVersion(const Value : string);
     procedure SetDefaultTypeFace(const Value: string);
     procedure SetDefaultFontSize(const Value: integer);
+    procedure CalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
     function GetPrintPageCount: Integer;
     constructor Create(AOwner: TComponent); override;
@@ -19503,6 +19505,24 @@ begin
       Invalidate;
     end;
   end;
+end;
+
+procedure TIpHtmlCustomPanel.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  r: TRect;
+begin
+  //  FMasterFrame.InvalidateSize(Self);
+  r:=Rect(0,0,0,0);
+  if (FMasterFrame<>nil) and (FMasterFrame.FHtml<>nil)
+  and (FMasterFrame.HyperPanel<>nil) then
+    r:=FMasterFrame.FHtml.GetPageRect(FMasterFrame.HyperPanel.Canvas,ClientWidth,0);
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
+    WithThemeSpace);
+  if PreferredWidth<r.Right-r.Left then
+    PreferredWidth:=r.Right-r.Left;
+  if PreferredHeight<r.Bottom-r.Top then
+    PreferredHeight:=r.Bottom-r.Top;
 end;
 
 procedure TIpHtmlCustomPanel.SetFactBAParag(const Value: Real); //JMN
