@@ -376,19 +376,4 @@ object ConvertSettingsForm: TConvertSettingsForm
     Style = csDropDownList
     TabOrder = 13
   end
-  object FixEncodingCheckBox: TCheckBox
-    AnchorSideLeft.Control = BackupCheckBox
-    AnchorSideTop.Control = KeepFileOpenCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 12
-    Height = 18
-    Hint = 'Separate form files allow different properties'
-    Top = 220
-    Width = 185
-    BorderSpacing.Top = 15
-    Caption = 'Try to fix character encoding'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 14
-  end
 end
