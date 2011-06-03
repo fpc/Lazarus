@@ -1,0 +1,447 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: codystrconsts.crsaddassignmethod
+msgid "Add Assign method"
+msgstr "Додати метод Assign"
+
+#: codystrconsts.crsaddassignmethod2
+msgid "Add Assign method ..."
+msgstr "Додати метод Assign ..."
+
+#: codystrconsts.crsaddcallinherited
+msgid "Add call inherited"
+msgstr "Додати виклик успадкованого"
+
+#: codystrconsts.crsalreadydefined
+msgid "Already defined"
+msgstr "Вже визначений"
+
+#: codystrconsts.crsalreadydefinedat
+msgid "Already defined at %s"
+msgstr "Вже визначений в %s"
+
+#: codystrconsts.crsbtncancel
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: codystrconsts.crsbtnok
+msgid "&OK"
+msgstr "&Гаразд"
+
+#: codystrconsts.crsbyfpccfg
+msgid "by fpc.cfg"
+msgstr "в fpc.cfg"
+
+#: codystrconsts.crscamaddassignmethodtoclass
+msgid "Add Assign method to class %s"
+msgstr "Додати метод Assign до класу %s"
+
+#: codystrconsts.crscamcallinherited
+msgid "Call inherited"
+msgstr "Викликати успадкований"
+
+#: codystrconsts.crscamcallinheritedonlyifwrongclass
+msgid "Call inherited only if wrong class"
+msgstr "Викликати успадкований лише для невірного класу"
+
+#: codystrconsts.crscamcursorisnotinapascalclassdeclaration
+msgid "cursor is not in a pascal class declaration"
+msgstr "курсор не знаходиться в оголошенні класу Паскаля"
+
+#: codystrconsts.crscamexistsalready
+msgid "exists already"
+msgstr "вже існує"
+
+#: codystrconsts.crscaminherited
+msgid "Inherited:"
+msgstr "Успадкований:"
+
+#: codystrconsts.crscaminvalididentifier
+msgid "invalid identifier"
+msgstr "невірний ідентифікатор"
+
+#: codystrconsts.crscammethod
+msgid "Method:"
+msgstr "Метод:"
+
+#: codystrconsts.crscammethodname
+msgid "Method name:"
+msgstr "Ім'я методу:"
+
+#: codystrconsts.crscamnewmethod
+msgid "New method:"
+msgstr "Новий метод:"
+
+#: codystrconsts.crscamoverride
+msgid "Override"
+msgstr "Перекрити"
+
+#: codystrconsts.crscamparametername
+msgid "Parameter name:"
+msgstr "Ім'я параметру:"
+
+#: codystrconsts.crscamparametertype
+msgid "Parameter type:"
+msgstr "Тип параметру:"
+
+#: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
+msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
+msgstr "Перед викликом \"Додати метод Assign\" встановіть курсор редактора початкового коду на оголошенні класу Паскаля."
+
+#: codystrconsts.crscamprivate
+msgid "private"
+msgstr "приватний"
+
+#: codystrconsts.crscamproperty
+msgid "%s property"
+msgstr "%s властивість"
+
+#: codystrconsts.crscamprotected
+msgid "protected"
+msgstr "захищений"
+
+#: codystrconsts.crscampublic
+msgid "public"
+msgstr "публічний"
+
+#: codystrconsts.crscampublished
+msgid "published"
+msgstr "опублікований"
+
+#: codystrconsts.crscamselectmemberstoassign
+msgid "Select members to assign:"
+msgstr "Вибір членів для присвоєння:"
+
+#: codystrconsts.crscamthereisnoinheritedmethod
+msgid "There is no inherited method."
+msgstr "Немає успадкованого методу."
+
+#: codystrconsts.crscamvar
+msgid "%s var"
+msgstr "%s змінна"
+
+#: codystrconsts.crscamvisibility
+msgid "?visibility?"
+msgstr "?видимість?"
+
+#: codystrconsts.crscamwrittenbyproperty
+msgid "%s, written by property %s"
+msgstr "%s, записаний властивістю %s"
+
+#: codystrconsts.crsclose
+msgid "&Close"
+msgstr "&Закрити"
+
+#: codystrconsts.crscodenodeinformation
+msgid "Code Node Information"
+msgstr "Інформація про Вузол Коду"
+
+#: codystrconsts.crscopydeclarationtoclipboard
+msgid "Copy declaration to clipboard"
+msgstr "Копіювати оголошення в буфер"
+
+#: codystrconsts.crscuallfiles
+msgid "%s|All files (%s)|%s"
+msgstr "%s|Всі файли (%s)|%s"
+
+#: codystrconsts.crscupascalpaspppaspp
+msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
+msgstr "Pascal (*.pas;*.pp)|*.pas;*.pp"
+
+#: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
+msgid "Please place the cursor of the source editor in an implementation of an overridden method."
+msgstr "Встановіть курсор редактора початкового коду на реалізації перевизначеного методу."
+
+#: codystrconsts.crscuselectfiletoinsertatcursor
+msgid "Select file to insert at cursor"
+msgstr "Вибір файлу для вставки в місці курсора"
+
+#: codystrconsts.crscutdeclarationtoclipboard
+msgid "Cut declaration to clipboard"
+msgstr "ВИрізати оголошення в буфер"
+
+#: codystrconsts.crscuthefileseemstobeabinaryproceed
+msgid "The file seems to be a binary. Proceed?"
+msgstr "Ймовірно файл є двійковим. Продовжити?"
+
+#: codystrconsts.crscuunabletoloadfile
+msgid "Unable to load file \"%s\"%s%s"
+msgstr "Не можу завантажити файл \"%s\"%s%s"
+
+#: codystrconsts.crscuwarning
+msgid "Warning"
+msgstr "Попередження"
+
+#: codystrconsts.crscwerror
+msgid "Error"
+msgstr "Помилка"
+
+#: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
+msgid "Please place the cursor of the source editor on a With variable."
+msgstr "Встановіть курсор редактора початкового коду на на змінній With."
+
+#: codystrconsts.crsdeclarevariable
+msgid "Declare Variable"
+msgstr "Оголосити Змінну"
+
+#: codystrconsts.crsdeclarevariable2
+msgid "Declare Variable ..."
+msgstr "Оголосити Змінну ..."
+
+#: codystrconsts.crsdeclarevariable3
+msgid "Declare variable \"%s\""
+msgstr "Оголосити змінну \"%s\""
+
+#: codystrconsts.crsdvisakeyword
+msgid "\"%s\" is a keyword."
+msgstr "\"%s\" це ключове слово."
+
+#: codystrconsts.crsexplodeawithblock
+msgid "Explode a \"With\" block"
+msgstr "Зруйнувати блок \"With\""
+
+#: codystrconsts.crsfile
+msgid "File"
+msgstr "Файл"
+
+#: codystrconsts.crsflags
+msgid "Flags"
+msgstr "Прапорці"
+
+#: codystrconsts.crsframeworks
+msgid "Frameworks"
+msgstr "Платформи"
+
+#: codystrconsts.crsgbytes
+msgid "Gbytes"
+msgstr "ГБ"
+
+#: codystrconsts.crshelp
+msgid "&Help"
+msgstr "&Довідка"
+
+#: codystrconsts.crsinimplementation
+msgid "In implementation"
+msgstr "В реалізації"
+
+#: codystrconsts.crsininterface
+msgid "In interface"
+msgstr "В інтерфейсі"
+
+#: codystrconsts.crsinsertfileatcursor
+msgid "Insert file at cursor ..."
+msgstr "Вставити файл під курсором ..."
+
+#: codystrconsts.crskbytes
+msgid "kbytes"
+msgstr "кБ"
+
+#: codystrconsts.crslinkedfiles
+msgid "Linked files"
+msgstr "Зв'язані файли"
+
+#: codystrconsts.crslocalvariableof
+msgid "Local variable of %s"
+msgstr "Локальні змінні %s"
+
+#: codystrconsts.crsmainsourcefile
+msgid "Main source file: %s"
+msgstr "Основний файл коду: %s"
+
+#: codystrconsts.crsmbytes
+msgid "Mbytes"
+msgstr "МБ"
+
+#: codystrconsts.crsmemberof
+msgid "%s member of %s %s"
+msgstr "%s членів %s %s"
+
+#: codystrconsts.crsmissing
+msgid "missing ..."
+msgstr "відсутній ..."
+
+#: codystrconsts.crsnoproject
+msgid "No project"
+msgstr "Немає проекту"
+
+#: codystrconsts.crsnounitselected
+msgid "No unit selected"
+msgstr "Модуль не вибраний"
+
+#: codystrconsts.crsonclipboard
+msgid "On clipboard"
+msgstr "На буфер обміну"
+
+#: codystrconsts.crsoptions
+msgid "Options"
+msgstr "Параметри"
+
+#: codystrconsts.crsotherobjectfiles
+msgid "Other object files"
+msgstr "Інші об'єктні файли"
+
+#: codystrconsts.crsothersharedlibraries
+msgid "Other shared libraries"
+msgstr "Інші спільні бібліотеки"
+
+#: codystrconsts.crsotherstaticlibraries
+msgid "Other static libraries"
+msgstr "Інші статичні бібліотеки"
+
+#: codystrconsts.crspackage
+msgid "Package"
+msgstr "Пакунок"
+
+#: codystrconsts.crspleaseopenaprojectfirst
+msgid "Please open a project first."
+msgstr "Спочатку відкрийте проект."
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
+msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
+msgstr "Встановіть курсор редактора початкового коду на ідентифікатор в операторі.%sНаприклад:%sMyVar:=3;"
+
+#: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
+msgid "Please place the cursor of the source editor on an identifier of a declaration."
+msgstr "Встановіть курсор редактора початкового коду на ідентифікатор в оголошенні."
+
+#: codystrconsts.crspleasespecifyalocation
+msgid "Please specify a location"
+msgstr "Вкажіть розміщення"
+
+#: codystrconsts.crspleasespecifyatype
+msgid "Please specify a type"
+msgstr "Вкажіть тип"
+
+#: codystrconsts.crsppu
+msgid "PPU: %s"
+msgstr "PPU: %s"
+
+#: codystrconsts.crsppufilesofproject
+msgid "PPU files of project \"%s\""
+msgstr "Файли PPU проекту \"%s\""
+
+#: codystrconsts.crsprivate
+msgid "Private"
+msgstr "Приватний"
+
+#: codystrconsts.crsprojecthasnomainsourcefile
+msgid "Project has no main source file."
+msgstr "Проект не має основного файлу з кодом."
+
+#: codystrconsts.crsprojectoutput
+msgid "Project output"
+msgstr "Вивід проекту"
+
+#: codystrconsts.crsprotected
+msgid "Protected"
+msgstr "Захищений"
+
+#: codystrconsts.crspublic
+msgid "Public"
+msgstr "Публічний"
+
+#: codystrconsts.crspublished
+msgid "Published"
+msgstr "Опублікований"
+
+#: codystrconsts.crsrefresh
+msgid "Refresh"
+msgstr "Оновити"
+
+#: codystrconsts.crsreport
+msgid "Report"
+msgstr "Звіт"
+
+#: codystrconsts.crssearching
+msgid "searching ..."
+msgstr "пошук ..."
+
+#: codystrconsts.crsshowcodetoolsnodeinfo
+msgid "Show CodeTools node info ..."
+msgstr "Показати інфо про вузол CodeTools ..."
+
+#: codystrconsts.crsshowusedppufiles
+msgid "Show used .ppu files ..."
+msgstr "Показати використовувані .ppu файли ..."
+
+#: codystrconsts.crssizeofofile
+msgid "Size of .o file"
+msgstr "Розмір .o файлу"
+
+#: codystrconsts.crssizeofppufile
+msgid "Size of .ppu file"
+msgstr "Розмір .ppu файлу"
+
+#: codystrconsts.crssource
+msgid "Source: %s"
+msgstr "Вихідний код: %s"
+
+#: codystrconsts.crstheidentifierisalreadydefined
+msgid "The identifier \"%s\" is already defined."
+msgstr "Ідентифікатор \"%s\" вже визначений."
+
+#: codystrconsts.crstotal
+msgid "Total"
+msgstr "Загалом"
+
+#: codystrconsts.crstype
+msgid "Type"
+msgstr "Тип"
+
+#: codystrconsts.crsunit
+msgid "Unit"
+msgstr "Модуль"
+
+#: codystrconsts.crsunit2
+msgid "Unit: %s"
+msgstr "Модуль: %s"
+
+#: codystrconsts.crsunitobjectfiles
+msgid "Unit object files"
+msgstr "Об'єктні файли модулів"
+
+#: codystrconsts.crsunits
+msgid "Units"
+msgstr "Модулі"
+
+#: codystrconsts.crsunitsharedlibraries
+msgid "Unit shared libraries"
+msgstr "Спільні бібліотеки модулів"
+
+#: codystrconsts.crsunitstaticlibraries
+msgid "Unit static libraries"
+msgstr "Статичні бібліотеки модулів"
+
+#: codystrconsts.crsusedby
+msgid "Used by"
+msgstr "Використовується"
+
+#: codystrconsts.crsuses
+msgid "Uses"
+msgstr "Використовує"
+
+#: codystrconsts.crsvirtualunit
+msgid "Virtual unit"
+msgstr "Віртуальний модуль"
+
+#: codystrconsts.crswhere
+msgid "Where"
+msgstr "Розміщення"
+
+#: codystrconsts.liscogeneral
+msgid "General"
+msgstr "Загальні"
+
+#: codystrconsts.liscousespath
+msgid "Uses path"
+msgstr "Шлях Uses"
+

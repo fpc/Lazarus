@@ -1,0 +1,211 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ldd_consts.ldd_availablecodegenerators
+msgid "Available code generators"
+msgstr "Наявні генератори коду"
+
+#: ldd_consts.ldd_cancel
+msgid "&Cancel"
+msgstr "&Скасувати"
+
+#: ldd_consts.ldd_close
+msgid "&Close"
+msgstr "&Закрити"
+
+#: ldd_consts.ldd_configuredatadictionary
+msgid "Configure Data Dictionary"
+msgstr "Налаштувати Словник Даних"
+
+#: ldd_consts.ldd_configuregeneratedcode
+msgid "Configure generated code"
+msgstr "Налаштувати згенерований код"
+
+#: ldd_consts.ldd_databasedesktopapplication
+msgid "Database desktop application"
+msgstr "Настільний додаток баз даних"
+
+#: ldd_consts.ldd_datadictionary
+msgid "Data dictionary &file:"
+msgstr "&Файл словника даних:"
+
+#: ldd_consts.ldd_defaultdatadictdirectory
+msgid "Default data dictionary directory"
+msgstr "Типова тека словників даних"
+
+#: ldd_consts.ldd_fields
+msgid "Fields"
+msgstr "Поля"
+
+#: ldd_consts.ldd_fieldstogeneratecodefor
+msgid "Fields to generate code for"
+msgstr "Поля для яких треба згенерувати код"
+
+#: ldd_consts.ldd_filenameapplicationsfilter
+msgid "Applications|*.exe|Any file|*.*"
+msgstr "Додатки|*.exe|Всі файли|*.*"
+
+#: ldd_consts.ldd_filenameedit
+msgid "Data dictionary|*.fdd|Any file|*.*"
+msgstr "Словник даних|*.fdd|Всі файли|*.*"
+
+#: ldd_consts.ldd_generatedcode
+msgid "Generated code"
+msgstr "Згенерований код"
+
+#: ldd_consts.ldd_knowndatadictionary
+msgid "Known data dictionary"
+msgstr "Відомий словник даних"
+
+#: ldd_consts.ldd_ok
+msgid "&OK"
+msgstr "&Гаразд"
+
+#: ldd_consts.ldd_openexistingfile
+msgid "Open existing file"
+msgstr "Відкрити існуючий файл"
+
+#: ldd_consts.ldd_options
+msgid "Options"
+msgstr "Параметри"
+
+#: ldd_consts.ldd_propertiesforselected
+msgid "Properties for selected fields"
+msgstr "Властивості для вибраних полів"
+
+#: ldd_consts.ldd_save
+msgid "&Save"
+msgstr "З&берегти"
+
+#: ldd_consts.ldd_saveto
+msgid "Save to"
+msgstr "Зберегти в"
+
+#: ldd_consts.ldd_sdcodefilter
+msgid "Pascal files|*.pp;*.pas;*.inc|All files|*.*"
+msgstr "Файли Pascal|*.pp;*.pas;*.inc|Всі файли|*.*"
+
+#: ldd_consts.ldd_sdcodetitle
+msgid "Save file as"
+msgstr "Зберегти файл як"
+
+#: ldd_consts.ldd_selectcodetobegenerated
+msgid "Select code to be generated"
+msgstr "Вибрати код для генерування"
+
+#: ldd_consts.ldd_setprojectdatadictionary
+msgid "Set project Data Dictionary"
+msgstr "Задати Словник даних проекту"
+
+#: ldd_consts.ldd_showgeneratedcode
+msgid "Show generated code"
+msgstr "Показати згенерований код"
+
+#: ldd_consts.ldd_usedatadictionary
+msgid "&Use Data dictionary for this project"
+msgstr "Вик&ористовувати Словник даних для цього проекту"
+
+#: ldd_consts.sapplicationfilter
+msgid "Applications|*"
+msgstr "Додатки|*"
+
+#: ldd_consts.sapplyingddtodataset
+msgid "Applying data dictionary to dataset %s"
+msgstr "Застосовую словник даних до набору даних %s"
+
+#: ldd_consts.sapplyingddtofield
+msgid "Applying data dictionary to field %s"
+msgstr "Застосовую словник даних до поля %s"
+
+#: ldd_consts.serrnodatadesktopdoselect
+msgid ""
+"Could not locate the database desktop application.\n"
+"Would you like to select it ?\n"
+msgstr ""
+"Не можу знайти настільний додаток баз даних.\n"
+"Хочете вибрати його ?\n"
+
+#: ldd_consts.serrnodatadictactive
+msgid ""
+"No datadictionary active.\n"
+"Please set a data dictionary for the project\n"
+msgstr ""
+"Відсутній активний словник даних.\n"
+"Задайте словник даних для проекту\n"
+
+#: ldd_consts.serrselectdd
+msgid "Please select a known data dictionary"
+msgstr "Виберіть відомий словник даних"
+
+#: ldd_consts.serrselectdir
+msgid "Please select an existing directory"
+msgstr "Виберіть існуючу директорію"
+
+#: ldd_consts.serrselectexe
+msgid "Please select an existing database desktop application"
+msgstr "Виберіть існуючу настільну програму баз даних"
+
+#: ldd_consts.serrselectfile
+msgid "Please select an existing data dictionary file"
+msgstr "Виберіть існуючий файл словника даних"
+
+#: ldd_consts.sfromfile
+msgid "from file: "
+msgstr "з файлу: "
+
+#: ldd_consts.sloadingdatadict
+msgid "Loading data dictionary "
+msgstr "Завантаження словника даних"
+
+#: ldd_consts.smenuconfdatadict
+msgid "Configuration"
+msgstr "Налаштування"
+
+#: ldd_consts.smenuconfprojdatadict
+msgid "Set..."
+msgstr "Задати..."
+
+#: ldd_consts.smenudatadesktop
+msgid "Database Desktop"
+msgstr "Робочий Стіл бази даних"
+
+#: ldd_consts.smenudatadict
+msgid "Data dictionary"
+msgstr "Словник даних"
+
+#: ldd_consts.smenudatadictapply
+msgid "Apply"
+msgstr "Застосувати"
+
+#: ldd_consts.smenudatadictcreatecode
+msgid "Create code from dataset"
+msgstr "Створити код з набору даних"
+
+#: ldd_consts.smenudatadictdesignsql
+msgid "Design SQL"
+msgstr "Реалізувати в SQL"
+
+#: ldd_consts.smenuopendatadict
+msgid "Open"
+msgstr "Відкрити"
+
+#: ldd_consts.snotyetimplemted
+msgid "Not yet implemented"
+msgstr "Ще не реалізовано"
+
+#: ldd_consts.swarningnoddforfield
+msgid "Warning: No definition in data dictionary for field %s"
+msgstr "Попередження: Для поля %s відсутнє визначення в словнику даних"
+
+#: ldd_consts.swrongselection
+msgid "Wrong selection count : %d"
+msgstr "Невірна кількість виборів : %d"
+

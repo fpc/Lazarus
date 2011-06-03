@@ -11,35 +11,35 @@ msgstr ""
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
-msgstr ""
+msgstr "Додати розділювач"
 
 #: lazdatadeskstr.eoandtermsinbrackets
 msgid "Put brackets around AND Terms"
-msgstr ""
+msgstr "Ставити дужки навколо вислову AND"
 
 #: lazdatadeskstr.eolinefeedafterandterm
 msgid "Linefeed after AND terms"
-msgstr ""
+msgstr "На новий рядок після виразу AND"
 
 #: lazdatadeskstr.eolinefeedafterfield
 msgid "Linefeed after each field"
-msgstr ""
+msgstr "На новий рядок після кожного поля"
 
 #: lazdatadeskstr.eoquotefieldnames
 msgid "Quote field names"
-msgstr ""
+msgstr "Імена полів в лапках"
 
 #: lazdatadeskstr.eoskipforeignkeys
 msgid "Skip foreign keys"
-msgstr ""
+msgstr "Пропуск зовнішніх ключів"
 
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
-msgstr ""
+msgstr "Префікс OLD в параметрах where"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
-msgstr ""
+msgstr "Закрити результат"
 
 #: lazdatadeskstr.scolfields
 msgctxt "lazdatadeskstr.scolfields"
@@ -70,7 +70,7 @@ msgstr "Підтвердження закриття"
 
 #: lazdatadeskstr.sconnectiondescription
 msgid "Enter a descriptive name for the connection"
-msgstr ""
+msgstr "Введіть описове ім'я з'єднання"
 
 #: lazdatadeskstr.sconnectionnameexists
 msgid ""
@@ -86,7 +86,7 @@ msgstr "Створити код"
 
 #: lazdatadeskstr.screateconnection
 msgid "Would you like to create a new connection for this database ?"
-msgstr ""
+msgstr "Хочете створити нове з'єднання для цієї бази даних ?"
 
 #: lazdatadeskstr.sddmodified
 msgid ""
@@ -98,7 +98,7 @@ msgstr ""
 
 #: lazdatadeskstr.sdeleteobject
 msgid "Delete this %s"
-msgstr ""
+msgstr "Видалити цей %s"
 
 #: lazdatadeskstr.sdescription
 msgctxt "lazdatadeskstr.sdescription"
@@ -119,31 +119,31 @@ msgstr "Відхилити зміни"
 
 #: lazdatadeskstr.senginetype
 msgid "Engine"
-msgstr ""
+msgstr "Двигун"
 
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
-msgstr ""
+msgstr "Відсутній двигун бази даних!"
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
-msgstr ""
+msgstr "Не вибрано жодного поля. Виберіть певні поля"
 
 #: lazdatadeskstr.serrselecttable
 msgid "No table selected. Please select a table"
-msgstr ""
+msgstr "Не вибрано жодної таблиці. Виберіть певні таблиці"
 
 #: lazdatadeskstr.serrunknowntype
 msgid "Unknown object type: %d"
-msgstr ""
+msgstr "Невідомий тип об'єкту: %d"
 
 #: lazdatadeskstr.sexecute
 msgid "Execute SQL"
-msgstr ""
+msgstr "Виконати SQL"
 
 #: lazdatadeskstr.sexport
 msgid "Export data"
-msgstr ""
+msgstr "Експорт даних"
 
 #: lazdatadeskstr.sfield
 msgid "Field"
@@ -151,43 +151,43 @@ msgstr "Поле"
 
 #: lazdatadeskstr.sforeignkey
 msgid "Foreign key"
-msgstr ""
+msgstr "Зовнішній ключ"
 
 #: lazdatadeskstr.shintclose
 msgid "Close query result data panel"
-msgstr ""
+msgstr "Закрити панель даних результату запиту"
 
 #: lazdatadeskstr.shintcreatecode
 msgid "Create pascal code for this data"
-msgstr ""
+msgstr "Створити код Паскаля для цих даних"
 
 #: lazdatadeskstr.shintexecute
 msgid "Execute SQL statement"
-msgstr ""
+msgstr "Виконати інструкцію SQL"
 
 #: lazdatadeskstr.shintexport
 msgid "Export this data"
-msgstr ""
+msgstr "Експортувати ці дані"
 
 #: lazdatadeskstr.shintload
 msgid "Load SQL statement from file"
-msgstr ""
+msgstr "Завантажити інструкцію SQL з файлу"
 
 #: lazdatadeskstr.shintnext
 msgid "Next SQL statement"
-msgstr ""
+msgstr "Наступна інструкція SQL"
 
 #: lazdatadeskstr.shintprevious
 msgid "Previous SQL statement"
-msgstr ""
+msgstr "Попередня інструкція SQL"
 
 #: lazdatadeskstr.shintsave
 msgid "Save SQL statement to file"
-msgstr ""
+msgstr "Зберегти інструкцію SQL в файл"
 
 #: lazdatadeskstr.simportdictinto
 msgid "Import datadictionary"
-msgstr ""
+msgstr "Імпортувати словник даних"
 
 #: lazdatadeskstr.sindex
 msgid "Index"
@@ -199,23 +199,23 @@ msgstr "Новий домен"
 
 #: lazdatadeskstr.sld_actionadddomainh
 msgid "Add a domain to the data dictionary"
-msgstr ""
+msgstr "Додати домен до словника даних"
 
 #: lazdatadeskstr.sld_actionaddforeignkey
 msgid "New Foreign Key"
-msgstr ""
+msgstr "Новий зовнішній ключ"
 
 #: lazdatadeskstr.sld_actionaddforeignkeyh
 msgid "Add a foreign key to the table"
-msgstr ""
+msgstr "Додати зовнішній ключ до таблиці"
 
 #: lazdatadeskstr.sld_actionaddsequence
 msgid "New sequence"
-msgstr ""
+msgstr "Нова послідовність"
 
 #: lazdatadeskstr.sld_actionaddsequenceh
 msgid "Add a sequence"
-msgstr ""
+msgstr "Додати послідовність"
 
 #: lazdatadeskstr.sld_actionclose
 msgid "&Close"
@@ -227,11 +227,11 @@ msgstr "Закрити В&се"
 
 #: lazdatadeskstr.sld_actioncloseallh
 msgid "Close all Data Dictionaries"
-msgstr ""
+msgstr "Закрити всі Словники Даних"
 
 #: lazdatadeskstr.sld_actioncloseh
 msgid "Close current Data Dictionary"
-msgstr ""
+msgstr "Закрити поточний Словник Даних"
 
 #: lazdatadeskstr.sld_actioncopy
 msgid "&Copy"
@@ -239,7 +239,7 @@ msgstr "&Копіювати"
 
 #: lazdatadeskstr.sld_actioncopyconnection
 msgid "&Copy connection"
-msgstr ""
+msgstr "&Копіювати з'єднання"
 
 #: lazdatadeskstr.sld_actioncopyh
 msgid "Copy"
@@ -247,11 +247,11 @@ msgstr "Копіювати"
 
 #: lazdatadeskstr.sld_actioncreatecode
 msgid "Create &code"
-msgstr ""
+msgstr "Створити &код"
 
 #: lazdatadeskstr.sld_actioncreatecodeh
 msgid "Create code from definition or data"
-msgstr ""
+msgstr "Створити код з визначення або даних"
 
 #: lazdatadeskstr.sld_actioncut
 msgid "Cu&t"
@@ -263,15 +263,15 @@ msgstr "Вирізати"
 
 #: lazdatadeskstr.sld_actiondeleteconnection
 msgid "&Delete connection"
-msgstr ""
+msgstr "&Видалити з'єднання"
 
 #: lazdatadeskstr.sld_actiondeleteobject
 msgid "Delete &Object"
-msgstr ""
+msgstr "Видалити &Об'єкт"
 
 #: lazdatadeskstr.sld_actiondeleteobjecth
 msgid "Delete the currently selected object"
-msgstr ""
+msgstr "Видалити вибраний об'єкт"
 
 #: lazdatadeskstr.sld_actiondeleterecentdatadict
 msgctxt "lazdatadeskstr.sld_actiondeleterecentdatadict"
@@ -284,15 +284,15 @@ msgstr "Ви&хід"
 
 #: lazdatadeskstr.sld_actionexith
 msgid "Quit this program"
-msgstr ""
+msgstr "Вийти з програми"
 
 #: lazdatadeskstr.sld_actiongeneratesql
 msgid "&Generate SQL"
-msgstr ""
+msgstr "&Генерувати SQL"
 
 #: lazdatadeskstr.sld_actiongeneratesqlh
 msgid "Generate SQL statements for the current table"
-msgstr ""
+msgstr "Генерувати інструкції SQL для поточної таблиці"
 
 #: lazdatadeskstr.sld_actionnew
 msgid "&New"
@@ -300,7 +300,7 @@ msgstr "&Новий"
 
 #: lazdatadeskstr.sld_actionnewconnection
 msgid "&New connection"
-msgstr ""
+msgstr "&Нове з'єднання"
 
 #: lazdatadeskstr.sld_actionnewfield
 msgid "New &field"
@@ -308,19 +308,19 @@ msgstr "Нове &поле"
 
 #: lazdatadeskstr.sld_actionnewfieldh
 msgid "Create a new field in the current table"
-msgstr ""
+msgstr "Створити нове поле в поточнй таблиці"
 
 #: lazdatadeskstr.sld_actionnewh
 msgid "Create a new Data Dictionary"
-msgstr ""
+msgstr "Створити новий Словник Даних"
 
 #: lazdatadeskstr.sld_actionnewindex
 msgid "New index"
-msgstr ""
+msgstr "Новий індекс"
 
 #: lazdatadeskstr.sld_actionnewindexh
 msgid "Add new index to current table"
-msgstr ""
+msgstr "Додати новий індекс в поточну таблицю"
 
 #: lazdatadeskstr.sld_actionnewtable
 msgid "New &table"
@@ -328,7 +328,7 @@ msgstr "Нова &таблиця"
 
 #: lazdatadeskstr.sld_actionnewtableh
 msgid "Create a new table"
-msgstr ""
+msgstr "Створити нову таблицю"
 
 #: lazdatadeskstr.sld_actionopen
 msgid "&Open..."
@@ -336,15 +336,15 @@ msgstr "&Відкрити..."
 
 #: lazdatadeskstr.sld_actionopenconnection
 msgid "&Open connection"
-msgstr ""
+msgstr "Від&крити з'єднання"
 
 #: lazdatadeskstr.sld_actionopenconnectionh
 msgid "Open selected recent connection"
-msgstr ""
+msgstr "Відкрити вибране недавнє з'єднання"
 
 #: lazdatadeskstr.sld_actionopenh
 msgid "Open a new Data Dictionary"
-msgstr ""
+msgstr "Відкрити новий Словник Даних"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadict
 msgid "Open"
@@ -352,7 +352,7 @@ msgstr "Відкрити"
 
 #: lazdatadeskstr.sld_actionopenrecentdatadicth
 msgid "Open selected recent datadictionary"
-msgstr ""
+msgstr "Відкрити вибраний недавній словник даних"
 
 #: lazdatadeskstr.sld_actionpaste
 msgid "&Paste"
@@ -372,11 +372,11 @@ msgstr "Зберегти &як"
 
 #: lazdatadeskstr.sld_actionsaveash
 msgid "Save datadictionary as"
-msgstr ""
+msgstr "Зберегти словник даних як"
 
 #: lazdatadeskstr.sld_actionsaveh
 msgid "Save Data Dictionary"
-msgstr ""
+msgstr "Зберегти Словник Даних"
 
 #: lazdatadeskstr.sld_cancel
 msgid "&Cancel"
@@ -397,7 +397,7 @@ msgstr "Драйвер"
 
 #: lazdatadeskstr.sld_connectionlv3
 msgid "Last used"
-msgstr ""
+msgstr "Останнє використання"
 
 #: lazdatadeskstr.sld_connectionlv4
 msgctxt "lazdatadeskstr.sld_connectionlv4"
@@ -411,11 +411,11 @@ msgstr "З'єднання"
 
 #: lazdatadeskstr.sld_connecttoadatabase
 msgid "Connect to a database"
-msgstr ""
+msgstr "При'єднатись до бази даних"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
-msgstr ""
+msgstr "Повний код створення таблиці на SQL"
 
 #: lazdatadeskstr.sld_createtable
 msgid "Create table"
@@ -437,15 +437,15 @@ msgstr "Словники"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
-msgstr ""
+msgstr "З з'єднання"
 
 #: lazdatadeskstr.sld_generatesql
 msgid "Generate SQL"
-msgstr ""
+msgstr "Генерувати SQL"
 
 #: lazdatadeskstr.sld_generatesqlstatements
 msgid "Generate SQL statements"
-msgstr ""
+msgstr "Генерувати інструкції SQL"
 
 #: lazdatadeskstr.sld_host
 msgid "Host"
@@ -453,11 +453,11 @@ msgstr "Хост"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
 msgid "Import/Update datadictionary"
-msgstr ""
+msgstr "Імпорт/Оновлення словника даних"
 
 #: lazdatadeskstr.sld_indent
 msgid "I&ndent"
-msgstr ""
+msgstr "В&ідступ"
 
 #: lazdatadeskstr.sld_insert
 msgid "&Insert"
@@ -465,11 +465,11 @@ msgstr "&Вставка"
 
 #: lazdatadeskstr.sld_keyfields
 msgid "&Key fields"
-msgstr ""
+msgstr "&Ключові поля"
 
 #: lazdatadeskstr.sld_lazarusdatabasedesktop
 msgid "Lazarus Database Desktop"
-msgstr ""
+msgstr "Робочий стіл Бази даних Lazarus"
 
 #: lazdatadeskstr.sld_linelength
 msgid "Line Length"
@@ -503,11 +503,11 @@ msgstr "&OK"
 #: lazdatadeskstr.sld_opendatadictionaryfilter
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
 msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr ""
+msgstr "Файли словників даних|*.fpd|Файли Ini|*.ini|Всі файли|*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
-msgstr ""
+msgstr "Відкрити словник даних"
 
 #: lazdatadeskstr.sld_options
 msgctxt "lazdatadeskstr.sld_options"
@@ -529,12 +529,12 @@ msgstr "Ім'я файлу"
 
 #: lazdatadeskstr.sld_recentlv3
 msgid "Last used on"
-msgstr ""
+msgstr "Останнє використання"
 
 #: lazdatadeskstr.sld_savefileasfilter
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
 msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
-msgstr ""
+msgstr "Файли словників даних|*.fpd|Файли Ini|*.ini|Всі файли|*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
@@ -546,7 +546,7 @@ msgstr "&Вибрати"
 
 #: lazdatadeskstr.sld_selectaconnectiontype
 msgid "Select a conection type"
-msgstr ""
+msgstr "Виберіть тип з'єднання"
 
 #: lazdatadeskstr.sld_selectall
 msgid "Select &all"
@@ -554,11 +554,11 @@ msgstr "Вибрати в&се"
 
 #: lazdatadeskstr.sld_selectnone
 msgid "Select &none"
-msgstr ""
+msgstr "Не вибирати ні&чого"
 
 #: lazdatadeskstr.sld_selectupdateinsertfields
 msgid "Select/Update/Insert fields"
-msgstr ""
+msgstr "Вибрати/Оновити/Вставити поля"
 
 #: lazdatadeskstr.sld_separator
 msgid "-"
@@ -570,7 +570,7 @@ msgstr "Та&блиця"
 
 #: lazdatadeskstr.sld_tableandfields
 msgid "Tables and &Fields"
-msgstr ""
+msgstr "Таблиці і &Поля"
 
 #: lazdatadeskstr.sld_update
 msgid "&Update"
@@ -578,11 +578,11 @@ msgstr "&Оновлення"
 
 #: lazdatadeskstr.sld_updateexistingtables
 msgid "Update existing tables"
-msgstr ""
+msgstr "Оновити існуючі таблиці"
 
 #: lazdatadeskstr.sld_username
 msgid "Username"
-msgstr ""
+msgstr "Ім'я користувача"
 
 #: lazdatadeskstr.sload
 msgid "Load SQL"
@@ -590,11 +590,11 @@ msgstr "Завантажити SQL"
 
 #: lazdatadeskstr.snamefor
 msgid "Enter a name for the new %s"
-msgstr ""
+msgstr "Введіть назву для нового %s"
 
 #: lazdatadeskstr.snew
 msgid "New %s"
-msgstr ""
+msgstr "Новий %s"
 
 #: lazdatadeskstr.snewconnection
 msgid "New connection"
@@ -606,55 +606,55 @@ msgstr "Нова база даних"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
-msgstr ""
+msgstr "Створити новий домен"
 
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
-msgstr ""
+msgstr "Введіть назву нового домену:"
 
 #: lazdatadeskstr.snewfield
 msgid "Create new field in table %s"
-msgstr ""
+msgstr "Створити нове поле в таблиці %s"
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
-msgstr ""
+msgstr "Введіть назву нового поля:"
 
 #: lazdatadeskstr.snewforeignkey
 msgid "Create new foreign key in table %s"
-msgstr ""
+msgstr "Створити новий зовнішній ключ в таблиці %s"
 
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
-msgstr ""
+msgstr "Введіть назву нового зовнішнього ключа:"
 
 #: lazdatadeskstr.snewindex
 msgid "Create new index on table %s"
-msgstr ""
+msgstr "Створити новий індекс в таблиці %s"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
-msgstr ""
+msgstr "Введіть назву нового індекса:"
 
 #: lazdatadeskstr.snewobject
 msgid "Create new %s"
-msgstr ""
+msgstr "Створити новий %s"
 
 #: lazdatadeskstr.snewsequence
 msgid "Create new sequence"
-msgstr ""
+msgstr "Створити нову послідовність"
 
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
-msgstr ""
+msgstr "Введіть назву нової послідовності:"
 
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
-msgstr ""
+msgstr "Створити нову таблицю"
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"
-msgstr ""
+msgstr "Введіть ім'я для нової таблиці:"
 
 #: lazdatadeskstr.snext
 msgid "Next"
@@ -667,7 +667,7 @@ msgstr "База даних"
 
 #: lazdatadeskstr.snodedatadictionary
 msgid "Datadictionary"
-msgstr ""
+msgstr "Словник даних"
 
 #: lazdatadeskstr.snodedomains
 msgid "Domains"
@@ -680,7 +680,7 @@ msgstr "Поля"
 
 #: lazdatadeskstr.snodeforeignkeys
 msgid "Foreign keys"
-msgstr ""
+msgstr "Зовнішні ключі"
 
 #: lazdatadeskstr.snodeindexes
 msgid "Indexes"
@@ -688,15 +688,15 @@ msgstr "Індекси"
 
 #: lazdatadeskstr.snodeindexfields
 msgid "Index fields: "
-msgstr ""
+msgstr "Індексні поля: "
 
 #: lazdatadeskstr.snodeindexoptions
 msgid "Index options: "
-msgstr ""
+msgstr "Індексні параметри: "
 
 #: lazdatadeskstr.snodesequences
 msgid "Sequences"
-msgstr ""
+msgstr "Послідовності"
 
 #: lazdatadeskstr.snodetabledata
 msgid "Table Data"
@@ -720,11 +720,11 @@ msgstr "Попередній"
 
 #: lazdatadeskstr.squery
 msgid "Run query"
-msgstr ""
+msgstr "Виконати запит"
 
 #: lazdatadeskstr.srowsaffected
 msgid "Query executed succesfully: %d rows affected."
-msgstr ""
+msgstr "Запит виконаний успішно: %d рядків змінено."
 
 #: lazdatadeskstr.ssave
 msgid "Save SQL"
@@ -736,19 +736,19 @@ msgstr "Зберегти зміни"
 
 #: lazdatadeskstr.sselectdbfdir
 msgid "Select a directory with DBF files"
-msgstr ""
+msgstr "Виберіть теку з DBF файлами"
 
 #: lazdatadeskstr.sselectedobject
 msgid "Selected object"
-msgstr ""
+msgstr "Вибрати об'єкт"
 
 #: lazdatadeskstr.ssequence
 msgid "Sequence"
-msgstr ""
+msgstr "Послідовність"
 
 #: lazdatadeskstr.ssqlfilters
 msgid "SQL files|*.sql|All files|*.*"
-msgstr ""
+msgstr "Файли SQL|*.sql|Всі файли|*.*"
 
 #: lazdatadeskstr.stable
 msgid "Table"
@@ -756,25 +756,25 @@ msgstr "Таблиця"
 
 #: lazdatadeskstr.sunknownconnection
 msgid "Unknown connection: %s"
-msgstr ""
+msgstr "Невідоме з'єднання: %s"
 
 #: lazdatadeskstr.sunknowndictionary
 msgid "Unknown data dictionary: %s"
-msgstr ""
+msgstr "Невідомий словник даних: %s"
 
 #: lazdatadeskstr.susecurrentdict
 msgid "Yes, use the active dictionary"
-msgstr ""
+msgstr "Так, використати активний словник"
 
 #: lazdatadeskstr.susenewdict
 msgid "No, import in a new dictionary"
-msgstr ""
+msgstr "Ні, імпортувати в новий словник"
 
 #: lazdatadeskstr.svalue
 msgid "Value"
-msgstr ""
+msgstr "Значення"
 
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
-msgstr ""
+msgstr "Словник даних активний.Ви хочете імпортувати в цей словник даних ?"
 

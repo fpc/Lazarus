@@ -3,7 +3,7 @@ msgstr ""
 "Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-25 15:03+0200\n"
+"PO-Revision-Date: 2011-06-01 10:53+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +27,7 @@ msgstr "Значення Атрибуту"
 
 #: syneditstrconst.syns_attrblock
 msgid "Block"
-msgstr ""
+msgstr "Блок"
 
 #: syneditstrconst.syns_attrbrackets
 msgid "Brackets"
@@ -35,7 +35,7 @@ msgstr "Дужки"
 
 #: syneditstrconst.syns_attrcaselabel
 msgid "Case label"
-msgstr ""
+msgstr "МІтка Case"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
@@ -47,19 +47,19 @@ msgstr "Символ"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
-msgstr ""
+msgstr "Маркер Шматка Diff"
 
 #: syneditstrconst.syns_attrchunkmixed
 msgid "Diff Chunk Line Counts"
-msgstr ""
+msgstr "Лічильник рядків Шматка Diff"
 
 #: syneditstrconst.syns_attrchunknew
 msgid "Diff Chunk New Line Count"
-msgstr ""
+msgstr "К-сть нових рядків Шматка Diff"
 
 #: syneditstrconst.syns_attrchunkorig
 msgid "Diff Chunk Original Line Count"
-msgstr ""
+msgstr "К-сть початкових рядків Шматка Diff"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -111,11 +111,11 @@ msgstr "Вбудований текст"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
-msgstr ""
+msgstr "Посилання на Сутність"
 
 #: syneditstrconst.syns_attrescapeampersand
 msgid "Escape ampersand"
-msgstr ""
+msgstr "Екранувати амперсант"
 
 #: syneditstrconst.syns_attrevent
 msgid "Event"
@@ -143,7 +143,7 @@ msgstr "Шістнадцятковий"
 
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
-msgstr ""
+msgstr "Посилання на значок"
 
 #: syneditstrconst.syns_attridedirective
 msgid "IDE Directive"
@@ -191,7 +191,7 @@ msgstr "Порівняти Змінений рядок"
 
 #: syneditstrconst.syns_attrlinecontext
 msgid "Diff Context Line"
-msgstr ""
+msgstr "Порівняти Контекстний Рядок"
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
@@ -219,11 +219,11 @@ msgstr "Різне"
 
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
-msgstr ""
+msgstr "Ім'я Атрибуту Простору Імен"
 
 #: syneditstrconst.syns_attrnamespaceattrvalue
 msgid "Namespace Attribute Value"
-msgstr ""
+msgstr "Значення Атрибуту Простору Імен"
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
@@ -231,15 +231,15 @@ msgstr "Порівняти Новий Файл"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
-msgstr ""
+msgstr "Незареєстроване ключове ім'я"
 
 #: syneditstrconst.syns_attrnull
 msgid "Null"
-msgstr ""
+msgstr "Порожнє значення"
 
 #: syneditstrconst.syns_attrnumber
 msgid "Number"
-msgstr ""
+msgstr "Число"
 
 #: syneditstrconst.syns_attroctal
 msgid "Octal"
@@ -259,7 +259,7 @@ msgstr "Зарезервоване слово (PL/SQL)"
 
 #: syneditstrconst.syns_attrpragma
 msgid "Pragma"
-msgstr ""
+msgstr "Директива Pragma"
 
 #: syneditstrconst.syns_attrpreprocessor
 msgid "Preprocessor"
@@ -267,7 +267,7 @@ msgstr "Препроцесор"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
-msgstr ""
+msgstr "Інструкція обробки"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
@@ -275,7 +275,7 @@ msgstr "Визначник"
 
 #: syneditstrconst.syns_attrregister
 msgid "Register"
-msgstr ""
+msgstr "Регістр"
 
 #: syneditstrconst.syns_attrreservedword
 msgid "Reserved word"
@@ -363,7 +363,7 @@ msgstr "Назва Таблиці"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
-msgstr ""
+msgstr "Обмежувач"
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
@@ -419,7 +419,7 @@ msgstr "Згорнути Код"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr ""
+msgstr "Вузли,Один,Всі,\"Під Курсором\",\"Поточний Вузол\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
@@ -431,7 +431,7 @@ msgstr "Розгорнути Код"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,All"
-msgstr ""
+msgstr "Вузли,Один,Всі"
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
@@ -439,15 +439,15 @@ msgstr "Спливаюче Меню"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr ""
+msgstr "\"Перемістити курсор, якщо існує виділення\", Ніколи, \"Клацання зовні\", Завжди"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
-msgstr ""
+msgstr "Посилання Початкового коду"
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"
-msgstr ""
+msgstr "Підкреслення,так, ні"
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
@@ -455,11 +455,11 @@ msgstr "Без Дії"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
-msgstr ""
+msgstr "Швидкий Вибір Вставки"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
-msgstr ""
+msgstr "Режим,Почати,Продовжити"
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"

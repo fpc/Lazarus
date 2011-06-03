@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fpcunitlazideintf.sfpcunconsoletestapp
+msgid "FPCUnit Console Test Application"
+msgstr "Консольний тестовий додаток FPCUnit"
+
+#: fpcunitlazideintf.sfpcunconsoletestdesc
+msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgstr "Консольний тестовий додаток FPCUnit%sДодаток для запуску тестів FPCUnit в режимі консолі.%sПочатковий код додатку автоматично підтримується Lazarus."
+
+#: fpcunitlazideintf.sfpcuntestapp
+msgid "FPCUnit Test Application"
+msgstr "Тестовий додаток FPCUnit"
+
+#: fpcunitlazideintf.sfpcuntestappdesc
+msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgstr "Тестовий додаток FPCUnit%sДодаток для запуску тестів FPCUnit.%sПочатковий код додатку автоматично підтримується Lazarus."
+
+#: fpcunitlazideintf.sfpcuntestcase
+msgid "FPCUnit Test Case"
+msgstr "Тест FPCUnit"
+
+#: fpcunitlazideintf.sfpcuntestcasedesc
+msgid "FPCUnit Test Case%sA unit containing a FPCUnit Test Case."
+msgstr "Тест FPCUnit%sМодуль, що містить тест FPCUnit."
+
+#: fpcunitlazideintf.swriteyourowntest
+msgid "Write your own test"
+msgstr "Напишіть ваш власний тест"
+

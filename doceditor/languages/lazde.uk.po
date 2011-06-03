@@ -53,11 +53,11 @@ msgstr "Файл прикладу коду"
 
 #: lazdemsg.scopyright1
 msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
-msgstr ""
+msgstr "(c) Michael Van Canneyt і команда розробників Lazarus"
 
 #: lazdemsg.scopyright2
 msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
-msgstr ""
+msgstr "Програма розповсюджується згідно умов GENERAL PUBLIC LICENSE:"
 
 #: lazdemsg.scpu
 msgid "CPU"
@@ -65,7 +65,7 @@ msgstr "Процесор"
 
 #: lazdemsg.screatecontentfile
 msgid "Create cont&ent file"
-msgstr ""
+msgstr "Ст&ворити файл вмісту"
 
 #: lazdemsg.sdataforelement
 msgid "Documentation for element \"%s\":"
@@ -101,27 +101,27 @@ msgstr "Змінити файл опису"
 
 #: lazdemsg.serrfpdoc
 msgid "Building failed with exit code %d. Please check log."
-msgstr ""
+msgstr "Побудова провалилась з кодом виходу %d. Перевірте звіт."
 
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
-msgstr ""
+msgstr "Не знайдено модуля для вставки елементу \"%s\""
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
-msgstr ""
+msgstr "Не знайдено вузла для модуля \"%s\""
 
 #: lazdemsg.serrnonodeforpackage
 msgid "No node found for package \"%s\""
-msgstr ""
+msgstr "Не знайдено вузла для пакунку \"%s\""
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr ""
+msgstr "Не знайдено батьківського вузла для вставки теми \"%s\""
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
-msgstr ""
+msgstr "Не знайдено пакунку для вставки модуля \"%s\""
 
 #: lazdemsg.serrors
 msgid "Errors"
@@ -129,11 +129,11 @@ msgstr "Помилки"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr ""
+msgstr "Невідомий DOM елемент як батьківський для вибранного елементу: \"%s\""
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr ""
+msgstr "Документ \"%s\" був змінений, хочете зберегти його?"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
@@ -246,7 +246,7 @@ msgstr "Новий пакунок"
 
 #: lazdemsg.shintinsertprintshortlink
 msgid "Insert a short description link"
-msgstr ""
+msgstr "Вставити посилання на короткий опис"
 
 #: lazdemsg.shintinserttable
 msgctxt "lazdemsg.shintinserttable"
@@ -285,7 +285,7 @@ msgstr "Про цю програму"
 
 #: lazdemsg.simportcontentfile
 msgid "Import content file"
-msgstr ""
+msgstr "Імпорт файлу вмісту"
 
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
@@ -294,7 +294,7 @@ msgstr "Вставити посилання"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
-msgstr ""
+msgstr "Вставити посилання на короткий опис"
 
 #: lazdemsg.sinserttable
 msgctxt "lazdemsg.sinserttable"
@@ -303,7 +303,7 @@ msgstr "Вставити таблицю"
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
-msgstr ""
+msgstr "Редактор Документації Lazarus"
 
 #: lazdemsg.slinksto
 msgid " links to "
@@ -315,11 +315,11 @@ msgstr "&Завантажити"
 
 #: lazdemsg.smakeskelfromsource
 msgid "Make new document from source file"
-msgstr ""
+msgstr "Згенерувати новий документ з файлу поч. коду"
 
 #: lazdemsg.smarkselection
 msgid "Mark selection %s"
-msgstr ""
+msgstr "Позначити виділення %s"
 
 #: lazdemsg.smenucollapseall
 msgid "Collapse All"
@@ -454,7 +454,7 @@ msgstr "&Пакунок"
 
 #: lazdemsg.smenuinsertprintshort
 msgid "Insert short desc link"
-msgstr ""
+msgstr "Вст-ти посил. на коротк. опис"
 
 #: lazdemsg.smenuinsertquicklink
 msgid "&Quick Link"
@@ -462,7 +462,7 @@ msgstr "&Швидке посилання"
 
 #: lazdemsg.smenuinsertshortdesclink
 msgid "&Short description link"
-msgstr ""
+msgstr "&Посилання на короткий опис"
 
 #: lazdemsg.smenuinserttable
 msgid "&Table"
@@ -478,7 +478,7 @@ msgstr "Перейменувати"
 
 #: lazdemsg.smoduleelements
 msgid "Elements for selected node"
-msgstr ""
+msgstr "Елементи для вибраного вузла"
 
 #: lazdemsg.snew
 msgid "New"
@@ -515,19 +515,19 @@ msgstr "Нова тема"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
-msgstr ""
+msgstr "Елементи не вибрано"
 
 #: lazdemsg.soptdlgbackupextension
 msgid "Backup extension"
-msgstr ""
+msgstr "Розширення резервної копії"
 
 #: lazdemsg.soptdlgconfirmdeletes
 msgid "C&onfirm deletes"
-msgstr ""
+msgstr "Під&тверджувати видалення"
 
 #: lazdemsg.soptdlgcreatebackups
 msgid "Create &backups"
-msgstr ""
+msgstr "Створювати &резервні копії"
 
 #: lazdemsg.soptdlgdefaultextension
 msgid "Default extension"
@@ -547,11 +547,11 @@ msgstr "Загальні"
 
 #: lazdemsg.soptdlgmakeskelprogram
 msgid "makeskel program"
-msgstr ""
+msgstr "програма makeskel"
 
 #: lazdemsg.soptdlgmaxrecentused
 msgid "Max. recent used"
-msgstr ""
+msgstr "К-сть недавніх"
 
 #: lazdemsg.soptdlgoptions
 msgid "Options"
@@ -559,7 +559,7 @@ msgstr "Параметри"
 
 #: lazdemsg.soptdlgreopenlastfile
 msgid "Reopen last file on startup"
-msgstr ""
+msgstr "Відкрити останній файл при старті"
 
 #: lazdemsg.soptdlgshowhints
 msgid "Show hints"
@@ -567,7 +567,7 @@ msgstr "Показати підказку"
 
 #: lazdemsg.soptdlgskipemptynodes
 msgid "&Skip empty nodes when saving"
-msgstr ""
+msgstr "Пропу&стити порожні вузли при збереженні"
 
 #: lazdemsg.soptdlgstartmaximized
 msgid "Start maximized"
@@ -633,15 +633,15 @@ msgstr "Коротко"
 
 #: lazdemsg.sshowprivatemethods
 msgid "Show p&rivate methods"
-msgstr ""
+msgstr "Показувати прив&атні методи"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr ""
+msgstr "makeskel звітував про помилку (%d). Спробувати завантажити створений файл все одно ?"
 
 #: lazdemsg.sskelerrorwithoutfile
 msgid "makeskel reported an error (%d) and produced no file."
-msgstr ""
+msgstr "makeskel звітував про помилку (%d) і не створив жодного файлу."
 
 #: lazdemsg.ssourcescapt
 msgid "Sources"
@@ -653,9 +653,9 @@ msgstr "Цільова ОС"
 
 #: lazdemsg.susingcommand
 msgid "Building docs using command: "
-msgstr ""
+msgstr "Побудова документації командою:"
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
-msgstr ""
+msgstr "Попередити, коли не знайдено вузлів документації"
 

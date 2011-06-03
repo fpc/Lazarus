@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sdb_consts.scancelrecordsexported
+msgid "Exported %d before user canceled."
+msgstr "До скасування користувачем експортовано %d."
+
+#: sdb_consts.sdb_availableexportformats
+msgid "Available export formats:"
+msgstr "Доступні формати експорту:"
+
+#: sdb_consts.sdb_cancel
+msgid "&Cancel"
+msgstr "&Скасувати"
+
+#: sdb_consts.sdb_configuredataexport
+msgid "Configure data export"
+msgstr "Налаштувати експорт даних"
+
+#: sdb_consts.sdb_exportprogress
+msgid "Export progress"
+msgstr "Хід експорту"
+
+#: sdb_consts.sdb_fields
+msgid "Fields"
+msgstr "Поля"
+
+#: sdb_consts.sdb_filename
+msgid "Filename:"
+msgstr "Ім'я файлу:"
+
+#: sdb_consts.sdb_formatting
+msgid "Formatting"
+msgstr "Форматування"
+
+#: sdb_consts.sdb_moveselectedfielddown
+msgid "Move selected field down"
+msgstr "Перемістити вибране поле вниз"
+
+#: sdb_consts.sdb_moveselectedfieldup
+msgid "Move selected field up"
+msgstr "Перемістити вибране поле вверх"
+
+#: sdb_consts.sdb_propertiesforselectedfield
+msgid "Properties for selected field:"
+msgstr "Властивості для вибраного поля:"
+
+#: sdb_consts.sdb_selectdataexportformat
+msgid "Select data export Format"
+msgstr "Вибір Формату екпорту даних"
+
+#: sdb_consts.sdb_selectfieldstoexport
+msgid "Select fi&elds to export"
+msgstr "Вибір по&ля для експорту"
+
+#: sdb_consts.serrnodatasetassigned
+msgid "DataExporter has no Dataset assigned."
+msgstr "В DataExporter відсутній призначений набір даних."
+
+#: sdb_consts.serropeningdataset
+msgid "Could not open dataset for exporting: %s"
+msgstr "Не можу відкрити набір даних для експорту: %s"
+
+#: sdb_consts.sexecute
+msgid "Execute..."
+msgstr "Виконати..."
+
+#: sdb_consts.snrecordsexported
+msgid "Succesfully exported %d records."
+msgstr "Успішно експортовано %d записів."
+
+#: sdb_consts.sprogress
+msgid "Exporting %d records"
+msgstr "Експортую %d записів"
+

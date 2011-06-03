@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: jcfideregister.format_about_menu
+msgid "&About"
+msgstr "&Про програму"
+
+#: jcfideregister.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr "Форматування Коду JEDI"
+
+#: jcfideregister.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Форматувати код в поточному вікні редактора"
+
+#: jcfideregister.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "&Поточне Вікно Редактора"
+
+#: jcfideregister.format_menu
+msgid "JEDI Code &Format"
+msgstr "&Форматування Коду JEDI"
+
+#: jcfideregister.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Всі &Відкриті Вікна"
+
+#: jcfideregister.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "Всі &Файли в Проекті"
+
+#: jcfideregister.format_reg_settings_menu
+msgid "&Registry Settings"
+msgstr "Параметри &Реєстру"
+
+#: jcfideregister.format_settings_menu
+msgid "&Format Settings"
+msgstr "&Параметри Форматування"
+

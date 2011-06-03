@@ -1,0 +1,31 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2011-06-01 12:07+0200\n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: projecttemplates.sbtncancel
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: projecttemplates.sbtnok
+msgid "&OK"
+msgstr "&Гаразд"
+
+#: projecttemplates.serrcouldnotcreatedir
+msgid "Could not create directory \"%s\""
+msgstr "Неможливо створити теку \"%s\""
+
+#: projecttemplates.serrfailedtocopyfile
+msgid "Failed to copy file \"%s\" to \"%s\""
+msgstr "Неможливо скопіювати файл \"%s\" в \"%s\""
+
+#: projecttemplates.serrnosuchtemplate
+msgid "\"%s\": No such template."
+msgstr "\"%s\": Немає такого шаблону."
+

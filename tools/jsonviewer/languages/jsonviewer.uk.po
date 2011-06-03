@@ -44,7 +44,7 @@ msgstr ""
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."
-msgstr ""
+msgstr "Член з іменем \"%s\" вже існує."
 
 #: msgjsonviewer.selement
 msgid "Element nr. %d"
@@ -56,15 +56,15 @@ msgstr "Порожній документ"
 
 #: msgjsonviewer.serrcreatingconfigdir
 msgid "Could not create the configuration files directory \"s\""
-msgstr ""
+msgstr "Не вдалось створити каталог файлів конфігурації \"s\""
 
 #: msgjsonviewer.serrinvalidvalue
 msgid "Invalid value or wrong type: \"%s\""
-msgstr ""
+msgstr "Невірне значення або не той тип: \"%s\""
 
 #: msgjsonviewer.serrnovalidjsonclipboard
 msgid "The clipboard does not contain valid JSON data"
-msgstr ""
+msgstr "Буфер не містить коректних даних JSON"
 
 #: msgjsonviewer.snewmember
 msgid "New object member"
@@ -72,11 +72,11 @@ msgstr "Новий член об'єкту"
 
 #: msgjsonviewer.snewmembername
 msgid "Enter a name for the new member (type: %s)"
-msgstr ""
+msgstr "Введіть ім'я нового члена (тип: %s)"
 
 #: msgjsonviewer.snomorematches
 msgid "No nodes match the criterium"
-msgstr ""
+msgstr "Немає вузлів що відповідають критерію"
 
 #: msgjsonviewer.snull
 msgid "null"
@@ -96,7 +96,7 @@ msgstr "&Копіювати"
 
 #: TMAINFORM.ACOPY.HINT
 msgid "Copy selected node to clipboard as JSON"
-msgstr ""
+msgstr "Копіювати вибраний вузол в буфер як JSON"
 
 #: TMAINFORM.ACUT.CAPTION
 msgid "C&ut"
@@ -104,15 +104,15 @@ msgstr "Ви&різати"
 
 #: TMAINFORM.ACUT.HINT
 msgid "Cut selected node to clipboard as JSON"
-msgstr ""
+msgstr "Вирізати вибраний вузол в буфер як JSON"
 
 #: TMAINFORM.ADELETEVALUE.CAPTION
 msgid "&Delete value"
-msgstr ""
+msgstr "Ви&далити значення"
 
 #: TMAINFORM.ADELETEVALUE.HINT
 msgid "Delete the selected value"
-msgstr ""
+msgstr "Видалити вибране значення"
 
 #: TMAINFORM.AEXPANDALL.CAPTION
 msgid "E&xpand all nodes"
@@ -136,7 +136,7 @@ msgstr "&Знайти"
 
 #: TMAINFORM.AFINDNEXT.CAPTION
 msgid "Find &next occurrence"
-msgstr ""
+msgstr "Знайти &наступну появу"
 
 #: TMAINFORM.ANEW.CAPTION
 msgid "&New"
@@ -144,7 +144,7 @@ msgstr "&Новий"
 
 #: TMAINFORM.ANEW.HINT
 msgid "Create new JSON document"
-msgstr ""
+msgstr "Створити новий документ JSON"
 
 #: TMAINFORM.ANEWARRAY.CAPTION
 msgid "New &Array"
@@ -152,31 +152,31 @@ msgstr "Новий &Масив"
 
 #: TMAINFORM.ANEWARRAY.HINT
 msgid "Add a new JSON array"
-msgstr ""
+msgstr "Додати новий масив JSON"
 
 #: TMAINFORM.ANEWBOOLEANVALUE.CAPTION
 msgid "New &boolean value"
-msgstr ""
+msgstr "Нове &логічне значення"
 
 #: TMAINFORM.ANEWBOOLEANVALUE.HINT
 msgid "Add a new boolean value"
-msgstr ""
+msgstr "Додати нове логічне значення"
 
 #: TMAINFORM.ANEWNULLVALUE.CAPTION
 msgid "New N&ull value"
-msgstr ""
+msgstr "Нове По&рожнє значення"
 
 #: TMAINFORM.ANEWNULLVALUE.HINT
 msgid "Add a new null value"
-msgstr ""
+msgstr "Додати нове порожнє значення"
 
 #: TMAINFORM.ANEWNUMBERVALUE.CAPTION
 msgid "&New numerical Value"
-msgstr ""
+msgstr "&Нове числове значення"
 
 #: TMAINFORM.ANEWNUMBERVALUE.HINT
 msgid "Add a new number value"
-msgstr ""
+msgstr "Додати нове числове значення"
 
 #: TMAINFORM.ANEWOBJECT.CAPTION
 msgid "New &Object"
@@ -184,15 +184,15 @@ msgstr "Новий &Об'єкт"
 
 #: TMAINFORM.ANEWOBJECT.HINT
 msgid "Add a new JSON object"
-msgstr ""
+msgstr "Додати новий об'єкт JSON"
 
 #: TMAINFORM.ANEWSTRINGVALUE.CAPTION
 msgid "New &string value"
-msgstr ""
+msgstr "Нове р&ядкове значення"
 
 #: TMAINFORM.ANEWSTRINGVALUE.HINT
 msgid "Add a new string value"
-msgstr ""
+msgstr "Додати нове рядкове значення"
 
 #: TMAINFORM.AOPEN.CAPTION
 msgid "&Open"
@@ -200,7 +200,7 @@ msgstr "Від&крити"
 
 #: TMAINFORM.AOPEN.HINT
 msgid "Open JSON document from file"
-msgstr ""
+msgstr "Відкрити документ JSON з файлу"
 
 #: TMAINFORM.APASTE.CAPTION
 msgid "&Paste"
@@ -208,15 +208,15 @@ msgstr "&Вставити"
 
 #: TMAINFORM.APASTE.HINT
 msgid "Paste JSON data in clipboard as new member"
-msgstr ""
+msgstr "Вставити дані JSON в буфер як новий член"
 
 #: TMAINFORM.APASTEASDOCUMENT.CAPTION
 msgid "Paste as new document"
-msgstr ""
+msgstr "Вставити як новий документ"
 
 #: TMAINFORM.APASTEASDOCUMENT.HINT
 msgid "Paste JSON data in clipboard as new document"
-msgstr ""
+msgstr "Вставити дані JSON в буфер як новий документ"
 
 #: TMAINFORM.AQUIT.CAPTION
 msgid "&Quit"
@@ -232,7 +232,7 @@ msgstr "&Зберегти"
 
 #: TMAINFORM.ASAVE.HINT
 msgid "Save the JSON document to file"
-msgstr ""
+msgstr "Зберегти документ JSON в файл"
 
 #: TMAINFORM.ASAVEAS.CAPTION
 msgid "Save &as"
@@ -240,7 +240,7 @@ msgstr "Зберегти &як"
 
 #: TMAINFORM.ASAVEAS.HINT
 msgid "Save JSON document with a new name"
-msgstr ""
+msgstr "Зберегти документ JSON з новим іменем"
 
 #: TMAINFORM.MAINFORM.CAPTION
 msgctxt "TMAINFORM.MAINFORM.CAPTION"
@@ -277,7 +277,7 @@ msgstr "&Файл"
 
 #: TMAINFORM.MIDOCUMENT.CAPTION
 msgid "&New document with object"
-msgstr ""
+msgstr "&Новий документ з об'єктом"
 
 #: TMAINFORM.MIINSERT.CAPTION
 msgid "&Values"
@@ -289,7 +289,7 @@ msgstr "Сортувати елементи об'єкта"
 
 #: TMAINFORM.MISTRICT.CAPTION
 msgid "&Strict JSON"
-msgstr ""
+msgstr "&Суворий JSON"
 
 #: TMAINFORM.MOPTIONS.CAPTION
 msgid "&Options"
