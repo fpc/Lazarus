@@ -5329,6 +5329,8 @@ resourcestring
   lisTheseFilesWillBeDeleted = 'These files will be deleted:';
   lisCleanUpAndBuild = 'Clean up and build';
   lisBuildProject = 'Build project';
+  lisCBPFiles = '%s (%s files)';
+  lisCBPReallyDeleteSourceFiles = 'Really delete %s source files%s%s';
 
 implementation
 

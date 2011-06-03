@@ -129,13 +129,15 @@ begin
   PreviewGroupBox.Caption:=lisTheseFilesWillBeDeleted;
 
   ButtonPanel1.OKButton.Caption:=lisCleanUpAndBuild;
+  ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
+
   DeleteButton.Caption:=dlgMouseOptBtnDel;
 
   FilesTreeView.Images:=IDEImages.Images_16;
   ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
   ImageIndexFile := IDEImages.LoadImage(16, 'laz_delete');
 
-  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
   ButtonPanel1.OKButton.ModalResult:=mrNone;
 end;
 
@@ -288,7 +290,7 @@ procedure TCleanBuildProjectDialog.UpdateFilesTreeView(Immediately: boolean);
       // has children, but no grand children => is a directory
       inc(Result,TVNode.Count);
     if Result>0 then
-      TVNode.Text:=TVNode.Text+' ('+IntToStr(Result)+' files)';
+      TVNode.Text:=Format(lisCBPFiles, [TVNode.Text, IntToStr(Result)]);
   end;
 
 var
@@ -320,14 +322,14 @@ end;
 
 procedure TCleanBuildProjectDialog.AddProjOutDirectory;
 begin
-  AddDirectory('Project output directory',
+  AddDirectory(lisProjectOutputDirectory,
     FProject.CompilerOptions.GetUnitOutputDirectory(false),
     ProjOutMaskComboBox.Text);
 end;
 
 procedure TCleanBuildProjectDialog.AddProjSrcDirectories;
 begin
-  AddDirectories('Project output directory',
+  AddDirectories(lisProjectOutputDirectory,
     FProject.SourceDirectories.CreateSearchPathFromAllFiles,
     ProjSrcMaskComboBox.Text);
 end;
@@ -520,9 +522,9 @@ begin
       Node:=Files.Tree.FindSuccessor(Node);
     end;
     if SourceFiles.Count>0 then begin
-      Result:=IDEMessageDialog('Warning',
-        'Really delete '+IntToStr(SourceFiles.Count)+' source files'#13#13
-        +copy(SourceFiles.Text,1,1000),mtWarning,[mbYes,mbNo]);
+      Result:=IDEMessageDialog(lisCCOWarningCaption,
+        Format(lisCBPReallyDeleteSourceFiles, [IntToStr(SourceFiles.Count), #13
+          +#13, copy(SourceFiles.Text, 1, 1000)]), mtWarning, [mbYes, mbNo]);
       if Result<>mrYes then exit(mrCancel);
     end;
 
