@@ -74,7 +74,7 @@ type
     FProviders: TLIHProviders;
     procedure SetProviders(const AValue: TLIHProviders);
   public
-    function GetStream(const URL: string): TStream; override;
+    function GetStream(const URL: string; Shared: Boolean): TStream; override;
     procedure ReleaseStream(const URL: string); override;
     property Providers: TLIHProviders read FProviders write SetProviders;
   end;
@@ -103,7 +103,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function FindStream(const URL: string; CreateIfNotExists: Boolean): TLIHProviderStream;
-    function GetStream(const URL: string): TStream;
+    function GetStream(const URL: string; Shared: boolean): TStream;
     procedure ReleaseStream(const URL: string);
   end;
 
@@ -461,12 +461,15 @@ begin
   if FURL=NewURL then exit;
   FURL:=NewURL;
   try
-    Stream:=Provider.GetStream(FURL);
-    SetLength(s,Stream.Size);
-    if s<>'' then
-      Stream.Read(s[1],length(s));
-    Caption:=HTMLToCaption(s,MaxLineCount);
-    Provider.ReleaseStream(FURL);
+    Stream:=Provider.GetStream(FURL,true);
+    try
+      SetLength(s,Stream.Size);
+      if s<>'' then
+        Stream.Read(s[1],length(s));
+      Caption:=HTMLToCaption(s,MaxLineCount);
+    finally
+      Provider.ReleaseStream(FURL);
+    end;
   except
     on E: Exception do begin
       Caption:=E.Message;
@@ -521,9 +524,10 @@ begin
   FProviders:=AValue;
 end;
 
-function TLazIDEHTMLProvider.GetStream(const URL: string): TStream;
+function TLazIDEHTMLProvider.GetStream(const URL: string; Shared: Boolean
+  ): TStream;
 begin
-  Result:=FProviders.GetStream(URL);
+  Result:=FProviders.GetStream(URL,Shared);
 end;
 
 procedure TLazIDEHTMLProvider.ReleaseStream(const URL: string);
@@ -563,7 +567,7 @@ begin
     Result:=nil;
 end;
 
-function TLIHProviders.GetStream(const URL: string): TStream;
+function TLIHProviders.GetStream(const URL: string; Shared: boolean): TStream;
 
   procedure OpenFile(out Stream: TStream; const Filename: string;
     UseCTCache: boolean);
@@ -611,9 +615,14 @@ var
   URLParams: string;
 begin
   if URL='' then raise Exception.Create('TLIHProviders.GetStream no URL');
-  Stream:=FindStream(URL,true);
-  Stream.IncreaseRefCount;
-  Result:=Stream.Stream;
+  if Shared then begin
+    Stream:=FindStream(URL,true);
+    Stream.IncreaseRefCount;
+    Result:=Stream.Stream;
+  end else begin
+    Stream:=nil;
+    Result:=nil;
+  end;
   try
     if Result=nil then begin
       SplitURL(URL,URLType,URLPath,URLParams);
@@ -640,10 +649,11 @@ begin
       Result.Position:=0;}
       if Result=nil then
         raise Exception.Create('TLIHProviders.GetStream: URL not found "'+dbgstr(URL)+'"');
-      Stream.Stream:=Result;
+      if Stream<>nil then
+        Stream.Stream:=Result;
     end;
   finally
-    if Result=nil then
+    if (Result=nil) and (Stream<>nil) then
       ReleaseStream(URL);
   end;
 end;

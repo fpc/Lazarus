@@ -55,11 +55,16 @@ type
     FIDEProvider: TAbstractIDEHTMLProvider;
     FIPHTMLPanel: TIpHtmlPanel;
     FURL: string;
+    procedure SetIDEProvider(const AValue: TAbstractIDEHTMLProvider);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function GetURL: string;
     procedure SetURL(const AValue: string);
-    property IDEProvider: TAbstractIDEHTMLProvider read FIDEProvider write FIDEProvider;
+    property IDEProvider: TAbstractIDEHTMLProvider read FIDEProvider write SetIDEProvider;
     procedure SetHTMLContent(Stream: TStream; const NewURL: string);
     procedure GetPreferredControlSize(out AWidth, AHeight: integer);
     property IPHTMLPanel: TIpHtmlPanel read FIPHTMLPanel;
@@ -82,11 +87,12 @@ function IPCreateLazIDEHTMLControl(Owner: TComponent;
 var
   HTMLControl: TLazIPHtmlControl;
 begin
+  //debugln(['IPCreateLazIDEHTMLControl ']);
   HTMLControl:=TLazIPHtmlControl.Create(Owner);
   Result:=HTMLControl;
   if Provider=nil then
     Provider:=CreateIDEHTMLProvider(HTMLControl);
-  Provider.ControlIntf:=HTMLControl;
+  //debugln(['IPCreateLazIDEHTMLControl Provider=',DbgSName(Provider)]);
   HTMLControl.IDEProvider:=Provider;
 end;
 
@@ -94,8 +100,8 @@ end;
 
 function TLazIpHtmlDataProvider.DoGetStream(const URL: string): TStream;
 begin
-  debugln(['TLazIpHtmlDataProvider.DoGetStream ',URL]);
-  Result:=Control.IDEProvider.GetStream(URL);
+  debugln(['TLazIpHtmlDataProvider.DoGetStream ',URL,' ',DbgSName(Control.IDEProvider)]);
+  Result:=Control.IDEProvider.GetStream(URL,false);
 end;
 
 { TLazIPHtmlControl }
@@ -152,7 +158,7 @@ begin
       // quick check if file format is supported (raises an exception)
       Picture.FindGraphicClassWithFileExt(Ext);
       // get stream
-      Stream:=IDEProvider.GetStream(NewURL);
+      Stream:=IDEProvider.GetStream(NewURL,true);
       // load picture
       Picture.LoadFromStreamWithFileExt(Stream,Ext);
     finally
@@ -178,6 +184,34 @@ begin
   debugln(['TLazIPHtmlControl.DataProviderReportReference URL=',URL]);
 end;
 
+procedure TLazIPHtmlControl.SetIDEProvider(
+  const AValue: TAbstractIDEHTMLProvider);
+begin
+  if FIDEProvider=AValue then exit;
+  //debugln(['TLazIPHtmlControl.SetIDEProvider Old=',DbgSName(FIDEProvider),' New=',DbgSName(FIDEProvider)]);
+  if FIDEProvider<>nil then begin
+    IDEProvider.ControlIntf:=nil;
+  end;
+  FIDEProvider:=AValue;
+  if FIDEProvider<>nil then begin
+    FreeNotification(FIDEProvider);
+    IDEProvider.ControlIntf:=Self;
+  end;
+end;
+
+procedure TLazIPHtmlControl.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if IDEProvider=AComponent then begin
+      if IDEProvider.ControlIntf=TIDEHTMLControlIntf(Self) then
+        IDEProvider.ControlIntf:=nil;
+      IDEProvider:=nil;
+    end;
+  end;
+end;
+
 constructor TLazIPHtmlControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -190,7 +224,7 @@ begin
     MarginWidth:=2;
     Parent:=Self;
   end;
-  FIPHTMLPanel.DataProvider:=TLazIpHtmlDataProvider.Create(Self);
+  FIPHTMLPanel.DataProvider:=TLazIpHtmlDataProvider.Create(FIPHTMLPanel);
   with TLazIpHtmlDataProvider(FIPHTMLPanel.DataProvider) do begin
     FControl:=Self;
     Name:='TLazIPHtmlControlDataProvider';
@@ -203,6 +237,13 @@ begin
   end;
   Caption:='';
   BevelInner:=bvLowered;
+end;
+
+destructor TLazIPHtmlControl.Destroy;
+begin
+  //debugln(['TLazIPHtmlControl.Destroy ',DbgSName(Self),' ',dbgs(Pointer(Self))]);
+  FreeAndNil(FIDEProvider);
+  inherited Destroy;
 end;
 
 function TLazIPHtmlControl.GetURL: string;
@@ -223,7 +264,7 @@ begin
   if FURL=NewURL then exit;
   FURL:=NewURL;
   try
-    Stream:=IDEProvider.GetStream(FURL);
+    Stream:=IDEProvider.GetStream(FURL,true);
     ok:=false;
     NewHTML:=nil;
     try

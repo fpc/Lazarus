@@ -87,21 +87,21 @@
 {$ELSE implementation}
 type
 
-{ TCSSReader }
+  { TCSSReader }
 
-TCSSReader = class
-  FStream: TStream;
-  FGlobalProps: TCSSGlobalProps;
-  function GetStatementElements(AStatement: String): TStringList;
-  function GetStatementCommands(AStatement: String): TStringList;
-  function CheckIsComment: Boolean;
-  procedure EatWhiteSpace;
-  procedure ParseCSS;
-  procedure EatComment;
-  function FindStatement(out AStatement: String): Boolean;
-  function EOF: Boolean;
-  constructor Create(AStream: TStream; AGlobalProps: TCSSGlobalProps);
-end;
+  TCSSReader = class
+    FStream: TStream;
+    FGlobalProps: TCSSGlobalProps;
+    function GetStatementElements(AStatement: String): TStringList;
+    function GetStatementCommands(AStatement: String): TStringList;
+    function CheckIsComment: Boolean;
+    procedure EatWhiteSpace;
+    procedure ParseCSS;
+    procedure EatComment;
+    function FindStatement(out AStatement: String): Boolean;
+    function EOF: Boolean;
+    constructor Create(AStream: TStream; AGlobalProps: TCSSGlobalProps);
+  end;
 
 function IsWhiteSpace(AChar: Char; ExcludeSpaces: Boolean = False): Boolean;
 begin

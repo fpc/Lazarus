@@ -102,18 +102,18 @@ type
     FBaseURL: string;
     FControlIntf: TIDEHTMLControlIntf;
     procedure SetBaseURL(const AValue: string); virtual;
-    procedure SetControlIntf(const AValue: TIDEHTMLControlIntf); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    function GetStream(const URL: string
-      ): TStream; virtual; abstract; { provider assumes ownership of returned TStream
-                                       and increases internal reference count.
-                                       If not found it raises an exception. }
+    function GetStream(const URL: string; Shared: boolean
+      ): TStream; virtual; abstract; { Shared=true: provider assumes ownership
+                  of returned TStream and increases internal reference count.
+                  If not found it raises an exception.
+                  Shared=false: caller must free stream}
     procedure ReleaseStream(const URL: string); virtual; abstract;
     property BaseURL: string read FBaseURL write SetBaseURL;// fallback for relative URLs
     function MakeURLAbsolute(const aBaseURL, aURL: string): string; virtual;
-    property ControlIntf: TIDEHTMLControlIntf read FControlIntf write SetControlIntf;
+    property ControlIntf: TIDEHTMLControlIntf read FControlIntf write FControlIntf;
   end;
 
   TCreateIDEHTMLControlEvent =
@@ -155,13 +155,6 @@ procedure TAbstractIDEHTMLProvider.SetBaseURL(const AValue: string);
 begin
   if FBaseURL=AValue then exit;
   FBaseURL:=AValue;
-end;
-
-procedure TAbstractIDEHTMLProvider.SetControlIntf(
-  const AValue: TIDEHTMLControlIntf);
-begin
-  if FControlIntf=AValue then exit;
-  FControlIntf:=AValue;
 end;
 
 constructor TAbstractIDEHTMLProvider.Create(TheOwner: TComponent);

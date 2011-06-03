@@ -6326,8 +6326,16 @@ begin
   end;
   if SourceCompletionTimer<>nil then
     SourceCompletionTimer.Enabled:=false;
-  if FHintWindow<>nil then
+  if FHintWindow<>nil then begin
     FHintWindow.Visible:=false;
+    FHintWindow.DisableAutoSizing;
+    try
+      while FHintWindow.ControlCount>0 do
+        FHintWindow.Controls[0].Free;
+    finally
+      FHintWindow.EnableAutoSizing;
+    end;
+  end;
 end;
 
 procedure TSourceNotebook.StartShowCodeContext(JumpToError: boolean);

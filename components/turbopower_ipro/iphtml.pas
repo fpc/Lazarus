@@ -3156,6 +3156,8 @@ type
     procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF} //JMN
   end;
 
+  { TIpAbstractHtmlDataProvider }
+
   TIpAbstractHtmlDataProvider = class(TIpBaseComponent)
   protected
     function DoGetHtmlStream(const URL: string;
@@ -3328,6 +3330,7 @@ type
     FCurElement : PIpHtmlElement;
     FPrintSettings: TIpHtmlPrintSettings;                              {!!.10}
     FFactBAParag: Real; //JMN
+    procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
     procedure SetFactBAParag(const Value: Real); //JMN
     function FactBAParagNotIs1: Boolean;
     function GetVScrollPos: Integer; //JMN
@@ -3438,7 +3441,7 @@ type
                 default True;
     property CurElement : PIpHtmlElement read FCurElement;
     property DataProvider: TIpAbstractHtmlDataProvider
-                read FDataProvider write FDataProvider;
+                read FDataProvider write SetDataProvider;
     property FactBAParag: Real
                 read FFactBAParag write SetFactBAParag stored FactBAParagNotIs1; //JMN
     property FlagErrors : Boolean
@@ -18030,15 +18033,16 @@ begin
   if FFramePanel <> nil then                                            {!!.12}
     FFramePanel.OnResize := nil;                                        {!!.12}
   for i := 0 to Pred(FFrameCount) do
-    FFrames[i].Free;
+    FreeAndNil(FFrames[i]);
   if HyperPanel <> nil then begin
     HyperPanel.Hyper := nil;
     HyperPanel.Free;
     HyperPanel := nil;
   end;
+  //debugln(['TIpHtmlFrame.Destroy ',DbgSName(Self),' ',dbgs(Pointer(FDataProvider))]);
   if (FDataProvider <> nil) and (not (csDestroying in FDataProvider.ComponentState)) then
     FDataProvider.DoLeave(FHtml);
-  FHtml.Free;
+  FreeAndNil(FHtml);
   inherited;
 end;
 
@@ -19163,6 +19167,7 @@ end;
 
 procedure TIpHtmlCustomPanel.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  //debugln(['TIpHtmlCustomPanel.Notification ',DbgSName(Self),' ',dbgs(Pointer(Self)),' AComponent=',DbgSName(AComponent),' ',dbgs(Pointer(AComponent))]);
   if (Operation = opRemove) then
     if (AComponent = DataProvider) then begin
       DataProvider := nil;
@@ -19535,6 +19540,15 @@ begin
   else if  V < 0
   then   V := 0;
   FFactBAParag := V;
+end;
+
+procedure TIpHtmlCustomPanel.SetDataProvider(
+  const AValue: TIpAbstractHtmlDataProvider);
+begin
+  if FDataProvider=AValue then exit;
+  //debugln(['TIpHtmlCustomPanel.SetDataProvider Old=',DbgSName(FDataProvider),' ',dbgs(Pointer(FDataProvider)),' New=',DbgSName(AValue),' ',dbgs(Pointer(AValue))]);
+  FDataProvider:=AValue;
+  if FDataProvider<>nil then FreeNotification(FDataProvider);
 end;
 
 function TIpHtmlCustomPanel.FactBAParagNotIs1: Boolean; //JMN
