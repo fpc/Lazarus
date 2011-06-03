@@ -452,6 +452,10 @@ msgstr "Bezeichner %s ist bereits definiert"
 msgid "identifier not found: %s"
 msgstr "Bezeichner nicht gefunden: %s"
 
+#: codetoolsstrconsts.ctsifdefdarwin
+msgid "IfDef Darwin"
+msgstr ""
+
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
 msgstr "IfDef Linux"

@@ -452,6 +452,10 @@ msgstr "标识符 %s 已经定义"
 msgid "identifier not found: %s"
 msgstr "标识符未找到: %s"
 
+#: codetoolsstrconsts.ctsifdefdarwin
+msgid "IfDef Darwin"
+msgstr ""
+
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
 msgstr ""

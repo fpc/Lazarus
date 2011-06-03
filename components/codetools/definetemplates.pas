@@ -510,7 +510,7 @@ type
     function CreateFPCSrcTemplate(const FPCSrcDir, UnitSearchPath, PPUExt,
                           DefaultTargetOS, DefaultProcessorName: string;
                           UnitLinkListValid: boolean; var UnitLinkList: string;
-                          Owner: TObject): TDefineTemplate;
+                          Owner: TObject): TDefineTemplate; deprecated;
     function CreateFPCCommandLineDefines(const Name, CmdLine: string;
                                          RecursiveDefines: boolean;
                                          Owner: TObject;
@@ -2010,6 +2010,30 @@ begin
       ['objpas, inc,'+TargetProcessor+','+SrcOS]),
       ExternalMacroStart+'IncPath',s,da_DefineRecurse));
 
+    // if solaris or darwin or beos then define FPC_USE_LIBC
+    IFTempl:=TDefineTemplate.Create('IF darwin or solaris or beos',
+      'If Darwin or Solaris or Beos', '', 'defined(darwin) or defined(solaris) or defined(beos)', da_If);
+      // then define FPC_USE_LIBC
+      IFTempl.AddChild(TDefineTemplate.Create('define FPC_USE_LIBC',
+        'define FPC_USE_LIBC','FPC_USE_LIBC','',da_DefineRecurse));
+    RTLDir.AddChild(IFTempl);
+
+    // rtl: IF SrcOS=win then add include path rtl/win/wininc
+    IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
+      '',''''+SrcOS+'''=''win''',da_If);
+    IFTempl.AddChild(TDefineTemplate.Create('Include Path',
+        Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
+        ExternalMacroStart+'IncPath',
+        IncPathMacro
+        +';'+Dir+'rtl'+DS+'win'+DS+'wininc'
+        +';'+Dir+'rtl'+DS+'win',
+        da_DefineRecurse));
+    RTLDir.AddChild(IFTempl);
+
+    // add processor and SrcOS alias defines for the RTL
+    AddProcessorTypeDefine(RTLDir);
+    AddSrcOSDefines(RTLDir);
+
     // rtl/$(#TargetOS)
     RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
                                      TargetOSMacro,da_Directory);
@@ -2027,33 +2051,6 @@ begin
       Format(ctsAddsDirToSourcePath,[TargetProcessor]),
       ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
-
-    // rtl: IF SrcOS=win then add include path rtl/win/wininc
-    IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
-      '',''''+SrcOS+'''=''win''',da_If);
-    IFTempl.AddChild(TDefineTemplate.Create('Include Path',
-        Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
-        ExternalMacroStart+'IncPath',
-        IncPathMacro
-        +';'+Dir+'rtl'+DS+'win'+DS+'wininc'
-        +';'+Dir+'rtl'+DS+'win',
-        da_DefineRecurse));
-    RTLDir.AddChild(IFTempl);
-
-    // rtl: IF TargetOS=darwin then add include path rtl/freebsd
-    IFTempl:=TDefineTemplate.Create('If TargetOS=darwin','If TargetOS=darwin',
-      '',''''+TargetOSMacro+'''=''darwin''',da_If);
-    IFTempl.AddChild(TDefineTemplate.Create('Include Path',
-        Format(ctsIncludeDirectoriesPlusDirs,['rtl'+DS+'freebsd']),
-        ExternalMacroStart+'IncPath',
-        IncPathMacro
-        +';'+Dir+'rtl'+DS+'freebsd',
-        da_DefineRecurse));
-    RTLDir.AddChild(IFTempl);
-
-    // add processor and SrcOS alias defines for the RTL
-    AddProcessorTypeDefine(RTLDir);
-    AddSrcOSDefines(RTLDir);
 
 
     // fcl
@@ -5724,6 +5721,14 @@ begin
       ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
 
+    // if solaris or darwin or beos then define FPC_USE_LIBC
+    IFTempl:=TDefineTemplate.Create('IF darwin or solaris or beos',
+      'If Darwin or Solaris or Beos', '', 'defined(darwin) or defined(solaris) or defined(beos)', da_If);
+      // then define FPC_USE_LIBC
+      IFTempl.AddChild(TDefineTemplate.Create('define FPC_USE_LIBC',
+        'define FPC_USE_LIBC','FPC_USE_LIBC','',da_DefineRecurse));
+    RTLDir.AddChild(IFTempl);
+
     // rtl: IF SrcOS=win then add include path rtl/win/wininc
     IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
       '',''''+SrcOS+'''=''win''',da_If);
@@ -5733,17 +5738,6 @@ begin
         IncPathMacro
         +';'+Dir+'rtl'+DS+'win'+DS+'wininc'
         +';'+Dir+'rtl'+DS+'win',
-        da_DefineRecurse));
-    RTLDir.AddChild(IFTempl);
-
-    // rtl: IF TargetOS=darwin then add include path rtl/freebsd
-    IFTempl:=TDefineTemplate.Create('If TargetOS=darwin','If TargetOS=darwin',
-      '',''''+TargetOSMacro+'''=''darwin''',da_If);
-    IFTempl.AddChild(TDefineTemplate.Create('Include Path',
-        Format(ctsIncludeDirectoriesPlusDirs,['rtl'+DS+'freebsd']),
-        ExternalMacroStart+'IncPath',
-        IncPathMacro
-        +';'+Dir+'rtl'+DS+'freebsd',
         da_DefineRecurse));
     RTLDir.AddChild(IFTempl);
 

@@ -449,6 +449,10 @@ msgstr "מזהה s% כבר הוגדר"
 msgid "identifier not found: %s"
 msgstr "מזהה לא נמצא: יחידה s%"
 
+#: codetoolsstrconsts.ctsifdefdarwin
+msgid "IfDef Darwin"
+msgstr ""
+
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
 msgstr "אם מוגדר לינוקס"

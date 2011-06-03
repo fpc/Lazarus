@@ -447,6 +447,10 @@ msgstr "Ідентифікатор %s вже визначений"
 msgid "identifier not found: %s"
 msgstr "не знайдений ідентифікатор: %s"
 
+#: codetoolsstrconsts.ctsifdefdarwin
+msgid "IfDef Darwin"
+msgstr ""
+
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
 msgstr "IfDef Linux"

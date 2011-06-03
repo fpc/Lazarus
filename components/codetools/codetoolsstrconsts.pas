@@ -238,6 +238,7 @@ ResourceString
   ctsAddsDirToSourcePath = 'adds %s to SrcPath';
   ctsIfDefWindows = 'IfDef Windows';
   ctsIfDefLinux = 'IfDef Linux';
+  ctsIfDefDarwin = 'IfDef Darwin';
   ctsAddsDirToIncludePath = 'adds %s to IncPath';
   ctsSetsIncPathTo = 'sets IncPath to %s';
   ctsSetsSrcPathTo = 'sets SrcPath to %s';

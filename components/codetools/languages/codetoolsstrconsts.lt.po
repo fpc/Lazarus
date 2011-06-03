@@ -451,6 +451,10 @@ msgstr "Apibrėžtis %s jau yra įgyvendinta"
 msgid "identifier not found: %s"
 msgstr "identifikatorius nerastas: %s"
 
+#: codetoolsstrconsts.ctsifdefdarwin
+msgid "IfDef Darwin"
+msgstr ""
+
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
 msgstr "IfDef Linux"

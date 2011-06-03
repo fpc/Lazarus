@@ -450,6 +450,10 @@ msgstr "Pengenal %s sudah didefinisikan"
 msgid "identifier not found: %s"
 msgstr "pengenal tidak ditemukan: %s"
 
+#: codetoolsstrconsts.ctsifdefdarwin
+msgid "IfDef Darwin"
+msgstr ""
+
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
 msgstr "IfDef Linux"

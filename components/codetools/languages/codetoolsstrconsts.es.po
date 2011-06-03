@@ -449,6 +449,10 @@ msgstr "Ya fue definido el identificador %s"
 msgid "identifier not found: %s"
 msgstr "identificador no encontrado: %s"
 
+#: codetoolsstrconsts.ctsifdefdarwin
+msgid "IfDef Darwin"
+msgstr ""
+
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
 msgstr ""
