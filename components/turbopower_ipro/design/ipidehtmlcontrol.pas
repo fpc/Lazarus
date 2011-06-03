@@ -22,7 +22,7 @@ unit IPIDEHTMLControl;
 interface
 
 uses
-  Classes, SysUtils, math, LCLProc, Graphics, Controls, Dialogs,
+  Classes, SysUtils, math, LCLProc, Graphics, Controls, Dialogs, ExtCtrls,
   IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf;
 
 type
@@ -41,7 +41,7 @@ type
 
   { TLazIPHtmlControl }
 
-  TLazIPHtmlControl = class(TIpHtmlPanel,TIDEHTMLControlIntf)
+  TLazIPHtmlControl = class(TCustomPanel,TIDEHTMLControlIntf)
     function DataProviderCanHandle(Sender: TObject; const URL: string): Boolean;
     procedure DataProviderCheckURL(Sender: TObject; const URL: string;
       var Available: Boolean; var ContentType: string);
@@ -53,6 +53,7 @@ type
     procedure DataProviderReportReference(Sender: TObject; const URL: string);
   private
     FIDEProvider: TAbstractIDEHTMLProvider;
+    FIPHTMLPanel: TIpHtmlPanel;
     FURL: string;
   public
     constructor Create(AOwner: TComponent); override;
@@ -61,6 +62,7 @@ type
     property IDEProvider: TAbstractIDEHTMLProvider read FIDEProvider write FIDEProvider;
     procedure SetHTMLContent(Stream: TStream; const NewURL: string);
     procedure GetPreferredControlSize(out AWidth, AHeight: integer);
+    property IPHTMLPanel: TIpHtmlPanel read FIPHTMLPanel;
   end;
 
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
@@ -179,11 +181,17 @@ end;
 constructor TLazIPHtmlControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  DefaultFontSize := 8;
-  MarginHeight := 0;
-  MarginWidth := 0;
-  DataProvider:=TLazIpHtmlDataProvider.Create(Self);
-  with TLazIpHtmlDataProvider(DataProvider) do begin
+  FIPHTMLPanel:=TIpHtmlPanel.Create(Self);
+  with FIPHTMLPanel do begin
+    Name:='TLazIPHtmlControl_IPHTMLPanel';
+    Align:=alClient;
+    DefaultFontSize:=8;
+    MarginHeight:=2;
+    MarginWidth:=2;
+    Parent:=Self;
+  end;
+  FIPHTMLPanel.DataProvider:=TLazIpHtmlDataProvider.Create(Self);
+  with TLazIpHtmlDataProvider(FIPHTMLPanel.DataProvider) do begin
     FControl:=Self;
     Name:='TLazIPHtmlControlDataProvider';
     OnCanHandle:=@DataProviderCanHandle;
@@ -193,6 +201,8 @@ begin
     OnCheckURL:=@DataProviderCheckURL;
     OnReportReference:=@DataProviderReportReference;
   end;
+  Caption:='';
+  BevelInner:=bvLowered;
 end;
 
 function TLazIPHtmlControl.GetURL: string;
@@ -224,7 +234,7 @@ begin
       if not ok then NewHTML.Free;
       IDEProvider.ReleaseStream(FURL);
     end;
-    SetHtml(NewHTML);
+    FIPHTMLPanel.SetHtml(NewHTML);
   except
     on E: Exception do begin
       MessageDlg('Unable to open HTML file',
@@ -241,7 +251,7 @@ var
 begin
   FURL:=NewURL;
   NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically by TIpHtmlPanel
-  SetHtml(NewHTML);
+  FIPHTMLPanel.SetHtml(NewHTML);
   NewHTML.LoadFromStream(Stream);
 end;
 
