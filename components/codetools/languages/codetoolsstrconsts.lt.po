@@ -639,10 +639,6 @@ msgstr "%s aplankas"
 msgid "%s Project"
 msgstr "%s projektas"
 
-#: codetoolsstrconsts.ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "Įdėtiniai komentarai įgalinti"
-
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "Įdėtinės %s apibrėžtys neleidžiamos"

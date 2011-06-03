@@ -637,10 +637,6 @@ msgstr "תיקייה s%"
 msgid "%s Project"
 msgstr "פרוייקט s%"
 
-#: codetoolsstrconsts.ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "מצב הערות מקוננות פועל"
-
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "הגדרות מקוננות s% אסורות"

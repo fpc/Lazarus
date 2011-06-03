@@ -637,10 +637,6 @@ msgstr "Directori %s"
 msgid "%s Project"
 msgstr "Projecte %s"
 
-#: codetoolsstrconsts.ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "Activa els comentaris niats"
-
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr ""

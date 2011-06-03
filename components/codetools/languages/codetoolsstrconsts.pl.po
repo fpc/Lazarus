@@ -641,10 +641,6 @@ msgstr "katalog %s"
 msgid "%s Project"
 msgstr "%s Projekt"
 
-#: codetoolsstrconsts.ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "Włączone zagnieżdżanie komentarzy"
-
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr ""

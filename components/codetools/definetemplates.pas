@@ -1983,10 +1983,6 @@ begin
     DefTempl:=TDefineTemplate.Create('Reset UnitPath',
       ctsUnitPathInitialization,ExternalMacroStart+'UnitPath','',da_DefineRecurse);
     MainDir.AddChild(DefTempl);
-    // turn Nested comments on
-    DefTempl:=TDefineTemplate.Create('Nested Comments',
-      ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse);
-    MainDir.AddChild(DefTempl);
 
     // rtl
     RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
@@ -5672,14 +5668,6 @@ begin
     DefTempl:=TDefineTemplate.Create('Reset UnitPath',
       ctsUnitPathInitialization,ExternalMacroStart+'UnitPath','',da_DefineRecurse);
     MainDir.AddChild(DefTempl);
-    // turn Nested comments on
-    DefTempl:=TDefineTemplate.Create('Nested Comments',
-      ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse);
-    MainDir.AddChild(DefTempl);
-    // enable FPDocSystem to find compiler functions like writeln and readln
-    {DefTempl:=TDefineTemplate.Create('FPDocSystem',
-      ctsFPDocSystemOn,'FPDocSystem','',da_DefineRecurse);
-    MainDir.AddChild(DefTempl);}
 
     // rtl
     RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
@@ -5995,9 +5983,6 @@ begin
       ExternalMacroStart+'SrcPath',
       d(LazarusSrcDir+'/lcl/nonwin32;')+SrcPath,da_DefineRecurse));
   MainDir.AddChild(IfTemplate);
-  // turn Nested comments on
-  MainDir.AddChild(TDefineTemplate.Create('Nested Comments',
-    ctsNestedCommentsOn,ExternalMacroStart+'NestedComments','',da_DefineRecurse));
   // define 'LCL'
   MainDir.AddChild(TDefineTemplate.Create('define LCL',
     ctsDefineLCL,'LCL',WidgetType,da_DefineRecurse));

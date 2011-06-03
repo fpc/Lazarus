@@ -637,10 +637,6 @@ msgstr "Directorio %s"
 msgid "%s Project"
 msgstr "%s Proyecto"
 
-#: codetoolsstrconsts.ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "Comentarios anidados"
-
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "Las definiciones %s anidadas no están permitidas"

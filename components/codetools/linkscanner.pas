@@ -774,9 +774,9 @@ begin
   FMainSourceFilename:='';
   FIncludeStack:=TFPList.Create;
   FPascalCompiler:=pcFPC;
-  FNestedComments:=true;
   FCompilerMode:=cmFPC;
   FCompilerModeSwitches:=DefaultCompilerModeSwitches[CompilerMode];
+  FNestedComments:=cmsNested_comment in CompilerModeSwitches;
 end;
 
 procedure TLinkScanner.DecCommentLevel;
@@ -1284,9 +1284,9 @@ begin
   ScannedRange:=lsrNone;
   CommentStyle:=CommentNone;
   CommentLevel:=0;
-  FNestedComments:=false;
   PascalCompiler:=pcFPC;
   CompilerMode:=cmFPC;
+  FNestedComments:=cmsNested_comment in DefaultCompilerModeSwitches[CompilerMode];
   IfLevel:=0;
   FSkippingDirectives:=lssdNone;
   //DebugLn('TLinkScanner.Scan D --------');
@@ -1308,6 +1308,10 @@ begin
       CompilerMode:=cm;
       break;
     end;
+
+  // nested comments override
+  if Values.IsDefined(ExternalMacroStart+'NestedComments') then
+    FNestedComments:=true;
 
   //DebugLn(['TLinkScanner.Scan ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' ',CompilerModeNames[CompilerMode],' FNestedComments=',FNestedComments]);
     

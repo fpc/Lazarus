@@ -638,10 +638,6 @@ msgstr "%s Adresář"
 msgid "%s Project"
 msgstr "%s Projekt"
 
-#: codetoolsstrconsts.ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "Zapnuty vnořené komentáře"
-
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "Vnořené definice %s nejsou povoleny"

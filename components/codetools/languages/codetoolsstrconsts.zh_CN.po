@@ -640,10 +640,6 @@ msgstr "%s 目录"
 msgid "%s Project"
 msgstr "%s 工程"
 
-#: codetoolsstrconsts.ctsnestedcommentson
-msgid "Nested Comments On"
-msgstr "开启注释嵌套"
-
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
 msgstr "不允许嵌套定义 %s"
