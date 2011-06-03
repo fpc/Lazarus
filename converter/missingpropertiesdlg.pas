@@ -129,97 +129,10 @@ type
     destructor Destroy; override;
   end;
 
-  function EnUnicode(const TS: UTF8String; var Changed: Boolean): UTF8String;
 
 implementation
 
 {$R *.lfm}
-
-{*******************************************************************************
-Function UTFEnc(S:ansiString):WideChar;
-S - string like '#1234' or like '1234'.
-It process only first 4-5 symbols. (Some kind of protection)
-Result - One Unicode symbol.
-If S isn't an unicode function will return symbol #0000.
-*******************************************************************************}
-function UTFEnc(S: ansistring): WideChar;
-var X: word;    //word - to be sure that it will return Unicode symbol. Not ASCII.
-begin
-  if (S[1]='#')and(Length(S)=5)then
-    X:=StrToIntDef(Copy(S,2,4),0)
-  else
-    X:=StrToIntDef(Copy(S,1,4),0);
-  Result:=WideChar(X);
-end;
-
-{*******************************************************************************
-function EnUnicode(TS:UTF8String):UTF8String;
-TS:UTF8String - Processing string like <<Caption = #1234#1235':'#1258>>
-Function converts it to string like <<Caption = 'АБ:В'>>
-It have some troubles with strings that contains several pairs of apostrophes.
-(<<Form1.Caption := 'String1 '+'String2'>> will converts into
-<<Form1.Caption := 'String1 +String2'>>
-*******************************************************************************}
-function EnUnicode(const TS: UTF8String; var Changed: Boolean): UTF8String;
-var
-  i,
-  LPA,              //LPA = Left Position of Apostroph. First pos of ' in TS
-  LPS,              //LPS = Left Position of Sharp. First pos of # in TS
-  RPA,              //RPA = Right Position of Apostroph. Last pos of ' in TS
-  RPS: integer;     //RPS = Right Position of Sharp. Last pos of # in TS
-  insideAp: Boolean;//inside of two Apostrophes.
-  S,WS: ansistring; //S copying "as is"(for better speed). WS - converts symbol by symbol
-begin
-  Changed:=False;
-  S:='';
-  insideAp:=false;
-  RPS:=0; RPA:=0;
-  for i:=1 to Length(TS) do begin    //find Last positions of ' and #
-    if TS[i]='#' then
-      RPS:=i;                        //May be there is a spec function to do it
-    if TS[i]='''' then
-      RPA:=i;                        //but I didn't find it.
-  end;
-  RPS:=RPS+4; //Actually no need for position of #, but pos of last symbol of sequence #1234
-  i:=1;                              //Now let's find FIRST pos of ' and #
-  LPA:=Pos('''',TS);                 //If ' not found I must throw out processing of
-  if LPA=0 then
-    LPA:=Length(TS)+1;               //any apostrophes in the TS.
-  LPS:=Pos('#',TS);                  //Also for #
-  if LPS=0 then LPS:=Length(TS)+1;
-  if (LPA<LPS) AND (LPA<=Length(TS)) then begin //Now I must define position of first
-    i:=LPA;                                     //symbol either ' or #.
-  end else if (LPS<LPA) AND (LPS<=Length(TS)) then begin
-    i:=LPS;
-  end;
-  if (RPS<=LPS) OR (RPS<=4) OR (RPS>Length(TS)+4) then
-    RPS:=0;                                   //More hiding processing if ' or #
-  if (RPA<=LPA) OR (RPA=0) OR (RPA>Length(TS)) then
-    RPA:=0;                                   // not found
-  if (LPA<=Length(TS)) OR (LPS<=Length(TS)) then begin //if we've found ' or # or both - start process
-     S:=LeftStr(TS,i-1);                      //first part of TS (before ' or #) copy "as is"
-     WS:='';
-     while (i<=Length(TS)) AND ((i<=RPA) OR (i<=RPS)) do begin //process
-       if TS[i]='''' then begin             //current symbol = '
-         insideAp:=not insideAp;            //part inside of '' will be copy as is
-       end;                                 //even it contains #1234 sequenses
-       if (not insideAp) AND (TS[i]='#') then begin  //part outside of ''
-         WS:=WS+UTFEnc(Copy(TS,i,5));       //send to UTFEnc
-         i:=i+4;                            //skipping nummbers
-       end else
-         if TS[i]<>'''' then                //skipping apostrophes themselves
-           WS:=WS+TS[i];
-       i:=i+1;
-     end;
-     //Form1.Memo1.Lines.Add(S+'|'+WS+'|'+Copy(TS,i,Length(TS)));//It was an debug output
-     S:=S+''''+WS+'''';                       //adding apostrophes around processed part
-     S:=S+Copy(TS,i,Length(TS));              //adding rest of string as is
-     Changed:=True;
-  end {if (LPA<=Length(TS))OR(LPS<=Length(TS))}
-  else
-    S:=TS;                                    //TS doesn't contain neither ' nor #. Copy as is.
-  Result:=AnsiToUtf8(S);                      //Result must be an UTF8-string
-end;
 
 function IsMissingType(LFMError: TLFMError): boolean;
 begin

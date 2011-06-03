@@ -452,9 +452,6 @@ begin
 end;
 
 function TConvertDelphiUnit.CopyAndLoadFile: TModalResult;
-var
-//  CurEncoding: String;
-  Changed: Boolean;
 begin
   IDEMessagesWindow.AddMsg(Format(lisConvDelphiConvertingFile,
                                   [fOrigUnitFilename]), '', -1);
@@ -475,12 +472,11 @@ begin
                          [lbfCheckIfText,lbfUpdateFromDisk],true);
   if Result<>mrOk then exit;
   // Change encoding to UTF-8
-{  CurEncoding:=GuessEncoding(fPascalBuffer.Source); //fPascalBuffer.DiskEncoding;
-  if CurEncoding<>EncodingUTF8 then begin
-    fPascalBuffer.Source:=ConvertEncoding(fPascalBuffer.Source, CurEncoding, EncodingUTF8);
-    fPascalBuffer.DiskEncoding:=EncodingUTF8;
-    fPascalBuffer.MemEncoding:=EncodingUTF8;
-  end; }
+  if fPascalBuffer.DiskEncoding<>EncodingUTF8 then begin
+    IDEMessagesWindow.AddMsg(Format(lisConvDelphiChangedEncodingToUTF8,
+                                    [fPascalBuffer.DiskEncoding]), '', -1);
+    fPascalBuffer.DiskEncoding:=EncodingUTF8; // Takes effect when buffer is saved.
+  end;
   // Create a shared link for codetools.
   Assert(fCTLink=Nil, 'fCTLink should be Nil in CopyAndLoadFile');
   fCTLink:=TCodeToolLink.Create(fPascalBuffer);
@@ -499,8 +495,6 @@ var
   LfmFilename: string;     // Lazarus .LFM file name.
   DFMConverter: TDFMConverter;
   TempLFMBuffer: TCodeBuffer;
-//  CurEncoding: String;
-  Changed: Boolean;
 begin
   Result:=mrOK;
   fLFMBuffer:=nil;
@@ -538,23 +532,13 @@ begin
       DFMConverter.Free;
     end;
     // Change encoding to UTF-8
-    if fSettings.FixEncoding then begin
-      Result:=LoadCodeBuffer(TempLFMBuffer,LfmFilename,
-                             [lbfCheckIfText,lbfUpdateFromDisk],true);
-      // Note: EnUnicode is meant to be a temporary solution.
-      // LCL has other functions for char encoding.
-      TempLFMBuffer.Source:=EnUnicode(TempLFMBuffer.Source, Changed);
-      if Changed then
-        IDEMessagesWindow.AddMsg(lisConvDelphiChangedEncodingToUTF8, '', -1);
-//      TempLFMBuffer.SaveToFile(ChangeFileExt(TempLFMBuffer.Filename, '_utf8.lfm'));
+    Result:=LoadCodeBuffer(TempLFMBuffer,LfmFilename,
+                           [lbfCheckIfText,lbfUpdateFromDisk],true);
+    if TempLFMBuffer.DiskEncoding<>EncodingUTF8 then begin
+      IDEMessagesWindow.AddMsg(Format(lisConvDelphiChangedEncodingToUTF8,
+                                      [TempLFMBuffer.DiskEncoding]), '', -1);
+      TempLFMBuffer.DiskEncoding:=EncodingUTF8;
       TempLFMBuffer.Save;
-{      CurEncoding:=GuessEncoding(TempLFMBuffer.Source);
-      if CurEncoding<>EncodingUTF8 then begin
-        ShowMessage('Encoding = ' + CurEncoding);
-        TempLFMBuffer.Source:=ConvertEncoding(TempLFMBuffer.Source, CurEncoding, EncodingUTF8);
-        TempLFMBuffer.DiskEncoding:=EncodingUTF8;
-        TempLFMBuffer.MemEncoding:=EncodingUTF8;
-      end; }
     end;
     // Read form file code in.
     if not fSettings.SameDfmFile then begin
