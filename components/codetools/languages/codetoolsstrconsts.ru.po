@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-29 15:09+0300\n"
+"PO-Revision-Date: 2011-06-04 01:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -450,7 +450,7 @@ msgstr "не найден идентификатор: %s"
 
 #: codetoolsstrconsts.ctsifdefdarwin
 msgid "IfDef Darwin"
-msgstr ""
+msgstr "IfDef Darwin"
 
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"

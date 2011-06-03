@@ -4041,6 +4041,10 @@ msgstr "Vybudovať nový projekt"
 msgid "Build Number"
 msgstr "Číslo vybudovania"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Volanie %s na vytvorenie Makefile z %s zlyhalo."
@@ -4762,6 +4766,14 @@ msgstr "Jednoduchá syntax (napr. * namiesto .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Vyčistiť zdrojové kódy Lazarus"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5768,6 +5780,10 @@ msgstr ""
 msgid "Categories:"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr ""
@@ -6145,10 +6161,6 @@ msgstr "Vytvoriť uzol Pomoci"
 msgid "Create it"
 msgstr "Vytvoriť v"
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "Vytvoriť nový projekt"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr ""
@@ -6220,6 +6232,10 @@ msgstr "Riadok kurzora v aktuálnom editore"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
+msgstr ""
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -7725,6 +7741,10 @@ msgstr "Súbor nie je textový"
 msgid "File Settings"
 msgstr "Nastavenia súboru ..."
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Súbory v kódovaní ASCII alebo UTF-8"
@@ -8746,6 +8766,10 @@ msgstr ""
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "Klasický"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9930,6 +9954,10 @@ msgstr "Skontrolovať súbor LFM v editore"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "Vyčistiť adresár ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11598,6 +11626,14 @@ msgstr "Meno balíčka obsahuje ..."
 msgid "Package needs installation"
 msgstr "Balíček potrebuje inštaláciu"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Balíčky pre nainštalovanie do IDE"
@@ -13170,12 +13206,20 @@ msgstr "makro ProjectUnitPath"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
@@ -13902,6 +13946,10 @@ msgstr "Súrodenec"
 msgid "Simple Syntax"
 msgstr "Jednoduchá syntax"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr ""
@@ -14589,6 +14637,10 @@ msgstr "Pri kopírovaní streamu komponentu dos chránky nastala chyba:%s%s"
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "Koreňový komponent nemôže byť zmazaný."
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15323,10 +15375,6 @@ msgstr ""
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr ""
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr "Ukáža aktualizácie"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16123,6 +16171,10 @@ msgstr "Vybudovať Lazarus"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Znak"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

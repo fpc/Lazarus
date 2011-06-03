@@ -4001,6 +4001,10 @@ msgstr "Sestavit nový projekt"
 msgid "Build Number"
 msgstr "Číslo sestavení"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Volání %s k vytvoření Makefile z %s selhalo."
@@ -4724,6 +4728,14 @@ msgstr "Jednoduchá syntaxe (např. * namísto .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Vyčistit zdrojové soubory Lazarusu"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5726,6 +5738,10 @@ msgstr "BeginCodeTools selhalo!"
 msgid "Categories:"
 msgstr "Kategorie:"
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr "Převod přerušen."
@@ -6109,10 +6125,6 @@ msgstr "Vytvořit uzel nápovědy"
 msgid "Create it"
 msgstr "Vytvořit to"
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "Vytvořit nový projekt"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "Vytvořit projekt"
@@ -6185,6 +6197,10 @@ msgstr "Řádek kurzoru v aktuálním editoru"
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
 msgstr "Vlastní sestavovací makra"
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
+msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -7685,6 +7701,10 @@ msgstr "Soubor není textový"
 msgid "File Settings"
 msgstr "Nastavení souboru..."
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Soubory v ASCII nebo v kódování UTF-8"
@@ -8704,6 +8724,10 @@ msgstr "Vyberte schéma mapování kláves"
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "Vzor"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9880,6 +9904,10 @@ msgstr "Zkontrolovat soubor LFM v editoru"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "Vyčistit adresář..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11511,6 +11539,14 @@ msgstr "Jméno balíčku obsahuje..."
 msgid "Package needs installation"
 msgstr "Balíček vyžaduje instalaci"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Balíčky k instalování do IDE"
@@ -13075,6 +13111,10 @@ msgstr "makro ProjectUnitPath"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "Výstupní adresář projektu (např. ppu adresář)"
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr "Cesta projektu:"
@@ -13082,6 +13122,10 @@ msgstr "Cesta projektu:"
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "Adresář, v němž musí být hlavní soubor projektu"
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
@@ -13803,6 +13847,10 @@ msgstr "Sourozenec"
 msgid "Simple Syntax"
 msgstr "Jednoduchá syntaxe"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr "Přeskočit soubor"
@@ -14493,6 +14541,10 @@ msgstr "Při kopírování proudu komponenty do schránky nastala chyba:%s%s"
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "Kořenový komponentu nelze smazat."
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15223,10 +15275,6 @@ msgstr "Bez znaménka"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Nepoužité jednotky"
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr "Aktualizovat náhled"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16019,6 +16067,10 @@ msgstr "Sestavit lazarus"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Znak"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

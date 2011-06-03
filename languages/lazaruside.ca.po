@@ -4030,6 +4030,10 @@ msgstr "Munta un projecte nou"
 msgid "Build Number"
 msgstr "Munta el número"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr ""
@@ -4747,6 +4751,14 @@ msgstr "Sintaxi simple (p.ex. * en lloc de .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Neteja el codi del Lazarus"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5751,6 +5763,10 @@ msgstr ""
 msgid "Categories:"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr ""
@@ -6128,10 +6144,6 @@ msgstr ""
 msgid "Create it"
 msgstr ""
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr ""
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr ""
@@ -6203,6 +6215,10 @@ msgstr "La línia del cursor en l'editor actual"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
+msgstr ""
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -7702,6 +7718,10 @@ msgstr "No és un fitxer de text"
 msgid "File Settings"
 msgstr ""
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr ""
@@ -8711,6 +8731,10 @@ msgstr ""
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "Clàssic"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9891,6 +9915,10 @@ msgstr "Comprova el fitxer LFM en l'editor"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "Neteja el directori ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11549,6 +11577,14 @@ msgstr ""
 msgid "Package needs installation"
 msgstr "S'ha d'instal·lar el paquet"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Paquets per instal·lar a l'IDE"
@@ -13119,12 +13155,20 @@ msgstr ""
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
@@ -13851,6 +13895,10 @@ msgstr ""
 msgid "Simple Syntax"
 msgstr "Sintaxi SImple"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr ""
@@ -14534,6 +14582,10 @@ msgstr "S'ha produït un error mentre es copiava l'afluent del component al port
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "No es pot eliminar el component arrel."
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15263,10 +15315,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
-msgstr ""
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
 msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
@@ -16058,6 +16106,10 @@ msgstr "Munta el Lazarus"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Caràcter"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

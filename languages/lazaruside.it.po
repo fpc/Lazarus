@@ -4051,6 +4051,10 @@ msgstr "Costruisci un nuovo progetto"
 msgid "Build Number"
 msgstr "Numero di costruzione"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Chiamata di %s per creare un nuovo makefile da %s fallita."
@@ -4774,6 +4778,14 @@ msgstr "Sintassi semplice (cioè * invece di .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Pulisci sorgenti Lazarus"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5777,6 +5789,10 @@ msgstr "BeginCodeTools ha fallito!"
 msgid "Categories:"
 msgstr "Categorie:"
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr "Conversione abortita."
@@ -6162,10 +6178,6 @@ msgstr "Crea nodo di aiuto"
 msgid "Create it"
 msgstr "Crealo"
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "Crea un nuovo progetto"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "Crea progetto"
@@ -6238,6 +6250,10 @@ msgstr "Riga cursore nell'editor corrente"
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
 msgstr "Macro per build personalizzata"
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
+msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -7742,6 +7758,10 @@ msgstr "File non di testo"
 msgid "File Settings"
 msgstr "Impostazioni file ..."
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Files in codifica ASCII o UTF-8"
@@ -8763,6 +8783,10 @@ msgstr "Scegli schema di mappatura tasti"
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "Classico"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9945,6 +9969,10 @@ msgstr "Controlla file LFM nell'editor"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "Pulisci cartella ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11617,6 +11645,14 @@ msgstr "Il nome del Pacchetto contiene ..."
 msgid "Package needs installation"
 msgstr "Il pacchetto necessita di installazione"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Pacchetti da installare nell'IDE"
@@ -13188,6 +13224,10 @@ msgstr ""
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "Cartella di output del progetto (es. la cartella ppu)"
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr "Path del progetto:"
@@ -13195,6 +13235,10 @@ msgstr "Path del progetto:"
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "Cartella del file principale del progetto"
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
@@ -13920,6 +13964,10 @@ msgstr "Fratello"
 msgid "Simple Syntax"
 msgstr "Sintassi semplice"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr "Salta file"
@@ -14610,6 +14658,10 @@ msgstr "C'è stato un errore nella copia dello stream del componente sugli appun
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "Il componente radice non può essere cancellato."
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15344,10 +15396,6 @@ msgstr ""
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Unit non usate"
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr "Anteprima dell'aggiornamento"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16144,6 +16192,10 @@ msgstr "Costruisci Lazarus"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Char"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

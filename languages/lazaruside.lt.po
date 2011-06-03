@@ -4041,6 +4041,10 @@ msgstr "Daryti naująjį projektą"
 msgid "Build Number"
 msgstr "Darymo numeris"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Besikreipiant į %s, kad pagal %s būtų sukurtas Makefile, įvyko klaida."
@@ -4764,6 +4768,14 @@ msgstr "Paprasta sintaksė (pvz.: * vietoje .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Apvalyti Lazarus aplankus"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5769,6 +5781,10 @@ msgstr ""
 msgid "Categories:"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr ""
@@ -6146,10 +6162,6 @@ msgstr "Kurti žinyno mazgą"
 msgid "Create it"
 msgstr "Kurti"
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "Kurti naują projektą"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "Sukurti projektą"
@@ -6221,6 +6233,10 @@ msgstr "Žymeklio eilutė veikiamojoje rengyklėje"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
+msgstr ""
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -7724,6 +7740,10 @@ msgstr "Ne teksto failas"
 msgid "File Settings"
 msgstr "Failo nuostatos…"
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCII arba UTF-8 koduotės failai"
@@ -8744,6 +8764,10 @@ msgstr "Rinkitės klavišų priskyrimo schemą"
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "Klasikinis"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9933,6 +9957,10 @@ msgstr "Tikrinti LFM failą rengyklėje"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "Apvalyti aplanką…"
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11595,6 +11623,14 @@ msgstr "Paketo pavadinime yra…"
 msgid "Package needs installation"
 msgstr "Paketą reikia įdiegti"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Į IKA diegtini paketai"
@@ -13166,12 +13202,20 @@ msgstr "makrokomanda ProjectUnitPath"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "Projekto išvesties aplankas (pvz. „ppu“ failų aplankas)"
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr "Kelias iki projekto:"
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
@@ -13902,6 +13946,10 @@ msgstr "Kaimynas"
 msgid "Simple Syntax"
 msgstr "Paprasta sintaksė"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr "Praleisti failą"
@@ -14592,6 +14640,10 @@ msgstr "Komponentę srautu kopijuojant į iškarpinę įvyko klaida:%s%s"
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "Šakninio komponento negalima Pašalinti."
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15328,10 +15380,6 @@ msgstr ""
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Nenaudojami moduliai"
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr "Naujinti peržiūrą"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16128,6 +16176,10 @@ msgstr "Daryti Lazarus"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Simbolis"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

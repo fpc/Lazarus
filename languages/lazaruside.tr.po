@@ -4002,6 +4002,10 @@ msgstr "Yeni projeyi inşa et"
 msgid "Build Number"
 msgstr ""
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr ""
@@ -4718,6 +4722,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
@@ -5713,6 +5725,10 @@ msgstr ""
 msgid "Categories:"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr ""
@@ -6088,10 +6104,6 @@ msgstr ""
 msgid "Create it"
 msgstr ""
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "Yeni proje oluştur"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr ""
@@ -6163,6 +6175,10 @@ msgstr "Şu anki düzenleyicinin imleç satırı"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
+msgstr ""
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -7660,6 +7676,10 @@ msgstr "Dosya metin değil"
 msgid "File Settings"
 msgstr ""
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr ""
@@ -8669,6 +8689,10 @@ msgstr ""
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "Klasik"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9847,6 +9871,10 @@ msgstr "LFM dosyasını düzenleyicide denetle"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "Dizini temizle ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11499,6 +11527,14 @@ msgstr ""
 msgid "Package needs installation"
 msgstr ""
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr ""
@@ -13061,12 +13097,20 @@ msgstr "macro ProjectUnitPath"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
@@ -13791,6 +13835,10 @@ msgstr ""
 msgid "Simple Syntax"
 msgstr "Basit Sözdizimi"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr ""
@@ -14457,6 +14505,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
+msgstr ""
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
 msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
@@ -15185,10 +15237,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
-msgstr ""
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
 msgstr ""
 
 #: lazarusidestrconsts.lisupdatereferences
@@ -15979,6 +16027,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
+msgstr ""
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall

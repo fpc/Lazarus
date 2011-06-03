@@ -4043,6 +4043,10 @@ msgstr "新規プロジェクトを構築"
 msgid "Build Number"
 msgstr "構築番号"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "%sの呼び出し(%sからMakefileを作成するための)に失敗しました。"
@@ -4766,6 +4770,14 @@ msgstr "簡単な表記法 (例 * instead of .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Lazarusソースを消去"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5772,6 +5784,10 @@ msgstr "BeginCodeToolsが失敗しました！"
 msgid "Categories:"
 msgstr "カテゴリ："
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr "変換を中止しました。"
@@ -6156,10 +6172,6 @@ msgstr "ヘルプノードを作成"
 msgid "Create it"
 msgstr "それを作成"
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "新しいプロジェクトを作成"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "プロジェクトを作成"
@@ -6232,6 +6244,10 @@ msgstr "カーソル"
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
 msgstr "カスタム構築マクロ"
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
+msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -7736,6 +7752,10 @@ msgstr "ファイルはテキストでない"
 msgid "File Settings"
 msgstr "ファイル設定 ..."
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCIIもしくはUTF-8エンコーディングのファイル"
@@ -8757,6 +8777,10 @@ msgstr "キーマッピングスキームを選択"
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "クラッシック"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9943,6 +9967,10 @@ msgstr "エディタでLFMファイルをチェック"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "ディレクトリの中身を消去 ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11617,6 +11645,14 @@ msgstr "パッケージ名が次を含む ..."
 msgid "Package needs installation"
 msgstr "パッケージはインストールが必要です"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "IDEにインストールするパッケージ"
@@ -13189,6 +13225,10 @@ msgstr "ProjectUnitPathマクロ"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "プロジェクト出力ディレクトリ（例：ppuディレクトリ）"
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr "プロジェクトパス："
@@ -13196,6 +13236,10 @@ msgstr "プロジェクトパス："
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "プロジェクトの主なファイルがなければならないディレクトリ"
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
@@ -13921,6 +13965,10 @@ msgstr "兄弟"
 msgid "Simple Syntax"
 msgstr "簡単な表記法"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr "ファイルをスキップ"
@@ -14608,6 +14656,10 @@ msgstr "コンポーネントストリームをクリップボードにコピー
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "rootコンポーネントは削除できません。"
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15342,10 +15394,6 @@ msgstr "未署名"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "使われていないユニット"
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr "プレビューを更新"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16144,6 +16192,10 @@ msgstr "lazarusを構築"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Char"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

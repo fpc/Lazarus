@@ -4045,6 +4045,10 @@ msgstr "构建新的工程"
 msgid "Build Number"
 msgstr "构建编号"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "调用 %s 建立Makefile失败(从 %s 中)."
@@ -4768,6 +4772,14 @@ msgstr "简单语法 (例如 * 取代 .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "清除 Lazarus 源代码"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5774,6 +5786,10 @@ msgstr ""
 msgid "Categories:"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr ""
@@ -6151,10 +6167,6 @@ msgstr "创建帮助节点"
 msgid "Create it"
 msgstr ""
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "创建新的工程"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr ""
@@ -6226,6 +6238,10 @@ msgstr "当前代码编辑器中光标所在行"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
+msgstr ""
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
 msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
@@ -7731,6 +7747,10 @@ msgstr "文件不是文本文件"
 msgid "File Settings"
 msgstr "文件设置 ..."
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "文件为ASCII或UTF-8编码"
@@ -8750,6 +8770,10 @@ msgstr "选择键盘映射方案"
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "经典"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9934,6 +9958,10 @@ msgstr "在编辑器中检查 LFM 文件"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "清除目录 ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11602,6 +11630,14 @@ msgstr "包名包含 ..."
 msgid "Package needs installation"
 msgstr "包需要安装"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "包将安装到 IDE 中"
@@ -13174,12 +13210,20 @@ msgstr "ProjectUnitPath 宏"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "工程输出目录(例如ppu目录)"
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
@@ -13906,6 +13950,10 @@ msgstr "同级别"
 msgid "Simple Syntax"
 msgstr "简单语法"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr ""
@@ -14593,6 +14641,10 @@ msgstr "复制组件流到剪切板发生一个错误:%s%s"
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "根组件无法删除."
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15323,10 +15375,6 @@ msgstr ""
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "未用单元"
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr "更新预览"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16121,6 +16169,10 @@ msgstr "构建 Lazarus"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Char"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

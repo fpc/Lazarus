@@ -3980,6 +3980,10 @@ msgstr ""
 msgid "Build Number"
 msgstr ""
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr ""
@@ -4699,6 +4703,14 @@ msgstr "Yksinkertainen kielioppi (kuten * eikä .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Siivoa Lazaruksen lähdekoodi"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5693,6 +5705,10 @@ msgstr ""
 msgid "Categories:"
 msgstr "Ryhmät"
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr "Muunnos on keskeytetty."
@@ -6068,10 +6084,6 @@ msgstr "Luo ohje-solmu"
 msgid "Create it"
 msgstr "Luo se"
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "Luodaan uusi projekti"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "Luo projekti"
@@ -6144,6 +6156,10 @@ msgstr ""
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
 msgstr "Räätälöidyt käännösmakrot"
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
+msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -7638,6 +7654,10 @@ msgstr "Tiedosto ei ole tekstitiedosto"
 msgid "File Settings"
 msgstr "Tiedoston asetukset"
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr ""
@@ -8645,6 +8665,10 @@ msgstr "Valitse näppäinkaavio"
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "Klassinen"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9811,6 +9835,10 @@ msgstr "Tarkista editorissa oleva LFM tiedosto"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "Ylimääräisten tiedostojen poisto ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11397,6 +11425,14 @@ msgstr ""
 msgid "Package needs installation"
 msgstr ""
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Komponenttipaketit jotka asennetaan kehitysympäristöön"
@@ -12959,12 +12995,20 @@ msgstr ""
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
@@ -13170,7 +13214,7 @@ msgstr "Rekisterit"
 #: lazarusidestrconsts.lisregistersdlgname
 msgctxt "lazarusidestrconsts.lisregistersdlgname"
 msgid "Name"
-msgstr ""
+msgstr "Nimi"
 
 #: lazarusidestrconsts.lisregistersdlgvalue
 msgctxt "lazarusidestrconsts.lisregistersdlgvalue"
@@ -13683,6 +13727,10 @@ msgstr "Sisarus"
 msgid "Simple Syntax"
 msgstr "Yksinkertainen kielioppi"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr "Ohita tiedosto"
@@ -14023,7 +14071,7 @@ msgstr "%s sisältää olemattoman hakemiston:%s%s"
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
 msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
-msgstr "%s sisältää tähtimerkin *.%sLazarus kohtelee sitä tavallisena merkkinä eikä laajenna sitä tiedostohaussa.
+msgstr "%s sisältää tähtimerkin *.%sLazarus kohtelee sitä tavallisena merkkinä eikä laajenna sitä tiedostohaussa"
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
@@ -14347,6 +14395,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
+msgstr ""
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
 msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
@@ -15074,10 +15126,6 @@ msgstr "Etumerkitön"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Käyttämättömät käännösyksiköt"
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr "Päivitä esikatselu"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -15868,6 +15916,10 @@ msgstr "Käännä Lazarus"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Merkki"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

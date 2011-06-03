@@ -4015,6 +4015,10 @@ msgstr "בנה פרויקט חדש"
 msgid "Build Number"
 msgstr "מספר הבניה"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "קריאת s% ליצירת makefile מ s% נכשלה."
@@ -4737,6 +4741,14 @@ msgstr "תחביר פשוט (כלומר * במקום .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "נקה את קוד המקור של לזרוס"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr ""
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr ""
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5741,6 +5753,10 @@ msgstr "נכשל BeginCodeTools"
 msgid "Categories:"
 msgstr "קטגוריות:"
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr "ההמרה נפסקה"
@@ -6126,10 +6142,6 @@ msgstr "צור צומת עזרה"
 msgid "Create it"
 msgstr "צור זאת"
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "צור פרוייקט חדש"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "צור פרוייקט"
@@ -6202,6 +6214,10 @@ msgstr "השורה בה נמצא הסמן בעורך הנוכחי"
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
 msgstr "מאקרו בניה מותאם אישית"
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
+msgstr ""
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -7704,6 +7720,10 @@ msgstr "הקובץ אינו קובץ טקסט"
 msgid "File Settings"
 msgstr "הגדרות קובץ ..."
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "קבצים בקידוד ASCII  או UTF-8"
@@ -8725,6 +8745,10 @@ msgstr "בחר סכמת מיפוי מקשים"
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "קלאסי"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9911,6 +9935,10 @@ msgstr "בדוק את קובץ הLFM בעורך"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "נקה ספרייה ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11573,6 +11601,14 @@ msgstr "שם החבילה מכיל ..."
 msgid "Package needs installation"
 msgstr "החבילה לא נמצאה"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr ""
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr ""
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "החבילות להתקנה בIDE"
@@ -13144,6 +13180,10 @@ msgstr "מאקרו ProjectUnitPath"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "תיקיית הפלט של הפרוייקט (למשל תיקיית ה ppu)"
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr "נתיב הפרוייקט:"
@@ -13151,6 +13191,10 @@ msgstr "נתיב הפרוייקט:"
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "התיקייה שבה חייב להיות הקובץ הראשי של הפרוייקט"
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
@@ -13878,6 +13922,10 @@ msgstr "אח"
 msgid "Simple Syntax"
 msgstr "תחביר פשוט"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr ""
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr "דלג על הקובץ"
@@ -14567,6 +14615,10 @@ msgstr "הייתה שגיאה בזמן העתקת זרימת הרכיב שנבח
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "אי אפשר למחוק את רכיב השורש."
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15297,10 +15349,6 @@ msgstr "ללא סימן"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "יחידות שאינן בשימוש"
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr "עדכן תצוגה מקדימה"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16100,6 +16148,10 @@ msgstr "בנה את לזרוס"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "תו"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

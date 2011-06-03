@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-26 03:56+0300\n"
+"PO-Revision-Date: 2011-06-04 01:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4045,6 +4045,10 @@ msgstr "Собрать новый проект"
 msgid "Build Number"
 msgstr "Номер сборки"
 
+#: lazarusidestrconsts.lisbuildproject
+msgid "Build project"
+msgstr "Собрать проект"
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Вызов %s для создания Makefile из %s не удался."
@@ -4767,6 +4771,14 @@ msgstr "Простой синтаксис (например, * вместо .*)"
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Очистить каталог исходного кода Lazarus"
+
+#: lazarusidestrconsts.liscleanupandbuild
+msgid "Clean up and build"
+msgstr "Очистить и собрать"
+
+#: lazarusidestrconsts.liscleanupandbuildproject
+msgid "Clean up and build project"
+msgstr "Очистка и сборка проекта"
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5765,6 +5777,10 @@ msgstr "Ошибка BeginCodeTools!"
 msgid "Categories:"
 msgstr "Категории:"
 
+#: lazarusidestrconsts.lisconvdelphichangedencodingtoutf8
+msgid "Changed encoding from %s to UTF-8"
+msgstr "Кодировка изменена с %s на UTF-8"
+
 #: lazarusidestrconsts.lisconvdelphiconversionaborted
 msgid "Conversion Aborted."
 msgstr "Преобразование прервано."
@@ -6147,10 +6163,6 @@ msgstr "Создать элемент справки"
 msgid "Create it"
 msgstr "Создать его"
 
-#: lazarusidestrconsts.liscreatenewproject
-msgid "Create new project"
-msgstr "Создать новый проект"
-
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
 msgstr "Создать проект"
@@ -6223,6 +6235,10 @@ msgstr "Номер строки под курсором в текущем ред
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
 msgstr "Пользовательские макросы сборки"
+
+#: lazarusidestrconsts.liscustomopthint
+msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
+msgstr "Эти параметры передаются непосредственно компилятору. Макросы заменяются, символы перевода строки заменяются одиночными пробелами."
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -7725,6 +7741,10 @@ msgstr "Файл не текстовый"
 msgid "File Settings"
 msgstr "Параметры файла"
 
+#: lazarusidestrconsts.lisfileshaverightencoding
+msgid "*** All found files already have the right encoding ***"
+msgstr "*** Все найденные файлы уже имеют верную кодировку ***"
+
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Файлы в кодировке ASCII либо UTF-8"
@@ -8739,6 +8759,10 @@ msgstr "Выберите схему привязки клавиш"
 #: lazarusidestrconsts.liskmclassic
 msgid "Classic"
 msgstr "Классическая"
+
+#: lazarusidestrconsts.liskmcleanupcompiled
+msgid "Clean up build files"
+msgstr "Очистить файлы сборки"
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9918,6 +9942,10 @@ msgstr "Проверить файл LFM в редакторе"
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
 msgstr "Очистить каталог ..."
+
+#: lazarusidestrconsts.lismenucleanupcompiled
+msgid "Clean up build files ..."
+msgstr "Очистить файлы сборки ..."
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -11554,6 +11582,14 @@ msgstr "Имя пакета содержит ..."
 msgid "Package needs installation"
 msgstr "Пакет требует установки"
 
+#: lazarusidestrconsts.lispackageoutputdirectories
+msgid "Package output directories"
+msgstr "Каталоги вывода пакетов"
+
+#: lazarusidestrconsts.lispackagesourcedirectories
+msgid "Package source directories"
+msgstr "Каталоги исходного кода пакетов"
+
 #: lazarusidestrconsts.lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
 msgstr "Пакеты для установки в IDE"
@@ -13125,6 +13161,10 @@ msgstr "макрос ProjectUnitPath"
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "Каталог вывода проекта (например, каталог с ppu)"
 
+#: lazarusidestrconsts.lisprojectoutputdirectory
+msgid "Project output directory"
+msgstr "Каталог вывода проекта"
+
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
 msgstr "Каталог проекта:"
@@ -13132,6 +13172,10 @@ msgstr "Каталог проекта:"
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
 msgstr "Каталог, в котором располагается главный файл проекта"
+
+#: lazarusidestrconsts.lisprojectsourcedirectories
+msgid "Project source directories"
+msgstr "Каталоги исходного кода проекта"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
@@ -13855,6 +13899,10 @@ msgstr "Сосед"
 msgid "Simple Syntax"
 msgstr "Простой синтаксис"
 
+#: lazarusidestrconsts.lisskiperrors
+msgid "Skip errors"
+msgstr "Пропустить ошибки"
+
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
 msgstr "Пропустить файл"
@@ -14535,6 +14583,10 @@ msgstr "Произошла ошибка при копировании поток
 #: lazarusidestrconsts.listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "Компонент верхнего уровня не может быть удалён."
+
+#: lazarusidestrconsts.listhesefileswillbedeleted
+msgid "These files will be deleted:"
+msgstr "Следующие файлы будут удалены:"
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
@@ -15266,10 +15318,6 @@ msgstr "Беззнаковое"
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
 msgstr "Неиспользуемые модули"
-
-#: lazarusidestrconsts.lisupdatepreview
-msgid "Update preview"
-msgstr "Обновить предпросмотр"
 
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
@@ -16066,6 +16114,10 @@ msgstr "Собрать Lazarus"
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Символ"
+
+#: lazarusidestrconsts.srkmeccleanupcompiled
+msgid "clean up build files"
+msgstr "очистить файлы сборки"
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

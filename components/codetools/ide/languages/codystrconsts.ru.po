@@ -207,7 +207,7 @@ msgstr "\"%s\" является ключевым словом."
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" block"
-msgstr ""
+msgstr "Раскрыть блок \"With\""
 
 #: codystrconsts.crsfile
 msgid "File"

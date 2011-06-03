@@ -11,11 +11,11 @@ msgstr ""
 
 #: reglazwebextra.rshttpappli
 msgid "HTTP server Application"
-msgstr ""
+msgstr "Приложение сервера HTTP"
 
 #: reglazwebextra.rshttpappli2
 msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
-msgstr ""
+msgstr "Приложение сервера HTTP. Законченная программа сервера HTTP на Free Pascal, использующая веб-модули. Исходный код программы автоматически поддерживается Lazarus."
 
 #: reglazwebextra.rswebdataprovi
 msgid "Web DataProvider Module"

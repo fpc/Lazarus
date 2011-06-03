@@ -25,11 +25,11 @@ msgstr "Введите здесь объявления классов/стиле
 
 #: fpwebstrconsts.sdocumentlocation
 msgid "&Location"
-msgstr ""
+msgstr "&Расположение"
 
 #: fpwebstrconsts.sdocumentroot
 msgid "&Directory"
-msgstr ""
+msgstr "&Каталог"
 
 #: fpwebstrconsts.senteryoutext
 msgctxt "fpwebstrconsts.senteryoutext"
@@ -179,7 +179,7 @@ msgstr "&Заголовок Html - <title>"
 
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
-msgstr ""
+msgstr "&Порт прослушивания запросов:"
 
 #: fpwebstrconsts.sjsfile
 msgid "Javascript file"
@@ -435,13 +435,13 @@ msgstr "Свойства нового файла HTML"
 
 #: fpwebstrconsts.snewhttpapp
 msgid "New HTTP application"
-msgstr ""
+msgstr "Новое приложение HTTP"
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
-msgstr ""
+msgstr "&Зарегистрировать расположение файлов для выдачи"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"
-msgstr ""
+msgstr "Обслуживать запросы в потоках &исполнения"
 
