@@ -2151,6 +2151,13 @@ begin
       begin
         if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
         begin
+          with ARect do
+          begin
+            if not odd(Right - Left) then
+              Dec(Right);
+            if not odd(Bottom - Top) then
+              Dec(Bottom);
+          end;
           Rectangle(DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
           Tmp := (ARect.Bottom + ARect.Top) shr 1;
           MoveToEx(DC, ARect.Left + 2, Tmp, nil);
