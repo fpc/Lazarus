@@ -6143,6 +6143,11 @@ begin
     QEventKeyPress,
     QEventKeyRelease:
     begin
+      if FOwnWidget and (FOwner = nil) and
+        ((QEvent_type(Event) = QEventKeyPress) or
+        (QEvent_type(Event) = QEventKeyRelease)) then
+        Result := inherited EventFilter(Sender, Event)
+      else
       if (QEvent_type(Event) = QEventWheel) and Assigned(FOwner) and
         (FOwner is TQtCustomControl) then
         Result := inherited EventFilter(Sender, Event)
