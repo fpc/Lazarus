@@ -45,7 +45,7 @@ type
   TGtk2WSCustomCalendar = class(TWSCustomCalendar)
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
-    class function GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; inline;
+    class function GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; //inline;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -106,7 +106,7 @@ begin
   end;
 end;
 
-class function TGtk2WSCustomCalendar.GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; inline;
+class function TGtk2WSCustomCalendar.GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; //inline;
 begin
   Result := PGtkCalendar(GetWidgetInfo(PGtkWidget(ACalendar.Handle))^.CoreWidget);
 end;
@@ -118,11 +118,14 @@ var
   FrameWidget, CalendarWidget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
   Allocation: TGtkAllocation;
+  Requisition: TGtkRequisition;
 begin
   FrameWidget := gtk_frame_new(nil);
   CalendarWidget := gtk_calendar_new();
   gtk_container_add(PGtkContainer(FrameWidget), CalendarWidget);
   gtk_widget_show_all(FrameWidget);
+  // if we don't request it - we have a SIGFPE sometimes
+  gtk_widget_size_request(CalendarWidget, @Requisition);
 
   Result := TLCLIntfHandle(PtrUInt(FrameWidget));
   {$IFDEF DebugLCLComponents}
