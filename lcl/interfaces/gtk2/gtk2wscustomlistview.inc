@@ -1442,6 +1442,7 @@ begin
     // already created in TGtkWSBaseScrollingWinControl
     // Replace the ScrollingInfo with our info
     WidgetInfo := GetWidgetInfo(ScrollWidget);
+    WidgetInfo^.DefaultCursor:=0;
     OrigScrollingData := WidgetInfo^.UserData;
     Widgets^.ScrollingData := OrigScrollingData^;
 
