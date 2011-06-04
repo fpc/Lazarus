@@ -184,22 +184,13 @@ end;
 
 function RegisterCustomToolButton: Boolean; alias : 'WSRegisterCustomToolButton';
 begin
-{$ifdef WSToolBar}
-  RegisterWSComponent(TCustomToolButton, TQtWSToolButton);
-  Result := True;
-{$else}
   Result := False;
-{$endif}
 end;
 
 function RegisterToolBar: Boolean; alias : 'WSRegisterToolBar';
 begin
-{$ifdef WSToolBar}
-  RegisterWSComponent(TCustomToolBar, TQtWSToolBar);
+  RegisterWSComponent(TToolBar, TQtWSToolBar);
   Result := True;
-{$else}
-  Result := False;
-{$endif}
 end;
 
 function RegisterCustomTrackBar: Boolean; alias : 'WSRegisterCustomTrackBar';
