@@ -8127,7 +8127,7 @@ begin
 
   Cfg:=TXMLConfig.Create(nil);
   Try
-    Cfg.FileName := FileName;
+    Cfg.FileName := UTF8ToSys(FileName);
     SaveContent(Cfg);
   Finally
     Cfg.Flush;
@@ -8183,7 +8183,7 @@ begin
 
   Cfg:=TXMLConfig.Create(nil);
   Try
-    Cfg.Filename := FileName;
+    Cfg.Filename := UTF8ToSys(FileName);
     Version:=cfg.GetValue('grid/version',-1);
     if Version=-1 then raise Exception.Create(rsNotAValidGridFile);
     BeginUpdate;
