@@ -377,10 +377,10 @@ end;
 
 procedure TActionListEditor.OnComponentRenamed(AComponent: TComponent);
 begin
-  if (not Visible) or (FActionList=nil)
-  or (not Assigned(FActionList.ActionByName(AComponent.Name)))
-  then Exit;
-  lstActionName.Items[lstActionName.ItemIndex] := AComponent.Name;
+  if Visible and Assigned(FActionList)
+  and (AComponent is TAction) and (TAction(AComponent).ActionList = FActionList)
+  and Assigned(FActionList.ActionByName(AComponent.Name)) then
+    lstActionName.Items[lstActionName.ItemIndex] := AComponent.Name;
 end;
 
 procedure TActionListEditor.OnComponentSelection(
