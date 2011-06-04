@@ -1450,8 +1450,10 @@ begin
 
   // auto create a storage for every shown form
   Layout:=SimpleLayoutStorage.ItemByFormID(AForm.Name);
-  if Layout=nil then
-    SimpleLayoutStorage.CreateWindowLayout(AForm)
+  if Layout=nil then begin
+    if not (csDesigning in AForm.ComponentState) then
+      SimpleLayoutStorage.CreateWindowLayout(AForm);
+  end
   else
     Layout.Form:=AForm;
 
