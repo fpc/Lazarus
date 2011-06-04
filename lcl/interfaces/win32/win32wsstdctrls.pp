@@ -648,12 +648,14 @@ begin
     Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
 end;
 
-class function TWin32WSCustomListBox.GetItemRect(
-  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
-  ): boolean;
+class function TWin32WSCustomListBox.GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): Boolean;
+var
+  Handle: HWND;
 begin
-  Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETITEMRECT, Index,
-    LPARAM(@ARect)) <> LB_ERR;
+  Handle := ACustomListBox.Handle;
+  // The check for GetProp is required because of some division error which happens
+  // if call LB_GETITEMRECT on window initialization
+  Result := (GetProp(Handle, 'WinControl') <> 0) and (Windows.SendMessage(Handle, LB_GETITEMRECT, Index, LPARAM(@ARect)) <> LB_ERR);
 end;
 
 class function TWin32WSCustomListBox.GetScrollWidth(const ACustomListBox: TCustomListBox): Integer;
