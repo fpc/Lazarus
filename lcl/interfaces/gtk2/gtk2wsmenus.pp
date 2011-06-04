@@ -94,12 +94,14 @@ begin
     Parent := gtk_widget_get_parent(Widget);
     if (Parent <> nil) and GTK_IS_MENU_BAR(Parent) then
     begin
+      WidgetInfo := GetWidgetInfo(Widget);
       if (gtk_menu_item_get_submenu(PGtkMenuItem(Widget)) = nil) then
       begin
-        WidgetInfo := GetWidgetInfo(Widget);
         if Assigned(TMenuItem(WidgetInfo^.LCLObject).OnClick) then
           gtk_menu_item_activate(PGtkMenuItem(Widget));
-      end;
+      end
+      else if Assigned(TMenuItem(WidgetInfo^.LCLObject).OnClick) then
+        TMenuItem(WidgetInfo^.LCLObject).Click;
     end;
   end;
 end;
