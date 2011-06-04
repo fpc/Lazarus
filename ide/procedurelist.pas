@@ -437,7 +437,7 @@ begin
     cbObjects.Items.Insert(1, lisPListNone);
   finally
     cbObjects.ItemIndex := 0;   // select <All> as the default
-    if cbObjects.Text = '' then  // some widgetsets have issues here so we do this
+    if (cbObjects.Items.Count > 0) and (cbObjects.Text = '') then  // some widgetsets have issues here so we do this
       cbObjects.Text := cbObjects.Items[0];
   end;
 end;
