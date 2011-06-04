@@ -992,8 +992,13 @@ begin
     TQtListWidget(ALV.Handle).removeItem(AIndex)
   else
   begin
-    QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    QtTreeWidget.DeleteItem(AIndex);
+    TQtListWidget(ALV.Handle).BeginUpdate;
+    try
+      QtTreeWidget := TQtTreeWidget(ALV.Handle);
+      QtTreeWidget.DeleteItem(AIndex);
+    finally
+      TQtListWidget(ALV.Handle).EndUpdate;
+    end;
   end;
 end;
 
