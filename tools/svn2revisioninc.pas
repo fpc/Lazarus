@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  ***************************************************************************
  *                                                                         *
@@ -62,6 +61,7 @@ type
     RevisionIncFileName: string;
     RevisionIncDirName: string;
     RevisionStr: string;
+    MainBranch: string;
     ConstName: string;
     Verbose: boolean;
     UseStdOut: boolean;
@@ -74,6 +74,9 @@ type
     function CanCreateRevisionInc: boolean;
     function ConstStart: string;
     procedure Show(msg: string);
+    function IsThisGitUpstreamBranch: boolean;
+    function GetGitBranchPoint: string;
+    function GitRevisionFromGitCommit: boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -228,9 +231,14 @@ begin
     Result := GetRevisionFromSvnVersion or GetRevisionFromEntriesTxt or
               GetRevisionFromEntriesXml;
   end else begin
-    GitDir:= AppendPathDelim(SourceDirectory) + '.git';
+    GitDir:= AppendPathDelim(SourceDirectory)+'.git';
     if DirectoryExistsUTF8(GitDir) then
-      Result:=GetRevisionFromGitVersion;
+    begin
+      if IsThisGitUpstreamBranch then
+        Result := GetRevisionFromGitVersion
+      else
+        Result := GitRevisionFromGitCommit;
+    end;
   end;
 end;
 
@@ -270,8 +278,7 @@ begin
   writeln(RevisionIncText, RevisionIncComment);
   writeln(RevisionIncText, ConstStart, RevisionStr, ''';');
   CloseFile(RevisionIncText);
-  debugln(format('Created %s for revision: %s',
-    [RevisionIncFileName, RevisionStr]));
+  debugln(format('Created %s for revision: %s', [RevisionIncFileName, RevisionStr]));
 end;
 
 procedure TSvn2RevisionApplication.ShowHelp;
@@ -393,6 +400,185 @@ procedure TSvn2RevisionApplication.Show(msg: string);
 begin
   if Verbose then
     debugln(msg);
+end;
+
+{
+  Determine what branch we are in by looking at the 'git branch' output.
+  Sample output:
+    $ git branch
+      custom-patches
+      docs
+      dubydebugger
+      externtools
+      filebrowser
+    * filefilters
+      fixes
+      graeme
+      upstream
+      work
+
+}
+function TSvn2RevisionApplication.IsThisGitUpstreamBranch: boolean;
+const
+  cBufSize = 1024;
+var
+  p: TProcessUTF8;
+  Buffer: string;
+  s: string;
+  i: integer;
+  n: LongInt;
+  sl: TStringList;
+begin
+  Result := false;
+  p := TProcessUTF8.Create(nil);
+  try
+    sl := TStringList.Create;
+    with p do
+    begin
+      CommandLine := 'git branch';
+      Options := [poUsePipes, poWaitOnExit];
+      try
+        Execute;
+        // Now lets process the output
+        SetLength(Buffer, cBufSize);
+        s := '';
+        repeat
+          n := OutPut.Read(Buffer[1], cBufSize);
+          s := s + Copy(Buffer, 1, n);
+        until n < cBufSize;
+        sl.Text := s;
+        // now search for the active branch marker '*' symbol
+        MainBranch := '';
+        for i := 0 to sl.Count-1 do
+        begin
+          s := sl[i];
+          // Guess the main branch name. 'master' takes precedence if both are defined.
+          if (MainBranch = '') then begin
+            if Pos('master', s) > 0 then
+              MainBranch := 'master'
+            else if Pos('upstream', s) > 0 then
+              MainBranch := 'upstream';
+            if (MainBranch <> '') and (s[1] = '*') then
+            begin
+              Result := True;
+              exit;
+            end;
+          end;
+        end;
+      except
+        // ignore error, default result is false
+      end;
+    end;
+  finally
+    sl.Free;
+    p.Free;
+  end;
+end;
+
+{ Determine the commit at which we branched away from 'upstream'. Note the
+  SHA1 commit we are looking for is always the last one in the list that has
+  the '-' prefix added.
+  Example output:
+    $ git rev-list --boundary HEAD...upstream
+    a39f9f70f96b9533377c2cad27155066a0b01411
+    3874aa82b83fedaa19459fedaa30f4582251b9a1
+    0379257d111d465bf28e879d6b87080d9e896648
+    5dd8ca18ef06520a524bfac9648103d440fbe0bc
+    -d1fba5c3f36a4816c933a8f7f361c585258b5b01
+}
+function TSvn2RevisionApplication.GetGitBranchPoint: string;
+const
+  cBufSize = 400;  // this can hold 10 SHA1 values at a time
+var
+  p: TProcessUTF8;
+  Buffer: string;
+  s: string;
+  i: integer;
+  n: LongInt;
+  sl: TStringList;
+begin
+  Result := '';
+  p := TProcessUTF8.Create(nil);
+  try
+    sl := TStringList.Create;
+    with p do
+    begin
+      CommandLine := 'git rev-list --boundary HEAD...' + MainBranch;
+      Options := [poUsePipes, poWaitOnExit];
+      try
+        Execute;
+        s := '';
+        { now process the output }
+        SetLength(Buffer, cBufSize);
+        repeat
+          n := OutPut.Read(Buffer[1], cBufSize);
+          if n > 0 then
+            s := s + Copy(Buffer, 1, n);
+        until n < cBufSize;
+        sl.Text := s;
+        { now search for the '-' marker. Should be the last one, so search in reverse. }
+        for i := sl.Count-1 downto 0 do
+        begin
+          s := sl[i];
+          n := Pos('-', s);
+          if n > 0 then
+          begin
+            Result := Copy(s, 2, Length(s));
+            exit;
+          end;
+        end;
+      except
+        // ignore error, default result is false
+      end;
+    end;
+  finally
+    sl.Free;
+    p.Free;
+  end;
+end;
+
+{ Get the branch point, and exact the SVN revision from that commit log }
+function TSvn2RevisionApplication.GitRevisionFromGitCommit: Boolean;
+const
+  cBufSize = 80;
+var
+  sha1: string;
+  p: TProcessUTF8;
+  Buffer: string;
+  n: LongInt;
+  s: string;
+begin
+  Result := False;
+  sha1 := GetGitBranchPoint;
+  p := TProcessUTF8.Create(nil);
+  try
+    with p do begin
+      CommandLine := 'git show --summary --pretty=format:"%b" ' + sha1;
+      Options := [poUsePipes, poWaitOnExit];
+      try
+        Execute;
+        { now process the output }
+        SetLength(Buffer, cBufSize);
+        s := '';
+        repeat
+          n := OutPut.Read(Buffer[1], cBufSize);
+          s := s + Copy(Buffer, 1, n);
+        until n < cBufSize;
+        { now search for our marker }
+        if (Pos('git-svn-id:', s) > 0) then
+        begin
+          Result := True;
+          RevisionStr := s;
+          System.Delete(RevisionStr, 1, Pos('@', RevisionStr));
+          System.Delete(RevisionStr, Pos(' ', RevisionStr), Length(RevisionStr));
+        end;
+      except
+        // ignore error, default result is false
+      end;
+    end;
+  finally
+    p.Free;
+  end;
 end;
 
 procedure TSvn2RevisionApplication.Run;
