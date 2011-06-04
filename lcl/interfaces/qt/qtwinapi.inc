@@ -4968,13 +4968,29 @@ function TQtWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
 var
   OldVisible: Boolean;
   Flags: QtWindowFlags;
+  W: TQtWidget;
 begin
+  {$ifdef VerboseQtWinAPI}
+  writeln('[WinApi SetParent] child: ',dbgHex(PtrUInt(hwndChild)),
+    ' parent: ',dbgHex(PtrUInt(hWndParent)));
+  {$endif}
+  Result := 0;
+  if not IsValidHandle(hwndChild) then
+    exit;
   Result := GetParent(hWndChild);
-  OldVisible := TQtWidget(hWndChild).getVisible;
-  Flags := TQtWidget(hWndChild).windowFlags;
-  TQtWidget(hWndChild).setParent(TQtWidget(hWndParent).GetContainerWidget);
-  TQtWidget(hWndChild).setWindowFlags(Flags);
-  TQtWidget(hWndChild).setVisible(OldVisible);
+  if (Result = hwndParent) then
+    exit;
+  W := TQtWidget(hWndChild);
+  OldVisible := W.getVisible;
+  Flags := W.windowFlags;
+  if IsValidHandle(hWndParent) then
+    W.setParent(TQtWidget(hWndParent).GetContainerWidget)
+  else
+  begin
+    W.setParent(nil);
+    W.setWindowFlags(Flags);
+  end;
+  W.setVisible(OldVisible);
 end;
 
 function TQtWidgetSet.SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
@@ -5524,7 +5540,7 @@ var
   Widget: TQtWidget;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI ShowWindow]');
+  WriteLn('[WinAPI ShowWindow] hwnd ',dbgHex(PtrUInt(hWnd)),' nCmdShow ',nCmdShow);
   {$endif}
 
   Result := False;
