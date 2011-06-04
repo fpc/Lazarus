@@ -78,7 +78,7 @@ var
   begin
     Result := '';
     // FieldName is an ansistring
-    for i := 0 to Length(AName) do
+    for i := 1 to Length(AName) do
       if AName[i] in ['0'..'9','a'..'z','A'..'Z','_'] then
         Result := Result + AName[i];
     if (Length(Result) > 0) and (not (Result[1] in ['0'..'9'])) then
