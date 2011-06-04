@@ -362,7 +362,8 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   FPosition:=45;
-  CreateSides;
+  if not (csDesigning in ComponentState) then
+    CreateSides;
 end;
 
 destructor TCustomPairSplitter.Destroy;
@@ -382,6 +383,7 @@ var
   i: Integer;
   APosition: Integer;
 begin
+  CreateSides;
   inherited CreateWnd;
   for i := Low(FSides) to High(FSides) do
     if FSides[i] <> nil then
