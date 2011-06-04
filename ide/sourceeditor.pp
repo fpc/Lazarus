@@ -2678,7 +2678,6 @@ end;
 function TSourceEditor.DoFindAndReplace(aFindText, aReplaceText: String;
   anOptions: TSynSearchOptions): integer;
 var
-  OldCaretXY: TPoint;
   AText, ACaption: String;
 begin
   Result:=0;
@@ -2689,7 +2688,6 @@ begin
   if SourceNotebook<>nil then
     Manager.AddJumpPointClicked(Self);
 
-  OldCaretXY:=EditorComponent.CaretXY;
   //debugln('TSourceEditor.DoFindAndReplace A aFindText="',dbgstr(aFindText),'" ssoEntireScope=',dbgs(ssoEntireScope in anOptions),' ssoBackwards=',dbgs(ssoBackwards in anOptions));
   try
     Result:=EditorComponent.SearchReplace(aFindText, aReplaceText, anOptions);
@@ -2701,9 +2699,7 @@ begin
     end;
   end;
 
-  if (OldCaretXY.X = EditorComponent.CaretX) and
-     (OldCaretXY.Y = EditorComponent.CaretY) and
-     not (ssoReplaceAll in anOptions)
+  if (Result = 0) and not (ssoReplaceAll in anOptions)
   then begin
     ACaption := lisUENotFound;
     AText := Format(lisUESearchStringNotFound, [ValidUTF8String(aFindText)]);
