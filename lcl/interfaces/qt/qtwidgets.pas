@@ -6872,7 +6872,7 @@ begin
   Result := False;
   QEvent_accept(Event);
   case QEvent_type(Event) of
-    QEventContextMenu: SlotContextMenu(Sender, Event);
+    QEventContextMenu: Result := SlotContextMenu(Sender, Event);
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
