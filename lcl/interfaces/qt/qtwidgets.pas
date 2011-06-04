@@ -372,6 +372,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    function CanPaintBackground: Boolean; override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setFrameStyle(p1: Integer);
     procedure setFrameShape(p1: QFrameShape);
@@ -5628,6 +5629,17 @@ begin
   Result := QFrame_create(Parent);
   if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
     QWidget_setAutoFillBackground(Result, True);
+end;
+
+function TQtFrame.CanPaintBackground: Boolean;
+begin
+  Result := CanSendLCLMessage and getEnabled and
+    (LCLObject.Color <> clBackground);
+  if Result and (LCLObject is TCustomPanel) then
+  begin
+    Result := (TCustomPanel(LCLObject).BevelInner = bvNone) and
+     (TCustomPanel(LCLObject).BevelOuter = bvNone);
+  end;
 end;
 
 procedure TQtFrame.setFocusPolicy(const APolicy: QtFocusPolicy);
