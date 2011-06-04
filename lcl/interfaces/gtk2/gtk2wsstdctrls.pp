@@ -1373,8 +1373,14 @@ begin
     @LCLIntfCellRenderer_CellDataFunc, nil, nil);
 end;
 
+procedure GtkComboFocus(AWidget: PGtkWidget; WidgetInfo: PWidgetInfo); cdecl;
+begin
+  LCLSendSetFocusMsg(TControl(WidgetInfo^.LCLObject));
+end;
+
 procedure GtkPopupShowCB(AMenu: PGtkMenuShell; WidgetInfo: PWidgetInfo); cdecl;
 begin
+  LCLSendSetFocusMsg(TControl(WidgetInfo^.LCLObject));
   // let the LCL change the items on the fly:
   LCLSendDropDownMsg(TControl(WidgetInfo^.LCLObject));
 end;
@@ -1398,6 +1404,7 @@ var
 begin
   if pspec^.name = 'popup-shown' then
   begin
+    LCLSendSetFocusMsg(TControl(WidgetInfo^.LCLObject));
     FillChar(AValue, SizeOf(AValue), 0); // fill by zeros
     g_value_init(@AValue, G_TYPE_BOOLEAN); // initialize for boolean
     g_object_get_property(AObject, pspec^.name, @AValue); // get property value
@@ -1516,10 +1523,8 @@ begin
   end;
   
   // if we are a GtkComboBoxEntry
-  if GtkWidgetIsA(PGtkWidget(AEntry), GTK_TYPE_ENTRY) then
-  begin
-    // Anything?
-  end;
+  if not GtkWidgetIsA(PGtkWidget(AEntry), GTK_TYPE_ENTRY) then
+    g_signal_connect(Combowidget, 'grab-focus', TGCallback(@GtkComboFocus), AWidgetInfo);
 
   AMenu := nil;
   if (APrivate^.popup_widget <> nil)
