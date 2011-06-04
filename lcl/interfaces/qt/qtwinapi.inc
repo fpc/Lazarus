@@ -758,6 +758,8 @@ var
   QtRegion: TQtRegion;
 begin
   QtRegion := TQtRegion.Create(True, X1, Y1, X2, Y2);
+  if (X1 <> 0) or (Y1 <> 0) then
+    QtRegion.translate(X1, Y1);
   Result := HRGN(QtRegion);
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
@@ -2062,7 +2064,7 @@ var
   ARegion: QRegionH;
   Pt: TPoint;
 begin
-  Result := SIMPLEREGION;
+  Result := NULLREGION;
   if lpRect <> nil then
     lpRect^ := Rect(0,0,0,0);
 
@@ -2098,10 +2100,14 @@ begin
       finally
         QRegion_destroy(ARegion);
       end;
+      Result := SIMPLEREGION;
     end
     else
       if vImage <> nil then
+      begin
         lpRect^ := Rect(0, 0, vImage.width, vImage.height);
+        Result := SIMPLEREGION;
+      end;
     {$ifdef VerboseQtWinAPI}
     WriteLn('TQtWidgetSet.GetClipBox Rect=', dbgs(lprect^));
     {$endif}
