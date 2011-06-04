@@ -35,7 +35,7 @@ unit EncloseSelectionDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
   ExtCtrls, BasicCodeTools, CodeToolManager, SourceChanger,
   LazarusIDEStrConsts, LazConf, IDEProcs, ButtonPanel;
 
@@ -252,6 +252,7 @@ var
     IndentStr:=GetIndentStr(TemplateIndent-OldSelectionIndent);
     for CurY:=SelectionStart.Y to SelectionEnd.Y do begin
       CurLine:=Source[CurY-1];
+      //debugln(['InsertSelection CurY=',CurY,' CurLine="',dbgstr(CurLine),'"']);
       MinX:=1;
       MaxX:=length(CurLine);
       if (CurY=SelectionStart.Y) then begin
@@ -263,7 +264,7 @@ var
       end;
       if (CurY=SelectionEnd.Y) and (MaxX>SelectionEnd.X) then
         MaxX:=SelectionEnd.X;
-      //writeln('InsertSelection CurY=',CurY,' Range=',MinX,'-',MaxX,' Indent=',length(IndentStr),' "',copy(CurLine,MinX,MaxX-MinX+1),'"');
+      //debugln(['InsertSelection CurY=',CurY,' Range=',MinX,'-',MaxX,' Indent="',length(IndentStr),'" "',copy(CurLine,MinX,MaxX-MinX+1),'"']);
       X:=1;
       // write indent
       if (IndentStr<>'') and (CurY<>SelectionStart.Y) then begin
@@ -271,7 +272,7 @@ var
         inc(X,length(IndentStr));
       end;
       // write line
-      if MaxX>MinX then begin
+      if MaxX>=MinX then begin
         NewSelect.Write(CurLine[MinX],MaxX-MinX+1);
         inc(X,MaxX-MinX+1);
       end;
@@ -331,8 +332,7 @@ var
   end;
   
 begin
-  //writeln('EncloseTextSelection A ',SelectionStart.X,',',SelectionStart.Y,'-',SelectionEnd.X,',',SelectionEnd.Y,
-  //  ' indent=',Indent,' Template="',Template,'"');
+  //debugln(['EncloseTextSelection A ',SelectionStart.X,',',SelectionStart.Y,'-',SelectionEnd.X,',',SelectionEnd.Y,' indent=',Indent,' Template="',Template,'"']);
   CutLastLineBreak:=true;
   if (SelectionEnd.X=1) and (SelectionEnd.Y>SelectionStart.Y) then begin
     CutLastLineBreak:=false;
@@ -380,6 +380,7 @@ begin
     if NewSelection<>'' then begin
       NewSelect.Position:=0;
       NewSelect.Read(NewSelection[1],length(NewSelection));
+      //debugln(['EncloseTextSelection CutLastLineBreak=',CutLastLineBreak,' NewSelection="',NewSelection,'"']);
       if CutLastLineBreak then begin
         CutPos:=length(NewSelection);
         if NewSelection[CutPos] in [#10,#13] then begin
