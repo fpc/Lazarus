@@ -2681,13 +2681,6 @@ var
       Output.Write(s[1], Length(s));
   end;
 
-  procedure WriteWideString(const s: WideString);
-  begin
-    WriteLRSInteger(Output,Length(s));
-    if Length(s) > 0 then
-      Output.Write(s[1], Length(s)*2);
-  end;
-
   procedure WriteInteger(value: LongInt);
   begin
     if (value >= -128) and (value <= 127) then begin
@@ -2792,7 +2785,7 @@ var
           WriteLRSExtended(Output,flt);
           ParserNextToken;
         end;
-      toString:
+      toString,toWString:
         begin
           toStringBuf := parser.TokenString;
           //DebugLn(['ProcessValue toStringBuf="',toStringBuf,'" ',dbgstr(toStringBuf)]);
@@ -2812,20 +2805,6 @@ var
             Output.WriteByte(Ord(vaLString));
             WriteLongString(toStringBuf);
           end;
-        end;
-      toWString:
-        begin
-          toStringBuf := parser.TokenString;
-          //DebugLn(['ProcessValue toStringBuf="',toStringBuf,'" ',dbgstr(toStringBuf)]);
-          while ParserNextToken = '+' do
-          begin
-            ParserNextToken;   // Get next string fragment
-            if not (parser.Token in [toString,toWString]) then
-              parser.CheckToken(toString);
-            toStringBuf := toStringBuf + parser.TokenString;
-          end;
-          Output.WriteByte(Ord(vaWString));
-          WriteWideString(UTF8Decode(toStringBuf));
         end;
       toSymbol:
         begin
