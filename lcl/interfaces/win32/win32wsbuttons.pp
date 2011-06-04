@@ -38,7 +38,7 @@ uses
   LCLType, LCLProc, LCLMessageGlue, LMessages, Themes,
 ////////////////////////////////////////////////////
   WSProc, WSButtons, Win32WSControls, Win32WSImgList,
-  Win32UxTheme, Win32Themes;
+  UxTheme, Win32Themes;
 
 type
 
@@ -184,7 +184,7 @@ var
     AEffect: TGraphicsDrawEffect;
     TmpDC: HDC;
     PaintBuffer: HPAINTBUFFER;
-    Options: TDTTOpts;
+    Options: DTTOpts;
     Details: TThemedElementDetails;
     ShowAccel: Boolean;
     Color: TColor;
@@ -305,8 +305,8 @@ var
         if Color = clDefault then
           Color := BitBtn.GetDefaultColor(dctFont);
         Options.crText := ThemeServices.ColorToRGB(Color, @Details);
-        Options.crShadow := Options.crText;
-        Options.dwFlags := Options.dwFlags or DTT_TEXTCOLOR;
+        Options.iFontPropId := TMT_GLYPHFONT;
+        Options.dwFlags := Options.dwFlags or DTT_TEXTCOLOR or DTT_FONTPROP;
       end;
       TWin32ThemeServices(ThemeServices).DrawTextEx(TmpDC, Details, ButtonCaption,
         Rect(XDestText, YDestText, XDestText + TextSize.cx, YDestText + TextSize.cy),
