@@ -9021,13 +9021,18 @@ end;
 function TGtk2WidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
   GtkWindow: PGtkWindow;
+  B: Boolean;
 begin
   Result := False;
   GtkWindow := PGtkWindow(hWnd);
   if GtkWindow = nil then
     RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is nil');
 
-  if not GTK_IS_WINDOW(PGtkWidget(GtkWindow)) then 
+  B := (PGtkWidget(GtkWindow)^.parent <> nil) and
+    (PGtkWidget(GtkWindow)^.parent^.window <> nil) and
+    (PGtkWidget(GtkWindow)^.parent^.window = PGtkWidget(GtkWindow)^.window);
+
+  if not B and not GTK_IS_WINDOW(PGtkWidget(GtkWindow)) then
   begin
     DebugLn(['TGtk2WidgetSet.ShowWindow ',GetWidgetDebugReport(PGTKWidget(GtkWindow))]);
     RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is not a gtkwindow');
@@ -9039,18 +9044,29 @@ begin
 
   SW_SHOWNORMAL:
     begin
-      gtk_window_deiconify(GtkWindow);
-      gtk_window_unmaximize(GtkWindow);
+      if B then
+        gtk_widget_show(PGtkWidget(GtkWindow))
+      else
+      begin
+        if not GTK_WIDGET_VISIBLE(PGtkWidget(GtkWindow)) then
+          gtk_widget_show(PGtkWidget(GtkWindow));
+        gtk_window_deiconify(GtkWindow);
+        gtk_window_unmaximize(GtkWindow);
+      end;
     end;
 
   SW_HIDE:
-    gdk_window_hide(PgtkWidget(GtkWindow)^.Window);
+      gtk_widget_hide(PGtkWidget(GtkWindow));
 
   SW_MINIMIZE:
-    gtk_window_iconify(GtkWindow);
+    if not B then
+      gtk_window_iconify(GtkWindow);
 
   SW_SHOWMAXIMIZED:
-    gtk_window_maximize(GtkWindow);
+    if B then
+      gtk_widget_show(PGtkWidget(GtkWindow))
+    else
+      gtk_window_maximize(GtkWindow);
 
   end;
 
