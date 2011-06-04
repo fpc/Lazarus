@@ -1406,6 +1406,7 @@ function StaticTextParentMsgHandler(const AWinControl: TWinControl; Window: HWnd
       var MsgResult: Windows.LResult; var WinProcess: Boolean): Boolean;
 var
   Info: PWin32WindowInfo;
+  TextColor: TColor;
 begin
   Result := False;
   case Msg of
@@ -1416,9 +1417,13 @@ begin
       if Result then
       begin
         ThemeServices.DrawParentBackground(HWND(LParam), HDC(WParam), nil, False);
-        MsgResult := GetStockObject(HOLLOW_BRUSH);
+        MsgResult := Windows.GetStockObject(HOLLOW_BRUSH);
         WinProcess := False;
-        SetBkMode(HDC(WParam), TRANSPARENT);
+        Windows.SetBkMode(HDC(WParam), TRANSPARENT);
+        TextColor := Info^.WinControl.Font.Color;
+        if TextColor = clDefault then
+          TextColor := Info^.WinControl.GetDefaultColor(dctFont);
+        Windows.SetTextColor(HDC(WParam), ColorToRGB(TextColor));
       end;
     end;
   end;
