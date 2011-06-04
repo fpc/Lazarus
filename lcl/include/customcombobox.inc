@@ -50,6 +50,7 @@ begin
   TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, FArrowKeysTraverseList);
   TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
   TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
+  TWSCustomComboBoxClass(WidgetSetClass).SetDropDownCount(Self, FDropDownCount);
 
   if FSelStart <> FSelLength then
   begin
