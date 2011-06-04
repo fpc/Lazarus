@@ -2355,7 +2355,7 @@ begin
     for i := 0 to QStringList_size(QStrList) - 1 do
     begin
       QStringList_at(QStrList, @WStr, i);
-      GotFiles := WStr = 'text/uri-list';
+      GotFiles := WStr = 'text/plain';
       if GotFiles then
         break;
     end;
