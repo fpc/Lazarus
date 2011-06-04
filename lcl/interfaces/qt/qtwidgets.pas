@@ -11164,8 +11164,17 @@ begin
            since qt won't do that for us.}
           if (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) and
             Assigned(FMenuItem.OnClick) and
-            (TempAction = nil) then
+            (TempAction = nil) and not (FMenuItem.IsInMenuBar) then
             SlotTriggered();
+        end;
+      end;
+    QEventShowtoParent:
+      begin
+        if Assigned(FMenuItem) and Assigned(FMenuItem.OnClick)
+           and not (FMenuItem.Menu is TPopupMenu) then
+        begin
+          SlotTriggered();
+          Result:=True;
         end;
       end;
   end;
