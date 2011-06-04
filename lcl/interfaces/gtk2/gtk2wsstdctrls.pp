@@ -1613,9 +1613,10 @@ begin
 
   // if the combo is an editable ...
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
-  if Entry<>nil then begin
-    if gtk_editable_get_selection_bounds(PGtkEditable(Entry), @AStart, @AEnd) = False then
-      Exit(gtk_editable_get_position(PGtkEditable(Entry)));
+  if Entry<>nil then
+  begin
+    if not gtk_editable_get_selection_bounds(PGtkEditable(Entry), @AStart, @AEnd) then
+      Exit(0);
     Result := ABS(AStart - AEnd);
   end;
 end;
