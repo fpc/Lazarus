@@ -1586,6 +1586,7 @@ begin
         FillChar(Mess,SizeOf(Mess),0);
         Mess.msg := LM_SelChange;
         DeliverMessage(TWinControl(Data), Mess);
+        g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
       end;
 
     end;
