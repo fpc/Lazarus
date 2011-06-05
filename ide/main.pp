@@ -12047,18 +12047,15 @@ begin
 
   // prepare static auto install packages
   PkgOptions:='';
-  if (blfWithStaticPackages in Flags)
-  or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
-    // create inherited compiler options
-    PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
-                PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
+  // create inherited compiler options
+  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
+              PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
 
-    // check ambiguous units
-    CodeToolBoss.GetFPCVersionForDirectory(
-                               EnvironmentOptions.LazarusDirectory,
-                               FPCVersion,FPCRelease,FPCPatch);
-    if (FPCVersion=0) or (FPCRelease=0) or (FPCPatch=0) then ;
-  end;
+  // check ambiguous units
+  CodeToolBoss.GetFPCVersionForDirectory(
+                             EnvironmentOptions.LazarusDirectory,
+                             FPCVersion,FPCRelease,FPCPatch);
+  if (FPCVersion=0) or (FPCRelease=0) or (FPCPatch=0) then ;
 
   // save extra options
   IDEBuildFlags:=Flags+[blfOnlyIDE];
@@ -12074,7 +12071,6 @@ var
   InheritedOptionStrings: TInheritedCompOptsStrings;
   CompiledUnitExt: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
-  OnlyBase: boolean;
 begin
   if ToolStatus<>itNone then begin
     MessageDlg(lisNotNow,
@@ -12094,55 +12090,32 @@ begin
   try
     MainBuildBoss.SetBuildTargetIDE;
 
-    // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
-    // but not the IDE
-    SourceEditorManager.ClearErrorLines;
-    CompileProgress.CreateDialog(OwningComponent, 'Lazarus...', '');
-    Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
-                         ExternalTools,GlobalMacroList,
-                         '',EnvironmentOptions.GetCompilerFilename,
-                         EnvironmentOptions.MakeFilename,
-                         Flags+[blfWithoutCompilingIDE,blfWithoutLinkingIDE]);
-    if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarus: Building standard components (package interface, LCL) failed.');
-      Result:=mrIgnore;
-      exit;
-    end;
-
-    // then compile the 'installed' packages
-    if (not (blfOnlyIDE in Flags))
+    if (blfOnlyIDE in Flags)
     and (MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode=mmNone) then begin
+      debugln(['TMainIDE.DoBuildLazarusSub ignore because blfOnlyIDE and CurrentIdeMode=mmNone']);
       CompileProgress.Ready;
       Result:=mrIgnore;
       exit;
     end;
 
-    OnlyBase:=not ((blfWithStaticPackages in Flags)
-                   or MiscellaneousOptions.BuildLazOpts.WithStaticPackages);
-
     // prepare static auto install packages
     PkgOptions:='';
     // compile auto install static packages
-    Result:=PkgBoss.DoCompileAutoInstallPackages([],OnlyBase);
+    Result:=PkgBoss.DoCompileAutoInstallPackages([],false);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Compile AutoInstall Packages failed.');
       exit;
     end;
 
     // create uses section addition for lazarus.pp
-    if not OnlyBase then begin
-      Result:=PkgBoss.DoSaveAutoInstallConfig;
-      if Result<>mrOk then begin
-        DebugLn('TMainIDE.DoBuildLazarus: Save AutoInstall Config failed.');
-        exit;
-      end;
+    Result:=PkgBoss.DoSaveAutoInstallConfig;
+    if Result<>mrOk then begin
+      DebugLn('TMainIDE.DoBuildLazarus: Save AutoInstall Config failed.');
+      exit;
     end;
 
     // create inherited compiler options
-    if OnlyBase then
-      PkgOptions:=''
-    else
-      PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
+    PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(
                 PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
 
     // check ambiguous units
@@ -12161,25 +12134,24 @@ begin
     end;
 
     // save extra options
-    IDEBuildFlags:=Flags+[blfOnlyIDE];
-    if not OnlyBase then
-    begin
+    IDEBuildFlags:=Flags;
+    if MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode<>mmNone then begin
       Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
-                                 GlobalMacroList,PkgOptions,IDEBuildFlags);
+                   GlobalMacroList,PkgOptions,IDEBuildFlags-[blfUseMakeIDECfg]);
       if Result<>mrOk then begin
         DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
         exit;
       end;
+      IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg];
     end;
 
-    // make ide
+    // make lazarus ide and/or examples
     SourceEditorManager.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
                          ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.GetCompilerFilename,
                          EnvironmentOptions.MakeFilename,
-                         IDEBuildFlags+[blfUseMakeIDECfg]
-                         );
+                         IDEBuildFlags);
     if Result<>mrOk then exit;
 
   finally
@@ -12207,7 +12179,7 @@ begin
     if (Result=mrOK) then begin
       if BuildLazProfiles.RestartAfterBuild
       and (BuildLazProfiles.Current.TargetDirectory='')
-      and ((blfWithStaticPackages in Flags) or MainBuildBoss.BuildTargetIDEIsDefault)
+      and MainBuildBoss.BuildTargetIDEIsDefault
       then begin
         CompileProgress.Close;
         mnuRestartClicked(nil);
@@ -12235,7 +12207,7 @@ begin
         if ProfInd<>-1 then begin
           // Set current profile temporarily, used by the codetools functions.
           BuildLazProfiles.CurrentIndex:=ProfInd;
-// does not show message: IDEMessagesWindow.AddMsg('Building: '+BuildLazProfiles.Current.Name,'',-1);
+          // does not show message: IDEMessagesWindow.AddMsg('Building: '+BuildLazProfiles.Current.Name,'',-1);
           LazSrcTemplate:=
             CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
           if Assigned(LazSrcTemplate) then begin

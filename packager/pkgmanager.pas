@@ -173,7 +173,7 @@ type
     function DoGetUnitRegisterInfo(const AFilename: string;
                           var TheUnitName: string; var HasRegisterProc: boolean;
                           IgnoreErrors: boolean): TModalResult;
-    procedure SaveAutoInstallDependencies(SetWithStaticPcksFlagForIDE: boolean);
+    procedure SaveAutoInstallDependencies;
     procedure LoadStaticCustomPackages;
     function LoadInstalledPackage(const PackageName: string;
                     AddToAutoInstall: boolean; var Quiet: boolean): TLazPackage;
@@ -1159,7 +1159,7 @@ begin
   // rename package
   PackageGraph.ChangePackageID(APackage,NewPkgName,APackage.Version,
                                RenameDependencies,true);
-  SaveAutoInstallDependencies(false);
+  SaveAutoInstallDependencies;
   RenamePackageInProject;
 
   // clean up old package file to reduce ambiguousities
@@ -1326,16 +1326,11 @@ begin
   Result:=mrOk;
 end;
 
-procedure TPkgManager.SaveAutoInstallDependencies(
-  SetWithStaticPcksFlagForIDE: boolean);
+procedure TPkgManager.SaveAutoInstallDependencies;
 var
   Dependency: TPkgDependency;
   sl: TStringList;
 begin
-  if SetWithStaticPcksFlagForIDE then begin
-    MiscellaneousOptions.BuildLazProfiles.Current.WithStaticPackages:=True;
-  end;
-
   sl:=TStringList.Create;
   Dependency:=PackageGraph.FirstAutoInstallDependency;
   while Dependency<>nil do begin
@@ -3573,11 +3568,11 @@ begin
 
   if NeedSaving then begin
     PackageGraph.SortAutoInstallDependencies;
-    SaveAutoInstallDependencies(true);
+    SaveAutoInstallDependencies;
   end;
 
   // save IDE build configs, so user can build IDE on command line
-  BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE];
+  BuildIDEFlags:=[blfDontClean,blfOnlyIDE];
   Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
   if Result<>mrOk then exit;
 
@@ -3655,11 +3650,11 @@ begin
         Dependency.Free;
         PackageGraph.SortAutoInstallDependencies;
       end;
-      SaveAutoInstallDependencies(true);
+      SaveAutoInstallDependencies;
     end;
 
     // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE];
+    BuildIDEFlags:=[blfDontClean,blfOnlyIDE];
     Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
     if Result<>mrOk then exit;
 
@@ -3891,11 +3886,10 @@ begin
     // save package list
     //debugln('TPkgManager.MainIDEitmPkgEditInstallPkgsClick save package list');
     PackageGraph.SortAutoInstallDependencies;
-    SaveAutoInstallDependencies(true);
+    SaveAutoInstallDependencies;
 
     // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfWithStaticPackages,blfDontClean,blfOnlyIDE,
-                    blfWithoutCompilingIDE];
+    BuildIDEFlags:=[blfDontClean,blfOnlyIDE];
     if MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags)<>mrOk then exit(mrCancel);
 
     if piiifRebuildIDE in Flags then
@@ -3977,7 +3971,7 @@ begin
           mrYes: ;
           mrYesToAll: AutoRemove:=true;
           else
-            SaveAutoInstallDependencies(true);
+            SaveAutoInstallDependencies;
             exit;
           end;
         end;
@@ -3985,7 +3979,7 @@ begin
         OldDependency.Free;
       end;
     end;
-    SaveAutoInstallDependencies(true);
+    SaveAutoInstallDependencies;
 
     // check consistency
     Result:=CheckPackageGraphForCompilation(nil,Dependencies,

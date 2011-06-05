@@ -109,7 +109,6 @@ type
     fTargetDirectory: string;
     fTargetCPU: string;
     fTargetPlatform: TLCLPlatform;
-    fWithStaticPackages: boolean;
     fUpdateRevisionInc: boolean;
     // User defined options.
     fOptions: TStringList;
@@ -140,7 +139,6 @@ type
     property TargetDirectory: string read fTargetDirectory write fTargetDirectory;
     property TargetCPU: string read fTargetCPU write SetTargetCPU;
     property TargetPlatform: TLCLPlatform read GetTargetPlatform write SetTargetPlatform;
-    property WithStaticPackages: boolean read fWithStaticPackages write fWithStaticPackages;
     property UpdateRevisionInc: boolean read fUpdateRevisionInc write fUpdateRevisionInc;
     property OptionsLines: TStringList read fOptions;
     property Defines: TStringList read fDefines;
@@ -407,7 +405,6 @@ begin
     fTargetPlatform  :=DirNameToLCLPlatform(LCLPlatformStr);
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
       XMLConfig.GetValue(Path+'TargetDirectory/Value', DefaultTargetDirectory)));
-  FWithStaticPackages:=XMLConfig.GetValue(Path+'WithStaticPackages/Value',true);
   FUpdateRevisionInc :=XMLConfig.GetValue(Path+'UpdateRevisionInc/Value',true);
   LoadStringList(XMLConfig,fOptions,Path+'Options/');
   if fOptions.Count=0 then     // Support a syntax used earlier by profiles.
@@ -433,7 +430,6 @@ begin
                            ''); //LCLPlatformDirNames[GetDefaultLCLWidgetType]
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
-  XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,true);
   XMLConfig.SetDeleteValue(Path+'UpdateRevisionInc/Value',FUpdateRevisionInc,true);
   SaveStringList(XMLConfig,fOptions,Path+'Options/');
   SaveStringList(XMLConfig,fDefines,Path+'Defines/');
@@ -451,7 +447,6 @@ begin
   TargetDirectory   :=Source.TargetDirectory;
   TargetCPU         :=Source.TargetCPU;
   TargetPlatform    :=Source.TargetPlatform;
-  WithStaticPackages:=Source.WithStaticPackages;
   UpdateRevisionInc :=Source.UpdateRevisionInc;
   fOptions.Assign(Source.fOptions);
   fDefines.Assign(Source.fDefines);
@@ -591,7 +586,6 @@ begin
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
-    fWithStaticPackages:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisIDE then
         fMakeModes[i]:=mmBuild
@@ -605,7 +599,6 @@ begin
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
-    fWithStaticPackages:=True;
     fUpdateRevisionInc:=True;
     fOptions.Add('-gw -gl -godwarfsets -gh -gt -Co -Cr -Ci -Sa');
     for i:=0 to fMakeModeDefs.Count-1 do
@@ -622,7 +615,6 @@ begin
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
-    fWithStaticPackages:=True;
     fUpdateRevisionInc:=True;
     fOptions.Add('-O2 -g- -Xs');
     for i:=0 to fMakeModeDefs.Count-1 do
@@ -638,7 +630,6 @@ begin
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
-    fWithStaticPackages:=True;
     fUpdateRevisionInc:=True;
     for i:=0 to fMakeModeDefs.Count-1 do
       fMakeModes[i]:=mmCleanBuild;

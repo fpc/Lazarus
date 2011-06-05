@@ -2820,7 +2820,6 @@ resourcestring
   lisMakeNotFound = 'Make not found';
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
     +'s was not found.%sThis tool is needed to build lazarus.%s';
-  lisCompileIDEWithoutLinking = 'Compile IDE (without linking)';
   lisIDE = 'IDE';
   lisExamples = 'Examples';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
@@ -2835,7 +2834,6 @@ resourcestring
   lisLazBuildTargetCPU = 'Target CPU:';
   lisLazBuildTargetDirectory = 'Target directory:';
   lisLazBuildBuildJITForm = 'Build JITForm';
-  lisLazBuildWithStaticPackages = 'With packages';
   lisLazBuildRestartAfterBuild = 'Restart after building IDE';
   lisLazBuildUpdateRevInc = 'Update revision.inc';
   lisLazBuildCommonSettings = 'Common Settings';
@@ -2885,8 +2883,6 @@ resourcestring
   lisLazBuildLikeMakeCleanOnCmdLine = 'Like "make clean" on cmd line';
   lisLazBuildUpdateRevisionInfoInAboutLazarusDialog = 'Update revision info '
     +'in "About Lazarus" dialog';
-  lisLazBuildCompileSelectedStaticPackagesIntoLazarusBinary = 'Compile '
-    +'selected static packages into Lazarus binary';
   lisLazBuildRestartLazarusAutomaticallyAfterBuildingTheIDEHasN = 'Restart '
     +'Lazarus automatically after building the IDE (has no effect when '
     +'building other parts)';

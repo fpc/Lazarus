@@ -63,11 +63,8 @@ uses
 type
 
   TBuildLazarusFlag = (
-    blfWithoutCompilingIDE, // skip compiling stage of IDE
-    blfWithoutLinkingIDE,   // skip linking stage of IDE
-    blfOnlyIDE,             // skip all but IDE
+    blfOnlyIDE,             // skip all but IDE (for example build IDE, but not examples)
     blfDontClean,           // ignore clean up
-    blfWithStaticPackages,  // build with IDE static design time packages
     blfUseMakeIDECfg,       // use idemake.cfg
     blfReplaceExe           // ignore OSLocksExecutables and do not create lazarus.new.exe
     );
@@ -110,7 +107,6 @@ type
     TargetOSComboBox: TComboBox;
     TargetOSLabel: TLabel;
     UpdateRevisionIncCheckBox: TCheckBox;
-    WithStaticPackagesCheckBox: TCheckBox;
     procedure BuildProfileButtonClick(Sender: TObject);
     procedure BuildProfileComboBoxSelect(Sender: TObject);
     procedure CompileAdvancedButtonClick(Sender: TObject);
@@ -239,10 +235,6 @@ var
 begin
   Result:=mrCancel;
 
-  if (blfOnlyIDE in Flags) and (blfWithoutLinkingIDE in Flags)
-  and (blfWithoutCompilingIDE in Flags) then
-    exit(mrOk); // only IDE, but skip both parts -> nothing to do
-
   Options:=Profiles.Current;
   if LazarusIDE<>nil then
     LazarusIDE.MainBarSubTitle:=Options.Name;
@@ -299,27 +291,18 @@ begin
       // calculate make mode
       CurMakeMode:=Profiles.Current.MakeModes[i];
       if (blfOnlyIDE in Flags) then begin
-        if (MMDef<>Profiles.MakeModeDefs.ItemIDE) then
+        if MMDef=Profiles.MakeModeDefs.ItemIDE then begin
+          if CurMakeMode=mmNone then
+            CurMakeMode:=mmBuild;
+        end else
           CurMakeMode:=mmNone;
       end;
-      if (MMDef=Profiles.MakeModeDefs.ItemIDE) then
-      begin
-        if (blfWithoutCompilingIDE in Flags) and (blfWithoutLinkingIDE in Flags)
-        then
-          CurMakeMode:=mmNone
-        // build the IDE when blfOnlyIDE is set, eg. when installing packages
-        // even if that build node is disabled in configure build lazarus dialog
-        else if (blfOnlyIDE in Flags) and (CurMakeMode=mmNone) then
-          CurMakeMode := mmBuild;
-      end;
-
+      //debugln(['BuildLazarus Def=',MMDef.Name,' Mode=',ord(CurMakeMode)]);
       if CurMakeMode=mmNone then continue;
 
       if (blfDontClean in Flags) and (CurMakeMode=mmCleanBuild) then
         CurMakeMode:=mmBuild;
       Tool.Title:=MMDef.Description;
-      if (MMDef=Profiles.MakeModeDefs.ItemIDE) and (blfWithoutLinkingIDE in Flags) then
-        Tool.Title:=lisCompileIDEWithoutLinking;
       Tool.WorkingDirectory:=WorkingDirectory;
       Tool.CmdLineParams:=MMDef.Commands[CurMakeMode];
       // append extra options
@@ -443,10 +426,6 @@ begin
           MakeIDECfgFilename:=ExtractShortPathNameUTF8(MakeIDECfgFilename);
         AppendExtraOption('@'+MakeIDECfgFilename);
       end;
-    end;
-    // check if linking should be skipped
-    if blfWithoutLinkingIDE in Flags then begin
-      AppendExtraOption('-Cn');
     end;
 
     // set target filename and target directory:
@@ -780,7 +759,6 @@ begin
   TargetDirectoryLabel.Caption := lisLazBuildTargetDirectory;
 
   CleanAllCheckBox.Caption := lisLazBuildCleanAll;
-  WithStaticPackagesCheckBox.Caption := lisLazBuildWithStaticPackages;
   UpdateRevisionIncCheckBox.Caption := lisLazBuildUpdateRevInc;
 
   CommonsDividerBevel.Caption := lisLazBuildCommonSettings;
@@ -803,8 +781,6 @@ begin
   CleanAllCheckBox.Hint := lisLazBuildLikeMakeCleanOnCmdLine;
   UpdateRevisionIncCheckBox.Hint :=
     lisLazBuildUpdateRevisionInfoInAboutLazarusDialog;
-  WithStaticPackagesCheckBox.Hint :=
-    lisLazBuildCompileSelectedStaticPackagesIntoLazarusBinary;
   RestartAfterBuildCheckBox.Hint :=
     lisLazBuildRestartLazarusAutomaticallyAfterBuildingTheIDEHasN;
   ConfirmBuildCheckBox.Hint :=
@@ -1037,7 +1013,6 @@ var
 begin
   CleanAllCheckBox.Checked          :=AProfile.CleanAll;
   LCLWidgetTypeComboBox.ItemIndex   :=ord(AProfile.TargetPlatform);
-  WithStaticPackagesCheckBox.Checked:=AProfile.WithStaticPackages;
   UpdateRevisionIncCheckBox.Checked :=AProfile.UpdateRevisionInc;
   TargetOSComboBox.Text             :=AProfile.TargetOS;
   TargetDirectoryComboBox.Text      :=AProfile.TargetDirectory;
@@ -1053,7 +1028,6 @@ var
 begin
   AProfile.CleanAll          :=CleanAllCheckBox.Checked;
   AProfile.TargetPlatform    :=TLCLPlatform(LCLWidgetTypeComboBox.ItemIndex);
-  AProfile.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
   AProfile.UpdateRevisionInc :=UpdateRevisionIncCheckBox.Checked;
   AProfile.TargetOS          :=TargetOSComboBox.Text;
   AProfile.TargetDirectory   :=TargetDirectoryComboBox.Text;
