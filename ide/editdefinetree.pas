@@ -52,10 +52,6 @@ procedure DisableDefaultsInDirectories(DefTempl: TDefineTemplate; Recurse: boole
 // FPC sources
 function CreateFPCSourceTemplate(Config: TFPCUnitSetCache;
                                  Owner: TObject): TDefineTemplate; overload;
-function CreateFPCSourceTemplate(const FPCSrcDir, UnitSearchPath, PPUExt,
-                      DefaultTargetOS, DefaultProcessorName: string;
-                      UnitLinkListValid: boolean; var UnitLinkList: string;
-                      Owner: TObject): TDefineTemplate; overload;
 function CreateLazarusSourceTemplate(
                       const LazarusSrcDir, WidgetType, ExtraOptions: string;
                       Owner: TObject): TDefineTemplate;
@@ -129,17 +125,6 @@ function CreateFPCSourceTemplate(Config: TFPCUnitSetCache; Owner: TObject
   ): TDefineTemplate;
 begin
   Result:=CreateFPCSrcTemplate(Config,Owner);
-  DisableDefaultsInDirectories(Result,true);
-end;
-
-function CreateFPCSourceTemplate(const FPCSrcDir, UnitSearchPath, PPUExt,
-  DefaultTargetOS, DefaultProcessorName: string; UnitLinkListValid: boolean;
-  var UnitLinkList: string; Owner: TObject): TDefineTemplate;
-begin
-  Result:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
-                                        UnitSearchPath, PPUExt,
-                                        DefaultTargetOS, DefaultProcessorName,
-                                        UnitLinkListValid, UnitLinkList, Owner);
   DisableDefaultsInDirectories(Result,true);
 end;
 

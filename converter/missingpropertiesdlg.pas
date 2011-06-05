@@ -189,7 +189,6 @@ end;
 function TDFMConverter.ConvertDfmToLfm(const aFilename: string): TModalResult;
 var
   DFMStream, LFMStream: TMemoryStream;
-  LFMBuffer: TCodeBuffer;
 begin
   Result:=mrOk;
   DFMStream:=TMemoryStream.Create;
