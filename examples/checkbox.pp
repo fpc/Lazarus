@@ -33,7 +33,6 @@ program CheckBox;
 
 {$mode objfpc}{$H+}
 // program uses WriteLn
-{$apptype console}
 
 uses
   Interfaces, Classes, Stdctrls, Forms, Buttons, Menus, Comctrls,
