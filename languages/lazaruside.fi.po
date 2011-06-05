@@ -2788,7 +2788,7 @@ msgstr "Kohde CPU perhe"
 #: lazarusidestrconsts.dlgtargetos
 msgctxt "lazarusidestrconsts.dlgtargetos"
 msgid "Target OS"
-msgstr "Kohde käyttöjärjestelmä"
+msgstr "Kohde käyttis"
 
 #: lazarusidestrconsts.dlgtargetplatform
 msgid "Target Platform:"
@@ -7668,11 +7668,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfilesinasciiorutf8encoding
 msgid "Files in ASCII or UTF-8 encoding"
-msgstr ""
+msgstr "ASCII tai UTF-8 koodatut tiedostot"
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
-msgstr ""
+msgstr "Muut kuin ASCII tai UTF-8 koodatut tiedostot"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
@@ -9467,7 +9467,7 @@ msgstr "Kohde hakemisto:"
 
 #: lazarusidestrconsts.lislazbuildtargetos
 msgid "Target OS:"
-msgstr "Kohde käyttöjärjestelmä:"
+msgstr "Kohde käyttis:"
 
 #: lazarusidestrconsts.lislazbuildunabletowritefile
 msgid "Unable to write file \"%s\":%s"
@@ -14004,7 +14004,7 @@ msgstr "Kohdetiedosto + parametrit"
 #: lazarusidestrconsts.listargetos
 msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
-msgstr "Kohde käyttöjärjestelmä"
+msgstr "Kohde käyttis"
 
 #: lazarusidestrconsts.listcompilerinternalerror
 msgid "Internal compiler error! (%d)"
