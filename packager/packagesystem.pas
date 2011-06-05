@@ -3200,9 +3200,8 @@ begin
             exit;
           end;
           if StateFileAge<RequiredPackage.LastCompile[o].StateFileDate then begin
-            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
-              RequiredPackage.IDAsString,
-              ' State file is newer than state file of ',GetOwnerID);
+            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies ',
+              ' State file of ',RequiredPackage.IDAsString,' is newer than state file of ',GetOwnerID);
             exit;
           end;
         end;
@@ -3215,8 +3214,8 @@ begin
           if FilenameIsAbsolute(OtherStateFile)
           and FileExistsCached(OtherStateFile)
           and (FileAgeCached(OtherStateFile)>StateFileAge) then begin
-            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
-              RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'" (',
+            DebugLn('TPkgManager.CheckCompileNeedDueToDependencies ',
+              ' OtherState of ',RequiredPackage.IDAsString,' file "',OtherStateFile,'" (',
                 FileAgeToStr(FileAgeCached(OtherStateFile)),')'
               ,' is newer than State file ',GetOwnerID,'(',FileAgeToStr(StateFileAge),')');
             Result:=mrYes;
