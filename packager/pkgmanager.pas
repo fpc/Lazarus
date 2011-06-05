@@ -1243,6 +1243,19 @@ begin
       exit;
     end;
 
+    // check for a package that compiles to the default FPC search path
+    PathList:=PackageGraph.FindPkgOutputInFPCSearchPath(APackage,FirstDependency);
+    if PathList<>nil then begin
+      ConflictPkg:=TObject(PathList[PathList.Count-1]) as TLazPackage;
+      DoShowPackageGraphPathList(PathList);
+      Result:=IDEMessageDialogAb(lisPkgMangCircleInPackageDependencies,
+        Format(lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec, [
+          ConflictPkg.Name, ConflictPkg.GetOutputDirectory, #13#13, #13, #13,
+          #13]),
+        mtError,[mbCancel],ShowAbort);
+      exit;
+    end;
+
     // check for ambiguous units between packages
     if PackageGraph.FindAmbiguousUnits(APackage,FirstDependency,
       PkgFile1,PkgFile2,ConflictPkg)

@@ -201,6 +201,8 @@ type
                                         FirstDependency: TPkgDependency): TFPList;
     function FindCircleDependencyPath(APackage: TLazPackage;
                                       FirstDependency: TPkgDependency): TFPList;
+    function FindPkgOutputInFPCSearchPath(APackage: TLazPackage;
+                                      FirstDependency: TPkgDependency): TFPList; // find a package with auto compile and output dir is in FPC default search path
     function FindUnsavedDependencyPath(APackage: TLazPackage;
                                        FirstDependency: TPkgDependency): TFPList;
     function FindNotInstalledRegisterUnits(APackage: TLazPackage;
@@ -2498,6 +2500,77 @@ begin
   FindCircle(FirstDependency,Result);
   if (Result<>nil) and (APackage<>nil) then
     Result.Insert(0,APackage);
+end;
+
+function TLazPackageGraph.FindPkgOutputInFPCSearchPath(APackage: TLazPackage;
+  FirstDependency: TPkgDependency): TFPList;
+var
+  CfgCache: TFPCTargetConfigCache;
+
+  function CheckPkg(Pkg: TLazPackage; var PathList: TFPList): boolean;
+  var
+    OutputDir: String;
+    i: Integer;
+    Dir: String;
+  begin
+    Result:=true;
+    if (Pkg=nil) then exit;
+    Pkg.Flags:=Pkg.Flags+[lpfVisited];
+    if (Pkg.FirstRequiredDependency=nil)
+    or Pkg.IsVirtual or (Pkg.AutoUpdate<>pupAsNeeded) then exit;
+    // this package is compiled automatically and has dependencies
+    OutputDir:=ChompPathDelim(Pkg.GetOutputDirectory);
+    if OutputDir='' then exit;
+    for i:=0 to CfgCache.UnitPaths.Count-1 do begin
+      Dir:=ChompPathDelim(CfgCache.UnitPaths[i]);
+      if CompareFilenames(Dir,OutputDir)=0 then begin
+        // this package changes the units in the default FPC search path
+        // => a circle, because the dependencies use FPC search path too
+        Result:=false;
+        PathList:=TFPList.Create;
+        PathList.Add(Pkg);
+        exit;
+      end;
+    end;
+  end;
+
+  procedure CheckDependencyList(Dependency: TPkgDependency; var PathList: TFPList);
+  var
+    RequiredPackage: TLazPackage;
+  begin
+    while Dependency<>nil do begin
+      if Dependency.LoadPackageResult=lprSuccess then begin
+        RequiredPackage:=Dependency.RequiredPackage;
+        if not (lpfVisited in RequiredPackage.Flags) then begin
+          if CheckPkg(RequiredPackage,PathList) then exit;
+          CheckDependencyList(RequiredPackage.FirstRequiredDependency,PathList);
+          if PathList<>nil then begin
+            // circle detected
+            // -> add current package to list
+            PathList.Insert(0,RequiredPackage);
+            exit;
+          end;
+        end;
+      end;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+  end;
+
+var
+  UnitSet: TFPCUnitSetCache;
+begin
+  Result:=nil;
+  MarkAllPackagesAsNotVisited;
+  UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+  if UnitSet=nil then exit;
+  CfgCache:=UnitSet.GetConfigCache(false);
+  if (CfgCache=nil) or (CfgCache.UnitPaths=nil) then exit;
+  if APackage<>nil then begin
+    if not CheckPkg(APackage,Result) then exit;
+    if FirstDependency=nil then
+      FirstDependency:=APackage.FirstRequiredDependency;
+  end;
+  CheckDependencyList(FirstDependency,Result);
 end;
 
 function TLazPackageGraph.FindUnsavedDependencyPath(APackage: TLazPackage;

@@ -303,8 +303,9 @@ type
     function FindUnitInUnitSet(const Directory, AUnitName: string): string;
     function GetUnitSetIDForDirectory(const Directory: string;
                                       UseCache: boolean = true): string;
+    function GetUnitSetForDirectory(const Directory: string): TFPCUnitSetCache;
     function GetFPCUnitPathForDirectory(const Directory: string;
-                                        UseCache: boolean = true): string;// unit paths reported by FPC
+                                        UseCache: boolean = true): string;// value of macro #FPCUnitPath
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  out FPCVersion, FPCRelease, FPCPatch: integer);
 
@@ -1507,6 +1508,20 @@ begin
     if Evaluator=nil then exit;
     Result:=Evaluator[UnitSetMacroName];
   end;
+end;
+
+function TCodeToolManager.GetUnitSetForDirectory(const Directory: string
+  ): TFPCUnitSetCache;
+var
+  ID: String;
+  Changed: boolean;
+begin
+  Result:=nil;
+  ID:=GetUnitSetIDForDirectory(Directory,true);
+  if ID='' then exit;
+  Changed:=false;
+  Result:=FPCDefinesCache.FindUnitSetWithID(ID,Changed,false);
+  if Changed then Result:=nil;
 end;
 
 function TCodeToolManager.GetFPCUnitPathForDirectory(const Directory: string;

@@ -3572,6 +3572,13 @@ resourcestring
   lisPkgMangARequiredPackagesWasNotFound = 'A required packages was not '
     +'found. See package graph.';
   lisPkgMangCircleInPackageDependencies = 'Circle in package dependencies';
+  lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec = 'The package '
+    +'%s is compiled automatically and its output directory is "%s", which is '
+    +'in the default unit search path of the compiler. The package uses other '
+    +'packages which also uses the default unit search of the compiler. This '
+    +'creates a circle.%sYou can fix this issue%sby removing the path from '
+    +'your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of '
+    +'this package%sor by removing dependencies.';
   lisPkgMangThereIsACircleInTheRequiredPackages = 'There is a circle in the '
     +'required packages. See package graph.';
   lisPkgMangThereAreTwoUnitsWithTheSameName1From2From = 'There are two units '
