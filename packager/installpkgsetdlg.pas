@@ -94,7 +94,7 @@ type
     FNewInstalledPackages: TObjectList;
     FOldInstalledPackages: TPkgDependency;
     FOnCheckInstallPackageList: TOnCheckInstallPackageList;
-    fPackages: TAVLTree;// tree of TLazPackageID (all available packages and links)
+    fAvailablePackages: TAVLTree;// tree of TLazPackageID (all available packages and links)
     FRebuildIDE: boolean;
     FSelectedPkg: TLazPackage;
     ImgIndexPackage: integer;
@@ -200,7 +200,7 @@ begin
   HelpButton.Caption:=lisMenuHelp;
   CancelButton.Caption:=dlgCancel;
 
-  fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
+  fAvailablePackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   FNewInstalledPackages:=TObjectList.Create(true);
   
   PkgInfoMemo.Clear;
@@ -305,7 +305,7 @@ begin
   IdleConnected:=false;
   ClearNewInstalledPackages;
   FNewInstalledPackages.Free;
-  fPackages.Free;
+  fAvailablePackages.Free;
 end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogResize(Sender: TObject);
@@ -434,10 +434,10 @@ begin
     exit;
   end;
   fAvailablePackagesNeedUpdate:=false;
-  fPackages.Clear;
-  PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
+  if fAvailablePackages.Count=0 then
+    PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
   sl:=TStringList.Create;
-  ANode:=fPackages.FindLowest;
+  ANode:=fAvailablePackages.FindLowest;
   while ANode<>nil do begin
     Pkg:=TLazPackageID(ANode.Data);
     //debugln('TInstallPkgSetDialog.UpdateAvailablePackages ',Pkg.IDAsString,' Pkg.PackageType=',dbgs(ord(Pkg.PackageType)));
@@ -451,7 +451,7 @@ begin
           sl.AddObject(PkgName,Pkg);
       end;
     end;
-    ANode:=fPackages.FindSuccessor(ANode);
+    ANode:=fAvailablePackages.FindSuccessor(ANode);
   end;
   sl.Sort;
   AvailableTreeView.BeginUpdate;
@@ -520,8 +520,8 @@ end;
 procedure TInstallPkgSetDialog.OnIteratePackages(APackageID: TLazPackageID);
 begin
   //debugln('TInstallPkgSetDialog.OnIteratePackages ',APackageID.IDAsString);
-  if (fPackages.Find(APackageID)=nil) then
-    fPackages.Add(APackageID);
+  if (fAvailablePackages.Find(APackageID)=nil) then
+    fAvailablePackages.Add(APackageID);
 end;
 
 function TInstallPkgSetDialog.DependencyToStr(Dependency: TPkgDependency
