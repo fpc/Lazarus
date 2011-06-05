@@ -346,8 +346,10 @@ procedure TInstallPkgSetDialog.SetIdleConnected(const AValue: boolean);
 begin
   if FIdleConnected=AValue then exit;
   FIdleConnected:=AValue;
-  if IdleConnected then
-    Application.AddOnIdleHandler(@OnIdle);
+  if FIdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
 procedure TInstallPkgSetDialog.SetOldInstalledPackages(
