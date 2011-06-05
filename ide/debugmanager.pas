@@ -96,6 +96,7 @@ type
     FDebugger: TDebugger;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
     FPrevShownWindow: HWND;
+    FStepping: Boolean;
     // keep track of the last reported location
     FCurrentLocation: TDBGLocationRec;
     FIgnoreSourceFiles: TStringList; // a list of unfindable sourcefiles, that should not be prompted anymore
@@ -868,10 +869,10 @@ begin
   if (FDebugger.State in [dsRun])
   then begin
     // hide IDE during run
-    if EnvironmentOptions.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger)
+    if EnvironmentOptions.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger) and not FStepping
     then MainIDE.HideIDE;
 
-    if FPrevShownWindow <> 0 then
+    if (FPrevShownWindow <> 0) and not FStepping then
     begin
       SetForegroundWindow(FPrevShownWindow);
       FPrevShownWindow := 0;
@@ -887,10 +888,14 @@ begin
     end
     else if (OldState in [dsRun]) then
     begin
-      if EnvironmentOptions.HideIDEOnRun
-      then MainIDE.UnhideIDE;
-      FPrevShownWindow := GetForegroundWindow;
-      Application.BringToFront;
+      if not FStepping then
+      begin
+        FPrevShownWindow := GetForegroundWindow;
+        if EnvironmentOptions.HideIDEOnRun then
+          MainIDE.UnhideIDE;
+        if not EnvironmentOptions.SingleTaskBarButton then
+          Application.BringToFront;
+      end;
     end;
   end;
 
@@ -932,6 +937,7 @@ begin
          FDebugger.ErrorStateInfo, ftError, [frStop]);
     end;
     dsStop: begin
+      FPrevShownWindow:=0;
       if (OldState<>dsIdle)
       then begin
         if EnvironmentOptions.DebuggerShowStopMessage
@@ -1956,6 +1962,7 @@ begin
     Exit;
   end;
 
+  FStepping:=True;
   FDebugger.StepInto;
   Result := mrOk;
 end;
@@ -1970,6 +1977,7 @@ begin
     Exit;
   end;
 
+  FStepping:=True;
   FDebugger.StepOver;
   Result := mrOk;
 end;
@@ -1984,6 +1992,7 @@ begin
     Exit;
   end;
 
+  FStepping:=True;
   FDebugger.StepIntoInstr;
   Result := mrOk;
   // Todo: move to DebuggerChangeState (requires the last run-command-type to be avail)
@@ -2000,6 +2009,7 @@ begin
     Exit;
   end;
 
+  FStepping:=True;
   FDebugger.StepOverInstr;
   Result := mrOk;
   // Todo: move to DebuggerChangeState (requires the last run-command-type to be avail)
@@ -2016,6 +2026,7 @@ begin
     Exit;
   end;
 
+  FStepping:=True;
   FDebugger.StepOut;
   Result := mrOk;
 end;
@@ -2152,6 +2163,7 @@ begin
       exit;
     end;
     Include(FManagerStates,dmsRunning);
+    FStepping:=False;
     try
       FDebugger.Run;
     finally

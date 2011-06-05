@@ -111,6 +111,7 @@ function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetDoubleClickTime: UINT; override;
 function GetFocus: HWND; override;
+function GetForegroundWindow: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
 function GetMapMode(DC: HDC): Integer; override;
 function GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;

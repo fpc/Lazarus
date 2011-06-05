@@ -3719,6 +3719,14 @@ begin
   then g_list_free(TopList);
 end;
 
+function TGtk2WidgetSet.GetForegroundWindow: HWND;
+begin
+  Result:=0;
+  {$IFDEF HASX}
+  Result:=X11GetActiveWindow;
+  {$ENDIF}
+end;
+
 {------------------------------------------------------------------------------
   Function: GetDIBits
   Params:
@@ -8114,6 +8122,7 @@ var
   GdkWindow: PGdkWindow;
   AForm: TCustomForm;
 begin
+  try
   {$IFDEF VerboseFocus}
   DbgOut('TGtk2WidgetSet.SetForegroundWindow hWnd=',DbgS(hWnd));
   LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
@@ -8152,12 +8161,18 @@ begin
       {$ENDIF}
       gdk_window_show(GdkWindow);
       gdk_window_raise(GdkWindow);
+      gdk_window_focus(GdkWindow, gtk_get_current_event_time);
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}
       // this currently will bring the window to the current desktop and focus it
       gtk_window_present(PGtkWindow(hWnd));
     end;
+  end;
+  except
+  {$IFDEF HASX}
+    Result:=X11Raise(hWnd);
+  {$ENDIF}
   end;
 end;
 

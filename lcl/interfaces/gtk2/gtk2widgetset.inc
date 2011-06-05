@@ -1156,6 +1156,8 @@ procedure TGtk2WidgetSet.AppBringToFront;
 begin
   if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
     gdk_window_raise(PGtkWidget(Application.MainForm.Handle)^.window);
+    gdk_window_focus(PGtkWidget(Application.MainForm.Handle)^.window,
+                                gtk_get_current_event_time);
 end;
 
 procedure TGtk2WidgetSet.AppMinimize;
@@ -4251,6 +4253,74 @@ begin
   then gdk_pixmap_unref(TempMaskBitmap);
 end;
 
+{$IFDEF HASX}
+function TGtk2WidgetSet.X11Raise(AHandle: HWND): boolean;
+var
+   Display: PDisplay;
+   RootWin: TWindow;
+   ScreenNum: Integer;
+   XClient: TXClientMessageEvent;
+   WMAtom: TAtom;
+   screen: PGdkScreen;
+begin
+  Result:=false;
+  screen:=gdk_screen_get_default;
+  Display := gdk_x11_get_default_xdisplay;
+
+  if Display = nil then
+    exit;
+  ScreenNum := gdk_screen_get_number(screen);
+  RootWin := gdk_x11_get_default_root_xwindow;
+
+  XClient._type := ClientMessage;
+  XClient.window := AHandle;
+  WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
+  XClient.message_type := WMATom;
+  XClient.format := 32;
+  XClient.data.l[0] := 1;
+  XClient.data.l[1] := 0;
+  XClient.data.l[2] := 0;
+  Result:=XSendEvent (Display, RootWin, False,
+	      SubstructureRedirectMask or SubstructureNotifyMask,
+	      @XClient)<>0;
+end;
+
+function TGtk2WidgetSet.X11GetActivewindow: HWND;
+var
+  Display: PDisplay;
+  RootWin: TWindow;
+  ScreenNum: Integer;
+  WMAtom: TAtom;
+  ActualTypeReturn: TAtom;
+  ActualFormatReturn: LongInt;
+  NItemsReturn, BytesAfterReturn: Cardinal;
+  Ptr: PByte;
+  screen: PGdkScreen;
+  Valid: Boolean;
+begin
+  screen:=gdk_screen_get_default;
+  Display := gdk_x11_get_default_xdisplay;
+
+  if Display = nil then
+    exit;
+  ScreenNum := gdk_screen_get_number(screen);
+  RootWin := gdk_x11_get_default_root_xwindow;
+  WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
+  Valid:=XGetWindowProperty(Display, RootWin, WMAtom, 0, 1, False,
+                                 AnyPropertyType, @ActualTypeReturn,
+                                 @ActualFormatReturn, @NItemsReturn,
+                                 @BytesAfterReturn, @Ptr)=0;
+  if Valid then
+  try
+    if (ActualTypeReturn = None) or (ActualFormatReturn <> 32) or not Assigned(Ptr) then
+      Valid := False;
+    if Valid then Result := PCardinal(Ptr)^;
+  finally
+    if Assigned(Ptr) then
+    XFree(Ptr);
+  end;
+end;
+{$ENDIF}
 {------------------------------------------------------------------------------
   procedure TGtk2WidgetSet.BringFormToFront(Sender: TObject);
 ------------------------------------------------------------------------------}

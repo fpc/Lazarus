@@ -168,6 +168,8 @@ procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPix
                                              dither : TGdkRgbDither; x_dither, y_dither : gint); cdecl; external gdklib;
 function gdk_screen_get_default: PGdkScreen; cdecl; external gdklib;
 function gdk_screen_get_rgb_colormap(screen: PGdkScreen): PGdkColormap; cdecl; external gdklib;
+function gdk_x11_get_default_xdisplay: pointer; cdecl; external gdklib;
+function gdk_x11_get_default_root_xwindow: guint; cdecl; external gdklib;
 
 // gdk 2.4
 function gdk_cursor_new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x, y: gint): PGdkCursor; cdecl; external gdklib name 'gdk_cursor_new_from_pixbuf';

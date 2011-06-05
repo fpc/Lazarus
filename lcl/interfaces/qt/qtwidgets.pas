@@ -4958,11 +4958,8 @@ begin
   else
     inherited Activate;
   {$IFDEF HASX11}
-  // qt X11 bug ?  activates window but it's not in
-  // front of others.
-  {$note TQtWidget.Activate: Check this with next qt version (>=4.7)}
   if not QWidget_isModal(Widget) then
-    QWidget_raise(Widget);
+  X11Raise(QWidget_winId(Widget));
   {$ENDIF}
 end;
 

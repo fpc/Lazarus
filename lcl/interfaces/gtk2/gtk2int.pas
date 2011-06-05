@@ -298,6 +298,10 @@ type
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
   public
+    {$IFDEF HASX}
+    function X11Raise(AHandle: HWND): boolean;
+    function X11GetActiveWindow: HWND;
+    {$ENDIF}
     procedure StartFocusTimer;
     property AppActive: Boolean read GetAppActive write SetAppActive;
     property LastFocusIn: PGtkWidget read FLastFocusIn write FLastFocusIn;

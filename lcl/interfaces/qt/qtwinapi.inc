@@ -4972,13 +4972,27 @@ begin
   end;
 end;
 
+function TQtWidgetSet.GetForegroundWindow: HWND;
+begin
+  Result:=0;
+  {$IFDEF HASX11}
+  Result:=X11GetActivewindow;
+  {$ENDIF}
+end;
+
 function TQtWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 begin
   Result := False;
   if HWND <> 0 then
   begin
-    Result := TQtWidget(HWND).IsActiveWindow;
-    TQtWidget(HWnd).Activate;
+    try
+      Result := TQtWidget(HWND).IsActiveWindow;
+      TQtWidget(HWnd).Activate;
+    except
+     {$IFDEF HASX11}
+       Result:=X11Raise(HWnd);
+     {$ENDIF}
+    end;
   end;
 end;
 
