@@ -81,8 +81,8 @@ begin
     for i:=1 to List.Count do begin  // Skip the fixed row in grid.
       OldIdent:=List[i-1];
       NewIdent:=AMap[OldIdent];
-      if AGrid.RowCount<i+2 then
-        AGrid.RowCount:=i+2;         // Leave one empty row to the end.
+      if AGrid.RowCount<i+1 then
+        AGrid.RowCount:=i+1;
       AGrid.Cells[0,i]:=OldIdent;
       AGrid.Cells[1,i]:=NewIdent;
     end;
@@ -139,8 +139,8 @@ begin
   Result:=true;
   AGrid.BeginUpdate;
   for i:=1 to AOffs.Count do begin  // Skip the fixed row in grid.
-    if AGrid.RowCount<i+2 then
-      AGrid.RowCount:=i+2;         // Leave one empty row to the end.
+    if AGrid.RowCount<i+1 then
+      AGrid.RowCount:=i+1;
     AGrid.Cells[0,i]:=AOffs[i-1].ParentType;
     AGrid.Cells[1,i]:=IntToStr(AOffs[i-1].Top);
     AGrid.Cells[2,i]:=IntToStr(AOffs[i-1].Left);

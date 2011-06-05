@@ -444,8 +444,8 @@ begin
   Result:=true;
   Grid.BeginUpdate;                          // Skip the fixed row in grid.
   for i:=1 to aFuncsAndCateg.fFuncs.Count do begin
-    if Grid.RowCount<i+2 then
-      Grid.RowCount:=i+2;                    // Leave one empty row to the end.
+    if Grid.RowCount<i+1 then
+      Grid.RowCount:=i+1;
     FuncRepl:=TFuncReplacement(aFuncsAndCateg.fFuncs.Objects[i-1]);
     Grid.Cells[0,i]:=FuncRepl.fCategory;
     Grid.Cells[1,i]:=aFuncsAndCateg.fFuncs[i-1];      // Delphi function name
