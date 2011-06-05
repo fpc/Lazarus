@@ -189,7 +189,7 @@ begin
 function TThreadsDlg.GetSelectedSnapshot: TSnapshot;
 begin
   Result := nil;
-  if (SnapshotManager <> nil) and (SnapshotManager.HistorySelected)
+  if (SnapshotManager <> nil) and (SnapshotManager.SelectedEntry <> nil)
   then Result := SnapshotManager.SelectedEntry;
 end;
 
@@ -219,7 +219,6 @@ begin
 
   FSnapshotNotification := TSnapshotNotification.Create;
   FSnapshotNotification.AddReference;
-  FSnapshotNotification.OnChange   := @SnapshotChanged;
   FSnapshotNotification.OnCurrent  := @SnapshotChanged;
 
   imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');

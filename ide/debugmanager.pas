@@ -78,6 +78,7 @@ type
 
     // Debugger events
     procedure DebuggerBreakPointHit(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
+    procedure DebuggerBeforeChangeState(ADebugger: TDebugger; AOldState: TDBGState);
     procedure DebuggerChangeState(ADebugger: TDebugger; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
@@ -95,6 +96,7 @@ type
   private
     FDebugger: TDebugger;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
+    FInStateChange: Boolean;
     FPrevShownWindow: HWND;
     FStepping: Boolean;
     // keep track of the last reported location
@@ -825,6 +827,16 @@ begin
   end;
 end;
 
+procedure TDebugManager.DebuggerBeforeChangeState(ADebugger: TDebugger; AOldState: TDBGState);
+var
+  DialogType: TDebugDialogType;
+begin
+  FInStateChange := True;
+  for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
+    if FDialogs[DialogType] <> nil then
+      FDialogs[DialogType].BeginUpdate;
+end;
+
 procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
   OldState: TDBGState);
 const
@@ -839,7 +851,13 @@ const
 var
   MsgResult: TModalResult;
   i: Integer;
+  DialogType: TDebugDialogType;
 begin
+  FInStateChange := False;
+  for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
+    if FDialogs[DialogType] <> nil then
+      FDialogs[DialogType].EndUpdate;
+
   if (ADebugger<>FDebugger) or (ADebugger=nil) then
     RaiseException('TDebugManager.OnDebuggerChangeState');
 
@@ -1127,6 +1145,7 @@ begin
   if FDialogs[ADialogType] = nil
   then begin
     CurDialog := TDebuggerDlg(DEBUGDIALOGCLASS[ADialogType].NewInstance);
+    if FInStateChange then CurDialog.BeginUpdate;
     CurDialog.DisableAutoSizing;
     CurDialog.Create(Self);
     FDialogs[ADialogType]:=CurDialog;
@@ -1318,6 +1337,7 @@ constructor TDebugManager.Create(TheOwner: TComponent);
 var
   DialogType: TDebugDialogType;
 begin
+  FInStateChange := False;
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     FDialogs[DialogType] := nil;
 
@@ -1846,6 +1866,7 @@ begin
       ClearDebugEventsLog;
 
     FDebugger.OnBreakPointHit := @DebuggerBreakPointHit;
+    FDebugger.OnBeforeState    := @DebuggerBeforeChangeState;
     FDebugger.OnState         := @DebuggerChangeState;
     FDebugger.OnCurrent       := @DebuggerCurrentLine;
     FDebugger.OnDbgOutput     := @DebuggerOutput;
@@ -1853,7 +1874,7 @@ begin
     FDebugger.OnException     := @DebuggerException;
     FDebugger.OnConsoleOutput := @DebuggerConsoleOutput;
     FDebugger.OnFeedback      := @DebuggerFeedback;
-    FDebugger.OnIdle           := @DebuggerIdle;
+    FDebugger.OnIdle          := @DebuggerIdle;
 
     if FDebugger.State = dsNone
     then begin

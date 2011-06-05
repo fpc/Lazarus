@@ -4623,6 +4623,7 @@ resourcestring
   lisInvalidOn = 'Invalid (On)';
   lisOff = '? (Off)';
   lisOn = '? (On)';
+  lisTakeSnapshot = 'Take a Snapshot';
 
   // Evaluate/Modify Dialog
   lisEvaluate = 'E&valuate';
@@ -4703,6 +4704,10 @@ resourcestring
   histdlgBtnPowerHint = 'Switch on/off automatic snapshots';
   histdlgBtnEnableHint = 'Toggle view snapshot or current';
   histdlgBtnClearHint = 'Clear all snapshots';
+  histdlgBtnShowHistHint = 'View history';
+  histdlgBtnShowSnapHint = 'View Snapshots';
+  histdlgBtnMakeSnapHint = 'Take Snapshot';
+  histdlgBtnRemoveHint   = 'Remove selected entry';
 
   // Exception Dialog
   lisExceptionDialog = 'Debugger Exception Notification';

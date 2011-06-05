@@ -388,6 +388,7 @@ type
     procedure ClearCommandQueue;
     function  GetIsIdle: Boolean; override;
     procedure DoState(const OldState: TDBGState); override;
+    procedure DoBeforeState(const OldState: TDBGState); override;
     procedure DoReadError; override;
     procedure DoWriteError; override;
     procedure DoThreadChanged;
@@ -4260,7 +4261,6 @@ begin
   FTheDebugger.FCurrentStackFrame :=  0;
   FTheDebugger.FCurrentThreadId := StrToIntDef(List.Values['thread-id'], -1);
   FTheDebugger.FCurrentLocation := FrameToLocation(List.Values['frame']);
-  FTheDebugger.Threads.CurrentThreads.CurrentThreadId := FTheDebugger.FCurrentThreadId;
 
   try
     Reason := List.Values['reason'];
@@ -4404,7 +4404,6 @@ begin
     end;
   finally
     List.Free;
-    FTheDebugger.CallStack.CurrentCallStackList.EntriesForThreads[FTheDebugger.FCurrentThreadId].CurrentIndex := FTheDebugger.FCurrentStackFrame;
   end;
 end;
 
@@ -4443,7 +4442,6 @@ begin
 
   Result := ExecuteCommand('-thread-select %d', [ID2], []);
   FTheDebugger.FCurrentThreadId := ID2;
-  FTheDebugger.Threads.CurrentThreads.CurrentThreadId := FTheDebugger.FCurrentThreadId;
 end;
 {$ENDIF}
 
@@ -5495,7 +5493,15 @@ begin
     {$ENDIF}
   end;
 
+  CallStack.CurrentCallStackList.EntriesForThreads[FCurrentThreadId].CurrentIndex := FCurrentStackFrame;
+
   inherited DoState(OldState);
+end;
+
+procedure TGDBMIDebugger.DoBeforeState(const OldState: TDBGState);
+begin
+  inherited DoBeforeState(OldState);
+  Threads.CurrentThreads.CurrentThreadId := FCurrentThreadId; // TODO: Works only because CurrentThreadId is always valid
 end;
 
 procedure TGDBMIDebugger.DoReadError;
@@ -7796,6 +7802,11 @@ end;
 
 procedure TGDBMICallStack.RequestCurrent(ACallstack: TCurrentCallStack);
 begin
+  if (Debugger = nil) or (Debugger.State <> dsPause) then begin
+    ACallstack.SetCurrentValidity(ddsInvalid);
+    Exit;
+  end;
+
   if ACallstack.ThreadId = TGDBMIDebugger(Debugger).FCurrentThreadId
   then ACallstack.CurrentIndex := TGDBMIDebugger(Debugger).FCurrentStackFrame
   else ACallstack.CurrentIndex := 0; // will be used, if thread is changed

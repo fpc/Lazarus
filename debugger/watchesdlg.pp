@@ -175,7 +175,6 @@ begin
 
   FSnapshotNotification := TSnapshotNotification.Create;
   FSnapshotNotification.AddReference;
-  FSnapshotNotification.OnChange    := @SnapshotChanged;
   FSnapshotNotification.OnCurrent  := @SnapshotChanged;
 
   ActionList1.Images := IDEImages.Images_16;
@@ -768,7 +767,7 @@ end;
 function TWatchesDlg.GetSelectedSnapshot: TSnapshot;
 begin
   Result := nil;
-  if (SnapshotManager <> nil) and (SnapshotManager.HistorySelected)
+  if (SnapshotManager <> nil) and (SnapshotManager.SelectedEntry <> nil)
   then Result := SnapshotManager.SelectedEntry;
 end;
 

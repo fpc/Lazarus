@@ -187,7 +187,6 @@ begin
 
   FSnapshotNotification := TSnapshotNotification.Create;
   FSnapshotNotification.AddReference;
-  FSnapshotNotification.OnChange := @SnapshotChanged;
   FSnapshotNotification.OnCurrent := @SnapshotChanged;
 
   FViewLimit := 10;
@@ -409,7 +408,7 @@ end;
 function TCallStackDlg.GetSelectedSnapshot: TSnapshot;
 begin
   Result := nil;
-  if (SnapshotManager <> nil) and (SnapshotManager.HistorySelected)
+  if (SnapshotManager <> nil) and (SnapshotManager.SelectedEntry <> nil)
   then Result := SnapshotManager.SelectedEntry;
 end;
 

@@ -171,6 +171,16 @@ type
     procedure ReleaseReference;
   end;
 
+  { TRefCntObjList }
+
+  TRefCntObjList = class(TList)
+  protected
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+  end;
+
+procedure ReleaseAndNil(var ARefCountedObject);
+
+type
 { ---------------------------------------------------------<br>
   TDebuggerNotification is a reference counted baseclass
   for handling notifications for locals, watches, breakpoints etc.<br>
@@ -237,6 +247,7 @@ type
   TCallStackSupplier = class;
   TThreadsMonitor = class;
   TThreadsSupplier = class;
+  TSnapshotManager = class;
   TDebugger = class;
 
   TOnSaveFilenameToConfig = procedure(var Filename: string) of object;
@@ -339,7 +350,8 @@ type
     bpaEnableGroup,
     bpaDisableGroup,
     bpaLogMessage,
-    bpaLogCallStack
+    bpaLogCallStack,
+    bpaTakeSnapshot
     );
   TIDEBreakPointActions = set of TIDEBreakPointAction;
 
@@ -1934,16 +1946,35 @@ type
 
   { TSnapshot }
 
-  TSnapshot = class
+  TSnapshot = class(TRefCountedObject)
   private
     FLocation: TDBGLocationRec;
     FTimeStamp: TDateTime;
+    FSnapMgr: TSnapshotManager;
     function GetLocationAsText: String;
   public
-    constructor Create;
+    constructor Create(ASnapMgr: TSnapshotManager);
+    destructor Destroy; override;
     property TimeStamp: TDateTime read FTimeStamp;
     property Location: TDBGLocationRec read FLocation write FLocation;
     property LocationAsText: String read GetLocationAsText;
+  public
+    procedure AddToSnapshots;
+    procedure RemoveFromSnapshots;
+    procedure RemoveFromHistory;
+    function IsCurrent: Boolean;
+    function IsHistory: Boolean;
+    function IsSnapshot: Boolean;
+  end;
+
+  { TSnapshotList }
+
+  TSnapshotList = class(TRefCntObjList)
+  private
+    function Get(Index: Integer): TSnapshot;
+    procedure Put(Index: Integer; const AValue: TSnapshot);
+  public
+    property Items[Index: Integer]: TSnapshot read Get write Put; default;
   end;
 
   { TSnapshotManager }
@@ -1958,24 +1989,41 @@ type
     FWatches: TWatchesMonitor;
     FCallStack: TCallStackMonitor;
     FThreads: TThreadsMonitor;
-    FCurrentState: TDBGState;
-    FCurrentSnapshot: TSnapshot; // snapshot fo rcurrent pause. Not yet in list
-    FRequestsDone: TSnapshotManagerRequestedFlags;
   private
     FActive: Boolean;
+    FUpdateLock: Integer;
+    FUpdateFlags: set of (ufSnapChanged, ufSnapCurrent);
+    FCurrentState: TDBGState;
+    FRequestsDone: TSnapshotManagerRequestedFlags;
+    FCurrentSnapshot: TSnapshot; // snapshot for current pause. Not yet in list
+    procedure SetActive(const AValue: Boolean);
+  protected
     FHistoryCapacity: Integer;
     FHistoryIndex: Integer;
-    FHistoryList: TList;
+    FHistoryList: TSnapshotList;
     FHistorySelected: Boolean;
-    function GetHistoryEntry(AIndex: Integer): TSnapshot;
-    procedure SetActive(const AValue: Boolean);
+    function  GetHistoryEntry(AIndex: Integer): TSnapshot;
     procedure SetHistoryIndex(const AValue: Integer);
     procedure SetHistorySelected(AValue: Boolean);
-  protected
-    procedure ClearHistory;
     procedure CreateHistoryEntry;
     procedure RemoveHistoryEntry(AIndex: Integer);
+    procedure RemoveHistoryEntry(ASnapShot: TSnapshot);
     procedure RemoveHistoryEntryFromMonitors(AnEntry: TSnapshot);
+  protected
+    FSnapshotIndex: Integer;
+    FSnapshotList: TSnapshotList;
+    FSnapshotSelected: Boolean;
+    function  GetSnapshotEntry(AIndex: Integer): TSnapshot;
+    procedure SetSnapshotIndex(const AValue: Integer);
+    procedure SetSnapshotSelected(AValue: Boolean);
+    procedure AddSnapshotEntry(ASnapShot: TSnapshot);
+    procedure RemoveSnapshotEntry(ASnapShot: TSnapshot);
+  protected
+    procedure DoSnapShotDestroy(ASnapShot: TSnapshot);
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure DoChanged;
+    procedure DoCurrent;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1988,12 +2036,18 @@ type
     function SelectedId: Pointer;
     function SelectedEntry: TSnapshot;
     procedure Clear;
+    procedure ClearHistory;
+    procedure ClearSnapshots;
+    property Current: TSnapshot read FCurrentSnapshot;
   public
-    function HistoryCount: Integer;
     property HistoryIndex: Integer read FHistoryIndex write SetHistoryIndex;
-    property HistoryEntries[AIndex: Integer]: TSnapshot read GetHistoryEntry;
     property HistoryCapacity: Integer read FHistoryCapacity write FHistoryCapacity;
     property HistorySelected: Boolean read FHistorySelected write SetHistorySelected;
+    property History: TSnapshotList read FHistoryList;
+  public
+    property SnapshotIndex: Integer read FSnapshotIndex write SetSnapshotIndex;
+    property SnapshotSelected: Boolean read FSnapshotSelected write SetSnapshotSelected;
+    property Snapshots: TSnapshotList read FSnapshotList;
   public
     property Locals: TLocalsMonitor read FLocals write FLocals;
     property Watches: TWatchesMonitor read FWatches write FWatches;
@@ -2329,6 +2383,7 @@ type
     FFileName: String;
     FLocals: TLocalsSupplier;
     FLineInfo: TDBGLineInfo;
+    FOnBeforeState: TDebuggerStateChangedEvent;
     FOnConsoleOutput: TDBGOutputEvent;
     FOnFeedback: TDBGFeedbackEvent;
     FOnIdle: TNotifyEvent;
@@ -2374,6 +2429,7 @@ type
       const AExceptionClass: String; AExceptionAddress: TDBGPtr; const AExceptionText: String; out AContinue: Boolean);
     procedure DoOutput(const AText: String);
     procedure DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
+    procedure DoBeforeState(const OldState: TDBGState); virtual;
     procedure DoState(const OldState: TDBGState); virtual;
     function  ChangeFileName: Boolean; virtual;
     function  GetCommands: TDBGCommands;
@@ -2461,6 +2517,7 @@ type
     property OnDbgEvent: TDBGEventNotify read FOnDbgEvent write FOnDbgEvent;     // Passes recognized debugger events, like library load or unload
     property OnException: TDBGExceptionEvent read FOnException write FOnException;  // Fires when the debugger received an exeption
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
+    property OnBeforeState: TDebuggerStateChangedEvent read FOnBeforeState write FOnBeforeState;   // Fires when the current state of the debugger changes
     property OnState: TDebuggerStateChangedEvent read FOnState write FOnState;   // Fires when the current state of the debugger changes
     property OnBreakPointHit: TDebuggerBreakPointHitEvent read FOnBreakPointHit write FOnBreakPointHit;   // Fires when the program is paused at a breakpoint
     property OnConsoleOutput: TDBGOutputEvent read FOnConsoleOutput write FOnConsoleOutput;  // Passes Application Console Output
@@ -2508,7 +2565,8 @@ const
     'EnableGroup',
     'DisableGroup',
     'LogMessage',
-    'LogCallStack'
+    'LogCallStack',
+    'TakeSnapshot'
     );
 
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
@@ -2577,6 +2635,14 @@ begin
   {$ENDIF}
 end;
 
+procedure ReleaseAndNil(var ARefCountedObject);
+begin
+  Assert((Pointer(ARefCountedObject) = nil) or (TObject(ARefCountedObject) is TRefCountedObject), 'ReleaseAndNil requires TRefCountedObject');
+  if Pointer(ARefCountedObject) <> nil
+  then TRefCountedObject(ARefCountedObject).ReleaseReference;
+  Pointer(ARefCountedObject) := nil;
+end;
+
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
 begin
   for Result:=Low(TDBGCommand) to High(TDBGCommand) do
@@ -2598,6 +2664,29 @@ begin
   Result:=bpaStop;
 end;
 
+{ TSnapshotList }
+
+function TSnapshotList.Get(Index: Integer): TSnapshot;
+begin
+  Result := TSnapshot(inherited Items[Index])
+end;
+
+procedure TSnapshotList.Put(Index: Integer; const AValue: TSnapshot);
+begin
+  inherited Items[Index] := AValue;
+end;
+
+{ TRefCntObjList }
+
+procedure TRefCntObjList.Notify(Ptr: Pointer; Action: TListNotification);
+begin
+  case Action of
+    lnAdded:   TRefCountedObject(Ptr).AddReference;
+    lnExtracted,
+    lnDeleted: TRefCountedObject(Ptr).ReleaseReference;
+  end;
+end;
+
 { TDebuggerDataSnapShot }
 
 destructor TDebuggerDataSnapShot.Destroy;
@@ -2615,16 +2704,54 @@ begin
   then Result := FLocation.FuncName + ' (' + Result + ')';
 end;
 
-constructor TSnapshot.Create;
+constructor TSnapshot.Create(ASnapMgr: TSnapshotManager);
 begin
   FTimeStamp := Now;
+  FSnapMgr := ASnapMgr;
+  AddReference;
+end;
+
+destructor TSnapshot.Destroy;
+begin
+  FSnapMgr.DoSnapShotDestroy(Self);
+  inherited Destroy;
+end;
+
+procedure TSnapshot.AddToSnapshots;
+begin
+  FSnapMgr.AddSnapshotEntry(Self);
+end;
+
+procedure TSnapshot.RemoveFromSnapshots;
+begin
+  FSnapMgr.RemoveSnapshotEntry(Self);
+end;
+
+procedure TSnapshot.RemoveFromHistory;
+begin
+  FSnapMgr.RemoveHistoryEntry(Self);
+end;
+
+function TSnapshot.IsCurrent: Boolean;
+begin
+  Result := Self = FSnapMgr.Current;
+end;
+
+function TSnapshot.IsHistory: Boolean;
+begin
+  Result := FSnapMgr.FHistoryList.IndexOf(Self) >= 0;
+end;
+
+function TSnapshot.IsSnapshot: Boolean;
+begin
+  Result := FSnapMgr.FSnapshotList.IndexOf(Self) >= 0;
 end;
 
 { TSnapshotManager }
 
 function TSnapshotManager.GetHistoryEntry(AIndex: Integer): TSnapshot;
 begin
-  Result := TSnapshot(FHistoryList[AIndex]);
+  Result := FHistoryList[AIndex];
 end;
 
 procedure TSnapshotManager.SetActive(const AValue: Boolean);
@@ -2632,48 +2759,112 @@ begin
   if FActive = AValue then exit;
   FActive := AValue;
 
-  if Active then begin
-    if FCurrentState = dsPause
-    then CreateHistoryEntry;
-  end
-  else begin
-    FLocals.CurrentLocalsList.SnapShot := nil;
-    FWatches.CurrentWatches.SnapShot := nil;
-    FCallStack.CurrentCallStackList.SnapShot := nil;
-    FThreads.CurrentThreads.SnapShot := nil;
-    if FCurrentSnapshot <> nil
-    then RemoveHistoryEntryFromMonitors(FCurrentSnapshot);
-    FreeAndNil(FCurrentSnapshot);
-  end;
+  if Active and (FCurrentState = dsPause)
+  then DoDebuggerIdle;
 end;
 
 procedure TSnapshotManager.SetHistoryindex(const AValue: Integer);
 begin
   if FHistoryindex = AValue then exit;
   FHistoryindex := AValue;
-  FNotificationList.NotifyCurrent(Self);
+  if FHistorySelected then DoCurrent;
 end;
 
 procedure TSnapshotManager.SetHistorySelected(AValue: Boolean);
 begin
-  if HistoryCount = 0 then AValue := False;
+  if FHistoryList.Count = 0 then AValue := False;
   if FHistorySelected = AValue then exit;
   FHistorySelected := AValue;
+  if AValue then SnapshotSelected := False;
+  DoCurrent;
+end;
+
+function TSnapshotManager.GetSnapshotEntry(AIndex: Integer): TSnapshot;
+begin
+  Result := FSnapshotList[AIndex];
+end;
+
+procedure TSnapshotManager.SetSnapshotIndex(const AValue: Integer);
+begin
+  if FSnapshotIndex = AValue then exit;
+  FSnapshotIndex := AValue;
+  if FSnapshotSelected then DoCurrent;
+end;
+
+procedure TSnapshotManager.SetSnapshotSelected(AValue: Boolean);
+begin
+  if FSnapshotList.Count = 0 then AValue := False;
+  if FSnapshotSelected = AValue then exit;
+  FSnapshotSelected := AValue;
+  if AValue then HistorySelected := False;
+  DoCurrent;
+end;
+
+procedure TSnapshotManager.DoSnapShotDestroy(ASnapShot: TSnapshot);
+begin
+  FHistoryList.Remove(ASnapShot);
+  RemoveHistoryEntryFromMonitors(ASnapShot);
+
+  if FHistoryList.Count = 0
+  then HistorySelected := False;
+  if FSnapshotList.Count = 0
+  then SnapshotSelected := False;
+end;
+
+procedure TSnapshotManager.BeginUpdate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TSnapshotManager.EndUpdate;
+begin
+  Assert(FUpdateLock > 0, 'TSnapshotManager.EndUpdate no locked');
+  if FUpdateLock > 0
+  then dec(FUpdateLock);
+  if FUpdateLock = 0 then begin
+    if ufSnapChanged in FUpdateFlags then DoChanged;
+    if ufSnapCurrent in FUpdateFlags then DoCurrent;
+  end;
+end;
+
+procedure TSnapshotManager.DoChanged;
+begin
+  if FUpdateLock > 0 then begin
+    Include(FUpdateFlags, ufSnapChanged);
+    exit;
+  end;
+  Exclude(FUpdateFlags, ufSnapChanged);
+  FNotificationList.NotifyChange(Self);
+end;
+
+procedure TSnapshotManager.DoCurrent;
+begin
+  if FUpdateLock > 0 then begin
+    Include(FUpdateFlags, ufSnapCurrent);
+    exit;
+  end;
+  Exclude(FUpdateFlags, ufSnapCurrent);
   FNotificationList.NotifyCurrent(Self);
 end;
 
 procedure TSnapshotManager.ClearHistory;
 begin
-  while FHistoryList.Count > 0 do RemoveHistoryEntry(0);
+  FHistoryList.Clear;
   HistorySelected := False;
+end;
+
+procedure TSnapshotManager.ClearSnapshots;
+begin
+  FSnapshotList.Clear;
+  SnapshotSelected := False;
 end;
 
 procedure TSnapshotManager.CreateHistoryEntry;
 var
   t: LongInt;
 begin
-  FreeAndNil(FCurrentSnapshot); // should be nil already
-  FCurrentSnapshot := TSnapshot.Create;
+  ReleaseAndNil(FCurrentSnapshot); // should be nil already
+  FCurrentSnapshot := TSnapshot.Create(Self);
   FCurrentSnapshot.Location := Debugger.GetLocation;
 
   FThreads.NewSnapshot(FCurrentSnapshot);
@@ -2686,18 +2877,33 @@ begin
   FCallStack.CurrentCallStackList.EntriesForThreads[t];
 
   DoDebuggerIdle;
+  DoChanged;
 end;
 
 procedure TSnapshotManager.RemoveHistoryEntry(AIndex: Integer);
-var
-  Snap: TSnapshot;
 begin
-  Snap := HistoryEntries[AIndex];
-  FHistoryList.Delete(AIndex);
-  RemoveHistoryEntryFromMonitors(Snap);
-  Snap.Free;
-  if HistoryCount = 0
-  then HistorySelected := False;
+  BeginUpdate;
+  try
+    FHistoryList.Delete(AIndex);
+    if FHistoryList.Count = 0
+    then HistorySelected := False;
+    DoChanged;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TSnapshotManager.RemoveHistoryEntry(ASnapShot: TSnapshot);
+begin
+  BeginUpdate;
+  try
+    FHistoryList.Remove(ASnapShot);
+    if FHistoryList.Count = 0
+    then HistorySelected := False;
+    DoChanged;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TSnapshotManager.RemoveHistoryEntryFromMonitors(AnEntry: TSnapshot);
@@ -2708,24 +2914,45 @@ begin
   FWatches.RemoveSnapshot(AnEntry);
 end;
 
+procedure TSnapshotManager.AddSnapshotEntry(ASnapShot: TSnapshot);
+begin
+  FSnapshotList.Add(ASnapShot);
+  DoChanged;
+end;
+
+procedure TSnapshotManager.RemoveSnapshotEntry(ASnapShot: TSnapshot);
+begin
+  BeginUpdate;
+  try
+    FSnapshotList.Remove(ASnapShot);
+    if FSnapshotList.Count = 0
+    then SnapshotSelected := False;
+    DoChanged;
+  finally
+    EndUpdate;
+  end;
+end;
+
 constructor TSnapshotManager.Create;
 begin
   FNotificationList := TDebuggerChangeNotificationList.Create;
   FActive := True;
   FHistorySelected := False;
-  FHistoryList := TList.Create;
+  FHistoryList := TSnapshotList.Create;
   FHistoryCapacity := 25;
+  FSnapshotList := TSnapshotList.Create;
   inherited Create;
 end;
 
 destructor TSnapshotManager.Destroy;
 begin
   FNotificationList.Clear;
-  ClearHistory;
+  ReleaseAndNil(FCurrentSnapshot);
+  Clear;
   inherited Destroy;
   FreeAndNil(FHistoryList);
+  FreeAndNil(FSnapshotList);
   FreeAndNil(FNotificationList);
-  FreeAndNil(FCurrentSnapshot);
 end;
 
 procedure TSnapshotManager.AddNotification(const ANotification: TSnapshotNotification);
@@ -2743,23 +2970,27 @@ begin
   if FDebugger = nil then exit;
   FCurrentState := Debugger.State;
 
-  if FDebugger.State = dsPause then begin
-    FRequestsDone := [];
-    if FActive then CreateHistoryEntry;
-    HistorySelected := False;
-  end
-  else begin
-    if FCurrentSnapshot <> nil then begin
-      FHistoryIndex := FHistoryList.Add(FCurrentSnapshot);
-      FCurrentSnapshot := nil;;
-      while HistoryCount > HistoryCapacity do RemoveHistoryEntry(0);
-      FNotificationList.NotifyChange(Self);
-      if HistorySelected
-      then FNotificationList.NotifyCurrent(Self);
+  BeginUpdate;
+  try
+    if FDebugger.State = dsPause then begin
+      FRequestsDone := [];
+      CreateHistoryEntry;
+      HistorySelected := False;
+      SnapshotSelected := False;
+    end
+    else begin
+      if FCurrentSnapshot <> nil then begin
+        HistoryIndex := FHistoryList.Add(FCurrentSnapshot);
+        ReleaseAndNil(FCurrentSnapshot);
+        while FHistoryList.Count > HistoryCapacity do RemoveHistoryEntry(0);
+        DoChanged;
+      end;
     end;
-  end;
-  if (FDebugger.State = dsInit) then begin
-    Clear;
+    if (FDebugger.State = dsInit) then begin
+      Clear;
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -2768,10 +2999,9 @@ var
   i, j, k: LongInt;
   w: TCurrentWatches;
 begin
-  if not FActive then exit;
-  if not Debugger.IsIdle then exit;
+  if (not FActive) then exit;
+  if (FCurrentState <> dsPause) or (not Debugger.IsIdle) then exit;
 
-  if FCurrentState <> dsPause then exit;
   if not(smrThreads in FRequestsDone) then begin
     include(FRequestsDone, smrThreads);
     FThreads.CurrentThreads.Count;
@@ -2810,29 +3040,33 @@ end;
 
 function TSnapshotManager.SelectedId: Pointer;
 begin
-  if (HistoryIndex < 0) or (HistoryIndex >= HistoryCount) or (not FHistorySelected)
-  then Result := nil
-  else Result := HistoryEntries[HistoryIndex];
+  Result := nil;
+  if (HistoryIndex >= 0) and (HistoryIndex < FHistoryList.Count) and (FHistorySelected)
+  then Result := FHistoryList[HistoryIndex];
+  if (SnapshotIndex >= 0) and (SnapshotIndex < FSnapshotList.Count) and (FSnapshotSelected)
+  then Result := FSnapshotList[HistoryIndex];
 end;
 
 function TSnapshotManager.SelectedEntry: TSnapshot;
 begin
-  if (HistoryIndex < 0) or (HistoryIndex >= HistoryCount) or (not FHistorySelected)
-  then Result := nil
-  else Result := HistoryEntries[HistoryIndex];
+  Result := nil;
+  if (HistoryIndex >= 0) and (HistoryIndex < FHistoryList.Count) and (FHistorySelected)
+  then Result := FHistoryList[HistoryIndex];
+  if (SnapshotIndex >= 0) and (SnapshotIndex < FSnapshotList.Count) and (FSnapshotSelected)
+  then Result := FSnapshotList[HistoryIndex];
 end;
 
 procedure TSnapshotManager.Clear;
 begin
-  if HistoryCount = 0 then exit;
-  ClearHistory;
-  FNotificationList.NotifyChange(Self);
-  FNotificationList.NotifyCurrent(Self);
-end;
-
-function TSnapshotManager.HistoryCount: Integer;
-begin
-  Result := FHistoryList.Count;
+  BeginUpdate;
+  try
+    ClearHistory;
+    ClearSnapshots;
+    DoChanged;
+    DoCurrent;
+  finally
+    EndUpdate;
+  end;
 end;
 
 { TDebuggerDataMonitorEx }
@@ -4637,6 +4871,11 @@ begin
   then FOnBreakpointHit(Self, ABreakPoint, ACanContinue);
 end;
 
+procedure TDebugger.DoBeforeState(const OldState: TDBGState);
+begin
+  if Assigned(FOnBeforeState) then FOnBeforeState(Self, OldState);
+end;
+
 procedure TDebugger.DoState(const OldState: TDBGState);
 begin
   if Assigned(FOnState) then FOnState(Self, OldState);
@@ -4876,15 +5115,19 @@ begin
   then begin
     OldState := FState;
     FState := AValue;
-    FThreads.DoStateChange(OldState);
-    FBreakpoints.DoStateChange(OldState);
-    FLocals.DoStateChange(OldState);
-    FLineInfo.DoStateChange(OldState);
-    FRegisters.DoStateChange(OldState);
-    FCallStack.DoStateChange(OldState);
-    FDisassembler.DoStateChange(OldState);
-    FWatches.DoStateChange(OldState);
-    DoState(OldState);
+    DoBeforeState(OldState);
+    try
+      FThreads.DoStateChange(OldState);
+      FBreakpoints.DoStateChange(OldState);
+      FLocals.DoStateChange(OldState);
+      FLineInfo.DoStateChange(OldState);
+      FRegisters.DoStateChange(OldState);
+      FCallStack.DoStateChange(OldState);
+      FDisassembler.DoStateChange(OldState);
+      FWatches.DoStateChange(OldState);
+    finally
+      DoState(OldState);
+    end;
   end;
 end;
 

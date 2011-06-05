@@ -124,7 +124,6 @@ begin
 
   FSnapshotNotification := TSnapshotNotification.Create;
   FSnapshotNotification.AddReference;
-  FSnapshotNotification.OnChange   := @SnapshotChanged;
   FSnapshotNotification.OnCurrent    := @SnapshotChanged;
 
   Caption:= lisLocals;
@@ -410,7 +409,7 @@ end;
 function TLocalsDlg.GetSelectedSnapshot: TSnapshot;
 begin
   Result := nil;
-  if (SnapshotManager <> nil) and (SnapshotManager.HistorySelected)
+  if (SnapshotManager <> nil) and (SnapshotManager.SelectedEntry <> nil)
   then Result := SnapshotManager.SelectedEntry;
 end;
 

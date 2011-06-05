@@ -26,6 +26,7 @@ inherited HistoryDialog: THistoryDialog
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvHistoryDblClick
+    OnSelectItem = lvHistorySelectItem
   end
   object ToolBar1: TToolBar[1]
     Left = 0
@@ -55,7 +56,7 @@ inherited HistoryDialog: THistoryDialog
       Style = tbsCheck
     end
     object tbClear: TToolButton
-      Left = 55
+      Left = 159
       Top = 2
       Caption = 'tbClear'
       OnClick = tbClearClick
@@ -63,9 +64,47 @@ inherited HistoryDialog: THistoryDialog
     object ToolButton1: TToolButton
       Left = 47
       Top = 2
-      Width = 8
+      Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
+    end
+    object tbHist: TToolButton
+      Tag = 1
+      Left = 57
+      Top = 2
+      Caption = 'tbHist'
+      Down = True
+      Grouped = True
+      OnClick = tbHistClick
+      Style = tbsCheck
+    end
+    object tbSnap: TToolButton
+      Tag = 1
+      Left = 80
+      Top = 2
+      Caption = 'tbSnap'
+      Grouped = True
+      OnClick = tbHistClick
+      Style = tbsCheck
+    end
+    object ToolButton4: TToolButton
+      Left = 103
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton4'
+      Style = tbsSeparator
+    end
+    object tbMakeSnap: TToolButton
+      Left = 113
+      Top = 2
+      Caption = 'tbMakeSnap'
+      OnClick = tbMakeSnapClick
+    end
+    object tbRemove: TToolButton
+      Left = 136
+      Top = 2
+      Caption = 'tbRemove'
+      OnClick = tbRemoveClick
     end
   end
 end

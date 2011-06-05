@@ -174,7 +174,7 @@ end;
 function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
 const
   DEBUG_ACTION: array[TIDEBreakPointAction] of ShortString =
-    (lisBreak, lisEnableGroups, lisDisableGroups, lisLogMessage, lisLogCallStack);
+    (lisBreak, lisEnableGroups, lisDisableGroups, lisLogMessage, lisLogCallStack, lisTakeSnapshot);
 var
   CurBreakPoint: TIDEBreakPoint;
   Action: TIDEBreakPointAction;
