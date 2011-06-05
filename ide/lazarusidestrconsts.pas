@@ -4424,7 +4424,7 @@ resourcestring
   lisBottomSiblingComboBoxHint = 'This is the sibling control to which the bottom side is anchored. Leave empty for parent.';
   lisRightSiblingComboBoxHint = 'This is the sibling control to which the right side is anchored. Leave empty for parent.';
   lisLeftSiblingComboBoxHint = 'This is the sibling control to which the left side is anchored. Leave empty for parent.';
-  lisBorderSpace = 'BorderSpace';
+  lisBorderSpace = 'Border space';
   lisSibling = 'Sibling';
   lisEnabled = 'Enabled';
   lisRightAnchoring = 'Right anchoring';
