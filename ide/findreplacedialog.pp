@@ -136,17 +136,12 @@ implementation
 constructor TLazFindReplaceDialog.Create(TheOwner:TComponent);
 begin
   inherited Create(TheOwner);
-
-  IDEDialogLayoutList.ApplyLayout(Self,420,350);
-
   Caption:='';
-
   TextToFindComboBox.Text:='';
   TextToFindLabel.Caption:=dlgTextToFing;
   ReplaceTextComboBox.Text:='';
   ReplaceWithCheckbox.Caption:=dlgReplaceWith;
   EnableAutoCompleteSpeedButton.LoadGlyphFromLazarusResource('menu_stepinto');
-
   OptionsGroupBox.Caption:=dlgFROpts;
 
   with CaseSensitiveCheckBox do begin
@@ -176,7 +171,7 @@ begin
 
   OriginGroupBox.Caption:=dlgSROrigin;
   FromCursorRadioButton.Caption := dlgFromCursor;
-  EntireScopeRadioButton.Caption := dlgEntireScope;
+  EntireScopeRadioButton.Caption := dlgFromBeginning;
 
   ScopeGroupBox.Caption:=dlgScope;
   GlobalRadioButton.Caption := dlgGlobal;
@@ -192,8 +187,10 @@ begin
   CancelButton.Caption:=dlgCancel;
 
   fReplaceAllClickedLast:=false;
-
   UpdateHints;
+
+  AutoSize:=IDEDialogLayoutList.Find(Self,false)=nil;
+  IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 destructor TLazFindReplaceDialog.Destroy;
@@ -202,6 +199,12 @@ begin
   inherited Destroy;
   if LazFindReplaceDialog=Self then
     LazFindReplaceDialog:=nil;
+end;
+
+procedure TLazFindReplaceDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TLazFindReplaceDialog.UpdateHints;
@@ -288,12 +291,6 @@ begin
       Key:=VK_UNKNOWN;
     end;
   end;
-end;
-
-procedure TLazFindReplaceDialog.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TLazFindReplaceDialog.HelpButtonClick(Sender: TObject);

@@ -166,7 +166,7 @@ begin
 
   DirectoryOptionsGroupBox.Caption := lisFindFileDirectoryOptions;
   DirectoryLabel.Caption := lisCodeToolsDefsInsertBehindDirectory;
-  FileMaskLabel.Caption := lisFindFileFileMaskBak;
+  FileMaskLabel.Caption := lisFindFileFileMask;
 
   IncludeSubDirsCheckBox.Caption := lisFindFileIncludeSubDirectories;
 

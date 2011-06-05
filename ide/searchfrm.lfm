@@ -1,25 +1,24 @@
 object SearchProgressForm: TSearchProgressForm
   Left = 422
-  Height = 149
+  Height = 132
   Top = 267
-  Width = 428
-  BorderStyle = bsDialog
+  Width = 622
   Caption = 'Searching....'
-  ClientHeight = 149
-  ClientWidth = 428
+  ClientHeight = 132
+  ClientWidth = 622
   OnCreate = SearchFormCREATE
   OnDestroy = SearchFormDESTROY
-  Position = poOwnerFormCenter
+  Position = poScreenCenter
   LCLVersion = '0.9.31'
   object Panel2: TPanel
     Left = 0
-    Height = 149
+    Height = 132
     Top = 0
-    Width = 428
+    Width = 622
     Align = alClient
     BevelInner = bvLowered
-    ClientHeight = 149
-    ClientWidth = 428
+    ClientHeight = 132
+    ClientWidth = 622
     FullRepaint = False
     TabOrder = 0
     TabStop = True
@@ -34,9 +33,9 @@ object SearchProgressForm: TSearchProgressForm
       AnchorSideTop.Control = lblMatches
       AnchorSideTop.Side = asrCenter
       Left = 16
-      Height = 18
-      Top = 71
-      Width = 58
+      Height = 14
+      Top = 73
+      Width = 48
       Caption = 'Matches'
       ParentColor = False
     end
@@ -51,9 +50,9 @@ object SearchProgressForm: TSearchProgressForm
       AnchorSideTop.Control = lblProgress
       AnchorSideTop.Side = asrCenter
       Left = 16
-      Height = 18
-      Top = 39
-      Width = 71
+      Height = 14
+      Top = 41
+      Width = 62
       Caption = 'Searching:'
       ParentColor = False
     end
@@ -61,9 +60,9 @@ object SearchProgressForm: TSearchProgressForm
       AnchorSideTop.Control = lblSearchText
       AnchorSideTop.Side = asrCenter
       Left = 16
-      Height = 18
-      Top = 7
-      Width = 82
+      Height = 14
+      Top = 9
+      Width = 71
       Caption = 'Search Text:'
       ParentColor = False
     end
@@ -75,10 +74,11 @@ object SearchProgressForm: TSearchProgressForm
       ParentColor = False
     end
     object btnCancel: TBitBtn
-      Left = 177
+      AnchorSideRight.Side = asrBottom
+      Left = 264
       Height = 32
-      Top = 112
-      Width = 89
+      Top = 88
+      Width = 75
       AutoSize = True
       Cancel = True
       Caption = 'Cancel'

@@ -2144,7 +2144,7 @@ resourcestring
   dlgPLDPackageGroup = 'Package group';
   lisPLDExists = 'Exists';
   dlgFromCursor = '&From Cursor';
-  dlgEntireScope = '&Entire Scope';
+  dlgFromBeginning = 'From &Beginning';
   dlgScope = 'Scope';
   lisWithRequiredPackages = 'With required packages';
   lisLevels = 'Levels';
@@ -3512,7 +3512,7 @@ resourcestring
   lisFindFilesearchAllOpenFiles = 'search all &open files';
   lisFindFilesearchInDirectories = 'search in &directories';
   lisFindFileDirectoryOptions = 'Directory options';
-  lisFindFileFileMaskBak = 'File mask (*;*.*;*.bak?)';
+  lisFindFileFileMask = 'File mask';
   lisFindFileIncludeSubDirectories = 'Include sub directories';
   lisFindFileOnlyTextFiles = 'Only text files';
 
