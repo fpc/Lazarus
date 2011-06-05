@@ -153,9 +153,6 @@ begin
   inherited Destroy;
 end;
 
-initialization
-   {$I ../../images/laz_images.lrs}
-
 finalization
   FreeAndNil(SVNDiffFrm);
 

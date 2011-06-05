@@ -209,9 +209,6 @@ begin
   MemStream.Free;
 end;
 
-initialization
-  {$I ../../images/bookmark.lrs}
-
 finalization
   FreeAndNil(SVNUpdateFrm);
 
