@@ -3053,7 +3053,7 @@ begin
   if (HistoryIndex >= 0) and (HistoryIndex < FHistoryList.Count) and (FHistorySelected)
   then Result := FHistoryList[HistoryIndex];
   if (SnapshotIndex >= 0) and (SnapshotIndex < FSnapshotList.Count) and (FSnapshotSelected)
-  then Result := FSnapshotList[HistoryIndex];
+  then Result := FSnapshotList[SnapshotIndex];
 end;
 
 procedure TSnapshotManager.Clear;
