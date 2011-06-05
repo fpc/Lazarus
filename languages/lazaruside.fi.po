@@ -3114,7 +3114,7 @@ msgstr "Lisää tiedosto"
 
 #: lazarusidestrconsts.lisa2paddfiles
 msgid "Add Files"
-msgstr ""
+msgstr "Lisää tiedostot"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
 msgid "Add files to package"
@@ -3122,7 +3122,7 @@ msgstr "Lisää nämä tiedostot pakettiin"
 
 #: lazarusidestrconsts.lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
-msgstr ""
+msgstr "Lisää LFM, LRS tiedostot, jos niitä on"
 
 #: lazarusidestrconsts.lisa2paddtopackage
 msgid "Add to package"
@@ -3543,7 +3543,7 @@ msgstr "Lisää tiedosto pakettiin"
 
 #: lazarusidestrconsts.lisaf2pdestinationpackage
 msgid "Destination Package"
-msgstr "Kohde paketti"
+msgstr "Kohdepaketti"
 
 #: lazarusidestrconsts.lisaf2pfiletype
 msgid "File Type"
@@ -5636,7 +5636,7 @@ msgstr "Haluatko kääntää Lazaruksen käyttäen profiilia: %s ?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
-msgstr "Vahvista uusi komponettipakettien joukko kehitysympäristöön"
+msgstr "Vahvista uusi pakettien joukko kehitysympäristöön"
 
 #: lazarusidestrconsts.lisconfirmpackageaction
 msgctxt "lazarusidestrconsts.lisconfirmpackageaction"
@@ -5645,7 +5645,7 @@ msgstr "Toiminta"
 
 #: lazarusidestrconsts.lisconfirmpackagenewpackageset
 msgid "New package set"
-msgstr "Uusi komponenttipakettien joukko"
+msgstr "Uusi pakettien joukko"
 
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
@@ -5795,7 +5795,7 @@ msgstr "Delphi nimi"
 
 #: lazarusidestrconsts.lisconvdelphipackagenameexists
 msgid "Package name exists"
-msgstr "Paketin nimi on jo olemassa"
+msgstr "Paketti tuolla nimellä on jo olemassa"
 
 #: lazarusidestrconsts.lisconvdelphiprojomittedunit
 msgid "Omitted unit %s from project"
@@ -9218,7 +9218,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
-msgstr "Lazarus komponenttipakettitiedostot"
+msgstr "Lazarus komponenttipaketti"
 
 #: lazarusidestrconsts.lislazarusproject
 msgid "Lazarus project"
@@ -10232,7 +10232,7 @@ msgstr "Uusi ..."
 
 #: lazarusidestrconsts.lismenunewpackage
 msgid "New package ..."
-msgstr "Uusi komponenttipaketti ..."
+msgstr "Uusi paketti ..."
 
 #: lazarusidestrconsts.lismenunewproject
 msgid "New Project ..."
@@ -10261,11 +10261,11 @@ msgstr "Avaa kursorin osoittama tiedosto"
 
 #: lazarusidestrconsts.lismenuopenpackage
 msgid "Open loaded package ..."
-msgstr "Avaa komponenttipaketti ..."
+msgstr "Avaa jo ladattu paketti ..."
 
 #: lazarusidestrconsts.lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
-msgstr "Avaa komponenttipaketti (.lpk) ..."
+msgstr "Avaa pakettitiedosto (.lpk) ..."
 
 #: lazarusidestrconsts.lismenuopenpackageofcurunit
 msgid "Open package of current unit"
@@ -10836,7 +10836,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismissingpackages
 msgid "Missing Packages"
-msgstr "Komponenttipaketti puuttuu"
+msgstr "Paketteja puuttuu"
 
 #: lazarusidestrconsts.lismissingunitschoices
 msgid "Your choices are:"
@@ -11230,11 +11230,11 @@ msgstr "Ei paketteja valittuna"
 
 #: lazarusidestrconsts.lisoipopenloadedpackage
 msgid "Open loaded package"
-msgstr "Avaa komponenttipaketti"
+msgstr "Avaa jo ladattu paketti"
 
 #: lazarusidestrconsts.lisoippackagename
 msgid "Package Name"
-msgstr "Komponenttipaketin nimi"
+msgstr "Paketin nimi"
 
 #: lazarusidestrconsts.lisoippleaseselectapackage
 msgid "Please select a package"
@@ -11327,7 +11327,7 @@ msgstr "Avaa paketti %s"
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"
-msgstr "Avaa komponenttipakettitiedosto"
+msgstr "Avaa pakettitiedosto"
 
 #: lazarusidestrconsts.lisopenproject
 msgid "Open Project?"
@@ -11593,31 +11593,31 @@ msgstr "Asenna"
 
 #: lazarusidestrconsts.lispckeditinstallpackageintheide
 msgid "Install package in the IDE"
-msgstr "Asenna komponenttipaketti kehitysympäristöön"
+msgstr "Asenna paketti kehitysympäristöön"
 
 #: lazarusidestrconsts.lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
-msgstr ""
+msgstr "Kelvoton maximiversio"
 
 #: lazarusidestrconsts.lispckeditinvalidminimumversion
 msgid "Invalid minimum version"
-msgstr ""
+msgstr "Kelvoton minimiversio"
 
 #: lazarusidestrconsts.lispckeditmaximumversion
 msgid "Maximum Version:"
-msgstr ""
+msgstr "Maximiversio:"
 
 #: lazarusidestrconsts.lispckeditminimumversion
 msgid "Minimum Version:"
-msgstr ""
+msgstr "Minimiversio:"
 
 #: lazarusidestrconsts.lispckeditmodified
 msgid "Modified: %s"
-msgstr ""
+msgstr "Muunnettu: %s"
 
 #: lazarusidestrconsts.lispckeditmore
 msgid "More >>"
-msgstr "Näytä muut >>"
+msgstr "Muut >>"
 
 #: lazarusidestrconsts.lispckeditmovedependencydown
 msgid "Move dependency down"
@@ -11633,7 +11633,7 @@ msgstr "Komponenttipaketti %s"
 
 #: lazarusidestrconsts.lispckeditpackagehaschangedsavepackage
 msgid "Package %s%s%s has changed.%sSave package?"
-msgstr "Komponenttipaketti %s%s%s on muuttunut.%sTallennetaanko komponenttipaketti?"
+msgstr "Komponenttipaketti %s%s%s on muuttunut.%sTallennetaanko?"
 
 #: lazarusidestrconsts.lispckeditpackagenotsaved
 msgid "package %s not saved"
@@ -12572,11 +12572,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage
 msgid "Uninstall package?"
-msgstr "Poistetaanko komponenttipaketti Lazaruksen asennuksesta?"
+msgstr "Poistetaanko paketti asennuksesta?"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage2
 msgid "Uninstall package %s?"
-msgstr "Poistetaanko komponenttipaketti %s ?"
+msgstr "Poistetaanko paketti %s ?"
 
 #: lazarusidestrconsts.lispkgmangunsavedpackage
 msgid "Unsaved package"
@@ -15762,7 +15762,7 @@ msgstr "Tekstin merkkauskomennot"
 
 #: lazarusidestrconsts.srkmcatpackagemenu
 msgid "Package menu commands"
-msgstr "Komponenttipakettivalikon komennot"
+msgstr "Pakettivalikon komennot"
 
 #: lazarusidestrconsts.srkmcatprojectmenu
 msgid "Project menu commands"
