@@ -14371,6 +14371,7 @@ begin
 
   // create a test unit needed to get from the compiler all macros and search paths
   CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
+  MainBuildBoss.UpdateEnglishErrorMsgFilename;
 
   if InteractiveSetup then
   begin

@@ -7577,13 +7577,12 @@ end;
 function TFPCTargetConfigCache.GetFPCInfoCmdLineOptions(ExtraOptions: string
   ): string;
 begin
-  Result:='';
-  if CompilerOptions<>'' then
-    ExtraOptions:=CompilerOptions+' '+ExtraOptions;
-  if TargetOS<>'' then
-    ExtraOptions:='-T'+LowerCase(TargetOS)+' '+ExtraOptions;
+  Result:=CompilerOptions;
   if TargetCPU<>'' then
-    ExtraOptions:='-P'+LowerCase(TargetCPU)+' '+ExtraOptions;
+    Result:=Result+' -P'+LowerCase(TargetCPU);
+  if TargetOS<>'' then
+    Result:=Result+' -T'+LowerCase(TargetOS);
+  Result:=Result+' '+ExtraOptions;
   Result:=Trim(ExtraOptions);
 end;
 

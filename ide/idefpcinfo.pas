@@ -143,7 +143,7 @@ begin
   try
     // fpc -i
     sl.Add('The IDE asks the compiler with the following command for the real OS/CPU:');
-    ExtraOptions:=Cfg.GetFPCInfoCmdLineOptions('');
+    ExtraOptions:=Cfg.GetFPCInfoCmdLineOptions(CodeToolBoss.FPCDefinesCache.ExtraOptions);
     Params:=Trim('-iTOTP '+ExtraOptions);
     WorkDir:=GetCurrentDirUTF8;
     sl.Add(CompilerFilename+' '+Params);
@@ -163,7 +163,7 @@ begin
     Filename:=ExtractFileName(TestFilename);
     WorkDir:=ExtractFilePath(TestFilename);
     sl.Add('The IDE asks the compiler with the following command for paths and macros:');
-    ExtraOptions:='';
+    ExtraOptions:=Cfg.GetFPCInfoCmdLineOptions(CodeToolBoss.FPCDefinesCache.ExtraOptions);
     Params:=Trim('-va '+ExtraOptions)+' '+Filename;
     sl.Add(CompilerFilename+' '+Params);
     sl.Add('Working directory: '+WorkDir);
