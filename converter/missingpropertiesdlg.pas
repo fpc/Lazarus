@@ -536,7 +536,6 @@ const // Will be moved to LazarusIDEStrConsts
 begin
   Caption:=lisFixLFMFile;
   Position:=poScreenCenter;
-  //  IDEDialogLayoutList.ApplyLayout(Self,600,400);
   NoteLabel.Caption:=lisLFMFileContainsInvalidProperties;
   ErrorsGroupBox.Caption:=lisErrors;
   LFMGroupBox.Caption:=lisLFMFile;
