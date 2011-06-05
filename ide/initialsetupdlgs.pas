@@ -44,7 +44,7 @@ uses
   FileUtil, Graphics, ComCtrls, ExtCtrls, StdCtrls,
   Laz_XMLCfg,
   DefineTemplates, CodeToolManager,
-  TextTools,
+  TextTools, IDEDialogs,
   TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,
   AboutFrm;
   
@@ -912,10 +912,23 @@ end;
 procedure TInitialSetupDialog.CompilerBrowseButtonClick(Sender: TObject);
 var
   Filename: String;
+  Dlg: TOpenDialog;
+  Filter: String;
 begin
-  Filename:=SelectDirectory(Format(lisSelectPathOf, [GetDefaultCompilerFilename]
-    ));
-  if Filename='' then exit;
+  Dlg:=TOpenDialog.Create(nil);
+  try
+    Filename:='fpc'+GetExecutableExt;
+    Dlg.Title:=Format(lisSelectPathTo, [Filename]);
+    Dlg.Options:=Dlg.Options+[ofFileMustExist];
+    Filter:=dlgAllFiles+'|'+GetAllFilesMask;
+    if ExtractFileExt(Filename)<>'' then
+      Filter:=lisExecutable+'|*'+ExtractFileExt(Filename)+'|'+Filter;
+    Dlg.Filter:=Filter;
+    if not Dlg.Execute then exit;
+    Filename:=Dlg.FileName;
+  finally
+    Dlg.Free;
+  end;
   CompilerComboBox.Text:=Filename;
   UpdateCompilerNote;
 end;

@@ -1234,6 +1234,7 @@ resourcestring
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   dlgAllFiles = 'All files';
+  lisExecutable = 'Executable';
   lisEditorFileTypes = 'Editor file types';
   lisOld = 'old';
   lisNew = 'new';
@@ -5266,6 +5267,7 @@ resourcestring
   lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro = 'The sources of the '
     +'Free Pascal packages are required for browsing and code completion. For '
     +'example it has the file "%s".';
+  lisSelectPathTo = 'Select path to %s';
   lisSelectPathOf = 'Select path of %s';
   lisSelectFPCSourceDirectory = 'Select FPC source directory';
   lisSelectLazarusSourceDirectory = 'Select Lazarus source directory';
