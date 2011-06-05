@@ -14876,71 +14876,76 @@ begin
     exit;
   end;
 
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then
-    GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-
-  if AddJumpPoint and (ActiveUnitInfo <> nil) and (ActiveSrcEdit <> nil)
-  then begin
-    if (NewSource<>ActiveUnitInfo.Source)
-    or (ActiveSrcEdit.EditorComponent.CaretX<>NewX)
-    or (ActiveSrcEdit.EditorComponent.CaretY<>NewY) then
-      SourceEditorManager.AddJumpPointClicked(Self);
-  end;
-
-  if (ActiveUnitInfo = nil) or (NewSource<>ActiveUnitInfo.Source)
-  then begin
-    // jump to other file -> open it
-    ActiveUnitInfo := Project1.UnitInfoWithFilename(NewSource.Filename);
-    AnEditorInfo := nil;
-    if ActiveUnitInfo <> nil then
-      AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
-    if AnEditorInfo <> nil then begin
-      SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
-      Result := mrOK;
-    end
-    else
-      Result:=DoOpenEditorFile(NewSource.Filename,-1,-1,
-        [ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
-    if Result<>mrOk then begin
-      UpdateSourceNames;
-      exit;
-    end;
-    NewSrcEdit := SourceEditorManager.ActiveEditor;
-  end
-  else begin
-    AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
-    if AnEditorInfo <> nil then begin
-      NewSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent);
-      SourceEditorManager.ActiveEditor := NewSrcEdit;
-    end
-    else
-      NewSrcEdit:=ActiveSrcEdit;
-  end;
-  if NewX<1 then NewX:=1;
-  if NewY<1 then NewY:=1;
-  //debugln(['[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine]);
+  SourceEditorManager.BeginAutoFocusLock;
   try
-    NewSrcEdit.BeginUpdate;
-    NewSrcEdit.EditorComponent.MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
-    if not NewSrcEdit.IsLocked then begin
-      if NewTopLine < 1 then
-        NewSrcEdit.CenterCursor(True)
-      else
-        NewSrcEdit.TopLine:=NewTopLine;
-    end;
-    //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
-    with NewSrcEdit.EditorComponent do
-      LeftChar:=Max(NewX - (CharsInWindow * 4 div 5), 1);
-  finally
-    NewSrcEdit.EndUpdate;
-  end;
-  if MarkLine then
-    NewSrcEdit.ErrorLine := NewY;
+    if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then
+      GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
 
-  if FocusEditor then
-    SourceEditorManager.ShowActiveWindowOnTop(True);
-  UpdateSourceNames;
-  Result:=mrOk;
+    if AddJumpPoint and (ActiveUnitInfo <> nil) and (ActiveSrcEdit <> nil)
+    then begin
+      if (NewSource<>ActiveUnitInfo.Source)
+      or (ActiveSrcEdit.EditorComponent.CaretX<>NewX)
+      or (ActiveSrcEdit.EditorComponent.CaretY<>NewY) then
+        SourceEditorManager.AddJumpPointClicked(Self);
+    end;
+
+    if (ActiveUnitInfo = nil) or (NewSource<>ActiveUnitInfo.Source)
+    then begin
+      // jump to other file -> open it
+      ActiveUnitInfo := Project1.UnitInfoWithFilename(NewSource.Filename);
+      AnEditorInfo := nil;
+      if ActiveUnitInfo <> nil then
+        AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
+      if AnEditorInfo <> nil then begin
+        SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
+        Result := mrOK;
+      end
+      else
+        Result:=DoOpenEditorFile(NewSource.Filename,-1,-1,
+          [ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
+      if Result<>mrOk then begin
+        UpdateSourceNames;
+        exit;
+      end;
+      NewSrcEdit := SourceEditorManager.ActiveEditor;
+    end
+    else begin
+      AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
+      if AnEditorInfo <> nil then begin
+        NewSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent);
+        SourceEditorManager.ActiveEditor := NewSrcEdit;
+      end
+      else
+        NewSrcEdit:=ActiveSrcEdit;
+    end;
+    if NewX<1 then NewX:=1;
+    if NewY<1 then NewY:=1;
+    //debugln(['[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine]);
+    try
+      NewSrcEdit.BeginUpdate;
+      NewSrcEdit.EditorComponent.MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
+      if not NewSrcEdit.IsLocked then begin
+        if NewTopLine < 1 then
+          NewSrcEdit.CenterCursor(True)
+        else
+          NewSrcEdit.TopLine:=NewTopLine;
+      end;
+      //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
+      with NewSrcEdit.EditorComponent do
+        LeftChar:=Max(NewX - (CharsInWindow * 4 div 5), 1);
+    finally
+      NewSrcEdit.EndUpdate;
+    end;
+    if MarkLine then
+      NewSrcEdit.ErrorLine := NewY;
+
+    if FocusEditor then
+      SourceEditorManager.ShowActiveWindowOnTop(True);
+    UpdateSourceNames;
+    Result:=mrOk;
+  finally
+    SourceEditorManager.EndAutoFocusLock;
+  end;
 end;
 
 {-------------------------------------------------------------------------------
