@@ -11,7 +11,6 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   Constraints.MinWidth = 400
   OnClose = FormClose
   OnCreate = FormCreate
-  Position = poScreenCenter
   LCLVersion = '0.9.31'
   object OptionsCheckGroupBox: TCheckGroup
     AnchorSideLeft.Control = Owner

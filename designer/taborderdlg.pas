@@ -33,7 +33,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
-  ComCtrls, StdCtrls, Arrow, LazarusIDEStrConsts, ButtonPanel, PropEdits;
+  ComCtrls, StdCtrls, Arrow, LazarusIDEStrConsts, ButtonPanel,
+  PropEdits, IDEWindowIntf;
 
 type
 
@@ -43,6 +44,7 @@ type
     ArrowDown: TSpeedButton;
     ArrowUp: TSpeedButton;
     ItemTreeview: TTreeView;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure ItemTreeviewClick(Sender: TObject);
     procedure TabOrderDialogCREATE(Sender: TObject);
@@ -90,6 +92,8 @@ begin
 
   ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
   ArrowUp.LoadGlyphFromLazarusResource('arrow_up');
+
+  IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 procedure TTabOrderDialog.FormShow(Sender: TObject);
@@ -105,6 +109,11 @@ begin
     Sel.Free;
   end;
   CheckButtonsEnabled;
+end;
+
+procedure TTabOrderDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TTabOrderDialog.ItemTreeviewClick(Sender: TObject);

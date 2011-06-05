@@ -4,13 +4,12 @@ object TabOrderDialog: TTabOrderDialog
   Top = 112
   Width = 310
   ActiveControl = ItemTreeview
-  BorderStyle = bsSizeToolWin
   Caption = 'TabOrderDialog'
   ClientHeight = 374
   ClientWidth = 310
+  OnClose = FormClose
   OnCreate = TabOrderDialogCREATE
   OnShow = FormShow
-  Position = poScreenCenter
   LCLVersion = '0.9.31'
   object ArrowUp: TSpeedButton
     AnchorSideRight.Control = Owner
