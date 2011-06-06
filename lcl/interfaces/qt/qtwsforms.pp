@@ -441,8 +441,17 @@ begin
       end;
     end;
   end;
+
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
   Widget.EndUpdate;
+
+  {$IFDEF HASX11}
+  if AWinControl.HandleObjectShouldBeVisible and
+    (fsModal in TForm(AWinControl).FormState) and
+    (QtWidgetSet.WindowManagerName = 'metacity') then
+      X11Raise(QWidget_winID(Widget.Widget));
+  {$ENDIF}
+
   {$IFDEF HASX11}
   if (QtVersionMajor = 4) and (QtVersionMinor >= 6)
     and (TForm(AWinControl).FormStyle <> fsMDIChild) then

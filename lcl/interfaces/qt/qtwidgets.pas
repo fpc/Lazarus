@@ -14251,6 +14251,12 @@ begin
   {$ELSE}
   QMessageBox_setWindowModality(QMessageBoxH(Widget), QtApplicationModal);
   QWidget_show(Widget);
+
+  {$IFDEF HASX11}
+  if (QtWidgetSet.WindowManagerName = 'metacity') then
+      X11Raise(QWidget_winID(Widget));
+  {$ENDIF}
+
   repeat
     QCoreApplication_processEvents();
     Application.Idle(true);
