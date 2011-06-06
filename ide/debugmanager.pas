@@ -835,7 +835,7 @@ begin
     if FDialogs[DialogType] <> nil then
       FDialogs[DialogType].BeginUpdate;
 
-  if Debugger.State = dsInternalPause then exit; // set debug windows to ignore / no updating
+  if FDebugger.State = dsInternalPause then exit; // set debug windows to ignore / no updating
 end;
 
 procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
@@ -872,10 +872,10 @@ begin
     FSnapshots.Current.AddToSnapshots;
     FSnapshots.DoDebuggerIdle(True);
   end
-  else if Debugger.State <> dsInternalPause
+  else if FDebugger.State <> dsInternalPause
   then FSnapshots.DoStateChange(OldState);
 
-  if Debugger.State = dsInternalPause
+  if FDebugger.State = dsInternalPause
   then exit;
 
   if FDebugger.State=dsError
@@ -1013,7 +1013,7 @@ var
   InIgnore: Boolean;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
-  if Debugger.State = dsInternalPause then exit;
+  if FDebugger.State = dsInternalPause then exit;
   if Destroying then exit;
 
   FCurrentLocation := ALocation;
