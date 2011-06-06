@@ -1197,16 +1197,19 @@ type
   TGDBMIDebuggerCommandThreads = class(TGDBMIDebuggerCommand)
   private
     FCurrentThreadId: Integer;
+    FSuccess: Boolean;
     FThreads: Array of TThreadEntry;
     function GetThread(AnIndex: Integer): TThreadEntry;
   protected
     function DoExecute: Boolean; override;
   public
+    constructor Create(AOwner: TGDBMIDebugger);
     destructor Destroy; override;
     //function DebugText: String; override;
     function Count: Integer;
     property Threads[AnIndex: Integer]: TThreadEntry read GetThread;
     property CurrentThreadId: Integer read FCurrentThreadId;
+    property Success: Boolean read FSuccess;
   end;
 
   { TGDBMIDebuggerCommandChangeThread }
@@ -1694,6 +1697,12 @@ begin
   if Monitor = nil then exit;
   Cmd := TGDBMIDebuggerCommandThreads(Sender);
 
+  if not Cmd.Success then begin
+    CurrentThreads.SetValidity(ddsInvalid);
+    CurrentThreads.CurrentThreadId := Debugger.FCurrentThreadId;
+    exit;
+  end;
+
   if CurrentThreads <> nil
   then begin
     CurrentThreads.Clear;
@@ -1702,6 +1711,7 @@ begin
 
     CurrentThreads.SetValidity(ddsValid);
     CurrentThreads.CurrentThreadId := Cmd.CurrentThreadId;
+    Debugger.FCurrentThreadId := CurrentThreads.CurrentThreadId;
   end;
 end;
 
@@ -1823,14 +1833,29 @@ var
   addr: TDBGPtr;
   Arguments: TStringList;
 begin
+(* TODO: none MI command
+<info threads>
+&"info threads\n"
+~"  5 thread 4928.0x1f50  0x77755ca4 in ntdll!LdrAccessResource () from C:\\Windows\\system32\\ntdll.dll\n"
+~"  4 thread 4928.0x12c8  0x77755ca4 in ntdll!LdrAccessResource () from C:\\Windows\\system32\\ntdll.dll\n"
+~"* 1 thread 4928.0x1d18  TFORM1__BUTTON1CLICK (SENDER=0x209ef0, this=0x209a20) at unit1.pas:65\n"
+^done
+(gdb)
+
+*)
+
   Result := True;
 
-  ExecuteCommand('-thread-info', R);
+  if not ExecuteCommand('-thread-info', R)
+  then exit;
+  if r.State = dsError then exit;;
   List := TGDBMINameValueList.Create(R);
   EList := TGDBMINameValueList.Create;
   ArgList := TGDBMINameValueList.Create;
 
   FCurrentThreadId := StrToIntDef(List.Values['current-thread-id'], -1);
+  if FCurrentThreadId < 0 then exit;
+  FSuccess := True;
 
   List.SetPath('threads');
   SetLength(FThreads, List.Count);
@@ -1867,6 +1892,12 @@ begin
   FreeAndNil(ArgList);
   FreeAndNil(EList);
   FreeAndNil(List);
+end;
+
+constructor TGDBMIDebuggerCommandThreads.Create(AOwner: TGDBMIDebugger);
+begin
+  inherited;
+  FSuccess := False;
 end;
 
 destructor TGDBMIDebuggerCommandThreads.Destroy;
