@@ -204,7 +204,7 @@ type
   {$IFDEF HASX11}
   function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
   function X11Raise(AHandle: HWND): boolean;
-  function X11GetActiveWindow: HWND;
+  function X11GetActiveWindow: QWidgetH;
   function GetWindowManager: String;
   procedure SetSkipX11Taskbar(Widget: QWidgetH; const ASkipTaskBar: Boolean);
   {check if we are running under kde3 installation}

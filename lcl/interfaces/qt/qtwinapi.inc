@@ -4973,11 +4973,15 @@ begin
 end;
 
 function TQtWidgetSet.GetForegroundWindow: HWND;
+var
+  W: QWidgetH;
 begin
-  Result:=0;
   {$IFDEF HASX11}
-  Result:=X11GetActivewindow;
+  W := X11GetActivewindow;
+  {$ELSE}
+  W := QApplication_activeWindow();
   {$ENDIF}
+  Result := HwndFromWidgetH(W);
 end;
 
 function TQtWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
@@ -4985,14 +4989,8 @@ begin
   Result := False;
   if HWND <> 0 then
   begin
-    try
-      Result := TQtWidget(HWND).IsActiveWindow;
-      TQtWidget(HWnd).Activate;
-    except
-     {$IFDEF HASX11}
-       Result:=X11Raise(HWnd);
-     {$ENDIF}
-    end;
+    Result := TQtWidget(HWND).IsActiveWindow;
+    TQtWidget(HWnd).Activate;
   end;
 end;
 

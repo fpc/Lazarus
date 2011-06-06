@@ -4959,7 +4959,7 @@ begin
     inherited Activate;
   {$IFDEF HASX11}
   if not QWidget_isModal(Widget) then
-  X11Raise(QWidget_winId(Widget));
+    X11Raise(QWidget_winId(Widget));
   {$ENDIF}
 end;
 

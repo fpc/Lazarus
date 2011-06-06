@@ -110,7 +110,7 @@ begin
 	      @XClient)<>0;
 end;
 
-function X11GetActivewindow: HWND;
+function X11GetActivewindow: QWidgetH;
 var
   Display: PDisplay;
   RootWin: TWindow;
@@ -119,29 +119,34 @@ var
   ActualTypeReturn: TAtom;
   ActualFormatReturn: LongInt;
   NItemsReturn, BytesAfterReturn: Cardinal;
-  Ptr: PByte;
+  Ptr: Pointer;
   Valid: Boolean;
 begin
+  Result := nil;
   Display := QX11Info_display();
 
   if Display = nil then
     exit;
+  Ptr := nil;
   ScreenNum := QX11Info_appScreen();
   RootWin := XRootWindow(Display, ScreenNum);
   WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
-  Valid:=XGetWindowProperty(Display, RootWin, WMAtom, 0, 1, False,
+  Valid := XGetWindowProperty(Display, RootWin, WMAtom, 0, 1, False,
                                  AnyPropertyType, @ActualTypeReturn,
                                  @ActualFormatReturn, @NItemsReturn,
-                                 @BytesAfterReturn, @Ptr)=0;
-  if Valid then
-  try
-    if (ActualTypeReturn = None) or (ActualFormatReturn <> 32) or not Assigned(Ptr) then
-      Valid := False;
-    if Valid then Result := PCardinal(Ptr)^;
-  finally
-    if Assigned(Ptr) then
+                                 @BytesAfterReturn, @Ptr) = Success;
+  if Valid and (Ptr <> nil) and (ActualTypeReturn = XA_WINDOW) and
+    (ActualFormatReturn = 32) then
+  begin
+    RootWin := TWindow(Ptr^);
+    try
+     Result := QWidget_find(RootWin);
+    finally
+      XFree(Ptr);
+    end;
+  end else
+  if Assigned(Ptr) then
     XFree(Ptr);
-  end;
 end;
 
 function GetWindowManager: String;
