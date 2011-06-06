@@ -176,6 +176,10 @@ debugger/callstack_goto.png
 debugger/callstack_more.png
 debugger/callstack_show.png
 debugger/callstack_top.png
+debugger/camera.png
+debugger/camera_add.png
+debugger/camera_go.png
+debugger/clock.png
 debugger/debugger.png
 debugger/debugger_current_line.png
 debugger/debugger_current_line_breakpoint.png

@@ -4535,6 +4535,10 @@ images/debugger/callstack_goto.png -text
 images/debugger/callstack_more.png -text
 images/debugger/callstack_show.png -text
 images/debugger/callstack_top.png -text
+images/debugger/camera.png -text
+images/debugger/camera_add.png -text
+images/debugger/camera_go.png -text
+images/debugger/clock.png -text
 images/debugger/debugger.png -text svneol=unset#image/png
 images/debugger/debugger_breakpoints.png -text svneol=unset#image/png
 images/debugger/debugger_call_stack.png -text svneol=unset#image/png
