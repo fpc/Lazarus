@@ -15715,7 +15715,6 @@ end;
 function TMainIDE.DoFindInFiles: TModalResult;
 begin
   Result:=mrOk;
-  DoArrangeSourceEditorAndMessageView(true);
   FindInFilesDialog.FindInFilesPerDialog(Project1);
 end;
 
