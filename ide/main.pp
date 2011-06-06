@@ -12096,8 +12096,21 @@ begin
       exit;
     end;
 
-    // prepare static auto install packages
-    PkgOptions:='';
+    // clean up
+    if (not (blfDontCleanAll in Flags))
+    and MiscellaneousOptions.BuildLazProfiles.Current.CleanAll then begin
+      SourceEditorManager.ClearErrorLines;
+      Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
+                           ExternalTools,GlobalMacroList,
+                           '',EnvironmentOptions.GetCompilerFilename,
+                           EnvironmentOptions.MakeFilename,
+                           [blfDontBuild]);
+      if Result<>mrOk then begin
+        DebugLn('TMainIDE.DoBuildLazarus: Clean up failed.');
+        exit;
+      end;
+    end;
+
     // compile auto install static packages
     Result:=PkgBoss.DoCompileAutoInstallPackages([],false);
     if Result<>mrOk then begin
@@ -12133,6 +12146,8 @@ begin
 
     // save extra options
     IDEBuildFlags:=Flags;
+    if MiscellaneousOptions.BuildLazProfiles.Current.CleanAll then
+      Include(IDEBuildFlags,blfDontCleanAll);
     if MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode<>mmNone then begin
       Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
                    GlobalMacroList,PkgOptions,IDEBuildFlags-[blfUseMakeIDECfg]);

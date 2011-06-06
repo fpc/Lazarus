@@ -3585,7 +3585,7 @@ begin
   end;
 
   // save IDE build configs, so user can build IDE on command line
-  BuildIDEFlags:=[blfDontClean,blfOnlyIDE];
+  BuildIDEFlags:=[blfDontCleanAll,blfOnlyIDE];
   Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
   if Result<>mrOk then exit;
 
@@ -3667,7 +3667,7 @@ begin
     end;
 
     // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfDontClean,blfOnlyIDE];
+    BuildIDEFlags:=[blfDontCleanAll,blfOnlyIDE];
     Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
     if Result<>mrOk then exit;
 
@@ -3902,7 +3902,7 @@ begin
     SaveAutoInstallDependencies;
 
     // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfDontClean,blfOnlyIDE];
+    BuildIDEFlags:=[blfDontCleanAll,blfOnlyIDE];
     if MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags)<>mrOk then exit(mrCancel);
 
     if piiifRebuildIDE in Flags then

@@ -63,9 +63,10 @@ uses
 type
 
   TBuildLazarusFlag = (
+    blfDontBuild,           // skip all building, only cleaning
     blfOnlyIDE,             // skip all but IDE (for example build IDE, but not examples)
-    blfDontClean,           // ignore clean up
-    blfUseMakeIDECfg,       // use idemake.cfg
+    blfDontCleanAll,        // ignore clean up
+    blfUseMakeIDECfg,       // append @idemake.cfg
     blfReplaceExe           // ignore OSLocksExecutables and do not create lazarus.new.exe
     );
   TBuildLazarusFlags = set of TBuildLazarusFlag;
@@ -265,7 +266,7 @@ begin
 
     // clean up
     if Options.CleanAll
-    and ([blfDontClean,blfOnlyIDE]*Flags=[]) then begin
+    and ([blfDontCleanAll,blfOnlyIDE]*Flags=[]) then begin
       WorkingDirectory:=EnvironmentOptions.LazarusDirectory;
       if not CheckDirectoryWritable(WorkingDirectory) then exit(mrCancel);
 
@@ -284,52 +285,54 @@ begin
     end;
 
     // build every item
-    for i:=0 to Profiles.MakeModeDefs.Count-1 do begin
-      MMDef:=Profiles.MakeModeDefs[i]; // build item
-      WorkingDirectory:=TrimFilename(EnvironmentOptions.LazarusDirectory
-                                     +PathDelim+MMDef.Directory);
-      // calculate make mode
-      CurMakeMode:=Profiles.Current.MakeModes[i];
-      if (blfOnlyIDE in Flags) then begin
-        if MMDef=Profiles.MakeModeDefs.ItemIDE then begin
-          if CurMakeMode=mmNone then
-            CurMakeMode:=mmBuild;
-        end else
-          CurMakeMode:=mmNone;
+    if not (blfDontBuild in Flags) then begin
+      for i:=0 to Profiles.MakeModeDefs.Count-1 do begin
+        MMDef:=Profiles.MakeModeDefs[i]; // build item
+        WorkingDirectory:=TrimFilename(EnvironmentOptions.LazarusDirectory
+                                       +PathDelim+MMDef.Directory);
+        // calculate make mode
+        CurMakeMode:=Profiles.Current.MakeModes[i];
+        if (blfOnlyIDE in Flags) then begin
+          if MMDef=Profiles.MakeModeDefs.ItemIDE then begin
+            if CurMakeMode=mmNone then
+              CurMakeMode:=mmBuild;
+          end else
+            CurMakeMode:=mmNone;
+        end;
+        //debugln(['BuildLazarus Def=',MMDef.Name,' Mode=',ord(CurMakeMode)]);
+        if CurMakeMode=mmNone then continue;
+
+        if (blfDontCleanAll in Flags) and (CurMakeMode=mmCleanBuild) then
+          CurMakeMode:=mmBuild;
+        Tool.Title:=MMDef.Description;
+        Tool.WorkingDirectory:=WorkingDirectory;
+        Tool.CmdLineParams:=MMDef.Commands[CurMakeMode];
+        // append extra options
+        ExOptions:='';
+        Result:=CreateBuildLazarusOptions(Profiles,i,Macros,PackageOptions,Flags,
+                                   ExOptions,UpdateRevisionInc,OutputDirRedirected);
+        if Result<>mrOk then exit;
+
+        if (not OutputDirRedirected)
+        and (not CheckDirectoryWritable(WorkingDirectory)) then
+          exit(mrCancel);
+
+        if ExOptions<>'' then
+          Tool.EnvironmentOverrides.Values['OPT'] := ExOptions;
+        if not UpdateRevisionInc then
+          Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
+        // add -w option to print leaving/entering messages
+        Tool.CmdLineParams:=Tool.CmdLineParams+' -w';
+        // append target OS
+        if Options.TargetOS<>'' then
+          Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.FPCTargetOS;
+        // append target CPU
+        if Options.TargetCPU<>'' then
+          Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.FPCTargetCPU;
+        // run
+        Result:=ExternalTools.Run(Tool,Macros,false);
+        if Result<>mrOk then exit;
       end;
-      //debugln(['BuildLazarus Def=',MMDef.Name,' Mode=',ord(CurMakeMode)]);
-      if CurMakeMode=mmNone then continue;
-
-      if (blfDontClean in Flags) and (CurMakeMode=mmCleanBuild) then
-        CurMakeMode:=mmBuild;
-      Tool.Title:=MMDef.Description;
-      Tool.WorkingDirectory:=WorkingDirectory;
-      Tool.CmdLineParams:=MMDef.Commands[CurMakeMode];
-      // append extra options
-      ExOptions:='';
-      Result:=CreateBuildLazarusOptions(Profiles,i,Macros,PackageOptions,Flags,
-                                 ExOptions,UpdateRevisionInc,OutputDirRedirected);
-      if Result<>mrOk then exit;
-
-      if (not OutputDirRedirected)
-      and (not CheckDirectoryWritable(WorkingDirectory)) then
-        exit(mrCancel);
-
-      if ExOptions<>'' then
-        Tool.EnvironmentOverrides.Values['OPT'] := ExOptions;
-      if not UpdateRevisionInc then
-        Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
-      // add -w option to print leaving/entering messages
-      Tool.CmdLineParams:=Tool.CmdLineParams+' -w';
-      // append target OS
-      if Options.TargetOS<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.FPCTargetOS;
-      // append target CPU
-      if Options.TargetCPU<>'' then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.FPCTargetCPU;
-      // run
-      Result:=ExternalTools.Run(Tool,Macros,false);
-      if Result<>mrOk then exit;
     end;
     Result:=mrOk;
   finally
