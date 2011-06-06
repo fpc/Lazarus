@@ -326,8 +326,6 @@ type
     procedure CreateForm(var AForm; AFormClass: TCustomFormClass;
                          DoDisableAutoSizing: boolean; TheOwner: TComponent); // utility function to create a form with delayed autosizing
 
-    property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm; // set by the IDE to implement a default
-
     property SimpleLayoutStorage: TSimpleWindowLayoutList read FSimpleLayoutStorage;
     procedure RestoreSimpleLayout;
   end;
@@ -1473,12 +1471,8 @@ begin
   and (FindWithName(AForm.Name)<>nil) then
     // show dockable if it has a creator and is not a designer form
     IDEDockMaster.ShowForm(AForm,BringToFront)
-  else if Assigned(OnShowForm) then
-    OnShowForm(Self,AForm,BringToFront)
-  else if BringToFront then
-    AForm.ShowOnTop
   else
-    AForm.Visible:=true;
+    SimpleLayoutStorage.ApplyAndShow(Self,AForm,BringToFront);
 end;
 
 function TIDEWindowCreatorList.ShowForm(AFormName: string; BringToFront: boolean

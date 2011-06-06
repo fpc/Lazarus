@@ -1283,7 +1283,6 @@ begin
   end;
   ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
   ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
-  IDEWindowCreators.OnShowForm:=@IDEWindowCreators.SimpleLayoutStorage.ApplyAndShow;
   UpdateDefaultPascalFileExtensions;
 
   EditorOpts := TEditorOptions.Create;
@@ -1524,7 +1523,6 @@ begin
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
   FreeThenNil(DebuggerOptions);
-  IDEWindowCreators.OnShowForm:=nil;
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(IDECommandScopes);
 
