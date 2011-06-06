@@ -3558,7 +3558,7 @@ begin
   end;
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
-    //debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" ',FileExistsUTF8(CurFile.Filename),' ',StateFileAge<FileAgeUTF8(CurFile.Filename));
+    //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" Exists=',FileExistsUTF8(CurFile.Filename),' NewerThanStateFile=',StateFileAge<FileAgeCached(CurFile.Filename)]);
     if FileExistsCached(CurFile.Filename)
     and (StateFileAge<FileAgeCached(CurFile.Filename)) then begin
       DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
