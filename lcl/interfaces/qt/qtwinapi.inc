@@ -4977,7 +4977,10 @@ var
   W: QWidgetH;
 begin
   {$IFDEF HASX11}
-  W := X11GetActivewindow;
+  if WindowManagerName = 'metacity' then
+    W := X11GetActivewindow
+  else
+    W := QApplication_activeWindow();
   {$ELSE}
   W := QApplication_activeWindow();
   {$ENDIF}

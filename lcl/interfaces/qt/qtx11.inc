@@ -89,11 +89,12 @@ var
    XClient: TXClientMessageEvent;
    WMAtom: TAtom;
 begin
-  Result:=false;
+  Result := False;
   Display := QX11Info_display();
 
   if Display = nil then
     exit;
+
   ScreenNum := QX11Info_appScreen();
   RootWin := XRootWindow(Display, ScreenNum);
 
@@ -105,9 +106,9 @@ begin
   XClient.data.l[0] := 1;
   XClient.data.l[1] := 0;
   XClient.data.l[2] := 0;
-  Result:=XSendEvent (Display, RootWin, False,
+  Result := XSendEvent(Display, RootWin, False,
 	      SubstructureRedirectMask or SubstructureNotifyMask,
-	      @XClient)<>0;
+	      @XClient) <> Success;
 end;
 
 function X11GetActivewindow: QWidgetH;

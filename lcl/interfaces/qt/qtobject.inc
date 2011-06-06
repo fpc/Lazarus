@@ -99,6 +99,7 @@ begin
   FLastMinimizeEvent := 0;
   if ((QtVersionMajor = 4) and (QtVersionMinor < 6)) or IsOldKDEInstallation then
     QtX11InitializePalettes;
+  FWindowManagerName := LowerCase(GetWindowManager);
   {$ENDIF}
   FGlobalActions := TFPList.Create;
 end;

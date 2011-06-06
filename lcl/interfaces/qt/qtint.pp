@@ -84,6 +84,11 @@ type
     FDragImageLock: Boolean;
     FCachedColors: array[0..MAX_SYS_COLORS] of PLongWord;
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+
+    {$IFDEF HASX11}
+    FWindowManagerName: String; // Track various incompatibilities between WM. Initialized at WS start.
+    {$ENDIF}
+
     procedure ClearCachedColors;
     procedure SetOverrideCursor(const AValue: TObject);
     procedure QtRemoveStayOnTop(const ASystemTopAlso: Boolean = False);
@@ -180,7 +185,9 @@ type
 
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
     property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;
-
+    {$IFDEF HASX11}
+    property WindowManagerName: String read FWindowManagerName;
+    {$ENDIF}
     {$I qtwinapih.inc}
     {$I qtlclintfh.inc}
   end;
