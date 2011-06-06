@@ -1736,7 +1736,7 @@ var
 begin
   if Debugger = nil then Exit;
 
-  if (Debugger.State = dsPause)
+  if (Debugger.State in [dsPause, dsInternalPause])
   then begin
     FGetThreadsCmdObj := TGDBMIDebuggerCommandThreads.Create(Debugger);
     FGetThreadsCmdObj.OnExecuted  := @DoThreadsFinished;
@@ -1784,7 +1784,7 @@ var
   ForceQueue: Boolean;
 begin
   if Debugger = nil then Exit;
-  if (Debugger.State <> dsPause) then exit;
+  if not(Debugger.State in [dsPause, dsInternalPause]) then exit;
 
   if FChangeThreadsCmdObj <> nil then begin
     if FChangeThreadsCmdObj.State = dcsQueued then
@@ -2358,7 +2358,7 @@ var
   ForceQueue: Boolean;
 begin
   Result := False;
-  if (Debugger = nil) or (Debugger.State <> dsPause)
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then exit;
 
   if (FDisassembleEvalCmdObj <> nil)
@@ -4346,6 +4346,7 @@ begin
         BreakPoint.Hit(CanContinue);
         if CanContinue
         then begin
+          SetDebuggerState(dsInternalPause);
           //ExecuteCommand('-exec-continue');
           Result := True;
           exit;
@@ -4634,7 +4635,7 @@ begin
       NextExecCmdObj := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectContinue);
       // Queue it, so we execute once this Cmd exits; do not execute recursive
       FTheDebugger.QueueExecuteLock;
-      FTheDebugger.QueueCommand(NextExecCmdObj);
+      FTheDebugger.QueueCommand(NextExecCmdObj, DebuggerState = dsInternalPause); // TODO: ForceQueue, only until better means of queue control... (allow snapshot to run)
       FTheDebugger.QueueExecuteUnlock;
     end;
 
@@ -5166,7 +5167,7 @@ end;
 
 procedure TGDBMILineInfo.DoStateChange(const AOldState: TDBGState);
 begin
-  if not (Debugger.State in [dsPause, dsRun]) then
+  if not (Debugger.State in [dsPause, dsInternalPause, dsRun]) then
     ClearSources;
 end;
 
@@ -5485,7 +5486,7 @@ begin
     SendCmdLn('kill'); // try to kill the debugged process. bypass all queues.
     DebugProcess.Terminate(0);
   end;
-  if (OldState = dsPause) and (State = dsRun)
+  if (OldState in [dsPause, dsInternalPause]) and (State = dsRun)
   then begin
     FPauseWaitState := pwsNone;
     {$IFDEF MSWindows}
@@ -6995,7 +6996,7 @@ begin
   if (Address = AValue) then exit;
   inherited;
   if (Debugger = nil) then Exit;
-  if TGDBMIDebugger(Debugger).State in [dsPause, dsRun]
+  if TGDBMIDebugger(Debugger).State in [dsPause, dsInternalPause, dsRun]
   then SetBreakpoint;
 end;
 
@@ -7159,7 +7160,7 @@ begin
   if (Source = ASource) and (Line = ALine) then exit;
   inherited;
   if (Debugger = nil) or (Source = '')  then Exit;
-  if TGDBMIDebugger(Debugger).State in [dsPause, dsRun]
+  if TGDBMIDebugger(Debugger).State in [dsPause, dsInternalPause, dsRun]
   then SetBreakpoint;
 end;
 
@@ -7363,7 +7364,7 @@ var
   ForceQueue: Boolean;
   EvaluationCmdObj: TGDBMIDebuggerCommandLocals;
 begin
-  if (Debugger = nil) or (Debugger.State <> dsPause) then Exit;
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then Exit;
 
   EvaluationCmdObj := TGDBMIDebuggerCommandLocals.Create(TGDBMIDebugger(Debugger), ALocals);
   EvaluationCmdObj.OnDestroy   := @DoEvaluationDestroyed;
@@ -7729,7 +7730,7 @@ var
   ForceQueue: Boolean;
   EvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
 begin
-  if (Debugger = nil) or not(Debugger.State = dsPause) then begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     AWatchValue.Validity := ddsInvalid;
     Exit;
   end;
@@ -7785,7 +7786,7 @@ procedure TGDBMICallStack.RequestCount(ACallstack: TCurrentCallStack);
 var
   DepthEvalCmdObj: TGDBMIDebuggerCommandStackDepth;
 begin
-  if (Debugger = nil) or (Debugger.State <> dsPause)
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then begin
     ACallstack.SetCountValidity(ddsInvalid);
     exit;
@@ -7802,7 +7803,7 @@ end;
 
 procedure TGDBMICallStack.RequestCurrent(ACallstack: TCurrentCallStack);
 begin
-  if (Debugger = nil) or (Debugger.State <> dsPause) then begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     ACallstack.SetCurrentValidity(ddsInvalid);
     Exit;
   end;
@@ -7817,7 +7818,7 @@ procedure TGDBMICallStack.RequestEntries(ACallstack: TCurrentCallStack);
 var
   FramesEvalCmdObj: TGDBMIDebuggerCommandStackFrames;
 begin
-  if (Debugger = nil) or (Debugger.State <> dsPause) then Exit;
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then Exit;
 
   FramesEvalCmdObj := TGDBMIDebuggerCommandStackFrames.Create(TGDBMIDebugger(Debugger), ACallstack);
   //FramesEvalCmdObj.OnExecuted := @DoFramesCommandExecuted;
@@ -7858,7 +7859,7 @@ var
   IndexCmd: TGDBMIDebuggerCommandStackSetCurrent;
   cs: TCurrentCallStack;
 begin
-  if (Debugger = nil) or (Debugger.State <> dsPause) then begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     exit;
   end;
 
@@ -7882,7 +7883,7 @@ var
   IndexCmd: TGDBMIDebuggerCommandStackSetCurrent;
   cs: TCurrentCallStack;
 begin
-  if (Debugger = nil) or (Debugger.State <> dsPause) then begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     exit;
   end;
 

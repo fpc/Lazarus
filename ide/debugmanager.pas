@@ -667,7 +667,6 @@ begin
   FCurrentBreakPoint := nil;
   if FBreakPoints = nil then Exit;
   if ABreakpoint = nil then Exit;
-  if ACanContinue then Exit;
 
   FCurrentBreakPoint := FBreakPoints.Find(ABreakPoint.Source, ABreakPoint.Line);
 end;
@@ -835,6 +834,8 @@ begin
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     if FDialogs[DialogType] <> nil then
       FDialogs[DialogType].BeginUpdate;
+
+  if Debugger.State = dsInternalPause then exit; // set debug windows to ignore / no updating
 end;
 
 procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
@@ -842,8 +843,8 @@ procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
 const
   // dsNone, dsIdle, dsStop, dsPause, dsInit, dsRun, dsError
   TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
-  //dsNone, dsIdle, dsStop, dsPause,    dsInit,     dsRun,      dsError,    dsDestroying
-    itNone, itNone, itNone, itDebugger, itDebugger, itDebugger, itNone, itNone
+  //dsNone, dsIdle, dsStop, dsPause,    dsInternalPause, dsInit,     dsRun,      dsError,    dsDestroying
+    itNone, itNone, itNone, itDebugger, itDebugger,      itDebugger, itDebugger, itNone, itNone
   );
   //STATENAME: array[TDBGState] of string = (
   //  'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsInit', 'dsRun', 'dsError'
@@ -858,11 +859,24 @@ begin
     if FDialogs[DialogType] <> nil then
       FDialogs[DialogType].EndUpdate;
 
-  if (ADebugger<>FDebugger) or (ADebugger=nil) then
-    RaiseException('TDebugManager.OnDebuggerChangeState');
+  if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting)
+  then exit;
 
-  if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting) then
-    exit;
+  assert((ADebugger=FDebugger) and (ADebugger<>nil), 'TDebugManager.OnDebuggerChangeState');
+
+  if (FDebugger.State in [dsRun])
+  then FCurrentBreakpoint := nil;
+
+  if (FCurrentBreakpoint <> nil) and (bpaTakeSnapshot in FCurrentBreakpoint.Actions) then begin
+    FSnapshots.DoStateChange(OldState);
+    FSnapshots.Current.AddToSnapshots;
+    FSnapshots.DoDebuggerIdle(True);
+  end
+  else if Debugger.State <> dsInternalPause
+  then FSnapshots.DoStateChange(OldState);
+
+  if Debugger.State = dsInternalPause
+  then exit;
 
   if FDebugger.State=dsError
   then begin
@@ -895,7 +909,6 @@ begin
       SetForegroundWindow(FPrevShownWindow);
       FPrevShownWindow := 0;
     end;
-    FCurrentBreakPoint := nil;
   end
   else
   if FDebugger.State <> dsInit then begin
@@ -938,8 +951,6 @@ begin
   if (FDebugger.State in [dsPause]) and (OldState = dsRun)
   and (FDialogs[ddtInspect] <> nil)
   then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
-
-  FSnapshots.DoStateChange(OldState);
 
   case FDebugger.State of
     dsError: begin
@@ -1002,6 +1013,7 @@ var
   InIgnore: Boolean;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
+  if Debugger.State = dsInternalPause then exit;
   if Destroying then exit;
 
   FCurrentLocation := ALocation;
@@ -1866,7 +1878,7 @@ begin
       ClearDebugEventsLog;
 
     FDebugger.OnBreakPointHit := @DebuggerBreakPointHit;
-    FDebugger.OnBeforeState    := @DebuggerBeforeChangeState;
+    FDebugger.OnBeforeState   := @DebuggerBeforeChangeState;
     FDebugger.OnState         := @DebuggerChangeState;
     FDebugger.OnCurrent       := @DebuggerCurrentLine;
     FDebugger.OnDbgOutput     := @DebuggerOutput;

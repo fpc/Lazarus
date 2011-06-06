@@ -81,6 +81,7 @@ type
     dsIdle,
     dsStop,
     dsPause,
+    dsInternalPause,
     dsInit,
     dsRun,
     dsError,
@@ -113,6 +114,10 @@ type
 
   dsPause:
     The debugger has paused the target. Target variables can be examined
+
+  dsInternalPause:
+    Pause, not visible to user.
+    For examble auto continue breakpoint: Allow collection of Snapshot data
 
   dsInit:
     (Optional, Internal) The debugger is about to run
@@ -2030,7 +2035,7 @@ type
     procedure AddNotification(const ANotification: TSnapshotNotification);
     procedure RemoveNotification(const ANotification: TSnapshotNotification);
     procedure DoStateChange(const AOldState: TDBGState);
-    procedure DoDebuggerIdle;
+    procedure DoDebuggerIdle(AForce: Boolean = False);
     property Active: Boolean read FActive write SetActive;
   public
     function SelectedId: Pointer;
@@ -2554,6 +2559,7 @@ const
     'Idle',
     'Stop',
     'Pause',
+    'InternalPause',
     'Init',
     'Run',
     'Error',
@@ -2594,6 +2600,8 @@ const
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
              dcStepOut, dcRunTo, dcJumpto, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
              dcEnvironment, dcSetStackFrame, dcDisassemble, dcSendConsoleInput],
+  {dsInternalPause} // same as run, so not really used
+            [dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput],
   {dsInit } [],
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput],
   {dsError} [dcStop],
@@ -2972,14 +2980,14 @@ begin
 
   BeginUpdate;
   try
-    if FDebugger.State = dsPause then begin
+    if FDebugger.State in [dsPause, dsInternalPause] then begin
       FRequestsDone := [];
       CreateHistoryEntry;
       HistorySelected := False;
       SnapshotSelected := False;
     end
     else begin
-      if FCurrentSnapshot <> nil then begin
+      if (FCurrentSnapshot <> nil) and (FActive or (AOldState = dsInternalPause)) then begin
         HistoryIndex := FHistoryList.Add(FCurrentSnapshot);
         ReleaseAndNil(FCurrentSnapshot);
         while FHistoryList.Count > HistoryCapacity do RemoveHistoryEntry(0);
@@ -2994,24 +3002,25 @@ begin
   end;
 end;
 
-procedure TSnapshotManager.DoDebuggerIdle;
+procedure TSnapshotManager.DoDebuggerIdle(AForce: Boolean = False);
 var
   i, j, k: LongInt;
   w: TCurrentWatches;
 begin
-  if (not FActive) then exit;
-  if (FCurrentState <> dsPause) or (not Debugger.IsIdle) then exit;
+  if (not FActive) and (not AForce) then exit;
+  if not(FCurrentState in [dsPause, dsInternalPause]) then exit;
+  if (not Debugger.IsIdle) and (not AForce) then exit;
 
   if not(smrThreads in FRequestsDone) then begin
     include(FRequestsDone, smrThreads);
     FThreads.CurrentThreads.Count;
-    if not Debugger.IsIdle then exit;
+    if (not Debugger.IsIdle) and (not AForce) then exit;
   end;
   if not(smrCallStackCnt in FRequestsDone) then begin
     include(FRequestsDone, smrCallStackCnt);
     i := FThreads.CurrentThreads.CurrentThreadId;
     FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
-    if not Debugger.IsIdle then exit;
+    if (not Debugger.IsIdle) and (not AForce) then exit;
   end;
   if not(smrCallStack in FRequestsDone) then begin
     include(FRequestsDone, smrCallStack);
@@ -3019,14 +3028,14 @@ begin
     k := FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
     if k > 0
     then FCallStack.CurrentCallStackList.EntriesForThreads[i].PrepareRange(0, Min(5, k));
-    if not Debugger.IsIdle then exit;
+    if (not Debugger.IsIdle) and (not AForce) then exit;
   end;
   if not(smrLocals in FRequestsDone) then begin
     include(FRequestsDone, smrLocals);
     i := FThreads.CurrentThreads.CurrentThreadId;
     j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
     FLocals.CurrentLocalsList.Entries[i, j].Count;
-    if not Debugger.IsIdle then exit;
+    if (not Debugger.IsIdle) and (not AForce) then exit;
   end;
   if not(smrWatches in FRequestsDone) then begin
     include(FRequestsDone, smrWatches);
@@ -3034,7 +3043,7 @@ begin
     j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
     w := FWatches.CurrentWatches;
     for k := 0 to w.Count - 1 do w[k].Values[i, j].Value;
-    if not Debugger.IsIdle then exit;
+    if (not Debugger.IsIdle) and (not AForce) then exit;
   end;
 end;
 
@@ -3316,7 +3325,7 @@ procedure TLocalsSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) or (CurrentLocalsList = nil) then Exit;
 
-  if FDebugger.State = dsPause
+  if FDebugger.State in [dsPause, dsInternalPause]
   then begin
     if Monitor<> nil
     then Monitor.Clear;
@@ -3324,7 +3333,7 @@ begin
   else begin
     CurrentLocalsList.SnapShot := nil;
 
-    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
+    if (AOldState in [dsPause, dsInternalPause]) or (AOldState = dsNone) { Force clear on initialisation }
     then begin
       if Monitor<> nil
       then Monitor.Clear;
@@ -3707,7 +3716,7 @@ end;
 
 procedure TWatchesSupplier.RequestData(AWatchValue: TCurrentWatchValue);
 begin
-  if FNotifiedState = dsPause
+  if FNotifiedState  in [dsPause, dsInternalPause]
   then InternalRequestData(AWatchValue)
   else AWatchValue.SetValidity(ddsInvalid);
 end;
@@ -3722,7 +3731,7 @@ begin
   if (Debugger = nil) or (CurrentWatches = nil) then Exit;
   FNotifiedState := Debugger.State;
 
-  if FDebugger.State = dsPause
+  if FDebugger.State  in [dsPause, dsInternalPause]
   then begin
     CurrentWatches.ClearValues;
     Monitor.NotifyUpdate(CurrentWatches, nil);
@@ -3730,7 +3739,7 @@ begin
   else begin
     CurrentWatches.SnapShot := nil;
 
-    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
+    if (AOldState  in [dsPause, dsInternalPause]) or (AOldState = dsNone) { Force clear on initialisation }
     then begin
       CurrentWatches.ClearValues;
       Monitor.NotifyUpdate(CurrentWatches, nil);
@@ -4326,14 +4335,14 @@ procedure TThreadsSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) or (CurrentThreads = nil) then Exit;
 
-  if Debugger.State in [dsPause]
+  if Debugger.State in [dsPause, dsInternalPause]
   then begin
     CurrentThreads.SetValidity(ddsUnknown);
   end
   else begin
     CurrentThreads.SnapShot := nil;
 
-    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
+    if (AOldState in [dsPause, dsInternalPause]) or (AOldState = dsNone) { Force clear on initialisation }
     then begin
       if Monitor <> nil
       then Monitor.Clear;
@@ -5900,7 +5909,7 @@ var
   Entry: TCallStackEntry;
   StackString: String;
 begin
-  Debugger.SetState(dsPause);
+  Debugger.SetState(dsInternalPause);
   CallStack := Debugger.CallStack.CurrentCallStackList.EntriesForThreads[Debugger.Threads.CurrentThreads.CurrentThreadId];
   if Limit = 0 then
   begin
@@ -7322,7 +7331,7 @@ end;
 function TDBGRegisters.Count: Integer;
 begin
   if  (FDebugger <> nil)
-  and (FDebugger.State = dsPause)
+  and (FDebugger.State  in [dsPause, dsInternalPause])
   then Result := GetCount
   else Result := 0;
 end;
@@ -7769,7 +7778,7 @@ procedure TCallStackSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) or (CurrentCallStackList = nil) then Exit;
 
-  if FDebugger.State = dsPause
+  if FDebugger.State in [dsPause, dsInternalPause]
   then begin
     CurrentCallStackList.Clear;
     Changed;
@@ -7777,7 +7786,7 @@ begin
   else begin
     CurrentCallStackList.SnapShot := nil;
 
-    if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation }
+    if (AOldState in [dsPause, dsInternalPause]) or (AOldState = dsNone) { Force clear on initialisation }
     then begin
       CurrentCallStackList.Clear;
       Monitor.CallStackClear(Self);

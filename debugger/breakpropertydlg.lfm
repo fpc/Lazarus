@@ -1,6 +1,6 @@
 inherited BreakPropertyDlg: TBreakPropertyDlg
   Left = 620
-  Height = 424
+  Height = 440
   Top = 132
   Width = 450
   HorzScrollBar.Page = 386
@@ -11,7 +11,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Breakpoint Properties'
-  ClientHeight = 424
+  ClientHeight = 440
   ClientWidth = 450
   Constraints.MinWidth = 450
   Position = poScreenCenter
@@ -180,14 +180,14 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 194
+    Height = 213
     Top = 180
     Width = 438
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Actions'
-    ClientHeight = 176
+    ClientHeight = 195
     ClientWidth = 434
     TabOrder = 4
     object chkActionBreak: TCheckBox
@@ -377,13 +377,26 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Caption = 'lblLogCallStackLimit'
       ParentColor = False
     end
+    object chkTakeSnap: TCheckBox
+      AnchorSideLeft.Control = gbActions
+      AnchorSideTop.Control = edtLogCallStack
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 176
+      Width = 90
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      Caption = 'chkTakeSnap'
+      TabOrder = 11
+    end
   end
   object ButtonPanel: TButtonPanel[12]
     AnchorSideTop.Control = gbActions
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 38
-    Top = 380
+    Height = 35
+    Top = 399
     Width = 438
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'

@@ -16,6 +16,7 @@ type
 
   TBreakPropertyDlg = class(TDebuggerDlg)
     ButtonPanel: TButtonPanel;
+    chkTakeSnap: TCheckBox;
     chkLogCallStack: TCheckBox;
     chkEnableGroups: TCheckBox;
     chkDisableGroups: TCheckBox;
@@ -138,6 +139,7 @@ begin
 //  if chkEvalExpression.Checked then Include(Actions, bpaEValExpression);
   if chkLogMessage.Checked then Include(Actions, bpaLogMessage);
   if chkLogCallStack.Checked then Include(Actions, bpaLogCallStack);
+  if chkTakeSnap.Checked then include(Actions, bpaTakeSnapshot);
   FBreakpoint.Actions := Actions;
   FBreakpoint.LogMessage := edtLogMessage.Text;
   FBreakpoint.LogCallStackLimit := edtLogCallStack.Value;
@@ -195,6 +197,7 @@ begin
   edtLogMessage.Text := FBreakpoint.LogMessage;
   chkLogCallStack.Checked := bpaLogCallStack in Actions;
   edtLogCallStack.Value := FBreakpoint.LogCallStackLimit;
+  chkTakeSnap.Checked := bpaTakeSnapshot in Actions;
 end;
 
 constructor TBreakPropertyDlg.Create(AOwner: TComponent; ABreakPoint: TIDEBreakPoint);
@@ -230,6 +233,7 @@ begin
   chkLogMessage.Caption := lisLogMessage;
   chkLogCallStack.Caption := lisLogCallStack;
   lblLogCallStackLimit.Caption := lisLogCallStackLimit;
+  chkTakeSnap.Caption := lisTakeSnapshot;
   edtCondition.Items.Assign(InputHistories.HistoryLists.GetList('BreakPointExpression', True));
 
   FBreakpoint := ABreakPoint;
