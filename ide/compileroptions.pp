@@ -2217,6 +2217,9 @@ var
   OptimizeSwitches: String;
   Vars: TCTCfgScriptVariables;
   v: string;
+  CurTargetOS: String;
+  CurTargetCPU: String;
+  CurSrcOS: String;
 begin
   CurMainSrcFile:=MainSourceFileName;
   if CurMainSrcFile='' then
@@ -2508,21 +2511,24 @@ begin
   if TargetProcessor<>'' then
     Switches:=Switches+' -Op'+UpperCase(TargetProcessor);
 
+  CurTargetOS:='';
+  CurTargetCPU:='';
   if not (ccloNoMacroParams in Flags) then
   begin
     Vars:=GetBuildMacroValues(Self,true);
     if Vars<>nil then
     begin
       { Target OS }
-      v:=GetFPCTargetOS(Vars.Values['TargetOS']);
-      if (v<>'') and (v<>GetDefaultTargetOS) then
-        switches := switches + ' -T' + v;
+      CurTargetOS:=GetFPCTargetOS(Vars.Values['TargetOS']);
+      if (CurTargetOS<>'') and (CurTargetOS<>GetDefaultTargetOS) then
+        switches := switches + ' -T' + CurTargetOS;
       { Target CPU }
-      v:=GetFPCTargetCPU(Vars.Values['TargetCPU']);
-      if (v<>'') and (v<>GetDefaultTargetCPU) then
-        switches := switches + ' -P' + v;
+      CurTargetCPU:=GetFPCTargetCPU(Vars.Values['TargetCPU']);
+      if (CurTargetCPU<>'') and (CurTargetCPU<>GetDefaultTargetCPU) then
+        switches := switches + ' -P' + CurTargetCPU;
     end;
   end;
+  CurSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
 
   { --------------- Linking Tab ------------------- }
   
@@ -2586,8 +2592,9 @@ begin
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
   end;
-  
-  if Win32GraphicApp then
+
+  if Win32GraphicApp
+  and ((CurSrcOS='win') or (CurTargetOS='darwin') or (CurTargetOS='os2')) then
     switches := switches + ' -WG';
 
   { ---------------- Other Tab -------------------- }
