@@ -643,7 +643,7 @@ begin
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
-    fWithStaticPackages:=False;
+    fWithStaticPackages:=True;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisIDE then
         fMakeModes[i]:=mmBuild
