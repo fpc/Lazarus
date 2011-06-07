@@ -2593,7 +2593,7 @@ begin
   end;
 
   if Win32GraphicApp
-  and ((CurSrcOS='win') or (CurTargetOS='darwin') or (CurTargetOS='os2')) then
+  and ((CurSrcOS='win') or (CurTargetOS='macos') or (CurTargetOS='os2')) then
     switches := switches + ' -WG';
 
   { ---------------- Other Tab -------------------- }
