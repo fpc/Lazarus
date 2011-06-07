@@ -3930,8 +3930,8 @@ begin
     exit;
   end;
   Filename:=APackage.GetSrcFilename;
-  if (not FilenameIsAbsolute(Filename)) or (not FileExistsUTF8(Filename)) then begin
-    IDEMessageDialog(lisCCOErrorCaption, lisPkgMangPleaseSaveThePackageFirst,
+  if (not FilenameIsAbsolute(Filename)) or (not FileExistsCached(Filename)) then begin
+    IDEMessageDialog(lisCCOErrorCaption, lisPkgMangPleaseCompileThePackageFirst,
       mtError,[mbCancel]);
     exit;
   end;

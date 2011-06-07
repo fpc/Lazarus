@@ -3730,7 +3730,7 @@ resourcestring
     +'sDo you want to rebuild Lazarus now?';
   lisPkgMangThisIsAVirtualPackageItHasNoSourceYetPleaseSaveThe = 'This is a '
     +'virtual package. It has no source yet. Please save the package first.';
-  lisPkgMangPleaseSaveThePackageFirst = 'Please save the package first.';
+  lisPkgMangPleaseCompileThePackageFirst = 'Please compile the package first.';
   lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound = 'The package %'
     +'s%s%s is marked for installation, but can not be found.%sRemove '
     +'dependency from the installation list of packages?';
