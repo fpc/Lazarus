@@ -1296,7 +1296,7 @@ begin
 
   // check package
   if FRegistrationPackage=nil then begin
-    RegistrationError('');
+    RegistrationError('Unit: '+TheUnitName);
     exit;
   end;
   try
@@ -1315,15 +1315,15 @@ begin
         FRegistrationFile:=
           FRegistrationPackage.FindUnit(FRegistrationUnitName,false);
         if FRegistrationFile=nil then begin
-          RegistrationError(Format(lisPkgSysUnitNotFound, ['"',
-            FRegistrationUnitName, '"']));
+          RegistrationError(Format(
+            lisPkgSysUnitWasNotFoundInTheLpkFileProbablyThisLpkFileWasN, [
+            FRegistrationUnitName, #13]));
         end else begin
           if not (pffReportedAsRemoved in FRegistrationFile.Flags) then begin
             RegistrationError(
-              Format(lisPkgSysUnitWasRemovedFromPackage, ['"',
-                FRegistrationUnitName, '"']));
-            FRegistrationFile.Flags:=
-                                   FRegistrationFile.Flags+[pffReportedAsRemoved];
+              Format(lisPkgSysUnitWasRemovedFromPackageLpk2, [
+                FRegistrationUnitName]));
+            FRegistrationFile.Flags:=FRegistrationFile.Flags+[pffReportedAsRemoved];
           end;
         end;
       end;
