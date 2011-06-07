@@ -643,14 +643,15 @@ begin
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
-    fWithStaticPackages:=True;
+    fWithStaticPackages:=False;
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisIDE then
         fMakeModes[i]:=mmBuild
       else
         fMakeModes[i]:=mmNone;
   end;
-  Add(Profile);
+  // Return this one as default for fixes branch, when user clicks on build Lazarus.
+  Result:=Add(Profile);
 
   // Build IDE without Packages
   Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildQBOBuildIDEwithoutPackages);
@@ -678,8 +679,7 @@ begin
       else
         fMakeModes[i]:=mmBuild;
   end;
-  // Return this one as default. Needed when building packages without saved profiles.
-  Result:=Add(Profile);
+  Add(Profile);
 
   // Clean Up + Build all
   Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildQBOCleanUpBuildAll);
