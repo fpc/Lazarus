@@ -2216,7 +2216,6 @@ var
   CurCustomOptions: String;
   OptimizeSwitches: String;
   Vars: TCTCfgScriptVariables;
-  v: string;
   CurTargetOS: String;
   CurTargetCPU: String;
   CurSrcOS: String;
