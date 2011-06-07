@@ -215,6 +215,7 @@ begin
   IDEAnchorDockMaster:=Self;
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
   DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
+  FHideSimpleLayoutOptions:=true;
 end;
 
 destructor TIDEAnchorDockMaster.Destroy;

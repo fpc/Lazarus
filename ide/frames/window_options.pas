@@ -65,6 +65,7 @@ type
   private
     FLayouts: TSimpleWindowLayoutList;
     FLayout: TSimpleWindowLayout;
+    FShowSimpleLayout: boolean;
     function GetPlacementRadioButtons(APlacement: TIDEWindowPlacement): TRadioButton;
     procedure SetLayout(const AValue: TSimpleWindowLayout);
     procedure SetWindowPositionsItem(Index: integer);
@@ -122,12 +123,11 @@ begin
     HideMessagesIconsCheckBox.Checked := HideMessagesIcons;
     TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
     ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
-
   end;
 
   FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage);
 
-  if IDEDockMaster=nil then begin
+  if FShowSimpleLayout then begin
     // Window Positions
     FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage);
     WindowPositionsGroupBox.Parent:=Self;
@@ -380,6 +380,7 @@ constructor TWindowOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLayouts:=TSimpleWindowLayoutList.Create;
+  FShowSimpleLayout:=(IDEDockMaster=nil) or (not IDEDockMaster.HideSimpleLayoutOptions);
 end;
 
 destructor TWindowOptionsFrame.Destroy;

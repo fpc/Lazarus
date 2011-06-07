@@ -293,7 +293,6 @@ type
   TIDEWindowCreatorList = class
   private
     fItems: TFPList; // list of TIDEWindowCreator
-    FOnShowForm: TShowIDEWindowEvent;
     FSimpleLayoutStorage: TSimpleWindowLayoutList;
     function GetItems(Index: integer): TIDEWindowCreator;
     procedure ErrorIfFormExists(FormName: string);
@@ -340,12 +339,15 @@ type
   { TIDEDockMaster }
 
   TIDEDockMaster = class
+  protected
+    FHideSimpleLayoutOptions: boolean;
   public
     procedure MakeIDEWindowDockable(AControl: TWinControl); virtual; abstract; // make AControl dockable, it can be docked and other dockable windows can be docked to it, this does not make it visible
     procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); virtual; abstract; // make AForm a dock site, AForm can not be docked, its Parent must be kept nil, this does not make it visible
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); virtual; abstract; // make a form visible, set BringToFront=true if form should be shown on active screen and on front of other windows, normally this focus the form
     function AddableInWindowMenu(AForm: TCustomForm): boolean; virtual;
     procedure CloseAll; virtual; // close all forms, called after IDE has saved all and shuts down
+    property HideSimpleLayoutOptions: boolean read FHideSimpleLayoutOptions;
   end;
 
 var
