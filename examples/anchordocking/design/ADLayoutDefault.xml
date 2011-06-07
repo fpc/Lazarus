@@ -3,32 +3,32 @@
   <MainConfig>
     <Nodes ChildCount="1">
       <Item1 Name="MainIDE" Type="CustomSite" ChildCount="1">
-        <Bounds Top="33" Left="11" Width="1246" Height="932">
+        <Bounds Top="28" Left="15" Width="614" Height="429">
           <WorkArea>
-            <Rect Top="25" Right="1280" Bottom="999"/>
+            <Rect Top="25" Right="800" Bottom="600"/>
           </WorkArea>
         </Bounds>
-        <Item1 Name="AnchorDockSite4" Type="Layout" ChildCount="5">
-          <Bounds Top="63" Width="1246" Height="844" SplitterPos="58"/>
+        <Item1 Name="AnchorDockSite5" Type="Layout" ChildCount="5">
+          <Bounds Top="65" Width="614" Height="339" SplitterPos="61"/>
           <Anchors Align="Bottom"/>
           <Item1 Name="SourceNotebook" Type="Control">
-            <Bounds Width="1025" Height="701"/>
+            <Bounds Width="468" Height="264"/>
             <Anchors Right="AnchorDockSplitter3" Bottom="AnchorDockSplitter2"/>
             <Header Position="left"/>
           </Item1>
           <Item2 Name="AnchorDockSplitter2" Type="SplitterHorizontal">
-            <Bounds Top="701" Width="1025" Height="4"/>
+            <Bounds Top="264" Width="468" Height="4"/>
             <Anchors Right="AnchorDockSplitter3"/>
           </Item2>
           <Item3 Name="MessagesView" Type="Control">
-            <Bounds Top="705" Width="1025" Height="139"/>
+            <Bounds Top="268" Width="468" Height="71"/>
             <Anchors Top="AnchorDockSplitter2" Right="AnchorDockSplitter3"/>
           </Item3>
           <Item4 Name="AnchorDockSplitter3" Type="SplitterVertical">
-            <Bounds Left="1025" Width="4" Height="844"/>
+            <Bounds Left="468" Width="4" Height="339"/>
           </Item4>
           <Item5 Name="CodeExplorerView" Type="Control">
-            <Bounds Left="1029" Width="217" Height="844"/>
+            <Bounds Left="472" Width="142" Height="339"/>
             <Anchors Left="AnchorDockSplitter3"/>
           </Item5>
         </Item1>
