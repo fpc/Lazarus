@@ -6513,7 +6513,7 @@ begin
         end;
 
         if InsertNode<>nil then begin
-        
+          //debugln(['TCodeCompletionCodeTool.InsertNewClassParts insert behind existing']);
           // for variable lists: a,b,c: integer
           // use last node
           if InsertBehind then begin
@@ -6545,7 +6545,7 @@ begin
           end;
         end else begin
           // insert as first variable/proc
-          //debugln(['TCodeCompletionCodeTool.InsertNewClassParts ',ClassSectionNode.DescAsString,' ',dbgstr(copy(Src,ClassSectionNode.StartPos,ClassSectionNode.EndPos-ClassSectionNode.StartPos))]);
+          //debugln(['TCodeCompletionCodeTool.InsertNewClassParts insert as first var: ',ClassSectionNode.DescAsString,' ',dbgstr(copy(Src,ClassSectionNode.StartPos,ClassSectionNode.EndPos-ClassSectionNode.StartPos))]);
           Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
           InsertPos:=ClassSectionNode.StartPos;
@@ -6566,6 +6566,7 @@ begin
             ReadNextAtom;
             if UpAtomIs('STRICT') then
               ReadNextAtom;
+            //debugln(['TCodeCompletionCodeTool.InsertNewClassParts insert as first of ',ClassSectionNode.DescAsString,' Atom=',GetAtom]);
             ANode:=ClassSectionNode.Next;
             if (ANode<>nil) and (CurPos.EndPos<=ANode.StartPos) then
               InsertPos:=CurPos.EndPos;
@@ -6579,7 +6580,9 @@ begin
               InsertPos:=CurPos.EndPos;
             end;
           end;
+          //debugln(['TCodeCompletionCodeTool.InsertNewClassParts insert as first, somewhere after InsertPos=',CleanPosToStr(InsertPos)]);
           InsertPos:=FindLineEndOrCodeAfterPosition(InsertPos);
+          //debugln(['TCodeCompletionCodeTool.InsertNewClassParts insert as first, InsertPos=',CleanPosToStr(InsertPos)]);
         end;
       end;
       CurCode:=ANodeExt.ExtTxt1;

@@ -2474,7 +2474,7 @@ var SrcLen: integer;
           if (P<=SrcLen) and (Source[P]='*') then begin
             inc(P);
             while (P<=SrcLen-1)
-            and ((Source[P]<>'*') or (Source[P-1]<>')')) do begin
+            and ((Source[P]<>'*') or (Source[P+1]<>')')) do begin
               if NestedComments and (Source[P] in ['{','(','/']) then
                 ReadComment(P)
               else
