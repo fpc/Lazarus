@@ -111,5 +111,17 @@ begin
     TControlCanvas(Canvas).FreeHandle;
 end;
 
+procedure TGraphicControl.Update;
+var
+  R: TRect;
+begin
+  if Assigned(Parent) and Parent.HandleAllocated and Parent.Visible then
+  begin
+    R := ClientRect;
+    OffsetRect(R, Left, Top);
+    LCLIntf.InvalidateRect(Parent.Handle, @R, True);
+  end;
+end;
+
 // included by controls.pp
 

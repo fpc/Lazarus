@@ -2021,7 +2021,7 @@ type
     procedure Paint; virtual;
     procedure DoOnChangeBounds; override;
     procedure DoOnParentHandleDestruction; override;
-
+    procedure Update; override;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   public
     constructor Create(AOwner: TComponent); override;
