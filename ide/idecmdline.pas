@@ -35,7 +35,7 @@ unit IDECmdLine;
 
 {$mode objfpc}{$H+}
 
-interface 
+interface
 
 uses 
   Classes, SysUtils, FileUtil, LazConf, LCLProc, LazarusIDEStrConsts;
@@ -87,6 +87,62 @@ function GetRemoteControlFilename: string;
 procedure CleanUpPIDFile;
 
 implementation
+
+{$IFDEF Linux}
+{$DEFINE UseProcFileSystem}
+{$ENDIF}
+{$IF defined(FreeBSD) and defined(VER2_5)}
+{$DEFINE UseFreeBSDKernProc}
+{$ENDIF}
+
+{$IFDEF UseFreeBSDKernProc}
+uses FreeBSD, BaseUnix;
+{$ENDIF}
+
+function IsLazarusPIDRunning(aPID: int64): boolean;
+
+  function CheckProcFileSystem: boolean;
+  var
+    sl: TStringList;
+    Filename: String;
+  begin
+    Result:=false;
+    Filename:='/proc/'+IntToStr(aPID)+'/cmdline';
+    if not FileExists(Filename) then exit;
+    sl:=TStringList.Create;
+    try
+      try
+        sl.LoadFromFile(Filename);
+        if sl.Count=0 then exit;
+        if Pos('lazarus',lowercase(sl[0]))<1 then exit;
+        Result:=true;
+      except
+      end;
+    finally
+      sl.Free;
+    end;
+  end;
+
+  {$IFDEF UseFreeBSDKernProc}
+  function CheckFreeBSDKernProc: boolean;
+  var
+    s: string;
+  begin
+    Result:=(kernproc_getpath(aPID,s)<>-1)
+        and (Pos('lazarus',lowercase(s))>0);
+  end;
+  {$ENDIF}
+
+begin
+  Result:=true;
+  {$IFDEF UseFreeBSDKernProc}
+  if CheckFreeBSDKernProc then exit;
+  {$ENDIF}
+  {$IFDEF UseProcFileSystem}
+  if CheckProcFileSystem then exit;
+  {$ENDIF}
+  Result:=false;
+end;
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid: Integer; out
   ShowSplashScreen: boolean);
@@ -253,37 +309,6 @@ end;
 function GetPidFile: string;
 begin
   Result:=AppendPathDelim(GetPrimaryConfigPath)+'pid.txt';
-end;
-
-function IsLazarusPIDRunning(aPID: int64): boolean;
-
-  function IsLinuxIDERunning: boolean;
-  var
-    sl: TStringList;
-    Filename: String;
-  begin
-    Result:=false;
-    Filename:='/proc/'+IntToStr(aPID)+'/cmdline';
-    if not FileExists(Filename) then exit;
-    sl:=TStringList.Create;
-    try
-      try
-        sl.LoadFromFile(Filename);
-        if sl.Count=0 then exit;
-        if Pos('lazarus',lowercase(sl[0]))<1 then exit;
-        Result:=true;
-      except
-      end;
-    finally
-      sl.Free;
-    end;
-  end;
-
-begin
-  Result:=false;
-  {$IFDEF Linux}
-  Result:=IsLinuxIDERunning;
-  {$ENDIF}
 end;
 
 function SetupMainIDEInstance: boolean;
