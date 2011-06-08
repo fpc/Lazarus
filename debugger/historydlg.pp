@@ -33,20 +33,16 @@ type
     procedure tbPowerClick(Sender: TObject);
     procedure tbRemoveClick(Sender: TObject);
   private
-    FSnapshotManager: TSnapshotManager;
-    FSnapshotNotification: TSnapshotNotification;
     FInSnapshotChanged: Boolean;
     imgCurrentLine: Integer;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FEnabledImgIdx, FDisabledIdx: Integer;
-    procedure SetSnapshotManager(const AValue: TSnapshotManager);
     procedure SnapshotChanged(Sender: TObject);
     procedure UpdateToolbar;
   public
     { public declarations }
     constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
-    property SnapshotManager: TSnapshotManager read FSnapshotManager write SetSnapshotManager;
+    property SnapshotManager;
   end;
 
 implementation
@@ -58,24 +54,24 @@ implementation
 procedure THistoryDialog.lvHistoryDblClick(Sender: TObject);
 begin
   if tbHist.Down then begin
-    if (FSnapshotManager.HistoryIndex = lvHistory.Selected.Index) and
-       (FSnapshotManager.HistorySelected)
+    if (SnapshotManager.HistoryIndex = lvHistory.Selected.Index) and
+       (SnapshotManager.HistorySelected)
     then begin
-      FSnapshotManager.HistorySelected := False;
+      SnapshotManager.HistorySelected := False;
     end
     else begin
-      FSnapshotManager.HistoryIndex := lvHistory.Selected.Index;
-      FSnapshotManager.HistorySelected := True;
+      SnapshotManager.HistoryIndex := lvHistory.Selected.Index;
+      SnapshotManager.HistorySelected := True;
     end;
   end else begin
-    if (FSnapshotManager.SnapshotIndex = lvHistory.Selected.Index) and
-       (FSnapshotManager.SnapshotSelected)
+    if (SnapshotManager.SnapshotIndex = lvHistory.Selected.Index) and
+       (SnapshotManager.SnapshotSelected)
     then begin
-      FSnapshotManager.SnapshotSelected := False;
+      SnapshotManager.SnapshotSelected := False;
     end
     else begin
-      FSnapshotManager.SnapshotIndex := lvHistory.Selected.Index;
-      FSnapshotManager.SnapshotSelected := True;
+      SnapshotManager.SnapshotIndex := lvHistory.Selected.Index;
+      SnapshotManager.SnapshotSelected := True;
     end;
   end;
 end;
@@ -88,16 +84,16 @@ end;
 
 procedure THistoryDialog.tbClearClick(Sender: TObject);
 begin
-  if FSnapshotManager <> nil
-  then FSnapshotManager.Clear;
+  if SnapshotManager <> nil
+  then SnapshotManager.Clear;
 end;
 
 procedure THistoryDialog.tbHistClick(Sender: TObject);
 begin
-  if (FSnapshotManager = nil) or (FInSnapshotChanged) then exit;
+  if (SnapshotManager = nil) or (FInSnapshotChanged) then exit;
   if tbHistorySelected.Down then begin
-    if tbSnap.Down then FSnapshotManager.SnapshotSelected := True;
-    if tbHist.Down then FSnapshotManager.HistorySelected := True;
+    if tbSnap.Down then SnapshotManager.SnapshotSelected := True;
+    if tbHist.Down then SnapshotManager.HistorySelected := True;
   end;
   SnapshotChanged(nil);
 end;
@@ -107,16 +103,16 @@ begin
   if tbHistorySelected.Down
   then tbHistorySelected.ImageIndex := FEnabledImgIdx
   else tbHistorySelected.ImageIndex := FDisabledIdx;
-  if FSnapshotManager = nil then exit;
+  if SnapshotManager = nil then exit;
   if tbHist.Down
-  then FSnapshotManager.HistorySelected := tbHistorySelected.Down
-  else FSnapshotManager.SnapshotSelected := tbHistorySelected.Down
+  then SnapshotManager.HistorySelected := tbHistorySelected.Down
+  else SnapshotManager.SnapshotSelected := tbHistorySelected.Down
 end;
 
 procedure THistoryDialog.tbMakeSnapClick(Sender: TObject);
 begin
-  if (FSnapshotManager = nil) or (FSnapshotManager.Current = nil) then exit;
-  FSnapshotManager.Current.AddToSnapshots;
+  if (SnapshotManager = nil) or (SnapshotManager.Current = nil) then exit;
+  SnapshotManager.Current.AddToSnapshots;
 end;
 
 procedure THistoryDialog.tbPowerClick(Sender: TObject);
@@ -124,17 +120,17 @@ begin
   if tbPower.Down
   then tbPower.ImageIndex := FPowerImgIdx
   else tbPower.ImageIndex := FPowerImgIdxGrey;
-  if FSnapshotManager <> nil
-  then FSnapshotManager.Active := tbPower.Down;
+  if SnapshotManager <> nil
+  then SnapshotManager.Active := tbPower.Down;
 end;
 
 procedure THistoryDialog.tbRemoveClick(Sender: TObject);
 begin
   if lvHistory.Selected = nil then exit;
   if tbHist.Down then begin
-    FSnapshotManager.History[lvHistory.Selected.Index].RemoveFromHistory;
+    SnapshotManager.History[lvHistory.Selected.Index].RemoveFromHistory;
   end else begin
-    FSnapshotManager.Snapshots[lvHistory.Selected.Index].RemoveFromSnapshots;
+    SnapshotManager.Snapshots[lvHistory.Selected.Index].RemoveFromSnapshots;
   end;
 end;
 
@@ -144,7 +140,7 @@ var
   Item: TListItem;
   Lst: TSnapshotList;
 begin
-  if (FSnapshotManager = nil) or FInSnapshotChanged then exit;
+  if (SnapshotManager = nil) or FInSnapshotChanged then exit;
 
   FInSnapshotChanged:= True;
   try
@@ -158,14 +154,14 @@ begin
   try
     if tbSnap.Down
     then begin
-      Lst := FSnapshotManager.Snapshots;
-      if FSnapshotManager.SnapshotSelected
-      then cur := FSnapshotManager.SnapshotIndex
+      Lst := SnapshotManager.Snapshots;
+      if SnapshotManager.SnapshotSelected
+      then cur := SnapshotManager.SnapshotIndex
       else cur := -1;
     end else begin
-      Lst := FSnapshotManager.History;
-      if FSnapshotManager.HistorySelected
-      then cur := FSnapshotManager.HistoryIndex
+      Lst := SnapshotManager.History;
+      if SnapshotManager.HistorySelected
+      then cur := SnapshotManager.HistoryIndex
       else cur := -1;
     end;
 
@@ -205,7 +201,7 @@ var
   Lst: TSnapshotList;
   Sel: Boolean;
 begin
-  if FSnapshotManager.Snapshots.Count > 0 then begin
+  if SnapshotManager.Snapshots.Count > 0 then begin
     tbSnap.Enabled := True;
   end else begin
     tbSnap.Enabled := False;
@@ -214,11 +210,11 @@ begin
 
   if tbSnap.Down
   then begin
-    Lst := FSnapshotManager.Snapshots;
-    Sel := FSnapshotManager.SnapshotSelected;
+    Lst := SnapshotManager.Snapshots;
+    Sel := SnapshotManager.SnapshotSelected;
   end else begin
-    Lst := FSnapshotManager.History;
-    Sel := FSnapshotManager.HistorySelected;
+    Lst := SnapshotManager.History;
+    Sel := SnapshotManager.HistorySelected;
   end;
 
   tbHistorySelected.Enabled := Lst.Count > 0;
@@ -227,19 +223,10 @@ begin
   else tbHistorySelected.Down := Sel;
   tbHistorySelected.Click;
 
-  tbClear.Enabled := (FSnapshotManager.History.Count > 0) or (FSnapshotManager.Snapshots.Count > 0);
+  tbClear.Enabled := (SnapshotManager.History.Count > 0) or (SnapshotManager.Snapshots.Count > 0);
 
-  tbMakeSnap.Enabled := (FSnapshotManager.Current <> nil) and (not FSnapshotManager.Current.IsSnapshot);
+  tbMakeSnap.Enabled := (SnapshotManager.Current <> nil) and (not SnapshotManager.Current.IsSnapshot);
   tbRemove.Enabled := lvHistory.Selected <> nil;
-end;
-
-procedure THistoryDialog.SetSnapshotManager(const AValue: TSnapshotManager);
-begin
-  if FSnapshotManager = AValue then exit;
-  if FSnapshotManager <> nil then FSnapshotManager.RemoveNotification(FSnapshotNotification);
-  FSnapshotManager := AValue;
-  if FSnapshotManager <> nil then FSnapshotManager.AddNotification(FSnapshotNotification);
-  SnapshotChanged(nil);
 end;
 
 constructor THistoryDialog.Create(TheOwner: TComponent);
@@ -251,10 +238,8 @@ begin
   lvHistory.Column[1].Caption := histdlgColumnTime;
   lvHistory.Column[2].Caption := histdlgColumnLoc;
 
-  FSnapshotNotification := TSnapshotNotification.Create;
-  FSnapshotNotification.AddReference;
-  FSnapshotNotification.OnChange := @SnapshotChanged;
-  FSnapshotNotification.OnCurrent := @SnapshotChanged;
+  SnapshotNotification.OnChange  := @SnapshotChanged;
+  SnapshotNotification.OnCurrent := @SnapshotChanged;
 
   imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
   lvHistory.SmallImages := IDEImages.Images_16;
@@ -286,15 +271,6 @@ begin
 
   tbPowerClick(nil);
   tbHistorySelectedClick(nil);
-end;
-
-destructor THistoryDialog.Destroy;
-begin
-  SetSnapshotManager(nil);
-  FSnapshotNotification.OnChange := nil;
-  FSnapshotNotification.OnCurrent := nil;
-  FSnapshotNotification.ReleaseReference;
-  inherited Destroy;
 end;
 
 end.

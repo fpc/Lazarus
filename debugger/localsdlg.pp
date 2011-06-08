@@ -65,21 +65,8 @@ type
     procedure actInspectUpdate(Sender: TObject);
     procedure actWathExecute(Sender: TObject);
   private
-    FCallStackMonitor: TCallStackMonitor;
-    FLocalsMonitor: TLocalsMonitor;
-    FLocalsNotification: TLocalsNotification;
-    FSnapshotManager: TSnapshotManager;
-    FThreadsMonitor: TThreadsMonitor;
-    FThreadsNotification: TThreadsNotification;
-    FCallstackNotification: TCallStackNotification;
-    FSnapshotNotification: TSnapshotNotification;
-    procedure SetSnapshotManager(const AValue: TSnapshotManager);
-    procedure SnapshotChanged(Sender: TObject);
     procedure ContextChanged(Sender: TObject);
     procedure LocalsChanged(Sender: TObject);
-    procedure SetCallStackMonitor(const AValue: TCallStackMonitor);
-    procedure SetLocals(const AValue: TLocalsMonitor);
-    procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TThreads;
     function GetStackframe: Integer;
@@ -89,12 +76,10 @@ type
     procedure DoEndUpdate; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
-    property LocalsMonitor: TLocalsMonitor read FLocalsMonitor write SetLocals;
-    property ThreadsMonitor: TThreadsMonitor read FThreadsMonitor write SetThreadsMonitor;
-    property CallStackMonitor: TCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
-    property SnapshotManager: TSnapshotManager read FSnapshotManager write SetSnapshotManager;
+    property LocalsMonitor;
+    property ThreadsMonitor;
+    property CallStackMonitor;
+    property SnapshotManager;
   end;
 
 
@@ -110,21 +95,10 @@ uses
 constructor TLocalsDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FLocalsNotification := TLocalsNotification.Create;
-  FLocalsNotification.AddReference;
-  FLocalsNotification.OnChange := @LocalsChanged;
-
-  FThreadsNotification := TThreadsNotification.Create;
-  FThreadsNotification.AddReference;
-  FThreadsNotification.OnCurrent := @ContextChanged;
-
-  FCallstackNotification := TCallStackNotification.Create;
-  FCallstackNotification.AddReference;
-  FCallstackNotification.OnCurrent   := @ContextChanged;
-
-  FSnapshotNotification := TSnapshotNotification.Create;
-  FSnapshotNotification.AddReference;
-  FSnapshotNotification.OnCurrent    := @SnapshotChanged;
+  LocalsNotification.OnChange     := @LocalsChanged;
+  ThreadsNotification.OnCurrent   := @LocalsChanged;
+  CallstackNotification.OnCurrent := @ContextChanged;
+  SnapshotNotification.OnCurrent  := @LocalsChanged;
 
   Caption:= lisLocals;
   lvLocals.Columns[0].Caption:= lisLocalsDlgName;
@@ -134,27 +108,6 @@ begin
   actEvaluate.Caption := lisEvaluateModify;
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
-end;
-
-destructor TLocalsDlg.Destroy;
-begin
-  SetLocals(nil);
-  FLocalsNotification.OnChange := nil;
-  FLocalsNotification.ReleaseReference;
-  FThreadsNotification.OnCurrent := nil;
-  FThreadsNotification.ReleaseReference;
-  FCallstackNotification.OnCurrent := nil;
-  FCallstackNotification.ReleaseReference;
-  SetSnapshotManager(nil);
-  FSnapshotNotification.OnChange := nil;
-  FSnapshotNotification.OnCurrent := nil;
-  FSnapshotNotification.ReleaseReference;
-  inherited Destroy;
-end;
-
-procedure TLocalsDlg.SnapshotChanged(Sender: TObject);
-begin
-  LocalsChanged(nil);
 end;
 
 procedure TLocalsDlg.actInspectUpdate(Sender: TObject);
@@ -200,15 +153,6 @@ begin
   Clipboard.Close;
 end;
 
-procedure TLocalsDlg.SetSnapshotManager(const AValue: TSnapshotManager);
-begin
-  if FSnapshotManager = AValue then exit;
-  if FSnapshotManager <> nil then FSnapshotManager.RemoveNotification(FSnapshotNotification);
-  FSnapshotManager := AValue;
-  if FSnapshotManager <> nil then FSnapshotManager.AddNotification(FSnapshotNotification);
-  LocalsChanged(nil);
-end;
-
 procedure TLocalsDlg.ContextChanged(Sender: TObject);
 begin
   LocalsChanged(nil);
@@ -223,7 +167,7 @@ var
   Locals: TLocals;
   Snap: TSnapshot;
 begin
-  if (FThreadsMonitor = nil) or (FCallStackMonitor = nil) or (FLocalsMonitor=nil) then begin
+  if (ThreadsMonitor = nil) or (CallStackMonitor = nil) or (LocalsMonitor=nil) then begin
     lvLocals.Items.Clear;
     exit;
   end;
@@ -235,7 +179,7 @@ begin
   Snap := GetSelectedSnapshot;
   if (Snap <> nil)
   then begin
-    Locals := FLocalsMonitor.Snapshots[Snap][GetThreadId, GetStackframe];
+    Locals := LocalsMonitor.Snapshots[Snap][GetThreadId, GetStackframe];
     Caption:= lisLocals + ' ('+ Snap.LocationAsText +')';
   end
   else begin
@@ -296,74 +240,12 @@ begin
   end;
 end;
 
-procedure TLocalsDlg.SetCallStackMonitor(const AValue: TCallStackMonitor);
-begin
-  if FCallStackMonitor = AValue then exit;
-  BeginUpdate;
-  try
-    if FCallStackMonitor <> nil
-    then FCallStackMonitor.RemoveNotification(FCallstackNotification);
-
-    FCallStackMonitor := AValue;
-
-    if FCallStackMonitor <> nil
-    then FCallStackMonitor.AddNotification(FCallstackNotification);
-
-    LocalsChanged(nil);
-  finally
-    EndUpdate;
-  end;
-end;
-
-procedure TLocalsDlg.SetLocals(const AValue: TLocalsMonitor);
-begin
-  if FLocalsMonitor = AValue then Exit;
-
-  BeginUpdate;
-  try
-    if FLocalsMonitor <> nil
-    then begin
-      FLocalsMonitor.RemoveNotification(FLocalsNotification);
-    end;
-
-    FLocalsMonitor := AValue;
-
-    if FLocalsMonitor <> nil
-    then begin
-      FLocalsMonitor.AddNotification(FLocalsNotification);
-    end;
-    
-    LocalsChanged(FLocalsMonitor);
-  finally
-    EndUpdate;
-  end;
-end;
-
-procedure TLocalsDlg.SetThreadsMonitor(const AValue: TThreadsMonitor);
-begin
-  if FThreadsMonitor = AValue then exit;
-  BeginUpdate;
-  try
-    if FThreadsMonitor <> nil
-    then FThreadsMonitor.RemoveNotification(FThreadsNotification);
-
-    FThreadsMonitor := AValue;
-
-    if FThreadsMonitor <> nil
-    then FThreadsMonitor.AddNotification(FThreadsNotification);
-
-    LocalsChanged(nil);
-  finally
-    EndUpdate;
-  end;
-end;
-
 function TLocalsDlg.GetThreadId: Integer;
 var
   Threads: TThreads;
 begin
   Result := -1;
-  if (FThreadsMonitor = nil) then exit;
+  if (ThreadsMonitor = nil) then exit;
   Threads := GetSelectedThreads(GetSelectedSnapshot);
   if Threads <> nil
   then Result := Threads.CurrentThreadId
@@ -372,10 +254,10 @@ end;
 
 function TLocalsDlg.GetSelectedThreads(Snap: TSnapshot): TThreads;
 begin
-  if FThreadsMonitor = nil then exit(nil);
+  if ThreadsMonitor = nil then exit(nil);
   if Snap = nil
-  then Result := FThreadsMonitor.CurrentThreads
-  else Result := FThreadsMonitor.Snapshots[Snap];
+  then Result := ThreadsMonitor.CurrentThreads
+  else Result := ThreadsMonitor.Snapshots[Snap];
 end;
 
 function TLocalsDlg.GetStackframe: Integer;

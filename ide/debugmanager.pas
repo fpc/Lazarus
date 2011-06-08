@@ -830,6 +830,10 @@ procedure TDebugManager.DebuggerBeforeChangeState(ADebugger: TDebugger; AOldStat
 var
   DialogType: TDebugDialogType;
 begin
+  if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting)
+  then exit;
+  assert((ADebugger=FDebugger) and (ADebugger<>nil), 'TDebugManager.OnDebuggerChangeState');
+
   FInStateChange := True;
   for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     if FDialogs[DialogType] <> nil then
@@ -840,6 +844,18 @@ end;
 
 procedure TDebugManager.DebuggerChangeState(ADebugger: TDebugger;
   OldState: TDBGState);
+
+  procedure UnlockDialogs;
+  var
+    DialogType: TDebugDialogType;
+  begin
+    if not FInStateChange then exit;
+    FInStateChange := False;
+    for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
+      if FDialogs[DialogType] <> nil then
+        FDialogs[DialogType].EndUpdate;
+  end;
+
 const
   // dsNone, dsIdle, dsStop, dsPause, dsInit, dsRun, dsError
   TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
@@ -852,28 +868,28 @@ const
 var
   MsgResult: TModalResult;
   i: Integer;
-  DialogType: TDebugDialogType;
 begin
-  FInStateChange := False;
-  for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
-    if FDialogs[DialogType] <> nil then
-      FDialogs[DialogType].EndUpdate;
-
   if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting)
-  then exit;
-
+  then begin
+    UnlockDialogs;
+    exit;
+  end;
   assert((ADebugger=FDebugger) and (ADebugger<>nil), 'TDebugManager.OnDebuggerChangeState');
 
   if (FDebugger.State in [dsRun])
   then FCurrentBreakpoint := nil;
 
+  // Notify FSnapshots of new state (while dialogs still in updating)
   if (FCurrentBreakpoint <> nil) and (bpaTakeSnapshot in FCurrentBreakpoint.Actions) then begin
     FSnapshots.DoStateChange(OldState);
     FSnapshots.Current.AddToSnapshots;
     FSnapshots.DoDebuggerIdle(True);
   end
-  else if FDebugger.State <> dsInternalPause
+  else
+  if FDebugger.State <> dsInternalPause
   then FSnapshots.DoStateChange(OldState);
+
+  UnlockDialogs;
 
   if FDebugger.State = dsInternalPause
   then exit;

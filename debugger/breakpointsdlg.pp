@@ -116,8 +116,6 @@ type
     procedure popDeleteAllClick(Sender: TObject);
   private
     FBaseDirectory: string;
-    FBreakPoints: TIDEBreakPoints;
-    FBreakpointsNotification: TIDEBreakPointsNotification;
     FStates: TBreakPointsDlgStates;
     FLockActionUpdate: Integer;
     procedure BreakPointAdd(const ASender: TIDEBreakPoints;
@@ -128,8 +126,6 @@ type
                                const ABreakpoint: TIDEBreakPoint);
     procedure SetBaseDirectory(const AValue: string);
 
-    procedure SetBreakPoints(const AValue: TIDEBreakPoints);
-
     procedure UpdateItem(const AnItem: TListItem;
                          const ABreakpoint: TIDEBreakPoint);
     procedure UpdateAll;
@@ -138,15 +134,15 @@ type
     procedure JumpToCurrentBreakPoint;
     procedure ShowProperties;
   protected
+    procedure DoBreakPointsChanged; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
     procedure DisableAllActions;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   public
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
-    property BreakPoints: TIDEBreakPoints read FBreakPoints write SetBreakPoints;
+    property BreakPoints;
   end;
   
 function GetBreakPointStateDescription(ABreakpoint: TBaseBreakpoint): string;
@@ -241,43 +237,13 @@ begin
   UpdateAll;
 end;
 
-procedure TBreakPointsDlg.SetBreakPoints(const AValue: TIDEBreakPoints);
-var
-  i: Integer;
-begin
-  if FBreakPoints = AValue then Exit;
-
-  BeginUpdate;
-  try
-    lvBreakPoints.Items.Clear;
-    if FBreakPoints <> nil
-    then begin
-      FBreakPoints.RemoveNotification(FBreakpointsNotification);
-    end;
-
-    FBreakPoints:=AValue;
-
-    if FBreakPoints <> nil
-    then begin
-      FBreakPoints.AddNotification(FBreakpointsNotification);
-
-      for i:=0 to FBreakPoints.Count-1 do
-        BreakPointUpdate(FBreakPoints, FBreakPoints.Items[i]);
-    end;
-  finally
-    EndUpdate;
-  end;
-end;
-
 constructor TBreakPointsDlg.Create(AOwner: TComponent);
 begin
   inherited;
   Name:='BreakPointsDlg';
-  FBreakpointsNotification := TIDEBreakPointsNotification.Create;
-  FBreakpointsNotification.AddReference;
-  FBreakpointsNotification.OnAdd := @BreakPointAdd;
-  FBreakpointsNotification.OnUpdate := @BreakPointUpdate;
-  FBreakpointsNotification.OnRemove := @BreakPointRemove;
+  BreakpointsNotification.OnAdd    := @BreakPointAdd;
+  BreakpointsNotification.OnUpdate := @BreakPointUpdate;
+  BreakpointsNotification.OnRemove := @BreakPointRemove;
 
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
@@ -318,16 +284,6 @@ begin
   actDeleteAllInSrc.Caption:= lisDeleteAllInSameSource;
 
   FLockActionUpdate := 0;
-end;
-
-destructor TBreakPointsDlg.Destroy;
-begin
-  SetBreakPoints(nil);
-  FBreakpointsNotification.OnAdd := nil;
-  FBreakpointsNotification.OnUpdate := nil;
-  FBreakpointsNotification.OnRemove := nil;
-  FBreakpointsNotification.ReleaseReference;
-  inherited;
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsColumnClick(Sender: TObject;
@@ -827,6 +783,18 @@ begin
   CurBreakPoint:=TIDEBreakPoint(Item.Data);
 
   DebugBoss.ShowBreakPointProperties(CurBreakPoint);
+end;
+
+procedure TBreakPointsDlg.DoBreakPointsChanged;
+var
+  i: Integer;
+begin
+  lvBreakPoints.Items.Clear;
+  if BreakPoints <> nil
+  then begin
+    for i:=0 to BreakPoints.Count-1 do
+      BreakPointUpdate(BreakPoints, BreakPoints.Items[i]);
+  end;
 end;
 
 procedure TBreakPointsDlg.DoBeginUpdate;

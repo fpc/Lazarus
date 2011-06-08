@@ -59,31 +59,31 @@ inherited CallStackDlg: TCallStackDlg
     ShowHint = True
     TabOrder = 1
     object ToolButtonShow: TToolButton
-      Left = 110
+      Left = 112
       Top = 0
       Action = actShow
       ImageIndex = 0
     end
     object ToolButtonCurrent: TToolButton
-      Left = 160
+      Left = 162
       Top = 0
       Action = actSetCurrent
     end
     object ToolButton4: TToolButton
-      Left = 210
+      Left = 212
       Top = 0
-      Width = 8
+      Width = 10
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object ToolButtonMore: TToolButton
-      Left = 280
+      Left = 284
       Top = 0
       Action = actViewMore
       ImageIndex = 1
     end
     object ToolButtonMax: TToolButton
-      Left = 218
+      Left = 222
       Top = 0
       Action = actViewLimit
       Caption = 'Max 10'
@@ -91,7 +91,7 @@ inherited CallStackDlg: TCallStackDlg
       Style = tbsDropDown
     end
     object ToolButtonGoto: TToolButton
-      Left = 488
+      Left = 494
       Top = 0
       Action = actViewGoto
       ImageIndex = 4
@@ -105,31 +105,31 @@ inherited CallStackDlg: TCallStackDlg
     object ToolButton8: TToolButton
       Left = 102
       Top = 0
-      Width = 8
+      Width = 10
       Caption = 'ToolButton8'
       Style = tbsSeparator
     end
     object ToolButton9: TToolButton
-      Left = 330
+      Left = 334
       Top = 0
-      Width = 8
+      Width = 10
       Caption = 'ToolButton9'
       Style = tbsSeparator
     end
     object ToolButtonTop: TToolButton
-      Left = 338
+      Left = 344
       Top = 0
       Action = actViewTop
       ImageIndex = 2
     end
     object ToolButtonBottom: TToolButton
-      Left = 388
+      Left = 394
       Top = 0
       Action = actViewBottom
       ImageIndex = 3
     end
     object Panel1: TPanel
-      Left = 438
+      Left = 444
       Height = 40
       Top = 0
       Width = 50
@@ -158,9 +158,9 @@ inherited CallStackDlg: TCallStackDlg
       Style = tbsCheck
     end
     object ToolButton2: TToolButton
-      Left = 538
+      Left = 544
       Top = 0
-      Width = 8
+      Width = 10
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end

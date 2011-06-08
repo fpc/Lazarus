@@ -98,40 +98,27 @@ type
     procedure actSetAsCurrentClick(Sender : TObject);
     procedure actShowClick(Sender: TObject);
   private
-    FBreakPoints: TIDEBreakPoints;
-    FCallStackMonitor: TCallStackMonitor;
-    FCallStackNotification: TCallStackNotification;
-    FSnapshotManager: TSnapshotManager;
-    FThreadNotification: TThreadsNotification;
-    FBreakpointsNotification: TIDEBreakPointsNotification;
-    FSnapshotNotification: TSnapshotNotification;
-    FThreadsMonitor: TThreadsMonitor;
     FViewCount: Integer;
     FViewLimit: Integer;
     FViewStart: Integer;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FInUpdateView: Boolean;
     function GetImageIndex(Entry: TCallStackEntry): Integer;
-    procedure SetBreakPoints(const AValue: TIDEBreakPoints);
-    procedure SetSnapshotManager(const AValue: TSnapshotManager);
-    procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
     procedure SetViewLimit(const AValue: Integer);
     procedure SetViewStart(AStart: Integer);
     procedure SetViewMax;
     procedure BreakPointChanged(const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
     procedure CallStackChanged(Sender: TObject);
     procedure CallStackCurrent(Sender: TObject);
-    procedure ThreadsCurrent(Sender: TObject);
-    procedure SnapshotChanged(Sender: TObject);
     procedure GotoIndex(AIndex: Integer);
     function  GetCurrentEntry: TCallStackEntry;
     function  GetFunction(const Entry: TCallStackEntry): string;
-    procedure SetCallStackMonitor(const AValue: TCallStackMonitor);
     procedure UpdateView;
     procedure JumpToSource;
     procedure CopyToClipBoard;
     procedure ToggleBreakpoint(Item: TListItem);
   protected
+    procedure DoBreakPointsChanged; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
     procedure DisableAllActions;
@@ -141,12 +128,10 @@ type
     function  GetSelectedCallstack: TCallStack;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
-    property BreakPoints: TIDEBreakPoints read FBreakPoints write SetBreakPoints;
-    property CallStackMonitor: TCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
-    property ThreadsMonitor: TThreadsMonitor read FThreadsMonitor write SetThreadsMonitor;
-    property SnapshotManager: TSnapshotManager read FSnapshotManager write SetSnapshotManager;
+    property BreakPoints;
+    property CallStackMonitor;
+    property ThreadsMonitor;
+    property SnapshotManager;
     property ViewLimit: Integer read FViewLimit write SetViewLimit;
   end;
 
@@ -170,24 +155,13 @@ var
 constructor TCallStackDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCallStackNotification := TCallStackNotification.Create;
-  FCallStackNotification.AddReference;
-  FCallStackNotification.OnChange := @CallStackChanged;
-  FCallStackNotification.OnCurrent := @CallStackCurrent;
-
-  FBreakpointsNotification := TIDEBreakPointsNotification.Create;
-  FBreakpointsNotification.AddReference;
-  FBreakpointsNotification.OnAdd := @BreakPointChanged;
-  FBreakpointsNotification.OnUpdate := @BreakPointChanged;
-  FBreakpointsNotification.OnRemove := @BreakPointChanged;
-
-  FThreadNotification := TThreadsNotification.Create;
-  FThreadNotification.AddReference;
-  FThreadNotification.OnCurrent := @ThreadsCurrent;
-
-  FSnapshotNotification := TSnapshotNotification.Create;
-  FSnapshotNotification.AddReference;
-  FSnapshotNotification.OnCurrent := @SnapshotChanged;
+  CallStackNotification.OnChange   := @CallStackChanged;
+  CallStackNotification.OnCurrent  := @CallStackCurrent;
+  BreakpointsNotification.OnAdd    := @BreakPointChanged;
+  BreakpointsNotification.OnUpdate := @BreakPointChanged;
+  BreakpointsNotification.OnRemove := @BreakPointChanged;
+  ThreadsNotification.OnCurrent    := @CallStackChanged;
+  SnapshotNotification.OnCurrent   := @CallStackChanged;
 
   FViewLimit := 10;
   FViewCount := 10;
@@ -347,29 +321,6 @@ begin
   end;
 end;
 
-destructor TCallStackDlg.Destroy;
-begin
-  SetBreakPoints(nil);
-  FBreakpointsNotification.OnAdd := nil;
-  FBreakpointsNotification.OnUpdate := nil;
-  FBreakpointsNotification.OnRemove := nil;
-  FBreakpointsNotification.ReleaseReference;
-
-  SetCallStackMonitor(nil);
-  FCallStackNotification.OnChange := nil;
-  FCallStackNotification.ReleaseReference;
-
-  SetThreadsMonitor(nil);
-  FThreadNotification.OnCurrent := nil;
-  FThreadNotification.ReleaseReference;
-
-  SetSnapshotManager(nil);
-  FSnapshotNotification.OnChange := nil;
-  FSnapshotNotification.OnCurrent := nil;
-  FSnapshotNotification.ReleaseReference;
-  inherited Destroy;
-end;
-
 procedure TCallStackDlg.DoBeginUpdate;
 begin
   DisableAllActions;
@@ -414,10 +365,10 @@ end;
 
 function TCallStackDlg.GetSelectedThreads(Snap: TSnapshot): TThreads;
 begin
-  if FThreadsMonitor = nil then exit(nil);
+  if ThreadsMonitor = nil then exit(nil);
   if Snap = nil
-  then Result := FThreadsMonitor.CurrentThreads
-  else Result := FThreadsMonitor.Snapshots[Snap];
+  then Result := ThreadsMonitor.CurrentThreads
+  else Result := ThreadsMonitor.Snapshots[Snap];
 end;
 
 function TCallStackDlg.GetSelectedCallstack: TCallStack;
@@ -539,6 +490,11 @@ begin
   end;
 end;
 
+procedure TCallStackDlg.DoBreakPointsChanged;
+begin
+  UpdateView;
+end;
+
 procedure TCallStackDlg.lvCallStackDBLCLICK(Sender: TObject);
 begin
   JumpToSource;
@@ -550,16 +506,6 @@ begin
   FViewCount := TMenuItem(Sender).Tag;
   ViewLimit := FViewCount;
   actViewLimit.Caption := TMenuItem(Sender).Caption;
-end;
-
-procedure TCallStackDlg.SnapshotChanged(Sender: TObject);
-begin
-  CallStackChanged(nil);
-end;
-
-procedure TCallStackDlg.ThreadsCurrent(Sender: TObject);
-begin
-  CallStackChanged(nil);
 end;
 
 procedure TCallStackDlg.ToolButtonPowerClick(Sender: TObject);
@@ -774,30 +720,6 @@ begin
 //  else lblViewCnt.Caption:= IntToStr(GetSelectedCallstack.Count);
 end;
 
-procedure TCallStackDlg.SetCallStackMonitor(const AValue: TCallStackMonitor);
-begin
-  if FCallStackMonitor = AValue then Exit;
-
-  BeginUpdate;
-  try
-    if FCallStackMonitor <> nil
-    then begin
-      FCallStackMonitor.RemoveNotification(FCallStackNotification);
-    end;
-
-    FCallStackMonitor := AValue;
-
-    if FCallStackMonitor <> nil
-    then begin
-      FCallStackMonitor.AddNotification(FCallStackNotification);
-    end;
-
-    CallStackChanged(nil);
-  finally
-    EndUpdate;
-  end;
-end;
-
 procedure TCallStackDlg.SetViewLimit(const AValue: Integer);
 begin
   ToolButtonPower.Down := True;
@@ -812,42 +734,6 @@ begin
   end;
   FViewLimit := AValue;
   UpdateView;
-end;
-
-procedure TCallStackDlg.SetBreakPoints(const AValue: TIDEBreakPoints);
-begin
-  if FBreakPoints = AValue then Exit;
-
-  if FBreakPoints <> nil
-  then begin
-    FBreakPoints.RemoveNotification(FBreakpointsNotification);
-  end;
-
-  FBreakPoints := AValue;
-
-  if FBreakPoints <> nil
-  then begin
-    FBreakPoints.AddNotification(FBreakpointsNotification);
-  end;
-  UpdateView;
-end;
-
-procedure TCallStackDlg.SetSnapshotManager(const AValue: TSnapshotManager);
-begin
-  if FSnapshotManager = AValue then exit;
-  if FSnapshotManager <> nil then FSnapshotManager.RemoveNotification(FSnapshotNotification);
-  FSnapshotManager := AValue;
-  if FSnapshotManager <> nil then FSnapshotManager.AddNotification(FSnapshotNotification);
-  UpdateView;
-end;
-
-procedure TCallStackDlg.SetThreadsMonitor(const AValue: TThreadsMonitor);
-begin
-  if FThreadsMonitor = AValue then exit;
-  if FThreadsMonitor <> nil then FThreadsMonitor.RemoveNotification(FThreadNotification);
-  FThreadsMonitor := AValue;
-  if FThreadsMonitor <> nil then FThreadsMonitor.AddNotification(FThreadNotification);
-  ThreadsCurrent(FThreadsMonitor);
 end;
 
 function TCallStackDlg.GetFunction(const Entry: TCallStackEntry): string;

@@ -106,14 +106,6 @@ type
     procedure SnapshotChanged(Sender: TObject);
   private
     FWatchesInView: TWatches;
-    FCallStackMonitor: TCallStackMonitor;
-    FSnapshotManager: TSnapshotManager;
-    FThreadsMonitor: TThreadsMonitor;
-    FWatchesMonitor: TWatchesMonitor;
-    FSnapshotNotification: TSnapshotNotification;
-    FWatchesNotification: TWatchesNotification;
-    FThreadsNotification: TThreadsNotification;
-    FCallstackNotification: TCallStackNotification;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded, FUpdatingAll: Boolean;
     FStateFlags: TWatchesDlgStateFlags;
@@ -121,10 +113,6 @@ type
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TThreads;
     function GetStackframe: Integer;
-    procedure SetSnapshotManager(const AValue: TSnapshotManager);
-    procedure SetCallStackMonitor(const AValue: TCallStackMonitor);
-    procedure SetThreadsMonitor(const AValue: TThreadsMonitor);
-    procedure SetWatchesMonitor(const AValue: TWatchesMonitor);
     procedure WatchAdd(const ASender: TWatches; const AWatch: TWatch);
     procedure WatchUpdate(const ASender: TWatches; const AWatch: TWatch);
     procedure WatchRemove(const ASender: TWatches; const AWatch: TWatch);
@@ -136,14 +124,13 @@ type
     property Watches: TWatches read GetWatches;
   protected
     procedure DoEndUpdate; override;
+    procedure DoWatchesChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-
-    property WatchesMonitor: TWatchesMonitor read FWatchesMonitor write SetWatchesMonitor;
-    property ThreadsMonitor: TThreadsMonitor read FThreadsMonitor write SetThreadsMonitor;
-    property CallStackMonitor: TCallStackMonitor read FCallStackMonitor write SetCallStackMonitor;
-    property SnapshotManager: TSnapshotManager read FSnapshotManager write SetSnapshotManager;
+    property WatchesMonitor;
+    property ThreadsMonitor;
+    property CallStackMonitor;
+    property SnapshotManager;
   end;
 
 
@@ -157,25 +144,14 @@ constructor TWatchesDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FWatchesInView := nil;
-
-  FWatchesNotification := TWatchesNotification.Create;
-  FWatchesNotification.AddReference;
-  FWatchesNotification.OnAdd := @WatchAdd;
-  FWatchesNotification.OnUpdate := @WatchUpdate;
-  FWatchesNotification.OnRemove := @WatchRemove;
   FStateFlags := [];
 
-  FThreadsNotification := TThreadsNotification.Create;
-  FThreadsNotification.AddReference;
-  FThreadsNotification.OnCurrent := @ContextChanged;
-
-  FCallstackNotification := TCallStackNotification.Create;
-  FCallstackNotification.AddReference;
-  FCallstackNotification.OnCurrent  := @ContextChanged;
-
-  FSnapshotNotification := TSnapshotNotification.Create;
-  FSnapshotNotification.AddReference;
-  FSnapshotNotification.OnCurrent  := @SnapshotChanged;
+  WatchesNotification.OnAdd       := @WatchAdd;
+  WatchesNotification.OnUpdate    := @WatchUpdate;
+  WatchesNotification.OnRemove    := @WatchRemove;
+  ThreadsNotification.OnCurrent   := @ContextChanged;
+  CallstackNotification.OnCurrent := @ContextChanged;
+  SnapshotNotification.OnCurrent  := @SnapshotChanged;
 
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
@@ -227,25 +203,6 @@ begin
   lvWatches.Column[1].Width := 200;
 end;
 
-destructor TWatchesDlg.Destroy;
-begin
-  //DebugLn('TWatchesDlg.Destroy ',DbgSName(Self));
-  SetWatchesMonitor(nil);
-  FWatchesNotification.OnAdd := nil;
-  FWatchesNotification.OnUpdate := nil;
-  FWatchesNotification.OnRemove := nil;
-  FWatchesNotification.ReleaseReference;
-  FThreadsNotification.OnCurrent := nil;
-  FThreadsNotification.ReleaseReference;
-  FCallstackNotification.OnCurrent := nil;
-  FCallstackNotification.ReleaseReference;
-  SetSnapshotManager(nil);
-  FSnapshotNotification.OnChange := nil;
-  FSnapshotNotification.OnCurrent := nil;
-  FSnapshotNotification.ReleaseReference;
-  inherited Destroy;
-end;
-          
 function TWatchesDlg.GetSelected: TCurrentWatch;
 var
   Item: TListItem;
@@ -261,7 +218,7 @@ var
   Threads: TThreads;
 begin
   Result := -1;
-  if (FThreadsMonitor = nil) then exit;
+  if (ThreadsMonitor = nil) then exit;
   Threads := GetSelectedThreads(GetSelectedSnapshot);
   if Threads <> nil
   then Result := Threads.CurrentThreadId
@@ -270,10 +227,10 @@ end;
 
 function TWatchesDlg.GetSelectedThreads(Snap: TSnapshot): TThreads;
 begin
-  if FThreadsMonitor = nil then exit(nil);
+  if ThreadsMonitor = nil then exit(nil);
   if Snap = nil
-  then Result := FThreadsMonitor.CurrentThreads
-  else Result := FThreadsMonitor.Snapshots[Snap];
+  then Result := ThreadsMonitor.CurrentThreads
+  else Result := ThreadsMonitor.Snapshots[Snap];
 end;
 
 function TWatchesDlg.GetStackframe: Integer;
@@ -302,79 +259,6 @@ begin
   if Stack <> nil
   then Result := Stack.CurrentIndex
   else Result := 0;
-end;
-
-procedure TWatchesDlg.SetSnapshotManager(const AValue: TSnapshotManager);
-begin
-  if FSnapshotManager = AValue then exit;
-  if FSnapshotManager <> nil then FSnapshotManager.RemoveNotification(FSnapshotNotification);
-  FSnapshotManager := AValue;
-  if FSnapshotManager <> nil then FSnapshotManager.AddNotification(FSnapshotNotification);
-  SnapshotChanged(nil);
-end;
-
-procedure TWatchesDlg.SetCallStackMonitor(const AValue: TCallStackMonitor);
-begin
-  if FCallStackMonitor = AValue then exit;
-  BeginUpdate;
-  try
-    if FCallStackMonitor <> nil
-    then FCallStackMonitor.RemoveNotification(FCallstackNotification);
-
-    FCallStackMonitor := AValue;
-
-    if FCallStackMonitor <> nil
-    then FCallStackMonitor.AddNotification(FCallstackNotification);
-
-    UpdateAll;
-  finally
-    EndUpdate;
-  end;
-end;
-
-procedure TWatchesDlg.SetThreadsMonitor(const AValue: TThreadsMonitor);
-begin
-  if FThreadsMonitor = AValue then exit;
-  BeginUpdate;
-  try
-    if FThreadsMonitor <> nil
-    then FThreadsMonitor.RemoveNotification(FThreadsNotification);
-
-    FThreadsMonitor := AValue;
-
-    if FThreadsMonitor <> nil
-    then FThreadsMonitor.AddNotification(FThreadsNotification);
-
-    UpdateAll;
-  finally
-    EndUpdate;
-  end;
-end;
-
-procedure TWatchesDlg.SetWatchesMonitor(const AValue: TWatchesMonitor);
-begin
-  if FWatchesMonitor = AValue then Exit;
-
-  BeginUpdate;
-  try
-    lvWatches.Items.Clear;
-
-    if FWatchesMonitor <> nil
-    then begin
-      FWatchesMonitor.RemoveNotification(FWatchesNotification);
-    end;
-
-    FWatchesMonitor:=AValue;
-
-    if FWatchesMonitor <> nil
-    then begin
-      FWatchesMonitor.AddNotification(FWatchesNotification);
-      UpdateAll;
-    end;
-    
-  finally
-    EndUpdate;
-  end;
 end;
 
 procedure TWatchesDlg.lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
@@ -568,13 +452,13 @@ var
   Snap: TSnapshot;
 begin
   Result := nil;
-  if FWatchesMonitor = nil then exit;
+  if WatchesMonitor = nil then exit;
 
   Snap := GetSelectedSnapshot;
 
   if Snap <> nil
-  then Result := FWatchesMonitor.Snapshots[Snap]
-  else Result := FWatchesMonitor.CurrentWatches;
+  then Result := WatchesMonitor.Snapshots[Snap]
+  else Result := WatchesMonitor.CurrentWatches;
 end;
 
 procedure TWatchesDlg.DoEndUpdate;
@@ -584,6 +468,11 @@ begin
     FUpdateAllNeeded := False;
     UpdateAll;
   end;
+end;
+
+procedure TWatchesDlg.DoWatchesChanged;
+begin
+  UpdateAll;
 end;
 
 procedure TWatchesDlg.popDeleteClick(Sender: TObject);
@@ -703,7 +592,7 @@ begin
 // Expression
 // Result
   if (not ToolButtonPower.Down) or (not Visible) then exit;
-  if (FThreadsMonitor = nil) or (FCallStackMonitor = nil) then exit;
+  if (ThreadsMonitor = nil) or (CallStackMonitor = nil) then exit;
   if GetStackframe < 0 then exit; // TODO need dedicated validity property
 
   include(FStateFlags, wdsfUpdating);
