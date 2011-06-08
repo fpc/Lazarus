@@ -9020,6 +9020,7 @@ var
   function DoResultRecord(Line: String): Boolean;
   var
     ResultClass: String;
+    OldResult: Boolean;
   begin
     ResultClass := GetPart('^', ',', Line);
 
@@ -9032,6 +9033,7 @@ var
       AResult.Values := Line;
     end;
 
+    OldResult := Result;
     Result := True;
     case StringCase(ResultClass, ['done', 'running', 'exit', 'error']) of
       0: begin // done
@@ -9052,8 +9054,17 @@ var
       end;
     else
       //TODO: should that better be dsError ?
-      Result := False;
-      DebugLn('[WARNING] Debugger: Unknown result class: ', ResultClass);
+      if OldResult and (AResult.State in [dsError, dsStop]) and
+         (copy(Line,1,7) = '^error"')
+      then begin
+        // Gdb 6.3.5 on Mac, does sometime return a 2nd mis-formatted error line
+        // The line seems truncated, it simply is (note the misplaced quote): ^error"
+        DebugLn('[WARNING] Debugger: Unknown result class (IGNORING): ', ResultClass);
+      end
+      else begin
+        Result := False;
+        DebugLn('[WARNING] Debugger: Unknown result class: ', ResultClass);
+      end;
     end;
   end;
 
