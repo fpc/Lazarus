@@ -157,6 +157,7 @@ type
     procedure AbsoluteToLineCol(Position: integer; out Line, Column: integer);
     function LineColIsOutside(Line, Column: integer): boolean;
     function LineColIsSpace(Line, Column: integer): boolean;
+    function AbsoluteToLineColStr(Position: integer): string;
     procedure Insert(Pos: integer; const Txt: string);
     procedure Delete(Pos, Len: integer);
     procedure Replace(Pos, Len: integer; const Txt: string);
@@ -794,6 +795,15 @@ begin
   p:=@fSource[rg^.StartPos];
   if (p[Column-1]>' ') then exit(false);
   if (Column>1) and (p[Column-2]>' ') then exit(false);
+end;
+
+function TSourceLog.AbsoluteToLineColStr(Position: integer): string;
+var
+  Line: integer;
+  Column: integer;
+begin
+  AbsoluteToLineCol(Position,Line,Column);
+  Result:='p='+IntToStr(Position)+',y='+IntToStr(Line)+',x='+IntToStr(Column);
 end;
 
 function TSourceLog.LoadFromFile(const Filename: string): boolean;

@@ -578,14 +578,17 @@ var
   IsDirectChange: boolean;
   IntersectionEntry: TSourceChangeCacheEntry;
 begin
+
   {$IFDEF VerboseSrcChanger}
   DebugLn('TSourceChangeCache.ReplaceEx FrontGap=',dbgs(FrontGap),
-  ' AfterGap=',dbgs(AfterGap),' CleanPos=',dbgs(FromPos),'-',dbgs(ToPos),
-  ' Text="',Text,'"');
+  ' AfterGap=',dbgs(AfterGap),' Text="',Text,'"');
   if DirectCode<>nil then
-    DebugLn('  DirectCode=',DirectCode.Filename,' DirectPos=',dbgs(FromDirectPos),'-',dbgs(ToDirectPos),' Src=(~',dbgstr(copy(DirectCode.Source,FromDirectPos,ToDirectPos-FromDirectPos)),'~)')
-  else if ToPos>FromPos then
-    debugln(['  DeleteCode=(~',dbgstr(copy(MainScanner.Src,FromPos,ToPos-FromPos)),'~)']);
+    DebugLn('  DirectCode=',DirectCode.Filename,' DirectPos=',DirectCode.AbsoluteToLineColStr(FromDirectPos),'-',DirectCode.AbsoluteToLineColStr(ToDirectPos),' Src=(~',dbgstr(copy(DirectCode.Source,FromDirectPos,ToDirectPos-FromDirectPos)),'~)')
+  else begin
+    debugln(['  CleanPos=',MainScanner.CleanedPosToStr(FromPos),'-',MainScanner.CleanedPosToStr(ToPos)]);
+    if ToPos>FromPos then
+      debugln(['  DeleteCode=(~',dbgstr(copy(MainScanner.Src,FromPos,ToPos-FromPos)),'~)']);
+  end;
   {$ENDIF}
   Result:=false;
   IsDirectChange:=DirectCode<>nil;

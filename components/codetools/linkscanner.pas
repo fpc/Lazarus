@@ -460,6 +460,7 @@ type
                           // 1=CursorPos beyond scanned code
     function CleanedPosToCursor(ACleanedPos: integer; var ACursorPos: integer;
                                 var ACode: Pointer): boolean;
+    function CleanedPosToStr(ACleanedPos: integer): string;
     function LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
 
@@ -3711,6 +3712,18 @@ begin
       end;
     end;
     ConsistencyCheckI(1);
+  end;
+end;
+
+function TLinkScanner.CleanedPosToStr(ACleanedPos: integer): string;
+var
+  p: integer;
+  ACode: Pointer;
+begin
+  if CleanedPosToCursor(ACleanedPos,p,ACode) then begin
+    Result:=TSourceLog(ACode).AbsoluteToLineColStr(p);
+  end else begin
+    Result:='p='+IntToStr(ACleanedPos)+',y=?,x=?';
   end;
 end;
 
