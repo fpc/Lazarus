@@ -9055,7 +9055,7 @@ var
     else
       //TODO: should that better be dsError ?
       if OldResult and (AResult.State in [dsError, dsStop]) and
-         (copy(Line,1,7) = '^error"')
+         (copy(ResultClass,1,6) = 'error"')
       then begin
         // Gdb 6.3.5 on Mac, does sometime return a 2nd mis-formatted error line
         // The line seems truncated, it simply is (note the misplaced quote): ^error"
