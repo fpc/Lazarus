@@ -781,6 +781,8 @@ type
 const
   DefaultObjectInspectorName: string = 'ObjectInspectorDlg';
 
+// the ObjectInspector of the IDE can be found in FormEditingIntf
+
 implementation
 
 {$R *.lfm}

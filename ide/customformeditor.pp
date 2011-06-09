@@ -120,6 +120,7 @@ type
     function CutSelectionToClipboard: Boolean; override;
     function PasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
                                          ): Boolean; override;
+    function GetCurrentObjectInspector: TObjectInspectorDlg; override;
 
     // JIT components
     function IsJITComponent(AComponent: TComponent): boolean;
@@ -645,6 +646,11 @@ begin
     Result:=TComponentEditorDesigner(ADesigner).PasteSelection(Flags);
   end else
     Result:=false;
+end;
+
+function TCustomFormEditor.GetCurrentObjectInspector: TObjectInspectorDlg;
+begin
+  Result:=FObj_Inspector;
 end;
 
 function TCustomFormEditor.IsJITComponent(AComponent: TComponent): boolean;

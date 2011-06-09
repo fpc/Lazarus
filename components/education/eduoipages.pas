@@ -24,8 +24,9 @@ unit EduOIPages;
 interface
 
 uses
-  Classes, LResources, Forms, StdCtrls, ExtCtrls, LazConfigStorage, IDEOptionsIntf, EduOptions,
-  ObjectInspector, ObjInspStrConsts;
+  Classes, Forms, LCLProc, StdCtrls, ExtCtrls, LazConfigStorage,
+  ObjectInspector, ObjInspStrConsts, IDEOptionsIntf, FormEditingIntf,
+  EduOptions;
 
 type
 
@@ -35,7 +36,6 @@ type
   private
     FOIPageFavs: boolean;
     FOIPageRestricted: boolean;
-
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -44,7 +44,6 @@ type
     procedure Apply(Enable: boolean); override;
     property OIPageFavs: boolean read FOIPageFavs write FOIPageFavs;
     property OIPageRestricted: boolean read FOIPageRestricted write FOIPageRestricted;
-
   end;
 
   { TEduOIPagesFrame }
@@ -53,14 +52,12 @@ type
     ckBoxRestricted: TCheckBox;
     ckBoxFavs: TCheckBox;
     grpBoxOIPages: TGroupBox;
-
   public
     function GetTitle: String; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
-    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
-
   end;
 
 var
@@ -88,7 +85,6 @@ begin
 
   FOIPageFavs:=false;
   FOIPageRestricted:=false;
-
 end;
 
 destructor TEduOIPagesOptions.Destroy;
@@ -98,7 +94,6 @@ end;
 
 function TEduOIPagesOptions.Load(Config: TConfigStorage): TModalResult;
 begin
-
   FOIPageFavs:=Config.GetValue('OIPageFavs',true);
   FOIPageRestricted:=Config.GetValue('OIPageRestricted',true);
 
@@ -107,7 +102,6 @@ end;
 
 function TEduOIPagesOptions.Save(Config: TConfigStorage): TModalResult;
 begin
-
   Config.SetValue('OIPageFavs',FOIPageFavs);
   Config.SetValue('OIPageRestricted',FOIPageRestricted);
 
@@ -115,14 +109,20 @@ begin
 end;
 
 procedure TEduOIPagesOptions.Apply(Enable: boolean);
+var
+  ObjInsp: TObjectInspectorDlg;
 begin
   inherited Apply(Enable);
+  ObjInsp:=FormEditingHook.GetCurrentObjectInspector;
+  if ObjInsp=nil then begin
+    debugln(['TEduOIPagesOptions.Apply no OI']);
+    exit;
+  end;
+  ObjInsp.ShowFavorites:=FOIPageFavs or (not Enable);
+  ObjInsp.ShowRestricted:=FOIPageRestricted or (not Enable);
 end;
 
 { TEduOIPagesFrame }
-
-
-
 
 function TEduOIPagesFrame.GetTitle: String;
 begin

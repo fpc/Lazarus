@@ -23,7 +23,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, TypInfo, types, Forms, Controls,
-  ProjectIntf, ComponentEditors;
+  ProjectIntf, ComponentEditors, ObjectInspector;
   
 const
   ComponentPaletteImageWidth = 24;
@@ -166,11 +166,13 @@ type
     function CutSelectionToClipboard: Boolean; virtual; abstract;
     function PasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
                                          ): Boolean; virtual; abstract;
+
+    function GetCurrentObjectInspector: TObjectInspectorDlg; virtual; abstract;
   end;
 
 type
   TDesignerIDECommandForm = class(TCustomForm)
-    // dummy form class, use by the IDE commands for keys in the designers
+    // dummy form class, used by the IDE commands for keys in the designers
   end;
 
 var
