@@ -102,6 +102,7 @@ begin
                   anoEscapeForCancelControl,anoF1ForHelp,anoArrowToSelectNextInParent];
   ApplicationActionComponent:=Self;
   OnMenuPopupHandler:=@MenuPopupHandler;
+  System.InitCriticalSection(FAsyncCall.CritSec);
 
   FFindGlobalComponentEnabled:=true;
   RegisterFindGlobalComponentProc(@FindApplicationComponent);
@@ -143,6 +144,8 @@ begin
   ExitProc:=FOldExitProc;
 
   ProcessAsyncCallQueue;
+  System.DoneCriticalSection(FAsyncCall.CritSec);
+
   if OnMenuPopupHandler=@MenuPopupHandler then
     OnMenuPopupHandler:=nil;
 
@@ -1020,42 +1023,52 @@ var
 begin
   with FAsyncCall do begin
     // move the items of NextQueue to CurQueue, keep the order
-    if Next.Top<>nil then
-    begin
-      if Cur.Last<>nil then
+    System.EnterCriticalsection(CritSec);
+    try
+      if Next.Top<>nil then
       begin
-        assert(Cur.Top <> nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
-        Cur.Last^.NextItem:=Next.Top;
-        Next.Top^.PrevItem:=Cur.Last;
-      end else begin
-        assert(Cur.Top = nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
-        Cur.Top:=Next.Top;
+        if Cur.Last<>nil then
+        begin
+          assert(Cur.Top <> nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
+          Cur.Last^.NextItem:=Next.Top;
+          Next.Top^.PrevItem:=Cur.Last;
+        end else begin
+          assert(Cur.Top = nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
+          Cur.Top:=Next.Top;
+        end;
+        Cur.Last:=Next.Last;
+        Next.Top:=nil;
+        Next.Last:=nil;
       end;
-      Cur.Last:=Next.Last;
-      Next.Top:=nil;
-      Next.Last:=nil;
+    finally
+      System.LeaveCriticalsection(CritSec);
     end;
 
     // process items from top to last in 'Cur' queue
     // this can create new items, which are added to the 'Next' queue
     // or it can call ProcessAsyncCallQueue, for example via calling
     // Application.ProcesssMessages
-    while Cur.Top <> nil do
-    begin
+    repeat
       // remove top item from queue
-      lItem:=Cur.Top;
-      Cur.Top := lItem^.NextItem;
-      if Cur.Top = nil then
-        Cur.Last := nil
-      else
-        Cur.Top^.PrevItem := nil;
-      // free item
-      Event:=lItem^.Method;
-      Data:=lItem^.Data;
-      Dispose(lItem);
+      System.EnterCriticalSection(CritSec);
+      try
+        if Cur.Top=nil then exit;
+        lItem:=Cur.Top;
+        Cur.Top := lItem^.NextItem;
+        if Cur.Top = nil then
+          Cur.Last := nil
+        else
+          Cur.Top^.PrevItem := nil;
+        // free item
+        Event:=lItem^.Method;
+        Data:=lItem^.Data;
+        Dispose(lItem);
+      finally
+        System.LeaveCriticalSection(CritSec);
+      end;
       // call event
       Event(Data);
-    end;
+    until false;
   end;
 end;
 
@@ -2167,16 +2180,21 @@ begin
   lItem^.Method := AMethod;
   lItem^.Data := Data;
   lItem^.NextItem := nil;
-  with FAsyncCall.Next do begin
-    lItem^.PrevItem := Last;
-    if Last<>nil then begin
-      assert(Top <> nil, 'TApplication.QueueAsyncCall: Top entry missing (but last is assigned)');
-      Last^.NextItem := lItem
-    end else begin
-      assert(Last = nil, 'TApplication.QueueAsyncCall: Last entry found, while Top not assigned');
-      Top := lItem;
+  System.EnterCriticalsection(FAsyncCall.CritSec);
+  try
+    with FAsyncCall.Next do begin
+      lItem^.PrevItem := Last;
+      if Last<>nil then begin
+        assert(Top <> nil, 'TApplication.QueueAsyncCall: Top entry missing (but last is assigned)');
+        Last^.NextItem := lItem
+      end else begin
+        assert(Last = nil, 'TApplication.QueueAsyncCall: Last entry found, while Top not assigned');
+        Top := lItem;
+      end;
+      Last := lItem;
     end;
-    Last := lItem;
+  finally
+    System.LeaveCriticalsection(FAsyncCall.CritSec);
   end;
 
   if Assigned(WakeMainThread) then
@@ -2215,8 +2233,13 @@ begin
   if AppDoNotCallAsyncQueue in FFlags then
     raise Exception.Create('TApplication.QueueAsyncCall already shut down');
 
-  DoRemoveAsyncCalls(FAsyncCall.Cur);
-  DoRemoveAsyncCalls(FAsyncCall.Next);
+  System.EnterCriticalsection(FAsyncCall.CritSec);
+  try
+    DoRemoveAsyncCalls(FAsyncCall.Cur);
+    DoRemoveAsyncCalls(FAsyncCall.Next);
+  finally
+    System.LeaveCriticalSection(FAsyncCall.CritSec);
+  end;
 end;
 
 procedure TApplication.FreeComponent(Data: PtrInt);

@@ -9324,26 +9324,6 @@ begin
   ACritSec:=System.PRTLCriticalSection(CritSection);
   System.EnterCriticalsection(ACritSec^);
 end;
-
-{var
-  Crit,
-  tmp : ppthread_mutex_t;
-begin
-  New(Crit);
-  If CritSection <> 0 then
-    Try
-      Crit^ := ppthread_mutex_t(CritSection)^;
-    except
-      begin
-        CritSection := Longint(Crit);
-        exit;
-      end;
-    end;
-  pthread_mutex_lock(Crit^);
-  tmp := ppthread_mutex_t(CritSection);
-  CritSection := Longint(Crit);
-  Dispose(Tmp);
-end;}
 {$Else}
 begin
 end;
@@ -9357,25 +9337,6 @@ begin
   ACritSec:=System.PRTLCriticalSection(CritSection);
   System.LeaveCriticalsection(ACritSec^);
 end;
-{var
-  Crit,
-  tmp : ppthread_mutex_t;
-begin
-  New(Crit);
-  If CritSection <> 0 then
-    Try
-      Crit^ := ppthread_mutex_t(CritSection)^;
-    except
-      begin
-        CritSection := Longint(Crit);
-        exit;
-      end;
-    end;
-  pthread_mutex_unlock(Crit^);
-  tmp := ppthread_mutex_t(CritSection);
-  CritSection := Longint(Crit);
-  Dispose(Tmp);
-end;}
 {$Else}
 begin
 end;
@@ -9391,26 +9352,6 @@ begin
   Dispose(ACritSec);
   CritSection:=0;
 end;
-{var
-  Crit,
-  tmp : ppthread_mutex_t;
-begin
-  New(Crit);
-  If CritSection <> 0 then
-    Try
-      Crit^ := ppthread_mutex_t(CritSection)^;
-    except
-      begin
-        CritSection := Longint(Crit);
-        exit;
-      end;
-    end;
-  pthread_mutex_destroy(Crit^);
-  Dispose(Crit);
-  tmp := ppthread_mutex_t(CritSection);
-  CritSection := 0;
-  Dispose(Tmp);
-end;}
 {$Else}
 begin
 end;

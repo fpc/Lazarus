@@ -1148,6 +1148,7 @@ type
     Top, Last: PAsyncCallQueueItem;
   end;
   TAsyncCallQueues = record
+    CritSec: TRTLCriticalSection;
     Cur: TAsyncCallQueue; // currently processing
     Next: TAsyncCallQueue; // new calls added to this queue
   end;
