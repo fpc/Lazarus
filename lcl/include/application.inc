@@ -1048,6 +1048,7 @@ begin
     // this can create new items, which are added to the 'Next' queue
     // or it can call ProcessAsyncCallQueue, for example via calling
     // Application.ProcesssMessages
+    // Using a second queue avoids an endless loop, when an event adds a new event.
     repeat
       // remove top item from queue
       System.EnterCriticalSection(CritSec);
