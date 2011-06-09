@@ -40,6 +40,10 @@ type
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure ChartToolset1DataPointDragTool1BeforeMouseMove(ATool: TChartTool;
       APoint: TPoint);
+    procedure ChartToolset1ReticuleTool1AfterKeyUp(ATool: TChartTool;
+      APoint: TPoint);
+    procedure ChartToolset1ReticuleTool1AfterMouseMove(ATool: TChartTool;
+      APoint: TPoint);
     procedure rgPanClick(Sender: TObject);
     procedure rgZoomClick(Sender: TObject);
   end;
@@ -91,6 +95,18 @@ begin
     then
       Handled;
   end;
+end;
+
+procedure TForm1.ChartToolset1ReticuleTool1AfterKeyUp(
+  ATool: TChartTool; APoint: TPoint);
+begin
+  Chart1.ReticulePos := Point(-1, -1);
+end;
+
+procedure TForm1.ChartToolset1ReticuleTool1AfterMouseMove(ATool: TChartTool;
+  APoint: TPoint);
+begin
+  Chart1.SetFocus;
 end;
 
 procedure TForm1.rgPanClick(Sender: TObject);

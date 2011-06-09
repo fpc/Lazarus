@@ -191,6 +191,8 @@ object Form1: TForm1
     end
     object ChartToolset1ReticuleTool1: TReticuleTool
       Shift = [ssCtrl]
+      OnAfterKeyUp = ChartToolset1ReticuleTool1AfterKeyUp
+      OnAfterMouseMove = ChartToolset1ReticuleTool1AfterMouseMove
     end
     object ChartToolset1DataPointDragTool1: TDataPointDragTool
       Shift = [ssAlt, ssLeft]
