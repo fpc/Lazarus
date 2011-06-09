@@ -110,6 +110,9 @@ type
     procedure(Sender: TObject; const CheckedState: TCheckboxState;
               var ABitmap: TBitmap) of object;
 
+  TDbGridCheckboxStateEvent =
+    procedure(Sender: TObject; Column: TColumn;
+              var AState: TCheckboxState) of object;
 type
 
   { TBMStringList }
@@ -285,6 +288,7 @@ type
     FOnTitleClick: TDBGridClickEvent;
     FOnSelectEditor: TDbGridSelEditorEvent;
     FOnCheckboxBitmap: TDbGridCheckBoxBitmapEvent;
+    FOnCheckboxState: TDbGridCheckboxStateEvent;
     FOptions: TDBGridOptions;
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
@@ -462,6 +466,7 @@ type
     property OnSelectEditor: TDbGridSelEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
     property OnUserCheckboxBitmap: TDbGridCheckboxBitmapEvent read FOnCheckboxBitmap write FOnCheckboxBitmap;
+    property OnUserCheckboxState: TDbGridCheckboxStateEvent read FOnCheckboxState write FOnCheckboxState;
   public
     constructor Create(AOwner: TComponent); override;
     procedure AutoSizeColumns;
@@ -569,6 +574,7 @@ type
     property OnStartDrag;
     property OnTitleClick;
     property OnUserCheckboxBitmap;
+    property OnUserCheckboxState;
     property OnUTF8KeyPress;
   end;
 
@@ -2707,6 +2713,9 @@ begin
         AState := cbGrayed
   else
     AState := cbGrayed;
+
+  if assigned(OnUserCheckboxState) then
+    OnUserCheckboxState(Self, TColumn(ColumnFromGridColumn(aCol)), AState);
 
   DrawGridCheckboxBitmaps(aCol, Row{dummy}, ARect, AState);
 end;
