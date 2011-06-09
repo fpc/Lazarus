@@ -9017,7 +9017,7 @@ function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATime
 var
   InLogWarning: Boolean;
 
-  function DoResultRecord(Line: String): Boolean;
+  function DoResultRecord(Line: String; CurRes: Boolean): Boolean;
   var
     ResultClass: String;
     OldResult: Boolean;
@@ -9033,7 +9033,7 @@ var
       AResult.Values := Line;
     end;
 
-    OldResult := Result;
+    OldResult := CurRes;
     Result := True;
     case StringCase(ResultClass, ['done', 'running', 'exit', 'error']) of
       0: begin // done
@@ -9154,7 +9154,7 @@ begin
 
     if s <> ''
     then case S[1] of
-      '^': Result := DoResultRecord(S);
+      '^': Result := DoResultRecord(S, Result);
       '~': DoConsoleStream(S);
       '@': DoTargetStream(S);
       '&': DoLogStream(S);
