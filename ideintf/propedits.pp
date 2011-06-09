@@ -4378,66 +4378,16 @@ end;
 
 procedure TVariantPropertyEditor.GetProperties(Proc:TGetPropEditProc);
 begin
-  //Proc(TVariantTypeProperty.Create(Self));
+
 end;
 
 function TVariantPropertyEditor.GetValue: string;
-{
-  function GetVariantStr(const Value: Variant): string;
-  begin
-    case VarType(Value) of
-      varBoolean:
-        Result := BooleanIdents[Value = True];
-      varCurrency:
-        Result := CurrToStr(Value);
-    else
-      Result := VarToStrDef(Value, SNull);
-    end;
-  end;
-
-var
-  Value: Variant;}
 begin
   Result:='';
-{  Value := GetVarValue;
-  if VarType(Value) <> varDispatch then
-    Result := GetVariantStr(Value)
-  else
-    Result := 'ERROR';}
 end;
 
 procedure TVariantPropertyEditor.SetValue(const Value: string);
-{
-  function Cast(var Value: Variant; NewType: Integer): Boolean;
-  var
-    V2: Variant;
-  begin
-    Result := True;
-    if NewType = varCurrency then
-      Result := AnsiPos(CurrencyString, Value) > 0;
-    if Result then
-    try
-      VarCast(V2, Value, NewType);
-      Result := (NewType = varDate) or (VarToStr(V2) = VarToStr(Value));
-      if Result then Value := V2;
-    except
-      Result := False;
-    end;
-  end;
-
-var
-  V: Variant;
-  OldType: Integer;}
 begin
-{  OldType := VarType(GetVarValue);
-  V := Value;
-  if Value = '' then
-    VarClear(V) else
-  if (CompareText(Value, SNull) = 0) then
-    V := NULL else
-  if not Cast(V, OldType) then
-    V := Value;
-  SetVarValue(V);}
 end;
 
 
