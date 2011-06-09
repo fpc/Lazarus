@@ -144,7 +144,6 @@ begin
   ExitProc:=FOldExitProc;
 
   ProcessAsyncCallQueue;
-  System.DoneCriticalSection(FAsyncCall.CritSec);
 
   if OnMenuPopupHandler=@MenuPopupHandler then
     OnMenuPopupHandler:=nil;
@@ -168,6 +167,7 @@ begin
 
   Include(FFlags,AppDoNotCallAsyncQueue);
   ProcessAsyncCallQueue;
+  System.DoneCriticalSection(FAsyncCall.CritSec);
 
   // restore exception handling
   CaptureExceptions:=false;
