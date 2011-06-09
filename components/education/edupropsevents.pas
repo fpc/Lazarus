@@ -73,9 +73,9 @@ type
     EventsExtRadioBtn: TRadioButton;
     EventsFullRadioBtn: TRadioButton;
     rdGrpEvents: TRadioGroup;
-    stTextEvents: TStaticText;
-    stTextProps2: TStaticText;
-    stTextProps: TStaticText;
+    stTextMinEvents: TStaticText;
+    stTextExtProps: TStaticText;
+    stTextMinProps: TStaticText;
 
     procedure EventsExtRadioBtnClick(Sender: TObject);
     procedure EventsFullRadioBtnClick(Sender: TObject);
@@ -172,8 +172,8 @@ end;
 procedure TEduPropsEventsFrame.PropsMinRadioBtnClick(Sender: TObject);
 begin
   grpBoxProps.Caption:=ersGrpBoxPropsMin;
-  stTextProps.Caption:=ersStTextPropsMin;
-  stTextProps2.Visible:=false;
+  stTextMinProps.Caption:=ersStTextPropsMin;
+  stTextExtProps.Visible:=false;
 end;
 
 procedure TEduPropsEventsFrame.rdGrpPropsClick(Sender: TObject);
@@ -184,33 +184,33 @@ end;
 procedure TEduPropsEventsFrame.PropsExtRadioBtnClick(Sender: TObject);
 begin
   grpBoxProps.Caption:=ersGrpBoxPropsExt;
-  stTextProps.Caption:=ersStTextPropsMin;
-  stTextProps2.Visible:=true;
+  stTextMinProps.Caption:=ersStTextPropsMin;
+  stTextExtProps.Visible:=true;
 end;
 
 procedure TEduPropsEventsFrame.EventsMinRadioBtnClick(Sender: TObject);
 begin
   grpBoxEvents.Caption:=ersGrpBoxEventsMin;
-  stTextEvents.Caption:=ersStTextEventsMin;
+  stTextMinEvents.Caption:=ersStTextEventsMin;
 end;
 
 procedure TEduPropsEventsFrame.EventsExtRadioBtnClick(Sender: TObject);
 begin
    grpBoxEvents.Caption:=ersGrpBoxEventsExt;
-   stTextEvents.Caption:=ersStTextEventsExt;
+   stTextMinEvents.Caption:=ersStTextEventsExt;
 end;
 
 procedure TEduPropsEventsFrame.EventsFullRadioBtnClick(Sender: TObject);
 begin
   grpBoxEvents.Caption:=ersGrpBoxEventsFull;
-  stTextEvents.Caption:=ersStTextEventsFull;
+  stTextMinEvents.Caption:=ersStTextEventsFull;
 end;
 
 procedure TEduPropsEventsFrame.PropsFullRadioBtnClick(Sender: TObject);
 begin
   grpBoxProps.Caption:=ersGrpBoxPropsFull;
-  stTextProps.Caption:=ersStTextPropsFull;
-    stTextProps2.Visible:=false;
+  stTextMinProps.Caption:=ersStTextPropsFull;
+    stTextExtProps.Visible:=false;
 end;
 
 
@@ -247,37 +247,37 @@ begin
   EventsExtRadioBtn.Caption:= ersShowExtended;
   EventsFullRadioBtn.Caption:= ersRdBtnFull;
 
-  stTextProps2.Caption:=ersStTextPropsExt;
-  stTextProps2.Visible:=false;
+  stTextExtProps.Caption:=ersStTextPropsExt;
+  stTextExtProps.Visible:=false;
 
   if (EduPropsEventsOptions.PropsMinimal)
    then begin
     grpBoxProps.Caption:=ersGrpBoxPropsMin;
-    stTextProps.Caption:=ersStTextPropsMin
+    stTextMinProps.Caption:=ersStTextPropsMin
    end else if (EduPropsEventsOptions.PropsExt)
       then begin
         grpBoxProps.Caption:=ersGrpBoxPropsExt;
-        stTextProps.Caption:=ersStTextPropsMin;
-        stTextProps2.Visible:=true
+        stTextMinProps.Caption:=ersStTextPropsMin;
+        stTextExtProps.Visible:=true
       end
    else begin
      grpBoxProps.Caption:=ersGrpBoxPropsFull;
-     stTextProps.Caption:=ersStTextPropsFull
+     stTextMinProps.Caption:=ersStTextPropsFull
 
    end;
    if (EduPropsEventsOptions.EventsMinimal)
    then begin
     grpBoxEvents.Caption:=ersGrpBoxEventsMin;
-    stTextEvents.Caption:=ersStTextEventsMin
+    stTextMinEvents.Caption:=ersStTextEventsMin
    end
    else if (EduPropsEventsOptions.EventsExt)
       then begin
         grpBoxEvents.Caption:=ersGrpBoxEventsExt;
-        stTextEvents.Caption:=ersStTextEventsExt;
+        stTextMinEvents.Caption:=ersStTextEventsExt;
       end
    else begin
      grpBoxEvents.Caption:=ersGrpBoxEventsFull;
-     stTextEvents.Caption:=ersStTextEventsFull;
+     stTextMinEvents.Caption:=ersStTextEventsFull;
    end;
 end;
 

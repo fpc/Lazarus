@@ -53,7 +53,6 @@ type
     ckBoxRestricted: TCheckBox;
     ckBoxFavs: TCheckBox;
     grpBoxOIPages: TGroupBox;
-    OptsPanel: TPanel;
 
   public
     function GetTitle: String; override;

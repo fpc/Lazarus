@@ -4,45 +4,42 @@ inherited EduOIPagesFrame: TEduOIPagesFrame
   ClientHeight = 393
   ClientWidth = 456
   TabOrder = 0
-  DesignLeft = 792
-  DesignTop = 2
-  object OptsPanel: TPanel[0]
-    Left = 8
-    Height = 152
-    Top = 8
-    Width = 440
-    Align = alCustom
-    ChildSizing.Layout = cclTopToBottomThenLeftToRight
-    ChildSizing.ControlsPerLine = 2
-    ClientHeight = 152
+  DesignLeft = 353
+  DesignTop = 355
+  object grpBoxOIPages: TGroupBox[0]
+    Left = 6
+    Height = 81
+    Top = 6
+    Width = 444
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'grpBoxOIPages'
+    ClientHeight = 62
     ClientWidth = 440
     TabOrder = 0
-    object grpBoxOIPages: TGroupBox
-      Left = 40
-      Height = 96
-      Top = 16
-      Width = 272
-      Align = alCustom
-      Caption = 'grpBoxOIPages'
-      ClientHeight = 78
-      ClientWidth = 268
+    object ckBoxFavs: TCheckBox
+      AnchorSideLeft.Control = grpBoxOIPages
+      AnchorSideTop.Control = grpBoxOIPages
+      Left = 6
+      Height = 22
+      Top = 6
+      Width = 94
+      BorderSpacing.Around = 6
+      Caption = 'ckBoxFavs'
       TabOrder = 0
-      object ckBoxFavs: TCheckBox
-        Left = 22
-        Height = 17
-        Top = 16
-        Width = 71
-        Caption = 'ckBoxFavs'
-        TabOrder = 0
-      end
-      object ckBoxRestricted: TCheckBox
-        Left = 22
-        Height = 17
-        Top = 48
-        Width = 97
-        Caption = 'ckBoxRestricted'
-        TabOrder = 1
-      end
+    end
+    object ckBoxRestricted: TCheckBox
+      AnchorSideLeft.Control = grpBoxOIPages
+      AnchorSideTop.Control = ckBoxFavs
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 34
+      Width = 129
+      BorderSpacing.Around = 6
+      Caption = 'ckBoxRestricted'
+      TabOrder = 1
     end
   end
 end
