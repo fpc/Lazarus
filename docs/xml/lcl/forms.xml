@@ -6801,7 +6801,7 @@ If it is a form it will be added to the application's forms list</descr>
       <!-- procedure Visibility: public -->
       <element name="TApplication.QueueAsyncCall">
         <short>Insert a given asynchronous call into the queue</short>
-        <descr/>
+        <descr>This is thread safe.</descr>
         <errors/>
         <seealso/>
         <example file="forms/tapplication_queueasynccall.pas"/>
@@ -9771,6 +9771,10 @@ Different operation systems has different preferences regards showing images in 
 dmPrimary - place the form on the primary monitor
 dmMainForm - place the form on the same monitor as the main form. If there is no main form then use dmPrimary behavior.
 dmActiveForm - place the form on the same monitor as the current active form. If there is no active form use dmMainForm behavior.</descr>
+      </element>
+      <element name="TApplication.RemoveAsyncCalls">
+        <short>Removes all calls added via QueueAsyncCall</short>
+        <descr>This is thread safe.</descr>
       </element>
     </module>
     <!-- Forms -->
