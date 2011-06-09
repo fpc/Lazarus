@@ -91,8 +91,6 @@ type
 
   TSeriesClass = class of TBasicChartSeries;
 
-  TChartToolEvent = procedure (AChart: TChart; AX, AY: Integer) of object;
-
   { TBasicСhartTool }
 
   TBasicChartTool = class(TIndexedComponent)
@@ -103,7 +101,8 @@ type
     procedure Deactivate; virtual;
   end;
 
-  TChartToolEventId = (evidMouseDown, evidMouseMove, evidMouseUp);
+  TChartToolEventId = (
+    evidKeyDown, evidKeyUp, evidMouseDown, evidMouseMove, evidMouseUp);
 
   { TBasicChartToolset }
 
@@ -240,6 +239,8 @@ type
     procedure Clear(ADrawer: IChartDrawer; const ARect: TRect);
     procedure DisplaySeries(ADrawer: IChartDrawer);
     procedure DrawBackWall(ADrawer: IChartDrawer);
+    procedure KeyDownAfterInterface(var AKey: Word; AShift: TShiftState); override;
+    procedure KeyUpAfterInterface(var AKey: Word; AShift: TShiftState); override;
     procedure MouseDown(
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -980,7 +981,26 @@ begin
     InRange(AP.X, XGraphMin, XGraphMax) and InRange(AP.Y, YGraphMin, YGraphMax);
 end;
 
-procedure TChart.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TChart.KeyDownAfterInterface(var AKey: Word; AShift: TShiftState);
+begin
+  if GetToolset.Dispatch(Self, evidKeyDown, AShift, Mouse.CursorPos) then exit;
+  inherited;
+end;
+
+procedure TChart.KeyUpAfterInterface(var AKey: Word; AShift: TShiftState);
+begin
+  // To find a tool, toolset must see the shift state with the key still down.
+  case AKey of
+    VK_CONTROL: AShift += [ssCtrl];
+    VK_MENU: AShift += [ssAlt];
+    VK_SHIFT: AShift += [ssShift];
+  end;
+  if GetToolset.Dispatch(Self, evidKeyUp, AShift, Mouse.CursorPos) then exit;
+  inherited;
+end;
+
+procedure TChart.MouseDown(
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if
     PtInRect(FClipRect, Point(X, Y)) and

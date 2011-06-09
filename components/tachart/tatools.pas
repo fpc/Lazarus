@@ -30,7 +30,7 @@ type
   TChartToolset = class;
   TChartTool = class;
 
-  TChartToolMouseEvent = procedure (ATool: TChartTool; APoint: TPoint) of object;
+  TChartToolEvent = procedure (ATool: TChartTool; APoint: TPoint) of object;
 
   { TChartTool }
 
@@ -38,15 +38,18 @@ type
   private
     FActiveCursor: TCursor;
     FEnabled: Boolean;
-    FMouseEvents: array [0..5] of TChartToolMouseEvent;
+    FEventsAfter: array [TChartToolEventId] of TChartToolEvent;
+    FEventsBefore: array [TChartToolEventId] of TChartToolEvent;
     FShift: TShiftState;
     FToolset: TChartToolset;
     procedure SetActiveCursor(const AValue: TCursor);
     procedure SetToolset(const AValue: TChartToolset);
   private
     FOldCursor: TCursor;
-    function GetMouseEvent(AIndex: Integer): TChartToolMouseEvent;
-    procedure SetMouseEvent(AIndex: Integer; AValue: TChartToolMouseEvent);
+    function GetAfterEvent(AIndex: Integer): TChartToolEvent;
+    function GetBeforeEvent(AIndex: Integer): TChartToolEvent;
+    procedure SetAfterEvent(AIndex: Integer; AValue: TChartToolEvent);
+    procedure SetBeforeEvent(AIndex: Integer; AValue: TChartToolEvent);
   protected
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
@@ -57,6 +60,8 @@ type
       AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint); overload;
     function GetIndex: Integer; override;
     function IsActive: Boolean;
+    procedure KeyDown(APoint: TPoint); virtual;
+    procedure KeyUp(APoint: TPoint); virtual;
     procedure MouseDown(APoint: TPoint); virtual;
     procedure MouseMove(APoint: TPoint); virtual;
     procedure MouseUp(APoint: TPoint); virtual;
@@ -79,18 +84,27 @@ type
     property Enabled: Boolean read FEnabled write FEnabled default true;
     property Shift: TShiftState read FShift write FShift;
   published
-    property OnAfterMouseDown: TChartToolMouseEvent
-      index 0 read GetMouseEvent write SetMouseEvent;
-    property OnAfterMouseMove: TChartToolMouseEvent
-      index 1 read GetMouseEvent write SetMouseEvent;
-    property OnAfterMouseUp: TChartToolMouseEvent
-      index 2 read GetMouseEvent write SetMouseEvent;
-    property OnBeforeMouseDown: TChartToolMouseEvent
-      index 3 read GetMouseEvent write SetMouseEvent;
-    property OnBeforeMouseMove: TChartToolMouseEvent
-      index 4 read GetMouseEvent write SetMouseEvent;
-    property OnBeforeMouseUp: TChartToolMouseEvent
-      index 5 read GetMouseEvent write SetMouseEvent;
+    property OnAfterKeyDown: TChartToolEvent
+      index 0 read GetAfterEvent write SetAfterEvent;
+    property OnAfterKeyUp: TChartToolEvent
+      index 1 read GetAfterEvent write SetAfterEvent;
+    property OnAfterMouseDown: TChartToolEvent
+      index 2 read GetAfterEvent write SetAfterEvent;
+    property OnAfterMouseMove: TChartToolEvent
+      index 3 read GetAfterEvent write SetAfterEvent;
+    property OnAfterMouseUp: TChartToolEvent
+      index 4 read GetAfterEvent write SetAfterEvent;
+
+    property OnBeforeKeyDown: TChartToolEvent
+      index 0 read GetBeforeEvent write SetBeforeEvent;
+    property OnBeforeKeyUp: TChartToolEvent
+      index 1 read GetBeforeEvent write SetBeforeEvent;
+    property OnBeforeMouseDown: TChartToolEvent
+      index 2 read GetBeforeEvent write SetBeforeEvent;
+    property OnBeforeMouseMove: TChartToolEvent
+      index 3 read GetBeforeEvent write SetBeforeEvent;
+    property OnBeforeMouseUp: TChartToolEvent
+      index 4 read GetBeforeEvent write SetBeforeEvent;
   end;
 
   TChartToolClass = class of TChartTool;
@@ -298,13 +312,13 @@ type
   TDataPointClickTool = class(TDataPointTool)
   private
     FMouseDownPoint: TPoint;
-    FOnPointClick: TChartToolMouseEvent;
+    FOnPointClick: TChartToolEvent;
   public
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
   published
     property ActiveCursor;
-    property OnPointClick: TChartToolMouseEvent
+    property OnPointClick: TChartToolEvent
       read FOnPointClick write FOnPointClick;
   end;
 
@@ -524,23 +538,35 @@ end;
 procedure TChartTool.Dispatch(
   AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint);
 var
-  ev: TChartToolMouseEvent;
+  ev: TChartToolEvent;
 begin
   if not Enabled or (FChart <> nil) and (FChart <> AChart) then exit;
   FChart := AChart;
-  ev := FMouseEvents[Ord(AEventId) + Ord(High(AEventId)) + 1];
+  ev := FEventsBefore[AEventId];
   if Assigned(ev) then begin
     ev(Self, APoint);
     if Toolset.FIsHandled then exit;
   end;
   case AEventId of
+    evidKeyDown  : KeyDown  (APoint);
+    evidKeyUp    : KeyUp    (APoint);
     evidMouseDown: MouseDown(APoint);
     evidMouseMove: MouseMove(APoint);
     evidMouseUp  : MouseUp  (APoint);
   end;
-  ev := FMouseEvents[Ord(AEventId)];
+  ev := FEventsAfter[AEventId];
   if Assigned(ev) then
     ev(Self, APoint);
+end;
+
+function TChartTool.GetAfterEvent(AIndex: Integer): TChartToolEvent;
+begin
+  Result := FEventsAfter[TChartToolEventId(AIndex)];
+end;
+
+function TChartTool.GetBeforeEvent(AIndex: Integer): TChartToolEvent;
+begin
+  Result := FEventsBefore[TChartToolEventId(AIndex)];
 end;
 
 function TChartTool.GetIndex: Integer;
@@ -549,11 +575,6 @@ begin
     Result := -1
   else
     Result := Toolset.Tools.IndexOf(Self);
-end;
-
-function TChartTool.GetMouseEvent(AIndex: Integer): TChartToolMouseEvent;
-begin
-  Result := FMouseEvents[AIndex];
 end;
 
 function TChartTool.GetParentComponent: TComponent;
@@ -574,6 +595,16 @@ end;
 function TChartTool.IsActive: Boolean;
 begin
   Result := (FChart <> nil) and (FChart.ActiveToolIndex = Index);
+end;
+
+procedure TChartTool.KeyDown(APoint: TPoint);
+begin
+  Unused(APoint);
+end;
+
+procedure TChartTool.KeyUp(APoint: TPoint);
+begin
+  Unused(APoint);
 end;
 
 procedure TChartTool.MouseDown(APoint: TPoint);
@@ -614,6 +645,16 @@ begin
     SetCursor;
 end;
 
+procedure TChartTool.SetAfterEvent(AIndex: Integer; AValue: TChartToolEvent);
+begin
+  FEventsAfter[TChartToolEventId(AIndex)] := AValue;
+end;
+
+procedure TChartTool.SetBeforeEvent(AIndex: Integer; AValue: TChartToolEvent);
+begin
+  FEventsBefore[TChartToolEventId(AIndex)] := AValue;
+end;
+
 procedure TChartTool.SetCursor;
 begin
   if ActiveCursor = crDefault then exit;
@@ -624,12 +665,6 @@ end;
 procedure TChartTool.SetIndex(AValue: Integer);
 begin
   Toolset.Tools.Move(Index, EnsureRange(AValue, 0, Toolset.Tools.Count - 1));
-end;
-
-procedure TChartTool.SetMouseEvent(
-  AIndex: Integer; AValue: TChartToolMouseEvent);
-begin
-  FMouseEvents[AIndex] := AValue;
 end;
 
 procedure TChartTool.SetParentComponent(AParent: TComponent);
