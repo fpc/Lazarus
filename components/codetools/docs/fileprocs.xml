@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="CodeTools">
+    <module name="FileProcs">
+      <element name="NeedRTLAnsi">
+        <short>Returns true if system encoding is not UTF-8</short>
+        <descr>This is thread safe.</descr>
+      </element>
+      <element name="UTF8ToSys">
+        <short>Converts an AnsiString in UTF8 into an AnsiString of the system encoding.</short>
+        <descr>If the system encoding is UTF-8 this function does not change the string. Otherwise the widestring manager is used. This is thread safe.</descr>
+      </element>
+      <element name="SysToUTF8">
+        <short>Converts an AnsiString in system encoding into an AnsiString in UTF-8.</short>
+        <descr>If the system encoding is UTF-8 this function does not change the string. Otherwise the widestring manager is used. This is thread safe.</descr>
+      </element>
+      <element name="UTF8CharacterLength">
+        <short>Returns the number of bytes for the code point at p.</short>
+        <descr>It returns 0 for nil, otherwise 1..4. Especially it returns 1 for the #0 character. This is thread safe.</descr>
+      </element>
+      <element name="FileExistsUTF8">
+        <short>Returns true if the file name exists on the file system.</short>
+        <descr>It does not support globbing and mask characters like * or ? or shell specials like the ~ directory. If you do not have permission to access the directory of the file the function returns false. This is thread safe.</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
