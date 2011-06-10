@@ -10470,6 +10470,12 @@ begin
         debugln('TMainIDE.DoNewProject ProjectDesc.CreateStartFiles failed');
       end;
 
+      if (Project1.FirstUnitWithEditorIndex=nil)
+      and (Project1.MainUnitInfo<>nil) then begin
+        // the project has not created any secondary files => open the main unit
+        DoOpenMainUnit(-1,-1,[]);
+      end;
+
       // init resource files
       if not Project1.Resources.Regenerate(Project1.MainFilename, True, False,'') then
         DebugLn('TMainIDE.DoNewProject Project1.Resources.Regenerate failed');
