@@ -1290,7 +1290,9 @@ begin
   {$endif}
 
   if CreateHandle then
-    Widget := QFont_create;
+    Widget := QFont_create
+  else
+    Widget := nil;
   
   FShared := False;
   FMetrics := nil;
@@ -1552,7 +1554,9 @@ begin
   {$endif}
 
   if CreateHandle then
-    Widget := QBrush_create;
+    Widget := QBrush_create
+  else
+    Widget := nil;
   
   FShared := False;
   FSelected := False;
@@ -1629,7 +1633,9 @@ begin
   {$endif}
   
   if CreateHandle then
-    Widget := QPen_create;
+    Widget := QPen_create
+  else
+    Widget := nil;
   FShared := False;
   FIsExtPen := False;
 end;
@@ -1770,7 +1776,10 @@ begin
   {$endif}
   FPolygon := nil;
   // Creates the widget
-  if CreateHandle then Widget := QRegion_create();
+  if CreateHandle then
+    Widget := QRegion_create()
+  else
+    Widget := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -1991,15 +2000,21 @@ begin
     dispose(vClipRect);
 
   if FMetrics <> nil then
-    FMetrics.Free;
+    FreeThenNil(FMetrics);
 
   DestroyObjects;
 
   if (Widget <> nil) and FOwnPainter then
+  begin
     QPainter_destroy(Widget);
+    Widget := nil;
+  end;
 
   if ParentPixmap <> nil then
+  begin
     QPixmap_destroy(ParentPixmap);
+    ParentPixmap := nil;
+  end;
 
   inherited Destroy;
 end;
@@ -2039,7 +2054,11 @@ begin
   FreeAndNil(vBrush);
   vPen.Widget := nil;
   FreeAndNil(vPen);
-  vRegion.Widget := nil;
+  if vRegion.Widget <> nil then
+  begin
+    QRegion_destroy(vRegion.Widget);
+    vRegion.Widget := nil;
+  end;
   FreeAndNil(vRegion);
   vBackgroundBrush.Widget := nil;
   FreeAndNil(vBackgroundBrush);
