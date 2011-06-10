@@ -182,7 +182,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(ASource: TPersistent); override;
     procedure Draw(
       ADrawer: IChartDrawer; const AClipRect: TRect;
       const ATransf: ICoordTransformer; const AZOffset: TPoint);
@@ -423,16 +423,25 @@ end;
 
 { TChartAxis }
 
-procedure TChartAxis.Assign(Source: TPersistent);
+procedure TChartAxis.Assign(ASource: TPersistent);
 begin
-  if Source is TChartAxis then
-    with TChartAxis(Source) do begin
-      FGrid.Assign(Grid);
-      FInverted := Inverted;
-      FTitle.Assign(Title);
+  if ASource is TChartAxis then
+    with TChartAxis(ASource) do begin
+      Self.FGrid.Assign(Grid);
+      Self.FGroup := Group;
+      Self.FInverted := Inverted;
+      Self.FMarks.Assign(Marks);
+      Self.FTickColor := TickColor;
+      Self.FTickLength := TickLength;
+      Self.FTitle.Assign(Title);
+      Self.FTransformations := Transformations;
+      Self.FZPosition := ZPosition;
+      Self.FVisible := Visible;
+
+      Self.FOnMarkToText := OnMarkToText;
     end
   else
-    inherited Assign(Source);
+    inherited Assign(ASource);
 end;
 
 constructor TChartAxis.Create(ACollection: TCollection);
