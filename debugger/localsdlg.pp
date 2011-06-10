@@ -36,7 +36,7 @@ unit LocalsDlg;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ClipBrd,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ClipBrd, LCLProc,
   ComCtrls, ActnList, Menus, BaseDebugManager, Debugger, DebuggerDlg;
 
 type
@@ -65,7 +65,7 @@ type
     procedure actInspectUpdate(Sender: TObject);
     procedure actWathExecute(Sender: TObject);
   private
-    procedure ContextChanged(Sender: TObject);
+    FUpdateFlags: set of (ufNeedUpdating);
     procedure LocalsChanged(Sender: TObject);
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TThreads;
@@ -97,7 +97,7 @@ begin
   inherited Create(AOwner);
   LocalsNotification.OnChange     := @LocalsChanged;
   ThreadsNotification.OnCurrent   := @LocalsChanged;
-  CallstackNotification.OnCurrent := @ContextChanged;
+  CallstackNotification.OnCurrent := @LocalsChanged;
   SnapshotNotification.OnCurrent  := @LocalsChanged;
 
   Caption:= lisLocals;
@@ -153,11 +153,6 @@ begin
   Clipboard.Close;
 end;
 
-procedure TLocalsDlg.ContextChanged(Sender: TObject);
-begin
-  LocalsChanged(nil);
-end;
-
 procedure TLocalsDlg.LocalsChanged(Sender: TObject);
 var
   n, idx: Integer;                               
@@ -171,6 +166,15 @@ begin
     lvLocals.Items.Clear;
     exit;
   end;
+
+  if IsUpdating then begin
+    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TLocalsDlg.LocalsChanged  in IsUpdating']); {$ENDIF}
+    Include(FUpdateFlags, ufNeedUpdating);
+    exit;
+  end;
+  Exclude(FUpdateFlags, ufNeedUpdating);
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TLocalsDlg.LocalsChanged']); {$ENDIF}
+
   if GetStackframe < 0 then begin // TODO need dedicated validity property
     lvLocals.Items.Clear;
     exit;
@@ -302,6 +306,7 @@ end;
 
 procedure TLocalsDlg.DoEndUpdate;
 begin
+  if ufNeedUpdating in FUpdateFlags then LocalsChanged(nil);
   lvLocals.EndUpdate;
 end;
 

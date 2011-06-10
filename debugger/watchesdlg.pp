@@ -370,7 +370,7 @@ end;
 
 procedure TWatchesDlg.ContextChanged(Sender: TObject);
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TWatchesDlg.ContextChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TWatchesDlg.ContextChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
   UpdateAll;
 end;
 
@@ -440,7 +440,7 @@ procedure TWatchesDlg.SnapshotChanged(Sender: TObject);
 var
   NewWatches: TWatches;
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TWatchesDlg.SnapshotChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TWatchesDlg.SnapshotChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
   lvWatches.BeginUpdate;
   try
     NewWatches := Watches;
@@ -620,17 +620,18 @@ var
   i, l: Integer;
   Snap: TSnapshot;
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['UpdateAll: TWatchesDlg.UpdateAll Upd:', IsUpdating]); {$ENDIF}
+  if Watches = nil then exit;
+  if IsUpdating then begin
+    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TWatchesDlg.UpdateAll: TWatchesDlg.UpdateAll  in IsUpdating:']); {$ENDIF}
+    FUpdateAllNeeded := True;
+    exit;
+  end;
+  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataWindow: TWatchesDlg.UpdateAll: >>ENTER: TWatchesDlg.UpdateAll ']); {$ENDIF}
+
   Snap := GetSelectedSnapshot;
   if Snap <> nil
   then Caption:= liswlWatchList + ' (' + Snap.LocationAsText + ')'
   else Caption:= liswlWatchList;
-
-  if Watches = nil then exit;
-  if UpdateCount > 0 then begin
-    FUpdateAllNeeded := True;
-    exit;
-  end;
 
   FUpdatingAll := True;
   lvWatches.BeginUpdate;
@@ -650,6 +651,7 @@ begin
     lvWatches.EndUpdate;
     lvWatchesSelectItem(nil, nil, False);
   end;
+  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataWindow: TWatchesDlg.UpdateAll: <<EXIT: TWatchesDlg.UpdateAll ']); end; {$ENDIF}
 end;
 
 procedure TWatchesDlg.DisableAllActions;
@@ -692,9 +694,9 @@ procedure TWatchesDlg.WatchUpdate(const ASender: TWatches; const AWatch: TWatch)
 var
   Item: TListItem;
 begin
-  if AWatch = nil then Exit;
+  if AWatch = nil then Exit; // TODO: update all
   if AWatch.Collection <> FWatchesInView then exit;
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TWatchesDlg.WatchUpdate  Upd:', IsUpdating, '  Watch=',AWatch.Expression]); {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataWindow: TWatchesDlg.WatchUpdate  Upd:', IsUpdating, '  Watch=',AWatch.Expression]); {$ENDIF}
 
   Item := lvWatches.Items.FindData(AWatch);
   if Item = nil
@@ -703,6 +705,7 @@ begin
 
   if not FUpdatingAll
   then lvWatchesSelectItem(nil, nil, False);
+  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataWindow: TWatchesDlg.WatchUpdate']); end; {$ENDIF}
 end;
 
 procedure TWatchesDlg.WatchRemove(const ASender: TWatches; const AWatch: TWatch);

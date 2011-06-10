@@ -2584,6 +2584,7 @@ function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
 
 function dbgs(AState: TDBGState): String; overload;
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
+function dbgs(ADataState: TDebuggerDataState): String; overload;
 
 function HasConsoleSupport: Boolean;
 (******************************************************************************)
@@ -2617,6 +2618,11 @@ var
 function dbgs(AState: TDBGState): String; overload;
 begin
   Result := DBGStateNames[AState];
+end;
+
+function dbgs(ADataState: TDebuggerDataState): String;
+begin
+  writestr(Result, ADataState);
 end;
 
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
@@ -2980,6 +2986,7 @@ procedure TSnapshotManager.DoStateChange(const AOldState: TDBGState);
 begin
   if FDebugger = nil then exit;
   FCurrentState := Debugger.State;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TSnapshotManager.DoStateChange  New-State=', DBGStateNames[FCurrentState]]); {$ENDIF}
 
   BeginUpdate;
   try
@@ -3003,6 +3010,7 @@ begin
   finally
     EndUpdate;
   end;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TSnapshotManager.DoStateChange']); {$ENDIF}
 end;
 
 procedure TSnapshotManager.DoDebuggerIdle(AForce: Boolean = False);
@@ -3327,6 +3335,7 @@ end;
 procedure TLocalsSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) or (CurrentLocalsList = nil) then Exit;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TLocalsSupplier.DoStateChange  New-State=', DBGStateNames[Debugger.State ]]); {$ENDIF}
 
   if FDebugger.State in [dsPause, dsInternalPause]
   then begin
@@ -3342,6 +3351,7 @@ begin
       then Monitor.Clear;
     end;
   end;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TLocalsSupplier.DoStateChange']); {$ENDIF}
 end;
 
 { TLocalsMonitor }
@@ -3507,6 +3517,7 @@ function TCurrentWatchValueList.CreateEntry(const AThreadId: Integer;
 var
   R: TWatchValue;
 begin
+  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataMonitor: >>ENTER: TCurrentWatchValueList.CreateEntry  AThreadId=', AThreadId, '  AStackFrame=',AStackFrame, ' Expr=', FWatch.Expression]); {$ENDIF}
   Result := TCurrentWatchValue.Create(FWatch, AThreadId, AStackFrame, ADisplayFormat);
   Add(Result);
   if FSnapShot <> nil then begin
@@ -3514,6 +3525,7 @@ begin
     FSnapShot.Add(R);
     TCurrentWatchValue(Result).SnapShot := R;
   end;
+  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TCurrentWatchValueList.CreateEntry']); end; {$ENDIF}
 end;
 
 { TWatchValueList }
@@ -3643,6 +3655,7 @@ end;
 procedure TWatchValue.SetValidity(const AValue: TDebuggerDataState);
 begin
   if FValidity = AValue then exit;
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TWatchValue.SetValidity: FThreadId=', FThreadId, '  FStackFrame=',FStackFrame, ' Expr=', FWatch.Expression, ' AValidity=',dbgs(AValue)]); {$ENDIF}
   FValidity := AValue;
   ValidityChanged;
 end;
@@ -3733,6 +3746,7 @@ procedure TWatchesSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) or (CurrentWatches = nil) then Exit;
   FNotifiedState := Debugger.State;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TWatchesSupplier.DoStateChange  New-State=', DBGStateNames[FNotifiedState]]); {$ENDIF}
 
   if FDebugger.State  in [dsPause, dsInternalPause]
   then begin
@@ -3744,10 +3758,11 @@ begin
 
     if (AOldState  in [dsPause, dsInternalPause]) or (AOldState = dsNone) { Force clear on initialisation }
     then begin
-      CurrentWatches.ClearValues;
+      CurrentWatches.ClearValues;  // TODO: block the update calls, update will be done for all on next line
       Monitor.NotifyUpdate(CurrentWatches, nil);
     end;
   end;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TWatchesSupplier.DoStateChange']); {$ENDIF}
 end;
 
 constructor TWatchesSupplier.Create(const ADebugger: TDebugger);
@@ -4080,6 +4095,7 @@ end;
 procedure TCurrentCallStack.SetCountValidity(AValidity: TDebuggerDataState);
 begin
   if FCountValidity = AValidity then exit;
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCurrentCallStack.SetCountValidity: FThreadId=', FThreadId, ' AValidity=',dbgs(AValidity)]); {$ENDIF}
   FCountValidity := AValidity;
   FMonitor.NotifyChange;
 end;
@@ -4087,6 +4103,7 @@ end;
 procedure TCurrentCallStack.SetCurrentValidity(AValidity: TDebuggerDataState);
 begin
   if FCurrentValidity = AValidity then exit;
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCurrentCallStack.SetCurrentValidity: FThreadId=', FThreadId, ' AValidity=',dbgs(AValidity)]); {$ENDIF}
   FCurrentValidity := AValidity;
   FMonitor.NotifyCurrent;
 end;
@@ -4130,6 +4147,7 @@ var
 begin
   Result := inherited GetEntryForThread(AThreadId);
   if Result = nil then begin
+    {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataMonitor: >>ENTER: TCurrentCallStackList.GetEntryForThread: ThreadId=', AThreadId]); {$ENDIF}
     Result := TCurrentCallStack.Create(FMonitor);
     Result.ThreadId := AThreadId;
     Add(Result);
@@ -4139,6 +4157,7 @@ begin
       FSnapShot.Add(R);
       TCurrentCallStack(Result).SnapShot := R;
     end;
+    {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TCurrentCallStackList.GetEntryForThread' ]) end; {$ENDIF}
   end;
 end;
 
@@ -4251,6 +4270,7 @@ end;
 procedure TCurrentThreads.SetValidity(AValidity: TDebuggerDataState);
 begin
   if FDataValidity = AValidity then exit;
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCurrentThreads.SetValidity ', dbgs(AValidity)]); {$ENDIF}
 
   // Assign snapshot, if old data wasn't final
   if (FDataValidity in [ddsUnknown, ddsEvaluating, ddsRequested]) and (FSnapShot <> nil)
@@ -4265,6 +4285,7 @@ end;
 procedure TCurrentThreads.SetCurrentThreadId(const AValue: Integer);
 begin
   if FCurrentThreadId = AValue then exit;
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCurrentThreads.SetCurrentThreadId ', AValue]); {$ENDIF}
   inherited SetCurrentThreadId(AValue);
   FMonitor.CurrentChanged; // TODO ChangedSelection
 end;
@@ -4338,6 +4359,7 @@ end;
 procedure TThreadsSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) or (CurrentThreads = nil) then Exit;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TThreadsSupplier.DoStateChange  New-State=', DBGStateNames[Debugger.State ]]); {$ENDIF}
 
   if Debugger.State in [dsPause, dsInternalPause]
   then begin
@@ -4352,6 +4374,7 @@ begin
       then Monitor.Clear;
     end;
   end;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TThreadsSupplier.DoStateChange']); {$ENDIF}
 end;
 
 { TThreadsMonitor }
@@ -4397,7 +4420,7 @@ end;
 
 procedure TThreadsMonitor.CurrentChanged;
 begin
-  FNotificationList.NotifyChange(Self);
+  FNotificationList.NotifyChange(Self); // TODO: is this required?? It should not
   FNotificationList.NotifyCurrent(Self);
 end;
 
@@ -4418,6 +4441,7 @@ end;
 
 procedure TThreadsMonitor.Clear;
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TThreadsMonitor.Clear']); {$ENDIF}
   FCurrentThreads.Clear;
   Changed;
 end;
@@ -7683,6 +7707,7 @@ end;
 
 procedure TCallStackMonitor.UpdateCurrentIndex;
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackMonitor.UpdateCurrentIndex']); {$ENDIF}
   if Supplier <> nil then Supplier.UpdateCurrentIndex;
   NotifyCurrent;
 end;
@@ -7695,6 +7720,7 @@ end;
 
 procedure TCallStackMonitor.CallStackClear(Sender: TObject);
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackMonitor.CallStackClear']); {$ENDIF}
   // Don't clear, set it to 0 so there are no entries shown
   //SetCount(0);
   NotifyChange;
@@ -7738,6 +7764,7 @@ end;
 
 procedure TCallStackSupplier.Changed;
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackSupplier.Changed']); {$ENDIF}
   Monitor.NotifyChange;
 end;
 
@@ -7773,6 +7800,7 @@ var
   e: TCallStackEntry;
   It: TMapIterator;
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackSupplier.RequestEntries']); {$ENDIF}
   It := TMapIterator.Create(ACallstack.FEntries);
 
   if not It.Locate(ACallstack.LowestUnknown )
@@ -7793,6 +7821,7 @@ end;
 
 procedure TCallStackSupplier.CurrentChanged;
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackSupplier.CurrentChanged']); {$ENDIF}
   if Monitor <> nil
   then Monitor.NotifyCurrent;
 end;
@@ -7800,6 +7829,7 @@ end;
 procedure TCallStackSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) or (CurrentCallStackList = nil) then Exit;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TCallStackSupplier.DoStateChange  New-State=', DBGStateNames[Debugger.State ]]); {$ENDIF}
 
   if FDebugger.State in [dsPause, dsInternalPause]
   then begin
@@ -7815,6 +7845,7 @@ begin
       Monitor.CallStackClear(Self);
     end;
   end;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TCallStackSupplier.DoStateChange']); {$ENDIF}
 end;
 
 procedure TCallStackSupplier.UpdateCurrentIndex;

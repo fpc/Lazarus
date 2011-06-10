@@ -174,7 +174,7 @@ end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.CallStackChanged from ',  DbgSName(Sender), ' Upd:', IsUpdating]); {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TCallStackDlg.CallStackChanged from ',  DbgSName(Sender), ' Upd:', IsUpdating]); {$ENDIF}
   if not ToolButtonPower.Down then exit;
   if FViewStart = 0
   then UpdateView
@@ -184,7 +184,7 @@ end;
 
 procedure TCallStackDlg.CallStackCurrent(Sender: TObject);
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.CallStackCurrent from ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TCallStackDlg.CallStackCurrent from ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
   if not ToolButtonPower.Down then exit;
   UpdateView;
 end;
@@ -239,7 +239,7 @@ begin
     Include(FUpdateFlags, ufNeedUpdating);
     exit;
   end;
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.UpdateView']); {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataMonitor: >>ENTER: TCallStackDlg.UpdateView']); {$ENDIF}
   Exclude(FUpdateFlags, ufNeedUpdating);
 
 
@@ -332,6 +332,7 @@ begin
     lvCallStack.EndUpdate;
     EndUpdate;
   end;
+  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TCallStackDlg.UpdateView']); end; {$ENDIF}
 end;
 
 procedure TCallStackDlg.DoBeginUpdate;

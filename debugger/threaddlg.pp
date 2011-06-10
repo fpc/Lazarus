@@ -50,12 +50,12 @@ var
   Snap: TSnapshot;
 begin
   if IsUpdating then begin
-    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender), ' in IsUpdating']); {$ENDIF}
+    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender), ' in IsUpdating']); {$ENDIF}
 
     Include(FUpdateFlags, ufThreadChanged);
     exit;
   end;
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender)]); {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataMonitor: >>ENTER: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender)]); {$ENDIF}
   Exclude(FUpdateFlags, ufThreadChanged);
 
   if ThreadsMonitor = nil then begin
@@ -112,6 +112,7 @@ begin
     lvThreads.Items[i].SubItems[5] := Threads[i].GetFunctionWithArg;
     lvThreads.Items[i].Data := Threads[i];
   end;
+  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TThreadsDlg.ThreadsChanged']); end; {$ENDIF}
 end;
 
 procedure TThreadsDlg.tbCurrentClick(Sender: TObject);
