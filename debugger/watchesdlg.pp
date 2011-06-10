@@ -44,7 +44,11 @@ uses
 
 type
 
-  TWatchesDlgStateFlags = set of (wdsfUpdating, wdsfNeedDeleteAll, wdsfNeedDeleteCurrent);
+  TWatchesDlgStateFlags = set of (
+    wdsfUpdating,
+    wdsfNeedDeleteAll,
+    wdsfNeedDeleteCurrent
+  );
 
   { TWatchesDlg }
 
@@ -366,6 +370,7 @@ end;
 
 procedure TWatchesDlg.ContextChanged(Sender: TObject);
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TWatchesDlg.ContextChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
   UpdateAll;
 end;
 
@@ -435,6 +440,7 @@ procedure TWatchesDlg.SnapshotChanged(Sender: TObject);
 var
   NewWatches: TWatches;
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TWatchesDlg.SnapshotChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
   lvWatches.BeginUpdate;
   try
     NewWatches := Watches;
@@ -614,6 +620,7 @@ var
   i, l: Integer;
   Snap: TSnapshot;
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['UpdateAll: TWatchesDlg.UpdateAll Upd:', IsUpdating]); {$ENDIF}
   Snap := GetSelectedSnapshot;
   if Snap <> nil
   then Caption:= liswlWatchList + ' (' + Snap.LocationAsText + ')'
@@ -687,6 +694,7 @@ var
 begin
   if AWatch = nil then Exit;
   if AWatch.Collection <> FWatchesInView then exit;
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TWatchesDlg.WatchUpdate  Upd:', IsUpdating, '  Watch=',AWatch.Expression]); {$ENDIF}
 
   Item := lvWatches.Items.FindData(AWatch);
   if Item = nil

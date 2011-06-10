@@ -103,13 +103,11 @@ type
     FViewStart: Integer;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FInUpdateView: Boolean;
+    FUpdateFlags: set of (ufNeedUpdating);
     function GetImageIndex(Entry: TCallStackEntry): Integer;
     procedure SetViewLimit(const AValue: Integer);
     procedure SetViewStart(AStart: Integer);
     procedure SetViewMax;
-    procedure BreakPointChanged(const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
-    procedure CallStackChanged(Sender: TObject);
-    procedure CallStackCurrent(Sender: TObject);
     procedure GotoIndex(AIndex: Integer);
     function  GetCurrentEntry: TCallStackEntry;
     function  GetFunction(const Entry: TCallStackEntry): string;
@@ -118,7 +116,6 @@ type
     procedure CopyToClipBoard;
     procedure ToggleBreakpoint(Item: TListItem);
   protected
-    procedure DoBreakPointsChanged; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
     procedure DisableAllActions;
@@ -126,6 +123,10 @@ type
     function  GetSelectedSnapshot: TSnapshot;
     function  GetSelectedThreads(Snap: TSnapshot): TThreads;
     function  GetSelectedCallstack: TCallStack;
+    procedure DoBreakPointsChanged; override;
+    procedure BreakPointChanged(const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
+    procedure CallStackChanged(Sender: TObject);
+    procedure CallStackCurrent(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     property BreakPoints;
@@ -173,6 +174,7 @@ end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.CallStackChanged from ',  DbgSName(Sender), ' Upd:', IsUpdating]); {$ENDIF}
   if not ToolButtonPower.Down then exit;
   if FViewStart = 0
   then UpdateView
@@ -182,6 +184,7 @@ end;
 
 procedure TCallStackDlg.CallStackCurrent(Sender: TObject);
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.CallStackCurrent from ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
   if not ToolButtonPower.Down then exit;
   UpdateView;
 end;
@@ -231,6 +234,15 @@ var
   CStack: TCallStack;
 begin
   if (not ToolButtonPower.Down) or FInUpdateView then exit;
+  if IsUpdating then begin
+    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.UpdateView in IsUpdating']); {$ENDIF}
+    Include(FUpdateFlags, ufNeedUpdating);
+    exit;
+  end;
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.UpdateView']); {$ENDIF}
+  Exclude(FUpdateFlags, ufNeedUpdating);
+
+
   BeginUpdate;
   lvCallStack.BeginUpdate;
   try
@@ -241,6 +253,7 @@ begin
 
     FInUpdateView := True; // ignore change triggered by count, if there is a change event, then Count will be updated already
     CStack := GetSelectedCallstack;
+    if CStack <> nil then CStack.Count; // trigger the update-notification, if executed immediately
     FInUpdateView := False;
 
     if (CStack = nil) or ((Snap <> nil) and (CStack.Count = 0)) then begin
@@ -329,6 +342,7 @@ end;
 
 procedure TCallStackDlg.DoEndUpdate;
 begin
+  if ufNeedUpdating in FUpdateFlags then UpdateView;
   lvCallStack.EndUpdate;
   EnableAllActions;
 end;
@@ -613,6 +627,7 @@ var
   Entry: TCallStackEntry;
   Stack: TCallStack;
 begin
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.BreakPointChanged ',  DbgSName(ASender), '  Upd:', IsUpdating]); {$ENDIF}
   Stack := GetSelectedCallstack;
   if (BreakPoints = nil) or (Stack = nil) then
     Exit;

@@ -56,6 +56,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function UpdateCount: integer;
+    function IsUpdating: Boolean;
   private (* provide some common properties *)
     FSnapshotManager: TSnapshotManager;
     FSnapshotNotification: TSnapshotNotification;
@@ -126,6 +127,11 @@ end;
 function TDebuggerDlg.UpdateCount: integer;
 begin
   Result := FUpdateCount;
+end;
+
+function TDebuggerDlg.IsUpdating: Boolean;
+begin
+  Result := FUpdateCount > 0;
 end;
 
 function TDebuggerDlg.GetSnapshotNotification: TSnapshotNotification;

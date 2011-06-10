@@ -5,7 +5,7 @@ unit ThreadDlg;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, LazarusIDEStrConsts,
+  Classes, SysUtils, ComCtrls, LCLProc, Debugger, DebuggerDlg, LazarusIDEStrConsts,
   BaseDebugManager, MainBase, IDEImagesIntf;
 
 type
@@ -19,12 +19,15 @@ type
     tbGoto: TToolButton;
     procedure lvThreadsDblClick(Sender: TObject);
     procedure tbCurrentClick(Sender: TObject);
-    procedure ThreadsChanged(Sender: TObject);
   private
     imgCurrentLine: Integer;
+    FUpdateFlags: set of (ufThreadChanged);
     procedure JumpToSource;
     function  GetSelectedSnapshot: TSnapshot;
     function GetSelectedThreads(Snap: TSnapshot): TThreads;
+  protected
+    procedure DoEndUpdate; override;
+    procedure ThreadsChanged(Sender: TObject);
   public
     { public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -46,6 +49,15 @@ var
   Threads: TThreads;
   Snap: TSnapshot;
 begin
+  if IsUpdating then begin
+    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender), ' in IsUpdating']); {$ENDIF}
+
+    Include(FUpdateFlags, ufThreadChanged);
+    exit;
+  end;
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender)]); {$ENDIF}
+  Exclude(FUpdateFlags, ufThreadChanged);
+
   if ThreadsMonitor = nil then begin
     lvThreads.Clear;
     exit;
@@ -169,6 +181,11 @@ begin
   else Result := ThreadsMonitor.Snapshots[Snap];
 end;
 
+procedure TThreadsDlg.DoEndUpdate;
+begin
+  if ufThreadChanged in FUpdateFlags then ThreadsChanged(nil);
+end;
+
 constructor TThreadsDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -183,7 +200,7 @@ begin
   tbGoto.Caption := lisThreadsGoto;
 
   SnapshotNotification.OnCurrent := @ThreadsChanged;
-  ThreadsNotification.OnChange   := @ThreadsChanged;;
+  ThreadsNotification.OnChange   := @ThreadsChanged;
 
   imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
   lvThreads.SmallImages := IDEImages.Images_16;
