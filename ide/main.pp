@@ -10470,9 +10470,12 @@ begin
         debugln('TMainIDE.DoNewProject ProjectDesc.CreateStartFiles failed');
       end;
 
-      if (Project1.FirstUnitWithEditorIndex=nil)
-      and (Project1.MainUnitInfo<>nil) then begin
-        // the project has not created any secondary files => open the main unit
+      if (Project1.MainUnitInfo<>nil)
+      and ((Project1.FirstUnitWithEditorIndex=nil)
+       or ([pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]*Project1.Flags=[]))
+      then begin
+        // the project has not created any secondary files
+        // or the project main source is not auto updated by the IDE
         DoOpenMainUnit(-1,-1,[]);
       end;
 
