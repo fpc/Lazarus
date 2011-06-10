@@ -142,7 +142,7 @@ type
     procedure SetTickLength(AValue: Integer);
     procedure SetVisible(AValue: Boolean);
   protected
-    procedure StyleChanged(ASender: TObject);
+    procedure StyleChanged(ASender: TObject); virtual; abstract;
   public
     constructor Create(ACollection: TCollection); override;
   public
@@ -153,10 +153,41 @@ type
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
 
+  { TChartMinorAxis }
+
+  TChartMinorAxis = class(TChartBasicAxis)
+  protected
+    function GetDisplayName: String; override;
+    procedure StyleChanged(ASender: TObject); override;
+  public
+    constructor Create(ACollection: TCollection); override;
+  published
+    property TickLength default DEF_TICK_LENGTH div 2;
+  end;
+
+  TChartAxis = class;
+
+  { TChartMinorAxisList }
+
+  TChartMinorAxisList = class(TCollection)
+  strict private
+    FAxis: TChartAxis;
+    function GetAxes(AIndex: Integer): TChartMinorAxis;
+  protected
+    function GetOwner: TPersistent; override;
+    procedure Update(AItem: TCollectionItem); override;
+  public
+    constructor Create(AOwner: TChartAxis);
+    destructor Destroy; override;
+  public
+    function Add: TChartMinorAxis; inline;
+    property Axes[AIndex: Integer]: TChartMinorAxis read GetAxes; default;
+  end;
+
   { TChartAxis }
 
   TChartAxis = class(TChartBasicAxis)
-  private
+  strict private
     FListener: TListener;
     FMarkTexts: TStringDynArray;
     FMarkValues: TDoubleDynArray;
@@ -173,6 +204,7 @@ type
     FGroup: Integer;
     FInverted: Boolean;
     FMarks: TChartAxisMarks;
+    FMinors: TChartMinorAxisList;
     FOnMarkToText: TChartAxisMarkToTextEvent;
     FTitle: TChartAxisTitle;
     FTransformations: TChartAxisTransformations;
@@ -184,7 +216,8 @@ type
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
     procedure SetMarks(const AValue: TChartAxisMarks);
-    procedure SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
+    procedure SetMinors(AValue: TChartMinorAxisList);
+    procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetTransformations(AValue: TChartAxisTransformations);
     procedure SetZPosition(const AValue: TChartDistance);
@@ -192,7 +225,8 @@ type
     function TryApplyStripes(
       ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
   protected
-    function GetDisplayName: string; override;
+    function GetDisplayName: String; override;
+    procedure StyleChanged(ASender: TObject); override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -215,6 +249,7 @@ type
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
     property Marks: TChartAxisMarks read FMarks write SetMarks;
+    property Minors: TChartMinorAxisList read FMinors write SetMinors;
     property TickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
     property Transformations: TChartAxisTransformations
@@ -475,15 +510,55 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartBasicAxis.StyleChanged(ASender: TObject);
+{ TChartMinorAxis }
+
+constructor TChartMinorAxis.Create(ACollection: TCollection);
 begin
-  with Collection.Owner as TCustomChart do begin
-    // Transformation change could have invalidated the current extent,
-    // so revert to full extent for now.
-    if ASender is TAxisTransform then
-      ZoomFull;
-    Invalidate;
-  end;
+  inherited Create(ACollection);
+  TickLength := DEF_TICK_LENGTH div 2;
+end;
+
+function TChartMinorAxis.GetDisplayName: String;
+begin
+  Result := 'M';
+end;
+
+procedure TChartMinorAxis.StyleChanged(ASender: TObject);
+begin
+  (Collection.Owner as TChartAxis).StyleChanged(ASender);
+end;
+
+{ TChartMinorAxisList }
+
+function TChartMinorAxisList.Add: TChartMinorAxis;
+begin
+  Result := TChartMinorAxis(inherited Add);
+end;
+
+constructor TChartMinorAxisList.Create(AOwner: TChartAxis);
+begin
+  inherited Create(TChartMinorAxis);
+  FAxis := AOwner;
+end;
+
+destructor TChartMinorAxisList.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TChartMinorAxisList.GetAxes(AIndex: Integer): TChartMinorAxis;
+begin
+  Result := TChartMinorAxis(Items[AIndex]);
+end;
+
+function TChartMinorAxisList.GetOwner: TPersistent;
+begin
+  Result := FAxis;
+end;
+
+procedure TChartMinorAxisList.Update(AItem: TCollectionItem);
+begin
+  FAxis.StyleChanged(AItem);
 end;
 
 { TChartAxis }
@@ -513,6 +588,7 @@ begin
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
   FMarks := TChartAxisMarks.Create(ACollection.Owner as TCustomChart);
+  FMinors := TChartMinorAxisList.Create(Self);
   TickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
 end;
@@ -520,6 +596,7 @@ end;
 destructor TChartAxis.Destroy;
 begin
   FreeAndNil(FTitle);
+  FreeAndNil(FMinors);
   FreeAndNil(FMarks);
   FreeAndNil(FListener);
   FreeAndNil(FGrid);
@@ -799,7 +876,14 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxis.SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
+procedure TChartAxis.SetMinors(AValue: TChartMinorAxisList);
+begin
+  if FMinors = AValue then exit;
+  FMinors.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
 begin
   if TMethod(FOnMarkToText) = TMethod(AValue) then exit;
   FOnMarkToText := AValue;
@@ -828,6 +912,17 @@ begin
   if FZPosition = AValue then exit;
   FZPosition := AValue;
   StyleChanged(Self);
+end;
+
+procedure TChartAxis.StyleChanged(ASender: TObject);
+begin
+  with Collection.Owner as TCustomChart do begin
+    // Transformation change could have invalidated the current extent,
+    // so revert to full extent for now.
+    if ASender is TAxisTransform then
+      ZoomFull;
+    Invalidate;
+  end;
 end;
 
 function TChartAxis.TryApplyStripes(
