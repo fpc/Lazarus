@@ -843,7 +843,7 @@ type
   
 
 const
-  LazPkgXMLFileVersion = 3;
+  LazPkgXMLFileVersion = 4;
   
   PkgFileTypeNames: array[TPkgFileType] of string = (
     'pftUnit', 'pftVirtualUnit', 'pftMainUnit',
@@ -2597,7 +2597,7 @@ begin
   while FFirstRequiredDependency<>nil do
     DeleteRequiredDependency(FFirstRequiredDependency);
   if not (lpfDestroying in FFlags) then begin
-    FAddToProjectUsesSection:=true;
+    FAddToProjectUsesSection:=false;
     FAuthor:='';
     FAutoInstall:=pitNope;
     FComponents.Clear;
@@ -2738,7 +2738,8 @@ begin
   Name:=XMLConfig.GetValue(Path+'Name/Value','');
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
-  FAddToProjectUsesSection:=XMLConfig.GetValue(Path+'AddToProjectUsesSection/Value',true);
+  FAddToProjectUsesSection:=XMLConfig.GetValue(Path+'AddToProjectUsesSection/Value',
+    FileVersion<4); // since version 4 the default is false
   FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
   FAutoUpdate:=NameToAutoUpdatePolicy(
                                 XMLConfig.GetValue(Path+'AutoUpdate/Value',''));
@@ -2824,7 +2825,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim],'/');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'AddToProjectUsesSection/Value',
-                           FAddToProjectUsesSection,true);
+                           FAddToProjectUsesSection,false);
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
   XMLConfig.SetDeleteValue(Path+'AutoUpdate/Value',AutoUpdateNames[FAutoUpdate],
                            AutoUpdateNames[pupAsNeeded]);
