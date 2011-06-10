@@ -131,9 +131,31 @@ type
     FTitleSize: Integer;
   end;
 
+  { TChartBasicAxis }
+
+  TChartBasicAxis = class(TCollectionItem)
+  strict private
+    FTickColor: TColor;
+    FTickLength: Integer;
+    FVisible: Boolean;
+    procedure SetTickColor(AValue: TColor);
+    procedure SetTickLength(AValue: Integer);
+    procedure SetVisible(AValue: Boolean);
+  protected
+    procedure StyleChanged(ASender: TObject);
+  public
+    constructor Create(ACollection: TCollection); override;
+  public
+    procedure Assign(ASource: TPersistent); override;
+  published
+    property TickColor: TColor read FTickColor write SetTickColor default clBlack;
+    property TickLength: Integer read FTickLength write SetTickLength;
+    property Visible: Boolean read FVisible write SetVisible default true;
+  end;
+
   { TChartAxis }
 
-  TChartAxis = class(TCollectionItem)
+  TChartAxis = class(TChartBasicAxis)
   private
     FListener: TListener;
     FMarkTexts: TStringDynArray;
@@ -152,11 +174,8 @@ type
     FInverted: Boolean;
     FMarks: TChartAxisMarks;
     FOnMarkToText: TChartAxisMarkToTextEvent;
-    FTickColor: TColor;
-    FTickLength: Integer;
     FTitle: TChartAxisTitle;
     FTransformations: TChartAxisTransformations;
-    FVisible: Boolean;
     FZPosition: TChartDistance;
 
     function GetTransform: TChartAxisTransformations;
@@ -166,14 +185,10 @@ type
     procedure SetInverted(AValue: Boolean);
     procedure SetMarks(const AValue: TChartAxisMarks);
     procedure SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
-    procedure SetTickColor(AValue: TColor);
-    procedure SetTickLength(AValue: Integer);
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetTransformations(AValue: TChartAxisTransformations);
-    procedure SetVisible(const AValue: Boolean);
     procedure SetZPosition(const AValue: TChartDistance);
 
-    procedure StyleChanged(ASender: TObject);
     function TryApplyStripes(
       ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
   protected
@@ -200,13 +215,10 @@ type
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
     property Marks: TChartAxisMarks read FMarks write SetMarks;
-    property TickColor: TColor read FTickColor write SetTickColor default clBlack;
-    property TickLength: Integer
-      read FTickLength write SetTickLength default DEF_TICK_LENGTH;
+    property TickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
     property Transformations: TChartAxisTransformations
       read FTransformations write SetTransformations;
-    property Visible: Boolean read FVisible write SetVisible default true;
     property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;
   published
     property OnMarkToText: TChartAxisMarkToTextEvent
@@ -421,6 +433,59 @@ begin
     Result := FDefaultSource;
 end;
 
+{ TChartBasicAxis }
+
+procedure TChartBasicAxis.Assign(ASource: TPersistent);
+begin
+  if ASource is TChartBasicAxis then
+    with TChartAxis(ASource) do begin
+      Self.FTickColor := TickColor;
+      Self.FTickLength := TickLength;
+      Self.FVisible := Visible;
+    end
+  else
+    inherited Assign(ASource);
+end;
+
+constructor TChartBasicAxis.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+  FTickColor := clBlack;
+  FVisible := true;
+end;
+
+procedure TChartBasicAxis.SetTickColor(AValue: TColor);
+begin
+  if FTickColor = AValue then exit;
+  FTickColor := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartBasicAxis.SetTickLength(AValue: Integer);
+begin
+  if FTickLength = AValue then exit;
+  FTickLength := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartBasicAxis.SetVisible(AValue: Boolean);
+begin
+  if FVisible = AValue then exit;
+  FVisible := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartBasicAxis.StyleChanged(ASender: TObject);
+begin
+  with Collection.Owner as TCustomChart do begin
+    // Transformation change could have invalidated the current extent,
+    // so revert to full extent for now.
+    if ASender is TAxisTransform then
+      ZoomFull;
+    Invalidate;
+  end;
+end;
+
 { TChartAxis }
 
 procedure TChartAxis.Assign(ASource: TPersistent);
@@ -431,17 +496,13 @@ begin
       Self.FGroup := Group;
       Self.FInverted := Inverted;
       Self.FMarks.Assign(Marks);
-      Self.FTickColor := TickColor;
-      Self.FTickLength := TickLength;
       Self.FTitle.Assign(Title);
       Self.FTransformations := Transformations;
       Self.FZPosition := ZPosition;
-      Self.FVisible := Visible;
 
       Self.FOnMarkToText := OnMarkToText;
-    end
-  else
-    inherited Assign(ASource);
+    end;
+  inherited Assign(ASource);
 end;
 
 constructor TChartAxis.Create(ACollection: TCollection);
@@ -452,10 +513,8 @@ begin
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
   FMarks := TChartAxisMarks.Create(ACollection.Owner as TCustomChart);
-  FTickColor := clBlack;
-  FTickLength := DEF_TICK_LENGTH;
+  TickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
-  FVisible := true;
 end;
 
 destructor TChartAxis.Destroy;
@@ -747,20 +806,6 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxis.SetTickColor(AValue: TColor);
-begin
-  if FTickColor = AValue then exit;
-  FTickColor := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TChartAxis.SetTickLength(AValue: Integer);
-begin
-  if FTickLength = AValue then exit;
-  FTickLength := AValue;
-  StyleChanged(Self);
-end;
-
 procedure TChartAxis.SetTitle(AValue: TChartAxisTitle);
 begin
   FTitle.Assign(AValue);
@@ -778,29 +823,11 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxis.SetVisible(const AValue: Boolean);
-begin
-  if FVisible = AValue then exit;
-  FVisible := AValue;
-  StyleChanged(Self);
-end;
-
 procedure TChartAxis.SetZPosition(const AValue: TChartDistance);
 begin
   if FZPosition = AValue then exit;
   FZPosition := AValue;
   StyleChanged(Self);
-end;
-
-procedure TChartAxis.StyleChanged(ASender: TObject);
-begin
-  with Collection.Owner as TCustomChart do begin
-    // Transformation change could have invalidated the current extent,
-    // so revert to full extent for now.
-    if ASender is TAxisTransform then
-      ZoomFull;
-    Invalidate;
-  end;
 end;
 
 function TChartAxis.TryApplyStripes(
