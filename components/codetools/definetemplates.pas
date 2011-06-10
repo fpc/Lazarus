@@ -7576,14 +7576,23 @@ end;
 
 function TFPCTargetConfigCache.GetFPCInfoCmdLineOptions(ExtraOptions: string
   ): string;
+var
+  CurTargetCPU: String;
+  CurTargetOS: String;
 begin
   Result:=CompilerOptions;
-  if TargetCPU<>'' then
-    Result:=Result+' -P'+LowerCase(TargetCPU);
-  if TargetOS<>'' then
-    Result:=Result+' -T'+LowerCase(TargetOS);
+  // Note: always pass the -P and -T options so that the compiler writes the
+  // target macros with -va
+  CurTargetCPU:=TargetCPU;
+  if CurTargetCPU='' then
+    CurTargetCPU:=GetCompiledTargetCPU;
+  Result:=Result+' -P'+LowerCase(CurTargetCPU);
+  CurTargetOS:=TargetOS;
+  if CurTargetOS='' then
+    CurTargetOS:=GetCompiledTargetOS;
+  Result:=Result+' -T'+LowerCase(CurTargetOS);
   Result:=Result+' '+ExtraOptions;
-  Result:=Trim(ExtraOptions);
+  Result:=Trim(Result);
 end;
 
 procedure TFPCTargetConfigCache.IncreaseChangeStamp;
