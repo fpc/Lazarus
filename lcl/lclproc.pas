@@ -119,8 +119,8 @@ type
   TStringsSortCompare = function(const Item1, Item2: string): Integer;
 
 
-procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);
-procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare);
+procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare); // sort so that for each i is OnCompare(List[i],List[i+1])<=0
+procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare); // sort so that for each i is OnCompare(List[i],List[i+1])<=0
 
 function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
                          const DefaultValue: Integer): Integer;
@@ -1917,8 +1917,30 @@ begin
 end;
 
 procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);
+// sort so that for each i is OnCompare(List[i],List[i+1])<=0
 var
   MergeList: PPointer;
+
+  procedure SmallSort(StartPos, EndPos: PtrInt);
+  // use insertion sort for small lists
+  var
+    i: PtrInt;
+    Best: PtrInt;
+    j: PtrInt;
+    Item: Pointer;
+  begin
+    for i:=StartPos to EndPos-1 do begin
+      Best:=i;
+      for j:=i+1 to EndPos do
+        if OnCompare(List[Best],List[j])>0 then
+          Best:=j;
+      if Best>i then begin
+        Item:=List[i];
+        List[i]:=List[Best];
+        List[Best]:=Item;
+      end;
+    end;
+  end;
 
   procedure Merge(Pos1, Pos2, Pos3: PtrInt);
   // merge two sorted arrays
@@ -1954,18 +1976,11 @@ var
   procedure Sort(StartPos, EndPos: PtrInt);
   // sort an interval in List. Use MergeList as work space.
   var
-    cmp, mid: integer;
-    p: Pointer;
+    mid: integer;
   begin
-    if StartPos=EndPos then begin
-    end else if StartPos+1=EndPos then begin
-      cmp:=OnCompare(List[StartPos],List[EndPos]);
-      if cmp>0 then begin
-        p:=List[StartPos];
-        List[StartPos]:=List[EndPos];
-        List[EndPos]:=p;
-      end;
-    end else if EndPos>StartPos then begin
+    if EndPos-StartPos<6 then begin
+      SmallSort(StartPos,EndPos);
+    end else begin
       mid:=(StartPos+EndPos) shr 1;
       Sort(StartPos,mid);
       Sort(mid+1,EndPos);
@@ -1981,8 +1996,30 @@ begin
 end;
 
 procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare);
+// sort so that for each i is OnCompare(List[i],List[i+1])<=0
 var
   MergeList: PAnsiString;
+
+  procedure SmallSort(StartPos, EndPos: PtrInt);
+  // use insertion sort for small lists
+  var
+    i: PtrInt;
+    Best: PtrInt;
+    j: PtrInt;
+    Item: string;
+  begin
+    for i:=StartPos to EndPos-1 do begin
+      Best:=i;
+      for j:=i+1 to EndPos do
+        if OnCompare(List[Best],List[j])>0 then
+          Best:=j;
+      if Best>i then begin
+        Item:=List[i];
+        List[i]:=List[Best];
+        List[Best]:=Item;
+      end;
+    end;
+  end;
 
   procedure Merge(Pos1, Pos2, Pos3: PtrInt);
   // merge two sorted arrays
@@ -2018,18 +2055,11 @@ var
   procedure Sort(StartPos, EndPos: PtrInt);
   // sort an interval in List. Use MergeList as work space.
   var
-    cmp, mid: integer;
-    s: string;
+    mid: integer;
   begin
-    if StartPos=EndPos then begin
-    end else if StartPos+1=EndPos then begin
-      cmp:=OnCompare(List[StartPos],List[EndPos]);
-      if cmp>0 then begin
-        s:=List[StartPos];
-        List[StartPos]:=List[EndPos];
-        List[EndPos]:=s;
-      end;
-    end else if EndPos>StartPos then begin
+    if EndPos-StartPos<6 then begin
+      SmallSort(StartPos,EndPos);
+    end else begin
       mid:=(StartPos+EndPos) shr 1;
       Sort(StartPos,mid);
       Sort(mid+1,EndPos);
