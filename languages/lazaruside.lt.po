@@ -1170,10 +1170,6 @@ msgstr "Elemento atributai"
 msgid "End key jumps to nearest end"
 msgstr "Paspaudus Pab, bus šokama į artimiausią pabaigą"
 
-#: lazarusidestrconsts.dlgentirescope
-msgid "&Entire Scope"
-msgstr "Nu&o pradžių"
-
 #: lazarusidestrconsts.dlgenvask
 msgid "Ask"
 msgstr "Klausti"
@@ -1437,6 +1433,10 @@ msgstr "Kadro spalva"
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
 msgstr "Formų konstruktorius"
+
+#: lazarusidestrconsts.dlgfrombeginning
+msgid "From &Beginning"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From Cursor"
@@ -3135,8 +3135,24 @@ msgstr ""
 msgid "Toggle view snapshot or current"
 msgstr ""
 
+#: lazarusidestrconsts.histdlgbtnmakesnaphint
+msgid "Take Snapshot"
+msgstr ""
+
 #: lazarusidestrconsts.histdlgbtnpowerhint
 msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnremovehint
+msgid "Remove selected entry"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnshowhisthint
+msgid "View history"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnshowsnaphint
+msgid "View Snapshots"
 msgstr ""
 
 #: lazarusidestrconsts.histdlgcolumnloc
@@ -3930,7 +3946,9 @@ msgid "Bold non default values"
 msgstr "Numatytąsias vertes pastorinti"
 
 #: lazarusidestrconsts.lisborderspace
-msgid "BorderSpace"
+#, fuzzy
+#| msgid "BorderSpace"
+msgid "Border space"
 msgstr "Kraštinės plotis"
 
 #: lazarusidestrconsts.lisbottom
@@ -5570,10 +5588,6 @@ msgstr "Komanda po modulio paskelbimo"
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Programos komandinės eilutės parametrai"
-
-#: lazarusidestrconsts.liscompileidewithoutlinking
-msgid "Compile IDE (without linking)"
-msgstr "Kompiliuoti IKA (nesaistant)"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -7544,6 +7558,10 @@ msgstr "Neįtraukimo filtras"
 msgid "Exclude filter"
 msgstr "Atmetamųjų filtras"
 
+#: lazarusidestrconsts.lisexecutable
+msgid "Executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Startuojama komanda po"
@@ -7788,9 +7806,9 @@ msgstr "Skirti raidžių &dydį"
 msgid "Directory options"
 msgstr "Aplanko parinktys"
 
-#: lazarusidestrconsts.lisfindfilefilemaskbak
-msgid "File mask (*;*.*;*.bak?)"
-msgstr "Failų pavadinimų kaukė (*;*.*;*.bak?)"
+#: lazarusidestrconsts.lisfindfilefilemask
+msgid "File mask"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
 msgid "Include sub directories"
@@ -9414,10 +9432,6 @@ msgstr "Apvalyti ir daryti"
 msgid "Common Settings"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildcompileselectedstaticpackagesintolazarusbinary
-msgid "Compile selected static packages into Lazarus binary"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 #, fuzzy
 #| msgid "Confirm before rebuilding Lazarus"
@@ -9588,10 +9602,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildwithstaticpackages
-msgid "With packages"
-msgstr "Su paketais"
 
 #: lazarusidestrconsts.lislazcleanupbuildall
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
@@ -12543,13 +12553,13 @@ msgstr "Paketas šiuo pavadinimu jau egzistuoja"
 msgid "Packages must have the extension .lpk"
 msgstr "Paketų failų plėtinys turi būti .lpk"
 
+#: lazarusidestrconsts.lispkgmangpleasecompilethepackagefirst
+msgid "Please compile the package first."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangpleasesavethefilebeforeaddingittoapackage
 msgid "Please save the file before adding it to a package."
 msgstr "Failą būtina įrašyti prieš dedant jį į paketą."
-
-#: lazarusidestrconsts.lispkgmangpleasesavethepackagefirst
-msgid "Please save the package first."
-msgstr "Pirma išsaugokite paketą."
 
 #: lazarusidestrconsts.lispkgmangproject
 msgid "Project: %s"
@@ -12655,6 +12665,10 @@ msgstr "Paketo failo pavadinimas %s%s%s, įrašytas %s%s%s%s, nėra tinkamas Laz
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
 msgstr "Paketas %s skirtas tik veikos rėžimui.%s Veikos rėžimo paketų negalima diegti į IKA."
+
+#: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
+msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a circle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -12866,13 +12880,14 @@ msgstr "Šis paketas įdiegtas, tačiau nerastas jo lpk failas. Pasyvinami visi 
 msgid "%s%sUnit Name: %s%s%s"
 msgstr "%s%sModulio pavadinimas: %s%s%s"
 
-#: lazarusidestrconsts.lispkgsysunitnotfound
-msgid "Unit not found: %s%s%s"
-msgstr "Modulis nerastas: %s%s%s"
+#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr ""
 
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackage
-msgid "Unit %s%s%s was removed from package"
-msgstr "Modulis %s%s%s pašalintas iš paketo"
+#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
+msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -13854,6 +13869,10 @@ msgstr ""
 msgid "Select path of %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectpathto
+msgid "Select path to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
 msgstr "Parinkti aktyvią darymo veikseną"
@@ -14203,6 +14222,10 @@ msgstr "Tab"
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Vieta tabuliatoriaus eilėje"
+
+#: lazarusidestrconsts.listakesnapshot
+msgid "Take a Snapshot"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

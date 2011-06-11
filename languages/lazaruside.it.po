@@ -1169,10 +1169,6 @@ msgstr "Attributi dell'elemento"
 msgid "End key jumps to nearest end"
 msgstr "Il tasto End salta all'end più vicino"
 
-#: lazarusidestrconsts.dlgentirescope
-msgid "&Entire Scope"
-msgstr "&Intero scope"
-
 #: lazarusidestrconsts.dlgenvask
 msgid "Ask"
 msgstr "Chiede"
@@ -1434,6 +1430,10 @@ msgstr "Marcatesto"
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
 msgstr "Editor form"
+
+#: lazarusidestrconsts.dlgfrombeginning
+msgid "From &Beginning"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From Cursor"
@@ -3152,8 +3152,24 @@ msgstr ""
 msgid "Toggle view snapshot or current"
 msgstr ""
 
+#: lazarusidestrconsts.histdlgbtnmakesnaphint
+msgid "Take Snapshot"
+msgstr ""
+
 #: lazarusidestrconsts.histdlgbtnpowerhint
 msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnremovehint
+msgid "Remove selected entry"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnshowhisthint
+msgid "View history"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnshowsnaphint
+msgid "View Snapshots"
 msgstr ""
 
 #: lazarusidestrconsts.histdlgcolumnloc
@@ -3944,7 +3960,9 @@ msgid "Bold non default values"
 msgstr "Grassetto per valori non standard"
 
 #: lazarusidestrconsts.lisborderspace
-msgid "BorderSpace"
+#, fuzzy
+#| msgid "BorderSpace"
+msgid "Border space"
 msgstr "SpazioBordo"
 
 #: lazarusidestrconsts.lisbottom
@@ -5577,10 +5595,6 @@ msgstr "Comando dopo la pubblicazione di un modulo"
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Parametri della riga di comando del programma"
-
-#: lazarusidestrconsts.liscompileidewithoutlinking
-msgid "Compile IDE (without linking)"
-msgstr "Compilare l'IDE (senza linking)"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -7562,6 +7576,10 @@ msgstr "Escludi Filtro"
 msgid "Exclude filter"
 msgstr "escludi filtro"
 
+#: lazarusidestrconsts.lisexecutable
+msgid "Executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Esecuzione comando dopo"
@@ -7806,9 +7824,9 @@ msgstr "&Maiuscolo/Minuscolo"
 msgid "Directory options"
 msgstr "Opzioni cartella"
 
-#: lazarusidestrconsts.lisfindfilefilemaskbak
-msgid "File mask (*;*.*;*.bak?)"
-msgstr "Maschera dei file (*;*.*;*.bak?)"
+#: lazarusidestrconsts.lisfindfilefilemask
+msgid "File mask"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
 msgid "Include sub directories"
@@ -9433,10 +9451,6 @@ msgstr "Pulisci e costruisci"
 msgid "Common Settings"
 msgstr "Impostazioni comuni"
 
-#: lazarusidestrconsts.lislazbuildcompileselectedstaticpackagesintolazarusbinary
-msgid "Compile selected static packages into Lazarus binary"
-msgstr "Compila il package statico selezionato in un binario Lazarus"
-
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before build"
 msgstr "Conferma prima di costruire"
@@ -9603,10 +9617,6 @@ msgstr "Aggiorna revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Aggiorna informazioni di revisione nella dialog \"Informazioni su Lazarus\""
-
-#: lazarusidestrconsts.lislazbuildwithstaticpackages
-msgid "With packages"
-msgstr "Con packages"
 
 #: lazarusidestrconsts.lislazcleanupbuildall
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
@@ -12564,13 +12574,13 @@ msgstr "Il nome del pacchetto esiste già"
 msgid "Packages must have the extension .lpk"
 msgstr "Il pacchetto deve avere l'estensione .lpk"
 
+#: lazarusidestrconsts.lispkgmangpleasecompilethepackagefirst
+msgid "Please compile the package first."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangpleasesavethefilebeforeaddingittoapackage
 msgid "Please save the file before adding it to a package."
 msgstr "Salvare il file prima di aggiungerlo ad un pacchetto."
-
-#: lazarusidestrconsts.lispkgmangpleasesavethepackagefirst
-msgid "Please save the package first."
-msgstr "Salvare prima il pacchetto."
 
 #: lazarusidestrconsts.lispkgmangproject
 msgid "Project: %s"
@@ -12676,6 +12686,10 @@ msgstr "Il nome del pacchetto %s%s%s in%s%s%s%s non è valido per lazarus."
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
 msgstr "Il pacchetto %s è un pacchetto di sola esecuzione.%s Questi package non possono essere installati nell'IDE."
+
+#: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
+msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a circle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -12887,13 +12901,14 @@ msgstr "Il pacchetto è installato, ma il suo file lpk non c'è: tutti i suoi co
 msgid "%s%sUnit Name: %s%s%s"
 msgstr "%s%sNome unit: %s%s%s"
 
-#: lazarusidestrconsts.lispkgsysunitnotfound
-msgid "Unit not found: %s%s%s"
-msgstr "Unit non trovata: %s%s%s"
+#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr ""
 
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackage
-msgid "Unit %s%s%s was removed from package"
-msgstr "La unit %s%s%s è stata rimossa dal pacchetto"
+#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
+msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -13872,6 +13887,10 @@ msgstr ""
 msgid "Select path of %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectpathto
+msgid "Select path to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
 msgstr "Scegli il modo di costruzione attivo"
@@ -14221,6 +14240,10 @@ msgstr "Tab"
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Ordine di tabulazione di "
+
+#: lazarusidestrconsts.listakesnapshot
+msgid "Take a Snapshot"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

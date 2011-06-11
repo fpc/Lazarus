@@ -1169,10 +1169,6 @@ msgstr "要素の属性"
 msgid "End key jumps to nearest end"
 msgstr "Endキーで最も近いendに移動"
 
-#: lazarusidestrconsts.dlgentirescope
-msgid "&Entire Scope"
-msgstr "スコープ全体(&E)"
-
 #: lazarusidestrconsts.dlgenvask
 msgid "Ask"
 msgstr "尋ねる"
@@ -1436,6 +1432,10 @@ msgstr "フレーム色"
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
 msgstr "フォームエディタ"
+
+#: lazarusidestrconsts.dlgfrombeginning
+msgid "From &Beginning"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From Cursor"
@@ -3142,8 +3142,24 @@ msgstr ""
 msgid "Toggle view snapshot or current"
 msgstr ""
 
+#: lazarusidestrconsts.histdlgbtnmakesnaphint
+msgid "Take Snapshot"
+msgstr ""
+
 #: lazarusidestrconsts.histdlgbtnpowerhint
 msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnremovehint
+msgid "Remove selected entry"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnshowhisthint
+msgid "View history"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnshowsnaphint
+msgid "View Snapshots"
 msgstr ""
 
 #: lazarusidestrconsts.histdlgcolumnloc
@@ -3936,7 +3952,9 @@ msgid "Bold non default values"
 msgstr "デフォルトでない値を太字に"
 
 #: lazarusidestrconsts.lisborderspace
-msgid "BorderSpace"
+#, fuzzy
+#| msgid "BorderSpace"
+msgid "Border space"
 msgstr "境界間隔"
 
 #: lazarusidestrconsts.lisbottom
@@ -5572,10 +5590,6 @@ msgstr "モジュールの発行後のコマンド"
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "プログラムのコマンドライン引数"
-
-#: lazarusidestrconsts.liscompileidewithoutlinking
-msgid "Compile IDE (without linking)"
-msgstr "リンクしないでIDEをコンパイル"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -7556,6 +7570,10 @@ msgstr "除外フィルタ"
 msgid "Exclude filter"
 msgstr "除外フィルタ"
 
+#: lazarusidestrconsts.lisexecutable
+msgid "Executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "次の後にコマンドを実行："
@@ -7800,9 +7818,9 @@ msgstr "大文字小文字を区別(&C)"
 msgid "Directory options"
 msgstr "ディレクトリオプション"
 
-#: lazarusidestrconsts.lisfindfilefilemaskbak
-msgid "File mask (*;*.*;*.bak?)"
-msgstr "ファイルマスク (*;*.*;*.bak?)"
+#: lazarusidestrconsts.lisfindfilefilemask
+msgid "File mask"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
 msgid "Include sub directories"
@@ -9427,10 +9445,6 @@ msgstr "消去＋構築"
 msgid "Common Settings"
 msgstr "共通設定"
 
-#: lazarusidestrconsts.lislazbuildcompileselectedstaticpackagesintolazarusbinary
-msgid "Compile selected static packages into Lazarus binary"
-msgstr "Lazarusバイナリに選択された静的パッケージをコンパイルします"
-
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 #, fuzzy
 #| msgid "Confirm before rebuilding Lazarus"
@@ -9601,10 +9615,6 @@ msgstr "revision.incをアップデート"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildwithstaticpackages
-msgid "With packages"
-msgstr "パッケージ付き"
 
 #: lazarusidestrconsts.lislazcleanupbuildall
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
@@ -12565,13 +12575,13 @@ msgstr "パッケージ名はすでに存在します"
 msgid "Packages must have the extension .lpk"
 msgstr "パッケージの拡張子は.lpkでなければなりません"
 
+#: lazarusidestrconsts.lispkgmangpleasecompilethepackagefirst
+msgid "Please compile the package first."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangpleasesavethefilebeforeaddingittoapackage
 msgid "Please save the file before adding it to a package."
 msgstr "ファイルをパッケージに加える前に保存してください。"
-
-#: lazarusidestrconsts.lispkgmangpleasesavethepackagefirst
-msgid "Please save the package first."
-msgstr "パッケージをはじめに保存してください。"
 
 #: lazarusidestrconsts.lispkgmangproject
 msgid "Project: %s"
@@ -12677,6 +12687,10 @@ msgstr "%s%s%s%sのパッケージファイル名 %s%s%sは有効なlazarusパ�
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
 msgstr "パッケージ %s は実行時専用パッケージです。%s実行時専用パッケージはIDEにインストールできません。"
+
+#: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
+msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a circle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -12888,13 +12902,14 @@ msgstr "このパッケージはインストールされましたが、lpkファ
 msgid "%s%sUnit Name: %s%s%s"
 msgstr "%s%sユニット名: %s%s%s"
 
-#: lazarusidestrconsts.lispkgsysunitnotfound
-msgid "Unit not found: %s%s%s"
-msgstr "ユニットが見つかりません: %s%s%s"
+#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr ""
 
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackage
-msgid "Unit %s%s%s was removed from package"
-msgstr "ユニット %s%s%s はパッケージから削除されました"
+#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
+msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -13873,6 +13888,10 @@ msgstr ""
 msgid "Select path of %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectpathto
+msgid "Select path to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
 msgstr "アクティブ構築モードを選択"
@@ -14222,6 +14241,10 @@ msgstr "タブ"
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "次のタブ順序"
+
+#: lazarusidestrconsts.listakesnapshot
+msgid "Take a Snapshot"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

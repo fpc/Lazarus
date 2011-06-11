@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-04 02:35+0300\n"
+"PO-Revision-Date: 2011-06-11 18:37+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1186,10 +1186,6 @@ msgstr "Атрибуты элементов"
 msgid "End key jumps to nearest end"
 msgstr "End переводит к концу текста в строке"
 
-#: lazarusidestrconsts.dlgentirescope
-msgid "&Entire Scope"
-msgstr "С начала &фрагмента"
-
 #: lazarusidestrconsts.dlgenvask
 msgid "Ask"
 msgstr "Спросить"
@@ -1452,6 +1448,10 @@ msgstr "Отметка"
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
 msgstr "Редактор форм"
+
+#: lazarusidestrconsts.dlgfrombeginning
+msgid "From &Beginning"
+msgstr "С на&чала"
 
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From Cursor"
@@ -3148,9 +3148,25 @@ msgstr "Очистить все снимки"
 msgid "Toggle view snapshot or current"
 msgstr "Переключить отображение между снимком и текущим состоянием"
 
+#: lazarusidestrconsts.histdlgbtnmakesnaphint
+msgid "Take Snapshot"
+msgstr "Сделать снимок"
+
 #: lazarusidestrconsts.histdlgbtnpowerhint
 msgid "Switch on/off automatic snapshots"
 msgstr "Включить/выключить автоматические снимки"
+
+#: lazarusidestrconsts.histdlgbtnremovehint
+msgid "Remove selected entry"
+msgstr "Удалить выбранный элемент"
+
+#: lazarusidestrconsts.histdlgbtnshowhisthint
+msgid "View history"
+msgstr "Показать историю"
+
+#: lazarusidestrconsts.histdlgbtnshowsnaphint
+msgid "View Snapshots"
+msgstr "Показать снимки"
 
 #: lazarusidestrconsts.histdlgcolumnloc
 msgid "Location"
@@ -3938,7 +3954,8 @@ msgid "Bold non default values"
 msgstr "Выделять значения не по умолчанию жирным"
 
 #: lazarusidestrconsts.lisborderspace
-msgid "BorderSpace"
+#| msgid "BorderSpace"
+msgid "Border space"
 msgstr "Зазор"
 
 #: lazarusidestrconsts.lisbottom
@@ -5568,10 +5585,6 @@ msgstr "Команда после установки модуля"
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Параметры командной строки программы"
-
-#: lazarusidestrconsts.liscompileidewithoutlinking
-msgid "Compile IDE (without linking)"
-msgstr "Компиляция IDE (без компоновки)"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -7546,6 +7559,10 @@ msgstr "Исключающий фильтр"
 msgid "Exclude filter"
 msgstr "Исключающий фильтр"
 
+#: lazarusidestrconsts.lisexecutable
+msgid "Executable"
+msgstr "Исполнимый файл"
+
 #: lazarusidestrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Выполнить команду после"
@@ -7789,9 +7806,9 @@ msgstr "&Учитывать регистр"
 msgid "Directory options"
 msgstr "Параметры каталогов"
 
-#: lazarusidestrconsts.lisfindfilefilemaskbak
-msgid "File mask (*;*.*;*.bak?)"
-msgstr "Маска файла (*;*.*;*.bak?)"
+#: lazarusidestrconsts.lisfindfilefilemask
+msgid "File mask"
+msgstr "Маска файлов"
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
 msgid "Include sub directories"
@@ -9410,10 +9427,6 @@ msgstr "Очистить+Собрать"
 msgid "Common Settings"
 msgstr "Общие параметры"
 
-#: lazarusidestrconsts.lislazbuildcompileselectedstaticpackagesintolazarusbinary
-msgid "Compile selected static packages into Lazarus binary"
-msgstr "Включить выбранные пакеты в исполнимый файл Lazarus статически"
-
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 #| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
@@ -9582,10 +9595,6 @@ msgstr "Обновить revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Обновить информацию о ревизии в диалоге \"О проекте Lazarus\""
-
-#: lazarusidestrconsts.lislazbuildwithstaticpackages
-msgid "With packages"
-msgstr "С пакетами"
 
 #: lazarusidestrconsts.lislazcleanupbuildall
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
@@ -12504,13 +12513,13 @@ msgstr "Имя пакета уже занято"
 msgid "Packages must have the extension .lpk"
 msgstr "Пакеты должны иметь расширение .lpk"
 
+#: lazarusidestrconsts.lispkgmangpleasecompilethepackagefirst
+msgid "Please compile the package first."
+msgstr "Сначала откомпилируйте пакет."
+
 #: lazarusidestrconsts.lispkgmangpleasesavethefilebeforeaddingittoapackage
 msgid "Please save the file before adding it to a package."
 msgstr "Сохраните файл перед добавлением в пакет."
-
-#: lazarusidestrconsts.lispkgmangpleasesavethepackagefirst
-msgid "Please save the package first."
-msgstr "Сначала сохраните пакет."
 
 #: lazarusidestrconsts.lispkgmangproject
 msgid "Project: %s"
@@ -12616,6 +12625,10 @@ msgstr "Имя пакета %s%s%s в%s%s%s%s не является коррек
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
 msgstr "Пакет %s является пакетом времени выполнения.%sТакие пакеты не могут встраиваться в IDE."
+
+#: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
+msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a circle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgstr "Пакет %s откомпилирован автоматически, и его каталогом вывода модулей является \"%s\", присутствующий в списке путей поиска модулей по умолчанию компилятора. Пакет использует другие пакеты, которые также используют поиск модулей по умолчанию компилятором. Это порождает порочный круг.%sВы можете исправить ситуацию путём%sудаления пути из файла настройки компилятора (например, fpc.cfg),%sлибо отключения автоматического обновления данного пакета,%sлибо удаления зависимостей."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -12826,13 +12839,14 @@ msgstr "Пакет установлен, но файл lpk не найден. В
 msgid "%s%sUnit Name: %s%s%s"
 msgstr "%s%sИмя модуля: %s%s%s"
 
-#: lazarusidestrconsts.lispkgsysunitnotfound
-msgid "Unit not found: %s%s%s"
-msgstr "Модуль не найден: %s%s%s"
+#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr "Модуль \"%s\" не был найден в файле LPK.%sВероятно, этот файл LPK не использовался при сборке IDE, либо пакет неверно использует процедуру RegisterUnit."
 
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackage
-msgid "Unit %s%s%s was removed from package"
-msgstr "Модуль %s%s%s был удалён из пакета"
+#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
+msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr "Модуль \"%s\" был удалён из пакета (LPK)"
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -13807,6 +13821,10 @@ msgstr "Выберите каталог исходного кода Lazarus"
 msgid "Select path of %s"
 msgstr "Выберите путь к %s"
 
+#: lazarusidestrconsts.lisselectpathto
+msgid "Select path to %s"
+msgstr "Выберите путь к %s"
+
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
 msgstr "Выбрать текущий режим сборки"
@@ -14154,6 +14172,10 @@ msgstr "Таб"
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Порядок перехода для %s"
+
+#: lazarusidestrconsts.listakesnapshot
+msgid "Take a Snapshot"
+msgstr "Сделать снимок"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

@@ -1167,10 +1167,6 @@ msgstr "Vlastnosti prvku"
 msgid "End key jumps to nearest end"
 msgstr "Klávesa End skočí k nejbližšímu konci"
 
-#: lazarusidestrconsts.dlgentirescope
-msgid "&Entire Scope"
-msgstr "&Celkový rozsah"
-
 #: lazarusidestrconsts.dlgenvask
 msgid "Ask"
 msgstr "Zeptat"
@@ -1432,6 +1428,10 @@ msgstr "Textová značka"
 #: lazarusidestrconsts.dlgfrmeditor
 msgid "Form Editor"
 msgstr "Editor formuláře"
+
+#: lazarusidestrconsts.dlgfrombeginning
+msgid "From &Beginning"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
 msgid "&From Cursor"
@@ -3108,8 +3108,24 @@ msgstr ""
 msgid "Toggle view snapshot or current"
 msgstr ""
 
+#: lazarusidestrconsts.histdlgbtnmakesnaphint
+msgid "Take Snapshot"
+msgstr ""
+
 #: lazarusidestrconsts.histdlgbtnpowerhint
 msgid "Switch on/off automatic snapshots"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnremovehint
+msgid "Remove selected entry"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnshowhisthint
+msgid "View history"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnshowsnaphint
+msgid "View Snapshots"
 msgstr ""
 
 #: lazarusidestrconsts.histdlgcolumnloc
@@ -3894,7 +3910,9 @@ msgid "Bold non default values"
 msgstr "Tlustě nevýchozí hodnoty"
 
 #: lazarusidestrconsts.lisborderspace
-msgid "BorderSpace"
+#, fuzzy
+#| msgid "BorderSpace"
+msgid "Border space"
 msgstr "Okrajový prostor"
 
 #: lazarusidestrconsts.lisbottom
@@ -5530,10 +5548,6 @@ msgstr "Příkaz po publikování modulu"
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
 msgstr "Parametry příkazového řádku programu"
-
-#: lazarusidestrconsts.liscompileidewithoutlinking
-msgid "Compile IDE (without linking)"
-msgstr "Přeložit IDE (bez vazeb)"
 
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
@@ -7505,6 +7519,10 @@ msgstr "Filtr vyřazení"
 msgid "Exclude filter"
 msgstr "Filtr vyřazení"
 
+#: lazarusidestrconsts.lisexecutable
+msgid "Executable"
+msgstr ""
+
 #: lazarusidestrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Vykonávání příkazu po"
@@ -7749,9 +7767,9 @@ msgstr "&Rozlišovat velikost znaků"
 msgid "Directory options"
 msgstr "Nastavení složky"
 
-#: lazarusidestrconsts.lisfindfilefilemaskbak
-msgid "File mask (*;*.*;*.bak?)"
-msgstr "Maska souboru (*;*.*;*.bak?)"
+#: lazarusidestrconsts.lisfindfilefilemask
+msgid "File mask"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
 msgid "Include sub directories"
@@ -9372,10 +9390,6 @@ msgstr "Vyčistit + Sestavit"
 msgid "Common Settings"
 msgstr "Společná nastavení"
 
-#: lazarusidestrconsts.lislazbuildcompileselectedstaticpackagesintolazarusbinary
-msgid "Compile selected static packages into Lazarus binary"
-msgstr "Přeložit vybrané statické balíčky do binárních balíčků Lazarusu"
-
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before build"
 msgstr "Potvrdit před sestavením"
@@ -9542,10 +9556,6 @@ msgstr "Aktualizovat revision.inc"
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
 msgstr "Aktualizovat informace o revizi v dialogu \"O Lazarusu\""
-
-#: lazarusidestrconsts.lislazbuildwithstaticpackages
-msgid "With packages"
-msgstr "S balíčky"
 
 #: lazarusidestrconsts.lislazcleanupbuildall
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
@@ -12455,13 +12465,13 @@ msgstr "Jméno balíčku již existuje"
 msgid "Packages must have the extension .lpk"
 msgstr "Balíček musí mít příponu .lpk"
 
+#: lazarusidestrconsts.lispkgmangpleasecompilethepackagefirst
+msgid "Please compile the package first."
+msgstr ""
+
 #: lazarusidestrconsts.lispkgmangpleasesavethefilebeforeaddingittoapackage
 msgid "Please save the file before adding it to a package."
 msgstr "Prosíme uložte soubor před jeho přidáním do balíčku."
-
-#: lazarusidestrconsts.lispkgmangpleasesavethepackagefirst
-msgid "Please save the package first."
-msgstr "Nejdříve prosím uložte balíček."
 
 #: lazarusidestrconsts.lispkgmangproject
 msgid "Project: %s"
@@ -12567,6 +12577,10 @@ msgstr "Jméno souboru balíčku %s%s%s v%s%s%s%s není platné jméno balíčku
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
 msgstr "Balíček %s je balíčkem jen pro dobu běhu. %sBalíčky jen pro dobu běhu nelze instalovat do IDE."
+
+#: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
+msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a circle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
 msgid "The package %s%s%s is marked for installation, but can not be found.%sRemove dependency from the installation list of packages?"
@@ -12778,13 +12792,14 @@ msgstr "Tento balíček je nainstalován, ale soubor lpk nebyl nalezen. Všechny
 msgid "%s%sUnit Name: %s%s%s"
 msgstr "%s%sJméno jednotky: %s%s%s"
 
-#: lazarusidestrconsts.lispkgsysunitnotfound
-msgid "Unit not found: %s%s%s"
-msgstr "Jednotka nenalezena: %s%s%s"
+#: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
+msgid "Unit \"%s\" was not found in the lpk file.%sProbably this lpk file was not used for building this IDE. Or the package misuses the procedure RegisterUnit."
+msgstr ""
 
-#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackage
-msgid "Unit %s%s%s was removed from package"
-msgstr "Jednotka %s%s%s byla odebrána z balíčku"
+#: lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk
+msgctxt "lazarusidestrconsts.lispkgsysunitwasremovedfrompackagelpk"
+msgid "Unit \"%s\" was removed from package (lpk)"
+msgstr ""
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
@@ -13755,6 +13770,10 @@ msgstr "Vybrat zdrojový adresář Lazarusu"
 msgid "Select path of %s"
 msgstr "Vybrat cestu %s"
 
+#: lazarusidestrconsts.lisselectpathto
+msgid "Select path to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisselecttheactivebuildmode
 msgid "Select the active build mode"
 msgstr "Vybrat aktivní režim sestavení"
@@ -14104,6 +14123,10 @@ msgstr "Tab"
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Pořadí záložek"
+
+#: lazarusidestrconsts.listakesnapshot
+msgid "Take a Snapshot"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
