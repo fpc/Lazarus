@@ -3752,8 +3752,6 @@ resourcestring
   lisPkgSysUnitWasNotFoundInTheLpkFileProbablyThisLpkFileWasN = 'Unit "%s" was'
     +' not found in the lpk file.%sProbably this lpk file was not used for '
     +'building this IDE. Or the package misuses the procedure RegisterUnit.';
-  lisPkgSysUnitWasRemovedFromPackageLpk2 = 'Unit "%s" was removed from package'
-    +' (lpk)';
   lisPkgSysUnitWasRemovedFromPackageLpk = 'Unit "%s" was removed from package '
     +'(lpk)';
   lisPkgSysCanNotRegisterComponentsWithoutUnit = 'Can not register components '

@@ -1321,7 +1321,7 @@ begin
         end else begin
           if not (pffReportedAsRemoved in FRegistrationFile.Flags) then begin
             RegistrationError(
-              Format(lisPkgSysUnitWasRemovedFromPackageLpk2, [
+              Format(lisPkgSysUnitWasRemovedFromPackageLpk, [
                 FRegistrationUnitName]));
             FRegistrationFile.Flags:=FRegistrationFile.Flags+[pffReportedAsRemoved];
           end;
