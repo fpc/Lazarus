@@ -4146,6 +4146,10 @@ begin
     // if this class is not TObject, TObject is class ancestor
     SearchBaseClass:=(ClassIdentNode=nil)
               or (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'TObject'));
+  end else if ClassNode.Desc=ctnDispinterface then begin
+    // default interface is IDispatch
+    SearchBaseClass:=(ClassIdentNode=nil)
+            or (not CompareSrcIdentifiers(ClassIdentNode.StartPos,'IDispatch'));
   end else if ClassNode.Desc in AllClassInterfaces then begin
     // Delphi has as default interface IInterface
     // FPC has as default interface IUnknown and an alias IInterface = IUnknown
@@ -4171,6 +4175,8 @@ begin
     Params.SetIdentifier(Self,'TObject',nil)
   else if ClassNode.Desc=ctnClassInterface then
     Params.SetIdentifier(Self,'IInterface',nil)
+  else if ClassNode.Desc=ctnDispinterface then
+    Params.SetIdentifier(Self,'IDispatch',nil)
   else
     exit;
   Params.ContextNode:=ClassNode;
