@@ -6534,7 +6534,7 @@ var
   i: Integer;
 begin
   for i:=0 to FCommandQueue.Count-1 do begin
-    TGDBMIDebuggerCommand(FCommandQueue[i]).Free;
+    TGDBMIDebuggerCommand(FCommandQueue[i]).ReleaseReference;
   end;
   FCommandQueue.Clear;
 end;
