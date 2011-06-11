@@ -2846,6 +2846,41 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     StopAfterAddress: TDBGPtr; StopAfterNumLines: Integer
     ): Boolean;
 
+    procedure AddRangetoMemDumpsNeeded(NewRange: TDBGDisassemblerEntryRange);
+    var
+      i: Integer;
+    begin
+      i := length(FMemDumpsNeeded);
+      if (i > 0)
+      then begin
+        if  (NewRange.RangeStartAddr <= FMemDumpsNeeded[0].FirstAddr)
+        and (NewRange.LastEntryEndAddr + 1 >= FMemDumpsNeeded[0].FirstAddr)
+        then FMemDumpsNeeded[0].FirstAddr := NewRange.RangeStartAddr
+        else
+        if  (NewRange.LastEntryEndAddr + 1 >= FMemDumpsNeeded[0].LastAddr)
+        and (NewRange.RangeStartAddr <= FMemDumpsNeeded[0].LastAddr)
+        then FMemDumpsNeeded[0].LastAddr := NewRange.LastEntryEndAddr + 1
+        else
+        if  (NewRange.RangeStartAddr <= FMemDumpsNeeded[i-1].FirstAddr)
+        and (NewRange.LastEntryEndAddr + 1 >= FMemDumpsNeeded[i-1].FirstAddr)
+        then FMemDumpsNeeded[i-1].FirstAddr := NewRange.RangeStartAddr
+        else
+        if  (NewRange.LastEntryEndAddr + 1 >= FMemDumpsNeeded[i-1].LastAddr)
+        and (NewRange.RangeStartAddr <= FMemDumpsNeeded[i-1].LastAddr)
+        then FMemDumpsNeeded[i-1].LastAddr := NewRange.LastEntryEndAddr + 1
+        else begin
+          SetLength(FMemDumpsNeeded, i + 1);
+          FMemDumpsNeeded[i].FirstAddr := NewRange.RangeStartAddr;
+          FMemDumpsNeeded[i].LastAddr := NewRange.LastEntryEndAddr + 1;
+        end;
+      end
+      else begin
+        SetLength(FMemDumpsNeeded, i + 1);
+        FMemDumpsNeeded[i].FirstAddr := NewRange.RangeStartAddr;
+        FMemDumpsNeeded[i].LastAddr := NewRange.LastEntryEndAddr + 1;
+      end;
+    end;
+
     procedure DoDisassembleSourceless(ASubFirstAddr, ASubLastAddr: TDBGPtr;
       ARange: TDBGDisassemblerEntryRange; SkipFirstAddresses: Boolean = False);
     var
@@ -3000,6 +3035,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
       if not ContinueAfterSource
       then begin
         AdjustLastEntryEndAddr(NewRange, DisAssList);
+        AddRangetoMemDumpsNeeded(NewRange);
         FKnownRanges.AddRange(NewRange);  // NewRange is now owned by FKnownRanges
         NewRange := nil;
         FreeAndNil(DisAssList);
@@ -3178,36 +3214,7 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
     if NewRange.LastEntryEndAddr > NewRange.RangeEndAddr
     then NewRange.RangeEndAddr := NewRange.LastEntryEndAddr;
 
-    i := length(FMemDumpsNeeded);
-    if (i > 0)
-    then begin
-      if  (NewRange.RangeStartAddr <= FMemDumpsNeeded[0].FirstAddr)
-      and (NewRange.LastEntryEndAddr + 1 >= FMemDumpsNeeded[0].FirstAddr)
-      then FMemDumpsNeeded[0].FirstAddr := NewRange.RangeStartAddr
-      else
-      if  (NewRange.LastEntryEndAddr + 1 >= FMemDumpsNeeded[0].LastAddr)
-      and (NewRange.RangeStartAddr <= FMemDumpsNeeded[0].LastAddr)
-      then FMemDumpsNeeded[0].LastAddr := NewRange.LastEntryEndAddr + 1
-      else
-      if  (NewRange.RangeStartAddr <= FMemDumpsNeeded[i-1].FirstAddr)
-      and (NewRange.LastEntryEndAddr + 1 >= FMemDumpsNeeded[i-1].FirstAddr)
-      then FMemDumpsNeeded[i-1].FirstAddr := NewRange.RangeStartAddr
-      else
-      if  (NewRange.LastEntryEndAddr + 1 >= FMemDumpsNeeded[i-1].LastAddr)
-      and (NewRange.RangeStartAddr <= FMemDumpsNeeded[i-1].LastAddr)
-      then FMemDumpsNeeded[i-1].LastAddr := NewRange.LastEntryEndAddr + 1
-      else begin
-        SetLength(FMemDumpsNeeded, i + 1);
-        FMemDumpsNeeded[i].FirstAddr := NewRange.RangeStartAddr;
-        FMemDumpsNeeded[i].LastAddr := NewRange.LastEntryEndAddr + 1;
-      end;
-    end
-    else begin
-      SetLength(FMemDumpsNeeded, i + 1);
-      FMemDumpsNeeded[i].FirstAddr := NewRange.RangeStartAddr;
-      FMemDumpsNeeded[i].LastAddr := NewRange.LastEntryEndAddr + 1;
-    end;
-
+    AddRangetoMemDumpsNeeded(NewRange);
     FKnownRanges.AddRange(NewRange);  // NewRange is now owned by FKnownRanges
     NewRange := nil;
 
