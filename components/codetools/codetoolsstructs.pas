@@ -167,14 +167,14 @@ type
 
   TComponentChildCollector = class
   private
-    FChilds: TFPList;
+    FChildren: TFPList;
     FRoot: TComponent;
     procedure AddChildComponent(Child: TComponent);
   public
     constructor Create;
     destructor Destroy; override;
     function GetComponents(RootComponent: TComponent; AddRoot: boolean = true): TFPList;
-    property Children: TFPList read FChilds;
+    property Children: TFPList read FChildren;
     property Root: TComponent read FRoot;
   end;
 
@@ -797,12 +797,12 @@ end;
 
 constructor TComponentChildCollector.Create;
 begin
-  FChilds:=TFPList.Create;
+  FChildren:=TFPList.Create;
 end;
 
 destructor TComponentChildCollector.Destroy;
 begin
-  FreeAndNil(FChilds);
+  FreeAndNil(FChildren);
   inherited Destroy;
 end;
 
