@@ -4790,12 +4790,19 @@ begin
     if (Addr <> 0) then
       EditorComponent.IDEGutterMarks.SetDebugMarks(i, i);
   end;
+  // TODO: move to SourceSyneditor
+  for i := 0 to SharedEditorCount - 1 do
+    SharedEditors[i].EditorComponent.IDEGutterMarks.HasDebugMarks; // update all shared editors
 end;
 
 procedure TSourceEditor.ClearExecutionMarks;
+var
+  i: Integer;
 begin
   EditorComponent.IDEGutterMarks.ClearDebugMarks;
   FSharedValues.MarksRequested := False;
+  for i := 0 to SharedEditorCount - 1 do
+    SharedEditors[i].EditorComponent.IDEGutterMarks.HasDebugMarks; // update all shared editors
   if (FLineInfoNotification <> nil) and (DebugBoss <> nil) and (DebugBoss.LineInfo <> nil) then
     DebugBoss.LineInfo.RemoveNotification(FLineInfoNotification);
 end;
