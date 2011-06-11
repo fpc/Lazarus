@@ -110,6 +110,7 @@ end;
 procedure TForm1.udcsGraphGetChartDataItem(ASource: TUserDefinedChartSource;
   AIndex: Integer; var AItem: TChartDataItem);
 begin
+  Unused(ASource);
   AItem.X := (AIndex - 50) * 0.1;
   AItem.Y := Sin(AItem.X * 3) + AItem.X / 10;
 end;
@@ -117,6 +118,7 @@ end;
 procedure TForm1.udcsMainGetChartDataItem(
   ASource: TUserDefinedChartSource; AIndex: Integer; var AItem: TChartDataItem);
 begin
+  Unused(ASource);
   AItem.X := AIndex - 5;
   AItem.Y := AItem.X;
 end;
@@ -124,6 +126,7 @@ end;
 procedure TForm1.udcsSubGetChartDataItem(
   ASource: TUserDefinedChartSource; AIndex: Integer; var AItem: TChartDataItem);
 begin
+  Unused(ASource);
   AItem.X := (AIndex - 25) * 0.2;
   AItem.Y := AItem.X;
 end;
