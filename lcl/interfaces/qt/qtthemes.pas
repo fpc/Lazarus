@@ -230,6 +230,13 @@ begin
               opt := QStyleOptionSlider_create();
               QStyleOptionSlider_setMinimum(QStyleOptionSliderH(opt), 0);
               QStyleOptionSlider_setMaximum(QStyleOptionSliderH(opt), 100);
+              if Element.ComplexControl = QStyleCC_Slider then
+              begin
+                if Element.Features = QtVertical then
+                  QStyleOptionSlider_setOrientation(QStyleOptionSliderH(opt), QtVertical)
+                else
+                  QStyleOptionSlider_setOrientation(QStyleOptionSliderH(opt), QtHorizontal);
+              end;
             end;
           else
             opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion),
@@ -483,7 +490,10 @@ begin
   // define orientations
   if ((Details.Element = teRebar) and (Details.Part = RP_GRIPPER)) or
      ((Details.Element = teToolBar) and (Details.Part = TP_SEPARATOR)) or
-     ((Details.Element = teScrollBar) and (Details.Part in [SBP_UPPERTRACKHORZ, SBP_LOWERTRACKHORZ, SBP_THUMBBTNHORZ, SBP_GRIPPERHORZ])) then
+     ((Details.Element = teScrollBar) and (Details.Part in
+       [SBP_UPPERTRACKHORZ, SBP_LOWERTRACKHORZ, SBP_THUMBBTNHORZ, SBP_GRIPPERHORZ])) or
+     ((Details.Element = teTrackbar) and not (Details.Part in
+       [TKP_TRACKVERT, TKP_THUMBVERT])) then
     Result := Result or QStyleState_Horizontal;
 
   if (Details.Element = teTreeview) then
@@ -505,6 +515,14 @@ begin
         TREIS_HOTSELECTED:
           Result := Result or QStyleState_Selected or QStyleState_MouseOver;
       end;
+    end;
+  end;
+  if (Details.Element = teTrackBar) then
+  begin
+    if Details.Part in [TKP_THUMB, TKP_THUMBVERT] then
+    begin
+      if Details.State in [TUS_PRESSED, TUS_HOT] then
+        Result := Result or QStyleState_Active or QStyleState_HasFocus or QStyleState_MouseOver;
     end;
   end;
 end;
@@ -739,6 +757,27 @@ begin
           SBP_UPPERTRACKVERT: Result.SubControls := QStyleSC_ScrollBarSubPage;
         else
           Result.SubControls := QStyleSC_None;
+        end;
+      end;
+    teTrackBar:
+      begin
+        Result.DrawVariant := qdvComplexControl;
+        Result.ComplexControl := QStyleCC_Slider;
+        if Details.Part in [TKP_TRACKVERT, TKP_THUMBVERT, TKP_TICSVERT] then
+          Result.Features := QtVertical
+        else
+          Result.Features := QtHorizontal;
+        case Details.Part of
+          TKP_TRACK,
+          TKP_TRACKVERT: Result.SubControls := QStyleSC_SliderGroove;
+          TKP_THUMB,
+          TKP_THUMBBOTTOM,
+          TKP_THUMBTOP,
+          TKP_THUMBVERT,
+          TKP_THUMBLEFT,
+          TKP_THUMBRIGHT: Result.SubControls := QStyleSC_SliderHandle;
+          TKP_TICS,
+          TKP_TICSVERT: Result.SubControls := QStyleSC_SliderTickmarks;
         end;
       end;
     teStatus:
