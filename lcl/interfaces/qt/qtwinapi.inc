@@ -629,11 +629,8 @@ begin
       AIcon := TQtIcon.Create;
       AIcon.addPixmap(APixmap);
       Result := HICON(AIcon);
-    end
-    else
-    begin
+    end else
       Result := HCURSOR(TQtCursor.Create(APixmap, IconInfo^.xHotspot, IconInfo^.yHotspot));
-    end;
     QPixmap_destroy(APixmap);
   end;
 end;

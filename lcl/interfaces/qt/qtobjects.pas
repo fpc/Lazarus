@@ -1296,6 +1296,7 @@ begin
   
   FShared := False;
   FMetrics := nil;
+  FDefaultFont := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -1808,7 +1809,8 @@ begin
     if H < 0 then
       H := 0;
     Widget := QRegion_create(X1, Y1, W, H, RegionType);
-  end;
+  end else
+    Widget := nil;
 end;
 
 constructor TQtRegion.Create(CreateHandle: Boolean; Poly: QPolygonH;
@@ -1822,7 +1824,8 @@ begin
   begin
     FPolygon := QPolygon_create(Poly);
     Widget := QRegion_create(FPolygon, Fill);
-  end;
+  end else
+    Widget := nil;
 end;
 
 
@@ -1928,13 +1931,15 @@ begin
 
   {NOTE FOR QT DEVELOPERS: Whenever you call TQtDeviceContext.Create() outside
    of TQtWidgetSet.BeginPaint() SET APaintEvent TO FALSE !}
+  Parent := nil;
+  ParentPixmap := nil;
+  FMetrics := nil;
+
   if AWidget = nil then
   begin
-    Parent := nil;
     ParentPixmap := QPixmap_Create(10, 10);
     Widget := QPainter_Create(QPaintDeviceH(ParentPixmap));
-  end
-  else
+  end else
   begin
     Parent := AWidget;
     if not APaintEvent then
@@ -1948,14 +1953,10 @@ begin
       
       ParentPixmap := QPixmap_Create(W, H);
       Widget := QPainter_create(QPaintDeviceH(ParentPixmap));
-    end
-    else
-    begin
+    end else
       Widget := QPainter_create(QWidget_to_QPaintDevice(Parent));
-    end;
   end;
 
-  FMetrics := nil;
   FRopMode := R2_COPYPEN;
   FOwnPainter := True;
   CreateObjects;
