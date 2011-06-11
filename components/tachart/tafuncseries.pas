@@ -29,7 +29,7 @@ uses
 const
   DEF_FUNC_STEP = 2;
   DEF_SPLINE_DEGREE = 3;
-  DEF_SPLINE_STEP = 2;
+  DEF_SPLINE_STEP = 4;
   DEF_COLORMAP_STEP = 4;
 
 type
@@ -431,15 +431,16 @@ end;
 procedure TSplineSeries.Draw(ADrawer: IChartDrawer);
 var
   p: array of TDoublePoint;
+  startIndex: Integer;
 
-  function SplinePoint(AIndex: Integer; APos: Double): TDoublePoint;
+  function SplinePoint(APos: Double): TPoint;
   var
     i, d: Integer;
     w: Double;
   begin
     for i := 0 to Degree do
       p[i] := FGraphPoints[
-        EnsureRange(AIndex - Degree + i, 0, High(FGraphPoints))];
+        EnsureRange(startIndex - Degree + i, 0, High(FGraphPoints))];
     // De Boor's algorithm.
     for d := 1 to Degree do
       for i := Degree downto d do begin
@@ -447,14 +448,29 @@ var
         p[i].X := WeightedAverage(p[i - 1].X, p[i].X, w);
         p[i].Y := WeightedAverage(p[i - 1].Y, p[i].Y, w);
       end;
-    Result := p[Degree];
+    Result := ParentChart.GraphToImage(p[Degree]);
   end;
 
-const
-  Steps = 10;
+  procedure SplineSegment(
+    ADepth: Integer; AL, AR: Double; const APL, APR: TPoint);
+  const
+    INF_SENTINEL = 15; // Arbitrary limit to guard against infinite recursion.
+  var
+    m: Double;
+    pm: TPoint;
+  begin
+    if (ADepth > INF_SENTINEL) or (PointDist(APL, APR) <= Sqr(Step)) then
+      ADrawer.Line(APL, APR)
+    else begin
+      m := (AL + AR) / 2;
+      pm := SplinePoint(m);
+      SplineSegment(ADepth + 1, AL, m, APL, pm);
+      SplineSegment(ADepth + 1, m, AR, pm, APR);
+    end;
+  end;
+
 var
   ext: TDoubleRect;
-  i, j: Integer;
 begin
   if IsEmpty then exit;
 
@@ -468,13 +484,9 @@ begin
   PrepareGraphPoints(ext, true);
 
   ADrawer.Pen := Pen;
-  ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[0]));
-
   SetLength(p, Degree + 1);
-  for i := 0 to High(FGraphPoints) + Degree - 1 do begin
-    for j := 1 to Steps do
-      ADrawer.LineTo(ParentChart.GraphToImage(SplinePoint(i, j / Steps)));
-  end;
+  for startIndex := 0 to High(FGraphPoints) + Degree - 1 do
+    SplineSegment(0, 0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
   DrawLabels(ADrawer);
 end;
 
