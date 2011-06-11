@@ -8,7 +8,8 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { you can add units after this }, main, TAChartLazarusPkg;
+  { you can add units after this }, main, runtimetypeinfocontrols,
+  TAChartLazarusPkg;
 
 begin
   Application.Title := 'TAChart function series demo';

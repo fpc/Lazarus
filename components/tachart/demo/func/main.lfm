@@ -28,10 +28,12 @@ object Form1: TForm1
         Width = 453
         AxisList = <        
           item
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
             Alignment = calBottom
+            Minors = <>
           end>
         ExpandPercentage = 10
         Extent.YMin = -6
@@ -112,11 +114,13 @@ object Form1: TForm1
         Width = 327
         AxisList = <        
           item
+            Minors = <>
             Title.LabelFont.Orientation = 900
             ZPosition = 1
           end        
           item
             Alignment = calBottom
+            Minors = <>
             ZPosition = 1
           end>
         Extent.XMin = -1
@@ -192,6 +196,87 @@ object Form1: TForm1
         ResizeAnchor = akRight
       end
     end
+    object tsSpline: TTabSheet
+      Caption = 'Spline'
+      ClientHeight = 336
+      ClientWidth = 453
+      object ChartSpline: TChart
+        Left = 0
+        Height = 306
+        Top = 0
+        Width = 453
+        AxisList = <        
+          item
+            Grid.Color = clGray
+            Grid.Cosmetic = False
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Grid.Color = clGray
+            Grid.Cosmetic = False
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartSplineLineSeries1: TLineSeries
+          Source = RandomChartSource1
+        end
+        object ChartSplineSplineSeries1: TSplineSeries
+          Source = RandomChartSource1
+          Pen.Color = clLime
+          Pen.Width = 3
+        end
+      end
+      object pnSpline: TPanel
+        Left = 0
+        Height = 30
+        Top = 306
+        Width = 453
+        Align = alBottom
+        ClientHeight = 30
+        ClientWidth = 453
+        TabOrder = 1
+        object iseSplineDegree: TTISpinEdit
+          Left = 60
+          Height = 21
+          Top = 4
+          Width = 50
+          Link.TIObject = ChartSplineSplineSeries1
+          Link.TIPropertyName = 'Degree'
+          MinValue = 1
+          OnChange = iseSplineDegreeChange
+          TabOrder = 0
+        end
+        object icbSplineRandomX: TTICheckBox
+          Left = 128
+          Height = 23
+          Top = 4
+          Width = 90
+          Caption = 'Random X'
+          Link.TIObject = RandomChartSource1
+          Link.TIPropertyName = 'RandomX'
+          PropertyNameAsCaption = False
+          TabOrder = 1
+        end
+        object lblSplineDegree: TLabel
+          Left = 12
+          Height = 14
+          Top = 8
+          Width = 36
+          Caption = 'Degree'
+          ParentColor = False
+        end
+      end
+    end
   end
   object UserDefinedChartSource1: TUserDefinedChartSource
     OnGetChartDataItem = UserDefinedChartSource1GetChartDataItem
@@ -219,5 +304,15 @@ object Form1: TForm1
     object chtsColorMapPanDragTool1: TPanDragTool
       Shift = [ssRight]
     end
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 1859411043
+    XMax = 9
+    XMin = 0
+    YMax = 10
+    YMin = -10
+    left = 280
+    top = 56
   end
 end

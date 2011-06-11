@@ -5,8 +5,9 @@ unit main;
 interface
 
 uses
-  Classes, ComCtrls, ExtCtrls, StdCtrls, Forms, Graphics, TAFuncSeries, TAGraph,
-  TALegendPanel, TASeries, TACustomSource, TASources, TATools;
+  Classes, ComCtrls, ExtCtrls, RTTICtrls, StdCtrls, Forms, Graphics,
+  TAFuncSeries, TAGraph, TALegendPanel, TASeries, TACustomSource, TASources,
+  TATools;
 
 type
 
@@ -23,15 +24,24 @@ type
     Chart1UserDrawnSeries1: TUserDrawnSeries;
     Chart1XAxis: TConstantLine;
     Chart1YAxis: TConstantLine;
+    ChartSpline: TChart;
     ChartColorMap: TChart;
     ChartColorMapColorMapSeries1: TColorMapSeries;
     ChartLegendPanel1: TChartLegendPanel;
+    ChartSplineLineSeries1: TLineSeries;
+    ChartSplineSplineSeries1: TSplineSeries;
     chtsColorMap: TChartToolset;
     chtsColorMapPanDragTool1: TPanDragTool;
     chtsColorMapZoomDragTool1: TZoomDragTool;
+    lblSplineDegree: TLabel;
     ListChartSource1: TListChartSource;
     PageControl1: TPageControl;
     Panel1: TPanel;
+    pnSpline: TPanel;
+    RandomChartSource1: TRandomChartSource;
+    iseSplineDegree: TTISpinEdit;
+    icbSplineRandomX: TTICheckBox;
+    tsSpline: TTabSheet;
     tsDomain: TTabSheet;
     tsColorMap: TTabSheet;
     Splitter1: TSplitter;
@@ -44,6 +54,7 @@ type
     procedure Chart1UserDrawnSeries1Draw(ACanvas: TCanvas; const ARect: TRect);
     procedure ChartColorMapColorMapSeries1Calculate(const AX, AY: Double; out
       AZ: Double);
+    procedure iseSplineDegreeChange(Sender: TObject);
     procedure UserDefinedChartSource1GetChartDataItem(
       ASource: TUserDefinedChartSource; AIndex: Integer;
       var AItem: TChartDataItem);
@@ -126,6 +137,11 @@ procedure TForm1.ChartColorMapColorMapSeries1Calculate(
   const AX, AY: Double; out AZ: Double);
 begin
   AZ := Sin(10 * Sqr(AX) + 17 * Sqr(AY));
+end;
+
+procedure TForm1.iseSplineDegreeChange(Sender: TObject);
+begin
+  (Sender as TTISpinEdit).EditingDone;
 end;
 
 procedure TForm1.UserDefinedChartSource1GetChartDataItem(
