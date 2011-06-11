@@ -27,6 +27,9 @@ uses
   TAChartUtils, TACustomSeries, TACustomSource, TADrawUtils, TALegend, TATypes;
 
 const
+  DEF_FUNC_STEP = 2;
+  DEF_SPLINE_DEGREE = 3;
+  DEF_SPLINE_STEP = 2;
   DEF_COLORMAP_STEP = 4;
 
 type
@@ -87,7 +90,43 @@ type
     property OnCalculate: TFuncCalculateEvent
       read FOnCalculate write SetOnCalculate;
     property Pen: TChartPen read FPen write SetPen;
-    property Step: TFuncSeriesStep read FStep write SetStep default 2;
+    property Step: TFuncSeriesStep read FStep write SetStep default DEF_FUNC_STEP;
+  end;
+
+  TSplineDegree = 1..100;
+
+  { TSplineSeries }
+
+  TSplineSeries = class(TBasicPointSeries)
+  private
+    FDegree: TSplineDegree;
+    FPen: TChartPen;
+    FStep: TFuncSeriesStep;
+
+    procedure SetDegree(AValue: TSplineDegree);
+    procedure SetPen(AValue: TChartPen);
+    procedure SetStep(AValue: TFuncSeriesStep);
+  protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+
+  public
+    procedure Assign(ASource: TPersistent); override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Draw(ADrawer: IChartDrawer); override;
+  published
+    property Active default true;
+    property AxisIndexX;
+    property AxisIndexY;
+    property ShowInLegend;
+    property Source;
+    property Title;
+    property ZPosition;
+  published
+    property Degree: TSplineDegree read FDegree write SetDegree default DEF_SPLINE_DEGREE;
+    property Pen: TChartPen read FPen write SetPen;
+    property Step: TFuncSeriesStep read FStep write SetStep default DEF_SPLINE_STEP;
   end;
 
   TFuncCalculate3DEvent =
@@ -214,7 +253,7 @@ begin
   FDomainExclusions.OnChange := @StyleChanged;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
-  FStep := 2;
+  FStep := DEF_FUNC_STEP;
 end;
 
 destructor TFuncSeries.Destroy;
@@ -356,6 +395,109 @@ begin
 end;
 
 procedure TFuncSeries.SetStep(AValue: TFuncSeriesStep);
+begin
+  if FStep = AValue then exit;
+  FStep := AValue;
+  UpdateParentChart;
+end;
+
+{ TSplineSeries }
+
+procedure TSplineSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TSplineSeries then
+    with TSplineSeries(ASource) do begin
+      Self.Pen := FPen;
+      Self.FStep := FStep;
+    end;
+  inherited Assign(ASource);
+end;
+
+constructor TSplineSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FDegree := DEF_SPLINE_DEGREE;
+  FPen := TChartPen.Create;
+  FPen.OnChange := @StyleChanged;
+  FStep := DEF_SPLINE_STEP;
+end;
+
+destructor TSplineSeries.Destroy;
+begin
+  FreeAndNil(FPen);
+  inherited;
+end;
+
+procedure TSplineSeries.Draw(ADrawer: IChartDrawer);
+var
+  p: array of TDoublePoint;
+
+  function SplinePoint(AIndex: Integer; APos: Double): TDoublePoint;
+  var
+    i, d: Integer;
+    w: Double;
+  begin
+    for i := 0 to Degree do
+      p[i] := FGraphPoints[
+        EnsureRange(AIndex - Degree + i, 0, High(FGraphPoints))];
+    // De Boor's algorithm.
+    for d := 1 to Degree do
+      for i := Degree downto d do begin
+        w := (APos + Degree - i) / (Degree + 1 - d);
+        p[i].X := WeightedAverage(p[i - 1].X, p[i].X, w);
+        p[i].Y := WeightedAverage(p[i - 1].Y, p[i].Y, w);
+      end;
+    Result := p[Degree];
+  end;
+
+const
+  Steps = 10;
+var
+  ext: TDoubleRect;
+  i, j: Integer;
+begin
+  if IsEmpty then exit;
+
+  with Extent do begin
+    ext.a := AxisToGraph(a);
+    ext.b := AxisToGraph(b);
+  end;
+  NormalizeRect(ext);
+  ExpandRange(ext.a.X, ext.b.X, 1.0);
+  ExpandRange(ext.a.Y, ext.b.Y, 1.0);
+  PrepareGraphPoints(ext, true);
+
+  ADrawer.Pen := Pen;
+  ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[0]));
+
+  SetLength(p, Degree + 1);
+  for i := 0 to High(FGraphPoints) + Degree - 1 do begin
+    for j := 1 to Steps do
+      ADrawer.LineTo(ParentChart.GraphToImage(SplinePoint(i, j / Steps)));
+  end;
+  DrawLabels(ADrawer);
+end;
+
+procedure TSplineSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemLine.Create(Pen, Title));
+end;
+
+procedure TSplineSeries.SetDegree(AValue: TSplineDegree);
+begin
+  if FDegree = AValue then exit;
+  FDegree := AValue;
+  UpdateParentChart;
+end;
+
+procedure TSplineSeries.SetPen(AValue: TChartPen);
+begin
+  if FPen = AValue then exit;
+  FPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TSplineSeries.SetStep(AValue: TFuncSeriesStep);
 begin
   if FStep = AValue then exit;
   FStep := AValue;
@@ -564,6 +706,7 @@ end;
 
 initialization
   RegisterSeriesClass(TFuncSeries, 'Function series');
+  RegisterSeriesClass(TSplineSeries, 'Spline series');
   RegisterSeriesClass(TColorMapSeries, 'Color map series');
 
 end.
