@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
-  EditorOptions, Maps, Math, LCLProc, Menus, Clipbrd, ActnList,
-  IDECommands, IDEImagesIntf;
+  BaseDebugManager, EditorOptions, Maps, Math, LCLProc, Menus, Clipbrd, ActnList,
+  IDECommands, IDEImagesIntf, CodeToolManager, CodeCache, SourceEditor;
 
 type
 
@@ -27,6 +27,7 @@ type
     Addr: TDbgPtr;
     Dump: String;
     Statement: String;
+    PasCode: String;
     FileName: String;
     SourceLine: Integer;
   end;
@@ -78,6 +79,7 @@ type
     procedure ToolButtonPowerClick(Sender: TObject);
   private
     FDebugger: TDebugger;
+    FDebugManager: TBaseDebugManager;
     FDisassembler: TIDEDisassembler;
     FDisassemblerNotification: TIDEDisassemblerNotification;
     FCurrentLocation, FLocation: TDBGPtr;
@@ -125,6 +127,7 @@ type
     function  IndexOfAddr(const AAddr: TDBGPtr): Integer;
     procedure UpdateLocation(const AAddr: TDBGPtr);
   protected
+    function GetSourceCodeLine(SrcFileName: string; SrcLineNumber: Integer): string;
     procedure InitializeWnd; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -132,6 +135,7 @@ type
 
     procedure SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
     property Disassembler: TIDEDisassembler read FDisassembler write SetDisassembler;
+    property DebugManager: TBaseDebugManager read FDebugManager write FDebugManager;
   end;
 
 implementation
@@ -543,7 +547,9 @@ begin
     lmsSource: begin
       if ALine.SourceLine = 0
       then Result := '---'
-      else Result :=  Format('%s:%u %s', [ALine.FileName, ALine.SourceLine, ALine.Statement]);
+      else Result :=  Format('%-'+IntToStr(W+25)+'s %s',
+                             [Format('%s:%u %s', [ALine.FileName, ALine.SourceLine, ALine.Statement]),
+                              ALine.PasCode]);
     end;
     lmsFuncName: Result:= ALine.FileName + ' ' + ALine.Statement;
   end;
@@ -769,6 +775,25 @@ begin
   UpdateLineData;
 end;
 
+function TAssemblerDlg.GetSourceCodeLine(SrcFileName: string; SrcLineNumber: Integer): string;
+var
+  PasSource: TCodeBuffer;
+  Editor: TSourceEditor;
+begin
+  Result := '';
+  if SrcLineNumber < 1 then exit;
+  if not FDebugManager.GetFullFilename(SrcFileName, False) // TODO: maybe ask user?
+  then exit;
+  PasSource := CodeToolBoss.LoadFile(SrcFileName, true, false);
+  if PasSource = nil
+  then exit;
+
+  Editor := SourceEditorManager.SourceEditorIntfWithFilename(SrcFileName);
+  if Editor <> nil then SrcLineNumber := Editor.DebugToSourceLine(SrcLineNumber);
+
+  Result := Trim(PasSource.GetLine(SrcLineNumber - 1));
+end;
+
 procedure TAssemblerDlg.UpdateLineData;
 begin
   UpdateLineDataEx(FLineMap, FTopLine, FLineCount + 1,
@@ -938,6 +963,7 @@ begin
           ALineMap[Line].State := lmsSource;
           ALineMap[Line].SourceLine := Itm^.SrcFileLine;
           ALineMap[Line].FileName   := Itm^.SrcFileName;
+          ALineMap[Line].PasCode := GetSourceCodeLine(Itm^.SrcFileName, Itm^.SrcFileLine);
         end
         else begin
           ALineMap[Line].State := lmsFuncName;
@@ -962,6 +988,7 @@ begin
           if NextItm <> nil
           then ALineMap[Line].Statement  := Format('(%d of %d)', [NextItm^.SrcStatementIndex, NextItm^.SrcStatementCount])
           else ALineMap[Line].Statement  := Format('(??? of %d)', [Itm^.SrcStatementCount]);
+          ALineMap[Line].PasCode := GetSourceCodeLine(Itm^.SrcFileName, Itm^.SrcFileLine);
         end
         else begin
           ALineMap[Line].State := lmsFuncName;
