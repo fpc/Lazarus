@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="CodeTools"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
       <Version Value="10"/>
@@ -30,7 +29,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="65">
+    <Files Count="66">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -286,12 +285,16 @@
       </Item63>
       <Item64>
         <Filename Value="ctunitgraph.pas"/>
-        <UnitName Value="ctunitgraph"/>
+        <UnitName Value="CTUnitGraph"/>
       </Item64>
       <Item65>
         <Filename Value="changedeclarationtool.pas"/>
-        <UnitName Value="changedeclarationtool"/>
+        <UnitName Value="ChangeDeclarationTool"/>
       </Item65>
+      <Item66>
+        <Filename Value="codetoolsfpcmsgs.pas"/>
+        <UnitName Value="CodeToolsFPCMsgs"/>
+      </Item66>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

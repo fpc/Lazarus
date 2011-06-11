@@ -400,6 +400,7 @@ components/codetools/codetools.lpk svneol=native#text/plain
 components/codetools/codetools.pas svneol=native#text/plain
 components/codetools/codetoolscfgscript.pas svneol=native#text/pascal
 components/codetools/codetoolsconfig.pas svneol=native#text/plain
+components/codetools/codetoolsfpcmsgs.pas svneol=native#text/plain
 components/codetools/codetoolsstrconsts.pas svneol=native#text/pascal
 components/codetools/codetoolsstructs.pas svneol=native#text/pascal
 components/codetools/codetree.pas svneol=native#text/pascal
