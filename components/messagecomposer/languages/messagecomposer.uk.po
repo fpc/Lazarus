@@ -1,0 +1,113 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: messagecomposer.rsok
+msgid "OK"
+msgstr "Гаразд"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Тест"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr "Додати"
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr "Кнопки (масив констант)"
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr "Кнопки (TMsgDlgButtons)"
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr "Результат \"Case\""
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr "За замовчуванням"
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr "Видалити"
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr "Заголовок діалогу"
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr "Тип діалогу"
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr "Контекст довідки"
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr "Ім'я файлу довідки"
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr "Ключове слово довідки"
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr "Результат \"If\""
+
+#: messagecomposer.skindofmessage
+msgid "Kind of message"
+msgstr "Тип повідомлення"
+
+#: messagecomposer.smaskinput
+msgid "Mask input"
+msgstr "Маскувати ввід"
+
+#: messagecomposer.smessagecomposercaption
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Компонувальник Повідомлень"
+
+#: messagecomposer.smessagecomposermenucaption
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "Компонувальник Повідомлень ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr "Модальний результат"
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "Відображуване повідомлення"
+
+#: messagecomposer.snotimplementedyet
+msgid "Not implemented yet"
+msgstr "Ще не реалізовано"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "Текст запиту на введення користувачем"
+
+#: messagecomposer.ssourcewrapper
+msgid "Source wrapper"
+msgstr "Обгортка початкового коду"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr "Значення (змінна)"
+

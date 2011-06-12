@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: iphtmlpv.rsiphtmlpreviewclose
+msgid "Close"
+msgstr "Закрити"
+
+#: iphtmlpv.rsiphtmlpreviewof
+msgid "of"
+msgstr "з"
+
+#: iphtmlpv.rsiphtmlpreviewpage
+msgid "Page:"
+msgstr "Сторінка:"
+
+#: iphtmlpv.rsiphtmlpreviewprint
+msgid "Print"
+msgstr "Друк"
+
+#: iphtmlpv.rsiphtmlpreviewprintpreview
+msgid "Print preview"
+msgstr "Попередній перегляд"
+
+#: iphtmlpv.rsiphtmlpreviewselectprinter
+msgid "Select printer..."
+msgstr "Виберіть принтер..."
+
+#: iphtmlpv.rsiphtmlpreviewzoom
+msgid "Zoom:"
+msgstr "Масштаб:"
+

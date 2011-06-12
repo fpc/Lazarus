@@ -1,0 +1,75 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: heaptrcview.rsdtimes
+msgid " (%d times)"
+msgstr " (%d разів)"
+
+#: heaptrcview.rserrorparse
+msgid "Error while parsing trace file"
+msgstr "Помилка розбору файлу стека викликів"
+
+#: heaptrcview.rsleakview
+msgid "Leak View"
+msgstr "Перегляд витоків пам'яті"
+
+#: heaptrcview.sbtnclipbrd
+msgid "Paste Clipboard"
+msgstr "Вставити з буфера обміну"
+
+#: heaptrcview.sbtnupdate
+msgid "Update"
+msgstr "Оновити"
+
+#: heaptrcview.schkraw
+msgid "Raw leak data"
+msgstr "Необроблені дані про витік"
+
+#: heaptrcview.schktop
+msgid "Stay on top"
+msgstr "Поверх інших вікон"
+
+#: heaptrcview.sfrmcap
+msgid "LeakView - HeapTrc output viewer"
+msgstr "LeakView - програма перегляду виводу HeapTrc"
+
+#: heaptrcview.slbltrace
+msgid ".trc file"
+msgstr "файл .trc"
+
+#: heaptrcview.stacklineformat
+msgid "%s"
+msgstr "%s"
+
+#: heaptrcview.stacklineformatwithfile
+msgid "%s file: %s : %d; "
+msgstr "%s файл: %s : %d; "
+
+#: heaptrcview.stacktraceformat
+msgid "Leak: %d bytes x %d times"
+msgstr "Витік: %d байт(ів) x %d раз(ів)"
+
+#: heaptrcview.stacktraceformatsingle
+msgid "Leak: %d bytes"
+msgstr "Витік: %d байт(ів)"
+
+#: heaptrcview.strleakingblockscount
+msgid "Leaking Blocks Count: %d"
+msgstr "К-сть втрачених блоків пам'яті: %d"
+
+#: heaptrcview.strleakingmemsize
+msgid "Leaking Mem Size: %d"
+msgstr "Розмір втраченої пам'яті: %d"
+
+#: heaptrcview.strtotalmemalloc
+msgid "Total Mem alloced: %d"
+msgstr "Розмір виділеної пам'яті: %d"
+

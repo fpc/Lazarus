@@ -1,0 +1,149 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: guitestrunner.rsalltests
+msgid "All Tests"
+msgstr "Всі Тести"
+
+#: guitestrunner.rserrors
+msgid "%s    Errors: %s"
+msgstr "%s    Помилки: %s"
+
+#: guitestrunner.rsexception
+msgid "Exception: %s"
+msgstr "Виняток: %s"
+
+#: guitestrunner.rsexceptioncla
+msgid "Exception class: %s"
+msgstr "Клас винятка: %s"
+
+#: guitestrunner.rsexceptionmes
+msgid "Exception message: %s"
+msgstr "Повідомлення винятка: %s"
+
+#: guitestrunner.rsfailures
+msgid "%s     Failures: %s"
+msgstr "%s     Невдач: %s"
+
+#: guitestrunner.rslinenumber
+msgid "Line number: %s"
+msgstr "Номер рядка: %s"
+
+#: guitestrunner.rsmessage
+msgid "Message: %s"
+msgstr "Повідомлення: %s"
+
+#: guitestrunner.rsmethodname
+msgid "Method name: %s"
+msgstr "Ім'я методу: %s"
+
+#: guitestrunner.rsnumberofexec
+msgid "Number of executed tests: %s  Time elapsed: %s"
+msgstr "Кількість виконаних тестів: %s Пройшло часу: %s"
+
+#: guitestrunner.rsrun
+msgid "Run "
+msgstr "Запустити"
+
+#: guitestrunner.rsrunning
+msgid "Running %s"
+msgstr "Виконується %s"
+
+#: guitestrunner.rsruns
+msgid "Runs: %s/%s"
+msgstr "Запусків: %s/%s"
+
+#: guitestrunner.rsunitname
+msgid "Unit name: %s"
+msgstr "Ім'я модуля: %s"
+
+#: guitestrunner.sactcheckall
+msgid "Check all Tests"
+msgstr "Відзначити всі тести"
+
+#: guitestrunner.sactcheckcurrentsuite
+msgid "Check the Current Suite"
+msgstr "Відзначити Поточний Набір"
+
+#: guitestrunner.sactcloseform
+msgid "Quit"
+msgstr "Вийти"
+
+#: guitestrunner.sactcloseformh
+msgid "Quit Testting"
+msgstr "Завершити Тестування"
+
+#: guitestrunner.sactrunaction
+msgid "&Run"
+msgstr "За&пустити"
+
+#: guitestrunner.sactrunactionh
+msgid "Run all checked test(s)"
+msgstr "Запустити всі відзначені тести"
+
+#: guitestrunner.sactrunhighlightedtest
+msgctxt "guitestrunner.sactrunhighlightedtest"
+msgid "Run highlighted test"
+msgstr "Запустити виділений текст"
+
+#: guitestrunner.sactuncheckall
+msgid "Uncheck all tests"
+msgstr "Зняти позначки з усіх тестів"
+
+#: guitestrunner.sactuncheckcurrentsuite
+msgid "Uncheck the Current Suite"
+msgstr "Зняти позначку з Поточного Набору"
+
+#: guitestrunner.sbtnclose
+msgid "Close"
+msgstr "Закрити"
+
+#: guitestrunner.sbtnrun
+msgid "Run"
+msgstr "Запустити"
+
+#: guitestrunner.sbtnrunh
+msgctxt "guitestrunner.sbtnrunh"
+msgid "Run highlighted test"
+msgstr "Запустити виділений текст"
+
+#: guitestrunner.sfrmguitest
+msgid "FPCUnit - run unit test"
+msgstr "FPCUnit - запустити модульне тестування"
+
+#: guitestrunner.smicopy
+msgid "&Copy"
+msgstr "&Копіювати"
+
+#: guitestrunner.smicopyclipbrd
+msgid "Copy to clipboard"
+msgstr "Копіювати в буфер обміну"
+
+#: guitestrunner.smicut
+msgid "C&ut"
+msgstr "Ви&різати"
+
+#: guitestrunner.smiruntest
+msgid "  &Run all selected (checked) tests"
+msgstr "  &Запустити всі вибрані (відзначені) тести"
+
+#: guitestrunner.smishowfail
+msgid "Copy message to clipboard"
+msgstr "Копіювати поідомлення в буфер"
+
+#: guitestrunner.stshresults
+msgid "Results XML"
+msgstr "Результати в вигляді XML"
+
+#: guitestrunner.stshtree
+msgid "Testcase tree"
+msgstr "Дерево тестів"
+

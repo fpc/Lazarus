@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-03 22:46+0200\n"
+"PO-Revision-Date: 2011-06-11 16:35+0200\n"
 "Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -673,7 +673,7 @@ msgstr "Бібліотеки (-F1)"
 
 #: lazarusidestrconsts.dlgcolinking
 msgid "Linking"
-msgstr "Створення посилань"
+msgstr "Компонування"
 
 #: lazarusidestrconsts.dlgcoloadsave
 msgid "Load/Save"
@@ -7187,7 +7187,7 @@ msgstr "Задужкувати"
 
 #: lazarusidestrconsts.lisencloseinifdef
 msgid "Enclose in $IFDEF"
-msgstr ""
+msgstr "Вкласти в $IFDEF"
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
@@ -8478,7 +8478,7 @@ msgstr "Встановити вибране"
 #: lazarusidestrconsts.lisinstalluninstallpackages
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
-msgstr ""
+msgstr "Встановлення/Видалення пакунків"
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
 msgid "Instead of compile package create a simple Makefile."
@@ -10056,7 +10056,7 @@ msgstr "Переглядання шаблону"
 
 #: lazarusidestrconsts.lismenuencloseinifdef
 msgid "Enclose in $IFDEF ..."
-msgstr ""
+msgstr "Вкласти в $IFDEF ..."
 
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
@@ -10759,7 +10759,7 @@ msgstr "Повідомлення"
 #: lazarusidestrconsts.lismenuviewobjectinspector
 msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
-msgstr "Інспектор об'єкту"
+msgstr "Інспектор Об'єктів"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgid "Terminal Output"
@@ -12192,7 +12192,7 @@ msgstr "Циклічна залежність пакунків"
 
 #: lazarusidestrconsts.lispkgmangcompilingpackage
 msgid "Compiling package %s"
-msgstr "Компілюю пакунок %s"
+msgstr "Компілювання пакунку %s"
 
 #: lazarusidestrconsts.lispkgmangdeletefailed
 msgid "Delete failed"
@@ -14616,7 +14616,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
-msgstr ""
+msgstr "Для встановлення потрібно скомпілювати та перезапустити IDE"
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
@@ -16442,7 +16442,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
-msgstr "швидка компіляція без збирання"
+msgstr "швидке компілювання, без компонування"
 
 #: lazarusidestrconsts.srkmecquit
 msgid "Quit"
@@ -16941,7 +16941,7 @@ msgstr "Додати спостереження біля курсора"
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"
-msgstr "Закладки"
+msgstr "Закладка"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"

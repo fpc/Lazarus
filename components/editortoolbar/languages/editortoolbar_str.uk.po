@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr "Додати Роздільник"
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr "Налаштувати Панель Інструментів"
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr "Налаштування Панелі Інструментів Редактора"
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr "Перейти До"
+
+#: editortoolbar_str.rsmenutree
+msgid "Menu Tree"
+msgstr "Дерево Меню"
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr "Гаразд"
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar"
+msgstr "Панель Інструментів"
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr "Неможливо знайти <%s>"
+

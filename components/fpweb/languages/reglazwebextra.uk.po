@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reglazwebextra.rshttpappli
+msgid "HTTP server Application"
+msgstr "Додаток сервера HTTP"
+
+#: reglazwebextra.rshttpappli2
+msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr "Додаток сервера HTTP. Закінчена програма сервера HTTP на Free Pascal, що використовує веб-модулі. Початковий код програми автоматично підтримується Lazarus."
+
+#: reglazwebextra.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr "Модуль Web DataProvider"
+
+#: reglazwebextra.rswebdataprovi2
+msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr "Модуль Web DataProvider%sМодуль даних для обробки запитів даних в додатках веб (HTTP) з використанням компонентів WebDataProvider."
+
+#: reglazwebextra.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr "Модуль Web Ext.Direct"
+
+#: reglazwebextra.rswebextdirect2
+msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Модуль Web Ext.Direct%sМодуль даних для обробки запитів Ext.Direct в додатках веб (HTTP) з використанням компонентів TJSONRPCHandler."
+
+#: reglazwebextra.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr "Модуль Web JSON-RPC"
+
+#: reglazwebextra.rswebjsonrpcmo2
+msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr "Модуль Web JSON-RPC%sМодуль даних для обробки запитів JSON-RPC в додатках веб (HTTP) з використанням компонентів TJSONRPCHandler."
+

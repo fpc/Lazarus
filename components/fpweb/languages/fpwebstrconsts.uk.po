@@ -1,0 +1,395 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fpwebstrconsts.scssfile
+msgid "CSS file"
+msgstr "Файл CSS"
+
+#: fpwebstrconsts.scssfiledesc
+msgid "Create new CSS file..."
+msgstr "Створити новий файл CSS..."
+
+#: fpwebstrconsts.scsssource
+msgid "Enter your classes/style definitions here"
+msgstr "Введіть визначення класів/стилів тут"
+
+#: fpwebstrconsts.sdocumentlocation
+msgid "&Location"
+msgstr "&Розміщення"
+
+#: fpwebstrconsts.sdocumentroot
+msgid "&Directory"
+msgstr "&Директорія"
+
+#: fpwebstrconsts.senteryoutext
+msgid "Enter your text..."
+msgstr "Введіть текст..."
+
+#: fpwebstrconsts.shtmlautor
+msgid "Html &author - <meta name=\"author\">"
+msgstr "&Автор Html - <meta name=\"author\">"
+
+#: fpwebstrconsts.shtmlcharset
+msgid "HTML chars&et"
+msgstr "&Кодування HTML"
+
+#: fpwebstrconsts.shtmlcopyright
+msgid "Html cop&yright - meta name=\"copyright\">"
+msgstr "Ав&торське право Html - meta name=\"copyright\">"
+
+#: fpwebstrconsts.shtmlcssfile
+msgid "&CSS file"
+msgstr "Ф&айл CSS"
+
+#: fpwebstrconsts.shtmldesign
+msgid "HTML design"
+msgstr "Проект HTML"
+
+#: fpwebstrconsts.shtmlfile
+msgid "HTML file"
+msgstr "Файл HTML"
+
+#: fpwebstrconsts.shtmlfiledesc
+msgid "Create new HTML file..."
+msgstr "Створити новий файл HTML..."
+
+#: fpwebstrconsts.shtmlinputformaccesskey
+msgid "Access key"
+msgstr "Клавіша доступу"
+
+#: fpwebstrconsts.shtmlinputformalign
+msgid "Align"
+msgstr "Вирівнювання"
+
+#: fpwebstrconsts.shtmlinputformalt
+msgid "Alt"
+msgstr "Alt"
+
+#: fpwebstrconsts.shtmlinputformcaption
+msgid "Tag property: INPUT"
+msgstr "Властивість тега: INPUT"
+
+#: fpwebstrconsts.shtmlinputformimagesrc
+msgid "Image src"
+msgstr "Адреса зображення"
+
+#: fpwebstrconsts.shtmlinputformmaxlen
+msgid "Max length"
+msgstr "Максимальна довжина"
+
+#: fpwebstrconsts.shtmlinputformname
+msgid "Name"
+msgstr "Ім'я"
+
+#: fpwebstrconsts.shtmlinputformsize
+msgid "Size"
+msgstr "Розмір"
+
+#: fpwebstrconsts.shtmlinputformtabindex
+msgid "Tab Index"
+msgstr "Індекс за ТАБом"
+
+#: fpwebstrconsts.shtmlinputformtype
+msgid "Type"
+msgstr "Тип"
+
+#: fpwebstrconsts.shtmlinputformvalue
+msgid "Value"
+msgstr "Значення"
+
+#: fpwebstrconsts.shtmljsfile
+msgid "&Javascript file"
+msgstr "&Файл Javascript"
+
+#: fpwebstrconsts.shtmltableformborderwidth
+msgid "Border width"
+msgstr "Ширина межі"
+
+#: fpwebstrconsts.shtmltableformcaption
+msgid "New HTML table..."
+msgstr "Нова таблиця HTML..."
+
+#: fpwebstrconsts.shtmltableformcellpadding
+msgid "Cell padding"
+msgstr "Відступ в клітинці"
+
+#: fpwebstrconsts.shtmltableformcellspacing
+msgid "Cell spacing"
+msgstr "Відступ клітинок"
+
+#: fpwebstrconsts.shtmltableformcolumncount
+msgid "Column count"
+msgstr "Кількість стовпців"
+
+#: fpwebstrconsts.shtmltableformheaderbgcolor
+msgid "Header bg color"
+msgstr "Колір тла заголовка"
+
+#: fpwebstrconsts.shtmltableformrowcount
+msgid "Row count"
+msgstr "Кількість рядків"
+
+#: fpwebstrconsts.shtmltableformuseheader
+msgid "Use header row"
+msgstr "Використовувати рядок заголовка"
+
+#: fpwebstrconsts.shtmltableformwidth
+msgid "Width"
+msgstr "Ширина"
+
+#: fpwebstrconsts.shtmltagcaptionreset
+msgid "Reset"
+msgstr "Скинути"
+
+#: fpwebstrconsts.shtmltagcaptionsubmit
+msgid "Submit"
+msgstr "Відіслати"
+
+#: fpwebstrconsts.shtmltagproperty
+msgid "Tag property: %s"
+msgstr "Властивість тега: %s"
+
+#: fpwebstrconsts.shtmltitle
+msgid "Html &title - <title>"
+msgstr "&Заголовок Html - <title>"
+
+#: fpwebstrconsts.shttpport
+msgid "&Port to listen for requests:"
+msgstr "&Порт прослуховування запитів:"
+
+#: fpwebstrconsts.sjsfile
+msgid "Javascript file"
+msgstr "Файл Javascript"
+
+#: fpwebstrconsts.sjsfiledesc
+msgid "Create new javascript file..."
+msgstr "Створити новий файл javascript..."
+
+#: fpwebstrconsts.sjssource
+msgid "Enter your javascript code here"
+msgstr "Введіть код javascript тут"
+
+#: fpwebstrconsts.smihtmleditor
+msgid "HTML Editor"
+msgstr "Редактор HTML"
+
+#: fpwebstrconsts.smihtmlformbuttton
+msgid "Insert Button control"
+msgstr "Вставити Кнопку"
+
+#: fpwebstrconsts.smihtmlformcheckbox
+msgid "Insert CheckBox control"
+msgstr "Вставити Прапорець"
+
+#: fpwebstrconsts.smihtmlformfieldset
+msgid "Insert HTML FIELDSET tag"
+msgstr "Вставити тег HTML FIELDSET"
+
+#: fpwebstrconsts.smihtmlformlegend
+msgid "Insert HTML LEGEND tag"
+msgstr "Вставити тег HTML LEGEND"
+
+#: fpwebstrconsts.smihtmlformradiobtn
+msgid "Insert RadioBtn control"
+msgstr "Вставити радіокнопку"
+
+#: fpwebstrconsts.smihtmlforms
+msgid "Forms"
+msgstr "Форми"
+
+#: fpwebstrconsts.smihtmlformselect
+msgid "Insert Select control"
+msgstr "Вставити розкривний список"
+
+#: fpwebstrconsts.smihtmlformselectopt
+msgid "Insert Select options"
+msgstr "Вставити елемент розкривного списку"
+
+#: fpwebstrconsts.smihtmlformselectoptwd
+msgid "Insert Select options with dialog"
+msgstr "Вставити елемент розкривного списку за допомогою діалогу"
+
+#: fpwebstrconsts.smihtmlinsertbr
+msgid "Insert new line"
+msgstr "Вставити новий рядок"
+
+#: fpwebstrconsts.smihtmlinsertcolor
+msgid "Insert HTML color value"
+msgstr "Вставити значення кольору HTML"
+
+#: fpwebstrconsts.smihtmlinsertcomment
+msgid "Insert HTML comment"
+msgstr "Вставити коментар HTML"
+
+#: fpwebstrconsts.smihtmlinsertdivblock
+msgid "Insert HTML DIV tag"
+msgstr "Вставити тег HTML DIV"
+
+#: fpwebstrconsts.smihtmlinsertform
+msgid "Insert HTML Form"
+msgstr "Вставити форму HTML"
+
+#: fpwebstrconsts.smihtmlinsertheader1level
+msgid "Insert HTML level 1 header"
+msgstr "Вставити заголовок HTML рівня 1"
+
+#: fpwebstrconsts.smihtmlinsertheader2level
+msgid "Insert HTML level 2 header"
+msgstr "Вставити заголовок HTML рівня 2"
+
+#: fpwebstrconsts.smihtmlinsertheader3level
+msgid "Insert HTML level 3 header"
+msgstr "Вставити заголовок HTML рівня 3"
+
+#: fpwebstrconsts.smihtmlinsertheader4level
+msgid "Insert HTML level 4 header"
+msgstr "Вставити заголовок HTML рівня 4"
+
+#: fpwebstrconsts.smihtmlinsertheader5level
+msgid "Insert HTML level 5 header"
+msgstr "Вставити заголовок HTML рівня 5"
+
+#: fpwebstrconsts.smihtmlinserthr
+msgid "Insert horizontal line"
+msgstr "Вставити горизонтальну лінію"
+
+#: fpwebstrconsts.smihtmlinsertimg
+msgid "Insert image"
+msgstr "Вставити зображення"
+
+#: fpwebstrconsts.smihtmlinsertinput
+msgid "Insert HTML INPUT tag"
+msgstr "Вставити тег HTML INPUT"
+
+#: fpwebstrconsts.smihtmlinsertinputreset
+msgid "Insert \"Reset\" button"
+msgstr "Вставити кнопку \"Скинути\""
+
+#: fpwebstrconsts.smihtmlinsertinputsubmit
+msgid "Insert \"Submit\" button "
+msgstr "Вставити кнопку \"Відіслати\""
+
+#: fpwebstrconsts.smihtmlinsertlink
+msgid "Insert link (HREF)"
+msgstr "Вставити посилання (HREF)"
+
+#: fpwebstrconsts.smihtmlinsertlist
+msgid "Insert HTML list"
+msgstr "Вставити список HTML"
+
+#: fpwebstrconsts.smihtmlinsertnbsp
+msgid "Insert Non Breaking Space"
+msgstr "Вставити нерозривний пробіл"
+
+#: fpwebstrconsts.smihtmlinsertpre
+msgid "Insert HTML PRE tag"
+msgstr "Вставити тег HTML PRE"
+
+#: fpwebstrconsts.smihtmlinsertspantext
+msgid "Insert HTML SPAN tag"
+msgstr "Вставити тег HTML SPAN"
+
+#: fpwebstrconsts.smihtmlinsertsub
+msgid "Insert Subscript"
+msgstr "Вставити нижній індекс"
+
+#: fpwebstrconsts.smihtmlinsertsuper
+msgid "Insert Superscript"
+msgstr "Вставити верхній індекс"
+
+#: fpwebstrconsts.smihtmlinserttable
+msgid "Insert HTML table"
+msgstr "Вставити таблицю HTML"
+
+#: fpwebstrconsts.smihtmlinserttabledata
+msgid "Insert HTML table data"
+msgstr "Вставити дані в таблицю HTML"
+
+#: fpwebstrconsts.smihtmlinserttabledatawd
+msgid "Insert HTML table data with dialog"
+msgstr "Вставити дані в таблицю HTML за допомогою діалогу"
+
+#: fpwebstrconsts.smihtmlinserttablerow
+msgid "Insert HTML table row"
+msgstr "Вставити рядок в таблицю HTML"
+
+#: fpwebstrconsts.smihtmlinserttablerowwd
+msgid "Insert HTML table row with dialog"
+msgstr "Вставити рядок в таблицю HTML за допомогою діалогу"
+
+#: fpwebstrconsts.smihtmllists
+msgid "Lists"
+msgstr "Списки"
+
+#: fpwebstrconsts.smihtmlother
+msgid "Other"
+msgstr "Інше"
+
+#: fpwebstrconsts.smihtmlstandart
+msgid "Standard"
+msgstr "Стандартні"
+
+#: fpwebstrconsts.smihtmlstyle
+msgid "Styles"
+msgstr "Стилі"
+
+#: fpwebstrconsts.smihtmltables
+msgid "Tables"
+msgstr "Таблиці"
+
+#: fpwebstrconsts.smihtmltextaligncenter
+msgid "Text align center"
+msgstr "Вирівняти текст по центру"
+
+#: fpwebstrconsts.smihtmltextalignjustify
+msgid "Text align justify"
+msgstr "Вирівняти текст по обидвох краях"
+
+#: fpwebstrconsts.smihtmltextalignleft
+msgid "Text align left"
+msgstr "Вирівняти текст по лівому краю"
+
+#: fpwebstrconsts.smihtmltextalignright
+msgid "Text align right"
+msgstr "Вирівняти текст по правому краю"
+
+#: fpwebstrconsts.smihtmltextbold
+msgid "Bold"
+msgstr "Жирний"
+
+#: fpwebstrconsts.smihtmltextitalic
+msgid "Italic"
+msgstr "Курсив"
+
+#: fpwebstrconsts.smihtmltextunderline
+msgid "Underline"
+msgstr "Підкреслений"
+
+#: fpwebstrconsts.smiotherinsertfn
+msgid "Insert file name"
+msgstr "Вставити ім'я файлу"
+
+#: fpwebstrconsts.snewhtmlfileprops
+msgid "New Html file properties"
+msgstr "Властивості нового файлу Html"
+
+#: fpwebstrconsts.snewhttpapp
+msgid "New HTTP application"
+msgstr "Новий додаток HTTP"
+
+#: fpwebstrconsts.sregisterfiles
+msgid "&Register location to serve files from"
+msgstr "Зар&еєструвати розташування файлів для видачі"
+
+#: fpwebstrconsts.susethreads
+msgid "Use &threads to serve requests in"
+msgstr "Обслуговувати запити в по&токах виконання"
+
