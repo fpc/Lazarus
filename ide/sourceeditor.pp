@@ -1859,6 +1859,8 @@ begin
       end;
 
   end;
+  if SrcEditHintWindow<>nil then
+    SrcEditHintWindow.UpdateHints;
 end;
 
 procedure TSourceEditCompletion.OnSynCompletionCompletePrefix(Sender: TObject);
