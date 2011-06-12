@@ -926,7 +926,7 @@ begin
   Result:=nil;
   if LazProject=nil then exit;
   CurNode:=ItemsTreeView.Selected;
-  if (CurNode=nil) or (CurNode.Parent<>FFilesNode) then exit;
+  if (CurNode=nil) then exit;
   //debugln(['TProjectInspectorForm.GetCurrentFile ',DbgSName(TObject(CurNode.Data)),' ',CurNode.Text]);
   if TObject(CurNode.Data) is TProjInspFileItem then
   begin
