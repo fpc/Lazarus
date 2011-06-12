@@ -128,7 +128,7 @@ general_i_number_of_notes=01023_I_$1 note(s) issued
 #
 # Scanner
 #
-# 02086 is the last used one
+# 02087 is the last used one
 #
 % \section{Scanner messages.}
 % This section lists the messages that the scanner emits. The scanner takes
@@ -344,7 +344,7 @@ scan_w_minstacksize_not_support=02077_W_MINSTACKSIZE is not supported by the tar
 % The \var{\{\$MINSTACKSIZE\}} directive is not supported by the target OS.
 scan_w_maxstacksize_not_support=02078_W_MAXSTACKSIZE is not supported by the target OS
 % The \var{\{\$MAXSTACKSIZE\}} directive is not supported by the target OS.
-scanner_e_illegal_warn_state=02079_E_Illegal state for $WARN directive
+scanner_e_illegal_warn_state=02079_E_Illegal state "$1" for $WARN directive
 % Only ON and OFF can be used as state with a \var{\{\$WARN\}} compiler directive.
 scan_e_only_packset=02080_E_Illegal set packing value
 % Only 0, 1, 2, 4, 8, DEFAULT and NORMAL are allowed as packset parameters.
@@ -362,11 +362,16 @@ scan_e_illegal_minfpconstprec=02085_E_Illegal minimal floating point constant pr
 scan_w_multiple_main_name_overrides=02086_W_Overriding name of "main" procedure multiple times, was previously set to "$1"
 % The name for the main entry procedure is specified more than once. Only the last
 % name will be used.
+scanner_w_illegal_warn_identifier=02087_W_Illegal identifier "$1" for $WARN directive
+% Identifier is not known by a \var{\{\$WARN\}} compiler directive.
+scanner_e_illegal_alignment_directive=02088_E_Illegal alignment directive
+% The alignment directive is not valid. Either the alignment type is not known or the alignment
+% value is not a power of two.
 % \end{description}
 #
 # Parser
 #
-# 03265 is the last used one
+# 03310 is the last used one
 #
 % \section{Parser messages}
 % This section lists all parser messages. The parser takes care of the
@@ -514,7 +519,7 @@ parser_e_fail_only_in_constructor=03051_E_FAIL can be used in constructors only
 parser_e_no_paras_for_destructor=03052_E_Destructors can't have parameters
 % You are declaring a destructor with a parameter list. Destructor methods
 % cannot have parameters.
-parser_e_only_class_methods_via_class_ref=03053_E_Only class methods can be referred with class references
+parser_e_only_class_members_via_class_ref=03053_E_Only class methods, class properties and class variables can be referred with class references
 % This error occurs in a situation like the following:
 % \begin{verbatim}
 % Type :
@@ -528,7 +533,7 @@ parser_e_only_class_methods_via_class_ref=03053_E_Only class methods can be refe
 % \end{verbatim}
 % \var{Free} is not a class method and hence cannot be called with a class
 % reference.
-parser_e_only_class_methods=03054_E_Only class methods can be accessed in class methods
+parser_e_only_class_members=03054_E_Only class class methods, class properties and class variables can be accessed in class methods
 % This is related to the previous error. You cannot call a method of an object
 % from inside a class method. The following code would produce this error:
 % \begin{verbatim}
@@ -624,8 +629,8 @@ parser_e_void_function=03080_E_Procedures can't return a value
 % In \fpc, you can specify a return value for a function when using
 % the \var{exit} statement. This error occurs when you try to do this with a
 % procedure. Procedures cannot return a value.
-parser_e_constructors_always_objects=03081_E_constructors and destructors must be methods
-% You're declaring a procedure as destructor or constructor, when the
+parser_e_only_methods_allowed=03081_E_constructors, destructors and class operators must be methods
+% You're declaring a procedure as destructor, constructor or class operator, when the
 % procedure isn't a class method.
 parser_e_operator_not_overloaded=03082_E_Operator is not overloaded
 % You're trying to use an overloaded operator when it is not overloaded for
@@ -911,13 +916,13 @@ parser_e_no_con_des_in_interfaces=03171_E_Con- and destructors aren't allowed in
 % Constructor and destructor declarations aren't allowed in interfaces.
 % In the most cases method \var{QueryInterface} of \var{IUnknown} can
 % be used to create a new interface.
-parser_e_no_access_specifier_in_interfaces=03172_E_Access specifiers can't be used in INTERFACES
+parser_e_no_access_specifier_in_interfaces=03172_E_Access specifiers can't be used in INTERFACEs and OBJCPROTOCOLs
 % The access specifiers \var{public}, \var{private}, \var{protected} and
-% \var{published} can't be used in interfaces because all methods
-% of an interface must be public.
-parser_e_no_vars_in_interfaces=03173_E_An interface can't contain fields
-% Declarations of fields aren't allowed in interfaces. An interface
-% can contain only methods and properties with method read/write specifiers.
+% \var{published} can't be used in interfaces, Objective-C protocols and categories because all methods
+% of an interface/protocol/category must be public.
+parser_e_no_vars_in_interfaces=03173_E_An interface, helper or Objective-C protocol or category cannot contain fields
+% Declarations of fields are not allowed in interfaces, helpers and Objective-C protocols and categories.
+% An interface/helper/protocol/category can contain only methods and properties with method read/write specifiers.
 parser_e_no_local_proc_external=03174_E_Can't declare local procedure as EXTERNAL
 % Declaring local procedures as external is not possible. Local procedures
 % get hidden parameters that will make the chance of errors very high.
@@ -948,7 +953,7 @@ parser_w_proc_overriding_calling=03182_W_Overriding calling convention "$1" with
 % There are two directives in the procedure declaration that specify a calling
 % convention. Only the last directive will be used.
 parser_e_no_procvarobj_const=03183_E_Typed constants of the type "procedure of object" can only be initialized with NIL
-% You can't assign the address of a method to a typed constant which has a
+% You cannot assign the address of a method to a typed constant which has a
 % 'procedure of object' type, because such a constant requires two addresses:
 % that of the method (which is known at compile time) and that of the object or
 % class instance it operates on (which cannot be known at compile time).
@@ -992,7 +997,7 @@ parser_e_illegal_calling_convention=03195_W_Calling convention directive ignored
 % Some calling conventions are supported only by certain CPUs. I.e. most non-i386 ports support
 % only the standard ABI calling convention of the CPU.
 parser_e_no_object_reintroduce=03196_E_REINTRODUCE can't be used in objects
-% \var{reintroduce} is not supported for objects.
+% \var{reintroduce} is not supported for objects, Objective-C classes and Objective-C protocols.
 parser_e_paraloc_only_one_para=03197_E_Each argument must have its own location
 % If locations for arguments are specified explicitly as it is required by
 % some syscall conventions, each argument must have its own location. Things
@@ -1076,7 +1081,7 @@ parser_e_protected_or_private_expected=03214_E_Protected or private expected
 parser_e_illegal_slice=03215_E_SLICE can't be used outside of parameter list
 % \var{slice} can be used only for arguments accepting an open array parameter.
 parser_e_dispinterface_cant_have_parent=03216_E_A DISPINTERFACE can't have a parent class
-% A DISPINTERFACE is a special type of interface which can't have a parent class.
+% A DISPINTERFACE is a special type of interface which can't have a parent class. Dispinterface always derive from IDispatch type.
 parser_e_dispinterface_needs_a_guid=03217_E_A DISPINTERFACE needs a guid
 % A DISPINTERFACE always needs an interface identification (a GUID).
 parser_w_overridden_methods_not_same_ret=03218_W_Overridden methods must have a related return type. This code may crash, it depends on a Delphi parser bug ("$2" is overridden by "$1" which has another return type)
@@ -1104,9 +1109,9 @@ parser_e_packed_element_no_loop=03223_E_Bit packed array elements and record fie
 % (or as \var{packed} in any mode with \var{\{\$bitpacking on\}}), it will
 % be packed at the bit level. For performance reasons, they cannot be
 % used as loop variables.
-parser_e_type_and_var_only_in_generics=03224_E_VAR and TYPE are allowed only in generics
-% The usage of VAR and TYPE to declare new types inside an object is allowed only inside
-% generics.
+parser_e_type_var_const_only_in_records_and_classes=03224_E_VAR, TYPE and CONST are allowed only in records, objects and classes
+% The usage of VAR, TYPE and CONST to declare new types inside an object is allowed only inside
+% records, objects and classes.
 parser_e_cant_create_generics_of_this_type=03225_E_This type can't be a generic
 % Only Classes, Objects, Interfaces and Records are allowed to be used as generic.
 parser_w_no_lineinfo_use_switch=03226_W_Don't load LINEINFO unit manually, Use the -gl compiler switch instead
@@ -1181,7 +1186,7 @@ parser_e_field_not_allowed_here=03251_E_Fields cannot appear after a method or p
 % without starting a new visibility section (such as \var{public}, \var{private}, etc.). The reason is
 % that otherwise the source code can appear ambiguous to the compiler, since it is possible to use modifiers
 % such as \var{default} and \var{register} also as field names.
-parser_e_no_local_para_def=03252_E_Parameters cannot contain local type definitions. Use a separate type definition in a type block.
+parser_e_no_local_para_def=03252_E_Parameters or result types cannot contain local type definitions. Use a separate type definition in a type block.
 % In Pascal, types are not considered to be identical simply because they are semantically equivalent.
 % Two variables or parameters are only considered to be of the same type if they refer to the
 % same type definition.
@@ -1201,6 +1206,8 @@ parser_e_only_virtual_methods_final=03256_E_Only virtual methods can be final
 parser_e_final_can_no_be_overridden=03257_E_Final method cannot be overridden: "$1"
 % You are trying to \var{override} a virtual method of a parent class that does
 % not exist.
+parser_e_multiple_messages=03258_E_Only one message can be used per method.
+% It is not possible to associate multiple messages with a single method.
 parser_e_invalid_enumerator_identifier=03259_E_Invalid enumerator identifier: "$1"
 % Only "MoveNext" and "Current" enumerator identifiers are supported.
 parser_e_enumerator_identifier_required=03260_E_Enumerator identifier required
@@ -1215,11 +1222,176 @@ parser_e_only_one_enumerator_current=03264_E_Only one enumerator Current propert
 % Class or Object can have only one enumerator Current declaration.
 parser_e_for_in_loop_cannot_be_used_for_the_type=03265_E_For in loop cannot be used for the type "$1"
 % For in loop can be used not for all types. For example it cannot be used for the enumerations with jumps.
+parser_e_objc_requires_msgstr=03266_E_Objective-C messages require their Objective-C selector name to be specified using the "message" directive.
+% Objective-C messages require their Objective-C name (selector name) to be specified using the \var{message `someName:'} procedure directive.
+% While bindings to other languages automatically generate such names based on the identifier you use (by replacing
+% all underscores with colons), this is unsafe since nothing prevents an Objective-C method name to contain actual
+% colons.
+parser_e_objc_no_constructor_destructor=03267_E_Objective-C does not have formal constructors nor destructors. Use the alloc, initXXX and dealloc messages.
+% The Objective-C language does not have any constructors or destructors. While there are some messages with a similar
+% purpose (such as \var{init} and \var{dealloc}), these cannot be identified using automatic parsers and do not
+% guarantee anything like Pascal constructors/destructors (e.g., you have to take care of only calling ``designated''
+% inherited ``constructors''). For these reasons, we have opted to follow the standard Objective-C patterns for
+% instance creation/destruction.
+parser_e_message_string_too_long=03268_E_Message name is too long (max. 255 characters)
+% Due to compiler implementation reasons, message names are currently limited to 255 characters.
+parser_e_objc_message_name_too_long=03269_E_Objective-C message symbol name for "$1" is too long
+% Due to compiler implementation reasons, mangled message names (i.e., the symbol names used in the assembler
+% code) are currently limited to 255 characters.
+parser_h_no_objc_parent=03270_H_Defining a new Objective-C root class. To derive from another root class (e.g., NSObject), specify it as the parent class.
+% If no parent class is specified for an Object Pascal class, then it automatically derives from TObject.
+% Objective-C classes however do not automatically derive from NSObject, because one can have multiple
+% root classes in Objective-C. For example, in the Cocoa framework both NSObject and NSProxy are root classes.
+% Therefore, you have to explicitly define a parent class (such as NSObject) if you want to derive your
+% Objective-C class from it.
+parser_e_no_objc_published=03271_E_Objective-C classes cannot have published sections.
+% In Object Pascal, ``published'' determines whether or not RTTI is generated. Since the Objective-C runtime always needs
+% RTTI for everything, this specified does not make sense for Objective-C classes.
+parser_f_need_objc=03272_F_This module requires an Objective-C mode switch to be compiled
+% This error indicates the use of Objective-C language features without an Objective-C mode switch
+% active. Enable one via the -M command line switch, or the {\$modeswitch x} directive.
+parser_e_must_use_override_objc=03273_E_Inherited methods can only be overridden in Objective-C, add "override" (inherited method defined in $1)
+parser_h_should_use_override_objc=03274_H_Inherited methods can only be overridden in Objective-C, add "override" (inherited method defined in $1).
+% It is not possible to \var{reintroduce} methods in Objective-C like in Object Pascal. Methods with the same
+% name always map to the same virtual method entry. In order to make this clear in the source code,
+% the compiler always requires the \var{override} directive to be specified when implementing overriding
+% Objective-C methods in Pascal. If the implementation is external, this rule is relaxed because Objective-C
+% does not have any \var{override}-style keyword (since it's the default and only behaviour in that language),
+% which makes it hard for automated header conversion tools to include it everywhere.
+% The type in which the inherited method is defined is explicitly mentioned, because this may either
+% be an objcclass or an objccategory.
+parser_e_objc_message_name_changed=03275_E_Message name "$1" in inherited class is different from message name "$2" in current class.
+% An overriding Objective-C method cannot have a different message name than an inherited method. The reason
+% is that these message names uniquely define the message to the Objective-C runtime, which means that
+% giving them a different message name breaks the ``override'' semantics.
+parser_e_no_objc_unique=03276_E_It is not yet possible to make unique copies of Objective-C types
+% Duplicating an Objective-C type using \var{type x = type y;} is not yet supported. You may be able to
+% obtain the desired effect using \var{type x = objcclass(y) end;} instead.
+parser_e_no_category_as_types=03277_E_Objective-C categories and Object Pascal class helpers cannot be used as types
+% It is not possible to declare a variable as an instance of an Objective-C
+% category or an Object Pascal class helper. A category/class helper adds
+% methods to the scope of an existing class, but does not define a type by
+% itself. An exception of this rule is when inheriting an Object Pascal class
+% helper from another class helper.
+parser_e_no_category_override=03278_E_Categories do not override, but replace methods. Use "reintroduce" instead.
+parser_e_must_use_reintroduce_objc=03279_E_Replaced methods can only be reintroduced in Objective-C, add "reintroduce" (replaced method defined in $1).
+parser_h_should_use_reintroduce_objc=03280_H_Replaced methods can only be reintroduced in Objective-C, add "reintroduce" (replaced method defined in $1).
+% A category replaces an existing method in an Objective-C class, rather than that it overrides it.
+% Calling an inherited method from an category method will call that method in
+% the extended class' parent, not in the extended class itself. The
+% replaced method in the original class is basically lost, and can no longer be
+% called or referred to. This behaviour corresponds somewhat more closely to
+% \var{reintroduce} than to \var{override} (although in case of \var{reintroduce}
+% in Object Pascal, hidden methods are still reachable via inherited).
+% The type in which the inherited method is defined is explicitly mentioned, because this may either
+% be an objcclass or an objccategory.
+parser_e_implements_getter_not_default_cc=03281_E_Getter for implements interface must use the target's default calling convention.
+% Interface getters are called via a helper in the run time library, and hence
+% have to use the default calling convention for the target (\var{register} on
+% i386 and x86\_64, \var{stdcall} on other architectures).
+parser_e_no_refcounted_typed_file=03282_E_Typed files cannot contain reference-counted types.
+% The data in a typed file cannot be of a reference counted type (such as
+% \var{ansistring} or a record containing a field that is reference counted).
+parser_e_operator_not_overloaded_2=03283_E_Operator is not overloaded: $2 "$1"
+% You are trying to use an overloaded operator when it is not overloaded for
+% this type.
+parser_e_operator_not_overloaded_3=03284_E_Operator is not overloaded: "$1" $2 "$3"
+% You are trying to use an overloaded operator when it is not overloaded for
+% this type.
+parser_e_more_array_elements_expected=03285_E_Expected another $1 array elements
+% When declaring a typed constant array, you provided to few elements to initialize the array
+parser_e_string_const_too_long=03286_E_String constant too long while ansistrings are disabled
+% Only when a piece of code is compiled with ansistrings enabled (\var{\{\$H+\}}), string constants
+% longer than 255 characters are allowed.
+parser_e_invalid_univ_para=03287_E_Type cannot be used as univ parameter because its size is unknown at compile time: "$1"
+% \var{univ} parameters are compatible with all values of the same size, but this
+% cannot be checked in case a parameter's size is unknown at compile time.
+parser_e_only_one_class_constructor_allowed=03288_E_Only one class constructor can be declared in class: "$1"
+% You are trying to declare more than one class constructor but only one class constructor can be declared.
+parser_e_only_one_class_destructor_allowed=03289_E_Only one class destructor can be declared in class: "$1"
+% You are trying to declare more than one class destructor but only one class destructor can be declared.
+parser_e_no_paras_for_class_constructor=03290_E_Class constructors can't have parameters
+% You are declaring a class constructor with a parameter list. Class constructor methods
+% cannot have parameters.
+parser_e_no_paras_for_class_destructor=03291_E_Class destructors can't have parameters
+% You are declaring a class destructor with a parameter list. Class destructor methods
+% cannot have parameters.
+parser_f_modeswitch_objc_required=03292_F_This construct requires the \{\$modeswitch objectivec1\} mode switch to be active
+% Objective-Pascal constructs are not supported when \{\$modeswitch ObjectiveC1\}
+% is not active.
+parser_e_widestring_to_ansi_compile_time=03293_E_Unicodechar/string constants cannot be converted to ansi/shortstring at compile-time
+% It is not possible to use unicodechar and unicodestring constants in
+% constant expressions that have to be converted into an ansistring or shortstring
+% at compile time, for example inside typed constants. The reason is that the
+% compiler cannot know what the actual ansi encoding will be at run time.
+parser_e_objc_enumerator_2_0=03294_E_For-in Objective-Pascal loops require \{\$modeswitch ObjectiveC2\} to be active
+% Objective-C ``fast enumeration'' support was added in Objective-C 2.0, and
+% hence the appropriate modeswitch has to be activated to expose this feature.
+% Note that Objective-C 2.0 programs require Mac OS X 10.5 or later.
+parser_e_objc_missing_enumeration_defs=03295_E_The compiler cannot find the NSFastEnumerationProtocol or NSFastEnumerationState type in the CocoaAll unit
+% Objective-C for-in loops (fast enumeration) require that the compiler can
+% find a unit called CocoaAll that contains definitions for the
+% NSFastEnumerationProtocol and NSFastEnumerationState types. If you get this
+% error, most likely the compiler is finding and loading an alternate CocoaAll
+% unit.
+parser_e_no_procvarnested_const=03296_E_Typed constants of the type 'procedure is nested' can only be initialized with NIL and global procedures/functions
+% A nested procedural variable consists of two components: the address of the
+% procedure/function to call (which is always known at compile time), and also
+% a parent frame pointer (which is never known at compile time) in case the
+% procedural variable contains a reference to a nested procedure/function.
+% Therefore such typed constants can only be initialized with global
+% functions/procedures since these do not require a parent frame pointer.
+parser_f_no_generic_inside_generic=03297_F_Declaration of generic class inside another generic class is not allowed
+% At the moment, scanner supports recording of only one token buffer at the time
+% (guarded by internal error 200511173 in tscannerfile.startrecordtokens).
+% Since generics are implemented by recording tokens, it is not possible to
+% have declaration of generic class inside another generic class.
+parser_e_forward_protocol_declaration_must_be_resolved=03298_E_Forward declaration of objcprotocol "$1" must be resolved before an objcclass can conform to it
+% An objcprotocol must be fully defined before classes can conform to it.
+% This error occurs in the following situation:
+% \begin{verbatim}
+%  Type MyProtocol = objcprotoocl;
+%       ChildClass = Class(NSObject,MyProtocol)
+%         ...
+%       end;
+% \end{verbatim}
+% where \var{MyProtocol} is declared but not defined.
+parser_e_no_record_published=03299_E_Record types cannot have published sections
+% Published sections can be used only inside classes.
+parser_e_no_destructor_in_records=03300_E_Destructors aren't allowed in records or helpers
+% Destructor declarations aren't allowed in records or helpers.
+parser_e_class_methods_only_static_in_records=03301_E_Class methods must be static in records
+% Class methods declarations aren't allowed in records without static modifier.
+% Records have no inheritance and therefore non static class methods have no sence for them.
+parser_e_no_constructor_in_records=03302_E_Constructors aren't allowed in records or record helpers
+% Constructor declarations aren't allowed in records or record helpers.
+parser_e_at_least_one_argument_must_be_of_type=03303_E_Either the result or at least one parameter must be of type "$1"
+% It is required that either the result of the routine or at least one of its parameters be of the specified type.
+% For example class operators either take an instance of the structured type in which they are defined, or they return one.
+parser_e_cant_use_type_parameters_here=03304_E_Type parameters may require initialization/finalization - can't be used in variant records
+% Type parameters may be specialized with types which (e.g. \var{ansistring}) need initialization/finalization
+% code which is implicitly generated by the compiler.
+parser_e_externals_no_section=03305_E_Variables being declared as external cannot be in a custom section
+% A section directive is not valid for variables being declared as external.
+parser_e_section_no_locals=03306_E_Non-static and non-global variables cannot have a section directive
+% A variable placed in a custom section is always statically allocated so it must be either a static or global variable.
+parser_e_not_allowed_in_helper=03307_E_"$1" is not allowed in helper types
+% Some directives and specifiers like "virtual", "dynamic", "override" aren't
+% allowed inside helper types in mode ObjFPC (they are ignored in mode Delphi),
+% because they have no meaning within helpers. Also "abstract" isn't allowed in
+% either mode.
+parser_e_no_class_constructor_in_helpers=03308_E_Class constructors aren't allowed in helpers
+% Class constructor declarations aren't allowed in helpers.
+parser_e_inherited_not_in_record=03309_E_The use of "inherited" is not allowed in a record
+% As records don't suppport inheritance the use of "inherited" is prohibited for
+% these as well as for record helpers (in mode "Delphi" only).
+parser_e_no_types_in_local_anonymous_records=03310_E_Type declarations are not allowed in local or anonymous records
+% Records with types must be defined globally. Types cannot be defined inside records which are defined in a
+% procedure or function or in anonymous records.
 % \end{description}
-#
 # Type Checking
 #
-# 04087 is the last used one
+# 04100 is the last used one
 #
 % \section{Type checking errors}
 % This section lists all errors that can occur when type checking is
@@ -1294,7 +1466,7 @@ type_w_convert_real_2_comp=04014_W_Automatic type conversion from floating type 
 type_h_use_div_for_int=04015_H_use DIV instead to get an integer result
 % When hints are on, then an integer division with the '/' operator will
 % produce this message, because the result will then be of type real.
-type_e_strict_var_string_violation=04016_E_string types doesn't match, because of $V+ mode
+type_e_strict_var_string_violation=04016_E_String types have to match exactly in $V+ mode
 % When compiling in \var{\{\$V+\}} mode, the string you pass as a parameter
 % should be of the exact same type as the declared parameter of the procedure.
 type_e_succ_and_pred_enums_with_assign_not_possible=04017_E_succ or pred on enums with assignments not possible
@@ -1500,10 +1672,10 @@ type_w_pointer_to_signed=04082_W_Converting pointers to signed integers may resu
 % For example both \windows and \linux allow pointers in the range \$0000000 to \$bfffffff.
 % If you convert pointers to signed types, this can cause overflow and range check errors,
 % but also \$80000000 < \$7fffffff. This can cause random errors in code like "if p>q".
-type_interface_has_no_guid=04083_E_Interface type $1 has no valid GUID
+type_e_interface_has_no_guid=04083_E_Interface type $1 has no valid GUID
 % When applying the as-operator to an interface or class, the desired interface (i.e. the right operand of the
 % as-operator) must have a valid GUID.
-type_e_invalid_objc_selector_name=04084_E_Invalid selector name
+type_e_invalid_objc_selector_name=04084_E_Invalid selector name "$1"
 % An Objective-C selector cannot be empty, must be a valid identifier or a single colon,
 % and if it contains at least one colon it must also end in one.
 type_e_expected_objc_method_but_got=04085_E_Expected Objective-C method, but got $1
@@ -1517,11 +1689,72 @@ type_e_no_type_info=04087_E_No type info available for this type
 % Type information is not generated for some types, such as enumerations with gaps
 % in their value range (this includes enumerations whose lower bound is different
 % from zero).
+type_e_ordinal_or_string_expr_expected=04088_E_Ordinal or string expression expected
+% The expression must be an ordinal or string type.
+type_e_string_expr_expected=04089_E_String expression expected
+% The expression must be a string type.
+type_w_zero_to_nil=04090_W_Converting 0 to NIL
+% Use NIL rather than 0 when initialising a pointer.
+type_e_protocol_type_expected=04091_E_Objective-C protocol type expected, but got "$1"
+% The compiler expected a protocol type name, but found something else.
+type_e_objc_type_unsupported=04092_E_The type "$1" is not supported for interaction with the Objective-C runtime.
+% Objective-C makes extensive use of run time type information (RTTI). This format
+% is defined by the maintainers of the run time and can therefore not be adapted
+% to all possible Object Pascal types. In particular, types that depend on
+% reference counting by the compiler (such as ansistrings and certain kinds of
+% interfaces) cannot be used as fields of Objective-C classes, cannot be
+% directly passed to Objective-C methods, and cannot be encoded using \var{objc\_encode}.
+type_e_class_or_objcclass_type_expected=04093_E_Class or objcclass type expected, but got "$1"
+% It is only possible to create class reference types of \var{class} and \var{objcclass}
+type_e_objcclass_type_expected=04094_E_Objcclass type expected
+% The compiler expected an \var{objcclass} type
+type_w_procvar_univ_conflicting_para=04095_W_Coerced univ parameter type in procedural variable may cause crash or memory corruption: $1 to $2
+% \var{univ} parameters are implicitly compatible with all types of the same size,
+% also in procedural variable definitions. That means that the following code is
+% legal, because \var{single} and \var{longint} have the same size:
+% \begin{verbatim}
+% {$mode macpas}
+% Type
+%   TIntProc = procedure (l: univ longint);
+%
+%   procedure test(s: single);
+%     begin
+%       writeln(s);
+%     end;
+%
+%   var
+%     p: TIntProc;
+%   begin
+%     p:=test;
+%     p(4);
+%   end.
+% \end{verbatim}
+% This code may however crash on platforms that pass integers in registers and
+% floating point values on the stack, because then the stack will be unbalanced.
+% Note that this warning will not flagg all potentially dangerous situations.
+% when \var{test} returns.
+type_e_generics_cannot_reference_itself=04096_E_Type parameters of specializations of generics cannot reference the currently specialized type
+% Recursive specializations of generics like \var{Type MyType = specialize MyGeneric<MyType>;} are not possible.
+type_e_type_parameters_are_not_allowed_here=04097_E_Type parameters are not allowed on non-generic class/record/object procedure or function
+% Type parameters are only allowed for methods of generic classes, records or objects
+type_e_generic_declaration_does_not_match=04098_E_Generic declaration of "$1" differs from previous declaration
+% Generic declaration does not match the previous declaration
+type_e_helper_type_expected=04099_E_Helper type expected
+% The compiler expected a \var{class helper} type.
+type_e_record_type_expected=04100_E_Record type expected
+% The compiler expected a \var{record} type.
+type_e_class_helper_must_extend_subclass=04101_E_Derived class helper must extend a subclass of "$1" or the class itself
+% If a class helper inherits from another class helper the extended class must
+% extend either the same class as the parent class helper or a subclass of it
+type_e_record_helper_must_extend_same_record=04102_E_Derived record helper must extend "$1"
+% If a record helper inherits from another record helper it must extend the same
+% record that the parent record helper extended.
+%
 % \end{description}
 #
 # Symtable
 #
-# 05069 is the last used one
+# 05080 is the last used one
 #
 % \section{Symbol handling}
 % This section lists all the messages that concern the handling of symbols.
@@ -1703,7 +1936,7 @@ sym_w_deprecated_symbol_with_msg=05066_W_Symbol "$1" is deprecated: "$2"
 % should be avoided as much as possible.
 sym_e_no_enumerator=05067_E_Cannot find an enumerator for the type "$1"
 % This means that compiler cannot find an apropriate enumerator to use in the for-in loop.
-% To create an enumerator you need to defind an operator enumerator or add a public or published 
+% To create an enumerator you need to defind an operator enumerator or add a public or published
 % GetEnumerator method to the class or object definition.
 sym_e_no_enumerator_move=05068_E_Cannot find a "MoveNext" method in enumerator "$1"
 % This means that compiler cannot find a public MoveNext method with the Boolean return type in
@@ -1711,6 +1944,61 @@ sym_e_no_enumerator_move=05068_E_Cannot find a "MoveNext" method in enumerator "
 sym_e_no_enumerator_current=05069_E_Cannot find a "Current" property in enumerator "$1"
 % This means that compiler cannot find a public Current property in  the enumerator class or object
 % definition.
+sym_e_objc_para_mismatch=05070_E_Mismatch between number of declared parameters and number of colons in message string.
+% In Objective-C, a message name automatically contains as many colons as parameters.
+% In order to prevent mistakes when specifying the message name in FPC, the compiler
+% checks whether this is also the case here. Note that in case of messages taking a
+% variable number of arguments translated to FPC via an \var{array of const} parameter,
+% this final \var{array of const} parameter is not counted. Neither are the hidden
+% \var{self} and \var{\_cmd} parameters.
+sym_n_private_type_not_used=05071_N_Private type "$1.$2" never used
+% The indicated private type is declared but is never used in the code.
+sym_n_private_const_not_used=05072_N_Private const "$1.$2" never used
+% The indicated private const is declared but is never used in the code.
+sym_n_private_property_not_used=05073_N_Private property "$1.$2" never used
+% The indicated private property is declared but is never used in the code.
+sym_w_deprecated_unit=05074_W_Unit "$1" is deprecated
+% This means that a unit which is
+% declared as \var{deprecated} is used. Deprecated units may no longer
+% be available in newer versions of the library. Use of this unit
+% should be avoided as much as possible.
+sym_w_deprecated_unit_with_msg=05075_W_Unit "$1" is deprecated: "$2"
+% This means that a unit which is
+% declared as \var{deprecated} is used. Deprecated units may no longer
+% be available in newer versions of the library. Use of this unit
+% should be avoided as much as possible.
+sym_w_non_portable_unit=05076_W_Unit "$1" is not portable
+% This means that a unit which is
+% declared as \var{platform} is used. This unit use
+% and availability is platform specific and should not be used
+% if the source code must be portable.
+sym_w_library_unit=05077_W_Unit "$1" is belongs to a library
+% This means that a unit which is
+% declared as \var{library} is used. Library units may not be
+% available in other libraries.
+sym_w_non_implemented_unit=05078_W_Unit "$1" is not implemented
+% This means that a unit which is
+% declared as \var{unimplemented} is used. This unit is defined,
+% but is not yet implemented on this specific platform.
+sym_w_experimental_unit=05079_W_Unit "$1" is experimental
+% This means that a unit which is
+% declared as \var{experimental} is used. Experimental units
+% might disappear or change semantics in future versions. Usage of this unit
+% should be avoided as much as possible.
+sym_e_objc_formal_class_not_resolved=05080_E_No complete definition of the formally declared objcclass "$1" is in scope
+% Objecive-C classes can be imported formally, without using the the unit in which it is fully declared.
+% This enables making forward references to such classes and breaking circular dependencies amongst units.
+% However, as soon as you wish to actually do something with an entity of this class type (such as
+% access one of its fields, send a message to it, or use it to inherit from), the compiler requires the full definition
+% of the class to be in scope.
+sym_e_interprocgoto_into_init_final_code_not_allowed=05081_E_Gotos into initialization or finalization blocks of units are not allowed
+% Gotos into initialization or finalization blockse of units are not allowed.
+sym_e_external_class_name_mismatch1=05082_E_Invalid external name "$1" for formal class "$2"
+sym_e_external_class_name_mismatch2=05083_E_Complete class definition with external name "$1" here
+% When a class is declared using a formal external definition, the actual external
+% definition (if any) must specify the same external name as the formal definition
+% (since both definitions refer to the same actual class type).
+%
 % \end{description}
 #
 # Codegenerator
@@ -1842,13 +2130,26 @@ cg_h_inherited_ignored=06048_H_Inherited call to abstract method ignored
 cg_e_goto_label_not_found=06049_E_Goto label "$1" not defined or optimized away
 % The label used in the goto definition is not defined or optimized away by the
 % unreachable code elemination.
+cg_f_unknown_type_in_unit=06050_F_Cannot find type "$1" in unit "$2". Check if you use the correct run time library.
+% The compiler expects that the runtime library contains certain type definitions. If you see this error
+% and you didn't change the runtime library code, it's very likely that the runtime library
+% you're using doesn't match the compiler in use. If you changed the runtime library this error means
+% that you removed a type which the compiler needs for internal use.
+cg_e_interprocedural_goto_only_to_outer_scope_allowed=06051_E_Interprocedural gotos are allowed only to outer subroutines
+% Gotos between subroutines are only allowed if the goto jumps from an inner to an outer subroutine or
+% from a subroutine to the main program
+cg_e_labels_cannot_defined_outside_declaration_scope=06052_E_Label must be defined in the same scope as it is declared
+% In ISO mode, labels must be defined in the same scope as they are declared.
+cg_e_goto_across_procedures_with_exceptions_not_allowed=06053_E_Leaving procedures containing explicit or implicit exceptions frames using goto is not allowed
+% Non-local gotos might not be used to leave procedures using exceptions either implicitly or explicitly. Procedures
+% which use automated types like ansistrings or class constructurs are affected by this too.
 % \end{description}
 # EndOfTeX
 
 #
 # Assembler reader
 #
-# 07107 is the last used one
+# 07110 is the last used one
 #
 asmr_d_start_reading=07000_DL_Starting $1 styled assembler parsing
 % This informs you that an assembler block is being parsed
@@ -1998,7 +2299,7 @@ asmr_w_id_supposed_external=07072_W_Identifier $1 supposed external
 % problems at link time if the symbol is not defined anywhere.
 asmr_e_string_not_allowed_as_const=07073_E_Strings not allowed as constants
 % Character strings are not allowed as constants.
-asmr_e_no_var_type_specified=07074_No type of variable specified
+asmr_e_no_var_type_specified=07074_E_No type of variable specified
 % The syntax expects a type idenfitifer after the dot, but
 % none was found.
 asmr_w_assembler_code_not_returned_to_text=07075_E_assembler code not returned to text section
@@ -2094,10 +2395,20 @@ asmr_e_need_pic_ref=07107_E_Generating PIC, but reference is not PIC-safe
 % The compiler has been configured to generate position-independent code
 % (PIC), but there are position-dependent references in the current
 % handwritten assembler instruction.
+asmr_e_mixing_regtypes=07108_E_All registers in a register set must be of the same kind and width
+% Instructions on the ARM architecture that take a register set as argument require that all registers
+% in this set are of the same kind (e.g., integer, vfp) and width (e.g., single precision, double precision).
+asmr_e_empty_regset=07109_E_A register set cannot be empty
+% Instructions on the ARM architecture that take a register set as argument require that such a set
+% contains at least one register.
+
+asmr_w_useless_got_for_local=07110_W_@GOTPCREL is useless and potentially dangereous for local symbols
+% The use of @GOTPCREL supposes an extra indirection that is
+% not present if the symbol is local, which might lead to wrong asembler code
 #
 # Assembler/binary writers
 #
-# 08020 is the last used one
+# 08022 is the last used one
 #
 asmw_f_too_many_asm_files=08000_F_Too many assembler files
 % With smartlinking enabled, there are too many assembler
@@ -2124,6 +2435,11 @@ asmw_e_first_defined_label=08018_E_Asm: First defined here
 asmw_e_invalid_register=08019_E_Asm: Invalid register $1
 asmw_e_16bit_32bit_not_supported=08020_E_Asm: 16 or 32 Bit references not supported
 asmw_e_64bit_not_supported=08021_E_Asm: 64 Bit operands not supported
+asmw_e_bad_reg_with_rex=08022_E_Asm: AH,BH,CH or DH cannot be used in an instruction requiring REX prefix
+% x86_64 only: instruction encoding of this platform does not allow using
+% 8086 high byte registers (AH,BH,CH or DH) together with REX prefix in a single instruction.
+% The REX prefix is required whenever the instruction operand size is 64 bits, or
+% when it uses one of extended x86_64 registers (R8-R15 or XMM8-XMM15).
 
 #
 # Executing linker/assembler
@@ -2269,7 +2585,7 @@ link_w_32bit_absolute_reloc=09201_W_Object file "$1" contains 32-bit absolute re
 #
 # Unit loading
 #
-# 10061 is the last used one
+# 10062 is the last used one
 #
 # BeginOfTeX
 % \section{Unit loading messages.}
@@ -2397,7 +2713,7 @@ unit_u_check_time=10037_U_PPU Check file $1 time $2
 unit_w_cant_compile_unit_with_changed_incfile=10040_W_Can't recompile unit $1, but found modifed include files
 % A unit was found to have modified include files, but
 % some source files were not found, so recompilation is impossible.
-unit_u_source_modified=10041_U_File $1 is newer than PPU file $2
+unit_u_source_modified=10041_U_File $1 is newer than the one used for creating PPU file $2
 % A modified source file for a compiler unit was found.
 unit_u_ppu_invalid_fpumode=10042_U_Trying to use a unit which was compiled with a different FPU mode
 % Trying to compile code while using units which were not compiled with
@@ -2420,7 +2736,7 @@ unit_u_implementation_crc_changed=10046_U_Implementation CRC changed for unit $1
 unit_u_finished_compiling=10047_U_Finished compiling unit $1
 % When you use the \var{-vu} flag, the compiler warns that it
 % has finished compiling the unit.
-unit_u_add_depend_to=10048_U_Add dependency of $1 to $2
+unit_u_add_depend_to=10048_U_Adding dependency: $1 depends on $2
 % When you use the \var{-vu} flag, the compiler warns that it
 % has added a dependency between the two units.
 unit_u_no_reload_is_caller=10049_U_No reload, is caller: $1
@@ -2466,13 +2782,18 @@ unit_e_different_wpo_file=10061_E_Unit $1 was compiled using a different whole p
 % When a unit has been compiled using a particular whole program optimization (wpo) feedback file (\var{-FW<x>} \var{-OW<x>}),
 % this compiled version of the unit is specialised for that particular compilation scenario and cannot be used in
 % any other context. It has to be recompiled before you can use it in another program or with another wpo feedback input file.
+unit_u_indirect_crc_changed=10062_U_Indirect interface (objects/classes) CRC changed for unit $1
+% When you use the \var{-vu} flag, the compiler warns that the
+% indirect CRC calculated for the unit (this is the CRC of all classes/objects/interfaces/$\ldots$
+% in the interfaces of units directly or indirectly used by this unit in the interface) has been changed after the
+% implementation has been parsed.
 % \end{description}
 # EndOfTeX
 
 #
 #  Options
 #
-# 11047 is the last used one
+# 11048 is the last used one
 #
 option_usage=11000_O_$1 [options] <inputfile> [options]
 # BeginOfTeX
@@ -2595,6 +2916,9 @@ option_dwarf_smart_linking=11046_N_DWARF debug information cannot be used with s
 option_ignored_target=11047_W_Option "$1" is ignored for the current target platform.
 % Not all options are supported or implemented for all target platforms. This message informs you that a chosen
 % option is ignored for the currently selected target platform.
+option_debug_external_unsupported=11048_W_Disabling external debug information because it is unsupported for the selected target/debug format combination.
+% Not all debug formats can be stored in an external file on all platforms. In particular, on
+% Mac OS X only DWARF debug information can be stored externally.
 %\end{description}
 # EndOfTeX
 
@@ -2680,7 +3004,7 @@ wpo_cant_create_feedback_file=12019_E_Cannot create specified whole program opti
 #
 option_logo=11023_[
 Free Pascal Compiler version $FPCFULLVERSION [$FPCDATE] for $FPCCPU
-Copyright (c) 1993-2010 by Florian Klaempfl
+Copyright (c) 1993-2011 by Florian Klaempfl and others
 ]
 
 #
@@ -2730,7 +3054,9 @@ or
 # line, the current possibilities are :
 #    * = every target
 #    3 = 80x86 targets
+#    4 = x86_64
 #    6 = 680x0 targets
+#    A = ARM
 #    e = in extended debug mode only
 #    P = PowerPC targets
 #    S = Sparc targets
@@ -2754,6 +3080,7 @@ option_help_pages=11025_[
 **1A<x>_Output format:
 **2Adefault_Use default assembler
 3*2Aas_Assemble using GNU AS
+3*2Amacho_Mach-O (Darwin, Intel 32 bit) using internal writer
 3*2Anasmcoff_COFF (Go32v2) file using Nasm
 3*2Anasmelf_ELF32 (Linux) file using Nasm
 3*2Anasmwin32_Win32 object file using Nasm
@@ -2777,6 +3104,7 @@ S*2Aas_Assemble using GNU AS
 **2bl_Generate local symbol info
 **1B_Build all modules
 **1C<x>_Code generation options:
+**2C3<x>_Turn on ieee error checking for constants
 **2Ca<x>_Select ABI, see fpc -i for possible values
 **2Cb_Generate big-endian code
 **2Cc<x>_Set default calling convention to <x>
@@ -2841,6 +3169,7 @@ S*2Aas_Assemble using GNU AS
 *g2gw_Generate DWARFv2 debug information (same as -gw2)
 *g2gw2_Generate DWARFv2 debug information
 *g2gw3_Generate DWARFv3 debug information
+*g2gw4_Generate DWARFv4 debug information (experimental)
 **1i_Information
 **2iD_Return compiler date
 **2iV_Return short compiler version
@@ -2899,16 +3228,18 @@ S*2Aas_Assemble using GNU AS
 **2Sm_Support macros like C (global)
 **2So_Same as -Mtp
 **2Ss_Constructor name must be init (destructor must be done)
-**2St_Allow static keyword in objects
 **2Sx_Enable exception keywords (default in Delphi/ObjFPC modes)
+**2Sy_@<pointer> returns a typed pointer, same as $T+
 **1s_Do not call assembler and linker
 **2sh_Generate script to link on host
 **2st_Generate script to link on target
 **2sr_Skip register allocation phase (use with -alr)
 **1T<x>_Target operating system:
+3*2Tdarwin_Darwin/Mac OS X
 3*2Temx_OS/2 via EMX (including EMX/RSX extender)
 3*2Tfreebsd_FreeBSD
 3*2Tgo32v2_Version 2 of DJ Delorie DOS extender
+3*2Tiphonesim_ iPhoneSimulator from iOS SDK 3.2+ (older versions: -Tdarwin)
 3*2Tlinux_Linux
 3*2Tnetbsd_NetBSD
 3*2Tnetware_Novell Netware Module (clib)
@@ -2917,23 +3248,27 @@ S*2Aas_Assemble using GNU AS
 3*2Tos2_OS/2 / eComStation
 3*2Tsunos_SunOS/Solaris
 3*2Tsymbian_Symbian OS
+3*2Tsolaris_Solaris
 3*2Twatcom_Watcom compatible DOS extender
 3*2Twdosx_WDOSX DOS extender
 3*2Twin32_Windows 32 Bit
 3*2Twince_Windows CE
+4*2Tdarwin_Darwin/Mac OS X
 4*2Tlinux_Linux
+4*2Twin64_Win64 (64 bit Windows systems)
 6*2Tamiga_Commodore Amiga
 6*2Tatari_Atari ST/STe/TT
-6*2Tlinux_Linux/m68k
-6*2Tmacos_Macintosh m68k (not supported)
+6*2Tlinux_Linux
 6*2Tpalmos_PalmOS
+A*2Tdarwin_Darwin/iPhoneOS/iOS
 A*2Tlinux_Linux
 A*2Twince_Windows CE
-P*2Tamiga_AmigaOS on PowerPC
-P*2Tdarwin_Darwin and Mac OS X on PowerPC
-P*2Tlinux_Linux on PowerPC
-P*2Tmacos_Mac OS (classic) on PowerPC
+P*2Tamiga_AmigaOS
+P*2Tdarwin_Darwin/Mac OS X
+P*2Tlinux_Linux
+P*2Tmacos_Mac OS (classic)
 P*2Tmorphos_MorphOS
+S*2Tsolaris_Solaris
 S*2Tlinux_Linux
 **1u<x>_Undefines the symbol <x>
 **1U_Unit options:
@@ -2953,39 +3288,54 @@ S*2Tlinux_Linux
 **2*_    with full path              v : Write fpcdebug.txt with
 **2*_                                    lots of debugging info
 **2*_m<x>,<y> : Don't show messages numbered <x> and <y>
-3*1W<x>_Target-specific options (targets)
-A*1W<x>_Target-specific options (targets)
-P*1W<x>_Target-specific options (targets)
-p*1W<x>_Target-specific options (targets)
+**1W<x>_Target-specific options (targets)
+3*2WA_Specify native type application (Windows)
+4*2WA_Specify native type application (Windows)
+A*2WA_Specify native type application (Windows)
 3*2Wb_Create a bundle instead of a library (Darwin)
 P*2Wb_Create a bundle instead of a library (Darwin)
 p*2Wb_Create a bundle instead of a library (Darwin)
-3*2WB_Create a relocatable image (Windows)
+A*2Wb_Create a bundle instead of a library (Darwin)
+4*2Wb_Create a bundle instead of a library (Darwin)
+3*2WB_Create a relocatable image (Windows, Symbian)
+3*2WBxxxx_Set image base to xxxx (Windows, Symbian)
+4*2WB_Create a relocatable image (Windows)
+4*2WBxxxx_Set image base to xxxx (Windows)
 A*2WB_Create a relocatable image (Windows, Symbian)
+A*2WBxxxx_Set image base to xxxx (Windows, Symbian)
 3*2WC_Specify console type application (EMX, OS/2, Windows)
+4*2WC_Specify console type application (EMX, OS/2, Windows)
 A*2WC_Specify console type application (Windows)
 P*2WC_Specify console type application (Classic Mac OS)
 3*2WD_Use DEFFILE to export functions of DLL or EXE (Windows)
+4*2WD_Use DEFFILE to export functions of DLL or EXE (Windows)
 A*2WD_Use DEFFILE to export functions of DLL or EXE (Windows)
 3*2We_Use external resources (Darwin)
+4*2We_Use external resources (Darwin)
+A*2We_Use external resources (Darwin)
 P*2We_Use external resources (Darwin)
 p*2We_Use external resources (Darwin)
 3*2WF_Specify full-screen type application (EMX, OS/2)
 3*2WG_Specify graphic type application (EMX, OS/2, Windows)
+4*2WG_Specify graphic type application (EMX, OS/2, Windows)
 A*2WG_Specify graphic type application (Windows)
 P*2WG_Specify graphic type application (Classic Mac OS)
 3*2Wi_Use internal resources (Darwin)
+4*2Wi_Use internal resources (Darwin)
+A*2Wi_Use internal resources (Darwin)
 P*2Wi_Use internal resources (Darwin)
 p*2Wi_Use internal resources (Darwin)
+3*2WI_Turn on/off the usage of import sections (Windows)
+4*2WI_Turn on/off the usage of import sections (Windows)
+A*2WI_Turn on/off the usage of import sections (Windows)
 3*2WN_Do not generate relocation code, needed for debugging (Windows)
+4*2WN_Do not generate relocation code, needed for debugging (Windows)
 A*2WN_Do not generate relocation code, needed for debugging (Windows)
 3*2WR_Generate relocation code (Windows)
+4*2WR_Generate relocation code (Windows)
 A*2WR_Generate relocation code (Windows)
 P*2WT_Specify MPW tool type application (Classic Mac OS)
-3*2WX_Enable executable stack (Linux)
-A*2WX_Enable executable stack (Linux)
-p*2WX_Enable executable stack (Linux)
-P*2WX_Enable executable stack (Linux)
+**2WX_Enable executable stack (Linux)
 **1X_Executable options:
 **2Xc_Pass --shared/-dynamic to the linker (BeOS, Darwin, FreeBSD, Linux)
 **2Xd_Do not use standard library search path (needed for cross compile)
