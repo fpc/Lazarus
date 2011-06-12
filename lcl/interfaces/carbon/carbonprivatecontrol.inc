@@ -473,6 +473,8 @@ function TCarbonControl.EmbedInScrollView(AScrollBars: TScrollStyle): HIViewRef;
 var
   ScrollOptions: MacOSAll.OptionBits;
   Bounds: HIRect;
+  s, d: HIRect;
+  cnt: Integer;
 const
   SName = 'EmbedInScrollView';
 begin
@@ -505,7 +507,24 @@ begin
       AScrollBars in [ssNone, ssAutoVertical, ssAutoHorizontal, ssAutoBoth]),
     Self, SName, SViewSetScrollBarAutoHide);
     
+  HIViewGetFrame(Widget, s);
+  HIViewRemoveFromSuperview(Widget);
   OSError(HIViewAddSubview(Result, Widget), Self, SName, SViewAddView);
+  HIViewGetFrame(Widget, d);
+
+  // hack: for some reason, sometimes HIViewAddSubview, changes the size
+  // of the widget by scrollsize width/height (15 pixels). #19425
+  cnt:=10;
+  while (cnt>0) and ((s.size.width<>d.size.width) or (s.size.height<>d.size.height)) do
+  begin
+    HIViewRemoveFromSuperview(Widget);
+    HIViewSetFrame(Widget, s);
+    HIViewSetFrame(Result, s);
+    HIViewAddSubview(Result, Widget);
+    HIViewGetFrame(Widget, d);
+    dec(cnt);
+  end;
+
   OSError(HIViewSetVisible(Widget, True), Self, SName, SViewVisible);
 end;
 

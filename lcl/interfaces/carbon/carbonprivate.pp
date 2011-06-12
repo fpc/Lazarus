@@ -702,11 +702,6 @@ begin
   
   if FScrollView <> Widget then
   begin
-    TmpSpec := MakeEventSpec(kEventClassScrollable, kEventScrollableGetInfo);
-    InstallControlEventHandler(Widget,
-      RegisterEventHandler(@CarbonScrollable_GetInfo),
-      1, @TmpSpec, Pointer(Self), nil);
-
     TmpSpec := MakeEventSpec(kEventClassScrollable, kEventScrollableScrollTo);
     InstallControlEventHandler(Widget,
       RegisterEventHandler(@CarbonScrollable_ScrollTo),
@@ -721,9 +716,17 @@ end;
   Creates Carbon custom control
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
+var
+  TmpSpec: EventTypeSpec;
 begin
   Widget := CreateCustomHIView(ParamsToHIRect(AParams), LCLObject.ControlStyle);
   if Widget = nil then RaiseCreateWidgetError(LCLObject);
+
+  // The event must be installed before embedding ScrollView. related to #19425
+  TmpSpec := MakeEventSpec(kEventClassScrollable, kEventScrollableGetInfo);
+  InstallControlEventHandler(Widget,
+    RegisterEventHandler(@CarbonScrollable_GetInfo),
+    1, @TmpSpec, Pointer(Self), nil);
 
   FScrollView := EmbedInScrollView(AParams);
   FScrollSize := Classes.Point(0, 0);
