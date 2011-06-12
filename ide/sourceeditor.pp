@@ -4802,7 +4802,7 @@ begin
   EditorComponent.IDEGutterMarks.ClearDebugMarks;
   FSharedValues.MarksRequested := False;
   for i := 0 to SharedEditorCount - 1 do
-    SharedEditors[i].EditorComponent.IDEGutterMarks.HasDebugMarks; // update all shared editors
+    SharedEditors[i].EditorComponent.IDEGutterMarks.ClearDebugMarks; // update all shared editors
   if (FLineInfoNotification <> nil) and (DebugBoss <> nil) and (DebugBoss.LineInfo <> nil) then
     DebugBoss.LineInfo.RemoveNotification(FLineInfoNotification);
 end;
