@@ -74,9 +74,13 @@ type
   { TLazIPHTMLManager }
 
   TLazIPHTMLManager = class
+  private
+    fWaitingForAsync: boolean;
+    procedure OpenNextURL(Data: PtrInt); // called via Application.QueueAsyncCall
   public
     NextURL: string;
-    procedure OpenNextURL(Data: PtrInt); // called via Application.QueueAsyncCall
+    procedure AsyncOpenURL(URL: string);
+    destructor Destroy; override;
   end;
 
 var
@@ -110,6 +114,15 @@ end;
 
 { TLazIPHTMLManager }
 
+procedure TLazIPHTMLManager.AsyncOpenURL(URL: string);
+begin
+  NextURL:=URL;
+  if not fWaitingForAsync then begin
+    Application.QueueAsyncCall(@OpenNextURL,0);
+    fWaitingForAsync:=true;
+  end;
+end;
+
 procedure TLazIPHTMLManager.OpenNextURL(Data: PtrInt);
 var
   URLScheme: string;
@@ -128,8 +141,16 @@ begin
     end else begin
       AFilename:=URLPath;
     end;
+    AFilename:=SetDirSeparators(AFilename);
     LazarusIDE.DoOpenFileAndJumpToPos(AFilename,p,-1,-1,-1,[]);
   end;
+end;
+
+destructor TLazIPHTMLManager.Destroy;
+begin
+  if (Application<>nil) and fWaitingForAsync then
+    Application.RemoveAsyncCalls(Self);
+  inherited Destroy;
 end;
 
 { TLazIpHtmlDataProvider }
@@ -244,8 +265,7 @@ begin
     // This will close the hint, so the open must be done outside the current event
     if LazIPHTMLManager=nil then
       LazIPHTMLManager:=TLazIPHTMLManager.Create;
-    LazIPHTMLManager.NextURL:=HRef;
-    Application.QueueAsyncCall(@LazIPHTMLManager.OpenNextURL,0);
+    LazIPHTMLManager.AsyncOpenURL(HRef);
   end;
 end;
 
