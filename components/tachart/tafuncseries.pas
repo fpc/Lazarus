@@ -90,7 +90,8 @@ type
     property OnCalculate: TFuncCalculateEvent
       read FOnCalculate write SetOnCalculate;
     property Pen: TChartPen read FPen write SetPen;
-    property Step: TFuncSeriesStep read FStep write SetStep default DEF_FUNC_STEP;
+    property Step: TFuncSeriesStep
+      read FStep write SetStep default DEF_FUNC_STEP;
   end;
 
   TSplineDegree = 1..100;
@@ -124,9 +125,11 @@ type
     property Title;
     property ZPosition;
   published
-    property Degree: TSplineDegree read FDegree write SetDegree default DEF_SPLINE_DEGREE;
+    property Degree: TSplineDegree
+      read FDegree write SetDegree default DEF_SPLINE_DEGREE;
     property Pen: TChartPen read FPen write SetPen;
-    property Step: TFuncSeriesStep read FStep write SetStep default DEF_SPLINE_STEP;
+    property Step: TFuncSeriesStep
+      read FStep write SetStep default DEF_SPLINE_STEP;
   end;
 
   TFuncCalculate3DEvent =
@@ -165,7 +168,8 @@ type
     property AxisIndexX;
     property AxisIndexY;
     property Brush: TBrush read FBrush write SetBrush;
-    property ColorSource: TCustomChartSource read FColorSource write SetColorSource;
+    property ColorSource: TCustomChartSource
+      read FColorSource write SetColorSource;
     property Interpolate: Boolean
       read FInterpolate write SetInterpolate default false;
     property OnCalculate: TFuncCalculate3DEvent
@@ -407,6 +411,7 @@ procedure TSplineSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TSplineSeries then
     with TSplineSeries(ASource) do begin
+      Self.FDegree := FDegree;
       Self.Pen := FPen;
       Self.FStep := FStep;
     end;
@@ -436,36 +441,47 @@ var
   function SplinePoint(APos: Double): TPoint;
   var
     i, d: Integer;
-    w: Double;
+    w, denom: Double;
   begin
+    // Duplicate end points Degree times to fix spline to them.
     for i := 0 to Degree do
       p[i] := FGraphPoints[
         EnsureRange(startIndex - Degree + i, 0, High(FGraphPoints))];
-    // De Boor's algorithm.
-    for d := 1 to Degree do
+    // De Boor's algorithm, source points used as control points.
+    // Parametric coordinate is equal to point index.
+    for d := 1 to Degree do begin
+      denom := 1 / (Degree + 1 - d);
       for i := Degree downto d do begin
-        w := (APos + Degree - i) / (Degree + 1 - d);
+        w := (APos + Degree - i) * denom;
         p[i].X := WeightedAverage(p[i - 1].X, p[i].X, w);
         p[i].Y := WeightedAverage(p[i - 1].Y, p[i].Y, w);
       end;
+    end;
     Result := ParentChart.GraphToImage(p[Degree]);
   end;
 
-  procedure SplineSegment(
-    ADepth: Integer; AL, AR: Double; const APL, APR: TPoint);
+var
+  level: Integer = 0;
+
+  // Pass screen coordinates down to calculate them only once for each point.
+  procedure SplineSegment(AL, AR: Double; const APL, APR: TPoint);
   const
-    INF_SENTINEL = 15; // Arbitrary limit to guard against infinite recursion.
+    INF_SENTINEL = 15; // Arbitrary guard against infinite recursion.
   var
     m: Double;
     pm: TPoint;
   begin
-    if (ADepth > INF_SENTINEL) or (PointDist(APL, APR) <= Sqr(Step)) then
-      ADrawer.Line(APL, APR)
+    if (level > INF_SENTINEL) or (PointDist(APL, APR) <= Sqr(Step)) then
+      // Left-then-right recursive call order guarantees that
+      // the last drawn segment is the immediately preceding one.
+      ADrawer.LineTo(APR)
     else begin
       m := (AL + AR) / 2;
       pm := SplinePoint(m);
-      SplineSegment(ADepth + 1, AL, m, APL, pm);
-      SplineSegment(ADepth + 1, m, AR, pm, APR);
+      level += 1;
+      SplineSegment(AL, m, APL, pm);
+      SplineSegment(m, AR, pm, APR);
+      level -= 1;
     end;
   end;
 
@@ -483,10 +499,11 @@ begin
   ExpandRange(ext.a.Y, ext.b.Y, 1.0);
   PrepareGraphPoints(ext, true);
 
-  ADrawer.Pen := Pen;
   SetLength(p, Degree + 1);
+  ADrawer.Pen := Pen;
+  ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[0]));
   for startIndex := 0 to High(FGraphPoints) + Degree - 1 do
-    SplineSegment(0, 0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
+    SplineSegment(0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
   DrawLabels(ADrawer);
 end;
 
