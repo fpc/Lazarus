@@ -490,6 +490,13 @@ begin
       end;
       NewTargetDirectory:=CleanAndExpandDirectory(NewTargetDirectory);
       debugln('CreateBuildLazarusOptions Options.TargetDirectory=',NewTargetDirectory);
+      NewUnitDirectory:=AppendPathDelim(NewTargetDirectory)+'units'
+                      +PathDelim+NewTargetCPU+'-'+NewTargetOS;
+      debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',NewUnitDirectory);
+      Result:=ForceDirectoryInteractive(NewUnitDirectory,[]);
+      if Result<>mrOk then exit;
+      NewTargetDirectory:=AppendPathDelim(NewTargetDirectory)+'bin';
+      debugln('CreateBuildLazarusOptions ExecutableTargetDirectory=',NewTargetDirectory);
       Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
       if Result<>mrOk then exit;
       if OSLocksExecutables and not CrossCompiling then begin
@@ -588,7 +595,7 @@ begin
     if NewUnitDirectory<>'' then
       // FPC interpretes '\ ' as an escape for a space in a path,
       // so make sure the directory doesn't end with the path delimeter.
-      AppendExtraOption('-FU'+ChompPathDelim(NewTargetDirectory));
+      AppendExtraOption('-FU'+ChompPathDelim(NewUnitDirectory));
 
     if NewTargetDirectory<>'' then
       // FPC interpretes '\ ' as an escape for a space in a path,
