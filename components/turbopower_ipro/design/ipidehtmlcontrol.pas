@@ -22,8 +22,8 @@ unit IPIDEHTMLControl;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Graphics, Controls, Dialogs, ExtCtrls,
-  IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf;
+  Classes, SysUtils, LCLProc, Forms, Graphics, Controls, Dialogs, ExtCtrls,
+  IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf, LazIDEIntf, TextTools;
 
 type
   TLazIPHtmlControl = class;
@@ -51,6 +51,7 @@ type
       var Picture: TPicture);
     procedure DataProviderLeave(Sender: TIpHtml);
     procedure DataProviderReportReference(Sender: TObject; const URL: string);
+    procedure IPHTMLPanelHotClick(Sender: TObject);
   private
     FIDEProvider: TAbstractIDEHTMLProvider;
     FIPHTMLPanel: TIpHtmlPanel;
@@ -69,6 +70,17 @@ type
     procedure GetPreferredControlSize(out AWidth, AHeight: integer);
     property IPHTMLPanel: TIpHtmlPanel read FIPHTMLPanel;
   end;
+
+  { TLazIPHTMLManager }
+
+  TLazIPHTMLManager = class
+  public
+    NextURL: string;
+    procedure OpenNextURL(Data: PtrInt); // called via Application.QueueAsyncCall
+  end;
+
+var
+  LazIPHTMLManager: TLazIPHTMLManager = nil;
 
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
   var Provider: TAbstractIDEHTMLProvider): TControl;
@@ -94,6 +106,30 @@ begin
     Provider:=CreateIDEHTMLProvider(HTMLControl);
   //debugln(['IPCreateLazIDEHTMLControl Provider=',DbgSName(Provider)]);
   HTMLControl.IDEProvider:=Provider;
+end;
+
+{ TLazIPHTMLManager }
+
+procedure TLazIPHTMLManager.OpenNextURL(Data: PtrInt);
+var
+  URLScheme: string;
+  URLPath: string;
+  URLParams: string;
+  AFilename: String;
+  p: TPoint;
+begin
+  SplitURL(NextURL,URLScheme,URLPath,URLParams);
+  if URLScheme='source' then begin
+    p:=Point(1,1);
+    if REMatches(URLPath,'(.*)\((.*),(.*)\)') then begin
+      AFilename:=REVar(1);
+      p.Y:=StrToIntDef(REVar(2),p.x);
+      p.X:=StrToIntDef(REVar(3),p.y);
+    end else begin
+      AFilename:=URLPath;
+    end;
+    LazarusIDE.DoOpenFileAndJumpToPos(AFilename,p,-1,-1,-1,[]);
+  end;
 end;
 
 { TLazIpHtmlDataProvider }
@@ -184,6 +220,35 @@ begin
   debugln(['TLazIPHtmlControl.DataProviderReportReference URL=',URL]);
 end;
 
+procedure TLazIPHtmlControl.IPHTMLPanelHotClick(Sender: TObject);
+var
+  HotNode: TIpHtmlNode;
+  HRef: String;
+  Target: String;
+  URLScheme: string;
+  URLPath: string;
+  URLParams: string;
+begin
+  HotNode:=FIPHTMLPanel.HotNode;
+  if HotNode is TIpHtmlNodeA then begin
+    HRef := TIpHtmlNodeA(HotNode).HRef;
+    Target := TIpHtmlNodeA(HotNode).Target;
+  end else begin
+    HRef := TIpHtmlNodeAREA(HotNode).HRef;
+    Target := TIpHtmlNodeAREA(HotNode).Target;
+  end;
+  debugln(['TLazIPHtmlControl.IPHTMLPanelHotClick HRef="',HRef,'" Target="',Target,'"']);
+  SplitURL(HRef,URLScheme,URLPath,URLParams);
+  if URLScheme='source' then begin
+    // open the source in the IDE
+    // This will close the hint, so the open must be done outside the current event
+    if LazIPHTMLManager=nil then
+      LazIPHTMLManager:=TLazIPHTMLManager.Create;
+    LazIPHTMLManager.NextURL:=HRef;
+    Application.QueueAsyncCall(@LazIPHTMLManager.OpenNextURL,0);
+  end;
+end;
+
 procedure TLazIPHtmlControl.SetIDEProvider(
   const AValue: TAbstractIDEHTMLProvider);
 begin
@@ -223,6 +288,7 @@ begin
     MarginHeight:=2;
     MarginWidth:=2;
     Parent:=Self;
+    OnHotClick:=@IPHTMLPanelHotClick;
   end;
   FIPHTMLPanel.DataProvider:=TLazIpHtmlDataProvider.Create(FIPHTMLPanel);
   with TLazIpHtmlDataProvider(FIPHTMLPanel.DataProvider) do begin
@@ -316,9 +382,14 @@ end;
 
 procedure TLazIPHtmlControl.GetPreferredControlSize(out AWidth, AHeight: integer);
 begin
+  AWidth:=0;
+  AHeight:=0;
   inherited GetPreferredSize(AWidth, AHeight);
   //debugln(['TLazIPHtmlControl.GetPreferredControlSize Width=',AWidth,' Height=',AHeight]);
 end;
+
+finalization
+  FreeAndNil(LazIPHTMLManager);
 
 end.
 

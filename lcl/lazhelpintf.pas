@@ -578,8 +578,8 @@ procedure FreeUnusedLCLHelpSystem;
 function FilenameToURL(const Filename: string): string;
 function FilenameToURLPath(const Filename: string): string;
 function URLPathToFilename(const URLPath: string): string;
-procedure SplitURL(const URL: string; out URLType, URLPath, URLParams: string);
-function CombineURL(const URLType, URLPath, URLParams: string): string;
+procedure SplitURL(const URL: string; out URLScheme, URLPath, URLParams: string);
+function CombineURL(const URLScheme, URLPath, URLParams: string): string;
 function URLFilenameIsAbsolute(const URLPath: string): boolean;
 function FindURLPathStart(const URL: string): integer;
 function FindURLPathEnd(const URL: string): integer;
@@ -656,14 +656,14 @@ begin
   {$warnings on}
 end;
 
-procedure SplitURL(const URL: string; out URLType, URLPath, URLParams: string);
+procedure SplitURL(const URL: string; out URLScheme, URLPath, URLParams: string);
 var
   Len: Integer;
   ColonPos: Integer;
   ParamStartPos: integer;
   URLStartPos: Integer;
 begin
-  URLType:='';
+  URLScheme:='';
   URLPath:='';
   URLParams:='';
   Len:=length(URL);
@@ -672,8 +672,8 @@ begin
   while (ColonPos<=len) and (URL[ColonPos]<>':') do
     inc(ColonPos);
   if ColonPos>len then exit;
-  // get URLType
-  URLType:=copy(URL,1,ColonPos-1);
+  // get URLScheme
+  URLScheme:=copy(URL,1,ColonPos-1);
   URLStartPos:=ColonPos+1;
   // skip the '//' after the colon
   if (URLStartPos<=len) and (URL[URLStartPos]='/') then inc(URLStartPos);
@@ -687,9 +687,9 @@ begin
   URLParams:=copy(URL,ParamStartPos,len-ParamStartPos+1);
 end;
 
-function CombineURL(const URLType, URLPath, URLParams: string): string;
+function CombineURL(const URLScheme, URLPath, URLParams: string): string;
 begin
-  Result:=URLType+'://'+URLPath;
+  Result:=URLScheme+'://'+URLPath;
   if URLParams<>'' then
     Result:=Result+URLParams;
 end;
