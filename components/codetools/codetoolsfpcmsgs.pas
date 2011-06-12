@@ -72,8 +72,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromFile(const Filename: string);
-    procedure LoadFromList(List: TStrings);
-    procedure Clear;
+    procedure LoadFromList(List: TStrings); virtual;
+    procedure Clear; virtual;
     function Count: integer;
     property Items[Index: integer]: TFPCMsgItem read GetItems; default;
     function FindWithID(ID: integer): TFPCMsgItem;
@@ -259,7 +259,7 @@ var
 begin
   sl:=TStringList.Create;
   try
-    sl.LoadFromFile(Filename);
+    sl.LoadFromFile(UTF8ToSys(Filename));
     LoadFromList(sl);
   finally
     sl.Free;

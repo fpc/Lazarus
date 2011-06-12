@@ -50,7 +50,7 @@ type
     procedure SetHintValid(const AValue: boolean);
     procedure SetWaitingForIdle(const AValue: boolean);
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
-    procedure ReadLazDocData;
+    procedure DoUpdateHint;
     procedure UpdateHintControl;
   public
     destructor Destroy; override;
@@ -84,10 +84,10 @@ end;
 procedure TFPDocHintProvider.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   WaitingForIdle:=false;
-  ReadLazDocData;
+  DoUpdateHint;
 end;
 
-procedure TFPDocHintProvider.ReadLazDocData;
+procedure TFPDocHintProvider.DoUpdateHint;
 var
   Position: LongInt;
   Item: TIdentifierListItem;
@@ -110,6 +110,8 @@ begin
   Item:=CodeToolBoss.IdentifierList.FilteredItems[Position];
   DebugLn(['TFPDocHintProvider.ReadLazDocData Identifier=',Item.Identifier]);
   try
+    FBaseURL:='';
+    FHTMLHint:='<HTML><BODY>No help available.</BODY></HTML>';
     // find current codetool node
     Node:=Item.Node;
     if (Node=nil) then begin
@@ -169,6 +171,7 @@ begin
       FTextControl.Visible:=false;
     FHTMLControl.Visible:=true;
     FHTMLProvider.BaseURL:=FBaseURL;
+    debugln(['TFPDocHintProvider.UpdateHintControl FHTMLControl=',DbgSName(FHTMLControl),' FHTMLProvider=',DbgSName(FHTMLProvider)]);
     ms:=TMemoryStream.Create;
     try
       if FHTMLHint<>'' then

@@ -294,6 +294,7 @@ begin
   //DebugLn(['TCodeHintFrm.UpdatePosition NewBounds=',dbgs(NewBounds),' BoundsRect=',dbgs(BoundsRect)]);
   BoundsRect:=NewBounds;
   Visible:=true;
+  UpdateHints;
 end;
 
 procedure TSrcEditHintWindow.Paint;
@@ -322,8 +323,8 @@ end;
 
 procedure TSrcEditHintWindow.UpdateHints;
 begin
+  DebugLn(['TCodeHintFrm.UpdateHints Visible=',Visible]);
   if not Visible then exit;
-  //DebugLn(['TCodeHintFrm.UpdateHints ']);
   if Provider<>nil then Provider.UpdateHint;
 end;
 

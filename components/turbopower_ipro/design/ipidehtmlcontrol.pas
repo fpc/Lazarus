@@ -22,7 +22,7 @@ unit IPIDEHTMLControl;
 interface
 
 uses
-  Classes, SysUtils, math, LCLProc, Graphics, Controls, Dialogs, ExtCtrls,
+  Classes, SysUtils, LCLProc, Graphics, Controls, Dialogs, ExtCtrls,
   IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf;
 
 type
@@ -272,14 +272,15 @@ begin
       NewHTML.LoadFromStream(Stream);
       ok:=true;
     finally
-      if not ok then NewHTML.Free;
+      if not ok then FreeAndNil(NewHTML);
       IDEProvider.ReleaseStream(FURL);
     end;
-    FIPHTMLPanel.SetHtml(NewHTML);
+    if NewHTML<>nil then
+      FIPHTMLPanel.SetHtml(NewHTML);
   except
     on E: Exception do begin
       MessageDlg('Unable to open HTML file',
-        'HTML File: '+FURL+#13
+        'URL: '+FURL+#13
         +'Error: '+E.Message,mtError,[mbCancel],0);
     end;
   end;
@@ -289,11 +290,28 @@ procedure TLazIPHtmlControl.SetHTMLContent(Stream: TStream; const NewURL: string
   );
 var
   NewHTML: TIpHtml;
+  ok: Boolean;
 begin
   FURL:=NewURL;
-  NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically by TIpHtmlPanel
-  FIPHTMLPanel.SetHtml(NewHTML);
-  NewHTML.LoadFromStream(Stream);
+  try
+    NewHTML:=nil;
+    ok:=false;
+    try
+      NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically TIpHtmlPanel
+      NewHTML.LoadFromStream(Stream);
+      ok:=true;
+    finally
+      if not ok then FreeAndNil(NewHTML);
+    end;
+    if NewHTML<>nil then
+      FIPHTMLPanel.SetHtml(NewHTML);
+  except
+    on E: Exception do begin
+      MessageDlg('Unable to load HTML stream',
+        'URL: '+FURL+#13
+        +'Error: '+E.Message,mtError,[mbCancel],0);
+    end;
+  end;
 end;
 
 procedure TLazIPHtmlControl.GetPreferredControlSize(out AWidth, AHeight: integer);
