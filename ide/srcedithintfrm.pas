@@ -68,10 +68,7 @@ type
     procedure SetAnchorForm(const AValue: TCustomForm);
     procedure OnAnchorFormChangeBounds(Sender: TObject);
     procedure SetHelpEnabled(const AValue: boolean);
-    procedure SetPreferredHeight(const AValue: integer);
-    procedure SetPreferredWidth(const AValue: integer);
     procedure SetProvider(const AValue: TCodeHintProvider);
-    procedure SetSrcEditCaret(const AValue: TPoint);
     procedure UpdatePosition;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -81,10 +78,10 @@ type
     function NeedVisible: boolean;
     property AnchorForm: TCustomForm read FAnchorForm write SetAnchorForm;
     property HelpEnabled: boolean read FHelpEnabled write SetHelpEnabled;
-    property SrcEditCaret: TPoint read FSrcEditCaret write SetSrcEditCaret;// 0,0 means use current position, should be ScreenXY, not TextXY
-    property PreferredWidth: integer read FPreferredWidth write SetPreferredWidth;
-    property PreferredHeight: integer read FPreferredHeight write SetPreferredHeight;
-    property Provider: TCodeHintProvider read FProvider write SetProvider;
+    property SrcEditCaret: TPoint read FSrcEditCaret write FSrcEditCaret;// 0,0 means use current position, should be ScreenXY, not TextXY
+    property PreferredWidth: integer read FPreferredWidth write FPreferredWidth;
+    property PreferredHeight: integer read FPreferredHeight write FPreferredHeight;
+    property Provider: TCodeHintProvider read FProvider write SetProvider; // Provider.Control=Self
   end;
   
 var
@@ -176,18 +173,6 @@ begin
   UpdatePosition;
 end;
 
-procedure TSrcEditHintWindow.SetPreferredHeight(const AValue: integer);
-begin
-  if FPreferredHeight=AValue then exit;
-  FPreferredHeight:=AValue;
-end;
-
-procedure TSrcEditHintWindow.SetPreferredWidth(const AValue: integer);
-begin
-  if FPreferredWidth=AValue then exit;
-  FPreferredWidth:=AValue;
-end;
-
 procedure TSrcEditHintWindow.SetProvider(const AValue: TCodeHintProvider);
 begin
   if FProvider=AValue then exit;
@@ -199,12 +184,6 @@ begin
     FProvider.Control:=Self;
     FProvider.GetPreferredSize(FPreferredWidth,FPreferredHeight);
   end;
-end;
-
-procedure TSrcEditHintWindow.SetSrcEditCaret(const AValue: TPoint);
-begin
-  if ComparePoints(FSrcEditCaret,AValue)=0 then exit;
-  FSrcEditCaret:=AValue;
 end;
 
 procedure TSrcEditHintWindow.UpdatePosition;
@@ -334,7 +313,7 @@ function TSrcEditHintWindow.NeedVisible: boolean;
 begin
   if not HelpEnabled then exit(false);
   if (AnchorForm<>nil) then begin
-    Result:=AnchorForm.Visible;
+    Result:=AnchorForm.IsVisible;
   end else begin
     Result:=(SourceEditorManagerIntf<>nil)
         and (SourceEditorManagerIntf.ActiveEditor<>nil);
