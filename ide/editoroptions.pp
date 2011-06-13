@@ -59,6 +59,9 @@ uses
   // IDE
   LazarusIDEStrConsts, IDEProcs, KeyMapping, LazConf, typinfo;
 
+const
+  DefaultCompletionLongLineHintType = sclpExtendRightOnly;
+
 type
   TPreviewPasSyn = TIDESynFreePasSyn;
   TSrcIDEHighlighter = TSynCustomHighlighter;
@@ -3066,7 +3069,7 @@ begin
   FMarkupCurWordNoTimer := False;
 
   // Code Tools options
-  FCompletionLongLineHintType := sclpExtendRightOnly;
+  FCompletionLongLineHintType := DefaultCompletionLongLineHintType;
 
   // Code folding
   FReverseFoldPopUpOrder := True;
@@ -3265,7 +3268,7 @@ begin
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoRemoveEmptyMethods', False);
     FCompletionLongLineHintInMSec :=
       XMLConfig.GetValue('EditorOptions/CodeTools/CompletionLongLineHintInMSec', 0);
-    FCompletionLongLineHintType := sclpExtendRightOnly;
+    FCompletionLongLineHintType := DefaultCompletionLongLineHintType;
     XMLConfig.ReadObject('EditorOptions/CodeTools/CompletionLongLineHintType',
                          Self, Self, 'CompletionLongLineHintType');
 

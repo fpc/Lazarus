@@ -2729,6 +2729,7 @@ function TCodeHelpManager.SourcePosToFPDocHint(XYPos: TCodeXYPosition;
   Caption: string): string;
 var
   Link: String;
+  i: Integer;
 begin
   Result:='';
   if XYPos.Code=nil then exit;
@@ -2739,7 +2740,14 @@ begin
       Link:=Link+','+IntToStr(XYPos.X);
     Link:=Link+')';
   end;
-  if Caption='' then Caption:=Link;
+  if Caption='' then begin
+    Caption:=Link;
+    // make caption breakable into several lines
+    for i:=length(Caption)-1 downto 1 do begin
+      if Caption[i]=PathDelim then
+        System.Insert('<wbr/>',Caption,i+1);
+    end;
+  end;
   Result:='<a href="source://'+Link+'">'+Caption+'</a>';
 end;
 

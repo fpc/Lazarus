@@ -1579,11 +1579,15 @@ Begin
       // '');
     end;
     debugln(['TSourceEditCompletion.ccExecute ',DbgSName(SourceEditorManager.ActiveCompletionPlugin)]);
-    if (CurrentCompletionType=ctIdentCompletion) and (SourceEditorManager.ActiveCompletionPlugin=nil)
+    if (CurrentCompletionType=ctIdentCompletion)
+    and (SourceEditorManager.ActiveCompletionPlugin=nil)
     then
       StartShowCodeHelp
     else if SrcEditHintWindow<>nil then
+    begin
       SrcEditHintWindow.HelpEnabled:=false;
+      TheForm.LongLineHintType := EditorOpts.CompletionLongLineHintType;
+    end;
   end;
 end;
 
@@ -2020,6 +2024,7 @@ begin
   end;
   SrcEditHintWindow.AnchorForm := TheForm;
   {$IFDEF EnableCodeHelp}
+  TheForm.LongLineHintType:=sclpNone;
   SrcEditHintWindow.HelpEnabled:=true;
   {$ENDIF}
 end;
