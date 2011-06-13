@@ -13,13 +13,18 @@ object Form1: TForm1
     Height = 432
     Top = 0
     Width = 300
+    AntialiasingMode = amOn
     AxisList = <    
       item
+        Marks.LabelFont.Height = 13
         Marks.LabelFont.Orientation = 400
+        Minors = <>
         Title.LabelFont.Orientation = 900
       end    
       item
         Alignment = calBottom
+        Marks.LabelFont.Height = 13
+        Minors = <>
       end>
     BackColor = clMoneyGreen
     Foot.Brush.Color = clBtnFace

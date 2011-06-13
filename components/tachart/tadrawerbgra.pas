@@ -42,6 +42,7 @@ type
     procedure SetPen(APen: TFPCustomPen);
   strict protected
     function GetFontAngle: Double; override;
+    procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
@@ -241,6 +242,11 @@ procedure TBGRABitmapDrawer.Rectangle(const ARect: TRect);
 begin
   with ARect do
     Rectangle(Left, Top, Right, Bottom)
+end;
+
+procedure TBGRABitmapDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);
+begin
+  FCanvas.FontAntialias := AValue = amOn;
 end;
 
 procedure TBGRABitmapDrawer.SetBrush(ABrush: TFPCustomBrush);
