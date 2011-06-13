@@ -37,6 +37,7 @@ type
     FPenWidth: Integer;
     FPrevPoint: TPoint;
 
+    procedure InternalDrawPolygon(const APoints: ArrayOfTPointF);
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -155,6 +156,24 @@ begin
   Result := 0.0;
 end;
 
+procedure TBGRABitmapDrawer.InternalDrawPolygon(const APoints: ArrayOfTPointF);
+var
+  bt: TBGRACustomBitmap;
+begin
+  if FBrushStyle = bsSolid then
+    FCanvas.FillPolyAntialias(APoints, FBrushColor)
+  else begin
+    bt := FCanvas.CreateBrushTexture(
+      FBrushStyle, FBrushColor, BGRAPixelTransparent);
+    try
+      FCanvas.FillPolyAntialias(APoints, bt);
+    finally
+      bt.Free;
+    end;
+  end;
+  FCanvas.DrawPolygonAntialias(APoints, FPenColor, FPenWidth);
+end;
+
 procedure TBGRABitmapDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
   FCanvas.DrawLineAntialias(AX1, AY1, AX2, AY2, FPenColor, FPenWidth);
@@ -181,22 +200,8 @@ end;
 
 procedure TBGRABitmapDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
-var
-  bt: TBGRACustomBitmap;
 begin
-  if FBrushStyle = bsSolid then
-    FCanvas.DrawPolygonAntialias(
-      PointsToPointsF(APoints, AStartIndex, ANumPts), FBrushColor, FPenWidth)
-  else begin
-    bt := FCanvas.CreateBrushTexture(
-      FBrushStyle, FBrushColor, BGRAPixelTransparent);
-    try
-      FCanvas.DrawPolygonAntialias(
-        PointsToPointsF(APoints, AStartIndex, ANumPts), bt, FPenWidth);
-    finally
-      bt.Free;
-    end;
-  end;
+  InternalDrawPolygon(PointsToPointsF(APoints, AStartIndex, ANumPts));
 end;
 
 procedure TBGRABitmapDrawer.Polyline(
@@ -214,10 +219,17 @@ end;
 
 procedure TBGRABitmapDrawer.RadialPie(
   AX1, AY1, AX2, AY2: Integer; AStartAngle16Deg, AAngleLength16Deg: Integer);
+const
+  CONV_COEFF = 65536 / (360 * 16);
+var
+  cx, cy, rx, ry: Integer;
 begin
-  Unused(AX1, AY1);
-  Unused(AX2, AY2);
-  Unused(AStartAngle16Deg, AAngleLength16Deg);
+  BoundingBoxToCenterAndHalfRadius(AX1, AY1, AX2, AY2, cx, cy, rx, ry);
+  InternalDrawPolygon(FCanvas.ComputePie65536(
+    cx, cy, rx, ry,
+    Round(AStartAngle16Deg * CONV_COEFF),
+    Round((AStartAngle16Deg + AAngleLength16Deg) * CONV_COEFF)
+  ));
 end;
 
 procedure TBGRABitmapDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
@@ -263,7 +275,6 @@ end;
 procedure TBGRABitmapDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  Unused(AStyle);
   FBrushColor := ColorToBGRA(AColor);
   FBrushStyle := AStyle;
 end;
