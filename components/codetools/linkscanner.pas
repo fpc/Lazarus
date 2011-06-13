@@ -323,9 +323,9 @@ type
     function ReadIdentifier: string;
     function ReadUpperIdentifier: string;
     procedure SkipSpace; {$IFDEF UseInline}inline;{$ENDIF}
-    procedure SkipComment;
-    procedure SkipDelphiComment;
-    procedure SkipOldTPComment;
+    procedure SkipCurlyComment;
+    procedure SkipLineComment;
+    procedure SkipRoundComment;
     procedure CommentEndNotFound;
     procedure EndComment; {$IFDEF UseInline}inline;{$ENDIF}
     procedure IncCommentLevel; {$IFDEF UseInline}inline;{$ENDIF}
@@ -1070,20 +1070,20 @@ begin
     '{' :
       begin
         SrcPos:=p-PChar(Src)+1;
-        SkipComment;
+        SkipCurlyComment;
         p:=@Src[SrcPos];
       end;
     '/':
       if p[1]='/' then begin
         SrcPos:=p-PChar(Src)+1;
-        SkipDelphiComment;
+        SkipLineComment;
         p:=@Src[SrcPos];
       end else
         break;
     '(':
       if p[1]='*' then begin
         SrcPos:=p-PChar(Src)+1;
-        SkipOldTPComment;
+        SkipRoundComment;
         p:=@Src[SrcPos];
       end else
         break;
@@ -1391,7 +1391,7 @@ begin
   FLinks[Index]:=Value;
 end;
 
-procedure TLinkScanner.SkipComment;
+procedure TLinkScanner.SkipCurlyComment;
 // a normal pascal {} comment
 var
   p: PChar;
@@ -1433,7 +1433,7 @@ begin
   EndComment;
 end;
 
-procedure TLinkScanner.SkipDelphiComment;
+procedure TLinkScanner.SkipLineComment;
 // a  // newline  comment
 begin
   CommentStyle:=CommentDelphi;
@@ -1450,7 +1450,7 @@ begin
   EndComment;
 end;
 
-procedure TLinkScanner.SkipOldTPComment;
+procedure TLinkScanner.SkipRoundComment;
 // a (* *) comment
 var
   p: PChar;
@@ -3510,7 +3510,7 @@ procedure TLinkScanner.SkipTillEndifElse(SkippingUntil: TLSSkippingDirective);
   end;
 
 var
-  c1: Char;
+  p: PChar;
 begin
   if FSkippingDirectives<>lssdNone then begin
     FSkippingDirectives:=SkippingUntil;
@@ -3527,38 +3527,53 @@ begin
   // parse till $else, $elseif or $endif without adding the code to FCleanedSrc
   FSkipIfLevel:=IfLevel;
   if (SrcPos<=SrcLen) then begin
+    p:=@Src[SrcPos];
     while true do begin
-      c1:=Src[SrcPos];
-      if IsCommentStartChar[c1] then begin
-        case c1 of
-          '{': begin
-                 SkipComment;
-                 if FSkippingDirectives=lssdNone then break;
-               end;
-          '/': if (Src[SrcPos+1]='/') then begin
-                 SkipDelphiComment;
-                 if FSkippingDirectives=lssdNone then break;
-               end else
-                 inc(SrcPos);
-          '(': if (Src[SrcPos+1]='*') then begin
-                 SkipOldTPComment;
-                 if FSkippingDirectives=lssdNone then break;
-               end else
-                 inc(SrcPos);
+      case p^ of
+      '{':
+        begin
+          SrcPos:=p-PChar(Src)+1;
+          SkipCurlyComment;
+          if FSkippingDirectives=lssdNone then break;
+          p:=@Src[SrcPos];
         end;
-      end else if c1='''' then begin
-        // skip string constant
-        inc(SrcPos);
-        while (SrcPos<=SrcLen) and (Src[SrcPos]<>'''') do inc(SrcPos);
-        inc(SrcPos);
-      end else begin
-        inc(SrcPos);
-        if (SrcPos>SrcLen) and not ReturnFromIncludeFile then begin
-          CommentStartPos:=0;
-          break;
+      '/':
+        if p[1]='/' then begin
+          SrcPos:=p-PChar(Src)+1;
+          SkipLineComment;
+          if FSkippingDirectives=lssdNone then break;
+          p:=@Src[SrcPos];
+        end else
+          inc(p);
+      '(':
+        if p[1]='*' then begin
+          SrcPos:=p-PChar(Src)+1;
+          SkipRoundComment;
+          if FSkippingDirectives=lssdNone then break;
+          p:=@Src[SrcPos];
+        end else
+          inc(p);
+      '''':
+        begin
+          // skip string constant
+          inc(p);
+          while p^<>'''' do inc(p);
+          inc(p);
         end;
+      #0:
+        begin
+          SrcPos:=p-PChar(Src)+1;
+          if (SrcPos>SrcLen) and not ReturnFromIncludeFile then begin
+            CommentStartPos:=0;
+            break;
+          end;
+          inc(p);
+        end;
+      else
+        inc(p);
       end;
     end;
+    SrcPos:=p-PChar(Src)+1;
   end;
   if CommentStartPos>0 then begin
     CopiedSrcPos:=CommentStartPos-1;
