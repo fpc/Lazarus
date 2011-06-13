@@ -3110,6 +3110,9 @@ type
       X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    {$IFDEF IP_LAZARUS}
+    procedure MouseLeave; override;
+    {$ENDIF}
     procedure DoHotChange;
     procedure DoCurElementChange;
     procedure DoHotInvoke;
@@ -17315,6 +17318,14 @@ begin
     else
       DoClick;
 end;
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlInternalPanel.MouseLeave;
+begin
+  HideHint;
+  inherited MouseLeave;
+end;
+{$ENDIF}
 
 procedure TIpHtmlInternalPanel.Paint;
 var

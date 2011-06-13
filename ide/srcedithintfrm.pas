@@ -171,6 +171,8 @@ procedure TSrcEditHintWindow.SetHelpEnabled(const AValue: boolean);
 begin
   if FHelpEnabled=AValue then exit;
   FHelpEnabled:=AValue;
+  if not HelpEnabled then
+    Visible:=false;
   UpdatePosition;
 end;
 
@@ -323,7 +325,7 @@ end;
 
 procedure TSrcEditHintWindow.UpdateHints;
 begin
-  DebugLn(['TCodeHintFrm.UpdateHints Visible=',Visible]);
+  //DebugLn(['TCodeHintFrm.UpdateHints Visible=',Visible]);
   if not Visible then exit;
   if Provider<>nil then Provider.UpdateHint;
 end;
