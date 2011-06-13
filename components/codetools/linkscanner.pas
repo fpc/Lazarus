@@ -1399,9 +1399,9 @@ begin
   CommentStyle:=CommentTP;
   CommentStartPos:=SrcPos;
   IncCommentLevel;
-  inc(SrcPos);
+  CommentInnerStartPos:=SrcPos+1;
   p:=@Src[SrcPos];
-  CommentInnerStartPos:=SrcPos;
+  inc(p);
   { HandleSwitches can dec CommentLevel }
   while true do begin
     case p^ of
@@ -1435,15 +1435,19 @@ end;
 
 procedure TLinkScanner.SkipLineComment;
 // a  // newline  comment
+var
+  p: PChar;
 begin
   CommentStyle:=CommentDelphi;
   CommentStartPos:=SrcPos;
   IncCommentLevel;
-  inc(SrcPos,2);
+  p:=@Src[SrcPos];
+  inc(p,2);
   CommentInnerStartPos:=SrcPos;
-  while (SrcPos<=SrcLen) and (Src[SrcPos]<>#10) do inc(SrcPos);
+  while not (p^ in [#0,#10,#13]) do inc(p);
   DecCommentLevel;
-  inc(SrcPos);
+  if p^<>#0 then inc(p);
+  SrcPos:=p-PChar(Src)+1;
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-1;
   { handle compiler switches (ignore) }
@@ -1458,9 +1462,9 @@ begin
   CommentStyle:=CommentDelphi;
   CommentStartPos:=SrcPos;
   IncCommentLevel;
-  inc(SrcPos,2);
-  CommentInnerStartPos:=SrcPos;
+  CommentInnerStartPos:=SrcPos+2;
   p:=@Src[SrcPos];
+  inc(p,2);
   while true do begin
     case p^ of
     #0:
