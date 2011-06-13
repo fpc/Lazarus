@@ -324,6 +324,7 @@ type
 implementation
 
 uses
+  GraphMath,
   TACustomSource, TAGeometry;
 
 { TChartPen }
@@ -579,7 +580,7 @@ begin
   if not Clipped then
     ADrawer.ClippingStop;
 
-  if LinkPen.Visible then begin;
+  if LinkPen.Visible and (ADataPoint <> ALabelCenter) then begin;
     ADrawer.Pen := LinkPen;
     ADrawer.Line(ADataPoint, ALabelCenter);
   end;
