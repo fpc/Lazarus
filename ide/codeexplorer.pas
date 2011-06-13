@@ -709,6 +709,21 @@ begin
     ctnUnit, ctnProgram, ctnLibrary, ctnPackage:
       Result:=CodeNode.DescAsString+' '+ACodeTool.ExtractSourceName;
 
+    ctnTypeSection:
+      Result:='Type';
+
+    ctnVarSection:
+      Result:='Var';
+
+    ctnConstSection:
+      Result:='Const';
+
+    ctnLabelSection:
+      Result:='Label';
+
+    ctnResStrSection:
+      Result:='Resourcestring';
+
     ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnUseUnit:
       Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
@@ -729,8 +744,20 @@ begin
                      phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
                      phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
 
+    ctnProcedureHead:
+      Result:='Procedure Header';
+
     ctnProperty:
       Result:=ACodeTool.ExtractPropName(CodeNode,false); // property keyword is not needed because there are icons
+
+    ctnInterface:
+      Result:='Interface';
+
+    ctnBeginBlock:
+      Result:='Begin block';
+
+    ctnAsmBlock:
+      Result:='Asm block';
 
     else
       Result:=CodeNode.DescAsString;
