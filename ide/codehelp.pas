@@ -2501,7 +2501,7 @@ begin
     ElementNames.Free;
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css"></head>'+LineEnding
-      +'<body>'+LineEnding+HTMLHint+LineEnding+'</body>'+LineEnding;
+      +'<body>'+LineEnding+HTMLHint+'</body>'+LineEnding;
   end;
   debugln(['TCodeHelpManager.GetHTMLHint2 ',HTMLHint]);
   Result:=chprSuccess;
@@ -2537,7 +2537,7 @@ begin
                                         NestedComments,true,true,true);
       if CommentStr <> '' then
         Result:=Result+'<span class="comment">'+TextToHTML(CommentStr)
-          +'('+SourcePosToFPDocHint(CodeXYPos^,'Source')+')'
+          +' ('+SourcePosToFPDocHint(CodeXYPos^,'Source')+')'
           +'</span><br>'+LineEnding;
     end;
 
