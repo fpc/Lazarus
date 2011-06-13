@@ -624,6 +624,7 @@ type
     function DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger; ALocals: TCurrentLocals);
+    destructor Destroy; override;
     function DebugText: String; override;
   end;
 
@@ -6548,7 +6549,7 @@ end;
 
 function TGDBMIDebugger.GetIsIdle: Boolean;
 begin
-  Result := FCommandQueue.Count = 0;
+  Result := (FCommandQueue.Count = 0) and (State in [dsPause, dsInternalPause]);
 end;
 
 procedure TGDBMIDebugger.ClearSourceInfo;
@@ -7354,6 +7355,13 @@ constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebugger; ALocals: 
 begin
   inherited Create(AOwner);
   FLocals := ALocals;
+  FLocals.AddReference;
+end;
+
+destructor TGDBMIDebuggerCommandLocals.Destroy;
+begin
+  ReleaseAndNil(FLocals);
+  inherited Destroy;
 end;
 
 function TGDBMIDebuggerCommandLocals.DebugText: String;

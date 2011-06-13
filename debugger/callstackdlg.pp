@@ -235,11 +235,11 @@ var
 begin
   if (not ToolButtonPower.Down) or FInUpdateView then exit;
   if IsUpdating then begin
-    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.UpdateView in IsUpdating']); {$ENDIF}
+    {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TCallStackDlg.UpdateView in IsUpdating']); {$ENDIF}
     Include(FUpdateFlags, ufNeedUpdating);
     exit;
   end;
-  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataMonitor: >>ENTER: TCallStackDlg.UpdateView']); {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataWindow: >>ENTER: TCallStackDlg.UpdateView']); {$ENDIF}
   Exclude(FUpdateFlags, ufNeedUpdating);
 
 
@@ -332,7 +332,7 @@ begin
     lvCallStack.EndUpdate;
     EndUpdate;
   end;
-  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TCallStackDlg.UpdateView']); end; {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataWindow: <<EXIT: TCallStackDlg.UpdateView']); end; {$ENDIF}
 end;
 
 procedure TCallStackDlg.DoBeginUpdate;
@@ -628,7 +628,7 @@ var
   Entry: TCallStackEntry;
   Stack: TCallStack;
 begin
-  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackDlg.BreakPointChanged ',  DbgSName(ASender), '  Upd:', IsUpdating]); {$ENDIF}
+  {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TCallStackDlg.BreakPointChanged ',  DbgSName(ASender), '  Upd:', IsUpdating]); {$ENDIF}
   Stack := GetSelectedCallstack;
   if (BreakPoints = nil) or (Stack = nil) then
     Exit;

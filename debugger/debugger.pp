@@ -1124,7 +1124,7 @@ type
 
   { TLocals }
 
-  TLocals = class(TObject)
+  TLocals = class(TRefCountedObject)
   private
     function GetName(const AnIndex: Integer): String;
     function GetValue(const AnIndex: Integer): String;
@@ -2000,7 +2000,7 @@ type
   private
     FActive: Boolean;
     FUpdateLock: Integer;
-    FUpdateFlags: set of (ufSnapChanged, ufSnapCurrent);
+    FUpdateFlags: set of (ufSnapChanged, ufSnapCurrent, ufInDebuggerIdle);
     FCurrentState: TDBGState;
     FRequestsDone: TSnapshotManagerRequestedFlags;
     FCurrentSnapshot: TSnapshot; // snapshot for current pause. Not yet in list
@@ -2991,6 +2991,7 @@ begin
   BeginUpdate;
   try
     if FDebugger.State in [dsPause, dsInternalPause] then begin
+      Exclude(FUpdateFlags, ufInDebuggerIdle);
       FRequestsDone := [];
       CreateHistoryEntry;
       HistorySelected := False;
@@ -3017,44 +3018,59 @@ procedure TSnapshotManager.DoDebuggerIdle(AForce: Boolean = False);
 var
   i, j, k: LongInt;
   w: TCurrentWatches;
+  CurSnap: TSnapshot;
 begin
+  if ufInDebuggerIdle in FUpdateFlags then exit;
   if (not FActive) and (not AForce) then exit;
   if not(FCurrentState in [dsPause, dsInternalPause]) then exit;
   if (not Debugger.IsIdle) and (not AForce) then exit;
+  Include(FUpdateFlags, ufInDebuggerIdle);
+  CurSnap := FCurrentSnapshot;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TSnapshotManager.DoDebuggerIdle  New-State=', DBGStateNames[FCurrentState]]); {$ENDIF}
+  try
 
-  if not(smrThreads in FRequestsDone) then begin
-    include(FRequestsDone, smrThreads);
-    FThreads.CurrentThreads.Count;
-    if (not Debugger.IsIdle) and (not AForce) then exit;
-  end;
-  if not(smrCallStackCnt in FRequestsDone) then begin
-    include(FRequestsDone, smrCallStackCnt);
-    i := FThreads.CurrentThreads.CurrentThreadId;
-    FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
-    if (not Debugger.IsIdle) and (not AForce) then exit;
-  end;
-  if not(smrCallStack in FRequestsDone) then begin
-    include(FRequestsDone, smrCallStack);
-    i := FThreads.CurrentThreads.CurrentThreadId;
-    k := FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
-    if k > 0
-    then FCallStack.CurrentCallStackList.EntriesForThreads[i].PrepareRange(0, Min(5, k));
-    if (not Debugger.IsIdle) and (not AForce) then exit;
-  end;
-  if not(smrLocals in FRequestsDone) then begin
-    include(FRequestsDone, smrLocals);
-    i := FThreads.CurrentThreads.CurrentThreadId;
-    j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
-    FLocals.CurrentLocalsList.Entries[i, j].Count;
-    if (not Debugger.IsIdle) and (not AForce) then exit;
-  end;
-  if not(smrWatches in FRequestsDone) then begin
-    include(FRequestsDone, smrWatches);
-    i := FThreads.CurrentThreads.CurrentThreadId;
-    j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
-    w := FWatches.CurrentWatches;
-    for k := 0 to w.Count - 1 do w[k].Values[i, j].Value;
-    if (not Debugger.IsIdle) and (not AForce) then exit;
+    if not(smrThreads in FRequestsDone) then begin
+      include(FRequestsDone, smrThreads);
+      FThreads.CurrentThreads.Count;
+      if (not Debugger.IsIdle) and (not AForce) then exit;
+      if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
+    end;
+    if not(smrCallStackCnt in FRequestsDone) then begin
+      include(FRequestsDone, smrCallStackCnt);
+      i := FThreads.CurrentThreads.CurrentThreadId;
+      FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
+      if (not Debugger.IsIdle) and (not AForce) then exit;
+      if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
+    end;
+    if not(smrCallStack in FRequestsDone) then begin
+      include(FRequestsDone, smrCallStack);
+      i := FThreads.CurrentThreads.CurrentThreadId;
+      k := FCallStack.CurrentCallStackList.EntriesForThreads[i].Count;
+      if k > 0
+      then FCallStack.CurrentCallStackList.EntriesForThreads[i].PrepareRange(0, Min(5, k));
+      if (not Debugger.IsIdle) and (not AForce) then exit;
+      if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
+    end;
+    if not(smrLocals in FRequestsDone) then begin
+      include(FRequestsDone, smrLocals);
+      i := FThreads.CurrentThreads.CurrentThreadId;
+      j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
+      FLocals.CurrentLocalsList.Entries[i, j].Count;
+      if (not Debugger.IsIdle) and (not AForce) then exit;
+      if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
+    end;
+    if not(smrWatches in FRequestsDone) then begin
+      include(FRequestsDone, smrWatches);
+      i := FThreads.CurrentThreads.CurrentThreadId;
+      j := FCallStack.CurrentCallStackList.EntriesForThreads[i].CurrentIndex;
+      w := FWatches.CurrentWatches;
+      for k := 0 to w.Count - 1 do w[k].Values[i, j].Value;
+      if (not Debugger.IsIdle) and (not AForce) then exit;
+      if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
+    end;
+  finally
+    Exclude(FUpdateFlags, ufInDebuggerIdle);
+    {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TSnapshotManager.DoDebuggerIdle']); {$ENDIF}
   end;
 end;
 
@@ -3298,7 +3314,7 @@ end;
 procedure TLocalsList.Clear;
 begin
   while FList.Count > 0 do begin
-    TObject(FList[0]).Free;
+    TRefCountedObject(FList[0]).ReleaseReference;
     FList.Delete(0);
   end;
 end;
@@ -4656,6 +4672,7 @@ end;
 
 procedure TRefCountedObject.ReleaseReference;
 begin
+  Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
   Dec(FRefCount);
   if FRefCount = 0 then Free;
 end;
@@ -5168,18 +5185,23 @@ begin
     {$ENDIF}
     OldState := FState;
     FState := AValue;
-    DoBeforeState(OldState);
+    LockCommandProcessing;
     try
-      FThreads.DoStateChange(OldState);
-      FBreakpoints.DoStateChange(OldState);
-      FLocals.DoStateChange(OldState);
-      FLineInfo.DoStateChange(OldState);
-      FRegisters.DoStateChange(OldState);
-      FCallStack.DoStateChange(OldState);
-      FDisassembler.DoStateChange(OldState);
-      FWatches.DoStateChange(OldState);
+      DoBeforeState(OldState);
+      try
+        FThreads.DoStateChange(OldState);
+        FCallStack.DoStateChange(OldState);
+        FBreakpoints.DoStateChange(OldState);
+        FLocals.DoStateChange(OldState);
+        FLineInfo.DoStateChange(OldState);
+        FRegisters.DoStateChange(OldState);
+        FDisassembler.DoStateChange(OldState);
+        FWatches.DoStateChange(OldState);
+      finally
+        DoState(OldState);
+      end;
     finally
-      DoState(OldState);
+      UnLockCommandProcessing;
       {$IFDEF DBG_STATE}
       DebugLnExit(['DebuggerState: Finished ', DBGStateNames[AValue]]);
       {$ENDIF}
@@ -7084,6 +7106,7 @@ constructor TLocals.Create;
 begin
   FLocals := TStringList.Create;
   inherited Create;
+  AddReference;
 end;
 
 constructor TLocals.Create(AThreadId, AStackFrame: Integer);
@@ -7149,10 +7172,15 @@ function TCurrentLocals.Count: Integer;
 begin
   case FDataValidity of
     ddsUnknown:   begin
-        Result := 0;
-        FDataValidity := ddsRequested;
-        FMonitor.RequestData(Self);
-        if FDataValidity = ddsValid then Result := inherited Count();
+        AddReference;
+        try
+          Result := 0;
+          FDataValidity := ddsRequested;
+          FMonitor.RequestData(Self);  // Locals can be cleared, if debugger is "run" again
+          if FDataValidity = ddsValid then Result := inherited Count();
+        finally
+          ReleaseReference;
+        end;
       end;
     ddsRequested, ddsEvaluating: Result := 0;
     ddsValid:                    Result := inherited Count;
