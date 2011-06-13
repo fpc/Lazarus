@@ -16,6 +16,11 @@ div.header {
   margin-bottom: 0px;
 }
 
+div.title {
+  font-size: 16px
+  color: #005A9C;
+}
+
 tt, span.keyword, pre {
   font-family: Courier, monospace
 }

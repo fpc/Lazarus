@@ -306,12 +306,14 @@ type
                      out BaseURL, HTMLHint: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool; Node: TCodeTreeNode): string;
-    function GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
+    function GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile; DOMNode: TDOMNode): string;
     function TextToHTML(Txt: string): string;
     function CreateElement(Code: TCodeBuffer; X, Y: integer;
                            out Element: TCodeHelpElement): Boolean;
     function SourceToFPDocHint(Src: string; NestedComments: boolean = true): string;
     function SourcePosToFPDocHint(XYPos: TCodeXYPosition; Caption: string=''): string;
+    function SourcePosToFPDocHint(const aFilename: string; X,Y: integer;
+                                  Caption: string=''): string;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -2457,8 +2459,12 @@ begin
             ElementNode:=FPDocFile.GetElementWithName(ElementName);
             if ElementNode<>nil then begin
               debugln(['TCodeHelpManager.GetHTMLHint2 fpdoc element found "',ElementName,'"']);
-              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(ElementNode.FindNode(FPDocItemNames[fpdiShort]));
-              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(ElementNode.FindNode(FPDocItemNames[fpdiDescription]));
+              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort]));
+              // todo elementlink
+              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiDescription]));
+              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiErrors]));
+              // todo HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiSeeAlso]));
+              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiExample]));
             end;
           end;
 
@@ -2546,7 +2552,8 @@ begin
   end;
 end;
 
-function TCodeHelpManager.GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
+function TCodeHelpManager.GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile;
+  DOMNode: TDOMNode): string;
 
   function NodeToHTML(Node: TDOMNode): string; forward;
 
@@ -2565,19 +2572,41 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
   function NodeToHTML(Node: TDOMNode): string;
   var
     s: String;
+    Attr: TDOMNode;
   begin
     Result:='';
     if Node=nil then exit;
-    //debugln(['TCodeHelpManager.GetFPDocNodeAsHTML.NodeToHTML ',DbgSName(Node)]);
+    //debugln(['TCodeHelpManager.GetFPDocNodeAsHTML.NodeToHTML ',Node.NodeName]);
     if (Node.NodeName='short')
-    or (Node.NodeName='descr') then begin
+    or (Node.NodeName='descr')
+    or (Node.NodeName='seealso')
+    or (Node.NodeName='errors')
+    then begin
       s:=AddChilds(Node);
-      if s<>'' then
-        Result:=Result+'<div class="'+Node.NodeName+'">'+s+'</div>'+LineEnding;
-    end else if (Node.NodeName='p') then begin
+      if s='' then exit;
+      if Node.NodeName='errors' then
+        Result:=Result+'<div class="title">'+'Errors'+'</div>'
+      else if Node.NodeName='seealso' then
+        Result:=Result+'<div class="title">'+'See also'+'</div>';
+      Result:=Result+'<div class="'+Node.NodeName+'">'+s+'</div>'+LineEnding;
+    end else if (Node.NodeName='p') or (Node.NodeName='b')
+    then begin
       Result:=Result+'<'+Node.NodeName+'>'+AddChilds(Node)+'</'+Node.NodeName+'>';
     end else if (Node.NodeName='var') then begin
       Result:=Result+'<span class="keyword">'+AddChilds(Node)+'</span>';
+    end else if (Node.NodeName='link') and (Node.Attributes<>nil) then begin
+      Attr:=Node.Attributes.GetNamedItem('id');
+      if (Attr=nil) or (Attr.NodeValue='') then exit;
+      s:=AddChilds(Node);
+      if s='' then s:=Attr.NodeValue;
+      Result:=Result+'<a href="'+Attr.NodeValue+'">'+s+'</a><br>';
+    end else if (Node.NodeName='example') then begin
+      Attr:=Node.Attributes.GetNamedItem('file');
+      if (Attr=nil) or (Attr.NodeValue='') then exit;
+      s:=ExtractFilePath(FPDocFile.Filename);
+      if not FilenameIsAbsolute(s) then exit;
+      s:=s+Attr.NodeValue;
+      Result:=Result+SourcePosToFPDocHint(s,1,1,'Example')+'<br>';
     end else if (Node.NodeName='#text') then begin
       Result:=Result+Node.NodeValue;
     end else begin
@@ -2729,17 +2758,25 @@ end;
 
 function TCodeHelpManager.SourcePosToFPDocHint(XYPos: TCodeXYPosition;
   Caption: string): string;
+begin
+  Result:='';
+  if XYPos.Code=nil then exit;
+  Result:=SourcePosToFPDocHint(XYPos.Code.Filename,XYPos.X,XYPos.Y,Caption);
+end;
+
+function TCodeHelpManager.SourcePosToFPDocHint(const aFilename: string; X,
+  Y: integer; Caption: string): string;
 var
   Link: String;
   i: Integer;
 begin
   Result:='';
-  if XYPos.Code=nil then exit;
-  Link:=XYPos.Code.Filename;
-  if XYPos.Y>=1 then begin
-    Link:=Link+'('+IntToStr(XYPos.Y);
-    if XYPos.X>=1 then
-      Link:=Link+','+IntToStr(XYPos.X);
+  if aFilename='' then exit;
+  Link:=aFilename;
+  if Y>=1 then begin
+    Link:=Link+'('+IntToStr(Y);
+    if X>=1 then
+      Link:=Link+','+IntToStr(X);
     Link:=Link+')';
   end;
   if Caption='' then begin
