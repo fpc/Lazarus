@@ -880,7 +880,9 @@ begin
   then FCurrentBreakpoint := nil;
 
   // Notify FSnapshots of new state (while dialogs still in updating)
-  if (FCurrentBreakpoint <> nil) and (bpaTakeSnapshot in FCurrentBreakpoint.Actions) then begin
+  if (FCurrentBreakpoint <> nil) and (bpaTakeSnapshot in FCurrentBreakpoint.Actions) and
+     (State in [dsPause, dsInternalPause])
+  then begin
     FSnapshots.DoStateChange(OldState);
     FSnapshots.Current.AddToSnapshots;
     FSnapshots.DoDebuggerIdle(True);
