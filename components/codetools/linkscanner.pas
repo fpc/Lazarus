@@ -3557,8 +3557,9 @@ begin
         begin
           // skip string constant
           inc(p);
-          while p^<>'''' do inc(p);
-          inc(p);
+          while not (p^ in ['''',#0,#10,#13]) do inc(p);
+          if p^='''' then
+            inc(p);
         end;
       #0:
         begin
