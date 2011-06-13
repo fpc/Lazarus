@@ -3534,14 +3534,14 @@ begin
         begin
           SrcPos:=p-PChar(Src)+1;
           SkipCurlyComment;
-          if FSkippingDirectives=lssdNone then break;
+          if (FSkippingDirectives=lssdNone) or (SrcPos>SrcLen) then break;
           p:=@Src[SrcPos];
         end;
       '/':
         if p[1]='/' then begin
           SrcPos:=p-PChar(Src)+1;
           SkipLineComment;
-          if FSkippingDirectives=lssdNone then break;
+          if (FSkippingDirectives=lssdNone) or (SrcPos>SrcLen) then break;
           p:=@Src[SrcPos];
         end else
           inc(p);
@@ -3549,7 +3549,7 @@ begin
         if p[1]='*' then begin
           SrcPos:=p-PChar(Src)+1;
           SkipRoundComment;
-          if FSkippingDirectives=lssdNone then break;
+          if (FSkippingDirectives=lssdNone) or (SrcPos>SrcLen) then break;
           p:=@Src[SrcPos];
         end else
           inc(p);
