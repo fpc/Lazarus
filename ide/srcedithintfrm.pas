@@ -289,7 +289,7 @@ begin
   OnDestroy:=@FormDestroy;
   OnKeyDown:=@FormKeyDown;
   OnUTF8KeyPress:=@FormUTF8KeyPress;
-  FPreferredWidth:=300;
+  FPreferredWidth:=400;
   FPreferredHeight:=200;
   FormCreate(Self);
 end;

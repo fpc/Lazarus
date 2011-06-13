@@ -43,6 +43,8 @@
 { Global defines potentially affecting this unit }
 {$I IPDEFINE.INC}
 
+{off $DEFINE IP_LAZARUS_DBG}
+
 unit IpHtml;
 
 interface
@@ -2940,7 +2942,7 @@ type
     function FindElement(const Name: string): TIpHtmlNode;
     procedure Clear; {clear any contents}
     procedure Home;
-    function GetPageRect(TargetCanvas: TCanvas; Width, Height : Integer): TRect;
+    function GetPageRect(TargetCanvas: TCanvas; Width, Height : Integer): TRect; // computes the layout for this Canvas
     procedure MouseMove(Pt : TPoint);
     {$IFDEF IP_LAZARUS}
     procedure DeselectAllItems(Item: Pointer);
@@ -3102,11 +3104,13 @@ type
   private
     FHyper : TIpHtml;
     FPageRect : TRect;
+    FPageRectValid: boolean;
     FAutoScroll: Boolean;
     FOnHotChange : TNotifyEvent;
     FOnCurElementChange : TNotifyEvent;
     FOnHotClick : TNotifyEvent;
     FOnClick : TNotifyEvent;
+    function GetPageRect: TRect;
     procedure SetHtml(const Value: TIpHtml);
     procedure SetPageRect(const Value: TRect);
   protected
@@ -3170,7 +3174,7 @@ type
     PageCount: Integer;                                                {!!.10}
     procedure InvalidateSize;
     property Hyper : TIpHtml read FHyper write SetHtml;
-    property PageRect : TRect read FPageRect write SetPageRect;
+    property PageRect : TRect read GetPageRect write SetPageRect;
     constructor Create(AOwner: TComponent); override;
     property AutoScroll: Boolean read FAutoScroll write FAutoScroll;
     property OnHotChange : TNotifyEvent read FOnHotChange write FOnHotChange;
@@ -3710,7 +3714,7 @@ begin
           writeln('TIpHtmlProps is nil');
           exit;
      end;
-     writeln('>>> ', aProps.FOwner.ClassName, ': ', Integer(@aProps));
+     writeln('>>> ', aProps.FOwner.ClassName, ': ', dbgs(@aProps));
      if aProps.PropA <> nil then
      begin
      propA := aProps.PropA.FPropRec;
@@ -3737,7 +3741,7 @@ begin
      end;
 end;
 
-procedure DebugBox(Canvas: TCanvas; R: Trect; cl:TColor; dbg:boolean=false);
+procedure DebugBox(Canvas: TCanvas; R: TRect; cl:TColor; dbg:boolean=false);
 var
   OldPenColor: TColor;
 begin
@@ -3748,7 +3752,7 @@ begin
   Canvas.MoveTo(r.Left, r.top+(r.bottom-r.top) div 2);
   Canvas.LineTo(r.right, r.top+(r.bottom-r.top) div 2);
   if Dbg then
-    DebugLn(dbgs(R));
+    DebugLn('DebugBox:R=',dbgs(R));
   Canvas.Pen.Color := OldPenColor;
 end;
 {$ENDIF}
@@ -7592,7 +7596,7 @@ procedure TIpHtml.ParseBlock(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 begin
   case CurToken of
-  IpHtmlTagH1 : ParseHeader(Parent,  IpHtmlTagH1end, 1);
+  IpHtmlTagH1 : ParseHeader(Parent, IpHtmlTagH1end, 1);
   IpHtmlTagH2 : ParseHeader(Parent, IpHtmlTagH2end, 2);
   IpHtmlTagH3 : ParseHeader(Parent, IpHtmlTagH3end, 3);
   IpHtmlTagH4 : ParseHeader(Parent, IpHtmlTagH4end, 4);
@@ -7629,7 +7633,7 @@ procedure TIpHtml.ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
 var
   StyleStream: TStream;
 begin
-  debugln(['TIpHtml.ParseStyleSheet ',href,' ',Parent is TIpHtmlNodeHEAD,' ',DbgSName(FDataProvider)]);
+  //debugln(['TIpHtml.ParseStyleSheet ',href,' ',Parent is TIpHtmlNodeHEAD,' ',DbgSName(FDataProvider)]);
   StyleStream:=nil;
   
   if Parent is TIpHtmlNodeHEAD then begin
@@ -9006,10 +9010,10 @@ begin
 end;
 
 procedure TIpHtml.DebugAll;
-var
-  i: Integer;
-  item: PIpHtmlRectListEntry;
-  Node: TIpHtmlNode;
+//var
+  //i: Integer;
+  //item: PIpHtmlRectListEntry;
+  //Node: TIpHtmlNode;
 begin
   CCC := 0;
   Fhtml.EnumChildren(DebugChild, FHtml);
@@ -9174,6 +9178,7 @@ var
   DefPageRect : TRect;
   Min, Max, W, H : Integer;
 begin
+  //debugln(['TIpHtml.GetPageRect START DoneLoading=',DoneLoading,' FHtml=',FHtml<>nil]);
   if not DoneLoading then begin
     {$IFDEF IP_LAZARUS}
     // always set Result
@@ -10137,7 +10142,6 @@ begin
   L0 := Level0;
   LastProp := nil;
   aCanvas := Owner.Target;
-
   for i := 0 to Pred(ElementQueue.Count) do begin
     CurWord := PIpHtmlElement(ElementQueue[i]);
 
@@ -10170,6 +10174,7 @@ begin
     //DumpTIpHtmlProps(LastProp);
     {$endif}
 
+    //debugln(['TIpHtmlNodeBlock.RenderQueue ',i,' ',IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect),' CurWord.WordRect2=',dbgs(CurWord.WordRect2),' Owner.PageViewRect=',dbgs(Owner.PageViewRect)]);
     if IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect) then
       case CurWord.ElementType of
       etWord :
@@ -10193,7 +10198,8 @@ begin
           else
           {$ENDIF}
           aCanvas.Brush.Style := bsClear;
-          if  CurWord.AnsiWord <> NAnchorChar then //JMN
+          //debugln(['TIpHtmlNodeBlock.RenderQueue ',CurWord.AnsiWord]);
+          if CurWord.AnsiWord <> NAnchorChar then //JMN
                aCanvas.TextOut(P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
           {$IFDEF IP_LAZARUS}
           restoreCanvasProperties;
@@ -17479,7 +17485,10 @@ var
 begin
   CR := GetClientRect;
   if not ScaleBitmaps {printing}                                       {!!.10}
-  and (Hyper <> nil) then
+  and (Hyper <> nil) then begin
+    // update layout
+    GetPageRect;
+    // render
     Hyper.Render(Canvas,
       Rect(
         ViewLeft, ViewTop,
@@ -17487,8 +17496,10 @@ begin
           ViewTop + (CR.Bottom - CR.Top)),
           True,
           Point(0, 0))                                                 {!!.10}
+  end
   else
     Canvas.FillRect(CR);
+  //debugln(['TIpHtmlInternalPanel.Paint ',dbgs(CR)]);
   {$IFDEF IP_LAZARUS_DBG}
   DebugBox(Canvas, CR, clYellow);
   Debugbox(Canvas, Canvas.ClipRect, clLime, true);
@@ -17682,8 +17693,7 @@ end;
 
 procedure TIpHtmlInternalPanel.InvalidateSize;
 begin
-  if Hyper <> nil then
-    PageRect := Hyper.GetPageRect(Canvas, ClientWidth, 0);
+  FPageRectValid:=false;
   Invalidate;
 end;
 
@@ -17760,6 +17770,18 @@ procedure TIpHtmlInternalPanel.SetHtml(const Value: TIpHtml);
 begin
   FHyper := Value;
   InvalidateSize;
+end;
+
+function TIpHtmlInternalPanel.GetPageRect: TRect;
+begin
+  if not FPageRectValid then begin
+    if Hyper <> nil then
+      PageRect := Hyper.GetPageRect(Canvas, ClientWidth, 0)
+    else
+      PageRect:=Rect(0,0,0,0);
+    FPageRectValid:=true;
+  end;
+  Result:=FPageRect;
 end;
 
 procedure TIpHtmlInternalPanel.SetPageRect(const Value: TRect);
@@ -19375,7 +19397,7 @@ begin
   or (FMasterFrame.FHtml = nil)
   or (not FMasterFrame.FHtml.CanPaint) then
     if not (csDesigning in ComponentState) then
-      FillRect(Message.DC, ClientRect, Brush.Handle);
+      FillRect(Message.DC, ClientRect, Brush.Reference.Handle);
   Message.Result := 1;
 end;
 
@@ -19674,11 +19696,10 @@ procedure TIpHtmlCustomPanel.CalculatePreferredSize(var PreferredWidth,
 var
   r: TRect;
 begin
-  //  FMasterFrame.InvalidateSize(Self);
+  //debugln(['TIpHtmlCustomPanel.CalculatePreferredSize ',DbgSName(Self)]);
   r:=Rect(0,0,0,0);
-  if (FMasterFrame<>nil) and (FMasterFrame.FHtml<>nil)
-  and (FMasterFrame.HyperPanel<>nil) then
-    r:=FMasterFrame.FHtml.GetPageRect(FMasterFrame.HyperPanel.Canvas,ClientWidth,0);
+  if (FMasterFrame<>nil) and (FMasterFrame.FHtml<>nil) then
+    r:=FMasterFrame.HyperPanel.PageRect;
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
     WithThemeSpace);
   if PreferredWidth<r.Right-r.Left then

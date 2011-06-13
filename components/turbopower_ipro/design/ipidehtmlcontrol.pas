@@ -342,7 +342,6 @@ var
   Stream: TStream;
   NewHTML: TIpHtml;
   NewURL: String;
-  ok: Boolean;
 begin
   if IDEProvider=nil then raise Exception.Create('TIPLazHtmlControl.SetURL missing Provider');
   if FURL=AValue then exit;
@@ -351,18 +350,13 @@ begin
   FURL:=NewURL;
   try
     Stream:=IDEProvider.GetStream(FURL,true);
-    ok:=false;
-    NewHTML:=nil;
     try
       NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically TIpHtmlPanel
+      FIPHTMLPanel.SetHtml(NewHTML);
       NewHTML.LoadFromStream(Stream);
-      ok:=true;
     finally
-      if not ok then FreeAndNil(NewHTML);
       IDEProvider.ReleaseStream(FURL);
     end;
-    if NewHTML<>nil then
-      FIPHTMLPanel.SetHtml(NewHTML);
   except
     on E: Exception do begin
       MessageDlg('Unable to open HTML file',
@@ -376,21 +370,12 @@ procedure TLazIPHtmlControl.SetHTMLContent(Stream: TStream; const NewURL: string
   );
 var
   NewHTML: TIpHtml;
-  ok: Boolean;
 begin
   FURL:=NewURL;
   try
-    NewHTML:=nil;
-    ok:=false;
-    try
-      NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically TIpHtmlPanel
-      NewHTML.LoadFromStream(Stream);
-      ok:=true;
-    finally
-      if not ok then FreeAndNil(NewHTML);
-    end;
-    if NewHTML<>nil then
-      FIPHTMLPanel.SetHtml(NewHTML);
+    NewHTML:=TIpHtml.Create; // Beware: Will be freed automatically TIpHtmlPanel
+    FIPHTMLPanel.SetHtml(NewHTML);
+    NewHTML.LoadFromStream(Stream);
   except
     on E: Exception do begin
       MessageDlg('Unable to load HTML stream',
@@ -405,7 +390,6 @@ begin
   AWidth:=0;
   AHeight:=0;
   inherited GetPreferredSize(AWidth, AHeight);
-  //debugln(['TLazIPHtmlControl.GetPreferredControlSize Width=',AWidth,' Height=',AHeight]);
 end;
 
 finalization

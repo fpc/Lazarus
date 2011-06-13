@@ -100,7 +100,9 @@
  public
    constructor Create;
    destructor Destroy; override;
-   //procedure DumpProps;
+   {$IFDEF IP_LAZARUS_DBG}
+   procedure DumpProps;
+   {$ENDIF}
    function GetElement(AElementID: String; ClassID: String = ''; CreateIfNotExist: Boolean = False): TCSSProps;
  end;
 
@@ -951,7 +953,6 @@ end;
 procedure TCSSGlobalProps.DumpProps;
 var
    n: integer;
-   props: TCSSProps;
 begin
    for n:=0 to FElements.Count-1 do
    begin
