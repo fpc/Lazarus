@@ -2576,6 +2576,8 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(DOMNode: TDOMNode): string;
         Result:=Result+'<div class="'+Node.NodeName+'">'+s+'</div>'+LineEnding;
     end else if (Node.NodeName='p') then begin
       Result:=Result+'<'+Node.NodeName+'>'+AddChilds(Node)+'</'+Node.NodeName+'>';
+    end else if (Node.NodeName='var') then begin
+      Result:=Result+'<span class="keyword">'+AddChilds(Node)+'</span>';
     end else if (Node.NodeName='#text') then begin
       Result:=Result+Node.NodeValue;
     end else begin
