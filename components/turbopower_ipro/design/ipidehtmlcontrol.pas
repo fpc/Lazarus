@@ -313,7 +313,7 @@ begin
   FIPHTMLPanel.DataProvider:=TLazIpHtmlDataProvider.Create(FIPHTMLPanel);
   with TLazIpHtmlDataProvider(FIPHTMLPanel.DataProvider) do begin
     FControl:=Self;
-    Name:='TLazIPHtmlControlDataProvider';
+    Name:='TLazIPHtmlControl_DataProvider';
     OnCanHandle:=@DataProviderCanHandle;
     OnGetHtml:=@DataProviderGetHtml;
     OnGetImage:=@DataProviderGetImage;

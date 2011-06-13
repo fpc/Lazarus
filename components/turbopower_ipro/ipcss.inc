@@ -9,6 +9,17 @@
 
  TCSSBorderStyle = (cbsNone, cbsHidden, cbsDotted, cbsDashed, cbsSolid, cbsDouble,
                    cbsGroove, cbsRidge, cbsInset, cbsOutset);
+ TCSSMarginStyle = (cmsNone,
+                    cmsAuto, // use default
+                    cmsPx,  // pixel
+                    cmsPt, cmsEm, cmsPercent // currently not supported
+                    );
+
+ TCSSMargin = record
+   Style: TCSSMarginStyle;
+   Size: integer; // negative values are allowed (not implemented)
+ end;
+
 
  { TCSSFont }
 
@@ -55,8 +66,17 @@
    FColor: TColor;
    FFont: TCSSFont;
    FAlignment: TIpHtmlAlign;
+   FMarginBottom: TCSSMargin;
+   FMarginLeft: TCSSMargin;
+   FMarginRight: TCSSMargin;
+   FMarginTop: TCSSMargin;
    function GetCommandArgs(ACommand: String): TStringList;
    function GetCommandName(ACommand: String): String;
+ public
+   property MarginTop: TCSSMargin read FMarginTop write FMarginTop;
+   property MarginLeft: TCSSMargin read FMarginLeft write FMarginLeft;
+   property MarginBottom: TCSSMargin read FMarginBottom write FMarginBottom;
+   property MarginRight: TCSSMargin read FMarginRight write FMarginRight;
  published
    property Font: TCSSFont read  FFont write FFont;
    property Color: TColor read FColor write FColor;
@@ -391,9 +411,45 @@ begin
   Result := StrToIntDef(S, 0);
 end;
 
+function StrToCssMargin(S: string): TCSSMargin;
+var
+  i: SizeInt;
+begin
+  S:=lowercase(S);
+  Result.Style:=cmsAuto;
+  Result.Size:=0;
+  if (S='') or (S='auto') then exit;
+
+  i:=Pos('px',S);
+  if i>0 then begin
+    Result.Style:=cmsPx;
+    Result.Size:=StrToIntDef(copy(S,1,i-1),0);
+    exit;
+  end;
+
+  i:=Pos('em',S);
+  if i>0 then begin
+    Result.Style:=cmsEm;
+    Result.Size:=StrToIntDef(copy(S,1,i-1),0);
+    exit;
+  end;
+
+  i:=Pos('%',S);
+  if i>0 then begin
+    Result.Style:=cmsPercent;
+    Result.Size:=StrToIntDef(copy(S,1,i-1),0);
+    exit;
+  end;
+
+  // a number without unit is px
+  Result.Style:=cmsPx;
+  Result.Size:=StrToIntDef(S,0);
+end;
+
 function CSSFontStyleFromName(S: String): TCSSFontStyle;
 begin
   Result := cfsNormal;
+  if length(s)<2 then exit;
   case S[2] of
     'b': if S = 'oblique' then Result := cfsOblique;
     'n': if S = 'inherit' then Result := cfsInherit;
@@ -480,6 +536,8 @@ var
   Arg: String;
   Start: Integer;
   Quote: char;
+  WantChar: Boolean;
+  Len: Integer;
 begin
   Result := TStringList.Create;
   Start := Pos(':', ACommand)+1;
@@ -513,12 +571,14 @@ begin
     end
     else // we have an arg we are reading ...
     begin
-      if (i<Length(ACommand)) and
-         (ACommand[i]<>';')
+      WantChar:=not (ACommand[i] in [';',' ',#9]);
+      if (i<Length(ACommand)) and WantChar
       then
         continue;
       WantArg := True;
-      Arg := Copy(ACommand, Start, i-1);
+      Len:=i-Start;
+      if WantChar then inc(Len);
+      Arg := Copy(ACommand, Start, Len);
       Result.Add(Arg);
     end;
   end;
@@ -729,6 +789,52 @@ begin
            begin
              Border.Style := BorderStyleFromString(Args[0]);
            end;
+
+      'm':
+        if Command = 'margin-top' then
+        begin
+          if Args.Count > 0 then MarginTop := StrToCssMargin(Args[0]);
+        end else if Command = 'margin-left' then
+        begin
+          if Args.Count > 0 then MarginLeft := StrToCssMargin(Args[0]);
+        end else if Command = 'margin-bottom' then
+        begin
+          if Args.Count > 0 then MarginBottom := StrToCssMargin(Args[0]);
+        end else if Command = 'margin-right' then
+        begin
+          if Args.Count > 0 then MarginRight := StrToCssMargin(Args[0]);
+        end else if Command = 'margin' then
+        begin
+          case Args.Count of
+          1:begin
+              // 1 arg: all four the same
+              MarginTop := StrToCssMargin(Args[0]);
+              MarginBottom := MarginTop;
+              MarginLeft := MarginTop;
+              MarginRight := MarginTop;
+            end;
+          2:begin
+              // 2 args: top+bottom and left+right
+              MarginTop := StrToCssMargin(Args[0]);
+              MarginBottom := MarginTop;
+              MarginLeft := StrToCssMargin(Args[1]);
+              MarginRight := MarginLeft;
+            end;
+          3:begin
+              // 3 args: top right bottom
+              MarginTop := StrToCssMargin(Args[0]);
+              MarginRight := StrToCssMargin(Args[1]);
+              MarginBottom := StrToCssMargin(Args[2]);
+            end;
+          4:begin
+              // 4 args: top right bottom left
+              MarginTop := StrToCssMargin(Args[0]);
+              MarginRight := StrToCssMargin(Args[1]);
+              MarginBottom := StrToCssMargin(Args[2]);
+              MarginLeft := StrToCssMargin(Args[3]);
+            end;
+          end;
+        end;
 
       't': if (Command = 'text-align') and (Args.Count = 1) then
              if Args.Count > 0 then

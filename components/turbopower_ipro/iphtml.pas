@@ -884,6 +884,16 @@ type
   TIpHtmlVAlign = (hvaTop, hvaMiddle, hvaBottom);
   TIpHtmlVAlign3 = (hva3Top, hva3Middle, hva3Bottom, hva3Baseline, hva3Default);
 
+  TIpHtmlElemMarginStyle = (hemsAuto, // use default
+                            hemsPx  // pixel
+                            );
+
+  TIpHtmlElemMargin = record
+    Style: TIpHtmlElemMarginStyle;
+    Size: integer; // negative values are not yet supported
+  end;
+
+
   {$IFDEF IP_LAZARUS}
   TIpAbstractHtmlDataProvider = class;
   {$DEFINE CSS_INTERFACE}
@@ -1038,6 +1048,10 @@ type
     BgColor : TColor;
     Preformatted : Boolean;
     NoBreak : Boolean;
+    ElemMarginTop: TIpHtmlElemMargin;
+    ElemMarginLeft: TIpHtmlElemMargin;
+    ElemMarginBottom: TIpHtmlElemMargin;
+    ElemMarginRight: TIpHtmlElemMargin;
   end;
 
   {display properties that don't affect the font size}
@@ -1060,6 +1074,10 @@ type
     property BgColor : TColor read FPropRec.BgColor write FPropRec.BgColor;
     property Preformatted : Boolean read FPropRec.Preformatted write FPropRec.Preformatted;
     property NoBreak : Boolean read FPropRec.NoBreak write FPropRec.NoBreak;
+    property ElemMarginTop: TIpHtmlElemMargin read FPropRec.ElemMarginTop write FPropRec.ElemMarginTop;
+    property ElemMarginLeft: TIpHtmlElemMargin read FPropRec.ElemMarginLeft write FPropRec.ElemMarginLeft;
+    property ElemMarginBottom: TIpHtmlElemMargin read FPropRec.ElemMarginBottom write FPropRec.ElemMarginBottom;
+    property ElemMarginRight: TIpHtmlElemMargin read FPropRec.ElemMarginRight write FPropRec.ElemMarginRight;
     property UseCount : Integer read FUseCount write FUseCount;
     procedure Assign(const Source: TIpHtmlPropB);
     procedure DecUse;
@@ -1077,6 +1095,10 @@ type
     function GetALinkColor: TColor;
     function GetBaseFontSize: Integer;
     function GetBgColor: TColor;
+    function GetElemMarginBottom: TIpHtmlElemMargin;
+    function GetElemMarginLeft: TIpHtmlElemMargin;
+    function GetElemMarginRight: TIpHtmlElemMargin;
+    function GetElemMarginTop: TIpHtmlElemMargin;
     function GetFontBaseline: Integer;
     function GetFontColor: TColor;
     function GetFontName: string;
@@ -1092,6 +1114,10 @@ type
     procedure SetALinkColor(const Value: TColor);
     procedure SetBaseFontSize(const Value: Integer);
     procedure SetBgColor(const Value: TColor);
+    procedure SetElemMarginBottom(const AValue: TIpHtmlElemMargin);
+    procedure SetElemMarginLeft(const AValue: TIpHtmlElemMargin);
+    procedure SetElemMarginRight(const AValue: TIpHtmlElemMargin);
+    procedure SetElemMarginTop(const AValue: TIpHtmlElemMargin);
     procedure SetFontBaseline(const Value: Integer);
     procedure SetFontColor(const Value: TColor);
     procedure SetFontName(const Value: string);
@@ -1143,6 +1169,11 @@ type
     property BgColor : TColor read GetBgColor write SetBgColor;
     property Preformatted : Boolean read GetPreformatted write SetPreformatted;
     property NoBreak : Boolean read GetNoBreak write SetNoBreak;
+    property ElemMarginTop: TIpHtmlElemMargin read GetElemMarginTop write SetElemMarginTop;
+    property ElemMarginLeft: TIpHtmlElemMargin read GetElemMarginLeft write SetElemMarginLeft;
+    property ElemMarginBottom: TIpHtmlElemMargin read GetElemMarginBottom write SetElemMarginBottom;
+    property ElemMarginRight: TIpHtmlElemMargin read GetElemMarginRight write SetElemMarginRight;
+  public
     property DelayCache : Boolean read getDelayCache write setDelayCache;
   end;
   
@@ -3607,6 +3638,8 @@ function CalcMultiLength(const List: TIpHtmlMultiLengthList;
 function GetAlignmentForStr(str: string;
          pDefault: TIpHtmlAlign = haDefault) : TIpHtmlAlign;
 
+function AreHtmlMarginsEqual(const Margin1, Margin2: TIpHtmlElemMargin): boolean;
+
 procedure Register;
 
 implementation
@@ -3738,6 +3771,12 @@ begin
   else
     Result := AColor;
   end;
+end;
+
+function AreHtmlMarginsEqual(const Margin1, Margin2: TIpHtmlElemMargin): boolean;
+begin
+  Result:=(Margin1.Style=Margin2.Style)
+       and (Margin1.Size=Margin2.Size);
 end;
 
 procedure Register;
@@ -7590,7 +7629,7 @@ procedure TIpHtml.ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
 var
   StyleStream: TStream;
 begin
-  //debugln(['TIpHtml.ParseStyleSheet ',href,' ',Parent is TIpHtmlNodeHEAD,' ',DbgSName(FDataProvider)]);
+  debugln(['TIpHtml.ParseStyleSheet ',href,' ',Parent is TIpHtmlNodeHEAD,' ',DbgSName(FDataProvider)]);
   StyleStream:=nil;
   
   if Parent is TIpHtmlNodeHEAD then begin
@@ -12283,19 +12322,38 @@ begin
 end;
 
 procedure TIpHtmlNodeDIV.SetProps(const RenderProps: TIpHtmlProps);
+{$IFDEF IP_LAZARUS}
+var
+  Elem: TCSSProps = nil;
+{$ENDIF}
 begin
   Props.Assign(RenderProps);
   Props.Alignment := Align;
+  {$IFDEF IP_LAZARUS}
+  LoadCSSProps(Owner, Elem, Props);
+  {$ENDIF}
   inherited SetProps(Props);
 end;
 
 procedure TIpHtmlNodeDIV.Enqueue;
 begin
-  if FChildren.Count > 0 then
-    EnqueueElement(Owner.HardLF);
+  if FChildren.Count > 0 then begin
+    if Props.ElemMarginTop.Style=hemsAuto then
+      EnqueueElement(Owner.HardLF)
+    else begin
+      // ToDo: Props.ElemMarginTop
+      EnqueueElement(Owner.HardLFClearBoth);
+    end;
+  end;
   inherited Enqueue;
-  if FChildren.Count > 0 then
-    EnqueueElement(Owner.HardLF);
+  if FChildren.Count > 0 then begin
+    if Props.ElemMarginTop.Style=hemsAuto then
+      EnqueueElement(Owner.HardLF)
+    else begin
+      // ToDo: Props.ElemMarginTop
+      EnqueueElement(Owner.HardLFClearBoth)
+    end;
+  end;
 end;
 
 { TIpHtmlNodeSPAN }
@@ -15757,6 +15815,24 @@ end;
 
 procedure TIpHtmlNodeCore.ApplyCSSProps(const Element: TCSSProps;
   const props: TIpHtmlProps);
+
+  function CssMarginToProps(CssMargin: TCSSMargin;
+    out ElemMargin: TIpHtmlElemMargin): boolean;
+  begin
+    ElemMargin.Style:=hemsAuto;
+    ElemMargin.Size:=0;
+    if CssMargin.Style=cmsNone then exit(false);
+    if CssMargin.Style=cmsAuto then exit(true);
+    if CssMargin.Style=cmsPx then begin
+      ElemMargin.Style:=hemsPx;
+      ElemMargin.Size:=CssMargin.Size;
+      exit(true);
+    end;
+    debugln(['TIpHtmlNodeCore.ApplyCSSProps.CssMarginToProps note: margin style not supported ',ord(CssMargin.Style)]);
+  end;
+
+var
+  ElemMargin: TIpHtmlElemMargin;
 begin
   if (Element<>nil) and (props<>nil) then
   begin
@@ -15809,6 +15885,16 @@ begin
         cfw900     : ;
       end;
     end;
+
+    if CssMarginToProps(Element.MarginTop,ElemMargin) then
+      props.ElemMarginTop:=ElemMargin;
+    if CssMarginToProps(Element.MarginRight,ElemMargin) then
+      props.ElemMarginRight:=ElemMargin;
+    if CssMarginToProps(Element.MarginBottom,ElemMargin) then
+      props.ElemMarginBottom:=ElemMargin;
+    if CssMarginToProps(Element.MarginLeft,ElemMargin) then
+      props.ElemMarginLeft:=ElemMargin;
+
     props.DelayCache:=False;
   end;
 end;
@@ -16206,6 +16292,26 @@ begin
   Result := PropB.BgColor;
 end;
 
+function TIpHtmlProps.GetElemMarginBottom: TIpHtmlElemMargin;
+begin
+  Result:=PropB.ElemMarginBottom;
+end;
+
+function TIpHtmlProps.GetElemMarginLeft: TIpHtmlElemMargin;
+begin
+  Result:=PropB.ElemMarginLeft;
+end;
+
+function TIpHtmlProps.GetElemMarginRight: TIpHtmlElemMargin;
+begin
+  Result:=PropB.ElemMarginRight;
+end;
+
+function TIpHtmlProps.GetElemMarginTop: TIpHtmlElemMargin;
+begin
+  Result:=PropB.ElemMarginTop;
+end;
+
 function TIpHtmlProps.GetFontBaseline: Integer;
 begin
   Result := PropB.FontBaseline;
@@ -16538,6 +16644,46 @@ begin
     pRec.LinkColor:=Value;
     FindOrCreatePropB(pRec);
   end;
+end;
+
+procedure TIpHtmlProps.SetElemMarginBottom(const AValue: TIpHtmlElemMargin);
+var
+  pRec : TIpHtmlPropBFieldsRec;
+begin
+  if AreHtmlMarginsEqual(AValue,ElemMarginBottom) then exit;
+  CopyPropBRecTo(pRec);
+  pRec.ElemMarginBottom:=AValue;
+  FindOrCreatePropB(pRec);
+end;
+
+procedure TIpHtmlProps.SetElemMarginLeft(const AValue: TIpHtmlElemMargin);
+var
+  pRec : TIpHtmlPropBFieldsRec;
+begin
+  if AreHtmlMarginsEqual(AValue,ElemMarginLeft) then exit;
+  CopyPropBRecTo(pRec);
+  pRec.ElemMarginLeft:=AValue;
+  FindOrCreatePropB(pRec);
+end;
+
+procedure TIpHtmlProps.SetElemMarginRight(const AValue: TIpHtmlElemMargin);
+var
+  pRec : TIpHtmlPropBFieldsRec;
+begin
+  if AreHtmlMarginsEqual(AValue,ElemMarginRight) then exit;
+  CopyPropBRecTo(pRec);
+  pRec.ElemMarginRight:=AValue;
+  FindOrCreatePropB(pRec);
+end;
+
+procedure TIpHtmlProps.SetElemMarginTop(const AValue: TIpHtmlElemMargin);
+var
+  pRec : TIpHtmlPropBFieldsRec;
+begin
+  if AreHtmlMarginsEqual(AValue,ElemMarginTop) then exit;
+  CopyPropBRecTo(pRec);
+  pRec.ElemMarginTop:=AValue;
+  FindOrCreatePropB(pRec);
 end;
 
 procedure TIpHtmlProps.SetNoBreak(const Value: Boolean);
