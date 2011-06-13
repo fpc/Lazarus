@@ -44,8 +44,7 @@ begin
    LogListBox.Items.Add('Async '+ IntToStr(Data));
 end;
 
-initialization
-  {$I testqueueasynccall.lrs}
+{$R *.lfm}
 
 end.
 
