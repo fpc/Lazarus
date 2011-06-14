@@ -178,6 +178,29 @@ const
   fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
                               fdfExceptionOnNotFound];
 
+  // for nicer output
+  FindDeclarationFlagNames: array[TFindDeclarationFlag] of string = (
+    'fdfSearchInAncestors',
+    'fdfSearchInParentNodes',
+    'fdfIgnoreCurContextNode',
+    'fdfIgnoreUsedUnits',
+    'fdfSearchForward',
+    'fdfExceptionOnNotFound',
+    'fdfExceptionOnPredefinedIdent',
+    'fdfIgnoreClassVisibility',
+    'fdfIgnoreMissingParams',
+    'fdfOnlyCompatibleProc',
+    'fdfIgnoreOverloadedProcs',
+    'fdfFindVariable',
+    'fdfFunctionResult',
+    'fdfEnumIdentifier',
+    'fdfFindChilds',
+    'fdfSkipClassForward',
+    'fdfCollect',
+    'fdfTopLvlResolving',
+    'fdfDoNotCache'
+  );
+
 type
   // flags/states for result
   TFoundDeclarationFlag = (
@@ -185,6 +208,11 @@ type
     );
   TFoundDeclarationFlags = set of TFoundDeclarationFlag;
   
+const
+  FoundDeclarationFlagNames: array[TFoundDeclarationFlag] of string = (
+      'fodDoNotCache'
+    );
+
   //----------------------------------------------------------------------------
 type
   TFindDeclarationParams = class;
@@ -871,9 +899,7 @@ function dbgsFC(const Context: TFindContext): string;
 
 function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
 function dbgs(const Flags: TFindDeclarationFlags): string; overload;
-function dbgs(const Flag: TFindDeclarationFlag): string; overload;
 function dbgs(const Flags: TFoundDeclarationFlags): string; overload;
-function dbgs(const Flag: TFoundDeclarationFlag): string; overload;
 
 
 implementation
@@ -888,14 +914,9 @@ begin
     if Flag in Flags then begin
       if Result<>'' then
         Result:=Result+', ';
-      Result:=Result+dbgs(Flag);
+      Result:=Result+FindDeclarationFlagNames[Flag];
     end;
   end;
-end;
-
-function dbgs(const Flag: TFindDeclarationFlag): string;
-begin
-  str(Flag,Result);
 end;
 
 function dbgs(
@@ -907,14 +928,9 @@ begin
     if Flag in Flags then begin
       if Result<>'' then
         Result:=Result+', ';
-      Result:=Result+dbgs(Flag);
+      Result:=Result+FoundDeclarationFlagNames[Flag];
     end;
   end;
-end;
-
-function dbgs(const Flag: TFoundDeclarationFlag): string;
-begin
-  str(Flag,Result);
 end;
 
 function ListOfPFindContextToStr(const ListOfPFindContext: TFPList): string;
