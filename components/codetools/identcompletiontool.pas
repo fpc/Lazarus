@@ -174,7 +174,10 @@ type
     property Node: TCodeTreeNode read GetNode write SetNode;
   end;
   
-  TIdentifierListFlag = (ilfFilteredListNeedsUpdate);
+  TIdentifierListFlag = (
+    ilfFilteredListNeedsUpdate,
+    ilfUsedToolsNeedsUpdate
+    );
   TIdentifierListFlags = set of TIdentifierListFlag;
   
   TIdentifierListContextFlag = (
@@ -205,6 +208,7 @@ type
     FHistory: TIdentifierHistoryList;
     FItems: TAVLTree; // tree of TIdentifierListItem (completely sorted)
     FIdentView: TAVLTree; // tree of TIdentHistListItem sorted for identifiers
+    FUsedTools: TAVLTree; // tree of TFindDeclarationTool
     FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
     FStartContext: TFindContext;
@@ -657,6 +661,7 @@ end;
 destructor TIdentifierList.Destroy;
 begin
   Clear;
+  FreeAndNil(FUsedTools);
   FreeAndNil(FItems);
   FreeAndNil(FIdentView);
   FreeAndNil(FFilteredList);
@@ -684,7 +689,9 @@ begin
   FCreatedIdentifiers.Clear;
   FItems.FreeAndClear;
   FIdentView.Clear;
-  Include(FFlags,ilfFilteredListNeedsUpdate);
+  if FUsedTools<>nil then
+    FUsedTools.Clear;
+  FFlags:=FFlags+[ilfFilteredListNeedsUpdate,ilfUsedToolsNeedsUpdate];
 end;
 
 procedure TIdentifierList.Add(NewItem: TIdentifierListItem);
@@ -697,7 +704,7 @@ begin
       NewItem.HistoryIndex:=History.GetHistoryIndex(NewItem);
     FItems.Add(NewItem);
     FIdentView.Add(NewItem);
-    Include(FFlags,ilfFilteredListNeedsUpdate);
+    FFlags:=FFlags+[ilfFilteredListNeedsUpdate,ilfUsedToolsNeedsUpdate];
   end else begin
     // redefined identifier -> ignore
     //DebugLn('TIdentifierList.Add redefined: ',NewItem.AsString);
@@ -823,8 +830,28 @@ end;
 
 procedure TIdentifierList.ToolTreeNodesDeleting(Tool: TCustomCodeTool;
   NodesDeleting: boolean);
+var
+  ItemNode: TAVLTreeNode;
+  Item: TIdentifierListItem;
 begin
+  if Tool=nil then exit;
   if FIdentView.Count=0 then exit;
+  if (FUsedTools=nil) or (ilfUsedToolsNeedsUpdate in FFlags) then begin
+    Exclude(FFlags,ilfUsedToolsNeedsUpdate);
+    // create list of all used tools
+    if FUsedTools=nil then
+      FUsedTools:=TAVLTree.Create
+    else
+      FUsedTools.Clear;
+    ItemNode:=FItems.FindLowest;
+    while ItemNode<>nil do begin
+      Item:=TIdentifierListItem(ItemNode.Data);
+      if (Item.Tool<>nil) and (FUsedTools.Find(Item.Tool)=nil) then
+        FUsedTools.Add(Item.Tool);
+      ItemNode:=FItems.FindSuccessor(ItemNode);
+    end;
+  end;
+  if FUsedTools.Find(Tool)=nil then exit;
   Clear;
 end;
 
