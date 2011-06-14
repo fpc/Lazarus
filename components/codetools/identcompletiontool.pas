@@ -348,8 +348,7 @@ type
       const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
     procedure GatherUsefulIdentifiers(CleanPos: integer;
       const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
-    procedure GatherUnitnames(CleanPos: integer;
-      const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+    procedure GatherUnitnames;
     procedure GatherSourceNames(const Context: TFindContext);
     procedure GatherContextKeywords(const Context: TFindContext; CleanPos: integer);
     procedure InitCollectIdentifiers(const CursorPos: TCodeXYPosition;
@@ -373,6 +372,8 @@ type
       const FoundContext: TFindContext): TIdentifierFoundResult;
     function IsInCompilerDirective(CursorPos: TCodeXYPosition): boolean;
   public
+    function GatherAvailableUnitNames(const CursorPos: TCodeXYPosition;
+                             var IdentifierList: TIdentifierList): Boolean;
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
                             var IdentifierList: TIdentifierList;
                             BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
@@ -1405,8 +1406,7 @@ begin
   end;
 end;
 
-procedure TIdentCompletionTool.GatherUnitnames(CleanPos: integer;
-  const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
+procedure TIdentCompletionTool.GatherUnitnames;
 
   procedure GatherUnitsFromSet;
   begin
@@ -2003,6 +2003,22 @@ begin
   end;
 end;
 
+function TIdentCompletionTool.GatherAvailableUnitNames(const CursorPos: TCodeXYPosition;
+  var IdentifierList: TIdentifierList): Boolean;
+begin
+  Result:=false;
+
+  try
+    InitCollectIdentifiers(CursorPos, IdentifierList);
+
+    GatherUnitNames;
+    Result:=true;
+
+  finally
+    CurrentIdentifierList:=nil;
+  end;
+end;
+
 function TIdentCompletionTool.GatherIdentifiers(
   const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList;
   BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
@@ -2081,7 +2097,7 @@ begin
     {$ENDIF}
     GatherContext:=CreateFindContext(Self,CursorNode);
     if CursorNode.Desc in [ctnUsesSection,ctnUseUnit] then begin
-      GatherUnitNames(IdentStartPos,GatherContext,BeautifyCodeOptions);
+      GatherUnitNames;
       MoveCursorToCleanPos(IdentEndPos);
       ReadNextAtom;
       if (CurPos.Flag=cafWord) and (not UpAtomIs('IN')) then begin

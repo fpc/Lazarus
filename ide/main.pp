@@ -3860,7 +3860,7 @@ begin
       SelAvail:=ASrcEdit.SelectionAvailable;
 
       // Get Available Units count to enable UseProjUnit feature.
-      AvailUnits:=GetAvailableUnits(ASrcEdit, CurrentUnitName, true);
+      AvailUnits:=GetProjAvailableUnits(ASrcEdit, CurrentUnitName, true);
 
       // Try to find main identifier declaration to enable rename feature.
       CursorXY:=ASrcEdit.EditorComponent.LogicalCaretXY;
@@ -15391,7 +15391,7 @@ end;
 
 function TMainIDE.DoUseProjectUnit: TModalResult;
 begin
-  Result:=ShowUseProjUnitDialog;
+  Result:=ShowUseUnitDialog;
 end;
 
 function TMainIDE.DoFindOverloads: TModalResult;

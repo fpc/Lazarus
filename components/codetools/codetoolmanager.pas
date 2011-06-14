@@ -427,6 +427,7 @@ type
           Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
 
     // gather identifiers (i.e. all visible)
+    function GatherUnitNames(Code: TCodeBuffer): Boolean;
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
     function GetIdentifierAt(Code: TCodeBuffer; X,Y: integer;
           var Identifier: string): boolean;
@@ -2177,6 +2178,23 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.ExtractProcedureHeader END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.GatherUnitNames(Code: TCodeBuffer): Boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result := False;
+  if not InitCurCodeTool(Code) then exit;
+  if IdentifierList<>nil then IdentifierList.Clear;
+  CursorPos.X := 0;
+  CursorPos.Y := 0;
+  CursorPos.Code := Code;
+  try
+    Result := FCurCodeTool.GatherAvailableUnitNames(CursorPos, IdentifierList);
+  except
+    on e: Exception do HandleException(e);
+  end;
 end;
 
 function TCodeToolManager.GatherIdentifiers(Code: TCodeBuffer; X, Y: integer
