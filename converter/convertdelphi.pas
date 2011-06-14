@@ -773,7 +773,7 @@ begin
   // without delay but then we must wait for the thread before continuing.
   CacheUnitsThread:=TCacheUnitsThread.Create(Self, fSettings.MainPath);
   try
-    CacheUnitsThread.Resume;
+    CacheUnitsThread.Start;
     Result:=fSettings.RunForm;      // Get settings from user.
     Screen.Cursor:=crHourGlass;
     try
