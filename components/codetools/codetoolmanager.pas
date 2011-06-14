@@ -94,6 +94,7 @@ type
     FCodeTreeNodesDeletedStep: integer;
     FIndentSize: integer;
     FJumpCentered: boolean;
+    FIdentifierListUpdating: boolean;
     FOnAfterApplyChanges: TOnAfterApplyCTChanges;
     FOnBeforeApplyChanges: TOnBeforeApplyCTChanges;
     FOnCheckAbort: TOnCodeToolCheckAbort;
@@ -2184,9 +2185,9 @@ var
   CursorPos: TCodeXYPosition;
 begin
   Result:=false;
-  { $IFDEF CTDEBUG}
+  {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GatherIdentifiers A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
-  { $ENDIF}
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   if IdentifierList<>nil then IdentifierList.Clear;
   CursorPos.X:=X;
@@ -2196,8 +2197,13 @@ begin
   DebugLn('TCodeToolManager.GatherIdentifiers B ',dbgs(FCurCodeTool.Scanner<>nil));
   {$ENDIF}
   try
-    Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList,
-                                         SourceChangeCache.BeautifyCodeOptions);
+    FIdentifierListUpdating:=true;
+    try
+      Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList,
+                                           SourceChangeCache.BeautifyCodeOptions);
+    finally
+      FIdentifierListUpdating:=false;
+    end;
   except
     on e: Exception do HandleException(e);
   end;
@@ -5139,7 +5145,7 @@ begin
   CTIncreaseChangeStamp(FCodeNodeTreeChangeStep);
   if NodesDeleting then begin
     CTIncreaseChangeStamp(FCodeTreeNodesDeletedStep);
-    if IdentifierList<>nil then
+    if (IdentifierList<>nil) and (not FIdentifierListUpdating) then
       IdentifierList.ToolTreeNodesDeleting(Tool,NodesDeleting);
   end;
 end;
