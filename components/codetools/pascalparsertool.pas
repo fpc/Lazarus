@@ -265,42 +265,9 @@ type
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
   
-const
-  ProcHeadAttributeNames: array[TProcHeadAttribute] of string = (
-      // extract attributes:
-      'phpWithStart',
-      'phpWithoutClassKeyword',
-      'phpAddClassName',
-      'phpWithoutClassName',
-      'phpWithoutName',
-      'phpWithoutParamList',
-      'phpWithVarModifiers',
-      'phpWithParameterNames',
-      'phpWithoutParamTypes',
-      'phpWithHasDefaultValues',
-      'phpWithDefaultValues',
-      'phpWithResultType',
-      'phpWithOfObject',
-      'phpWithCallingSpecs',
-      'phpWithProcModifiers',
-      'phpWithComments',
-      'phpInUpperCase',
-      'phpCommentsToSpace',
-      'phpWithoutBrackets',
-      'phpWithoutSemicolon',
-      'phpDoNotAddSemicolon',
-      // search attributes:
-      'phpIgnoreForwards',
-      'phpIgnoreProcsWithBody',
-      'phpIgnoreMethods',
-      'phpOnlyWithClassname',
-      'phpFindCleanPosition',
-      // parse attributes:
-      'phpCreateNodes'
-    );
-
 function ProcHeadAttributesToStr(Attr: TProcHeadAttributes): string;
 function dbgs(Attr: TProcHeadAttributes): string; overload;
+function dbgs(Attr: TProcHeadAttribute): string; overload;
 
 
 implementation
@@ -318,7 +285,7 @@ begin
   for a:=Low(TProcHeadAttribute) to High(TProcHeadAttribute) do begin
     if a in Attr then begin
       if Result<>'' then Result:=Result+',';
-      Result:=Result+ProcHeadAttributeNames[a];
+      Result:=Result+dbgs(a);
     end;
   end;
 end;
@@ -326,6 +293,11 @@ end;
 function dbgs(Attr: TProcHeadAttributes): string;
 begin
   Result:=ProcHeadAttributesToStr(Attr);
+end;
+
+function dbgs(Attr: TProcHeadAttribute): string;
+begin
+  str(Attr,Result);
 end;
 
 { TPascalParserTool }

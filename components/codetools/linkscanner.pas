@@ -582,23 +582,6 @@ var
   PSourceLinkMemManager: TPSourceLinkMemManager;
   PSourceChangeStepMemManager: TPSourceChangeStepMemManager;
 
-const
-  LinkScannerRangeNames: array[TLinkScannerRange] of string = (
-    'lsrNone',
-    'lsrInit',
-    'lsrSourceType',
-    'lsrSourceName',
-    'lsrInterfaceStart',
-    'lsrMainUsesSectionStart',
-    'lsrMainUsesSectionEnd',
-    'lsrImplementationStart',
-    'lsrImplementationUsesSectionStart',
-    'lsrImplementationUsesSectionEnd',
-    'lsrInitializationStart',
-    'lsrFinalizationStart',
-    'lsrEnd'
-    );
-
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);
 function IndexOfCodeInUniqueList(ACode: Pointer;
                                  UniqueSortedCodeList: TList): integer;
@@ -655,7 +638,7 @@ end;
 
 function dbgs(r: TLinkScannerRange): string; overload;
 begin
-  Result:=LinkScannerRangeNames[r];
+  str(r,Result);
 end;
 
 procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TFPList);

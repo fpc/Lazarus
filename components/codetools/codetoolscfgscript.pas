@@ -54,7 +54,7 @@ interface
 
 uses
   Classes, SysUtils, BasicCodeTools, AVL_Tree, KeywordFuncLists, FileProcs,
-  typinfo, CodeToolsStrConsts;
+  CodeToolsStrConsts;
 
 type
   TCTCSValueType = (
@@ -975,17 +975,17 @@ end;
 
 function dbgs(const t: TCTCfgScriptStackItemType): string;
 begin
-  Result:=GetEnumName(typeinfo(t),ord(t));
+  str(t,Result);
 end;
 
 function dbgs(const t: TCTCSValueType): string;
 begin
-  Result:=GetEnumName(typeinfo(t),ord(t));
+  str(t,Result);
 end;
 
 function dbgs(const t: TCTCfgScriptOperator): string;
 begin
-  Result:=GetEnumName(typeinfo(t),ord(t));
+  str(t,Result);
 end;
 
 function dbgs(const V: PCTCfgScriptVariable): string;

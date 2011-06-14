@@ -43,7 +43,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeCache, BasicCodeTools,
-  typinfo, LinkScanner, AVL_Tree, CodeBeautifier, KeywordFuncLists;
+  LinkScanner, AVL_Tree, CodeBeautifier, KeywordFuncLists;
   
 type
   // Insert policy types for class parts (properties, variables, method defs)
@@ -394,7 +394,7 @@ end;
 
 function dbgs(g: TGapTyp): string;
 begin
-  Result:=GetEnumName(typeinfo(g),ord(g));
+  str(g,Result);
 end;
 
 function CompareSourceChangeCacheEntry(NodeData1, NodeData2: pointer): integer;
