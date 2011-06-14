@@ -190,8 +190,9 @@ type
                     const BaseURL: string; var TheHint: string;
                     out HintWinRect: TRect): boolean; override;
     function GetHintForSourcePosition(const ExpandedFilename: string;
-                                      const CodePos: TPoint;
-                                      out BaseURL, HTMLHint: string): TShowHelpResult; override;
+                  const CodePos: TPoint;
+                  out BaseURL, HTMLHint: string;
+                  Flags: TIDEHelpManagerCreateHintFlags = []): TShowHelpResult; override;
 
     function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
                const Filename: string): TPascalHelpContextList; override;
@@ -1492,20 +1493,24 @@ begin
   Result:=true;
 end;
 
-function TIDEHelpManager.GetHintForSourcePosition(const ExpandedFilename: string;
-  const CodePos: TPoint; out BaseURL, HTMLHint: string): TShowHelpResult;
+function TIDEHelpManager.GetHintForSourcePosition(
+  const ExpandedFilename: string; const CodePos: TPoint; out BaseURL,
+  HTMLHint: string; Flags: TIDEHelpManagerCreateHintFlags): TShowHelpResult;
 var
   Code: TCodeBuffer;
   CacheWasUsed: boolean;
+  HintFlags: TCodeHelpHintOptions;
 begin
   BaseURL:='';
   HTMLHint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if (Code=nil) or Code.LineColIsSpace(CodePos.Y,CodePos.X) then
     exit(shrHelpNotFound);
+  HintFlags:=[chhoDeclarationHeader];
+  if ihmchAddFocusHint in Flags then
+    Include(HintFlags,chhoShowFocusHint);
   if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,
-    [chhoDeclarationHeader],
-    BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
+    HintFlags,BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);
   Result:=shrHelpNotFound;

@@ -49,6 +49,11 @@ type
     property ModifierStr: string read FModifierStr write FModifierStr;
   end;
 
+  TIDEHelpManagerCreateHintFlag = (
+    ihmchAddFocusHint
+    );
+  TIDEHelpManagerCreateHintFlags = set of TIDEHelpManagerCreateHintFlag;
+
   { TBaseHelpManager }
 
   TBaseHelpManager = class(TComponent)
@@ -65,7 +70,8 @@ type
     procedure ShowHelpForIDEControl(Sender: TControl); virtual; abstract;
     function GetHintForSourcePosition(const ExpandedFilename: string;
                       const CodePos: TPoint;
-                      out BaseURL, HTMLHint: string): TShowHelpResult; virtual; abstract;
+                      out BaseURL, HTMLHint: string;
+                      Flags: TIDEHelpManagerCreateHintFlags = []): TShowHelpResult; virtual; abstract;
     function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
                     const BaseURL: string; var TheHint: string;
                     out HintWinRect: TRect): boolean; virtual; abstract;

@@ -310,6 +310,7 @@ const
   ecContextHelp             = ecFirstLazarus + 903;
   ecEditContextHelp         = ecFirstLazarus + 904;
   ecReportingBug            = ecFirstLazarus + 905;
+  ecFocusHint               = ecFirstLazarus + 906;
 
   // designer
   ecDesignerCopy            = ecFirstLazarus + 1000;

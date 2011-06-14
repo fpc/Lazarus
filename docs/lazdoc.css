@@ -22,6 +22,12 @@ div.title {
   color: #005A9C;
 }
 
+div.focushint {
+  text-align: right;
+  font-size: 10px;
+  color: #005A9C;
+}
+
 tt, span.keyword, pre {
   font-family: Courier, monospace
 }

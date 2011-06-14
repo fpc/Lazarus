@@ -40,6 +40,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, AvgLvlTree,
+  LCLType,
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, FileProcs,
@@ -51,11 +52,11 @@ uses
   // synedit
   SynHighlighterPas,
   // IDEIntf
-  IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, IDEDialogs,
-  IDEHelpIntf, LazIDEIntf,
+  IDECommands, IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf,
+  IDEDialogs, IDEHelpIntf, LazIDEIntf,
   // IDE
-  LazarusIDEStrConsts, CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts,
-  TransferMacros, PackageSystem, DialogProcs;
+  EditorOptions, LazarusIDEStrConsts, CompilerOptions, IDEProcs, PackageDefs,
+  EnvironmentOpts, TransferMacros, PackageSystem, DialogProcs, KeyMapping;
 
 const
   IDEProjectName = 'Lazarus';
@@ -215,7 +216,8 @@ type
   TCodeHelpHintOption = (
     chhoSmallStep,    // do the next step. Use this to run on idle.
     chhoDeclarationHeader, // add a header with source position and type of identifier
-    chhoNoComments    // do not add the pasdoc comments
+    chhoNoComments,    // do not add the pasdoc comments
+    chhoShowFocusHint  // show the shortcut ecFocusHint
   );
   TCodeHelpHintOptions = set of TCodeHelpHintOption;
     
@@ -2240,6 +2242,7 @@ var
   n: Integer;
   LastOwner: TObject;
   s: String;
+  Cmd: TKeyCommandRelation;
 
   procedure AddLinkToOwner(CurOwner: TObject);
   var
@@ -2302,7 +2305,7 @@ begin
           // add fpdoc entry
           FPDocFilename:=GetFPDocFilenameForSource(CTTool.MainFilename,
                                                    false,CacheWasUsed,AnOwner);
-          //DebugLn(['TCodeHelpManager.GetHTMLHint2 FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
+          //DebugLn(['TCodeHelpManager.GetHTMLHint FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
           if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
           if n=1 then
@@ -2315,7 +2318,7 @@ begin
 
             ElementNode:=FPDocFile.GetElementWithName(ElementName);
             if ElementNode<>nil then begin
-              //debugln(['TCodeHelpManager.GetHTMLHint2 fpdoc element found "',ElementName,'"']);
+              //debugln(['TCodeHelpManager.GetHTMLHint fpdoc element found "',ElementName,'"']);
               AddLinkToOwner(AnOwner);
 
               s:=AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort])));
@@ -2343,7 +2346,7 @@ begin
         or ((CTNode.Desc in [ctnProcedure,ctnProcedureHead])
             and (CTTool.ProcNodeHasSpecifier(CTNode,psOVERRIDE)))
         then begin
-          debugln(['TCodeHelpManager.GetHTMLHint2 searching for inherited of ',CTNode.DescAsString,' ',dbgs(XYPos)]);
+          debugln(['TCodeHelpManager.GetHTMLHint searching for inherited of ',CTNode.DescAsString,' ',dbgs(XYPos)]);
           OldXYPos:=XYPos;
           OldCTTool:=CTTool;
           OldCTNode:=CTNode;
@@ -2351,18 +2354,19 @@ begin
             CTTool,CTNode,XYPos,aTopLine))
           or (CTNode=OldCTNode)
           then begin
-            debugln(['TCodeHelpManager.GetHTMLHint2 inherited not found: ',dbgs(OldXYPos)]);
+            debugln(['TCodeHelpManager.GetHTMLHint inherited not found: ',dbgs(OldXYPos)]);
             break;
           end;
         end else begin
-          debugln(['TCodeHelpManager.GetHTMLHint2 not searching inherited for ',CTNode.DescAsString]);
+          debugln(['TCodeHelpManager.GetHTMLHint not searching inherited for ',CTNode.DescAsString]);
           break;
         end;
 
       end;
+
     except
       on E: Exception do begin
-        debugln(['TCodeHelpManager.GetHTMLHint2 Exception: ',E.Message]);
+        debugln(['TCodeHelpManager.GetHTMLHint Exception: ',E.Message]);
         //DumpExceptionBackTrace;
       end;
     end;
@@ -2370,10 +2374,17 @@ begin
   finally
     ElementNames.Free;
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    if chhoShowFocusHint in Options then begin
+      Cmd:=EditorOpts.KeyMap.FindByCommand(ecFocusHint);
+      if (Cmd<>nil) and (not IDEShortCutEmpty(Cmd.ShortcutA)) then begin
+        HTMLHint:=HTMLHint+'<div class="focushint">Press '
+          +KeyAndShiftStateToEditorKeyString(Cmd.ShortcutA)+' for focus</div>'+LineEnding;
+      end;
+    end;
     HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css"></head>'+LineEnding
       +'<body>'+LineEnding+HTMLHint+'</body>'+LineEnding;
   end;
-  debugln(['TCodeHelpManager.GetHTMLHint2 ',HTMLHint]);
+  debugln(['TCodeHelpManager.GetHTMLHint ',HTMLHint]);
   Result:=chprSuccess;
 end;
 

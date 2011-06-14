@@ -607,6 +607,7 @@ begin
   ecContextHelp: SetResult(VK_F1,[],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_F1,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFocusHint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
   ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
@@ -1049,6 +1050,7 @@ begin
   ecContextHelp: SetResult(VK_F1,[ssCtrl],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_F1,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFocusHint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
   ecDesignerCopy        : SetResult(VK_C,[ssCtrl],VK_UNKNOWN,[],VK_Insert,[ssCtrl],VK_UNKNOWN,[]);
@@ -1680,6 +1682,7 @@ begin
   ecContextHelp: SetResult(VK_HELP,[],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_HELP,[ssShift,ssCtrl],VK_HELP,[ssCtrl]);
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFocusHint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
   ecDesignerCopy        : SetResult(VK_C,[ssMeta],VK_UNKNOWN,[]);
@@ -2227,6 +2230,7 @@ begin
     ecContextHelp             : Result:= lisMenuContextHelp;
     ecEditContextHelp         : Result:= lisMenuEditContextHelp;
     ecReportingBug            : Result:= srkmecReportingBug;
+    ecFocusHint               : Result:= lisFocusHint;
 
     // desginer
     ecDesignerCopy            : Result:= lisDsgCopyComponents;
@@ -2887,6 +2891,7 @@ begin
   AddDefault(C, 'Context sensitive help', lisKMContextSensitiveHelp, ecContextHelp);
   AddDefault(C, 'Edit context sensitive help', lisKMEditContextSensitiveHelp, ecEditContextHelp);
   AddDefault(C, 'Reporting a bug', srkmecReportingBug, ecReportingBug);
+  AddDefault(C, 'Focus hint', lisFocusHint, ecFocusHint);
 
   // designer  - without menu items in the IDE bar (at least not directly)
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,IDECmdScopeDesignerOnly)];

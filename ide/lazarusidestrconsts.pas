@@ -2706,6 +2706,7 @@ resourcestring
   // help menu
   srkmecunknown                   = 'unknown editor command';
   srkmecReportingBug              = 'Reporting a bug';
+  lisFocusHint = 'Focus hint';
    
   // Category
   srkmCatCursorMoving   = 'Cursor moving commands';

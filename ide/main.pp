@@ -16139,7 +16139,8 @@ begin
   if EditorOpts.AutoToolTipSymbTools then begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
     TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
-                                          CaretPos,BaseURL,SmartHintStr);
+                             CaretPos,BaseURL,SmartHintStr,
+                             [{$IFDEF EnableFocusHint}ihmchAddFocusHint{$ENDIF}]);
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
   end;
   case ToolStatus of

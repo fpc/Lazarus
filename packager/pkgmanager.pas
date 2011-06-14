@@ -306,7 +306,7 @@ type
     function CheckInstallPackageList(PkgIDList: TObjectList;
                           Flags: TPkgInstallInIDEFlags = []): boolean; override;
     function InstallPackages(PkgIdList: TObjectList;
-                              Flags: TPkgInstallInIDEFlags = []): TModalResult; override;
+                             Flags: TPkgInstallInIDEFlags = []): TModalResult; override;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags;
