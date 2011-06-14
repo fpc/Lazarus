@@ -14,11 +14,6 @@
 
   Abstract:
     Installs a HTML control in the IDE using TIpHtmlPanel.
-
-  ToDo:
-    - implement in iphtml &wbr;
-    - in codehelp: show package
-    - in codehelp: links
 }
 unit IPIDEHTMLControl;
 
