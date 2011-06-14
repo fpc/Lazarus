@@ -138,7 +138,7 @@ begin
     
     // get help text
     if (not Item.Tool.CleanPosToCaret(CleanPos,Caret)) then begin
-      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED CleanPosToCaret']);
+      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED CleanPosToCaret Tool=',Item.Tool.MainFilename,' CleanPos=',CleanPos,' SrcLen=',Item.Tool.SrcLen]);
       exit;
     end;
     //DebugLn(['TFPDocHintProvider.ReadLazDocData ',Item.Identifier,' ',Item.Tool.MainFilename,' ',Caret.Code.Filename,' ',Caret.X,',',Caret.Y]);

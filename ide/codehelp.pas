@@ -2406,7 +2406,6 @@ var
   var
     s: String;
   begin
-    debugln(['AddLinkToOwner ',DbgSName(CurOwner)]);
     if (CurOwner=nil) or (CurOwner=LastOwner) then exit;
     s:=OwnerToFPDocHint(CurOwner);
     if s='' then exit;
@@ -2464,7 +2463,7 @@ begin
           // add fpdoc entry
           FPDocFilename:=GetFPDocFilenameForSource(CTTool.MainFilename,
                                                    false,CacheWasUsed,AnOwner);
-          DebugLn(['TCodeHelpManager.GetHTMLHint2 FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
+          //DebugLn(['TCodeHelpManager.GetHTMLHint2 FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
           if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
           if n=1 then
@@ -2477,7 +2476,7 @@ begin
 
             ElementNode:=FPDocFile.GetElementWithName(ElementName);
             if ElementNode<>nil then begin
-              debugln(['TCodeHelpManager.GetHTMLHint2 fpdoc element found "',ElementName,'"']);
+              //debugln(['TCodeHelpManager.GetHTMLHint2 fpdoc element found "',ElementName,'"']);
               AddLinkToOwner(AnOwner);
 
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort]));

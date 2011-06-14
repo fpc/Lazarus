@@ -538,6 +538,7 @@ var
   AFilename: String;
   p: TPoint;
 begin
+  fWaitingForAsync:=false;
   SplitURL(NextURL,URLScheme,URLPath,URLParams);
   if URLScheme='source' then begin
     p:=Point(1,1);
@@ -579,6 +580,7 @@ end;
 procedure TLazIDEHTMLProvider.OpenURLAsync(const URL: string);
 begin
   NextURL:=URL;
+  //debugln(['TLazIDEHTMLProvider.OpenURLAsync URL=',URL]);
   if not fWaitingForAsync then begin
     Application.QueueAsyncCall(@OpenNextURL,0);
     fWaitingForAsync:=true;
