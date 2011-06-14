@@ -30,9 +30,9 @@ uses
 
 type
 
-  { TCodetoolsIndentifierComplietionOptionsFrame }
+  { TCodetoolsIndentifierCompletionOptionsFrame }
 
-  TCodetoolsIndentifierComplietionOptionsFrame = class(TAbstractIDEOptionsEditor)
+  TCodetoolsIndentifierCompletionOptionsFrame = class(TAbstractIDEOptionsEditor)
     ICAutoAddParameterBrackets: TCheckBox;
     ICAutoStartAfterPointCheckBox: TCheckBox;
     ICAddAssignOperatorCheckBox: TCheckBox;
@@ -51,14 +51,14 @@ implementation
 
 {$R *.lfm}
 
-{ TCodetoolsIndentifierComplietionOptionsFrame }
+{ TCodetoolsIndentifierCompletionOptionsFrame }
 
-function TCodetoolsIndentifierComplietionOptionsFrame.GetTitle: String;
+function TCodetoolsIndentifierCompletionOptionsFrame.GetTitle: String;
 begin
   Result := dlgIdentifierCompletion;
 end;
 
-procedure TCodetoolsIndentifierComplietionOptionsFrame.Setup(
+procedure TCodetoolsIndentifierCompletionOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 begin
   ICAddSemicolonCheckBox.Caption:=dlgAddSemicolon;
@@ -67,7 +67,7 @@ begin
   ICAutoAddParameterBrackets.Caption:=lisAddParameterBrackets;
 end;
 
-procedure TCodetoolsIndentifierComplietionOptionsFrame.ReadSettings(
+procedure TCodetoolsIndentifierCompletionOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TCodeToolsOptions do
@@ -79,7 +79,7 @@ begin
   end;
 end;
 
-procedure TCodetoolsIndentifierComplietionOptionsFrame.WriteSettings(
+procedure TCodetoolsIndentifierCompletionOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
   with AOptions as TCodeToolsOptions do
@@ -91,12 +91,12 @@ begin
   end;
 end;
 
-class function TCodetoolsIndentifierComplietionOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TCodetoolsIndentifierCompletionOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TCodeToolsOptions;
 end;
 
 initialization
-  RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsIndentifierComplietionOptionsFrame, CdtOptionsIdentCompletion);
+  RegisterIDEOptionsEditor(GroupCodetools, TCodetoolsIndentifierCompletionOptionsFrame, CdtOptionsIdentCompletion);
 end.
 

@@ -1,4 +1,4 @@
-inherited CodetoolsIndentifierComplietionOptionsFrame: TCodetoolsIndentifierComplietionOptionsFrame
+inherited CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompletionOptionsFrame
   Height = 300
   Width = 400
   ClientHeight = 300
@@ -13,7 +13,7 @@ inherited CodetoolsIndentifierComplietionOptionsFrame: TCodetoolsIndentifierComp
     Left = 6
     Height = 22
     Top = 6
-    Width = 191
+    Width = 206
     BorderSpacing.Around = 6
     Caption = 'ICAddSemicolonCheckBox'
     TabOrder = 0
@@ -25,7 +25,7 @@ inherited CodetoolsIndentifierComplietionOptionsFrame: TCodetoolsIndentifierComp
     Left = 6
     Height = 22
     Top = 34
-    Width = 223
+    Width = 243
     BorderSpacing.Around = 6
     Caption = 'ICAddAssignOperatorCheckBox'
     TabOrder = 1
@@ -37,7 +37,7 @@ inherited CodetoolsIndentifierComplietionOptionsFrame: TCodetoolsIndentifierComp
     Left = 6
     Height = 22
     Top = 62
-    Width = 224
+    Width = 247
     BorderSpacing.Around = 6
     Caption = 'ICAutoStartAfterPointCheckBox'
     TabOrder = 2
@@ -49,7 +49,7 @@ inherited CodetoolsIndentifierComplietionOptionsFrame: TCodetoolsIndentifierComp
     Left = 6
     Height = 22
     Top = 90
-    Width = 214
+    Width = 233
     BorderSpacing.Around = 6
     Caption = 'ICAutoAddParameterBrackets'
     TabOrder = 3
