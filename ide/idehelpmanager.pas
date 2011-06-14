@@ -1484,7 +1484,6 @@ begin
       inc(NewHeight, 8); // border
 
     HintWinRect := Rect(0, 0, NewWidth, NewHeight);
-    TheHint := '';
   end else begin
     HintWinRect := aHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
   end;

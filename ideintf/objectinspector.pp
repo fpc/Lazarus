@@ -3046,7 +3046,7 @@ end;
 
 procedure TOICustomPropertyGrid.HintTimer(sender : TObject);
 var
-  Rect : TRect;
+  HintRect : TRect;
   AHint : String;
   Position : TPoint;
   Index: integer;
@@ -3081,15 +3081,15 @@ begin
       if Index <> ItemIndex then 
       begin
         HintType := GetHintTypeAt(Index,Position.X);
-        if (HintType = pehName) and Assigned(OnPropertyHint) then 
+        if (HintType = pehName) and Assigned(OnPropertyHint) then
         begin
-          if OnPropertyHint(Self, PointedRow, Position, FHintWindow, Rect, AHint) and
+          if OnPropertyHint(Self, PointedRow, Position, FHintWindow, HintRect, AHint) and
              (AHint <> '') then
           begin
             FHintIndex := Index;
             FShowingLongHint := True;
-            //DebugLn(['TOICustomPropertyGrid.HintTimer ',dbgs(Rect),' ',AHint,' ',dbgs(Position)]);
-            FHintWindow.ActivateHint(Rect, AHint);
+            //DebugLn(['TOICustomPropertyGrid.HintTimer ',dbgs(HintRect),' ',AHint,' ',dbgs(Position)]);
+            FHintWindow.ActivateHint(HintRect, AHint);
           end;
           exit;
         end;
@@ -3101,14 +3101,14 @@ begin
   if AHint = '' then Exit;
   FHintIndex := Index;
   FShowingLongHint := True;
-  Rect := FHintWindow.CalcHintRect(0, AHint, nil);  //no maxwidth
-  Rect.Left := Position.X + 10;
-  Rect.Top := Position.Y + 10;
-  Rect.Right := Rect.Left + Rect.Right + 3;
-  Rect.Bottom := Rect.Top + Rect.Bottom + 3;
+  HintRect := FHintWindow.CalcHintRect(0, AHint, nil);  //no maxwidth
+  HintRect.Left := Position.X + 10;
+  HintRect.Top := Position.Y + 10;
+  HintRect.Right := HintRect.Left + HintRect.Right + 3;
+  HintRect.Bottom := HintRect.Top + HintRect.Bottom + 3;
   //DebugLn(['TOICustomPropertyGrid.HintTimer ',dbgs(Rect),' ',AHint,' ',dbgs(Position)]);
 
-  FHintWindow.ActivateHint(Rect, AHint);
+  FHintWindow.ActivateHint(HintRect, AHint);
 end;
 
 Procedure TOICustomPropertyGrid.ResetHintTimer;
@@ -4547,7 +4547,8 @@ function TObjectInspectorDlg.OnGridPropertyHint(Sender: TObject;
 begin
   Result := False;
   if Assigned(FOnPropertyHint) then
-    Result := FOnPropertyHint(Sender, PointedRow, ScreenPos, aHintWindow, HintWinRect, AHint);
+    Result := FOnPropertyHint(Sender, PointedRow, ScreenPos,
+       aHintWindow, HintWinRect, AHint);
 end;
 
 procedure TObjectInspectorDlg.SetAvailComboBoxText;

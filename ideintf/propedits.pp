@@ -1536,6 +1536,8 @@ procedure EditCollection(AComponent: TComponent; ACollection: TCollection; AProp
 function IsInteresting(
   const AEditor: TPropertyEditor; const AFilter: TTypeKinds): Boolean;
 
+function dbgs(peh: TPropEditHint): string; overload;
+
 const
   NoDefaultValue = Longint($80000000); // magic number for properties with nodefault modifier
 
@@ -6319,6 +6321,11 @@ begin
   finally
     visited.Free;
   end;
+end;
+
+function dbgs(peh: TPropEditHint): string;
+begin
+  writestr(Result,peh);
 end;
 
 { TNoteBookActiveControlPropertyEditor }
