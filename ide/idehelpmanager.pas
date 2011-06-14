@@ -41,8 +41,8 @@ uses
   PascalParserTool, FindDeclarationTool,
   // IDEIntf
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf, TextTools,
-  LazHelpIntf, LazHelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, IDEMsgIntf,
-  PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
+  IDEDialogs, LazHelpIntf, LazHelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf,
+  IDEMsgIntf, PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
@@ -75,6 +75,7 @@ type
     FProviders: TLIHProviders;
     procedure SetProviders(const AValue: TLIHProviders);
     procedure OpenNextURL(Data: PtrInt); // called via Application.QueueAsyncCall
+    procedure OpenFPDoc(Path: string);
   public
     NextURL: string;
     destructor Destroy; override;
@@ -540,6 +541,7 @@ var
 begin
   fWaitingForAsync:=false;
   SplitURL(NextURL,URLScheme,URLPath,URLParams);
+  debugln(['TLazIDEHTMLProvider.OpenNextURL "',URLScheme,'" :// "',URLPath,'" & "',URLParams,'"']);
   if URLScheme='source' then begin
     p:=Point(1,1);
     if REMatches(URLPath,'(.*)\((.*),(.*)\)') then begin
@@ -554,6 +556,109 @@ begin
   end else if (URLScheme='openpackage') and (URLPath<>'')
   and IsValidIdent(URLPath) then begin
     PackageEditingInterface.DoOpenPackageWithName(URLPath,[],false);
+  end else if (URLScheme='fpdoc') and (URLParams<>'') then begin
+    OpenFPDoc(URLParams);
+  end;
+end;
+
+procedure TLazIDEHTMLProvider.OpenFPDoc(Path: string);
+var
+  RestPath: string;
+
+  function ExtractSubPath: string;
+  var
+    p: SizeInt;
+  begin
+    p:=System.Pos('.',RestPath);
+    if p<1 then p:=length(RestPath)+1;
+    Result:=copy(RestPath,1,p-1);
+    RestPath:=copy(RestPath,p+1,length(RestPath));
+  end;
+
+  procedure InvalidPathError(Msg: string);
+  begin
+    debugln(['InvalidPathError Path="',Path,'" Msg="',Msg,'"']);
+    IDEMessageDialog('Unable to open fpdoc help',
+      'The fpdoc path "'+Path+'" is invalid.'#13+Msg,mtError,[mbCancel]);
+  end;
+
+var
+  PkgName: String;
+  Pkg: TLazPackage;
+  AnUnitName: String;
+  PkgFile: TPkgFile;
+  ContextList: TPascalHelpContextList;
+  ElementName: String;
+  Filename: String;
+  ErrMsg: string;
+  PascalHelpContextLists: TList;
+  i: Integer;
+begin
+  RestPath:=Path;
+  PkgName:=ExtractSubPath;
+  if (PkgName='') or (PkgName[1]<>'#') then begin
+    InvalidPathError('It does not start with a package name, for example #rtl.');
+    exit;
+  end;
+  PkgName:=copy(PkgName,2,length(PkgName));
+  if (PkgName='') or not IsValidIdent(PkgName) then begin
+    InvalidPathError('It does not start with a package name, for example #rtl.');
+    exit;
+  end;
+  if SysUtils.CompareText(PkgName,'rtl')=0 then PkgName:='fcl';
+  Pkg:=TLazPackage(PackageEditingInterface.FindPackageWithName(PkgName));
+  if Pkg=nil then begin
+    InvalidPathError('Package "'+PkgName+'" not found.');
+    exit;
+  end;
+  if Pkg.IsVirtual then begin
+    InvalidPathError('Package "'+PkgName+'" has no help.');
+    exit;
+  end;
+
+  AnUnitName:=ExtractSubPath;
+  if (AnUnitName='') or (not IsValidIdent(AnUnitName)) then begin
+    InvalidPathError('Unit name "'+AnUnitName+'" is invalid.');
+    exit;
+  end;
+
+  Filename:='';
+  PkgFile:=Pkg.FindUnit(AnUnitName);
+  if (PkgFile<>nil) and (PkgFile.FileType in PkgFileRealUnitTypes) then begin
+    // normal unit in lpk
+    if PkgFile.IsVirtual then begin
+      InvalidPathError('Unit "'+PkgFile.Filename+'" has no help.');
+      exit;
+    end;
+    Filename:=PkgFile.Filename;
+  end else if SysUtils.CompareText(PkgName,'fcl')=0 then begin
+    // search in FPC sources
+    Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitSet('',AnUnitName);
+  end;
+  if Filename='' then begin
+    InvalidPathError('Unit "'+AnUnitName+'" has no help.');
+    exit;
+  end;
+
+  PascalHelpContextLists:=TList.Create;
+  try
+    // create a context list (and add it as sole element to the PascalHelpContextLists)
+    ContextList:=TPascalHelpContextList.Create;
+    PascalHelpContextLists.Add(ContextList);
+    ContextList.Add(pihcFilename,Filename);
+    ContextList.Add(pihcSourceName,AnUnitName);
+    repeat
+      ElementName:=ExtractSubPath;
+      if ElementName='' then break;
+      ContextList.Add(pihcType,ElementName);
+    until false;
+    ShowHelpForPascalContexts(Filename,Point(1,1),PascalHelpContextLists,ErrMsg);
+  finally
+    if PascalHelpContextLists<>nil then begin
+      for i:=0 to PascalHelpContextLists.Count-1 do
+        TObject(PascalHelpContextLists[i]).Free;
+      PascalHelpContextLists.Free;
+    end;
   end;
 end;
 
@@ -572,9 +677,8 @@ var
 begin
   Result:=false;
   SplitURL(NextURL,URLScheme,URLPath,URLParams);
-  if (URLScheme='file') or (URLScheme='lazdoc') then begin
+  if (URLScheme='file') or (URLScheme='lazdoc') or (URLScheme='fpdoc') then
     Result:=true;
-  end;
 end;
 
 procedure TLazIDEHTMLProvider.OpenURLAsync(const URL: string);
@@ -1173,12 +1277,8 @@ function TIDEHelpManager.ConvertCodePosToPascalHelpContext(
 
   procedure AddContext(Descriptor: TPascalHelpContextType;
     const Context: string);
-  var
-    CurContext: TPascalHelpContext;
   begin
-    CurContext.Descriptor:=Descriptor;
-    CurContext.Context:=Context;
-    Result.Add(CurContext);
+    Result.Add(Descriptor,Context);
     //debugln('  AddContext Descriptor=',dbgs(ord(Descriptor)),' Context="',Context,'"');
   end;
 

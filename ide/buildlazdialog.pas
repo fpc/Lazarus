@@ -570,7 +570,7 @@ begin
     if NewUnitDirectory<>'' then
       // FPC interpretes '\ ' as an escape for a space in a path,
       // so make sure the directory doesn't end with the path delimeter.
-      AppendExtraOption('-FU'+ChompPathDelim(NewTargetDirectory));
+      AppendExtraOption('-FU'+ChompPathDelim(NewUnitDirectory));
 
     if NewTargetDirectory<>'' then
       // FPC interpretes '\ ' as an escape for a space in a path,

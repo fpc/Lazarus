@@ -315,6 +315,7 @@ type
     function SourcePosToFPDocHint(const aFilename: string; X,Y: integer;
                                   Caption: string=''): string;
     function OwnerToFPDocHint(AnOwner: TObject): string;
+    function FPDocLinkToURL(FPDocFile: TLazFPDocFile; const LinkID: string): string;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -2496,7 +2497,7 @@ begin
                 HTMLHint:=HTMLHint+s;
               end;
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiErrors]));
-              // todo HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiSeeAlso]));
+              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiSeeAlso]));
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiExample]));
             end;
           end;
@@ -2533,7 +2534,7 @@ begin
     except
       on E: Exception do begin
         debugln(['TCodeHelpManager.GetHTMLHint2 Exception: ',E.Message]);
-        DumpExceptionBackTrace;
+        //DumpExceptionBackTrace;
       end;
     end;
 
@@ -2633,7 +2634,7 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile;
       if (Attr=nil) or (Attr.NodeValue='') then exit;
       s:=AddChilds(Node);
       if s='' then s:=Attr.NodeValue;
-      Result:=Result+'<a href="'+Attr.NodeValue+'">'+s+'</a><br>';
+      Result:=Result+'<a href="fpdoc://'+FPDocLinkToURL(FPDocFile,Attr.NodeValue)+'">'+s+'</a><br>';
     end else if (Node.NodeName='example') then begin
       Attr:=Node.Attributes.GetNamedItem('file');
       if (Attr=nil) or (Attr.NodeValue='') then exit;
@@ -2831,6 +2832,24 @@ begin
   if AnOwner is TLazPackage then
     Result:='<span class="seealso">Package <a href="openpackage://'+TLazPackage(AnOwner).Name+'">'
                                    +TLazPackage(AnOwner).Name+'</a></span>';
+end;
+
+function TCodeHelpManager.FPDocLinkToURL(FPDocFile: TLazFPDocFile;
+  const LinkID: string): string;
+begin
+  Result:=LinkID;
+  if Result='' then exit;
+  if Result[1]='#' then begin
+    // has already a package
+    exit;
+  end;
+  if FPDocFile.GetElementWithName(Result)<>nil then begin
+    // link target is in this unit => prepend package and unit name
+    Result:='#'+FPDocFile.GetPackageName+'.'+FPDocFile.GetModuleName+'.'+Result;
+  end else begin
+    // link target is not in this unit, but same package => prepend package name
+    Result:='#'+FPDocFile.GetPackageName+'.'+Result;
+  end;
 end;
 
 procedure TCodeHelpManager.FreeDocs;

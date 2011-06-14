@@ -66,6 +66,7 @@ type
     function GetItems(Index: integer): TPascalHelpContext;
   public
     procedure Add(const Context: TPascalHelpContext);
+    procedure Add(Descriptor: TPascalHelpContextType; const Context: string);
     procedure Insert(Index: integer; const Context: TPascalHelpContext);
     procedure Clear;
     destructor Destroy; override;
@@ -2253,6 +2254,16 @@ begin
   // to prevent freeing uninitialized strings, initialize the new strings to nil
   FillChar(fItems[FCount-1], SizeOf(TPascalHelpContext), 0);
   fItems[FCount-1]:=Context;
+end;
+
+procedure TPascalHelpContextList.Add(Descriptor: TPascalHelpContextType;
+  const Context: string);
+var
+  CurContext: TPascalHelpContext;
+begin
+  CurContext.Descriptor:=Descriptor;
+  CurContext.Context:=Context;
+  Add(CurContext);
 end;
 
 procedure TPascalHelpContextList.Insert(Index: integer;

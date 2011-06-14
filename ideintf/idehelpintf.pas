@@ -107,8 +107,9 @@ type
     destructor Destroy; override;
     function URLHasStream(const URL: string): boolean; virtual; abstract;
       { The standard IDE implementation supports for OpenURLAsync the following:
-        source://local-file-name   : this opens the file local-file-name in the editor
-        openpackage://package-name : this opens the package editor of the package with the name package-name
+        source://local-file-name   : open a file local-file-name in the source editor
+        openpackage://package-name : open a package editor
+        fpdoc://#package-name.unitname.element : this opens the help for the fpdoc entry
         }
     procedure OpenURLAsync(const URL: string); virtual; abstract;
     function GetStream(const URL: string; Shared: boolean
