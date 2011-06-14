@@ -9036,6 +9036,7 @@ begin
   //debugln(['TFindDeclarationTool.CheckDependsOnNodeCaches ',MainFilename,' FDependsOnCodeTools=',FDependsOnCodeTools]);
   if (FDependsOnCodeTools=nil) or FCheckingNodeCacheDependencies then exit;
   if Scanner=nil then exit;
+
   if Assigned(Scanner.OnGetGlobalChangeSteps) then begin
     // check if any sources or values have changed
     Scanner.OnGetGlobalChangeSteps(SourcesChangeStep,FilesChangeStep,
@@ -9043,7 +9044,7 @@ begin
     if (SourcesChangeStep=FSourcesChangeStep)
     and (FilesChangeStep=FFilesChangeStep)
     and (InitValuesChangeStep=FInitValuesChangeStep) then
-      // all sources and values are the same =>
+      // all sources and values are the same
       exit;
     FSourcesChangeStep:=SourcesChangeStep;
     FFilesChangeStep:=FilesChangeStep;
@@ -9053,7 +9054,7 @@ begin
   if (CheckedTools<>nil) and (CheckedTools.Find(Self)<>nil) then exit;
 
   {$IFDEF ShowCacheDependencies}
-  DebugLn(['[TFindDeclarationTool.CheckDependsOnNodeCaches] START ',MainFilename,' ',FDependsOnCodeTools.Count]);
+  DebugLn(['[TFindDeclarationTool.CheckDependsOnNodeCaches] START DependsOn=',FDependsOnCodeTools.Count,' ',MainFilename]);
   {$ENDIF}
   FCheckingNodeCacheDependencies:=true;
   FreeCheckedTools:=false;
@@ -9074,8 +9075,7 @@ begin
     Result:=false;
   finally
     {$IFDEF ShowCacheDependencies}
-    DebugLn('[TFindDeclarationTool.CheckDependsOnNodeCaches] Result=',
-            DbgS(Result),' ',MainFilename);
+    DebugLn('[TFindDeclarationTool.CheckDependsOnNodeCaches] Result=',DbgS(Result),' ',MainFilename);
     {$ENDIF}
     FCheckingNodeCacheDependencies:=false;
     if FreeCheckedTools then FreeAndNil(CheckedTools);

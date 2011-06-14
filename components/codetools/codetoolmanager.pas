@@ -2184,9 +2184,9 @@ var
   CursorPos: TCodeXYPosition;
 begin
   Result:=false;
-  {$IFDEF CTDEBUG}
+  { $IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GatherIdentifiers A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
-  {$ENDIF}
+  { $ENDIF}
   if not InitCurCodeTool(Code) then exit;
   if IdentifierList<>nil then IdentifierList.Clear;
   CursorPos.X:=X;
@@ -5136,17 +5136,11 @@ end;
 procedure TCodeToolManager.OnToolTreeChange(Tool: TCustomCodeTool;
   NodesDeleting: boolean);
 begin
-  if FCodeNodeTreeChangeStep<>High(integer) then
-    inc(FCodeNodeTreeChangeStep)
-  else
-    FCodeNodeTreeChangeStep:=Low(Integer);
+  CTIncreaseChangeStamp(FCodeNodeTreeChangeStep);
   if NodesDeleting then begin
-    if FCodeTreeNodesDeletedStep<>High(integer) then
-      inc(FCodeTreeNodesDeletedStep)
-    else
-      FCodeTreeNodesDeletedStep:=Low(Integer);
+    CTIncreaseChangeStamp(FCodeTreeNodesDeletedStep);
     if IdentifierList<>nil then
-      IdentifierList.ToolTreeChange(Tool,NodesDeleting);
+      IdentifierList.ToolTreeNodesDeleting(Tool,NodesDeleting);
   end;
 end;
 

@@ -227,7 +227,7 @@ type
     function StartUpAtomInFrontIs(const s: string): boolean;
     function StartUpAtomBehindIs(const s: string): boolean;
     function CompletePrefix(const OldPrefix: string): string;
-    procedure ToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
+    procedure ToolTreeNodesDeleting(Tool: TCustomCodeTool; NodesDeleting: boolean);
     function CalcMemSize: PtrUInt;
   public
     property Context: TFindContext read FContext write FContext;
@@ -820,28 +820,11 @@ begin
   end;
 end;
 
-procedure TIdentifierList.ToolTreeChange(Tool: TCustomCodeTool;
+procedure TIdentifierList.ToolTreeNodesDeleting(Tool: TCustomCodeTool;
   NodesDeleting: boolean);
-var
-  AVLNode: TAVLTreeNode;
-  Item: TIdentifierListItem;
-  RootNode: TCodeTreeNode;
 begin
-  if (Tool.Tree=nil) then exit;
-  RootNode:=Tool.Tree.Root;
-  if RootNode=nil then exit;
-  //DebugLn(['TIdentifierList.ToolTreeChange START ',Tool.MainFilename]);
   if FIdentView.Count=0 then exit;
-  //DebugLn(['TIdentifierList.ToolTreeChange ',Tool.MainFilename]);
-  AVLNode:=FIdentView.FindLowest;
-  while AVLNode<>nil do begin
-    Item:=TIdentifierListItem(AVLNode.Data);
-    if (Item.FNode<>nil) and (Item.Tool=Tool) then begin
-      //DebugLn(['TIdentifierList.ToolTreeChange ',Item.Identifier]);
-      Item.UnbindNode;
-    end;
-    AVLNode:=FIdentView.FindSuccessor(AVLNode);
-  end;
+  Clear;
 end;
 
 function TIdentifierList.CalcMemSize: PtrUInt;
@@ -1832,10 +1815,8 @@ begin
                    fdfSearchInParentNodes,fdfSearchInAncestors];
     if IgnoreCurContext then
       Params.Flags:=Params.Flags+[fdfIgnoreCurContextNode];
-    //debugln(['TIdentCompletionTool.FindCollectionContext ',fdfIgnoreCurContextNode in Params.Flags]);
     ExprType:=FindExpressionTypeOfTerm(ContextExprStartPos,IdentStartPos,
                                        Params,false);
-    //DebugLn(['TIdentCompletionTool.FindCollectionContext ',ExprTypeToString(ExprType)]);
     if (ExprType.Desc=xtContext) then begin
       GatherContext:=ExprType.Context;
       StartInSubContext:=true;

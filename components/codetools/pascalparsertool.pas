@@ -524,6 +524,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TPascalParserTool.BuildTree START ',MainFilename,' Range=',dbgs(Range),' ScannedRange=',dbgs(ScannedRange));
   {$ENDIF}
+  ValidateToolDependencies;
   if not UpdateNeeded(Range) then begin
     // input is the same as last time -> output is the same
     // => if there was an error, raise it again
@@ -551,7 +552,6 @@ begin
   end;
 
   // an update is needed
-  ValidateToolDependencies;
 
   // The last error was in the area to be update.
   ClearLastError;

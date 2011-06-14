@@ -1711,7 +1711,7 @@ begin
   // and no update is needed
   if (ord(Range)>ord(ScannedRange)) and (not LastErrorIsValid) then begin
     {$IFDEF VerboseUpdateNeeded}
-    DebugLn(['TLinkScanner.UpdateNeeded because range increased from ',dbgs(ScannedRange),' to ',dbgs(Range)]);
+    DebugLn(['TLinkScanner.UpdateNeeded because range increased from ',dbgs(ScannedRange),' to ',dbgs(Range),' ',ExtractFilename(MainFilename)]);
     {$ENDIF}
     exit;
   end;
@@ -1724,6 +1724,7 @@ begin
     and ((not CheckFilesOnDisk) or (CurFilesChangeStep=FGlobalSourcesChangeStep))
     then begin
       // sources and values did not change since last check
+      //debugln(['TLinkScanner.UpdateNeeded global change steps still the same: ',MainFilename]);
       Result:=false;
       exit;
     end;

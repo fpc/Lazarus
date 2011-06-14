@@ -2554,7 +2554,10 @@ begin
   Result:=Scanner.CleanedPosToCursor(CleanPos,p,Code);
   if Result then begin
     Caret.Code:=TCodeBuffer(Code);
-    if Caret.Code.IsDeleted then exit(false);
+    if Caret.Code.IsDeleted then begin
+      debugln(['TCustomCodeTool.CleanPosToCaret IsDeleted: ',Caret.Code.Filename,' SourceLength=',Caret.Code.SourceLength]);
+      exit(false);
+    end;
     TCodeBuffer(Code).AbsoluteToLineCol(p,Caret.Y,Caret.X);
     Result:=(Caret.Y>=0);
   end;
@@ -2756,7 +2759,7 @@ end;
 function TCustomCodeTool.UpdateNeeded(Range: TLinkScannerRange): boolean;
 begin
   {$IFDEF CTDEBUG}
-  DebugLn('TCustomCodeTool.UpdateNeeded A ',dbgs(Scanner<>nil),' FForceUpdateNeeded=',dbgs(FForceUpdateNeeded));
+  DebugLn('TCustomCodeTool.UpdateNeeded A Range=',dbgs(Range),' ',Scanner.MainFilename);
   {$ENDIF}
   if Range=lsrNone then exit(false);
   if ord(FRangeValidTill)<ord(Range) then begin
