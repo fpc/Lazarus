@@ -2224,9 +2224,9 @@ begin
   else
   begin
     if FillBrush = nil then
-        q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, QPalette_background(Palette))
+      q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, QPalette_background(Palette))
     else
-        q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, FillBrush);
+      q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, FillBrush);
   end;
   if AppPalette <> nil then
   begin
