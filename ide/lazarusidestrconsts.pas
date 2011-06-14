@@ -4977,6 +4977,9 @@ resourcestring
   lisInsertPrintShortTag = 'Insert PrintShort tag';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisAddParameterBrackets = 'Add parameter brackets';
+  lisShowHelp = 'Show help';
+  lisBestViewedByInstallingAHTMLControlLikeTurbopowerip = 'Best viewed by '
+    +'installing a HTML control like turbopoweriprodsgn';
   lisShowEmptyUnitsPackages = 'Show empty units/packages';
   lisUsePackageInProject = 'Use package %s in project';
   lisUsePackageInPackage = 'Use package %s in package %s';

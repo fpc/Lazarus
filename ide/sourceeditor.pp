@@ -2023,10 +2023,10 @@ begin
     SrcEditHintWindow.Provider:=TFPDocHintProvider.Create(SrcEditHintWindow);
   end;
   SrcEditHintWindow.AnchorForm := TheForm;
-  {$IFDEF EnableCodeHelp}
-  TheForm.LongLineHintType:=sclpNone;
-  SrcEditHintWindow.HelpEnabled:=true;
-  {$ENDIF}
+  if CodeToolsOpts.IdentComplShowHelp then begin
+    TheForm.LongLineHintType:=sclpNone;
+    SrcEditHintWindow.HelpEnabled:=true;
+  end;
 end;
 
 function TSourceEditCompletion.Manager: TSourceEditorManager;

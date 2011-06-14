@@ -33,10 +33,11 @@ type
   { TCodetoolsIndentifierCompletionOptionsFrame }
 
   TCodetoolsIndentifierCompletionOptionsFrame = class(TAbstractIDEOptionsEditor)
-    ICAutoAddParameterBrackets: TCheckBox;
+    ICAutoAddParameterBracketsCheckBox: TCheckBox;
     ICAutoStartAfterPointCheckBox: TCheckBox;
     ICAddAssignOperatorCheckBox: TCheckBox;
     ICAddSemicolonCheckBox: TCheckBox;
+    ICShowHelpCheckBox: TCheckBox;
   private
     { private declarations }
   public
@@ -64,7 +65,9 @@ begin
   ICAddSemicolonCheckBox.Caption:=dlgAddSemicolon;
   ICAddAssignOperatorCheckBox.Caption:=dlgAddAssignmentOperator;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
-  ICAutoAddParameterBrackets.Caption:=lisAddParameterBrackets;
+  ICAutoAddParameterBracketsCheckBox.Caption:=lisAddParameterBrackets;
+  ICShowHelpCheckBox.Caption:=lisShowHelp;
+  ICShowHelpCheckBox.Hint:=lisBestViewedByInstallingAHTMLControlLikeTurbopowerip;
 end;
 
 procedure TCodetoolsIndentifierCompletionOptionsFrame.ReadSettings(
@@ -75,7 +78,8 @@ begin
     ICAddSemicolonCheckBox.Checked := IdentComplAddSemicolon;
     ICAddAssignOperatorCheckBox.Checked := IdentComplAddAssignOperator;
     ICAutoStartAfterPointCheckBox.Checked := IdentComplAutoStartAfterPoint;
-    ICAutoAddParameterBrackets.Checked:=IdentComplAddParameterBrackets;
+    ICAutoAddParameterBracketsCheckBox.Checked:=IdentComplAddParameterBrackets;
+    ICShowHelpCheckBox.Checked:=IdentComplShowHelp;
   end;
 end;
 
@@ -87,7 +91,8 @@ begin
     IdentComplAddSemicolon := ICAddSemicolonCheckBox.Checked;
     IdentComplAddAssignOperator := ICAddAssignOperatorCheckBox.Checked;
     IdentComplAutoStartAfterPoint := ICAutoStartAfterPointCheckBox.Checked;
-    IdentComplAddParameterBrackets:=ICAutoAddParameterBrackets.Checked;
+    IdentComplAddParameterBrackets:=ICAutoAddParameterBracketsCheckBox.Checked;
+    IdentComplShowHelp:=ICShowHelpCheckBox.Checked;
   end;
 end;
 

@@ -2463,7 +2463,9 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile;
       if (Attr=nil) or (Attr.NodeValue='') then exit;
       s:=AddChilds(Node);
       if s='' then s:=Attr.NodeValue;
-      Result:=Result+'<a href="fpdoc://'+FPDocLinkToURL(FPDocFile,Attr.NodeValue)+'">'+s+'</a><br>';
+      Result:=Result+'<a href="fpdoc://'+FPDocLinkToURL(FPDocFile,Attr.NodeValue)+'">'+s+'</a>';
+      if (Node.ParentNode<>nil) and (Node.ParentNode.NodeName='seealso') then
+        Result:=Result+'<br>';
     end else if (Node.NodeName='example') then begin
       Attr:=Node.Attributes.GetNamedItem('file');
       if (Attr=nil) or (Attr.NodeValue='') then exit;

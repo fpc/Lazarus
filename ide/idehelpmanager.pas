@@ -45,8 +45,9 @@ uses
   IDEMsgIntf, PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
-  ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
-  OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
+  ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, MainBar, OutputFilter,
+  PackageDefs, PackageSystem,
+  HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
   IDEContextHelpEdit, IDEWindowHelp;
 
 type
@@ -593,6 +594,8 @@ var
   ErrMsg: string;
   PascalHelpContextLists: TList;
   i: Integer;
+  PkgList: TFPList;
+  SubPkg: TLazPackage;
 begin
   RestPath:=Path;
   PkgName:=ExtractSubPath;
@@ -624,6 +627,25 @@ begin
 
   Filename:='';
   PkgFile:=Pkg.FindUnit(AnUnitName);
+  if PkgFile=nil then begin
+    // search in all sub packages
+    PkgList:=nil;
+    try
+      PackageGraph.GetAllRequiredPackages(Pkg.FirstRequiredDependency,PkgList);
+      if PkgList<>nil then begin
+        for i:=0 to PkgList.Count-1 do begin
+          SubPkg:=TLazPackage(PkgList[i]);
+          PkgFile:=SubPkg.FindUnit(AnUnitName);
+          if PkgFile<>nil then begin
+            Pkg:=SubPkg;
+            break;
+          end;
+        end;
+      end;
+    finally
+      PkgList.Free;
+    end;
+  end;
   if (PkgFile<>nil) and (PkgFile.FileType in PkgFileRealUnitTypes) then begin
     // normal unit in lpk
     if PkgFile.IsVirtual then begin
@@ -636,7 +658,7 @@ begin
     Filename:=CodeToolBoss.DirectoryCachePool.FindUnitInUnitSet('',AnUnitName);
   end;
   if Filename='' then begin
-    InvalidPathError('Unit "'+AnUnitName+'" has no help.');
+    InvalidPathError('Unit "'+AnUnitName+'" was not found in package '+Pkg.Name+'.');
     exit;
   end;
 
