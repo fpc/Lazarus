@@ -3644,6 +3644,8 @@ function GetAlignmentForStr(str: string;
 
 function AreHtmlMarginsEqual(const Margin1, Margin2: TIpHtmlElemMargin): boolean;
 
+function dbgs(et: TElementType): string; overload;
+
 procedure Register;
 
 implementation
@@ -3781,6 +3783,11 @@ function AreHtmlMarginsEqual(const Margin1, Margin2: TIpHtmlElemMargin): boolean
 begin
   Result:=(Margin1.Style=Margin2.Style)
        and (Margin1.Size=Margin2.Size);
+end;
+
+function dbgs(et: TElementType): string;
+begin
+  str(et,Result);
 end;
 
 procedure Register;
@@ -9197,6 +9204,7 @@ begin
     {PanelWidth := Width;}                                             {!!.12}
     FTarget := TargetCanvas;
     FHtml.CalcMinMaxWidth(DefaultProps, Min, Max);
+    //debugln(['TIpHtml.GetPageRect Min=',Min,' Max=',Max]);
     W := MaxI2(Min + 2 * MarginWidth, Width);
     H := FHtml.GetHeight(DefaultProps, W - 2 * MarginWidth) + 2 * MarginHeight;
     DefPageRect := Rect(
@@ -10272,9 +10280,9 @@ begin
     etWord :}                                                        {!!.10}
     if CurElement.ElementType = etWord then
       if CurElement.IsBlank = 0 then begin
-      if (CurElement.Props = nil)
-      or CurElement.Props.AIsEqualTo(CurProps) then begin
-        {if CurElement.IsBlank = 0 then begin}
+        if (CurElement.Props = nil)
+        or CurElement.Props.AIsEqualTo(CurProps) then begin
+          {if CurElement.IsBlank = 0 then begin}
           if (CurElement.SizeProp <> CurProps.PropA) then begin
             CurElement.Size :=
               GetExt(CurElement.AnsiWord);
@@ -19698,8 +19706,9 @@ var
 begin
   //debugln(['TIpHtmlCustomPanel.CalculatePreferredSize ',DbgSName(Self)]);
   r:=Rect(0,0,0,0);
-  if (FMasterFrame<>nil) and (FMasterFrame.FHtml<>nil) then
-    r:=FMasterFrame.HyperPanel.PageRect;
+  if (FMasterFrame<>nil) and (FMasterFrame.HyperPanel<>nil)
+  and (FMasterFrame.HyperPanel.Hyper<>nil) then
+    r:=FMasterFrame.HyperPanel.Hyper.GetPageRect(Canvas, 0, 0);
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
     WithThemeSpace);
   if PreferredWidth<r.Right-r.Left then
