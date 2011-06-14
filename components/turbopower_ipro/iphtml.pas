@@ -3787,7 +3787,7 @@ end;
 
 function dbgs(et: TElementType): string;
 begin
-  str(et,Result);
+  writestr(Result,et);
 end;
 
 procedure Register;
