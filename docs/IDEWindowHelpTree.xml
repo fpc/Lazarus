@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="58">
+<CONFIG Name="IDE windows and dialogs" Path="IDE_Window:_" ChildCount="59">
   <Node1 Name="TObjectInspector" Path="Object_Inspector" HasHelp="True"/>
   <Node2 Name="TfrmCompilerOptions" Path="Compiler_Options" HasHelp="True" IsRoot="True" ChildCount="1">
     <Node1 Name="MainNotebook" ChildCount="7">
@@ -158,4 +158,5 @@
     <Node7 Name="ClickBox" Path="#ClickType" HasHelp="True"/>
     <Node8 Name="DirCheck" Path="#ClickDir" HasHelp="True"/>
   </Node58>
+  <Node59 Name="TCleanBuildProjectDialog" Path="Clean_up_build_files_dialog" HasHelp="True" IsRoot="True"/>
 </CONFIG>
