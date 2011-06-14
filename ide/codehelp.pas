@@ -348,6 +348,7 @@ function CompareAnsistringWithLDSrc2DocSrcFile(Key, Data: Pointer): integer;
 function ToUnixLineEnding(const s: String): String;
 function ToOSLineEnding(const s: String): String;
 function ReplaceLineEndings(const s, NewLineEnds: string): string;
+function AppendLineEnding(const s: string): string; // append if not empty and there is not already a line ending
 
 implementation
 
@@ -429,6 +430,13 @@ begin
       inc(p);
     end;
   end;
+end;
+
+function AppendLineEnding(const s: string): string;
+begin
+  Result:=s;
+  if (Result='') or (Result[length(Result)] in [#10,#13]) then exit;
+  Result:=Result+LineEnding;
 end;
 
 function CompareLazFPDocFilenames(Data1, Data2: Pointer): integer;
@@ -2401,6 +2409,7 @@ var
   OldCTNode: TCodeTreeNode;
   n: Integer;
   LastOwner: TObject;
+  s: String;
 
   procedure AddLinkToOwner(CurOwner: TObject);
   var
@@ -2479,9 +2488,13 @@ begin
               //debugln(['TCodeHelpManager.GetHTMLHint2 fpdoc element found "',ElementName,'"']);
               AddLinkToOwner(AnOwner);
 
-              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort]));
-              // todo elementlink
-              HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiDescription]));
+              s:=AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort])));
+              s:=s+AppendLineEnding(GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiDescription])));
+              if s<>'' then begin
+                s:='<br>'+LineEnding
+                   +'<div class="title">Description</div>'+LineEnding+s;
+                HTMLHint:=HTMLHint+s;
+              end;
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiErrors]));
               // todo HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiSeeAlso]));
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiExample]));
@@ -2816,8 +2829,8 @@ begin
   Result:='';
   if AnOwner=nil then exit;
   if AnOwner is TLazPackage then
-    Result:='<a href="openpackage://'+TLazPackage(AnOwner).Name+'">'
-                                   +'Package '+TLazPackage(AnOwner).Name+'</a>';
+    Result:='<span class="seealso">Package <a href="openpackage://'+TLazPackage(AnOwner).Name+'">'
+                                   +TLazPackage(AnOwner).Name+'</a></span>';
 end;
 
 procedure TCodeHelpManager.FreeDocs;
