@@ -17,7 +17,7 @@
       </Other>
     </CompilerOptions>
     <Version Minor="1"/>
-    <Files Count="3">
+    <Files Count="2">
       <Item1>
         <Filename Value="lazchmhelp.pas"/>
         <HasRegisterProc Value="True"/>
@@ -27,10 +27,6 @@
         <Filename Value="chmlangref.pas"/>
         <UnitName Value="ChmLangRef"/>
       </Item2>
-      <Item3>
-        <Filename Value="chmlcl.pas"/>
-        <UnitName Value="chmlcl"/>
-      </Item3>
     </Files>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="5">

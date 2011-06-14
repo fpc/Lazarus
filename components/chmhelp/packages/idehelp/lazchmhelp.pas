@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazHelpIntf, HelpIntfs, LazConfigStorage,
-  PropEdits, LHelpControl, Controls, ChmLangRef, ChmLcl;
+  PropEdits, LHelpControl, Controls, ChmLangRef;
   
 type
   
@@ -428,8 +428,6 @@ begin
   HelpViewers.RegisterViewer(ChmHelp);
   RegisterLangRefHelpDatabase;
   LangRefHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
-  RegisterLclHelpDatabase;
-  LCLHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
 end;
 
 initialization
