@@ -6485,11 +6485,13 @@ begin
   QEvent_accept(Event);
   if LCLObject = nil then
     exit;
+
   if (ChildOfComplexWidget = ccwComboBox) and
-    (QEvent_type(Event) = QEventPaint) and
-    (LCLObject.HandleAllocated) then
+    ((QEvent_type(Event) = QEventPaint) or (QEvent_type(Event) = QEventResize))
+    and (LCLObject.HandleAllocated) then
   begin
-    Result := TQtComboBox(LCLObject.Handle).InUpdate;
+    Result := TQtComboBox(LCLObject.Handle).InUpdate or
+      (csDesigning in LCLObject.ComponentState);
     if Result then
       QEvent_ignore(Event)
     else
