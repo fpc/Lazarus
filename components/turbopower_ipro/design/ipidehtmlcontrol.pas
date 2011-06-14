@@ -14,6 +14,11 @@
 
   Abstract:
     Installs a HTML control in the IDE using TIpHtmlPanel.
+
+  ToDo:
+    - implement in iphtml &wbr;
+    - in codehelp: show package
+    - in codehelp: links
 }
 unit IPIDEHTMLControl;
 
@@ -23,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Graphics, Controls, Dialogs, ExtCtrls,
-  IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf, LazIDEIntf, TextTools;
+  IpMsg, Ipfilebroker, IpHtml, IDEHelpIntf, LazHelpIntf, LazIDEIntf;
 
 type
   TLazIPHtmlControl = class;
@@ -71,21 +76,6 @@ type
     property IPHTMLPanel: TIpHtmlPanel read FIPHTMLPanel;
   end;
 
-  { TLazIPHTMLManager }
-
-  TLazIPHTMLManager = class
-  private
-    fWaitingForAsync: boolean;
-    procedure OpenNextURL(Data: PtrInt); // called via Application.QueueAsyncCall
-  public
-    NextURL: string;
-    procedure AsyncOpenURL(URL: string);
-    destructor Destroy; override;
-  end;
-
-var
-  LazIPHTMLManager: TLazIPHTMLManager = nil;
-
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
   var Provider: TAbstractIDEHTMLProvider): TControl;
 
@@ -110,47 +100,6 @@ begin
     Provider:=CreateIDEHTMLProvider(HTMLControl);
   //debugln(['IPCreateLazIDEHTMLControl Provider=',DbgSName(Provider)]);
   HTMLControl.IDEProvider:=Provider;
-end;
-
-{ TLazIPHTMLManager }
-
-procedure TLazIPHTMLManager.AsyncOpenURL(URL: string);
-begin
-  NextURL:=URL;
-  if not fWaitingForAsync then begin
-    Application.QueueAsyncCall(@OpenNextURL,0);
-    fWaitingForAsync:=true;
-  end;
-end;
-
-procedure TLazIPHTMLManager.OpenNextURL(Data: PtrInt);
-var
-  URLScheme: string;
-  URLPath: string;
-  URLParams: string;
-  AFilename: String;
-  p: TPoint;
-begin
-  SplitURL(NextURL,URLScheme,URLPath,URLParams);
-  if URLScheme='source' then begin
-    p:=Point(1,1);
-    if REMatches(URLPath,'(.*)\((.*),(.*)\)') then begin
-      AFilename:=REVar(1);
-      p.Y:=StrToIntDef(REVar(2),p.x);
-      p.X:=StrToIntDef(REVar(3),p.y);
-    end else begin
-      AFilename:=URLPath;
-    end;
-    AFilename:=SetDirSeparators(AFilename);
-    LazarusIDE.DoOpenFileAndJumpToPos(AFilename,p,-1,-1,-1,[]);
-  end;
-end;
-
-destructor TLazIPHTMLManager.Destroy;
-begin
-  if (Application<>nil) and fWaitingForAsync then
-    Application.RemoveAsyncCalls(Self);
-  inherited Destroy;
 end;
 
 { TLazIpHtmlDataProvider }
@@ -246,9 +195,6 @@ var
   HotNode: TIpHtmlNode;
   HRef: String;
   Target: String;
-  URLScheme: string;
-  URLPath: string;
-  URLParams: string;
 begin
   HotNode:=FIPHTMLPanel.HotNode;
   if HotNode is TIpHtmlNodeA then begin
@@ -259,14 +205,7 @@ begin
     Target := TIpHtmlNodeAREA(HotNode).Target;
   end;
   debugln(['TLazIPHtmlControl.IPHTMLPanelHotClick HRef="',HRef,'" Target="',Target,'"']);
-  SplitURL(HRef,URLScheme,URLPath,URLParams);
-  if URLScheme='source' then begin
-    // open the source in the IDE
-    // This will close the hint, so the open must be done outside the current event
-    if LazIPHTMLManager=nil then
-      LazIPHTMLManager:=TLazIPHTMLManager.Create;
-    LazIPHTMLManager.AsyncOpenURL(HRef);
-  end;
+  IDEProvider.OpenURLAsync(HRef);
 end;
 
 procedure TLazIPHtmlControl.SetIDEProvider(
@@ -391,9 +330,6 @@ begin
   AHeight:=0;
   inherited GetPreferredSize(AWidth, AHeight);
 end;
-
-finalization
-  FreeAndNil(LazIPHTMLManager);
 
 end.
 

@@ -40,9 +40,9 @@ uses
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   // IDEIntf
-  PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
+  PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf, TextTools,
   LazHelpIntf, LazHelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, IDEMsgIntf,
-  LazIDEIntf, HelpIntfs, IDEHelpIntf,
+  PackageIntf, LazIDEIntf, HelpIntfs, IDEHelpIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
@@ -71,9 +71,15 @@ type
 
   TLazIDEHTMLProvider = class(TAbstractIDEHTMLProvider)
   private
+    fWaitingForAsync: boolean;
     FProviders: TLIHProviders;
     procedure SetProviders(const AValue: TLIHProviders);
+    procedure OpenNextURL(Data: PtrInt); // called via Application.QueueAsyncCall
   public
+    NextURL: string;
+    destructor Destroy; override;
+    function URLHasStream(const URL: string): boolean; override;
+    procedure OpenURLAsync(const URL: string); override;
     function GetStream(const URL: string; Shared: Boolean): TStream; override;
     procedure ReleaseStream(const URL: string); override;
     property Providers: TLIHProviders read FProviders write SetProviders;
@@ -524,6 +530,61 @@ begin
   FProviders:=AValue;
 end;
 
+procedure TLazIDEHTMLProvider.OpenNextURL(Data: PtrInt);
+var
+  URLScheme: string;
+  URLPath: string;
+  URLParams: string;
+  AFilename: String;
+  p: TPoint;
+begin
+  SplitURL(NextURL,URLScheme,URLPath,URLParams);
+  if URLScheme='source' then begin
+    p:=Point(1,1);
+    if REMatches(URLPath,'(.*)\((.*),(.*)\)') then begin
+      AFilename:=REVar(1);
+      p.Y:=StrToIntDef(REVar(2),p.x);
+      p.X:=StrToIntDef(REVar(3),p.y);
+    end else begin
+      AFilename:=URLPath;
+    end;
+    AFilename:=SetDirSeparators(AFilename);
+    LazarusIDE.DoOpenFileAndJumpToPos(AFilename,p,-1,-1,-1,[]);
+  end else if (URLScheme='openpackage') and (URLPath<>'')
+  and IsValidIdent(URLPath) then begin
+    PackageEditingInterface.DoOpenPackageWithName(URLPath,[],false);
+  end;
+end;
+
+destructor TLazIDEHTMLProvider.Destroy;
+begin
+  if (Application<>nil) and fWaitingForAsync then
+    Application.RemoveAsyncCalls(Self);
+  inherited Destroy;
+end;
+
+function TLazIDEHTMLProvider.URLHasStream(const URL: string): boolean;
+var
+  URLScheme: string;
+  URLPath: string;
+  URLParams: string;
+begin
+  Result:=false;
+  SplitURL(NextURL,URLScheme,URLPath,URLParams);
+  if (URLScheme='file') or (URLScheme='lazdoc') then begin
+    Result:=true;
+  end;
+end;
+
+procedure TLazIDEHTMLProvider.OpenURLAsync(const URL: string);
+begin
+  NextURL:=URL;
+  if not fWaitingForAsync then begin
+    Application.QueueAsyncCall(@OpenNextURL,0);
+    fWaitingForAsync:=true;
+  end;
+end;
+
 function TLazIDEHTMLProvider.GetStream(const URL: string; Shared: Boolean
   ): TStream;
 begin
@@ -640,8 +701,8 @@ begin
               true);
           end;
         end;
-      end else begin
-
+      end else if URLType='file' then begin
+        OpenFile(Result,SetDirSeparators(URLPath),true);
       end;
       {Result:=TMemoryStream.Create;
       Stream.Stream:=Result;

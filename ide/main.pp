@@ -9017,6 +9017,7 @@ begin
   try
     //debugln(['TMainIDE.DoCloseEditorFile File=',AnUnitInfo.Filename,' UnitSession=',AnUnitInfo.SessionModified,' ProjSession=',project1.SessionModified]);
     if AnUnitInfo.OpenEditorInfoCount > 1 then begin
+      // opened multiple times => close one instance
       SourceEditorManager.CloseFile(AEditor);
       Result:=mrOk;
       exit;
@@ -9072,14 +9073,14 @@ begin
     MainIDEBar.itmFileClose.Enabled:=SourceEditorManager.SourceEditorCount > 0;
     MainIDEBar.itmFileCloseAll.Enabled:=MainIDEBar.itmFileClose.Enabled;
 
-    // free sources
+    // free sources, forget changes
     if (AnUnitInfo.Source<>nil) then begin
       if (Project1.MainUnitInfo=AnUnitInfo)
       and (not (cfProjectClosing in Flags)) then begin
-        // lpr file closed in editor, but project kept open -> revert lpr file
-        Project1.MainUnitInfo.Source.Revert;
-      end else
+        AnUnitInfo.Source.Revert;
+      end else begin
         AnUnitInfo.Source.IsDeleted:=true;
+      end;
     end;
 
     // close file in project

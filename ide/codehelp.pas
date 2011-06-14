@@ -314,6 +314,7 @@ type
     function SourcePosToFPDocHint(XYPos: TCodeXYPosition; Caption: string=''): string;
     function SourcePosToFPDocHint(const aFilename: string; X,Y: integer;
                                   Caption: string=''): string;
+    function OwnerToFPDocHint(AnOwner: TObject): string;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -2399,6 +2400,20 @@ var
   OldCTTool: TFindDeclarationTool;
   OldCTNode: TCodeTreeNode;
   n: Integer;
+  LastOwner: TObject;
+
+  procedure AddLinkToOwner(CurOwner: TObject);
+  var
+    s: String;
+  begin
+    debugln(['AddLinkToOwner ',DbgSName(CurOwner)]);
+    if (CurOwner=nil) or (CurOwner=LastOwner) then exit;
+    s:=OwnerToFPDocHint(CurOwner);
+    if s='' then exit;
+    HTMLHint:=HTMLHint+s+'<br>'+LineEnding;
+    LastOwner:=AnOwner;
+  end;
+
 begin
   Result:=chprFailed;
   BaseURL:='lazdoc://';
@@ -2426,7 +2441,7 @@ begin
         CTHint:=CTTool.GetSmartHint(CTNode,XYPos,false);
         HTMLHint:=HTMLHint+'  '+SourceToFPDocHint(CTHint);
 
-        // add link
+        // add link to declaration
         HTMLHint:=HTMLHint+'<br>'+LineEnding;
         if XYPos.Code=nil then
           CTTool.CleanPosToCaret(CTNode.StartPos,XYPos);
@@ -2434,6 +2449,7 @@ begin
         HTMLHint:=HTMLHint+'</div>'+LineEnding;
       end;
 
+      LastOwner:=nil;
       for n:=1 to 30 do begin
         ElementName:=CodeNodeToElementName(CTTool,CTNode);
         i:=ElementNames.Count-1;
@@ -2451,6 +2467,9 @@ begin
           DebugLn(['TCodeHelpManager.GetHTMLHint2 FPDocFilename=',FPDocFilename,' ElementName="',ElementName,'"']);
           if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
+          if n=1 then
+            AddLinkToOwner(AnOwner); // add link to owner of declaration, even if there is no fpdoc entry
+
           if FPDocFilename<>'' then begin
             // load FPDoc file
             LoadFPDocFile(FPDocFilename,[chofUpdateFromDisk],FPDocFile,CacheWasUsed);
@@ -2459,6 +2478,8 @@ begin
             ElementNode:=FPDocFile.GetElementWithName(ElementName);
             if ElementNode<>nil then begin
               debugln(['TCodeHelpManager.GetHTMLHint2 fpdoc element found "',ElementName,'"']);
+              AddLinkToOwner(AnOwner);
+
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiShort]));
               // todo elementlink
               HTMLHint:=HTMLHint+GetFPDocNodeAsHTML(FPDocFile,ElementNode.FindNode(FPDocItemNames[fpdiDescription]));
@@ -2476,7 +2497,7 @@ begin
         end;
 
         // find inherited node
-        if (CTNode.Desc in [ctnProperty])
+        if (CTNode.Desc=ctnProperty)
         or ((CTNode.Desc in [ctnProcedure,ctnProcedureHead])
             and (CTTool.ProcNodeHasSpecifier(CTNode,psOVERRIDE)))
         then begin
@@ -2500,6 +2521,7 @@ begin
     except
       on E: Exception do begin
         debugln(['TCodeHelpManager.GetHTMLHint2 Exception: ',E.Message]);
+        DumpExceptionBackTrace;
       end;
     end;
 
@@ -2788,6 +2810,15 @@ begin
     end;
   end;
   Result:='<a href="source://'+Link+'">'+Caption+'</a>';
+end;
+
+function TCodeHelpManager.OwnerToFPDocHint(AnOwner: TObject): string;
+begin
+  Result:='';
+  if AnOwner=nil then exit;
+  if AnOwner is TLazPackage then
+    Result:='<a href="openpackage://'+TLazPackage(AnOwner).Name+'">'
+                                   +'Package '+TLazPackage(AnOwner).Name+'</a>';
 end;
 
 procedure TCodeHelpManager.FreeDocs;

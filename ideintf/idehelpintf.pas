@@ -105,6 +105,8 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function URLHasStream(const URL: string): boolean; virtual; abstract;
+    procedure OpenURLAsync(const URL: string); virtual; abstract;
     function GetStream(const URL: string; Shared: boolean
       ): TStream; virtual; abstract; { Shared=true: provider assumes ownership
                   of returned TStream and increases internal reference count.
