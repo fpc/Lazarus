@@ -631,8 +631,8 @@ begin
   
   if (TQtDeviceContext(CanvasHandle).vImage <> nil) then
   begin
-// This code results in ARGB values, but TColor uses ABGR
-//    Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
+    // This code results in ARGB values, but TColor uses ABGR
+    // Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
 
     Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
 
@@ -720,7 +720,7 @@ begin
         (aObject is TQtBrush) or
         (aObject is TQtImage) or
         (aObject is TQtPen) or
-        (aObject is TQTRegion);
+        (aObject is TQtRegion);
     end;
   except
     DebugLn(['Gdi object: ', GDIObject, ' is not an object!']);
