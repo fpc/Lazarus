@@ -856,6 +856,9 @@ end;
 function TPascalReaderTool.MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
   ProcSpec: TProcedureSpecifier): boolean;
 begin
+  if ProcNode.FirstChild=nil then begin
+    exit(false);
+  end;
   MoveCursorToFirstProcSpecifier(ProcNode);
   while (CurPos.StartPos<=ProcNode.FirstChild.EndPos) do begin
     if CurPos.Flag=cafSemicolon then begin
@@ -1077,6 +1080,11 @@ end;
 function TPascalReaderTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
   ProcSpec: TProcedureSpecifier): boolean;
 begin
+  Result:=false;
+  if ProcNode=nil then exit;
+  if (ProcNode.FirstChild=nil)
+  or ((ProcNode.SubDesc and ctnsNeedJITParsing)>0) then
+    BuildSubTreeForProcHead(ProcNode);
 
   // ToDo: ppu, dcu
 
