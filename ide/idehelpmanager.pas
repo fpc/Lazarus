@@ -115,7 +115,8 @@ type
     procedure ReleaseStream(const URL: string);
   end;
 
-  { TSimpleHTMLControl }
+  { TSimpleHTMLControl
+    At the moment it is a TLabel that simply strips all tags }
 
   TSimpleHTMLControl = class(TLabel,TIDEHTMLControlIntf)
   private
@@ -365,6 +366,7 @@ begin
         end;
         inc(EndPos);
       end;
+      //debugln(['TSimpleHTMLControl.HTMLToCaption CurTagName=',CurTagName,' Tag="',copy(Result,p,EndPos-p),'"']);
 
       if CurTagName='HTML' then
       begin
@@ -413,8 +415,10 @@ begin
       end
       else
         NewTag:='';
-      if NewTag='' then
-        System.Delete(Result,p,EndPos-p)
+      if NewTag='' then begin
+        //debugln(['TSimpleHTMLControl.HTMLToCaption deleting tag ',copy(Result,p,EndPos-p)]);
+        System.Delete(Result,p,EndPos-p);
+      end
       else begin
         Result:=copy(Result,1,p-1)+NewTag+copy(Result,EndPos,length(Result));
         inc(p,length(NewTag));
@@ -496,6 +500,7 @@ begin
   if s<>'' then
     Stream.Read(s[1],length(s));
   Caption:=HTMLToCaption(s,MaxLineCount);
+  debugln(['TSimpleHTMLControl.SetHTMLContent ',Caption]);
 end;
 
 procedure TSimpleHTMLControl.GetPreferredControlSize(out AWidth, AHeight: integer);
@@ -1485,6 +1490,7 @@ begin
       inc(NewHeight, 8); // border
 
     HintWinRect := Rect(0, 0, NewWidth, NewHeight);
+    TheHint:='';
   end else begin
     HintWinRect := aHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
   end;

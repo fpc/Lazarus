@@ -3083,9 +3083,8 @@ begin
         HintType := GetHintTypeAt(Index,Position.X);
         if (HintType = pehName) and Assigned(OnPropertyHint) then
         begin
-          if OnPropertyHint(Self, PointedRow, Position, FHintWindow, HintRect, AHint) and
-             (AHint <> '') then
-          begin
+          if OnPropertyHint(Self, PointedRow, Position, FHintWindow, HintRect, AHint)
+          then begin
             FHintIndex := Index;
             FShowingLongHint := True;
             //DebugLn(['TOICustomPropertyGrid.HintTimer ',dbgs(HintRect),' ',AHint,' ',dbgs(Position)]);
