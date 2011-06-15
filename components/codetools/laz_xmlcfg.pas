@@ -524,8 +524,8 @@ begin
   //debugln(['TXMLConfig.InternalFindNode APath="',copy(APath,1,PathLen),'" CreateNodes=',CreateNodes]);
   PathIndex:=0;
   Result:=GetPathNodeCache(PathIndex);
-  if Result=nil then begin
-    Result := TDOMElement(doc.FindNode('CONFIG'));
+  if (Result=nil) and (doc<>nil) then begin
+    Result:=TDOMElement(doc.FindNode('CONFIG'));
     SetPathNodeCache(PathIndex,Result);
   end;
   if PathLen=0 then exit;
