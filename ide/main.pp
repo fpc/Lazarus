@@ -16127,6 +16127,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   BaseURL, SmartHintStr, Expression, DebugEval, DebugEvalDerefer: String;
   DBGType,DBGTypeDerefer: TDBGType;
+  HasHint: Boolean;
 begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
@@ -16141,11 +16142,14 @@ begin
   writeln('');
   writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
   {$ENDIF}
+  HasHint:=false;
   if EditorOpts.AutoToolTipSymbTools then begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
-    TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
+    if TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
                              CaretPos,BaseURL,SmartHintStr,
-                             [{$IFDEF EnableFocusHint}ihmchAddFocusHint{$ENDIF}]);
+                             [{$IFDEF EnableFocusHint}ihmchAddFocusHint{$ENDIF}])=shrSuccess
+    then
+      HasHint:=true;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
   end;
   case ToolStatus of
@@ -16180,6 +16184,7 @@ begin
       end;
       FreeAndNil(DBGType);
       FreeAndNil(DBGTypeDerefer);
+      HasHint:=true;
       Expression := Expression + ' = ' + DebugEval;
       if SmartHintStr<>'' then
         SmartHintStr:=LineEnding+LineEnding+SmartHintStr;
@@ -16187,7 +16192,7 @@ begin
     end;
   end;
 
-  if SmartHintStr <> '' then
+  if HasHint then
     SrcEdit.ActivateHint(ClientPos, BaseURL, SmartHintStr);
 end;
 

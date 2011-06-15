@@ -2374,18 +2374,21 @@ begin
   finally
     ElementNames.Free;
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-    if chhoShowFocusHint in Options then begin
-      Cmd:=EditorOpts.KeyMap.FindByCommand(ecFocusHint);
-      if (Cmd<>nil) and (not IDEShortCutEmpty(Cmd.ShortcutA)) then begin
-        HTMLHint:=HTMLHint+'<div class="focushint">Press '
-          +KeyAndShiftStateToEditorKeyString(Cmd.ShortcutA)+' for focus</div>'+LineEnding;
+    if HTMLHint<>'' then begin
+      if (chhoShowFocusHint in Options) then begin
+        Cmd:=EditorOpts.KeyMap.FindByCommand(ecFocusHint);
+        if (Cmd<>nil) and (not IDEShortCutEmpty(Cmd.ShortcutA)) then begin
+          HTMLHint:=HTMLHint+'<div class="focushint">Press '
+            +KeyAndShiftStateToEditorKeyString(Cmd.ShortcutA)+' for focus</div>'+LineEnding;
+        end;
       end;
-    end;
-    HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css"></head>'+LineEnding
-      +'<body>'+LineEnding+HTMLHint+'</body>'+LineEnding;
+      HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css"></head>'+LineEnding
+        +'<body>'+LineEnding+HTMLHint+'</body>'+LineEnding;
+      Result:=chprSuccess;
+    end else
+      Result:=chprFailed;
   end;
   debugln(['TCodeHelpManager.GetHTMLHint ',HTMLHint]);
-  Result:=chprSuccess;
 end;
 
 function TCodeHelpManager.GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool;
