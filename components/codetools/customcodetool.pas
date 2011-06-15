@@ -327,6 +327,7 @@ type
       ClearNicePos: boolean = true); virtual;
     procedure RaiseExceptionFmt(const AMessage: string;
       const args: array of const; ClearNicePos: boolean = true);
+    // permanent errors, that the parser will raise again
     procedure SaveRaiseException(const AMessage: string;
       ClearNicePos: boolean = true); virtual;
     procedure SaveRaiseExceptionFmt(const AMessage: string;
@@ -435,6 +436,8 @@ end;
 
 procedure TCustomCodeTool.SaveRaiseException(const AMessage: string;
   ClearNicePos: boolean);
+var
+  Node: TCodeTreeNode;
 begin
   LastErrorMessage:=AMessage;
   LastErrorCurPos:=CurPos;
@@ -445,6 +448,17 @@ begin
   end else begin
     LastErrorNicePosition:=ErrorNicePosition;
   end;
+
+  Node:=CurNode;
+  while (Node<>nil) do begin
+    if (ctnsNeedJITParsing and Node.SubDesc)>0 then begin
+      SetNodeParserError(Node,AMessage,CurPos.StartPos,
+                         ErrorNicePosition);
+      break;
+    end;
+    Node:=Node.Parent;
+  end;
+
   RaiseException(AMessage,ClearNicePos);
 end;
 
@@ -2304,7 +2318,6 @@ procedure TCustomCodeTool.RaiseExceptionInstance(TheException: ECodeToolError;
 var
   CaretXY: TCodeXYPosition;
   CursorPos: integer;
-  Node: TCodeTreeNode;
 begin
   ErrorPosition.Code:=nil;
   CursorPos:=CurPos.StartPos;
@@ -2317,15 +2330,6 @@ begin
 
   // close all open nodes, so that FindDeepestNodeAtPos works in the code
   // already parsed
-  Node:=CurNode;
-  while (Node<>nil) do begin
-    if (ctnsNeedJITParsing and Node.SubDesc)>0 then begin
-      SetNodeParserError(Node,TheException.Message,CurPos.StartPos,
-                         ErrorNicePosition);
-      break;
-    end;
-    Node:=Node.Parent;
-  end;
   CloseUnfinishedNodes;
   // convert cursor pos to caret pos, which is more human readable
   if (CursorPos>SrcLen) and (SrcLen>0) then CursorPos:=SrcLen;
@@ -2866,6 +2870,8 @@ begin
     //DebugLn(['TCustomCodeTool.DoDeleteNodes ',MainFilename]);
     // first notify, so that references could be deleted clean
     IncreaseTreeChangeStep(true);
+    if (CurNode<>nil) and (StartNode.StartPos<=CurNode.StartPos) then
+      CurNode:=nil;
 
     // free errors and nodes
     if StartNode=Tree.Root then begin
