@@ -4030,12 +4030,17 @@ var
   OpenDialog:TOpenDialog;
   AFilename: string;
   PreReadBuf: TCodeBuffer;
+  Filter: String;
 Begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseProgramSourcePpPasLpr;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist,ofFileMustExist];
+    Filter := lisLazarusUnit + ' (*.pas;*.pp;*.p)|*.pas;*.pp;*.p'
+      + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
+    Filter:=Filter+ '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
+    OpenDialog.Filter := Filter;
     if OpenDialog.Execute then begin
       AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
       if not FilenameIsPascalSource(AFilename) then begin
