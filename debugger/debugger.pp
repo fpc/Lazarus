@@ -328,12 +328,12 @@ type
   private
     FSnapshots: TDebuggerDataSnapShotList;
   protected
-    function CreateSnapshot: TObject; virtual;
+    function CreateSnapshot(CreateEmpty: Boolean = False): TObject; virtual;
     function GetSnapshotObj(AnID: Pointer): TObject; virtual;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure NewSnapshot(AnID: Pointer);
+    procedure NewSnapshot(AnID: Pointer; CreateEmpty: Boolean = False);
     procedure RemoveSnapshot(AnID: Pointer);
   end;
 
@@ -871,6 +871,10 @@ type
     FValue: String;
     procedure RequestData; virtual;
     procedure ValidityChanged; virtual;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                const APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              const APath: string);
   public
     constructor Create; virtual;  overload;
     constructor Create(AOwnerWatch: TWatch);  overload;
@@ -902,6 +906,10 @@ type
   protected
     function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer;
                          const ADisplayFormat: TWatchDisplayFormat): TWatchValue; virtual;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string);
   public
     procedure Assign(AnOther: TWatchValueList);
     constructor Create(AOwnerWatch: TWatch);
@@ -942,6 +950,10 @@ type
     procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetExpression(const AValue: String); virtual;
     procedure SetDisplayFormat(const AValue: TWatchDisplayFormat); virtual;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                const APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              const APath: string);
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -966,6 +978,10 @@ type
     function GetItem(const AnIndex: Integer): TWatch;
     procedure SetItem(const AnIndex: Integer; const AValue: TWatch);
   protected
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string);
   public
     constructor Create;
     constructor Create(const AWatchClass: TBaseWatchClass);
@@ -1074,7 +1090,7 @@ type
     procedure NotifyRemove(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
     procedure NotifyUpdate(const AWatches: TCurrentWatches; const AWatch: TCurrentWatch);
     procedure RequestData(AWatchValue: TCurrentWatchValue);
-    function CreateSnapshot: TObject; override;
+    function CreateSnapshot(CreateEmpty: Boolean = False): TObject; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1132,6 +1148,10 @@ type
     FLocals: TStringList;
     FStackFrame: Integer;
     FThreadId: Integer;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string);
   public
     procedure Assign(AnOther: TLocals);
     constructor Create;
@@ -1156,6 +1176,10 @@ type
   protected
     function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TLocals; virtual;
     procedure Add(AnEntry: TLocals);
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -1212,7 +1236,7 @@ type
     procedure NotifyChange(ALocals: TCurrentLocals);
     procedure DoNewSupplier; override;
     procedure RequestData(ALocals: TCurrentLocals);
-    function CreateSnapshot: TObject; override;
+    function CreateSnapshot(CreateEmpty: Boolean = False): TObject; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1447,7 +1471,13 @@ type
     function GetFullFileName: String;
     function GetFunctionName: String;
     function GetSource: String;
+  protected
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string);
   public
+    constructor Create;
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
                        const ASource: String; const AFullFileName: String;
@@ -1492,6 +1522,10 @@ type
     function  GetEntry(AIndex: Integer): TCallStackEntry; virtual;
     procedure AddEntry(AnEntry: TCallStackEntry); virtual; // must be added in correct order
     procedure AssignEntriesTo(AnOther: TCallStack); virtual;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string);
   public
     constructor Create;
     constructor CreateCopy(const ASource: TCallStack);
@@ -1514,6 +1548,10 @@ type
   protected
     function  GetEntryForThread(const AThreadId: Integer): TCallStack; virtual;
     procedure Add(ACallStack: TCallStack);
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -1596,7 +1634,7 @@ type
     procedure RequestEntries(ACallstack: TCallStack);
     procedure UpdateCurrentIndex;
     procedure DoNewSupplier; override;
-    function  CreateSnapshot: TObject; override;
+    function  CreateSnapshot(CreateEmpty: Boolean = False): TObject; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1847,6 +1885,11 @@ type
     FThreadId: Integer;
     FThreadName: String;
     FThreadState: String;
+  protected
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                const APath: string); reintroduce;
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              const APath: string); reintroduce;
   public
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
@@ -1854,7 +1897,7 @@ type
                        const ALine: Integer;
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: String;
-                       AState: TDebuggerDataState = ddsValid);
+                       AState: TDebuggerDataState = ddsValid); overload;
     constructor CreateCopy(const ASource: TThreadEntry);
     property ThreadId: Integer read FThreadId;
     property ThreadName: String read FThreadName;
@@ -1871,6 +1914,10 @@ type
     procedure SetCurrentThreadId(const AValue: Integer); virtual;
   protected
     procedure Assign(AOther: TThreads);
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string); virtual;
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1912,7 +1959,7 @@ type
     procedure DoNewSupplier; override;
     procedure Changed;
     procedure RequestData;
-    function  CreateSnapshot: TObject; override;
+    function  CreateSnapshot(CreateEmpty: Boolean = False): TObject; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1960,6 +2007,11 @@ type
     FTimeStamp: TDateTime;
     FSnapMgr: TSnapshotManager;
     function GetLocationAsText: String;
+  protected
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string); virtual;
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string); virtual;
   public
     constructor Create(ASnapMgr: TSnapshotManager);
     destructor Destroy; override;
@@ -1968,6 +2020,7 @@ type
     property LocationAsText: String read GetLocationAsText;
   public
     procedure AddToSnapshots;
+    procedure AddToHistory;
     procedure RemoveFromSnapshots;
     procedure RemoveFromHistory;
     function IsCurrent: Boolean;
@@ -2026,12 +2079,18 @@ type
     procedure SetSnapshotSelected(AValue: Boolean);
     procedure AddSnapshotEntry(ASnapShot: TSnapshot);
     procedure RemoveSnapshotEntry(ASnapShot: TSnapshot);
+    procedure AddHistoryEntry(ASnapShot: TSnapshot);
   protected
     procedure DoSnapShotDestroy(ASnapShot: TSnapshot);
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure DoChanged;
     procedure DoCurrent;
+  protected
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                APath: string); virtual;
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                              APath: string); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -2046,6 +2105,8 @@ type
     procedure Clear;
     procedure ClearHistory;
     procedure ClearSnapshots;
+    function  GetAsXML: String;
+    procedure SetFromXML(aXML: String);
     property Current: TSnapshot read FCurrentSnapshot;
   public
     property HistoryIndex: Integer read FHistoryIndex write SetHistoryIndex;
@@ -2734,9 +2795,60 @@ begin
   inherited Destroy;
 end;
 
+procedure TSnapshot.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+begin
+  FLocation.Address     := StrToQWordDef(AConfig.GetValue(APath + 'LocationAddress', '0'), 0);
+  FLocation.FuncName    := AConfig.GetValue(APath + 'LocationFuncName', '');
+  FLocation.SrcFile     := AConfig.GetValue(APath + 'LocationSrcFile', '');
+  FLocation.SrcFullName := AConfig.GetValue(APath + 'LocationSrcFullName', '');
+  FLocation.SrcLine     := AConfig.GetValue(APath + 'LocationSrcLine', -1);
+  try
+    FTimeStamp := StrToDouble(AConfig.GetValue(APath + 'TimeStamp', '0'));
+  except
+    FTimeStamp := 0;
+  end;
+  if FSnapMgr.Threads.Snapshots[Pointer(Self)] <> nil then
+    FSnapMgr.Threads.Snapshots[Pointer(Self)].LoadDataFromXMLConfig(AConfig, APath + 'SnapThreads/');
+  if FSnapMgr.CallStack.Snapshots[Pointer(Self)] <> nil then
+    FSnapMgr.CallStack.Snapshots[Pointer(Self)].LoadDataFromXMLConfig(AConfig, APath + 'SnapCallstack/');
+  if FSnapMgr.Locals.Snapshots[Pointer(Self)] <> nil then
+    FSnapMgr.Locals.Snapshots[Pointer(Self)].LoadDataFromXMLConfig(AConfig, APath + 'SnapLocals/');
+  if FSnapMgr.Watches.Snapshots[Pointer(Self)] <> nil then
+    FSnapMgr.Watches.Snapshots[Pointer(Self)].LoadDataFromXMLConfig(AConfig, APath + 'SnapWatches/');
+
+  if AConfig.GetValue(APath + 'IsSnapshot', False) then AddToSnapshots;
+  if AConfig.GetValue(APath + 'IsHistory', True)  then AddToHistory;
+end;
+
+procedure TSnapshot.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+begin
+  AConfig.SetValue(APath + 'LocationAddress', IntToStr(FLocation.Address));
+  AConfig.SetValue(APath + 'LocationFuncName', FLocation.FuncName);
+  AConfig.SetValue(APath + 'LocationSrcFile', FLocation.SrcFile);
+  AConfig.SetValue(APath + 'LocationSrcFullName', FLocation.SrcFullName);
+  AConfig.SetValue(APath + 'LocationSrcLine', FLocation.SrcLine);
+  AConfig.SetValue(APath + 'TimeStamp', FloatToStr(FTimeStamp));
+  AConfig.SetValue(APath + 'IsHistory', IsHistory);
+  AConfig.SetValue(APath + 'IsSnapshot', IsSnapshot);
+
+  if FSnapMgr.Threads.Snapshots[Pointer(Self)] <> nil then
+    FSnapMgr.Threads.Snapshots[Pointer(Self)].SaveDataToXMLConfig(AConfig, APath + 'SnapThreads/');
+  if FSnapMgr.CallStack.Snapshots[Pointer(Self)] <> nil then
+    FSnapMgr.CallStack.Snapshots[Pointer(Self)].SaveDataToXMLConfig(AConfig, APath + 'SnapCallstack/');
+  if FSnapMgr.Locals.Snapshots[Pointer(Self)] <> nil then
+    FSnapMgr.Locals.Snapshots[Pointer(Self)].SaveDataToXMLConfig(AConfig, APath + 'SnapLocals/');
+  if FSnapMgr.Watches.Snapshots[Pointer(Self)] <> nil then
+    FSnapMgr.Watches.Snapshots[Pointer(Self)].SaveDataToXMLConfig(AConfig, APath + 'SnapWatches/');
+end;
+
 procedure TSnapshot.AddToSnapshots;
 begin
   FSnapMgr.AddSnapshotEntry(Self);
+end;
+
+procedure TSnapshot.AddToHistory;
+begin
+  FSnapMgr.AddHistoryEntry(Self);
 end;
 
 procedure TSnapshot.RemoveFromSnapshots;
@@ -2864,6 +2976,71 @@ begin
   FNotificationList.NotifyCurrent(Self);
 end;
 
+procedure TSnapshotManager.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  c, i: Integer;
+  NewSnap: TSnapshot;
+begin
+  Clear;
+
+  c := AConfig.GetValue(APath + 'SnapCount', 0);
+  for i := 0 to c - 1 do begin
+    NewSnap := TSnapshot.Create(Self);
+    FThreads.NewSnapshot(NewSnap, True);
+    FCallStack.NewSnapshot(NewSnap, True);
+    FLocals.NewSnapshot(NewSnap, True);
+    FWatches.NewSnapshot(NewSnap, True);
+    NewSnap.LoadDataFromXMLConfig(AConfig, APath + 'SnapEntry' + IntToStr(i) + '/');
+    if not(NewSnap.IsHistory or NewSnap.IsSnapshot) then begin
+      RemoveHistoryEntryFromMonitors(NewSnap); // TODO: add user feedback / warning
+      debugln(['************** Snapshot loaded, but not kept']);
+    end;
+    NewSnap.ReleaseReference;
+  end;
+
+  c := AConfig.GetValue(APath + 'HistCount', 0);
+  for i := 0 to c - 1 do begin
+    NewSnap := TSnapshot.Create(Self);
+    FThreads.NewSnapshot(NewSnap, True);
+    FCallStack.NewSnapshot(NewSnap, True);
+    FLocals.NewSnapshot(NewSnap, True);
+    FWatches.NewSnapshot(NewSnap, True);
+    NewSnap.LoadDataFromXMLConfig(AConfig, APath + 'HistEntry' + IntToStr(i) + '/');
+    if not(NewSnap.IsHistory or NewSnap.IsSnapshot) then begin
+      RemoveHistoryEntryFromMonitors(NewSnap); // TODO: add user feedback / warning
+      debugln(['************** Snapshot loaded, but not kept']);
+    end;
+    NewSnap.ReleaseReference;
+  end;
+
+  //FThreads.CurrentThreads.SnapShot := nil;
+  //FCallStack.CurrentCallStackList.SnapShot := nil;
+  //FLocals.CurrentLocalsList.SnapShot := nil;
+  //FWatches.CurrentWatches.SnapShot := nil;
+  DoChanged;
+  DoCurrent;
+end;
+
+procedure TSnapshotManager.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  c, i: Integer;
+begin
+  c := 0;
+  for i := 0 to FSnapshotList.Count - 1 do begin
+    if FSnapshotList[i].IsHistory then continue;
+    FSnapshotList[i].SaveDataToXMLConfig(AConfig, APath + 'SnapEntry' + IntToStr(i) + '/');
+    inc(c);
+  end;
+  AConfig.SetValue(APath + 'SnapCount', c);
+
+  c := 0;
+  for i := 0 to FHistoryList.Count - 1 do begin
+    FHistoryList[i].SaveDataToXMLConfig(AConfig, APath + 'HistEntry' + IntToStr(i) + '/');
+    inc(c);
+  end;
+  AConfig.SetValue(APath + 'HistCount', c);
+end;
+
 procedure TSnapshotManager.ClearHistory;
 begin
   FHistoryList.Clear;
@@ -2874,6 +3051,36 @@ procedure TSnapshotManager.ClearSnapshots;
 begin
   FSnapshotList.Clear;
   SnapshotSelected := False;
+end;
+
+function TSnapshotManager.GetAsXML: String;
+var
+  XmlConf: TXMLConfig;
+  s: TStringStream;
+begin
+  XmlConf := TXMLConfig.CreateClean('');
+  XmlConf.Clear;
+  SaveDataToXMLConfig(XmlConf, 'History/');
+  s := TStringStream.Create('');
+  XmlConf.WriteToStream(s);
+  Result := s.DataString;
+  s.WriteAnsiString(Result);
+  XmlConf.Free;
+  s.Free;
+end;
+
+procedure TSnapshotManager.SetFromXML(aXML: String);
+var
+  XmlConf: TXMLConfig;
+  s: TStringStream;
+begin
+  XmlConf := TXMLConfig.CreateClean('');
+  XmlConf.Clear;
+  s := TStringStream.Create(aXML);
+  XmlConf.ReadFromStream(s);
+  LoadDataFromXMLConfig(XmlConf, 'History/');
+  XmlConf.Free;
+  s.Free;
 end;
 
 procedure TSnapshotManager.CreateHistoryEntry;
@@ -2948,6 +3155,12 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TSnapshotManager.AddHistoryEntry(ASnapShot: TSnapshot);
+begin
+  FHistoryList.Add(ASnapShot);
+  DoChanged;
 end;
 
 constructor TSnapshotManager.Create;
@@ -3107,7 +3320,7 @@ end;
 
 { TDebuggerDataMonitorEx }
 
-function TDebuggerDataMonitorEx.CreateSnapshot: TObject;
+function TDebuggerDataMonitorEx.CreateSnapshot(CreateEmpty: Boolean = False): TObject;
 begin
   Result := nil;
 end;
@@ -3130,11 +3343,11 @@ begin
   FreeAndNil(FSnapshots);
 end;
 
-procedure TDebuggerDataMonitorEx.NewSnapshot(AnID: Pointer);
+procedure TDebuggerDataMonitorEx.NewSnapshot(AnID: Pointer; CreateEmpty: Boolean = False);
 var
   S: TObject;
 begin
-  S := CreateSnapshot;
+  S := CreateSnapshot(CreateEmpty);
   FSnapshots.AddSnapShot(AnID, S);
 end;
 
@@ -3289,6 +3502,31 @@ begin
   FList.add(AnEntry);
 end;
 
+procedure TLocalsList.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  e: TLocals;
+  c, i: Integer;
+begin
+  Clear;
+  c := AConfig.GetValue(APath + 'Count', 0);
+  APath := APath + 'LocalsEntry';
+  for i := 0 to c - 1 do begin
+    e := TLocals.Create;
+    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    Add(e);
+  end;
+end;
+
+procedure TLocalsList.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  i: Integer;
+begin
+  AConfig.SetDeleteValue(APath + 'Count', Count, 0);
+  APath := APath + 'LocalsEntry';
+  for i := 0 to Count - 1 do
+    EntriesByIdx[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
+end;
+
 procedure TLocalsList.Assign(AnOther: TLocalsList);
 var
   i: Integer;
@@ -3405,10 +3643,11 @@ begin
   else ALocals.SetDataValidity(ddsInvalid);
 end;
 
-function TLocalsMonitor.CreateSnapshot: TObject;
+function TLocalsMonitor.CreateSnapshot(CreateEmpty: Boolean = False): TObject;
 begin
   Result := TLocalsList.Create;
-  CurrentLocalsList.SnapShot := TLocalsList(Result);
+  if not CreateEmpty
+  then CurrentLocalsList.SnapShot := TLocalsList(Result);
 end;
 
 constructor TLocalsMonitor.Create;
@@ -3574,6 +3813,33 @@ begin
   Result := nil;
 end;
 
+procedure TWatchValueList.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+  APath: string);
+var
+  e: TWatchValue;
+  c, i: Integer;
+begin
+  Clear;
+  c := AConfig.GetValue(APath + 'Count', 0);
+  APath := APath + 'Entry';
+  for i := 0 to c - 1 do begin
+    e := TWatchValue.Create(FWatch);
+    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    Add(e);
+  end;
+end;
+
+procedure TWatchValueList.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+  APath: string);
+var
+  i: Integer;
+begin
+  AConfig.SetDeleteValue(APath + 'Count', Count, 0);
+  APath := APath + 'Entry';
+  for i := 0 to Count - 1 do
+    EntriesByIdx[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
+end;
+
 procedure TWatchValueList.Assign(AnOther: TWatchValueList);
 var
   i: Integer;
@@ -3614,7 +3880,7 @@ begin
   while FList.Count > 0 do begin
     TObject(FList[0]).Free;
     FList.Delete(0);
-  end;;
+  end;
 end;
 
 function TWatchValueList.Count: Integer;
@@ -3684,6 +3950,31 @@ end;
 procedure TWatchValue.ValidityChanged;
 begin
   //
+end;
+
+procedure TWatchValue.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+  const APath: string);
+begin
+  FThreadId   := AConfig.GetValue(APath + 'ThreadId', -1);
+  FStackFrame := AConfig.GetValue(APath + 'StackFrame', -1);
+  FValue      := AConfig.GetValue(APath + 'Value', '');
+  try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
+  except FDisplayFormat := wdfDefault; end;
+  try    ReadStr(AConfig.GetValue(APath + 'Validity', 'ddsValid'), FValidity);
+  except FValidity := ddsUnknown; end;
+end;
+
+procedure TWatchValue.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+var
+  s: String;
+begin
+  AConfig.SetValue(APath + 'ThreadId', FThreadId);
+  AConfig.SetValue(APath + 'StackFrame', FStackFrame);
+  AConfig.SetValue(APath + 'Value', FValue);
+  WriteStr(s, FDisplayFormat);
+  AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
+  WriteStr(s, FValidity);
+  AConfig.SetDeleteValue(APath + 'Validity', s, 'ddsValid');
 end;
 
 constructor TWatchValue.Create;
@@ -3826,10 +4117,11 @@ begin
   else AWatchValue.SetValidity(ddsInvalid);
 end;
 
-function TWatchesMonitor.CreateSnapshot: TObject;
+function TWatchesMonitor.CreateSnapshot(CreateEmpty: Boolean = False): TObject;
 begin
   Result := TWatches.Create;
-  CurrentWatches.SnapShot := TWatches(Result);
+  if not CreateEmpty
+  then CurrentWatches.SnapShot := TWatches(Result);
 end;
 
 constructor TWatchesMonitor.Create;
@@ -4202,6 +4494,32 @@ begin
   FList.Add(ACallStack);
 end;
 
+procedure TCallStackList.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+  APath: string);
+var
+  c, i: Integer;
+  e: TCallStack;
+begin
+  Clear;
+  c := AConfig.GetValue(APath + 'Count', 0);
+  APath := APath + 'Entry';
+  for i := 0 to c - 1 do begin
+    e := TCallStack.Create;
+    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    Add(e);
+  end;
+end;
+
+procedure TCallStackList.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  i: Integer;
+begin
+  AConfig.SetDeleteValue(APath + 'Count', Count, 0);
+  APath := APath + 'Entry';
+  for i := 0 to Count - 1 do
+    Entries[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
+end;
+
 procedure TCallStackList.Assign(AnOther: TCallStackList);
 var
   i: Integer;
@@ -4423,10 +4741,11 @@ begin
   then Supplier.RequestMasterData;
 end;
 
-function TThreadsMonitor.CreateSnapshot: TObject;
+function TThreadsMonitor.CreateSnapshot(CreateEmpty: Boolean = False): TObject;
 begin
   Result := TThreads.Create;
-  CurrentThreads.SnapShot := TThreads(Result);
+  if not CreateEmpty
+  then CurrentThreads.SnapShot := TThreads(Result);
 end;
 
 procedure TThreadsMonitor.Changed;
@@ -4557,6 +4876,22 @@ end;
 
 { TThreadEntry }
 
+procedure TThreadEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+begin
+  inherited;
+  FThreadId    := AConfig.GetValue(APath + 'ThreadId', -1);
+  FThreadName  := AConfig.GetValue(APath + 'ThreadName', '');
+  FThreadState := AConfig.GetValue(APath + 'ThreadState', '');
+end;
+
+procedure TThreadEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+begin
+  inherited;
+  AConfig.SetValue(APath + 'ThreadId', FThreadId);
+  AConfig.SetValue(APath + 'ThreadName', FThreadName);
+  AConfig.SetValue(APath + 'ThreadState', FThreadState);
+end;
+
 constructor TThreadEntry.Create(const AIndex: Integer; const AnAdress: TDbgPtr;
   const AnArguments: TStrings; const AFunctionName: String; const ASource: String;
   const AFullFileName: String; const ALine: Integer; const AThreadId: Integer;
@@ -4600,6 +4935,33 @@ begin
   FCurrentThreadId := AOther.FCurrentThreadId;
   for i := 0 to AOther.FList.Count-1 do
     FList.Add(TThreadEntry.CreateCopy(TThreadEntry(AOther.FList[i])));
+end;
+
+procedure TThreads.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  c, i: Integer;
+  e: TThreadEntry;
+begin
+  Clear;
+  FCurrentThreadId   := AConfig.GetValue(APath + 'CurrentThreadId', -1);
+  c := AConfig.GetValue(APath + 'Count', 0);
+  APath := APath + 'Entry';
+  for i := 0 to c - 1 do begin
+    e := TThreadEntry.Create;
+    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    FList.Add(e);
+  end;
+end;
+
+procedure TThreads.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  i: Integer;
+begin
+  AConfig.SetValue(APath + 'CurrentThreadId', FCurrentThreadId);
+  AConfig.SetDeleteValue(APath + 'Count', Count, 0);
+  APath := APath + 'Entry';
+  for i := 0 to Count - 1 do
+    Entries[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
 end;
 
 constructor TThreads.Create;
@@ -6801,6 +7163,28 @@ begin
   DoDisplayFormatChanged;
 end;
 
+procedure TWatch.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+begin
+  FEnabled    := AConfig.GetValue(APath + 'Enabled', True);
+  FExpression := AConfig.GetValue(APath + 'Expression', '');
+  try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
+  except FDisplayFormat := wdfDefault; end;
+
+  FValueList.LoadDataFromXMLConfig(AConfig, APath + 'ValueList/');
+end;
+
+procedure TWatch.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+var
+  s: String;
+begin
+  AConfig.SetDeleteValue(APath + 'Enabled', FEnabled, True);
+  AConfig.SetDeleteValue(APath + 'Expression', FExpression, '');
+  WriteStr(s, FDisplayFormat);
+  AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
+
+  FValueList.SaveDataToXMLConfig(AConfig, APath + 'ValueList/');
+end;
+
 function TWatch.GetExpression: String;
 begin
   Result := FExpression;
@@ -6915,6 +7299,27 @@ end;
 procedure TWatches.SetItem(const AnIndex: Integer; const AValue: TWatch);
 begin
   inherited Items[AnIndex] := AValue;
+end;
+
+procedure TWatches.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  c, i: Integer;
+begin
+  Clear;
+  c := AConfig.GetValue(APath + 'Count', 0);
+  APath := APath + 'Entry';
+  for i := 0 to c - 1 do
+    Add('').LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+end;
+
+procedure TWatches.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  i: Integer;
+begin
+  AConfig.SetDeleteValue(APath + 'Count', Count, 0);
+  APath := APath + 'Entry';
+  for i := 0 to Count - 1 do
+    Items[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
 end;
 
 constructor TWatches.Create;
@@ -7137,6 +7542,38 @@ function TLocals.GetValue(const AnIndex: Integer): String;
 begin
   Result := FLocals[AnIndex];
   Result := GetPart('=', '', Result);
+end;
+
+procedure TLocals.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  c, i: Integer;
+begin
+  FLocals.Clear;
+  FThreadId := AConfig.GetValue(APath + 'ThreadId', -1);
+  FStackFrame := AConfig.GetValue(APath + 'StackFrame', -1);
+  c := AConfig.GetValue(APath + 'Count', 0);
+  APath := APath + 'Entry';
+  for i := 0 to c - 1 do begin
+    FLocals.Add(
+      AConfig.GetValue(APath + IntToStr(i) + '/Expression', '')
+      + '=' +
+      AConfig.GetValue(APath + IntToStr(i) + '/Value', '')
+    );
+  end;
+end;
+
+procedure TLocals.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  i: Integer;
+begin
+  AConfig.SetValue(APath + 'ThreadId', FThreadId);
+  AConfig.SetValue(APath + 'StackFrame', FStackFrame);
+  AConfig.SetDeleteValue(APath + 'Count', Count, 0);
+  APath := APath + 'Entry';
+  for i := 0 to Count - 1 do begin
+    AConfig.SetValue(APath + IntToStr(i) + '/Expression', Names[i]);
+    AConfig.SetValue(APath + IntToStr(i) + '/Value', Values[i]);
+  end;
 end;
 
 procedure TLocals.Assign(AnOther: TLocals);
@@ -7583,6 +8020,42 @@ begin
   else Result := '';
 end;
 
+procedure TCallStackEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+begin
+  FIndex          := AConfig.GetValue(APath + 'Index', 0);
+  FAdress         := StrToQWordDef(AConfig.GetValue(APath + 'Address', '0'), 0);
+  FFunctionName   := AConfig.GetValue(APath + 'FunctionName', '');
+  FLine           := AConfig.GetValue(APath + 'Line', 0);
+  FArguments.Text := AConfig.GetValue(APath + 'Arguments', '');
+  FSource         := AConfig.GetValue(APath + 'Source', '');
+  FFullFileName   := AConfig.GetValue(APath + 'FullFileName', '');
+  try
+    ReadStr(AConfig.GetValue(APath + 'State', 'ddsUnknown'), FState);
+  except
+    FState := ddsUnknown;
+  end;
+end;
+
+procedure TCallStackEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  s: string;
+begin
+  AConfig.SetValue(APath + 'Index', FIndex);
+  AConfig.SetValue(APath + 'Address', IntToStr(FAdress));
+  AConfig.SetValue(APath + 'FunctionName', FFunctionName);
+  AConfig.SetValue(APath + 'Line', FLine);
+  AConfig.SetValue(APath + 'Arguments', FArguments.Text);
+  AConfig.SetValue(APath + 'Source', FSource);
+  AConfig.SetValue(APath + 'FullFileName', FFullFileName);
+  WriteStr(s, FState);
+  AConfig.SetValue(APath + 'State', s);
+end;
+
+constructor TCallStackEntry.Create;
+begin
+  FArguments := TStringlist.Create;
+end;
+
 { =========================================================================== }
 { TCallStack }
 { =========================================================================== }
@@ -7635,6 +8108,38 @@ begin
   for i := 0 to FList.Count-1 do begin
     AnOther.AddEntry(TCallStackEntry.CreateCopy(TCallStackEntry(FList[i])));
   end;
+end;
+
+procedure TCallStack.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  c, i: Integer;
+  e: TCallStackEntry;
+begin
+  Clear;
+  FThreadId := AConfig.GetValue(APath + 'ThreadId', -1);
+  FCurrent  := AConfig.GetValue(APath + 'Current', -1);
+
+  c := AConfig.GetValue(APath + 'Count', 0);
+  APath := APath + 'Entry';
+  for i := 0 to c - 1 do begin
+    e := TCallStackEntry.Create();
+    e.FOwner := self;
+    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    FList.Add(e);
+  end;
+end;
+
+procedure TCallStack.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+var
+  i: Integer;
+begin
+  AConfig.SetValue(APath + 'ThreadId', FThreadId);
+  AConfig.SetValue(APath + 'Current', FCurrent);
+
+  AConfig.SetDeleteValue(APath + 'Count', FList.Count, 0);
+  APath := APath + 'Entry';
+  for i := 0 to FList.Count - 1 do
+    TCallStackEntry(FList[i]).SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
 end;
 
 function TCallStack.IndexError(AIndex: Integer): TCallStackEntry;
@@ -7774,10 +8279,11 @@ begin
   FNotificationList.NotifyCurrent(Self);
 end;
 
-function TCallStackMonitor.CreateSnapshot: TObject;
+function TCallStackMonitor.CreateSnapshot(CreateEmpty: Boolean = False): TObject;
 begin
   Result := TCallStackList.Create;
-  CurrentCallStackList.SnapShot := TCallStackList(Result);
+  if not CreateEmpty
+  then CurrentCallStackList.SnapShot := TCallStackList(Result);
 end;
 
 procedure TCallStackMonitor.RemoveNotification(const ANotification: TCallStackNotification);

@@ -4719,6 +4719,8 @@ resourcestring
   histdlgBtnShowSnapHint = 'View Snapshots';
   histdlgBtnMakeSnapHint = 'Take Snapshot';
   histdlgBtnRemoveHint   = 'Remove selected entry';
+  histdlgBtnImport   = 'Import';
+  histdlgBtnExport   = 'Export';
 
   // Exception Dialog
   lisExceptionDialog = 'Debugger Exception Notification';

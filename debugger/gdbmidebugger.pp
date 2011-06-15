@@ -1458,18 +1458,6 @@ begin
   Result := '"' + Result + '"';
 end;
 
-{ TGDBMIDebuggerCommandList }
-
-function TGDBMIDebuggerCommandList.Get(Index: Integer): TGDBMIDebuggerCommand;
-begin
-  Result := TGDBMIDebuggerCommand(inherited Items[Index]);
-end;
-
-procedure TGDBMIDebuggerCommandList.Put(Index: Integer; const AValue: TGDBMIDebuggerCommand);
-begin
-  inherited Items[Index] := AValue;
-end;
-
 { TGDBMIDebuggerCommandChangeFilename }
 
 function TGDBMIDebuggerCommandChangeFilename.DoExecute: Boolean;
@@ -9800,6 +9788,18 @@ end;
 function TGDBMIDebuggerCommand.DebugText: String;
 begin
   Result := ClassName;
+end;
+
+{ TGDBMIDebuggerCommandList }
+
+function TGDBMIDebuggerCommandList.Get(Index: Integer): TGDBMIDebuggerCommand;
+begin
+  Result := TGDBMIDebuggerCommand(inherited Items[Index]);
+end;
+
+procedure TGDBMIDebuggerCommandList.Put(Index: Integer; const AValue: TGDBMIDebuggerCommand);
+begin
+  inherited Items[Index] := AValue;
 end;
 
 { TGDBMIDebuggerSimpleCommand }

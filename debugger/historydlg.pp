@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, LazarusIDEStrConsts,
-  BaseDebugManager, MainBase, IDEImagesIntf;
+  BaseDebugManager, MainBase, IDEImagesIntf, Clipbrd, Dialogs;
 
 type
 
@@ -14,6 +14,8 @@ type
 
   THistoryDialog = class(TDebuggerDlg)
     lvHistory: TListView;
+    OpenDialog1: TOpenDialog;
+    SaveDialog1: TSaveDialog;
     tbMakeSnap: TToolButton;
     ToolBar1: TToolBar;
     tbHistorySelected: TToolButton;
@@ -23,7 +25,10 @@ type
     tbHist: TToolButton;
     tbSnap: TToolButton;
     tbRemove: TToolButton;
+    ToolButton2: TToolButton;
+    tbExport: TToolButton;
     ToolButton4: TToolButton;
+    tbImport: TToolButton;
     procedure lvHistoryDblClick(Sender: TObject);
     procedure lvHistorySelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure tbClearClick(Sender: TObject);
@@ -32,6 +37,8 @@ type
     procedure tbMakeSnapClick(Sender: TObject);
     procedure tbPowerClick(Sender: TObject);
     procedure tbRemoveClick(Sender: TObject);
+    procedure tbExportClick(Sender: TObject);
+    procedure tbImportClick(Sender: TObject);
   private
     FInSnapshotChanged: Boolean;
     imgCurrentLine: Integer;
@@ -53,6 +60,7 @@ implementation
 
 procedure THistoryDialog.lvHistoryDblClick(Sender: TObject);
 begin
+  if (lvHistory.Items.Count = 0) or (lvHistory.Selected = nil) then exit;
   if tbHist.Down then begin
     if (SnapshotManager.HistoryIndex = lvHistory.Selected.Index) and
        (SnapshotManager.HistorySelected)
@@ -131,6 +139,32 @@ begin
     SnapshotManager.History[lvHistory.Selected.Index].RemoveFromHistory;
   end else begin
     SnapshotManager.Snapshots[lvHistory.Selected.Index].RemoveFromSnapshots;
+  end;
+end;
+
+procedure THistoryDialog.tbExportClick(Sender: TObject);
+var
+  tl: TStringList;
+begin
+  if (SnapshotManager = nil) then exit;
+  if SaveDialog1.Execute then begin
+    tl := TStringList.Create;
+    tl.Text := SnapshotManager.GetAsXML;
+    tl.SaveToFile(SaveDialog1.FileName);
+    tl.Free;
+  end;
+end;
+
+procedure THistoryDialog.tbImportClick(Sender: TObject);
+var
+  tl: TStringList;
+begin
+  if (SnapshotManager = nil) then exit;
+  if OpenDialog1.Execute then begin
+    tl := TStringList.Create;
+    tl.LoadFromFile(OpenDialog1.FileName);
+    SnapshotManager.SetFromXML(tl.Text);
+    tl.Free;
   end;
 end;
 
@@ -268,6 +302,12 @@ begin
 
   tbRemove.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
   tbRemove.Hint  := histdlgBtnRemoveHint;
+
+  tbImport.ImageIndex := IDEImages.LoadImage(16, 'laz_open');
+  tbImport.Hint  := histdlgBtnImport;
+
+  tbExport.ImageIndex := IDEImages.LoadImage(16, 'laz_save');
+  tbExport.Hint  := histdlgBtnExport;
 
   tbPowerClick(nil);
   tbHistorySelectedClick(nil);

@@ -106,5 +106,39 @@ inherited HistoryDialog: THistoryDialog
       Caption = 'tbRemove'
       OnClick = tbRemoveClick
     end
+    object ToolButton2: TToolButton
+      Left = 182
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+    object tbExport: TToolButton
+      Left = 215
+      Top = 2
+      Caption = 'tbExport'
+      OnClick = tbExportClick
+    end
+    object tbImport: TToolButton
+      Left = 192
+      Top = 2
+      Caption = 'tbImport'
+      OnClick = tbImportClick
+    end
+  end
+  object OpenDialog1: TOpenDialog[2]
+    Title = 'Import from'
+    DefaultExt = '.xml'
+    Filter = 'xml|*.xml|all|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 49
+    top = 106
+  end
+  object SaveDialog1: TSaveDialog[3]
+    Title = 'Export to'
+    DefaultExt = '.xml'
+    Filter = 'xml|*.xml|all|*.*'
+    left = 128
+    top = 104
   end
 end
