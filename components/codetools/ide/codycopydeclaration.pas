@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, Dialogs,
   IDEDialogs, LazIDEIntf, SrcEditorIntf,
-  CodeToolManager, CodeCache, CodeTree, BasicCodeTools,
+  CodeToolManager, CodeTree, BasicCodeTools,
   CodyUtils, CodyStrConsts;
 
 type
