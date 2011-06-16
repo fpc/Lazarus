@@ -214,7 +214,7 @@ type
     property Parent:TOIPropertyGridRow read FParent;
     property ChildCount:integer read FChildCount;
     property FirstChild:TOIPropertyGridRow read FFirstChild;
-    property LastChild:TOIPropertyGridRow read FFirstChild;
+    property LastChild:TOIPropertyGridRow read FLastChild;
     property NextBrother:TOIPropertyGridRow read FNextBrother;
     property PriorBrother:TOIPropertyGridRow read FPriorBrother;
     property Index: integer read FIndex;
@@ -1016,10 +1016,11 @@ const
 begin
   inherited CreateParams(Params);
   with Params do begin
+    {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
     {$R-}
     WindowClass.Style := WindowClass.Style and not ClassStylesOff;
     Style := Style or WS_VSCROLL or WS_CLIPCHILDREN;
-    {$R+}
+    {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
     ExStyle := ExStyle or WS_EX_CLIENTEDGE;
   end;
 end;
