@@ -1651,7 +1651,7 @@ end;
 
 procedure TCodeExplorerView.CreateSurrounding(Tool: TCodeTool);
 
-  function CTNodeIsEnclosing(CTNOdE: TCodeTreeNode; p: integer): boolean;
+  function CTNodeIsEnclosing(CTNode: TCodeTreeNode; p: integer): boolean;
   var
     NextCTNode: TCodeTreeNode;
   begin

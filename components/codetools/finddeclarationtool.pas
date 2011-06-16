@@ -7085,7 +7085,9 @@ var
       exit;
     end;
 
-    //DebugLn(['ResolveEdgedBracketOpen ',ExprTypeToString(ExprType)]);
+    {$IFDEF ShowExprEval}
+    DebugLn(['  FindExpressionTypeOfTerm ResolveEdgedBracketOpen ExprType=',ExprTypeToString(ExprType)]);
+    {$ENDIF}
     case ExprType.Context.Node.Desc of
 
     ctnOpenArrayType,ctnRangedArrayType:
@@ -7147,8 +7149,7 @@ var
           if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
             // only types allowed
             if Params.NewNode.Desc=ctnTypeDefinition then begin
-              ExprType.Context:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
-                                                                Params.NewNode);
+              ExprType.Context:=CreateFindContext(Params);
             end else if Params.NewNode.Desc=ctnGenericParameter then begin
               ExprType.Context.Tool:=Params.NewCodeTool;
               ExprType.Context.Node:=Params.NewNode;
