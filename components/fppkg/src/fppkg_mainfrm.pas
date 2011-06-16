@@ -131,7 +131,6 @@ type
 
     procedure MaybeCreateLocalDirs;
     procedure DoRun(cfg: TFppkgConfigOptions; ParaAction: string; ParaPackages: TStrings);
-    procedure LoadGlobalDefaults(cfg: TFppkgConfigOptions);
     procedure LoadCompilerDefaults;
 
     procedure UpdatePackageListView;
@@ -548,62 +547,6 @@ begin
       s.Add(PackageListView.Items[i].Caption);
 end;
 
-procedure TFppkgForm.LoadGlobalDefaults(cfg: TFppkgConfigOptions);
-var
-  cfgfile: string;
-  GeneratedConfig, UseGlobalConfig: boolean;
-begin
-  GeneratedConfig := False;
-  UseGlobalConfig := False;
-  // First try config file from command line
-  if cfg.ConfigFile <> '' then
-  begin
-    cfgfile := cfg.ConfigFile;
-    if not FileExists(cfgfile) then
-      Error(SErrNoSuchFile, [cfgfile]);
-  end
-  else
-  begin
-    // Now try if a local config-file exists
-    cfgfile := GetAppConfigFile(False, False);
-    if not FileExists(cfgfile) then
-    begin
-      // If not, try to find a global configuration file
-      cfgfile := GetAppConfigFile(True, False);
-      if FileExists(cfgfile) then
-        UseGlobalConfig := True
-      else
-      begin
-        // Create a new configuration file
-        if not IsSuperUser then // Make a local, not global, configuration file
-          cfgfile := GetAppConfigFile(False, False);
-        ForceDirectories(ExtractFilePath(cfgfile));
-        //make sure the downloader is FPC native
-        GlobalOptions.Downloader := 'FPC';
-        GlobalOptions.SaveGlobalToFile(cfgfile);
-        GeneratedConfig := True;
-      end;
-    end;
-  end;
-  // Load file or create new default configuration
-  if not GeneratedConfig then
-  begin
-    GlobalOptions.LoadGlobalFromFile(cfgfile);
-    //make sure the downloader is FPC native
-    GlobalOptions.Downloader := 'FPC';
-    if GlobalOptions.SaveInifileChanges and (not UseGlobalConfig or IsSuperUser) then
-      GlobalOptions.SaveGlobalToFile(cfgfile);
-  end;
-  GlobalOptions.CompilerConfig := GlobalOptions.DefaultCompilerConfig;
-  // Tracing of what we've done above, need to be done after the verbosity is set
-  if GeneratedConfig then
-    pkgglobals.Log(vlDebug, SLogGeneratingGlobalConfig, [cfgfile])
-  else
-    pkgglobals.Log(vlDebug, SLogLoadingGlobalConfig, [cfgfile]);
-  // Log configuration
-  GlobalOptions.LogValues(vlDebug);
-end;
-
 procedure TFppkgForm.LoadCompilerDefaults;
 var
   S: string;
@@ -658,7 +601,7 @@ var
 begin
   OldCurrDir := GetCurrentDir;
   try
-    LoadGlobalDefaults(cfg);
+    LoadGlobalDefaults(cfg.ConfigFile);
     //ProcessCommandLine(true);
 
     // Scan is special, it doesn't need a valid local setup

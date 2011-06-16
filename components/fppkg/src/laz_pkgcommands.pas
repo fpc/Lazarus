@@ -335,7 +335,7 @@ begin
             UFN:=CompilerOptions.LocalUnitDir;
         end;
       UFN:=IncludeTrailingPathDelimiter(UFN)+S+PathDelim+UnitConfigFileName;
-      LoadUnitConfigFromFile(P,UFN);
+      P.LoadUnitConfigFromFile(UFN);
       if P.IsFPMakeAddIn then
         AddFPMakeAddIn(P);
     end
