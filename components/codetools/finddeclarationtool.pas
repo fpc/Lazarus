@@ -9550,7 +9550,8 @@ begin
       debugln(['TFindDeclarationTool.FindTermTypeAsString [name: ',ExprTypeToString(ExprType)]);
       {$ENDIF}
       if (ExprType.Desc=xtContext)
-      and (ExprType.Context.Node.Desc=ctnEnumerationType) then begin
+      and (ExprType.Context.Node.Desc in [ctnEnumerationType,ctnEnumIdentifier])
+      then begin
         SetTool:=ExprType.Context.Tool;
         SetNode:=SetTool.FindSetOfEnumerationType(ExprType.Context.Node);
         if SetNode<>nil then begin
@@ -10166,6 +10167,9 @@ var
  end;
 
 begin
+  {$IFDEF ShowExprEval}
+  debugln(['TFindDeclarationTool.FindSetOfEnumerationType ',EnumNode.DescAsString]);
+  {$ENDIF}
   if EnumNode.Desc=ctnEnumIdentifier then EnumNode:=EnumNode.Parent;
   if EnumNode.Desc=ctnEnumerationType then EnumNode:=EnumNode.Parent;
   p:=@Src[EnumNode.StartPos];
@@ -10230,8 +10234,7 @@ begin
   if (AliasType<>nil) and (AliasType^.Node<>nil) then begin
     case AliasType^.Node.Desc of
     ctnTypeDefinition:
-      Result:=GetIdentifier(
-                          @AliasType^.Tool.Src[AliasType^.Node.StartPos]);
+      Result:=GetIdentifier(@AliasType^.Tool.Src[AliasType^.Node.StartPos]);
     end;
     if Result<>'' then exit;
   end;
