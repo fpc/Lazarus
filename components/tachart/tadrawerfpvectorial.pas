@@ -28,13 +28,12 @@ type
 
   TFPVectorialDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
-    FBottom: Integer;
+    FBoundingBox: TRect;
     FBrushColor: TFPColor;
     FBrushStyle: TFPBrushStyle;
     FCanvas: TvVectorialDocument;
     FFontSize: Integer;
     FPenColor: TFPColor;
-    FTop: Integer;
 
     procedure AddLine(AX, AY: Integer);
     function InvertY(AY: Integer): Integer; inline;
@@ -46,12 +45,13 @@ type
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
-    constructor Create(ACanvas: TvVectorialDocument; ATop, ABottom: Integer);
+    constructor Create(ACanvas: TvVectorialDocument);
   public
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart;
     procedure ClippingStart(const AClipRect: TRect);
     procedure ClippingStop;
+    procedure DrawingBegin(const ABoundingBox: TRect); override;
     procedure Ellipse(AX1, AY1, AX2, AY2: Integer);
     procedure FillRect(AX1, AY1, AX2, AY2: Integer);
     function GetBrushColor: TChartColor;
@@ -106,13 +106,15 @@ begin
   // Not implemented.
 end;
 
-constructor TFPVectorialDrawer.Create(
-  ACanvas: TvVectorialDocument; ATop, ABottom: Integer);
+constructor TFPVectorialDrawer.Create(ACanvas: TvVectorialDocument);
 begin
   inherited Create;
   FCanvas := ACanvas;
-  FTop := ATop;
-  FBottom := ABottom;
+end;
+
+procedure TFPVectorialDrawer.DrawingBegin(const ABoundingBox: TRect);
+begin
+  FBoundingBox := ABoundingBox;
 end;
 
 procedure TFPVectorialDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
@@ -147,7 +149,8 @@ end;
 
 function TFPVectorialDrawer.InvertY(AY: Integer): Integer;
 begin
-  Result := FTop + FBottom - AY;
+  with FBoundingBox do
+    Result := Bottom - Top - AY;
 end;
 
 procedure TFPVectorialDrawer.Line(AX1, AY1, AX2, AY2: Integer);
@@ -196,7 +199,7 @@ begin
   MoveTo(APoints[AStartIndex]);
   for i := 1 to ANumPts - 1 do
     with APoints[i + AStartIndex] do
-      FCanvas.AddLineToPath(X, Y);
+      AddLine(X, Y);
   FCanvas.SetPenColor(FPenColor);
   FCanvas.EndPath();
 end;
