@@ -203,7 +203,7 @@ begin
   if s.Count = 0 then
     Error(SErrNoPackageSpecified)
   else
-    DoRun(FppkgCfg, 'laz_clean', s);
+    DoRun(FppkgCfg, 'clean', s);
 
   s.Free;
 end;
@@ -219,7 +219,7 @@ begin
   if s.Count = 0 then
     Error(SErrNoPackageSpecified)
   else
-    DoRun(FppkgCfg, 'laz_compile', s);
+    DoRun(FppkgCfg, 'compile', s);
 
   s.Free;
 end;
@@ -235,7 +235,7 @@ begin
   if s.Count = 0 then
     Error(SErrNoPackageSpecified)
   else
-    DoRun(FppkgCfg, 'laz_download', s);
+    DoRun(FppkgCfg, 'download', s);
 
   s.Free;
 end;
@@ -251,7 +251,7 @@ begin
   if s.Count = 0 then
     Error(SErrNoPackageSpecified)
   else
-    DoRun(FppkgCfg, 'laz_archive', s);
+    DoRun(FppkgCfg, 'archive', s);
 
   s.Free;
 end;
@@ -267,7 +267,7 @@ begin
   if s.Count = 0 then
     Error(SErrNoPackageSpecified)
   else
-    DoRun(FppkgCfg, 'laz_build', s);
+    DoRun(FppkgCfg, 'build', s);
 
   s.Free;
 end;
@@ -323,7 +323,7 @@ begin
     Error(SErrNoPackageSpecified)
   else
   begin
-    DoRun(FppkgCfg, 'laz_install', s);
+    DoRun(FppkgCfg, 'install', s);
     ListPackages;
     UpdatePackageListView;
 
@@ -457,7 +457,7 @@ var
   s: TStrings;
 begin
   s := TStringList.Create;
-  DoRun(FppkgCfg, 'laz_update', s);
+  DoRun(FppkgCfg, 'update', s);
   UpdatePackageListView;
   s.Free;
 end;
