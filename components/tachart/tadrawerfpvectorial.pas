@@ -248,7 +248,7 @@ end;
 procedure TFPVectorialDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  Unused(AStyle);
+  FBrushStyle := AStyle;
   SetBrushColor(AColor);
 end;
 
