@@ -10679,18 +10679,21 @@ var
 begin
   // close the old project
   if SomethingOfProjectIsModified then begin
-    case IDEQuestionDialog(lisProjectChanged,
+    Result:=IDEQuestionDialog(lisProjectChanged,
       Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
-      mtconfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '')
-    of
-      mrYes: if DoSaveProject([])=mrAbort then begin
-          Result:=mrAbort;
-          exit;
-        end;
-      mrNo, mrNoToAll:
-    else // mrCancel, mrAbort ...
-      exit(mrCancel);
+      mtconfirmation, [mrYes, mrNoToAll, lisNo, mbCancel], '');
+    if Result=mrNoToAll then
+      Result:=mrOk;
+    if Result=mrYes then begin
+      Result:=DoSaveProject([sfCanAbort]);
+      if Result=mrAbort then exit;
+      if Result<>mrOk then begin
+        Result:=IDEQuestionDialog(lisChangesWereNotSaved,
+          lisDoYouStillWantToOpenAnotherProject,
+          mtConfirmation, [mrOk, lisDiscardChangesAndOpenProject, mrAbort]);
+      end;
     end;
+    if Result<>mrOk then exit(mrCancel);
   end;
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
