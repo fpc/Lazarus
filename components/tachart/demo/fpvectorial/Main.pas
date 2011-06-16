@@ -39,7 +39,7 @@ uses
 procedure SaveAs(AChart: TChart; AFormat: TvVectorialFormat);
 const
   ext: array [TvVectorialFormat] of String = (
-    'pdf', 'ps', 'svg', 'cdr', 'wmf', 'dxf', 'gcode5', 'gcode6');
+    'pdf', 'svg', 'cdr', 'wmf', 'dxf', 'ps', 'eps', 'gcode5', 'gcode6');
 var
   d: TvVectorialDocument;
 begin
