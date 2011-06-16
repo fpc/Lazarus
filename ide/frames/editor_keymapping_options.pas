@@ -282,7 +282,7 @@ end;
 procedure TEditorKeymappingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   FDialog := ADialog;
-  KeyMappingChooseSchemeButton.Caption := lisEdOptsChooseScheme;
+  KeyMappingChooseSchemeButton.Caption := lisEdOptsLoadAScheme;
   KeyMappingConsistencyCheckButton.Caption := dlgCheckConsistency;
   KeyMappingHelpLabel.Caption := lisHintDoubleClickOnTheCommandYouWantToEdit;
   KeyMappingFilterEdit.Text := lisFilter2;

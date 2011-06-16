@@ -1431,7 +1431,7 @@ resourcestring
   dlgDisableAntialiasing = 'Disable anti-aliasing';
   dlgKeyMappingScheme = 'Key Mapping Scheme';
   dlgCheckConsistency = 'Check consistency';
-  lisEdOptsChooseScheme = 'Choose Scheme';
+  lisEdOptsLoadAScheme = 'Load a scheme';
   dlgLang = 'Language';
   dlgEditSchemDefaults = 'Scheme globals';
   lis0No1DrawDividerLinesOnlyForTopLevel2DrawLinesForFi = '0 = no, 1 = draw '
