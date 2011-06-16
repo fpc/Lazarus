@@ -10421,8 +10421,14 @@ begin
         mtConfirmation, [mrYes, lisHintSave, mrNo, lisDiscardChanges, mrAbort,
           dlgCancel]);
       if Result=mrYes then begin
-        Result:=DoSaveProject([]);
+        Result:=DoSaveProject([sfCanAbort]);
         if Result=mrAbort then exit;
+        if Result<>mrOk then begin
+          Result:=IDEQuestionDialog(lisChangesWereNotSaved,
+            lisDoYouStillWantToCreateTheNewProject,
+            mtConfirmation, [mrYes, lisDiscardChangesCreateNewProject, mrAbort]);
+          if Result<>mrYes then exit;
+        end;
       end else if Result<>mrNo then
         exit;
     end;
@@ -10529,9 +10535,11 @@ begin
   DebugLn('TMainIDE.DoSaveProject A SaveAs=',dbgs(sfSaveAs in Flags),' SaveToTestDir=',dbgs(sfSaveToTestDir in Flags),' ProjectInfoFile=',Project1.ProjectInfoFile);
   {$ENDIF}
 
-  if DoCheckFilesOnDisk(true) in [mrCancel,mrAbort] then exit;
+  Result:=DoCheckFilesOnDisk(true);
+  if Result in [mrCancel,mrAbort] then exit;
 
-  if CheckMainSrcLCLInterfaces(sfQuietUnitCheck in Flags)<>mrOk then exit;
+  if CheckMainSrcLCLInterfaces(sfQuietUnitCheck in Flags)<>mrOk then
+    exit(mrCancel);
 
   // if this is a virtual project then save first the project info file
   // to get a project directory
@@ -10539,7 +10547,7 @@ begin
   and ([sfSaveToTestDir,sfDoNotSaveVirtualFiles]*Flags=[])
   then begin
     Result:=SaveProjectInfo(Flags);
-    if Result<>mrOk then exit;
+    if Result in [mrCancel,mrAbort] then exit;
   end;
 
   if (not (sfDoNotSaveVirtualFiles in Flags)) then
@@ -10559,13 +10567,13 @@ begin
             Include(SaveFileFlags,sfSaveToTestDir);
         end;
         Result:=DoSaveEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent, SaveFileFlags);
-        if (Result=mrAbort) or (Result=mrCancel) then exit;
+        if Result in [mrCancel,mrAbort] then exit;
       end;
     end;
   end;
 
   Result:=SaveProjectInfo(Flags);
-  if Result<>mrOk then exit;
+  if Result in [mrCancel,mrAbort] then exit;
 
   // save all editor files
   for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
@@ -10588,6 +10596,7 @@ begin
       end;
       Result:=DoSaveEditorFile(SourceEditorManager.SourceEditors[i], SaveFileFlags);
       if Result=mrAbort then exit;
+      // mrCancel: continue saving other files
     end;
   end;
 

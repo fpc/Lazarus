@@ -5350,6 +5350,10 @@ resourcestring
   lisBuildProject = 'Build project';
   lisCBPFiles = '%s (%s files)';
   lisCBPReallyDeleteSourceFiles = 'Really delete %s source files%s%s';
+  lisChangesWereNotSaved = 'Changes were not saved';
+  lisDoYouStillWantToCreateTheNewProject = 'Do you still want to create the '
+    +'new project?';
+  lisDiscardChangesCreateNewProject = 'Discard changes, create new project';
 
 implementation
 
