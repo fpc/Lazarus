@@ -1821,7 +1821,13 @@ begin
 
       mrYes:
         begin
-          CanClose := DoSaveProject([]) <> mrAbort;
+          MsgResult:=DoSaveProject([sfCanAbort]);
+          if MsgResult<>mrOk then begin
+            MsgResult:=IDEQuestionDialog(lisChangesWereNotSaved,
+              'Do you still want to quit?',
+              mtConfirmation, [mrOk, 'Discard changes and quit', mrAbort]);
+          end;
+          CanClose := MsgResult=mrOk;
           if not CanClose then exit;
         end;
 
