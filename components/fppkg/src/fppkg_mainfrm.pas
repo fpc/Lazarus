@@ -41,7 +41,7 @@ uses
   fppkg_optionsfrm, fppkg_details, fppkg_lpk,
   //IDE interface
   {$IFDEF LazarusIDEPackage}
-    IDEIntf, PackageIntf, IDECommands,
+    IDEIntf, PackageIntf, IDECommands, contnrs,
   {$ENDIF}
   // Repository handler objects
   fprepos,
@@ -284,6 +284,8 @@ begin
 
   //setup error callback function
   ErrorHandler := @LazError;
+  SetDefaultRepositoryClass(TLazFPRepository);
+
 
   Caption := rsFreePascalPackageManagerForLazarus;
 
@@ -308,11 +310,14 @@ end;
 procedure TFppkgForm.InstallButtonClick(Sender: TObject);
 var
   s: TStrings;
-  i: integer;
+  i,j,k: integer;
   LPKFile: string;
   {$IFDEF LazarusIDEPackage}
+  P: TLazFPPackage;
   RebuildLazarus: boolean;
   PkgFlags: TPkgInstallInIDEFlags;
+  APackage: TIDEPackage;
+  InstPackages: TObjectList;
   {$ENDIF}
 begin
   s := TStringList.Create;
@@ -327,39 +332,52 @@ begin
     ListPackages;
     UpdatePackageListView;
 
-    ////handle the installation of packages and the rebuilding of the IDE
-    //{$IFDEF LazarusIDEPackage}
-    //  RebuildLazarus := False;
-    //
-    //  //now install the packages in the IDE
-    //  for i := 0 to s.Count - 1 do
-    //  begin
-    //    //retrieve each package file location
-    //    LPKFile := LPKFindPackage(s[i]);
-    //
-    //    if LPKFile <> '' then
-    //    begin
-    //      PkgFlags := [piiifQuiet];
-    //
-    //      //make sure to determine if the IDE needs to be rebuilt
-    //      if LPKStatus(LPKFile) in [lpDesigntime, lpBoth] then
-    //      begin
-    //        RebuildLazarus := True;
-    //        PkgFlags := PkgFlags + [piiifRebuildIDE];
-    //      end;
-    //
-    //      //add LPK file to IDE
-    //      {$note what's the modal result doing here?}
-    //      //PackageEditingInterface.InstallPackages(, PkgFlags);
-    //    end;
-    //  end;
-    //
-    //  //one or more designtime or design/runtime packages were installed
-    //  if RebuildLazarus then
-    //    ExecuteIDECommand(Self, ecBuildLazarus);
-    //{$ENDIF}
-  end;
+    {$IFDEF LazarusIDEPackage}
+    RebuildLazarus := False;
+    InstPackages:=TObjectList.create;
+    try
+      PkgFlags := [piiifQuiet];
+      for i:=0 to s.Count-1 do
+      begin
+        P := InstalledRepository.FindPackage(s.Strings[i]) as TLazFPPackage;
+        if P.HasLazarusPackageFiles then
+          for j := 0 to p.LazarusPackageFiles.Count-1 do
+          begin
+            LPKFile := P.LazarusPackageFiles.Strings[j];
 
+            //make sure to determine if the IDE needs to be rebuilt
+            if LPKStatus(LPKFile) in [lpDesigntime, lpBoth] then
+            begin
+              RebuildLazarus := True;
+              PkgFlags := PkgFlags + [piiifRebuildIDE];
+            end;
+
+            //add LPK file to IDE
+            {$note what's the modal result doing here?}
+
+            PackageEditingInterface.DoOpenPackageFile(LPKFile,[pofRevert,pofDoNotOpenEditor],true);
+            APackage := nil;
+            for k := 0 to PackageEditingInterface.GetPackageCount-1 do
+              if PackageEditingInterface.GetPackages(k).Filename = LPKFile then
+                begin
+                  APackage := PackageEditingInterface.GetPackages(k);
+                  break;
+                end;
+            if not assigned(APackage) then
+              raise exception.create('Failed to find just installed package. Something went wrong.');
+            InstPackages.Add(APackage);
+          end;
+      end;
+
+      if InstPackages.Count>0 then
+        PackageEditingInterface.InstallPackages(InstPackages,PkgFlags);
+    finally
+      InstPackages.Free;
+    end;
+    if RebuildLazarus then
+      ExecuteIDECommand(Self, ecBuildLazarus);
+    {$ENDIF}
+  end;
   s.Free;
 end;
 

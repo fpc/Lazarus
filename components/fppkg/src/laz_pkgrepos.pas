@@ -9,6 +9,29 @@ uses
   fprepos;
 
 type
+
+  { TLazFPPackage }
+
+  TLazFPPackage = Class(TFPPackage)
+  private
+    FLazarusPackageFiles: TStrings;
+    function GetLazarusPackageFiles: TStrings;
+  protected
+    procedure LoadUnitConfigFromStringlist(Const AStringList: TStrings); override;
+  public
+    function HasLazarusPackageFiles: boolean;
+    property LazarusPackageFiles: TStrings read GetLazarusPackageFiles;
+    destructor Destroy; override;
+  end;
+
+  { TLazFPRepository }
+
+  TLazFPRepository = Class(TFPRepository)
+  protected
+    procedure CreatePackages; override;
+  end;
+
+type
   TLazPackageData = record
     Name: string;
     InstalledVersion: string;
@@ -136,6 +159,45 @@ begin
   end;
 
   FreeAndNil(SL);
+end;
+
+{ TLazFPPackage }
+
+function TLazFPPackage.GetLazarusPackageFiles: TStrings;
+begin
+  if not assigned(FLazarusPackageFiles) then
+    FLazarusPackageFiles := TStringList.Create;
+  Result := FLazarusPackageFiles;
+end;
+
+procedure TLazFPPackage.LoadUnitConfigFromStringlist(const AStringList: TStrings);
+var
+  L: TStrings;
+  S: String;
+begin
+  inherited LoadUnitConfigFromStringlist(AStringList);
+  S:=AStringList.Values['LazarusPackageFiles'];
+  if s <> '' then
+    LazarusPackageFiles.CommaText:=s;
+end;
+
+function TLazFPPackage.HasLazarusPackageFiles: boolean;
+begin
+  result := assigned(FLazarusPackageFiles) and (FLazarusPackageFiles.Count>0);
+end;
+
+destructor TLazFPPackage.Destroy;
+begin
+  FLazarusPackageFiles.Free;
+  inherited Destroy;
+end;
+
+{ TLazFPRepository }
+
+procedure TLazFPRepository.CreatePackages;
+begin
+  FPackages:=TFPPackages.Create(TLazFPPackage);
+  FPackages.StreamVersion:=StreamVersion;
 end;
 
 { TLazPackages }
