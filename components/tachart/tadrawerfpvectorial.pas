@@ -20,7 +20,7 @@ unit TADrawerFPVectorial;
 interface
 
 uses
-  Classes, FPCanvas, FPVectorial, TADrawUtils;
+  Classes, FPCanvas, FPVectorial, TADrawUtils, fpimage;
 
 type
 
@@ -28,10 +28,11 @@ type
 
   TFPVectorialDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
-    FBrushColor: TvColor;
+    FBrushColor: TFPColor;
+    FBrushStyle: TFPBrushStyle;
     FCanvas: TvVectorialDocument;
     FFontSize: Integer;
-    FPenColor: TvColor;
+    FPenColor: TFPColor;
   strict protected
     function GetFontAngle: Double; override;
     procedure SetBrush(ABrush: TFPCustomBrush);
@@ -71,21 +72,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils, TAGeometry;
-
-function ChartColorToVColor(AColor: TChartColor): TvColor;
-begin
-  Result.Alpha := 255;
-  Result.Red := AColor;
-  Result.Green := AColor shr 8;
-  Result.Blue := AColor shr 16;
-end;
-
-function VColorToChartColor(AColor: TvColor): TChartColor;
-begin
-  with AColor do
-    Result := Red + (Green shl 8) + (Blue shl 16);
-end;
+  Math, TAChartUtils, TAGeometry, fpvutils;
 
 { TFPVectorialDrawer }
 
@@ -137,7 +124,7 @@ end;
 
 function TFPVectorialDrawer.GetBrushColor: TChartColor;
 begin
-  Result := VColorToChartColor(FBrushColor);
+  Result := FPColorToChartColor(FBrushColor);
 end;
 
 function TFPVectorialDrawer.GetFontAngle: Double;
@@ -198,7 +185,7 @@ end;
 
 procedure TFPVectorialDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
-  FPenColor := ChartColorToVColor(AColor);
+  FPenColor := ChartColorToFPColor(AColor);
 end;
 
 procedure TFPVectorialDrawer.RadialPie(
@@ -215,7 +202,7 @@ begin
   FCanvas.AddLineToPath(AX1, AY2);
   FCanvas.AddLineToPath(AX1, AY1);
   FCanvas.SetBrushColor(FBrushColor);
-  FCanvas.SetBrushStyle(bsSolid);
+  FCanvas.SetBrushStyle(FBrushStyle);
   FCanvas.SetPenColor(FPenColor);
   FCanvas.EndPath();
 end;
@@ -228,12 +215,13 @@ end;
 
 procedure TFPVectorialDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  FBrushColor := ChartColorToVColor(FPColorToChartColor(ABrush.FPColor));
+  FBrushColor := ABrush.FPColor;
+  FBrushStyle := ABrush.Style;
 end;
 
 procedure TFPVectorialDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FBrushColor := ChartColorToVColor(AColor);
+  FBrushColor := ChartColorToFPColor(AColor);
 end;
 
 procedure TFPVectorialDrawer.SetBrushParams(
@@ -250,14 +238,14 @@ end;
 
 procedure TFPVectorialDrawer.SetPen(APen: TFPCustomPen);
 begin
-  FPenColor := ChartColorToVColor(FPColorToChartColor(APen.FPColor));
+  FPenColor := APen.FPColor;
 end;
 
 procedure TFPVectorialDrawer.SetPenParams(
   AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   Unused(AStyle);
-  FPenColor := ChartColorToVColor(AColor);
+  FPenColor := ChartColorToFPColor(AColor);
 end;
 
 function TFPVectorialDrawer.SimpleTextExtent(const AText: String): TPoint;
