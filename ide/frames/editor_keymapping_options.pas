@@ -109,9 +109,10 @@ begin
   begin
     Name := 'BackButton';
     AutoSize:=true;
-    Anchors:=[akBottom];
+    Anchors:=[akLeft,akBottom];
     Parent := Self;
     AnchorParallel(akBottom,6,Self);
+    AnchorParallel(akLeft,6,Self);
     Caption := dlgEdBack;
     OnClick := @BackButtonClick;
   end;
