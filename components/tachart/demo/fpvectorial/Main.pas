@@ -48,10 +48,10 @@ begin
   d := TvVectorialDocument.Create;
   d.Width := AChart.Width;
   d.Height := AChart.Height;
-  v := TFPVectorialDrawer.Create(d);
+  v := TFPVectorialDrawer.Create(d, 0, AChart.Height);
   v.DoChartColorToFPColor := @ChartColorSysToFPColor;
   with AChart do
-    Draw(v, Rect(0, 0, Width, Height));
+    Draw(v, Rect(0, 10, Width, Height));
   d.WriteToFile('test.' + ext[AFormat], AFormat);
 end;
 

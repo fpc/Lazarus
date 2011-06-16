@@ -28,11 +28,16 @@ type
 
   TFPVectorialDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
+    FBottom: Integer;
     FBrushColor: TFPColor;
     FBrushStyle: TFPBrushStyle;
     FCanvas: TvVectorialDocument;
     FFontSize: Integer;
     FPenColor: TFPColor;
+    FTop: Integer;
+
+    procedure AddLine(AX, AY: Integer);
+    function InvertY(AY: Integer): Integer; inline;
   strict protected
     function GetFontAngle: Double; override;
     procedure SetBrush(ABrush: TFPCustomBrush);
@@ -41,7 +46,7 @@ type
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
-    constructor Create(ACanvas: TvVectorialDocument);
+    constructor Create(ACanvas: TvVectorialDocument; ATop, ABottom: Integer);
   public
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart;
@@ -76,9 +81,14 @@ uses
 
 { TFPVectorialDrawer }
 
+procedure TFPVectorialDrawer.AddLine(AX, AY: Integer);
+begin
+  FCanvas.AddLineToPath(AX, InvertY(AY));
+end;
+
 procedure TFPVectorialDrawer.AddToFontOrientation(ADelta: Integer);
 begin
-
+  // Not implemented.
 end;
 
 procedure TFPVectorialDrawer.ClippingStart(const AClipRect: TRect);
@@ -96,10 +106,13 @@ begin
   // Not implemented.
 end;
 
-constructor TFPVectorialDrawer.Create(ACanvas: TvVectorialDocument);
+constructor TFPVectorialDrawer.Create(
+  ACanvas: TvVectorialDocument; ATop, ABottom: Integer);
 begin
   inherited Create;
   FCanvas := ACanvas;
+  FTop := ATop;
+  FBottom := ABottom;
 end;
 
 procedure TFPVectorialDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
@@ -107,16 +120,16 @@ var
   cx, cy, rx, ry: Integer;
 begin
   BoundingBoxToCenterAndHalfRadius(AX1, AY1, AX2, AY2, cx, cy, rx, ry);
-  FCanvas.AddEllipse(cx, cy, 0, rx, ry, 0.0);
+  FCanvas.AddEllipse(cx, InvertY(cy), 0, rx, ry, 0.0);
 end;
 
 procedure TFPVectorialDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
 begin
   MoveTo(AX1, AY1);
-  FCanvas.AddLineToPath(AX2, AY1);
-  FCanvas.AddLineToPath(AX2, AY2);
-  FCanvas.AddLineToPath(AX1, AY2);
-  FCanvas.AddLineToPath(AX1, AY1);
+  AddLine(AX2, AY1);
+  AddLine(AX2, AY2);
+  AddLine(AX1, AY2);
+  AddLine(AX1, AY1);
   FCanvas.SetBrushStyle(bsClear);
   FCanvas.SetPenColor(FPenColor);
   FCanvas.EndPath();
@@ -132,10 +145,15 @@ begin
   Result := 0.0;
 end;
 
+function TFPVectorialDrawer.InvertY(AY: Integer): Integer;
+begin
+  Result := FTop + FBottom - AY;
+end;
+
 procedure TFPVectorialDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
-  FCanvas.StartPath(AX1, AY1);
-  FCanvas.AddLineToPath(AX2, AY2);
+  FCanvas.StartPath(AX1, InvertY(AY1));
+  AddLine(AX2, AY2);
   FCanvas.SetPenColor(FPenColor);
   FCanvas.EndPath();
 end;
@@ -147,13 +165,13 @@ end;
 
 procedure TFPVectorialDrawer.LineTo(AX, AY: Integer);
 begin
-  FCanvas.AddLineToPath(AX, AY, FPenColor);
+  FCanvas.AddLineToPath(AX, InvertY(AY), FPenColor);
 end;
 
 procedure TFPVectorialDrawer.MoveTo(AX, AY: Integer);
 begin
   FCanvas.EndPath();
-  FCanvas.StartPath(AX, AY);
+  FCanvas.StartPath(AX, InvertY(AY));
 end;
 
 procedure TFPVectorialDrawer.Polygon(
@@ -164,7 +182,7 @@ begin
   MoveTo(APoints[AStartIndex]);
   for i := 1 to ANumPts - 1 do
     with APoints[i + AStartIndex] do
-      FCanvas.AddLineToPath(X, Y);
+      AddLine(X, Y);
   FCanvas.SetBrushColor(FBrushColor);
   FCanvas.SetPenColor(FPenColor);
   FCanvas.EndPath();
@@ -197,10 +215,10 @@ end;
 procedure TFPVectorialDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
 begin
   MoveTo(AX1, AY1);
-  FCanvas.AddLineToPath(AX2, AY1);
-  FCanvas.AddLineToPath(AX2, AY2);
-  FCanvas.AddLineToPath(AX1, AY2);
-  FCanvas.AddLineToPath(AX1, AY1);
+  AddLine(AX2, AY1);
+  AddLine(AX2, AY2);
+  AddLine(AX1, AY2);
+  AddLine(AX1, AY1);
   FCanvas.SetBrushColor(FBrushColor);
   FCanvas.SetBrushStyle(FBrushStyle);
   FCanvas.SetPenColor(FPenColor);
@@ -257,7 +275,7 @@ end;
 procedure TFPVectorialDrawer.SimpleTextOut(
   AX, AY: Integer; const AText: String);
 begin
-  FCanvas.AddText(AX, AY, 0, AText);
+  FCanvas.AddText(AX, InvertY(AY), 0, AText);
 end;
 
 end.
