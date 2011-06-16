@@ -5354,6 +5354,8 @@ resourcestring
   lisDoYouStillWantToCreateTheNewProject = 'Do you still want to create the '
     +'new project?';
   lisDiscardChangesCreateNewProject = 'Discard changes, create new project';
+  lisDoYouStillWantToQuit = 'Do you still want to quit?';
+  lisDiscardChangesAndQuit = 'Discard changes and quit';
 
 implementation
 
