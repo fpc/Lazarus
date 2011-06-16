@@ -394,6 +394,27 @@ var
   breaks: TIntegerDynArray;
   breakCount: Integer = 0;
 
+  // Drawing long polylines with wide pen is very inefficient on Windows and GTK.
+  // On Windows it is so bad that trying to draw polyline with 50000 points
+  // will cause hard freeze of entire OS. (!)
+  // So, split long polylines into segments.
+  function PolylineIsTooLong: Boolean; inline;
+  const
+    // There is a trade-off between the call overhead for short serment and
+    // the above-mentioned inefficiency for long ones.
+    // This value was selected by some experiments as "optimal enough" for
+    // both affected platforms.
+    MAX_LENGTH = 50;
+  begin
+    {$IF defined(WIN32) or defined(GTK2)}
+    Result :=
+      (LinePen.Width > 1) and (breakCount > 0) and
+      (pointCount - breaks[breakCount - 1] > MAX_LENGTH);
+    {$ELSE}
+    Result := false;
+    {$ENDIF}
+  end;
+
   procedure CacheLine(AA, AB: TDoublePoint);
   var
     ai, bi: TPoint;
@@ -404,7 +425,9 @@ var
     ai := ParentChart.GraphToImage(AA);
     bi := ParentChart.GraphToImage(AB);
     if ai = bi then exit;
-    if (pointCount = 0) or (points[pointCount - 1] <> ai) then begin
+    if
+      (pointCount = 0) or (points[pointCount - 1] <> ai) or PolylineIsTooLong
+    then begin
       breaks[breakCount] := pointCount;
       breakCount += 1;
       points[pointCount] := ai;
