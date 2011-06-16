@@ -10413,19 +10413,17 @@ begin
   Result:=ProjectDesc.InitDescriptor;
   if Result<>mrOk then exit;
 
-  // invalidate cached substituted macros
-  IncreaseCompilerParseStamp;
-
   // close current project first
   If Project1<>nil then begin
     if SomethingOfProjectIsModified then begin
-      Result:=MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
+      Result:=IDEQuestionDialog(lisProjectChanged, Format(lisSaveChangesToProject,
        [Project1.GetTitleOrName]),
-        mtconfirmation, [mbYes, mbNo, mbAbort], 0);
+        mtConfirmation, [mrYes, lisHintSave, mrNo, lisDiscardChanges, mrAbort,
+          dlgCancel]);
       if Result=mrYes then begin
         Result:=DoSaveProject([]);
         if Result=mrAbort then exit;
-      end else if Result in [mrCancel,mrAbort] then
+      end else if Result<>mrNo then
         exit;
     end;
     Result:=DoCloseProject;
@@ -10433,6 +10431,9 @@ begin
   end;
 
   // create a virtual project (i.e. unsaved and without real project directory)
+
+  // invalidate cached substituted macros
+  IncreaseCompilerParseStamp;
 
   // switch codetools to virtual project directory
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
