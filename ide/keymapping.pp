@@ -786,8 +786,8 @@ begin
   ecColSelEditorBottom: SetResult(VK_END, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
 
   // editing
-  ecBlockIndent: SetResult(VK_K,[ssCtrl],VK_I,[]);
-  ecBlockUnindent: SetResult(VK_K,[ssCtrl],VK_U,[]);
+  ecBlockIndent: SetResult(VK_K,[ssCtrl],VK_I,[],VK_K,[ssCtrl],VK_I,[ssCtrl]);
+  ecBlockUnindent: SetResult(VK_K,[ssCtrl],VK_U,[],VK_K,[ssCtrl],VK_U,[ssCtrl]);
   ecDeleteLastChar: SetResult(VK_H,[ssCtrl],VK_UNKNOWN,[],VK_BACK, [],VK_UNKNOWN,[]);
   ecDeleteChar: SetResult(VK_DELETE,[],VK_UNKNOWN,[]);
   ecDeleteWord: SetResult(VK_T,[ssCtrl],VK_UNKNOWN,[]);
