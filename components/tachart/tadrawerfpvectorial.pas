@@ -20,7 +20,7 @@ unit TADrawerFPVectorial;
 interface
 
 uses
-  Classes, FPCanvas, FPVectorial, TADrawUtils, fpimage;
+  Classes, FPCanvas, FPImage, FPVectorial, TADrawUtils;
 
 type
 
@@ -72,7 +72,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils, TAGeometry, fpvutils;
+  Math, TAChartUtils, TAGeometry;
 
 { TFPVectorialDrawer }
 
@@ -185,7 +185,7 @@ end;
 
 procedure TFPVectorialDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
-  FPenColor := ChartColorToFPColor(AColor);
+  FPenColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TFPVectorialDrawer.RadialPie(
@@ -221,7 +221,7 @@ end;
 
 procedure TFPVectorialDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FBrushColor := ChartColorToFPColor(AColor);
+  FBrushColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TFPVectorialDrawer.SetBrushParams(
@@ -245,7 +245,7 @@ procedure TFPVectorialDrawer.SetPenParams(
   AStyle: TFPPenStyle; AColor: TChartColor);
 begin
   Unused(AStyle);
-  FPenColor := ChartColorToFPColor(AColor);
+  FPenColor := FChartColorToFPColorFunc(AColor);
 end;
 
 function TFPVectorialDrawer.SimpleTextExtent(const AText: String): TPoint;

@@ -34,7 +34,8 @@ implementation
 {$R *.lfm}
 
 uses
-  FPVectorial, SVGVectorialWriter, avisocncgcodewriter, TADrawerFPVectorial;
+  FPVectorial, SVGVectorialWriter, avisocncgcodewriter, TADrawerFPVectorial,
+  TADrawUtils, TADrawerCanvas;
 
 procedure SaveAs(AChart: TChart; AFormat: TvVectorialFormat);
 const
@@ -42,12 +43,15 @@ const
     'pdf', 'svg', 'cdr', 'wmf', 'dxf', 'ps', 'eps', 'gcode5', 'gcode6');
 var
   d: TvVectorialDocument;
+  v: IChartDrawer;
 begin
   d := TvVectorialDocument.Create;
   d.Width := AChart.Width;
   d.Height := AChart.Height;
+  v := TFPVectorialDrawer.Create(d);
+  v.DoChartColorToFPColor := @ChartColorSysToFPColor;
   with AChart do
-    Draw(TFPVectorialDrawer.Create(d), Rect(0, 0, Width, Height));
+    Draw(v, Rect(0, 0, Width, Height));
   d.WriteToFile('test.' + ext[AFormat], AFormat);
 end;
 

@@ -15,10 +15,12 @@ object Form1: TForm1
     Width = 422
     AxisList = <    
       item
+        Minors = <>
         Title.LabelFont.Orientation = 900
       end    
       item
         Alignment = calBottom
+        Minors = <>
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
