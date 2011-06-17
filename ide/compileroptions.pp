@@ -676,7 +676,7 @@ function InheritedOptionsToCompilerParameters(
 function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
 function MergeCustomOptions(const OldOptions, AddOptions: string): string;
 function ConvertSearchPathToCmdLine(const switch, paths: String): String;
-function ConvertOptionsToCmdLine(const Delim, Switch, OptionStr: string): string;
+function ConvertOptionsToCmdLine(const Switch, OptionStr: string): string;
 
 type
   TGetBuildMacroValues = function(Options: TBaseCompilerOptions;
@@ -854,7 +854,7 @@ begin
   if (not (ccloNoLinkerOpts in Flags)) then begin
     CurLinkerOpts:=InheritedOptionStrings[icoLinkerOptions];
     if CurLinkerOpts<>'' then
-      Result := Result + ' ' + ConvertOptionsToCmdLine(' ','-k', CurLinkerOpts);
+      Result := Result + ' ' + ConvertOptionsToCmdLine('-k', CurLinkerOpts);
   end;
 
   // include path
@@ -937,20 +937,30 @@ begin
   end;
 end;
 
-function ConvertOptionsToCmdLine(const Delim, Switch,
+function ConvertOptionsToCmdLine(const Switch,
   OptionStr: string): string;
 var Startpos, EndPos: integer;
+  p: Integer;
 begin
   Result:='';
   StartPos:=1;
   while StartPos<=length(OptionStr) do begin
+    while (StartPos<=length(OptionStr)) and (OptionStr[StartPos]<=' ') do
+      inc(StartPos);
     EndPos:=StartPos;
-    while (EndPos<=length(OptionStr)) and (pos(OptionStr[EndPos],Delim)=0) do
+    while (EndPos<=length(OptionStr)) and (OptionStr[EndPos]>' ') do begin
+      if OptionStr[EndPos] in ['"',''''] then begin
+        p:=EndPos;
+        inc(EndPos);
+        while (EndPos<=length(OptionStr)) and (OptionStr[EndPos]<>OptionStr[p]) do
+          inc(EndPos);
+      end;
       inc(EndPos);
+    end;
     if EndPos>StartPos then begin
       Result:=Result+' '+Switch+copy(OptionStr,StartPos,EndPos-StartPos);
     end;
-    StartPos:=EndPos+1;
+    StartPos:=EndPos;
   end;
 end;
 
@@ -2581,7 +2591,7 @@ begin
     begin
       CurLinkerOptions:=ParsedOpts.GetParsedValue(pcosLinkerOptions);
       if (CurLinkerOptions<>'') then
-        switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', CurLinkerOptions);
+        switches := switches + ' ' + ConvertOptionsToCmdLine('-k', CurLinkerOptions);
     end;
 
     // inherited Linker options
@@ -2589,7 +2599,7 @@ begin
                                    not (ccloAbsolutePaths in Flags),coptParsed);
     //debugln(['TBaseCompilerOptions.MakeOptionsString InhLinkerOpts="',InhLinkerOpts,'"']);
     if InhLinkerOpts<>'' then
-      switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
+      switches := switches + ' ' + ConvertOptionsToCmdLine('-k', InhLinkerOpts);
   end;
 
   if Win32GraphicApp
