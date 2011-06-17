@@ -172,7 +172,6 @@ end;
 
 procedure TLazFPPackage.LoadUnitConfigFromStringlist(const AStringList: TStrings);
 var
-  L: TStrings;
   S: String;
 begin
   inherited LoadUnitConfigFromStringlist(AStringList);

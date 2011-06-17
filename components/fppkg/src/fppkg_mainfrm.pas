@@ -38,10 +38,10 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls, Buttons,
   Menus, CheckLst, Dialogs, fppkg_const,
-  fppkg_optionsfrm, fppkg_details, fppkg_lpk,
+  fppkg_optionsfrm, fppkg_details,
   //IDE interface
   {$IFDEF LazarusIDEPackage}
-    IDEIntf, PackageIntf, IDECommands, contnrs,
+    IDEIntf, PackageIntf, IDECommands, contnrs, fppkg_lpk,
   {$ENDIF}
   // Repository handler objects
   fprepos,
@@ -310,14 +310,14 @@ end;
 procedure TFppkgForm.InstallButtonClick(Sender: TObject);
 var
   s: TStrings;
-  i,j,k: integer;
-  LPKFile: string;
   {$IFDEF LazarusIDEPackage}
-  P: TLazFPPackage;
-  RebuildLazarus: boolean;
-  PkgFlags: TPkgInstallInIDEFlags;
-  APackage: TIDEPackage;
-  InstPackages: TObjectList;
+    P: TLazFPPackage;
+    RebuildLazarus: boolean;
+    PkgFlags: TPkgInstallInIDEFlags;
+    APackage: TIDEPackage;
+    InstPackages: TObjectList;
+    i, j, k: integer;
+    LPKFile: string;
   {$ENDIF}
 begin
   s := TStringList.Create;
