@@ -2758,7 +2758,6 @@ debian/compat svneol=native#text/plain
 debian/control svneol=native#text/plain
 debian/control.in svneol=native#text/plain
 debian/copyright svneol=native#text/plain
-debian/docs svneol=native#text/plain
 debian/fixdeb svneol=native#text/plain
 debian/lazarus-doc.doc-base.in svneol=native#text/plain
 debian/lazarus-doc.install.in svneol=native#text/plain
