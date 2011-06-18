@@ -93,10 +93,11 @@ implementation
 {$ENDIF}
 {$IF defined(FreeBSD) and defined(VER2_5)}
 {$DEFINE UseFreeBSDKernProc}
-{$ENDIF}
-
-{$IFDEF UseFreeBSDKernProc}
 uses FreeBSD, BaseUnix;
+{$ENDIF}
+{$IFDEF Darwin}
+{$DEFINE UseCarbonProc}
+uses MacOSAll, CarbonProc;
 {$ENDIF}
 
 function IsLazarusPIDRunning(aPID: int64): boolean;
@@ -133,6 +134,28 @@ function IsLazarusPIDRunning(aPID: int64): boolean;
   end;
   {$ENDIF}
 
+  {$IFDEF UseCarbonProc}
+  function CheckCarbonProc: boolean;
+  var
+    psn: ProcessSerialNumber;
+    info: ProcessInfoRec;
+    processName: CFStringRef;
+    s: String;
+  begin
+    Result:=false;
+    if GetProcessForPID(aPid,psn)=noErr then exit;
+    FillByte(info,SizeOf(info),0);
+    if GetProcessInformation(psn,info)=noErr then exit;
+    processName := nil;
+    if CopyProcessName(psn, processName)=noErr then exit;
+    if processName<>nil then begin
+      s:=CFStringToStr(processName);
+      CFRelease(processName);
+      Result:=Pos('lazarus',lowercase(s))>0;
+    end;
+  end;
+  {$ENDIF}
+
 begin
   Result:=true;
   {$IFDEF UseFreeBSDKernProc}
@@ -140,6 +163,9 @@ begin
   {$ENDIF}
   {$IFDEF UseProcFileSystem}
   if CheckProcFileSystem then exit;
+  {$ENDIF}
+  {$IFDEF UseCarbonProc}
+  if CheckCarbonProc then exit;
   {$ENDIF}
   Result:=false;
 end;
@@ -218,22 +244,22 @@ end;
 function IsHelpRequested (index : Integer = 1) : Boolean;
 begin
   Result := (ParamCount>=index) and
-            ((CompareText (ParamStrUTF8(index), '--help') = 0) or
-             (CompareText (ParamStrUTF8(index), '-help')  = 0) or
-             (CompareText (ParamStrUTF8(index), '-?')     = 0) or
-             (CompareText (ParamStrUTF8(index), '-h')     = 0));
+            ((SysUtils.CompareText (ParamStrUTF8(index), '--help') = 0) or
+             (SysUtils.CompareText (ParamStrUTF8(index), '-help')  = 0) or
+             (SysUtils.CompareText (ParamStrUTF8(index), '-?')     = 0) or
+             (SysUtils.CompareText (ParamStrUTF8(index), '-h')     = 0));
 end;
 
 function IsVersionRequested: boolean;
 begin
   Result := (ParamCount=1) and
-            ((CompareText (ParamStrUTF8(1), '--version') = 0) or
-             (CompareText (ParamStrUTF8(1), '-v')     = 0));
+            ((SysUtils.CompareText (ParamStrUTF8(1), '--version') = 0) or
+             (SysUtils.CompareText (ParamStrUTF8(1), '-v')     = 0));
 end;
 
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
 begin
-  Result:=CompareText(ParamStrUTF8(ParamIndex),Option) = 0;
+  Result:=SysUtils.CompareText(ParamStrUTF8(ParamIndex),Option) = 0;
 end;
 
 function ParamIsOptionPlusValue(ParamIndex : integer;
@@ -242,7 +268,7 @@ var
   p : String;
 begin
  p      := ParamStrUTF8(ParamIndex);
- Result := CompareText(LeftStr(p, length(Option)), Option) = 0;
+ Result := SysUtils.CompareText(LeftStr(p, length(Option)), Option) = 0;
  if Result then
    AValue := copy(p, length(Option) + 1, length(p))
  else
