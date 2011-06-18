@@ -456,7 +456,7 @@ begin
     if NewMsg.Parts=nil then
       NewMsg.Parts:=TStringList.Create;
     NewMsg.Parts.Assign(Parts);
-    NewMsg.Filename:=Parts.Values['Filename'];
+    NewMsg.UpdateSourcePosition;
   end;
   //DebugLn('TMessagesView.Add FItems.Count=',dbgs(FItems.Count),' OriginalIndex=',dbgs(OriginalIndex));
 

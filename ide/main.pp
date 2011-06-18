@@ -13468,8 +13468,8 @@ end;
 function GetFPCMessage(ALine: TLazMessageLine; var FileName: String; var CaretPos: TPoint; var ErrType: TFPCErrorType): Boolean;
 begin
   Result := Assigned(ALine.Parts);
-  if Result and (Aline.Filename = '') then
-    Aline.UpdateSourcePosition;
+  if Result and (ALine.Filename = '') then
+    ALine.UpdateSourcePosition;
   FileName:=ALine.Filename;
   CaretPos.x:=ALine.Column;
   CaretPos.y:=ALine.LineNumber;
@@ -13480,7 +13480,8 @@ end;
 
 function TMainIDE.DoJumpToCompilerMessage(Index:integer;
   FocusEditor: boolean): boolean;
-var MaxMessages: integer;
+var
+  MaxMessages: integer;
   Filename, SearchedFilename: string;
   LogCaretXY: TPoint;
   TopLine: integer;
@@ -13491,6 +13492,7 @@ var MaxMessages: integer;
   NewFilename: String;
   AnUnitInfo: TUnitInfo;
   AnEditorInfo: TUnitEditorInfo;
+  MsgLine: TLazMessageLine;
 begin
   Result:=false;
 
@@ -13501,7 +13503,8 @@ begin
     Index:=0;
     while (Index<MaxMessages) do begin
       // ParseFPCMessage doesn't support multilingual messages, by GetFPCMessage
-      if GetFPCMessage(MessagesView.VisibleItems[Index],Filename,LogCaretXY,MsgType) then
+      MsgLine:=MessagesView.VisibleItems[Index];
+      if GetFPCMessage(MsgLine,Filename,LogCaretXY,MsgType) then
       begin
         if MsgType in [etError,etFatal,etPanic] then break;
       end;
@@ -13515,9 +13518,10 @@ begin
   if MessagesView.ExecuteMsgLinePlugin(imqfoJump) then exit;
 
   // default: jump to source position
-  if GetFPCMessage(MessagesView.VisibleItems[Index],Filename,LogCaretXY,MsgType) 
-  then begin
-    CurDir:=MessagesView.VisibleItems[Index].Directory;
+  MsgLine:=MessagesView.VisibleItems[Index];
+  if GetFPCMessage(MsgLine,Filename,LogCaretXY,MsgType) then begin
+    //debugln(['TMainIDE.DoJumpToCompilerMessage Index=',Index,' MsgFile=',MsgLine.Filename,' MsgY=',MsgLine.LineNumber,' File=',Filename,' XY=',dbgs(LogCaretXY),' ',MsgLine.Parts.Text]);
+    CurDir:=MsgLine.Directory;
     if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
       // the directory was just hidden, re-append it
       NewFilename:=AppendPathDelim(CurDir)+Filename;

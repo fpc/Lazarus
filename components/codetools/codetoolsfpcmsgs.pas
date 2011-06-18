@@ -66,6 +66,7 @@ type
     FItems: TFPList; // list of TFPCMsgItem
     fSortedForID: TAVLTree; // tree of TFPCMsgItem sorted for ID
     fItemById: array of TFPCMsgItem;
+    fNodeMgr: TAVLTreeNodeMemManager;
     function GetItems(Index: integer): TFPCMsgItem;
     procedure CreateArray;
   public
@@ -222,27 +223,41 @@ var
   MaxID: Integer;
   i: Integer;
   Item: TFPCMsgItem;
+  MinID: Integer;
 begin
   SetLength(fItemById,0);
   if fSortedForID.Count=0 then
     exit;
-  MaxID:=TFPCMsgItem(fSortedForID.FindHighest.Data).ID;
+  debugln(['TFPCMsgFile.CreateArray AAA1']);
+  Item:=TFPCMsgItem(fSortedForID.FindLowest.Data);
+  MinID:=Item.ID;
+  if MinID<0 then begin
+    debugln(['TFPCMsgFile.CreateArray WARNING: MinID ',MinID,' too low: ',Item.Msg]);
+    exit;
+  end;
+  Item:=TFPCMsgItem(fSortedForID.FindHighest.Data);
+  MaxID:=Item.ID;
   if MaxID>100000 then begin
-    debugln(['TFPCMsgFile.CreateArray WARNING: MaxID ',MaxID,' too high']);
+    debugln(['TFPCMsgFile.CreateArray WARNING: MaxID ',MaxID,' too high: ',Item.Msg]);
     exit;
   end;
   SetLength(fItemById,MaxID+1);
   for i:=0 to length(fItemById)-1 do fItemById[i]:=nil;
   for i:=0 to FItems.Count-1 do begin
     Item:=TFPCMsgItem(FItems[i]);
+    debugln(['TFPCMsgFile.CreateArray ',Item.ID,' ',Item.Msg]);
     fItemById[Item.ID]:=Item;
   end;
 end;
 
 constructor TFPCMsgFile.Create;
 begin
+  debugln(['TFPCMsgFile.Create START']);
+  inherited Create;
   FItems:=TFPList.Create;
   fSortedForID:=TAVLTree.Create(@CompareFPCMsgId);
+  fNodeMgr:=TAVLTreeNodeMemManager.Create;
+  fSortedForID.SetNodeManager(fNodeMgr);
 end;
 
 destructor TFPCMsgFile.Destroy;
@@ -250,6 +265,7 @@ begin
   Clear;
   FreeAndNil(FItems);
   FreeAndNil(fSortedForID);
+  FreeAndNil(fNodeMgr);
   inherited Destroy;
 end;
 
@@ -257,9 +273,13 @@ procedure TFPCMsgFile.LoadFromFile(const Filename: string);
 var
   sl: TStringList;
 begin
+  debugln(['TFPCMsgFile.LoadFromFile AAA1']);
+  exit;
   sl:=TStringList.Create;
   try
+    debugln(['TFPCMsgFile.LoadFromFile AAA2']);
     sl.LoadFromFile(UTF8ToSys(Filename));
+    debugln(['TFPCMsgFile.LoadFromFile AAA3']);
     LoadFromList(sl);
   finally
     sl.Free;
@@ -373,6 +393,7 @@ var
   s: string;
   Item: TFPCMsgItem;
 begin
+  debugln(['TFPCMsgFile.LoadFromList START']);
   Clear;
   Line:=0;
   Item:=nil;
@@ -393,6 +414,7 @@ begin
     end else begin
       Item:=ReadItem(Line,s);
       if Item<>nil then begin
+        debugln(['TFPCMsgFile.LoadFromList ',Item.ID,' ',Item.Msg]);
         Item.Index:=FItems.Count;
         FItems.Add(Item);
         fSortedForID.Add(Item);
@@ -400,6 +422,7 @@ begin
     end;
     inc(Line);
   end;
+  debugln(['TFPCMsgFile.LoadFromList BBB1']);
   CreateArray;
 end;
 
