@@ -1183,17 +1183,17 @@ type
 
   PGradientTriangle = ^tagGradientTriangle;
   tagGRADIENTTRIANGLE = record
-    Vertex1: Longint;
-    Vertex2: Longint;
-    Vertex3: Longint;
+    Vertex1: Cardinal;
+    Vertex2: Cardinal;
+    Vertex3: Cardinal;
   end;
   GRADIENTTRIANGLE = tagGRADIENTTRIANGLE;
   TGradientTriangle = GRADIENTTRIANGLE;
 
   PGradientRect = ^tagGradientRect;
   tagGRADIENTRECT = record
-    UpperLeft: Longint;
-    LowerRight: Longint;
+    UpperLeft: Cardinal;
+    LowerRight: Cardinal;
   end;
   GRADIENTRECT = tagGRADIENTRECT;
   TGradientRect = GRADIENTRECT;
