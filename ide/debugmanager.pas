@@ -2029,6 +2029,7 @@ var
 begin
   TheDialog := TAssemblerDlg(FDialogs[ddtAssembler]);
   TheDialog.Disassembler := FDisassembler;
+  TheDialog.DebugManager := Self;
   TheDialog.SetLocation(FDebugger, FCurrentLocation.Address);
 end;
 
