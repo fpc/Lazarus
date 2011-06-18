@@ -94,6 +94,7 @@ begin
   if Assigned(OnProcessCommand) and (Command <> ecNone)
   then begin
     OnProcessCommand(Self,Command,Handled);
+    Key := 0;
   end;
 end;
 
