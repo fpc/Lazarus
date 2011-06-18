@@ -758,8 +758,6 @@ var
   QtRegion: TQtRegion;
 begin
   QtRegion := TQtRegion.Create(True, X1, Y1, X2, Y2);
-  if (X1 <> 0) or (Y1 <> 0) then
-    QtRegion.translate(X1, Y1);
   Result := HRGN(QtRegion);
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
