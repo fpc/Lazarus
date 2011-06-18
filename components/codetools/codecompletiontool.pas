@@ -5500,46 +5500,51 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy InsertPos=',dbgs(InsertPos),' Name="',VariableName,'" Type="',NewType,'" Unit=',NewUnitName]);
+  debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy InsertPos=',dbgs(InsertPos),' Name="',VariableName,'" Type="',NewType,'" Unit=',NewUnitName,' LevelPos=',dbgs(LevelPos)]);
   {$ENDIF}
   BuildTreeAndGetCleanPos(InsertPos,CleanCursorPos);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CaretToCleanPos(LevelPos,LevelCleanPos);
+  if LevelCleanPos>0 then begin
+    Node:=FindDeepestNodeAtPos(LevelCleanPos,false);
+    while Node<>nil do begin
+      //debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy Node=',Node.DescAsString]);
+      if Node.Desc in AllClassObjects then begin
+        // class member
+        debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy class member']);
+        // initialize class for code completion
+        InitClassCompletion(Node,SourceChangeCache);
+        // check if variable already exists
+        if VarExistsInCodeCompleteClass(UpperCaseStr(VariableName)) then begin
+          debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy member already exists: ',VariableName,' Class=',ExtractClassName(Node,false)]);
+          exit;
+        end;
+        ClassPart:=ncpPublishedVars;
+        case Visibility of
+        ctnClassPrivate: ClassPart:=ncpPrivateVars;
+        ctnClassProtected: ClassPart:=ncpProtectedVars;
+        ctnClassPublic: ClassPart:=ncpPublicVars;
+        end;
+        AddClassInsertion(UpperCaseStr(VariableName),
+                          VariableName+':'+NewType+';',VariableName,ClassPart);
+        if not InsertAllNewClassParts then
+          RaiseException(ctsErrorDuringInsertingNewClassParts);
+        if (NewUnitName<>'')
+        and (not AddUnitToMainUsesSection(NewUnitName,'',SourceChangeCache)) then
+        begin
+          debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy AddUnitToMainUsesSection for new class memeber failed']);
+          exit;
+        end;
+        // apply the changes
+        if not SourceChangeCache.Apply then
+          RaiseException(ctsUnableToApplyChanges);
+        exit(true);
+      end;
+      Node:=Node.Parent;
+    end;
+  end;
   SourceChangeCache.MainScanner:=Scanner;
   Node:=CursorNode;
-  while Node<>nil do begin
-    if Node.Desc in AllClassObjects then begin
-      // class member
-      // initialize class for code completion
-      InitClassCompletion(Node,SourceChangeCache);
-      // check if variable already exists
-      if VarExistsInCodeCompleteClass(UpperCaseStr(VariableName)) then begin
-        debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy member already exists: ',VariableName,' Class=',ExtractClassName(Node,false)]);
-        exit;
-      end;
-      ClassPart:=ncpPublishedVars;
-      case Visibility of
-      ctnClassPrivate: ClassPart:=ncpPrivateVars;
-      ctnClassProtected: ClassPart:=ncpProtectedVars;
-      ctnClassPublic: ClassPart:=ncpPublicVars;
-      end;
-      AddClassInsertion(UpperCaseStr(VariableName),
-                        VariableName+':'+NewType+';',VariableName,ClassPart);
-      if not InsertAllNewClassParts then
-        RaiseException(ctsErrorDuringInsertingNewClassParts);
-      if (NewUnitName<>'')
-      and (not AddUnitToMainUsesSection(NewUnitName,'',SourceChangeCache)) then
-      begin
-        debugln(['TCodeCompletionCodeTool.DeclareVariableNearBy AddUnitToMainUsesSection for new class memeber failed']);
-        exit;
-      end;
-      // apply the changes
-      if not SourceChangeCache.Apply then
-        RaiseException(ctsUnableToApplyChanges);
-      exit(true);
-    end;
-    Node:=Node.Parent;
-  end;
   Result:=AddLocalVariable(CleanCursorPos,1,VariableName,NewType,NewUnitName,
                            NewPos,NewTopLine,SourceChangeCache,LevelCleanPos);
 end;
