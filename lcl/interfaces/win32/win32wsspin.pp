@@ -169,7 +169,7 @@ begin
     Flags := Flags or ES_AUTOHSCROLL;
     HotTracking := False;
     SystemParametersInfo(SPI_GETHOTTRACKING, 0, @HotTracking, 0);
-    UpDownFlags := WS_CHILD or UDS_ALIGNRIGHT or UDS_ARROWKEYS or
+    UpDownFlags := WS_CHILD or WS_CLIPSIBLINGS or UDS_ALIGNRIGHT or UDS_ARROWKEYS or
       UpDownHotStyle[HotTracking] or ((WS_VISIBLE or WS_DISABLED) and Flags);
     {$IFDEF WindowsUnicodeSupport}
     if UnicodeEnabledOS then
