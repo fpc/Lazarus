@@ -769,32 +769,44 @@ end;
 class function TGtk2WSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  Widget: PGtkWidget;
+  Frame, WidgetClient: PGtkWidget;
   WidgetInfo: PWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  Widget := TGtk2Widgetset(Widgetset).CreateAPIWidget(AWinControl);
+  Frame := gtk_frame_new(nil);
+  gtk_frame_set_shadow_type(PGtkFrame(Frame),
+    BorderStyleShadowMap[TCustomControl(AWinControl).BorderStyle]);
+
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  DebugGtkWidgets.MarkCreated(Frame, dbgsName(AWinControl));
   {$ENDIF}
 
-  Result := THandle(PtrUInt(Widget));
-  if Result = 0 then Exit;
+  WidgetClient := CreateFixedClientWidget(True);
 
-  WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
+  gtk_container_add(GTK_CONTAINER(Frame), WidgetClient);
+
+  WidgetInfo := CreateWidgetInfo(Frame, AWinControl, AParams);
+  WidgetInfo^.ClientWidget := WidgetClient;
+  WidgetInfo^.CoreWidget := WidgetClient;
+  WidgetInfo^.LCLObject := AWinControl;
   WidgetInfo^.Style := AParams.Style;
   WidgetInfo^.ExStyle := AParams.ExStyle;
   WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
 
-  // set allocation
+  g_object_set_data(PGObject(WidgetClient), 'widgetinfo', WidgetInfo);
+
+  gtk_widget_show_all(Frame);
+
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(Widget, @Allocation);
+  gtk_widget_size_allocate(Frame, @Allocation);
 
-  Set_RC_Name(AWinControl, Widget);
-  SetCallbacks(Widget, WidgetInfo);
+  Set_RC_Name(AWinControl, Frame);
+  SetCallbacks(Frame, WidgetInfo);
+
+  Result := TLCLIntfHandle(PtrUInt(Frame));
 end;
 
 class procedure TGtk2WSCustomPanel.SetColor(const AWinControl: TWinControl);
