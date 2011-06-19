@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-11 18:37+0300\n"
+"PO-Revision-Date: 2011-06-19 17:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1975,6 +1975,7 @@ msgid "Extra 2"
 msgstr "Дополнительная 2"
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
 msgid "Import"
 msgstr "Импорт"
 
@@ -2996,8 +2997,9 @@ msgid "Use tab history when closing tabs"
 msgstr "Учитывать историю вкладок при их закрытии"
 
 #: lazarusidestrconsts.dlguseunitcaption
-msgid "Use a unit from this project"
-msgstr "Использовать модуль из текущего проекта"
+#| msgid "Use a unit from this project"
+msgid "Add unit to Uses section"
+msgstr "Добавить модуль в выражение Uses"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3147,6 +3149,16 @@ msgstr "Очистить все снимки"
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr "Переключить отображение между снимком и текущим состоянием"
+
+#: lazarusidestrconsts.histdlgbtnexport
+msgctxt "lazarusidestrconsts.histdlgbtnexport"
+msgid "Export"
+msgstr "Экспорт"
+
+#: lazarusidestrconsts.histdlgbtnimport
+msgctxt "lazarusidestrconsts.histdlgbtnimport"
+msgid "Import"
+msgstr "Импорт"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -3907,6 +3919,10 @@ msgstr "начинается"
 msgid "Behind related"
 msgstr "После связанных"
 
+#: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
+msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
+msgstr "Отображается наилучшим образом при установленном компоненте HTML, например, turbopoweriprodsgn"
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Всегда собирать перед запуском"
@@ -4612,6 +4628,10 @@ msgstr "Изменить файл"
 #| msgid "Change Parent..."
 msgid "Change Parent"
 msgstr "Сменить родителя"
+
+#: lazarusidestrconsts.lischangeswerenotsaved
+msgid "Changes were not saved"
+msgstr "Изменения не были сохранены"
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -6911,6 +6931,18 @@ msgstr "Отбросить изменения"
 msgid "Discard all changes"
 msgstr "Отбросить все изменения"
 
+#: lazarusidestrconsts.lisdiscardchangesandopenproject
+msgid "Discard changes and open project"
+msgstr "Отбросить изменения и открыть проект"
+
+#: lazarusidestrconsts.lisdiscardchangesandquit
+msgid "Discard changes and quit"
+msgstr "Отбросить изменения и выйти"
+
+#: lazarusidestrconsts.lisdiscardchangescreatenewproject
+msgid "Discard changes, create new project"
+msgstr "Отбросить изменения и создать новый проект"
+
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "Изменённые файлы:"
@@ -6979,6 +7011,18 @@ msgstr "Не показывать этот диалог для данного п
 msgid "Do not show this message again"
 msgstr "Больше не показывать это сообщение"
 
+#: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
+msgid "Do you still want to create the new project?"
+msgstr "Вы действительно хотите создать новый проект?"
+
+#: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
+msgid "Do you still want to open another project?"
+msgstr "Вы действительно хотите открыть другой проект?"
+
+#: lazarusidestrconsts.lisdoyoustillwanttoquit
+msgid "Do you still want to quit?"
+msgstr "Вы действительно хотите выйти?"
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr "Отображать линии сетки"
@@ -7043,9 +7087,9 @@ msgstr "Редактировать контекстно-зависимую сп�
 msgid "Editor file types"
 msgstr "Типы файлов редактора"
 
-#: lazarusidestrconsts.lisedoptschoosescheme
-msgid "Choose Scheme"
-msgstr "Выбрать схему"
+#: lazarusidestrconsts.lisedoptsloadascheme
+msgid "Load a scheme"
+msgstr "Загрузить схему"
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -7869,6 +7913,10 @@ msgstr "Исправить файл LFM"
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
 msgstr "С плавающей точкой"
+
+#: lazarusidestrconsts.lisfocushint
+msgid "Focus hint"
+msgstr "Прикрепить подсказку"
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -13868,6 +13916,10 @@ msgstr "Показывать значки для:"
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr "Показывать поле (лев)"
+
+#: lazarusidestrconsts.lisshowhelp
+msgid "Show help"
+msgstr "Показывать справку"
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"

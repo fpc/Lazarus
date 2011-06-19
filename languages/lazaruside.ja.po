@@ -1957,6 +1957,7 @@ msgid "Extra 2"
 msgstr "追加２"
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
 msgid "Import"
 msgstr "インポート"
 
@@ -2981,7 +2982,7 @@ msgid "Use tab history when closing tabs"
 msgstr "タブを閉じるときにタブ履歴を使用"
 
 #: lazarusidestrconsts.dlguseunitcaption
-msgid "Use a unit from this project"
+msgid "Add unit to Uses section"
 msgstr ""
 
 #: lazarusidestrconsts.dlgvaluecolor
@@ -3141,6 +3142,16 @@ msgstr ""
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnexport
+msgctxt "lazarusidestrconsts.histdlgbtnexport"
+msgid "Export"
+msgstr "エクスポート"
+
+#: lazarusidestrconsts.histdlgbtnimport
+msgctxt "lazarusidestrconsts.histdlgbtnimport"
+msgid "Import"
+msgstr "インポート"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -3905,6 +3916,10 @@ msgstr "begins"
 msgid "Behind related"
 msgstr "関連するものの後に"
 
+#: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
+msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "実行の前に常に構築"
@@ -4612,6 +4627,10 @@ msgstr "ファイルを変更"
 #| msgid "Change Parent..."
 msgid "Change Parent"
 msgstr "基本クラスを変更 ..."
+
+#: lazarusidestrconsts.lischangeswerenotsaved
+msgid "Changes were not saved"
+msgstr ""
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -6923,6 +6942,18 @@ msgstr "変更を破棄"
 msgid "Discard all changes"
 msgstr "すべての変更を破棄"
 
+#: lazarusidestrconsts.lisdiscardchangesandopenproject
+msgid "Discard changes and open project"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangesandquit
+msgid "Discard changes and quit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangescreatenewproject
+msgid "Discard changes, create new project"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "変更されたファイル"
@@ -6991,6 +7022,18 @@ msgstr "このプロジェクトについてはこのダイアログを表示し
 msgid "Do not show this message again"
 msgstr "このメッセージを再び表示しない"
 
+#: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
+msgid "Do you still want to create the new project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
+msgid "Do you still want to open another project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoquit
+msgid "Do you still want to quit?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr "グリッド線を描く"
@@ -7055,9 +7098,9 @@ msgstr "状況依存ヘルプを編集"
 msgid "Editor file types"
 msgstr ""
 
-#: lazarusidestrconsts.lisedoptschoosescheme
-msgid "Choose Scheme"
-msgstr "スキームを選択してください"
+#: lazarusidestrconsts.lisedoptsloadascheme
+msgid "Load a scheme"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -7881,6 +7924,10 @@ msgstr "LFMファイルを修復"
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
 msgstr "浮動小数点"
+
+#: lazarusidestrconsts.lisfocushint
+msgid "Focus hint"
+msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -13935,6 +13982,10 @@ msgstr "次のグリフ(Glyph)表示設定:"
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr "ガターを表示"
+
+#: lazarusidestrconsts.lisshowhelp
+msgid "Show help"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"

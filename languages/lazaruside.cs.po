@@ -1951,6 +1951,7 @@ msgid "Extra 2"
 msgstr "Extra 2"
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
 msgid "Import"
 msgstr "Import"
 
@@ -2963,7 +2964,9 @@ msgid "Use tab history when closing tabs"
 msgstr "Použít historii záložek při zavření záložky"
 
 #: lazarusidestrconsts.dlguseunitcaption
-msgid "Use a unit from this project"
+#, fuzzy
+#| msgid "Use a unit from this project"
+msgid "Add unit to Uses section"
 msgstr "Použít jednotku z tohoto projektu"
 
 #: lazarusidestrconsts.dlgvaluecolor
@@ -3107,6 +3110,16 @@ msgstr ""
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnexport
+msgctxt "lazarusidestrconsts.histdlgbtnexport"
+msgid "Export"
+msgstr "Exportovat"
+
+#: lazarusidestrconsts.histdlgbtnimport
+msgctxt "lazarusidestrconsts.histdlgbtnimport"
+msgid "Import"
+msgstr "Import"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -3863,6 +3876,10 @@ msgstr "začátky"
 msgid "Behind related"
 msgstr "Za vztaženými"
 
+#: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
+msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Vždy sestavit před spuštěním"
@@ -4570,6 +4587,10 @@ msgstr "Změnit soubor"
 #| msgid "Change Parent..."
 msgid "Change Parent"
 msgstr "Změnit rodiče..."
+
+#: lazarusidestrconsts.lischangeswerenotsaved
+msgid "Changes were not saved"
+msgstr ""
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -6874,6 +6895,18 @@ msgstr "Zahodit změny"
 msgid "Discard all changes"
 msgstr "Zahodit všechny změny"
 
+#: lazarusidestrconsts.lisdiscardchangesandopenproject
+msgid "Discard changes and open project"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangesandquit
+msgid "Discard changes and quit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangescreatenewproject
+msgid "Discard changes, create new project"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "Změněné soubory:..."
@@ -6942,6 +6975,18 @@ msgstr "Nezobrazovat tento dialog pro tento projekt"
 msgid "Do not show this message again"
 msgstr "Neukazovat znova tuto zprávu"
 
+#: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
+msgid "Do you still want to create the new project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
+msgid "Do you still want to open another project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoquit
+msgid "Do you still want to quit?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr "Kreslit čáry mřížky"
@@ -7006,9 +7051,9 @@ msgstr "Upravit kontextovou nápovědu"
 msgid "Editor file types"
 msgstr "Typy souborů editoru"
 
-#: lazarusidestrconsts.lisedoptschoosescheme
-msgid "Choose Scheme"
-msgstr "Vyberte schéma"
+#: lazarusidestrconsts.lisedoptsloadascheme
+msgid "Load a scheme"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -7830,6 +7875,10 @@ msgstr "Opravit LFM soubor"
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
 msgstr "Plovoucí čárka"
+
+#: lazarusidestrconsts.lisfocushint
+msgid "Focus hint"
+msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -13817,6 +13866,10 @@ msgstr "Zobrazit ikony pro:"
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr "Ukázat žlábek"
+
+#: lazarusidestrconsts.lisshowhelp
+msgid "Show help"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"

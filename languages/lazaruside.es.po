@@ -1950,6 +1950,7 @@ msgid "Extra 2"
 msgstr "Extra 2"
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
 msgid "Import"
 msgstr "Importar"
 
@@ -2969,7 +2970,9 @@ msgid "Use tab history when closing tabs"
 msgstr "Usar historial cuando cierre pestañas"
 
 #: lazarusidestrconsts.dlguseunitcaption
-msgid "Use a unit from this project"
+#, fuzzy
+#| msgid "Use a unit from this project"
+msgid "Add unit to Uses section"
 msgstr "Usar una unidad de este proyecto"
 
 #: lazarusidestrconsts.dlgvaluecolor
@@ -3121,6 +3124,16 @@ msgstr ""
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnexport
+msgctxt "lazarusidestrconsts.histdlgbtnexport"
+msgid "Export"
+msgstr "Exportar"
+
+#: lazarusidestrconsts.histdlgbtnimport
+msgctxt "lazarusidestrconsts.histdlgbtnimport"
+msgid "Import"
+msgstr "Importar"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -3882,6 +3895,10 @@ msgstr "empieza"
 msgid "Behind related"
 msgstr "Detrás de los relacionados"
 
+#: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
+msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Siempre construir antes de ejecutar"
@@ -4589,6 +4606,10 @@ msgstr "Modificar archivo"
 #| msgid "Change Parent..."
 msgid "Change Parent"
 msgstr "Cambiar Padre ..."
+
+#: lazarusidestrconsts.lischangeswerenotsaved
+msgid "Changes were not saved"
+msgstr ""
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -6897,6 +6918,18 @@ msgstr "Descartar cambios"
 msgid "Discard all changes"
 msgstr "Descartar todos los cambios"
 
+#: lazarusidestrconsts.lisdiscardchangesandopenproject
+msgid "Discard changes and open project"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangesandquit
+msgid "Discard changes and quit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangescreatenewproject
+msgid "Discard changes, create new project"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "Archivos cambiados"
@@ -6965,6 +6998,18 @@ msgstr "No mostrar este dialogo para este proyecto"
 msgid "Do not show this message again"
 msgstr "No volver a mostrar este mensaje"
 
+#: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
+msgid "Do you still want to create the new project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
+msgid "Do you still want to open another project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoquit
+msgid "Do you still want to quit?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr "Dibujar lineas de cuadrícula"
@@ -7029,9 +7074,9 @@ msgstr "Editar ayuda contextual"
 msgid "Editor file types"
 msgstr "Tipos de archivo del editor"
 
-#: lazarusidestrconsts.lisedoptschoosescheme
-msgid "Choose Scheme"
-msgstr "Escoja Esquema"
+#: lazarusidestrconsts.lisedoptsloadascheme
+msgid "Load a scheme"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -7854,6 +7899,10 @@ msgstr "Corregir fichero LFM"
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
 msgstr "Punto Flotante"
+
+#: lazarusidestrconsts.lisfocushint
+msgid "Focus hint"
+msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -13872,6 +13921,10 @@ msgstr "Mostrar iconos en:"
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr "Mostrar columna de marcas"
+
+#: lazarusidestrconsts.lisshowhelp
+msgid "Show help"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"

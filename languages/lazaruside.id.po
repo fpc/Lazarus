@@ -1950,6 +1950,7 @@ msgid "Extra 2"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
 msgid "Import"
 msgstr ""
 
@@ -2974,7 +2975,7 @@ msgid "Use tab history when closing tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlguseunitcaption
-msgid "Use a unit from this project"
+msgid "Add unit to Uses section"
 msgstr ""
 
 #: lazarusidestrconsts.dlgvaluecolor
@@ -3133,6 +3134,16 @@ msgstr ""
 
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnexport
+msgctxt "lazarusidestrconsts.histdlgbtnexport"
+msgid "Export"
+msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnimport
+msgctxt "lazarusidestrconsts.histdlgbtnimport"
+msgid "Import"
 msgstr ""
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
@@ -3898,6 +3909,10 @@ msgstr "mulai"
 msgid "Behind related"
 msgstr ""
 
+#: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
+msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Selalu Membangun sebelum Dijalankan"
@@ -4601,6 +4616,10 @@ msgstr ""
 #| msgid "Change Parent..."
 msgid "Change Parent"
 msgstr "Ubah leluhur ..."
+
+#: lazarusidestrconsts.lischangeswerenotsaved
+msgid "Changes were not saved"
+msgstr ""
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -6905,6 +6924,18 @@ msgstr "Abaikan perubahan"
 msgid "Discard all changes"
 msgstr ""
 
+#: lazarusidestrconsts.lisdiscardchangesandopenproject
+msgid "Discard changes and open project"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangesandquit
+msgid "Discard changes and quit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangescreatenewproject
+msgid "Discard changes, create new project"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "File yang berubah:"
@@ -6973,6 +7004,18 @@ msgstr ""
 msgid "Do not show this message again"
 msgstr ""
 
+#: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
+msgid "Do you still want to create the new project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
+msgid "Do you still want to open another project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoquit
+msgid "Do you still want to quit?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr ""
@@ -7037,9 +7080,9 @@ msgstr ""
 msgid "Editor file types"
 msgstr ""
 
-#: lazarusidestrconsts.lisedoptschoosescheme
-msgid "Choose Scheme"
-msgstr "Pilih Skema"
+#: lazarusidestrconsts.lisedoptsloadascheme
+msgid "Load a scheme"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -7860,6 +7903,10 @@ msgstr "Betulkan file LFM"
 
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
+msgstr ""
+
+#: lazarusidestrconsts.lisfocushint
+msgid "Focus hint"
 msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
@@ -13888,6 +13935,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowhelp
+msgid "Show help"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector

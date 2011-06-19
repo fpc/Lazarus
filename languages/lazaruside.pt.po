@@ -1970,6 +1970,7 @@ msgid "Extra 2"
 msgstr "Extra 2"
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
 msgid "Import"
 msgstr "Importar"
 
@@ -2990,7 +2991,7 @@ msgid "Use tab history when closing tabs"
 msgstr "Usar aba histórico quando fechando abas"
 
 #: lazarusidestrconsts.dlguseunitcaption
-msgid "Use a unit from this project"
+msgid "Add unit to Uses section"
 msgstr ""
 
 #: lazarusidestrconsts.dlgvaluecolor
@@ -3142,6 +3143,16 @@ msgstr ""
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnexport
+msgctxt "lazarusidestrconsts.histdlgbtnexport"
+msgid "Export"
+msgstr "Exportar"
+
+#: lazarusidestrconsts.histdlgbtnimport
+msgctxt "lazarusidestrconsts.histdlgbtnimport"
+msgid "Import"
+msgstr "Importar"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -3903,6 +3914,10 @@ msgstr "começa"
 msgid "Behind related"
 msgstr "Relacionado anteriormente"
 
+#: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
+msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Sempre construir antes de executar"
@@ -4609,6 +4624,10 @@ msgstr "Alterar arquivo"
 #| msgid "Change Parent..."
 msgid "Change Parent"
 msgstr "Alterar controle-pai ..."
+
+#: lazarusidestrconsts.lischangeswerenotsaved
+msgid "Changes were not saved"
+msgstr ""
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -6918,6 +6937,18 @@ msgstr "&Descartar alterações"
 msgid "Discard all changes"
 msgstr "Descartar todas alterações"
 
+#: lazarusidestrconsts.lisdiscardchangesandopenproject
+msgid "Discard changes and open project"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangesandquit
+msgid "Discard changes and quit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangescreatenewproject
+msgid "Discard changes, create new project"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "Arquivos alterados:"
@@ -6986,6 +7017,18 @@ msgstr "Não exibir este diálogo para este projeto"
 msgid "Do not show this message again"
 msgstr "Não exibir esta mensagem novamente"
 
+#: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
+msgid "Do you still want to create the new project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
+msgid "Do you still want to open another project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoquit
+msgid "Do you still want to quit?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr "Desenhar linhas da grade"
@@ -7050,9 +7093,9 @@ msgstr "Editar ajuda contextual"
 msgid "Editor file types"
 msgstr ""
 
-#: lazarusidestrconsts.lisedoptschoosescheme
-msgid "Choose Scheme"
-msgstr "Escolher Esquema"
+#: lazarusidestrconsts.lisedoptsloadascheme
+msgid "Load a scheme"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -7877,6 +7920,10 @@ msgstr "Corrigir arquivo LFM"
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
 msgstr "Ponto Flutuante"
+
+#: lazarusidestrconsts.lisfocushint
+msgid "Focus hint"
+msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -13905,6 +13952,10 @@ msgstr "Exibir Glifos para"
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr "Exibir medianiz"
+
+#: lazarusidestrconsts.lisshowhelp
+msgid "Show help"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"

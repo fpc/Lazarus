@@ -1940,6 +1940,7 @@ msgid "Extra 2"
 msgstr "Екстра 2"
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
 msgid "Import"
 msgstr "Імпорт"
 
@@ -2948,7 +2949,9 @@ msgid "Use tab history when closing tabs"
 msgstr "Врахов. історію вкладок при їх закритті"
 
 #: lazarusidestrconsts.dlguseunitcaption
-msgid "Use a unit from this project"
+#, fuzzy
+#| msgid "Use a unit from this project"
+msgid "Add unit to Uses section"
 msgstr "Використовувати модуль з цього проекту"
 
 #: lazarusidestrconsts.dlgvaluecolor
@@ -3092,6 +3095,16 @@ msgstr "Очистити всі знімки"
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr "Перемкнути відображення між знімком та поточним"
+
+#: lazarusidestrconsts.histdlgbtnexport
+msgctxt "lazarusidestrconsts.histdlgbtnexport"
+msgid "Export"
+msgstr "Експорт"
+
+#: lazarusidestrconsts.histdlgbtnimport
+msgctxt "lazarusidestrconsts.histdlgbtnimport"
+msgid "Import"
+msgstr "Імпорт"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -3848,6 +3861,10 @@ msgstr "починається"
 msgid "Behind related"
 msgstr "Після пов'язаних"
 
+#: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
+msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "Завжди Будувати перед Виконанням"
@@ -4549,6 +4566,10 @@ msgstr "Змінити файл"
 #: lazarusidestrconsts.lischangeparent
 msgid "Change Parent"
 msgstr "Змінити предка"
+
+#: lazarusidestrconsts.lischangeswerenotsaved
+msgid "Changes were not saved"
+msgstr ""
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -6832,6 +6853,18 @@ msgstr "Відхилити зміни"
 msgid "Discard all changes"
 msgstr "Відхилити всі зміни"
 
+#: lazarusidestrconsts.lisdiscardchangesandopenproject
+msgid "Discard changes and open project"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangesandquit
+msgid "Discard changes and quit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangescreatenewproject
+msgid "Discard changes, create new project"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "Змінені файли:"
@@ -6900,6 +6933,18 @@ msgstr "Не показувати цей діалог для цього прое
 msgid "Do not show this message again"
 msgstr "Не показувати це повідомлення знов"
 
+#: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
+msgid "Do you still want to create the new project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
+msgid "Do you still want to open another project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoquit
+msgid "Do you still want to quit?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr "Малювати лінії сітки"
@@ -6964,9 +7009,9 @@ msgstr ""
 msgid "Editor file types"
 msgstr "Файлові типи Редактора"
 
-#: lazarusidestrconsts.lisedoptschoosescheme
-msgid "Choose Scheme"
-msgstr "Вибрати схему"
+#: lazarusidestrconsts.lisedoptsloadascheme
+msgid "Load a scheme"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -7786,6 +7831,10 @@ msgstr "Виправити файл LFM"
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
 msgstr "Плаваюча Точка"
+
+#: lazarusidestrconsts.lisfocushint
+msgid "Focus hint"
+msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -13698,6 +13747,10 @@ msgstr "Показувати Знаки для:"
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr "Показувати канавку"
+
+#: lazarusidestrconsts.lisshowhelp
+msgid "Show help"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"

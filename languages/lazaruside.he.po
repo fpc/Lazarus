@@ -1952,6 +1952,7 @@ msgid "Extra 2"
 msgstr "תוספות 2"
 
 #: lazarusidestrconsts.dlgmouseoptbtnimport
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnimport"
 msgid "Import"
 msgstr "יבוא"
 
@@ -2970,7 +2971,9 @@ msgid "Use tab history when closing tabs"
 msgstr "השתמש בהסטוריית לשוניות בזמן סגירת לשוניות"
 
 #: lazarusidestrconsts.dlguseunitcaption
-msgid "Use a unit from this project"
+#, fuzzy
+#| msgid "Use a unit from this project"
+msgid "Add unit to Uses section"
 msgstr "השתמש ביחידה מפרוייקט זה"
 
 #: lazarusidestrconsts.dlgvaluecolor
@@ -3115,6 +3118,16 @@ msgstr ""
 #: lazarusidestrconsts.histdlgbtnenablehint
 msgid "Toggle view snapshot or current"
 msgstr ""
+
+#: lazarusidestrconsts.histdlgbtnexport
+msgctxt "lazarusidestrconsts.histdlgbtnexport"
+msgid "Export"
+msgstr "יצוא"
+
+#: lazarusidestrconsts.histdlgbtnimport
+msgctxt "lazarusidestrconsts.histdlgbtnimport"
+msgid "Import"
+msgstr "יבוא"
 
 #: lazarusidestrconsts.histdlgbtnmakesnaphint
 msgid "Take Snapshot"
@@ -3877,6 +3890,10 @@ msgstr "מתחיל"
 msgid "Behind related"
 msgstr "מאחורי הקשורים"
 
+#: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
+msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
+msgstr ""
+
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
 msgstr "תמיד בנה לפני ריצה"
@@ -4583,6 +4600,10 @@ msgstr "שנה קובץ"
 #| msgid "Change Parent..."
 msgid "Change Parent"
 msgstr "שנה הורה..."
+
+#: lazarusidestrconsts.lischangeswerenotsaved
+msgid "Changes were not saved"
+msgstr ""
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -6893,6 +6914,18 @@ msgstr "בטל שינויים"
 msgid "Discard all changes"
 msgstr "בטל את כל השינויים"
 
+#: lazarusidestrconsts.lisdiscardchangesandopenproject
+msgid "Discard changes and open project"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangesandquit
+msgid "Discard changes and quit"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiscardchangescreatenewproject
+msgid "Discard changes, create new project"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "קבצים ששונו:"
@@ -6961,6 +6994,18 @@ msgstr "אל תראה דיאלוג עבור פרוייקט זה"
 msgid "Do not show this message again"
 msgstr "אל תראה הודעה זאת שוב"
 
+#: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
+msgid "Do you still want to create the new project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
+msgid "Do you still want to open another project?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdoyoustillwanttoquit
+msgid "Do you still want to quit?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
 msgstr "שרטט קווי רשת"
@@ -7025,9 +7070,9 @@ msgstr "ערוך עזרה תלויית הקשר"
 msgid "Editor file types"
 msgstr "סוגי הקבצים של העורך"
 
-#: lazarusidestrconsts.lisedoptschoosescheme
-msgid "Choose Scheme"
-msgstr "בחר סכמה"
+#: lazarusidestrconsts.lisedoptsloadascheme
+msgid "Load a scheme"
+msgstr ""
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -7849,6 +7894,10 @@ msgstr "תקן קובץ LFM"
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
 msgstr "נקודה צפה"
+
+#: lazarusidestrconsts.lisfocushint
+msgid "Focus hint"
+msgstr ""
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -13891,6 +13940,10 @@ msgstr "הראה גליף עבור:"
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
 msgstr "הראה gutter"
+
+#: lazarusidestrconsts.lisshowhelp
+msgid "Show help"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"
