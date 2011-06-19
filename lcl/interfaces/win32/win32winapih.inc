@@ -86,6 +86,7 @@ function ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt; Rect: PRect; Str: 
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer; override;
 
 function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; override;
+function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL; override;
 function FloodFill(DC: HDC; X, Y: Integer; Color: TGraphicsColor; FillStyle: TGraphicsFillStyle;   Brush: HBRUSH): Boolean; override;
 { Draws a 3D border in GTK native style. }
 function Frame3D(DC: HDC; var ARect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; override;
@@ -210,6 +211,7 @@ function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;
 function SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer; override;
+function SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer; override;
 function SetSysColors(CElements: Integer; Const LPAElements; Const LPARgbValues): Boolean; override;
 function SetTextCharacterExtra(_HDC: HDC; NCharExtra: Integer): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
