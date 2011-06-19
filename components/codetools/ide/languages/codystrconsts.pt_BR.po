@@ -23,11 +23,11 @@ msgstr "Adicionar chamada \"inherited\""
 
 #: codystrconsts.crsalreadydefined
 msgid "Already defined"
-msgstr ""
+msgstr "Já definido"
 
 #: codystrconsts.crsalreadydefinedat
 msgid "Already defined at %s"
-msgstr ""
+msgstr "Já definido em %s"
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -143,43 +143,43 @@ msgstr "&Fechar"
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
-msgstr ""
+msgstr "Informação Nó de Código"
 
 #: codystrconsts.crscopydeclarationtoclipboard
 msgid "Copy declaration to clipboard"
-msgstr ""
+msgstr "Copiar declaração para área transferência"
 
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
-msgstr ""
+msgstr "%s|Todos arquivos (%s)|%s"
 
 #: codystrconsts.crscupascalpaspppaspp
 msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
-msgstr ""
+msgstr "Pascal (*.pas;*.pp)|*.pas;*.pp"
 
 #: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
 msgid "Please place the cursor of the source editor in an implementation of an overridden method."
-msgstr ""
+msgstr "Favor colocar o cursor do editor de código em uma implementação de um método sobrecarregado."
 
 #: codystrconsts.crscuselectfiletoinsertatcursor
 msgid "Select file to insert at cursor"
-msgstr ""
+msgstr "Selecionar arquivo à inserir na posição do cursor"
 
 #: codystrconsts.crscutdeclarationtoclipboard
 msgid "Cut declaration to clipboard"
-msgstr ""
+msgstr "Recortar declaração para área transferência"
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
 msgid "The file seems to be a binary. Proceed?"
-msgstr ""
+msgstr "Os arquivos parecem binários. Continuar?"
 
 #: codystrconsts.crscuunabletoloadfile
 msgid "Unable to load file \"%s\"%s%s"
-msgstr ""
+msgstr "Incapaz de carregar arquivo \"%s\"%s%s"
 
 #: codystrconsts.crscuwarning
 msgid "Warning"
-msgstr ""
+msgstr "Aviso"
 
 #: codystrconsts.crscwerror
 msgid "Error"
@@ -199,27 +199,27 @@ msgstr "Declarar Variável ..."
 
 #: codystrconsts.crsdeclarevariable3
 msgid "Declare variable \"%s\""
-msgstr ""
+msgstr "Declarar variável \"%s\""
 
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
-msgstr ""
+msgstr "\"%s\" é uma palavra-chave."
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" block"
-msgstr ""
+msgstr "Expandir um bloco \"With\""
 
 #: codystrconsts.crsfile
 msgid "File"
-msgstr ""
+msgstr "Arquivo"
 
 #: codystrconsts.crsflags
 msgid "Flags"
-msgstr ""
+msgstr "Flags"
 
 #: codystrconsts.crsframeworks
 msgid "Frameworks"
-msgstr ""
+msgstr "Frameworks"
 
 #: codystrconsts.crsgbytes
 msgid "Gbytes"
@@ -227,15 +227,15 @@ msgstr "Gbytes"
 
 #: codystrconsts.crshelp
 msgid "&Help"
-msgstr ""
+msgstr "&Ajuda"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
-msgstr ""
+msgstr "Na implementação"
 
 #: codystrconsts.crsininterface
 msgid "In interface"
-msgstr ""
+msgstr "Na interface"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert file at cursor ..."
@@ -247,11 +247,11 @@ msgstr "kbytes"
 
 #: codystrconsts.crslinkedfiles
 msgid "Linked files"
-msgstr ""
+msgstr "Arquivos vinculados"
 
 #: codystrconsts.crslocalvariableof
 msgid "Local variable of %s"
-msgstr ""
+msgstr "Variável local de %s"
 
 #: codystrconsts.crsmainsourcefile
 msgid "Main source file: %s"
@@ -263,7 +263,7 @@ msgstr "Mbytes"
 
 #: codystrconsts.crsmemberof
 msgid "%s member of %s %s"
-msgstr ""
+msgstr "%s membro de %s %s"
 
 #: codystrconsts.crsmissing
 msgid "missing ..."
@@ -279,23 +279,23 @@ msgstr "Nenhuma unidade selecionada"
 
 #: codystrconsts.crsonclipboard
 msgid "On clipboard"
-msgstr ""
+msgstr "Na área de transferência"
 
 #: codystrconsts.crsoptions
 msgid "Options"
-msgstr ""
+msgstr "Opções"
 
 #: codystrconsts.crsotherobjectfiles
 msgid "Other object files"
-msgstr ""
+msgstr "Outros arquivos objeto"
 
 #: codystrconsts.crsothersharedlibraries
 msgid "Other shared libraries"
-msgstr ""
+msgstr "Outras bibliotecas compartilhadas"
 
 #: codystrconsts.crsotherstaticlibraries
 msgid "Other static libraries"
-msgstr ""
+msgstr "Outras bibliotecas estáticas"
 
 #: codystrconsts.crspackage
 msgid "Package"
@@ -307,19 +307,19 @@ msgstr "Favor abrir um projeto primeiro."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
-msgstr ""
+msgstr "Favor colocar o cursor do editor de código em um identificador na afirmação.%sPor exemplo:%MyVar:=3;"
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
 msgid "Please place the cursor of the source editor on an identifier of a declaration."
-msgstr ""
+msgstr "Favor colocar o cursor do editor de código em um identificador da declaração."
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
-msgstr ""
+msgstr "Favor especificar um local"
 
 #: codystrconsts.crspleasespecifyatype
 msgid "Please specify a type"
-msgstr ""
+msgstr "Favor especificar um tipo"
 
 #: codystrconsts.crsppu
 msgid "PPU: %s"
@@ -331,7 +331,7 @@ msgstr "Arquivos PPU do projeto \"%s\""
 
 #: codystrconsts.crsprivate
 msgid "Private"
-msgstr ""
+msgstr "Private"
 
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
@@ -343,23 +343,23 @@ msgstr "Saída do Projeto"
 
 #: codystrconsts.crsprotected
 msgid "Protected"
-msgstr ""
+msgstr "Protected"
 
 #: codystrconsts.crspublic
 msgid "Public"
-msgstr ""
+msgstr "Public"
 
 #: codystrconsts.crspublished
 msgid "Published"
-msgstr ""
+msgstr "Published"
 
 #: codystrconsts.crsrefresh
 msgid "Refresh"
-msgstr ""
+msgstr "Atualizar"
 
 #: codystrconsts.crsreport
 msgid "Report"
-msgstr ""
+msgstr "Relatório"
 
 #: codystrconsts.crssearching
 msgid "searching ..."
@@ -367,7 +367,7 @@ msgstr "localizando ..."
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools node info ..."
-msgstr ""
+msgstr "Exibir info do nó CodeTools ..."
 
 #: codystrconsts.crsshowusedppufiles
 #| msgid "Show used .ppu files"
@@ -388,7 +388,7 @@ msgstr "Fonte: %s"
 
 #: codystrconsts.crstheidentifierisalreadydefined
 msgid "The identifier \"%s\" is already defined."
-msgstr ""
+msgstr "O identificador \"%s\" já foi definido."
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -396,7 +396,7 @@ msgstr "Total"
 
 #: codystrconsts.crstype
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: codystrconsts.crsunit
 msgid "Unit"
@@ -408,19 +408,19 @@ msgstr "Unidade: %s"
 
 #: codystrconsts.crsunitobjectfiles
 msgid "Unit object files"
-msgstr ""
+msgstr "Arquivos objeto de unidade"
 
 #: codystrconsts.crsunits
 msgid "Units"
-msgstr ""
+msgstr "Unidades"
 
 #: codystrconsts.crsunitsharedlibraries
 msgid "Unit shared libraries"
-msgstr ""
+msgstr "Unidade de bibliotecas compartilhadas"
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"
-msgstr ""
+msgstr "Unidade de bibliotecas estáticas"
 
 #: codystrconsts.crsusedby
 msgid "Used by"
@@ -436,7 +436,7 @@ msgstr "Unidade Virtual"
 
 #: codystrconsts.crswhere
 msgid "Where"
-msgstr ""
+msgstr "Where"
 
 #: codystrconsts.liscogeneral
 msgid "General"

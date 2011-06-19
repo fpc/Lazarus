@@ -894,6 +894,7 @@ components/fppkg/images/lazarus_pkg.png -text
 components/fppkg/images/package_manager.png -text
 components/fppkg/images/update.png -text
 components/fppkg/languages/fppkg_const.po svneol=native#text/plain
+components/fppkg/languages/fppkg_const.pt_BR.po svneol=native#text/plain
 components/fppkg/readme.txt svneol=native#text/plain
 components/fppkg/src/fppkg_aboutfrm.lfm svneol=native#text/plain
 components/fppkg/src/fppkg_aboutfrm.pas svneol=native#text/plain
@@ -2716,6 +2717,7 @@ components/turbopower_ipro/languages/ipconst.uk.po svneol=native#text/plain
 components/turbopower_ipro/languages/ipconst.zh_CN.po svneol=native#text/plain
 components/turbopower_ipro/languages/iphtmlpv.it.po svneol=native#text/plain
 components/turbopower_ipro/languages/iphtmlpv.po svneol=native#text/plain
+components/turbopower_ipro/languages/iphtmlpv.pt_BR.po svneol=native#text/plain
 components/turbopower_ipro/languages/iphtmlpv.ru.po svneol=native#text/plain
 components/turbopower_ipro/languages/iphtmlpv.uk.po svneol=native#text/plain
 components/turbopower_ipro/languages/iputils.de.po svneol=native#text/plain

@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,11 +23,11 @@ msgstr "Entre com suas definições de classe/estilo aqui"
 
 #: fpwebstrconsts.sdocumentlocation
 msgid "&Location"
-msgstr ""
+msgstr "&Local"
 
 #: fpwebstrconsts.sdocumentroot
 msgid "&Directory"
-msgstr ""
+msgstr "&Diretório"
 
 #: fpwebstrconsts.senteryoutext
 msgid "Enter your text..."
@@ -146,7 +146,6 @@ msgid "Width"
 msgstr "Largura"
 
 #: fpwebstrconsts.shtmltagcaptionreset
-#, fuzzy
 msgid "Reset"
 msgstr "Reset"
 
@@ -164,7 +163,7 @@ msgstr "&Título Html - \"<title>\""
 
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
-msgstr ""
+msgstr "&Porta de escuta para requisições:"
 
 #: fpwebstrconsts.sjsfile
 msgid "Javascript file"
@@ -384,13 +383,13 @@ msgstr "Novas propriedades arquivo HTML"
 
 #: fpwebstrconsts.snewhttpapp
 msgid "New HTTP application"
-msgstr ""
+msgstr "Nova aplicação HTTP"
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
-msgstr ""
+msgstr "&Registrar local dos arquivos à servir"
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"
-msgstr ""
+msgstr "Usar &threads para servir requisições em"
 

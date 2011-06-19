@@ -6,28 +6,28 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
-msgstr ""
+msgstr "parênteses não encontrado"
 
 #: codetoolsstrconsts.crsbracketnotfound2
 msgid "bracket ] not found"
-msgstr ""
+msgstr "colchete não encontrado"
 
 #: codetoolsstrconsts.crsclosingbracketnotfound
 msgid "closing bracket not found"
-msgstr ""
+msgstr "parênteses de fechamento não encontrado"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
 msgid "%s, found unexpected %s at %s"
-msgstr ""
+msgstr "%s, inesperadamente encontrado %s em %s"
 
 #: codetoolsstrconsts.crsrecordendnotfound
 msgid "record end not found"
-msgstr ""
+msgstr "final de registro não encontrado"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
@@ -451,7 +451,7 @@ msgstr "identificador não encontrado: %s"
 
 #: codetoolsstrconsts.ctsifdefdarwin
 msgid "IfDef Darwin"
-msgstr ""
+msgstr "IfDef Darwin"
 
 #: codetoolsstrconsts.ctsifdeflinux
 msgid "IfDef Linux"
@@ -607,7 +607,7 @@ msgstr "nome de método"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
 msgid "Method signature %s not found in class"
-msgstr ""
+msgstr "Assinatura método %s não encontrado na classe"
 
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"

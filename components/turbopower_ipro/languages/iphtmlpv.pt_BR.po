@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo B Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: iphtmlpv.rsiphtmlpreviewclose
+msgid "Close"
+msgstr "Fechar"
+
+#: iphtmlpv.rsiphtmlpreviewof
+msgid "of"
+msgstr "de"
+
+#: iphtmlpv.rsiphtmlpreviewpage
+msgid "Page:"
+msgstr "Página:"
+
+#: iphtmlpv.rsiphtmlpreviewprint
+msgid "Print"
+msgstr "Imprimir"
+
+#: iphtmlpv.rsiphtmlpreviewprintpreview
+msgid "Print preview"
+msgstr "Visualizar Impressão"
+
+#: iphtmlpv.rsiphtmlpreviewselectprinter
+msgid "Select printer..."
+msgstr "Selecionar impressora..."
+
+#: iphtmlpv.rsiphtmlpreviewzoom
+msgid "Zoom:"
+msgstr "Zoom:"
+
