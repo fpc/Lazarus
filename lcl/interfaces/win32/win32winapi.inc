@@ -1445,12 +1445,8 @@ end;
   The FillRgn function fills a region by using the specified brush.
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL;
-var
-  OldBrush: HGDIOBJ;
 begin
-  OldBrush := Windows.SelectObject(DC, hbr);
-  Result := {Boolean}(Windows.FillRgn(DC, RegionHnd, hbr));
-  Windows.SelectObject(DC, OldBrush);
+  Result := Windows.FillRgn(DC, RegionHnd, hbr);
 end;
 
 function TWin32WidgetSet.FloodFill(DC: HDC; X, Y: Integer;
