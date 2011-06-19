@@ -1459,6 +1459,24 @@ begin
   Assert(False, Format('trace:< [TWin32WidgetSet.FillRect] DC: 0x%x; Rect: ((%d,%d)(%d,%d)); Brush: %x', [Integer(DC), R.left, R.top, R.right, R.bottom, brush]));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  FillRgn
+  Params:  DC        - handle to device context
+           RegionHnd - handle to region
+           Brush     - handle to brush
+  Returns: If the function succeeds
+
+  The FillRgn function fills a region by using the specified brush.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL;
+var
+  OldBrush: HGDIOBJ;
+begin
+  OldBrush := Windows.SelectObject(DC, hbr);
+  Result := {Boolean}(Windows.FillRgn(DC, RegionHnd, hbr));
+  Windows.SelectObject(DC, OldBrush);
+end;
+
 function TWin32WidgetSet.FloodFill(DC: HDC; X, Y: Integer;
   Color: TGraphicsColor; FillStyle: TGraphicsFillStyle; Brush: HBRUSH): Boolean;
 const
@@ -3191,6 +3209,19 @@ begin
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
   with ScrollInfo Do
     Assert(False, Format('Trace:> [TWin32WidgetSet.SetScrollInfo] --> %d', [Result]));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetStretchBltMode
+  Params:  DC          - handle of device context
+           StretchMode - strech mode
+  Returns: 0 if unsuccesful
+
+  The SetStretchBltMode function sets the StrechBlt mode.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer;
+begin
+  Result := Windows.SetStretchBltMode(DC, StretchMode);
 end;
 
 {------------------------------------------------------------------------------
