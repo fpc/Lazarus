@@ -665,7 +665,7 @@ var
       ScrollInfo.fMask := SIF_TRACKPOS;
       // older windows versions may not support trackpos, so fill it with some default
       if WindowInfo^.TrackValid
-      then ScrollInfo.nTrackPos := (WindowInfo^.TrackPos and $FFFF0000) or HIWORD(WParam)
+      then ScrollInfo.nTrackPos := Integer(WindowInfo^.TrackPos and $FFFF0000) or HIWORD(WParam)
       else ScrollInfo.nTrackPos := HIWORD(WParam);
     end
     else begin
@@ -693,7 +693,7 @@ var
     end
     else begin
       if WindowInfo^.TrackValid
-      then LMScroll.Pos := (WindowInfo^.TrackPos and $FFFF0000) or HIWORD(WParam)
+      then LMScroll.Pos := LongInt(WindowInfo^.TrackPos and $FFFF0000) or HIWORD(WParam)
       else LMScroll.Pos := (ScrollInfo.nPos and $FFFF0000) or HIWORD(WParam);
     end;
 
