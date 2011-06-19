@@ -143,11 +143,11 @@ function IsLazarusPIDRunning(aPID: int64): boolean;
     s: String;
   begin
     Result:=false;
-    if GetProcessForPID(aPid,psn)=noErr then exit;
+    if GetProcessForPID(aPid,psn)<>noErr then exit;
     FillByte(info,SizeOf(info),0);
-    if GetProcessInformation(psn,info)=noErr then exit;
+    if GetProcessInformation(psn,info)<>noErr then exit;
     processName := nil;
-    if CopyProcessName(psn, processName)=noErr then exit;
+    if CopyProcessName(psn, processName)<>noErr then exit;
     if processName<>nil then begin
       s:=CFStringToStr(processName);
       CFRelease(processName);
