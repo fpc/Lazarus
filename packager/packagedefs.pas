@@ -3441,9 +3441,10 @@ begin
   with Result do begin
     Owner:=NewOwner;
     PackageName:=Self.Name;
-    if WithMinVersion then
+    if WithMinVersion then begin
       MinVersion.Assign(Version);
-    Flags:=[pdfMinVersion];
+      Flags:=[pdfMinVersion];
+    end;
   end;
 end;
 
