@@ -1680,22 +1680,10 @@ begin
      and (FilesTreeView.Selected<>nil)
      and ((TObject(FilesTreeView.Selected.Data) is TPkgEditFileItem)
            or (FilesTreeView.Selected.Parent=FRequiredPackagesNode));
-  if (LazPackage.Installed<>pitNope)
-  or PackageEditors.ShouldNotBeInstalled(LazPackage) then begin
-    // show use... button
-    UseBitBtn.Caption:=lisUse;
-    UseBitBtn.Hint:=lisClickToSeeThePossibleUses;
-    UseBitBtn.Enabled:=true;
-    UseBitBtn.OnClick:=nil;
-    UseBitBtn.DropdownMenu:=UsePopupMenu;
-  end else begin
-    // show install button
-    UseBitBtn.Caption:=lisPckEditInstall;
-    UseBitBtn.Hint:=lisPckEditInstallPackageInTheIDE;
-    UseBitBtn.Enabled:=(not LazPackage.AutoCreated);
-    UseBitBtn.OnClick:=@InstallClick;
-    UseBitBtn.DropdownMenu:=nil;
-  end;
+  UseBitBtn.Caption:=lisUse;
+  UseBitBtn.Hint:=lisClickToSeeThePossibleUses;
+  UseBitBtn.OnClick:=nil;
+  UseBitBtn.DropdownMenu:=UsePopupMenu;
   OptionsBitBtn.Enabled:=true;
 end;
 
