@@ -168,12 +168,18 @@ var
 begin
   UsesCTypes:='uses ctypes;'+LineEnding;
   EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
-  (*Test('convert anonymous enum{ENUM1};',
+  Test('convert anonymous enum{ENUM1};',
        'enum{ENUM1};',
-       UsesCTypes+'type enumENUM1 = (ENUM1);'+EmpytImplementation);*)
+       UsesCTypes+'type enumENUM1 = (ENUM1);'+EmpytImplementation);
   Test('convert one named enum color{red};',
        'enum color{red};',
-       UsesCTypes+'type enumENUM1 = (ENUM1);'+EmpytImplementation);
+       UsesCTypes+'type color = (red);'+EmpytImplementation);
+  Test('convert named enum with id: color{red=1};',
+       'enum color{red=1};',
+       UsesCTypes+'type color = (red=1);'+EmpytImplementation);
+  Test('convert multi enums: color{red,green,blue};',
+       'enum color{red,green,blue};',
+       UsesCTypes+'type color = (red,green,blue);'+EmpytImplementation);
 end;
 
 initialization
