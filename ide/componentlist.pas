@@ -70,6 +70,8 @@ type
     procedure ListboxComponentsDblClick(Sender: TObject);
     procedure ListboxComponentsKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure PatternEditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure TreeInheritanceDblClick ( Sender: TObject ) ;
     procedure TreeInheritanceKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -325,6 +327,20 @@ procedure TComponentListForm.ListboxComponentsKeyDown(Sender: TObject;
 begin
   if Key = VK_RETURN then
     ListboxComponentsDblClick(Sender);
+end;
+
+procedure TComponentListForm.PatternEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_Down then
+  begin
+    Key := 0;
+    case PageControl.PageIndex of
+      0: ListBoxComponents.SetFocus;
+      1: TreePallette.SetFocus;
+      2: TreeInheritance.SetFocus;
+    end;
+  end;
 end;
 
 procedure TComponentListForm.TreePalletteDblClick(Sender: TObject);

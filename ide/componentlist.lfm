@@ -3,7 +3,7 @@ object ComponentListForm: TComponentListForm
   Height = 556
   Top = 269
   Width = 224
-  ActiveControl = Panel6
+  ActiveControl = PatternEdit
   Caption = 'Components'
   ClientHeight = 556
   ClientWidth = 224
@@ -11,7 +11,7 @@ object ComponentListForm: TComponentListForm
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object PageControl: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Panel3
@@ -20,34 +20,34 @@ object ComponentListForm: TComponentListForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 471
-    Top = 39
+    Height = 452
+    Top = 57
     Width = 212
     ActivePage = TabSheetListBox
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     TabIndex = 0
-    TabOrder = 0
+    TabOrder = 1
     object TabSheetListBox: TTabSheet
       Caption = 'List'
-      ClientHeight = 445
-      ClientWidth = 204
+      ClientHeight = 425
+      ClientWidth = 208
       object Panel7: TPanel
         Left = 0
-        Height = 445
+        Height = 425
         Top = 0
-        Width = 204
+        Width = 208
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 445
-        ClientWidth = 204
+        ClientHeight = 425
+        ClientWidth = 208
         TabOrder = 0
         object ListboxComponents: TListBox
           Left = 5
-          Height = 435
+          Height = 415
           Top = 5
-          Width = 194
+          Width = 198
           Align = alClient
           ItemHeight = 0
           OnDblClick = ListboxComponentsDblClick
@@ -59,62 +59,62 @@ object ComponentListForm: TComponentListForm
     end
     object TabSheetPaletteTree: TTabSheet
       Caption = 'Palette'
-      ClientHeight = 445
-      ClientWidth = 204
+      ClientHeight = 425
+      ClientWidth = 208
       object Panel5: TPanel
         Left = 0
-        Height = 445
+        Height = 425
         Top = 0
-        Width = 204
+        Width = 208
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 445
-        ClientWidth = 204
+        ClientHeight = 425
+        ClientWidth = 208
         TabOrder = 0
         object TreePallette: TTreeView
           Left = 5
-          Height = 435
+          Height = 415
           Top = 5
-          Width = 194
+          Width = 198
           Align = alClient
-          DefaultItemHeight = 15
+          DefaultItemHeight = 19
           ReadOnly = True
           ShowLines = False
           TabOrder = 0
           OnDblClick = TreePalletteDblClick
           OnKeyDown = TreePalletteKeyDown
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoThemedDraw, tvoNoDoubleClickExpand]
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
         end
       end
     end
     object TabSheetInheritance: TTabSheet
       Caption = 'Inheritance'
-      ClientHeight = 445
-      ClientWidth = 204
+      ClientHeight = 425
+      ClientWidth = 208
       object Panel6: TPanel
         Left = 0
-        Height = 445
+        Height = 425
         Top = 0
-        Width = 204
+        Width = 208
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 445
-        ClientWidth = 204
+        ClientHeight = 425
+        ClientWidth = 208
         TabOrder = 0
         object TreeInheritance: TTreeView
           Left = 5
-          Height = 435
+          Height = 415
           Top = 5
-          Width = 194
+          Width = 198
           Align = alClient
-          DefaultItemHeight = 15
+          DefaultItemHeight = 19
           ReadOnly = True
           TabOrder = 0
           OnDblClick = TreeInheritanceDblClick
           OnKeyDown = TreeInheritanceKeyDown
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw, tvoNoDoubleClickExpand]
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
         end
       end
     end
@@ -125,23 +125,23 @@ object ComponentListForm: TComponentListForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 33
+    Height = 51
     Top = 0
     Width = 224
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BevelOuter = bvNone
     BorderWidth = 8
-    ClientHeight = 33
+    ClientHeight = 51
     ClientWidth = 224
-    TabOrder = 1
+    TabOrder = 0
     object LabelSearch: TLabel
       AnchorSideLeft.Control = Panel3
       AnchorSideTop.Control = Panel3
-      Left = 6
-      Height = 14
-      Top = 6
-      Width = 59
+      Left = 14
+      Height = 18
+      Top = 14
+      Width = 80
       BorderSpacing.Around = 6
       Caption = 'LabelSearch'
       ParentColor = False
@@ -152,21 +152,30 @@ object ComponentListForm: TComponentListForm
       AnchorSideTop.Control = Panel3
       AnchorSideRight.Control = Panel3
       AnchorSideRight.Side = asrBottom
-      Left = 71
-      Height = 21
-      Top = 6
-      Width = 147
+      Left = 100
+      Height = 23
+      Top = 14
+      Width = 110
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       OnChange = PatternEditChange
+      OnKeyDown = PatternEditKeyDown
       TabOrder = 0
     end
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 516
+    Height = 35
+    Top = 515
     Width = 212
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 2
     ShowButtons = [pbClose]
   end
