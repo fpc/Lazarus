@@ -4,6 +4,7 @@
      ./runtests --format=plain --suite=TestCTH2PMergeHeaderFiles
      ./runtests --format=plain --suite=TestCTH2PReplaceMacros
      ./runtests --format=plain --suite=TestCTH2PConvertSimpleTypes
+     ./runtests --format=plain --suite=TestCTH2PConvertEnumsTypes
 }
 unit TestCTH2Pas;
 
@@ -23,15 +24,49 @@ type
 
   TTestCodetoolsH2Pas = class(TTestCase)
   protected
+    procedure Test(Title, CHeaderSrc, ExpectedPasSrc: string);
   published
     procedure TestCTH2PMergeHeaderFiles;
     procedure TestCTH2PReplaceMacros;
     procedure TestCTH2PConvertSimpleTypes;
+    procedure TestCTH2PConvertEnumsTypes;
   end;
 
 implementation
 
 { TTestCodetoolsH2Pas }
+
+procedure TTestCodetoolsH2Pas.Test(Title, CHeaderSrc, ExpectedPasSrc: string);
+var
+  Tool: TH2PasTool;
+  Header1: TCodeBuffer;
+  PasCode: TCodeBuffer;
+begin
+  Tool:=TH2PasTool.Create;
+  Header1:=nil;
+  PasCode:=nil;
+  try
+    Header1:=CodeToolBoss.CreateFile('header1.h');
+    PasCode:=CodeToolBoss.CreateFile('header1.pas');
+    Header1.Source:=CHeaderSrc;
+    Tool.Convert(Header1,PasCode);
+    if CompareTextIgnoringSpace(ExpectedPasSrc,PasCode.Source,true)<>0 then begin
+      // failed
+      debugln(['TTestCodetoolsH2Pas.Test C Source="',CHeaderSrc,'"']);
+      debugln(['TTestCodetoolsH2Pas.Test Expected pas="',ExpectedPasSrc,'"']);
+      debugln(['TTestCodetoolsH2Pas.Test Found pas="',PasCode.Source,'"']);
+      Tool.WriteH2PNodeReport;
+      Tool.WriteH2PDirectivesNodeReport;
+      AssertEquals(Title,ExpectedPasSrc,PasCode.Source);
+    end else begin
+      AssertEquals(Title,true,true);
+    end;
+  finally
+    if Header1<>nil then Header1.IsDeleted:=true;
+    if PasCode<>nil then PasCode.IsDeleted:=true;
+    Tool.Free;
+  end;
+end;
 
 procedure TTestCodetoolsH2Pas.TestCTH2PMergeHeaderFiles;
 var
@@ -116,41 +151,26 @@ end;
 
 procedure TTestCodetoolsH2Pas.TestCTH2PConvertSimpleTypes;
 var
-  Tool: TH2PasTool;
-  Header1: TCodeBuffer;
-  PasCode: TCodeBuffer;
-  ExpectedSrc: String;
+  UsesCTypes: String;
+  EmpytImplementation: String;
 begin
-  Tool:=TH2PasTool.Create;
-  Header1:=nil;
-  PasCode:=nil;
-  try
-    Header1:=CodeToolBoss.CreateFile('header1.h');
-    PasCode:=CodeToolBoss.CreateFile('header1.pas');
-    Header1.Source:='int i;';
-    Tool.Convert(Header1,PasCode);
-    ExpectedSrc:=
-      'uses ctypes;'+LineEnding
-      +'var'+LineEnding
-      +'  i: cint; cvar; external;'+LineEnding
-      +'implementation'+LineEnding
-      +'end.';
-    if CompareTextIgnoringSpace(ExpectedSrc,PasCode.Source,true)<>0 then begin
-      AssertEquals('convert int i;',ExpectedSrc,PasCode.Source);
-    end else begin
-      AssertEquals('convert int i;',true,true);
-    end;
+  UsesCTypes:='uses ctypes;'+LineEnding;
+  EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
+  Test('convert int i;',
+       'int i;',
+       UsesCTypes+'var i: cint; cvar; external;'+EmpytImplementation);
+end;
 
-    {Tool.WriteH2PNodeReport;
-    Tool.WriteH2PDirectivesNodeReport;
-    writeln;
-    writeln('=============================================');
-    writeln(PasCode.Source);}
-  finally
-    if Header1<>nil then Header1.IsDeleted:=true;
-    if PasCode<>nil then PasCode.IsDeleted:=true;
-    Tool.Free;
-  end;
+procedure TTestCodetoolsH2Pas.TestCTH2PConvertEnumsTypes;
+var
+  UsesCTypes: String;
+  EmpytImplementation: String;
+begin
+  UsesCTypes:='uses ctypes;'+LineEnding;
+  EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
+  Test('convert anonymous enum{ENUM1};',
+       'enum{ENUM1};',
+       UsesCTypes+'type enumENUM1 = (ENUM1);'+EmpytImplementation);
 end;
 
 initialization

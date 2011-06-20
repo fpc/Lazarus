@@ -2022,24 +2022,28 @@ function TCCodeParserTool.ExtractDefinitionType(VarNode: TCodeTreeNode;
 var
   NameNode: TCodeTreeNode;
   s: String;
+  AfterNameNode: TCodeTreeNode;
+  StartPos: Integer;
 begin
+  Result:='';
   NameNode:=GetFirstNameNode(VarNode);
-  if (NameNode=nil) then
-    Result:=''
-  else begin
+  if (NameNode<>nil) then begin
     Result:=ExtractCode(VarNode.StartPos,NameNode.StartPos,WithDirectives);
-    if (NameNode.NextBrother<>nil)
-    and (NameNode.NextBrother.Desc=ccnConstant) then begin
-      // a variable with an initial value
-      // omit the constant
-      s:=ExtractCode(NameNode.EndPos,NameNode.NextBrother.StartPos,
-                     WithDirectives);
-      s:=copy(s,1,length(s)-1);
-      Result:=Result+s;
-    end else begin
-      Result:=Result+ExtractCode(NameNode.EndPos,VarNode.EndPos,
-                                 WithDirectives);
-    end;
+    AfterNameNode:=NameNode.NextBrother;
+    StartPos:=NameNode.EndPos;
+  end else begin
+    AfterNameNode:=VarNode.FirstChild;
+    StartPos:=VarNode.StartPos;
+  end;
+  if (AfterNameNode<>nil)
+  and (AfterNameNode.Desc=ccnConstant) then begin
+    // omit constant
+    s:=ExtractCode(StartPos,AfterNameNode.StartPos,WithDirectives);
+    if (s<>'') and (s[length(s)]='=') then
+      s:=Trim(copy(s,1,length(s)-1));
+    Result:=Result+s;
+  end else begin
+    Result:=Result+ExtractCode(StartPos,VarNode.EndPos,WithDirectives);
   end;
 end;
 
@@ -2544,7 +2548,7 @@ begin
   if Tree<>nil then begin
     Node:=Tree.Root;
     while Node<>nil do begin
-      DebugLn([GetNodeIndent(CurNode)+NodeAsString(Node)]);
+      DebugLn([GetNodeIndent(Node)+NodeAsString(Node)]);
       Node:=Node.Next;
     end;
   end;
