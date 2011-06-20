@@ -6,6 +6,7 @@
      ./runtests --format=plain --suite=TestCTH2PConvertSimpleVars
      ./runtests --format=plain --suite=TestCTH2PConvertEnumsTypes
      ./runtests --format=plain --suite=TestCTH2PConvertConst
+     ./runtests --format=plain --suite=TestCTH2PConvertSimpleTypedefs
 }
 unit TestCTH2Pas;
 
@@ -26,12 +27,14 @@ type
   TTestCodetoolsH2Pas = class(TTestCase)
   protected
     procedure Test(Title, CHeaderSrc, ExpectedPasSrc: string);
+    procedure TestIntf(Title, CHeaderSrc, ExpectedPasSrc: string);
   published
     procedure TestCTH2PMergeHeaderFiles;
     procedure TestCTH2PReplaceMacros;
     procedure TestCTH2PConvertSimpleVars;
     procedure TestCTH2PConvertEnumsTypes;
     procedure TestCTH2PConvertConst;
+    procedure TestCTH2PConvertSimpleTypedefs;
   end;
 
 implementation
@@ -69,6 +72,17 @@ begin
     if PasCode<>nil then PasCode.IsDeleted:=true;
     Tool.Free;
   end;
+end;
+
+procedure TTestCodetoolsH2Pas.TestIntf(Title, CHeaderSrc, ExpectedPasSrc: string
+  );
+var
+  UsesCTypes: String;
+  EmpytImplementation: String;
+begin
+  UsesCTypes:='uses ctypes;'+LineEnding;
+  EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
+  Test(Title,CHeaderSrc,UsesCTypes+ExpectedPasSrc+EmpytImplementation);
 end;
 
 procedure TTestCodetoolsH2Pas.TestCTH2PMergeHeaderFiles;
@@ -153,84 +167,70 @@ begin
 end;
 
 procedure TTestCodetoolsH2Pas.TestCTH2PConvertSimpleVars;
-var
-  UsesCTypes: String;
-  EmpytImplementation: String;
 begin
-  UsesCTypes:='uses ctypes;'+LineEnding;
-  EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
-  Test('convert int i;',
-       'int i;',
-       UsesCTypes+'var i: cint; cvar; external;'+EmpytImplementation);
-  Test('convert #define c 1',
-       '#define c 1',
-       UsesCTypes+'const c=1;'+EmpytImplementation);
-  Test('convert int y = 7;',
-       'int y = 7;',
-       UsesCTypes+'var y:cint;cvar;external;'+EmpytImplementation);
-  Test('convert short signed int ssi_octal = 0123;',
+  TestIntf('convert int i;',  'int i;',  'var i: cint; cvar; external;');
+  TestIntf('convert #define c 1', '#define c 1',  'const c=1;');
+  TestIntf('convert int y = 7;',  'int y = 7;',  'var y:cint;cvar;external;');
+  TestIntf('convert short signed int ssi_octal = 0123;',
        'short signed int ssi_octal = 0123;',
-       UsesCTypes+'var ssi_octal:csshort;cvar;external;'+EmpytImplementation);
-  Test('convert unsigned short unsigned_short;',
+       'var ssi_octal:csshort;cvar;external;');
+  TestIntf('convert unsigned short unsigned_short;',
        'unsigned short unsigned_short;',
-       UsesCTypes+'var unsigned_short:cushort;cvar;external;'+EmpytImplementation);
-  Test('convert unsigned long long unsigned_long_long;',
+       'var unsigned_short:cushort;cvar;external;');
+  TestIntf('convert unsigned long long unsigned_long_long;',
        'unsigned long long unsigned_long_long;',
-       UsesCTypes+'var unsigned_long_long:culonglong;cvar;external;'+EmpytImplementation);
+       'var unsigned_long_long:culonglong;cvar;external;');
 end;
 
 procedure TTestCodetoolsH2Pas.TestCTH2PConvertEnumsTypes;
-var
-  UsesCTypes: String;
-  EmpytImplementation: String;
 begin
-  UsesCTypes:='uses ctypes;'+LineEnding;
-  EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
-  Test('convert anonymous enum{ENUM1};',
+  TestIntf('convert anonymous enum{ENUM1};',
        'enum{ENUM1};',
-       UsesCTypes+'type enumENUM1 = (ENUM1);'+EmpytImplementation);
-  Test('convert one named enum color{red};',
+       'type enumENUM1 = (ENUM1);');
+  TestIntf('convert one named enum color{red};',
        'enum color{red};',
-       UsesCTypes+'type color = (red);'+EmpytImplementation);
-  Test('convert named enum with id: color{red=1};',
+       'type color = (red);');
+  TestIntf('convert named enum with id: color{red=1};',
        'enum color{red=1};',
-       UsesCTypes+'type color = (red=1);'+EmpytImplementation);
-  Test('convert multi enums: color{red,green,blue};',
+       'type color = (red=1);');
+  TestIntf('convert multi enums: color{red,green,blue};',
        'enum color{red,green,blue};',
-       UsesCTypes+'type color = (red,green,blue);'+EmpytImplementation);
+       'type color = (red,green,blue);');
 end;
 
 procedure TTestCodetoolsH2Pas.TestCTH2PConvertConst;
-var
-  UsesCTypes: String;
-  EmpytImplementation: String;
 begin
-  UsesCTypes:='uses ctypes;'+LineEnding;
-  EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
   // const char a;           // A constant character
-  Test('convert const char a;',
+  TestIntf('convert const char a;',
        'const char a;',
-       UsesCTypes+'var a: cchar;cvar;external;'+EmpytImplementation);
+       'var a: cchar;cvar;external;');
 
   //char const b;           // A constant character (the same)
-  Test('convert char const b;',
+  TestIntf('convert char const b;',
        'char const b;',
-       UsesCTypes+'var b: cchar;cvar;external;'+EmpytImplementation);
+       'var b: cchar;cvar;external;');
 
   //char *const c;          // A constant pointer to a character
-  Test('convert char *const c;',
+  TestIntf('convert char *const c;',
        'char *const c;',
-       UsesCTypes+'var c: pcchar;cvar;external;'+EmpytImplementation);
+       'var c: pcchar;cvar;external;');
 
   //const char *const d;    // A constant pointer to a constant character
-  Test('convert char *const d;',
+  TestIntf('convert char *const d;',
        'char *const d;',
-       UsesCTypes+'var d: pcchar;cvar;external;'+EmpytImplementation);
+       'var d: pcchar;cvar;external;');
 
   //const char *e;          // A pointer to a constant character. The pointer may be modified.
-  Test('convert const char *e;',
+  TestIntf('convert const char *e;',
        'const char *e;',
-       UsesCTypes+'var e: pcchar;cvar;external;'+EmpytImplementation);
+       'var e: pcchar;cvar;external;');
+end;
+
+procedure TTestCodetoolsH2Pas.TestCTH2PConvertSimpleTypedefs;
+begin
+  TestIntf('convert typedef unsigned short sa_family_t;',
+    'typedef unsigned short sa_family_t;',
+    'type sa_family_t = cushort;');
 end;
 
 initialization
