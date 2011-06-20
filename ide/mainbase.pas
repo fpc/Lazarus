@@ -894,6 +894,7 @@ begin
     itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
     itmViewRestrictionBrowser.Command:=GetCommand(ecToggleRestrictionBrowser);
     itmViewComponents.Command:=GetCommand(ecViewComponents);
+    itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);
     itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
     itmViewToggleFormUnit.Command:=GetCommand(ecToggleFormUnit);
     itmViewMessage.Command:=GetCommand(ecToggleMessages);
@@ -902,7 +903,6 @@ begin
     itmViewTabOrder.Command:=GetCommand(ecViewTabOrder);
     itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
     itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
-    itmJumpHistory.Command:=GetCommand(ecViewJumpHistory);
     //itmViewPackageLinks.Command:=GetCommand(ec?);
 
     // source menu

@@ -373,7 +373,6 @@ begin
   ecJumpBack: SetResult(VK_H,[ssCtrl],VK_UNKNOWN,[]);
   ecJumpForward: SetResult(VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecAddJumpPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewJumpHistory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecJumpToPrevError: SetResult(VK_F8,[ssCtrl, ssShift],VK_UNKNOWN,[]);
   ecJumpToNextError: SetResult(VK_F8,[ssCtrl],VK_UNKNOWN,[]);
   ecOpenFileAtCursor: SetResult2(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
@@ -515,6 +514,7 @@ begin
   ecToggleFPDocEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleMessages: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewComponents: SetResult(VK_P,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
+  ecViewJumpHistory: SetResult(VK_J,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleSearchResults: SetResult(VK_F,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
@@ -840,7 +840,6 @@ begin
   ecJumpBack: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecJumpForward: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddJumpPoint: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewJumpHistory: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecJumpToPrevError: SetSingle(VK_F7,[ssShift,ssAlt],VK_UNKNOWN,[]);
   ecJumpToNextError: SetSingle(VK_F8,[ssShift,ssAlt],VK_UNKNOWN,[]);
   ecOpenFileAtCursor: SetSingle(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
@@ -969,6 +968,7 @@ begin
   ecToggleFPDocEditor: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleMessages: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewComponents: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewJumpHistory: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleSearchResults: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleWatches: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetSingle(VK_F8,[ssCtrl],VK_UNKNOWN,[]);
@@ -1468,7 +1468,6 @@ begin
   ecJumpBack: SetSingle(VK_H,[ssCtrl],VK_UNKNOWN,[]);
   ecJumpForward: SetSingle(VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecAddJumpPoint: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewJumpHistory: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecJumpToPrevError: SetSingle(VK_ADD,[ssMeta,ssShift],VK_UNKNOWN,[]);
   ecJumpToNextError: SetSingle(VK_ADD,[ssMeta],VK_UNKNOWN,[]);
   ecOpenFileAtCursor: SetSingle(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
@@ -1601,6 +1600,7 @@ begin
   ecToggleFPDocEditor: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleMessages: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewComponents: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewJumpHistory: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleSearchResults: SetSingle(VK_F,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleWatches: SetSingle(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetSingle(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
@@ -2102,7 +2102,6 @@ begin
     ecJumpBack                : Result:= lisMenuJumpBack;
     ecJumpForward             : Result:= lisMenuJumpForward;
     ecAddJumpPoint            : Result:= srkmecAddJumpPoint;
-    ecViewJumpHistory         : Result:= lisMenuViewJumpHistory;
     ecJumpToNextError         : Result:= lisMenuJumpToNextError;
     ecJumpToPrevError         : Result:= lisMenuJumpToPrevError;
     ecGotoIncludeDirective    : Result:= srkmecGotoIncludeDirective;
@@ -2134,6 +2133,7 @@ begin
     ecToggleCodeBrowser       : Result:= srkmecToggleCodeBrowser;
     ecToggleRestrictionBrowser: Result:= srkmecToggleRestrictionBrowser;
     ecViewComponents          : Result:= srkmecViewComponents;
+    ecViewJumpHistory         : Result:= lisMenuViewJumpHistory;
     ecToggleCompPalette       : Result:= srkmecToggleCompPalette;
     ecToggleIDESpeedBtns      : Result:= srkmecToggleIDESpeedBtns;
 

@@ -2571,7 +2571,6 @@ resourcestring
   srkmecFindNextWordOccurrence    = 'Find next word occurrence';
   srkmecFindPrevWordOccurrence    = 'Find previous word occurrence';
   srkmecAddJumpPoint              = 'Add jump point';
-  lisKMViewJumpHistory            = 'View jump history';
   srkmecOpenFileAtCursor          = 'Open file at cursor';
   srkmecGotoIncludeDirective      = 'Go to to include directive of current include file';
   
@@ -2596,6 +2595,7 @@ resourcestring
   srkmecViewUnits                 = 'View units';
   srkmecViewForms                 = 'View forms';
   srkmecViewComponents            = 'View components';
+  lisKMViewJumpHistory            = 'View jump history';
   srkmecViewUnitDependencies      = 'View unit dependencies';
   srkmecViewUnitInfo              = 'View unit information';
   srkmecViewAnchorEditor          = 'View anchor editor';
