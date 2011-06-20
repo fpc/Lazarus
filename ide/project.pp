@@ -5072,7 +5072,7 @@ function TProject.GetPOOutDirectory: string;
 begin
   Result:=POOutputDirectory;
   IDEMacros.SubstituteMacros(Result);
-  Result:=TrimFilename(Result);
+  Result:=TrimFilename(AppendPathDelim(ProjectDirectory)+Result);
 end;
 
 function TProject.GetAutoCreatedFormsList: TStrings;
