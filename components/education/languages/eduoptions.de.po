@@ -1,0 +1,213 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: eduoptions.edurseducation
+msgid "Education"
+msgstr ""
+
+#: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
+msgid "Add an entry to the %sNew ...%s dialog to create a new program"
+msgstr ""
+
+#: eduoptions.ersaddanidemenuitemtocreateanewprogram
+msgid "Add an IDE menu item to create a new program"
+msgstr ""
+
+#: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
+msgid "Add a speed button to the IDE toolbar to create a new program"
+msgstr ""
+
+#: eduoptions.ersaddicon
+msgid "Add icon"
+msgstr "Icon hinzufügen"
+
+#: eduoptions.ersaddmenuitem
+msgid "Add menu item"
+msgstr "Menüeintrag hinzufügen"
+
+#: eduoptions.ersaddtonewdialog
+msgid "Add to %sNew ...%s dialog"
+msgstr "Zum %sNeu ...%s Dialog hinzufügen"
+
+#: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
+msgid "A simple program. Only one file is created and added to the current project."
+msgstr ""
+
+#: eduoptions.erseducomppalettetitle
+msgid "Component palette"
+msgstr "Komponentenpalette"
+
+#: eduoptions.erseduenvoptsframetitle
+msgid "General"
+msgstr "Allgemein"
+
+#: eduoptions.ersedumenutitle
+msgid "Menus"
+msgstr "Menüs"
+
+#: eduoptions.ersedunewprogramtitle
+msgctxt "eduoptions.ersedunewprogramtitle"
+msgid "New program"
+msgstr "Neues Programm"
+
+#: eduoptions.erseduoipages
+msgid "Object Inspector"
+msgstr "Objektinspektor"
+
+#: eduoptions.ersedupropseventstitle
+msgid "Properties and Events"
+msgstr "Eigenschaften und Ereignisse"
+
+#: eduoptions.ersedusbtitle
+msgid "Speed Buttons"
+msgstr ""
+
+#: eduoptions.ersenableeducheckboxcaption
+msgid "Enable education settings"
+msgstr ""
+
+#: eduoptions.ersgrpboxeventsext
+msgid "Events: Extended Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxeventsfull
+msgid "Events: Full Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxeventsmin
+msgid "Events: Minimal Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxpropsext
+msgid "Properties: Extended Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxpropsfull
+msgid "Properties: Full Configuration"
+msgstr ""
+
+#: eduoptions.ersgrpboxpropsmin
+msgid "Properties: Minimal Configuration"
+msgstr ""
+
+#: eduoptions.ershideall
+msgid "Hide all"
+msgstr "Alle verbergen"
+
+#: eduoptions.ersidemenuitems
+msgid "IDE menu items"
+msgstr "IDE Menüpunkte"
+
+#: eduoptions.ersloaddefaultcode
+msgid "Load default code?"
+msgstr ""
+
+#: eduoptions.ersloadsourcefromfile
+msgid "Load source from file"
+msgstr ""
+
+#: eduoptions.ersnewprogram
+msgctxt "eduoptions.ersnewprogram"
+msgid "New program"
+msgstr "Neues Programm"
+
+#: eduoptions.ersnewsinglefileeducationprogram
+msgid "New single file education program"
+msgstr ""
+
+#: eduoptions.ersnewsinglefileprogram
+msgid "New single file program"
+msgstr ""
+
+#: eduoptions.ersrdbtnfull
+msgid "Show All"
+msgstr "Alle zeigen"
+
+#: eduoptions.ersrdgrpeventscaption
+msgid "Events"
+msgstr "Ereignisse"
+
+#: eduoptions.ersrdgrppropscaption
+msgid "Properties"
+msgstr "Eigenschaften"
+
+#: eduoptions.ersreplacecurrentsourcewithdefaultsourcecode
+msgid "Replace current source with default source code"
+msgstr ""
+
+#: eduoptions.ersreplacecurrentwithdefaultsourcecode
+msgid "Replace current with default source code?"
+msgstr ""
+
+#: eduoptions.ersshowall
+msgid "Show all"
+msgstr "Alle zeigen"
+
+#: eduoptions.ersshowallchilds
+msgid "Show all children"
+msgstr ""
+
+#: eduoptions.ersshowextended
+msgid "Show Extended"
+msgstr ""
+
+#: eduoptions.ersshowminimal
+msgid "Show Minimal"
+msgstr ""
+
+#: eduoptions.ersshowoipages
+msgid "Show Object Inspector Pages"
+msgstr "Zeige Objektinspektor-Seiten"
+
+#: eduoptions.ersshowselection
+msgid "Show Selection"
+msgstr "Auswahl zeigen"
+
+#: eduoptions.erssinglefileprogram
+msgid "Single file program"
+msgstr ""
+
+#: eduoptions.erssource
+msgid "Source"
+msgstr "Quelltext"
+
+#: eduoptions.erssttexteventsext
+msgid "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+msgstr ""
+
+#: eduoptions.erssttexteventsfull
+msgid "All Events available"
+msgstr "Alle Ereignisse verfügbar"
+
+#: eduoptions.erssttexteventsmin
+msgid "OnClick, OnChange, OnMouseMove"
+msgstr ""
+
+#: eduoptions.erssttextpropsext
+msgid "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
+msgstr ""
+
+#: eduoptions.erssttextpropsfull
+msgid "All Properties available"
+msgstr "Alle Eigenschaften verfügbar"
+
+#: eduoptions.erssttextpropsmin
+msgid "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
+msgstr ""
+
+#: eduoptions.ersvisiblecomponents
+msgid "Visible components"
+msgstr "Sichtbare Komponenten"
+
+#: eduoptions.ersvisiblespeedbuttons
+msgid "Visible SpeedButtons"
+msgstr "Sichtbare SpeedButtons"
+

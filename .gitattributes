@@ -805,6 +805,7 @@ components/education/edupropsevents.lrs svneol=native#text/plain
 components/education/edupropsevents.pas svneol=native#text/plain
 components/education/eduspeedbuttons.lfm svneol=native#text/plain
 components/education/eduspeedbuttons.pas svneol=native#text/plain
+components/education/languages/eduoptions.de.po svneol=native#text/plain
 components/education/languages/eduoptions.it.po svneol=native#text/plain
 components/education/languages/eduoptions.po svneol=native#text/plain
 components/education/languages/eduoptions.pt_BR.po svneol=native#text/plain
