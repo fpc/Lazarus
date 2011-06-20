@@ -3,7 +3,7 @@
      ./runtests --format=plain --suite=TTestCodetoolsH2Pas
      ./runtests --format=plain --suite=TestCTH2PMergeHeaderFiles
      ./runtests --format=plain --suite=TestCTH2PReplaceMacros
-     ./runtests --format=plain --suite=TestCTH2PConvertSimpleTypes
+     ./runtests --format=plain --suite=TestCTH2PConvertSimpleVars
      ./runtests --format=plain --suite=TestCTH2PConvertEnumsTypes
 }
 unit TestCTH2Pas;
@@ -28,7 +28,7 @@ type
   published
     procedure TestCTH2PMergeHeaderFiles;
     procedure TestCTH2PReplaceMacros;
-    procedure TestCTH2PConvertSimpleTypes;
+    procedure TestCTH2PConvertSimpleVars;
     procedure TestCTH2PConvertEnumsTypes;
   end;
 
@@ -59,6 +59,7 @@ begin
       Tool.WriteH2PDirectivesNodeReport;
       AssertEquals(Title,ExpectedPasSrc,PasCode.Source);
     end else begin
+      //debugln(['TTestCodetoolsH2Pas.Test Found pas="',PasCode.Source,'"']);
       AssertEquals(Title,true,true);
     end;
   finally
@@ -149,16 +150,19 @@ begin
   end;
 end;
 
-procedure TTestCodetoolsH2Pas.TestCTH2PConvertSimpleTypes;
+procedure TTestCodetoolsH2Pas.TestCTH2PConvertSimpleVars;
 var
   UsesCTypes: String;
   EmpytImplementation: String;
 begin
   UsesCTypes:='uses ctypes;'+LineEnding;
   EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
-  Test('convert int i;',
+  (*Test('convert int i;',
        'int i;',
-       UsesCTypes+'var i: cint; cvar; external;'+EmpytImplementation);
+       UsesCTypes+'var i: cint; cvar; external;'+EmpytImplementation);*)
+  Test('convert #define c 1',
+       '#define c 1',
+       UsesCTypes+'const c=1;'+EmpytImplementation);
 end;
 
 procedure TTestCodetoolsH2Pas.TestCTH2PConvertEnumsTypes;
