@@ -514,6 +514,7 @@ begin
   ecToggleCodeExpl: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFPDocEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleMessages: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewComponents: SetResult(VK_P,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleSearchResults: SetResult(VK_F,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetResult(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
@@ -967,6 +968,7 @@ begin
   ecToggleCodeExpl: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFPDocEditor: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleMessages: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewComponents: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleSearchResults: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleWatches: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetSingle(VK_F8,[ssCtrl],VK_UNKNOWN,[]);
@@ -1598,6 +1600,7 @@ begin
   ecToggleCodeExpl: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleFPDocEditor: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleMessages: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecViewComponents: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleSearchResults: SetSingle(VK_F,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleWatches: SetSingle(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleBreakPoints: SetSingle(VK_B,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
@@ -2790,6 +2793,7 @@ begin
   AddDefault(C, 'Toggle view Code Explorer', lisKMToggleViewCodeExplorer, ecToggleCodeExpl);
   AddDefault(C, 'Toggle view Documentation Editor', lisKMToggleViewDocumentationEditor, ecToggleFPDocEditor);
   AddDefault(C, 'Toggle view Messages', lisKMToggleViewMessages, ecToggleMessages);
+  AddDefault(C, 'View Components', srkmecViewComponents, ecViewComponents);
   AddDefault(C, 'Toggle view Search Results', lisKMToggleViewSearchResults, ecToggleSearchResults);
   AddDefault(C, 'Toggle view Watches', lisKMToggleViewWatches, ecToggleWatches);
   AddDefault(C, 'Toggle view Breakpoints', lisKMToggleViewBreakpoints, ecToggleBreakPoints);
