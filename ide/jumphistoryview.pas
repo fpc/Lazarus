@@ -39,6 +39,7 @@ type
     procedure FormCreate(Sender : TObject);
     procedure listHistoryClick(Sender : TObject);
     procedure listHistoryDblClick(Sender : TObject);
+    procedure listHistoryKeyPress(Sender: TObject; var Key: char);
     procedure OnIdle(Sender : TObject; var Done: Boolean);
   private
     { private declarations }
@@ -77,6 +78,7 @@ begin
   InitDisplay;
   Application.AddOnIdleHandler(@OnIdle);
 end;
+
 procedure TJumpHistoryViewWin.listHistoryClick(Sender : TObject);
 begin
   if EnvironmentOptions.MsgViewDblClickJumps then exit;
@@ -87,6 +89,13 @@ procedure TJumpHistoryViewWin.listHistoryDblClick(Sender : TObject);
 begin
   if not EnvironmentOptions.MsgViewDblClickJumps then exit;
   if Assigned(fOnSelectionChanged) then fOnSelectionChanged(self);
+end;
+
+procedure TJumpHistoryViewWin.listHistoryKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = #13 then begin
+    if Assigned(fOnSelectionChanged) then fOnSelectionChanged(self);
+  end;
 end;
 
 procedure TJumpHistoryViewWin.OnIdle(Sender: TObject; var Done: Boolean);

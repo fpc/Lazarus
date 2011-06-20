@@ -8,7 +8,7 @@ object JumpHistoryViewWin: TJumpHistoryViewWin
   ClientWidth = 400
   OnCreate = FormCreate
   ShowHint = True
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object listHistory: TListBox
     Left = 0
     Height = 426
@@ -19,6 +19,9 @@ object JumpHistoryViewWin: TJumpHistoryViewWin
     ItemHeight = 0
     OnClick = listHistoryClick
     OnDblClick = listHistoryDblClick
+    OnKeyPress = listHistoryKeyPress
+    ScrollWidth = 396
     TabOrder = 0
+    TopIndex = -1
   end
 end
