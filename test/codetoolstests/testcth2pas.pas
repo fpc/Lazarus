@@ -124,7 +124,13 @@ begin
   try
     Header1:=CodeToolBoss.CreateFile('header1.h');
     PasCode:=CodeToolBoss.CreateFile('header1.pas');
-
+    Header1.Source:='int i;';
+    Tool.Convert(Header1,PasCode);
+    Tool.WriteH2PNodeReport;
+    Tool.WriteH2PDirectivesNodeReport;
+    writeln;
+    writeln('=============================================');
+    writeln(PasCode.Source);
   finally
     Tool.Free;
   end;

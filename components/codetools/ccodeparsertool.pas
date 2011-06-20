@@ -835,8 +835,10 @@ begin
     ReadDefinition(false);
     if CurNode.LastChild.Desc<>ccnFunction then begin
       ReadNextAtom;
+      debugln(['TCCodeParserTool.OtherToken ',GetAtom,' SrcPos=',SrcPos,' AtomStart=',AtomStart,' SrcLen=',SrcLen]);
       if not AtomIsChar(';') then
         RaiseExpectedButAtomFound(';');
+      debugln(['TCCodeParserTool.OtherToken AAA1']);
     end;
   end else
     RaiseException('unexpected token '+GetAtom);
@@ -1863,7 +1865,7 @@ end;
 function TCCodeParserTool.AtomIsChar(const c: char): boolean;
 begin
   if SrcPos-AtomStart<>1 then exit(false);
-  if SrcPos>SrcLen then exit(false);
+  if AtomStart>SrcLen then exit(false);
   if Src[AtomStart]<>c then exit(false);
   Result:=true;
 end;
