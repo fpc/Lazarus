@@ -96,6 +96,7 @@ begin
   StayOnTopList := nil;
   FEatNextDeactivate := False;
   {$IFDEF HASX11}
+  FMinimizedByPager := False;
   FLastMinimizeEvent := 0;
   if ((QtVersionMajor = 4) and (QtVersionMinor < 6)) or IsOldKDEInstallation then
     QtX11InitializePalettes;

@@ -173,6 +173,7 @@ type
   public
     {$IFDEF HASX11}
     FLastMinimizeEvent: DWord; // track mainform minimize events -> TQtMainWindow.EventFilter
+    FMinimizedByPager: Boolean; // track if app is minimized via desktop pager or by us.
     {$ENDIF}
     function CreateDefaultFont: HFONT; virtual;
     function GetDefaultAppFontName: WideString;

@@ -5063,7 +5063,10 @@ begin
       AState := getWindowState;
       IsMinimizeEvent := AState and QtWindowMinimized <> 0;
       if IsMinimizeEvent then
+      begin
         CanSendEvent := IsCurrentDesktop(Widget);
+        QtWidgetSet.FMinimizedByPager := not CanSendEvent;
+      end;
       {$ENDIF}
       if IsMainForm and CanSendEvent then
       begin
@@ -5078,7 +5081,16 @@ begin
         if (AOldState and QtWindowMinimized <> 0) or
           (AOldState and QtWindowMaximized <> 0) or
           (AOldState and QtWindowFullScreen <> 0) then
-          Application.IntfAppRestore;
+        begin
+          {$IFDEF HASX11}
+          // do not activate lazarus app if it wasn't active during
+          // pager switch !
+          if (AOldState and QtWindowMinimized <> 0) and QtWidgetSet.FMinimizedByPager then
+              QtWidgetSet.FMinimizedByPager := False
+          else
+          {$ENDIF}
+            Application.IntfAppRestore;
+        end;
       end;
       if CanSendEvent then
         SlotWindowStateChange;
