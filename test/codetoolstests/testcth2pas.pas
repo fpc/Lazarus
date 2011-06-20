@@ -5,6 +5,7 @@
      ./runtests --format=plain --suite=TestCTH2PReplaceMacros
      ./runtests --format=plain --suite=TestCTH2PConvertSimpleVars
      ./runtests --format=plain --suite=TestCTH2PConvertEnumsTypes
+     ./runtests --format=plain --suite=TestCTH2PConvertConst
 }
 unit TestCTH2Pas;
 
@@ -30,6 +31,7 @@ type
     procedure TestCTH2PReplaceMacros;
     procedure TestCTH2PConvertSimpleVars;
     procedure TestCTH2PConvertEnumsTypes;
+    procedure TestCTH2PConvertConst;
   end;
 
 implementation
@@ -184,6 +186,39 @@ begin
   Test('convert multi enums: color{red,green,blue};',
        'enum color{red,green,blue};',
        UsesCTypes+'type color = (red,green,blue);'+EmpytImplementation);
+end;
+
+procedure TTestCodetoolsH2Pas.TestCTH2PConvertConst;
+var
+  UsesCTypes: String;
+  EmpytImplementation: String;
+begin
+  UsesCTypes:='uses ctypes;'+LineEnding;
+  EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
+  // const char a;           // A constant character
+  Test('convert const char a;',
+       'const char a;',
+       UsesCTypes+'var a: cchar;cvar;external;'+EmpytImplementation);
+
+  //char const b;           // A constant character (the same)
+  Test('convert char const b;',
+       'char const b;',
+       UsesCTypes+'var b: cchar;cvar;external;'+EmpytImplementation);
+
+  //char *const c;          // A constant pointer to a character
+  Test('convert char *const c;',
+       'char *const c;',
+       UsesCTypes+'var c: pcchar;cvar;external;'+EmpytImplementation);
+
+  //const char *const d;    // A constant pointer to a constant character
+  Test('convert char *const d;',
+       'char *const d;',
+       UsesCTypes+'var d: pcchar;cvar;external;'+EmpytImplementation);
+
+  //const char *e;          // A pointer to a constant character. The pointer may be modified.
+  Test('convert const char *e;',
+       'const char *e;',
+       UsesCTypes+'var e: pcchar;cvar;external;'+EmpytImplementation);
 end;
 
 initialization
