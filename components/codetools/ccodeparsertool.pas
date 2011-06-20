@@ -278,9 +278,12 @@ type
                          WithDirectives: boolean = false): string;// extract code without comments
 
     function GetFirstNameNode(Node: TCodeTreeNode): TCodeTreeNode;
+    function ExtractName(NameNode: TCodeTreeNode): string;
     function ExtractDefinitionName(VarNode: TCodeTreeNode): string;
     function ExtractDefinitionType(VarNode: TCodeTreeNode;
                                    WithDirectives: boolean = false): string;
+    function ExtractTypeDefType(TypeDefNode: TCodeTreeNode;
+                                WithDirectives: boolean = false): string;
     function ExtractFunctionName(FuncNode: TCodeTreeNode): string;
     function GetFunctionParamListNode(Node: TCodeTreeNode): TCodeTreeNode;
     function ExtractFunctionParamList(FuncNode: TCodeTreeNode): string;
@@ -2006,6 +2009,11 @@ begin
   while (Result<>nil) and (Result.Desc<>ccnName) do Result:=Result.NextBrother;
 end;
 
+function TCCodeParserTool.ExtractName(NameNode: TCodeTreeNode): string;
+begin
+  Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
+end;
+
 function TCCodeParserTool.ExtractDefinitionName(VarNode: TCodeTreeNode): string;
 var
   NameNode: TCodeTreeNode;
@@ -2045,6 +2053,21 @@ begin
   end else begin
     Result:=Result+ExtractCode(StartPos,VarNode.EndPos,WithDirectives);
   end;
+end;
+
+function TCCodeParserTool.ExtractTypeDefType(TypeDefNode: TCodeTreeNode;
+  WithDirectives: boolean): string;
+var
+  NameNode: TCodeTreeNode;
+  StartPos: Integer;
+begin
+  Result:='';
+  StartPos:=TypeDefNode.StartPos+length('typedef');
+  NameNode:=GetFirstNameNode(TypeDefNode);
+  if (NameNode<>nil) then begin
+    Result:=ExtractCode(StartPos,NameNode.StartPos,WithDirectives);
+  end else
+    Result:=ExtractCode(StartPos,TypeDefNode.EndPos,WithDirectives);
 end;
 
 function TCCodeParserTool.ExtractFunctionName(FuncNode: TCodeTreeNode): string;

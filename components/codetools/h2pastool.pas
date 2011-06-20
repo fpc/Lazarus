@@ -255,6 +255,7 @@ type
     
     function GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
     function GetSimplePascalTypeOfCParameter(CParamNode: TCodeTreeNode): string;
+    function GetSimplePascalTypeOfTypeDef(TypeDefNode: TCodeTreeNode): string;
     function GetSimplePascalResultTypeOfCFunction(CFuncNode: TCodeTreeNode): string;
     function ConvertSimpleCTypeToPascalType(CType: string;
                   UseSingleIdentifierAsDefault: boolean): string;
@@ -761,24 +762,23 @@ begin
   DebugLn(['TH2PasTool.ConvertTypedef Typedef name="',CurName,'"']);
   ChildNode:=CNode.FirstChild;
   case ChildNode.Desc of
-  
-  ccnDefinition: // typedef name
+
+  ccnName: // typedef simple-type name
     begin
-      CurName:=CTool.ExtractDefinitionName(ChildNode);
-      CurType:=CTool.ExtractDefinitionType(ChildNode);
-      SimpleType:=GetSimplePascalTypeOfCVar(ChildNode);
+      SimpleType:=GetSimplePascalTypeOfTypeDef(CNode);
       if SimpleType='' then begin
         // this variable has a complex type
-        TypeH2PNode:=CreateH2PNodeForComplexType(ChildNode,true,ParentNode<>nil);
+        TypeH2PNode:=CreateH2PNodeForComplexType(CNode,true,ParentNode<>nil);
         if TypeH2PNode<>nil then
           SimpleType:=TypeH2PNode.PascalName;
       end;
       if SimpleType<>'' then begin
         CurCName:=CurName;
         H2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnTypeDefinition,
-                               SimpleType,nil,true);
+                               SimpleType);
         DebugLn(['TH2PasTool.ConvertTypedef added: ',H2PNode.DescAsString(CTool)]);
       end else begin
+        CurType:=CTool.ExtractDefinitionType(ChildNode);
         DebugLn(['TH2PasTool.ConvertTypedef SKIPPING Typedef Variable Name="',CurName,'" Type="',CurType,'"']);
       end;
     end;
@@ -2276,6 +2276,14 @@ begin
     Result:=ConvertSimpleCTypeToPascalType(Result,true);
 end;
 
+function TH2PasTool.GetSimplePascalTypeOfTypeDef(TypeDefNode: TCodeTreeNode
+  ): string;
+begin
+  Result:=CTool.ExtractTypeDefType(TypeDefNode,false);
+  if Result='' then exit;
+  Result:=ConvertSimpleCTypeToPascalType(Result,true);
+end;
+
 function TH2PasTool.GetSimplePascalResultTypeOfCFunction(
   CFuncNode: TCodeTreeNode): string;
 begin
@@ -2442,8 +2450,12 @@ begin
     CCode:=CTool.ExtractFunctionResultType(CNode)
   else if CNode.Desc=ccnFuncParameter then
     CCode:=CTool.ExtractParameterType(CNode)
-  else
+  else if CNode.Desc=ccnTypedef then
+    CCode:=CTool.ExtractTypeDefType(CNode)
+  else begin
+    debugln(['TH2PasTool.GetH2PNodeForComplexType not supported: CNode=',CCNodeDescAsString(CNode.Desc)]);
     exit;
+  end;
 
   DebugLn(['TH2PasTool.GetH2PNodeForComplexType CCode="',CCode,'"']);
   { int[][3]  -> array of array[0..2] of cint
