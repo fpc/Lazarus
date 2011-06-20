@@ -969,6 +969,7 @@ var
   Cfg: TXMLOptionsStorage;
   EventType: TDBGEventType;
   NodeName: String;
+  s: String;
 begin
   Cfg:=nil;
   try
@@ -1076,15 +1077,17 @@ begin
 
       if not OnlyDesktop then begin
         // files
-        LazarusDirectory:=XMLConfig.GetValue(
-           Path+'LazarusDirectory/Value',FLazarusDirectory);
+        s:=TrimFilename(
+           XMLConfig.GetValue(Path+'LazarusDirectory/Value',FLazarusDirectory));
+        if not FilenameIsAbsolute(s) then
+          s:=TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+s);
+        LazarusDirectory:=s;
         LoadRecentList(XMLConfig,FLazarusDirsHistory,
            Path+'LazarusDirectory/History/');
-        if FLazarusDirsHistory.Count=0 then begin
+        if FLazarusDirsHistory.Count=0 then
           FLazarusDirsHistory.Add(ProgramDirectory(true));
-        end;
         CompilerFilename:=TrimFilename(XMLConfig.GetValue(
-           Path+'CompilerFilename/Value',FCompilerFilename));
+                              Path+'CompilerFilename/Value',FCompilerFilename));
         LoadRecentList(XMLConfig,FCompilerFileHistory,
            Path+'CompilerFilename/History/');
         if FCompilerFileHistory.Count=0 then
