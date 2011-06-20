@@ -193,12 +193,15 @@ var
         if SysUtils.CompareText(AClassName,MissingClasses[i])=0 then
           exit;
     end;
+    // ToDo: search only in used packages
     // search in designer base classes
     if BaseFormEditor1.FindDesignerBaseClassByName(AClassName,true)<>nil then
       exit;
     // search in registered classes
     RegComp:=IDEComponentPalette.FindComponent(ObjNode.TypeName);
     if (RegComp<>nil) and (RegComp.GetUnitName<>'') then exit;
+    if GetClass(ObjNode.TypeName) <> nil then
+      Exit;
     // class is missing
     DebugLn(['FindMissingClass ',ObjNode.Name,':',ObjNode.TypeName,' IsInherited=',ObjNode.IsInherited]);
     if MissingClasses=nil then
