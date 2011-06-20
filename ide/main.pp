@@ -16215,7 +16215,7 @@ begin
         if p>0 then begin
           Insert('<div class="debuggerhint">'+Expression+'</div><br>',SmartHintStr,p+length('<body>'));
         end else begin
-          SmartHintStr:=Expression;
+          SmartHintStr:=Expression+LineEnding+LineEnding+SmartHintStr;
         end;
       end else
         SmartHintStr:=Expression;
