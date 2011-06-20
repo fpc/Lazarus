@@ -16151,6 +16151,7 @@ var
   BaseURL, SmartHintStr, Expression, DebugEval, DebugEvalDerefer: String;
   DBGType,DBGTypeDerefer: TDBGType;
   HasHint: Boolean;
+  p: SizeInt;
 begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
@@ -16209,9 +16210,15 @@ begin
       FreeAndNil(DBGTypeDerefer);
       HasHint:=true;
       Expression := Expression + ' = ' + DebugEval;
-      if SmartHintStr<>'' then
-        SmartHintStr:=LineEnding+LineEnding+SmartHintStr;
-      SmartHintStr:=Expression+SmartHintStr;
+      if SmartHintStr<>'' then begin
+        p:=System.Pos('<body>',lowercase(SmartHintStr));
+        if p>0 then begin
+          Insert('<div class="debuggerhint">'+Expression+'</div><br>',SmartHintStr,p+length('<body>'));
+        end else begin
+          SmartHintStr:=Expression;
+        end;
+      end else
+        SmartHintStr:=Expression;
     end;
   end;
 
