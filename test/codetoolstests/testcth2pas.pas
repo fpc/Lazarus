@@ -159,12 +159,24 @@ var
 begin
   UsesCTypes:='uses ctypes;'+LineEnding;
   EmpytImplementation:=LineEnding+'implementation'+LineEnding+'end.';
-  (*Test('convert int i;',
+  Test('convert int i;',
        'int i;',
-       UsesCTypes+'var i: cint; cvar; external;'+EmpytImplementation);*)
+       UsesCTypes+'var i: cint; cvar; external;'+EmpytImplementation);
   Test('convert #define c 1',
        '#define c 1',
        UsesCTypes+'const c=1;'+EmpytImplementation);
+  Test('convert int y = 7;',
+       'int y = 7;',
+       UsesCTypes+'var y:cint;cvar;external;'+EmpytImplementation);
+  Test('convert short signed int ssi_octal = 0123;',
+       'short signed int ssi_octal = 0123;',
+       UsesCTypes+'var ssi_octal:csshort;cvar;external;'+EmpytImplementation);
+  Test('convert unsigned short unsigned_short;',
+       'unsigned short unsigned_short;',
+       UsesCTypes+'var unsigned_short:cushort;cvar;external;'+EmpytImplementation);
+  Test('convert unsigned long long unsigned_long_long;',
+       'unsigned long long unsigned_long_long;',
+       UsesCTypes+'var unsigned_long_long:culonglong;cvar;external;'+EmpytImplementation);
 end;
 
 procedure TTestCodetoolsH2Pas.TestCTH2PConvertEnumsTypes;
