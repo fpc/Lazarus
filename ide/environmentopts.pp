@@ -915,15 +915,6 @@ procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
 var
   XMLConfig: TXMLConfig;
   FileVersion: integer;
-  CurDebuggerClass: String;
-  OldDebuggerType: TDebuggerType;
-  Path: String;
-  CurPath: String;
-  i, j: Integer;
-  name: String;
-  Rec: PIDEOptionsGroupRec;
-  Cfg: TXMLOptionsStorage;
-  EventType: TDBGEventType;
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -968,6 +959,16 @@ var
     fLanguageID:=XMLConfig.GetValue('EnvironmentOptions/Language/ID','');
   end;
 
+var
+  CurDebuggerClass: String;
+  OldDebuggerType: TDebuggerType;
+  Path: String;
+  CurPath: String;
+  i, j: Integer;
+  Rec: PIDEOptionsGroupRec;
+  Cfg: TXMLOptionsStorage;
+  EventType: TDBGEventType;
+  NodeName: String;
 begin
   Cfg:=nil;
   try
@@ -1251,14 +1252,15 @@ begin
       FObjectInspectorOptions.Load;
       FObjectInspectorOptions.SaveBounds:=false;
 
+      // IDEEditorGroups
       for i := 0 to IDEEditorGroups.Count - 1 do begin
         Rec := IDEEditorGroups[i];
-        name := Rec^.GroupClass.ClassName;
-        Rec^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name + '/Value',
+        NodeName := Rec^.GroupClass.ClassName;
+        Rec^.Collapsed := XMLConfig.GetValue(Path+'OptionDialog/Tree/' + NodeName + '/Value',
                                              Rec^.DefaultCollapsed);
         if Rec^.Items <> nil then begin
           for j := 0 to Rec^.Items.Count - 1 do begin
-          Rec^.Items[j]^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name
+            Rec^.Items[j]^.Collapsed := XMLConfig.GetValue(Path+'OptionDialog/Tree/' + NodeName
                   + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
                   Rec^.Items[j]^.DefaultCollapsed);
           end;
@@ -1279,12 +1281,6 @@ end;
 procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
 var
   XMLConfig: TXMLConfig;
-  Path: String;
-  i, j: Integer;
-  name: String;
-  Rec: PIDEOptionsGroupRec;
-  Cfg: TXMLOptionsStorage;
-  EventType: TDBGEventType;
 
   procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
   var i:integer;
@@ -1312,6 +1308,13 @@ var
                              DebuggerName[dtNone]);
   end;
   
+var
+  Path: String;
+  i, j: Integer;
+  NodeName: String;
+  Rec: PIDEOptionsGroupRec;
+  Cfg: TXMLOptionsStorage;
+  EventType: TDBGEventType;
 begin
   Cfg:=nil;
   try
@@ -1550,15 +1553,16 @@ begin
       FObjectInspectorOptions.SaveBounds:=false;
       FObjectInspectorOptions.Save;
 
+      // IDEEditorGroups
       for i := 0 to IDEEditorGroups.Count - 1 do begin
         Rec := IDEEditorGroups[i];
-        name := Rec^.GroupClass.ClassName;
-        XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name + '/Value',
+        NodeName := Rec^.GroupClass.ClassName;
+        XMLConfig.SetDeleteValue(Path+'OptionDialog/Tree/' + NodeName + '/Value',
                                  Rec^.Collapsed,
                                  Rec^.DefaultCollapsed);
         if Rec^.Items <> nil then begin
           for j := 0 to Rec^.Items.Count - 1 do begin
-            XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name
+            XMLConfig.SetDeleteValue(Path+'OptionDialog/Tree/' + NodeName
                                      + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
                                      Rec^.Items[j]^.Collapsed,
                                      Rec^.Items[j]^.DefaultCollapsed);
@@ -1804,9 +1808,12 @@ begin
 end;
 
 procedure TEnvironmentOptions.SetLazarusDirectory(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FLazarusDirectory=AValue then exit;
-  FLazarusDirectory:=AppendPathDelim(TrimFilename(AValue));
+  NewValue:=AppendPathDelim(TrimFilename(AValue));
+  if FLazarusDirectory=NewValue then exit;
+  FLazarusDirectory:=NewValue;
 end;
 
 procedure TEnvironmentOptions.SetFPCSourceDirectory(const AValue: string);
