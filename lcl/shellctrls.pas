@@ -53,6 +53,7 @@ type
     FShellListView: TCustomShellListView;
     FFileSortType: TFileSortType;
     { Setters and getters }
+    procedure SetFileSortType(const AValue: TFileSortType);
     procedure SetRoot(const AValue: string);
     procedure SetShellListView(const Value: TCustomShellListView);
   protected
@@ -78,7 +79,7 @@ type
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property ShellListView: TCustomShellListView read FShellListView write SetShellListView;
-    property FileSortType: TFileSortType read FFileSortType write FFileSortType;
+    property FileSortType: TFileSortType read FFileSortType write SetFileSortType;
     property Root: string read FRoot write SetRoot;
 
     { Protected properties which users may want to access, see bug 15374 }
@@ -327,6 +328,19 @@ begin
     PopulateWithBaseFiles()
   else
     PopulateTreeNodeWithFiles(nil, AValue);
+end;
+
+// ToDo: Optimize, now the tree is populated in constructor, SetRoot and SetFileSortType.
+// For some reason it does not show in performance really.
+procedure TCustomShellTreeView.SetFileSortType(const AValue: TFileSortType);
+begin
+  if FFileSortType=AValue then exit;
+  FFileSortType:=AValue;
+  Items.Clear;
+  if FRoot = '' then
+    PopulateWithBaseFiles()
+  else
+    PopulateTreeNodeWithFiles(nil, FRoot);
 end;
 
 function TCustomShellTreeView.CanExpand(Node: TTreeNode): Boolean;
