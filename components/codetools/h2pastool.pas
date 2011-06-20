@@ -190,6 +190,7 @@ type
     FSimplifyExpressions: boolean;
     FSourceName: string;
     FUndefines: TStringToStringTree;
+    FUseExternal: boolean;
     // converting C nodes to H2P nodes
     procedure ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode);
@@ -289,6 +290,7 @@ type
     property PredefinedCTypes: TStringToStringTree read FPredefinedCTypes;
     property IgnoreCParts: TIgnoreCSourceParts read FIgnoreCParts write FIgnoreCParts;
     property SourceName: string read FSourceName write FSourceName;
+    property UseExternal: boolean read FUseExternal write FUseExternal;// use external instad of public
 
     // directives
     property SimplifyExpressions: boolean read FSimplifyExpressions
@@ -1279,7 +1281,11 @@ begin
   SetPasSection(ctnVarSection);
   PascalCode:=H2PNode.PascalCode+';';
   if H2PNode.CName<>'' then begin
-    PascalCode:=PascalCode+' cvar; public';
+    PascalCode:=PascalCode+' cvar; ';
+    if UseExternal then
+      PascalCode:=PascalCode+'external'
+    else
+      PascalCode:=PascalCode+'public';
     if H2PNode.PascalName<>H2PNode.CName then begin
       PascalCode:=PascalCode+' name '''+H2PNode.CName+'''';
     end;
@@ -2009,7 +2015,10 @@ var
   CNode: TCodeTreeNode;
   NextCNode: TCodeTreeNode;
 begin
-  //DebugLn(['TH2PasTool.BuildH2PTree ParentNode=',ParentNode.DescAsString(CTool)]);
+  if ParentNode<>nil then
+    DebugLn(['TH2PasTool.BuildH2PTree ParentNode=',ParentNode.DescAsString(CTool)])
+  else
+    debugln(['TH2PasTool.BuildH2PTree START']);
   if ParentNode<>nil then begin
     if StartNode=nil then
       StartNode:=ParentNode.CNode.FirstChild;
@@ -2024,7 +2033,10 @@ begin
   end;
   CNode:=StartNode;
   while CNode<>nil do begin
-    //DebugLn(['TH2PasTool.BuildH2PTree Current ParentNode=',ParentNode.DescAsString(CTool),' CNode=',CCNodeDescAsString(CNode.Desc)]);
+    if ParentNode<>nil then
+      DebugLn(['TH2PasTool.BuildH2PTree Current ParentNode=',ParentNode.DescAsString(CTool),' CNode=',CCNodeDescAsString(CNode.Desc)])
+    else
+      DebugLn(['TH2PasTool.BuildH2PTree Current ParentNode=nil CNode=',CCNodeDescAsString(CNode.Desc)]);
     NextCNode:=CNode.NextSkipChilds;
     case CNode.Desc of
     ccnRoot, ccnExternBlock:
@@ -2693,6 +2705,7 @@ begin
   FIgnoreCParts:=[icspInclude];
   FDefines:=TStringToStringTree.Create(true);
   FUndefines:=TStringToStringTree.Create(true);
+  UseExternal:=true;
   AddCommonCDefines;
 end;
 

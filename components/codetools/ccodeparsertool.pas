@@ -366,6 +366,8 @@ type
 function CCNodeDescAsString(Desc: TCCodeNodeDesc; SubDesc: TCCodeNodeDesc = 0): string;
 procedure InitCCodeKeyWordLists;
 
+function GetNodeIndent(Node: TCodeTreeNode): string;
+
 var
   IsCCodeFunctionModifier: TKeyWordFunctionList = nil;
   IsCCodeCustomOperator: TKeyWordFunctionList = nil;
@@ -452,6 +454,14 @@ begin
     Add('=='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('!='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+end;
+
+function GetNodeIndent(Node: TCodeTreeNode): string;
+begin
+  if Node=nil then
+    Result:=''
+  else
+    Result:=GetIndentStr(Node.GetLevel*2);
 end;
 
 { TCHeaderFileMerger }
@@ -835,10 +845,8 @@ begin
     ReadDefinition(false);
     if CurNode.LastChild.Desc<>ccnFunction then begin
       ReadNextAtom;
-      debugln(['TCCodeParserTool.OtherToken ',GetAtom,' SrcPos=',SrcPos,' AtomStart=',AtomStart,' SrcLen=',SrcLen]);
       if not AtomIsChar(';') then
         RaiseExpectedButAtomFound(';');
-      debugln(['TCCodeParserTool.OtherToken AAA1']);
     end;
   end else
     RaiseException('unexpected token '+GetAtom);
@@ -855,7 +863,7 @@ function TCCodeParserTool.DirectiveToken: boolean;
     repeat
       ReadRawNextAtom;
       {$IFDEF VerboseCCodeParser}
-      debugln([GetIndentStr(CurNode.GetLevel*2),'ReadExpression Atom ',GetAtom]);
+      debugln([GetNodeIndent(CurNode),'ReadExpression Atom ',GetAtom]);
       {$ENDIF}
       if AtomStart>SrcLen then
         RaiseException('missing expression');
@@ -949,14 +957,14 @@ begin
         RaiseExpectedButAtomFound('identifier');
     end else if AtomIs('if') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveIf;
       IncIfLevel(AtomStart);
       ReadExpression;
     end else if AtomIs('ifdef') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveIfDef;
       IncIfLevel(AtomStart);
@@ -965,7 +973,7 @@ begin
         RaiseExpectedButAtomFound('identifier');
     end else if AtomIs('ifndef') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveIfNDef;
       IncIfLevel(AtomStart);
@@ -974,7 +982,7 @@ begin
         RaiseExpectedButAtomFound('identifier');
     end else if AtomIs('elif') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
+      DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveElIf;
       if IfLevel=0 then
@@ -982,7 +990,7 @@ begin
       ReadExpression;
     end else if AtomIs('else') then begin
       {$IFDEF VerboseCDirectives}
-      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
+      DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
       {$ENDIF}
       CurNode.SubDesc:=ccnsDirectiveElse;
       if IfLevel=0 then
@@ -993,7 +1001,7 @@ begin
         RaiseException('endif without if');
       dec(IfLevel);
       {$IFDEF VerboseCDirectives}
-      DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
       {$ENDIF}
     end else if AtomIs('line') then begin
       CurNode.SubDesc:=ccnsDirectiveLine;
@@ -1223,14 +1231,14 @@ begin
   CurNode:=NewNode;
   CurNode.StartPos:=AtomStart;
   {$IFDEF VerboseCCodeParser}
-  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.CreateChildNode ',CCNodeDescAsString(Desc)]);
+  DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.CreateChildNode ',CCNodeDescAsString(Desc)]);
   {$ENDIF}
 end;
 
 procedure TCCodeParserTool.EndChildNode;
 begin
   {$IFDEF VerboseCCodeParser}
-  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.EndChildNode ',CCNodeDescAsString(CurNode.Desc)]);
+  DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.EndChildNode ',CCNodeDescAsString(CurNode.Desc)]);
   {$ENDIF}
   if CurNode.EndPos<=0 then
     CurNode.EndPos:=SrcPos;
@@ -1321,7 +1329,7 @@ var
   MainNode: TCodeTreeNode;
 begin
   {$IFDEF VerboseCCodeParser}
-  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadVariable START ',GetAtom]);
+  DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.ReadVariable START ',GetAtom]);
   {$ENDIF}
   if AtomIs('typedef') then begin
     if AsParameter then
@@ -1416,7 +1424,7 @@ begin
       ReadNextAtom;
     end;
     {$IFDEF VerboseCCodeParser}
-    DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadVariable name=',GetAtom]);
+    DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.ReadVariable name=',GetAtom]);
     {$ENDIF}
     if AtomIsIdentifier then begin
       CreateChildNode(ccnName);
@@ -1429,7 +1437,7 @@ begin
       RaiseExpectedButAtomFound(')');
   end else begin
     {$IFDEF VerboseCCodeParser}
-    DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadVariable name=',GetAtom]);
+    DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.ReadVariable name=',GetAtom]);
     {$ENDIF}
     if AtomIsIdentifier then begin
       CreateChildNode(ccnName);
@@ -1761,7 +1769,7 @@ begin
     ReadRawNextCAtom(Src,SrcPos,AtomStart);
   until (SrcPos>SrcLen) or (not (Src[AtomStart] in [#10,#13]));
   {$IFDEF VerboseCCodeParser}
-  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+  DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
   {$ENDIF}
 end;
 
@@ -1772,14 +1780,14 @@ begin
   LastAtomStart:=AtomStart;
   repeat
     ReadRawNextCAtom(Src,SrcPos,AtomStart);
-    if (SrcPos>SrcLen) then break;
+    if (AtomStart>SrcLen) then break;
     if Src[AtomStart]='#' then begin
       ReadTilCLineEnd(Src,SrcPos);
       if (SrcPos>SrcLen) then break;
     end;
   until (not (Src[AtomStart] in [#10,#13]));
   {$IFDEF VerboseCCodeParser}
-  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+  DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
   {$ENDIF}
 end;
 
@@ -1801,7 +1809,7 @@ begin
     SrcPos:=AtomStart;
   end;
   {$IFDEF VerboseCCodeParser}
-  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.UndoReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+  DebugLn([GetNodeIndent(CurNode),'TCCodeParserTool.UndoReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
   {$ENDIF}
 end;
 
@@ -2536,7 +2544,7 @@ begin
   if Tree<>nil then begin
     Node:=Tree.Root;
     while Node<>nil do begin
-      DebugLn([GetIndentStr(Node.GetLevel*2)+NodeAsString(Node)]);
+      DebugLn([GetNodeIndent(CurNode)+NodeAsString(Node)]);
       Node:=Node.Next;
     end;
   end;

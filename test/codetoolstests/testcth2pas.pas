@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testglobals, FileProcs, CodeToolManager,
-  CodeCache, CCodeParserTool, H2PasTool;
+  BasicCodeTools, CodeCache, CCodeParserTool, H2PasTool;
 
 type
 
@@ -119,19 +119,36 @@ var
   Tool: TH2PasTool;
   Header1: TCodeBuffer;
   PasCode: TCodeBuffer;
+  ExpectedSrc: String;
 begin
   Tool:=TH2PasTool.Create;
+  Header1:=nil;
+  PasCode:=nil;
   try
     Header1:=CodeToolBoss.CreateFile('header1.h');
     PasCode:=CodeToolBoss.CreateFile('header1.pas');
     Header1.Source:='int i;';
     Tool.Convert(Header1,PasCode);
-    Tool.WriteH2PNodeReport;
+    ExpectedSrc:=
+      'uses ctypes;'+LineEnding
+      +'var'+LineEnding
+      +'  i: cint; cvar; external;'+LineEnding
+      +'implementation'+LineEnding
+      +'end.';
+    if CompareTextIgnoringSpace(ExpectedSrc,PasCode.Source,true)<>0 then begin
+      AssertEquals('convert int i;',ExpectedSrc,PasCode.Source);
+    end else begin
+      AssertEquals('convert int i;',true,true);
+    end;
+
+    {Tool.WriteH2PNodeReport;
     Tool.WriteH2PDirectivesNodeReport;
     writeln;
     writeln('=============================================');
-    writeln(PasCode.Source);
+    writeln(PasCode.Source);}
   finally
+    if Header1<>nil then Header1.IsDeleted:=true;
+    if PasCode<>nil then PasCode.IsDeleted:=true;
     Tool.Free;
   end;
 end;
