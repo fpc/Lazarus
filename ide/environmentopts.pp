@@ -1318,6 +1318,8 @@ var
   Rec: PIDEOptionsGroupRec;
   Cfg: TXMLOptionsStorage;
   EventType: TDBGEventType;
+  CurLazDir: String;
+  BaseDir: String;
 begin
   Cfg:=nil;
   try
@@ -1418,8 +1420,18 @@ begin
 
       if not OnlyDesktop then begin
         // files
-        XMLConfig.SetDeleteValue(
-           Path+'LazarusDirectory/Value',FLazarusDirectory,'');
+        CurLazDir:=ChompPathDelim(FLazarusDirectory);
+        BaseDir:=ExtractFilePath(ChompPathDelim(GetPrimaryConfigPath));
+        if (CompareFilenames(BaseDir,CurLazDir)=0)
+        or FileIsInPath(CurLazDir,BaseDir) then begin
+          // the pcp directory is in the lazarus directory
+          // or the lazarus directory is a sibling or a sub dir of a sibling of the pcp
+          // examples:
+          //   pcp=C:\Lazarus\config, lazdir=C:\Lazarus => store '..'
+          //   pcp=/home/user/.lazarus, lazdir=/home/user/freepascal/lazarus => store ../freepascal/lazarus
+          CurLazDir:=CreateRelativePath(CurLazDir,GetPrimaryConfigPath);
+        end;
+        XMLConfig.SetDeleteValue(Path+'LazarusDirectory/Value',CurLazDir,'');
         SaveRecentList(XMLConfig,FLazarusDirsHistory,
            Path+'LazarusDirectory/History/');
         XMLConfig.SetDeleteValue(
