@@ -91,7 +91,7 @@ var
   ControlType: Cardinal;
   ControlStyle: Cardinal;
   fpgRect: TfpgRect;
-  Style: TFButtonFlags;
+  Style: TfpgButtonFlags;
   (*
   DFC_CAPTION = $01;
   DFC_MENU = $02;

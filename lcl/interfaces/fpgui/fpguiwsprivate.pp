@@ -746,7 +746,7 @@ begin
 //  WidgetProtected.OnKeyPress    := KeyHandler;
 //  WidgetProtected.OnMouseEnter  := MouseEnterHandler;
 //  WidgetProtected.OnMouseExit   := MouseExitHandler;
-  WidgetProtected.OnPaint       := PaintHandler;
+//  WidgetProtected.OnPaint       := PaintHandler;
 //  WidgetProtected.OnMouseMove   := MouseMoveHandler;
 
   //WidgetProtected.OnMove  := MoveHandler;
