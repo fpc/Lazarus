@@ -2963,21 +2963,21 @@ begin
   ReadNextAtom;
   if CurPos.Flag=cafColon then begin
     // this is for example: on E: Exception do ;
-    if CreateNodes then begin
-      // close the variable
-      EndChildNode;
-    end;
+    if CreateNodes then
+      CurNode.Desc:=ctnVarDefinition;
     ReadNextAtom;
     AtomIsIdentifier(true);
     if CreateNodes then begin
-      // ctnOnIdentifier for the type
+      // ctnIdentifier for the type
       CreateChildNode;
-      CurNode.Desc:=ctnOnIdentifier;
+      CurNode.Desc:=ctnIdentifier;
+      CurNode.EndPos:=CurPos.EndPos;
     end;
     ReadNextAtom;
   end;
   if CurPos.Flag=cafPoint then begin
-    // this is for example: on Unit.Exception do ;
+    // for example: on Unit.Exception do ;
+    // or: on E:Unit.Exception do ;
     ReadNextAtom;
     AtomIsIdentifier(true);
     if CreateNodes then begin
@@ -2986,7 +2986,12 @@ begin
     ReadNextAtom;
   end;
   if CreateNodes then begin
-    // close the type
+    if CurNode.Desc=ctnIdentifier then begin
+      // close the type
+      CurNode.Parent.EndPos:=CurNode.EndPos;
+      EndChildNode;
+    end;
+    // close ctnVarDefinition or ctnOnIdentifier
     EndChildNode;
   end;
   // read 'do'

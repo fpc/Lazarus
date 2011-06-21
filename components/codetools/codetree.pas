@@ -142,8 +142,8 @@ const
 
   ctnWithVariable       =110;
   ctnWithStatement      =111;
-  ctnOnBlock            =112;
-  ctnOnIdentifier       =113;// e.g. on E: Exception
+  ctnOnBlock            =112;// childs: ctnOnIdentifier+ctnOnStatement, or ctnVarDefinition(with child ctnIdentifier)+ctnOnStatement
+  ctnOnIdentifier       =113;// e.g. 'on Exception', Note: on E:Exception creates a ctnVarDefinition
   ctnOnStatement        =114;
 
   // combined values
