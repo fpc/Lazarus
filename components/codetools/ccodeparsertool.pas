@@ -2599,7 +2599,7 @@ begin
     exit;
   end;
   case Node.Desc of
-  ccnName: Result:=copy(Src,Node.StartPos,Node.EndPos-Node.StartPos);
+  ccnName, ccnTypeName: Result:=copy(Src,Node.StartPos,Node.EndPos-Node.StartPos);
   else Result:='';
   end;
   Result:=Result+'('+CCNodeDescAsString(Node.Desc,Node.SubDesc)

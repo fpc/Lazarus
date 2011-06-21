@@ -240,6 +240,11 @@ begin
   TestIntf('convert struct SwsContext;',
     'struct SwsContext;',
     'type SwsContext = record end;');
+  TestIntf('convert struct hidp_connlist_req {uint32_t cnum;};',
+    'struct hidp_connlist_req {'+LineEnding
+    +'  uint32_t cnum;'+LineEnding
+    +'};',
+    'type hidp_connlist_req = record cnum:cuint32; end;');
 end;
 
 initialization

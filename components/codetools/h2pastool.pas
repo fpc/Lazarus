@@ -519,6 +519,7 @@ function TH2PasTool.ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode
 var
   CurName: String;
   CurCName: String;
+  ChildCNode: TCodeTreeNode;
 begin
   Result:=nil;
   CurName:=CTool.ExtractStructName(CNode);
@@ -533,7 +534,12 @@ begin
                                nil,ParentNode=nil);
     DebugLn(['TH2PasTool.ConvertStruct ADDED ',Result.DescAsString(CTool)]);
     // build recursively
-    BuildH2PTree(Result);
+    ChildCNode:=CNode.FirstChild;
+    while (ChildCNode<>nil) do begin
+      if (ChildCNode.Desc=ccnSubDefs) and (ChildCNode.FirstChild<>nil) then
+        BuildH2PTree(Result,ChildCNode.FirstChild);
+      ChildCNode:=ChildCNode.NextBrother;
+    end;
   end;
 end;
 
