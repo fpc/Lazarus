@@ -237,14 +237,43 @@ end;
 
 procedure TTestCodetoolsH2Pas.TestCTH2PConvertSimpleStructs;
 begin
-  TestIntf('convert struct SwsContext;',
+  (*TestIntf('convert struct SwsContext;',
     'struct SwsContext;',
     'type SwsContext = record end;');
+
   TestIntf('convert struct hidp_connlist_req {uint32_t cnum;};',
     'struct hidp_connlist_req {'+LineEnding
     +'  uint32_t cnum;'+LineEnding
     +'};',
-    'type hidp_connlist_req = record cnum:cuint32; end;');
+    'type hidp_connlist_req = record cnum:cuint32; end;');*)
+
+  // nested struct
+  TestIntf('convert struct hidp_connlist_req {uint32_t cnum;struct hidp_conninfo ci;};',
+    'struct hidp_connlist_req {'+LineEnding
+    +'  uint32_t cnum;'+LineEnding
+    +'  struct hidp_conninfo ci;'+LineEnding
+    +'};',
+    'type'+LineEnding
+    +'  hidp_connlist_req = record'+LineEnding
+    +'    cnum:cuint32;'+LineEnding
+    +'    ci:hidp_conninfo;'+LineEnding
+    +'  end;'+LineEnding
+    +'  hidp_conninfo = record'+LineEnding
+    +'  end;');
+
+  // nested pointer of struct
+  (*TestIntf('convert struct hidp_connlist_req {uint32_t cnum;struct hidp_conninfo *ci;};',
+    'struct hidp_connlist_req {'+LineEnding
+    +'  uint32_t cnum;'+LineEnding
+    +'  struct hidp_conninfo *ci;'+LineEnding
+    +'};',
+    'type'+LineEnding
+    +'  hidp_connlist_req = record'+LineEnding
+    +'    cnum:cuint32;'+LineEnding
+    +'    ci:Phidp_conninfo;'+LineEnding
+    +'  end;'+LineEnding
+    +'  hidp_conninfo = record'+LineEnding
+    +'  end;'); *)
 end;
 
 initialization
