@@ -1726,6 +1726,7 @@ procedure TIdentCompletionTool.ParseSourceTillCollectionStart(
   out CursorNode: TCodeTreeNode; out IdentStartPos, IdentEndPos: integer);
 var
   StartContext: TFindContext;
+  ContextPos: Integer;
 begin
   CleanCursorPos:=0;
   CursorNode:=nil;
@@ -1740,7 +1741,19 @@ begin
                           [btSetIgnoreErrorPos]);
 
   // find node at position
-  CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
+  ContextPos:=CleanCursorPos;
+  // The context node might be in front of the CleanCursorPos
+  // For example: A.|end; In this case the statement ends at the point.
+  // Check the atom in front
+  ReadPriorAtomSafe(CleanCursorPos);
+  if (CurPos.Flag<>cafNone) then begin
+    ContextPos:=CurPos.EndPos;
+    if (CurPos.Flag in [cafPoint,cafRoundBracketOpen,cafEdgedBracketOpen])
+    or UpAtomIs('INHERITED') then
+      ContextPos:=CurPos.StartPos;
+  end;
+
+  CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(ContextPos,true);
   if CurrentIdentifierList<>nil then begin
     StartContext:=CurrentIdentifierList.StartContext;
     StartContext.Node:=CursorNode;

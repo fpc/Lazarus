@@ -1719,7 +1719,7 @@ begin
     until false;
     ReadNextAtom;
     if CurPos.StartPos<CleanPos then
-      exit;
+      break;
     // first atom of node is behind CleanPos => try prior node
     Node:=Node.Prior;
   until false;
