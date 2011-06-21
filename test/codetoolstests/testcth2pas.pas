@@ -7,6 +7,7 @@
      ./runtests --format=plain --suite=TestCTH2PConvertEnumsTypes
      ./runtests --format=plain --suite=TestCTH2PConvertConst
      ./runtests --format=plain --suite=TestCTH2PConvertSimpleTypedefs
+     ./runtests --format=plain --suite=TestCTH2PConvertSimpleStructs
 }
 unit TestCTH2Pas;
 
@@ -35,6 +36,7 @@ type
     procedure TestCTH2PConvertEnumsTypes;
     procedure TestCTH2PConvertConst;
     procedure TestCTH2PConvertSimpleTypedefs;
+    procedure TestCTH2PConvertSimpleStructs;
   end;
 
 implementation
@@ -231,6 +233,13 @@ begin
   TestIntf('convert typedef unsigned short sa_family_t;',
     'typedef unsigned short sa_family_t;',
     'type sa_family_t = cushort;');
+end;
+
+procedure TTestCodetoolsH2Pas.TestCTH2PConvertSimpleStructs;
+begin
+  TestIntf('convert struct SwsContext;',
+    'struct SwsContext;',
+    'type SwsContext = record end;');
 end;
 
 initialization

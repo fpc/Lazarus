@@ -2287,7 +2287,7 @@ var
   NameNode: TCodeTreeNode;
 begin
   NameNode:=StructNode.FirstChild;
-  if (NameNode<>nil) and (NameNode.Desc=ccnName) then
+  if (NameNode<>nil) and (NameNode.Desc=ccnTypeName) then
     Result:=GetIdentifier(@Src[NameNode.StartPos])
   else
     Result:='';

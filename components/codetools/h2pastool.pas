@@ -192,7 +192,7 @@ type
     FUndefines: TStringToStringTree;
     FUseExternal: boolean;
     // converting C nodes to H2P nodes
-    procedure ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+    function ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode): TH2PNode;
     procedure ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     function ConvertEnumBlock(CNode: TCodeTreeNode; ParentNode: TH2PNode): TH2PNode;
     procedure ConvertFunction(CNode: TCodeTreeNode; ParentNode: TH2PNode);
@@ -514,12 +514,13 @@ end;
 
 { TH2PasTool }
 
-procedure TH2PasTool.ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+function TH2PasTool.ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode
+  ): TH2PNode;
 var
   CurName: String;
-  TypeH2PNode: TH2PNode;
   CurCName: String;
 begin
+  Result:=nil;
   CurName:=CTool.ExtractStructName(CNode);
   if CurName='' then begin
     // this is an anonymous struct -> ignore
@@ -528,11 +529,11 @@ begin
     // this struct has a name
     // create a type
     CurCName:=CurName;
-    TypeH2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnRecordType,'',
+    Result:=CreateH2PNode(CurName,CurCName,CNode,ctnRecordType,'',
                                nil,ParentNode=nil);
-    DebugLn(['TH2PasTool.ConvertStruct ADDED ',TypeH2PNode.DescAsString(CTool)]);
+    DebugLn(['TH2PasTool.ConvertStruct ADDED ',Result.DescAsString(CTool)]);
     // build recursively
-    BuildH2PTree(TypeH2PNode);
+    BuildH2PTree(Result);
   end;
 end;
 
@@ -2327,8 +2328,7 @@ begin
     ReadRawNextCAtom(CType,p,CurAtomStart);
     if CurAtomStart>length(CType) then break;
     //DebugLn(['TH2PasTool.ConvertSimpleCTypeToPascalType Atom=',copy(CType,CurAtomStart,p-CurAtomStart)]);
-    if (not TestIsAtomAndRemove('const'))
-    and (not TestIsAtomAndRemove('struct')) then ;
+    TestIsAtomAndRemove('const');
   until false;
   // seach in predefined ctypes
   Result:=PredefinedCTypes[CType];
@@ -2433,6 +2433,10 @@ begin
     if (SubCNode<>nil) then begin
       if (SubCNode.Desc=ccnEnumBlock) then begin
         Result:=ConvertEnumBlock(SubCNode,nil);
+        exit;
+      end;
+      if (SubCNode.Desc=ccnStruct) then begin
+        Result:=ConvertStruct(SubCNode,nil);
         exit;
       end;
       if SubCNode.Desc<>ccnConstant then begin

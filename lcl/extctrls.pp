@@ -383,8 +383,8 @@ type
     For example:
       Do something after 2 seconds after user input and idle.
       AutoEnabled:=true;
-      AutoStartEvent:=[itaOnIdle];    // start the timer on first idle
-      AutoEndEvent:=[itaOnUserInput]; // end on any user input
+      AutoStartEvent:=itaOnIdle;    // start the timer on first idle
+      AutoEndEvent:=itaOnUserInput; // end on any user input
 
     If the OnTimer event works in several chunks, set FireOnIdle:=true.
     The OnTimer event will then be called on idle until FireOnIdle is false.
