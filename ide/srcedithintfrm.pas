@@ -32,6 +32,7 @@ interface
 
 uses
   Classes, Math, SysUtils, LCLProc, LCLType, LCLIntf, Forms, Controls, Graphics,
+  ExtCtrls,
   SynEdit, SynEditKeyCmds,
   SrcEditorIntf;
   
@@ -53,11 +54,13 @@ type
   { TSrcEditHintWindow }
 
   TSrcEditHintWindow = class(THintWindow)
+    IdleTimer1: TIdleTimer;
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure IdleTimer1Timer(Sender: TObject);
   private
     FAnchorForm: TCustomForm;
     FHelpEnabled: boolean;
@@ -74,7 +77,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-    procedure UpdateHints;// update content
+    procedure UpdateHints(Immediately: boolean = false);// update content
     function NeedVisible: boolean;
     property AnchorForm: TCustomForm read FAnchorForm write SetAnchorForm;
     property HelpEnabled: boolean read FHelpEnabled write SetHelpEnabled;
@@ -97,11 +100,8 @@ type
 procedure TSrcEditHintWindow.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   //DebugLn(['TCodeHintFrm.ApplicationIdle NeedVisible=',NeedVisible]);
-  if not NeedVisible then begin
+  if Visible and (not NeedVisible) then
     Hide;
-    exit;
-  end;
-  UpdatePosition;
 end;
 
 procedure TSrcEditHintWindow.FormCreate(Sender: TObject);
@@ -147,6 +147,11 @@ begin
   end;
 end;
 
+procedure TSrcEditHintWindow.IdleTimer1Timer(Sender: TObject);
+begin
+  UpdateHints(true);
+end;
+
 procedure TSrcEditHintWindow.SetAnchorForm(const AValue: TCustomForm);
 begin
   if FAnchorForm=AValue then exit;
@@ -155,13 +160,14 @@ begin
   FAnchorForm:=AValue;
   if FAnchorForm<>nil then
     FAnchorForm.AddHandlerOnChangeBounds(@OnAnchorFormChangeBounds);
-  UpdatePosition;
+  UpdateHints;
 end;
 
 procedure TSrcEditHintWindow.OnAnchorFormChangeBounds(Sender: TObject);
 begin
   //DebugLn(['TCodeHintFrm.OnAnchorFormChangeBounds ',dbgs(BoundsRect),' Sender=',dbgsName(Sender),' SenderVisible=',TControl(Sender).Visible,' SenderBounds=',dbgs(TControl(Sender).BoundsRect)]);
-  UpdatePosition;
+  if Visible then
+    UpdatePosition;
 end;
 
 procedure TSrcEditHintWindow.SetHelpEnabled(const AValue: boolean);
@@ -170,7 +176,7 @@ begin
   FHelpEnabled:=AValue;
   if not HelpEnabled then
     Visible:=false;
-  UpdatePosition;
+  UpdateHints;
 end;
 
 procedure TSrcEditHintWindow.SetProvider(const AValue: TCodeHintProvider);
@@ -275,7 +281,6 @@ begin
   //DebugLn(['TCodeHintFrm.UpdatePosition NewBounds=',dbgs(NewBounds),' BoundsRect=',dbgs(BoundsRect)]);
   BoundsRect:=NewBounds;
   Visible:=true;
-  UpdateHints;
 end;
 
 procedure TSrcEditHintWindow.Paint;
@@ -291,6 +296,11 @@ begin
   OnUTF8KeyPress:=@FormUTF8KeyPress;
   FPreferredWidth:=400;
   FPreferredHeight:=200;
+
+  IdleTimer1:=TIdleTimer.Create(Self);
+  IdleTimer1.Interval:=400;
+  IdleTimer1.OnTimer:=@IdleTimer1Timer;
+
   FormCreate(Self);
 end;
 
@@ -302,10 +312,21 @@ begin
   inherited Destroy;
 end;
 
-procedure TSrcEditHintWindow.UpdateHints;
+procedure TSrcEditHintWindow.UpdateHints(Immediately: boolean);
 begin
+  if Visible and not NeedVisible then begin
+    // hide immediately
+    Hide;
+    exit;
+  end;
+  if not Immediately then begin
+    IdleTimer1.AutoEnabled:=true;
+    exit;
+  end;
   //DebugLn(['TCodeHintFrm.UpdateHints Visible=',Visible]);
-  if not Visible then exit;
+  IdleTimer1.AutoEnabled:=false;
+  IdleTimer1.Enabled:=false;
+  UpdatePosition;
   if Provider<>nil then Provider.UpdateHint;
 end;
 
