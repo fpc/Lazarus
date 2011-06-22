@@ -5790,6 +5790,13 @@ function TQtWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvPa
 begin
   case uiAction of
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := QApplication_wheelScrollLines;
+    SPI_GETWORKAREA: begin
+      TRect(pvParam^):=Bounds(GetSystemMetrics(SM_XVIRTUALSCREEN),
+                              GetSystemMetrics(SM_YVIRTUALSCREEN),
+                              GetSystemMetrics(SM_CXVIRTUALSCREEN),
+                              GetSystemMetrics(SM_CYVIRTUALSCREEN));
+      Result:=True;
+    end;
   else
     Result := False;
   end

@@ -9776,6 +9776,21 @@ begin
                           Rop);
 end;
 
+function TGTKWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
+  pvParam: Pointer; fWinIni: DWord): LongBool;
+begin
+  Result:=False;
+  Case uiAction of
+    SPI_GETWORKAREA: begin
+      TRect(pvParam^):=Bounds(GetSystemMetrics(SM_XVIRTUALSCREEN),
+                              GetSystemMetrics(SM_YVIRTUALSCREEN),
+                              GetSystemMetrics(SM_CXVIRTUALSCREEN),
+                              GetSystemMetrics(SM_CYVIRTUALSCREEN));
+      Result:=True;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: TextOut
   Params: DC:

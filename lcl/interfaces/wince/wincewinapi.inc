@@ -3534,6 +3534,12 @@ begin
   Result := true;
 end;
 
+function TWinCEWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
+  pvParam: Pointer; fWinIni: DWord): LongBool;
+begin
+  Result := Windows.SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TextOut
   Params: DC    - handle of device context

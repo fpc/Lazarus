@@ -654,6 +654,48 @@ begin
   Result := GetSystemMetrics(SM_CXVIRTUALSCREEN);
 end;
 
+function TScreen.GetDesktopLeft: Integer;
+begin
+  Result := GetSystemMetrics(SM_XVIRTUALSCREEN);  
+end;
+
+function TScreen.GetDesktopRect: TRect;
+begin
+  Result := Bounds(DesktopLeft, DesktopTop, DesktopWidth, DesktopHeight);
+end;
+
+function TScreen.GetDesktopTop: Integer;
+begin
+  Result := GetSystemMetrics(SM_YVIRTUALSCREEN);  
+end;
+
+function TScreen.GetWorkAreaLeft: Integer;
+begin
+  Result := WorkAreaRect.Left;
+end;
+
+function TScreen.GetWorkAreaRect: TRect;
+begin
+  SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0);
+end;
+
+function TScreen.GetWorkAreaTop: Integer;
+begin
+  Result := WorkAreaRect.Top;
+end;
+
+function TScreen.GetWorkAreaHeight: Integer;
+begin
+  with WorkAreaRect do Result := Bottom - Top;
+end;
+
+function TScreen.GetWorkAreaWidth: Integer;
+begin
+  with WorkAreaRect do Result := Right - Left;
+end;
+
+
+
 {------------------------------------------------------------------------------
   Function: TScreen.AddForm
   Params:   FForm: The form to be added

@@ -3616,6 +3616,21 @@ begin
     TCarbonBitmap(Mask), XMask, YMask, Rop);
 end;
 
+function TCarbonWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
+  pvParam: Pointer; fWinIni: DWord): LongBool;
+begin
+  Result:=False;
+  Case uiAction of
+    SPI_GETWORKAREA: begin
+      TRect(pvParam^):=Bounds(GetSystemMetrics(SM_XVIRTUALSCREEN),
+                              GetSystemMetrics(SM_YVIRTUALSCREEN),
+                              GetSystemMetrics(SM_CXVIRTUALSCREEN),
+                              GetSystemMetrics(SM_CYVIRTUALSCREEN));
+      Result:=True;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TextOut
   Params:  DC    - Handle of the device context

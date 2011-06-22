@@ -943,8 +943,11 @@ type
     function GetCustomFormsZOrdered(Index: Integer): TCustomForm;
     function GetDataModuleCount: Integer;
     function GetDataModules(AIndex: Integer): TDataModule;
+    function GetDesktopLeft: Integer;
+    function GetDesktopTop: Integer;
     function GetDesktopHeight: Integer;
     function GetDesktopWidth: Integer;
+    function GetDesktopRect: TRect;
     function GetFonts : TStrings;
     function GetFormCount: Integer;
     function GetForms(IIndex: Integer): TForm;
@@ -973,6 +976,11 @@ type
     procedure DoRemoveDataModule(DataModule: TDataModule);
     procedure NotifyScreenFormHandler(HandlerType: TScreenNotification;
                                       Form: TCustomForm);
+    function GetWorkAreaHeight: Integer;
+    function GetWorkAreaLeft: Integer;
+    function GetWorkAreaRect: TRect;
+    function GetWorkAreaTop: Integer;
+    function GetWorkAreaWidth: Integer;
   protected
     function GetHintFont: TFont; virtual;
     function GetIconFont: TFont; virtual;
@@ -1033,8 +1041,12 @@ type
     property CustomFormZOrderCount: Integer read GetCustomFormZOrderCount;
     property CustomFormsZOrdered[Index: Integer]: TCustomForm
                                read GetCustomFormsZOrdered; // lower index means on top
+    property DesktopLeft: Integer read GetDesktopLeft;
+    property DesktopTop: Integer read GetDesktopTop;
+
     property DesktopHeight: Integer read GetDesktopHeight;
     property DesktopWidth: Integer read GetDesktopWidth;
+    property DesktopRect: TRect read GetDesktopRect;
     property FocusedForm: TCustomForm read FFocusedForm;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
@@ -1053,6 +1065,11 @@ type
     property PixelsPerInch: integer read FPixelsPerInch;
     property PrimaryMonitor: TMonitor read GetPrimaryMonitor;
     property Width: Integer read GetWidth;
+    property WorkAreaRect: TRect read GetWorkAreaRect;
+    property WorkAreaHeight: Integer read GetWorkAreaHeight;
+    property WorkAreaLeft: Integer read GetWorkAreaLeft;
+    property WorkAreaTop: Integer read GetWorkAreaTop;
+    property WorkAreaWidth: Integer read GetWorkAreaWidth;
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange
                                                  write FOnActiveControlChange;
     property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange
