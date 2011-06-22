@@ -28,7 +28,7 @@ unit TAGraph;
 interface
 
 uses
-  Graphics, Classes, Controls, LCLType, SysUtils,
+  Graphics, Classes, Contnrs, Controls, LCLType, SysUtils,
   TAChartAxis, TAChartUtils, TADrawUtils, TALegend, TATypes;
 
 type
@@ -279,6 +279,7 @@ type
     procedure DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
     procedure EnableRedrawing;
     function GetFullExtent: TDoubleRect;
+    function GetLegendItems: TObjectList;
     procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure SaveToBitmapFile(const AFileName: String); inline;
@@ -286,9 +287,7 @@ type
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure StyleChanged(Sender: TObject); override;
     procedure ZoomFull; override;
-  public
-    property RenderingParams: TChartRenderingParams
-      read GetRenderingParams write SetRenderingParams;
+
   public // Coordinate conversion
     function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
     function ImageToGraph(const APoint: TPoint): TDoublePoint;
@@ -308,6 +307,8 @@ type
     property LogicalExtent: TDoubleRect read FLogicalExtent write SetLogicalExtent;
     property OnChartPaint: TChartPaintEvent
       read FOnChartPaint write SetOnChartPaint; experimental;
+    property RenderingParams: TChartRenderingParams
+      read GetRenderingParams write SetRenderingParams;
     property ReticulePos: TPoint read FReticulePos write SetReticulePos;
     property SeriesCount: Integer read GetSeriesCount;
     property XGraphMax: Double read FCurrentExtent.b.X;
@@ -923,6 +924,22 @@ begin
   end;
 end;
 
+function TChart.GetLegendItems: TObjectList;
+var
+  i: Integer;
+begin
+  Result := TChartLegendItems.Create;
+  try
+    for i := 0 to SeriesCount - 1 do
+      with Series[i] do
+        if Active and GetShowInLegend then
+          GetLegendItemsBasic(Result);
+  except
+    FreeAndNil(Result);
+    raise;
+  end;
+end;
+
 function TChart.GetMargins(ADrawer: IChartDrawer): TRect;
 var
   i: Integer;
@@ -1083,15 +1100,9 @@ end;
 procedure TChart.PrepareLegend(
   ADrawer: IChartDrawer; out ALegendItems: TChartLegendItems;
   var AClipRect: TRect; out ALegendRect: TRect);
-var
-  i: Integer;
 begin
-  ALegendItems := TChartLegendItems.Create;
+  ALegendItems := GetLegendItems;
   try
-    for i := 0 to SeriesCount - 1 do
-      with Series[i] do
-        if Active and GetShowInLegend then
-          GetLegendItemsBasic(ALegendItems);
     ALegendRect := Legend.Prepare(ADrawer, ALegendItems, AClipRect);
   except
     FreeAndNil(ALegendItems);
