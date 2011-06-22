@@ -101,7 +101,7 @@ end;
 
 function TLazIpHtmlDataProvider.DoGetStream(const URL: string): TStream;
 begin
-  debugln(['TLazIpHtmlDataProvider.DoGetStream ',URL,' ',DbgSName(Control.IDEProvider)]);
+  //debugln(['TLazIpHtmlDataProvider.DoGetStream ',URL,' ',DbgSName(Control.IDEProvider)]);
   Result:=Control.IDEProvider.GetStream(URL,false);
 end;
 
@@ -110,14 +110,14 @@ end;
 function TLazIPHtmlControl.DataProviderCanHandle(Sender: TObject;
   const URL: string): Boolean;
 begin
-  debugln(['TLazIPHtmlControl.DataProviderCanHandle URL=',URL]);
+  //debugln(['TLazIPHtmlControl.DataProviderCanHandle URL=',URL]);
   Result:=false;
 end;
 
 procedure TLazIPHtmlControl.DataProviderCheckURL(Sender: TObject;
   const URL: string; var Available: Boolean; var ContentType: string);
 begin
-  debugln(['TLazIPHtmlControl.DataProviderCheckURL URL=',URL]);
+  //debugln(['TLazIPHtmlControl.DataProviderCheckURL URL=',URL]);
   Available:=false;
   ContentType:='';
 end;
@@ -125,7 +125,7 @@ end;
 procedure TLazIPHtmlControl.DataProviderGetHtml(Sender: TObject;
   const URL: string; const aPostData: TIpFormDataEntity; var Stream: TStream);
 begin
-  debugln(['TLazIPHtmlControl.DataProviderGetHtml URL=',URL]);
+  //debugln(['TLazIPHtmlControl.DataProviderGetHtml URL=',URL]);
   Stream:=nil;
 end;
 
@@ -182,7 +182,7 @@ end;
 procedure TLazIPHtmlControl.DataProviderReportReference(Sender: TObject;
   const URL: string);
 begin
-  debugln(['TLazIPHtmlControl.DataProviderReportReference URL=',URL]);
+  //debugln(['TLazIPHtmlControl.DataProviderReportReference URL=',URL]);
 end;
 
 procedure TLazIPHtmlControl.IPHTMLPanelHotClick(Sender: TObject);
@@ -199,7 +199,7 @@ begin
     HRef := TIpHtmlNodeAREA(HotNode).HRef;
     Target := TIpHtmlNodeAREA(HotNode).Target;
   end;
-  debugln(['TLazIPHtmlControl.IPHTMLPanelHotClick HRef="',HRef,'" Target="',Target,'"']);
+  //debugln(['TLazIPHtmlControl.IPHTMLPanelHotClick HRef="',HRef,'" Target="',Target,'"']);
   IDEProvider.OpenURLAsync(HRef);
 end;
 

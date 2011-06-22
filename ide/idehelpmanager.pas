@@ -820,7 +820,9 @@ begin
   try
     if Result=nil then begin
       SplitURL(URL,URLType,URLPath,URLParams);
+      {$ifdef VerboseLazDoc}
       DebugLn(['TLIHProviders.GetStream URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams]);
+      {$endif}
       if URLType='lazdoc' then begin
         if copy(URLPath,1,8)='lazarus/' then begin
           URLPath:=copy(URLPath,9,length(URLPath));

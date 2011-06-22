@@ -2346,7 +2346,9 @@ begin
         or ((CTNode.Desc in [ctnProcedure,ctnProcedureHead])
             and (CTTool.ProcNodeHasSpecifier(CTNode,psOVERRIDE)))
         then begin
+          {$ifdef VerboseLazDoc}
           debugln(['TCodeHelpManager.GetHTMLHint searching for inherited of ',CTNode.DescAsString,' ',dbgs(XYPos)]);
+          {$endif}
           OldXYPos:=XYPos;
           OldCTTool:=CTTool;
           OldCTNode:=CTNode;
@@ -2354,11 +2356,15 @@ begin
             CTTool,CTNode,XYPos,aTopLine))
           or (CTNode=OldCTNode)
           then begin
+            {$ifdef VerboseLazDoc}
             debugln(['TCodeHelpManager.GetHTMLHint inherited not found: ',dbgs(OldXYPos)]);
+            {$endif}
             break;
           end;
         end else begin
+          {$ifdef VerboseLazDoc}
           debugln(['TCodeHelpManager.GetHTMLHint not searching inherited for ',CTNode.DescAsString]);
+          {$endif}
           break;
         end;
 
@@ -2388,7 +2394,9 @@ begin
     end else
       Result:=chprFailed;
   end;
+  {$ifdef VerboseLazDoc}
   debugln(['TCodeHelpManager.GetHTMLHint ',HTMLHint]);
+  {$endif}
 end;
 
 function TCodeHelpManager.GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool;
