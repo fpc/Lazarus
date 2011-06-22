@@ -2,7 +2,106 @@ lazarus (0.9.30.1-0) unstable; urgency=low
 
   * Snapshot building.
 
- -- Vincent Snijders <vincents@freepascal.org>  Sun, 27 Feb 2011 21:09:00 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 30 May 2011 09:37:00 +0100
+
+lazarus (0.9.30-2) unstable; urgency=low
+
+  * Added lclbase.lpk to lcl-units package. (Closes upstream bug#18656)
+  * Fixed issue preventing using ~ in Debian version. (Closes: Bug#622665)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Fri, 03 May 2011 19:28:00 +0200
+
+lazarus (0.9.30-1) unstable; urgency=low
+
+  * New upstream release many fixes and new features.
+    - The detailed list of changes can be found here:
+      http://wiki.lazarus.freepascal.org/Lazarus_0.9.30_release_notes
+  * LCL changes:
+    - Windows CE: support for clipboard and keypad devices
+    - GTK2 and GTK1 interfaces are now separated.
+    - GTK1 is no longer maintained by Lazarus team, but patches are accepted.
+    - fpGUI: LCL interface now supports all components on the standard page.
+    - QT support for Haiku
+    - Layout and autosizing is now more consistent across widgetsets,
+      overhead was reduced, improved cross platform layouts and complex forms.
+    - Added gif reader
+    - TLazIntfImage: New function AlphaBlend, which can alpha blend an intfimage
+      into another, using a separate intfimage as the alpha channel.
+    - Unit chart and its component TBarChar are deprecated in favor of new
+      package TAChartLazarusPkg.
+  * IDE:
+    - Support of FPC resources: {$R *.lfm} instead of {$i unit1.lrs}.
+    - The Delphi converter has improved a lot.
+    - Build modes, build macros and conditionals now allows different sets of
+      compiler options for projects and packages.
+    - Editor improvements:
+      + Hiding (Folding) of comments in Pascal source.
+      + Allow Multiple Source-Editor Windows
+      + Allow several Views of the same Source
+      + User-defined color-schemes.
+      + Identifier-completion pop-up is now resizable
+    - Project compiler options can now be saved as default for new projects.
+    - When opening a project only those forms are opened that were open when
+      project was closed.
+    - Various designer usability improvements:
+      + arrow and tab keys switching between components
+      + resize/move cancellation using ESC key
+      + save/restore of the form window state in the project session
+      + skip snapping when Alt key is pressed
+    - When creating a new project the default unit output directory is now
+      lib/$(TargetCPU)-$(TargetOS). Target file name is project1. This has no
+      impact on old projects.
+    - IDE now preserves the line endings of source files (it uses the line
+      ending of the first line, it does not preserve mixed line endings).
+    - You can now quickly switch between several versions / branches of packages
+      by defining the preferred package file name for each dependency.
+    - You can now use the IDE directive %H- to hide individual hints, notes and
+      warnings.
+    - The IDE can be made dockable. Install either the package AnchorDockingDsgn
+      or EasyDockMgrDsgn.
+    - The ToDo list was moved to a separate package: todolistlaz.lpk.
+    - Czech translation added
+  * Debugger / Editor:
+    - Inserted/Deleted lines during a debug session are now tracked. Breakpoints
+      and Execution-line are adjusted.
+    - Step out command implementation (by Flavio)
+    - Show execution point command
+    - Single Instruction step (over/into)
+    - UI Improvements: Toolbars for Watches, Breakpoints, Disassembler
+    - Watches: Enabled display formats (mem-dump, Hex, Default, ..)
+    - Disassembler added navigation: jump to address / return to execution point
+    - Improved reaction speed: It is possible to continue stepping without
+      having to wait for all watches, locals, ... to be evaluated
+  * Components:
+    - IDE got some options to become easier for students and pupils and there is
+      a new package EducationLaz adding options to hide complex parts of the IDE
+    - New AggPas (Anti Grain Geometry for Object Pascal) package, now supporting
+      FPImage and LCL. AggPas highlights: Subpixel rendering, 8-bit alpha
+      channel, paths, platform independent rendering using pure pascal
+    - TAChart update, including: stacked and rotated series, 3 new types of
+      series, axis transformations, interactive tools, 6 new demos and other
+      improvements
+  * Added metapackges in order to ease upgrading and fixed dependcy rules.
+    (Closes: Bug#620108)
+  * Test for dh_input exit status 30 as this is a normal exit status which just
+    informs that the question was not displayed because of its priority.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Fri, 05 Apr 2011 19:20:00 +0200
+
+lazarus (0.9.28.2-13) unstable; urgency=low
+
+  * Added support for multiple version coexistence in the same system. This will
+    allow installing multiple versions of Lazarus in the same system and choose
+    a default using update-alternatives.
+  * Included *.lfm files into the binary packages as these are used by the
+    compiler at the link stage.
+  * Factorized code in code tools FindXXXXNode functions.
+  * Included *.lpk files in the binary packages and mark them as manually
+    compiled to avoid recompiling them when used.
+  * Added build dependency constraint on FPC version to be 2.4.0 as it won't
+    build using other FPC versions.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 08 Mar 2011 19:14:00 +0100
 
 lazarus (0.9.30-0) unstable; urgency=low
 
