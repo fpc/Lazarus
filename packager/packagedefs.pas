@@ -2555,9 +2555,8 @@ begin
   if FOptionsBackup=nil then
     FOptionsBackup:=TLazPackage.Create;
   FOptionsBackup.AssignOptions(Self);
-  if lpfModified in FFlags then
   FOptionsBackup.FFlags:=FOptionsBackup.FFlags-[lpfModified]+[lpfModified]*FFlags;
-  FOptionsBackup.CompilerOptions.Modified:=CompilerOptions.Modified
+  FOptionsBackup.CompilerOptions.Modified:=CompilerOptions.Modified;
 end;
 
 procedure TLazPackage.RestoreOptions;
@@ -2565,7 +2564,7 @@ begin
   if FOptionsBackup=nil then exit;
   AssignOptions(FOptionsBackup);
   FFlags:=FFlags-[lpfModified]+[lpfModified]*FOptionsBackup.FFlags;
-  CompilerOptions.Modified:=FOptionsBackup.CompilerOptions.Modified
+  CompilerOptions.Modified:=FOptionsBackup.CompilerOptions.Modified;
 end;
 
 procedure TLazPackage.BeginUpdate;
