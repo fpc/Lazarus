@@ -244,10 +244,22 @@ begin
   WinToDosTime(F.FindData.ftLastWriteTime,F.Time);
   f.size:=F.FindData.NFileSizeLow+(qword(maxdword)+1)*F.FindData.NFileSizeHigh;
   f.attr:=F.FindData.dwFileAttributes;
+  { The structures are different at this point
+    in win32 it is the ansi structure with a utf-8 string
+    in wince it is a wide structure }
+  {$ifdef WinCE}
+  f.Name:=UTF8Encode(F.FindData.cFileName);
+  {$else}
   f.Name:=F.FindData.cFileName;
+  {$endif}
   Result:=0;
 end;
 
+{ This function does not really convert from wide to ansi, but from wide to
+  a utf-8 encoded ansi version of the data structures in win32 and does
+  nothing in wince
+
+  See FindMatch also }
 procedure FindWideToAnsi(const wide: TWIN32FINDDATAW; var ansi: TWIN32FINDDATA);
 var
   ws : WideString;
