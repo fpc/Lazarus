@@ -577,7 +577,7 @@ procedure TPkgManager.OnAfterWritePackage(Sender: TObject; Restore: boolean);
 var
   APackage: TLazPackage absolute Sender;
 begin
-  debugln(['TPkgManager.OnAfterWritePackage ',DbgSName(APackage),' Restore=',Restore]);
+  //debugln(['TPkgManager.OnAfterWritePackage ',DbgSName(APackage),' Restore=',Restore]);
   if Restore then
     APackage.RestoreOptions;
 end;

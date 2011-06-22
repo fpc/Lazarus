@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
    diffpatch.pas - functions to extract differences between texts
