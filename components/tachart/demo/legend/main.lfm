@@ -6,6 +6,8 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 390
   ClientWidth = 510
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object Chart1: TChart
@@ -15,12 +17,14 @@ object Form1: TForm1
     Width = 510
     AxisList = <    
       item
-        Title.LabelFont.Orientation = 900
         Visible = False
+        Minors = <>
+        Title.LabelFont.Orientation = 900
       end    
       item
-        Alignment = calBottom
         Visible = False
+        Alignment = calBottom
+        Minors = <>
       end>
     BackColor = clSkyBlue
     Foot.Brush.Color = clBtnFace
@@ -191,6 +195,17 @@ object Form1: TForm1
       OnChange = seMarginXChange
       TabOrder = 5
       Value = 4
+    end
+    object cbSeries: TComboBox
+      Left = 102
+      Height = 19
+      Top = 60
+      Width = 148
+      ItemHeight = 16
+      OnDrawItem = cbSeriesDrawItem
+      ReadOnly = True
+      Style = csOwnerDrawFixed
+      TabOrder = 6
     end
   end
   object RandomChartSource1: TRandomChartSource

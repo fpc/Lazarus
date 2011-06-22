@@ -5,8 +5,8 @@ unit main;
 interface
 
 uses
-  ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources, Classes,
-  TALegend, TAFuncSeries, Graphics;
+  Contnrs, Controls, ExtCtrls, Graphics, Spin, StdCtrls, Forms,
+  TAGraph, TASeries, TASources, Classes, TALegend, TAFuncSeries;
 
 type
 
@@ -19,6 +19,7 @@ type
     Chart1LineSeries1: TLineSeries;
     Chart1PieSeries1: TPieSeries;
     cbUseSidebar: TCheckBox;
+    cbSeries: TComboBox;
     lblSpacing: TLabel;
     lblMarginX: TLabel;
     lblSymbolWidth: TLabel;
@@ -32,15 +33,21 @@ type
     seMarginX: TSpinEdit;
     seSymbolWidth: TSpinEdit;
     seMarginY: TSpinEdit;
+    procedure cbSeriesDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure cbUseSidebarChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1FuncSeries1DrawLegend(
       ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; var AText: String);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure rgAlignmentClick(Sender: TObject);
     procedure seMarginXChange(Sender: TObject);
     procedure seMarginYChange(Sender: TObject);
     procedure seSpacingChange(Sender: TObject);
     procedure seSymbolWidthChange(Sender: TObject);
+  private
+    FItems: TObjectList;
   end;
 
 var
@@ -51,9 +58,22 @@ implementation
 {$R *.lfm}
 
 uses
-  SysUtils;
+  SysUtils, TADrawerCanvas, TADrawUtils;
 
 { TForm1 }
+
+procedure TForm1.cbSeriesDrawItem(
+  Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var
+  id: IChartDrawer;
+  r: TRect;
+begin
+  id := TCanvasDrawer.Create(cbSeries.Canvas);
+  r := Bounds(
+    ARect.Left, ARect.Top, Chart1.Legend.SymbolWidth, cbSeries.ItemHeight);
+  id.Pen := Chart1.Legend.Frame;
+  (FItems[Index] as TLegendItem).Draw(id, r);
+end;
 
 procedure TForm1.cbUseSidebarChange(Sender: TObject);
 begin
@@ -79,6 +99,20 @@ begin
     ACanvas.LineTo(
       ARect.Left + x,
       Round(Sin(x / w * 2 * Pi) * (ARect.Bottom - ARect.Top) / 2) + y0);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  i: Integer;
+begin
+  FItems := Chart1.GetLegendItems;
+  for i := 1 to FItems.Count do
+    cbSeries.AddItem('', nil);
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FItems);
 end;
 
 procedure TForm1.rgAlignmentClick(Sender: TObject);
