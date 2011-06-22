@@ -143,6 +143,8 @@ type
       ADrawer: IChartDrawer; AItems: TObjectList; const ABounds: TRect);
     function Prepare(
       ADrawer: IChartDrawer; AItems: TObjectList; var AClipRect: TRect): TRect;
+    // Not includes the margins around item.
+    function MeasureItem(ADrawer: IChartDrawer; AItems: TObjectList): TPoint;
   published
     property Alignment: TLegendAlignment
       read FAlignment write SetAlignment default laTopRight;
@@ -381,30 +383,36 @@ begin
   end;
 end;
 
+function TChartLegend.MeasureItem(
+  ADrawer: IChartDrawer; AItems: TObjectList): TPoint;
+var
+  i: Integer;
+begin
+  ADrawer.Font := Font;
+  Result := Point(0, 0);
+  for i := 0 to AItems.Count - 1 do
+    with ADrawer.TextExtent((AItems[i] as TLegendItem).FText) do begin
+      Result.X := Max(X, Result.X);
+      Result.Y := Max(Y, Result.Y);
+    end;
+
+  Result.X += SYMBOL_TEXT_SPACING + SymbolWidth;
+end;
+
 function TChartLegend.Prepare(
   ADrawer: IChartDrawer; AItems: TObjectList; var AClipRect: TRect): TRect;
 var
-  x, y, i, textHeight: Integer;
+  x, y: Integer;
   sidebar, legendSize: TPoint;
 begin
-  ADrawer.Font := Font;
+  with MeasureItem(ADrawer, AItems) do
+    legendSize := Point(X + 2 * Spacing, Spacing + AItems.Count * (Y + Spacing));
 
-  // Measure the legend.
-  legendSize.X := 0;
-  textHeight := 0;
-  for i := 0 to AItems.Count - 1 do
-    with ADrawer.TextExtent((AItems[i] as TLegendItem).FText) do begin
-      legendSize.X := Max(X, legendSize.X);
-      textHeight := Max(Y, textHeight);
-    end;
-
-  legendSize.X += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
   sidebar.X := 2 * MarginX;
   with AClipRect do
     legendSize.X := EnsureRange(legendSize.X, 0, Right - Left - sidebar.X);
   sidebar.X += legendSize.X;
 
-  legendSize.Y := Spacing + AItems.Count * (textHeight + Spacing);
   sidebar.Y := 2 * MarginX;
   with AClipRect do
     legendSize.Y := EnsureRange(legendSize.Y, 0, Bottom - Top - sidebar.Y);
