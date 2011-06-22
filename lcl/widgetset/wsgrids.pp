@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, LCLType, Grids,
+  LCLType, Controls, StdCtrls, Grids,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSFactory;
 
@@ -72,13 +72,33 @@ class procedure TWSCustomGrid.SendCharToEditor(AEditor:TWinControl;
   Ch: TUTF8Char);
 var
   GMsg: TGridMessage;
+  GridEditor: boolean;
 begin
+  GMsg.Grid := nil;
+  GMsg.Options:= 0;
+  GMsg.LclMsg.Msg:=GM_GETGRID;
+  AEditor.Dispatch(GMsg);
+  GridEditor := (GMsg.Options and EO_IMPLEMENTED<>0) and (GMsg.Grid<>nil);
+
   GMsg.LclMsg.Msg:=GM_SETVALUE;
   if Ch=#8 then // backspace
     GMsg.Value:=''
   else
     GMsg.Value:=Ch;
-  AEditor.Dispatch(GMsg);
+
+  if GridEditor then
+    AEditor.Dispatch(GMsg)
+  else begin
+    // TODO: Find a generic way ...
+    if AEditor is TCustomEdit then begin
+      TCustomEdit(AEditor).Text:=GMsg.Value;
+      TCustomEdit(AEditor).SelStart:=UTF8Length(GMsg.Value);
+    end else
+    if AEditor is TCustomCombobox then begin
+      TCustomCombobox(AEditor).Text:=GMsg.Value;
+      TCustomCombobox(AEditor).SelStart:=UTF8Length(GMsg.Value);
+    end;
+  end;
 end;
 
 class function TWSCustomGrid.InvalidateStartY(const FixedHeight, RowOffset: Integer): Integer;

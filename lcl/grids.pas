@@ -56,6 +56,7 @@ const
   GM_SETMASK    = LM_INTERFACELAST + 105;
   GM_SETPOS     = LM_INTERFACELAST + 106;
   GM_READY      = LM_INTERFACELAST + 107;
+  GM_GETGRID    = LM_INTERFACELAST + 108;
 
 
 const
@@ -64,6 +65,7 @@ const
   EO_HOOKKEYPRESS =   $4;
   EO_HOOKKEYUP    =   $8;
   EO_SELECTALL    =   $10;
+  EO_IMPLEMENTED  =   $20;
 
 const
   DEFCOLWIDTH     = 64;
@@ -196,6 +198,7 @@ type
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
+    procedure msg_GetGrid(var Msg: TGridMessage); message GM_GETGRID;
   public
     procedure EditingDone; override;
   end;
@@ -211,6 +214,7 @@ type
     procedure msg_SetBounds(var Msg: TGridMessage); message GM_SETBOUNDS;
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
     procedure msg_Ready(var Msg: TGridMessage); message GM_READY;
+    procedure msg_GetGrid(var Msg: TGridMessage); message GM_GETGRID;
   public
     property Col: Integer read FCol;
     property Row: Integer read FRow;
@@ -233,6 +237,7 @@ type
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
+    procedure msg_GetGrid(var Msg: TGridMessage); message GM_GETGRID;
   public
     procedure EditingDone; override;
     property BorderStyle;
@@ -263,6 +268,7 @@ type
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
     procedure CMControlChange(var Message: TLMEssage); message CM_CONTROLCHANGE;
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
+    procedure msg_GetGrid(var Msg: TGridMessage); message GM_GETGRID;
     procedure VisibleChanging; override;
     function  SendChar(AChar: TUTF8Char): Integer;
     procedure WndProc(var TheMessage : TLMessage); override;
@@ -8733,6 +8739,12 @@ begin
   FRow := Msg.Row;
 end;
 
+procedure TStringCellEditor.msg_GetGrid(var Msg: TGridMessage);
+begin
+  Msg.Grid := FGrid;
+  Msg.Options:= EO_IMPLEMENTED;
+end;
+
 { TStringGridStrings }
 
 function TStringGridStrings.ConvertIndexLineCol(Index: Integer; var Line, Col: Integer): boolean;
@@ -10911,6 +10923,12 @@ begin
   Width := DEFBUTTONWIDTH;
 end;
 
+procedure TButtonCellEditor.msg_GetGrid(var Msg: TGridMessage);
+begin
+  Msg.Grid := FGrid;
+  Msg.Options:= EO_IMPLEMENTED;
+end;
+
 { TPickListCellEditor }
 procedure TPickListCellEditor.WndProc(var TheMessage: TLMessage);
 begin
@@ -11082,6 +11100,12 @@ begin
   FRow := Msg.Row;
 end;
 
+procedure TPickListCellEditor.msg_GetGrid(var Msg: TGridMessage);
+begin
+  Msg.Grid := FGrid;
+  Msg.Options:= EO_IMPLEMENTED;
+end;
+
 { TCompositeCellEditor }
 
 procedure TCompositeCellEditor.DispatchMsg(msg: TGridMessage);
@@ -11192,6 +11216,12 @@ begin
   FCol := Msg.Col;
   FRow := Msg.Row;
   DispatchMsg(Msg);
+end;
+
+procedure TCompositeCellEditor.msg_GetGrid(var Msg: TGridMessage);
+begin
+  Msg.Grid := FGrid;
+  Msg.Options:= EO_IMPLEMENTED;
 end;
 
 procedure TCompositeCellEditor.VisibleChanging;
