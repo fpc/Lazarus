@@ -89,6 +89,7 @@ end;
 procedure TFPVectorialDrawer.AddToFontOrientation(ADelta: Integer);
 begin
   // Not implemented.
+  Unused(ADelta);
 end;
 
 procedure TFPVectorialDrawer.ClippingStart(const AClipRect: TRect);
@@ -213,6 +214,9 @@ procedure TFPVectorialDrawer.RadialPie(
   AX1, AY1, AX2, AY2: Integer; AStartAngle16Deg, AAngleLength16Deg: Integer);
 begin
   // Not implemented.
+  Unused(AX1, AY1);
+  Unused(AX2, AY2);
+  Unused(AStartAngle16Deg, AAngleLength16Deg);
 end;
 
 procedure TFPVectorialDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
@@ -278,7 +282,8 @@ end;
 procedure TFPVectorialDrawer.SimpleTextOut(
   AX, AY: Integer; const AText: String);
 begin
-  FCanvas.AddText(AX, InvertY(AY), 0, AText);
+  // FPVectorial uses lower-left instead of upper-left corner as text start.
+  FCanvas.AddText(AX, InvertY(AY) - FFontSize, 0, AText);
 end;
 
 end.
