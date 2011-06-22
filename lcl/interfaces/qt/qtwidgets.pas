@@ -98,6 +98,7 @@ type
 
   TQtWidget = class(TQtObject, IUnknown)
   private
+    FWidgetNeedFontColorInitialization: Boolean;
     FChildOfComplexWidget: TChildOfComplexWidget;
     FOwnWidget: Boolean;
     FProps: TStringList;
@@ -168,6 +169,7 @@ type
     procedure Destroyed; cdecl; override;
   public
     function CanAdjustClientRectOnResize: Boolean; virtual;
+    function CanChangeFontColor: Boolean; virtual;
     function CanSendLCLMessage: Boolean;
     function CanPaintBackground: Boolean; virtual;
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
@@ -260,6 +262,7 @@ type
     procedure setFocusProxy(const AWidget: QWidgetH);
     procedure setFont(AFont: QFontH);
     procedure setGeometry(ARect: TRect); virtual;
+    procedure setInitialFontColor(AControl: TWinControl); virtual;
     procedure setLayoutDirection(ADirection: QtLayoutDirection);
     procedure setMaximumSize(AWidth, AHeight: Integer);
     procedure setMask(AMask: QBitmapH); overload;
@@ -320,6 +323,7 @@ type
     procedure SlotSliderPressed; cdecl;
     procedure SlotSliderReleased; cdecl; virtual;
   public
+    function CanChangeFontColor: Boolean; override;
     function getInvertedAppereance: Boolean;
     function getInvertedControls: Boolean;
     function getOrientation: QtOrientation;
@@ -1737,6 +1741,7 @@ end;
 procedure TQtWidget.InitializeWidget;
 begin
   // default color roles
+  FWidgetNeedFontColorInitialization := False;
   SetDefaultColorRoles;
   FPalette := nil;
   FHasCaret := False;
@@ -1760,7 +1765,7 @@ begin
 
   {$ifdef VerboseQt}
   DebugLn('TQtWidget.InitializeWidget: Self:%x Widget:%x was created for control %s',
-    [HWND(Self), PtrUInt(Widget), LCLObject.Name]);
+    [PtrUInt(Self), PtrUInt(Widget), LCLObject.Name]);
   {$endif}
 
   // set Handle->QWidget map
@@ -1785,6 +1790,9 @@ begin
 
   // Set mouse move messages policy
   QWidget_setMouseTracking(Widget, True);
+
+  if FWidgetNeedFontColorInitialization then
+    setInitialFontColor(LCLObject);
 end;
 
 procedure TQtWidget.DeInitializeWidget;
@@ -1902,6 +1910,11 @@ end;
   from TQtViewport.EventFilter.This avoids deadlocks with autosizing.
  ------------------------------------------------------------------------------}
 function TQtWidget.CanAdjustClientRectOnResize: Boolean;
+begin
+  Result := True;
+end;
+
+function TQtWidget.CanChangeFontColor: Boolean;
 begin
   Result := True;
 end;
@@ -3829,6 +3842,31 @@ begin
   QWidget_setGeometry(Widget, @ARect);
 end;
 
+procedure TQtWidget.setInitialFontColor(AControl: TWinControl);
+var
+  QColor: TQColor;
+  ColorRef: TColorRef;
+begin
+  if AControl.Font.Color = clDefault then
+  begin
+    BeginUpdate;
+    Palette.ForceColor := True;
+    SetDefaultColor(dctFont);
+    Palette.ForceColor := False;
+    EndUpdate;
+  end
+  else
+  begin
+    ColorRef := ColorToRGB(AControl.Font.Color);
+    QColor_fromRgb(@QColor,Red(ColorRef),Green(ColorRef),Blue(ColorRef));
+    BeginUpdate;
+    Palette.ForceColor := True;
+    SetTextColor(@QColor);
+    Palette.ForceColor := False;
+    EndUpdate;
+  end;
+end;
+
 procedure TQtWidget.setLayoutDirection(ADirection: QtLayoutDirection);
 begin
   QWidget_setLayoutDirection(Widget, ADirection);
@@ -5317,7 +5355,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtStaticText.Create');
   {$endif}
-
+  FWidgetNeedFontColorInitialization := True;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -5383,7 +5421,7 @@ begin
     WriteLn('TQtCheckBox.Create');
   {$endif}
   TextColorRole := QPaletteWindowText;
-
+  FWidgetNeedFontColorInitialization := True;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -5457,6 +5495,7 @@ begin
     WriteLn('TQtRadioButton.Create');
   {$endif}
   TextColorRole := QPaletteWindowText;
+  FWidgetNeedFontColorInitialization := True;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -6034,6 +6073,11 @@ begin
   {$endif}
   FSliderPressed := False;
   FSliderReleased := True;
+end;
+
+function TQtAbstractSlider.CanChangeFontColor: Boolean;
+begin
+  Result := False;
 end;
 
 function TQtAbstractSlider.getInvertedAppereance: Boolean;
@@ -6950,7 +6994,9 @@ begin
 
   FViewportEventHook := QObject_hook_create(viewportWidget);
   QObject_hook_hook_events(FViewportEventHook, @viewportEventFilter);
-
+  // initialize scrollbars
+  verticalScrollBar;
+  horizontalScrollBar;
 end;
 
 procedure TQtTextEdit.DetachEvents;
@@ -7162,6 +7208,9 @@ begin
       if (QEvent_type(Event) = QEventKeyPress) then
         FSavedIndexOnPageChanging := QTabBar_currentIndex(QTabBarH(Widget));
       SlotKey(Sender, Event);
+      if (LCLObject = nil) or
+        ((LCLObject <> nil) and not LCLObject.HandleAllocated) then
+        Result := True;
     end;
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
@@ -7172,7 +7221,11 @@ begin
           if (QEvent_type(Event) = QEventMouseButtonPress) then
             FSavedIndexOnPageChanging := QTabBar_currentIndex(QTabBarH(Widget));
           Result := SlotTabBarMouse(Sender, Event);
-          SetNoMousePropagation(QWidgetH(Sender), False);
+          if (LCLObject = nil) or
+            ((LCLObject <> nil) and not LCLObject.HandleAllocated) then
+            Result := True
+          else
+            SetNoMousePropagation(QWidgetH(Sender), False);
         end;
       end;
   else
@@ -7244,6 +7297,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTabWidget.Create');
   {$endif}
+  FWidgetNeedFontColorInitialization := True;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -11435,6 +11489,9 @@ begin
   FHeight := getHeight;
   FVisible := False;
   FIsApplicationMainMenu := False;
+  Palette.ForceColor := True;
+  setDefaultColor(dctFont);
+  Palette.ForceColor := False;
   setVisible(FVisible);
 end;
 
@@ -12036,6 +12093,16 @@ begin
     FHScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FHScrollBar.FOwner := Self;
     FHScrollBar.setFocusPolicy(QtNoFocus);
+
+    if not FHScrollBar.CanChangeFontColor then
+    begin
+      with FHScrollBar do
+      begin
+        Palette.ForceColor := True;
+        setDefaultColor(dctFont);
+        Palette.ForceColor := False;
+      end;
+    end;
     FHScrollBar.AttachEvents;
   end;
   Result := FHScrollBar;
@@ -12062,6 +12129,15 @@ begin
     FVScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FVScrollBar.FOwner := Self;
     FVScrollBar.setFocusPolicy(QtNoFocus);
+    if not FVScrollBar.CanChangeFontColor then
+    begin
+      with FVScrollBar do
+      begin
+        Palette.ForceColor := True;
+        setDefaultColor(dctFont);
+        Palette.ForceColor := False;
+      end;
+    end;
     FVScrollbar.AttachEvents;
   end;
   Result := FVScrollBar;
@@ -13162,6 +13238,11 @@ begin
 
   FAbstractItemViewportEventHook := QObject_hook_create(viewportWidget);
   QObject_hook_hook_events(FAbstractItemViewportEventHook, @itemViewViewportEventFilter);
+
+  // initialize scrollbars
+  verticalScrollBar;
+  horizontalScrollBar;
+
 end;
 
 procedure TQtAbstractItemView.DetachEvents;

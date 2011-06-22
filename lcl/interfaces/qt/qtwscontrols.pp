@@ -580,6 +580,20 @@ begin
   QtWidget := TQtWidget(AWinControl.Handle);
   QtWidget.setFont(TQtFont(AFont.Reference.Handle).Widget);
 
+  // tscrollbar, ttrackbar etc.
+  if not QtWidget.CanChangeFontColor then
+  begin
+    with QtWidget do
+    begin
+      BeginUpdate;
+      Palette.ForceColor := True;
+      setDefaultColor(dctFont);
+      Palette.ForceColor := False;
+      EndUpdate;
+    end;
+    exit;
+  end;
+
   if AFont.Color = clDefault then
   begin
     QtWidget.BeginUpdate;

@@ -699,6 +699,7 @@ type
     function ColorChangeNeeded(const AColor: TQColor;
       const ATextRole: Boolean): Boolean;
   protected
+    FForceColor: Boolean;
     FInReload: Boolean;
     FWidget: QWidgetH;
     FWidgetRole: QPaletteColorRole;
@@ -726,6 +727,7 @@ type
     property DisabledColor: TQColor read FDisabledColor;
     property DisabledTextColor: TQColor read FDisabledTextColor;
     property InReload: Boolean read FInReload;
+    property ForceColor: Boolean read FForceColor write FForceColor;
   end;
 
   {TQtObjectDump}
@@ -4373,6 +4375,7 @@ constructor TQtWidgetPalette.Create(AWidgetColorRole: QPaletteColorRole;
   AWidgetTextColorRole: QPaletteColorRole; AWidget: QWidgetH);
 begin
   FInReload := False;
+  FForceColor := False;
   FWidget := AWidget;
   FWidgetRole := AWidgetColorRole;
   FTextRole := AWidgetTextColorRole;
@@ -4410,7 +4413,7 @@ end;
 
 procedure TQtWidgetPalette.setColor(const AColor: PQColor);
 begin
-  if not ColorChangeNeeded(AColor^, False) and not FInReload then
+  if not ColorChangeNeeded(AColor^, False) and not FInReload and not FForceColor then
     exit;
 
   QPalette_setColor(FHandle, QPaletteActive, FWidgetRole, AColor);
@@ -4427,9 +4430,8 @@ end;
 
 procedure TQtWidgetPalette.setTextColor(const AColor: PQColor);
 begin
-  if not ColorChangeNeeded(AColor^, True) and not FInReload then
+  if not ColorChangeNeeded(AColor^, True) and not FInReload and not FForceColor then
     exit;
-
   QPalette_setColor(FHandle, QPaletteActive, FTextRole, AColor);
   QPalette_setColor(FHandle, QPaletteInActive, FTextRole, AColor);
   if EqualTQColor(AColor^, FDefaultTextColor) or
