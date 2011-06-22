@@ -1297,13 +1297,17 @@ type
     property AllowGrayed;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property Caption;
     property Checked;
+    property Color;
+    property Constraints;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
+    property Font;
     property Hint;
     property OnChange;
     property OnClick;
@@ -1318,6 +1322,8 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property ParentBidiMode;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
