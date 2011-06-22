@@ -145,6 +145,8 @@ type
 
   TSortOrder = (soAscending, soDescending);
 
+  TPrefixOption = (poNone, poHeaderClick);
+
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
   constRubberSpace: byte = 2;
@@ -377,6 +379,7 @@ type
     FImageLayout: TButtonLayout;
     FIsDefaultTitleFont: boolean;
     FLayout: ^TTextLayout;
+    FPrefixOption: TPrefixOption;
     procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
     function GetCaption: string;
@@ -394,6 +397,7 @@ type
     procedure SetImageIndex(const AValue: Integer);
     procedure SetImageLayout(const AValue: TButtonLayout);
     procedure SetLayout(const AValue: TTextLayout);
+    procedure SetPrefixOption(const AValue: TPrefixOption);
     property IsDefaultFont: boolean read FIsDefaultTitleFont;
   protected
     function  GetDefaultCaption: string; virtual;
@@ -417,6 +421,7 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property ImageLayout: TButtonLayout read FImageLayout write SetImageLayout default blGlyphRight;
     property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
+    property PrefixOption: TPrefixOption read FPrefixOption write SetPrefixOption;
   end;
 
   { TGridColumn }
@@ -848,6 +853,7 @@ type
     procedure DblClick; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
+    function  DialogChar(var Message: TLMKey): boolean; override;
     function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; virtual;
     procedure DoCopyToClipboard; virtual;
     procedure DoCutToClipboard; virtual;
@@ -932,6 +938,7 @@ type
     function  GetLastVisibleColumn: Integer;
     function  GetLastVisibleRow: Integer;
     function  GetSelectedColor: TColor; virtual;
+    function  GetTitleShowPrefix(Column: Integer): boolean;
     function  GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
     procedure GridMouseWheel(shift: TShiftState; Delta: Integer); virtual;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); virtual;
@@ -3394,6 +3401,7 @@ begin
     CurrentTextStyle := DefaultTextStyle;
     CurrentTextStyle.Alignment := BidiFlipAlignment(GetColumnAlignment(aCol, gdFixed in AState), UseRightToLeftAlignment);
     CurrentTextStyle.Layout := GetColumnLayout(aCol, gdFixed in AState);
+    CurrentTextStyle.ShowPrefix := ((gdFixed in aState) and (aRow < FFixedRows)) and GetTitleShowPrefix(aCol);
     CurrentTextStyle.RightToLeft := UseRightToLeftReading;
     Canvas.TextStyle := CurrentTextStyle;
   end else begin
@@ -6062,6 +6070,20 @@ begin
   editorGetValue;
 end;
 
+function TCustomGrid.DialogChar(var Message: TLMKey): boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to Columns.Count-1 do
+    if Columns[i].Visible and (Columns[i].Title.PrefixOption<>poNone) then
+      if IsAccel(Message.CharCode, Columns[i].Title.Caption) then begin
+        result := true;
+        HeaderClick(True, GridColumnFromColumnIndex(i));
+        exit;
+      end;
+  result := inherited DialogChar(Message);
+end;
+
 function TCustomGrid.DoCompareCells(Acol, ARow, Bcol, BRow: Integer): Integer;
 begin
   result := 0;
@@ -7450,6 +7472,17 @@ end;
 function TCustomGrid.GetSelectedColor: TColor;
 begin
   Result:=FSelectedColor;
+end;
+
+function TCustomGrid.GetTitleShowPrefix(Column: Integer): boolean;
+var
+  C: TGridColumn;
+begin
+  C := ColumnFromGridColumn(Column);
+  if C<>nil then
+    result := C.Title.PrefixOption<>poNone
+  else
+    result := false;
 end;
 
 function TCustomGrid.GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
@@ -10075,6 +10108,13 @@ begin
   end else if FLayout^ = AValue then
     exit;
   FLayout^ := AValue;
+  FColumn.ColumnChanged;
+end;
+
+procedure TGridColumnTitle.SetPrefixOption(const AValue: TPrefixOption);
+begin
+  if FPrefixOption=AValue then exit;
+  FPrefixOption:=AValue;
   FColumn.ColumnChanged;
 end;
 
