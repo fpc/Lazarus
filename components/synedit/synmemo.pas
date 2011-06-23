@@ -142,7 +142,7 @@ type
     property OnStartDrag;
     // TCustomSynEdit properties
     property BookMarkOptions;
-    property BorderStyle;
+    property BorderStyle default bsSingle;
     property ExtraLineSpacing;
     property Gutter;
     property HideSelection;
