@@ -71,7 +71,7 @@ begin
   id := TCanvasDrawer.Create(cbSeries.Canvas);
   r := Bounds(
     ARect.Left, ARect.Top, Chart1.Legend.SymbolWidth, cbSeries.ItemHeight);
-  id.Pen := Chart1.Legend.Frame;
+  id.Pen := Chart1.Legend.SymbolFrame;
   (FItems[Index] as TLegendItem).Draw(id, r);
 end;
 

@@ -198,7 +198,7 @@ object Form1: TForm1
     end
     object cbSeries: TComboBox
       Left = 102
-      Height = 19
+      Height = 22
       Top = 60
       Width = 148
       ItemHeight = 16

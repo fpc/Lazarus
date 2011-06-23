@@ -120,6 +120,7 @@ type
     FMarginX: TChartDistance;
     FMarginY: TChartDistance;
     FSpacing: TChartDistance;
+    FSymbolFrame: TChartPen;
     FSymbolWidth: TChartDistance;
     FUseSidebar: Boolean;
 
@@ -131,6 +132,7 @@ type
     procedure SetMarginX(AValue: TChartDistance);
     procedure SetMarginY(AValue: TChartDistance);
     procedure SetSpacing(AValue: TChartDistance);
+    procedure SetSymbolFrame(AValue: TChartPen);
     procedure SetSymbolWidth(AValue: TChartDistance);
     procedure SetUseSidebar(AValue: Boolean);
   public
@@ -141,10 +143,10 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
       ADrawer: IChartDrawer; AItems: TObjectList; const ABounds: TRect);
+    function MeasureItem(ADrawer: IChartDrawer; AItems: TObjectList): TPoint;
     function Prepare(
       ADrawer: IChartDrawer; AItems: TObjectList; var AClipRect: TRect): TRect;
     // Not includes the margins around item.
-    function MeasureItem(ADrawer: IChartDrawer; AItems: TObjectList): TPoint;
   published
     property Alignment: TLegendAlignment
       read FAlignment write SetAlignment default laTopRight;
@@ -160,6 +162,7 @@ type
       read FMarginY write SetMarginY default DEF_LEGEND_MARGIN;
     property Spacing: TChartDistance
       read FSpacing write SetSpacing default DEF_LEGEND_SPACING;
+    property SymbolFrame: TChartPen read FSymbolFrame write SetSymbolFrame;
     property SymbolWidth: TChartDistance
       read FSymbolWidth write SetSymbolWidth default DEF_LEGEND_SYMBOL_WIDTH;
     property UseSidebar: Boolean read FUseSidebar write SetUseSidebar default true;
@@ -338,6 +341,7 @@ begin
   InitHelper(FBackgroundBrush, TChartLegendBrush);
   InitHelper(FFont, TFont);
   InitHelper(FFrame, TChartPen);
+  InitHelper(FSymbolFrame, TChartPen);
 end;
 
 destructor TChartLegend.Destroy;
@@ -345,6 +349,7 @@ begin
   FreeAndNil(FBackgroundBrush);
   FreeAndNil(FFont);
   FreeAndNil(FFrame);
+  FreeAndNil(FSymbolFrame);
 
   inherited;
 end;
@@ -376,7 +381,10 @@ begin
     for i := 0 to AItems.Count - 1 do begin
       ADrawer.Font := Font;
       ADrawer.Brush := BackgroundBrush;
-      ADrawer.Pen := Frame;
+      if SymbolFrame.Visible then
+        ADrawer.Pen := SymbolFrame
+      else
+        ADrawer.SetPenParams(psClear, clTAColor);
       (AItems[i] as TLegendItem).Draw(ADrawer, r);
       OffsetRect(r, 0, itemHeight + Spacing);
     end;
@@ -500,6 +508,13 @@ procedure TChartLegend.SetSpacing(AValue: TChartDistance);
 begin
   if FSpacing = AValue then exit;
   FSpacing := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetSymbolFrame(AValue: TChartPen);
+begin
+  if FSymbolFrame = AValue then exit;
+  FSymbolFrame := AValue;
   StyleChanged(Self);
 end;
 
