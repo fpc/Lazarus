@@ -17369,23 +17369,28 @@ procedure TMainIDE.OnGetLayout(Sender: TObject; aFormName: string; out
   aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
 var
   SrcEditWnd: TSourceNotebook;
+  ScreenR: TRect;
 begin
   DockSibling:='';
   DockAlign:=alNone;
   if (ObjectInspector1<>nil) and (aFormName=ObjectInspector1.Name) then begin
     // place object inspector below main bar
-    aBounds:=Rect(0,Min(MainIDEBar.Top+MainIDEBar.Height+25,200),230,Screen.Height-150);
-    // do not dock object inspector, because this would hide the designers
+    ScreenR:=IDEWindowCreators.GetScreenrectForDefaults;
+    aBounds:=Rect(ScreenR.Left,
+       Min(MainIDEBar.Top+MainIDEBar.Height+25,200),230,
+       ScreenR.Bottom-ScreenR.Top-150);
+    // do not dock object inspector, because this would hide the floating designers
   end
   else if (aFormName=NonModalIDEWindowNames[nmiwMessagesViewName]) then begin
     // place messages below source editor
+    ScreenR:=IDEWindowCreators.GetScreenrectForDefaults;
     if SourceEditorManager.SourceWindowCount>0 then begin
       SrcEditWnd:=SourceEditorManager.SourceWindows[0];
       aBounds:=GetParentForm(SrcEditWnd).BoundsRect;
       aBounds.Top:=aBounds.Bottom+25;
       aBounds.Bottom:=aBounds.Top+100;
     end else begin
-      aBounds:=Rect(250,Screen.Height-200,Screen.Width-250,100);
+      aBounds:=Rect(ScreenR.Left+250,ScreenR.Bottom-200,ScreenR.Right-250,100);
     end;
     if IDEDockMaster<>nil then begin
       DockSibling:=NonModalIDEWindowNames[nmiwSourceNoteBookName];

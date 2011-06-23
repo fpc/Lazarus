@@ -8274,6 +8274,7 @@ procedure TSourceEditorManager.GetDefaultLayout(Sender: TObject;
 var
   i: LongInt;
   p: Integer;
+  ScreenR: TRect;
 begin
   DockSibling:='';
   DockAlign:=alNone;
@@ -8283,12 +8284,15 @@ begin
   {$IFDEF VerboseIDEDocking}
   debugln(['TSourceEditorManager.GetDefaultLayout ',aFormName,' i=',i]);
   {$ENDIF}
+  ScreenR:=IDEWindowCreators.GetScreenrectForDefaults;
   if Application.MainForm<>nil then
-    p:=Min(200,Application.MainForm.Top+Application.MainForm.Height+25)
+    p:=Min(ScreenR.Left+200,Application.MainForm.Top+Application.MainForm.Height+25)
   else
     p:=120;
   inc(p,30*i);
-  aBounds:=Rect(250+30*i,p,Min(1000,Screen.Width-300),Screen.Height-200);
+  aBounds:=Rect(ScreenR.Left+250+30*i,p,
+                Min(1000,ScreenR.Right-ScreenR.Left),
+                ScreenR.Bottom-ScreenR.Top-200);
   if (i=0) and (IDEDockMaster<>nil) then begin
     DockSibling:=NonModalIDEWindowNames[nmiwMainIDEName];
     DockAlign:=alBottom;

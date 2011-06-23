@@ -23,7 +23,7 @@ unit IDEWindowIntf;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, LazConfigStorage, Forms, Controls;
+  Math, types, Classes, SysUtils, LCLProc, LazConfigStorage, Forms, Controls;
 
   //----------------------------------------------------------------------------
   // layout settings of modal forms (dialogs) in the IDE
@@ -293,6 +293,7 @@ type
   TIDEWindowCreatorList = class
   private
     fItems: TFPList; // list of TIDEWindowCreator
+    FScreenMaxSizeForDefaults: TPoint;
     FSimpleLayoutStorage: TSimpleWindowLayoutList;
     function GetItems(Index: integer): TIDEWindowCreator;
     procedure ErrorIfFormExists(FormName: string);
@@ -327,6 +328,10 @@ type
 
     property SimpleLayoutStorage: TSimpleWindowLayoutList read FSimpleLayoutStorage;
     procedure RestoreSimpleLayout;
+
+    property ScreenMaxSizeForDefaults: TPoint read FScreenMaxSizeForDefaults
+                                              write FScreenMaxSizeForDefaults; // on big screens: do not span the whole screen
+    function GetScreenrectForDefaults: TRect;
   end;
 
 var
@@ -1256,44 +1261,71 @@ procedure TIDEWindowCreator.GetDefaultBounds(AForm: TCustomForm; out
 var
   aRight: LongInt;
   aBottom: LongInt;
+  ScreenR: TRect;
+  ScreenW: Integer;
+  ScreenH: Integer;
 begin
+  ScreenR:=IDEWindowCreators.GetScreenrectForDefaults;
+  ScreenW:=ScreenR.Right-ScreenR.Left;
+  ScreenH:=ScreenR.Bottom-ScreenR.Top;
+
   // left
   if Left='' then
     DefBounds.Left:=AForm.Left
   else if Left[length(Left)]='%' then
-    DefBounds.Left:=Screen.Width*StrToIntDef(copy(Left,1,length(Left)-1),0) div 100
+    DefBounds.Left:=ScreenR.Left+ScreenW*StrToIntDef(copy(Left,1,length(Left)-1),0) div 100
   else
-    DefBounds.Left:=StrToIntDef(Left,0);
+    DefBounds.Left:=ScreenR.Left+StrToIntDef(Left,0);
   // top
   if Top='' then
     DefBounds.Top:=AForm.Top
   else if Top[length(Top)]='%' then
-    DefBounds.Top:=Screen.Height*StrToIntDef(copy(Top,1,length(Top)-1),0) div 100
+    DefBounds.Top:=ScreenR.Top+ScreenH*StrToIntDef(copy(Top,1,length(Top)-1),0) div 100
   else
-    DefBounds.Top:=StrToIntDef(Top,0);
+    DefBounds.Top:=ScreenR.Top+StrToIntDef(Top,0);
   // right
   if Right='' then
     aRight:=DefBounds.Left+AForm.Width
-  else if Right[length(Right)]='%' then
-    aRight:=Screen.Width*StrToIntDef(copy(Right,1,length(Right)-1),0) div 100
-  else
-    aRight:=StrToIntDef(Right,0);
-  if aRight<0 then
-    aRight:=Screen.Width-aRight
-  else if (Right<>'') and (Right[1]='+') then
-    inc(aRight,DefBounds.Left);
+  else begin
+    // 300 = fixed at 300,
+    // +300 = Left+300
+    // 30% = fixed at 30% on screen
+    // +30% = Left+30% of screen
+    // -300 = fixed 300 from right border of screen
+    // -30% = fixed 30% from right border of screen
+    if Right[length(Right)]='%' then
+      aRight:=ScreenW*StrToIntDef(copy(Right,1,length(Right)-1),0) div 100
+    else
+      aRight:=StrToIntDef(Right,0);
+    if aRight<0 then
+      aRight:=ScreenR.Right-aRight // relative to right of screen
+    else if (Right<>'') and (Right[1]='+') then
+      inc(aRight,DefBounds.Left) // relative to Left
+    else
+      inc(aRight,ScreenR.Left); // relative to left of screen
+  end;
   DefBounds.Right:=aRight;
   // bottom
   if Bottom='' then
     aBottom:=DefBounds.Top+AForm.Height
-  else if Bottom[length(Bottom)]='%' then
-    aBottom:=Screen.Height*StrToIntDef(copy(Bottom,1,length(Bottom)-1),0) div 100
-  else
-    aBottom:=StrToIntDef(Bottom,0);
-  if aBottom<0 then
-    aBottom:=Screen.Height-aBottom
-  else if (Bottom<>'') and (Bottom[1]='+') then
-    inc(aBottom,DefBounds.Top);
+  else begin
+    // 300 = fixed at 300,
+    // +300 = Top+300
+    // 30% = fixed at 30% on screen
+    // +30% = Top+30% of screen
+    // -300 = fixed 300 from bottom border of screen
+    // -30% = fixed 30% from bottom border of screen
+    if Bottom[length(Bottom)]='%' then
+      aBottom:=ScreenH*StrToIntDef(copy(Bottom,1,length(Bottom)-1),0) div 100
+    else
+      aBottom:=StrToIntDef(Bottom,0);
+    if aBottom<0 then
+      aBottom:=ScreenR.Bottom-aBottom // relative to bottom of screen
+    else if (Bottom<>'') and (Bottom[1]='+') then
+      inc(aBottom,DefBounds.Top) // relative to Top
+    else
+      inc(aBottom,ScreenR.Top); // relative to top of screen
+  end;
   DefBounds.Bottom:=aBottom;
 end;
 
@@ -1344,6 +1376,7 @@ constructor TIDEWindowCreatorList.Create;
 begin
   fItems:=TFPList.Create;
   FSimpleLayoutStorage:=TSimpleWindowLayoutList.Create;
+  FScreenMaxSizeForDefaults:=Point(1200,900);
 end;
 
 destructor TIDEWindowCreatorList.Destroy;
@@ -1512,6 +1545,18 @@ begin
     if AForm=nil then continue;
     ShowForm(AForm,false);
   end;
+end;
+
+function TIDEWindowCreatorList.GetScreenrectForDefaults: TRect;
+begin
+  Result:=Screen.WorkAreaRect;
+  if (Result.Right-Result.Left<10)
+  or (Result.Bottom-Result.Top<10) then begin
+    // screen not recognized
+    Result:=Rect(0,0,Max(Screen.Width,600),Max(Screen.Height,400));
+  end;
+  Result.Right:=Min(Result.Right,Result.Left+IDEWindowCreators.ScreenMaxSizeForDefaults.X);
+  Result.Bottom:=Min(Result.Bottom,Result.Top+IDEWindowCreators.ScreenMaxSizeForDefaults.Y);
 end;
 
 { TIDEDockMaster }
