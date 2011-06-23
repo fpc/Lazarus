@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-19 17:26+0100\n"
+"PO-Revision-Date: 2011-06-22 20:10+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -2977,7 +2977,7 @@ msgstr "Nachrichtendateien verwenden"
 
 #: lazarusidestrconsts.dlguserschemeerror
 msgid "Failed to load user-scheme file %s"
-msgstr ""
+msgstr "Laden von Benutzer-Schemadatei %s fehlgeschlagen"
 
 #: lazarusidestrconsts.dlguseschemedefaults
 #, fuzzy
@@ -3862,7 +3862,7 @@ msgstr "Automatisch fortsetzen nach:"
 
 #: lazarusidestrconsts.lisautomarkup
 msgid "Markup and Matches"
-msgstr ""
+msgstr "Hervorhebung"
 
 #: lazarusidestrconsts.lisautomatic
 msgid "Automatic"
@@ -4832,11 +4832,11 @@ msgstr "Lazarus-Quelltext aufräumen"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgid "Clean up and build"
-msgstr "Aufräumen und Erstellen"
+msgstr "Aufräumen und Kompilieren"
 
 #: lazarusidestrconsts.liscleanupandbuildproject
 msgid "Clean up and build project"
-msgstr "Aufräumen und Projekt erstellen"
+msgstr "Aufräumen und Projekt kompilieren"
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -5955,7 +5955,7 @@ msgstr "Unit \"%s\" mit \"%s\" im uses Abschnitt ersetzt."
 
 #: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
 msgid "Some units of the Delphi package are missing:%s%s"
-msgstr ""
+msgstr "Einige Units des Delphi-Packages fehlen:%s%s"
 
 #: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
 msgctxt "lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname"
@@ -6376,7 +6376,7 @@ msgstr "E&rgebnis:"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
-msgstr ""
+msgstr "Haltepunkt-Auswertung"
 
 #: lazarusidestrconsts.lisdbgenbreakpointhit
 msgid "Breakpoint Hit"
@@ -6396,7 +6396,7 @@ msgstr "Vorgabefarbe"
 
 #: lazarusidestrconsts.lisdbgenexceptionraised
 msgid "Exception Raised"
-msgstr ""
+msgstr "Ausnahme ausgelöst"
 
 #: lazarusidestrconsts.lisdbgenmoduleload
 msgid "Module Load"
@@ -6720,7 +6720,7 @@ msgstr "Haltepunkt bei %s»%s«, Zeile %d löschen?"
 
 #: lazarusidestrconsts.lisdeletebreakpointforaddress
 msgid "Delete breakpoint for address %s?"
-msgstr ""
+msgstr "Haltepunkt für Adresse %s löschen?"
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
@@ -6949,15 +6949,15 @@ msgstr "Alle Änderungen verwerfen"
 
 #: lazarusidestrconsts.lisdiscardchangesandopenproject
 msgid "Discard changes and open project"
-msgstr ""
+msgstr "Änderungen verwerfen und Projekt öffnen"
 
 #: lazarusidestrconsts.lisdiscardchangesandquit
 msgid "Discard changes and quit"
-msgstr ""
+msgstr "Änderungen verwerfen und beenden"
 
 #: lazarusidestrconsts.lisdiscardchangescreatenewproject
 msgid "Discard changes, create new project"
-msgstr ""
+msgstr "Änderungen verwerfen, neues Projekt erzeugen"
 
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
@@ -8034,13 +8034,11 @@ msgid "Free Pascal program using TCustomApplication to easily check command line
 msgstr "Free-Pascal-Programm auf der Basis von TCustomApplication für das einfache Prüfen von Kommandozeileneinstellungen, Bearbeiten von Ausnahmen und so weiter. Die Programmdatei wird von Lazarus betreut."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
-#, fuzzy
 #| msgid "Freepascal source directory"
 msgid "Free Pascal source directory"
 msgstr "Free-Pascal-Quelltextverzeichnis"
 
 #: lazarusidestrconsts.lisfreepascalsourcefile
-#, fuzzy
 #| msgid "FreePascal source file"
 msgid "Free Pascal source file"
 msgstr "Free-Pascal-Quelldatei"
@@ -8453,10 +8451,9 @@ msgid "Index"
 msgstr "Index"
 
 #: lazarusidestrconsts.lisinfobuildabort
-#, fuzzy
 #| msgid "Aborted..."
 msgid "Aborted ..."
-msgstr "Abgebrochen..."
+msgstr "Abgebrochen ..."
 
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
@@ -8629,7 +8626,7 @@ msgstr "Installation fehlgeschlagen"
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
-msgstr ""
+msgstr "Installieren, ich will es so"
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -8831,7 +8828,7 @@ msgstr "Kompilieren abbrechen"
 
 #: lazarusidestrconsts.liskmaddbpaddress
 msgid "Add address breakpoint"
-msgstr ""
+msgstr "Adress-Haltepunkt hinzufügen"
 
 #: lazarusidestrconsts.liskmaddbpsource
 msgid "Add source breakpoint"
@@ -8855,7 +8852,7 @@ msgstr "Klassisch"
 
 #: lazarusidestrconsts.liskmcleanupcompiled
 msgid "Clean up build files"
-msgstr ""
+msgstr "Aufräumen und Kompilieren"
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -10035,7 +10032,7 @@ msgstr "Verzeichnis säubern ..."
 
 #: lazarusidestrconsts.lismenucleanupcompiled
 msgid "Clean up build files ..."
-msgstr ""
+msgstr "Aufräumen und Kompilieren ..."
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -12180,7 +12177,7 @@ msgstr "Eine Pascal-Unit muß die Endung .pp oder .pas haben"
 
 #: lazarusidestrconsts.lispecollapsedirectory
 msgid "Collapse directory"
-msgstr ""
+msgstr "Verzeichnis einklappen"
 
 #: lazarusidestrconsts.lispeconflictfound
 msgid "Conflict found"
@@ -16177,7 +16174,7 @@ msgstr "Abstrakte Methoden ..."
 
 #: lazarusidestrconsts.srkmecaddbpaddress
 msgid "add address breakpoint"
-msgstr ""
+msgstr "Adress-Haltepunkt hinzufügen"
 
 #: lazarusidestrconsts.srkmecaddbpsource
 msgid "add source breakpoint"
@@ -16261,7 +16258,7 @@ msgstr "Zeichen"
 
 #: lazarusidestrconsts.srkmeccleanupcompiled
 msgid "clean up build files"
-msgstr ""
+msgstr "aufräumen und kompilieren"
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
@@ -16341,7 +16338,7 @@ msgstr "Spaltenauswahlmodus"
 
 #: lazarusidestrconsts.srkmeccompile
 msgid "compile program/project"
-msgstr ""
+msgstr "Programm/Projekt kompilieren"
 
 #: lazarusidestrconsts.srkmeccompileroptions
 msgid "compiler options"
@@ -17163,7 +17160,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
-msgstr ""
+msgstr "Tabulatorreihenfolge anzeigen"
 
 #: lazarusidestrconsts.srkmecviewthreads
 msgid "View Threads"
