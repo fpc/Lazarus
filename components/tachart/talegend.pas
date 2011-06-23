@@ -356,9 +356,11 @@ var
   r: TRect;
 begin
   // Draw the background and the border.
-  ADrawer.Font := Font;
   ADrawer.Brush := BackgroundBrush;
-  ADrawer.Pen := Frame;
+  if Frame.Visible then
+    ADrawer.Pen := Frame
+  else
+    ADrawer.SetPenParams(psClear, clTAColor);
   ADrawer.Rectangle(ABounds);
   if AItems.Count = 0 then exit;
 
