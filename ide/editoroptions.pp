@@ -60,6 +60,7 @@ uses
 
 const
   DefaultCompletionLongLineHintType = sclpExtendRightOnly;
+  DefaultEditorDisableAntiAliasing = false;
 
 type
   TPreviewPasSyn = TIDESynFreePasSyn;
@@ -569,12 +570,14 @@ const
     );
 
 const
-  EditorOptsFormatVersion = 6;
-  (* * Changes in Version 6:
+  EditorOptsFormatVersion = 7;
+  { * Changes in Version 6:
        - ColorSchemes now have a Global settings part.
          Language specific changes must save UseSchemeGlobals=False (Default is true)
          Since Version 5 did not have this setting, in Version 5 the default is false.
-  *)
+    * Changes in Version 7:
+         DisableAntialiasing default true to false
+  }
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
@@ -1096,7 +1099,7 @@ type
     property ExtraLineSpacing: Integer
       read fExtraLineSpacing write fExtraLineSpacing default 1;
     property DisableAntialiasing: Boolean
-      read fDisableAntialiasing write fDisableAntialiasing default True;
+      read fDisableAntialiasing write fDisableAntialiasing default DefaultEditorDisableAntiAliasing;
     property DoNotWarnForFont: string
       read FDoNotWarnForFont write FDoNotWarnForFont;
 
@@ -3045,7 +3048,7 @@ begin
   // Display options
   fEditorFont := SynDefaultFontName;
   fEditorFontHeight := SynDefaultFontHeight;
-  fDisableAntialiasing := True;
+  fDisableAntialiasing := DefaultEditorDisableAntiAliasing;
 
   // Key Mappings
   fKeyMappingScheme := KeyMapSchemeNames[kmsLazarus];
@@ -3205,7 +3208,8 @@ begin
     fExtraLineSpacing :=
       XMLConfig.GetValue('EditorOptions/Display/ExtraLineSpacing', 1);
     fDisableAntialiasing :=
-      XMLConfig.GetValue('EditorOptions/Display/DisableAntialiasing', True);
+      XMLConfig.GetValue('EditorOptions/Display/DisableAntialiasing',
+                         FileVersion<7);
     FDoNotWarnForFont :=
       XMLConfig.GetValue('EditorOptions/Display/DoNotWarnForFont', '');
 
@@ -3394,7 +3398,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraLineSpacing'
       ,fExtraLineSpacing, 1);
     XMLConfig.SetDeleteValue('EditorOptions/Display/DisableAntialiasing'
-      ,fDisableAntialiasing, True);
+      ,fDisableAntialiasing, DefaultEditorDisableAntiAliasing);
     XMLConfig.SetDeleteValue('EditorOptions/Display/DoNotWarnForFont'
       ,FDoNotWarnForFont, '');
 
