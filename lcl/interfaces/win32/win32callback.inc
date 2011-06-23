@@ -187,6 +187,7 @@ type
 var
   CurDoubleBuffer: TDoubleBuffer = (DC: 0; Bitmap: 0; BitmapWidth: 0; BitmapHeight: 0);
   DisabledForms: TList = nil;
+  CurrentWindow: HWND = 0;
 
 function CheckMouseMovement: boolean;
   // returns true if mouse did not move between lmousebutton down
@@ -1374,6 +1375,8 @@ begin
     end;
     WM_DESTROY:
     begin
+      if CurrentWindow=Window then
+        CurrentWindow := 0;
       if lWinControl is TCustomComboBox then
         DisposeComboEditWindowInfo(TCustomComboBox(lWinControl));
       if WindowInfo^.Overlay<>HWND(nil) then
@@ -2391,7 +2394,13 @@ begin
 
   // application processing
   if NotifyUserInput then
+  begin
+    CurrentWindow := Window;
     NotifyApplicationUserInput(PLMsg^.Msg);
+    if CurrentWindow=0 then
+      // Invalidate associated lWinControl if current window has been destroyed
+      lWinControl := nil;
+  end;
 
   if Assigned(lWinControl) and (PLMsg^.Msg <> LM_NULL) then
     DeliverMessage(lWinControl, PLMsg^);
