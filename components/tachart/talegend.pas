@@ -142,10 +142,12 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
-      ADrawer: IChartDrawer; AItems: TObjectList; const ABounds: TRect);
-    function MeasureItem(ADrawer: IChartDrawer; AItems: TObjectList): TPoint;
+      ADrawer: IChartDrawer; AItems: TChartLegendItems; const ABounds: TRect);
+    function MeasureItem(
+      ADrawer: IChartDrawer; AItems: TChartLegendItems): TPoint;
     function Prepare(
-      ADrawer: IChartDrawer; AItems: TObjectList; var AClipRect: TRect): TRect;
+      ADrawer: IChartDrawer; AItems: TChartLegendItems;
+      var AClipRect: TRect): TRect;
     // Not includes the margins around item.
   published
     property Alignment: TLegendAlignment
@@ -355,7 +357,7 @@ begin
 end;
 
 procedure TChartLegend.Draw(
-  ADrawer: IChartDrawer; AItems: TObjectList; const ABounds: TRect);
+  ADrawer: IChartDrawer; AItems: TChartLegendItems; const ABounds: TRect);
 var
   i, itemHeight: Integer;
   r: TRect;
@@ -394,7 +396,7 @@ begin
 end;
 
 function TChartLegend.MeasureItem(
-  ADrawer: IChartDrawer; AItems: TObjectList): TPoint;
+  ADrawer: IChartDrawer; AItems: TChartLegendItems): TPoint;
 var
   i: Integer;
 begin
@@ -410,7 +412,7 @@ begin
 end;
 
 function TChartLegend.Prepare(
-  ADrawer: IChartDrawer; AItems: TObjectList; var AClipRect: TRect): TRect;
+  ADrawer: IChartDrawer; AItems: TChartLegendItems; var AClipRect: TRect): TRect;
 var
   x, y: Integer;
   sidebar, legendSize: TPoint;

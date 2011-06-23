@@ -279,7 +279,7 @@ type
     procedure DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
     procedure EnableRedrawing;
     function GetFullExtent: TDoubleRect;
-    function GetLegendItems: TObjectList;
+    function GetLegendItems: TChartLegendItems;
     procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure SaveToBitmapFile(const AFileName: String); inline;
@@ -924,7 +924,7 @@ begin
   end;
 end;
 
-function TChart.GetLegendItems: TObjectList;
+function TChart.GetLegendItems: TChartLegendItems;
 var
   i: Integer;
 begin

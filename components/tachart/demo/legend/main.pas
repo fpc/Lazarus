@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Contnrs, Controls, ExtCtrls, Graphics, Spin, StdCtrls, Forms,
+  Controls, ExtCtrls, Graphics, Spin, StdCtrls, Forms,
   TAGraph, TASeries, TASources, Classes, TALegend, TAFuncSeries;
 
 type
@@ -47,7 +47,7 @@ type
     procedure seSpacingChange(Sender: TObject);
     procedure seSymbolWidthChange(Sender: TObject);
   private
-    FItems: TObjectList;
+    FItems: TChartLegendItems;
   end;
 
 var
