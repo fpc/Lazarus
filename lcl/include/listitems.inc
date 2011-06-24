@@ -21,7 +21,7 @@
 constructor TListItems.Create(AOwner : TCustomListView);
 begin
   Inherited Create;
-  FItems := TList.Create;
+  FItems := TFPList.Create;
   FOwner := AOwner;
   FCacheIndex := -1;
 end;
@@ -154,6 +154,8 @@ begin
     raise Exception.CreateFmt(rsListIndexExceedsBounds, [AIndex2]);
   AItem := Item[AIndex1];
   FItems.Exchange(AIndex1, AIndex2);
+  FCacheIndex := AIndex1;
+  FCacheItem := AItem;
   if WSUpdateAllowed then
   begin
     TWSCustomListViewClass(FOwner.WidgetSetClass).ItemExchange(FOwner, AItem,
@@ -171,6 +173,8 @@ begin
     raise Exception.CreateFmt(rsListIndexExceedsBounds, [AToIndex]);
   AItem := Item[AFromIndex];
   FItems.Move(AFromIndex, AToIndex);
+  FCacheIndex := AToIndex;
+  FCacheItem := AItem;
   if WSUpdateAllowed then
   begin
     TWSCustomListViewClass(FOwner.WidgetSetClass).ItemMove(FOwner, AItem,

@@ -817,7 +817,7 @@ type
   TListItems = class(TPersistent)
   private
     FOwner: TCustomListView;
-    FItems: TList;
+    FItems: TFPList;
     FFlags: TListItemsFlags;
     FCacheIndex: Integer;  // Caches the last used item 
     FCacheItem: TListItem; //

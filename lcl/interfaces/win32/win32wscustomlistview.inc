@@ -531,12 +531,56 @@ end;
 
 class procedure TWin32WSCustomListView.ItemExchange(const ALV: TCustomListView;
   AItem: TListItem; const AIndex1, AIndex2: Integer);
+var
+  B1, B2: Boolean;
+  i: Integer;
+  AItem1, AItem2: TListItem;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemExchange') then
     exit;
-  //TODO: there's no way to exchange items with Windows listview macros
-  //so we have to reassign TLvItem to AIndex1 and AIndex2
+
+  //We have to reassign TLvItem to AIndex1 and AIndex2
   //or use RecreateWnd() which is very expensive
+
+  AItem1 := ALV.Items[AIndex2];
+  AItem2 := ALV.Items[AIndex1];
+  if ALV.Checkboxes then
+  begin
+    B2 := AItem1.Checked;
+    B1 := AItem2.Checked;
+  end;
+
+  ItemSetText(ALV, AIndex2, AItem1, 0, AItem1.Caption);
+  for i := 0 to AItem1.SubItems.Count - 1 do
+    ItemSetText(ALV, AIndex2, AItem1, i + 1, AItem1.SubItems[i]);
+
+
+  ItemSetText(ALV, AIndex1, AItem2, 0, AItem2.Caption);
+  for i := 0 to AItem2.SubItems.Count - 1 do
+    ItemSetText(ALV, AIndex1, AItem2, i + 1, AItem2.SubItems[i]);
+
+
+  // set state images
+  if Assigned(TListView(ALV).StateImages) then
+  begin
+    ItemSetStateImage(ALV, AIndex2,AItem1,0, AItem1.StateIndex);
+    ItemSetStateImage(ALV, AIndex1,AItem2,0, AItem2.StateIndex);
+  end;
+
+  // set images
+  if AItem1.ImageIndex >= 0 then
+    ItemSetImage(ALV, AIndex2, AItem1, 0, AItem1.ImageIndex);
+  if AItem2.ImageIndex >= 0 then
+    ItemSetImage(ALV, AIndex1, AItem2, 0, AItem2.ImageIndex);
+
+  // apply checkbox states
+  if ALV.Checkboxes then
+  begin
+    ItemSetChecked(ALV, AIndex2, AItem1, B1);
+    ItemSetChecked(ALV, AIndex1, AItem2, B2);
+  end;
+  //TODO: selection and focused item.
+  // that works but triggers selection change in LCL ...
 end;
 
 class procedure TWin32WSCustomListView.ItemMove(const ALV: TCustomListView;
@@ -544,9 +588,7 @@ class procedure TWin32WSCustomListView.ItemMove(const ALV: TCustomListView;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemMove') then
     exit;
-  //TODO: there's no way to exchange items with Windows listview macros
-  //so we have to reassign TLvItem to AIndex1 and AIndex2
-  //or use RecreateWnd() which is very expensive
+  ItemExchange(ALV, AItem, AFromIndex, AToIndex);
 end;
 
 class function TWin32WSCustomListView.ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean;
@@ -865,7 +907,8 @@ begin
   Result := SendMessage(ALV.Handle, LVM_GETHOVERTIME, 0, 0);
 end;
 
-class function TWin32WSCustomListView.GetItemAt(const ALV: TCustomListView; x,y: integer): Integer;
+class function TWin32WSCustomListView.GetItemAt(const ALV: TCustomListView; x,
+  y: Integer): Integer;
 var 
   HitInfo: LV_HITTESTINFO;
 begin
