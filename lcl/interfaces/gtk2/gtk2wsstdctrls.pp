@@ -913,6 +913,10 @@ begin
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+  if AParams.Style and WS_VISIBLE = 0 then
+    gtk_widget_hide(PGtkWidget(Result))
+  else
+    gtk_widget_show(PGtkWidget(Result));
 
   Set_RC_Name(AWinControl, PGtkWidget(Result));
   SetCallbacks(PGtkWidget(Result), WidgetInfo);
@@ -1080,7 +1084,10 @@ var
 begin
   Widget := gtk_entry_new();
   gtk_editable_set_editable(PGtkEditable(Widget), not TCustomEdit(AWinControl).ReadOnly);
-  gtk_widget_show_all(Widget);
+  if AParams.Style and WS_VISIBLE = 0 then
+    gtk_widget_hide(Widget)
+  else
+    gtk_widget_show(Widget);
   Result := TLCLIntfHandle(PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
@@ -1349,6 +1356,10 @@ begin
   
   gtk_container_add(PGtkContainer(Box), ComboWidget);
   gtk_widget_show_all(Box);
+  if ACustomComboBox.HandleObjectShouldBeVisible then
+    gtk_widget_show(Box)
+  else
+    gtk_widget_hide(Box);
   if csDesigning in ACustomComboBox.ComponentState then
     gtk_event_box_set_above_child(PGtkEventBox(Box), true);
 
@@ -2010,6 +2021,11 @@ begin
   if ACustomComboBox.Items is TStringList then
     ItemList.Sorted:=TStringList(ACustomComboBox.Items).Sorted;
 
+  if AParams.Style and WS_VISIBLE = 0 then
+    gtk_widget_hide(Box)
+  else
+    gtk_widget_show(Box);
+
   Result := TLCLIntfHandle(PtrUInt(Box));
 end;
 
@@ -2310,6 +2326,11 @@ begin
 
   Set_RC_Name(AWinControl, EventBox);
   SetCallbacks(EventBox, WidgetInfo);
+
+  if AParams.Style and WS_VISIBLE = 0 then
+    gtk_widget_hide(EventBox)
+  else
+    gtk_widget_show(EventBox);
 end;
 
 class function TGtk2WSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
