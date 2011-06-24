@@ -417,7 +417,7 @@ type
     function  GridCanModify: boolean;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);override;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
-                  out HsbRange,VsbRange, HsbPage, VsbPage:Integer); override;
+                  out HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos:Integer); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; Index: Integer); override;
     function  IsValidChar(AField: TField; AChar: TUTF8Char): boolean;
@@ -2568,16 +2568,15 @@ begin
 end;
 
 procedure TCustomDBGrid.GetSBRanges(const HsbVisible, VsbVisible: boolean; out
-  HsbRange, VsbRange, HsbPage, VsbPage: Integer);
-var
-  aPos: Integer;
+  HsbRange, VsbRange, HsbPage, VsbPage, HsbPos, VsbPos: Integer);
 begin
-  inherited GetSBRanges(HsbVisible, VsbVisible, HsbRange, VsbRange, HsbPage, VsbPage);
+  inherited GetSBRanges(HsbVisible, VsbVisible, HsbRange, VsbRange, HsbPage, VsbPage, HsbPos, VsbPos);
   if VSbVisible then
-    GetScrollbarParams(VsbRange, VsbPage, aPos)
+    GetScrollbarParams(VsbRange, VsbPage, VsbPos)
   else begin
     VsbRange := 0;
     VsbPage := 0;
+    VsbPos := 0;
   end;
 end;
 
