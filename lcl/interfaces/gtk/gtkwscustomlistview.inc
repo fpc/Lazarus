@@ -571,6 +571,31 @@ begin
   gtk_clist_remove(CListWidget, AIndex);
 end;
 
+class procedure TGtkWSCustomListView.ItemExchange(const ALV: TCustomListView;
+  AItem: TListItem; const AIndex1, AIndex2: Integer);
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemExchange') then
+    exit;
+  ItemMove(ALV, AItem, AIndex1, AIndex2);
+  if AIndex1 > AIndex2 then
+    ItemMove(ALV, AItem, AIndex2 + 1, AIndex1)
+  else
+    ItemMove(ALV, AItem, AIndex2 - 1, AIndex1);
+end;
+
+class procedure TGtkWSCustomListView.ItemMove(const ALV: TCustomListView;
+  AItem: TListItem; const AFromIndex, AToIndex: Integer);
+var
+  WidgetInfo: PWidgetInfo;
+  CListWidget: PGtkCList;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemMove') then
+    exit;
+  WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
+  CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
+  gtk_clist_row_move(CListWidget, AFromIndex, AToIndex);
+end;
+
 class function TGtkWSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
@@ -963,7 +988,7 @@ begin
   SignalConnect(AListWidget, 'click-column',        @GtkWSCustomListView_ClickColumn,       AWidgetInfo);
   SignalConnect(AListWidget, 'resize-column',       @GtkWSCustomListView_ResizeColumn,      AWidgetInfo);
   SignalConnect(AListWidget, 'abort-column-resize', @GtkWSCustomListView_AbortColumnResize, AWidgetInfo);
-  SignalConnect(AListWidget, 'row-move',            @GtkWSCustomListView_RowMove,           AWidgetInfo);
+  // SignalConnect(AListWidget, 'row-move',            @GtkWSCustomListView_RowMove,           AWidgetInfo);
   SignalConnect(AListWidget, 'select-row',          @GtkWSCustomListView_SelectRow,         AWidgetInfo);
   SignalConnect(AListWidget, 'unselect-row',        @GtkWSCustomListView_UnSelectRow,       AWidgetInfo);
   SignalConnect(AListWidget, 'toggle-focus-row',    @GtkWSCustomListView_ToggleFocusRow,    AWidgetInfo);

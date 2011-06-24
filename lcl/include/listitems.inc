@@ -148,10 +148,13 @@ procedure TListItems.Exchange(const AIndex1, AIndex2: Integer);
 var
   AItem: TListItem;
 begin
+  if AIndex1 = AIndex2 then
+    exit;
   if (AIndex1 < 0) or (AIndex1 >= FItems.Count) then
     raise Exception.CreateFmt(rsListIndexExceedsBounds, [AIndex1]);
   if (AIndex2 < 0) or (AIndex2 >= FItems.Count) then
     raise Exception.CreateFmt(rsListIndexExceedsBounds, [AIndex2]);
+
   AItem := Item[AIndex1];
   FItems.Exchange(AIndex1, AIndex2);
   FCacheIndex := AIndex1;
@@ -167,6 +170,8 @@ procedure TListItems.Move(const AFromIndex, AToIndex: Integer);
 var
   AItem: TListItem;
 begin
+  if AFromIndex = AToIndex then
+    exit;
   if (AFromIndex < 0) or (AFromIndex >= FItems.Count) then
     raise Exception.CreateFmt(rsListIndexExceedsBounds, [AFromIndex]);
   if (AToIndex < 0) or (AToIndex >= FItems.Count) then
