@@ -348,10 +348,13 @@ begin
   end;
   LinkGetBookMark;
   try
-    if FListLink.DataSet.Locate(FKeyFieldNames,
-      FControlLink.DataSet.FieldValues[FDataFieldNames], []) then
-      Result := FListField.AsString
-    else Result:= '';
+    try
+      if FListLink.DataSet.Locate(FKeyFieldNames,
+        FControlLink.DataSet.FieldValues[FDataFieldNames], []) then
+        Result := FListField.AsString;
+    except
+      result := '';
+    end;
   finally
     LinkGotoBookMark;
   end;
