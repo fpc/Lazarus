@@ -1552,6 +1552,7 @@ var
 begin
   ANode:=StartNode;
   Result:=nil;
+  if AClassName='' then exit;
   p:=PChar(AClassName);
   while (ANode<>nil) do begin
     if ANode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
@@ -1568,6 +1569,7 @@ begin
           if (ANode.Desc=ctnGenericType) and (ANode.FirstChild<>nil) then
             NameNode:=ANode.FirstChild;
           //debugln(['TPascalReaderTool.FindClassNode class name = "',GetIdentifier(@Src[NameNode.StartPos]),'"']);
+          if NameNode.StartPos>SrcLen then exit;
           if CompareIdentifiers(p,@Src[NameNode.StartPos])=0 then begin
             Result:=FindNestedClass(CurClassNode,p,true);
             exit;
