@@ -154,12 +154,11 @@ begin
     raise Exception.CreateFmt(rsListIndexExceedsBounds, [AIndex1]);
   if (AIndex2 < 0) or (AIndex2 >= FItems.Count) then
     raise Exception.CreateFmt(rsListIndexExceedsBounds, [AIndex2]);
-
   AItem := Item[AIndex1];
   FItems.Exchange(AIndex1, AIndex2);
   FCacheIndex := AIndex1;
   FCacheItem := AItem;
-  if WSUpdateAllowed then
+  if not Owner.OwnerData and WSUpdateAllowed then
   begin
     TWSCustomListViewClass(FOwner.WidgetSetClass).ItemExchange(FOwner, AItem,
       AIndex1, AIndex2);
@@ -180,7 +179,7 @@ begin
   FItems.Move(AFromIndex, AToIndex);
   FCacheIndex := AToIndex;
   FCacheItem := AItem;
-  if WSUpdateAllowed then
+  if not Owner.OwnerData and WSUpdateAllowed then
   begin
     TWSCustomListViewClass(FOwner.WidgetSetClass).ItemMove(FOwner, AItem,
       AFromIndex, AToIndex);
