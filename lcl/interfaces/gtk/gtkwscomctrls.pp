@@ -77,7 +77,7 @@ type
     class procedure ItemChangeInternal(const ACListWidget: PGtkCList; const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
     class procedure SetPropertyInternal(const ACListWidget: PGtkCList; const AInfo: PWidgetInfo; const AProp: TListViewProperty; const AIsSet: Boolean);
   protected
-    class procedure SetCallbacks(const AScrollWidget, AListWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetListCallbacks(const AScrollWidget, AListWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
   published
     // columns
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;

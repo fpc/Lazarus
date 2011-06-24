@@ -953,10 +953,10 @@ begin
   // already created in TGtkWSBaseScrollingWinControl
 
   Set_RC_Name(AWinControl, PGtkWidget(ScrollWidget));
-  SetCallbacks(PGtkWidget(ScrollWidget), PGtkWidget(CListWidget), WidgetInfo);
+  SetListCallbacks(PGtkWidget(ScrollWidget), PGtkWidget(CListWidget), WidgetInfo);
 end;
 
-class procedure TGtkWSCustomListView.SetCallbacks(const AScrollWidget, AListWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+class procedure TGtkWSCustomListView.SetListCallbacks(const AScrollWidget, AListWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSBaseScrollingWinControl.SetCallbacks(AScrollWidget, AWidgetInfo);
 
