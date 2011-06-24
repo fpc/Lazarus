@@ -225,7 +225,8 @@ type
     function charWidth(str: WideString; pos: Integer): Integer;
     function averageCharWidth: Integer;
     function elidedText(const AText: WideString;
-      const AMode: QtTextElideMode; const AWidth: Integer): WideString;
+      const AMode: QtTextElideMode; const AWidth: Integer;
+      const AFlags: Integer = 0): WideString;
   end;
 
   { TQtBrush }
@@ -1537,9 +1538,10 @@ begin
 end;
 
 function TQtFontMetrics.elidedText(const AText: WideString;
-  const AMode: QtTextElideMode; const AWidth: Integer): WideString;
+  const AMode: QtTextElideMode; const AWidth: Integer;
+  const AFlags: Integer = 0): WideString;
 begin
-  QFontMetrics_elidedText(Widget, @Result, @AText, AMode, AWidth, 0);
+  QFontMetrics_elidedText(Widget, @Result, @AText, AMode, AWidth, AFlags);
 end;
 
 { TQtBrush }

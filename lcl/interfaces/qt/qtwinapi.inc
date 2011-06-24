@@ -1202,7 +1202,6 @@ var
   S: String;
   i: Integer;
 
-
   procedure CalculateOffsetWithAngle(const AFontAngle: Integer;
     var TextLeft,TextTop: Integer);
   var
@@ -1339,8 +1338,9 @@ begin
    Save
    project (in two lines, so Ctrl+S is invisible. See issue #18631.
    But does not trigger with qt-4.6.XX and maybe with 4.7.0.
-   Opened nokia issue: http://bugreports.qt.nokia.com/browse/QTBUG-17020}
-  if (QtVersionMajor = 4) and (QtVersionMinor = 7) and (QtVersionMicro = 1) and
+   Opened nokia issue: http://bugreports.qt.nokia.com/browse/QTBUG-17020
+   UPDATE: it's fixed in qt-4.7.4 git and qt-4.8}
+  if (QtVersionMajor = 4) and (QtVersionMinor = 7) and (QtVersionMicro < 4) and
    (Flags and DT_WORDBREAK = DT_WORDBREAK) and
    ((Flags and DT_VCENTER = DT_VCENTER) or (Flags and DT_CENTER = DT_CENTER))
     and not (Flags and DT_NOCLIP = DT_NOCLIP) and
@@ -1363,8 +1363,11 @@ begin
   if (Flags and DT_MODIFYSTRING = DT_MODIFYSTRING) and
   (Flags and DT_END_ELLIPSIS = DT_END_ELLIPSIS) then
   begin
+    // windows are removing trailing spaces in this case
+    // and we are doing same thing too.
+    WideStr := TrimLeft(WideStr);
     with ARect do
-      WideStr := QtDC.Metrics.elidedText(WideStr, QtElideRight, Right - Left);
+      WideStr := QtDC.Metrics.elidedText(WideStr, QtElideRight, Right - Left, 0);
   end;
 
   with ARect do
