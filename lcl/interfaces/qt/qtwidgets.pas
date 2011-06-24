@@ -1793,6 +1793,10 @@ begin
 
   if FWidgetNeedFontColorInitialization then
     setInitialFontColor(LCLObject);
+  if (FParams.Style and WS_VISIBLE) = 0 then
+    QWidget_hide(Widget)
+  else
+    QWidget_show(Widget);
 end;
 
 procedure TQtWidget.DeInitializeWidget;
