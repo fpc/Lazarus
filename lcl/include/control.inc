@@ -3713,10 +3713,10 @@ begin
         else
           AsWincontrol := nil;
         InvalidatePreferredSize;
-        if AsWincontrol <> nil then
+        if Assigned(AsWincontrol) then
           AsWincontrol.InvalidatePreferredChildSizes;
         AdjustSize;
-        if (not Visible) and (Parent<>nil) then
+        if (not Visible) and Assigned(Parent) then
         begin
           // control became invisible, so AdjustSize was not propagated
           // propagate

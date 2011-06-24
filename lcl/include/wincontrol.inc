@@ -4250,16 +4250,18 @@ var
 begin
   bShow := HandleObjectShouldBeVisible;
 
-  if bShow then begin
+  if bShow then
+  begin
     if not HandleAllocated then CreateHandle;
-    if FControls <> nil
-    then begin
+    if Assigned(FControls) then
+    begin
       for n := 0 to FControls.Count - 1 do
         if TObject(FControls[n]) is TWinControl then
           TWinControl(FControls[n]).UpdateShowing;
     end;
   end;
-  if not HandleAllocated then begin
+  if not HandleAllocated then
+  begin
     {$IFDEF VerboseShowing}
     if bShow then
       DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' handle not allocated']);
@@ -4268,7 +4270,7 @@ begin
   end;
 
   if FShowing = bShow then Exit;
-  //DebugLn('TWinControl.UpdateShowing A ',dbgsName(Self),' FShowing=',dbgs(FShowing),' bShow=',dbgs(bShow));
+  //DebugLn(['TWinControl.UpdateShowing ',dbgsName(Self),' FShowing=',dbgs(FShowing),' bShow=',dbgs(bShow), ' IsWindowVisible=', IsWindowVisible(FHandle)]);
   if bShow then
   begin
     // the Handle should become visible
@@ -7055,7 +7057,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMShowWindow(var Message: TLMShowWindow);
 begin
-  //DebugLn(Format('Trace: TODO: [TWinControl.LMShowWindow] %s', [ClassName]));
+  // DebugLn(['TWinControl.LMShowWindow ', dbgsName(self)]);
 end;
 
 {------------------------------------------------------------------------------
@@ -7323,8 +7325,8 @@ begin
     end;
 
     InvalidatePreferredSize;
-    if FControls<>nil then
-      for i:=0 to FControls.Count-1 do
+    if Assigned(FControls) then
+      for i := 0 to FControls.Count - 1 do
         TControl(FControls[i]).InvalidatePreferredSize;
     // size this control
     AdjustSize;
@@ -8042,7 +8044,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMVisibleChanged(var Message : TLMessage);
 begin
-  if not FVisible and (Parent <> nil) then
+  if not FVisible and Assigned(Parent) then
     RemoveFocus(False);
 
   if not (csDesigning in ComponentState) or (csNoDesignVisible in ControlStyle) then
@@ -8090,12 +8092,13 @@ procedure TWinControl.DoSendShowHideToInterface;
 var
   NewVisible: Boolean;
 begin
-  NewVisible:=HandleObjectShouldBeVisible;
-  if NewVisible<>(wcfHandleVisible in FWinControlFlags) then begin
+  NewVisible := HandleObjectShouldBeVisible;
+  if NewVisible <> (wcfHandleVisible in FWinControlFlags) then
+  begin
     if NewVisible then
-      Include(FWinControlFlags,wcfHandleVisible)
+      Include(FWinControlFlags, wcfHandleVisible)
     else
-      Exclude(FWinControlFlags,wcfHandleVisible);
+      Exclude(FWinControlFlags, wcfHandleVisible);
     {$IF defined(VerboseNewAutoSize) or defined(VerboseIntfSizing) or defined(VerboseShowing)}
     DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
     {$ENDIF}
@@ -8285,7 +8288,7 @@ begin
   if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
     DoSendShowHideToInterface
   else
-    Exclude(FWinControlFlags,wcfHandleVisible);
+    Exclude(FWinControlFlags, wcfHandleVisible);
 end;
 
 {------------------------------------------------------------------------------
