@@ -1361,7 +1361,8 @@ begin
   end;
 
   if (Flags and DT_MODIFYSTRING = DT_MODIFYSTRING) and
-  (Flags and DT_END_ELLIPSIS = DT_END_ELLIPSIS) then
+  (Flags and DT_END_ELLIPSIS = DT_END_ELLIPSIS) and
+  (Flags and DT_WORDBREAK = 0) then
   begin
     // windows are removing trailing spaces in this case
     // and we are doing same thing too.
