@@ -1141,40 +1141,28 @@ end;
 procedure TCustomDBGrid.WMVScroll(var Message: TLMVScroll);
 var
   IsSeq: boolean;
-  aPos: Integer;
+  aPos, aRange, aPage: Integer;
   DeltaRec: integer;
 
   function MaxPos: Integer;
   begin
     if IsSeq then
-      result := GetRecordCount
+      result := GetRecordCount - 1
     else
       result := 4;
-  end;
-
-  procedure CalcPos(Delta: Integer);
-  begin
-    if FDataLink.Dataset.BOF then
-      aPos := 0
-    else if FDatalink.DataSet.EOF then
-      aPos := MaxPos
-    else if IsSeq then
-      aPos := FOldPosition + Delta
-    else
-      aPos := 2;
   end;
 
   procedure DsMoveBy(Delta: Integer);
   begin
     FDataLink.MoveBy(Delta);
-    CalcPos(Delta);
+    GetScrollbarParams(aRange, aPage, aPos);
   end;
 
   procedure DsGoto(BOF: boolean);
   begin
     if BOF then FDatalink.DataSet.First
     else        FDataLink.DataSet.Last;
-    CalcPos(0);
+    GetScrollbarParams(aRange, aPage, aPos);
   end;
 
 begin
@@ -1202,12 +1190,14 @@ begin
     SB_THUMBPOSITION:
       begin
         aPos := Message.Pos;
+        if aPos=FOldPosition then
+          exit;
         if aPos>=MaxPos then
           dsGoto(False)
         else if aPos<=0 then
           dsGoto(True)
         else if IsSeq then
-          FDatalink.DataSet.RecNo := aPos
+          FDatalink.DataSet.RecNo := aPos + 1
         else begin
           DeltaRec := Message.Pos - FOldPosition;
           if DeltaRec=0 then
