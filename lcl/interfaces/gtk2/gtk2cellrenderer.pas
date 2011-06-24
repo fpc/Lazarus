@@ -367,7 +367,7 @@ begin
   gtk_tree_path_free(APath);
 
   WidgetInfo := PWidgetInfo(data);
-  // DebugLn(['LCLIntfCellRenderer_CellDataFunc stamp=',iter^.stamp,' tree_model=',dbgs(tree_model),' cell=',dbgs(cell),' WidgetInfo=',WidgetInfo <> nil]);
+  // DebugLn(['LCLIntfCellRenderer_CellDataFunc stamp=',iter^.stamp,' tree_model=',dbgs(tree_model),' cell=',dbgs(cell),' WidgetInfo=',WidgetInfo <> nil,' Time=',TimeToStr(Now)]);
 
   if (WidgetInfo <> nil) and
     (WidgetInfo^.LCLObject is TCustomComboBox) and
@@ -382,6 +382,7 @@ begin
   end else
   if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject.InheritsFrom(TCustomListView)) then
   begin
+    // DebugLn(['LCLIntfCellRenderer_CellDataFunc stamp=',iter^.stamp,' tree_model=',dbgs(tree_model),' cell=',dbgs(cell),' WidgetInfo=',WidgetInfo <> nil,' Time=',TimeToStr(Now)]);
     Value.g_type := G_TYPE_STRING;
     gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
     if (ListItem = nil) and TCustomListView(WidgetInfo^.LCLObject).OwnerData then

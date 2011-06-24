@@ -219,7 +219,8 @@ begin
 //    LVN_ODSTATECHANGED:
 //    LVN_BEGINLABELEDIT:
 //    LVN_ENDLABELEDIT:
-    LVN_COLUMNCLICK: begin
+    LVN_COLUMNCLICK:
+    begin
       ColClick(Columns[nm^.iSubItem]);
     end;
     LVN_INSERTITEM: begin
@@ -998,7 +999,7 @@ end;
 procedure TCustomListView.SetItemIndex(const AValue: Integer);
 begin
   if (AValue < -1) or (AValue >= Items.Count) then
-    raise Exception.Create(Format('index %d out of bounds',[AValue]));
+    raise Exception.CreateFmt(rsListIndexExceedsBounds,[AValue]);
   if AValue = -1 then
     Selected := nil
   else
@@ -1013,7 +1014,7 @@ var
   i: integer;
 begin
   if (AValue<>nil) and (AValue.ListView<>Self) then
-    raise Exception.Create('item does not belong to this listview');
+    raise Exception.Create('Item does not belong to this listview');
   if FSelected = AValue then Exit;
   //DebugLn('TCustomListView.SetSelection FSelected=',dbgs(FSelected));
   if AValue = nil then begin

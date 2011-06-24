@@ -92,6 +92,8 @@ type
     {items}
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); override;
+    class procedure ItemExchange(const ALV: TCustomListView; AItem: TListItem; const AIndex1, AIndex2: Integer); override;
+    class procedure ItemMove(const ALV: TCustomListView; AItem: TListItem; const AFromIndex, AToIndex: Integer); override;
     class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; override;
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); override;
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
@@ -1031,6 +1033,60 @@ begin
   end;
 end;
 
+class procedure TQtWSCustomListView.ItemExchange(const ALV: TCustomListView;
+  AItem: TListItem; const AIndex1, AIndex2: Integer);
+var
+  QtTreeWidget: TQtTreeWidget;
+  QtListWidget: TQtListWidget;
+  ItemFrom: QTreeWidgetItemH;
+  ItemTo: QTreeWidgetItemH;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemExchange') then
+    Exit;
+  if IsIconView(ALV) then
+  begin
+    QtListWidget := TQtListWidget(ALV.Handle);
+    QtListWidget.BeginUpdate;
+    QtListWidget.ExchangeItems(AIndex1, AIndex2);
+    QtListWidget.EndUpdate;
+  end else
+  begin
+    QtTreeWidget := TQtTreeWidget(ALV.Handle);
+    if QtTreeWidget.Sorting then
+      exit;
+    QtTreeWidget.BeginUpdate;
+    QtTreeWidget.ExchangeItems(AIndex1, AIndex2);
+    QtTreeWidget.EndUpdate;
+  end;
+end;
+
+class procedure TQtWSCustomListView.ItemMove(const ALV: TCustomListView;
+  AItem: TListItem; const AFromIndex, AToIndex: Integer);
+var
+  QtTreeWidget: TQtTreeWidget;
+  QtListWidget: TQtListWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemMove') then
+    Exit;
+  if IsIconView(ALV) then
+  begin
+    QtListWidget := TQtListWidget(ALV.Handle);
+    QtListWidget.BeginUpdate;
+    QtListWidget.MoveItem(AFromIndex, AToIndex);
+    QtListWidget.EndUpdate;
+  end else
+  begin
+    QtTreeWidget := TQtTreeWidget(ALV.Handle);
+    if QtTreeWidget.Sorting then
+      exit;
+    QtTreeWidget.BeginUpdate;
+    QtTreeWidget.MoveItem(AFromIndex, AToIndex);
+    // Item := QtTreeWidget.takeTopLevelItem(AFromIndex);
+    // QtTreeWidget.insertTopLevelItem(AToIndex, Item);
+    QtTreeWidget.EndUpdate;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListView.ItemGetChecked
   Params:  None
@@ -1312,6 +1368,7 @@ var
   Str: WideString;
   i: Integer;
   AAlignment: QtAlignment;
+  v: QVariantH;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
     Exit;
@@ -1355,6 +1412,12 @@ begin
         Str := GetUtf8String(AItem.Subitems.Strings[i]);
         QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
       end;
+    end;
+    v := QVariant_create(QWord(PtrUInt(AItem)));
+    try
+      QTreeWidgetItem_setData(TWI, 0, Ord(QtUserRole), v);
+    finally
+      QVariant_destroy(v);
     end;
     QtTreeWidget.insertTopLevelItem(AIndex, TWI);
   end;

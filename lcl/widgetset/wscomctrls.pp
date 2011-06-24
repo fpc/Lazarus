@@ -98,6 +98,8 @@ type
     // Item          
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); virtual;
     class function  ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect; virtual;
+    class procedure ItemExchange(const ALV: TCustomListView; AItem: TListItem; const AIndex1, AIndex2: Integer); virtual;
+    class procedure ItemMove(const ALV: TCustomListView; AItem: TListItem; const AFromIndex, AToIndex: Integer); virtual;
     class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; virtual;
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; virtual;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; virtual; // returns True if supported
@@ -333,6 +335,16 @@ end;
 class function TWSCustomListView.ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode): TRect;
 begin
   Result := Rect(0,0,0,0);
+end;
+
+class procedure TWSCustomListView.ItemExchange(const ALV: TCustomListView;
+  AItem: TListItem; const AIndex1, AIndex2: Integer);
+begin
+end;
+
+class procedure TWSCustomListView.ItemMove(const ALV: TCustomListView;
+  AItem: TListItem; const AFromIndex, AToIndex: Integer);
+begin
 end;
 
 class function TWSCustomListView.ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean;

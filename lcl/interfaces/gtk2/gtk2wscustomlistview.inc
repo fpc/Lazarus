@@ -125,7 +125,7 @@ begin
  // property of the item changed or the appropriate image list changed in the
  // list view. Change is ctState if the Cut, Focused, or Selected property of
  // the item changed.
- //DebugLn('Gtk2_ItemChanged');
+ // DebugLn('Gtk2_ItemChanged');
 end;
 
 
@@ -574,7 +574,7 @@ begin
     Result := nil;
 end;
 
-class procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
+class procedure TGtk2WSCustomListView.SetListCallbacks(const AScrollWidget: PGtkWidget;
   const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo);
 begin
   TGtk2WSBaseScrollingWinControl.SetCallbacks(AScrollWidget, AWidgetInfo);
@@ -967,6 +967,76 @@ begin
     end;
     Result := RectFromGdkRect(ItemRect);
   end;
+end;
+
+class procedure TGtk2WSCustomListView.ItemExchange(const ALV: TCustomListView;
+  AItem: TListItem; const AIndex1, AIndex2: Integer);
+var
+  Widgets: PTVWidgets;
+  Path: PGtkTreePath;
+  ItemRect: TGdkRectangle;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemExchange') then
+    exit;
+  // gtk2 needs only update
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  if GetViewModel(Widgets^.MainView) = nil then
+    exit;
+
+  if not gtk_widget_realized(Widgets^.MainView) then
+    exit;
+
+  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+  begin
+    Path := gtk_tree_path_new_from_indices(AIndex1, -1);
+    gtk_tree_view_get_cell_area(PGtkTreeView(Widgets^.MainView), Path, nil, @ItemRect);
+    gtk_tree_path_free(Path);
+    if ItemRect.height = 0 then
+    begin
+      Path := gtk_tree_path_new_from_indices(AIndex2, -1);
+      gtk_tree_view_get_cell_area(PGtkTreeView(Widgets^.MainView), Path, nil, @ItemRect);
+      gtk_tree_path_free(Path);
+    end;
+  end else
+    ItemRect.height := 1; // force redraw
+
+  if ItemRect.height <> 0 then // item is visible
+    gtk_widget_queue_draw(Widgets^.MainView);
+end;
+
+class procedure TGtk2WSCustomListView.ItemMove(const ALV: TCustomListView;
+  AItem: TListItem; const AFromIndex, AToIndex: Integer);
+var
+  Widgets: PTVWidgets;
+  Path: PGtkTreePath;
+  ItemRect: TGdkRectangle;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemMove') then
+    exit;
+  // gtk2 needs only update
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  if GetViewModel(Widgets^.MainView) = nil then
+    exit;
+
+  if not gtk_widget_realized(Widgets^.MainView) then
+    exit;
+
+  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+  begin
+    Path := gtk_tree_path_new_from_indices(AFromIndex, -1);
+    gtk_tree_view_get_cell_area(PGtkTreeView(Widgets^.MainView), Path, nil, @ItemRect);
+    gtk_tree_path_free(Path);
+    if ItemRect.height = 0 then
+    begin
+      Path := gtk_tree_path_new_from_indices(AToIndex, -1);
+      gtk_tree_view_get_cell_area(PGtkTreeView(Widgets^.MainView), Path, nil, @ItemRect);
+      gtk_tree_path_free(Path);
+    end;
+  end else
+    ItemRect.height := 1; // force redraw
+
+  if ItemRect.height <> 0 then // item is visible
+    gtk_widget_queue_draw(Widgets^.MainView);
 end;
 
 class function TGtk2WSCustomListView.ItemGetChecked(const ALV: TCustomListView;
@@ -1454,9 +1524,7 @@ begin
     //SetMainWidget(ScrollWidget, MainView);
     //GetWidgetInfo(ScrollWidget, True)^.CoreWidget := PGtkWidget(MainView);
     gtk_widget_show_all(PGtkWidget(MainView));
-    
-    SetCallbacks(PGtkWidget(ScrollWidget), Widgets, WidgetInfo);
-   // SetCallbacks(PGtkWidget(MainView), Widgets^, WidgetInfo);
+    SetListCallbacks(PGtkWidget(ScrollWidget), Widgets, Widgets^.WidgetInfo);
   end;
 
   (*

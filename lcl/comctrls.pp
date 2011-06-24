@@ -847,6 +847,8 @@ type
     destructor Destroy; override;
     procedure Delete(const AIndex : Integer);
     procedure EndUpdate;
+    procedure Exchange(const AIndex1, AIndex2: Integer);
+    procedure Move(const AFromIndex, AToIndex: Integer);
     function FindCaption(StartIndex: Integer; Value: string;
                      Partial, Inclusive, Wrap: Boolean;
                      PartStart: Boolean = True): TListItem;

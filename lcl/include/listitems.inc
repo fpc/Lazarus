@@ -144,6 +144,40 @@ begin
   Owner.EndUpdate;
 end;
 
+procedure TListItems.Exchange(const AIndex1, AIndex2: Integer);
+var
+  AItem: TListItem;
+begin
+  if (AIndex1 < 0) or (AIndex1 >= FItems.Count) then
+    raise Exception.CreateFmt(rsListIndexExceedsBounds, [AIndex1]);
+  if (AIndex2 < 0) or (AIndex2 >= FItems.Count) then
+    raise Exception.CreateFmt(rsListIndexExceedsBounds, [AIndex2]);
+  AItem := Item[AIndex1];
+  FItems.Exchange(AIndex1, AIndex2);
+  if WSUpdateAllowed then
+  begin
+    TWSCustomListViewClass(FOwner.WidgetSetClass).ItemExchange(FOwner, AItem,
+      AIndex1, AIndex2);
+  end;
+end;
+
+procedure TListItems.Move(const AFromIndex, AToIndex: Integer);
+var
+  AItem: TListItem;
+begin
+  if (AFromIndex < 0) or (AFromIndex >= FItems.Count) then
+    raise Exception.CreateFmt(rsListIndexExceedsBounds, [AFromIndex]);
+  if (AToIndex < 0) or (AToIndex >= FItems.Count) then
+    raise Exception.CreateFmt(rsListIndexExceedsBounds, [AToIndex]);
+  AItem := Item[AFromIndex];
+  FItems.Move(AFromIndex, AToIndex);
+  if WSUpdateAllowed then
+  begin
+    TWSCustomListViewClass(FOwner.WidgetSetClass).ItemMove(FOwner, AItem,
+      AFromIndex, AToIndex);
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItems IntfCreateItem                                                  }
 {------------------------------------------------------------------------------}

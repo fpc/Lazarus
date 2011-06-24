@@ -1144,7 +1144,8 @@ type
     procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
     procedure removeItem(AIndex: Integer);
     function rowCount: integer;
-    procedure exchangeItems(AIndex1, AIndex2: Integer);
+    procedure ExchangeItems(const AIndex1, AIndex2: Integer);
+    procedure MoveItem(const AFromIndex, AToIndex: Integer);
     property ItemCount: Integer read getItemCount write setItemCount;
   end;
 
@@ -1282,6 +1283,8 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    procedure ExchangeItems(const AIndex1, AIndex2: Integer);
+    procedure MoveItem(const AFromIndex, AToIndex: Integer);
     function getClientBounds: TRect; override;
     function getClientOffset: TPoint; override;
 
@@ -1300,6 +1303,7 @@ type
     property MaxColSize[ACol: Integer]: Integer read getMaxColSize write setMaxColSize;
     property MinColSize[ACol: Integer]: Integer read getMinColSize write setMinColSize;
     property SortEnabled: Boolean read getSortEnabled write setSortEnabled;
+    property Sorting: Boolean read FSorting;
   end;
   
   {TQtTableView}
@@ -9565,9 +9569,9 @@ begin
   Result := QListWidget_count(QListWidgetH(Widget));
 end;
 
-procedure TQtListWidget.exchangeItems(AIndex1, AIndex2: Integer);
+procedure TQtListWidget.ExchangeItems(const AIndex1, AIndex2: Integer);
 var
-  Item1, Item2: QListWidgetItemH;
+  ItemTo, ItemFrom: QListWidgetItemH;
   R: TRect;
 begin
   if AIndex1 = AIndex2 then
@@ -9579,22 +9583,40 @@ begin
 
   if AIndex1 < AIndex2 then
   begin
-    Item1 := QListWidget_takeItem(QListWidgetH(Widget), AIndex1);
-    Item2 := QListWidget_takeItem(QListWidgetH(Widget), AIndex2 - 1);
-    QListWidget_insertItem(QListWidgetH(Widget), AIndex1, Item2);
-    QListWidget_insertItem(QListWidgetH(Widget), AIndex2, Item1);
+    ItemTo := QListWidget_takeItem(QListWidgetH(Widget), AIndex2);
+    ItemFrom := QListWidget_takeItem(QListWidgetH(Widget), AIndex1);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex1, ItemTo);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex2, ItemFrom);
   end else
   begin
-    Item1 := QListWidget_takeItem(QListWidgetH(Widget), AIndex2);
-    Item2 := QListWidget_takeItem(QListWidgetH(Widget), AIndex1 - 1);
-    QListWidget_insertItem(QListWidgetH(Widget), AIndex2, Item2);
-    QListWidget_insertItem(QListWidgetH(Widget), AIndex1, Item1);
+    ItemFrom := QListWidget_takeItem(QListWidgetH(Widget), AIndex1);
+    ItemTo := QListWidget_takeItem(QListWidgetH(Widget), AIndex2);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex2, ItemFrom);
+    QListWidget_insertItem(QListWidgetH(Widget), AIndex1, ItemTo);
   end;
+
   if OwnerDrawn then
   begin
-    R := getVisualItemRect(Item1);
+    R := getVisualItemRect(ItemTo);
     Update(@R);
-    R := getVisualItemRect(Item2);
+    R := getVisualItemRect(ItemFrom);
+    Update(@R);
+  end;
+end;
+
+procedure TQtListWidget.MoveItem(const AFromIndex, AToIndex: Integer);
+var
+  Item: QListWidgetItemH;
+  R: TRect;
+begin
+  if (currentRow = AFromIndex) or (currentRow = AToIndex) then
+    if (getSelectionMode = QAbstractItemViewSingleSelection) then
+      setCurrentRow(-1);
+  Item := QListWidget_takeItem(QListWidgetH(Widget), AFromIndex);
+  QListWidget_insertItem(QListWidgetH(Widget), AToIndex, Item);
+  if OwnerDrawn then
+  begin
+    R := getVisualItemRect(Item);
     Update(@R);
   end;
 end;
@@ -10505,8 +10527,31 @@ begin
 end;
 
 procedure TQtTreeWidget.sortItems(Acolumn: Integer; AOrder: QtSortOrder);
+var
+  i: Integer;
+  j: Integer;
+  v: QVariantH;
+  Item: QTreeWidgetItemH;
+  p: PtrUInt;
+  AOk: Boolean;
 begin
   QTreeWidget_sortItems(QTreeWidgetH(Widget), AColumn, AOrder);
+  AOk := False;
+  TListView(LCLObject).BeginUpdate;
+  for i := 0 to ItemCount - 1 do
+  begin
+    v := QVariant_create();
+    Item := topLevelItem(i);
+    QTreeWidgetItem_data(Item, v, 0, Ord(QtUserRole));
+    if QVariant_isValid(v) and not QVariant_isNull(v) then
+    begin
+      P := QVariant_toUInt(v, @AOk);
+      if AOk and (p > 0) then
+        TListView(LCLObject).Items.Move(TListItem(p).Index, i);
+    end;
+    QVariant_destroy(v);
+  end;
+  TListView(LCLObject).EndUpdate;
 end;
 
 procedure TQtTreeWidget.AttachEvents;
@@ -10574,6 +10619,60 @@ begin
   end;
 
   inherited DetachEvents;
+end;
+
+procedure TQtTreeWidget.ExchangeItems(const AIndex1, AIndex2: Integer);
+var
+  ItemFrom: QTreeWidgetItemH;
+  ItemTo: QTreeWidgetItemH;
+  R: TRect;
+begin
+
+  if AIndex1 = AIndex2 then
+    exit;
+
+  if (currentRow = AIndex1) or (currentRow = AIndex2) then
+    if (getSelectionMode = QAbstractItemViewSingleSelection) then
+      setCurrentRow(-1);
+
+  if AIndex1 < AIndex2 then
+  begin
+    ItemTo := takeTopLevelItem(AIndex2);
+    ItemFrom := takeTopLevelItem(AIndex1);
+    insertTopLevelItem(AIndex1, ItemTo);
+    insertTopLevelItem(AIndex2, ItemFrom);
+  end else
+  begin
+    ItemFrom := takeTopLevelItem(AIndex1);
+    ItemTo := takeTopLevelItem(AIndex2);
+    insertTopLevelItem(AIndex2, ItemFrom);
+    insertTopLevelItem(AIndex1, ItemTo);
+  end;
+
+  if OwnerDrawn then
+  begin
+    R := VisualItemRect(ItemFrom);
+    Update(@R);
+    R := VisualItemRect(ItemTo);
+    Update(@R);
+  end;
+end;
+
+procedure TQtTreeWidget.MoveItem(const AFromIndex, AToIndex: Integer);
+var
+  Item: QTreeWidgetItemH;
+  R: TRect;
+begin
+  if (currentRow = AFromIndex) or (currentRow = AToIndex) then
+    if (getSelectionMode = QAbstractItemViewSingleSelection) then
+      setCurrentRow(-1);
+  Item := takeTopLevelItem(AFromIndex);
+  insertTopLevelItem(AToIndex, Item);
+  if OwnerDrawn then
+  begin
+    R := VisualItemRect(Item);
+    Update(@R);
+  end;
 end;
 
 function TQtTreeWidget.getClientBounds: TRect;
