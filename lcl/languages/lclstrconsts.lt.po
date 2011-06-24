@@ -1433,7 +1433,9 @@ msgid "Invalid integer number: %s"
 msgstr "Netinkamas sveikasis skaičius: %s"
 
 #: lclstrconsts.sparlocinfo
-msgid " (at %d,%d, stream offset %.8x)"
+#, fuzzy
+#| msgid " (at %d,%d, stream offset %.8x)"
+msgid " (at %d,%d, stream offset %d)"
 msgstr " (ties %d,%d, srauto poslinkis %.8x)"
 
 #: lclstrconsts.sparunterminatedbinvalue

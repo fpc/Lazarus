@@ -1423,7 +1423,9 @@ msgid "Invalid integer number: %s"
 msgstr "Невірне ціле число: %s"
 
 #: lclstrconsts.sparlocinfo
-msgid " (at %d,%d, stream offset %.8x)"
+#, fuzzy
+#| msgid " (at %d,%d, stream offset %.8x)"
+msgid " (at %d,%d, stream offset %d)"
 msgstr " (на %d,%d, зміщення потоку %.8x)"
 
 #: lclstrconsts.sparunterminatedbinvalue

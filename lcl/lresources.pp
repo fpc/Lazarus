@@ -342,13 +342,15 @@ type
     property Count: integer read FCount write SetCount;
   end;
   
+  { TUTF8Parser }
+
   TUTF8Parser = class(TObject)
   private
     fStream : TStream;
     fBuf : pchar;
-    fBufLen : integer;
+    fBufLen : integer; // read
     fPos : integer;
-    fDeltaPos : integer;
+    fLineStart : integer; // column = fPos - fLineStart + 1
     fFloatType : char;
     fSourceLine : integer;
     fToken : char;
@@ -394,6 +396,7 @@ type
     function TokenSymbolIs(const S: string): Boolean;
     property FloatType: Char read fFloatType;
     property SourceLine: Integer read fSourceLine;
+    function SourceColumn: integer;
     property Token: Char read fToken;
   end;
 
@@ -1397,8 +1400,7 @@ begin
     try
       LRSObjectTextToBinary(LFMStream,BinStream);
       BinStream.Position:=0;
-      BinaryToLazarusResourceCode(BinStream,LRSStream,FormClassName
-        ,'FORMDATA');
+      BinaryToLazarusResourceCode(BinStream,LRSStream,FormClassName,'FORMDATA');
     finally
       BinStream.Free;
     end;
@@ -5322,25 +5324,27 @@ begin
 end;
 
 procedure TUTF8Parser.LoadBuffer;
-var toread : integer;
+var newread : integer;
 begin
-  toread:=fStream.Size-fStream.Position;
-  if toread>ParseBufSize then toread:=ParseBufSize;
-  if toread=0 then
-  begin
-    fEofReached:=true;
-    exit;
-  end;
-  fStream.ReadBuffer(fBuf[0],toread);
-  fBuf[toread]:=#0;
-  inc(fDeltaPos,fPos);
+  newread:=fStream.Read(fBuf[0],ParseBufSize);
+  fBuf[newread]:=#0;
+  fLineStart:=fPos-fLineStart;
   fPos:=0;
-  fBufLen:=toread;
+  fBufLen:=newread;
+  fEofReached:=newread=0;
 end;
 
 procedure TUTF8Parser.CheckLoadBuffer; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
 begin
-  if fBuf[fPos]=#0 then LoadBuffer;
+  if fBuf[fPos]<>#0 then exit;
+  if fPos<fBufLen then begin
+    // skip #0
+    repeat
+      inc(fPos);
+      if fBuf[fPos]<>#0 then exit;
+    until (fPos=fBufLen);
+  end;
+  LoadBuffer;
 end;
 
 procedure TUTF8Parser.ProcessChar; {$ifdef CLASSESINLINE} inline; {$endif CLASSESINLINE}
@@ -5400,22 +5404,26 @@ begin
     CheckLoadBuffer;
     if fBuf[fPos]=#10 then inc(fPos); //CR LF
   end
-  else inc(fPos); //LF
+  else begin
+    inc(fPos); //LF
+    CheckLoadBuffer;
+  end;
   inc(fSourceLine);
-  fDeltaPos:=-(fPos-1);
+  fLineStart:=fPos;
 end;
 
 procedure TUTF8Parser.SkipSpaces;
 begin
-  while fBuf[fPos] in [' ',#9] do
+  while fBuf[fPos] in [' ',#9] do begin
     inc(fPos);
+    CheckLoadBuffer;
+  end;
 end;
 
 procedure TUTF8Parser.SkipWhitespace;
 begin
   while true do
   begin
-    CheckLoadBuffer;
     case fBuf[fPos] of
       ' ',#9  : SkipSpaces;
       #10,#13 : HandleNewLine
@@ -5472,6 +5480,7 @@ begin
   begin
     fFloatType:=fBuf[fPos];
     inc(fPos);
+    CheckLoadBuffer;
     fToken:=toFloat;
   end
   else fFloatType:=#0;
@@ -5578,6 +5587,7 @@ begin
   fToken:=fBuf[fPos];
   fLastTokenStr:=fToken;
   inc(fPos);
+  CheckLoadBuffer;
 end;
 
 constructor TUTF8Parser.Create(Stream: TStream);
@@ -5586,7 +5596,7 @@ begin
   fBuf:=GetMem(ParseBufSize+1);
   fBufLen:=0;
   fPos:=0;
-  fDeltaPos:=1;
+  fLineStart:=0;
   fSourceLine:=1;
   fEofReached:=false;
   fLastTokenStr:='';
@@ -5627,7 +5637,8 @@ end;
 
 procedure TUTF8Parser.ErrorStr(const Message: string);
 begin
-  raise EParserError.CreateFmt(Message+SParLocInfo,[SourceLine,fPos+fDeltaPos,SourcePos]);
+  debugln(['TUTF8Parser.ErrorStr Message="',Message,'" at y=',SourceLine,',x=',SourceColumn]);
+  raise EParserError.CreateFmt(Message+SParLocInfo,[SourceLine,SourceColumn,SourcePos]);
 end;
 
 procedure TUTF8Parser.HexToBinary(Stream: TStream);
@@ -5646,6 +5657,7 @@ begin
       Error(SParUnterminatedBinValue);
     b:=b or GetHexValue(fBuf[fPos]);
     inc(fPos);
+    CheckLoadBuffer;
     outbuf[i]:=b;
     inc(i);
     if i>=ParseBufSize then
@@ -5727,6 +5739,11 @@ end;
 function TUTF8Parser.TokenSymbolIs(const S: string): Boolean;
 begin
   Result:=(fToken=toSymbol) and (CompareText(fLastTokenStr,S)=0);
+end;
+
+function TUTF8Parser.SourceColumn: integer;
+begin
+  Result:=fPos-fLineStart+1;
 end;
 
 //------------------------------------------------------------------------------

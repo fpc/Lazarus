@@ -1429,7 +1429,9 @@ msgid "Invalid integer number: %s"
 msgstr "Neplatné celé číslo: %s"
 
 #: lclstrconsts.sparlocinfo
-msgid " (at %d,%d, stream offset %.8x)"
+#, fuzzy
+#| msgid " (at %d,%d, stream offset %.8x)"
+msgid " (at %d,%d, stream offset %d)"
 msgstr " (u %d,%d, posun proudu %.8x)"
 
 #: lclstrconsts.sparunterminatedbinvalue

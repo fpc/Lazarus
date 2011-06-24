@@ -1435,7 +1435,7 @@ msgid "Invalid integer number: %s"
 msgstr "Nombre entier non valide : %s"
 
 #: lclstrconsts.sparlocinfo
-msgid " (at %d,%d, stream offset %.8x)"
+msgid " (at %d,%d, stream offset %d)"
 msgstr ""
 
 #: lclstrconsts.sparunterminatedbinvalue

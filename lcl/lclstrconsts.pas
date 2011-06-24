@@ -429,7 +429,7 @@ resourceString
   SParInvalidFloat              = 'Invalid floating point number: %s';
   SParWrongTokenSymbol          = 'Wrong token symbol: %s expected but %s found';
   SParUnterminatedString        = 'Unterminated string';
-  SParLocInfo                   = ' (at %d,%d, stream offset %.8x)';
+  SParLocInfo                   = ' (at %d,%d, stream offset %d)';
   SParUnterminatedBinValue      = 'Unterminated byte value';
 
   // colorbox

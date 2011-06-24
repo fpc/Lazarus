@@ -1429,7 +1429,9 @@ msgid "Invalid integer number: %s"
 msgstr "Número entero no válido: %s"
 
 #: lclstrconsts.sparlocinfo
-msgid " (at %d,%d, stream offset %.8x)"
+#, fuzzy
+#| msgid " (at %d,%d, stream offset %.8x)"
+msgid " (at %d,%d, stream offset %d)"
 msgstr " (en %d,%d, flujo de desplazamiento %.8x)"
 
 #: lclstrconsts.sparunterminatedbinvalue
