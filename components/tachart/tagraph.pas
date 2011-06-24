@@ -279,7 +279,7 @@ type
     procedure DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
     procedure EnableRedrawing;
     function GetFullExtent: TDoubleRect;
-    function GetLegendItems: TChartLegendItems;
+    function GetLegendItems(AIncludeHidden: Boolean = false): TChartLegendItems;
     procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure SaveToBitmapFile(const AFileName: String); inline;
@@ -924,7 +924,7 @@ begin
   end;
 end;
 
-function TChart.GetLegendItems: TChartLegendItems;
+function TChart.GetLegendItems(AIncludeHidden: Boolean): TChartLegendItems;
 var
   i: Integer;
 begin
@@ -932,7 +932,7 @@ begin
   try
     for i := 0 to SeriesCount - 1 do
       with Series[i] do
-        if Active and GetShowInLegend then
+        if AIncludeHidden or (Active and GetShowInLegend) then
           GetLegendItemsBasic(Result);
   except
     FreeAndNil(Result);
