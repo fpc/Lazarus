@@ -529,6 +529,26 @@ begin
   SendMessage(ALV.Handle, mes, AIndex, lparam(@Result));
 end;
 
+class procedure TWin32WSCustomListView.ItemExchange(const ALV: TCustomListView;
+  AItem: TListItem; const AIndex1, AIndex2: Integer);
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemExchange') then
+    exit;
+  //TODO: there's no way to exchange items with Windows listview macros
+  //so we have to reassign TLvItem to AIndex1 and AIndex2
+  //or use RecreateWnd() which is very expensive
+end;
+
+class procedure TWin32WSCustomListView.ItemMove(const ALV: TCustomListView;
+  AItem: TListItem; const AFromIndex, AToIndex: Integer);
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemMove') then
+    exit;
+  //TODO: there's no way to exchange items with Windows listview macros
+  //so we have to reassign TLvItem to AIndex1 and AIndex2
+  //or use RecreateWnd() which is very expensive
+end;
+
 class function TWin32WSCustomListView.ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean;
 begin
   Result := False;
