@@ -210,6 +210,7 @@ begin
   Dlg.CaseSensitiveCheckBox.Visible:=not (frHideMatchCase in Options);
   Dlg.DirectionRadioGroup.Visible:=not (frHideUpDown in Options);
   Dlg.HelpButton.Visible:=(frShowHelp in Options);
+  Dlg.EntireScopeCheckBox.Visible := not (frHideEntireScope in Options);
 end;
 
 procedure TFindDialog.GetFormValues;

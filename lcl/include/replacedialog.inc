@@ -116,6 +116,7 @@ begin
   dlg.CaseSensitiveCheckBox.Visible:=not (frHideMatchCase in Options);
   dlg.DirectionRadioGroup.Visible:=not (frHideUpDown in Options);
   dlg.HelpButton.Visible:=(frShowHelp in Options);
+  Dlg.EntireScopeCheckBox.Visible := not (frHideEntireScope in Options);
 end;
 
 procedure TReplaceDialog.GetFormValues;
