@@ -264,6 +264,7 @@ var
   P, ClientPt, ControlPt: TPoint;
   DesignPt: HIPoint;
   ViewPart: HIViewPartCode;
+  lTmpWidget: TCarbonWidget;
 begin
   Result := EventNotHandledErr;
   Postpone := False;
@@ -286,7 +287,13 @@ begin
   
   Widget := GetCarbonWidget(Control);
   while Assigned(Widget) and not Widget.IsEnabled do
-    Widget := TCarbonWidget(CarbonWidgetset.GetParent(HWND(Widget)));
+  begin
+    // Here we need to avoid an endless loop which might occur in case
+    // GetParent returns the same widget that we passed
+    lTmpWidget := TCarbonWidget(CarbonWidgetset.GetParent(HWND(Widget)));
+    if lTmpWidget = Widget then Break;
+    Widget := lTmpWidget;
+  end;
   if Widget = nil then Exit;
 
   FillChar(Msg, SizeOf(Msg), 0);
