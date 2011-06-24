@@ -61,7 +61,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
 
-  if Parent.HandleAllocated then
+  if Assigned(Parent) and Parent.HandleAllocated then
   begin
     if FTabVisible then
     begin
