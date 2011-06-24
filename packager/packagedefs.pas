@@ -635,9 +635,9 @@ type
     procedure SetPackageType(const AValue: TLazPackageType);
     procedure SetStorePathDelim(const AValue: TPathDelimSwitch);
     procedure SetUserReadOnly(const AValue: boolean);
-    procedure OnMacroListSubstitution(TheMacro: TTransferMacro;
+    procedure OnMacroListSubstitution({%H-}TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
-      const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
+      const Data: PtrInt; var Handled, {%H-}Abort: boolean; {%H-}Depth: integer);
     procedure Clear;
     procedure UpdateSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);

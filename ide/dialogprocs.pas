@@ -636,10 +636,13 @@ var
   LFMMemStream, LRSMemStream: TMemoryStream;
   LFMBuffer: TCodeBuffer;
   LRSBuffer: TCodeBuffer;
+  FormClassName: String;
+  BinStream: TMemoryStream;
 begin
   // read lfm file
   Result:=LoadCodeBuffer(LFMBuffer,LFMFilename,[lbfUpdateFromDisk],ShowAbort);
   if Result<>mrOk then exit;
+  //debugln(['ConvertLFMToLRSFileInteractive ',LFMBuffer.Filename,' DiskEncoding=',LFMBuffer.DiskEncoding,' MemEncoding=',LFMBuffer.MemEncoding]);
   LFMMemStream:=nil;
   LRSMemStream:=nil;
   try
@@ -647,13 +650,27 @@ begin
     LFMBuffer.SaveToStream(LFMMemStream);
     LFMMemStream.Position:=0;
     LRSMemStream:=TMemoryStream.Create;
-    // convert
-    if not LFMtoLRSstream(LFMMemStream,LRSMemStream) then begin
-      Result:=IDEMessageDialogAb(lisStreamError,
-        Format(lisUnableToUpdateTheBinaryResourceFileFromFileTheText, [#13,
-          LRSFilename, #13, #13, LFMFilename, #13, #13]),
-        mtError,[mbCancel,mbIgnore],ShowAbort);
-      exit;
+    try
+      FormClassName:=FindLFMClassName(LFMMemStream);
+      //debugln(['ConvertLFMToLRSFileInteractive FormClassName="',FormClassName,'"']);
+      BinStream:=TMemoryStream.Create;
+      try
+        LRSObjectTextToBinary(LFMMemStream,BinStream);
+        BinStream.Position:=0;
+        BinaryToLazarusResourceCode(BinStream,LRSMemStream,FormClassName,'FORMDATA');
+      finally
+        BinStream.Free;
+      end;
+    except
+      on E: Exception do begin
+        {$IFNDEF DisableChecks}
+        DebugLn('LFMtoLRSstream ',E.Message);
+        {$ENDIF}
+        Result:=IDEMessageDialogAb('Error',
+          'Error while converting '+LFMFilename+' to '+LRSFilename+':'#13
+          +E.Message,mtError,[mbCancel,mbIgnore],ShowAbort);
+        exit;
+      end;
     end;
     LRSMemStream.Position:=0;
     // save lrs file

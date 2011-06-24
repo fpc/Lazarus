@@ -26,9 +26,9 @@ program lazbuild;
 
 uses
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
-  Interfaces, InterfaceBase, UTF8Process,
+  Interfaces, InterfaceBase, UTF8Process, LConvEncoding,
   // codetools
-  CodeToolManager, DefineTemplates, Laz_XMLCfg,
+  CodeCache, CodeToolManager, DefineTemplates, Laz_XMLCfg,
   // IDEIntf
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf, CompOptsIntf,
   // IDE
@@ -63,6 +63,12 @@ type
                                         ErrorOccurred: boolean);
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
                                          var {%H-}Abort: boolean);
+
+    // codetools
+    procedure OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
+         const Filename: string; var Source, DiskEncoding, MemEncoding: string);
+    procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
+                                    const Filename: string; var Source: string);
 
     // global package functions
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
@@ -109,6 +115,7 @@ type
     procedure LoadMiscellaneousOptions;
     procedure SetupOutputFilter;
     procedure SetupMacros;
+    procedure SetupCodetools;
     procedure SetupPackageSystem;
     procedure SetupDialogs;
     function RepairedCheckOptions(Const ShortOptions : String;
@@ -205,6 +212,35 @@ procedure TLazBuildApplication.OnExtToolNeedsOutputFilter(
   var OutputFilter: TOutputFilter; var Abort: boolean);
 begin
   OutputFilter:=TheOutputFilter;
+end;
+
+procedure TLazBuildApplication.OnCodeBufferEncodeSaving(Code: TCodeBuffer;
+  const Filename: string; var Source: string);
+begin
+  if (Code.DiskEncoding<>'') and (Code.MemEncoding<>'')
+  and (Code.DiskEncoding<>Code.MemEncoding) then begin
+    {$IFDEF VerboseIDEEncoding}
+    DebugLn(['TLazBuildApplication.OnCodeBufferEncodeSaving Filename=',Code.Filename,' Mem=',Code.MemEncoding,' to Disk=',Code.DiskEncoding]);
+    {$ENDIF}
+    Source:=ConvertEncoding(Source,Code.MemEncoding,Code.DiskEncoding);
+  end;
+end;
+
+procedure TLazBuildApplication.OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
+  const Filename: string; var Source, DiskEncoding, MemEncoding: string);
+begin
+  //DebugLn(['TLazBuildApplication.OnCodeBufferDecodeLoaded Filename=',Filename,' Encoding=',GuessEncoding(Source)]);
+  DiskEncoding:='';
+  if DiskEncoding='' then
+    DiskEncoding:=GuessEncoding(Source);
+  MemEncoding:=EncodingUTF8;
+  if (DiskEncoding<>MemEncoding) then begin
+    {$IFDEF VerboseIDEEncoding}
+    DebugLn(['TLazBuildApplication.OnCodeBufferDecodeLoaded Filename=',Filename,' Disk=',DiskEncoding,' to Mem=',MemEncoding]);
+    {$ENDIF}
+    Source:=ConvertEncoding(Source,DiskEncoding,MemEncoding);
+    //DebugLn(['TLazBuildApplication.OnCodeBufferDecodeLoaded ',Source]);
+  end;
 end;
 
 procedure TLazBuildApplication.GetDependencyOwnerDescription(
@@ -764,8 +800,7 @@ begin
   LoadMiscellaneousOptions;
   SetupMacros;
   SetupLazarusDirectory;
-  // create a test unit needed to get from the compiler all macros and search paths
-  CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
+  SetupCodetools;
   SetupCompilerFilename;
   SetupPackageSystem;
   SetupOutputFilter;
@@ -819,6 +854,15 @@ end;
 procedure TLazBuildApplication.SetupMacros;
 begin
   MainBuildBoss.SetupTransferMacros;
+end;
+
+procedure TLazBuildApplication.SetupCodetools;
+begin
+  // create a test unit needed to get from the compiler all macros and search paths
+  CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
+  CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
+  CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
+  CodeToolBoss.SourceCache.DefaultEncoding:=EncodingUTF8;
 end;
 
 procedure TLazBuildApplication.SetupPackageSystem;

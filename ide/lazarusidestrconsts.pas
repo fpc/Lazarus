@@ -4564,9 +4564,6 @@ resourcestring
   lisFileLinkError = 'File link error';
   lisWriteErrorFile = 'Write error: %s%sFile: %s%s%s';
   lisStreamError = 'Stream Error';
-  lisUnableToUpdateTheBinaryResourceFileFromFileTheText = 'Unable to update '
-    +'the binary resource file%s%s%sfrom file the text resource file%s%s%s%'
-    +'sProbably the text file is corrupt.';
   lisTheCodetoolsFoundAnError = 'The codetools found an error:%s%s%s';
   lisIgnoreAndContinue = 'Ignore and continue';
   lisNotImplemented = 'Not implemented';
