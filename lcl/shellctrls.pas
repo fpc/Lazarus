@@ -344,11 +344,16 @@ begin
 end;
 
 function TCustomShellTreeView.CanExpand(Node: TTreeNode): Boolean;
+var
+  OldAutoExpand: Boolean;
 begin
   Result:=inherited CanExpand(Node);
   if not Result then exit;
+  OldAutoExpand:=AutoExpand;
+  AutoExpand:=False;
   Node.DeleteChildren;
   Result := PopulateTreeNodeWithFiles(Node, GetPathFromNode(Node));
+  AutoExpand:=OldAutoExpand;
 end;
 
 constructor TCustomShellTreeView.Create(AOwner: TComponent);
