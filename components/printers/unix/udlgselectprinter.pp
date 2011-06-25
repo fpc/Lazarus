@@ -293,6 +293,7 @@ end;
 //Initialization of selected Printer options
 procedure TdlgSelectPrinter.InitPrinterOptions;
 Var St    : string;
+    pOr   : TPrinterOrientation;
 
   //Convert an Local hour to GMT hour
   function GetTimeHold : string;
@@ -310,10 +311,13 @@ Var St    : string;
 begin
   if not fPropertiesSetting then
   begin
+    //Preserve selected orientation - isn't stored in cups options
+    pOr:=Printer.Orientation;
     //Free current options if exists
     THackCUPSPrinter(Printer).FreeOptions;
     //Initialize default Options
     THackCUPSPrinter(Printer).SetOptionsOfPrinter;
+    Printer.Orientation := pOr;
   end;
   
   //Copies
