@@ -557,8 +557,6 @@ end;
 class procedure TWin32WSCustomListView.ItemExchange(const ALV: TCustomListView;
   AItem: TListItem; const AIndex1, AIndex2: Integer);
 var
-  B1, B2: Boolean;
-  i: Integer;
   AItem1, AItem2: TListItem;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemExchange') then
