@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-14 01:35+0300\n"
+"PO-Revision-Date: 2011-06-25 16:05+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1433,10 +1433,9 @@ msgid "Invalid integer number: %s"
 msgstr "Неверное целое число: %s"
 
 #: lclstrconsts.sparlocinfo
-#, fuzzy
 #| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
-msgstr " (на %d,%d, смещение потока %.8x)"
+msgstr " (на %d,%d, смещение потока %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"

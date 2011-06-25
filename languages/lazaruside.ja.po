@@ -15371,10 +15371,6 @@ msgstr "%s:T%sのバイナリコンポーネントストリームをテキスト
 msgid "Unable to update CreateForm statement in project source"
 msgstr "プロジェクトソースのCreateForm文をアップデートできません。"
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr "バイナリリソースファイル%s%s%sをテキストリソースファイル%s%s%s%sからアップデートできませんでした。おそらくテキストファイルが壊れています。"
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "%s%s%s%s%sを書き込めません。"

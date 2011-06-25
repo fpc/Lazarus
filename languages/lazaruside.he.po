@@ -15330,10 +15330,6 @@ msgstr "לא ניתן להמיר את הזרם הבינרי של הרכיב %s:T
 msgid "Unable to update CreateForm statement in project source"
 msgstr "לא ניתן לעדכן את CreateForm בקוד המקור של הפרויקט."
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr "לא יכול לעדכן את קובץ המשאב הבינארי %s%s%s מקובץ הטקסט של המשאב %s%s%s%s כנראה קובץ הטקסט הרוס."
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "לא יכול לכתוב %s%s%s%s%s."

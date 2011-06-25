@@ -15373,10 +15373,6 @@ msgstr "Impossibile trasformare lo stream componente binario di %s:T%s in testo.
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Impossibile aggiornare il comando CreateForm nel sorgente del progetto"
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr "Impossibile aggiornare il file di risorse binario%s%s%sdal file risorse testuale%s%s%s%sForse il file testuale è corrotto."
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Impossibile scrivere %s%s%s%s%s."

@@ -15106,10 +15106,6 @@ msgstr "Не можу перевести двійковий компонент �
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Неможливо оновити вираз CreateForm в коді проекту"
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr "Не можу оновити двійковий файл ресурсів%s%s%sз текстового файлу ресурсів%s%s%s%sЙмовірно текстовий файл пошкоджено."
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Не можу записати %s%s%s%s%s."

@@ -15294,10 +15294,6 @@ msgstr "Nie można przekształcić binarnego strumienia komponentu %s:T%s na tek
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Nie można uaktualnić polecenia CreateForm w źródle"
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr ""
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Nie można pisać do pliku %s%s%s%s%s."

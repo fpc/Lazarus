@@ -15352,10 +15352,6 @@ msgstr "无法转换二进制组件流 %s:T%s 为文本文档"
 msgid "Unable to update CreateForm statement in project source"
 msgstr "无法更新工程源代码中的 CreateForm 语句"
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr "不能更新二进制资源文件%s%s%s从文本资源文件%s%s%s%s中, 大概是文本资源文件有错误."
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "无法写 %s%s%s%s%s."

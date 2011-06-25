@@ -15352,10 +15352,6 @@ msgstr "Nemožno transformovať binárny stream komponentu %s:T%s na text."
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Nemožno vytvoriť príkaz CreateForm v zdrojovom kóde projektu"
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr "Nemožno aktualizovať binárny súbor zdrojov %s%s%st textového súbora zdrojov %s%s%s%sTextový súbor je asi poškodený."
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Nemožno zapísať %s%s%s%s%s."

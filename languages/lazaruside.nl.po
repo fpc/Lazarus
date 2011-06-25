@@ -15305,10 +15305,6 @@ msgstr "Kan de binaire stream met componenten van %s:T%s niet omzetten in tekst.
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Kan het CreateForm statement niet wijzigen in de project broncode"
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr ""
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Kan niet schrijven naar %s%s%s%s%s."

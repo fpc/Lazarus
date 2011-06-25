@@ -15354,10 +15354,6 @@ msgstr "Impossible de transformer le flux binaire du composant %s:T%s en texte."
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Impossible de mettre à jour la déclaration CreateForm dans le source du projet."
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr "Impossible de mettre à jour le fichier de ressources binaires %s%s%s à partir du fichier de ressource texte %s%s%s%s Le fichier texte est probablement corrompu."
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Impossible d'écrire %s%s%s%s%s."

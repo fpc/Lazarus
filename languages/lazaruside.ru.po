@@ -15296,10 +15296,6 @@ msgstr "Невозможно преобразовать двоичный пот�
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Невозможно обновить выражение CreateForm в исходном коде проекта"
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr "Невозможно обновить двоичный файл ресурсов%s%s%sиз текстового файла ресурсов%s%s%s%sВероятно, текстовый файл повреждён."
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Невозможно записать %s%s%s%s%s."

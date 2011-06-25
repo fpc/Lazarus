@@ -15291,10 +15291,6 @@ msgstr "No es pot transformar afluent de component binari de %s:T%s a text."
 msgid "Unable to update CreateForm statement in project source"
 msgstr "No es pot actualitzar la declaració CreateForm en el codi font del projecte"
 
-#: lazarusidestrconsts.lisunabletoupdatethebinaryresourcefilefromfilethetext
-msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr ""
-
 #: lazarusidestrconsts.lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "No es pot escriure %s%s%s%s%s."
