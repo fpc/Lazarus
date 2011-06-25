@@ -87,6 +87,7 @@ type
     FComponentList: TFPList;
     procedure FindAllLazarusComponents;
     procedure AddSelectedComponent(AComponent: TRegisteredComponent);
+    procedure SetFocusToDataList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -328,17 +329,65 @@ begin
     ListboxComponentsDblClick(Sender);
 end;
 
+procedure TComponentListForm.SetFocusToDataList;
+var
+  S: String;
+  i: Integer;
+  Node: TTreeNode;
+begin
+  S := PatternEdit.Text;
+  case PageControl.PageIndex of
+    0:
+    begin
+      ListBoxComponents.SetFocus;
+      if ListBoxComponents.Items.Count > 0 then
+      begin
+        i := ListBoxComponents.Items.IndexOf(S);
+        if i < 0 then
+          i := 0;
+        ListBoxComponents.ItemIndex := i;
+      end;
+    end;
+    1:
+    begin
+      TreePallette.SetFocus;
+      with TreePallette do
+      begin
+        if Items.Count > 0 then
+        begin
+          Node := Items.FindNodeWithText(S);
+          if Node <> nil then
+            Selected := Node
+          else
+            Selected := Items[0];
+        end;
+      end;
+    end;
+    2:
+    begin
+      TreeInheritance.SetFocus;
+      with TreeInheritance do
+      begin
+        if Items.Count > 0 then
+        begin
+          Node := Items.FindNodeWithText(S);
+          if Node <> nil then
+            Selected := Node
+          else
+            Selected := Items[0];
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TComponentListForm.PatternEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_Down then
+  if Key = VK_RETURN then
   begin
     Key := 0;
-    case PageControl.PageIndex of
-      0: ListBoxComponents.SetFocus;
-      1: TreePallette.SetFocus;
-      2: TreeInheritance.SetFocus;
-    end;
+    SetFocusToDataList;
   end;
 end;
 
