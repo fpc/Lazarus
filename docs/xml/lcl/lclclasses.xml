@@ -59,7 +59,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#rtl.Classes.TObject.NewInstance">TObject.NewInstance</link>
+          <link id="#rtl.System.TObject.NewInstance">TObject.NewInstance</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->

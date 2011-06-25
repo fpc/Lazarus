@@ -688,7 +688,7 @@ action handles the current component.
       </element>
       <!-- function Visibility: public -->
       <element name="TShortCutList.Add">
-        <short>Add a shortcut to the list; implements the <link id="TStrings.Add"/> function</short>
+        <short>Add a shortcut to the list; implements the <link id="#rtl.classes.TStrings.Add"/> function</short>
         <descr/>
         <errors/>
         <seealso/>

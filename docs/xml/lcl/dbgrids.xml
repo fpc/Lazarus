@@ -2038,8 +2038,8 @@
         <short>
           <var>Create</var> - constructor for <var>TColumn</var>: calls inherited <var>Create</var> and sets a design index of appropriate size</short>
         <descr>
-          <var>Create</var> instantiates a new item in a <link id="TCollection"/>. It
-is called by the <link id="TCollection.Add"/> function and should under
+          <var>Create</var> instantiates a new item in a <link id="#rtl.classes.TCollection">TCollection</link>. It
+is called by the <link id="#rtl.classes.TCollection.Add">TCollection.Add</link> function and should under
 normal circumstances never be called directly.
 </descr>
         <errors/>
