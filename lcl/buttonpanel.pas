@@ -338,7 +338,7 @@ begin
   if not (AControl is TPanelBitBtn) then exit(false);
   for i:=low(FButtons) to pred(high(FButtons)) do
     if (FButtons[i]<>nil) and FButtons[i].IsControlVisible
-    and (FButtons[i].Tag>AControl.Tag) then
+    and (FButtons[i].TabOrder>TPanelBitBtn(AControl).TabOrder) then
       exit(false); // there is a higher one
   Result:=true;
 end;
@@ -554,7 +554,7 @@ begin
     Exit(True)
   else if (AControl1 is TPanelBitBtn) and (not (AControl2 is TPanelBitBtn)) then
     Exit(False);
-  // sort for tag
+  // sort for taborder
   Result := TWinControl(AControl2).TabOrder > TWinControl(AControl1).TabOrder;
 end;
 
