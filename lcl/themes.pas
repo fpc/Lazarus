@@ -1910,8 +1910,8 @@ begin
       img.Canvas.Pen.Width:=2;
       img.Canvas.Line(4,4,img.Width-3, img.Height-3);
       img.Canvas.Line(img.Width-4, 4, 3, img.Height-3);
-      Image:=img.ReleaseHandle; 
-      Mask:=0;
+      Mask:=img.ReleaseMaskHandle;
+      Image:=img.ReleaseHandle;
       img.Free;
       Result:=True;
     end;
