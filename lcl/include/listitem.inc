@@ -523,7 +523,8 @@ var
   LV: TCustomListView;
 begin
   LV := FOwner.FOwner;
-  Result := LV.Checkboxes and WSUpdateAllowed;
+  // we are using cached data when moving or exchanging items
+  Result := LV.Checkboxes and WSUpdateAllowed and not (lffItemsMoving in LV.FFlags);
   if Result then
     Result := TWSCustomListViewClass(LV.WidgetSetClass).ItemGetChecked(LV, GetIndex, Self)
   else

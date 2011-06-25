@@ -83,6 +83,7 @@ type
     class procedure PositionHeader(const AHandle: THandle);
     class procedure UpdateStyle(const AHandle: THandle; const AMask, AStyle: Integer);
     class procedure UpdateExStyle(const AHandle: THandle; const AMask, AStyle: Integer);
+    class procedure LVItemAssign(const ALV: TCustomListView; AItem: TListItem; const AIndex: Integer);
   published
     // columns
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;

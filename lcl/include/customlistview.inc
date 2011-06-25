@@ -427,7 +427,8 @@ end;
 procedure TCustomListView.DoSelectItem(AItem: TListItem; ASelected: Boolean);
 begin
   AItem.Selected:=ASelected;
-  if Assigned(FOnSelectItem) then FOnSelectItem(Self, AItem, ASelected);
+  if Assigned(FOnSelectItem) and not (lffItemsMoving in FFlags) then
+    FOnSelectItem(Self, AItem, ASelected);
 end;
 
 {------------------------------------------------------------------------------}

@@ -529,6 +529,31 @@ begin
   SendMessage(ALV.Handle, mes, AIndex, lparam(@Result));
 end;
 
+class procedure TWin32WSCustomListView.LVItemAssign(const ALV: TCustomListView;
+  AItem: TListItem; const AIndex: Integer);
+var
+  i: Integer;
+  B: Boolean;
+begin
+  if ALV.CheckBoxes then
+    B := AItem.Checked;
+  ItemSetText(ALV, AIndex, AItem, 0, AItem.Caption);
+  for i := 0 to AItem.SubItems.Count - 1 do
+    ItemSetText(ALV, AIndex, AItem, i + 1, AItem.SubItems[i]);
+
+  // set state images
+  if Assigned(TListView(ALV).StateImages) then
+    ItemSetStateImage(ALV, AIndex,AItem,0, AItem.StateIndex);
+
+  // set images
+  if AItem.ImageIndex >= 0 then
+    ItemSetImage(ALV, AIndex, AItem, 0, AItem.ImageIndex);
+
+  // apply checkbox states
+  if ALV.Checkboxes then
+    ItemSetChecked(ALV, AIndex, AItem, B);
+end;
+
 class procedure TWin32WSCustomListView.ItemExchange(const ALV: TCustomListView;
   AItem: TListItem; const AIndex1, AIndex2: Integer);
 var
@@ -544,51 +569,27 @@ begin
 
   AItem1 := ALV.Items[AIndex2];
   AItem2 := ALV.Items[AIndex1];
-  if ALV.Checkboxes then
-  begin
-    B2 := AItem1.Checked;
-    B1 := AItem2.Checked;
-  end;
 
-  ItemSetText(ALV, AIndex2, AItem1, 0, AItem1.Caption);
-  for i := 0 to AItem1.SubItems.Count - 1 do
-    ItemSetText(ALV, AIndex2, AItem1, i + 1, AItem1.SubItems[i]);
-
-
-  ItemSetText(ALV, AIndex1, AItem2, 0, AItem2.Caption);
-  for i := 0 to AItem2.SubItems.Count - 1 do
-    ItemSetText(ALV, AIndex1, AItem2, i + 1, AItem2.SubItems[i]);
-
-
-  // set state images
-  if Assigned(TListView(ALV).StateImages) then
-  begin
-    ItemSetStateImage(ALV, AIndex2,AItem1,0, AItem1.StateIndex);
-    ItemSetStateImage(ALV, AIndex1,AItem2,0, AItem2.StateIndex);
-  end;
-
-  // set images
-  if AItem1.ImageIndex >= 0 then
-    ItemSetImage(ALV, AIndex2, AItem1, 0, AItem1.ImageIndex);
-  if AItem2.ImageIndex >= 0 then
-    ItemSetImage(ALV, AIndex1, AItem2, 0, AItem2.ImageIndex);
-
-  // apply checkbox states
-  if ALV.Checkboxes then
-  begin
-    ItemSetChecked(ALV, AIndex2, AItem1, B1);
-    ItemSetChecked(ALV, AIndex1, AItem2, B2);
-  end;
-  //TODO: selection and focused item.
-  // that works but triggers selection change in LCL ...
+  LVItemAssign(ALV, AItem1, AIndex2);
+  LVItemAssign(ALV, AItem2, AIndex1);
 end;
 
 class procedure TWin32WSCustomListView.ItemMove(const ALV: TCustomListView;
   AItem: TListItem; const AFromIndex, AToIndex: Integer);
+var
+  i: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemMove') then
     exit;
-  ItemExchange(ALV, AItem, AFromIndex, AToIndex);
+  if AFromIndex = AToIndex then
+    exit;
+  if AFromIndex > AToIndex then
+  begin
+    for i := AToIndex to AFromIndex do
+      LVItemAssign(ALV, ALV.Items[i], i);
+  end else
+    for i := AFromIndex to AToIndex do
+      LVItemAssign(ALV, ALV.Items[i], i);
 end;
 
 class function TWin32WSCustomListView.ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean;
@@ -1315,4 +1316,5 @@ begin
  //Invalidate Listview, so that changes are made visible
   Windows.InvalidateRect(AHandle, nil, true);
 end;
+
 

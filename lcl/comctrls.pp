@@ -1011,7 +1011,8 @@ type
   TListHotTrackStyles = set of TListHotTrackStyle;
   
   TListViewFlag = (
-    lffSelectedValid
+    lffSelectedValid,
+    lffItemsMoving
     );
   TListViewFlags = set of TListViewFlag;
 

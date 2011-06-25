@@ -147,6 +147,8 @@ end;
 procedure TListItems.Exchange(const AIndex1, AIndex2: Integer);
 var
   AItem: TListItem;
+  SelItem: TListItem;
+  FocusItem: TListItem;
 begin
   if AIndex1 = AIndex2 then
     exit;
@@ -155,19 +157,33 @@ begin
   if (AIndex2 < 0) or (AIndex2 >= FItems.Count) then
     raise Exception.CreateFmt(rsListIndexExceedsBounds, [AIndex2]);
   AItem := Item[AIndex1];
-  FItems.Exchange(AIndex1, AIndex2);
-  FCacheIndex := AIndex1;
-  FCacheItem := AItem;
-  if not Owner.OwnerData and WSUpdateAllowed then
-  begin
-    TWSCustomListViewClass(FOwner.WidgetSetClass).ItemExchange(FOwner, AItem,
-      AIndex1, AIndex2);
+  SelItem := Owner.Selected;
+  FocusItem := Owner.ItemFocused;
+
+  Include(Owner.FFlags, lffItemsMoving);
+  try
+    FItems.Exchange(AIndex1, AIndex2);
+    FCacheIndex := AIndex1;
+    FCacheItem := AItem;
+    if not Owner.OwnerData and WSUpdateAllowed then
+    begin
+      TWSCustomListViewClass(FOwner.WidgetSetClass).ItemExchange(FOwner, AItem,
+        AIndex1, AIndex2);
+      Owner.InvalidateSelected;
+      Owner.ItemFocused := nil;
+      Owner.Selected := SelItem;
+      Owner.ItemFocused := FocusItem;
+    end;
+  finally
+    Exclude(Owner.FFlags, lffItemsMoving);
   end;
 end;
 
 procedure TListItems.Move(const AFromIndex, AToIndex: Integer);
 var
   AItem: TListItem;
+  SelItem: TListItem;
+  FocusItem: TListItem;
 begin
   if AFromIndex = AToIndex then
     exit;
@@ -176,13 +192,24 @@ begin
   if (AToIndex < 0) or (AToIndex >= FItems.Count) then
     raise Exception.CreateFmt(rsListIndexExceedsBounds, [AToIndex]);
   AItem := Item[AFromIndex];
-  FItems.Move(AFromIndex, AToIndex);
-  FCacheIndex := AToIndex;
-  FCacheItem := AItem;
-  if not Owner.OwnerData and WSUpdateAllowed then
-  begin
-    TWSCustomListViewClass(FOwner.WidgetSetClass).ItemMove(FOwner, AItem,
-      AFromIndex, AToIndex);
+  SelItem := Owner.Selected;
+  FocusItem := Owner.ItemFocused;
+  Include(Owner.FFlags, lffItemsMoving);
+  try
+    FItems.Move(AFromIndex, AToIndex);
+    FCacheIndex := AToIndex;
+    FCacheItem := AItem;
+    if not Owner.OwnerData and WSUpdateAllowed then
+    begin
+      TWSCustomListViewClass(FOwner.WidgetSetClass).ItemMove(FOwner, AItem,
+        AFromIndex, AToIndex);
+      Owner.InvalidateSelected;
+      Owner.ItemFocused := nil;
+      Owner.Selected := SelItem;
+      Owner.ItemFocused := FocusItem;
+    end;
+  finally
+    Exclude(Owner.FFlags, lffItemsMoving);
   end;
 end;
 
