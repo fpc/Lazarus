@@ -1232,7 +1232,6 @@ begin
   else UpdateStyle(ALV.Handle, LVS_NOSCROLL, 0);
 end;
 
-
 function ListCompare(lParam1, lParam2: LParam; lParamSort: LParam): Integer; stdcall;
 var
   Item1: TListItem absolute lParam1;
@@ -1245,8 +1244,7 @@ class procedure TWin32WSCustomListView.SetSort(const ALV: TCustomListView; const
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;
-
-  ListView_SortItems(ALV.Handle, @ListCompare, 0);
+  ListView_SortItems(ALV.Handle, @ListCompare, Windows.MAKELPARAM(Ord(AType), AColumn));
 end;
 
 class procedure TWin32WSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);
