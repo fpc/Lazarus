@@ -21,8 +21,11 @@ type
   private
     FKeywordNodes: TList;
     FKeyWordsList: TStringList;
+    FRTLIndex: TStringList;
     FDocsDir: string;
     procedure ClearKeywordNodes;
+    procedure LoadChmIndex(const Path, ChmFileName: string;
+      IndexStrings: TStrings; const Filter: string = '');
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -67,6 +70,8 @@ begin
   FKeywordNodes := TList.Create;
   FKeyWordsList := TStringList.Create;
   FKeyWordsList.CaseSensitive := False;
+  FRTLIndex := TStringList.Create;
+  FRTLIndex.CaseSensitive := False;
 end;
 
 destructor TLangRefHelpDatabase.Destroy;
@@ -74,10 +79,18 @@ begin
   ClearKeywordNodes;
   FKeywordNodes.Free;
   FKeyWordsList.Free;
+  FRTLIndex.Free;
   inherited Destroy;
 end;
 
 procedure TLangRefHelpDatabase.LoadKeywordList(const Path: string);
+begin
+  FRTLIndex.Clear; // Path has been changed
+  LoadChmIndex(Path, 'ref.chm', FKeyWordsList);
+end;
+
+procedure TLangRefHelpDatabase.LoadChmIndex(const Path, ChmFileName: string;
+  IndexStrings: TStrings; const Filter: string = '');
 var
   chm: TChmFileList;
   fchm: TChmReader;
@@ -94,10 +107,10 @@ begin
   end;
   FDocsDir := AppendPathDelim(FDocsDir);
 
-  FKeyWordsList.Clear;
-  if FileExistsUTF8(FDocsDir + 'ref.chm') then
+  IndexStrings.Clear;
+  if FileExistsUTF8(FDocsDir + ChmFileName) then
   begin
-    chm := TChmFileList.Create(Utf8ToSys(FDocsDir + 'ref.chm'));
+    chm := TChmFileList.Create(Utf8ToSys(FDocsDir + ChmFileName));
     try
       if chm.Count = 0 then Exit;
       fchm := chm.Chm[0];
@@ -108,11 +121,16 @@ begin
         begin
           s := SM.Items.Item[X].Text;
           if SM.Items.Item[X].Children.Count = 0 then
-            FKeyWordsList.Add(s + '=' + SM.Items.Item[X].Local)
-          else
+          begin
+            if (Filter = '') or (Pos(Filter, SM.Items.Item[X].Local) > 0) then
+              IndexStrings.Add(s + '=' + SM.Items.Item[X].Local)
+          end else
             with SM.Items.Item[X].Children do
               for Y := 0 to Count - 1 do
-                FKeyWordsList.Add(s + '=' + Item[Y].Local)
+              begin
+                if (Filter = '') or (Pos(Filter, Item[Y].Local) > 0) then
+                  IndexStrings.Add(s + '=' + Item[Y].Local)
+              end;
         end;
         SM.Free;
       end;
@@ -126,7 +144,7 @@ end;
 function TLangRefHelpDatabase.GetNodesForKeyword(const HelpKeyword: string;
   var ListOfNodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
 var
-  KeyWord: String;
+  KeyWord, s: String;
   i, n: Integer;
   KeywordNode: THelpNode;
 begin
@@ -162,16 +180,33 @@ begin
         CreateNodeQueryListAndAdd(KeywordNode,nil,ListOfNodes,true);
         Result := shrSuccess;
       end;
-    if Result <> shrSuccess then Exit;
-    { for => +forin, in => +forin }
-    if SameText(KeyWord, 'for') or SameText(KeyWord, 'in') then
-    begin
+    if (Result = shrSuccess) and (SameText(KeyWord, 'for') or SameText(KeyWord, 'in')) then
+    begin  { for => +forin, in => +forin }
       i := FKeyWordsList.IndexOfName('forin');
       if i < 0 then Exit;
       KeywordNode := THelpNode.CreateURL(Self,KeyWord,'ref.chm://' + FKeyWordsList.ValueFromIndex[i]);
       KeywordNode.Title := Format('Pascal keyword "%s"', ['for..in']);
       FKeywordNodes.Add(KeywordNode);
       CreateNodeQueryListAndAdd(KeywordNode, nil, ListOfNodes, True);
+    end;
+    if Result <> shrSuccess then
+    begin
+      { it can be predefined procedure/function from RTL }
+      if FRTLIndex.Count = 0 then
+        LoadChmIndex(FDocsDir, 'rtl.chm', FRTLIndex, 'system/');
+      for i := 0 to FRTLIndex.Count - 1 do
+      begin
+        s := FRTLIndex.Names[i];
+        if SameText(KeyWord, Copy(s, 1, Length(KeyWord))) and
+          ((Length(s) = Length(KeyWord)) or (s[Length(KeyWord) + 1] = ' ')) then
+        begin
+          KeywordNode := THelpNode.CreateURL(Self,KeyWord,'rtl.chm://' + FRTLIndex.ValueFromIndex[i]);
+          KeywordNode.Title := Format('RTL - Free Pascal Run Time Library: "%s"', [KeyWord]);
+          FKeywordNodes.Add(KeywordNode);
+          CreateNodeQueryListAndAdd(KeywordNode, nil, ListOfNodes, True);
+          Exit(shrSuccess); // only first match
+        end;
+      end;
     end;
   end;
 end;
