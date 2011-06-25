@@ -139,6 +139,7 @@ var
   QtMainWindow: TQtMainWindow;
   Str: WideString;
   PopupParent: QWidgetH;
+  AForm: TCustomForm;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),
@@ -155,37 +156,38 @@ begin
   else
     QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
 
-  // Set´s initial properties
-  QtMainWindow.QtFormBorderStyle := Ord(TCustomForm(AWinControl).BorderStyle);
-  QtMainWindow.QtFormStyle := Ord(TCustomForm(AWinControl).FormStyle);
+  AForm := TCustomForm(AWinControl);
+
+  QtMainWindow.QtFormBorderStyle := Ord(AForm.BorderStyle);
+  QtMainWindow.QtFormStyle := Ord(AForm.FormStyle);
 
   Str := GetUtf8String(AWinControl.Caption);
 
   QtMainWindow.SetWindowTitle(@Str);
 
-  if not (csDesigning in TCustomForm(AWinControl).ComponentState) then
+  if not (csDesigning in AForm.ComponentState) then
   begin
-    UpdateWindowFlags(QtMainWindow, TCustomForm(AWinControl).BorderStyle,
-      TCustomForm(AWinControl).BorderIcons, TCustomForm(AWinControl).FormStyle);
+    UpdateWindowFlags(QtMainWindow, AForm.BorderStyle,
+      AForm.BorderIcons, AForm.FormStyle);
   end;
 
-  if not (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
+  if not (AForm.FormStyle in [fsMDIChild]) and
      (Application <> nil) and
      (Application.MainForm <> nil) and
      (Application.MainForm.HandleAllocated) and
-     (Application.MainForm <> AWinControl) then
+     (Application.MainForm <> AForm) then
   begin
-    if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever])
+    if (AForm.ShowInTaskBar in [stDefault, stNever])
        {$ifdef HASX11}
        {QtTool have not minimize button !}
-       and not (TCustomForm(AWinControl).BorderStyle in [bsSizeToolWin, bsToolWindow])
+       and not (AForm.BorderStyle in [bsSizeToolWin, bsToolWindow])
        {$endif} then
       QtMainWindow.setShowInTaskBar(False);
-    if Assigned(TCustomForm(AWinControl).PopupParent) then
-      PopupParent := TQtWidget(TCustomForm(AWinControl).PopupParent.Handle).Widget
+    if Assigned(AForm.PopupParent) then
+      PopupParent := TQtWidget(AForm.PopupParent.Handle).Widget
     else
       PopupParent := nil;
-    QtMainWindow.setPopupParent(TCustomForm(AWinControl).PopupMode, PopupParent);
+    QtMainWindow.setPopupParent(AForm.PopupMode, PopupParent);
   end;
 
   {$IFDEF HASX11}
@@ -196,7 +198,7 @@ begin
   // Sets Various Events
   QtMainWindow.AttachEvents;
   
-  if (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
+  if (AForm.FormStyle in [fsMDIChild]) and
      (Application.MainForm.FormStyle = fsMdiForm) and
      not (csDesigning in AWinControl.ComponentState) then
   begin
