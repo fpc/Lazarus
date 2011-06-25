@@ -5901,6 +5901,10 @@ the Canvas.SaveHandleState and Canvas.RestoreHandleState.
       <element name="GetTickCount.Result">
         <short/>
       </element>
+      <element name="OpenURL">
+        <short>Open a given URL with the default browser</short>
+        <descr>The function uses FindDefaultBrowser to find the default browser. If it can be found it starts it and returns true. The AURL is passed as parameter. AURL must be an URL like http://www.lazarus.freepascal.org or file:///tmp/test.txt or file://C:\test.txt.</descr>
+      </element>
     </module>
     <!-- LCLIntf -->
   </package>

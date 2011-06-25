@@ -88,7 +88,6 @@ function GetTickCount: DWord;
 function GetTickStep: DWord;
 {$ENDIF}
 
-// Functions in the include file sysenvapis.inc
 function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
 function OpenURL(AURL: String): Boolean;
 function OpenDocument(APath: String): Boolean;
