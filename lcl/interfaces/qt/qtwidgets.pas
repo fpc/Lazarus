@@ -14245,6 +14245,12 @@ begin
 
   BeginEventProcessing;
   case QEvent_type(Event) of
+    QEventWindowActivate:
+    begin
+      Result := inherited EventFilter(Sender, Event);
+      setFocus;
+      BringDesignerToFront;
+    end;
     QEventChildAdded,
     QEventChildRemoved: BringDesignerToFront;
     QEventResize:
