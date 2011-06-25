@@ -1333,7 +1333,12 @@ begin
     QtListWidget.BeginUpdate;
     case AState of
       lisFocused: QtListWidget.setCurrentItem(LWI);
-      lisSelected: QtListWidget.setItemSelected(LWI, AIsSet);
+      lisSelected:
+      begin
+        if AIsSet and not ALV.MultiSelect then
+          QtListWidget.setCurrentItem(LWI);
+        QtListWidget.setItemSelected(LWI, AIsSet);
+      end;
     end;
     QtListWidget.EndUpdate;
   end else
@@ -1595,6 +1600,8 @@ var
   LWI: QListWidgetItemH;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
+  AOrientation: QtOrientation;
+  HeaderOffset: Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'GetItemAt') then
     Exit;
@@ -1606,7 +1613,12 @@ begin
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    TWI := QtTreeWidget.itemAt(x, y);
+    HeaderOffset := QtTreeWidget.getHeaderHeight(AOrientation);
+
+    HeaderOffset := y - HeaderOffset;
+    if HeaderOffset < 0 then
+      HeaderOffset := 0;
+    TWI := QtTreeWidget.itemAt(x, HeaderOffset);
     Result := QtTreeWidget.getRow(TWI);
   end;
 end;

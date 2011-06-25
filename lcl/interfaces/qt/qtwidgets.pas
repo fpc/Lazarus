@@ -9023,7 +9023,15 @@ begin
           MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
           Item := itemAt(MousePos.x, MousePos.y);
           if Item = nil then
-            FSavedSelection := selectedItems;
+            FSavedSelection := selectedItems
+          else
+          begin
+            // qt selection in QListWidget is ugly, and LCL needs that info
+            // when mouse button is pressed, not after that, so we
+            // trigger selectionChanged() here
+            if not QListWidgetItem_isSelected(Item) then
+              QListWidgetItem_setSelected(Item, True);
+          end;
         end;
 
         Result := inherited itemViewViewportEventFilter(Sender, Event);
@@ -9577,10 +9585,6 @@ begin
   if AIndex1 = AIndex2 then
     exit;
 
-  if (currentRow = AIndex1) or (currentRow = AIndex2) then
-    if (getSelectionMode = QAbstractItemViewSingleSelection) then
-      setCurrentRow(-1);
-
   if AIndex1 < AIndex2 then
   begin
     ItemTo := QListWidget_takeItem(QListWidgetH(Widget), AIndex2);
@@ -9609,9 +9613,6 @@ var
   Item: QListWidgetItemH;
   R: TRect;
 begin
-  if (currentRow = AFromIndex) or (currentRow = AToIndex) then
-    if (getSelectionMode = QAbstractItemViewSingleSelection) then
-      setCurrentRow(-1);
   Item := QListWidget_takeItem(QListWidgetH(Widget), AFromIndex);
   QListWidget_insertItem(QListWidgetH(Widget), AToIndex, Item);
   if OwnerDrawn then
@@ -10631,10 +10632,6 @@ begin
   if AIndex1 = AIndex2 then
     exit;
 
-  if (currentRow = AIndex1) or (currentRow = AIndex2) then
-    if (getSelectionMode = QAbstractItemViewSingleSelection) then
-      setCurrentRow(-1);
-
   if AIndex1 < AIndex2 then
   begin
     ItemTo := takeTopLevelItem(AIndex2);
@@ -10663,9 +10660,6 @@ var
   Item: QTreeWidgetItemH;
   R: TRect;
 begin
-  if (currentRow = AFromIndex) or (currentRow = AToIndex) then
-    if (getSelectionMode = QAbstractItemViewSingleSelection) then
-      setCurrentRow(-1);
   Item := takeTopLevelItem(AFromIndex);
   insertTopLevelItem(AToIndex, Item);
   if OwnerDrawn then
