@@ -23,7 +23,7 @@ unit TAFuncSeries;
 interface
 
 uses
-  Classes, Graphics,
+  Classes, Graphics, typ,
   TAChartUtils, TACustomSeries, TACustomSource, TADrawUtils, TALegend, TATypes;
 
 const
@@ -132,6 +132,44 @@ type
       read FStep write SetStep default DEF_SPLINE_STEP;
   end;
 
+  { TCubicSplineSeries }
+
+  TCubicSplineSeries = class(TBasicPointSeries)
+  private
+    FPen: TChartPen;
+    FStep: TFuncSeriesStep;
+
+    procedure SetPen(AValue: TChartPen);
+    procedure SetStep(AValue: TFuncSeriesStep);
+  private
+    FX, FY, FCoeff: array of ArbFloat;
+
+    procedure PrepareCoeffs;
+    function Calculate(AX: Double): Double;
+  protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+    procedure SourceChanged(ASender: TObject); override;
+
+  public
+    procedure Assign(ASource: TPersistent); override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Draw(ADrawer: IChartDrawer); override;
+  published
+    property Active default true;
+    property AxisIndexX;
+    property AxisIndexY;
+    property ShowInLegend;
+    property Source;
+    property Title;
+    property ZPosition;
+  published
+    property Pen: TChartPen read FPen write SetPen;
+    property Step: TFuncSeriesStep
+      read FStep write SetStep default DEF_SPLINE_STEP;
+  end;
+
   TFuncCalculate3DEvent =
     procedure (const AX, AY: Double; out AZ: Double) of object;
 
@@ -183,7 +221,7 @@ type
 implementation
 
 uses
-  Math, SysUtils, TAGeometry, TAGraph;
+  ipf, Math, SysUtils, TAGeometry, TAGraph;
 
 function DoublePointRotated(AX, AY: Double): TDoublePoint;
 begin
@@ -277,21 +315,27 @@ begin
   OnCalculate(AX, Result)
 end;
 
-procedure TFuncSeries.Draw(ADrawer: IChartDrawer);
 type
   TTransform = function (A: Double): Double of object;
+  TCustomSeriesCrack = class(TCustomChartSeries);
+
+procedure DrawFunction(
+  ADrawer: IChartDrawer; ASeries: TCustomChartSeries;
+  ADomainExclusions: TIntervalList; ACalc: TTransform; AStep: Integer);
+type
   TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;
 
 var
-  axisToGraphXr, axisToGraphYr, graphToAxisXr, calc: TTransform;
+  axisToGraphXr, axisToGraphYr, graphToAxisXr: TTransform;
   makeDP: TMakeDoublePoint;
   r: TDoubleRect = (coords:(NegInfinity, NegInfinity, Infinity, Infinity));
   prev: TDoublePoint;
   prevInExtent: Boolean;
+  chart: TChart;
 
   procedure CalcAt(AXg, AXa: Double; out APt: TDoublePoint; out AIn: Boolean);
   begin
-    APt := makeDP(AXg, axisToGraphYr(calc(AXa)));
+    APt := makeDP(AXg, axisToGraphYr(ACalc(AXa)));
     AIn := (r.a <= APt) and (APt <= r.b);
   end;
 
@@ -299,7 +343,7 @@ var
   begin
     CalcAt(AXg, AXa, prev, prevInExtent);
     if prevInExtent then
-      ADrawer.MoveTo(FChart.GraphToImage(prev));
+      ADrawer.MoveTo(chart.GraphToImage(prev));
   end;
 
   procedure LineTo(AXg, AXa: Double);
@@ -310,10 +354,10 @@ var
     CalcAt(AXg, AXa, p, inExtent);
     t := p;
     if inExtent and prevInExtent then
-      ADrawer.LineTo(FChart.GraphToImage(p))
+      ADrawer.LineTo(chart.GraphToImage(p))
     else if LineIntersectsRect(prev, t, r) then begin
-      ADrawer.MoveTo(FChart.GraphToImage(prev));
-      ADrawer.LineTo(FChart.GraphToImage(t));
+      ADrawer.MoveTo(chart.GraphToImage(prev));
+      ADrawer.LineTo(chart.GraphToImage(t));
     end;
     prevInExtent := inExtent;
     prev := p;
@@ -323,46 +367,41 @@ var
   hint: Integer;
   xg, xa, xg1, xa1, xmax, graphStep: Double;
 begin
-  if Assigned(OnCalculate) then
-    calc := @DoCalculate
-  else if csDesigning in ComponentState then
-    calc := @DoCalcIdentity
-  else
-    exit;
-  GetGraphBounds(r);
-  RectIntersectsRect(r, FChart.CurrentExtent);
+  chart := TCustomSeriesCrack(ASeries).FChart;
+  TCustomSeriesCrack(ASeries).GetGraphBounds(r);
+  RectIntersectsRect(r, chart.CurrentExtent);
 
-  if IsRotated then begin
-    axisToGraphXr := @AxisToGraphY;
-    axisToGraphYr := @AxisToGraphX;
-    graphToAxisXr := @GraphToAxisY;
-    makeDP := @DoublePointRotated;
-    graphStep := FChart.YImageToGraph(-Step) - FChart.YImageToGraph(0);
-    xg := r.a.Y;
-    xmax := r.b.Y;
-  end
-  else begin
-    axisToGraphXr := @AxisToGraphX;
-    axisToGraphYr := @AxisToGraphY;
-    graphToAxisXr := @GraphToAxisX;
-    makeDP := @DoublePoint;
-    graphStep := FChart.XImageToGraph(Step) - FChart.XImageToGraph(0);
-    xg := r.a.X;
-    xmax := r.b.X;
-  end;
+  with TCustomSeriesCrack(ASeries) do
+    if IsRotated then begin
+      axisToGraphXr := @AxisToGraphY;
+      axisToGraphYr := @AxisToGraphX;
+      graphToAxisXr := @GraphToAxisY;
+      makeDP := @DoublePointRotated;
+      graphStep := chart.YImageToGraph(-AStep) - chart.YImageToGraph(0);
+      xg := r.a.Y;
+      xmax := r.b.Y;
+    end
+    else begin
+      axisToGraphXr := @AxisToGraphX;
+      axisToGraphYr := @AxisToGraphY;
+      graphToAxisXr := @GraphToAxisX;
+      makeDP := @DoublePoint;
+      graphStep := chart.XImageToGraph(AStep) - chart.XImageToGraph(0);
+      xg := r.a.X;
+      xmax := r.b.X;
+    end;
 
   hint := 0;
   xa := graphToAxisXr(xg);
-  if DomainExclusions.Intersect(xa, xa, hint) then
+  if ADomainExclusions.Intersect(xa, xa, hint) then
     xg := axisToGraphXr(xa);
 
   MoveTo(xg, xa);
 
-  ADrawer.Pen := Pen;
   while xg < xmax do begin
     xg1 := xg + graphStep;
     xa1 := graphToAxisXr(xg1);
-    if DomainExclusions.Intersect(xa, xa1, hint) then begin
+    if ADomainExclusions.Intersect(xa, xa1, hint) then begin
       LineTo(axisToGraphXr(xa), xa);
       xg1 := axisToGraphXr(xa1);
       MoveTo(xg1, xa1);
@@ -372,6 +411,22 @@ begin
     xg := xg1;
     xa := xa1;
   end;
+end;
+
+procedure TFuncSeries.Draw(ADrawer: IChartDrawer);
+var
+  calc: TTransform;
+begin
+  if Assigned(OnCalculate) then
+    calc := @DoCalculate
+  else if csDesigning in ComponentState then
+    calc := @DoCalcIdentity
+  else
+    exit;
+  ADrawer.Pen := Pen;
+  DrawFunction(
+    ADrawer, TCustomSeriesCrack(TCustomChartSeries(Self)),
+    DomainExclusions, calc, Step);
 end;
 
 procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -531,6 +586,98 @@ begin
   if FStep = AValue then exit;
   FStep := AValue;
   UpdateParentChart;
+end;
+
+{ TCubicSplineSeries }
+
+procedure TCubicSplineSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TCubicSplineSeries then
+    with TCubicSplineSeries(ASource) do begin
+      Self.Pen := FPen;
+      Self.FStep := FStep;
+    end;
+  inherited Assign(ASource);
+end;
+
+function TCubicSplineSeries.Calculate(AX: Double): Double;
+var
+  ok: Integer;
+begin
+  Result := ipfspn(High(FCoeff) - 1, FX[0], FY[0], FCoeff[0], AX, ok);
+end;
+
+constructor TCubicSplineSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FPen := TChartPen.Create;
+  FPen.OnChange := @StyleChanged;
+  FStep := DEF_SPLINE_STEP;
+end;
+
+destructor TCubicSplineSeries.Destroy;
+begin
+  FreeAndNil(FPen);
+  inherited;
+end;
+
+procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
+var
+  de: TIntervalList;
+begin
+  if FCoeff = nil then
+    PrepareCoeffs;
+  if FCoeff = nil then exit;
+  de := TIntervalList.Create;
+  try
+    ADrawer.Pen := Pen;
+    DrawFunction(ADrawer, Self, de, @Calculate, Step);
+  finally
+    de.Free;
+  end;
+end;
+
+procedure TCubicSplineSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemLine.Create(Pen, Title));
+end;
+
+procedure TCubicSplineSeries.PrepareCoeffs;
+var
+  i, n: Integer;
+begin
+  n := Source.Count;
+  SetLength(FX, n);
+  SetLength(FY, n);
+  SetLength(FCoeff, n);
+  for i := 0 to n - 1 do
+    with Source[i]^ do begin
+      FX[i] := X;
+      FY[i] := Y;
+    end;
+  ipfisn(n - 2, FX[0], FY[0], FCoeff[0], i);
+  if i > 1 then
+    FCoeff := nil;
+end;
+
+procedure TCubicSplineSeries.SetPen(AValue: TChartPen);
+begin
+  if FPen = AValue then exit;
+  FPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TCubicSplineSeries.SetStep(AValue: TFuncSeriesStep);
+begin
+  if FStep = AValue then exit;
+  FStep := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCubicSplineSeries.SourceChanged(ASender: TObject);
+begin
+  inherited SourceChanged(ASender);
+  FCoeff := nil;
 end;
 
 { TColorMapSeries }
@@ -736,6 +883,7 @@ end;
 initialization
   RegisterSeriesClass(TFuncSeries, 'Function series');
   RegisterSeriesClass(TBSplineSeries, 'B-Spline series');
+  RegisterSeriesClass(TCubicSplineSeries, 'Cubic spline series');
   RegisterSeriesClass(TColorMapSeries, 'Color map series');
 
 end.
