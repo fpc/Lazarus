@@ -674,12 +674,12 @@ msgstr "בסיס הנתונים של העזרה %s%s%s  לא מצא תוכנה �
 msgid "Help Database %s%s%s not found"
 msgstr "בסיס הנתונים של העזרה %s%s%s  לא נמצא "
 
-#: lclstrconsts.rshelphelpdirectivenotfound
-msgid "Help directive %s%s%s not found."
+#: lclstrconsts.rshelphelpfordirectivenotfound
+msgid "Help for directive %s%s%s not found."
 msgstr ""
 
-#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
-msgid "Help directive %s%s%s not found in Database %s%s%s."
+#: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
+msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound

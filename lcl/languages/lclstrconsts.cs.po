@@ -676,12 +676,12 @@ msgstr "Databáze nápovědy %s%s%s nenalezla prohlížeč pro stránku nápově
 msgid "Help Database %s%s%s not found"
 msgstr "Databáze nápovědy %s%s%s nenalezena"
 
-#: lclstrconsts.rshelphelpdirectivenotfound
-msgid "Help directive %s%s%s not found."
+#: lclstrconsts.rshelphelpfordirectivenotfound
+msgid "Help for directive %s%s%s not found."
 msgstr ""
 
-#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
-msgid "Help directive %s%s%s not found in Database %s%s%s."
+#: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
+msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound

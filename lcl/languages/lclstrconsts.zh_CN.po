@@ -679,12 +679,12 @@ msgstr "帮助数据库 %s%s%s 未找到浏览器可以阅读帮助页 %s 的类
 msgid "Help Database %s%s%s not found"
 msgstr "未找到帮助数据库 %s%s%s"
 
-#: lclstrconsts.rshelphelpdirectivenotfound
-msgid "Help directive %s%s%s not found."
+#: lclstrconsts.rshelphelpfordirectivenotfound
+msgid "Help for directive %s%s%s not found."
 msgstr ""
 
-#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
-msgid "Help directive %s%s%s not found in Database %s%s%s."
+#: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
+msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-25 16:05+0300\n"
+"PO-Revision-Date: 2011-06-27 03:11+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -675,13 +675,13 @@ msgstr "База данных справки %s%s%s не нашла програ
 msgid "Help Database %s%s%s not found"
 msgstr "База данных справки %s%s%s не найдена"
 
-#: lclstrconsts.rshelphelpdirectivenotfound
-msgid "Help directive %s%s%s not found."
-msgstr ""
+#: lclstrconsts.rshelphelpfordirectivenotfound
+msgid "Help for directive %s%s%s not found."
+msgstr "Справка для директивы %s%s%s не найдена."
 
-#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
-msgid "Help directive %s%s%s not found in Database %s%s%s."
-msgstr ""
+#: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
+msgid "Help for directive %s%s%s not found in Database %s%s%s."
+msgstr "Справка для директивы %s%s%s в базе данных %s%s%s не найдена."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."

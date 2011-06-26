@@ -1670,10 +1670,10 @@ begin
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrContextNotFound;
       if Query.HelpDatabaseID<>'' then
-        ErrMsg:=Format(rsHelpHelpDirectiveNotFoundInDatabase, ['"',Query.Directive,
+        ErrMsg:=Format(rsHelpHelpForDirectiveNotFoundInDatabase, ['"',Query.Directive,
           '"', '"', Query.HelpDatabaseID, '"'])
       else
-        ErrMsg:=Format(rsHelpHelpDirectiveNotFound, ['"',Query.Directive,'"']);
+        ErrMsg:=Format(rsHelpHelpForDirectiveNotFound, ['"',Query.Directive,'"']);
       exit;
     end;
 

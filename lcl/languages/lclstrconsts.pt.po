@@ -677,12 +677,12 @@ msgstr "Banco de dados Ajuda %s%s%s não encontra visualizador para página de a
 msgid "Help Database %s%s%s not found"
 msgstr "Banco de dados de ajuda %s%s%s não encontrado"
 
-#: lclstrconsts.rshelphelpdirectivenotfound
-msgid "Help directive %s%s%s not found."
+#: lclstrconsts.rshelphelpfordirectivenotfound
+msgid "Help for directive %s%s%s not found."
 msgstr ""
 
-#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
-msgid "Help directive %s%s%s not found in Database %s%s%s."
+#: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
+msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
