@@ -320,9 +320,12 @@ begin
   else
     GetLegendItems(AItems);
   for i := oldCount to AItems.Count - 1 do
-    with AItems[i] do
+    with AItems[i] do begin
+      if GroupIndex = LEGEND_ITEM_NO_GROUP then
+        GroupIndex := Legend.GroupIndex;
       if Order = LEGEND_ITEM_ORDER_AS_ADDED then
         Order := Legend.Order;
+    end;
 end;
 
 function TCustomChartSeries.GetNearestPoint(

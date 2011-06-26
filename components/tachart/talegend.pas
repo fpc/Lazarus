@@ -28,6 +28,7 @@ const
   DEF_LEGEND_MARGIN = 4;
   DEF_LEGEND_SYMBOL_WIDTH = 20;
   LEGEND_ITEM_ORDER_AS_ADDED = -1;
+  LEGEND_ITEM_NO_GROUP = -1;
 
 type
   { TLegendItem }
@@ -35,14 +36,25 @@ type
   TLegendItem = class
   private
     FColor: TColor;
+    FGroupIndex: Integer;
     FOrder: Integer;
     FText: String;
   public
     constructor Create(const AText: String; AColor: TColor = clTAColor);
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); virtual;
+    function HasSymbol: Boolean; virtual;
   public
     property Color: TColor read FColor write FColor;
+    property GroupIndex: Integer read FGroupIndex write FGroupIndex;
     property Order: Integer read FOrder write FOrder;
+  end;
+
+  { TLegendItemGroupTitle }
+
+  TLegendItemGroupTitle = class(TLegendItem)
+  public
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
+    function HasSymbol: Boolean; override;
   end;
 
   TLegendItemDrawEvent = procedure (
@@ -122,6 +134,7 @@ type
     FBackgroundBrush: TChartLegendBrush;
     FFont: TFont;
     FFrame: TChartPen;
+    FGroupTitles: TStrings;
     FMarginX: TChartDistance;
     FMarginY: TChartDistance;
     FSpacing: TChartDistance;
@@ -133,6 +146,7 @@ type
     procedure SetBackgroundBrush(AValue: TChartLegendBrush);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
+    procedure SetGroupTitles(AValue: TStrings);
     procedure SetMargin(AValue: TChartDistance);
     procedure SetMarginX(AValue: TChartDistance);
     procedure SetMarginY(AValue: TChartDistance);
@@ -145,15 +159,17 @@ type
     destructor Destroy; override;
 
   public
+    procedure AddGroups(AItems: TChartLegendItems);
     procedure Assign(Source: TPersistent); override;
     procedure Draw(
       ADrawer: IChartDrawer; AItems: TChartLegendItems; const ABounds: TRect);
+    // Not includes the margins around item.
     function MeasureItem(
       ADrawer: IChartDrawer; AItems: TChartLegendItems): TPoint;
     function Prepare(
       ADrawer: IChartDrawer; AItems: TChartLegendItems;
       var AClipRect: TRect): TRect;
-    // Not includes the margins around item.
+    procedure SortItemsByOrder(AItems: TChartLegendItems);
   published
     property Alignment: TLegendAlignment
       read FAlignment write SetAlignment default laTopRight;
@@ -161,6 +177,7 @@ type
       read FBackgroundBrush write SetBackgroundBrush;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
+    property GroupTitles: TStrings read FGroupTitles write SetGroupTitles;
     property Margin: TChartDistance
       read FMarginX write SetMargin stored false; deprecated;
     property MarginX: TChartDistance
@@ -182,10 +199,12 @@ type
 
   TChartSeriesLegend = class(TChartElement)
   private
+    FGroupIndex: Integer;
     FMultiplicity: TLegendMultiplicity;
     FOnDraw: TLegendItemDrawEvent;
     FOrder: Integer;
     FUserItemsCount: Integer;
+    procedure SetGroupIndex(AValue: Integer);
     procedure SetMultiplicity(AValue: TLegendMultiplicity);
     procedure SetOnDraw(AValue: TLegendItemDrawEvent);
     procedure SetOrder(AValue: Integer);
@@ -195,6 +214,8 @@ type
   public
     procedure Assign(Source: TPersistent); override;
   published
+    property GroupIndex: Integer
+      read FGroupIndex write SetGroupIndex default LEGEND_ITEM_NO_GROUP;
     property Multiplicity: TLegendMultiplicity
       read FMultiplicity write SetMultiplicity default lmSingle;
     property Order: Integer
@@ -207,19 +228,22 @@ type
     property OnDraw: TLegendItemDrawEvent read FOnDraw write SetOnDraw;
   end;
 
-  function LegendItemCompare(AItem1, AItem2: Pointer): Integer;
-
 implementation
 
 uses
-  Math, PropEdits, Types, TADrawerCanvas;
+  Math, PropEdits, Types, TADrawerCanvas, TAGeometry;
 
 const
   SYMBOL_TEXT_SPACING = 4;
 
 function LegendItemCompare(AItem1, AItem2: Pointer): Integer;
+var
+  li1: TLegendItem absolute AItem1;
+  li2: TLegendItem absolute AItem2;
 begin
-  Result := Sign(TLegendItem(AItem1).Order - TLegendItem(AItem2).Order);
+  Result := Sign(li1.GroupIndex - li2.GroupIndex);
+  if Result = 0 then
+    Result := Sign(li1.Order - li2.Order);
 end;
 
 { TChartLegendItems }
@@ -239,6 +263,7 @@ end;
 constructor TLegendItem.Create(const AText: String; AColor: TColor);
 begin
   FColor := AColor;
+  FGroupIndex := LEGEND_ITEM_NO_GROUP;
   FOrder := LEGEND_ITEM_ORDER_AS_ADDED;
   FText := AText;
 end;
@@ -247,6 +272,23 @@ procedure TLegendItem.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
   ADrawer.TextOut.
     Pos(ARect.Right + SYMBOL_TEXT_SPACING, ARect.Top).Text(FText).Done;
+end;
+
+function TLegendItem.HasSymbol: Boolean;
+begin
+  Result := true;
+end;
+
+{ TLegendItemGroupTitle }
+
+procedure TLegendItemGroupTitle.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+begin
+  ADrawer.TextOut.Pos(ARect.Left, ARect.Top).Text(FText).Done;
+end;
+
+function TLegendItemGroupTitle.HasSymbol: Boolean;
+begin
+  Result := false;
 end;
 
 { TLegendItemUserDrawn }
@@ -334,6 +376,24 @@ end;
 
 { TChartLegend }
 
+procedure TChartLegend.AddGroups(AItems: TChartLegendItems);
+var
+  i, gi: Integer;
+  g: TLegendItemGroupTitle;
+begin
+  for i := AItems.Count - 1 downto 0 do begin
+    gi := AItems[i].GroupIndex;
+    if
+      InRange(gi, 0, GroupTitles.Count - 1) and
+      ((i = 0) or (AItems[i - 1].GroupIndex <> gi))
+    then begin
+      g := TLegendItemGroupTitle.Create(GroupTitles[gi]);
+      g.GroupIndex := gi;
+      AItems.Insert(i, g);
+    end;
+  end;
+end;
+
 procedure TChartLegend.Assign(Source: TPersistent);
 begin
   if Source is TChartLegend then
@@ -347,6 +407,7 @@ constructor TChartLegend.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FAlignment := laTopRight;
+  FGroupTitles := TStringList.Create;
   FMarginX := DEF_LEGEND_MARGIN;
   FMarginY := DEF_LEGEND_MARGIN;
   FSpacing := DEF_LEGEND_SPACING;
@@ -365,6 +426,7 @@ begin
   FreeAndNil(FBackgroundBrush);
   FreeAndNil(FFont);
   FreeAndNil(FFrame);
+  FreeAndNil(FGroupTitles);
   FreeAndNil(FSymbolFrame);
 
   inherited;
@@ -413,16 +475,16 @@ function TChartLegend.MeasureItem(
   ADrawer: IChartDrawer; AItems: TChartLegendItems): TPoint;
 var
   i: Integer;
+  p: TPoint;
 begin
   ADrawer.Font := Font;
   Result := Point(0, 0);
-  for i := 0 to AItems.Count - 1 do
-    with ADrawer.TextExtent(AItems[i].FText) do begin
-      Result.X := Max(X, Result.X);
-      Result.Y := Max(Y, Result.Y);
-    end;
-
-  Result.X += SYMBOL_TEXT_SPACING + SymbolWidth;
+  for i := 0 to AItems.Count - 1 do begin
+    p := ADrawer.TextExtent(AItems[i].FText);
+    if AItems[i].HasSymbol then
+      p.X += SYMBOL_TEXT_SPACING + SymbolWidth;
+    Result := MaxPoint(p, Result);
+  end;
 end;
 
 function TChartLegend.Prepare(
@@ -500,6 +562,13 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartLegend.SetGroupTitles(AValue: TStrings);
+begin
+  if FGroupTitles = AValue then exit;
+  FGroupTitles.Assign(AValue);
+  StyleChanged(Self);
+end;
+
 procedure TChartLegend.SetMargin(AValue: TChartDistance);
 begin
   SetMarginX(AValue);
@@ -548,6 +617,11 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartLegend.SortItemsByOrder(AItems: TChartLegendItems);
+begin
+  AItems.Sort(@LegendItemCompare);
+end;
+
 { TChartSeriesLegend }
 
 procedure TChartSeriesLegend.Assign(Source: TPersistent);
@@ -565,9 +639,17 @@ end;
 constructor TChartSeriesLegend.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FGroupIndex := LEGEND_ITEM_NO_GROUP;
   FOrder := LEGEND_ITEM_ORDER_AS_ADDED;
   FVisible := true;
   FUserItemsCount := 1;
+end;
+
+procedure TChartSeriesLegend.SetGroupIndex(AValue: Integer);
+begin
+  if FGroupIndex = AValue then exit;
+  FGroupIndex := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartSeriesLegend.SetMultiplicity(AValue: TLegendMultiplicity);

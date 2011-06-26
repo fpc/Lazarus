@@ -940,7 +940,6 @@ begin
         Result[i].Order := j;
         j -= 1;
       end;
-    Result.Sort(@LegendItemCompare);
   except
     FreeAndNil(Result);
     raise;
@@ -1110,6 +1109,8 @@ procedure TChart.PrepareLegend(
 begin
   ALegendItems := GetLegendItems;
   try
+    Legend.SortItemsByOrder(ALegendItems);
+    Legend.AddGroups(ALegendItems);
     ALegendRect := Legend.Prepare(ADrawer, ALegendItems, AClipRect);
   except
     FreeAndNil(ALegendItems);

@@ -70,7 +70,7 @@ var
 begin
   id := TCanvasDrawer.Create(cbSeries.Canvas);
   r := Bounds(
-    ARect.Left, ARect.Top, Chart1.Legend.SymbolWidth, cbSeries.ItemHeight);
+    ARect.Left + 2, ARect.Top, Chart1.Legend.SymbolWidth, cbSeries.ItemHeight);
   id.Pen := Chart1.Legend.SymbolFrame;
   FItems[Index].Draw(id, r);
 end;
@@ -106,6 +106,7 @@ var
   i: Integer;
 begin
   FItems := Chart1.GetLegendItems;
+  Chart1.Legend.SortItemsByOrder(FItems);
   for i := 1 to FItems.Count do
     cbSeries.AddItem('', nil);
 end;
