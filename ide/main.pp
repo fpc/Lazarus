@@ -3847,7 +3847,6 @@ var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
   Editable, SelEditable, SelAvail, IdentFound, StringFound: Boolean;
-  CurrentUnitName: String;
   StartCode, EndCode: TCodeBuffer;
   StartPos, EndPos: TPoint;
   NewX, NewY, NewTopLine: integer;

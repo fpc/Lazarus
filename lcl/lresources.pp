@@ -5328,7 +5328,7 @@ var newread : integer;
 begin
   newread:=fStream.Read(fBuf[0],ParseBufSize);
   fBuf[newread]:=#0;
-  fLineStart:=fPos-fLineStart;
+  fLineStart:=fLineStart-fPos; // column = fPos - fLineStart + 1
   fPos:=0;
   fBufLen:=newread;
   fEofReached:=newread=0;
@@ -5404,10 +5404,9 @@ begin
     CheckLoadBuffer;
     if fBuf[fPos]=#10 then inc(fPos); //CR LF
   end
-  else begin
+  else
     inc(fPos); //LF
-    CheckLoadBuffer;
-  end;
+  CheckLoadBuffer;
   inc(fSourceLine);
   fLineStart:=fPos;
 end;
