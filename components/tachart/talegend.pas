@@ -130,12 +130,24 @@ type
     laTopCenter, laBottomCenter, // laCenterCenter makes no sense.
     laTopRight, laCenterRight, laBottomRight);
 
+  TChartLegendDrawingData = record
+    FDrawer: IChartDrawer;
+    FItems: TChartLegendItems;
+    FColCount: Integer;
+    FRowCount: Integer;
+    FItemSize: TPoint;
+    FBounds: TRect;
+  end;
+
+  TLegendColumnCount = 1..MaxInt;
+
   { TChartLegend }
 
   TChartLegend = class(TChartElement)
   private
     FAlignment: TLegendAlignment;
     FBackgroundBrush: TChartLegendBrush;
+    FColumnCount: TLegendColumnCount;
     FFont: TFont;
     FFrame: TChartPen;
     FGroupFont: TFont;
@@ -149,6 +161,7 @@ type
 
     procedure SetAlignment(AValue: TLegendAlignment);
     procedure SetBackgroundBrush(AValue: TChartLegendBrush);
+    procedure SetColumnCount(AValue: TLegendColumnCount);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
     procedure SetGroupFont(const AValue: TFont);
@@ -167,20 +180,19 @@ type
   public
     procedure AddGroups(AItems: TChartLegendItems);
     procedure Assign(Source: TPersistent); override;
-    procedure Draw(
-      ADrawer: IChartDrawer; AItems: TChartLegendItems; const ABounds: TRect);
+    procedure Draw(var AData: TChartLegendDrawingData);
     // Not includes the margins around item.
     function MeasureItem(
       ADrawer: IChartDrawer; AItems: TChartLegendItems): TPoint;
-    function Prepare(
-      ADrawer: IChartDrawer; AItems: TChartLegendItems;
-      var AClipRect: TRect): TRect;
+    procedure Prepare(var AData: TChartLegendDrawingData; var AClipRect: TRect);
     procedure SortItemsByOrder(AItems: TChartLegendItems);
   published
     property Alignment: TLegendAlignment
       read FAlignment write SetAlignment default laTopRight;
     property BackgroundBrush: TChartLegendBrush
       read FBackgroundBrush write SetBackgroundBrush;
+    property ColumnCount: TLegendColumnCount
+      read FColumnCount write SetColumnCount default 1;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
     property GroupFont: TFont read FGroupFont write SetGroupFont;
@@ -217,8 +229,8 @@ type
     FUserItemsCount: Integer;
     procedure SetGroupIndex(AValue: Integer);
     procedure SetMultiplicity(AValue: TLegendMultiplicity);
-    procedure SetOnDraw(AValue: TLegendItemDrawEvent);
     procedure SetOnCreate(AValue: TLegendItemCreateEvent);
+    procedure SetOnDraw(AValue: TLegendItemDrawEvent);
     procedure SetOrder(AValue: Integer);
     procedure SetUserItemsCount(AValue: Integer);
   public
@@ -430,6 +442,7 @@ constructor TChartLegend.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FAlignment := laTopRight;
+  FColumnCount := 1;
   FGroupTitles := TStringList.Create;
   FMarginX := DEF_LEGEND_MARGIN;
   FMarginY := DEF_LEGEND_MARGIN;
@@ -457,43 +470,45 @@ begin
   inherited;
 end;
 
-procedure TChartLegend.Draw(
-  ADrawer: IChartDrawer; AItems: TChartLegendItems; const ABounds: TRect);
+procedure TChartLegend.Draw(var AData: TChartLegendDrawingData);
 var
-  i, itemHeight: Integer;
+  i: Integer;
   r: TRect;
   prevFont: TFont = nil;
+  drawer: IChartDrawer;
 begin
+  drawer := AData.FDrawer;
   // Draw the background and the border.
-  ADrawer.Brush := BackgroundBrush;
+  drawer.Brush := BackgroundBrush;
   if Frame.Visible then
-    ADrawer.Pen := Frame
+    drawer.Pen := Frame
   else
-    ADrawer.SetPenParams(psClear, clTAColor);
-  ADrawer.Rectangle(ABounds);
-  if AItems.Count = 0 then exit;
+    drawer.SetPenParams(psClear, clTAColor);
+  r := AData.FBounds;
+  drawer.Rectangle(r);
+  if AData.FItems.Count = 0 then exit;
 
-  try
-    r := ABounds;
-    r.Right -= 1;
-    ADrawer.ClippingStart(r);
+  r.Right -= 1;
+  drawer.ClippingStart(r);
 
-    itemHeight :=
-      (ABounds.Bottom - ABounds.Top - Spacing) div AItems.Count - Spacing;
-    r := Bounds(
-      ABounds.Left + Spacing, ABounds.Top + Spacing, SymbolWidth, itemHeight);
-    for i := 0 to AItems.Count - 1 do begin
-      AItems[i].UpdateFont(ADrawer, prevFont);
-      ADrawer.Brush := BackgroundBrush;
+  with AData do try
+    for i := 0 to FItems.Count - 1 do begin
+      FItems[i].UpdateFont(drawer, prevFont);
+      drawer.Brush := BackgroundBrush;
       if SymbolFrame.Visible then
-        ADrawer.Pen := SymbolFrame
+        drawer.Pen := SymbolFrame
       else
-        ADrawer.SetPenParams(psClear, clTAColor);
-      AItems[i].Draw(ADrawer, r);
-      OffsetRect(r, 0, itemHeight + Spacing);
+        drawer.SetPenParams(psClear, clTAColor);
+
+      r := Bounds(
+        FBounds.Left + Spacing + i div FRowCount * (FItemSize.X + Spacing),
+        FBounds.Top + Spacing + i mod FRowCount * (FItemSize.Y + Spacing),
+        SymbolWidth, FItemSize.Y);
+      FItems[i].Draw(drawer, r);
+      OffsetRect(r, 0, FItemSize.Y + Spacing);
     end;
   finally
-    ADrawer.ClippingStop;
+    drawer.ClippingStop;
   end;
 end;
 
@@ -515,14 +530,19 @@ begin
     end;
 end;
 
-function TChartLegend.Prepare(
-  ADrawer: IChartDrawer; AItems: TChartLegendItems; var AClipRect: TRect): TRect;
+procedure TChartLegend.Prepare(
+  var AData: TChartLegendDrawingData; var AClipRect: TRect);
 var
   x, y: Integer;
   sidebar, legendSize: TPoint;
 begin
-  with MeasureItem(ADrawer, AItems) do
-    legendSize := Point(X + 2 * Spacing, Spacing + AItems.Count * (Y + Spacing));
+  with AData do begin
+    FColCount := Min(ColumnCount, FItems.Count);
+    FRowCount := FItems.Count div FColCount;
+    FItemSize := MeasureItem(FDrawer, FItems);
+    legendSize.X := (FItemSize.X + Spacing) * FColCount + Spacing;
+    legendSize.Y := (FItemSize.Y + Spacing) * FRowCount + Spacing;
+  end;
 
   sidebar.X := 2 * MarginX;
   with AClipRect do
@@ -562,7 +582,7 @@ begin
       laBottomCenter:
         AClipRect.Bottom -= legendSize.Y + 2 * MarginY;
     end;
-  Result := Bounds(x, y, legendSize.X, legendSize.Y);
+  AData.FBounds := Bounds(x, y, legendSize.X, legendSize.Y);
 end;
 
 procedure TChartLegend.SetAlignment(AValue: TLegendAlignment);
@@ -575,6 +595,13 @@ end;
 procedure TChartLegend.SetBackgroundBrush(AValue: TChartLegendBrush);
 begin
   FBackgroundBrush.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetColumnCount(AValue: TLegendColumnCount);
+begin
+  if FColumnCount = AValue then exit;
+  FColumnCount := AValue;
   StyleChanged(Self);
 end;
 

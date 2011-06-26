@@ -20,6 +20,7 @@ type
     Chart1PieSeries1: TPieSeries;
     cbUseSidebar: TCheckBox;
     cbSeries: TComboBox;
+    lblColumnCount: TLabel;
     lblSpacing: TLabel;
     lblMarginX: TLabel;
     lblSymbolWidth: TLabel;
@@ -31,6 +32,7 @@ type
     RandomChartSource1: TRandomChartSource;
     seSpacing: TSpinEdit;
     seMarginX: TSpinEdit;
+    seColumnCount: TSpinEdit;
     seSymbolWidth: TSpinEdit;
     seMarginY: TSpinEdit;
     procedure cbSeriesDrawItem(Control: TWinControl; Index: Integer;
@@ -48,6 +50,7 @@ type
     procedure seMarginYChange(Sender: TObject);
     procedure seSpacingChange(Sender: TObject);
     procedure seSymbolWidthChange(Sender: TObject);
+    procedure seColumnCountChange(Sender: TObject);
   private
     FItems: TChartLegendItems;
   end;
@@ -161,6 +164,11 @@ end;
 procedure TForm1.seSymbolWidthChange(Sender: TObject);
 begin
   Chart1.Legend.SymbolWidth := seSymbolWidth.Value;
+end;
+
+procedure TForm1.seColumnCountChange(Sender: TObject);
+begin
+  Chart1.Legend.ColumnCount := seColumnCount.Value;
 end;
 
 end.

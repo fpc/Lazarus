@@ -250,9 +250,8 @@ type
     procedure DoOnResize; override;
     {$ENDIF}
     procedure PrepareAxis(ADrawer: IChartDrawer);
-    procedure PrepareLegend(
-      ADrawer: IChartDrawer; out ALegendItems: TChartLegendItems;
-      var AClipRect: TRect; out ALegendRect: TRect);
+    function PrepareLegend(
+      ADrawer: IChartDrawer; var AClipRect: TRect): TChartLegendDrawingData;
     procedure SetName(const AValue: TComponentName); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -682,8 +681,7 @@ end;
 procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   i, c: Integer;
-  legendItems: TChartLegendItems = nil;
-  legendRect: TRect;
+  ldd: TChartLegendDrawingData;
 begin
   ADrawer.DrawingBegin(ARect);
   ADrawer.SetAntialiasingMode(AntialiasingMode);
@@ -708,15 +706,15 @@ begin
   FFoot.Draw(ADrawer, -1, c, FClipRect.Bottom);
 
   if Legend.Visible then
-    PrepareLegend(ADrawer, legendItems, FClipRect, legendRect);
+    ldd := PrepareLegend(ADrawer, FClipRect);
   try
     PrepareAxis(ADrawer);
     DrawBackWall(ADrawer);
     DisplaySeries(ADrawer);
     if Legend.Visible then
-      Legend.Draw(ADrawer, legendItems, legendRect);
+      Legend.Draw(ldd);
   finally
-    legendItems.Free;
+    ldd.FItems.Free;
   end;
   DrawReticule(ADrawer);
 
@@ -762,16 +760,13 @@ end;
 
 procedure TChart.DrawLegendOn(ACanvas: TCanvas; var ARect: TRect);
 var
-  legendItems: TChartLegendItems = nil;
-  legendRect: TRect;
-  drawer: IChartDrawer;
+  ldd: TChartLegendDrawingData;
 begin
-  drawer := TCanvasDrawer.Create(ACanvas);
+  ldd := PrepareLegend(TCanvasDrawer.Create(ACanvas), ARect);
   try
-    PrepareLegend(drawer, legendItems, ARect, legendRect);
-    Legend.Draw(drawer, legendItems, legendRect);
+    Legend.Draw(ldd);
   finally
-    legendItems.Free;
+    ldd.FItems.Free;
   end;
 end;
 
@@ -1103,17 +1098,17 @@ begin
   AxisList.Prepare(FClipRect);
 end;
 
-procedure TChart.PrepareLegend(
-  ADrawer: IChartDrawer; out ALegendItems: TChartLegendItems;
-  var AClipRect: TRect; out ALegendRect: TRect);
+function TChart.PrepareLegend(
+  ADrawer: IChartDrawer; var AClipRect: TRect): TChartLegendDrawingData;
 begin
-  ALegendItems := GetLegendItems;
+  Result.FDrawer := ADrawer;
+  Result.FItems := GetLegendItems;
   try
-    Legend.SortItemsByOrder(ALegendItems);
-    Legend.AddGroups(ALegendItems);
-    ALegendRect := Legend.Prepare(ADrawer, ALegendItems, AClipRect);
+    Legend.SortItemsByOrder(Result.FItems);
+    Legend.AddGroups(Result.FItems);
+    Legend.Prepare(Result, AClipRect);
   except
-    FreeAndNil(ALegendItems);
+    FreeAndNil(Result.FItems);
     raise;
   end;
 end;
