@@ -36,6 +36,7 @@ type
   TLegendItem = class
   private
     FColor: TColor;
+    FFont: TFont;
     FGroupIndex: Integer;
     FOrder: Integer;
     FText: String;
@@ -43,10 +44,13 @@ type
     constructor Create(const AText: String; AColor: TColor = clTAColor);
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); virtual;
     function HasSymbol: Boolean; virtual;
+    procedure UpdateFont(ADrawer: IChartDrawer; var APrevFont: TFont);
   public
     property Color: TColor read FColor write FColor;
+    property Font: TFont read FFont write FFont;
     property GroupIndex: Integer read FGroupIndex write FGroupIndex;
     property Order: Integer read FOrder write FOrder;
+    property Text: String read FText;
   end;
 
   { TLegendItemGroupTitle }
@@ -134,6 +138,7 @@ type
     FBackgroundBrush: TChartLegendBrush;
     FFont: TFont;
     FFrame: TChartPen;
+    FGroupFont: TFont;
     FGroupTitles: TStrings;
     FMarginX: TChartDistance;
     FMarginY: TChartDistance;
@@ -146,6 +151,7 @@ type
     procedure SetBackgroundBrush(AValue: TChartLegendBrush);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
+    procedure SetGroupFont(const AValue: TFont);
     procedure SetGroupTitles(AValue: TStrings);
     procedure SetMargin(AValue: TChartDistance);
     procedure SetMarginX(AValue: TChartDistance);
@@ -177,6 +183,7 @@ type
       read FBackgroundBrush write SetBackgroundBrush;
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
+    property GroupFont: TFont read FGroupFont write SetGroupFont;
     property GroupTitles: TStrings read FGroupTitles write SetGroupTitles;
     property Margin: TChartDistance
       read FMarginX write SetMargin stored false; deprecated;
@@ -279,11 +286,18 @@ begin
   Result := true;
 end;
 
+procedure TLegendItem.UpdateFont(ADrawer: IChartDrawer; var APrevFont: TFont);
+begin
+  if APrevFont = Font then exit;
+  ADrawer.Font := Font;
+  APrevFont := Font;
+end;
+
 { TLegendItemGroupTitle }
 
 procedure TLegendItemGroupTitle.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
-  ADrawer.TextOut.Pos(ARect.Left, ARect.Top).Text(FText).Done;
+  ADrawer.TextOut.Pos(ARect.Left, ARect.Top).Text(Text).Done;
 end;
 
 function TLegendItemGroupTitle.HasSymbol: Boolean;
@@ -389,6 +403,7 @@ begin
     then begin
       g := TLegendItemGroupTitle.Create(GroupTitles[gi]);
       g.GroupIndex := gi;
+      g.Font := GroupFont;
       AItems.Insert(i, g);
     end;
   end;
@@ -418,6 +433,7 @@ begin
   InitHelper(FBackgroundBrush, TChartLegendBrush);
   InitHelper(FFont, TFont);
   InitHelper(FFrame, TChartPen);
+  InitHelper(FGroupFont, TFont);
   InitHelper(FSymbolFrame, TChartPen);
 end;
 
@@ -426,6 +442,7 @@ begin
   FreeAndNil(FBackgroundBrush);
   FreeAndNil(FFont);
   FreeAndNil(FFrame);
+  FreeAndNil(FGroupFont);
   FreeAndNil(FGroupTitles);
   FreeAndNil(FSymbolFrame);
 
@@ -437,6 +454,7 @@ procedure TChartLegend.Draw(
 var
   i, itemHeight: Integer;
   r: TRect;
+  prevFont: TFont = nil;
 begin
   // Draw the background and the border.
   ADrawer.Brush := BackgroundBrush;
@@ -457,7 +475,7 @@ begin
     r := Bounds(
       ABounds.Left + Spacing, ABounds.Top + Spacing, SymbolWidth, itemHeight);
     for i := 0 to AItems.Count - 1 do begin
-      ADrawer.Font := Font;
+      AItems[i].UpdateFont(ADrawer, prevFont);
       ADrawer.Brush := BackgroundBrush;
       if SymbolFrame.Visible then
         ADrawer.Pen := SymbolFrame
@@ -476,15 +494,17 @@ function TChartLegend.MeasureItem(
 var
   i: Integer;
   p: TPoint;
+  prevFont: TFont = nil;
 begin
-  ADrawer.Font := Font;
   Result := Point(0, 0);
-  for i := 0 to AItems.Count - 1 do begin
-    p := ADrawer.TextExtent(AItems[i].FText);
-    if AItems[i].HasSymbol then
-      p.X += SYMBOL_TEXT_SPACING + SymbolWidth;
-    Result := MaxPoint(p, Result);
-  end;
+  for i := 0 to AItems.Count - 1 do
+    with AItems[i] do begin
+      AItems[i].UpdateFont(ADrawer, prevFont);
+      p := ADrawer.TextExtent(Text);
+      if HasSymbol then
+        p.X += SYMBOL_TEXT_SPACING + SymbolWidth;
+      Result := MaxPoint(p, Result);
+    end;
 end;
 
 function TChartLegend.Prepare(
@@ -562,9 +582,14 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartLegend.SetGroupFont(const AValue: TFont);
+begin
+  FGroupFont.Assign(AValue);
+  StyleChanged(Self);
+end;
+
 procedure TChartLegend.SetGroupTitles(AValue: TStrings);
 begin
-  if FGroupTitles = AValue then exit;
   FGroupTitles.Assign(AValue);
   StyleChanged(Self);
 end;
