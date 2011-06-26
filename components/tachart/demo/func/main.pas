@@ -14,6 +14,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    cbBSpline: TTICheckBox;
     cbDomain: TCheckBox;
     cbRotate: TCheckBox;
     cbInterpolate: TCheckBox;
@@ -28,8 +29,9 @@ type
     ChartColorMap: TChart;
     ChartColorMapColorMapSeries1: TColorMapSeries;
     ChartLegendPanel1: TChartLegendPanel;
+    ChartSplineCubicSplineSeries1: TCubicSplineSeries;
     ChartSplineLineSeries1: TLineSeries;
-    ChartSplineSplineSeries1: TSplineSeries;
+    ChartSplineBSplineSeries1: TBSplineSeries;
     chtsColorMap: TChartToolset;
     chtsColorMapPanDragTool1: TPanDragTool;
     chtsColorMapZoomDragTool1: TZoomDragTool;
@@ -41,6 +43,7 @@ type
     RandomChartSource1: TRandomChartSource;
     iseSplineDegree: TTISpinEdit;
     icbSplineRandomX: TTICheckBox;
+    cbCubic: TTICheckBox;
     tsSpline: TTabSheet;
     tsDomain: TTabSheet;
     tsColorMap: TTabSheet;

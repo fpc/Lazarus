@@ -230,10 +230,16 @@ object Form1: TForm1
         object ChartSplineLineSeries1: TLineSeries
           Source = RandomChartSource1
         end
-        object ChartSplineSplineSeries1: TSplineSeries
+        object ChartSplineBSplineSeries1: TBSplineSeries
+          Active = False
           Source = RandomChartSource1
           Pen.Color = clLime
           Pen.Width = 3
+        end
+        object ChartSplineCubicSplineSeries1: TCubicSplineSeries
+          Source = RandomChartSource1
+          Pen.Color = clAqua
+          Pen.Width = 2
         end
       end
       object pnSpline: TPanel
@@ -250,7 +256,7 @@ object Form1: TForm1
           Height = 21
           Top = 4
           Width = 50
-          Link.TIObject = ChartSplineSplineSeries1
+          Link.TIObject = ChartSplineBSplineSeries1
           Link.TIPropertyName = 'Degree'
           MinValue = 1
           OnChange = iseSplineDegreeChange
@@ -274,6 +280,29 @@ object Form1: TForm1
           Width = 36
           Caption = 'Degree'
           ParentColor = False
+        end
+        object cbCubic: TTICheckBox
+          Left = 324
+          Height = 23
+          Top = 4
+          Width = 90
+          Caption = 'Cubic'
+          Link.TIObject = ChartSplineCubicSplineSeries1
+          Link.TIPropertyName = 'Active'
+          PropertyNameAsCaption = False
+          State = cbChecked
+          TabOrder = 2
+        end
+        object cbBSpline: TTICheckBox
+          Left = 224
+          Height = 23
+          Top = 4
+          Width = 90
+          Caption = 'B-Spline'
+          Link.TIObject = ChartSplineBSplineSeries1
+          Link.TIPropertyName = 'Active'
+          PropertyNameAsCaption = False
+          TabOrder = 3
         end
       end
     end
@@ -306,9 +335,9 @@ object Form1: TForm1
     end
   end
   object RandomChartSource1: TRandomChartSource
-    PointsNumber = 20
+    PointsNumber = 21
     RandSeed = 1859411043
-    XMax = 9
+    XMax = 10
     XMin = 0
     YMax = 10
     YMin = -10
