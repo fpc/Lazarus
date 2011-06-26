@@ -28,7 +28,7 @@ unit TAGraph;
 interface
 
 uses
-  Graphics, Classes, Contnrs, Controls, LCLType, SysUtils,
+  Graphics, Classes, Controls, LCLType, SysUtils,
   TAChartAxis, TAChartUtils, TADrawUtils, TALegend, TATypes;
 
 type

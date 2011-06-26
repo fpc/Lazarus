@@ -97,7 +97,16 @@ type
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
-  TChartLegendItems = TObjectList;
+  { TChartLegendItems }
+
+  TChartLegendItems = class(TObjectList)
+  private
+    function GetItem(AIndex: Integer): TLegendItem;
+    procedure SetItem(AIndex: Integer; AValue: TLegendItem);
+  public
+    property Items[AIndex: Integer]: TLegendItem
+      read GetItem write SetItem; default;
+  end;
 
   TChartLegendBrush = class(TBrush)
   published
@@ -203,6 +212,18 @@ uses
 
 const
   SYMBOL_TEXT_SPACING = 4;
+
+{ TChartLegendItems }
+
+function TChartLegendItems.GetItem(AIndex: Integer): TLegendItem;
+begin
+  Result := TLegendItem(inherited GetItem(AIndex));
+end;
+
+procedure TChartLegendItems.SetItem(AIndex: Integer; AValue: TLegendItem);
+begin
+  inherited;
+end;
 
 { TLegendItem }
 
@@ -387,7 +408,7 @@ begin
         ADrawer.Pen := SymbolFrame
       else
         ADrawer.SetPenParams(psClear, clTAColor);
-      (AItems[i] as TLegendItem).Draw(ADrawer, r);
+      AItems[i].Draw(ADrawer, r);
       OffsetRect(r, 0, itemHeight + Spacing);
     end;
   finally
@@ -403,7 +424,7 @@ begin
   ADrawer.Font := Font;
   Result := Point(0, 0);
   for i := 0 to AItems.Count - 1 do
-    with ADrawer.TextExtent((AItems[i] as TLegendItem).FText) do begin
+    with ADrawer.TextExtent(AItems[i].FText) do begin
       Result.X := Max(X, Result.X);
       Result.Y := Max(Y, Result.Y);
     end;
