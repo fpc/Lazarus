@@ -73,7 +73,6 @@ type
     property MMWidth: Integer read FMMWidth write SetMMWidth;
   end;
 
-
   { TMetafileCanvas }
 
   TMetafileCanvas = class(TCanvas)

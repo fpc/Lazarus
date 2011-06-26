@@ -20,7 +20,7 @@ unit TADrawerSVG;
 interface
 
 uses
-  Classes, FPImage, FPCanvas, TADrawUtils;
+  Classes, FPImage, FPCanvas, TAChartUtils, TADrawUtils;
 
 type
 
@@ -90,7 +90,7 @@ type
 implementation
 
 uses
-  Math, SysUtils, TAChartUtils, TAGeometry;
+  Math, SysUtils, TAGeometry;
 
 const
   RECT_FMT =

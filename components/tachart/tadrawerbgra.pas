@@ -20,7 +20,7 @@ unit TADrawerBGRA;
 interface
 
 uses
-  BGRABitmap, BGRABitmapTypes, Classes, FPCanvas, TADrawUtils;
+  BGRABitmap, BGRABitmapTypes, Classes, FPCanvas, TAChartUtils, TADrawUtils;
 
 type
 
@@ -78,7 +78,7 @@ type
 implementation
 
 uses
-  TAChartUtils, TAGeometry;
+  TAGeometry;
 
 function PointsToPointsF(
   APoints: array of TPoint; AStartIndex, ANumPts: Integer): ArrayOfTPointF;

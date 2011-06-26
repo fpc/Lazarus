@@ -20,7 +20,7 @@ unit TADrawerFPVectorial;
 interface
 
 uses
-  Classes, FPCanvas, FPImage, FPVectorial, TADrawUtils;
+  Classes, FPCanvas, FPImage, FPVectorial, TAChartUtils, TADrawUtils;
 
 type
 
@@ -77,7 +77,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils, TAGeometry;
+  Math, TAGeometry;
 
 { TFPVectorialDrawer }
 

@@ -29,9 +29,6 @@ type
   EEditableSourceRequired = class(EChartError);
   EYCountError = class(EChartError);
 
-  // Like TColor, but avoiding dependency on Graphics.
-  TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
-
   { TChartDataItem }
 
   TChartDataItem = object

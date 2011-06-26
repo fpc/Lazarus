@@ -20,7 +20,7 @@ unit TADrawerAggPas;
 interface
 
 uses
-  Classes, FPCanvas, Agg_LCL, TADrawUtils;
+  Classes, FPCanvas, Agg_LCL, TAChartUtils, TADrawUtils;
 
 type
 
@@ -68,7 +68,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils, TAGeometry;
+  Math, TAGeometry;
 
 { TAggPasDrawer }
 

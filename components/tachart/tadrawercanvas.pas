@@ -21,7 +21,7 @@ unit TADrawerCanvas;
 interface
 
 uses
-  Classes, FPCanvas, FPImage, Graphics, SysUtils, TADrawUtils;
+  Classes, FPCanvas, FPImage, Graphics, SysUtils, TAChartUtils, TADrawUtils;
 
 type
   IChartTCanvasDrawer = interface
@@ -81,7 +81,7 @@ type
 implementation
 
 uses
-  TAChartUtils, TAGeometry;
+  TAGeometry;
 
 function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
 begin

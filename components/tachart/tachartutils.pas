@@ -42,6 +42,9 @@ type
   EListenerError = class(EChartError);
   EDrawDataError = class(EChartError);
 
+  // Like TColor, but avoiding dependency on Graphics.
+  TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
+
   TDoublePoint = record
     X, Y: Double;
   end;

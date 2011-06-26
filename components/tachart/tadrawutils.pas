@@ -21,11 +21,10 @@ unit TADrawUtils;
 interface
 
 uses
-  Classes, FPCanvas, FPImage, Types;
+  Classes, FPCanvas, FPImage, Types, TAChartUtils;
 
 type
   // Same types as in Graphics unit, but without dependency.
-  TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
   TChartAntialiasingMode = (amDontCare, amOn, amOff);
 
 type
@@ -155,7 +154,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils, TAGeometry;
+  Math, TAGeometry;
 
 const
   LINE_INTERVAL = 2;
