@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="TAChartLazarusPkg"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Luís Rodrigues (lr@neei.uevora.pt), Philippe Martinole, Alexander Klenin"/>
     <CompilerOptions>
       <Version Value="10"/>
       <PathDelim Value="\"/>
       <SearchPaths>
+        <OtherUnitFiles Value="numlib_fix"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
       <Parsing>
