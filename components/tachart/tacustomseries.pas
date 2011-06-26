@@ -320,14 +320,7 @@ begin
   else
     GetLegendItems(AItems);
   for i := oldCount to AItems.Count - 1 do
-    with AItems[i] do begin
-      if Font = nil then
-        Font := FChart.Legend.Font;
-      if GroupIndex = LEGEND_ITEM_NO_GROUP then
-        GroupIndex := Legend.GroupIndex;
-      if Order = LEGEND_ITEM_ORDER_AS_ADDED then
-        Order := Legend.Order;
-    end;
+    Legend.InitItem(AItems[i], i - oldCount, FChart.Legend);
 end;
 
 function TCustomChartSeries.GetNearestPoint(

@@ -39,6 +39,8 @@ type
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1FuncSeries1DrawLegend(
       ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; var AText: String);
+    procedure Chart1FuncSeries1LegendCreate(
+      AItem: TLegendItem; AIndex: Integer);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure rgAlignmentClick(Sender: TObject);
@@ -85,12 +87,19 @@ begin
   AY := Sin(AX * 2) + 7;
 end;
 
+procedure TForm1.Chart1FuncSeries1LegendCreate(
+  AItem: TLegendItem; AIndex: Integer);
+begin
+  AItem.Text := 'Function ' + IntToStr(AIndex);
+  if AIndex = 1 then
+    AItem.Order := 0;
+end;
+
 procedure TForm1.Chart1FuncSeries1DrawLegend(
   ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; var AText: String);
 var
   x, y0, w: Integer;
 begin
-  AText := 'Function ' + IntToStr(AIndex);
   ACanvas.Pen := Chart1FuncSeries1.Pen;
   y0 := (ARect.Top + ARect.Bottom) div 2;
   ACanvas.MoveTo(ARect.Left, y0);
@@ -105,6 +114,8 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   i: Integer;
 begin
+  // Workaround for issue #19632
+  Chart1FuncSeries1.Legend.OnCreate := @Chart1FuncSeries1LegendCreate;
   FItems := Chart1.GetLegendItems;
   Chart1.Legend.SortItemsByOrder(FItems);
   for i := 1 to FItems.Count do

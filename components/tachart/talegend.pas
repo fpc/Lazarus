@@ -34,7 +34,7 @@ type
   { TLegendItem }
 
   TLegendItem = class
-  private
+  strict private
     FColor: TColor;
     FFont: TFont;
     FGroupIndex: Integer;
@@ -50,7 +50,7 @@ type
     property Font: TFont read FFont write FFont;
     property GroupIndex: Integer read FGroupIndex write FGroupIndex;
     property Order: Integer read FOrder write FOrder;
-    property Text: String read FText;
+    property Text: String read FText write FText;
   end;
 
   { TLegendItemGroupTitle }
@@ -202,24 +202,31 @@ type
 
   TLegendMultiplicity = (lmSingle, lmPoint);
 
+  TLegendItemCreateEvent = procedure (
+    AItem: TLegendItem; AIndex: Integer) of object;
+
   { TChartSeriesLegend }
 
   TChartSeriesLegend = class(TChartElement)
   private
     FGroupIndex: Integer;
     FMultiplicity: TLegendMultiplicity;
+    FOnCreate: TLegendItemCreateEvent;
     FOnDraw: TLegendItemDrawEvent;
     FOrder: Integer;
     FUserItemsCount: Integer;
     procedure SetGroupIndex(AValue: Integer);
     procedure SetMultiplicity(AValue: TLegendMultiplicity);
     procedure SetOnDraw(AValue: TLegendItemDrawEvent);
+    procedure SetOnCreate(AValue: TLegendItemCreateEvent);
     procedure SetOrder(AValue: Integer);
     procedure SetUserItemsCount(AValue: Integer);
   public
     constructor Create(AOwner: TCustomChart);
   public
     procedure Assign(Source: TPersistent); override;
+    procedure InitItem(
+      AItem: TLegendItem; AIndex: Integer; ALegend: TChartLegend);
   published
     property GroupIndex: Integer
       read FGroupIndex write SetGroupIndex default LEGEND_ITEM_NO_GROUP;
@@ -232,6 +239,7 @@ type
     property Visible default true;
 
   published
+    property OnCreate: TLegendItemCreateEvent read FOnCreate write SetOnCreate;
     property OnDraw: TLegendItemDrawEvent read FOnDraw write SetOnDraw;
   end;
 
@@ -318,9 +326,13 @@ end;
 procedure TLegendItemUserDrawn.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   ic: IChartTCanvasDrawer;
+  t: String;
 begin
-  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDraw) then
-    FOnDraw(ic.Canvas, ARect, FIndex, FText);
+  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDraw) then begin
+    t := Text;
+    FOnDraw(ic.Canvas, ARect, FIndex, t);
+    Text := t;
+  end;
   inherited Draw(ADrawer, ARect);
 end;
 
@@ -670,6 +682,19 @@ begin
   FUserItemsCount := 1;
 end;
 
+procedure TChartSeriesLegend.InitItem(
+  AItem: TLegendItem; AIndex: Integer; ALegend: TChartLegend);
+begin
+  if Assigned(OnCreate) then
+    OnCreate(AItem, AIndex);
+  if AItem.Font = nil then
+    AItem.Font := ALegend.Font;
+  if AItem.GroupIndex = LEGEND_ITEM_NO_GROUP then
+    AItem.GroupIndex := GroupIndex;
+  if AItem.Order = LEGEND_ITEM_ORDER_AS_ADDED then
+    AItem.Order := Order;
+end;
+
 procedure TChartSeriesLegend.SetGroupIndex(AValue: Integer);
 begin
   if FGroupIndex = AValue then exit;
@@ -688,6 +713,13 @@ procedure TChartSeriesLegend.SetOnDraw(AValue: TLegendItemDrawEvent);
 begin
   if TMethod(FOnDraw) = TMethod(AValue) then exit;
   FOnDraw := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartSeriesLegend.SetOnCreate(AValue: TLegendItemCreateEvent);
+begin
+  if TMethod(FOnCreate) = TMethod(AValue) then exit;
+  FOnCreate := AValue;
   StyleChanged(Self);
 end;
 
