@@ -96,9 +96,9 @@ type
 
   TSplineDegree = 1..100;
 
-  { TSplineSeries }
+  { TBSplineSeries }
 
-  TSplineSeries = class(TBasicPointSeries)
+  TBSplineSeries = class(TBasicPointSeries)
   private
     FDegree: TSplineDegree;
     FPen: TChartPen;
@@ -405,12 +405,12 @@ begin
   UpdateParentChart;
 end;
 
-{ TSplineSeries }
+{ TBSplineSeries }
 
-procedure TSplineSeries.Assign(ASource: TPersistent);
+procedure TBSplineSeries.Assign(ASource: TPersistent);
 begin
-  if ASource is TSplineSeries then
-    with TSplineSeries(ASource) do begin
+  if ASource is TBSplineSeries then
+    with TBSplineSeries(ASource) do begin
       Self.FDegree := FDegree;
       Self.Pen := FPen;
       Self.FStep := FStep;
@@ -418,7 +418,7 @@ begin
   inherited Assign(ASource);
 end;
 
-constructor TSplineSeries.Create(AOwner: TComponent);
+constructor TBSplineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDegree := DEF_SPLINE_DEGREE;
@@ -427,13 +427,13 @@ begin
   FStep := DEF_SPLINE_STEP;
 end;
 
-destructor TSplineSeries.Destroy;
+destructor TBSplineSeries.Destroy;
 begin
   FreeAndNil(FPen);
   inherited;
 end;
 
-procedure TSplineSeries.Draw(ADrawer: IChartDrawer);
+procedure TBSplineSeries.Draw(ADrawer: IChartDrawer);
 var
   p: array of TDoublePoint;
   startIndex: Integer;
@@ -507,26 +507,26 @@ begin
   DrawLabels(ADrawer);
 end;
 
-procedure TSplineSeries.GetLegendItems(AItems: TChartLegendItems);
+procedure TBSplineSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
-procedure TSplineSeries.SetDegree(AValue: TSplineDegree);
+procedure TBSplineSeries.SetDegree(AValue: TSplineDegree);
 begin
   if FDegree = AValue then exit;
   FDegree := AValue;
   UpdateParentChart;
 end;
 
-procedure TSplineSeries.SetPen(AValue: TChartPen);
+procedure TBSplineSeries.SetPen(AValue: TChartPen);
 begin
   if FPen = AValue then exit;
   FPen.Assign(AValue);
   UpdateParentChart;
 end;
 
-procedure TSplineSeries.SetStep(AValue: TFuncSeriesStep);
+procedure TBSplineSeries.SetStep(AValue: TFuncSeriesStep);
 begin
   if FStep = AValue then exit;
   FStep := AValue;
@@ -735,7 +735,7 @@ end;
 
 initialization
   RegisterSeriesClass(TFuncSeries, 'Function series');
-  RegisterSeriesClass(TSplineSeries, 'Spline series');
+  RegisterSeriesClass(TBSplineSeries, 'B-Spline series');
   RegisterSeriesClass(TColorMapSeries, 'Color map series');
 
 end.
