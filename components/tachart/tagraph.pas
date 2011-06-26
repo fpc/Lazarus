@@ -705,6 +705,7 @@ begin
   FTitle.Draw(ADrawer, 1, c, FClipRect.Top);
   FFoot.Draw(ADrawer, -1, c, FClipRect.Bottom);
 
+  ldd.FItems := nil;
   if Legend.Visible then
     ldd := PrepareLegend(ADrawer, FClipRect);
   try
