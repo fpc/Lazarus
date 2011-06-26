@@ -62,7 +62,7 @@ type
   end;
 
   TLegendItemDrawEvent = procedure (
-    ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; var AText: String
+    ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; AItem: TLegendItem
   ) of object;
 
   { TLegendItemUserDrawn }
@@ -326,13 +326,9 @@ end;
 procedure TLegendItemUserDrawn.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   ic: IChartTCanvasDrawer;
-  t: String;
 begin
-  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDraw) then begin
-    t := Text;
-    FOnDraw(ic.Canvas, ARect, FIndex, t);
-    Text := t;
-  end;
+  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDraw) then
+    FOnDraw(ic.Canvas, ARect, FIndex, Self);
   inherited Draw(ADrawer, ARect);
 end;
 

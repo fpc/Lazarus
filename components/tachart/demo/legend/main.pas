@@ -38,7 +38,7 @@ type
     procedure cbUseSidebarChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1FuncSeries1DrawLegend(
-      ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; var AText: String);
+      ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; AItem: TLegendItem);
     procedure Chart1FuncSeries1LegendCreate(
       AItem: TLegendItem; AIndex: Integer);
     procedure FormCreate(Sender: TObject);
@@ -96,7 +96,7 @@ begin
 end;
 
 procedure TForm1.Chart1FuncSeries1DrawLegend(
-  ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; var AText: String);
+  ACanvas: TCanvas; const ARect: TRect; AIndex: Integer; AItem: TLegendItem);
 var
   x, y0, w: Integer;
 begin
