@@ -143,29 +143,15 @@ procedure TLegendItemPie.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 const
   INDEX_TO_ANGLE = 360 * 16 / Length(FColors);
 var
-  c: TPoint;
-  w, h: Integer;
-  r: TRect;
   i: Integer;
 begin
   inherited Draw(ADrawer, ARect);
-  c := CenterPoint(ARect);
-  r := ARect;
-  w := Abs(r.Right - r.Left);
-  h := Abs(r.Bottom - r.Top);
-  if w > h then begin
-    r.Left := c.X - h div 2;
-    r.Right := c.X + h div 2;
-  end
-  else begin
-    r.Top := c.Y - w div 2;
-    r.Bottom := c.Y + w div 2;
-  end;
   for i := 0 to High(FColors) do begin
     ADrawer.SetBrushColor(FColors[i]);
-    ADrawer.RadialPie(
-      r.Left, r.Top, r.Right, r.Bottom,
-      Round(i * INDEX_TO_ANGLE), Round(INDEX_TO_ANGLE));
+    with MakeSquare(ARect) do
+      ADrawer.RadialPie(
+        Left, Top, Right, Bottom,
+        Round(i * INDEX_TO_ANGLE), Round(INDEX_TO_ANGLE));
   end;
 end;
 

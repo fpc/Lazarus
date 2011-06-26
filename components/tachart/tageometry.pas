@@ -46,6 +46,7 @@ function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
 procedure NormalizeRect(var ARect: TRect); overload;
 procedure NormalizeRect(var ARect: TDoubleRect); overload;
+function MakeSquare(const ARect: TRect): TRect;
 function MeasureRotatedRect(const ASize: TPoint; AAngle: Double): TSize;
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
@@ -280,6 +281,25 @@ begin
     cotBoth: exit(false);
   end;
   Result := true;
+end;
+
+function MakeSquare(const ARect: TRect): TRect;
+var
+  c: TPoint;
+  w, h: Integer;
+begin
+  c := CenterPoint(ARect);
+  Result := ARect;
+  w := Abs(Result.Right - Result.Left);
+  h := Abs(Result.Bottom - Result.Top);
+  if w > h then begin
+    Result.Left := c.X - h div 2;
+    Result.Right := c.X + h div 2;
+  end
+  else begin
+    Result.Top := c.Y - w div 2;
+    Result.Bottom := c.Y + w div 2;
+  end;
 end;
 
 function MeasureRotatedRect(const ASize: TPoint; AAngle: Double): TSize;
