@@ -311,13 +311,18 @@ end;
 
 procedure TCustomChartSeries.GetLegendItemsBasic(AItems: TChartLegendItems);
 var
-  i: Integer;
+  i, oldCount: Integer;
 begin
+  oldCount := AItems.Count;
   if Assigned(Legend.OnDraw) then
     for i := 0 to Legend.UserItemsCount - 1 do
       AItems.Add(TLegendItemUserDrawn.Create(i, Legend.OnDraw, Title))
   else
     GetLegendItems(AItems);
+  for i := oldCount to AItems.Count - 1 do
+    with AItems[i] do
+      if Order = LEGEND_ITEM_ORDER_AS_ADDED then
+        Order := Legend.Order;
 end;
 
 function TCustomChartSeries.GetNearestPoint(

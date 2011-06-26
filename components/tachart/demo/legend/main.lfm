@@ -60,8 +60,9 @@ object Form1: TForm1
       Source = ListChartSource2
     end
     object Chart1FuncSeries1: TFuncSeries
-      Legend.OnDraw = Chart1FuncSeries1DrawLegend
+      Legend.Order = 0
       Legend.UserItemsCount = 2
+      Legend.OnDraw = Chart1FuncSeries1DrawLegend
       Extent.XMax = 5
       Extent.UseXMin = True
       Extent.UseXMax = True

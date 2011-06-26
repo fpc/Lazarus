@@ -27,6 +27,7 @@ const
   DEF_LEGEND_SPACING = 4;
   DEF_LEGEND_MARGIN = 4;
   DEF_LEGEND_SYMBOL_WIDTH = 20;
+  LEGEND_ITEM_ORDER_AS_ADDED = -1;
 
 type
   { TLegendItem }
@@ -34,12 +35,14 @@ type
   TLegendItem = class
   private
     FColor: TColor;
+    FOrder: Integer;
     FText: String;
   public
     constructor Create(const AText: String; AColor: TColor = clTAColor);
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); virtual;
   public
     property Color: TColor read FColor write FColor;
+    property Order: Integer read FOrder write FOrder;
   end;
 
   TLegendItemDrawEvent = procedure (
@@ -181,9 +184,11 @@ type
   private
     FMultiplicity: TLegendMultiplicity;
     FOnDraw: TLegendItemDrawEvent;
+    FOrder: Integer;
     FUserItemsCount: Integer;
     procedure SetMultiplicity(AValue: TLegendMultiplicity);
     procedure SetOnDraw(AValue: TLegendItemDrawEvent);
+    procedure SetOrder(AValue: Integer);
     procedure SetUserItemsCount(AValue: Integer);
   public
     constructor Create(AOwner: TCustomChart);
@@ -192,11 +197,17 @@ type
   published
     property Multiplicity: TLegendMultiplicity
       read FMultiplicity write SetMultiplicity default lmSingle;
-    property OnDraw: TLegendItemDrawEvent read FOnDraw write SetOnDraw;
+    property Order: Integer
+      read FOrder write SetOrder default LEGEND_ITEM_ORDER_AS_ADDED;
     property UserItemsCount: Integer
       read FUserItemsCount write SetUserItemsCount default 1;
     property Visible default true;
+
+  published
+    property OnDraw: TLegendItemDrawEvent read FOnDraw write SetOnDraw;
   end;
+
+  function LegendItemCompare(AItem1, AItem2: Pointer): Integer;
 
 implementation
 
@@ -205,6 +216,11 @@ uses
 
 const
   SYMBOL_TEXT_SPACING = 4;
+
+function LegendItemCompare(AItem1, AItem2: Pointer): Integer;
+begin
+  Result := Sign(TLegendItem(AItem1).Order - TLegendItem(AItem2).Order);
+end;
 
 { TChartLegendItems }
 
@@ -223,6 +239,7 @@ end;
 constructor TLegendItem.Create(const AText: String; AColor: TColor);
 begin
   FColor := AColor;
+  FOrder := LEGEND_ITEM_ORDER_AS_ADDED;
   FText := AText;
 end;
 
@@ -548,6 +565,7 @@ end;
 constructor TChartSeriesLegend.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FOrder := LEGEND_ITEM_ORDER_AS_ADDED;
   FVisible := true;
   FUserItemsCount := 1;
 end;
@@ -563,6 +581,13 @@ procedure TChartSeriesLegend.SetOnDraw(AValue: TLegendItemDrawEvent);
 begin
   if TMethod(FOnDraw) = TMethod(AValue) then exit;
   FOnDraw := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartSeriesLegend.SetOrder(AValue: Integer);
+begin
+  if FOrder = AValue then exit;
+  FOrder := AValue;
   StyleChanged(Self);
 end;
 
