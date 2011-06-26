@@ -680,6 +680,14 @@ msgstr "Žinyno duomenų bazė %s%s%s nerado žiūryklės %s tipo žinyno lapui.
 msgid "Help Database %s%s%s not found"
 msgstr "Žinyno duomenų bazė %s%s%s nerasta."
 
+#: lclstrconsts.rshelphelpdirectivenotfound
+msgid "Help directive %s%s%s not found."
+msgstr ""
+
+#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
+msgid "Help directive %s%s%s not found in Database %s%s%s."
+msgstr ""
+
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
 msgstr "Žinyno raktažodis %s%s%s nerastas."

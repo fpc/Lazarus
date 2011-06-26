@@ -678,6 +678,14 @@ msgstr "La base de dades de l'ajuda %s%s%s no ha trobat un visor per una pàgina
 msgid "Help Database %s%s%s not found"
 msgstr "Base de dades de l'ajuda %s%s%s no trobada"
 
+#: lclstrconsts.rshelphelpdirectivenotfound
+msgid "Help directive %s%s%s not found."
+msgstr ""
+
+#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
+msgid "Help directive %s%s%s not found in Database %s%s%s."
+msgstr ""
+
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
 msgstr "Paraula clau d'ajuda %s%s%s no trobada"

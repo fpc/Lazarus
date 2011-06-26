@@ -676,6 +676,14 @@ msgstr "La base de datos de ayuda %s%s%s no encontró un visor para el tipo de p
 msgid "Help Database %s%s%s not found"
 msgstr "Base de datos de ayuda %s%s%s no encotrada"
 
+#: lclstrconsts.rshelphelpdirectivenotfound
+msgid "Help directive %s%s%s not found."
+msgstr ""
+
+#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
+msgid "Help directive %s%s%s not found in Database %s%s%s."
+msgstr ""
+
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
 msgstr "Clave de ayuda %s%s%s no encontrada"

@@ -141,6 +141,7 @@ var
 
 var
   FPCKeyWordHelpPrefix: string = 'FPCKeyword_';
+  FPCDirectiveHelpPrefix: string = 'FPCDirective_';
 
 implementation
 

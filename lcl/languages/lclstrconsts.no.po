@@ -680,6 +680,14 @@ msgstr "Hjelp-database %s%s%s fant ingen viser for en hjelpeside av type %s"
 msgid "Help Database %s%s%s not found"
 msgstr "Hjelp-database %s%s%s ikke funnet"
 
+#: lclstrconsts.rshelphelpdirectivenotfound
+msgid "Help directive %s%s%s not found."
+msgstr ""
+
+#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
+msgid "Help directive %s%s%s not found in Database %s%s%s."
+msgstr ""
+
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
 msgstr "Hjelp-nøkkelord %s%s%s ikke funnet."

@@ -101,6 +101,18 @@ type
   end;
 
 
+  { THelpQueryDirective }
+
+  THelpQueryDirective = class(THelpQuery)
+  private
+    FDirective: string;
+  public
+    constructor Create(const TheHelpDatabaseID: THelpDatabaseID;
+                       const TheDirective: string);
+    property Directive: string read FDirective write FDirective;
+  end;
+
+
   { THelpQuerySourcePosition }
 
   THelpQuerySourcePosition = class(THelpQuery)
@@ -202,6 +214,8 @@ type
                                 var ErrMsg: string): TShowHelpResult; virtual;
     function ShowHelpForKeyword(Query: THelpQueryKeyword;
                                 var ErrMsg: string): TShowHelpResult; virtual;
+    function ShowHelpForDirective(Query: THelpQueryDirective;
+                                var ErrMsg: string): TShowHelpResult; virtual;
     function ShowHelpForPascalContexts(Query: THelpQueryPascalContexts;
                                        var ErrMsg: string): TShowHelpResult; virtual;
     function ShowHelpForSourcePosition(Query: THelpQuerySourcePosition;
@@ -247,6 +261,12 @@ function ShowHelpOrErrorForKeyword(HelpDatabaseID: THelpDatabaseID;
 function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
   const HelpKeyword: string; var ErrMsg: string): TShowHelpResult; overload;
 function ShowHelpForKeyword(const HelpKeyword: string; var ErrMsg: string
+  ): TShowHelpResult; overload;
+
+// help by compiler directive
+function ShowHelpForDirective(HelpDatabaseID: THelpDatabaseID;
+  const HelpDirective: string; var ErrMsg: string): TShowHelpResult; overload;
+function ShowHelpForDirective(const HelpDirective: string; var ErrMsg: string
   ): TShowHelpResult; overload;
 
 // help for pascal sources
@@ -339,6 +359,20 @@ begin
   Result:=ShowHelpForKeyword('',HelpKeyword,ErrMsg);
 end;
 
+function ShowHelpForDirective(HelpDatabaseID: THelpDatabaseID;
+  const HelpDirective: string; var ErrMsg: string): TShowHelpResult;
+begin
+  Result:=HelpManager.ShowHelpForQuery(
+            THelpQueryDirective.Create(HelpDatabaseID,HelpDirective),
+            true,ErrMsg);
+end;
+
+function ShowHelpForDirective(const HelpDirective: string;
+  var ErrMsg: string): TShowHelpResult;
+begin
+  Result:=ShowHelpForDirective('',HelpDirective,ErrMsg);
+end;
+
 function ShowHelpForPascalContexts(const Filename: string;
   const SourcePosition: TPoint; ListOfPascalHelpContextList: TList;
   var ErrMsg: string): TShowHelpResult;
@@ -428,6 +462,15 @@ const
     );
 begin
   Result:=ResultNames[HelpResult];
+end;
+
+{ THelpQueryDirective }
+
+constructor THelpQueryDirective.Create(
+  const TheHelpDatabaseID: THelpDatabaseID; const TheDirective: string);
+begin
+  inherited Create(TheHelpDatabaseID);
+  FDirective := TheDirective;
 end;
 
 { THelpQuery }
@@ -527,6 +570,12 @@ begin
 end;
 
 function THelpManager.ShowHelpForKeyword(Query: THelpQueryKeyword;
+  var ErrMsg: string): TShowHelpResult;
+begin
+  Result:=DoHelpNotFound(ErrMsg);
+end;
+
+function THelpManager.ShowHelpForDirective(Query: THelpQueryDirective;
   var ErrMsg: string): TShowHelpResult;
 begin
   Result:=DoHelpNotFound(ErrMsg);

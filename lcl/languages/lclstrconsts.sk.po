@@ -681,6 +681,14 @@ msgstr "Databáza pomoci %s%s%s nenašla zobrazovač pre stránku pomocníka typ
 msgid "Help Database %s%s%s not found"
 msgstr "Databáza pomoci %s%s%s nenájdená"
 
+#: lclstrconsts.rshelphelpdirectivenotfound
+msgid "Help directive %s%s%s not found."
+msgstr ""
+
+#: lclstrconsts.rshelphelpdirectivenotfoundindatabase
+msgid "Help directive %s%s%s not found in Database %s%s%s."
+msgstr ""
+
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
 msgstr "Kľúčové slovo pomoci %s%s%s nenájdené."

@@ -350,6 +350,9 @@ type
     function GetNodesForKeyword(const HelpKeyword: string;
                                 var ListOfNodes: THelpNodeQueryList;
                                 var ErrMsg: string): TShowHelpResult; virtual;
+    function GetNodesForDirective(const HelpDirective: string;
+                                var ListOfNodes: THelpNodeQueryList;
+                                var ErrMsg: string): TShowHelpResult; virtual;
     function GetNodesForContext(HelpContext: THelpContext;
                                 var ListOfNodes: THelpNodeQueryList;
                                 var ErrMsg: string): TShowHelpResult; virtual;
@@ -430,6 +433,8 @@ type
                                 var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpForKeyword(Query: THelpQueryKeyword;
                                 var ErrMsg: string): TShowHelpResult; override;
+    function ShowHelpForDirective(Query: THelpQueryDirective;
+                                var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpForPascalContexts(Query: THelpQueryPascalContexts;
                                        var ErrMsg: string): TShowHelpResult; override;
     function ShowHelpForSourcePosition(Query: THelpQuerySourcePosition;
@@ -444,6 +449,9 @@ type
                       var ErrMsg: string): TShowHelpResult; override;
     // search registered items in all databases
     function GetNodesForKeyword(const HelpKeyword: string;
+                                var ListOfNodes: THelpNodeQueryList;
+                                var ErrMsg: string): TShowHelpResult; virtual;
+    function GetNodesForDirective(const HelpDirective: string;
                                 var ListOfNodes: THelpNodeQueryList;
                                 var ErrMsg: string): TShowHelpResult; virtual;
     function GetNodesForContext(HelpContext: THelpContext;
@@ -1072,6 +1080,28 @@ begin
   end;
 end;
 
+function THelpDatabase.GetNodesForDirective(const HelpDirective: string;
+  var ListOfNodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
+// if ListOfNodes<>nil new nodes will be appended
+// if ListOfNodes=nil and nodes exists a new list will be created
+var
+  i: Integer;
+  Node: THelpNode;
+begin
+  Result:=shrSuccess;
+  ErrMsg:='';
+  if csDesigning in ComponentState then exit;
+  // add the registered nodes
+  if FSearchItems<>nil then begin
+    for i:=0 to FSearchItems.Count-1 do begin
+      Node:=THelpDBItem(FSearchItems[i]).Node;
+      if (Node=nil) or (not Node.IDValid) then continue;
+      if AnsiCompareText(Node.ID,HelpDirective)<>0 then continue;
+      CreateNodeQueryListAndAdd(Node,nil,ListOfNodes,true);
+    end;
+  end;
+end;
+
 function THelpDatabase.GetNodesForContext(HelpContext: THelpContext;
   var ListOfNodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
 // if ListOfNodes<>nil new nodes will be appended
@@ -1520,6 +1550,8 @@ begin
       Result:=ShowHelpForContext(THelpQueryContext(Query),ErrMsg)
     else if Query is THelpQueryKeyword then
       Result:=ShowHelpForKeyword(THelpQueryKeyword(Query),ErrMsg)
+    else if Query is THelpQueryDirective then
+      Result:=ShowHelpForDirective(THelpQueryDirective(Query),ErrMsg)
     else if Query is THelpQuerySourcePosition then
       Result:=ShowHelpForSourcePosition(THelpQuerySourcePosition(Query),ErrMsg)
     else if Query is THelpQueryMessage then
@@ -1603,6 +1635,45 @@ begin
           '"', '"', Query.HelpDatabaseID, '"'])
       else
         ErrMsg:=Format(rsHelpHelpKeywordNotFound, ['"',Query.Keyword,'"']);
+      exit;
+    end;
+
+    Result:=ShowHelpForNodes(Query,Nodes,ErrMsg);
+  finally
+    Nodes.Free;
+  end;
+end;
+
+function THelpDatabases.ShowHelpForDirective(Query: THelpQueryDirective;
+  var ErrMsg: string): TShowHelpResult;
+var
+  Nodes: THelpNodeQueryList;
+  HelpDB: THelpDatabase;
+begin
+  ErrMsg:='';
+  Result:=shrHelpNotFound;
+
+  // search node
+  Nodes:=nil;
+  try
+    if Query.HelpDatabaseID<>'' then begin
+      HelpDB:=nil;
+      if not GetDatabase(Query.HelpDatabaseID,HelpDB,Result,ErrMsg) then exit;
+      Result:=HelpDB.GetNodesForKeyword(Query.Directive,Nodes,ErrMsg);
+      if Result<>shrSuccess then exit;
+    end else begin
+      Result:=GetNodesForDirective(Query.Directive,Nodes,ErrMsg);
+      if Result<>shrSuccess then exit;
+    end;
+
+    // check if at least one node found
+    if (Nodes=nil) or (Nodes.Count=0) then begin
+      Result:=shrContextNotFound;
+      if Query.HelpDatabaseID<>'' then
+        ErrMsg:=Format(rsHelpHelpDirectiveNotFoundInDatabase, ['"',Query.Directive,
+          '"', '"', Query.HelpDatabaseID, '"'])
+      else
+        ErrMsg:=Format(rsHelpHelpDirectiveNotFound, ['"',Query.Directive,'"']);
       exit;
     end;
 
@@ -1752,6 +1823,21 @@ begin
   ErrMsg:='';
   for i:=Count-1 downto 0 do begin
     Result:=Items[i].GetNodesForKeyword(HelpKeyword,ListOfNodes,ErrMsg);
+    if Result<>shrSuccess then exit;
+  end;
+end;
+
+function THelpDatabases.GetNodesForDirective(const HelpDirective: string;
+  var ListOfNodes: THelpNodeQueryList; var ErrMsg: string): TShowHelpResult;
+// if ListOfNodes<>nil then new nodes will be appended
+// if ListOfNodes=nil and nodes exists a new list will be created
+var
+  i: Integer;
+begin
+  Result:=shrSuccess;
+  ErrMsg:='';
+  for i:=Count-1 downto 0 do begin
+    Result:=Items[i].GetNodesForDirective(HelpDirective,ListOfNodes,ErrMsg);
     if Result<>shrSuccess then exit;
   end;
 end;

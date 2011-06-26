@@ -397,6 +397,9 @@ resourceString
   rsHelpHelpKeywordNotFoundInDatabase = 'Help keyword %s%s%s not found in '
     +'Database %s%s%s.';
   rsHelpHelpKeywordNotFound = 'Help keyword %s%s%s not found.';
+  rsHelpHelpDirectiveNotFoundInDatabase = 'Help directive %s%s%s not found in '
+    +'Database %s%s%s.';
+  rsHelpHelpDirectiveNotFound = 'Help directive %s%s%s not found.';
   rsHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
     +'Database %s%s%s.';
   rsHelpHelpContextNotFound = 'Help context %s not found.';
