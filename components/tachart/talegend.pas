@@ -306,7 +306,7 @@ procedure TLegendItemBrushRect.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 begin
   inherited Draw(ADrawer, ARect);
   if FBrush = nil then
-    ADrawer.SetBrushParams(bsSolid, IfThen(Color = clTAColor, clRed, Color))
+    ADrawer.SetBrushParams(bsSolid, ColorDef(Color, clRed))
   else begin
     ADrawer.Brush := FBrush;
     if Color <> clTAColor then

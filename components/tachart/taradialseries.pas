@@ -132,13 +132,9 @@ uses
 procedure TLegendItemPieSlice.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 const
   ANGLE = 30 * 16;
-var
-  bc: TChartColor = clRed;
 begin
   inherited Draw(ADrawer, ARect);
-  if Color <> clTAColor then
-    bc := Color;
-  ADrawer.SetBrushParams(bsSolid, bc);
+  ADrawer.SetBrushParams(bsSolid, ColorDef(Color, clRed));
   ADrawer.RadialPie(
     2 * ARect.Left - ARect.Right, ARect.Top, ARect.Right, ARect.Bottom,
     -ANGLE, 2 * ANGLE);
@@ -307,13 +303,12 @@ end;
 
 function TCustomPieSeries.SliceColor(AIndex: Integer): TColor;
 const
-  SLICE_COLORS: array [1..15] of TColor = (
+  SLICE_COLORS: array [0..14] of TColor = (
     clRed, clGreen, clYellow, clBlue, clWhite, clGray, clFuchsia,
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
 begin
-  Result :=
-    ColorOrDefault(
-      Source[AIndex]^.Color, SLICE_COLORS[AIndex mod High(SLICE_COLORS) + 1]);
+  Result := ColorDef(
+    Source[AIndex]^.Color, SLICE_COLORS[AIndex mod Length(SLICE_COLORS)]);
 end;
 
 function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;

@@ -124,7 +124,6 @@ type
     procedure AfterAdd; override;
     procedure AfterDraw; override;
     procedure BeforeDraw; override;
-    function ColorOrDefault(AColor: TColor; ADefault: TColor = clTAColor): TColor;
     procedure GetBounds(var ABounds: TDoubleRect); override;
     function GetGraphPoint(AIndex: Integer): TDoublePoint;
     function GetGraphPointX(AIndex: Integer): Double; inline;
@@ -507,15 +506,6 @@ begin
   ListSource.Clear;
 end;
 
-function TChartSeries.ColorOrDefault(AColor: TColor; ADefault: TColor): TColor;
-begin
-  Result := AColor;
-  if Result <> clTAColor then exit;
-  Result := ADefault;
-  if Result <> clTAColor then exit;
-  Result := GetSeriesColor;
-end;
-
 function TChartSeries.Count: Integer;
 begin
   Result := Source.Count;
@@ -570,7 +560,7 @@ end;
 
 function TChartSeries.GetColor(AIndex: Integer): TColor;
 begin
-  Result := ColorOrDefault(Source[AIndex]^.Color);
+  Result := ColorDef(Source[AIndex]^.Color, GetSeriesColor);
 end;
 
 function TChartSeries.GetGraphPoint(AIndex: Integer): TDoublePoint;

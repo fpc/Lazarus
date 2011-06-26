@@ -150,6 +150,7 @@ type
 
   function ChartColorToFPColor(AChartColor: TChartColor): TFPColor;
   function FPColorToChartColor(AFPColor: TFPColor): TChartColor;
+  function ColorDef(AColor, ADefaultColor: TChartColor): TChartColor; inline;
 
 implementation
 
@@ -184,6 +185,11 @@ begin
     ((AFPColor.red shr 8) and $FF) or
     (AFPColor.green and $FF00) or
     ((AFPColor.blue shl 8) and $FF0000);
+end;
+
+function ColorDef(AColor, ADefaultColor: TChartColor): TChartColor;
+begin
+  Result := IfThen(AColor = clTAColor, ADefaultColor, AColor);
 end;
 
 { TChartTextOut }
