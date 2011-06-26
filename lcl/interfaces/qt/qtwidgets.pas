@@ -5063,6 +5063,11 @@ var
   AState: QtWindowStates;
   AOldState: QtWindowStates;
   CanSendEvent: Boolean;
+  {$IFDEF MSWINDOWS}
+  i: Integer;
+  AForm: TCustomForm;
+  w: QWidgetH;
+  {$ENDIF}
   {$IFDEF HASX11}
   IsMinimizeEvent: Boolean;
   {$ENDIF}
@@ -5122,12 +5127,58 @@ begin
         AStateEvent := QWindowStateChangeEventH(Event);
         AOldState := QWindowStateChangeEvent_oldState(AStateEvent);
         if AState and QtWindowMinimized <> 0 then
-          Application.IntfAppMinimize
+        begin
+          {$IFDEF MSWINDOWS}
+          for i := 0 to Screen.CustomFormZOrderCount - 1 do
+          begin
+            AForm := Screen.CustomFormsZOrdered[i];
+            if (AForm <> Application.MainForm) and
+              (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and
+              AForm.HandleAllocated and AForm.Visible then
+            begin
+              W := TQtWidget(AForm.Handle).Widget;
+              if not QWidget_isMinimized(W) then
+              begin
+                TQtWidget(AForm.Handle).BeginUpdate;
+                try
+                  QWidget_showMinimized(W);
+                finally
+                  TQtWidget(AForm.Handle).EndUpdate;
+                end;
+              end;
+            end;
+          end;
+          {$ENDIF}
+          Application.IntfAppMinimize;
+        end
         else
         if (AOldState and QtWindowMinimized <> 0) or
           (AOldState and QtWindowMaximized <> 0) or
           (AOldState and QtWindowFullScreen <> 0) then
         begin
+          {$IFDEF MSWINDOWS}
+          for i := 0 to Screen.CustomFormZOrderCount - 1 do
+          begin
+            AForm := Screen.CustomFormsZOrdered[i];
+            if (AForm <> Application.MainForm) and
+              (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and
+              AForm.HandleAllocated and AForm.Visible then
+            begin
+              W := TQtWidget(AForm.Handle).Widget;
+              if QWidget_isMinimized(W) then
+              begin
+                TQtWidget(AForm.Handle).BeginUpdate;
+                try
+                  QWidget_showNormal(W);
+                finally
+                  TQtWidget(AForm.Handle).EndUpdate;
+                end;
+              end;
+            end;
+          end;
+          Application.IntfAppRestore;
+          {$ELSE}
+
           {$IFDEF HASX11}
           // do not activate lazarus app if it wasn't active during
           // pager switch !
@@ -5136,10 +5187,19 @@ begin
           else
           {$ENDIF}
             Application.IntfAppRestore;
+          {$ENDIF}
         end;
       end;
       if CanSendEvent then
+      begin
+        {$IFDEF MSWINDOWS}
+        AForm := TCustomForm(LCLObject);
+        if (AForm.FormStyle in [fsStayOnTop, fsSystemStayOnTop]) and InUpdate then
+          // do not trigger LCL
+        else
+        {$ENDIF}
         SlotWindowStateChange;
+      end;
     end;
     QEventDrop,
     QEventDragMove,
