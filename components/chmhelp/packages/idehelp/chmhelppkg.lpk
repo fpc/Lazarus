@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="ChmHelpPkg"/>
     <CompilerOptions>
       <Version Value="10"/>
@@ -13,11 +13,14 @@
         </SyntaxOptions>
       </Parsing>
       <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Version Minor="1"/>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="lazchmhelp.pas"/>
         <HasRegisterProc Value="True"/>
@@ -29,8 +32,12 @@
       </Item2>
       <Item3>
         <Filename Value="chmlcl.pas"/>
-        <UnitName Value="chmlcl"/>
+        <UnitName Value="ChmLcl"/>
       </Item3>
+      <Item4>
+        <Filename Value="chmprog.pas"/>
+        <UnitName Value="ChmProg"/>
+      </Item4>
     </Files>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="5">
@@ -52,7 +59,7 @@
       </Item5>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

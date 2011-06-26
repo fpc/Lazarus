@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazHelpIntf, HelpIntfs, LazConfigStorage,
-  PropEdits, LHelpControl, Controls, ChmLangRef, ChmLcl;
+  PropEdits, LHelpControl, Controls, ChmLangRef, ChmLcl, ChmProg;
   
 type
   
@@ -118,6 +118,8 @@ begin
   fChmsFilePath := AppendPathDelim(AValue);
   if Assigned(LangRefHelpDatabase) then
     LangRefHelpDatabase.LoadKeywordList(fChmsFilePath);
+  if Assigned(FPCDirectivesHelpDatabase) then
+    FPCDirectivesHelpDatabase.DocsDir := fChmsFilePath;
 end;
 
 function TChmHelpViewer.GetHelpEXE: String;
@@ -430,6 +432,8 @@ begin
   LangRefHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
   RegisterLclHelpDatabase;
   LCLHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
+  RegisterFPCDirectivesHelpDatabase;
+  FPCDirectivesHelpDatabase.OnFindViewer := @ChmHelp.DBFindViewer;
 end;
 
 initialization

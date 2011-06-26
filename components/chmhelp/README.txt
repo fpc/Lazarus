@@ -29,8 +29,8 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
     and select the lhelp executable.
 
     HelpFilesPath:
-    This is the directory that contains the lcl.chm fcl.chm and rtl.chm files.
-    You can download them from the download page of www.lazarus.freepascal.org.
+    This is the directory that contains the help files in CHM format (lcl.chm, fcl.chm, rtl.chm etc.).
+    You can download them from http://sourceforge.net/projects/freepascal/files/Documentation/
 
     HelpLabel Name and Tag do not need to be altered.
     The HelpLabel is the name of the named pipe that lazarus will use to communicate with lhelp.
@@ -43,8 +43,6 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
     this should be "rtl.chm://"
     FCLUnits:
     this should be "fcl.chm://"
-    LCLUnits:
-    this should be "lcl.chm://"
 
     NOTE if you have only a single lcl-fcl-rtl.chm file then paths become:
     "lcl-fcl-rtl.chm://rtl/"
