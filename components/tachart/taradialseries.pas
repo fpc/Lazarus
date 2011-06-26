@@ -26,6 +26,13 @@ uses
   TAChartUtils, TACustomSeries, TADrawUtils, TALegend;
 
 type
+  { TLegendItemPieSlice }
+
+  TLegendItemPieSlice = class(TLegendItem)
+  public
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
+  end;
+
   TLabelParams = record
     FAttachment: TPoint;
     FCenter: TPoint;
@@ -119,6 +126,23 @@ implementation
 uses
   Math,
   TACustomSource, TAGeometry, TAGraph;
+
+{ TLegendItemPieSlice }
+
+procedure TLegendItemPieSlice.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+const
+  ANGLE = 30 * 16;
+var
+  bc: TChartColor = clRed;
+begin
+  inherited Draw(ADrawer, ARect);
+  if Color <> clTAColor then
+    bc := Color;
+  ADrawer.SetBrushParams(bsSolid, bc);
+  ADrawer.RadialPie(
+    2 * ARect.Left - ARect.Right, ARect.Top, ARect.Right, ARect.Bottom,
+    -ANGLE, 2 * ANGLE);
+end;
 
 { TCustomPieSeries }
 
