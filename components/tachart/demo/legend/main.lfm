@@ -55,6 +55,7 @@ object Form1: TForm1
       Legend.Multiplicity = lmPoint
       Marks.Format = '%2:s %1:.2f%%'
       Marks.Style = smsLabelPercent
+      Title = 'Pie'
       Exploded = True
       Source = ListChartSource2
     end

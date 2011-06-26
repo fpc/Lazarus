@@ -72,7 +72,7 @@ begin
   r := Bounds(
     ARect.Left, ARect.Top, Chart1.Legend.SymbolWidth, cbSeries.ItemHeight);
   id.Pen := Chart1.Legend.SymbolFrame;
-  (FItems[Index] as TLegendItem).Draw(id, r);
+  FItems[Index].Draw(id, r);
 end;
 
 procedure TForm1.cbUseSidebarChange(Sender: TObject);

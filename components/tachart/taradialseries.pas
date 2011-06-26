@@ -26,6 +26,18 @@ uses
   TAChartUtils, TACustomSeries, TADrawUtils, TALegend;
 
 type
+
+  { TLegendItemPie }
+
+  TLegendItemPie = class(TLegendItem)
+  private
+    FColors: array [0..2] of TChartColor;
+    procedure SetColors(AIndex: Integer; AValue: TChartColor);
+  public
+    procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
+    property Colors[AIndex: Integer]: TChartColor write SetColors;
+  end;
+
   { TLegendItemPieSlice }
 
   TLegendItemPieSlice = class(TLegendItem)
@@ -126,6 +138,41 @@ implementation
 uses
   Math,
   TACustomSource, TAGeometry, TAGraph;
+
+procedure TLegendItemPie.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+const
+  INDEX_TO_ANGLE = 360 * 16 / Length(FColors);
+var
+  c: TPoint;
+  w, h: Integer;
+  r: TRect;
+  i: Integer;
+begin
+  inherited Draw(ADrawer, ARect);
+  c := CenterPoint(ARect);
+  r := ARect;
+  w := Abs(r.Right - r.Left);
+  h := Abs(r.Bottom - r.Top);
+  if w > h then begin
+    r.Left := c.X - h div 2;
+    r.Right := c.X + h div 2;
+  end
+  else begin
+    r.Top := c.Y - w div 2;
+    r.Bottom := c.Y + w div 2;
+  end;
+  for i := 0 to High(FColors) do begin
+    ADrawer.SetBrushColor(FColors[i]);
+    ADrawer.RadialPie(
+      r.Left, r.Top, r.Right, r.Bottom,
+      Round(i * INDEX_TO_ANGLE), Round(INDEX_TO_ANGLE));
+  end;
+end;
+
+procedure TLegendItemPie.SetColors(AIndex: Integer; AValue: TChartColor);
+begin
+  FColors[AIndex] := AValue;
+end;
 
 { TLegendItemPieSlice }
 
@@ -229,14 +276,15 @@ end;
 procedure TCustomPieSeries.GetLegendItems(AItems: TChartLegendItems);
 var
   i: Integer;
-  br: TLegendItemBrushRect;
+  p: TLegendItemPie;
   ps: TLegendItemPieSlice;
 begin
   case Legend.Multiplicity of
     lmSingle: begin
-      br := TLegendItemBrushRect.Create(nil, Title);
-      br.Color := SliceColor(0);
-      AItems.Add(br);
+      p := TLegendItemPie.Create(Title);
+      for i := 0 to 2 do
+        p.Colors[i] := SliceColor(i);
+      AItems.Add(p);
     end;
     lmPoint:
       for i := 0 to Count - 1 do begin
@@ -307,8 +355,11 @@ const
     clRed, clGreen, clYellow, clBlue, clWhite, clGray, clFuchsia,
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
 begin
-  Result := ColorDef(
-    Source[AIndex]^.Color, SLICE_COLORS[AIndex mod Length(SLICE_COLORS)]);
+  if AIndex < Count then
+    Result := Source[AIndex]^.Color
+  else
+    Result := clTAColor;
+  Result := ColorDef(Result, SLICE_COLORS[AIndex mod Length(SLICE_COLORS)]);
 end;
 
 function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
