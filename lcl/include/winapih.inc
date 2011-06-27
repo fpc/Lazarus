@@ -1,4 +1,4 @@
-{%MainUnit ../lclintf.pp}
+{%MainUnit ../lclintf.pas}
 // included by interfacebase.pp and lclintf.pp
 
 (******************************************************************************
