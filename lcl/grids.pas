@@ -4496,25 +4496,30 @@ var
   Tw, Th: Integer;
 begin
   with FGCache do begin
+
+    HsbRange := 0;
+    HsbPos := 0;
     if HsbVisible then begin
       HsbRange:=GridWidth + 2 - GetBorderWidth;
       if not (goSmoothScroll in Options) then begin
         TW:= integer(PtrUInt(AccumWidth[MaxTopLeft.X]))-(HsbRange-ClientWidth);
         HsbRange:=HsbRange + TW - FixedWidth + 1;
       end;
-      HsbPos := integer(PtrUInt(AccumWidth[FTopLeft.x]))-TLColOff-FixedWidth;
-    end else
-      HsbRange:=0;
+      if FTopLeft.x<=ColCount-1 then
+        HsbPos := integer(PtrUInt(AccumWidth[FTopLeft.x]))-TLColOff-FixedWidth;
+    end;
 
+    VsbRange := 0;
+    VsbPos := 0;
     if VsbVisible then begin
       VSbRange:= GridHeight + 2 - GetBorderWidth;
       if not (goSmoothScroll in Options) then begin
         TH:= integer(PtrUInt(accumHeight[MaxTopLeft.Y]))-(VsbRange-ClientHeight);
         VsbRange:=VsbRange + TH -FixedHeight + 1;
       end;
-      VsbPos := integer(PtrUInt(AccumHeight[FTopLeft.y]))-TLRowOff-FixedHeight;
-    end else
-      VsbRange:= 0;
+      if FTopLeft.Y<=RowCount-1 then
+        VsbPos := integer(PtrUInt(AccumHeight[FTopLeft.y]))-TLRowOff-FixedHeight;
+    end;
 
     HsbPage := ClientWidth;
     VSbPage := ClientHeight;
