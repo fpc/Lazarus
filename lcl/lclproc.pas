@@ -128,7 +128,7 @@ function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
 function ShortCutToText(ShortCut: TShortCut): string;// untranslated
 function TextToShortCut(const ShortCutText: string): TShortCut;// untranslated
 
-function GetCompleteText(sText: string; iSelStart: Integer;
+function GetCompleteText(const sText: string; iSelStart: Integer;
   bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
 function IsEditableTextKey(Key: Word): Boolean;
 
@@ -1278,10 +1278,10 @@ begin
   end;
 end;
 
-function GetCompleteText(sText: string; iSelStart: Integer;
+function GetCompleteText(const sText: string; iSelStart: Integer;
   bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
 
-  function IsSamePrefix(sCompareText, sPrefix: string; iStart: Integer;
+  function IsSamePrefix(const sCompareText, sPrefix: string; iStart: Integer;
     var ResultText: string): Boolean;
   var
     sTempText: string;
