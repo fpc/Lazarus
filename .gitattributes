@@ -380,6 +380,7 @@ components/chmhelp/packages/idehelp/chmhelppkg.lpk svneol=native#text/plain
 components/chmhelp/packages/idehelp/chmhelppkg.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/chmlangref.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/chmlcl.pas svneol=native#text/plain
+components/chmhelp/packages/idehelp/chmprog.pas svneol=native#text/plain
 components/chmhelp/packages/idehelp/lazchmhelp.pas svneol=native#text/plain
 components/codetools/Makefile.compiled svneol=native#text/plain
 components/codetools/allcodetoolunits.pp svneol=native#text/pascal
