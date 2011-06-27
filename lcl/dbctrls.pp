@@ -882,6 +882,7 @@ Type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DragCursor;
     property DragMode;
+    property Enabled;
     property Font;
     property MaxLength;
     property OnChange;
