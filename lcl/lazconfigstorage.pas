@@ -94,6 +94,9 @@ type
 
   TConfigMemStorageModification = (cmsmSet, cmsmGet, cmsmDelete, cmsmDeleteValue);
 
+const
+  ConfigMemStorageFormatVersion = 2; // change this when format changes
+type
   { TConfigMemStorage }
 
   TConfigMemStorage = class(TConfigStorage)
@@ -637,15 +640,19 @@ procedure TConfigMemStorage.SaveToConfig(Config: TConfigStorage;
         ChildNode:=Node.Children.FindSuccessor(ChildNode);
       end;
     end;
-    Config.SetDeleteValue(SubPath+'Children',Names,'');
+    Config.SetDeleteValue(SubPath+'Items',Names,'');
   end;
 
 begin
   Save(Root,APath);
+  if (Root<>nil) and ((Root.Value<>'') or (Root.Children<>nil)) then
+    Config.SetValue(APath+'Version',ConfigMemStorageFormatVersion);
 end;
 
 procedure TConfigMemStorage.LoadFromConfig(Config: TConfigStorage;
   const APath: string);
+var
+  StorageVersion: LongInt;
 
   procedure Load(Node: TConfigMemStorageNode; SubPath: string);
   var
@@ -659,7 +666,10 @@ procedure TConfigMemStorage.LoadFromConfig(Config: TConfigStorage;
     if (Node<>Root) then
       SubPath:=SubPath+'_'+Node.Name+'/';
     Node.Value:=Config.GetValue(SubPath+'Value','');
-    ChildNames:=Config.GetValue(SubPath+'Children','');
+    if StorageVersion<2 then
+      ChildNames:=Config.GetValue(SubPath+'Childs','')
+    else
+      ChildNames:=Config.GetValue(SubPath+'Items','');
     //DebugLn(['Load SubPath="',SubPath,'" Value="',Node.Value,'" ChildNames="',ChildNames,'"']);
     if ChildNames<>'' then begin
       p:=PChar(ChildNames);
@@ -686,6 +696,8 @@ begin
   Clear;
   if Root=nil then
     CreateRoot;
+  StorageVersion:=Config.GetValue(APath+'Version',0);
+  //debugln(['TConfigMemStorage.LoadFromConfig ',APath,' Version=',StorageVersion]);
   Load(Root,APath);
 end;
 
