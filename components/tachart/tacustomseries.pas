@@ -200,6 +200,7 @@ type
     FUpBound: Integer;
     FUseReticule: Boolean;
 
+    procedure AfterAdd; override;
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
     procedure DrawLabels(ADrawer: IChartDrawer);
@@ -749,6 +750,13 @@ begin
 end;
 
 { TBasicPointSeries }
+
+procedure TBasicPointSeries.AfterAdd;
+begin
+  inherited AfterAdd;
+  if Pointer <> nil then
+    Pointer.SetOwner(ParentChart);
+end;
 
 procedure TBasicPointSeries.AfterDrawPointer(
   ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint);

@@ -195,7 +195,6 @@ type
     procedure SetShowLines(Value: Boolean);
     procedure SetShowPoints(Value: Boolean);
   protected
-    procedure AfterAdd; override;
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
@@ -320,12 +319,6 @@ uses
   TADrawerCanvas, TAGeometry, TAGraph;
 
 { TLineSeries }
-
-procedure TLineSeries.AfterAdd;
-begin
-  inherited AfterAdd;
-  Pointer.SetOwner(FChart);
-end;
 
 procedure TLineSeries.AfterDrawPointer(
   ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint);

@@ -128,6 +128,7 @@ type
     property Degree: TSplineDegree
       read FDegree write SetDegree default DEF_SPLINE_DEGREE;
     property Pen: TChartPen read FPen write SetPen;
+    property Pointer;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
   end;
@@ -166,6 +167,7 @@ type
     property ZPosition;
   published
     property Pen: TChartPen read FPen write SetPen;
+    property Pointer;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
   end;
@@ -477,6 +479,7 @@ begin
   FDegree := DEF_SPLINE_DEGREE;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
+  FPointer := TSeriesPointer.Create(ParentChart);
   FStep := DEF_SPLINE_STEP;
 end;
 
@@ -558,6 +561,7 @@ begin
   for startIndex := 0 to High(FGraphPoints) + Degree - 1 do
     SplineSegment(0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
   DrawLabels(ADrawer);
+  DrawPointers(ADrawer);
 end;
 
 procedure TBSplineSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -610,6 +614,7 @@ begin
   inherited Create(AOwner);
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
+  FPointer := TSeriesPointer.Create(ParentChart);
   FStep := DEF_SPLINE_STEP;
 end;
 
@@ -633,6 +638,9 @@ begin
   finally
     de.Free;
   end;
+  PrepareGraphPoints(FChart.CurrentExtent, true);
+  DrawLabels(ADrawer);
+  DrawPointers(ADrawer);
 end;
 
 procedure TCubicSplineSeries.GetLegendItems(AItems: TChartLegendItems);
