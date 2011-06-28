@@ -601,7 +601,7 @@ end;
 
 function TCubicSplineSeries.Calculate(AX: Double): Double;
 var
-  ok: Integer;
+  ok: Integer = 0;
 begin
   Result := ipfspn(High(FCoeff) - 1, FX[0], FY[0], FCoeff[0], AX, ok);
 end;
