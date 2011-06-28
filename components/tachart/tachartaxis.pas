@@ -337,6 +337,61 @@ type
     FMin, FMax: Double;
   end;
 
+  { TAxisDrawHelper }
+
+  TAxisDrawHelper = class
+  strict protected
+    procedure DrawLabel(ALabelCenter: TPoint; const AText: String); inline;
+    procedure DrawLabelAndTick(
+      ACoord, AFixedCoord: Integer; const AText: String); virtual; abstract;
+    function GraphToImage(AGraph: Double): Integer; virtual; abstract;
+    procedure GridLine(ACoord: Integer); virtual; abstract;
+    procedure LineZ(AP1, AP2: TPoint); inline;
+  public
+    FAxis: TChartAxis;
+    FClipRect: TRect;
+    FDrawer: IChartDrawer;
+    FPrevCoord: Integer;
+    FPrevLabelPoly: TPointArray;
+    FScaledTickLength: Integer;
+    FStripeIndex: Cardinal;
+    FTransf: ICoordTransformer;
+    FZOffset: TPoint;
+
+    procedure BarZ(AX1, AY1, AX2, AY2: Integer); inline;
+    procedure DrawMark(
+      AFixedCoord: Integer; AMark: Double; const AText: String);
+    procedure BeginDrawing; virtual;
+    procedure EndDrawing; virtual; abstract;
+    function TryApplyStripes: Boolean; inline;
+  end;
+
+  { TAxisDrawHelperX }
+
+  TAxisDrawHelperX = class(TAxisDrawHelper)
+  protected
+    procedure DrawLabelAndTick(
+      ACoord, AFixedCoord: Integer; const AText: String); override;
+    function GraphToImage(AGraph: Double): Integer; override;
+    procedure GridLine(ACoord: Integer); override;
+  public
+    procedure BeginDrawing; override;
+    procedure EndDrawing; override;
+  end;
+
+  { TAxisDrawHelperY }
+
+  TAxisDrawHelperY = class(TAxisDrawHelper)
+  protected
+    procedure DrawLabelAndTick(
+      ACoord, AFixedCoord: Integer; const AText: String); override;
+    function GraphToImage(AGraph: Double): Integer; override;
+    procedure GridLine(ACoord: Integer); override;
+  public
+    procedure BeginDrawing; override;
+    procedure EndDrawing; override;
+  end;
+
 var
   VIdentityTransform: TChartAxisTransformations;
 
@@ -368,6 +423,136 @@ begin
     Result := AAxisList[AIndex].Transformations;
   if Result = nil then
     Result := VIdentityTransform;
+end;
+
+{ TAxisDrawHelper }
+
+procedure TAxisDrawHelper.BarZ(AX1, AY1, AX2, AY2: Integer);
+begin
+  with FZOffset do
+    FDrawer.FillRect(AX1 + X, AY1 + Y, AX2 + X, AY2 + Y);
+end;
+
+procedure TAxisDrawHelper.DrawLabel(ALabelCenter: TPoint; const AText: String);
+begin
+  ALabelCenter += FZOffset;
+  FAxis.Marks.DrawLabel(
+    FDrawer, ALabelCenter, ALabelCenter, AText, FPrevLabelPoly);
+end;
+
+procedure TAxisDrawHelper.DrawMark(
+  AFixedCoord: Integer; AMark: Double; const AText: String);
+var
+  coord: Integer;
+begin
+  coord := GraphToImage(AMark);
+
+  if FAxis.Grid.Visible then begin
+    FDrawer.Pen := FAxis.Grid;
+    FDrawer.SetBrushParams(bsClear, clTAColor);
+    GridLine(coord);
+    FPrevCoord := coord;
+  end;
+
+  if FAxis.Marks.Visible then begin
+    FDrawer.PrepareSimplePen(FAxis.TickColor);
+    DrawLabelAndTick(coord, AFixedCoord, AText);
+  end;
+end;
+
+procedure TAxisDrawHelper.BeginDrawing;
+begin
+  FScaledTickLength := FDrawer.Scale(FAxis.TickLength);
+end;
+
+procedure TAxisDrawHelper.LineZ(AP1, AP2: TPoint);
+begin
+  FDrawer.Line(AP1 + FZOffset, AP2 + FZOffset);
+end;
+
+function TAxisDrawHelper.TryApplyStripes: Boolean;
+begin
+  Result := FAxis.TryApplyStripes(FDrawer, FStripeIndex);
+end;
+
+{ TAxisDrawHelperX }
+
+procedure TAxisDrawHelperX.BeginDrawing;
+begin
+  inherited Init;
+  FPrevCoord := FClipRect.Left;
+end;
+
+procedure TAxisDrawHelperX.DrawLabelAndTick(
+  ACoord, AFixedCoord: Integer; const AText: String);
+var
+  d: Integer;
+begin
+  d := FScaledTickLength + FAxis.Marks.CenterOffset(FDrawer, AText).cy;
+  if FAxis.Alignment = calTop then
+    d := -d;
+  LineZ(
+    Point(ACoord, AFixedCoord - FScaledTickLength),
+    Point(ACoord, AFixedCoord + FScaledTickLength));
+  DrawLabel(Point(ACoord, AFixedCoord + d), AText);
+end;
+
+procedure TAxisDrawHelperX.EndDrawing;
+begin
+  if Grid.Visible and TryApplyStripes then
+    BarZ(FPrevCoord + 1, FClipRect.Top + 1, FClipRect.Right, FClipRect.Bottom);
+end;
+
+function TAxisDrawHelperX.GraphToImage(AGraph: Double): Integer;
+begin
+  Result := FTransf.XGraphToImage(AGraph);
+end;
+
+procedure TAxisDrawHelperX.GridLine(ACoord: Integer);
+begin
+  if TryApplyStripes then
+    BarZ(FPrevCoord + 1, FClipRect.Top + 1, ACoord, FClipRect.Bottom);
+  LineZ(Point(ACoord, FClipRect.Top), Point(ACoord, FClipRect.Bottom));
+end;
+
+{ TAxisDrawHelperY }
+
+procedure TAxisDrawHelperY.DrawLabelAndTick(
+  ACoord, AFixedCoord: Integer; const AText: String);
+var
+  d: Integer;
+begin
+  d := FScaledTickLength + FAxis.Marks.CenterOffset(FDrawer, AText).cx;
+  if FAxis.Alignment = calLeft then
+    d := -d;
+  LineZ(
+    Point(AFixedCoord - FScaledTickLength, ACoord),
+    Point(AFixedCoord + FScaledTickLength, ACoord));
+  DrawLabel(Point(AFixedCoord + d, ACoord), AText);
+end;
+
+procedure TAxisDrawHelperY.EndDrawing;
+begin
+  if Grid.Visible and TryApplyStripes then
+    BarZ(FClipRect.Left + 1, FClipRect.Top + 1, FClipRect.Right, FPrevCoord)
+end;
+
+function TAxisDrawHelperY.GraphToImage(AGraph: Double): Integer;
+begin
+  Result := FTransf.YGraphToImage(AGraph);
+end;
+
+procedure TAxisDrawHelperY.GridLine(ACoord: Integer);
+begin
+  if TryApplyStripes then
+    BarZ(FClipRect.Left + 1, FPrevCoord, FClipRect.Right, ACoord);
+  LineZ(Point(FClipRect.Left, ACoord), Point(FClipRect.Right, ACoord));
+end;
+
+procedure TAxisDrawHelperY.BeginDrawing;
+begin
+  inherited Init;
+  FPrevCoord := FClipRect.Bottom;
 end;
 
 { TChartAxisTitle }
@@ -606,104 +791,35 @@ end;
 procedure TChartAxis.Draw(
   ADrawer: IChartDrawer; const AClipRect: TRect;
   const ATransf: ICoordTransformer; const AZOffset: TPoint);
-
 var
-  prevLabelPoly: TPointArray = nil;
-  stripeIndex: Cardinal = 0;
-  prevCoord, scaledTickLength: Integer;
-
-  procedure BarZ(AX1, AY1, AX2, AY2: Integer);
-  begin
-    with AZOffset do
-      ADrawer.FillRect(AX1 + X, AY1 + Y, AX2 + X, AY2 + Y);
-  end;
-
-  procedure LineZ(AP1, AP2: TPoint);
-  begin
-    ADrawer.Line(AP1 + AZOffset, AP2 + AZOffset);
-  end;
-
-  procedure DrawLabelAndTick(
-    ALabelCenter: TPoint; const ATickRect: TRect; const AText: String);
-  begin
-    ADrawer.PrepareSimplePen(TickColor);
-    LineZ(ATickRect.TopLeft, ATickRect.BottomRight);
-    ALabelCenter += AZOffset;
-    Marks.DrawLabel(ADrawer, ALabelCenter, ALabelCenter, AText, prevLabelPoly);
-  end;
-
-  procedure DrawXMark(AY: Integer; AMark: Double; const AText: String);
-  var
-    x, d: Integer;
-  begin
-    x := ATransf.XGraphToImage(AMark);
-
-    if Grid.Visible then begin
-      ADrawer.Pen := Grid;
-      ADrawer.SetBrushParams(bsClear, clTAColor);
-      if TryApplyStripes(ADrawer, stripeIndex) then
-        BarZ(prevCoord + 1, AClipRect.Top + 1, x, AClipRect.Bottom);
-      LineZ(Point(x, AClipRect.Top), Point(x, AClipRect.Bottom));
-      prevCoord := x;
-    end;
-
-    if Marks.Visible then begin
-      d := scaledTickLength + Marks.CenterOffset(ADrawer, AText).cy;
-      if Alignment = calTop then
-        d := -d;
-      DrawLabelAndTick(
-        Point(x, AY + d),
-        Rect(x, AY - scaledTickLength, x, AY + scaledTickLength), AText);
-    end;
-  end;
-
-  procedure DrawYMark(AX: Integer; AMark: Double; const AText: String);
-  var
-    y, d: Integer;
-  begin
-    y := ATransf.YGraphToImage(AMark);
-
-    if Grid.Visible then begin
-      ADrawer.Pen := Grid;
-      ADrawer.SetBrushParams(bsClear, clTAColor);
-      if TryApplyStripes(ADrawer, stripeIndex) then
-        BarZ(AClipRect.Left + 1, prevCoord, AClipRect.Right, y);
-      LineZ(Point(AClipRect.Left, y), Point(AClipRect.Right, y));
-      prevCoord := y;
-    end;
-
-    if Marks.Visible then begin
-      d := scaledTickLength + Marks.CenterOffset(ADrawer, AText).cx;
-      if Alignment = calLeft then
-        d := -d;
-      DrawLabelAndTick(
-        Point(AX + d, y),
-        Rect(AX - scaledTickLength, y, AX + scaledTickLength, y), AText);
-    end;
-  end;
-
-var
-  i, coord: Integer;
+  i, fixedCoord: Integer;
   v: Double;
+  dh: TAxisDrawHelper;
 begin
   if not Visible then exit;
-  scaledTickLength := ADrawer.Scale(TickLength);
   if Marks.Visible then
     ADrawer.Font := Marks.LabelFont;
-  coord := TChartAxisMargins(FAxisRect)[Alignment];
-  prevCoord := IfThen(IsVertical, AClipRect.Bottom, AClipRect.Left);
-  for i := 0 to High(FMarkValues) do begin
-    v := GetTransform.AxisToGraph(FMarkValues[i]);
-    if IsVertical then
-      DrawYMark(coord, v, FMarkTexts[i])
-    else
-      DrawXMark(coord, v, FMarkTexts[i]);
+  fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
+
+  if IsVertical then
+    dh := TAxisDrawHelperY.Create
+  else
+    dh := TAxisDrawHelperX.Create;
+  try
+    dh.FAxis := Self;
+    dh.FClipRect := AClipRect;
+    dh.FDrawer := ADrawer;
+    dh.FTransf := ATransf;
+    dh.FZOffset := AZOffset;
+    dh.BeginDrawing;
+    for i := 0 to High(FMarkValues) do begin
+      v := GetTransform.AxisToGraph(FMarkValues[i]);
+      dh.DrawMark(fixedCoord, v, FMarkTexts[i]);
+    end;
+    dh.EndDrawing;
+  finally
+    dh.Free;
   end;
-  if Grid.Visible and TryApplyStripes(ADrawer, stripeIndex) then
-    if IsVertical then
-      BarZ(AClipRect.Left + 1, AClipRect.Top + 1, AClipRect.Right, prevCoord)
-    else
-      BarZ(prevCoord + 1, AClipRect.Top + 1, AClipRect.Right, AClipRect.Bottom);
 end;
 
 procedure TChartAxis.DrawTitle(
