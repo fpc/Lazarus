@@ -14,6 +14,16 @@ uses
   Classes, Types;
 
 type
+  TCocoaBitmapType = (
+    cbtMono,  // mask or mono bitmap
+    cbtGray,  // grayscale bitmap
+    cbtRGB,   // color bitmap 8-8-8 R-G-B
+    cbtARGB,  // color bitmap with alpha channel first 8-8-8-8 A-R-G-B
+    cbtRGBA,  // color bitmap with alpha channel last 8-8-8-8 R-G-B-A
+    cbtBGR,   // color bitmap 8-8-8 B-G-R (windows compatible)
+    cbtBGRA   // color bitmap with alpha channel 8-8-8-8 B-G-R-A (windows compatible)
+  );
+
   { TCocoaGDIObject }
 
   TCocoaGDIObject = class(TObject)
@@ -80,12 +90,16 @@ type
   { TCocoaBitmap }
 
   TCocoaBitmap = class(TCocoaGDIObject)
+  private
+    FType: TCocoaBitmapType;
   public
     image: NSImage;
     imagerep: NSBitmapImageRep;
     constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AData: Pointer; ACopyData: Boolean = True);
-   end;
+  public
+    property BitmapType: TCocoaBitmapType read FType;
+  end;
 
   { TCocoaTextLayout }
 

@@ -51,9 +51,9 @@ function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; ove
 function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
-{function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
+{function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;}
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
-function CreateCompatibleDC(DC: HDC): HDC; override;
+{function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;}
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;

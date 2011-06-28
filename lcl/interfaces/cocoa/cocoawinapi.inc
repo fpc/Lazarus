@@ -372,9 +372,9 @@ end;
 function TCocoaWidgetSet.CreateBitmap(Width, Height: Integer;
   Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 begin
-//  {$IFDEF VerboseWinAPI}
-//    DebugLn('TCocoaWidgetSet.CreateBitmap');
-//  {$ENDIF}
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreateBitmap');
+  {$ENDIF}
 
   Result := HBITMAP(TCocoaBitmap.Create(Width, Height, BitCount, BitCount, BitmapBits));
 end;
@@ -420,6 +420,15 @@ begin
   b:=TCocoaBrush.Create;
   with b do ColorToRGBFloat(LogBrush.lbColor, R, G, B);
   Result:=HBRUSH(b);
+end;
+
+function TCocoaWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreateCompatibleBitmap');
+  {$ENDIF}
+
+  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, 32, 32, nil));
 end;
 
 {------------------------------- SYNC OBJECTS ---------------------------------}
@@ -614,6 +623,59 @@ begin
   Result:=HFONT(cf);
 end;
 
+function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
+var
+  ARawImage: TRawImage;
+  Desc: TRawImageDescription absolute ARawimage.Description;
+
+  ImgHandle, ImgMaskHandle: HBitmap;
+  ImagePtr: PRawImage;
+  DevImage: TRawImage;
+  DevDesc: TRawImageDescription;
+  SrcImage, DstImage: TLazIntfImage;
+  W, H: Integer;
+begin
+  Result := nil;
+
+  if not RawImage_FromBitmap(ARawImage, HBITMAP(ABitmap), HBITMAP(AMask)) then
+    Exit;
+
+  ImgMaskHandle := 0;
+
+  W := Desc.Width;
+  if W < 1 then W := 1;
+  H := Desc.Height;
+  if H < 1 then H := 1;
+
+  QueryDescription(DevDesc, [riqfRGB, riqfAlpha], W, H);
+
+  if DevDesc.IsEqual(Desc)
+  then begin
+    // image is compatible, so use it
+    DstImage := nil;
+    ImagePtr := @ARawImage;
+  end
+  else begin
+    // create compatible copy
+    SrcImage := TLazIntfImage.Create(ARawImage, False);
+    DstImage := TLazIntfImage.Create(0,0,[]);
+    DstImage.DataDescription := DevDesc;
+    DstImage.CopyPixels(SrcImage);
+    SrcImage.Free;
+    DstImage.GetRawImage(DevImage);
+    ImagePtr := @DevImage;
+  end;
+
+  try
+    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, True) then Exit;
+
+    Result := TCocoaBitmap(ImgHandle);
+  finally
+    ARawImage.FreeData;
+    DstImage.Free;
+  end;
+end;
+
 function TCocoaWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
 var
   ABitmap: TCocoaBitmap;
@@ -621,15 +683,15 @@ begin
   Result := 0;
   if IconInfo^.hbmColor = 0 then Exit;
 
-//  ABitmap := Create32BitAlphaBitmap(TCarbonBitmap(IconInfo^.hbmColor), TCarbonBitmap(IconInfo^.hbmMask));
+  ABitmap := Create32BitAlphaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
   // For now just ignore the mask
   Result := HICON(IconInfo^.hbmColor);
 
-{  if IconInfo^.fIcon then
+  if IconInfo^.fIcon then
   begin
     Result := HICON(ABitmap)
-  end
-  else
+  end;
+{  else
   begin
     IconInfo^.hbmColor := HBITMAP(ABitmap);
     IconInfo^.hbmMask := 0;
