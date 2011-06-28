@@ -135,19 +135,32 @@ type
 
   TChartBasicAxis = class(TCollectionItem)
   strict private
+    FGrid: TChartAxisPen;
+    FMarks: TChartAxisMarks;
     FTickColor: TColor;
     FTickLength: Integer;
     FVisible: Boolean;
+    procedure SetGrid(AValue: TChartAxisPen);
+    procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
     procedure SetVisible(AValue: Boolean);
-  protected
+  strict protected
+    function GetAlignment: TChartAxisAlignment; virtual; abstract;
+    procedure SetAlignment(AValue: TChartAxisAlignment); virtual; abstract;
     procedure StyleChanged(ASender: TObject); virtual; abstract;
   public
-    constructor Create(ACollection: TCollection); override;
+    constructor Create(ACollection: TCollection; AChart: TCustomChart); overload;
+    destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
+    function TryApplyStripes(
+      ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
+    property Alignment: TChartAxisAlignment
+      read GetAlignment write SetAlignment;
+    property Marks: TChartAxisMarks read FMarks write SetMarks;
   published
+    property Grid: TChartAxisPen read FGrid write SetGrid;
     property TickColor: TColor read FTickColor write SetTickColor default clBlack;
     property TickLength: Integer read FTickLength write SetTickLength;
     property Visible: Boolean read FVisible write SetVisible default true;
@@ -159,6 +172,9 @@ type
   protected
     function GetDisplayName: String; override;
     procedure StyleChanged(ASender: TObject); override;
+  strict protected
+    function GetAlignment: TChartAxisAlignment; override;
+    procedure SetAlignment(AValue: TChartAxisAlignment); override;
   public
     constructor Create(ACollection: TCollection); override;
   published
@@ -178,9 +194,9 @@ type
     procedure Update(AItem: TCollectionItem); override;
   public
     constructor Create(AOwner: TChartAxis);
-    destructor Destroy; override;
   public
-    function Add: TChartMinorAxis; inline;
+    function Add: TChartMinorAxis;
+    function GetChart: TCustomChart; inline;
     property Axes[AIndex: Integer]: TChartMinorAxis read GetAxes; default;
   end;
 
@@ -198,12 +214,10 @@ type
     FAxisRect: TRect;
     FGroupIndex: Integer;
     FTitleRect: TRect;
-  private
+  strict private
     FAlignment: TChartAxisAlignment;
-    FGrid: TChartAxisPen;
     FGroup: Integer;
     FInverted: Boolean;
-    FMarks: TChartAxisMarks;
     FMinors: TChartMinorAxisList;
     FOnMarkToText: TChartAxisMarkToTextEvent;
     FTitle: TChartAxisTitle;
@@ -211,22 +225,20 @@ type
     FZPosition: TChartDistance;
 
     function GetTransform: TChartAxisTransformations;
-    procedure SetAlignment(AValue: TChartAxisAlignment);
-    procedure SetGrid(AValue: TChartAxisPen);
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
-    procedure SetMarks(const AValue: TChartAxisMarks);
     procedure SetMinors(AValue: TChartMinorAxisList);
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetTransformations(AValue: TChartAxisTransformations);
     procedure SetZPosition(const AValue: TChartDistance);
 
-    function TryApplyStripes(
-      ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
   protected
     function GetDisplayName: String; override;
     procedure StyleChanged(ASender: TObject); override;
+  strict protected
+    function GetAlignment: TChartAxisAlignment; override;
+    procedure SetAlignment(AValue: TChartAxisAlignment); override;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -237,18 +249,17 @@ type
       const ATransf: ICoordTransformer; const AZOffset: TPoint);
     procedure DrawTitle(
       ADrawer: IChartDrawer; const ACenter, AZOffset: TPoint; ASize: Integer);
+    function GetChart: TCustomChart; inline;
     function IsVertical: Boolean; inline;
     procedure Measure(
       ADrawer: IChartDrawer; const AExtent: TDoubleRect; AFirstPass: Boolean;
       var AMeasureData: TChartAxisGroup);
   published
-    property Alignment: TChartAxisAlignment
-      read FAlignment write SetAlignment default calLeft;
-    property Grid: TChartAxisPen read FGrid write SetGrid;
+    property Alignment default calLeft;
     property Group: Integer read FGroup write SetGroup default 0;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
-    property Marks: TChartAxisMarks read FMarks write SetMarks;
+    property Marks;
     property Minors: TChartMinorAxisList read FMinors write SetMinors;
     property TickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
@@ -350,7 +361,7 @@ type
     procedure LineZ(AP1, AP2: TPoint); inline;
     function TryApplyStripes: Boolean; inline;
   public
-    FAxis: TChartAxis;
+    FAxis: TChartBasicAxis;
     FClipRect: TRect;
     FDrawer: IChartDrawer;
     FPrevCoord: Integer;
@@ -659,6 +670,8 @@ procedure TChartBasicAxis.Assign(ASource: TPersistent);
 begin
   if ASource is TChartBasicAxis then
     with TChartAxis(ASource) do begin
+      Self.FGrid.Assign(Grid);
+      Self.FMarks.Assign(Marks);
       Self.FTickColor := TickColor;
       Self.FTickLength := TickLength;
       Self.FVisible := Visible;
@@ -667,11 +680,35 @@ begin
     inherited Assign(ASource);
 end;
 
-constructor TChartBasicAxis.Create(ACollection: TCollection);
+constructor TChartBasicAxis.Create(
+  ACollection: TCollection; AChart: TCustomChart);
 begin
   inherited Create(ACollection);
+  FGrid := TChartAxisPen.Create;
+  FGrid.OnChange := @StyleChanged;
+  FGrid.Style := psDot;
+  FMarks := TChartAxisMarks.Create(AChart);
   FTickColor := clBlack;
   FVisible := true;
+end;
+
+destructor TChartBasicAxis.Destroy;
+begin
+  FreeAndNil(FGrid);
+  FreeAndNil(FMarks);
+  inherited;
+end;
+
+procedure TChartBasicAxis.SetGrid(AValue: TChartAxisPen);
+begin
+  FGrid.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartBasicAxis.SetMarks(AValue: TChartAxisMarks);
+begin
+  FMarks.Assign(AValue);
+  StyleChanged(Self);
 end;
 
 procedure TChartBasicAxis.SetTickColor(AValue: TColor);
@@ -695,17 +732,37 @@ begin
   StyleChanged(Self);
 end;
 
+function TChartBasicAxis.TryApplyStripes(
+  ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
+begin
+  Result := Marks.Stripes <> nil;
+  if not Result then exit;
+  Marks.Stripes.Apply(ADrawer, AIndex);
+  AIndex += 1;
+end;
+
 { TChartMinorAxis }
 
 constructor TChartMinorAxis.Create(ACollection: TCollection);
 begin
-  inherited Create(ACollection);
+  inherited Create(ACollection, (ACollection as TChartMinorAxisList).GetChart);
   TickLength := DEF_TICK_LENGTH div 2;
+end;
+
+function TChartMinorAxis.GetAlignment: TChartAxisAlignment;
+begin
+  Result := (Collection.Owner as TChartAxis).GetAlignment;
 end;
 
 function TChartMinorAxis.GetDisplayName: String;
 begin
   Result := 'M';
+end;
+
+procedure TChartMinorAxis.SetAlignment(AValue: TChartAxisAlignment);
+begin
+  Unused(AValue);
+  raise EChartError.Create('TChartMinorAxis.SetAlignment');
 end;
 
 procedure TChartMinorAxis.StyleChanged(ASender: TObject);
@@ -726,14 +783,14 @@ begin
   FAxis := AOwner;
 end;
 
-destructor TChartMinorAxisList.Destroy;
-begin
-  inherited Destroy;
-end;
-
 function TChartMinorAxisList.GetAxes(AIndex: Integer): TChartMinorAxis;
 begin
   Result := TChartMinorAxis(Items[AIndex]);
+end;
+
+function TChartMinorAxisList.GetChart: TCustomChart;
+begin
+  Result := FAxis.GetChart;
 end;
 
 function TChartMinorAxisList.GetOwner: TPersistent;
@@ -752,10 +809,8 @@ procedure TChartAxis.Assign(ASource: TPersistent);
 begin
   if ASource is TChartAxis then
     with TChartAxis(ASource) do begin
-      Self.FGrid.Assign(Grid);
       Self.FGroup := Group;
       Self.FInverted := Inverted;
-      Self.FMarks.Assign(Marks);
       Self.FTitle.Assign(Title);
       Self.FTransformations := Transformations;
       Self.FZPosition := ZPosition;
@@ -767,12 +822,8 @@ end;
 
 constructor TChartAxis.Create(ACollection: TCollection);
 begin
-  inherited Create(ACollection);
+  inherited Create(ACollection, ACollection.Owner as TCustomChart);
   FListener := TListener.Create(@FTransformations, @StyleChanged);
-  FGrid := TChartAxisPen.Create;
-  FGrid.OnChange := @StyleChanged;
-  FGrid.Style := psDot;
-  FMarks := TChartAxisMarks.Create(ACollection.Owner as TCustomChart);
   FMinors := TChartMinorAxisList.Create(Self);
   TickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
@@ -782,9 +833,7 @@ destructor TChartAxis.Destroy;
 begin
   FreeAndNil(FTitle);
   FreeAndNil(FMinors);
-  FreeAndNil(FMarks);
   FreeAndNil(FListener);
-  FreeAndNil(FGrid);
   inherited;
 end;
 
@@ -839,6 +888,16 @@ begin
   end;
   p += AZOffset;
   Title.DrawLabel(ADrawer, p, p, Title.Caption, dummy);
+end;
+
+function TChartAxis.GetAlignment: TChartAxisAlignment;
+begin
+  Result := FAlignment;
+end;
+
+function TChartAxis.GetChart: TCustomChart;
+begin
+  Result := Collection.Owner as TCustomChart;
 end;
 
 function TChartAxis.GetDisplayName: string;
@@ -964,12 +1023,6 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxis.SetGrid(AValue: TChartAxisPen);
-begin
-  FGrid.Assign(AValue);
-  StyleChanged(Self);
-end;
-
 procedure TChartAxis.SetGroup(AValue: Integer);
 begin
   if FGroup = AValue then exit;
@@ -981,13 +1034,6 @@ procedure TChartAxis.SetInverted(AValue: Boolean);
 begin
   if FInverted = AValue then exit;
   FInverted := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TChartAxis.SetMarks(const AValue: TChartAxisMarks);
-begin
-  if FMarks = AValue then exit;
-  FMarks := AValue;
   StyleChanged(Self);
 end;
 
@@ -1031,22 +1077,13 @@ end;
 
 procedure TChartAxis.StyleChanged(ASender: TObject);
 begin
-  with Collection.Owner as TCustomChart do begin
+  with GetChart do begin
     // Transformation change could have invalidated the current extent,
     // so revert to full extent for now.
     if ASender is TAxisTransform then
       ZoomFull;
     Invalidate;
   end;
-end;
-
-function TChartAxis.TryApplyStripes(
-  ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
-begin
-  Result := Marks.Stripes <> nil;
-  if not Result then exit;
-  Marks.Stripes.Apply(ADrawer, AIndex);
-  AIndex += 1;
 end;
 
 procedure TChartAxis.VisitSource(ASource: TCustomChartSource; var AData);
@@ -1221,7 +1258,7 @@ begin
   if a = nil then
     a := Add;
   a.Assign(AValue);
-  a.FAlignment := AXIS_INDEX[AIndex];
+  a.Alignment := AXIS_INDEX[AIndex];
 end;
 
 procedure TChartAxisList.Update(AItem: TCollectionItem);
