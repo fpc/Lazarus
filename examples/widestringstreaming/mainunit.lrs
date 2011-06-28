@@ -1,39 +1,48 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TStreamDemoForm','FORMDATA',[
-  'TPF0'#15'TStreamDemoForm'#14'StreamDemoForm'#7'Caption'#6#28'Streaming compo'
-  +'nents example'#12'ClientHeight'#3#229#1#11'ClientWidth'#3#13#2#8'OnCreate'#7
-  +#10'FormCreate'#13'PixelsPerInch'#2'p'#18'HorzScrollBar.Page'#3#12#2#18'Vert'
-  +'ScrollBar.Page'#3#228#1#4'Left'#3'$'#1#6'Height'#3#229#1#3'Top'#3#168#0#5'W'
-  +'idth'#3#13#2#0#6'TLabel'#10'Note1Label'#7'Caption'#6'UThis example demonstr'
-  +'ates, how to stream a component to a stream in binary format ...'#5'Color'#7
-  +#6'clNone'#11'ParentColor'#8#8'WordWrap'#9#4'Left'#3#253#0#6'Height'#2'+'#3
-  +'Top'#2#27#5'Width'#3#196#0#0#0#6'TLabel'#10'Note2Label'#7'Caption'#6#236'..'
-  +'. and how to reconstruct the component from a stream. This technique can be'
-  +' used to save components to disk or to transfer them via network. Of course'
-  +' this also works for your own classes as long as they are descendants of TC'
-  +'omponent.'#5'Color'#7#6'clNone'#11'ParentColor'#8#8'WordWrap'#9#4'Left'#3#9
-  +#1#6'Height'#2'g'#3'Top'#3'E'#1#5'Width'#3#228#0#0#0#9'TGroupBox'#14'SourceG'
-  +'roupBox'#7'Caption'#6#6'Source'#12'ClientHeight'#2'I'#11'ClientWidth'#3#191
-  +#0#8'TabOrder'#2#0#4'Left'#2#15#6'Height'#2'Z'#3'Top'#2#25#5'Width'#3#195#0#0
-  +#9'TGroupBox'#9'AGroupBox'#7'Caption'#6#9'AGroupBox'#12'ClientHeight'#2#26#11
-  +'ClientWidth'#2'|'#8'TabOrder'#2#0#4'Left'#2#23#6'Height'#2'+'#3'Top'#2#15#5
-  +'Width'#3#128#0#0#0#0#9'TGroupBox'#19'DestinationGroupBox'#7'Anchors'#11#6'a'
-  +'kLeft'#8'akBottom'#0#7'Caption'#6#11'Destination'#12'ClientHeight'#2'\'#11
-  +'ClientWidth'#3#211#0#8'TabOrder'#2#1#4'Left'#2#30#6'Height'#2'm'#3'Top'#3'h'
-  +#1#5'Width'#3#215#0#0#0#7'TButton'#19'WriteToStreamButton'#25'BorderSpacing.'
-  +'InnerBorder'#2#4#7'Caption'#6#28'1. Write AGroupBox to stream'#7'OnClick'#7
-  +#24'WriteToStreamButtonClick'#8'TabOrder'#2#2#4'Left'#2#23#6'Height'#2#25#3
-  +'Top'#3#130#0#5'Width'#3#197#0#0#0#9'TGroupBox'#14'StreamGroupBox'#7'Anchors'
-  +#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6'3Stream (specia'
-  +'l characters are shown as hexnumbers)'#12'ClientHeight'#2's'#11'ClientWidth'
-  +#3#236#1#8'TabOrder'#2#3#4'Left'#2#15#6'Height'#3#132#0#3'Top'#3#170#0#5'Wid'
-  +'th'#3#240#1#0#5'TMemo'#10'StreamMemo'#5'Align'#7#8'alClient'#13'Lines.Strin'
-  +'gs'#1#6'5First click on the button above, then on button below'#0#8'ReadOnl'
-  +'y'#9#8'TabOrder'#2#0#6'Height'#2'_'#5'Width'#3#236#1#0#0#9'TCheckBox'#19'St'
-  +'reamAsLFMCheckBox'#5'Align'#7#8'alBottom'#7'Caption'#6#31'Show sream in LFM'
-  +' format (text)'#8'OnChange'#7#25'StreamAsLFMCheckBoxChange'#8'TabOrder'#2#1
-  +#6'Height'#2#20#3'Top'#2'_'#5'Width'#3#236#1#0#0#0#7'TButton'#16'ReadStreamB'
-  +'utton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#25'BorderSpacing.InnerBorder'#2
-  +#4#7'Caption'#6#31'2. Create component from stream'#7'OnClick'#7#21'ReadStre'
-  +'amButtonClick'#8'TabOrder'#2#4#4'Left'#2#25#6'Height'#2#24#3'Top'#3'<'#1#5
-  +'Width'#3#215#0#0#0#0
+  'TPF0'#15'TStreamDemoForm'#14'StreamDemoForm'#4'Left'#3'$'#1#6'Height'#3#247#1
+  +#3'Top'#3#168#0#5'Width'#3'Y'#2#18'HorzScrollBar.Page'#3#12#2#18'VertScrollB'
+  +'ar.Page'#3#228#1#7'Caption'#6#28'Streaming components example'#12'ClientHei'
+  +'ght'#3#247#1#11'ClientWidth'#3'Y'#2#8'OnCreate'#7#10'FormCreate'#10'LCLVers'
+  +'ion'#6#6'0.9.31'#0#6'TLabel'#10'Note1Label'#22'AnchorSideLeft.Control'#7#14
+  +'SourceGroupBox'#19'AnchorSideLeft.Side'#7#9'asrBottom'#23'AnchorSideRight.C'
+  +'ontrol'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Left'#3#216#0#6
+  +'Height'#2'#'#3'Top'#2#27#5'Width'#3'{'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7
+  +'akRight'#0#18'BorderSpacing.Left'#2#6#19'BorderSpacing.Right'#2#6#7'Caption'
+  +#6'UThis example demonstrates, how to stream a component to a stream in bina'
+  +'ry format ...'#11'ParentColor'#8#8'WordWrap'#9#0#0#6'TLabel'#10'Note2Label'
+  +#22'AnchorSideLeft.Control'#7#19'DestinationGroupBox'#19'AnchorSideLeft.Side'
+  +#7#9'asrBottom'#21'AnchorSideTop.Control'#7#19'DestinationGroupBox'#23'Ancho'
+  +'rSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#4'Le'
+  +'ft'#3#251#0#6'Height'#2'g'#3'Top'#3'z'#1#5'Width'#3'X'#1#7'Anchors'#11#5'ak'
+  +'Top'#6'akLeft'#7'akRight'#0#18'BorderSpacing.Left'#2#6#19'BorderSpacing.Rig'
+  +'ht'#2#6#7'Caption'#6#236'... and how to reconstruct the component from a st'
+  +'ream. This technique can be used to save components to disk or to transfer '
+  +'them via network. Of course this also works for your own classes as long as'
+  +' they are descendants of TComponent.'#11'ParentColor'#8#8'WordWrap'#9#0#0#9
+  +'TGroupBox'#14'SourceGroupBox'#4'Left'#2#15#6'Height'#2'Z'#3'Top'#2#25#5'Wid'
+  +'th'#3#195#0#7'Caption'#6#6'Source'#12'ClientHeight'#2'E'#11'ClientWidth'#3
+  +#187#0#8'TabOrder'#2#0#0#9'TGroupBox'#9'AGroupBox'#4'Left'#2#23#6'Height'#2
+  +'+'#3'Top'#2#15#5'Width'#3#128#0#7'Caption'#6#9'AGroupBox'#8'TabOrder'#2#0#0
+  +#0#0#9'TGroupBox'#19'DestinationGroupBox'#4'Left'#2#30#6'Height'#2'm'#3'Top'
+  +#3'z'#1#5'Width'#3#215#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6
+  +#11'Destination'#8'TabOrder'#2#1#0#0#7'TButton'#19'WriteToStreamButton'#4'Le'
+  +'ft'#2#23#6'Height'#2'#'#3'Top'#3#130#0#5'Width'#3#229#0#8'AutoSize'#9#25'Bo'
+  +'rderSpacing.InnerBorder'#2#4#7'Caption'#6#28'1. Write AGroupBox to stream'#7
+  +'OnClick'#7#24'WriteToStreamButtonClick'#8'TabOrder'#2#2#0#0#9'TGroupBox'#14
+  +'StreamGroupBox'#4'Left'#2#15#6'Height'#3#150#0#3'Top'#3#170#0#5'Width'#3'<'
+  +#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6'3S'
+  +'tream (special characters are shown as hexnumbers)'#12'ClientHeight'#3#129#0
+  +#11'ClientWidth'#3'4'#2#8'TabOrder'#2#3#0#5'TMemo'#10'StreamMemo'#4'Left'#2#0
+  +#6'Height'#2'k'#3'Top'#2#0#5'Width'#3'4'#2#5'Align'#7#8'alClient'#13'Lines.S'
+  +'trings'#1#6'5First click on the button above, then on button below'#0#8'Rea'
+  +'dOnly'#9#8'TabOrder'#2#0#0#0#9'TCheckBox'#19'StreamAsLFMCheckBox'#4'Left'#2
+  +#0#6'Height'#2#22#3'Top'#2'k'#5'Width'#3'4'#2#5'Align'#7#8'alBottom'#7'Capti'
+  +'on'#6#31'Show sream in LFM format (text)'#8'OnChange'#7#25'StreamAsLFMCheck'
+  +'BoxChange'#8'TabOrder'#2#1#0#0#0#7'TButton'#16'ReadStreamButton'#4'Left'#2
+  +#25#6'Height'#2'#'#3'Top'#3'C'#1#5'Width'#3#254#0#7'Anchors'#11#6'akLeft'#8
+  +'akBottom'#0#8'AutoSize'#9#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#31
+  +'2. Create component from stream'#7'OnClick'#7#21'ReadStreamButtonClick'#8'T'
+  +'abOrder'#2#4#0#0#0
 ]);

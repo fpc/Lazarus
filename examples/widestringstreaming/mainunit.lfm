@@ -1,115 +1,129 @@
 object StreamDemoForm: TStreamDemoForm
-  Caption = 'Streaming components example'
-  ClientHeight = 485
-  ClientWidth = 525
-  OnCreate = FormCreate
-  PixelsPerInch = 112
+  Left = 292
+  Height = 503
+  Top = 168
+  Width = 601
   HorzScrollBar.Page = 524
   VertScrollBar.Page = 484
-  Left = 292
-  Height = 485
-  Top = 168
-  Width = 525
+  Caption = 'Streaming components example'
+  ClientHeight = 503
+  ClientWidth = 601
+  OnCreate = FormCreate
+  LCLVersion = '0.9.31'
   object Note1Label: TLabel
+    AnchorSideLeft.Control = SourceGroupBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 216
+    Height = 35
+    Top = 27
+    Width = 379
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
     Caption = 'This example demonstrates, how to stream a component to a stream in binary format ...'
-    Color = clNone
     ParentColor = False
     WordWrap = True
-    Left = 253
-    Height = 43
-    Top = 27
-    Width = 196
   end
   object Note2Label: TLabel
+    AnchorSideLeft.Control = DestinationGroupBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = DestinationGroupBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 251
+    Height = 103
+    Top = 378
+    Width = 344
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
     Caption = '... and how to reconstruct the component from a stream. This technique can be used to save components to disk or to transfer them via network. Of course this also works for your own classes as long as they are descendants of TComponent.'
-    Color = clNone
     ParentColor = False
     WordWrap = True
-    Left = 265
-    Height = 103
-    Top = 325
-    Width = 228
   end
   object SourceGroupBox: TGroupBox
-    Caption = 'Source'
-    ClientHeight = 73
-    ClientWidth = 191
-    TabOrder = 0
     Left = 15
     Height = 90
     Top = 25
     Width = 195
+    Caption = 'Source'
+    ClientHeight = 69
+    ClientWidth = 187
+    TabOrder = 0
     object AGroupBox: TGroupBox
-      Caption = 'AGroupBox'
-      ClientHeight = 26
-      ClientWidth = 124
-      TabOrder = 0
       Left = 23
       Height = 43
       Top = 15
       Width = 128
+      Caption = 'AGroupBox'
+      TabOrder = 0
     end
   end
   object DestinationGroupBox: TGroupBox
-    Anchors = [akLeft, akBottom]
-    Caption = 'Destination'
-    ClientHeight = 92
-    ClientWidth = 211
-    TabOrder = 1
     Left = 30
     Height = 109
-    Top = 360
+    Top = 378
     Width = 215
+    Anchors = [akLeft, akBottom]
+    Caption = 'Destination'
+    TabOrder = 1
   end
   object WriteToStreamButton: TButton
+    Left = 23
+    Height = 35
+    Top = 130
+    Width = 229
+    AutoSize = True
     BorderSpacing.InnerBorder = 4
     Caption = '1. Write AGroupBox to stream'
     OnClick = WriteToStreamButtonClick
     TabOrder = 2
-    Left = 23
-    Height = 25
-    Top = 130
-    Width = 197
   end
   object StreamGroupBox: TGroupBox
+    Left = 15
+    Height = 150
+    Top = 170
+    Width = 572
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Stream (special characters are shown as hexnumbers)'
-    ClientHeight = 115
-    ClientWidth = 492
+    ClientHeight = 129
+    ClientWidth = 564
     TabOrder = 3
-    Left = 15
-    Height = 132
-    Top = 170
-    Width = 496
     object StreamMemo: TMemo
+      Left = 0
+      Height = 107
+      Top = 0
+      Width = 564
       Align = alClient
       Lines.Strings = (
         'First click on the button above, then on button below'
       )
       ReadOnly = True
       TabOrder = 0
-      Height = 95
-      Width = 492
     end
     object StreamAsLFMCheckBox: TCheckBox
+      Left = 0
+      Height = 22
+      Top = 107
+      Width = 564
       Align = alBottom
       Caption = 'Show sream in LFM format (text)'
       OnChange = StreamAsLFMCheckBoxChange
       TabOrder = 1
-      Height = 20
-      Top = 95
-      Width = 492
     end
   end
   object ReadStreamButton: TButton
+    Left = 25
+    Height = 35
+    Top = 323
+    Width = 254
     Anchors = [akLeft, akBottom]
+    AutoSize = True
     BorderSpacing.InnerBorder = 4
     Caption = '2. Create component from stream'
     OnClick = ReadStreamButtonClick
     TabOrder = 4
-    Left = 25
-    Height = 24
-    Top = 316
-    Width = 215
   end
 end
