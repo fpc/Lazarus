@@ -3159,8 +3159,11 @@ begin
         (fTopLeft.y<RowCount) do
   begin
     RNew:=CellRect(aCol,aRow);
-    RNew.Left := FlipX(RNew.Left);
-    RNew.Right := FlipX(RNew.Right);
+    if UseRightToLeftAlignment then begin
+      XInc := RNew.Right;
+      RNew.Right := FlipX(RNew.Left);
+      RNew.Left := FlipX(XInc);
+    end;
 
     Xinc := 0;
     if RNew.Right <= FGCache.FixedWidth+GetBorderWidth then
