@@ -29,21 +29,27 @@ uses
 
 const
   DEF_TICK_LENGTH = 4;
+  DEF_INTERVALS_COUNT = 5;
 
 type
 
   { TChartMinorAxis }
 
   TChartMinorAxis = class(TChartBasicAxis)
+  strict private
+    FIntervalsCount: Cardinal;
+    procedure SetIntervalsCount(AValue: Cardinal);
   protected
     function GetDisplayName: String; override;
-    procedure StyleChanged(ASender: TObject); override;
   strict protected
     function GetAlignment: TChartAxisAlignment; override;
     procedure SetAlignment(AValue: TChartAxisAlignment); override;
+    procedure StyleChanged(ASender: TObject); override;
   public
     constructor Create(ACollection: TCollection); override;
   published
+    property IntervalsCount: Cardinal
+      read FIntervalsCount write SetIntervalsCount default DEF_INTERVALS_COUNT;
     property TickLength default DEF_TICK_LENGTH div 2;
   end;
 
@@ -258,6 +264,7 @@ end;
 constructor TChartMinorAxis.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection, (ACollection as TChartMinorAxisList).GetChart);
+  FIntervalsCount := DEF_INTERVALS_COUNT;
   TickLength := DEF_TICK_LENGTH div 2;
 end;
 
@@ -275,6 +282,13 @@ procedure TChartMinorAxis.SetAlignment(AValue: TChartAxisAlignment);
 begin
   Unused(AValue);
   raise EChartError.Create('TChartMinorAxis.SetAlignment');
+end;
+
+procedure TChartMinorAxis.SetIntervalsCount(AValue: Cardinal);
+begin
+  if FIntervalsCount = AValue then exit;
+  FIntervalsCount := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartMinorAxis.StyleChanged(ASender: TObject);
@@ -352,30 +366,58 @@ end;
 procedure TChartAxis.Draw(
   ADrawer: IChartDrawer; const AClipRect: TRect;
   const ATransf: ICoordTransformer; const AZOffset: TPoint);
+
+  function MakeDrawHelper(AAxis: TChartBasicAxis): TAxisDrawHelper;
+  begin
+    if IsVertical then
+      Result := TAxisDrawHelperY.Create
+    else
+      Result := TAxisDrawHelperX.Create;
+    try
+      Result.FAxis := AAxis;
+      Result.FClipRect := AClipRect;
+      Result.FDrawer := ADrawer;
+      Result.FTransf := ATransf;
+      Result.FZOffset := AZOffset;
+      Result.BeginDrawing;
+    except
+      Result.Free;
+      raise;
+    end;
+  end;
+
 var
-  i, fixedCoord: Integer;
+  i, j, c, ic, fixedCoord: Integer;
   axisTransf: TTransformFunc;
-  dh: TAxisDrawHelper;
+  dh, dhMinor: TAxisDrawHelper;
+  pv, v: Double;
 begin
   if not Visible then exit;
   if Marks.Visible then
     ADrawer.Font := Marks.LabelFont;
   fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
-
-  if IsVertical then
-    dh := TAxisDrawHelperY.Create
-  else
-    dh := TAxisDrawHelperX.Create;
+  v := 0;
+  dh := MakeDrawHelper(Self);
   try
-    dh.FAxis := Self;
-    dh.FClipRect := AClipRect;
-    dh.FDrawer := ADrawer;
-    dh.FTransf := ATransf;
-    dh.FZOffset := AZOffset;
-    dh.BeginDrawing;
     axisTransf := @GetTransform.AxisToGraph;
-    for i := 0 to High(FMarkValues) do
-      dh.DrawMark(fixedCoord, axisTransf(FMarkValues[i]), FMarkTexts[i]);
+    for i := 0 to High(FMarkValues) do begin
+      pv := v;
+      v := axisTransf(FMarkValues[i]);
+      dh.DrawMark(fixedCoord, v, FMarkTexts[i]);
+      if (i = 0) or (v = pv) then continue;
+      for j := 0 to Minors.Count - 1 do begin
+        ic := Minors[j].IntervalsCount;
+        if not Minors[j].Visible or (ic < 2) then continue;
+        dhMinor := MakeDrawHelper(Minors[j]);
+        try
+          for c := 1 to ic - 1 do
+            dhMinor.DrawMark(fixedCoord, WeightedAverage(pv, v, c / ic), '');
+          dhMinor.EndDrawing;
+        finally
+          dhMinor.Free;
+        end;
+      end;
+    end;
     dh.EndDrawing;
   finally
     dh.Free;
