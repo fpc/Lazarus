@@ -316,17 +316,16 @@ begin
 end;
 
 type
-  TTransform = function (A: Double): Double of object;
   TCustomSeriesCrack = class(TCustomChartSeries);
 
 procedure DrawFunction(
   ADrawer: IChartDrawer; ASeries: TCustomChartSeries;
-  ADomainExclusions: TIntervalList; ACalc: TTransform; AStep: Integer);
+  ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer);
 type
   TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;
 
 var
-  axisToGraphXr, axisToGraphYr, graphToAxisXr: TTransform;
+  axisToGraphXr, axisToGraphYr, graphToAxisXr: TTransformFunc;
   makeDP: TMakeDoublePoint;
   r: TDoubleRect = (coords:(NegInfinity, NegInfinity, Infinity, Infinity));
   prev: TDoublePoint;
@@ -415,7 +414,7 @@ end;
 
 procedure TFuncSeries.Draw(ADrawer: IChartDrawer);
 var
-  calc: TTransform;
+  calc: TTransformFunc;
 begin
   if Assigned(OnCalculate) then
     calc := @DoCalculate

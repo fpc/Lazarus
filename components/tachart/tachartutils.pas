@@ -65,6 +65,8 @@ type
 
   TPointDistFunc = function (const A, B: TPoint): Integer;
 
+  TTransformFunc = function (A: Double): Double of object;
+
   TAxisScale = (asIncreasing, asDecreasing, asLogIncreasing, asLogDecreasing);
 
   TSeriesMarksStyle = (
