@@ -4946,6 +4946,7 @@ lcl/images/btncalcplus.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcpm.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalculator.png -text svneol=unset#image/png
 lcl/images/btncalendar.png -text svneol=unset#image/png
+lcl/images/btnfiltercancel.png -text
 lcl/images/btnseldir.png -text svneol=unset#image/png
 lcl/images/btnselfile.png -text svneol=unset#image/png
 lcl/images/buttons/btn_abort.png -text svneol=unset#image/png
