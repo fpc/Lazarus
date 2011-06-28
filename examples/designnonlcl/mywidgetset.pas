@@ -88,7 +88,7 @@ type
     destructor Destroy; override;
     property Parent: TMyWidget read FParent write SetParent;
     function ChildCount: integer;
-    property Childs[Index: integer]: TMyWidget read GetChilds;
+    property Children[Index: integer]: TMyWidget read GetChilds;
     procedure SetBounds(NewLeft, NewTop, NewWidth, NewHeight: integer); virtual;
     procedure InvalidateRect(ARect: TRect; Erase: boolean);
     procedure Invalidate;
@@ -250,8 +250,8 @@ var
   i: Integer;
 begin
   for i:=0 to ChildCount-1 do
-    if Childs[i].Owner=Root then
-      Proc(Childs[i]);
+    if Children[i].Owner=Root then
+      Proc(Children[i]);
 end;
 
 constructor TMyWidget.Create(AOwner: TComponent);
@@ -268,7 +268,7 @@ end;
 destructor TMyWidget.Destroy;
 begin
   Parent:=nil;
-  while ChildCount>0 do Childs[ChildCount-1].Free;
+  while ChildCount>0 do Children[ChildCount-1].Free;
   FreeAndNil(FChilds);
   inherited Destroy;
 end;

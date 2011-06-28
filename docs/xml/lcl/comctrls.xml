@@ -16480,9 +16480,9 @@ the comparision is case sensitive.
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
-      <element name="TTreeNodeExpandedState.Childs">
+      <element name="TTreeNodeExpandedState.Children">
         <short>
-          <var>Childs</var> - the children of the current node, as an AvgLvlTree</short>
+          <var>Children</var> - the children of the current node, as an AvgLvlTree</short>
         <descr/>
         <seealso/>
       </element>

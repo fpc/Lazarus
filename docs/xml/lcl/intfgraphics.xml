@@ -1392,7 +1392,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
-      <element name="TArrayNode.Childs">
+      <element name="TArrayNode.Children">
         <short/>
         <descr/>
         <seealso/>

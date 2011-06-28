@@ -141,7 +141,7 @@ type
     property NextSibling: TEduOptionsNode read FNextSibling;
     property PrevSibling: TEduOptionsNode read FPrevSibling;
     property ChildCount: integer read GetChildCount;
-    property Childs[Index: integer]: TEduOptionsNode read GetChilds; default;
+    property Children[Index: integer]: TEduOptionsNode read GetChilds; default;
   end;
 
   { TEduOptsRootNode }
@@ -233,7 +233,7 @@ procedure TEduOptionsNode.Delete(Index: integer);
 var
   Child: TEduOptionsNode;
 begin
-  Child:=Childs[Index];
+  Child:=Children[Index];
   Remove(Index);
   Child.Free;
 end;
@@ -242,7 +242,7 @@ procedure TEduOptionsNode.Remove(Index: integer);
 var
   Child: TEduOptionsNode;
 begin
-  Child:=Childs[Index];
+  Child:=Children[Index];
   fChilds.Delete(Index);
   Child.FParent:=nil;
   Child.Unbind;
@@ -259,11 +259,11 @@ begin
   FChilds.Insert(Index,Node);
   Node.FParent:=Self;
   if Index>0 then begin
-    Node.FPrevSibling:=Childs[Index-1];
+    Node.FPrevSibling:=Children[Index-1];
     Node.FPrevSibling.FNextSibling:=Node;
   end;
   if Index+1<ChildCount then begin
-    Node.FNextSibling:=Childs[Index+1];
+    Node.FNextSibling:=Children[Index+1];
     Node.FNextSibling.FPrevSibling:=Node;
   end;
 end;
@@ -287,7 +287,7 @@ var
   Child: TEduOptionsNode;
 begin
   for i:=0 to ChildCount-1 do begin
-    Child:=Childs[i];
+    Child:=Children[i];
     if (Child.Name='') or (not IsValidIdent(Child.Name)) then continue;
     Config.AppendBasePath(Child.Name);
     try
@@ -306,7 +306,7 @@ var
   Child: TEduOptionsNode;
 begin
   for i:=0 to ChildCount-1 do begin
-    Child:=Childs[i];
+    Child:=Children[i];
     if (Child.Name='') or (not IsValidIdent(Child.Name)) then continue;
     Config.AppendBasePath(Child.Name);
     try
@@ -329,7 +329,7 @@ var
   i: Integer;
 begin
   for i:=0 to ChildCount-1 do
-    Childs[i].Apply(Enable);
+    Children[i].Apply(Enable);
 end;
 
 { TEduOptions }

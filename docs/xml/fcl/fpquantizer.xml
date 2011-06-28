@@ -301,7 +301,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
-      <element name="TOctreeQNode.Childs">
+      <element name="TOctreeQNode.Children">
         <short/>
         <descr/>
         <seealso/>

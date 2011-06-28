@@ -70,8 +70,8 @@ type
     A TAutoSizeBox is a node in a tree.
     A TAutoSizeBox can be a cell. Then it is a leaf in the tree and can have a
     Control.
-    A TAutoSizeBox can be a row or column. Then it has only one Childs array.
-    A TAutoSizeBox can be a table. Then it has both Childs arrays.
+    A TAutoSizeBox can be a row or column. Then it has only one Children array.
+    A TAutoSizeBox can be a table. Then it has both Children arrays.
   }
 
   TAutoSizeBox = class
@@ -86,7 +86,7 @@ type
     Parent: array[TAutoSizeBoxOrientation] of TAutoSizeBox;
     Index: array[TAutoSizeBoxOrientation] of Integer; // index in parent or grandparent
     ChildCount: array[TAutoSizeBoxOrientation] of Integer;
-    Childs: array[TAutoSizeBoxOrientation] of PAutoSizeBox;
+    Children: array[TAutoSizeBoxOrientation] of PAutoSizeBox;
     NewControlBounds: TRect;
 
     // for nodes
@@ -936,9 +936,9 @@ begin
       //Box.WriteDebugReport('TAutoSizeCtrlData.SetupNonAlignedChilds');
       // transfer the coords of the layout
       for y:=0 to Box.ChildCount[asboVertical]-1 do begin
-        RowBox:=Box.Childs[asboVertical][y];
+        RowBox:=Box.Children[asboVertical][y];
         for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
-          ControlBox:=RowBox.Childs[asboHorizontal][x];
+          ControlBox:=RowBox.Children[asboHorizontal][x];
           Child:=ControlBox.Control;
           if Child=nil then continue;
           NewBounds:=ControlBox.NewControlBounds;
@@ -1425,9 +1425,9 @@ var
   Size: Integer;
 begin
   Size:=NewChildCount*SizeOf(Pointer);
-  ReallocMem(Childs[Orientation],Size);
+  ReallocMem(Children[Orientation],Size);
   if Size>0 then
-    FillChar(Childs[Orientation][0],Size,0);
+    FillChar(Children[Orientation][0],Size,0);
   ChildCount[Orientation]:=NewChildCount;
 end;
 
@@ -1457,7 +1457,7 @@ begin
   // create columns
   for x:=0 to ColCount-1 do begin
     ColBox:=TAutoSizeBox.Create;
-    Childs[asboHorizontal][x]:=ColBox;
+    Children[asboHorizontal][x]:=ColBox;
     ColBox.AllocateChildsArray(asboVertical,RowCount);
     ColBox.Parent[asboHorizontal]:=Self;
     ColBox.Index[asboHorizontal]:=x;
@@ -1466,7 +1466,7 @@ begin
   // create rows
   for y:=0 to RowCount-1 do begin
     RowBox:=TAutoSizeBox.Create;
-    Childs[asboVertical][y]:=RowBox;
+    Children[asboVertical][y]:=RowBox;
     RowBox.AllocateChildsArray(asboHorizontal,ColCount);
     RowBox.Parent[asboVertical]:=Self;
     RowBox.Index[asboHorizontal]:=-1;
@@ -1474,12 +1474,12 @@ begin
   end;
   // create cells
   for y:=0 to RowCount-1 do begin
-    RowBox:=Childs[asboVertical][y];
+    RowBox:=Children[asboVertical][y];
     for x:=0 to ColCount-1 do begin
-      ColBox:=Childs[asboHorizontal][x];
+      ColBox:=Children[asboHorizontal][x];
       CellBox:=TAutoSizeBox.Create;
-      RowBox.Childs[asboHorizontal][x]:=CellBox;
-      ColBox.Childs[asboVertical][y]:=CellBox;
+      RowBox.Children[asboHorizontal][x]:=CellBox;
+      ColBox.Children[asboVertical][y]:=CellBox;
       CellBox.Parent[asboHorizontal]:=RowBox;
       CellBox.Parent[asboVertical]:=ColBox;
       CellBox.Index[asboHorizontal]:=x;
@@ -1528,7 +1528,7 @@ begin
         Col:=i mod LineMax;
         if (BiDiMode=bdRightToLeft) then
           Col:=LineMax-Col-1;
-        ChildBox:=Childs[asboHorizontal][Col].Childs[asboVertical][Row];
+        ChildBox:=Children[asboHorizontal][Col].Children[asboVertical][Row];
         ChildBox.SetControl(ChildControl);
         ChildBox.ApplyChildsizingBorders(ChildSizing);
       end;
@@ -1539,7 +1539,7 @@ begin
         Row:=i mod LineMax;
         if (BiDiMode=bdRightToLeft) then
           Col:=LineMax-Col-1;
-        ChildBox:=Childs[asboVertical][Row].Childs[asboHorizontal][Col];
+        ChildBox:=Children[asboVertical][Row].Children[asboHorizontal][Col];
         ChildBox.SetControl(ChildControl);
         ChildBox.ApplyChildsizingBorders(ChildSizing);
       end;
@@ -1593,7 +1593,7 @@ procedure TAutoSizeBox.InitSums;
     FirstChild: TAutoSizeBox;
   begin
     if ChildCount[o]>0 then begin
-      FirstChild:=Childs[o][0];
+      FirstChild:=Children[o][0];
       MaximumSize[o]:=FirstChild.MaximumSize[o];
       MinimumSize[o]:=FirstChild.MinimumSize[o];
       PreferredSize[o]:=FirstChild.PreferredSize[o];
@@ -1632,12 +1632,12 @@ begin
   Orthogonal:=SizeBoxOrthogonal[Orientation];
   if ChildCount[Orientation]>0 then begin
     for i:=0 to ChildCount[Orientation]-1 do begin
-      CurChild:=Childs[Orientation][i];
+      CurChild:=Children[Orientation][i];
       
       // add border in Orientation
       CurBorder:=CurChild.BorderLeftTop[Orientation];
       if i>0 then
-        CurBorder:=Max(Childs[Orientation][i-1].BorderRightBottom[Orientation],
+        CurBorder:=Max(Children[Orientation][i-1].BorderRightBottom[Orientation],
                        CurBorder);
       if MaximumSize[Orientation]>0 then begin
         inc(MaximumSize[Orientation],CurBorder);
@@ -1673,7 +1673,7 @@ begin
     end;
 
     // last border
-    LastChild:=Childs[Orientation][ChildCount[Orientation]-1];
+    LastChild:=Children[Orientation][ChildCount[Orientation]-1];
     BorderRightBottom[Orientation]:=LastChild.BorderRightBottom[Orientation];
   end;
 end;
@@ -1687,12 +1687,12 @@ var
 begin
   // sum items in rows
   for y:=0 to ChildCount[asboVertical]-1 do begin
-    RowBox:=Childs[asboVertical][y];
+    RowBox:=Children[asboVertical][y];
     RowBox.SumLine(asboHorizontal,true);
   end;
   // sum items in columns
   for x:=0 to ChildCount[asboHorizontal]-1 do begin
-    ColBox:=Childs[asboHorizontal][x];
+    ColBox:=Children[asboHorizontal][x];
     ColBox.SumLine(asboVertical,true);
   end;
   // sum rows
@@ -1709,7 +1709,7 @@ var
 begin
   CurLeftTop:=0;
   for i:=0 to ChildCount[Orientation]-1 do begin
-    Child:=Childs[Orientation][i];
+    Child:=Children[Orientation][i];
     if i=0 then
       inc(CurLeftTop,Child.BorderLeftTop[Orientation]);
     Child.LeftTop[Orientation]:=CurLeftTop;
@@ -1738,7 +1738,7 @@ var
   begin
     Result:=0;
     for i:=0 to ChildCount[Orientation]-1 do begin
-      Child:=Childs[Orientation][i];
+      Child:=Children[Orientation][i];
       if i=0 then
         inc(Result,Child.BorderLeftTop[Orientation]);
       if Child.PreferredSize[Orientation]<1 then
@@ -1769,7 +1769,7 @@ var
     crsScaleChilds,crsHomogenousChildResize:
     
       for i:=0 to ChildCount[Orientation]-1 do begin
-        Child:=Childs[Orientation][i];
+        Child:=Children[Orientation][i];
         if (Child.MaximumSize[Orientation]>0)
         and (Child.PreferredSize[Orientation]>=Child.MaximumSize[Orientation])
         then begin
@@ -1824,7 +1824,7 @@ var
     for i:=0 to ChildCount[Orientation]-1 do begin
       if TargetSize=CurSize then break;
     
-      Child:=Childs[Orientation][i];
+      Child:=Children[Orientation][i];
       if (Child.MaximumSize[Orientation]<0)
       and (Child.PreferredSize[Orientation]>=Child.MaximumSize[Orientation])
       then begin
@@ -1899,7 +1899,7 @@ var
 
     crsScaleChilds,crsHomogenousChildResize:
       for i:=0 to ChildCount[Orientation]-1 do begin
-        Child:=Childs[Orientation][i];
+        Child:=Children[Orientation][i];
         if (Child.PreferredSize[Orientation]<=Child.MinimumSize[Orientation])
         or (Child.PreferredSize[Orientation]<=1)
         then begin
@@ -1939,7 +1939,7 @@ var
 
     crsHomogenousSpaceResize:
       for i:=0 to ChildCount[Orientation]-1 do begin
-        Child:=Childs[Orientation][i];
+        Child:=Children[Orientation][i];
         if i=0 then begin
           CurScale:=double(TargetSize);
           CurOffset:=Child.BorderLeftTop[Orientation];
@@ -1977,7 +1977,7 @@ var
     OldSize: LongInt;
   begin
     for i:=0 to ChildCount[Orientation]-1 do begin
-      Child:=Childs[Orientation][i];
+      Child:=Children[Orientation][i];
       if (Child.PreferredSize[Orientation]<=1)
       or (Child.PreferredSize[Orientation]<=Child.MinimumSize[Orientation])
       then begin
@@ -2117,7 +2117,7 @@ procedure TAutoSizeBox.AlignToRight(TargetWidth: integer);
   begin
     Result:=0;
     for i:=0 to ChildCount[Orientation]-1 do begin
-      Child:=Childs[Orientation][i];
+      Child:=Children[Orientation][i];
       if i=0 then
         inc(Result,Child.BorderLeftTop[Orientation]);
       if Child.PreferredSize[Orientation]<1 then
@@ -2137,7 +2137,7 @@ begin
   dx:=TargetWidth-GetChildTotalSize(Orientation);
 
   for i:=ChildCount[Orientation]-1 downto 0 do begin
-    Child:=Childs[Orientation][i];
+    Child:=Children[Orientation][i];
     inc(Child.LeftTop[Orientation],dx);
   end;
 end;
@@ -2158,9 +2158,9 @@ var
 begin
   //WriteDebugReport;
   for y:=0 to ChildCount[asboVertical]-1 do begin
-    RowBox:=Childs[asboVertical][y];
+    RowBox:=Children[asboVertical][y];
     for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
-      ControlBox:=RowBox.Childs[asboHorizontal][x];
+      ControlBox:=RowBox.Children[asboHorizontal][x];
       ColBox:=ControlBox.Parent[asboVertical];
       CurControl:=ControlBox.Control;
       if CurControl=nil then continue;
@@ -2237,9 +2237,9 @@ begin
   Result:=false;
   //WriteDebugReport;
   for y:=0 to ChildCount[asboVertical]-1 do begin
-    RowBox:=Childs[asboVertical][y];
+    RowBox:=Children[asboVertical][y];
     for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
-      ControlBox:=RowBox.Childs[asboHorizontal][x];
+      ControlBox:=RowBox.Children[asboHorizontal][x];
       CurControl:=ControlBox.Control;
       if CurControl=nil then continue;
       NewBounds:=ControlBox.NewControlBounds;
@@ -2286,7 +2286,7 @@ begin
   DebugLn('TAutoSizeBox.WriteDebugReport '+Title
     +' ChildCounts=',dbgs(ChildCount[asboHorizontal]),'x',dbgs(ChildCount[asboVertical]));
   for y:=0 to ChildCount[asboVertical]-1 do begin
-    RowBox:=Childs[asboVertical][y];
+    RowBox:=Children[asboVertical][y];
     DbgOut('  Row='+dbgs(y),
             ' MinY='+dbgs(RowBox.MinimumSize[asboVertical]),
             ' MaxY='+dbgs(RowBox.MaximumSize[asboVertical]),
@@ -2294,7 +2294,7 @@ begin
             ' BorderTop=',dbgs(RowBox.BorderLeftTop[asboVertical]),
             ' #Col='+dbgs(RowBox.ChildCount[asboHorizontal]));
     for x:=0 to RowBox.ChildCount[asboHorizontal]-1 do begin
-      CellBox:=RowBox.Childs[asboHorizontal][x];
+      CellBox:=RowBox.Children[asboHorizontal][x];
       DbgOut(' CellControl=',DbgSName(CellBox.Control),
              ' Min='+dbgs(CellBox.MinimumSize[asboHorizontal])+'x'+dbgs(CellBox.MinimumSize[asboVertical]),
              ' Max='+dbgs(CellBox.MaximumSize[asboHorizontal])+'x'+dbgs(CellBox.MaximumSize[asboVertical]),
@@ -2306,7 +2306,7 @@ begin
   end;
   DbgOut(' Columns: ');
   for x:=0 to ChildCount[asboHorizontal]-1 do begin
-    ColBox:=Childs[asboHorizontal][x];
+    ColBox:=Children[asboHorizontal][x];
     DbgOut(' Col='+dbgs(ColBox.Index[asboHorizontal]),
            ' Min='+dbgs(ColBox.MinimumSize[asboHorizontal]),
            ' Max='+dbgs(ColBox.MaximumSize[asboHorizontal]),
@@ -2323,7 +2323,7 @@ begin
   // unlink from parent
   for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
     if Parent[o]<>nil then
-      Parent[o].Childs[o][Index[o]]:=nil;
+      Parent[o].Children[o][Index[o]]:=nil;
   Clear;
   inherited Destroy;
 end;
@@ -2336,10 +2336,10 @@ begin
   // free all children
   for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
     for i:=0 to ChildCount[o]-1 do
-      Childs[o][i].Free;
+      Children[o][i].Free;
   // free children arrays
   for o:=Low(TAutoSizeBoxOrientation) to high(TAutoSizeBoxOrientation) do
-    ReallocMem(Childs[o],0);
+    ReallocMem(Children[o],0);
 end;
 
 {------------------------------------------------------------------------------

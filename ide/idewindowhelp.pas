@@ -71,7 +71,7 @@ type
     property Path: string read FPath write SetPath;
     property Parent: TIWHelpNode read FParent;
     property Count: integer read GetCount;
-    property Childs[Index: integer]: TIWHelpNode read GetChilds; default;
+    property Children[Index: integer]: TIWHelpNode read GetChilds; default;
   end;
   
   { TIWHelpTree }
@@ -229,7 +229,7 @@ var
 begin
   if FItems<>nil then begin
     for i:=FItems.Count-1 downto 0 do begin
-      CurChild:=Childs[i];
+      CurChild:=Children[i];
       CurChild.FParent:=nil;
       CurChild.Free;
     end;
@@ -298,7 +298,7 @@ begin
   Config.SetDeleteValue(CfgPath+'IsRoot',IsRoot,false);
   Config.SetDeleteValue(CfgPath+'ChildCount',Count,0);
   for i:=0 to Count-1 do
-    Childs[i].Save(Config,CfgPath+'Node'+IntToStr(i+1)+'/');
+    Children[i].Save(Config,CfgPath+'Node'+IntToStr(i+1)+'/');
 end;
 
 function TIWHelpNode.FindByName(const ChildName: string): TIWHelpNode;
@@ -306,7 +306,7 @@ var
   i: Integer;
 begin
   for i := 0 to Count-1 do begin
-    Result:=Childs[i];
+    Result:=Children[i];
     if CompareText(Result.Name,ChildName)=0 then exit;
   end;
   Result:=nil;
@@ -318,7 +318,7 @@ var
   i: Integer;
 begin
   for i:=Count-1 downto 0 do begin
-    CurChild:=Childs[i];
+    CurChild:=Children[i];
     CurChild.DeleteLeavesWithoutHelp;
     if (CurChild.Count=0) and (not CurChild.HasHelp) then
       CurChild.Free;

@@ -124,7 +124,7 @@ type
     property URL: string read FURL write SetURL;
     property StoreIn: string read FStoreIn write SetStoreIn;
     property ChildCount: integer read GetChildCount;
-    property Childs[Index: integer]: TExternHelpItem read GetChilds;
+    property Children[Index: integer]: TExternHelpItem read GetChilds;
     property ChangeStep: integer read FChangeStep;
   end;
 
@@ -333,7 +333,7 @@ begin
   Config.SetDeleteValue(Path+'URL/Value',Node.URL,'');
   Config.SetDeleteValue(Path+'ChildCount',Node.ChildCount,0);
   for i:=1 to Node.ChildCount do
-    SaveNode(Config,Path+'Item'+IntToStr(i)+'/',Node.Childs[i-1]);
+    SaveNode(Config,Path+'Item'+IntToStr(i)+'/',Node.Children[i-1]);
 end;
 
 constructor TExternHelpOptions.Create;
@@ -371,7 +371,7 @@ var
 begin
   if RootItem<>nil then begin
     for i:=RootItem.ChildCount-1 downto 0 do begin
-      Item:=RootItem.Childs[i];
+      Item:=RootItem.Children[i];
       if (Item.StoreIn='') then
         Item.Free;
     end;
@@ -386,7 +386,7 @@ var
 begin
   if Parent<>nil then begin
     for i:=Parent.ChildCount-1 downto 0 do begin
-      Item:=Parent.Childs[i];
+      Item:=Parent.Children[i];
       if (Item.StoreIn<>'')
       and (Name='*') or (SysUtils.CompareText(Item.StoreIn,Name)=0) then
         Item.Free;
@@ -444,10 +444,10 @@ begin
     Changed:=false;
     Cnt:=0;
     for i:=0 to RootItem.ChildCount-1 do begin
-      Item:=RootItem.Childs[i];
+      Item:=RootItem.Children[i];
       if SysUtils.CompareText(Item.StoreIn,Pkg.Name)<>0 then continue;
       if (Cnt=TmpRoot.ChildCount)
-      or (not TmpRoot.Childs[Cnt].IsEqual(Item,true)) then begin
+      or (not TmpRoot.Children[Cnt].IsEqual(Item,true)) then begin
         Changed:=true;
         break;
       end;
@@ -466,7 +466,7 @@ begin
   Path:=Path+'/';
   Cnt:=0;
   for i:=0 to RootItem.ChildCount-1 do begin
-    Item:=RootItem.Childs[i];
+    Item:=RootItem.Children[i];
     //DebugLn(['TExternHelpOptions.SaveOptionsToPackage ',Item.Name,' StoreIN=',Item.StoreIn,' ',SysUtils.CompareText(Item.StoreIn,Pkg.Name)=0]);
     if SysUtils.CompareText(Item.StoreIn,Pkg.Name)<>0 then continue;
     inc(Cnt);
@@ -525,7 +525,7 @@ begin
   Path:='ExternHelp/';
   Cnt:=0;
   for i:=1 to RootItem.ChildCount do begin
-    Item:=RootItem.Childs[i-1];
+    Item:=RootItem.Children[i-1];
     if Item.StoreIn<>'' then continue;
     inc(Cnt);
     SaveNode(Config,Path+'Items/Item'+IntToStr(Cnt)+'/',Item);
@@ -627,7 +627,7 @@ procedure TExternHelpOptions.UpdateHelpDB;
     end;
 
     for i:=0 to Item.ChildCount-1 do
-      RegisterItem(Item.Childs[i]);
+      RegisterItem(Item.Children[i]);
   end;
 
 begin
@@ -976,7 +976,7 @@ procedure TExternHelpGeneralOptsFrame.FillItemsTreeView;
     TVNode: TTreeNode;
   begin
     for i:=0 to ParentItem.ChildCount-1 do begin
-      Item:=ParentItem.Childs[i];
+      Item:=ParentItem.Children[i];
       TVNode:=ItemsTreeView.Items.AddChildObject(ParentTVNode,Item.Name,Item);
       Add(Item,TVNode);
       TVNode.Expanded:=true;
@@ -1267,7 +1267,7 @@ var
 begin
   if (ChildCount=0) and (URL='') and (Filename='') and (StoreIn='') then exit;
   for i:=fChilds.Count-1 downto 0 do begin
-    Child:=Childs[i];
+    Child:=Children[i];
     Child.Parent:=nil;
     Child.Free;
   end;
@@ -1295,14 +1295,14 @@ end;
 
 procedure TExternHelpItem.RemoveChild(Index: integer);
 begin
-  Childs[Index].Parent:=nil;
+  Children[Index].Parent:=nil;
   fChilds.Delete(Index);
   IncreaseChangeStep;
 end;
 
 procedure TExternHelpItem.DeleteChild(Index: integer);
 begin
-  Childs[Index].Free;
+  Children[Index].Free;
 end;
 
 procedure TExternHelpItem.DeleteChild(Child: TExternHelpItem);
@@ -1328,7 +1328,7 @@ begin
     and (ChildCount=Item.ChildCount);
   if Result then begin
     for i:=0 to ChildCount-1 do
-      if not (Childs[i].IsEqual(Item.Childs[i],true)) then exit(false);
+      if not (Children[i].IsEqual(Item.Children[i],true)) then exit(false);
   end;
 end;
 
@@ -1353,9 +1353,9 @@ begin
       AddChild(Item);
       IncreaseChangeStep;
     end else begin
-      Item:=Childs[i];
+      Item:=Children[i];
     end;
-    Item.Assign(Src.Childs[i],true);
+    Item.Assign(Src.Children[i],true);
   end;
   while ChildCount>Src.ChildCount do begin
     DeleteChild(ChildCount-1);
