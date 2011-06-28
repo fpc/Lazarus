@@ -502,6 +502,7 @@ begin
   APrivateTrayIcon.item := NSStatusItem.CreateWithHandle(APrivateTrayIcon.bar.statusItemWithLength(NSSquareStatusItemLength));
   APrivateTrayIcon.item.retain();
   APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);
+  APrivateTrayIcon.item.setHighlightMode(LongBool(YES));
 
   { Inserts the menu }
 
