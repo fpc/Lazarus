@@ -500,12 +500,12 @@ begin
   DrawLines;
   DrawLabels(ADrawer);
 
-  if FShowPoints then
+  if ShowPoints and Pointer.Visible then
     for i := FLoBound to FUpBound do begin
       p := FGraphPoints[i - FLoBound];
       if not ParentChart.IsPointInViewPort(p) then continue;
       ai := ParentChart.GraphToImage(p);
-      FPointer.Draw(ADrawer, ai, Source[i]^.Color);
+      Pointer.Draw(ADrawer, ai, Source[i]^.Color);
       if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDrawPointer) then
         FOnDrawPointer(Self, ic.Canvas, i, ai);
     end;
