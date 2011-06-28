@@ -367,8 +367,7 @@ var
   xg, xa, xg1, xa1, xmax, graphStep: Double;
 begin
   chart := TCustomSeriesCrack(ASeries).FChart;
-  TCustomSeriesCrack(ASeries).GetGraphBounds(r);
-  RectIntersectsRect(r, chart.CurrentExtent);
+  r := chart.CurrentExtent;
 
   with TCustomSeriesCrack(ASeries) do
     if IsRotated then begin
@@ -603,7 +602,7 @@ function TCubicSplineSeries.Calculate(AX: Double): Double;
 var
   ok: Integer = 0;
 begin
-  Result := ipfspn(High(FCoeff) - 1, FX[0], FY[0], FCoeff[0], AX, ok);
+  Result := ipfspn(High(FCoeff), FX[0], FY[0], FCoeff[0], AX, ok);
 end;
 
 constructor TCubicSplineSeries.Create(AOwner: TComponent);
@@ -654,7 +653,7 @@ begin
       FX[i] := X;
       FY[i] := Y;
     end;
-  ipfisn(n - 2, FX[0], FY[0], FCoeff[0], i);
+  ipfisn(n - 1, FX[0], FY[0], FCoeff[0], i);
   if i > 1 then
     FCoeff := nil;
 end;
