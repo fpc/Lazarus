@@ -136,7 +136,7 @@ type
   protected
     property Styles: TChartStyles read FStyles write SetStyles;
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -190,15 +190,20 @@ type
     FMarkPositions: TLinearMarkPositions;
     function GetLabelDirection(AIndex: Integer): TLabelDirection;
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
+    procedure SetPointer(AValue: TSeriesPointer);
     procedure SetUseReticule(AValue: Boolean);
   protected
     FGraphPoints: array of TDoublePoint;
     FLoBound: Integer;
     FMinXRange: Double;
+    FPointer: TSeriesPointer;
     FUpBound: Integer;
     FUseReticule: Boolean;
 
+    procedure AfterDrawPointer(
+      ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
     procedure DrawLabels(ADrawer: IChartDrawer);
+    procedure DrawPointers(ADrawer: IChartDrawer);
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
@@ -209,7 +214,12 @@ type
     procedure UpdateMinXRange;
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;
+  protected
+    property Pointer: TSeriesPointer read FPointer write SetPointer;
   public
+    destructor Destroy; override;
+  public
+    procedure Assign(ASource: TPersistent); override;
     function GetNearestPoint(
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
@@ -486,10 +496,10 @@ begin
   Source.AfterDraw;
 end;
 
-procedure TChartSeries.Assign(Source: TPersistent);
+procedure TChartSeries.Assign(ASource: TPersistent);
 begin
-  if Source is TChartSeries then
-    with TChartSeries(Source) do begin
+  if ASource is TChartSeries then
+    with TChartSeries(ASource) do begin
       Self.Marks := FMarks;
       Self.FOnGetMark := FOnGetMark;
       Self.Source := FSource;
@@ -740,6 +750,29 @@ end;
 
 { TBasicPointSeries }
 
+procedure TBasicPointSeries.AfterDrawPointer(
+  ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint);
+begin
+  Unused(ADrawer);
+  Unused(AIndex, APos);
+end;
+
+procedure TBasicPointSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TBasicPointSeries then
+    with TBasicPointSeries(ASource) do begin
+      Self.FPointer := Pointer;
+      Self.FUseReticule := UseReticule;
+    end;
+  inherited Assign(ASource);
+end;
+
+destructor TBasicPointSeries.Destroy;
+begin
+  FreeAndNil(FPointer);
+  inherited;
+end;
+
 procedure TBasicPointSeries.DrawLabels(ADrawer: IChartDrawer);
 var
   prevLabelPoly: TPointArray;
@@ -779,6 +812,23 @@ begin
         then
           DrawLabel(FormattedMark(i, si), GraphToImage(g), ld);
     end;
+  end;
+end;
+
+procedure TBasicPointSeries.DrawPointers(ADrawer: IChartDrawer);
+var
+  i: Integer;
+  p: TDoublePoint;
+  ai: TPoint;
+begin
+  Assert(Pointer <> nil, 'Series pointer');
+  if not Pointer.Visible then exit;
+  for i := FLoBound to FUpBound do begin
+    p := FGraphPoints[i - FLoBound];
+    if not ParentChart.IsPointInViewPort(p) then continue;
+    ai := ParentChart.GraphToImage(p);
+    Pointer.Draw(ADrawer, ai, Source[i]^.Color);
+    AfterDrawPointer(ADrawer, i, ai);
   end;
 end;
 
@@ -907,6 +957,12 @@ procedure TBasicPointSeries.SetMarkPositions(AValue: TLinearMarkPositions);
 begin
   if FMarkPositions = AValue then exit;
   FMarkPositions := AValue;
+  UpdateParentChart;
+end;
+
+procedure TBasicPointSeries.SetPointer(AValue: TSeriesPointer);
+begin
+  FPointer.Assign(AValue);
   UpdateParentChart;
 end;
 

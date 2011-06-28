@@ -185,25 +185,25 @@ type
     FLinePen: TPen;
     FLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
-    FPointer: TSeriesPointer;
     FShowPoints: Boolean;
 
     procedure DrawSingleLineInStack(ADrawer: IChartDrawer; AIndex: Integer);
     function GetShowLines: Boolean;
     procedure SetLinePen(AValue: TPen);
     procedure SetLineType(AValue: TLineType);
-    procedure SetPointer(Value: TSeriesPointer);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetShowLines(Value: Boolean);
     procedure SetShowPoints(Value: Boolean);
   protected
     procedure AfterAdd; override;
+    procedure AfterDrawPointer(
+      ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
+    destructor Destroy; override;
 
     procedure Draw(ADrawer: IChartDrawer); override;
   public
@@ -219,7 +219,7 @@ type
     property MarkPositions;
     property OnDrawPointer: TSeriesPointerDrawEvent
       read FOnDrawPointer write FOnDrawPointer;
-    property Pointer: TSeriesPointer read FPointer write SetPointer;
+    property Pointer;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clBlack;
     property ShowLines: Boolean
@@ -324,7 +324,16 @@ uses
 procedure TLineSeries.AfterAdd;
 begin
   inherited AfterAdd;
-  FPointer.SetOwner(FChart);
+  Pointer.SetOwner(FChart);
+end;
+
+procedure TLineSeries.AfterDrawPointer(
+  ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint);
+var
+  ic: IChartTCanvasDrawer;
+begin
+  if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDrawPointer) then
+    FOnDrawPointer(Self, ic.Canvas, AIndex, APos);
 end;
 
 procedure TLineSeries.Assign(ASource: TPersistent);
@@ -334,7 +343,6 @@ begin
       Self.LinePen := FLinePen;
       Self.FLineType := FLineType;
       Self.FOnDrawPointer := FOnDrawPointer;
-      Self.Pointer :=  FPointer;
       Self.FShowPoints := FShowPoints;
     end;
   inherited Assign(ASource);
@@ -359,7 +367,6 @@ end;
 destructor TLineSeries.Destroy;
 begin
   FreeAndNil(FLinePen);
-  FreeAndNil(FPointer);
   inherited;
 end;
 
@@ -491,24 +498,11 @@ var
     end;
   end;
 
-var
-  i: Integer;
-  ai: TPoint;
-  p: TDoublePoint;
-  ic: IChartTCanvasDrawer;
 begin
   DrawLines;
   DrawLabels(ADrawer);
-
-  if ShowPoints and Pointer.Visible then
-    for i := FLoBound to FUpBound do begin
-      p := FGraphPoints[i - FLoBound];
-      if not ParentChart.IsPointInViewPort(p) then continue;
-      ai := ParentChart.GraphToImage(p);
-      Pointer.Draw(ADrawer, ai, Source[i]^.Color);
-      if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDrawPointer) then
-        FOnDrawPointer(Self, ic.Canvas, i, ai);
-    end;
+  if ShowPoints then
+    DrawPointers(ADrawer);
 end;
 
 procedure TLineSeries.EndUpdate;
@@ -564,12 +558,6 @@ procedure TLineSeries.SetLineType(AValue: TLineType);
 begin
   if FLineType = AValue then exit;
   FLineType := AValue;
-  UpdateParentChart;
-end;
-
-procedure TLineSeries.SetPointer(Value: TSeriesPointer);
-begin
-  FPointer.Assign(Value);
   UpdateParentChart;
 end;
 
