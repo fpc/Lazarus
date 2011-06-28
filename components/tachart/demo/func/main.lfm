@@ -213,11 +213,12 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
           end        
           item
-            Alignment = calBottom
             Grid.Color = clGray
             Grid.Cosmetic = False
+            Alignment = calBottom
             Minors = <>
           end>
+        ExpandPercentage = 5
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
         Title.Brush.Color = clBtnFace
@@ -235,11 +236,14 @@ object Form1: TForm1
           Source = RandomChartSource1
           Pen.Color = clLime
           Pen.Width = 3
+          Pointer.Brush.Color = clLime
         end
         object ChartSplineCubicSplineSeries1: TCubicSplineSeries
+          ZPosition = 1
           Source = RandomChartSource1
           Pen.Color = clAqua
           Pen.Width = 2
+          Pointer.Brush.Color = clAqua
         end
       end
       object pnSpline: TPanel
