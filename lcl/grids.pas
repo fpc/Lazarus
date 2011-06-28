@@ -6946,7 +6946,10 @@ begin
     exit;
   RIni := CellRect(aRange.Left, aRange.Top);
   RFin := CellRect(aRange.Right, aRange.Bottom);
-  RIni.Right := RFin.Right;
+  if UseRightToLeftAlignment then
+    RIni.Left := RFin.Left
+  else
+    RIni.Right := RFin.Right;
   RIni.Bottom:= RFin.Bottom;
   InvalidateRect(Handle, @RIni, False);
 end;
