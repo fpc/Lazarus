@@ -146,7 +146,7 @@ uses
   BuildFileDlg, ProcedureList, ExtractProcDlg, FindRenameIdentifier,
   AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg, UseProjUnitDlg, FindOverloadsDlg,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
-  RestrictionBrowser, ProjectWizardDlg, IDECmdLine, CodeExplOpts,
+  RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -1241,7 +1241,7 @@ begin
     exit;
   end;
 
-  SetParamOptions(SkipAutoLoadingLastProject, StartedByStartLazarus,
+  ParseGuiCmdLineParams(SkipAutoLoadingLastProject, StartedByStartLazarus,
     EnableRemoteControl, ShowSplashScreen, ShowSetupDialog);
 
   DebugLn('TMainIDE.ParseCmdLineOptions:');

@@ -60,7 +60,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="84">
+    <Units Count="85">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -633,6 +633,11 @@
         <HasResources Value="True"/>
         <UnitName Value="BuildProjectDlg"/>
       </Unit83>
+      <Unit84>
+        <Filename Value="ideguicmdline.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="IDEGuiCmdLine"/>
+      </Unit84>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

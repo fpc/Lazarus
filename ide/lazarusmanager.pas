@@ -82,7 +82,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, Process, UTF8Process,
   LCLProc, FileProcs, FileUtil, Forms, Controls, Dialogs,
-  LazConf, Splash;
+  IDECmdLine, LazConf, Splash;
   
 type
   TLazarusProcess = class
@@ -123,7 +123,6 @@ type
   end;
 
 implementation
-uses IDECmdLine;
 
 destructor TLazarusManager.Destroy;
 begin

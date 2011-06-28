@@ -50,7 +50,7 @@ uses
   SysUtils,
   Interfaces,
   Forms, LCLProc,
-  LazConf, IDECmdLine,
+  LazConf, IDEGuiCmdLine,
   Splash,
   Main,
   AboutFrm,

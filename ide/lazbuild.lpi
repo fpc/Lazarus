@@ -41,7 +41,7 @@
         <PackageName Value="IDEIntf"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="lazbuild.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -57,6 +57,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="BaseBuildManager"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="idecmdline.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="IDECmdLine"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
