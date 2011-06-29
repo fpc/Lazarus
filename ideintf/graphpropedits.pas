@@ -702,6 +702,7 @@ var
   Images: TCustomImageList;
   I: Integer;
 begin
+  Proc(IntToStr(GetDefaultOrdValue));
   Images := GetImageList;
   if Assigned(Images) then
     for I := 0 to Images.Count - 1 do
@@ -726,6 +727,7 @@ var
   R: TRect;
   OldColor: TColor;
 begin
+  Dec(Index);
   Images := GetImageList;
   R := ARect;
   if Assigned(Images) then
