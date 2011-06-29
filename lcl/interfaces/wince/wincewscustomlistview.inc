@@ -971,7 +971,7 @@ var
   Item1: TListItem absolute lParam1;
   Item2: TListItem absolute lParam2;
 begin
-  Result := CompareItems(Item1, Item2);
+  Result := CompareValue(Item1.Index, Item2.Index);
 end;
 
 class procedure TWinCEWSCustomListView.SetSort(const ALV: TCustomListView;

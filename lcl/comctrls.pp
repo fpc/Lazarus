@@ -3065,7 +3065,6 @@ type
 
 function CompareExpandedNodes(Data1, Data2: Pointer): integer;
 function CompareTextWithExpandedNode(Key, Data: Pointer): integer;
-function CompareItems(Item1, Item2: Pointer): Integer;
 
 procedure Register;
 
