@@ -447,8 +447,9 @@ end;
 procedure TCustomListView.DoSelectItem(AItem: TListItem; ASelected: Boolean);
 begin
   AItem.Selected:=ASelected;
-  if Assigned(FOnSelectItem) and not (lffItemsMoving in FFlags) then
-    FOnSelectItem(Self, AItem, ASelected);
+  if Assigned(FOnSelectItem) and
+    ([lffItemsMoving, lffItemsSorting] * FFlags = []) then
+      FOnSelectItem(Self, AItem, ASelected);
 end;
 
 {------------------------------------------------------------------------------}
@@ -693,12 +694,63 @@ end;
 {   TCustomListView Sort                                                       }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.Sort;
+var
+  FSavedSelection: TFPList;
+  FSavedFocused: TListItem;
+  i: Integer;
+  AItemIndex: Integer;
 begin
   if FSortType = stNone then exit;
   if FListItems.Count < 2 then Exit;
-  FListItems.FItems.Sort(@CompareItems);
+
   if HandleAllocated then
-    TWSCustomListViewClass(WidgetSetClass).SetSort(Self, FSortType, FSortColumn, FSortDirection);
+  begin
+    Include(FFlags, lffItemsSorting);
+    FSavedSelection := TFPList.Create;
+    try
+      if (ItemIndex >= 0) then
+        FSavedFocused := Items[ItemIndex]
+      else
+        FSavedFocused := nil;
+      if Assigned(Selected) then
+      begin
+        FSavedSelection.Add(Selected);
+        if MultiSelect then
+        begin
+          for i := 0 to Items.Count-1 do
+          begin
+            if Items[i].Selected and (Items[i] <> Selected) then
+              FSavedSelection.Add(Items[i]);
+          end;
+        end;
+      end;
+
+      FListItems.FItems.Sort(@CompareItems);
+      TWSCustomListViewClass(WidgetSetClass).SetSort(Self, FSortType,
+        FSortColumn, FSortDirection);
+
+      if (FSavedSelection.Count > 0) or Assigned(FSavedFocused) then
+      begin
+        Selected := nil; // unselect all
+
+        if FSavedFocused <> nil then
+          TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self,
+            FSavedFocused.Index, FSavedFocused, lisFocused, True);
+
+        for i := FSavedSelection.Count - 1 downto 0 do
+        begin
+          AItemIndex := Items.IndexOf(TListItem(FSavedSelection.Items[i]));
+          if AItemIndex <> -1 then
+            TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self,
+              AItemIndex, Items[AItemIndex], lisSelected, True);
+        end;
+      end;
+    finally
+      FreeThenNil(FSavedSelection);
+      Exclude(FFlags, lffItemsSorting);
+    end;
+  end else
+    FListItems.FItems.Sort(@CompareItems);
 end;
 
 {------------------------------------------------------------------------------}

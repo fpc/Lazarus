@@ -1012,7 +1012,8 @@ type
   
   TListViewFlag = (
     lffSelectedValid,
-    lffItemsMoving
+    lffItemsMoving,
+    lffItemsSorting
     );
   TListViewFlags = set of TListViewFlag;
 
