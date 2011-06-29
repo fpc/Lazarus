@@ -2664,6 +2664,7 @@ function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
 var
   Msg: TLMVScroll;
   MaxValue: gdouble;
+  State: PByte;
 begin
   Result := CallBackDefaultReturn;
 
@@ -2698,6 +2699,56 @@ begin
     ScrollCode := GtkScrollTypeToScrollCode(AScrollType);
   end;
   Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
+
+  if not Result or not (AWidgetInfo^.LCLObject is TScrollBar) or
+    not Assigned(AWidgetInfo^.UserData) then exit;
+
+  State:=AWidgetInfo^.UserData;
+
+  if Msg.Scrollcode=SB_THUMBTRACK then
+  begin
+    if State^ = 0 then
+    begin
+      Msg.ScrollCode := SB_THUMBPOSITION;
+      DeliverMessage(AWidgetInfo^.LCLObject, Msg);
+      Msg.ScrollCode:=SB_ENDSCROLL;
+      DeliverMessage(AWidgetInfo^.LCLObject, Msg);
+    end;
+  end
+  else State^:=1;
+end;
+
+function Gtk2RangeScrollPressCB(Widget: PGtkWidget;
+  Event: PGdkEventButton; Data: gPointer): gboolean; cdecl;
+var
+  State: PByte;
+  WidgetInfo: PWidgetInfo;
+begin
+  WidgetInfo:=GetWidgetInfo(Widget, false);
+  if Assigned(WidgetInfo^.UserData) then
+  begin
+    State:=WidgetInfo^.UserData;
+    State^:=2;
+  end;
+  Result:=False;
+end;
+
+function Gtk2RangeScrollReleaseCB(Widget: PGtkWidget;
+  Event: PGdkEventButton; Data: gPointer): gboolean; cdecl;
+var
+  Avalue: gdouble;
+  WidgetInfo: PWidgetInfo;
+  State: PByte;
+begin
+  AValue:=PGtkRange(Widget)^.adjustment^.value;
+  WidgetInfo:=GetWidgetInfo(Widget, false);
+  If Assigned(WidgetInfo^.UserData) then
+  begin
+    State:=WidgetInfo^.UserData;
+    if State^=1 then Gtk2RangeScrollCB(PGtkRange(Widget), 0, AValue, WidgetInfo);
+    State^:=0;
+  end;
+  Result:=False;
 end;
 
 function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow; AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;

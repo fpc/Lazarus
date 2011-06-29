@@ -206,6 +206,10 @@ function GTKVScrollCB(Adjustment: PGTKAdjustment;
 // PGtkRange cb
 function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
   AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
+function Gtk2RangeScrollPressCB(Widget: PGtkWidget;
+  Event: PGdkEventButton; Data: gPointer): gboolean; cdecl;
+function Gtk2RangeScrollReleaseCB(Widget: PGtkWidget;
+  Event: PGdkEventButton; Data: gPointer): gboolean; cdecl;
 function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow;
   AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
 function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem;
