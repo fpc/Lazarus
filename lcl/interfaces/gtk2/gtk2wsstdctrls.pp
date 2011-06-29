@@ -2413,6 +2413,10 @@ begin
   TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
   
   g_signal_connect(AGtkWidget, 'change-value', TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
+  g_signal_connect(AGtkWidget, 'button-press-event',
+    TGCallback(@Gtk2RangeScrollPressCB), AWidgetInfo);
+  g_signal_connect(AGtkWidget, 'button-release-event',
+    TGCallback(@Gtk2RangeScrollReleaseCB), AWidgetInfo);
 end;
 
 class function TGtk2WSScrollBar.CreateHandle(const AWinControl: TWinControl;
@@ -2421,6 +2425,7 @@ var
   Adjustment: PGtkAdjustment = nil;
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
+  State: PByte;
 begin
   with TScrollBar(AWinControl) do
   begin
@@ -2441,6 +2446,12 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+
+  WidgetInfo^.DataOwner:=True;
+  State:=New(PByte);
+  WidgetInfo^.UserData:=State;
+  State^:=0;
+
   Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;

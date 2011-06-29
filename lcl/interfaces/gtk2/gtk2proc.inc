@@ -377,7 +377,7 @@ function GtkScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
 begin
   case ScrollType of
       GTK_SCROLL_NONE          : Result := SB_ENDSCROLL;
-      GTK_SCROLL_JUMP          : Result := SB_THUMBPOSITION;
+      GTK_SCROLL_JUMP          : Result := SB_THUMBTRACK;
       GTK_SCROLL_STEP_BACKWARD : Result := SB_LINELEFT;
       GTK_SCROLL_STEP_FORWARD  : Result := SB_LINERIGHT;
       GTK_SCROLL_PAGE_BACKWARD : Result := SB_PAGELEFT;
