@@ -63,7 +63,7 @@ uses
   ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil, ExtCtrls,
   LazIDEIntf, IDECommands,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, AddToProjectDlg, PackageSystem, PackageDefs;
+  Project, AddToProjectDlg, PackageSystem, PackageDefs, ListFilterEdit;
   
 type
   TOnAddUnitToProject =
@@ -84,32 +84,22 @@ type
     );
   TProjectInspectorFlags = set of TProjectInspectorFlag;
 
-  { TProjInspFileItem }
-
-  TProjInspFileItem = class
-  public
-    Filename: string;
-    constructor Create(AFilename: string);
-  end;
-
   { TProjectInspectorForm }
 
   TProjectInspectorForm = class(TForm)
     AddBitBtn: TSpeedButton;
     BtnPanel: TPanel;
     DirectoryHierarchySpeedButton: TSpeedButton;
-    FilterEdit: TEdit;
+    FilterEdit: TListFilterEdit;
     OpenBitBtn: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
     OptionsBitBtn: TSpeedButton;
     RemoveBitBtn: TSpeedButton;
     SortAlphabeticallySpeedButton: TSpeedButton;
+    DummySpeedButton: TSpeedButton;
     procedure AddBitBtnClick(Sender: TObject);
     procedure DirectoryHierarchySpeedButtonClick(Sender: TObject);
-    procedure FilterEditChange(Sender: TObject);
-    procedure FilterEditEnter(Sender: TObject);
-    procedure FilterEditExit(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word;
@@ -129,7 +119,6 @@ type
     procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
     procedure ToggleI18NForLFMMenuItemClick(Sender: TObject);
   private
-    FFilter: string;
     FIdleConnected: boolean;
     FOnAddDependency: TAddProjInspDepEvent;
     FOnAddUnitToProject: TOnAddUnitToProject;
@@ -158,21 +147,18 @@ type
     ImageIndexDirectory: integer;
     FFlags: TProjectInspectorFlags;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
-    procedure SetFilter(const AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
     procedure SetLazProject(const AValue: TProject);
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
+    function ChooseImageIndex(Str: String; Data: TObject): Integer;
     procedure UpdateProjectFiles(Immediately: boolean);
     procedure UpdateRequiredPackages;
     procedure UpdateRemovedRequiredPackages;
-    function GetImageIndexOfFile(AFile: TUnitInfo): integer;
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
-    function FitsFilter(aFilename: string): boolean;
     function CompareProjFilenames(AFilename1, AFilename2: string): integer;
-    procedure FreeTVNodeData(Node: TTreeNode);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var Done: Boolean);
@@ -188,8 +174,6 @@ type
     procedure UpdateItems(Immediately: boolean);
     function GetSelectedFile: TUnitInfo;
     function GetSelectedDependency: TPkgDependency;
-    function StoreCurrentTreeSelection: TStringList;
-    procedure ApplyTreeSelection(ASelection: TStringList; FreeList: boolean);
   public
     property LazProject: TProject read FLazProject write SetLazProject;
     property OnOpen: TNotifyEvent read FOnOpen write FOnOpen;
@@ -204,7 +188,6 @@ type
                              read FOnRemoveDependency write FOnRemoveDependency;
     property OnReAddDependency: TAddProjInspDepEvent
                              read FOnReAddDependency write FOnReAddDependency;
-    property Filter: string read FFilter write SetFilter;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
     property ShowDirectoryHierarchy: boolean read FShowDirectoryHierarchy write SetShowDirectoryHierarchy;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -221,12 +204,6 @@ implementation
 uses
   IDEImagesIntf;
 
-{ TProjInspFileItem }
-
-constructor TProjInspFileItem.Create(AFilename: string);
-begin
-  Filename:=AFilename;
-end;
 
 { TProjectInspectorForm }
 
@@ -350,23 +327,6 @@ procedure TProjectInspectorForm.DirectoryHierarchySpeedButtonClick(
   Sender: TObject);
 begin
   ShowDirectoryHierarchy:=DirectoryHierarchySpeedButton.Down;
-end;
-
-procedure TProjectInspectorForm.FilterEditChange(Sender: TObject);
-begin
-  Filter:=FilterEdit.Text;
-end;
-
-procedure TProjectInspectorForm.FilterEditEnter(Sender: TObject);
-begin
-  if FilterEdit.Text=lisCEFilter then
-    FilterEdit.Text:='';
-end;
-
-procedure TProjectInspectorForm.FilterEditExit(Sender: TObject);
-begin
-  if FilterEdit.Text=lisCEFilter then
-    FilterEdit.Text:='';
 end;
 
 procedure TProjectInspectorForm.ItemsPopupMenuPopup(Sender: TObject);
@@ -497,8 +457,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.RemoveNonExistingFilesMenuItemClick(
-  Sender: TObject);
+procedure TProjectInspectorForm.RemoveNonExistingFilesMenuItemClick(Sender: TObject);
 var
   AnUnitInfo: TUnitInfo;
   NextUnitInfo: TUnitInfo;
@@ -554,8 +513,7 @@ begin
   UpdateAll(false);
 end;
 
-procedure TProjectInspectorForm.SetShowDirectoryHierarchy(const AValue: boolean
-  );
+procedure TProjectInspectorForm.SetShowDirectoryHierarchy(const AValue: boolean);
 begin
   if FShowDirectoryHierarchy=AValue then exit;
   FShowDirectoryHierarchy:=AValue;
@@ -571,8 +529,7 @@ begin
   UpdateProjectFiles(false);
 end;
 
-procedure TProjectInspectorForm.SetDependencyDefaultFilename(
-  AsPreferred: boolean);
+procedure TProjectInspectorForm.SetDependencyDefaultFilename(AsPreferred: boolean);
 var
   NewFilename: String;
   CurDependency: TPkgDependency;
@@ -588,24 +545,6 @@ begin
   LazProject.Modified:=true;
   UpdateRequiredPackages;
   UpdateButtons;
-end;
-
-procedure TProjectInspectorForm.SetFilter(const AValue: string);
-var
-  NewValue: String;
-begin
-  NewValue:=AValue;
-  if NewValue=lisCEFilter then NewValue:='';
-  NewValue:=LowerCase(NewValue);
-  //debugln(['TProjectInspectorForm.SetFilter Old="',Filter,'" New="',NewValue,'"']);
-  if FFilter=NewValue then exit;
-  FFilter:=NewValue;
-  if not FilterEdit.Focused then
-    if Filter='' then
-      FilterEdit.Text:=lisCEFilter
-    else
-      FilterEdit.Text:=Filter;
-  UpdateProjectFiles(false);
 end;
 
 procedure TProjectInspectorForm.SetIdleConnected(const AValue: boolean);
@@ -632,6 +571,7 @@ begin
   ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
   ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
 
+  FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
   OpenBitBtn.LoadGlyphFromLazarusResource('laz_open');
   AddBitBtn.LoadGlyphFromLazarusResource('laz_add');
   RemoveBitBtn.LoadGlyphFromLazarusResource('laz_delete');
@@ -661,14 +601,19 @@ begin
   end;
 end;
 
+function TProjectInspectorForm.ChooseImageIndex(Str: String; Data: TObject): Integer;
+begin
+  if FilenameIsPascalUnit((Data as TUnitInfo).Filename) then
+    Result:=ImageIndexUnit
+  else if (LazProject<>nil) and (LazProject.MainUnitinfo=Data) then
+    Result:=ImageIndexProject
+  else
+    Result:=ImageIndexText;
+end;
+
 procedure TProjectInspectorForm.UpdateProjectFiles(Immediately: boolean);
 var
   CurFile: TUnitInfo;
-  CurNode: TTreeNode;
-  OldSelection: TStringList;
-  Files: TStringList;
-  TVNodeStack: TFPList;
-  ExpandedState: TTreeNodeExpandedState;
   Filename: String;
   i: Integer;
 begin
@@ -678,72 +623,31 @@ begin
     exit;
   end;
   Exclude(FFlags,pifFilesChanged);
-
-  ItemsTreeView.BeginUpdate;
-  if FNextSelectedPart=nil then
-    OldSelection:=StoreCurrentTreeSelection
-  else
-    OldSelection:=nil;
-  Files:=TStringList.Create;
-  TVNodeStack:=TFPList.Create;
-  ExpandedState:=TTreeNodeExpandedState.Create(ItemsTreeView);
-  try
-    FreeTVNodeData(FFilesNode);
-    if LazProject<>nil then begin
-      // collect and sort files
-      CurFile:=LazProject.FirstPartOfProject;
-      while CurFile<>nil do begin
-        Filename:=CurFile.GetShortFilename(true);
-        if (Filename<>'') and FitsFilter(Filename) then begin
-          i:=Files.Count-1;
-          while i>=0 do begin
-            if CompareProjFilenames(Filename,Files[i])>=0 then break;
-            dec(i);
-          end;
-          Files.Insert(i+1,Filename);
-          Files.Objects[i+1]:=CurFile;
-        end;
-        CurFile:=CurFile.NextPartOfProject;
+  if LazProject=nil then Exit;
+  FilterEdit.RootNode:=FFilesNode;
+  FilterEdit.SelectedPart:=FNextSelectedPart;
+  FilterEdit.StoreFilenameInNode:=True;
+  FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
+  FilterEdit.SortData:=SortAlphabetically;
+  FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
+  FilterEdit.Data.Clear;
+  // collect and sort files
+  CurFile:=LazProject.FirstPartOfProject;
+  while CurFile<>nil do begin
+    Filename:=CurFile.GetShortFilename(true);
+    if Filename<>'' then begin
+      i:=FilterEdit.Data.Count-1;
+      while i>=0 do begin
+        if CompareProjFilenames(Filename,FilterEdit.Data[i])>=0 then break;
+        dec(i);
       end;
-      //debugln(['TProjectInspectorForm.UpdateFiles filtered=',Files.Count,' of ',LazProject.FileCount,' Filter="',Filter,'" Hierachy=',ShowDirectoryHierarchy,' SortAlpha=',SortAlphabetically]);
-
-      // update treeview nodes
-      if Files.Count=0 then
-        FFilesNode.DeleteChildren
-      else begin
-        CurNode:=FFilesNode.GetFirstChild;
-        for i:=0 to Files.Count-1 do begin
-          Filename:=Files[i];
-          CurFile:=TUnitInfo(Files.Objects[i]);
-          TVClearUnneededAndCreateHierachy(ItemsTreeView,FFilesNode,Filename,
-                        TVNodeStack,ShowDirectoryHierarchy,ImageIndexDirectory);
-          CurNode:=TTreeNode(TVNodeStack[TVNodeStack.Count-1]);
-          if FNextSelectedPart<>nil then begin
-            CurNode.Selected:=FNextSelectedPart=CurFile;
-            FNextSelectedPart:=nil;
-          end;
-          CurNode.Data:=TProjInspFileItem.Create(CurFile.Filename);
-          CurNode.ImageIndex:=GetImageIndexOfFile(CurFile);
-          CurNode.SelectedIndex:=CurNode.ImageIndex;
-          CurNode.DeleteChildren;
-        end;
-        TVDeleteUnneededNodes(TVNodeStack,0);
-      end;
-
-    end else begin
-      // delete file nodes
-      FFilesNode.DeleteChildren;
+      FilterEdit.MapShortToFullFilename(Filename, CurFile.Filename);
+      FilterEdit.Data.Insert(i+1,Filename);
+      FilterEdit.Data.Objects[i+1]:=CurFile;
     end;
-    ExpandedState.Apply(ItemsTreeView);
-    FFilesNode.Expanded:=true;
-  finally
-    ExpandedState.Free;
-    TVNodeStack.Free;
-    Files.Free;
+    CurFile:=CurFile.NextPartOfProject;
   end;
-  if OldSelection<>nil then
-    ApplyTreeSelection(OldSelection,true);
-  ItemsTreeView.EndUpdate;
+  FilterEdit.Invalidate;
 end;
 
 procedure TProjectInspectorForm.UpdateRequiredPackages;
@@ -760,8 +664,7 @@ begin
     while Dependency<>nil do begin
       NodeText:=Dependency.AsString;
       if Dependency.DefaultFilename<>'' then begin
-        AFilename:=Dependency.MakeFilenameRelativeToOwner(
-                                                    Dependency.DefaultFilename);
+        AFilename:=Dependency.MakeFilenameRelativeToOwner(Dependency.DefaultFilename);
         if Dependency.PreferDefaultFilename then
           NodeText:=Format(lisCEIn, [NodeText,AFilename])  // like the 'in' keyword in the uses section
         else
@@ -803,9 +706,8 @@ begin
   if (LazProject<>nil) and (LazProject.FirstRemovedDependency<>nil) then begin
     Dependency:=LazProject.FirstRemovedDependency;
     if RemovedDependenciesNode=nil then begin
-      RemovedDependenciesNode:=
-        ItemsTreeView.Items.Add(DependenciesNode,
-          lisProjInspRemovedRequiredPackages);
+      RemovedDependenciesNode:=ItemsTreeView.Items.Add(DependenciesNode,
+                                              lisProjInspRemovedRequiredPackages);
       RemovedDependenciesNode.ImageIndex:=ImageIndexRemovedRequired;
       RemovedDependenciesNode.SelectedIndex:=RemovedDependenciesNode.ImageIndex;
     end;
@@ -835,16 +737,6 @@ begin
   ItemsTreeView.EndUpdate;
 end;
 
-function TProjectInspectorForm.GetImageIndexOfFile(AFile: TUnitInfo): integer;
-begin
-  if FilenameIsPascalUnit(AFile.Filename) then
-    Result:=ImageIndexUnit
-  else if (LazProject<>nil) and (LazProject.MainUnitinfo=AFile) then
-    Result:=ImageIndexProject
-  else
-    Result:=ImageIndexText;
-end;
-
 procedure TProjectInspectorForm.OnProjectBeginUpdate(Sender: TObject);
 begin
   BeginUpdate;
@@ -855,11 +747,6 @@ procedure TProjectInspectorForm.OnProjectEndUpdate(Sender: TObject;
 begin
   UpdateAll(false);
   EndUpdate;
-end;
-
-function TProjectInspectorForm.FitsFilter(aFilename: string): boolean;
-begin
-  Result:=(Filter='') or (System.Pos(Filter,lowercase(aFilename))>0);
 end;
 
 function TProjectInspectorForm.CompareProjFilenames(AFilename1,
@@ -873,31 +760,13 @@ begin
     Result:=0;
 end;
 
-procedure TProjectInspectorForm.FreeTVNodeData(Node: TTreeNode);
-var
-  Child: TTreeNode;
-begin
-  if Node=nil then exit;
-  if (Node.Data<>nil) then begin
-    TObject(Node.Data).Free;
-    Node.Data:=nil;
-  end;
-  Child:=Node.GetFirstChild;
-  while Child<>nil do
-  begin
-    FreeTVNodeData(Child);
-    Child:=Child.GetNextSibling;
-  end;
-end;
-
 procedure TProjectInspectorForm.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   ExecuteIDEShortCut(Self,Key,Shift,nil);
 end;
 
-procedure TProjectInspectorForm.IdleHandler(Sender: TObject; var Done: Boolean
-  );
+procedure TProjectInspectorForm.IdleHandler(Sender: TObject; var Done: Boolean);
 begin
   if (not Visible) or (FUpdateLock>0) then begin
     IdleConnected:=false;
@@ -920,16 +789,16 @@ end;
 function TProjectInspectorForm.GetSelectedFile: TUnitInfo;
 var
   CurNode: TTreeNode;
-  Item: TProjInspFileItem;
+  Item: TFileNameItem;
 begin
   Result:=nil;
   if LazProject=nil then exit;
   CurNode:=ItemsTreeView.Selected;
   if (CurNode=nil) then exit;
   //debugln(['TProjectInspectorForm.GetCurrentFile ',DbgSName(TObject(CurNode.Data)),' ',CurNode.Text]);
-  if TObject(CurNode.Data) is TProjInspFileItem then
+  if TObject(CurNode.Data) is TFileNameItem then
   begin
-    Item:=TProjInspFileItem(CurNode.Data);
+    Item:=TFileNameItem(CurNode.Data);
     //debugln(['TProjectInspectorForm.GetCurrentFile Item=',Item.Filename,' ',Item.IsDirectory]);
     Result:=LazProject.UnitInfoWithFilename(Item.Filename);
   end;
@@ -955,40 +824,6 @@ begin
   end;
 end;
 
-function TProjectInspectorForm.StoreCurrentTreeSelection: TStringList;
-var
-  ANode: TTreeNode;
-begin
-  Result:=TStringList.Create;
-  ANode:=ItemsTreeView.Selected;
-  while ANode<>nil do begin
-    Result.Insert(0,ANode.Text);
-    ANode:=ANode.Parent;
-  end;
-end;
-
-procedure TProjectInspectorForm.ApplyTreeSelection(ASelection: TStringList;
-  FreeList: boolean);
-var
-  ANode: TTreeNode;
-  CurText: string;
-begin
-  ANode:=nil;
-  while ASelection.Count>0 do begin
-    CurText:=ASelection[0];
-    if ANode=nil then
-      ANode:=ItemsTreeView.Items.GetFirstNode
-    else
-      ANode:=ANode.GetFirstChild;
-    while (ANode<>nil) and (ANode.Text<>CurText) do
-      ANode:=ANode.GetNextSibling;
-    if ANode=nil then break;
-    ASelection.Delete(0);
-  end;
-  if ANode<>nil then ItemsTreeView.Selected:=ANode;
-  if FreeList then ASelection.Free;
-end;
-
 constructor TProjectInspectorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -1003,11 +838,10 @@ end;
 destructor TProjectInspectorForm.Destroy;
 begin
   IdleConnected:=false;
-  BeginUpdate;
-  FreeTVNodeData(FFilesNode);
   LazProject:=nil;
   inherited Destroy;
-  if ProjInspector=Self then ProjInspector:=nil;
+  if ProjInspector=Self then
+    ProjInspector:=nil;
 end;
 
 procedure TProjectInspectorForm.BeginUpdate;
