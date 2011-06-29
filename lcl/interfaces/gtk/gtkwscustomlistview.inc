@@ -1429,7 +1429,8 @@ begin
 end;
 
 class procedure TGtkWSCustomListView.SetSort(const ALV: TCustomListView;
-  const AType: TSortType; const AColumn: Integer);
+  const AType: TSortType; const AColumn: Integer;
+  const ASortDirection: TSortDirection);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;

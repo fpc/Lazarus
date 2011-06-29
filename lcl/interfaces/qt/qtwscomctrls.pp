@@ -72,6 +72,7 @@ type
   TQtWSCustomListView = class(TWSCustomListView)
   protected
     class function IsIconView(const AList: TCustomListView): boolean;
+    class procedure InternalUpdateItems(const AList: TCustomListView);
   published
     class function CreateHandle(const AWinControl: TWinControl;
      const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -113,7 +114,8 @@ type
     class function GetSelCount(const ALV: TCustomListView): Integer; override;
     class function GetSelection(const ALV: TCustomListView): Integer; override;
     class function GetTopItem(const ALV: TCustomListView): Integer; override;
-    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
+    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer;
+      const ASortDirection: TSortDirection); override;
 
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
@@ -1038,8 +1040,6 @@ class procedure TQtWSCustomListView.ItemExchange(const ALV: TCustomListView;
 var
   QtTreeWidget: TQtTreeWidget;
   QtListWidget: TQtListWidget;
-  ItemFrom: QTreeWidgetItemH;
-  ItemTo: QTreeWidgetItemH;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemExchange') then
     Exit;
@@ -1052,8 +1052,6 @@ begin
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    if QtTreeWidget.Sorting then
-      exit;
     QtTreeWidget.BeginUpdate;
     QtTreeWidget.ExchangeItems(AIndex1, AIndex2);
     QtTreeWidget.EndUpdate;
@@ -1077,12 +1075,8 @@ begin
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    if QtTreeWidget.Sorting then
-      exit;
     QtTreeWidget.BeginUpdate;
     QtTreeWidget.MoveItem(AFromIndex, AToIndex);
-    // Item := QtTreeWidget.takeTopLevelItem(AFromIndex);
-    // QtTreeWidget.insertTopLevelItem(AToIndex, Item);
     QtTreeWidget.EndUpdate;
   end;
 end;
@@ -1373,7 +1367,6 @@ var
   Str: WideString;
   i: Integer;
   AAlignment: QtAlignment;
-  v: QVariantH;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
     Exit;
@@ -1407,6 +1400,8 @@ begin
     if Str <> '' then
       QtTreeWidget.setItemText(TWI, 0, Str, AAlignment);
 
+    QtTreeWidget.setItemData(TWI, 0, AItem);
+
     for i := 0 to AItem.SubItems.Count - 1 do
     begin
       AAlignment := QtAlignLeft;
@@ -1416,13 +1411,8 @@ begin
       begin
         Str := GetUtf8String(AItem.Subitems.Strings[i]);
         QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
+        QtTreeWidget.setItemData(TWI, i + 1, AItem);
       end;
-    end;
-    v := QVariant_create(QWord(PtrUInt(AItem)));
-    try
-      QTreeWidgetItem_setData(TWI, 0, Ord(QtUserRole), v);
-    finally
-      QVariant_destroy(v);
     end;
     QtTreeWidget.insertTopLevelItem(AIndex, TWI);
   end;
@@ -1683,15 +1673,98 @@ begin
   Result := QtItemView.getTopItem;
 end;
 
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomListView.InternalUpdateItems
+  Params:  TCustomListView
+  Returns: Nothing
+  Sync TCustomListView with QTreeWidget items.
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomListView.InternalUpdateItems(
+  const AList: TCustomListView);
+var
+  QtTreeWidget: TQtTreeWidget;
+  i: Integer;
+  j: Integer;
+  AItem: TListItem;
+  WStr: WideString;
+  Item: QTreeWidgetItemH;
+  AAlignment: QtAlignment;
+  ImgList: TImageList;
+  Bmp: TBitmap;
+begin
+  QtTreeWidget := TQtTreeWidget(AList.Handle);
+  ImgList := TImageList.Create(nil);
+
+  if (TListView(AList).ViewStyle = vsIcon) and
+    Assigned(TListView(AList).LargeImages) then
+    ImgList.Assign(TListView(AList).LargeImages);
+
+  if (TListView(AList).ViewStyle in [vsSmallIcon, vsReport, vsList]) and
+    Assigned(TListView(AList).SmallImages) then
+    ImgList.Assign(TListView(AList).SmallImages);
+
+  BeginUpdate(AList);
+  try
+    for i := 0 to AList.Items.Count - 1 do
+    begin
+      AItem := AList.Items[i];
+      WStr := GetUTF8String(AItem.Caption);
+      Item := QtTreeWidget.topLevelItem(i);
+      QtTreeWidget.setItemText(Item, 0, WStr, AlignmentToQtAlignmentMap[AList.Column[0].Alignment]);
+      QtTreeWidget.setItemData(Item, 0, AItem);
+      if AList.Checkboxes then
+      begin
+        if AItem.Checked then
+          QTreeWidgetItem_setCheckState(Item, 0, QtChecked)
+        else
+          QTreeWidgetItem_setCheckState(Item, 0, QtUnChecked);
+      end;
+
+      if (ImgList.Count > 0) and
+        ((AItem.ImageIndex >= 0) and (AItem.ImageIndex < ImgList.Count)) then
+      begin
+        Bmp := TBitmap.Create;
+        try
+          ImgList.GetBitmap(AItem.ImageIndex, Bmp);
+          QTreeWidgetItem_setIcon(Item, 0, TQtImage(Bmp.Handle).AsIcon);
+        finally
+          Bmp.Free;
+        end;
+      end;
+
+      // subitems
+      for j := 0 to AItem.SubItems.Count - 1 do
+      begin
+        AAlignment := QtAlignLeft;
+        if (TListView(AList).Columns.Count > 0) and (j + 1 < TListView(AList).Columns.Count) then
+          AAlignment := AlignmentToQtAlignmentMap[TListView(AList).Column[j + 1].Alignment];
+        WStr := GetUtf8String(AItem.Subitems.Strings[j]);
+        QtTreeWidget.setItemText(Item, j + 1, WStr, AAlignment);
+        QtTreeWidget.setItemData(Item, j + 1, AItem);
+      end;
+    end;
+
+  finally
+    ImgList.Free;
+    EndUpdate(AList);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListView.SetSort
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListView.SetSort(const ALV: TCustomListView;
-  const AType: TSortType; const AColumn: Integer);
+  const AType: TSortType; const AColumn: Integer; const ASortDirection: TSortDirection);
 var
   QtTreeWidget: TQtTreeWidget;
+  {$IFDEF TEST_QT_SORTING}
+  StdModel: QStandardItemModelH;
+  {$ELSE}
+  CanSort: Boolean;
+  {$ENDIF}
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort') then
     Exit;
@@ -1708,15 +1781,31 @@ begin
     QtTreeWidget.Header.SetSortIndicatorVisible(False)
   else
   begin
-    with QtTreeWidget.Header do
+    {$IFDEF TEST_QT_SORTING}
+    // QTreeWidget crashes sometimes on changing sort role (possible qt bug).
+    // need deeper investigation.
+    if QtTreeWidget.ItemCount > 0 then
     begin
-      SetSortIndicatorVisible(True);
-      if (AColumn >= 0) and (AColumn < QtTreeWidget.ColCount) then
-        SetSortIndicator(AColumn, QtAscendingOrder);
+      StdModel := QStandardItemModelH(QtTreeWidget.getModel);
+      if QStandardItemModel_sortRole(StdModel) <> Ord(QtUserRole) then
+        QStandardItemModel_setSortRole(StdModel, Ord(QtUserRole));
     end;
+    {$ELSE}
+    with QtTreeWidget do
+    begin
+      CanSort := ItemCount > 0;
+      Header.SetSortIndicatorVisible(True);
+      if (AColumn >= 0) and (AColumn < ColCount) and
+        CanSort then
+      begin
+        Header.SetSortIndicator(AColumn, QtSortOrder(Ord(ASortDirection)));
+        InternalUpdateItems(ALV);
+      end;
+    end;
+    {$ENDIF}
   end;
-
 end;
+
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListView.GetBoundingRect

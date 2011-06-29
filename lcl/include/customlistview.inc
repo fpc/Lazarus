@@ -81,6 +81,8 @@ var
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csCaptureMouse];
+  FAutoSort := True;
+  FSortDirection := sdAscending;
   FIconOptions := TIconOptions.Create(Self);
   FColumns := TListColumns.Create(Self);
   FListItems := TListItems.Create(Self);
@@ -171,7 +173,25 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.ColClick(AColumn: TListColumn);
 begin
-  if Assigned(FOnColumnClick) and ColumnClick then FOnColumnClick(Self, AColumn)
+  if Assigned(FOnColumnClick) and ColumnClick then FOnColumnClick(Self, AColumn);
+  // we set autosort after FOnColumnClick, maybe programmer want to
+  // stop autosorting after some special column is clicked.
+  if FAutoSort then
+  begin
+    if SortType <> stNone then
+    begin
+      if AColumn.Index <> SortColumn then
+        SortColumn := AColumn.Index
+      else
+      begin
+        // with same column we are changing only direction
+        if SortDirection = sdAscending then
+          SortDirection := sdDescending
+        else
+          SortDirection := sdAscending;
+      end;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -362,7 +382,7 @@ begin
   LVC.SetScrollBars(Self, FScrollBars);
   LVC.SetViewOrigin(Self, FViewOriginCache) ;
   LVC.SetProperties(Self, FProperties);
-  LVC.SetSort(Self, FSortType, FSortColumn);
+  LVC.SetSort(Self, FSortType, FSortColumn, FSortDirection);
 
   // add items
   if not OwnerData then 
@@ -611,9 +631,7 @@ procedure TCustomListView.SetSortType(const AValue: TSortType);
 begin
   if FSortType = AValue then Exit;
   FSortType := AValue;
-  if not(AValue in [stNone]) then Sort;
-  if not HandleAllocated then Exit;
-  TWSCustomListViewClass(WidgetSetClass).SetSort(Self, AValue, FSortColumn);
+  Sort;
 end;
 
 {------------------------------------------------------------------------------}
@@ -623,9 +641,14 @@ procedure TCustomListView.SetSortColumn(const AValue : Integer);
 begin
   if FSortColumn = AValue then Exit;
   FSortColumn := AValue;
-  if not(FSortType in [stNone]) then Sort;
-  if not HandleAllocated then Exit;
-  TWSCustomListViewClass(WidgetSetClass).SetSort(Self, FSortType, AValue);
+  Sort;
+end;
+
+procedure TCustomListView.SetSortDirection(const AValue: TSortDirection);
+begin
+  if FSortDirection=AValue then exit;
+  FSortDirection:=AValue;
+  Sort;
 end;
 
 function CompareItems(Item1, Item2: Pointer): Integer;
@@ -636,23 +659,33 @@ var
 begin
   Result := 0;
   ListView := TListItem(Item1).Owner.Owner;
-  if Assigned(ListView.FOnCompare) then begin
-    ListView.FOnCompare(ListView, TListItem(Item1), TListItem(Item2),0 ,Result);
-  end
-  else begin
-    if ListView.FSortColumn = 0 then begin
-      Str1 := TListItem(Item1).Caption;
-      Str2 := TListItem(Item2).Caption;
-    end
-    else begin
-      if ListView.FSortColumn <= TListItem(Item1).SubItems.Count then
-        Str1 := TListItem(Item1).SubItems.Strings[ListView.FSortColumn-1]
-      else Str1 := '';
-      if ListView.FSortColumn <= TListItem(Item2).SubItems.Count then
-        Str2 := TListItem(Item2).SubItems.Strings[ListView.FSortColumn-1]
-      else Str2 := '';
+  if Assigned(ListView.FOnCompare) then
+    ListView.FOnCompare(ListView, TListItem(Item1), TListItem(Item2),0 ,Result)
+  else
+  begin
+    if ListView.SortType in [stData] then
+      Result := CompareValue(PtrUInt(TListItem(Item1).Data), PtrUInt(TListItem(Item2).Data))
+    else
+    begin
+      if ListView.FSortColumn = 0 then
+      begin
+        Str1 := TListItem(Item1).Caption;
+        Str2 := TListItem(Item2).Caption;
+      end else
+      begin
+        if ListView.FSortColumn <= TListItem(Item1).SubItems.Count then
+          Str1 := TListItem(Item1).SubItems.Strings[ListView.FSortColumn-1]
+        else
+          Str1 := '';
+        if ListView.FSortColumn <= TListItem(Item2).SubItems.Count then
+          Str2 := TListItem(Item2).SubItems.Strings[ListView.FSortColumn-1]
+        else
+          Str2 := '';
+      end;
+      Result := AnsiCompareText(Str1, Str2);
     end;
-    Result := AnsiCompareText(Str1, Str2);
+    if ListView.SortDirection = sdDescending then
+      Result := -Result;
   end;
 end;
 
@@ -661,8 +694,11 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.Sort;
 begin
+  if FSortType = stNone then exit;
   if FListItems.Count < 2 then Exit;
   FListItems.FItems.Sort(@CompareItems);
+  if HandleAllocated then
+    TWSCustomListViewClass(WidgetSetClass).SetSort(Self, FSortType, FSortColumn, FSortDirection);
 end;
 
 {------------------------------------------------------------------------------}

@@ -1016,11 +1016,14 @@ type
     );
   TListViewFlags = set of TListViewFlag;
 
+  TSortDirection = (sdAscending, sdDescending);
+
   { TCustomListView }
 
   TCustomListView = class(TWinControl)
   private
     FAllocBy: Integer;
+    FAutoSort: Boolean;
     FCanvas: TCanvas;
     FDefaultItemHeight: integer;
     FHotTrackStyles: TListHotTrackStyles;
@@ -1032,6 +1035,7 @@ type
     FImages: array[TListViewImageList] of TCustomImageList;
     FImageChangeLinks: array[TListViewImageList] of TChangeLink;
     FFlags: TListViewFlags;
+    FSortDirection: TSortDirection;
 
     FViewStyle: TViewStyle;
     FSortType: TSortType;
@@ -1093,6 +1097,7 @@ type
     procedure SetScrollBars(const AValue: TScrollStyle);
     procedure SetSelection(const AValue: TListItem);
     procedure SetSortColumn(const AValue: Integer);
+    procedure SetSortDirection(const AValue: TSortDirection);
     procedure SetSortType(const AValue: TSortType);
     procedure SetViewOrigin(AValue: TPoint);
     procedure SetViewStyle(const Avalue: TViewStyle);
@@ -1135,6 +1140,7 @@ type
     procedure DoGetOwnerData(Item: TListItem); virtual;
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
+    property AutoSort: Boolean read FAutoSort write FAutoSort default True; // when we click header column sort automatically
     property ColumnClick: Boolean index Ord(lvpColumnClick) read GetProperty write SetProperty default True;
     property Columns: TListColumns read FColumns write SetColumns;
     property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
@@ -1148,6 +1154,7 @@ type
     property SmallImages: TCustomImageList index Ord(lvilSmall) read GetImageList write SetImageList;
     property SortType: TSortType read FSortType write SetSortType default stNone;
     property SortColumn: Integer read FSortColumn write SetSortColumn default 0;
+    property SortDirection: TSortDirection read FSortDirection write SetSortDirection default sdAscending;
     property StateImages: TCustomImageList index Ord(lvilState) read GetImageList write SetImageList;
     property ToolTips: Boolean index Ord(lvpToolTips) read GetProperty write SetProperty default True;
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
@@ -1214,6 +1221,7 @@ type
     property Align;
     property AllocBy;
     property Anchors;
+    property AutoSort;
     property BorderSpacing;
     property BorderStyle;
     property BorderWidth;
@@ -1255,6 +1263,7 @@ type
 //    property ShowWorkAreas;
     property SmallImages;
     property SortColumn;
+    property SortDirection;
     property SortType;
     property StateImages;
     property TabStop;
@@ -3056,6 +3065,7 @@ type
 
 function CompareExpandedNodes(Data1, Data2: Pointer): integer;
 function CompareTextWithExpandedNode(Key, Data: Pointer): integer;
+function CompareItems(Item1, Item2: Pointer): Integer;
 
 procedure Register;
 

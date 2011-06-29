@@ -1236,17 +1236,12 @@ function ListCompare(lParam1, lParam2: LParam; lParamSort: LParam): Integer; std
 var
   Item1: TListItem absolute lParam1;
   Item2: TListItem absolute lParam2;
-  ASortType: Word;
 begin
-  //TODO: stNone, stData, stText, stBoth + add mask for ascending, descending
-  ASortType := Windows.LOWORD(lParamSort);
-  if ASortType = Ord(stData) then
-    Result := CompareValue(PtrUInt(Item1.Data), PtrUInt(Item2.Data))
-  else
-    Result := CompareValue(Item1.Index, Item2.Index);
+  Result := CompareItems(Item1, Item2);
 end;
 
-class procedure TWin32WSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
+class procedure TWin32WSCustomListView.SetSort(const ALV: TCustomListView;
+  const AType: TSortType; const AColumn: Integer; const ASortDirection: TSortDirection);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;

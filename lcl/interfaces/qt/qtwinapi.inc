@@ -2268,7 +2268,6 @@ end;
 function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
 var
   Widget: TQtWidget;
-  B: Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
@@ -3889,10 +3888,8 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   var
     V1, V2, V3: tagTRIVERTEX;
     C: TQColor;
-    Points: array[0..2] of TPoint;
     Grad: QLinearGradientH;
     Brush: QBrushH;
-    P: TQtPoint;
     Path: QPainterPathH;
   begin
     with Mesh do

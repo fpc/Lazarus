@@ -78,7 +78,6 @@ type
   TWSListViewItemChange = (lvicText, lvicImage);
   TWSListViewItemChanges = set of TWSListViewItemChange;
 
-  TWSCustomListViewClass = class of TWSCustomListView;
   TWSCustomListView = class(TWSWinControl)
   published
     // Column
@@ -140,10 +139,13 @@ type
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); virtual;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); virtual;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); virtual;
-    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); virtual;
+    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer;
+      const ASortDirection: TSortDirection); virtual;
     class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); virtual;
     class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); virtual;
   end;
+
+  TWSCustomListViewClass = class of TWSCustomListView;
 
   { TWSListView }                             
 
@@ -520,7 +522,9 @@ class procedure TWSCustomListView.SetScrollBars(const ALV: TCustomListView; cons
 begin
 end;
 
-class procedure TWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
+class procedure TWSCustomListView.SetSort(const ALV: TCustomListView;
+  const AType: TSortType; const AColumn: Integer;
+  const ASortDirection: TSortDirection);
 begin
 end;
 

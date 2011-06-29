@@ -122,7 +122,8 @@ type
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
-    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
+    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer;
+      const ASortDirection: TSortDirection); override;
     class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
     class procedure SetViewStyle(const ALV: TCustomListView; const AValue: TViewStyle); override;
   end;
@@ -590,8 +591,9 @@ begin
   TCarbonListView(ALV.Handle).SetScrollBars(AValue);
 end;
 
-class procedure TCarbonWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType;
-  const AColumn: Integer);
+class procedure TCarbonWSCustomListView.SetSort(const ALV: TCustomListView;
+  const AType: TSortType; const AColumn: Integer;
+  const ASortDirection: TSortDirection);
 begin
   if not CheckHandle(ALV, Self, 'SetSort') then Exit;
   TCarbonListView(ALV.Handle).UpdateItems;

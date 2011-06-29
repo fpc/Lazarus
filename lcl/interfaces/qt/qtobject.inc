@@ -498,8 +498,6 @@ function TQtWidgetSet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cd
 var
   AObject: TQtObject;
   W: TQtMainWindow;
-  R: TRect;
-  Pt: TQtPoint;
 begin
   Result := False;
   case QEvent_type(Event) of

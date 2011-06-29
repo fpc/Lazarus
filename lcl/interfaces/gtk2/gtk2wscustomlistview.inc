@@ -2061,11 +2061,23 @@ begin
 end;
 
 class procedure TGtk2WSCustomListView.SetSort(const ALV: TCustomListView;
-  const AType: TSortType; const AColumn: Integer);
+  const AType: TSortType; const AColumn: Integer;
+  const ASortDirection: TSortDirection);
+var
+  Widgets: PTVWidgets;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;
-//  inherited SetSort(ALV, AType, AColumn);
+  // gtk2 needs only update
+  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
+  if GetViewModel(Widgets^.MainView) = nil then
+    exit;
+
+  if not gtk_widget_realized(Widgets^.MainView) then
+    exit;
+
+  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
+    gtk_widget_queue_draw(Widgets^.MainView);
 end;
 
 class procedure TGtk2WSCustomListView.SetViewOrigin(const ALV: TCustomListView;

@@ -645,7 +645,8 @@ begin
 //  Result := ListView_GetHoverTime(ALV.Handle);
 end;
 
-class function TWinCEWSCustomListView.GetItemAt(const ALV: TCustomListView; x,y: integer): Integer;
+class function TWinCEWSCustomListView.GetItemAt(const ALV: TCustomListView; x,
+  y: Integer): Integer;
 var
   HitInfo: LV_HITTESTINFO;
 begin
@@ -970,10 +971,11 @@ var
   Item1: TListItem absolute lParam1;
   Item2: TListItem absolute lParam2;
 begin
-  Result := CompareValue(Item1.Index, Item2.Index);
+  Result := CompareItems(Item1, Item2);
 end;
 
-class procedure TWinCEWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
+class procedure TWinCEWSCustomListView.SetSort(const ALV: TCustomListView;
+  const AType: TSortType; const AColumn: Integer; const ASortDirection: TSortDirection);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;

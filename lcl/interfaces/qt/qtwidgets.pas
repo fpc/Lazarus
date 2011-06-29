@@ -1226,9 +1226,12 @@ type
   TQtTreeWidget = class(TQtTreeView)
   private
     FSelection: TFPList;
-    FSorting: Boolean;
     FHeader: TQtHeaderView;
+    {$IFDEF TEST_QT_SORTING}
+    FCanSort: Boolean; // it can sort items only when LCL says so !
+    FSorting: Boolean;
     FSortChanged: QHeaderView_hookH;
+    {$ENDIF}
     FItemDoubleClickedHook: QTreeWidget_hookH;
     FItemClickedHook: QTreeWidget_hookH;
     FItemActivatedHook: QTreeWidget_hookH;
@@ -1274,12 +1277,17 @@ type
     procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
     procedure setItemText(AItem: QTreeWidgetItemH; const AColumn: Integer;
       const AText: WideString; const AAlignment: QtAlignment);
+    procedure setItemData(AItem: QTreeWidgetItemH; const AColumn: Integer;
+       Data: Pointer; const ARole: Integer = Ord(QtUserRole));
     function selCount: Integer;
     function selectedItems: TPtrIntArray;
     procedure setHeaderVisible(AVisible: Boolean);
     procedure setItemSelected(AItem: QTreeWidgetItemH; ASelect: Boolean);
     procedure setStretchLastSection(AValue: Boolean);
+    {$IFDEF TEST_QT_SORTING}
+    // direct Qt sorting via QtUserData ptr = our TListItem, crashes sometimes - qt bug.
     procedure sortItems(Acolumn: Integer; AOrder: QtSortOrder);
+    {$ENDIF}
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -1295,15 +1303,19 @@ type
     procedure SignalItemChanged(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH); cdecl;
     procedure SignalSelectionChanged(); cdecl;
+    {$IFDEF TEST_QT_SORTING}
     procedure SignalSortIndicatorChanged(ALogicalIndex: Integer; AOrder: QtSortOrder); cdecl;
-
+    property CanSort: Boolean read FCanSort write FCanSort;
+    {$ENDIF}
     property ColCount: Integer read getColCount write setColCount;
     property Header: TQtHeaderView read getHeader;
     property ItemCount: Integer read getItemCount write setItemCount;
     property MaxColSize[ACol: Integer]: Integer read getMaxColSize write setMaxColSize;
     property MinColSize[ACol: Integer]: Integer read getMinColSize write setMinColSize;
     property SortEnabled: Boolean read getSortEnabled write setSortEnabled;
-    property Sorting: Boolean read FSorting;
+    {$IFDEF TEST_QT_SORTING}
+    property Sorting: Boolean read FSorting write FSorting;
+    {$ENDIF}
   end;
   
   {TQtTableView}
@@ -10068,7 +10080,6 @@ begin
     WriteLn('TQtTreeWidget.Create');
   {$endif}
   FSelection := TFPList.Create;
-
   FSavedEvent := nil;
   FSavedEventTimer := nil;
   FSavedEventTimerHook := nil;
@@ -10077,7 +10088,10 @@ begin
   FHideSelection := False;
   FOwnerData := False;
   FSyncingItems := False;
+  {$IFDEF TEST_QT_SORTING}
+  FCanSort := False;
   FSorting := False;
+  {$ENDIF}
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -10270,9 +10284,11 @@ begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
     FHeader.FOwner := Self;
     FHeader.FChildOfComplexWidget := ccwTreeWidget;
+    {$IFDEF TEST_QT_SORTING}
     FSortChanged := QHeaderView_hook_create(FHeader.Widget);
     QHeaderView_hook_hook_sortIndicatorChanged(FSortChanged,
       @SignalSortIndicatorChanged);
+    {$ENDIF}
     FHeader.AttachEvents;
   end;
   Result := FHeader;
@@ -10526,6 +10542,19 @@ begin
   QTreeWidgetItem_setTextAlignment(AItem, AColumn, AAlignment);
 end;
 
+procedure TQtTreeWidget.setItemData(AItem: QTreeWidgetItemH;
+  const AColumn: Integer; Data: Pointer; const ARole: Integer = Ord(QtUserRole));
+var
+  v: QVariantH;
+begin
+  if Data = nil then
+    v := QVariant_create(QVariantInvalid)
+  else
+    v := QVariant_create(Int64(PtrUInt(Data)));
+  QTreeWidgetItem_setData(AItem, AColumn, ARole, v);
+  QVariant_destroy(v);
+end;
+
 function TQtTreeWidget.selCount: Integer;
 begin
   Result := length(selectedItems);
@@ -10602,33 +10631,30 @@ begin
     Header.setStretchLastSection(AValue);
 end;
 
+{$IFDEF TEST_QT_SORTING}
 procedure TQtTreeWidget.sortItems(Acolumn: Integer; AOrder: QtSortOrder);
 var
-  i: Integer;
-  j: Integer;
-  v: QVariantH;
-  Item: QTreeWidgetItemH;
-  p: PtrUInt;
-  AOk: Boolean;
+  StdModel: QStandardItemModelH;
 begin
-  QTreeWidget_sortItems(QTreeWidgetH(Widget), AColumn, AOrder);
-  AOk := False;
-  TListView(LCLObject).BeginUpdate;
-  for i := 0 to ItemCount - 1 do
-  begin
-    v := QVariant_create();
-    Item := topLevelItem(i);
-    QTreeWidgetItem_data(Item, v, 0, Ord(QtUserRole));
-    if QVariant_isValid(v) and not QVariant_isNull(v) then
-    begin
-      P := QVariant_toUInt(v, @AOk);
-      if AOk and (p > 0) then
-        TListView(LCLObject).Items.Move(TListItem(p).Index, i);
-    end;
-    QVariant_destroy(v);
+  // there's bug with QStandardItemModel persistent index update, we
+  // use InternalUpdate in QtWSComCtrls !
+  if not FCanSort then
+    exit;
+  try
+    if ItemCount = 0 then
+      exit;
+    StdModel := QStandardItemModelH(getModel);
+    // writeln('Sorting called ...SortRole=',QStandardItemModel_sortRole(StdModel));
+    if QStandardItemModel_sortRole(StdModel) <> Ord(QtUserRole) then
+      QStandardItemModel_setSortRole(StdModel, Ord(QtUserRole));
+    setUpdatesEnabled(False);
+    QStandardItemModel_sort(StdModel, AColumn, AOrder);
+    setUpdatesEnabled(True);
+  finally
+    FCanSort := False;
   end;
-  TListView(LCLObject).EndUpdate;
 end;
+{$ENDIF}
 
 procedure TQtTreeWidget.AttachEvents;
 begin
@@ -10688,11 +10714,13 @@ begin
     FSelectionChangedHook := nil;
   end;
 
+  {$IFDEF TEST_QT_SORTING}
   if FSortChanged <> nil then
   begin
     QHeaderView_hook_destroy(FSortChanged);
     FSortChanged := nil;
   end;
+  {$ENDIF}
 
   inherited DetachEvents;
 end;
@@ -10777,7 +10805,8 @@ end;
   Params:  Integer
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
+procedure TQtTreeWidget.SignalItemClicked(item: QTreeWidgetItemH;
+  column: Integer); cdecl;
 var
   MsgN: TLMNotify;
   NMLV: TNMListView;
@@ -10838,7 +10867,8 @@ end;
   Params:  Integer
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemDoubleClicked(item: QTreeWidgetItemH; column: Integer) cdecl;
+procedure TQtTreeWidget.SignalItemDoubleClicked(item: QTreeWidgetItemH;
+  column: Integer); cdecl;
 var
   Msg: TLMNotify;
   NMLV: TNMListView;
@@ -10868,7 +10898,8 @@ end;
   Params:  Integer
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemActivated(item: QTreeWidgetItemH; column: Integer) cdecl;
+procedure TQtTreeWidget.SignalItemActivated(item: QTreeWidgetItemH;
+  column: Integer); cdecl;
 var
   Msg: TLMNotify;
   NMLV: TNMListView;
@@ -10897,7 +10928,8 @@ end;
   Params:  Integer
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemEntered(item: QTreeWidgetItemH; column: Integer) cdecl;
+procedure TQtTreeWidget.SignalItemEntered(item: QTreeWidgetItemH;
+  column: Integer); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -10911,7 +10943,8 @@ end;
   Params:  Integer
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemChanged(item: QTreeWidgetItemH; column: Integer) cdecl;
+procedure TQtTreeWidget.SignalItemChanged(item: QTreeWidgetItemH;
+  column: Integer); cdecl;
 var
   Msg: TLMessage;
 begin
@@ -11128,11 +11161,14 @@ begin
   end;
 end;
 
+{$IFDEF TEST_QT_SORTING}
 procedure TQtTreeWidget.SignalSortIndicatorChanged(ALogicalIndex: Integer;
-  AOrder: QtSortOrder)cdecl;
+  AOrder: QtSortOrder); cdecl;
 begin
   if FSorting or not Assigned(LCLObject) or not
     QHeaderView_isSortIndicatorShown(QHeaderViewH(Header.Widget)) then
+    exit;
+  if not FCanSort then
     exit;
   FSorting := True;
   try
@@ -11142,6 +11178,7 @@ begin
     FSorting := False;
   end;
 end;
+{$ENDIF}
 
 {TQtTableView}
 
