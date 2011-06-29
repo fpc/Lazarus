@@ -42,8 +42,8 @@ uses
   LResources, Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, HelpIntfs, ExtCtrls, LazIDEIntf, ProjectIntf,
-  CodeToolsStructs, FormEditingIntf, Laz_XMLCfg, PackageIntf, IDEDialogs,
-  IDEHelpIntf, IDEOptionsIntf,
+  CodeToolsStructs, FormEditingIntf, Laz_XMLCfg, ListFilterEdit, PackageIntf,
+  IDEDialogs, IDEHelpIntf, IDEOptionsIntf,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, ComponentReg,
@@ -137,19 +137,11 @@ type
              const Filename: string): TModalResult of object;
   TOnFreePkgEditor = procedure(APackage: TLazPackage) of object;
 
-  { TPkgEditFileItem }
-
-  TPkgEditFileItem = class
-  public
-    Filename: string;
-    constructor Create(AFilename: string);
-  end;
-
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
     DirectoryHierarchySpeedButton: TSpeedButton;
-    FilterEdit: TEdit;
+    FilterEdit: TListFilterEdit;
     ItemsPanel: TPanel;
     SortAlphabeticallySpeedButton: TSpeedButton;
     Splitter1: TSplitter;
@@ -203,9 +195,6 @@ type
     procedure FilesTreeViewDblClick(Sender: TObject);
     procedure FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
-    procedure FilterEditChange(Sender: TObject);
-    procedure FilterEditEnter(Sender: TObject);
-    procedure FilterEditExit(Sender: TObject);
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
     procedure InstallClick(Sender: TObject);
@@ -241,8 +230,6 @@ type
     procedure ViewPkgSourceClick(Sender: TObject);
     procedure ViewPkgTodosClick(Sender: TObject);
   private
-    FFilter: string;
-    FIdleConnected: boolean;
     FLazPackage: TLazPackage;
     FNextSelectedPart: TObject;// select this file/dependency on next update
     FFilesNode: TTreeNode;
@@ -250,20 +237,17 @@ type
     FRemovedFilesNode: TTreeNode;
     FRemovedRequiredNode: TTreeNode;
     FPlugins: TStringList;
-    FNeedUpdateAll: boolean;
-    FNeedUpdateFiles: boolean;
     FShowDirectoryHierarchy: boolean;
     FSortAlphabetically: boolean;
     FDirSummaryLabel: TLabel;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
-    procedure SetFilter(const AValue: string);
-    procedure SetIdleConnected(const AValue: boolean);
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
+    function ChooseImageIndex(Str: String; Data: TObject): Integer;
     procedure UpdateTitle;
     procedure UpdateButtons;
-    procedure UpdateFiles(Immediately: boolean);
+    procedure UpdateFiles;
     procedure UpdateRequiredPkgs;
     procedure UpdateSelectedFile;
     procedure UpdateApplyDependencyButton;
@@ -280,10 +264,7 @@ type
     procedure ExtendIncPathForNewIncludeFile(const AnIncludeFile: string;
       var IgnoreIncPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
-    procedure IdleHandler(Sender: TObject; var Done: Boolean);
-    function FitsFilter(aFilename: string): boolean;
     function ComparePkgFilenames(AFilename1, AFilename2: string): integer;
-    procedure FreeTVNodeData(Node: TTreeNode);
   protected
     procedure SetLazPackage(const AValue: TLazPackage); override;
   public
@@ -305,10 +286,8 @@ type
     procedure UpdateAll(Immediately: boolean); override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
-    property Filter: string read FFilter write SetFilter;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
     property ShowDirectoryHierarchy: boolean read FShowDirectoryHierarchy write SetShowDirectoryHierarchy;
-    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
   
   
@@ -517,13 +496,6 @@ begin
   PkgEditMenuViewPackageSource:=RegisterIDEMenuCommand(AParent,'View Package Source',lisPckEditViewPackageSource);
 end;
 
-{ TPkgEditFileItem }
-
-constructor TPkgEditFileItem.Create(AFilename: string);
-begin
-  Filename:=AFilename;
-end;
-
 { TPackageEditorForm }
 
 procedure TPackageEditorForm.PublishClick(Sender: TObject);
@@ -719,23 +691,6 @@ begin
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup END ',FilesPopupMenu.Items.Count]); PackageEditorMenuRoot.WriteDebugReport('  ',true);
 end;
 
-procedure TPackageEditorForm.FilterEditChange(Sender: TObject);
-begin
-  Filter:=FilterEdit.Text;
-end;
-
-procedure TPackageEditorForm.FilterEditEnter(Sender: TObject);
-begin
-  if FilterEdit.Text=lisCEFilter then
-    FilterEdit.Text:='';
-end;
-
-procedure TPackageEditorForm.FilterEditExit(Sender: TObject);
-begin
-  if FilterEdit.Text='' then
-    FilterEdit.Text:=lisCEFilter;
-end;
-
 procedure TPackageEditorForm.SortAlphabeticallySpeedButtonClick(Sender: TObject);
 begin
   SortAlphabetically:=SortAlphabeticallySpeedButton.Down;
@@ -899,7 +854,7 @@ begin
   if CurNode=nil then exit;
   NodeIndex:=CurNode.Index;
   if CurNode.Parent<>nil then begin
-    if TObject(CurNode.Data) is TPkgEditFileItem then begin
+    if TObject(CurNode.Data) is TFileNameItem then begin
       CurFile:=GetCurrentFile(Removed);
       if CurFile=nil then exit;
       DoOpenPkgFile(CurFile);
@@ -1016,7 +971,7 @@ begin
     exit;
   end;
   NodeIndex:=ANode.Index;
-  if TObject(ANode.Data) is TPkgEditFileItem then begin
+  if TObject(ANode.Data) is TFileNameItem then begin
     // get current package file
     CurFile:=GetCurrentFile(Removed);
     if CurFile<>nil then begin
@@ -1474,7 +1429,7 @@ begin
   // update components
   UpdateAll(true);
   // show files
-  FFilesNode.Expanded:=true;
+//  FFilesNode.Expanded:=true;
 end;
 
 procedure TPackageEditorForm.SetupComponents;
@@ -1517,7 +1472,7 @@ begin
   ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
   ImageIndexDirectory := IDEImages.LoadImage(16, 'pkg_files');
 
-  FilterEdit.Text:=lisCEFilter;
+  FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
   SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
   DirectoryHierarchySpeedButton.Hint:=lisPEShowDirectoryHierarchy;
@@ -1592,41 +1547,13 @@ begin
   UpdateButtons;
 end;
 
-procedure TPackageEditorForm.SetFilter(const AValue: string);
-var
-  NewValue: String;
-begin
-  NewValue:=AValue;
-  if NewValue=lisCEFilter then NewValue:='';
-  NewValue:=LowerCase(NewValue);
-  //debugln(['TPackageEditorForm.SetFilter Old="',Filter,'" New="',NewValue,'"']);
-  if FFilter=NewValue then exit;
-  FFilter:=NewValue;
-  if not FilterEdit.Focused then
-    if Filter='' then
-      FilterEdit.Text:=lisCEFilter
-    else
-      FilterEdit.Text:=Filter;
-  UpdateFiles(false);
-end;
-
-procedure TPackageEditorForm.SetIdleConnected(const AValue: boolean);
-begin
-  if FIdleConnected=AValue then exit;
-  FIdleConnected:=AValue;
-  if FIdleConnected then
-    Application.AddOnIdleHandler(@IdleHandler)
-  else
-    Application.RemoveOnIdleHandler(@IdleHandler);
-end;
-
 procedure TPackageEditorForm.SetShowDirectoryHierarchy(const AValue: boolean);
 begin
   //debugln(['TPackageEditorForm.SetShowDirectoryHierachy Old=',FShowDirectoryHierarchy,' New=',AValue]);
   if FShowDirectoryHierarchy=AValue then exit;
   FShowDirectoryHierarchy:=AValue;
   DirectoryHierarchySpeedButton.Down:=ShowDirectoryHierarchy;
-  UpdateFiles(false);
+  UpdateFiles;
 end;
 
 procedure TPackageEditorForm.SetSortAlphabetically(const AValue: boolean);
@@ -1634,28 +1561,21 @@ begin
   if FSortAlphabetically=AValue then exit;
   FSortAlphabetically:=AValue;
   SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
-  UpdateFiles(false);
+  UpdateFiles;
 end;
 
 procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
 begin
   if LazPackage=nil then exit;
   Name:=PackageEditorWindowPrefix+LazPackage.Name;
-  if not Immediately then begin
-    if FNeedUpdateAll then exit;
-    FNeedUpdateAll:=true;
-    IdleConnected:=true;
-    exit;
-  end;
-  FNeedUpdateAll:=false;
-  FilesTreeView.BeginUpdate;
+//  FilesTreeView.BeginUpdate;
   UpdateTitle;
   UpdateButtons;
-  UpdateFiles(true);
+  UpdateFiles;
   UpdateRequiredPkgs;
   UpdateSelectedFile;
   UpdateStatusBar;
-  FilesTreeView.EndUpdate;
+//  FilesTreeView.EndUpdate;
 end;
 
 procedure TPackageEditorForm.UpdateTitle;
@@ -1678,7 +1598,7 @@ begin
   AddBitBtn.Enabled:=not LazPackage.ReadOnly;
   RemoveBitBtn.Enabled:=(not LazPackage.ReadOnly)
      and (FilesTreeView.Selected<>nil)
-     and ((TObject(FilesTreeView.Selected.Data) is TPkgEditFileItem)
+     and ((TObject(FilesTreeView.Selected.Data) is TFileNameItem)
            or (FilesTreeView.Selected.Parent=FRequiredPackagesNode));
   UseBitBtn.Caption:=lisUse;
   UseBitBtn.Hint:=lisClickToSeeThePossibleUses;
@@ -1687,138 +1607,86 @@ begin
   OptionsBitBtn.Enabled:=true;
 end;
 
-procedure TPackageEditorForm.UpdateFiles(Immediately: boolean);
-
-  procedure SetImageIndex(ANode: TTreeNode; PkgFile: TPkgFile);
-  begin
-    case PkgFile.FileType of
+function TPackageEditorForm.ChooseImageIndex(Str: String; Data: TObject): Integer;
+begin
+  case TPkgFile(Data).FileType of
     pftUnit,pftVirtualUnit,pftMainUnit:
-      if PkgFile.HasRegisterProc then
-        ANode.ImageIndex:=ImageIndexRegisterUnit
+      if TPkgFile(Data).HasRegisterProc then
+        Result:=ImageIndexRegisterUnit
       else
-        ANode.ImageIndex:=ImageIndexUnit;
-    pftLFM: ANode.ImageIndex:=ImageIndexLFM;
-    pftLRS: ANode.ImageIndex:=ImageIndexLRS;
-    pftInclude: ANode.ImageIndex:=ImageIndexInclude;
-    pftIssues: ANode.ImageIndex:=ImageIndexIssues;
-    pftText: ANode.ImageIndex:=ImageIndexText;
-    pftBinary: ANode.ImageIndex:=ImageIndexBinary;
+        Result:=ImageIndexUnit;
+    pftLFM: Result:=ImageIndexLFM;
+    pftLRS: Result:=ImageIndexLRS;
+    pftInclude: Result:=ImageIndexInclude;
+    pftIssues: Result:=ImageIndexIssues;
+    pftText: Result:=ImageIndexText;
+    pftBinary: Result:=ImageIndexBinary;
     else
-      ANode.ImageIndex:=-1;
-    end;
-    ANode.SelectedIndex:=ANode.ImageIndex;
+      Result:=-1;
   end;
+end;
 
+procedure TPackageEditorForm.UpdateFiles;
 var
-  Cnt: Integer;
-  i: Integer;
+  Cnt, i, j: Integer;
   CurFile: TPkgFile;
   CurNode: TTreeNode;
   NextNode: TTreeNode;
-  OldSelection: TStringList;
-  Files: TStringList;
-  j: Integer;
   Filename: String;
   TVNodeStack: TFPList;
-  ExpandedState: TTreeNodeExpandedState;
 begin
   if LazPackage=nil then exit;
-  //debugln(['TPackageEditorForm.UpdateFiles Immediately=',Immediately]);
-  if not Immediately then begin
-    FNeedUpdateFiles:=true;
-    IdleConnected:=true;
-    exit;
+  FilterEdit.RootNode:=FFilesNode;
+  FilterEdit.SelectedPart:=FNextSelectedPart;
+  FilterEdit.StoreFilenameInNode:=True;
+  FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
+  FilterEdit.SortData:=SortAlphabetically;
+  FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
+  FilterEdit.Data.Clear;
+  // collect and sort files
+  for i:=0 to LazPackage.FileCount-1 do begin
+    CurFile:=LazPackage.Files[i];
+    Filename:=CurFile.GetShortFilename(true);
+    if Filename='' then continue;
+    j:=FilterEdit.Data.Count-1;
+    while j>=0 do begin
+      if ComparePkgFilenames(Filename,FilterEdit.Data[j])>=0 then break;
+      dec(j);
+    end;
+    FilterEdit.MapShortToFullFilename(Filename, CurFile.Filename);
+    FilterEdit.Data.Insert(j+1,Filename);
+    FilterEdit.Data.Objects[j+1]:=CurFile;
   end;
-  FNeedUpdateFiles:=false;
+  FilterEdit.Invalidate;                  // Shown by FilterEdit.
 
-  FilesTreeView.BeginUpdate;
-
-  if FNextSelectedPart=nil then
-    OldSelection:=StoreCurrentTreeSelection
-  else
-    OldSelection:=nil;
-
-  // files
-  Files:=TStringList.Create;
-  TVNodeStack:=TFPList.Create;
-  ExpandedState:=TTreeNodeExpandedState.Create(FilesTreeView);
-  try
-    // collect and sort files
-    for i:=0 to LazPackage.FileCount-1 do begin
-      CurFile:=LazPackage.Files[i];
-      Filename:=CurFile.GetShortFilename(true);
-      if Filename='' then continue;
-      if not FitsFilter(Filename) then continue;
-      j:=Files.Count-1;
-      while j>=0 do begin
-        if ComparePkgFilenames(Filename,Files[j])>=0 then break;
-        dec(j);
-      end;
-      Files.Insert(j+1,Filename);
-      Files.Objects[j+1]:=CurFile;
+  // removed files
+  if LazPackage.RemovedFilesCount>0 then begin
+    if FRemovedFilesNode=nil then begin
+      FRemovedFilesNode:=
+        FilesTreeView.Items.Add(FRequiredPackagesNode,
+                lisPckEditRemovedFilesTheseEntriesAreNotSavedToTheLpkFile);
+      FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
+      FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
     end;
-    //debugln(['TPackageEditorForm.UpdateFiles filtered=',Files.Count,' of ',LazPackage.FileCount,' Filter="',Filter,'" Hierachy=',ShowDirectoryHierarchy,' SortAlpha=',SortAlphabetically]);
-
-    // update treeview nodes
-    FreeTVNodeData(FFilesNode);
-    if Files.Count=0 then
-      FFilesNode.DeleteChildren
-    else begin
-      CurNode:=FFilesNode.GetFirstChild;
-      for i:=0 to Files.Count-1 do begin
-        Filename:=Files[i];
-        CurFile:=TPkgFile(Files.Objects[i]);
-        TVClearUnneededAndCreateHierachy(FilesTreeView,FFilesNode,Filename,
-          TVNodeStack,ShowDirectoryHierarchy,ImageIndexDirectory);
-        CurNode:=TTreeNode(TVNodeStack[TVNodeStack.Count-1]);
-        if FNextSelectedPart<>nil then
-          CurNode.Selected:=FNextSelectedPart=CurFile;
-        CurNode.Data:=TPkgEditFileItem.Create(CurFile.Filename);
-        SetImageIndex(CurNode,CurFile);
-        CurNode.DeleteChildren;
-      end;
-      TVDeleteUnneededNodes(TVNodeStack,0);
+    CurNode:=FRemovedFilesNode.GetFirstChild;
+    Cnt:=LazPackage.RemovedFilesCount;
+    for i:=0 to Cnt-1 do begin
+      if CurNode=nil then
+        CurNode:=FilesTreeView.Items.AddChild(FRemovedFilesNode,'');
+      CurFile:=LazPackage.RemovedFiles[i];
+      CurNode.Text:=CurFile.GetShortFilename(true);
+      CurNode.ImageIndex:=ChooseImageIndex('', CurFile); // SetImageIndex(CurNode,CurFile);
+      CurNode:=CurNode.GetNextSibling;
     end;
-
-    // removed files
-    if LazPackage.RemovedFilesCount>0 then begin
-      if FRemovedFilesNode=nil then begin
-        FRemovedFilesNode:=
-          FilesTreeView.Items.Add(FRequiredPackagesNode,
-                  lisPckEditRemovedFilesTheseEntriesAreNotSavedToTheLpkFile);
-        FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
-        FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
-      end;
-      CurNode:=FRemovedFilesNode.GetFirstChild;
-      Cnt:=LazPackage.RemovedFilesCount;
-      for i:=0 to Cnt-1 do begin
-        if CurNode=nil then
-          CurNode:=FilesTreeView.Items.AddChild(FRemovedFilesNode,'');
-        CurFile:=LazPackage.RemovedFiles[i];
-        CurNode.Text:=CurFile.GetShortFilename(true);
-        SetImageIndex(CurNode,CurFile);
-        CurNode:=CurNode.GetNextSibling;
-      end;
-      while CurNode<>nil do begin
-        NextNode:=CurNode.GetNextSibling;
-        CurNode.Free;
-        CurNode:=NextNode;
-      end;
-      FRemovedFilesNode.Expanded:=true;
-    end else begin
-      FreeAndNil(FRemovedFilesNode);
+    while CurNode<>nil do begin
+      NextNode:=CurNode.GetNextSibling;
+      CurNode.Free;
+      CurNode:=NextNode;
     end;
-
-    ExpandedState.Apply(FilesTreeView);
-  finally
-    ExpandedState.Free;
-    TVNodeStack.Free;
-    Files.Free;
+    FRemovedFilesNode.Expanded:=true;
+  end else begin
+    FreeAndNil(FRemovedFilesNode);
   end;
-  if OldSelection<>nil then
-    ApplyTreeSelection(OldSelection,true);
-
-  FilesTreeView.EndUpdate;
 end;
 
 procedure TPackageEditorForm.UpdateRequiredPkgs;
@@ -2063,7 +1931,7 @@ function TPackageEditorForm.GetCurrentFile(out Removed: boolean): TPkgFile;
 var
   CurNode: TTreeNode;
   NodeIndex: Integer;
-  Item: TPkgEditFileItem;
+  Item: TFileNameItem;
   i: Integer;
 begin
   Result:=nil;
@@ -2078,9 +1946,9 @@ begin
     exit;
   end;
   //debugln(['TPackageEditorForm.GetCurrentFile ',DbgSName(TObject(CurNode.Data)),' ',CurNode.Text]);
-  if TObject(CurNode.Data) is TPkgEditFileItem then
+  if TObject(CurNode.Data) is TFileNameItem then
   begin
-    Item:=TPkgEditFileItem(CurNode.Data);
+    Item:=TFileNameItem(CurNode.Data);
     //debugln(['TPackageEditorForm.GetCurrentFile Item=',Item.Filename,' ',Item.IsDirectory]);
     for i:=0 to LazPackage.FileCount-1 do
     begin
@@ -2106,11 +1974,11 @@ procedure TPackageEditorForm.GetDirectorySummary(DirNode: TTreeNode; out
 
   procedure Traverse(Node: TTreeNode);
   var
-    Item: TPkgEditFileItem;
+    Item: TFileNameItem;
     CurFile: TPkgFile;
   begin
-    if TObject(Node.Data) is TPkgEditFileItem then begin
-      Item:=TPkgEditFileItem(Node.Data);
+    if TObject(Node.Data) is TFileNameItem then begin
+      Item:=TFileNameItem(Node.Data);
       CurFile:=LazPackage.FindPkgFile(Item.Filename,true,true);
       if CurFile<>nil then begin
         inc(FileCount);
@@ -2163,7 +2031,8 @@ begin
     ASelection.Delete(0);
   end;
   if ANode<>nil then FilesTreeView.Selected:=ANode;
-  if FreeList then ASelection.Free;
+  if FreeList then
+    ASelection.Free;
 end;
 
 procedure TPackageEditorForm.ExtendUnitIncPathForNewUnit(const AnUnitFilename,
@@ -2271,37 +2140,6 @@ begin
   Result:=PackageEditors.AddToProject(LazPackage,true)=mrOk;
 end;
 
-procedure TPackageEditorForm.IdleHandler(Sender: TObject; var Done: Boolean);
-begin
-  if FNeedUpdateAll then
-    UpdateAll(true)
-  else if FNeedUpdateFiles then
-    UpdateFiles(true);
-  IdleConnected:=false;
-end;
-
-function TPackageEditorForm.FitsFilter(aFilename: string): boolean;
-begin
-  Result:=(Filter='') or (System.Pos(Filter,lowercase(aFilename))>0);
-end;
-
-procedure TPackageEditorForm.FreeTVNodeData(Node: TTreeNode);
-var
-  Child: TTreeNode;
-begin
-  if Node=nil then exit;
-  if (Node.Data<>nil) then begin
-    TObject(Node.Data).Free;
-    Node.Data:=nil;
-  end;
-  Child:=Node.GetFirstChild;
-  while Child<>nil do
-  begin
-    FreeTVNodeData(Child);
-    Child:=Child.GetNextSibling;
-  end;
-end;
-
 function TPackageEditorForm.ComparePkgFilenames(AFilename1, AFilename2: string
   ): integer;
 begin
@@ -2393,9 +2231,9 @@ procedure TPackageEditorForm.DoUseUnitsInDirectory(Use: boolean);
   var
     PkgFile: TPkgFile;
   begin
-    if TObject(Node.Data) is TPkgEditFileItem then
+    if TObject(Node.Data) is TFileNameItem then
     begin
-      PkgFile:=LazPackage.FindPkgFile(TPkgEditFileItem(Node.Data).Filename,true,true);
+      PkgFile:=LazPackage.FindPkgFile(TFileNameItem(Node.Data).Filename,true,true);
       if (PkgFile<>nil) and (PkgFile.FileType in [pftUnit,pftVirtualUnit]) then
       begin
         if PkgFile.AddToUsesPkgSection<>Use then
@@ -2438,7 +2276,7 @@ begin
   if (NewIndex<0) or (NewIndex>=LazPackage.FileCount) then exit;
   TreeSelection:=StoreCurrentTreeSelection;
   LazPackage.MoveFile(OldIndex,NewIndex);
-  UpdateFiles(true);
+  UpdateFiles;
   ApplyTreeSelection(TreeSelection,true);
   UpdateButtons;
   UpdateStatusBar;
@@ -2463,14 +2301,14 @@ procedure TPackageEditorForm.DoFixFilesCase;
 begin
   if LazPackage.FixFilesCaseSensitivity then
     LazPackage.Modified:=true;
-  UpdateFiles(false);
+  UpdateFiles;
   UpdateButtons;
 end;
 
 procedure TPackageEditorForm.DoShowMissingFiles;
 begin
   ShowMissingPkgFilesDialog(LazPackage);
-  UpdateFiles(false);
+  UpdateFiles;
 end;
 
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
@@ -2482,8 +2320,6 @@ end;
 
 destructor TPackageEditorForm.Destroy;
 begin
-  IdleConnected:=false;
-  FreeTVNodeData(FFilesNode);
   if PackageEditorMenuRoot.MenuItem=FilesPopupMenu.Items then
     PackageEditorMenuRoot.MenuItem:=nil;
   PackageEditors.DoFreeEditor(LazPackage);
@@ -2654,8 +2490,7 @@ begin
     Result:=mrCancel;
 end;
 
-function TPackageEditors.ViewPkgSource(APackage: TLazPackage
-  ): TModalResult;
+function TPackageEditors.ViewPkgSource(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnViewPackageSource) then
     Result:=OnViewPackageSource(Self,APackage)
