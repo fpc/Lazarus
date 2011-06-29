@@ -7,7 +7,7 @@ unit LazControls;
 interface
 
 uses
-  DividerBevel, ExtendedNotebook, LazarusPackageIntf;
+  DividerBevel, ExtendedNotebook, ListFilterEdit, LazarusPackageIntf;
 
 implementation
 
@@ -15,6 +15,7 @@ procedure Register;
 begin
   RegisterUnit('DividerBevel', @DividerBevel.Register); 
   RegisterUnit('ExtendedNotebook', @ExtendedNotebook.Register); 
+  RegisterUnit('ListFilterEdit', @ListFilterEdit.Register); 
 end; 
 
 initialization
