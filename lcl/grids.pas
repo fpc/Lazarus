@@ -7609,11 +7609,19 @@ var
     DeltaCol := 0;
     DeltaRow := 0;
 
-    // invert direction if necessary
-    //
     aa := FAutoAdvance;
-    if Inverse then
+    if UseRightToLeftAlignment then
       case FAutoAdvance of
+        aaLeftUp:     aa := aaRightUp;
+        aaLeftDown:   aa := aaRightDown;
+        aaLeft:       aa := aaRight;
+        aaRightUp:    aa := aaLeftUp;
+        aaRightDown:  aa := aaLeftDown;
+        aaRight:      aa := aaLeft;
+      end;
+    // invert direction if necessary
+    if Inverse then
+      case aa of
         aaRight:      aa := aaLeft;
         aaLeft:       aa := aaRight;
         aaRightDown:  aa := aaLeftUp;
