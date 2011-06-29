@@ -2651,7 +2651,6 @@ function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
 var
   Msg: TLMVScroll;
   MaxValue: gdouble;
-  State: PByte;
 begin
   Result := CallBackDefaultReturn;
 
@@ -2684,100 +2683,6 @@ begin
 
     ScrollBar := HWND(PtrUInt(ARange));
     ScrollCode := GtkScrollTypeToScrollCode(AScrollType);
-  end;
-  Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
-
-  if not Result or not (AWidgetInfo^.LCLObject is TScrollBar) or
-    not Assigned(AWidgetInfo^.UserData) then exit;
-
-  State:=AWidgetInfo^.UserData;
-
-  if Msg.Scrollcode=SB_THUMBTRACK then
-  begin
-    if State^ = 0 then
-    begin
-      Msg.ScrollCode := SB_THUMBPOSITION;
-      DeliverMessage(AWidgetInfo^.LCLObject, Msg);
-      Msg.ScrollCode:=SB_ENDSCROLL;
-      DeliverMessage(AWidgetInfo^.LCLObject, Msg);
-    end;
-  end
-  else State^:=1;
-end;
-
-function Gtk2RangeScrollPressCB(Widget: PGtkWidget;
-  Event: PGdkEventButton; Data: gPointer): gboolean; cdecl;
-var
-  State: PByte;
-  WidgetInfo: PWidgetInfo;
-begin
-  WidgetInfo:=GetWidgetInfo(Widget, false);
-  if Assigned(WidgetInfo^.UserData) then
-  begin
-    State:=WidgetInfo^.UserData;
-    State^:=2;
-  end;
-  Result:=False;
-end;
-
-function Gtk2RangeScrollReleaseCB(Widget: PGtkWidget;
-  Event: PGdkEventButton; Data: gPointer): gboolean; cdecl;
-var
-  Avalue: gdouble;
-  WidgetInfo: PWidgetInfo;
-  State: PByte;
-begin
-  AValue:=PGtkRange(Widget)^.adjustment^.value;
-  WidgetInfo:=GetWidgetInfo(Widget, false);
-  If Assigned(WidgetInfo^.UserData) then
-  begin
-    State:=WidgetInfo^.UserData;
-    if State^=1 then Gtk2RangeScrollCB(PGtkRange(Widget), 0, AValue, WidgetInfo);
-    State^:=0;
-  end;
-  Result:=False;
-end;
-
-function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow; AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
-var
-  Msg: TLMVScroll;
-  AValue: Double;
-  Range: PGtkRange;
-begin
-  case AEvent^.direction of
-    GDK_SCROLL_UP,
-    GDK_SCROLL_DOWN: Msg.Msg := LM_VSCROLL;
-    GDK_SCROLL_LEFT,
-    GDK_SCROLL_RIGHT: Msg.Msg := LM_HSCROLL;
-  end;
-
-  case Msg.Msg of
-    LM_VSCROLL: Range := GTK_RANGE(AScrollWindow^.vscrollbar);
-    LM_HSCROLL: Range := GTK_RANGE(AScrollWindow^.hscrollbar);
-  end;
-
-  AValue :=  power(Range^.adjustment^.page_size, 2 / 3);
-
-  if (AEvent^.direction = GDK_SCROLL_UP) or
-     (AEvent^.direction = GDK_SCROLL_LEFT)
-  then
-    AValue := -AValue;
-
-  AValue := gtk_range_get_value(Range) + AValue;
-
-  AValue := Max(AValue, Range^.adjustment^.lower);
-  AValue := Min(AValue, Range^.adjustment^.upper - Range^.adjustment^.page_size);
-
-  with Msg do
-  begin
-    Pos := Round(AValue);
-    if Pos < High(SmallPos) then
-      SmallPos := Pos
-    else
-      SmallPos := High(SmallPos);
-
-    ScrollBar := HWND(PtrUInt(Range));
-    ScrollCode := SB_THUMBPOSITION;
   end;
   Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
 end;

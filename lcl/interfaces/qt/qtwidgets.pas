@@ -6031,15 +6031,7 @@ begin
   SliderAction := SliderActions[Action];
 
   case SliderAction of
-    QAbstractSliderSliderNoAction:
-    begin
-      if getTracking and getSliderDown then
-      begin
-        LMScroll.ScrollCode := SB_THUMBPOSITION;
-        DeliverMessage(LMScroll);
-      end;
-    LMScroll.ScrollCode := SB_ENDSCROLL;
-    end;
+    QAbstractSliderSliderNoAction: Exit;
     QAbstractSliderSliderSingleStepAdd:
       begin
         if LMScroll.Msg = LM_HSCROLL then
@@ -6082,7 +6074,13 @@ begin
         else
           LMScroll.ScrollCode := SB_BOTTOM;
       end;
-    QAbstractSliderSliderMove: LMScroll.ScrollCode := SB_THUMBTRACK;
+    QAbstractSliderSliderMove:
+      begin
+        if getTracking and getSliderDown then
+          LMScroll.ScrollCode := SB_THUMBTRACK
+        else
+          LMScroll.ScrollCode := SB_THUMBPOSITION;
+      end;
   end;
 
   DeliverMessage(LMScroll);
@@ -6155,20 +6153,7 @@ begin
         Result := inherited EventFilter(Sender, Event)
       else
         Result := False;
-      if (QEvent_type(Event) = QEventKeyRelease) and not
-        (QKeyEvent_isAutoRepeat(QKeyEventH(event))) then
-        begin
-          Case QKeyEvent_key(QKeyEventH(Event)) of
-            QtKey_Left, QtKey_Up, QtKey_Right, QtKey_Down,
-            QtKey_PageUp, QtKey_PageDown, QtKey_Home, QtKey_End:
-              QAbstractSlider_triggerAction(QAbstractSliderH(Widget),
-                       QAbstractSliderSliderNoAction);
-          end;
-        end;
     end;
-    QEventMouseButtonRelease:
-    QAbstractSlider_triggerAction(QAbstractSliderH(Widget),
-                        QAbstractSliderSliderNoAction);
   else
     if FOwnWidget then
       Result := inherited EventFilter(Sender, Event);
