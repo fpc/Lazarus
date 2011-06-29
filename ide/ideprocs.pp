@@ -266,13 +266,6 @@ procedure SetComboBoxText(AComboBox:TComboBox; const AText: String;
 function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
 
 
-// treeview
-procedure TVDeleteUnneededNodes(TVNodeStack: TFPList; p: integer);
-procedure TVClearUnneededAndCreateHierachy(TV: TTreeView; FilesNode: TTreeNode;
-        Filename: string; TVNodeStack: TFPList;
-        ShowDirectoryHierarchy: boolean; ImageIndexDirectory: integer);
-
-
 implementation
 
 
@@ -2735,84 +2728,6 @@ end;
 function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
 begin
   Result := CheckGroup.Checked[CheckGroup.Items.IndexOf(Caption)];
-end;
-
-procedure TVDeleteUnneededNodes(TVNodeStack: TFPList; p: integer);
-// delete all nodes behind the nodes in the stack, and depth>=p
-var
-  i: Integer;
-  Node: TTreeNode;
-begin
-  for i:=TVNodeStack.Count-1 downto p do begin
-    Node:=TTreeNode(TVNodeStack[i]);
-    while Node.GetNextSibling<>nil do
-      Node.GetNextSibling.Free;
-  end;
-  TVNodeStack.Count:=p;
-end;
-
-procedure TVClearUnneededAndCreateHierachy(TV: TTreeView; FilesNode: TTreeNode;
-  Filename: string; TVNodeStack: TFPList;
-  ShowDirectoryHierarchy: boolean; ImageIndexDirectory: integer);
-// TVNodeStack contains a path of TTreeNode for the last filename
-var
-  DelimPos: Integer;
-  FilePart: String;
-  Node: TTreeNode;
-  p: Integer;
-begin
-  p:=0;
-  while Filename<>'' do begin
-    // get the next file name part
-    if ShowDirectoryHierarchy then
-      DelimPos:=System.Pos(PathDelim,Filename)
-    else
-      DelimPos:=0;
-    if DelimPos>0 then begin
-      FilePart:=copy(Filename,1,DelimPos-1);
-      Filename:=copy(Filename,DelimPos+1,length(Filename));
-    end else begin
-      FilePart:=Filename;
-      Filename:='';
-    end;
-    //debugln(['ClearUnneededAndCreateHierachy FilePart=',FilePart,' Filename=',Filename,' p=',p]);
-    if p<TVNodeStack.Count then begin
-      Node:=TTreeNode(TVNodeStack[p]);
-      if (FilePart=Node.Text) and (Node.Data=nil) then begin
-        // same sub directory
-      end
-      else begin
-        // change directory => last directory is complete
-        // => delete unneeded nodes after last path
-        TVDeleteUnneededNodes(TVNodeStack,p+1);
-        if Node.GetNextSibling<>nil then begin
-          Node:=Node.GetNextSibling;
-          Node.Text:=FilePart;
-        end
-        else
-          Node:=TV.Items.Add(Node,FilePart);
-        TVNodeStack[p]:=Node;
-      end;
-    end else begin
-      // new sub node
-      if p>0 then
-        Node:=TTreeNode(TVNodeStack[p-1])
-      else
-        Node:=FilesNode;
-      if Node.GetFirstChild<>nil then begin
-        Node:=Node.GetFirstChild;
-        Node.Text:=FilePart;
-      end
-      else
-        Node:=TV.Items.AddChild(Node,FilePart);
-      TVNodeStack.Add(Node);
-    end;
-    if (Filename<>'') then begin
-      Node.ImageIndex:=ImageIndexDirectory;
-      Node.SelectedIndex:=Node.ImageIndex;
-    end;
-    inc(p);
-  end;
 end;
 
 procedure CTDbgOut(const s: string);
