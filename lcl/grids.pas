@@ -658,7 +658,6 @@ type
     FDragDx: Integer;
     FMoveLast: TPoint;
     FUpdateCount: Integer;
-    FUpdateScrollBarsCount: Integer;
     FGCache: TGridDataCache;
     FOptions: TGridOptions;
     FOnDrawCell: TOnDrawcell;
@@ -787,7 +786,6 @@ type
     function  StartColSizing(const X, Y: Integer): boolean;
     procedure ChangeCursor(ACursor: Integer = MAXINT);
     procedure TryScrollTo(aCol,aRow: integer);
-    procedure UpdateScrollBarPos(Which: TScrollStyle);
     procedure UpdateCachedSizes;
     procedure UpdateSBVisibility;
     procedure UpdateSizes;
@@ -905,7 +903,7 @@ type
     function  GetScrollBarPosition(Which: integer): Integer;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);virtual;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
-                  out HsbRange,VsbRange, HsbPage, VsbPage:Integer); virtual;
+                  out HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos:Integer); virtual;
     procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); virtual;
     function  GetEditMask(ACol, ARow: Longint): string; virtual;
     function  GetEditText(ACol, ARow: Longint): string; virtual;
@@ -951,7 +949,7 @@ type
     procedure ResizeRow(aRow, aHeight: Integer);
     procedure RowHeightsChanged; virtual;
     procedure SaveContent(cfg: TXMLConfig); virtual;
-    procedure ScrollBarRange(Which:Integer; aRange,aPage: Integer);
+    procedure ScrollBarRange(Which:Integer; aRange,aPage,aPos: Integer);
     procedure ScrollBarPosition(Which, Value: integer);
     function  ScrollBarIsVisible(Which:Integer): Boolean;
     procedure ScrollBarPage(Which: Integer; aPage: Integer);
@@ -972,9 +970,9 @@ type
     procedure TopLeftChanged; virtual;
     function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
     procedure UnLockEditor;
-    procedure UpdateHorzScrollBar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
+    procedure UpdateHorzScrollBar(const aVisible: boolean; const aRange,aPage,aPos: Integer); virtual;
     procedure UpdateSelectionRange;
-    procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); virtual;
+    procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage,aPos: Integer); virtual;
     procedure UpdateBorderStyle;
     function  ValidateEntry(const ACol,ARow:Integer; const OldValue:string; var NewValue:string): boolean; virtual;
     procedure VisualChange; virtual;
@@ -2792,7 +2790,6 @@ procedure TCustomGrid.doTopleftChange(dimChg: Boolean);
 begin
   TopLeftChanged;
   VisualChange;
-  updateScrollBarPos(ssBoth);
 end;
 
 procedure TCustomGrid.DrawXORVertLine(X: Integer);
@@ -2882,13 +2879,14 @@ procedure TCustomGrid.ResetSizes;
     HsbVisible, VsbVisible: boolean;
     HsbRange,VsbRange: Integer;
     HsbPage, VsbPage: Integer;
+    HsbPos, VsbPos: Integer;
   begin
     with FGCache do begin
       // Horizontal scrollbar
       GetSBVisibility(HsbVisible, VsbVisible);
-      GetSBRanges(HsbVisible,VsbVisible,HsbRange,VsbRange,HsbPage,VsbPage);
-      UpdateVertScrollBar(VsbVisible, VsbRange, VsbPage);
-      UpdateHorzScrollBar(HsbVisible, HsbRange, HsbPage);
+      GetSBRanges(HsbVisible,VsbVisible,HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos);
+      UpdateVertScrollBar(VsbVisible, VsbRange, VsbPage, VsbPos);
+      UpdateHorzScrollBar(HsbVisible, HsbRange, HsbPage, HsbPos);
       {$ifdef DbgScroll}
       DebugLn('VRange=',dbgs(VsbRange),' Visible=',dbgs(VSbVisible));
       DebugLn('HRange=',dbgs(HsbRange),' Visible=',dbgs(HSbVisible));
@@ -2919,7 +2917,6 @@ begin
   DebugLn('  MaxTopLeft',dbgs(FGCache.MaxTopLeft));
   {$Endif}
   CalcScrollBarsRange;
-  updateScrollBarPos(ssBoth);
 end;
 
 procedure TCustomGrid.CreateParams(var Params: TCreateParams);
@@ -2940,7 +2937,7 @@ begin
     inherited Click;
 end;
 
-procedure TCustomGrid.ScrollBarRange(Which: Integer; aRange,aPage: Integer);
+procedure TCustomGrid.ScrollBarRange(Which: Integer; aRange,aPage,aPos: Integer);
 var
   ScrollInfo: TScrollInfo;
 begin
@@ -2950,7 +2947,7 @@ begin
     {$endif}
     FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
-    ScrollInfo.fMask := SIF_RANGE or SIF_PAGE or SIF_DISABLENOSCROLL;
+    ScrollInfo.fMask := SIF_RANGE or SIF_POS or SIF_PAGE or SIF_DISABLENOSCROLL;
     {$ifdef Unix}
     ScrollInfo.fMask := ScrollInfo.fMask or SIF_UPDATEPOLICY;
     if goThumbTracking in Options then
@@ -2959,7 +2956,8 @@ begin
       ScrollInfo.ntrackPos := SB_POLICY_DISCONTINUOUS;
     {$endif}
     ScrollInfo.nMin := 0;
-    ScrollInfo.nMax := ARange;
+    ScrollInfo.nMax := aRange;
+    ScrollInfo.nPos := aPos;
     if APage<0 then
       APage := 0;
     ScrollInfo.nPage := APage;
@@ -3364,8 +3362,6 @@ begin
     if ChkRow or ChkCol then begin
       CacheVisibleGrid;
       Invalidate;
-      if ChkCol then updateScrollBarPos(ssHorizontal);
-      if ChkRow then updateScrollBarPos(ssVertical);
     end;
   end;
 end;
@@ -4079,9 +4075,7 @@ begin
     FGCache.TLColOff:=0;
 
   if TL<>FTopLeft.X then begin
-    Inc(FUpdateScrollBarsCount);
     TryScrollTo(Tl, FTopLeft.Y);
-    Dec(FUpdateScrollBarsCount);
   end else
   if goSmoothScroll in Options then begin
     CacheVisibleGrid;
@@ -4185,9 +4179,7 @@ begin
     FGCache.TLRowOff:=0;
 
   if TL<>FTopLeft.Y then begin
-    Inc(FUpdateScrollBarsCount);
     TryScrollTo(FTopLeft.X, Tl);
-    Dec(FUpdateScrollBarsCount);
   end else
   if goSmoothScroll in Options then begin
     CacheVisibleGrid;
@@ -4317,31 +4309,6 @@ begin
   Invalidate;
 end;
 
-{ Reposition the scrollbars according to the current TopLeft }
-procedure TCustomGrid.UpdateScrollbarPos(Which: TScrollStyle);
-begin
-  // Adjust ScrollBar Positions
-  // Special condition only When scrolling by draging
-  // the scrollbars see: WMHScroll and WVHScroll
-  if (FUpdateScrollBarsCount=0) and not FixedGrid then begin
-    if Which in [ssHorizontal, ssBoth] then begin
-      if FScrollBars in [ssHorizontal,ssBoth,ssAutoHorizontal,ssAutoBoth] then begin
-        with FGCache do
-          ScrollBarPosition(SB_HORZ,
-            integer(PtrUInt(AccumWidth[FTopLeft.x]))-TLColOff-FixedWidth );
-      end;
-    end;
-
-    if Which in [ssVertical, ssBoth] then begin
-      if FScrollBars in [ssVertical,ssBoth,ssAutoVertical,ssAutoBoth] then begin
-        with FGCache do
-          ScrollBarPosition(SB_VERT,
-            integer(PtrUInt(AccumHeight[FTopLeft.y]))-TLRowOff-FixedHeight);
-      end;
-    end;
-  end; {if FUpd...}
-end;
-
 procedure TCustomGrid.UpdateCachedSizes;
 var
   i: Integer;
@@ -4436,7 +4403,7 @@ begin
 end;
 
 procedure TCustomGrid.GetSBRanges(const HsbVisible, VsbVisible: boolean; out
-  HsbRange, VsbRange, HsbPage, VSbPage: Integer);
+  HsbRange,VsbRange,HsbPage,VSbPage,HsbPos,VsbPos: Integer);
 var
   Tw, Th: Integer;
 begin
@@ -4447,6 +4414,7 @@ begin
         TW:= integer(PtrUInt(AccumWidth[MaxTopLeft.X]))-(HsbRange-ClientWidth);
         HsbRange:=HsbRange + TW - FixedWidth + 1;
       end;
+      HsbPos := integer(PtrUInt(AccumWidth[FTopLeft.x]))-TLColOff-FixedWidth;
     end else
       HsbRange:=0;
 
@@ -4456,6 +4424,7 @@ begin
         TH:= integer(PtrUInt(accumHeight[MaxTopLeft.Y]))-(VsbRange-ClientHeight);
         VsbRange:=VsbRange + TH -FixedHeight + 1;
       end;
+      VsbPos := integer(PtrUInt(AccumHeight[FTopLeft.y]))-TLRowOff-FixedHeight;
     end else
       VsbRange:= 0;
 
@@ -6588,7 +6557,7 @@ begin
 end;
 
 procedure TCustomGrid.UpdateHorzScrollBar(const aVisible: boolean;
-  const aRange,aPage: Integer);
+  const aRange,aPage,aPos: Integer);
 begin
   {$ifdef DbgScroll}
   DebugLn('TCustomGrid.UpdateHorzScrollbar: Vis=',dbgs(aVisible),
@@ -6596,11 +6565,11 @@ begin
   {$endif}
   ScrollBarShow(SB_HORZ, aVisible);
   if aVisible then
-    ScrollBarRange(SB_HORZ, aRange, aPage);
+    ScrollBarRange(SB_HORZ, aRange, aPage, aPos);
 end;
 
 procedure TCustomGrid.UpdateVertScrollbar(const aVisible: boolean;
-  const aRange,aPage: Integer);
+  const aRange,aPage,aPos: Integer);
 begin
   {$ifdef DbgScroll}
   DebugLn('TCustomGrid.UpdateVertScrollbar: Vis=',dbgs(aVisible),
@@ -6608,7 +6577,7 @@ begin
   {$endif}
   ScrollBarShow(SB_VERT, aVisible);
   if aVisible then
-    ScrollbarRange(SB_VERT, aRange, aPage );
+    ScrollbarRange(SB_VERT, aRange, aPage, aPos );
 end;
 
 procedure TCustomGrid.UpdateBorderStyle;
