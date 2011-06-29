@@ -1,4 +1,4 @@
-{ DividerBevel
+{ ExtendedNotebook
 
   Copyright (C) 2010 Lazarus team
 
