@@ -398,7 +398,7 @@ begin
   then Result := RawImage_DescriptionFromCarbonBitmap(ADesc, TCarbonBitmap(ABitmap))
   else Result := False;
 end;
-
+*)
 
 {------------------------------------------------------------------------------
   Function: RawImage_DescriptionFromDevice
@@ -408,7 +408,7 @@ end;
 
   Retrieves the standard image format utilized by Carbon
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
+function TCocoaWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
 var
   P: TPoint;
 begin
@@ -417,13 +417,14 @@ begin
   FillStandardDescription(ADesc);
   if (ADC <> 0) and CheckDC(ADC, 'RawImage_DescriptionFromDevice')
   then begin
-    P := TCarbonDeviceContext(ADC).Size;
+    P.X := TCocoaContext(ADC).ContextSize.cx;
+    P.Y := TCocoaContext(ADC).ContextSize.cy;
     ADesc.Width := P.X;
     ADesc.Height := P.Y
   end;
 
   Result := True;
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: RawImage_FromBitmap

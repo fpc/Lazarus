@@ -167,9 +167,8 @@ type
     procedure SetFont(const AValue: TCocoaFont);
     procedure SetPen(const AValue: TCocoaPen);
     procedure SetRegion(const AValue: TCocoaRegion);
-  protected
-    ContextSize : TSize;
   public
+    ContextSize : TSize;
     ctx      : NSGraphicsContext;
     PenPos   : TPoint;
     Stack    : Integer;
@@ -200,6 +199,7 @@ var
   TextLayoutClass  : TCocoaTextLayoutClass = nil;
 
 function CheckDC(dc: HDC): TCocoaContext;
+function CheckDC(dc: HDC; Str: string): Boolean;
 function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
 function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
 
@@ -210,6 +210,11 @@ implementation
 function CheckDC(dc: HDC): TCocoaContext;
 begin
   Result:=TCocoaContext(dc);
+end;
+
+function CheckDC(dc: HDC; Str: string): Boolean;
+begin
+  Result:=dc<>0;
 end;
 
 function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
@@ -231,8 +236,8 @@ type
   // http://wiki.freepascal.org/FPC_PasCocoa/Differences#Sending_messages_to_id
   // http://wiki.lazarus.freepascal.org/FPC_PasCocoa#Category_declaration
   NSBitmapImageRepFix = objccategory external(NSBitmapImageRep)
-    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bytesPerRow_bitsPerPixel(planes: PChar; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:';
-    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(planes: PChar; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; bitmapFormat_: NSBitmapFormat; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:';
+    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bytesPerRow_bitsPerPixel(planes: PPByte; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:';
+    function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(planes: PPByte; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; bitmapFormat_: NSBitmapFormat; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:';
   end;
 
 {------------------------------------------------------------------------------
@@ -279,8 +284,8 @@ begin
     False, // hasAlpha
     False, // isPlanar
     NSCalibratedRGBColorSpace, // colorSpaceName
-    0, // bitmapFormat
-    0, // bytesPerRow
+    NSAlphaNonpremultipliedBitmapFormat, // bitmapFormat
+    FBytesPerRow, // bytesPerRow
     FBitsPerPixel //bitsPerPixel
     ));
 

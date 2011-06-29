@@ -38,6 +38,7 @@ uses
   InterfaceBase, GraphType,
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaTextLayout,
+  CocoaProc,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   IntfGraphics, Graphics, CocoaWSFactory;

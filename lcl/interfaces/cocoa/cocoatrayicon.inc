@@ -69,29 +69,10 @@ begin
     image := TCocoaBitmap(ATrayIcon.icon.Handle).image;
     if image <> nil then statusitem.setImage(image);
   end;
-  //Result:=TLCLIntfHandle(box);
-//  APrivateTrayIcon := TPrivateCocoaCocoaTrayIcon(ATrayIcon.Handle);
 
-{  if APrivateTrayIcon.item <> nil then
-  begin
-    APrivateTrayIcon.item.Free;
-    APrivateTrayIcon.item := nil;
-  end;}
-
-
-{  if APrivateTrayIcon.item <> nil then Exit(True);
-
-  APrivateTrayIcon.item := NSStatusItem.CreateWithHandle(APrivateTrayIcon.bar.statusItemWithLength(NSSquareStatusItemLength));
-  APrivateTrayIcon.item.retain();
-  APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);}
-
-  { Inserts the menu }
-
-{  if ATrayIcon.PopUpMenu <> nil then
-  begin
-    APrivateTrayIcon.menu := APrivateTrayIcon.CreateMenu(ATrayIcon.PopUpMenu);
-    APrivateTrayIcon.item.setMenu(APrivateTrayIcon.menu.Handle);
-  end;}
+//  statusitem.setTitle('Menu');
+  statusitem.setHighlightMode(True);
+  statusitem.setEnabled(True);
 
   Result := True;
   
