@@ -21,6 +21,7 @@
 
   Original version by Juha Manninen
   Icons added by Marcelo B Paula
+  All available units added to the list by Anton
 }
 unit UseProjUnitDlg;
 
@@ -30,9 +31,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons,
-  ButtonPanel, Dialogs, LCLProc, FileProcs, Graphics, LCLType,
-  SourceEditor, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts,
-  ProjectIntf, Project, CodeCache, CodeToolManager, IdentCompletionTool;
+  ButtonPanel, Dialogs, LCLProc, FileProcs, Graphics, LCLType, EditBtn, StrUtils,
+  SourceEditor, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf,
+  Project, CodeCache, CodeToolManager, IdentCompletionTool, ListFilterEdit;
 
 type
 
@@ -56,10 +57,14 @@ type
       ARect: TRect; State: TOwnerDrawState);
   private
     UnitImgInd: Integer;
+    FMainUsedUnits: TStrings;
+    FImplUsedUnits: TStrings;
+    FProjUnits: TStringList;
     FOtherUnits: TStringList;
     procedure AddItems(AItems: TStrings);
     procedure AddOtherUnits;
     procedure RemoveOtherUnits;
+    function GetAvailableProjUnits(SrcEdit: TSourceEditor): TModalResult;
     procedure CreateOtherUnitsList;
     function SelectedUnit: string;
     function InterfaceSelected: Boolean;
@@ -71,13 +76,9 @@ type
 
   end; 
 
-function GetProjAvailableUnits(SrcEdit: TSourceEditor; out CurrentUnitName: String;
-                           IgnoreErrors: boolean): TStringList;
 function ShowUseUnitDialog: TModalResult;
 
 implementation
-
-uses StrUtils, math;
 
 {$R *.lfm}
 
@@ -104,108 +105,44 @@ begin
     Result := f.IdentItem.Identifier;
 end;
 
-function GetProjAvailableUnits(SrcEdit: TSourceEditor; out CurrentUnitName: String;
-  IgnoreErrors: boolean): TStringList;
-var
-  MainUsedUnits, ImplUsedUnits: TStrings;
-  ProjFile: TUnitInfo;
-  s: String;
-begin
-  MainUsedUnits:=nil;
-  ImplUsedUnits:=nil;
-  Result:=nil;
-  try
-    if SrcEdit=nil then exit;
-    Assert(Assigned(SrcEdit.CodeBuffer));
-    if not CodeToolBoss.FindUsedUnitNames(SrcEdit.CodeBuffer,
-                                          MainUsedUnits,ImplUsedUnits)
-    then begin
-      if not IgnoreErrors then
-      begin
-        DebugLn(['ShowUseProjUnitDialog CodeToolBoss.FindUsedUnitNames failed']);
-        LazarusIDE.DoJumpToCodeToolBossError;
-      end;
-      exit;
-    end;
-    Result:=TStringList.Create;  // Result TStringList must be freed by caller.
-    TStringList(MainUsedUnits).CaseSensitive:=False;
-    TStringList(ImplUsedUnits).CaseSensitive:=False;
-    // Debug message will be cleaned soon!!!
-    if SrcEdit.GetProjectFile is TUnitInfo then
-      CurrentUnitName:=TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
-    else
-      CurrentUnitName:='';
-    //DebugLn('ShowUseProjUnitDialog: CurrentUnitName before loop = '+CurrentUnitName);
-    // Add available unit names to Result.
-    ProjFile:=Project1.FirstPartOfProject;
-    while ProjFile<>nil do begin
-      s:=ProjFile.Unit_Name;
-      if s=CurrentUnitName then begin      // current unit
-        {if SrcEdit.GetProjectFile is TUnitInfo then   // Debug!
-          DebugLn('ShowUseProjUnitDialog: CurrentUnitName in loop = ' +
-                      TUnitInfo(SrcEdit.GetProjectFile).Unit_Name);}
-        s:='';
-      end;
-      if (ProjFile<>Project1.MainUnitInfo) and (s<>'') then
-        if (MainUsedUnits.IndexOf(s)<0) and (ImplUsedUnits.IndexOf(s)<0) then
-          Result.Add(s);
-      ProjFile:=ProjFile.NextPartOfProject;
-    end;
-  finally
-    ImplUsedUnits.Free;
-    MainUsedUnits.Free;
-  end;
-end;
-
 function ShowUseUnitDialog: TModalResult;
 var
   UseProjUnitDlg: TUseUnitDialog;
   SrcEdit: TSourceEditor;
-  AvailUnits: TStringList;
-  CurrentUnitName, s: String;
+  s: String;
   CTRes: Boolean;
 begin
   Result:=mrOk;
   if not LazarusIDE.BeginCodeTools then exit;
   // get cursor position
   SrcEdit:=SourceEditorManager.ActiveEditor;
+  UseProjUnitDlg:=TUseUnitDialog.Create(nil);
   try
-    AvailUnits:=GetProjAvailableUnits(SrcEdit, CurrentUnitName, false);
+    Result:=UseProjUnitDlg.GetAvailableProjUnits(SrcEdit);
+    if Result<>mrOK then exit;
+    // there is only main uses section in program/library/package
+    if SrcEdit.GetProjectFile=Project1.MainUnitInfo then
+      UseProjUnitDlg.EnableOnlyInterface;
     // Show the dialog.
-    AvailUnits.Sorted:=True;
-    UseProjUnitDlg:=TUseUnitDialog.Create(nil);
-    try
-      if Assigned(AvailUnits) then UseProjUnitDlg.AddItems(AvailUnits);
-      if UseProjUnitDlg.UnitsListBox.Count = 0 then
-      begin
-        UseProjUnitDlg.AllUnitsCheckBox.Checked := True;
-        if UseProjUnitDlg.UnitsListBox.Count = 0 then Exit(mrCancel);
-      end;
-      // there is only main uses section in program/library/package
-      if SrcEdit.GetProjectFile=Project1.MainUnitInfo then
-        UseProjUnitDlg.EnableOnlyInterface;
-      if UseProjUnitDlg.ShowModal=mrOk then begin
-        s:=UseProjUnitDlg.SelectedUnit;
-        if s <> '' then begin
-          if not UseProjUnitDlg.UnitExists(s) and
-            (MessageDlg(Format('Unit "%s" seems not to be exist. Do you still want to add it?', [s]),
-              mtConfirmation, mbYesNo, 0) = mrNo) then Exit(mrCancel);
-          if UseProjUnitDlg.InterfaceSelected then
-            CTRes:=CodeToolBoss.AddUnitToMainUsesSection(SrcEdit.CodeBuffer, s, '')
-          else
-            CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(SrcEdit.CodeBuffer, s, '');
-          if not CTRes then begin
-            LazarusIDE.DoJumpToCodeToolBossError;
-            exit(mrCancel);
-          end;
+    if UseProjUnitDlg.ShowModal=mrOk then begin
+      s:=UseProjUnitDlg.SelectedUnit;
+      if s <> '' then begin
+        if not UseProjUnitDlg.UnitExists(s) and
+          (MessageDlg(Format('Unit "%s" seems not to exist. Do you still want to add it?', [s]),
+            mtConfirmation, mbYesNo, 0) = mrNo) then Exit(mrCancel);
+        if UseProjUnitDlg.InterfaceSelected then
+          CTRes:=CodeToolBoss.AddUnitToMainUsesSection(SrcEdit.CodeBuffer, s, '')
+        else
+          CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(SrcEdit.CodeBuffer, s, '');
+        if not CTRes then begin
+          LazarusIDE.DoJumpToCodeToolBossError;
+          exit(mrCancel);
         end;
       end;
-    finally
-      UseProjUnitDlg.Free;
     end;
   finally
+    UseProjUnitDlg.Free;
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
-    AvailUnits.Free;
   end;
 end;
 
@@ -233,6 +170,20 @@ begin
   ButtonPanel1.OKButton.Caption:=lisOk;
   ButtonPanel1.CancelButton.Caption:=dlgCancel;
   UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
+  FProjUnits:=TStringList.Create;
+end;
+
+procedure TUseUnitDialog.FormDestroy(Sender: TObject);
+var
+  i: Integer;
+begin
+  if Assigned(FOtherUnits) then
+    for i := 0 to FOtherUnits.Count - 1 do
+      FOtherUnits.Objects[i].Free;
+  FOtherUnits.Free;
+  FProjUnits.Free;
+  FImplUsedUnits.Free;
+  FMainUsedUnits.Free;
 end;
 
 procedure TUseUnitDialog.AllUnitsCheckBoxChange(Sender: TObject);
@@ -242,15 +193,6 @@ begin
   else
     RemoveOtherUnits;
   if Visible then UnitnameEdit.SetFocus;
-end;
-
-procedure TUseUnitDialog.FormDestroy(Sender: TObject);
-var i: Integer;
-begin
-  if Assigned(FOtherUnits) then
-    for i := 0 to FOtherUnits.Count - 1 do
-      FOtherUnits.Objects[i].Free;
-  FOtherUnits.Free;
 end;
 
 procedure TUseUnitDialog.UnitnameEditKeyDown(Sender: TObject; var Key: Word;
@@ -328,12 +270,13 @@ end;
 
 procedure TUseUnitDialog.AddOtherUnits;
 begin
-  if not Assigned(FOtherUnits) then CreateOtherUnitsList;
+  CreateOtherUnitsList;
   UnitsListBox.Items.AddStrings(FOtherUnits);
 end;
 
 procedure TUseUnitDialog.RemoveOtherUnits;
-var i: Integer;
+var
+  i: Integer;
 begin
   with UnitsListBox.Items do
   begin
@@ -347,36 +290,78 @@ begin
   end;
 end;
 
+function TUseUnitDialog.GetAvailableProjUnits(SrcEdit: TSourceEditor): TModalResult;
+var
+  ProjFile: TUnitInfo;
+  CurrentUnitName, s: String;
+begin
+  Result:=mrOk;
+  FMainUsedUnits:=nil;
+  FImplUsedUnits:=nil;
+  if SrcEdit=nil then exit;
+  Assert(Assigned(SrcEdit.CodeBuffer));
+  if not CodeToolBoss.FindUsedUnitNames(SrcEdit.CodeBuffer,
+                                        FMainUsedUnits,FImplUsedUnits)
+  then begin
+    DebugLn(['ShowUseProjUnitDialog CodeToolBoss.FindUsedUnitNames failed']);
+    LazarusIDE.DoJumpToCodeToolBossError;
+    exit(mrCancel);
+  end;
+  TStringList(FMainUsedUnits).CaseSensitive:=False;
+  TStringList(FImplUsedUnits).CaseSensitive:=False;
+  if SrcEdit.GetProjectFile is TUnitInfo then
+    CurrentUnitName:=TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
+  else
+    CurrentUnitName:='';
+  // Add available unit names to FProjUnits.
+  ProjFile:=Project1.FirstPartOfProject;
+  while ProjFile<>nil do begin
+    s:=ProjFile.Unit_Name;
+    if s=CurrentUnitName then       // current unit
+      s:='';
+    if (ProjFile<>Project1.MainUnitInfo) and (s<>'') then
+      if (FMainUsedUnits.IndexOf(s) < 0) and (FImplUsedUnits.IndexOf(s) < 0) then
+        FProjUnits.Add(s);
+    ProjFile:=ProjFile.NextPartOfProject;
+  end;
+  FProjUnits.Sorted:=True;
+  if Assigned(FProjUnits) then
+    AddItems(FProjUnits);
+  if UnitsListBox.Count = 0 then
+  begin
+    AllUnitsCheckBox.Checked := True;
+    if UnitsListBox.Count = 0 then Exit(mrCancel);
+  end;
+end;
+
 procedure TUseUnitDialog.CreateOtherUnitsList;
 var
   i: Integer; curUnit: string;
   SrcEdit: TSourceEditor;
-  MainUsedUnits, ImplUsedUnits: TStrings;
 begin
   if Assigned(FOtherUnits) then Exit;
-  FOtherUnits := TStringList.Create;
-  SrcEdit := SourceEditorManager.ActiveEditor;
-  MainUsedUnits := nil; ImplUsedUnits := nil;
-  CodeToolBoss.FindUsedUnitNames(SrcEdit.CodeBuffer, MainUsedUnits, ImplUsedUnits);
+  Screen.Cursor:=crHourGlass;
   try
-    if CodeToolBoss.GatherUnitNames(SrcEdit.CodeBuffer) then
-      with CodeToolBoss.IdentifierList, FOtherUnits do
+    FOtherUnits := TStringList.Create;
+    SrcEdit := SourceEditorManager.ActiveEditor;
+    with CodeToolBoss do
+      if GatherUnitNames(SrcEdit.CodeBuffer) then
       begin
-        Prefix := '';
-        for i := 0 to GetFilteredCount - 1 do
+        IdentifierList.Prefix := '';
+        Assert(Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits));
+        for i := 0 to IdentifierList.GetFilteredCount - 1 do
         begin
-          curUnit := FilteredItems[i].Identifier;
-          if (MainUsedUnits.IndexOf(curUnit) < 0)
-            and (ImplUsedUnits.IndexOf(curUnit) < 0)
-            and (IndexOf(curUnit) < 0) then
-              AddObject(FilteredItems[i].Identifier,
-                TUnitsListBoxObject.Create(CodeToolBoss.IdentifierList, FilteredItems[i]));
+          curUnit := IdentifierList.FilteredItems[i].Identifier;
+          if (FMainUsedUnits.IndexOf(curUnit) < 0)
+            and (FImplUsedUnits.IndexOf(curUnit) < 0)
+            and (FOtherUnits.IndexOf(curUnit) < 0) then
+              FOtherUnits.AddObject(IdentifierList.FilteredItems[i].Identifier,
+                TUnitsListBoxObject.Create(IdentifierList, IdentifierList.FilteredItems[i]));
         end;
       end;
     FOtherUnits.Sort;
   finally
-    MainUsedUnits.Free;
-    ImplUsedUnits.Free;
+    Screen.Cursor:=crDefault;
   end;
 end;
 
@@ -446,7 +431,7 @@ begin
   if Result then Exit;
   if not AllUnitsCheckBox.Checked then
   begin
-    if not Assigned(FOtherUnits) then CreateOtherUnitsList;
+    CreateOtherUnitsList;
     Result := FOtherUnits.IndexOf(AUnitName) >= 0;
   end;
 end;

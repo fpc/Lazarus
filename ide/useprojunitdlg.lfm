@@ -1,12 +1,12 @@
 object UseUnitDialog: TUseUnitDialog
   Left = 315
-  Height = 346
+  Height = 422
   Top = 177
-  Width = 276
+  Width = 344
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Add unit to uses section'
-  ClientHeight = 346
-  ClientWidth = 276
+  ClientHeight = 422
+  ClientWidth = 344
   Constraints.MinHeight = 150
   Constraints.MinWidth = 200
   OnCreate = FormCreate
@@ -15,9 +15,9 @@ object UseUnitDialog: TUseUnitDialog
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 314
-    Width = 264
+    Height = 32
+    Top = 384
+    Width = 332
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
@@ -41,8 +41,8 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
     Height = 49
-    Top = 259
-    Width = 264
+    Top = 329
+    Width = 332
     Anchors = [akLeft, akRight, akBottom]
     AutoFill = True
     BorderSpacing.Top = 3
@@ -56,8 +56,8 @@ object UseUnitDialog: TUseUnitDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 31
-    ClientWidth = 260
+    ClientHeight = 32
+    ClientWidth = 328
     Columns = 2
     ItemIndex = 1
     Items.Strings = (
@@ -73,9 +73,9 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = AllUnitsCheckBox
     Left = 6
-    Height = 198
+    Height = 267
     Top = 32
-    Width = 264
+    Width = 332
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     ItemHeight = 0
@@ -91,9 +91,9 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 21
+    Height = 20
     Top = 6
-    Width = 264
+    Width = 332
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     OnKeyDown = UnitnameEditKeyDown
@@ -104,9 +104,9 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = SectionRadioGroup
     Left = 12
-    Height = 17
-    Top = 236
-    Width = 85
+    Height = 18
+    Top = 305
+    Width = 104
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
