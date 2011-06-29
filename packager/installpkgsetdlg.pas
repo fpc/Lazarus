@@ -39,8 +39,8 @@ interface
 
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Graphics, Dialogs,
-  KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls,
-  AVL_Tree, Laz_XMLCfg,
+  KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls, EditBtn,
+  AVL_Tree, Laz_XMLCfg, ListFilterEdit,
   PackageIntf, IDEImagesIntf, IDEHelpIntf,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
   PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
@@ -53,7 +53,6 @@ type
 
   TInstallPkgSetDialog = class(TForm)
     AddToInstallButton: TBitBtn;
-    AvailableFilterEdit: TEdit;
     AvailableTreeView: TTreeView;
     AvailablePkgGroupBox: TGroupBox;
     HelpButton: TBitBtn;
@@ -62,6 +61,7 @@ type
     BtnPanel: TPanel;
     InstallTreeView: TTreeView;
     lblMiddle: TLabel;
+    AvailableFilterEdit: TListFilterEdit;
     NoteLabel: TLabel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
@@ -71,9 +71,6 @@ type
     SaveAndRebuildButton: TBitBtn;
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
-    procedure AvailableFilterEditChange(Sender: TObject);
-    procedure AvailableFilterEditEnter(Sender: TObject);
-    procedure AvailableFilterEditExit(Sender: TObject);
     procedure AvailableTreeViewDblClick(Sender: TObject);
     procedure AvailableTreeViewSelectionChanged(Sender: TObject);
     procedure ExportButtonClick(Sender: TObject);
@@ -88,9 +85,6 @@ type
     procedure SaveAndExitButtonClick(Sender: TObject);
     procedure UninstallButtonClick(Sender: TObject);
   private
-    FIdleConnected: boolean;
-    FAvailableFilter: string;
-    fAvailablePackagesNeedUpdate: boolean;
     FNewInstalledPackages: TObjectList;
     FOldInstalledPackages: TPkgDependency;
     FOnCheckInstallPackageList: TOnCheckInstallPackageList;
@@ -103,12 +97,10 @@ type
     ImgIndexUninstallPackage: integer;
     ImgIndexCirclePackage: integer;
     ImgIndexMissingPackage: integer;
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
-    procedure SetIdleConnected(const AValue: boolean);
-    procedure SetAvailableFilter(const AValue: string);
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
     function PackageInInstallList(PkgName: string): boolean;
+    function ChooseImageIndex(Str: String; Data: TObject): Integer;
     procedure UpdateAvailablePackages(Immediately: boolean = false);
     procedure UpdateNewInstalledPackages;
     procedure OnIteratePackages(APackageID: TLazPackageID);
@@ -125,8 +117,6 @@ type
     function ExtractNameFromPkgID(ID: string): string;
     procedure AddToInstall;
     procedure AddToUninstall;
-    function FitsAvailableFilter(PkgName: string): boolean;
-    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   public
     function GetNewInstalledPackages: TObjectList;
     property OldInstalledPackages: TPkgDependency read FOldInstalledPackages
@@ -135,7 +125,6 @@ type
     property RebuildIDE: boolean read FRebuildIDE write FRebuildIDE;
     property OnCheckInstallPackageList: TOnCheckInstallPackageList
                read FOnCheckInstallPackageList write FOnCheckInstallPackageList;
-    property AvailableFilter: string read FAvailableFilter write SetAvailableFilter;
   end;
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
@@ -185,8 +174,9 @@ begin
   Caption:=lisInstallUninstallPackages;
   NoteLabel.Caption:=lisToInstallYouMustCompileAndRestartTheIDE;
 
-  AvailableFilterEdit.Text:=lisCEFilter;
   AvailablePkgGroupBox.Caption:=lisDoNotInstall;
+  AvailableFilterEdit.OnGetImageIndex:=@ChooseImageIndex;
+
   ExportButton.Caption:=lisExportList;
   ImportButton.Caption:=lisImportList;
   UninstallButton.Caption:=lisUninstallSelection;
@@ -202,7 +192,7 @@ begin
 
   fAvailablePackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   FNewInstalledPackages:=TObjectList.Create(true);
-  
+
   PkgInfoMemo.Clear;
 end;
 
@@ -278,23 +268,6 @@ begin
   AddToInstall;
 end;
 
-procedure TInstallPkgSetDialog.AvailableFilterEditChange(Sender: TObject);
-begin
-  AvailableFilter:=AvailableFilterEdit.Text;
-end;
-
-procedure TInstallPkgSetDialog.AvailableFilterEditEnter(Sender: TObject);
-begin
-  if AvailableFilterEdit.Text=lisCEFilter then
-    AvailableFilterEdit.Text:='';
-end;
-
-procedure TInstallPkgSetDialog.AvailableFilterEditExit(Sender: TObject);
-begin
-  if AvailableFilterEdit.Text='' then
-    AvailableFilterEdit.Text:=lisCEFilter;
-end;
-
 procedure TInstallPkgSetDialog.AvailableTreeViewDblClick(Sender: TObject);
 begin
   AddToInstall;
@@ -302,7 +275,6 @@ end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogDestroy(Sender: TObject);
 begin
-  IdleConnected:=false;
   ClearNewInstalledPackages;
   FNewInstalledPackages.Free;
   fAvailablePackages.Free;
@@ -335,46 +307,12 @@ begin
   AddToUninstall;
 end;
 
-procedure TInstallPkgSetDialog.OnIdle(Sender: TObject; var Done: Boolean);
-begin
-  if fAvailablePackagesNeedUpdate then
-    UpdateAvailablePackages(true);
-  IdleConnected:=false;
-end;
-
-procedure TInstallPkgSetDialog.SetIdleConnected(const AValue: boolean);
-begin
-  if FIdleConnected=AValue then exit;
-  FIdleConnected:=AValue;
-  if FIdleConnected then
-    Application.AddOnIdleHandler(@OnIdle)
-  else
-    Application.RemoveOnIdleHandler(@OnIdle);
-end;
-
 procedure TInstallPkgSetDialog.SetOldInstalledPackages(
   const AValue: TPkgDependency);
 begin
   if FOldInstalledPackages=AValue then exit;
   FOldInstalledPackages:=AValue;
   AssignOldInstalledPackagesToList;
-end;
-
-procedure TInstallPkgSetDialog.SetAvailableFilter(const AValue: string);
-var
-  NewValue: String;
-begin
-  NewValue:=AValue;
-  if NewValue=lisCEFilter then NewValue:='';
-  NewValue:=LowerCase(NewValue);
-  if FAvailableFilter=NewValue then exit;
-  FAvailableFilter:=NewValue;
-  if not AvailableFilterEdit.Focused then
-    if AvailableFilter='' then
-      AvailableFilterEdit.Text:=lisCEFilter
-    else
-      AvailableFilterEdit.Text:=AvailableFilter;
-  UpdateAvailablePackages(false);
 end;
 
 procedure TInstallPkgSetDialog.AssignOldInstalledPackagesToList;
@@ -416,62 +354,44 @@ begin
   Result:=false;
 end;
 
+function TInstallPkgSetDialog.ChooseImageIndex(Str: String; Data: TObject): Integer;
+var
+  Pkg: TLazPackageID;
+  APackage: TLazPackage;
+begin
+  Pkg:=TLazPackageID(Data);
+  Result:=ImgIndexPackage;
+  if (Pkg is TLazPackage) then begin
+    APackage:=TLazPackage(Pkg);
+    if APackage.Installed<>pitNope then
+      Result:=ImgIndexUninstallPackage; // is installed and will be uninstalled
+  end;
+end;
+
 procedure TInstallPkgSetDialog.UpdateAvailablePackages(Immediately: boolean);
 var
   ANode: TAVLTreeNode;
-  sl: TStringList;
-  PkgName: String;
   Pkg: TLazPackageID;
-  TVNode: TTreeNode;
-  APackage: TLazPackage;
-  ImgIndex: LongInt;
-  i: Integer;
+  PkgName: String;
 begin
-  if not Immediately then begin
-    if csDestroying in ComponentState then exit;
-    fAvailablePackagesNeedUpdate:=true;
-    IdleConnected:=true;
-    exit;
-  end;
-  fAvailablePackagesNeedUpdate:=false;
   if fAvailablePackages.Count=0 then
     PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
-  sl:=TStringList.Create;
+  AvailableFilterEdit.Data.Clear;
   ANode:=fAvailablePackages.FindLowest;
   while ANode<>nil do begin
     Pkg:=TLazPackageID(ANode.Data);
-    //debugln('TInstallPkgSetDialog.UpdateAvailablePackages ',Pkg.IDAsString,' Pkg.PackageType=',dbgs(ord(Pkg.PackageType)));
     if (not (Pkg is TLazPackage))
     or (TLazPackage(Pkg).PackageType in [lptDesignTime,lptRunAndDesignTime])
     then begin
-      if (not PackageInInstallList(Pkg.Name))
-      and (FitsAvailableFilter(Pkg.Name)) then begin
+      if (not PackageInInstallList(Pkg.Name)) then begin
         PkgName:=Pkg.IDAsString;
-        if (sl.IndexOf(PkgName)<0) then
-          sl.AddObject(PkgName,Pkg);
+        if (AvailableFilterEdit.Data.IndexOf(PkgName)<0) then
+          AvailableFilterEdit.Data.AddObject(PkgName,Pkg);
       end;
     end;
     ANode:=fAvailablePackages.FindSuccessor(ANode);
   end;
-  sl.Sort;
-  AvailableTreeView.BeginUpdate;
-  AvailableTreeView.Items.Clear;
-  for i:=0 to sl.Count-1 do begin
-    TVNode:=AvailableTreeView.Items.Add(nil,sl[i]);
-    Pkg:=TLazPackageID(sl.Objects[i]);
-    ImgIndex:=ImgIndexPackage;
-    if (Pkg is TLazPackage) then begin
-      APackage:=TLazPackage(Pkg);
-      if APackage.Installed<>pitNope then begin
-        // is installed and will be uninstalled
-        ImgIndex:=ImgIndexUninstallPackage;
-      end;
-    end;
-    TVNode.ImageIndex:=ImgIndex;
-    TVNode.SelectedIndex:=ImgIndex;
-  end;
-  AvailableTreeView.EndUpdate;
-  sl.Free;
+  AvailableFilterEdit.Invalidate;
 end;
 
 procedure TInstallPkgSetDialog.UpdateNewInstalledPackages;
@@ -500,20 +420,16 @@ begin
     TVNode:=InstallTreeView.Items.Add(nil,sl[i]);
     NewPackageID:=TLazPackageID(sl.Objects[i]);
     ImgIndex:=ImgIndexInstallPackage;
-    //debugln(['TInstallPkgSetDialog.UpdateNewInstalledPackages ',NewPackageID.IDAsString,' ',DbgSName(NewPackageID)]);
     if NewPackageID is TLazPackage then begin
       APackage:=TLazPackage(NewPackageID);
-      if APackage.Installed<>pitNope then begin
-        // stay installed
-        ImgIndex:=ImgIndexInstalledPackage;
-      end;
+      if APackage.Installed<>pitNope then
+        ImgIndex:=ImgIndexInstalledPackage;    // stay installed
     end;
     TVNode.ImageIndex:=ImgIndex;
     TVNode.SelectedIndex:=ImgIndex;
   end;
   InstallTreeView.EndUpdate;
   sl.Free;
-  //debugln(['TInstallPkgSetDialog.UpdateNewInstalledPackages END ',InstallTreeView.Items.TopLvlCount]);
   UpdateAvailablePackages;
 end;
 
@@ -524,8 +440,7 @@ begin
     fAvailablePackages.Add(APackageID);
 end;
 
-function TInstallPkgSetDialog.DependencyToStr(Dependency: TPkgDependency
-  ): string;
+function TInstallPkgSetDialog.DependencyToStr(Dependency: TPkgDependency): string;
 begin
   Result:='';
   if Dependency=nil then exit;
@@ -896,11 +811,6 @@ begin
     OldPackageID.Free;
     Deletions.Free;
   end;
-end;
-
-function TInstallPkgSetDialog.FitsAvailableFilter(PkgName: string): boolean;
-begin
-  Result:=(AvailableFilter='') or (System.Pos(AvailableFilter,lowercase(PkgName))>0);
 end;
 
 function TInstallPkgSetDialog.GetNewInstalledPackages: TObjectList;

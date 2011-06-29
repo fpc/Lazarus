@@ -1,12 +1,12 @@
 object InstallPkgSetDialog: TInstallPkgSetDialog
   Left = 292
-  Height = 550
+  Height = 562
   Top = 240
-  Width = 572
+  Width = 587
   BorderStyle = bsSizeToolWin
   Caption = 'InstallPkgSetDialog'
-  ClientHeight = 550
-  ClientWidth = 572
+  ClientHeight = 562
+  ClientWidth = 587
   Constraints.MinHeight = 400
   Constraints.MinWidth = 450
   OnCreate = InstallPkgSetDialogCreate
@@ -21,23 +21,23 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     AnchorSideRight.Control = lblMiddle
     AnchorSideBottom.Control = PkgInfoGroupBox
     Left = 6
-    Height = 375
-    Top = 30
-    Width = 277
+    Height = 393
+    Top = 26
+    Width = 284
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
     Caption = 'InstallPkgGroupBox'
-    ClientHeight = 354
-    ClientWidth = 269
+    ClientHeight = 376
+    ClientWidth = 280
     TabOrder = 0
     object ImportButton: TButton
       Left = 6
       Height = 25
-      Top = 292
-      Width = 257
+      Top = 314
+      Width = 268
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'ImportButton'
@@ -47,8 +47,8 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object ExportButton: TButton
       Left = 6
       Height = 25
-      Top = 323
-      Width = 257
+      Top = 345
+      Width = 268
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'ExportButton'
@@ -57,12 +57,12 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     end
     object InstallTreeView: TTreeView
       Left = 6
-      Height = 249
+      Height = 271
       Top = 6
-      Width = 257
+      Width = 268
       Align = alClient
       BorderSpacing.Around = 6
-      DefaultItemHeight = 19
+      DefaultItemHeight = 15
       MultiSelect = True
       ReadOnly = True
       ShowButtons = False
@@ -76,8 +76,8 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object UninstallButton: TBitBtn
       Left = 6
       Height = 25
-      Top = 261
-      Width = 257
+      Top = 283
+      Width = 268
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'UninstallButton'
@@ -92,29 +92,29 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = PkgInfoGroupBox
-    Left = 289
-    Height = 375
-    Top = 30
-    Width = 277
+    Left = 296
+    Height = 393
+    Top = 26
+    Width = 285
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 3
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Caption = 'AvailablePkgGroupBox'
-    ClientHeight = 354
-    ClientWidth = 269
+    ClientHeight = 376
+    ClientWidth = 281
     TabOrder = 1
     object AvailableTreeView: TTreeView
       Left = 6
-      Height = 284
-      Top = 33
-      Width = 257
-      Align = alClient
+      Height = 308
+      Top = 31
+      Width = 269
+      Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      DefaultItemHeight = 19
+      DefaultItemHeight = 15
       MultiSelect = True
       ReadOnly = True
       ShowButtons = False
@@ -128,46 +128,45 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object AddToInstallButton: TBitBtn
       Left = 6
       Height = 25
-      Top = 323
-      Width = 257
+      Top = 345
+      Width = 269
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'AddToInstallButton'
       OnClick = AddToInstallButtonClick
       TabOrder = 1
     end
-    object AvailableFilterEdit: TEdit
+    object AvailableFilterEdit: TListFilterEdit
       Left = 6
-      Height = 27
-      Top = 6
-      Width = 257
-      Align = alTop
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      OnChange = AvailableFilterEditChange
-      OnEnter = AvailableFilterEditEnter
-      OnExit = AvailableFilterEditExit
+      Height = 20
+      Top = 7
+      Width = 247
+      FilteredTreeview = AvailableTreeView
+      ButtonWidth = 23
+      NumGlyphs = 0
+      Anchors = [akTop, akLeft, akRight]
+      Font.Color = clBtnShadow
+      MaxLength = 0
+      ParentFont = False
       TabOrder = 2
-      Text = 'AvailableFilterEdit'
     end
   end
   object PkgInfoGroupBox: TGroupBox
     AnchorSideBottom.Control = BtnPanel
     Left = 0
     Height = 93
-    Top = 411
-    Width = 572
+    Top = 425
+    Width = 587
     Align = alBottom
     Caption = 'PkgInfoGroupBox'
-    ClientHeight = 72
-    ClientWidth = 564
+    ClientHeight = 76
+    ClientWidth = 583
     TabOrder = 2
     object PkgInfoMemo: TMemo
       Left = 6
-      Height = 60
+      Height = 64
       Top = 6
-      Width = 552
+      Width = 571
       Align = alClient
       BorderSpacing.Around = 6
       Lines.Strings = (
@@ -180,20 +179,20 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 46
-    Top = 504
-    Width = 572
+    Height = 44
+    Top = 518
+    Width = 587
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 46
-    ClientWidth = 572
+    ClientHeight = 44
+    ClientWidth = 587
     TabOrder = 3
     object HelpButton: TBitBtn
       Left = 6
-      Height = 34
+      Height = 32
       Top = 6
-      Width = 85
+      Width = 75
       Align = alLeft
       AutoSize = True
       BorderSpacing.Around = 6
@@ -205,10 +204,10 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 0
     end
     object CancelButton: TBitBtn
-      Left = 102
-      Height = 34
+      Left = 201
+      Height = 32
       Top = 6
-      Width = 89
+      Width = 75
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -221,10 +220,10 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 1
     end
     object SaveAndExitButton: TBitBtn
-      Left = 397
-      Height = 34
+      Left = 445
+      Height = 32
       Top = 6
-      Width = 169
+      Width = 136
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -271,10 +270,10 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       TabOrder = 2
     end
     object SaveAndRebuildButton: TBitBtn
-      Left = 197
-      Height = 34
+      Left = 282
+      Height = 32
       Top = 6
-      Width = 194
+      Width = 157
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -323,9 +322,9 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   end
   object NoteLabel: TLabel
     Left = 6
-    Height = 18
+    Height = 14
     Top = 6
-    Width = 560
+    Width = 575
     Align = alTop
     BorderSpacing.Around = 6
     Caption = 'NoteLabel'
@@ -336,9 +335,9 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
     AnchorSideTop.Side = asrCenter
-    Left = 286
+    Left = 293
     Height = 1
-    Top = 275
+    Top = 281
     Width = 1
     AutoSize = False
     ParentColor = False
