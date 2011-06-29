@@ -60,6 +60,9 @@ begin
   statusitem := bar.statusItemWithLength(NSSquareStatusItemLength);
 //  statusitem.bar := bar;
   //statusicon.callback:=TLCLCommonCallback.Create(box, AWinControl);
+
+  { Shows the icon }
+
   statusitem.retain();
   if (ATrayIcon.icon <> nil) and (ATrayIcon.icon.Handle <> 0) then
   begin
@@ -75,7 +78,6 @@ begin
     APrivateTrayIcon.item := nil;
   end;}
 
-  { Shows the icon }
 
 {  if APrivateTrayIcon.item <> nil then Exit(True);
 

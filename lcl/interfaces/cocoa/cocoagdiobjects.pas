@@ -14,6 +14,14 @@ uses
   Classes, Types;
 
 type
+  TCocoaBitmapAlignment = (
+    cbaByte,  // each line starts at byte boundary.
+    cbaWord,  // each line starts at word (16bit) boundary
+    cbaDWord, // each line starts at double word (32bit) boundary
+    cbaQWord, // each line starts at quad word (64bit) boundary
+    cbaDQWord // each line starts at double quad word (128bit) boundary
+  );
+
   TCocoaBitmapType = (
     cbtMono,  // mask or mono bitmap
     cbtGray,  // grayscale bitmap
@@ -24,6 +32,10 @@ type
     cbtBGRA   // color bitmap with alpha channel 8-8-8-8 B-G-R-A (windows compatible)
   );
 
+const
+  cbtMask = cbtMono;
+
+type
   { TCocoaGDIObject }
 
   TCocoaGDIObject = class(TObject)
@@ -91,14 +103,40 @@ type
 
   TCocoaBitmap = class(TCocoaGDIObject)
   private
+    FData: Pointer;
+    FAlignment: TCocoaBitmapAlignment;
+    FFreeData: Boolean;
+    FDataSize: Integer;
+    FBytesPerRow: Integer;
+    FDepth: Byte;
+    FBitsPerPixel: Byte;
+    FWidth: Integer;
+    FHeight: Integer;
     FType: TCocoaBitmapType;
+    // Cocoa information
+    FbitsPerSample: NSInteger;  // How many bits in each color component
+    FsamplesPerPixel: NSInteger;// How many color components
   public
     image: NSImage;
     imagerep: NSBitmapImageRep;
     constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
+      AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
       AData: Pointer; ACopyData: Boolean = True);
+    destructor Destroy; override;
+    procedure SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
+      AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType);
   public
+//    property BitsPerComponent: Integer read GetBitsPerComponent;
     property BitmapType: TCocoaBitmapType read FType;
+//    property BytesPerRow: Integer read FBytesPerRow;
+//    property CGImage: CGImageRef read FCGImage write SetCGImage;
+//    property ColorSpace: CGColorSpaceRef read GetColorSpace;
+    property Data: Pointer read FData;
+    property DataSize: Integer read FDataSize;
+    property Depth: Byte read FDepth;
+//    property Info: CGBitmapInfo read GetInfo;
+    property Width: Integer read FWidth;
+    property Height: Integer read FHeight;
   end;
 
   { TCocoaTextLayout }
@@ -161,7 +199,28 @@ type
 var
   TextLayoutClass  : TCocoaTextLayoutClass = nil;
 
+function CheckDC(dc: HDC): TCocoaContext;
+function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
+function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
+
 implementation
+
+//todo: a better check!
+
+function CheckDC(dc: HDC): TCocoaContext;
+begin
+  Result:=TCocoaContext(dc);
+end;
+
+function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
+begin
+  Result:=TCocoaGDIObject(obj);
+end;
+
+function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
+begin
+  Result := ABitmap <> 0;
+end;
 
 { TCocoaBitmap }
 
@@ -186,57 +245,115 @@ type
 //           ABytesPerRow  - The number of bytes between rows
            ACopyData     - Copy supplied bitmap data (OPTIONAL)
 
-  Creates Carbon bitmap with the specified characteristics
+  Creates Cocoa bitmap with the specified characteristics
  ------------------------------------------------------------------------------}
-constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth,
-  ABitsPerPixel: Integer; AData: Pointer; ACopyData: Boolean);
-var
-  bitsPerSample: NSInteger;  // How many bits in each color component
-  samplesPerPixel: NSInteger;// How many color components
+constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
+  AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
+  AData: Pointer; ACopyData: Boolean);
 begin
-  case ABitsPerPixel of
-    // Mono
-    1:
-    begin
-      bitsPerSample := 1;
-      samplesPerPixel := 1;
-    end;
-    // Gray scale
-    8:
-    begin
-      bitsPerSample := 8;
-      samplesPerPixel := 1;
-    end;
-    // ARGB
-    32:
-    begin
-      bitsPerSample := 8;
-      samplesPerPixel := 4;
-    end;
+  SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel, AAlignment, AType);
+
+  // Copy the image data, if necessary
+  if (AData = nil) or ACopyData then
+  begin
+    System.GetMem(FData, FDataSize);
+    FFreeData := True;
+    if AData <> nil then
+      System.Move(AData^, FData^, FDataSize) // copy data
+    else
+      FillDWord(FData^, FDataSize shr 2, 0); // clear bitmap
+  end
   else
-    // Other RGB
-    bitsPerSample := bitsPerSample div 3;
-    samplesPerPixel := 3;
+  begin
+    FData := AData;
+    FFreeData := False;
   end;
 
   // Create the associated NSImageRep
   imagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
-    @AData, // planes, BitmapDataPlanes
-    AWidth, // width, pixelsWide
-    AHeight,// height, PixelsHigh
-    bitsPerSample,// bitsPerSample, bps
-    samplesPerPixel, // samplesPerPixel, sps
+    @FData, // planes, BitmapDataPlanes
+    FWidth, // width, pixelsWide
+    FHeight,// height, PixelsHigh
+    FbitsPerSample,// bitsPerSample, bps
+    FsamplesPerPixel, // samplesPerPixel, sps
     False, // hasAlpha
     False, // isPlanar
     NSCalibratedRGBColorSpace, // colorSpaceName
     0, // bitmapFormat
     0, // bytesPerRow
-    ABitsPerPixel //bitsPerPixel
+    FBitsPerPixel //bitsPerPixel
     ));
 
   // Create the associated NSImage
   image := NSImage.alloc.initWithSize(NSMakeSize(AWidth, AHeight));
   image.addRepresentation(imagerep);
+end;
+
+destructor TCocoaBitmap.Destroy;
+begin
+  //CGImageRelease(FCGImage);
+  if FFreeData then System.FreeMem(FData);
+
+  inherited Destroy;
+end;
+
+procedure TCocoaBitmap.SetInfo(AWidth, AHeight, ADepth,
+  ABitsPerPixel: Integer; AAlignment: TCocoaBitmapAlignment;
+  AType: TCocoaBitmapType);
+const
+  ALIGNBITS: array[TCocoaBitmapAlignment] of Integer = (0, 1, 3, 7, $F);
+var
+  M: Integer;
+begin
+  if AWidth < 1 then AWidth := 1;
+  if AHeight < 1 then AHeight := 1;
+  FWidth := AWidth;
+  FHeight := AHeight;
+  FDepth := ADepth;
+  FBitsPerPixel := ABitsPerPixel;
+  FType := AType;
+  FAlignment := AAlignment;
+
+  if (FType in [cbtMono, cbtGray]) and (FDepth=0) then
+    FDepth:=FBitsPerPixel;
+
+  FBytesPerRow := ((AWidth * ABitsPerPixel) + 7) shr 3;
+  M := FBytesPerRow and ALIGNBITS[AAlignment];
+  if M <> 0 then Inc(FBytesPerRow, ALIGNBITS[AAlignment] + 1 - M);
+
+  FDataSize := FBytesPerRow * FHeight;
+
+  // Cocoa information
+  case ABitsPerPixel of
+    // Strangely, this might appear
+    0:
+    begin
+      FbitsPerSample := 0;
+      FsamplesPerPixel := 0;
+    end;
+    // Mono
+    1:
+    begin
+      FbitsPerSample := 1;
+      FsamplesPerPixel := 1;
+    end;
+    // Gray scale
+    8:
+    begin
+      FbitsPerSample := 8;
+      FsamplesPerPixel := 1;
+    end;
+    // ARGB
+    32:
+    begin
+      FbitsPerSample := 8;
+      FsamplesPerPixel := 4;
+    end;
+  else
+    // Other RGB
+    FbitsPerSample := ABitsPerPixel div 3;
+    FsamplesPerPixel := 3;
+  end;
 end;
 
 { TCocoaContext }

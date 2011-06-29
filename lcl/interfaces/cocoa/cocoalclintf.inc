@@ -363,8 +363,8 @@ end;  {TCarbonWidgetSet.PromptUser}*)
 
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
-{const
-  ALIGNMAP: array[TRawImageLineEnd] of TCarbonBitmapAlignment = (cbaByte, cbaByte, cbaWord, cbaDWord, cbaQWord, cbaDQWord);}
+const
+  ALIGNMAP: array[TRawImageLineEnd] of TCocoaBitmapAlignment = (cbaByte, cbaByte, cbaWord, cbaDWord, cbaQWord, cbaDQWord);
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
   bmpType: TCocoaBitmapType;
@@ -374,11 +374,11 @@ begin
     debugln(['TCarbonWidgetSet.RawImage_CreateBitmaps TODO Depth=',ADesc.Depth,' alphaprec=',ADesc.AlphaPrec,' byteorder=',ord(ADesc.ByteOrder),' alpha=',ADesc.AlphaShift,' red=',ADesc.RedShift,' green=',adesc.GreenShift,' blue=',adesc.BlueShift]);
     exit;
   end;
-  ABitmap := HBITMAP(TCocoaBitmap.Create(ADesc.Width, ADesc.Height, ADesc.Depth, ADesc.BitsPerPixel, {ALIGNMAP[ADesc.LineEnd], bmpType,} ARawImage.Data));
+  ABitmap := HBITMAP(TCocoaBitmap.Create(ADesc.Width, ADesc.Height, ADesc.Depth, ADesc.BitsPerPixel, ALIGNMAP[ADesc.LineEnd], bmpType, ARawImage.Data));
 
   if ASkipMask or (ADesc.MaskBitsPerPixel = 0)
   then AMask := 0
-  else AMask := HBITMAP(TCocoaBitmap.Create(ADesc.Width, ADesc.Height, 1, ADesc.MaskBitsPerPixel, {ALIGNMAP[ADesc.MaskLineEnd], cbtMask,} ARawImage.Mask));
+  else AMask := HBITMAP(TCocoaBitmap.Create(ADesc.Width, ADesc.Height, 1, ADesc.MaskBitsPerPixel, ALIGNMAP[ADesc.MaskLineEnd], cbtMask, ARawImage.Mask));
 
   Result := True;
 end;
@@ -423,7 +423,7 @@ begin
   end;
 
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: RawImage_FromBitmap
@@ -435,14 +435,14 @@ end;
 
   Creates a raw image from the specified bitmap
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
+function TCocoaWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 begin
   if CheckBitmap(ABitmap, 'RawImage_FromBitmap')
   and ((AMask = 0) or CheckBitmap(AMask, 'RawImage_FromBitmap (mask)'))
-  then Result := RawImage_FromCarbonBitmap(ARawImage, TCarbonBitmap(ABitmap), TCarbonBitmap(AMask), ARect)
+  then Result := RawImage_FromCocoaBitmap(ARawImage, TCocoaBitmap(ABitmap), TCocoaBitmap(AMask), ARect)
   else Result := False;
 end;
-
+(*
 {------------------------------------------------------------------------------
   Function: RawImage_FromDevice
   Params: ARawImage: Image to create

@@ -371,12 +371,30 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.CreateBitmap(Width, Height: Integer;
   Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+var
+  bmpType: TCocoaBitmapType;
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCocoaWidgetSet.CreateBitmap');
   {$ENDIF}
 
-  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, BitCount, BitCount, BitmapBits));
+  // WORKAROUND: force context supported depths
+  if BitmapBits = nil then
+  begin
+    if BitCount = 24 then BitCount := 32;
+    // if BitCount = 1 then BitCount := 8;
+  end;
+
+  case BitCount of
+    1:  bmpType := cbtMono;
+    8:  bmpType := cbtGray;
+    32: bmpType := cbtARGB;
+  else
+    bmpType := cbtRGB;
+  end;
+
+  // winapi Bitmaps are on a word boundary
+  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, BitCount, BitCount, cbaWord, bmpType, BitmapBits));
 end;
 
 function TCocoaWidgetSet.CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;
@@ -428,7 +446,7 @@ begin
     DebugLn('TCocoaWidgetSet.CreateCompatibleBitmap');
   {$ENDIF}
 
-  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, 32, 32, nil));
+  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, 32, 32, cbaDQWord, cbtARGB, nil));
 end;
 
 {------------------------------- SYNC OBJECTS ---------------------------------}

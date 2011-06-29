@@ -22,18 +22,6 @@
  *****************************************************************************
 }
 
-//todo: a better check!
-
-function CheckDC(dc: HDC): TCocoaContext;
-begin
-  Result:=TCocoaContext(dc);
-end;
-
-function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
-begin
-  Result:=TCocoaGDIObject(obj);
-end;
-
 { TCocoaWidgetSet }
 
 {------------------------------------------------------------------------------
@@ -450,7 +438,7 @@ begin
   FillChar(ARawImage, SizeOf(ARawImage), 0);
   RawImage_DescriptionFromCocoaBitmap(ARawImage.Description, ABitmap);
 
-{  ARawImage.DataSize := ABitmap.DataSize;
+  ARawImage.DataSize := ABitmap.DataSize;
   ReAllocMem(ARawImage.Data, ARawImage.DataSize);
   if ARawImage.DataSize > 0 then
     System.Move(ABitmap.Data^, ARawImage.Data^, ARawImage.DataSize);
@@ -472,7 +460,7 @@ begin
   ARawImage.MaskSize := AMask.DataSize;
   ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
   if ARawImage.MaskSize > 0 then
-    System.Move(AMask.Data^, ARawImage.Mask^, ARawImage.MaskSize);}
+    System.Move(AMask.Data^, ARawImage.Mask^, ARawImage.MaskSize);
 end;
 
 function TCocoaWidgetSet.RawImage_DescriptionToBitmapType(
