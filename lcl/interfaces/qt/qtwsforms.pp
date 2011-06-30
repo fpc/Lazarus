@@ -343,7 +343,8 @@ const
   LCLToQtWindowState: array[TWindowState] of QtWindowState = (
  { wsNormal    } QtWindowNoState,
  { wsMinimized } QtWindowMinimized,
- { wsMaximized } QtWindowMaximized
+ { wsMaximized } QtWindowMaximized,
+ { wsFullScreen} QtWindowFullScreen
   );
 var
   Widget: TQtMainWindow;
