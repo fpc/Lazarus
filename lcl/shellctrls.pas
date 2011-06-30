@@ -328,6 +328,8 @@ begin
     PopulateWithBaseFiles()
   else
     PopulateTreeNodeWithFiles(nil, AValue);
+  if Assigned(ShellListView) then
+    ShellListView.Root := FRoot;
 end;
 
 // ToDo: Optimize, now the tree is populated in constructor, SetRoot and SetFileSortType.
