@@ -66,6 +66,11 @@ begin
   RegisterHintWindow;
 end;
 
+procedure THintWindow.WMNCHitTest(var Message: TLMessage);
+begin
+  Message.Result := HTTRANSPARENT;
+end;
+
 procedure THintWindow.DoShowWindow;
 begin
   if (ActiveControl = nil) and (not (csDesigning in ComponentState)) and (Parent=nil) then

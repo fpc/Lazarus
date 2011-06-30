@@ -820,6 +820,7 @@ type
     procedure SetHideInterval(Value : Integer);
   protected
     class procedure WSRegisterClass; override;
+    procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
     procedure DoShowWindow; override;
     procedure UpdateRegion;
   public

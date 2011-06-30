@@ -979,7 +979,7 @@ end;
 procedure TCanvas.Frame3D(var ARect: TRect; TopColor, BottomColor: TColor;
   const FrameWidth: integer);
 var
-  Delta, W, ii : Integer;
+  W, ii : Integer;
 begin
   if ARect.Bottom-ARect.Top > ARect.Right-ARect.Left
   then

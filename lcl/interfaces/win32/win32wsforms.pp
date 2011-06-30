@@ -732,16 +732,6 @@ end;
 
 { TWin32WSHintWindow }
 
-function HintWindowWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
-begin
-  case Msg of
-    WM_NCHITTEST:
-      Result := HTTRANSPARENT;
-    else
-      Result := CustomFormWndProc(Window, Msg, WParam, LParam);
-  end;
-end;
-
 class function TWin32WSHintWindow.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -760,7 +750,6 @@ begin
     Top := LongInt(CW_USEDEFAULT);
     Width := LongInt(CW_USEDEFAULT);
     Height := LongInt(CW_USEDEFAULT);
-    SubClassWndProc := @HintWindowWndProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
