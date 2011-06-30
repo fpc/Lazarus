@@ -262,7 +262,8 @@ const
   ADLWindowStateNames: array[TWindowState] of string = (
     'Normal',
     'Minimized',
-    'Maximized'
+    'Maximized',
+    'Fullscreen'
     );
   ADLHeaderPositionNames: array[TADLHeaderPosition] of string = (
     'auto',
