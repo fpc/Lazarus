@@ -26,13 +26,6 @@
 
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 
-{------------------------------------------------------------------------------
-  function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-
-  nCmdShow:
-    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
-------------------------------------------------------------------------------}
-
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
 begin
   R:=(cl and $FF) / $FF;
@@ -45,8 +38,329 @@ begin
   Result:=(Round(b*$FF) shl 16) or (Round(g*$FF) shl 8) or Round(r*$FF);
 end;
 
-{--------------------------------- WINDOWS ------------------------------------}
+function CocoaCombineMode(fnCombineMode: Integer): TCocoaCombine;
+begin
+  case fnCombineMode of
+    RGN_AND:  Result:=cc_And;
+    RGN_OR:   Result:=cc_Or;
+    RGN_XOR:  Result:=cc_Xor;
+    RGN_DIFF: Result:=cc_Diff;
+  else
+    Result:=cc_Copy;
+  end;
+end;
 
+function TCocoaWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
+  fnCombineMode: Longint): Longint;
+begin
+  Result := LCLType.Error;
+  if (Dest = 0) or (Src1 = 0) or (fnCombineMode<RGN_AND) or (fnCombineMode>RGN_COPY) then Exit;
+  if (fnCombineMode <> RGN_COPY) and (Src2 = 0) then Exit;
+
+  TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src1), cc_Copy);
+
+  if fnCombineMode <> RGN_COPY then
+    TCocoaRegion(Dest). CombineWith(TCocoaRegion(Src2), CocoaCombineMode(fnCombineMode));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreateBitmap
+  Params:  Width      - Bitmap width, in pixels
+           Height     - Bitmap height, in pixels
+           Planes     - Number of color planes
+           BitCount   - Number of bits required to identify a color (TODO)
+           BitmapBits - Pointer to array containing color data (TODO)
+  Returns: A handle to a bitmap
+
+  Creates a bitmap with the specified width, height and color format
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.CreateBitmap(Width, Height: Integer;
+  Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+var
+  bmpType: TCocoaBitmapType;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreateBitmap');
+  {$ENDIF}
+
+  // WORKAROUND: force context supported depths
+  if BitmapBits = nil then
+  begin
+    if BitCount = 24 then BitCount := 32;
+    // if BitCount = 1 then BitCount := 8;
+  end;
+
+  case BitCount of
+    1:  bmpType := cbtMono;
+    8:  bmpType := cbtGray;
+    32: bmpType := cbtARGB;
+  else
+    bmpType := cbtRGB;
+  end;
+
+  // winapi Bitmaps are on a word boundary
+  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, BitCount, BitCount, cbaWord, bmpType, BitmapBits));
+end;
+
+function TCocoaWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
+var
+  b     : TCocoaBrush;
+begin
+  b:=TCocoaBrush.Create;
+  with b do ColorToRGBFloat(LogBrush.lbColor, R, G, B);
+  Result:=HBRUSH(b);
+end;
+
+function TCocoaWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreateCompatibleBitmap');
+  {$ENDIF}
+
+  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, 32, 32, cbaDQWord, cbtARGB, nil));
+end;
+
+//todo:
+//function TCocoaWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+//begin
+//end;
+
+function TCocoaWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
+begin
+  Result:=CreateFontIndirectEx(LogFont, LogFont.lfFaceName);
+end;
+
+function TCocoaWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
+  const LongFontName: string): HFONT;
+var
+  cf  : TCocoaFont;
+begin
+  cf:=TCocoaFont.Create;
+  cf.Size:=LogFont.lfHeight;
+  cf.Name:=LongFontName;
+  if LogFont.lfWeight>FW_NORMAL then Include(cf.Style, cfs_Bold);
+  if LogFont.lfItalic>0 then Include(cf.Style, cfs_Italic);
+  if LogFont.lfUnderline>0 then Include(cf.Style, cfs_Underline);
+  if LogFont.lfStrikeOut>0 then Include(cf.Style, cfs_Strikeout);
+  cf.Antialiased:=logFont.lfQuality>=ANTIALIASED_QUALITY;
+  Result:=HFONT(cf);
+end;
+
+function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
+var
+  ARawImage: TRawImage;
+  Desc: TRawImageDescription absolute ARawimage.Description;
+
+  ImgHandle, ImgMaskHandle: HBitmap;
+  ImagePtr: PRawImage;
+  DevImage: TRawImage;
+  DevDesc: TRawImageDescription;
+  SrcImage, DstImage: TLazIntfImage;
+  W, H: Integer;
+begin
+  Result := nil;
+
+  if not RawImage_FromBitmap(ARawImage, HBITMAP(ABitmap), HBITMAP(AMask)) then
+    Exit;
+
+  ImgMaskHandle := 0;
+
+  W := Desc.Width;
+  if W < 1 then W := 1;
+  H := Desc.Height;
+  if H < 1 then H := 1;
+
+  QueryDescription(DevDesc, [riqfRGB, riqfAlpha], W, H);
+
+  if DevDesc.IsEqual(Desc)
+  then begin
+    // image is compatible, so use it
+    DstImage := nil;
+    ImagePtr := @ARawImage;
+  end
+  else begin
+    // create compatible copy
+    SrcImage := TLazIntfImage.Create(ARawImage, False);
+    DstImage := TLazIntfImage.Create(0,0,[]);
+    DstImage.DataDescription := DevDesc;
+    DstImage.CopyPixels(SrcImage);
+    SrcImage.Free;
+    DstImage.GetRawImage(DevImage);
+    ImagePtr := @DevImage;
+  end;
+
+  try
+    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, True) then Exit;
+
+    Result := TCocoaBitmap(ImgHandle);
+  finally
+    ARawImage.FreeData;
+    DstImage.Free;
+  end;
+end;
+
+function TCocoaWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+var
+  ABitmap: TCocoaBitmap;
+begin
+  Result := 0;
+  if IconInfo^.hbmColor = 0 then Exit;
+
+  ABitmap := Create32BitAlphaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
+  // For now just ignore the mask
+  Result := HICON(IconInfo^.hbmColor);
+
+  if IconInfo^.fIcon then
+  begin
+    Result := HICON(ABitmap)
+  end;
+{  else
+  begin
+    IconInfo^.hbmColor := HBITMAP(ABitmap);
+    IconInfo^.hbmMask := 0;
+    Result := HICON(TCarbonCursor.CreateFromInfo(IconInfo));
+  end;}
+end;
+
+function TCocoaWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
+var
+  p   : TCocoaPen;
+  cl  : DWORD;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreatePenIndirect');
+  {$ENDIF}
+  p:=TCocoaPen.Create;
+  if LogPen.lopnWidth.x>0 then p.Width:=LogPen.lopnWidth.x;
+  p.Style:=LogPen.lopnStyle;
+  if LogPen.lopnColor and $8000000 > 0 then cl:=GetSysColor(LogPen.lopnColor)
+  else cl:=LogPen.lopnColor;
+  //todo:!
+  ColorToRGBFloat(cl, p.R, p.G, p.B);
+  Result := HPEN(p);//TCocoaPen.Create(LogPen));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreatePolygonRgn
+  Params:  Points   - Pointer to array of polygon points
+           NumPts   - Number of points passed
+           FillMode - Filling mode
+  Returns: The new polygonal region
+
+  Creates a new polygonal region from the specified points
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
+  FillMode: integer): HRGN;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreatePolygonRgn NumPts: ' + DbgS(NumPts) +
+      ' FillMode: ' + DbgS(FillMode));
+  {$ENDIF}
+
+  Result := HRGN(TCocoaRegion.Create(Points, NumPts, FillMode=ALTERNATE));
+end;
+
+function TCocoaWidgetSet.CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreateRectRgn R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
+  {$ENDIF}
+
+  Result := HRGN(TCocoaRegion.Create(X1, Y1, X2, Y2));
+end;
+
+function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+var
+  gdi: TCocoaGDIObject;
+begin
+  Result:=True;
+  gdi:=CheckGDIOBJ(GdiObject);
+  if Assigned(gdi) then gdi.Release;
+end;
+
+function TCocoaWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx);
+  if not Result then Exit;
+
+  ctx.Ellipse(x1, y1, x2, y2);
+end;
+
+function TCocoaWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+begin
+  if hWnd<>0
+    then NSObject(hWnd).lclSetEnabled(bEnable)
+    else Result:=False;
+end;
+
+function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+  Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
+var
+  fontManager : NSFontManager;
+  arr         : NSArray;
+  fname       : NSString;
+  i           : Integer;
+
+  ELogFont    : TEnumLogFontEx;
+  Metric      : TNewTextMetricEx;
+  FontName    : AnsiString;
+begin
+  Result:=0;
+  if not Assigned(Callback) then Exit;
+  fontManager:=NSFontManager.sharedFontManager;
+  arr:=fontManager.availableFontFamilies;
+  for i:=0 to arr.count-1 do begin
+    fname:=NSString(arr.objectAtIndex(i));
+    try
+      FontName:=NSStringToString(fname);
+      FillChar(ELogFont, SizeOf(ELogFont), #0);
+      FillChar(Metric, SizeOf(Metric), #0);
+      ELogFont.elfLogFont.lfFaceName := FontName;
+      ELogFont.elfFullName := FontName;
+      //todo: read the data from all fonts of the fontfamily
+      Result:=CallBack(ELogFont, Metric, TRUETYPE_FONTTYPE, lparam);
+      if Result=0 then Break;
+    except
+      Break;
+    end;
+  end;
+  arr.release;
+end;
+
+function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx);
+  if not Assigned(ctx) then Exit;
+  ctx.TextOut(X,Y, Str, Count, Dx);
+end;
+
+function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
+var
+  ctx : TCocoaContext;
+  br  : TCocoaGDIObject;
+begin
+  ctx:=CheckDC(DC);
+  br:=CheckGDIOBJ(Brush);
+  Result:=Assigned(ctx) and (not Assigned(br) or (br is TCocoaBrush));
+  if not Result then Exit;
+
+  with Rect do
+    ctx.Rectangle(Left, Top, Right, Bottom, True, TCocoaBrush(br));
+end;
+
+{------------------------------------------------------------------------------
+  function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+
+  nCmdShow:
+    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
+------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
   {$ifdef VerboseCocoaWinAPI}
@@ -93,13 +407,6 @@ function TCocoaWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
 begin
   if Handle<>0
     then Result:=NSObject(Handle).lclIsEnabled
-    else Result:=False;
-end;
-
-function TCocoaWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
-begin
-  if hWnd<>0
-    then NSObject(hWnd).lclSetEnabled(bEnable)
     else Result:=False;
 end;
 
@@ -286,169 +593,6 @@ begin
   Result:=True;
 end;
 
-function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
-var
-  ctx : TCocoaContext;
-  br  : TCocoaGDIObject;
-begin
-  ctx:=CheckDC(DC);
-  br:=CheckGDIOBJ(Brush);
-  Result:=Assigned(ctx) and (not Assigned(br) or (br is TCocoaBrush));
-  if not Result then Exit;
-
-  with Rect do
-    ctx.Rectangle(Left, Top, Right, Bottom, True, TCocoaBrush(br));
-end;
-
-function TCocoaWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
-var
-  ctx : TCocoaContext;
-begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Result then Exit;
-
-  ctx.Ellipse(x1, y1, x2, y2);
-end;
-
-{----------------------------------- REGION -----------------------------------}
-
-{------------------------------------------------------------------------------
-  Method:  CreatePolygonRgn
-  Params:  Points   - Pointer to array of polygon points
-           NumPts   - Number of points passed
-           FillMode - Filling mode
-  Returns: The new polygonal region
-
-  Creates a new polygonal region from the specified points
- ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
-  FillMode: integer): HRGN;
-begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.CreatePolygonRgn NumPts: ' + DbgS(NumPts) +
-      ' FillMode: ' + DbgS(FillMode));
-  {$ENDIF}
-
-  Result := HRGN(TCocoaRegion.Create(Points, NumPts, FillMode=ALTERNATE));
-end;
-
-function CocoaCombineMode(fnCombineMode: Integer): TCocoaCombine;
-begin
-  case fnCombineMode of
-    RGN_AND:  Result:=cc_And;
-    RGN_OR:   Result:=cc_Or;
-    RGN_XOR:  Result:=cc_Xor;
-    RGN_DIFF: Result:=cc_Diff;
-  else
-    Result:=cc_Copy;
-  end;
-end;
-
-function TCocoaWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
-  fnCombineMode: Longint): Longint;
-begin
-  Result := LCLType.Error;
-  if (Dest = 0) or (Src1 = 0) or (fnCombineMode<RGN_AND) or (fnCombineMode>RGN_COPY) then Exit;
-  if (fnCombineMode <> RGN_COPY) and (Src2 = 0) then Exit;
-
-  TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src1), cc_Copy);
-
-  if fnCombineMode <> RGN_COPY then
-    TCocoaRegion(Dest). CombineWith(TCocoaRegion(Src2), CocoaCombineMode(fnCombineMode));
-end;
-
-{------------------------------------------------------------------------------
-  Method:  CreateBitmap
-  Params:  Width      - Bitmap width, in pixels
-           Height     - Bitmap height, in pixels
-           Planes     - Number of color planes
-           BitCount   - Number of bits required to identify a color (TODO)
-           BitmapBits - Pointer to array containing color data (TODO)
-  Returns: A handle to a bitmap
-
-  Creates a bitmap with the specified width, height and color format
- ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.CreateBitmap(Width, Height: Integer;
-  Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
-var
-  bmpType: TCocoaBitmapType;
-begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.CreateBitmap');
-  {$ENDIF}
-
-  // WORKAROUND: force context supported depths
-  if BitmapBits = nil then
-  begin
-    if BitCount = 24 then BitCount := 32;
-    // if BitCount = 1 then BitCount := 8;
-  end;
-
-  case BitCount of
-    1:  bmpType := cbtMono;
-    8:  bmpType := cbtGray;
-    32: bmpType := cbtARGB;
-  else
-    bmpType := cbtRGB;
-  end;
-
-  // winapi Bitmaps are on a word boundary
-  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, BitCount, BitCount, cbaWord, bmpType, BitmapBits));
-end;
-
-function TCocoaWidgetSet.CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;
-begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.CreateRectRgn R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
-  {$ENDIF}
-
-  Result := HRGN(TCocoaRegion.Create(X1, Y1, X2, Y2));
-end;
-
-//todo:
-//function TCocoaWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
-//begin
-//end;
-
-{---------------------------- PEN AND BRUSH -----------------------------------}
-
-function TCocoaWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
-var
-  p   : TCocoaPen;
-  cl  : DWORD;
-begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.CreatePenIndirect');
-  {$ENDIF}
-  p:=TCocoaPen.Create;
-  if LogPen.lopnWidth.x>0 then p.Width:=LogPen.lopnWidth.x;
-  p.Style:=LogPen.lopnStyle;
-  if LogPen.lopnColor and $8000000 > 0 then cl:=GetSysColor(LogPen.lopnColor)
-  else cl:=LogPen.lopnColor;
-  //todo:!
-  ColorToRGBFloat(cl, p.R, p.G, p.B);
-  Result := HPEN(p);//TCocoaPen.Create(LogPen));
-end;
-
-function TCocoaWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
-var
-  b     : TCocoaBrush;
-begin
-  b:=TCocoaBrush.Create;
-  with b do ColorToRGBFloat(LogBrush.lbColor, R, G, B);
-  Result:=HBRUSH(b);
-end;
-
-function TCocoaWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
-begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.CreateCompatibleBitmap');
-  {$ENDIF}
-
-  Result := HBITMAP(TCocoaBitmap.Create(Width, Height, 32, 32, cbaDQWord, cbtARGB, nil));
-end;
-
 {------------------------------- SYNC OBJECTS ---------------------------------}
 
 procedure TCocoaWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
@@ -506,15 +650,6 @@ begin
   {$IFDEF VerboseWinAPI}
     DebugLn('[TCocoaWidgetSet.GetDC] hWnd: %x Result: %x', [hWnd, Result]);
   {$ENDIF}
-end;
-
-function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
-var
-  gdi: TCocoaGDIObject;
-begin
-  Result:=True;
-  gdi:=CheckGDIOBJ(GdiObject);
-  if Assigned(gdi) then gdi.Release;
 end;
 
 function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
@@ -619,114 +754,6 @@ begin
 end;
 
 {------------------------------- FONT AND TEXT --------------------------------}
-
-function TCocoaWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
-begin
-  Result:=CreateFontIndirectEx(LogFont, LogFont.lfFaceName);
-end;
-
-function TCocoaWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
-  const LongFontName: string): HFONT;
-var
-  cf  : TCocoaFont;
-begin
-  cf:=TCocoaFont.Create;
-  cf.Size:=LogFont.lfHeight;
-  cf.Name:=LongFontName;
-  if LogFont.lfWeight>FW_NORMAL then Include(cf.Style, cfs_Bold);
-  if LogFont.lfItalic>0 then Include(cf.Style, cfs_Italic);
-  if LogFont.lfUnderline>0 then Include(cf.Style, cfs_Underline);
-  if LogFont.lfStrikeOut>0 then Include(cf.Style, cfs_Strikeout);
-  cf.Antialiased:=logFont.lfQuality>=ANTIALIASED_QUALITY;
-  Result:=HFONT(cf);
-end;
-
-function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
-var
-  ARawImage: TRawImage;
-  Desc: TRawImageDescription absolute ARawimage.Description;
-
-  ImgHandle, ImgMaskHandle: HBitmap;
-  ImagePtr: PRawImage;
-  DevImage: TRawImage;
-  DevDesc: TRawImageDescription;
-  SrcImage, DstImage: TLazIntfImage;
-  W, H: Integer;
-begin
-  Result := nil;
-
-  if not RawImage_FromBitmap(ARawImage, HBITMAP(ABitmap), HBITMAP(AMask)) then
-    Exit;
-
-  ImgMaskHandle := 0;
-
-  W := Desc.Width;
-  if W < 1 then W := 1;
-  H := Desc.Height;
-  if H < 1 then H := 1;
-
-  QueryDescription(DevDesc, [riqfRGB, riqfAlpha], W, H);
-
-  if DevDesc.IsEqual(Desc)
-  then begin
-    // image is compatible, so use it
-    DstImage := nil;
-    ImagePtr := @ARawImage;
-  end
-  else begin
-    // create compatible copy
-    SrcImage := TLazIntfImage.Create(ARawImage, False);
-    DstImage := TLazIntfImage.Create(0,0,[]);
-    DstImage.DataDescription := DevDesc;
-    DstImage.CopyPixels(SrcImage);
-    SrcImage.Free;
-    DstImage.GetRawImage(DevImage);
-    ImagePtr := @DevImage;
-  end;
-
-  try
-    if not RawImage_CreateBitmaps(ImagePtr^, ImgHandle, ImgMaskHandle, True) then Exit;
-
-    Result := TCocoaBitmap(ImgHandle);
-  finally
-    ARawImage.FreeData;
-    DstImage.Free;
-  end;
-end;
-
-function TCocoaWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
-var
-  ABitmap: TCocoaBitmap;
-begin
-  Result := 0;
-  if IconInfo^.hbmColor = 0 then Exit;
-
-  ABitmap := Create32BitAlphaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
-  // For now just ignore the mask
-  Result := HICON(IconInfo^.hbmColor);
-
-  if IconInfo^.fIcon then
-  begin
-    Result := HICON(ABitmap)
-  end;
-{  else
-  begin
-    IconInfo^.hbmColor := HBITMAP(ABitmap);
-    IconInfo^.hbmMask := 0;
-    Result := HICON(TCarbonCursor.CreateFromInfo(IconInfo));
-  end;}
-end;
-
-function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
-  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-var
-  ctx : TCocoaContext;
-begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Assigned(ctx) then Exit;
-  ctx.TextOut(X,Y, Str, Count, Dx);
-end;
 
 function TCocoaWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 var
@@ -866,40 +893,6 @@ end;
 function TCocoaWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
-end;
-
-function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
-  Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
-var
-  fontManager : NSFontManager;
-  arr         : NSArray;
-  fname       : NSString;
-  i           : Integer;
-
-  ELogFont    : TEnumLogFontEx;
-  Metric      : TNewTextMetricEx;
-  FontName    : AnsiString;
-begin
-  Result:=0;
-  if not Assigned(Callback) then Exit;
-  fontManager:=NSFontManager.sharedFontManager;
-  arr:=fontManager.availableFontFamilies;
-  for i:=0 to arr.count-1 do begin
-    fname:=NSString(arr.objectAtIndex(i));
-    try
-      FontName:=NSStringToString(fname);
-      FillChar(ELogFont, SizeOf(ELogFont), #0);
-      FillChar(Metric, SizeOf(Metric), #0);
-      ELogFont.elfLogFont.lfFaceName := FontName;
-      ELogFont.elfFullName := FontName;
-      //todo: read the data from all fonts of the fontfamily
-      Result:=CallBack(ELogFont, Metric, TRUETYPE_FONTTYPE, lparam);
-      if Result=0 then Break;
-    except
-      Break;
-    end;
-  end;
-  arr.release;
 end;
 
 function TCocoaWidgetSet.SaveDC(DC: HDC): Integer;

@@ -191,7 +191,3 @@ function UpdateWindow(Handle: HWND): Boolean; override;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 
-
-
-
-
