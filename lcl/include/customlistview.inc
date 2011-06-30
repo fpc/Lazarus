@@ -702,6 +702,8 @@ var
 begin
   if FSortType = stNone then exit;
   if FListItems.Count < 2 then Exit;
+  if lffPreparingSorting in FFlags then
+    exit;
 
   if HandleAllocated then
   begin
@@ -770,6 +772,20 @@ begin
   FreeAndNil(FOwnerDataItem);
   FreeAndNil(FListItems);
   FreeAndNil(FIconOptions);
+end;
+
+function TCustomListView.AlphaSort: Boolean;
+begin
+  Result := False;
+  Include(FFlags, lffPreparingSorting);
+  // always reset direction, so sort triggers later !
+  SortDirection := sdDescending;
+  SortType := stText;
+  SortColumn := 0;
+  Exclude(FFlags, lffPreparingSorting);
+  // now trigger sort when all rules are applied
+  SortDirection := sdAscending;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

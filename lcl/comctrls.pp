@@ -1013,7 +1013,8 @@ type
   TListViewFlag = (
     lffSelectedValid,
     lffItemsMoving,
-    lffItemsSorting
+    lffItemsSorting,
+    lffPreparingSorting // do not trigger when we are setting more rules
     );
   TListViewFlags = set of TListViewFlag;
 
@@ -1176,6 +1177,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function AlphaSort: Boolean; // always sorts column 0 in sdAscending order
     procedure BeginUpdate;
     procedure Clear;
     procedure EndUpdate;
