@@ -436,9 +436,40 @@ begin
       FCacheItem := Result;
       Exit;
     end;
-  end;          
-  
+  end;
   Result := nil;
+end;
+
+function TListItems.FindData(StartIndex: Integer; Value: Pointer; Inclusive,
+  Wrap: Boolean): TListItem;
+var
+  AnItem: TListItem;
+  i: Integer;
+begin
+  Result := nil;
+  if Inclusive then Dec(StartIndex);
+  for i := StartIndex + 1 to Count - 1 do
+  begin
+    AnItem := Item[i];
+    if (AnItem <> nil) and (AnItem.Data = Value) then
+    begin
+      Result := AnItem;
+      exit;
+    end;
+  end;
+  if Wrap then
+  begin
+    if Inclusive then Inc(StartIndex);
+    for i := 0 to StartIndex - 1 do
+    begin
+      AnItem := Item[i];
+      if (AnItem <> nil) and (AnItem.Data = Value) then
+      begin
+        Result := AnItem;
+        exit;
+      end;
+    end;
+  end;
 end;
 
 function TListItems.GetEnumerator: TListItemsEnumerator;

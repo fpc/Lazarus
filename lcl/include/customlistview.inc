@@ -863,6 +863,12 @@ begin
   Result := FListItems.FindCaption(StartIndex, Value, Partial, Inclusive, Wrap);
 end;
 
+function TCustomListView.FindData(StartIndex: Integer; Value: Pointer;
+  Inclusive, Wrap: Boolean): TListItem;
+begin
+  Result := FListItems.FindData(StartIndex, Value, Inclusive, Wrap);
+end;
+
 function TCustomListView.GetBoundingRect: TRect;
 begin
   if not HandleAllocated
