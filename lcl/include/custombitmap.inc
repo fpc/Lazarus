@@ -45,6 +45,12 @@ begin
   inherited Clear;
 end;
 
+procedure TCustomBitmap.FreeImage;
+begin
+  inherited FreeImage;
+  TSharedCustomBitmap(FSharedImage).FreeImage;
+end;
+
 constructor TCustomBitmap.Create;
 begin
   inherited Create;

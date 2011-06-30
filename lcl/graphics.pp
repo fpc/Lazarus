@@ -1299,7 +1299,7 @@ type
     procedure Clear; override;
     procedure BeginUpdate(ACanvasOnly: Boolean = False);
     procedure EndUpdate(AStreamIsValid: Boolean = False);
-    procedure FreeImage;
+    procedure FreeImage; virtual;
     function BitmapHandleAllocated: boolean; virtual; abstract;
     function MaskHandleAllocated: boolean; virtual; abstract;
     function PaletteAllocated: boolean; virtual; abstract;
@@ -1398,8 +1398,8 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-
     procedure Clear; override;
+    procedure FreeImage; override;
     function GetResourceType: TResourceType; override;
     function LazarusResourceTypeValid(const ResourceType: string): Boolean; override;
     function BitmapHandleAllocated: boolean; override;
