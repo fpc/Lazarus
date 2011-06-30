@@ -5611,6 +5611,7 @@ begin
       SW_MINIMIZE: Widget.setWindowState(QtWindowMinimized);
       SW_SHOWMINIMIZED: Widget.ShowMinimized;
       SW_SHOWMAXIMIZED: Widget.ShowMaximized;
+      SW_SHOWFULLSCREEN: Widget.ShowFullScreen;
       SW_HIDE: Widget.setVisible(False);
     end;
     Result := True;

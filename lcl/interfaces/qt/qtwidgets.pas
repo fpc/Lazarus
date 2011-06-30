@@ -208,6 +208,7 @@ type
     procedure ShowNormal;
     procedure ShowMinimized;
     procedure ShowMaximized;
+    procedure ShowFullScreen;
     function getActionByIndex(AIndex: Integer): QActionH;
     function getAutoFillBackground: Boolean;
     function getClientBounds: TRect; virtual;
@@ -237,6 +238,7 @@ type
     function IsActiveWindow: Boolean;
     function isMinimized: Boolean;
     function isMaximized: Boolean;
+    function isFullScreen: Boolean;
     function IsWindow: Boolean;
     procedure lowerWidget; virtual;
     procedure move(ANewLeft, ANewTop: Integer); virtual;
@@ -3556,6 +3558,11 @@ begin
   QWidget_showMaximized(Widget);
 end;
 
+procedure TQtWidget.ShowFullScreen;
+begin
+  QWidget_showFullScreen(Widget);
+end;
+
 function TQtWidget.getActionByIndex(AIndex: Integer): QActionH;
 var
   ActionList: TPtrIntArray;
@@ -3729,6 +3736,11 @@ end;
 function TQtWidget.isMaximized: Boolean;
 begin
   Result := QWidget_isMaximized(Widget);
+end;
+
+function TQtWidget.isFullScreen: Boolean;
+begin
+  Result := QWidget_isFullScreen(Widget);
 end;
 
 function TQtWidget.IsWindow: Boolean;
