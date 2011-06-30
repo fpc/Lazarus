@@ -6487,7 +6487,7 @@ const
   BufSize = 4096; // allocating mem in 4k chunks helps many mem managers
 
   ShowCommands: array[TWindowState] of Integer =
-    (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED);
+    (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED, SW_SHOWFULLSCREEN);
 
 var
   TxtLFMStream, BinStream: TExtMemoryStream;
