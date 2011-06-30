@@ -66,7 +66,7 @@ type
     poOwnerFormCenter  // center form on owner form (depends on DefaultMonitor)
     );
 
-  TWindowState = (wsNormal, wsMinimized, wsMaximized);
+  TWindowState = (wsNormal, wsMinimized, wsMaximized, wsFullScreen);
   TCloseAction = (caNone, caHide, caFree, caMinimize);
 
   { Hint actions }

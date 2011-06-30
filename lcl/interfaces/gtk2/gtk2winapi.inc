@@ -9043,6 +9043,12 @@ begin
     else
       gtk_window_maximize(GtkWindow);
 
+  SW_SHOWFULLSCREEN:
+    if B then
+      gtk_widget_show(PGtkWidget(GtkWindow))
+    else
+      gtk_window_fullscreen(GtkWindow);
+
   end;
 
   Result := True;

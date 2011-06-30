@@ -975,6 +975,7 @@ const
   SW_RESTORE        = 9;
   SW_SHOWDEFAULT    = 10;
   SW_MAX            = 10;
+  SW_SHOWFULLSCREEN = 11; // LCL Addition
 
 //==============================================
 // Redrawindow() flags

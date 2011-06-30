@@ -1707,7 +1707,7 @@ end;
 procedure TCustomForm.SetWindowState(Value : TWindowState);
 const
   ShowCommands: array[TWindowState] of Integer =
-    (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED);
+    (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED, SW_SHOWFULLSCREEN);
 begin
   if FWindowState <> Value then
   begin
