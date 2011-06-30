@@ -655,12 +655,14 @@ begin
   n := Source.Count;
   SetLength(FX, n);
   SetLength(FY, n);
-  SetLength(FCoeff, n);
+  FCoeff := nil;
   for i := 0 to n - 1 do
     with Source[i]^ do begin
       FX[i] := X;
       FY[i] := Y;
+      if (i > 0) and (FX[i - 1] >= X) then exit;
     end;
+  SetLength(FCoeff, n);
   ipfisn(n - 1, FX[0], FY[0], FCoeff[0], i);
   if i > 1 then
     FCoeff := nil;
