@@ -38,7 +38,6 @@ type
     Label5: TLabel;
     PaintBox: TPaintBox;
     procedure BrushChange(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
     procedure cbAntialiasingChange(Sender: TObject);
     procedure FigureComboChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -56,15 +55,12 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses
   TypInfo;
 
 { TForm1 }
-
-procedure TForm1.Button1Click(Sender: TObject);
-begin
-  Monitor;
-end;
 
 procedure TForm1.cbAntialiasingChange(Sender: TObject);
 const
@@ -209,9 +205,6 @@ begin
   PaintBox.Canvas.Pen.SetPattern(Dashes);
   PaintBox.Invalidate;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 
