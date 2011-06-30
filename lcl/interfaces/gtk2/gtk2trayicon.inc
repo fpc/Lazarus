@@ -313,6 +313,16 @@ begin
   if Assigned(vwsTrayIcon.PopUpMenu) then
     vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 end;
+
+function button_release_cb_statusicon(status_icon: PGtkStatusIcon;
+  event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
+var
+  vwsTrayIcon: TCustomTrayIcon absolute user_data;
+begin
+  if Assigned(vwsTrayIcon.OnClick) then
+    vwsTrayIcon.OnClick(vwsTrayIcon);
+end;
+
 {$endif}
 
 constructor TGtk2TrayIconHandle.Create(const wsTrayIcon: TCustomTrayIcon);
@@ -330,6 +340,7 @@ begin
 
     g_signal_connect(FStatusIcon, 'activate', TGCallback(@activate_cb_statusicon), fTrayIcon);
     g_signal_connect(FStatusIcon, 'popup-menu', TGCallback(@popup_cb_statusicon), fTrayIcon);
+    g_signal_connect(FStatusIcon, 'button-release-event', TGCallback(@button_release_cb_statusicon), fTrayIcon);
   end
   else
 {$endif}
