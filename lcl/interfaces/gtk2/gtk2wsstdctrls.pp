@@ -2442,7 +2442,6 @@ var
   Adjustment: PGtkAdjustment = nil;
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
-  State: PByte;
 begin
   with TScrollBar(AWinControl) do
   begin
@@ -2463,11 +2462,6 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
-
-  WidgetInfo^.DataOwner:=True;
-  State:=New(PByte);
-  WidgetInfo^.UserData:=State;
-  State^:=0;
 
   Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);

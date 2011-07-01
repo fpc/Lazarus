@@ -6208,7 +6208,7 @@ begin
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
 
-  if not InUpdate then
+  if not InUpdate and not getTracking then
     DeliverMessage(LMScroll);
 
   b := p1 = getMax;
