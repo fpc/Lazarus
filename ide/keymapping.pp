@@ -2676,6 +2676,7 @@ begin
   AddDefault(C, 'Remove unused units', srkmecRemoveUnusedUnits, ecRemoveUnusedUnits);
   AddDefault(C, 'Add unit to uses section', lisUseProjectUnit, ecUseProjectUnit);
   AddDefault(C, 'Find overloads', srkmecFindOverloads, ecFindOverloads);
+  AddDefault(C, 'Make resource string', srkmecMakeResourceString, ecMakeResourceString);
 
   // Template editing
   C:=Categories[AddCategory('Edit Template', srkmCatTemplateEdit, IDECmdScopeSrcEditOnlyTmplEdit)];
@@ -2879,7 +2880,6 @@ begin
   AddDefault(C, 'Build Lazarus', lisMenuBuildLazarus, ecBuildLazarus);
   AddDefault(C, 'Configure "Build Lazarus"',
     Format(lisConfigureBuildLazarus, ['"', '"']), ecConfigBuildLazarus);
-  AddDefault(C, 'Make resource string', srkmecMakeResourceString, ecMakeResourceString);
   AddDefault(C, 'Diff editor files', lisKMDiffEditorFiles, ecDiff);
   AddDefault(C, 'Convert DFM file to LFM', lisKMConvertDFMFileToLFM, ecConvertDFM2LFM);
   AddDefault(C, 'Convert Delphi unit to Lazarus unit',
