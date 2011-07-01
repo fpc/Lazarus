@@ -885,7 +885,13 @@ var
 begin
   if FDragImageList = nil then
   begin
-    FDragImageList := QWidget_create(nil, QtSubWindow or QtFramelessWindowHint or QtWindowStaysOnTopHint);
+    FDragImageList := QWidget_create(nil,
+      QtSubWindow or QtFramelessWindowHint or QtWindowStaysOnTopHint);
+
+    // do not set focus and do not activate this widget
+    QWidget_setFocusPolicy(FDragImageList, QtNoFocus);
+    QWidget_setAttribute(FDragImageList, QtWA_ShowWithoutActivating, True);
+
     QImage_size(AImage, @ASize);
     QWidget_setFixedSize(FDragImageList, @ASize);
     APixmap := QPixmap_create();
