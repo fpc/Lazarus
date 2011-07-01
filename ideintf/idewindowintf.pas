@@ -1298,7 +1298,7 @@ begin
     else
       aRight:=StrToIntDef(Right,0);
     if aRight<0 then
-      aRight:=ScreenR.Right-aRight // relative to right of screen
+      aRight:=ScreenR.Right+aRight // relative to right of screen
     else if (Right<>'') and (Right[1]='+') then
       inc(aRight,DefBounds.Left) // relative to Left
     else
@@ -1320,7 +1320,7 @@ begin
     else
       aBottom:=StrToIntDef(Bottom,0);
     if aBottom<0 then
-      aBottom:=ScreenR.Bottom-aBottom // relative to bottom of screen
+      aBottom:=ScreenR.Bottom+aBottom // relative to bottom of screen
     else if (Bottom<>'') and (Bottom[1]='+') then
       inc(aBottom,DefBounds.Top) // relative to Top
     else
