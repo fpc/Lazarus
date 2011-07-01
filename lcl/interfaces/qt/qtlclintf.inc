@@ -634,6 +634,7 @@ var
   WorkImage, WorkMask: TQtImage;
   R: TRect;
   Width, Height: Integer;
+  InvertPixels: Boolean;
 begin
   Result := False;
   
@@ -681,15 +682,34 @@ begin
   if ARawImage.DataSize > 0 then
     Move(WorkImage.bits^, ARawImage.Data^, ARawImage.DataSize);
 
-  if WorkMask <> nil
-  then begin
+  if WorkMask <> nil then
+  begin
     Desc.MaskLineEnd := rileDWordBoundary;
     Desc.MaskBitOrder := riboReversedBits;
     Desc.MaskBitsPerPixel := 1;
     ARawImage.MaskSize := WorkMask.numBytes;
     ReAllocMem(ARawImage.Mask, ARawImage.MaskSize);
     if ARawImage.MaskSize > 0 then
+    begin
+      InvertPixels := False;
+      if WorkImage <> nil then
+      begin
+        InvertPixels :=
+          (
+          not QImage_hasAlphaChannel(WorkMask.Handle) and
+          not QImage_hasAlphaChannel(WorkImage.Handle) and
+          // invert only if WorkImage is RGB32 fmt
+          (WorkImage.getFormat = QImageFormat_RGB32) and
+          // both are 32b imgs
+          (QImage_numColors(WorkImage.Handle) = 0) and
+          (QImage_numColors(WorkMask.Handle) = 0));
+      end;
+      if InvertPixels then
+        WorkMask.invertPixels(QImageInvertRGB);
       Move(WorkMask.bits^, ARawImage.Mask^, ARawImage.MaskSize);
+      if InvertPixels then
+        WorkMask.invertPixels(QImageInvertRGB);
+    end;
   end;
   
   if WorkImage <> Image then
