@@ -10281,11 +10281,11 @@ begin
                      @FindContext.Tool.Src[FindContext.Node.Parent.Parent.StartPos]);
 
         ctnEnumerationType:
-          if (FindContext.Node.Parent.Parent<>nil)
-          and (FindContext.Node.Parent.Parent.Desc=ctnTypeDefinition)
+          if (FindContext.Node.Parent<>nil)
+          and (FindContext.Node.Parent.Desc=ctnTypeDefinition)
           then
             Result:=GetIdentifier(
-                     @FindContext.Tool.Src[FindContext.Node.Parent.Parent.StartPos]);
+                     @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
 
         ctnProperty,ctnGlobalProperty:
           begin

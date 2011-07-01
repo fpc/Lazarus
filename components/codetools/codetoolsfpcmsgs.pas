@@ -37,6 +37,8 @@ unit CodeToolsFPCMsgs;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE VerboseFPCMsgFile}
+
 interface
 
 uses
@@ -242,7 +244,7 @@ begin
     debugln(['TFPCMsgFile.CreateArray WARNING: MaxID ',MaxID,' too high: ',Item.Msg]);
     exit;
   end;
-  debugln(['TFPCMsgFile.CreateArray Max=',MaxID]);
+  //debugln(['TFPCMsgFile.CreateArray Max=',MaxID]);
   SetLength(fItemById,MaxID+1);
   for i:=0 to length(fItemById)-1 do fItemById[i]:=nil;
   for i:=0 to FItems.Count-1 do begin
@@ -274,7 +276,9 @@ procedure TFPCMsgFile.LoadFromFile(const Filename: string);
 var
   sl: TStringList;
 begin
+  {$IFDEF VerboseFPCMsgFile}
   debugln(['TFPCMsgFile.LoadFromFile START ',Filename]);
+  {$ENDIF}
   sl:=TStringList.Create;
   try
     sl.LoadFromFile(UTF8ToSys(Filename));
@@ -329,37 +333,51 @@ procedure TFPCMsgFile.LoadFromList(List: TStrings);
     Result:=nil;
     p:=PChar(s);
     if not ReadTilChar(p,'_',Part) then begin
+      {$IFDEF VerboseFPCMsgFile}
       debugln(['TFPCMsgFile.LoadFromList invalid <part>, line ',Line,': "',s,'"']);
+      {$ENDIF}
       exit;
     end;
     if (Part='option') or (Part='wpo') then
       Typ:=''
     else if not ReadTilChar(p,'_',Typ) then begin
+      {$IFDEF VerboseFPCMsgFile}
       debugln(['TFPCMsgFile.LoadFromList invalid <type>, line ',Line,': "',s,'"']);
+      {$ENDIF}
       exit;
     end else if (length(Typ)<>1)
       or (not (Typ[1] in ['f','e','w','n','h','i','l','u','t','c','d','x','o']))
     then begin
+      {$IFDEF VerboseFPCMsgFile}
       debugln(['TFPCMsgFile.LoadFromList invalid <type>, line ',Line,': "',s,'"']);
+      {$ENDIF}
       exit;
     end;
     if not ReadTilChar(p,'=',TxtID) then begin
+      {$IFDEF VerboseFPCMsgFile}
       debugln(['TFPCMsgFile.LoadFromList invalid <textidentifier>, line ',Line,': "',s,'"']);
+      {$ENDIF}
       exit;
     end;
     if not ReadTilChar(p,'_',IDStr) then begin
+      {$IFDEF VerboseFPCMsgFile}
       debugln(['TFPCMsgFile.LoadFromList invalid id, line ',Line,': "',s,'"']);
+      {$ENDIF}
       exit;
     end;
     ID:=StrToIntDef(IDStr,-1);
     if ID<0 then begin
+      {$IFDEF VerboseFPCMsgFile}
       debugln(['TFPCMsgFile.LoadFromList invalid id, line ',Line,': "',s,'"']);
+      {$ENDIF}
       exit;
     end;
     IdTyp:='';
     if p<>'[' then begin
       if not ReadTilChar(p,'_',IdTyp) then begin
+        {$IFDEF VerboseFPCMsgFile}
         debugln(['TFPCMsgFile.LoadFromList invalid urgency, line ',Line,': "',s,'"']);
+        {$ENDIF}
         exit;
       end;
       Msg:=p;
