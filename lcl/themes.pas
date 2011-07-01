@@ -1891,33 +1891,8 @@ begin
 end;
 
 function TThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
-var
-  img : TBitmap;
 begin
-  case StockID of
-    idButtonClose:
-    begin
-      img:=TBitmap.Create;
-      img.SetSize(16, 16);
-      img.PixelFormat:=pf24bit;
-      img.Transparent:=True;
-      img.TransparentColor:=clLime;
-      img.Canvas.AntialiasingMode:=amOff;
-      img.Canvas.Brush.Color:=img.TransparentColor;
-      img.Canvas.Brush.Style:=bsSolid;
-      img.Canvas.FillRect(Rect(0,0,img.Width,img.Height));
-      img.Canvas.Pen.Color:=clBlack;
-      img.Canvas.Pen.Width:=2;
-      img.Canvas.Line(4,4,img.Width-3, img.Height-3);
-      img.Canvas.Line(img.Width-4, 4, 3, img.Height-3);
-      Mask:=img.ReleaseMaskHandle;
-      Image:=img.ReleaseHandle;
-      img.Free;
-      Result:=True;
-    end;
-  else
-    Result := False;
-  end;
+  Result := False;
 end;
 
 function TThemeServices.GetOption(AOption: TThemeOption): Integer;
