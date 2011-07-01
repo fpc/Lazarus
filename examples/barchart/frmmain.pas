@@ -5,7 +5,7 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, chart;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, BarChart;
 
 type
   TForm1 = class(TForm)
