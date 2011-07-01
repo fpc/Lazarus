@@ -714,7 +714,7 @@ end;
 function TQtWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN;
 var
   QtRegion: TQtRegion;
-  pts: Array of TQtPoint;
+  QtPoints: PQtPoint;
   i: Integer;
   p: PPoint;
   Poly: QPolygonH;
@@ -722,21 +722,17 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: [WinAPI CreatePolygonRgn] ');
   {$endif}
-  SetLength(pts, NumPts);
-  p := PPoint(@Points);
+  GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
   for i := 0 to NumPts - 1 do
-  begin
-    pts[i].X := p^.X;
-    pts[i].Y := p^.Y;
-    Inc(p);
-  end;
-  Poly := QPolygon_create(NumPts, @pts[0]);
+    QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
+  Poly := QPolygon_create(NumPts, PInteger(QtPoints));
+  FreeMem(QtPoints);
   try
     {fillmode can be ALTERNATE or WINDING as msdn says}
     if FillMode = ALTERNATE then
-			QtRegion := TQtRegion.Create(True, Poly, QtOddEvenFill)
+      QtRegion := TQtRegion.Create(True, Poly, QtOddEvenFill)
     else
-    	QtRegion := TQtRegion.Create(True, Poly, QtWindingFill);
+      QtRegion := TQtRegion.Create(True, Poly, QtWindingFill);
     Result := HRGN(QtRegion);
   finally
     QPolygon_destroy(Poly);
