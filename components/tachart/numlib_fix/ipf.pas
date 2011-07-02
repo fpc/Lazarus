@@ -47,6 +47,11 @@ s calculated from x,y, with e.g. ipfisn}
 function  ipfspn(n: ArbInt; var x, y, d2s: ArbFloat; t: ArbFloat;
                  var term: ArbInt): ArbFloat;
 
+{Calculate minimum and maximum values for the n.c. spline d2s.
+Does NOT take source points into account.}
+procedure ipfsmm(
+  n: ArbInt; var x, y, d2s, minv, maxv: ArbFloat; var term: ArbInt);
+
 {Calculate n-degree polynomal b for dataset (x,y) with n elements
  using the least squares method.}
 procedure ipfpol(m, n: ArbInt; var x, y, b: ArbFloat; var term: ArbInt);
@@ -652,6 +657,72 @@ begin
         end
    end  { x[0] < t < x[n] }
 end; {ipfspn}
+
+procedure ipfsmm(
+  n: ArbInt; var x, y, d2s, minv, maxv: ArbFloat; var term: ArbInt);
+
+var
+  i: ArbInt;
+  h: ArbFloat;
+  px, py: ^arfloat0;
+  pd2s: ^arfloat1;
+
+  procedure UpdateMinMax(v: ArbFloat);
+  begin
+    if (0 >= v) or (v >= h) then exit;
+    v := ipfspn(n, x, y, d2s, px^[i]+v, term);
+    if v < minv then
+      minv := v;
+    if v > maxv then
+      maxv := v;
+  end;
+
+  procedure MinMaxOnSegment;
+  var
+    a, b, c: ArbFloat;
+    d: ArbFloat;
+  begin
+    h:=px^[i+1]-px^[i];
+    if i=0
+    then
+      begin
+        a:=pd2s^[1]/h/2;
+        b:=0;
+        c:=(py^[1]-py^[0])/h-h*pd2s^[1]/6;
+      end
+    else
+    if i=n-1
+    then
+      begin
+        a:=-pd2s^[n-1]/h/2;
+        b:=pd2s^[n-1];
+        c:=(py^[n]-py^[n-1])/h-h*pd2s^[n-1]/3;
+      end
+    else
+      begin
+        a:=(pd2s^[i+1]-pd2s^[i])/h/2;
+        b:=pd2s^[i];
+        c:=(py^[i+1]-py^[i])/h-h*(2*pd2s^[i]+pd2s^[i+1])/6;
+      end;
+    a:=s3/2;
+    if a=0 then exit;
+    d := b*b-4*a*c;
+    if d<0 then exit;
+    d:=Sqrt(d);
+    UpdateMinMax((-b+d)/(2*a));
+    UpdateMinMax((-b-d)/(2*a));
+  end;
+
+begin
+  term:=1;
+  if n<2 then begin
+    term:=3;
+    exit;
+  end;
+  px:=@x; py:=@y; pd2s:=@d2s;
+  for i:=0 to n-1 do
+    MinMaxOnSegment;
+end;
 
 function p(x, a, z:complex): ArbFloat;
 begin
