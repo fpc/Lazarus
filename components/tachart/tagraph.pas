@@ -637,9 +637,10 @@ var
   axisMargin: TChartAxisMargins = (0, 0, 0, 0);
   a: TChartAxisAlignment;
 begin
-  if not FAxisVisible or (AxisList.Count = 0) then begin
+  if not AxisVisible or (AxisList.Count = 0) then begin
     FClipRect.Left += Depth;
     FClipRect.Bottom -= Depth;
+    CalculateTransformationCoeffs(GetMargins(ACanvas));
     exit;
   end;
 
@@ -872,7 +873,8 @@ begin
         with TBasicChartSeries(seriesInZOrder[i]) do begin
           if not Active then continue;
           // Interleave axises with series according to ZPosition.
-          AxisList.Draw(ACanvas, CurrentExtent, Self, ZPosition, d, axisIndex);
+          if AxisVisible then
+            AxisList.Draw(ACanvas, CurrentExtent, Self, ZPosition, d, axisIndex);
           OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
           ACanvas.ClipRect := FClipRect;
           ACanvas.Clipping := true;
@@ -892,7 +894,8 @@ begin
       seriesInZOrder.Free;
     end;
   end;
-  AxisList.Draw(ACanvas, CurrentExtent, Self, MaxInt, d, axisIndex);
+  if AxisVisible then
+    AxisList.Draw(ACanvas, CurrentExtent, Self, MaxInt, d, axisIndex);
 end;
 
 procedure TChart.DrawReticule(ACanvas: TCanvas);

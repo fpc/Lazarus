@@ -473,11 +473,13 @@ var
         Point(x, ATransf.YGraphToImage(AExtent.b.Y)));
     end;
 
-    d := TickLength + Marks.CenterOffset(ACanvas, AText).cy;
-    if Alignment = calTop then
-      d := -d;
-    DrawLabelAndTick(
-      Point(x, AY + d), Rect(x, AY - TickLength, x, AY + TickLength), AText);
+    if Marks.Visible then begin
+      d := TickLength + Marks.CenterOffset(ACanvas, AText).cy;
+      if Alignment = calTop then
+        d := -d;
+      DrawLabelAndTick(
+        Point(x, AY + d), Rect(x, AY - TickLength, x, AY + TickLength), AText);
+    end;
   end;
 
   procedure DrawYMark(AX: Integer; AMark: Double; const AText: String);
@@ -494,11 +496,13 @@ var
         Point(ATransf.XGraphToImage(AExtent.b.X), y));
     end;
 
-    d := TickLength + Marks.CenterOffset(ACanvas, AText).cx;
-    if Alignment = calLeft then
-      d := -d;
-    DrawLabelAndTick(
-      Point(AX + d, y), Rect(AX - TickLength, y, AX + TickLength, y), AText);
+    if Marks.Visible then begin
+      d := TickLength + Marks.CenterOffset(ACanvas, AText).cx;
+      if Alignment = calLeft then
+        d := -d;
+      DrawLabelAndTick(
+        Point(AX + d, y), Rect(AX - TickLength, y, AX + TickLength, y), AText);
+    end;
   end;
 
 var
@@ -608,6 +612,7 @@ procedure TChartAxis.Measure(
     Result := Size(0, 0);
     if AMin = AMax then exit;
     GetMarkValues(AMin, AMax);
+    if not Marks.Visible then exit;
     for i := 0 to High(FMarkTexts) do begin
       // CalculateTransformationCoeffs changes axis interval, so it is possibile
       // that a new mark longer then existing ones is introduced.
