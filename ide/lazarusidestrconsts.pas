@@ -215,7 +215,7 @@ resourcestring
   lisMenuSelectWord = 'Select word';
   lisMenuSelectLine = 'Select line';
   lisMenuSelectParagraph = 'Select paragraph';
-  lisMenuInsertCharacter = 'Insert from Character Map';
+  lisMenuInsertCharacter = 'Insert from Character Map ...';
   lisMenuInsertCVSKeyword = 'Insert CVS keyword';
   lisMenuInsertGeneral = 'Insert General';
   lisGeneral = 'General';
