@@ -695,14 +695,11 @@ begin
       if WorkImage <> nil then
       begin
         InvertPixels :=
-          (
           not QImage_hasAlphaChannel(WorkMask.Handle) and
           not QImage_hasAlphaChannel(WorkImage.Handle) and
-          // invert only if WorkImage is RGB32 fmt
+          // invert only if WorkImage is RGB32 fmt and allGray
           (WorkImage.getFormat = QImageFormat_RGB32) and
-          // both are 32b imgs
-          (QImage_numColors(WorkImage.Handle) = 0) and
-          (QImage_numColors(WorkMask.Handle) = 0));
+          QImage_allGray(WorkImage.Handle);
       end;
       if InvertPixels then
         WorkMask.invertPixels(QImageInvertRGB);
