@@ -139,7 +139,7 @@ type
   end;
 
   TCubicSplineOptions =
-    set of (csoDrawFewPoints, csoDrawUnorderedX);
+    set of (csoDrawFewPoints, csoDrawUnorderedX, csoExtrapolate);
 
   { TCubicSplineSeries }
 
@@ -183,7 +183,8 @@ type
     // Used when data is not suitable for drawing cubic spline --
     // e.g. points are too few or not ordered by X value.
     property BadDataPen: TBadDataChartPen read FBadDataPen write SetBadDataPen;
-    property Options: TCubicSplineOptions read FOptions write SetOptions;
+    property Options: TCubicSplineOptions
+      read FOptions write SetOptions default [];
     property Pen: TChartPen read FPen write SetPen;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
@@ -684,6 +685,10 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
     ADrawer.Pen := p;
     de := TIntervalList.Create;
     try
+      if not (csoExtrapolate in Options) then begin
+        de.AddRange(NegInfinity, FX[0]);
+        de.AddRange(FX[High(FX)], SafeInfinity);
+      end;
       DrawFunction(ADrawer, Self, de, @Calculate, Step);
     finally
       de.Free;
