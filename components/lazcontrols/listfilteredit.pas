@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, LResources, Graphics, StdCtrls, ComCtrls, EditBtn,
-  CodeToolsStructs;
+  FileUtil, AvgLvlTree;
 
 resourcestring
   lisCEFilter = '(Filter)';
@@ -29,14 +29,19 @@ type
     fIdleConnected: boolean;
     fSelectedPart: TObject;         // Select this node on next update
     fSelectionList: TStringList;    // or store/restore the old selections here.
-    fShowDirHierarchy: Boolean;
-    fSortData: Boolean;
-    fStoreFilenameInNode: boolean;
+    fShowDirHierarchy: Boolean;     // Show direcories / files as a tree structure.
+    fSortData: Boolean;             // Data needs to be sorted.
+    // Full filename in node data is needed when showing the directory hierarchy.
+    // It is stored automatically if the map is populated by MapShortToFullFilename.
     fFilenameMap: TStringToStringTree;
     fTVNodeStack: TFPList;
-    // Data to be filtered. Objects property can contain data, too.
-    fData: TStringList;
+    // Data supplied by caller through Data property.
+    // Objects property is passed to OnGetImageIndex.
+    fOriginalData: TStringList;
+    // Data sorted for viewing.
+    fSortedData: TStringList;
     fRootNode: TTreeNode;           // The filtered items are under this node.
+    // A control showing the (filtered) data. These are exclusive, only one is used.
     fFilteredTreeview: TTreeview;
     fFilteredListbox: TListbox;
     fOnGetImageIndex: TImageIndexEvent;
@@ -50,6 +55,8 @@ type
     procedure FreeTVNodeData(Node: TTreeNode);
     procedure TVDeleteUnneededNodes(p: integer);
     procedure TVClearUnneededAndCreateHierachy(Filename: string);
+    function CompareFNs(AFilename1,AFilename2: string): integer;
+    procedure SortForView;
     procedure ApplyFilterToTreeview;
     procedure SetIdleConnected(const AValue: boolean);
   protected
@@ -69,8 +76,7 @@ type
     property SelectedPart: TObject read fSelectedPart write fSelectedPart;
     property ShowDirHierarchy: Boolean read fShowDirHierarchy write fShowDirHierarchy;
     property SortData: Boolean read fSortData write fSortData;
-    property StoreFilenameInNode: boolean read fStoreFilenameInNode write fStoreFilenameInNode;
-    property Data: TStringList read fData;
+    property Data: TStringList read fOriginalData;
     property RootNode: TTreeNode read fRootNode write fRootNode;
   published
     // TListFilterEdit properties.
@@ -81,7 +87,6 @@ type
     property ButtonWidth;
     property DirectInput;
     property ButtonOnlyWhenFocused;
-    // property Glyph;
     property NumGlyphs;
     property Flat;
     // Other properties
@@ -162,9 +167,11 @@ end;
 constructor TListFilterEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fData:=TStringList.Create;
+  fOriginalData:=TStringList.Create;
+  fSortedData:=TStringList.Create;
   fSelectionList:=TStringList.Create;
   fFilenameMap:=TStringToStringTree.Create(True);
+  fImageIndexDirectory := -1;
   Button.Enabled:=False;
   Font.Color:=clBtnShadow;
   Text:=lisCEFilter;
@@ -178,7 +185,8 @@ begin
   FreeTVNodeData(fRootNode);
   fFilenameMap.Free;
   fSelectionList.Free;
-  fData.Free;
+  fSortedData.Free;
+  fOriginalData.Free;
   inherited Destroy;
 end;
 
@@ -355,10 +363,7 @@ begin
   p:=0;
   while Filename<>'' do begin
     // get the next file name part
-    if fShowDirHierarchy then
-      DelimPos:=System.Pos(PathDelim,Filename)
-    else
-      DelimPos:=0;
+    DelimPos:=System.Pos(PathDelim,Filename);
     if DelimPos>0 then begin
       FilePart:=copy(Filename,1,DelimPos-1);
       Filename:=copy(Filename,DelimPos+1,length(Filename));
@@ -406,57 +411,86 @@ begin
   end;
 end;
 
+function TListFilterEdit.CompareFNs(AFilename1,AFilename2: string): integer;
+begin
+  if fSortData then
+    Result:=CompareFilenames(AFilename1, AFilename2)
+  else if fShowDirHierarchy then
+    Result:=CompareFilenames(ExtractFilePath(AFilename1), ExtractFilePath(AFilename2))
+  else
+    Result:=0;
+end;
+
+procedure TListFilterEdit.SortForView;
+// Copy data from fOriginalData to fSortedData in sorted order
+var
+  Origi, i: Integer;
+  FileN: string;
+begin
+  fSortedData.Clear;
+  for Origi:=0 to fOriginalData.Count-1 do begin
+    FileN:=fOriginalData[Origi];
+    i:=fSortedData.Count-1;
+    while i>=0 do begin
+      if CompareFNs(FileN,fSortedData[i])>=0 then break;
+      dec(i);
+    end;
+    fSortedData.InsertObject(i+1,FileN, fOriginalData.Objects[Origi]);
+  end;
+end;
+
 procedure TListFilterEdit.ApplyFilterToTreeview;
 var
   TVNode: TTreeNode;
   ImgIndex, i: Integer;
-  s: string;
+  FileN, s: string;
 begin
   fNeedUpdate:=false;
   ImgIndex:=-1;
-  fData.Sorted:=SortData;
-  fFilteredTreeview.BeginUpdate;
+  SortForView;
   if fSelectedPart=Nil then
     StoreTreeSelection;
-  if Assigned(fRootNode) then begin
-    if fStoreFilenameInNode then
-      FreeTVNodeData(fRootNode);
-    fRootNode.DeleteChildren;
-    fTVNodeStack:=TFPList.Create;
-  end
+  if fFilenameMap.Count > 0 then
+    FreeTVNodeData(fRootNode);   // Free node data now, it will be filled later.
+  if Assigned(fRootNode) then    // Delete old tree nodes.
+    fRootNode.DeleteChildren
   else
     fFilteredTreeview.Items.Clear;
-  for i:=0 to fData.Count-1 do
-    if PassesFilter(fData[i]) then begin
-      if Assigned(fRootNode) then begin
-        TVClearUnneededAndCreateHierachy(fData[i]);
+  if fShowDirHierarchy then
+    fTVNodeStack:=TFPList.Create;
+  fFilteredTreeview.BeginUpdate;
+  for i:=0 to fSortedData.Count-1 do begin
+    FileN:=fSortedData[i];
+    if PassesFilter(FileN) then begin
+      if fShowDirHierarchy then begin
+        TVClearUnneededAndCreateHierachy(FileN);
         TVNode:=TTreeNode(fTVNodeStack[fTVNodeStack.Count-1]);
       end
-      else begin
-        TVNode:=fFilteredTreeview.Items.Add(nil,fData[i]);
-      end;
-      if fStoreFilenameInNode then begin
-        s:=fData[i];
-        if fFilenameMap.Contains(fData[i]) then
-          s:=fFilenameMap[fData[i]];           // Full file name.
+      else if Assigned(fRootNode) then
+        TVNode:=fFilteredTreeview.Items.AddChild(fRootNode,FileN)
+      else
+        TVNode:=fFilteredTreeview.Items.Add(Nil,FileN);
+      if fFilenameMap.Count > 0 then begin
+        s:=FileN;
+        if fFilenameMap.Contains(FileN) then
+          s:=fFilenameMap[FileN];           // Full file name.
         TVNode.Data:=TFileNameItem.Create(s);
       end;
       if Assigned(OnGetImageIndex) then
-        ImgIndex:=OnGetImageIndex(fData[i], fData.Objects[i]);
+        ImgIndex:=OnGetImageIndex(FileN, fSortedData.Objects[i]);
       TVNode.ImageIndex:=ImgIndex;
       TVNode.SelectedIndex:=ImgIndex;
       if Assigned(fSelectedPart) then
-        TVNode.Selected:=fSelectedPart=fData.Objects[i];
+        TVNode.Selected:=fSelectedPart=fSortedData.Objects[i];
     end;
-  if Assigned(fRootNode) then begin
-    TVDeleteUnneededNodes(0);
-    fTVNodeStack.Free;
-    fRootNode.Expanded:=True;
   end;
+  if fShowDirHierarchy then      // TVDeleteUnneededNodes(0); ?
+    fTVNodeStack.Free;
+  if Assigned(fRootNode) then
+    fRootNode.Expanded:=True;
   if fSelectedPart=Nil then
     RestoreTreeSelection;
   fFilteredTreeview.EndUpdate;
-  fData.Sorted:=False;
 end;
 
 procedure TListFilterEdit.ApplyFilter(Immediately: Boolean);
@@ -481,7 +515,6 @@ begin
   fNeedUpdate:=true;
   IdleConnected:=true;
 end;
-
 
 end.
 
