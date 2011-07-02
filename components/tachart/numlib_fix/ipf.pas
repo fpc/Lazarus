@@ -704,7 +704,6 @@ var
         b:=pd2s^[i];
         c:=(py^[i+1]-py^[i])/h-h*(2*pd2s^[i]+pd2s^[i+1])/6;
       end;
-    a:=s3/2;
     if a=0 then exit;
     d := b*b-4*a*c;
     if d<0 then exit;
