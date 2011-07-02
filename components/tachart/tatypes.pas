@@ -122,8 +122,12 @@ type
 
   { TGenericChartMarks }
 
+  {$IFNDEF fpdoc}  // Workaround for issue #18549.
   generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
     class(TChartElement)
+  {$ELSE}
+  TGenericChartMarks = class(TChartElement)
+  {$ENDIF}
   private
     function GetDistanceToCenter: Boolean;
     function LabelAngle: Double; inline;
@@ -200,8 +204,10 @@ type
     property Color default clYellow;
   end;
 
+  {$IFNDEF fpdoc}  // Workaround for issue #18549.
   TCustomChartMarks =
     specialize TGenericChartMarks<TChartLabelBrush, TChartLinkPen, TChartPen>;
+  {$ENDIF}
 
   { TChartMarks }
 

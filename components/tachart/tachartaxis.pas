@@ -42,8 +42,10 @@ type
     property Style default psClear;
   end;
 
+  {$IFNDEF fpdoc}  // Workaround for issue #18549.
   TCustomChartAxisTitle =
     specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
+  {$ENDIF}
 
   { TChartAxisTitle }
 
@@ -62,7 +64,7 @@ type
   published
     property Caption: String read FCaption write SetCaption;
     property Distance default DEF_TITLE_DISTANCE;
-     // Use LabelFont instead.
+    // Use LabelFont instead.
     property Font: TFont read GetFont write SetFont stored false; deprecated;
     property Frame;
     property LabelBrush;
@@ -85,7 +87,10 @@ type
     property Style default psDot;
   end;
 
-  TCustomChartAxisMarks = specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
+  {$IFNDEF fpdoc} // Workaround for issue #18549.
+  TCustomChartAxisMarks =
+    specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
+  {$ENDIF}
 
   { TChartAxisMarks }
 
