@@ -564,8 +564,8 @@ begin
     lvpMultiSelect: TCarbonListView(ALV.Handle).SetSelectionMode(AIsSet, AIsSet);
     lvpOwnerDraw: TCarbonListView(ALV.Handle).SetOwnerDraw(AIsSet);
   //lvpReadOnly
-    lvpRowSelect: TCarbonListView(ALV.Handle).SetRowSelect(AIsSet);
-    lvpShowColumnHeaders: TCarbonListView(ALV.Handle).ShowColumnHeaders(AIsSet);
+    lvpRowSelect: TCarbonListView(ALV.Handle).SetRowSelect((TListView(ALV).ViewStyle <> vsReport) or AIsSet);
+    lvpShowColumnHeaders: TCarbonListView(ALV.Handle).ShowColumnHeaders((TListView(ALV).ViewStyle = vsReport) and AIsSet);
   //lvpShowWorkAreas
   //lvpWrapText
   //lvpToolTips

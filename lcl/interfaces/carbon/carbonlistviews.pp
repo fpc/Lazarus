@@ -1744,6 +1744,10 @@ procedure TCarbonListView.SetViewStyle(AStyle: TViewStyle);
 begin
   FStyle:=AStyle;
   ListViewModes[FStyle].Apply(Self);
+  if FStyle = vsList then
+  begin
+    ShowAsList(True);
+  end;
 end;
 
 procedure TCarbonListView.DoColumnClicked(MouseX, MouseY: Integer);
