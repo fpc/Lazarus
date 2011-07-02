@@ -158,7 +158,6 @@ type
     procedure UpdateRemovedRequiredPackages;
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
-    function CompareProjFilenames(AFilename1, AFilename2: string): integer;
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var Done: Boolean);
@@ -323,8 +322,7 @@ begin
   AddResult.Free;
 end;
 
-procedure TProjectInspectorForm.DirectoryHierarchySpeedButtonClick(
-  Sender: TObject);
+procedure TProjectInspectorForm.DirectoryHierarchySpeedButtonClick(Sender: TObject);
 begin
   ShowDirectoryHierarchy:=DirectoryHierarchySpeedButton.Down;
 end;
@@ -481,8 +479,7 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.SortAlphabeticallySpeedButtonClick(
-  Sender: TObject);
+procedure TProjectInspectorForm.SortAlphabeticallySpeedButtonClick(Sender: TObject);
 begin
   SortAlphabetically:=SortAlphabeticallySpeedButton.Down;
 end;
@@ -517,8 +514,9 @@ procedure TProjectInspectorForm.SetShowDirectoryHierarchy(const AValue: boolean)
 begin
   if FShowDirectoryHierarchy=AValue then exit;
   FShowDirectoryHierarchy:=AValue;
-  DirectoryHierarchySpeedButton.Down:=ShowDirectoryHierarchy;
-  UpdateProjectFiles(false);
+  DirectoryHierarchySpeedButton.Down:=FShowDirectoryHierarchy;
+  FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
+  FilterEdit.Invalidate;
 end;
 
 procedure TProjectInspectorForm.SetSortAlphabetically(const AValue: boolean);
@@ -526,7 +524,8 @@ begin
   if FSortAlphabetically=AValue then exit;
   FSortAlphabetically:=AValue;
   SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
-  UpdateProjectFiles(false);
+  FilterEdit.SortData:=SortAlphabetically;
+  FilterEdit.Invalidate;
 end;
 
 procedure TProjectInspectorForm.SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -615,7 +614,6 @@ procedure TProjectInspectorForm.UpdateProjectFiles(Immediately: boolean);
 var
   CurFile: TUnitInfo;
   Filename: String;
-  i: Integer;
 begin
   if (not Immediately) or (FUpdateLock>0) or (not Visible) then begin
     Include(FFlags,pifFilesChanged);
@@ -626,7 +624,6 @@ begin
   if LazProject=nil then Exit;
   FilterEdit.RootNode:=FFilesNode;
   FilterEdit.SelectedPart:=FNextSelectedPart;
-  FilterEdit.StoreFilenameInNode:=True;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
@@ -636,18 +633,12 @@ begin
   while CurFile<>nil do begin
     Filename:=CurFile.GetShortFilename(true);
     if Filename<>'' then begin
-      i:=FilterEdit.Data.Count-1;
-      while i>=0 do begin
-        if CompareProjFilenames(Filename,FilterEdit.Data[i])>=0 then break;
-        dec(i);
-      end;
+      FilterEdit.Data.AddObject(Filename, CurFile);
       FilterEdit.MapShortToFullFilename(Filename, CurFile.Filename);
-      FilterEdit.Data.Insert(i+1,Filename);
-      FilterEdit.Data.Objects[i+1]:=CurFile;
     end;
     CurFile:=CurFile.NextPartOfProject;
   end;
-  FilterEdit.Invalidate;
+  FilterEdit.Invalidate;               // Data is shown by FilterEdit.
 end;
 
 procedure TProjectInspectorForm.UpdateRequiredPackages;
@@ -747,17 +738,6 @@ procedure TProjectInspectorForm.OnProjectEndUpdate(Sender: TObject;
 begin
   UpdateAll(false);
   EndUpdate;
-end;
-
-function TProjectInspectorForm.CompareProjFilenames(AFilename1,
-  AFilename2: string): integer;
-begin
-  if SortAlphabetically then
-    Result:=CompareFilenames(AFilename1, AFilename2)
-  else if ShowDirectoryHierarchy then
-    Result:=CompareFilenames(ExtractFilePath(AFilename1), ExtractFilePath(AFilename2))
-  else
-    Result:=0;
 end;
 
 procedure TProjectInspectorForm.KeyUp(var Key: Word; Shift: TShiftState);
