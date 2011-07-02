@@ -716,7 +716,6 @@ var
   QtRegion: TQtRegion;
   QtPoints: PQtPoint;
   i: Integer;
-  p: PPoint;
   Poly: QPolygonH;
 begin
   {$ifdef VerboseQtWinAPI}

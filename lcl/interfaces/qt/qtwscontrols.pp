@@ -415,7 +415,6 @@ end;
 class procedure TQtWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 var
-  Pt: TQtPoint;
   R: TRect;
   Box: TQtWidget;
 begin
@@ -431,8 +430,6 @@ begin
   if Assigned(Box) and
     (Box.ChildOfComplexWidget = ccwScrollingWinControl) then
   begin
-    Pt := TQtWidget(AWinControl.Handle).getPos;
-
     R := Rect(ALeft - TQtCustomControl(Box).horizontalScrollBar.getValue,
       ATop - TQtCustomControl(Box).verticalScrollBar.getValue, AWidth, AHeight);
   end;
