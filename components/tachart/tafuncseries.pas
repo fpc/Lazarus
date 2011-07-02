@@ -698,6 +698,7 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
   end;
 
 begin
+  if IsEmpty then exit;
   if FCoeff = nil then
     PrepareCoeffs;
 
