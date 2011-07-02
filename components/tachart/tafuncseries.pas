@@ -133,20 +133,33 @@ type
       read FStep write SetStep default DEF_SPLINE_STEP;
   end;
 
+  TBadDataChartPen = class(TChartPen)
+  published
+    property Color default clRed;
+  end;
+
+  TCubicSplineOptions =
+    set of (csoDrawFewPoints, csoDrawUnorderedX);
+
   { TCubicSplineSeries }
 
   TCubicSplineSeries = class(TBasicPointSeries)
-  private
+  strict private
+    FBadDataPen: TBadDataChartPen;
+    FOptions: TCubicSplineOptions;
     FPen: TChartPen;
     FStep: TFuncSeriesStep;
 
     procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
-  private
+  strict private
+    FUnorderedX: Boolean;
     FX, FY, FCoeff: array of ArbFloat;
 
-    procedure PrepareCoeffs;
     function Calculate(AX: Double): Double;
+    procedure PrepareCoeffs;
+    procedure SetBadDataPen(AValue: TBadDataChartPen);
+    procedure SetOptions(AValue: TCubicSplineOptions);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure SourceChanged(ASender: TObject); override;
@@ -161,13 +174,17 @@ type
     property Active default true;
     property AxisIndexX;
     property AxisIndexY;
+    property Pointer;
     property ShowInLegend;
     property Source;
     property Title;
     property ZPosition;
   published
+    // Used when data is not suitable for drawing cubic spline --
+    // e.g. points are too few or not ordered by X value.
+    property BadDataPen: TBadDataChartPen read FBadDataPen write SetBadDataPen;
+    property Options: TCubicSplineOptions read FOptions write SetOptions;
     property Pen: TChartPen read FPen write SetPen;
-    property Pointer;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
   end;
@@ -612,6 +629,9 @@ end;
 constructor TCubicSplineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FBadDataPen := TBadDataChartPen.Create;
+  FBadDataPen.Color := clRed;
+  FBadDataPen.OnChange := @StyleChanged;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(ParentChart);
@@ -620,25 +640,64 @@ end;
 
 destructor TCubicSplineSeries.Destroy;
 begin
+  FreeAndNil(FBadDataPen);
   FreeAndNil(FPen);
   inherited;
 end;
 
 procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
-var
-  de: TIntervalList;
+
+  function DrawFewPoints: Boolean;
+  const
+    MIN_SPLINE_POINTS = 4;
+  var
+    pts: TPointArray;
+    i: Integer;
+  begin
+    Result := Length(FX) < MIN_SPLINE_POINTS;
+    if
+      not Result or not (csoDrawFewPoints in Options) or not BadDataPen.Visible
+    then
+      exit;
+    SetLength(pts, Length(FGraphPoints));
+    for i := 0 to High(FGraphPoints) do
+      pts[i] := ParentChart.GraphToImage(FGraphPoints[i]);
+    ADrawer.Pen := BadDataPen;
+    ADrawer.Polyline(pts, 0, Length(pts));
+  end;
+
+  procedure DrawSpline;
+  var
+    de: TIntervalList;
+    p: TChartPen;
+  begin
+    if FCoeff = nil then exit;
+    if FUnorderedX then begin
+      if csoDrawUnorderedX in Options then
+        p := BadDataPen
+      else
+        exit;
+    end
+    else
+      p := Pen;
+    if not p.Visible then exit;
+    ADrawer.Pen := p;
+    de := TIntervalList.Create;
+    try
+      DrawFunction(ADrawer, Self, de, @Calculate, Step);
+    finally
+      de.Free;
+    end;
+  end;
+
 begin
   if FCoeff = nil then
     PrepareCoeffs;
-  if FCoeff = nil then exit;
-  de := TIntervalList.Create;
-  try
-    ADrawer.Pen := Pen;
-    DrawFunction(ADrawer, Self, de, @Calculate, Step);
-  finally
-    de.Free;
-  end;
+
   PrepareGraphPoints(FChart.CurrentExtent, true);
+  if not DrawFewPoints then
+    DrawSpline;
+
   DrawLabels(ADrawer);
   DrawPointers(ADrawer);
 end;
@@ -655,17 +714,39 @@ begin
   n := Source.Count;
   SetLength(FX, n);
   SetLength(FY, n);
-  FCoeff := nil;
-  for i := 0 to n - 1 do
-    with Source[i]^ do begin
-      FX[i] := X;
-      FY[i] := Y;
-      if (i > 0) and (FX[i - 1] >= X) then exit;
-    end;
+  SetLength(FCoeff, n);
+  FUnorderedX := false;
+  n := 0;
+  for i := 0 to Source.Count - 1 do
+    with Source[i]^ do
+      if (i > 0) and (FX[n - 1] >= X) then
+        FUnorderedX := true
+      else begin
+        FX[n] := X;
+        FY[n] := Y;
+        n += 1;
+      end;
+  SetLength(FX, n);
+  SetLength(FY, n);
   SetLength(FCoeff, n);
   ipfisn(n - 1, FX[0], FY[0], FCoeff[0], i);
   if i > 1 then
     FCoeff := nil;
+end;
+
+procedure TCubicSplineSeries.SetBadDataPen(AValue: TBadDataChartPen);
+begin
+  if FBadDataPen = AValue then exit;
+  FBadDataPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TCubicSplineSeries.SetOptions(AValue: TCubicSplineOptions);
+begin
+  if FOptions = AValue then exit;
+  FOptions := AValue;
+  FCoeff := nil;
+  UpdateParentChart;
 end;
 
 procedure TCubicSplineSeries.SetPen(AValue: TChartPen);
