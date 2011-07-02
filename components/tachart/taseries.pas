@@ -64,6 +64,7 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
+    function GetZeroLevel: Double; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -810,6 +811,11 @@ begin
   Result := FBarBrush.Color;
 end;
 
+function TBarSeries.GetZeroLevel: Double;
+begin
+  Result := ZeroLevel;
+end;
+
 function TBarSeries.IsZeroLevelStored: boolean;
 begin
   Result := ZeroLevel <> 0.0;
@@ -905,6 +911,7 @@ var
     else
       Result.Y := ACoord;
   end;
+
 var
   i, j, n2, numPrevPts: Integer;
   a, b: TDoublePoint;
