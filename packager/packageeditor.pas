@@ -264,7 +264,6 @@ type
     procedure ExtendIncPathForNewIncludeFile(const AnIncludeFile: string;
       var IgnoreIncPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
-    function ComparePkgFilenames(AFilename1, AFilename2: string): integer;
   protected
     procedure SetLazPackage(const AValue: TLazPackage); override;
   public
@@ -1552,30 +1551,30 @@ begin
   //debugln(['TPackageEditorForm.SetShowDirectoryHierachy Old=',FShowDirectoryHierarchy,' New=',AValue]);
   if FShowDirectoryHierarchy=AValue then exit;
   FShowDirectoryHierarchy:=AValue;
-  DirectoryHierarchySpeedButton.Down:=ShowDirectoryHierarchy;
-  UpdateFiles;
+  DirectoryHierarchySpeedButton.Down:=FShowDirectoryHierarchy;
+  FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
+  FilterEdit.Invalidate;
 end;
 
 procedure TPackageEditorForm.SetSortAlphabetically(const AValue: boolean);
 begin
   if FSortAlphabetically=AValue then exit;
   FSortAlphabetically:=AValue;
-  SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
-  UpdateFiles;
+  SortAlphabeticallySpeedButton.Down:=FSortAlphabetically;
+  FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
+  FilterEdit.Invalidate;
 end;
 
 procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
 begin
   if LazPackage=nil then exit;
   Name:=PackageEditorWindowPrefix+LazPackage.Name;
-//  FilesTreeView.BeginUpdate;
   UpdateTitle;
   UpdateButtons;
   UpdateFiles;
   UpdateRequiredPkgs;
   UpdateSelectedFile;
   UpdateStatusBar;
-//  FilesTreeView.EndUpdate;
 end;
 
 procedure TPackageEditorForm.UpdateTitle;
@@ -1628,7 +1627,7 @@ end;
 
 procedure TPackageEditorForm.UpdateFiles;
 var
-  Cnt, i, j: Integer;
+  Cnt, i: Integer;
   CurFile: TPkgFile;
   CurNode: TTreeNode;
   NextNode: TTreeNode;
@@ -1638,7 +1637,6 @@ begin
   if LazPackage=nil then exit;
   FilterEdit.RootNode:=FFilesNode;
   FilterEdit.SelectedPart:=FNextSelectedPart;
-  FilterEdit.StoreFilenameInNode:=True;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
@@ -1647,17 +1645,12 @@ begin
   for i:=0 to LazPackage.FileCount-1 do begin
     CurFile:=LazPackage.Files[i];
     Filename:=CurFile.GetShortFilename(true);
-    if Filename='' then continue;
-    j:=FilterEdit.Data.Count-1;
-    while j>=0 do begin
-      if ComparePkgFilenames(Filename,FilterEdit.Data[j])>=0 then break;
-      dec(j);
+    if Filename<>'' then begin
+      FilterEdit.Data.AddObject(Filename, CurFile);
+      FilterEdit.MapShortToFullFilename(Filename, CurFile.Filename);
     end;
-    FilterEdit.MapShortToFullFilename(Filename, CurFile.Filename);
-    FilterEdit.Data.Insert(j+1,Filename);
-    FilterEdit.Data.Objects[j+1]:=CurFile;
   end;
-  FilterEdit.Invalidate;                  // Shown by FilterEdit.
+  FilterEdit.Invalidate;                  // Data is shown by FilterEdit.
 
   // removed files
   if LazPackage.RemovedFilesCount>0 then begin
@@ -2138,17 +2131,6 @@ function TPackageEditorForm.CanBeAddedToProject: boolean;
 begin
   if LazPackage=nil then exit(false);
   Result:=PackageEditors.AddToProject(LazPackage,true)=mrOk;
-end;
-
-function TPackageEditorForm.ComparePkgFilenames(AFilename1, AFilename2: string
-  ): integer;
-begin
-  if SortAlphabetically then
-    Result:=CompareFilenames(AFilename1, AFilename2)
-  else if ShowDirectoryHierarchy then
-    Result:=CompareFilenames(ExtractFilePath(AFilename1), ExtractFilePath(AFilename2))
-  else
-    Result:=0;
 end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
