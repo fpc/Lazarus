@@ -3883,10 +3883,13 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
   function FillTriMesh(Mesh: tagGradientTriangle) : Boolean;
   var
     V1, V2, V3: tagTRIVERTEX;
-    C: TQColor;
-    Grad: QLinearGradientH;
+    C1, C2, C3: TQColor;
+    Grad: QConicalGradientH;
     Brush: QBrushH;
-    Path: QPainterPathH;
+    Triangle: QPolygonH;
+    R: TRect;
+    Painter: QPainterH;
+    Rgn: QRegionH;
   begin
     with Mesh do
     begin
@@ -3904,25 +3907,51 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
       V2 := Vertices[Vertex2];
       V3 := Vertices[Vertex3];
 
-      // todo: how to create a triangle gradient using QLinearGradient?
-      //Grad := QConicalGradient_create(V2.x, V2.y, 0);
-      Grad := QLinearGradient_create(V1.x, V1.y, V2.x, V2.y);
-      C := VertexToColor(V1);
-      QGradient_setColorAt(Grad, 0, @C);
-      C := VertexToColor(V2);
-      QGradient_setColorAt(Grad, 0.5, @C);
-      C := VertexToColor(V3);
-      QGradient_setColorAt(Grad, 1, @C);
+      Painter := TQtDeviceContext(DC).Widget;
+      QPainter_save(Painter);
+      Triangle := QPolygon_create(3);
+      QPolygon_setPoint(Triangle, 0, V1.X, V1.Y);
+      QPolygon_setPoint(Triangle, 1, V2.X, V2.Y);
+      QPolygon_setPoint(Triangle, 2, V3.X, V3.Y);
+      QPolygon_boundingRect(Triangle, @R);
+
+      Dec(R.Bottom);
+      Dec(R.Right);
+
+      Rgn := QRegion_create(@R);
+
+      // make our poly clip region , so gradient center is at real center
+      QPainter_setClipRegion(Painter, Rgn, QtIntersectClip);
+
+      Grad := QConicalGradient_create(R.Right div 2, R.Bottom div 2, 90);
+      C1 := VertexToColor(V1);
+      C2 := VertexToColor(V2);
+      C3 := VertexToColor(V3);
+
+      QGradient_setColorAt(Grad, 0.0, @C1); // open
+      QGradient_setColorAt(Grad, 0.33, @C2); // left corner
+      QGradient_setColorAt(Grad, 0.66, @C3); // right corner
+      QGradient_setColorAt(Grad, 1.0, @C1); // close
+
+
       Brush := QBrush_create(Grad);
-      Path := QPainterPath_create();
-      QPainterPath_moveTo(Path, V1.x, V1.y);
-      QPainterPath_lineTo(Path, V2.x, V2.y);
-      QPainterPath_lineTo(Path, V3.x, V3.y);
-      QPainterPath_lineTo(Path, V1.X, V1.y);
-      QPainter_fillPath(TQtDeviceContext(DC).Widget, Path, Brush);
-      QGradient_destroy(Grad);
+      QPainter_setPen(Painter, QtNoPen);
+      QPainter_setBrush(Painter, Brush);
+
+      // move center point down, so we remove reflections of C2 and C3
+      // TODO: C1 reflection is still visible
+      QPainter_setBrushOrigin(Painter, 0, R.Bottom div 5);
+      QPainter_drawPolygon(Painter, Triangle);
+
+      //TODO: now me must make it look "softer" because reflection look of
+      // first color is ugly.
+
       QBrush_destroy(Brush);
-      QPainterPath_destroy(Path);
+      QPolygon_destroy(Triangle);
+      QGradient_destroy(Grad);
+      QRegion_destroy(Rgn);
+      QPainter_restore(Painter);
+
     end;
   end;
 
