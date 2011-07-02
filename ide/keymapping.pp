@@ -420,7 +420,7 @@ begin
   ecIdentCompletion: SetResult(VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
   ecShowCodeContext: SetResult(VK_SPACE,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindIdentifierRefs: SetResult(VK_F,[ssAlt],VK_UNKNOWN,[]);
   ecRenameIdentifier: SetResult(VK_F2,[],VK_E,[ssShift,ssCtrl]);
   ecInvertAssignment: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
