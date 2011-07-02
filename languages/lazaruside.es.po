@@ -10321,7 +10321,9 @@ msgid "ChangeLog entry"
 msgstr "Entrada de registro de cambios"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
-msgid "Insert from Character Map"
+#, fuzzy
+#| msgid "Insert from Character Map"
+msgid "Insert from Character Map ..."
 msgstr "Insertar desde Mapa de Caracteres"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword

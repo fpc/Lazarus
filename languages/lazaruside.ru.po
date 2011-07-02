@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-19 17:17+0300\n"
+"PO-Revision-Date: 2011-07-02 23:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -10321,8 +10321,9 @@ msgid "ChangeLog entry"
 msgstr "Элемент ChangeLog"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
-msgid "Insert from Character Map"
-msgstr "Вставить из таблицы символов"
+#| msgid "Insert from Character Map"
+msgid "Insert from Character Map ..."
+msgstr "Вставить из таблицы символов ..."
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
 #| msgid "CVS keyword"

@@ -10289,7 +10289,9 @@ msgid "ChangeLog entry"
 msgstr "Položka Poznámek k vydání"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
-msgid "Insert from Character Map"
+#, fuzzy
+#| msgid "Insert from Character Map"
+msgid "Insert from Character Map ..."
 msgstr "Vložit z mapy znaků"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword

@@ -10355,7 +10355,9 @@ msgid "ChangeLog entry"
 msgstr "変更ログエントリー"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
-msgid "Insert from Character Map"
+#, fuzzy
+#| msgid "Insert from Character Map"
+msgid "Insert from Character Map ..."
 msgstr "キャラクターマップから挿入"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword

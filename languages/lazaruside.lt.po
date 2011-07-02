@@ -10344,7 +10344,9 @@ msgid "ChangeLog entry"
 msgstr "Pakeitimų žurnalo įrašas"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
-msgid "Insert from Character Map"
+#, fuzzy
+#| msgid "Insert from Character Map"
+msgid "Insert from Character Map ..."
 msgstr "Įterpti iš simbolių lentelės"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword

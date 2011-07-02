@@ -10319,7 +10319,9 @@ msgid "ChangeLog entry"
 msgstr "Entri ChangeLog"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
-msgid "Insert from Character Map"
+#, fuzzy
+#| msgid "Insert from Character Map"
+msgid "Insert from Character Map ..."
 msgstr "Sisipkan dari Peta Karakter"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
