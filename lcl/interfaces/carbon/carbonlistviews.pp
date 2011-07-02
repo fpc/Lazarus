@@ -934,14 +934,10 @@ procedure TCarbonDataBrowser.UpdateItems;
 var
   i : Integer;
 begin
-  {// removes all and adds new count of items starting with index 1
-  OSError(RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 0, nil, kDataBrowserItemNoProperty),
-    Self, 'UpdateItems', 'RemoveDataBrowserItems');
-
-  if GetItemsCount <> 0 then
-    OSError(AddDataBrowserItems(Widget, kDataBrowserNoItem, GetItemsCount, nil, kDataBrowserItemNoProperty),
-      Self, 'UpdateItems', 'AddDataBrowserItems');}
-  for i:=0 to GetItemsCount-1 do UpdateItem(i);
+  if GetItemsCount > 0 then
+    OSError(UpdateDataBrowserItems(Widget, kDataBrowserNoItem, GetItemsCount, nil,
+      kDataBrowserItemNoProperty, kDataBrowserNoItem),
+      Self,'UpdateItems','UpdateDataBrowserItems');
 
   CheckNeedsScrollBars;
 end;
