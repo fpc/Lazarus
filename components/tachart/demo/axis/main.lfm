@@ -215,6 +215,7 @@ object Form1: TForm1
             Marks.Source = lcsMarks
             Marks.Style = smsLabel
             TickLength = 0
+            OnMarkToText = TChartAxisList1MarkToText
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -290,7 +291,6 @@ object Form1: TForm1
           item
             Grid.Visible = False
             Group = 1
-            Marks.Visible = False
             Marks.Source = udcsSub
             Marks.Style = smsNone
             TickLength = 2
@@ -299,7 +299,6 @@ object Form1: TForm1
             Alignment = calBottom
             Grid.Visible = False
             Group = 2
-            Marks.Visible = False
             Marks.Source = udcsSub
             Marks.Style = smsNone
             TickLength = 2

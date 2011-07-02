@@ -693,7 +693,7 @@ end;
 
 procedure TChartAxis.SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
 begin
-  if FOnMarkToText = AValue then exit;
+  if TMethod(FOnMarkToText) = TMethod(AValue) then exit;
   FOnMarkToText := AValue;
   StyleChanged(Self);
 end;

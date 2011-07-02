@@ -666,7 +666,7 @@ end;
 
 procedure TChartSeries.SetOnGetMark(const AValue: TChartGetMarkEvent);
 begin
-  if FOnGetMark = AValue then exit;
+  if TMethod(FOnGetMark) = TMethod(AValue) then exit;
   FOnGetMark := AValue;
   UpdateParentChart;
 end;

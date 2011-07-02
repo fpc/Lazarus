@@ -512,7 +512,7 @@ end;
 
 procedure TChartSeriesLegend.SetOnDraw(AValue: TLegendItemDrawEvent);
 begin
-  if FOnDraw = AValue then exit;
+  if TMethod(FOnDraw) = TMethod(AValue) then exit;
   FOnDraw := AValue;
   StyleChanged(Self);
 end;

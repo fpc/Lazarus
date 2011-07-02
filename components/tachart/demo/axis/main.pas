@@ -150,7 +150,7 @@ end;
 
 procedure TForm1.TChartAxisList1MarkToText(var AText: String; AMark: Double);
 begin
-  if AMark < 15 then
+  if AMark = 3 then
     AText := '*' + AText + '*';
 end;
 
