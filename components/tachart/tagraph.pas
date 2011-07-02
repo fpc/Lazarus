@@ -232,7 +232,7 @@ type
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetReticulePos(const AValue: TPoint);
     procedure SetTitle(Value: TChartTitle);
-    procedure SetToolset(const AValue: TBasicChartToolset);
+    procedure SetToolset(AValue: TBasicChartToolset);
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
   protected
@@ -249,6 +249,8 @@ type
     {$IFDEF LCLGtk2}
     procedure DoOnResize; override;
     {$ENDIF}
+    procedure Notification(
+      AComponent: TComponent; AOperation: TOperation); override;
     procedure PrepareAxis(ADrawer: IChartDrawer);
     function PrepareLegend(
       ADrawer: IChartDrawer; var AClipRect: TRect): TChartLegendDrawingData;
@@ -1041,6 +1043,13 @@ begin
   inherited;
 end;
 
+procedure TChart.Notification(AComponent: TComponent; AOperation: TOperation);
+begin
+  if (AOperation = opRemove) and (AComponent = Toolset) then
+    FToolset := nil;
+  inherited Notification(AComponent, AOperation);
+end;
+
 procedure TChart.Paint;
 var
   defaultDrawing: Boolean = true;
@@ -1331,11 +1340,15 @@ begin
   Invalidate;
 end;
 
-procedure TChart.SetToolset(const AValue: TBasicChartToolset);
+procedure TChart.SetToolset(AValue: TBasicChartToolset);
 begin
   if FToolset = AValue then exit;
+  if FToolset <> nil then
+    RemoveFreeNotification(FToolset);
   FToolset := AValue;
   FActiveToolIndex := -1;
+  if FToolset <> nil then
+    FreeNotification(FToolset);
 end;
 
 procedure TChart.StyleChanged(Sender: TObject);
