@@ -170,6 +170,7 @@ type
     destructor Destroy; override;
 
     procedure Draw(ADrawer: IChartDrawer); override;
+    function Extent: TDoubleRect; override;
   published
     property Active default true;
     property AxisIndexX;
@@ -637,6 +638,7 @@ begin
   FPen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(ParentChart);
   FStep := DEF_SPLINE_STEP;
+  FUseReticule := true;
 end;
 
 destructor TCubicSplineSeries.Destroy;
@@ -705,6 +707,22 @@ begin
 
   DrawLabels(ADrawer);
   DrawPointers(ADrawer);
+end;
+
+function TCubicSplineSeries.Extent: TDoubleRect;
+var
+  r: Integer = 0;
+  minv, maxv: ArbFloat;
+begin
+  Result := inherited Extent;
+  if FCoeff = nil then
+    PrepareCoeffs;
+  if FCoeff = nil then exit;
+  minv := Result.a.Y;
+  maxv := Result.b.Y;
+  ipfsmm(High(FCoeff), FX[0], FY[0], FCoeff[0], minv, maxv, r);
+  Result.a.Y := minv;
+  Result.b.Y := maxv;
 end;
 
 procedure TCubicSplineSeries.GetLegendItems(AItems: TChartLegendItems);
