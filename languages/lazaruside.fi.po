@@ -79,7 +79,7 @@ msgstr "Kaksoisklikkaus valitsee rivin"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 msgid "Drag Selection (copy/paste)"
-msgstr "Vedä valintaa (kopioi/liitä)"
+msgstr "Vedä valittua lohkoa (kopioi/liitä)"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
@@ -97,7 +97,7 @@ msgstr "ei mitään"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
 msgid "paste selection"
-msgstr "liitä valinta"
+msgstr "liitä valittu lohko"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
@@ -836,7 +836,7 @@ msgstr "Kursori:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
-msgstr ""
+msgstr "Kursori ohittaa valinnan"
 
 #: lazarusidestrconsts.dlgcursorskipstab
 msgid "Cursor skips tabs"
@@ -1473,7 +1473,7 @@ msgstr "Apupisteiden välinen etäisyys pystysuunnassa"
 #: lazarusidestrconsts.dlggroupcodeexplorer
 msgctxt "lazarusidestrconsts.dlggroupcodeexplorer"
 msgid "Code Explorer"
-msgstr "Koodin selain"
+msgstr "Koodin tutkija"
 
 #: lazarusidestrconsts.dlggroupcodetools
 msgid "Codetools"
@@ -4663,15 +4663,15 @@ msgstr "Valitse nimi"
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"
-msgstr "Valitse jokin alla olevista kohteista saadaksesi aikaan uuden tiedoston"
+msgstr "Valitse jokin näistä kohteista uudeksi tiedostoksi"
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewpackage
 msgid "Choose one of these items to create a new Package"
-msgstr "Valitse jokin alla olevista kohteista saadaksesi aikaan uuden komponenttipaketin"
+msgstr "Valitse jokin näistä kohteista uudeksi komponenttipaketiksi"
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewproject
 msgid "Choose one of these items to create a new Project"
-msgstr "Valitse jokin alla olevista kohteista saadaksesi aikaan uuden ohjelmointiprojektin"
+msgstr "Valitse jokin näistä kohteista uudeksi projektiksi"
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstoinheritfromanexistingone
 msgid "Choose one of these items to inherit from an existing one"
@@ -4683,7 +4683,7 @@ msgstr "Valitse ohjelman lähdekoodi (*.pp,*.pas,*.lpr)"
 
 #: lazarusidestrconsts.lischoosestructuretoencloseselection
 msgid "Choose structure to enclose selection"
-msgstr "Lisää, alla olevasta listasta valittu, rakenne. Valitun lohkon ympärille"
+msgstr "Valitse kapseloiva rakenne"
 
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
@@ -4723,7 +4723,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
-msgstr "Ylimääräisten tiedostojen poisto"
+msgstr "Siivoa hakemisto"
 
 #: lazarusidestrconsts.liscldircleansubdirectories
 msgid "Clean sub directories"
@@ -4751,11 +4751,11 @@ msgstr "Siivoa Lazaruksen lähdekoodi"
 
 #: lazarusidestrconsts.liscleanupandbuild
 msgid "Clean up and build"
-msgstr ""
+msgstr "Siivoa ja käännä"
 
 #: lazarusidestrconsts.liscleanupandbuildproject
 msgid "Clean up and build project"
-msgstr ""
+msgstr "Siivoa ja käännä projekti"
 
 #: lazarusidestrconsts.liscleanupunitpath
 msgid "Clean up unit path?"
@@ -4783,19 +4783,19 @@ msgstr "&Sulje"
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
-msgstr ""
+msgstr "Sulje tiedostot"
 
 #: lazarusidestrconsts.lisclosealltabshide
 msgid "Hide window"
-msgstr ""
+msgstr "Piilota ikkuna"
 
 #: lazarusidestrconsts.lisclosealltabsquestion
 msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
-msgstr ""
+msgstr "Suljetaan koodieditorin ikkuna. Tahdotko sulkea kaikki tiedostot vai piilottaa ikkunan?"
 
 #: lazarusidestrconsts.lisclosealltabstitle
 msgid "Close Source Editor Window"
-msgstr ""
+msgstr "Sulje koodieditorin ikkuna"
 
 #: lazarusidestrconsts.liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -4808,23 +4808,23 @@ msgstr "Parametri"
 #: lazarusidestrconsts.liscmplstcomponents
 msgctxt "lazarusidestrconsts.liscmplstcomponents"
 msgid "Components"
-msgstr ""
+msgstr "Komponentit"
 
 #: lazarusidestrconsts.liscmplstinheritance
 msgid "Inheritance"
-msgstr ""
+msgstr "Periytyvyys"
 
 #: lazarusidestrconsts.liscmplstlist
 msgid "List"
-msgstr ""
+msgstr "Luettelo"
 
 #: lazarusidestrconsts.liscmplstpalette
 msgid "Palette"
-msgstr ""
+msgstr "Paletti"
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
-msgstr ""
+msgstr "Toinen ristiriitainen kääntäjän asetustiedosto"
 
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
@@ -4856,16 +4856,16 @@ msgstr "Komento:"
 
 #: lazarusidestrconsts.liscode
 msgid "Code"
-msgstr ""
+msgstr "Koodi"
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
-msgstr ""
+msgstr "Koodin selain"
 
 #: lazarusidestrconsts.liscodeexplorer
 msgctxt "lazarusidestrconsts.liscodeexplorer"
 msgid "Code Explorer"
-msgstr "Koodin selain"
+msgstr "Koodin tutkija"
 
 #: lazarusidestrconsts.liscodefault
 msgid "default (%s)"
@@ -7223,11 +7223,11 @@ msgstr "Salli makrot"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
-msgstr "Lisää lauserakenne"
+msgstr "Kapseloi"
 
 #: lazarusidestrconsts.lisencloseinifdef
 msgid "Enclose in $IFDEF"
-msgstr ""
+msgstr "Kapseloi $IFDEF:n sisään"
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
@@ -7955,7 +7955,7 @@ msgstr "Etsi tai vaihda tunnisteiden nimiä"
 
 #: lazarusidestrconsts.lisfrifindreferences
 msgid "Find References"
-msgstr "Etsi tunnisteet"
+msgstr "Etsi viittaukset"
 
 #: lazarusidestrconsts.lisfriidentifier
 msgid "Identifier: %s"
@@ -7988,7 +7988,7 @@ msgstr "Nimeä uudelleen"
 
 #: lazarusidestrconsts.lisfrirenameallreferences
 msgid "Rename all References"
-msgstr "Nimeä uudelleen kaikki tunnisteet"
+msgstr "Nimeä uudelleen viittaukset"
 
 #: lazarusidestrconsts.lisfrirenameto
 msgid "Rename to"
@@ -8620,7 +8620,7 @@ msgstr "Kelvoton julkaisuhakemisto"
 
 #: lazarusidestrconsts.lisinvalidselection
 msgid "Invalid selection"
-msgstr "Vääränlainen valinta"
+msgstr "Kelvoton valinta"
 
 #: lazarusidestrconsts.lisinvalidversionin
 msgid "invalid version in %s"
@@ -8830,7 +8830,7 @@ msgstr "Editorin asetukset"
 
 #: lazarusidestrconsts.liskmencloseselection
 msgid "Enclose selection"
-msgstr "Kapseloi valinta"
+msgstr "Kapseloi valittu lohko"
 
 #: lazarusidestrconsts.liskmevaluatemodify
 msgid "Evaluate/Modify"
@@ -9147,7 +9147,7 @@ msgstr "Vaihda kutsu-pinon näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
-msgstr "Vaihda koodin selainnäkymä"
+msgstr "Vaihda näkymä koodin tutkijaan"
 
 #: lazarusidestrconsts.liskmtoggleviewcomponentpalette
 msgid "Toggle view component palette"
@@ -9874,7 +9874,7 @@ msgstr "Lisää vahti ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in selection"
-msgstr ""
+msgstr "Rivitä valittu lohko uudelleen"
 
 #: lazarusidestrconsts.lismenubuild
 msgctxt "lazarusidestrconsts.lismenubuild"
@@ -9899,11 +9899,11 @@ msgstr "Tarkista editorissa oleva LFM tiedosto"
 
 #: lazarusidestrconsts.lismenucleandirectory
 msgid "Clean directory ..."
-msgstr "Ylimääräisten tiedostojen poisto ..."
+msgstr "Siivoa hakemisto ..."
 
 #: lazarusidestrconsts.lismenucleanupcompiled
 msgid "Clean up build files ..."
-msgstr ""
+msgstr "Siivoa käännetyt tiedostot"
 
 #: lazarusidestrconsts.lismenuclose
 msgctxt "lazarusidestrconsts.lismenuclose"
@@ -9928,7 +9928,7 @@ msgstr "Kerää .po tiedostot"
 
 #: lazarusidestrconsts.lismenucommentselection
 msgid "Comment selection"
-msgstr "Kommentoi lohko (//)"
+msgstr "Kommentoi valittu lohko (//)"
 
 #: lazarusidestrconsts.lismenucompile
 msgctxt "lazarusidestrconsts.lismenucompile"
@@ -10106,7 +10106,7 @@ msgstr "Kapseloi $IFDEF:n sisään ..."
 
 #: lazarusidestrconsts.lismenuencloseselection
 msgid "Enclose selection ..."
-msgstr "Kapseloi valinta ..."
+msgstr "Kapseloi valittu lohko ..."
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
@@ -10143,7 +10143,7 @@ msgstr "Siirry määrittelyyn"
 
 #: lazarusidestrconsts.lismenufindidentifierrefs
 msgid "Find Identifier References ..."
-msgstr "Etsi tunnisteiden nimiä ..."
+msgstr "Etsi viittauksia tunnisteisiin ..."
 
 #: lazarusidestrconsts.lismenufindinfiles
 msgid "Find &in files ..."
@@ -10204,7 +10204,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertcharacter
 msgid "Insert from Character Map"
-msgstr "Lisää merkkitaulukosta"
+msgstr "Lisää merkkitaulukosta ..."
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
 msgid "Insert CVS keyword"
@@ -10533,7 +10533,7 @@ msgstr "Näytä suorituspiste"
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
-msgstr "Lajittele lohko ..."
+msgstr "Järjestä valittu lohko ..."
 
 #: lazarusidestrconsts.lismenusource
 msgid "S&ource"
@@ -10590,7 +10590,7 @@ msgstr "Käännä kirjaimen koko"
 
 #: lazarusidestrconsts.lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
-msgstr "Valinnan tabit välilyönneiksi"
+msgstr "Muuta tabit välilyönneiksi"
 
 #: lazarusidestrconsts.lismenutemplateabout
 msgid "About"
@@ -10750,12 +10750,12 @@ msgstr "Kutsupino"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgid "Code Browser"
-msgstr ""
+msgstr "Koodin selain"
 
 #: lazarusidestrconsts.lismenuviewcodeexplorer
 msgctxt "lazarusidestrconsts.lismenuviewcodeexplorer"
 msgid "Code Explorer"
-msgstr "Koodin selain"
+msgstr "Koodin tutkija"
 
 #: lazarusidestrconsts.lismenuviewcomponentpalette
 msgid "Component Palette"
@@ -10818,7 +10818,7 @@ msgstr "Rekisterit"
 
 #: lazarusidestrconsts.lismenuviewrestrictionbrowser
 msgid "Restriction Browser"
-msgstr ""
+msgstr "Rajoituksien selain"
 
 #: lazarusidestrconsts.lismenuviewsearchresults
 msgid "Search Results"
@@ -12970,7 +12970,7 @@ msgstr "Komponenttipakettia ei löytynyt"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
 msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
-msgstr "Tarvittavaa komponenttipakettia %s%s%s ei löytynyt.%sJos mahdollista niin valitse jokin toinen komponenttipaketti."
+msgstr "Riippuvuutta %s%s%s ei löytynyt.%sValitse jokin toinen komponenttipaketti."
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
@@ -13887,7 +13887,7 @@ msgstr "Hyväksy"
 
 #: lazarusidestrconsts.lissortselsortselection
 msgid "Sort selection"
-msgstr "Lajittele lohko"
+msgstr "Järjestä valittu lohko"
 
 #: lazarusidestrconsts.lissortselwords
 msgctxt "lazarusidestrconsts.lissortselwords"
@@ -14501,7 +14501,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "Käännösyksikön %s%s%s nimeä käytetään jo projektissa.%sVoit kaikesta huolimatta nimetä näin jolloin nimenvaihto tapahtuu,%sMahdollista on myös perua tämä tallennus tai sitten keskeyttää kaikki tallennukset."
+msgstr "Käännösyksikön %s%s%s nimi on jo käytössä.%sVoit kaikesta huolimatta nimetä näin jolloin nimenvaihto tapahtuu,%sMahdollista on myös perua tämä tallennus tai sitten keskeyttää kaikki tallennukset."
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
@@ -14541,7 +14541,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
-msgstr ""
+msgstr "tämä avusteviesti"
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
@@ -14561,7 +14561,7 @@ msgstr "Tästä ei voi tehdä omaa aliohjelmaa.%sValitse ensin jokin muu koodin 
 
 #: lazarusidestrconsts.listhiswillcreateacircle
 msgid "This will create a circle."
-msgstr ""
+msgstr "Tämä synnyttäisi kehän."
 
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -15365,7 +15365,7 @@ msgstr "Tervetuloa lazarus IDE:en %s"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references ..."
-msgstr "Kun käännösyksikön nimeä muutetaan niin päivitetään viittaukset ..."
+msgstr "Käännösyksikön nimeä muutettaessa päivitetään viittaukset ..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
@@ -15373,7 +15373,7 @@ msgstr "Nykyiset asetukset talletetaan malliksi, mitä käytetään luotaessa uu
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
-msgstr "Kun kursori liikkuu lähdekoodissa, näytä aktiivinen solmu koodin selaimessa"
+msgstr "Kun kursori liikkuu lähdekoodissa, näytä aktiivinen solmu koodin tutkijassa"
 
 #: lazarusidestrconsts.liswithincludes
 msgid "%s, with includes %s"
@@ -15433,7 +15433,7 @@ msgstr "Ominaisuudet"
 
 #: lazarusidestrconsts.liswlwatchlist
 msgid "Watch list"
-msgstr "Vahti luettelo"
+msgstr "Vahtiluettelo"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -15710,7 +15710,7 @@ msgstr "venäjä"
 
 #: lazarusidestrconsts.rslanguageselection
 msgid "Language selection:"
-msgstr ""
+msgstr "Kielen valinta:"
 
 #: lazarusidestrconsts.rslanguageslovak
 msgid "Slovak"
@@ -15925,7 +15925,7 @@ msgstr "Lisää hyppypiste"
 
 #: lazarusidestrconsts.srkmecaddwatch
 msgid "add watch"
-msgstr "Lisää vahti"
+msgstr "lisää vahti"
 
 #: lazarusidestrconsts.srkmecautocompletion
 msgid "Code template completion"
@@ -16093,7 +16093,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmeccopy
 msgid "Copy selection to clipboard"
-msgstr "Kopio valittu leikepöydälle"
+msgstr "Kopio valittu lohko leikepöydälle"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
@@ -16113,7 +16113,7 @@ msgstr "Erikoistyökalu %d"
 
 #: lazarusidestrconsts.srkmeccut
 msgid "Cut selection to clipboard"
-msgstr "Leikkaa valittu leikepöydälle"
+msgstr "Leikkaa valittu lohko leikepöydälle"
 
 #: lazarusidestrconsts.srkmecdeletebol
 msgid "Delete to beginning of line"
@@ -16198,7 +16198,7 @@ msgstr "Etsi määrittely"
 
 #: lazarusidestrconsts.srkmecfindidentifierrefs
 msgid "Find identifier references"
-msgstr "Etsi tunnisteiden nimiä"
+msgstr "Etsi viittauksia tunnisteisiin"
 
 #: lazarusidestrconsts.srkmecfindinfiles
 msgid "Find in files"
@@ -16784,11 +16784,11 @@ msgstr "Näytä kutsupino"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
-msgstr ""
+msgstr "Näytä koodin selain"
 
 #: lazarusidestrconsts.srkmectogglecodeexpl
 msgid "View Code Explorer"
-msgstr "Naytä koodin selain"
+msgstr "Naytä koodin tutkija"
 
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
@@ -16953,19 +16953,19 @@ msgstr "Paina jotain näppäintä ..."
 
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"
-msgstr "Laskosta valitun tekstin kommentit"
+msgstr "Laskosta valitun lohkon kommentit"
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
-msgstr "Piilota valitun tekstin kommentit"
+msgstr "Piilota valitun lohkon kommentit"
 
 #: lazarusidestrconsts.synfunfoldallinselection
 msgid "Unfold all in Selection"
-msgstr "Poista laskostus valitusta tekstistä"
+msgstr "Poista laskostus valitusta lohkosta"
 
 #: lazarusidestrconsts.synfunfoldcommentsinselection
 msgid "Unfold comments in Selection"
-msgstr "Poista kommenttien laskostus valitusta tekstistä"
+msgstr "Poista kommenttien laskostus valitusta lohkosta"
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
