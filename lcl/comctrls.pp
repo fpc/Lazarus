@@ -956,8 +956,17 @@ type
   TItemChange = (ctText, ctImage, ctState);
   TViewStyle = (vsIcon, vsSmallIcon, vsList, vsReport);
 
+  TItemFind = (ifData, ifPartialString, ifExactString, ifNearest);
+  TSearchDirection = (sdLeft, sdRight, sdAbove, sdBelow, sdAll);
+
   TLVChangeEvent = procedure(Sender: TObject; Item: TListItem;
                              Change: TItemChange) of object;
+
+  TLVDataFindEvent = procedure(Sender: TObject; AFind: TItemFind;
+    const AFindString: string; const AFindPosition: TPoint; AFindData: Pointer;
+    AStartIndex: Integer; ADirection: TSearchDirection; AWrap: Boolean;
+    var AIndex: Integer) of object;
+
   TLVColumnClickEvent = procedure(Sender: TObject;
                                   Column: TListColumn) of object;
   TLVColumnRClickEvent = procedure(Sender: TObject; Column: TListColumn;
@@ -1031,6 +1040,7 @@ type
     FDefaultItemHeight: integer;
     FHotTrackStyles: TListHotTrackStyles;
     FIconOptions: TIconOptions;
+    FOnDataFind: TLVDataFindEvent;
     FOwnerData: Boolean;
     FOwnerDataItem: TOwnerDataListItem;
     FListItems: TListItems;
@@ -1165,6 +1175,7 @@ type
     property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
     property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
     property OnData: TLVDataEvent read FOnData write FOnData;
+    property OnDataFind: TLVDataFindEvent read FOnDataFind write FOnDataFind;
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnInsert: TLVInsertEvent read FOnInsert write FOnInsert;
     property OnItemChecked: TLVCheckedItemEvent read FOnItemChecked write FOnItemChecked;
@@ -1288,6 +1299,7 @@ type
     property OnCustomDrawItem;
     property OnCustomDrawSubItem;
     property OnData;
+    property OnDataFind;
     property OnDblClick;
     property OnDeletion;
     property OnDragDrop;
