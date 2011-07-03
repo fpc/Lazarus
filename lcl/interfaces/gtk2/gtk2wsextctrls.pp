@@ -772,10 +772,23 @@ var
   Frame, WidgetClient: PGtkWidget;
   WidgetInfo: PWidgetInfo;
   Allocation: TGTKAllocation;
+  bwidth: gint;
+  Style: PGtkRCStyle;
 begin
   Frame := gtk_frame_new(nil);
   gtk_frame_set_shadow_type(PGtkFrame(Frame),
     BorderStyleShadowMap[TCustomControl(AWinControl).BorderStyle]);
+
+  case TCustomPanel(AWinControl).BorderStyle of
+    bsSingle:
+      bwidth:=1
+    else
+      bwidth:=0
+  end;
+  style := gtk_widget_get_modifier_style(Frame);
+  style^.xthickness := bwidth;
+  style^.ythickness := bwidth;
+  gtk_widget_modify_style(Frame, style);
 
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Frame, dbgsName(AWinControl));
