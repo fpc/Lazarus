@@ -92,6 +92,7 @@ function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
 var
   ViewUnitDialog: TViewUnitDialog;
   UEntry: TViewUnitsEntry;
+  TmpList: TStringList;
   i: integer;
 begin
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
@@ -117,9 +118,18 @@ begin
     Result:=ShowModal;
     if Result=mrOk then begin
       // Return new selections from the dialog
-      for i:=0 to Entries.Count-1 do begin
-        UEntry:=TViewUnitsEntry(Entries.Objects[i]);
-        UEntry.Selected:=FilterEdit.SelectionList.IndexOf(UEntry.Name)>-1;
+      TmpList:=TStringList.Create;
+      try
+        for i:=0 to ListBox.Count-1 do begin
+          if ListBox.Selected[i] then
+            TmpList.Add(ListBox.Items[i]);
+        end;
+        for i:=0 to Entries.Count-1 do begin
+          UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+          UEntry.Selected:=TmpList.IndexOf(UEntry.Name)>-1;
+        end;
+      finally
+        TmpList.Free;
       end;
       CheckMultiSelect := mniMultiselect.Checked;
     end;
