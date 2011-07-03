@@ -5,26 +5,33 @@ unit ListFilterEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, LResources, Graphics, StdCtrls, ComCtrls, EditBtn,
-  FileUtil, AvgLvlTree;
+  Classes, SysUtils, Forms, LResources, LCLType, Graphics,
+  Controls, StdCtrls, ComCtrls, EditBtn, FileUtil, AvgLvlTree, ImgList;
 
 resourcestring
   lisCEFilter = '(Filter)';
 
 type
 
-  TImageIndexEvent = function (Str: String; Data: TObject): Integer of object;
+  TImageIndexEvent = function (Str: String; Data: TObject;
+                               var IsEnabled: Boolean): Integer of object;
 
   { TListFilterEdit }
 
   TListFilterEdit = class(TCustomEditButton)
+    procedure ListBoxDrawItem(Control: TWinControl;
+      Index: Integer; ARect: TRect; State: TOwnerDrawState);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditEnter(Sender: TObject);
     procedure FilterEditExit(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
     fFilter: string;
+    // A control showing the (filtered) data. These are exclusive, only one is used.
+    fFilteredTreeview: TTreeview;
+    fFilteredListbox: TListbox;
     fImageIndexDirectory: integer;  // Needed if directory structure is shown.
+    fImages4Listbox: TCustomImageList; // Listbox does not have ImageList of its own.
     fNeedUpdate: boolean;
     fIdleConnected: boolean;
     fSelectedPart: TObject;         // Select this node on next update
@@ -41,22 +48,21 @@ type
     // Data sorted for viewing.
     fSortedData: TStringList;
     fRootNode: TTreeNode;           // The filtered items are under this node.
-    // A control showing the (filtered) data. These are exclusive, only one is used.
-    fFilteredTreeview: TTreeview;
-    fFilteredListbox: TListbox;
     fOnGetImageIndex: TImageIndexEvent;
     procedure SetFilter(const AValue: string);
     procedure SetFilteredTreeview(const AValue: TTreeview);
     procedure SetFilteredListbox(const AValue: TListBox);
-    function PassesFilter(Entry: string): boolean;
-    procedure ApplyFilterToListBox;
-    procedure  StoreTreeSelection;
+    procedure SetShowDirHierarchy(const AValue: Boolean);
+    procedure StoreTreeSelection;
+    procedure StoreListSelection;
     procedure RestoreTreeSelection;
+    procedure RestoreListSelection;
     procedure FreeTVNodeData(Node: TTreeNode);
     procedure TVDeleteUnneededNodes(p: integer);
     procedure TVClearUnneededAndCreateHierachy(Filename: string);
     function CompareFNs(AFilename1,AFilename2: string): integer;
-    procedure SortForView;
+    procedure SortAndFilter;
+    procedure ApplyFilterToListBox;
     procedure ApplyFilterToTreeview;
     procedure SetIdleConnected(const AValue: boolean);
   protected
@@ -68,13 +74,13 @@ type
     destructor Destroy; override;
     procedure MapShortToFullFilename(ShortFilename, FullFilename: string);
     procedure ApplyFilter(Immediately: Boolean = False);
-    procedure Invalidate;
+    procedure InvalidateFilter;
   public
     property Filter: string read fFilter write SetFilter;
     property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
     property IdleConnected: boolean read fIdleConnected write SetIdleConnected;
     property SelectedPart: TObject read fSelectedPart write fSelectedPart;
-    property ShowDirHierarchy: Boolean read fShowDirHierarchy write fShowDirHierarchy;
+    property ShowDirHierarchy: Boolean read fShowDirHierarchy write SetShowDirHierarchy;
     property SortData: Boolean read fSortData write fSortData;
     property Data: TStringList read fOriginalData;
     property RootNode: TTreeNode read fRootNode write fRootNode;
@@ -82,6 +88,7 @@ type
     // TListFilterEdit properties.
     property FilteredTreeview: TTreeview read fFilteredTreeview write SetFilteredTreeview;
     property FilteredListbox: TListBox read fFilteredListbox write SetFilteredListbox;
+    property Images4Listbox: TCustomImageList read fImages4Listbox write fImages4Listbox;
     property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
     // TEditButton properties.
     property ButtonWidth;
@@ -190,6 +197,29 @@ begin
   inherited Destroy;
 end;
 
+procedure TListFilterEdit.ListBoxDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var
+  ImgIndex: Integer;
+  ena: Boolean;
+begin
+  if Index < 0 then Exit;
+  ena:=True;
+  ImgIndex:=-1;
+  if Assigned(fImages4Listbox) and Assigned(OnGetImageIndex) then
+    ImgIndex:=OnGetImageIndex(fFilteredListbox.Items[Index],
+                              fFilteredListbox.Items.Objects[Index], ena);
+  fFilteredListbox.Canvas.FillRect(ARect);
+  if ImgIndex<>-1 then
+  begin
+    if not (ena or (odSelected in State)) then
+      fFilteredListbox.Canvas.Font.Color := clGreen;
+    fImages4Listbox.Draw(fFilteredListbox.Canvas, 1, ARect.Top, ImgIndex, ena);
+  end;
+  fFilteredListbox.Canvas.TextRect(ARect, ARect.Left + 20,ARect.Top,
+                                fFilteredListbox.Items[Index]);
+end;
+
 procedure TListFilterEdit.FilterEditChange(Sender: TObject);
 begin
   Filter:=Text;
@@ -263,24 +293,31 @@ procedure TListFilterEdit.SetFilteredTreeview(const AValue: TTreeview);
 begin
   if Assigned(fFilteredListbox) then
     raise Exception.Create('Sorry, both Treeview and ListBox should not be assigned.');
-  fFilteredTreeview := AValue;
+  fFilteredTreeview:=AValue;
 end;
 
 procedure TListFilterEdit.SetFilteredListbox(const AValue: TListBox);
 begin
   if Assigned(fFilteredTreeview) then
     raise Exception.Create('Sorry, both Treeview and ListBox should not be assigned.');
-  fFilteredListbox := AValue;
+  fFilteredListbox:=AValue;
+  if fFilteredListbox.Style=lbStandard then begin
+    // ToDo: support normal drawing (lbStandard).
+  end
+  else begin
+    if Assigned(fFilteredListbox.OnDrawItem) then
+      raise Exception.Create('Listbox.OnDrawItem should not be defined.'+
+                             ' ListFilterEdit assigns its own handler.');
+    fFilteredListbox.OnDrawItem:=@ListBoxDrawItem;
+  end;
 end;
 
-function TListFilterEdit.PassesFilter(Entry: string): boolean;
+procedure TListFilterEdit.SetShowDirHierarchy(const AValue: Boolean);
 begin
-  Result:=(Filter='') or (System.Pos(Filter,lowercase(Entry))>0);
-end;
-
-procedure TListFilterEdit.ApplyFilterToListBox;
-begin                                      // use fFilteredListbox
-  raise Exception.Create('Under construction.');
+  if fShowDirHierarchy=AValue then exit;
+  if not Assigned(fFilteredTreeview) then
+    raise Exception.Create('Showing directory hierarchy requires Treeview.');
+  fShowDirHierarchy:=AValue;
 end;
 
 procedure TListFilterEdit.MapShortToFullFilename(ShortFilename, FullFilename: string);
@@ -296,6 +333,16 @@ begin
   while ANode<>nil do begin
     fSelectionList.Insert(0,ANode.Text);
     ANode:=ANode.Parent;
+  end;
+end;
+
+procedure TListFilterEdit.StoreListSelection;
+var
+  i: Integer;
+begin
+  for i := 0 to fFilteredListbox.Count-1 do begin
+    if fFilteredListbox.Selected[i] then
+      fSelectionList.Add(fFilteredListbox.Items[i]);
   end;
 end;
 
@@ -319,6 +366,16 @@ begin
   if ANode<>nil then
     fFilteredTreeview.Selected:=ANode;
   fSelectionList.Clear;
+end;
+
+procedure TListFilterEdit.RestoreListSelection;
+var
+  i: Integer;
+begin
+  for i := 0 to fFilteredListbox.Count-1 do begin
+    if fSelectionList.IndexOf(fFilteredListbox.Items[i])>0 then
+      fFilteredListbox.Selected[i]:=True;
+  end;
 end;
 
 procedure TListFilterEdit.FreeTVNodeData(Node: TTreeNode);
@@ -421,7 +478,7 @@ begin
     Result:=0;
 end;
 
-procedure TListFilterEdit.SortForView;
+procedure TListFilterEdit.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi, i: Integer;
@@ -430,12 +487,14 @@ begin
   fSortedData.Clear;
   for Origi:=0 to fOriginalData.Count-1 do begin
     FileN:=fOriginalData[Origi];
-    i:=fSortedData.Count-1;
-    while i>=0 do begin
-      if CompareFNs(FileN,fSortedData[i])>=0 then break;
-      dec(i);
+    if (Filter='') or (Pos(Filter,lowercase(FileN))>0) then begin
+      i:=fSortedData.Count-1;
+      while i>=0 do begin
+        if CompareFNs(FileN,fSortedData[i])>=0 then break;
+        dec(i);
+      end;
+      fSortedData.InsertObject(i+1,FileN, fOriginalData.Objects[Origi]);
     end;
-    fSortedData.InsertObject(i+1,FileN, fOriginalData.Objects[Origi]);
   end;
 end;
 
@@ -444,10 +503,9 @@ var
   TVNode: TTreeNode;
   ImgIndex, i: Integer;
   FileN, s: string;
+  ena: Boolean;
 begin
-  fNeedUpdate:=false;
   ImgIndex:=-1;
-  SortForView;
   if fSelectedPart=Nil then
     StoreTreeSelection;
   if fFilenameMap.Count > 0 then
@@ -461,28 +519,26 @@ begin
   fFilteredTreeview.BeginUpdate;
   for i:=0 to fSortedData.Count-1 do begin
     FileN:=fSortedData[i];
-    if PassesFilter(FileN) then begin
-      if fShowDirHierarchy then begin
-        TVClearUnneededAndCreateHierachy(FileN);
-        TVNode:=TTreeNode(fTVNodeStack[fTVNodeStack.Count-1]);
-      end
-      else if Assigned(fRootNode) then
-        TVNode:=fFilteredTreeview.Items.AddChild(fRootNode,FileN)
-      else
-        TVNode:=fFilteredTreeview.Items.Add(Nil,FileN);
-      if fFilenameMap.Count > 0 then begin
-        s:=FileN;
-        if fFilenameMap.Contains(FileN) then
-          s:=fFilenameMap[FileN];           // Full file name.
-        TVNode.Data:=TFileNameItem.Create(s);
-      end;
-      if Assigned(OnGetImageIndex) then
-        ImgIndex:=OnGetImageIndex(FileN, fSortedData.Objects[i]);
-      TVNode.ImageIndex:=ImgIndex;
-      TVNode.SelectedIndex:=ImgIndex;
-      if Assigned(fSelectedPart) then
-        TVNode.Selected:=fSelectedPart=fSortedData.Objects[i];
+    if fShowDirHierarchy then begin
+      TVClearUnneededAndCreateHierachy(FileN);
+      TVNode:=TTreeNode(fTVNodeStack[fTVNodeStack.Count-1]);
+    end
+    else if Assigned(fRootNode) then
+      TVNode:=fFilteredTreeview.Items.AddChild(fRootNode,FileN)
+    else
+      TVNode:=fFilteredTreeview.Items.Add(Nil,FileN);
+    if fFilenameMap.Count > 0 then begin
+      s:=FileN;
+      if fFilenameMap.Contains(FileN) then
+        s:=fFilenameMap[FileN];           // Full file name.
+      TVNode.Data:=TFileNameItem.Create(s);
     end;
+    if Assigned(OnGetImageIndex) then
+      ImgIndex:=OnGetImageIndex(FileN, fSortedData.Objects[i], ena);
+    TVNode.ImageIndex:=ImgIndex;
+    TVNode.SelectedIndex:=ImgIndex;
+    if Assigned(fSelectedPart) then
+      TVNode.Selected:=fSelectedPart=fSortedData.Objects[i];
   end;
   if fShowDirHierarchy then      // TVDeleteUnneededNodes(0); ?
     fTVNodeStack.Free;
@@ -493,9 +549,31 @@ begin
   fFilteredTreeview.EndUpdate;
 end;
 
+procedure TListFilterEdit.ApplyFilterToListBox;
+var
+  i: Integer;
+  FileN: string;
+begin
+  if fSelectedPart=Nil then
+    StoreListSelection;
+  fFilteredListbox.Clear;
+  fFilteredListbox.Items.BeginUpdate;
+  for i:=0 to fSortedData.Count-1 do begin
+    FileN:=fSortedData[i];
+    fFilteredListbox.Items.AddObject(FileN, fSortedData.Objects[i]);
+    if Assigned(fSelectedPart) then
+      fFilteredListbox.Selected[i]:=fSelectedPart=fSortedData.Objects[i];
+  end;
+  if fSelectedPart=Nil then
+    RestoreListSelection;
+  fFilteredListbox.Items.EndUpdate;
+end;
+
 procedure TListFilterEdit.ApplyFilter(Immediately: Boolean);
 begin
   if Immediately then begin
+    fNeedUpdate:=false;
+    SortAndFilter;
     if Assigned(fFilteredTreeview) then
       ApplyFilterToTreeview
     else if Assigned(fFilteredListbox) then
@@ -506,11 +584,11 @@ begin
   end
   else begin
     if csDestroying in ComponentState then exit;
-    Invalidate;
+    InvalidateFilter;
   end;
 end;
 
-procedure TListFilterEdit.Invalidate;
+procedure TListFilterEdit.InvalidateFilter;
 begin
   fNeedUpdate:=true;
   IdleConnected:=true;
