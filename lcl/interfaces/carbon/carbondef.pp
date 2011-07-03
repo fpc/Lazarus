@@ -75,7 +75,7 @@ type
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
     procedure DestroyWidget; virtual; abstract;
     function GetContent: ControlRef; virtual; abstract;
-    procedure UpdateLCLClientRect;
+    procedure UpdateLCLClientRect; virtual;
   public
     FNeedFree: Boolean;
     procedure BeginEventProc;
@@ -474,6 +474,7 @@ begin
     LCLClientR:=LCLObject.ClientRect;
     RChanged:=not CompareRect(@R,@LCLR);
     ClientChanged:=not CompareRect(@ClientR,@LCLClientR);
+
     if not ClientChanged then
       LCLObject.InvalidateClientRectCache(False);
     if RChanged or ClientChanged then

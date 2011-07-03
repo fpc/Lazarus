@@ -136,6 +136,7 @@ type
     function GetFrame(Index: Integer): ControlRef; override;
     function GetForceEmbedInScrollView: Boolean; override;
     procedure SendScrollUpdate;
+    procedure UpdateLCLClientRect; override;
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure Draw; override;

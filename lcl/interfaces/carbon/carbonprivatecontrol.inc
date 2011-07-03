@@ -590,6 +590,33 @@ begin
   end;
 end;
 
+procedure TCarbonCustomControl.UpdateLCLClientRect;
+var
+  R: TRect;
+  ClientR: TRect;
+  LCLR: TRect;
+  LCLClientR: TRect;
+  RChanged: Boolean;
+  ClientChanged: Boolean;
+begin
+  if not Resizing then
+  begin
+    GetBounds(R);
+    GetClientRect(ClientR);
+    LCLR:=LCLObject.BoundsRect;
+    LCLClientR:=LCLObject.ClientRect;
+    RChanged:=not CompareRect(@R,@LCLR);
+    ClientChanged:=not CompareRect(@ClientR,@LCLClientR);
+
+    if not RChanged and ((LCLObject.CachedClientWidth <>  ClientR.Right) or
+      (LCLObject.CachedClientHeight <> ClientR.Bottom)) then
+        LCLObject.InvalidateClientRectCache(False);
+
+    if RChanged or ClientChanged then
+      LCLSendSizeMsg(LCLObject, R.Right - R.Left, R.Bottom - R.Top, Size_SourceIsInterface);
+  end;
+end;
+
 procedure TCarbonControl.AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowCommandProcess: Boolean);
 begin
   AllowCommandProcess:=True;
