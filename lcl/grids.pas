@@ -102,7 +102,8 @@ type
     goScrollKeepVisible,  // keeps focused cell visible while scrolling
     goHeaderHotTracking,  // Header cells change look when mouse is over them
     goHeaderPushedLook,   // Header cells looks pushed when clicked
-    goSelectionActive     // Setting grid.Selection moves also cell cursor
+    goSelectionActive,    // Setting grid.Selection moves also cell cursor
+    goFixedColSizing
   );
   TGridOptions = set of TGridOption;
 
@@ -2486,7 +2487,10 @@ begin
     //DeltaOff := OffEnd - FGCache.ClickMouse.X;
     DeltaOff := 0;
 
-    result := (Index>=FixedCols);
+    if goFixedColSizing in Options then
+      result := (Index>=0)
+    else
+      result := (Index>=FixedCols);
   end;
 
 end;
@@ -5061,9 +5065,9 @@ begin
     HeaderSizing(true, Index, X - OffIni + DeltaOff);
     exit(true);
   end else
-  if (fGridState=gsNormal) and (ColCount>FixedCols) and
+  if (fGridState=gsNormal) and
      ((Y<FGCache.FixedHeight) or (FExtendedColSizing and (Y<FGCache.MaxClientXY.Y))) and
-     (FlipX(X)>FGCache.FixedWidth)
+     ((goFixedColSizing in Options) or ((ColCount>FixedCols) and (FlipX(X)>FGCache.FixedWidth)))
   then begin
 
     // find closest cell and cell boundaries
@@ -5085,15 +5089,21 @@ begin
         FindPrevColumn;
     end;
 
-    // check if it's not fixed col and if cursor is close enough to sel boundary
-    if (Index>=FFixedCols)and(Abs(Offset-x)<=2) then begin
-      // start resizing
-      if Cursor<>crHSplit then begin
-        PrevLine := false;
-        PrevOffset := -1;
-        ChangeCursor(crHSplit);
+    // check if cursor is near boundary and it's a valid column
+    if (Abs(Offset-x)<=2) then begin
+      if goFixedColSizing in Options then
+        Offset := 0
+      else
+        Offset := FFixedCols;
+      if Index>=Offset then begin
+        // start resizing
+        if Cursor<>crHSplit then begin
+          PrevLine := false;
+          PrevOffset := -1;
+          ChangeCursor(crHSplit);
+        end;
+        exit(true);
       end;
-      exit(true);
     end;
 
   end;
@@ -5690,10 +5700,15 @@ begin
 
     gzFixedCells:
       begin
-        FGridState := gsHeaderClicking;
-        if ((goHeaderPushedLook in Options) and
-            (FGCache.HotGridZone in FHeaderPushZones)) then
-          DoPushCell;
+        if (goColSizing in Options) and (goFixedColSizing in Options) and
+           (Cursor=crHSplit) then
+          fGridState:= gsColSizing
+        else begin
+          FGridState := gsHeaderClicking;
+          if ((goHeaderPushedLook in Options) and
+              (FGCache.HotGridZone in FHeaderPushZones)) then
+            DoPushCell;
+        end;
       end;
 
     gzFixedCols:
