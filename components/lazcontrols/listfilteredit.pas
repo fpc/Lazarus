@@ -114,6 +114,7 @@ type
     procedure MapShortToFullFilename(ShortFilename, FullFilename: string);
     procedure ApplyFilter(Immediately: Boolean = False);
     procedure InvalidateFilter;
+    procedure StoreSelection; // Calls the ViewControlWrapper method
   public
     property Filter: string read fFilter write SetFilter;
     property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
@@ -322,6 +323,7 @@ procedure TViewControlTreeview.StoreSelection;
 var
   ANode: TTreeNode;
 begin
+  fOwner.fSelectionList.Clear;
   ANode:=fTreeview.Selected;
   while ANode<>nil do begin
     fOwner.fSelectionList.Insert(0,ANode.Text);
@@ -349,7 +351,6 @@ begin
     end;
     if ANode<>nil then
       fTreeview.Selected:=ANode;
-    fSelectionList.Clear;
   end;
 end;
 
@@ -478,6 +479,7 @@ procedure TViewControlListbox.StoreSelection;
 var
   i: Integer;
 begin
+  fOwner.fSelectionList.Clear;
   for i := 0 to fListbox.Count-1 do begin
     if fListbox.Selected[i] then
       fOwner.fSelectionList.Add(fListbox.Items[i]);
@@ -681,6 +683,11 @@ procedure TListFilterEdit.InvalidateFilter;
 begin
   fNeedUpdate:=true;
   IdleConnected:=true;
+end;
+
+procedure TListFilterEdit.StoreSelection;
+begin
+  fViewControlWrapper.StoreSelection;
 end;
 
 end.

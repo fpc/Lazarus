@@ -25,6 +25,7 @@ object ViewUnitDialog: TViewUnitDialog
     OnDblClick = OKButtonClick
     OnKeyDown = ListboxKeyDown
     PopupMenu = popListBox
+    Style = lbOwnerDrawFixed
     TabOrder = 0
   end
   object ButtonPanel: TButtonPanel

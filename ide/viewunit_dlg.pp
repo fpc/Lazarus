@@ -40,8 +40,8 @@ interface
 uses
   SysUtils, Classes, Math, Controls, Forms, Dialogs, Buttons, StdCtrls,
   LazarusIdeStrConsts, LCLType, LCLIntf, LMessages,
-  ExtCtrls, ButtonPanel, Menus, StrUtils,
-  IDEWindowIntf, IDEHelpIntf, ListFilterEdit;
+  ExtCtrls, ButtonPanel, Menus, StrUtils, ImgList,
+  IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, ListFilterEdit;
 
 type
   TViewUnitsEntry = class
@@ -73,14 +73,16 @@ type
     procedure MultiselectCheckBoxClick(Sender :TObject);
   private
     FSortAlphabetically: boolean;
+    FImageIndex: Integer;
     procedure SetSortAlphabetically(const AValue: boolean);
+    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
   public
     constructor Create(TheOwner: TComponent); override;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
   end;
 
 function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
-  var CheckMultiSelect: Boolean; const Caption: string): TModalResult;
+  var CheckMultiSelect: Boolean; const aCaption: string; aImageIndex: Integer): TModalResult;
   // Entries is a list of TViewUnitsEntry(s)
 
 implementation
@@ -88,25 +90,30 @@ implementation
 {$R *.lfm}
 
 function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
-  var CheckMultiSelect: Boolean; const Caption: string): TModalResult;
+  var CheckMultiSelect: Boolean; const aCaption: string; aImageIndex: Integer): TModalResult;
 var
   ViewUnitDialog: TViewUnitDialog;
   UEntry: TViewUnitsEntry;
-  TmpList: TStringList;
   i: integer;
 begin
+  IDEImages.Images_16;
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
   with ViewUnitDialog do
   try
-    Caption:=Caption;
+    Caption:=aCaption;
     mniMultiselect.Enabled := AllowMultiSelect;
     mniMultiselect.Checked := CheckMultiSelect;
     ListBox.MultiSelect := mniMultiselect.Enabled;
+    if aImageIndex > -1 then begin
+      FImageIndex:=aImageIndex;
+      FilterEdit.Images4Listbox:=IDEImages.Images_16;
+      FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
+    end;
     // Data items
-      for i:=0 to Entries.Count-1 do begin
-        UEntry:=TViewUnitsEntry(Entries.Objects[i]);
-        FilterEdit.Data.Add(UEntry.Name);
-      end;
+    for i:=0 to Entries.Count-1 do begin
+      UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+      FilterEdit.Data.Add(UEntry.Name);
+    end;
     FilterEdit.InvalidateFilter;
     // Initial selection
     for i:=0 to Entries.Count-1 do
@@ -118,18 +125,10 @@ begin
     Result:=ShowModal;
     if Result=mrOk then begin
       // Return new selections from the dialog
-      TmpList:=TStringList.Create;
-      try
-        for i:=0 to ListBox.Count-1 do begin
-          if ListBox.Selected[i] then
-            TmpList.Add(ListBox.Items[i]);
-        end;
-        for i:=0 to Entries.Count-1 do begin
-          UEntry:=TViewUnitsEntry(Entries.Objects[i]);
-          UEntry.Selected:=TmpList.IndexOf(UEntry.Name)>-1;
-        end;
-      finally
-        TmpList.Free;
+      FilterEdit.StoreSelection;
+      for i:=0 to Entries.Count-1 do begin
+        UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+        UEntry.Selected:=FilterEdit.SelectionList.IndexOf(UEntry.Name)>-1;
       end;
       CheckMultiSelect := mniMultiselect.Checked;
     end;
@@ -205,6 +204,12 @@ begin
   SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.InvalidateFilter;
+end;
+
+function TViewUnitDialog.ChooseImageIndex(Str: String; Data: TObject;
+                                          var IsEnabled: Boolean): Integer;
+begin
+  Result:=FImageIndex;
 end;
 
 

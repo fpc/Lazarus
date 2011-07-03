@@ -9549,11 +9549,20 @@ begin
     end;
   end;
   case ItemType of
-    piUnit: DlgCaption := dlgMainViewUnits;
-    piComponent: DlgCaption := dlgMainViewForms;
-    piFrame: DlgCaption := dlgMainViewFrames;
+    piUnit: begin
+      DlgCaption := dlgMainViewUnits;
+      i := IDEImages.LoadImage(16, 'item_unit');
+    end;
+    piComponent: begin
+      DlgCaption := dlgMainViewForms;
+      i := IDEImages.LoadImage(16, 'item_form');
+    end;
+    piFrame: begin
+      DlgCaption := dlgMainViewFrames;
+      i := IDEImages.LoadImage(16, 'tpanel');
+    end;
   end;
-  Result := ShowViewUnitsDlg(ItemList, MultiSelect, MultiSelectCheckedState, DlgCaption);
+  Result := ShowViewUnitsDlg(ItemList, MultiSelect, MultiSelectCheckedState, DlgCaption, i);
 end;
 
 function TMainIDE.DoSelectFrame: TComponentClass;
@@ -11158,7 +11167,6 @@ Begin
   ViewUnitEntries := TStringList.Create;
   ViewUnitEntries.Sorted := True;
   UnitInfos:=nil;
-
   try
     for i := 0 to Project1.UnitCount-1 do
     begin
@@ -11169,7 +11177,8 @@ Begin
         ViewUnitEntries.AddObject(AName, TViewUnitsEntry.Create(AName,i,false));
       end;
     end;
-    if ShowViewUnitsDlg(ViewUnitEntries, true, MultiSelectCheckedState, lisRemoveFromProject) <> mrOk then
+    if ShowViewUnitsDlg(ViewUnitEntries, true, MultiSelectCheckedState,
+          lisRemoveFromProject, IDEImages.LoadImage(16, 'item_unit')) <> mrOk then
       exit(mrOk);
     { This is where we check what the user selected. }
     UnitInfos:=TFPList.Create;
