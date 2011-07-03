@@ -41,7 +41,7 @@ uses
   SysUtils, Classes, Math, Controls, Forms, Dialogs, Buttons, StdCtrls,
   LazarusIdeStrConsts, LCLType, LCLIntf, LMessages,
   ExtCtrls, ButtonPanel, Menus, StrUtils,
-  IDEWindowIntf, IDEHelpIntf;
+  IDEWindowIntf, IDEHelpIntf, ListFilterEdit;
 
 type
   TViewUnitsEntry = class
@@ -55,28 +55,28 @@ type
   { TViewUnitDialog }
 
   TViewUnitDialog = class(TForm)
+    BtnPanel: TPanel;
     ButtonPanel: TButtonPanel;
-    Edit: TEdit;
+    DummySpeedButton: TSpeedButton;
+    FilterEdit: TListFilterEdit;
     ListBox: TListBox;
     mniMultiSelect: TMenuItem;
-    mniSort: TMenuItem;
+    OptionsBitBtn: TSpeedButton;
     popListBox: TPopupMenu;
-    procedure EditChange(Sender: TObject);
-    procedure EditEnter(Sender: TObject);
-    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    RemoveBitBtn: TSpeedButton;
+    SortAlphabeticallySpeedButton: TSpeedButton;
+    procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
+    procedure OKButtonClick(Sender :TObject);
     procedure HelpButtonClick(Sender: TObject);
-    procedure mniSortClick(Sender: TObject);
-    Procedure OKButtonClick(Sender :TObject);
-    Procedure CancelButtonClick(Sender :TObject);
-    procedure ListboxClick(Sender: TObject);
+    procedure CancelButtonClick(Sender :TObject);
     procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MultiselectCheckBoxClick(Sender :TObject);
   private
-    FBlockListBoxChange: boolean;
-    procedure FocusEdit;
-    procedure SearchList(StartIndex: Integer = -1);
+    FSortAlphabetically: boolean;
+    procedure SetSortAlphabetically(const AValue: boolean);
   public
     constructor Create(TheOwner: TComponent); override;
+    property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
   end;
 
 function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
@@ -91,48 +91,41 @@ function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
   var CheckMultiSelect: Boolean; const Caption: string): TModalResult;
 var
   ViewUnitDialog: TViewUnitDialog;
+  UEntry: TViewUnitsEntry;
   i: integer;
 begin
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
+  with ViewUnitDialog do
   try
-    ViewUnitDialog.Caption:=Caption;
-    ViewUnitDialog.mniMultiselect.Enabled := AllowMultiSelect;
-    ViewUnitDialog.mniMultiselect.Checked := CheckMultiSelect;
-    ViewUnitDialog.ListBox.MultiSelect := ViewUnitDialog.mniMultiselect.Enabled;
-    with ViewUnitDialog.ListBox.Items do begin
-      BeginUpdate;
-      Clear;
-      for i:=0 to Entries.Count-1 do
-        Add(TViewUnitsEntry(Entries.Objects[i]).Name);
-      EndUpdate;
-    end;
-    for i:=0 to Entries.Count-1 do
-      ViewUnitDialog.ListBox.Selected[i]:=TViewUnitsEntry(Entries.Objects[i]).Selected;
-    Result:=ViewUnitDialog.ShowModal;
-    if Result=mrOk then begin
+    Caption:=Caption;
+    mniMultiselect.Enabled := AllowMultiSelect;
+    mniMultiselect.Checked := CheckMultiSelect;
+    ListBox.MultiSelect := mniMultiselect.Enabled;
+    // Data items
       for i:=0 to Entries.Count-1 do begin
-        TViewUnitsEntry(Entries.Objects[i]).Selected:=ViewUnitDialog.ListBox.Selected[i];
+        UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+        FilterEdit.Data.Add(UEntry.Name);
       end;
-      CheckMultiSelect := ViewUnitDialog.mniMultiselect.Checked;
+    FilterEdit.InvalidateFilter;
+    // Initial selection
+    for i:=0 to Entries.Count-1 do
+      if TViewUnitsEntry(Entries.Objects[i]).Selected then begin
+        UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+        FilterEdit.SelectionList.Add(UEntry.Name);
+      end;
+    // Show the dialog
+    Result:=ShowModal;
+    if Result=mrOk then begin
+      // Return new selections from the dialog
+      for i:=0 to Entries.Count-1 do begin
+        UEntry:=TViewUnitsEntry(Entries.Objects[i]);
+        UEntry.Selected:=FilterEdit.SelectionList.IndexOf(UEntry.Name)>-1;
+      end;
+      CheckMultiSelect := mniMultiselect.Checked;
     end;
   finally
-    ViewUnitDialog.Free;
+    Free;
   end;
-end;
-
-function SearchItem(Items: TStrings; Text: String; StartIndex: Integer = -1): Integer;
-var
-  i: integer;
-begin
-  // Items can be unsorted => use simple traverse
-  Result := -1;
-  Text := AnsiLowerCase(Text);
-  for i := StartIndex +1 to Items.Count - 1 do
-    if AnsiContainsText(Items[i], Text) then
-    begin
-      Result := i;
-      break;
-    end;
 end;
 
 { TViewUnitsEntry }
@@ -157,9 +150,16 @@ begin
   ButtonPanel.OKButton.Caption:=lisOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=dlgCancel;
+  SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
+  SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
 end;
 
-Procedure TViewUnitDialog.OKButtonClick(Sender : TOBject);
+procedure TViewUnitDialog.SortAlphabeticallySpeedButtonClick(Sender: TObject);
+begin
+  SortAlphabetically:=SortAlphabeticallySpeedButton.Down;
+end;
+
+procedure TViewUnitDialog.OKButtonClick(Sender: TObject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrOK;
@@ -170,108 +170,10 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TViewUnitDialog.mniSortClick(Sender: TObject);
-var
-  TmpList: TStringList;
-  i: Integer;
-  SelName: String;
-begin
-  TmpList := TStringList.Create;
-  try
-    TmpList.Assign(ListBox.Items);
-    if ListBox.MultiSelect then
-    begin
-      for i := 0 to ListBox.Count -1 do
-        if ListBox.Selected[i] then
-          TmpList.Objects[i] := TObject(-1);
-    end;
-    TmpList.Sort;
-    if ListBox.ItemIndex >= 0 then
-      SelName := ListBox.Items[ListBox.ItemIndex]
-    else
-      SelName := '';
-    ListBox.Items := TmpList;
-    if SelName <> '' then
-    begin
-      ListBox.ItemIndex := TmpList.IndexOf(SelName);
-      ListBox.MakeCurrentVisible;
-    end;
-    if ListBox.MultiSelect then
-    begin
-      ListBox.ClearSelection;
-      for i := 0 to TmpList.Count -1 do
-        if TmpList.Objects[i] <> nil then
-          ListBox.Selected[i] := True;
-    end;
-  finally
-    TmpList.Free;
-  end;
-end;
-
-procedure TViewUnitDialog.EditKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-  
-  procedure MoveItemIndex(d: integer); inline;
-  var
-    NewIndex: Integer;
-  begin
-    NewIndex := Min(ListBox.Items.Count - 1, Max(0, ListBox.ItemIndex + D));
-    ListBox.ItemIndex := NewIndex;
-    ListBoxClick(nil);
-  end;
-
-  function PageCount: Integer;
-  begin
-    if ListBox.ItemHeight > 0 then
-      Result := ListBox.Height div ListBox.ItemHeight
-    else
-      Result := 0;
-  end;
-  
-begin
-  case Key of
-    VK_UP: MoveItemIndex(-1);
-    VK_DOWN:
-      begin
-        MoveItemIndex(1);
-        // Avoid switching to next control in TabOrder in gtk2
-        Key := 0;
-      end;
-    VK_NEXT: MoveItemIndex(PageCount);
-    VK_PRIOR: MoveItemIndex(-PageCount);
-    VK_RETURN: OKButtonClick(nil);
-    VK_RIGHT: SearchList(ListBox.ItemIndex);
-  end;
-end;
-
-procedure TViewUnitDialog.EditChange(Sender: TObject);
-begin
-  // the change was initiated by the listbox,
-  // so don't make any changes to the listbox
-  if FBlockListBoxChange then exit;
-  
-  SearchList();
-end;
-
-procedure TViewUnitDialog.EditEnter(Sender: TObject);
-begin
-  FocusEdit;
-end;
-
-Procedure TViewUnitDialog.CancelButtonClick(Sender : TOBject);
+procedure TViewUnitDialog.CancelButtonClick(Sender: TObject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
-end;
-
-procedure TViewUnitDialog.ListboxClick(Sender: TObject);
-begin
-  FBlockListBoxChange := true;
-  
-  if ListBox.ItemIndex <> -1 then
-    Edit.Text := ListBox.Items[ListBox.ItemIndex];
-  
-  FBlockListBoxChange := false;
 end;
 
 procedure TViewUnitDialog.ListboxKeyDown(Sender: TObject; var Key: Word;
@@ -286,28 +188,15 @@ begin
   ListBox.Multiselect := mniMultiSelect.Checked;
 end;
 
-procedure TViewUnitDialog.FocusEdit;
+procedure TViewUnitDialog.SetSortAlphabetically(const AValue: boolean);
 begin
-  Edit.SelectAll;
-  Edit.SetFocus;
+  if FSortAlphabetically=AValue then exit;
+  FSortAlphabetically:=AValue;
+  SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
+  FilterEdit.SortData:=SortAlphabetically;
+  FilterEdit.InvalidateFilter;
 end;
 
-procedure TViewUnitDialog.SearchList(StartIndex: Integer);
-var
-  Index: Integer;
-begin
-  Index := SearchItem(ListBox.Items, Edit.Text, StartIndex);
-  if Index >= 0 then
-  begin
-    ListBox.ItemIndex := Index;
-    ListBox.MakeCurrentVisible;
-    if ListBox.MultiSelect then
-    begin
-      ListBox.ClearSelection;
-      ListBox.Selected[Index] := True;
-    end;
-  end;
-end;
 
 end.
 
