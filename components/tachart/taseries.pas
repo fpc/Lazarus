@@ -64,7 +64,6 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    function GetZeroLevel: Double; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -465,7 +464,7 @@ begin
   DrawLines;
   DrawLabels(ACanvas);
 
-  if FShowPoints then
+  if FShowPoints and Pointer.Visible then
     for i := FLoBound to FUpBound do begin
       p := FGraphPoints[i - FLoBound];
       if not ParentChart.IsPointInViewPort(p) then continue;
@@ -832,11 +831,6 @@ end;
 function TBarSeries.GetSeriesColor: TColor;
 begin
   Result := FBarBrush.Color;
-end;
-
-function TBarSeries.GetZeroLevel: Double;
-begin
-  Result := ZeroLevel;
 end;
 
 function TBarSeries.IsZeroLevelStored: boolean;
