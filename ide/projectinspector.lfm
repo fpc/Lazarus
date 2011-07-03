@@ -2,18 +2,18 @@ object ProjectInspectorForm: TProjectInspectorForm
   Left = 389
   Height = 474
   Top = 328
-  Width = 388
+  Width = 400
   ActiveControl = ItemsTreeView
   Caption = 'ProjectInspectorForm'
   ClientHeight = 474
-  ClientWidth = 388
+  ClientWidth = 400
   OnShow = ProjectInspectorFormShow
   LCLVersion = '0.9.31'
   object ItemsTreeView: TTreeView
     Left = 0
     Height = 448
     Top = 26
-    Width = 388
+    Width = 400
     Align = alClient
     BorderSpacing.Top = 2
     DefaultItemHeight = 15
@@ -30,18 +30,18 @@ object ProjectInspectorForm: TProjectInspectorForm
     Left = 0
     Height = 24
     Top = 0
-    Width = 388
+    Width = 400
     Align = alTop
     AutoSize = True
     ClientHeight = 24
-    ClientWidth = 388
+    ClientWidth = 400
     TabOrder = 1
     object DummySpeedButton: TSpeedButton
-      Left = 318
+      Left = 161
       Height = 22
       Top = 1
-      Width = 23
-      Align = alRight
+      Width = 15
+      Align = alLeft
       NumGlyphs = 0
     end
     object OpenBitBtn: TSpeedButton
@@ -97,11 +97,11 @@ object ProjectInspectorForm: TProjectInspectorForm
       ParentShowHint = False
     end
     object DirectoryHierarchySpeedButton: TSpeedButton
-      Left = 341
+      Left = 176
       Height = 22
       Top = 1
-      Width = 23
-      Align = alRight
+      Width = 25
+      Align = alLeft
       AllowAllUp = True
       AutoSize = True
       GroupIndex = 1
@@ -111,11 +111,11 @@ object ProjectInspectorForm: TProjectInspectorForm
       ParentShowHint = False
     end
     object SortAlphabeticallySpeedButton: TSpeedButton
-      Left = 364
+      Left = 201
       Height = 22
       Top = 1
-      Width = 23
-      Align = alRight
+      Width = 25
+      Align = alLeft
       AllowAllUp = True
       AutoSize = True
       GroupIndex = 2
@@ -125,14 +125,16 @@ object ProjectInspectorForm: TProjectInspectorForm
       ParentShowHint = False
     end
     object FilterEdit: TListFilterEdit
-      Left = 161
-      Height = 22
-      Top = 1
-      Width = 157
+      AnchorSideLeft.Control = SortAlphabeticallySpeedButton
+      AnchorSideLeft.Side = asrBottom
+      Left = 226
+      Height = 20
+      Top = 3
+      Width = 154
       FilteredTreeview = ItemsTreeView
       ButtonWidth = 23
       NumGlyphs = 0
-      Align = alClient
+      Anchors = [akLeft, akRight]
       Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
