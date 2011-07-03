@@ -541,8 +541,10 @@ begin
     wasClipping := true;
   end;
 
-  ACanvas.Pen.Assign(LinkPen);
-  ACanvas.Line(ADataPoint, ALabelCenter);
+  if LinkPen.Visible then begin
+    ACanvas.Pen.Assign(LinkPen);
+    ACanvas.Line(ADataPoint, ALabelCenter);
+  end;
   ACanvas.Brush.Assign(LabelBrush);
   if IsMarginRequired then begin
     ACanvas.Pen.Assign(Frame);

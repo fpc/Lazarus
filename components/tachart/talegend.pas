@@ -348,7 +348,10 @@ begin
     // Draw the background and the border.
     ACanvas.Font.Assign(Font);
     ACanvas.Brush.Assign(BackgroundBrush);
-    ACanvas.Pen.Assign(Frame);
+    if Frame.Visible then
+      ACanvas.Pen.Assign(Frame)
+    else
+      ACanvas.Pen.Style := psClear;
     ACanvas.Rectangle(ABounds);
 
     r := ABounds;
