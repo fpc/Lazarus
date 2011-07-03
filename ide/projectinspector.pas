@@ -152,7 +152,7 @@ type
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
-    function ChooseImageIndex(Str: String; Data: TObject): Integer;
+    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
     procedure UpdateProjectFiles(Immediately: boolean);
     procedure UpdateRequiredPackages;
     procedure UpdateRemovedRequiredPackages;
@@ -516,7 +516,7 @@ begin
   FShowDirectoryHierarchy:=AValue;
   DirectoryHierarchySpeedButton.Down:=FShowDirectoryHierarchy;
   FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
-  FilterEdit.Invalidate;
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TProjectInspectorForm.SetSortAlphabetically(const AValue: boolean);
@@ -525,7 +525,7 @@ begin
   FSortAlphabetically:=AValue;
   SortAlphabeticallySpeedButton.Down:=SortAlphabetically;
   FilterEdit.SortData:=SortAlphabetically;
-  FilterEdit.Invalidate;
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TProjectInspectorForm.SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -600,8 +600,10 @@ begin
   end;
 end;
 
-function TProjectInspectorForm.ChooseImageIndex(Str: String; Data: TObject): Integer;
+function TProjectInspectorForm.ChooseImageIndex(Str: String; Data: TObject;
+                                                var IsEnabled: Boolean): Integer;
 begin
+  IsEnabled:=True;
   if FilenameIsPascalUnit((Data as TUnitInfo).Filename) then
     Result:=ImageIndexUnit
   else if (LazProject<>nil) and (LazProject.MainUnitinfo=Data) then
@@ -638,7 +640,7 @@ begin
     end;
     CurFile:=CurFile.NextPartOfProject;
   end;
-  FilterEdit.Invalidate;               // Data is shown by FilterEdit.
+  FilterEdit.InvalidateFilter;            // Data is shown by FilterEdit.
 end;
 
 procedure TProjectInspectorForm.UpdateRequiredPackages;

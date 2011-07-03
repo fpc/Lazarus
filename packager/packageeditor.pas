@@ -244,7 +244,7 @@ type
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
-    function ChooseImageIndex(Str: String; Data: TObject): Integer;
+    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
     procedure UpdateTitle;
     procedure UpdateButtons;
     procedure UpdateFiles;
@@ -1553,7 +1553,7 @@ begin
   FShowDirectoryHierarchy:=AValue;
   DirectoryHierarchySpeedButton.Down:=FShowDirectoryHierarchy;
   FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
-  FilterEdit.Invalidate;
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.SetSortAlphabetically(const AValue: boolean);
@@ -1562,7 +1562,7 @@ begin
   FSortAlphabetically:=AValue;
   SortAlphabeticallySpeedButton.Down:=FSortAlphabetically;
   FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
-  FilterEdit.Invalidate;
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
@@ -1606,8 +1606,10 @@ begin
   OptionsBitBtn.Enabled:=true;
 end;
 
-function TPackageEditorForm.ChooseImageIndex(Str: String; Data: TObject): Integer;
+function TPackageEditorForm.ChooseImageIndex(Str: String; Data: TObject;
+                                             var IsEnabled: Boolean): Integer;
 begin
+  IsEnabled:=True;
   case TPkgFile(Data).FileType of
     pftUnit,pftVirtualUnit,pftMainUnit:
       if TPkgFile(Data).HasRegisterProc then
@@ -1633,6 +1635,7 @@ var
   NextNode: TTreeNode;
   Filename: String;
   TVNodeStack: TFPList;
+  ena: Boolean;
 begin
   if LazPackage=nil then exit;
   FilterEdit.RootNode:=FFilesNode;
@@ -1650,7 +1653,7 @@ begin
       FilterEdit.MapShortToFullFilename(Filename, CurFile.Filename);
     end;
   end;
-  FilterEdit.Invalidate;                  // Data is shown by FilterEdit.
+  FilterEdit.InvalidateFilter;               // Data is shown by FilterEdit.
 
   // removed files
   if LazPackage.RemovedFilesCount>0 then begin
@@ -1667,8 +1670,8 @@ begin
       if CurNode=nil then
         CurNode:=FilesTreeView.Items.AddChild(FRemovedFilesNode,'');
       CurFile:=LazPackage.RemovedFiles[i];
-      CurNode.Text:=CurFile.GetShortFilename(true);
-      CurNode.ImageIndex:=ChooseImageIndex('', CurFile); // SetImageIndex(CurNode,CurFile);
+      CurNode.Text:=CurFile.GetShortFilename(true); // SetImageIndex(CurNode,CurFile);
+      CurNode.ImageIndex:=ChooseImageIndex('', CurFile, ena);
       CurNode:=CurNode.GetNextSibling;
     end;
     while CurNode<>nil do begin

@@ -100,7 +100,7 @@ type
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
     function PackageInInstallList(PkgName: string): boolean;
-    function ChooseImageIndex(Str: String; Data: TObject): Integer;
+    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
     procedure UpdateAvailablePackages(Immediately: boolean = false);
     procedure UpdateNewInstalledPackages;
     procedure OnIteratePackages(APackageID: TLazPackageID);
@@ -354,7 +354,8 @@ begin
   Result:=false;
 end;
 
-function TInstallPkgSetDialog.ChooseImageIndex(Str: String; Data: TObject): Integer;
+function TInstallPkgSetDialog.ChooseImageIndex(Str: String; Data: TObject;
+                                               var IsEnabled: Boolean): Integer;
 var
   Pkg: TLazPackageID;
   APackage: TLazPackage;
@@ -391,7 +392,7 @@ begin
     end;
     ANode:=fAvailablePackages.FindSuccessor(ANode);
   end;
-  AvailableFilterEdit.Invalidate;
+  AvailableFilterEdit.InvalidateFilter;
 end;
 
 procedure TInstallPkgSetDialog.UpdateNewInstalledPackages;
