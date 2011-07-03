@@ -36,6 +36,7 @@ WizardImageStretch=false
 ShowTasksTreeLines=true
 TimeStampRounding=0
 PrivilegesRequired=none
+ChangesAssociations=true
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
