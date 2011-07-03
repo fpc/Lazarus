@@ -1609,7 +1609,6 @@ end;
 function TPackageEditorForm.ChooseImageIndex(Str: String; Data: TObject;
                                              var IsEnabled: Boolean): Integer;
 begin
-  IsEnabled:=True;
   case TPkgFile(Data).FileType of
     pftUnit,pftVirtualUnit,pftMainUnit:
       if TPkgFile(Data).HasRegisterProc then

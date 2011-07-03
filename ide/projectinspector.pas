@@ -603,7 +603,6 @@ end;
 function TProjectInspectorForm.ChooseImageIndex(Str: String; Data: TObject;
                                                 var IsEnabled: Boolean): Integer;
 begin
-  IsEnabled:=True;
   if FilenameIsPascalUnit((Data as TUnitInfo).Filename) then
     Result:=ImageIndexUnit
   else if (LazProject<>nil) and (LazProject.MainUnitinfo=Data) then
