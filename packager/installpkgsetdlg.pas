@@ -192,7 +192,7 @@ begin
 
   fAvailablePackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   FNewInstalledPackages:=TObjectList.Create(true);
-
+  ActiveControl:=AvailableFilterEdit;
   PkgInfoMemo.Clear;
 end;
 

@@ -31,7 +31,7 @@ inherited PackageEditorForm: TPackageEditorForm
     Caption = 'FilePropsGroupBox'
     ClientHeight = 101
     ClientWidth = 573
-    TabOrder = 1
+    TabOrder = 2
     object CallRegisterProcCheckBox: TCheckBox
       Left = 0
       Height = 18
@@ -175,7 +175,7 @@ inherited PackageEditorForm: TPackageEditorForm
     BevelOuter = bvNone
     ClientHeight = 261
     ClientWidth = 577
-    TabOrder = 4
+    TabOrder = 1
     object FilesTreeView: TTreeView
       AnchorSideTop.Side = asrBottom
       Left = 0
@@ -187,7 +187,7 @@ inherited PackageEditorForm: TPackageEditorForm
       DefaultItemHeight = 15
       PopupMenu = FilesPopupMenu
       ReadOnly = True
-      TabOrder = 0
+      TabOrder = 1
       OnDblClick = FilesTreeViewDblClick
       OnKeyPress = FilesTreeViewKeyPress
       OnSelectionChanged = FilesTreeViewSelectionChanged
@@ -240,7 +240,7 @@ inherited PackageEditorForm: TPackageEditorForm
       Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
-      TabOrder = 1
+      TabOrder = 0
     end
   end
   object FilesPopupMenu: TPopupMenu[5]

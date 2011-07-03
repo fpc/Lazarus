@@ -42,7 +42,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       BorderSpacing.Around = 6
       Caption = 'ImportButton'
       OnClick = ImportButtonClick
-      TabOrder = 0
+      TabOrder = 2
     end
     object ExportButton: TButton
       Left = 6
@@ -53,7 +53,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       BorderSpacing.Around = 6
       Caption = 'ExportButton'
       OnClick = ExportButtonClick
-      TabOrder = 1
+      TabOrder = 3
     end
     object InstallTreeView: TTreeView
       Left = 6
@@ -68,7 +68,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       ShowButtons = False
       ShowLines = False
       ShowRoot = False
-      TabOrder = 2
+      TabOrder = 0
       OnDblClick = InstallTreeViewDblClick
       OnSelectionChanged = InstallTreeViewSelectionChanged
       Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
@@ -82,7 +82,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       BorderSpacing.Around = 6
       Caption = 'UninstallButton'
       OnClick = UninstallButtonClick
-      TabOrder = 3
+      TabOrder = 1
     end
   end
   object AvailablePkgGroupBox: TGroupBox
@@ -120,7 +120,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       ShowButtons = False
       ShowLines = False
       ShowRoot = False
-      TabOrder = 0
+      TabOrder = 1
       OnDblClick = AvailableTreeViewDblClick
       OnSelectionChanged = AvailableTreeViewSelectionChanged
       Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoToolTips, tvoThemedDraw]
@@ -134,7 +134,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       BorderSpacing.Around = 6
       Caption = 'AddToInstallButton'
       OnClick = AddToInstallButtonClick
-      TabOrder = 1
+      TabOrder = 2
     end
     object AvailableFilterEdit: TListFilterEdit
       Left = 6
@@ -148,7 +148,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
-      TabOrder = 2
+      TabOrder = 0
     end
   end
   object PkgInfoGroupBox: TGroupBox
