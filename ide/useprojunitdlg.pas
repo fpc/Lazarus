@@ -48,9 +48,8 @@ type
     procedure AllUnitsCheckBoxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure UnitnameEditKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure UnitnameEditKeyPress(Sender: TObject; var Key: char);
+//    procedure UnitnameEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+//    procedure UnitnameEditKeyPress(Sender: TObject; var Key: char);
     procedure UnitsListBoxClick(Sender: TObject);
     procedure UnitsListBoxDblClick(Sender: TObject);
     procedure UnitsListBoxDrawItem(Control: TWinControl; Index: Integer;
@@ -70,8 +69,8 @@ type
     function InterfaceSelected: Boolean;
     procedure EnableOnlyInterface;
     procedure SearchList(StartIndex: Integer = -1);
-    procedure UpdateUnitName(Index: Integer);
-    function UnitExists(AUnitName: string): Boolean;
+//    procedure UpdateUnitName(Index: Integer);
+//    function UnitExists(AUnitName: string): Boolean;
   public
 
   end; 
@@ -92,7 +91,7 @@ type
     Handled: Boolean;
     constructor Create(AIdentList: TIdentifierList; AIdentItem: TIdentifierListItem);
   end;
-
+{
 function FindUnitName(f: TUnitsListBoxObject): string;
 var
   CodeBuf: TCodeBuffer;
@@ -104,7 +103,7 @@ begin
   if Result = '' then
     Result := f.IdentItem.Identifier;
 end;
-
+}
 function ShowUseUnitDialog: TModalResult;
 var
   UseProjUnitDlg: TUseUnitDialog;
@@ -192,9 +191,10 @@ begin
     AddOtherUnits
   else
     RemoveOtherUnits;
-  if Visible then UnitnameEdit.SetFocus;
+  if Visible then
+    UnitnameEdit.SetFocus;
 end;
-
+{
 procedure TUseUnitDialog.UnitnameEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -223,16 +223,17 @@ begin
   SearchList;
   Key := #0;
 end;
-
+}
 procedure TUseUnitDialog.UnitsListBoxClick(Sender: TObject);
 begin
   with UnitsListBox do
     if ItemIndex >= 0 then
     begin
       UpdateUnitName(ItemIndex);
-      UnitnameEdit.Text := Items[ItemIndex];
-      if Visible then UnitnameEdit.SetFocus;
-      UnitnameEdit.SelectAll;
+{      UnitnameEdit.Text := Items[ItemIndex];
+      if Visible then
+        UnitnameEdit.SetFocus;
+      UnitnameEdit.SelectAll;    }
     end;
 end;
 
@@ -241,8 +242,8 @@ begin
   with UnitsListBox do
     if ItemIndex >= 0 then
     begin
-      UpdateUnitName(ItemIndex);
-      UnitnameEdit.Text := Items[ItemIndex];
+//      UpdateUnitName(ItemIndex);
+//      UnitnameEdit.Text := Items[ItemIndex];
       ModalResult := mrOK;
     end;
 end;
@@ -364,12 +365,12 @@ begin
     Screen.Cursor:=crDefault;
   end;
 end;
-
+{
 function TUseUnitDialog.SelectedUnit: string;
 begin
   Result := Trim(UnitnameEdit.Text);
 end;
-
+}
 function TUseUnitDialog.InterfaceSelected: Boolean;
 begin
   Result:=SectionRadioGroup.ItemIndex=0;
@@ -395,7 +396,7 @@ begin
       Break;
     end;
 end;
-
+{
 procedure TUseUnitDialog.SearchList(StartIndex: Integer);
 var
   Index, Len: Integer;
@@ -435,7 +436,7 @@ begin
     Result := FOtherUnits.IndexOf(AUnitName) >= 0;
   end;
 end;
-
+}
 
 end.
 
