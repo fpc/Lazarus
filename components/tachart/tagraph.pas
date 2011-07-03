@@ -193,7 +193,7 @@ type
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetReticulePos(const AValue: TPoint);
     procedure SetTitle(Value: TChartTitle);
-    procedure SetToolset(const AValue: TBasicChartToolset);
+    procedure SetToolset(AValue: TBasicChartToolset);
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
   protected
@@ -209,6 +209,8 @@ type
     {$IFDEF LCLGtk2}
     procedure DoOnResize; override;
     {$ENDIF}
+    procedure Notification(
+      AComponent: TComponent; AOperation: TOperation); override;
     procedure PrepareAxis(ACanvas: TCanvas);
     procedure PrepareLegend(
       ACanvas: TCanvas; out ALegendItems: TChartLegendItems;
@@ -637,7 +639,7 @@ var
   axisMargin: TChartAxisMargins = (0, 0, 0, 0);
   a: TChartAxisAlignment;
 begin
-  if not AxisVisible or (AxisList.Count = 0) then begin
+  if not AxisVisible then begin
     FClipRect.Left += Depth;
     FClipRect.Bottom -= Depth;
     CalculateTransformationCoeffs(GetMargins(ACanvas));
@@ -702,10 +704,14 @@ begin
   Invalidate;
 end;
 
-procedure TChart.SetToolset(const AValue: TBasicChartToolset);
+procedure TChart.SetToolset(AValue: TBasicChartToolset);
 begin
   if FToolset = AValue then exit;
+  if FToolset <> nil then
+    RemoveFreeNotification(FToolset);
   FToolset := AValue;
+  if FToolset <> nil then
+    FreeNotification(FToolset);
   FActiveToolIndex := -1;
 end;
 
@@ -927,6 +933,13 @@ procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
 begin
   if GetToolset.Dispatch(Self, evidMouseUp, Shift, Point(X, Y)) then exit;
   inherited;
+end;
+
+procedure TChart.Notification(AComponent: TComponent; AOperation: TOperation);
+begin
+  if (AOperation = opRemove) and (AComponent = Toolset) then
+    FToolset := nil;
+  inherited Notification(AComponent, AOperation);
 end;
 
 procedure TChart.SetLegend(Value: TChartLegend);
