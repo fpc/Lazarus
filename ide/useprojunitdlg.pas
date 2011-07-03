@@ -42,35 +42,25 @@ type
   TUseUnitDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
     AllUnitsCheckBox: TCheckBox;
-    UnitnameEdit: TEdit;
+    FilterEdit: TListFilterEdit;
     UnitsListBox: TListBox;
     SectionRadioGroup: TRadioGroup;
     procedure AllUnitsCheckBoxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-//    procedure UnitnameEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-//    procedure UnitnameEditKeyPress(Sender: TObject; var Key: char);
-    procedure UnitsListBoxClick(Sender: TObject);
     procedure UnitsListBoxDblClick(Sender: TObject);
-    procedure UnitsListBoxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
   private
     UnitImgInd: Integer;
     FMainUsedUnits: TStrings;
     FImplUsedUnits: TStrings;
     FProjUnits: TStringList;
     FOtherUnits: TStringList;
-    procedure AddItems(AItems: TStrings);
-    procedure AddOtherUnits;
-    procedure RemoveOtherUnits;
     function GetAvailableProjUnits(SrcEdit: TSourceEditor): TModalResult;
     procedure CreateOtherUnitsList;
     function SelectedUnit: string;
     function InterfaceSelected: Boolean;
     procedure EnableOnlyInterface;
-    procedure SearchList(StartIndex: Integer = -1);
-//    procedure UpdateUnitName(Index: Integer);
-//    function UnitExists(AUnitName: string): Boolean;
+    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
   public
 
   end; 
@@ -81,29 +71,6 @@ implementation
 
 {$R *.lfm}
 
-type
-  { TUnitsListBoxObject }
-
-  TUnitsListBoxObject = class
-  public
-    IdentList: TIdentifierList;
-    IdentItem: TIdentifierListItem;
-    Handled: Boolean;
-    constructor Create(AIdentList: TIdentifierList; AIdentItem: TIdentifierListItem);
-  end;
-{
-function FindUnitName(f: TUnitsListBoxObject): string;
-var
-  CodeBuf: TCodeBuffer;
-begin
-  Result := f.IdentItem.Identifier;
-  CodeBuf := CodeToolBoss.FindUnitSource(f.IdentList.StartContextPos.Code, Result, '');
-  if CodeBuf = nil then Exit;
-  Result := CodeToolBoss.GetSourceName(CodeBuf, True);
-  if Result = '' then
-    Result := f.IdentItem.Identifier;
-end;
-}
 function ShowUseUnitDialog: TModalResult;
 var
   UseProjUnitDlg: TUseUnitDialog;
@@ -126,9 +93,6 @@ begin
     if UseProjUnitDlg.ShowModal=mrOk then begin
       s:=UseProjUnitDlg.SelectedUnit;
       if s <> '' then begin
-        if not UseProjUnitDlg.UnitExists(s) and
-          (MessageDlg(Format('Unit "%s" seems not to exist. Do you still want to add it?', [s]),
-            mtConfirmation, mbYesNo, 0) = mrNo) then Exit(mrCancel);
         if UseProjUnitDlg.InterfaceSelected then
           CTRes:=CodeToolBoss.AddUnitToMainUsesSection(SrcEdit.CodeBuffer, s, '')
         else
@@ -145,15 +109,6 @@ begin
   end;
 end;
 
-{ TUnitsListBoxObject }
-
-constructor TUnitsListBoxObject.Create(AIdentList: TIdentifierList;
-  AIdentItem: TIdentifierListItem);
-begin
-  inherited Create;
-  IdentList := AIdentList;
-  IdentItem := AIdentItem;
-end;
 
 { TUseUnitDialog }
 
@@ -169,6 +124,8 @@ begin
   ButtonPanel1.OKButton.Caption:=lisOk;
   ButtonPanel1.CancelButton.Caption:=dlgCancel;
   UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
+  FilterEdit.Images4Listbox:=IDEImages.Images_16;
+  FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
   FProjUnits:=TStringList.Create;
 end;
 
@@ -176,9 +133,6 @@ procedure TUseUnitDialog.FormDestroy(Sender: TObject);
 var
   i: Integer;
 begin
-  if Assigned(FOtherUnits) then
-    for i := 0 to FOtherUnits.Count - 1 do
-      FOtherUnits.Objects[i].Free;
   FOtherUnits.Free;
   FProjUnits.Free;
   FImplUsedUnits.Free;
@@ -186,109 +140,39 @@ begin
 end;
 
 procedure TUseUnitDialog.AllUnitsCheckBoxChange(Sender: TObject);
-begin
-  if AllUnitsCheckBox.Checked then
-    AddOtherUnits
-  else
-    RemoveOtherUnits;
-  if Visible then
-    UnitnameEdit.SetFocus;
-end;
-{
-procedure TUseUnitDialog.UnitnameEditKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if Key = VK_UP then
-  begin
-    if UnitsListBox.ItemIndex > 0 then
-      UnitsListBox.ItemIndex := UnitsListBox.ItemIndex - 1;
-    UpdateUnitName(UnitsListBox.ItemIndex);
-    UnitsListBoxClick(nil);
-    Key := 0;
-  end else
-  if Key = VK_DOWN then
-  begin
-    if UnitsListBox.ItemIndex < UnitsListBox.Count - 1 then
-      UnitsListBox.ItemIndex := UnitsListBox.ItemIndex + 1;
-    UpdateUnitName(UnitsListBox.ItemIndex);
-    UnitsListBoxClick(nil);
-    Key := 0;
-  end;
-end;
-
-procedure TUseUnitDialog.UnitnameEditKeyPress(Sender: TObject; var Key: char);
-begin
-  if not (Key in ['a'..'z', 'A'..'Z', '_', '0'..'9']) then Exit;
-  UnitnameEdit.SelText := Key;
-  SearchList;
-  Key := #0;
-end;
-}
-procedure TUseUnitDialog.UnitsListBoxClick(Sender: TObject);
-begin
-  with UnitsListBox do
-    if ItemIndex >= 0 then
-    begin
-      UpdateUnitName(ItemIndex);
-{      UnitnameEdit.Text := Items[ItemIndex];
-      if Visible then
-        UnitnameEdit.SetFocus;
-      UnitnameEdit.SelectAll;    }
-    end;
-end;
-
-procedure TUseUnitDialog.UnitsListBoxDblClick(Sender: TObject);
-begin
-  with UnitsListBox do
-    if ItemIndex >= 0 then
-    begin
-//      UpdateUnitName(ItemIndex);
-//      UnitnameEdit.Text := Items[ItemIndex];
-      ModalResult := mrOK;
-    end;
-end;
-
-procedure TUseUnitDialog.UnitsListBoxDrawItem(Control: TWinControl;
-  Index: Integer; ARect: TRect; State: TOwnerDrawState);
-begin
-  if Index < 0 then Exit;
-  UnitsListBox.Canvas.FillRect(ARect);
-  if Assigned(UnitsListBox.Items.Objects[Index]) then
-  begin
-    if not (odSelected in State) then
-      UnitsListBox.Canvas.Font.Color := clGreen;
-    IDEImages.Images_16.Draw(UnitsListBox.Canvas, 1, ARect.Top, UnitImgInd, False);
-  end else
-    IDEImages.Images_16.Draw(UnitsListBox.Canvas, 1, ARect.Top, UnitImgInd);
-  UnitsListBox.Canvas.TextRect(ARect, ARect.Left + 20,ARect.Top,
-                                UnitsListBox.Items[Index]);
-end;
-
-procedure TUseUnitDialog.AddItems(AItems: TStrings);
-begin
-  UnitsListBox.Items.Assign(AItems);
-end;
-
-procedure TUseUnitDialog.AddOtherUnits;
-begin
-  CreateOtherUnitsList;
-  UnitsListBox.Items.AddStrings(FOtherUnits);
-end;
-
-procedure TUseUnitDialog.RemoveOtherUnits;
 var
   i: Integer;
 begin
-  with UnitsListBox.Items do
-  begin
+  if AllUnitsCheckBox.Checked then begin    // Add other units
+    CreateOtherUnitsList;
+    FilterEdit.Data.AddStrings(FOtherUnits);
+  end
+  else
+  with FilterEdit.Data do begin             // Remove other units
     BeginUpdate;
     try
-      for i := Count - 1 downto 0 do
+      for i := Count-1 downto 0 do
         if Assigned(Objects[i]) then Delete(i);
     finally
       EndUpdate;
     end;
   end;
+  if Visible then
+    FilterEdit.SetFocus;
+  FilterEdit.InvalidateFilter;
+end;
+
+procedure TUseUnitDialog.UnitsListBoxDblClick(Sender: TObject);
+begin
+  if UnitsListBox.ItemIndex >= 0 then
+    ModalResult := mrOK;
+end;
+
+function TUseUnitDialog.ChooseImageIndex(Str: String; Data: TObject;
+                                         var IsEnabled: Boolean): Integer;
+begin
+  IsEnabled:=Data=Nil;
+  Result:=UnitImgInd;
 end;
 
 function TUseUnitDialog.GetAvailableProjUnits(SrcEdit: TSourceEditor): TModalResult;
@@ -314,7 +198,7 @@ begin
     CurrentUnitName:=TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
   else
     CurrentUnitName:='';
-  // Add available unit names to FProjUnits.
+  // Add available unit names to list.
   ProjFile:=Project1.FirstPartOfProject;
   while ProjFile<>nil do begin
     s:=ProjFile.Unit_Name;
@@ -326,13 +210,13 @@ begin
     ProjFile:=ProjFile.NextPartOfProject;
   end;
   FProjUnits.Sorted:=True;
-  if Assigned(FProjUnits) then
-    AddItems(FProjUnits);
-  if UnitsListBox.Count = 0 then
+  FilterEdit.Data.Assign(FProjUnits);
+  if FilterEdit.Data.Count = 0 then
   begin
     AllUnitsCheckBox.Checked := True;
-    if UnitsListBox.Count = 0 then Exit(mrCancel);
+    if FilterEdit.Data.Count = 0 then Exit(mrCancel);
   end;
+  FilterEdit.InvalidateFilter;
 end;
 
 procedure TUseUnitDialog.CreateOtherUnitsList;
@@ -356,8 +240,7 @@ begin
           if (FMainUsedUnits.IndexOf(curUnit) < 0)
             and (FImplUsedUnits.IndexOf(curUnit) < 0)
             and (FOtherUnits.IndexOf(curUnit) < 0) then
-              FOtherUnits.AddObject(IdentifierList.FilteredItems[i].Identifier,
-                TUnitsListBoxObject.Create(IdentifierList, IdentifierList.FilteredItems[i]));
+              FOtherUnits.AddObject(IdentifierList.FilteredItems[i].Identifier, TObject(1));
         end;
       end;
     FOtherUnits.Sort;
@@ -365,12 +248,12 @@ begin
     Screen.Cursor:=crDefault;
   end;
 end;
-{
+
 function TUseUnitDialog.SelectedUnit: string;
 begin
-  Result := Trim(UnitnameEdit.Text);
+  Result:=UnitsListBox.Items[UnitsListBox.ItemIndex];
 end;
-}
+
 function TUseUnitDialog.InterfaceSelected: Boolean;
 begin
   Result:=SectionRadioGroup.ItemIndex=0;
@@ -381,62 +264,6 @@ begin
   SectionRadioGroup.ItemIndex := 0;
   SectionRadioGroup.Enabled := False;
 end;
-
-function SearchItem(Items: TStrings; Text: String; StartIndex: Integer = -1): Integer;
-var
-  i: integer;
-begin
-  // Items can be unsorted => use simple traverse
-  Result := -1;
-  Text := AnsiLowerCase(Text);
-  for i := StartIndex + 1 to Items.Count - 1 do
-    if AnsiStartsText(Text, Items[i]) then
-    begin
-      Result := i;
-      Break;
-    end;
-end;
-{
-procedure TUseUnitDialog.SearchList(StartIndex: Integer);
-var
-  Index, Len: Integer;
-begin
-  Index := SearchItem(UnitsListBox.Items, UnitnameEdit.Text, StartIndex);
-  if Index >= 0 then
-  begin
-    UpdateUnitName(Index);
-    UnitsListBox.ItemIndex := Index;
-    UnitsListBox.MakeCurrentVisible;
-    Len := Length(UnitnameEdit.Text);
-    UnitnameEdit.Text := UnitsListBox.Items[Index];
-    UnitnameEdit.SelStart := Len;
-    UnitnameEdit.SelLength := Length(UnitnameEdit.Text) - Len;
-  end;
-end;
-
-procedure TUseUnitDialog.UpdateUnitName(Index: Integer);
-var
-  f: TUnitsListBoxObject;
-begin
-  f := TUnitsListBoxObject(UnitsListBox.Items.Objects[Index]);
-  if Assigned(f) and not f.Handled then
-  begin
-    f.Handled := True;
-    UnitsListBox.Items[Index] := FindUnitName(f);
-  end;
-end;
-
-function TUseUnitDialog.UnitExists(AUnitName: string): Boolean;
-begin
-  Result := UnitsListBox.Items.IndexOf(AUnitName) >= 0;
-  if Result then Exit;
-  if not AllUnitsCheckBox.Checked then
-  begin
-    CreateOtherUnitsList;
-    Result := FOtherUnits.IndexOf(AUnitName) >= 0;
-  end;
-end;
-}
 
 end.
 
