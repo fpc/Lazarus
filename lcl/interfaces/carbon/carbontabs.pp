@@ -924,8 +924,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.ScrollTabsLeft;
 begin
-  Dec(FFirstIndex);
-  UpdateTabs;
+  if FFirstIndex > 0 then
+  begin
+    Dec(FFirstIndex);
+    UpdateTabs;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -933,8 +936,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.ScrollTabsRight;
 begin
-  Inc(FLastIndex);
-  UpdateTabs(True);
+  if FFirstIndex < FTabs.Count - 1 then
+  begin
+    Inc(FLastIndex);
+    UpdateTabs(True);
+  end;
 end;
 
 procedure TCarbonTabsControl.StartScrollingTabsLeft;

@@ -581,8 +581,9 @@ function TCarbonClipboard.GetOwnerShip(ClipboardType: TClipboardType;
         end;
       end
       else
-        AddData(FFormats[Formats[I]], CFDataCreate(nil, @DataStream.DataString[1],
-          DataStream.Size));
+        if DataStream.Size>0 then
+          AddData(FFormats[Formats[I]], CFDataCreate(nil, @DataStream.DataString[1],
+            DataStream.Size));
     end;
 
     DataStream.Free;

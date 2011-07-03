@@ -225,7 +225,8 @@ begin
             FillChar(Msg, SizeOf(Msg), 0);
             Msg.msg := LM_ACTIVATE;
             CarbonMenu.LCLMenuItem.Dispatch(Msg);
-            CarbonMenu.Parent.Dismissed:=0;
+            if assigned(CarbonMenu.Parent) then  // if parent not closed
+              CarbonMenu.Parent.Dismissed:=0;
             Result := noErr;
             Exit;
           end else

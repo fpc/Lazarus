@@ -889,7 +889,8 @@ var
 begin
   // keep copy of text
   FTextBuffer := UTF8ToUTF16(Text);
-  
+  if Text='' then
+    FTextBuffer:=#0#0;
   TextStyle := Font.Style;
 
   // create text layout
@@ -1555,10 +1556,10 @@ begin
   FBitmap := nil;
   case ALogBrush.lbStyle of
     BS_SOLID:
-        inherited Create(ColorToRGB(ALogBrush.lbColor), True, False);
+        inherited Create(ColorToRGB(TColor(ALogBrush.lbColor)), True, False);
     BS_HATCHED:        // Hatched brush.
       begin
-        inherited Create(ColorToRGB(ALogBrush.lbColor), True, False);
+        inherited Create(ColorToRGB(TColor(ALogBrush.lbColor)), True, False);
         SetHatchStyle(ALogBrush.lbHatch);
       end;
     BS_DIBPATTERN,
@@ -1567,11 +1568,11 @@ begin
     BS_PATTERN,
     BS_PATTERN8X8:
       begin
-        inherited Create(ColorToRGB(ALogBrush.lbColor), False, False);
+        inherited Create(ColorToRGB(TColor(ALogBrush.lbColor)), False, False);
         SetBitmap(TCarbonBitmap(ALogBrush.lbHatch));
       end
     else
-      inherited Create(ColorToRGB(ALogBrush.lbColor), False, False);
+      inherited Create(ColorToRGB(TColor(ALogBrush.lbColor)), False, False);
   end;
 end;
 
@@ -1660,12 +1661,12 @@ begin
     PS_SOLID..PS_DASHDOTDOT,
     PS_INSIDEFRAME:
       begin
-        inherited Create(ColorToRGB(ALogPen.lopnColor), True, False);
+        inherited Create(ColorToRGB(TColor(ALogPen.lopnColor)), True, False);
         FWidth := Max(1, ALogPen.lopnWidth.x);
       end;
     else
     begin
-      inherited Create(ColorToRGB(ALogPen.lopnColor), False, False);
+      inherited Create(ColorToRGB(TColor(ALogPen.lopnColor)), False, False);
       FWidth := 1;
     end;
   end;
@@ -1681,11 +1682,11 @@ begin
     PS_SOLID..PS_DASHDOTDOT,
     PS_USERSTYLE:
       begin
-        inherited Create(ColorToRGB(lplb.lbColor), True, False);
+        inherited Create(ColorToRGB(TColor(lplb.lbColor)), True, False);
       end;
     else
     begin
-      inherited Create(ColorToRGB(lplb.lbColor), False, False);
+      inherited Create(ColorToRGB(TColor(lplb.lbColor)), False, False);
     end;
   end;
 

@@ -3102,8 +3102,8 @@ begin
   
   if not CheckDC(DC, 'SetBkColor') then Exit;
 
-  Result := TCarbonDeviceContext(DC).BkColor;
-  TCarbonDeviceContext(DC).BkColor := Color;
+  Result := TColorRef(TCarbonDeviceContext(DC).BkColor);
+  TCarbonDeviceContext(DC).BkColor := TColor(Color);
 end;
 
 {------------------------------------------------------------------------------
@@ -3445,8 +3445,8 @@ begin
   
   if not CheckDC(DC, 'SetTextColor') then Exit;
   
-  Result := TCarbonDeviceContext(DC).TextColor;
-  TCarbonDeviceContext(DC).TextColor := Color;
+  Result := TColorRef(TCarbonDeviceContext(DC).TextColor);
+  TCarbonDeviceContext(DC).TextColor := TColor(Color);
 end;
 
 function TCarbonWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer;
