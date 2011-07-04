@@ -1967,8 +1967,6 @@ begin
   DebugGtkWidgets.MarkCreated(Box,dbgsName(AWinControl));
   {$ENDIF}
 
-  gtk_container_set_focus_chain(PGtkContainer(Box), nil);
-
   WidgetInfo := CreateWidgetInfo(Box, AWinControl, AParams);
 
   ListStore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
