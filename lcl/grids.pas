@@ -7148,7 +7148,8 @@ begin
     // send editor bounds
     Msg.CellRect:=CellRect(FCol,FRow);
     if (Msg.CellRect.Top<FGCache.FixedHeight) or
-      (Msg.CellRect.Left<FGCache.FixedWidth) then
+       (UseRightToLeftAlignment and (Msg.CellRect.Right-1>FlipX(FGCache.FixedWidth))) or
+       (not UseRightToLeftAlignment and (Msg.CellRect.Left<FGCache.FixedWidth)) then
     begin
       // editor is not in visible area, hide it complety
       // to avoid showing it in fixed cell area
