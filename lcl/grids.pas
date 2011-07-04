@@ -3893,13 +3893,8 @@ begin
     // non-fixed cells
     if fGridLineWidth > 0 then begin
       if Dh then begin
-        if UseRightToLeftAlignment then begin
-          MoveTo(Right, Bottom - 1);
-          LineTo(Left, Bottom - 1);
-        end else begin
-          MoveTo(Left, Bottom - 1);
-          LineTo(Right, Bottom - 1);
-        end;
+        MoveTo(Left, Bottom - 1);
+        LineTo(Right, Bottom - 1);
       end;
       if Dv then begin
         if UseRightToLeftAlignment then begin
@@ -3962,7 +3957,6 @@ begin
 
     if (Left<>Right) and (Top<>Bottom) then
       Canvas.TextRect(aRect,Left,Top, aText);
-
   end;
 end;
 
@@ -5339,8 +5333,8 @@ begin
     end;
     if IsCol and UseRightToLeftAlignment then
     begin
-      EndPos := FlipX(StartPos);
-      StartPos := EndPos - Dim + 1;
+      EndPos := FlipX(StartPos) + 1;
+      StartPos := EndPos - Dim;
     end
     else
       EndPos:=StartPos + Dim;
@@ -9230,7 +9224,7 @@ end;
 procedure TCustomDrawGrid.DrawCellAutonumbering(aCol, aRow: Integer;
   aRect: TRect; const aValue: string);
 begin
-  Canvas.TextRect(aRect,ARect.Left+3,ARect.Top+3, aValue);
+  DrawCellText(aCol, aRow, aRect, [], aValue);
 end;
 
 function TCustomDrawGrid.SelectCell(aCol, aRow: Integer): boolean;
