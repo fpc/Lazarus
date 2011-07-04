@@ -27,8 +27,8 @@ function CarbonCommon_Dispose(ANextHandler: EventHandlerCallRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   Result := CallNextEventHandler(ANextHandler, AEvent);
-
-  LCLSendDestroyMsg(AWidget.LCLObject); // widget is disposed in DestroyHandle
+  if Assigned(AWidget) and Assigned(AWidget.LCLObject) then
+    LCLSendDestroyMsg(AWidget.LCLObject); // widget is disposed in DestroyHandle
 end;
 
 {------------------------------------------------------------------------------

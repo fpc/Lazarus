@@ -563,7 +563,7 @@ end;
 procedure TCarbonDesignWindow.DestroyWidget;
 begin
   DisposeControl(FDesignControl);
-  
+  LCLObject := nil;
   inherited;
 end;
 
