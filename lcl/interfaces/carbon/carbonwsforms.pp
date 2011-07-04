@@ -214,6 +214,7 @@ begin
   if AWinControl.HandleObjectShouldBeVisible then
   begin
     case TCustomForm(AWinControl).WindowState of
+      wsFullScreen: nCmdShow := SW_SHOWFULLSCREEN;
       wsMaximized: nCmdShow := SW_SHOWMAXIMIZED;
       wsMinimized: nCmdShow := SW_SHOWMINIMIZED;
     else

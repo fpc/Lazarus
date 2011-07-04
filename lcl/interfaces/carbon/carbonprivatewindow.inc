@@ -1846,6 +1846,9 @@ function TCarbonWindow.Show(AShow: Integer): Boolean;
 var
   P: MacOSAll.Point;
   Maximized: Boolean;
+  FullScreen: Boolean;
+  UIMode: SystemUIMode;
+  UIOptions: SystemUIOptions;
 const
   SName = 'Show';
   SCollapse = 'CollapseWindow';
@@ -1857,7 +1860,7 @@ begin
   //DebugLn('TCarbonWindow.Show ' + DbgS(AShow));
 
   case AShow of
-  SW_SHOWNORMAL, SW_SHOWMAXIMIZED:
+  SW_SHOWNORMAL, SW_SHOWMAXIMIZED, SW_SHOWFULLSCREEN:
   begin
     if IsWindowCollapsed(fWindowRef) then
       if OSError(CollapseWindow(fWindowRef, False),
@@ -1865,22 +1868,36 @@ begin
 
     // for checking if any change is necessary
     Maximized := IsWindowInStandardState(fWindowRef, nil, nil);
+    GetSystemUIMode(@UIMode, @UIOptions);
+    FullScreen := (UIMode = kuiModeAllHidden) and (UIOptions = kUIOptionAutoShowMenuBar);
 
-    if AShow = SW_SHOWNORMAL then
+    if FullScreen then
+    begin
+      SetSystemUIMode(kuiModeNormal, 0);
+      if OSError(ZoomWindowIdeal(fWindowRef, inZoomIn, P),
+        Self, SName, SZoomIdeal, 'inZoomIn') then Exit;
+      exit(True);
+    end;
+
+    if (AShow = SW_SHOWNORMAL) then
     begin
       if Maximized then
         if OSError(ZoomWindowIdeal(fWindowRef, inZoomIn, P),
           Self, SName, SZoomIdeal, 'inZoomIn') then Exit;
     end
     else
-      if not Maximized then
+    begin
+      if AShow = SW_SHOWFULLSCREEN then
+        SetSystemUIMode(kuiModeAllHidden, kUIOptionAutoShowMenuBar);
+
+      if not Maximized or (AShow = SW_SHOWFULLSCREEN) then
       begin
         P.v := $3FFF;
         P.h := $3FFF;
         if OSError(ZoomWindowIdeal(fWindowRef, inZoomOut, P),
          Self, SName, SZoomIdeal, 'inZoomOut') then Exit;
       end;
-
+    end;
     SetForeground;
   end;
   SW_MINIMIZE:
