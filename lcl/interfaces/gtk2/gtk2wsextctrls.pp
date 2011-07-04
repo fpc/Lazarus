@@ -216,10 +216,11 @@ begin
   WidgetClient := CreateFixedClientWidget(True);
 
   gtk_container_add(GTK_CONTAINER(Frame), WidgetClient);
+  GTK_WIDGET_SET_FLAGS(Frame, GTK_CAN_FOCUS);
 
   WidgetInfo := CreateWidgetInfo(Frame, AWinControl, AParams);
   WidgetInfo^.ClientWidget := WidgetClient;
-  WidgetInfo^.CoreWidget := WidgetClient;
+  WidgetInfo^.CoreWidget := Frame;
   WidgetInfo^.LCLObject := AWinControl;
   WidgetInfo^.Style := AParams.Style;
   WidgetInfo^.ExStyle := AParams.ExStyle;
