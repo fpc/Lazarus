@@ -85,6 +85,7 @@ type
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       virtual;
     function GetParentComponent: TComponent; override;
+    procedure GetSingleLegendItem(AItems: TChartLegendItems);
     function HasParent: Boolean; override;
 
     property AxisIndexX: Integer
@@ -353,6 +354,21 @@ end;
 function TCustomChartSeries.GetShowInLegend: Boolean;
 begin
   Result := Legend.Visible;
+end;
+
+procedure TCustomChartSeries.GetSingleLegendItem(AItems: TChartLegendItems);
+var
+  oldMultiplicity: TLegendMultiplicity;
+begin
+  ParentChart.DisableRedrawing;
+  oldMultiplicity := Legend.Multiplicity;
+  try
+    Legend.Multiplicity := lmSingle;
+    GetLegendItemsBasic(AItems);
+  finally
+    ParentChart.EnableRedrawing;
+    Legend.Multiplicity := oldMultiplicity;
+  end;
 end;
 
 function TCustomChartSeries.GraphToAxis(APoint: TDoublePoint): TDoublePoint;
