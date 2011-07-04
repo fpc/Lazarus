@@ -38,9 +38,9 @@ uses
   {$endif CarbonUseCocoa}
   // LCL
   Classes, Controls, ExtCtrls, LCLType, LCLProc, Graphics, Math, SysUtils,
-  Menus,
+  Menus, ComCtrls,
   // widgetset
-  WSExtCtrls, WSLCLClasses, WSControls, WSProc,
+  WSExtCtrls, WSLCLClasses, WSControls, WSProc, WSComCtrls,
   // LCL Carbon
   carbongdiobjects, CarbonWSControls;
 

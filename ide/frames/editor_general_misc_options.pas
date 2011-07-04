@@ -25,7 +25,7 @@ unit editor_general_misc_options;
 interface
 
 uses
-  LCLProc, StdCtrls, SynEdit, ExtCtrls, EditorOptions,
+  LCLProc, StdCtrls, SynEdit, ExtCtrls, ComCtrls, EditorOptions,
   LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, editor_general_options,
   SynEditTextTrimmer;
 

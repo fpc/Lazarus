@@ -32,7 +32,7 @@ interface
 uses
   Math, Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
   Graphics, Controls, ExtCtrls, Forms, Menus, Themes, LCLIntf,
-  LMessages, LResources, typinfo;
+  ComCtrls, LMessages, LResources, typinfo;
 
 type
   TLazDockPages = class;

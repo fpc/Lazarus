@@ -39,7 +39,7 @@ uses
   Graphics, StdCtrls, Buttons, Menus, LCLType, ExtCtrls, LCLIntf,
   Dialogs, Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps,
   StringsPropEditDlg, ColumnDlg, FileUtil, FileCtrl, ObjInspStrConsts,
-  CollectionPropEditForm, PropEditUtils;
+  CollectionPropEditForm, PropEditUtils, ComCtrls;
 
 const
   MaxIdentLength: Byte = 63;

@@ -36,7 +36,7 @@ uses
   // RTL, FCL
   Classes, SysUtils, resource,
   // LCL
-  Controls, ExtCtrls, Graphics, LCLProc, FileUtil, LResources, Forms, Dialogs,
+  Controls, ExtCtrls, Graphics, LCLProc, FileUtil, LResources, Forms, Dialogs, ComCtrls,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditTypes,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,

@@ -37,25 +37,6 @@ uses
 
 type
 
-  { TFpGuiWSCustomPage }
-
-  TFpGuiWSCustomPage = class(TWSCustomPage)
-  private
-  protected
-  public
-  end;
-
-  { TFpGuiWSCustomNotebook }
-
-  TFpGuiWSCustomNotebook = class(TWSCustomNotebook)
-  private
-  protected
-  published
-    class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
-  end;
-
   { TFpGuiWSPage }
 
   TFpGuiWSPage = class(TWSPage)
@@ -207,22 +188,6 @@ type
   end;
 
 implementation
-
-{ TFpGuiWSCustomNotebook }
-
-class function TFpGuiWSCustomNotebook.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
-begin
-  Result := TLCLIntfHandle(TFPGUIPrivatePageControl.Create(AWinControl, AParams));
-end;
-
-class procedure TFpGuiWSCustomNotebook.DestroyHandle(
-  const AWinControl: TWinControl);
-begin
-  TFPGUIPrivatePageControl(AWinControl.Handle).Free;
-
-  AWinControl.Handle := 0;
-end;
 
 { TFpGuiWSCustomTrayIcon }
 

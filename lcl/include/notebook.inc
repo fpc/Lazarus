@@ -101,12 +101,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TUNBPages.Delete(Index: Integer);
 var
-  APage: TCustomPage;
+  APage: TPage;
 begin
   // Make sure Index is in the range of valid pages to delete
   if (Index < 0) or (Index >= fPageList.Count) then Exit;
 
-  APage := TCustomPage(fPageList[Index]);
+  APage := TPage(fPageList[Index]);
   // delete handle
   APage.Parent := nil;
   // free the page

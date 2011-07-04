@@ -34,11 +34,44 @@ uses
   qtwidgets, qtobjects, qtproc,
   // LCL
   SysUtils, Classes, Types, ComCtrls, Controls, LCLType, Graphics, StdCtrls,
-  LCLProc, LCLIntf, Forms,
+  LCLProc, LCLIntf, Forms, ImgList,
   // Widgetset
   WSProc, WSComCtrls, WSLCLClasses;
 
 type
+  { TQtWSCustomPage }
+
+  TQtWSCustomPage = class(TWSCustomPage)
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+  end;
+
+  { TQtWSCustomNotebook }
+
+  TQtWSCustomNotebook = class(TWSCustomNotebook)
+  published
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
+
+    class procedure AddPage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure MovePage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemovePage(const ANotebook: TCustomNotebook;
+      const AIndex: integer); override;
+
+    class function GetCapabilities: TNoteBookCapabilities; override;
+    class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); override;
+    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
+  end;
 
   { TQtWSStatusBar }
 
@@ -226,6 +259,8 @@ type
 
 
 implementation
+
+{$include qtpagecontrol.inc}
 
 const
   TickMarkToQtSliderTickPositionMap: array[TTickMark] of QSliderTickPosition =

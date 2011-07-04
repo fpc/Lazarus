@@ -5,7 +5,7 @@ unit FpGuiWSFactory;
 interface
 
 uses
-  Classes, Controls, StdCtrls, Forms, Menus, ExtCtrls, Dialogs,
+  Classes, Controls, StdCtrls, Forms, Menus, ExtCtrls, Dialogs, ComCtrls,
   WSLCLClasses;
 
 // imglist
@@ -102,6 +102,7 @@ uses
  FpGuiWSButtons,
  FpGuiWSControls,
  FpGuiWSExtCtrls,
+ FpGuiWSComCtrls,
  FpGuiWSForms,
  FpGuiWSMenus,
  FpGuiWSStdCtrls,

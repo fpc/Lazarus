@@ -33,10 +33,10 @@ uses
   {$ifdef Win32}win32compat,{$endif}
   // LCL
   ExtCtrls, Classes, Controls, ImgList, Forms, LCLType, LCLIntf, LCLMessageGlue,
-  LCLProc,
+  LCLProc, ComCtrls,
   // widgetset
   WSControls, WSExtCtrls, WSLCLClasses, WinCEInt, WinCEProc, InterfaceBase,
-  WinCEWSControls, WSProc;
+  WinCEWSControls, WSProc, WSComCtrls;
 
 type
 

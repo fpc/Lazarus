@@ -49,46 +49,15 @@ uses
   WSLCLClasses, WSControls, WSStdCtrls, WSFactory;
 
 type
-  { TWSCustomPage }
-
-  TWSCustomPageClass = class of TWSCustomPage;
-  TWSCustomPage = class(TWSWinControl)
-  published
-    class procedure UpdateProperties(const ACustomPage: TCustomPage); virtual;
-  end;
-
-  { TWSCustomNotebook }
-
-  TWSCustomNotebook = class(TWSWinControl)
-  published
-    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); virtual;
-    class procedure MovePage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const NewIndex: integer); virtual;
-    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
-
-    class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; virtual;
-    class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
-    class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; virtual;
-    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; virtual;
-    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; virtual;
-    class function GetCapabilities: TNoteBookCapabilities; virtual;
-    class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); virtual;
-    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
-    class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
-    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); virtual;
-    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); virtual;
-    class procedure UpdateProperties(const ANotebook: TCustomNotebook); virtual;
-  end;
-  TWSCustomNotebookClass = class of TWSCustomNotebook;
-
   { TWSPage }
 
-  TWSPage = class(TWSCustomPage)
+  TWSPage = class(TWSCustomControl)
   published
   end;
 
   { TWSNotebook }
 
-  TWSNotebook = class(TWSCustomNotebook)
+  TWSNotebook = class(TWSCustomControl)
   published
   end;
 
@@ -197,8 +166,6 @@ type
 
   { WidgetSetRegistration }
 
-  procedure RegisterCustomPage;
-  procedure RegisterCustomNotebook;
   procedure RegisterShape;
   procedure RegisterCustomSplitter;
   procedure RegisterPaintBox;
@@ -211,133 +178,6 @@ type
   procedure RegisterCustomTrayIcon;
 
 implementation
-
-{ TWSCustomPage }
-
-class procedure TWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
-begin
-end;
-
-{ TWSCustomNotebook }
-
-{ -----------------------------------------------------------------------------
-  Method: TWSCustomNotebook.AddPage
-  Params: ANotebook - A notebook control
-          AChild - Page to insert
-          AIndex  - The position in the notebook to insert the page
-  Returns: Nothing
-
-  Adds a new page to a notebook
- ------------------------------------------------------------------------------}
-class procedure TWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer);
-begin
-end;
-
-{------------------------------------------------------------------------------
-  Method: TWSCustomNotebook.MovePage
-  Params: ANotebook - The notebook control
-          AChild    - The page to move
-          NewIndex  - The new index of the page
-  Returns: Nothing
-
-  Moves a page in a notebook control
- ------------------------------------------------------------------------------}
-class procedure TWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
-  const AChild: TCustomPage; const NewIndex: integer);
-begin
-end;
-
-{------------------------------------------------------------------------------
-  Method: TWSCustomNotebook.RemovePage
-  Params: ANotebook - The notebook control
-          AIndex    - The index of the page to delete
-  Returns: Nothing
-
-  Removes a page from a notebook control
- ------------------------------------------------------------------------------}
-class procedure TWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer);
-begin
-end;
-
-{-------------------------------------------------------------------------------
-  function TWSCustomNotebook.GetNotebookMinTabHeight(
-    const AWinControl: TWinControl): integer;
-
-  Returns the minimum height of the horizontal tabs of a notebook. That is the
-  Notebook with TabPosition in [tpTop,tpBottom] without the client panel.
--------------------------------------------------------------------------------}
-class function  TWSCustomNotebook.GetNotebookMinTabHeight(
-  const AWinControl: TWinControl): integer;
-begin
-  Result:=30;
-end;
-
-{-------------------------------------------------------------------------------
-  function TWSCustomNotebook.GetNotebookMinTabWidth(
-    const AWinControl: TWinControl): integer;
-
-  Returns the minimum width of the vertical tabs of a notebook. That is the
-  Notebook with TabPosition in [tpLeft,tpRight] without the client panel.
--------------------------------------------------------------------------------}
-class function TWSCustomNotebook.GetNotebookMinTabWidth(const AWinControl: TWinControl
-  ): integer;
-begin
-  Result:=60;
-end;
-
-class function TWSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook;
-  AIndex: Integer): Integer;
-begin
-  Result := AIndex;
-end;
-
-class function TWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
-  const AClientPos: TPoint): integer;
-begin
-  Result := -1;
-end;
-
-class function TWSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
-  const AIndex: Integer): TRect;
-begin
-  Result := Rect(-1,-1,-1,-1);
-end;
-
-class function TWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
-begin
-  Result:=[];
-end;
-
-class procedure TWSCustomNotebook.SetImageList(
-  const ANotebook: TCustomNotebook; const AImageList: TCustomImageList);
-begin
-end;
-
-class procedure TWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook;
-  const AIndex: integer);
-begin
-end;
-
-class procedure TWSCustomNotebook.SetTabCaption(const ANotebook: TCustomNotebook;
-  const AChild: TCustomPage; const AText: string);
-begin
-end;
-
-class procedure TWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook;
-  const ATabPosition: TTabPosition);
-begin
-end;
-
-class procedure TWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
-  AShowTabs: boolean);
-begin
-end;
-
-class procedure TWSCustomNotebook.UpdateProperties(
-  const ANotebook: TCustomNotebook);
-begin
-
-end;
 
 { TWSCustomTrayIcon }
 
@@ -379,27 +219,6 @@ begin
 end;
 
 { WidgetSetRegistration }
-
-procedure RegisterCustomPage;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterCustomPage;
-//  if not WSRegisterCustomPage then
-//    RegisterWSComponent(TCustomPage, TWSCustomPage);
-  Done := True;
-end;
-
-procedure RegisterCustomNotebook;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  if not WSRegisterCustomNotebook then
-    RegisterWSComponent(TCustomNotebook, TWSCustomNotebook);
-  Done := True;
-end;
 
 procedure RegisterShape;
 const

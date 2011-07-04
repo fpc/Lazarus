@@ -57,6 +57,50 @@ type
   end;
 
 type
+  { TGtk2WSCustomPage }
+
+  TGtk2WSCustomPage = class(TWSCustomPage)
+  protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+  published
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+    class function GetDefaultClientRect(const AWinControl: TWinControl;
+             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             ): boolean; override;
+  end;
+
+  { TGtk2WSCustomNotebook }
+
+  TGtk2WSCustomNotebook = class(TWSCustomNotebook)
+  protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+                                const AParams: TCreateParams): HWND; override;
+    class function GetDefaultClientRect(const AWinControl: TWinControl;
+             const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
+             ): boolean; override;
+    class procedure AddPage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure MovePage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemovePage(const ANotebook: TCustomNotebook;
+      const AIndex: integer); override;
+
+    class function GetCapabilities: TNoteBookCapabilities; override;
+    class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
+    class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
+  end;
 
   { TGtk2WSStatusBar }
 
@@ -239,6 +283,8 @@ type
 implementation
 
 uses Gtk2CellRenderer, Gtk2Extra{$IFNDEF USEORIGTREEMODEL}, Gtk2ListViewTreeModel{$ENDIF};
+
+{$I gtk2pagecontrol.inc}
 
 // Will be used commonly for ListViews and TreeViews
 procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget;

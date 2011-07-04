@@ -42,6 +42,45 @@ uses
   GtkDef, GtkExtra, GtkWSPrivate;
 
 type
+  { TGtkWSCustomPage }
+
+  TGtkWSCustomPage = class(TWSCustomPage)
+  protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+  published
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+  end;
+
+  { TGtkWSCustomNotebook }
+
+  TGtkWSCustomNotebook = class(TWSCustomNotebook)
+  protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+  published
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure AddPage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure MovePage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemovePage(const ANotebook: TCustomNotebook;
+      const AIndex: integer); override;
+
+    class function GetCapabilities: TNoteBookCapabilities; override;
+    class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
+    class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
+  end;
+
   { TGtkWSStatusBar }
 
   TGtkWSStatusBar = class(TWSStatusBar)
@@ -223,6 +262,7 @@ uses
 const
   DEFAULT_IMAGE_SPACING = 3;
 
+{$include gtkpagecontrol.inc}
 
 {$IFDEF GTK1}
 {$I gtkwscustomlistview.inc }
