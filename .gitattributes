@@ -5589,6 +5589,7 @@ lcl/interfaces/win32/win32listsl.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32listslh.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32memostrings.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32object.inc svneol=native#text/pascal
+lcl/interfaces/win32/win32pagecontrol.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32proc.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32themes.pas svneol=native#text/pascal
 lcl/interfaces/win32/win32trayicon.inc svneol=native#text/pascal
@@ -5634,6 +5635,7 @@ lcl/interfaces/wince/wincememostrings.inc svneol=native#text/plain
 lcl/interfaces/wince/wincemenures.rc svneol=native#text/plain
 lcl/interfaces/wince/wincemenures.res -text
 lcl/interfaces/wince/winceobject.inc svneol=native#text/plain
+lcl/interfaces/wince/wincepagecontrol.inc svneol=native#text/pascal
 lcl/interfaces/wince/winceproc.pp svneol=native#text/plain
 lcl/interfaces/wince/wincewinapi.inc svneol=native#text/plain
 lcl/interfaces/wince/wincewinapih.inc svneol=native#text/plain

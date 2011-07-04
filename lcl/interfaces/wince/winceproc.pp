@@ -114,7 +114,7 @@ var
 implementation
 
 uses
-  SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
+  SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
   WinCEInt,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 

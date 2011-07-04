@@ -163,7 +163,7 @@ var
 implementation
 
 uses
-  LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
+  LCLStrConsts, Dialogs, StdCtrls, ExtCtrls, ComCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
 {$IFOPT C-}

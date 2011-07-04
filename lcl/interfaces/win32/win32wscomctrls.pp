@@ -30,9 +30,10 @@ interface
 uses        
   // FCL
   CommCtrl, Windows, Classes, SysUtils, Math, Win32Extra,
+  ShellAPI,
   // LCL
   ComCtrls, LCLType, Controls, Graphics, Themes,
-  ImgList, StdCtrls,
+  ImgList, StdCtrls, Forms, LCLIntf,
   LMessages, LCLProc, LCLMessageGlue, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
@@ -40,6 +41,46 @@ uses
   Win32Int, Win32Proc, Win32WSControls;
 
 type
+  { TWin32WSCustomPage }
+
+  TWin32WSCustomPage = class(TWSCustomPage)
+  public
+    class procedure ThemeChange(Wnd: HWND);
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+  end;
+
+  { TWin32WSCustomNotebook }
+
+  TWin32WSCustomNotebook = class(TWSCustomNotebook)
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
+    class procedure AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);
+    class procedure AddPage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure MovePage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemoveAllNBPages(const ANotebook: TCustomNotebook);
+    class procedure RemovePage(const ANotebook: TCustomNotebook;
+      const AIndex: integer); override;
+
+    class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
+    class function GetCapabilities: TNoteBookCapabilities;override;
+    class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
+    class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
+  end;
 
   { TWin32WSStatusBar }
 
@@ -228,11 +269,16 @@ type
   published
   end;
 
+procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);
+function NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
+function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
 
 implementation
 
 const
   DefMarqueeTime = 50; // ms
+
+{$I win32pagecontrol.inc}
 
 type
   TStatusPanelAccess = class(TStatusPanel);
@@ -452,7 +498,7 @@ begin
   SetUpdated(AStatusBar, False);
   // request invalidate of only panel rectange
   SendMessage(AStatusBar.Handle, SB_GETRECT, PanelIndex, LParam(@ARect));
-  InvalidateRect(AStatusBar.Handle, ARect, False);
+  Windows.InvalidateRect(AStatusBar.Handle, ARect, False);
 end;
 
 class procedure TWin32WSStatusBar.SetColor(const AWinControl: TWinControl);
@@ -491,13 +537,13 @@ end;
 
 class function TWin32WSStatusBar.GetUpdated(const AStatusBar: TStatusBar): Boolean;
 begin
-  Result := GetProp(AStatusBar.Handle, 'lcl-statusbar-updated') = 1;
+  Result := Windows.GetProp(AStatusBar.Handle, 'lcl-statusbar-updated') = 1;
 end;
 
 class procedure TWin32WSStatusBar.SetUpdated(const AStatusBar: TStatusBar;
   const Value: Boolean);
 begin
-  SetProp(AStatusBar.Handle, 'lcl-statusbar-updated', Ord(Value));
+  Windows.SetProp(AStatusBar.Handle, 'lcl-statusbar-updated', Ord(Value));
 end;
 
 class procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);

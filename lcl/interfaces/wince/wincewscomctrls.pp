@@ -26,19 +26,57 @@ interface
 
 uses
   // RTL, FCL
-  Windows, Classes, SysUtils, WinExt,
+  Windows, Classes, SysUtils, WinExt, Forms,
   {$ifndef ver2_2_0}commctrl,{$endif}
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
   // LCL
   ComCtrls, LCLType, Controls, Graphics,
-  ImgList, StdCtrls, Math,
-  LCLProc, InterfaceBase,
+  ImgList, StdCtrls, Math, LCLIntf, ExtCtrls,
+  LCLProc, InterfaceBase, LMessages, LCLMessageGlue,
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc, WsControls,
   WinCEInt, WinCEProc, WinCEWSControls, WinCEExtra;
 
 type
+  { TWinCEWSCustomPage }
+
+  TWinCEWSCustomPage = class(TWSCustomPage)
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+  end;
+
+  { TWinCEWSCustomNotebook }
+
+  TWinCEWSCustomNotebook = class(TWSCustomNotebook)
+  published
+    class function CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
+    class procedure AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);
+    class procedure AddPage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure MovePage(const ANotebook: TCustomNotebook;
+      const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemoveAllNBPages(const ANotebook: TCustomNotebook);
+    class procedure RemovePage(const ANotebook: TCustomNotebook;
+      const AIndex: integer); override;
+
+    class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
+    class function GetCapabilities: TNoteBookCapabilities;override;
+    class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
+    class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
+    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
+  end;
 
   { TWinCEWSStatusBar }
 
@@ -230,9 +268,13 @@ type
   end;
 
 
+procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);
+function NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
+
 implementation
 
 
+{$I wincepagecontrol.inc}
 {$I wincewscustomlistview.inc }
 
 

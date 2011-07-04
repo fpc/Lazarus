@@ -258,6 +258,7 @@ uses
   WinCEWSFactory,
   WinCEWSButtons,
   WinCEWSExtCtrls,
+  WinCEWSComCtrls,
   WinCEWSMenus,
   WinCEWSStdCtrls,
   WinCEWSSpin,
