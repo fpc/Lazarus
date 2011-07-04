@@ -2155,10 +2155,10 @@ var
     // the gtk2 gtkentry handles the return key and emits an activate signal
     // The LCL does not use that and needs the return key event
     // => emulate it
-    if GtkWidgetIsA(TargetWidget, gtk_type_entry)
-    and (gdk_event_get_type(AEvent) = GDK_KEY_PRESS)
-    and (VKey=13)
-    then begin
+    if GtkWidgetIsA(TargetWidget, gtk_type_entry) and
+      (gdk_event_get_type(AEvent) = GDK_KEY_PRESS) and
+      ((VKey = VK_RETURN) or (VKey = VK_TAB)) then
+    begin
       //DebugLn(['EmulateKeysEatenByGtk ']);
       FillChar(Msg, SizeOf(Msg), 0);
       Msg.CharCode := VKey;
@@ -2203,7 +2203,7 @@ begin
   {$ENDIF}
   
   // handle every key event only once
-  if HandledByLCL then Exit;
+  if HandledByLCL then exit;
 
   TargetWidget := AWidget;
   TargetObj := AData;
