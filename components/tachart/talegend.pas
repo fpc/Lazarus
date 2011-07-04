@@ -39,6 +39,7 @@ type
     FFont: TFont;
     FGroupIndex: Integer;
     FOrder: Integer;
+    FOwner: TIndexedComponent;
     FText: String;
   public
     constructor Create(const AText: String; AColor: TColor = clTAColor);
@@ -50,6 +51,7 @@ type
     property Font: TFont read FFont write FFont;
     property GroupIndex: Integer read FGroupIndex write FGroupIndex;
     property Order: Integer read FOrder write FOrder;
+    property Owner: TIndexedComponent read FOwner write FOwner;
     property Text: String read FText write FText;
   end;
 
