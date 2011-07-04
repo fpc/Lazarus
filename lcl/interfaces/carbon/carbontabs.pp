@@ -35,7 +35,7 @@ uses
  // LCL Carbon
   CarbonDef, CarbonPrivate, CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCanvas, CarbonGDIObjects,
  // LCL
-  LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, ExtCtrls;
+  LMessages, LCLMessageGlue, LCLProc, LCLType, Graphics, Controls, ExtCtrls, ComCtrls;
   
 type
   TCarbonTabsControl = class;
