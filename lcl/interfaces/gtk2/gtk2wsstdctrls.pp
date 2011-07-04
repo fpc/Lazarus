@@ -1076,11 +1076,18 @@ begin
     gtk_entry_set_max_length(GTK_ENTRY(Widget), guint16(NewLength));
 end;
 
+function CellEntryKeyDown(Widget: PGtkWidget; Event : pgdkeventkey;
+  Data: gPointer) : GBoolean; cdecl;
+begin
+  Result := (Event^.keyval = GDK_KEY_UP) or (Event^.keyval = GDK_KEY_DOWN);
+end;
+
 class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   Widget: PGtkWidget; // ptr to the newly created GtkWidget
   WidgetInfo: PWidgetInfo;
+  CellEditable: PGtkCellEditable;
 begin
   Widget := gtk_entry_new();
   gtk_editable_set_editable(PGtkEditable(Widget), not TCustomEdit(AWinControl).ReadOnly);
@@ -1100,6 +1107,12 @@ begin
 
   if Result <> 0 then
   begin
+    // hook into GtkEntry interface, so it won't focus another control
+    // by pressing VK_UP or VK_DOWN. issue #11115
+    CellEditable := GTK_CELL_EDITABLE(Widget);
+    g_signal_connect(CellEditable, 'key_press_event',
+      TGTKSignalFunc(@CellEntryKeyDown), AWinControl);
+
     gtk_entry_set_has_frame(PGtkEntry(Result),
       TCustomEdit(AWinControl).BorderStyle <> bsNone);
     // don't select it on focus since LCL do this itself
