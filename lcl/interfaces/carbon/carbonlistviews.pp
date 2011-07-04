@@ -499,7 +499,7 @@ begin
     AddDataBrowserListViewColumn(FOwner.Widget, FDesc, FOwner.GetInsertIndex(Self)),
     Self, 'Add', 'AddDataBrowserListViewColumn');
     
-  SetHeaderWidth(FWidth)
+  SetHeaderWidth(FWidth);
 end;
 
 procedure TCarbonListColumn.Remove;
@@ -637,6 +637,14 @@ begin
   if FOwner.IsOwnerDrawn then
     Result := kDataBrowserCustomType
   else
+
+  if FOwner is TCarbonListView then
+  begin
+    case TCarbonListView(FOwner).FStyle of
+      vsList: Result := kDataBrowserIconAndTextType;
+      vsSmallIcon, vsIcon: Result := kDataBrowserIconType;
+    end;
+  end else
     Result := kDataBrowserTextType;
 end;
 
@@ -1690,6 +1698,7 @@ begin
 
   view := TListView(LCLObject);
   idx := view.Items[AIndex].ImageIndex;
+
   if view.ViewStyle <> vsIcon then begin
     imgs := view.SmallImages;
     size := 16;
@@ -1718,8 +1727,7 @@ var
 begin
   view := TListView(LCLObject);
   if not Assigned(view) then Exit;
-
-  if (view.ViewStyle = vsReport) and (FColumns.Count > 0) then
+  if { (view.ViewStyle = vsReport) and } (FColumns.Count > 0) then
   begin
     firstIconed := Assigned(view.SmallImages);
     C := TCarbonListColumn(FColumns[0]);
@@ -1729,6 +1737,7 @@ begin
       C.ReCreate;
     end;
   end;
+
 end;
 
 procedure TCarbonListView.ClearIconCache;
@@ -1746,10 +1755,8 @@ procedure TCarbonListView.SetViewStyle(AStyle: TViewStyle);
 begin
   FStyle:=AStyle;
   ListViewModes[FStyle].Apply(Self);
-  if FStyle = vsList then
-  begin
+  if FStyle <> vsReport then
     ShowAsList(True);
-  end;
 end;
 
 procedure TCarbonListView.DoColumnClicked(MouseX, MouseY: Integer);
