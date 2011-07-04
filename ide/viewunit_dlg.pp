@@ -96,7 +96,6 @@ var
   UEntry: TViewUnitsEntry;
   i: integer;
 begin
-  IDEImages.Images_16;
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
   with ViewUnitDialog do
   try
