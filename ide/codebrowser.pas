@@ -239,8 +239,7 @@ type
     procedure PackageFilterEditEditingDone(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
     procedure RescanButtonClick(Sender: TObject);
-    procedure ScopeComboBoxGetItems(Sender: TObject);
-    procedure ScopeComboBoxEditingDone(Sender: TObject);
+    procedure ScopeComboBoxChange(Sender: TObject);
     procedure ScopeWithRequiredPackagesCheckBoxChange(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure OpenMenuItemClick(Sender: TObject);
@@ -487,11 +486,10 @@ begin
   IdentifierFilterContainsSpeedButton.Hint:=lisIdentifierContains;
   
   ProgressBar1.Max:=ProgressTotal;
-
   InitImageList;
   LoadOptions;
-  
-  UpdateNeeded:=true;
+  FillScopeComboBox;
+  ScopeComboBox.ItemIndex:=0;
   Application.AddOnIdleHandler(@OnIdle);
 end;
 
@@ -673,18 +671,12 @@ begin
   InvalidateStage(cbwsGetScopeOptions);
 end;
 
-procedure TCodeBrowserView.ScopeComboBoxGetItems(Sender: TObject);
-begin
-  FillScopeComboBox;
-end;
-
-procedure TCodeBrowserView.ScopeComboBoxEditingDone(Sender: TObject);
+procedure TCodeBrowserView.ScopeComboBoxChange(Sender: TObject);
 begin
   InvalidateStage(cbwsGetScopeOptions);
 end;
 
-procedure TCodeBrowserView.ScopeWithRequiredPackagesCheckBoxChange(
-  Sender: TObject);
+procedure TCodeBrowserView.ScopeWithRequiredPackagesCheckBoxChange(Sender: TObject);
 begin
   InvalidateStage(cbwsGetScopeOptions);
 end;
@@ -2752,7 +2744,7 @@ begin
   end;
 end;
 
-function TCodeBrowserView.ExportTreeAsText(Filename: String): TModalResult;
+function TCodeBrowserView.ExportTreeAsText(Filename: string): TModalResult;
 
   procedure WriteNode(var List: TStrings; Node: TTreeNode; Prefix: String='');
   const
@@ -2833,16 +2825,15 @@ function TCodeBrowserView.SetScopeToCurUnitOwner(UseFCLAsDefault,
   WithRequiredPackages: boolean): boolean;
 var
   NewScope: String;
-  i: LongInt;
+//  i: LongInt;
 begin
   Result:=false;
   NewScope:=GetScopeToCurUnitOwner(UseFCLAsDefault);
   if NewScope='' then exit;
-  FillScopeComboBox;
   ScopeComboBox.Text:=NewScope;
-  i:=ScopeComboBox.Items.IndexOf(NewScope);
-  if i>=0 then
-    ScopeComboBox.ItemIndex:=i;
+{  i:=ScopeComboBox.Items.IndexOf(NewScope);
+  if i>=0 then                     - not needed for csDropDownList style combobox
+    ScopeComboBox.ItemIndex:=i;  }
   ScopeWithRequiredPackagesCheckBox.Checked:=WithRequiredPackages;
   InvalidateStage(cbwsGetScopeOptions);
 end;
