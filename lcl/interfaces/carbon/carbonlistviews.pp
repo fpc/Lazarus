@@ -110,6 +110,7 @@ type
     FColumns: TObjectList; // of TCarbonListColumn, indexed by col PropertyIDs
     FCheckListColumn: TCarbonCheckListColumn;
     FCaptionListColumn: TCarbonCaptionListColumn;
+    FDestroying : Boolean;
     FHeaderHeight: UInt16;
     FScrollBars: TScrollStyle;
     FItemIndex: Integer; // focused item
@@ -225,7 +226,6 @@ type
     FIcons  : TFPList;
     FStyle  : TViewStyle;
     FOwnerData  : Boolean;
-    FDestroying : Boolean;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
@@ -487,7 +487,7 @@ begin
   SetVisible(False);
   
   FreeCFString(FDesc.headerBtnDesc.titleString);
-    
+
   inherited Destroy;
 end;
 
@@ -506,7 +506,6 @@ procedure TCarbonListColumn.Remove;
 begin
   OSError(RemoveDataBrowserTableViewColumn(FOwner.Widget, FDesc.propertyDesc.propertyID),
     Self, 'Remove', 'RemoveDataBrowserTableViewColumn');
-
   FOwner.CheckNeedsScrollBars;
 end;
 
@@ -626,7 +625,7 @@ end;
 
 destructor TCarbonCheckListColumn.Destroy;
 begin
-  FListColumn.Free;
+  FreeThenNil(FListColumn);
   
   inherited Destroy;
 end;
@@ -798,6 +797,7 @@ end;
 
 procedure TCarbonDataBrowser.CreateWidget(const AParams: TCreateParams);
 begin
+  FDestroying := False;
   if OSError(CreateDataBrowserControl(
       GetTopParentWindow, ParamsToCarbonRect(AParams), kDataBrowserListView, Widget),
     Self, SCreateWidget, 'CreateDataBrowserControl') then RaiseCreateWidgetError(LCLObject);
@@ -899,6 +899,8 @@ var
 const
   SName = 'SetScrollBars';
 begin
+  if FDestroying then
+    exit;
   GetClientRect(C);
   R := GetItemsRect;
   
@@ -995,7 +997,7 @@ begin
   begin
     Result.Right := 0;
     
-    if FCheckListColumn <> nil then
+    if (FCheckListColumn <> nil) and (FCheckListColumn.FListColumn <> nil) then
       Inc(Result.Right, FCheckListColumn.FListColumn.Width);
     
     for I := 0 to FColumns.Count - 1 do
