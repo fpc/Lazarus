@@ -138,8 +138,9 @@ type
     property Color default clRed;
   end;
 
-  TCubicSplineOptions =
-    set of (csoDrawFewPoints, csoDrawUnorderedX, csoExtrapolate);
+  TCubicSplineOptions = set of (
+    csoDrawFewPoints, csoDrawUnorderedX, csoExtrapolateLeft,
+    csoExtrapolateRight);
 
   { TCubicSplineSeries }
 
@@ -687,10 +688,10 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
     ADrawer.Pen := p;
     de := TIntervalList.Create;
     try
-      if not (csoExtrapolate in Options) then begin
+      if not (csoExtrapolateLeft in Options) then
         de.AddRange(NegInfinity, FX[0]);
+      if not (csoExtrapolateRight in Options) then
         de.AddRange(FX[High(FX)], SafeInfinity);
-      end;
       DrawFunction(ADrawer, Self, de, @Calculate, Step);
     finally
       de.Free;
