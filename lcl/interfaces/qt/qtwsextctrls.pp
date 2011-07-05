@@ -301,6 +301,12 @@ begin
 
   SystemTrayIcon := TQtSystemTrayIcon(ATrayIcon.Handle);
 
+  if Assigned(ATrayIcon.Icon) and (ATrayIcon.Icon.HandleAllocated) then
+    SystemTrayIcon.setIcon(TQtIcon(ATrayIcon.Icon.Handle).Handle)
+  else
+    SystemTrayIcon.setIcon(nil);
+
+
   { PopUpMenu }
   if Assigned(ATrayIcon.PopUpMenu) then
     if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then

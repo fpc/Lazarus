@@ -492,8 +492,8 @@ type
     procedure signalActivated(AReason: QSystemTrayIconActivationReason); cdecl;
     procedure showBaloonHint(const ATitle, AHint: String;
       const AFlag: QSystemTrayIconMessageIcon; const ATimeOut: Integer);
-    procedure show;
-    procedure hide;
+    procedure Show;
+    procedure Hide;
   end;
   
   { TQtButtonGroup }
@@ -3364,6 +3364,14 @@ begin
       begin
         if Assigned(FTrayIcon.OnMouseDown) then
           FTrayIcon.OnMouseDown(FTrayIcon, mbRight, [], MousePos.x, MousePos.y);
+
+        if (QSystemTrayIcon_contextMenu(Handle) = nil) and
+          Assigned(FTrayIcon) and Assigned(FTrayIcon.PopUpMenu) then
+        begin
+          FTrayIcon.InternalUpdate;
+          FTrayIcon.PopUpMenu.PopUp;
+        end;
+
         if Assigned(FTrayIcon.OnMouseUp) then
           FTrayIcon.OnMouseUp(FTrayIcon, mbRight, [], MousePos.x, MousePos.y);
       end;
@@ -3381,12 +3389,12 @@ begin
   QSystemTrayIcon_showMessage(Handle, @WTitle, @WHint, AFlag, ATimeOut);
 end;
 
-procedure TQtSystemTrayIcon.show;
+procedure TQtSystemTrayIcon.Show;
 begin
   QSystemTrayIcon_show(handle);
 end;
 
-procedure TQtSystemTrayIcon.hide;
+procedure TQtSystemTrayIcon.Hide;
 begin
   QSystemTrayIcon_hide(handle);
 end;
