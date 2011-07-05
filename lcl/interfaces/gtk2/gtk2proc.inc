@@ -7394,6 +7394,14 @@ begin
         TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
       g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.vscrollbar, 'change-value',
         TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
+      g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.hscrollbar, 'button-press-event',
+        TGCallback(@Gtk2RangeScrollPressCB), AWidgetInfo);
+      g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.hscrollbar, 'button-release-event',
+        TGCallback(@Gtk2RangeScrollReleaseCB), AWidgetInfo);
+      g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.vscrollbar, 'button-press-event',
+        TGCallback(@Gtk2RangeScrollPressCB), AWidgetInfo);
+      g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.vscrollbar, 'button-release-event',
+        TGCallback(@Gtk2RangeScrollReleaseCB), AWidgetInfo);
     end;
 
   end;

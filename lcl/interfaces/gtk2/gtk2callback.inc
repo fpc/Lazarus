@@ -2680,10 +2680,7 @@ begin
     else
       MaxValue := ARange^.adjustment^.upper;
     if (AValue > MaxValue) or (AValue < ARange^.adjustment^.lower) then
-    begin
-      Result := not Result;
       AValue := MaxValue;
-    end;
 
   with Msg do
   begin
@@ -2709,6 +2706,10 @@ begin
     end;
   end
   else Widget^.state := 1;
+
+  if (AWidgetInfo^.LCLObject is TScrollingWinControl) and
+  ((Msg.ScrollCode=SB_LINEUP) or (Msg.ScrollCode=SB_LINEDOWN)) then
+  Result:=True;
 end;
 
 function Gtk2RangeScrollPressCB(Widget: PGtkWidget;
