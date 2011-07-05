@@ -450,7 +450,7 @@ begin
   Series.FList.Add(ASeries);
   ASeries.FChart := Self;
   ASeries.AfterAdd;
-  Invalidate;
+  StyleChanged(ASeries);
 end;
 
 procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
@@ -495,7 +495,7 @@ end;
 procedure TChart.ClearSeries;
 begin
   FSeries.Clear;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 function TChart.Clone: TChart;
@@ -592,7 +592,7 @@ begin
   if i < 0 then exit;
   FSeries.FList.Delete(i);
   ASeries.FChart := nil;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 destructor TChart.Destroy;
@@ -1155,31 +1155,31 @@ procedure TChart.SetAntialiasingMode(AValue: TChartAntialiasingMode);
 begin
   if FAntialiasingMode = AValue then exit;
   FAntialiasingMode := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetAxis(AIndex: Integer; AValue: TChartAxis);
 begin
   FAxisList.SetAxis(AIndex, AValue);
-  Invalidate;
+  StyleChanged(AValue);
 end;
 
 procedure TChart.SetAxisList(AValue: TChartAxisList);
 begin
   FAxisList.Assign(AValue);
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetAxisVisible(Value: Boolean);
 begin
   FAxisVisible := Value;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetBackColor(AValue: TColor);
 begin
   FBackColor:= AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetChildOrder(Child: TComponent; Order: Integer);
@@ -1195,32 +1195,32 @@ procedure TChart.SetDepth(AValue: TChartDistance);
 begin
   if FDepth = AValue then exit;
   FDepth := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetExpandPercentage(AValue: Integer);
 begin
   if FExpandPercentage = AValue then exit;
   FExpandPercentage := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetExtent(const AValue: TChartExtent);
 begin
   FExtent.Assign(AValue);
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetFoot(Value: TChartTitle);
 begin
   FFoot.Assign(Value);
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetFrame(Value: TChartPen);
 begin
   FFrame.Assign(Value);
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetGraphBrush(Value: TBrush);
@@ -1231,7 +1231,7 @@ end;
 procedure TChart.SetLegend(Value: TChartLegend);
 begin
   FLegend.Assign(Value);
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetLogicalExtent(const AValue: TDoubleRect);
@@ -1240,13 +1240,13 @@ begin
   HideReticule;
   FLogicalExtent := AValue;
   FIsZoomed := true;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetMargins(AValue: TChartMargins);
 begin
   FMargins.Assign(AValue);
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetName(const AValue: TComponentName);
@@ -1264,49 +1264,49 @@ procedure TChart.SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
 begin
   if TMethod(FOnAfterDrawBackground) = TMEthod(AValue) then exit;
   FOnAfterDrawBackground := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
 begin
   if TMethod(FOnAfterDrawBackWall) = TMethod(AValue) then exit;
   FOnAfterDrawBackWall := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
 begin
   if TMethod(FOnBeforeDrawBackground) = TMethod(AValue) then exit;
   FOnBeforeDrawBackground := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
 begin
   if TMethod(FOnBeforeDrawBackWall) = TMethod(AValue) then exit;
   FOnBeforeDrawBackWall := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetOnChartPaint(AValue: TChartPaintEvent);
 begin
   if TMethod(FOnChartPaint) = TMethod(AValue) then exit;
   FOnChartPaint := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetOnDrawReticule(AValue: TDrawReticuleEvent);
 begin
   if TMethod(FOnDrawReticule) = TMethod(AValue) then exit;
   FOnDrawReticule := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetProportional(AValue: Boolean);
 begin
   if FProportional = AValue then exit;
   FProportional := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetRenderingParams(AValue: TChartRenderingParams);
@@ -1323,7 +1323,7 @@ procedure TChart.SetReticuleMode(const AValue: TReticuleMode);
 begin
   if FReticuleMode = AValue then exit;
   FReticuleMode := AValue;
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetReticulePos(const AValue: TPoint);
@@ -1337,7 +1337,7 @@ end;
 procedure TChart.SetTitle(Value: TChartTitle);
 begin
   FTitle.Assign(Value);
-  Invalidate;
+  StyleChanged(Self);
 end;
 
 procedure TChart.SetToolset(AValue: TBasicChartToolset);
