@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-11-28 17:17+0100\n"
+"PO-Revision-Date: 2011-06-29 17:10+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -146,7 +146,7 @@ msgstr "Prüfe Dataset-Einstellungen"
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
-msgstr ""
+msgstr "&Daten"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
@@ -220,7 +220,7 @@ msgstr "Ko&mponentenname:"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
-msgstr ""
+msgstr "E&rgebnisfelder:"
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
@@ -561,7 +561,7 @@ msgstr "Fließkomma"
 
 #: objinspstrconsts.oishelp
 msgid "&Help"
-msgstr ""
+msgstr "&Hilfe"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."
@@ -637,7 +637,7 @@ msgstr "Nach unten"
 
 #: objinspstrconsts.oismovedownhint
 msgid "Move field down"
-msgstr ""
+msgstr "Feld nach unten"
 
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
@@ -645,7 +645,7 @@ msgstr "Nach oben"
 
 #: objinspstrconsts.oismoveuphint
 msgid "Move field up"
-msgstr ""
+msgstr "Feld nach oben"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -1381,7 +1381,7 @@ msgstr "Neuer Untereintrag"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor..."
-msgstr "Markeneditor bearbeiten..."
+msgstr "Maskeneditor bearbeiten..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
@@ -1531,7 +1531,6 @@ msgid "Accept"
 msgstr "Übernehmen"
 
 #: objinspstrconsts.srvk_apps
-#, fuzzy
 #| msgid "application key"
 msgid "Application Key"
 msgstr "Anwendungstaste"
@@ -1611,7 +1610,6 @@ msgid "Insert"
 msgstr "Einfügen"
 
 #: objinspstrconsts.srvk_irregular
-#, fuzzy
 #| msgid "Irregular "
 msgid "Irregular"
 msgstr "Unregelmäßig"
