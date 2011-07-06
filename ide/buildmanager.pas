@@ -1798,8 +1798,12 @@ begin
       for i:=0 to MainMacroValues.Count-1 do begin
         aName:=MainMacroValues.Names[i];
         aValue:=MainMacroValues.ValueFromIndex(i);
+        //debugln(['TBuildManager.OnGetBuildMacroValues project override: ',aName,'="',aValue,'"']);
         Result.Define(PChar(aName),aValue);
       end;
+      {$IFDEF VerboseBuildMacros}
+      Result.WriteDebugReport('OnGetBuildMacroValues project overrides');
+      {$ENDIF}
       MainMacroValues.CfgVarsBuildMacroStamp:=BuildMacroChangeStamp;
     end else if DefaultCfgVars<>nil then begin
       // there is no project => use defaults
@@ -1818,7 +1822,7 @@ begin
       for i:=0 to Overrides.Count-1 do
         Result.Values[Overrides.Names[i]]:=Overrides.ValueFromIndex[i];
       {$IFDEF VerboseBuildMacros}
-      debugln(['TBuildManager.OnGetBuildMacroValues Overrides=',dbgstr(Overrides.Text)]);
+      debugln(['TBuildManager.OnGetBuildMacroValues cmd line overrides=',dbgstr(Overrides.Text)]);
       {$ENDIF}
     finally
       Overrides.Free;

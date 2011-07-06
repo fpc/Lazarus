@@ -1236,6 +1236,18 @@ begin
 end;
 
 procedure TCTCfgScriptVariables.Define(Name: PChar; const Value: string);
+
+  function IsNumber: boolean;
+  var
+    p: PChar;
+  begin
+    if Value='' then exit;
+    p:=PChar(Value);
+    if p^='-' then inc(p);
+    while (p^ in ['0'..'9']) do inc(p);
+    Result:=(p^=#0) and (p-PChar(Value)=length(Value));
+  end;
+
 var
   V: PCTCfgScriptVariable;
   i: Int64;
@@ -1243,7 +1255,7 @@ begin
   V:=GetVariable(Name,true);
   if Value='' then
     ClearCTCSVariable(V)
-  else if TryStrToInt64(Value,i) then
+  else if IsNumber and TryStrToInt64(Value,i) then
     SetCTCSVariableAsNumber(V,i)
   else
     SetCTCSVariableAsString(V,Value);
