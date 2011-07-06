@@ -34,8 +34,8 @@ Unit AnchorDockStorage;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, AvgLvlTree, ExtCtrls, ComCtrls, Forms, Controls,
-  LazConfigStorage, AnchorDockStr;
+  Math, Classes, SysUtils, LCLProc, AvgLvlTree, ExtCtrls, ComCtrls, Forms,
+  Controls, LazConfigStorage, AnchorDockStr;
 
 const
   AnchorDockSplitterName = 'AnchorDockSplitter';
