@@ -9180,9 +9180,11 @@ begin
     bsDialog : Result := GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE
                 or GDK_FUNC_MOVE;
 
-    bsToolWindow : Result := GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
+    bsToolWindow : Result := GDK_FUNC_MOVE or GDK_FUNC_CLOSE
+                 or GDK_FUNC_MINIMIZE or GDK_FUNC_MAXIMIZE;
 
-    bsSizeToolWin : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
+    bsSizeToolWin : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or GDK_FUNC_CLOSE
+                  or GDK_FUNC_MINIMIZE or GDK_FUNC_MAXIMIZE;
   end;
 
   // X warns if marking a fixed size window resizeable:
