@@ -3882,6 +3882,7 @@ begin
     itmSourceEncloseBlock.Enabled:=SelEditable;
     itmSourceEncloseInIFDEF.Enabled:=SelEditable;
     itmSourceCompleteCode.Enabled:=Editable;
+    itmSourceUseUnit.Enabled:=Editable;
   //itmSourceInsertions
     //itmSourceInsertCVSKeyWord
       itmSourceInsertCVSAuthor.Enabled:=Editable;
