@@ -61,6 +61,7 @@ type
   
   TCarbonWidget = class
   private
+    FScrollOffset: TPoint;
     FEventProcCount: Integer;
     FProperties: TStringList;
     FCursor: HCURSOR;
@@ -69,6 +70,7 @@ type
     FBoundsReported: Boolean;
     function GetPainting: Boolean;
     function GetProperty(AIndex: String): Pointer;
+    function GetScrollOffset: TPoint;
     procedure SetProperty(AIndex: String; const AValue: Pointer);
   protected
     procedure RegisterEvents; virtual; abstract;
@@ -142,6 +144,7 @@ type
      - processes track and draw event                  }
     property Content: ControlRef read GetContent;
     property Cursor: HCURSOR read FCursor;
+    property ScrollOffset: TPoint read GetScrollOffset; // scrolled offset of  ScrollingWinControl
     property HasCaret: Boolean read FHasCaret write FHasCaret;
     property Painting: Boolean read GetPainting;
     property Properties[AIndex: String]: Pointer read GetProperty write SetProperty;
@@ -403,6 +406,11 @@ begin
     end;
   end;
   Result := nil;
+end;
+
+function TCarbonWidget.GetScrollOffset: TPoint;
+begin
+  Result := Point(-FScrollOffset.X, -FScrollOffset.Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -688,6 +696,7 @@ end;
 constructor TCarbonWidget.Create(const AObject: TWinControl;
   const AParams: TCreateParams);
 begin
+  FScrollOffset := Point(0, 0);
   LCLObject := AObject;
   FProperties := nil;
   Widget := nil;
@@ -955,6 +964,11 @@ begin
     Self, SName, 'HIViewGetBounds');
   OSError(HIViewSetBoundsOrigin(Content, R.origin.x - DX, R.origin.y - DY),
     Self, SName, 'HIViewSetBoundsOrigin');
+  with FScrollOffset do
+  begin
+    X := X + DX;
+    Y := Y + DY;
+  end;
 end;
 
 {------------------------------------------------------------------------------
