@@ -156,7 +156,7 @@ var
   APoint: TQtPoint;
   Pt: TPoint;
 begin
-  Result := Handle <> 0;
+  Result := IsValidHandle(Handle);
   if Result then
   begin
     APoint := QtPoint(P.X, P.Y);
@@ -4895,7 +4895,7 @@ var
   APoint: TQtPoint;
 begin
   Result := 0;
-  if Handle <> 0 then
+  if IsValidHandle(Handle) then
   begin
     APoint := QtPoint(P.X, P.Y);
     QWidget_mapFromGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
