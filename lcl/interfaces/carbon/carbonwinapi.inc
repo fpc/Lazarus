@@ -88,6 +88,7 @@ end;
 function TCarbonWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
 var
   R: TRect;
+  Pt: TPoint;
 begin
   Result := False;
   
@@ -109,7 +110,11 @@ begin
     begin
       Inc(P.X, R.Left);
       Inc(P.Y, R.Top);
+      Pt := TCarbonWidget(Handle).ScrollOffset;
+      Dec(P.X, Pt.X);
+      Dec(P.Y, Pt.Y);
     end;
+
   end;
   
   {$IFDEF VerboseWinAPI}
