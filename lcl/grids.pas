@@ -4116,7 +4116,12 @@ begin
   case message.ScrollCode of
       // Scrolls to start / end of the text
     SB_TOP:        C := 0;
-    SB_BOTTOM:     C := TL;
+    SB_BOTTOM:
+    begin
+      if not (goSmoothScroll in Options) then
+        TL := TL + 1;
+      C := TL;
+    end;
       // Scrolls one line left / right
     SB_LINERIGHT:  C := CTL + NextColWidth( FTopLeft.X, 1);
     SB_LINELEFT:   C := CTL - NextColWidth( FTopLeft.X - 1, -1);
@@ -4223,7 +4228,12 @@ begin
   case message.ScrollCode of
       // Scrolls to start / end of the text
     SB_TOP:        C := 0;
-    SB_BOTTOM:     C := TL;
+    SB_BOTTOM:
+    begin
+      if not (goSmoothScroll in Options) then
+        TL := TL + 1;
+      C := TL;
+    end;
       // Scrolls one line up / down
     SB_LINEDOWN:   C := CTL + NextRowHeight(FTopleft.Y, 1);
     SB_LINEUP:     C := CTL - NextRowHeight(FTopleft.Y-1, -1);

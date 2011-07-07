@@ -3232,8 +3232,8 @@ begin
       ScrollInfo.nPos := QtScrollBar.getValue;
 
     // RANGE
-    if (ScrollInfo.fMask and SIF_RANGE) <> 0
-    then begin
+    if (ScrollInfo.fMask and SIF_RANGE) <> 0 then
+    begin
       ScrollInfo.nMin:= QtScrollBar.getMin;
       ScrollInfo.nMax:= QtScrollBar.getMax + QtScrollBar.getPageStep;
     end;
@@ -5710,6 +5710,9 @@ var
       end;
     end;
 
+    if (ScrollInfo.FMask and SIF_UPDATEPOLICY) <> 0 then
+      ScrollBar.setTracking(ScrollInfo.nTrackPos <> SB_POLICY_DISCONTINUOUS);
+
     if (ScrollInfo.FMask and SIF_POS) <> 0 then
     begin
       inc(SBUpdatesCount);
@@ -5717,11 +5720,11 @@ var
       if SBUpdatesCount = 1 then
         ScrollBar.BeginUpdate;
       try
-        if (ScrollInfo.FMask and SIF_UPDATEPOLICY) = 0 then
+        if not (ScrollBar.getTracking and ScrollBar.getSliderDown) then
         begin
           {do not setValue() if values are equal, since it calls
            signalValueChanged() which sends unneeded LM_SCROLL msgs }
-          if ScrollBar.getValue = ScrollInfo.nPos then
+          if (ScrollBar.getValue = ScrollInfo.nPos) then
             SBUpdatesCount := 0;
 
           if (ScrollInfo.nPos < ScrollBar.getMin) then
@@ -5730,17 +5733,14 @@ var
           if (ScrollInfo.nPos > ScrollBar.getMax) then
             ScrollInfo.nPos := ScrollBar.getMax;
 
-          if SBUpdatesCount > 0 then
+          if (SBUpdatesCount > 0) then
             ScrollBar.setValue(ScrollInfo.nPos);
         end;
       finally
-        if SBUpdatesCount = 1 then
+        if ScrollBar.InUpdate then
           ScrollBar.EndUpdate;
       end;
     end;
-
-    if (ScrollInfo.FMask and SIF_UPDATEPOLICY) <> 0 then
-      ScrollBar.setTracking(ScrollInfo.nTrackPos <> SB_POLICY_DISCONTINUOUS);
 
     if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then
     begin

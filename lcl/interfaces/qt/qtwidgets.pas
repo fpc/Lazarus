@@ -368,6 +368,7 @@ type
   public
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
+    procedure SlotSliderReleased; cdecl; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
     property TrackPos: Integer read FTrackPos write FTrackPos;
@@ -6200,7 +6201,7 @@ var
   b: Boolean;
 begin
   {$ifdef VerboseQt}
-  writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1,' inUpdate ',inUpdate);
+  writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1,' inUpdate ',inUpdate,' maxIs ',getMax);
   {$endif}
 
   FillChar(LMScroll, SizeOf(LMScroll), #0);
@@ -6211,11 +6212,11 @@ begin
     LMScroll.Msg := LM_HSCROLL
   else
     LMScroll.Msg := LM_VSCROLL;
-  
+
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
 
-  if not InUpdate and not getTracking then
+  if not InUpdate then
     DeliverMessage(LMScroll);
 
   b := p1 = getMax;
@@ -6356,6 +6357,42 @@ begin
     inherited setFocusPolicy(QtNoFocus)
   else
     inherited setFocusPolicy(APolicy);
+end;
+
+procedure TQtScrollBar.SlotSliderReleased; cdecl;
+var
+  AValue: Integer;
+  LMScroll: TLMScroll;
+begin
+  inherited SlotSliderReleased;
+  if (ChildOfComplexWidget = ccwAbstractScrollArea) and (FOwner <> nil) and
+    (FOwner.ChildOfComplexWidget in [ccwCustomControl]) then
+  begin
+    AValue := getValue;
+    if AValue <= getMin then
+      QAbstractSlider_triggerAction(QAbstractSliderH(Widget), QAbstractSliderSliderToMinimum)
+    else
+    if AValue >= getMax then
+      QAbstractSlider_triggerAction(QAbstractSliderH(Widget), QAbstractSliderSliderToMaximum)
+    else
+    begin
+      FillChar(LMScroll, SizeOf(LMScroll), #0);
+
+      LMScroll.ScrollBar := PtrUInt(Self);
+
+      if QAbstractSlider_orientation(QAbstractSliderH(Widget)) = QtHorizontal then
+        LMScroll.Msg := LM_HSCROLL
+      else
+        LMScroll.Msg := LM_VSCROLL;
+
+      LMScroll.Pos := getSliderPosition;
+      if not GetTracking then
+        LMScroll.ScrollCode := SB_THUMBPOSITION
+      else
+        LMScroll.ScrollCode := SB_THUMBTRACK;
+      DeliverMessage(LMScroll);
+    end;
+  end;
 end;
 
 function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
