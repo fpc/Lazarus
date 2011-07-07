@@ -154,6 +154,7 @@ end;
 function TQtWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
 var
   APoint: TQtPoint;
+  Pt: TPoint;
 begin
   Result := Handle <> 0;
   if Result then
@@ -161,6 +162,12 @@ begin
     APoint := QtPoint(P.X, P.Y);
 
     QWidget_mapToGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
+    if TQtWidget(Handle).ChildOfComplexWidget = ccwScrollingWinControl then
+    begin
+      Pt := TQtCustomControl(Handle).viewport.ScrolledOffset;
+      dec(APoint.X, Pt.X);
+      dec(APoint.Y, Pt.Y);
+    end;
     P := Point(APoint.x, APoint.y);
   end;
 end;

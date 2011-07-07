@@ -124,6 +124,7 @@ type
 
     function GetPalette: TQtWidgetPalette;
     function GetProps(const AnIndex: String): pointer;
+    function getScrolledOffset: TPoint;
     function GetStyleSheet: WideString;
     function GetWidget: QWidgetH;
     function LCLKeyToQtKey(AKey: Word): Integer;
@@ -291,6 +292,7 @@ type
     property HasPaint: Boolean read FHasPaint write FHasPaint;
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
     property LastCaretPos: TQtPoint read FLastCaretPos write SetLastCaretPos;
+    property ScrolledOffset: TPoint read getScrolledOffset;
     property StyleSheet: WideString read GetStyleSheet write SetStyleSheet;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Palette: TQtWidgetPalette read GetPalette;
@@ -4461,6 +4463,11 @@ begin
     end;
   end;
   result := nil;
+end;
+
+function TQtWidget.getScrolledOffset: TPoint;
+begin
+  Result := Point(-FScrollX, -FScrollY);
 end;
 
 function TQtWidget.GetStyleSheet: WideString;
