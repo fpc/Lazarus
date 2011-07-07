@@ -1757,6 +1757,9 @@ var
 begin
   if TVNode=nil then exit;
   if TVNode.Data<>nil then begin
+    if (TObject(TVNode.Data) is TViewNodeData) and (fCodeSortedForStartPos<>nil)
+    then
+      fCodeSortedForStartPos.Remove(TVNode);
     TObject(TVNode.Data).Free;
     TVNode.Data:=nil;
   end;
@@ -2402,7 +2405,7 @@ var
   NodeData: TViewNodeData;
 begin
   if fCodeSortedForStartPos<>nil then
-   fCodeSortedForStartPos.Clear;
+    fCodeSortedForStartPos.Clear;
   if (CodeTreeview=nil) then exit;
   TVNode:=CodeTreeview.Items.GetFirstNode;
   while TVNode<>nil do begin
