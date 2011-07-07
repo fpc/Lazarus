@@ -130,8 +130,6 @@ begin
 end;
 
 procedure TUseUnitDialog.FormDestroy(Sender: TObject);
-var
-  i: Integer;
 begin
   FOtherUnits.Free;
   FProjUnits.Free;
