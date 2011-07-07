@@ -499,7 +499,7 @@ begin
   if s<>'' then
     Stream.Read(s[1],length(s));
   Caption:=HTMLToCaption(s,MaxLineCount);
-  debugln(['TSimpleHTMLControl.SetHTMLContent ',Caption]);
+  //debugln(['TSimpleHTMLControl.SetHTMLContent ',Caption]);
 end;
 
 procedure TSimpleHTMLControl.GetPreferredControlSize(out AWidth, AHeight: integer);

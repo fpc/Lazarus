@@ -43,7 +43,8 @@ uses
   LCLType,
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
-  KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, FileProcs,
+  KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
+  FileProcs,
   {$IFDEF NewXMLCfg}
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   {$ELSE}
@@ -2371,6 +2372,9 @@ begin
       end;
 
     except
+      on E: ECodeToolError do begin
+        //debugln(['TCodeHelpManager.GetHTMLHint ECodeToolError: ',E.Message]);
+      end;
       on E: Exception do begin
         debugln(['TCodeHelpManager.GetHTMLHint Exception: ',E.Message]);
         //DumpExceptionBackTrace;
