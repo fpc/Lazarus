@@ -37,8 +37,8 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Dialogs, Graphics, ExtCtrls, ComCtrls,
-  Buttons, FileUtil, Menus, LResources, AVL_Tree,
+  Classes, SysUtils, LCLProc, Controls, Forms, Dialogs, Graphics, ExtCtrls,
+  ComCtrls, Buttons, FileUtil, Menus, LResources, AVL_Tree,
   PropEdits, FormEditingIntf, LazIDEIntf, MacroIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
@@ -496,6 +496,7 @@ begin
     for j:= 1 to Page.ControlCount-1 do begin
       CurButton:=TSpeedbutton(Page.Controls[j]);
       if not (CurButton is TSpeedButton) then continue;
+      if not CurButton.Visible then continue;
       ButtonTree.Add(CurButton);
     end;
     if ButtonTree.Count=0 then exit;
@@ -572,12 +573,13 @@ begin
           CurPage:=Pages[PageIndex];
           CurBtn:=TSpeedButton(CurPage.SelectButton);
           CurPage.SelectButton:=nil;
-          CurBtn.Free;
+          Application.ReleaseComponent(CurBtn);
           Pages[PageIndex].PageComponent:=nil;
         end;
         if FPageControl.Pages[i]=OldActivePage then
           OldActivePage:=nil;
-        FPageControl.Pages[i].Free;
+        FPageControl.Pages[i].Visible:=false;
+        Application.ReleaseComponent(FPageControl.Pages[i]);
       end;
     end;
 
@@ -689,7 +691,8 @@ begin
           end;
         end else if CurComponent.Button<>nil then begin
           //debugln(['TComponentPalette.UpdateNoteBookButtons Destroy Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name]);
-          CurComponent.Button.Free;
+          TControl(CurComponent.Button).Visible:=false;
+          Application.ReleaseComponent(CurComponent.Button);
           CurComponent.Button:=nil;
         end;
       end;
@@ -711,7 +714,7 @@ begin
     SortedCompList.Free;
     SortedPageList.Free;
   end;
-  //writeln('TComponentPalette.UpdateNoteBookButtons END');
+  //debugln('TComponentPalette.UpdateNoteBookButtons END');
 end;
 
 procedure TComponentPalette.OnGetNonVisualCompIcon(Sender: TObject;

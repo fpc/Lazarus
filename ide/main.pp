@@ -16229,7 +16229,7 @@ begin
   FDisplayState:= dsSource;
 end;
 
-Procedure TMainIDE.OnDesignerActivated(Sender: TObject);
+procedure TMainIDE.OnDesignerActivated(Sender: TObject);
 begin
   FDisplayState:= dsForm;
   FLastFormActivated := (Sender as TDesigner).Form;
