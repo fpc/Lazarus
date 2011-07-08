@@ -210,6 +210,8 @@ type
     FLastConvertDelphiPackage: string;
     FLastConvertDelphiProject: string;
     FLastConvertDelphiUnit: string;
+    FNewFileType: string;
+    FNewProjectType: string;
     FReplaceHistory: TStringList;
     FFindInFilesPathHistory: TStringList;
     FFindInFilesMaskHistory: TStringList;
@@ -300,6 +302,10 @@ type
     property DiffText2: string read FDiffText2 write FDiffText2;
     property DiffText2OnlySelection: boolean read FDiffText2OnlySelection
                                              write FDiffText2OnlySelection;
+
+    // new dialog
+    property NewProjectType: string read FNewProjectType write FNewProjectType;
+    property NewFileType: string read FNewFileType write FNewFileType;
 
     // Delphi conversion
     property LastConvertDelphiProject: string read FLastConvertDelphiProject
@@ -466,6 +472,8 @@ begin
   FDiffFlags:=DefaultDiffFlags;
   FDiffText2:='';
   FDiffText2OnlySelection:=false;
+  FNewProjectType:='';
+  FNewFileType:='';
   FFPCConfigCache.Clear;
   FLastConvertDelphiProject:='';
   FLastConvertDelphiUnit:='';
@@ -542,7 +550,11 @@ begin
   FDiffText2:=XMLConfig.GetValue(Path+'DiffDialog/Text2/Name','');
   FDiffText2OnlySelection:=
     XMLConfig.GetValue(Path+'DiffDialog/Text2/OnlySelection',false);
-    
+
+  // new items
+  FNewProjectType:=XMLConfig.GetValue(Path+'New/Project/Type','');
+  FNewFileType:=XMLConfig.GetValue(Path+'New/File/Type','');
+
   // delphi conversion
   FLastConvertDelphiProject:=XMLConfig.GetValue(Path+'Conversion/Delphi/Project','');
   FLastConvertDelphiPackage:=XMLConfig.GetValue(Path+'Conversion/Delphi/Package','');
@@ -611,6 +623,11 @@ begin
   XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/Name',FDiffText2,'');
   XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/OnlySelection',
                            FDiffText2OnlySelection,false);
+
+  // new items
+  XMLConfig.SetDeleteValue(Path+'New/Project/Type',FNewProjectType,'');
+  XMLConfig.SetDeleteValue(Path+'New/File/Type',FNewFileType,'');
+
   // delphi conversion
   XMLConfig.SetDeleteValue(Path+'Conversion/Delphi/Project',
                            FLastConvertDelphiProject,'');

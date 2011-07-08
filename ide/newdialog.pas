@@ -40,10 +40,10 @@ interface
 
 uses
   Buttons, SysUtils, Classes, LCLProc, ComCtrls, Controls, Dialogs,
-  Forms, StdCtrls, ExtCtrls, FileProcs,
+  Forms, StdCtrls, ExtCtrls, FileProcs, ButtonPanel,
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, PackageIntf, ProjectIntf,
   LazIDEIntf, IDEHelpIntf,
-  LazarusIDEStrConsts, Project, MainIntf, ButtonPanel;
+  InputHistory, LazarusIDEStrConsts, Project, MainIntf;
 
 type
   { TNewLazIDEItemCategory }
@@ -136,6 +136,7 @@ type
     procedure FillItemsTree;
     procedure SetupComponents;
     procedure UpdateDescription;
+    function FindItem(const aName: string): TTreeNode;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -189,11 +190,16 @@ begin
     exit;
   end;
   FNewItem := TNewIDEItemTemplate(ANode.Data);
-  
+
+  InputHistories.NewFileType:=FNewItem.Name;
+  //debugln(['TNewOtherDialog.OKButtonClick InputHistories.NewFileType=',InputHistories.NewFileType]);
+
   // if the selected item is an inherited one
   if FNewItem is TNewItemProjectFile then
   begin
     //
+    InputHistories.NewProjectType:=FNewItem.Name;
+
     NewFile:=TNewItemProjectFile(FNewItem);
     if (NewFile.Descriptor is TFileDescInheritedItem) then
     begin
@@ -368,7 +374,22 @@ begin
   DescriptionLabel.Caption := Desc;
 end;
 
+function TNewOtherDialog.FindItem(const aName: string): TTreeNode;
+begin
+  if aName='' then exit(nil);
+  Result:=ItemsTreeView.Items.GetFirstNode;
+  while Result<>nil do begin
+    if (Result.Data<>nil)
+    and (TObject(Result.Data) is TNewIDEItemTemplate)
+    and (CompareText(TNewIDEItemTemplate(Result.Data).Name,aName)=0) then
+      exit;
+    Result:=Result.GetNext;
+  end;
+end;
+
 constructor TNewOtherDialog.Create(TheOwner: TComponent);
+var
+  Node: TTreeNode;
 begin
   inherited Create(TheOwner);
   Caption := lisMenuNewOther;
@@ -377,6 +398,12 @@ begin
   FillProjectInheritableItemsList;
   InheritableComponentsListView.Visible := false;
   IDEDialogLayoutList.ApplyLayout(Self, 570, 400);
+
+  Node:=FindItem(InputHistories.NewFileType);
+  if Node=nil then
+    Node:=FindItem(InputHistories.NewProjectType);
+  if Node<>nil then
+    ItemsTreeView.Selected:=Node;
 end;
 
 destructor TNewOtherDialog.Destroy;
