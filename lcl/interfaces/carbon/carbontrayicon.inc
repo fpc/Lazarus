@@ -426,7 +426,7 @@ var
   AMenuItem: NSMenuItem;
   LCLMenu: TMenuItem;
 begin
-  AMenuItem := NSMenuItem.CreateWithHandle(sender);
+  AMenuItem := NSMenuItem.CreateWithHandle(lobjc.id(_cmd));
   LCLMenu := TMenuItem(PtrInt(AMenuItem.Tag()));
   if (LCLMenu <> nil) and Assigned(LCLMenu.OnClick) then LCLMenu.OnClick(LCLMenu);
 end;
@@ -501,7 +501,8 @@ begin
 
   APrivateTrayIcon.item := NSStatusItem.CreateWithHandle(APrivateTrayIcon.bar.statusItemWithLength(NSSquareStatusItemLength));
   APrivateTrayIcon.item.retain();
-  APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);
+  if Assigned(APrivateTrayIcon.image) and Assigned(APrivateTrayIcon.Image.Handle) then
+    APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);
   APrivateTrayIcon.item.setHighlightMode(LongBool(YES));
 
   { Inserts the menu }
@@ -540,10 +541,14 @@ begin
 
   { Updates the image }
 
-  APrivateTrayIcon.image.Free;
+  if Assigned(APrivateTrayIcon.Image) then
+    APrivateTrayIcon.image.Free;
 
-  APrivateTrayIcon.image := APrivateTrayIcon.ConvertTIconToNSImage(ATrayIcon.Icon);
-  APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);
+  if Assigned(ATrayIcon.Icon) then
+  begin
+    APrivateTrayIcon.image := APrivateTrayIcon.ConvertTIconToNSImage(ATrayIcon.Icon);
+    APrivateTrayIcon.item.setImage(APrivateTrayIcon.image.Handle);
+  end;
 
   { Inserts the menu }
 
