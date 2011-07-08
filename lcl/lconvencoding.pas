@@ -6330,10 +6330,17 @@ begin
   AFrom:=NormalizeEncoding(FromEncoding);
   ATo:=NormalizeEncoding(ToEncoding);
   SysEnc:=NormalizeEncoding(GetDefaultTextEncoding);
-  if AFrom=EncodingAnsi then AFrom:=SysEnc;
-  if ATo=EncodingAnsi then ATo:=SysEnc;
+  if AFrom=EncodingAnsi then AFrom:=SysEnc
+  else if AFrom='' then AFrom:=EncodingUTF8;
+  if ATo=EncodingAnsi then ATo:=SysEnc
+  else if ATo='' then ATo:=EncodingUTF8;
   if AFrom=ATo then begin
     Result:=s;
+    exit;
+  end;
+  if s='' then begin
+    if ATo=EncodingUTF8BOM then
+      Result:=UTF8BOM;
     exit;
   end;
   //DebugLn(['ConvertEncoding ',AFrom,' ',ATo]);
