@@ -855,11 +855,31 @@ begin
 end;
 
 procedure TCodeBrowserView.SetUpdateNeeded(const AValue: boolean);
+
+  procedure InvalidateFileList(StartList: TCodeBrowserUnitList);
+  var
+    APackage: TCodeBrowserUnitList;
+    Node: TAVLTreeNode;
+  begin
+    if StartList=nil then exit;
+    StartList.UnitsValid:=false;
+    if (StartList.UnitLists=nil) then exit;
+    Node:=StartList.UnitLists.FindLowest;
+    while Node<>nil do begin
+      APackage:=TCodeBrowserUnitList(Node.Data);
+      InvalidateFileList(APackage);
+      Node:=StartList.UnitLists.FindSuccessor(Node);
+    end;
+  end;
+
 begin
   if FUpdateNeeded=AValue then exit;
   FUpdateNeeded:=AValue;
-  if FUpdateNeeded then
+  if FUpdateNeeded then begin
+    InvalidateFileList(FParserRoot);
+    InvalidateFileList(FWorkingParserRoot);
     InvalidateStage(cbwsGetScopeOptions);
+  end;
 end;
 
 procedure TCodeBrowserView.SetVisibleIdentifiers(const AValue: PtrInt);
