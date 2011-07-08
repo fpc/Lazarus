@@ -1985,6 +1985,7 @@ type
     procedure Paint; virtual;
     procedure DoOnChangeBounds; override;
     procedure DoOnParentHandleDestruction; override;
+    procedure Update; override;
 
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
   public
@@ -2775,7 +2776,8 @@ begin
   begin
     Result := WinControl;
     Control := WinControl.ControlAtPos(WinControl.ScreenToClient(Position),
-                        [capfAllowDisabled, capfAllowWinControls, capfRecursive]);
+                        [capfAllowDisabled, capfAllowWinControls, capfRecursive,
+                        capfHasScrollOffset]);
     //debugln(['FindControlAtPosition ',dbgs(Position),' ',DbgSName(WinControl),' ',dbgs(WinControl.ScreenToClient(Position)),' ',DbgSName(Control)]);
     if Control <> nil then
       Result := Control;
