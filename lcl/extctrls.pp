@@ -1028,6 +1028,7 @@ type
 
   TCustomTrayIcon = class(TLCLComponent)
   private
+    FDelayedShowing: Boolean;
     FAnimate: Boolean;
     FAnimateTimer: TTimer;
     FCurAnimationStep: Integer;
@@ -1047,6 +1048,7 @@ type
     FOnMouseMove: TMouseMoveEvent;
     function GetAnimateInterval: Cardinal;
     function  GetCanvas: TCanvas;
+    function InternalShow: Boolean;
     procedure SetAnimate(const AValue: Boolean);
     procedure SetAnimateInterval(const AValue: Cardinal);
     procedure SetHint(const AValue: string);
@@ -1061,6 +1063,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Loaded; override;
   public
     Handle: HWND;
     constructor Create(TheOwner: TComponent); override;

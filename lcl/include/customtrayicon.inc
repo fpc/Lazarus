@@ -37,6 +37,7 @@
 constructor TCustomTrayIcon.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
+  FDelayedShowing := False;
 
   { Default property values }
   FBalloonTimeout := 3000;
@@ -101,12 +102,35 @@ begin
 
   if not(csDesigning in ComponentState) then
   begin
-    Result := TWSCustomTrayIconClass(WidgetSetClass).Hide(Self);
+    Result := not (csLoading in ComponentState);
+    if Result then
+      Result := TWSCustomTrayIconClass(WidgetSetClass).Hide(Self);
     FVisible := not Result;
     FAnimateTimer.Enabled := False;
   end
   else
     Result := false;
+end;
+
+{*******************************************************************
+*  TCustomTrayIcon.InternalShow()
+*
+*  DESCRIPTION:    Called when component is loaded, if Show() is called during
+*                  loading.
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        If successfull
+*
+*******************************************************************}
+function TCustomTrayIcon.InternalShow: Boolean;
+begin
+  FDelayedShowing := csLoading in ComponentState;
+  if FDelayedShowing then
+    exit(False);
+  Result := TWSCustomTrayIconClass(WidgetSetClass).Show(Self);
+  FVisible := Result;
+  FAnimateTimer.Enabled := FAnimate;
 end;
 
 {*******************************************************************
@@ -126,13 +150,9 @@ begin
   FVisible := True;
 
   if not(csDesigning in ComponentState) then
-  begin
-    Result := TWSCustomTrayIconClass(WidgetSetClass).Show(Self);
-    FVisible := Result;
-    FAnimateTimer.Enabled := FAnimate;
-  end
+    Result := InternalShow
   else
-    Result := false;
+    Result := False;
 end;
 
 {*******************************************************************
@@ -212,6 +232,13 @@ begin
     PopupMenu := nil;
 end;
 
+procedure TCustomTrayIcon.Loaded;
+begin
+  inherited Loaded;
+  if FDelayedShowing then
+    InternalShow;
+end;
+
 {*******************************************************************
 *  TCustomTrayIcon.InternalUpdate ()
 *
@@ -232,7 +259,8 @@ end;
 *******************************************************************}
 procedure TCustomTrayIcon.InternalUpdate;
 begin
-  TWSCustomTrayIconClass(WidgetSetClass).InternalUpdate(Self);
+  if not (csLoading in ComponentState) then
+    TWSCustomTrayIconClass(WidgetSetClass).InternalUpdate(Self);
 end;
 
 {*******************************************************************
@@ -352,3 +380,4 @@ begin
 end;
 
 // included by extctrls.pp
+
