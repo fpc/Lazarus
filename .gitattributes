@@ -602,6 +602,7 @@ components/codetools/languages/codetoolsstrconsts.uk.po svneol=native#text/plain
 components/codetools/languages/codetoolsstrconsts.zh_CN.po svneol=native#text/utf8
 components/codetools/laz2_dom.pas svneol=native#text/plain
 components/codetools/laz2_names.inc svneol=native#text/plain
+components/codetools/laz2_xmlcfg.pas svneol=native#text/plain
 components/codetools/laz2_xmlread.pas svneol=native#text/plain
 components/codetools/laz2_xmlutils.pas svneol=native#text/plain
 components/codetools/laz2_xmlwrite.pas svneol=native#text/plain

@@ -29,7 +29,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="66">
+    <Files Count="67">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -295,6 +295,10 @@
         <Filename Value="codetoolsfpcmsgs.pas"/>
         <UnitName Value="CodeToolsFPCMsgs"/>
       </Item66>
+      <Item67>
+        <Filename Value="laz2_xmlcfg.pas"/>
+        <UnitName Value="Laz2_XMLCfg"/>
+      </Item67>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

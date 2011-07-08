@@ -1,5 +1,5 @@
 {
-    $Id$
+    $Id: laz_xmlcfg.pas 31237 2011-06-15 07:27:06Z mattias $
     This file was part of the Free Component Library and was adapted to use UTF8
     strings instead of widestrings.
 
@@ -23,12 +23,13 @@
 {$MODE objfpc}
 {$H+}
 
-unit Laz_XMLCfg;
+unit Laz2_XMLCfg;
 
 interface
 
 {off $DEFINE MEM_CHECK}
 
+{$DEFINE NewXMLCfg}
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
@@ -617,7 +618,7 @@ begin
     doc := TXMLDocument.Create;
 
   cfg :=TDOMElement(doc.FindNode('CONFIG'));
-  //debugln(['TXMLConfig.SetFilename ',DbgSName(cfg)]);
+  //debugln(['TXMLConfig.SetFilename cfg=',DbgSName(cfg),' doc=',DbgSName(doc)]);
   if not Assigned(cfg) then begin
     cfg := doc.CreateElement('CONFIG');
     doc.AppendChild(cfg);
@@ -905,6 +906,5 @@ begin
     end;
   end;
 end;
-
 
 end.

@@ -17,6 +17,7 @@ unit laz2_xmlutils;
 {$ifdef fpc}{$mode objfpc}{$endif}
 {$H+}
 {$ifopt Q+}{$define overflow_check}{$endif}
+{$R-}
 
 interface
 

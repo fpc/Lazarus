@@ -116,7 +116,7 @@ type
 // -------------------------------------------------------
 
   TSetOfChar = set of Char;
-  DOMString = ANsiString;
+  DOMString = AnsiString;
   DOMPChar = PChar;
   DOMChar = Char;
   PDOMString = ^DOMString;

@@ -3039,6 +3039,7 @@ begin
     old := FBuf;
     repeat
       wc := FBuf^;
+      //writeln('TXMLDecodingSource.SkipUntil ',ord(wc));
       if (wc = #10) or (wc = #13)
       or (FXML11Rules and ((wc = #$85) or (wc = #$2028))) // ToDo #$2028
       then begin
@@ -3054,7 +3055,7 @@ begin
               (FXML11Rules and (wc >= #$7F) and (wc <= #$9F)) )
         then
           FReader.FatalError('Invalid character')
-      else if wc=#0 then
+      else if (wc=#0) and (FBuf < FBufEnd) then
         FReader.FatalError('Invalid character');
       if (wc < #255) and (Char(ord(wc)) in Delim) then
         Break;
