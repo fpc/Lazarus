@@ -1866,17 +1866,24 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer;
+(*
 var
   Region: QRegionH;
   ExRegion: QRegionH;
   QtDC: TQtDeviceContext absolute dc;
+*)
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExcludeClipRect]');
   {$endif}
 
-  Result := ERROR;
+  Result := inherited ExcludeClipRect(DC, Left, Top, Right, Bottom);
 
+  exit;
+  {$warning TQtWidgetSet.ExcludeClipRect is calling inherited ExcludeClipRect
+   because this code is too slow for some reason}
+  (*
+  Result := ERROR;
   if not IsValidDC(DC) then Exit;
 
   ExRegion := QRegion_create(Left, Top, Right - Left, Bottom - Top, QRegionRectangle);
@@ -1898,6 +1905,7 @@ begin
     QRegion_destroy(Region);
     QRegion_destroy(ExRegion);
   end;
+  *)
 end;
 
 function TQtWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
@@ -4729,20 +4737,21 @@ var
   QtWidget: TQtWidget absolute Wnd;
   Region: TQtRegion absolute hrgnUpdate;
 begin
-  if (lprcUpdate = nil) and (hrgnUpdate = 0)
-  then begin
-    if Wnd = 0
-    then begin
+  if (lprcUpdate = nil) and (hrgnUpdate = 0) then
+  begin
+    if Wnd = 0 then
+    begin
       // redraw desktop
       Exit(False);
     end;
-    QWidget_update(QtWidget.Widget);
+    QtWidget.Update(nil);
     Exit(True);
   end;
 
-  if Region = nil
-  then Result := InvalidateRect(Wnd, lprcUpdate, False)
-  else begin
+  if Region = nil then
+    Result := InvalidateRect(Wnd, lprcUpdate, False)
+  else
+  begin
     QWidget_update(QtWidget.Widget, Region.Widget);
     Result := True;
   end;
@@ -5624,7 +5633,7 @@ begin
   begin
     TQtWidget(Handle).Props[str] := Data;
     result:=(TQtWidget(Handle).Props[str]=Data);
-    {$ifdef VerboseQT}
+    {$ifdef VerboseQtWinApi}
     DebugLn('[WinAPI SetProp win=%s str=%s data=%x',[dbgsname(TQtWidget(Handle)), str, ptrint(data)]);
     {$endif}
   end else
