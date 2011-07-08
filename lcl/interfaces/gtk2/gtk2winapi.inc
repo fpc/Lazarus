@@ -6121,8 +6121,10 @@ begin
   //  DebugLn(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Widget:=PGtkWidget(aHandle);
   LCLObject:=GetLCLObject(Widget);
-  if (LCLObject<>nil) then begin
-    if (LCLObject=CurrentSentPaintMessageTarget) then begin
+  if (LCLObject<>nil) then
+  begin
+    if (LCLObject=CurrentSentPaintMessageTarget) then
+    begin
       DebugLn('NOTE: TGtk2WidgetSet.InvalidateRect during paint message: ',
         LCLObject.ClassName);
       //DumpStack;
@@ -6144,25 +6146,26 @@ begin
   PaintWidget:=GetFixedWidget(Widget);
   if PaintWidget=nil then PaintWidget:=Widget;
 
-  if Rect = nil then begin
+  if Rect = nil then
+  begin
     Rect := @r;
     Rect^.Left := 0;//PaintWidget^.Allocation.X;
     Rect^.Top := 0;//PaintWidget^.Allocation.Y;
     Rect^.Right := PaintWidget^.Allocation.Width;
     Rect^.Bottom := PaintWidget^.Allocation.Height;
-   end;
+  end;
+
   gdkRect.X := Rect^.Left;
   gdkRect.Y := Rect^.Top;
   gdkRect.Width := (Rect^.Right - Rect^.Left);
   gdkRect.Height := (Rect^.Bottom - Rect^.Top);
 
-    if (PaintWidget<>nil) and GTK_WIDGET_NO_WINDOW(PaintWidget)
-      and (not GtkWidgetIsA(PGTKWidget(PaintWidget),GTKAPIWidget_GetType))
-      and (Rect<>nil)
-    then begin
-      Inc(gdkRect.X, PaintWidget^.Allocation.x);
-      Inc(gdkRect.Y, PaintWidget^.Allocation.y);
-    end;
+  if (PaintWidget<>nil) and GTK_WIDGET_NO_WINDOW(PaintWidget) and (Rect<>nil) and
+    (not GtkWidgetIsA(PGTKWidget(PaintWidget),GTKAPIWidget_GetType)) then
+  begin
+    Inc(gdkRect.X, PaintWidget^.Allocation.x);
+    Inc(gdkRect.Y, PaintWidget^.Allocation.y);
+  end;
 
   WidgetInfo := GetWidgetInfo(Widget, False); // True ??
   if WidgetInfo <> nil then

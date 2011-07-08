@@ -259,14 +259,72 @@ begin
   end;
 end;
 
+
+//Helper function
+function GetExtensionFromFilterAtIndex(Filter: String; Index: Integer): String;
+{
+  Returns a file extension from a filter as used in TOpen/TSaveDialog
+  - it will return the extension (including the leading period) that matches the index (index starts at 1)
+  - it will return an empty string if the extension contains a wildcard, or on any failure
+  - filters have the format of:
+    'Text files (*.txt)|*.txt|'+
+    'Pascal files (*.pp;*.pas)|*.pp;*.pas|'+
+    'All files (*.*)|*.*'
+  - if a given extension is a composite (like '*.pp;*.pas') it will return the first one from the list
+}
+var
+  p, pipe: Integer;
+begin
+  Result := '';
+  if Index < 1 then Exit;
+  p := 0;
+  pipe := 0;
+  //Find where the filter for the given index starts
+  while (p < Length(Filter)) do
+  begin
+    Inc(p);
+    //Debugln('p = ',dbgs(p),' Filter[',dbgs(p),'] = ',Filter[p]);
+    if Filter[p] = '|' then Inc(pipe);
+    if (pipe = 2 * (Index - 1)) then break;
+  end;
+  //debugln('p = ',dbgs(p),' pipe = ',dbgs(pipe));
+  if (p = length(Filter)) then exit;
+  System.Delete(Filter,1,p);
+  //Find the | that splits the filter name and the filter extension
+  p := Pos('|',Filter);
+  if (p = 0) then exit;
+  System.Delete(Filter,1,p);
+  Filter := Copy(Filter,1,MaxInt);
+  //debugln('Filter now = ',filter);
+
+  //The associated extension ends at the first ; or |, or at the end of the string
+  p := Pos(';',Filter);
+  pipe := Pos('|',Filter);
+  //Debugln('Pos(;/|,Filter) = ',dbgs(p),' ',dbgs(pipe));
+  if (pipe < p) or (p = 0) then p := pipe;
+  if (p > 0) then System.Delete(Filter,p,Length(Filter) - p + 1);
+  //debugln('Filter now = ',filter);
+
+  //Get the associated extension
+  Filter := ExtractFileExt(Filter);
+  //debugln('Filter now = ',filter);
+  //if an extension at this point contains a wildcard, reject it
+  if (Pos('?',Filter) > 0) or (Pos('*',Filter) > 0) then exit;
+  Result := Filter;
+end;
+
 function TOpenDialog.CheckFile(var AFilename: string): boolean;
 var
-  Dir: string;
+  Dir, Ext: string;
 begin
   Result:=true;
   if (DefaultExt<>'') and (ExtractFileExt(AFilename)='')
   and (not FileExistsUTF8(AFilename)) then begin
-    AFilename:=AFilename+DefaultExt;
+    Ext := GetExtensionFromFilterAtIndex(Filter, FilterIndex);
+    if (Length(Ext) > 0) then
+      AFileName := AFileName + Ext
+    else
+      AFilename:=AFilename+DefaultExt;
   end;
   //ofOverwritePrompt -> is done in the interface
   if (ofPathMustExist in Options)
@@ -402,6 +460,8 @@ begin
   else
     Exclude(FOptions, AOption);
 end;
+
+
 
 class procedure TSaveDialog.WSRegisterClass;
 begin
