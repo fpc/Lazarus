@@ -3329,16 +3329,20 @@ begin
     exit;
 
   QCursor_pos(@MousePos);
-
+  {$note: TODO: Mouse events of trayicon can be catched
+   in QApplication event filter (TQtWidgetSet.EventFilter),
+   so OnMouseDown and OnMouseUp can be properly sent.
+   Check if it works ok on qtwin32 and qtmac and
+   then replace this blind calls to mouse events.
+   To get systryicon object handle in application event filter
+   add property "lclsystrayicon" to this handle.}
   case AReason of
     QSystemTrayIconTrigger:
       begin
         if Assigned(FTrayIcon.OnMouseDown) then
           FTrayIcon.OnMouseDown(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
-
         if Assigned(FTrayIcon.OnClick) then
           FTrayIcon.OnClick(FTrayIcon);
-
         if Assigned(FTrayIcon.OnMouseUp) then
           FTrayIcon.OnMouseUp(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
       end;
@@ -3364,13 +3368,6 @@ begin
       begin
         if Assigned(FTrayIcon.OnMouseDown) then
           FTrayIcon.OnMouseDown(FTrayIcon, mbRight, [], MousePos.x, MousePos.y);
-
-        if (QSystemTrayIcon_contextMenu(Handle) = nil) and
-          Assigned(FTrayIcon) and Assigned(FTrayIcon.PopUpMenu) then
-        begin
-          FTrayIcon.InternalUpdate;
-          FTrayIcon.PopUpMenu.PopUp;
-        end;
 
         if Assigned(FTrayIcon.OnMouseUp) then
           FTrayIcon.OnMouseUp(FTrayIcon, mbRight, [], MousePos.x, MousePos.y);
