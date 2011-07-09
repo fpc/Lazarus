@@ -171,7 +171,7 @@ begin
       FTextControl.Visible:=false;
     FHTMLControl.Visible:=true;
     FHTMLProvider.BaseURL:=FBaseURL;
-    debugln(['TFPDocHintProvider.UpdateHintControl FHTMLControl=',DbgSName(FHTMLControl),' FHTMLProvider=',DbgSName(FHTMLProvider)]);
+    //debugln(['TFPDocHintProvider.UpdateHintControl FHTMLControl=',DbgSName(FHTMLControl),' FHTMLProvider=',DbgSName(FHTMLProvider)]);
     ms:=TMemoryStream.Create;
     try
       if FHTMLHint<>'' then
