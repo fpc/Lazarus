@@ -254,20 +254,20 @@ begin
 
   case fnCombineMode of
     RGN_AND:
-      QRegion_Intersect(RSrc1, RDest, RSrc2);
+      QRegion_intersected(RSrc1, RDest, RSrc2);
     RGN_COPY:
       begin
         // union of Src1 with a null region
-        RSrc2 := QRegion_Create;
-        QRegion_unite(RSrc1, RDest, RSrc2);
-        QRegion_Destroy(RSrc2);
+        RSrc2 := QRegion_create;
+        QRegion_united(RSrc1, RDest, RSrc2);
+        QRegion_destroy(RSrc2);
       end;
     RGN_DIFF:
       QRegion_subtracted(RSrc1, RDest, RSrc2);
     RGN_OR:
-      QRegion_unite(RSrc1, RDest, RSrc2);
+      QRegion_united(RSrc1, RDest, RSrc2);
     RGN_XOR:
-      QRegion_eor(RSrc1, RDest, RSrc2);
+      QRegion_xored(RSrc1, RDest, RSrc2);
   end;
 
   if QRegion_isEmpty(RDest) then
