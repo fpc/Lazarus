@@ -1831,7 +1831,7 @@ begin
 
     case Value of
       $01..$08, $0B..$0C, $0E..$1F:
-        if FXML11 then
+        if FXML11 or (xrfAllowSpecialCharsInAttributeValue in FFlags) then
           BufAppend(ToFill, DOMChar(Value))
         else
           FatalError('Invalid character reference');
@@ -1875,7 +1875,10 @@ begin
 end;
 
 const
-  AttrDelims: TSetOfChar = [#0, '<', '&', '''', '"', #9, #10, #13];
+  AttrDelims: array[boolean] of TSetOfChar = (
+    [#0, '<', '&', '''', '"', #9, #10, #13], // false: default
+    [#0, '<', '&', '''', '"'] // true: xrfAllowSpecialCharsInAttributeValue
+    );
   GT_Delim: TSetOfChar = [#0, '>'];
 
 procedure TXMLReader.ExpectAttValue;
@@ -1884,12 +1887,14 @@ var
   Delim: DOMChar;
   ent: TDOMEntityEx;
   start: TObject;
+  AllowSpecialChars: boolean;
 begin
   SkipQuote(Delim);
   FValue.Length := 0;
   start := FSource.FEntity;
+  AllowSpecialChars:=xrfAllowSpecialCharsInAttributeValue in Flags;
   repeat
-    wc := FSource.SkipUntil(FValue, AttrDelims, nil, xrfAllowSpecialCharsInAttributeValue in Flags);
+    wc := FSource.SkipUntil(FValue, AttrDelims[AllowSpecialChars], nil, AllowSpecialChars);
     if (wc = '<') and (not (xrfAllowLowerThanInAttributeValue in Flags)) then
       FatalError('Character ''<'' is not allowed in attribute value')
     else if wc = '&' then
@@ -3040,8 +3045,9 @@ begin
     repeat
       wc := FBuf^;
       //writeln('TXMLDecodingSource.SkipUntil ',ord(wc));
-      if (wc = #10) or (wc = #13)
-      or (FXML11Rules and ((wc = #$85) or (wc = #$2028))) // ToDo #$2028
+      if (not AllowSpecialChars)
+      and ((wc = #10) or (wc = #13)
+        or (FXML11Rules and ((wc = #$85) or (wc = #$2028)))) // ToDo #$2028
       then begin
 // strictly this is needed only for 2-byte lineendings
         BufAppendChunk(ToFill, old, FBuf);

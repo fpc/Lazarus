@@ -29,9 +29,15 @@ interface
 
 uses Classes, laz2_DOM, SysUtils, laz2_xmlutils;
 
-procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String); overload;
-procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text); overload;
-procedure WriteXMLFile(doc: TXMLDocument; AStream: TStream); overload;
+type
+  TXMLWriterFlag = (
+    xwfSpecialCharsInAttributeValue // write #13 as #13 instead of as &xD;
+    );
+  TXMLWriterFlags = set of TXMLWriterFlag;
+
+procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String; Flags: TXMLWriterFlags = []); overload;
+procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text; Flags: TXMLWriterFlags = []); overload;
+procedure WriteXMLFile(doc: TXMLDocument; AStream: TStream; Flags: TXMLWriterFlags = []); overload;
 
 procedure WriteXML(Element: TDOMNode; const AFileName: String); overload;
 procedure WriteXML(Element: TDOMNode; var AFile: Text); overload;
@@ -53,6 +59,8 @@ type
     Prefix: PHashItem;
   end;
 
+  { TXMLWriter }
+
   TXMLWriter = class(TObject)
   private
     FInsideTextNode: Boolean;
@@ -67,6 +75,7 @@ type
     FAttrFixups: TFPList;
     FScratch: TFPList;
     FNSDefs: TFPList;
+    FWriteFlags: TXMLWriterFlags;
     procedure wrtChars(Src: DOMPChar; Length: Integer);
     procedure IncIndent;
     procedure DecIndent; {$IFDEF HAS_INLINE} inline; {$ENDIF}
@@ -95,6 +104,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    property WriteFlags: TXMLWriterFlags read FWriteFlags write FWriteFlags;
   end;
 
   TTextXMLWriter = Class(TXMLWriter)
@@ -160,7 +170,10 @@ end;
   ---------------------------------------------------------------------}
 
 const
-  AttrSpecialChars = ['<', '"', '&', #0..#31];
+  AttrSpecialChars : array[boolean] of TSetOfChar = (
+    ['<', '"', '&', #0..#31], // false: default
+    ['<', '"', '&']  // true: write special characters
+    );
   TextSpecialChars = ['<', '>', '&', #0..#31];
   CDSectSpecialChars = [']'];
   LineEndingChars = [#13, #10];
@@ -457,7 +470,8 @@ begin
     wrtStr(B.Prefix^.Key);
   end;
   wrtChars('="', 2);
-  ConvWrite(B.uri, AttrSpecialChars, @AttrSpecialCharCallback);
+  ConvWrite(B.uri, AttrSpecialChars[xwfSpecialCharsInAttributeValue in FWriteFlags],
+            @AttrSpecialCharCallback);
   wrtChr('"');
 end;
 
@@ -591,7 +605,9 @@ begin
 
       wrtChars('="', 2);
       // TODO: not correct w.r.t. entities
-      ConvWrite(attr.nodeValue, AttrSpecialChars, @AttrSpecialCharCallback);
+      ConvWrite(attr.nodeValue,
+        AttrSpecialChars[xwfSpecialCharsInAttributeValue in FWriteFlags],
+        @AttrSpecialCharCallback);
       wrtChr('"');
     end;
   end;
@@ -775,12 +791,14 @@ begin
   Child := Node.FirstChild;
   while Assigned(Child) do
   begin
-    writeln('TXMLWriter.VisitAttribute ',Child.NodeType);
+    //writeln('TXMLWriter.VisitAttribute ',Child.NodeType);
     case Child.NodeType of
       ENTITY_REFERENCE_NODE:
         VisitEntityRef(Child);
       TEXT_NODE:
-        ConvWrite(TDOMCharacterData(Child).Data, AttrSpecialChars, @AttrSpecialCharCallback);
+        ConvWrite(TDOMCharacterData(Child).Data,
+          AttrSpecialChars[xwfSpecialCharsInAttributeValue in FWriteFlags],
+          @AttrSpecialCharCallback);
     end;
     Child := Child.NextSibling;
   end;
@@ -836,32 +854,37 @@ end;
 //   Interface implementation
 // -------------------------------------------------------------------
 
-procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String);
+procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String;
+  Flags: TXMLWriterFlags = []);
 var
   fs: TFileStream;
 begin
   fs := TFileStream.Create(AFileName, fmCreate);
   try
-    WriteXMLFile(doc, fs);
+    WriteXMLFile(doc, fs, Flags);
   finally
     fs.Free;
   end;
 end;
 
-procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text);
+procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text;
+  Flags: TXMLWriterFlags = []);
 begin
   with TTextXMLWriter.Create(AFile) do
   try
+    WriteFlags:=Flags;
     WriteNode(doc);
   finally
     Free;
   end;
 end;
 
-procedure WriteXMLFile(doc: TXMLDocument; AStream: TStream);
+procedure WriteXMLFile(doc: TXMLDocument; AStream: TStream;
+  Flags: TXMLWriterFlags = []);
 begin
   with TStreamXMLWriter.Create(AStream) do
   try
+    WriteFlags:=Flags;
     WriteNode(doc);
   finally
     Free;

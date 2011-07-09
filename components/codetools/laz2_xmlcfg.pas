@@ -55,6 +55,7 @@ type
     FFilename: String;
     {$IFDEF NewXMLCfg}
     FReadFlags: TXMLReaderFlags;
+    FWriteFlags: TXMLWriterFlags;
     {$ENDIF}
     procedure SetFilename(const AFilename: String);
   protected
@@ -112,6 +113,7 @@ type
     property Document: TXMLDocument read doc;
     {$IFDEF NewXMLCfg}
     property ReadFlags: TXMLReaderFlags read FReadFlags write FReadFlags;
+    property WriteFlags: TXMLWriterFlags read FWriteFlags write FWriteFlags;
     {$ENDIF}
   end;
 
@@ -141,7 +143,9 @@ constructor TXMLConfig.Create(const AFilename: String);
 begin
   //DebugLn(['TXMLConfig.Create ',AFilename]);
   {$IFDEF NewXMLCfg}
+  // for compatibility with old TXMLConfig, which wrote #13 as #13, not as &xD;
   FReadFlags:=[xrfAllowLowerThanInAttributeValue,xrfAllowSpecialCharsInAttributeValue];
+  FWriteFlags:=[xwfSpecialCharsInAttributeValue];
   {$ENDIF}
   inherited Create(nil);
   SetFilename(AFilename);
@@ -195,7 +199,12 @@ begin
   if Modified and (Filename<>'') then
   begin
     //DebugLn(['TXMLConfig.Flush ',Filename]);
-    WriteXMLFile(doc, Filename);
+    {$IFDEF NewXMLCfg}
+    Laz2_XMLWrite.WriteXMLFile(Doc,Filename,WriteFlags);
+    {$ELSE}
+    Laz_XMLWrite.WriteXMLFile(Doc,Filename);
+    {$ENDIF}
+    InvalidateFileStateCache;
     FModified := False;
   end;
 end;
@@ -215,7 +224,7 @@ end;
 procedure TXMLConfig.WriteToStream(s: TStream);
 begin
   {$IFDEF NewXMLCfg}
-  Laz2_XMLWrite.WriteXMLFile(Doc,s);
+  Laz2_XMLWrite.WriteXMLFile(Doc,s,WriteFlags);
   {$ELSE}
   Laz_XMLWrite.WriteXMLFile(Doc,s);
   {$ENDIF}
@@ -463,7 +472,7 @@ end;
 procedure TXMLConfig.WriteXMLFile(ADoc: TXMLDocument; const AFileName: String);
 begin
   {$IFDEF NewXMLCfg}
-  Laz2_XMLWrite.WriteXMLFile(ADoc,AFileName);
+  Laz2_XMLWrite.WriteXMLFile(ADoc,AFileName,WriteFlags);
   {$ELSE}
   Laz_XMLWrite.WriteXMLFile(ADoc,AFileName);
   {$ENDIF}
@@ -596,9 +605,13 @@ begin
   end;
 
   doc:=nil;
-  //debugln(['TXMLConfig.SetFilename ',not fDoNotLoadFromFile,' ',FileExistsCached(Filename)]);
+  //debugln(['TXMLConfig.SetFilename Load=',not fDoNotLoadFromFile,' FileExists=',FileExistsCached(Filename),' File=',Filename]);
   if (not fDoNotLoadFromFile) and FileExistsCached(Filename) then
-    ReadXMLFile(doc,Filename)
+    {$IFDEF NewXMLCfg}
+    Laz2_XMLRead.ReadXMLFile(doc,Filename,ReadFlags)
+    {$ELSE}
+    Laz_XMLRead.ReadXMLFile(doc,Filename)
+    {$ENDIF}
   else if fAutoLoadFromSource<>'' then begin
     ms:=TMemoryStream.Create;
     try
