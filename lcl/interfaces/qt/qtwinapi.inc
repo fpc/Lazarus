@@ -1881,13 +1881,15 @@ begin
 
   QtDC := TQtDeviceContext(DC);
 
-  {ExcludeClipRect on X11 paint engine is pretty slow with complex clipregions
+  {ExcludeClipRect on X11 paint engine is pretty slow with complex regions
    eg. setting clipRegion with hundreds of rects (usually created by
    calling ExcludeClipRect for many children on widget) dramatically kills
    performance of our application.
-   To get rid of it we are using trick from webkit. If numRects passes
+   To get rid of it we are using trick from webkit. If numRects is over
    25 then create an new rect region with boundsRect of NewRegion.
-   see issue http://bugs.freepascal.org/view.php?id=19698}
+   see issue http://bugs.freepascal.org/view.php?id=19698.
+   If you want accurate ExcludeClipRect use graphicssystem Raster or
+   see comment in TQtWidgetSet.ExtSelectClipRgn}
   ExRegion := QRegion_create(Left, Top, Right - Left, Bottom - Top, QRegionRectangle);
   Region := QRegion_create;
   try
@@ -1995,12 +1997,11 @@ begin
     (not Assigned(QtWidget) and Assigned(QtDC.vImage)) then
   begin
     // there is no clipping region in the DC
-    Case Mode of
+    case Mode of
       RGN_COPY: Result := SelectClipRGN(DC, RGN);
       RGN_OR,
       RGN_XOR,
-      RGN_AND,
-      RGN_DIFF:
+      RGN_AND:
         begin
           // as MSDN says only RGN_COPY allows NULL RGN param.
           if not IsValidGDIObject(RGN) then
@@ -2015,14 +2016,13 @@ begin
           begin
             Result := SelectClipRGN(DC, RGN);
             exit;
-          end else
-          begin
-            // get transformation
-            GetWindowOrgEx(DC, @DCOrigin);
-            R := QtRgn.getBoundingRect;
-            Clip := CreateRectRGN(0, 0, R.Right - R.Left, R.Bottom - R.Top);
-            TQtRegion(Clip).translate(DCOrigin.X, DCOrigin.Y);
           end;
+
+          // get transformation
+          GetWindowOrgEx(DC, @DCOrigin);
+          R := QtRgn.getBoundingRect;
+          Clip := CreateRectRGN(0, 0, R.Right - R.Left, R.Bottom - R.Top);
+          TQtRegion(Clip).translate(DCOrigin.X, DCOrigin.Y);
 
           // create target clip
           Tmp := CreateEmptyRegion;
@@ -2034,7 +2034,30 @@ begin
           DeleteObject(Clip);
           DeleteObject(Tmp);
         end;
+      RGN_DIFF:
+      begin
+        // when substracting we must have active clipregion
+        // with all of its rects.
+        QtRgn := QtDC.getClipRegion;
+        if (QtRgn = nil) or (QtRgn.GetRegionType = NULLREGION) then
+        begin
+          Result := SelectClipRGN(DC, RGN);
+          exit;
+        end;
+
+        Tmp := CreateEmptyRegion;
+        Result := CombineRGN(Tmp, HRGN(QtRgn), RGN, MODE);
+
+        // X11 paintEngine comment only !
+        // we'll NOT reset num of rects here (performance problem) like we do
+        // in ExcludeClipRect, because this function must be correct,
+        // if someone want accurate ExcludeClipRect with X11 then
+        // use code from intfbasewinapi.inc TWidgetSet.ExcludeClipRect()
+        // which calls this function and then combineRgn.
+        SelectClipRGN(DC, Tmp);
+        DeleteObject(Tmp);
       end;
+    end;
   end
   else
     Result := inherited ExtSelectClipRGN(DC, RGN, Mode);
