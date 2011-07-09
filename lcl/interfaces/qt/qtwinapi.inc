@@ -263,9 +263,9 @@ begin
         QRegion_Destroy(RSrc2);
       end;
     RGN_DIFF:
-      QRegion_Subtract(RSrc1, RDest, RSrc2);
+      QRegion_subtracted(RSrc1, RDest, RSrc2);
     RGN_OR:
-      QRegion_Unite(RSrc1, RDest, RSrc2);
+      QRegion_unite(RSrc1, RDest, RSrc2);
     RGN_XOR:
       QRegion_eor(RSrc1, RDest, RSrc2);
   end;
@@ -1920,7 +1920,7 @@ begin
       writeln('** NOT intersected EXCL RECT ',dbgs(R1),' FROM ',dbgs(R),' clip ? ',QtDC.GetClipping);
       {$ENDIF}
     end;
-    QRegion_subtract(Region, NewRegion, ExRegion);
+    QRegion_subtracted(Region, NewRegion, ExRegion);
     if QRegion_isEmpty(NewRegion) then
     begin
       {$IFDEF DEBUG_QT_EXCLUDECLIPRECT}
