@@ -2977,9 +2977,14 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.region() ');
   {$endif}
-  if vRegion.Widget=nil then
+  if vRegion.Widget <> nil then
+  begin
+    QRegion_destroy(vRegion.Widget);
+    vRegion.Widget := nil;
+  end;
+  if vRegion.Widget = nil then
     vRegion.Widget := QRegion_Create();
-    
+
   QPainter_clipRegion(Widget,  vRegion.Widget);
   Result := vRegion;
 end;

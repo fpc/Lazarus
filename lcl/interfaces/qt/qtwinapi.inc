@@ -2489,7 +2489,7 @@ end;
 function TQtWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN): Longint;
 begin
   {$ifdef VerboseQtWinAPI}
-    Write('Trace: [WinAPI GetClipRgn]',
+    Writeln('Trace: [WinAPI GetClipRgn]',
      ' DC: ', dbghex(DC),
      ' RGN: ', dbghex(Rgn));
     if RGN<>0 then
@@ -2501,13 +2501,21 @@ begin
   Result := -1;
   if not IsValidDC(DC) then
     exit;
-  if rgn=0 then
+  if Rgn = 0 then
     exit;
   if not TQtDeviceContext(DC).getClipping then
     Result := 0
   else
   begin
-    QPainter_ClipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).Widget);
+    // if our TQtRegion contains widget then
+    // first destroy it because QPainter creates
+    // new reference.
+    if TQtRegion(Rgn).Widget <> nil then
+    begin
+      QRegion_destroy(TQtRegion(Rgn).Widget);
+      TQtRegion(Rgn).Widget := QRegion_create;
+    end;
+    QPainter_clipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).Widget);
     Result := 1;
   end;
 end;
@@ -4419,26 +4427,33 @@ begin
   if not IsValidDC(DC) then exit;
 
   IntersectRgn := QRegion_create(Left, Top, Right - Left, Bottom - Top);
-  Rgn := QRegion_create;
   try
     if QtDC.getClipping then
     begin
-      QPainter_clipRegion(QtDC.Widget, Rgn);
-      if QRegion_isEmpty(Rgn) then
-        QtDC.setClipRegion(IntersectRgn)
-      else
-        QtDC.setClipRegion(IntersectRgn, QtIntersectClip);
-    end
-    else
+      Rgn := QRegion_create;
+      try
+        QPainter_clipRegion(QtDC.Widget, Rgn);
+        if QRegion_isEmpty(Rgn) then
+          QtDC.setClipRegion(IntersectRgn)
+        else
+          QtDC.setClipRegion(IntersectRgn, QtIntersectClip);
+        QtDC.setClipping(True);
+        // recreate Rgn
+        QRegion_destroy(Rgn);
+        Rgn := QRegion_create;
+        QPainter_clipRegion(QtDC.Widget, Rgn);
+        Result := QtDC.GetRegionType(Rgn);
+      finally
+        QRegion_destroy(Rgn);
+      end;
+    end else
     begin
       QtDC.setClipRegion(InterSectRgn);
-      QPainter_clipRegion(QtDC.Widget, Rgn);
+      QtDC.setClipping(True);
+      Result := QtDC.GetRegionType(InterSectRgn);
     end;
-    QtDC.setClipping(True);
-    Result := QtDC.GetRegionType(Rgn);
   finally
     QRegion_destroy(IntersectRgn);
-    QRegion_destroy(Rgn);
   end;
 end;
 
