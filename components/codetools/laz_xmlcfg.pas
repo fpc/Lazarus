@@ -1,5 +1,4 @@
 {
-    $Id$
     This file was part of the Free Component Library and was adapted to use UTF8
     strings instead of widestrings.
 

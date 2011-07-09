@@ -1,5 +1,4 @@
 {
-    $Id: laz_xmlcfg.pas 31237 2011-06-15 07:27:06Z mattias $
     This file was part of the Free Component Library and was adapted to use UTF8
     strings instead of widestrings.
 
