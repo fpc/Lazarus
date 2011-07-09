@@ -1871,9 +1871,6 @@ var
   ExRegion: QRegionH;
   NewRegion: QRegionH;
   QtDC: TQtDeviceContext;
-  {$IFDEF DEBUG_QT_EXCLUDECLIPRECT}
-  R, R1: TRect;
-  {$ENDIF}
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExcludeClipRect]');
@@ -1892,21 +1889,9 @@ begin
   Region := QRegion_create;
   NewRegion := QRegion_create;
   try
-    {$IFDEF DEBUG_QT_EXCLUDECLIPRECT}
-    R1 := Rect(Left, Top, Right - Left, Bottom - Top);
-    {$ENDIF}
     QPainter_clipRegion(QtDC.Widget, Region);
-    {$IFDEF DEBUG_QT_EXCLUDECLIPRECT}
-    QRegion_boundingRect(Region, @R);
-    {$ENDIF}
-    {TODO: write helper for checking intersection,
-     better to leave clip region as it is then
-     to create complex region with few rects. It's pretty slow.}
     if QRegion_intersects(Region, ExRegion) then
     begin
-      {$IFDEF DEBUG_QT_EXCLUDECLIPRECT}
-      writeln('** intersected EXCL RECT ',dbgs(R1),' FROM ',dbgs(R),' clip ? ',QtDC.GetClipping);
-      {$ENDIF}
       if QRegion_numRects(Region) = 1 then
         Result := SIMPLEREGION
       else
@@ -1914,18 +1899,10 @@ begin
       if not QtDC.getClipping then
         QtDC.setClipping(True);
       exit;
-    end else
-    begin
-      {$IFDEF DEBUG_QT_EXCLUDECLIPRECT}
-      writeln('** NOT intersected EXCL RECT ',dbgs(R1),' FROM ',dbgs(R),' clip ? ',QtDC.GetClipping);
-      {$ENDIF}
     end;
     QRegion_subtracted(Region, NewRegion, ExRegion);
     if QRegion_isEmpty(NewRegion) then
     begin
-      {$IFDEF DEBUG_QT_EXCLUDECLIPRECT}
-      writeln('**New region is NULL ... so just unset clipping ...');
-      {$ENDIF}
       // 1st case - new region is null
       if QRegion_isEmpty(Region) then
         Result := NULLREGION
