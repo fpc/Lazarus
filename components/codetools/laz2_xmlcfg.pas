@@ -12,9 +12,8 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
- **********************************************************************}
+ **********************************************************************
 
-{
   TXMLConfig enables applications to use XML files for storing their
   configuration data
 }
