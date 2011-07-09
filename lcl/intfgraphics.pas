@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils, fpImage, FPReadBMP, FPWriteBMP, BMPComn, FPCAdds,
   AvgLvlTree, LCLType, LCLversion, Math,
-  LCLProc, GraphType, LCLIntf, FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff,
+  LCLProc, GraphType, FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff,
   IcnsTypes;
 
 type
@@ -731,7 +731,7 @@ function dbgs(const FPColor: TFPColor): string; overload;
 implementation
 
 uses
-  Graphics;
+  Graphics, LCLIntf;
   
 type
   PFPColorBytes = ^TFPColorBytes;

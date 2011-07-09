@@ -48,7 +48,8 @@ interface
 uses
   // no Graphics or Controls can be used here to prevent circular references
   //
-  Types, Math, Classes, LCLProc, LCLType, TmSchema;
+  SysUtils, Types, GraphType, Math, Classes, LCLProc, LCLType, Graphics,
+  TmSchema;
   
 type
   // These are all elements which can be themed.
@@ -510,11 +511,16 @@ const
   // Do not modify the copyright in any way! Usage of this unit is prohibited without the copyright notice
   // in the compiled binary file.
   ThemeManagerCopyright: string = 'Theme manager © 2001-2005 Mike Lischke';
+type
+  TThemesImageDrawEvent = procedure(AImageList: TPersistent; ACanvas: TPersistent;
+                     AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect);
+var
+  ThemesImageDrawEvent: TThemesImageDrawEvent = nil; // set by unit ImgList if used
 
 implementation
 
 uses
-  SysUtils, InterfaceBase, LCLIntf, GraphType, Graphics, ImgList;
+  InterfaceBase, LCLIntf;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -2187,10 +2193,9 @@ procedure TThemeServices.DrawIcon(ACanvas: TPersistent;
   Details: TThemedElementDetails; const P: TPoint; AImageList: TPersistent;
   Index: Integer);
 var
-  Canvas: TCanvas absolute ACanvas;
-  ImageList: TCustomImageList absolute AImageList;
   AEffect: TGraphicsDrawEffect;
 begin
+  if not Assigned(ThemesImageDrawEvent) then exit;
   if IsDisabled(Details) then
     AEffect := gdeDisabled
   else
@@ -2201,7 +2206,7 @@ begin
     AEffect := gdeHighlighted
   else
     AEffect := gdeNormal;
-  ImageList.Draw(Canvas, P.X, P.Y, Index, AEffect);
+  ThemesImageDrawEvent(AImageList, ACanvas, P.X, P.Y, Index, AEffect);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

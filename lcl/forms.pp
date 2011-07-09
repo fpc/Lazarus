@@ -41,7 +41,8 @@ uses
   Classes, SysUtils, Types, TypInfo, Math,
   AvgLvlTree, Maps, LCLVersion, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   FileUtil, InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages,
-  CustomTimer, ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls, Themes
+  CustomTimer, ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls,
+  ImgList, Themes
   {$ifndef wince},gettext{$endif}// remove ifdefs when gettext is fixed and a new fpc is released
   ;
 
@@ -1980,6 +1981,15 @@ end;
 
 //==============================================================================
 
+procedure ImageDrawEvent(AImageList: TPersistent; ACanvas: TPersistent;
+                     AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect);
+var
+  ImageList: TCustomImageList absolute AImageList;
+  Canvas: TCanvas absolute ACanvas;
+begin
+  ImageList.Draw(Canvas,AX,AY,AIndex,ADrawEffect);
+end;
+
 initialization
   {$INCLUDE cursors.lrs}
   RegisterPropertyToSkip(TForm, 'OldCreateOrder', 'VCL compatibility property', '');
@@ -1987,6 +1997,7 @@ initialization
   RegisterPropertyToSkip(TForm, 'Scaled', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TForm, 'TransparentColorValue', 'VCL compatibility property', '');
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
+  ThemesImageDrawEvent:=@ImageDrawEvent;
   Screen:=TScreen.Create(nil);
   Application:=TApplication.Create(nil);
 

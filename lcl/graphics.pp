@@ -44,8 +44,8 @@ uses
   FPReadGif,
   IntfGraphics,
   AvgLvlTree,
-  LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
-  GraphType, IcnsTypes, GraphMath, InterfaceBase, WSReferences;
+  LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
+  GraphType, IcnsTypes, GraphMath, WSReferences;
 
 type
   PColor = ^TColor;
@@ -2017,8 +2017,9 @@ procedure Register;
 procedure UpdateHandleObjects;
 
 implementation
+
 uses
-  SyncObjs;
+  SyncObjs, LCLIntf, InterfaceBase;
 
 var
   GraphicsUpdateCount: Integer = 0;
