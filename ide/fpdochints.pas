@@ -99,6 +99,9 @@ var
 begin
   FBaseURL:='';
   FHTMLHint:='';
+
+  if (Control=nil) or (not Control.IsVisible) then exit;
+  //debugln(['TFPDocHintProvider.DoUpdateHint ',DbgSName(Control)]);
   
   // find current completion item
   if (SourceEditorManagerIntf=nil) or (CodeToolBoss=nil)
