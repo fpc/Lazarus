@@ -71,6 +71,7 @@
     - keep custom dock site content visible
     - restore custom dock site splitter without resizing content, only resize docked site
     - undock on hide
+    - option to show/hide dock headers of children
     - popup menu
        - shrink side left, top, right, bottom
     - simple way to make forms dockable at designtime without any code
