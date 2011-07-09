@@ -1869,8 +1869,8 @@ function TQtWidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Intege
 var
   Region: QRegionH;
   ExRegion: QRegionH;
-  NewRegion: QRegionH;
   QtDC: TQtDeviceContext;
+  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExcludeClipRect]');
@@ -1881,53 +1881,39 @@ begin
 
   QtDC := TQtDeviceContext(DC);
 
-  {Qt != GDI so we must do it so.
-   TODO: Excluding inner rect from
-   region forces creating of complex region, but there are various catches
-   in qt documentation about this.}
+  {ExcludeClipRect on X11 paint engine is pretty slow with complex clipregions
+   eg. setting clipRegion with hundreds of rects (usually created by
+   calling ExcludeClipRect for many children on widget) dramatically kills
+   performance of our application.
+   To get rid of it we are using trick from webkit. If numRects passes
+   25 then create an new rect region with boundsRect of NewRegion.
+   see issue http://bugs.freepascal.org/view.php?id=19698}
   ExRegion := QRegion_create(Left, Top, Right - Left, Bottom - Top, QRegionRectangle);
   Region := QRegion_create;
-  NewRegion := QRegion_create;
   try
     QPainter_clipRegion(QtDC.Widget, Region);
-    if QRegion_intersects(Region, ExRegion) then
+    QRegion_subtracted(Region, Region, ExRegion);
+
+    // only for X11 paintEngine.
+    if (QPaintEngine_type(QtDC.PaintEngine) = QPaintEngineX11) and
+      not QRegion_isEmpty(Region) and
+      (QRegion_numRects(Region) > 25) then
     begin
-      if QRegion_numRects(Region) = 1 then
-        Result := SIMPLEREGION
-      else
-        Result := COMPLEXREGION;
-      if not QtDC.getClipping then
-        QtDC.setClipping(True);
-      exit;
-    end;
-    QRegion_subtracted(Region, NewRegion, ExRegion);
-    if QRegion_isEmpty(NewRegion) then
-    begin
-      // 1st case - new region is null
-      if QRegion_isEmpty(Region) then
-        Result := NULLREGION
-      else
-      if QRegion_numRects(Region) = 1 then
-        Result := SIMPLEREGION
-      else
-        Result := COMPLEXREGION;
-      QtDC.setClipping(False);
-      exit;
-    end else
-    begin
-      QtDC.setClipRegion(NewRegion);
-      QtDC.setClipping(True);
+      QRegion_boundingRect(Region, @R);
+      QRegion_setRects(Region, @R, 1);
     end;
 
-    if QRegion_isEmpty(NewRegion) then
+    QtDC.setClipRegion(Region);
+    QtDC.setClipping(True);
+    if QRegion_isEmpty(Region) then
       Result := NULLREGION
     else
-    if QRegion_numRects(NewRegion) = 1 then
+    if QRegion_numRects(Region) = 1 then
       Result := SIMPLEREGION
     else
       Result := COMPLEXREGION;
+
   finally
-    QRegion_destroy(NewRegion);
     QRegion_destroy(Region);
     QRegion_destroy(ExRegion);
   end;
