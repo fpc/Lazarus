@@ -1633,7 +1633,6 @@ var
   CurNode: TTreeNode;
   NextNode: TTreeNode;
   Filename: String;
-  TVNodeStack: TFPList;
   ena: Boolean;
 begin
   if LazPackage=nil then exit;
