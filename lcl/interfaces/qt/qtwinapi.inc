@@ -2150,22 +2150,24 @@ begin
 
   QtDC := TQtDeviceContext(DC);
 
+  HasClipping := QtDC.getClipping;
   QtDC.save;
-  OldRgn := TQtRegion.Create(True);
+  if HasClipping then
+    OldRgn := TQtRegion.Create(True);
   try
-    hasClipping := QtDC.getClipping;
-    if hasClipping then
+    if HasClipping then
       QPainter_clipRegion(QtDC.Widget, OldRgn.Widget);
     if SelectClipRgn(DC, RegionHnd) <> ERROR then
     begin
       R := TQtRegion(RegionHnd).getBoundingRect;
       QtDC.fillRect(@R, TQtBrush(hbr).Widget);
-      if hasClipping then
+      if HasClipping then
         SelectClipRgn(DC, HRGN(OldRgn));
       Result := True;
     end;
   finally
-    OldRgn.Free;
+    if HasClipping then
+      OldRgn.Free;
     QtDC.restore;
   end;
 
