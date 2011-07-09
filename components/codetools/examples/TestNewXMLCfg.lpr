@@ -84,7 +84,7 @@ procedure TMyApplication.Test1;
       x1:=Laz_XMLCfg.TXMLConfig.Create(Filename)
     else
       x2:=Laz2_XMLCfg.TXMLConfig.Create(Filename);
-    for i:=8 to 13 do begin
+    for i:=1 to 130 do begin
       CheckValue('Item'+IntToStr(i)+'/Value',chr(i));
     end;
     CheckValue('AUmlaut/Value','Ä');
