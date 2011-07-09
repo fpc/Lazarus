@@ -231,7 +231,6 @@ type
     function StartUpAtomInFrontIs(const s: string): boolean;
     function StartUpAtomBehindIs(const s: string): boolean;
     function CompletePrefix(const OldPrefix: string): string;
-    procedure ToolTreeNodesDeleting(Tool: TCustomCodeTool; NodesDeleting: boolean);
     function CalcMemSize: PtrUInt;
   public
     property Context: TFindContext read FContext write FContext;
@@ -826,33 +825,6 @@ begin
     end;
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
-end;
-
-procedure TIdentifierList.ToolTreeNodesDeleting(Tool: TCustomCodeTool;
-  NodesDeleting: boolean);
-var
-  ItemNode: TAVLTreeNode;
-  Item: TIdentifierListItem;
-begin
-  if Tool=nil then exit;
-  if FIdentView.Count=0 then exit;
-  if (FUsedTools=nil) or (ilfUsedToolsNeedsUpdate in FFlags) then begin
-    Exclude(FFlags,ilfUsedToolsNeedsUpdate);
-    // create list of all used tools
-    if FUsedTools=nil then
-      FUsedTools:=TAVLTree.Create
-    else
-      FUsedTools.Clear;
-    ItemNode:=FItems.FindLowest;
-    while ItemNode<>nil do begin
-      Item:=TIdentifierListItem(ItemNode.Data);
-      if (Item.Tool<>nil) and (FUsedTools.Find(Item.Tool)=nil) then
-        FUsedTools.Add(Item.Tool);
-      ItemNode:=FItems.FindSuccessor(ItemNode);
-    end;
-  end;
-  if FUsedTools.Find(Tool)=nil then exit;
-  Clear;
 end;
 
 function TIdentifierList.CalcMemSize: PtrUInt;

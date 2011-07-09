@@ -5163,8 +5163,8 @@ begin
   CTIncreaseChangeStamp(FCodeNodeTreeChangeStep);
   if NodesDeleting then begin
     CTIncreaseChangeStamp(FCodeTreeNodesDeletedStep);
-    if (IdentifierList<>nil) and (not FIdentifierListUpdating) then
-      IdentifierList.ToolTreeNodesDeleting(Tool,NodesDeleting);
+    // Note: IdentifierList nodes do not need to be cleared, because Node
+    // is accessed via GetNode, which checks if nodes were deleted
   end;
 end;
 
