@@ -150,7 +150,7 @@ end;
 
 constructor TXMLConfig.Create(const AFilename: String);
 begin
-  inherited Create(nil);
+  Create(nil);
   SetFilename(AFilename);
 end;
 

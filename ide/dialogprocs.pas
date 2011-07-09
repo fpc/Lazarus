@@ -375,7 +375,7 @@ begin
   ms:=TMemoryStream.Create;
   try
     try
-      WriteXMLFile(Config.Document,ms);
+      Config.WriteToStream(ms);
     except
       on E: Exception do begin
         Result:=MessageDlg(lisXMLError,

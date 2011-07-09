@@ -88,6 +88,7 @@ procedure TMyApplication.Test1;
       CheckValue('Item'+IntToStr(i)+'/Value',chr(i));
     end;
     CheckValue('AUmlaut/Value','Ä');
+    CheckValue('LineBreak/Value','First#10Second#13#10Third');
     if WriteTo then
       if UseOld then
         x1.Flush

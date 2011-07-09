@@ -166,7 +166,9 @@ function GetIDEDirBuildScanStrFromFlags(Flags: TIDEDirBuildScanFlags): string;
 // run flags
 function IDEDirRunFlagNameToFlag(const FlagName: string
   ): TIDEDirRunFlag;
-function GetIDEDirRunFlagFromString(const s: string): TIDEDirRunFlags;
+function GetIDEDirRunFlagFromString(const s: string): TIDEDirRunFlags; overload;
+function GetIDEDirRunFlagFromString(const s: string;
+                      DefaultFlags: TIDEDirRunFlags): TIDEDirRunFlags; overload;
 function GetIDEDirRunFlagStrFromFlags(Flags: TIDEDirRunFlags): string;
 
   
@@ -447,14 +449,19 @@ begin
 end;
 
 function GetIDEDirRunFlagFromString(const s: string): TIDEDirRunFlags;
+begin
+  Result:=GetIDEDirRunFlagFromString(s,IDEDirRunFlagDefValues);
+end;
+
+function GetIDEDirRunFlagFromString(const s: string;
+  DefaultFlags: TIDEDirRunFlags): TIDEDirRunFlags;
 var
   f: TIDEDirRunFlag;
 begin
   Result:=[];
   for f:=Low(TIDEDirRunFlag) to High(TIDEDirRunFlag) do begin
     if f=idedrfNone then continue;
-    if GetIDEDirectiveFlag(s,IDEDirRunFlagNames[f],
-                           f in IDEDirRunFlagDefValues)
+    if GetIDEDirectiveFlag(s,IDEDirRunFlagNames[f],f in DefaultFlags)
     then
       Include(Result,f);
   end;

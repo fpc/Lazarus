@@ -2409,6 +2409,7 @@ begin
   RegisterProjectFileDescriptor(TFileDescPascalUnitWithFrame.Create);
   RegisterProjectFileDescriptor(TFileDescSimplePascalProgram.Create);
   RegisterProjectFileDescriptor(TFileDescText.Create);
+  RegisterProjectFileDescriptor(TFileDescInstantFPCProgram.Create);
 
   RegisterProjectFileDescriptor(TFileDescInheritedComponent.Create, InheritedItemsGroupName);
 
@@ -12376,9 +12377,13 @@ function TMainIDE.DoRunFile: TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  FirstLine: String;
+  HasShebang: Boolean;
   RunFlags: TIDEDirRunFlags;
+  DefRunFlags: TIDEDirRunFlags;
   AlwaysBuildBeforeRun: boolean;
   RunWorkingDir: String;
+  DefRunCommand: String;
   RunCommand: String;
   ProgramFilename: string;
   Params: string;
@@ -12398,9 +12403,16 @@ begin
     Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
     if Result<>mrOk then exit;
 
+    if ActiveUnitInfo.Source.LineCount>0 then
+      FirstLine:=ActiveUnitInfo.Source.GetLine(0)
+    else
+      FirstLine:='';
+    HasShebang:=copy(FirstLine,1,2)='#!';
+    DefRunFlags:=IDEDirRunFlagDefValues;
+    if HasShebang then Exclude(DefRunFlags,idedrfBuildBeforeRun);
     RunFlags:=GetIDEDirRunFlagFromString(
-                 GetIDEStringDirective(DirectiveList,
-                                       IDEDirectiveNames[idedRunFlags],''));
+      GetIDEStringDirective(DirectiveList,IDEDirectiveNames[idedRunFlags],''),
+      DefRunFlags);
     AlwaysBuildBeforeRun:=idedrfBuildBeforeRun in RunFlags;
     if AlwaysBuildBeforeRun then begin
       Result:=DoBuildFile(true);
@@ -12414,14 +12426,17 @@ begin
       Result:=mrCancel;
       exit;
     end;
+    if HasShebang then
+      DefRunCommand:='instantfpc'+ExeExt+' '+ActiveUnitInfo.Filename
+    else
+      DefRunCommand:=IDEDirDefaultRunCommand;
     RunCommand:=GetIDEStringDirective(DirectiveList,
                                     IDEDirectiveNames[idedRunCommand],
-                                    IDEDirDefaultRunCommand);
-    if (not GlobalMacroList.SubstituteStr(RunCommand))
-    or (RunCommand='') then begin
-      Result:=mrCancel;
-      exit;
-    end;
+                                    DefRunCommand);
+    if (not GlobalMacroList.SubstituteStr(RunCommand)) then
+      exit(mrCancel);
+    if (RunCommand='') then
+      exit(mrCancel);
 
     SourceEditorManager.ClearErrorLines;
 

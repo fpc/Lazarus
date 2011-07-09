@@ -32,6 +32,7 @@ const
   FileDescNameDatamodule = 'Datamodule';
   FileDescNameFrame = 'Frame';
   FileDescNameText = 'Text';
+  FileDescNameInstantFPC = 'InstantFPCProgram';
 
   InheritedItemsGroupName = 'Inherited Items';
   FileDescNameLCLInheritedComponent = 'Inherited Component';
