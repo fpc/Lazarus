@@ -422,7 +422,7 @@ begin
         Buf.SaveToStream(ms);
         ms.Position:=0;
         {$IFDEF NewXMLCfg}
-        Laz2_XMLRead.ReadXMLFile(ADoc, ms);
+        Laz2_XMLRead.ReadXMLFile(ADoc, ms, ReadFlags);
         {$ELSE}
         Laz_XMLRead.ReadXMLFile(ADoc, ms);
         {$ENDIF}
@@ -455,7 +455,7 @@ begin
       ms:=TMemoryStream.Create;
       try
         {$IFDEF NewXMLCfg}
-        Laz2_XMLWrite.WriteXMLFile(ADoc, ms);
+        Laz2_XMLWrite.WriteXMLFile(ADoc, ms, WriteFlags);
         {$ELSE}
         Laz_XMLWrite.WriteXMLFile(ADoc, ms);
         {$ENDIF}
