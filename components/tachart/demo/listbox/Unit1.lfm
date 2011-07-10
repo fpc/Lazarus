@@ -108,6 +108,7 @@ object Form1: TForm1
       Top = 0
       Width = 138
       Chart = Chart
+      OnAddSeries = ChartListboxAddSeries
       OnCheckboxClick = ChartListboxCheckboxClick
       OnItemClick = ChartListboxItemClick
       OnSeriesIconDblClick = ChartListboxSeriesIconDblClick

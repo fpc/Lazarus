@@ -36,8 +36,15 @@ uses
   TAChartUtils, TACustomSeries, TALegend, TAGraph;
 
 type
+  TChartListbox = class;
+
   TChartListboxIndexEvent = procedure (
     ASender: TObject; AIndex: Integer) of object;
+
+  TChartListboxAddSeriesEvent = procedure (
+    ASender: TChartListbox; ASeries: TCustomChartSeries;
+    AItems: TChartLegendItems; var ASkip: Boolean
+  ) of object;
 
   TCheckBoxesStyle = (cbsCheckbox, cbsRadiobutton);
 
@@ -55,6 +62,7 @@ type
     FLegendItems: TChartLegendItems;
     FListener: TListener;
     FLockCount: Integer;
+    FOnAddSeries: TChartListboxAddSeriesEvent;
     FOnCheckboxClick: TChartListboxIndexEvent;
     FOnItemClick: TChartListboxIndexEvent;
     FOnPopulate: TNotifyEvent;
@@ -65,10 +73,10 @@ type
     function GetLegendItem(AIndex: Integer): TLegendItem;
     function GetSeries(AIndex: Integer): TCustomChartSeries;
     function GetSeriesCount: Integer;
-    procedure SeriesChanged(ASender: TObject);
     procedure SetChart(AValue: TChart);
     procedure SetChecked(AIndex: Integer; AValue: Boolean);
     procedure SetCheckStyle(AValue: TCheckBoxesStyle);
+    procedure SetOnAddSeries(AValue: TChartListboxAddSeriesEvent);
     procedure SetOnPopulate(AValue: TNotifyEvent);
     procedure SetOptions(AValue: TChartListOptions);
 
@@ -98,6 +106,8 @@ type
     function FindSeriesIndex(ASeries: TCustomChartSeries): Integer;
     procedure MeasureItem(AIndex: Integer; var AHeight: Integer); override;
     procedure RemoveSeries(ASeries: TCustomChartSeries);
+    procedure SeriesChanged(ASender: TObject);
+
     property Checked[AIndex: Integer]: Boolean read GetChecked write SetChecked;
     property Series[AIndex: Integer]: TCustomChartSeries read GetSeries;
     property SeriesCount: Integer read GetSeriesCount;
@@ -109,6 +119,8 @@ type
     property Options: TChartListOptions
       read FOptions write SetOptions default SHOW_ALL;
   published
+    property OnAddSeries: TChartListboxAddSeriesEvent
+      read FOnAddSeries write SetOnAddSeries;
     property OnCheckboxClick: TChartListboxIndexEvent
       read FOnCheckboxClick write FOnCheckboxClick;
     property OnItemClick: TChartListboxIndexEvent
@@ -254,13 +266,20 @@ function TChartListbox.CreateLegendItems: TChartLegendItems;
   a single legend item is used }
 var
   i: Integer;
+  skip: Boolean;
 begin
   Result := TChartLegendItems.Create;
   try
     if FChart = nil then exit;
     for i := 0 to FChart.SeriesCount - 1 do
-      if FChart.Series[i] is TCustomChartSeries then
+      if FChart.Series[i] is TCustomChartSeries then begin
+        if Assigned(OnAddSeries) then begin
+          skip := false;
+          FOnAddSeries(Self, TCustomChartSeries(FChart.Series[i]), Result, skip);
+          if skip then continue;
+        end;
         TCustomChartSeries(FChart.Series[i]).GetSingleLegendItem(Result);
+      end;
   except
     FreeAndNil(Result);
     raise;
@@ -549,6 +568,13 @@ begin
       Checked[j] := true;
   end;
   Invalidate;
+end;
+
+procedure TChartListbox.SetOnAddSeries(AValue: TChartListboxAddSeriesEvent);
+begin
+  if TMethod(FOnAddSeries) = TMethod(AValue) then exit;
+  FOnAddSeries := AValue;
+  Populate;
 end;
 
 procedure TChartListbox.SetOnPopulate(AValue: TNotifyEvent);

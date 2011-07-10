@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, TASources, TASeries, TAGraph, CheckLst, Spin, ComCtrls,
   ExtCtrls, StdCtrls, FileUtil, Forms, Controls, Graphics, Dialogs,
-  TAChartListbox;
+  TAChartListbox, TACustomSeries, TALegend;
 
 type
 
@@ -48,13 +48,15 @@ type
     procedure CbShowSeriesIconChange(Sender: TObject);
     procedure CbCheckStyleChange(Sender: TObject);
     procedure CbKeepSeriesOutChange(Sender: TObject);
+    procedure ChartListboxAddSeries(ASender: TChartListbox;
+      ASeries: TCustomChartSeries; AItems: TChartLegendItems;
+      var ASkip: Boolean);
     procedure EdColumnsChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ChartListboxCheckboxClick(Sender: TObject; Index: Integer);
     procedure ChartListboxClick(Sender: TObject);
     procedure ChartListboxItemClick(Sender: TObject; Index: Integer);
     procedure ChartListboxSeriesIconDblClick(Sender: TObject; Index: Integer);
-    procedure ChartListboxPopulate(Sender: TObject);
   private
     procedure CreateData;
   end;
@@ -120,12 +122,6 @@ begin
         [ItemIndex, Series[ItemIndex].Title]));
 end;
 
-procedure TForm1.ChartListboxPopulate(Sender: TObject);
-begin
-  ChartListbox.RemoveSeries(SinSeries);
-  ChartListbox.RemoveSeries(CosSeries);
-end;
-
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   CreateData;
@@ -154,6 +150,13 @@ begin
       Options := Options - [cloShowIcons];
 end;
 
+procedure TForm1.ChartListboxAddSeries(ASender: TChartListbox;
+  ASeries: TCustomChartSeries; AItems: TChartLegendItems; var ASkip: Boolean);
+begin
+  ASkip := CbKeepSeriesOut.Checked and
+    ((ASeries = SinSeries) or (ASeries = CosSeries));
+end;
+
 procedure TForm1.CbCheckStyleChange(Sender:TObject);
 begin
   if CbCheckStyle.Checked then
@@ -164,13 +167,7 @@ end;
 
 procedure TForm1.CbKeepSeriesOutChange(Sender: TObject);
 begin
-  if CbKeepSeriesOut.Checked then begin
-    ChartListbox.OnPopulate := @ChartListboxPopulate;
-    ChartListbox.RemoveSeries(SinSeries);
-    ChartListbox.RemoveSeries(CosSeries);
-  end
-  else
-    ChartListbox.OnPopulate := nil;
+  ChartListbox.SeriesChanged(Self);
 end;
 
 procedure TForm1.EdColumnsChange(Sender: TObject);
