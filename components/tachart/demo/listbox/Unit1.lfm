@@ -48,8 +48,12 @@ object Form1: TForm1
     Align = alClient
     ParentColor = False
     object SinSeries: TLineSeries
+      Title = 'sin(x)'
+      LinePen.Color = clRed
     end
     object CosSeries: TLineSeries
+      Title = 'cos(x)'
+      LinePen.Color = clBlue
     end
   end
   object ListboxPanel: TPanel
@@ -97,6 +101,19 @@ object Form1: TForm1
       )
       ItemHeight = 13
       TabOrder = 1
+    end
+    object ChartListbox: TChartListbox
+      Left = 0
+      Height = 256
+      Top = 0
+      Width = 138
+      Chart = Chart
+      OnCheckboxClick = ChartListboxCheckboxClick
+      OnItemClick = ChartListboxItemClick
+      OnSeriesIconClick = ChartListboxSeriesIconClick
+      Align = alClient
+      ItemHeight = 0
+      TabOrder = 2
     end
   end
   object Splitter: TSplitter

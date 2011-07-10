@@ -14,50 +14,50 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Bevel1 : TBevel;
-    BtnAddSeries:TButton;
-    BtnDeleteSeries:TButton;
-    BtnToggleCOS:TButton;
-    BtnToggleChart:TButton;
-    BtnToggleSIN:TButton;
-    Chart:TChart;
-    CbShowCheckboxes:TCheckBox;
-    CbShowSeriesIcon:TCheckBox;
-    CbCheckStyle:TCheckBox;
-    CbMultiSelect : TCheckBox;
-    CbKeepSeriesOut:TCheckBox;
-    CheckListBox1:TCheckListBox;
-    ColorDialog:TColorDialog;
-    Label1 : TLabel;
-    Label2:TLabel;
-    ListBox1:TListBox;
-    Memo : TMemo;
-    SinSeries:TLineSeries;
-    CosSeries:TLineSeries;
-    ListboxPanel:TPanel;
-    Panel1:TPanel;
-    RandomChartSource:TRandomChartSource;
-    EdColumns:TSpinEdit;
-    Splitter:TSplitter;
-    procedure BtnAddSeriesClick(Sender:TObject);
-    procedure BtnDeleteSeriesClick(Sender:TObject);
-    procedure BtnToggleCOSClick(Sender:TObject);
-    procedure BtnToggleChartClick(Sender:TObject);
-    procedure BtnToggleSINClick(Sender:TObject);
-    procedure CbMultiSelectChange(Sender : TObject);
-    procedure CbShowCheckboxesChange(Sender:TObject);
-    procedure CbShowSeriesIconChange(Sender:TObject);
-    procedure CbCheckStyleChange(Sender:TObject);
-    procedure CbKeepSeriesOutChange(Sender:TObject);
-    procedure EdColumnsChange(Sender:TObject);
-    procedure FormCreate(Sender:TObject);
-    procedure ChartListboxCheckboxClick(Sender:TObject; Index:integer);
-    procedure ChartListboxClick(Sender:TObject);
-    procedure ChartListboxItemClick(Sender:TObject; Index:integer);
-    procedure ChartListboxSeriesIconClick(Sender:TObject; Index:integer);
-    procedure ChartListboxPopulate(Sender:TObject);
+    Bevel1: TBevel;
+    BtnAddSeries: TButton;
+    BtnDeleteSeries: TButton;
+    BtnToggleCOS: TButton;
+    BtnToggleChart: TButton;
+    BtnToggleSIN: TButton;
+    Chart: TChart;
+    CbShowCheckboxes: TCheckBox;
+    CbShowSeriesIcon: TCheckBox;
+    CbCheckStyle: TCheckBox;
+    CbMultiSelect: TCheckBox;
+    CbKeepSeriesOut: TCheckBox;
+    ChartListbox: TChartListbox;
+    CheckListBox1: TCheckListBox;
+    ColorDialog: TColorDialog;
+    Label1: TLabel;
+    Label2: TLabel;
+    ListBox1: TListBox;
+    Memo: TMemo;
+    SinSeries: TLineSeries;
+    CosSeries: TLineSeries;
+    ListboxPanel: TPanel;
+    Panel1: TPanel;
+    RandomChartSource: TRandomChartSource;
+    EdColumns: TSpinEdit;
+    Splitter: TSplitter;
+    procedure BtnAddSeriesClick(Sender: TObject);
+    procedure BtnDeleteSeriesClick(Sender: TObject);
+    procedure BtnToggleCOSClick(Sender: TObject);
+    procedure BtnToggleChartClick(Sender: TObject);
+    procedure BtnToggleSINClick(Sender: TObject);
+    procedure CbMultiSelectChange(Sender: TObject);
+    procedure CbShowCheckboxesChange(Sender: TObject);
+    procedure CbShowSeriesIconChange(Sender: TObject);
+    procedure CbCheckStyleChange(Sender: TObject);
+    procedure CbKeepSeriesOutChange(Sender: TObject);
+    procedure EdColumnsChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure ChartListboxCheckboxClick(Sender: TObject; Index: Integer);
+    procedure ChartListboxClick(Sender: TObject);
+    procedure ChartListboxItemClick(Sender: TObject; Index: Integer);
+    procedure ChartListboxSeriesIconClick(Sender: TObject; Index: Integer);
+    procedure ChartListboxPopulate(Sender: TObject);
   private
-    ChartListbox : TChartListbox;
     procedure CreateData;
   end;
 
@@ -87,10 +87,6 @@ begin
     SinSeries.AddXY(x, sin(x));
     CosSeries.AddXY(x, cos(x));
   end;
-  SinSeries.Title := 'sin(x)';
-  SinSeries.SeriesColor := clRed;
-  CosSeries.Title := 'cos(x)';
-  CosSeries.SeriesColor := clBlue;
 end;
 
 procedure TForm1.ChartListboxCheckboxClick(Sender: TObject; Index: Integer);
@@ -134,17 +130,6 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  ChartListbox := TChartListbox.Create(self);
-  ChartListbox.Parent := ListboxPanel;
-  ChartListbox.Align := alClient;
-  ChartListbox.Chart := Chart;
-  ChartListbox.OnSeriesIconClick := @ChartListboxSeriesIconClick;
-  ChartListbox.OnCheckboxClick := @ChartListboxCheckboxClick;
-  ChartListbox.OnItemClick := @ChartListboxItemClick;
-  ChartListbox.OnClick := @ChartListboxClick;
-
-  Memo.Lines.Clear;
-
   CreateData;
 end;
 
@@ -176,7 +161,7 @@ begin
     ChartListbox.CheckStyle := cbsCheckbox;
 end;
 
-procedure TForm1.CbKeepSeriesOutChange(Sender:TObject);
+procedure TForm1.CbKeepSeriesOutChange(Sender: TObject);
 begin
   if CbKeepSeriesOut.Checked then begin
     ChartListbox.OnPopulate := @ChartListboxPopulate;
@@ -187,14 +172,14 @@ begin
     ChartListbox.OnPopulate := nil;
 end;
 
-procedure TForm1.EdColumnsChange(Sender:TObject);
+procedure TForm1.EdColumnsChange(Sender: TObject);
 begin
   ChartListbox.Columns := EdColumns.Value;
   CheckListbox1.Columns := EdColumns.Value;
   Listbox1.Columns := EdColumns.Value;
 end;
 
-procedure TForm1.BtnAddSeriesClick(Sender:TObject);
+procedure TForm1.BtnAddSeriesClick(Sender: TObject);
 var
   ser : TLineSeries;
   cs : TRandomChartSource;
@@ -218,7 +203,7 @@ begin
   Chart.AddSeries(ser);
 end;
 
-procedure TForm1.BtnDeleteSeriesClick(Sender:TObject);
+procedure TForm1.BtnDeleteSeriesClick(Sender: TObject);
 begin
   if ChartListbox.ItemIndex = -1 then
     ShowMessage('Select the series to be deleted from the listbox first.')
@@ -230,12 +215,12 @@ begin
     ChartListbox.Series[ChartListbox.ItemIndex].Free;
 end;
 
-procedure TForm1.BtnToggleCOSClick(Sender:TObject);
+procedure TForm1.BtnToggleCOSClick(Sender: TObject);
 begin
   CosSeries.Active := not CosSeries.Active;
 end;
 
-procedure TForm1.BtnToggleChartClick(Sender:TObject);
+procedure TForm1.BtnToggleChartClick(Sender: TObject);
 begin
   if ChartListbox.Chart = nil then
     ChartListbox.Chart := Chart
