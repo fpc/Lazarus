@@ -331,8 +331,10 @@ begin
       AItems.Add(TLegendItemUserDrawn.Create(i, Legend.OnDraw, Title))
   else
     GetLegendItems(AItems);
-  for i := oldCount to AItems.Count - 1 do
+  for i := oldCount to AItems.Count - 1 do begin
+    AItems[i].Owner := Self;
     Legend.InitItem(AItems[i], i - oldCount, FChart.Legend);
+  end;
 end;
 
 function TCustomChartSeries.GetNearestPoint(
