@@ -1,11 +1,4 @@
 {
- /***************************************************************************
-                            TAChartListbox.pas
-                            ------------------
-                    Component Library Standard Graph Listbox
-
-
- ***************************************************************************/
 
  *****************************************************************************
  *                                                                           *
@@ -39,33 +32,33 @@ unit TAChartListbox;
 interface
 
 uses
-  Classes, Controls, SysUtils, LCLType, StdCtrls,
+  Classes, Controls, StdCtrls,
   TAChartUtils, TACustomSeries, TALegend, TAGraph;
 
 type
   TChartListboxIndexEvent = procedure (
-    Sender: TObject; Index: Integer) of object;
+    ASender: TObject; AIndex: Integer) of object;
 
   TCheckBoxesStyle = (cbsCheckbox, cbsRadiobutton);
 
   TChartListbox = class(TCustomListbox)
   private
     FChart: TChart;
-    FListener: TListener;
-    FLegendItems: TChartLegendItems;
-    FShowSeriesIcons: Boolean;
-    FShowCheckboxes: Boolean;
     FCheckStyle: TCheckBoxesStyle;
+    FLegendItems: TChartLegendItems;
+    FListener: TListener;
     FLockCount: Integer;
-    FSeriesIconClicked: Integer;
     FOnCheckboxClick: TChartListboxIndexEvent;
-    FOnSeriesIconClick: TChartListboxIndexEvent;
     FOnItemClick: TChartListboxIndexEvent;
     FOnPopulate: TNotifyEvent;
-    function  GetChecked(AIndex: Integer): Boolean;
-    function  GetLegendItem(AIndex: Integer): TLegendItem;
-    function  GetSeries(AIndex: Integer): TCustomChartSeries;
-    function  GetSeriesCount: Integer;
+    FOnSeriesIconClick: TChartListboxIndexEvent;
+    FSeriesIconClicked: Integer;
+    FShowCheckboxes: Boolean;
+    FShowSeriesIcons: Boolean;
+    function GetChecked(AIndex: Integer): Boolean;
+    function GetLegendItem(AIndex: Integer): TLegendItem;
+    function GetSeries(AIndex: Integer): TCustomChartSeries;
+    function GetSeriesCount: Integer;
     procedure SeriesChanged(ASender: TObject);
     procedure SetChart(AValue: TChart);
     procedure SetChecked(AIndex: Integer; AValue: Boolean);
@@ -74,31 +67,32 @@ type
     procedure SetShowSeriesIcons(AValue: Boolean);
 
   protected
-    procedure CalcRects(
-      const AItemRect: TRect; out CheckboxRect, SeriesIconRect: TRect);
-    procedure ClickedCheckbox(AIndex: Integer); virtual;
-    procedure ClickedItem(AIndex: Integer); virtual;
-    procedure ClickedSeriesIcon(AIndex: Integer); virtual;
-    function  CreateLegendItems: TChartLegendItems;
-    procedure DblClick; override;
     procedure DrawItem(
-      Index: Integer; ARect: TRect; AState: TOwnerDrawState); override;
-    function  FirstCheckedIndex: Integer;
-    function  IsLocked: Boolean;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure Lock;
+      AIndex: Integer; ARect: TRect; AState: TOwnerDrawState); override;
+    procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
     procedure MouseDown(
       AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
     procedure Notification(
       AComponent: TComponent; AOperation: TOperation); override;
+  protected
+    procedure CalcRects(
+      const AItemRect: TRect; out ACheckboxRect, ASeriesIconRect: TRect);
+    procedure ClickedCheckbox(AIndex: Integer); virtual;
+    procedure ClickedItem(AIndex: Integer); virtual;
+    procedure ClickedSeriesIcon(AIndex: Integer); virtual;
+    function CreateLegendItems: TChartLegendItems;
+    procedure DblClick; override;
+    function FirstCheckedIndex: Integer;
+    function IsLocked: Boolean;
+    procedure Lock;
     procedure Populate;
     procedure Unlock;
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function  FindSeriesIndex(ASeries: TCustomChartSeries): Integer;
-    procedure MeasureItem(Index: Integer; var AHeight: Integer); override;
+    function FindSeriesIndex(ASeries: TCustomChartSeries): Integer;
+    procedure MeasureItem(AIndex: Integer; var AHeight: Integer); override;
     procedure RemoveSeries(ASeries: TCustomChartSeries);
     property Checked[AIndex: Integer]: Boolean read GetChecked write SetChecked;
     property Series[AIndex: Integer]: TCustomChartSeries read GetSeries;
@@ -107,20 +101,20 @@ type
   published
     property Chart: TChart read FChart write SetChart;
     property CheckStyle: TCheckBoxesStyle
-        read FCheckStyle write SetCheckStyle default cbsCheckbox;
+      read FCheckStyle write SetCheckStyle default cbsCheckbox;
     property ShowCheckboxes: Boolean
-        read FShowCheckboxes write SetShowCheckboxes default true;
+      read FShowCheckboxes write SetShowCheckboxes default true;
     property ShowSeriesIcons: Boolean
-        read FShowSeriesIcons write SetShowSeriesIcons default true;
+      read FShowSeriesIcons write SetShowSeriesIcons default true;
+  published
     property OnCheckboxClick: TChartListboxIndexEvent
-        read FOnCheckboxClick write FOnCheckboxClick;
+      read FOnCheckboxClick write FOnCheckboxClick;
     property OnItemClick: TChartListboxIndexEvent
-        read FOnItemClick write FOnItemClick;
+      read FOnItemClick write FOnItemClick;
+    property OnPopulate: TNotifyEvent read FOnPopulate write FOnPopulate;
     property OnSeriesIconClick: TChartListboxIndexEvent
-        read FOnSeriesIconClick write FOnSeriesIconClick;
-    property OnPopulate: TNotifyEvent
-        read FOnPopulate write FOnPopulate;
-
+      read FOnSeriesIconClick write FOnSeriesIconClick;
+  published
     property Align;
 //    property AllowGrayed;
     property Anchors;
@@ -132,8 +126,8 @@ type
     property Constraints;
     property DragCursor;
     property DragMode;
-    property ExtendedSelect;
     property Enabled;
+    property ExtendedSelect;
     property Font;
     property IntegralHeight;
 //    property Items;
@@ -144,21 +138,21 @@ type
 //    property OnClickCheck;
     property OnContextPopup;
     property OnDblClick;
-    property OnDrawItem;
     property OnDragDrop;
     property OnDragOver;
+    property OnDrawItem;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
 //    property OnItemClick;
-    property OnKeyPress;
     property OnKeyDown;
+    property OnKeyPress;
     property OnKeyUp;
-    property OnMouseMove;
     property OnMouseDown;
-    property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
@@ -185,7 +179,8 @@ procedure Register;
 implementation
 
 uses
-  Math, LCLIntf, Themes, TAGeometry, TADrawUtils, TADrawerCanvas;
+  Math, LCLIntf, LCLType, SysUtils, Themes,
+  TAGeometry, TADrawUtils, TADrawerCanvas;
 
 procedure Register;
 begin
@@ -209,27 +204,27 @@ begin
 end;
 
 procedure TChartListbox.CalcRects(
-  const AItemRect: TRect; out CheckboxRect, SeriesIconRect: TRect);
+  const AItemRect: TRect; out ACheckboxRect, ASeriesIconRect: TRect);
 { based on the rect of a listbox item, calculates the locations of the
   checkbox and of the series icon }
 var
   w, x: Integer;
 begin
-  CheckBoxRect := Rect(-1, -1, -1, -1);
-  SeriesIconRect := Rect(-1, -1, -1, -1);
+  ACheckBoxRect := Rect(-1, -1, -1, -1);
+  ASeriesIconRect := Rect(-1, -1, -1, -1);
   w := GetSystemMetrics(SM_CYMENUCHECK);
   x := 2;
   if FShowCheckboxes then begin
-    CheckboxRect := Bounds(AItemRect.Left + 1, AItemRect.Top + 1, w, w);
+    ACheckboxRect := Bounds(AItemRect.Left + 1, AItemRect.Top + 1, w, w);
     if FShowSeriesIcons then
-      inc(x, CheckboxRect.Right);
+      x += ACheckboxRect.Right;
   end
   else begin
     if FShowSeriesIcons then
-      inc(x, AItemRect.Left);
+      x += AItemRect.Left;
   end;
   if FShowSeriesIcons then
-    SeriesIconRect := Rect(
+    ASeriesIconRect := Rect(
       x, AItemRect.Top + 2, x + FChart.Legend.SymbolWidth, AItemRect.Bottom - 2);
 end;
 
@@ -262,13 +257,10 @@ var
 begin
   Result := TChartLegendItems.Create;
   try
-    if FChart <> nil then
-      for i := 0 to FChart.SeriesCount - 1 do begin
-        if FChart.Series[i] is TCustomChartSeries then begin
-          TCustomChartSeries(FChart.Series[i]).GetSingleLegendItem(Result);
-          Result[i].Owner := FChart.Series[i];
-        end;
-      end;
+    if FChart = nil then exit;
+    for i := 0 to FChart.SeriesCount - 1 do
+      if FChart.Series[i] is TCustomChartSeries then
+        TCustomChartSeries(FChart.Series[i]).GetSingleLegendItem(Result);
     for i := Result.Count - 1 downto 0 do
       if Result[i].Order = LEGEND_ITEM_ORDER_AS_ADDED then begin
         Result[i].Order := j;
@@ -288,18 +280,23 @@ begin
 end;
 
 procedure TChartListbox.DrawItem(
-  Index: Integer; ARect: TRect; AState: TOwnerDrawState);
+  AIndex: Integer; ARect: TRect; AState: TOwnerDrawState);
 { draws the listbox item }
 const
-  IS_CHECKED: array[TCheckboxesStyle, Boolean] of Integer = (
+  UNTHEMED_FLAGS: array [TCheckboxesStyle, Boolean] of Integer = (
     (DFCS_BUTTONCHECK, DFCS_BUTTONCHECK or DFCS_CHECKED),
     (DFCS_BUTTONRADIO, DFCS_BUTTONRADIO or DFCS_CHECKED)
+  );
+  THEMED_FLAGS: array [TCheckboxesStyle, Boolean] of TThemedButton = (
+    (tbCheckBoxUncheckedNormal, tbCheckBoxCheckedNormal),
+    (tbRadioButtonUnCheckedNormal, tbRadioButtonCheckedNormal)
   );
 var
   id: IChartDrawer;
   rcb, ricon: TRect;
   te: TThemedElementDetails;
   x: Integer;
+  ch: Boolean;
 begin
   Unused(AState);
 
@@ -308,24 +305,14 @@ begin
   CalcRects(ARect, rcb, ricon);
 
   if FShowCheckboxes then begin
+    ch := Checked[AIndex];
     if ThemeServices.ThemesEnabled then begin
-      case FCheckStyle of
-        cbsCheckbox :
-          if Checked[Index] then
-            te := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal)
-          else
-            te := ThemeServices.GetElementDetails(tbCheckBoxUncheckedNormal);
-        cbsRadioButton :
-          if Checked[Index] then
-            te := ThemeServices.GetElementDetails(tbRadioButtonCheckedNormal)
-          else
-            te := ThemeServices.GetElementDetails(tbRadioButtonUnCheckedNormal);
-      end;
+      te := ThemeServices.GetElementDetails(THEMED_FLAGS[FCheckStyle, ch]);
       ThemeServices.DrawElement(Canvas.Handle, te, rcb);
     end
     else
       DrawFrameControl(
-        Canvas.Handle, rcb, DFC_BUTTON, IS_CHECKED[FCheckStyle, Checked[Index]]);
+        Canvas.Handle, rcb, DFC_BUTTON, UNTHEMED_FLAGS[FCheckStyle, ch]);
     x := rcb.Right;
   end
   else
@@ -334,37 +321,25 @@ begin
   if FShowSeriesIcons then begin
     id := TCanvasDrawer.Create(Canvas);
     id.Pen := Chart.Legend.SymbolFrame;
-    FLegendItems[Index].Draw(id, ricon);
-  end else
-    Canvas.TextOut(x + 2, ARect.Top, FLegendItems.Items[Index].Text);
+    FLegendItems[AIndex].Draw(id, ricon);
+  end
+  else
+    Canvas.TextOut(x + 2, ARect.Top, FLegendItems.Items[AIndex].Text);
 end;
 
 function TChartListbox.FindSeriesIndex(ASeries: TCustomChartSeries): Integer;
 { searches the internal legend items list for the specified series }
-var
-  i: Integer;
-  ser: TBasicChartSeries;
 begin
-  for i := 0 to FLegendItems.Count - 1 do begin
-    ser := GetSeries(i);
-    if ser = ASeries then begin
-      Result := i;
-      exit;
-    end;
-  end;
+  for Result := 0 to FLegendItems.Count - 1 do
+    if GetSeries(Result) = ASeries then exit;
   Result := -1;
 end;
 
 function TChartListbox.FirstCheckedIndex: Integer;
 { Returns the index of the first listbox series that is active }
-var
-  i: Integer;
 begin
-  for i := 0 to FLegendItems.Count - 1 do
-    if Checked[i] then begin
-      Result := i;
-      exit;
-    end;
+  for Result := 0 to FLegendItems.Count - 1 do
+    if Checked[Result] then exit;
   Result := -1;
 end;
 
@@ -375,7 +350,7 @@ var
   ser: TBasicChartSeries;
 begin
   ser := GetSeries(AIndex);
-  Result := ser.Active;
+  Result := (ser <> nil) and ser.Active;
 end;
 
 function TChartListbox.GetLegendItem(AIndex: Integer): TLegendItem;
@@ -409,29 +384,29 @@ begin
   Result := FLockCount <> 0;
 end;
 
-procedure TChartListBox.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TChartListBox.KeyDown(var AKey: Word; AShift: TShiftState);
 { allows checking/unchecking of items by means of pressing the space bar }
 begin
-  if (Key = VK_SPACE) and (Shift = []) and FShowCheckboxes then begin
+  if (AKey = VK_SPACE) and (AShift = []) and FShowCheckboxes then begin
     ClickedCheckbox(ItemIndex);
-    Key := VK_UNKNOWN;
+    AKey := VK_UNKNOWN;
   end
   else
-    inherited KeyDown(Key,Shift);
+    inherited KeyDown(AKey, AShift);
 end;
 
 procedure TChartListBox.Lock;
 { locking mechanism to avoid excessive broadcasting of chart changes.
   See also: IsLocked and UnLock }
 begin
-  inc(FLockCount);
+  FLockCount += 1;
 end;
 
-procedure TChartListBox.MeasureItem(Index: Integer; var AHeight: Integer);
+procedure TChartListBox.MeasureItem(AIndex: Integer; var AHeight: Integer);
 { inherited from ancestor: measures the height of a listbox item taking into
   account the height of the checkbox }
 begin
-  Unused(Index);
+  Unused(AIndex);
   AHeight := CalculateStandardItemHeight;
   if FShowCheckboxes then
     AHeight := Max(AHeight, GetSystemMetrics(SM_CYMENUCHECK) + 2);
@@ -493,17 +468,16 @@ begin
   try
     Items.BeginUpdate;
     Items.Clear;
-    if FChart <> nil then begin
-      FreeAndNil(FLegendItems);
-      FLegendItems := CreateLegendItems;
-      for i := 0 to FLegendItems.Count - 1 do
-        Items.Add('');
-        // the caption is owner-drawn using info from the FLegendItems
-        // --> no need to pass the text here
+    if FChart = nil then exit;
+    FreeAndNil(FLegendItems);
+    FLegendItems := CreateLegendItems;
+    for i := 0 to FLegendItems.Count - 1 do
+      Items.Add('');
+      // the caption is owner-drawn using info from the FLegendItems
+      // --> no need to pass the text here
 
-      if Assigned(OnPopulate) then
-        OnPopulate(self);
-    end;
+    if Assigned(OnPopulate) then
+      OnPopulate(self);
   finally
     Items.EndUpdate;
   end;
@@ -515,11 +489,10 @@ var
   index: Integer;
 begin
   index := FindSeriesIndex(ASeries);
-  if index <> -1 then begin
-    FLegendItems.Delete(index);
-    Items.Delete(index);
-    Invalidate;
-  end;
+  if index = -1 then exit;
+  FLegendItems.Delete(index);
+  Items.Delete(index);
+  Invalidate;
 end;
 
 procedure TChartListbox.SeriesChanged(ASender: TObject);
@@ -528,16 +501,15 @@ procedure TChartListbox.SeriesChanged(ASender: TObject);
 var
   index: Integer;
 begin
-  if not IsLocked then begin
-    Populate;
-    { in case of radiobutton mode, it is necessary to uncheck the other
-      series; there can be only one active series in this mode }
-    if (FCheckStyle = cbsRadioButton) and (ASender is TBasicChartSeries) then
-    begin
-      index := FindSeriesIndex(ASender as TCustomChartSeries);
-      if index <> -1 then
-        Checked[index] := (ASender as TCustomChartSeries).Active;
-    end;
+  if IsLocked then exit;
+  Populate;
+  { in case of radiobutton mode, it is necessary to uncheck the other
+    series; there can be only one active series in this mode }
+  if (FCheckStyle = cbsRadioButton) and (ASender is TBasicChartSeries) then
+  begin
+    index := FindSeriesIndex(ASender as TCustomChartSeries);
+    if index <> -1 then
+      Checked[index] := (ASender as TCustomChartSeries).Active;
   end;
 end;
 
@@ -551,7 +523,7 @@ begin
   FChart := AValue;
   if FChart <> nil then
     FChart.Broadcaster.Subscribe(FListener);
-  SeriesChanged(nil);
+  SeriesChanged(Self);
 end;
 
 procedure TChartListbox.SetChecked(AIndex: Integer; AValue: Boolean);
@@ -562,20 +534,19 @@ var
   i: Integer;
 begin
   ser := GetSeries(AIndex);
-  if ser <> nil then begin
-    Lock;
-    try
-      ser.Active := AValue;
-      if AValue and (FCheckStyle = cbsRadioButton) then
-        for i:=0 to FLegendItems.Count-1 do begin
-          ser := GetSeries(i);
-          if (i <> AIndex) and (ser <> nil) then
-            ser.Active := false;
-        end;
-      Invalidate;
-    finally
-      Unlock;
-    end;
+  if ser = nil then exit;
+  Lock;
+  try
+    ser.Active := AValue;
+    if AValue and (FCheckStyle = cbsRadioButton) then
+      for i := 0 to FLegendItems.Count - 1 do begin
+        ser := GetSeries(i);
+        if (i <> AIndex) and (ser <> nil) then
+          ser.Active := false;
+      end;
+    Invalidate;
+  finally
+    Unlock;
   end;
 end;
 
@@ -585,37 +556,33 @@ procedure TChartlistbox.SetCheckStyle(AValue: TCheckBoxesStyle);
 var
   j: Integer;
 begin
-  if AValue <> FCheckStyle then begin
-    if AValue = cbsRadioButton then
-      j := FirstCheckedIndex
-    else
-      j := -1;
-    FCheckStyle := AValue;
-    if (FCheckStyle = cbsRadioButton) and (j <> -1) then
+  if FCheckStyle = AValue then exit;
+  FCheckStyle := AValue;
+  if FCheckStyle = cbsRadioButton then begin
+    j := FirstCheckedIndex;
+    if j <> -1 then
       Checked[j] := true;
-    Invalidate;
   end;
+  Invalidate;
 end;
 
 procedure TChartListbox.SetShowCheckboxes(AValue: Boolean);
 begin
-  if AValue <> FShowCheckboxes then begin
-    FShowCheckboxes := AValue;
-    Invalidate;
-  end;
+  if FShowCheckboxes = AValue then exit;
+  FShowCheckboxes := AValue;
+  Invalidate;
 end;
 
 procedure TChartListbox.SetShowSeriesIcons(AValue: Boolean);
 begin
-  if AValue <> FShowSeriesIcons then begin
-    FShowSeriesIcons := AValue;
-    Invalidate;
-  end;
+  if FShowSeriesIcons = AValue then exit;
+  FShowSeriesIcons := AValue;
+  Invalidate;
 end;
 
 procedure TChartListbox.Unlock;
 begin
-  dec(FLockCount);
+  FLockCount -= 1;
 end;
 
 end.
