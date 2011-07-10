@@ -63,6 +63,7 @@ type
     procedure SetChart(AValue: TChart);
     procedure SetChecked(AIndex: Integer; AValue: Boolean);
     procedure SetCheckStyle(AValue: TCheckBoxesStyle);
+    procedure SetOnPopulate(AValue: TNotifyEvent);
     procedure SetShowCheckboxes(AValue: Boolean);
     procedure SetShowSeriesIcons(AValue: Boolean);
 
@@ -109,7 +110,7 @@ type
       read FOnCheckboxClick write FOnCheckboxClick;
     property OnItemClick: TChartListboxIndexEvent
       read FOnItemClick write FOnItemClick;
-    property OnPopulate: TNotifyEvent read FOnPopulate write FOnPopulate;
+    property OnPopulate: TNotifyEvent read FOnPopulate write SetOnPopulate;
     property OnSeriesIconClick: TChartListboxIndexEvent
       read FOnSeriesIconClick write FOnSeriesIconClick;
   published
@@ -535,7 +536,7 @@ begin
   end;
 end;
 
-procedure TChartlistbox.SetCheckStyle(AValue: TCheckBoxesStyle);
+procedure TChartListbox.SetCheckStyle(AValue: TCheckBoxesStyle);
 { selects "checkbox" or "radiobutton" styles. In radiobutton mode, only
   one series can be visible }
 var
@@ -549,6 +550,13 @@ begin
       Checked[j] := true;
   end;
   Invalidate;
+end;
+
+procedure TChartListbox.SetOnPopulate(AValue: TNotifyEvent);
+begin
+  if TMethod(FOnPopulate) = TMethod(AValue) then exit;
+  FOnPopulate := AValue;
+  Populate;
 end;
 
 procedure TChartListbox.SetShowCheckboxes(AValue: Boolean);
