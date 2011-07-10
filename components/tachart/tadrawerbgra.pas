@@ -215,7 +215,8 @@ begin
   Canvas.Font.Height := AFont.Size * 96 div 72;
   Canvas.Font.Orientation := FGetFontOrientationFunc(AFont);
   Canvas.Font.BGRAColor := FPColorToBGRA(AFont.FPColor);
-  // TODO: FontStyle
+  if AFont is TFont then
+    Canvas.Font.Style := (AFont as TFont).Style;
 end;
 
 procedure TBGRABitmapDrawer.SetPen(APen: TFPCustomPen);
