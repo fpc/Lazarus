@@ -24,7 +24,6 @@ type
     CbShowCheckboxes: TCheckBox;
     CbShowSeriesIcon: TCheckBox;
     CbCheckStyle: TCheckBox;
-    CbMultiSelect: TCheckBox;
     CbKeepSeriesOut: TCheckBox;
     ChartListbox: TChartListbox;
     CheckListBox1: TCheckListBox;
@@ -45,7 +44,6 @@ type
     procedure BtnToggleCOSClick(Sender: TObject);
     procedure BtnToggleChartClick(Sender: TObject);
     procedure BtnToggleSINClick(Sender: TObject);
-    procedure CbMultiSelectChange(Sender: TObject);
     procedure CbShowCheckboxesChange(Sender: TObject);
     procedure CbShowSeriesIconChange(Sender: TObject);
     procedure CbCheckStyleChange(Sender: TObject);
@@ -138,19 +136,22 @@ begin
   SinSeries.Active := not SinSeries.Active;
 end;
 
-procedure TForm1.CbMultiSelectChange(Sender: TObject);
-begin
-  ChartListbox.MultiSelect := CbMultiSelect.Checked;
-end;
-
 procedure TForm1.CbShowCheckboxesChange(Sender: TObject);
 begin
-  ChartListbox.ShowCheckboxes := CbShowCheckboxes.Checked;
+  with ChartListbox do
+    if CbShowCheckboxes.Checked then
+      Options := Options + [cloShowCheckboxes]
+    else
+      Options := Options - [cloShowCheckboxes];
 end;
 
 procedure TForm1.CbShowSeriesIconChange(Sender: TObject);
 begin
-  ChartListbox.ShowSeriesIcons := CbShowSeriesIcon.Checked;
+  with ChartListbox do
+    if CbShowSeriesIcon.Checked then
+      Options := Options + [cloShowIcons]
+    else
+      Options := Options - [cloShowIcons];
 end;
 
 procedure TForm1.CbCheckStyleChange(Sender:TObject);

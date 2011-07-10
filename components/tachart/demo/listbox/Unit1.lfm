@@ -202,22 +202,13 @@ object Form1: TForm1
       OnChange = CbCheckStyleChange
       TabOrder = 6
     end
-    object CbMultiSelect: TCheckBox
-      Left = 8
-      Height = 17
-      Top = 344
-      Width = 71
-      Caption = 'MultiSelect'
-      OnChange = CbMultiSelectChange
-      TabOrder = 7
-    end
     object Memo: TMemo
       Left = 9
       Height = 106
       Top = 104
       Width = 275
       ScrollBars = ssAutoVertical
-      TabOrder = 8
+      TabOrder = 7
     end
     object Label1: TLabel
       Left = 9
@@ -230,17 +221,17 @@ object Form1: TForm1
     object EdColumns: TSpinEdit
       Left = 208
       Height = 21
-      Top = 340
+      Top = 308
       Width = 50
       MinValue = 1
       OnChange = EdColumnsChange
-      TabOrder = 9
+      TabOrder = 8
       Value = 1
     end
     object Label2: TLabel
       Left = 152
       Height = 14
-      Top = 345
+      Top = 313
       Width = 45
       Caption = 'Columns:'
       ParentColor = False
@@ -252,7 +243,7 @@ object Form1: TForm1
       Width = 81
       Caption = 'Delete series'
       OnClick = BtnDeleteSeriesClick
-      TabOrder = 10
+      TabOrder = 9
     end
     object CbKeepSeriesOut: TCheckBox
       Left = 9
@@ -261,7 +252,7 @@ object Form1: TForm1
       Width = 227
       Caption = 'Keep sin and cos series out of ChartListBox'
       OnChange = CbKeepSeriesOutChange
-      TabOrder = 11
+      TabOrder = 10
     end
     object Bevel1: TBevel
       Left = 9

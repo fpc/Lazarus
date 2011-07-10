@@ -41,6 +41,13 @@ type
 
   TCheckBoxesStyle = (cbsCheckbox, cbsRadiobutton);
 
+  TChartListOption = (cloShowCheckboxes, cloShowIcons);
+  TChartListOptions = set of TChartListOption;
+
+const
+  SHOW_ALL = [cloShowCheckboxes, cloShowIcons];
+
+type
   TChartListbox = class(TCustomListbox)
   private
     FChart: TChart;
@@ -52,9 +59,8 @@ type
     FOnItemClick: TChartListboxIndexEvent;
     FOnPopulate: TNotifyEvent;
     FOnSeriesIconClick: TChartListboxIndexEvent;
+    FOptions: TChartListOptions;
     FSeriesIconClicked: Integer;
-    FShowCheckboxes: Boolean;
-    FShowSeriesIcons: Boolean;
     function GetChecked(AIndex: Integer): Boolean;
     function GetLegendItem(AIndex: Integer): TLegendItem;
     function GetSeries(AIndex: Integer): TCustomChartSeries;
@@ -64,8 +70,7 @@ type
     procedure SetChecked(AIndex: Integer; AValue: Boolean);
     procedure SetCheckStyle(AValue: TCheckBoxesStyle);
     procedure SetOnPopulate(AValue: TNotifyEvent);
-    procedure SetShowCheckboxes(AValue: Boolean);
-    procedure SetShowSeriesIcons(AValue: Boolean);
+    procedure SetOptions(AValue: TChartListOptions);
 
   protected
     procedure DblClick; override;
@@ -101,10 +106,8 @@ type
     property Chart: TChart read FChart write SetChart;
     property CheckStyle: TCheckBoxesStyle
       read FCheckStyle write SetCheckStyle default cbsCheckbox;
-    property ShowCheckboxes: Boolean
-      read FShowCheckboxes write SetShowCheckboxes default true;
-    property ShowSeriesIcons: Boolean
-      read FShowSeriesIcons write SetShowSeriesIcons default true;
+    property Options: TChartListOptions
+      read FOptions write SetOptions default SHOW_ALL;
   published
     property OnCheckboxClick: TChartListboxIndexEvent
       read FOnCheckboxClick write FOnCheckboxClick;
@@ -191,8 +194,7 @@ begin
   inherited Create(AOwner);
   Style := lbOwnerDrawFixed;
   FListener := TListener.Create(@FChart, @SeriesChanged);
-  FShowSeriesIcons := true;
-  FShowCheckboxes := true;
+  FOptions := SHOW_ALL;
 end;
 
 destructor TChartListbox.Destroy;
@@ -213,16 +215,16 @@ begin
   ASeriesIconRect := Rect(-1, -1, -1, -1);
   w := GetSystemMetrics(SM_CYMENUCHECK);
   x := 2;
-  if FShowCheckboxes then begin
+  if cloShowCheckboxes in Options then begin
     ACheckboxRect := Bounds(AItemRect.Left + 1, AItemRect.Top + 1, w, w);
-    if FShowSeriesIcons then
+    if cloShowIcons in Options then
       x += ACheckboxRect.Right;
   end
   else begin
-    if FShowSeriesIcons then
+    if cloShowIcons in Options then
       x += AItemRect.Left;
   end;
-  if FShowSeriesIcons then
+  if cloShowIcons in Options then
     ASeriesIconRect := Rect(
       x, AItemRect.Top + 2, x + FChart.Legend.SymbolWidth, AItemRect.Bottom - 2);
 end;
@@ -297,7 +299,7 @@ begin
 
   CalcRects(ARect, rcb, ricon);
 
-  if FShowCheckboxes then begin
+  if cloShowCheckboxes in Options then begin
     ch := Checked[AIndex];
     if ThemeServices.ThemesEnabled then begin
       te := ThemeServices.GetElementDetails(THEMED_FLAGS[FCheckStyle, ch]);
@@ -311,7 +313,7 @@ begin
   else
     x := ARect.Left;
 
-  if FShowSeriesIcons then begin
+  if cloShowIcons in Options then begin
     id := TCanvasDrawer.Create(Canvas);
     id.Pen := Chart.Legend.SymbolFrame;
     FLegendItems[AIndex].Draw(id, ricon);
@@ -380,7 +382,8 @@ end;
 procedure TChartListbox.KeyDown(var AKey: Word; AShift: TShiftState);
 { allows checking/unchecking of items by means of pressing the space bar }
 begin
-  if (AKey = VK_SPACE) and (AShift = []) and FShowCheckboxes then begin
+  if (AKey = VK_SPACE) and (AShift = []) and (cloShowCheckboxes in Options) then
+  begin
     ClickedCheckbox(ItemIndex);
     AKey := VK_UNKNOWN;
   end
@@ -401,7 +404,7 @@ procedure TChartListbox.MeasureItem(AIndex: Integer; var AHeight: Integer);
 begin
   Unused(AIndex);
   AHeight := CalculateStandardItemHeight;
-  if FShowCheckboxes then
+  if cloShowCheckboxes in Options then
     AHeight := Max(AHeight, GetSystemMetrics(SM_CYMENUCHECK) + 2);
 end;
 
@@ -428,9 +431,9 @@ begin
     index := GetIndexAtXY(AX, AY);
     if index < 0 then exit;
     CalcRects(ItemRect(index), rcb, ricon);
-    if FShowCheckboxes and IsPointInRect(p, rcb) then
+    if (cloShowCheckboxes in Options) and IsPointInRect(p, rcb) then
       ClickedCheckbox(index)
-    else if FShowSeriesIcons and IsPointInRect(p, ricon) then
+    else if (cloShowIcons in Options) and IsPointInRect(p, ricon) then
       // Remember clicked index for the double click event.
       FSeriesIconClicked := index
     else
@@ -553,17 +556,10 @@ begin
   Populate;
 end;
 
-procedure TChartListbox.SetShowCheckboxes(AValue: Boolean);
+procedure TChartListbox.SetOptions(AValue: TChartListOptions);
 begin
-  if FShowCheckboxes = AValue then exit;
-  FShowCheckboxes := AValue;
-  Invalidate;
-end;
-
-procedure TChartListbox.SetShowSeriesIcons(AValue: Boolean);
-begin
-  if FShowSeriesIcons = AValue then exit;
-  FShowSeriesIcons := AValue;
+  if FOptions = AValue then exit;
+  FOptions := AValue;
   Invalidate;
 end;
 
