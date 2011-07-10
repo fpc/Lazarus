@@ -925,7 +925,6 @@ end;
 function TChart.GetLegendItems(AIncludeHidden: Boolean): TChartLegendItems;
 var
   i: Integer;
-  j: Integer = MaxInt;
 begin
   Result := TChartLegendItems.Create;
   try
@@ -933,11 +932,6 @@ begin
       with Series[i] do
         if AIncludeHidden or (Active and GetShowInLegend) then
           GetLegendItemsBasic(Result);
-    for i := Result.Count - 1 downto 0 do
-      if Result[i].Order = LEGEND_ITEM_ORDER_AS_ADDED then begin
-        Result[i].Order := j;
-        j -= 1;
-      end;
   except
     FreeAndNil(Result);
     raise;

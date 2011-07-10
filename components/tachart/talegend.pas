@@ -680,7 +680,15 @@ begin
 end;
 
 procedure TChartLegend.SortItemsByOrder(AItems: TChartLegendItems);
+var
+  i: Integer;
+  j: Integer = MaxInt;
 begin
+  for i := AItems.Count - 1 downto 0 do
+    if AItems[i].Order = LEGEND_ITEM_ORDER_AS_ADDED then begin
+      AItems[i].Order := j;
+      j -= 1;
+    end;
   AItems.Sort(@LegendItemCompare);
 end;
 
