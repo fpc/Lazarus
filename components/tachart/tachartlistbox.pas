@@ -67,6 +67,7 @@ type
     procedure SetShowSeriesIcons(AValue: Boolean);
 
   protected
+    procedure DblClick; override;
     procedure DrawItem(
       AIndex: Integer; ARect: TRect; AState: TOwnerDrawState); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
@@ -79,7 +80,6 @@ type
     procedure ClickedItem(AIndex: Integer); virtual;
     procedure ClickedSeriesIcon(AIndex: Integer); virtual;
     function CreateLegendItems: TChartLegendItems;
-    procedure DblClick; override;
     function FirstCheckedIndex: Integer;
     function IsLocked: Boolean;
     procedure Lock;
@@ -198,7 +198,7 @@ destructor TChartListbox.Destroy;
 begin
   FreeAndNil(FListener);
   FreeAndNil(FLegendItems);
-  inherited Destroy;
+  inherited;
 end;
 
 procedure TChartListbox.CalcRects(
@@ -382,7 +382,7 @@ begin
   Result := FLockCount <> 0;
 end;
 
-procedure TChartListBox.KeyDown(var AKey: Word; AShift: TShiftState);
+procedure TChartListbox.KeyDown(var AKey: Word; AShift: TShiftState);
 { allows checking/unchecking of items by means of pressing the space bar }
 begin
   if (AKey = VK_SPACE) and (AShift = []) and FShowCheckboxes then begin
@@ -393,14 +393,14 @@ begin
     inherited KeyDown(AKey, AShift);
 end;
 
-procedure TChartListBox.Lock;
+procedure TChartListbox.Lock;
 { locking mechanism to avoid excessive broadcasting of chart changes.
   See also: IsLocked and UnLock }
 begin
   FLockCount += 1;
 end;
 
-procedure TChartListBox.MeasureItem(AIndex: Integer; var AHeight: Integer);
+procedure TChartListbox.MeasureItem(AIndex: Integer; var AHeight: Integer);
 { inherited from ancestor: measures the height of a listbox item taking into
   account the height of the checkbox }
 begin
@@ -451,19 +451,18 @@ procedure TChartListbox.Populate;
 var
   i: Integer;
 begin
+  Items.BeginUpdate;
   try
-    Items.BeginUpdate;
     Items.Clear;
     if FChart = nil then exit;
     FreeAndNil(FLegendItems);
     FLegendItems := CreateLegendItems;
     for i := 0 to FLegendItems.Count - 1 do
-      Items.Add('');
-      // the caption is owner-drawn using info from the FLegendItems
-      // --> no need to pass the text here
+      // The caption is owner-drawn, but add it anyway for user convenience.
+      Items.AddObject(FLegendItems[i].Text, FLegendItems[i]);
 
     if Assigned(OnPopulate) then
-      OnPopulate(self);
+      OnPopulate(Self);
   finally
     Items.EndUpdate;
   end;
