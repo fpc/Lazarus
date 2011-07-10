@@ -61,7 +61,6 @@ type
     FCheckStyle: TCheckBoxesStyle;
     FLegendItems: TChartLegendItems;
     FListener: TListener;
-    FLockCount: Integer;
     FOnAddSeries: TChartListboxAddSeriesEvent;
     FOnCheckboxClick: TChartListboxIndexEvent;
     FOnItemClick: TChartListboxIndexEvent;
@@ -70,7 +69,6 @@ type
     FOptions: TChartListOptions;
     FSeriesIconClicked: Integer;
     function GetChecked(AIndex: Integer): Boolean;
-    function GetLegendItem(AIndex: Integer): TLegendItem;
     function GetSeries(AIndex: Integer): TCustomChartSeries;
     function GetSeriesCount: Integer;
     procedure EnsureSingleChecked(AIndex: Integer = -1);
@@ -345,13 +343,18 @@ var
 begin
   if (FCheckStyle <> cbsRadioButton) or not (cloShowCheckboxes in Options) then
     exit;
-  for i := 0 to FLegendItems.Count - 1 do begin
-    ser := GetSeries(i);
-    if ser = nil then continue;
-    if (AIndex < 0) and ser.Active then
-      AIndex := i
-    else
-      ser.Active := AIndex = i;
+  FListener.OnNotify := nil;
+  try
+    for i := 0 to FLegendItems.Count - 1 do begin
+      ser := GetSeries(i);
+      if ser = nil then continue;
+      if (AIndex < 0) and ser.Active then
+        AIndex := i
+      else
+        ser.Active := AIndex = i;
+    end;
+  finally
+    FListener.OnNotify := @SeriesChanged;
   end;
 end;
 
@@ -373,18 +376,13 @@ begin
   Result := (ser <> nil) and ser.Active;
 end;
 
-function TChartListbox.GetLegendItem(AIndex: Integer): TLegendItem;
-begin
-  Result := FLegendItems[AIndex];
-end;
-
 function TChartListbox.GetSeries(AIndex: Integer): TCustomChartSeries;
 { extracts, for the given index, the series from the internal
   legend items list. }
 var
   legitem: TLegendItem;
 begin
-  legitem := GetLegendItem(AIndex);
+  legitem := FLegendItems[AIndex];
   if (legitem <> nil) and (legitem.Owner is TCustomChartSeries) then
     Result := TCustomChartSeries(legitem.Owner)
   else
@@ -402,8 +400,10 @@ end;
 procedure TChartListbox.KeyDown(var AKey: Word; AShift: TShiftState);
 { allows checking/unchecking of items by means of pressing the space bar }
 begin
-  if (AKey = VK_SPACE) and (AShift = []) and (cloShowCheckboxes in Options) then
-  begin
+  if
+    (AKey = VK_SPACE) and (AShift = []) and
+    (cloShowCheckboxes in Options) and (ItemIndex >= 0)
+  then begin
     ClickedCheckbox(ItemIndex);
     AKey := VK_UNKNOWN;
   end
@@ -523,11 +523,20 @@ procedure TChartListbox.SetChecked(AIndex: Integer; AValue: Boolean);
 { shows/hides the series with the specified index of its listbox item.
   In case of radiobutton style, all other series are hidden if AValue=true }
 var
-  ser: TBasicChartSeries;
+  ser: TCustomChartSeries;
 begin
   ser := GetSeries(AIndex);
   if (ser = nil) or (ser.Active = AValue) then exit;
-  ser.Active := AValue;
+  // Do not listen to this change since we know what changed.
+  FListener.OnNotify := nil;
+  try
+    ser.Active := AValue;
+  finally
+    FListener.OnNotify := @SeriesChanged;
+  end;
+  if AValue then
+    EnsureSingleChecked(FindSeriesIndex(ser));
+  Invalidate;
 end;
 
 procedure TChartListbox.SetCheckStyle(AValue: TCheckBoxesStyle);
