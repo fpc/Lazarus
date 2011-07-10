@@ -58,7 +58,7 @@ type
     FOnCheckboxClick: TChartListboxIndexEvent;
     FOnItemClick: TChartListboxIndexEvent;
     FOnPopulate: TNotifyEvent;
-    FOnSeriesIconClick: TChartListboxIndexEvent;
+    FOnSeriesIconDblClick: TChartListboxIndexEvent;
     FOptions: TChartListOptions;
     FSeriesIconClicked: Integer;
     function GetChecked(AIndex: Integer): Boolean;
@@ -114,8 +114,8 @@ type
     property OnItemClick: TChartListboxIndexEvent
       read FOnItemClick write FOnItemClick;
     property OnPopulate: TNotifyEvent read FOnPopulate write SetOnPopulate;
-    property OnSeriesIconClick: TChartListboxIndexEvent
-      read FOnSeriesIconClick write FOnSeriesIconClick;
+    property OnSeriesIconDblClick: TChartListboxIndexEvent
+      read FOnSeriesIconDblClick write FOnSeriesIconDblClick;
   published
     property Align;
 //    property AllowGrayed;
@@ -244,8 +244,8 @@ end;
 
 procedure TChartListbox.ClickedSeriesIcon(AIndex: Integer);
 begin
-  if Assigned(OnSeriesIconClick) then
-    OnSeriesIconClick(Self, AIndex);
+  if Assigned(OnSeriesIconDblClick) then
+    OnSeriesIconDblClick(Self, AIndex);
 end;
 
 function TChartListbox.CreateLegendItems: TChartLegendItems;

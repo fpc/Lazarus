@@ -53,7 +53,7 @@ type
     procedure ChartListboxCheckboxClick(Sender: TObject; Index: Integer);
     procedure ChartListboxClick(Sender: TObject);
     procedure ChartListboxItemClick(Sender: TObject; Index: Integer);
-    procedure ChartListboxSeriesIconClick(Sender: TObject; Index: Integer);
+    procedure ChartListboxSeriesIconDblClick(Sender: TObject; Index: Integer);
     procedure ChartListboxPopulate(Sender: TObject);
   private
     procedure CreateData;
@@ -93,7 +93,7 @@ begin
     [Index, ChartListbox.Series[Index].Title]));
 end;
 
-procedure TForm1.ChartListboxSeriesIconClick(Sender: TObject; Index: Integer);
+procedure TForm1.ChartListboxSeriesIconDblClick(Sender: TObject; Index: Integer);
 begin
   Memo.Lines.Add(Format('Icon of item #%d (series "%s") clicked.',
     [Index, ChartListbox.Series[Index].Title]));

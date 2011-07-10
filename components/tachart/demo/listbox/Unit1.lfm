@@ -110,7 +110,7 @@ object Form1: TForm1
       Chart = Chart
       OnCheckboxClick = ChartListboxCheckboxClick
       OnItemClick = ChartListboxItemClick
-      OnSeriesIconClick = ChartListboxSeriesIconClick
+      OnSeriesIconDblClick = ChartListboxSeriesIconDblClick
       Align = alClient
       ItemHeight = 0
       TabOrder = 2
