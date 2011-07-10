@@ -210,7 +210,7 @@ begin
   ser := TLineSeries.Create(Chart);
   ser.Source := cs;
   ser.SeriesColor := rgbToColor(Random(255), Random(256), Random(256));
-  ser.Title := Format('Series %d', [Chart.SeriesCount+1]);
+  ser.Title := Format('Series %d', [Chart.SeriesCount + 1]);
   ser.ShowPoints := Odd(Chart.SeriesCount);
   ser.Pointer.Brush.Color := ser.SeriesColor;
   ser.Pointer.Style :=
