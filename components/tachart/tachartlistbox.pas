@@ -72,8 +72,6 @@ type
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
     procedure MouseDown(
       AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
-    procedure Notification(
-      AComponent: TComponent; AOperation: TOperation); override;
   protected
     procedure CalcRects(
       const AItemRect: TRect; out ACheckboxRect, ASeriesIconRect: TRect);
@@ -445,15 +443,6 @@ begin
   finally
     inherited MouseDown(AButton, AShift, AX, AY);
   end;
-end;
-
-procedure TChartListbox.Notification(
-  AComponent: TComponent; AOperation: TOperation);
-{ avoids AV if Chart is deleted from its container form }
-begin
-  if (AOperation = opRemove) and (AComponent = FChart) then
-    SetChart(nil);
-  inherited Notification(AComponent, AOperation);
 end;
 
 procedure TChartListbox.Populate;
