@@ -71,9 +71,6 @@ type
   TListFilterEdit = class(TCustomEditButton)
     procedure ListBoxDrawItem(Control: TWinControl;
       Index: Integer; ARect: TRect; State: TOwnerDrawState);
-    procedure FilterEditChange(Sender: TObject);
-    procedure FilterEditEnter(Sender: TObject);
-    procedure FilterEditExit(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
     fFilter: string;
@@ -107,6 +104,9 @@ type
   protected
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
+    procedure Change; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
     procedure DoButtonClick (Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -161,15 +161,15 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
-//    property OnChange;
+    property OnChange;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEditingDone;
     property OnEndDrag;
-//    property OnEnter;
-//    property OnExit;
+    property OnEnter;
+    property OnExit;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -507,9 +507,6 @@ begin
   fFilenameMap:=TStringToStringTree.Create(True);
   fImageIndexDirectory := -1;
   Button.Enabled:=False;
-  OnChange:=@FilterEditChange;
-  OnEnter:=@FilterEditEnter;
-  OnExit:=@FilterEditExit;
   fIsFirstUpdate:=True;
 end;
 
@@ -547,20 +544,23 @@ begin
                                 fFilteredListbox.Items[Index]);
 end;
 
-procedure TListFilterEdit.FilterEditChange(Sender: TObject);
+procedure TListFilterEdit.Change;
 begin
   Filter:=Text;
+  inherited;
 end;
 
-procedure TListFilterEdit.FilterEditEnter(Sender: TObject);
+procedure TListFilterEdit.DoEnter;
 begin
   if Text=lisCEFilter then
     Text:='';
+  inherited;
 end;
 
-procedure TListFilterEdit.FilterEditExit(Sender: TObject);
+procedure TListFilterEdit.DoExit;
 begin
   Filter:=Text;
+  inherited;
 end;
 
 procedure TListFilterEdit.DoButtonClick(Sender: TObject);
