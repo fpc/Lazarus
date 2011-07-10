@@ -20,6 +20,7 @@ type
     BtnToggleCOS: TButton;
     BtnToggleChart: TButton;
     BtnToggleSIN: TButton;
+    BtnAddPoint: TButton;
     Chart: TChart;
     CbShowCheckboxes: TCheckBox;
     CbShowSeriesIcon: TCheckBox;
@@ -44,6 +45,7 @@ type
     procedure BtnToggleCOSClick(Sender: TObject);
     procedure BtnToggleChartClick(Sender: TObject);
     procedure BtnToggleSINClick(Sender: TObject);
+    procedure BtnAddPointClick(Sender: TObject);
     procedure CbShowCheckboxesChange(Sender: TObject);
     procedure CbShowSeriesIconChange(Sender: TObject);
     procedure CbCheckStyleChange(Sender: TObject);
@@ -51,6 +53,7 @@ type
     procedure ChartListboxAddSeries(ASender: TChartListbox;
       ASeries: TCustomChartSeries; AItems: TChartLegendItems;
       var ASkip: Boolean);
+    procedure ChartListboxPopulate(Sender: TObject);
     procedure EdColumnsChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ChartListboxCheckboxClick(Sender: TObject; Index: Integer);
@@ -114,6 +117,11 @@ begin
     [Index, ChartListbox.Series[Index].Title]));
 end;
 
+procedure TForm1.ChartListboxPopulate(Sender: TObject);
+begin
+  Memo.Lines.Add('Populate');
+end;
+
 procedure TForm1.ChartListboxClick(Sender: TObject);
 begin
   with ChartListbox do
@@ -130,6 +138,11 @@ end;
 procedure TForm1.BtnToggleSINClick(Sender: TObject);
 begin
   SinSeries.Active := not SinSeries.Active;
+end;
+
+procedure TForm1.BtnAddPointClick(Sender: TObject);
+begin
+  SinSeries.Add(Random(5), '', clRed);
 end;
 
 procedure TForm1.CbShowCheckboxesChange(Sender: TObject);
