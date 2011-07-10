@@ -488,8 +488,10 @@ begin
   Populate;
   { in case of radiobutton mode, it is necessary to uncheck the other
     series; there can be only one active series in this mode }
-  if (FCheckStyle = cbsRadioButton) and (ASender is TBasicChartSeries) then
-  begin
+  if
+    (CheckStyle = cbsRadioButton) and (cloShowCheckboxes in Options) and
+    (ASender is TBasicChartSeries)
+  then begin
     index := FindSeriesIndex(ASender as TCustomChartSeries);
     if index <> -1 then
       Checked[index] := (ASender as TCustomChartSeries).Active;
