@@ -26,13 +26,15 @@ object ViewUnitDialog: TViewUnitDialog
     OnDblClick = OKButtonClick
     OnKeyDown = ListboxKeyDown
     PopupMenu = popListBox
+    ScrollWidth = 362
     Style = lbOwnerDrawFixed
     TabOrder = 0
+    TopIndex = -1
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 340
+    Height = 34
+    Top = 346
     Width = 366
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&ОК'
@@ -77,8 +79,8 @@ object ViewUnitDialog: TViewUnitDialog
       AnchorSideLeft.Control = SortAlphabeticallySpeedButton
       AnchorSideLeft.Side = asrBottom
       Left = 26
-      Height = 20
-      Top = 3
+      Height = 23
+      Top = 2
       Width = 332
       FilteredListbox = Listbox
       ButtonWidth = 23

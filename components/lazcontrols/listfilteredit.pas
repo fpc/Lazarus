@@ -507,8 +507,6 @@ begin
   fFilenameMap:=TStringToStringTree.Create(True);
   fImageIndexDirectory := -1;
   Button.Enabled:=False;
-  Font.Color:=clBtnShadow;
-  Text:=lisCEFilter;
   OnChange:=@FilterEditChange;
   OnEnter:=@FilterEditEnter;
   OnExit:=@FilterEditExit;
