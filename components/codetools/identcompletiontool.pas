@@ -78,6 +78,7 @@ type
     iliParamNameListValid,
     iliNodeValid,
     iliNodeHashValid,
+    iliNodeGoneWarned,
     iliIsConstructor,
     iliIsConstructorValid,
     iliIsDestructor,
@@ -2737,6 +2738,11 @@ begin
   Result:=nil;
   if Tool=nil then
     exit;
+
+  if (iliNodeValid in Flags)
+  and (FToolNodesDeletedStep<>Tool.NodesDeletedChangeStep) then
+    Exclude(Flags,iliNodeValid);
+
   if (not (iliNodeValid in Flags)) then begin
     if iliNodeHashValid in Flags then begin
       RestoreNode;
@@ -2744,12 +2750,14 @@ begin
         Result:=FNode;
       end;
     end;
-    exit;
   end else begin
     if FToolNodesDeletedStep=Tool.NodesDeletedChangeStep then begin
       Result:=FNode;
     end else begin
-      DebugLn(['TIdentifierListItem.GetNode node ',Identifier,' is gone from ',Tool.MainFilename]);
+      if not (iliNodeGoneWarned in Flags) then begin
+        DebugLn(['TIdentifierListItem.GetNode node ',Identifier,' is gone from ',Tool.MainFilename]);
+        Include(Flags,iliNodeGoneWarned);
+      end;
       FNode:=nil;
     end;
   end;
