@@ -666,11 +666,12 @@ begin
   // calculate screen position
   ScreenTextXY:=SrcEdit.TextToScreenPosition(CursorTextXY);
   ClientXY:=SrcEdit.ScreenToPixelPosition(ScreenTextXY);
+  ScreenXY:=SrcEdit.EditorControl.ClientToScreen(ClientXY);
   FSourceEditorTopIndex:=SrcEdit.TopLine;
 
   // calculate size of hints
   DrawWidth:=SourceEditorManagerIntf.ActiveSourceWindow.ClientWidth;
-  DrawHeight:=ClientXY.Y;
+  DrawHeight:=ScreenXY.Y-GetParentForm(SrcEdit.EditorControl).Monitor.WorkareaRect.Top-10;
   DrawHints(DrawWidth,DrawHeight,false);
   if DrawWidth<20 then DrawWidth:=20;
   if DrawHeight<5 then DrawHeight:=5;
@@ -684,8 +685,7 @@ begin
 
   // calculate screen position
   ScreenXY:=SrcEdit.EditorControl.ClientToScreen(ClientXY);
-  dec(ScreenXY.Y,4);
-  NewBounds:=Bounds(ScreenXY.X,ScreenXY.Y,DrawWidth,DrawHeight);
+  NewBounds:=Bounds(ScreenXY.X,ScreenXY.Y-4,DrawWidth,DrawHeight);
 
   // move form
   BoundsRect:=NewBounds;
