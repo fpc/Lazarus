@@ -12,7 +12,7 @@ uses
   TATypes, TADrawUtils, TAMultiSeries, TALegend, TAStyles, TAFuncSeries, 
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
   TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
-  LazarusPackageIntf;
+  TAChartListbox, LazarusPackageIntf;
 
 implementation
 
@@ -28,6 +28,7 @@ begin
   RegisterUnit('TALegendPanel', @TALegendPanel.Register); 
   RegisterUnit('TANavigation', @TANavigation.Register); 
   RegisterUnit('TAIntervalSources', @TAIntervalSources.Register); 
+  RegisterUnit('TAChartListbox', @TAChartListbox.Register); 
 end; 
 
 initialization
