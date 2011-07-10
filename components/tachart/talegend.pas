@@ -539,7 +539,7 @@ var
   sidebar, legendSize: TPoint;
 begin
   with AData do begin
-    FColCount := Min(ColumnCount, FItems.Count);
+    FColCount := Max(Min(ColumnCount, FItems.Count), 1);
     FRowCount := FItems.Count div FColCount;
     FItemSize := MeasureItem(FDrawer, FItems);
     legendSize.X := (FItemSize.X + Spacing) * FColCount + Spacing;
