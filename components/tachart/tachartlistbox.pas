@@ -252,7 +252,6 @@ function TChartListbox.CreateLegendItems: TChartLegendItems;
   a single legend item is used }
 var
   i: Integer;
-  j: Integer = MaxInt;
 begin
   Result := TChartLegendItems.Create;
   try
@@ -260,11 +259,6 @@ begin
     for i := 0 to FChart.SeriesCount - 1 do
       if FChart.Series[i] is TCustomChartSeries then
         TCustomChartSeries(FChart.Series[i]).GetSingleLegendItem(Result);
-    for i := Result.Count - 1 downto 0 do
-      if Result[i].Order = LEGEND_ITEM_ORDER_AS_ADDED then begin
-        Result[i].Order := j;
-        j -= 1;
-      end;
   except
     FreeAndNil(Result);
     raise;
@@ -458,10 +452,10 @@ begin
     if FChart = nil then exit;
     FreeAndNil(FLegendItems);
     FLegendItems := CreateLegendItems;
+    Chart.Legend.SortItemsByOrder(FLegendItems);
     for i := 0 to FLegendItems.Count - 1 do
       // The caption is owner-drawn, but add it anyway for user convenience.
       Items.AddObject(FLegendItems[i].Text, FLegendItems[i]);
-
     if Assigned(OnPopulate) then
       OnPopulate(Self);
   finally
