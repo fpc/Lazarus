@@ -165,6 +165,7 @@ type
       ACoord, AFixedCoord: Integer; const AText: String); virtual; abstract;
     function GraphToImage(AGraph: Double): Integer; virtual; abstract;
     procedure GridLine(ACoord: Integer); virtual; abstract;
+    function IsInClipRange(ACoord: Integer): Boolean; virtual; abstract;
     procedure LineZ(AP1, AP2: TPoint); inline;
     function TryApplyStripes: Boolean; inline;
   public
@@ -192,6 +193,7 @@ type
       ACoord, AFixedCoord: Integer; const AText: String); override;
     function GraphToImage(AGraph: Double): Integer; override;
     procedure GridLine(ACoord: Integer); override;
+    function IsInClipRange(ACoord: Integer): Boolean; override;
   public
     procedure BeginDrawing; override;
     procedure EndDrawing; override;
@@ -205,6 +207,7 @@ type
       ACoord, AFixedCoord: Integer; const AText: String); override;
     function GraphToImage(AGraph: Double): Integer; override;
     procedure GridLine(ACoord: Integer); override;
+    function IsInClipRange(ACoord: Integer): Boolean; override;
   public
     procedure BeginDrawing; override;
     procedure EndDrawing; override;
@@ -213,7 +216,7 @@ type
 implementation
 
 uses
-  SysUtils,
+  Math, SysUtils,
   TAGeometry, TAIntervalSources;
 
 { TAxisDrawHelper }
@@ -242,6 +245,7 @@ var
   coord: Integer;
 begin
   coord := GraphToImage(AMark);
+  if not IsInClipRange(coord) then exit;
 
   if FAxis.Grid.Visible then begin
     FDrawer.Pen := FAxis.Grid;
@@ -306,6 +310,11 @@ begin
   LineZ(Point(ACoord, FClipRect.Top), Point(ACoord, FClipRect.Bottom));
 end;
 
+function TAxisDrawHelperX.IsInClipRange(ACoord: Integer): Boolean;
+begin
+  Result := InRange(ACoord, FClipRect.Left, FClipRect.Right);
+end;
+
 { TAxisDrawHelperY }
 
 procedure TAxisDrawHelperY.BeginDrawing;
@@ -344,6 +353,11 @@ begin
   if TryApplyStripes then
     BarZ(FClipRect.Left + 1, FPrevCoord, FClipRect.Right, ACoord);
   LineZ(Point(FClipRect.Left, ACoord), Point(FClipRect.Right, ACoord));
+end;
+
+function TAxisDrawHelperY.IsInClipRange(ACoord: Integer): Boolean;
+begin
+  Result := InRange(ACoord, FClipRect.Top, FClipRect.Bottom);
 end;
 
 { TChartAxisTitle }

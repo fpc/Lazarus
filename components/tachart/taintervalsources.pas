@@ -111,7 +111,7 @@ begin
         AStart := 0
       else
         AStart := Round((AMin - AStep) * scale) / scale;
-      while AStart > AMin do AStart -= AStep;
+      while AStart >= AMin do AStart -= AStep;
     end;
     asDecreasing: begin
       // If 0 is in the interval, set it as a mark.
@@ -119,7 +119,7 @@ begin
         AStart := 0
       else
         AStart := Round((AMax + AStep) * scale) / scale;
-      while AStart < AMax do AStart += AStep;
+      while AStart <= AMax do AStart += AStep;
     end;
     asLogIncreasing: begin
       // FIXME: asLogIncreasing is still not implemented.
@@ -147,43 +147,34 @@ end;
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 const
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
-  K = 1e-10;
 var
-  start, step, m, m1: Double;
-  markCount: Integer;
+  start, step, m: Double;
+  markCount, crossCount: Integer;
 begin
   CalculateIntervals(AMin, AMax, INV_TO_SCALE[AInverted], start, step);
-  AMin -= step * K;
-  AMax += step * K;
   if AInverted then
     step := - step;
   m := start;
-  markCount := 0;
-  while true do begin
-    if InRange(m, AMin, AMax) then
-      Inc(markCount)
-    else if markCount > 0 then
-      break;
-    m1 := m + step;
-    if m1 = m then break;
-    m := m1;
-  end;
+  crossCount := 0;
+  markCount := 1;
+  repeat
+    markCount += 1;
+    crossCount += Ord(InRange(m, AMin, AMax) <> InRange(m + step, AMin, AMax));
+    m += step;
+  until (crossCount = 2) or (m + step = m);
   SetLength(Result, markCount);
   m := start;
+  crossCount := 0;
   markCount := 0;
-  while true do begin
-    if Abs(m / step) < K then
+  repeat
+    if IsZero(m) then
       m := 0;
-    if InRange(m, AMin, AMax) then begin
-      Result[markCount] := m;
-      Inc(markCount);
-    end
-    else if markCount > 0 then
-      break;
-    m1 := m + step;
-    if m1 = m then break;
-    m := m1;
-  end;
+    Result[markCount] := m;
+    markCount += 1;
+    crossCount += Ord(InRange(m, AMin, AMax) <> InRange(m + step, AMin, AMax));
+    m += step;
+  until (crossCount = 2) or (m + step = m);
+  Result[markCount] := m;
 end;
 
 procedure Register;
@@ -305,10 +296,9 @@ begin
   end;
   start := Int(AMin / si - 1) * si;
   x := start;
-  cnt := 0;
+  cnt := 1;
   while x <= AMax do begin
-    if x >= AMin then
-      cnt += 1;
+    cnt += 1;
     x += si;
   end;
   i := Length(AValues);
@@ -318,11 +308,9 @@ begin
   FillChar(prevSt, SizeOf(prevSt), $FF);
   x := start;
   while x <= AMax do begin
-   if x >= AMin then begin
-      AValues[i] := x;
-      ATexts[i] := Format(AFormat, [x, 0.0, FormatLabel, 0.0, 0.0]);
-      i += 1;
-    end;
+    AValues[i] := x;
+    ATexts[i] := Format(AFormat, [x, 0.0, FormatLabel, 0.0, 0.0]);
+    i += 1;
     case s of
       dtsCentury: x := IncYear(x, 100);
       dtsDecade: x := IncYear(x, 10);
@@ -331,6 +319,8 @@ begin
       otherwise x += si;
     end;
   end;
+  AValues[i] := x;
+  ATexts[i] := Format(AFormat, [x, 0.0, FormatLabel, 0.0, 0.0]);
 end;
 
 end.
