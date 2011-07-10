@@ -79,7 +79,6 @@ type
     function SliceColor(AIndex: Integer): TColor;
     function TryRadius(ADrawer: IChartDrawer): TRect;
   protected
-    procedure AfterAdd; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
     function AddPie(AValue: Double; AText: String; AColor: TColor): Integer;
@@ -179,14 +178,6 @@ function TCustomPieSeries.AddPie(
   AValue: Double; AText: String; AColor: TColor): Integer;
 begin
   Result := AddXY(GetXMaxVal + 1, AValue, AText, AColor);
-end;
-
-procedure TCustomPieSeries.AfterAdd;
-begin
-  inherited;
-  // disable axis when we have TPie series
-  ParentChart.LeftAxis.Visible := false;
-  ParentChart.BottomAxis.Visible := false;
 end;
 
 procedure TCustomPieSeries.Assign(ASource: TPersistent);
