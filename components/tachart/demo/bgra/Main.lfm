@@ -1,19 +1,19 @@
 object Form1: TForm1
   Left = 1221
-  Height = 432
+  Height = 459
   Top = 154
-  Width = 640
+  Width = 620
   Caption = 'Form1'
-  ClientHeight = 432
-  ClientWidth = 640
+  ClientHeight = 459
+  ClientWidth = 620
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
-    Height = 432
+    Height = 425
     Top = 0
-    Width = 300
-    AntialiasingMode = amOn
+    Width = 308
+    AntialiasingMode = amOff
     AxisList = <    
       item
         Marks.LabelFont.Height = 13
@@ -42,27 +42,68 @@ object Form1: TForm1
     Color = clGreen
     ParentColor = False
     object Chart1LineSeries1: TLineSeries
-      LinePen.Width = 2
+      ZPosition = 10
+      LinePen.Color = clMaroon
+      LinePen.Style = psDot
+      LinePen.Width = 8
       Source = RandomChartSource1
     end
     object Chart1BarSeries1: TBarSeries
-      BarBrush.Color = clRed
+      BarBrush.Color = 3059701
+      Source = RandomChartSource1
+    end
+    object Chart1PieSeries1: TPieSeries
+      Active = False
+      Source = RandomChartSource1
+    end
+    object Chart1AreaSeries1: TAreaSeries
+      ZPosition = 9
+      AreaBrush.Color = clRed
+      AreaBrush.Style = bsDiagCross
       Source = RandomChartSource1
     end
   end
   object PaintBox1: TPaintBox
-    Left = 304
-    Height = 432
+    Left = 312
+    Height = 425
     Top = 0
-    Width = 336
+    Width = 308
     Align = alClient
     OnPaint = PaintBox1Paint
   end
   object Splitter1: TSplitter
-    Left = 300
-    Height = 432
+    Left = 308
+    Height = 425
     Top = 0
     Width = 4
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 34
+    Top = 425
+    Width = 620
+    Align = alBottom
+    ClientHeight = 34
+    ClientWidth = 620
+    TabOrder = 2
+    object cbAntialiasing: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 8
+      Width = 74
+      Caption = 'Antialiasing'
+      OnChange = cbAntialiasingChange
+      TabOrder = 0
+    end
+    object cbPie: TCheckBox
+      Left = 104
+      Height = 17
+      Top = 7
+      Width = 34
+      Caption = 'Pie'
+      OnChange = cbPieChange
+      TabOrder = 1
+    end
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 10
@@ -70,7 +111,7 @@ object Form1: TForm1
     XMax = 15
     XMin = 5
     YMax = 10
-    YMin = -1
+    YMin = 1
     left = 189
     top = 263
   end
