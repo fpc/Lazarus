@@ -1,0 +1,292 @@
+object Form1: TForm1
+  Left = 265
+  Height = 419
+  Top = 182
+  Width = 892
+  Caption = 'Form1'
+  ClientHeight = 419
+  ClientWidth = 892
+  OnCreate = FormCreate
+  LCLVersion = '0.9.31'
+  object Chart: TChart
+    Left = 296
+    Height = 419
+    Top = 0
+    Width = 453
+    AxisList = <    
+      item
+        Minors = <        
+          item
+            Grid.Color = clSilver
+          end>
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'y axis'
+      end    
+      item
+        Alignment = calBottom
+        Minors = <        
+          item
+            Grid.Color = clSilver
+          end>
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'x axis'
+      end>
+    BackColor = clWhite
+    Extent.XMax = 10
+    Extent.UseXMin = True
+    Extent.UseXMax = True
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    Align = alClient
+    ParentColor = False
+    object SinSeries: TLineSeries
+    end
+    object CosSeries: TLineSeries
+    end
+  end
+  object ListboxPanel: TPanel
+    Left = 754
+    Height = 419
+    Top = 0
+    Width = 138
+    Align = alRight
+    BevelOuter = bvNone
+    ClientHeight = 419
+    ClientWidth = 138
+    TabOrder = 1
+    object CheckListBox1: TCheckListBox
+      Left = 0
+      Height = 83
+      Top = 336
+      Width = 138
+      Align = alBottom
+      Items.Strings = (
+        'Item1'
+        'Item2'
+        'Item3'
+        'Item4'
+        'Item5'
+      )
+      ItemHeight = 15
+      TabOrder = 0
+      Data = {
+        050000000000000000
+      }
+    end
+    object ListBox1: TListBox
+      Left = 0
+      Height = 80
+      Top = 256
+      Width = 138
+      Align = alBottom
+      Items.Strings = (
+        'Item1'
+        'Item2'
+        'Item3'
+        'Item4'
+        'Item5'
+        'Item6'
+      )
+      ItemHeight = 13
+      TabOrder = 1
+    end
+  end
+  object Splitter: TSplitter
+    Left = 749
+    Height = 419
+    Top = 0
+    Width = 5
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 419
+    Top = 0
+    Width = 296
+    Align = alLeft
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 419
+    ClientWidth = 296
+    TabOrder = 3
+    object BtnAddSeries: TButton
+      Left = 8
+      Height = 25
+      Top = 12
+      Width = 81
+      Caption = 'Add series'
+      OnClick = BtnAddSeriesClick
+      TabOrder = 0
+    end
+    object BtnToggleCOS: TButton
+      Left = 104
+      Height = 25
+      Top = 40
+      Width = 81
+      Caption = 'Toggle cos(x)'
+      OnClick = BtnToggleCOSClick
+      TabOrder = 1
+    end
+    object BtnToggleChart: TButton
+      Left = 9
+      Height = 25
+      Top = 232
+      Width = 159
+      Caption = 'Toggle ChartListbox.Chart'
+      OnClick = BtnToggleChartClick
+      TabOrder = 2
+    end
+    object BtnToggleSIN: TButton
+      Left = 104
+      Height = 25
+      Top = 12
+      Width = 82
+      Caption = 'Toggle sin(x)'
+      OnClick = BtnToggleSINClick
+      TabOrder = 3
+    end
+    object CbShowCheckboxes: TCheckBox
+      Left = 9
+      Height = 17
+      Top = 280
+      Width = 105
+      Caption = 'Show checkboxes'
+      Checked = True
+      OnChange = CbShowCheckboxesChange
+      State = cbChecked
+      TabOrder = 4
+    end
+    object CbShowSeriesIcon: TCheckBox
+      Left = 152
+      Height = 17
+      Top = 280
+      Width = 104
+      Caption = 'Show series icons'
+      Checked = True
+      OnChange = CbShowSeriesIconChange
+      State = cbChecked
+      TabOrder = 5
+    end
+    object CbCheckStyle: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 312
+      Width = 84
+      Caption = 'Radiobuttons'
+      OnChange = CbCheckStyleChange
+      TabOrder = 6
+    end
+    object CbMultiSelect: TCheckBox
+      Left = 8
+      Height = 17
+      Top = 344
+      Width = 71
+      Caption = 'MultiSelect'
+      OnChange = CbMultiSelectChange
+      TabOrder = 7
+    end
+    object Memo: TMemo
+      Left = 9
+      Height = 106
+      Top = 104
+      Width = 275
+      ScrollBars = ssAutoVertical
+      TabOrder = 8
+    end
+    object Label1: TLabel
+      Left = 9
+      Height = 14
+      Top = 88
+      Width = 57
+      Caption = 'Click viewer'
+      ParentColor = False
+    end
+    object EdColumns: TSpinEdit
+      Left = 208
+      Height = 21
+      Top = 340
+      Width = 50
+      OnChange = EdColumnsChange
+      TabOrder = 9
+    end
+    object Label2: TLabel
+      Left = 152
+      Height = 14
+      Top = 345
+      Width = 45
+      Caption = 'Columns:'
+      ParentColor = False
+    end
+    object BtnDeleteSeries: TButton
+      Left = 9
+      Height = 25
+      Top = 40
+      Width = 81
+      Caption = 'Delete series'
+      OnClick = BtnDeleteSeriesClick
+      TabOrder = 10
+    end
+    object CbKeepSeriesOut: TCheckBox
+      Left = 9
+      Height = 17
+      Top = 376
+      Width = 227
+      Caption = 'Keep sin and cos series out of ChartListBox'
+      OnChange = CbKeepSeriesOutChange
+      TabOrder = 11
+    end
+    object Bevel1: TBevel
+      Left = 9
+      Height = 4
+      Top = 76
+      Width = 278
+      Shape = bsBottomLine
+    end
+  end
+  object RandomChartSource: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 1603921857
+    XMax = 10
+    XMin = 0
+    YMax = 1
+    YMin = -1
+    left = 496
+    top = 80
+  end
+  object ColorDialog: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    left = 496
+    top = 128
+  end
+end

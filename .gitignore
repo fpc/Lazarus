@@ -181,6 +181,9 @@ components/tachart/demo/legend/lib
 components/tachart/demo/line/*.exe
 components/tachart/demo/line/*.lps
 components/tachart/demo/line/lib
+components/tachart/demo/listbox/*.exe
+components/tachart/demo/listbox/*.lps
+components/tachart/demo/listbox/lib
 components/tachart/demo/multi/*.exe
 components/tachart/demo/multi/*.lps
 components/tachart/demo/multi/lib

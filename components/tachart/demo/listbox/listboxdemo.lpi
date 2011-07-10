@@ -1,0 +1,384 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <PathDelim Value="\"/>
+    <General>
+      <MainUnit Value="0"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1" Active="Default">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="TAChartLazarusPkg"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="36">
+      <Unit0>
+        <Filename Value="listboxdemo.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="listboxdemo"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="37" Y="9"/>
+        <UsageCount Value="85"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="Unit1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="80"/>
+        <CursorPos X="1" Y="106"/>
+        <UsageCount Value="85"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="TAGraph.pas"/>
+        <UnitName Value="TAGraph"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="913"/>
+        <CursorPos X="31" Y="925"/>
+        <UsageCount Value="9"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\..\tasources.pas"/>
+        <UnitName Value="TASources"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="78"/>
+        <CursorPos X="3" Y="86"/>
+        <UsageCount Value="28"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\tacustomsource.pas"/>
+        <UnitName Value="TACustomSource"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="40"/>
+        <CursorPos X="23" Y="60"/>
+        <UsageCount Value="28"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\..\..\..\fpc\2.4.4\source\rtl\objpas\math.pp"/>
+        <UnitName Value="math"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="154"/>
+        <CursorPos X="10" Y="168"/>
+        <UsageCount Value="8"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="C:\lazarus_\components\tachart\tacustomseries.pas"/>
+        <UnitName Value="TACustomSeries"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="163"/>
+        <CursorPos X="37" Y="37"/>
+        <UsageCount Value="4"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="C:\lazarus_\components\tachart\tafuncseries.pas"/>
+        <UnitName Value="TAFuncSeries"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="87"/>
+        <CursorPos X="17" Y="87"/>
+        <UsageCount Value="4"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\..\tachartutils.pas"/>
+        <UnitName Value="TAChartUtils"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="140"/>
+        <CursorPos X="15" Y="154"/>
+        <UsageCount Value="29"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\..\tanavigation.pas"/>
+        <UnitName Value="TANavigation"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="111"/>
+        <CursorPos X="15" Y="116"/>
+        <UsageCount Value="28"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="TAChartListbox.pas"/>
+        <UnitName Value="TAChartListbox"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="396"/>
+        <CursorPos X="12" Y="402"/>
+        <UsageCount Value="85"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="..\..\..\..\lcl\stdctrls.pp"/>
+        <UnitName Value="StdCtrls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="475"/>
+        <CursorPos X="31" Y="483"/>
+        <UsageCount Value="40"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="..\..\..\..\lcl\checklst.pas"/>
+        <UnitName Value="CheckLst"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="60"/>
+        <CursorPos X="67" Y="60"/>
+        <UsageCount Value="32"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="..\..\talegend.pas"/>
+        <UnitName Value="TALegend"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="102"/>
+        <CursorPos X="3" Y="116"/>
+        <UsageCount Value="28"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="..\..\taseries.pas"/>
+        <UnitName Value="TASeries"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="507"/>
+        <CursorPos X="38" Y="512"/>
+        <UsageCount Value="28"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="..\..\tacustomseries.pas"/>
+        <UnitName Value="TACustomSeries"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="307"/>
+        <CursorPos X="1" Y="321"/>
+        <UsageCount Value="28"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\..\..\..\lcl\include\customlistbox.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="281"/>
+        <CursorPos X="1" Y="299"/>
+        <UsageCount Value="18"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="..\..\tadrawutils.pas"/>
+        <UnitName Value="TADrawUtils"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="54"/>
+        <CursorPos X="3" Y="68"/>
+        <UsageCount Value="26"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="..\..\tadrawercanvas.pas"/>
+        <UnitName Value="TADrawerCanvas"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="241"/>
+        <CursorPos X="1" Y="257"/>
+        <UsageCount Value="8"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="..\..\..\..\lcl\widgetset\wschecklst.pp"/>
+        <UnitName Value="WSCheckLst"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="35"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="5"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="..\..\..\..\lcl\extctrls.pp"/>
+        <UnitName Value="ExtCtrls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="16"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="..\..\..\..\lcl\comctrls.pp"/>
+        <UnitName Value="ComCtrls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2977"/>
+        <CursorPos X="21" Y="2994"/>
+        <UsageCount Value="17"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="..\..\..\..\lcl\include\headercontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="366"/>
+        <CursorPos X="13" Y="394"/>
+        <UsageCount Value="5"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\..\..\..\lcl\themes.pas"/>
+        <UnitName Value="Themes"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="491"/>
+        <CursorPos X="10" Y="505"/>
+        <UsageCount Value="16"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="..\..\..\..\lcl\include\winapih.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="78"/>
+        <CursorPos X="10" Y="152"/>
+        <UsageCount Value="5"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="..\..\..\..\lcl\lcltype.pp"/>
+        <UnitName Value="LCLType"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="264"/>
+        <CursorPos X="3" Y="278"/>
+        <UsageCount Value="9"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="..\..\tagraph.pas"/>
+        <UnitName Value="TAGraph"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1336"/>
+        <CursorPos X="21" Y="1360"/>
+        <UsageCount Value="17"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="..\..\tatypes.pas"/>
+        <UnitName Value="TATypes"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="220"/>
+        <CursorPos X="3" Y="234"/>
+        <UsageCount Value="16"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="..\..\..\..\lcl\controls.pp"/>
+        <UnitName Value="Controls"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1159"/>
+        <CursorPos X="1" Y="1184"/>
+        <UsageCount Value="15"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="..\..\tageometry.pas"/>
+        <UnitName Value="TAGeometry"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="27"/>
+        <CursorPos X="10" Y="41"/>
+        <UsageCount Value="14"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="D:\lazarus\components\tachart\tachartutils.pas"/>
+        <UnitName Value="TAChartUtils"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="582"/>
+        <CursorPos X="1" Y="613"/>
+        <UsageCount Value="9"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="D:\lazarus\components\tachart\tagraph.pas"/>
+        <UnitName Value="TAGraph"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1341"/>
+        <CursorPos X="1" Y="1361"/>
+        <UsageCount Value="9"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="D:\lazarus\components\tachart\tacustomseries.pas"/>
+        <UnitName Value="TACustomSeries"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="395"/>
+        <CursorPos X="1" Y="415"/>
+        <UsageCount Value="9"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="D:\lazarus\lcl\include\buttoncontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="31"/>
+        <CursorPos X="63" Y="48"/>
+        <UsageCount Value="8"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="..\..\tachartlazaruspkg.pas"/>
+        <UnitName Value="TAChartLazarusPkg"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="14" Y="6"/>
+        <UsageCount Value="12"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="..\TAChartListbox.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TAChartListbox"/>
+        <UsageCount Value="20"/>
+      </Unit35>
+    </Units>
+    <JumpHistory Count="3" HistoryIndex="2">
+      <Position1>
+        <Filename Value="Unit1.pas"/>
+        <Caret Line="225" Column="10" TopLine="212"/>
+      </Position1>
+      <Position2>
+        <Filename Value="Unit1.pas"/>
+        <Caret Line="208" Column="23" TopLine="185"/>
+      </Position2>
+      <Position3>
+        <Filename Value="Unit1.pas"/>
+        <Caret Line="255" Column="1" TopLine="185"/>
+      </Position3>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="10"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value=".."/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Linking>
+      <Debugging>
+        <StripSymbols Value="True"/>
+      </Debugging>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
