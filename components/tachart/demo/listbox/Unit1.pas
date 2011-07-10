@@ -57,12 +57,9 @@ type
     procedure ChartListboxSeriesIconClick(Sender:TObject; Index:integer);
     procedure ChartListboxPopulate(Sender:TObject);
   private
-    { private declarations }
     ChartListbox : TChartListbox;
     procedure CreateData;
-  public
-    { public declarations }
-  end; 
+  end;
 
 var
   Form1: TForm1; 
@@ -80,13 +77,12 @@ procedure TForm1.CreateData;
 const
   n = 100;
 var
-  i : integer;
-  mn, mx : double;
-  x : double;
+  i: Integer;
+  mn, mx, x: Double;
 begin
   mx := 10.0;
   mn := 0.0;
-  for i:=0 to n-1 do begin
+  for i := 0 to n - 1 do begin
     x := mn + (mx - mn) / (n - 1) * i;
     SinSeries.AddXY(x, sin(x));
     CosSeries.AddXY(x, cos(x));
@@ -97,13 +93,13 @@ begin
   CosSeries.SeriesColor := clBlue;
 end;
 
-procedure TForm1.ChartListboxCheckboxClick(Sender:TObject; Index:integer);
+procedure TForm1.ChartListboxCheckboxClick(Sender: TObject; Index: Integer);
 begin
   Memo.Lines.Add(Format('Checkbox of item #%d (series "%s") clicked.',
     [Index, ChartListbox.Series[Index].Title]));
 end;
 
-procedure TForm1.ChartListboxSeriesIconClick(Sender:TObject; Index:integer);
+procedure TForm1.ChartListboxSeriesIconClick(Sender: TObject; Index: Integer);
 begin
   Memo.Lines.Add(Format('Icon of item #%d (series "%s") clicked.',
     [Index, ChartListbox.Series[Index].Title]));
@@ -116,13 +112,13 @@ begin
     end;
 end;
 
-procedure TForm1.ChartListboxItemClick(Sender:TObject; Index:integer);
+procedure TForm1.ChartListboxItemClick(Sender: TObject; Index: Integer);
 begin
   Memo.Lines.Add(Format('Title of item #%d (series "%s") clicked.',
     [Index, ChartListbox.Series[Index].Title]));
 end;
 
-procedure TForm1.ChartListboxClick(Sender:TObject);
+procedure TForm1.ChartListboxClick(Sender: TObject);
 begin
   with ChartListbox do
     if ItemIndex <> -1 then
@@ -130,13 +126,13 @@ begin
         [ItemIndex, Series[ItemIndex].Title]));
 end;
 
-procedure TForm1.ChartListboxPopulate(Sender:TObject);
+procedure TForm1.ChartListboxPopulate(Sender: TObject);
 begin
   ChartListbox.RemoveSeries(SinSeries);
   ChartListbox.RemoveSeries(CosSeries);
 end;
 
-procedure TForm1.FormCreate(Sender:TObject);
+procedure TForm1.FormCreate(Sender: TObject);
 begin
   ChartListbox := TChartListbox.Create(self);
   ChartListbox.Parent := ListboxPanel;
@@ -152,22 +148,22 @@ begin
   CreateData;
 end;
 
-procedure TForm1.BtnToggleSINClick(Sender:TObject);
+procedure TForm1.BtnToggleSINClick(Sender: TObject);
 begin
   SinSeries.Active := not SinSeries.Active;
 end;
 
-procedure TForm1.CbMultiSelectChange(Sender : TObject);
+procedure TForm1.CbMultiSelectChange(Sender: TObject);
 begin
   ChartListbox.MultiSelect := CbMultiSelect.Checked;
 end;
 
-procedure TForm1.CbShowCheckboxesChange(Sender:TObject);
+procedure TForm1.CbShowCheckboxesChange(Sender: TObject);
 begin
   ChartListbox.ShowCheckboxes := CbShowCheckboxes.Checked;
 end;
 
-procedure TForm1.CbShowSeriesIconChange(Sender:TObject);
+procedure TForm1.CbShowSeriesIconChange(Sender: TObject);
 begin
   ChartListbox.ShowSeriesIcons := CbShowSeriesIcon.Checked;
 end;
@@ -186,7 +182,8 @@ begin
     ChartListbox.OnPopulate := @ChartListboxPopulate;
     ChartListbox.RemoveSeries(SinSeries);
     ChartListbox.RemoveSeries(CosSeries);
-  end else
+  end
+  else
     ChartListbox.OnPopulate := nil;
 end;
 
@@ -203,8 +200,8 @@ var
   cs : TRandomChartSource;
 begin
   cs := TRandomChartSource.Create(Chart);
-  cs.RandSeed := random(65000);
-  cs.PointsNumber := random(10) + 3;
+  cs.RandSeed := Random(65000);
+  cs.PointsNumber := Random(10) + 3;
   cs.XMax := 10;
   cs.XMin := 0;
   cs.YMax := 1;
@@ -212,31 +209,25 @@ begin
   cs.YCount := 1;
   ser := TLineSeries.Create(Chart);
   ser.Source := cs;
-  ser.SeriesColor := rgbToColor(random(255), random(256), random(256));
+  ser.SeriesColor := rgbToColor(Random(255), Random(256), Random(256));
   ser.Title := Format('Series %d', [Chart.SeriesCount+1]);
-  ser.ShowPoints := odd(Chart.SeriesCount);
+  ser.ShowPoints := Odd(Chart.SeriesCount);
   ser.Pointer.Brush.Color := ser.SeriesColor;
-  ser.Pointer.Style := TSeriesPointerStyle(random(ord(High(TSeriesPointerStyle))));
+  ser.Pointer.Style :=
+    TSeriesPointerStyle(Random(Ord(High(TSeriesPointerStyle))));
   Chart.AddSeries(ser);
 end;
 
 procedure TForm1.BtnDeleteSeriesClick(Sender:TObject);
-var
-  ser : TBasicChartSeries;
 begin
-  if (ChartListbox.ItemIndex = -1) then begin
-    MessageDlg('Select the series to be deleted from the listbox first.',
-      mtInformation, [mbOK], 0);
-    exit;
-  end;
-  if (ChartListbox.ItemIndex < 2) and (not CbKeepSeriesOut.Checked) then
-    MessageDlg('This demo is designed to have at least the sine and cosine '+
-      'series in the chart. Deleting is not allowed.', mtInformation, [mbOK], 0)
-  else begin
-    ser := ChartListbox.Series[ChartListbox.ItemIndex];
-    Chart.DeleteSeries(ser);
-    FreeAndNil(ser);
-  end;
+  if ChartListbox.ItemIndex = -1 then
+    ShowMessage('Select the series to be deleted from the listbox first.')
+  else if (ChartListbox.ItemIndex < 2) and not CbKeepSeriesOut.Checked then
+    ShowMessage(
+      'This demo is designed to have at least the sine and cosine ' +
+      'series in the chart. Deleting is not allowed.')
+  else
+    ChartListbox.Series[ChartListbox.ItemIndex].Free;
 end;
 
 procedure TForm1.BtnToggleCOSClick(Sender:TObject);
