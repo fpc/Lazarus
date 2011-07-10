@@ -153,7 +153,7 @@ constructor TViewUnitDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
-  ActiveControl:=FilterEdit;
+  //ActiveControl:=FilterEdit;
   mniMultiSelect.Caption := dlgMultiSelect;
   ButtonPanel.OKButton.Caption:=lisOk;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
