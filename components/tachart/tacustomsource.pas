@@ -428,8 +428,8 @@ var
   pv, v: Double;
 begin
   cnt := Length(AValues);
-  SetLength(AValues, cnt + Count);
-  SetLength(ATexts, cnt + Count);
+  SetLength(AValues, cnt + Count + 2);
+  SetLength(ATexts, cnt + Count + 2);
   v := 0;
   li := 0;
   for i := 0 to Count - 1 do begin
