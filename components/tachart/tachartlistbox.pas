@@ -48,7 +48,7 @@ type
 
   TCheckBoxesStyle = (cbsCheckbox, cbsRadiobutton);
 
-  TChartListOption = (cloShowCheckboxes, cloShowIcons);
+  TChartListOption = (cloShowCheckboxes, cloShowIcons, cloRefreshOnSourceChange);
   TChartListOptions = set of TChartListOption;
 
 const
@@ -189,7 +189,7 @@ implementation
 
 uses
   Math, LCLIntf, LCLType, SysUtils, Themes,
-  TAGeometry, TADrawUtils, TADrawerCanvas;
+  TACustomSource, TADrawerCanvas, TADrawUtils, TAGeometry;
 
 procedure Register;
 begin
@@ -495,6 +495,11 @@ procedure TChartListbox.SeriesChanged(ASender: TObject);
 { Notification procedure of the listener. Responds to chart broadcasts
   by populating the listbox with the chart's series }
 begin
+  if
+    (ASender is TCustomChartSource) and
+    not (cloRefreshOnSourceChange in Options)
+  then
+    exit;
   Populate;
   { in case of radiobutton mode, it is necessary to uncheck the other
     series; there can be only one active series in this mode }
