@@ -81,7 +81,7 @@ object ViewUnitDialog: TViewUnitDialog
       Left = 26
       Height = 23
       Top = 2
-      Width = 332
+      Width = 324
       FilteredListbox = Listbox
       ButtonWidth = 23
       NumGlyphs = 0
