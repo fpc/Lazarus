@@ -427,27 +427,24 @@ var
   rcb, ricon: TRect;
   index: Integer;
   p: TPoint;
-  done: Boolean;
 begin
-  if AButton = mbLeft then begin
+  FSeriesIconClicked := -1;
+  try
+    if AButton <> mbLeft then exit;
     p := Point(AX, AY);
     index := GetIndexAtXY(AX, AY);
+    if index < 0 then exit;
     CalcRects(ItemRect(index), rcb, ricon);
-    FSeriesIconClicked := -1;
-    done := false;
-    if FShowCheckboxes and IsPointInRect(p, rcb) then begin
-      ClickedCheckbox(index);
-      done := true;
-    end;
-    if FShowSeriesIcons and PtInRect(ricon, p) then begin
-      FSeriesIconClicked := index;
-      // remember the clicked index for the double click event
-      done := true;
-    end;
-    if not done then
+    if FShowCheckboxes and IsPointInRect(p, rcb) then
+      ClickedCheckbox(index)
+    else if FShowSeriesIcons and IsPointInRect(p, ricon) then
+      // Remember clicked index for the double click event.
+      FSeriesIconClicked := index
+    else
       ClickedItem(index);
+  finally
+    inherited MouseDown(AButton, AShift, AX, AY);
   end;
-  inherited MouseDown(AButton, AShift, AX, AY);
 end;
 
 procedure TChartListbox.Notification(

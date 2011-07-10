@@ -124,8 +124,10 @@ end;
 
 procedure TForm1.ChartListboxClick(Sender:TObject);
 begin
-  Memo.Lines.Add(Format('Item #%d (series "%s") clicked.',
-    [ChartListbox.ItemIndex, ChartListbox.Series[ChartListbox.ItemIndex].Title]));
+  with ChartListbox do
+    if ItemIndex <> -1 then
+      Memo.Lines.Add(Format('Item #%d (series "%s") clicked.',
+        [ItemIndex, Series[ItemIndex].Title]));
 end;
 
 procedure TForm1.ChartListboxPopulate(Sender:TObject);
