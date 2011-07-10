@@ -73,6 +73,7 @@ type
     function GetLegendItem(AIndex: Integer): TLegendItem;
     function GetSeries(AIndex: Integer): TCustomChartSeries;
     function GetSeriesCount: Integer;
+    procedure EnsureSingleChecked(AIndex: Integer = -1);
     procedure SetChart(AValue: TChart);
     procedure SetChecked(AIndex: Integer; AValue: Boolean);
     procedure SetCheckStyle(AValue: TCheckBoxesStyle);
@@ -94,11 +95,7 @@ type
     procedure ClickedItem(AIndex: Integer); virtual;
     procedure ClickedSeriesIcon(AIndex: Integer); virtual;
     function CreateLegendItems: TChartLegendItems;
-    function FirstCheckedIndex: Integer;
-    function IsLocked: Boolean;
-    procedure Lock;
     procedure Populate;
-    procedure Unlock;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -341,19 +338,28 @@ begin
     Canvas.TextOut(x + 2, ARect.Top, FLegendItems.Items[AIndex].Text);
 end;
 
+procedure TChartListbox.EnsureSingleChecked(AIndex: Integer);
+var
+  i: Integer;
+  ser: TCustomChartSeries;
+begin
+  if (FCheckStyle <> cbsRadioButton) or not (cloShowCheckboxes in Options) then
+    exit;
+  for i := 0 to FLegendItems.Count - 1 do begin
+    ser := GetSeries(i);
+    if ser = nil then continue;
+    if (AIndex < 0) and ser.Active then
+      AIndex := i
+    else
+      ser.Active := AIndex = i;
+  end;
+end;
+
 function TChartListbox.FindSeriesIndex(ASeries: TCustomChartSeries): Integer;
 { searches the internal legend items list for the specified series }
 begin
   for Result := 0 to FLegendItems.Count - 1 do
     if GetSeries(Result) = ASeries then exit;
-  Result := -1;
-end;
-
-function TChartListbox.FirstCheckedIndex: Integer;
-{ Returns the index of the first listbox series that is active }
-begin
-  for Result := 0 to FLegendItems.Count - 1 do
-    if Checked[Result] then exit;
   Result := -1;
 end;
 
@@ -393,11 +399,6 @@ begin
   Result := FLegendItems.Count;
 end;
 
-function TChartListbox.IsLocked : Boolean;
-begin
-  Result := FLockCount <> 0;
-end;
-
 procedure TChartListbox.KeyDown(var AKey: Word; AShift: TShiftState);
 { allows checking/unchecking of items by means of pressing the space bar }
 begin
@@ -408,13 +409,6 @@ begin
   end
   else
     inherited KeyDown(AKey, AShift);
-end;
-
-procedure TChartListbox.Lock;
-{ locking mechanism to avoid excessive broadcasting of chart changes.
-  See also: IsLocked and UnLock }
-begin
-  FLockCount += 1;
 end;
 
 procedure TChartListbox.MeasureItem(AIndex: Integer; var AHeight: Integer);
@@ -500,21 +494,16 @@ end;
 procedure TChartListbox.SeriesChanged(ASender: TObject);
 { Notification procedure of the listener. Responds to chart broadcasts
   by populating the listbox with the chart's series }
-var
-  index: Integer;
 begin
-  if IsLocked then exit;
   Populate;
   { in case of radiobutton mode, it is necessary to uncheck the other
     series; there can be only one active series in this mode }
   if
-    (CheckStyle = cbsRadioButton) and (cloShowCheckboxes in Options) and
-    (ASender is TBasicChartSeries)
-  then begin
-    index := FindSeriesIndex(ASender as TCustomChartSeries);
-    if index <> -1 then
-      Checked[index] := (ASender as TCustomChartSeries).Active;
-  end;
+    (ASender is TCustomChartSeries) and (ASender as TCustomChartSeries).Active
+  then
+    EnsureSingleChecked(FindSeriesIndex(ASender as TCustomChartSeries))
+  else
+    EnsureSingleChecked;
 end;
 
 procedure TChartListbox.SetChart(AValue: TChart);
@@ -535,38 +524,19 @@ procedure TChartListbox.SetChecked(AIndex: Integer; AValue: Boolean);
   In case of radiobutton style, all other series are hidden if AValue=true }
 var
   ser: TBasicChartSeries;
-  i: Integer;
 begin
   ser := GetSeries(AIndex);
-  if ser = nil then exit;
-  Lock;
-  try
-    ser.Active := AValue;
-    if AValue and (FCheckStyle = cbsRadioButton) then
-      for i := 0 to FLegendItems.Count - 1 do begin
-        ser := GetSeries(i);
-        if (i <> AIndex) and (ser <> nil) then
-          ser.Active := false;
-      end;
-    Invalidate;
-  finally
-    Unlock;
-  end;
+  if (ser = nil) or (ser.Active = AValue) then exit;
+  ser.Active := AValue;
 end;
 
 procedure TChartListbox.SetCheckStyle(AValue: TCheckBoxesStyle);
 { selects "checkbox" or "radiobutton" styles. In radiobutton mode, only
   one series can be visible }
-var
-  j: Integer;
 begin
   if FCheckStyle = AValue then exit;
   FCheckStyle := AValue;
-  if FCheckStyle = cbsRadioButton then begin
-    j := FirstCheckedIndex;
-    if j <> -1 then
-      Checked[j] := true;
-  end;
+  EnsureSingleChecked;
   Invalidate;
 end;
 
@@ -588,12 +558,8 @@ procedure TChartListbox.SetOptions(AValue: TChartListOptions);
 begin
   if FOptions = AValue then exit;
   FOptions := AValue;
+  EnsureSingleChecked;
   Invalidate;
-end;
-
-procedure TChartListbox.Unlock;
-begin
-  FLockCount -= 1;
 end;
 
 end.
