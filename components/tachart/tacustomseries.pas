@@ -477,7 +477,8 @@ end;
 
 procedure TCustomChartSeries.StyleChanged(Sender: TObject);
 begin
-  UpdateParentChart;
+  if ParentChart <> nil then
+    ParentChart.StyleChanged(Sender);
 end;
 
 procedure TCustomChartSeries.UpdateParentChart;
