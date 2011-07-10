@@ -1,17 +1,17 @@
 object Form1: TForm1
   Left = 343
-  Height = 333
+  Height = 430
   Top = 184
   Width = 533
   Caption = 'TAChart axis demo'
-  ClientHeight = 333
+  ClientHeight = 430
   ClientWidth = 533
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object PageControl1: TPageControl
     Left = 0
-    Height = 333
+    Height = 430
     Top = 0
     Width = 533
     ActivePage = tsCustomMarks
@@ -20,11 +20,11 @@ object Form1: TForm1
     TabOrder = 0
     object tsCustomMarks: TTabSheet
       Caption = 'Customized marks'
-      ClientHeight = 307
+      ClientHeight = 404
       ClientWidth = 525
       object ChartCustomMarks: TChart
         Left = 0
-        Height = 307
+        Height = 404
         Top = 0
         Width = 525
         AxisList = <        
@@ -36,17 +36,19 @@ object Form1: TForm1
             Marks.LabelBrush.Style = bsSolid
             Marks.Source = lcsMarks
             Marks.Style = smsCustom
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
-            Alignment = calBottom
             Grid.Visible = False
+            TickLength = 0
+            Alignment = calBottom
             Marks.LabelFont.Height = -13
             Marks.LabelFont.Style = [fsBold]
             Marks.Format = '%2:s'
             Marks.Source = lcsMarks
             Marks.Style = smsLabel
-            TickLength = 0
+            Minors = <>
             OnMarkToText = ChartCustomMarksAxisList1MarkToText
           end>
         Foot.Brush.Color = clBtnFace
@@ -70,22 +72,24 @@ object Form1: TForm1
     end
     object tsAxisGroup: TTabSheet
       Caption = 'Axis groups'
-      ClientHeight = 307
+      ClientHeight = 404
       ClientWidth = 525
       object ChartAxisGroup: TChart
         Left = 0
-        Height = 307
+        Height = 404
         Top = 0
         Width = 525
         AxisList = <        
           item
             Grid.Visible = False
-            Group = 2
             TickLength = 0
+            Group = 2
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
             Alignment = calBottom
+            Minors = <>
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -100,41 +104,40 @@ object Form1: TForm1
     end
     object tsSubmarks: TTabSheet
       Caption = 'Submarks'
-      ClientHeight = 307
+      ClientHeight = 404
       ClientWidth = 525
       object ChartSubmarks: TChart
         Left = 0
-        Height = 307
+        Height = 404
         Top = 0
         Width = 525
         AxisList = <        
           item
+            TickLength = 6
             Group = 1
             Marks.Source = udcsMain
-            TickLength = 6
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
+            TickLength = 6
             Alignment = calBottom
             Group = 2
-            Marks.Source = udcsMain
-            TickLength = 6
+            Minors = <            
+              item
+                Grid.Color = clGray
+                Grid.Cosmetic = False
+              end>
           end        
           item
             Grid.Visible = False
+            TickLength = 2
             Group = 1
             Marks.Source = udcsSub
             Marks.Style = smsNone
-            TickLength = 2
-          end        
-          item
-            Alignment = calBottom
-            Grid.Visible = False
-            Group = 2
-            Marks.Source = udcsSub
-            Marks.Style = smsNone
-            TickLength = 2
+            Minors = <>
           end>
+        BackColor = clWhite
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
         Title.Brush.Color = clBtnFace
@@ -160,6 +163,7 @@ object Form1: TForm1
         Width = 525
         AxisList = <        
           item
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
@@ -168,6 +172,7 @@ object Form1: TForm1
             Marks.OverlapPolicy = opHideNeighbour
             Marks.Source = DateTimeIntervalChartSource1
             Marks.Style = smsLabel
+            Minors = <>
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue

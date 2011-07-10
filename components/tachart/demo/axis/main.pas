@@ -51,7 +51,7 @@ type
   end;
 
 var
-  Form1: TForm1; 
+  Form1: TForm1;
 
 implementation
 
@@ -87,7 +87,7 @@ begin
     tr := TChartAxisTransformations.Create(Self);
     with TAutoScaleAxisTransform.Create(Self) do begin
       Transformations := tr;
-      MinValue := i;
+      MinValue := i + 0.2;
       MaxValue := i + 0.8;
     end;
     with TChartAxis.Create(ChartAxisGroup.AxisList) do begin
