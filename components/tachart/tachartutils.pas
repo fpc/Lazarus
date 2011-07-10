@@ -151,8 +151,9 @@ type
     constructor Create(ARef: PPointer; AOnNotify: TNotifyEvent);
     destructor Destroy; override;
     procedure Forget; virtual;
-    procedure Notify(ASender: TObject); virtual;
+    procedure Notify(ASender: TObject);
     property IsListening: Boolean read GetIsListening;
+    property OnNotify: TNotifyEvent read FOnNotify write FOnNotify;
   end;
 
   { TBroadcaster }
@@ -598,7 +599,8 @@ end;
 
 procedure TListener.Notify(ASender: TObject);
 begin
-  FOnNotify(ASender)
+  if Assigned(FOnNotify) then
+    FOnNotify(ASender)
 end;
 
 { TBroadcaster }
