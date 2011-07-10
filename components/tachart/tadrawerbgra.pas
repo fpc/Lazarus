@@ -20,24 +20,16 @@ unit TADrawerBGRA;
 interface
 
 uses
-  BGRABitmap, BGRABitmapTypes, Classes, FPCanvas, TAChartUtils, TADrawUtils;
+  BGRABitmap, BGRABitmapTypes, BGRACanvas, Classes, FPCanvas,
+  TAChartUtils, TADrawUtils;
 
 type
 
-  { TBGRABitmapDrawer }
   TBGRABitmapDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
-    FBrushColor: TBGRAPixel;
-    FBrushStyle: TFPBrushStyle;
-    FCanvas: TBGRABitmap;
-    FClipRect: TRect;
-    FFontColor: TBGRAPixel;
-    FFontOrientation: Integer;
-    FPenColor: TBGRAPixel;
-    FPenWidth: Integer;
-    FPrevPoint: TPoint;
+    FBitmap: TBGRABitmap;
 
-    procedure InternalDrawPolygon(const APoints: ArrayOfTPointF);
+    function Canvas: TBGRACanvas; inline;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -47,7 +39,7 @@ type
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
   public
-    constructor Create(ACanvas: TBGRABitmap);
+    constructor Create(ABitmap: TBGRABitmap);
   public
     procedure AddToFontOrientation(ADelta: Integer);
     procedure ClippingStart;
@@ -78,77 +70,55 @@ type
 implementation
 
 uses
-  TAGeometry;
-
-function PointsToPointsF(
-  APoints: array of TPoint; AStartIndex, ANumPts: Integer): ArrayOfTPointF;
-var
-  i: Integer;
-begin
-  Assert(ANumPts >= 0);
-  SetLength(Result, ANumPts);
-  for i := 0 to ANumPts - 1 do
-    with APoints[i + AStartIndex] do
-      Result[i] := PointF(X, Y);
-end;
+  Graphics, TAGeometry;
 
 { TBGRABitmapDrawer }
 
 procedure TBGRABitmapDrawer.AddToFontOrientation(ADelta: Integer);
 begin
-  FFontOrientation += ADelta;
+  with Canvas.Font do
+    Orientation := Orientation + ADelta;
+end;
+
+function TBGRABitmapDrawer.Canvas: TBGRACanvas;
+begin
+  Result := FBitmap.CanvasBGRA;
 end;
 
 procedure TBGRABitmapDrawer.ClippingStart(const AClipRect: TRect);
 begin
-  FClipRect := AClipRect;
+  Canvas.ClipRect := AClipRect;
   ClippingStart;
 end;
 
 procedure TBGRABitmapDrawer.ClippingStart;
 begin
-  FCanvas.ClipRect := FClipRect;
+  Canvas.Clipping := true;
 end;
 
 procedure TBGRABitmapDrawer.ClippingStop;
 begin
-  FCanvas.NoClip;
+  Canvas.Clipping := false;
 end;
 
-constructor TBGRABitmapDrawer.Create(ACanvas: TBGRABitmap);
+constructor TBGRABitmapDrawer.Create(ABitmap: TBGRABitmap);
 begin
-  FCanvas := ACanvas;
+  FBitmap := ABitmap;
 end;
 
 procedure TBGRABitmapDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
-var
-  cx, cy, rx, ry: Integer;
 begin
-  BoundingBoxToCenterAndHalfRadius(AX1, AY1, AX2, AY2, cx, cy, rx, ry);
-  FCanvas.FillEllipseAntialias(cx, cy, rx, ry, FBrushColor);
-  FCanvas.EllipseAntialias(cx, cy, rx, ry, FPenColor, 1.0);
+  Canvas.Ellipse(AX1, AY1, AX2, AY2);
 end;
 
 procedure TBGRABitmapDrawer.FillRect(AX1, AY1, AX2, AY2: Integer);
-var
-  bt: TBGRACustomBitmap;
 begin
-  if FBrushStyle = bsSolid then
-    FCanvas.FillRect(AX1, AY1, AX2, AY2, FBrushColor, dmSet)
-  else begin
-    bt := FCanvas.CreateBrushTexture(
-      FBrushStyle, FBrushColor, BGRAPixelTransparent);
-    try
-      FCanvas.FillRect(AX1, AY1, AX2, AY2, bt, dmSet)
-    finally
-      bt.Free;
-    end;
-  end;
+  Canvas.FillRect(AX1, AY1, AX2, AY2);
 end;
 
 function TBGRABitmapDrawer.GetBrushColor: TChartColor;
 begin
-  Result := TChartColor(BGRAToColor(FBrushColor));
+  Result := TChartColor(Canvas.Brush.Color);
 end;
 
 function TBGRABitmapDrawer.GetFontAngle: Double;
@@ -156,98 +126,57 @@ begin
   Result := 0.0;
 end;
 
-procedure TBGRABitmapDrawer.InternalDrawPolygon(const APoints: ArrayOfTPointF);
-var
-  bt: TBGRACustomBitmap;
-begin
-  if FBrushStyle = bsSolid then
-    FCanvas.FillPolyAntialias(APoints, FBrushColor)
-  else begin
-    bt := FCanvas.CreateBrushTexture(
-      FBrushStyle, FBrushColor, BGRAPixelTransparent);
-    try
-      FCanvas.FillPolyAntialias(APoints, bt);
-    finally
-      bt.Free;
-    end;
-  end;
-  FCanvas.DrawPolygonAntialias(APoints, FPenColor, FPenWidth);
-end;
-
 procedure TBGRABitmapDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
-  FCanvas.DrawLineAntialias(AX1, AY1, AX2, AY2, FPenColor, FPenWidth);
+  Canvas.MoveTo(AX1, AY1);
+  Canvas.LineTo(AX2, AY2);
 end;
 
 procedure TBGRABitmapDrawer.Line(const AP1, AP2: TPoint);
 begin
-  FCanvas.DrawLineAntialias(AP1.X, AP1.Y, AP2.X, AP2.Y, FPenColor, FPenWidth);
+  Canvas.MoveTo(AP1);
+  Canvas.LineTo(AP2);
 end;
 
 procedure TBGRABitmapDrawer.LineTo(AX, AY: Integer);
-var
-  p: TPoint;
 begin
-  p := Point(AX, AY);
-  Line(FPrevPoint, p);
-  FPrevPoint := p;
+  Canvas.LineTo(AX, AY);
 end;
 
 procedure TBGRABitmapDrawer.MoveTo(AX, AY: Integer);
 begin
-  FPrevPoint := Point(AX, AY);
+  Canvas.MoveTo(AX, AY);
 end;
 
 procedure TBGRABitmapDrawer.Polygon(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  InternalDrawPolygon(PointsToPointsF(APoints, AStartIndex, ANumPts));
+  Canvas.Polygon(APoints, false, AStartIndex, ANumPts);
 end;
 
 procedure TBGRABitmapDrawer.Polyline(
   const APoints: array of TPoint; AStartIndex, ANumPts: Integer);
 begin
-  FCanvas.DrawPolyLineAntialias(
-    PointsToPointsF(APoints, AStartIndex, ANumPts), FPenColor, FPenWidth);
+  Canvas.Polyline(APoints, AStartIndex, ANumPts);
 end;
 
 procedure TBGRABitmapDrawer.PrepareSimplePen(AColor: TChartColor);
 begin
-  FPenColor := ColorToBGRA(AColor);
-  FCanvas.PenStyle := psSolid;
+  Canvas.Pen.Color := AColor;
+  Canvas.Pen.Style := psSolid;
+  Canvas.Pen.Width := 1;
 end;
 
 procedure TBGRABitmapDrawer.RadialPie(
   AX1, AY1, AX2, AY2: Integer; AStartAngle16Deg, AAngleLength16Deg: Integer);
-const
-  CONV_COEFF = 65536 / (360 * 16);
-var
-  cx, cy, rx, ry: Integer;
 begin
-  BoundingBoxToCenterAndHalfRadius(AX1, AY1, AX2, AY2, cx, cy, rx, ry);
-  InternalDrawPolygon(FCanvas.ComputePie65536(
-    cx, cy, rx, ry,
-    Round(AStartAngle16Deg * CONV_COEFF),
-    Round((AStartAngle16Deg + AAngleLength16Deg) * CONV_COEFF)
-  ));
+  Canvas.RadialPie(
+    AX1, AY1, AX2, AY2, AStartAngle16Deg, AAngleLength16Deg);
 end;
 
 procedure TBGRABitmapDrawer.Rectangle(AX1, AY1, AX2, AY2: Integer);
-var
-  bt: TBGRACustomBitmap;
 begin
-  if FBrushStyle = bsSolid then
-    FCanvas.RectangleAntialias(
-      AX1, AY1, AX2, AY2, FPenColor, FPenWidth, FBrushColor)
-  else begin
-    bt := FCanvas.CreateBrushTexture(
-      FBrushStyle, FBrushColor, BGRAPixelTransparent);
-    try
-      FCanvas.RectangleAntialias(AX1, AY1, AX2, AY2, bt, FPenWidth);
-    finally
-      bt.Free;
-    end;
-  end;
+  Canvas.Rectangle(AX1, AY1, AX2, AY2);
 end;
 
 procedure TBGRABitmapDrawer.Rectangle(const ARect: TRect);
@@ -258,61 +187,65 @@ end;
 
 procedure TBGRABitmapDrawer.SetAntialiasingMode(AValue: TChartAntialiasingMode);
 begin
-  FCanvas.FontAntialias := AValue = amOn;
+  Canvas.AntialiasingMode := TAntialiasingMode(AValue);
+  Canvas.Font.Antialiasing := AValue = TADrawUtils.amOn;
 end;
 
 procedure TBGRABitmapDrawer.SetBrush(ABrush: TFPCustomBrush);
 begin
-  FBrushColor := FPColorToBGRA(ABrush.FPColor);
-  FBrushStyle := ABrush.Style;
+  Canvas.Brush.BGRAColor := FPColorToBGRA(ABrush.FPColor);
+  Canvas.Brush.Style := ABrush.Style;
 end;
 
 procedure TBGRABitmapDrawer.SetBrushColor(AColor: TChartColor);
 begin
-  FBrushColor := ColorToBGRA(AColor);
+  Canvas.Brush.Color := AColor;
 end;
 
 procedure TBGRABitmapDrawer.SetBrushParams(
   AStyle: TFPBrushStyle; AColor: TChartColor);
 begin
-  FBrushColor := ColorToBGRA(AColor);
-  FBrushStyle := AStyle;
+  Canvas.Brush.Color := AColor;
+  Canvas.Brush.Style := AStyle;
 end;
 
 procedure TBGRABitmapDrawer.SetFont(AFont: TFPCustomFont);
 begin
-  FCanvas.FontName := AFont.Name;
-  FCanvas.FontHeight := AFont.Size * 96 div 72;
-  FFontOrientation := FGetFontOrientationFunc(AFont);
-  FFontColor := FPColorToBGRA(AFont.FPColor);
+  Canvas.Font.Name := AFont.Name;
+  Canvas.Font.Height := AFont.Size * 96 div 72;
+  Canvas.Font.Orientation := FGetFontOrientationFunc(AFont);
+  Canvas.Font.BGRAColor := FPColorToBGRA(AFont.FPColor);
   // TODO: FontStyle
 end;
 
 procedure TBGRABitmapDrawer.SetPen(APen: TFPCustomPen);
 begin
-  FCanvas.PenStyle := APen.Style;
-  FPenWidth := APen.Width;
+  Canvas.Pen.Style := APen.Style;
+  Canvas.Pen.Width := APen.Width;
   // TODO: JoinStyle
-  FPenColor := FPColorToBGRA(APen.FPColor);
+  Canvas.Pen.BGRAColor := FPColorToBGRA(APen.FPColor);
 end;
 
 procedure TBGRABitmapDrawer.SetPenParams(
   AStyle: TFPPenStyle; AColor: TChartColor);
 begin
-  FCanvas.PenStyle := AStyle;
-  FPenColor := ColorToBGRA(AColor);
+  Canvas.Pen.Style := AStyle;
+  Canvas.Pen.Color := AColor;
 end;
 
 function TBGRABitmapDrawer.SimpleTextExtent(const AText: String): TPoint;
 begin
-  Result := FCanvas.TextSize(AText);
+  Result := Canvas.TextExtent(AText);
 end;
 
 procedure TBGRABitmapDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 begin
-  FCanvas.TextOutAngle(
-    AX, AY, FFontOrientation, AText, FFontColor, taLeftJustify);
+  Canvas.TextOut(AX, AY, AText);
 end;
+
+initialization
+  // Suppress incorrect "TAGeometry is unused" hint
+  Unused(DoublePoint(0, 0));
 
 end.
 
