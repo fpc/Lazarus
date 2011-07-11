@@ -1175,13 +1175,114 @@ begin
     QStyleOptionFocusRect_destroy(StyleOption);
     QtDC.restore;
   end;
-
 end;
 
 function TQtWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
   uState: Cardinal): Boolean;
+var
+  QtDC: TQtDeviceContext;
+  Painter: QPainterH;
+  Widget: QWidgetH;
+
+  function uStatetoQStyleState: QStyleState;
+  begin
+    Result := QStyleState_None;
+    if (uState and DFCS_INACTIVE = 0) then
+      Result := Result or QStyleState_Enabled;
+
+    if (uState and DFCS_PUSHED <> 0) then
+      Result := Result or QStyleState_MouseOver or QStyleState_Sunken
+    else
+      Result := Result or QStyleState_Raised;
+
+    if (uState and DFCS_CHECKED <> 0) then
+      Result := Result or QStyleState_On
+    else
+      Result := Result or QStyleState_Off;
+
+    if ((uState and DFCS_HOT <> 0) or (uState and DFCS_PUSHED <> 0)) then
+      Result := Result or QStyleState_MouseOver or QStyleState_Active;
+
+    if (uType <> DFC_BUTTON) and
+      ((uState and DFCS_FLAT <> 0) and not (uState and DFCS_PUSHED <> 0)) then
+      Result := Result and not QStyleState_Raised;
+    // DFCS_TRANSPARENT = 2048;
+    //DFCS_ADJUSTRECT = 8192;
+    //DFCS_FLAT = 16384;
+    //DFCS_MONO = 32768;
+  end;
+
+  procedure DrawButton;
+  var
+    Opt: QStyleOptionButtonH;
+    Element: QStyleControlElement;
+    State: QStyleState;
+    Features: QStyleOptionButtonButtonFeatures;
+  begin
+    State := uStatetoQStyleState;
+    if uState and DFCS_FLAT <> 0 then
+      Features := QStyleOptionButtonFlat
+    else
+      Features := QStyleOptionButtonNone;
+    if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
+      Element := QStyleCE_CheckBox
+    else
+    if (DFCS_BUTTONRADIO and uState) <> 0 then
+      Element := QStyleCE_RadioButton
+    else
+    if (DFCS_BUTTONPUSH and uState) <> 0 then
+      Element := QStyleCE_PushButton
+    else
+    if (DFCS_BUTTONRADIOIMAGE and uState) <> 0 then
+      Element := QStyleCE_RadioButton
+      //TODO: what to implement here ?
+    else
+    if (DFCS_BUTTONRADIOMASK and uState) <> 0 then
+      Element := QStyleCE_RadioButton
+      //TODO: what to implement here ?
+    ;
+
+    Opt := QStyleOptionButton_create();
+    QStyleOptionButton_setFeatures(Opt, Features);
+    QStyleOption_setRect(Opt, @Rect);
+    QStyleOption_setState(Opt, State);
+    QStyle_drawControl(QApplication_style(), Element, Opt, Painter, Widget);
+    QStyleOptionButton_destroy(Opt);
+  end;
+
+  procedure DrawScrollBar;
+  var
+    Opt: QStyleOptionSliderH;
+    Element: QStyleControlElement;
+    State: QStyleState;
+    Features: QStyleOptionButtonButtonFeatures;
+  begin
+    Opt := QStyleOptionSlider_create();
+    (*
+    QStyleCE_ScrollBarAddLine,
+    QStyleCE_ScrollBarSubLine,
+    QStyleCE_ScrollBarAddPage,
+    QStyleCE_ScrollBarSubPage,
+    QStyleCE_ScrollBarSlider,
+    QStyleCE_ScrollBarFirst,
+    QStyleCE_ScrollBarLast,
+    *)
+    QStyleOptionSlider_destroy(Opt);
+  end;
+
 begin
-  Result:=inherited DrawFrameControl(DC, Rect, uType, uState);
+  Result := False;
+  if not IsValidDC(DC) then
+    exit;
+  QtDC := TQtDeviceContext(DC);
+  Painter := QtDC.Widget;
+  Widget := QtDC.Parent;
+  case uType of
+    DFC_BUTTON: DrawButton;
+    DFC_CAPTION: ; // title bar captions
+    DFC_MENU: ; // menu
+    DFC_SCROLL: DrawScrollBar;
+  end;
 end;
 
 {------------------------------------------------------------------------------
