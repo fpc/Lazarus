@@ -1206,6 +1206,7 @@ var
     if (uType <> DFC_BUTTON) and
       ((uState and DFCS_FLAT <> 0) and not (uState and DFCS_PUSHED <> 0)) then
       Result := Result and not QStyleState_Raised;
+
     // DFCS_TRANSPARENT = 2048;
     //DFCS_ADJUSTRECT = 8192;
     //DFCS_FLAT = 16384;
@@ -1250,24 +1251,34 @@ var
     QStyleOptionButton_destroy(Opt);
   end;
 
-  procedure DrawScrollBar;
+  procedure DrawScrollBarArrows;
   var
-    Opt: QStyleOptionSliderH;
-    Element: QStyleControlElement;
+    Opt: QStyleOptionH;
+    Element: QStylePrimitiveElement;
     State: QStyleState;
-    Features: QStyleOptionButtonButtonFeatures;
   begin
-    Opt := QStyleOptionSlider_create();
-    (*
-    QStyleCE_ScrollBarAddLine,
-    QStyleCE_ScrollBarSubLine,
-    QStyleCE_ScrollBarAddPage,
-    QStyleCE_ScrollBarSubPage,
-    QStyleCE_ScrollBarSlider,
-    QStyleCE_ScrollBarFirst,
-    QStyleCE_ScrollBarLast,
-    *)
-    QStyleOptionSlider_destroy(Opt);
+    //TODO: DFCS_SCROLLCOMBOBOX and DFCS_SCROLLSIZEGRIP
+    State := uStatetoQStyleState;
+    Element := QStylePE_CustomBase;
+    if (uState and $1F) in [DFCS_SCROLLUP] then
+      Element := QStylePE_IndicatorArrowUp
+    else
+    if (uState and $1F) in [DFCS_SCROLLDOWN] then
+      Element := QStylePE_IndicatorArrowDown
+    else
+    if (uState and $1F) in [DFCS_SCROLLLEFT] then
+      Element := QStylePE_IndicatorArrowLeft
+    else
+    if (uState and $1F) in [DFCS_SCROLLRIGHT] then
+      Element := QStylePE_IndicatorArrowRight;
+
+    if Element = QStylePE_CustomBase then
+      exit;
+    Opt := QStyleOption_create(1, 0);
+    QStyleOption_setRect(Opt, @Rect);
+    QStyleOption_setState(Opt, State);
+    QStyle_drawPrimitive(QApplication_style(), Element, Opt, Painter, Widget);
+    QStyleOption_destroy(Opt);
   end;
 
 begin
@@ -1281,7 +1292,7 @@ begin
     DFC_BUTTON: DrawButton;
     DFC_CAPTION: ; // title bar captions
     DFC_MENU: ; // menu
-    DFC_SCROLL: DrawScrollBar;
+    DFC_SCROLL: DrawScrollBarArrows;
   end;
 end;
 
