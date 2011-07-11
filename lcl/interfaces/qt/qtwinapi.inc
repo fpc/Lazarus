@@ -932,36 +932,53 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: DrawFocusRect
-  Params: DC: HDC; const Rect: TRect
+  Method:  DPtoLP
+  Params:  DC: HDC; var Points; Count: Integer
   Returns: Boolean
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+function TQtWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
 var
-  StyleOption: QStyleOptionFocusRectH;
+  P: PPoint;
+  QtPoint: TQtPoint;
+  Matrix: QTransformH;
+  MatrixInv: QTransformH;
   QtDC: TQtDeviceContext;
+  Inverted: Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[TQtWidgetSet.DrawFocusRect] Handle: ', dbghex(DC));
+    WriteLn('[WinAPI DPtoLP] ');
   {$endif}
+
   Result := False;
 
-  if not IsValidDC(DC) then exit;
+  if not IsValidDC(DC) then
+    Exit;
 
   QtDC := TQtDeviceContext(DC);
-  StyleOption := QStyleOptionFocusRect_create;
-  QtDC.save;
+
+  Matrix := QTransform_create;
+  MatrixInv := QTransform_create;
+  QPainter_combinedTransform(QtDC.Widget, Matrix);
+  P := @Points;
   try
-    QStyleOption_setRect(StyleOption, @Rect);
-    if not QtDC.getClipping then
-      QtDC.setClipRect(Rect);
-    QStyle_drawPrimitive(QApplication_style, QStylePE_FrameFocusRect, StyleOption, QtDC.Widget, QtDC.Parent);
+    while Count > 0 do
+    begin
+      Dec(Count);
+      Inverted := QTransform_isInvertible(Matrix);
+      QTransform_inverted(Matrix, MatrixInv, @Inverted);
+      QtPoint.X := P^.X;
+      QtPoint.Y := P^.Y;
+      QTransform_map(MatrixInv, PQtPoint(@QtPoint), PQtPoint(@QtPoint));
+      P^.X := QtPoint.X;
+      P^.Y := QtPoint.Y;
+      Inc(P);
+    end;
+
     Result := True;
   finally
-    QStyleOptionFocusRect_destroy(StyleOption);
-    QtDC.restore;
+    QTransform_destroy(MatrixInv);
+    QTransform_destroy(Matrix);
   end;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -1129,53 +1146,42 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  DPtoLP
-  Params:  DC: HDC; var Points; Count: Integer
+  Method: DrawFocusRect
+  Params: DC: HDC; const Rect: TRect
   Returns: Boolean
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+function TQtWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
 var
-  P: PPoint;
-  QtPoint: TQtPoint;
-  Matrix: QTransformH;
-  MatrixInv: QTransformH;
+  StyleOption: QStyleOptionFocusRectH;
   QtDC: TQtDeviceContext;
-  Inverted: Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI DPtoLP] ');
+    WriteLn('[TQtWidgetSet.DrawFocusRect] Handle: ', dbghex(DC));
   {$endif}
-
   Result := False;
 
-  if not IsValidDC(DC) then
-    Exit;
+  if not IsValidDC(DC) then exit;
 
   QtDC := TQtDeviceContext(DC);
-
-  Matrix := QTransform_create;
-  MatrixInv := QTransform_create;
-  QPainter_combinedTransform(QtDC.Widget, Matrix);
-  P := @Points;
+  StyleOption := QStyleOptionFocusRect_create;
+  QtDC.save;
   try
-    while Count > 0 do
-    begin
-      Dec(Count);
-      Inverted := QTransform_isInvertible(Matrix);
-      QTransform_inverted(Matrix, MatrixInv, @Inverted);
-      QtPoint.X := P^.X;
-      QtPoint.Y := P^.Y;
-      QTransform_map(MatrixInv, PQtPoint(@QtPoint), PQtPoint(@QtPoint));
-      P^.X := QtPoint.X;
-      P^.Y := QtPoint.Y;
-      Inc(P);
-    end;
-
+    QStyleOption_setRect(StyleOption, @Rect);
+    if not QtDC.getClipping then
+      QtDC.setClipRect(Rect);
+    QStyle_drawPrimitive(QApplication_style, QStylePE_FrameFocusRect, StyleOption, QtDC.Widget, QtDC.Parent);
     Result := True;
   finally
-    QTransform_destroy(MatrixInv);
-    QTransform_destroy(Matrix);
+    QStyleOptionFocusRect_destroy(StyleOption);
+    QtDC.restore;
   end;
+
+end;
+
+function TQtWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
+  uState: Cardinal): Boolean;
+begin
+  Result:=inherited DrawFrameControl(DC, Rect, uType, uState);
 end;
 
 {------------------------------------------------------------------------------
