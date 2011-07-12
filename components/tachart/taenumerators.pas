@@ -100,6 +100,7 @@ constructor TFilteredChartSeriesEnumerator.Create(
   AFactory: TBasicFilteredChartSeriesEnumeratorFactory);
 begin
   FFactory := AFactory;
+  FPosition := -1;
 end;
 
 destructor TFilteredChartSeriesEnumerator.Destroy;

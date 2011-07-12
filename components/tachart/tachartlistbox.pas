@@ -189,7 +189,7 @@ implementation
 
 uses
   Math, LCLIntf, LCLType, SysUtils, Themes,
-  TACustomSource, TADrawerCanvas, TADrawUtils, TAGeometry;
+  TACustomSource, TADrawerCanvas, TADrawUtils, TAEnumerators, TAGeometry;
 
 procedure Register;
 begin
@@ -260,21 +260,20 @@ function TChartListbox.CreateLegendItems: TChartLegendItems;
   all series contained in the Chart. In case of MultiLegend items, only
   a single legend item is used }
 var
-  i: Integer;
   skip: Boolean;
+  s: TCustomChartSeries;
 begin
   Result := TChartLegendItems.Create;
   try
     if FChart = nil then exit;
-    for i := 0 to FChart.SeriesCount - 1 do
-      if FChart.Series[i] is TCustomChartSeries then begin
-        if Assigned(OnAddSeries) then begin
-          skip := false;
-          FOnAddSeries(Self, TCustomChartSeries(FChart.Series[i]), Result, skip);
-          if skip then continue;
-        end;
-        TCustomChartSeries(FChart.Series[i]).GetSingleLegendItem(Result);
+    for s in CustomSeries(Chart) do begin
+      if Assigned(OnAddSeries) then begin
+        skip := false;
+        FOnAddSeries(Self, s, Result, skip);
+        if skip then continue;
       end;
+      s.GetSingleLegendItem(Result);
+    end;
   except
     FreeAndNil(Result);
     raise;
