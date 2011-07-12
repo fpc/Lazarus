@@ -70,13 +70,7 @@ begin
   PopupForm.FOnReturnDate := OnReturnDate;
   PopupForm.OnShow := OnShowHide;
   PopupForm.OnHide := OnShowHide;
-  //TODO: Change to PopupForm.Show when gtk supports non modal forms on top of
-  //modal forms.
-  {$IFDEF windows}
   PopupForm.Show;
-  {$ELSE}
-  PopupForm.ShowModal;
-  {$ENDIF}
 end;
 
 { TCalendarPopupForm }
