@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 560
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
     Height = 297
@@ -16,10 +16,12 @@ object Form1: TForm1
     Width = 560
     AxisList = <    
       item
+        Minors = <>
         Title.LabelFont.Orientation = 900
       end    
       item
         Alignment = calBottom
+        Minors = <>
       end>
     BackColor = clSilver
     Depth = 50

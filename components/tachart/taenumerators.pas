@@ -30,7 +30,7 @@ type
     FChart: TChart;
     FFilter: TBooleanDynArray;
   public
-    constructor Create(AChart: TChart; AFilter: TBooleanDynArray);
+    constructor Create(AChart: TChart; AFilter: TBooleanDynArray = nil);
     property Chart: TChart read FChart;
     property Filter: TBooleanDynArray read FFilter;
   end;

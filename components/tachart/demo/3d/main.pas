@@ -54,11 +54,11 @@ end;
 
 procedure TForm1.seDepthChange(Sender: TObject);
 var
-  i: Integer;
+  s: TBasicChartSeries;
 begin
   Chart1.Depth := seDepth.Value;
-  for i := 0 to Chart1.SeriesCount - 1 do
-    Chart1.Series[i].Depth := Min(seDepth.Value, 10);
+  for s in Chart1.Series do
+    s.Depth := Min(seDepth.Value, 10);
 end;
 
 end.

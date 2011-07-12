@@ -62,7 +62,11 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLIntf, TATypes, TAChartUtils;
+  LCLIntf, TAChartUtils, TATypes, TAEnumerators;
+
+type
+  TLineSeriesEnum =
+    specialize TFilteredChartSeriesEnumeratorFactory<TLineSeries>;
 
 { TForm1 }
 
@@ -95,45 +99,37 @@ end;
 
 procedure TForm1.cb3DChange(Sender: TObject);
 var
-  i: Integer;
+  ls: TLineSeries;
 begin
-  for i := 0 to chFast.SeriesCount - 1 do
-    if chFast.Series[i] is TLineSeries then
-      with chFast.Series[i] as TLineSeries do
-        Depth := 15 - Depth;
+  for ls in TLineSeriesEnum.Create(chFast) do
+    ls.Depth := 15 - ls.Depth;
 end;
 
 procedure TForm1.cbLineTypeChange(Sender: TObject);
 var
-  i: Integer;
+  ls: TLineSeries;
 begin
-  for i := 0 to chFast.SeriesCount - 1 do
-    if chFast.Series[i] is TLineSeries then
-      with chFast.Series[i] as TLineSeries do
-        LineType := TLineType(cbLineType.ItemIndex);
+  for ls in TLineSeriesEnum.Create(chFast) do
+    ls.LineType := TLineType(cbLineType.ItemIndex);
 end;
 
 procedure TForm1.cbRotatedChange(Sender: TObject);
 var
-  i: Integer;
+  ls: TLineSeries;
 begin
-  for i := 0 to chFast.SeriesCount - 1 do
-    if chFast.Series[i] is TLineSeries then
-      with chFast.Series[i] as TLineSeries do begin
-        AxisIndexY := Ord(cbRotated.Checked);
-        AxisIndexX := 1 - AxisIndexY;
-      end;
+  for ls in TLineSeriesEnum.Create(chFast) do begin
+    ls.AxisIndexY := Ord(cbRotated.Checked);
+    ls.AxisIndexX := 1 - ls.AxisIndexY;
+  end;
 end;
 
 procedure TForm1.cbSortedChange(Sender: TObject);
 var
-  i: Integer;
+  ls: TLineSeries;
 begin
-  for i := 0 to chFast.SeriesCount - 1 do
-    if chFast.Series[i] is TLineSeries then
-      with chFast.Series[i] as TLineSeries do
-        if Source is TListChartSource then
-          ListSource.Sorted := cbSorted.Checked;
+  for ls in TLineSeriesEnum.Create(chFast) do
+    if ls.Source is TListChartSource then
+      ls.ListSource.Sorted := cbSorted.Checked;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -142,7 +138,7 @@ var
   ls: TLineSeries;
   s: ShortString;
 begin
-  for st := Low(st) to High(st) do begin
+  for st in TSeriesPointerStyle do begin
     ls := TLineSeries.Create(Self);
     ls.LinePen.Color := clGreen;
     ls.ShowPoints := true;
@@ -161,10 +157,10 @@ end;
 
 procedure TForm1.sePointerSizeChange(Sender: TObject);
 var
-  i: Integer;
+  ls: TLineSeries;
 begin
-  for i := 0 to chPointers.SeriesCount - 1 do
-    with (chPointers.Series[i] as TLineSeries).Pointer do begin
+  for ls in TLineSeriesEnum.Create(chPointers) do
+    with ls.Pointer do begin
       HorizSize := sePointerSize.Value;
       VertSize := sePointerSize.Value;
     end;

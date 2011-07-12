@@ -17,12 +17,14 @@ object Form1: TForm1
     AxisList = <    
       item
         Grid.Color = clGray
+        Minors = <>
         Title.LabelFont.Height = -11
         Title.LabelFont.Name = 'MS Sans Serif'
       end    
       item
-        Alignment = calBottom
         Grid.Color = clGray
+        Alignment = calBottom
+        Minors = <>
         Title.LabelFont.Height = -11
         Title.LabelFont.Name = 'MS Sans Serif'
       end>

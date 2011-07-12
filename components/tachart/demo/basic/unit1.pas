@@ -87,9 +87,10 @@ uses
 procedure TForm1.BringToFront(ASeries: TBasicChartSeries);
 var
   i: Integer;
+  s: TBasicChartSeries;
 begin
-  for i := 0 to Chart1.SeriesCount - 1 do
-    Chart1.Series[i].ZPosition := Ord(Chart1.Series[i] = ASeries);
+  for s in Chart1.Series do
+    s.ZPosition := Ord(s = ASeries);
 end;
 
 procedure TForm1.btnAddAreaClick(Sender: TObject);
