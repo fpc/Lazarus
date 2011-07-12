@@ -113,6 +113,11 @@ type
       AShift: TShiftState; APoint: TPoint): Boolean; virtual; abstract; overload;
   end;
 
+  TBasicChartSeriesEnumerator = class(TFPListEnumerator)
+    function GetCurrent: TBasicChartSeries;
+    property Current: TBasicChartSeries read GetCurrent;
+  end;
+
   { TChartSeriesList }
 
   TChartSeriesList = class(TPersistent)
@@ -125,6 +130,7 @@ type
   public
     procedure Clear;
     function Count: Integer;
+    function GetEnumerator: TBasicChartSeriesEnumerator;
   public
     property Items[AIndex: Integer]: TBasicChartSeries read GetItem; default;
     property List: TIndexedComponentList read FList;
@@ -443,6 +449,13 @@ begin
   end;
 end;
 
+{ TBasicChartSeriesEnumerator }
+
+function TBasicChartSeriesEnumerator.GetCurrent: TBasicChartSeries;
+begin
+  Result := TBasicChartSeries(inherited GetCurrent);
+end;
+
 { TChart }
 
 procedure TChart.AddSeries(ASeries: TBasicChartSeries);
@@ -689,6 +702,7 @@ procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   i, c: Integer;
   ldd: TChartLegendDrawingData;
+  s: TBasicChartSeries;
 begin
   ADrawer.DrawingBegin(ARect);
   ADrawer.SetAntialiasingMode(AntialiasingMode);
@@ -706,8 +720,8 @@ begin
     with AxisList[i] do
       if Transformations <> nil then
         Transformations.SetChart(Self);
-  for i := 0 to SeriesCount - 1 do
-    Series[i].BeforeDraw;
+  for s in Series do
+    s.BeforeDraw;
 
   if not FIsZoomed then
     FLogicalExtent := GetFullExtent;
@@ -731,8 +745,8 @@ begin
   end;
   DrawReticule(ADrawer);
 
-  for i := 0 to SeriesCount - 1 do
-    Series[i].AfterDraw;
+  for s in Series do
+    s.AfterDraw;
   ADrawer.DrawingEnd;
 
   if FPrevLogicalExtent <> FLogicalExtent then begin
@@ -857,13 +871,13 @@ end;
 
 procedure TChart.GetChildren(AProc: TGetChildProc; ARoot: TComponent);
 var
-  i: Integer;
+  s: TBasicChartSeries;
 begin
   // FIXME: This is a workaround for issue #16035
   if FSeries = nil then exit;
-  for i := 0 to SeriesCount - 1 do
-    if Series[i].Owner = ARoot then
-      AProc(Series[i]);
+  for s in Series do
+    if s.Owner = ARoot then
+      AProc(s);
 end;
 
 function TChart.GetFullExtent: TDoubleRect;
@@ -909,8 +923,7 @@ begin
         Transformations.ClearBounds;
 
   Result := EmptyExtent;
-  for i := 0 to SeriesCount - 1 do begin
-    s := Series[i];
+  for s in Series do begin
     if not s.Active then continue;
     seriesBounds := EmptyExtent;
     try
@@ -934,14 +947,13 @@ end;
 
 function TChart.GetLegendItems(AIncludeHidden: Boolean): TChartLegendItems;
 var
-  i: Integer;
+  s: TBasicChartSeries;
 begin
   Result := TChartLegendItems.Create;
   try
-    for i := 0 to SeriesCount - 1 do
-      with Series[i] do
-        if AIncludeHidden or (Active and GetShowInLegend) then
-          GetLegendItemsBasic(Result);
+    for s in Series do
+      if AIncludeHidden or (s.Active and s.GetShowInLegend) then
+        s.GetLegendItemsBasic(Result);
   except
     FreeAndNil(Result);
     raise;
@@ -952,11 +964,12 @@ function TChart.GetMargins(ADrawer: IChartDrawer): TRect;
 var
   i: Integer;
   a: TRectArray absolute Result;
+  s: TBasicChartSeries;
 begin
   Result := Margins.Data;
-  for i := 0 to SeriesCount - 1 do
-    if Series[i].Active then
-      Series[i].UpdateMargins(ADrawer, Result);
+  for s in Series do
+    if s.Active then
+      s.UpdateMargins(ADrawer, Result);
   for i := Low(a) to High(a) do
     a[i] := ADrawer.Scale(a[i]);
 end;
@@ -1374,12 +1387,11 @@ end;
 procedure TChart.VisitSources(
   AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
 var
-  i: Integer;
+  s: TBasicChartSeries;
 begin
-  for i := 0 to SeriesCount - 1 do
-    with Series[i] do
-      if Active then
-        VisitSources(AVisitor, AAxis, AData);
+  for s in Series do
+    if s.Active then
+      s.VisitSources(AVisitor, AAxis, AData);
 end;
 
 function TChart.XGraphToImage(AX: Double): Integer;
@@ -1507,6 +1519,11 @@ begin
   Clear;
   FreeAndNil(FList);
   inherited;
+end;
+
+function TChartSeriesList.GetEnumerator: TBasicChartSeriesEnumerator;
+begin
+  Result := TBasicChartSeriesEnumerator.Create(FList);
 end;
 
 function TChartSeriesList.GetItem(AIndex: Integer): TBasicChartSeries;
