@@ -38,10 +38,12 @@ unit AddToPackageDlg;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLType, Forms, Controls, Buttons, ExtDlgs,
-  StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc,
-  NewItemIntf, ProjectIntf, PackageIntf, FormEditingIntf,
-  LazarusIDEStrConsts, IDEWindowIntf, InputHistory, CodeToolManager, IDEDefs,
+  Math, Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs,
+  StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree,
+  // IDEIntf
+  NewItemIntf, ProjectIntf, PackageIntf, FormEditingIntf, IDEWindowIntf,
+  // IDE
+  LazarusIDEStrConsts, InputHistory, CodeToolManager, IDEDefs,
   IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg,
   AddDirToPkgDlg;
   
@@ -88,15 +90,6 @@ type
   TAddToPackageDlg = class(TForm)
     CancelDependButton: TBitBtn;
     CancelNewComponentButton: TBitBtn;
-    ComponentIconLabel: TLabel;
-    ComponentIconSpeedButton: TSpeedButton;
-    NewCompBtnPanel: TPanel;
-    NewComponentButton: TBitBtn;
-    NewDepBtnPanel: TPanel;
-    NewDependButton: TBitBtn;
-    NewDepPanel: TPanel;
-    NewFileCancelButton: TBitBtn;
-    NewFileOkButton: TBitBtn;
     // notebook
     NoteBook: TPageControl;
     NewFilePage: TTabSheet;
@@ -107,7 +100,11 @@ type
     NewFileTreeView: TTreeView;
     NewFileDescriptionGroupBox: TGroupBox;
     NewFileHelpLabel: TLabel;
+    NewFileCancelButton: TBitBtn;
+    NewFileOkButton: TBitBtn;
     // new component page
+    NewCompBtnPanel: TPanel;
+    NewComponentButton: TBitBtn;
     AncestorTypeLabel: TLabel;
     AncestorComboBox: TComboBox;
     AncestorShowAllCheckBox: TCheckBox;
@@ -115,6 +112,8 @@ type
     ClassNameEdit: TEdit;
     PalettePageLabel: TLabel;
     PalettePageCombobox: TCombobox;
+    ComponentIconLabel: TLabel;
+    ComponentIconSpeedButton: TSpeedButton;
     ComponentUnitFileLabel: TLabel;
     ComponentUnitFileEdit: TEdit;
     ComponentUnitFileBrowseButton: TButton;
@@ -122,6 +121,9 @@ type
     ComponentUnitNameLabel: TLabel;
     ComponentUnitNameEdit: TEdit;
     // new required package
+    NewDepBtnPanel: TPanel;
+    NewDependButton: TBitBtn;
+    NewDepPanel: TPanel;
     DependPkgNameLabel: TLabel;
     DependPkgNameComboBox: TComboBox;
     DependMinVersionLabel: TLabel;
@@ -861,6 +863,9 @@ begin
   if PkgComponent<>nil then begin
     Params.UsedUnitname:=PkgComponent.GetUnitName;
     ARequiredPackage:=PkgComponent.PkgFile.LazPackage;
+    ARequiredPackage:=TLazPackage(
+           PackageEditingInterface.RedirectPackageDependency(ARequiredPackage));
+
     if (LazPackage<>ARequiredPackage)
     and (not LazPackage.Requires(PkgComponent.PkgFile.LazPackage))
     then

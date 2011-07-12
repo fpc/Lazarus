@@ -1212,17 +1212,10 @@ begin
 end;
 
 function TLazPackageGraph.CreateUniqueUnitName(const Prefix: string): string;
-var
-  i: Integer;
 begin
-  if FindUnitInAllPackages(Prefix,false)=nil then
-    Result:=Prefix
-  else begin
-    i:=1;
-    repeat
-      Result:=Prefix+IntToStr(i);
-    until FindUnitInAllPackages(Result,false)=nil;
-  end;
+  Result:=Prefix;
+  while FindUnitInAllPackages(Result,false)<>nil do
+    Result:=CreateNextIdentifier(Result);
 end;
 
 function TLazPackageGraph.PackageNameExists(const PkgName: string;

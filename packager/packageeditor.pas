@@ -1140,9 +1140,13 @@ var
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                               PkgFileFlags,cpNormal);
     // add dependency
-    if AddParams.Dependency<>nil then begin
+    if (AddParams.Dependency<>nil)
+    and (LazPackage.FindDependencyByName(AddParams.Dependency.PackageName)=nil)
+    then
       PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
-    end;
+    if (AddParams.IconFile<>'')
+    and (LazPackage.FindDependencyByName('LCL')=nil) then
+      PackageGraph.AddDependencyToPackage(LazPackage,PackageGraph.LCLPackage);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     // open file in editor
     PackageEditors.CreateNewFile(Self,AddParams);

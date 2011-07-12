@@ -239,7 +239,7 @@ type
     function GetPackageCount: integer; override;
     function GetPackages(Index: integer): TIDEPackage; override;
     function FindPackageWithName(const PkgName: string): TIDEPackage; override;
-    procedure RedirectPackageDependency(var APackage: TLazPackage);
+    function RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage; override;
 
     // project
     function OpenProjectDependencies(AProject: TProject;
@@ -670,7 +670,12 @@ begin
 
   // create sourcecode
   LE:=LineEnding;
-  UsesLine:='Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs';
+  if PackageGraph.FindDependencyRecursively(Params.Pkg.FirstRequiredDependency,
+    'LCL')<>nil
+  then
+    UsesLine:='Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs'
+  else
+    UsesLine:='Classes, SysUtils';
   if (System.Pos(Params.UsedUnitname,UsesLine)<1)
   and (Params.UsedUnitname<>'') then
     UsesLine:=UsesLine+', '+Params.UsedUnitname;
@@ -1941,7 +1946,7 @@ begin
   if (PkgFile=nil) then exit;
 
   APackage:=PkgFile.LazPackage;
-  RedirectPackageDependency(APackage);
+  APackage:=TLazPackage(RedirectPackageDependency(APackage));
 
   AddProjectDependency(AProject,APackage);
 end;
@@ -2493,12 +2498,14 @@ begin
   end;
 end;
 
-procedure TPkgManager.RedirectPackageDependency(var APackage: TLazPackage);
+function TPkgManager.RedirectPackageDependency(APackage: TIDEPackage
+  ): TIDEPackage;
 begin
-  if APackage=PackageGraph.LCLBasePackage then begin
+  Result:=APackage;
+  if Result=PackageGraph.LCLBasePackage then begin
     // Older Lazarus does not have a LCLBase and a component does not work
     // without an LCLBase implementation, so we have to use LCL instead.
-    APackage:=PackageGraph.LCLPackage;
+    Result:=PackageGraph.LCLPackage;
   end;
 end;
 
@@ -2708,7 +2715,7 @@ var
           PkgFile:=TPkgComponent(RegComp).PkgFile;
           if (PkgFile<>nil) then begin
             APackage:=PkgFile.LazPackage;
-            RedirectPackageDependency(APackage);
+            APackage:=TLazPackage(RedirectPackageDependency(APackage));
             if (Packages.IndexOf(APackage)<0) then
               Packages.Add(APackage);
           end;
@@ -2762,7 +2769,7 @@ var
       for i:=0 to MissingDependencies.Count-1 do begin
         UnitOwner:=TObject(MissingDependencies[i]);
         RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
-        RedirectPackageDependency(RequiredPackage);
+        RequiredPackage:=TLazPackage(RedirectPackageDependency(RequiredPackage));
         if UnitOwner is TProject then begin
           PackageAdditions:=Format(
             lisPkgMangAddingNewDependencyForProjectPackage, [PackageAdditions,
@@ -2801,7 +2808,7 @@ var
       for i:=0 to MissingDependencies.Count-1 do begin
         UnitOwner:=TObject(MissingDependencies[i]);
         RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
-        RedirectPackageDependency(RequiredPackage);
+        RequiredPackage:=TLazPackage(RedirectPackageDependency(RequiredPackage));
         if UnitOwner is TProject then begin
           DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Adding Project Dependency ',TProject(UnitOwner).Title,' -> ',RequiredPackage.Name);
           AddProjectDependency(TProject(UnitOwner),RequiredPackage);
@@ -3278,7 +3285,7 @@ begin
     end;
     // add package dependency
     //DebugLn(['TPkgManager.AddDependencyToUnitOwners ',dbgsName(TObject(OwnersList[0])),' ',RequiredPkg.IDAsString]);
-    RedirectPackageDependency(RequiredPkg);
+    RequiredPkg:=TLazPackage(RedirectPackageDependency(RequiredPkg));
     Result:=AddDependencyToOwners(OwnersList,RequiredPkg,false);
   finally
     OwnersList.Free;
