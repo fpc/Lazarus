@@ -150,7 +150,7 @@ type
   { TChart }
 
   TChart = class(TCustomChart, ICoordTransformer)
-  private // Property fields
+  strict private // Property fields
     FAllowZoom: Boolean;
     FAntialiasingMode: TChartAntialiasingMode;
     FAxisList: TChartAxisList;
@@ -165,6 +165,7 @@ type
     FLegend: TChartLegend;
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
+    FMarginsExternal: TChartMargins;
     FOnAfterDrawBackground: TChartAfterDrawEvent;
     FOnAfterDrawBackWall: TChartAfterDrawEvent;
     FOnBeforeDrawBackground: TChartBeforeDrawEvent;
@@ -221,6 +222,7 @@ type
     procedure SetLegend(Value: TChartLegend);
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
+    procedure SetMarginsExternal(AValue: TChartMargins);
     procedure SetOnAfterDrawBackground(AValue: TChartAfterDrawEvent);
     procedure SetOnAfterDrawBackWall(AValue: TChartAfterDrawEvent);
     procedure SetOnBeforeDrawBackground(AValue: TChartBeforeDrawEvent);
@@ -335,6 +337,8 @@ type
     property LeftAxis: TChartAxis index 2 read GetAxis write SetAxis stored false;
     property Legend: TChartLegend read FLegend write SetLegend;
     property Margins: TChartMargins read FMargins write SetMargins;
+    property MarginsExternal: TChartMargins
+      read FMarginsExternal write SetMarginsExternal;
     property Proportional: Boolean
       read FProportional write SetProportional default false;
     property ReticuleMode: TReticuleMode
@@ -577,6 +581,7 @@ begin
 
   FExtent := TChartExtent.Create(Self);
   FMargins := TChartMargins.Create(Self);
+  FMarginsExternal := TChartMargins.Create(Self);
 
   FBuiltinToolset := OnInitBuiltinTools(Self);
   FActiveToolIndex := -1;
@@ -690,7 +695,12 @@ begin
   Clear(ADrawer, ARect);
 
   FClipRect := ARect;
-  InflateRect(FClipRect, -2, -2);
+  with MarginsExternal do begin
+    FClipRect.Left += Left;
+    FClipRect.Top += Top;
+    FClipRect.Right -= Right;
+    FClipRect.Bottom -= Bottom;
+  end;
 
   for i := 0 to AxisList.Count - 1 do
     with AxisList[i] do
@@ -1240,6 +1250,13 @@ end;
 procedure TChart.SetMargins(AValue: TChartMargins);
 begin
   FMargins.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChart.SetMarginsExternal(AValue: TChartMargins);
+begin
+  if FMarginsExternal = AValue then exit;
+  FMarginsExternal.Assign(AValue);
   StyleChanged(Self);
 end;
 
