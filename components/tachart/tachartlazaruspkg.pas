@@ -12,7 +12,7 @@ uses
   TATypes, TADrawUtils, TAMultiSeries, TALegend, TAStyles, TAFuncSeries, 
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
   TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
-  TAChartListbox, LazarusPackageIntf;
+  TAChartListbox, TAEnumerators, LazarusPackageIntf;
 
 implementation
 

@@ -363,7 +363,8 @@ implementation
 
 uses
   ComponentEditors, Forms, GraphMath, Math, PropEdits, SysUtils,
-  TACustomSeries, TADrawerCanvas, TAGeometry, TASubcomponentsEditor;
+  TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry,
+  TASubcomponentsEditor;
 
 type
   { TToolsComponentEditor }
@@ -937,23 +938,21 @@ var
     retPos: TPoint;
     value: TDoublePoint;
   end;
-  i, bestSeries: Integer;
   d, minDist: Double;
   df: TPointDistFunc;
+  s, bestS: TCustomChartSeries;
 begin
   if FChart.ReticuleMode = rmNone then exit;
   minDist := SafeInfinity;
   df := DIST_FUNCS[FChart.ReticuleMode];
-  for i := 0 to FChart.SeriesCount - 1 do
+  for s in CustomSeries(FChart) do
     if
-      (FChart.Series[i] is TCustomChartSeries) and
-      (FChart.Series[i] as TCustomChartSeries).GetNearestPoint(
-        df, APoint, cur.pointIndex, cur.retPos, cur.value) and
+      s.GetNearestPoint(df, APoint, cur.pointIndex, cur.retPos, cur.value) and
       PtInRect(FChart.ClipRect, cur.retPos)
     then begin
        d := df(APoint, cur.retPos);
        if d < minDist then begin
-         bestSeries := i;
+         bestS := s;
          best := cur;
          minDist := d;
        end;
@@ -961,7 +960,7 @@ begin
   if not IsInfinite(minDist) and (best.retPos <> FChart.ReticulePos) then begin
     FChart.ReticulePos := best.retPos;
     if Assigned(FChart.OnDrawReticule) then
-      FChart.OnDrawReticule(FChart, bestSeries, best.pointIndex, best.value);
+      FChart.OnDrawReticule(FChart, bestS.Index, best.pointIndex, best.value);
   end;
 end;
 
@@ -1158,20 +1157,14 @@ end;
 
 procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
 var
-  i, d, bestd, idx: Integer;
-  bests: TBasicChartSeries;
-  s: TCustomChartSeries;
-  affected: TBooleanDynArray;
+  d, bestd, idx: Integer;
+  s, bests: TCustomChartSeries;
   dummy: TDoublePoint;
   nearest: TPoint;
 begin
   bestd := MaxInt;
   bests := nil;
-  affected := ParseAffectedSeries;
-  for i := 0 to FChart.SeriesCount - 1 do begin
-    if not affected[i] or not (FChart.Series[i] is TCustomChartSeries) then
-      continue;
-    s := FChart.Series[i] as TCustomChartSeries;
+  for s in CustomSeries(FChart, ParseAffectedSeries) do begin
     if not s.GetNearestPoint(@PointDist, APoint, idx, nearest, dummy) then
       continue;
     d := PointDist(APoint, nearest);

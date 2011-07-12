@@ -2618,6 +2618,7 @@ components/tachart/tadraweropengl.pas svneol=native#text/pascal
 components/tachart/tadrawersvg.pas svneol=native#text/pascal
 components/tachart/tadrawerwmf.pas svneol=native#text/pascal
 components/tachart/tadrawutils.pas svneol=native#text/pascal
+components/tachart/taenumerators.pas svneol=native#text/pascal
 components/tachart/tafuncseries.pas svneol=native#text/pascal
 components/tachart/tageometry.pas svneol=native#text/pascal
 components/tachart/tagraph.lrs svneol=native#text/pascal

@@ -30,7 +30,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="29">
+    <Files Count="30">
       <Item1>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
@@ -158,8 +158,12 @@
       <Item29>
         <Filename Value="tachartlistbox.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="tachartlistbox"/>
+        <UnitName Value="TAChartListbox"/>
       </Item29>
+      <Item30>
+        <Filename Value="taenumerators.pas"/>
+        <UnitName Value="TAEnumerators"/>
+      </Item30>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
     <Type Value="RunAndDesignTime"/>
