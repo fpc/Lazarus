@@ -111,6 +111,12 @@ type
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
+  TLegendItemsEnumerator = class(TListEnumerator)
+  public
+    function GetCurrent: TLegendItem;
+    property Current: TLegendItem read GetCurrent;
+  end;
+
   { TChartLegendItems }
 
   TChartLegendItems = class(TObjectList)
@@ -118,6 +124,7 @@ type
     function GetItem(AIndex: Integer): TLegendItem;
     procedure SetItem(AIndex: Integer; AValue: TLegendItem);
   public
+    function GetEnumerator: TLegendItemsEnumerator;
     property Items[AIndex: Integer]: TLegendItem
       read GetItem write SetItem; default;
   end;
@@ -275,7 +282,19 @@ begin
     Result := Sign(li1.Order - li2.Order);
 end;
 
+{ TLegendItemsEnumerator }
+
+function TLegendItemsEnumerator.GetCurrent: TLegendItem;
+begin
+  Result := TLegendItem(inherited GetCurrent);
+end;
+
 { TChartLegendItems }
+
+function TChartLegendItems.GetEnumerator: TLegendItemsEnumerator;
+begin
+  Result := TLegendItemsEnumerator.Create(Self);
+end;
 
 function TChartLegendItems.GetItem(AIndex: Integer): TLegendItem;
 begin
@@ -517,19 +536,18 @@ end;
 function TChartLegend.MeasureItem(
   ADrawer: IChartDrawer; AItems: TChartLegendItems): TPoint;
 var
-  i: Integer;
   p: TPoint;
   prevFont: TFont = nil;
+  li: TLegendItem;
 begin
   Result := Point(0, 0);
-  for i := 0 to AItems.Count - 1 do
-    with AItems[i] do begin
-      AItems[i].UpdateFont(ADrawer, prevFont);
-      p := ADrawer.TextExtent(Text);
-      if HasSymbol then
-        p.X += SYMBOL_TEXT_SPACING + SymbolWidth;
-      Result := MaxPoint(p, Result);
-    end;
+  for li in AItems do begin
+    li.UpdateFont(ADrawer, prevFont);
+    p := ADrawer.TextExtent(li.Text);
+    if li.HasSymbol then
+      p.X += SYMBOL_TEXT_SPACING + SymbolWidth;
+    Result := MaxPoint(p, Result);
+  end;
 end;
 
 procedure TChartLegend.Prepare(

@@ -115,13 +115,13 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
-  i: Integer;
+  li: TLegendItem;
 begin
   // Workaround for issue #19632
   Chart1FuncSeries1.Legend.OnCreate := @Chart1FuncSeries1LegendCreate;
   FItems := Chart1.GetLegendItems;
   Chart1.Legend.SortItemsByOrder(FItems);
-  for i := 1 to FItems.Count do
+  for li in FItems do
     cbSeries.AddItem('', nil);
 end;
 

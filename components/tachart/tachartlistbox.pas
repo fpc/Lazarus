@@ -460,7 +460,7 @@ procedure TChartListbox.Populate;
 { populates the listbox with all series contained in the chart. Use the event
   OnPopulate if you don't omit special series from the listbox (RemoveSeries) }
 var
-  i: Integer;
+  li: TLegendItem;
 begin
   Items.BeginUpdate;
   try
@@ -469,9 +469,9 @@ begin
     FreeAndNil(FLegendItems);
     FLegendItems := CreateLegendItems;
     Chart.Legend.SortItemsByOrder(FLegendItems);
-    for i := 0 to FLegendItems.Count - 1 do
+    for li in FLegendItems do
       // The caption is owner-drawn, but add it anyway for user convenience.
-      Items.AddObject(FLegendItems[i].Text, FLegendItems[i]);
+      Items.AddObject(li.Text, li);
     if Assigned(OnPopulate) then
       OnPopulate(Self);
   finally
