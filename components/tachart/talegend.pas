@@ -166,7 +166,7 @@ type
     procedure SetColumnCount(AValue: TLegendColumnCount);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
-    procedure SetGroupFont(const AValue: TFont);
+    procedure SetGroupFont(AValue: TFont);
     procedure SetGroupTitles(AValue: TStrings);
     procedure SetMargin(AValue: TChartDistance);
     procedure SetMarginX(AValue: TChartDistance);
@@ -619,7 +619,7 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartLegend.SetGroupFont(const AValue: TFont);
+procedure TChartLegend.SetGroupFont(AValue: TFont);
 begin
   FGroupFont.Assign(AValue);
   StyleChanged(Self);

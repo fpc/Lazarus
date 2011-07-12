@@ -67,7 +67,7 @@ type
   TChartElement = class(TPersistent)
   protected
     FVisible: Boolean;
-    procedure SetVisible(const AValue: Boolean);
+    procedure SetVisible(AValue: Boolean);
   protected
     FOwner: TCustomChart;
     function GetOwner: TPersistent; override;
@@ -154,13 +154,13 @@ type
 
     procedure SetClipped(AValue: Boolean);
     procedure SetDistance(AValue: TChartDistance);
-    procedure SetFormat(const AValue: String);
-    procedure SetFrame(const AValue: _TFramePen);
-    procedure SetLabelBrush(const AValue: _TLabelBrush);
-    procedure SetLabelFont(const AValue: TFont);
-    procedure SetLinkPen(const AValue: _TLinkPen);
+    procedure SetFormat(AValue: String);
+    procedure SetFrame(AValue: _TFramePen);
+    procedure SetLabelBrush(AValue: _TLabelBrush);
+    procedure SetLabelFont(AValue: TFont);
+    procedure SetLinkPen(AValue: _TLinkPen);
     procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
-    procedure SetStyle(const AValue: TSeriesMarksStyle);
+    procedure SetStyle(AValue: TSeriesMarksStyle);
   protected
     function IsMarginRequired: Boolean;
   public
@@ -382,7 +382,7 @@ begin
   FOwner := AOwner;
 end;
 
-procedure TChartElement.SetVisible(const AValue: Boolean);
+procedure TChartElement.SetVisible(AValue: Boolean);
 begin
   if FVisible = AValue then exit;
   FVisible := AValue;
@@ -678,7 +678,7 @@ begin
     Attachment := maDefault;
 end;
 
-procedure TGenericChartMarks.SetFormat(const AValue: String);
+procedure TGenericChartMarks.SetFormat(AValue: String);
 begin
   if FFormat = AValue then exit;
   TCustomChartSource.CheckFormat(AValue);
@@ -689,28 +689,28 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TGenericChartMarks.SetFrame(const AValue: _TFramePen);
+procedure TGenericChartMarks.SetFrame(AValue: _TFramePen);
 begin
   if FFrame = AValue then exit;
   FFrame.Assign(AValue);
   StyleChanged(Self);
 end;
 
-procedure TGenericChartMarks.SetLabelBrush(const AValue: _TLabelBrush);
+procedure TGenericChartMarks.SetLabelBrush(AValue: _TLabelBrush);
 begin
   if FLabelBrush = AValue then exit;
   FLabelBrush.Assign(AValue);
   StyleChanged(Self);
 end;
 
-procedure TGenericChartMarks.SetLabelFont(const AValue: TFont);
+procedure TGenericChartMarks.SetLabelFont(AValue: TFont);
 begin
   if FLabelFont = AValue then exit;
   FLabelFont := AValue;
   StyleChanged(Self);
 end;
 
-procedure TGenericChartMarks.SetLinkPen(const AValue: _TLinkPen);
+procedure TGenericChartMarks.SetLinkPen(AValue: _TLinkPen);
 begin
   if FLinkPen = AValue then exit;
   FLinkPen := AValue;
@@ -724,7 +724,7 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TGenericChartMarks.SetStyle(const AValue: TSeriesMarksStyle);
+procedure TGenericChartMarks.SetStyle(AValue: TSeriesMarksStyle);
 begin
   if FStyle = AValue then exit;
   FStyle := AValue;

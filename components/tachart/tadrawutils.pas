@@ -56,7 +56,7 @@ type
     function Pos(AX, AY: Integer): TChartTextOut;
     function Pos(const APos: TPoint): TChartTextOut;
     function Text(const AText: String): TChartTextOut;
-    function Text(const AText: TStrings): TChartTextOut;
+    function Text(AText: TStrings): TChartTextOut;
     function Width(AWidth: Integer): TChartTextOut;
   end;
 
@@ -266,7 +266,7 @@ begin
   Result := Self;
 end;
 
-function TChartTextOut.Text(const AText: TStrings): TChartTextOut;
+function TChartTextOut.Text(AText: TStrings): TChartTextOut;
 begin
   FText2 := AText;
   Result := Self;

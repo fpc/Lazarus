@@ -109,7 +109,7 @@ type
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetTransformations(AValue: TChartAxisTransformations);
-    procedure SetZPosition(const AValue: TChartDistance);
+    procedure SetZPosition(AValue: TChartDistance);
 
   protected
     function GetDisplayName: String; override;
@@ -622,7 +622,7 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxis.SetZPosition(const AValue: TChartDistance);
+procedure TChartAxis.SetZPosition(AValue: TChartDistance);
 begin
   if FZPosition = AValue then exit;
   FZPosition := AValue;

@@ -33,8 +33,8 @@ type
     FRepeatCount: Cardinal;
     FUseBrush: Boolean;
     FUsePen: Boolean;
-    procedure SetBrush(const AValue: TBrush);
-    procedure SetPen(const AValue: TPen);
+    procedure SetBrush(AValue: TBrush);
+    procedure SetPen(AValue: TPen);
     procedure SetRepeatCount(AValue: Cardinal);
     procedure SetUseBrush(AValue: Boolean);
     procedure SetUsePen(AValue: Boolean);
@@ -143,13 +143,13 @@ begin
   Result := inherited GetDisplayName;
 end;
 
-procedure TChartStyle.SetBrush(const AValue: TBrush);
+procedure TChartStyle.SetBrush(AValue: TBrush);
 begin
   if FBrush = AValue then exit;
   FBrush := AValue;
 end;
 
-procedure TChartStyle.SetPen(const AValue: TPen);
+procedure TChartStyle.SetPen(AValue: TPen);
 begin
   if FPen = AValue then exit;
   FPen := AValue;

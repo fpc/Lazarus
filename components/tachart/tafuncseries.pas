@@ -69,8 +69,8 @@ type
 
     function DoCalcIdentity(AX: Double): Double;
     function DoCalculate(AX: Double): Double;
-    procedure SetOnCalculate(const AValue: TFuncCalculateEvent);
-    procedure SetPen(const AValue: TChartPen);
+    procedure SetOnCalculate(AValue: TFuncCalculateEvent);
+    procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
@@ -459,14 +459,14 @@ begin
   Result := not Assigned(OnCalculate);
 end;
 
-procedure TFuncSeries.SetOnCalculate(const AValue: TFuncCalculateEvent);
+procedure TFuncSeries.SetOnCalculate(AValue: TFuncCalculateEvent);
 begin
   if TMethod(FOnCalculate) = TMethod(AValue) then exit;
   FOnCalculate := AValue;
   UpdateParentChart;
 end;
 
-procedure TFuncSeries.SetPen(const AValue: TChartPen);
+procedure TFuncSeries.SetPen(AValue: TChartPen);
 begin
   if FPen = AValue then exit;
   FPen.Assign(AValue);

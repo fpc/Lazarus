@@ -74,7 +74,7 @@ type
   TMWCRandomGenerator = class
   private
     FHistory: array [0..4] of LongWord;
-    procedure SetSeed(const AValue: Integer);
+    procedure SetSeed(AValue: Integer);
   public
     function Get: LongWord;
     function GetInRange(AMin, AMax: Integer): Integer;
@@ -97,13 +97,13 @@ type
     FCurItem: TChartDataItem;
     FRNG: TMWCRandomGenerator;
 
-    procedure SetPointsNumber(const AValue: Integer);
-    procedure SetRandomX(const AValue: Boolean);
-    procedure SetRandSeed(const AValue: Integer);
-    procedure SetXMax(const AValue: Double);
-    procedure SetXMin(const AValue: Double);
-    procedure SetYMax(const AValue: Double);
-    procedure SetYMin(const AValue: Double);
+    procedure SetPointsNumber(AValue: Integer);
+    procedure SetRandomX(AValue: Boolean);
+    procedure SetRandSeed(AValue: Integer);
+    procedure SetXMax(AValue: Double);
+    procedure SetXMin(AValue: Double);
+    procedure SetYMax(AValue: Double);
+    procedure SetYMin(AValue: Double);
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
@@ -139,8 +139,8 @@ type
     FOnGetChartDataItem: TGetChartDataItemEvent;
     FPointsNumber: Integer;
     FSorted: Boolean;
-    procedure SetOnGetChartDataItem(const AValue: TGetChartDataItemEvent);
-    procedure SetPointsNumber(const AValue: Integer);
+    procedure SetOnGetChartDataItem(AValue: TGetChartDataItemEvent);
+    procedure SetPointsNumber(AValue: Integer);
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
@@ -220,7 +220,7 @@ type
   TListChartSourceStrings = class(TStrings)
   private
     FSource: TListChartSource;
-    procedure Parse(const AString: String; ADataItem: PChartDataItem);
+    procedure Parse(AString: String; ADataItem: PChartDataItem);
   protected
     function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
@@ -286,7 +286,7 @@ begin
 end;
 
 procedure TListChartSourceStrings.Parse(
-  const AString: String; ADataItem: PChartDataItem);
+  AString: String; ADataItem: PChartDataItem);
 var
   p: Integer = 0;
   parts: TStringList;
@@ -623,7 +623,7 @@ begin
   Result := Integer(Hi(m)) + AMin;
 end;
 
-procedure TMWCRandomGenerator.SetSeed(const AValue: Integer);
+procedure TMWCRandomGenerator.SetSeed(AValue: Integer);
 var
   i: Integer;
 begin
@@ -701,7 +701,7 @@ begin
   Result := not RandomX;
 end;
 
-procedure TRandomChartSource.SetPointsNumber(const AValue: Integer);
+procedure TRandomChartSource.SetPointsNumber(AValue: Integer);
 begin
   if FPointsNumber = AValue then exit;
   FPointsNumber := AValue;
@@ -709,7 +709,7 @@ begin
   Notify;
 end;
 
-procedure TRandomChartSource.SetRandomX(const AValue: Boolean);
+procedure TRandomChartSource.SetRandomX(AValue: Boolean);
 begin
   if FRandomX = AValue then exit;
   FRandomX := AValue;
@@ -717,7 +717,7 @@ begin
   Notify;
 end;
 
-procedure TRandomChartSource.SetRandSeed(const AValue: Integer);
+procedure TRandomChartSource.SetRandSeed(AValue: Integer);
 begin
   if FRandSeed = AValue then exit;
   FRandSeed := AValue;
@@ -727,7 +727,7 @@ begin
   Notify;
 end;
 
-procedure TRandomChartSource.SetXMax(const AValue: Double);
+procedure TRandomChartSource.SetXMax(AValue: Double);
 begin
   if FXMax = AValue then exit;
   FXMax := AValue;
@@ -735,7 +735,7 @@ begin
   Notify;
 end;
 
-procedure TRandomChartSource.SetXMin(const AValue: Double);
+procedure TRandomChartSource.SetXMin(AValue: Double);
 begin
   if FXMin = AValue then exit;
   FXMin := AValue;
@@ -751,7 +751,7 @@ begin
   Notify;
 end;
 
-procedure TRandomChartSource.SetYMax(const AValue: Double);
+procedure TRandomChartSource.SetYMax(AValue: Double);
 begin
   if FYMax = AValue then exit;
   FYMax := AValue;
@@ -759,7 +759,7 @@ begin
   Notify;
 end;
 
-procedure TRandomChartSource.SetYMin(const AValue: Double);
+procedure TRandomChartSource.SetYMin(AValue: Double);
 begin
   if FYMin = AValue then exit;
   FYMin := AValue;
@@ -802,14 +802,14 @@ begin
 end;
 
 procedure TUserDefinedChartSource.SetOnGetChartDataItem(
-  const AValue: TGetChartDataItemEvent);
+  AValue: TGetChartDataItemEvent);
 begin
   if TMethod(FOnGetChartDataItem) = TMethod(AValue) then exit;
   FOnGetChartDataItem := AValue;
   Reset;
 end;
 
-procedure TUserDefinedChartSource.SetPointsNumber(const AValue: Integer);
+procedure TUserDefinedChartSource.SetPointsNumber(AValue: Integer);
 begin
   if FPointsNumber = AValue then exit;
   FPointsNumber := AValue;

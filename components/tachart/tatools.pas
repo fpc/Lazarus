@@ -42,8 +42,8 @@ type
     FEventsBefore: array [TChartToolEventId] of TChartToolEvent;
     FShift: TShiftState;
     FToolset: TChartToolset;
-    procedure SetActiveCursor(const AValue: TCursor);
-    procedure SetToolset(const AValue: TChartToolset);
+    procedure SetActiveCursor(AValue: TCursor);
+    procedure SetToolset(AValue: TChartToolset);
   private
     FOldCursor: TCursor;
     function GetAfterEvent(AIndex: Integer): TChartToolEvent;
@@ -635,7 +635,7 @@ begin
   FChart.Cursor := FOldCursor;
 end;
 
-procedure TChartTool.SetActiveCursor(const AValue: TCursor);
+procedure TChartTool.SetActiveCursor(AValue: TCursor);
 begin
   if FActiveCursor = AValue then exit;
   if IsActive then
@@ -673,7 +673,7 @@ begin
     Toolset := AParent as TChartToolset;
 end;
 
-procedure TChartTool.SetToolset(const AValue: TChartToolset);
+procedure TChartTool.SetToolset(AValue: TChartToolset);
 begin
   if FToolset = AValue then exit;
   if FToolset <> nil then

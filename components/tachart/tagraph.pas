@@ -215,7 +215,7 @@ type
     procedure SetBackColor(AValue: TColor);
     procedure SetDepth(AValue: TChartDistance);
     procedure SetExpandPercentage(AValue: Integer);
-    procedure SetExtent(const AValue: TChartExtent);
+    procedure SetExtent(AValue: TChartExtent);
     procedure SetFoot(Value: TChartTitle);
     procedure SetFrame(Value: TChartPen);
     procedure SetGraphBrush(Value: TBrush);
@@ -231,7 +231,7 @@ type
     procedure SetOnDrawReticule(AValue: TDrawReticuleEvent);
     procedure SetProportional(AValue: Boolean);
     procedure SetRenderingParams(AValue: TChartRenderingParams);
-    procedure SetReticuleMode(const AValue: TReticuleMode);
+    procedure SetReticuleMode(AValue: TReticuleMode);
     procedure SetReticulePos(const AValue: TPoint);
     procedure SetTitle(Value: TChartTitle);
     procedure SetToolset(AValue: TBasicChartToolset);
@@ -286,7 +286,7 @@ type
     procedure PaintOnAuxCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure PaintOnCanvas(ACanvas: TCanvas; ARect: TRect);
     procedure SaveToBitmapFile(const AFileName: String); inline;
-    procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
+    procedure SaveToFile(AClass: TRasterImageClass; AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure StyleChanged(Sender: TObject); override;
     procedure ZoomFull; override;
@@ -1132,7 +1132,7 @@ begin
   SaveToFile(TBitmap, AFileName);
 end;
 
-procedure TChart.SaveToFile(AClass: TRasterImageClass; const AFileName: String);
+procedure TChart.SaveToFile(AClass: TRasterImageClass; AFileName: String);
 begin
   with SaveToImage(AClass) do
     try
@@ -1209,7 +1209,7 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChart.SetExtent(const AValue: TChartExtent);
+procedure TChart.SetExtent(AValue: TChartExtent);
 begin
   FExtent.Assign(AValue);
   StyleChanged(Self);
@@ -1330,7 +1330,7 @@ begin
   FIsZoomed := AValue.FIsZoomed;
 end;
 
-procedure TChart.SetReticuleMode(const AValue: TReticuleMode);
+procedure TChart.SetReticuleMode(AValue: TReticuleMode);
 begin
   if FReticuleMode = AValue then exit;
   FReticuleMode := AValue;

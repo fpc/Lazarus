@@ -117,8 +117,8 @@ type
 
     function GetSource: TCustomChartSource;
     function IsSourceStored: boolean;
-    procedure SetMarks(const AValue: TChartMarks);
-    procedure SetOnGetMark(const AValue: TChartGetMarkEvent);
+    procedure SetMarks(AValue: TChartMarks);
+    procedure SetOnGetMark(AValue: TChartGetMarkEvent);
     procedure SetSource(AValue: TCustomChartSource);
     procedure SetStyles(AValue: TChartStyles);
   protected
@@ -713,13 +713,13 @@ begin
   end;
 end;
 
-procedure TChartSeries.SetMarks(const AValue: TChartMarks);
+procedure TChartSeries.SetMarks(AValue: TChartMarks);
 begin
   if FMarks = AValue then exit;
   FMarks.Assign(AValue);
 end;
 
-procedure TChartSeries.SetOnGetMark(const AValue: TChartGetMarkEvent);
+procedure TChartSeries.SetOnGetMark(AValue: TChartGetMarkEvent);
 begin
   if TMethod(FOnGetMark) = TMethod(AValue) then exit;
   FOnGetMark := AValue;

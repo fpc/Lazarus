@@ -129,8 +129,8 @@ type
     FMinValue: Double;
     function MaxValueIsStored: boolean;
     function MinValueIsStored: boolean;
-    procedure SetMaxValue(const AValue: Double);
-    procedure SetMinValue(const AValue: Double);
+    procedure SetMaxValue(AValue: Double);
+    procedure SetMinValue(AValue: Double);
   protected
     procedure ClearBounds; override;
     function GetDrawDataClass: TDrawDataItemClass; override;
@@ -692,14 +692,14 @@ begin
   Result := MinValue <> 0.0;
 end;
 
-procedure TAutoScaleAxisTransform.SetMaxValue(const AValue: Double);
+procedure TAutoScaleAxisTransform.SetMaxValue(AValue: Double);
 begin
   if FMaxValue = AValue then exit;
   FMaxValue := AValue;
   Changed;
 end;
 
-procedure TAutoScaleAxisTransform.SetMinValue(const AValue: Double);
+procedure TAutoScaleAxisTransform.SetMinValue(AValue: Double);
 begin
   if FMinValue = AValue then exit;
   FMinValue := AValue;
