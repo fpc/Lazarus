@@ -78,7 +78,8 @@ type
     fUpdatingPageControl: boolean;
     procedure SetPageControl(const AValue: TPageControl);
     procedure SelectionToolClick(Sender: TObject);
-    procedure ComponentBtnClick(Sender: TObject);
+    procedure ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure ComponentBtnDblClick(Sender: TObject);
     procedure CreatePopupMenu;
   protected
@@ -248,9 +249,10 @@ begin
   SelectButton(TComponent(Sender));
 end;
 
-procedure TComponentPalette.ComponentBtnClick(Sender: TObject);
+procedure TComponentPalette.ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
 begin
-  if ssShift in GetKeyShiftState then
+  if ssShift in Shift then
     SelectionMode := csmMulty
   else
     SelectionMode := csmSingle;
@@ -674,7 +676,7 @@ begin
               Glyph.Assign(CurComponent.Icon);
               GroupIndex := 1;
               Flat := true;
-              OnClick := @ComponentBtnClick;
+              OnMouseDown:= @ComponentBtnMouseDown;
               OnDblClick := @ComponentBtnDblClick;
               ShowHint := true;
               Hint := CurComponent.ComponentClass.ClassName;
