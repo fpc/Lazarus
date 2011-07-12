@@ -114,6 +114,7 @@ type
   end;
 
   TBasicChartSeriesEnumerator = class(TFPListEnumerator)
+  public
     function GetCurrent: TBasicChartSeries;
     property Current: TBasicChartSeries read GetCurrent;
   end;
@@ -625,6 +626,7 @@ begin
   FreeAndNil(FFrame);
   FreeAndNil(FExtent);
   FreeAndNil(FMargins);
+  FreeAndNil(FMarginsExternal);
   FreeAndNil(FBuiltinToolset);
   FreeAndNil(FBroadcaster);
   FreeAndNil(FExtentBroadcaster);
