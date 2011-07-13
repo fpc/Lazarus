@@ -2387,7 +2387,7 @@ end;
 
 function TQtDeviceContext.GetMetrics: TQtFontMetrics;
 begin
-  Result := Font.Metrics
+  Result := Font.Metrics;
 end;
 
 {------------------------------------------------------------------------------
@@ -2906,14 +2906,14 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setBKMode() ');
   {$endif}
-  result := 0;
+  Result := 0;
   if Widget <> nil then
   begin
     Mode := QPainter_BackgroundMode(Widget);
     if Mode = QtOpaqueMode then
-      result := OPAQUE
+      Result := OPAQUE
     else
-      result := TRANSPARENT;
+      Result := TRANSPARENT;
 
     if BkMode = OPAQUE then
       Mode := QtOpaqueMode

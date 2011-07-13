@@ -4214,7 +4214,7 @@ begin
   begin
     P^.X := -Trunc(QTransform_Dx(Matrix));
     P^.Y := -Trunc(QTransform_Dy(Matrix));
-    result := 1;
+    Result := 1;
   end;
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: < [WinAPI GetWindowOrgEx] Result=', dbgs(p^));
@@ -4267,7 +4267,8 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowRelativePosition]');
   {$endif}
-
+  if Handle = 0 then
+    Exit(False);
   R := TQtWidget(Handle).getFrameGeometry;
   Left := R.Left;
   Top := R.Top;
@@ -4286,6 +4287,8 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowSize]');
   {$endif}
+  if Handle = 0 then
+    Exit(False);
 
   with TQtWidget(Handle).getSize do
   begin
@@ -5351,7 +5354,7 @@ begin
     Exit;
   end;
 
-  result := TQtDeviceContext(DC).SetBkMode(bkMode);
+  Result := TQtDeviceContext(DC).SetBkMode(bkMode);
 end;
 
 function TQtWidgetSet.SetCapture(AHandle: HWND): HWND;
@@ -5801,12 +5804,12 @@ begin
   if Handle<>0 then
   begin
     TQtWidget(Handle).Props[str] := Data;
-    result:=(TQtWidget(Handle).Props[str]=Data);
+    Result := (TQtWidget(Handle).Props[str]=Data);
     {$ifdef VerboseQtWinApi}
     DebugLn('[WinAPI SetProp win=%s str=%s data=%x',[dbgsname(TQtWidget(Handle)), str, ptrint(data)]);
     {$endif}
   end else
-    result:=False;
+    Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -6008,14 +6011,14 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI SetTextColor] DC: ', dbghex(DC));
   {$endif}
-  result := CLR_INVALID;
+  Result := CLR_INVALID;
   if not IsValidDC(DC) then begin
     {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI SetTextColor] Invalid DC');
     {$endif}
     exit;
   end;
-  result := TQtDeviceContext(DC).vTextColor;
+  Result := TQtDeviceContext(DC).vTextColor;
   TQtDeviceContext(DC).vTextColor := ColorToRGB(TColor(Color)); // be sure we get TColorRef
 end;
 
