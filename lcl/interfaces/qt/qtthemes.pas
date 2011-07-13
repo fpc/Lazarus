@@ -261,11 +261,15 @@ begin
                 opt := QStyleOptionTabWidgetFrame_create();
                 // need widget to draw gradient
               end;
+            QStylePE_FrameFocusRect:
+              begin
+                opt := QStyleOptionFocusRect_create();
+              end;
             QStylePE_PanelTipLabel:
               begin
                 opt := QStyleOptionFrame_create();
               end;
-              QStylePE_IndicatorBranch:
+            QStylePE_IndicatorBranch:
               begin
                 opt := QStyleOption_create(Integer(QStyleOptionVersion),
                   Integer(QStyleOptionSO_Default));
@@ -525,6 +529,19 @@ begin
         Result := Result or QStyleState_Active or QStyleState_HasFocus or QStyleState_MouseOver;
     end;
   end;
+  if (Details.Element = teWindow) then
+  begin
+    if Details.Part in [WP_FRAMELEFT,
+          WP_FRAMERIGHT,
+          WP_FRAMEBOTTOM,
+          WP_SMALLFRAMELEFT,
+          WP_SMALLFRAMERIGHT,
+          WP_SMALLFRAMEBOTTOM] then
+    begin
+      if Details.State = FS_ACTIVE then
+        Result := Result or QStyleState_Active or QStyleState_HasFocus;
+    end;
+  end;
 end;
 
 function TQtThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
@@ -693,6 +710,18 @@ begin
     teWindow:
       begin
         case Details.Part of
+          WP_FRAMELEFT,
+          WP_FRAMERIGHT,
+          WP_FRAMEBOTTOM,
+          WP_SMALLFRAMELEFT,
+          WP_SMALLFRAMERIGHT,
+          WP_SMALLFRAMEBOTTOM:
+          begin
+            Result.PrimitiveElement := QStylePE_FrameWindow;
+            Result.DrawVariant := qdvPrimitive;
+            exit;
+          end;
+
           WP_SYSBUTTON: Result.SubControls := QStyleSC_TitleBarSysMenu;
           WP_MINBUTTON: Result.SubControls := QStyleSC_TitleBarMinButton;
           WP_MAXBUTTON: Result.SubControls := QStyleSC_TitleBarMaxButton;
