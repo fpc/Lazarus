@@ -80,8 +80,11 @@ type
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure ComponentBtnMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure ComponentBtnDblClick(Sender: TObject);
     procedure CreatePopupMenu;
+    procedure UnselectAllButtons;
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
@@ -259,6 +262,16 @@ begin
   SelectButton(TComponent(Sender));
 end;
 
+procedure TComponentPalette.ComponentBtnMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+   { If the visual state is down, but internal "no selection" then
+    just do visual unselection of all buttons
+    This trick is for double-click handling (to unselect the button visually ). }
+  if ((Sender as TCustomSpeedButton).Down) and (Selected = Nil) then
+    UnselectAllButtons;
+end;
+
 procedure TComponentPalette.ComponentBtnDblClick(Sender: TObject);
 var
   TypeClass: TComponentClass;
@@ -294,11 +307,23 @@ begin
   Selected:=nil;
 end;
 
-procedure TComponentPalette.SetSelected(const AValue: TRegisteredComponent);
+// unselect all other buttons on all other PageControl pages
+procedure TComponentPalette.UnselectAllButtons;
 var
-  SelectButtonOnPage: TSpeedButton;
-  CurPage: TBaseComponentPage;
   i: Integer;
+  CurPage: TBaseComponentPage;
+  SelectButtonOnPage: TSpeedButton;
+begin
+  for i:=0 to Count-1 do begin
+    CurPage:=Pages[i];
+    if (FSelected=nil) or (FSelected.Page<>CurPage) then begin
+      SelectButtonOnPage:=TSpeedButton(CurPage.SelectButton);
+      if SelectButtonOnPage<>nil then SelectButtonOnPage.Down:=true;
+    end;
+  end;
+end;
+
+procedure TComponentPalette.SetSelected(const AValue: TRegisteredComponent);
 begin
   if FSelected=AValue then exit;
   FSelected:=AValue;
@@ -309,14 +334,7 @@ begin
       FSelected:=nil;
   end;
   if FPageControl=nil then exit;
-  // unselect all other buttons on all other PageControl pages
-  for i:=0 to Count-1 do begin
-    CurPage:=Pages[i];
-    if (FSelected=nil) or (FSelected.Page<>CurPage) then begin
-      SelectButtonOnPage:=TSpeedButton(CurPage.SelectButton);
-      if SelectButtonOnPage<>nil then SelectButtonOnPage.Down:=true;
-    end;
-  end;
+  UnselectAllButtons;
   // select button
   if (FSelected<>nil) and (FPageControl<>nil) then begin
     TSpeedButton(FSelected.Button).Down:=true;
@@ -677,6 +695,7 @@ begin
               GroupIndex := 1;
               Flat := true;
               OnMouseDown:= @ComponentBtnMouseDown;
+              OnMouseUp:=@ComponentBtnMouseUp;
               OnDblClick := @ComponentBtnDblClick;
               ShowHint := true;
               Hint := CurComponent.ComponentClass.ClassName;
