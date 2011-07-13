@@ -274,6 +274,8 @@ begin
       if APackage.Filename=Filename then begin
         Found:=true;
         if APackage.FindUnit(MissingUnitName)<>nil then begin
+          APackage:=TLazPackage(
+            PackageEditingInterface.RedirectPackageDependency(APackage));
           if MainOwnerHasRequirement(APackage.Name) then begin
             // already in requirements
           end else if FindQuickFixAddRequirement(APackage.Name)=nil then begin
