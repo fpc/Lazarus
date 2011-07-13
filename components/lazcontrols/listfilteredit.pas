@@ -31,6 +31,8 @@ type
     procedure ApplyFilter; virtual; abstract;
     procedure StoreSelection; virtual; abstract;
     procedure RestoreSelection; virtual; abstract;
+    procedure MoveNext; virtual; abstract;
+    procedure MovePrev; virtual; abstract;
   public
     constructor Create(AOwner: TListFilterEdit);
     destructor Destroy; override;
@@ -45,6 +47,8 @@ type
     procedure ApplyFilter; override;
     procedure StoreSelection; override;
     procedure RestoreSelection; override;
+    procedure MoveNext; override;
+    procedure MovePrev; override;
     procedure FreeTVNodeData(Node: TTreeNode);
     procedure TVDeleteUnneededNodes(p: integer);
     procedure TVClearUnneededAndCreateHierachy(Filename: string);
@@ -61,6 +65,8 @@ type
     procedure ApplyFilter; override;
     procedure StoreSelection; override;
     procedure RestoreSelection; override;
+    procedure MoveNext; override;
+    procedure MovePrev; override;
   public
     constructor Create(AOwner: TListFilterEdit; aListbox: TListbox);
     destructor Destroy; override;
@@ -102,6 +108,7 @@ type
     procedure SetShowDirHierarchy(const AValue: Boolean);
     procedure SetIdleConnected(const AValue: Boolean);
   protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
     procedure Change; override;
@@ -354,6 +361,29 @@ begin
   end;
 end;
 
+procedure TViewControlTreeview.MoveNext;
+var tn: TTreeNode;
+begin
+  tn := fTreeview.Selected;
+  if not Assigned(tn) then
+  begin
+    tn := fTreeview.TopItem;
+    if Assigned(tn) then fTreeview.Selected := tn;
+    Exit;
+  end;
+  tn := tn.GetNext;
+  if Assigned(tn) then fTreeview.Selected := tn;
+end;
+
+procedure TViewControlTreeview.MovePrev;
+var tn: TTreeNode;
+begin
+  tn := fTreeview.Selected;
+  if not Assigned(tn) then Exit;
+  tn := tn.GetPrev;
+  if Assigned(tn) then fTreeview.Selected := tn;
+end;
+
 procedure TViewControlTreeview.FreeTVNodeData(Node: TTreeNode);
 var
   Child: TTreeNode;
@@ -496,6 +526,20 @@ begin
   end;
 end;
 
+procedure TViewControlListbox.MoveNext;
+var i: Integer;
+begin
+  i := fListbox.ItemIndex + 1;
+  if i < fListbox.Count then fListbox.ItemIndex := i;
+end;
+
+procedure TViewControlListbox.MovePrev;
+var i: Integer;
+begin
+  i := fListbox.ItemIndex - 1;
+  if i >= 0 then fListbox.ItemIndex := i;
+end;
+
 
 { TListBoxFilterEdit }
 
@@ -604,6 +648,15 @@ begin
     Application.AddOnIdleHandler(@OnIdle)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TListFilterEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+    VK_UP: fViewControlWrapper.MovePrev;
+    VK_DOWN: fViewControlWrapper.MoveNext;
+    else inherited KeyDown(Key, Shift);
+  end;
 end;
 
 function TListFilterEdit.GetDefaultGlyph: TBitmap;
