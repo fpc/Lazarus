@@ -689,5 +689,155 @@ begin
   Result:=(FTabs<>nil) and TTabControlStrings(fTabs).IsUpdating;
 end;
 
+{ TTabPage }
+
+type
+  TTabPage = class(TCustomPage)
+  protected
+    FIndex: integer;
+    FTabs: TCustomTabControl;
+    function GetTabVisible: Boolean; override; //assure always visible
+    function GetPageIndex: integer; override;
+    procedure SetPageIndex(AValue: Integer); override;
+  public
+    function IsControlVisible: Boolean; override;
+    function VisibleIndex: integer; override;
+  end;
+
+function TTabPage.GetTabVisible: Boolean;
+begin
+  Result := True;
+end;
+
+function TTabPage.GetPageIndex: integer;
+begin
+  Result := FIndex;
+end;
+
+procedure TTabPage.SetPageIndex(AValue: Integer);
+begin
+  FIndex := AValue;
+end;
+
+function TTabPage.IsControlVisible: Boolean;
+begin
+  Result := True;
+end;
+
+function TTabPage.VisibleIndex: integer;
+begin
+  Result := FIndex; //assume always visible
+end;
+
+{ TTabPages }
+
+type
+  TTabPages = class(TStringList)
+  protected
+    FPage: TTabPage;
+    FTabs: TTabs;
+  public
+    constructor Create(ATabCtl: TTabs);
+    function Add(const S: string): Integer; override;
+    procedure Delete(Index: Integer); override;
+  end;
+
+constructor TTabPages.Create(ATabCtl: TTabs);
+begin
+  inherited Create;
+  FTabs := ATabCtl;
+  FPage := TTabPage.Create(ATabCtl);
+  FPage.Visible := False;
+end;
+
+function TTabPages.Add(const S: string): Integer;
+begin
+  Result:=inherited Add(S);
+  FTabs.InsertPage(nil, Result);
+end;
+
+procedure TTabPages.Delete(Index: Integer);
+begin
+  inherited Delete(Index);
+  FTabs.PageRemoved(Index);
+end;
+
+{ TTabs }
+
+constructor TTabs.Create(TheOwner: TComponent);
+begin
+  FUnPaged:=True;
+  FAccess := TTabPages.Create(Self); //specialization required for notifications
+  TTabPages(FAccess).FTabs := Self;
+  inherited Create(TheOwner);
+end;
+
+procedure TTabs.DoChange;
+var
+  i: integer;
+  p: TObject;
+begin
+  //inherited DoChange;
+  if Assigned(OnPageChanged) then
+    OnPageChanged(Self)
+  else begin
+  //emulate page switch
+    for i := 0 to TabCount - 1 do begin
+      p := Tabs.Objects[i];
+      if p is TControl then
+        TControl(p).Visible := i = TabIndex;
+    end;
+  end;
+end;
+
+function TTabs.GetPage(AIndex: Integer): TCustomPage;
+begin
+  Result := TTabPages(Tabs).FPage;
+  Result.PageIndex := AIndex;
+  Result.Caption := FAccess.Strings[AIndex];
+end;
+
+function TTabs.IndexOf(APage: TPersistent): integer;
+begin
+  if APage is TTabPage then begin
+    Result := TTabPage(APage).FIndex;
+  end else
+    Result := Tabs.IndexOfObject(APage);
+end;
+
+function TTabs.IndexOfTabWithCaption(const TabCaption: string): Integer;
+begin
+  Result := Tabs.IndexOf(TabCaption);
+end;
+
+procedure TTabs.InsertPage(APage: TCustomPage; Index: Integer);
+begin
+//A page has been added to Pages - notify widgetset
+//TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, APage.VisibleIndex);
+  if HandleAllocated and (not (csLoading in ComponentState)) then begin
+  //if first page, make it current
+    if APage = nil then
+      APage := Page[Index];
+    TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, Index);
+    if PageIndex <> Index then begin //???
+      //DoSendPageIndex;
+      PageIndex:=Index;
+    end;
+  end;
+end;
+
+procedure TTabs.RemovePage(Index: Integer);
+begin
+//A page has been removed from Pages - notify widgetset
+//TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.VisibleIndex);
+  //if False then inherited RemovePage(Index);
+  if HandleAllocated and not (csDestroying in ComponentState) then begin
+  //select next visible page
+    TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, Index);
+    if FPageIndex >= Index then
+      Dec(FPageIndex);
+  end;
+end;
+
 // included by comctrls.pp
 

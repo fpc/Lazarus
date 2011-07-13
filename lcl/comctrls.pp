@@ -3401,7 +3401,6 @@ const
 {$I tabsheet.inc}
 {$I pagecontrol.inc}
 {$I tabcontrol.inc}
-{$I tabctl.inc}
 {$I listcolumns.inc}
 {$I listcolumn.inc}
 {$I listitem.inc}
