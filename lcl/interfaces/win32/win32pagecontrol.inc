@@ -59,17 +59,8 @@ begin
 end;
 
 function NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
-var
-  I: Integer;
 begin
-  Result := AIndex;
-  if csDesigning in ANotebook.ComponentState then exit;
-  I := 0;
-  while (I < ANotebook.PageCount) and (I <= Result) do
-  begin
-    if not ANotebook.Page[I].TabVisible then Inc(Result);
-    Inc(I);
-  end;
+  Result := ANotebook.TabToPageIndex(AIndex);
 end;
 
 function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
@@ -83,7 +74,13 @@ begin
   Notebook := GetWin32WindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
   PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
   PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
-  if PageIndex = -1 then exit;
+
+  if NoteBook.IsUnpaged then
+    exit(PageIndex);
+
+  if PageIndex = -1 then
+    exit(PageIndex); //DONE: must return something!
+
   PageHandle := Notebook.CustomPage(PageIndex).Handle;
   Windows.SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or ShowFlags[Showing]);
   Windows.RedrawWindow(PageHandle, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
@@ -332,7 +329,8 @@ begin
     // but on windows page handle is differ from tab and thus allocation can be
     // postponed, but this cause problems with event handling like bug #0012434
     // so to overcome such problems we need to allocate this handle
-    AChild.HandleNeeded;
+    if not ANotebook.IsUnpaged then
+      AChild.HandleNeeded;
     if ShowTabs then
     begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM or TCIF_IMAGE;
@@ -465,6 +463,7 @@ begin
   AdjustSizeNotebookPages(ANotebook);
 end;
 
+{$IFDEF old}
 class function TWin32WSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer;
 var
   X: Integer;
@@ -474,6 +473,8 @@ begin
   for X := 0 to AIndex - 1 do
     if ANotebook.Page[X].TabVisible = False then Dec(Result);
 end;
+{$ELSE}
+{$ENDIF}
 
 procedure SendSelChangeMessage(const ANotebook: TCustomNotebook; const AHandle: HWND;
   const APageIndex: integer);
@@ -565,6 +566,10 @@ begin
   NewRealIndex := GetPageRealIndex(ANotebook, AIndex);
 
   SendMessage(NotebookHandle, TCM_SETCURSEL, Windows.WParam(NewRealIndex), 0);
+
+  if ANotebook.IsUnpaged then
+    exit; //all done
+
   if not (csDestroying in ANotebook.ComponentState) then
   begin
     // create handle if not already done, need to show!

@@ -8310,7 +8310,7 @@ var
 begin
   Result := nil;
   for i := FSourceWindowList.Count-1 downto 0 do begin
-    if TSourceNotebook(SourceWindows[i]).FNoteBook.PageList.IndexOf(APage) >= 0 then begin
+    if TSourceNotebook(SourceWindows[i]).FNoteBook.IndexOf(APage) >= 0 then begin
       Result := SourceWindows[i];
       break;
     end;

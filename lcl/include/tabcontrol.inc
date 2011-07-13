@@ -479,7 +479,7 @@ procedure TCustomTabControl.DrawTab(ATabIndex: Integer; const Rect: TRect;
   Active: Boolean);
 begin
   if Assigned(FOnDrawTab) then
-    FOnDrawTab(Self,TabIndex,Rect,Active)
+    FOnDrawTab(TCustomNotebook(Self),TabIndex,Rect,Active)
   else
     Canvas.FillRect(Rect);
 end;

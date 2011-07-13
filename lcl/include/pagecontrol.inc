@@ -33,11 +33,6 @@ begin
   Result:=TTabSheet(inherited ActivePageComponent);
 end;
 
-function TPageControl.GetTabIndex: Integer;
-begin
-  Result:=inherited PageIndex;
-end;
-
 function TPageControl.GetTabSheet(Index: Integer): TTabSheet;
 begin
   Result:=TTabSheet(inherited Page[Index]);
@@ -51,11 +46,6 @@ end;
 procedure TPageControl.SetActiveTabSheet(const AValue: TTabSheet);
 begin
   ActivePageComponent := AValue;
-end;
-
-procedure TPageControl.SetTabIndex(const AValue: Integer);
-begin
-  inherited PageIndex := Avalue;
 end;
 
 function TPageControl.FindPageWithDockClient(Client: TControl): TTabSheet;

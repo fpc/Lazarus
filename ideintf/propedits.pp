@@ -6342,7 +6342,7 @@ begin
   if not (AComponent is TCustomNotebook) then
     raise Exception.Create('invalid instance for this property editor');
   Notebook:=TCustomNotebook(AComponent);
-  if Notebook.PageList.IndexOf(APersistent)<0 then
+  if Notebook.IndexOf(APersistent)<0 then
     raise Exception.Create('only children are allowed for this property');
 end;
 
@@ -6361,8 +6361,8 @@ begin
   AComponent:=GetComponent(0);
   if not (AComponent is TCustomNotebook) then exit;
   Notebook:=TCustomNotebook(AComponent);
-  for i:=0 to Notebook.PageList.Count-1 do
-    Proc(TComponent(Notebook.PageList[i]).Name);
+  for i:=0 to Notebook.PageCount-1 do
+    Proc(Notebook.Page[i].Name);
 end;
 
 { TCustomShortCutGrabBox }

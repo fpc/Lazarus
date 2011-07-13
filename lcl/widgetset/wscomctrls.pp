@@ -68,7 +68,7 @@ type
 
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; virtual;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
-    class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; virtual;
+    class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; //virtual;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; virtual;
     class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; virtual;
     class function GetCapabilities: TNoteBookCapabilities; virtual;
@@ -342,7 +342,11 @@ end;
 class function TWSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook;
   AIndex: Integer): Integer;
 begin
-  Result := AIndex;
+(* Get the Tab index from Page index.
+  No need to override, everything handled in the notebook.
+*)
+  //Result := AIndex;
+  Result := ANotebook.PageToTabIndex(AIndex);
 end;
 
 class function TWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;

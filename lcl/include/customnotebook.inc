@@ -206,11 +206,14 @@ begin
 
   fCompStyle := csNoteBook;
 
-  FPageList := TListWithEvent.Create;
+  if not FUnPaged then begin
+    FPageList := TListWithEvent.Create;
+    fAccess := TNBPages.Create(TListWithEvent(fPageList), Self);
+  end;
+
   FImageListChangeLink := TChangeLink.Create;
   FImageListChangeLink.OnChange := @DoImageListChange;
 
-  fAccess := TNBPages.Create(TListWithEvent(fPageList), Self);
   FPageIndex := -1;
   FLoadedPageIndex:=-1;
   FPageIndexOnLastShow:=-1;
@@ -255,7 +258,7 @@ begin
   DisableAlign;
   try
     FAddingPages := True;
-    for i := 0 to FPageList.Count -1 do
+    for i := 0 to PageCount -1 do
     begin
       {$IFDEF NOTEBOOK_DEBUG}
       DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
@@ -291,7 +294,7 @@ begin
   FImageListChangeLink.Free;
   Pages.Clear;
   FreeAndNil(FAccess);
-  FreeAndNil(FPageList);
+  FreeAndNil(fPageList);
   inherited Destroy;
 end;
 
@@ -332,9 +335,12 @@ begin
     OnGetImageIndex(Self, ThePageIndex, Result);
 end;
 
-function TCustomNotebook.IndexOf(APage: TCustomPage): integer;
+function TCustomNotebook.IndexOf(APage: TPersistent): integer;
 begin
-  Result:=FPageList.IndexOf(APage);
+  if FUnPaged then
+    Result := -1
+  else
+    Result:=FPageList.IndexOf(APage);
 end;
 
 function TCustomNotebook.CustomPage(Index: integer): TCustomPage;
@@ -366,6 +372,45 @@ begin
   Result:=TWSCustomNotebookClass(WidgetSetClass).GetCapabilities;
 end;
 
+function TCustomNotebook.PageToTabIndex(AIndex: integer): integer;
+var
+  i: integer;
+begin
+(* Map LCL Page into widgetset Tab index.
+  Taken from TWin32WSCustomNotebook.GetPageRealIndex (modified)
+*)
+  if (AIndex < 0) or (AIndex >= PageCount) then
+    exit(-1);
+
+  Result := AIndex;
+  if csDesigning in ComponentState then
+    exit; //all pages are visible
+  for i := 0 to AIndex - 1 do begin
+    if not Page[i].TabVisible then
+      dec(Result); //exclude invisible page
+  end;
+end;
+
+function TCustomNotebook.TabToPageIndex(AIndex: integer): integer;
+var
+  I: integer;
+begin
+(* Map widgetset Tab index into LCL Page index.
+  Taken from win32 NotebookPageRealToLCLIndex
+*)
+  Result := AIndex;
+  if FUnPaged or (csDesigning in ComponentState) then
+    exit; //all pages are visible
+  I := 0;
+  while (I < PageCount) and (I <= Result) do
+  begin
+    if not Page[I].TabVisible then
+      Inc(Result); //insert invisible page
+    Inc(I);
+  end;
+end;
+
+
 {------------------------------------------------------------------------------
   method TCustomNotebook DoCloseTabClicked
   Params: APage: TCustomPage
@@ -384,7 +429,7 @@ end;
 function TCustomNotebook.GetActivePage: String;
 begin
   if (FPageIndex >= 0) and (FPageIndex < PageCount) then
-    Result := TCustomPage(FPageList[FPageIndex]).Caption
+    Result := Page[FPageIndex].Caption
   else
     Result := '';
 end;
@@ -400,6 +445,11 @@ begin
     Result := nil;
 end;
 
+function TCustomNotebook.GetDisplayRect: TRect;
+begin
+  Result := GetClientRect; //???
+end;
+
 function TCustomNotebook.GetMultiLine: Boolean;
 begin
   Result := nboMultiLine in Options;
@@ -412,9 +462,9 @@ procedure TCustomNotebook.SetActivePage(const Value: String);
 var
   i: Integer;
 begin
-  for i := 0 to FPageList.Count - 1 do
+  for i := 0 to PageCount - 1 do
   begin
-    if TCustomPage(FPageList[i]).Caption = Value then
+    if Page[i].Caption = Value then
     begin
       SetPageIndex(i);
       Exit;
@@ -424,7 +474,8 @@ end;
 
 procedure TCustomNotebook.SetActivePageComponent(const AValue: TCustomPage);
 begin
-  PageIndex := FPageList.IndexOf(AValue);
+  if not FUnPaged then
+    PageIndex := FPageList.IndexOf(AValue);
 end;
 
 procedure TCustomNotebook.SetImages(const AValue: TImageList);
@@ -471,12 +522,14 @@ begin
   //debugln('TCustomNotebook.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
 
   FPageIndex := AValue;
-  UpdateAllDesignerFlags;
+  if not FUnPaged then
+    UpdateAllDesignerFlags;
   DoSendPageIndex;
   if ([csDesigning, csLoading, csDestroying] * ComponentState = []) then
     DoChange;
 end;
 
+{$IFDEF old}
 {------------------------------------------------------------------------------
   TCustomNotebook GetPageIndex
  ------------------------------------------------------------------------------}
@@ -484,20 +537,23 @@ function TCustomNotebook.GetPageIndex: Integer;
 begin
   Result := FPageIndex;
 end;
+{$ELSE}
+//if override is required, make virtual first!
+{$ENDIF}
 
 procedure TCustomNotebook.InsertPage(APage: TCustomPage; Index: Integer);
 var
   NewZPosition: integer;
 begin
-  if FPageList.IndexOf(APage) >= 0 then Exit;
+  if FUnPaged or (IndexOf(APage) >= 0) then Exit;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TCustomNotebook.InsertPage A ',dbgsName(Self),' Index=',Index,' Name=',
     APage.Name,' Caption=',APage.Caption]);
   {$ENDIF}
   APage.DisableAlign;
   try
-    if Index < FPageList.Count then
-      NewZPosition := GetControlIndex(TCustomPage(fPageList[Index]))
+    if Index < PageCount then
+      NewZPosition := GetControlIndex(Page[Index])
     else
       NewZPosition := -1;
     Include(APage.FFlags, pfInserting);
@@ -556,12 +612,12 @@ end;
 
 function TCustomNotebook.FindVisiblePage(Index: Integer): Integer;
 begin
-  for Result := Index to FPageList.Count - 1 do
-    if TCustomPage(FPageList[Result]).TabVisible then
+  for Result := Index to PageCount - 1 do
+    if Page[Result].TabVisible then
       exit;
   // if arrived here no visible forward page was found, search backwards
   for Result := Index - 1 downto 0 do
-    if TCustomPage(FPageList[Result]).TabVisible then
+    if Page[Result].TabVisible then
       exit;
   Result := -1;
 end;
@@ -641,11 +697,11 @@ begin
   // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TCustomNotebook.RemovePage A ',dbgsName(Self),' Index=',Index,
-    ' FPageList.Count=',FPageList.Count,' PageIndex=',PageIndex]);
+    ' FPageList.Count=',PageCount,' PageIndex=',PageIndex]);
   {$ENDIF}
-  if (Index >= 0) and (Index < FPageList.Count) then
+  if not FUnPaged and (Index >= 0) and (Index < PageCount) then
   begin
-    APage:=TCustomPage(fPageList[Index]);
+    APage:=Page[Index];
     APage.FTabVisible:=false;
     if HandleAllocated then
       AddRemovePageHandle(APage);
@@ -673,7 +729,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetPageCount: Integer;
 begin
-  Result := fPageList.Count;
+  if FUnPaged then
+    Result := FAccess.Count
+  else
+    Result := fPageList.Count;
 end;
 
 {------------------------------------------------------------------------------
@@ -689,7 +748,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetPage(AIndex: Integer): TCustomPage;
 begin
-  if (AIndex < 0) or (AIndex >= FPageList.Count) then
+  if (AIndex < 0) or (AIndex >= PageCount) then
     RaiseGDBException('TCustomNotebook.GetCustomPage Index out of bounds');
   Result := TCustomPage(FPageList.Items[AIndex]);
 end;
@@ -721,6 +780,8 @@ procedure TCustomNotebook.UpdateAllDesignerFlags;
 var
   i: integer;
 begin
+  if FUnPaged then
+    exit;
   for i:=0 to PageCount-1 do
     UpdateDesignerFlags(i);
 end;
@@ -765,8 +826,8 @@ begin
   { Find a child control that matches the one passed in and display
     the page that contains that control. This method is necessary
     for compatibility with Delphi }
-  for i := 0 to fPageList.Count - 1 do begin
-    if TControl(fPageList[i]) = APage then begin
+  for i := 0 to PageCount - 1 do begin
+    if Page[i] = APage then begin
       PageIndex := i;
       Exit;
     end;

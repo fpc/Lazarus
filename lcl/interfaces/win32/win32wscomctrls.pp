@@ -70,7 +70,11 @@ type
     class procedure RemovePage(const ANotebook: TCustomNotebook;
       const AIndex: integer); override;
 
+  {$IFDEF old}
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
+  {$ELSE}
+    //use ANotebook.PageToTabIndex (and .TabToPageIndex)
+  {$ENDIF}
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
     class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
     class function GetCapabilities: TNoteBookCapabilities;override;

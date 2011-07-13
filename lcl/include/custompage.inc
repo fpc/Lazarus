@@ -130,7 +130,7 @@ begin
   begin
     // add to new pagelist
     ParentNotebook := TCustomNotebook(Parent);
-    i := ParentNotebook.PageList.IndexOf(Self);
+    i := ParentNotebook.IndexOf(Self);
     if i < 0 then
       ParentNotebook.InsertPage(Self, ParentNotebook.PageCount);
   end;
@@ -160,7 +160,7 @@ end;
 function TCustomPage.GetPageIndex: integer;
 begin
   if (Parent <> nil) and (Parent is TCustomNotebook) then
-    Result := TCustomNotebook(Parent).PageList.IndexOf(Self)
+    Result := TCustomNotebook(Parent).IndexOf(Self)
   else
     Result := -1;
 end;
@@ -232,23 +232,28 @@ end;
 function TCustomPage.VisibleIndex: integer;
 // returns the visible index, as if TabVisible=true
 var
-  List: TList;
+  notebook: TCustomNotebook;
   i: Integer;
 begin
+(* Removed PageList dependency.
+  Added missing result value.
+*)
   if (Parent <> nil) and (Parent is TCustomNotebook) then
   begin
     Result := 0;
-    List := TCustomNotebook(Parent).PageList;
+    //List := TCustomNotebook(Parent).PageList;
+    notebook := TCustomNotebook(Parent);
     i := 0;
     repeat
-      if i = List.Count then exit(-1);
-      if (TObject(List[i]) = Self) then exit;
-      if TCustomPage(List[i]).TabVisible or (csDesigning in ComponentState)
+      if i = notebook.PageCount then exit(-1);
+      if notebook.Page[i] = Self then exit;
+      if (csDesigning in ComponentState) or notebook.Page[i].TabVisible
       then inc(Result);
       inc(i);
     until False;
-  end else
-    Result := -1;
+  end;
+// else
+  Result := -1;
 end;
 
 {------------------------------------------------------------------------------
