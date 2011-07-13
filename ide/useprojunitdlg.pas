@@ -21,7 +21,7 @@
 
   Original version by Juha Manninen
   Icons added by Marcelo B Paula
-  All available units added to the list by Anton
+  All available units added to the list by Anton Panferov
 }
 unit UseProjUnitDlg;
 
@@ -249,7 +249,10 @@ end;
 
 function TUseUnitDialog.SelectedUnit: string;
 begin
-  Result:=UnitsListBox.Items[UnitsListBox.ItemIndex];
+  if UnitsListBox.ItemIndex >= 0 then
+    Result := UnitsListBox.Items[UnitsListBox.ItemIndex]
+  else
+    Result := '';
 end;
 
 function TUseUnitDialog.InterfaceSelected: Boolean;
