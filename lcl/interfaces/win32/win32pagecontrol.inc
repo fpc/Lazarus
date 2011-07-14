@@ -463,19 +463,6 @@ begin
   AdjustSizeNotebookPages(ANotebook);
 end;
 
-{$IFDEF old}
-class function TWin32WSCustomNotebook.GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer;
-var
-  X: Integer;
-begin
-  Result := AIndex;
-  if csDesigning in ANotebook.ComponentState then exit;
-  for X := 0 to AIndex - 1 do
-    if ANotebook.Page[X].TabVisible = False then Dec(Result);
-end;
-{$ELSE}
-{$ENDIF}
-
 procedure SendSelChangeMessage(const ANotebook: TCustomNotebook; const AHandle: HWND;
   const APageIndex: integer);
 var
