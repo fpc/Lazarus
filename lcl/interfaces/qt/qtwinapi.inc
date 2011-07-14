@@ -3805,11 +3805,11 @@ begin
       end;
     SM_CXMENUSIZE:
       begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMENUSIZE       ');
+        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth, nil, nil);
       end;
     SM_CYMENUSIZE:
       begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENUSIZE       ');
+        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorHeight, nil, nil);
       end;
     SM_CXMIN:
       begin
