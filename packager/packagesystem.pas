@@ -864,6 +864,7 @@ var
 begin
   FuncData:=PReadFunctionData(Data);
   FuncData^.Result:=GetIdentifier(PChar(FuncData^.Param));
+  Result:=true;
 end;
 
 function TLazPackageGraph.GetPackageFromMacroParameter(const TheID: string;
