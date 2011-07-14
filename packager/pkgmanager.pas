@@ -1527,7 +1527,7 @@ begin
     'PKGUNITPATH',nil,@PackageGraph.MacroFunctionCTPkgUnitPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PKGINCPATH',nil,@PackageGraph.MacroFunctionCTPkgIncPath);
-    
+
   LazPackageDescriptors:=TLazPackageDescriptors.Create;
   LazPackageDescriptors.AddDefaultPackageDescriptors;
 

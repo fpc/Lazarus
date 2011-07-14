@@ -2137,6 +2137,10 @@ begin
   else if CompareText(MacroName,'PkgDir')=0 then begin
     Handled:=true;
     s:=FDirectory;
+  end
+  else if CompareText(MacroName,'PkgName')=0 then begin
+    Handled:=true;
+    s:=Name;
   end;
 end;
 
