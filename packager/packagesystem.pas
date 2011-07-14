@@ -183,6 +183,7 @@ type
     function MacroFunctionCTPkgSrcPath(Data: Pointer): boolean;
     function MacroFunctionCTPkgUnitPath(Data: Pointer): boolean;
     function MacroFunctionCTPkgIncPath(Data: Pointer): boolean;
+    function MacroFunctionCTPkgName(Data: Pointer): boolean;
     function GetPackageFromMacroParameter(const TheID: string;
                                           out APackage: TLazPackage): boolean;
   public
@@ -855,6 +856,14 @@ begin
   Result:=GetPackageFromMacroParameter(FuncData^.Param,APackage);
   if Result then
     FuncData^.Result:=APackage.GetIncludePath(false);
+end;
+
+function TLazPackageGraph.MacroFunctionCTPkgName(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+begin
+  FuncData:=PReadFunctionData(Data);
+  FuncData^.Result:=GetIdentifier(PChar(FuncData^.Param));
 end;
 
 function TLazPackageGraph.GetPackageFromMacroParameter(const TheID: string;
