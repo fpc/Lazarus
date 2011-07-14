@@ -146,7 +146,7 @@ begin
   begin
     PageControlHandle := AWinControl.Parent.Handle;
     PageIndex := TCustomPage(AWinControl).PageIndex;
-    RealIndex := TWinCEWSCustomNotebook.GetPageRealIndex(TCustomNotebook(AWinControl.Parent), PageIndex);
+    RealIndex := TCustomNotebook(AWinControl.Parent).PageToTabIndex(PageIndex);
     if RealIndex <> -1 then
       Windows.SendMessage(PageControlHandle, TCM_DELETEITEM,
         Windows.WPARAM(RealIndex), 0);
@@ -161,7 +161,7 @@ var
   NotebookHandle: HWND;
 begin
   PageIndex := TCustomPage(AWinControl).PageIndex;
-  RealIndex := TWinCEWSCustomNotebook.GetPageRealIndex(TCustomNotebook(AWinControl.Parent), PageIndex);
+  RealIndex := TCustomNotebook(AWinControl.Parent).PageToTabIndex(PageIndex);
   NotebookHandle := AWinControl.Parent.Handle;
   // We can't set label of a page not yet added,
   // Check for valid page index
@@ -192,7 +192,7 @@ var
   NotebookHandle: HWND;
 begin
   PageIndex := ACustomPage.PageIndex;
-  RealIndex := TWinCEWSCustomNotebook.GetPageRealIndex(TCustomNotebook(ACustomPage.Parent), PageIndex);
+  RealIndex := TCustomNotebook(ACustomPage.Parent).PageToTabIndex(PageIndex);
   NotebookHandle := ACustomPage.Parent.Handle;
   // Check for valid page index
   if (RealIndex >= 0) and (RealIndex < Windows.SendMessage(NotebookHandle, TCM_GETITEMCOUNT,0,0)) then
@@ -459,7 +459,7 @@ begin
   Handle := ANotebook.Handle;
   OldRealIndex := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
   OldIndex := NotebookPageRealToLCLIndex(ANotebook, OldRealIndex);
-  NewRealIndex := GetPageRealIndex(ANotebook, AIndex);
+  NewRealIndex := ANotebook.PageToTabIndex(AIndex);
   SendMessage(Handle, TCM_SETCURSEL, Windows.WParam(NewRealIndex), 0);
   if not (csDestroying in ANotebook.ComponentState) then
   begin
