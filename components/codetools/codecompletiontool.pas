@@ -6211,20 +6211,20 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         if (Parts[ppIndexWord].StartPos<1) then begin
           // param list, no index
           AccessFunc:='procedure '+AccessParam
-                      +'('+ParamList+';const '+SetPropertyVariablename+': '
+                      +'('+ParamList+';'+SetPropertyVariablename+':'
                       +PropType+');';
         end else begin
           // index + param list
           AccessFunc:='procedure '+AccessParam
                       +'(AIndex:integer;'+ParamList+';'
-                      +'const '+SetPropertyVariablename+': '+PropType+');';
+                      +SetPropertyVariablename+':'+PropType+');';
         end;
       end else begin
         if (Parts[ppIndexWord].StartPos<1) then begin
           // no param list, no index
           AccessFunc:=
             'procedure '+AccessParam
-            +'(const '+SetPropertyVariablename+': '+PropType+');';
+            +'('+SetPropertyVariablename+':'+PropType+');';
           if VariableName<>'' then begin
             { read spec is a variable -> add simple assign code to body
               For example:
@@ -6239,7 +6239,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
             ProcBody:=
               'procedure '
               +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
-              +'(const '+SetPropertyVariablename+': '+PropType+');'
+              +'('+SetPropertyVariablename+':'+PropType+');'
               +BeautifyCodeOpts.LineEnd
               +'begin'+BeautifyCodeOpts.LineEnd
               +GetIndentStr(BeautifyCodeOpts.Indent)
@@ -6253,8 +6253,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index, no param list
           AccessFunc:='procedure '+AccessParam
-                      +'(AIndex:integer; const '+SetPropertyVariablename+': '
-                      +PropType+');';
+                  +'(AIndex:integer;'+SetPropertyVariablename+':'+PropType+');';
         end;
       end;
       // add new Insert Node
