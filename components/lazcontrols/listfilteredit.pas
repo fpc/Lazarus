@@ -652,11 +652,15 @@ end;
 
 procedure TListFilterEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  case Key of
-    VK_UP: fViewControlWrapper.MovePrev;
-    VK_DOWN: fViewControlWrapper.MoveNext;
-    else inherited KeyDown(Key, Shift);
-  end;
+  if ((Key=VK_UP) or (Key=VK_DOWN)) and (Shift=[]) then
+  begin
+    case Key of
+      VK_UP:   fViewControlWrapper.MovePrev;
+      VK_DOWN: fViewControlWrapper.MoveNext;
+    end;
+    Key:=0;
+  end
+  else inherited KeyDown(Key, Shift);
 end;
 
 function TListFilterEdit.GetDefaultGlyph: TBitmap;
