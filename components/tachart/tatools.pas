@@ -1180,25 +1180,24 @@ end;
 
 function TDataPointTool.ParseAffectedSeries: TBooleanDynArray;
 var
-  s: TStringList;
-  i, p: Integer;
+  sl: TStringList;
+  p: Integer;
+  s: String;
 begin
   SetLength(Result, FChart.SeriesCount);
   if AffectedSeries = '' then begin
     FillChar(Result[0], Length(Result), true);
     exit;
   end;
-  s := TStringList.Create;
+  sl := TStringList.Create;
   try
-    s.CommaText := AffectedSeries;
+    sl.CommaText := AffectedSeries;
     FillChar(Result[0], Length(Result), false);
-    for i := 0 to s.Count - 1 do begin
-      p := StrToIntDef(s[i], -1);
-      if InRange(p, 0, High(Result)) then
+    for s in sl do
+      if TryStrToInt(s, p) and InRange(p, 0, High(Result)) then
         Result[p] := true;
-    end;
   finally
-    s.Free;
+    sl.Free;
   end;
 end;
 

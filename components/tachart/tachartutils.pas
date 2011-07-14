@@ -130,6 +130,15 @@ type
 
   TShowMessageProc = procedure (const AMsg: String);
 
+  {$IFNDEF fpdoc} // Workaround for issue #18549.
+  generic TTypedFPListEnumerator<T> = class(TFPListEnumerator)
+  {$ELSE}
+  TTypedFPListEnumerator = class(TFPListEnumerator)
+  {$ENDIF}
+    function GetCurrent: T;
+    property Current: T read GetCurrent;
+  end;
+
   { TIndexedComponentList }
 
   TIndexedComponentList = class(TFPList)
@@ -427,6 +436,13 @@ begin
   Result := (A.Code = B.Code) and (A.Data = B.Data);
 end;
 
+{ TTypedFPListEnumerator }
+
+function TTypedFPListEnumerator.GetCurrent: T;
+begin
+  Result := T(inherited GetCurrent);
+end;
+
 { TIndexedComponentList }
 
 procedure TIndexedComponentList.ChangeNamePrefix(
@@ -607,19 +623,19 @@ end;
 
 procedure TBroadcaster.Broadcast(ASender: TObject);
 var
-  i: Integer;
+  p: Pointer;
 begin
   if Locked then exit;
-  for i := 0 to Count - 1 do
-    TListener(Items[i]).Notify(ASender);
+  for p in Self do
+    TListener(p).Notify(ASender);
 end;
 
 destructor TBroadcaster.Destroy;
 var
-  i: Integer;
+  p: Pointer;
 begin
-  for i := 0 to Count - 1 do
-    TListener(Items[i]).Forget;
+  for p in Self do
+    TListener(p).Forget;
   inherited;
 end;
 

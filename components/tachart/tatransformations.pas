@@ -70,7 +70,13 @@ type
 
   TAxisTransformClass = class of TAxisTransform;
 
+  {$IFNDEF fpdoc} // Workaround for issue #18549.
+  TAxisTransformEnumerator = specialize TTypedFPListEnumerator<TAxisTransform>;
+  {$ENDIF}
+
   TAxisTransformList = class(TIndexedComponentList)
+  public
+    function GetEnumerator: TAxisTransformEnumerator;
   end;
 
   { TChartAxisTransformations }
@@ -256,6 +262,13 @@ procedure RegisterAxisTransformClass(
 begin
   RegisterClass(AAxisTransformClass);
   AxisTransformsClassRegistry.AddObject(ACaption, TObject(AAxisTransformClass));
+end;
+
+{ TAxisTransformList }
+
+function TAxisTransformList.GetEnumerator: TAxisTransformEnumerator;
+begin
+  Result := TAxisTransformEnumerator.Create(Self);
 end;
 
 { TAxisTransformsComponentEditor }
@@ -450,23 +463,21 @@ end;
 
 function TChartAxisTransformations.AxisToGraph(AX: Double): Double;
 var
-  i: Integer;
+  t: TAxisTransform;
 begin
   Result := AX;
-  for i := 0 to List.Count - 1 do
-    with TAxisTransform(List[i]) do
-      if Enabled then
-        Result := AxisToGraph(Result);
+  for t in List do
+    if t.Enabled then
+      Result := t.AxisToGraph(Result);
 end;
 
 procedure TChartAxisTransformations.ClearBounds;
 var
-  i: Integer;
+  t: TAxisTransform;
 begin
-  for i := List.Count - 1 downto 0 do
-    with TAxisTransform(List[i]) do
-      if Enabled then
-        ClearBounds;
+  for t in List do
+    if t.Enabled then
+      t.ClearBounds;
 end;
 
 constructor TChartAxisTransformations.Create(AOwner: TComponent);
@@ -488,11 +499,11 @@ end;
 procedure TChartAxisTransformations.GetChildren(
   Proc: TGetChildProc; Root: TComponent);
 var
-  i: Integer;
+  t: TAxisTransform;
 begin
-  for i := 0 to List.Count - 1 do
-    if TAxisTransform(List[i]).Owner = Root then
-      Proc(TAxisTransform(List[i]));
+  for t in List do
+    if t.Owner = Root then
+      Proc(t);
 end;
 
 function TChartAxisTransformations.GraphToAxis(AX: Double): Double;
@@ -508,12 +519,11 @@ end;
 
 procedure TChartAxisTransformations.SetChart(AChart: TObject);
 var
-  i: Integer;
+  t: TAxisTransform;
 begin
-  for i := 0 to List.Count - 1 do
-    with TAxisTransform(List[i]) do
-      if Enabled then
-        TAxisTransform(List[i]).SetChart(AChart);
+  for t in List do
+    if t.Enabled then
+      t.SetChart(AChart);
 end;
 
 procedure TChartAxisTransformations.SetChildOrder(
@@ -539,12 +549,11 @@ end;
 
 procedure TChartAxisTransformations.UpdateBounds(var AMin, AMax: Double);
 var
-  i: Integer;
+  t: TAxisTransform;
 begin
-  for i := 0 to List.Count - 1 do
-    with TAxisTransform(List[i]) do
-      if Enabled then
-        UpdateBounds(AMin, AMax);
+  for t in List do
+    if t.Enabled then
+      t.UpdateBounds(AMin, AMax);
 end;
 
 { TLinearAxisTransform }
