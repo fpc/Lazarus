@@ -696,11 +696,14 @@ end;
 
 procedure TProjectVersionStringTable.AddRequired;
 const
-  RequiredFields: array[0..6] of String = (
+  RequiredFields: array[0..9] of String = (
+    'Comments',
     'CompanyName',
     'FileDescription',
     'FileVersion',
     'InternalName',
+    'LegalCopyright',
+    'LegalTrademarks',
     'OriginalFilename',
     'ProductName',
     'ProductVersion'
@@ -743,10 +746,13 @@ end;
 function TProjectVersionStringTable.IsRequired(const aKey: string): Boolean;
 begin
   Result :=
+    (aKey = 'Comments') or
     (aKey = 'CompanyName') or
     (aKey = 'FileDescription') or
     (aKey = 'FileVersion') or
     (aKey = 'InternalName') or
+    (aKey = 'LegalCopyright') or
+    (aKey = 'LegalTrademarks') or
     (aKey = 'OriginalFilename') or
     (aKey = 'ProductName') or
     (aKey = 'ProductVersion');
