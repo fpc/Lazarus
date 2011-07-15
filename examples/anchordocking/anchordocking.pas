@@ -1683,14 +1683,18 @@ end;
 procedure TAnchorDockMaster.CreateCloseButtonBitmap;
 var
   BitmapHandle,MaskHandle: HBITMAP;
-  OrigBitmap: TBitmap;
+  OrigBitmap: TCustomBitmap;
 begin
   if fCloseBtnBitmap<>nil then exit;
-  ThemeServices.GetStockImage(idButtonClose,BitmapHandle,MaskHandle);
-  OrigBitmap:=TBitmap.Create;
-  OrigBitmap.Handle:=BitmapHandle;
-  if MaskHandle<>0 then
-    OrigBitmap.MaskHandle:=MaskHandle;
+
+  if ThemeServices.GetStockImage(idButtonClose,BitmapHandle,MaskHandle) then begin
+    OrigBitmap:=TBitmap.Create;
+    OrigBitmap.Handle:=BitmapHandle;
+    if MaskHandle<>0 then
+      OrigBitmap.MaskHandle:=MaskHandle;
+  end
+  else
+    OrigBitmap := GetDefaultButtonIcon(idButtonClose);
   DockMaster.fCloseBtnBitmap:=TBitmap.Create;
   with DockMaster.fCloseBtnBitmap do begin
     SetSize(HeaderButtonSize,HeaderButtonSize);

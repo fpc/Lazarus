@@ -1456,7 +1456,7 @@ begin
   if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault; 
   UseMsgFile := aXMLConfig.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
   MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', '');
-  if UseMsgFile and FileExists(MsgFileName) then
+  if UseMsgFile and FileExistsCached(MsgFileName) then
     fCompilerMessages.LoadMsgFile(MsgFileName);
 
   for i := 0 to fCompilerMessages.Count - 1 do begin
