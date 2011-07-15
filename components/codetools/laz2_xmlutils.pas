@@ -401,10 +401,10 @@ end;
 
 function KeyCompare(const Key1: TXMLUtilString; Key2: Pointer; Key2Len: Integer): Boolean;
 begin
-{$IFDEF FPC}
+{$IF defined(FPC) and (SizeOf(TXMLUtilChar)=2)}
   Result := (Length(Key1)=Key2Len) and (CompareWord(Pointer(Key1)^, Key2^, Key2Len) = 0);
 {$ELSE}
-  Result := (Length(Key1)=Key2Len) and CompareMem(Pointer(Key1), Key2, Key2Len*2);
+  Result := (Length(Key1)=Key2Len) and CompareMem(Pointer(Key1), Key2, Key2Len*SizeOf(TXMLUtilChar));
 {$ENDIF}
 end;
 
@@ -497,7 +497,7 @@ begin
     Result := Entry^;
     Exit;
   end;
-  if FCount > FBucketCount then  { arbitrary limit, probably too high }
+  if FCount > ((FBucketCount*7) div 8) then
   begin
     Resize(FBucketCount * 2);
     Result := Lookup(Key, KeyLength, Found, CanCreate);
