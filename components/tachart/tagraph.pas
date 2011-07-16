@@ -967,12 +967,12 @@ var
   a: TRectArray absolute Result;
   s: TBasicChartSeries;
 begin
-  Result := Margins.Data;
+  Result := Rect(0, 0, 0, 0);
   for s in Series do
     if s.Active then
       s.UpdateMargins(ADrawer, Result);
   for i := Low(a) to High(a) do
-    a[i] := ADrawer.Scale(a[i]);
+    a[i] := ADrawer.Scale(a[i] + TRectArray(Margins.Data)[i]);
 end;
 
 function TChart.GetRenderingParams: TChartRenderingParams;
