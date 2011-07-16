@@ -668,7 +668,7 @@ begin
           if not Active then continue;
           // Interleave axises with series according to ZPosition.
           if AxisVisible then
-            AxisList.Draw(ADrawer, FClipRect, Self, ZPosition, d, axisIndex);
+            AxisList.Draw(ZPosition, axisIndex);
           OffsetDrawArea(Min(ZPosition, d), Min(Depth, d));
           ADrawer.ClippingStart(FClipRect);
           try
@@ -688,7 +688,7 @@ begin
     end;
   end;
   if AxisVisible then
-    AxisList.Draw(ADrawer, FClipRect, Self, MaxInt, d, axisIndex);
+    AxisList.Draw(MaxInt, axisIndex);
 end;
 
 {$IFDEF LCLGtk2}
@@ -1105,10 +1105,11 @@ end;
 procedure TChart.PrepareAxis(ADrawer: IChartDrawer);
 var
   axisMargin: TChartAxisMargins;
-  a: TChartAxisAlignment;
+  aa: TChartAxisAlignment;
   cr: TRect;
   tries: Integer;
   prevExt: TDoubleRect;
+  axis: TChartAxis;
 begin
   if not AxisVisible then begin
     FClipRect.Left += Depth;
@@ -1117,24 +1118,28 @@ begin
     exit;
   end;
 
+  AxisList.PrepareGroups;
+  for axis in AxisList do
+    axis.PrepareHelper(ADrawer, Self, @FClipRect, Depth);
+
   // There is a cyclic dependency: extent -> visible marks -> margins.
   // We recalculate them iteratively hoping that the process converges.
-  AxisList.PrepareGroups;
   CalculateTransformationCoeffs(Rect(0, 0, 0, 0));
   cr := FClipRect;
   for tries := 1 to 10 do begin
-    axisMargin := AxisList.Measure(ADrawer, CurrentExtent);
+    FClipRect := cr;
+    axisMargin := AxisList.Measure(CurrentExtent);
     axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
     axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
-    FClipRect := cr;
-    for a := Low(a) to High(a) do
-      SideByAlignment(FClipRect, a, -axisMargin[a]);
+    for aa := Low(aa) to High(aa) do
+      SideByAlignment(FClipRect, aa, -axisMargin[aa]);
     prevExt := FCurrentExtent;
     FCurrentExtent := FLogicalExtent;
     CalculateTransformationCoeffs(GetMargins(ADrawer));
     if prevExt = FCurrentExtent then break;
     prevExt := FCurrentExtent;
   end;
+
   AxisList.Prepare(FClipRect);
 end;
 

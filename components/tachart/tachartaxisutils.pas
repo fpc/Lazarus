@@ -170,7 +170,7 @@ type
     function TryApplyStripes: Boolean; inline;
   public
     FAxis: TChartBasicAxis;
-    FClipRect: TRect;
+    FClipRect: ^TRect;
     FDrawer: IChartDrawer;
     FPrevCoord: Integer;
     FPrevLabelPoly: TPointArray;
@@ -180,10 +180,14 @@ type
     FZOffset: TPoint;
 
     procedure BeginDrawing; virtual;
+    constructor Create; virtual;
+    function Clone: TAxisDrawHelper;
     procedure DrawMark(
       AFixedCoord: Integer; AMark: Double; const AText: String);
     procedure EndDrawing; virtual; abstract;
   end;
+
+  TAxisDrawHelperClass = class of TAxisDrawHelper;
 
   { TAxisDrawHelperX }
 
@@ -232,6 +236,21 @@ begin
   FScaledTickLength := FDrawer.Scale(FAxis.TickLength);
 end;
 
+function TAxisDrawHelper.Clone: TAxisDrawHelper;
+begin
+  Result := TAxisDrawHelperClass(ClassType).Create;
+  Result.FAxis := FAxis;
+  Result.FClipRect := FClipRect;
+  Result.FDrawer := FDrawer;
+  Result.FTransf := FTransf;
+  Result.FZOffset := FZOffset;
+end;
+
+constructor TAxisDrawHelper.Create;
+begin
+  inherited;
+end;
+
 procedure TAxisDrawHelper.DrawLabel(ALabelCenter: TPoint; const AText: String);
 begin
   ALabelCenter += FZOffset;
@@ -275,7 +294,7 @@ end;
 procedure TAxisDrawHelperX.BeginDrawing;
 begin
   inherited;
-  FPrevCoord := FClipRect.Left;
+  FPrevCoord := FClipRect^.Left;
 end;
 
 procedure TAxisDrawHelperX.DrawLabelAndTick(
@@ -295,7 +314,7 @@ end;
 procedure TAxisDrawHelperX.EndDrawing;
 begin
   if FAxis.Grid.Visible and TryApplyStripes then
-    BarZ(FPrevCoord + 1, FClipRect.Top + 1, FClipRect.Right, FClipRect.Bottom);
+    BarZ(FPrevCoord + 1, FClipRect^.Top + 1, FClipRect^.Right, FClipRect^.Bottom);
 end;
 
 function TAxisDrawHelperX.GraphToImage(AGraph: Double): Integer;
@@ -306,13 +325,13 @@ end;
 procedure TAxisDrawHelperX.GridLine(ACoord: Integer);
 begin
   if TryApplyStripes then
-    BarZ(FPrevCoord + 1, FClipRect.Top + 1, ACoord, FClipRect.Bottom);
-  LineZ(Point(ACoord, FClipRect.Top), Point(ACoord, FClipRect.Bottom));
+    BarZ(FPrevCoord + 1, FClipRect^.Top + 1, ACoord, FClipRect^.Bottom);
+  LineZ(Point(ACoord, FClipRect^.Top), Point(ACoord, FClipRect^.Bottom));
 end;
 
 function TAxisDrawHelperX.IsInClipRange(ACoord: Integer): Boolean;
 begin
-  Result := InRange(ACoord, FClipRect.Left, FClipRect.Right);
+  Result := InRange(ACoord, FClipRect^.Left, FClipRect^.Right);
 end;
 
 { TAxisDrawHelperY }
@@ -320,7 +339,7 @@ end;
 procedure TAxisDrawHelperY.BeginDrawing;
 begin
   inherited;
-  FPrevCoord := FClipRect.Bottom;
+  FPrevCoord := FClipRect^.Bottom;
 end;
 
 procedure TAxisDrawHelperY.DrawLabelAndTick(
@@ -340,7 +359,7 @@ end;
 procedure TAxisDrawHelperY.EndDrawing;
 begin
   if FAxis.Grid.Visible and TryApplyStripes then
-    BarZ(FClipRect.Left + 1, FClipRect.Top + 1, FClipRect.Right, FPrevCoord);
+    BarZ(FClipRect^.Left + 1, FClipRect^.Top + 1, FClipRect^.Right, FPrevCoord);
 end;
 
 function TAxisDrawHelperY.GraphToImage(AGraph: Double): Integer;
@@ -351,13 +370,13 @@ end;
 procedure TAxisDrawHelperY.GridLine(ACoord: Integer);
 begin
   if TryApplyStripes then
-    BarZ(FClipRect.Left + 1, FPrevCoord, FClipRect.Right, ACoord);
-  LineZ(Point(FClipRect.Left, ACoord), Point(FClipRect.Right, ACoord));
+    BarZ(FClipRect^.Left + 1, FPrevCoord, FClipRect^.Right, ACoord);
+  LineZ(Point(FClipRect^.Left, ACoord), Point(FClipRect^.Right, ACoord));
 end;
 
 function TAxisDrawHelperY.IsInClipRange(ACoord: Integer): Boolean;
 begin
-  Result := InRange(ACoord, FClipRect.Top, FClipRect.Bottom);
+  Result := InRange(ACoord, FClipRect^.Top, FClipRect^.Bottom);
 end;
 
 { TChartAxisTitle }

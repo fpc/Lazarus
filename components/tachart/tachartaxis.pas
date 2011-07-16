@@ -97,6 +97,7 @@ type
   strict private
     FAlignment: TChartAxisAlignment;
     FGroup: Integer;
+    FHelper: TAxisDrawHelper;
     FInverted: Boolean;
     FMinors: TChartMinorAxisList;
     FOnMarkToText: TChartAxisMarkToTextEvent;
@@ -124,16 +125,15 @@ type
     destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
-    procedure Draw(
-      ADrawer: IChartDrawer; const AClipRect: TRect;
-      const ATransf: ICoordTransformer; const AZOffset: TPoint);
-    procedure DrawTitle(
-      ADrawer: IChartDrawer; const ACenter, AZOffset: TPoint; ASize: Integer);
+    procedure Draw;
+    procedure DrawTitle(const ACenter: TPoint; ASize: Integer);
     function GetChart: TCustomChart; inline;
     function IsVertical: Boolean; inline;
     procedure Measure(
-      ADrawer: IChartDrawer; const AExtent: TDoubleRect;
-      var AMeasureData: TChartAxisGroup);
+      const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
+    procedure PrepareHelper(
+      ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
+      AClipRect: PRect; AMaxZPosition: Integer);
   published
     property Alignment default calLeft;
     property Group: Integer read FGroup write SetGroup default 0;
@@ -183,14 +183,10 @@ type
     destructor Destroy; override;
   public
     function Add: TChartAxis; inline;
-    procedure Draw(
-      ADrawer: IChartDrawer; const AClipRect: TRect;
-      const ATransf: ICoordTransformer; ACurrentZ, AMaxZ: Integer;
-      var AIndex: Integer);
+    procedure Draw(ACurrentZ: Integer; var AIndex: Integer);
     function GetAxis(AIndex: Integer): TChartAxis;
     function GetEnumerator: TChartAxisEnumerator;
-    function Measure(
-      ADrawer: IChartDrawer; const AExtent: TDoubleRect): TChartAxisMargins;
+    function Measure(const AExtent: TDoubleRect): TChartAxisMargins;
     procedure Prepare(ARect: TRect);
     procedure PrepareGroups;
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
@@ -375,72 +371,48 @@ begin
   FreeAndNil(FTitle);
   FreeAndNil(FMinors);
   FreeAndNil(FListener);
+  FreeAndNil(FHelper);
   inherited;
 end;
 
-procedure TChartAxis.Draw(
-  ADrawer: IChartDrawer; const AClipRect: TRect;
-  const ATransf: ICoordTransformer; const AZOffset: TPoint);
-
-  function MakeDrawHelper(AAxis: TChartBasicAxis): TAxisDrawHelper;
-  begin
-    if IsVertical then
-      Result := TAxisDrawHelperY.Create
-    else
-      Result := TAxisDrawHelperX.Create;
-    try
-      Result.FAxis := AAxis;
-      Result.FClipRect := AClipRect;
-      Result.FDrawer := ADrawer;
-      Result.FTransf := ATransf;
-      Result.FZOffset := AZOffset;
-      Result.BeginDrawing;
-    except
-      Result.Free;
-      raise;
-    end;
-  end;
-
+procedure TChartAxis.Draw;
 var
   i, j, c, ic, fixedCoord: Integer;
   axisTransf: TTransformFunc;
-  dh, dhMinor: TAxisDrawHelper;
+  dhMinor: TAxisDrawHelper;
   pv, v: Double;
 begin
   if not Visible then exit;
   if Marks.Visible then
-    ADrawer.Font := Marks.LabelFont;
+    FHelper.FDrawer.Font := Marks.LabelFont;
   fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
   v := 0;
-  dh := MakeDrawHelper(Self);
-  try
-    axisTransf := @GetTransform.AxisToGraph;
-    for i := 0 to High(FMarkValues) do begin
-      pv := v;
-      v := axisTransf(FMarkValues[i]);
-      dh.DrawMark(fixedCoord, v, FMarkTexts[i]);
-      if (i = 0) or (v = pv) then continue;
-      for j := 0 to Minors.Count - 1 do begin
-        ic := Minors[j].IntervalsCount;
-        if not Minors[j].Visible or (ic < 2) then continue;
-        dhMinor := MakeDrawHelper(Minors[j]);
-        try
-          for c := 1 to ic - 1 do
-            dhMinor.DrawMark(fixedCoord, WeightedAverage(pv, v, c / ic), '');
-          dhMinor.EndDrawing;
-        finally
-          dhMinor.Free;
-        end;
+  FHelper.BeginDrawing;
+  axisTransf := @GetTransform.AxisToGraph;
+  for i := 0 to High(FMarkValues) do begin
+    pv := v;
+    v := axisTransf(FMarkValues[i]);
+    FHelper.DrawMark(fixedCoord, v, FMarkTexts[i]);
+    if (i = 0) or (v = pv) then continue;
+    for j := 0 to Minors.Count - 1 do begin
+      ic := Minors[j].IntervalsCount;
+      if not Minors[j].Visible or (ic < 2) then continue;
+      dhMinor := FHelper.Clone;
+      dhMinor.FAxis := Minors[j];
+      try
+        dhMinor.BeginDrawing;
+        for c := 1 to ic - 1 do
+          dhMinor.DrawMark(fixedCoord, WeightedAverage(pv, v, c / ic), '');
+        dhMinor.EndDrawing;
+      finally
+        dhMinor.Free;
       end;
     end;
-    dh.EndDrawing;
-  finally
-    dh.Free;
   end;
+  FHelper.EndDrawing;
 end;
 
-procedure TChartAxis.DrawTitle(
-  ADrawer: IChartDrawer; const ACenter, AZOffset: TPoint; ASize: Integer);
+procedure TChartAxis.DrawTitle(const ACenter: TPoint; ASize: Integer);
 var
   p: TPoint;
   dummy: TPointArray = nil;
@@ -455,8 +427,8 @@ begin
     calRight: p.X := FTitleRect.Right + d;
     calBottom: p.Y := FTitleRect.Bottom + d;
   end;
-  p += AZOffset;
-  Title.DrawLabel(ADrawer, p, p, Title.Caption, dummy);
+  p += FHelper.FZOffset;
+  Title.DrawLabel(FHelper.FDrawer, p, p, Title.Caption, dummy);
 end;
 
 function TChartAxis.GetAlignment: TChartAxisAlignment;
@@ -527,8 +499,7 @@ begin
 end;
 
 procedure TChartAxis.Measure(
-  ADrawer: IChartDrawer; const AExtent: TDoubleRect;
-  var AMeasureData: TChartAxisGroup);
+  const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
 
   function MaxMarksSize(AMin, AMax: Double): TPoint;
   var
@@ -539,7 +510,7 @@ procedure TChartAxis.Measure(
     GetMarkValues(AMin, AMax);
     if not Marks.Visible then exit;
     for t in FMarkTexts do
-      Result := MaxPoint(Marks.MeasureLabel(ADrawer, t), Result);
+      Result := MaxPoint(Marks.MeasureLabel(FHelper.FDrawer, t), Result);
   end;
 
   function TitleSize: Integer;
@@ -548,13 +519,13 @@ procedure TChartAxis.Measure(
   begin
     if not Title.Visible or (Title.Caption = '') then
       exit(0);
-    sz := Title.MeasureLabel(ADrawer, Title.Caption);
+    sz := Title.MeasureLabel(FHelper.FDrawer, Title.Caption);
     Result := IfThen(IsVertical, sz.cx, sz.cy) + Title.Distance;
   end;
 
   function FirstLastSize(AIndex: Integer): Integer;
   begin
-    with Marks.MeasureLabel(ADrawer, FMarkTexts[AIndex]) do
+    with Marks.MeasureLabel(FHelper.FDrawer, FMarkTexts[AIndex]) do
       Result := IfThen(IsVertical, cy, cx) div 2;
   end;
 
@@ -569,7 +540,8 @@ begin
   if Marks.DistanceToCenter then
     sz := sz div 2;
   if sz > 0 then
-    sz += ADrawer.Scale(TickLength) + ADrawer.Scale(Marks.Distance);
+    sz += FHelper.FDrawer.Scale(TickLength) +
+      FHelper.FDrawer.Scale(Marks.Distance);
   with AMeasureData do begin
     FSize := Max(sz, FSize);
     FTitleSize := Max(TitleSize, FTitleSize);
@@ -578,6 +550,23 @@ begin
       FLastMark := Max(FirstLastSize(High(FMarkTexts)), FLastMark);
     end;
   end;
+end;
+
+procedure TChartAxis.PrepareHelper(
+  ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
+  AClipRect: PRect; AMaxZPosition: Integer);
+begin
+  FreeAndNil(FHelper);
+  if IsVertical then
+    FHelper := TAxisDrawHelperY.Create
+  else
+    FHelper := TAxisDrawHelperX.Create;
+  FHelper.FAxis := Self;
+  FHelper.FClipRect := AClipRect;
+  FHelper.FDrawer := ADrawer;
+  FHelper.FTransf := ATransf;
+  FHelper.FZOffset.X := Min(ZPosition, AMaxZPosition);
+  FHelper.FZOffset.Y := -FHelper.FZOffset.X;
 end;
 
 procedure TChartAxis.SetAlignment(AValue: TChartAxisAlignment);
@@ -695,20 +684,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TChartAxisList.Draw(
-  ADrawer: IChartDrawer; const AClipRect: TRect;
-  const ATransf: ICoordTransformer; ACurrentZ, AMaxZ: Integer;
-  var AIndex: Integer);
-var
-  zoffset: TPoint;
+procedure TChartAxisList.Draw(ACurrentZ: Integer; var AIndex: Integer);
 begin
   while AIndex < FZOrder.Count do
     with TChartAxis(FZOrder[AIndex]) do begin
       if ACurrentZ < ZPosition then break;
-      zoffset.Y := Min(ZPosition, AMaxZ);
-      zoffset.X := - zoffset.Y;
-      Draw(ADrawer, AClipRect, ATransf, zoffset);
-      DrawTitle(ADrawer, FCenterPoint, zoffset, FGroups[FGroupIndex].FTitleSize);
+      Draw;
+      DrawTitle(FCenterPoint, FGroups[FGroupIndex].FTitleSize);
       AIndex += 1;
     end;
 end;
@@ -746,8 +728,7 @@ begin
   AList.Sort(ACompare);
 end;
 
-function TChartAxisList.Measure(
-  ADrawer: IChartDrawer; const AExtent: TDoubleRect): TChartAxisMargins;
+function TChartAxisList.Measure(const AExtent: TDoubleRect): TChartAxisMargins;
 var
   g: ^TChartAxisGroup;
 
@@ -771,7 +752,7 @@ begin
     g^.FTitleSize := 0;
     for j := 0 to g^.FCount - 1 do begin
       axis := TChartAxis(FGroupOrder[ai]);
-      axis.Measure(ADrawer, AExtent, g^);
+      axis.Measure(AExtent, g^);
       ai += 1;
     end;
     Result[axis.Alignment] += g^.FSize + g^.FTitleSize;
