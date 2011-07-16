@@ -530,7 +530,7 @@ procedure TChartAxis.Measure(
   end;
 
 var
-  sz: Integer;
+  sz, rmin, rmax, c, i: Integer;
 begin
   if not Visible then exit;
   if IsVertical then
@@ -542,12 +542,21 @@ begin
   if sz > 0 then
     sz += FHelper.FDrawer.Scale(TickLength) +
       FHelper.FDrawer.Scale(Marks.Distance);
+  FHelper.GetClipRange(rmin, rmax);
   with AMeasureData do begin
     FSize := Max(sz, FSize);
     FTitleSize := Max(TitleSize, FTitleSize);
-    if FMarkTexts <> nil then begin
-      FFirstMark := Max(FirstLastSize(0), FFirstMark);
-      FLastMark := Max(FirstLastSize(High(FMarkTexts)), FLastMark);
+    for i := 0 to High(FMarkTexts) do begin
+      c := FHelper.GraphToImage(FMarkValues[i]);
+      if not InRange(c, rmin, rmax) then continue;
+      FFirstMark := Max(FirstLastSize(i) - c + rmin, FFirstMark);
+      break;
+    end;
+    for i := High(FMarkTexts) downto 0 do begin
+      c := FHelper.GraphToImage(FMarkValues[i]);
+      if not InRange(c, rmin, rmax) then continue;
+      FLastMark := Max(FirstLastSize(i) - rmax + c, FLastMark);
+      break;
     end;
   end;
 end;

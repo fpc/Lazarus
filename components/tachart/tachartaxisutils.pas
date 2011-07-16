@@ -163,9 +163,8 @@ type
     procedure DrawLabel(ALabelCenter: TPoint; const AText: String); inline;
     procedure DrawLabelAndTick(
       ACoord, AFixedCoord: Integer; const AText: String); virtual; abstract;
-    function GraphToImage(AGraph: Double): Integer; virtual; abstract;
     procedure GridLine(ACoord: Integer); virtual; abstract;
-    function IsInClipRange(ACoord: Integer): Boolean; virtual; abstract;
+    function IsInClipRange(ACoord: Integer): Boolean;
     procedure LineZ(AP1, AP2: TPoint); inline;
     function TryApplyStripes: Boolean; inline;
   public
@@ -180,11 +179,13 @@ type
     FZOffset: TPoint;
 
     procedure BeginDrawing; virtual;
-    constructor Create; virtual;
     function Clone: TAxisDrawHelper;
+    constructor Create; virtual;
     procedure DrawMark(
       AFixedCoord: Integer; AMark: Double; const AText: String);
     procedure EndDrawing; virtual; abstract;
+    procedure GetClipRange(out AMin, AMax: Integer); virtual; abstract;
+    function GraphToImage(AGraph: Double): Integer; virtual; abstract;
   end;
 
   TAxisDrawHelperClass = class of TAxisDrawHelper;
@@ -197,10 +198,10 @@ type
       ACoord, AFixedCoord: Integer; const AText: String); override;
     function GraphToImage(AGraph: Double): Integer; override;
     procedure GridLine(ACoord: Integer); override;
-    function IsInClipRange(ACoord: Integer): Boolean; override;
   public
     procedure BeginDrawing; override;
     procedure EndDrawing; override;
+    procedure GetClipRange(out AMin, AMax: Integer); override;
   end;
 
   { TAxisDrawHelperY }
@@ -211,10 +212,10 @@ type
       ACoord, AFixedCoord: Integer; const AText: String); override;
     function GraphToImage(AGraph: Double): Integer; override;
     procedure GridLine(ACoord: Integer); override;
-    function IsInClipRange(ACoord: Integer): Boolean; override;
   public
     procedure BeginDrawing; override;
     procedure EndDrawing; override;
+    procedure GetClipRange(out AMin, AMax: Integer); override;
   end;
 
 implementation
@@ -279,6 +280,14 @@ begin
   end;
 end;
 
+function TAxisDrawHelper.IsInClipRange(ACoord: Integer): Boolean;
+var
+  rmin, rmax: Integer;
+begin
+  GetClipRange(rmin, rmax);
+  Result := InRange(ACoord, rmin, rmax);
+end;
+
 procedure TAxisDrawHelper.LineZ(AP1, AP2: TPoint);
 begin
   FDrawer.Line(AP1 + FZOffset, AP2 + FZOffset);
@@ -317,6 +326,12 @@ begin
     BarZ(FPrevCoord + 1, FClipRect^.Top + 1, FClipRect^.Right, FClipRect^.Bottom);
 end;
 
+procedure TAxisDrawHelperX.GetClipRange(out AMin, AMax: Integer);
+begin
+  AMin := FClipRect^.Left;
+  AMax := FClipRect^.Right;
+end;
+
 function TAxisDrawHelperX.GraphToImage(AGraph: Double): Integer;
 begin
   Result := FTransf.XGraphToImage(AGraph);
@@ -327,11 +342,6 @@ begin
   if TryApplyStripes then
     BarZ(FPrevCoord + 1, FClipRect^.Top + 1, ACoord, FClipRect^.Bottom);
   LineZ(Point(ACoord, FClipRect^.Top), Point(ACoord, FClipRect^.Bottom));
-end;
-
-function TAxisDrawHelperX.IsInClipRange(ACoord: Integer): Boolean;
-begin
-  Result := InRange(ACoord, FClipRect^.Left, FClipRect^.Right);
 end;
 
 { TAxisDrawHelperY }
@@ -362,6 +372,12 @@ begin
     BarZ(FClipRect^.Left + 1, FClipRect^.Top + 1, FClipRect^.Right, FPrevCoord);
 end;
 
+procedure TAxisDrawHelperY.GetClipRange(out AMin, AMax: Integer);
+begin
+  AMin := FClipRect^.Top;
+  AMax := FClipRect^.Bottom;
+end;
+
 function TAxisDrawHelperY.GraphToImage(AGraph: Double): Integer;
 begin
   Result := FTransf.YGraphToImage(AGraph);
@@ -372,11 +388,6 @@ begin
   if TryApplyStripes then
     BarZ(FClipRect^.Left + 1, FPrevCoord, FClipRect^.Right, ACoord);
   LineZ(Point(FClipRect^.Left, ACoord), Point(FClipRect^.Right, ACoord));
-end;
-
-function TAxisDrawHelperY.IsInClipRange(ACoord: Integer): Boolean;
-begin
-  Result := InRange(ACoord, FClipRect^.Top, FClipRect^.Bottom);
 end;
 
 { TChartAxisTitle }
