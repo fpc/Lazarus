@@ -274,7 +274,7 @@ end;
 
 procedure TAxisDrawHelperX.BeginDrawing;
 begin
-  inherited BeginDrawing;
+  inherited;
   FPrevCoord := FClipRect.Left;
 end;
 
@@ -319,7 +319,7 @@ end;
 
 procedure TAxisDrawHelperY.BeginDrawing;
 begin
-  inherited BeginDrawing;
+  inherited;
   FPrevCoord := FClipRect.Bottom;
 end;
 
@@ -340,7 +340,7 @@ end;
 procedure TAxisDrawHelperY.EndDrawing;
 begin
   if FAxis.Grid.Visible and TryApplyStripes then
-    BarZ(FClipRect.Left + 1, FClipRect.Top + 1, FClipRect.Right, FPrevCoord)
+    BarZ(FClipRect.Left + 1, FClipRect.Top + 1, FClipRect.Right, FPrevCoord);
 end;
 
 function TAxisDrawHelperY.GraphToImage(AGraph: Double): Integer;

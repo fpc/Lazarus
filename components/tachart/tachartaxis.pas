@@ -74,6 +74,8 @@ type
 
   TChartAxisGroup = record
     FCount: Integer;
+    FFirstMark: Integer;
+    FLastMark: Integer;
     FSize: Integer;
     FTitleSize: Integer;
   end;
@@ -529,7 +531,7 @@ procedure TChartAxis.Measure(
   ADrawer: IChartDrawer; const AExtent: TDoubleRect;
   AFirstPass: Boolean; var AMeasureData: TChartAxisGroup);
 
-  function CalcMarksSize(AMin, AMax: Double): TPoint;
+  function MaxMarksSize(AMin, AMax: Double): TPoint;
   const
     SOME_DIGIT = '0';
   var
@@ -551,7 +553,7 @@ procedure TChartAxis.Measure(
     end;
   end;
 
-  function CalcTitleSize: Integer;
+  function TitleSize: Integer;
   var
     sz: TSize;
   begin
@@ -561,21 +563,31 @@ procedure TChartAxis.Measure(
     Result := IfThen(IsVertical, sz.cx, sz.cy) + Title.Distance;
   end;
 
+  function FirstLastSize(AIndex: Integer): Integer;
+  begin
+    with Marks.MeasureLabel(ADrawer, FMarkTexts[AIndex]) do
+      Result := IfThen(IsVertical, cy, cx) div 2;
+  end;
+
 var
   sz: Integer;
 begin
   if not Visible then exit;
   if IsVertical then
-    sz := CalcMarksSize(AExtent.a.Y, AExtent.b.Y).X
+    sz := MaxMarksSize(AExtent.a.Y, AExtent.b.Y).X
   else
-    sz := CalcMarksSize(AExtent.a.X, AExtent.b.X).Y;
+    sz := MaxMarksSize(AExtent.a.X, AExtent.b.X).Y;
   if Marks.DistanceToCenter then
     sz := sz div 2;
   if sz > 0 then
     sz += ADrawer.Scale(TickLength) + ADrawer.Scale(Marks.Distance);
   with AMeasureData do begin
     FSize := Max(sz, FSize);
-    FTitleSize := Max(CalcTitleSize, FTitleSize);
+    FTitleSize := Max(TitleSize, FTitleSize);
+    if FMarkTexts <> nil then begin
+      FFirstMark := Max(FirstLastSize(0), FFirstMark);
+      FLastMark := Max(FirstLastSize(High(FMarkTexts)), FLastMark);
+    end;
   end;
 end;
 
@@ -749,13 +761,23 @@ procedure TChartAxisList.Measure(
   ADrawer: IChartDrawer; const AExtent: TDoubleRect;
   AFirstPass: Boolean; var AMargins: TChartAxisMargins);
 var
+  g: ^TChartAxisGroup;
+
+  procedure UpdateMarginsForMarks(AFirst, ALast: TChartAxisAlignment);
+  begin
+    AMargins[AFirst] := Max(AMargins[AFirst], g^.FFirstMark);
+    AMargins[ALast] := Max(AMargins[ALast], g^.FLastMark);
+  end;
+
+var
   i, j, ai: Integer;
   axis: TChartAxis;
-  g: ^TChartAxisGroup;
 begin
   ai := 0;
   for i := 0 to High(FGroups) do begin
     g := @FGroups[i];
+    g^.FFirstMark := 0;
+    g^.FLastMark := 0;
     g^.FSize := 0;
     g^.FTitleSize := 0;
     for j := 0 to g^.FCount - 1 do begin
@@ -765,6 +787,15 @@ begin
     end;
     if AFirstPass then
       AMargins[axis.Alignment] += g^.FSize + g^.FTitleSize;
+  end;
+  ai := 0;
+  for i := 0 to High(FGroups) do begin
+    g := @FGroups[i];
+    if TChartAxis(FGroupOrder[ai]).IsVertical then
+      UpdateMarginsForMarks(calBottom, calTop)
+    else
+      UpdateMarginsForMarks(calLeft, calRight);
+    ai += g^.FCount;
   end;
 end;
 
