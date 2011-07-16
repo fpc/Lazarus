@@ -1127,10 +1127,10 @@ begin
   CalculateTransformationCoeffs(Rect(0, 0, 0, 0));
   cr := FClipRect;
   for tries := 1 to 10 do begin
-    FClipRect := cr;
     axisMargin := AxisList.Measure(CurrentExtent);
     axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
     axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
+    FClipRect := cr;
     for aa := Low(aa) to High(aa) do
       SideByAlignment(FClipRect, aa, -axisMargin[aa]);
     prevExt := FCurrentExtent;

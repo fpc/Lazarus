@@ -514,13 +514,14 @@ procedure TChartAxis.Measure(
   end;
 
   function TitleSize: Integer;
-  var
-    sz: TSize;
   begin
     if not Title.Visible or (Title.Caption = '') then
       exit(0);
-    sz := Title.MeasureLabel(FHelper.FDrawer, Title.Caption);
-    Result := IfThen(IsVertical, sz.cx, sz.cy) + Title.Distance;
+    with Title.MeasureLabel(FHelper.FDrawer, Title.Caption) do
+      Result := IfThen(IsVertical, cx, cy);
+    if Title.DistanceToCenter then
+      Result := Result div 2;
+    Result += FHelper.FDrawer.Scale(Title.Distance);
   end;
 
   function FirstLastSize(AIndex: Integer): Integer;
