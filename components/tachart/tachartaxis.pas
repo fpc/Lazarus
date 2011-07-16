@@ -132,7 +132,7 @@ type
     function GetChart: TCustomChart; inline;
     function IsVertical: Boolean; inline;
     procedure Measure(
-      ADrawer: IChartDrawer; const AExtent: TDoubleRect; AFirstPass: Boolean;
+      ADrawer: IChartDrawer; const AExtent: TDoubleRect;
       var AMeasureData: TChartAxisGroup);
   published
     property Alignment default calLeft;
@@ -189,9 +189,8 @@ type
       var AIndex: Integer);
     function GetAxis(AIndex: Integer): TChartAxis;
     function GetEnumerator: TChartAxisEnumerator;
-    procedure Measure(
-      ADrawer: IChartDrawer; const AExtent: TDoubleRect;
-      AFirstPass: Boolean; var AMargins: TChartAxisMargins);
+    function Measure(
+      ADrawer: IChartDrawer; const AExtent: TDoubleRect): TChartAxisMargins;
     procedure Prepare(ARect: TRect);
     procedure PrepareGroups;
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
@@ -209,7 +208,7 @@ type
 
   TAxisCoeffHelper = object
     FAxis: TChartAxis;
-    FImageLo, FImageHi, FMarginLo, FMarginHi: Integer;
+    FImageLo, FImageHi: Integer;
     FLo, FHi: Integer;
     FMin, FMax: PDouble;
     function CalcOffset(AScale: Double): Double;
@@ -529,11 +528,9 @@ end;
 
 procedure TChartAxis.Measure(
   ADrawer: IChartDrawer; const AExtent: TDoubleRect;
-  AFirstPass: Boolean; var AMeasureData: TChartAxisGroup);
+  var AMeasureData: TChartAxisGroup);
 
   function MaxMarksSize(AMin, AMax: Double): TPoint;
-  const
-    SOME_DIGIT = '0';
   var
     t: String;
   begin
@@ -541,16 +538,8 @@ procedure TChartAxis.Measure(
     if AMin = AMax then exit;
     GetMarkValues(AMin, AMax);
     if not Marks.Visible then exit;
-    for t in FMarkTexts do begin
-      // CalculateTransformationCoeffs changes axis interval, so it is possibile
-      // that a new mark longer then existing ones is introduced.
-      // That will change marks width and reduce view area,
-      // requiring another call to CalculateTransformationCoeffs...
-      // So punt for now and just reserve space for extra digit unconditionally.
-      if AFirstPass then
-        t += SOME_DIGIT;
+    for t in FMarkTexts do
       Result := MaxPoint(Marks.MeasureLabel(ADrawer, t), Result);
-    end;
   end;
 
   function TitleSize: Integer;
@@ -757,22 +746,22 @@ begin
   AList.Sort(ACompare);
 end;
 
-procedure TChartAxisList.Measure(
-  ADrawer: IChartDrawer; const AExtent: TDoubleRect;
-  AFirstPass: Boolean; var AMargins: TChartAxisMargins);
+function TChartAxisList.Measure(
+  ADrawer: IChartDrawer; const AExtent: TDoubleRect): TChartAxisMargins;
 var
   g: ^TChartAxisGroup;
 
   procedure UpdateMarginsForMarks(AFirst, ALast: TChartAxisAlignment);
   begin
-    AMargins[AFirst] := Max(AMargins[AFirst], g^.FFirstMark);
-    AMargins[ALast] := Max(AMargins[ALast], g^.FLastMark);
+    Result[AFirst] := Max(Result[AFirst], g^.FFirstMark);
+    Result[ALast] := Max(Result[ALast], g^.FLastMark);
   end;
 
 var
   i, j, ai: Integer;
   axis: TChartAxis;
 begin
+  FillChar(Result, SizeOf(Result), 0);
   ai := 0;
   for i := 0 to High(FGroups) do begin
     g := @FGroups[i];
@@ -782,11 +771,10 @@ begin
     g^.FTitleSize := 0;
     for j := 0 to g^.FCount - 1 do begin
       axis := TChartAxis(FGroupOrder[ai]);
-      axis.Measure(ADrawer, AExtent, AFirstPass, g^);
+      axis.Measure(ADrawer, AExtent, g^);
       ai += 1;
     end;
-    if AFirstPass then
-      AMargins[axis.Alignment] += g^.FSize + g^.FTitleSize;
+    Result[axis.Alignment] += g^.FSize + g^.FTitleSize;
   end;
   ai := 0;
   for i := 0 to High(FGroups) do begin
@@ -872,12 +860,10 @@ begin
   FAxis := AAxis;
   FImageLo := AImageLo;
   FImageHi := AImageHi;
-  FMarginLo := AMarginLo;
-  FMarginHi := AMarginHi;
   FMin := AMin;
   FMax := AMax;
-  FLo := FImageLo + FMarginLo;
-  FHi := FImageHi + FMarginHi;
+  FLo := FImageLo + AMarginLo;
+  FHi := FImageHi + AMarginHi;
 end;
 
 function TAxisCoeffHelper.CalcScale(ASign: Integer): Double;

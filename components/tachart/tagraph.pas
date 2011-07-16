@@ -1104,8 +1104,11 @@ end;
 
 procedure TChart.PrepareAxis(ADrawer: IChartDrawer);
 var
-  axisMargin: TChartAxisMargins = (0, 0, 0, 0);
+  axisMargin: TChartAxisMargins;
   a: TChartAxisAlignment;
+  cr: TRect;
+  tries: Integer;
+  prevExt: TDoubleRect;
 begin
   if not AxisVisible then begin
     FClipRect.Left += Depth;
@@ -1114,15 +1117,24 @@ begin
     exit;
   end;
 
+  // There is a cyclic dependency: extent -> visible marks -> margins.
+  // We recalculate them iteratively hoping that the process converges.
   AxisList.PrepareGroups;
-  AxisList.Measure(ADrawer, CurrentExtent, true, axisMargin);
-  axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
-  axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
-  for a := Low(a) to High(a) do
-    SideByAlignment(FClipRect, a, -axisMargin[a]);
-
-  CalculateTransformationCoeffs(GetMargins(ADrawer));
-  AxisList.Measure(ADrawer, CurrentExtent, false, axisMargin);
+  CalculateTransformationCoeffs(Rect(0, 0, 0, 0));
+  cr := FClipRect;
+  for tries := 1 to 10 do begin
+    axisMargin := AxisList.Measure(ADrawer, CurrentExtent);
+    axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
+    axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
+    FClipRect := cr;
+    for a := Low(a) to High(a) do
+      SideByAlignment(FClipRect, a, -axisMargin[a]);
+    prevExt := FCurrentExtent;
+    FCurrentExtent := FLogicalExtent;
+    CalculateTransformationCoeffs(GetMargins(ADrawer));
+    if prevExt = FCurrentExtent then break;
+    prevExt := FCurrentExtent;
+  end;
   AxisList.Prepare(FClipRect);
 end;
 
