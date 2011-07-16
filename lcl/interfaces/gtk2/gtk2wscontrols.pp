@@ -186,9 +186,9 @@ begin
 
   TGtk2WSWinControl.SetCallbacks(GTK_OBJECT(Widget), AWinControl);
 
-  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'change-value',
+  g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'change-value',
     TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
-  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'change-value',
+  g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'change-value',
     TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
   g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'button-press-event',
     TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
