@@ -165,6 +165,10 @@ const
   PubidChars: TSetOfChar = [' ', #13, #10, 'a'..'z', 'A'..'Z', '0'..'9',
     '-', '''', '(', ')', '+', ',', '.', '/', ':', '=', '?', ';', '!', '*',
     '#', '@', '$', '_', '%'];
+var
+  {$IF SizeOf(DOMChar)<2}
+  IsNameStartChar, IsNameChar: array[char] of boolean;
+  {$ENDIF}
 
 type
   TDOMNotationEx = class(TDOMNotation);
@@ -1214,7 +1218,7 @@ begin
         FBuf^ := #10;
       end;
     end;
-    #$85:   // ToDo #$2028
+    #$85:
     if FXML11Rules then
     begin
       FBuf^ := #10;
@@ -1680,16 +1684,26 @@ begin
   repeat
     if NameStartFlag then
     begin
-      if (Byte(p^) in NamingBitmap[FNamePages^[hi(Word(p^))]]) or
-        ((p^ = ':') and (not FNamespaces)) then
-        Inc(p)
+      if {$IF SizeOf(DOMChar)=2}
+         (Byte(p^) in NamingBitmap[FNamePages^[hi(Word(p^))]])
+         {$ELSE}
+         IsNameStartChar[p^]
+         {$ENDIF}
+        or ((p^ = ':') and (not FNamespaces)) then
+      begin
+        Inc(p);
+      end
+      {$IF SizeOf(DOMChar)=2}
       else if FXML11 and ((p^ >= #$D800) and (p^ <= #$DB7F) and
         (p[1] >= #$DC00) and (p[1] <= #$DFFF)) then
-        Inc(p, 2)
+      begin
+        Inc(p, 2);
+      end
+      {$ENDIF}
       else
       begin
-  // here we come either when first char of name is bad (it may be a colon),
-  // or when a colon is not followed by a valid NameStartChar
+        // here we come either when first char of name is bad (it may be a colon),
+        // or when a colon is not followed by a valid NameStartChar
         FSource.FBuf := p;
         Result := False;
         Break;
@@ -1697,19 +1711,24 @@ begin
       NameStartFlag := False;
     end;
 
-    if FXML11 then
-    repeat
-      if Byte(p^) in NamingBitmap[FNamePages^[$100+hi(Word(p^))]] then
-        Inc(p)
-      else if ((p^ >= #$D800) and (p^ <= #$DB7F) and
-        (p[1] >= #$DC00) and (p[1] <= #$DFFF)) then
-        Inc(p,2)
-      else
-        Break;
-    until False
+    {$IF SizeOf(DOMChar)=2}
+    if FXML11 then begin
+      repeat
+        if Byte(p^) in NamingBitmap[FNamePages^[$100+hi(Word(p^))]] then
+          Inc(p)
+        else if ((p^ >= #$D800) and (p^ <= #$DB7F) and
+          (p[1] >= #$DC00) and (p[1] <= #$DFFF)) then
+          Inc(p,2)
+        else
+          Break;
+      until False;
+    end
     else
     while Byte(p^) in NamingBitmap[FNamePages^[$100+hi(Word(p^))]] do
       Inc(p);
+    {$ELSE}
+    while IsNameChar[p^] do inc(p);
+    {$ENDIF}
 
     if p^ = ':' then
     begin
@@ -3043,32 +3062,95 @@ begin
   repeat
     old := FBuf;
     repeat
+      {$IF SizeOf(DOMChar)=2}
+      // skip common white spaces
+      while FBuf^ in [' ',#9] do inc(FBuf);
       wc := FBuf^;
       //writeln('TXMLDecodingSource.SkipUntil ',ord(wc));
-      if (not AllowSpecialChars)
-      and ((wc = #10) or (wc = #13)
-        or (FXML11Rules and ((wc = #$85) or (wc = #$2028)))) // ToDo #$2028
+      if ((wc = #10) or (wc = #13)
+        {$IF SizeOf(DOMChar)=2}
+        or (FXML11Rules and ((wc = #$85) or (wc = #$2028)))
+        {$ENDIF}
+        ) and (not AllowSpecialChars)
       then begin
-// strictly this is needed only for 2-byte lineendings
         BufAppendChunk(ToFill, old, FBuf);
         NewLine;
         old := FBuf;
-        wc := FBuf^
+        inc(FBuf);
+        // skip common white spaces at line start
+        while FBuf^ in [' ',#9] do inc(FBuf);
+        wc := FBuf^;
       end
       else if (not AllowSpecialChars)
         and ( ((wc < #32) and (not ((wc = #0) and (FBuf >= FBufEnd))) and (wc <> #9))
-              or (wc > #$FFFD) or
-              (FXML11Rules and (wc >= #$7F) and (wc <= #$9F)) )
+              {$IF SizeOf(DOMChar)=2}
+              or (wc > #$FFFD)
+              {$ENDIF}
+              or (FXML11Rules and (wc >= #$7F) and (wc <= #$9F)) )
         then
           FReader.FatalError('Invalid character')
       else if (wc=#0) and (FBuf < FBufEnd) then
-        FReader.FatalError('Invalid character');
-      if (wc < #255) and (Char(ord(wc)) in Delim) then
+        FReader.FatalError('Invalid #0 character');
+      if {$IF SizeOf(DOMChar)=2}(wc < #255) and{$ENDIF}
+        (Char(ord(wc)) in Delim)
+      then
         Break;
-// the checks above filter away everything below #32 that isn't a whitespace
+      // the checks above filter away everything below #32 that isn't a whitespace
       if wc > #32 then
         nonws := True;
       Inc(FBuf);
+      {$ELSE}
+      wc:=FBuf^;
+      if (wc>#0) and (wc < #255) and (Char(ord(wc)) in Delim) then
+        Break;
+      if wc<' ' then begin
+        case wc of
+        #0:
+          if (FBuf < FBufEnd) then
+            FReader.FatalError('Invalid #0 character')
+          else
+            break;
+        #10:
+          if AllowSpecialChars then begin
+            inc(FBuf);
+          end else begin
+            if FBuf[1] in [#0,#13] then begin
+              BufAppendChunk(ToFill, old, FBuf);
+              old := FBuf;
+            end;
+            NewLine;
+            inc(FBuf);
+            // skip common white spaces at line start
+            while FBuf^ in [' ',#9] do inc(FBuf);
+          end;
+        #13:
+          if AllowSpecialChars then begin
+            inc(FBuf);
+          end else begin
+            BufAppendChunk(ToFill, old, FBuf);
+            NewLine;
+            old := FBuf;
+            inc(FBuf);
+            // skip common white spaces at line start
+            while FBuf^ in [' ',#9] do inc(FBuf);
+          end;
+        ' ',#9:
+          inc(FBuf);
+        #1..#8,#11,#12,#14..#31:
+          if AllowSpecialChars then begin
+            inc(FBuf);
+          end else begin
+            FReader.FatalError('Invalid character');
+          end;
+        else
+          nonws:=true;
+          inc(FBuf);
+        end;
+      end else begin
+        nonws:=wc>' ';
+        inc(FBuf);
+      end;
+      {$ENDIF}
     until False;
     Result := wc;
     BufAppendChunk(ToFill, old, FBuf);
@@ -4135,5 +4217,22 @@ begin
   Result.Y:=Line;
   Result.X:=LinePos;
 end;
+
+procedure InitXMLRead;
+{$IF SizeOf(DOMChar)<2}
+var
+  c: Char;
+{$ENDIF}
+begin
+  {$IF SizeOf(DOMChar)<2}
+  for c:=low(char) to high(char) do begin
+    IsNameStartChar[c]:=c in ['A'..'Z','a'..'z','_',#128..#255];
+    IsNameChar[c]:=c in ['A'..'Z','a'..'z','_','0'..'9','-','.',#128..#255];
+  end;
+  {$ENDIF}
+end;
+
+initialization
+  InitXMLRead;
 
 end.
