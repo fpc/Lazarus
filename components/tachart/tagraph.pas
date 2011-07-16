@@ -702,9 +702,10 @@ end;
 
 procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
-  i, c: Integer;
+  c: Integer;
   ldd: TChartLegendDrawingData;
   s: TBasicChartSeries;
+  a: TChartAxis;
 begin
   ADrawer.DrawingBegin(ARect);
   ADrawer.SetAntialiasingMode(AntialiasingMode);
@@ -718,10 +719,9 @@ begin
     FClipRect.Bottom -= Bottom;
   end;
 
-  for i := 0 to AxisList.Count - 1 do
-    with AxisList[i] do
-      if Transformations <> nil then
-        Transformations.SetChart(Self);
+  for a in AxisList do
+    if a.Transformations <> nil then
+      a.Transformations.SetChart(Self);
   for s in Series do
     s.BeforeDraw;
 
@@ -913,16 +913,15 @@ function TChart.GetFullExtent: TDoubleRect;
   end;
 
 var
-  i: Integer;
   seriesBounds: TDoubleRect;
   s: TBasicChartSeries;
+  a: TChartAxis;
 begin
   Extent.CheckBoundsOrder;
 
-  for i := 0 to AxisList.Count - 1 do
-    with AxisList[i] do
-      if Transformations <> nil then
-        Transformations.ClearBounds;
+  for a in AxisList do
+    if a.Transformations <> nil then
+      a.Transformations.ClearBounds;
 
   Result := EmptyExtent;
   for s in Series do begin

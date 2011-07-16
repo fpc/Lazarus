@@ -154,14 +154,20 @@ type
   TChartOnVisitSources = procedure (
     AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData) of object;
 
+  TChartAxisEnumerator = class(TCollectionEnumerator)
+  public
+    function GetCurrent: TChartAxis;
+    property Current: TChartAxis read GetCurrent;
+  end;
+
   { TChartAxisList }
 
   TChartAxisList = class(TCollection)
-  private
+  strict private
     FChart: TCustomChart;
     FOnVisitSources: TChartOnVisitSources;
     function GetAxes(AIndex: Integer): TChartAxis;
-  private
+  strict private
     FCenterPoint: TPoint;
     FGroupOrder: TFPList;
     FGroups: array of TChartAxisGroup;
@@ -180,6 +186,7 @@ type
       const ATransf: ICoordTransformer; ACurrentZ, AMaxZ: Integer;
       var AIndex: Integer);
     function GetAxis(AIndex: Integer): TChartAxis;
+    function GetEnumerator: TChartAxisEnumerator;
     procedure Measure(
       ADrawer: IChartDrawer; const AExtent: TDoubleRect;
       AFirstPass: Boolean; var AMargins: TChartAxisMargins);
@@ -257,6 +264,13 @@ begin
     Result := AAxisList[AIndex].Transformations;
   if Result = nil then
     Result := VIdentityTransform;
+end;
+
+{ TChartAxisEnumerator }
+
+function TChartAxisEnumerator.GetCurrent: TChartAxis;
+begin
+  Result := TChartAxis(inherited GetCurrent);
 end;
 
 { TChartMinorAxis }
@@ -515,31 +529,25 @@ procedure TChartAxis.Measure(
   ADrawer: IChartDrawer; const AExtent: TDoubleRect;
   AFirstPass: Boolean; var AMeasureData: TChartAxisGroup);
 
-  function CalcMarksSize(AMin, AMax: Double): TSize;
+  function CalcMarksSize(AMin, AMax: Double): TPoint;
   const
     SOME_DIGIT = '0';
   var
-    i, d: Integer;
     t: String;
   begin
-    Result := Size(0, 0);
+    Result := Point(0, 0);
     if AMin = AMax then exit;
     GetMarkValues(AMin, AMax);
     if not Marks.Visible then exit;
-    for i := 0 to High(FMarkTexts) do begin
+    for t in FMarkTexts do begin
       // CalculateTransformationCoeffs changes axis interval, so it is possibile
       // that a new mark longer then existing ones is introduced.
       // That will change marks width and reduce view area,
       // requiring another call to CalculateTransformationCoeffs...
       // So punt for now and just reserve space for extra digit unconditionally.
-      t := FMarkTexts[i];
       if AFirstPass then
         t += SOME_DIGIT;
-      d := IfThen(Marks.DistanceToCenter, 2, 1);
-      with Marks.MeasureLabel(ADrawer, t) do begin
-        Result.cx := Max(cx div d, Result.cx);
-        Result.cy := Max(cy div d, Result.cy);
-      end;
+      Result := MaxPoint(Marks.MeasureLabel(ADrawer, t), Result);
     end;
   end;
 
@@ -550,7 +558,6 @@ procedure TChartAxis.Measure(
     if not Title.Visible or (Title.Caption = '') then
       exit(0);
     sz := Title.MeasureLabel(ADrawer, Title.Caption);
-
     Result := IfThen(IsVertical, sz.cx, sz.cy) + Title.Distance;
   end;
 
@@ -559,9 +566,11 @@ var
 begin
   if not Visible then exit;
   if IsVertical then
-    sz := CalcMarksSize(AExtent.a.Y, AExtent.b.Y).cx
+    sz := CalcMarksSize(AExtent.a.Y, AExtent.b.Y).X
   else
-    sz := CalcMarksSize(AExtent.a.X, AExtent.b.X).cy;
+    sz := CalcMarksSize(AExtent.a.X, AExtent.b.X).Y;
+  if Marks.DistanceToCenter then
+    sz := sz div 2;
   if sz > 0 then
     sz += ADrawer.Scale(TickLength) + ADrawer.Scale(Marks.Distance);
   with AMeasureData do begin
@@ -709,13 +718,15 @@ begin
 end;
 
 function TChartAxisList.GetAxis(AIndex: Integer): TChartAxis;
-var
-  i: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if Axes[i].Alignment = AXIS_INDEX[AIndex] then
-      exit(Axes[i]);
+  for Result in Self do
+    if Result.Alignment = AXIS_INDEX[AIndex] then exit;
   Result := nil;
+end;
+
+function TChartAxisList.GetEnumerator: TChartAxisEnumerator;
+begin
+  Result := TChartAxisEnumerator.Create(Self);
 end;
 
 function TChartAxisList.GetOwner: TPersistent;
@@ -726,11 +737,11 @@ end;
 procedure TChartAxisList.InitAndSort(
   AList: TFPList; ACompare: TListSortCompare);
 var
-  i: Integer;
+  a: TChartAxis;
 begin
   AList.Clear;
-  for i := 0 to Count - 1 do
-    AList.Add(Pointer(Axes[i]));
+  for a in Self do
+    AList.Add(Pointer(a));
   AList.Sort(ACompare);
 end;
 
