@@ -141,7 +141,7 @@ type
 
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
     gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged, gfColumnsLocked,
-    gfEditingDone, gfSizingStarted);
+    gfEditingDone, gfSizingStarted, gfPainting);
   TGridFlags = set of TGridFlagsOption;
 
   TSortOrder = (soAscending, soDescending);
@@ -828,6 +828,7 @@ type
     function  BoxRect(ALeft,ATop,ARight,ABottom: Longint): TRect;
     procedure CalcAutoSizeColumn(const Index: Integer; var AMin,AMax,APriority: Integer); virtual;
     procedure CalcFocusRect(var ARect: TRect);
+    procedure CalcScrollbarsRange;
     function  CanEditShow: Boolean; virtual;
     function  CanGridAcceptKey(Key: Word; Shift: TShiftState): Boolean; virtual;
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); virtual;
@@ -2923,25 +2924,6 @@ procedure TCustomGrid.ResetSizes;
     end;
   end;
 
-  procedure CalcScrollbarsRange;
-  var
-    HsbVisible, VsbVisible: boolean;
-    HsbRange,VsbRange: Integer;
-    HsbPage, VsbPage: Integer;
-    HsbPos, VsbPos: Integer;
-  begin
-    with FGCache do begin
-      // Horizontal scrollbar
-      GetSBVisibility(HsbVisible, VsbVisible);
-      GetSBRanges(HsbVisible,VsbVisible,HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos);
-      UpdateVertScrollBar(VsbVisible, VsbRange, VsbPage, VsbPos);
-      UpdateHorzScrollBar(HsbVisible, HsbRange, HsbPage, HsbPos);
-      {$ifdef DbgScroll}
-      DebugLn('VRange=',dbgs(VsbRange),' Visible=',dbgs(VSbVisible));
-      DebugLn('HRange=',dbgs(HsbRange),' Visible=',dbgs(HSbVisible));
-      {$endif}
-    end;
-  end;
 begin
   //DebugLn('TCustomGrid.VisualChange ',DbgSName(Self));
   if (FCols=nil) or ([csLoading,csDestroying]*ComponentState<>[])
@@ -2953,10 +2935,6 @@ begin
   FGCache.ScrollWidth:=FGCache.ClientWidth-FGCache.FixedWidth;
   FGCache.ScrollHeight:=FGCache.ClientHeight-FGCache.FixedHeight;
   FGCache.MaxTopLeft:=CalcMaxTopLeft;
-  if not(goSmoothScroll in Options) then begin
-    FGCache.TLColOff:=0;
-    FGCache.TLRowOff:=0;
-  end;
   CacheVisibleGrid;
   {$Ifdef DbgVisualChange}
   DebugLn('TCustomGrid.ResetSizes %s Width=%d Height=%d',[DbgSName(Self),Width,Height]);
@@ -2996,7 +2974,9 @@ begin
     {$endif}
     FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
-    ScrollInfo.fMask := SIF_RANGE or SIF_POS or SIF_PAGE or SIF_DISABLENOSCROLL;
+    ScrollInfo.fMask := SIF_RANGE or SIF_PAGE or SIF_DISABLENOSCROLL;
+    if not (gfPainting in FGridFlags) then
+      ScrollInfo.fMask := ScrollInfo.fMask or SIF_POS;
     {$ifdef Unix}
     ScrollInfo.fMask := ScrollInfo.fMask or SIF_UPDATEPOLICY;
     if goThumbTracking in Options then
@@ -3115,7 +3095,9 @@ begin
 
   // Left Margin of next visible Column and Rightmost visible cell
   if ColCount>FixedCols then begin
-    W:=GetColWidths(Result.Left) + FGCache.FixedWidth- FGCache.TLColOff;
+    W:=GetColWidths(Result.Left) + FGCache.FixedWidth;
+    if goSmoothScroll in Options then
+      W := W - FGCache.TLColOff;
     while (Result.Right<ColCount-1)and(W<FGCache.ClientWidth) do begin
       Inc(Result.Right);
       W:=W+GetColWidths(Result.Right);
@@ -3128,7 +3110,9 @@ begin
 
   // Top Margin of next visible Row and Bottom most visible cell
   if RowCount>FixedRows then begin
-    w:=GetRowheights(Result.Top) + FGCache.FixedHeight - FGCache.TLRowOff;
+    W:=GetRowheights(Result.Top) + FGCache.FixedHeight;
+    if goSmoothScroll in Options then
+      W := W - FGCache.TLRowOff;
     while (Result.Bottom<RowCount-1)and(W<FGCache.ClientHeight) do begin
       Inc(Result.Bottom);
       W:=W+GetRowHeights(Result.Bottom);
@@ -3353,8 +3337,9 @@ begin
   DebugLn('TCustomGrid.Paint %s Row=%d Clip=%s',[DbgSName(Self),Row,Dbgs(R)]);
   {$endif}
   if gfVisualChange in fGridFlags then begin
+    FGridFlags := FGridFlags + [gfPainting];
     ResetSizes;
-    exclude(FGridFlags, gfVisualChange);
+    FGridFlags := FGridFlags - [gfVisualChange, gfPainting];
   end;
   inherited Paint;
   if FUpdateCount=0 then begin
@@ -4086,19 +4071,6 @@ var
     until (Result<>0) or (aCol>=ColCount) or (aCol<0);
   end;
 
-  function ThumbPos: Integer;
-  var
-    ScrollInfo: TScrollInfo;
-  begin
-    ScrollInfo.cbSize := SizeOf(ScrollInfo);
-    ScrollInfo.fMask := SIF_RANGE or SIF_PAGE;
-    GetScrollInfo(Handle, SB_HORZ, ScrollInfo);
-    with ScrollInfo do
-      if not (goSmoothScroll in Options) and (message.Pos>=(nMax-nMin-nPage)) then
-        result := TL
-      else
-        result := message.Pos;
-  end;
 begin
 
   {$IfDef dbgScroll}
@@ -4130,16 +4102,20 @@ begin
     SB_PAGELEFT:   C := CTL - FGCache.ClientWidth;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
-      C := ThumbPos;
+      C := Message.Pos;
     SB_THUMBTRACK:
       if goThumbTracking in Options then
-        C := ThumbPos
+        C := Message.Pos
       else
         Exit;
       // Ends scrolling
     SB_ENDSCROLL:
       Exit;
   end;
+
+  {$Ifdef dbgScroll}
+  DebugLn('HSCROLL: C=%d TL=%d CTL=%d',[C,TL,CTL]);
+  {$Endif}
 
   if C > TL then C := TL else
   if C < 0 then C := 0;
@@ -4165,8 +4141,6 @@ begin
   DebugLn('HSCROLL: Offset=%d TL=%d TLColOff=%d',[C,TL,FGCache.TLColOff]);
   {$Endif}
 
-  if not (goSmoothScroll in Options) then
-    FGCache.TLColOff:=0;
 
   if TL<>FTopLeft.X then begin
     TryScrollTo(Tl, FTopLeft.Y);
@@ -4196,20 +4170,6 @@ var
       result := GetRowHeights(aRow);
       aRow := aRow + Delta;
     until (Result<>0) or (aRow>=RowCount) or (aRow<0);
-  end;
-
-  function ThumbPos: Integer;
-  var
-    ScrollInfo: TScrollInfo;
-  begin
-    ScrollInfo.cbSize := SizeOf(ScrollInfo);
-    ScrollInfo.fMask := SIF_RANGE or SIF_PAGE;
-    GetScrollInfo(Handle, SB_VERT, ScrollInfo);
-    with ScrollInfo do
-      if not (goSmoothScroll in Options) and (message.Pos>=(nMax-nMin-nPage)) then
-        result := TL
-      else
-        result := message.Pos;
   end;
 
 begin
@@ -4242,10 +4202,10 @@ begin
     SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
-      C := ThumbPos;
+      C := Message.Pos;
     SB_THUMBTRACK:
       if goThumbTracking in Options then
-        C := ThumbPos
+        C := Message.Pos
       else
         Exit;
       // Ends scrolling
@@ -4511,29 +4471,26 @@ begin
     HsbRange := 0;
     HsbPos := 0;
     if HsbVisible then begin
-      HsbRange:=GridWidth + 2 - GetBorderWidth;
-      if not (goSmoothScroll in Options) then begin
-        TW:= integer(PtrUInt(AccumWidth[MaxTopLeft.X]))-(HsbRange-ClientWidth);
-        HsbRange:=HsbRange + TW - FixedWidth + 1;
-      end;
+      HsbRange:=GridWidth - GetBorderWidth;
       if FTopLeft.x<=ColCount-1 then
-        HsbPos := integer(PtrUInt(AccumWidth[FTopLeft.x]))-TLColOff-FixedWidth;
+        HsbPos := integer(PtrUInt(AccumWidth[FTopLeft.x]))+TLColOff-FixedWidth;
     end;
 
     VsbRange := 0;
     VsbPos := 0;
     if VsbVisible then begin
-      VSbRange:= GridHeight + 2 - GetBorderWidth;
-      if not (goSmoothScroll in Options) then begin
-        TH:= integer(PtrUInt(accumHeight[MaxTopLeft.Y]))-(VsbRange-ClientHeight);
-        VsbRange:=VsbRange + TH -FixedHeight + 1;
-      end;
+      VSbRange:= GridHeight - GetBorderWidth;
       if FTopLeft.Y<=RowCount-1 then
-        VsbPos := integer(PtrUInt(AccumHeight[FTopLeft.y]))-TLRowOff-FixedHeight;
+        VsbPos := integer(PtrUInt(AccumHeight[FTopLeft.y]))+TLRowOff-FixedHeight;
     end;
 
     HsbPage := ClientWidth;
     VSbPage := ClientHeight;
+
+    {$ifdef dbgscroll}
+    DebugLn('GetSBRanges: HRange=%d HPage=%d HPos=%d VRange=%d VPage=%d VPos=%d',
+      [HSbRange,HsbPage,HsbPos, VsbRange, VsbPage, VsbPos]);
+    {$endif}
   end;
 end;
 
@@ -4560,7 +4517,7 @@ begin
   Include(FGridFlags, gfVisualChange);
   UpdateCachedSizes;
   CacheVisibleGrid;
-  UpdateSBVisibility;
+  CalcScrollbarsRange;
 end;
 
 procedure TCustomGrid.UpdateSelectionRange;
@@ -4931,10 +4888,12 @@ begin
     FullVisibleGrid := VisibleGrid;
     if ValidGrid then
       with FullVisibleGrid do begin
-        if TLColOff>0 then
-          Left := Min(Left+1, Right);
-        if TLRowOff>0 then
-          Top  := Min(Top+1, Bottom);
+        if goSmoothScroll in Options then begin
+          if TLColOff>0 then
+            Left := Min(Left+1, Right);
+          if TLRowOff>0 then
+            Top  := Min(Top+1, Bottom);
+        end;
         R := CellRect(Right, Bottom);
         if R.Right>(ClientWidth+GetBorderWidth) then
           Right := Max(Right-1, Left);
@@ -5335,11 +5294,17 @@ begin
       Exit;
     end;
     if IsCol then begin
-      if index>=FFixedCols then
-        StartPos:=StartPos-integer(PtrUInt(AccumWidth[FTopLeft.X])) + FixedWidth -  TLColOff;
+      if index>=FFixedCols then begin
+        StartPos:=StartPos-integer(PtrUInt(AccumWidth[FTopLeft.X])) + FixedWidth;
+        if goSmoothScroll in Options then
+          StartPos := StartPos - TLColOff;
+      end;
     end else begin
-      if index>=FFixedRows then
-        StartPos:=StartPos-integer(PtrUInt(AccumHeight[FTopLeft.Y])) + FixedHeight - TLRowOff;
+      if index>=FFixedRows then begin
+        StartPos:=StartPos-integer(PtrUInt(AccumHeight[FTopLeft.Y])) + FixedHeight;
+        if goSmoothScroll in Options then
+          StartPos := StartPos - TLRowOff;
+      end;
     end;
     if IsCol and UseRightToLeftAlignment then
     begin
@@ -6734,8 +6699,8 @@ procedure TCustomGrid.UpdateHorzScrollBar(const aVisible: boolean;
   const aRange,aPage,aPos: Integer);
 begin
   {$ifdef DbgScroll}
-  DebugLn('TCustomGrid.UpdateHorzScrollbar: Vis=',dbgs(aVisible),
-    ' Range=',dbgs(aRange),' Page=',dbgs(aPage));
+  DebugLn('TCustomGrid.UpdateHorzScrollbar: Vis=%s Range=%d Page=%d aPos=%d',
+    [dbgs(aVisible),aRange, aPage, aPos]);
   {$endif}
   ScrollBarShow(SB_HORZ, aVisible);
   if aVisible then
@@ -6746,8 +6711,8 @@ procedure TCustomGrid.UpdateVertScrollbar(const aVisible: boolean;
   const aRange,aPage,aPos: Integer);
 begin
   {$ifdef DbgScroll}
-  DebugLn('TCustomGrid.UpdateVertScrollbar: Vis=',dbgs(aVisible),
-    ' Range=',dbgs(aRange),' Page=',dbgs(aPage));
+  DebugLn('TCustomGrid.UpdateVertScrollbar: Vis=%s Range=%d Page=%d aPos=%d',
+    [dbgs(aVisible),aRange, aPage, aPos]);
   {$endif}
   ScrollBarShow(SB_VERT, aVisible);
   if aVisible then
@@ -6827,6 +6792,26 @@ begin
     Dec(aRect.Botton, 1);
   end;
   }
+end;
+
+procedure TCustomGrid.CalcScrollbarsRange;
+var
+  HsbVisible, VsbVisible: boolean;
+  HsbRange,VsbRange: Integer;
+  HsbPage, VsbPage: Integer;
+  HsbPos, VsbPos: Integer;
+begin
+  with FGCache do begin
+    // Horizontal scrollbar
+    GetSBVisibility(HsbVisible, VsbVisible);
+    GetSBRanges(HsbVisible,VsbVisible,HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos);
+    UpdateVertScrollBar(VsbVisible, VsbRange, VsbPage, VsbPos);
+    UpdateHorzScrollBar(HsbVisible, HsbRange, HsbPage, HsbPos);
+    {$ifdef DbgScroll}
+    DebugLn('VRange=',dbgs(VsbRange),' Visible=',dbgs(VSbVisible));
+    DebugLn('HRange=',dbgs(HsbRange),' Visible=',dbgs(HSbVisible));
+    {$endif}
+  end;
 end;
 
 procedure TCustomGrid.CellClick(const aCol, aRow: Integer; const Button:TMouseButton);
