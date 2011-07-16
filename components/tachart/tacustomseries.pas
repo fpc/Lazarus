@@ -1014,10 +1014,8 @@ end;
 
 procedure TBasicPointSeries.UpdateMargins(
   ADrawer: IChartDrawer; var AMargins: TRect);
-const
-  LABEL_TO_BORDER = 4;
 var
-  i, dist, d: Integer;
+  i, dist: Integer;
   labelText: String;
   dir: TLabelDirection;
   m: array [TLabelDirection] of Integer absolute AMargins;
@@ -1030,10 +1028,11 @@ begin
     if labelText = '' then continue;
 
     dir := GetLabelDirection(i);
-    d := IfThen(Marks.DistanceToCenter, 2, 1);
     with Marks.MeasureLabel(ADrawer, labelText) do
-      dist := IfThen(dir in [ldLeft, ldRight], cx, cy) div d;
-    m[dir] := Max(m[dir], dist + Marks.Distance + LABEL_TO_BORDER);
+      dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
+    if Marks.DistanceToCenter then
+      dist := dist div 2;
+    m[dir] := Max(m[dir], dist + Marks.Distance);
   end;
 end;
 
