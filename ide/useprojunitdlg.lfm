@@ -80,8 +80,11 @@ object UseUnitDialog: TUseUnitDialog
     BorderSpacing.Around = 6
     ItemHeight = 0
     OnDblClick = UnitsListBoxDblClick
+    OnDrawItem = UnitsListBoxDrawItem
+    ScrollWidth = 347
     Style = lbOwnerDrawFixed
     TabOrder = 1
+    TopIndex = -1
   end
   object AllUnitsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner

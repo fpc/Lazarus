@@ -49,6 +49,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure UnitsListBoxDblClick(Sender: TObject);
+    procedure UnitsListBoxDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
   private
     UnitImgInd: Integer;
     FMainUsedUnits: TStrings;
@@ -60,7 +62,6 @@ type
     function SelectedUnit: string;
     function InterfaceSelected: Boolean;
     procedure EnableOnlyInterface;
-    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
   public
 
   end; 
@@ -124,8 +125,6 @@ begin
   ButtonPanel1.OKButton.Caption:=lisOk;
   ButtonPanel1.CancelButton.Caption:=dlgCancel;
   UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
-  FilterEdit.Images4Listbox:=IDEImages.Images_16;
-  FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
   FProjUnits:=TStringList.Create;
 end;
 
@@ -166,11 +165,20 @@ begin
     ModalResult := mrOK;
 end;
 
-function TUseUnitDialog.ChooseImageIndex(Str: String; Data: TObject;
-                                         var IsEnabled: Boolean): Integer;
+procedure TUseUnitDialog.UnitsListBoxDrawItem(Control: TWinControl;
+  Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var ena: Boolean;
 begin
-  IsEnabled:=Data=Nil;
-  Result:=UnitImgInd;
+  if Index < 0 then Exit;
+  with UnitsListBox do
+  begin
+    Canvas.FillRect(ARect);
+    ena := not Assigned(Items.Objects[Index]);
+    if not (ena or (odSelected in State)) then
+      UnitsListBox.Canvas.Font.Color := clGreen;
+    IDEImages.Images_16.Draw(Canvas, 1, ARect.Top, UnitImgInd, ena);
+    Canvas.TextRect(ARect, ARect.Left + 20, ARect.Top, Items[Index]);
+  end;
 end;
 
 function TUseUnitDialog.GetAvailableProjUnits(SrcEdit: TSourceEditor): TModalResult;
@@ -238,7 +246,7 @@ begin
           if (FMainUsedUnits.IndexOf(curUnit) < 0)
             and (FImplUsedUnits.IndexOf(curUnit) < 0)
             and (FOtherUnits.IndexOf(curUnit) < 0) then
-              FOtherUnits.AddObject(IdentifierList.FilteredItems[i].Identifier, TObject(1));
+              FOtherUnits.AddObject(IdentifierList.FilteredItems[i].Identifier, IdentifierList.FilteredItems[i]);
         end;
       end;
     FOtherUnits.Sort;
@@ -248,11 +256,28 @@ begin
 end;
 
 function TUseUnitDialog.SelectedUnit: string;
+var
+  IdentItem: TIdentifierListItem;
+  CodeBuf: TCodeBuffer;
 begin
-  if UnitsListBox.ItemIndex >= 0 then
-    Result := UnitsListBox.Items[UnitsListBox.ItemIndex]
-  else
-    Result := '';
+  with UnitsListBox do
+    if ItemIndex >= 0 then
+    begin
+      IdentItem := TIdentifierListItem(Items.Objects[ItemIndex]);
+      if Assigned(IdentItem) then
+      begin
+        Result := IdentItem.Identifier;
+        CodeBuf := CodeToolBoss.FindUnitSource(
+          SourceEditorManager.ActiveEditor.CodeBuffer, Result, '');
+        if CodeBuf = nil then
+          Exit(IdentItem.Identifier);
+        Result := CodeToolBoss.GetSourceName(CodeBuf, True);
+        if Result = '' then
+          Result := IdentItem.Identifier;
+      end else
+        Result := Items[ItemIndex];
+    end else
+      Result := '';
 end;
 
 function TUseUnitDialog.InterfaceSelected: Boolean;

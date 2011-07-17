@@ -24,12 +24,12 @@ object ViewUnitDialog: TViewUnitDialog
     ClickOnSelChange = False
     ItemHeight = 0
     OnDblClick = OKButtonClick
+    OnDrawItem = ListboxDrawItem
     OnKeyDown = ListboxKeyDown
     PopupMenu = popListBox
     ScrollWidth = 362
     Style = lbOwnerDrawFixed
     TabOrder = 0
-    TopIndex = -1
   end
   object ButtonPanel: TButtonPanel
     Left = 6
@@ -78,6 +78,8 @@ object ViewUnitDialog: TViewUnitDialog
     object FilterEdit: TListFilterEdit
       AnchorSideLeft.Control = SortAlphabeticallySpeedButton
       AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SortAlphabeticallySpeedButton
+      AnchorSideTop.Side = asrCenter
       Left = 26
       Height = 23
       Top = 2
@@ -85,7 +87,7 @@ object ViewUnitDialog: TViewUnitDialog
       FilteredListbox = Listbox
       ButtonWidth = 23
       NumGlyphs = 0
-      Anchors = [akLeft, akRight]
+      Anchors = [akTop, akLeft, akRight]
       Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False

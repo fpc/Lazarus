@@ -65,6 +65,8 @@ type
     popListBox: TPopupMenu;
     RemoveBitBtn: TSpeedButton;
     SortAlphabeticallySpeedButton: TSpeedButton;
+    procedure ListboxDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender :TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -75,15 +77,14 @@ type
     FSortAlphabetically: boolean;
     FImageIndex: Integer;
     procedure SetSortAlphabetically(const AValue: boolean);
-    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
   public
     constructor Create(TheOwner: TComponent); override;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
   end;
 
+// Entries is a list of TViewUnitsEntry(s)
 function ShowViewUnitsDlg(Entries: TStringList; AllowMultiSelect: boolean;
   var CheckMultiSelect: Boolean; const aCaption: string; aImageIndex: Integer): TModalResult;
-  // Entries is a list of TViewUnitsEntry(s)
 
 implementation
 
@@ -103,11 +104,7 @@ begin
     mniMultiselect.Enabled := AllowMultiSelect;
     mniMultiselect.Checked := CheckMultiSelect;
     ListBox.MultiSelect := mniMultiselect.Enabled;
-    if aImageIndex > -1 then begin
-      FImageIndex:=aImageIndex;
-      FilterEdit.Images4Listbox:=IDEImages.Images_16;
-      FilterEdit.OnGetImageIndex:=@ChooseImageIndex;
-    end;
+    if aImageIndex > -1 then FImageIndex:=aImageIndex; // otherwise FImageIndex will stay "0"
     // Data items
     for i:=0 to Entries.Count-1 do begin
       UEntry:=TViewUnitsEntry(Entries.Objects[i]);
@@ -167,6 +164,18 @@ begin
   SortAlphabetically:=SortAlphabeticallySpeedButton.Down;
 end;
 
+procedure TViewUnitDialog.ListboxDrawItem(Control: TWinControl; Index: Integer;
+  ARect: TRect; State: TOwnerDrawState);
+begin
+  if Index < 0 then Exit;
+  with ListBox do
+  begin
+    Canvas.FillRect(ARect);
+    IDEImages.Images_16.Draw(Canvas, 1, ARect.Top, FImageIndex);
+    Canvas.TextRect(ARect, ARect.Left + 20, ARect.Top, Items[Index]);
+  end;
+end;
+
 procedure TViewUnitDialog.OKButtonClick(Sender: TObject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
@@ -204,13 +213,6 @@ begin
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.InvalidateFilter;
 end;
-
-function TViewUnitDialog.ChooseImageIndex(Str: String; Data: TObject;
-                                          var IsEnabled: Boolean): Integer;
-begin
-  Result:=FImageIndex;
-end;
-
 
 end.
 
