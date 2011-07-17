@@ -591,8 +591,8 @@ begin
   FHelper.FClipRect := AClipRect;
   FHelper.FDrawer := ADrawer;
   FHelper.FTransf := ATransf;
-  FHelper.FZOffset.X := Min(ZPosition, AMaxZPosition);
-  FHelper.FZOffset.Y := -FHelper.FZOffset.X;
+  FHelper.FZOffset.Y := Min(ZPosition, AMaxZPosition);
+  FHelper.FZOffset.X := -FHelper.FZOffset.Y;
 end;
 
 procedure TChartAxis.SetAlignment(AValue: TChartAxisAlignment);
