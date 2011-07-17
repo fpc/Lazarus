@@ -80,6 +80,11 @@ type
     FTitleSize: Integer;
   end;
 
+  TChartAxisPen = class(TChartPen)
+  published
+    property Visible default false;
+  end;
+
   { TChartAxis }
 
   TChartAxis = class(TChartBasicAxis)
@@ -96,6 +101,7 @@ type
     FTitleRect: TRect;
   strict private
     FAlignment: TChartAxisAlignment;
+    FAxisPen: TChartAxisPen;
     FGroup: Integer;
     FHelper: TAxisDrawHelper;
     FInverted: Boolean;
@@ -106,6 +112,7 @@ type
     FZPosition: TChartDistance;
 
     function GetTransform: TChartAxisTransformations;
+    procedure SetAxisPen(AValue: TChartAxisPen);
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
     procedure SetMinors(AValue: TChartMinorAxisList);
@@ -136,6 +143,7 @@ type
       AClipRect: PRect; AMaxZPosition: Integer);
   published
     property Alignment default calLeft;
+    property AxisPen: TChartAxisPen read FAxisPen write SetAxisPen;
     property Group: Integer read FGroup write SetGroup default 0;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
@@ -360,6 +368,9 @@ end;
 constructor TChartAxis.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection, ACollection.Owner as TCustomChart);
+  FAxisPen := TChartAxisPen.Create;
+  FAxisPen.OnChange := @StyleChanged;
+  FAxisPen.Visible := false;
   FListener := TListener.Create(@FTransformations, @StyleChanged);
   FMinors := TChartMinorAxisList.Create(Self);
   TickLength := DEF_TICK_LENGTH;
@@ -372,6 +383,7 @@ begin
   FreeAndNil(FMinors);
   FreeAndNil(FListener);
   FreeAndNil(FHelper);
+  FreeAndNil(FAxisPen);
   inherited;
 end;
 
@@ -388,6 +400,10 @@ begin
   fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
   v := 0;
   FHelper.BeginDrawing;
+  if AxisPen.Visible then begin;
+    FHelper.FDrawer.Pen := AxisPen;
+    FHelper.DrawAxisLine(fixedCoord);
+  end;
   axisTransf := @GetTransform.AxisToGraph;
   for i := 0 to High(FMarkValues) do begin
     pv := v;
@@ -586,6 +602,12 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartAxis.SetAxisPen(AValue: TChartAxisPen);
+begin
+  FAxisPen.Assign(AValue);
+  StyleChanged(Self);
+end;
+
 procedure TChartAxis.SetGroup(AValue: Integer);
 begin
   if FGroup = AValue then exit;
@@ -602,7 +624,6 @@ end;
 
 procedure TChartAxis.SetMinors(AValue: TChartMinorAxisList);
 begin
-  if FMinors = AValue then exit;
   FMinors.Assign(AValue);
   StyleChanged(Self);
 end;

@@ -78,7 +78,7 @@ type
   TChartAxisMarkToTextEvent =
     procedure (var AText: String; AMark: Double) of object;
 
-  TChartAxisPen = class(TChartPen)
+  TChartAxisGridPen = class(TChartPen)
   published
     property Style default psDot;
   end;
@@ -124,12 +124,12 @@ type
 
   TChartBasicAxis = class(TCollectionItem)
   strict private
-    FGrid: TChartAxisPen;
+    FGrid: TChartAxisGridPen;
     FMarks: TChartAxisMarks;
     FTickColor: TColor;
     FTickLength: Integer;
     FVisible: Boolean;
-    procedure SetGrid(AValue: TChartAxisPen);
+    procedure SetGrid(AValue: TChartAxisGridPen);
     procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
@@ -149,7 +149,7 @@ type
       read GetAlignment write SetAlignment;
     property Marks: TChartAxisMarks read FMarks write SetMarks;
   published
-    property Grid: TChartAxisPen read FGrid write SetGrid;
+    property Grid: TChartAxisGridPen read FGrid write SetGrid;
     property TickColor: TColor read FTickColor write SetTickColor default clBlack;
     property TickLength: Integer read FTickLength write SetTickLength;
     property Visible: Boolean read FVisible write SetVisible default true;
@@ -181,6 +181,7 @@ type
     procedure BeginDrawing; virtual;
     function Clone: TAxisDrawHelper;
     constructor Create; virtual;
+    procedure DrawAxisLine(AFixedCoord: Integer); virtual; abstract;
     procedure DrawMark(
       AFixedCoord: Integer; AMark: Double; const AText: String);
     procedure EndDrawing; virtual; abstract;
@@ -200,6 +201,7 @@ type
     procedure GridLine(ACoord: Integer); override;
   public
     procedure BeginDrawing; override;
+    procedure DrawAxisLine(AFixedCoord: Integer); override;
     procedure EndDrawing; override;
     procedure GetClipRange(out AMin, AMax: Integer); override;
   end;
@@ -214,6 +216,7 @@ type
     procedure GridLine(ACoord: Integer); override;
   public
     procedure BeginDrawing; override;
+    procedure DrawAxisLine(AFixedCoord: Integer); override;
     procedure EndDrawing; override;
     procedure GetClipRange(out AMin, AMax: Integer); override;
   end;
@@ -306,6 +309,12 @@ begin
   FPrevCoord := FClipRect^.Left;
 end;
 
+procedure TAxisDrawHelperX.DrawAxisLine(AFixedCoord: Integer);
+begin
+  LineZ(
+    Point(FClipRect^.Left, AFixedCoord), Point(FClipRect^.Right, AFixedCoord));
+end;
+
 procedure TAxisDrawHelperX.DrawLabelAndTick(
   ACoord, AFixedCoord: Integer; const AText: String);
 var
@@ -350,6 +359,12 @@ procedure TAxisDrawHelperY.BeginDrawing;
 begin
   inherited;
   FPrevCoord := FClipRect^.Bottom;
+end;
+
+procedure TAxisDrawHelperY.DrawAxisLine(AFixedCoord: Integer);
+begin
+  LineZ(
+    Point(AFixedCoord, FClipRect^.Top), Point(AFixedCoord, FClipRect^.Bottom));
 end;
 
 procedure TAxisDrawHelperY.DrawLabelAndTick(
@@ -508,7 +523,7 @@ constructor TChartBasicAxis.Create(
   ACollection: TCollection; AChart: TCustomChart);
 begin
   inherited Create(ACollection);
-  FGrid := TChartAxisPen.Create;
+  FGrid := TChartAxisGridPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
   FMarks := TChartAxisMarks.Create(AChart);
@@ -523,7 +538,7 @@ begin
   inherited;
 end;
 
-procedure TChartBasicAxis.SetGrid(AValue: TChartAxisPen);
+procedure TChartBasicAxis.SetGrid(AValue: TChartAxisGridPen);
 begin
   FGrid.Assign(AValue);
   StyleChanged(Self);
