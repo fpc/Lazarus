@@ -38,6 +38,8 @@ const
   DEF_MARKS_DISTANCE = 20;
   DEF_POINTER_SIZE = 4;
   MARKS_YINDEX_ALL = -1;
+  DEF_ARROW_LENGTH = 10;
+  DEF_ARROW_WIDTH = 5;
 
 type
   TCustomChart = class(TCustomControl)
@@ -76,7 +78,7 @@ type
   public
     constructor Create(AOwner: TCustomChart);
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(ASource: TPersistent); override;
 
     procedure SetOwner(AOwner: TCustomChart);
 
@@ -273,7 +275,7 @@ type
 
   { TChartExtent }
 
-  TChartExtent = class (TChartElement)
+  TChartExtent = class(TChartElement)
   private
     FExtent: TDoubleRect;
     FUseBounds: array [1..4] of Boolean;
@@ -300,7 +302,7 @@ type
 
   { TChartMargins }
 
-  TChartMargins = class (TChartElement)
+  TChartMargins = class(TChartElement)
   private
     FData: record
       case Integer of
@@ -321,10 +323,29 @@ type
     property Bottom: TChartDistance index 4 read GetValue write SetValue default DEF_MARGIN;
   end;
 
+  TChartArrow = class(TChartElement)
+  private
+    FLength: TChartDistance;
+    FWidth: TChartDistance;
+    procedure SetLength(AValue: TChartDistance);
+    procedure SetWidth(AValue: TChartDistance);
+  public
+    constructor Create(AOwner: TCustomChart);
+  public
+    procedure Assign(ASource: TPersistent); override;
+    procedure Draw(ADrawer: IChartDrawer; const AEndPos: TPoint; AAngle: Double);
+  published
+    property Length: TChartDistance
+      read FLength write SetLength default DEF_ARROW_LENGTH;
+    property Visible default false;
+    property Width: TChartDistance
+      read FWidth write SetWidth default DEF_ARROW_WIDTH;
+  end;
+
 implementation
 
 uses
-  GraphMath,
+  GraphMath, Math,
   TACustomSource, TAGeometry;
 
 { TChartPen }
@@ -351,10 +372,10 @@ end;
 
 { TChartElement }
 
-procedure TChartElement.Assign(Source: TPersistent);
+procedure TChartElement.Assign(ASource: TPersistent);
 begin
-  if Source is TChartElement then
-    with TChartElement(Source) do begin
+  if ASource is TChartElement then
+    with TChartElement(ASource) do begin
       Self.FVisible := FVisible;
       Self.FOwner := FOwner;
     end;
@@ -960,6 +981,54 @@ procedure TChartMargins.SetValue(AIndex: integer; AValue: TChartDistance);
 begin
   if FData.FCoords[AIndex] = AValue then exit;
   FData.FCoords[AIndex] := AValue;
+  StyleChanged(Self);
+end;
+
+{ TChartArrow }
+
+procedure TChartArrow.Assign(ASource: TPersistent);
+begin
+  if ASource is TChartArrow then
+    with TChartArrow(ASource) do begin
+      Self.FLength := FLength;
+      Self.FWidth := FWidth;
+    end;
+  inherited Assign(ASource);
+end;
+
+constructor TChartArrow.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FLength := DEF_ARROW_LENGTH;
+  FVisible := false;
+  FWidth := DEF_ARROW_WIDTH;
+end;
+
+procedure TChartArrow.Draw(
+  ADrawer: IChartDrawer; const AEndPos: TPoint; AAngle: Double);
+var
+  da: Double;
+  pt: TPoint;
+begin
+  if not Visible then exit;
+  da := ArcTan2(Width, Length);
+  pt := Point(-Length, 0);
+  ADrawer.Polyline([
+    AEndPos + RotatePoint(pt, AAngle - da), AEndPos,
+    AEndPos + RotatePoint(pt, AAngle + da)], 0, 3);
+end;
+
+procedure TChartArrow.SetLength(AValue: TChartDistance);
+begin
+  if FLength = AValue then exit;
+  FLength := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartArrow.SetWidth(AValue: TChartDistance);
+begin
+  if FWidth = AValue then exit;
+  FWidth := AValue;
   StyleChanged(Self);
 end;
 

@@ -239,7 +239,8 @@ type
   { TConstantLine }
 
   TConstantLine = class(TCustomChartSeries)
-  private
+  strict private
+    FArrow: TChartArrow;
     FLineStyle: TLineStyle;
     FPen: TPen;
     FPosition: Double; // Graph coordinate of line
@@ -247,18 +248,20 @@ type
 
     function GetSeriesColor: TColor;
     procedure SavePosToCoord(var APoint: TDoublePoint);
+    procedure SetArrow(AValue: TChartArrow);
     procedure SetLineStyle(AValue: TLineStyle);
     procedure SetPen(AValue: TPen);
     procedure SetPosition(AValue: Double);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetUseBounds(AValue: Boolean);
   protected
+    procedure AfterAdd; override;
     procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
-    destructor  Destroy; override;
+    destructor Destroy; override;
 
     procedure Draw(ADrawer: IChartDrawer); override;
     function GetNearestPoint(
@@ -269,6 +272,7 @@ type
 
   published
     property Active default true;
+    property Arrow: TChartArrow read FArrow write SetArrow;
     property LineStyle: TLineStyle
       read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
@@ -577,10 +581,17 @@ end;
 
 { TConstantLine }
 
+procedure TConstantLine.AfterAdd;
+begin
+  inherited;
+  Arrow.SetOwner(ParentChart);
+end;
+
 procedure TConstantLine.Assign(ASource: TPersistent);
 begin
   if ASource is TConstantLine then
     with TConstantLine(ASource) do begin
+      Self.FArrow.Assign(FArrow);
       Self.FLineStyle := FLineStyle;
       Self.Pen := FPen;
       Self.FPosition := FPosition;
@@ -592,7 +603,7 @@ end;
 constructor TConstantLine.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
+  FArrow := TChartArrow.Create(ParentChart);
   FLineStyle := lsHorizontal;
   FPen := TPen.Create;
   FPen.OnChange := @StyleChanged;
@@ -601,21 +612,30 @@ end;
 
 destructor TConstantLine.Destroy;
 begin
+  FreeAndNil(FArrow);
   FreeAndNil(FPen);
   inherited;
 end;
 
 procedure TConstantLine.Draw(ADrawer: IChartDrawer);
+var
+  p: Integer;
 begin
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := FPen;
 
   with ParentChart do
     case LineStyle of
-      lsHorizontal:
-        DrawLineHoriz(ADrawer, YGraphToImage(FPosition));
-      lsVertical:
-        DrawLineVert(ADrawer, XGraphToImage(FPosition));
+      lsHorizontal: begin
+        p := YGraphToImage(FPosition);
+        DrawLineHoriz(ADrawer, p);
+        Arrow.Draw(ADrawer, Point(ClipRect.Right - 1, p), 0);
+      end;
+      lsVertical: begin
+        p := XGraphToImage(FPosition);
+        DrawLineVert(ADrawer, p);
+        Arrow.Draw(ADrawer, Point(p, ClipRect.Top), -Pi / 2);
+      end;
     end;
 end;
 
@@ -671,6 +691,12 @@ begin
     APoint.X := Position
   else
     APoint.Y := Position;
+end;
+
+procedure TConstantLine.SetArrow(AValue: TChartArrow);
+begin
+  FArrow.Assign(AValue);
+  UpdateParentChart;
 end;
 
 procedure TConstantLine.SetLineStyle(AValue: TLineStyle);

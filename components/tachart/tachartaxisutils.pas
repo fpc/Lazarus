@@ -197,13 +197,13 @@ type
   protected
     procedure DrawLabelAndTick(
       ACoord, AFixedCoord: Integer; const AText: String); override;
-    function GraphToImage(AGraph: Double): Integer; override;
     procedure GridLine(ACoord: Integer); override;
   public
     procedure BeginDrawing; override;
     procedure DrawAxisLine(AFixedCoord: Integer); override;
     procedure EndDrawing; override;
     procedure GetClipRange(out AMin, AMax: Integer); override;
+    function GraphToImage(AGraph: Double): Integer; override;
   end;
 
   { TAxisDrawHelperY }
@@ -212,13 +212,13 @@ type
   protected
     procedure DrawLabelAndTick(
       ACoord, AFixedCoord: Integer; const AText: String); override;
-    function GraphToImage(AGraph: Double): Integer; override;
     procedure GridLine(ACoord: Integer); override;
   public
     procedure BeginDrawing; override;
     procedure DrawAxisLine(AFixedCoord: Integer); override;
     procedure EndDrawing; override;
     procedure GetClipRange(out AMin, AMax: Integer); override;
+    function GraphToImage(AGraph: Double): Integer; override;
   end;
 
 implementation
