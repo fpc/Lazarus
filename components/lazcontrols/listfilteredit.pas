@@ -136,8 +136,8 @@ type
     // TListFilterEdit properties.
     property FilteredTreeview: TTreeview read fFilteredTreeview write SetFilteredTreeview;
     property FilteredListbox: TListBox read fFilteredListbox write SetFilteredListbox;
-    property Images4Listbox: TCustomImageList read fImages4Listbox write fImages4Listbox;
-    property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex;
+    property Images4Listbox: TCustomImageList read fImages4Listbox write fImages4Listbox; deprecated 'use OnDrawItem handler in FilteredListbox';
+    property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex; deprecated 'use OnDrawItem handler in FilteredListbox';
     // TEditButton properties.
     property ButtonWidth;
     property DirectInput;
@@ -311,6 +311,7 @@ begin
           s:=fFilenameMap[FileN];           // Full file name.
         TVNode.Data:=TFileNameItem.Create(s);
       end;
+      ena := True;
       if Assigned(OnGetImageIndex) then
         fImgIndex:=OnGetImageIndex(FileN, fSortedData.Objects[i], ena);
       TVNode.ImageIndex:=fImgIndex;
@@ -551,7 +552,6 @@ begin
   fFilenameMap:=TStringToStringTree.Create(True);
   fImageIndexDirectory := -1;
   Button.Enabled:=False;
-  fIsFirstUpdate:=True;
 end;
 
 destructor TListFilterEdit.Destroy;
@@ -573,7 +573,6 @@ begin
   ena:=True;
   ImgIndex:=-1;
   if Assigned(fImages4Listbox) and Assigned(OnGetImageIndex) then begin
-    ena:=True;
     ImgIndex:=OnGetImageIndex(fFilteredListbox.Items[Index],
                               fFilteredListbox.Items.Objects[Index], ena);
   end;
@@ -652,7 +651,8 @@ end;
 
 procedure TListFilterEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if ((Key=VK_UP) or (Key=VK_DOWN)) and (Shift=[]) then
+  if Assigned(fViewControlWrapper)
+    and (Key in [VK_UP, VK_DOWN]) and (Shift = []) then
   begin
     case Key of
       VK_UP:   fViewControlWrapper.MovePrev;
@@ -675,28 +675,38 @@ end;
 
 procedure TListFilterEdit.SetFilteredTreeview(const AValue: TTreeview);
 begin
+  if fFilteredTreeview = AValue then Exit;
   if Assigned(fFilteredListbox) then
-    raise Exception.Create('Sorry, both Treeview and ListBox should not be assigned.');
+    FilteredListbox := nil;
   fFilteredTreeview:=AValue;
-  if Assigned(fViewControlWrapper) then
-    fViewControlWrapper.Free;
+  if Assigned(fViewControlWrapper) then FreeAndNil(fViewControlWrapper);
+  if AValue = nil then Exit;
   fViewControlWrapper:=TViewControlTreeview.Create(Self, fFilteredTreeview);
+  fIsFirstUpdate := True;
 end;
 
 procedure TListFilterEdit.SetFilteredListbox(const AValue: TListBox);
 begin
+  if fFilteredListbox = AValue then Exit;
   if Assigned(fFilteredTreeview) then
-    raise Exception.Create('Sorry, both Treeview and ListBox should not be assigned.');
+    FilteredTreeview := nil;
+  if Assigned(fFilteredListbox)
+    and (fFilteredListbox.OnDrawItem = @ListBoxDrawItem) then
+      fFilteredListbox.OnDrawItem := nil;
   fFilteredListbox:=AValue;
+  if Assigned(fViewControlWrapper) then FreeAndNil(fViewControlWrapper);
+  if AValue = nil then Exit;
   if fFilteredListbox.Style<>lbStandard then begin
-    if Assigned(fFilteredListbox.OnDrawItem) then
-      raise Exception.Create('Listbox.OnDrawItem should not be defined.'+
-                             ' ListFilterEdit assigns its own handler.');
-    fFilteredListbox.OnDrawItem:=@ListBoxDrawItem;
+    // if Listbox.Style<>Standard then it is OwnerDraw,
+    // and OnDrawItem should be defined, so the following code is useless
+    if not (csDesigning in fFilteredListbox.ComponentState)
+      and not Assigned(fFilteredListbox.OnDrawItem) then
+        // AP: I propose not to use ListBoxDrawItem at all, DrawItem handler of FilteredListbox must be used
+        fFilteredListbox.OnDrawItem:=@ListBoxDrawItem;
   end;
-  if Assigned(fViewControlWrapper) then
-    fViewControlWrapper.Free;
   fViewControlWrapper:=TViewControlListbox.Create(Self, fFilteredListbox);
+  fOriginalData.Assign(fFilteredListbox.Items);
+  fIsFirstUpdate := True;
 end;
 
 procedure TListFilterEdit.SetShowDirHierarchy(const AValue: Boolean);
@@ -715,15 +725,12 @@ end;
 procedure TListFilterEdit.ApplyFilter(Immediately: Boolean);
 begin
   if Immediately then begin
-    if not (Assigned(fFilteredTreeview) or Assigned(fFilteredListbox)) then
-      raise Exception.Create(
-        'Set either FilteredTreeview or FilteredListbox before using the filter.');
-    fNeedUpdate:=false;
+    fNeedUpdate := False;
+    if not Assigned(fViewControlWrapper) then Exit;
     fViewControlWrapper.SortAndFilter;
     if (fSelectedPart=Nil) and not fIsFirstUpdate then
       fViewControlWrapper.StoreSelection; // At first round the selection is from caller
-    if fIsFirstUpdate then
-      fIsFirstUpdate:=False;
+    fIsFirstUpdate:=False;
     fViewControlWrapper.ApplyFilter;
     fSelectedPart:=Nil;
     fViewControlWrapper.RestoreSelection;
