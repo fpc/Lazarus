@@ -124,11 +124,13 @@ type
 
   TChartBasicAxis = class(TCollectionItem)
   strict private
+    FArrow: TChartArrow;
     FGrid: TChartAxisGridPen;
     FMarks: TChartAxisMarks;
     FTickColor: TColor;
     FTickLength: Integer;
     FVisible: Boolean;
+    procedure SetArrow(AValue: TChartArrow);
     procedure SetGrid(AValue: TChartAxisGridPen);
     procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetTickColor(AValue: TColor);
@@ -145,8 +147,10 @@ type
     procedure Assign(ASource: TPersistent); override;
     function TryApplyStripes(
       ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
+
     property Alignment: TChartAxisAlignment
-      read GetAlignment write SetAlignment;
+    read GetAlignment write SetAlignment;
+    property Arrow: TChartArrow read FArrow write SetArrow;
     property Marks: TChartAxisMarks read FMarks write SetMarks;
   published
     property Grid: TChartAxisGridPen read FGrid write SetGrid;
@@ -160,6 +164,8 @@ type
   TAxisDrawHelper = class
   strict protected
     procedure BarZ(AX1, AY1, AX2, AY2: Integer); inline;
+    procedure InternalAxisLine(
+      APen: TChartPen; const AStart, AEnd: TPoint; AAngle: Double);
     procedure DrawLabel(ALabelCenter: TPoint; const AText: String); inline;
     procedure DrawLabelAndTick(
       ACoord, AFixedCoord: Integer; const AText: String); virtual; abstract;
@@ -181,7 +187,8 @@ type
     procedure BeginDrawing; virtual;
     function Clone: TAxisDrawHelper;
     constructor Create; virtual;
-    procedure DrawAxisLine(AFixedCoord: Integer); virtual; abstract;
+    procedure DrawAxisLine(
+      APen: TChartPen; AFixedCoord: Integer); virtual; abstract;
     procedure DrawMark(
       AFixedCoord: Integer; AMark: Double; const AText: String);
     procedure EndDrawing; virtual; abstract;
@@ -200,7 +207,7 @@ type
     procedure GridLine(ACoord: Integer); override;
   public
     procedure BeginDrawing; override;
-    procedure DrawAxisLine(AFixedCoord: Integer); override;
+    procedure DrawAxisLine(APen: TChartPen; AFixedCoord: Integer); override;
     procedure EndDrawing; override;
     procedure GetClipRange(out AMin, AMax: Integer); override;
     function GraphToImage(AGraph: Double): Integer; override;
@@ -215,7 +222,7 @@ type
     procedure GridLine(ACoord: Integer); override;
   public
     procedure BeginDrawing; override;
-    procedure DrawAxisLine(AFixedCoord: Integer); override;
+    procedure DrawAxisLine(APen: TChartPen; AFixedCoord: Integer); override;
     procedure EndDrawing; override;
     procedure GetClipRange(out AMin, AMax: Integer); override;
     function GraphToImage(AGraph: Double): Integer; override;
@@ -283,6 +290,17 @@ begin
   end;
 end;
 
+procedure TAxisDrawHelper.InternalAxisLine(
+  APen: TChartPen; const AStart, AEnd: TPoint; AAngle: Double);
+begin
+  if not APen.Visible and not FAxis.Arrow.Visible then exit;
+  FDrawer.Pen := APen;
+  if APen.Visible then
+    LineZ(Astart, AEnd);
+  if FAxis.Arrow.Visible then
+    FAxis.Arrow.Draw(FDrawer, AEnd + FZOffset, AAngle);
+end;
+
 function TAxisDrawHelper.IsInClipRange(ACoord: Integer): Boolean;
 var
   rmin, rmax: Integer;
@@ -309,10 +327,14 @@ begin
   FPrevCoord := FClipRect^.Left;
 end;
 
-procedure TAxisDrawHelperX.DrawAxisLine(AFixedCoord: Integer);
+procedure TAxisDrawHelperX.DrawAxisLine(APen: TChartPen; AFixedCoord: Integer);
+var
+  p: TPoint;
 begin
-  LineZ(
-    Point(FClipRect^.Left, AFixedCoord), Point(FClipRect^.Right, AFixedCoord));
+  p := Point(FClipRect^.Right, AFixedCoord);
+  if FAxis.Arrow.Visible then
+    p.X += FDrawer.Scale(FAxis.Arrow.Length);
+  InternalAxisLine(APen, Point(FClipRect^.Left, AFixedCoord), p, 0);
 end;
 
 procedure TAxisDrawHelperX.DrawLabelAndTick(
@@ -361,10 +383,14 @@ begin
   FPrevCoord := FClipRect^.Bottom;
 end;
 
-procedure TAxisDrawHelperY.DrawAxisLine(AFixedCoord: Integer);
+procedure TAxisDrawHelperY.DrawAxisLine(APen: TChartPen; AFixedCoord: Integer);
+var
+  p: TPoint;
 begin
-  LineZ(
-    Point(AFixedCoord, FClipRect^.Top), Point(AFixedCoord, FClipRect^.Bottom));
+  p := Point(AFixedCoord, FClipRect^.Top);
+  if FAxis.Arrow.Visible then
+    p.Y -= FDrawer.Scale(FAxis.Arrow.Length);
+  InternalAxisLine(APen, Point(AFixedCoord, FClipRect^.Bottom), p, -Pi / 2);
 end;
 
 procedure TAxisDrawHelperY.DrawLabelAndTick(
@@ -523,6 +549,7 @@ constructor TChartBasicAxis.Create(
   ACollection: TCollection; AChart: TCustomChart);
 begin
   inherited Create(ACollection);
+  FArrow := TChartArrow.Create(AChart);
   FGrid := TChartAxisGridPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
@@ -533,9 +560,16 @@ end;
 
 destructor TChartBasicAxis.Destroy;
 begin
+  FreeAndNil(FArrow);
   FreeAndNil(FGrid);
   FreeAndNil(FMarks);
   inherited;
+end;
+
+procedure TChartBasicAxis.SetArrow(AValue: TChartArrow);
+begin
+  FArrow.Assign(AValue);
+  StyleChanged(Self);
 end;
 
 procedure TChartBasicAxis.SetGrid(AValue: TChartAxisGridPen);

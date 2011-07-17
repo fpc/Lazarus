@@ -143,6 +143,7 @@ type
       AClipRect: PRect; AMaxZPosition: Integer);
   published
     property Alignment default calLeft;
+    property Arrow;
     property AxisPen: TChartAxisPen read FAxisPen write SetAxisPen;
     property Group: Integer read FGroup write SetGroup default 0;
     // Inverts the axis scale from increasing to decreasing.
@@ -400,10 +401,7 @@ begin
   fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
   v := 0;
   FHelper.BeginDrawing;
-  if AxisPen.Visible then begin;
-    FHelper.FDrawer.Pen := AxisPen;
-    FHelper.DrawAxisLine(fixedCoord);
-  end;
+  FHelper.DrawAxisLine(AxisPen, fixedCoord);
   axisTransf := @GetTransform.AxisToGraph;
   for i := 0 to High(FMarkValues) do begin
     pv := v;
@@ -574,6 +572,10 @@ begin
       if not InRange(c, rmin, rmax) then continue;
       FLastMark := Max(FirstLastSize(i) - rmax + c, FLastMark);
       break;
+    end;
+    if Arrow.Visible then begin
+      FSize := Max(FHelper.FDrawer.Scale(Arrow.Width), FSize);
+      FLastMark := Max(FHelper.FDrawer.Scale(Arrow.Length), FLastMark);
     end;
   end;
 end;
