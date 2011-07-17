@@ -3088,6 +3088,19 @@ the Canvas.SaveHandleState and Canvas.RestoreHandleState.
       <element name="SetWindowPos.uFlags">
         <short/>
       </element>
+      <!-- function SetWindowRgn Visibility: default -->
+      <element name="SetWindowRgn">
+        <short>Defines the visible region of a window or control</short>
+        <descr>This function sets the visible region of a window or control. It's parameters are:
+hWnd - The handle of the window or control
+hRgn - The handle to the region which contains the visible section of the window or control
+bRedraw - True if the control or window should be repainted following the call of this function, false otherwise
+See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Creating_a_non-rectangular_window_or_control</descr>
+        <seealso>
+          <link id="#lcl.Controls.TWinControl.SetShape">TWinControl.SetShape</link>
+          <link id="#lcl.LCLIntf.CreateRectRgn">LCLIntf.CreateRectRgn</link>
+        </seealso>
+      </element>
       <!-- function Visibility: default -->
       <element name="ShowCaret">
         <short/>
