@@ -506,6 +506,8 @@ var
   aCaption: String;
   Btns: PLongInt;
   CancelValue, DefaultIndex, ButtonCount: Longint;
+  MsgDlgCaptions: Array[mtWarning..mtCustom] of String = (rsMtWarning, rsMtError,
+    rsMtInformation, rsMtConfirmation, rsMtCustom);
 begin
   if DlgType <> mtCustom then
     aCaption := MsgDlgCaptions[DlgType]

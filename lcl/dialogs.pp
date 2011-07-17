@@ -569,9 +569,6 @@ const
     bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,
     bkIgnore, bkAll, bkYesToAll, bkNoToAll);
 
-  MsgDlgCaptions: Array[mtWarning..mtCustom] of String = (rsMtWarning, rsMtError,
-        rsMtInformation, rsMtConfirmation, rsMtCustom);
-
   DialogResName: array[idDialogWarning..idDialogConfirm] of String =
   (
 {idDialogWarning} 'dialog_warning',
@@ -579,7 +576,6 @@ const
 {idDialogInfo   } 'dialog_information',
 {idDialogConfirm} 'dialog_confirmation'
   );
-
 
 type
   TBitBtnAccess = class(TBitBtn);
