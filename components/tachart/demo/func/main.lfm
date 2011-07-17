@@ -28,10 +28,14 @@ object Form1: TForm1
         Width = 453
         AxisList = <        
           item
+            Grid.Color = clGray
+            TickLength = 0
             Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
+            Grid.Color = clGray
+            TickLength = 0
             Alignment = calBottom
             Minors = <>
           end>
@@ -42,6 +46,7 @@ object Form1: TForm1
         Extent.UseYMax = True
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
+        Frame.Visible = False
         Legend.Visible = True
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
@@ -66,10 +71,12 @@ object Form1: TForm1
         end
         object Chart1XAxis: TConstantLine
           Legend.Visible = False
+          Arrow.Visible = True
           Position = 0
         end
         object Chart1YAxis: TConstantLine
           Legend.Visible = False
+          Arrow.Visible = True
           LineStyle = lsVertical
           Position = 0
         end
