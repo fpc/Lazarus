@@ -1011,8 +1011,8 @@ var
   pt: TPoint;
 begin
   if not Visible then exit;
-  da := ArcTan2(Width, Length);
-  pt := Point(-Length, 0);
+  da := ArcTan2(ADrawer.Scale(Width), ADrawer.Scale(Length));
+  pt := Point(-ADrawer.Scale(Length), 0);
   ADrawer.Polyline([
     AEndPos + RotatePoint(pt, AAngle - da), AEndPos,
     AEndPos + RotatePoint(pt, AAngle + da)], 0, 3);
