@@ -501,16 +501,26 @@ begin
 end;
 
 function CreateMessageDialog(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons): TForm;
+
+  function MsgDlgCaptions(const DlgType: TMsgDlgType): String;
+  begin
+    case DlgType of
+      mtWarning: Result := rsMtWarning;
+      mtError: Result := rsMtError;
+      mtInformation: Result := rsMtInformation;
+      mtConfirmation: Result := rsMtConfirmation;
+      mtCustom: Result := rsMtCustom;
+    end;
+  end;
+
 var
   PDlg: TPromptDialog;
   aCaption: String;
   Btns: PLongInt;
   CancelValue, DefaultIndex, ButtonCount: Longint;
-  MsgDlgCaptions: Array[mtWarning..mtCustom] of String = (rsMtWarning, rsMtError,
-    rsMtInformation, rsMtConfirmation, rsMtCustom);
 begin
   if DlgType <> mtCustom then
-    aCaption := MsgDlgCaptions[DlgType]
+    aCaption := MsgDlgCaptions(DlgType)
   else
     aCaption := Application.Title;
   Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount, False, mbOk);
