@@ -759,8 +759,11 @@ begin
     h:=s;
     Tree.Add(Pointer(h));
     Pointer(h):=nil; // keep refcount
-  end else
+    //debugln(['TStringTree.ReplaceString NewString="',dbgstr(s),'"']);
+  end else begin
     s:=AnsiString(Node.Data);
+    //debugln(['TStringTree.ReplaceString OldString="',dbgstr(s),'"']);
+  end;
 end;
 
 function TStringTree.CalcMemSize: PtrUInt;
