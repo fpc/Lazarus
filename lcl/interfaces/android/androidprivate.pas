@@ -27,7 +27,7 @@ interface
 
 uses
   // libs
-//  MacOSAll,
+  android_all,
   // wdgetset
   WSLCLClasses, LCLClasses,
   // LCL + RTL

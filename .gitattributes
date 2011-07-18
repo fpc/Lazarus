@@ -5200,6 +5200,7 @@ lcl/interfaces/android/Makefile svneol=native#text/pascal
 lcl/interfaces/android/Makefile.compiled svneol=native#text/pascal
 lcl/interfaces/android/Makefile.fpc svneol=native#text/text
 lcl/interfaces/android/alllclintfunits.pas svneol=native#text/pascal
+lcl/interfaces/android/android_all.pas svneol=native#text/pascal
 lcl/interfaces/android/androidint.pas svneol=native#text/pascal
 lcl/interfaces/android/androidobject.inc svneol=native#text/pascal
 lcl/interfaces/android/androidprivate.pas svneol=native#text/pascal

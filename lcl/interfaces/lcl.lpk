@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="LCL"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
       <Version Value="10"/>
@@ -110,7 +109,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="335">
+    <Files Count="336">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1673,6 +1672,10 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoawsbuttons"/>
       </Item335>
+      <Item336>
+        <Filename Value="android/alllclintfunits.pas"/>
+        <UnitName Value="alllclintfunits"/>
+      </Item336>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
