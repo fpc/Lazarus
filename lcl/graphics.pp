@@ -692,21 +692,31 @@ type
     property Style default bsSolid;
   end;
 
+  TRegionCombineMode = (rgnAnd, rgnCopy, rgnDiff, rgnOr, rgnXOR);
+
+  TRegionOperationType = (rgnNewRect, rgnCombine);
+
+  TRegionOperation = record
+    ROType: TRegionOperationType;
+    Source1, Source2, Dest: Integer; // Index to the list of sub-regions, -1 indicates the main region
+    CombineMode: TRegionCombineMode; // Used only if ROType=rgnCombine
+    Rect: TRect; // Used for ROType=rgnNewRect
+  end;
+
+  TRegionOperations = array of TRegionOperation;
 
   { TRegion }
 
-  TRegionData = record
-    Reference: TWSRegionReference;
-    Rect: TRect;
-    {Polygon Region Info - not used yet}
-    Polygon: PPoint;    //Polygon Points
-    NumPoints: Longint; //Number of Points
-    Winding: Boolean;   //Use Winding mode
-  end;
-
   TRegion = class(TGraphicsObject)
   private
-    FRegionData: TRegionData;
+    FReference: TWSRegionReference;
+    // Description of the region
+    RegionOperations: TRegionOperations;
+    SubRegions: array of HRGN;
+    procedure AddOperation(AOp: TRegionOperation);
+    procedure ClearSubRegions();
+    procedure AddSubRegion(AHandle: HRGN);
+    //
     procedure FreeReference;
     function GetReference: TWSRegionReference;
     function GetHandle: HRGN;
@@ -719,6 +729,9 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+
+    // Convenience routines to add elements to the region
+    procedure AddRectangle(X1, Y1, X2, Y2: Integer);
 
     property ClipRect: TRect read GetClipRect write SetClipRect;
     property Handle: HRGN read GetHandle write SetHandle; deprecated;

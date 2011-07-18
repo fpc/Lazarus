@@ -28,7 +28,6 @@
 constructor TRegion.Create;
 begin
   inherited Create;
-  FillChar(FRegionData, SizeOf(FRegionData), 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -53,14 +52,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TRegion.Assign(Source : Tpersistent);
 begin
-  if Source is TRegion
-  then begin
-    Self.ClipRect := TRegion(Source).ClipRect;
-    //TODO : Get Polygon INFO
+  if Source is TRegion then
+  begin
     Exit;
   end;
 
   inherited Assign(Source);
+end;
+
+procedure TRegion.AddRectangle(X1, Y1, X2, Y2: Integer);
+var
+  lRGN: HRGN;
+begin
+  ReferenceNeeded();
+  lRGN := CreateRectRgn(X1, Y1, X2, Y2);
+  CombineRgn(FReference.Handle, FReference.Handle, lRGN, RGN_OR);
+  DeleteObject(lRGN);
 end;
 
 {------------------------------------------------------------------------------
@@ -72,12 +79,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TRegion.SetHandle(const Value: HRGN);
 begin
-  if HRGN(FRegionData.Reference.Handle) = Value then Exit;
+  if HRGN(FReference.Handle) = Value then Exit;
 
   FreeReference;
-  FRegionData.Reference._lclHandle := TLCLHandle(Value);
-  FRegionData.Rect := GetClipRect;
-  //TODO: query polygon params
+  FReference._lclHandle := TLCLHandle(Value);
+  //TODO: query region description data
   Changed;
 end;
 
@@ -96,35 +102,43 @@ end;
 function TRegion.GetReference: TWSRegionReference;
 begin
   ReferenceNeeded;
-  Result := FRegionData.Reference;
+  Result := FReference;
 end;
 
 procedure TRegion.ReferenceNeeded;
 var
-  FillMode: integer;
+  i: Integer;
+  lSource1, lSource2, lDest: HRGN;
 begin
-  if FRegionData.Reference.Allocated then Exit;
+  if FReference.Allocated then Exit;
 
-  if FRegionData.Polygon <> nil
-  then begin
-    if FRegionData.Winding
-    then FillMode := Winding
-    else FillMode := Alternate;
-    
-    FRegionData.Reference._lclHandle := TLCLHandle(CreatePolygonRgn(
-      FRegionData.Polygon, FRegionData.NumPoints, FillMode));
-    Exit;
-  end;
-    
-  with FRegionData.Rect do
+  FReference._lclHandle := TLCLHandle(CreateRectRgn(0, 0, 0, 0));
+
+{ At the moment all operations are executed on a live handle, so not yet used
+
+  for i := 0 to Length(RegionOperations) - 1 do
   begin
-    if (Right - Left <> 0) or (Bottom - Top <> 0)
-    then begin
-      FRegionData.Reference._lclHandle := TLCLHandle(CreateRectRgn(Left, Top, Right, Bottom));
-      Exit;
+//    TRegionCombineMode = (rgnAnd, rgnCopy, rgnDiff, rgnOr, rgnXOR);
+    case RegionOperations[i].ROType of
+      rgnNewRect:
+      begin
+        lDest := LCLIntf.CreateRectRgn(
+          RegionOperations[i].Rect.Left, RegionOperations[i].Rect.Top,
+          RegionOperations[i].Rect.Left + RegionOperations[i].Rect.Width,
+          RegionOperations[i].Rect.Top + RegionOperations[i].Rect.Height);
+        AddSubRegion(lDest);
+      end;
+      rgnCombine:
+      begin
+        RegionOperations[i].CombineMode:=;
+
+        CombineRgn(lDest, lSource1, lSource2);
+      end;
     end;
-  end;
-  
+    Source1, Source2, Dest: Integer; // Index to the list of sub-regions, -1 indicates the main region
+    CombineMode: TRegionCombineMode; // Used only if ROType=rgnCombine
+    Rect: TRect; // Used for ROType=rgnNewRect
+  end;}
 end;
 
 {------------------------------------------------------------------------------
@@ -135,12 +149,27 @@ end;
   Frees a region handle if needed
  ------------------------------------------------------------------------------}
 
+procedure TRegion.AddOperation(AOp: TRegionOperation);
+begin
+
+end;
+
+procedure TRegion.ClearSubRegions();
+begin
+
+end;
+
+procedure TRegion.AddSubRegion(AHandle: HRGN);
+begin
+
+end;
+
 procedure TRegion.FreeReference;
 begin
-  if not FRegionData.Reference.Allocated then Exit;
+  if not FReference.Allocated then Exit;
 
-  DeleteObject(HGDIOBJ(FRegionData.Reference.Handle));
-  FRegionData.Reference._lclHandle := 0;
+  DeleteObject(HGDIOBJ(FReference.Handle));
+  FReference._lclHandle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -152,18 +181,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TRegion.SetClipRect(Value : TRect);
 begin
-  if FRegionData.Rect = Value then Exit;
+//  if ClipRect = Value then Exit;
 
-  FreeReference;
-  FRegionData.Rect := Value;
-  if FRegionData.Polygon <> nil then
-    ReallocMem(FRegionData.Polygon, 0);
+//  FreeReference;
+//  ClipRect := Value;
 
-  FRegionData.Polygon := nil;
-  FRegionData.NumPoints := 0;
-  FRegionData.Winding := False;
-    
-  Changed;
+//  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -175,7 +198,8 @@ end;
  ------------------------------------------------------------------------------}
 function TRegion.GetClipRect : TRect;
 begin
-  if FRegionData.Reference.Allocated
+//  Result := ClipRect;
+{  if FRegionData.Reference.Allocated
   then begin
     GetRgnBox(HRGN(FRegionData.Reference.Handle), @Result);
   end
@@ -190,7 +214,7 @@ begin
     end
     else
       Result := FRegionData.Rect;
-  end;
+  end;}
 end;
 
 // included by graphics.pp
