@@ -166,7 +166,7 @@ const
     '-', '''', '(', ')', '+', ',', '.', '/', ':', '=', '?', ';', '!', '*',
     '#', '@', '$', '_', '%'];
 var
-  {$IFDEF UseUTF8}
+  {$IF SizeOf(DOMChar)<2}
   IsNameStartChar, IsNameChar: array[char] of boolean;
   {$ENDIF}
 
@@ -527,7 +527,6 @@ begin
     end;
 end;
 
-{$IFDEF UseUTF8}
 function WriteUTF8(u: cardinal; var OutBuf: DOMPChar; var OutCnt: Cardinal): boolean; inline;
 begin
   case u of
@@ -570,7 +569,6 @@ begin
   end;
   Result:=true;
 end;
-{$ENDIF}
 
 function Decode_UCS2(Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
 {$IFDEF UseUTF8}
@@ -1686,7 +1684,7 @@ begin
   repeat
     if NameStartFlag then
     begin
-      if {$IFDEF UseWideString}
+      if {$IF SizeOf(DOMChar)=2}
          (Byte(p^) in NamingBitmap[FNamePages^[hi(Word(p^))]])
          {$ELSE}
          IsNameStartChar[p^]
@@ -1695,7 +1693,7 @@ begin
       begin
         Inc(p);
       end
-      {$IFDEF UseWideString}
+      {$IF SizeOf(DOMChar)=2}
       else if FXML11 and ((p^ >= #$D800) and (p^ <= #$DB7F) and
         (p[1] >= #$DC00) and (p[1] <= #$DFFF)) then
       begin
@@ -1713,7 +1711,7 @@ begin
       NameStartFlag := False;
     end;
 
-    {$IFDEF UseWideString}
+    {$IF SizeOf(DOMChar)=2}
     if FXML11 then begin
       repeat
         if Byte(p^) in NamingBitmap[FNamePages^[$100+hi(Word(p^))]] then
@@ -3064,12 +3062,15 @@ begin
   repeat
     old := FBuf;
     repeat
-      {$IFDEF UseWideString}
+      {$IF SizeOf(DOMChar)=2}
       // skip common white spaces
       while FBuf^ in [' ',#9] do inc(FBuf);
       wc := FBuf^;
       //writeln('TXMLDecodingSource.SkipUntil ',ord(wc));
       if ((wc = #10) or (wc = #13)
+        {$IF SizeOf(DOMChar)=2}
+        or (FXML11Rules and ((wc = #$85) or (wc = #$2028)))
+        {$ENDIF}
         ) and (not AllowSpecialChars)
       then begin
         BufAppendChunk(ToFill, old, FBuf);
@@ -3082,12 +3083,17 @@ begin
       end
       else if (not AllowSpecialChars)
         and ( ((wc < #32) and (not ((wc = #0) and (FBuf >= FBufEnd))) and (wc <> #9))
+              {$IF SizeOf(DOMChar)=2}
+              or (wc > #$FFFD)
+              {$ENDIF}
               or (FXML11Rules and (wc >= #$7F) and (wc <= #$9F)) )
         then
           FReader.FatalError('Invalid character')
       else if (wc=#0) and (FBuf < FBufEnd) then
         FReader.FatalError('Invalid #0 character');
-      if (Char(ord(wc)) in Delim) then
+      if {$IF SizeOf(DOMChar)=2}(wc < #255) and{$ENDIF}
+        (Char(ord(wc)) in Delim)
+      then
         Break;
       // the checks above filter away everything below #32 that isn't a whitespace
       if wc > #32 then
@@ -4213,12 +4219,12 @@ begin
 end;
 
 procedure InitXMLRead;
-{$IFDEF UseUTF8}
+{$IF SizeOf(DOMChar)<2}
 var
   c: Char;
 {$ENDIF}
 begin
-  {$IFDEF UseUTF8}
+  {$IF SizeOf(DOMChar)<2}
   for c:=low(char) to high(char) do begin
     IsNameStartChar[c]:=c in ['A'..'Z','a'..'z','_',#128..#255];
     IsNameChar[c]:=c in ['A'..'Z','a'..'z','_','0'..'9','-','.',#128..#255];

@@ -50,12 +50,11 @@ type
     procedure ListBoxDblClick(Sender: TObject);
     procedure ListBoxSelectionChange(Sender: TObject; User: boolean);
   private
-    FProjectDescriptor: TProjectDescriptor;
     procedure FillHelpLabel;
     procedure SetupComponents;
   public
     constructor Create(AOwner: TComponent); override;
-    property ProjectDescriptor: TProjectDescriptor read FProjectDescriptor;
+    function GetProjectDescriptor: TProjectDescriptor;
   end;
 
 function ChooseNewProject(var ProjectDesc: TProjectDescriptor): TModalResult;
@@ -73,7 +72,7 @@ begin
   try
     Result:=NewProjectDialog.ShowModal;
     if Result=mrOk then
-      ProjectDesc:=NewProjectDialog.ProjectDescriptor;
+      ProjectDesc:=NewProjectDialog.GetProjectDescriptor;
   finally
     NewProjectDialog.Free;
   end;
@@ -89,10 +88,23 @@ begin
   FillHelpLabel;
 end;
 
+function TNewProjectDialog.GetProjectDescriptor: TProjectDescriptor;
+var
+  i: LongInt;
+  s: string;
+begin
+  Result:=ProjectDescriptorApplication;
+  i:=ListBox.ItemIndex;
+  if (i<0) then exit;
+  s:=ListBox.Items[i];
+  for i:=0 to ProjectDescriptors.Count-1 do
+    if ProjectDescriptors[i].GetLocalizedName=s then
+      exit(ProjectDescriptors[i]);
+end;
+
 procedure TNewProjectDialog.FillHelpLabel;
 begin
-  FProjectDescriptor := TProjectDescriptor(ListBox.Items.Objects[ListBox.ItemIndex]);
-  HelpLabel.Caption:=FProjectDescriptor.GetLocalizedDescription;
+  HelpLabel.Caption:=GetProjectDescriptor.GetLocalizedDescription;
   HelpLabel.Width:=Self.ClientWidth-HelpLabel.Left-10;
 end;
 
@@ -105,7 +117,7 @@ begin
       BeginUpdate;
       for i:=0 to ProjectDescriptors.Count-1 do begin
         if ProjectDescriptors[i].VisibleInNewDialog then
-          AddObject(ProjectDescriptors[i].GetLocalizedName, ProjectDescriptors[i]);
+          Add(ProjectDescriptors[i].GetLocalizedName);
       end;
       EndUpdate;
     end;
