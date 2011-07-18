@@ -39,37 +39,6 @@ uses
 
 type
 
-  { TCocoaWSCustomPage }
-
-  TCocoaWSCustomPage = class(TWSCustomPage)
-  private
-  protected
-  public
-{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;}
-  end;
-
-  { TCocoaWSCustomNotebook }
-
-  TCocoaWSCustomNotebook = class(TWSCustomNotebook)
-  private
-  protected
-  public
-{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-
-    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
-    class procedure MovePage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const NewIndex: integer); override;
-    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
-
-    //class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
-    //class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
-    //class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
-    //class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
-    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
-    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
-    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;}
-  end;
-
   { TCocoaWSPage }
 
   TCocoaWSPage = class(TWSPage)

@@ -120,6 +120,22 @@ begin
   Result := HBITMAP(TCocoaBitmap.Create(Width, Height, 32, 32, cbaDQWord, cbtARGB, nil));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  CreateCompatibleDC
+  Params:  DC - Handle to memory device context
+  Returns: Handle to a memory device context
+
+  Creates a memory device context (DC) compatible with the specified device
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreateCompatibleDC');
+  {$ENDIF}
+
+  Result := HDC(TCocoaContext.Create);
+end;
+
 //todo:
 //function TCocoaWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
 //begin
