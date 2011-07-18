@@ -4471,7 +4471,10 @@ begin
     HsbRange := 0;
     HsbPos := 0;
     if HsbVisible then begin
-      HsbRange:=GridWidth - GetBorderWidth;
+      if not (goSmoothScroll in Options) then
+        HsbRange := integer(PtrUInt(AccumWidth[MaxTopLeft.X]))+ClientWidth-FixedWidth
+      else
+        HsbRange:=GridWidth - GetBorderWidth;
       if FTopLeft.x<=ColCount-1 then
         HsbPos := integer(PtrUInt(AccumWidth[FTopLeft.x]))+TLColOff-FixedWidth;
     end;
@@ -4479,7 +4482,10 @@ begin
     VsbRange := 0;
     VsbPos := 0;
     if VsbVisible then begin
-      VSbRange:= GridHeight - GetBorderWidth;
+      if not (goSmoothScroll in Options) then
+        VsbRange := integer(PtrUInt(AccumHeight[MaxTopLeft.Y]))+ClientHeight-FixedHeight
+      else
+        VSbRange:= GridHeight - GetBorderWidth;
       if FTopLeft.Y<=RowCount-1 then
         VsbPos := integer(PtrUInt(AccumHeight[FTopLeft.y]))+TLRowOff-FixedHeight;
     end;
