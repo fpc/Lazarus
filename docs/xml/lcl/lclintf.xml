@@ -309,8 +309,20 @@ the Canvas.SaveHandleState and Canvas.RestoreHandleState.
       </element>
       <!-- function Visibility: default -->
       <element name="CombineRgn">
-        <short/>
-        <descr/>
+      <element name="OpenURL">
+        <short>Combines two regions</short>
+        <descr>The following parameters are present in this function:
+Dest - The Handle of a region which will receive the result of the operation
+Src1 - One of the two regions to combine
+Src2 - The other region to combinee
+fnCombineMode - The method to use to combine the regions.
+As for the parameter fnCombineMode, the following constants from the unit LCLType can be used:
+RGN_AND	- The result is the intersection of the two combined regions.
+RGN_COPY - The result is a copy of the region Src1
+RGN_DIFF - Combines the parts of Src1 that are not part of Src2.
+RGN_OR - The result is the union of the two regions.
+RGN_XOR - The result is the union of two combined regions except for any overlapping areas.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -631,7 +643,7 @@ the Canvas.SaveHandleState and Canvas.RestoreHandleState.
       </element>
       <!-- function Visibility: default -->
       <element name="CreateRectRgn">
-        <short/>
+        <short>Creates a new rectangular region</short>
         <descr/>
         <errors/>
         <seealso/>
