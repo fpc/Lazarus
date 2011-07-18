@@ -724,6 +724,25 @@ begin
   Result:=false;
 end;
 
+procedure TCustomNotebook.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (nboKeyboardTabSwitch in Options) and (Key = VK_TAB) and (PageCount > 0) then 
+  begin
+    if Shift = [ssCtrl] then 
+    begin
+      PageIndex := (PageIndex + 1) mod PageCount;
+      Exit;
+    end
+    else if Shift = [ssCtrl, ssShift] then 
+    begin
+      PageIndex := (PageIndex + PageCount - 1) mod PageCount;
+      Exit;
+    end;
+  end;
+
+  inherited KeyDown(Key, Shift);
+end;
+
 {------------------------------------------------------------------------------
   TCustomNotebook GetPageCount
  ------------------------------------------------------------------------------}

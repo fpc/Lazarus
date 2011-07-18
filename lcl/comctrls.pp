@@ -297,7 +297,9 @@ type
   TTabGetImageEvent = procedure(Sender: TObject; TabIndex: Integer;
     var ImageIndex: Integer) of object;
 
-  TNoteBookOption = (nboShowCloseButtons, nboMultiLine, nboHidePageListPopup);
+  TNoteBookOption = (
+    nboShowCloseButtons, nboMultiLine, nboHidePageListPopup,
+    nboKeyboardTabSwitch);
   TNoteBookOptions = set of TNoteBookOption;
   TNoteBookCapability = (nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup);
   TNoteBookCapabilities = set of TNoteBookCapability;
@@ -366,6 +368,7 @@ type
     procedure DoCreateWnd; virtual;
     procedure DoChange; virtual;
     procedure Change; virtual;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Loaded; override;
     procedure ReadState(Reader: TReader); override;
     function  DialogChar(var Message: TLMKey): boolean; override;
