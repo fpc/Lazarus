@@ -615,9 +615,10 @@ procedure TListFilterEdit.SetFilter(const AValue: string);
 var
   NewValue: String;
 begin
-  NewValue:=LowerCase(AValue);
   if AValue=lisCEFilter then
-    NewValue:='';
+    NewValue:=''
+  else
+    NewValue:=LowerCase(AValue);
   Button.Enabled:=NewValue<>'';
   if (NewValue='') and not Focused then begin
     Text:=lisCEFilter;
