@@ -75,7 +75,7 @@ const
 type
   TLastMouseClick = record
     Down: boolean;
-    TheTime: TDateTime; // last Down time
+    eventTime: guint32;   // last Down time
     ClickCount: integer;
     Component: TComponent;
     Window: PGdkWindow;
@@ -84,7 +84,7 @@ type
 
 const
   EmptyLastMouseClick: TLastMouseClick =
-    (Down: false; TheTime: -1; ClickCount: 0; Component: nil;
+    (Down: false; eventTime: 0; ClickCount: 0; Component: nil;
      Window: nil; WindowPoint: (X: 0; Y: 0));
 
 var

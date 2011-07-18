@@ -1657,7 +1657,7 @@ var
 
     function LastClickInTime: boolean;
     begin
-      Result := ((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)));
+      Result:=(event^.time -  LastMouse.eventTime) <= DblClickTime;
     end;
 
     function TestIfMultiClick: boolean;
@@ -1732,7 +1732,7 @@ var
     DebugLn('  ClickCount=',dbgs(LastMouse.ClickCount));
     {$ENDIF}
 
-    LastMouse.TheTime := Now;
+    LastMouse.eventTime := event^.time;
     LastMouse.Window := Event^.Window;
     LastMouse.WindowPoint := EventXY;
     LastMouse.Down := True;
