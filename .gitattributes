@@ -5206,6 +5206,7 @@ lcl/interfaces/android/androidint.pas svneol=native#text/pascal
 lcl/interfaces/android/androidobject.inc svneol=native#text/pascal
 lcl/interfaces/android/androidpipescomm.pas svneol=native#text/pascal
 lcl/interfaces/android/androidprivate.pas svneol=native#text/pascal
+lcl/interfaces/android/androidtimer.pas svneol=native#text/pascal
 lcl/interfaces/android/androidwsfactory.pas svneol=native#text/pascal
 lcl/interfaces/android/interfaces.pp svneol=native#text/plain
 lcl/interfaces/android/javalang.pas svneol=native#text/pascal

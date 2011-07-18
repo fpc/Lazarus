@@ -75,7 +75,7 @@ var
 
 implementation
 
-uses android_all, androidapp, javalang;
+uses android_all, androidapp, androidtimer, javalang;
 
 var
   Str: string;
@@ -159,8 +159,8 @@ begin
       amkTimer: // A Timer Callback
       begin
         lPascalPointer := ReadInt();
-{        TAndroidTimer(lPascalPointer).callOnTimerListener();
-        vAndroidPipesComm.SendMessage(amkTimer, amkTimer_Callback_Finished);}
+        TAndroidTimer(lPascalPointer).callOnTimerListener();
+        vAndroidPipesComm.SendMessage(amkTimer, amkTimer_Callback_Finished);
       end;
     end;
 //    dataString1 := 'Pascal log: ' + IntToStr(lByte) + LineEnding;
