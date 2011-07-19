@@ -3707,9 +3707,11 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnActivate">
-        <short>Event handler for activation (opening) of the form</short>
-        <descr/>
-        <seealso/>
+        <short>Event called when the form receives focus</short>
+        <descr>This method is called when the form receives focus for the first time at application start up and then subsequently each time focus is changed from another window of the same application to this window. For focus changes between different applications the event Application.OnActivate is called instead.</descr>
+        <seealso>
+          <link id="#LCL.Forms.TApplication.OnActivate">TApplication.OnActivate</link>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnClose">
