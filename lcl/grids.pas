@@ -828,6 +828,7 @@ type
     function  BoxRect(ALeft,ATop,ARight,ABottom: Longint): TRect;
     procedure CalcAutoSizeColumn(const Index: Integer; var AMin,AMax,APriority: Integer); virtual;
     procedure CalcFocusRect(var ARect: TRect);
+    function  CalcMaxTopLeft: TPoint;
     procedure CalcScrollbarsRange;
     function  CanEditShow: Boolean; virtual;
     function  CanGridAcceptKey(Key: Word; Shift: TShiftState): Boolean; virtual;
@@ -2903,27 +2904,6 @@ begin
 end;
 
 procedure TCustomGrid.ResetSizes;
-
-  function CalcMaxTopLeft: TPoint;
-  var
-    i: Integer;
-    W,H: Integer;
-  begin
-    Result:=Point(ColCount-1, RowCount-1);
-    W:=0;
-    for i:=ColCount-1 downto FFixedCols do begin
-      W:=W+GetColWidths(i);
-      if W<FGCache.ScrollWidth then Result.x:=i
-      else         Break;
-    end;
-    H:=0;
-    for i:=RowCount-1 downto FFixedRows do begin
-      H:=H+GetRowHeights(i);
-      if H<FGCache.ScrollHeight then Result.y:=i
-      else         Break;
-    end;
-  end;
-
 begin
   //DebugLn('TCustomGrid.VisualChange ',DbgSName(Self));
   if (FCols=nil) or ([csLoading,csDestroying]*ComponentState<>[])
@@ -2932,9 +2912,6 @@ begin
 
   UpdateCachedSizes;
   CheckNewCachedSizes(FGCache);
-  FGCache.ScrollWidth:=FGCache.ClientWidth-FGCache.FixedWidth;
-  FGCache.ScrollHeight:=FGCache.ClientHeight-FGCache.FixedHeight;
-  FGCache.MaxTopLeft:=CalcMaxTopLeft;
   CacheVisibleGrid;
   {$Ifdef DbgVisualChange}
   DebugLn('TCustomGrid.ResetSizes %s Width=%d Height=%d',[DbgSName(Self),Width,Height]);
@@ -3337,9 +3314,15 @@ begin
   DebugLn('TCustomGrid.Paint %s Row=%d Clip=%s',[DbgSName(Self),Row,Dbgs(R)]);
   {$endif}
   if gfVisualChange in fGridFlags then begin
+    {$ifdef DbgVisualChange}
+    DebugLnEnter('Resetting Sizes in Paint INIT');
+    {$endif}
     FGridFlags := FGridFlags + [gfPainting];
     ResetSizes;
     FGridFlags := FGridFlags - [gfVisualChange, gfPainting];
+    {$ifdef DbgVisualChange}
+    DebugLnExit('Resetting Sizes in Paint DONE');
+    {$endif}
   end;
   inherited Paint;
   if FUpdateCount=0 then begin
@@ -4396,12 +4379,18 @@ begin
 
   FGCache.ClientRect := ClientRect;
   FGCache.ClientWidth := ClientWidth;
-  FGCache.ClientHeight:= ClientHeight;
+  FGCache.ClientHeight := ClientHeight;
+
+  FGCache.ScrollWidth := FGCache.ClientWidth-FGCache.FixedWidth;
+  FGCache.ScrollHeight := FGCache.ClientHeight-FGCache.FixedHeight;
+  FGCache.MaxTopLeft:=CalcMaxTopLeft;
+
   {$ifdef dbgVisualChange}
   DebugLn('TCustomGrid.updateCachedSizes: ');
   with FGCache do
-  DebugLn('  GWidth=%d GHeight=%d FixWidth=%d FixHeight=%d CWidth=%d CHeight=%d',
-    [GridWidth,GridHeight,FixedWidth,FixedHeight,ClientWidth,ClientHeight]);
+  DebugLn(' GWidth=%d GHeight=%d FWidth=%d FHeight=%d CWidth=%d CHeight=%d MTL.X=%d MTL.Y=%d',
+    [GridWidth,GridHeight,FixedWidth,FixedHeight,ClientWidth,ClientHeight,
+     MaxTopLeft.X, MaxTopLeft.Y]);
   {$endif}
 end;
 
@@ -4463,8 +4452,6 @@ end;
 
 procedure TCustomGrid.GetSBRanges(const HsbVisible, VsbVisible: boolean; out
   HsbRange,VsbRange,HsbPage,VSbPage,HsbPos,VsbPos: Integer);
-var
-  Tw, Th: Integer;
 begin
   with FGCache do begin
 
@@ -6808,7 +6795,6 @@ var
   HsbPos, VsbPos: Integer;
 begin
   with FGCache do begin
-    // Horizontal scrollbar
     GetSBVisibility(HsbVisible, VsbVisible);
     GetSBRanges(HsbVisible,VsbVisible,HsbRange,VsbRange,HsbPage,VsbPage,HsbPos,VsbPos);
     UpdateVertScrollBar(VsbVisible, VsbRange, VsbPage, VsbPos);
@@ -6817,6 +6803,30 @@ begin
     DebugLn('VRange=',dbgs(VsbRange),' Visible=',dbgs(VSbVisible));
     DebugLn('HRange=',dbgs(HsbRange),' Visible=',dbgs(HSbVisible));
     {$endif}
+  end;
+end;
+
+function TCustomGrid.CalcMaxTopLeft: TPoint;
+var
+  i: Integer;
+  W,H: Integer;
+begin
+  Result:=Point(ColCount-1, RowCount-1);
+  W:=0;
+  for i:=ColCount-1 downto FFixedCols do begin
+    W:=W+GetColWidths(i);
+    if W<=FGCache.ScrollWidth then
+      Result.x:=i
+    else
+      Break;
+  end;
+  H:=0;
+  for i:=RowCount-1 downto FFixedRows do begin
+    H:=H+GetRowHeights(i);
+    if H<=FGCache.ScrollHeight then
+      Result.y:=i
+    else
+      Break;
   end;
 end;
 
