@@ -8,9 +8,6 @@ uses
   Classes, SysUtils, Forms, LResources, LCLType, Graphics,
   Controls, StdCtrls, ComCtrls, EditBtn, FileUtil, AvgLvlTree, ImgList;
 
-resourcestring
-  lisCEFilter = '(Filter)';
-
 type
 
   TImageIndexEvent = function (Str: String; Data: TObject;
@@ -74,25 +71,19 @@ type
 
   { TListFilterEdit }
 
-  TListFilterEdit = class(TCustomEditButton)
+  TListFilterEdit = class(TCustomControlFilterEdit)
     procedure ListBoxDrawItem(Control: TWinControl;
       Index: Integer; ARect: TRect; State: TOwnerDrawState);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
-    fFilter: string;
     // A control showing the (filtered) data. These are exclusive, only one is used.
     fFilteredTreeview: TTreeview;
     fFilteredListbox: TListbox;
     fViewControlWrapper: TViewControl; // Wraps either TTreeview or TListbox.
     fImageIndexDirectory: integer;     // Needed if directory structure is shown.
     fImages4Listbox: TCustomImageList; // Listbox does not have ImageList of its own.
-    fNeedUpdate: Boolean;
-    fIdleConnected: Boolean;
-    fIsFirstUpdate: Boolean;
     fSelectedPart: TObject;         // Select this node on next update
     fSelectionList: TStringList;    // or store/restore the old selections here.
     fShowDirHierarchy: Boolean;     // Show direcories / files as a tree structure.
-    fSortData: Boolean;             // Data needs to be sorted.
     // Full filename in node data is needed when showing the directory hierarchy.
     // It is stored automatically if the map is populated by MapShortToFullFilename.
     fFilenameMap: TStringToStringTree;
@@ -102,34 +93,24 @@ type
     // Data sorted for viewing.
     fRootNode: TTreeNode;           // The filtered items are under this node.
     fOnGetImageIndex: TImageIndexEvent;
-    procedure SetFilter(const AValue: string);
     procedure SetFilteredTreeview(const AValue: TTreeview);
     procedure SetFilteredListbox(const AValue: TListBox);
     procedure SetShowDirHierarchy(const AValue: Boolean);
-    procedure SetIdleConnected(const AValue: Boolean);
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     function GetDefaultGlyph: TBitmap; override;
     function GetDefaultGlyphName: String; override;
-    procedure Change; override;
-    procedure DoEnter; override;
-    procedure DoExit; override;
-    procedure DoButtonClick (Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure MapShortToFullFilename(ShortFilename, FullFilename: string);
-    procedure ApplyFilter(Immediately: Boolean = False);
-    procedure InvalidateFilter;
+    procedure ApplyFilter(Immediately: Boolean = False); override;
     procedure StoreSelection; // Calls the ViewControlWrapper method
   public
-    property Filter: string read fFilter write SetFilter;
     property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
-    property IdleConnected: Boolean read fIdleConnected write SetIdleConnected;
     property SelectedPart: TObject read fSelectedPart write fSelectedPart;
     property SelectionList: TStringList read fSelectionList;
     property ShowDirHierarchy: Boolean read fShowDirHierarchy write SetShowDirHierarchy;
-    property SortData: Boolean read fSortData write fSortData;
     property Data: TStringList read fOriginalData;
     property RootNode: TTreeNode read fRootNode write fRootNode;
   published
@@ -236,7 +217,7 @@ end;
 
 function TViewControl.CompareFNs(AFilename1,AFilename2: string): integer;
 begin
-  if fOwner.fSortData then
+  if fOwner.SortData then
     Result:=CompareFilenames(AFilename1, AFilename2)
   else if fOwner.fShowDirHierarchy then
     Result:=CompareFilenames(ExtractFilePath(AFilename1), ExtractFilePath(AFilename2))
@@ -551,7 +532,6 @@ begin
   fSelectionList:=TStringList.Create;
   fFilenameMap:=TStringToStringTree.Create(True);
   fImageIndexDirectory := -1;
-  Button.Enabled:=False;
 end;
 
 destructor TListFilterEdit.Destroy;
@@ -585,69 +565,6 @@ begin
   end;
   fFilteredListbox.Canvas.TextRect(ARect, ARect.Left + 20,ARect.Top,
                                 fFilteredListbox.Items[Index]);
-end;
-
-procedure TListFilterEdit.Change;
-begin
-  Filter:=Text;
-  inherited;
-end;
-
-procedure TListFilterEdit.DoEnter;
-begin
-  if Text=lisCEFilter then
-    Text:='';
-  inherited;
-end;
-
-procedure TListFilterEdit.DoExit;
-begin
-  Filter:=Text;
-  inherited;
-end;
-
-procedure TListFilterEdit.DoButtonClick(Sender: TObject);
-begin
-  Filter:='';
-end;
-
-procedure TListFilterEdit.SetFilter(const AValue: string);
-var
-  NewValue: String;
-begin
-  if AValue=lisCEFilter then
-    NewValue:=''
-  else
-    NewValue:=LowerCase(AValue);
-  Button.Enabled:=NewValue<>'';
-  if (NewValue='') and not Focused then begin
-    Text:=lisCEFilter;
-    Font.Color:=clBtnShadow;
-  end
-  else begin
-    Text:=NewValue;
-    Font.Color:=clDefault;
-  end;
-  if fFilter=NewValue then exit;
-  fFilter:=NewValue;
-  ApplyFilter;
-end;
-
-procedure TListFilterEdit.OnIdle(Sender: TObject; var Done: Boolean);
-begin
-  if fNeedUpdate then
-    ApplyFilter(true);
-  IdleConnected:=false;
-end;
-
-procedure TListFilterEdit.SetIdleConnected(const AValue: boolean);
-begin
-  if fIdleConnected=AValue then exit;
-  fIdleConnected:=AValue;
-  if fIdleConnected then
-    Application.AddOnIdleHandler(@OnIdle)
-  else
-    Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
 procedure TListFilterEdit.KeyDown(var Key: Word; Shift: TShiftState);
@@ -740,12 +657,6 @@ begin
     if csDestroying in ComponentState then exit;
     InvalidateFilter;
   end;
-end;
-
-procedure TListFilterEdit.InvalidateFilter;
-begin
-  fNeedUpdate:=true;
-  IdleConnected:=true;
 end;
 
 procedure TListFilterEdit.StoreSelection;

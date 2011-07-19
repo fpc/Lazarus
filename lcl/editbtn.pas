@@ -31,6 +31,9 @@ uses
   Graphics, Controls, Forms, FileUtil, Dialogs, StdCtrls, Buttons, Calendar,
   ExtDlgs, CalendarPopup, MaskEdit;
 
+resourcestring
+  lisCEFilter = '(Filter)';
+
 const
   NullDate: TDateTime = 0;
 
@@ -91,6 +94,36 @@ type
   end;
   
   
+  { TCustomControlFilterEdit }
+
+  // An abstract base class for edit controls which filter data in
+  // visual controls like TListView and TTreeView.
+  TCustomControlFilterEdit = class(TCustomEditButton)
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
+  private
+    fFilter: string;
+    fIdleConnected: Boolean;
+    fSortData: Boolean;             // Data needs to be sorted.
+    procedure SetFilter(const AValue: string);
+    procedure SetIdleConnected(const AValue: Boolean);
+  protected
+    fNeedUpdate: Boolean;
+    fIsFirstUpdate: Boolean;
+    procedure Change; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure DoButtonClick (Sender: TObject); override;
+    procedure ApplyFilter(Immediately: Boolean = False); virtual; abstract;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure InvalidateFilter;
+  public
+    property Filter: string read fFilter write SetFilter;
+    property IdleConnected: Boolean read fIdleConnected write SetIdleConnected;
+    property SortData: Boolean read fSortData write fSortData;
+  end;
+
   { TEditButton }
   
   TEditButton = class(TCustomEditButton)
@@ -502,6 +535,7 @@ type
     property OnUTF8KeyPress;
   end;
 
+
 var
   FileOpenGlyph: TBitmap;
   DateGlyph: TBitmap;
@@ -730,6 +764,89 @@ procedure TCustomEditButton.WMSetFocus(var Message: TLMSetFocus);
 begin
   CheckButtonVisible;
   inherited;
+end;
+
+
+{ TCustomControlFilterEdit }
+
+constructor TCustomControlFilterEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Button.Enabled:=False;
+end;
+
+destructor TCustomControlFilterEdit.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCustomControlFilterEdit.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  if fNeedUpdate then
+    ApplyFilter(true);
+  IdleConnected:=false;
+end;
+
+procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
+var
+  NewValue: String;
+begin
+  if AValue=lisCEFilter then
+    NewValue:=''
+  else
+    NewValue:=LowerCase(AValue);
+  Button.Enabled:=NewValue<>'';
+  if (NewValue='') and not Focused then begin
+    Text:=lisCEFilter;
+    Font.Color:=clBtnShadow;
+  end
+  else begin
+    Text:=NewValue;
+    Font.Color:=clDefault;
+  end;
+  if fFilter=NewValue then exit;
+  fFilter:=NewValue;
+  ApplyFilter;
+end;
+
+procedure TCustomControlFilterEdit.SetIdleConnected(const AValue: Boolean);
+begin
+  if fIdleConnected=AValue then exit;
+  fIdleConnected:=AValue;
+  if fIdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TCustomControlFilterEdit.Change;
+begin
+  Filter:=Text;
+  inherited;
+end;
+
+procedure TCustomControlFilterEdit.DoEnter;
+begin
+  if Text=lisCEFilter then
+    Text:='';
+  inherited;
+end;
+
+procedure TCustomControlFilterEdit.DoExit;
+begin
+  Filter:=Text;
+  inherited;
+end;
+
+procedure TCustomControlFilterEdit.DoButtonClick(Sender: TObject);
+begin
+  Filter:='';
+end;
+
+procedure TCustomControlFilterEdit.InvalidateFilter;
+begin
+  fNeedUpdate:=true;
+  IdleConnected:=true;
 end;
 
 { TFileNameEdit }
@@ -1229,6 +1346,8 @@ begin
   inherited Create(AOwner);
   FdialogTitle:=rsCalculator;
 end;
+
+
 
 procedure Register;
 begin
