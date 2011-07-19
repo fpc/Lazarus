@@ -31,8 +31,6 @@ uses
   Graphics, Controls, Forms, FileUtil, Dialogs, StdCtrls, Buttons, Calendar,
   ExtDlgs, CalendarPopup, MaskEdit;
 
-resourcestring
-  lisCEFilter = '(Filter)';
 
 const
   NullDate: TDateTime = 0;
