@@ -91,39 +91,8 @@ type
     property ButtonOnlyWhenFocused: Boolean read FButtonNeedsFocus write SetButtonNeedsFocus default False;
   end;
   
-  
-  { TCustomControlFilterEdit }
-
-  // An abstract base class for edit controls which filter data in
-  // visual controls like TListView and TTreeView.
-  TCustomControlFilterEdit = class(TCustomEditButton)
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
-  private
-    fFilter: string;
-    fIdleConnected: Boolean;
-    fSortData: Boolean;             // Data needs to be sorted.
-    procedure SetFilter(const AValue: string);
-    procedure SetIdleConnected(const AValue: Boolean);
-  protected
-    fNeedUpdate: Boolean;
-    fIsFirstUpdate: Boolean;
-    procedure Change; override;
-    procedure DoEnter; override;
-    procedure DoExit; override;
-    procedure DoButtonClick (Sender: TObject); override;
-    procedure ApplyFilter(Immediately: Boolean = False); virtual; abstract;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure InvalidateFilter;
-  public
-    property Filter: string read fFilter write SetFilter;
-    property IdleConnected: Boolean read fIdleConnected write SetIdleConnected;
-    property SortData: Boolean read fSortData write fSortData;
-  end;
-
   { TEditButton }
-  
+
   TEditButton = class(TCustomEditButton)
   Public
     property Button;
@@ -182,6 +151,92 @@ type
     property Visible;
   end;
 
+  { TCustomControlFilterEdit }
+
+  // An abstract base class for edit controls which filter data in
+  // visual controls like TListView and TTreeView.
+  TCustomControlFilterEdit = class(TCustomEditButton)
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
+  private
+    fFilter: string;
+    fIdleConnected: Boolean;
+    fSortData: Boolean;             // Data needs to be sorted.
+    procedure SetFilter(const AValue: string);
+    procedure SetIdleConnected(const AValue: Boolean);
+  protected
+    fNeedUpdate: Boolean;
+    fIsFirstUpdate: Boolean;
+    fSelectedPart: TObject;         // Select this node on next update
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure Change; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure DoButtonClick (Sender: TObject); override;
+    procedure SortAndFilter; virtual; abstract;
+    procedure ApplyFilter(Immediately: Boolean = False);
+    procedure ApplyFilterCore; virtual; abstract;
+    procedure MoveNext; virtual; abstract;
+    procedure MovePrev; virtual; abstract;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure InvalidateFilter;
+    procedure StoreSelection; virtual; abstract;
+    procedure RestoreSelection; virtual; abstract;
+  public
+    property Filter: string read fFilter write SetFilter;
+    property IdleConnected: Boolean read fIdleConnected write SetIdleConnected;
+    property SortData: Boolean read fSortData write fSortData;
+    property SelectedPart: TObject read fSelectedPart write fSelectedPart;
+  published
+    // TEditButton properties.
+    property ButtonWidth;
+    property DirectInput;
+    property ButtonOnlyWhenFocused;
+    property NumGlyphs;
+    property Flat;
+    // Other properties
+    property Align;
+    property Anchors;
+    property BidiMode;
+    property BorderSpacing;
+    property BorderStyle;
+    property AutoSize;
+    property AutoSelect;
+    property Color;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property MaxLength;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnChange;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEditingDone;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+    property OnUTF8KeyPress;
+  end;
 
   { TFileNameEdit }
 
@@ -771,6 +826,7 @@ constructor TCustomControlFilterEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Button.Enabled:=False;
+  fIsFirstUpdate := True;
 end;
 
 destructor TCustomControlFilterEdit.Destroy;
@@ -817,6 +873,19 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
+procedure TCustomControlFilterEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (Key in [VK_UP, VK_DOWN]) and (Shift = []) then
+  begin
+    case Key of
+      VK_UP:   MovePrev;
+      VK_DOWN: MoveNext;
+    end;
+    Key:=0;
+  end
+  else inherited KeyDown(Key, Shift);
+end;
+
 procedure TCustomControlFilterEdit.Change;
 begin
   Filter:=Text;
@@ -839,6 +908,29 @@ end;
 procedure TCustomControlFilterEdit.DoButtonClick(Sender: TObject);
 begin
   Filter:='';
+end;
+
+procedure TCustomControlFilterEdit.ApplyFilter(Immediately: Boolean);
+var
+  i: Integer;
+  FileN: string;
+begin
+  if Immediately then begin
+    fNeedUpdate := False;
+    SortAndFilter;
+    if (fSelectedPart=Nil) and not fIsFirstUpdate then
+      StoreSelection;      // At first round the selection is from caller
+    fIsFirstUpdate:=False;
+
+    ApplyFilterCore;       // The actual filtering implemented by inherited class.
+
+    fSelectedPart:=Nil;
+    RestoreSelection;
+  end
+  else begin
+    if csDestroying in ComponentState then exit;
+    InvalidateFilter;
+  end;
 end;
 
 procedure TCustomControlFilterEdit.InvalidateFilter;

@@ -40,8 +40,7 @@ interface
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, Controls, Graphics, Dialogs,
   KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls, EditBtn,
-  AVL_Tree, Laz_XMLCfg, ListFilterEdit,
-  PackageIntf, IDEImagesIntf, IDEHelpIntf,
+  AVL_Tree, Laz_XMLCfg, TreeFilterEdit, PackageIntf, IDEImagesIntf, IDEHelpIntf,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
   PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
 
@@ -61,7 +60,7 @@ type
     BtnPanel: TPanel;
     InstallTreeView: TTreeView;
     lblMiddle: TLabel;
-    AvailableFilterEdit: TListFilterEdit;
+    AvailableFilterEdit: TTreeFilterEdit;
     NoteLabel: TLabel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;

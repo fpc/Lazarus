@@ -63,7 +63,7 @@ uses
   ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil, ExtCtrls,
   LazIDEIntf, IDECommands,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, AddToProjectDlg, PackageSystem, PackageDefs, ListFilterEdit;
+  Project, AddToProjectDlg, PackageSystem, PackageDefs, TreeFilterEdit;
   
 type
   TOnAddUnitToProject =
@@ -90,7 +90,7 @@ type
     AddBitBtn: TSpeedButton;
     BtnPanel: TPanel;
     DirectoryHierarchySpeedButton: TSpeedButton;
-    FilterEdit: TListFilterEdit;
+    FilterEdit: TTreeFilterEdit;
     OpenBitBtn: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
@@ -584,7 +584,6 @@ begin
   AddBitBtn.Hint:=lisCodeTemplAdd;
   RemoveBitBtn.Hint:=lisExtToolRemove;
   OptionsBitBtn.Hint:=dlgFROpts;
-  FilterEdit.Text:=lisCEFilter;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
   SortAlphabeticallySpeedButton.LoadGlyphFromLazarusResource('pkg_sortalphabetically');
   DirectoryHierarchySpeedButton.Hint:=lisPEShowDirectoryHierarchy;

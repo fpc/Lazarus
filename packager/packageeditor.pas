@@ -42,7 +42,7 @@ uses
   LResources, Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, HelpIntfs, ExtCtrls, LazIDEIntf, ProjectIntf,
-  CodeToolsStructs, FormEditingIntf, Laz_XMLCfg, ListFilterEdit, PackageIntf,
+  CodeToolsStructs, FormEditingIntf, Laz_XMLCfg, TreeFilterEdit, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEOptionsIntf,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
@@ -141,7 +141,7 @@ type
 
   TPackageEditorForm = class(TBasePackageEditor)
     DirectoryHierarchySpeedButton: TSpeedButton;
-    FilterEdit: TListFilterEdit;
+    FilterEdit: TTreeFilterEdit;
     ItemsPanel: TPanel;
     SortAlphabeticallySpeedButton: TSpeedButton;
     Splitter1: TSplitter;

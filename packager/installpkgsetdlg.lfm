@@ -136,7 +136,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       OnClick = AddToInstallButtonClick
       TabOrder = 2
     end
-    object AvailableFilterEdit: TListFilterEdit
+    object AvailableFilterEdit: TTreeFilterEdit
       Left = 6
       Height = 20
       Top = 7

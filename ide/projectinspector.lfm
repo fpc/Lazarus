@@ -123,14 +123,13 @@ object ProjectInspectorForm: TProjectInspectorForm
       ShowHint = True
       ParentShowHint = False
     end
-    object FilterEdit: TListFilterEdit
+    object FilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = SortAlphabeticallySpeedButton
       AnchorSideLeft.Side = asrBottom
       Left = 238
       Height = 23
       Top = 4
       Width = 164
-      FilteredTreeview = ItemsTreeView
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akLeft, akRight]
@@ -139,6 +138,7 @@ object ProjectInspectorForm: TProjectInspectorForm
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
+      FilteredTreeview = ItemsTreeView
     end
   end
   object ItemsPopupMenu: TPopupMenu

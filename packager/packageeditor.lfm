@@ -224,7 +224,7 @@ inherited PackageEditorForm: TPackageEditorForm
       ShowHint = True
       ParentShowHint = False
     end
-    object FilterEdit: TListFilterEdit
+    object FilterEdit: TTreeFilterEdit
       AnchorSideLeft.Control = SortAlphabeticallySpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ItemsPanel

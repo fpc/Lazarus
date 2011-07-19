@@ -14,7 +14,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="dividerbevel.pas"/>
         <HasRegisterProc Value="True"/>
@@ -30,6 +30,11 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="ListFilterEdit"/>
       </Item3>
+      <Item4>
+        <Filename Value="treefilteredit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TreeFilterEdit"/>
+      </Item4>
     </Files>
     <LazDoc Paths="docs"/>
     <Type Value="RunAndDesignTime"/>
