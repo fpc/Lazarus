@@ -244,6 +244,10 @@ msgstr "Haut"
 msgid "can not execute %s"
 msgstr ""
 
+#: lclstrconsts.liscefilter
+msgid "(Filter)"
+msgstr ""
+
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"

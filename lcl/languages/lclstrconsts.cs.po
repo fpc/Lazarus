@@ -243,6 +243,10 @@ msgstr "Nahoru"
 msgid "can not execute %s"
 msgstr "nelze spustit %s"
 
+#: lclstrconsts.liscefilter
+msgid "(Filter)"
+msgstr ""
+
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"

@@ -242,6 +242,10 @@ msgstr "Arriba"
 msgid "can not execute %s"
 msgstr "no se puede ejecutar %s"
 
+#: lclstrconsts.liscefilter
+msgid "(Filter)"
+msgstr ""
+
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"

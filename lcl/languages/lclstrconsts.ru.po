@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-27 03:11+0300\n"
+"PO-Revision-Date: 2011-07-20 00:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -241,6 +241,10 @@ msgstr "Стрелка вверх"
 #: lclstrconsts.liscannotexecute
 msgid "can not execute %s"
 msgstr "Запустить %s невозможно"
+
+#: lclstrconsts.liscefilter
+msgid "(Filter)"
+msgstr "(Фильтр)"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"

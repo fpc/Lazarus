@@ -242,6 +242,10 @@ msgstr "למעלה"
 msgid "can not execute %s"
 msgstr "לא יכול להריץ את %s"
 
+#: lclstrconsts.liscefilter
+msgid "(Filter)"
+msgstr ""
+
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"

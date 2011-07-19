@@ -246,6 +246,10 @@ msgstr "Aukštyn"
 msgid "can not execute %s"
 msgstr "negalima vykdyti %s"
 
+#: lclstrconsts.liscefilter
+msgid "(Filter)"
+msgstr ""
+
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
