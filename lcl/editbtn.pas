@@ -177,6 +177,7 @@ type
     procedure ApplyFilterCore; virtual; abstract;
     procedure MoveNext; virtual; abstract;
     procedure MovePrev; virtual; abstract;
+    function GetDefaultGlyphName: String; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -595,6 +596,7 @@ var
   CalcGlyph: TBitmap;
 
 const
+  ResBtnListFilter = 'btnfiltercancel';
   ResBtnFileOpen   = 'btnselfile';
   ResBtnSelDir     = 'btnseldir';
   ResBtnCalendar   = 'btncalendar';
@@ -937,6 +939,11 @@ procedure TCustomControlFilterEdit.InvalidateFilter;
 begin
   fNeedUpdate:=true;
   IdleConnected:=true;
+end;
+
+function TCustomControlFilterEdit.GetDefaultGlyphName: String;
+begin
+  Result := ResBtnListFilter;
 end;
 
 { TFileNameEdit }

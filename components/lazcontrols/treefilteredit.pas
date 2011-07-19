@@ -26,13 +26,12 @@ type
     // It is stored automatically if the map is populated by MapShortToFullFilename.
     fFilenameMap: TStringToStringTree;
     // Data supplied by caller through Data property.
-    // Objects property is passed to OnGetImageIndex.
     fOriginalData: TStringList;
     // Data sorted for viewing.
+    fSortedData: TStringList;
     fRootNode: TTreeNode;           // The filtered items are under this node.
     fOnGetImageIndex: TImageIndexEvent;
     fImgIndex: Integer;
-    fSortedData: TStringList;
     fTVNodeStack: TFPList;
     function CompareFNs(AFilename1,AFilename2: string): integer;
     procedure SetFilteredTreeview(const AValue: TTreeview);
@@ -46,7 +45,6 @@ type
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
     function GetDefaultGlyph: TBitmap; override;
-    function GetDefaultGlyphName: String; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -74,9 +72,6 @@ type
 
 var
   TreeFilterGlyph: TBitmap;
-
-const
-  ResBtnListFilter = 'btnfiltercancel';
 
 procedure Register;
 
@@ -121,11 +116,6 @@ end;
 function TTreeFilterEdit.GetDefaultGlyph: TBitmap;
 begin
   Result := TreeFilterGlyph;
-end;
-
-function TTreeFilterEdit.GetDefaultGlyphName: String;
-begin
-  Result := ResBtnListFilter;
 end;
 
 procedure TTreeFilterEdit.SetFilteredTreeview(const AValue: TTreeview);

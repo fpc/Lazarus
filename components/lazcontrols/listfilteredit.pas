@@ -16,20 +16,13 @@ type
   { TListFilterEdit }
 
   TListFilterEdit = class(TCustomControlFilterEdit)
-    procedure ListBoxDrawItem(Control: TWinControl;
-      Index: Integer; ARect: TRect; State: TOwnerDrawState);
   private
     // A control showing the (filtered) data. These are exclusive, only one is used.
     fFilteredListbox: TListbox;
-    fImageIndexDirectory: integer;     // Needed if directory structure is shown.
-    fImages4Listbox: TCustomImageList; // Listbox does not have ImageList of its own.
-    fSelectionList: TStringList;    // or store/restore the old selections here.
+    fSelectionList: TStringList;       // or store/restore the old selections here.
     // Data supplied by caller through Data property.
-    // Objects property is passed to OnGetImageIndex.
     fOriginalData: TStringList;
     // Data sorted for viewing.
-    fOnGetImageIndex: TImageIndexEvent;
-    fImgIndex: Integer;
     fSortedData: TStringList;
     function CompareFNs(AFilename1,AFilename2: string): integer;
     procedure SetFilteredListbox(const AValue: TListBox);
@@ -39,27 +32,20 @@ type
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
     function GetDefaultGlyph: TBitmap; override;
-    function GetDefaultGlyphName: String; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure StoreSelection; override;
     procedure RestoreSelection; override;
   public
-    property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
     property SelectionList: TStringList read fSelectionList;
     property Data: TStringList read fOriginalData;
   published
     property FilteredListbox: TListBox read fFilteredListbox write SetFilteredListbox;
-    property Images4Listbox: TCustomImageList read fImages4Listbox write fImages4Listbox; deprecated 'use OnDrawItem handler in FilteredListbox';
-    property OnGetImageIndex: TImageIndexEvent read fOnGetImageIndex write fOnGetImageIndex; deprecated 'use OnDrawItem handler in FilteredListbox';
   end;
 
 var
   ListFilterGlyph: TBitmap;
-
-const
-  ResBtnListFilter = 'btnfiltercancel';
 
 procedure Register;
 
@@ -79,8 +65,6 @@ begin
   fOriginalData:=TStringList.Create;
   fSelectionList:=TStringList.Create;
   fSortedData:=TStringList.Create;
-  fImageIndexDirectory := -1;
-  fImgIndex:=-1;
 end;
 
 destructor TListFilterEdit.Destroy;
@@ -91,56 +75,16 @@ begin
   inherited Destroy;
 end;
 
-procedure TListFilterEdit.ListBoxDrawItem(Control: TWinControl;
-  Index: Integer; ARect: TRect; State: TOwnerDrawState);
-var
-  ImgIndex: Integer;
-  ena: Boolean;
-begin
-  if Index < 0 then Exit;
-  ena:=True;
-  ImgIndex:=-1;
-  if Assigned(fImages4Listbox) and Assigned(OnGetImageIndex) then begin
-    ImgIndex:=OnGetImageIndex(fFilteredListbox.Items[Index],
-                              fFilteredListbox.Items.Objects[Index], ena);
-  end;
-  fFilteredListbox.Canvas.FillRect(ARect);
-  if ImgIndex<>-1 then
-  begin
-    if not (ena or (odSelected in State)) then
-      fFilteredListbox.Canvas.Font.Color := clGreen;
-    fImages4Listbox.Draw(fFilteredListbox.Canvas, 1, ARect.Top, ImgIndex, ena);
-  end;
-  fFilteredListbox.Canvas.TextRect(ARect, ARect.Left + 20,ARect.Top,
-                                fFilteredListbox.Items[Index]);
-end;
-
 function TListFilterEdit.GetDefaultGlyph: TBitmap;
 begin
   Result := ListFilterGlyph;
 end;
 
-function TListFilterEdit.GetDefaultGlyphName: String;
-begin
-  Result := ResBtnListFilter;
-end;
-
 procedure TListFilterEdit.SetFilteredListbox(const AValue: TListBox);
 begin
   if fFilteredListbox = AValue then Exit;
-  if Assigned(fFilteredListbox)
-    and (fFilteredListbox.OnDrawItem = @ListBoxDrawItem) then
-      fFilteredListbox.OnDrawItem := nil;
   fFilteredListbox:=AValue;
   if AValue = nil then Exit;
-  if fFilteredListbox.Style<>lbStandard then begin
-    // if Listbox.Style<>Standard then it is OwnerDraw,
-    // and OnDrawItem should be defined, so the following code is useless
-    if not (csDesigning in fFilteredListbox.ComponentState)
-      and not Assigned(fFilteredListbox.OnDrawItem) then
-        // AP: I propose not to use ListBoxDrawItem at all, DrawItem handler of FilteredListbox must be used
-        fFilteredListbox.OnDrawItem:=@ListBoxDrawItem;
-  end;
   fOriginalData.Assign(fFilteredListbox.Items);
 end;
 
