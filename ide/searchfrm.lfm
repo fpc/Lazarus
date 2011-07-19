@@ -1,85 +1,104 @@
 object SearchProgressForm: TSearchProgressForm
-  Left = 422
-  Height = 132
-  Top = 267
-  Width = 622
+  Left = 384
+  Height = 149
+  Top = 387
+  Width = 700
+  AutoSize = True
   Caption = 'Searching....'
-  ClientHeight = 132
-  ClientWidth = 622
+  ClientHeight = 149
+  ClientWidth = 700
+  Constraints.MinWidth = 700
   OnCreate = SearchFormCREATE
   OnDestroy = SearchFormDESTROY
   Position = poScreenCenter
   LCLVersion = '0.9.31'
+  Visible = True
   object Panel2: TPanel
     Left = 0
-    Height = 132
+    Height = 149
     Top = 0
-    Width = 622
+    Width = 700
     Align = alClient
+    AutoSize = True
     BevelInner = bvLowered
-    ClientHeight = 132
-    ClientWidth = 622
+    ClientHeight = 149
+    ClientWidth = 700
     FullRepaint = False
     TabOrder = 0
     TabStop = True
     object lblMatches: TLabel
+      AnchorSideTop.Control = MatchesLabel
+      AnchorSideTop.Side = asrCenter
       Left = 121
       Height = 1
-      Top = 80
+      Top = 91
       Width = 1
       ParentColor = False
     end
     object MatchesLabel: TLabel
-      AnchorSideTop.Control = lblMatches
-      AnchorSideTop.Side = asrCenter
+      AnchorSideTop.Control = SearchingLabel
+      AnchorSideTop.Side = asrBottom
       Left = 16
       Height = 14
-      Top = 73
-      Width = 48
+      Top = 84
+      Width = 41
+      BorderSpacing.Top = 18
       Caption = 'Matches'
       ParentColor = False
     end
     object lblProgress: TLabel
+      AnchorSideTop.Control = SearchingLabel
+      AnchorSideTop.Side = asrCenter
       Left = 121
       Height = 1
-      Top = 48
+      Top = 59
       Width = 1
       ParentColor = False
     end
     object SearchingLabel: TLabel
-      AnchorSideTop.Control = lblProgress
-      AnchorSideTop.Side = asrCenter
+      AnchorSideTop.Control = SearchTextLabel
+      AnchorSideTop.Side = asrBottom
       Left = 16
       Height = 14
-      Top = 41
-      Width = 62
+      Top = 52
+      Width = 52
+      BorderSpacing.Top = 18
       Caption = 'Searching:'
       ParentColor = False
     end
     object SearchTextLabel: TLabel
-      AnchorSideTop.Control = lblSearchText
-      AnchorSideTop.Side = asrCenter
+      AnchorSideTop.Control = Panel2
       Left = 16
       Height = 14
-      Top = 9
-      Width = 71
+      Top = 20
+      Width = 63
+      BorderSpacing.Top = 18
       Caption = 'Search Text:'
       ParentColor = False
     end
     object lblSearchText: TLabel
+      AnchorSideTop.Control = SearchTextLabel
+      AnchorSideTop.Side = asrCenter
       Left = 121
       Height = 1
-      Top = 16
+      Top = 27
       Width = 1
       ParentColor = False
     end
     object btnCancel: TBitBtn
+      AnchorSideLeft.Control = Panel2
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = MatchesLabel
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 264
-      Height = 32
-      Top = 88
-      Width = 75
+      AnchorSideBottom.Side = asrBottom
+      Left = 312
+      Height = 26
+      Top = 110
+      Width = 77
       AutoSize = True
+      BorderSpacing.Top = 12
+      BorderSpacing.Bottom = 6
       Cancel = True
       Caption = 'Cancel'
       Kind = bkCancel
