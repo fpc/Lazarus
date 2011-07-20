@@ -542,60 +542,44 @@ end;
 
 procedure TChartAxis.Measure(
   const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
-
-  function MaxMarksSize(AMin, AMax: Double): TPoint;
-  var
-    t: TChartValueText;
-  begin
-    Result := Point(0, 0);
-    if AMin = AMax then exit;
-    GetMarkValues(AMin, AMax);
-    if not Marks.Visible then exit;
-    for t in FMarkValues do
-      Result := MaxPoint(Marks.MeasureLabel(FHelper.FDrawer, t.FText), Result);
-  end;
+var
+  v: Boolean;
+  d: IChartDrawer;
 
   function TitleSize: Integer;
   begin
-    if not Title.Visible or (Title.Caption = '') then
-      exit(0);
-    with Title.MeasureLabel(FHelper.FDrawer, Title.Caption) do
-      Result := IfThen(IsVertical, cx, cy);
+    if not Title.Visible or (Title.Caption = '') then exit(0);
+    Result := TPointBoolArr(Title.MeasureLabel(d, Title.Caption))[not v];
     if Title.DistanceToCenter then
       Result := Result div 2;
-    Result += FHelper.FDrawer.Scale(Title.Distance);
+    Result += d.Scale(Title.Distance);
   end;
 
   function FirstLastSize(AText: String): Integer;
   begin
-    with Marks.MeasureLabel(FHelper.FDrawer, AText) do
-      Result := IfThen(IsVertical, cy, cx) div 2;
-  end;
-
-  function MaxMinorTick: Integer;
-  var
-    m: TCollectionItem;
-  begin
-    Result := 0;
-    for m in Minors do
-      Result := Max(TChartMinorAxis(m).TickLength, Result);
+    Result := TPointBoolArr(Marks.MeasureLabel(d, AText))[not v] div 2;
   end;
 
 var
   sz, rmin, rmax, c, i: Integer;
   t: TChartValueText;
+  pv: Double = NaN;
 begin
   if not Visible then exit;
-  if IsVertical then
-    sz := MaxMarksSize(AExtent.a.Y, AExtent.b.Y).X
-  else
-    sz := MaxMarksSize(AExtent.a.X, AExtent.b.X).Y;
-  if Marks.DistanceToCenter then
-    sz := sz div 2;
-  if sz > 0 then
-    sz += FHelper.FDrawer.Scale(TickLength) +
-      FHelper.FDrawer.Scale(Marks.Distance);
-  sz := Max(FHelper.FDrawer.Scale(MaxMinorTick), sz);
+  v := IsVertical;
+  d := FHelper.FDrawer;
+  GetMarkValues(
+    TDoublePointBoolArr(AExtent.a)[v], TDoublePointBoolArr(AExtent.b)[v]);
+  sz := Marks.Measure(d, not v, TickLength, FMarkValues);
+  for t in FMarkValues do begin
+    if not IsNan(pv) then begin
+      for i := 0 to Minors.Count - 1 do
+        with Minors[i] do
+          sz := Max(sz,
+            Marks.Measure(d, not v, TickLength, GetMarkValues(pv, t.FValue)));
+    end;
+    pv := t.FValue;
+  end;
   FHelper.GetClipRange(rmin, rmax);
   with AMeasureData do begin
     FSize := Max(sz, FSize);

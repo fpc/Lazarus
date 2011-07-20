@@ -86,6 +86,9 @@ type
     FStart, FEnd: Double;
   end;
 
+  TPointBoolArr = array [Boolean] of Integer;
+  TDoublePointBoolArr = array [Boolean] of Double;
+
   { TIntervalList }
 
   TIntervalList = class

@@ -106,6 +106,9 @@ type
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
 
+    function Measure(
+      ADrawer: IChartDrawer; AIsVertical: Boolean; ATickLength: Integer;
+      AValues: TChartValueTextArray): Integer;
     function SourceDef: TCustomChartSource;
   published
     property AtDataOnly: Boolean
@@ -496,6 +499,23 @@ end;
 function TChartAxisMarks.IsFormatStored: Boolean;
 begin
   Result := FStyle <> smsValue;
+end;
+
+function TChartAxisMarks.Measure(
+  ADrawer: IChartDrawer; AIsVertical: Boolean; ATickLength: Integer;
+  AValues: TChartValueTextArray): Integer;
+var
+  t: TChartValueText;
+begin
+  Result := 0;
+  if not Visible then exit;
+  for t in AValues do
+    Result := Max(
+      TPointBoolArr(MeasureLabel(ADrawer, t.FText))[AIsVertical], Result);
+  if Result = 0 then exit;
+  if DistanceToCenter then
+    Result := Result div 2;
+  Result += ADrawer.Scale(ATickLength) + ADrawer.Scale(Distance);
 end;
 
 procedure TChartAxisMarks.SetAtDataOnly(AValue: Boolean);

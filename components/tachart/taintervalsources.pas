@@ -22,7 +22,7 @@ unit TAIntervalSources;
 interface
 
 uses
-  Classes, Types, TAChartUtils, TACustomSource;
+  Classes, TAChartUtils, TACustomSource;
 
 type
   { TIntervalChartSource }
