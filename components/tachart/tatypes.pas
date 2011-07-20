@@ -91,9 +91,11 @@ type
   strict private
     FClipped: Boolean;
     FOverlapPolicy: TChartMarksOverlapPolicy;
+    procedure SetAlignment(AValue: TAlignment);
     procedure SetClipped(AValue: Boolean);
     procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
   strict protected
+    FAlignment: TAlignment;
     procedure AddMargins(ADrawer: IChartDrawer; var ASize: TPoint);
     procedure ApplyLabelFont(ADrawer: IChartDrawer); virtual;
     function IsMarginRequired: Boolean;
@@ -117,25 +119,35 @@ type
     property Clipped: Boolean read FClipped write SetClipped default true;
     property OverlapPolicy: TChartMarksOverlapPolicy
       read FOverlapPolicy write SetOverlapPolicy default opIgnore;
+  published
+    property Alignment: TAlignment
+      read FAlignment write SetAlignment;
+  end;
+
+  TChartTitleFramePen = class(TChartPen)
+  published
+    property Visible default false;
   end;
 
   { TChartTitle }
 
-  TChartTitle = class(TChartElement)
-  private
-    FAlignment: TAlignment;
+  TChartTitle = class(TChartTextElement)
+  strict private
     FBrush: TBrush;
     FFont: TFont;
-    FFrame: TChartPen;
+    FFrame: TChartTitleFramePen;
     FMargin: TChartDistance;
     FText: TStrings;
 
-    procedure SetAlignment(AValue: TAlignment);
     procedure SetBrush(AValue: TBrush);
     procedure SetFont(AValue: TFont);
-    procedure SetFrame(AValue: TChartPen);
+    procedure SetFrame(AValue: TChartTitleFramePen);
     procedure SetMargin(AValue: TChartDistance);
     procedure SetText(AValue: TStrings);
+  strict protected
+    function GetFrame: TChartPen; override;
+    function GetLabelBrush: TBrush; override;
+    function GetLabelFont: TFont; override;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
@@ -143,11 +155,10 @@ type
     procedure Assign(ASource: TPersistent); override;
     procedure Draw(ADrawer: IChartDrawer; ADir, AX: Integer; var AY: Integer);
   published
-    property Alignment: TAlignment
-      read FAlignment write SetAlignment default taCenter;
+    property Alignment default taCenter;
     property Brush: TBrush read FBrush write SetBrush;
     property Font: TFont read FFont write SetFont;
-    property Frame: TChartPen read FFrame write SetFrame;
+    property Frame: TChartTitleFramePen read FFrame write SetFrame;
     property Margin: TChartDistance
       read FMargin write SetMargin default DEF_MARGIN;
     property Text: TStrings read FText write SetText;
@@ -456,6 +467,7 @@ procedure TChartTextElement.Assign(ASource: TPersistent);
 begin
   if ASource is TChartTextElement then
     with TChartTextElement(ASource) do begin
+      Self.FAlignment := Alignment;
       Self.FClipped := FClipped;
       Self.FOverlapPolicy := FOverlapPolicy;
     end;
@@ -475,10 +487,11 @@ procedure TChartTextElement.DrawLabel(
 var
   labelPoly: TPointArray;
   ptText: TPoint;
-  i: Integer;
+  i, w: Integer;
 begin
   ApplyLabelFont(ADrawer);
   ptText := ADrawer.TextExtent(AText);
+  w := ptText.X;
   labelPoly := GetLabelPolygon(ADrawer, ptText);
   for i := 0 to High(labelPoly) do
     labelPoly[i] += ALabelCenter;
@@ -499,12 +512,15 @@ begin
   end;
   ADrawer.Brush := GetLabelBrush;
   if IsMarginRequired then begin
-    ADrawer.Pen := GetFrame;
+    if GetFrame.Visible then
+      ADrawer.Pen := GetFrame
+    else
+      ADrawer.SetPenParams(psClear, clTAColor);
     ADrawer.Polygon(labelPoly, 0, Length(labelPoly));
   end;
 
   ptText := RotatePoint(-ptText div 2, GetLabelAngle) + ALabelCenter;
-  ADrawer.TextOut.Pos(ptText).Text(AText).Done;
+  ADrawer.TextOut.Pos(ptText).Alignment(Alignment).Width(w).Text(AText).Done;
   if not Clipped then
     ADrawer.ClippingStart;
 end;
@@ -544,6 +560,13 @@ begin
   Result := MeasureRotatedRect(sz, GetLabelAngle);
 end;
 
+procedure TChartTextElement.SetAlignment(AValue: TAlignment);
+begin
+  if FAlignment = AValue then exit;
+  FAlignment := AValue;
+  StyleChanged(Self);
+end;
+
 procedure TChartTextElement.SetClipped(AValue: Boolean);
 begin
   if FClipped = AValue then exit;
@@ -564,7 +587,6 @@ procedure TChartTitle.Assign(ASource: TPersistent);
 begin
   if ASource is TChartTitle then
     with TChartTitle(ASource) do begin
-      Self.FAlignment := Alignment;
       Self.FBrush.Assign(Brush);
       Self.FFont.Assign(Font);
       Self.FFrame.Assign(Frame);
@@ -584,6 +606,7 @@ begin
   InitHelper(FFont, TFont);
   FFont.Color := clBlue;
   InitHelper(FFrame, TChartPen);
+  FFrame.Visible := false;
   FMargin := DEF_MARGIN;
   FText := TStringList.Create;
   TStringList(FText).OnChange := @StyleChanged;
@@ -602,28 +625,30 @@ end;
 procedure TChartTitle.Draw(
   ADrawer: IChartDrawer; ADir, AX: Integer; var AY: Integer);
 var
-  ptSize, textOrigin: TPoint;
-  a: Double;
+  p, ptSize: TPoint;
   w: Integer;
+  dummy: TPointArray;
 begin
   if not Visible or (Text.Count = 0) then exit;
-  ADrawer.Brush := Brush;
-  ADrawer.Font := Font;
-  a := -OrientToRad(Font.Orientation);
-  ptSize := ADrawer.TextExtent(Text);
-  textOrigin := RotatePoint(-ptSize div 2, a);
-  w := ptSize.X;
-  ptSize := MeasureRotatedRect(ptSize, a);
-  textOrigin += Point(AX, AY + ptSize.Y div 2 * ADir);
-  ADrawer.TextOut.Pos(textOrigin).Text(Text).Alignment(Alignment).Width(w).Done;
+  ptSize := MeasureLabel(ADrawer, Text.Text);
+  p := Point(AX, AY + ADir * ptSize.Y div 2);
+  DrawLabel(ADrawer, p, p, Text.Text, dummy);
   AY += ADir * (ptSize.Y + Margin);
 end;
 
-procedure TChartTitle.SetAlignment(AValue: TAlignment);
+function TChartTitle.GetFrame: TChartPen;
 begin
-  if FAlignment = AValue then exit;
-  FAlignment := AValue;
-  StyleChanged(Self);
+  Result := Frame;
+end;
+
+function TChartTitle.GetLabelBrush: TBrush;
+begin
+  Result := Brush;
+end;
+
+function TChartTitle.GetLabelFont: TFont;
+begin
+  Result := Font;
 end;
 
 procedure TChartTitle.SetBrush(AValue: TBrush);
@@ -638,7 +663,7 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartTitle.SetFrame(AValue: TChartPen);
+procedure TChartTitle.SetFrame(AValue: TChartTitleFramePen);
 begin
   FFrame.Assign(AValue);
   StyleChanged(Self);
