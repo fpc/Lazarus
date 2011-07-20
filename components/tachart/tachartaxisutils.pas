@@ -179,6 +179,7 @@ type
     function TryApplyStripes: Boolean; inline;
   public
     FAxis: TChartBasicAxis;
+    FAxisTransf: TTransformFunc;
     FClipRect: ^TRect;
     FDrawer: IChartDrawer;
     FPrevCoord: Integer;
@@ -255,6 +256,7 @@ function TAxisDrawHelper.Clone: TAxisDrawHelper;
 begin
   Result := TAxisDrawHelperClass(ClassType).Create;
   Result.FAxis := FAxis;
+  Result.FAxisTransf := FAxisTransf;
   Result.FClipRect := FClipRect;
   Result.FDrawer := FDrawer;
   Result.FTransf := FTransf;

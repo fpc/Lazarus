@@ -433,7 +433,6 @@ procedure TChartAxis.Draw;
 var
   fixedCoord: Integer;
   pv, v: Double;
-  axisTransf: TTransformFunc;
   t: TChartValueText;
 begin
   if not Visible then exit;
@@ -443,9 +442,8 @@ begin
   pv := NaN;
   FHelper.BeginDrawing;
   FHelper.DrawAxisLine(AxisPen, fixedCoord);
-  axisTransf := @GetTransform.AxisToGraph;
   for t in FMarkValues do begin
-    v := axisTransf(t.FValue);
+    v := FHelper.FAxisTransf(t.FValue);
     FHelper.DrawMark(fixedCoord, v, t.FText);
     DrawMinors(fixedCoord, pv, v);
     pv := v;
@@ -597,7 +595,7 @@ begin
     end;
     pv := cv;
     // Optimization: only measure edge labels to calculate longitudinal margins.
-    c := FHelper.GraphToImage(cv);
+    c := FHelper.GraphToImage(FHelper.FAxisTransf(cv));
     if not InRange(c, rmin, rmax) then continue;
     if c < minc then begin
       minc := c;
@@ -634,6 +632,7 @@ begin
   else
     FHelper := TAxisDrawHelperX.Create;
   FHelper.FAxis := Self;
+  FHelper.FAxisTransf := @GetTransform.AxisToGraph;
   FHelper.FClipRect := AClipRect;
   FHelper.FDrawer := ADrawer;
   FHelper.FTransf := ATransf;
