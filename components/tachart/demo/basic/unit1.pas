@@ -86,7 +86,6 @@ uses
 
 procedure TForm1.BringToFront(ASeries: TBasicChartSeries);
 var
-  i: Integer;
   s: TBasicChartSeries;
 begin
   for s in Chart1.Series do

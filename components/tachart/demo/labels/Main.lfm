@@ -30,6 +30,7 @@ object Form1: TForm1
           item
             Marks.LabelBrush.Color = clSkyBlue
             Marks.LabelBrush.Style = bsSolid
+            Minors = <>
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Left axis title'
@@ -39,6 +40,7 @@ object Form1: TForm1
             Alignment = calBottom
             Marks.LabelBrush.Color = clSkyBlue
             Marks.LabelBrush.Style = bsSolid
+            Minors = <>
             Title.Visible = True
             Title.Caption = 'Bottom axis title'
             Title.Frame.Style = psSolid
@@ -71,14 +73,17 @@ object Form1: TForm1
         Width = 488
         AxisList = <        
           item
+            Marks.Alignment = taCenter
             Marks.LabelFont.Orientation = 900
             Marks.Frame.Style = psSolid
+            Minors = <>
             Title.LabelFont.Orientation = 900
             OnMarkToText = ChartMultiAxisList1MarkToText
           end        
           item
             Alignment = calBottom
             Marks.Frame.Style = psSolid
+            Minors = <>
             Title.Visible = True
             Title.Caption = 'test'
             OnMarkToText = ChartMultiAxisList1MarkToText
@@ -89,9 +94,10 @@ object Form1: TForm1
           'TAChart'
         )
         Title.Brush.Color = clBtnFace
+        Title.Brush.Style = bsClear
         Title.Font.Color = clBlue
         Title.Text.Strings = (
-          'Chart'
+          'Chart long'
           'title'
         )
         Title.Visible = True
