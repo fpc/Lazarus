@@ -883,7 +883,7 @@ begin
     ORect.Right := -2;
     ORect.Bottom := -2;
   end else
-  if TheWinControl is TCustomNoteBook then
+  if TheWinControl is TCustomTabControl then
   begin
     // Can't use complete client rect in wince interface, bottom part contains the tabs
     Windows.GetClientRect(Handle, @ARect);

@@ -380,7 +380,7 @@ end;
 
 function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
 begin
-  RegisterWSComponent(TCustomNotebook, TGtk2WSCustomNotebook, TGtk2PrivateNotebook);
+  RegisterWSComponent(TCustomTabControl, TGtk2WSCustomTabControl, TGtk2PrivateNotebook);
 //  RegisterWSComponent(TNotebook, TGtk2WSNotebook);
   Result := True;
 end;

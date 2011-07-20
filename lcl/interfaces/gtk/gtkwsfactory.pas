@@ -377,7 +377,7 @@ end;
 function RegisterCustomNotebook: Boolean; alias : 'WSRegisterCustomNotebook';
 begin
 {$IFDEF GTK1}
-  RegisterWSComponent(TCustomNotebook, TGtkWSCustomNotebook, TGtk1PrivateNotebook);
+  RegisterWSComponent(TCustomTabControl, TGtkWSCustomTabControl, TGtk1PrivateNotebook);
   Result := True;
 {$ELSE}
   Result := False;

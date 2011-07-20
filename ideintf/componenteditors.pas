@@ -243,9 +243,9 @@ type
   // we're not 100% the same, but it might help some ppl.
   TDefaultEditor = TDefaultComponentEditor;
   
-{ TNotebookComponentEditor
-  The default component editor for TCustomNotebook. }
-  TNotebookComponentEditor = class(TDefaultComponentEditor)
+{ TTabControlComponentEditor
+  The default component editor for TCustomTabControl. }
+  TTabControlComponentEditor = class(TDefaultComponentEditor)
   protected
     procedure AddNewPageToDesigner(Index: integer); virtual;
     procedure DoAddPage; virtual;
@@ -261,15 +261,15 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
     procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
-    function Notebook: TCustomNotebook; virtual;
+    function Notebook: TCustomTabControl; virtual;
   end;
   
   { TPageComponentEditor
     The default component editor for TCustomPage. }
-  TPageComponentEditor = class(TNotebookComponentEditor)
+  TPageComponentEditor = class(TTabControlComponentEditor)
   protected
   public
-    function Notebook: TCustomNotebook; override;
+    function Notebook: TCustomTabControl; override;
     function Page: TCustomPage; virtual;
   end;
 
@@ -702,7 +702,7 @@ begin
 end;
 
 
-{ TNotebookComponentEditor }
+{ TTabControlComponentEditor }
 
 const
   nbvAddPage       = 0;
@@ -712,7 +712,7 @@ const
   nbvMovePageRight = 4;
   nbvShowPage      = 5;
 
-procedure TNotebookComponentEditor.ShowPageMenuItemClick(Sender: TObject);
+procedure TTabControlComponentEditor.ShowPageMenuItemClick(Sender: TObject);
 var
   AMenuItem: TMenuItem;
   NewPageIndex: integer;
@@ -725,7 +725,7 @@ begin
   GetDesigner.SelectOnlyThisComponent(NoteBook.CustomPage(NoteBook.PageIndex));
 end;
 
-procedure TNotebookComponentEditor.AddNewPageToDesigner(Index: integer);
+procedure TTabControlComponentEditor.AddNewPageToDesigner(Index: integer);
 var
   Hook: TPropertyEditorHook;
   NewPage: TCustomPage;
@@ -742,14 +742,14 @@ begin
   Modified;
 end;
 
-procedure TNotebookComponentEditor.DoAddPage;
+procedure TTabControlComponentEditor.DoAddPage;
 begin
   if not HasHook then exit;
   NoteBook.Pages.Add('');
   AddNewPageToDesigner(NoteBook.PageCount-1);
 end;
 
-procedure TNotebookComponentEditor.DoInsertPage;
+procedure TTabControlComponentEditor.DoInsertPage;
 var
   NewIndex: integer;
 begin
@@ -760,7 +760,7 @@ begin
   AddNewPageToDesigner(NewIndex);
 end;
 
-procedure TNotebookComponentEditor.DoDeletePage;
+procedure TTabControlComponentEditor.DoDeletePage;
 var
   Hook: TPropertyEditorHook;
   OldIndex: integer;
@@ -774,7 +774,7 @@ begin
   end;
 end;
 
-procedure TNotebookComponentEditor.DoMoveActivePageLeft;
+procedure TTabControlComponentEditor.DoMoveActivePageLeft;
 var
   Index: integer;
 begin
@@ -783,7 +783,7 @@ begin
   DoMovePage(Index,Index-1);
 end;
 
-procedure TNotebookComponentEditor.DoMoveActivePageRight;
+procedure TTabControlComponentEditor.DoMoveActivePageRight;
 var
   Index: integer;
 begin
@@ -793,14 +793,14 @@ begin
   DoMovePage(Index,Index+1);
 end;
 
-procedure TNotebookComponentEditor.DoMovePage(
+procedure TTabControlComponentEditor.DoMovePage(
   CurIndex, NewIndex: Integer);
 begin
   NoteBook.Pages.Move(CurIndex,NewIndex);
   Modified;
 end;
 
-procedure TNotebookComponentEditor.AddMenuItemsForPages(
+procedure TTabControlComponentEditor.AddMenuItemsForPages(
   ParentMenuItem: TMenuItem);
 var
   i: integer;
@@ -816,7 +816,7 @@ begin
   end;
 end;
 
-procedure TNotebookComponentEditor.ExecuteVerb(Index: Integer);
+procedure TTabControlComponentEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
     nbvAddPage:       DoAddPage;
@@ -827,7 +827,7 @@ begin
   end;
 end;
 
-function TNotebookComponentEditor.GetVerb(Index: Integer): string;
+function TTabControlComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     nbvAddPage:       Result:=nbcesAddPage;
@@ -841,12 +841,12 @@ begin
   end;
 end;
 
-function TNotebookComponentEditor.GetVerbCount: Integer;
+function TTabControlComponentEditor.GetVerbCount: Integer;
 begin
   Result:=6;
 end;
 
-procedure TNotebookComponentEditor.PrepareItem(Index: Integer;
+procedure TTabControlComponentEditor.PrepareItem(Index: Integer;
   const AnItem: TMenuItem);
 begin
   inherited PrepareItem(Index, AnItem);
@@ -860,20 +860,20 @@ begin
   end;
 end;
 
-function TNotebookComponentEditor.Notebook: TCustomNotebook;
+function TTabControlComponentEditor.Notebook: TCustomTabControl;
 begin
-  Result:=TCustomNotebook(GetComponent);
+  Result:=TCustomTabControl(GetComponent);
 end;
 
 { TPageComponentEditor }
 
-function TPageComponentEditor.Notebook: TCustomNotebook;
+function TPageComponentEditor.Notebook: TCustomTabControl;
 var
   APage: TCustomPage;
 begin
   APage:=Page;
-  if (APage.Parent<>nil) and (APage.Parent is TCustomNoteBook) then
-    Result:=TCustomNoteBook(APage.Parent);
+  if (APage.Parent<>nil) and (APage.Parent is TCustomTabControl) then
+    Result:=TCustomTabControl(APage.Parent);
 end;
 
 function TPageComponentEditor.Page: TCustomPage;
@@ -1331,11 +1331,10 @@ end;
 
 initialization
   RegisterComponentEditorProc := @DefaultRegisterComponentEditorProc;
-  RegisterComponentEditor(TCustomNotebook, TNotebookComponentEditor);
+  RegisterComponentEditor(TCustomTabControl, TTabControlComponentEditor);
   RegisterComponentEditor(TCustomPage, TPageComponentEditor);
   RegisterComponentEditor(TNotebook, TUntabbedNotebookComponentEditor);
   RegisterComponentEditor(TPage, TUNBPageComponentEditor);
-//  RegisterComponentEditor(TCustomTabControl, TTabControlComponentEditor);
   RegisterComponentEditor(TStringGrid, TStringGridComponentEditor);
   RegisterComponentEditor(TCheckListBox, TCheckListBoxComponentEditor);
   RegisterComponentEditor(TCheckGroup, TCheckGroupComponentEditor);

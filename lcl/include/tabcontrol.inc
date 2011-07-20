@@ -27,7 +27,7 @@ type
   TTabPage = class(TCustomPage)
   protected
     FIndex: integer;
-    FTabs: TCustomNotebook;
+    FTabs: TCustomTabControl;
     function GetTabVisible: Boolean; override; //assure always visible
     function GetPageIndex: integer; override;
     procedure SetPageIndex(AValue: Integer); override;
@@ -150,7 +150,7 @@ begin
   //if first page, make it current
     if APage = nil then
       APage := Page[Index];
-    TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, Index);
+    TWSCustomTabControlClass(WidgetSetClass).AddPage(Self, APage, Index);
     if PageIndex <> Index then begin //???
       //DoSendPageIndex;
       PageIndex:=Index;
@@ -165,7 +165,7 @@ begin
   //if False then inherited RemovePage(Index);
   if HandleAllocated and not (csDestroying in ComponentState) then begin
   //select next visible page
-    TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, Index);
+    TWSCustomTabControlClass(WidgetSetClass).RemovePage(Self, Index);
     if FPageIndex >= Index then
       Dec(FPageIndex);
   end;

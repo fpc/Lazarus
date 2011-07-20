@@ -215,12 +215,12 @@ Var
 
   function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
   var
-    NoteBook: TCustomNotebook;
+    NoteBook: TCustomTabControl;
     PageIndex, Flags: Integer;
     PageHandle: HWND;
     WindowInfo: PWindowInfo;
   begin
-    Notebook := GetWindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
+    Notebook := GetWindowInfo(NotebookHandle)^.WinControl as TCustomTabControl;
     PageIndex := Windows.SendMessageW(NotebookHandle, TCM_GETCURSEL, 0, 0);
     PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
     if PageIndex = -1 then exit;
@@ -2087,7 +2087,7 @@ begin
           begin
             lWinControl.DoAdjustClientRectChange;
             if (lWinControl is TCustomPage)
-            and (lWinControl.Parent is TCustomNotebook) then
+            and (lWinControl.Parent is TCustomTabControl) then
             begin
               // the TCustomPage size is the ClientRect size of the parent
               // => invalidate the Parent.ClientRect
@@ -2204,7 +2204,7 @@ begin
             if LMNotify.Result = 0 then
               ShowHideTabPage(HWndFrom, False);
           TCN_SELCHANGE:
-            NotebookFocusNewControl(GetWindowInfo(hwndFrom)^.WinControl as TCustomNotebook, idFrom);
+            NotebookFocusNewControl(GetWindowInfo(hwndFrom)^.WinControl as TCustomTabControl, idFrom);
         end;
     end;
 

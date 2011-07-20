@@ -264,12 +264,12 @@ type
 
   { TNBPages }
 
-  TCustomNotebook = class;
+  TCustomTabControl = class;
 
   TNBPages = class(TStrings)
   private
     FPageList: TListWithEvent;
-    FNotebook: TCustomNotebook;
+    FNotebook: TCustomTabControl;
     procedure PageListChange(Ptr: Pointer; AnAction: TListNotification);
   protected
     function Get(Index: Integer): String; override;
@@ -278,14 +278,14 @@ type
     procedure Put(Index: Integer; const S: String); override;
   public
     constructor Create(thePageList: TListWithEvent;
-                       theNotebook: TCustomNotebook);
+                       theNotebook: TCustomTabControl);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
     procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
-  { TCustomNotebook }
+  { TCustomTabControl }
 
   TTabChangingEvent = procedure(Sender: TObject;
     var AllowChange: Boolean) of object;
@@ -304,10 +304,10 @@ type
   TNoteBookCapability = (nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup);
   TNoteBookCapabilities = set of TNoteBookCapability;
 
-  TDrawTabEvent = procedure(Control: TCustomNotebook; TabIndex: Integer;
+  TDrawTabEvent = procedure(Control: TCustomTabControl; TabIndex: Integer;
     const Rect: TRect; Active: Boolean) of object;
 
-  TCustomNotebook = class(TWinControl)
+  TCustomTabControl = class(TWinControl)
   private
     FAccess: TStrings; // TNBPages
     FAddingPages: boolean;
@@ -492,7 +492,7 @@ type
 
   { TPageControl }
 
-  TPageControl = class(TCustomNotebook)
+  TPageControl = class(TCustomTabControl)
   private
     FPageToUndock: TTabSheet;
     function GetActivePageIndex: Integer;
@@ -583,12 +583,12 @@ type
 
   { TTabControl }
 
-(* The new TTabControl is a replacement for the old TTabControl, both derived from TCustomNotebook.
+(* The new TTabControl is a replacement for the old TTabControl, both derived from TCustomTabControl.
   TTabPage is a dummy page, for communication with the widgetsets.
   TTabPages holds the tabs (Strings[] and Objects[]).
 *)
 
-  TTabControl = class(TCustomNotebook)
+  TTabControl = class(TCustomTabControl)
   protected
     procedure DoChange; override;
     function GetPage(AIndex: Integer): TCustomPage; override;
@@ -3131,7 +3131,7 @@ procedure Register;
 { WidgetSetRegistration }
 
 procedure RegisterCustomPage;
-procedure RegisterCustomNotebook;
+procedure RegisterCustomTabControl;
 
 implementation
 
@@ -3244,13 +3244,13 @@ begin
   Done := True;
 end;
 
-procedure RegisterCustomNotebook;
+procedure RegisterCustomTabControl;
 const
   Done: Boolean = False;
 begin
   if Done then exit;
   if not WSRegisterCustomNotebook then
-    RegisterWSComponent(TCustomNotebook, TWSCustomNotebook);
+    RegisterWSComponent(TCustomTabControl, TWSCustomTabControl);
   Done := True;
 end;
 

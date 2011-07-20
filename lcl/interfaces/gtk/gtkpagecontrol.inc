@@ -21,7 +21,7 @@ const
 { tpRight  } GTK_POS_RIGHT
   );
   
-  LCL_NotebookManualPageSwitchKey = 'lcl_manual_page_switch';
+  LCL_TabControlManualPageSwitchKey = 'lcl_manual_page_switch';
 
 { TGtkWSCustomPage }
 
@@ -106,24 +106,24 @@ begin
       TCustomPage(AWinControl).TabVisible);
 end;
 
-{ TGtkWSCustomNotebook }
+{ TGtkWSCustomTabControl }
 
-function NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
+function TabControlPageRealToLCLIndex(const ATabControl: TCustomTabControl; AIndex: integer): integer;
 var
   I: Integer;
 begin
   Result := AIndex;
-  if csDesigning in ANotebook.ComponentState then exit;
+  if csDesigning in ATabControl.ComponentState then exit;
   I := 0;
-  while (I < ANotebook.PageCount) and (I <= Result) do
+  while (I < ATabControl.PageCount) and (I <= Result) do
   begin
-    if not ANotebook.Page[I].TabVisible then Inc(Result);
+    if not ATabControl.Page[I].TabVisible then Inc(Result);
     Inc(I);
   end;
 end;
 
 
-function GtkWSNotebook_SwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer; data: gPointer): GBoolean; cdecl;
+function GtkWSTabControl_SwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer; data: gPointer): GBoolean; cdecl;
 var
   Mess: TLMNotify;
   NMHdr: tagNMHDR;
@@ -131,12 +131,12 @@ var
 begin
   Result := CallBackDefaultReturn;
   EventTrace('switch-page', data);
-  UpdateNoteBookClientWidget(TObject(Data));
+  UpdateNotebookClientWidget(TObject(Data));
 
   // remove flag
-  IsManual := gtk_object_get_data(PGtkObject(Widget), LCL_NotebookManualPageSwitchKey) <> nil;
+  IsManual := gtk_object_get_data(PGtkObject(Widget), LCL_TabControlManualPageSwitchKey) <> nil;
   if IsManual then
-    gtk_object_set_data(PGtkObject(Widget), LCL_NotebookManualPageSwitchKey, nil);
+    gtk_object_set_data(PGtkObject(Widget), LCL_TabControlManualPageSwitchKey, nil);
   if PGtkNotebook(Widget)^.cur_page = nil then // for windows compatibility
     Exit;
 
@@ -149,7 +149,7 @@ begin
     FillChar(NMHdr, SizeOf(NMHdr), 0);
     NMHdr.code := TCN_SELCHANGING;
     NMHdr.hwndFrom := PtrUInt(widget);
-    NMHdr.idFrom := NotebookPageRealToLCLIndex(TCustomNotebook(Data), pagenum);  //use this to set pageindex to the correct page.
+    NMHdr.idFrom := TabControlPageRealToLCLIndex(TCustomTabControl(Data), pagenum);  //use this to set pageindex to the correct page.
     Mess.NMHdr := @NMHdr;
     Mess.Result := 0;
     DeliverMessage(Data, Mess);
@@ -167,57 +167,57 @@ begin
   FillChar(NMHdr, SizeOf(NMHdr), 0);
   NMHdr.code := TCN_SELCHANGE;
   NMHdr.hwndFrom := PtrUInt(widget);
-  NMHdr.idFrom := NotebookPageRealToLCLIndex(TCustomNotebook(Data), pagenum);  //use this to set pageindex to the correct page.
+  NMHdr.idFrom := TabControlPageRealToLCLIndex(TCustomTabControl(Data), pagenum);  //use this to set pageindex to the correct page.
   Mess.NMHdr := @NMHdr;
   DeliverMessage(Data, Mess);
 end;
 
-class procedure TGtkWSCustomNotebook.SetCallbacks(const AGtkWidget: PGtkWidget;
+class procedure TGtkWSCustomTabControl.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
-  ConnectSignal(PGtkObject(AGtkWidget), 'switch_page', @GtkWSNotebook_SwitchPage, AWidgetInfo^.LCLObject);
+  ConnectSignal(PGtkObject(AGtkWidget), 'switch_page', @GtkWSTabControl_SwitchPage, AWidgetInfo^.LCLObject);
 end;
 
-class function TGtkWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
+class function TGtkWSCustomTabControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  AWidget: PGtkNoteBook;
+  AWidget: PGtkNotebook;
   WidgetInfo: PWidgetInfo;
 begin
-  AWidget := PGtkNoteBook(gtk_notebook_new());
+  AWidget := PGtkNotebook(gtk_notebook_new());
   WidgetInfo := CreateWidgetInfo(AWidget, AWinControl, AParams);
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Pointer(AWidget), dbgsName(AWinControl));
   {$ENDIF}
   gtk_notebook_set_scrollable(AWidget, True);
 
-  if not (nboHidePageListPopup in TCustomNotebook(AWinControl).Options) then
+  if not (nboHidePageListPopup in TCustomTabControl(AWinControl).Options) then
     gtk_notebook_popup_enable(AWidget);
 
-  if TCustomNotebook(AWinControl).PageCount=0 then
-    // a gtk notebook needs a page -> add dummy page
-    GTKWidgetSet.AddDummyNoteBookPage(AWidget);
+  if TCustomTabControl(AWinControl).PageCount=0 then
+    // a gtk TabControl needs a page -> add dummy page
+    GTKWidgetSet.AddDummyNotebookPage(AWidget);
 
-  gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomNotebook(AWinControl).TabPosition]);
+  gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomTabControl(AWinControl).TabPosition]);
   Result := TLCLIntfHandle(PtrUInt(AWidget));
   Set_RC_Name(AWinControl, PGtkWidget(AWidget));
   SetCallBacks(PGtkWidget(AWidget), WidgetInfo);
 end;
 
-class procedure TGtkWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
+class procedure TGtkWSCustomTabControl.AddPage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const AIndex: integer);
 {
-  Inserts a new page to a notebook at position Index. The ANotebook is a
-  TCustomNoteBook, the AChild one of its TCustomPage. Both handles must already
-  be created. ANoteBook Handle is a PGtkNoteBook and APage handle is a
+  Inserts a new page to a TabControl at position Index. The ATabControl is a
+  TCustomTabControl, the AChild one of its TCustomPage. Both handles must already
+  be created. ATabControl Handle is a PGtkNotebook and APage handle is a
   PGtkHBox.
   This procedure creates a new tab with an optional image, the page caption and
   an optional close button. The image and the caption will also be added to the
   tab popup menu.
 }
 var
-  NoteBookWidget: PGtkWidget;  // the notebook
+  TabControlWidget: PGtkWidget;  // the TabControl
   PageWidget: PGtkWidget;      // the page (content widget)
   TabWidget: PGtkWidget;       // the tab (hbox containing a pixmap, a label
                                //          and a close button)
@@ -226,23 +226,23 @@ var
                                // a label)
   MenuLabelWidget: PGtkWidget; // the label in the popup menu item
 begin
-  {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TGtkWSCustomNotebook.AddPage ',dbgsName(ANoteBook),' ',ANotebook.HandleAllocated,' AChild=',dbgsName(AChild),' ',AChild.HandleAllocated,' Child.TabVisible=',AChild.TabVisible]);
+  {$IFDEF TabControl_DEBUG}
+  DebugLn(['TGtkWSCustomTabControl.AddPage ',dbgsName(ATabControl),' ',ATabControl.HandleAllocated,' AChild=',dbgsName(AChild),' ',AChild.HandleAllocated,' Child.TabVisible=',AChild.TabVisible]);
   {$ENDIF}
-  NoteBookWidget := PGtkWidget(ANoteBook.Handle);
+  TabControlWidget := PGtkWidget(ATabControl.Handle);
   PageWidget := PGtkWidget(AChild.Handle);
 
   // set LCL size
-  AChild.SetBounds(AChild.Left, AChild.Top, ANotebook.ClientWidth, ANotebook.ClientHeight);
+  AChild.SetBounds(AChild.Left, AChild.Top, ATabControl.ClientWidth, ATabControl.ClientHeight);
 
   if AChild.TabVisible then
     gtk_widget_show(PageWidget);
 
   // Check if already created. if so just show it because it is invisible
-  if gtk_notebook_get_tab_label(PGtkNoteBook(NoteBookWidget), PageWidget) <> nil
+  if gtk_notebook_get_tab_label(PGtkNotebook(TabControlWidget), PageWidget) <> nil
   then begin
-    {$IFDEF NOTEBOOK_DEBUG}
-    DebugLn(['TGtkWSCustomNotebook.AddPage already added']);
+    {$IFDEF TabControl_DEBUG}
+    DebugLn(['TGtkWSCustomTabControl.AddPage already added']);
     {$ENDIF}
     exit;
   end;
@@ -274,32 +274,32 @@ begin
     gtk_widget_show(MenuWidget);
 
   // remove the dummy page (a gtk_notebook needs at least one page)
-  RemoveDummyNoteBookPage(PGtkNotebook(NoteBookWidget));
+  RemoveDummyNotebookPage(PGtkNotebook(TabControlWidget));
   // insert the page
-  gtk_notebook_insert_page_menu(PGtkNotebook(NotebookWidget), PageWidget,
+  gtk_notebook_insert_page_menu(PGtkNotebook(TabControlWidget), PageWidget,
     TabWidget, MenuWidget, AIndex);
 
-  UpdateNotebookPageTab(ANoteBook, AChild);
-  UpdateNoteBookClientWidget(ANoteBook);
+  UpdateNotebookPageTab(ATabControl, AChild);
+  UpdateNotebookClientWidget(ATabControl);
   
   // init the size of the page widget
-  //DebugLn(['TGtkWSCustomNotebook.AddPage ',DbgSName(ANoteBook),' ',dbgs(ANoteBook.BoundsRect)]);
+  //DebugLn(['TGtkWSCustomTabControl.AddPage ',DbgSName(ATabControl),' ',dbgs(ATabControl.BoundsRect)]);
   {$IFDEF VerboseSizeMsg}
-  DebugLn(['TGtkWSCustomNotebook.AddPage PageWidget^.allocation=',dbgs(PageWidget^.allocation),' NotebookWidget=',dbgs(NotebookWidget^.allocation)]);
+  DebugLn(['TGtkWSCustomTabControl.AddPage PageWidget^.allocation=',dbgs(PageWidget^.allocation),' TabControlWidget=',dbgs(TabControlWidget^.allocation)]);
   {$ENDIF}
 end;
 
-class procedure TGtkWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
+class procedure TGtkWSCustomTabControl.MovePage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const NewIndex: integer);
 var
-  NoteBookWidget: PGtkNotebook;
+  TabControlWidget: PGtkNotebook;
 begin
-  NoteBookWidget:=PGtkNotebook(ANoteBook.Handle);
-  gtk_notebook_reorder_child(NoteBookWidget, PGtkWidget(AChild.Handle), NewIndex);
-  UpdateNoteBookClientWidget(ANoteBook);
+  TabControlWidget:=PGtkNotebook(ATabControl.Handle);
+  gtk_notebook_reorder_child(TabControlWidget, PGtkWidget(AChild.Handle), NewIndex);
+  UpdateNotebookClientWidget(ATabControl);
 end;
 
-class procedure TGtkWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
+class procedure TGtkWSCustomTabControl.RemovePage(const ATabControl: TCustomTabControl;
   const AIndex: integer);
 var
   PageWidget: PGtkWidget;
@@ -308,21 +308,21 @@ begin
   // The gtk does not provide a function to remove a page without destroying it.
   // Luckily the LCL destroys the Handle, when a page is removed, so this
   // function is not needed.
-  {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TGtkWSCustomNotebook.RemovePage AIndex=',AIndex,' ',DbgSName(ANotebook.Page[AIndex])]);
+  {$IFDEF TabControl_DEBUG}
+  DebugLn(['TGtkWSCustomTabControl.RemovePage AIndex=',AIndex,' ',DbgSName(ATabControl.Page[AIndex])]);
   {$ENDIF}
-  Page:=ANotebook.Page[AIndex];
+  Page:=ATabControl.Page[AIndex];
   if not Page.HandleAllocated then exit;
   PageWidget := PGtkWidget(Page.Handle);
   gtk_widget_hide(PageWidget);
 end;
 
-class function TGtkWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+class function TGtkWSCustomTabControl.GetCapabilities: TNotebookCapabilities;
 begin
   Result:=[nbcPageListPopup, nbcShowCloseButtons];
 end;
 
-class function TGtkWSCustomNotebook.GetNotebookMinTabHeight(
+class function TGtkWSCustomTabControl.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;
 var
   NBWidget: PGTKWidget;
@@ -333,33 +333,33 @@ var
   Page: PGtkNotebookPage;
 begin
   Result:=inherited GetNotebookMinTabHeight(AWinControl);
-  //debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight A ',dbgs(Result));
+  //debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight A ',dbgs(Result));
   exit;
 
-  debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight A ',dbgs(AWinControl.HandleAllocated));
+  debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight A ',dbgs(AWinControl.HandleAllocated));
   if AWinControl.HandleAllocated then
     NBWidget:=PGTKWidget(AWinControl.Handle)
   else
     NBWidget:=GetStyleWidget(lgsNotebook);
 
-  // ToDo: find out how to create a fully working hidden Notebook style widget
+  // ToDo: find out how to create a fully working hidden TabControl style widget
 
   if (NBWidget=nil) then begin
-    Result:=TWSCustomNotebook.GetNotebookMinTabHeight(AWinControl);
+    Result:=TWSCustomTabControl.GetNotebookMinTabHeight(AWinControl);
     exit;
   end;
-  debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight NBWidget: ',GetWidgetDebugReport(NBWidget),
+  debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight NBWidget: ',GetWidgetDebugReport(NBWidget),
    ' ',dbgs(NBWidget^.allocation.width),'x',dbgs(NBWidget^.allocation.height));
   
   BorderWidth:=(PGtkContainer(NBWidget)^.flag0 and bm_TGtkContainer_border_width)
                shr bp_TGtkContainer_border_width;
-  if PGtkNoteBook(NBWidget)^.first_tab<>nil then
-    Page:=PGtkNoteBook(NBWidget)^.cur_page;
+  if PGtkNotebook(NBWidget)^.first_tab<>nil then
+    Page:=PGtkNotebook(NBWidget)^.cur_page;
 
   Result:=BorderWidth;
   {$IFDEF GTK2}
   if (Page<>nil) then begin
-    debugln('TGtkWSCustomNotebook.RemovePage TODO');
+    debugln('TGtkWSCustomTabControl.RemovePage TODO');
   end;
   {$ELSE GTK2}
   if (NBWidget^.thestyle<>nil) and (PGtkStyle(NBWidget^.thestyle)^.klass<>nil) then
@@ -367,29 +367,29 @@ begin
   if (Page<>nil) and (Page^.child<>nil) then begin
     gtk_widget_size_request(Page^.Child, @Requisition);
     gtk_widget_map(Page^.child);
-    debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight B ',dbgs(Page^.child^.allocation.height),
+    debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight B ',dbgs(Page^.child^.allocation.height),
       ' ',GetWidgetDebugReport(Page^.child),' Requisition=',dbgs(Requisition.height));
     inc(Result,Page^.child^.allocation.height);
   end;
   {$ENDIF GTK2}
-  debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight END ',dbgs(Result),' ',
+  debugln('TGtkWSCustomTabControl.GetNotebookMinTabHeight END ',dbgs(Result),' ',
     GetWidgetDebugReport(NBWidget));
 end;
 
-class function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
+class function TGtkWSCustomTabControl.GetNotebookMinTabWidth(
   const AWinControl: TWinControl): integer;
 begin
-  Result:=TWSCustomNotebook.GetNotebookMinTabWidth(AWinControl);
+  Result:=TWSCustomTabControl.GetNotebookMinTabWidth(AWinControl);
 end;
 
-class function TGtkWSCustomNotebook.GetTabIndexAtPos(
-  const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer;
+class function TGtkWSCustomTabControl.GetTabIndexAtPos(
+  const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer;
 var
-  NoteBookWidget: PGtkNotebook;
+  TabControlWidget: PGtkNotebook;
   i: integer;
   TabWidget: PGtkWidget;
   PageWidget: PGtkWidget;
-  NotebookPos: TPoint;
+  TabControlPos: TPoint;
   {$IFDEF GTK2}
   Window: PGdkWindow;
   WindowOrg,ClientOrg: TPoint;
@@ -397,33 +397,33 @@ var
   Count: guint;
 begin
   Result:=-1;
-  NoteBookWidget:=PGtkNotebook(ANotebook.Handle);
-  if (NotebookWidget=nil) then exit;
-  //DebugLn(['TGtkWSCustomNotebook.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(NotebookWidget))]);
+  TabControlWidget:=PGtkNotebook(ATabControl.Handle);
+  if (TabControlWidget=nil) then exit;
+  //DebugLn(['TGtkWSCustomTabControl.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(TabControlWidget))]);
   {$IFDEF GTK2}
-  Window := GetControlWindow(NoteBookWidget);
+  Window := GetControlWindow(TabControlWidget);
   gdk_window_get_origin(Window,@WindowOrg.X,@WindowOrg.Y);
-  ClientOrg:=GetWidgetClientOrigin(PGtkWidget(NotebookWidget));
-  NotebookPos.X:= AClientPos.X + (ClientOrg.X-WindowOrg.X);
-  NotebookPos.Y:= AClientPos.Y + (ClientOrg.Y-WindowOrg.Y);
+  ClientOrg:=GetWidgetClientOrigin(PGtkWidget(TabControlWidget));
+  TabControlPos.X:= AClientPos.X + (ClientOrg.X-WindowOrg.X);
+  TabControlPos.Y:= AClientPos.Y + (ClientOrg.Y-WindowOrg.Y);
   {$ELSE}
-  NotebookPos:=AClientPos;
+  TabControlPos:=AClientPos;
   {$ENDIF}
   // go through all tabs
-  Count:=g_list_length(NoteBookWidget^.Children);
+  Count:=g_list_length(TabControlWidget^.Children);
   for i:=0 to Count-1 do
   begin
-    PageWidget:=gtk_notebook_get_nth_page(NoteBookWidget,i);
+    PageWidget:=gtk_notebook_get_nth_page(TabControlWidget,i);
     if PageWidget<>nil then
     begin
-      TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
+      TabWidget:=gtk_notebook_get_tab_label(TabControlWidget, PageWidget);
       if (TabWidget<>nil) and GTK_WIDGET_MAPPED(TabWidget) then
       begin
         // test if position is in tabwidget
-        if (TabWidget^.Allocation.X<=NoteBookPos.X)
-        and (TabWidget^.Allocation.Y<=NoteBookPos.Y)
-        and (TabWidget^.Allocation.X+TabWidget^.Allocation.Width>NoteBookPos.X)
-        and (TabWidget^.Allocation.Y+TabWidget^.Allocation.Height>NoteBookPos.Y)
+        if (TabWidget^.Allocation.X<=TabControlPos.X)
+        and (TabWidget^.Allocation.Y<=TabControlPos.Y)
+        and (TabWidget^.Allocation.X+TabWidget^.Allocation.Width>TabControlPos.X)
+        and (TabWidget^.Allocation.Y+TabWidget^.Allocation.Height>TabControlPos.Y)
         then begin
           Result:=i;
           exit;
@@ -433,10 +433,10 @@ begin
   end;
 end;
 
-class function TGtkWSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
+class function TGtkWSCustomTabControl.GetTabRect(const ATabControl: TCustomTabControl;
   const AIndex: Integer): TRect;
 var
-  NoteBookWidget: PGtkNotebook;
+  TabControlWidget: PGtkNotebook;
   TabWidget: PGtkWidget;
   PageWidget: PGtkWidget;
   {$IFDEF GTK2}
@@ -447,13 +447,13 @@ var
   Count: guint;
 begin
   Result := inherited;
-  NoteBookWidget:=PGtkNotebook(ANotebook.Handle);
-  if (NotebookWidget=nil) then exit;
-  //DebugLn(['TGtkWSCustomNotebook.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(NotebookWidget))]);
+  TabControlWidget:=PGtkNotebook(ATabControl.Handle);
+  if (TabControlWidget=nil) then exit;
+  //DebugLn(['TGtkWSCustomTabControl.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(TabControlWidget))]);
   {$IFDEF GTK2}
-  Window := GetControlWindow(NoteBookWidget);
+  Window := GetControlWindow(TabControlWidget);
   gdk_window_get_origin(Window,@WindowOrg.X,@WindowOrg.Y);
-  ClientOrg:=GetWidgetClientOrigin(PGtkWidget(NotebookWidget));
+  ClientOrg:=GetWidgetClientOrigin(PGtkWidget(TabControlWidget));
   XOffset := (ClientOrg.X-WindowOrg.X);
   YOffset := (ClientOrg.Y-WindowOrg.Y);
   {$ELSE}
@@ -461,10 +461,10 @@ begin
   YOffset := 0;
   {$ENDIF}
   // go through all tabs
-  Count:=g_list_length(NoteBookWidget^.Children);
-  PageWidget:=gtk_notebook_get_nth_page(NoteBookWidget, AIndex);
+  Count:=g_list_length(TabControlWidget^.Children);
+  PageWidget:=gtk_notebook_get_nth_page(TabControlWidget, AIndex);
   if (PageWidget<>nil) and (AIndex < Count) then begin
-    TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
+    TabWidget:=gtk_notebook_get_tab_label(TabControlWidget, PageWidget);
     if TabWidget<>nil then begin
       Result.Top := TabWidget^.Allocation.Y - YOffset;
       Result.Bottom := TabWidget^.Allocation.Y - YOffset + TabWidget^.Allocation.Height;
@@ -475,42 +475,42 @@ begin
   end;
 end;
 
-class procedure TGtkWSCustomNotebook.SetPageIndex(
-  const ANotebook: TCustomNotebook; const AIndex: integer);
+class procedure TGtkWSCustomTabControl.SetPageIndex(
+  const ATabControl: TCustomTabControl; const AIndex: integer);
 var
-  GtkNotebook: PGtkNotebook;
+  GtkTabControl: PGtkNotebook;
 begin
-  if not WSCheckHandleAllocated(ANotebook, 'SetPageIndex') then
+  if not WSCheckHandleAllocated(ATabControl, 'SetPageIndex') then
     Exit;
     
-  GtkNotebook := PGtkNoteBook(ANotebook.Handle);
-  if gtk_notebook_get_current_page(GtkNotebook) <> AIndex then
+  GtkTabControl := PGtkNotebook(ATabControl.Handle);
+  if gtk_notebook_get_current_page(GtkTabControl) <> AIndex then
   begin
-    gtk_object_set_data(PGtkObject(GtkNotebook), LCL_NotebookManualPageSwitchKey, ANotebook);
-    gtk_notebook_set_page(GtkNotebook, AIndex);
+    gtk_object_set_data(PGtkObject(GtkTabControl), LCL_TabControlManualPageSwitchKey, ATabControl);
+    gtk_notebook_set_page(GtkTabControl, AIndex);
   end;
-  UpdateNoteBookClientWidget(ANotebook);
+  UpdateNotebookClientWidget(ATabControl);
 end;
 
-class procedure TGtkWSCustomNotebook.SetTabPosition(
-  const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
+class procedure TGtkWSCustomTabControl.SetTabPosition(
+  const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
 begin
-  gtk_notebook_set_tab_pos(PGtkNotebook(ANotebook.Handle),
+  gtk_notebook_set_tab_pos(PGtkNotebook(ATabControl.Handle),
     GtkPositionTypeMap[ATabPosition]);
 end;
 
-class procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
+class procedure TGtkWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl;
   AShowTabs: boolean);
 begin
-  gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
+  gtk_notebook_set_show_tabs(PGtkNotebook(ATabControl.Handle), AShowTabs);
 end;
 
-class procedure TGtkWSCustomNotebook.UpdateProperties(const ANotebook: TCustomNotebook);
+class procedure TGtkWSCustomTabControl.UpdateProperties(const ATabControl: TCustomTabControl);
 begin
-  if (nboHidePageListPopup in ANoteBook.Options) then
-    gtk_notebook_popup_disable(PGtkNotebook(ANoteBook.Handle))
+  if (nboHidePageListPopup in ATabControl.Options) then
+    gtk_notebook_popup_disable(PGtkNotebook(ATabControl.Handle))
   else
-    gtk_notebook_popup_enable(PGtkNotebook(ANoteBook.Handle));
+    gtk_notebook_popup_enable(PGtkNotebook(ATabControl.Handle));
 end;
 
 

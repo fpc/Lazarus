@@ -73,9 +73,9 @@ type
              ): boolean; override;
   end;
 
-  { TGtk2WSCustomNotebook }
+  { TGtk2WSCustomTabControl }
 
-  TGtk2WSCustomNotebook = class(TWSCustomNotebook)
+  TGtk2WSCustomTabControl = class(TWSCustomTabControl)
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
@@ -84,22 +84,22 @@ type
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
-    class procedure AddPage(const ANotebook: TCustomNotebook;
+    class procedure AddPage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const AIndex: integer); override;
-    class procedure MovePage(const ANotebook: TCustomNotebook;
+    class procedure MovePage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const NewIndex: integer); override;
-    class procedure RemovePage(const ANotebook: TCustomNotebook;
+    class procedure RemovePage(const ATabControl: TCustomTabControl;
       const AIndex: integer); override;
 
     class function GetCapabilities: TNoteBookCapabilities; override;
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
-    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
-    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
-    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
-    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
-    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
-    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
+    class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ATabControl: TCustomTabControl; const AIndex: Integer): TRect; override;
+    class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); override;
+    class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ATabControl: TCustomTabControl); override;
   end;
 
   { TGtk2WSStatusBar }

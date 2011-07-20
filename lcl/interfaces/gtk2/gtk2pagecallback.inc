@@ -17,13 +17,13 @@
 
 procedure DrawNotebookPageIcon(Page: TCustomPage; Widget: PGtkWidget);
 var
-  NoteBook: TCustomNotebook;
+  NoteBook: TCustomTabControl;
   NoteBookWidget: PGtkWidget;
   PageWidget: PGtkWidget;
   TabWidget: PGtkWidget;
   ImageIndex: Integer;
 begin
-  NoteBook := Page.Parent as TCustomNotebook;
+  NoteBook := Page.Parent as TCustomTabControl;
   ImageIndex := NoteBook.GetImageIndex(Page.PageIndex);
   if (NoteBook.Images = nil) or (ImageIndex < 0)
   or (Page.ImageIndex >= NoteBook.Images.Count)

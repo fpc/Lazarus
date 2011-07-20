@@ -171,7 +171,7 @@ type
 
   { TLazDockPages }
 
-  TLazDockPages = class(TCustomNotebook)
+  TLazDockPages = class(TCustomTabControl)
   private
     function GetActiveNotebookPageComponent: TLazDockPage;
     function GetNoteBookPage(Index: Integer): TLazDockPage;

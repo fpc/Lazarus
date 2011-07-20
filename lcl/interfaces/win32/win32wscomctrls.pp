@@ -56,29 +56,29 @@ type
 
   { TWin32WSCustomNotebook }
 
-  TWin32WSCustomNotebook = class(TWSCustomNotebook)
+  TWin32WSCustomNotebook = class(TWSCustomPageControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure AddAllNBPages(const ANotebook: TCustomNotebook);
-    class procedure AdjustSizeNotebookPages(const ANotebook: TCustomNotebook);
-    class procedure AddPage(const ANotebook: TCustomNotebook;
+    class procedure AddAllNBPages(const ANotebook: TCustomTabControl);
+    class procedure AdjustSizeNotebookPages(const ANotebook: TCustomTabControl);
+    class procedure AddPage(const ANotebook: TCustomTabControl;
       const AChild: TCustomPage; const AIndex: integer); override;
-    class procedure MovePage(const ANotebook: TCustomNotebook;
+    class procedure MovePage(const ANotebook: TCustomTabControl;
       const AChild: TCustomPage; const NewIndex: integer); override;
-    class procedure RemoveAllNBPages(const ANotebook: TCustomNotebook);
-    class procedure RemovePage(const ANotebook: TCustomNotebook;
+    class procedure RemoveAllNBPages(const ANotebook: TCustomTabControl);
+    class procedure RemovePage(const ANotebook: TCustomTabControl;
       const AIndex: integer); override;
 
-    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
-    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomTabControl; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomTabControl; const AIndex: Integer): TRect; override;
     class function GetCapabilities: TNoteBookCapabilities;override;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
-    class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
-    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
-    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
-    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
-    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
+    class procedure SetImageList(const ANotebook: TCustomTabControl; const AImageList: TCustomImageList); override;
+    class procedure SetPageIndex(const ANotebook: TCustomTabControl; const AIndex: integer); override;
+    class procedure SetTabPosition(const ANotebook: TCustomTabControl; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ANotebook: TCustomTabControl; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomTabControl); override;
   end;
 
   { TWin32WSStatusBar }
@@ -268,8 +268,8 @@ type
   published
   end;
 
-procedure NotebookFocusNewControl(const ANotebook: TCustomNotebook; NewIndex: integer);
-function NotebookPageRealToLCLIndex(const ANotebook: TCustomNotebook; AIndex: integer): integer;
+procedure NotebookFocusNewControl(const ANotebook: TCustomTabControl; NewIndex: integer);
+function NotebookPageRealToLCLIndex(const ANotebook: TCustomTabControl; AIndex: integer): integer;
 function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
 
 implementation

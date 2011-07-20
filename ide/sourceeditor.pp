@@ -5480,7 +5480,7 @@ end;
 function TSourceNotebook.GetNotebookPages: TStrings;
 begin
   if FNotebook.Visible then
-    Result := TCustomNotebook(FNotebook).Pages
+    Result := TCustomTabControl(FNotebook).Pages
   else
     Result := nil;
 end;

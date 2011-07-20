@@ -46,7 +46,7 @@ type
 
   { TFpGuiWSCustomNotebook }
 
-  TFpGuiWSCustomNotebook = class(TWSCustomNotebook)
+  TFpGuiWSCustomNotebook = class(TWSCustomTabControl)
   private
   protected
   published

@@ -1,4 +1,4 @@
-{%MainUnit ../extctrls.pp}
+{%MainUnit ../comctrls.pp}
 
 {******************************************************************************
                                    TNBPages
@@ -24,7 +24,7 @@
   TNBPages Constructor
  ------------------------------------------------------------------------------}
 constructor TNBPages.Create(thePageList: TListWithEvent;
-  theNotebook: TCustomNotebook);
+  theNotebook: TCustomTabControl);
 begin
   inherited Create;
   fPageList := thePageList;
@@ -193,12 +193,12 @@ end;
 
 
 {******************************************************************************
-                                TCustomNotebook
+                                TCustomTabControl
  ******************************************************************************}
 {------------------------------------------------------------------------------
-  TCustomNotebook Constructor
+  TCustomTabControl Constructor
  ------------------------------------------------------------------------------}
-constructor TCustomNotebook.Create(TheOwner: TComponent);
+constructor TCustomTabControl.Create(TheOwner: TComponent);
 begin
   if PageClass=nil then PageClass := TCustomPage;
 
@@ -227,33 +227,33 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomNotebook.CreateWnd
+  Method:  TCustomTabControl.CreateWnd
   Params:  None
   Returns: Nothing
 
   Creates the interface object.
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.CreateWnd;
+procedure TCustomTabControl.CreateWnd;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TCustomNotebook.CreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
+  DebugLn(['TCustomTabControl.CreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
   {$ENDIF}
   inherited CreateWnd;
   DoCreateWnd;
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomNotebook.DoCreateWnd;
+  procedure TCustomTabControl.DoCreateWnd;
 
   Creates the handles for the pages and updates the notebook handle.
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.DoCreateWnd;
+procedure TCustomTabControl.DoCreateWnd;
 var
   i: Integer;
   lPage: TCustomPage;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
+  DebugLn(['TCustomTabControl.DoCreateWnd ',dbgsName(Self),' HandleAllocated=',HandleAllocated]);
   {$ENDIF}
   DisableAlign;
   try
@@ -261,7 +261,7 @@ begin
     for i := 0 to PageCount -1 do
     begin
       {$IFDEF NOTEBOOK_DEBUG}
-      DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
+      DebugLn(['TCustomTabControl.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
       {$ENDIF}
       lPage := Page[i];
       AddRemovePageHandle(lPage);
@@ -276,20 +276,20 @@ begin
   end;
 end;
 
-procedure TCustomNotebook.DoChange;
+procedure TCustomTabControl.DoChange;
 begin
   if Assigned(OnPageChanged) then
     OnPageChanged(Self);
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomNotebook.Destroy
+  Method: TCustomTabControl.Destroy
   Params:  None
   Returns: Nothing
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-destructor TCustomNotebook.Destroy;
+destructor TCustomTabControl.Destroy;
 begin
   FImageListChangeLink.Free;
   Pages.Clear;
@@ -299,30 +299,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TCustomNotebook.TabIndexAtClientPos(ClientPos: TPoint): integer;
+  function TCustomTabControl.TabIndexAtClientPos(ClientPos: TPoint): integer;
 
   Returns the index of the page of the tab at the client position.
   For example:
     Index:=NoteBook1.PageIndexAtClientPos(
                NoteBook1.ScreenToClient(Mouse.CursorPos));
  ------------------------------------------------------------------------------}
-function TCustomNotebook.TabIndexAtClientPos(ClientPos: TPoint): integer;
+function TCustomTabControl.TabIndexAtClientPos(ClientPos: TPoint): integer;
 begin
   if HandleAllocated then
-    Result:=TWSCustomNotebookClass(WidgetSetClass).GetTabIndexAtPos(Self, ClientPos)
+    Result:=TWSCustomTabControlClass(WidgetSetClass).GetTabIndexAtPos(Self, ClientPos)
   else
     Result:=-1;
 end;
 
-function TCustomNotebook.TabRect(AIndex: Integer): TRect;
+function TCustomTabControl.TabRect(AIndex: Integer): TRect;
 begin
   if HandleAllocated then
-    Result := TWSCustomNotebookClass(WidgetSetClass).GetTabRect(Self, AIndex)
+    Result := TWSCustomTabControlClass(WidgetSetClass).GetTabRect(Self, AIndex)
   else
     Result := Rect(-1, -1, -1, -1);
 end;
 
-function TCustomNotebook.GetImageIndex(ThePageIndex: Integer): Integer;
+function TCustomTabControl.GetImageIndex(ThePageIndex: Integer): Integer;
 var
   APage: TCustomPage;
 begin
@@ -335,7 +335,7 @@ begin
     OnGetImageIndex(Self, ThePageIndex, Result);
 end;
 
-function TCustomNotebook.IndexOf(APage: TPersistent): integer;
+function TCustomTabControl.IndexOf(APage: TPersistent): integer;
 begin
   if FUnPaged then
     Result := -1
@@ -343,36 +343,36 @@ begin
     Result:=FPageList.IndexOf(APage);
 end;
 
-function TCustomNotebook.CustomPage(Index: integer): TCustomPage;
+function TCustomTabControl.CustomPage(Index: integer): TCustomPage;
 begin
   Result:=GetPage(Index);
 end;
 
-function TCustomNotebook.CanChangePageIndex: boolean;
+function TCustomTabControl.CanChangePageIndex: boolean;
 begin
   Result := True;
   if ([csDesigning, csDestroying] * ComponentState = []) and Assigned(OnChanging) then
     OnChanging(Self, Result);
 end;
 
-function TCustomNotebook.GetMinimumTabWidth: integer;
+function TCustomTabControl.GetMinimumTabWidth: integer;
 begin
-  Result := TWSCustomNotebookClass(WidgetSetClass).GetNotebookMinTabWidth(Self);
-  //debugln('TCustomNotebook.GetMinimumTabWidth A ',dbgs(Result));
+  Result := TWSCustomTabControlClass(WidgetSetClass).GetNotebookMinTabWidth(Self);
+  //debugln('TCustomTabControl.GetMinimumTabWidth A ',dbgs(Result));
 end;
 
-function TCustomNotebook.GetMinimumTabHeight: integer;
+function TCustomTabControl.GetMinimumTabHeight: integer;
 begin
-  Result := TWSCustomNotebookClass(WidgetSetClass).GetNotebookMinTabHeight(Self);
-  //debugln('TCustomNotebook.GetMinimumTabHeight A ',dbgs(Result));
+  Result := TWSCustomTabControlClass(WidgetSetClass).GetNotebookMinTabHeight(Self);
+  //debugln('TCustomTabControl.GetMinimumTabHeight A ',dbgs(Result));
 end;
 
-function TCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+function TCustomTabControl.GetCapabilities: TNoteBookCapabilities;
 begin
-  Result:=TWSCustomNotebookClass(WidgetSetClass).GetCapabilities;
+  Result:=TWSCustomTabControlClass(WidgetSetClass).GetCapabilities;
 end;
 
-function TCustomNotebook.PageToTabIndex(AIndex: integer): integer;
+function TCustomTabControl.PageToTabIndex(AIndex: integer): integer;
 var
   i: integer;
 begin
@@ -391,7 +391,7 @@ begin
   end;
 end;
 
-function TCustomNotebook.TabToPageIndex(AIndex: integer): integer;
+function TCustomTabControl.TabToPageIndex(AIndex: integer): integer;
 var
   I: integer;
 begin
@@ -412,21 +412,21 @@ end;
 
 
 {------------------------------------------------------------------------------
-  method TCustomNotebook DoCloseTabClicked
+  method TCustomTabControl DoCloseTabClicked
   Params: APage: TCustomPage
   Result: none
 
   Called whenever the user closes the tab.
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.DoCloseTabClicked(APage: TCustomPage);
+procedure TCustomTabControl.DoCloseTabClicked(APage: TCustomPage);
 begin
   if Assigned(OnCloseTabClicked) then OnCloseTabClicked(APage);
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook GetActivePage
+  TCustomTabControl GetActivePage
  ------------------------------------------------------------------------------}
-function TCustomNotebook.GetActivePage: String;
+function TCustomTabControl.GetActivePage: String;
 begin
   if (FPageIndex >= 0) and (FPageIndex < PageCount) then
     Result := Page[FPageIndex].Caption
@@ -435,9 +435,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TCustomNotebook.GetActivePageComponent: TCustomPage;
+  function TCustomTabControl.GetActivePageComponent: TCustomPage;
  ------------------------------------------------------------------------------}
-function TCustomNotebook.GetActivePageComponent: TCustomPage;
+function TCustomTabControl.GetActivePageComponent: TCustomPage;
 begin
   if (FPageIndex >= 0) and (FPageIndex < PageCount) then
     Result := Page[FPageIndex]
@@ -445,20 +445,20 @@ begin
     Result := nil;
 end;
 
-function TCustomNotebook.GetDisplayRect: TRect;
+function TCustomTabControl.GetDisplayRect: TRect;
 begin
   Result := GetClientRect; //???
 end;
 
-function TCustomNotebook.GetMultiLine: Boolean;
+function TCustomTabControl.GetMultiLine: Boolean;
 begin
   Result := nboMultiLine in Options;
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook SetActivePage
+  TCustomTabControl SetActivePage
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.SetActivePage(const Value: String);
+procedure TCustomTabControl.SetActivePage(const Value: String);
 var
   i: Integer;
 begin
@@ -472,13 +472,13 @@ begin
   end;
 end;
 
-procedure TCustomNotebook.SetActivePageComponent(const AValue: TCustomPage);
+procedure TCustomTabControl.SetActivePageComponent(const AValue: TCustomPage);
 begin
   if not FUnPaged then
     PageIndex := FPageList.IndexOf(AValue);
 end;
 
-procedure TCustomNotebook.SetImages(const AValue: TImageList);
+procedure TCustomTabControl.SetImages(const AValue: TImageList);
 begin
   if FImages = AValue then Exit;
   if FImages <> nil then
@@ -496,7 +496,7 @@ begin
   UpdateTabProperties;
 end;
 
-procedure TCustomNotebook.SetOptions(const AValue: TNoteBookOptions);
+procedure TCustomTabControl.SetOptions(const AValue: TNoteBookOptions);
 var
   ChangedOptions: TNoteBookOptions;
 begin
@@ -506,20 +506,20 @@ begin
   if nboShowCloseButtons in ChangedOptions then
     UpdateTabProperties;
   if HandleAllocated then
-    TWSCustomNotebookClass(WidgetSetClass).UpdateProperties(Self);
+    TWSCustomTabControlClass(WidgetSetClass).UpdateProperties(Self);
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook SetPageIndex
+  TCustomTabControl SetPageIndex
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.SetPageIndex(AValue: Integer);
+procedure TCustomTabControl.SetPageIndex(AValue: Integer);
 begin
   if (csLoading in ComponentState) then FLoadedPageIndex := AValue;
-  //debugln('TCustomNotebook.SetPageIndex A ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated),' ',dbgs(ComponentState));
+  //debugln('TCustomTabControl.SetPageIndex A ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated),' ',dbgs(ComponentState));
   if (AValue < -1) or (AValue >= PageCount) then Exit;
   if FPageIndex = AValue then exit;
   if not CanChangePageIndex then exit;
-  //debugln('TCustomNotebook.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
+  //debugln('TCustomTabControl.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
 
   FPageIndex := AValue;
   if not FUnPaged then
@@ -531,9 +531,9 @@ end;
 
 {$IFDEF old}
 {------------------------------------------------------------------------------
-  TCustomNotebook GetPageIndex
+  TCustomTabControl GetPageIndex
  ------------------------------------------------------------------------------}
-function TCustomNotebook.GetPageIndex: Integer;
+function TCustomTabControl.GetPageIndex: Integer;
 begin
   Result := FPageIndex;
 end;
@@ -541,13 +541,13 @@ end;
 //if override is required, make virtual first!
 {$ENDIF}
 
-procedure TCustomNotebook.InsertPage(APage: TCustomPage; Index: Integer);
+procedure TCustomTabControl.InsertPage(APage: TCustomPage; Index: Integer);
 var
   NewZPosition: integer;
 begin
   if FUnPaged or (IndexOf(APage) >= 0) then Exit;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TCustomNotebook.InsertPage A ',dbgsName(Self),' Index=',Index,' Name=',
+  DebugLn(['TCustomTabControl.InsertPage A ',dbgsName(Self),' Index=',Index,' Name=',
     APage.Name,' Caption=',APage.Caption]);
   {$ENDIF}
   APage.DisableAlign;
@@ -577,15 +577,15 @@ begin
     APage.EnableAlign;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TCustomNotebook.InsertPage END ',dbgsName(Self),' Index=',
+  DebugLn(['TCustomTabControl.InsertPage END ',dbgsName(Self),' Index=',
     Index,' Name=',APage.Name,' Caption=',APage.Caption]);
   {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook MoveTab
+  TCustomTabControl MoveTab
  ------------------------------------------------------------------------------}
-procedure TCustomNoteBook.MoveTab(Sender: TObject; NewIndex: Integer);
+procedure TCustomTabControl.MoveTab(Sender: TObject; NewIndex: Integer);
 begin
   if (Sender <> nil) and (NewIndex < PageCount) then begin
     TNBPages(fAccess).Move(TCustomPage(Sender).PageIndex,NewIndex);
@@ -594,7 +594,7 @@ begin
   Change;
 end;
 
-procedure TCustomNotebook.SetMultiLine(const AValue: Boolean);
+procedure TCustomTabControl.SetMultiLine(const AValue: Boolean);
 begin
   if AValue then
     Options := Options + [nboMultiLine]
@@ -603,14 +603,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TCustomNotebook.FindVisiblePage(Index: Integer): Integer;
+  function TCustomTabControl.FindVisiblePage(Index: Integer): Integer;
 
   It tries to find the next (at right) visible page. If no one is found,
   it tries to to find the previous (at left) visible page.
   Returns -1 if there's no visible pages.
  ------------------------------------------------------------------------------}
 
-function TCustomNotebook.FindVisiblePage(Index: Integer): Integer;
+function TCustomTabControl.FindVisiblePage(Index: Integer): Integer;
 begin
   for Result := Index to PageCount - 1 do
     if Page[Result].TabVisible then
@@ -622,7 +622,7 @@ begin
   Result := -1;
 end;
 
-procedure TCustomNotebook.PageRemoved(Index: Integer);
+procedure TCustomTabControl.PageRemoved(Index: Integer);
 var
   NewPageIndex: Integer;
 begin
@@ -640,12 +640,12 @@ begin
   end;
 end;
 
-procedure TCustomNotebook.WSMovePage(APage: TCustomPage; NewIndex: Integer);
+procedure TCustomTabControl.WSMovePage(APage: TCustomPage; NewIndex: Integer);
 var
   RealIndex: Integer;
   i: Integer;
 begin
-  //DebugLn(['TCustomNotebook.WSMovePage APage=',DbgSName(APage),' NewIndex=',NewIndex,' pfAdded=',pfAdded in APage.FFlags]);
+  //DebugLn(['TCustomTabControl.WSMovePage APage=',DbgSName(APage),' NewIndex=',NewIndex,' pfAdded=',pfAdded in APage.FFlags]);
   if HandleAllocated and (pfAdded in APage.FFlags) then begin
     RealIndex:=0;
     i:=0;
@@ -654,49 +654,49 @@ begin
       if pfAdded in Page[i].FFlags then inc(RealIndex);
       inc(i);
     until false;
-    //DebugLn(['TCustomNotebook.WSMovePage APage=',DbgSName(APage),' NewIndex=',NewIndex,' RealIndex=',RealIndex]);
-    TWSCustomNotebookClass(WidgetSetClass).MovePage(Self, APage, RealIndex);
+    //DebugLn(['TCustomTabControl.WSMovePage APage=',DbgSName(APage),' NewIndex=',NewIndex,' RealIndex=',RealIndex]);
+    TWSCustomTabControlClass(WidgetSetClass).MovePage(Self, APage, RealIndex);
   end;
 end;
 
-procedure TCustomNoteBook.AddRemovePageHandle(APage: TCustomPage);
+procedure TCustomTabControl.AddRemovePageHandle(APage: TCustomPage);
 begin
-  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomNoteBook.AddRemovePageHandle'){$ENDIF};
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomTabControl.AddRemovePageHandle'){$ENDIF};
   try
     if (not (csDestroying in APage.ComponentState))
     and (APage.TabVisible or (csDesigning in ComponentState)) then begin
       {$IFDEF NOTEBOOK_DEBUG}
-      DebugLn(['TCustomNoteBook.AddRemovePageHandle ADD ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
+      DebugLn(['TCustomTabControl.AddRemovePageHandle ADD ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
       {$ENDIF}
       if (pfAdded in APage.FFlags) then exit;
       Include(APage.FFlags,pfAdding);
-      TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, APage.VisibleIndex);
+      TWSCustomTabControlClass(WidgetSetClass).AddPage(Self, APage, APage.VisibleIndex);
       APage.FFlags:=APage.FFlags+[pfAdded]-[pfAdding];
       APage.AdjustSize;
     end else begin
       {$IFDEF NOTEBOOK_DEBUG}
-      DebugLn(['TCustomNoteBook.AddRemovePageHandle REMOVE ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
+      DebugLn(['TCustomTabControl.AddRemovePageHandle REMOVE ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
       {$ENDIF}
       if not (pfAdded in APage.FFlags) or (pfRemoving in APage.FFlags) then
         exit;
       APage.FFlags := APage.FFlags - [pfAdded] + [pfRemoving];
-      TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.VisibleIndex);
+      TWSCustomTabControlClass(WidgetSetClass).RemovePage(Self, APage.VisibleIndex);
       if APage.HandleAllocated then
         APage.DestroyHandle;
       Exclude(APage.FFlags, pfRemoving);
     end;
   finally
-    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomNoteBook.AddRemovePageHandle'){$ENDIF};
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomTabControl.AddRemovePageHandle'){$ENDIF};
   end;
 end;
 
-procedure TCustomNotebook.RemovePage(Index: Integer);
+procedure TCustomTabControl.RemovePage(Index: Integer);
 var
   APage: TCustomPage;
 begin
   // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TCustomNotebook.RemovePage A ',dbgsName(Self),' Index=',Index,
+  DebugLn(['TCustomTabControl.RemovePage A ',dbgsName(Self),' Index=',Index,
     ' FPageList.Count=',PageCount,' PageIndex=',PageIndex]);
   {$ENDIF}
   if not FUnPaged and (Index >= 0) and (Index < PageCount) then
@@ -712,19 +712,19 @@ begin
       Dec(FPageIndex);
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TCustomNotebook.RemovePage END ',dbgsName(Self),' Index=',Index,' fPageList.Count=',fPageList.Count,' PageIndex=',PageIndex]);
+  DebugLn(['TCustomTabControl.RemovePage END ',dbgsName(Self),' Index=',Index,' fPageList.Count=',fPageList.Count,' PageIndex=',PageIndex]);
   {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
-  function TCustomNotebook.IsStoredActivePage: boolean;
+  function TCustomTabControl.IsStoredActivePage: boolean;
  ------------------------------------------------------------------------------}
-function TCustomNotebook.IsStoredActivePage: boolean;
+function TCustomTabControl.IsStoredActivePage: boolean;
 begin
   Result:=false;
 end;
 
-procedure TCustomNotebook.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TCustomTabControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (nboKeyboardTabSwitch in Options) and (Key = VK_TAB) and (PageCount > 0) then 
   begin
@@ -744,9 +744,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook GetPageCount
+  TCustomTabControl GetPageCount
  ------------------------------------------------------------------------------}
-function TCustomNotebook.GetPageCount: Integer;
+function TCustomTabControl.GetPageCount: Integer;
 begin
   if FUnPaged then
     Result := FAccess.Count
@@ -755,27 +755,27 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook SetPages
+  TCustomTabControl SetPages
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.SetPages(AValue: TStrings);
+procedure TCustomTabControl.SetPages(AValue: TStrings);
 begin
   FAccess.Assign(AValue);
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook GetPage
+  TCustomTabControl GetPage
  ------------------------------------------------------------------------------}
-function TCustomNotebook.GetPage(AIndex: Integer): TCustomPage;
+function TCustomTabControl.GetPage(AIndex: Integer): TCustomPage;
 begin
   if (AIndex < 0) or (AIndex >= PageCount) then
-    RaiseGDBException('TCustomNotebook.GetCustomPage Index out of bounds');
+    RaiseGDBException('TCustomTabControl.GetCustomPage Index out of bounds');
   Result := TCustomPage(FPageList.Items[AIndex]);
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook SetShowTabs
+  TCustomTabControl SetShowTabs
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.SetShowTabs(AValue: Boolean);
+procedure TCustomTabControl.SetShowTabs(AValue: Boolean);
 begin
   if fShowTabs=AValue then exit;
   fShowTabs := AValue;
@@ -783,9 +783,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook SetTabPosition
+  TCustomTabControl SetTabPosition
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.SetTabPosition(tabPos: TTabPosition);
+procedure TCustomTabControl.SetTabPosition(tabPos: TTabPosition);
 begin
   if fTabPosition = tabPos then exit;
   fTabPosition := tabPos;
@@ -793,9 +793,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomNotebook.UpdateAllDesignerFlags;
+  procedure TCustomTabControl.UpdateAllDesignerFlags;
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.UpdateAllDesignerFlags;
+procedure TCustomTabControl.UpdateAllDesignerFlags;
 var
   i: integer;
 begin
@@ -806,9 +806,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomNotebook.UpdateDesignerFlags(APageIndex: integer);
+  procedure TCustomTabControl.UpdateDesignerFlags(APageIndex: integer);
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.UpdateDesignerFlags(APageIndex: integer);
+procedure TCustomTabControl.UpdateDesignerFlags(APageIndex: integer);
 begin
   if APageIndex<>fPageIndex then
     Page[APageIndex].ControlStyle:=
@@ -818,16 +818,16 @@ begin
       Page[APageIndex].ControlStyle-[csNoDesignVisible];
 end;
 
-class procedure TCustomNotebook.WSRegisterClass;
+class procedure TCustomTabControl.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  RegisterCustomNotebook;
+  RegisterCustomTabControl();
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook ReadState
+  TCustomTabControl ReadState
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.ReadState(Reader: TReader);
+procedure TCustomTabControl.ReadState(Reader: TReader);
 begin
   // do not clear. Think about loading ancestor + loading descendant stream.
   // fAccess.Clear;
@@ -835,9 +835,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook ShowControl
+  TCustomTabControl ShowControl
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.ShowControl(APage: TControl);
+procedure TCustomTabControl.ShowControl(APage: TControl);
 var
   i: LongInt;
 begin
@@ -854,13 +854,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  method TCustomNotebook UpdateTabProperties
+  method TCustomTabControl UpdateTabProperties
   Params: none
   Result: none
 
   Tells the interface to update all tabs.
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.UpdateTabProperties;
+procedure TCustomTabControl.UpdateTabProperties;
 var
   i: integer;
 begin
@@ -869,18 +869,18 @@ begin
     TWSCustomPageClass(Page[i].WidgetSetClass).UpdateProperties(Page[i]);
 end;
 
-function TCustomNotebook.ChildClassAllowed(ChildClass: TClass): boolean;
+function TCustomTabControl.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   Result:=(ChildClass<>nil) and (ChildClass.InheritsFrom(PageClass));
 end;
 
-class function TCustomNotebook.GetControlClassDefaultSize: TSize;
+class function TCustomTabControl.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 200;
   Result.CY := 200;
 end;
 
-procedure TCustomNotebook.Notification(AComponent: TComponent;
+procedure TCustomTabControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -889,30 +889,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook Change
+  TCustomTabControl Change
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.Change;
+procedure TCustomTabControl.Change;
 begin
-  //DebugLn(['TCustomNotebook.Change ',DbgSName(Self),' fPageIndex=',fPageIndex]);
+  //DebugLn(['TCustomTabControl.Change ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   ShowCurrentPage;
   FPageIndexOnLastChange := FPageIndex;
   if ([csLoading,csDestroying]*ComponentState=[]) and (not FAddingPages) then
     DoChange;
 end;
 
-procedure TCustomNotebook.Loaded;
+procedure TCustomTabControl.Loaded;
 begin
   inherited Loaded;
   if FLoadedPageIndex >= -1 then
     PageIndex := FLoadedPageIndex;
   FLoadedPageIndex := -1;
-  //DebugLn(['TCustomNotebook.Loaded ',DbgSName(Self),' fPageIndex=',fPageIndex]);
+  //DebugLn(['TCustomTabControl.Loaded ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   FPageIndexOnLastChange := PageIndex;
   FPageIndexOnLastShow := FPageIndexOnLastChange;
   if HandleAllocated then DoCreateWnd;
 end;
 
-function TCustomNotebook.DialogChar(var Message: TLMKey): boolean;
+function TCustomTabControl.DialogChar(var Message: TLMKey): boolean;
 var
   destPage: TCustomPage;
 begin
@@ -924,9 +924,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TCustomNotebook CNNotify
+  TCustomTabControl CNNotify
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.CNNotify(var Message: TLMNotify);
+procedure TCustomTabControl.CNNotify(var Message: TLMNotify);
 var
   OldPageIndex: LongInt;
 begin
@@ -942,8 +942,8 @@ begin
             FPageIndex := PtrInt(NMHDR^.idfrom);
             if FPageIndex >= PageCount then
               FPageIndex := -1;
-            //debugln(['TCustomNotebook.CNNotify ',DbgSName(Self),' A Old=',OldPageIndex,' fPageIndex=',fPageIndex,' FLoadedPageIndex=',FLoadedPageIndex]);
-            //if PageIndex>=0 then DebugLn(['TCustomNotebook.CNNotify Page=',DbgSName(Page[PageIndex]),' Visible=',Page[PageIndex].Visible]);
+            //debugln(['TCustomTabControl.CNNotify ',DbgSName(Self),' A Old=',OldPageIndex,' fPageIndex=',fPageIndex,' FLoadedPageIndex=',FLoadedPageIndex]);
+            //if PageIndex>=0 then DebugLn(['TCustomTabControl.CNNotify Page=',DbgSName(Page[PageIndex]),' Visible=',Page[PageIndex].Visible]);
             UpdateAllDesignerFlags;
             if ([csLoading,csDestroying]*ComponentState=[]) then
             begin
@@ -951,7 +951,7 @@ begin
               begin
                 if csDesigning in ComponentState then
                   OwnerFormDesignerModified(Self);
-                //DebugLn(['TCustomNotebook.CNNotify ',DbgSName(Page[PageIndex]),' ',Page[PageIndex].Visible]);
+                //DebugLn(['TCustomTabControl.CNNotify ',DbgSName(Page[PageIndex]),' ',Page[PageIndex].Visible]);
                 Change;
               end;
             end;
@@ -964,23 +964,23 @@ begin
             Result := 0
           else
             Result := 1;
-          //debugln('TCustomNotebook.CNNotify TCN_SELCHANGING Result=',dbgs(Result));
+          //debugln('TCustomTabControl.CNNotify TCN_SELCHANGING Result=',dbgs(Result));
         end;
     else
       begin
         {$IFDEF NOTEBOOK_DEBUG}
-        DebugLn(['[TCustomNotebook.CNNotify] unhandled NMHdr code:', NMHdr^.code]);
+        DebugLn(['[TCustomTabControl.CNNotify] unhandled NMHdr code:', NMHdr^.code]);
         {$ENDIF}
       end;
     end;
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomNotebook.ShowCurrentPage
+  procedure TCustomTabControl.ShowCurrentPage
 
   Makes sure Visible = true for page which has index FPageIndex
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.ShowCurrentPage;
+procedure TCustomTabControl.ShowCurrentPage;
 var
   CurPage: TCustomPage;
 begin
@@ -988,7 +988,7 @@ begin
   begin
     CurPage := Page[FPageIndex];
     // first make the new page visible
-    //DebugLn(['TCustomNotebook.ShowCurrentPage ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible]);
+    //DebugLn(['TCustomTabControl.ShowCurrentPage ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible]);
     CurPage.UpdateControlState;
     if CurPage.Visible then
     begin
@@ -996,7 +996,7 @@ begin
       begin
         // some widgetsets like win32/64 do not send WM_SIZE messages for
         // hidden pages. Force resizing page (it is alClient).
-        //DebugLn(['TCustomNotebook.ShowCurrentPage ',dbgsName(Self),' ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible,' BoundsRect=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CurPage.BoundsRect=',dbgs(CurPage.BoundsRect),' CurPage.ClientRect=',dbgs(CurPage.ClientRect)]);
+        //DebugLn(['TCustomTabControl.ShowCurrentPage ',dbgsName(Self),' ',DbgSName(CurPage),' CurPage.Visible=',CurPage.Visible,' BoundsRect=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CurPage.BoundsRect=',dbgs(CurPage.BoundsRect),' CurPage.ClientRect=',dbgs(CurPage.ClientRect)]);
         ReAlign;
         // TCustomPage.IsControlVisible is overriden
         // therefore AutoSizing of children was skipped => do it now
@@ -1005,7 +1005,7 @@ begin
     end else
     begin
       CurPage.Visible := true;
-      //DebugLn(['TCustomNotebook.ShowCurrentPage CurPage.AutoSizeDelayed=',CurPage.AutoSizeDelayed,' ',dbgs(CurPage.ComponentState),' ',CurPage.HandleAllocated]);
+      //DebugLn(['TCustomTabControl.ShowCurrentPage CurPage.AutoSizeDelayed=',CurPage.AutoSizeDelayed,' ',dbgs(CurPage.ComponentState),' ',CurPage.HandleAllocated]);
     end;
     FPageIndexOnLastShow := FPageIndex;
     CurPage.DoShow;
@@ -1020,51 +1020,51 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomNotebook.DoSendPageIndex;
+  procedure TCustomTabControl.DoSendPageIndex;
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.DoSendPageIndex;
+procedure TCustomTabControl.DoSendPageIndex;
 begin
-  //DebugLn('[TCustomNotebook.DoSendPageIndex] A ',dbgsName(Self),' PageIndex=',dbgs(fPageIndex),' ',dbgs(csLoading in ComponentState),' ',dbgs(HandleAllocated));
+  //DebugLn('[TCustomTabControl.DoSendPageIndex] A ',dbgsName(Self),' PageIndex=',dbgs(fPageIndex),' ',dbgs(csLoading in ComponentState),' ',dbgs(HandleAllocated));
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   {$IFDEF NOTEBOOK_DEBUG}
-  //DebugLn('[TCustomNotebook.DoSendPageIndex] B ',dbgsName(Self),' PageIndex=',dbgs(fPageIndex));
+  //DebugLn('[TCustomTabControl.DoSendPageIndex] B ',dbgsName(Self),' PageIndex=',dbgs(fPageIndex));
   {$ENDIF}
   ShowCurrentPage;
   FPageIndexOnLastChange := FPageIndex;
-  TWSCustomNotebookClass(WidgetSetClass).SetPageIndex(Self, FPageIndex);
+  TWSCustomTabControlClass(WidgetSetClass).SetPageIndex(Self, FPageIndex);
   {$IFDEF NOTEBOOK_DEBUG}
-  //DebugLn('[TCustomNotebook.DoSendPageIndex] END ',dbgs(FPageIndex));
+  //DebugLn('[TCustomTabControl.DoSendPageIndex] END ',dbgs(FPageIndex));
   {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomNotebook.DoSendShowTabs;
+  procedure TCustomTabControl.DoSendShowTabs;
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.DoSendShowTabs;
+procedure TCustomTabControl.DoSendShowTabs;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('[TCustomNotebook.DoSendShowTabs] A ',dbgsName(Self));
+  DebugLn('[TCustomTabControl.DoSendShowTabs] A ',dbgsName(Self));
   {$ENDIF}
-  TWSCustomNotebookClass(WidgetSetClass).ShowTabs(Self, FShowTabs);
+  TWSCustomTabControlClass(WidgetSetClass).ShowTabs(Self, FShowTabs);
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('[TCustomNotebook.DoSendShowTabs] B ',dbgsName(Self));
+  DebugLn('[TCustomTabControl.DoSendShowTabs] B ',dbgsName(Self));
   {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomNotebook.DoSendTabPosition;
+  procedure TCustomTabControl.DoSendTabPosition;
  ------------------------------------------------------------------------------}
-procedure TCustomNotebook.DoSendTabPosition;
+procedure TCustomTabControl.DoSendTabPosition;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
-  TWSCustomNotebookClass(WidgetSetClass).SetTabPosition(Self, FTabPosition);
+  TWSCustomTabControlClass(WidgetSetClass).SetTabPosition(Self, FTabPosition);
 end;
 
-procedure TCustomNotebook.DoImageListChange(Sender: TObject);
+procedure TCustomTabControl.DoImageListChange(Sender: TObject);
 begin
   if HandleAllocated then
-    TWSCustomNotebookClass(WidgetSetClass).SetImageList(Self, Images);
+    TWSCustomTabControlClass(WidgetSetClass).SetImageList(Self, Images);
 end;
 
 

@@ -118,7 +118,7 @@ begin
   Add(TCustomSpeedButton,'Glyph');
   Add(TCustomImage,'Picture');
   Add(TCustomImage,'Align');
-  Add(TCustomNotebook,'Align');
+  Add(TCustomTabControl,'Align');
   Add(TScrollBox,'Align');
   Add(TCustomGrid,'Align');
   Add(TCustomGrid,'Options');

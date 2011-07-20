@@ -834,7 +834,7 @@ begin
       end//if
       else
       begin
-        NewPage:= TCustomNotebook(ResultsNoteBook).Pages.Add(FWorkedSearchText);
+        NewPage:= TCustomTabControl(ResultsNoteBook).Pages.Add(FWorkedSearchText);
         PageIndex:= NewPage;
         Page[PageIndex].OnKeyDown := @TreeViewKeyDown;
         if NewPage > -1 then

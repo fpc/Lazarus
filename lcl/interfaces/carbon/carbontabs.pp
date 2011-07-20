@@ -351,9 +351,9 @@ var
   Err: OSStatus;
   Ver: SInt32;
 begin
-  FShowTabBar := (LCLObject as TCustomNotebook).ShowTabs;
+  FShowTabBar := (LCLObject as TCustomTabControl).ShowTabs;
 
-  case (LCLObject as TCustomNotebook).TabPosition of
+  case (LCLObject as TCustomTabControl).TabPosition of
   tpTop: Direction := kControlTabDirectionNorth;
   tpBottom: Direction := kControlTabDirectionSouth;
   tpRight: Direction := kControlTabDirectionEast;
@@ -376,7 +376,7 @@ begin
       Self, SCreateWidget, 'CreateGroupBoxControl') then RaiseCreateWidgetError(LCLObject);
   end;
   FOldTabIndex := -1;
-  FTabPosition := (LCLObject as TCustomNotebook).TabPosition;
+  FTabPosition := (LCLObject as TCustomTabControl).TabPosition;
   FTabs := TObjectList.Create(False);
 
   Widget := Control;
@@ -716,9 +716,9 @@ begin
   Result := AIndex;
   if csDesigning in LCLObject.ComponentState then Exit;
   I := 0;
-  while (I < (LCLObject as TCustomNotebook).PageCount) and (I <= Result) do
+  while (I < (LCLObject as TCustomTabControl).PageCount) and (I <= Result) do
   begin
-    if not (LCLObject as TCustomNotebook).Page[I].TabVisible then Inc(Result);
+    if not (LCLObject as TCustomTabControl).Page[I].TabVisible then Inc(Result);
     Inc(I);
   end;
 end;
@@ -781,7 +781,7 @@ begin
 
   if DeliverMessage(LCLObject, Msg) <> 0 then
   begin // tab change cancelled
-    SetPageIndex((LCLObject as TCustomNoteBook).PageIndex);
+    SetPageIndex((LCLObject as TCustomTabControl).PageIndex);
     Exit;
   end;
 
@@ -891,7 +891,7 @@ begin
 
   if tabno = kControlNoPart then
   begin
-    Result := TCustomNotebook(LCLObject).PageIndex
+    Result := TCustomTabControl(LCLObject).PageIndex
     //CarbonHitTest(FUserPane, AClientPos.X, AClientPos.Y-35, tabno);
     //Result := tabno;
   end
@@ -1045,7 +1045,7 @@ end;
 procedure TCarbonTabsControl.ShowTabs(AShow: Boolean);
 var
   I: Integer;
-  Notebook: TCustomNotebook;
+  Notebook: TCustomTabControl;
   Page: TCustomPage;
 begin
   if FShowTabBar <> AShow then
@@ -1056,7 +1056,7 @@ begin
   else
     FShowTabBar := AShow;
 
-  Notebook := LCLObject as TCustomNotebook;
+  Notebook := LCLObject as TCustomTabControl;
   for I := 0 to Notebook.PageCount - 1 do
   begin
     Page := Notebook.Page[I];

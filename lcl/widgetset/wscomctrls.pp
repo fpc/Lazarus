@@ -58,27 +58,27 @@ type
     class procedure UpdateProperties(const ACustomPage: TCustomPage); virtual;
   end;
 
-  { TWSCustomNotebook }
+  { TWSCustomTabControl }
 
-  TWSCustomNotebook = class(TWSWinControl)
+  TWSCustomTabControl = class(TWSWinControl)
   published
-    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); virtual;
-    class procedure MovePage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const NewIndex: integer); virtual;
-    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
+    class procedure AddPage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AIndex: integer); virtual;
+    class procedure MovePage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const NewIndex: integer); virtual;
+    class procedure RemovePage(const ATabControl: TCustomTabControl; const AIndex: integer); virtual;
 
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; virtual;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
-    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; virtual;
-    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; virtual;
+    class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; virtual;
+    class function GetTabRect(const ATabControl: TCustomTabControl; const AIndex: Integer): TRect; virtual;
     class function GetCapabilities: TNoteBookCapabilities; virtual;
-    class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); virtual;
-    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
-    class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
-    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); virtual;
-    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); virtual;
-    class procedure UpdateProperties(const ANotebook: TCustomNotebook); virtual;
+    class procedure SetImageList(const ATabControl: TCustomTabControl; const AImageList: TCustomImageList); virtual;
+    class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); virtual;
+    class procedure SetTabCaption(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AText: string); virtual;
+    class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); virtual;
+    class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); virtual;
+    class procedure UpdateProperties(const ATabControl: TCustomTabControl); virtual;
   end;
-  TWSCustomNotebookClass = class of TWSCustomNotebook;
+  TWSCustomTabControlClass = class of TWSCustomTabControl;
 
   { TWSStatusBar }
 
@@ -100,7 +100,7 @@ type
 
   { TWSPageControl }
 
-  TWSPageControl = class(TWSCustomNotebook)
+  TWSPageControl = class(TWSCustomTabControl)
   published
   end;
 
@@ -271,117 +271,117 @@ class procedure TWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 begin
 end;
 
-{ TWSCustomNotebook }
+{ TWSCustomTabControl }
 
 { -----------------------------------------------------------------------------
-  Method: TWSCustomNotebook.AddPage
-  Params: ANotebook - A notebook control
+  Method: TWSCustomTabControl.AddPage
+  Params: ATabControl - A notebook control
           AChild - Page to insert
           AIndex  - The position in the notebook to insert the page
   Returns: Nothing
 
   Adds a new page to a notebook
  ------------------------------------------------------------------------------}
-class procedure TWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer);
+class procedure TWSCustomTabControl.AddPage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AIndex: integer);
 begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWSCustomNotebook.MovePage
-  Params: ANotebook - The notebook control
+  Method: TWSCustomTabControl.MovePage
+  Params: ATabControl - The notebook control
           AChild    - The page to move
           NewIndex  - The new index of the page
   Returns: Nothing
 
   Moves a page in a notebook control
  ------------------------------------------------------------------------------}
-class procedure TWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
+class procedure TWSCustomTabControl.MovePage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const NewIndex: integer);
 begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWSCustomNotebook.RemovePage
-  Params: ANotebook - The notebook control
+  Method: TWSCustomTabControl.RemovePage
+  Params: ATabControl - The notebook control
           AIndex    - The index of the page to delete
   Returns: Nothing
 
   Removes a page from a notebook control
  ------------------------------------------------------------------------------}
-class procedure TWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer);
+class procedure TWSCustomTabControl.RemovePage(const ATabControl: TCustomTabControl; const AIndex: integer);
 begin
 end;
 
 {-------------------------------------------------------------------------------
-  function TWSCustomNotebook.GetNotebookMinTabHeight(
+  function TWSCustomTabControl.GetNotebookMinTabHeight(
     const AWinControl: TWinControl): integer;
 
   Returns the minimum height of the horizontal tabs of a notebook. That is the
   Notebook with TabPosition in [tpTop,tpBottom] without the client panel.
 -------------------------------------------------------------------------------}
-class function  TWSCustomNotebook.GetNotebookMinTabHeight(
+class function  TWSCustomTabControl.GetNotebookMinTabHeight(
   const AWinControl: TWinControl): integer;
 begin
   Result:=30;
 end;
 
 {-------------------------------------------------------------------------------
-  function TWSCustomNotebook.GetNotebookMinTabWidth(
+  function TWSCustomTabControl.GetNotebookMinTabWidth(
     const AWinControl: TWinControl): integer;
 
   Returns the minimum width of the vertical tabs of a notebook. That is the
   Notebook with TabPosition in [tpLeft,tpRight] without the client panel.
 -------------------------------------------------------------------------------}
-class function TWSCustomNotebook.GetNotebookMinTabWidth(const AWinControl: TWinControl
+class function TWSCustomTabControl.GetNotebookMinTabWidth(const AWinControl: TWinControl
   ): integer;
 begin
   Result:=60;
 end;
 
-class function TWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
+class function TWSCustomTabControl.GetTabIndexAtPos(const ATabControl: TCustomTabControl;
   const AClientPos: TPoint): integer;
 begin
   Result := -1;
 end;
 
-class function TWSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
+class function TWSCustomTabControl.GetTabRect(const ATabControl: TCustomTabControl;
   const AIndex: Integer): TRect;
 begin
   Result := Rect(-1,-1,-1,-1);
 end;
 
-class function TWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+class function TWSCustomTabControl.GetCapabilities: TNoteBookCapabilities;
 begin
   Result:=[];
 end;
 
-class procedure TWSCustomNotebook.SetImageList(
-  const ANotebook: TCustomNotebook; const AImageList: TCustomImageList);
+class procedure TWSCustomTabControl.SetImageList(
+  const ATabControl: TCustomTabControl; const AImageList: TCustomImageList);
 begin
 end;
 
-class procedure TWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook;
+class procedure TWSCustomTabControl.SetPageIndex(const ATabControl: TCustomTabControl;
   const AIndex: integer);
 begin
 end;
 
-class procedure TWSCustomNotebook.SetTabCaption(const ANotebook: TCustomNotebook;
+class procedure TWSCustomTabControl.SetTabCaption(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const AText: string);
 begin
 end;
 
-class procedure TWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook;
+class procedure TWSCustomTabControl.SetTabPosition(const ATabControl: TCustomTabControl;
   const ATabPosition: TTabPosition);
 begin
 end;
 
-class procedure TWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
+class procedure TWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl;
   AShowTabs: boolean);
 begin
 end;
 
-class procedure TWSCustomNotebook.UpdateProperties(
-  const ANotebook: TCustomNotebook);
+class procedure TWSCustomTabControl.UpdateProperties(
+  const ATabControl: TCustomTabControl);
 begin
 
 end;

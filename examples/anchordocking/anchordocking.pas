@@ -191,7 +191,7 @@ type
     Its children are all TAnchorDockPage.
     It shows the DockMaster popup menu and starts dragging. }
 
-  TAnchorDockPageControl = class(TCustomNotebook)
+  TAnchorDockPageControl = class(TCustomTabControl)
   private
     function GetDockPages(Index: integer): TAnchorDockPage;
   protected

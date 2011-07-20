@@ -69,21 +69,21 @@ type
 
   { TCarbonWSCustomNotebook }
 
-  TCarbonWSCustomNotebook = class(TWSCustomNotebook)
+  TCarbonWSCustomNotebook = class(TWSCustomTabControl)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
-    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
-    class procedure MovePage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const NewIndex: integer); override;
-    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure AddPage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure MovePage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemovePage(const ATabControl: TCustomTabControl; const AIndex: integer); override;
 
     //class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     //class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
-    //class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
-    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
-    class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
-    class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
-    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    //class function GetPageRealIndex(const ATabControl: TCustomTabControl; AIndex: Integer): Integer; override;
+    class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; override;
+    class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); override;
+    class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); override;
+    class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); override;
   end;
 
   { TCarbonWSPageControl }
@@ -330,115 +330,115 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomNotebook.AddPage
-  Params:  ANotebook - LCL custom notebook
+  Params:  ATabControl - LCL custom notebook
            AChild    - New tab
            AIndex    - New tab index
 
   Adds tab with the specified index in notebook in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
+class procedure TCarbonWSCustomNotebook.AddPage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const AIndex: integer);
 begin
-  if not CheckHandle(ANotebook, Self, 'AddPage') then Exit;
+  if not CheckHandle(ATabControl, Self, 'AddPage') then Exit;
   if AChild.HandleAllocated and not CheckHandle(AChild, Self, 'AddPage AChild') then Exit;
 
   // create child handle
   AChild.HandleNeeded;
   // add page
-  TCarbonTabsControl(ANotebook.Handle).Add(TCarbonTab(AChild.Handle), AIndex);
+  TCarbonTabsControl(ATabControl.Handle).Add(TCarbonTab(AChild.Handle), AIndex);
   // sync PageIndex with LCL
-  TCarbonTabsControl(ANotebook.Handle).SetPageIndex(ANotebook.PageIndex);
+  TCarbonTabsControl(ATabControl.Handle).SetPageIndex(ATabControl.PageIndex);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomNotebook.MovePage
-  Params:  ANotebook - LCL custom notebook
+  Params:  ATabControl - LCL custom notebook
            AChild    - Moved tab
            AIndex    - New tab index
 
   Moves tab to the specified index in notebook in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
+class procedure TCarbonWSCustomNotebook.MovePage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const NewIndex: integer);
 begin
-  if not CheckHandle(ANotebook, Self, 'MovePage') then Exit;
+  if not CheckHandle(ATabControl, Self, 'MovePage') then Exit;
   if not CheckHandle(AChild, Self, 'MovePage AChild') then Exit;
 
-  TCarbonTabsControl(ANotebook.Handle).Remove(AChild.PageIndex);
-  TCarbonTabsControl(ANotebook.Handle).Add(TCarbonTab(AChild.Handle), NewIndex);
+  TCarbonTabsControl(ATabControl.Handle).Remove(AChild.PageIndex);
+  TCarbonTabsControl(ATabControl.Handle).Add(TCarbonTab(AChild.Handle), NewIndex);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomNotebook.RemovePage
-  Params:  ANotebook - LCL custom notebook
+  Params:  ATabControl - LCL custom notebook
            AIndex    - Removed tab index
 
   Removes tab with the specified index from notebook in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
+class procedure TCarbonWSCustomNotebook.RemovePage(const ATabControl: TCustomTabControl;
   const AIndex: integer);
 begin
-  if not CheckHandle(ANotebook, Self, 'RemovePage') then Exit;
+  if not CheckHandle(ATabControl, Self, 'RemovePage') then Exit;
 
-  TCarbonTabsControl(ANotebook.Handle).Remove(AIndex);
+  TCarbonTabsControl(ATabControl.Handle).Remove(AIndex);
   // sync PageIndex with LCL
-  TCarbonTabsControl(ANotebook.Handle).SetPageIndex(ANotebook.PageIndex);
+  TCarbonTabsControl(ATabControl.Handle).SetPageIndex(ATabControl.PageIndex);
 end;
 
 
-class function TCarbonWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer;
+class function TCarbonWSCustomNotebook.GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer;
 var
   p : TPoint;
 begin
-  if not CheckHandle(ANotebook, Self, 'GetTabIndexAtPos') then Exit;
+  if not CheckHandle(ATabControl, Self, 'GetTabIndexAtPos') then Exit;
   p := AClientPos;
   inc(p.y, 35); // todo: find out why AClientPos incorrect for TNotebook
-  Result := TCarbonTabsControl(ANotebook.Handle).GetPageIndexAtCursor(p);
+  Result := TCarbonTabsControl(ATabControl.Handle).GetPageIndexAtCursor(p);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomNotebook.SetPageIndex
-  Params:  ANotebook - LCL custom notebook
+  Params:  ATabControl - LCL custom notebook
            AIndex    - New tab index
 
   Selects tab with the specified index in notebook in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook;
+class procedure TCarbonWSCustomNotebook.SetPageIndex(const ATabControl: TCustomTabControl;
   const AIndex: integer);
 begin
-  if not CheckHandle(ANotebook, Self, 'SetPageIndex') then Exit;
+  if not CheckHandle(ATabControl, Self, 'SetPageIndex') then Exit;
 
-  TCarbonTabsControl(ANotebook.Handle).SetPageIndex(AIndex);
+  TCarbonTabsControl(ATabControl.Handle).SetPageIndex(AIndex);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomNotebook.SetTabPosition
-  Params:  ANotebook    - LCL custom notebook
+  Params:  ATabControl    - LCL custom notebook
            ATabPosition - New position of tabs
 
   Changes position of the tabs of notebook in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook;
+class procedure TCarbonWSCustomNotebook.SetTabPosition(const ATabControl: TCustomTabControl;
   const ATabPosition: TTabPosition);
 begin
-  if not CheckHandle(ANotebook, Self, 'SetTabPosition') then Exit;
+  if not CheckHandle(ATabControl, Self, 'SetTabPosition') then Exit;
 
-  TCarbonTabsControl(ANotebook.Handle).SetTabPosition(ATabPosition);
+  TCarbonTabsControl(ATabControl.Handle).SetTabPosition(ATabPosition);
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSCustomNotebook.ShowTabs
-  Params:  ANotebook - LCL custom notebook
+  Params:  ATabControl - LCL custom notebook
            AShowTabs - Tabs visibility
 
   Changes visibility of all tabs of notebook in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
+class procedure TCarbonWSCustomNotebook.ShowTabs(const ATabControl: TCustomTabControl;
   AShowTabs: boolean);
 begin
-  if not CheckHandle(ANotebook, Self, 'ShowTabs') then Exit;
+  if not CheckHandle(ATabControl, Self, 'ShowTabs') then Exit;
 
-  TCarbonTabsControl(ANotebook.Handle).ShowTabs(AShowTabs);
+  TCarbonTabsControl(ATabControl.Handle).ShowTabs(AShowTabs);
 end;
 
 { TCarbonWSCustomListView }

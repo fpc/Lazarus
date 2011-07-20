@@ -6103,7 +6103,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl UpdateControlState
 
-  Called by: RecreateWnd, TCustomNotebook.ShowCurrentPage,
+  Called by: RecreateWnd, TCustomTabControl.ShowCurrentPage,
     TWinControl.SetParentWindow, TWinControl.InsertControl,
     TWinControl.CMVisibleChanged
 ------------------------------------------------------------------------------}

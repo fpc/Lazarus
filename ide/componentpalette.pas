@@ -623,13 +623,13 @@ begin
       if not CurPage.Visible then continue;
       if CurPage.PageComponent=nil then begin
         // insert a new PageControl page
-        TCustomNotebook(FPageControl).Pages.Insert(PageIndex,CurPage.PageName);
+        TCustomTabControl(FPageControl).Pages.Insert(PageIndex,CurPage.PageName);
         CurPage.PageComponent:=FPageControl.Page[PageIndex];
       end else begin
         // move to the right position
         CurPageIndex:=TTabSheet(CurPage.PageComponent).PageIndex;
         if CurPageIndex<>PageIndex then
-          TCustomNotebook(FPageControl).Pages.Move(CurPageIndex,PageIndex);
+          TCustomTabControl(FPageControl).Pages.Move(CurPageIndex,PageIndex);
       end;
       inc(PageIndex);
     end;

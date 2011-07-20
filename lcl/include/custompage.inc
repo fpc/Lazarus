@@ -66,13 +66,13 @@ begin
     if FTabVisible then
     begin
       // check if there was no visible tab
-      if TCustomNotebook(Parent).PageIndex = -1 then
-        TCustomNotebook(Parent).PageIndex:=PageIndex;
+      if TCustomTabControl(Parent).PageIndex = -1 then
+        TCustomTabControl(Parent).PageIndex:=PageIndex;
     end
     else
       // Check if the page is active and set a new pageindex
-      TCustomNotebook(Parent).PageRemoved(PageIndex);
-    TCustomNotebook(Parent).AddRemovePageHandle(Self);
+      TCustomTabControl(Parent).PageRemoved(PageIndex);
+    TCustomTabControl(Parent).AddRemovePageHandle(Self);
   end;
 end;
 
@@ -88,11 +88,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomPage.WMPaint(var Msg: TLMPaint);
 var
-    Notebook: TCustomNoteBook;
+    Notebook: TCustomTabControl;
 begin
-  if (Parent <> nil) and (Parent is TCustomNoteBook) then
+  if (Parent <> nil) and (Parent is TCustomTabControl) then
   begin
-    NoteBook := TCustomNoteBook(Parent);
+    NoteBook := TCustomTabControl(Parent);
     if (NoteBook.PageIndex >= 0) and (NoteBook.Page[NoteBook.PageIndex] = Self) then
       inherited WMPaint(Msg);
   end
@@ -108,17 +108,17 @@ end;
 procedure TCustomPage.SetParent(AParent: TWinControl);
 var
   OldParent: TWinControl;
-  ParentNotebook: TCustomNotebook;
+  ParentNotebook: TCustomTabControl;
   i: integer;
 begin
   if (AParent = Parent) or (pfInserting in FFlags) then Exit;
   CheckNewParent(AParent);
   OldParent := Parent;
   if (OldParent <> AParent) and (OldParent <> nil) and
-     (OldParent is TCustomNotebook) and (not (pfRemoving in FFlags)) then
+     (OldParent is TCustomTabControl) and (not (pfRemoving in FFlags)) then
   begin
     // remove from old pagelist
-    ParentNotebook := TCustomNotebook(OldParent);
+    ParentNotebook := TCustomTabControl(OldParent);
     i := PageIndex;
     if i >= 0 then
       ParentNotebook.RemovePage(i);
@@ -126,10 +126,10 @@ begin
 
   inherited SetParent(AParent);
 
-  if (OldParent <> AParent) and (Parent <> nil) and (Parent is TCustomNotebook) then
+  if (OldParent <> AParent) and (Parent <> nil) and (Parent is TCustomTabControl) then
   begin
     // add to new pagelist
-    ParentNotebook := TCustomNotebook(Parent);
+    ParentNotebook := TCustomTabControl(Parent);
     i := ParentNotebook.IndexOf(Self);
     if i < 0 then
       ParentNotebook.InsertPage(Self, ParentNotebook.PageCount);
@@ -141,14 +141,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomPage.CMHitTest(var Message: TLMNCHITTEST);
 begin
-  if (Parent<>nil) and (Parent is TCustomNotebook) and
-     (TCustomNotebook(Parent).ActivePageComponent <> Self) then
+  if (Parent<>nil) and (Parent is TCustomTabControl) and
+     (TCustomTabControl(Parent).ActivePageComponent <> Self) then
     Message.Result := 0 // no hit
   else
     inherited CMHitTest(Message);
   {DebugLn('TCustomPage.CMHitTest A ',Name,' ',(Parent<>nil),' ',
-    (Parent is TCustomNotebook),' ',
-    (TCustomNotebook(Parent).ActivePageComponent<>Self),
+    (Parent is TCustomTabControl),' ',
+    (TCustomTabControl(Parent).ActivePageComponent<>Self),
     ' Message.Result=',Message.Result);}
 end;
 
@@ -159,16 +159,16 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomPage.GetPageIndex: integer;
 begin
-  if (Parent <> nil) and (Parent is TCustomNotebook) then
-    Result := TCustomNotebook(Parent).IndexOf(Self)
+  if (Parent <> nil) and (Parent is TCustomTabControl) then
+    Result := TCustomTabControl(Parent).IndexOf(Self)
   else
     Result := -1;
 end;
 
 procedure TCustomPage.SetPageIndex(AValue: Integer);
 begin
-  if (Parent <> nil) and (Parent is TCustomNotebook) then
-    TCustomNotebook(Parent).MoveTab(Self,AValue);
+  if (Parent <> nil) and (Parent is TCustomTabControl) then
+    TCustomTabControl(Parent).MoveTab(Self,AValue);
   //DebugLn('TCustomPage.SetPageIndex Old=',dbgs(PageIndex),' New=',dbgs(AValue));
 end;
 
@@ -178,8 +178,8 @@ begin
   if (not (csDesigning in ComponentState)) and IsAccel(Message.CharCode, Caption) and TabVisible then
   begin
     Result := True;
-    if (Parent <> nil) and (Parent is TCustomNotebook) then
-      TCustomNotebook(Parent).PageIndex := PageIndex;
+    if (Parent <> nil) and (Parent is TCustomTabControl) then
+      TCustomTabControl(Parent).PageIndex := PageIndex;
   end
   else
     Result := inherited DialogChar(Message);
@@ -218,31 +218,31 @@ end;
 function TCustomPage.IsControlVisible: Boolean;
 begin
   Result := inherited IsControlVisible;
-  if Parent is TCustomNotebook then
-    Result := Result and (PageIndex = TCustomNotebook(Parent).PageIndex);
+  if Parent is TCustomTabControl then
+    Result := Result and (PageIndex = TCustomTabControl(Parent).PageIndex);
 end;
 
 function TCustomPage.HandleObjectShouldBeVisible: boolean;
 begin
   Result := inherited HandleObjectShouldBeVisible;
-  if Parent is TCustomNotebook then
-    Result := Result and (PageIndex = TCustomNotebook(Parent).PageIndex);
+  if Parent is TCustomTabControl then
+    Result := Result and (PageIndex = TCustomTabControl(Parent).PageIndex);
 end;
 
 function TCustomPage.VisibleIndex: integer;
 // returns the visible index, as if TabVisible=true
 var
-  notebook: TCustomNotebook;
+  notebook: TCustomTabControl;
   i: Integer;
 begin
 (* Removed PageList dependency.
   Added missing result value.
 *)
-  if (Parent <> nil) and (Parent is TCustomNotebook) then
+  if (Parent <> nil) and (Parent is TCustomTabControl) then
   begin
     Result := 0;
-    //List := TCustomNotebook(Parent).PageList;
-    notebook := TCustomNotebook(Parent);
+    //List := TCustomTabControl(Parent).PageList;
+    notebook := TCustomTabControl(Parent);
     i := 0;
     repeat
       if i = notebook.PageCount then exit(-1);

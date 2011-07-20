@@ -6217,7 +6217,7 @@ begin
   RegisterPropertyEditor(TypeInfo(LongInt), TControl, 'ClientHeight', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomForm, 'LCLVersion', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomNotebook, 'ActivePage', TNoteBookActiveControlPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomTabControl, 'ActivePage', TNoteBookActiveControlPropertyEditor);
 end;
 
 procedure FinalPropEdits;
@@ -6334,14 +6334,14 @@ function TNoteBookActiveControlPropertyEditor.CheckNewValue(
   APersistent: TPersistent): boolean;
 var
   AComponent: TPersistent;
-  Notebook: TCustomNotebook;
+  Notebook: TCustomTabControl;
 begin
   Result:=true;
   if APersistent=nil then exit;
   AComponent:=GetComponent(0);
-  if not (AComponent is TCustomNotebook) then
+  if not (AComponent is TCustomTabControl) then
     raise Exception.Create('invalid instance for this property editor');
-  Notebook:=TCustomNotebook(AComponent);
+  Notebook:=TCustomTabControl(AComponent);
   if Notebook.IndexOf(APersistent)<0 then
     raise Exception.Create('only children are allowed for this property');
 end;
@@ -6354,13 +6354,13 @@ end;
 procedure TNoteBookActiveControlPropertyEditor.GetValues(Proc: TGetStrProc);
 var
   AComponent: TPersistent;
-  Notebook: TCustomNotebook;
+  Notebook: TCustomTabControl;
   i: Integer;
 begin
   Proc(oisNone);
   AComponent:=GetComponent(0);
-  if not (AComponent is TCustomNotebook) then exit;
-  Notebook:=TCustomNotebook(AComponent);
+  if not (AComponent is TCustomTabControl) then exit;
+  Notebook:=TCustomTabControl(AComponent);
   for i:=0 to Notebook.PageCount-1 do
     Proc(Notebook.Page[i].Name);
 end;

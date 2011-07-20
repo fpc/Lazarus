@@ -4154,8 +4154,8 @@ var
   ClientWidget: PGtkWidget;
   NoteBookWidget: PGtkNotebook;
 begin
-  if not TCustomNotebook(ANoteBook).HandleAllocated then exit;
-  NoteBookWidget := PGtkNotebook(TCustomNotebook(ANoteBook).Handle);
+  if not TCustomTabControl(ANoteBook).HandleAllocated then exit;
+  NoteBookWidget := PGtkNotebook(TCustomTabControl(ANoteBook).Handle);
   ClientWidget := nil;
   SetFixedWidget(NoteBookWidget, ClientWidget);
 end;
@@ -4198,7 +4198,7 @@ end;
 
 {-------------------------------------------------------------------------------
   method UpdateNotebookPageTab
-  Params: ANoteBook: TCustomNotebook; APage: TCustomPage
+  Params: ANoteBook: TCustomTabControl; APage: TCustomPage
   Result: none
 
   Updates the tab of a page of a notebook. This contains the image to the left
@@ -4206,7 +4206,7 @@ end;
 -------------------------------------------------------------------------------}
 procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);
 var
-  TheNoteBook: TCustomNotebook;
+  TheNoteBook: TCustomTabControl;
   ThePage: TCustomPage;
 
   NoteBookWidget: PGtkWidget;  // the notebook
@@ -4361,10 +4361,10 @@ var
 
 begin
   ThePage := TCustomPage(APage);
-  TheNoteBook := TCustomNotebook(ANoteBook);
+  TheNoteBook := TCustomTabControl(ANoteBook);
   if (APage=nil) or (not ThePage.HandleAllocated) then exit;
   if TheNoteBook=nil then begin
-    TheNoteBook:=TCustomNotebook(ThePage.Parent);
+    TheNoteBook:=TCustomTabControl(ThePage.Parent);
     if TheNoteBook=nil then exit;
   end;
   NoteBookWidget:=PGtkWidget(TWinControl(TheNoteBook).Handle);

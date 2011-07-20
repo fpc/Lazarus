@@ -431,7 +431,7 @@ begin
   if (not FTabDragged) and (FTabDragAcceptMode = dmAutomatic) and
      (Source = Self) and (TabId2 >= 0) and (TabId2 <> FDraggingTabIndex)
   then begin
-    TCustomNotebook(Self).Pages.Move(Src.DraggingTabIndex, TabId);
+    TCustomTabControl(Self).Pages.Move(Src.DraggingTabIndex, TabId);
     FTabDragged := True;
   end;
 end;

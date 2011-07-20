@@ -56,11 +56,11 @@ var
   ImageIndex: Integer;
   Bmp: TBitmap;
 begin
-  ImageList := TCustomNoteBook(ACustomPage.Parent).Images;
+  ImageList := TCustomTabControl(ACustomPage.Parent).Images;
 
   if Assigned(ImageList) then
   begin
-    ImageIndex := TCustomNoteBook(ACustomPage.Parent).GetImageIndex(ACustomPage.PageIndex);
+    ImageIndex := TCustomTabControl(ACustomPage.Parent).GetImageIndex(ACustomPage.PageIndex);
     if (ImageIndex >= 0) and (ImageIndex < ImageList.Count) then
     begin
       Bmp := TBitmap.Create;
@@ -77,22 +77,22 @@ end;
 { TQtWSCustomNotebook }
 
 {------------------------------------------------------------------------------
-  Method: TQtWSCustomNotebook.CreateHandle
+  Method: TQtWSCustomTabControl.CreateHandle
   Params:  None
   Returns: Nothing
 
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
-class function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TQtWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtTabWidget: TQtTabWidget;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWSCustomNotebook.CreateHandle');
+    WriteLn('TQtWSCustomTabControl.CreateHandle');
   {$endif}
   QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
-  QtTabWidget.setTabPosition(QTabWidgetTabPositionMap[TCustomNoteBook(AWinControl).TabPosition]);
-  QtTabWidget.setTabsClosable(nboShowCloseButtons in TCustomNotebook(AWinControl).Options);
+  QtTabWidget.setTabPosition(QTabWidgetTabPositionMap[TCustomTabControl(AWinControl).TabPosition]);
+  QtTabWidget.setTabsClosable(nboShowCloseButtons in TCustomTabControl(AWinControl).Options);
   QtTabWidget.AttachEvents;
 
   // Returns the Handle
@@ -100,15 +100,15 @@ begin
   Result := TLCLIntfHandle(QtTabWidget);
 end;
 
-class procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
+class procedure TQtWSCustomTabControl.AddPage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const AIndex: integer);
 var
   QtTabWidget: TQtTabWidget;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWSCustomNotebook.AddPage');
+    WriteLn('TQtWSCustomTabControl.AddPage');
   {$endif}
-  QtTabWidget := TQtTabWidget(ANotebook.Handle);
+  QtTabWidget := TQtTabWidget(ATabControl.Handle);
   QtTabWidget.setUpdatesEnabled(False);
   QtTabWidget.BeginUpdate;
   try
@@ -122,7 +122,7 @@ begin
   TQtWsCustomPage.UpdateProperties(AChild);
 end;
 
-class procedure TQtWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
+class procedure TQtWSCustomTabControl.MovePage(const ATabControl: TCustomTabControl;
   const AChild: TCustomPage; const NewIndex: integer);
 var
   TabWidget: TQtTabWidget;
@@ -130,10 +130,10 @@ var
   Page: TQtPage;
 begin
   Page := TQtPage(AChild.Handle);
-  TabWidget := TQtTabWidget(ANotebook.Handle);
+  TabWidget := TQtTabWidget(ATabControl.Handle);
   Index := AChild.PageIndex;
   if Index < 0 then
-    Index := ANoteBook.IndexOf(AChild);
+    Index := ATabControl.IndexOf(AChild);
 
   TabWidget.BeginUpdate;
   TabWidget.setUpdatesEnabled(false);
@@ -145,15 +145,15 @@ begin
   TabWidget.EndUpdate;
 end;
 
-class procedure TQtWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
+class procedure TQtWSCustomTabControl.RemovePage(const ATabControl: TCustomTabControl;
   const AIndex: integer);
 var
   TabWidget: TQtTabWidget;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQtWSCustomNotebook.RemovePage');
+    WriteLn('TQtWSCustomTabControl.RemovePage');
   {$endif}
-  TabWidget := TQtTabWidget(ANotebook.Handle);
+  TabWidget := TQtTabWidget(ATabControl.Handle);
   TabWidget.setUpdatesEnabled(false);
   TabWidget.BeginUpdate;
   try
@@ -164,12 +164,12 @@ begin
   end;
 end;
 
-class function TQtWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+class function TQtWSCustomTabControl.GetCapabilities: TNoteBookCapabilities;
 begin
   Result := [nbcShowCloseButtons];
 end;
 
-class function TQtWSCustomNotebook.GetDesignInteractive(
+class function TQtWSCustomTabControl.GetDesignInteractive(
   const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
 var
   TabWidget: TQtTabWidget;
@@ -187,17 +187,17 @@ begin
   Result := (TabIndex >= 0) and (TabWidget.getCurrentIndex <> TabIndex);
 end;
 
-class function TQtWSCustomNotebook.GetTabIndexAtPos(
-  const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer;
+class function TQtWSCustomTabControl.GetTabIndexAtPos(
+  const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer;
 var
   TabWidget: TQtTabWidget;
   NewPos: TPoint;
   R: TRect;
 begin
-  TabWidget := TQtTabWidget(ANotebook.Handle);
+  TabWidget := TQtTabWidget(ATabControl.Handle);
   NewPos := AClientPos;
   R := TabWidget.TabBar.getGeometry;
-  case ANoteBook.TabPosition of
+  case ATabControl.TabPosition of
     tpTop: if NewPos.Y < 0 then NewPos.Y := R.Bottom + NewPos.Y;
     tpLeft: if NewPos.X < 0 then NewPos.X := R.Left + NewPos.X;
     tpRight: NewPos.X := R.Right - NewPos.X;
@@ -206,17 +206,17 @@ begin
   Result := TabWidget.tabAt(NewPos);
 end;
 
-class function TQtWSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
+class function TQtWSCustomTabControl.GetTabRect(const ATabControl: TCustomTabControl;
   const AIndex: Integer): TRect;
 var
   TabWidget: TQtTabWidget;
 begin
   Result := Rect(-1, -1, -1, -1);
-  if not WSCheckHandleAllocated(ANotebook, 'GetTabRect') then
+  if not WSCheckHandleAllocated(ATabControl, 'GetTabRect') then
     Exit;
-  TabWidget := TQtTabWidget(ANotebook.Handle);
+  TabWidget := TQtTabWidget(ATabControl.Handle);
   Result := TabWidget.TabBar.GetTabRect(AIndex);
-  case ANoteBook.TabPosition of
+  case ATabControl.TabPosition of
     tpTop: OffsetRect(Result, 0, -Result.Bottom);
     tpLeft: OffsetRect(Result, -Result.Right, 0);
     tpRight: OffsetRect(Result, Result.Left, 0);
@@ -224,49 +224,49 @@ begin
   end;
 end;
 
-class procedure TQtWSCustomNotebook.SetPageIndex(
-  const ANotebook: TCustomNotebook; const AIndex: integer);
+class procedure TQtWSCustomTabControl.SetPageIndex(
+  const ATabControl: TCustomTabControl; const AIndex: integer);
 var
   TabWidget: TQtTabWidget;
 begin
-  if not WSCheckHandleAllocated(ANotebook, 'SetPageIndex') then
+  if not WSCheckHandleAllocated(ATabControl, 'SetPageIndex') then
     Exit;
-  TabWidget := TQtTabWidget(ANotebook.Handle);
+  TabWidget := TQtTabWidget(ATabControl.Handle);
   TabWidget.BeginUpdate;
   TabWidget.setCurrentIndex(AIndex);
   TabWidget.EndUpdate;
 end;
 
-class procedure TQtWSCustomNotebook.SetTabCaption(
-  const ANotebook: TCustomNotebook; const AChild: TCustomPage;
+class procedure TQtWSCustomTabControl.SetTabCaption(
+  const ATabControl: TCustomTabControl; const AChild: TCustomPage;
   const AText: string);
 var
   Index: Integer;
 begin
   Index := AChild.PageIndex;
   if Index < 0 then
-    Index := ANotebook.IndexOf(AChild);
-  TQtTabWidget(ANotebook.Handle).setTabText(Index, GetUtf8String(AText));
+    Index := ATabControl.IndexOf(AChild);
+  TQtTabWidget(ATabControl.Handle).setTabText(Index, GetUtf8String(AText));
 end;
 
-class procedure TQtWSCustomNotebook.SetTabPosition(
-  const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
+class procedure TQtWSCustomTabControl.SetTabPosition(
+  const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
 begin
-  TQtTabWidget(ANotebook.Handle).SetTabPosition(QTabWidgetTabPositionMap[ATabPosition]);
+  TQtTabWidget(ATabControl.Handle).SetTabPosition(QTabWidgetTabPositionMap[ATabPosition]);
 end;
 
-class procedure TQtWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
+class procedure TQtWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl;
   AShowTabs: boolean);
 var
   TabWidget: TQtTabWidget;
 begin
-  TabWidget := TQtTabWidget(ANotebook.Handle);
+  TabWidget := TQtTabWidget(ATabControl.Handle);
   if TabWidget.TabBar <> nil then
     TabWidget.ShowTabs := AShowTabs;
 end;
 
-class procedure TQtWSCustomNotebook.UpdateProperties(const ANotebook: TCustomNotebook);
+class procedure TQtWSCustomTabControl.UpdateProperties(const ATabControl: TCustomTabControl);
 begin
-  TQtTabWidget(ANotebook.Handle).setTabsClosable(nboShowCloseButtons in ANotebook.Options);
+  TQtTabWidget(ATabControl.Handle).setTabsClosable(nboShowCloseButtons in ATabControl.Options);
 end;
 

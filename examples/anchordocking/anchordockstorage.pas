@@ -519,7 +519,7 @@ var
 
   function IsPages(Node: TObject): boolean;
   begin
-    Result:=(Node is TCustomNotebook)
+    Result:=(Node is TCustomTabControl)
       or ((Node is TAnchorDockLayoutTreeNode)
           and (TAnchorDockLayoutTreeNode(Node).NodeType in [adltnPages,adltnNone]));
   end;
@@ -1113,8 +1113,8 @@ begin
     WorkAreaRect:=TCustomForm(AControl).Monitor.WorkareaRect;
   end else
     WindowState:=wsNormal;
-  if AControl is TCustomNotebook then
-    TabPosition:=TCustomNotebook(AControl).TabPosition
+  if AControl is TCustomTabControl then
+    TabPosition:=TCustomTabControl(AControl).TabPosition
   else
     TabPosition:=tpTop;
   for a:=low(TAnchorKind) to high(TAnchorKind) do begin

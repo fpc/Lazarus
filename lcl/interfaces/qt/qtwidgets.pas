@@ -7485,12 +7485,12 @@ begin
   Result := AIndex;
   if (LCLObject = nil) or
      (csDesigning in LCLObject.ComponentState) or
-     not (LCLObject is TCustomNotebook) then
+     not (LCLObject is TCustomTabControl) then
     Exit;
   I := 0;
-  while (I < TCustomNotebook(LCLObject).PageCount) and (I <= Result) do
+  while (I < TCustomTabControl(LCLObject).PageCount) and (I <= Result) do
   begin
-    if not TCustomNotebook(LCLObject).Page[I].TabVisible then
+    if not TCustomTabControl(LCLObject).Page[I].TabVisible then
       Inc(Result);
     Inc(I);
   end;
@@ -7721,10 +7721,10 @@ procedure TQtTabWidget.SignalCloseRequested(Index: Integer); cdecl;
 var
   APage: TCustomPage;
 begin
-  APage := TCustomNotebook(LCLObject).Page[GetLCLPageIndex(Index)];
+  APage := TCustomTabControl(LCLObject).Page[GetLCLPageIndex(Index)];
   if not APage.HandleAllocated then
     Exit;
-  TCustomNoteBook(LCLObject).DoCloseTabClicked(APage);
+  TCustomTabControl(LCLObject).DoCloseTabClicked(APage);
 end;
 
 function TQtTabWidget.indexOf(const AWidget: QWidgetH): integer;
@@ -14353,7 +14353,7 @@ begin
 
       if Assigned(Control) and (Control is TWinControl) then
       begin
-        if Control is TCustomNotebook then
+        if Control is TCustomTabControl then
           WidgetToNotify := TQtTabWidget(TWinControl(Control).Handle).TabBar.Widget
         else
           WidgetToNotify := TQtWidget(TWinControl(Control).Handle).Widget;

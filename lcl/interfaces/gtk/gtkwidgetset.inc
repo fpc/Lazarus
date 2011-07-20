@@ -3957,11 +3957,11 @@ begin
       // -> if this is the last page, then add a dummy page
       APage:=TCustomPage(Sender);
       if (APage.Parent<>nil) and APage.Parent.HandleAllocated
-      and (APage.Parent is TCustomNoteBook) then begin
-        NoteBookWidget:=PGtkNotebook(TCustomNoteBook(APage.Parent).Handle);
+      and (APage.Parent is TCustomTabControl) then begin
+        NoteBookWidget:=PGtkNotebook(TCustomTabControl(APage.Parent).Handle);
         if GetGtkNoteBookPageCount(NoteBookWidget)=1 then begin
           AddDummyNoteBookPage(NoteBookWidget);
-          UpdateNoteBookClientWidget(TCustomNoteBook(APage.Parent));
+          UpdateNoteBookClientWidget(TCustomTabControl(APage.Parent));
         end;
       end;
     end;
@@ -4571,7 +4571,7 @@ end;
   procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
 
   Adds the dummy page.
-  A gtk notebook must have at least one page, but TCustomNoteBook also allows
+  A gtk notebook must have at least one page, but TCustomTabControl also allows
   no pages at all. Therefore at least a dummy page is added. This dummy page is
   removed as soon as other pages are added.
 -------------------------------------------------------------------------------}

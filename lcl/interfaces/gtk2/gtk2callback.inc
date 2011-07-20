@@ -137,7 +137,7 @@ begin
   if Widget=nil then ;
   if ComponentIsDestroyingHandle(TWinControl(Data)) then exit;
   APage:=TCustomPage(Data);
-  TCustomNoteBook(APage.Parent).DoCloseTabClicked(APage);
+  TCustomTabControl(APage.Parent).DoCloseTabClicked(APage);
 end;
 
 function FilterFuc(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn; cdecl;
@@ -1601,7 +1601,7 @@ begin
     end;
   end else begin
     if (event^.Button=1) and
-       (TControl(Data) is TCustomNoteBook) then
+       (TControl(Data) is TCustomTabControl) then
     begin
       // clicks on the tab control should be handled by the gtk (switching page)
     end
@@ -1967,7 +1967,7 @@ begin
   end else
   begin
     // stop the signal, so that the widget does not auto react
-    if not (TControl(Data) is TCustomNoteBook) then
+    if not (TControl(Data) is TCustomTabControl) then
     begin
       g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-release-event');
       Result := not CallBackDefaultReturn;
