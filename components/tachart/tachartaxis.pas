@@ -555,15 +555,27 @@ var
     Result += d.Scale(Title.Distance);
   end;
 
-  function FirstLastSize(AText: String): Integer;
+  procedure UpdateFirstLast(ACoord, AIndex, ARMin, ARMax: Integer);
+  var
+    sz, fm, lm: Integer;
   begin
-    Result := TPointBoolArr(Marks.MeasureLabel(d, AText))[not v] div 2;
+    sz := TPointBoolArr(
+      Marks.MeasureLabel(d, FMarkValues[AIndex].FText))[v] div 2;
+    fm := sz - ACoord + ARMin;
+    lm := sz - ARMax + ACoord;
+    if v then
+      Exchange(fm, lm);
+    with AMeasureData do begin
+      FFirstMark := Max(fm, FFirstMark);
+      FLastMark := Max(lm, FLastMark);
+    end;
   end;
 
 var
-  sz, rmin, rmax, c, i: Integer;
-  t: TChartValueText;
+  sz, rmin, rmax, c, i, j, minc, maxc, mini, maxi: Integer;
+  minorValues: TChartValueTextArray;
   pv: Double = NaN;
+  cv: Double;
 begin
   if not Visible then exit;
   v := IsVertical;
@@ -571,37 +583,45 @@ begin
   GetMarkValues(
     TDoublePointBoolArr(AExtent.a)[v], TDoublePointBoolArr(AExtent.b)[v]);
   sz := Marks.Measure(d, not v, TickLength, FMarkValues);
-  for t in FMarkValues do begin
-    if not IsNan(pv) then begin
-      for i := 0 to Minors.Count - 1 do
-        with Minors[i] do
-          sz := Max(sz,
-            Marks.Measure(d, not v, TickLength, GetMarkValues(pv, t.FValue)));
-    end;
-    pv := t.FValue;
-  end;
   FHelper.GetClipRange(rmin, rmax);
+  minc := MaxInt;
+  maxc := -MaxInt;
+  for i := 0 to High(FMarkValues) do begin
+    cv := FMarkValues[i].FValue;
+    if not IsNan(pv) then begin
+      for j := 0 to Minors.Count - 1 do
+        with Minors[j] do begin
+          minorValues := GetMarkValues(pv, cv);
+          sz := Max(Marks.Measure(d, not v, TickLength, minorValues), sz);
+        end;
+    end;
+    pv := cv;
+    // Optimization: only measure edge labels to calculate longitudinal margins.
+    c := FHelper.GraphToImage(cv);
+    if not InRange(c, rmin, rmax) then continue;
+    if c < minc then begin
+      minc := c;
+      mini := i;
+    end;
+    if c > maxc then begin
+      maxc := c;
+      maxi := i;
+    end;
+  end;
   with AMeasureData do begin
     FSize := Max(sz, FSize);
     FTitleSize := Max(TitleSize, FTitleSize);
-    for t in FMarkValues do begin
-      c := FHelper.GraphToImage(t.FValue);
-      if not InRange(c, rmin, rmax) then continue;
-      FFirstMark := Max(FirstLastSize(t.FText) - c + rmin, FFirstMark);
-      break;
-    end;
-    for i := High(FMarkValues) downto 0 do begin
-      t := FMarkValues[i];
-      c := FHelper.GraphToImage(t.FValue);
-      if not InRange(c, rmin, rmax) then continue;
-      FLastMark := Max(FirstLastSize(t.FText) - rmax + c, FLastMark);
-      break;
-    end;
-    if Arrow.Visible then begin
-      FSize := Max(FHelper.FDrawer.Scale(Arrow.Width), FSize);
-      FLastMark := Max(FHelper.FDrawer.Scale(Arrow.Length), FLastMark);
-    end;
   end;
+  if minc < MaxInt then begin
+    UpdateFirstLast(minc, mini, rmin, rmax);
+    UpdateFirstLast(maxc, maxi, rmin, rmax);
+  end;
+
+  if Arrow.Visible then
+    with AMeasureData do begin
+      FSize := Max(d.Scale(Arrow.Width), FSize);
+      FLastMark := Max(d.Scale(Arrow.Length), FLastMark);
+    end;
 end;
 
 procedure TChartAxis.PrepareHelper(
@@ -698,22 +718,14 @@ end;
 
 procedure TChartAxis.VisitSource(ASource: TCustomChartSource; var AData);
 var
-  lmin, lmax: Double;
   ext: TDoubleRect;
 begin
   ext := ASource.Extent;
-  with TAxisDataExtent(AData) do begin
-    if IsVertical then begin
-      lmin := Max(ext.a.Y, FMin);
-      lmax := Min(ext.b.Y, FMax);
-    end
-    else begin
-      lmin := Max(ext.a.X, FMin);
-      lmax := Min(ext.b.X, FMax);
-    end;
+  with TAxisDataExtent(AData) do
     Marks.SourceDef.ValuesInRange(
-      lmin, lmax, Marks.Format, IsVertical, FMarkValues);
-  end;
+      Max(TDoublePointBoolArr(ext.a)[IsVertical], FMin),
+      Min(TDoublePointBoolArr(ext.b)[IsVertical], FMax),
+      Marks.Format, IsVertical, FMarkValues);
 end;
 
 const
