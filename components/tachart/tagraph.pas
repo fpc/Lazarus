@@ -730,8 +730,10 @@ begin
   FCurrentExtent := FLogicalExtent;
 
   c := (FClipRect.Left + FClipRect.Right) div 2;
-  FTitle.Draw(ADrawer, 1, c, FClipRect.Top);
-  FFoot.Draw(ADrawer, -1, c, FClipRect.Bottom);
+  with ClipRect do begin;
+    FTitle.Draw(ADrawer, 1, Left, Right, Top);
+    FFoot.Draw(ADrawer, -1, Left, Right, Bottom);
+  end;
 
   ldd.FItems := nil;
   if Legend.Visible then

@@ -153,7 +153,8 @@ type
     destructor Destroy; override;
   public
     procedure Assign(ASource: TPersistent); override;
-    procedure Draw(ADrawer: IChartDrawer; ADir, AX: Integer; var AY: Integer);
+    procedure Draw(
+      ADrawer: IChartDrawer; ADir, ALeft, ARight: Integer; var AY: Integer);
   published
     property Alignment default taCenter;
     property Brush: TBrush read FBrush write SetBrush;
@@ -624,14 +625,19 @@ begin
 end;
 
 procedure TChartTitle.Draw(
-  ADrawer: IChartDrawer; ADir, AX: Integer; var AY: Integer);
+  ADrawer: IChartDrawer; ADir, ALeft, ARight: Integer; var AY: Integer);
 var
   p, ptSize: TPoint;
   dummy: TPointArray = nil;
 begin
   if not Visible or (Text.Count = 0) then exit;
   ptSize := MeasureLabel(ADrawer, Text.Text);
-  p := Point(AX, AY + ADir * ptSize.Y div 2);
+  case Alignment of
+    taLeftJustify: p.X := ALeft + ptSize.X div 2;
+    taRightJustify: p.X := ARight - ptSize.X div 2;
+    taCenter: p.X := (ALeft + ARight) div 2;
+  end;
+  p.Y := AY + ADir * ptSize.Y div 2;
   DrawLabel(ADrawer, p, p, Text.Text, dummy);
   AY += ADir * (ptSize.Y + Margin);
 end;
