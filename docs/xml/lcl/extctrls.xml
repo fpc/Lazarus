@@ -131,547 +131,6 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TCustomPage">
-        <short>
-          <var>TCustomPage</var>: The base type for 
-          <var>Page</var>
-        </short>
-        <descr>
-          <var>TCustomPage</var>: The base type for the tabbed pages found in notebooks
-        </descr>
-        <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
-        </seealso>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomPage.FFlags">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomPage.FImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomPage.GetTabVisible">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.GetTabVisible.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomPage.SetImageIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.SetImageIndex.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomPage.SetTabVisible">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.SetTabVisible.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.WMPaint" link="#LCL.Controls.TWinControl.WMPaint">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.WMPaint.Msg">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.SetParent" link="#LCL.Controls.TControl.SetParent">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.SetParent.AParent">
-        <short/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomPage.Flags">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.CMHitTest" link="#LCL.Controls.TControl.CMHitTest">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.CMHitTest.Message">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.DestroyHandle" link="#LCL.Controls.TWinControl.DestroyHandle">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomPage.GetPageIndex">
-        <short>
-          <var>GetPageIndex</var> - returns the index of the current page</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.GetPageIndex.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.SetPageIndex">
-        <short>
-          <var>SetPageIndex</var> - specifies an index for the current page</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.SetPageIndex.AValue">
-        <short/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomPage.TabVisible">
-        <short>
-          <var>TabVisible</var> - is the Tab for this page visible?</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomPage.FTabVisible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomPage.FOnHide">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomPage.FOnShow">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomPage.DialogChar" link="#LCL.Controls.TControl.DialogChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.DialogChar.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.DialogChar.Message">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.DoHide">
-        <short>
-          <var>DoHide</var> - perform the code for the <var>OnHide</var> event handler</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomPage.DoShow">
-        <short>
-          <var>DoShow</var> - perform the code for the <var>OnShow</var> event handler</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCustomPage.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomPage</var>: calls inherited <var>Create</var> then initialises style, visibility, alignment and caption</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#lcl.Controls.TControl.Create">TControl.Create</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.Create.TheOwner">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomPage.AdjustClientRect" link="#LCL.Controls.TWinControl.AdjustClientRect">
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPage.AdjustClientRect.ARect">
-        <short/>
-      </element>
-      <element name="TCustomPage.AutoSizeDelayed" link="#lcl.Controls.TControl.AutoSizeDelayed"/>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.AutoSizeDelayed.Result">
-        <short/>
-      </element>
-      <element name="TCustomPage.IsControlVisible" link="#lcl.Controls.TControl.IsControlVisible"/>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.IsControlVisible.Result">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.Visible" link="#lcl.Controls.TControl.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.PageIndex">
-        <short>
-          <var>PageIndex </var>- integer index value for this page in the notebook</short>
-      </element>
-      <element name="TCustomPage.VisibleIndex">
-        <short>
-          <var>VisibleIndex</var> - returns the index number of a visible page</short>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.VisibleIndex.Result">
-        <short/>
-      </element>
-      <element name="TCustomPage.OnHide">
-        <short>
-          <var>OnHide</var> - event handler for hiding this page in a notebook</short>
-      </element>
-      <element name="TCustomPage.OnShow">
-        <short>
-          <var>OnShow</var> - event handler for showing (making visible) this page of a notebook</short>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomPage.CanTab" link="#LCL.Controls.TControl.CanTab"/>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.CanTab.Result"/>
-      <!-- function Visibility: public -->
-      <element name="TCustomPage.IsVisible">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPage.IsVisible.Result">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.ImageIndex">
-        <short>
-          <var>ImageIndex</var> - integer index value for the image associated with this page</short>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.Left" link="#lcl.Controls.TControl.Left">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.Top" link="#lcl.Controls.TControl.Top">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.Width" link="#lcl.Controls.TControl.Width">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.Height" link="#lcl.Controls.TControl.Height">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomPage.TabOrder" link="#lcl.Controls.TWinControl.TabOrder">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- "class of" type Visibility: default -->
-      <element name="TCustomPageClass">
-        <short>
-          <var>TCustomPageClass</var> - class of <var>TCustomPage</var>
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TNBPages">
-        <short>
-          <var>TNBPages</var> - NoteBook Pages: an array of strings containing the names of the pages</short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TNBPages.FPageList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TNBPages.FNotebook">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TNBPages.Get" link="#rtl.Classes.TStrings.Get">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TNBPages.Get.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Get.Index">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TNBPages.GetCount" link="#rtl.Classes.TStrings.GetCount">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TNBPages.GetCount.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TNBPages.GetObject" link="#rtl.Classes.TStrings.GetObject">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TNBPages.GetObject.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.GetObject.Index">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TNBPages.Put" link="#rtl.Classes.TStrings.Put">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Put.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Put.S">
-        <short/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TNBPages.Create">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#rtl.System.TObject.Create">TObject.Create</link>
-        </seealso>
-        <short>
-          <var>Create</var> - constructor for <var>TNBPages</var>: calls inherited <var>Create</var> then sets up the list of pages on the notebook</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Create.thePageList">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Create.theNotebook">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TNBPages.Clear" link="#rtl.Classes.TStrings.Clear">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TNBPages.Delete" link="#rtl.Classes.TStrings.Delete">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Delete.Index">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TNBPages.Insert" link="#rtl.Classes.TStrings.Insert">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Insert.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Insert.S">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TNBPages.Move" link="#rtl.Classes.TStrings.Move">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Move.CurIndex">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.Move.NewIndex">
-        <short/>
-      </element>
-      <!-- procedure type Visibility: default -->
-      <element name="TTabChangingEvent">
-        <short>
-          <var>TTabChangingEvent</var> - generic event handling method for a change in a notebook Tab</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TTabChangingEvent.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TTabChangingEvent.AllowChange">
-        <short/>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TTabPosition">
-        <short>
-          <var>TTabPosition</var> - enumerated type for position of tab relative to page: top, bottom, left or right</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabPosition.tpTop">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabPosition.tpBottom">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabPosition.tpLeft">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabPosition.tpRight">
-        <short/>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TTabStyle">
-        <short>
-          <var>TTabStyle</var> - enumerated type for tab style: normal, buttons or flat buttons</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabStyle.tsTabs">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabStyle.tsButtons">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TTabStyle.tsFlatButtons">
-        <short/>
-      </element>
-      <!-- procedure type Visibility: default -->
-      <element name="TTabGetImageEvent">
-        <short>
-          <var>TTabGetImageEvent</var> - generic event handling method for getting an image for a Tab</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TTabGetImageEvent.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TTabGetImageEvent.TabIndex">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TTabGetImageEvent.ImageIndex">
-        <short/>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TNoteBookOption">
-        <short>
-          <var>TNoteBookOption</var> - Show the close button on a tab, allow multi-line tabs</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TNoteBookOption.nboShowCloseButtons">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TNoteBookOption.nboMultiLine">
-        <short/>
-      </element>
-      <!-- set type Visibility: default -->
-      <element name="TNoteBookOptions">
-        <short>
-          <var>TNoteBookOptions</var> - set of <var>TNoteBookOption</var>
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
       <element name="TPage">
         <short>
           <var>TPage</var>: One of the pages in a tabbed Notebook</short>
@@ -868,7 +327,7 @@
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TNotebook.Create" link="#LCL.ExtCtrls.TCustomNotebook.Create">
+      <element name="TNotebook.Create">
         <short/>
         <descr/>
         <errors/>
@@ -879,7 +338,7 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TNotebook.Page" link="#LCL.ExtCtrls.TCustomNotebook.Page">
+      <element name="TNotebook.Page">
         <short/>
         <descr/>
         <seealso/>
@@ -889,19 +348,19 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TNotebook.ActivePageComponent" link="#LCL.ExtCtrls.TCustomNotebook.ActivePageComponent">
+      <element name="TNotebook.ActivePageComponent">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TNotebook.Pages" link="#LCL.ExtCtrls.TCustomNotebook.Pages">
+      <element name="TNotebook.Pages">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.ActivePage" link="#LCL.ExtCtrls.TCustomNotebook.ActivePage">
+      <element name="TNotebook.ActivePage">
         <short/>
         <descr/>
         <seealso/>
@@ -937,7 +396,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.Images" link="#LCL.ExtCtrls.TCustomNotebook.Images">
+      <element name="TNotebook.Images">
         <short/>
         <descr/>
         <seealso/>
@@ -949,7 +408,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnCloseTabClicked" link="#LCL.ExtCtrls.TCustomNotebook.OnCloseTabClicked">
+      <element name="TNotebook.OnCloseTabClicked">
         <short/>
         <descr/>
         <seealso/>
@@ -973,7 +432,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnGetImageIndex" link="#LCL.ExtCtrls.TCustomNotebook.OnGetImageIndex">
+      <element name="TNotebook.OnGetImageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -997,7 +456,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnPageChanged" link="#LCL.ExtCtrls.TCustomNotebook.OnPageChanged">
+      <element name="TNotebook.OnPageChanged">
         <short/>
         <descr/>
         <seealso/>
@@ -1009,7 +468,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.Options" link="#LCL.ExtCtrls.TCustomNotebook.Options">
+      <element name="TNotebook.Options">
         <short>Set of <var>Options</var> for this Notebook. Include <var>nboShowCloseButtons</var>, <var>nboMultiLine</var>
         </short>
         <descr>
@@ -1020,13 +479,7 @@
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.PageIndex" link="#LCL.ExtCtrls.TCustomNotebook.PageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TNotebook.ShowTabs" link="#LCL.ExtCtrls.TCustomNotebook.ShowTabs">
+      <element name="TNotebook.PageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -5731,90 +5184,6 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       <element name="TPageFlag.pfAdding">
         <short/>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TNBPages.PageListChange">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.PageListChange.Ptr">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TNBPages.PageListChange.AnAction">
-        <short/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FPageIndexOnLastShow">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomNotebook.FindVisiblePage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.FindVisiblePage.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.FindVisiblePage.Index">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.AddRemovePageHandle">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.AddRemovePageHandle.APage">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.PageRemoved">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.PageRemoved.Index">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomNotebook.DialogChar" link="#LCL.Controls.TControl.DialogChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.DialogChar.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.DialogChar.Message">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomNotebook.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetControlClassDefaultSize.Result">
-        <short/>
-      </element>
       <!-- property Visibility: published -->
       <element name="TPage.Font" link="#LCL.Controls.TControl.Font">
         <short/>
@@ -5846,7 +5215,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.OnChanging" link="#LCL.ExtCtrls.TCustomNotebook.OnChanging">
+      <element name="TNotebook.OnChanging">
         <short/>
         <descr/>
         <seealso/>
@@ -5894,7 +5263,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.TabStop" link="#LCL.ExtCtrls.TCustomNotebook.TabStop">
+      <element name="TNotebook.TabStop" link="#LCL.Control.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
@@ -6595,20 +5964,6 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       <element name="TCustomTrayIcon.GetPosition.Result">
         <short/>
       </element>
-      <element name="TCustomNotebook.GetCapabilities">
-        <short>
-          <var>GetCapabilities</var> - returns the set of capabilities</short>
-      </element>
-      <element name="TNoteBookCapability">
-        <short>
-          <var>TNoteBookCapability</var> - enumerated type containing possible capabilities of a notebook</short>
-        <descr>nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup</descr>
-      </element>
-      <element name="TNoteBookCapabilities">
-        <short>
-          <var>TNoteBookCapabilities</var> - set of <var>TNoteBookCapability</var>
-        </short>
-      </element>
       <element name="TShape.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
       <element name="TShape.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TCustomImage.OnPictureChanged">
@@ -6627,7 +5982,6 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
           <var>TBalloonFlags</var> enumerated type for flags on Tray Icon balloons</short>
       </element>
       <element name="TCustomPage.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomNotebook.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TShape.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomSplitter.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TPaintBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>

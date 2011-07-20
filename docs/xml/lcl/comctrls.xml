@@ -56,722 +56,6 @@
       <!-- unresolved type reference Visibility: default -->
       <element name="Buttons"/>
       <!-- object Visibility: default -->
-      <element name="TCustomNotebook">
-        <short>
-          <var>TCustomNotebook</var>: The base type for  <var>TTabControl</var> and  <var>TPageControl</var>
-        </short>
-        <descr>
-          <p>
-            <var>TCustom Notebook</var>: The base type for 
-            <var>TTabControl</var> and 
-            <var>TPageControl</var>
-          </p>
-          <p>A tab control has a series of <var>Tabs</var>, and it may or may not contain pages.</p>
-        </descr>
-        <seealso>
-          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
-        </seealso>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FAccess">
-        <short/>
-        <descr/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FAddingPages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FImages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FLoadedPageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FOnChanging">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FOnCloseTabClicked"/>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FOnGetImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.fOnPageChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FOptions">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FPageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FPageIndexOnLastChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FPageList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FShowTabs">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FTabPosition">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.CNNotify">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.CNNotify.Message">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.DoSendPageIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.DoSendShowTabs">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.DoSendTabPosition">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomNotebook.GetActivePage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetActivePage.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomNotebook.GetActivePageComponent">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetActivePageComponent.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomNotebook.GetPage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetPage.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.GetPage.aIndex">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomNotebook.GetPageCount">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetPageCount.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomNotebook.GetPageIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetPageIndex.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.InsertPage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.InsertPage.APage">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.InsertPage.Index">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomNotebook.IsStoredActivePage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.IsStoredActivePage.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.MoveTab">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.MoveTab.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.MoveTab.NewIndex">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.WSMovePage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.WSMovePage.APage">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.WSMovePage.NewIndex">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.RemovePage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.RemovePage.Index">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.SetActivePage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetActivePage.Value">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.SetActivePageComponent">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetActivePageComponent.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.SetImages">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetImages.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.SetOptions">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetOptions.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.SetPageIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetPageIndex.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.SetPages">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetPages.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.SetShowTabs">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetShowTabs.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.SetTabPosition">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetTabPosition.tabPos">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.ShowCurrentPage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.UpdateAllDesignerFlags">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomNotebook.UpdateDesignerFlags">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.UpdateDesignerFlags.APageIndex">
-        <short/>
-      </element>
-      <!-- variable Visibility: protected -->
-      <element name="TCustomNotebook.PageClass">
-        <short>
-          <var>PageClass</var> - the class of page that is included in this NoteBook</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.DoCreateWnd">
-        <short>
-          <var>DoCreateWnd</var> - perform th ecode for method <var>CreateWnd</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.Change">
-        <short>
-          <var>Change</var> - perform the code for <var>OnChanging</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.Loaded" link="#rtl.Classes.TComponent.Loaded">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.ReadState" link="#rtl.Classes.TComponent.ReadState">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.ReadState.Reader">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.ShowControl" link="#LCL.Controls.TWinControl.ShowControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.ShowControl.APage">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomNotebook.UpdateTabProperties">
-        <short>
-          <var>UpdateTabProperties</var> - apply all pending changes to the Tab</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomNotebook.ChildClassAllowed" link="#LCL.Controls.TWinControl.ChildClassAllowed">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.ChildClassAllowed.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.ChildClassAllowed.ChildClass">
-        <short/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomNotebook.ActivePageComponent">
-        <short>
-          <var>ActivePageComponent</var> - the actual contents of the currently selected 
-          
-          <var>Page</var>
-        </short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomNotebook.ActivePage">
-        <short>
-          <var>ActivePage</var> - the  name (string) of the 
-          
-          <var>Page</var> that is currently selected and is available for interaction</short>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCustomNotebook.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomNotebook</var>: calls inherited <var>Create</var> creates a pagelist, then sets initial bounds and default values for local variables and properties</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.Create.TheOwner">
-        <short/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TCustomNotebook.Destroy">
-        <short>
-          <var>Destroy</var> - destructor for <var>TCustomNotebook</var>: clears and frees pages and list, then calls inherited <var>Destroy</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
-        </seealso>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomNotebook.TabIndexAtClientPos">
-        <short>
-          <var>TabIndexAtClientPos</var> - the index value of the Tab at the specified position 
-          
-          <var>ClientPos</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.TabIndexAtClientPos.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.TabIndexAtClientPos.ClientPos">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomNotebook.CanTab" link="#LCL.Controls.TControl.CanTab"/>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.CanTab.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomNotebook.GetImageIndex">
-        <short>
-          <var>GetImageIndex</var> - find the index number of the image associated with the specified Page index</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetImageIndex.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.GetImageIndex.ThePageIndex">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomNotebook.IndexOf">
-        <short>
-          <var>IndexOf</var> - returns the index value of a specified page</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.IndexOf.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.IndexOf.APage">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomNotebook.CustomPage">
-        <short>
-          <var>CustomPage</var> - returns the page specified by 
-          
-          <var>Index</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.CustomPage.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.CustomPage.Index">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomNotebook.CanChangePageIndex">
-        <short>
-          <var>CanChangePageIndex</var> - determine whether it is permissible to change the index of the page</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.CanChangePageIndex.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomNotebook.GetMinimumTabWidth">
-        <short>
-          <var>GetMinimumTabWidth</var> - find the smallest permissible tab width</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetMinimumTabWidth.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomNotebook.GetMinimumTabHeight">
-        <short>
-          <var>GetMinimumTabHeight</var> - find the least permissible height for a tab</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetMinimumTabHeight.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomNotebook.DoCloseTabClicked">
-        <short>
-          <var>DoCloseTabClicked</var> - perform the action associated with clicking the Close tab for this page (<var>OnCloseTabClicked</var>)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.DoCloseTabClicked.APage">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.Images">
-        <short>
-          <var>Images</var> - the list of images associated with the pages of this notebook</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.OnChanging">
-        <short>
-          <var>OnChanging</var> - event handler for changing a tab</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.OnCloseTabClicked">
-        <short>
-          <var>OnCloseTabClicked</var> - event handler for clicking on the Close button to close a tab</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.OnGetImageIndex">
-        <short>
-          <var>OnGetImageIndex</var> - event handler for getting an image index</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.OnPageChanged">
-        <short>
-          <var>OnPageChanged</var> - event handler for a change in the page</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.Options">
-        <short>The set of  <var>Options</var> for the Notebook: Show close buttons on the tabs, multi-line tabs</short>
-        <descr>
-          <p>The set of  <var>Options</var> for the Notebook: </p>
-          <p>
-            <var>nboShowCloseButtons</var> (display a little CloseButton on the Tab next to the label, to allow the user to close that tab),</p>
-          <p>
-            <var>nboMultiLine</var> (allows multi-line captions on the Tabs)</p>
-        </descr>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.Page">
-        <short>The current <var>Page</var> of the Notebook</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.Page.Index">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.PageCount">
-        <short>
-          <var>PageCount</var> - the number of Pages in the Notebook</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.PageIndex">
-        <short>
-          <var>PageIndex</var> - Index number of the current page</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.PageList">
-        <short>
-          <var>PageList</var> - the Indexed list of the Pages in the Notebook</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.Pages">
-        <short>The contents of the <var>Pages</var> in the Notebook (as Strings)</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.ShowTabs">
-        <short>
-          <var>ShowTabs</var> - if True (default condition), show the tabs for each page</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomNotebook.TabPosition">
-        <short>
-          <var>TabPosition</var> - top, bottom, left or right</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCustomNotebook.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <descr/>
-        <seealso/>
-      </element>
       <!-- enumeration type Visibility: default -->
       <element name="THitTest">
         <short>
@@ -1520,6 +804,1361 @@
         <descr/>
         <seealso/>
       </element>
+      <!-- object Visibility: default -->
+      <element name="TCustomPage">
+        <short>
+          <var>TCustomPage</var>: The base type for 
+          <var>Page</var>
+        </short>
+        <descr>
+          <var>TCustomPage</var>: The base type for the tabbed pages found in notebooks
+        </descr>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FFlags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomPage.GetTabVisible">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.GetTabVisible.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomPage.SetImageIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.SetImageIndex.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomPage.SetTabVisible">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.SetTabVisible.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.WMPaint" link="#LCL.Controls.TWinControl.WMPaint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.WMPaint.Msg">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.SetParent" link="#LCL.Controls.TControl.SetParent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.SetParent.AParent">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomPage.Flags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.CMHitTest" link="#LCL.Controls.TControl.CMHitTest">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.CMHitTest.Message">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.DestroyHandle" link="#LCL.Controls.TWinControl.DestroyHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomPage.GetPageIndex">
+        <short>
+          <var>GetPageIndex</var> - returns the index of the current page</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.GetPageIndex.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.SetPageIndex">
+        <short>
+          <var>SetPageIndex</var> - specifies an index for the current page</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.SetPageIndex.AValue">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomPage.TabVisible">
+        <short>
+          <var>TabVisible</var> - is the Tab for this page visible?</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FTabVisible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FOnHide">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomPage.FOnShow">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomPage.DialogChar" link="#LCL.Controls.TControl.DialogChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.DialogChar.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.DialogChar.Message">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.DoHide">
+        <short>
+          <var>DoHide</var> - perform the code for the <var>OnHide</var> event handler</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomPage.DoShow">
+        <short>
+          <var>DoShow</var> - perform the code for the <var>OnShow</var> event handler</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomPage.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomPage</var>: calls inherited <var>Create</var> then initialises style, visibility, alignment and caption</short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#lcl.Controls.TControl.Create">TControl.Create</link>
+        </seealso>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomPage.AdjustClientRect" link="#LCL.Controls.TWinControl.AdjustClientRect">
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomPage.AdjustClientRect.ARect">
+        <short/>
+      </element>
+      <element name="TCustomPage.AutoSizeDelayed" link="#lcl.Controls.TControl.AutoSizeDelayed"/>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.AutoSizeDelayed.Result">
+        <short/>
+      </element>
+      <element name="TCustomPage.IsControlVisible" link="#lcl.Controls.TControl.IsControlVisible"/>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.IsControlVisible.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.Visible" link="#lcl.Controls.TControl.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.PageIndex">
+        <short>
+          <var>PageIndex </var>- integer index value for this page in the notebook</short>
+      </element>
+      <element name="TCustomPage.VisibleIndex">
+        <short>
+          <var>VisibleIndex</var> - returns the index number of a visible page</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.VisibleIndex.Result">
+        <short/>
+      </element>
+      <element name="TCustomPage.OnHide">
+        <short>
+          <var>OnHide</var> - event handler for hiding this page in a notebook</short>
+      </element>
+      <element name="TCustomPage.OnShow">
+        <short>
+          <var>OnShow</var> - event handler for showing (making visible) this page of a notebook</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomPage.CanTab" link="#LCL.Controls.TControl.CanTab"/>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.CanTab.Result"/>
+      <!-- function Visibility: public -->
+      <element name="TCustomPage.IsVisible">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomPage.IsVisible.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.ImageIndex">
+        <short>
+          <var>ImageIndex</var> - integer index value for the image associated with this page</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.Left" link="#lcl.Controls.TControl.Left">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.Top" link="#lcl.Controls.TControl.Top">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.Width" link="#lcl.Controls.TControl.Width">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.Height" link="#lcl.Controls.TControl.Height">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomPage.TabOrder" link="#lcl.Controls.TWinControl.TabOrder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TCustomPageClass">
+        <short>
+          <var>TCustomPageClass</var> - class of <var>TCustomPage</var>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TNBPages">
+        <short>
+          <var>TNBPages</var> - NoteBook Pages: an array of strings containing the names of the pages</short>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TNBPages.FPageList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TNBPages.FNotebook">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TNBPages.Get" link="#rtl.Classes.TStrings.Get">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TNBPages.Get.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Get.Index">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TNBPages.GetCount" link="#rtl.Classes.TStrings.GetCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TNBPages.GetCount.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TNBPages.GetObject" link="#rtl.Classes.TStrings.GetObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TNBPages.GetObject.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.GetObject.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TNBPages.Put" link="#rtl.Classes.TStrings.Put">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Put.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Put.S">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TNBPages.Create">
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+        <short>
+          <var>Create</var> - constructor for <var>TNBPages</var>: calls inherited <var>Create</var> then sets up the list of pages on the notebook</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Create.thePageList">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Create.theNotebook">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TNBPages.Clear" link="#rtl.Classes.TStrings.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TNBPages.Delete" link="#rtl.Classes.TStrings.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Delete.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TNBPages.Insert" link="#rtl.Classes.TStrings.Insert">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Insert.Index">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Insert.S">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TNBPages.Move" link="#rtl.Classes.TStrings.Move">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Move.CurIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.Move.NewIndex">
+        <short/>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TTabChangingEvent">
+        <short>
+          <var>TTabChangingEvent</var> - generic event handling method for a change in a notebook Tab</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTabChangingEvent.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTabChangingEvent.AllowChange">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TTabPosition">
+        <short>
+          <var>TTabPosition</var> - enumerated type for position of tab relative to page: top, bottom, left or right</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TTabPosition.tpTop">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TTabPosition.tpBottom">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TTabPosition.tpLeft">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TTabPosition.tpRight">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TTabStyle">
+        <short>
+          <var>TTabStyle</var> - enumerated type for tab style: normal, buttons or flat buttons</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TTabStyle.tsTabs">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TTabStyle.tsButtons">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TTabStyle.tsFlatButtons">
+        <short/>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TTabGetImageEvent">
+        <short>
+          <var>TTabGetImageEvent</var> - generic event handling method for getting an image for a Tab</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTabGetImageEvent.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTabGetImageEvent.TabIndex">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TTabGetImageEvent.ImageIndex">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TNoteBookOption">
+        <short>
+          <var>TNoteBookOption</var> - Show the close button on a tab, allow multi-line tabs</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TNoteBookOption.nboShowCloseButtons">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TNoteBookOption.nboMultiLine">
+        <short/>
+      </element>
+      <!-- set type Visibility: default -->
+      <element name="TNoteBookOptions">
+        <short>
+          <var>TNoteBookOptions</var> - set of <var>TNoteBookOption</var>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomTabControl">
+        <short>
+          <var>TCustomTabControl</var>: The base type for  <var>TTabControl</var> and  <var>TPageControl</var>
+        </short>
+        <descr>
+          <p>
+            <var>TCustom Notebook</var>: The base type for 
+            <var>TTabControl</var> and 
+            <var>TPageControl</var>
+          </p>
+          <p>A tab control has a series of <var>Tabs</var>, and it may or may not contain pages.</p>
+        </descr>
+        <seealso>
+          <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
+        </seealso>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FAccess">
+        <short/>
+        <descr/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FAddingPages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FImages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FLoadedPageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FOnChanging">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FOnCloseTabClicked"/>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FOnGetImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.fOnPageChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FOptions">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FPageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FPageIndexOnLastChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FPageList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FShowTabs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FTabPosition">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.CNNotify">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.CNNotify.Message">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.DoSendPageIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.DoSendShowTabs">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.DoSendTabPosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomTabControl.GetActivePage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.GetActivePage.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomTabControl.GetActivePageComponent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.GetActivePageComponent.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomTabControl.GetPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.GetPage.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.GetPage.aIndex">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomTabControl.GetPageCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.GetPageCount.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomTabControl.GetPageIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.GetPageIndex.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.InsertPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.InsertPage.APage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.InsertPage.Index">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomTabControl.IsStoredActivePage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.IsStoredActivePage.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.MoveTab">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.MoveTab.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.MoveTab.NewIndex">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.WSMovePage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.WSMovePage.APage">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.WSMovePage.NewIndex">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.RemovePage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.RemovePage.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.SetActivePage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.SetActivePage.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.SetActivePageComponent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.SetActivePageComponent.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.SetImages">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.SetImages.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.SetOptions">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.SetOptions.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.SetPageIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.SetPageIndex.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.SetPages">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.SetPages.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.SetShowTabs">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.SetShowTabs.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.SetTabPosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.SetTabPosition.tabPos">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.ShowCurrentPage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.UpdateAllDesignerFlags">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.UpdateDesignerFlags">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.UpdateDesignerFlags.APageIndex">
+        <short/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TCustomTabControl.PageClass">
+        <short>
+          <var>PageClass</var> - the class of page that is included in this NoteBook</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTabControl.CreateWnd" link="#LCL.Controls.TWinControl.CreateWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTabControl.DoCreateWnd">
+        <short>
+          <var>DoCreateWnd</var> - perform th ecode for method <var>CreateWnd</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTabControl.Change">
+        <short>
+          <var>Change</var> - perform the code for <var>OnChanging</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTabControl.Loaded" link="#rtl.Classes.TComponent.Loaded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTabControl.ReadState" link="#rtl.Classes.TComponent.ReadState">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.ReadState.Reader">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTabControl.ShowControl" link="#LCL.Controls.TWinControl.ShowControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.ShowControl.APage">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomTabControl.UpdateTabProperties">
+        <short>
+          <var>UpdateTabProperties</var> - apply all pending changes to the Tab</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomTabControl.ChildClassAllowed" link="#LCL.Controls.TWinControl.ChildClassAllowed">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.ChildClassAllowed.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.ChildClassAllowed.ChildClass">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomTabControl.ActivePageComponent">
+        <short>
+          <var>ActivePageComponent</var> - the actual contents of the currently selected 
+          
+          <var>Page</var>
+        </short>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomTabControl.ActivePage">
+        <short>
+          <var>ActivePage</var> - the  name (string) of the 
+          
+          <var>Page</var> that is currently selected and is available for interaction</short>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomTabControl.Create">
+        <short>
+          <var>Create</var> - constructor for <var>TCustomTabControl</var>: calls inherited <var>Create</var> creates a pagelist, then sets initial bounds and default values for local variables and properties</short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
+        </seealso>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TCustomTabControl.Destroy">
+        <short>
+          <var>Destroy</var> - destructor for <var>TCustomTabControl</var>: clears and frees pages and list, then calls inherited <var>Destroy</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
+        </seealso>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomTabControl.TabIndexAtClientPos">
+        <short>
+          <var>TabIndexAtClientPos</var> - the index value of the Tab at the specified position 
+          
+          <var>ClientPos</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.TabIndexAtClientPos.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.TabIndexAtClientPos.ClientPos">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomTabControl.CanTab" link="#LCL.Controls.TControl.CanTab"/>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.CanTab.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomTabControl.GetImageIndex">
+        <short>
+          <var>GetImageIndex</var> - find the index number of the image associated with the specified Page index</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.GetImageIndex.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.GetImageIndex.ThePageIndex">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomTabControl.IndexOf">
+        <short>
+          <var>IndexOf</var> - returns the index value of a specified page</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.IndexOf.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.IndexOf.APage">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomTabControl.CustomPage">
+        <short>
+          <var>CustomPage</var> - returns the page specified by 
+          
+          <var>Index</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.CustomPage.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.CustomPage.Index">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomTabControl.CanChangePageIndex">
+        <short>
+          <var>CanChangePageIndex</var> - determine whether it is permissible to change the index of the page</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.CanChangePageIndex.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomTabControl.GetMinimumTabWidth">
+        <short>
+          <var>GetMinimumTabWidth</var> - find the smallest permissible tab width</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.GetMinimumTabWidth.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCustomTabControl.GetMinimumTabHeight">
+        <short>
+          <var>GetMinimumTabHeight</var> - find the least permissible height for a tab</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.GetMinimumTabHeight.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomTabControl.DoCloseTabClicked">
+        <short>
+          <var>DoCloseTabClicked</var> - perform the action associated with clicking the Close tab for this page (<var>OnCloseTabClicked</var>)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.DoCloseTabClicked.APage">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.Images">
+        <short>
+          <var>Images</var> - the list of images associated with the pages of this notebook</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.OnChanging">
+        <short>
+          <var>OnChanging</var> - event handler for changing a tab</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.OnCloseTabClicked">
+        <short>
+          <var>OnCloseTabClicked</var> - event handler for clicking on the Close button to close a tab</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.OnGetImageIndex">
+        <short>
+          <var>OnGetImageIndex</var> - event handler for getting an image index</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.OnPageChanged">
+        <short>
+          <var>OnPageChanged</var> - event handler for a change in the page</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.Options">
+        <short>The set of  <var>Options</var> for the Notebook: Show close buttons on the tabs, multi-line tabs</short>
+        <descr>
+          <p>The set of  <var>Options</var> for the Notebook: </p>
+          <p>
+            <var>nboShowCloseButtons</var> (display a little CloseButton on the Tab next to the label, to allow the user to close that tab),</p>
+          <p>
+            <var>nboMultiLine</var> (allows multi-line captions on the Tabs)</p>
+        </descr>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.Page">
+        <short>The current <var>Page</var> of the Notebook</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.Page.Index">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.PageCount">
+        <short>
+          <var>PageCount</var> - the number of Pages in the Notebook</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.PageIndex">
+        <short>
+          <var>PageIndex</var> - Index number of the current page</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.PageList">
+        <short>
+          <var>PageList</var> - the Indexed list of the Pages in the Notebook</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.Pages">
+        <short>The contents of the <var>Pages</var> in the Notebook (as Strings)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.ShowTabs">
+        <short>
+          <var>ShowTabs</var> - if True (default condition), show the tabs for each page</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomTabControl.TabPosition">
+        <short>
+          <var>TabPosition</var> - top, bottom, left or right</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCustomTabControl.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TNBPages.PageListChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.PageListChange.Ptr">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TNBPages.PageListChange.AnAction">
+        <short/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomTabControl.FPageIndexOnLastShow">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomTabControl.FindVisiblePage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.FindVisiblePage.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.FindVisiblePage.Index">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.AddRemovePageHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.AddRemovePageHandle.APage">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomTabControl.PageRemoved">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.PageRemoved.Index">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomTabControl.DialogChar" link="#LCL.Controls.TControl.DialogChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.DialogChar.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomTabControl.DialogChar.Message">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomTabControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomTabControl.GetControlClassDefaultSize.Result">
+        <short/>
+      </element>
+      <element name="TCustomTabControl.GetCapabilities">
+        <short>
+          <var>GetCapabilities</var> - returns the set of capabilities</short>
+      </element>
+      <element name="TNoteBookCapability">
+        <short>
+          <var>TNoteBookCapability</var> - enumerated type containing possible capabilities of a notebook</short>
+        <descr>nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup</descr>
+      </element>
+      <element name="TNoteBookCapabilities">
+        <short>
+          <var>TNoteBookCapabilities</var> - set of <var>TNoteBookCapability</var>
+        </short>
+      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTabStyle" link="#LCL.ExtCtrls.TTabStyle">
         <short>TTabStyle</short>
@@ -1836,7 +2475,7 @@
           <p>To use <var>TPageControl</var>, select its icon from the Common Controls tab of the IDE Component Palette, and place it at the desired location on the Form.</p>
           <p>Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring, docking and other properties, then select the object and right click with the mouse to bring up a pop-up menu whose frst item is 'AddPage'. After you have added as many pages as you need, the individual pages can be edited by selecting <var>ActivePage</var> in the Object Inspector, choosing the page required, and editing its properties. </p>
           <p>While a given page is selected, it is also possible to drop other controls (such as buttons, memo boxes etc) on to the page from the Component Palette.</p>
-          <p>Inherits most of its properties from <link id="#lcl.ComCtrls.TCustomNotebook">TCustomNoteBook</link>
+          <p>Inherits most of its properties from <link id="#lcl.ComCtrls.TCustomTabControl">TCustomTabControl</link>
           </p>
         </descr>
         <errors/>
@@ -1940,7 +2579,7 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.ExtCtrls.TCustomNotebook.Create">TCustomNotebook.Create</link>
+          <link id="#LCL.ExtCtrls.TCustomTabControl.Create">TCustomTabControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2019,7 +2658,7 @@
           <var>Pages</var> - the actual Pages (<var>TTabSheet</var>) that comprise the component</short>
         <descr/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomNotebook.Pages">TCustomNotebook.Pages</link>
+          <link id="#LCL.ExtCtrls.TCustomTabControl.Pages">TCustomTabControl.Pages</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2033,7 +2672,7 @@
         <descr>
           <p>
             <var>ActivePage</var> - the currently selected active page (<var>TTabSheet</var>)</p>
-          <p>Note that this overrides the definition in <var>TCustomNoteBook</var>, where <var>ActivePage</var> is defined as a String.</p>
+          <p>Note that this overrides the definition in <var>TCustomTabControl</var>, where <var>ActivePage</var> is defined as a String.</p>
         </descr>
         <seealso/>
       </element>
@@ -2074,7 +2713,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.Images" link="#LCL.ExtCtrls.TCustomNotebook.Images">
+      <element name="TPageControl.Images" link="#LCL.ExtCtrls.TCustomTabControl.Images">
         <short/>
         <descr/>
         <seealso/>
@@ -2117,7 +2756,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.TabPosition" link="#LCL.ExtCtrls.TCustomNotebook.TabPosition">
+      <element name="TPageControl.TabPosition" link="#LCL.ExtCtrls.TCustomTabControl.TabPosition">
         <short/>
         <descr/>
         <seealso/>
@@ -2142,7 +2781,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnChanging" link="#LCL.ExtCtrls.TCustomNotebook.OnChanging">
+      <element name="TPageControl.OnChanging" link="#LCL.ExtCtrls.TCustomTabControl.OnChanging">
         <short/>
         <descr/>
         <seealso/>
@@ -2166,7 +2805,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnGetImageIndex" link="#LCL.ExtCtrls.TCustomNotebook.OnGetImageIndex">
+      <element name="TPageControl.OnGetImageIndex" link="#LCL.ExtCtrls.TCustomTabControl.OnGetImageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -17568,7 +18207,7 @@ the comparision is case sensitive.
       <element name="TPageControl.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
       <element name="TPageControl.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
       <element name="TPageControl.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
-      <element name="TPageControl.OnPageChanged" link="#LCL.ExtCtrls.TCustomNotebook.OnPageChanged"/>
+      <element name="TPageControl.OnPageChanged" link="#LCL.ComCtrls.TCustomTabControl.OnPageChanged"/>
       <element name="TPageControl.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TPageControl.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TPageControl.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
@@ -18141,6 +18780,7 @@ the comparision is case sensitive.
       <element name="TToolBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomTrackBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomTreeView.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomTabControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TToolButton.ShowCaption">
         <short>Show/Hide caption</short>
         <descr>The ToolBar.ShowCaptions has precendence. Hiding will only work if ToolBar.List is true.</descr>
