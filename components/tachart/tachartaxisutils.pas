@@ -118,6 +118,7 @@ type
     property Source: TCustomChartSource read FSource write SetSource;
     property Stripes: TChartStyles read FStripes write SetStripes;
     property Style default smsValue;
+    property YIndex;
   end;
 
   { TChartBasicAxis }

@@ -190,6 +190,7 @@ type
     property OverlapPolicy: TChartMarksOverlapPolicy
       read FOverlapPolicy write SetOverlapPolicy default opIgnore;
     property Style: TSeriesMarksStyle read FStyle write SetStyle;
+    property YIndex: Integer read FYIndex write SetYIndex default 0;
   published
     property Attachment: TChartMarkAttachment
       read FAttachment write SetAttachment default maDefault;
@@ -199,7 +200,6 @@ type
     property Distance: TChartDistance read FDistance write SetDistance;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
     property Visible default true;
-    property YIndex: Integer read FYIndex write SetYIndex default 0;
   end;
 
   TChartLinkPen = class(TChartPen)
@@ -231,6 +231,7 @@ type
     property LinkPen;
     property OverlapPolicy;
     property Style default smsNone;
+    property YIndex;
   end;
 
   TSeriesPointerStyle = (
