@@ -1601,9 +1601,9 @@ begin
     end;
   end else begin
     if (event^.Button=1) and
-       ((TControl(Data) is TCustomNoteBook) or (TControl(Data) is TCustomTabControl)) then
+       (TControl(Data) is TCustomNoteBook) then
     begin
-      // clicks on the notebook should be handled by the gtk (switching page)
+      // clicks on the tab control should be handled by the gtk (switching page)
     end
     else
     begin
@@ -1967,9 +1967,8 @@ begin
   end else
   begin
     // stop the signal, so that the widget does not auto react
-    if (not (TControl(Data) is TCustomNoteBook)) and
-       (not (TControl(Data) is TCustomTabControl))
-    then begin
+    if not (TControl(Data) is TCustomNoteBook) then
+    begin
       g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-release-event');
       Result := not CallBackDefaultReturn;
     end;
