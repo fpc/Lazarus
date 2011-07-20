@@ -544,6 +544,15 @@ procedure TChartAxis.Measure(
       Result := IfThen(IsVertical, cy, cx) div 2;
   end;
 
+  function MaxMinorTick: Integer;
+  var
+    m: TCollectionItem;
+  begin
+    Result := 0;
+    for m in Minors do
+      Result := Max(TChartMinorAxis(m).TickLength, Result);
+  end;
+
 var
   sz, rmin, rmax, c, i: Integer;
 begin
@@ -557,6 +566,7 @@ begin
   if sz > 0 then
     sz += FHelper.FDrawer.Scale(TickLength) +
       FHelper.FDrawer.Scale(Marks.Distance);
+  sz := Max(FHelper.FDrawer.Scale(MaxMinorTick), sz);
   FHelper.GetClipRange(rmin, rmax);
   with AMeasureData do begin
     FSize := Max(sz, FSize);
@@ -788,6 +798,7 @@ begin
       axis.Measure(AExtent, g^);
       ai += 1;
     end;
+    // Axises of the same group should have the same Alignment and ZPosition.
     Result[axis.Alignment] += g^.FSize + g^.FTitleSize;
   end;
   ai := 0;
