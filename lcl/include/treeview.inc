@@ -282,6 +282,9 @@ begin
   {$ENDIF}
   Include(FStates,nsDeleting);
 
+  Selected := False;
+  MultiSelected := False;
+
   // we must trigger TCustomTreeView.OnDeletion event before
   // unbinding.See issue #17832.
   if Assigned(Owner) and Assigned(Owner.Owner) then
