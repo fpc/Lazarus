@@ -450,7 +450,7 @@ constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := DEF_TITLE_DISTANCE;
-  FFrame.Style := psClear;
+  Frame.Style := psClear;
   FLabelBrush.Style := bsClear;
   FVisible := false;
 end;
@@ -479,7 +479,7 @@ begin
   inherited Create(AOwner);
   FDefaultSource := TIntervalChartSource.Create(AOwner);
   FDistance := 1;
-  FFrame.Style := psClear;
+  Frame.Style := psClear;
   FLabelBrush.Style := bsClear;
   FListener := TListener.Create(@FSource, @StyleChanged);
   FStyle := smsValue;

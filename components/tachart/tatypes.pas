@@ -85,6 +85,40 @@ type
     property Visible: Boolean read FVisible write SetVisible;
   end;
 
+  TChartMarksOverlapPolicy = (opIgnore, opHideNeighbour);
+
+  TChartTextElement = class(TChartElement)
+  strict private
+    FClipped: Boolean;
+    FOverlapPolicy: TChartMarksOverlapPolicy;
+    procedure SetClipped(AValue: Boolean);
+    procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
+  strict protected
+    procedure AddMargins(ADrawer: IChartDrawer; var ASize: TPoint);
+    procedure ApplyLabelFont(ADrawer: IChartDrawer); virtual;
+    function IsMarginRequired: Boolean;
+  strict protected
+    function GetFrame: TChartPen; virtual; abstract;
+    function GetLabelAngle: Double; virtual;
+    function GetLabelBrush: TBrush; virtual; abstract;
+    function GetLabelFont: TFont; virtual; abstract;
+    function GetLinkPen: TChartPen; virtual;
+  public
+    constructor Create(AOwner: TCustomChart);
+  public
+    procedure Assign(ASource: TPersistent); override;
+    procedure DrawLabel(
+      ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
+      const AText: String; var APrevLabelPoly: TPointArray);
+    function GetLabelPolygon(ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
+    function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
+  public
+    // If false, labels may overlap axises and legend.
+    property Clipped: Boolean read FClipped write SetClipped default true;
+    property OverlapPolicy: TChartMarksOverlapPolicy
+      read FOverlapPolicy write SetOverlapPolicy default opIgnore;
+  end;
+
   { TChartTitle }
 
   TChartTitle = class(TChartElement)
@@ -120,64 +154,53 @@ type
     property Visible default false;
   end;
 
-  TChartMarksOverlapPolicy = (opIgnore, opHideNeighbour);
-
   TChartMarkAttachment = (maDefault, maEdge, maCenter);
 
   { TGenericChartMarks }
 
   {$IFNDEF fpdoc}  // Workaround for issue #18549.
   generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
-    class(TChartElement)
+    class(TChartTextElement)
   {$ELSE}
-  TGenericChartMarks = class(TChartElement)
+  TGenericChartMarks = class(TChartTextElement)
   {$ENDIF}
-  private
-    FYIndex: Integer;
-    procedure AddMargins(ADrawer: IChartDrawer; var ASize: TPoint);
-    function GetDistanceToCenter: Boolean;
-    function LabelAngle: Double; inline;
-    procedure PutLabelFontTo(ADrawer: IChartDrawer);
-    procedure SetAttachment(AValue: TChartMarkAttachment);
-    procedure SetDistanceToCenter(AValue: Boolean);
-    procedure SetYIndex(AValue: Integer);
-  protected
+  strict private
     FAdditionalAngle: Double;
     FAttachment: TChartMarkAttachment;
-    FClipped: Boolean;
-    FDistance: TChartDistance;
-    FFormat: String;
     FFrame: _TFramePen;
-    FLabelBrush: _TLabelBrush;
-    FLabelFont: TFont;
-    FLinkPen: _TLinkPen;
-    FOverlapPolicy: TChartMarksOverlapPolicy;
-    FStyle: TSeriesMarksStyle;
-
-    procedure SetClipped(AValue: Boolean);
+    FYIndex: Integer;
+    function GetDistanceToCenter: Boolean;
+    procedure SetAttachment(AValue: TChartMarkAttachment);
     procedure SetDistance(AValue: TChartDistance);
+    procedure SetDistanceToCenter(AValue: Boolean);
     procedure SetFormat(AValue: String);
     procedure SetFrame(AValue: _TFramePen);
     procedure SetLabelBrush(AValue: _TLabelBrush);
     procedure SetLabelFont(AValue: TFont);
     procedure SetLinkPen(AValue: _TLinkPen);
-    procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
     procedure SetStyle(AValue: TSeriesMarksStyle);
-  protected
-    function IsMarginRequired: Boolean;
+    procedure SetYIndex(AValue: Integer);
+  strict protected
+    FDistance: TChartDistance;
+    FFormat: String;
+    FLabelBrush: _TLabelBrush;
+    FLabelFont: TFont;
+    FLinkPen: _TLinkPen;
+    FStyle: TSeriesMarksStyle;
+  strict protected
+    procedure ApplyLabelFont(ADrawer: IChartDrawer); override;
+    function GetFrame: TChartPen; override;
+    function GetLabelAngle: Double; override;
+    function GetLabelBrush: TBrush; override;
+    function GetLabelFont: TFont; override;
+    function GetLinkPen: TChartPen; override;
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
-
   public
     procedure Assign(ASource: TPersistent); override;
     function CenterOffset(ADrawer: IChartDrawer; const AText: String): TSize;
-    procedure DrawLabel(
-      ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
-      const AText: String; var APrevLabelPoly: TPointArray);
-    function GetLabelPolygon(ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
     function IsMarkLabelsVisible: Boolean;
-    function MeasureLabel(ADrawer: IChartDrawer; const AText: String): TSize;
     procedure SetAdditionalAngle(AAngle: Double);
   public
     property DistanceToCenter: Boolean
@@ -187,16 +210,13 @@ type
     property Frame: _TFramePen read FFrame write SetFrame;
     property LabelBrush: _TLabelBrush read FLabelBrush write SetLabelBrush;
     property LinkPen: _TLinkPen read FLinkPen write SetLinkPen;
-    property OverlapPolicy: TChartMarksOverlapPolicy
-      read FOverlapPolicy write SetOverlapPolicy default opIgnore;
     property Style: TSeriesMarksStyle read FStyle write SetStyle;
     property YIndex: Integer read FYIndex write SetYIndex default 0;
   published
     property Attachment: TChartMarkAttachment
       read FAttachment write SetAttachment default maDefault;
-    // If false, labels may overlap axises and legend.
-    property Clipped: Boolean read FClipped write SetClipped default true;
     // Distance between labelled object and label.
+    property Clipped;
     property Distance: TChartDistance read FDistance write SetDistance;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
     property Visible default true;
@@ -417,6 +437,127 @@ begin
     FOwner.StyleChanged(Sender);
 end;
 
+{ TChartTextElement }
+
+procedure TChartTextElement.AddMargins(
+  ADrawer: IChartDrawer; var ASize: TPoint);
+begin
+  if not IsMarginRequired then exit;
+  with ADrawer do
+    ASize += Point(Scale(MARKS_MARGIN_X), Scale(MARKS_MARGIN_Y)) * 2;
+end;
+
+procedure TChartTextElement.ApplyLabelFont(ADrawer: IChartDrawer);
+begin
+  ADrawer.Font := GetLabelFont;
+end;
+
+procedure TChartTextElement.Assign(ASource: TPersistent);
+begin
+  if ASource is TChartTextElement then
+    with TChartTextElement(ASource) do begin
+      Self.FClipped := FClipped;
+      Self.FOverlapPolicy := FOverlapPolicy;
+    end;
+  inherited Assign(ASource);
+end;
+
+constructor TChartTextElement.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FClipped := true;
+  FOverlapPolicy := opIgnore;
+end;
+
+procedure TChartTextElement.DrawLabel(
+  ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
+  const AText: String; var APrevLabelPoly: TPointArray);
+var
+  labelPoly: TPointArray;
+  ptText: TPoint;
+  i: Integer;
+begin
+  ApplyLabelFont(ADrawer);
+  ptText := ADrawer.TextExtent(AText);
+  labelPoly := GetLabelPolygon(ADrawer, ptText);
+  for i := 0 to High(labelPoly) do
+    labelPoly[i] += ALabelCenter;
+
+  if
+    (OverlapPolicy = opHideNeighbour) and
+    IsPolygonIntersectsPolygon(APrevLabelPoly, labelPoly)
+  then
+    exit;
+  APrevLabelPoly := labelPoly;
+
+  if not Clipped then
+    ADrawer.ClippingStop;
+
+  if (ADataPoint <> ALabelCenter) and GetLinkPen.Visible then begin
+    ADrawer.Pen := GetLinkPen;
+    ADrawer.Line(ADataPoint, ALabelCenter);
+  end;
+  ADrawer.Brush := GetLabelBrush;
+  if IsMarginRequired then begin
+    ADrawer.Pen := GetFrame;
+    ADrawer.Polygon(labelPoly, 0, Length(labelPoly));
+  end;
+
+  ptText := RotatePoint(-ptText div 2, GetLabelAngle) + ALabelCenter;
+  ADrawer.TextOut.Pos(ptText).Text(AText).Done;
+  if not Clipped then
+    ADrawer.ClippingStart;
+end;
+
+function TChartTextElement.GetLabelAngle: Double;
+begin
+  // Negate to take into account top-down Y axis.
+  Result := -OrientToRad(GetLabelFont.Orientation);
+end;
+
+function TChartTextElement.GetLabelPolygon(
+  ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
+begin
+  AddMargins(ADrawer, ASize);
+  Result := RotateRect(ASize, GetLabelAngle);
+end;
+
+function TChartTextElement.GetLinkPen: TChartPen;
+begin
+  Result := nil;
+end;
+
+function TChartTextElement.IsMarginRequired: Boolean;
+begin
+  with GetFrame do
+    Result := (GetLabelBrush.Style <> bsClear) or (Style <> psClear) and Visible;
+end;
+
+function TChartTextElement.MeasureLabel(
+  ADrawer: IChartDrawer; const AText: String): TSize;
+var
+  sz: TPoint;
+begin
+  ApplyLabelFont(ADrawer);
+  sz := ADrawer.TextExtent(AText);
+  AddMargins(ADrawer, sz);
+  Result := MeasureRotatedRect(sz, GetLabelAngle);
+end;
+
+procedure TChartTextElement.SetClipped(AValue: Boolean);
+begin
+  if FClipped = AValue then exit;
+  FClipped := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartTextElement.SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
+begin
+  if FOverlapPolicy = AValue then exit;
+  FOverlapPolicy := AValue;
+  StyleChanged(Self);
+end;
+
 { TChartTitle }
 
 procedure TChartTitle.Assign(ASource: TPersistent);
@@ -518,19 +659,17 @@ end;
 
 { TGenericChartMarks }
 
-procedure TGenericChartMarks.AddMargins(
-  ADrawer: IChartDrawer; var ASize: TPoint);
+procedure TGenericChartMarks.ApplyLabelFont(ADrawer: IChartDrawer);
 begin
-  if not IsMarginRequired then exit;
-  with ADrawer do
-    ASize += Point(Scale(MARKS_MARGIN_X), Scale(MARKS_MARGIN_Y)) * 2;
+  inherited ApplyLabelFont(ADrawer);
+  if FAdditionalAngle <> 0 then
+    ADrawer.AddToFontOrientation(RadToOrient(FAdditionalAngle));
 end;
 
 procedure TGenericChartMarks.Assign(ASource: TPersistent);
 begin
   if ASource is Self.ClassType then
     with TGenericChartMarks(ASource) do begin
-      Self.FClipped := FClipped;
       Self.FDistance := FDistance;
       Self.FFormat := FFormat;
       Self.FFrame.Assign(FFrame);
@@ -539,7 +678,6 @@ begin
       // Self.FLabelBrush.Assign(FLabelBrush);
       // Self.FLabelFont.Assign(FLabelFont);
       // Self.FLinkPen.Assign(FLinkPen);
-      Self.FOverlapPolicy := FOverlapPolicy;
       Self.FStyle := FStyle;
     end;
   inherited Assign(ASource);
@@ -559,12 +697,10 @@ end;
 constructor TGenericChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
-  FClipped := true;
   InitHelper(FFrame, _TFramePen);
   InitHelper(FLabelBrush, _TLabelBrush);
   InitHelper(FLabelFont, TFont);
   InitHelper(FLinkPen, _TLinkPen);
-  FOverlapPolicy := opIgnore;
   FStyle := smsNone;
   FVisible := true;
 end;
@@ -578,92 +714,39 @@ begin
   inherited;
 end;
 
-procedure TGenericChartMarks.DrawLabel(
-  ADrawer: IChartDrawer; const ADataPoint, ALabelCenter: TPoint;
-  const AText: String; var APrevLabelPoly: TPointArray);
-var
-  labelPoly: TPointArray;
-  ptText: TPoint;
-  i: Integer;
-begin
-  PutLabelFontTo(ADrawer);
-  ptText := ADrawer.TextExtent(AText);
-  labelPoly := GetLabelPolygon(ADrawer, ptText);
-  for i := 0 to High(labelPoly) do
-    labelPoly[i] += ALabelCenter;
-
-  if
-    (OverlapPolicy = opHideNeighbour) and
-    IsPolygonIntersectsPolygon(APrevLabelPoly, labelPoly)
-  then
-    exit;
-  APrevLabelPoly := labelPoly;
-
-  if not Clipped then
-    ADrawer.ClippingStop;
-
-  if LinkPen.Visible and (ADataPoint <> ALabelCenter) then begin;
-    ADrawer.Pen := LinkPen;
-    ADrawer.Line(ADataPoint, ALabelCenter);
-  end;
-  ADrawer.Brush := LabelBrush;
-  if IsMarginRequired then begin
-    ADrawer.Pen := Frame;
-    ADrawer.Polygon(labelPoly, 0, Length(labelPoly));
-  end;
-
-  ptText := RotatePoint(-ptText div 2, LabelAngle) + ALabelCenter;
-  ADrawer.TextOut.Pos(ptText).Text(AText).Done;
-  if not Clipped then
-    ADrawer.ClippingStart;
-end;
-
 function TGenericChartMarks.GetDistanceToCenter: Boolean;
 begin
   Result := Attachment = maCenter;
 end;
 
-function TGenericChartMarks.GetLabelPolygon(
-  ADrawer: IChartDrawer; ASize: TPoint): TPointArray;
+function TGenericChartMarks.GetFrame: TChartPen;
 begin
-  AddMargins(ADrawer, ASize);
-  Result := RotateRect(ASize, LabelAngle);
+  Result := Frame;
 end;
 
-function TGenericChartMarks.IsMarginRequired: Boolean;
+function TGenericChartMarks.GetLabelAngle: Double;
 begin
-  Result :=
-    (LabelBrush.Style <> bsClear) or
-    (Frame.Style <> psClear) and Frame.Visible;
+  Result := inherited GetLabelAngle - FAdditionalAngle;
+end;
+
+function TGenericChartMarks.GetLabelBrush: TBrush;
+begin
+  Result := LabelBrush;
+end;
+
+function TGenericChartMarks.GetLabelFont: TFont;
+begin
+  Result := LabelFont;
+end;
+
+function TGenericChartMarks.GetLinkPen: TChartPen;
+begin
+  Result := LinkPen;
 end;
 
 function TGenericChartMarks.IsMarkLabelsVisible: Boolean;
 begin
   Result := Visible and (Style <> smsNone) and (Format <> '');
-end;
-
-function TGenericChartMarks.LabelAngle: Double;
-begin
-  // Negate to take into account top-down Y axis.
-  Result := -OrientToRad(LabelFont.Orientation) - FAdditionalAngle;
-end;
-
-function TGenericChartMarks.MeasureLabel(
-  ADrawer: IChartDrawer; const AText: String): TSize;
-var
-  sz: TPoint;
-begin
-  PutLabelFontTo(ADrawer);
-  sz := ADrawer.TextExtent(AText);
-  AddMargins(ADrawer, sz);
-  Result := MeasureRotatedRect(sz, LabelAngle);
-end;
-
-procedure TGenericChartMarks.PutLabelFontTo(ADrawer: IChartDrawer);
-begin
-  ADrawer.Font := LabelFont;
-  if FAdditionalAngle <> 0 then
-    ADrawer.AddToFontOrientation(RadToOrient(FAdditionalAngle));
 end;
 
 procedure TGenericChartMarks.SetAdditionalAngle(AAngle: Double);
@@ -675,13 +758,6 @@ procedure TGenericChartMarks.SetAttachment(AValue: TChartMarkAttachment);
 begin
   if FAttachment = AValue then exit;
   FAttachment := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TGenericChartMarks.SetClipped(AValue: Boolean);
-begin
-  if FClipped = AValue then exit;
-  FClipped := AValue;
   StyleChanged(Self);
 end;
 
@@ -736,13 +812,6 @@ procedure TGenericChartMarks.SetLinkPen(AValue: _TLinkPen);
 begin
   if FLinkPen = AValue then exit;
   FLinkPen := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TGenericChartMarks.SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
-begin
-  if FOverlapPolicy = AValue then exit;
-  FOverlapPolicy := AValue;
   StyleChanged(Self);
 end;
 
