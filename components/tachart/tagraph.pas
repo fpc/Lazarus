@@ -702,7 +702,6 @@ end;
 
 procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
-  c: Integer;
   ldd: TChartLegendDrawingData;
   s: TBasicChartSeries;
   a: TChartAxis;
@@ -729,7 +728,6 @@ begin
     FLogicalExtent := GetFullExtent;
   FCurrentExtent := FLogicalExtent;
 
-  c := (FClipRect.Left + FClipRect.Right) div 2;
   with ClipRect do begin;
     FTitle.Draw(ADrawer, 1, Left, Right, Top);
     FFoot.Draw(ADrawer, -1, Left, Right, Bottom);

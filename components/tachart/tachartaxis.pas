@@ -33,6 +33,13 @@ const
 
 type
 
+  TChartValueText = record
+    FValue: Double;
+    FText: String;
+  end;
+
+  TChartValueTextArray = array of TChartValueText;
+
   { TChartMinorAxis }
 
   TChartMinorAxis = class(TChartBasicAxis)
@@ -47,9 +54,11 @@ type
     procedure StyleChanged(ASender: TObject); override;
   public
     constructor Create(ACollection: TCollection); override;
+    function GetMarkValues(AMin, AMax: Double): TChartValueTextArray;
   published
     property IntervalsCount: Cardinal
       read FIntervalsCount write SetIntervalsCount default DEF_INTERVALS_COUNT;
+    property Marks;
     property TickLength default DEF_TICK_LENGTH div 2;
   end;
 
@@ -298,6 +307,21 @@ begin
   Result := 'M';
 end;
 
+function TChartMinorAxis.GetMarkValues(AMin, AMax: Double): TChartValueTextArray;
+var
+  c, ic: Integer;
+begin
+  if not Visible then exit(nil);
+  ic := IntervalsCount;
+  SetLength(Result, ic - 1);
+  for c := 1 to ic - 1 do
+    with Result[c - 1] do begin
+      FValue := WeightedAverage(AMin, AMax, c / ic);
+      if Marks.Visible then
+        FText := Format(Marks.Format, [FValue, 0.0, '', 0.0, 0.0]);
+    end;
+end;
+
 procedure TChartMinorAxis.SetAlignment(AValue: TChartAxisAlignment);
 begin
   Unused(AValue);
@@ -390,10 +414,11 @@ end;
 
 procedure TChartAxis.Draw;
 var
-  i, j, c, ic, fixedCoord: Integer;
+  i, j, fixedCoord: Integer;
   axisTransf: TTransformFunc;
-  dhMinor: TAxisDrawHelper;
   pv, v: Double;
+  minorMarks: TChartValueTextArray;
+  m: TChartValueText;
 begin
   if not Visible then exit;
   if Marks.Visible then
@@ -409,17 +434,18 @@ begin
     FHelper.DrawMark(fixedCoord, v, FMarkTexts[i]);
     if (i = 0) or (v = pv) then continue;
     for j := 0 to Minors.Count - 1 do begin
-      ic := Minors[j].IntervalsCount;
-      if not Minors[j].Visible or (ic < 2) then continue;
-      dhMinor := FHelper.Clone;
-      dhMinor.FAxis := Minors[j];
-      try
-        dhMinor.BeginDrawing;
-        for c := 1 to ic - 1 do
-          dhMinor.DrawMark(fixedCoord, WeightedAverage(pv, v, c / ic), '');
-        dhMinor.EndDrawing;
-      finally
-        dhMinor.Free;
+      minorMarks := Minors[j].GetMarkValues(pv, v);
+      if minorMarks = nil then continue;
+      with FHelper.Clone do begin
+        FAxis := Minors[j];
+        try
+          BeginDrawing;
+          for m in minorMarks do
+            DrawMark(fixedCoord, m.FValue, m.FText);
+          EndDrawing;
+        finally
+          Free;
+        end;
       end;
     end;
   end;
