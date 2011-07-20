@@ -224,6 +224,7 @@ type
     property Style: TSeriesMarksStyle read FStyle write SetStyle;
     property YIndex: Integer read FYIndex write SetYIndex default 0;
   published
+    property Alignment default taLeftJustify;
     property Attachment: TChartMarkAttachment
       read FAttachment write SetAttachment default maDefault;
     // Distance between labelled object and label.
@@ -605,7 +606,7 @@ begin
   FBrush.Color := FOwner.Color;
   InitHelper(FFont, TFont);
   FFont.Color := clBlue;
-  InitHelper(FFrame, TChartPen);
+  InitHelper(FFrame, TChartTitleFramePen);
   FFrame.Visible := false;
   FMargin := DEF_MARGIN;
   FText := TStringList.Create;
@@ -626,8 +627,7 @@ procedure TChartTitle.Draw(
   ADrawer: IChartDrawer; ADir, AX: Integer; var AY: Integer);
 var
   p, ptSize: TPoint;
-  w: Integer;
-  dummy: TPointArray;
+  dummy: TPointArray = nil;
 begin
   if not Visible or (Text.Count = 0) then exit;
   ptSize := MeasureLabel(ADrawer, Text.Text);
