@@ -309,7 +309,6 @@ the Canvas.SaveHandleState and Canvas.RestoreHandleState.
       </element>
       <!-- function Visibility: default -->
       <element name="CombineRgn">
-      <element name="OpenURL">
         <short>Combines two regions</short>
         <descr>The following parameters are present in this function:
 Dest - The Handle of a region which will receive the result of the operation

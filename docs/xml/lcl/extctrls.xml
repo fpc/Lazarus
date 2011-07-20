@@ -277,9 +277,7 @@
           <var>TNotebook</var> is a container for a series of 
           <var>pages</var> placed together</short>
         <descr>
-          <p>
-          <var>TNotebook</var> is a control which can hold a series of 
-          <var>pages</var> placed together. Only one page is shown at a time and this control is completely custom drawn, which means that it is available and looks the same in any widgetset which supports TCustomControl. The pages are containers which can hold controls. This control never has tabs. If you are looking for a control with tabs and pages, please see <var>TPageControl</var> instead.</short>
+          <p><var>TNotebook</var> is a control which can hold a series of pages placed together. Only one page is shown at a time and this control is completely custom drawn, which means that it is available and looks the same in any widgetset which supports TCustomControl. The pages are containers which can hold controls. This control never has tabs. If you are looking for a control with tabs and pages, please see <var>TPageControl</var> instead.</p>
           <p>To use a Notebook, select its icon from the 'Additional' tab of the Component Palette and place it on the Form. Adjust its size, position, alignment and anchoring as required, by moving the object on the Form or by using the Object Inspector.</p>
           <p>Pages are added to the NoteBook by selecting the control and right-clicking with the mouse to get a pop-up menu whose first item is 'Add Page'. Pages already in the NoteBook can be edited by selecting the appropriate ActivePage in the Object Inspector and modifying its properties or adding additional components to that Page.</p>
         </descr>
