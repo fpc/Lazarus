@@ -35,7 +35,7 @@ type
   public
     procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-      var AValues: TDoubleDynArray; var ATexts: TStringDynArray); override;
+      var AValues: TChartValueTextArray); override;
   end;
 
   TDateTimeStep = (
@@ -59,7 +59,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-      var AValues: TDoubleDynArray; var ATexts: TStringDynArray); override;
+      var AValues: TChartValueTextArray); override;
   published
     property DateTimeFormat: String read FDateTimeFormat write FDateTimeFormat;
     property Steps: TDateTimeSteps
@@ -144,7 +144,8 @@ begin
   end; {case AxisScale}
 end;
 
-function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
+function GetIntervals(
+  AMin, AMax: Double; AInverted: Boolean): TChartValueTextArray;
 const
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
 var
@@ -169,12 +170,12 @@ begin
   repeat
     if IsZero(m) then
       m := 0;
-    Result[markCount] := m;
+    Result[markCount].FValue := m;
     markCount += 1;
     crossCount += Ord(InRange(m, AMin, AMax) <> InRange(m + step, AMin, AMax));
     m += step;
   until (crossCount = 2) or (m + step = m);
-  Result[markCount] := m;
+  Result[markCount].FValue := m;
 end;
 
 procedure Register;
@@ -206,17 +207,16 @@ end;
 
 procedure TIntervalChartSource.ValuesInRange(
   AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-  var AValues: TDoubleDynArray; var ATexts: TStringDynArray);
+  var AValues: TChartValueTextArray);
 var
   i: Integer;
 begin
   Unused(AUseY);
   if AMin > AMax then exit;
   AValues := GetIntervals(AMin, AMax, false);
-  SetLength(ATexts, Length(AValues));
   for i := 0 to High(AValues) do
     // Extra format arguments for compatibility with FormatItem.
-    ATexts[i] := Format(AFormat, [AValues[i], 0.0, '', 0.0, 0.0]);
+    AValues[i].FText := Format(AFormat, [AValues[i].FValue, 0.0, '', 0.0, 0.0]);
 end;
 
 { TDateTimeIntervalChartSource }
@@ -227,9 +227,9 @@ begin
   FSteps := DATE_TIME_STEPS_ALL;
 end;
 
-procedure TDateTimeIntervalChartSource.ValuesInRange(AMin, AMax: Double;
-  const AFormat: String; AUseY: Boolean; var AValues: TDoubleDynArray;
-  var ATexts: TStringDynArray);
+procedure TDateTimeIntervalChartSource.ValuesInRange(
+  AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
+  var AValues: TChartValueTextArray);
 const
   YEAR = 365.25;
   STEP_INTERVALS: array [TDateTimeStep] of Double = (
@@ -284,7 +284,7 @@ begin
   if (AMax - AMin) / STEP_INTERVALS[dtsCentury] > MAX_STEPS then begin
     inherited ValuesInRange(
       AMin / STEP_INTERVALS[dtsYear], AMax / STEP_INTERVALS[dtsYear],
-      AFormat, AUseY, AValues, ATexts);
+      AFormat, AUseY, AValues);
     exit;
   end;
   s := Low(s);
@@ -303,13 +303,12 @@ begin
   end;
   i := Length(AValues);
   SetLength(AValues, i + cnt);
-  SetLength(ATexts, i + cnt);
 
   FillChar(prevSt, SizeOf(prevSt), $FF);
   x := start;
   while x <= AMax do begin
-    AValues[i] := x;
-    ATexts[i] := Format(AFormat, [x, 0.0, FormatLabel, 0.0, 0.0]);
+    AValues[i].FValue := x;
+    AValues[i].FText := Format(AFormat, [x, 0.0, FormatLabel, 0.0, 0.0]);
     i += 1;
     case s of
       dtsCentury: x := IncYear(x, 100);
@@ -319,8 +318,8 @@ begin
       otherwise x += si;
     end;
   end;
-  AValues[i] := x;
-  ATexts[i] := Format(AFormat, [x, 0.0, FormatLabel, 0.0, 0.0]);
+  AValues[i].FValue := x;
+  AValues[i].FText := Format(AFormat, [x, 0.0, FormatLabel, 0.0, 0.0]);
 end;
 
 end.

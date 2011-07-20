@@ -33,13 +33,6 @@ const
 
 type
 
-  TChartValueText = record
-    FValue: Double;
-    FText: String;
-  end;
-
-  TChartValueTextArray = array of TChartValueText;
-
   { TChartMinorAxis }
 
   TChartMinorAxis = class(TChartBasicAxis)
@@ -99,8 +92,7 @@ type
   TChartAxis = class(TChartBasicAxis)
   strict private
     FListener: TListener;
-    FMarkTexts: TStringDynArray;
-    FMarkValues: TDoubleDynArray;
+    FMarkValues: TChartValueTextArray;
 
     procedure GetMarkValues(AMin, AMax: Double);
     procedure VisitSource(ASource: TCustomChartSource; var AData);
@@ -413,41 +405,50 @@ begin
 end;
 
 procedure TChartAxis.Draw;
-var
-  i, j, fixedCoord: Integer;
-  axisTransf: TTransformFunc;
-  pv, v: Double;
-  minorMarks: TChartValueTextArray;
-  m: TChartValueText;
-begin
-  if not Visible then exit;
-  if Marks.Visible then
-    FHelper.FDrawer.Font := Marks.LabelFont;
-  fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
-  v := 0;
-  FHelper.BeginDrawing;
-  FHelper.DrawAxisLine(AxisPen, fixedCoord);
-  axisTransf := @GetTransform.AxisToGraph;
-  for i := 0 to High(FMarkValues) do begin
-    pv := v;
-    v := axisTransf(FMarkValues[i]);
-    FHelper.DrawMark(fixedCoord, v, FMarkTexts[i]);
-    if (i = 0) or (v = pv) then continue;
+
+  procedure DrawMinors(AFixedCoord: Integer; AMin, AMax: Double);
+  var
+    j: Integer;
+    minorMarks: TChartValueTextArray;
+    m: TChartValueText;
+  begin
+    if IsNan(AMin) or (AMin = AMax) then exit;
     for j := 0 to Minors.Count - 1 do begin
-      minorMarks := Minors[j].GetMarkValues(pv, v);
+      minorMarks := Minors[j].GetMarkValues(AMin, AMax);
       if minorMarks = nil then continue;
       with FHelper.Clone do begin
         FAxis := Minors[j];
         try
           BeginDrawing;
           for m in minorMarks do
-            DrawMark(fixedCoord, m.FValue, m.FText);
+            DrawMark(AFixedCoord, m.FValue, m.FText);
           EndDrawing;
         finally
           Free;
         end;
       end;
     end;
+  end;
+
+var
+  fixedCoord: Integer;
+  pv, v: Double;
+  axisTransf: TTransformFunc;
+  t: TChartValueText;
+begin
+  if not Visible then exit;
+  if Marks.Visible then
+    FHelper.FDrawer.Font := Marks.LabelFont;
+  fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
+  pv := NaN;
+  FHelper.BeginDrawing;
+  FHelper.DrawAxisLine(AxisPen, fixedCoord);
+  axisTransf := @GetTransform.AxisToGraph;
+  for t in FMarkValues do begin
+    v := axisTransf(t.FValue);
+    FHelper.DrawMark(fixedCoord, v, t.FText);
+    DrawMinors(fixedCoord, pv, v);
+    pv := v;
   end;
   FHelper.EndDrawing;
 end;
@@ -500,12 +501,12 @@ var
   i: Integer;
   d: TAxisDataExtent;
   vis: TChartOnVisitSources;
+  t: TChartValueText;
 begin
   AMin := GetTransform.GraphToAxis(AMin);
   AMax := GetTransform.GraphToAxis(AMax);
   EnsureOrder(AMin, AMax);
   SetLength(FMarkValues, 0);
-  SetLength(FMarkTexts, 0);
   vis := TChartAxisList(Collection).OnVisitSources;
   if Marks.AtDataOnly and Assigned(vis) then begin
     d.FMin := AMin;
@@ -514,16 +515,17 @@ begin
   end
   else
     Marks.SourceDef.ValuesInRange(
-      AMin, AMax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
+      AMin, AMax, Marks.Format, IsVertical, FMarkValues);
   if Inverted then
     for i := 0 to High(FMarkValues) div 2 do begin
-      Exchange(FMarkValues[i], FMarkValues[High(FMarkValues) - i]);
-      Exchange(FMarkTexts[i], FMarkTexts[High(FMarkValues) - i]);
+      t := FMarkValues[i];
+      FMarkValues[i] := FMarkValues[High(FMarkValues) - i];
+      FMarkValues[High(FMarkValues) - i] := t;
     end;
 
   if Assigned(FOnMarkToText) then
-    for i := 0 to High(FMarkTexts) do
-      FOnMarkToText(FMarkTexts[i], FMarkValues[i]);
+    for i := 0 to High(FMarkValues) do
+      FOnMarkToText(FMarkValues[i].FText, FMarkValues[i].FValue);
 end;
 
 function TChartAxis.GetTransform: TChartAxisTransformations;
@@ -543,14 +545,14 @@ procedure TChartAxis.Measure(
 
   function MaxMarksSize(AMin, AMax: Double): TPoint;
   var
-    t: String;
+    t: TChartValueText;
   begin
     Result := Point(0, 0);
     if AMin = AMax then exit;
     GetMarkValues(AMin, AMax);
     if not Marks.Visible then exit;
-    for t in FMarkTexts do
-      Result := MaxPoint(Marks.MeasureLabel(FHelper.FDrawer, t), Result);
+    for t in FMarkValues do
+      Result := MaxPoint(Marks.MeasureLabel(FHelper.FDrawer, t.FText), Result);
   end;
 
   function TitleSize: Integer;
@@ -564,9 +566,9 @@ procedure TChartAxis.Measure(
     Result += FHelper.FDrawer.Scale(Title.Distance);
   end;
 
-  function FirstLastSize(AIndex: Integer): Integer;
+  function FirstLastSize(AText: String): Integer;
   begin
-    with Marks.MeasureLabel(FHelper.FDrawer, FMarkTexts[AIndex]) do
+    with Marks.MeasureLabel(FHelper.FDrawer, AText) do
       Result := IfThen(IsVertical, cy, cx) div 2;
   end;
 
@@ -581,6 +583,7 @@ procedure TChartAxis.Measure(
 
 var
   sz, rmin, rmax, c, i: Integer;
+  t: TChartValueText;
 begin
   if not Visible then exit;
   if IsVertical then
@@ -597,16 +600,17 @@ begin
   with AMeasureData do begin
     FSize := Max(sz, FSize);
     FTitleSize := Max(TitleSize, FTitleSize);
-    for i := 0 to High(FMarkTexts) do begin
-      c := FHelper.GraphToImage(FMarkValues[i]);
+    for t in FMarkValues do begin
+      c := FHelper.GraphToImage(t.FValue);
       if not InRange(c, rmin, rmax) then continue;
-      FFirstMark := Max(FirstLastSize(i) - c + rmin, FFirstMark);
+      FFirstMark := Max(FirstLastSize(t.FText) - c + rmin, FFirstMark);
       break;
     end;
-    for i := High(FMarkTexts) downto 0 do begin
-      c := FHelper.GraphToImage(FMarkValues[i]);
+    for i := High(FMarkValues) downto 0 do begin
+      t := FMarkValues[i];
+      c := FHelper.GraphToImage(t.FValue);
       if not InRange(c, rmin, rmax) then continue;
-      FLastMark := Max(FirstLastSize(i) - rmax + c, FLastMark);
+      FLastMark := Max(FirstLastSize(t.FText) - rmax + c, FLastMark);
       break;
     end;
     if Arrow.Visible then begin
@@ -724,7 +728,7 @@ begin
       lmax := Min(ext.b.X, FMax);
     end;
     Marks.SourceDef.ValuesInRange(
-      lmin, lmax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
+      lmin, lmax, Marks.Format, IsVertical, FMarkValues);
   end;
 end;
 

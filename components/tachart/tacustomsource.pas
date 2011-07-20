@@ -29,6 +29,13 @@ type
   EEditableSourceRequired = class(EChartError);
   EYCountError = class(EChartError);
 
+  TChartValueText = record
+    FValue: Double;
+    FText: String;
+  end;
+
+  TChartValueTextArray = array of TChartValueText;
+
   { TChartDataItem }
 
   TChartDataItem = object
@@ -79,7 +86,7 @@ type
     function IsSorted: Boolean; virtual;
     procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-      var AValues: TDoubleDynArray; var ATexts: TStringDynArray); virtual;
+      var AValues: TChartValueTextArray); virtual;
     function ValuesTotal: Double; virtual;
     function XOfMax: Double;
     function XOfMin: Double;
@@ -411,15 +418,15 @@ end;
 
 procedure TCustomChartSource.ValuesInRange(
   AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-  var AValues: TDoubleDynArray; var ATexts: TStringDynArray);
+  var AValues: TChartValueTextArray);
 
 var
   cnt: Integer;
 
   procedure Push(AValue: Double; AIndex: Integer);
   begin
-    AValues[cnt] := AValue;
-    ATexts[cnt] := FormatItem(AFormat, AIndex, 0);
+    AValues[cnt].FValue := AValue;
+    AValues[cnt].FText := FormatItem(AFormat, AIndex, 0);
     cnt += 1;
   end;
 
@@ -429,7 +436,6 @@ var
 begin
   cnt := Length(AValues);
   SetLength(AValues, cnt + Count + 2);
-  SetLength(ATexts, cnt + Count + 2);
   v := 0;
   li := 0;
   for i := 0 to Count - 1 do begin
@@ -444,7 +450,6 @@ begin
   if not InRange(v, AMin, AMax) then
     Push(v, li);
   SetLength(AValues, cnt);
-  SetLength(ATexts, cnt);
 end;
 
 function TCustomChartSource.ValuesTotal: Double;
