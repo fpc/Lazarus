@@ -136,6 +136,8 @@ object Form1: TForm1
                 Marks.Distance = 4
                 Marks.LabelFont.Height = -9
                 Marks.LabelFont.Orientation = 900
+                Marks.Format = '%0:.9g'
+                Marks.Style = smsValue
               end>
           end        
           item

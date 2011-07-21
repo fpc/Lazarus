@@ -84,31 +84,51 @@ type
   end;
 
   {$IFNDEF fpdoc} // Workaround for issue #18549.
-  TCustomChartAxisMarks =
+  TBasicChartAxisMarks =
     specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
   {$ENDIF}
+
+  TCustomChartAxisMarks = class(TBasicChartAxisMarks)
+  strict private
+    FStripes: TChartStyles;
+    procedure SetStripes(AValue: TChartStyles);
+  strict protected
+    function IsFormatStored: Boolean;
+  public
+    constructor Create(AOwner: TCustomChart);
+    function Measure(
+      ADrawer: IChartDrawer; AIsVertical: Boolean; ATickLength: Integer;
+      AValues: TChartValueTextArray): Integer;
+    property Stripes: TChartStyles read FStripes write SetStripes;
+  end;
+
+  TChartMinorAxisMarks = class(TCustomChartAxisMarks)
+  public
+    constructor Create(AOwner: TCustomChart);
+  published
+    property Distance default 1;
+    property Format;
+    property Frame;
+    property LabelBrush;
+    property OverlapPolicy;
+    property Style default smsNone;
+  end;
 
   { TChartAxisMarks }
 
   TChartAxisMarks = class(TCustomChartAxisMarks)
-  private
+  strict private
     FAtDataOnly: Boolean;
     FDefaultSource: TCustomChartSource;
     FListener: TListener;
     FSource: TCustomChartSource;
-    FStripes: TChartStyles;
 
-    function IsFormatStored: Boolean;
     procedure SetAtDataOnly(AValue: Boolean);
     procedure SetSource(AValue: TCustomChartSource);
-    procedure SetStripes(AValue: TChartStyles);
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
 
-    function Measure(
-      ADrawer: IChartDrawer; AIsVertical: Boolean; ATickLength: Integer;
-      AValues: TChartValueTextArray): Integer;
     function SourceDef: TCustomChartSource;
   published
     property AtDataOnly: Boolean
@@ -119,7 +139,7 @@ type
     property LabelBrush;
     property OverlapPolicy;
     property Source: TCustomChartSource read FSource write SetSource;
-    property Stripes: TChartStyles read FStripes write SetStripes;
+    property Stripes;
     property Style default smsValue;
     property YIndex;
   end;
@@ -130,19 +150,19 @@ type
   strict private
     FArrow: TChartArrow;
     FGrid: TChartAxisGridPen;
-    FMarks: TChartAxisMarks;
     FTickColor: TColor;
     FTickLength: Integer;
     FVisible: Boolean;
     procedure SetArrow(AValue: TChartArrow);
     procedure SetGrid(AValue: TChartAxisGridPen);
-    procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
     procedure SetVisible(AValue: Boolean);
   strict protected
+    FMarks: TCustomChartAxisMarks;
     function GetAlignment: TChartAxisAlignment; virtual; abstract;
     procedure SetAlignment(AValue: TChartAxisAlignment); virtual; abstract;
+    procedure SetMarks(AValue: TCustomChartAxisMarks);
     procedure StyleChanged(ASender: TObject); virtual; abstract;
   public
     constructor Create(ACollection: TCollection; AChart: TCustomChart); overload;
@@ -155,7 +175,7 @@ type
     property Alignment: TChartAxisAlignment
     read GetAlignment write SetAlignment;
     property Arrow: TChartArrow read FArrow write SetArrow;
-    property Marks: TChartAxisMarks read FMarks write SetMarks;
+    property Marks: TCustomChartAxisMarks read FMarks write SetMarks;
   published
     property Grid: TChartAxisGridPen read FGrid write SetGrid;
     property TickColor: TColor read FTickColor write SetTickColor default clBlack;
@@ -238,6 +258,15 @@ implementation
 uses
   Math, SysUtils,
   TAGeometry, TAIntervalSources;
+
+{ TChartMinorAxisMarks }
+
+constructor TChartMinorAxisMarks.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FStyle := smsNone;
+  FFormat := SERIES_MARK_FORMATS[FStyle];
+end;
 
 { TAxisDrawHelper }
 
@@ -477,34 +506,23 @@ begin
   LabelFont := AValue;
 end;
 
-{ TChartAxisMarks }
+{ TCustomChartAxisMarks }
 
-constructor TChartAxisMarks.Create(AOwner: TCustomChart);
+constructor TCustomChartAxisMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
-  FDefaultSource := TIntervalChartSource.Create(AOwner);
   FDistance := 1;
   Frame.Style := psClear;
   FLabelBrush.Style := bsClear;
-  FListener := TListener.Create(@FSource, @StyleChanged);
-  FStyle := smsValue;
-  FFormat := SERIES_MARK_FORMATS[FStyle];
 end;
 
-destructor TChartAxisMarks.Destroy;
-begin
-  FreeAndNil(FListener);
-  FreeAndNil(FDefaultSource);
-  inherited;
-end;
-
-function TChartAxisMarks.IsFormatStored: Boolean;
+function TCustomChartAxisMarks.IsFormatStored: Boolean;
 begin
   Result := FStyle <> smsValue;
 end;
 
-function TChartAxisMarks.Measure(
-  ADrawer: IChartDrawer; AIsVertical: Boolean; ATickLength: Integer;
+function TCustomChartAxisMarks.Measure(ADrawer: IChartDrawer;
+  AIsVertical: Boolean; ATickLength: Integer;
   AValues: TChartValueTextArray): Integer;
 var
   t: TChartValueText;
@@ -518,6 +536,31 @@ begin
   if DistanceToCenter then
     Result := Result div 2;
   Result += ADrawer.Scale(ATickLength) + ADrawer.Scale(Distance);
+end;
+
+procedure TCustomChartAxisMarks.SetStripes(AValue: TChartStyles);
+begin
+  if FStripes = AValue then exit;
+  FStripes := AValue;
+  StyleChanged(Self);
+end;
+
+{ TChartAxisMarks }
+
+constructor TChartAxisMarks.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FDefaultSource := TIntervalChartSource.Create(AOwner);
+  FListener := TListener.Create(@FSource, @StyleChanged);
+  FStyle := smsValue;
+  FFormat := SERIES_MARK_FORMATS[FStyle];
+end;
+
+destructor TChartAxisMarks.Destroy;
+begin
+  FreeAndNil(FListener);
+  FreeAndNil(FDefaultSource);
+  inherited;
 end;
 
 procedure TChartAxisMarks.SetAtDataOnly(AValue: Boolean);
@@ -535,13 +578,6 @@ begin
   FSource := AValue;
   if FSource <> nil then
     FSource.Broadcaster.Subscribe(FListener);
-  StyleChanged(Self);
-end;
-
-procedure TChartAxisMarks.SetStripes(AValue: TChartStyles);
-begin
-  if FStripes = AValue then exit;
-  FStripes := AValue;
   StyleChanged(Self);
 end;
 
@@ -576,7 +612,7 @@ begin
   FGrid := TChartAxisGridPen.Create;
   FGrid.OnChange := @StyleChanged;
   FGrid.Style := psDot;
-  FMarks := TChartAxisMarks.Create(AChart);
+  // FMarks must be created in descendants.
   FTickColor := clBlack;
   FVisible := true;
 end;
@@ -601,7 +637,7 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartBasicAxis.SetMarks(AValue: TChartAxisMarks);
+procedure TChartBasicAxis.SetMarks(AValue: TCustomChartAxisMarks);
 begin
   FMarks.Assign(AValue);
   StyleChanged(Self);

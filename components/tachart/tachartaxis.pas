@@ -38,7 +38,9 @@ type
   TChartMinorAxis = class(TChartBasicAxis)
   strict private
     FIntervalsCount: Cardinal;
+    function GetMarks: TChartMinorAxisMarks; inline;
     procedure SetIntervalsCount(AValue: Cardinal);
+    procedure SetMarks(AValue: TChartMinorAxisMarks);
   protected
     function GetDisplayName: String; override;
   strict protected
@@ -51,7 +53,7 @@ type
   published
     property IntervalsCount: Cardinal
       read FIntervalsCount write SetIntervalsCount default DEF_INTERVALS_COUNT;
-    property Marks;
+    property Marks: TChartMinorAxisMarks read GetMarks write SetMarks;
     property TickLength default DEF_TICK_LENGTH div 2;
   end;
 
@@ -112,10 +114,12 @@ type
     FTransformations: TChartAxisTransformations;
     FZPosition: TChartDistance;
 
+    function GetMarks: TChartAxisMarks; inline;
     function GetTransform: TChartAxisTransformations;
     procedure SetAxisPen(AValue: TChartAxisPen);
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
+    procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetMinors(AValue: TChartMinorAxisList);
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
     procedure SetTitle(AValue: TChartAxisTitle);
@@ -149,7 +153,7 @@ type
     property Group: Integer read FGroup write SetGroup default 0;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
-    property Marks;
+    property Marks: TChartAxisMarks read GetMarks write SetMarks;
     property Minors: TChartMinorAxisList read FMinors write SetMinors;
     property TickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
@@ -286,6 +290,8 @@ constructor TChartMinorAxis.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection, (ACollection as TChartMinorAxisList).GetChart);
   FIntervalsCount := DEF_INTERVALS_COUNT;
+  FMarks := TChartMinorAxisMarks.Create(
+    (ACollection as TChartMinorAxisList).GetChart);
   TickLength := DEF_TICK_LENGTH div 2;
 end;
 
@@ -297,6 +303,11 @@ end;
 function TChartMinorAxis.GetDisplayName: String;
 begin
   Result := 'M';
+end;
+
+function TChartMinorAxis.GetMarks: TChartMinorAxisMarks;
+begin
+  Result := TChartMinorAxisMarks(inherited Marks);
 end;
 
 function TChartMinorAxis.GetMarkValues(AMin, AMax: Double): TChartValueTextArray;
@@ -325,6 +336,11 @@ begin
   if FIntervalsCount = AValue then exit;
   FIntervalsCount := AValue;
   StyleChanged(Self);
+end;
+
+procedure TChartMinorAxis.SetMarks(AValue: TChartMinorAxisMarks);
+begin
+  inherited Marks := AValue;
 end;
 
 procedure TChartMinorAxis.StyleChanged(ASender: TObject);
@@ -389,6 +405,7 @@ begin
   FAxisPen.OnChange := @StyleChanged;
   FAxisPen.Visible := false;
   FListener := TListener.Create(@FTransformations, @StyleChanged);
+  FMarks := TChartAxisMarks.Create(ACollection.Owner as TCustomChart);
   FMinors := TChartMinorAxisList.Create(Self);
   TickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
@@ -492,6 +509,11 @@ begin
     SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[Inverted];
   if Title.Caption <> '' then
     Result += Format(CAPTION_FMT, [Title.Caption]);
+end;
+
+function TChartAxis.GetMarks: TChartAxisMarks;
+begin
+  Result := TChartAxisMarks(inherited Marks);
 end;
 
 procedure TChartAxis.GetMarkValues(AMin, AMax: Double);
@@ -665,6 +687,11 @@ begin
   if FInverted = AValue then exit;
   FInverted := AValue;
   StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetMarks(AValue: TChartAxisMarks);
+begin
+  inherited Marks := AValue;
 end;
 
 procedure TChartAxis.SetMinors(AValue: TChartMinorAxisList);
