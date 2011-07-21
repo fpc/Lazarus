@@ -2,11 +2,17 @@ lazarus (0.9.31-0) unstable; urgency=low
 
   * Snapshot building.
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 30 May 2011 09:37:00 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Wed, 20 Jul 2011 09:32:00 +0100
+
+lazarus (0.9.30-3) unstable; urgency=low
+
+  * Enable IDE to rebuild itself when needed. (Closes: Upstream Bug#19074)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 06 Jun 2011 23:41:00 +0200
 
 lazarus (0.9.30-2) unstable; urgency=low
 
-  * Added lclbase.lpk to lcl-units package. (Closes upstream bug#18656)
+  * Added lclbase.lpk to lcl-units package. (Closes: Upstream Bug#18656)
   * Fixed issue preventing using ~ in Debian version. (Closes: Bug#622665)
   * Checked conformance to policy 3.9.2 and updated standard version.
 
