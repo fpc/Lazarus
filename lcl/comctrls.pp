@@ -590,15 +590,8 @@ type
 *)
 
   TTabControl = class(TCustomTabControl)
-  protected
-    procedure DoChange; override;
-    function GetPage(AIndex: Integer): TCustomPage; override;
-    procedure InsertPage(APage: TCustomPage; Index: Integer); override;
-    procedure RemovePage(Index: Integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
-    function IndexOf(APage: TPersistent): integer; override;
-    function IndexOfTabWithCaption(const TabCaption: string): Integer;
   published
     property Align;
     property Anchors;
