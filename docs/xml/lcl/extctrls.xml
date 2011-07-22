@@ -5954,7 +5954,9 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       <element name="TCustomTrayIcon.InternalUpdate">
         <short>
           <var>InternalUpdate</var> - updates any pending changes</short>
-        <descr/>
+        <descr>
+          The behavior of this method depends on the widgetset and it was added to provide an way to update items which either cannot be updated automatically upon change or would be too inneficient to be updated on each change. One example of this is the tray icon menu under LCL-Carbon. It is not automatically updated when changes are done to it's associated LCL TPopUpMenu, but changes are updated when InternalUpdate is called. This happens because the tray icon menus are Cocoa menus which don't match the Carbon menus from LCL-Carbon. Similar things happen in various other widgetsets, so InternalUpdate can be expected to update the menu and/or icon of the tray icon, if this is necessary. If such an update is not required, for example because it is automatically updated on each change, then InternalUpdate will simply do nothing, so it is always a safe function to call, regardless of the widgetset.
+        </descr>
         <errors/>
         <seealso/>
       </element>
