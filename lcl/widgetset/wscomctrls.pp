@@ -77,7 +77,6 @@ type
     class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); virtual;
     class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); virtual;
     class procedure UpdateProperties(const ATabControl: TCustomTabControl); virtual;
-    class function IndexOfTabAt(const X, Y: Integer): Integer; virtual;
   end;
   TWSCustomTabControlClass = class of TWSCustomTabControl;
 
@@ -385,11 +384,6 @@ class procedure TWSCustomTabControl.UpdateProperties(
   const ATabControl: TCustomTabControl);
 begin
 
-end;
-
-class function TWSCustomTabControl.IndexOfTabAt(const X, Y: Integer): Integer;
-begin
-  Result := -1;
 end;
 
 { TWSStatusBar }
