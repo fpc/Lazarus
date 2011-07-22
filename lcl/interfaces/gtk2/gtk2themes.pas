@@ -88,6 +88,7 @@ type
        const R: TRect; ClipRect: PRect); override;
 
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
+    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
@@ -559,7 +560,7 @@ begin
               case Details.State of
                 TREIS_SELECTED,
                 TREIS_HOTSELECTED: Result.State := GTK_STATE_SELECTED;
-                TREIS_SELECTEDNOTFOCUS: Result.State := GTK_STATE_ACTIVE;
+                TREIS_SELECTEDNOTFOCUS: Result.State := GTK_STATE_SELECTED; //Was: GTK_STATE_ACTIVE;
                 TREIS_HOT: Result.State := GTK_STATE_PRELIGHT;
                 TREIS_DISABLED: Result.State := GTK_STATE_INSENSITIVE;
               else
@@ -932,6 +933,16 @@ procedure TGtk2ThemeServices.DrawIcon(DC: HDC; Details: TThemedElementDetails;
   const R: TRect; himl: HIMAGELIST; Index: Integer);
 begin
 
+end;
+
+procedure TGtk2ThemeServices.DrawText(ACanvas: TPersistent;
+  Details: TThemedElementDetails; const S: String; R: TRect; Flags,
+  Flags2: Cardinal);
+begin
+  if ThemesEnabled then
+    DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2)
+  else
+    inherited;
 end;
 
 procedure TGtk2ThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
