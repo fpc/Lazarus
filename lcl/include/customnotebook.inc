@@ -391,6 +391,11 @@ begin
   end;
 end;
 
+function TCustomTabControl.IndexOfTabAt(X, Y: Integer): Integer;
+begin
+  Result := TWSCustomTabControlClass(WidgetSetClass).IndexOfTabAt(X, Y);
+end;
+
 function TCustomTabControl.TabToPageIndex(AIndex: integer): integer;
 var
   I: integer;
