@@ -302,11 +302,11 @@
         <errors/>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
-          <link id="#fcl.db.TDataLink.Create">TDataLink.Create</link>
+          <link id="#rtl.db.TDataLink.Create">TDataLink.Create</link>
         </seealso>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFieldDataLink.Destroy" link="#lcl.db.TDataLink.Destroy">
+      <element name="TFieldDataLink.Destroy" link="#rtl.db.TDataLink.Destroy">
         <short/>
         <descr/>
         <errors/>

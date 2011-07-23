@@ -5261,7 +5261,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TNotebook.TabStop" link="#LCL.Control.TWinControl.TabStop">
+      <element name="TNotebook.TabStop" link="#lclbase.Control.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>

@@ -1073,7 +1073,6 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
         <descr>Select Directory Dialog: allows the user to select a directory when the directory structure is displayed as a tree.</descr>
         <errors/>
         <seealso>
-          <link id="#lcl.dirsel.tdirseldlg">TDirSelDlg</link>
           <link id="#lclbase.editbtn.tdirectoryedit">TDirectoryEdit</link>
         </seealso>
       </element>
