@@ -754,7 +754,7 @@ end;
 
 function TSimpleWindowLayout.CustomCoordinatesAreValid: boolean;
 begin
-  Result:=(Width>0) and (Height>0) and (Left>10-Width) and (Top>10-Height);
+  Result:=(Width>0) and (Height>0); // and (Left>10-Width) and (Top>10-Height);
 end;
 
 procedure TSimpleWindowLayout.CloseForm;
@@ -1058,9 +1058,9 @@ begin
             if NewBounds.Bottom-NewBounds.Top<60 then
               NewBounds.Bottom:=NewBounds.Top+60;
             // move to visible area
-            if NewBounds.Right<60 then
+            if NewBounds.Right<Screen.DesktopLeft+60 then
               OffsetRect(NewBounds,60-NewBounds.Right,0);
-            if NewBounds.Bottom<60 then
+            if NewBounds.Bottom<Screen.DesktopTop+60 then
               OffsetRect(NewBounds,0,60-NewBounds.Bottom);
             if NewBounds.Left>Screen.DesktopWidth-60 then begin
               i:=(Screen.DesktopWidth-60)-NewBounds.Left;
