@@ -3108,8 +3108,8 @@ hRgn - The handle to the region which contains the visible section of the window
 bRedraw - True if the control or window should be repainted following the call of this function, false otherwise
 See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Creating_a_non-rectangular_window_or_control</descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl.SetShape">TWinControl.SetShape</link>
-          <link id="#lcl.LCLIntf.CreateRectRgn">LCLIntf.CreateRectRgn</link>
+          <link id="#lclbase.Controls.TWinControl.SetShape">TWinControl.SetShape</link>
+          <link id="#lclbase.LCLIntf.CreateRectRgn">LCLIntf.CreateRectRgn</link>
         </seealso>
       </element>
       <!-- function Visibility: default -->

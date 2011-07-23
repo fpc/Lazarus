@@ -702,7 +702,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TFileOpen.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass">
+      <element name="TFileOpen.GetDialogClass" link="#lclbase.StdActns.TCommonDialogAction.GetDialogClass">
         <short/>
         <descr/>
         <errors/>
@@ -735,7 +735,7 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.Caption" link="#LCL.ActnList.TCustomAction.Caption">
+      <element name="TFileOpen.Caption" link="#lclbase.ActnList.TCustomAction.Caption">
         <short/>
         <descr/>
         <seealso/>
@@ -747,49 +747,49 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
+      <element name="TFileOpen.Enabled" link="#lclbase.ActnList.TCustomAction.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
+      <element name="TFileOpen.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
+      <element name="TFileOpen.HelpKeyword" link="#lclbase.ActnList.TCustomAction.HelpKeyword">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
+      <element name="TFileOpen.HelpType" link="#lclbase.ActnList.TCustomAction.HelpType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.Hint" link="#LCL.ActnList.TCustomAction.Hint">
+      <element name="TFileOpen.Hint" link="#lclbase.ActnList.TCustomAction.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
+      <element name="TFileOpen.ImageIndex" link="#lclbase.ActnList.TCustomAction.ImageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
+      <element name="TFileOpen.ShortCut" link="#lclbase.ActnList.TCustomAction.ShortCut">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
+      <element name="TFileOpen.SecondaryShortCuts" link="#lclbase.ActnList.TCustomAction.SecondaryShortCuts">
         <short/>
         <descr/>
         <seealso/>
@@ -802,31 +802,31 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.Visible" link="#LCL.ActnList.TCustomAction.Visible">
+      <element name="TFileOpen.Visible" link="#lclbase.ActnList.TCustomAction.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
+      <element name="TFileOpen.BeforeExecute" link="#lclbase.StdActns.TCommonDialogAction.BeforeExecute">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept">
+      <element name="TFileOpen.OnAccept" link="#lclbase.StdActns.TCommonDialogAction.OnAccept">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel">
+      <element name="TFileOpen.OnCancel" link="#lclbase.StdActns.TCommonDialogAction.OnCancel">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpen.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
+      <element name="TFileOpen.OnHint" link="#lclbase.ActnList.TCustomAction.OnHint">
         <short/>
         <descr/>
         <seealso/>
@@ -873,25 +873,25 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpenWith.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
+      <element name="TFileOpenWith.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpenWith.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
+      <element name="TFileOpenWith.HelpKeyword" link="#lclbase.ActnList.TCustomAction.HelpKeyword">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpenWith.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
+      <element name="TFileOpenWith.HelpType" link="#lclbase.ActnList.TCustomAction.HelpType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileOpenWith.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
+      <element name="TFileOpenWith.BeforeExecute" link="#lclbase.StdActns.TCommonDialogAction.BeforeExecute">
         <short/>
         <descr/>
         <seealso/>
@@ -927,7 +927,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TFileSaveAs.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass">
+      <element name="TFileSaveAs.GetDialogClass" link="#lclbase.StdActns.TCommonDialogAction.GetDialogClass">
         <short/>
         <descr/>
         <errors/>
@@ -949,7 +949,7 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.Caption" link="#LCL.ActnList.TCustomAction.Caption">
+      <element name="TFileSaveAs.Caption" link="#lclbase.ActnList.TCustomAction.Caption">
         <short/>
         <descr/>
         <seealso/>
@@ -961,67 +961,67 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
+      <element name="TFileSaveAs.Enabled" link="#lclbase.ActnList.TCustomAction.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
+      <element name="TFileSaveAs.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.Hint" link="#LCL.ActnList.TCustomAction.Hint">
+      <element name="TFileSaveAs.Hint" link="#lclbase.ActnList.TCustomAction.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
+      <element name="TFileSaveAs.ImageIndex" link="#lclbase.ActnList.TCustomAction.ImageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
+      <element name="TFileSaveAs.ShortCut" link="#lclbase.ActnList.TCustomAction.ShortCut">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
+      <element name="TFileSaveAs.SecondaryShortCuts" link="#lclbase.ActnList.TCustomAction.SecondaryShortCuts">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.Visible" link="#LCL.ActnList.TCustomAction.Visible">
+      <element name="TFileSaveAs.Visible" link="#lclbase.ActnList.TCustomAction.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
+      <element name="TFileSaveAs.BeforeExecute" link="#lclbase.StdActns.TCommonDialogAction.BeforeExecute">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept">
+      <element name="TFileSaveAs.OnAccept" link="#lclbase.StdActns.TCommonDialogAction.OnAccept">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel">
+      <element name="TFileSaveAs.OnCancel" link="#lclbase.StdActns.TCommonDialogAction.OnCancel">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileSaveAs.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
+      <element name="TFileSaveAs.OnHint" link="#lclbase.ActnList.TCustomAction.OnHint">
         <short/>
         <descr/>
         <seealso/>
@@ -1061,67 +1061,67 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.Caption" link="#LCL.ActnList.TCustomAction.Caption">
+      <element name="TFileExit.Caption" link="#lclbase.ActnList.TCustomAction.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
+      <element name="TFileExit.Enabled" link="#lclbase.ActnList.TCustomAction.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
+      <element name="TFileExit.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
+      <element name="TFileExit.HelpKeyword" link="#lclbase.ActnList.TCustomAction.HelpKeyword">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
+      <element name="TFileExit.HelpType" link="#lclbase.ActnList.TCustomAction.HelpType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.Hint" link="#LCL.ActnList.TCustomAction.Hint">
+      <element name="TFileExit.Hint" link="#lclbase.ActnList.TCustomAction.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
+      <element name="TFileExit.ImageIndex" link="#lclbase.ActnList.TCustomAction.ImageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
+      <element name="TFileExit.ShortCut" link="#lclbase.ActnList.TCustomAction.ShortCut">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
+      <element name="TFileExit.SecondaryShortCuts" link="#lclbase.ActnList.TCustomAction.SecondaryShortCuts">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.Visible" link="#LCL.ActnList.TCustomAction.Visible">
+      <element name="TFileExit.Visible" link="#lclbase.ActnList.TCustomAction.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileExit.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
+      <element name="TFileExit.OnHint" link="#lclbase.ActnList.TCustomAction.OnHint">
         <short/>
         <descr/>
         <seealso/>
@@ -1249,7 +1249,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TFontEdit.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass">
+      <element name="TFontEdit.GetDialogClass" link="#lclbase.StdActns.TCommonDialogAction.GetDialogClass">
         <short/>
         <descr/>
         <errors/>
@@ -1260,7 +1260,7 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.Caption" link="#LCL.ActnList.TCustomAction.Caption">
+      <element name="TFontEdit.Caption" link="#lclbase.ActnList.TCustomAction.Caption">
         <short/>
         <descr/>
         <seealso/>
@@ -1272,79 +1272,79 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
+      <element name="TFontEdit.Enabled" link="#lclbase.ActnList.TCustomAction.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
+      <element name="TFontEdit.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
+      <element name="TFontEdit.HelpKeyword" link="#lclbase.ActnList.TCustomAction.HelpKeyword">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
+      <element name="TFontEdit.HelpType" link="#lclbase.ActnList.TCustomAction.HelpType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.Hint" link="#LCL.ActnList.TCustomAction.Hint">
+      <element name="TFontEdit.Hint" link="#lclbase.ActnList.TCustomAction.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
+      <element name="TFontEdit.ImageIndex" link="#lclbase.ActnList.TCustomAction.ImageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
+      <element name="TFontEdit.ShortCut" link="#lclbase.ActnList.TCustomAction.ShortCut">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
+      <element name="TFontEdit.SecondaryShortCuts" link="#lclbase.ActnList.TCustomAction.SecondaryShortCuts">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.Visible" link="#LCL.ActnList.TCustomAction.Visible">
+      <element name="TFontEdit.Visible" link="#lclbase.ActnList.TCustomAction.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
+      <element name="TFontEdit.BeforeExecute" link="#lclbase.StdActns.TCommonDialogAction.BeforeExecute">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept">
+      <element name="TFontEdit.OnAccept" link="#lclbase.StdActns.TCommonDialogAction.OnAccept">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel">
+      <element name="TFontEdit.OnCancel" link="#lclbase.StdActns.TCommonDialogAction.OnCancel">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFontEdit.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
+      <element name="TFontEdit.OnHint" link="#lclbase.ActnList.TCustomAction.OnHint">
         <short/>
         <descr/>
         <seealso/>
@@ -1369,7 +1369,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TColorSelect.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass">
+      <element name="TColorSelect.GetDialogClass" link="#lclbase.StdActns.TCommonDialogAction.GetDialogClass">
         <short/>
         <descr/>
         <errors/>
@@ -1380,7 +1380,7 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.Caption" link="#LCL.ActnList.TCustomAction.Caption">
+      <element name="TColorSelect.Caption" link="#lclbase.ActnList.TCustomAction.Caption">
         <short/>
         <descr/>
         <seealso/>
@@ -1392,79 +1392,79 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
+      <element name="TColorSelect.Enabled" link="#lclbase.ActnList.TCustomAction.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
+      <element name="TColorSelect.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
+      <element name="TColorSelect.HelpKeyword" link="#lclbase.ActnList.TCustomAction.HelpKeyword">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
+      <element name="TColorSelect.HelpType" link="#lclbase.ActnList.TCustomAction.HelpType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.Hint" link="#LCL.ActnList.TCustomAction.Hint">
+      <element name="TColorSelect.Hint" link="#lclbase.ActnList.TCustomAction.Hint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
+      <element name="TColorSelect.ImageIndex" link="#lclbase.ActnList.TCustomAction.ImageIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
+      <element name="TColorSelect.ShortCut" link="#lclbase.ActnList.TCustomAction.ShortCut">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
+      <element name="TColorSelect.SecondaryShortCuts" link="#lclbase.ActnList.TCustomAction.SecondaryShortCuts">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.Visible" link="#LCL.ActnList.TCustomAction.Visible">
+      <element name="TColorSelect.Visible" link="#lclbase.ActnList.TCustomAction.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
+      <element name="TColorSelect.BeforeExecute" link="#lclbase.StdActns.TCommonDialogAction.BeforeExecute">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept">
+      <element name="TColorSelect.OnAccept" link="#lclbase.StdActns.TCommonDialogAction.OnAccept">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel">
+      <element name="TColorSelect.OnCancel" link="#lclbase.StdActns.TCommonDialogAction.OnCancel">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TColorSelect.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
+      <element name="TColorSelect.OnHint" link="#lclbase.ActnList.TCustomAction.OnHint">
         <short/>
         <descr/>
         <seealso/>
@@ -1479,7 +1479,7 @@
         <short>
           <var>CreateDialog</var> - method for creating the dialog</short>
       </element>
-      <element name="TSearchAction.CreateDialog" link="#LCL.StdActns.TCommonDialogAction.CreateDialog"/>
+      <element name="TSearchAction.CreateDialog" link="#lclbase.StdActns.TCommonDialogAction.CreateDialog"/>
       <element name="TSearchAction.UpdateControl">
         <short>
           <var>UpdateControl</var> - brings the control performing the action up to date</short>
@@ -1497,51 +1497,51 @@
           <var>TSearchFind</var> - the action associated with a Search and Find dialog (as opposed to search and replace)</short>
       </element>
       <element name="TSearchFind.GetFindDialog"/>
-      <element name="TSearchFind.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass"/>
-      <element name="TSearchFind.Caption" link="#LCL.ActnList.TCustomAction.Caption"/>
+      <element name="TSearchFind.GetDialogClass" link="#lclbase.StdActns.TCommonDialogAction.GetDialogClass"/>
+      <element name="TSearchFind.Caption" link="#lclbase.ActnList.TCustomAction.Caption"/>
       <element name="TSearchFind.Dialog">
         <short>The Find<var>Dialog</var> to be used with this action</short>
       </element>
-      <element name="TSearchFind.Enabled" link="#LCL.ActnList.TCustomAction.Enabled"/>
-      <element name="TSearchFind.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext"/>
-      <element name="TSearchFind.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword"/>
-      <element name="TSearchFind.HelpType" link="#LCL.ActnList.TCustomAction.HelpType"/>
-      <element name="TSearchFind.Hint" link="#LCL.ActnList.TCustomAction.Hint"/>
-      <element name="TSearchFind.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex"/>
-      <element name="TSearchFind.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut"/>
-      <element name="TSearchFind.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts"/>
-      <element name="TSearchFind.Visible" link="#LCL.ActnList.TCustomAction.Visible"/>
-      <element name="TSearchFind.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute"/>
-      <element name="TSearchFind.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept"/>
-      <element name="TSearchFind.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel"/>
-      <element name="TSearchFind.OnHint" link="#LCL.ActnList.TCustomAction.OnHint"/>
+      <element name="TSearchFind.Enabled" link="#lclbase.ActnList.TCustomAction.Enabled"/>
+      <element name="TSearchFind.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext"/>
+      <element name="TSearchFind.HelpKeyword" link="#lclbase.ActnList.TCustomAction.HelpKeyword"/>
+      <element name="TSearchFind.HelpType" link="#lclbase.ActnList.TCustomAction.HelpType"/>
+      <element name="TSearchFind.Hint" link="#lclbase.ActnList.TCustomAction.Hint"/>
+      <element name="TSearchFind.ImageIndex" link="#lclbase.ActnList.TCustomAction.ImageIndex"/>
+      <element name="TSearchFind.ShortCut" link="#lclbase.ActnList.TCustomAction.ShortCut"/>
+      <element name="TSearchFind.SecondaryShortCuts" link="#lclbase.ActnList.TCustomAction.SecondaryShortCuts"/>
+      <element name="TSearchFind.Visible" link="#lclbase.ActnList.TCustomAction.Visible"/>
+      <element name="TSearchFind.BeforeExecute" link="#lclbase.StdActns.TCommonDialogAction.BeforeExecute"/>
+      <element name="TSearchFind.OnAccept" link="#lclbase.StdActns.TCommonDialogAction.OnAccept"/>
+      <element name="TSearchFind.OnCancel" link="#lclbase.StdActns.TCommonDialogAction.OnCancel"/>
+      <element name="TSearchFind.OnHint" link="#lclbase.ActnList.TCustomAction.OnHint"/>
       <element name="TSearchReplace">
         <short>
           <var>TSearchReplace</var> - action associated with the <var>Search and Replace</var> menu option and dialogs</short>
       </element>
-      <element name="TSearchReplace.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass"/>
-      <element name="TSearchReplace.CreateDialog" link="#LCL.StdActns.TCommonDialogAction.CreateDialog"/>
+      <element name="TSearchReplace.GetDialogClass" link="#lclbase.StdActns.TCommonDialogAction.GetDialogClass"/>
+      <element name="TSearchReplace.CreateDialog" link="#lclbase.StdActns.TCommonDialogAction.CreateDialog"/>
       <element name="TSearchReplace.Replace">
         <short>
           <var>Replace</var> - the method to perform the Replace action once the specified text has been found</short>
       </element>
-      <element name="TSearchReplace.Caption" link="#LCL.ActnList.TCustomAction.Caption"/>
+      <element name="TSearchReplace.Caption" link="#lclbase.ActnList.TCustomAction.Caption"/>
       <element name="TSearchReplace.Dialog">
         <short>The Replace<var>Dialog</var> to be used with this action</short>
       </element>
-      <element name="TSearchReplace.Enabled" link="#LCL.ActnList.TCustomAction.Enabled"/>
-      <element name="TSearchReplace.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext"/>
-      <element name="TSearchReplace.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword"/>
-      <element name="TSearchReplace.HelpType" link="#LCL.ActnList.TCustomAction.HelpType"/>
-      <element name="TSearchReplace.Hint" link="#LCL.ActnList.TCustomAction.Hint"/>
-      <element name="TSearchReplace.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex"/>
-      <element name="TSearchReplace.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut"/>
-      <element name="TSearchReplace.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts"/>
-      <element name="TSearchReplace.Visible" link="#LCL.ActnList.TCustomAction.Visible"/>
-      <element name="TSearchReplace.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute"/>
-      <element name="TSearchReplace.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept"/>
-      <element name="TSearchReplace.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel"/>
-      <element name="TSearchReplace.OnHint" link="#LCL.ActnList.TCustomAction.OnHint"/>
+      <element name="TSearchReplace.Enabled" link="#lclbase.ActnList.TCustomAction.Enabled"/>
+      <element name="TSearchReplace.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext"/>
+      <element name="TSearchReplace.HelpKeyword" link="#lclbase.ActnList.TCustomAction.HelpKeyword"/>
+      <element name="TSearchReplace.HelpType" link="#lclbase.ActnList.TCustomAction.HelpType"/>
+      <element name="TSearchReplace.Hint" link="#lclbase.ActnList.TCustomAction.Hint"/>
+      <element name="TSearchReplace.ImageIndex" link="#lclbase.ActnList.TCustomAction.ImageIndex"/>
+      <element name="TSearchReplace.ShortCut" link="#lclbase.ActnList.TCustomAction.ShortCut"/>
+      <element name="TSearchReplace.SecondaryShortCuts" link="#lclbase.ActnList.TCustomAction.SecondaryShortCuts"/>
+      <element name="TSearchReplace.Visible" link="#lclbase.ActnList.TCustomAction.Visible"/>
+      <element name="TSearchReplace.BeforeExecute" link="#lclbase.StdActns.TCommonDialogAction.BeforeExecute"/>
+      <element name="TSearchReplace.OnAccept" link="#lclbase.StdActns.TCommonDialogAction.OnAccept"/>
+      <element name="TSearchReplace.OnCancel" link="#lclbase.StdActns.TCommonDialogAction.OnCancel"/>
+      <element name="TSearchReplace.OnHint" link="#lclbase.ActnList.TCustomAction.OnHint"/>
       <element name="TSearchFindFirst">
         <short>
           <var>TSearchFindFirst</var> - Search action to find the first match</short>
@@ -1555,20 +1555,20 @@
       <element name="TSearchFindNext.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget"/>
       <element name="TSearchFindNext.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget"/>
       <element name="TSearchFindNext.Notification" link="#rtl.Classes.TComponent.Notification"/>
-      <element name="TSearchFindNext.Caption" link="#LCL.ActnList.TCustomAction.Caption"/>
-      <element name="TSearchFindNext.Enabled" link="#LCL.ActnList.TCustomAction.Enabled"/>
-      <element name="TSearchFindNext.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext"/>
-      <element name="TSearchFindNext.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword"/>
-      <element name="TSearchFindNext.HelpType" link="#LCL.ActnList.TCustomAction.HelpType"/>
-      <element name="TSearchFindNext.Hint" link="#LCL.ActnList.TCustomAction.Hint"/>
-      <element name="TSearchFindNext.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex"/>
+      <element name="TSearchFindNext.Caption" link="#lclbase.ActnList.TCustomAction.Caption"/>
+      <element name="TSearchFindNext.Enabled" link="#lclbase.ActnList.TCustomAction.Enabled"/>
+      <element name="TSearchFindNext.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext"/>
+      <element name="TSearchFindNext.HelpKeyword" link="#lclbase.ActnList.TCustomAction.HelpKeyword"/>
+      <element name="TSearchFindNext.HelpType" link="#lclbase.ActnList.TCustomAction.HelpType"/>
+      <element name="TSearchFindNext.Hint" link="#lclbase.ActnList.TCustomAction.Hint"/>
+      <element name="TSearchFindNext.ImageIndex" link="#lclbase.ActnList.TCustomAction.ImageIndex"/>
       <element name="TSearchFindNext.SearchFind">
         <short>The <var>SearchFind</var> action to use for searching</short>
       </element>
-      <element name="TSearchFindNext.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut"/>
-      <element name="TSearchFindNext.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts"/>
-      <element name="TSearchFindNext.Visible" link="#LCL.ActnList.TCustomAction.Visible"/>
-      <element name="TSearchFindNext.OnHint" link="#LCL.ActnList.TCustomAction.OnHint"/>
+      <element name="TSearchFindNext.ShortCut" link="#lclbase.ActnList.TCustomAction.ShortCut"/>
+      <element name="TSearchFindNext.SecondaryShortCuts" link="#lclbase.ActnList.TCustomAction.SecondaryShortCuts"/>
+      <element name="TSearchFindNext.Visible" link="#lclbase.ActnList.TCustomAction.Visible"/>
+      <element name="TSearchFindNext.OnHint" link="#lclbase.ActnList.TCustomAction.OnHint"/>
     </module>
     <!-- StdActns -->
   </package>

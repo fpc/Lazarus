@@ -634,33 +634,33 @@ action handles the current component.
           <p>You can add, remove or modify actions on the list by right-clicking on the ActionList icon on the form editor and then choosing "Edit action list...", or by double-clicking on the icon with the left mouse button. This will open the "Action List Editor". </p>
           <p>You can now use the "+" and "-" buttons to add and remove actions. The ActionList editor menu allows you to select standard actions from a selection (option 'New Standard Action')  or create a new action (option 'New Action'). To edit an action, click it and then open the object inspector. To add code to be executed when an action is triggered, double-click the action's name on the "Action List Editor".</p>
           <p>The <var>TActionList</var>
- Class introduces very few properties of its own, but inherits a lot from its ancestor, <link id="#lcl.ActnList.TCustomActionList">TCustomActionList</link>, and related components <link id="#lcl.ActnList.TAction">TAction</link>, <link id="#lcl.ActnList.TCustomAction">TCustomAction</link>, <link id="#lcl.ActnList.TContainedAction">TContainedAction</link> and <link id="#rtl.Classes.TBasicAction">TBasicAction</link>
+ Class introduces very few properties of its own, but inherits a lot from its ancestor, <link id="#lclbase.ActnList.TCustomActionList">TCustomActionList</link>, and related components <link id="#lclbase.ActnList.TAction">TAction</link>, <link id="#lclbase.ActnList.TCustomAction">TCustomAction</link>, <link id="#lclbase.ActnList.TContainedAction">TContainedAction</link> and <link id="#rtl.Classes.TBasicAction">TBasicAction</link>
           </p>
           <p>Each entry in the ActionList appears in the Object Inspector as an instance of <var>TAction</var>, and its properties are accessible and modifiable from the Object Inspector</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.Images" link="#LCL.ActnList.TCustomActionList.Images">
+      <element name="TActionList.Images" link="#lclbase.ActnList.TCustomActionList.Images">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.State" link="#LCL.ActnList.TCustomActionList.State">
+      <element name="TActionList.State" link="#lclbase.ActnList.TCustomActionList.State">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.OnChange" link="#LCL.ActnList.TCustomActionList.OnChange">
+      <element name="TActionList.OnChange" link="#lclbase.ActnList.TCustomActionList.OnChange">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.OnExecute" link="#LCL.ActnList.TCustomActionList.OnExecute">
+      <element name="TActionList.OnExecute" link="#lclbase.ActnList.TCustomActionList.OnExecute">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TActionList.OnUpdate" link="#LCL.ActnList.TCustomActionList.OnUpdate">
+      <element name="TActionList.OnUpdate" link="#lclbase.ActnList.TCustomActionList.OnUpdate">
         <descr/>
         <seealso/>
       </element>
@@ -1223,58 +1223,58 @@ execution will end up at the <var>TPersistent</var> implementation of
         </seealso>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TAction.Create" link="#LCL.ActnList.TCustomAction.Create"/>
+      <element name="TAction.Create" link="#lclbase.ActnList.TCustomAction.Create"/>
       <!-- argument Visibility: default -->
       <element name="TAction.Create.AOwner">
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.AutoCheck" link="#LCL.ActnList.TCustomAction.AutoCheck">
+      <element name="TAction.AutoCheck" link="#lclbase.ActnList.TCustomAction.AutoCheck">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Caption" link="#LCL.ActnList.TCustomAction.Caption">
+      <element name="TAction.Caption" link="#lclbase.ActnList.TCustomAction.Caption">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Checked" link="#LCL.ActnList.TCustomAction.Checked">
+      <element name="TAction.Checked" link="#lclbase.ActnList.TCustomAction.Checked">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
+      <element name="TAction.Enabled" link="#lclbase.ActnList.TCustomAction.Enabled">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.GroupIndex" link="#LCL.ActnList.TCustomAction.GroupIndex">
+      <element name="TAction.GroupIndex" link="#lclbase.ActnList.TCustomAction.GroupIndex">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
+      <element name="TAction.HelpContext" link="#lclbase.ActnList.TCustomAction.HelpContext">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
+      <element name="TAction.HelpKeyword" link="#lclbase.ActnList.TCustomAction.HelpKeyword">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
+      <element name="TAction.HelpType" link="#lclbase.ActnList.TCustomAction.HelpType">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Hint" link="#LCL.ActnList.TCustomAction.Hint">
+      <element name="TAction.Hint" link="#lclbase.ActnList.TCustomAction.Hint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
+      <element name="TAction.ImageIndex" link="#lclbase.ActnList.TCustomAction.ImageIndex">
         <descr/>
         <seealso/>
       </element>
@@ -1298,7 +1298,7 @@ normal task if the <var>OnExecute</var> handler was called.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
+      <element name="TAction.OnHint" link="#lclbase.ActnList.TCustomAction.OnHint">
         <descr/>
         <seealso/>
       </element>
@@ -1313,18 +1313,18 @@ executed at this point in time.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
+      <element name="TAction.SecondaryShortCuts" link="#lclbase.ActnList.TCustomAction.SecondaryShortCuts">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
+      <element name="TAction.ShortCut" link="#lclbase.ActnList.TCustomAction.ShortCut">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.Visible" link="#LCL.ActnList.TCustomAction.Visible">
+      <element name="TAction.Visible" link="#lclbase.ActnList.TCustomAction.Visible">
         <descr/>
         <seealso/>
       </element>
@@ -1753,7 +1753,7 @@ executed at this point in time.
       <element name="TCustomActionList.IsShortCut">
         <short>This action is associated with a shortcut</short>
       </element>
-      <element name="TAction.DisableIfNoHandler" link="#LCL.ActnList.TCustomAction.DisableIfNoHandler"/>
+      <element name="TAction.DisableIfNoHandler" link="#lclbase.ActnList.TCustomAction.DisableIfNoHandler"/>
     </module>
     <!-- ActnList -->
   </package>

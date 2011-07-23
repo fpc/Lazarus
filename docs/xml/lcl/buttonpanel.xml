@@ -124,7 +124,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TPanelBitBtn.Create" link="#LCL.Buttons.TCustomBitBtn.Create">
+      <element name="TPanelBitBtn.Create" link="#lclbase.Buttons.TCustomBitBtn.Create">
         <short/>
         <descr/>
         <errors/>
@@ -135,31 +135,31 @@
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.Caption" link="#LCL.Controls.TControl.Caption">
+      <element name="TPanelBitBtn.Caption" link="#lclbase.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TPanelBitBtn.Enabled" link="#lclbase.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TPanelBitBtn.Font" link="#lclbase.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.Glyph" link="#LCL.Buttons.TCustomBitBtn.Glyph">
+      <element name="TPanelBitBtn.Glyph" link="#lclbase.Buttons.TCustomBitBtn.Glyph">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanelBitBtn.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TPanelBitBtn.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
@@ -497,139 +497,139 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TButtonPanel.Align" link="#lclbase.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TButtonPanel.Anchors" link="#lclbase.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OKButton" link="#LCL.ButtonPanel.TCustomButtonPanel.OKButton">
+      <element name="TButtonPanel.OKButton" link="#lclbase.ButtonPanel.TCustomButtonPanel.OKButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.HelpButton" link="#LCL.ButtonPanel.TCustomButtonPanel.HelpButton">
+      <element name="TButtonPanel.HelpButton" link="#lclbase.ButtonPanel.TCustomButtonPanel.HelpButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.CloseButton" link="#LCL.ButtonPanel.TCustomButtonPanel.CloseButton">
+      <element name="TButtonPanel.CloseButton" link="#lclbase.ButtonPanel.TCustomButtonPanel.CloseButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.CancelButton" link="#LCL.ButtonPanel.TCustomButtonPanel.CancelButton">
+      <element name="TButtonPanel.CancelButton" link="#lclbase.ButtonPanel.TCustomButtonPanel.CancelButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.ButtonOrder" link="#LCL.ButtonPanel.TCustomButtonPanel.ButtonOrder">
+      <element name="TButtonPanel.ButtonOrder" link="#lclbase.ButtonPanel.TCustomButtonPanel.ButtonOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
+      <element name="TButtonPanel.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.DefaultButton" link="#LCL.ButtonPanel.TCustomButtonPanel.DefaultButton">
+      <element name="TButtonPanel.DefaultButton" link="#lclbase.ButtonPanel.TCustomButtonPanel.DefaultButton">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TButtonPanel.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+      <element name="TButtonPanel.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
+      <element name="TButtonPanel.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
+      <element name="TButtonPanel.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnExit" link="#LCL.Controls.TWinControl.OnExit">
+      <element name="TButtonPanel.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+      <element name="TButtonPanel.OnKeyDown" link="#lclbase.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
+      <element name="TButtonPanel.OnKeyPress" link="#lclbase.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
+      <element name="TButtonPanel.OnKeyUp" link="#lclbase.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TButtonPanel.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TButtonPanel.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TButtonPanel.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.OnResize" link="#LCL.Controls.TControl.OnResize">
+      <element name="TButtonPanel.OnResize" link="#lclbase.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.ShowButtons" link="#LCL.ButtonPanel.TCustomButtonPanel.ShowButtons">
+      <element name="TButtonPanel.ShowButtons" link="#lclbase.ButtonPanel.TCustomButtonPanel.ShowButtons">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButtonPanel.ShowGlyphs" link="#LCL.ButtonPanel.TCustomButtonPanel.ShowGlyphs">
+      <element name="TButtonPanel.ShowGlyphs" link="#lclbase.ButtonPanel.TCustomButtonPanel.ShowGlyphs">
         <short/>
         <descr/>
         <seealso/>
@@ -643,9 +643,9 @@
       </element>
       <element name="TCustomButtonPanel.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
       <element name="TCustomButtonPanel.Notification" link="#rtl.Classes.TComponent.Notification"/>
-      <element name="TButtonPanel.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-      <element name="TButtonPanel.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TButtonPanel.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <element name="TButtonPanel.AutoSize" link="#lclbase.Controls.TControl.AutoSize"/>
+      <element name="TButtonPanel.OnUTF8KeyPress" link="#lclbase.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TButtonPanel.Visible" link="#lclbase.Controls.TControl.Visible"/>
     </module>
     <!-- ButtonPanel -->
   </package>

@@ -895,7 +895,7 @@
         <errors/>
         <seealso/>
       </element>
-      <element name="TCustomFloatSpinEdit.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomFloatSpinEdit.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- Spin -->
   </package>

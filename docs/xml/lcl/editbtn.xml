@@ -271,7 +271,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEditButton.SetParent" link="#LCL.Controls.TControl.SetParent">
+      <element name="TCustomEditButton.SetParent" link="#lclbase.Controls.TControl.SetParent">
         <short/>
         <descr/>
         <errors/>
@@ -347,7 +347,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEditButton.CMVisibleChanged" link="#LCL.Controls.TWinControl.CMVisibleChanged">
+      <element name="TCustomEditButton.CMVisibleChanged" link="#lclbase.Controls.TWinControl.CMVisibleChanged">
         <short/>
         <descr/>
         <errors/>
@@ -358,7 +358,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEditButton.CMEnabledChanged" link="#LCL.Controls.TWinControl.CMEnabledChanged">
+      <element name="TCustomEditButton.CMEnabledChanged" link="#lclbase.Controls.TWinControl.CMEnabledChanged">
         <short/>
         <descr/>
         <errors/>
@@ -422,8 +422,8 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.StdCtrls.TCustomEdit.Create">TCustomEdit.Create</link>
-          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
+          <link id="#lclbase.StdCtrls.TCustomEdit.Create">TCustomEdit.Create</link>
+          <link id="#lclbase.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -431,7 +431,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomEditButton.Destroy" link="#LCL.Controls.TWinControl.Destroy">
+      <element name="TCustomEditButton.Destroy" link="#lclbase.Controls.TWinControl.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -460,265 +460,265 @@
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TEditButton.Button" link="#LCL.EditBtn.TCustomEditButton.Button">
+      <element name="TEditButton.Button" link="#lclbase.EditBtn.TCustomEditButton.Button">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+      <element name="TEditButton.AutoSize" link="#lclbase.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TEditButton.Align" link="#lclbase.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TEditButton.Anchors" link="#lclbase.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TEditButton.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.ButtonOnlyWhenFocused" link="#LCL.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
+      <element name="TEditButton.ButtonOnlyWhenFocused" link="#lclbase.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.ButtonWidth" link="#LCL.EditBtn.TCustomEditButton.ButtonWidth">
+      <element name="TEditButton.ButtonWidth" link="#lclbase.EditBtn.TCustomEditButton.ButtonWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.Color" link="#LCL.Controls.TControl.Color">
+      <element name="TEditButton.Color" link="#lclbase.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
+      <element name="TEditButton.Ctl3D" link="#lclbase.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.DirectInput" link="#LCL.EditBtn.TCustomEditButton.DirectInput">
+      <element name="TEditButton.DirectInput" link="#lclbase.EditBtn.TCustomEditButton.DirectInput">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.DragCursor" link="#LCL.Controls.TControl.DragCursor">
+      <element name="TEditButton.DragCursor" link="#lclbase.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.DragMode" link="#LCL.Controls.TControl.DragMode">
+      <element name="TEditButton.DragMode" link="#lclbase.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TEditButton.Enabled" link="#lclbase.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.Flat" link="#LCL.EditBtn.TCustomEditButton.Flat">
+      <element name="TEditButton.Flat" link="#lclbase.EditBtn.TCustomEditButton.Flat">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TEditButton.Font" link="#lclbase.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.Glyph" link="#LCL.EditBtn.TCustomEditButton.Glyph">
+      <element name="TEditButton.Glyph" link="#lclbase.EditBtn.TCustomEditButton.Glyph">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength">
+      <element name="TEditButton.MaxLength" link="#lclbase.StdCtrls.TCustomEdit.MaxLength">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.NumGlyphs" link="#LCL.EditBtn.TCustomEditButton.NumGlyphs">
+      <element name="TEditButton.NumGlyphs" link="#lclbase.EditBtn.TCustomEditButton.NumGlyphs">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnButtonClick" link="#LCL.EditBtn.TCustomEditButton.OnButtonClick">
+      <element name="TEditButton.OnButtonClick" link="#lclbase.EditBtn.TCustomEditButton.OnButtonClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange">
+      <element name="TEditButton.OnChange" link="#lclbase.StdCtrls.TCustomEdit.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TEditButton.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+      <element name="TEditButton.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
+      <element name="TEditButton.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
+      <element name="TEditButton.OnDragOver" link="#lclbase.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
+      <element name="TEditButton.OnEndDrag" link="#lclbase.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
+      <element name="TEditButton.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnExit" link="#LCL.Controls.TWinControl.OnExit">
+      <element name="TEditButton.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+      <element name="TEditButton.OnKeyDown" link="#lclbase.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
+      <element name="TEditButton.OnKeyPress" link="#lclbase.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
+      <element name="TEditButton.OnKeyUp" link="#lclbase.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TEditButton.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TEditButton.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TEditButton.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
+      <element name="TEditButton.OnStartDrag" link="#lclbase.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.ParentColor" link="#LCL.Controls.TControl.ParentColor">
+      <element name="TEditButton.ParentColor" link="#lclbase.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
+      <element name="TEditButton.ParentCtl3D" link="#lclbase.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.ParentFont" link="#LCL.Controls.TControl.ParentFont">
+      <element name="TEditButton.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
+      <element name="TEditButton.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TEditButton.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly">
+      <element name="TEditButton.ReadOnly" link="#lclbase.StdCtrls.TCustomEdit.ReadOnly">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.ShowHint" link="#LCL.Controls.TControl.ShowHint">
+      <element name="TEditButton.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
+      <element name="TEditButton.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+      <element name="TEditButton.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEditButton.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TEditButton.Visible" link="#lclbase.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -889,7 +889,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TFileNameEdit.DoButtonClick" link="#LCL.EditBtn.TCustomEditButton.DoButtonClick">
+      <element name="TFileNameEdit.DoButtonClick" link="#lclbase.EditBtn.TCustomEditButton.DoButtonClick">
         <short/>
         <descr/>
         <errors/>
@@ -908,7 +908,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TFileNameEdit.Create" link="#LCL.EditBtn.TCustomEditButton.Create">
+      <element name="TFileNameEdit.Create" link="#lclbase.EditBtn.TCustomEditButton.Create">
         <short/>
         <descr/>
         <errors/>
@@ -919,7 +919,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFileNameEdit.Destroy" link="#LCL.EditBtn.TCustomEditButton.Destroy">
+      <element name="TFileNameEdit.Destroy" link="#lclbase.EditBtn.TCustomEditButton.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -990,247 +990,247 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.ButtonWidth" link="#LCL.EditBtn.TCustomEditButton.ButtonWidth">
+      <element name="TFileNameEdit.ButtonWidth" link="#lclbase.EditBtn.TCustomEditButton.ButtonWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.DirectInput" link="#LCL.EditBtn.TCustomEditButton.DirectInput">
+      <element name="TFileNameEdit.DirectInput" link="#lclbase.EditBtn.TCustomEditButton.DirectInput">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.ButtonOnlyWhenFocused" link="#LCL.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
+      <element name="TFileNameEdit.ButtonOnlyWhenFocused" link="#lclbase.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.NumGlyphs" link="#LCL.EditBtn.TCustomEditButton.NumGlyphs">
+      <element name="TFileNameEdit.NumGlyphs" link="#lclbase.EditBtn.TCustomEditButton.NumGlyphs">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.Flat" link="#LCL.EditBtn.TCustomEditButton.Flat">
+      <element name="TFileNameEdit.Flat" link="#lclbase.EditBtn.TCustomEditButton.Flat">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TFileNameEdit.Align" link="#lclbase.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TFileNameEdit.Anchors" link="#lclbase.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TFileNameEdit.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+      <element name="TFileNameEdit.AutoSize" link="#lclbase.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.Color" link="#LCL.Controls.TControl.Color">
+      <element name="TFileNameEdit.Color" link="#lclbase.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
+      <element name="TFileNameEdit.Ctl3D" link="#lclbase.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.DragCursor" link="#LCL.Controls.TControl.DragCursor">
+      <element name="TFileNameEdit.DragCursor" link="#lclbase.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.DragMode" link="#LCL.Controls.TControl.DragMode">
+      <element name="TFileNameEdit.DragMode" link="#lclbase.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TFileNameEdit.Enabled" link="#lclbase.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TFileNameEdit.Font" link="#lclbase.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength">
+      <element name="TFileNameEdit.MaxLength" link="#lclbase.StdCtrls.TCustomEdit.MaxLength">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor">
+      <element name="TFileNameEdit.ParentColor" link="#lclbase.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
+      <element name="TFileNameEdit.ParentCtl3D" link="#lclbase.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.ParentFont" link="#LCL.Controls.TControl.ParentFont">
+      <element name="TFileNameEdit.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
+      <element name="TFileNameEdit.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TFileNameEdit.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly">
+      <element name="TFileNameEdit.ReadOnly" link="#lclbase.StdCtrls.TCustomEdit.ReadOnly">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint">
+      <element name="TFileNameEdit.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
+      <element name="TFileNameEdit.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+      <element name="TFileNameEdit.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TFileNameEdit.Visible" link="#lclbase.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange">
+      <element name="TFileNameEdit.OnChange" link="#lclbase.StdCtrls.TCustomEdit.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TFileNameEdit.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+      <element name="TFileNameEdit.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
+      <element name="TFileNameEdit.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
+      <element name="TFileNameEdit.OnDragOver" link="#lclbase.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
+      <element name="TFileNameEdit.OnEndDrag" link="#lclbase.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
+      <element name="TFileNameEdit.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit">
+      <element name="TFileNameEdit.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+      <element name="TFileNameEdit.OnKeyDown" link="#lclbase.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
+      <element name="TFileNameEdit.OnKeyPress" link="#lclbase.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
+      <element name="TFileNameEdit.OnKeyUp" link="#lclbase.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TFileNameEdit.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TFileNameEdit.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TFileNameEdit.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileNameEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
+      <element name="TFileNameEdit.OnStartDrag" link="#lclbase.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -1242,7 +1242,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lcl.dialogs.tselectdirectorydialog">TSelectDirectoryDialog</link>
+          <link id="#lclbase.dialogs.tselectdirectorydialog">TSelectDirectoryDialog</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -1331,7 +1331,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDirectoryEdit.DoButtonClick" link="#LCL.EditBtn.TCustomEditButton.DoButtonClick">
+      <element name="TDirectoryEdit.DoButtonClick" link="#lclbase.EditBtn.TCustomEditButton.DoButtonClick">
         <short/>
         <descr/>
         <errors/>
@@ -1406,247 +1406,247 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.ButtonWidth" link="#LCL.EditBtn.TCustomEditButton.ButtonWidth">
+      <element name="TDirectoryEdit.ButtonWidth" link="#lclbase.EditBtn.TCustomEditButton.ButtonWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.DirectInput" link="#LCL.EditBtn.TCustomEditButton.DirectInput">
+      <element name="TDirectoryEdit.DirectInput" link="#lclbase.EditBtn.TCustomEditButton.DirectInput">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.ButtonOnlyWhenFocused" link="#LCL.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
+      <element name="TDirectoryEdit.ButtonOnlyWhenFocused" link="#lclbase.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.NumGlyphs" link="#LCL.EditBtn.TCustomEditButton.NumGlyphs">
+      <element name="TDirectoryEdit.NumGlyphs" link="#lclbase.EditBtn.TCustomEditButton.NumGlyphs">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.Flat" link="#LCL.EditBtn.TCustomEditButton.Flat">
+      <element name="TDirectoryEdit.Flat" link="#lclbase.EditBtn.TCustomEditButton.Flat">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TDirectoryEdit.Align" link="#lclbase.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TDirectoryEdit.Anchors" link="#lclbase.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TDirectoryEdit.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+      <element name="TDirectoryEdit.AutoSize" link="#lclbase.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.Color" link="#LCL.Controls.TControl.Color">
+      <element name="TDirectoryEdit.Color" link="#lclbase.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
+      <element name="TDirectoryEdit.Ctl3D" link="#lclbase.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.DragCursor" link="#LCL.Controls.TControl.DragCursor">
+      <element name="TDirectoryEdit.DragCursor" link="#lclbase.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.DragMode" link="#LCL.Controls.TControl.DragMode">
+      <element name="TDirectoryEdit.DragMode" link="#lclbase.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TDirectoryEdit.Enabled" link="#lclbase.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TDirectoryEdit.Font" link="#lclbase.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength">
+      <element name="TDirectoryEdit.MaxLength" link="#lclbase.StdCtrls.TCustomEdit.MaxLength">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor">
+      <element name="TDirectoryEdit.ParentColor" link="#lclbase.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
+      <element name="TDirectoryEdit.ParentCtl3D" link="#lclbase.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.ParentFont" link="#LCL.Controls.TControl.ParentFont">
+      <element name="TDirectoryEdit.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
+      <element name="TDirectoryEdit.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TDirectoryEdit.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly">
+      <element name="TDirectoryEdit.ReadOnly" link="#lclbase.StdCtrls.TCustomEdit.ReadOnly">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint">
+      <element name="TDirectoryEdit.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
+      <element name="TDirectoryEdit.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+      <element name="TDirectoryEdit.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TDirectoryEdit.Visible" link="#lclbase.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange">
+      <element name="TDirectoryEdit.OnChange" link="#lclbase.StdCtrls.TCustomEdit.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TDirectoryEdit.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+      <element name="TDirectoryEdit.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
+      <element name="TDirectoryEdit.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
+      <element name="TDirectoryEdit.OnDragOver" link="#lclbase.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
+      <element name="TDirectoryEdit.OnEndDrag" link="#lclbase.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
+      <element name="TDirectoryEdit.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit">
+      <element name="TDirectoryEdit.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+      <element name="TDirectoryEdit.OnKeyDown" link="#lclbase.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
+      <element name="TDirectoryEdit.OnKeyPress" link="#lclbase.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
+      <element name="TDirectoryEdit.OnKeyUp" link="#lclbase.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TDirectoryEdit.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TDirectoryEdit.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TDirectoryEdit.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDirectoryEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
+      <element name="TDirectoryEdit.OnStartDrag" link="#lclbase.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -1741,7 +1741,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDateEdit.DoButtonClick" link="#LCL.EditBtn.TCustomEditButton.DoButtonClick">
+      <element name="TDateEdit.DoButtonClick" link="#lclbase.EditBtn.TCustomEditButton.DoButtonClick">
         <short/>
         <descr/>
         <errors/>
@@ -1769,7 +1769,7 @@
         </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.EditBtn.TCustomEditButton.Create">TCustomEditButton.Create</link>
+          <link id="#lclbase.EditBtn.TCustomEditButton.Create">TCustomEditButton.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1811,25 +1811,25 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.ButtonWidth" link="#LCL.EditBtn.TCustomEditButton.ButtonWidth">
+      <element name="TDateEdit.ButtonWidth" link="#lclbase.EditBtn.TCustomEditButton.ButtonWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.DirectInput" link="#LCL.EditBtn.TCustomEditButton.DirectInput">
+      <element name="TDateEdit.DirectInput" link="#lclbase.EditBtn.TCustomEditButton.DirectInput">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.ButtonOnlyWhenFocused" link="#LCL.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
+      <element name="TDateEdit.ButtonOnlyWhenFocused" link="#lclbase.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.NumGlyphs" link="#LCL.EditBtn.TCustomEditButton.NumGlyphs">
+      <element name="TDateEdit.NumGlyphs" link="#lclbase.EditBtn.TCustomEditButton.NumGlyphs">
         <short/>
         <descr/>
         <seealso/>
@@ -1841,31 +1841,31 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TDateEdit.Align" link="#lclbase.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TDateEdit.Anchors" link="#lclbase.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TDateEdit.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+      <element name="TDateEdit.AutoSize" link="#lclbase.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.Color" link="#LCL.Controls.TControl.Color">
+      <element name="TDateEdit.Color" link="#lclbase.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
@@ -1883,25 +1883,25 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.DragMode" link="#LCL.Controls.TControl.DragMode">
+      <element name="TDateEdit.DragMode" link="#lclbase.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TDateEdit.Enabled" link="#lclbase.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TDateEdit.Font" link="#lclbase.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength">
+      <element name="TDateEdit.MaxLength" link="#lclbase.StdCtrls.TCustomEdit.MaxLength">
         <short/>
         <descr/>
         <seealso/>
@@ -1919,61 +1919,61 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.ParentFont" link="#LCL.Controls.TControl.ParentFont">
+      <element name="TDateEdit.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
+      <element name="TDateEdit.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TDateEdit.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly">
+      <element name="TDateEdit.ReadOnly" link="#lclbase.StdCtrls.TCustomEdit.ReadOnly">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint">
+      <element name="TDateEdit.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
+      <element name="TDateEdit.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+      <element name="TDateEdit.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TDateEdit.Visible" link="#lclbase.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange">
+      <element name="TDateEdit.OnChange" link="#lclbase.StdCtrls.TCustomEdit.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TDateEdit.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
@@ -2003,49 +2003,49 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
+      <element name="TDateEdit.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit">
+      <element name="TDateEdit.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+      <element name="TDateEdit.OnKeyDown" link="#lclbase.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
+      <element name="TDateEdit.OnKeyPress" link="#lclbase.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
+      <element name="TDateEdit.OnKeyUp" link="#lclbase.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TDateEdit.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TDateEdit.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TDateEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TDateEdit.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
@@ -2175,7 +2175,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCalcEdit.DoButtonClick" link="#LCL.EditBtn.TCustomEditButton.DoButtonClick">
+      <element name="TCalcEdit.DoButtonClick" link="#lclbase.EditBtn.TCustomEditButton.DoButtonClick">
         <short/>
         <descr/>
         <errors/>
@@ -2194,7 +2194,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCalcEdit.Create" link="#LCL.EditBtn.TCustomEditButton.Create">
+      <element name="TCalcEdit.Create" link="#lclbase.EditBtn.TCustomEditButton.Create">
         <short/>
         <descr/>
         <errors/>
@@ -2205,7 +2205,7 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCalcEdit.Destroy" link="#LCL.EditBtn.TCustomEditButton.Destroy">
+      <element name="TCalcEdit.Destroy" link="#lclbase.EditBtn.TCustomEditButton.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -2247,247 +2247,247 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.ButtonWidth" link="#LCL.EditBtn.TCustomEditButton.ButtonWidth">
+      <element name="TCalcEdit.ButtonWidth" link="#lclbase.EditBtn.TCustomEditButton.ButtonWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.DirectInput" link="#LCL.EditBtn.TCustomEditButton.DirectInput">
+      <element name="TCalcEdit.DirectInput" link="#lclbase.EditBtn.TCustomEditButton.DirectInput">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.ButtonOnlyWhenFocused" link="#LCL.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
+      <element name="TCalcEdit.ButtonOnlyWhenFocused" link="#lclbase.EditBtn.TCustomEditButton.ButtonOnlyWhenFocused">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.NumGlyphs" link="#LCL.EditBtn.TCustomEditButton.NumGlyphs">
+      <element name="TCalcEdit.NumGlyphs" link="#lclbase.EditBtn.TCustomEditButton.NumGlyphs">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.Flat" link="#LCL.EditBtn.TCustomEditButton.Flat">
+      <element name="TCalcEdit.Flat" link="#lclbase.EditBtn.TCustomEditButton.Flat">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TCalcEdit.Align" link="#lclbase.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TCalcEdit.Anchors" link="#lclbase.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TCalcEdit.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.AutoSize" link="#LCL.Controls.TControl.AutoSize">
+      <element name="TCalcEdit.AutoSize" link="#lclbase.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.Color" link="#LCL.Controls.TControl.Color">
+      <element name="TCalcEdit.Color" link="#lclbase.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
+      <element name="TCalcEdit.Ctl3D" link="#lclbase.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.DragCursor" link="#LCL.Controls.TControl.DragCursor">
+      <element name="TCalcEdit.DragCursor" link="#lclbase.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.DragMode" link="#LCL.Controls.TControl.DragMode">
+      <element name="TCalcEdit.DragMode" link="#lclbase.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TCalcEdit.Enabled" link="#lclbase.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TCalcEdit.Font" link="#lclbase.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.MaxLength" link="#LCL.StdCtrls.TCustomEdit.MaxLength">
+      <element name="TCalcEdit.MaxLength" link="#lclbase.StdCtrls.TCustomEdit.MaxLength">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor">
+      <element name="TCalcEdit.ParentColor" link="#lclbase.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
+      <element name="TCalcEdit.ParentCtl3D" link="#lclbase.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.ParentFont" link="#LCL.Controls.TControl.ParentFont">
+      <element name="TCalcEdit.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
+      <element name="TCalcEdit.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TCalcEdit.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.ReadOnly" link="#LCL.StdCtrls.TCustomEdit.ReadOnly">
+      <element name="TCalcEdit.ReadOnly" link="#lclbase.StdCtrls.TCustomEdit.ReadOnly">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.ShowHint" link="#LCL.Controls.TControl.ShowHint">
+      <element name="TCalcEdit.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
+      <element name="TCalcEdit.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+      <element name="TCalcEdit.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TCalcEdit.Visible" link="#lclbase.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnChange" link="#LCL.StdCtrls.TCustomEdit.OnChange">
+      <element name="TCalcEdit.OnChange" link="#lclbase.StdCtrls.TCustomEdit.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TCalcEdit.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+      <element name="TCalcEdit.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
+      <element name="TCalcEdit.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
+      <element name="TCalcEdit.OnDragOver" link="#lclbase.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
+      <element name="TCalcEdit.OnEndDrag" link="#lclbase.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
+      <element name="TCalcEdit.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnExit" link="#LCL.Controls.TWinControl.OnExit">
+      <element name="TCalcEdit.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+      <element name="TCalcEdit.OnKeyDown" link="#lclbase.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
+      <element name="TCalcEdit.OnKeyPress" link="#lclbase.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
+      <element name="TCalcEdit.OnKeyUp" link="#lclbase.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TCalcEdit.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TCalcEdit.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TCalcEdit.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalcEdit.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
+      <element name="TCalcEdit.OnStartDrag" link="#lclbase.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -2553,10 +2553,10 @@
         <short>
           <var>ButtonHint</var> - the hint that pops up when the mouse hovers over the button</short>
       </element>
-      <element name="TDirectoryEdit.GetDefaultGlyph" link="#LCL.EditBtn.TCustomEditButton.GetDefaultGlyph"/>
-      <element name="TDirectoryEdit.GetDefaultGlyphName" link="#LCL.EditBtn.TCustomEditButton.GetDefaultGlyphName"/>
-      <element name="TDateEdit.GetDefaultGlyph" link="#LCL.EditBtn.TCustomEditButton.GetDefaultGlyph"/>
-      <element name="TDateEdit.GetDefaultGlyphName" link="#LCL.EditBtn.TCustomEditButton.GetDefaultGlyphName"/>
+      <element name="TDirectoryEdit.GetDefaultGlyph" link="#lclbase.EditBtn.TCustomEditButton.GetDefaultGlyph"/>
+      <element name="TDirectoryEdit.GetDefaultGlyphName" link="#lclbase.EditBtn.TCustomEditButton.GetDefaultGlyphName"/>
+      <element name="TDateEdit.GetDefaultGlyph" link="#lclbase.EditBtn.TCustomEditButton.GetDefaultGlyph"/>
+      <element name="TDateEdit.GetDefaultGlyphName" link="#lclbase.EditBtn.TCustomEditButton.GetDefaultGlyphName"/>
       <element name="TDateEdit.DateFormatChanged">
         <short>
           <var>DateFormatChanged</var> - method for changing date format</short>
@@ -2565,7 +2565,7 @@
         <short>
           <var>GetDateFormat</var> - returns the format for the date</short>
       </element>
-      <element name="TDateEdit.Button" link="#LCL.EditBtn.TCustomEditButton.Button"/>
+      <element name="TDateEdit.Button" link="#lclbase.EditBtn.TCustomEditButton.Button"/>
       <element name="TDateEdit.OKCaption">
         <short>
           <var>OKCaption</var> - the caption to be used for the OK button in the calendar dialog</short>
@@ -2578,45 +2578,45 @@
         <short>
           <var>DefaultToday</var> - if True, the current date is offered as the default date (value is False by default)</short>
       </element>
-      <element name="TCalcEdit.GetDefaultGlyph" link="#LCL.EditBtn.TCustomEditButton.GetDefaultGlyph"/>
-      <element name="TCalcEdit.GetDefaultGlyphName" link="#LCL.EditBtn.TCustomEditButton.GetDefaultGlyphName"/>
-      <element name="TCustomEditButton.GetReadOnly" link="#LCL.StdCtrls.TCustomEdit.GetReadOnly"/>
-      <element name="TCustomEditButton.SetReadOnly" link="#LCL.StdCtrls.TCustomEdit.SetReadOnly"/>
-      <element name="TEditButton.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
-      <element name="TEditButton.ButtonHint" link="#LCL.EditBtn.TCustomEditButton.ButtonHint"/>
-      <element name="TEditButton.CharCase" link="#LCL.StdCtrls.TCustomEdit.CharCase"/>
-      <element name="TEditButton.EchoMode" link="#LCL.StdCtrls.TCustomEdit.EchoMode"/>
-      <element name="TEditButton.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
-      <element name="TEditButton.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TEditButton.PasswordChar" link="#LCL.StdCtrls.TCustomEdit.PasswordChar"/>
-      <element name="TEditButton.Text" link="#LCL.StdCtrls.TCustomEdit.Text"/>
-      <element name="TFileNameEdit.GetDefaultGlyph" link="#LCL.EditBtn.TCustomEditButton.GetDefaultGlyph"/>
-      <element name="TFileNameEdit.GetDefaultGlyphName" link="#LCL.EditBtn.TCustomEditButton.GetDefaultGlyphName"/>
-      <element name="TFileNameEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
-      <element name="TFileNameEdit.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
-      <element name="TFileNameEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TDirectoryEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
-      <element name="TDirectoryEdit.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
-      <element name="TDirectoryEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TDateEdit.DblClick" link="#LCL.Controls.TControl.DblClick"/>
+      <element name="TCalcEdit.GetDefaultGlyph" link="#lclbase.EditBtn.TCustomEditButton.GetDefaultGlyph"/>
+      <element name="TCalcEdit.GetDefaultGlyphName" link="#lclbase.EditBtn.TCustomEditButton.GetDefaultGlyphName"/>
+      <element name="TCustomEditButton.GetReadOnly" link="#lclbase.StdCtrls.TCustomEdit.GetReadOnly"/>
+      <element name="TCustomEditButton.SetReadOnly" link="#lclbase.StdCtrls.TCustomEdit.SetReadOnly"/>
+      <element name="TEditButton.AutoSelect" link="#lclbase.StdCtrls.TCustomEdit.AutoSelect"/>
+      <element name="TEditButton.ButtonHint" link="#lclbase.EditBtn.TCustomEditButton.ButtonHint"/>
+      <element name="TEditButton.CharCase" link="#lclbase.StdCtrls.TCustomEdit.CharCase"/>
+      <element name="TEditButton.EchoMode" link="#lclbase.StdCtrls.TCustomEdit.EchoMode"/>
+      <element name="TEditButton.OnEditingDone" link="#lclbase.Controls.TControl.OnEditingDone"/>
+      <element name="TEditButton.OnUTF8KeyPress" link="#lclbase.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TEditButton.PasswordChar" link="#lclbase.StdCtrls.TCustomEdit.PasswordChar"/>
+      <element name="TEditButton.Text" link="#lclbase.StdCtrls.TCustomEdit.Text"/>
+      <element name="TFileNameEdit.GetDefaultGlyph" link="#lclbase.EditBtn.TCustomEditButton.GetDefaultGlyph"/>
+      <element name="TFileNameEdit.GetDefaultGlyphName" link="#lclbase.EditBtn.TCustomEditButton.GetDefaultGlyphName"/>
+      <element name="TFileNameEdit.AutoSelect" link="#lclbase.StdCtrls.TCustomEdit.AutoSelect"/>
+      <element name="TFileNameEdit.OnEditingDone" link="#lclbase.Controls.TControl.OnEditingDone"/>
+      <element name="TFileNameEdit.OnUTF8KeyPress" link="#lclbase.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TDirectoryEdit.AutoSelect" link="#lclbase.StdCtrls.TCustomEdit.AutoSelect"/>
+      <element name="TDirectoryEdit.OnEditingDone" link="#lclbase.Controls.TControl.OnEditingDone"/>
+      <element name="TDirectoryEdit.OnUTF8KeyPress" link="#lclbase.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TDateEdit.DblClick" link="#lclbase.Controls.TControl.DblClick"/>
       <element name="TDateEdit.OnCustomDate">
         <short>
           <var>OnCustomDate</var> - event handler for inserting a custom date</short>
       </element>
-      <element name="TDateEdit.Action" link="#LCL.Controls.TControl.Action"/>
-      <element name="TDateEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
-      <element name="TDateEdit.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TDateEdit.CharCase" link="#LCL.StdCtrls.TCustomEdit.CharCase"/>
-      <element name="TDateEdit.Glyph" link="#LCL.EditBtn.TCustomEditButton.Glyph"/>
-      <element name="TDateEdit.EchoMode" link="#LCL.StdCtrls.TCustomEdit.EchoMode"/>
-      <element name="TDateEdit.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
-      <element name="TDateEdit.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
-      <element name="TDateEdit.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TDateEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TDateEdit.PasswordChar" link="#LCL.StdCtrls.TCustomEdit.PasswordChar"/>
-      <element name="TCalcEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
-      <element name="TCalcEdit.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
-      <element name="TCalcEdit.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TDateEdit.Action" link="#lclbase.Controls.TControl.Action"/>
+      <element name="TDateEdit.AutoSelect" link="#lclbase.StdCtrls.TCustomEdit.AutoSelect"/>
+      <element name="TDateEdit.Constraints" link="#lclbase.Controls.TControl.Constraints"/>
+      <element name="TDateEdit.CharCase" link="#lclbase.StdCtrls.TCustomEdit.CharCase"/>
+      <element name="TDateEdit.Glyph" link="#lclbase.EditBtn.TCustomEditButton.Glyph"/>
+      <element name="TDateEdit.EchoMode" link="#lclbase.StdCtrls.TCustomEdit.EchoMode"/>
+      <element name="TDateEdit.OnChangeBounds" link="#lclbase.Controls.TControl.OnChangeBounds"/>
+      <element name="TDateEdit.OnEditingDone" link="#lclbase.Controls.TControl.OnEditingDone"/>
+      <element name="TDateEdit.OnResize" link="#lclbase.Controls.TControl.OnResize"/>
+      <element name="TDateEdit.OnUTF8KeyPress" link="#lclbase.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TDateEdit.PasswordChar" link="#lclbase.StdCtrls.TCustomEdit.PasswordChar"/>
+      <element name="TCalcEdit.AutoSelect" link="#lclbase.StdCtrls.TCustomEdit.AutoSelect"/>
+      <element name="TCalcEdit.OnEditingDone" link="#lclbase.Controls.TControl.OnEditingDone"/>
+      <element name="TCalcEdit.OnUTF8KeyPress" link="#lclbase.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TCustomDateEvent">
         <short>
           <var>TCustomDateEvent</var> - generic event handler method for date-related events</short>

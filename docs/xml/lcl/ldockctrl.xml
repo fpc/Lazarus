@@ -456,25 +456,25 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLazControlDocker.Control" link="#LCL.LDockCtrl.TCustomLazControlDocker.Control">
+      <element name="TLazControlDocker.Control" link="#lclbase.LDockCtrl.TCustomLazControlDocker.Control">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLazControlDocker.Manager" link="#LCL.LDockCtrl.TCustomLazControlDocker.Manager">
+      <element name="TLazControlDocker.Manager" link="#lclbase.LDockCtrl.TCustomLazControlDocker.Manager">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLazControlDocker.ExtendPopupMenu" link="#LCL.LDockCtrl.TCustomLazControlDocker.ExtendPopupMenu">
+      <element name="TLazControlDocker.ExtendPopupMenu" link="#lclbase.LDockCtrl.TCustomLazControlDocker.ExtendPopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLazControlDocker.DockerName" link="#LCL.LDockCtrl.TCustomLazControlDocker.DockerName">
+      <element name="TLazControlDocker.DockerName" link="#lclbase.LDockCtrl.TCustomLazControlDocker.DockerName">
         <short/>
         <descr/>
         <seealso/>
@@ -580,7 +580,7 @@
         <short>
           <var>TheType</var> of node (see definition of <var>TLDConfigNodeType</var>)</short>
         <seealso>
-          <link id="#LCL.LDockCtrl.TLDConfigNodeType">TLDConfigNodeType</link>
+          <link id="#lclbase.LDockCtrl.TLDConfigNodeType">TLDConfigNodeType</link>
         </seealso>
       </element>
       <element name="TLazDockConfigNode.Name">
@@ -598,14 +598,14 @@
         <short>
           <var>DisableLayout</var> - disables layout specifically for the given control; calls inherited method</short>
         <seealso>
-          <link id="#LCL.LDockTree.TCustomAnchoredDockManager.DisableLayout">TCustomAnchoredDockManager.DisableLayout</link>
+          <link id="#lclbase.LDockTree.TCustomAnchoredDockManager.DisableLayout">TCustomAnchoredDockManager.DisableLayout</link>
         </seealso>
       </element>
       <element name="TAnchoredDockManager.EnableLayout">
         <short>
           <var>EnableLayout</var> - enables layout specifically for the given control; calls inherited method</short>
         <seealso>
-          <link id="#LCL.LDockTree.TCustomAnchoredDockManager.EnableLayout">TCustomAnchoredDockManager.EnableLayout</link>
+          <link id="#lclbase.LDockTree.TCustomAnchoredDockManager.EnableLayout">TCustomAnchoredDockManager.EnableLayout</link>
         </seealso>
       </element>
       <element name="TAnchoredDockManager.Configs">
@@ -821,7 +821,7 @@
         <short>
           <var>LayoutLock</var> - the number of layouts that are locked</short>
       </element>
-      <element name="TLazControlDocker.Enabled" link="#LCL.LDockCtrl.TCustomLazControlDocker.Enabled"/>
+      <element name="TLazControlDocker.Enabled" link="#lclbase.LDockCtrl.TCustomLazControlDocker.Enabled"/>
     </module>
     <!-- LDockCtrl -->
   </package>

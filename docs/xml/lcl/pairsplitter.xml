@@ -568,8 +568,8 @@
         <errors/>
         <seealso/>
       </element>
-      <element name="TPairSplitterSide.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomPairSplitter.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPairSplitterSide.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomPairSplitter.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- PairSplitter -->
   </package>

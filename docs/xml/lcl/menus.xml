@@ -164,7 +164,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsCaptionLinked" link="#LCL.ActnList.TActionLink.IsCaptionLinked">
+      <element name="TMenuActionLink.IsCaptionLinked" link="#lclbase.ActnList.TActionLink.IsCaptionLinked">
         <short/>
         <descr/>
         <errors/>
@@ -175,7 +175,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsCheckedLinked" link="#LCL.ActnList.TActionLink.IsCheckedLinked">
+      <element name="TMenuActionLink.IsCheckedLinked" link="#lclbase.ActnList.TActionLink.IsCheckedLinked">
         <short/>
         <descr/>
         <errors/>
@@ -186,7 +186,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsEnabledLinked" link="#LCL.ActnList.TActionLink.IsEnabledLinked">
+      <element name="TMenuActionLink.IsEnabledLinked" link="#lclbase.ActnList.TActionLink.IsEnabledLinked">
         <short/>
         <descr/>
         <errors/>
@@ -197,7 +197,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsHelpContextLinked" link="#LCL.ActnList.TActionLink.IsHelpContextLinked">
+      <element name="TMenuActionLink.IsHelpContextLinked" link="#lclbase.ActnList.TActionLink.IsHelpContextLinked">
         <short/>
         <descr/>
         <errors/>
@@ -208,7 +208,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsHintLinked" link="#LCL.ActnList.TActionLink.IsHintLinked">
+      <element name="TMenuActionLink.IsHintLinked" link="#lclbase.ActnList.TActionLink.IsHintLinked">
         <short/>
         <descr/>
         <errors/>
@@ -219,7 +219,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsGroupIndexLinked" link="#LCL.ActnList.TActionLink.IsGroupIndexLinked">
+      <element name="TMenuActionLink.IsGroupIndexLinked" link="#lclbase.ActnList.TActionLink.IsGroupIndexLinked">
         <short/>
         <descr/>
         <errors/>
@@ -230,7 +230,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsImageIndexLinked" link="#LCL.ActnList.TActionLink.IsImageIndexLinked">
+      <element name="TMenuActionLink.IsImageIndexLinked" link="#lclbase.ActnList.TActionLink.IsImageIndexLinked">
         <short/>
         <descr/>
         <errors/>
@@ -241,7 +241,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsShortCutLinked" link="#LCL.ActnList.TActionLink.IsShortCutLinked">
+      <element name="TMenuActionLink.IsShortCutLinked" link="#lclbase.ActnList.TActionLink.IsShortCutLinked">
         <short/>
         <descr/>
         <errors/>
@@ -252,7 +252,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TMenuActionLink.IsVisibleLinked" link="#LCL.ActnList.TActionLink.IsVisibleLinked">
+      <element name="TMenuActionLink.IsVisibleLinked" link="#lclbase.ActnList.TActionLink.IsVisibleLinked">
         <short/>
         <descr/>
         <errors/>
@@ -2077,7 +2077,7 @@ customise by choosing various menu items.</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Menus.TMenu.Create">TMenu.Create</link>
+          <link id="#lclbase.Menus.TMenu.Create">TMenu.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2173,7 +2173,7 @@ customise by choosing various menu items.</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Menus.TMenu.Create">TMenu.Create</link>
+          <link id="#lclbase.Menus.TMenu.Create">TMenu.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2188,7 +2188,7 @@ customise by choosing various menu items.</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Menus.TMenu.Destroy">TMenu.Destroy</link>
+          <link id="#lclbase.Menus.TMenu.Destroy">TMenu.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -2348,8 +2348,8 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
           <p>Any or all of the <link id="TMenuItem">MenuItems</link> that you add can be configured using the Object Inspector.</p>
           <p>At the least you should give each item a <var>Caption</var> which will appear on the Menu Bar (you may also wish to give it a more meaningful <var>Name</var>). The caption should indicate the activity to be selected, such as "File Open" or "Close", "Run" or "Quit"</p>
           <p>If you want a particular letter in the Caption to be associated with a shortcut key, that letter should be preceded by an ampersand. The Menu item at run-time will appear with the shortcut letter underlined, and hitting that letter key will have the same effect as selecting the menu item. Alternatively you can choose a shortcut key sequence (such as Ctrl-C for Copy or Ctrl-V for Paste - the standard Keyboard shortcuts) with the <var>ShortCut</var> property of the MenuItem.</p>
-          <p>It is often helpful to use the Menu controls in conjuction with an <link id="#lcl.ActnList.TActionList">ActionList</link> which contains a series of standard or customised <link id="#lcl.ActnList.TAction">Actions</link>. Menu Items can be linked in the Object Inspector to Actions on the list, and the same actions can be linked to <link id="#lcl.StdCtrls.TButton">Buttons</link>, <link id="#lcl.ComCtrls.TToolButton">ToolBar Buttons</link>, <link id="#lcl.Buttons.TSpeedButton">SpeedButtons</link> etc. It is obviously economic of effort to re-use the same code to respond to the various events, rather than writing separate <var>OnClick</var> event handlers for each individual control.</p>
-          <p>By default a number of standard actions is pre-loaded from <link id="#lcl.StdActns">StdActns</link> or, if DataAware controls are being used, from <link id="#lcl.DBActns">DBActns</link>, and these can be chosen using the ActionList editor which appears when you right-click on the ActionList icon on the Form Designer.</p>
+          <p>It is often helpful to use the Menu controls in conjuction with an <link id="#lclbase.ActnList.TActionList">ActionList</link> which contains a series of standard or customised <link id="#lclbase.ActnList.TAction">Actions</link>. Menu Items can be linked in the Object Inspector to Actions on the list, and the same actions can be linked to <link id="#lclbase.StdCtrls.TButton">Buttons</link>, <link id="#lclbase.ComCtrls.TToolButton">ToolBar Buttons</link>, <link id="#lclbase.Buttons.TSpeedButton">SpeedButtons</link> etc. It is obviously economic of effort to re-use the same code to respond to the various events, rather than writing separate <var>OnClick</var> event handlers for each individual control.</p>
+          <p>By default a number of standard actions is pre-loaded from <link id="#lclbase.StdActns">StdActns</link> or, if DataAware controls are being used, from <link id="#lclbase.DBActns">DBActns</link>, and these can be chosen using the ActionList editor which appears when you right-click on the ActionList icon on the Form Designer.</p>
         </descr>
       </topic>
       <element name="TMenuItem.BitmapChange">
@@ -2376,7 +2376,7 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
         <short>
           <var>IsLine</var> - if true, this item is a line (separator) on the menu</short>
       </element>
-      <element name="TMenuItem.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
+      <element name="TMenuItem.RemoveAllHandlersOfObject" link="#lclbase.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
         <short/>
       </element>
       <element name="TMenuItem.Menu">
@@ -2452,10 +2452,10 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
         <descr>Currently has only one member - <var>mihtDestroy</var>
         </descr>
       </element>
-      <element name="TMenuItem.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TMenu.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TMainMenu.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TPopupMenu.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TMenuItem.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TMenu.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TMainMenu.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPopupMenu.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TPopupMenu.TrackButton">
         <short>
           <var>TrackButton</var> - defines which mouse button(s) are allowed to activate menu items</short>

@@ -159,7 +159,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TArrow.Paint" link="#LCL.Controls.TCustomControl.Paint">
+      <element name="TArrow.Paint" link="#lclbase.Controls.TCustomControl.Paint">
         <short/>
         <descr/>
         <errors/>
@@ -191,20 +191,20 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TArrow.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
+      <element name="TArrow.InitializeWnd" link="#lclbase.Controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TArrow.Align" link="#lclbase.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TArrow.Anchors" link="#lclbase.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
@@ -217,7 +217,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TArrow.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
@@ -230,55 +230,55 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TArrow.Visible" link="#lclbase.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TArrow.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TArrow.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TArrow.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TArrow.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
+      <element name="TArrow.OnChangeBounds" link="#lclbase.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnResize" link="#LCL.Controls.TControl.OnResize">
+      <element name="TArrow.OnResize" link="#lclbase.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
+      <element name="TArrow.OnContextPopup" link="#lclbase.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TArrow.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
@@ -290,9 +290,9 @@
         <errors/>
         <seealso/>
       </element>
-      <element name="TArrow.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
-      <element name="TArrow.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TArrow.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TArrow.GetControlClassDefaultSize" link="#lclbase.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TArrow.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick"/>
+      <element name="TArrow.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- Arrow -->
   </package>

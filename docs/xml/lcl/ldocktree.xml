@@ -503,7 +503,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomNotebook.Create">TCustomNotebook.Create</link>
+          <link id="#lclbase.ExtCtrls.TCustomNotebook.Create">TCustomNotebook.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -523,13 +523,13 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TLazDockPages.ActivePageComponent" link="#LCL.ExtCtrls.TCustomNotebook.ActivePageComponent">
+      <element name="TLazDockPages.ActivePageComponent" link="#lclbase.ExtCtrls.TCustomNotebook.ActivePageComponent">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TLazDockPages.Pages" link="#LCL.ExtCtrls.TCustomNotebook.Pages">
+      <element name="TLazDockPages.Pages" link="#lclbase.ExtCtrls.TCustomNotebook.Pages">
         <short/>
         <descr/>
         <seealso/>
@@ -589,7 +589,7 @@
           <var>Notification</var> - if the required operation is removal, sets MainControl to nil, then calls inherited <var>Notification</var>
         </short>
         <seealso>
-          <link id="#LCL.Forms.TCustomForm.Notification">TCustomForm.Notification</link>
+          <link id="#lclbase.Forms.TCustomForm.Notification">TCustomForm.Notification</link>
         </seealso>
       </element>
       <element name="TLazDockForm.UpdateMainControl">
@@ -600,35 +600,35 @@
         <short>
           <var>MouseUp</var> - calls inherited MouseUp then finds position and appropriate header</short>
         <seealso>
-          <link id="#LCL.Controls.TControl.MouseUp">TControl.MouseUp</link>
+          <link id="#lclbase.Controls.TControl.MouseUp">TControl.MouseUp</link>
         </seealso>
       </element>
       <element name="TLazDockForm.MouseDown">
         <short>
           <var>MouseDown</var> - performs inherited MouseDpwn, then finds position and appropriate header</short>
         <seealso>
-          <link id="#LCL.Controls.TControl.MouseDown">TControl.MouseDown</link>
+          <link id="#lclbase.Controls.TControl.MouseDown">TControl.MouseDown</link>
         </seealso>
       </element>
       <element name="TLazDockForm.MouseMove">
         <short>
           <var>MouseMove</var> - performs inherited Mousemove, then finds position and appropriate header</short>
         <seealso>
-          <link id="#LCL.Controls.TControl.MouseMove">TControl.MouseMove</link>
+          <link id="#lclbase.Controls.TControl.MouseMove">TControl.MouseMove</link>
         </seealso>
       </element>
       <element name="TLazDockForm.MouseLeave">
         <short>
           <var>MouseLeave</var> - performs inherited MouseLeave, and sets the local store of position to indicate absence of the mouse</short>
         <seealso>
-          <link id="#LCL.Controls.TControl.MouseLeave">TControl.MouseLeave</link>
+          <link id="#lclbase.Controls.TControl.MouseLeave">TControl.MouseLeave</link>
         </seealso>
       </element>
       <element name="TLazDockForm.PaintWindow">
         <short>
           <var>PaintWindow</var> - calls inherited PaintWindow, then creates new canvas and handle at cursor position, inserts header caption, title and images</short>
         <seealso>
-          <link id="#LCL.Controls.TCustomControl.PaintWindow">TCustomControl.PaintWindow</link>
+          <link id="#lclbase.Controls.TCustomControl.PaintWindow">TCustomControl.PaintWindow</link>
         </seealso>
       </element>
       <element name="TLazDockForm.TrackMouse">
@@ -639,21 +639,21 @@
         <short>
           <var>Create</var> - constructor for <var>TLazDocForm</var>: calls inherited Create, then fills in the header</short>
         <seealso>
-          <link id="#LCL.Forms.TCustomForm.Create">TCustomForm.Create</link>
+          <link id="#lclbase.Forms.TCustomForm.Create">TCustomForm.Create</link>
         </seealso>
       </element>
       <element name="TLazDockForm.Destroy">
         <short>
           <var>Destroy</var> - destructor for <var>TLazDockForm</var>: removes header then calls inherited Destroy</short>
         <seealso>
-          <link id="#LCL.Forms.TCustomForm.Destroy">TCustomForm.Destroy</link>
+          <link id="#lclbase.Forms.TCustomForm.Destroy">TCustomForm.Destroy</link>
         </seealso>
       </element>
       <element name="TLazDockForm.CloseQuery">
         <short>
           <var>CloseQuery</var> - calls inherited method, then asks all top level forms if form can close</short>
         <seealso>
-          <link id="#LCL.Forms.TCustomForm.CloseQuery">TCustomForm.CloseQuery</link>
+          <link id="#lclbase.Forms.TCustomForm.CloseQuery">TCustomForm.CloseQuery</link>
         </seealso>
       </element>
       <element name="TLazDockForm.UpdateCaption">
@@ -676,7 +676,7 @@
         <short>
           <var>InsertControl</var> - calls inherited method then updates the main control</short>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.InsertControl">TWinControl.InsertControl</link>
+          <link id="#lclbase.Controls.TWinControl.InsertControl">TWinControl.InsertControl</link>
         </seealso>
       </element>
       <element name="TLazDockForm.IsDockedControl">
@@ -703,28 +703,28 @@
           <var>InsertControl</var> - calls inherited method, then ensures that all parents recognise the <var>MainControl</var>
         </short>
         <seealso>
-          <link id="#LCL.Controls.TWinControl.InsertControl">TWinControl.InsertControl</link>
+          <link id="#lclbase.Controls.TWinControl.InsertControl">TWinControl.InsertControl</link>
         </seealso>
       </element>
       <element name="TLazDockPages.GetFloatingDockSiteClass">
         <short>
           <var>GetFloatingDockSiteClass</var> - returns a default class of <var>TLazDockForm</var>, overriding the inherited value</short>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetFloatingDockSiteClass">TControl.GetFloatingDockSiteClass</link>
+          <link id="#lclbase.Controls.TControl.GetFloatingDockSiteClass">TControl.GetFloatingDockSiteClass</link>
         </seealso>
       </element>
       <element name="TLazDockPages.Change">
         <short>
           <var>Change</var> - calls inherited method, then ensures that all parents recognise MainControl</short>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomNotebook.Change">TCustomNotebook.Change</link>
+          <link id="#lclbase.ExtCtrls.TCustomNotebook.Change">TCustomNotebook.Change</link>
         </seealso>
       </element>
       <element name="TLazDockSplitter.Create">
         <short>
           <var>Create</var> - constructor for <var>TLazDockSplitter</var>: calls inherited <var>Create</var> and initialises minimum size</short>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomSplitter.Create">TCustomSplitter.Create</link>
+          <link id="#lclbase.ExtCtrls.TCustomSplitter.Create">TCustomSplitter.Create</link>
         </seealso>
       </element>
       <element name="TLazDockOwnerComponent">
@@ -833,7 +833,7 @@
         <short>
           <var>BeginUpdate</var> - starts the update process by incrementing the update count</short>
         <seealso>
-          <link id="#LCL.Controls.TDockManager.BeginUpdate">TDockManager.BeginUpdate</link>
+          <link id="#lclbase.Controls.TDockManager.BeginUpdate">TDockManager.BeginUpdate</link>
         </seealso>
       </element>
       <element name="TCustomAnchoredDockManager.EndUpdate">
@@ -845,7 +845,7 @@
         <short>
           <var>GetControlBounds</var> - finds the bounding rectangle of the specified control</short>
         <seealso>
-          <link id="#LCL.Controls.TDockManager.GetControlBounds">TDockManager.GetControlBounds</link>
+          <link id="#lclbase.Controls.TDockManager.GetControlBounds">TDockManager.GetControlBounds</link>
         </seealso>
       </element>
       <element name="TCustomAnchoredDockManager.DisableLayout">
@@ -939,8 +939,8 @@
         <short>
           <var>InsertControl</var> - calls DockControl to perform insertion</short>
         <seealso>
-          <link id="#lcl.LDockTree.TCustomAnchoredDockManager.DockControl">TCustomAnchoredDockManager.DockControl</link>
-          <link id="#LCL.Controls.TDockManager.InsertControl">TDockManager.InsertControl</link>
+          <link id="#lclbase.LDockTree.TCustomAnchoredDockManager.DockControl">TCustomAnchoredDockManager.DockControl</link>
+          <link id="#lclbase.Controls.TDockManager.InsertControl">TDockManager.InsertControl</link>
         </seealso>
       </element>
       <element name="TCustomAnchoredDockManager.EnlargeControl">
@@ -951,8 +951,8 @@
         <short>
           <var>RemoveControl</var> - calls <var>UndockControl</var> to remove the specified control from the docking heirarchy</short>
         <seealso>
-          <link id="#lcl.LDockTree.TCustomAnchoredDockManager.UndockControl">TCustomAnchoredDockManager.UndockControl</link>
-          <link id="#LCL.Controls.TDockManager.RemoveControl">TDockManager.RemoveControl</link>
+          <link id="#lclbase.LDockTree.TCustomAnchoredDockManager.UndockControl">TCustomAnchoredDockManager.UndockControl</link>
+          <link id="#lclbase.Controls.TDockManager.RemoveControl">TDockManager.RemoveControl</link>
         </seealso>
       </element>
       <element name="TCustomAnchoredDockManager.ReplaceAnchoredControl">
@@ -987,8 +987,8 @@
         <short>
           <var>PaintSite</var> - (drawing of titles is is actually done by <var>TLazDockForm</var>)</short>
         <seealso>
-          <link id="#LCL.LDockTree.TLazDockForm.PaintWindow">TLazDockForm.PaintWindow</link>
-          <link id="#LCL.Controls.TDockManager.PaintSite">TDockManager.PaintSite</link>
+          <link id="#lclbase.LDockTree.TLazDockForm.PaintWindow">TLazDockForm.PaintWindow</link>
+          <link id="#lclbase.Controls.TDockManager.PaintSite">TDockManager.PaintSite</link>
         </seealso>
       </element>
       <element name="TCustomAnchoredDockManager.MessageHandler">
@@ -1019,7 +1019,7 @@
         <short>
           <var>AutoFreeByControl</var> - always returns False, overriding inherited value</short>
         <seealso>
-          <link id="#LCL.Controls.TDockManager.AutoFreeByControl">TDockManager.AutoFreeByControl</link>
+          <link id="#lclbase.Controls.TDockManager.AutoFreeByControl">TDockManager.AutoFreeByControl</link>
         </seealso>
       </element>
       <element name="TCustomAnchoredDockManager.CreateForm">

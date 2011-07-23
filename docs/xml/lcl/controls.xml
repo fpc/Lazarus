@@ -934,9 +934,9 @@
       <element name="TControlCanvas">
         <short>The base class for the canvas property of several graphic controls, such as TGraphicControl and TCustomControl</short>
         <seealso>
-          <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link>
-          <link id="#lcl.Controls.TCustomControl">TCustomControl</link>
-          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
+          <link id="#lclbase.Controls.TGraphicControl">TGraphicControl</link>
+          <link id="#lclbase.Controls.TCustomControl">TCustomControl</link>
+          <link id="#lclbase.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -987,7 +987,7 @@
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Graphics.TCanvas.CreateHandle" name="TControlCanvas.CreateHandle">
+      <element link="#lclbase.Graphics.TCanvas.CreateHandle" name="TControlCanvas.CreateHandle">
         <short/>
         <descr/>
         <errors/>
@@ -1029,11 +1029,11 @@
         </short>
         <seealso>
           <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
-          <link id="#LCL.Graphics.TCanvas.Destroy">TCanvas.Destroy</link>
+          <link id="#lclbase.Graphics.TCanvas.Destroy">TCanvas.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#LCL.Graphics.TCanvas.FreeHandle" name="TControlCanvas.FreeHandle">
+      <element link="#lclbase.Graphics.TCanvas.FreeHandle" name="TControlCanvas.FreeHandle">
         <descr/>
         <errors/>
         <seealso/>
@@ -1725,7 +1725,7 @@ dmFindTarget: find child control under the mouse
       <element name="TDragObject.HideDragImage">
         <short>Hides the drag image</short>
         <seealso>
-          <link id="#lcl.Controls.TDragObject.ShowDragImage">ShowDragImage</link>
+          <link id="#lclbase.Controls.TDragObject.ShowDragImage">ShowDragImage</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -1740,7 +1740,7 @@ dmFindTarget: find child control under the mouse
       <element name="TDragObject.ShowDragImage">
         <short>Shows the drag image</short>
         <seealso>
-          <link id="#lcl.Controls.TDragObject.HideDragImage">HideDragImage</link>
+          <link id="#lclbase.Controls.TDragObject.HideDragImage">HideDragImage</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -1793,7 +1793,7 @@ dmFindTarget: find child control under the mouse
       <element name="TBaseDragControlObject">
         <short>An ancestor class for many drag control objects</short>
         <seealso>
-          <link id="#lcl.Controls.TDragObject"/>
+          <link id="#lclbase.Controls.TDragObject"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -1858,7 +1858,7 @@ dmFindTarget: find child control under the mouse
         <short>Assigns source object</short>
         <descr>Overrides definition in parent class</descr>
         <seealso>
-          <link id="#lcl.Controls.TDragObject"/>
+          <link id="#lclbase.Controls.TDragObject"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1880,7 +1880,7 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TDragObject.GetDragCursor" name="TDragControlObject.GetDragCursor">
+      <element link="#lclbase.Controls.TDragObject.GetDragCursor" name="TDragControlObject.GetDragCursor">
         <short/>
         <descr/>
         <errors/>
@@ -1903,7 +1903,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TDragObject.GetDragImages" name="TDragControlObject.GetDragImages">
+      <element link="#lclbase.Controls.TDragObject.GetDragImages" name="TDragControlObject.GetDragImages">
         <short/>
         <descr/>
         <errors/>
@@ -2139,7 +2139,7 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDragObject.EndDrag" name="TDragDockObject.EndDrag">
+      <element link="#lclbase.Controls.TDragObject.EndDrag" name="TDragDockObject.EndDrag">
         <short>Finish docking.</short>
         <descr>Invokes Control.DoEndDock.</descr>
         <errors/>
@@ -2167,7 +2167,7 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TDragObject.GetDragCursor" name="TDragDockObject.GetDragCursor">
+      <element link="#lclbase.Controls.TDragObject.GetDragCursor" name="TDragDockObject.GetDragCursor">
         <short/>
         <descr/>
         <errors/>
@@ -3459,7 +3459,7 @@ dmFindTarget: find child control under the mouse
         <descr>
           <p>
             <var>TControlActionLink</var> - links the current control to an action</p>
-          <p>Defines a number of protected methods (inherited from <link id="#lcl.ActnList.TActionLink">TActionLink</link>) for checking which parts of the control are linked to the action</p>
+          <p>Defines a number of protected methods (inherited from <link id="#lclbase.ActnList.TActionLink">TActionLink</link>) for checking which parts of the control are linked to the action</p>
         </descr>
         <errors/>
         <seealso/>
@@ -3482,7 +3482,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.ActnList.TActionLink.IsCaptionLinked" name="TControlActionLink.IsCaptionLinked">
+      <element link="#lclbase.ActnList.TActionLink.IsCaptionLinked" name="TControlActionLink.IsCaptionLinked">
         <short/>
         <descr/>
         <errors/>
@@ -3493,7 +3493,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.ActnList.TActionLink.IsEnabledLinked" name="TControlActionLink.IsEnabledLinked">
+      <element link="#lclbase.ActnList.TActionLink.IsEnabledLinked" name="TControlActionLink.IsEnabledLinked">
         <short/>
         <descr/>
         <errors/>
@@ -3504,7 +3504,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.ActnList.TActionLink.IsHelpLinked" name="TControlActionLink.IsHelpLinked">
+      <element link="#lclbase.ActnList.TActionLink.IsHelpLinked" name="TControlActionLink.IsHelpLinked">
         <short/>
         <descr/>
         <errors/>
@@ -3515,7 +3515,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.ActnList.TActionLink.IsHintLinked" name="TControlActionLink.IsHintLinked">
+      <element link="#lclbase.ActnList.TActionLink.IsHintLinked" name="TControlActionLink.IsHintLinked">
         <short/>
         <descr/>
         <errors/>
@@ -3526,7 +3526,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.ActnList.TActionLink.IsVisibleLinked" name="TControlActionLink.IsVisibleLinked">
+      <element link="#lclbase.ActnList.TActionLink.IsVisibleLinked" name="TControlActionLink.IsVisibleLinked">
         <short/>
         <descr/>
         <errors/>
@@ -3571,7 +3571,7 @@ dmFindTarget: find child control under the mouse
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ActnList.TActionLink.SetCaption">TActionLink.SetCaption</link>
+          <link id="#lclbase.ActnList.TActionLink.SetCaption">TActionLink.SetCaption</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4363,8 +4363,8 @@ dmFindTarget: find child control under the mouse
         <short>Function to get text-string associated with control</short>
         <descr>Uses RealGetText rather than GetTextBuf to avoid unnecessary read-writes to PChar buffers</descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
-          <link id="#lcl.Controls.TControl.RealGetText"/>
+          <link id="#lclbase.Controls.TControl.GetTextBuf">GetTextBuf</link>
+          <link id="#lclbase.Controls.TControl.RealGetText"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -4830,8 +4830,8 @@ dmFindTarget: find child control under the mouse
         <short>Stores text in buffer</short>
         <descr>Uses RealSetText rather than SetTextBuf to avoid unnecessary read-writes to PChar buffer</descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
-          <link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
+          <link id="#lclbase.Controls.TControl.RealSetText">RealSetText</link>
+          <link id="#lclbase.Controls.TControl.SetTextBuf">SetTextBuf</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4872,7 +4872,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.FControlState">
         <short>Flag showing the set of states for this control</short>
         <seealso>
-          <link id="#lcl.Controls.TControlState"/>
+          <link id="#lclbase.Controls.TControlState"/>
         </seealso>
       </element>
       <!-- variable Visibility: protected -->
@@ -4889,11 +4889,11 @@ dmFindTarget: find child control under the mouse
           </p>
           <p>IMPORTANT: Many Delphi controls override this method and many call this method directly after setting some properties.</p>
           <p>During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size.</p>
-          <p>That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
+          <p>That's why you should always call <link id="#lclbase.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.AutoSize">AutoSize topic</link>
-          <link id="#lcl.Controls.TControl.AdjustSize">TControl.AdjustSize</link>
+          <link id="#lclbase.Controls.AutoSize">AutoSize topic</link>
+          <link id="#lclbase.Controls.TControl.AdjustSize">TControl.AdjustSize</link>
         </seealso>
       </element>
       <!-- function Visibility: protected -->
@@ -5035,7 +5035,7 @@ dmFindTarget: find child control under the mouse
             
             
             
-            <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
+            <link id="#lclbase.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
           <p>WithThemeSpace: If true, adds space for stacking.</p>
           <p>For example: <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so the parameter is passed to the widgetset.</p>
@@ -5871,7 +5871,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           
           
           
-          <link id="#lcl.Controls.TControl.OnClick">OnClick</link> event</short>
+          <link id="#lclbase.Controls.TControl.OnClick">OnClick</link> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
@@ -5890,7 +5890,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           
           
           
-          <link id="#lcl.Controls.TControl.OnDblClick">OnDblClick</link>  event</short>
+          <link id="#lclbase.Controls.TControl.OnDblClick">OnDblClick</link>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TripleClick">
@@ -5909,7 +5909,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           
           
           
-          <link id="#lcl.Controls.TControl.OnTripleClick">OnTripleClick</link> event</short>
+          <link id="#lclbase.Controls.TControl.OnTripleClick">OnTripleClick</link> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.QuadClick">
@@ -5928,7 +5928,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           
           
           
-          <link id="#lcl.Controls.TControl.OnQuadClick">OnQuadClick</link>  event</short>
+          <link id="#lclbase.Controls.TControl.OnQuadClick">OnQuadClick</link>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseDown">
@@ -5937,7 +5937,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           
           <var>Action</var>  as that associated with the 	                                                                    
           
-          <link id="#lcl.Controls.TControl.OnMouseDown">OnMouseDown</link>  event</short>
+          <link id="#lclbase.Controls.TControl.OnMouseDown">OnMouseDown</link>  event</short>
         <descr>
           <p>
             <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same  
@@ -5945,7 +5945,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
             <var>Action</var>  as that associated with the  
   
             
-            <link id="#lcl.Controls.TControl.OnMouseDown"/>  event</p>
+            <link id="#lclbase.Controls.TControl.OnMouseDown"/>  event</p>
           <p>
             <var>X, Y</var> show mouse position
 </p>
@@ -5974,7 +5974,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           
           <var>Action</var>  as that associated with the 	                                                                
           
-          <link id="#lcl.Controls.TControl.OnMouseMove">OnMouseMove</link>  event</short>
+          <link id="#lclbase.Controls.TControl.OnMouseMove">OnMouseMove</link>  event</short>
         <descr>
           <p>
             <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same  
@@ -5982,7 +5982,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
             <var>Action</var>  as that associated with the 
   
             
-            <link id="#lcl.Controls.TControl.OnMouseMove"/>  event</p>
+            <link id="#lclbase.Controls.TControl.OnMouseMove"/>  event</p>
           <p>
             <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; 
   
@@ -6020,7 +6020,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           
           
           
-          <link id="#lcl.Controls.TControl.OnMouseUp">OnMouseUp</link>  event</short>
+          <link id="#lclbase.Controls.TControl.OnMouseUp">OnMouseUp</link>  event</short>
         <descr>
           <p>
             <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same 
@@ -6039,7 +6039,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
             
             
             
-            <link id="#lcl.Controls.TControl.OnMouseUp"/>  event</p>
+            <link id="#lclbase.Controls.TControl.OnMouseUp"/>  event</p>
           <p>
             <var>Button</var> specifies which mouse button; 
             
@@ -6095,7 +6095,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           
           
           
-          <link id="#lcl.Controls.TControl.OnMouseEnter">OnMouseEnter</link> event</short>
+          <link id="#lclbase.Controls.TControl.OnMouseEnter">OnMouseEnter</link> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6117,7 +6117,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           
           
           
-          <link id="#lcl.Controls.TControl.OnMouseLeave">OnMouseLeave</link> event</short>
+          <link id="#lclbase.Controls.TControl.OnMouseLeave">OnMouseLeave</link> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6304,9 +6304,9 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
         <descr>This is the function that is actually used by <var>GetTextBuf</var>, and loads a string rather than performing read-write to a <var>PChar</var> buffer
 </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
-          <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
-          <link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
+          <link id="#lclbase.Controls.TControl.GetTextBuf">GetTextBuf</link>
+          <link id="#lclbase.Controls.TControl.RealSetText">RealSetText</link>
+          <link id="#lclbase.Controls.TControl.SetTextBuf">SetTextBuf</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -6319,9 +6319,9 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
         <descr>This is the procedure that is actually used by <var>SetTextBuf,</var> and stores text as a string rather than performing read-write to a <var>PChar</var> buffer
 </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.SetTextBuf">SetTextBuf</link>
-          <link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
-          <link id="#lcl.Controls.TControl.GetTextBuf">GetTextBuf</link>
+          <link id="#lclbase.Controls.TControl.SetTextBuf">SetTextBuf</link>
+          <link id="#lclbase.Controls.TControl.RealGetText">RealGetText</link>
+          <link id="#lclbase.Controls.TControl.GetTextBuf">GetTextBuf</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6667,7 +6667,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.Autosize">Autosize topic</link>
+          <link id="#lclbase.Controls.Autosize">Autosize topic</link>
         </seealso>
       </element>
       <!-- property Visibility: protected -->
@@ -6744,7 +6744,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           <p>
             <var>Text </var>
 - the character string in the name or caption of the control</p>
-          <p>But BEWARE: <var>Text</var> is used in another context in editing controls such as <link id="#lcl.StdCtrls.TEdit">TEdit</link> and <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>, <link id="#lcl.ExtCtrls.TLabeledEdit">TLabeledEdit</link> and <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link>, where it contains the character string that is being edited in the Edit Box.</p>
+          <p>But BEWARE: <var>Text</var> is used in another context in editing controls such as <link id="#lclbase.StdCtrls.TEdit">TEdit</link> and <link id="#lclbase.StdCtrls.TCustomEdit">TCustomEdit</link>, <link id="#lclbase.ExtCtrls.TLabeledEdit">TLabeledEdit</link> and <link id="#lclbase.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link>, where it contains the character string that is being edited in the Edit Box.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
@@ -6953,7 +6953,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
 </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.ManualDock"/>
+          <link id="#lclbase.Controls.TControl.ManualDock"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -7001,7 +7001,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
           <p>This method initially does the same as <var>TWinControl.DoAutoSize</var>.  But since <var>DoAutoSize</var> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.AutoSize"/>
+          <link id="#lclbase.Controls.AutoSize"/>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -7111,7 +7111,7 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
         <descr>Checks that this is a new control, then calls SetBounds to set up coordinates defining its position
 </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.SetBounds">SetBounds</link>
+          <link id="#lclbase.Controls.TControl.SetBounds">SetBounds</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7182,7 +7182,7 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
             
             
             
-            <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
+            <link id="#lclbase.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -7211,7 +7211,7 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
         </descr>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
+          <link id="#lclbase.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for 
@@ -7244,7 +7244,7 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
         </descr>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
+          <link id="#lclbase.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - Destructor for 
@@ -7375,8 +7375,8 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
         <short>
           <var>Hide </var>this control</short>
         <seealso>
-          <link id="#lcl.Controls.TControl.Visible"/>
-          <link id="#lcl.Controls.TControl.Show"/>
+          <link id="#lclbase.Controls.TControl.Visible"/>
+          <link id="#lclbase.Controls.TControl.Show"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -7460,8 +7460,8 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
 </pre>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
-          <link id="#lcl.Controls.TControl.GetText">GetText</link>
+          <link id="#lclbase.Controls.TControl.RealGetText">RealGetText</link>
+          <link id="#lclbase.Controls.TControl.GetText">GetText</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -7506,8 +7506,8 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
 </pre>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
-          <link id="#lcl.Controls.TControl.SetText">SetText</link>
+          <link id="#lclbase.Controls.TControl.RealSetText">RealSetText</link>
+          <link id="#lclbase.Controls.TControl.SetText">SetText</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7592,8 +7592,8 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lcl.Controls.TControl.Visible"/>
-          <link id="#lcl.Controls.TControl.Hide"/>
+          <link id="#lclbase.Controls.TControl.Visible"/>
+          <link id="#lclbase.Controls.TControl.Hide"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -7656,7 +7656,7 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject" name="TControl.RemoveAllHandlersOfObject">
+      <element link="#lclbase.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject" name="TControl.RemoveAllHandlersOfObject">
         <short/>
         <descr/>
         <errors/>
@@ -7771,7 +7771,7 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TAlign">TAlign</link>
+          <link id="#lclbase.Controls.TAlign">TAlign</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7784,7 +7784,7 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TAnchors"/>
+          <link id="#lclbase.Controls.TAnchors"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7793,11 +7793,11 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Finds which side is to be used to anchor this control, and what relationships it has to other controls nearby. </p>
-          <p>For complex relationships, use the <var>Side</var> property of the parent class <link id="#lcl.Controls.TAnchorSide">TAnchorSide</link>, and make a reference eg using <var>asrCenter</var>
+          <p>For complex relationships, use the <var>Side</var> property of the parent class <link id="#lclbase.Controls.TAnchorSide">TAnchorSide</link>, and make a reference eg using <var>asrCenter</var>
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TAnchorSide"/>
+          <link id="#lclbase.Controls.TAnchorSide"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7811,7 +7811,7 @@ SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is 
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
           <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          <p>The properties are defined in the parent class <link id="#lclbase.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
           </p>
         </descr>
       </element>
@@ -7850,8 +7850,8 @@ introduced. These functions interface with the LCLInterface. </p>
           <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.RealGetText"/>
-          <link id="#lcl.Controls.TControl.RealSetText"/>
+          <link id="#lclbase.Controls.TControl.RealGetText"/>
+          <link id="#lclbase.Controls.TControl.RealSetText"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7904,7 +7904,7 @@ introduced. These functions interface with the LCLInterface. </p>
           <p>The default colour is the same as the window in which the control is located.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Graphics.TColor"/>
+          <link id="#lclbase.Graphics.TColor"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7915,7 +7915,7 @@ introduced. These functions interface with the LCLInterface. </p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TSizeConstraints"/>
+          <link id="#lclbase.Controls.TSizeConstraints"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7943,7 +7943,7 @@ introduced. These functions interface with the LCLInterface. </p>
  - whether mouse has been clicked, data being read, control being re-drawn, etc. Reads or stores the state of the control.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControlState"/>
+          <link id="#lclbase.Controls.TControlState"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7958,7 +7958,7 @@ introduced. These functions interface with the LCLInterface. </p>
  - whether the control responds to mouse clicks, can be re-sized, has particular actions, etc. Reads the stored style, or saves the new style</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControlStyle"/>
+          <link id="#lclbase.Controls.TControlStyle"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7967,9 +7967,9 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Font">
-        <short>The <link id="#lcl.Graphics.TFont">font</link> to be used for text in this control (read/write).</short>
+        <short>The <link id="#lclbase.Graphics.TFont">font</link> to be used for text in this control (read/write).</short>
         <seealso>
-          <link id="#lcl.Graphics.TFont"/>
+          <link id="#lclbase.Graphics.TFont"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -8030,8 +8030,8 @@ Keep in mind that ClientWidth and ClientHeight can change even when Width, Heigh
         <short>Event Handler when a hint needs to be shown</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads or Writes a flag when a hint (a small pop-up box, appearing when the mouse hovers over an object) is to be shown</descr>
         <seealso>
-          <link id="#lcl.Controls.THintInfo"/>
-          <link id="#lcl.Controls.TControlShowHintEvent"/>
+          <link id="#lclbase.Controls.THintInfo"/>
+          <link id="#lclbase.Controls.TControlShowHintEvent"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -8042,10 +8042,10 @@ Keep in mind that ClientWidth and ClientHeight can change even when Width, Heigh
           <var>PopupMenu</var> - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+Properties are defined in the parent class <link id="#lclbase.Menus.TPopupMenu">TPopupMenu</link>
         </descr>
         <seealso>
-          <link id="#lcl.Menus.TPopupMenu"/>
+          <link id="#lclbase.Menus.TPopupMenu"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -8053,7 +8053,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>Flag to determine: Is hint to be displayed for this control?</short>
         <descr>// standard properties, which should be supported by all descendants<br/>Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint</descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.OnShowHint">OnShowHint</link>
+          <link id="#lclbase.Controls.TControl.OnShowHint">OnShowHint</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -8069,9 +8069,9 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
           <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.IsVisible"/>
-          <link id="#lcl.Controls.TControl.Show"/>
-          <link id="#lcl.Controls.TControl.Hide"/>
+          <link id="#lclbase.Controls.TControl.IsVisible"/>
+          <link id="#lclbase.Controls.TControl.Show"/>
+          <link id="#lclbase.Controls.TControl.Hide"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -8081,8 +8081,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
 Reads message from flag area, or stores a message
 </descr>
         <seealso>
-          <link id="#lcl.Controls.TWndMethod">TWndMethod</link>
-          <link id="#lcl.LMessages.TLMessage">TLMessage</link>
+          <link id="#lclbase.Controls.TWndMethod">TWndMethod</link>
+          <link id="#lclbase.LMessages.TLMessage">TLMessage</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -9392,7 +9392,7 @@ Reads message from flag area, or stores a message
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TControl.CanTab" name="TWinControl.CanTab">
+      <element link="#lclbase.Controls.TControl.CanTab" name="TWinControl.CanTab">
         <short/>
         <descr/>
         <errors/>
@@ -9403,7 +9403,7 @@ Reads message from flag area, or stores a message
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.DoDragMsg" name="TWinControl.DoDragMsg">
+      <element link="#lclbase.Controls.TControl.DoDragMsg" name="TWinControl.DoDragMsg">
         <short>Dispatch a drag message, sent by the DragManager</short>
         <descr>
           <p>On dmFindTarget a TWinControl returns the child control under the mouse, or Self if none is found.
@@ -9514,7 +9514,7 @@ Reads message from flag area, or stores a message
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.DoConstraintsChange" name="TWinControl.DoConstraintsChange">
+      <element link="#lclbase.Controls.TControl.DoConstraintsChange" name="TWinControl.DoConstraintsChange">
         <short/>
         <descr/>
         <errors/>
@@ -9534,7 +9534,7 @@ Reads message from flag area, or stores a message
           <p>Changing the clientrect in the LCL to the most probable size reduces unneccessary resizes.</p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.DoSetBounds"/>
+          <link id="#lclbase.Controls.TControl.DoSetBounds"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9568,11 +9568,11 @@ Reads message from flag area, or stores a message
             <li>Adjusts the size of the client rectangle</li>
             <li>Adjusts the bounds of the whole control</li>
           </ul>
-          <p>Because this method involves so much overhead, the simpler <link id="#lcl.Controls.TControl.AdjustSize">TControl.AdjustSize</link> is often called instead.</p>
+          <p>Because this method involves so much overhead, the simpler <link id="#lclbase.Controls.TControl.AdjustSize">TControl.AdjustSize</link> is often called instead.</p>
         </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link>
+          <link id="#lclbase.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -9608,7 +9608,7 @@ Reads message from flag area, or stores a message
         </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
+          <link id="#lclbase.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10385,7 +10385,7 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TControl.DialogChar" name="TWinControl.DialogChar">
+      <element link="#lclbase.Controls.TControl.DialogChar" name="TWinControl.DialogChar">
         <short/>
         <descr/>
         <errors/>
@@ -10596,7 +10596,7 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TControl.RealGetText" name="TWinControl.RealGetText">
+      <element link="#lclbase.Controls.TControl.RealGetText" name="TWinControl.RealGetText">
         <short/>
         <descr/>
         <errors/>
@@ -10619,7 +10619,7 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TControl.GetChildsRect" name="TWinControl.GetChildsRect">
+      <element link="#lclbase.Controls.TControl.GetChildsRect" name="TWinControl.GetChildsRect">
         <descr/>
         <errors/>
         <seealso/>
@@ -10633,7 +10633,7 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TControl.GetClientOrigin" name="TWinControl.GetClientOrigin">
+      <element link="#lclbase.Controls.TControl.GetClientOrigin" name="TWinControl.GetClientOrigin">
         <descr>
           <p>Returns the screen coordinate of the topleft coordinate 0,0 of the control area. (The topleft pixel of the control on the screen)
 </p>
@@ -10647,7 +10647,7 @@ It is up to the interface to handle moves instantly or queued.</remark>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TControl.GetClientRect" name="TWinControl.GetClientRect">
+      <element link="#lclbase.Controls.TControl.GetClientRect" name="TWinControl.GetClientRect">
         <short/>
         <descr/>
         <errors/>
@@ -10658,7 +10658,7 @@ It is up to the interface to handle moves instantly or queued.</remark>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TControl.GetControlOrigin" name="TWinControl.GetControlOrigin">
+      <element link="#lclbase.Controls.TControl.GetControlOrigin" name="TWinControl.GetControlOrigin">
         <short>The screen coordinates of the control.</short>
         <descr>
           <p>Returns the screen coordinates of the topleft pixel of the control on the screen.
@@ -10673,7 +10673,7 @@ It is up to the interface to handle moves instantly or queued.</remark>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TControl.GetDeviceContext" name="TWinControl.GetDeviceContext">
+      <element link="#lclbase.Controls.TControl.GetDeviceContext" name="TWinControl.GetDeviceContext">
         <short/>
         <descr/>
         <errors/>
@@ -10704,7 +10704,7 @@ It is up to the interface to handle moves instantly or queued.</remark>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#LCL.Controls.TControl.ParentHandlesAllocated" name="TWinControl.ParentHandlesAllocated">
+      <element link="#lclbase.Controls.TControl.ParentHandlesAllocated" name="TWinControl.ParentHandlesAllocated">
         <short/>
         <descr/>
         <errors/>
@@ -10801,7 +10801,7 @@ End;
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.FontChanged" name="TWinControl.FontChanged">
+      <element link="#lclbase.Controls.TControl.FontChanged" name="TWinControl.FontChanged">
         <short/>
         <descr/>
         <errors/>
@@ -10839,7 +10839,7 @@ End;
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TControl.Loaded">TControl.Loaded</link>
+          <link id="#lclbase.Controls.TControl.Loaded">TControl.Loaded</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -10860,7 +10860,7 @@ End;
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TControl.ParentFormHandleInitialized">TControl.ParentFormHandleInitialized</link>
+          <link id="#lclbase.Controls.TControl.ParentFormHandleInitialized">TControl.ParentFormHandleInitialized</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -10880,7 +10880,7 @@ End;
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.RealSetText" name="TWinControl.RealSetText">
+      <element link="#lclbase.Controls.TControl.RealSetText" name="TWinControl.RealSetText">
         <short/>
         <descr/>
         <errors/>
@@ -10903,7 +10903,7 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.SendMoveSizeMessages" name="TWinControl.SendMoveSizeMessages">
+      <element link="#lclbase.Controls.TControl.SendMoveSizeMessages" name="TWinControl.SendMoveSizeMessages">
         <short/>
         <descr/>
         <errors/>
@@ -10930,7 +10930,7 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.SetColor" name="TWinControl.SetColor">
+      <element link="#lclbase.Controls.TControl.SetColor" name="TWinControl.SetColor">
         <short/>
         <descr/>
         <errors/>
@@ -10975,7 +10975,7 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.Update" name="TWinControl.Update">
+      <element link="#lclbase.Controls.TControl.Update" name="TWinControl.Update">
         <short/>
         <descr/>
         <errors/>
@@ -11024,7 +11024,7 @@ End;
         </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TControl.WndProc">TControl.WndProc</link>
+          <link id="#lclbase.Controls.TControl.WndProc">TControl.WndProc</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11059,7 +11059,7 @@ End;
       <element name="TWinControl.Brush">
         <short>Find which type of brush to use for drawing the control</short>
         <seealso>
-          <link id="#lcl.graphics.TBrush"/>
+          <link id="#lclbase.graphics.TBrush"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -11074,7 +11074,7 @@ End;
       <element name="TWinControl.ChildSizing">
         <short>Definitions how any child control is to be sized (read/write).</short>
         <seealso>
-          <link id="#lcl.Controls.TControlChildSizing"/>
+          <link id="#lclbase.Controls.TControlChildSizing"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -11190,7 +11190,7 @@ End;
           <p>
             <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
+          <p>Differs from <link id="#lclbase.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
@@ -11200,7 +11200,7 @@ End;
           <p>
             <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
+          <p>Differs from <link id="#lclbase.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
           <p>Note: we recommend you to use OnUTF8KeyPress to prevent data lost. National chars are converted from UTF8 to the system encoding in OnKeyPressEvent. This can cause a data lost if symbol cannot be converted, which means OnKeyPress is not called or with Char=#0. OnUTF8KeyPress does not perform this conversion.</p>
         </descr>
       </element>
@@ -11244,7 +11244,7 @@ End;
         <descr>
           <p>
             <var>OnUTF8KeyPress</var> - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyDown</link> in that the char does not converts to the system encoding</p>
+          <p>Differs from <link id="#lclbase.Controls.TWinControl.OnKeyPress">OnKeyDown</link> in that the char does not converts to the system encoding</p>
         </descr>
         <seealso/>
       </element>
@@ -11278,7 +11278,7 @@ End;
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#LCL.Controls.TControl.AutoSizeDelayed" name="TWinControl.AutoSizeDelayed">
+      <element link="#lclbase.Controls.TControl.AutoSizeDelayed" name="TWinControl.AutoSizeDelayed">
         <short/>
         <descr/>
         <errors/>
@@ -11418,7 +11418,7 @@ WinControls are found before Controls (if overlapping).</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#LCL.Controls.TControl.SetBounds" name="TWinControl.SetBounds">
+      <element link="#lclbase.Controls.TControl.SetBounds" name="TWinControl.SetBounds">
         <descr/>
         <errors/>
         <seealso/>
@@ -11444,7 +11444,7 @@ WinControls are found before Controls (if overlapping).</descr>
       <element name="TWinControl.Create">
         <seealso>
           <link id="#rtl.Classes.TComponent.Create"/>
-          <link id="#LCL.Controls.TControl.Create"/>
+          <link id="#lclbase.Controls.TControl.Create"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -11513,7 +11513,7 @@ WinControls are found before Controls (if overlapping).</descr>
           <p>Overrides ancestor destructors, and may in turn be overridden</p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.Destroy">TControl.Destroy</link>
+          <link id="#lclbase.Controls.TControl.Destroy">TControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -11714,7 +11714,7 @@ WinControls are found before Controls (if overlapping).</descr>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#LCL.Controls.TControl.GetTextLen" name="TWinControl.GetTextLen">
+      <element link="#lclbase.Controls.TControl.GetTextLen" name="TWinControl.GetTextLen">
         <short/>
         <descr/>
         <errors/>
@@ -11805,7 +11805,7 @@ WinControls are found before Controls (if overlapping).</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#LCL.Controls.TControl.Repaint" name="TWinControl.Repaint">
+      <element link="#lclbase.Controls.TControl.Repaint" name="TWinControl.Repaint">
         <short/>
         <descr/>
         <errors/>
@@ -11953,8 +11953,8 @@ need the ability to accept keyboard input or contain other controls. </p>
             <var>Paint</var> method called in response to paint requests received by the parent control.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl"/>
-          <link id="#lcl.Graphics.TCanvas"/>
+          <link id="#lclbase.Controls.TWinControl"/>
+          <link id="#lclbase.Graphics.TCanvas"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -12038,7 +12038,7 @@ need the ability to accept keyboard input or contain other controls. </p>
           <p>Overrides ancestor and may be overridden</p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.Create">TControl.Create</link>
+          <link id="#lclbase.Controls.TControl.Create">TControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -12085,7 +12085,7 @@ need the ability to accept keyboard input or contain other controls. </p>
           <p>Overrides ancestor destructors, and may be overridden</p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.Destroy">TControl.Destroy</link>
+          <link id="#lclbase.Controls.TControl.Destroy">TControl.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -12100,7 +12100,7 @@ getting the parent control's Canvas dimensions.</p>
           <p>To get the dimensions of the <var>TGraphicControl,</var> you must query the <var>ClientRect</var>.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
+          <link id="#lclbase.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -12117,8 +12117,8 @@ getting the parent control's Canvas dimensions.</p>
           <p>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl">TWinControl</link>
-          <link id="#lcl.Controls.TControl">TControl</link>
+          <link id="#lclbase.Controls.TWinControl">TWinControl</link>
+          <link id="#lclbase.Controls.TControl">TControl</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -12146,14 +12146,14 @@ getting the parent control's Canvas dimensions.</p>
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TWinControl.PaintWindow" name="TCustomControl.PaintWindow">
+      <element link="#lclbase.Controls.TWinControl.PaintWindow" name="TCustomControl.PaintWindow">
         <short>Paint handler plug-in</short>
         <descr>This is a plug-in in TWinControl to get the DC, <br/>
 assign it to our canvas and call the paint method for <br/>
 descendants to do the actual painting
 </descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl.PaintWindow">TWinControl.PaintWindow</link>
+          <link id="#lclbase.Controls.TWinControl.PaintWindow">TWinControl.PaintWindow</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -12193,8 +12193,8 @@ descendants to do the actual painting
           
           <var>DoubleBuffered</var> to be False</short>
         <seealso>
-          <link id="#LCL.Controls.TControl.Create">TControl.Create</link>
-          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
+          <link id="#lclbase.Controls.TControl.Create">TControl.Create</link>
+          <link id="#lclbase.Controls.TWinControl.Create">TWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -12255,8 +12255,8 @@ descendants to do the actual painting
           <p>Overrides ancestor destructors, may be overridden</p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.Destroy">TControl.Destroy</link>
-          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
+          <link id="#lclbase.Controls.TControl.Destroy">TControl.Destroy</link>
+          <link id="#lclbase.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -12276,15 +12276,15 @@ This inherits its properties from TCanvas, <br/>
 and that description should be read to understand their definitions more fully.
 </descr>
         <seealso>
-          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
+          <link id="#lclbase.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element link="#LCL.Controls.TWinControl.BorderStyle" name="TCustomControl.BorderStyle">
+      <element link="#lclbase.Controls.TWinControl.BorderStyle" name="TCustomControl.BorderStyle">
         <descr>Only a restricted series of options is available: none or a single border.
 </descr>
         <seealso>
-          <link id="#lcl.Controls.TBorderStyle"/>
+          <link id="#lclbase.Controls.TBorderStyle"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -12296,31 +12296,31 @@ and that description should be read to understand their definitions more fully.
         <short>A list of images, as used for dragging.</short>
       </element>
       <!-- property Visibility: published -->
-      <element link="#LCL.ImgList.TCustomImageList.BkColor" name="TImageList.BkColor">
+      <element link="#lclbase.ImgList.TCustomImageList.BkColor" name="TImageList.BkColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element link="#LCL.ImgList.TCustomImageList.Height" name="TImageList.Height">
+      <element link="#lclbase.ImgList.TCustomImageList.Height" name="TImageList.Height">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element link="#LCL.ImgList.TCustomImageList.Masked" name="TImageList.Masked">
+      <element link="#lclbase.ImgList.TCustomImageList.Masked" name="TImageList.Masked">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element link="#LCL.ImgList.TCustomImageList.Width" name="TImageList.Width">
+      <element link="#lclbase.ImgList.TCustomImageList.Width" name="TImageList.Width">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element link="#LCL.ImgList.TCustomImageList.OnChange" name="TImageList.OnChange">
+      <element link="#lclbase.ImgList.TCustomImageList.OnChange" name="TImageList.OnChange">
         <short/>
         <descr/>
         <seealso/>
@@ -12891,7 +12891,7 @@ and that description should be read to understand their definitions more fully.
 </pre>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TDockManager"/>
+          <link id="#lclbase.Controls.TDockManager"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -12978,16 +12978,16 @@ AdjustDockRect is not part of the general docking model. It can implemented and 
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.BeginUpdate" name="TDockTree.BeginUpdate"/>
+      <element link="#lclbase.Controls.TDockManager.BeginUpdate" name="TDockTree.BeginUpdate"/>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.EndUpdate" name="TDockTree.EndUpdate">
+      <element link="#lclbase.Controls.TDockManager.EndUpdate" name="TDockTree.EndUpdate">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.GetControlBounds" name="TDockTree.GetControlBounds">
+      <element link="#lclbase.Controls.TDockManager.GetControlBounds" name="TDockTree.GetControlBounds">
         <short/>
         <descr/>
         <errors/>
@@ -13060,7 +13060,7 @@ One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.LoadFromStream" name="TDockTree.LoadFromStream">
+      <element link="#lclbase.Controls.TDockManager.LoadFromStream" name="TDockTree.LoadFromStream">
         <short/>
         <descr/>
         <errors/>
@@ -13091,7 +13091,7 @@ One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.PositionDockRect" name="TDockTree.PositionDockRect">
+      <element link="#lclbase.Controls.TDockManager.PositionDockRect" name="TDockTree.PositionDockRect">
         <short/>
         <descr/>
         <errors/>
@@ -13114,7 +13114,7 @@ One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.RemoveControl" name="TDockTree.RemoveControl">
+      <element link="#lclbase.Controls.TDockManager.RemoveControl" name="TDockTree.RemoveControl">
         <short/>
         <descr/>
         <errors/>
@@ -13125,7 +13125,7 @@ One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.SaveToStream" name="TDockTree.SaveToStream">
+      <element link="#lclbase.Controls.TDockManager.SaveToStream" name="TDockTree.SaveToStream">
         <short/>
         <descr/>
         <errors/>
@@ -13136,7 +13136,7 @@ One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.SetReplacingControl" name="TDockTree.SetReplacingControl">
+      <element link="#lclbase.Controls.TDockManager.SetReplacingControl" name="TDockTree.SetReplacingControl">
         <short/>
         <descr/>
         <errors/>
@@ -13147,7 +13147,7 @@ One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TDockManager.ResetBounds" name="TDockTree.ResetBounds">
+      <element link="#lclbase.Controls.TDockManager.ResetBounds" name="TDockTree.ResetBounds">
         <short/>
         <descr/>
         <errors/>
@@ -13317,7 +13317,7 @@ One value of InsertAt (alCustom) is reserved for notebook docking, where DropCtl
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#LCL.Controls.TDockManager.PaintSite" name="TDockTree.PaintSite">
+      <element link="#lclbase.Controls.TDockManager.PaintSite" name="TDockTree.PaintSite">
         <short/>
         <descr/>
         <errors/>
@@ -13721,7 +13721,7 @@ First a window at the given screen position is searched, then a control within i
         <descr>Calls CursorToIdent to find correct entry in look-up table</descr>
         <errors/>
         <seealso>
-          <link id="#lcl.Controls.CursorToIdent"/>
+          <link id="#lclbase.Controls.CursorToIdent"/>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -14077,7 +14077,7 @@ First a window at the given screen position is searched, then a control within i
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ImgList.TCustomImageList.Initialize">TCustomImageList.Initialize</link>
+          <link id="#lclbase.ImgList.TCustomImageList.Initialize">TCustomImageList.Initialize</link>
         </seealso>
       </element>
       <!-- function Visibility: public -->
@@ -14169,7 +14169,7 @@ First a window at the given screen position is searched, then a control within i
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#LCL.ImgList.TCustomImageList.GetHotSpot" name="TDragImageList.GetHotSpot">
+      <element link="#lclbase.ImgList.TCustomImageList.GetHotSpot" name="TDragImageList.GetHotSpot">
         <short/>
         <descr/>
         <errors/>
@@ -15773,7 +15773,7 @@ capfHasScrollOffset: crap, ScrollOffset is taken into account only for the first
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element link="#LCL.Controls.TControl.IsClientHeightStored" name="TWinControl.IsClientHeightStored">
+      <element link="#lclbase.Controls.TControl.IsClientHeightStored" name="TWinControl.IsClientHeightStored">
         <short/>
         <descr/>
         <errors/>
@@ -15784,7 +15784,7 @@ capfHasScrollOffset: crap, ScrollOffset is taken into account only for the first
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element link="#LCL.Controls.TControl.IsClientWidthStored" name="TWinControl.IsClientWidthStored">
+      <element link="#lclbase.Controls.TControl.IsClientWidthStored" name="TWinControl.IsClientWidthStored">
         <short/>
         <descr/>
         <errors/>
@@ -15940,7 +15940,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.DoFloatMsg" name="TWinControl.DoFloatMsg">
+      <element link="#lclbase.Controls.TControl.DoFloatMsg" name="TWinControl.DoFloatMsg">
         <short>Handler called when the control starts floating.</short>
         <descr>TWinControls can float for themselves, unless they request a special FloatingDockSiteClass.
 
@@ -16014,7 +16014,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TControl.FormEndUpdated">TControl.FormEndUpdated</link>
+          <link id="#lclbase.Controls.TControl.FormEndUpdated">TControl.FormEndUpdated</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -16057,7 +16057,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#LCL.Controls.TControl.WriteLayoutDebugReport" name="TWinControl.WriteLayoutDebugReport">
+      <element link="#lclbase.Controls.TControl.WriteLayoutDebugReport" name="TWinControl.WriteLayoutDebugReport">
         <short/>
         <descr/>
         <errors/>
@@ -16072,7 +16072,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#LCL.Controls.TControl.SetTempCursor" name="TWinControl.SetTempCursor">
+      <element link="#lclbase.Controls.TControl.SetTempCursor" name="TWinControl.SetTempCursor">
         <descr/>
         <errors/>
         <seealso/>
@@ -16142,7 +16142,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.FontChanged" name="TGraphicControl.FontChanged">
+      <element link="#lclbase.Controls.TControl.FontChanged" name="TGraphicControl.FontChanged">
         <short/>
         <descr/>
         <errors/>
@@ -16153,14 +16153,14 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.DoOnChangeBounds" name="TGraphicControl.DoOnChangeBounds">
+      <element link="#lclbase.Controls.TControl.DoOnChangeBounds" name="TGraphicControl.DoOnChangeBounds">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.FontChanged" name="TCustomControl.FontChanged">
+      <element link="#lclbase.Controls.TControl.FontChanged" name="TCustomControl.FontChanged">
         <short/>
         <descr/>
         <errors/>
@@ -16171,7 +16171,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#LCL.Controls.TControl.SetColor" name="TCustomControl.SetColor">
+      <element link="#lclbase.Controls.TControl.SetColor" name="TCustomControl.SetColor">
         <short/>
         <descr/>
         <errors/>
@@ -16182,7 +16182,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#LCL.Controls.TWinControl.DestroyWnd" name="TCustomControl.DestroyWnd">
+      <element link="#lclbase.Controls.TWinControl.DestroyWnd" name="TCustomControl.DestroyWnd">
         <short/>
         <descr/>
         <errors/>
@@ -16203,19 +16203,19 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element link="#LCL.ImgList.TCustomImageList.DrawingStyle" name="TImageList.DrawingStyle">
+      <element link="#lclbase.ImgList.TCustomImageList.DrawingStyle" name="TImageList.DrawingStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element link="#LCL.ImgList.TCustomImageList.ImageType" name="TImageList.ImageType">
+      <element link="#lclbase.ImgList.TCustomImageList.ImageType" name="TImageList.ImageType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element link="#LCL.ImgList.TCustomImageList.ShareImages" name="TImageList.ShareImages">
+      <element link="#lclbase.ImgList.TCustomImageList.ShareImages" name="TImageList.ShareImages">
         <short/>
         <descr/>
         <seealso/>
@@ -16610,7 +16610,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <short>
           <var>DoMouseWheelUp</var> - performs the action for an upward movement of the mouse wheel; returns True if handled</short>
       </element>
-      <element link="#LCL.Controls.TDockManager.MouseMessage" name="TDockTree.MouseMessage"/>
+      <element link="#lclbase.Controls.TDockManager.MouseMessage" name="TDockTree.MouseMessage"/>
       <element name="TControl.CreateControlBorderSpacing">
         <short>
           <var>CreateControlBorderSpacing</var> - calls 
@@ -16704,20 +16704,20 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
         <short>
           <var>SetWidth</var> - specifies the width of the zone</short>
       </element>
-      <element link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass" name="TWinControl.WSRegisterClass"/>
-      <element link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass" name="TControl.WSRegisterClass"/>
-      <element link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass" name="TGraphicControl.WSRegisterClass"/>
-      <element link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass" name="TCustomControl.WSRegisterClass"/>
+      <element link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass" name="TWinControl.WSRegisterClass"/>
+      <element link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass" name="TControl.WSRegisterClass"/>
+      <element link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass" name="TGraphicControl.WSRegisterClass"/>
+      <element link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass" name="TCustomControl.WSRegisterClass"/>
       <topic name="AutoSize">
         <short>
           <var>AutoSize</var> - boolean property that permits the size of a control to be adjusted automatically</short>
         <descr>
           <p>
             <var>AutoSize</var> is a boolean property found in many classes; it permits the size of a control to be adjusted automatically to accommodate differences in the text or graphic contained therein, and allows most efficient use of available space</p>
-          <p>Many controls call  <link id="#lcl.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link> to perform the actual auto-sizing. </p>
+          <p>Many controls call  <link id="#lclbase.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link> to perform the actual auto-sizing. </p>
           <p>IMPORTANT: Many Delphi controls override this method and many call this method directly after setting some properties.</p>
           <p>During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size.</p>
-          <p>That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
+          <p>That's why you should always call <link id="#lclbase.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
           <p>
             <var>TControl.AdjustSize</var> calls 
             
@@ -16727,7 +16727,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
             
             <var>DoAutoSize</var> in a smart fashion.</p>
           <p>During loading and handle creation the calls are delayed.</p>
-          <p>This method initially does the same as <link id="#lcl.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
+          <p>This method initially does the same as <link id="#lclbase.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
           <p>When setting <var>AutoSize</var> = true the LCL autosizes the control in width and height. This is one of the most complex parts of the LCL, because the result depends on nearly a hundred properties. Let's start simple:</p>
           <p>The LCL will only autosize the Width or Height if it is free to resize. In other words - the width is not autosized if:</p>
           <ul>
@@ -16735,7 +16735,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
             </li>
             <li>the Width and Height are bound by the <var>Constraints</var> properties. The Contraints can also be overriden by the widgetset. For example the winapi does not allow resizing the height of a combobox. And the gtk widgetset does not allow resizing the width of a vertical scrollbar</li>
           </ul>
-          <p>The new size is calculated by the protected method <link id="#lcl.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>.
+          <p>The new size is calculated by the protected method <link id="#lclbase.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>.
 			      This method asks the widgetset for an appropriate Width and Height. For example a <var>TButton</var> has preferred Width and Height. A <var>TComboBox</var> has only a preferred Height. The preferred Width is returned as 0 and so the LCL does not autosize the Width - it keeps the width unaltered. Finally a <var>TMemo</var> has no preferred Width or Height. Therefore AutoSize has no effect on a TMemo.</p>
           <p>Some controls override this method. For example the <var>TGraphicControl</var> descendants like <var>TLabel</var> have no window handle and so cannot query the widgetset. They must calculate their preferred Width and Height themselves.</p>
           <p>The widgetsets must override the <var>GetPreferredSize</var> method for each widget class that has a preferred size (Width or Height or both).</p>
@@ -16809,7 +16809,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.<
           <ul>
             <li>fLastAlignedBounds: TRect</li>
           </ul>
-          <p>See <link id="#lcl.Controls.TControl.SetAlignedBounds">TControl.SetAlignedBounds</link> for an explanation.
+          <p>See <link id="#lclbase.Controls.TControl.SetAlignedBounds">TControl.SetAlignedBounds</link> for an explanation.
 		      In short: It stops some circles between interface and LCL autosizing.</p>
           <ul>
             <li>FLastChangebounds: TRect</li>
@@ -17015,12 +17015,12 @@ bounds to the wanted position and sends a move message to the interface. It is u
       <element name="TDragControlObjectEx.Create">
         <short>Creates an object to be destroyed after use.</short>
       </element>
-      <element name="TDragObjectEx" link="#LCL.Controls.TDragObject">
+      <element name="TDragObjectEx" link="#lclbase.Controls.TDragObject">
         <seealso>
           <link id="TDragObject"/>
         </seealso>
       </element>
-      <element name="TDragControlObjectEx" link="#LCL.Controls.TDragControlObject"/>
+      <element name="TDragControlObjectEx" link="#lclbase.Controls.TDragControlObject"/>
       <element name="TDragManagerDefault">
         <short>The default DragManager class.</short>
         <seealso>

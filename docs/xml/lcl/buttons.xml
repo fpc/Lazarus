@@ -547,7 +547,7 @@ bkYesToAll
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomBitBtn.Click" link="#LCL.Controls.TControl.Click">
+      <element name="TCustomBitBtn.Click" link="#lclbase.Controls.TControl.Click">
         <descr>
           <p>
             <var>Click </var>
@@ -572,7 +572,7 @@ bkYesToAll
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomBitBtn.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
+      <element name="TCustomBitBtn.InitializeWnd" link="#lclbase.Controls.TWinControl.InitializeWnd">
         <descr/>
         <errors/>
         <seealso/>
@@ -588,7 +588,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.StdCtrls.TCustomButton.Create">TCustomButton.Create</link>
+          <link id="#lclbase.StdCtrls.TCustomButton.Create">TCustomButton.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomBitBtn</var>: calls inherited <var>Create</var> then initialises layout, style and spacing, creates the Button Glyph</short>
@@ -614,7 +614,7 @@ Take the following precautions when creating your own Destroy method:
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.StdCtrls.TCustomButton.Destroy">TCustomButton.Destroy</link>
+          <link id="#lclbase.StdCtrls.TCustomButton.Destroy">TCustomButton.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - destructor for <var>TCustomBitBtn</var>: frees Button Glyph then calls inherited <var>Destroy</var>
@@ -661,11 +661,11 @@ Take the following precautions when creating your own Destroy method:
         <short>A Button with a small image attached</short>
         <descr>Bit Button: a push button control on a toolbar causing a particular action to be executed. It often displays a glyph or small graphic to denote its function.</descr>
         <seealso>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lclbase.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Action" link="#LCL.Controls.TControl.Action">
+      <element name="TBitBtn.Action" link="#lclbase.Controls.TControl.Action">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>The (default) action to be associated with this control</p>
@@ -673,7 +673,7 @@ Take the following precautions when creating your own Destroy method:
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TBitBtn.Align" link="#lclbase.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -681,7 +681,7 @@ Take the following precautions when creating your own Destroy method:
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TBitBtn.Anchors" link="#lclbase.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -690,24 +690,24 @@ Take the following precautions when creating your own Destroy method:
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TBitBtn.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
           <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          <p>The properties are defined in the parent class <link id="#lclbase.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
           </p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Cancel" link="#LCL.StdCtrls.TCustomButton.Cancel">
+      <element name="TBitBtn.Cancel" link="#lclbase.StdCtrls.TCustomButton.Cancel">
         <descr>
           <p>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked, even if the button does not have focus. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Caption" link="#LCL.Controls.TControl.Caption">
+      <element name="TBitBtn.Caption" link="#lclbase.Controls.TControl.Caption">
         <descr>
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
@@ -720,20 +720,20 @@ introduced. These functions interface with the LCLInterface. </p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Constraints" link="#LCL.Controls.TControl.Constraints">
+      <element name="TBitBtn.Constraints" link="#lclbase.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Default" link="#LCL.StdCtrls.TCustomButton.Default">
+      <element name="TBitBtn.Default" link="#lclbase.StdCtrls.TCustomButton.Default">
         <descr>
           <p>Defines if a button is the <var>Default</var> on a form. That is, pressing ENTER will execute its onClick method, whether the control has focus or not!</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TBitBtn.Enabled" link="#lclbase.Controls.TControl.Enabled">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
@@ -741,42 +741,42 @@ introduced. These functions interface with the LCLInterface. </p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TBitBtn.Font" link="#lclbase.Controls.TControl.Font">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lclbase.Graphics.TFont">TFont</link>
           </p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Glyph" link="#LCL.Buttons.TCustomBitBtn.Glyph">
+      <element name="TBitBtn.Glyph" link="#lclbase.Buttons.TCustomBitBtn.Glyph">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Kind" link="#LCL.Buttons.TCustomBitBtn.Kind">
+      <element name="TBitBtn.Kind" link="#lclbase.Buttons.TCustomBitBtn.Kind">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Layout" link="#LCL.Buttons.TCustomBitBtn.Layout">
+      <element name="TBitBtn.Layout" link="#lclbase.Buttons.TCustomBitBtn.Layout">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Margin" link="#LCL.Buttons.TCustomBitBtn.Margin">
+      <element name="TBitBtn.Margin" link="#lclbase.Buttons.TCustomBitBtn.Margin">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.ModalResult" link="#LCL.StdCtrls.TCustomButton.ModalResult">
+      <element name="TBitBtn.ModalResult" link="#lclbase.StdCtrls.TCustomButton.ModalResult">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
+      <element name="TBitBtn.OnChangeBounds" link="#lclbase.Controls.TControl.OnChangeBounds">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads or Writes flag if bounds are changed</p>
@@ -784,7 +784,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TBitBtn.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
@@ -794,37 +794,37 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
+      <element name="TBitBtn.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnExit" link="#LCL.Controls.TWinControl.OnExit">
+      <element name="TBitBtn.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
+      <element name="TBitBtn.OnKeyDown" link="#lclbase.Controls.TWinControl.OnKeyDown">
         <descr>
           <p>
             <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
+          <p>Differs from <link id="#lclbase.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
+      <element name="TBitBtn.OnKeyPress" link="#lclbase.Controls.TWinControl.OnKeyPress">
         <descr>
           <p>
             <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
+          <p>Differs from <link id="#lclbase.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
+      <element name="TBitBtn.OnKeyUp" link="#lclbase.Controls.TWinControl.OnKeyUp">
         <descr>
           <p>
             <var>OnKeyUp</var>
@@ -834,66 +834,66 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TBitBtn.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TBitBtn.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TBitBtn.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.OnResize" link="#LCL.Controls.TControl.OnResize">
+      <element name="TBitBtn.OnResize" link="#lclbase.Controls.TControl.OnResize">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if control is re-sized.
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
+      <element name="TBitBtn.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TBitBtn.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+Properties are defined in the parent class <link id="#lclbase.Menus.TPopupMenu">TPopupMenu</link>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.ShowHint" link="#LCL.Controls.TControl.ShowHint">
+      <element name="TBitBtn.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Spacing" link="#LCL.Buttons.TCustomBitBtn.Spacing">
+      <element name="TBitBtn.Spacing" link="#lclbase.Buttons.TCustomBitBtn.Spacing">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
+      <element name="TBitBtn.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
         <descr>Reads or writes information in flag; default is -1
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.TabStop" link="#LCL.Controls.TWinControl.TabStop">
+      <element name="TBitBtn.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBitBtn.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TBitBtn.Visible" link="#lclbase.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -919,7 +919,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TSpeedButtonActionLink.IsCheckedLinked" link="#LCL.ActnList.TActionLink.IsCheckedLinked">
+      <element name="TSpeedButtonActionLink.IsCheckedLinked" link="#lclbase.ActnList.TActionLink.IsCheckedLinked">
         <short/>
         <descr/>
         <errors/>
@@ -930,7 +930,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TSpeedButtonActionLink.IsGroupIndexLinked" link="#LCL.ActnList.TActionLink.IsGroupIndexLinked">
+      <element name="TSpeedButtonActionLink.IsGroupIndexLinked" link="#lclbase.ActnList.TActionLink.IsGroupIndexLinked">
         <short/>
         <descr/>
         <errors/>
@@ -1134,14 +1134,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomSpeedButton.MouseEnter" link="#LCL.Controls.TControl.MouseEnter">
+      <element name="TCustomSpeedButton.MouseEnter" link="#lclbase.Controls.TControl.MouseEnter">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomSpeedButton.MouseLeave" link="#LCL.Controls.TControl.MouseLeave">
+      <element name="TCustomSpeedButton.MouseLeave" link="#lclbase.Controls.TControl.MouseLeave">
         <short/>
         <descr/>
         <errors/>
@@ -1188,7 +1188,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSpeedButton.MouseDown" link="#LCL.Controls.TControl.MouseDown">
+      <element name="TCustomSpeedButton.MouseDown" link="#lclbase.Controls.TControl.MouseDown">
         <short/>
         <descr/>
         <errors/>
@@ -1211,7 +1211,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSpeedButton.MouseMove" link="#LCL.Controls.TControl.MouseMove">
+      <element name="TCustomSpeedButton.MouseMove" link="#lclbase.Controls.TControl.MouseMove">
         <short/>
         <descr/>
         <errors/>
@@ -1230,7 +1230,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSpeedButton.MouseUp" link="#LCL.Controls.TControl.MouseUp">
+      <element name="TCustomSpeedButton.MouseUp" link="#lclbase.Controls.TControl.MouseUp">
         <short/>
         <descr/>
         <errors/>
@@ -1253,7 +1253,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSpeedButton.Paint" link="#LCL.Controls.TGraphicControl.Paint">
+      <element name="TCustomSpeedButton.Paint" link="#lclbase.Controls.TGraphicControl.Paint">
         <descr/>
         <errors/>
         <seealso/>
@@ -1332,7 +1332,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSpeedButton.RealSetText" link="#LCL.Controls.TControl.RealSetText">
+      <element name="TCustomSpeedButton.RealSetText" link="#lclbase.Controls.TControl.RealSetText">
         <descr>This is the procedure that is actually used by SetTextBuf, and stores text as a string rather than performing read-write to a PChar buffer
 </descr>
         <errors/>
@@ -1373,7 +1373,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomSpeedButton.ActionChange" link="#LCL.Controls.TControl.ActionChange">
+      <element name="TCustomSpeedButton.ActionChange" link="#lclbase.Controls.TControl.ActionChange">
         <short/>
         <descr/>
         <errors/>
@@ -1388,7 +1388,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomSpeedButton.GetActionLinkClass" link="#LCL.Controls.TControl.GetActionLinkClass">
+      <element name="TCustomSpeedButton.GetActionLinkClass" link="#lclbase.Controls.TControl.GetActionLinkClass">
         <short/>
         <descr/>
         <errors/>
@@ -1425,7 +1425,7 @@ is done automatically by the streaming system.
         </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
+          <link id="#lclbase.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TCustomSpeedButton</var>: calls inherited <var>Create</var> and initialises many defaults and properties</short>
@@ -1442,11 +1442,11 @@ is done automatically by the streaming system.
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Destroy">TGraphicControl.Destroy</link>
+          <link id="#lclbase.Controls.TGraphicControl.Destroy">TGraphicControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomSpeedButton.Click" link="#LCL.Controls.TControl.Click">
+      <element name="TCustomSpeedButton.Click" link="#lclbase.Controls.TControl.Click">
         <descr/>
         <errors/>
         <seealso/>
@@ -1519,11 +1519,11 @@ If Spacing is -1 and Margin is not -1 then Spacing will fill the remaining space
 
 When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc)</descr>
         <seealso>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lclbase.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Action" link="#LCL.Controls.TControl.Action">
+      <element name="TSpeedButton.Action" link="#lclbase.Controls.TControl.Action">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>The (default) action to be associated with this control</p>
@@ -1531,7 +1531,7 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TSpeedButton.Align" link="#lclbase.Controls.TControl.Align">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
@@ -1539,7 +1539,7 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TSpeedButton.Anchors" link="#lclbase.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
@@ -1549,22 +1549,22 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.AllowAllUp" link="#LCL.Buttons.TCustomSpeedButton.AllowAllUp">
+      <element name="TSpeedButton.AllowAllUp" link="#lclbase.Buttons.TCustomSpeedButton.AllowAllUp">
         <descr/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TSpeedButton.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
           <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          <p>The properties are defined in the parent class <link id="#lclbase.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
           </p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Constraints" link="#LCL.Controls.TControl.Constraints">
+      <element name="TSpeedButton.Constraints" link="#lclbase.Controls.TControl.Constraints">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
@@ -1572,7 +1572,7 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Caption" link="#LCL.Controls.TControl.Caption">
+      <element name="TSpeedButton.Caption" link="#lclbase.Controls.TControl.Caption">
         <descr>
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
@@ -1585,11 +1585,11 @@ introduced. These functions interface with the LCLInterface. </p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Down" link="#LCL.Buttons.TCustomSpeedButton.Down">
+      <element name="TSpeedButton.Down" link="#lclbase.Buttons.TCustomSpeedButton.Down">
         <descr/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Enabled" link="#LCL.Controls.TControl.Enabled">
+      <element name="TSpeedButton.Enabled" link="#lclbase.Controls.TControl.Enabled">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
@@ -1597,43 +1597,43 @@ introduced. These functions interface with the LCLInterface. </p>
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Flat" link="#LCL.Buttons.TCustomSpeedButton.Flat">
+      <element name="TSpeedButton.Flat" link="#lclbase.Buttons.TCustomSpeedButton.Flat">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Glyph" link="#LCL.Buttons.TCustomSpeedButton.Glyph"/>
+      <element name="TSpeedButton.Glyph" link="#lclbase.Buttons.TCustomSpeedButton.Glyph"/>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.GroupIndex" link="#LCL.Buttons.TCustomSpeedButton.GroupIndex">
+      <element name="TSpeedButton.GroupIndex" link="#lclbase.Buttons.TCustomSpeedButton.GroupIndex">
         <descr/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Layout" link="#LCL.Buttons.TCustomSpeedButton.Layout">
+      <element name="TSpeedButton.Layout" link="#lclbase.Buttons.TCustomSpeedButton.Layout">
         <descr/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Margin" link="#LCL.Buttons.TCustomSpeedButton.Margin">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TSpeedButton.NumGlyphs" link="#LCL.Buttons.TCustomSpeedButton.NumGlyphs">
+      <element name="TSpeedButton.Margin" link="#lclbase.Buttons.TCustomSpeedButton.Margin">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Spacing" link="#LCL.Buttons.TCustomSpeedButton.Spacing">
+      <element name="TSpeedButton.NumGlyphs" link="#lclbase.Buttons.TCustomSpeedButton.NumGlyphs">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Transparent" link="#LCL.Buttons.TCustomSpeedButton.Transparent">
+      <element name="TSpeedButton.Spacing" link="#lclbase.Buttons.TCustomSpeedButton.Spacing">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TSpeedButton.Transparent" link="#lclbase.Buttons.TCustomSpeedButton.Transparent">
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TSpeedButton.Visible" link="#lclbase.Controls.TControl.Visible">
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -1644,7 +1644,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TSpeedButton.OnClick" link="#lclbase.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
@@ -1654,14 +1654,14 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
+      <element name="TSpeedButton.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
         <descr>
           <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TSpeedButton.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
         <descr/>
         <seealso/>
       </element>
@@ -1672,24 +1672,24 @@ introduced. These functions interface with the LCLInterface. </p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TSpeedButton.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.OnPaint" link="#LCL.Controls.TGraphicControl.OnPaint">
+      <element name="TSpeedButton.OnPaint" link="#lclbase.Controls.TGraphicControl.OnPaint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.OnResize" link="#LCL.Controls.TControl.OnResize">
+      <element name="TSpeedButton.OnResize" link="#lclbase.Controls.TControl.OnResize">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads or Writes flag if control is re-sized.
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
+      <element name="TSpeedButton.OnChangeBounds" link="#lclbase.Controls.TControl.OnChangeBounds">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads or Writes flag if bounds are changed</p>
@@ -1697,27 +1697,27 @@ Reads or Writes flag if control is re-sized.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.ShowHint" link="#LCL.Controls.TControl.ShowHint">
+      <element name="TSpeedButton.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.ParentFont" link="#LCL.Controls.TControl.ParentFont">
+      <element name="TSpeedButton.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
+      <element name="TSpeedButton.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TSpeedButton.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+Properties are defined in the parent class <link id="#lclbase.Menus.TPopupMenu">TPopupMenu</link>
         </descr>
         <seealso/>
       </element>
@@ -1741,10 +1741,10 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <element name="TButtonGlyph.Height">
         <short>The height of the glyph image</short>
       </element>
-      <element name="TCustomBitBtn.TextChanged" link="#LCL.Controls.TControl.TextChanged"/>
-      <element name="TCustomBitBtn.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
-      <element name="TBitBtn.Color" link="#LCL.Controls.TControl.Color"/>
-      <element name="TBitBtn.NumGlyphs" link="#LCL.Buttons.TCustomBitBtn.NumGlyphs"/>
+      <element name="TCustomBitBtn.TextChanged" link="#lclbase.Controls.TControl.TextChanged"/>
+      <element name="TCustomBitBtn.GetControlClassDefaultSize" link="#lclbase.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TBitBtn.Color" link="#lclbase.Controls.TControl.Color"/>
+      <element name="TBitBtn.NumGlyphs" link="#lclbase.Buttons.TCustomBitBtn.NumGlyphs"/>
       <element name="TCustomSpeedButton.PaintBackground">
         <short>Paint the background</short>
       </element>
@@ -1761,34 +1761,34 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <element name="TCustomSpeedButton.ShowCaption">
         <short>Should caption be displayed?</short>
       </element>
-      <element name="TSpeedButton.Color" link="#LCL.Controls.TControl.Color">
+      <element name="TSpeedButton.Color" link="#lclbase.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
           <p>The default colour is the same as the window in which the control is located.</p>
         </descr>
       </element>
-      <element name="TSpeedButton.Font" link="#LCL.Controls.TControl.Font">
+      <element name="TSpeedButton.Font" link="#lclbase.Controls.TControl.Font">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lclbase.Graphics.TFont">TFont</link>
           </p>
         </descr>
       </element>
-      <element name="TSpeedButton.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
-      <element name="TSpeedButton.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
-      <element name="TSpeedButton.ShowCaption" link="#LCL.Buttons.TCustomSpeedButton.ShowCaption"/>
-      <element name="TBitBtn.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
-      <element name="TBitBtn.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TBitBtn.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
-      <element name="TCustomSpeedButton.DialogChar" link="#LCL.Controls.TControl.DialogChar"/>
-      <element name="TCustomSpeedButton.SetEnabled" link="#LCL.Controls.TControl.SetEnabled"/>
+      <element name="TSpeedButton.OnMouseEnter" link="#lclbase.Controls.TControl.OnMouseEnter"/>
+      <element name="TSpeedButton.OnMouseLeave" link="#lclbase.Controls.TControl.OnMouseLeave"/>
+      <element name="TSpeedButton.ShowCaption" link="#lclbase.Buttons.TCustomSpeedButton.ShowCaption"/>
+      <element name="TBitBtn.AutoSize" link="#lclbase.Controls.TControl.AutoSize"/>
+      <element name="TBitBtn.OnUTF8KeyPress" link="#lclbase.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TBitBtn.ParentFont" link="#lclbase.Controls.TControl.ParentFont"/>
+      <element name="TCustomSpeedButton.DialogChar" link="#lclbase.Controls.TControl.DialogChar"/>
+      <element name="TCustomSpeedButton.SetEnabled" link="#lclbase.Controls.TControl.SetEnabled"/>
       <element name="TCustomSpeedButton.GetDrawDetails">
         <short>
           <var>GetDrawDetails</var> - returns the structured details for drawing</short>
       </element>
-      <element name="TCustomSpeedButton.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomSpeedButton.GetControlClassDefaultSize" link="#lclbase.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TCustomSpeedButton.LoadGlyphFromLazarusResource">
         <short>
           <var>LoadGlyphFromLazarusResource</var> - method for loading a glyph from a Lazarus Resource file (.lrs)</short>
@@ -1819,8 +1819,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>
           <var>LoadGlyphFromLazarusResource</var> - generic method to load a button glyph with specified name from a Lazarus Resource file (.lrs)</short>
       </element>
-      <element name="TCustomBitBtn.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomSpeedButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomBitBtn.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomSpeedButton.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
   </package>
 </fpdoc-descriptions>

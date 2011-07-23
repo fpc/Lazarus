@@ -93,7 +93,7 @@
         <short>
           <var>TRubberBand</var> for drawing a ring resembling a rubber band around a selection</short>
       </element>
-      <element name="TCustomRubberBand.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomRubberBand.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- RubberBand -->
   </package>

@@ -104,7 +104,7 @@ Application use is restricted to sending messages to a windowed control, using i
       <element name="TLCLReferenceComponent.Destroy">
         <short>Destroys the Reference, prior to calling the inherited destructor.</short>
         <seealso>
-          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
+          <link id="#lclbase.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
         </seealso>
       </element>
       <element name="TLCLReferenceComponent.Handle">
