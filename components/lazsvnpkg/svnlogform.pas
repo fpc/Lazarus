@@ -77,6 +77,7 @@ type
     SVNLogLimit: TSpinEdit;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure mnuOpenCurentClick(Sender: TObject);
     procedure mnuOpenPrevRevisionClick(Sender: TObject);
     procedure mnuOpenRevisionClick(Sender: TObject);
@@ -279,9 +280,10 @@ end;
 
 procedure TSVNLogFrm.ChangeCursor(ACursor: TCursor);
 begin
-  LogListView.Cursor:=ACursor;
+  //LogListView.Cursor:=ACursor;
   SVNLogMsgMemo.Cursor:=ACursor;
-  SVNActionsListView.Cursor:=ACursor;
+  //SVNActionsListView.Cursor:=ACursor;
+  Self.Cursor:=ACursor;
   Application.ProcessMessages;
 end;
 
@@ -313,16 +315,6 @@ begin
   Close;
 end;
 
-procedure TSVNLogFrm.mnuOpenRevisionClick(Sender: TObject);
-begin
-
-end;
-
-procedure TSVNLogFrm.mnuOpenPrevRevisionClick(Sender: TObject);
-begin
-
-end;
-
 procedure TSVNLogFrm.mnuOpenCurentClick(Sender: TObject);
 var
   Path: String;
@@ -335,6 +327,21 @@ begin
     else
       ShowMessage(rsFileNotInWorkingCopyAnymore);
   end;
+end;
+
+procedure TSVNLogFrm.mnuOpenPrevRevisionClick(Sender: TObject);
+begin
+  //
+end;
+
+procedure TSVNLogFrm.mnuOpenRevisionClick(Sender: TObject);
+begin
+  //
+end;
+
+procedure TSVNLogFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  CloseAction := caFree;
 end;
 
 procedure TSVNLogFrm.FormCreate(Sender: TObject);
@@ -368,6 +375,7 @@ begin
   for i := 0 to LogList.Count - 1 do
     TSVNLogItem(LogList[i]).Free;
   LogList.Free;
+  SVNLogFrm := nil;
 end;
 
 procedure TSVNLogFrm.Execute(Data: PtrInt);
@@ -523,9 +531,6 @@ begin
   UpdateLogListView;
   ChangeCursor(crDefault);
 end;
-
-finalization
-  FreeAndNil(SVNLogFrm);
 
 end.
 

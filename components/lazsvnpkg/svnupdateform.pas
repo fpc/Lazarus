@@ -35,7 +35,9 @@ type
     UpdatePopupMenu: TPopupMenu;
     ButtonPanel: TButtonPanel;
     SVNUpdateListView: TListView;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure mnuShowDiffClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
@@ -84,6 +86,16 @@ begin
   ButtonPanel.HelpButton.Caption := rsShowLog;
   ButtonPanel.HelpButton.LoadGlyphFromLazarusResource('tsynsyncroedit');
   mnuShowDiff.Caption:=rsShowDiff;
+end;
+
+procedure TSVNUpdateFrm.FormDestroy(Sender: TObject);
+begin
+  SVNUpdateFrm := nil;
+end;
+
+procedure TSVNUpdateFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  CloseAction := caFree;
 end;
 
 procedure TSVNUpdateFrm.FormShow(Sender: TObject);
@@ -208,9 +220,6 @@ begin
   AProcess.Free;
   MemStream.Free;
 end;
-
-finalization
-  FreeAndNil(SVNUpdateFrm);
 
 end.
 

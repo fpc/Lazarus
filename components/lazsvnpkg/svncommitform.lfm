@@ -10,14 +10,16 @@ object SVNCommitFrm: TSVNCommitFrm
   Caption = 'SVNCommitFrm'
   ClientHeight = 300
   ClientWidth = 675
+  OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 260
+    Height = 38
+    Top = 256
     Width = 663
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -34,7 +36,7 @@ object SVNCommitFrm: TSVNCommitFrm
   object SVNCommitMemo: TMemo
     Cursor = crHourGlass
     Left = 6
-    Height = 248
+    Height = 244
     Top = 6
     Width = 663
     Align = alClient

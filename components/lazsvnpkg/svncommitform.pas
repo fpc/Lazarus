@@ -15,7 +15,9 @@ type
   TSVNCommitFrm = class(TForm)
     ButtonPanel: TButtonPanel;
     SVNCommitMemo: TMemo;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
   private
@@ -45,7 +47,7 @@ begin
     SVNCommitFrm := TSVNCommitFrm.Create(nil);
 
   SVNCommitFrm.SVNCommandLine:=ACmdLine;
-  SVNCommitFrm.Show;
+  SVNCommitFrm.ShowModal;
 end;
 
 { TSVNCommitFrm }
@@ -70,8 +72,16 @@ begin
   Caption := rsLazarusSVNCommit;
 end;
 
-finalization
-  FreeAndNil(SVNCommitFrm);
+procedure TSVNCommitFrm.FormDestroy(Sender: TObject);
+begin
+  SVNCommitFrm := nil;
+end;
+
+procedure TSVNCommitFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  CloseAction := caFree;
+end;
+
 
 end.
 

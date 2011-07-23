@@ -6,14 +6,15 @@ object SVNDiffFrm: TSVNDiffFrm
   Caption = 'SVNDiffFrm'
   ClientHeight = 466
   ClientWidth = 617
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 426
+    Height = 38
+    Top = 422
     Width = 605
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -32,7 +33,7 @@ object SVNDiffFrm: TSVNDiffFrm
   end
   inline SVNDiffMemo: TSynEdit
     Left = 6
-    Height = 414
+    Height = 410
     Top = 6
     Width = 605
     Align = alClient

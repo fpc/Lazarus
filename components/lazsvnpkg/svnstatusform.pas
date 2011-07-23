@@ -209,7 +209,7 @@ begin
       exit;
 
   //commit the checked files
-  CmdLine := SVNExecutable + ' commit --force-log ';
+  CmdLine := SVNExecutable + ' commit --non-interactive --force-log ';
 
   for i := 0 to SVNStatus.List.Count - 1 do
   begin
@@ -363,7 +363,8 @@ procedure TSVNStatusFrm.ChangeCursor(ACursor: TCursor);
 begin
   Cursor := ACursor;
   SVNCommitMsgMemo.Cursor := ACursor;
-  SVNFileListView.Cursor := ACursor;
+  //SVNFileListView.Cursor := ACursor;
+  Self.Cursor := ACursor;
   Application.ProcessMessages;
 end;
 
@@ -427,6 +428,11 @@ begin
   end;
 end;
 
+procedure TSVNStatusFrm.FormDestroy(Sender: TObject);
+begin
+  SVNStatusFrm := nil;
+end;
+
 procedure TSVNStatusFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 var
   Config: TConfigStorage;
@@ -445,20 +451,14 @@ begin
       Config.Free;
     end;
   end;
+  SVNStatus.Free;
+  CloseAction := caFree;
 end;
 
 procedure TSVNStatusFrm.CancelButtonClick(Sender: TObject);
 begin
   Close;
 end;
-
-procedure TSVNStatusFrm.FormDestroy(Sender: TObject);
-begin
-  SVNStatus.Free;
-end;
-
-finalization
-  FreeAndNil(SVNStatusFrm);
 
 end.
 

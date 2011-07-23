@@ -35,6 +35,7 @@ type
     SaveDialog: TSaveDialog;
     SVNDiffMemo: TSynEdit;
     SynDiffSyn1: TSynDiffSyn;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
@@ -111,6 +112,11 @@ begin
   ButtonPanel.HelpButton.LoadGlyphFromLazarusResource('laz_save');
 end;
 
+procedure TSVNDiffFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  CloseAction := caFree;
+end;
+
 procedure TSVNDiffFrm.SaveButtonClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
@@ -150,11 +156,9 @@ end;
 destructor TSVNDiffFrm.Destroy;
 begin
   FFileList.Free;
+  SVNDiffFrm := nil;
   inherited Destroy;
 end;
-
-finalization
-  FreeAndNil(SVNDiffFrm);
 
 end.
 
