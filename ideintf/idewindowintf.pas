@@ -1062,14 +1062,14 @@ begin
               OffsetRect(NewBounds,60-NewBounds.Right,0);
             if NewBounds.Bottom<Screen.DesktopTop+60 then
               OffsetRect(NewBounds,0,60-NewBounds.Bottom);
-            if NewBounds.Left>Screen.DesktopWidth-60 then begin
-              i:=(Screen.DesktopWidth-60)-NewBounds.Left;
-              NewBounds.Left := Screen.DesktopWidth-60;
+            if NewBounds.Left>Screen.DesktopWidth+Screen.DesktopLeft-60 then begin
+              i:=(Screen.DesktopWidth+Screen.DesktopLeft-60)-NewBounds.Left;
+              NewBounds.Left := Screen.DesktopWidth+Screen.DesktopLeft-60;
               NewBounds.Right := NewBounds.Right + i;
             end;
-            if NewBounds.Top>Screen.DesktopHeight-60 then begin
-              i:=(Screen.DesktopHeight-60)-NewBounds.Top;
-              NewBounds.Top := Screen.DesktopHeight-60;
+            if NewBounds.Top>Screen.DesktopHeight+Screen.DesktopTop-60 then begin
+              i:=(Screen.DesktopHeight+Screen.DesktopLeft-60)-NewBounds.Top;
+              NewBounds.Top := Screen.DesktopHeight+Screen.DesktopTop-60;
               NewBounds.Bottom := NewBounds.Bottom + i;
             end;
             // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
