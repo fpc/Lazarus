@@ -1059,9 +1059,9 @@ begin
               NewBounds.Bottom:=NewBounds.Top+60;
             // move to visible area
             if NewBounds.Right<Screen.DesktopLeft+60 then
-              OffsetRect(NewBounds,60-NewBounds.Right,0);
+              OffsetRect(NewBounds,Screen.DesktopLeft+60-NewBounds.Right,0);
             if NewBounds.Bottom<Screen.DesktopTop+60 then
-              OffsetRect(NewBounds,0,60-NewBounds.Bottom);
+              OffsetRect(NewBounds,0,Screen.DesktopTop+60-NewBounds.Bottom);
             if NewBounds.Left>Screen.DesktopWidth+Screen.DesktopLeft-60 then begin
               i:=(Screen.DesktopWidth+Screen.DesktopLeft-60)-NewBounds.Left;
               NewBounds.Left := Screen.DesktopWidth+Screen.DesktopLeft-60;
