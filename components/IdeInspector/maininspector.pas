@@ -38,6 +38,7 @@ type
     menuFollowFrame: TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
+    Panel3: TPanel;
     popComponent: TPopupMenu;
     popSubComponent: TPopupMenu;
     popControls: TPopupMenu;
@@ -756,14 +757,14 @@ begin
   inherited Create(TheOwner);
 
   FPropertiesGrid := TCustomPropertiesGrid.Create(Self);
-  with FPropertiesGrid do
-  begin
-    Name := 'FPropertiesGrid';
-    Parent := TabControl1;
-    Align := alClient;
-    SaveOnChangeTIObject := False;
-    OnSelectionChange  := @DoPropSelChanged;
-  end;
+  FPropertiesGrid.Name := 'FPropertiesGrid';
+  FPropertiesGrid.Parent := Panel3;
+  FPropertiesGrid.Top := TabControl1.Height;
+  FPropertiesGrid.Left := 0;
+  FPropertiesGrid.Width := TabControl1.Width;
+  FPropertiesGrid.Height := 381 - TabControl1.Height;
+  FPropertiesGrid.SaveOnChangeTIObject := False;
+  FPropertiesGrid.OnSelectionChange  := @DoPropSelChanged;
 
   btnComponent.Caption := ideinspQuickLinks;
   btnSubComponent.Caption := ideinspComponentsOwned;

@@ -260,21 +260,28 @@ object IdeInspectForm: TIdeInspectForm
       end
     end
   end
-  object TabControl1: TTabControl
+  object Panel3: TPanel
     Left = 222
     Height = 381
     Top = 24
     Width = 290
     Align = alClient
-    OnChange = TabControl1Change
-    TabIndex = 0
-    TabOrder = 4
-    Tabs.Strings = (
-      'Properties'
-      'Events'
-      'All'
-    )
-    TabStop = False
+    object TabControl1: TTabControl
+      Left = 0
+      Height = 81
+      Top = 0
+      Width = 290
+      Align = alTop
+      OnChange = TabControl1Change
+      TabIndex = 0
+      TabOrder = 4
+      Tabs.Strings = (
+        'Properties'
+        'Events'
+        'All'
+      )
+      TabStop = False
+    end
   end
   object popComponent: TPopupMenu
     OnPopup = popComponentPopup
