@@ -5181,9 +5181,6 @@ resourcestring
   lisConvDelphiAddedPackageRequirement = 'Added Package %s as a requirement.';
   lisConvDelphiThereIsAlreadyAPackageWithTheNamePleaseCloseThisPa = 'There is '
     +'already a package with the name "%s"%sPlease close this package first.';
-  lisConvDelphiUnitsNotFound = 'Units not found';
-  lisConvDelphiSomeUnitsOfTheDelphiPackageAreMissing = 'Some units of the '
-    +'Delphi package are missing:%s%s';
   lisConvDelphiDelphiPackageMainSourceDpkFileNotFoundForPackage = 'Delphi '
     +'package main source (.dpk) file not found for package%s%s';
 

@@ -1634,15 +1634,6 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    // warn about missing units
-    if (MissingInUnits<>nil) and (MissingInUnits.Count>0) then begin
-      NotFoundUnits:=MissingInUnits.Text;
-      Result:=QuestionDlg(lisConvDelphiUnitsNotFound,
-        Format(lisConvDelphiSomeUnitsOfTheDelphiPackageAreMissing,
-               [#13, NotFoundUnits]), mtWarning, [mrIgnore, mrAbort], 0);
-      if Result<>mrIgnore then exit;
-    end;
-
     try
       // add all units to the package
       for i:=0 to FoundInUnits.Count-1 do begin
@@ -1651,6 +1642,7 @@ begin
         if p>0 then
           CurFilename:=copy(CurFilename,p+4,length(CurFilename));
         if CurFilename='' then continue;
+        CurFilename:=SwitchPathDelims(CurFilename, True);
         if not FilenameIsAbsolute(CurFilename) then
           CurFilename:=AppendPathDelim(LazPackage.Directory)+CurFilename;
         CurFilename:=TrimFilename(CurFilename);
@@ -1676,13 +1668,11 @@ begin
               end;
             end;
           end;
-
           // add new unit to package
           LazPackage.AddFile(CurFilename,ExtractFileNameOnly(CurFilename),
                            pftUnit,[pffAddToPkgUsesSection],cpNormal);
         end;
       end;
-
     finally
       AllPath:=LazPackage.SourceDirectories.CreateSearchPathFromAllFiles;
       UselessPath:='.;'+VirtualDirectory+';'+VirtualTempDir+';'+LazPackage.Directory;
