@@ -64,7 +64,7 @@ implementation
 {$R *.lfm}
 
 const
-  VersionPos: TPoint = (X:397; Y:281);
+  VersionPos: TPoint = (X:0; Y:281);
   VersionStyle: TTextStyle =
     (
       Alignment  : taCenter;
