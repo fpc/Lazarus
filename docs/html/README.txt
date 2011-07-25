@@ -11,4 +11,4 @@ documentation.
 
 For Windows:
 
-Build the project build_lcl_docs.lpi, fix the PATH in the build_html.bat batch script to your local instalation and then run the script, or run build_lcl_docs.exe directly.
+Build the project build_lcl_docs.lpi, fix the PATH in the build_html.bat batch script to your local installation and then run the script, or run build_lcl_docs.exe directly.
