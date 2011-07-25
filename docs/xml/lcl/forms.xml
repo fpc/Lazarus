@@ -271,7 +271,7 @@ An ancestor class for many forms with scrolling windows
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCustomHintAction.Hint" link="#lclbase.ActnList.TCustomAction.Hint">
+      <element name="TCustomHintAction.Hint" link="#LCL.ActnList.TCustomAction.Hint">
         <short/>
         <descr/>
         <seealso/>
@@ -890,7 +890,7 @@ To get the current visible state of the widget use the method IsScrollBarVisible
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TWinControl.AlignControls">TWinControl.AlignControls</link>
+          <link id="#LCL.Controls.TWinControl.AlignControls">TWinControl.AlignControls</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -908,7 +908,7 @@ To get the current visible state of the widget use the method IsScrollBarVisible
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
         </seealso>
       </element>
       <!-- function Visibility: protected -->
@@ -918,7 +918,7 @@ To get the current visible state of the widget use the method IsScrollBarVisible
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TControl.GetClientScrollOffset">TControl.GetClientScrollOffset</link>
+          <link id="#LCL.Controls.TControl.GetClientScrollOffset">TControl.GetClientScrollOffset</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -932,7 +932,7 @@ To get the current visible state of the widget use the method IsScrollBarVisible
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TControl.GetLogicalClientRect">TControl.GetLogicalClientRect</link>
+          <link id="#LCL.Controls.TControl.GetLogicalClientRect">TControl.GetLogicalClientRect</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -946,7 +946,7 @@ To get the current visible state of the widget use the method IsScrollBarVisible
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TControl.DoOnResize">TControl.DoOnResize</link>
+          <link id="#LCL.Controls.TControl.DoOnResize">TControl.DoOnResize</link>
         </seealso>
       </element>
       <!-- function Visibility: protected -->
@@ -956,7 +956,7 @@ To get the current visible state of the widget use the method IsScrollBarVisible
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -1038,7 +1038,7 @@ To get the current visible state of the widget use the method IsScrollBarVisible
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
+          <link id="#LCL.Controls.TWinControl.Loaded">TWinControl.Loaded</link>
         </seealso>
       </element>
       <!-- constructor Visibility: public -->
@@ -1047,7 +1047,7 @@ To get the current visible state of the widget use the method IsScrollBarVisible
 </descr>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TCustomControl.Create">TCustomControl.Create</link>
+          <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TScrollingWinControl</var>: performs inherited <var>Create</var> then creates and intiialises the scrollbars</short>
@@ -1062,7 +1062,7 @@ To get the current visible state of the widget use the method IsScrollBarVisible
 </descr>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TCustomControl.Destroy"/>
+          <link id="#LCL.Controls.TCustomControl.Destroy"/>
         </seealso>
         <short>
           <var>Destroy</var> - destructor for <var>TScrollingWinControl</var>: frees the horizontal and vertical scrollbars, then performs inherited <var>Destroy</var>
@@ -1114,7 +1114,7 @@ If the indicators are valid, re-computes position etc</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TScrollBox.Create" link="#lclbase.Forms.TScrollingWinControl.Create">
+      <element name="TScrollBox.Create" link="#LCL.Forms.TScrollingWinControl.Create">
         <short/>
         <descr/>
         <errors/>
@@ -1125,253 +1125,253 @@ If the indicators are valid, re-computes position etc</descr>
         <short/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.Align" link="#lclbase.Controls.TControl.Align">
+      <element name="TScrollBox.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.Anchors" link="#lclbase.Controls.TControl.Anchors">
+      <element name="TScrollBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.AutoSize" link="#lclbase.Controls.TControl.AutoSize">
+      <element name="TScrollBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
+      <element name="TScrollBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.BiDiMode" link="#lclbase.Controls.TControl.BiDiMode">
+      <element name="TScrollBox.BiDiMode" link="#LCL.Controls.TControl.BiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.BorderStyle" link="#lclbase.Controls.TWinControl.BorderStyle">
+      <element name="TScrollBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.ChildSizing" link="#lclbase.Controls.TWinControl.ChildSizing">
+      <element name="TScrollBox.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.Constraints" link="#lclbase.Controls.TControl.Constraints">
+      <element name="TScrollBox.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.DragCursor" link="#lclbase.Controls.TControl.DragCursor">
+      <element name="TScrollBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.DragKind" link="#lclbase.Controls.TControl.DragKind">
+      <element name="TScrollBox.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.DragMode" link="#lclbase.Controls.TControl.DragMode">
+      <element name="TScrollBox.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.Enabled" link="#lclbase.Controls.TControl.Enabled">
+      <element name="TScrollBox.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.Color" link="#lclbase.Controls.TControl.Color">
+      <element name="TScrollBox.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.Ctl3D" link="#lclbase.Controls.TControl.Ctl3D">
+      <element name="TScrollBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.Font" link="#lclbase.Controls.TControl.Font">
+      <element name="TScrollBox.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.ParentBiDiMode" link="#lclbase.Controls.TControl.ParentBiDiMode">
+      <element name="TScrollBox.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.ParentColor" link="#lclbase.Controls.TControl.ParentColor">
+      <element name="TScrollBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.ParentCtl3D" link="#lclbase.Controls.TWinControl.ParentCtl3D">
+      <element name="TScrollBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
+      <element name="TScrollBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
+      <element name="TScrollBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
+      <element name="TScrollBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
+      <element name="TScrollBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
+      <element name="TScrollBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
+      <element name="TScrollBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.Visible" link="#lclbase.Controls.TControl.Visible">
+      <element name="TScrollBox.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnClick" link="#lclbase.Controls.TControl.OnClick">
+      <element name="TScrollBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnConstrainedResize" link="#lclbase.Controls.TControl.OnConstrainedResize">
+      <element name="TScrollBox.OnConstrainedResize" link="#LCL.Controls.TControl.OnConstrainedResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
+      <element name="TScrollBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop">
+      <element name="TScrollBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnDragOver" link="#lclbase.Controls.TControl.OnDragOver">
+      <element name="TScrollBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnEndDrag" link="#lclbase.Controls.TControl.OnEndDrag">
+      <element name="TScrollBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
+      <element name="TScrollBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
+      <element name="TScrollBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
+      <element name="TScrollBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
+      <element name="TScrollBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
+      <element name="TScrollBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnMouseWheel" link="#lclbase.Controls.TControl.OnMouseWheel">
+      <element name="TScrollBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnMouseWheelDown" link="#lclbase.Controls.TControl.OnMouseWheelDown">
+      <element name="TScrollBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnMouseWheelUp" link="#lclbase.Controls.TControl.OnMouseWheelUp">
+      <element name="TScrollBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnResize" link="#lclbase.Controls.TControl.OnResize">
+      <element name="TScrollBox.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnStartDrag" link="#lclbase.Controls.TControl.OnStartDrag">
+      <element name="TScrollBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBox.OnPaint" link="#lclbase.Controls.TCustomControl.OnPaint">
+      <element name="TScrollBox.OnPaint" link="#LCL.Controls.TCustomControl.OnPaint">
         <short/>
         <descr/>
         <seealso/>
@@ -1415,7 +1415,7 @@ If the indicators are valid, re-computes position etc</descr>
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.GetChildren">TComponent.GetChildren</link>
-          <link id="#lclbase.Controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
+          <link id="#LCL.Controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1434,7 +1434,7 @@ If the indicators are valid, re-computes position etc</descr>
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Notification">TComponent.Notification</link>
-          <link id="#lclbase.Controls.TControl.Notification">TControl.Notification</link>
+          <link id="#LCL.Controls.TControl.Notification">TControl.Notification</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1452,7 +1452,7 @@ If the indicators are valid, re-computes position etc</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TControl.SetParent">TControl.SetParent</link>
+          <link id="#LCL.Controls.TControl.SetParent">TControl.SetParent</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1466,7 +1466,7 @@ If the indicators are valid, re-computes position etc</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -1480,7 +1480,7 @@ If the indicators are valid, re-computes position etc</descr>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Forms.TScrollingWinControl.Create">TScrollingWinControl.Create</link>
+          <link id="#LCL.Forms.TScrollingWinControl.Create">TScrollingWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -1504,271 +1504,271 @@ If the indicators are valid, re-computes position etc</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.Align" link="#lclbase.Controls.TControl.Align">
+      <element name="TFrame.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.Anchors" link="#lclbase.Controls.TControl.Anchors">
+      <element name="TFrame.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.AutoScroll" link="#lclbase.Forms.TScrollingWinControl.AutoScroll">
+      <element name="TFrame.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.AutoSize" link="#lclbase.Controls.TControl.AutoSize">
+      <element name="TFrame.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.Constraints" link="#lclbase.Controls.TControl.Constraints">
+      <element name="TFrame.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.DockSite" link="#lclbase.Controls.TWinControl.DockSite">
+      <element name="TFrame.DockSite" link="#LCL.Controls.TWinControl.DockSite">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.DragCursor" link="#lclbase.Controls.TControl.DragCursor">
+      <element name="TFrame.DragCursor" link="#LCL.Controls.TControl.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.DragKind" link="#lclbase.Controls.TControl.DragKind">
+      <element name="TFrame.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.DragMode" link="#lclbase.Controls.TControl.DragMode">
+      <element name="TFrame.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.Enabled" link="#lclbase.Controls.TControl.Enabled">
+      <element name="TFrame.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.Color" link="#lclbase.Controls.TControl.Color">
+      <element name="TFrame.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.Ctl3D" link="#lclbase.Controls.TControl.Ctl3D">
+      <element name="TFrame.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.Font" link="#lclbase.Controls.TControl.Font">
+      <element name="TFrame.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.ParentColor" link="#lclbase.Controls.TControl.ParentColor">
+      <element name="TFrame.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.ParentCtl3D" link="#lclbase.Controls.TWinControl.ParentCtl3D">
+      <element name="TFrame.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
+      <element name="TFrame.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
+      <element name="TFrame.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
+      <element name="TFrame.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
+      <element name="TFrame.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
+      <element name="TFrame.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
+      <element name="TFrame.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.Visible" link="#lclbase.Controls.TControl.Visible">
+      <element name="TFrame.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnClick" link="#lclbase.Controls.TControl.OnClick">
+      <element name="TFrame.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnConstrainedResize" link="#lclbase.Controls.TControl.OnConstrainedResize">
+      <element name="TFrame.OnConstrainedResize" link="#LCL.Controls.TControl.OnConstrainedResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnContextPopup" link="#lclbase.Controls.TControl.OnContextPopup">
+      <element name="TFrame.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
+      <element name="TFrame.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnDockDrop" link="#lclbase.Controls.TWinControl.OnDockDrop">
+      <element name="TFrame.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnDockOver" link="#lclbase.Controls.TWinControl.OnDockOver">
+      <element name="TFrame.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop">
+      <element name="TFrame.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnDragOver" link="#lclbase.Controls.TControl.OnDragOver">
+      <element name="TFrame.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnEndDock" link="#lclbase.Controls.TControl.OnEndDock">
+      <element name="TFrame.OnEndDock" link="#LCL.Controls.TControl.OnEndDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnEndDrag" link="#lclbase.Controls.TControl.OnEndDrag">
+      <element name="TFrame.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
+      <element name="TFrame.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
+      <element name="TFrame.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnGetSiteInfo" link="#lclbase.Controls.TWinControl.OnGetSiteInfo">
+      <element name="TFrame.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
+      <element name="TFrame.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
+      <element name="TFrame.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
+      <element name="TFrame.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnMouseWheel" link="#lclbase.Controls.TControl.OnMouseWheel">
+      <element name="TFrame.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnMouseWheelDown" link="#lclbase.Controls.TControl.OnMouseWheelDown">
+      <element name="TFrame.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnMouseWheelUp" link="#lclbase.Controls.TControl.OnMouseWheelUp">
+      <element name="TFrame.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnResize" link="#lclbase.Controls.TControl.OnResize">
+      <element name="TFrame.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnStartDock" link="#lclbase.Controls.TControl.OnStartDock">
+      <element name="TFrame.OnStartDock" link="#LCL.Controls.TControl.OnStartDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnStartDrag" link="#lclbase.Controls.TControl.OnStartDrag">
+      <element name="TFrame.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFrame.OnUnDock" link="#lclbase.Controls.TWinControl.OnUnDock">
+      <element name="TFrame.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock">
         <short/>
         <descr/>
         <seealso/>
@@ -2717,7 +2717,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TWinControl.CreateParams">TWinControl.CreateParams</link>
+          <link id="#LCL.Controls.TWinControl.CreateParams">TWinControl.CreateParams</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2731,8 +2731,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
-          <link id="#lclbase.Forms.TScrollingWinControl.CreateWnd">TScrollingWinControl.CreateWnd</link>
+          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
+          <link id="#LCL.Forms.TScrollingWinControl.CreateWnd">TScrollingWinControl.CreateWnd</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -2744,7 +2744,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DestroyWnd" link="#lclbase.Controls.TWinControl.DestroyWnd">
+      <element name="TCustomForm.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd">
         <short/>
         <descr/>
         <errors/>
@@ -2811,7 +2811,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.GetChildren">TComponent.GetChildren</link>
-          <link id="#lclbase.Controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
+          <link id="#LCL.Controls.TWinControl.GetChildren">TWinControl.GetChildren</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2830,7 +2830,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
-          <link id="#lclbase.Forms.TScrollingWinControl.Loaded">TScrollingWinControl.Loaded</link>
+          <link id="#LCL.Forms.TScrollingWinControl.Loaded">TScrollingWinControl.Loaded</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -2840,7 +2840,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TWinControl.ChildHandlesCreated">TWinControl.ChildHandlesCreated</link>
+          <link id="#LCL.Controls.TWinControl.ChildHandlesCreated">TWinControl.ChildHandlesCreated</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -2862,7 +2862,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.PaintWindow" link="#lclbase.Controls.TCustomControl.PaintWindow">
+      <element name="TCustomForm.PaintWindow" link="#LCL.Controls.TCustomControl.PaintWindow">
         <short/>
         <descr/>
         <errors/>
@@ -2873,7 +2873,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.RequestAlign" link="#lclbase.Controls.TControl.RequestAlign">
+      <element name="TCustomForm.RequestAlign" link="#LCL.Controls.TControl.RequestAlign">
         <short/>
         <descr/>
         <errors/>
@@ -2892,7 +2892,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.SetParent" link="#lclbase.Controls.TControl.SetParent">
+      <element name="TCustomForm.SetParent" link="#LCL.Controls.TControl.SetParent">
         <short/>
         <descr/>
         <errors/>
@@ -2909,11 +2909,11 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TWinControl.UpdateShowing">TWinControl.UpdateShowing</link>
+          <link id="#LCL.Controls.TWinControl.UpdateShowing">TWinControl.UpdateShowing</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.SetVisible" link="#lclbase.Controls.TControl.SetVisible">
+      <element name="TCustomForm.SetVisible" link="#LCL.Controls.TControl.SetVisible">
         <short/>
         <descr/>
         <errors/>
@@ -2961,8 +2961,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </descr>
         <errors/>
         <seealso>
-          <link id="#lclbase.Controls.TControl.WndProc">TControl.WndProc</link>
-          <link id="#lclbase.Controls.TWinControl.WndProc">TWinControl.WndProc</link>
+          <link id="#LCL.Controls.TControl.WndProc">TControl.WndProc</link>
+          <link id="#LCL.Controls.TWinControl.WndProc">TWinControl.WndProc</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2970,7 +2970,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.FormIsUpdating" link="#lclbase.Controls.TControl.FormIsUpdating">
+      <element name="TCustomForm.FormIsUpdating" link="#LCL.Controls.TControl.FormIsUpdating">
         <short/>
         <descr/>
         <errors/>
@@ -2993,7 +2993,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.ColorIsStored" link="#lclbase.Controls.TControl.ColorIsStored">
+      <element name="TCustomForm.ColorIsStored" link="#LCL.Controls.TControl.ColorIsStored">
         <short/>
         <descr/>
         <errors/>
@@ -3004,21 +3004,21 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoSendBoundsToInterface" link="#lclbase.Controls.TWinControl.DoSendBoundsToInterface">
+      <element name="TCustomForm.DoSendBoundsToInterface" link="#LCL.Controls.TWinControl.DoSendBoundsToInterface">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoAutoSize" link="#lclbase.Controls.TControl.DoAutoSize">
+      <element name="TCustomForm.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.SetAutoSize" link="#lclbase.Controls.TControl.SetAutoSize">
+      <element name="TCustomForm.SetAutoSize" link="#LCL.Controls.TControl.SetAutoSize">
         <short/>
         <descr/>
         <errors/>
@@ -3029,7 +3029,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.GetControlClassDefaultSize" link="#lclbase.Controls.TControl.GetControlClassDefaultSize">
+      <element name="TCustomForm.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -3040,7 +3040,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoDock" link="#lclbase.Controls.TControl.DoDock">
+      <element name="TCustomForm.DoDock" link="#LCL.Controls.TControl.DoDock">
         <short/>
         <descr/>
         <errors/>
@@ -3055,7 +3055,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.GetFloating" link="#lclbase.Controls.TControl.GetFloating">
+      <element name="TCustomForm.GetFloating" link="#LCL.Controls.TControl.GetFloating">
         <short/>
         <descr/>
         <errors/>
@@ -3131,7 +3131,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Forms.TCustomForm.DoExecuteAction">DoExecuteAction</link>
+          <link id="#LCL.Forms.TCustomForm.DoExecuteAction">DoExecuteAction</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -3158,7 +3158,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
 </descr>
         <errors/>
         <seealso>
-          <link id="#lclbase.Forms.TScrollingWinControl.Create">TScrollingWinControl.Create</link>
+          <link id="#LCL.Forms.TScrollingWinControl.Create">TScrollingWinControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -3208,7 +3208,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Forms.TScrollingWinControl.Destroy">TScrollingWinControl.Destroy</link>
+          <link id="#LCL.Forms.TScrollingWinControl.Destroy">TScrollingWinControl.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -3236,14 +3236,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.Hide" link="#lclbase.Controls.TControl.Hide">
+      <element name="TCustomForm.Hide" link="#LCL.Controls.TControl.Hide">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.Show" link="#lclbase.Controls.TControl.Show">
+      <element name="TCustomForm.Show" link="#LCL.Controls.TControl.Show">
         <descr/>
         <errors/>
         <seealso/>
@@ -3267,7 +3267,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomForm.NeedParentForAutoSize" link="#lclbase.Controls.TControl.NeedParentForAutoSize">
+      <element name="TCustomForm.NeedParentForAutoSize" link="#LCL.Controls.TControl.NeedParentForAutoSize">
         <short/>
         <descr/>
         <errors/>
@@ -3314,7 +3314,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.SetFocus" link="#lclbase.Controls.TWinControl.SetFocus">
+      <element name="TCustomForm.SetFocus" link="#LCL.Controls.TWinControl.SetFocus">
         <short/>
         <descr/>
         <errors/>
@@ -3401,7 +3401,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.RemoveAllHandlersOfObject" link="#lclbase.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
+      <element name="TCustomForm.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
         <short/>
         <descr/>
         <errors/>
@@ -3536,7 +3536,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.Dock" link="#lclbase.Controls.TControl.Dock">
+      <element name="TCustomForm.Dock" link="#LCL.Controls.TControl.Dock">
         <short/>
         <descr/>
         <errors/>
@@ -3614,13 +3614,13 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.Caption" link="#lclbase.Controls.TControl.Caption">
+      <element name="TCustomForm.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.Color" link="#lclbase.Controls.TControl.Color">
+      <element name="TCustomForm.Color" link="#LCL.Controls.TControl.Color">
         <descr>The form's colour; by default it is the same as the colour specified for button faces.
 </descr>
         <seealso/>
@@ -3662,7 +3662,7 @@ When the form is put into another control the window borders depend on the widge
           <p>FormStyle is a set, so could take zero or more of these values.</p>
         </descr>
         <seealso>
-          <link id="#lclbase.Controls.TFormStyle"/>
+          <link id="#lcl.Controls.TFormStyle"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3694,7 +3694,7 @@ When the form is put into another control the window borders depend on the widge
         <descr>Drop a TMainMenu on the form and select it here to show it on the form.<br/>
         </descr>
         <seealso>
-          <link id="#lclbase.Menus.TMainMenu"/>
+          <link id="#lcl.Menus.TMainMenu"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3710,7 +3710,7 @@ When the form is put into another control the window borders depend on the widge
         <short>Event called when the form receives focus</short>
         <descr>This method is called when the form receives focus for the first time at application start up and then subsequently each time focus is changed from another window of the same application to this window. For focus changes between different applications the event Application.OnActivate is called instead.</descr>
         <seealso>
-          <link id="#lclbase.Forms.TApplication.OnActivate">TApplication.OnActivate</link>
+          <link id="#LCL.Forms.TApplication.OnActivate">TApplication.OnActivate</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3764,7 +3764,7 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.OnResize" link="#lclbase.Controls.TControl.OnResize">
+      <element name="TCustomForm.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
@@ -3844,7 +3844,7 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.Visible" link="#lclbase.Controls.TControl.Visible">
+      <element name="TCustomForm.Visible" link="#LCL.Controls.TControl.Visible">
         <descr>Set or get this to set the form visible/hidden or get the status of the form
 </descr>
         <seealso/>
@@ -3879,7 +3879,7 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TForm.CreateWnd" link="#lclbase.Forms.TScrollingWinControl.CreateWnd">
+      <element name="TForm.CreateWnd" link="#LCL.Forms.TScrollingWinControl.CreateWnd">
         <descr/>
         <errors/>
         <seealso/>
@@ -3891,362 +3891,362 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TForm.DockManager" link="#lclbase.Controls.TWinControl.DockManager">
+      <element name="TForm.DockManager" link="#LCL.Controls.TWinControl.DockManager">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Action" link="#lclbase.Controls.TControl.Action">
+      <element name="TForm.Action" link="#LCL.Controls.TControl.Action">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ActiveControl" link="#lclbase.Forms.TCustomForm.ActiveControl">
+      <element name="TForm.ActiveControl" link="#LCL.Forms.TCustomForm.ActiveControl">
         <short/>
         <descr>Use active control to set or get the control that has the focus on this form
 </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Align" link="#lclbase.Controls.TControl.Align">
+      <element name="TForm.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.AllowDropFiles" link="#lclbase.Forms.TCustomForm.AllowDropFiles">
+      <element name="TForm.AllowDropFiles" link="#LCL.Forms.TCustomForm.AllowDropFiles">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.AutoSize" link="#lclbase.Controls.TControl.AutoSize">
+      <element name="TForm.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.BiDiMode" link="#lclbase.Controls.TControl.BiDiMode">
+      <element name="TForm.BiDiMode" link="#LCL.Controls.TControl.BiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.BorderIcons" link="#lclbase.Forms.TCustomForm.BorderIcons">
+      <element name="TForm.BorderIcons" link="#LCL.Forms.TCustomForm.BorderIcons">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.BorderStyle" link="#lclbase.Forms.TCustomForm.BorderStyle">
+      <element name="TForm.BorderStyle" link="#LCL.Forms.TCustomForm.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Caption" link="#lclbase.Controls.TControl.Caption">
+      <element name="TForm.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ChildSizing" link="#lclbase.Controls.TWinControl.ChildSizing">
+      <element name="TForm.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ClientHeight" link="#lclbase.Controls.TControl.ClientHeight">
+      <element name="TForm.ClientHeight" link="#LCL.Controls.TControl.ClientHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ClientWidth" link="#lclbase.Controls.TControl.ClientWidth">
+      <element name="TForm.ClientWidth" link="#LCL.Controls.TControl.ClientWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Color" link="#lclbase.Controls.TControl.Color">
+      <element name="TForm.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Constraints" link="#lclbase.Controls.TControl.Constraints">
+      <element name="TForm.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.DragKind" link="#lclbase.Controls.TControl.DragKind">
+      <element name="TForm.DragKind" link="#LCL.Controls.TControl.DragKind">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.DragMode" link="#lclbase.Controls.TControl.DragMode">
+      <element name="TForm.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.DockSite" link="#lclbase.Controls.TWinControl.DockSite">
+      <element name="TForm.DockSite" link="#LCL.Controls.TWinControl.DockSite">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Enabled" link="#lclbase.Controls.TControl.Enabled">
+      <element name="TForm.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Font" link="#lclbase.Controls.TControl.Font">
+      <element name="TForm.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.FormStyle" link="#lclbase.Forms.TCustomForm.FormStyle">
+      <element name="TForm.FormStyle" link="#LCL.Forms.TCustomForm.FormStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.HelpFile" link="#lclbase.Forms.TCustomForm.HelpFile">
+      <element name="TForm.HelpFile" link="#LCL.Forms.TCustomForm.HelpFile">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Icon" link="#lclbase.Forms.TCustomForm.Icon">
+      <element name="TForm.Icon" link="#LCL.Forms.TCustomForm.Icon">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.KeyPreview" link="#lclbase.Forms.TCustomForm.KeyPreview">
+      <element name="TForm.KeyPreview" link="#LCL.Forms.TCustomForm.KeyPreview">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Menu" link="#lclbase.Forms.TCustomForm.Menu">
+      <element name="TForm.Menu" link="#LCL.Forms.TCustomForm.Menu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnActivate" link="#lclbase.Forms.TCustomForm.OnActivate">
+      <element name="TForm.OnActivate" link="#LCL.Forms.TCustomForm.OnActivate">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnClick" link="#lclbase.Controls.TControl.OnClick">
+      <element name="TForm.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnClose" link="#lclbase.Forms.TCustomForm.OnClose">
+      <element name="TForm.OnClose" link="#LCL.Forms.TCustomForm.OnClose">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnCloseQuery" link="#lclbase.Forms.TCustomForm.OnCloseQuery">
+      <element name="TForm.OnCloseQuery" link="#LCL.Forms.TCustomForm.OnCloseQuery">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnChangeBounds" link="#lclbase.Controls.TControl.OnChangeBounds">
+      <element name="TForm.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnCreate" link="#lclbase.Forms.TCustomForm.OnCreate">
+      <element name="TForm.OnCreate" link="#LCL.Forms.TCustomForm.OnCreate">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
+      <element name="TForm.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDeactivate" link="#lclbase.Forms.TCustomForm.OnDeactivate">
+      <element name="TForm.OnDeactivate" link="#LCL.Forms.TCustomForm.OnDeactivate">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDestroy" link="#lclbase.Forms.TCustomForm.OnDestroy">
+      <element name="TForm.OnDestroy" link="#LCL.Forms.TCustomForm.OnDestroy">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDockDrop" link="#lclbase.Controls.TWinControl.OnDockDrop">
+      <element name="TForm.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDockOver" link="#lclbase.Controls.TWinControl.OnDockOver">
+      <element name="TForm.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop">
+      <element name="TForm.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDragOver" link="#lclbase.Controls.TControl.OnDragOver">
+      <element name="TForm.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnEndDock" link="#lclbase.Controls.TControl.OnEndDock">
+      <element name="TForm.OnEndDock" link="#LCL.Controls.TControl.OnEndDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnDropFiles" link="#lclbase.Forms.TCustomForm.OnDropFiles">
+      <element name="TForm.OnDropFiles" link="#LCL.Forms.TCustomForm.OnDropFiles">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnGetSiteInfo" link="#lclbase.Controls.TWinControl.OnGetSiteInfo">
+      <element name="TForm.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnHide" link="#lclbase.Forms.TCustomForm.OnHide">
+      <element name="TForm.OnHide" link="#LCL.Forms.TCustomForm.OnHide">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnKeyDown" link="#lclbase.Controls.TWinControl.OnKeyDown">
+      <element name="TForm.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnKeyPress" link="#lclbase.Controls.TWinControl.OnKeyPress">
+      <element name="TForm.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnKeyUp" link="#lclbase.Controls.TWinControl.OnKeyUp">
+      <element name="TForm.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnHelp" link="#lclbase.Forms.TCustomForm.OnHelp">
+      <element name="TForm.OnHelp" link="#LCL.Forms.TCustomForm.OnHelp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
+      <element name="TForm.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
+      <element name="TForm.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
+      <element name="TForm.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnPaint" link="#lclbase.Controls.TCustomControl.OnPaint">
+      <element name="TForm.OnPaint" link="#LCL.Controls.TCustomControl.OnPaint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnResize" link="#lclbase.Controls.TControl.OnResize">
+      <element name="TForm.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnShortCut" link="#lclbase.Forms.TCustomForm.OnShortcut">
+      <element name="TForm.OnShortCut" link="#LCL.Forms.TCustomForm.OnShortcut">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnShow" link="#lclbase.Forms.TCustomForm.OnShow">
+      <element name="TForm.OnShow" link="#LCL.Forms.TCustomForm.OnShow">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnStartDock" link="#lclbase.Controls.TControl.OnStartDock">
+      <element name="TForm.OnStartDock" link="#LCL.Controls.TControl.OnStartDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnUnDock" link="#lclbase.Controls.TWinControl.OnUnDock">
+      <element name="TForm.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnUTF8KeyPress" link="#lclbase.Controls.TWinControl.OnUTF8KeyPress">
+      <element name="TForm.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ParentBiDiMode" link="#lclbase.Controls.TControl.ParentBiDiMode">
+      <element name="TForm.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
+      <element name="TForm.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.PixelsPerInch" link="#lclbase.Forms.TCustomForm.PixelsPerInch">
+      <element name="TForm.PixelsPerInch" link="#LCL.Forms.TCustomForm.PixelsPerInch">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
+      <element name="TForm.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
@@ -4258,19 +4258,19 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.SessionProperties" link="#lclbase.Controls.TControl.SessionProperties">
+      <element name="TForm.SessionProperties" link="#LCL.Controls.TControl.SessionProperties">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
+      <element name="TForm.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.ShowInTaskBar" link="#lclbase.Forms.TCustomForm.ShowInTaskBar">
+      <element name="TForm.ShowInTaskBar" link="#LCL.Forms.TCustomForm.ShowInTaskBar">
         <short/>
         <descr/>
         <seealso/>
@@ -4282,25 +4282,25 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.UseDockManager" link="#lclbase.Controls.TWinControl.UseDockManager">
+      <element name="TForm.UseDockManager" link="#LCL.Controls.TWinControl.UseDockManager">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Visible" link="#lclbase.Controls.TControl.Visible">
+      <element name="TForm.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.WindowState" link="#lclbase.Forms.TCustomForm.WindowState">
+      <element name="TForm.WindowState" link="#LCL.Forms.TCustomForm.WindowState">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.OnWindowStateChange" link="#lclbase.Forms.TCustomForm.OnWindowStateChange">
+      <element name="TForm.OnWindowStateChange" link="#LCL.Forms.TCustomForm.OnWindowStateChange">
         <short/>
         <descr/>
         <seealso/>
@@ -4322,7 +4322,7 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.DoAddDockClient" link="#lclbase.Controls.TWinControl.DoAddDockClient">
+      <element name="TCustomDockForm.DoAddDockClient" link="#LCL.Controls.TWinControl.DoAddDockClient">
         <descr/>
         <errors/>
         <seealso/>
@@ -4336,7 +4336,7 @@ When the form is put into another control the window borders depend on the widge
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.DoRemoveDockClient" link="#lclbase.Controls.TWinControl.DoRemoveDockClient">
+      <element name="TCustomDockForm.DoRemoveDockClient" link="#LCL.Controls.TWinControl.DoRemoveDockClient">
         <short/>
         <descr/>
         <errors/>
@@ -4347,7 +4347,7 @@ When the form is put into another control the window borders depend on the widge
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.GetSiteInfo" link="#lclbase.Controls.TWinControl.GetSiteInfo">
+      <element name="TCustomDockForm.GetSiteInfo" link="#LCL.Controls.TWinControl.GetSiteInfo">
         <short/>
         <descr/>
         <errors/>
@@ -4370,7 +4370,7 @@ When the form is put into another control the window borders depend on the widge
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomDockForm.Loaded" link="#lclbase.Forms.TCustomForm.Loaded">
+      <element name="TCustomDockForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded">
         <short/>
         <descr/>
         <errors/>
@@ -4383,7 +4383,7 @@ When the form is put into another control the window borders depend on the widge
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Forms.TCustomForm.Create">TCustomForm.Create</link>
+          <link id="#LCL.Forms.TCustomForm.Create">TCustomForm.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4391,25 +4391,25 @@ When the form is put into another control the window borders depend on the widge
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomDockForm.AutoScroll" link="#lclbase.Forms.TScrollingWinControl.AutoScroll">
+      <element name="TCustomDockForm.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomDockForm.BorderStyle" link="#lclbase.Forms.TCustomForm.BorderStyle">
+      <element name="TCustomDockForm.BorderStyle" link="#LCL.Forms.TCustomForm.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomDockForm.FormStyle" link="#lclbase.Forms.TCustomForm.FormStyle">
+      <element name="TCustomDockForm.FormStyle" link="#LCL.Forms.TCustomForm.FormStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCustomDockForm.PixelsPerInch" link="#lclbase.Forms.TCustomForm.PixelsPerInch">
+      <element name="TCustomDockForm.PixelsPerInch" link="#LCL.Forms.TCustomForm.PixelsPerInch">
         <short/>
         <descr/>
         <seealso/>
@@ -4479,14 +4479,14 @@ When the form is put into another control the window borders depend on the widge
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="THintWindow.Paint" link="#lclbase.Controls.TCustomControl.Paint">
+      <element name="THintWindow.Paint" link="#LCL.Controls.TCustomControl.Paint">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="THintWindow.GetControlClassDefaultSize" link="#lclbase.Controls.TControl.GetControlClassDefaultSize">
+      <element name="THintWindow.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
@@ -4503,7 +4503,7 @@ When the form is put into another control the window borders depend on the widge
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Forms.TCustomForm.Create">TCustomForm.Create</link>
+          <link id="#LCL.Forms.TCustomForm.Create">TCustomForm.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4518,7 +4518,7 @@ When the form is put into another control the window borders depend on the widge
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Forms.TCustomForm.Destroy">TCustomForm.Destroy</link>
+          <link id="#LCL.Forms.TCustomForm.Destroy">TCustomForm.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -5102,7 +5102,7 @@ When the form is put into another control the window borders depend on the widge
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#lclbase.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
         </seealso>
         <short>
           <var>Create</var> - constructor for <var>TScreen</var>: performs inherited <var>Create</var> then creates and initialises lists of fonts, strings and forms</short>
@@ -5117,7 +5117,7 @@ When the form is put into another control the window borders depend on the widge
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#lclbase.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
         </seealso>
         <short>
           <var>Destroy</var> - destructor for <var>TForm</var>: frees various lists then performs inherited <var>Destroy</var>
@@ -5369,7 +5369,7 @@ When the form is put into another control the window borders depend on the widge
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TScreen.RemoveAllHandlersOfObject" link="#lclbase.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
+      <element name="TScreen.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
         <descr/>
         <errors/>
         <seealso/>
@@ -7054,7 +7054,7 @@ It also writes details of the exception to the appropriate place for debugging.
         </descr>
         <errors/>
         <seealso>
-          <link id="#lclbase.Dialogs.MessageDlg">MessageDlg</link>
+          <link id="#lcl.Dialogs.MessageDlg">MessageDlg</link>
         </seealso>
         <example file="dialogs/displaymessagebox.pas"/>
       </element>
@@ -8602,7 +8602,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#lclbase.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -8618,7 +8618,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#lclbase.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
+          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
         </seealso>
       </element>
       <!-- property Visibility: published -->
@@ -9581,7 +9581,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TForm.LCLVersion">
         <short>The version of the LCL as string. Used to distinguish form streams of different versions.</short>
       </element>
-      <element name="TForm.Loaded" link="#lclbase.Forms.TCustomForm.Loaded">
+      <element name="TForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded">
         <seealso>
           <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
         </seealso>
@@ -9593,27 +9593,27 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TScreen.DataModules">
         <short>The list of Data Modules </short>
       </element>
-      <element name="TScrollBox.AutoScroll" link="#lclbase.Forms.TScrollingWinControl.AutoScroll"/>
-      <element name="TScrollBox.DockSite" link="#lclbase.Controls.TWinControl.DockSite"/>
-      <element name="TScrollBox.OnDockDrop" link="#lclbase.Controls.TWinControl.OnDockDrop"/>
-      <element name="TScrollBox.OnDockOver" link="#lclbase.Controls.TWinControl.OnDockOver"/>
-      <element name="TScrollBox.OnEndDock" link="#lclbase.Controls.TControl.OnEndDock"/>
-      <element name="TScrollBox.OnGetSiteInfo" link="#lclbase.Controls.TWinControl.OnGetSiteInfo"/>
-      <element name="TScrollBox.OnStartDock" link="#lclbase.Controls.TControl.OnStartDock"/>
-      <element name="TScrollBox.OnUnDock" link="#lclbase.Controls.TWinControl.OnUnDock"/>
+      <element name="TScrollBox.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll"/>
+      <element name="TScrollBox.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
+      <element name="TScrollBox.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop"/>
+      <element name="TScrollBox.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver"/>
+      <element name="TScrollBox.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
+      <element name="TScrollBox.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
+      <element name="TScrollBox.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
+      <element name="TScrollBox.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
       <element name="TCustomFrame.DefineProperties">
         <short>
           <var>DefineProperties</var>- calculates low and high values for frame design from ancestor class</short>
         <seealso>
           <link id="#rtl.Classes.TComponent.DefineProperties">TComponent.DefineProperties</link>
-          <link id="#lclbase.Controls.TControl.DefineProperties">TControl.DefineProperties</link>
+          <link id="#LCL.Controls.TControl.DefineProperties">TControl.DefineProperties</link>
         </seealso>
       </element>
       <element name="TFrame.LCLVersionIsStored"/>
-      <element name="TFrame.Create" link="#lclbase.Forms.TCustomFrame.Create"/>
-      <element name="TFrame.ClientHeight" link="#lclbase.Controls.TControl.ClientHeight"/>
-      <element name="TFrame.ClientWidth" link="#lclbase.Controls.TControl.ClientWidth"/>
-      <element name="TFrame.LCLVersion" link="#lclbase.LCLVersion.lcl_version"/>
+      <element name="TFrame.Create" link="#LCL.Forms.TCustomFrame.Create"/>
+      <element name="TFrame.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
+      <element name="TFrame.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
+      <element name="TFrame.LCLVersion" link="#LCL.LCLVersion.lcl_version"/>
       <element name="TCustomForm.BigIconHandle">
         <short>
           <var>BigIconHandle</var> - returns system Handle for large Icon</short>
@@ -9626,11 +9626,11 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <short>
           <var>GetFormImage</var> - gets a Bitmap image for the Form</short>
       </element>
-      <element name="TForm.AutoScroll" link="#lclbase.Forms.TScrollingWinControl.AutoScroll"/>
-      <element name="TForm.OnMouseWheel" link="#lclbase.Controls.TControl.OnMouseWheel"/>
-      <element name="TForm.OnMouseWheelDown" link="#lclbase.Controls.TControl.OnMouseWheelDown"/>
-      <element name="TForm.OnMouseWheelUp" link="#lclbase.Controls.TControl.OnMouseWheelUp"/>
-      <element name="TForm.OnShowHint" link="#lclbase.Controls.TControl.OnShowHint"/>
+      <element name="TForm.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll"/>
+      <element name="TForm.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TForm.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TForm.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TForm.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
       <element name="TScreen.FindDataModule">
         <short>
           <var>FindDataModule</var> - returns the Data Module with the specified name</short>
@@ -9647,7 +9647,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <short>
           <var>SmallIconHandle</var> - system handle for small Icon</short>
       </element>
-      <element name="TCustomForm.ParentFont" link="#lclbase.Controls.TControl.ParentFont"/>
+      <element name="TCustomForm.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TApplication.BidiMode">
         <short>
           <var>BidiMode</var> - whether bi-directional mode is available</short>
@@ -9660,10 +9660,10 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <short>
           <var>AdjustClientRect</var> - adjusts window size to accommodate borders</short>
         <seealso>
-          <link id="#lclbase.Controls.TWinControl.AdjustClientRect">TWinControl.AdjustClientRect</link>
+          <link id="#LCL.Controls.TWinControl.AdjustClientRect">TWinControl.AdjustClientRect</link>
         </seealso>
       </element>
-      <element name="THintWindow.DoShowWindow" link="#lclbase.Forms.TCustomForm.DoShowWindow"/>
+      <element name="THintWindow.DoShowWindow" link="#LCL.Forms.TCustomForm.DoShowWindow"/>
       <element name="TScreen.DisableForms">
         <short>
           <var>DisableForms</var> - disable all forms except <var>SkipForm</var>. If <var>DisabledList</var> is available then add forms to that list and return it, otherwise return new list. Used to show forms and other dialogs modal        </short>
@@ -9677,11 +9677,11 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <short>
           <var>DoArrowKey</var> - method for processing an arrow key</short>
       </element>
-      <element name="TScrollingWinControl.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TScrollBox.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomFrame.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomForm.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="THintWindow.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TScrollingWinControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TScrollBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomFrame.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomForm.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="THintWindow.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TApplicationProperties.ShowButtonGlyphs">
         <short>
           <var>ShowButtonGlyphs</var> - determines whether to show show or not glyphs on TBitBtn controls</short>

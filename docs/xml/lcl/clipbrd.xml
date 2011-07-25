@@ -150,20 +150,20 @@
             <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting</p>
           <p>The clipboard object encapsulates the Windows clipboard and the three standard Gtk selections. For each of the three clipboards/selections there is an object: <link id="PrimarySelection"/>, <link id="SecondarySelection"/> and <link id="Clipboard"/>. There is no difference between the three objects except their type.</p>
           <p>A lot of information about Clipboard Formats, including pre-defined formats for Delphi/Kylix compatibility, is found in the LCLType unit, at
-		  <link id="#lclbase.lcltype.TClipboardFormat">TClipboardFormat</link>, 
-		  <link id="#lclbase.lcltype.TClipboardType">TClipboardType</link>, 
-		  <link id="#lclbase.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
-		  <link id="#lclbase.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
-		  <link id="#lclbase.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
+		  <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>, 
+		  <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>, 
+		  <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
+		  <link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
+		  <link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
           </p>
         </descr>
         <errors/>
         <seealso>
-          <link id="#lclbase.lcltype.TClipboardFormat">TClipboardFormat</link>, 
-		<link id="#lclbase.lcltype.TClipboardType">TClipboardType</link>, 
-		<link id="#lclbase.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
-		<link id="#lclbase.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
-		<link id="#lclbase.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
+          <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>, 
+		<link id="#lcl.lcltype.TClipboardType">TClipboardType</link>, 
+		<link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
+		<link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
+		<link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -414,7 +414,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TClipboard.AddFormat" link="#lclbase.Clipbrd.TClipboard.AddFormat">
+      <element name="TClipboard.AddFormat" link="#LCL.Clipbrd.TClipboard.AddFormat">
         <descr/>
         <errors/>
         <seealso/>

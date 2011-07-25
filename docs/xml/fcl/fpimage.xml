@@ -13,7 +13,7 @@
       <element name="TFPCustomImage">
         <short>Abstract FreePascal base class for all image classes.</short>
         <descr>
-          <link id="#LCLBase.intfgraphics.TLazIntfImage">TLazIntfImage</link> is an LCL implementation of this class.
+          <link id="#LCL.intfgraphics.TLazIntfImage">TLazIntfImage</link> is an LCL implementation of this class.
 
 TFPCustomImage only provides an image size and a palette, and methods to load, store and Assign images.
 The data storage and handling must be added in derived classes, by overriding the virtual (abstract) methods.
@@ -22,7 +22,7 @@ It also provides Extra image attributes (a TStringList).
 
 [entire review 2010-14-01 DoDi]</descr>
         <seealso>
-          <link id="#LCLBase.intfgraphics.TLazIntfImage">TLazIntfImage</link>
+          <link id="#LCL.intfgraphics.TLazIntfImage">TLazIntfImage</link>
         </seealso>
       </element>
       <element name="TFPMemoryImage"/>

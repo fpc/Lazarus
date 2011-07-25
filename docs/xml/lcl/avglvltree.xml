@@ -844,7 +844,7 @@
         <short>
           <var>Create</var> - constructor for <var>TPointerToPointerTree</var>. Calls the <var>TAvgLvlTree.Create</var> method</short>
         <seealso>
-          <link id="#lclbase.AvgLvlTree.TAvgLvlTree.Create">TAvgLvlTree.Create</link>
+          <link id="#lcl.AvgLvlTree.TAvgLvlTree.Create">TAvgLvlTree.Create</link>
         </seealso>
       </element>
       <element name="TPointerToPointerTree.Destroy">

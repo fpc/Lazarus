@@ -132,7 +132,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TPreviewFileControl.CreateParams" link="#lclbase.Controls.TWinControl.CreateParams">
+      <element name="TPreviewFileControl.CreateParams" link="#LCL.Controls.TWinControl.CreateParams">
         <short/>
         <descr/>
         <errors/>
@@ -190,7 +190,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TPreviewFileDialog.Execute" link="#lclbase.Dialogs.TCommonDialog.Execute">
+      <element name="TPreviewFileDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
         <short/>
         <descr/>
         <errors/>
@@ -291,21 +291,21 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.DoClose" link="#lclbase.Dialogs.TCommonDialog.DoClose">
+      <element name="TOpenPictureDialog.DoClose" link="#LCL.Dialogs.TCommonDialog.DoClose">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.DoSelectionChange" link="#lclbase.Dialogs.TOpenDialog.DoSelectionChange">
+      <element name="TOpenPictureDialog.DoSelectionChange" link="#LCL.Dialogs.TOpenDialog.DoSelectionChange">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.DoShow" link="#lclbase.Dialogs.TCommonDialog.DoShow">
+      <element name="TOpenPictureDialog.DoShow" link="#LCL.Dialogs.TCommonDialog.DoShow">
         <short/>
         <descr/>
         <errors/>
@@ -326,7 +326,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TOpenPictureDialog.InitPreviewControl" link="#lclbase.ExtDlgs.TPreviewFileDialog.InitPreviewControl">
+      <element name="TOpenPictureDialog.InitPreviewControl" link="#LCL.ExtDlgs.TPreviewFileDialog.InitPreviewControl">
         <short/>
         <descr/>
         <errors/>
@@ -367,7 +367,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TOpenPictureDialog.Filter" link="#lclbase.Dialogs.TFileDialog.Filter">
+      <element name="TOpenPictureDialog.Filter" link="#LCL.Dialogs.TFileDialog.Filter">
         <short/>
         <descr/>
         <seealso/>
@@ -600,7 +600,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCalculatorDialog.Execute" link="#lclbase.Dialogs.TCommonDialog.Execute">
+      <element name="TCalculatorDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
         <short/>
         <descr/>
         <errors/>
@@ -639,7 +639,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.HelpContext" link="#lclbase.Dialogs.TCommonDialog.HelpContext">
+      <element name="TCalculatorDialog.HelpContext" link="#LCL.Dialogs.TCommonDialog.HelpContext">
         <short/>
         <descr/>
         <seealso/>
@@ -660,7 +660,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalculatorDialog.Title" link="#lclbase.Dialogs.TCommonDialog.Title">
+      <element name="TCalculatorDialog.Title" link="#LCL.Dialogs.TCommonDialog.Title">
         <short/>
         <descr/>
         <seealso/>
@@ -1167,7 +1167,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCalendarDialog.Execute" link="#lclbase.Dialogs.TCommonDialog.Execute">
+      <element name="TCalendarDialog.Execute" link="#LCL.Dialogs.TCommonDialog.Execute">
         <short/>
         <descr/>
         <errors/>
@@ -1217,7 +1217,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendarDialog.HelpContext" link="#lclbase.Dialogs.TCommonDialog.HelpContext">
+      <element name="TCalendarDialog.HelpContext" link="#LCL.Dialogs.TCommonDialog.HelpContext">
         <short/>
         <descr/>
         <seealso/>
@@ -1285,7 +1285,7 @@
         <short>
           <var>GetNewDate</var> - programmatic simulation of <var>OnClick</var> event, which transfers the selected dae to the calling program</short>
       </element>
-      <element name="TPreviewFileControl.GetControlClassDefaultSize" link="#lclbase.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TPreviewFileControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TOpenPictureDialog.GetFilterExt">
         <short>
           <var>GetFilterExt</var> - returns the extention for filtering filenames</short>
@@ -1294,13 +1294,13 @@
         <short>
           <var>CalendarDblClick</var> - method for handling doubleclick on the calendar</short>
       </element>
-      <element name="TPreviewFileControl.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TPreviewFileDialog.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TOpenPictureDialog.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TSavePictureDialog.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCalculatorDialog.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCalculatorForm.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCalendarDialog.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPreviewFileControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TPreviewFileDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TOpenPictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TSavePictureDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCalculatorDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCalculatorForm.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCalendarDialog.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- ExtDlgs -->
   </package>

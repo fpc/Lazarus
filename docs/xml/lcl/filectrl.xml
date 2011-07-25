@@ -215,7 +215,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomFileListBox.Click" link="#lclbase.Controls.TControl.Click">
+      <element name="TCustomFileListBox.Click" link="#LCL.Controls.TControl.Click">
         <short/>
         <descr/>
         <errors/>
@@ -245,7 +245,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomFileListBox.KeyUp" link="#lclbase.Controls.TWinControl.KeyUp">
+      <element name="TCustomFileListBox.KeyUp" link="#LCL.Controls.TWinControl.KeyUp">
         <short/>
         <descr/>
         <errors/>
@@ -317,7 +317,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomFileListBox.Sorted" link="#lclbase.StdCtrls.TCustomListBox.Sorted">
+      <element name="TCustomFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted">
         <short/>
         <descr/>
         <seealso/>
@@ -331,223 +331,223 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Align" link="#lclbase.Controls.TControl.Align">
+      <element name="TFileListBox.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Anchors" link="#lclbase.Controls.TControl.Anchors">
+      <element name="TFileListBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.BorderStyle" link="#lclbase.Controls.TWinControl.BorderStyle">
+      <element name="TFileListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Constraints" link="#lclbase.Controls.TControl.Constraints">
+      <element name="TFileListBox.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.ExtendedSelect" link="#lclbase.StdCtrls.TCustomListBox.ExtendedSelect">
+      <element name="TFileListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.FileType" link="#lclbase.FileCtrl.TCustomFileListBox.FileType">
+      <element name="TFileListBox.FileType" link="#LCL.FileCtrl.TCustomFileListBox.FileType">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Font" link="#lclbase.Controls.TControl.Font">
+      <element name="TFileListBox.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.IntegralHeight" link="#lclbase.StdCtrls.TCustomListBox.IntegralHeight">
+      <element name="TFileListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.ItemHeight" link="#lclbase.StdCtrls.TCustomListBox.ItemHeight">
+      <element name="TFileListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Mask" link="#lclbase.FileCtrl.TCustomFileListBox.Mask">
+      <element name="TFileListBox.Mask" link="#LCL.FileCtrl.TCustomFileListBox.Mask">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.MultiSelect" link="#lclbase.StdCtrls.TCustomListBox.MultiSelect">
+      <element name="TFileListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnChange" link="#lclbase.FileCtrl.TCustomFileListBox.OnChange">
+      <element name="TFileListBox.OnChange" link="#LCL.FileCtrl.TCustomFileListBox.OnChange">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnChangeBounds" link="#lclbase.Controls.TControl.OnChangeBounds">
+      <element name="TFileListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnClick" link="#lclbase.Controls.TControl.OnClick">
+      <element name="TFileListBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
+      <element name="TFileListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
+      <element name="TFileListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
+      <element name="TFileListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnKeyPress" link="#lclbase.Controls.TWinControl.OnKeyPress">
+      <element name="TFileListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnKeyDown" link="#lclbase.Controls.TWinControl.OnKeyDown">
+      <element name="TFileListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnKeyUp" link="#lclbase.Controls.TWinControl.OnKeyUp">
+      <element name="TFileListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
+      <element name="TFileListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
+      <element name="TFileListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
+      <element name="TFileListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseWheel" link="#lclbase.Controls.TControl.OnMouseWheel">
+      <element name="TFileListBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseWheelDown" link="#lclbase.Controls.TControl.OnMouseWheelDown">
+      <element name="TFileListBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseWheelUp" link="#lclbase.Controls.TControl.OnMouseWheelUp">
+      <element name="TFileListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.OnResize" link="#lclbase.Controls.TControl.OnResize">
+      <element name="TFileListBox.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
+      <element name="TFileListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
+      <element name="TFileListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
+      <element name="TFileListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
+      <element name="TFileListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Sorted" link="#lclbase.StdCtrls.TCustomListBox.Sorted">
+      <element name="TFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Style" link="#lclbase.StdCtrls.TCustomListBox.Style">
+      <element name="TFileListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
+      <element name="TFileListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
+      <element name="TFileListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.TopIndex" link="#lclbase.StdCtrls.TCustomListBox.TopIndex">
+      <element name="TFileListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Visible" link="#lclbase.Controls.TControl.Visible">
+      <element name="TFileListBox.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
@@ -559,14 +559,14 @@
         <errors/>
         <seealso/>
       </element>
-      <element name="TFileListBox.Directory" link="#lclbase.FileCtrl.TCustomFileListBox.Directory"/>
-      <element name="TFileListBox.DragCursor" link="#lclbase.Controls.TControl.DragCursor"/>
-      <element name="TFileListBox.DragMode" link="#lclbase.Controls.TControl.DragMode"/>
-      <element name="TFileListBox.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop"/>
-      <element name="TFileListBox.OnDragOver" link="#lclbase.Controls.TControl.OnDragOver"/>
-      <element name="TFileListBox.OnEndDrag" link="#lclbase.Controls.TControl.OnEndDrag"/>
-      <element name="TFileListBox.OnStartDrag" link="#lclbase.Controls.TControl.OnStartDrag"/>
-      <element name="TFileListBox.OnUTF8KeyPress" link="#lclbase.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TFileListBox.Directory" link="#LCL.FileCtrl.TCustomFileListBox.Directory"/>
+      <element name="TFileListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TFileListBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TFileListBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TFileListBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TFileListBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TFileListBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TFileListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="MiniMizeName">
         <short>
           <var>MiniMizeName</var> This function will return a shortened version of <var>FileName</var>, so that it fits on the given <var>Canvas</var>, with a given <var>MaxWidth</var>.</short>

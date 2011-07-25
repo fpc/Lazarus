@@ -1717,7 +1717,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.LCLResCache.TResourceCache.RemoveItem" name="TFontHandleCache.RemoveItem">
+      <element link="#LCL.LCLResCache.TResourceCache.RemoveItem" name="TFontHandleCache.RemoveItem">
         <short/>
         <descr/>
         <errors/>
@@ -1735,7 +1735,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.LCLResCache.TResourceCache.CompareDescriptors" name="TFontHandleCache.CompareDescriptors">
+      <element link="#LCL.LCLResCache.TResourceCache.CompareDescriptors" name="TFontHandleCache.CompareDescriptors">
         <short/>
         <descr/>
         <errors/>
@@ -2385,7 +2385,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.LCLResCache.TResourceCache.RemoveItem" name="TPenHandleCache.RemoveItem">
+      <element link="#LCL.LCLResCache.TResourceCache.RemoveItem" name="TPenHandleCache.RemoveItem">
         <short/>
         <descr/>
         <errors/>
@@ -2626,7 +2626,7 @@ Default is psSolid
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.LCLResCache.TResourceCache.RemoveItem" name="TBrushHandleCache.RemoveItem">
+      <element link="#LCL.LCLResCache.TResourceCache.RemoveItem" name="TBrushHandleCache.RemoveItem">
         <short/>
         <descr/>
         <errors/>
@@ -2999,7 +2999,7 @@ Default is psSolid
         <short>Operating System <var>Handle</var>  for this <var>Region</var>
         </short>
         <seealso>
-          <link id="#lclbase.lcltype.HRGN">HRGN </link>
+          <link id="#lcl.lcltype.HRGN">HRGN </link>
           <link id="#rtl.sysutils.thandle">THandle </link>
         </seealso>
       </element>
@@ -5121,7 +5121,7 @@ Zero degrees is at the 3 o'clock position.</descr>
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.Draw">TFPCustomCanvas.Draw</link>
-          <link id="#lclbase.Graphics.TCanvas.StretchDraw">TCanvas.StretchDraw</link>
+          <link id="#LCL.Graphics.TCanvas.StretchDraw">TCanvas.StretchDraw</link>
         </seealso>
         <short>
           <var>Draw</var> - copies bounds from 
@@ -5146,7 +5146,7 @@ Zero degrees is at the 3 o'clock position.</descr>
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.StretchDraw">TFPCustomCanvas.StretchDraw</link>
-          <link id="#lclbase.Graphics.TGraphic.Draw">TGraphic.Draw</link>
+          <link id="#LCL.Graphics.TGraphic.Draw">TGraphic.Draw</link>
         </seealso>
         <short>
           <var>StretchDraw</var> - uses the 
@@ -5168,7 +5168,7 @@ Zero degrees is at the 3 o'clock position.</descr>
           <var>Ellipse</var> draws a filled circle or ellipse on the canvas, using the method for the current interface or widget set</short>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.Ellipse">TFPCustomCanvas.Ellipse</link>
-          <link id="#lclbase.LCLIntf.Ellipse">LCLIntf.Ellipse</link>
+          <link id="#LCL.LCLIntf.Ellipse">LCLIntf.Ellipse</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5210,7 +5210,7 @@ Use <var>Ellipse</var>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.LCLIntf.FillRect">LCLIntf.FillRect</link>
+          <link id="#LCL.LCLIntf.FillRect">LCLIntf.FillRect</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5247,7 +5247,7 @@ Use <var>Ellipse</var>
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.FloodFill">TFPCustomCanvas.FloodFill</link>
-          <link id="#lclbase.LCLIntf.FloodFill">LCLIntf.FloodFill</link>
+          <link id="#LCL.LCLIntf.FloodFill">LCLIntf.FloodFill</link>
         </seealso>
         <short>
           <var>FloodFill</var> flood-fills an area with the given colour, starting from the specified point; uses the 
@@ -5276,7 +5276,7 @@ Use <var>Ellipse</var>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.LCLIntf.Frame3d">LCLIntf.Frame3d</link>
+          <link id="#LCL.LCLIntf.Frame3d">LCLIntf.Frame3d</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5297,7 +5297,7 @@ Use <var>Ellipse</var>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.LCLIntf.Frame">LCLIntf.Frame</link>
+          <link id="#LCL.LCLIntf.Frame">LCLIntf.Frame</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -5335,7 +5335,7 @@ Use <var>Ellipse</var>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.LCLIntf.FrameRect">LCLIntf.FrameRect</link>
+          <link id="#LCL.LCLIntf.FrameRect">LCLIntf.FrameRect</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6020,7 +6020,7 @@ Calling the <var>MoveTo</var>
         <errors/>
         <seealso>
           <link id="#FCL.FPCanvas.TFPCustomCanvas.Rectangle">TFPCustomCanvas.Rectangle</link>
-          <link id="#lclbase.LCLIntf.Rectangle">LCLIntf.Rectangle</link>
+          <link id="#LCL.LCLIntf.Rectangle">LCLIntf.Rectangle</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6058,7 +6058,7 @@ Calling the <var>MoveTo</var>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.LCLIntf.RoundRect">LCLIntf.RoundRect</link>
+          <link id="#LCL.LCLIntf.RoundRect">LCLIntf.RoundRect</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -6109,7 +6109,7 @@ Calling the <var>MoveTo</var>
       <element name="TCanvas.TextOut">
         <short>Writes the <var>Text</var> string at the position <var>X, Y</var> on the canvas and leaves the pen at the end of the text; uses the <var>ExtUTF8Out</var> method of the current interface or widget set</short>
         <seealso>
-          <link id="#lclbase.LCLIntf.ExtUTF8Out">LCLIntf.ExtUTF8Out</link>
+          <link id="#LCL.LCLIntf.ExtUTF8Out">LCLIntf.ExtUTF8Out</link>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.TextOut">TFPCustomCanvas.TextOut</link>
         </seealso>
       </element>
@@ -6616,11 +6616,11 @@ The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y<
             <var>TBitmap</var> is the data of an image. The image can be loaded from a file, stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)</p>
           <p>The loading routine automatically recognizes the format, so it is also used to load the images from Delphi form streams (e.g. .dfm files) or FreePascal/Lazarus form streams (.lfm)</p>
           <p>When the handle is created, it is up to the interface (gtk, win32, ...) to convert it automatically to the best internal format. That is why the <var>Handle</var> is interface dependent.</p>
-          <p>To access the raw data, see <link id="#lclbase.IntfGraphics.TLazIntfImage">TLazIntfImage</link>
+          <p>To access the raw data, see <link id="#lcl.IntfGraphics.TLazIntfImage">TLazIntfImage</link>
           </p>
         </descr>
         <seealso>
-          <link id="#lclbase.IntfGraphics.TLazIntfImage"/>
+          <link id="#lcl.IntfGraphics.TLazIntfImage"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -7230,7 +7230,7 @@ The boundaries of the rectangle are specified in <var>ARect</var><br/><var>X, Y<
         <short>The target resource type specified as a string</short>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#lclbase.Graphics.TRasterImage.LoadFromStream" name="TBitmap.LoadFromStream"/>
+      <element link="#LCL.Graphics.TRasterImage.LoadFromStream" name="TBitmap.LoadFromStream"/>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromStream.Stream">
         <short/>
@@ -7341,7 +7341,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.GetFileExtensions" name="TBitmap.GetFileExtensions">
+      <element link="#LCL.Graphics.TGraphic.GetFileExtensions" name="TBitmap.GetFileExtensions">
         <descr/>
         <errors/>
         <seealso/>
@@ -7615,7 +7615,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
 </descr>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.LazarusResourceTypeValid" name="TPixmap.LazarusResourceTypeValid"/>
+      <element link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid" name="TPixmap.LazarusResourceTypeValid"/>
       <!-- function result Visibility: default -->
       <element name="TPixmap.LazarusResourceTypeValid.Result">
         <short>Returns True if resource type is 'XPM'</short>
@@ -7664,7 +7664,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.GetFileExtensions" name="TFPImageBitmap.GetFileExtensions">
+      <element link="#LCL.Graphics.TGraphic.GetFileExtensions" name="TFPImageBitmap.GetFileExtensions">
         <descr/>
         <errors/>
         <seealso/>
@@ -7742,7 +7742,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.LazarusResourceTypeValid" name="TFPImageBitmap.LazarusResourceTypeValid">
+      <element link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid" name="TFPImageBitmap.LazarusResourceTypeValid">
         <short/>
         <descr/>
         <errors/>
@@ -7762,7 +7762,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TRasterImage.ReadStream">TRasterImage.ReadStream</link>
+          <link id="#LCL.Graphics.TRasterImage.ReadStream">TRasterImage.ReadStream</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7783,7 +7783,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TRasterImage.WriteStream">TRasterImage.WriteStream</link>
+          <link id="#LCL.Graphics.TRasterImage.WriteStream">TRasterImage.WriteStream</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -7814,7 +7814,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.GetFileExtensions" name="TPortableNetworkGraphic.GetFileExtensions">
+      <element link="#LCL.Graphics.TGraphic.GetFileExtensions" name="TPortableNetworkGraphic.GetFileExtensions">
         <short/>
         <descr/>
         <errors/>
@@ -8838,10 +8838,10 @@ Checks for the presence of a valid Lazarus Resource, then uses
           <var>Create</var> then initialises local variables for performance, quality and encoding</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
-          <link id="#lclbase.Graphics.TCustomBitmap.Create">TCustomBitmap.Create</link>
+          <link id="#LCL.Graphics.TCustomBitmap.Create">TCustomBitmap.Create</link>
         </seealso>
       </element>
-      <element link="#lclbase.Graphics.TGraphic.GetFileExtensions" name="TJPEGImage.GetFileExtensions"/>
+      <element link="#LCL.Graphics.TGraphic.GetFileExtensions" name="TJPEGImage.GetFileExtensions"/>
       <element name="TJPEGImage.GetDefaultFPReader"/>
       <element name="TJPEGImage.GetDefaultFPWriter"/>
       <topic name="Progress">
@@ -9728,7 +9728,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoCreateDefaultFont">TFPCustomCanvas.DoCreateDefaultFont</link>
-          <link id="#lclbase.Graphics.TFont.Create">TFont.Create</link>
+          <link id="#LCL.Graphics.TFont.Create">TFont.Create</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9744,7 +9744,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoCreateDefaultPen">TFPCustomCanvas.DoCreateDefaultPen</link>
-          <link id="#lclbase.Graphics.TPen.Create">TPen.Create</link>
+          <link id="#LCL.Graphics.TPen.Create">TPen.Create</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9760,7 +9760,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoCreateDefaultBrush">TFPCustomCanvas.DoCreateDefaultBrush</link>
-          <link id="#lclbase.Graphics.TBrush.Create">TBrush.Create</link>
+          <link id="#LCL.Graphics.TBrush.Create">TBrush.Create</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9878,7 +9878,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoTextOut">TFPCustomCanvas.DoTextOut</link>
-          <link id="#lclbase.Graphics.TCanvas.TextOut">TCanvas.TextOut</link>
+          <link id="#LCL.Graphics.TCanvas.TextOut">TCanvas.TextOut</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9902,7 +9902,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoGetTextSize">TFPCustomCanvas.DoGetTextSize</link>
-          <link id="#lclbase.Graphics.TCanvas.TextExtent">TCanvas.TextExtent</link>
+          <link id="#LCL.Graphics.TCanvas.TextExtent">TCanvas.TextExtent</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9926,7 +9926,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoGetTextHeight">TFPCustomCanvas.DoGetTextHeight</link>
-          <link id="#lclbase.Graphics.TCanvas.TextHeight">TCanvas.TextHeight</link>
+          <link id="#LCL.Graphics.TCanvas.TextHeight">TCanvas.TextHeight</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9946,7 +9946,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoGetTextWidth">TFPCustomCanvas.DoGetTextWidth</link>
-          <link id="#lclbase.Graphics.TCanvas.TextWidth">TCanvas.TextWidth</link>
+          <link id="#LCL.Graphics.TCanvas.TextWidth">TCanvas.TextWidth</link>
         </seealso>
       </element>
       <!-- function result Visibility: default -->
@@ -9966,7 +9966,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoRectangle">TFPCustomCanvas.DoRectangle</link>
-          <link id="#lclbase.Graphics.TCanvas.Frame">TCanvas.Frame</link>
+          <link id="#LCL.Graphics.TCanvas.Frame">TCanvas.Frame</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9982,7 +9982,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoRectangleFill">TFPCustomCanvas.DoRectangleFill</link>
-          <link id="#lclbase.Graphics.TCanvas.FillRect">TCanvas.FillRect</link>
+          <link id="#LCL.Graphics.TCanvas.FillRect">TCanvas.FillRect</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -9998,7 +9998,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoRectangleAndFill">TFPCustomCanvas.DoRectangleAndFill</link>
-          <link id="#lclbase.Graphics.TCanvas.Rectangle">TCanvas.Rectangle</link>
+          <link id="#LCL.Graphics.TCanvas.Rectangle">TCanvas.Rectangle</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10015,7 +10015,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoEllipse">TFPCustomCanvas.DoEllipse</link>
-          <link id="#lclbase.Graphics.TCanvas.Arc">TCanvas.Arc</link>
+          <link id="#LCL.Graphics.TCanvas.Arc">TCanvas.Arc</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10032,7 +10032,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoEllipseFill">TFPCustomCanvas.DoEllipseFill</link>
-          <link id="#lclbase.Graphics.TCanvas.Ellipse">TCanvas.Ellipse</link>
+          <link id="#LCL.Graphics.TCanvas.Ellipse">TCanvas.Ellipse</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10064,7 +10064,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoPolygon">TFPCustomCanvas.DoPolygon</link>
-          <link id="#lclbase.Graphics.TCanvas.PolyLine">TCanvas.PolyLine</link>
+          <link id="#LCL.Graphics.TCanvas.PolyLine">TCanvas.PolyLine</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10080,7 +10080,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoPolygonFill">TFPCustomCanvas.DoPolygonFill</link>
-          <link id="#lclbase.Graphics.TCanvas.Polygon">TCanvas.Polygon</link>
+          <link id="#LCL.Graphics.TCanvas.Polygon">TCanvas.Polygon</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10111,7 +10111,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoPolyline">TFPCustomCanvas.DoPolyline</link>
-          <link id="#lclbase.Graphics.TCanvas.PolyLine">TCanvas.PolyLine</link>
+          <link id="#LCL.Graphics.TCanvas.PolyLine">TCanvas.PolyLine</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10128,7 +10128,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoFloodFill">TFPCustomCanvas.DoFloodFill</link>
-          <link id="#lclbase.Graphics.TCanvas.FloodFill">TCanvas.FloodFill</link>
+          <link id="#LCL.Graphics.TCanvas.FloodFill">TCanvas.FloodFill</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10149,7 +10149,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoMoveTo">TFPCustomCanvas.DoMoveTo</link>
-          <link id="#lclbase.Graphics.TCanvas.MoveTo">TCanvas.MoveTo</link>
+          <link id="#LCL.Graphics.TCanvas.MoveTo">TCanvas.MoveTo</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10170,7 +10170,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoLineTo">TFPCustomCanvas.DoLineTo</link>
-          <link id="#lclbase.Graphics.TCanvas.LineTo">TCanvas.LineTo</link>
+          <link id="#LCL.Graphics.TCanvas.LineTo">TCanvas.LineTo</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10190,7 +10190,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoLine">TFPCustomCanvas.DoLine</link>
-          <link id="#lclbase.Graphics.TCanvas.Line">TCanvas.Line</link>
+          <link id="#LCL.Graphics.TCanvas.Line">TCanvas.Line</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10221,7 +10221,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
 </errors>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoCopyRect">TFPCustomCanvas.DoCopyRect</link>
-          <link id="#lclbase.Graphics.TCanvas.CopyRect">TCanvas.CopyRect</link>
+          <link id="#LCL.Graphics.TCanvas.CopyRect">TCanvas.CopyRect</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10722,7 +10722,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element link="#lclbase.Graphics.TRasterImage.SetHandle" name="TCustomBitmap.SetHandle">
+      <element link="#LCL.Graphics.TRasterImage.SetHandle" name="TCustomBitmap.SetHandle">
         <short/>
         <descr/>
         <errors/>
@@ -10777,7 +10777,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element link="#lclbase.Graphics.TRasterImage.SetPixelFormat" name="TCustomBitmap.SetPixelFormat">
+      <element link="#LCL.Graphics.TRasterImage.SetPixelFormat" name="TCustomBitmap.SetPixelFormat">
         <short/>
         <descr/>
         <errors/>
@@ -10806,7 +10806,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.Changed" name="TCustomBitmap.Changed">
+      <element link="#LCL.Graphics.TRasterImage.Changed" name="TCustomBitmap.Changed">
         <short/>
         <descr/>
         <errors/>
@@ -10873,7 +10873,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.GetPalette" name="TCustomBitmap.GetPalette">
+      <element link="#LCL.Graphics.TGraphic.GetPalette" name="TCustomBitmap.GetPalette">
         <short/>
         <descr/>
         <errors/>
@@ -10906,7 +10906,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetMaskHandle" name="TCustomBitmap.GetMaskHandle">
+      <element link="#LCL.Graphics.TRasterImage.GetMaskHandle" name="TCustomBitmap.GetMaskHandle">
         <short/>
         <descr/>
         <errors/>
@@ -10939,28 +10939,28 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.HandleNeeded" name="TCustomBitmap.HandleNeeded">
+      <element link="#LCL.Graphics.TRasterImage.HandleNeeded" name="TCustomBitmap.HandleNeeded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.MaskHandleNeeded" name="TCustomBitmap.MaskHandleNeeded">
+      <element link="#LCL.Graphics.TRasterImage.MaskHandleNeeded" name="TCustomBitmap.MaskHandleNeeded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.PaletteNeeded" name="TCustomBitmap.PaletteNeeded">
+      <element link="#LCL.Graphics.TRasterImage.PaletteNeeded" name="TCustomBitmap.PaletteNeeded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.UnshareImage" name="TCustomBitmap.UnshareImage">
+      <element link="#LCL.Graphics.TRasterImage.UnshareImage" name="TCustomBitmap.UnshareImage">
         <short/>
         <descr/>
         <errors/>
@@ -11212,13 +11212,13 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>Returns True if a handle is allocated</short>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TRasterImage.MaskHandleAllocated" name="TCustomBitmap.MaskHandleAllocated"/>
+      <element link="#LCL.Graphics.TRasterImage.MaskHandleAllocated" name="TCustomBitmap.MaskHandleAllocated"/>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmap.MaskHandleAllocated.Result">
         <short>Returns True is a mask handle has been allocated</short>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TRasterImage.PaletteAllocated" name="TCustomBitmap.PaletteAllocated"/>
+      <element link="#LCL.Graphics.TRasterImage.PaletteAllocated" name="TCustomBitmap.PaletteAllocated"/>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmap.PaletteAllocated.Result">
         <short>Returns True if a palette has been allocated</short>
@@ -11240,7 +11240,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.LazarusResourceTypeValid" name="TCustomBitmap.LazarusResourceTypeValid"/>
+      <element link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid" name="TCustomBitmap.LazarusResourceTypeValid"/>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmap.LazarusResourceTypeValid.Result">
         <short>Returns TRUE if a valid resource type is found</short>
@@ -11318,7 +11318,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.GetResourceType" name="TCustomBitmap.GetResourceType"/>
+      <element link="#LCL.Graphics.TGraphic.GetResourceType" name="TCustomBitmap.GetResourceType"/>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmap.GetResourceType.Result">
         <short/>
@@ -11340,7 +11340,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#lclbase.Graphics.TRasterImage.SetHandles" name="TCustomBitmap.SetHandles"/>
+      <element link="#LCL.Graphics.TRasterImage.SetHandles" name="TCustomBitmap.SetHandles"/>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.SetHandles.ABitmap">
         <short/>
@@ -11578,7 +11578,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.GetFileExtensions" name="TPortableAnyMapGraphic.GetFileExtensions">
+      <element link="#LCL.Graphics.TGraphic.GetFileExtensions" name="TPortableAnyMapGraphic.GetFileExtensions">
         <short/>
         <descr/>
         <errors/>
@@ -11710,7 +11710,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.GetFileExtensions" name="TCursorImage.GetFileExtensions">
+      <element link="#LCL.Graphics.TGraphic.GetFileExtensions" name="TCursorImage.GetFileExtensions">
         <short/>
         <descr/>
         <errors/>
@@ -11721,7 +11721,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.LazarusResourceTypeValid" name="TCursorImage.LazarusResourceTypeValid">
+      <element link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid" name="TCursorImage.LazarusResourceTypeValid">
         <short/>
         <descr/>
         <errors/>
@@ -12076,7 +12076,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TSharedImage.FreeHandle" name="TSharedRasterImage.FreeHandle">
+      <element link="#LCL.Graphics.TSharedImage.FreeHandle" name="TSharedRasterImage.FreeHandle">
         <short/>
         <descr/>
         <errors/>
@@ -12141,7 +12141,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TSharedImage.HandleAllocated" name="TSharedRasterImage.HandleAllocated">
+      <element link="#LCL.Graphics.TSharedImage.HandleAllocated" name="TSharedRasterImage.HandleAllocated">
         <short/>
         <descr/>
         <errors/>
@@ -12285,7 +12285,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TGraphic.Changed">TGraphic.Changed</link>
+          <link id="#LCL.Graphics.TGraphic.Changed">TGraphic.Changed</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -12322,7 +12322,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.Draw" name="TRasterImage.Draw">
+      <element link="#LCL.Graphics.TGraphic.Draw" name="TRasterImage.Draw">
         <short/>
         <descr/>
         <errors/>
@@ -12337,7 +12337,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.GetEmpty" name="TRasterImage.GetEmpty">
+      <element link="#LCL.Graphics.TGraphic.GetEmpty" name="TRasterImage.GetEmpty">
         <short/>
         <descr/>
         <errors/>
@@ -12384,7 +12384,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.GetMimeType" name="TRasterImage.GetMimeType">
+      <element link="#LCL.Graphics.TGraphic.GetMimeType" name="TRasterImage.GetMimeType">
         <short/>
         <descr/>
         <errors/>
@@ -12429,7 +12429,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.GetTransparent" name="TRasterImage.GetTransparent">
+      <element link="#LCL.Graphics.TGraphic.GetTransparent" name="TRasterImage.GetTransparent">
         <short/>
         <descr/>
         <errors/>
@@ -12452,7 +12452,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.GetHeight" name="TRasterImage.GetHeight">
+      <element link="#LCL.Graphics.TGraphic.GetHeight" name="TRasterImage.GetHeight">
         <short/>
         <descr/>
         <errors/>
@@ -12463,7 +12463,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.GetWidth" name="TRasterImage.GetWidth">
+      <element link="#LCL.Graphics.TGraphic.GetWidth" name="TRasterImage.GetWidth">
         <short/>
         <descr/>
         <errors/>
@@ -12615,7 +12615,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.ReadData" name="TRasterImage.ReadData">
+      <element link="#LCL.Graphics.TGraphic.ReadData" name="TRasterImage.ReadData">
         <short/>
         <descr/>
         <errors/>
@@ -12670,7 +12670,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.SetHeight" name="TRasterImage.SetHeight">
+      <element link="#LCL.Graphics.TGraphic.SetHeight" name="TRasterImage.SetHeight">
         <descr/>
         <errors/>
         <seealso/>
@@ -12680,7 +12680,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.SetWidth" name="TRasterImage.SetWidth">
+      <element link="#LCL.Graphics.TGraphic.SetWidth" name="TRasterImage.SetWidth">
         <descr/>
         <errors/>
         <seealso/>
@@ -12714,7 +12714,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.WriteData" name="TRasterImage.WriteData">
+      <element link="#LCL.Graphics.TGraphic.WriteData" name="TRasterImage.WriteData">
         <short/>
         <descr/>
         <errors/>
@@ -12737,7 +12737,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.Create" name="TRasterImage.Create">
+      <element link="#LCL.Graphics.TGraphic.Create" name="TRasterImage.Create">
         <short/>
         <descr/>
         <errors/>
@@ -12762,7 +12762,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TGraphic.Assign">TGraphic.Assign</link>
+          <link id="#LCL.Graphics.TGraphic.Assign">TGraphic.Assign</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -12770,7 +12770,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.Clear" name="TRasterImage.Clear">
+      <element link="#LCL.Graphics.TGraphic.Clear" name="TRasterImage.Clear">
         <short/>
         <descr/>
         <errors/>
@@ -12875,7 +12875,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TGraphic.LoadFromMimeStream">TGraphic.LoadFromMimeStream</link>
+          <link id="#LCL.Graphics.TGraphic.LoadFromMimeStream">TGraphic.LoadFromMimeStream</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -12905,7 +12905,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
 </descr>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TGraphic.SaveToStream">TGraphic.SaveToStream</link>
+          <link id="#LCL.Graphics.TGraphic.SaveToStream">TGraphic.SaveToStream</link>
         </seealso>
         <short>
           <var>SaveToStream</var> - write graphic data to a stream, with many error checks</short>
@@ -12921,7 +12921,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TGraphic.GetSupportedSourceMimeTypes">TGraphic.GetSupportedSourceMimeTypes</link>
+          <link id="#LCL.Graphics.TGraphic.GetSupportedSourceMimeTypes">TGraphic.GetSupportedSourceMimeTypes</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -13118,7 +13118,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TSharedImage.FreeHandle">TSharedImage.FreeHandle</link>
+          <link id="#LCL.Graphics.TSharedImage.FreeHandle">TSharedImage.FreeHandle</link>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
@@ -13187,7 +13187,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         </seealso>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TSharedImage.HandleAllocated" name="TSharedCustomBitmap.HandleAllocated">
+      <element link="#LCL.Graphics.TSharedImage.HandleAllocated" name="TSharedCustomBitmap.HandleAllocated">
         <short/>
         <descr/>
         <errors/>
@@ -13250,7 +13250,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.CanShareImage" name="TCustomBitmap.CanShareImage">
+      <element link="#LCL.Graphics.TRasterImage.CanShareImage" name="TCustomBitmap.CanShareImage">
         <short/>
         <descr/>
         <errors/>
@@ -13265,7 +13265,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.CreateDefaultBitmapHandle" name="TCustomBitmap.CreateDefaultBitmapHandle">
+      <element link="#LCL.Graphics.TRasterImage.CreateDefaultBitmapHandle" name="TCustomBitmap.CreateDefaultBitmapHandle">
         <short/>
         <descr/>
         <errors/>
@@ -13280,7 +13280,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetBitmapHandle" name="TCustomBitmap.GetBitmapHandle">
+      <element link="#LCL.Graphics.TRasterImage.GetBitmapHandle" name="TCustomBitmap.GetBitmapHandle">
         <short/>
         <descr/>
         <errors/>
@@ -13291,7 +13291,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetPixelFormat" name="TCustomBitmap.GetPixelFormat">
+      <element link="#LCL.Graphics.TRasterImage.GetPixelFormat" name="TCustomBitmap.GetPixelFormat">
         <short/>
         <descr/>
         <errors/>
@@ -13324,7 +13324,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.InternalReleaseBitmapHandle" name="TCustomBitmap.InternalReleaseBitmapHandle">
+      <element link="#LCL.Graphics.TRasterImage.InternalReleaseBitmapHandle" name="TCustomBitmap.InternalReleaseBitmapHandle">
         <short/>
         <descr/>
         <errors/>
@@ -13335,7 +13335,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.InternalReleaseMaskHandle" name="TCustomBitmap.InternalReleaseMaskHandle">
+      <element link="#LCL.Graphics.TRasterImage.InternalReleaseMaskHandle" name="TCustomBitmap.InternalReleaseMaskHandle">
         <short/>
         <descr/>
         <errors/>
@@ -13346,7 +13346,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.InternalReleasePalette" name="TCustomBitmap.InternalReleasePalette">
+      <element link="#LCL.Graphics.TRasterImage.InternalReleasePalette" name="TCustomBitmap.InternalReleasePalette">
         <short/>
         <descr/>
         <errors/>
@@ -13374,7 +13374,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.UpdateHandles" name="TCustomBitmap.UpdateHandles">
+      <element link="#LCL.Graphics.TRasterImage.UpdateHandles" name="TCustomBitmap.UpdateHandles">
         <short/>
         <descr/>
         <errors/>
@@ -13393,7 +13393,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TRasterImage.BitmapHandleAllocated" name="TCustomBitmap.BitmapHandleAllocated">
+      <element link="#LCL.Graphics.TRasterImage.BitmapHandleAllocated" name="TCustomBitmap.BitmapHandleAllocated">
         <short/>
         <descr/>
         <errors/>
@@ -13410,7 +13410,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TRasterImage.SetSize">TRasterImage.SetSize</link>
+          <link id="#LCL.Graphics.TRasterImage.SetSize">TRasterImage.SetSize</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -13422,7 +13422,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.GetMimeType" name="TFPImageBitmap.GetMimeType">
+      <element link="#LCL.Graphics.TGraphic.GetMimeType" name="TFPImageBitmap.GetMimeType">
         <short/>
         <descr/>
         <errors/>
@@ -13533,7 +13533,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.InitializeReader" name="TBitmap.InitializeReader">
+      <element link="#LCL.Graphics.TFPImageBitmap.InitializeReader" name="TBitmap.InitializeReader">
         <short/>
         <descr/>
         <errors/>
@@ -13548,7 +13548,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.InitializeWriter" name="TBitmap.InitializeWriter">
+      <element link="#LCL.Graphics.TFPImageBitmap.InitializeWriter" name="TBitmap.InitializeWriter">
         <short/>
         <descr/>
         <errors/>
@@ -13574,7 +13574,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetReaderClass" name="TBitmap.GetReaderClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetReaderClass" name="TBitmap.GetReaderClass">
         <short/>
         <descr/>
         <errors/>
@@ -13585,7 +13585,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetWriterClass" name="TBitmap.GetWriterClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetWriterClass" name="TBitmap.GetWriterClass">
         <short/>
         <descr/>
         <errors/>
@@ -13596,7 +13596,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetSharedImageClass" name="TBitmap.GetSharedImageClass">
+      <element link="#LCL.Graphics.TRasterImage.GetSharedImageClass" name="TBitmap.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -13614,7 +13614,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetReaderClass" name="TPixmap.GetReaderClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetReaderClass" name="TPixmap.GetReaderClass">
         <short/>
         <descr/>
         <errors/>
@@ -13625,7 +13625,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetWriterClass" name="TPixmap.GetWriterClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetWriterClass" name="TPixmap.GetWriterClass">
         <short/>
         <descr/>
         <errors/>
@@ -13636,7 +13636,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetSharedImageClass" name="TPixmap.GetSharedImageClass">
+      <element link="#LCL.Graphics.TRasterImage.GetSharedImageClass" name="TPixmap.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -13646,7 +13646,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.GetFileExtensions" name="TPixmap.GetFileExtensions">
+      <element link="#LCL.Graphics.TGraphic.GetFileExtensions" name="TPixmap.GetFileExtensions">
         <short/>
         <descr/>
         <errors/>
@@ -13665,7 +13665,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetReaderClass" name="TPortableNetworkGraphic.GetReaderClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetReaderClass" name="TPortableNetworkGraphic.GetReaderClass">
         <short/>
         <descr/>
         <errors/>
@@ -13676,7 +13676,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetWriterClass" name="TPortableNetworkGraphic.GetWriterClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetWriterClass" name="TPortableNetworkGraphic.GetWriterClass">
         <short/>
         <descr/>
         <errors/>
@@ -13687,7 +13687,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.InitializeWriter" name="TPortableNetworkGraphic.InitializeWriter">
+      <element link="#LCL.Graphics.TFPImageBitmap.InitializeWriter" name="TPortableNetworkGraphic.InitializeWriter">
         <short/>
         <descr/>
         <errors/>
@@ -13702,7 +13702,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetSharedImageClass" name="TPortableNetworkGraphic.GetSharedImageClass">
+      <element link="#LCL.Graphics.TRasterImage.GetSharedImageClass" name="TPortableNetworkGraphic.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -13720,7 +13720,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetReaderClass" name="TPortableAnyMapGraphic.GetReaderClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetReaderClass" name="TPortableAnyMapGraphic.GetReaderClass">
         <short/>
         <descr/>
         <errors/>
@@ -13731,7 +13731,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetWriterClass" name="TPortableAnyMapGraphic.GetWriterClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetWriterClass" name="TPortableAnyMapGraphic.GetWriterClass">
         <short/>
         <descr/>
         <errors/>
@@ -13742,7 +13742,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetSharedImageClass" name="TPortableAnyMapGraphic.GetSharedImageClass">
+      <element link="#LCL.Graphics.TRasterImage.GetSharedImageClass" name="TPortableAnyMapGraphic.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -13780,7 +13780,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TSharedImage.FreeHandle" name="TSharedIcon.FreeHandle">
+      <element link="#LCL.Graphics.TSharedImage.FreeHandle" name="TSharedIcon.FreeHandle">
         <short/>
         <descr/>
         <errors/>
@@ -14087,14 +14087,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.MaskHandleNeeded" name="TCustomIcon.MaskHandleNeeded">
+      <element link="#LCL.Graphics.TRasterImage.MaskHandleNeeded" name="TCustomIcon.MaskHandleNeeded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.PaletteNeeded" name="TCustomIcon.PaletteNeeded">
+      <element link="#LCL.Graphics.TRasterImage.PaletteNeeded" name="TCustomIcon.PaletteNeeded">
         <short/>
         <descr/>
         <errors/>
@@ -14125,7 +14125,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetBitmapHandle" name="TCustomIcon.GetBitmapHandle">
+      <element link="#LCL.Graphics.TRasterImage.GetBitmapHandle" name="TCustomIcon.GetBitmapHandle">
         <short/>
         <descr/>
         <errors/>
@@ -14136,7 +14136,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetMaskHandle" name="TCustomIcon.GetMaskHandle">
+      <element link="#LCL.Graphics.TRasterImage.GetMaskHandle" name="TCustomIcon.GetMaskHandle">
         <short/>
         <descr/>
         <errors/>
@@ -14147,7 +14147,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.GetPalette" name="TCustomIcon.GetPalette">
+      <element link="#LCL.Graphics.TGraphic.GetPalette" name="TCustomIcon.GetPalette">
         <short/>
         <descr/>
         <errors/>
@@ -14158,7 +14158,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetPixelFormat" name="TCustomIcon.GetPixelFormat">
+      <element link="#LCL.Graphics.TRasterImage.GetPixelFormat" name="TCustomIcon.GetPixelFormat">
         <short/>
         <descr/>
         <errors/>
@@ -14191,7 +14191,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetSharedImageClass" name="TCustomIcon.GetSharedImageClass">
+      <element link="#LCL.Graphics.TRasterImage.GetSharedImageClass" name="TCustomIcon.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -14201,14 +14201,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.HandleNeeded" name="TCustomIcon.HandleNeeded">
+      <element link="#LCL.Graphics.TRasterImage.HandleNeeded" name="TCustomIcon.HandleNeeded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.InternalReleaseBitmapHandle" name="TCustomIcon.InternalReleaseBitmapHandle">
+      <element link="#LCL.Graphics.TRasterImage.InternalReleaseBitmapHandle" name="TCustomIcon.InternalReleaseBitmapHandle">
         <short/>
         <descr/>
         <errors/>
@@ -14219,7 +14219,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.InternalReleaseMaskHandle" name="TCustomIcon.InternalReleaseMaskHandle">
+      <element link="#LCL.Graphics.TRasterImage.InternalReleaseMaskHandle" name="TCustomIcon.InternalReleaseMaskHandle">
         <short/>
         <descr/>
         <errors/>
@@ -14230,7 +14230,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.InternalReleasePalette" name="TCustomIcon.InternalReleasePalette">
+      <element link="#LCL.Graphics.TRasterImage.InternalReleasePalette" name="TCustomIcon.InternalReleasePalette">
         <short/>
         <descr/>
         <errors/>
@@ -14241,7 +14241,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TGraphic.ReadData" name="TCustomIcon.ReadData">
+      <element link="#LCL.Graphics.TGraphic.ReadData" name="TCustomIcon.ReadData">
         <short/>
         <descr/>
         <errors/>
@@ -14252,7 +14252,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.ReadStream" name="TCustomIcon.ReadStream">
+      <element link="#LCL.Graphics.TRasterImage.ReadStream" name="TCustomIcon.ReadStream">
         <short/>
         <descr/>
         <errors/>
@@ -14267,7 +14267,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.SetPixelFormat" name="TCustomIcon.SetPixelFormat">
+      <element link="#LCL.Graphics.TRasterImage.SetPixelFormat" name="TCustomIcon.SetPixelFormat">
         <short/>
         <descr/>
         <errors/>
@@ -14278,7 +14278,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.UnshareImage" name="TCustomIcon.UnshareImage">
+      <element link="#LCL.Graphics.TRasterImage.UnshareImage" name="TCustomIcon.UnshareImage">
         <short/>
         <descr/>
         <errors/>
@@ -14297,7 +14297,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.UpdateHandles" name="TCustomIcon.UpdateHandles">
+      <element link="#LCL.Graphics.TRasterImage.UpdateHandles" name="TCustomIcon.UpdateHandles">
         <short/>
         <descr/>
         <errors/>
@@ -14316,7 +14316,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.WriteStream" name="TCustomIcon.WriteStream">
+      <element link="#LCL.Graphics.TRasterImage.WriteStream" name="TCustomIcon.WriteStream">
         <short/>
         <descr/>
         <errors/>
@@ -14327,7 +14327,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.Create" name="TCustomIcon.Create">
+      <element link="#LCL.Graphics.TGraphic.Create" name="TCustomIcon.Create">
         <short/>
         <descr/>
         <errors/>
@@ -14378,7 +14378,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TGraphic.Clear">TGraphic.Clear</link>
+          <link id="#LCL.Graphics.TGraphic.Clear">TGraphic.Clear</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -14452,7 +14452,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TRasterImage.SetSize">TRasterImage.SetSize</link>
+          <link id="#LCL.Graphics.TRasterImage.SetSize">TRasterImage.SetSize</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -14468,7 +14468,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lclbase.Graphics.TGraphic.GetFileExtensions">TGraphic.GetFileExtensions</link>
+          <link id="#LCL.Graphics.TGraphic.GetFileExtensions">TGraphic.GetFileExtensions</link>
         </seealso>
         <short>
           <var>GetFileExtensions</var> returns valid file extensions, in this case 'ico'</short>
@@ -14478,7 +14478,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TGraphic.LazarusResourceTypeValid" name="TCustomIcon.LazarusResourceTypeValid">
+      <element link="#LCL.Graphics.TGraphic.LazarusResourceTypeValid" name="TCustomIcon.LazarusResourceTypeValid">
         <descr/>
         <errors/>
         <seealso/>
@@ -14492,7 +14492,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TRasterImage.BitmapHandleAllocated" name="TCustomIcon.BitmapHandleAllocated">
+      <element link="#LCL.Graphics.TRasterImage.BitmapHandleAllocated" name="TCustomIcon.BitmapHandleAllocated">
         <descr/>
         <errors/>
         <seealso/>
@@ -14502,7 +14502,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TRasterImage.MaskHandleAllocated" name="TCustomIcon.MaskHandleAllocated">
+      <element link="#LCL.Graphics.TRasterImage.MaskHandleAllocated" name="TCustomIcon.MaskHandleAllocated">
         <descr/>
         <errors/>
         <seealso/>
@@ -14512,7 +14512,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element link="#lclbase.Graphics.TRasterImage.PaletteAllocated" name="TCustomIcon.PaletteAllocated">
+      <element link="#LCL.Graphics.TRasterImage.PaletteAllocated" name="TCustomIcon.PaletteAllocated">
         <descr/>
         <errors/>
         <seealso/>
@@ -14522,7 +14522,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#lclbase.Graphics.TRasterImage.SetHandles" name="TCustomIcon.SetHandles">
+      <element link="#LCL.Graphics.TRasterImage.SetHandles" name="TCustomIcon.SetHandles">
         <descr/>
         <errors/>
         <seealso/>
@@ -14572,7 +14572,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.HandleNeeded" name="TIcon.HandleNeeded">
+      <element link="#LCL.Graphics.TRasterImage.HandleNeeded" name="TIcon.HandleNeeded">
         <short/>
         <descr/>
         <errors/>
@@ -14605,14 +14605,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TSharedImage.FreeHandle" name="TSharedCursorImage.FreeHandle">
+      <element link="#LCL.Graphics.TSharedImage.FreeHandle" name="TSharedCursorImage.FreeHandle">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TSharedIcon.GetImagesClass" name="TSharedCursorImage.GetImagesClass">
+      <element link="#LCL.Graphics.TSharedIcon.GetImagesClass" name="TSharedCursorImage.GetImagesClass">
         <short/>
         <descr/>
         <errors/>
@@ -14666,14 +14666,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.HandleNeeded" name="TCursorImage.HandleNeeded">
+      <element link="#LCL.Graphics.TRasterImage.HandleNeeded" name="TCursorImage.HandleNeeded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetSharedImageClass" name="TCursorImage.GetSharedImageClass">
+      <element link="#LCL.Graphics.TRasterImage.GetSharedImageClass" name="TCursorImage.GetSharedImageClass">
         <short/>
         <descr/>
         <errors/>
@@ -14710,7 +14710,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.InitializeReader" name="TJPEGImage.InitializeReader">
+      <element link="#LCL.Graphics.TFPImageBitmap.InitializeReader" name="TJPEGImage.InitializeReader">
         <short/>
         <descr/>
         <errors/>
@@ -14725,7 +14725,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.InitializeWriter" name="TJPEGImage.InitializeWriter">
+      <element link="#LCL.Graphics.TFPImageBitmap.InitializeWriter" name="TJPEGImage.InitializeWriter">
         <short/>
         <descr/>
         <errors/>
@@ -14740,7 +14740,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.FinalizeReader" name="TJPEGImage.FinalizeReader">
+      <element link="#LCL.Graphics.TFPImageBitmap.FinalizeReader" name="TJPEGImage.FinalizeReader">
         <short/>
         <descr/>
         <errors/>
@@ -14751,7 +14751,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetReaderClass" name="TJPEGImage.GetReaderClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetReaderClass" name="TJPEGImage.GetReaderClass">
         <short/>
         <descr/>
         <errors/>
@@ -14762,7 +14762,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TFPImageBitmap.GetWriterClass" name="TJPEGImage.GetWriterClass">
+      <element link="#LCL.Graphics.TFPImageBitmap.GetWriterClass" name="TJPEGImage.GetWriterClass">
         <short/>
         <descr/>
         <errors/>
@@ -14773,7 +14773,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element link="#lclbase.Graphics.TRasterImage.GetSharedImageClass" name="TJPEGImage.GetSharedImageClass">
+      <element link="#LCL.Graphics.TRasterImage.GetSharedImageClass" name="TJPEGImage.GetSharedImageClass">
         <descr/>
         <errors/>
         <seealso/>
@@ -14824,7 +14824,7 @@ be carefull with this, modify only within a begin/endupdate</descr>
         <short>
           <var>PixelFormat</var> - the format for the Pixels in this Bitmap</short>
       </element>
-      <element link="#lclbase.Graphics.TGraphic.Clear" name="TCustomBitmap.Clear"/>
+      <element link="#LCL.Graphics.TGraphic.Clear" name="TCustomBitmap.Clear"/>
       <element name="TIconImage.RawImageNeeded">
         <short>
           <var>RawImageNeeded</var> - if 
@@ -14854,25 +14854,25 @@ be carefull with this, modify only within a begin/endupdate</descr>
         <short>
           <var>SetMasked</var> - specifies if the image is to be masked</short>
       </element>
-      <element link="#lclbase.Graphics.TGraphic.SetTransparent" name="TRasterImage.SetTransparent"/>
+      <element link="#LCL.Graphics.TGraphic.SetTransparent" name="TRasterImage.SetTransparent"/>
       <element name="TRasterImage.RequestTransparentColor">
         <short>
           <var>RequestTransparentColor</var> - returns a color to be used for transparent Images</short>
       </element>
-      <element link="#lclbase.Graphics.TSharedRasterImage.IsEmpty" name="TSharedCustomBitmap.IsEmpty"/>
+      <element link="#LCL.Graphics.TSharedRasterImage.IsEmpty" name="TSharedCustomBitmap.IsEmpty"/>
       <element name="TCustomBitmap.FPixelFormatNeedsUpdate"/>
       <element name="TCustomBitmap.FreeMaskHandle">
         <short>
           <var>FreeMaskHandle</var> - method to release Mask handle</short>
       </element>
-      <element link="#lclbase.Graphics.TRasterImage.GetRawImagePtr" name="TCustomBitmap.GetRawImagePtr"/>
-      <element link="#lclbase.Graphics.TRasterImage.GetRawImageDescriptionPtr" name="TCustomBitmap.GetRawImageDescriptionPtr"/>
-      <element link="#lclbase.Graphics.TSharedRasterImage.IsEmpty" name="TSharedIcon.IsEmpty"/>
+      <element link="#LCL.Graphics.TRasterImage.GetRawImagePtr" name="TCustomBitmap.GetRawImagePtr"/>
+      <element link="#LCL.Graphics.TRasterImage.GetRawImageDescriptionPtr" name="TCustomBitmap.GetRawImageDescriptionPtr"/>
+      <element link="#LCL.Graphics.TSharedRasterImage.IsEmpty" name="TSharedIcon.IsEmpty"/>
       <element name="TCustomIcon.FRequestedSize">
         <short>
           <var>FRequestedSize</var> - local variable to hold requested size of Icon</short>
       </element>
-      <element link="#lclbase.Graphics.TRasterImage.CanShareImage" name="TCustomIcon.CanShareImage"/>
+      <element link="#LCL.Graphics.TRasterImage.CanShareImage" name="TCustomIcon.CanShareImage"/>
       <element name="TCustomIcon.CheckRequestedSize">
         <short>
           <var>CheckRequestedSize</var> - method to ensure correct size requested</short>
@@ -14881,27 +14881,27 @@ be carefull with this, modify only within a begin/endupdate</descr>
         <short>
           <var>GetDefaultSize</var> - returns default size for Icon</short>
       </element>
-      <element link="#lclbase.Graphics.TRasterImage.GetMasked" name="TCustomIcon.GetMasked"/>
-      <element link="#lclbase.Graphics.TRasterImage.GetRawImagePtr" name="TCustomIcon.GetRawImagePtr"/>
-      <element link="#lclbase.Graphics.TRasterImage.GetRawImageDescriptionPtr" name="TCustomIcon.GetRawImageDescriptionPtr"/>
-      <element link="#lclbase.Graphics.TGraphic.GetTransparent" name="TCustomIcon.GetTransparent"/>
+      <element link="#LCL.Graphics.TRasterImage.GetMasked" name="TCustomIcon.GetMasked"/>
+      <element link="#LCL.Graphics.TRasterImage.GetRawImagePtr" name="TCustomIcon.GetRawImagePtr"/>
+      <element link="#LCL.Graphics.TRasterImage.GetRawImageDescriptionPtr" name="TCustomIcon.GetRawImageDescriptionPtr"/>
+      <element link="#LCL.Graphics.TGraphic.GetTransparent" name="TCustomIcon.GetTransparent"/>
       <element name="TCustomIcon.GetTypeID">
         <short>
           <var>GetTypeID</var> - returns Identifier for type of Icon</short>
       </element>
-      <element link="#lclbase.Graphics.TRasterImage.SetMasked" name="TCustomIcon.SetMasked"/>
-      <element link="#lclbase.Graphics.TRasterImage.SetTransparent" name="TCustomIcon.SetTransparent"/>
-      <element link="#lclbase.Graphics.TCustomIcon.GetTypeID" name="TIcon.GetTypeID"/>
-      <element link="#lclbase.Graphics.TCustomIcon.GetDefaultSize" name="TCursorImage.GetDefaultSize"/>
-      <element link="#lclbase.Graphics.TCustomIcon.GetTypeID" name="TCursorImage.GetTypeID"/>
-      <element link="#lclbase.Graphics.TRasterImage.GetSharedImageClass" name="TIcnsIcon.GetSharedImageClass"/>
+      <element link="#LCL.Graphics.TRasterImage.SetMasked" name="TCustomIcon.SetMasked"/>
+      <element link="#LCL.Graphics.TRasterImage.SetTransparent" name="TCustomIcon.SetTransparent"/>
+      <element link="#LCL.Graphics.TCustomIcon.GetTypeID" name="TIcon.GetTypeID"/>
+      <element link="#LCL.Graphics.TCustomIcon.GetDefaultSize" name="TCursorImage.GetDefaultSize"/>
+      <element link="#LCL.Graphics.TCustomIcon.GetTypeID" name="TCursorImage.GetTypeID"/>
+      <element link="#LCL.Graphics.TRasterImage.GetSharedImageClass" name="TIcnsIcon.GetSharedImageClass"/>
       <element name="TFPImageBitmapClass">
         <short>
           <var>TFPImageBitmapClass</var> - class of 
           <var>TFPImageBitmap</var>
         </short>
       </element>
-      <element link="#lclbase.LCLResCache.TResourceCache.CompareDescriptors" name="TPenHandleCache.CompareDescriptors"/>
+      <element link="#LCL.LCLResCache.TResourceCache.CompareDescriptors" name="TPenHandleCache.CompareDescriptors"/>
       <element name="TPenHandleCache.FindPen">
         <short>
           <var>FindPen</var> - returns a 

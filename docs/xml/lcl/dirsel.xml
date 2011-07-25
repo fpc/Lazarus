@@ -87,8 +87,8 @@
           <var>TDirSelDlg</var> - a dialog for selecting a directory from a TreeView list</short>
         <descr/>
         <errors/>
-	<seealso><link id="#lclbase.editbtn.tdirectoryedit">TDirectoryEdit</link>
-		<link id="#lclbase.dialogs.tselectdirectorydialog">TSelectDirectoryDialog</link>
+	<seealso><link id="#lcl.editbtn.tdirectoryedit">TDirectoryEdit</link>
+		<link id="#lcl.dialogs.tselectdirectorydialog">TSelectDirectoryDialog</link>
       </seealso>
       </element>
       <!-- variable Visibility: default -->

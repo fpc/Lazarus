@@ -637,7 +637,7 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TBlockResourceCache.CompareDescriptors" link="#lclbase.LCLResCache.TResourceCache.CompareDescriptors">
+      <element name="TBlockResourceCache.CompareDescriptors" link="#LCL.LCLResCache.TResourceCache.CompareDescriptors">
         <short/>
         <descr/>
         <errors/>

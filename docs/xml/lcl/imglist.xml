@@ -826,7 +826,7 @@ Returns the index of the first added bitmap, or -1 if unsuccessful.</descr>
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomImageList.HandleAllocated" link="#lclbase.LCLClasses.TLCLReferenceComponent.HandleAllocated">
+      <element name="TCustomImageList.HandleAllocated" link="#LCL.LCLClasses.TLCLReferenceComponent.HandleAllocated">
         <short/>
         <descr/>
         <errors/>
@@ -1127,7 +1127,7 @@ If Mask is nil, the inserted images have no transparent parts.</descr>
         <short>
           <var>StretchDraw</var> - draw the image to fill the canvas</short>
       </element>
-      <element name="TCustomImageList.WSRegisterClass" link="#lclbase.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomImageList.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomImageList.InternalInsert"/>
       <element name="TCustomImageList.Equals">
         <short>Check for equivalence with another ImageList</short>

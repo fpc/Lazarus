@@ -136,7 +136,7 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#lclbase.ExtCtrls.TCustomPanel.Create">TCustomPanel.Create</link>
+          <link id="#LCL.ExtCtrls.TCustomPanel.Create">TCustomPanel.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -152,7 +152,7 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#lclbase.ExtCtrls.TCustomPanel.Destroy">TCustomPanel.Destroy</link>
+          <link id="#LCL.ExtCtrls.TCustomPanel.Destroy">TCustomPanel.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -251,91 +251,91 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Align" link="#lclbase.Controls.TControl.Align">
+      <element name="TBarChart.Align" link="#LCL.Controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Alignment" link="#lclbase.ExtCtrls.TCustomPanel.Alignment">
+      <element name="TBarChart.Alignment" link="#LCL.ExtCtrls.TCustomPanel.Alignment">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Anchors" link="#lclbase.Controls.TControl.Anchors">
+      <element name="TBarChart.Anchors" link="#LCL.Controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.AutoSize" link="#lclbase.Controls.TControl.AutoSize">
+      <element name="TBarChart.AutoSize" link="#LCL.Controls.TControl.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BorderSpacing" link="#lclbase.Controls.TControl.BorderSpacing">
+      <element name="TBarChart.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BevelInner" link="#lclbase.ExtCtrls.TCustomPanel.BevelInner">
+      <element name="TBarChart.BevelInner" link="#LCL.ExtCtrls.TCustomPanel.BevelInner">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BevelOuter" link="#lclbase.ExtCtrls.TCustomPanel.BevelOuter">
+      <element name="TBarChart.BevelOuter" link="#LCL.ExtCtrls.TCustomPanel.BevelOuter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BevelWidth" link="#lclbase.ExtCtrls.TCustomPanel.BevelWidth">
+      <element name="TBarChart.BevelWidth" link="#LCL.ExtCtrls.TCustomPanel.BevelWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BorderWidth" link="#lclbase.Controls.TWinControl.BorderWidth">
+      <element name="TBarChart.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.BorderStyle" link="#lclbase.Controls.TWinControl.BorderStyle">
+      <element name="TBarChart.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Caption" link="#lclbase.Controls.TControl.Caption">
+      <element name="TBarChart.Caption" link="#LCL.Controls.TControl.Caption">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ClientHeight" link="#lclbase.Controls.TControl.ClientHeight">
+      <element name="TBarChart.ClientHeight" link="#LCL.Controls.TControl.ClientHeight">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ClientWidth" link="#lclbase.Controls.TControl.ClientWidth">
+      <element name="TBarChart.ClientWidth" link="#LCL.Controls.TControl.ClientWidth">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Color" link="#lclbase.Controls.TControl.Color">
+      <element name="TBarChart.Color" link="#LCL.Controls.TControl.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Constraints" link="#lclbase.Controls.TControl.Constraints">
+      <element name="TBarChart.Constraints" link="#LCL.Controls.TControl.Constraints">
         <short/>
         <descr/>
         <seealso/>
@@ -347,145 +347,145 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.DragMode" link="#lclbase.Controls.TControl.DragMode">
+      <element name="TBarChart.DragMode" link="#LCL.Controls.TControl.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Enabled" link="#lclbase.Controls.TControl.Enabled">
+      <element name="TBarChart.Enabled" link="#LCL.Controls.TControl.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Font" link="#lclbase.Controls.TControl.Font">
+      <element name="TBarChart.Font" link="#LCL.Controls.TControl.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.FullRepaint" link="#lclbase.ExtCtrls.TCustomPanel.FullRepaint">
+      <element name="TBarChart.FullRepaint" link="#LCL.ExtCtrls.TCustomPanel.FullRepaint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ParentColor" link="#lclbase.Controls.TControl.ParentColor">
+      <element name="TBarChart.ParentColor" link="#LCL.Controls.TControl.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ParentFont" link="#lclbase.Controls.TControl.ParentFont">
+      <element name="TBarChart.ParentFont" link="#LCL.Controls.TControl.ParentFont">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ParentShowHint" link="#lclbase.Controls.TControl.ParentShowHint">
+      <element name="TBarChart.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.PopupMenu" link="#lclbase.Controls.TControl.PopupMenu">
+      <element name="TBarChart.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.ShowHint" link="#lclbase.Controls.TControl.ShowHint">
+      <element name="TBarChart.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.TabOrder" link="#lclbase.Controls.TWinControl.TabOrder">
+      <element name="TBarChart.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.TabStop" link="#lclbase.Controls.TWinControl.TabStop">
+      <element name="TBarChart.TabStop" link="#LCL.Controls.TWinControl.TabStop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.Visible" link="#lclbase.Controls.TControl.Visible">
+      <element name="TBarChart.Visible" link="#LCL.Controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnClick" link="#lclbase.Controls.TControl.OnClick">
+      <element name="TBarChart.OnClick" link="#LCL.Controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnDblClick" link="#lclbase.Controls.TControl.OnDblClick">
+      <element name="TBarChart.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnDragDrop" link="#lclbase.Controls.TControl.OnDragDrop">
+      <element name="TBarChart.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnDragOver" link="#lclbase.Controls.TControl.OnDragOver">
+      <element name="TBarChart.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnEndDrag" link="#lclbase.Controls.TControl.OnEndDrag">
+      <element name="TBarChart.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnEnter" link="#lclbase.Controls.TWinControl.OnEnter">
+      <element name="TBarChart.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnExit" link="#lclbase.Controls.TWinControl.OnExit">
+      <element name="TBarChart.OnExit" link="#LCL.Controls.TWinControl.OnExit">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnMouseDown" link="#lclbase.Controls.TControl.OnMouseDown">
+      <element name="TBarChart.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnMouseMove" link="#lclbase.Controls.TControl.OnMouseMove">
+      <element name="TBarChart.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnMouseUp" link="#lclbase.Controls.TControl.OnMouseUp">
+      <element name="TBarChart.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnResize" link="#lclbase.Controls.TControl.OnResize">
+      <element name="TBarChart.OnResize" link="#LCL.Controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TBarChart.OnStartDrag" link="#lclbase.Controls.TControl.OnStartDrag">
+      <element name="TBarChart.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -527,7 +527,7 @@
         <short>
           <var>LabelPosition</var> - left, centered or right</short>
       </element>
-      <element name="TCustomBarChart.GetControlClassDefaultSize" link="#lclbase.Controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomBarChart.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TCustomBarChart.UpdateBarChart">
         <short>
           <var>UpdateBarChart</var> - fill in any new information</short>
