@@ -3107,7 +3107,6 @@ docs/xml/fcl/pngcomn.xml svneol=native#text/xml
 docs/xml/fcl/pscanvas.xml svneol=native#text/xml
 docs/xml/fcl/targacmn.xml svneol=native#text/xml
 docs/xml/fcl/xwdfile.xml svneol=native#text/xml
-docs/xml/find_cvs_fpdoc_files.pl -text svneol=native#application/x-perl
 docs/xml/ide/aboutfrm.xml svneol=native#text/plain
 docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/alllclunits.xml svneol=LF#text/xml eol=lf
