@@ -482,7 +482,7 @@ type
     procedure EndCustomCodeFoldBlock(ABlockType: TPascalCodeFoldBlockType);
 
     function GetFoldNodeInfo(Line, Index: Integer; Filter: TSynFoldActions): TSynFoldNodeInfo; override;
-    function GetFoldNodeInfoCount(Line: Integer; Filter: TSynFoldActions): Integer; override;
+    function GetFoldNodeInfoCount(Line: Integer; Filter: TSynFoldActions): Integer; override; // Line: 0-based
 
     property PasCodeFoldRange: TSynPasSynRange read GetPasCodeFoldRange;
     function TopPascalCodeFoldBlockType
@@ -1097,17 +1097,19 @@ end;
 
 function TSynPasSyn.Func33: TtkTokenKind;
 begin
-  if KeyComp('Or') then Result := tkKey else
-    if KeyComp('Asm') then
-    begin
-      Result := tkKey;
-      fRange := fRange + [rsAsm];
-      fAsmStart := True;
-      {$IFDEF SYN_LAZARUS}
-      StartPascalCodeFoldBlock(cfbtAsm);
-      //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumCodeFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
-      {$ENDIF}
-    end else Result := tkIdentifier;
+  if KeyComp('Or') then Result := tkKey
+  else
+  if KeyComp('Asm') then
+  begin
+    Result := tkKey;
+    fRange := fRange + [rsAsm];
+    fAsmStart := True;
+    if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+      EndPascalCodeFoldBlockLastLine;
+    StartPascalCodeFoldBlock(cfbtAsm);
+    //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumCodeFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
+  end
+  else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func35: TtkTokenKind;
@@ -3944,6 +3946,7 @@ function TSynPasSyn.GetFoldNodeInfoCount(Line: Integer;
 var
   i: Integer;
 begin
+  // TODO: assert line > 0
   if FNodeInfoLine <> Line then
     GetFoldNodeInfo(Line, 0, []);
   Result := FNodeInfoCount;
