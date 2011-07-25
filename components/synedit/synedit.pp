@@ -2922,6 +2922,8 @@ begin
       if fScrollDeltaY > 0
       then Y := FFoldedLinesView.TextIndex[LinesInWindow-1]+1  // scrolling down
       else Y := TopLine;  // scrolling up
+      if Y < 1   // past end of file
+      then y := FCaret.LinePos;
       FCaret.LineCharPos := Point(C.X, Y);
       if (not(sfIsDragging in fStateFlags)) then
         SetBlockEnd(LogicalCaretXY);
