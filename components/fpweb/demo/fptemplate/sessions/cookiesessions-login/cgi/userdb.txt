@@ -1,2 +1,0 @@
-joe=joepassword
-jane=janepassword
