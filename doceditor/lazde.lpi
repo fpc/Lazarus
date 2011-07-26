@@ -33,7 +33,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="--element=rtl.system.writeln /home/michael/docs/system.xml"/>
+        <CommandLineParams Value="--element=system.writeln /home/michael/docs/system.xml"/>
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>

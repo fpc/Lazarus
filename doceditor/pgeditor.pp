@@ -280,7 +280,7 @@ begin
   // if not found, assume first part is modulename in first package.
   if (PE=Nil) then
     begin
-    PE:=FindElementNode(FDocument.DocumentElement,'package',PN);
+    PE:=FindElementNode(FDocument.DocumentElement,'package','');
     N:=ElementName;
     end;
   if (PE=Nil) then // No package node !
@@ -291,7 +291,7 @@ begin
   // if not found, assume elementname is element in first module.
   if (ME=Nil) then
     begin
-    ME:=FindElementNode(PE,'module',PN);
+    ME:=FindElementNode(PE,'module','');
     N:=ElementName;
     end;
   if (ME=Nil) then // No module node !
