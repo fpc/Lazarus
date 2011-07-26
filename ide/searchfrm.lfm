@@ -1,11 +1,10 @@
 object SearchProgressForm: TSearchProgressForm
   Left = 384
-  Height = 149
+  Height = 167
   Top = 387
   Width = 700
-  AutoSize = True
   Caption = 'Searching....'
-  ClientHeight = 149
+  ClientHeight = 167
   ClientWidth = 700
   Constraints.MinWidth = 700
   OnCreate = SearchFormCREATE
@@ -15,13 +14,12 @@ object SearchProgressForm: TSearchProgressForm
   Visible = True
   object Panel2: TPanel
     Left = 0
-    Height = 149
+    Height = 167
     Top = 0
     Width = 700
     Align = alClient
-    AutoSize = True
     BevelInner = bvLowered
-    ClientHeight = 149
+    ClientHeight = 167
     ClientWidth = 700
     FullRepaint = False
     TabOrder = 0
@@ -88,14 +86,15 @@ object SearchProgressForm: TSearchProgressForm
     object btnCancel: TBitBtn
       AnchorSideLeft.Control = Panel2
       AnchorSideLeft.Side = asrCenter
-      AnchorSideTop.Control = MatchesLabel
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel2
       AnchorSideBottom.Side = asrBottom
       Left = 312
       Height = 26
-      Top = 110
+      Top = 133
       Width = 77
+      Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Top = 12
       BorderSpacing.Bottom = 6
