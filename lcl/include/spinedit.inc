@@ -53,12 +53,8 @@ var
 begin
   PrevValue := FValue;
   FValueChanged := True;
-
-  if Value <> PrevValue then
-  begin
-    FValueEmpty := False;
-    inherited;
-  end;
+  if Value <> PrevValue then FValueEmpty := False;
+  inherited;
 end;
 
 procedure TCustomFloatSpinEdit.SetMaxValue(const AValue: Double);
