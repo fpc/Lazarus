@@ -6464,6 +6464,7 @@ begin
     //if (not Enabled) then debugln('TWinControl.CMEnabledChanged disable ',Name,':',CLassName);
     EnableWindow(Handle, Enabled);
   end;
+  inherited;
 end;
 
 {------------------------------------------------------------------------------
