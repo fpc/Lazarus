@@ -70,6 +70,9 @@ Type
     FSplitter : TSplitter;
     FFileNAme : String;
     Procedure ElementSelected(Node : TDomElement) ;
+    function FindElement(const ElementName: String; Out PE,ME : TDomElement): TDomElement;
+    function FindElementNode(AParent: TDomElement; const ANodeName: String;
+      const AElementName: string): TDomElement;
     Procedure TopicSelected(Node : TDomElement) ;
     Procedure ModuleSelected(Node : TDomElement) ;
     Procedure PackageSelected(Node : TDomElement) ;
@@ -87,7 +90,7 @@ Type
     Procedure SetModified(Value : Boolean);
     Function  GetModified : Boolean;
     Function MakeBackup(FN : String) : Boolean;
-    Procedure DisplayDocument;
+    Procedure DisplayDocument(Const AStartNode : String = '');
     Procedure ElementChanged(Sender: TObject);
   protected
     procedure SetParent(NewParent: TWinControl); override;
@@ -95,7 +98,7 @@ Type
     constructor Create(AOwner : TComponent); override;
     Function  FirstPackage : TDomElement;
     Function  FirstModule(APackage : TDomElement) : TDomElement;
-    Procedure LoadFromFile(FN : String);
+    Procedure LoadFromFile(FN : String; Const AStartNode : String = '');
     Procedure LoadFromStream(S : TStream);
     Procedure SaveToFile(FN : String);
     Procedure SetFileName(FN : String);
@@ -172,7 +175,7 @@ begin
   Result:=FElement.CanInsertTag(TagType);
 end;
 
-Procedure TEditorPage.LoadFromFile(FN : String);
+Procedure TEditorPage.LoadFromFile(FN : String; Const AStartNode : String = '');
 
 Var
   F : TFileStream;
@@ -183,7 +186,7 @@ begin
   Try
     SetFileName(FN);
     ReadXMLFile(FDocument,F);
-    DisplayDocument;
+    DisplayDocument(AStartNode);
   finally
     F.Free;
   end;
@@ -228,10 +231,94 @@ begin
   Modified :=False;
 end;
 
-Procedure TEditorPage.DisplayDocument;
+function TEditorPage.FindElementNode(AParent : TDomElement; Const ANodeName : String; Const AElementName : string) : TDomElement;
+
+Var
+  N : TDomNode;
 
 begin
+  Result:=Nil;
+  N:=AParent.FirstChild;
+  While (Result=Nil) and (N<>Nil) do
+    begin
+    if (N.NodeType=ELEMENT_NODE) and (N.NodeName=ANodeName) then
+       If (AElementName='') or (CompareText((N as TDomElement).AttribStrings['name'],AElementName)=0) then
+         Result:=N as TDomElement;
+    N:=N.NextSibling;
+    end;
+end;
+
+
+function TEditorPage.FindElement(Const ElementName : String; Out PE,ME : TDomElement) : TDomElement;
+
+  Function GetNextPart(Var N : String) : String;
+
+  Var
+    p : integer;
+
+  begin
+    P:=Pos('.',N);
+    if P=0 then
+      P:=Length(N)+1;
+    Result:=Copy(N,1,P-1);
+    Delete(N,1,P);
+  end;
+
+Var
+  P : Integer;
+  PN,N : String;
+
+begin
+  Result:=Nil;
+  PE:=Nil;
+  ME:=Nil;
+  N:=ElementName;
+  // Extract package name.
+  PN:=GetNextPart(N);
+  // Search package node
+  PE:=FindElementNode(FDocument.DocumentElement,'package',PN);
+  // if not found, assume first part is modulename in first package.
+  if (PE=Nil) then
+    begin
+    PE:=FindElementNode(FDocument.DocumentElement,'package',PN);
+    N:=ElementName;
+    end;
+  if (PE=Nil) then // No package node !
+    exit;
+  // Extract Module name
+  PN:=GetNextPart(N);
+  ME:=FindElementNode(PE,'module',PN);
+  // if not found, assume elementname is element in first module.
+  if (ME=Nil) then
+    begin
+    ME:=FindElementNode(PE,'module',PN);
+    N:=ElementName;
+    end;
+  if (ME=Nil) then // No module node !
+    exit;
+  Result:=FindElementNode(ME,'element',N);
+end;
+
+Procedure TEditorPage.DisplayDocument(Const AStartNode : String = '');
+
+Var
+  PE,ME,EE : TDomElement;
+
+begin
+  EE:=Nil;
+  if (AStartNode <> '') then
+    begin
+    EE:=FindElement(AStartNode,PE,ME);
+    If (EE=Nil) then
+      ShowMessage(Format(SStartNodeNotFound,[AStartNode]));
+    end;
   FPackages.DescriptionNode:=FDocument.DocumentElement;
+  if (EE<>Nil) then
+    begin
+    FPackages.CurrentPackage:=PE;
+    FPackages.CurrentModule:=ME;
+    FPackages.CurrentElement:=EE;
+    end;
 end;
 
 procedure TEditorPage.ElementChanged(Sender: TObject);

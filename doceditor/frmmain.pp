@@ -175,7 +175,7 @@ type
     procedure BuildReopenList;
     Procedure AddTorecent(FN : String);
     procedure FormLocalization;
-    Procedure OpenFile(FN : String);
+    Procedure OpenFile(FN : String; Const AStartNode : String = '');
     Procedure SaveEditorAs(E : TEditorPage);
     Procedure SaveEditor(E : TEditorPage);
     Function  CloseEditor(E : TEditorPage) : Boolean;
@@ -600,14 +600,14 @@ begin
   end;
 end;
 
-procedure TMainForm.OpenFile(FN: String);
+procedure TMainForm.OpenFile(FN: String; Const AStartNode : String = '');
 begin
   if (FN<>'') then
     begin
     If FileExistsUTF8(FN) then
       With CreatePage do
         begin
-        LoadFromFile(UTF8ToSys(FN));
+        LoadFromFile(UTF8ToSys(FN),AStartNode);
         AddToRecent(Fn);
         end;
     end;
@@ -665,12 +665,22 @@ end;
 procedure TMainForm.LoadCommandLine;
 var
   I : Integer;
+  N : string;
 begin
   I:=1;
   While I<=ParamCount do
     begin
-    If FileExistsUTF8(ParamStrUTF8(i)) then
-      OpenFile(ParamStrUTF8(I));
+    if (Copy(ParamStrUTF8(i),1,10)='--element=') then
+      begin
+      N:=ParamStrUTF8(i);
+      Delete(N,1,10);
+      end
+    else
+      begin
+      If FileExistsUTF8(ParamStrUTF8(i)) then
+        OpenFile(ParamStrUTF8(I),N);
+      N:='';
+      end;
     Inc(I);
     end;
 end;

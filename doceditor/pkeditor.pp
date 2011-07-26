@@ -296,6 +296,7 @@ begin
     OnChange:=@ModuleChange;
     OnChanging:=@ModuleChanging;
     ReadOnly:=True;
+    HideSelection:=False;
     end;
   FSplitter:=TSplitter.Create(Self);
   With FSplitter do
@@ -329,6 +330,7 @@ begin
     OnChange:=@ElementChange;
     OnChanging:=@ElementChanging;
     ReadOnly:=True;
+    HideSelection:=False;
     end;
   PEMenu:=TPopupMenu.Create(Self);
   FERenameMenu:=NewMenuItem(SMenuRename,@MenuRenameClick);
@@ -799,28 +801,33 @@ begin
       // root node
       TNode:=FModuleNode;
       // process list of elements, create levels
-      For I:=0 to S.Count-1 do
-        begin
-        PNode:=Nil;
-        SNode:=TNode;
-        N:=S[i];
-        // look for a tentative new parents
-        While (SNode<>FModuleNode) and (PNode=Nil) do
+      FElementTree.Items.BeginUpdate;
+      try
+        For I:=0 to S.Count-1 do
           begin
-          PN:=TDomElement(SNode.Data)['name']+'.';
-          L:=Length(PN);
-          If CompareText(Copy(N,1,L),PN)=0 then
-            PNode:=SNode;
-          SNode:=SNode.Parent;
+          PNode:=Nil;
+          SNode:=TNode;
+          N:=S[i];
+          // look for a tentative new parents
+          While (SNode<>FModuleNode) and (PNode=Nil) do
+            begin
+            PN:=TDomElement(SNode.Data)['name']+'.';
+            L:=Length(PN);
+            If CompareText(Copy(N,1,L),PN)=0 then
+              PNode:=SNode;
+            SNode:=SNode.Parent;
+            end;
+          If (PNode=Nil) then
+            PNode:=FModuleNode
+          else
+            System.Delete(N,1,L);
+          TNode:=FElementTree.Items.AddChild(PNode,N);
+          TNode.Data:=S.Objects[i];
+          UpdateNodeImage(TNode);
           end;
-        If (PNode=Nil) then
-          PNode:=FModuleNode
-        else
-          System.Delete(N,1,L);
-        TNode:=FElementTree.Items.AddChild(PNode,N);
-        TNode.Data:=S.Objects[i];
-        UpdateNodeImage(TNode);
-        end;
+      finally
+        FElementTree.Items.EndUpdate;
+      end;
       Finally
         S.Free;
       end;
@@ -1007,6 +1014,7 @@ begin
       SetCurrentModuleNode(FindModuleNodeInNode(Value,Nil))
     else
       ClearElements;
+    FCurrentModule:=Value
     end;
 end;
 
@@ -1020,6 +1028,7 @@ begin
   If Assigned(P) then
     P.Expand(False);
   FModuleTree.Selected:=N;
+  Application.ProcessMessages;
 end;
 
 Procedure TPackageEditor.SetCurrentTopic(T : TDomElement);

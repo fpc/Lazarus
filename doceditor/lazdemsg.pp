@@ -222,7 +222,7 @@ ResourceString
   SErrNoModuleForElement = 'No module found to insert element "%s"';
   //SErrNoNodeForElement   = 'No node found for element "%s"';
   SErrUnknownDomElement  = 'Unknwon DOM element as parent for selected element: "%s"';
-
+  SStartNodeNotFound     = 'Start element "%d" could not be found';
 
   //SSaveFileTitle = 'Enter filename to save to';
   //SOpenFileTitle = 'Select file to open';
