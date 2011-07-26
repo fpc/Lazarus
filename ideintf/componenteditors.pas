@@ -298,6 +298,27 @@ type
     function Page: TPage; virtual;
   end;
 
+  { TOldTabControlComponentEditor
+    The default component editor for TCustomTabControl. }
+  TOldTabControlComponentEditor = class(TDefaultComponentEditor)
+  protected
+    procedure DoAddTab; virtual;
+    procedure DoInsertTab; virtual;
+    procedure DoDeleteTab; virtual;
+    procedure DoMoveActiveTabLeft; virtual;
+    procedure DoMoveActiveTabRight; virtual;
+    procedure DoMoveTab(CurIndex, NewIndex: Integer); virtual;
+    procedure AddMenuItemsForTabs(ParentMenuItem: TMenuItem); virtual;
+    procedure ShowTabMenuItemClick(Sender: TObject);
+    function CreateNewTabCaption: string;
+  public
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
+    function TabControl: TTabControl; virtual;
+  end;
+
 { TStringGridComponentEditor
   The default componenteditor for TStringGrid }
 
@@ -1257,6 +1278,141 @@ begin
   EditorForms.Free;
 end;
 
+{ TOldTabControlComponentEditor }
+
+const
+  tcvAddTab       = 0;
+  tcvInsertTab    = 1;
+  tcvDeleteTab    = 2;
+  tcvMoveTabLeft  = 3;
+  tcvMoveTabRight = 4;
+
+procedure TOldTabControlComponentEditor.DoAddTab;
+begin
+  TabControl.Tabs.Add(CreateNewTabCaption);
+  Modified;
+end;
+
+procedure TOldTabControlComponentEditor.DoInsertTab;
+begin
+  TabControl.Tabs.Insert(TabControl.TabIndex,CreateNewTabCaption);
+  Modified;
+end;
+
+procedure TOldTabControlComponentEditor.DoDeleteTab;
+begin
+  if (TabControl.Tabs.Count=0) then exit;
+  TabControl.Tabs.Delete(TabControl.TabIndex);
+  Modified;
+end;
+
+procedure TOldTabControlComponentEditor.DoMoveActiveTabLeft;
+var
+  Index: integer;
+begin
+  Index:=TabControl.TabIndex;
+  if (Index<0) then exit;
+  DoMoveTab(Index,Index-1);
+end;
+
+procedure TOldTabControlComponentEditor.DoMoveActiveTabRight;
+var
+  Index: integer;
+begin
+  Index:=TabControl.TabIndex;
+  if (Index>=TabControl.Tabs.Count-1) then exit;
+  DoMoveTab(Index,Index+1);
+end;
+
+procedure TOldTabControlComponentEditor.DoMoveTab(CurIndex, NewIndex: Integer);
+begin
+  TabControl.Tabs.Move(CurIndex,NewIndex);
+  Modified;
+end;
+
+procedure TOldTabControlComponentEditor.AddMenuItemsForTabs(
+  ParentMenuItem: TMenuItem);
+var
+  i: integer;
+  NewMenuItem: TMenuItem;
+begin
+  ParentMenuItem.Enabled:=TabControl.Tabs.Count>0;
+  for i:=0 to TabControl.Tabs.Count-1 do begin
+    NewMenuItem:=TMenuItem.Create(ParentMenuItem);
+    NewMenuItem.Name:='ShowTab'+IntToStr(i);
+    NewMenuItem.Caption:='"'+TabControl.Tabs[i]+'"';
+    NewMenuItem.OnClick:=@ShowTabMenuItemClick;
+    ParentMenuItem.Add(NewMenuItem);
+  end;
+end;
+
+procedure TOldTabControlComponentEditor.ShowTabMenuItemClick(Sender: TObject);
+var
+  AMenuItem: TMenuItem;
+  NewTabIndex: LongInt;
+begin
+  AMenuItem:=TMenuItem(Sender);
+  if (AMenuItem=nil) or (not (AMenuItem is TMenuItem)) then exit;
+  NewTabIndex:=AMenuItem.MenuIndex;
+  if (NewTabIndex<0) or (NewTabIndex>=TabControl.Tabs.Count) then exit;
+  TabControl.TabIndex:=NewTabIndex;
+  Modified;
+end;
+
+function TOldTabControlComponentEditor.CreateNewTabCaption: string;
+begin
+  Result:='New Tab';
+  while TabControl.IndexOfTabWithCaption(Result)>=0 do
+    Result:=CreateNextIdentifier(Result);
+end;
+
+procedure TOldTabControlComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  case Index of
+    tcvAddTab:       DoAddTab;
+    tcvInsertTab:    DoInsertTab;
+    tcvDeleteTab:    DoDeleteTab; // beware: this can free the editor itself
+    tcvMoveTabLeft:  DoMoveActiveTabLeft;
+    tcvMoveTabRight: DoMoveActiveTabRight;
+  end;
+end;
+
+function TOldTabControlComponentEditor.GetVerb(Index: Integer): string;
+begin
+  case Index of
+    tcvAddTab:       Result:=tccesAddTab;
+    tcvInsertTab:    Result:=tccesInsertTab;
+    tcvDeleteTab:    Result:=tccesDeleteTab;
+    tcvMoveTabLeft:  Result:=tccesMoveTabLeft;
+    tcvMoveTabRight: Result:=tccesMoveTabRight;
+  else
+    Result:='';
+  end;
+end;
+
+function TOldTabControlComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=5;
+end;
+
+procedure TOldTabControlComponentEditor.PrepareItem(Index: Integer;
+  const AnItem: TMenuItem);
+begin
+  inherited PrepareItem(Index, AnItem);
+  case Index of
+    tcvAddTab:       ;
+    tcvInsertTab:    AnItem.Enabled:=TabControl.TabIndex>=0;
+    tcvDeleteTab:    AnItem.Enabled:=TabControl.TabIndex>=0;
+    tcvMoveTabLeft:  AnItem.Enabled:=TabControl.TabIndex>0;
+    tcvMoveTabRight: AnItem.Enabled:=TabControl.TabIndex<TabControl.Tabs.Count-1;
+  end;
+end;
+
+function TOldTabControlComponentEditor.TabControl: TTabControl;
+begin
+  Result:=TTabControl(GetComponent);
+end;
+
 { TTimerComponentEditor }
 
 constructor TTimerComponentEditor.Create(AComponent: TComponent;
@@ -1332,6 +1488,7 @@ end;
 initialization
   RegisterComponentEditorProc := @DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TCustomTabControl, TTabControlComponentEditor);
+  RegisterComponentEditor(TTabControl, TOldTabControlComponentEditor);
   RegisterComponentEditor(TCustomPage, TPageComponentEditor);
   RegisterComponentEditor(TNotebook, TUntabbedNotebookComponentEditor);
   RegisterComponentEditor(TPage, TUNBPageComponentEditor);
