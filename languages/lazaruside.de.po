@@ -5953,10 +5953,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "Unit \"%s\" mit \"%s\" im uses Abschnitt ersetzt."
 
-#: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
-msgid "Some units of the Delphi package are missing:%s%s"
-msgstr "Einige Units des Delphi-Packages fehlen:%s%s"
-
 #: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
 msgctxt "lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname"
 msgid "There are two units with the same unitname:%s%s%s%s%s"
@@ -5969,10 +5965,6 @@ msgstr "Es gibt bereits ein Package namens \"%s\"%sBitte schließen sie zuerst d
 #: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
 msgid "Unitname exists twice"
 msgstr "Unitname existiert doppelt"
-
-#: lazarusidestrconsts.lisconvdelphiunitsnotfound
-msgid "Units not found"
-msgstr "Units nicht gefunden"
 
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 msgid "Units to replace in %s"

@@ -5859,10 +5859,6 @@ msgctxt "lazarusidestrconsts.lisconvdelphireplacedunitinusessection"
 msgid "Replaced unit \"%s\" with \"%s\" in uses section."
 msgstr "Korvattu käännösyksikkö \"%s\" \"%s\":lla uses-lauseessa."
 
-#: lazarusidestrconsts.lisconvdelphisomeunitsofthedelphipackagearemissing
-msgid "Some units of the Delphi package are missing:%s%s"
-msgstr "Jotkut Delphi paketin käännösyksiköt puuttuvat:%s%s"
-
 #: lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname
 msgctxt "lazarusidestrconsts.lisconvdelphitherearetwounitswiththesameunitname"
 msgid "There are two units with the same unitname:%s%s%s%s%s"
@@ -5875,10 +5871,6 @@ msgstr "\"%s\" niminen paketti on jo olemassa.%sSulje se ensin."
 #: lazarusidestrconsts.lisconvdelphiunitnameexiststwice
 msgid "Unitname exists twice"
 msgstr "Samanniminen käännösyksikkö esiintyy kahdesti"
-
-#: lazarusidestrconsts.lisconvdelphiunitsnotfound
-msgid "Units not found"
-msgstr "Käännösyksikköjä ei löydy"
 
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 msgid "Units to replace in %s"

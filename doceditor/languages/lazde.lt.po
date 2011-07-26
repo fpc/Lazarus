@@ -649,6 +649,10 @@ msgstr "Programa „makeskel“ pranešė apie klaidą bei nesukūrė failo."
 msgid "Sources"
 msgstr "Pradiniai kodai"
 
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr ""
+
 #: lazdemsg.stargetos
 msgid "Target OS"
 msgstr "Paskirties OS"

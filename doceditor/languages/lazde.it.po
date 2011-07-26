@@ -649,6 +649,10 @@ msgstr "makeskel ha riportato l'errore %d e non ha creato nessun file."
 msgid "Sources"
 msgstr "Sorgenti"
 
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr ""
+
 #: lazdemsg.stargetos
 msgid "Target OS"
 msgstr "Sistema Operativo di destinazione"

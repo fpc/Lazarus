@@ -671,6 +671,10 @@ msgctxt "lazdemsg.ssourcescapt"
 msgid "Sources"
 msgstr "Исходный код"
 
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr "Начальный элемент \"%s\" не найден"
+
 #: lazdemsg.stargetos
 msgctxt "lazdemsg.stargetos"
 msgid "Target OS"

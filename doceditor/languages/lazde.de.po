@@ -647,6 +647,10 @@ msgstr "makeskel hat einen Fehler (%d) gemeldet und keine Datei erzeugt."
 msgid "Sources"
 msgstr "Quellen"
 
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr ""
+
 #: lazdemsg.stargetos
 msgid "Target OS"
 msgstr "Ziel-OS"

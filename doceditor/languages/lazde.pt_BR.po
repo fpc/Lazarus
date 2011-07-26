@@ -647,6 +647,10 @@ msgstr "\"masksel\" reportou um erro (%d) e não gerou nenhum arquivo."
 msgid "Sources"
 msgstr "Fontes"
 
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr ""
+
 #: lazdemsg.stargetos
 msgid "Target OS"
 msgstr "SO Alvo"

@@ -647,6 +647,10 @@ msgstr "makeskel звітував про помилку (%d) і не створ�
 msgid "Sources"
 msgstr "Вихідний код"
 
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr ""
+
 #: lazdemsg.stargetos
 msgid "Target OS"
 msgstr "Цільова ОС"

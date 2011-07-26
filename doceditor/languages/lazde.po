@@ -639,6 +639,10 @@ msgstr ""
 msgid "Sources"
 msgstr ""
 
+#: lazdemsg.sstartnodenotfound
+msgid "Start element \"%s\" could not be found"
+msgstr ""
+
 #: lazdemsg.stargetos
 msgid "Target OS"
 msgstr ""
