@@ -62,6 +62,7 @@ function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
+//function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
@@ -69,6 +70,7 @@ function CreatePalette(const LogPalette: TLogPalette): HPALETTE; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
+function CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse: Integer): HRGN; override;
 
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteDC(hDC: HDC): Boolean; override;

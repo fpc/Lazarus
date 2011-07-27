@@ -1730,6 +1730,72 @@ begin
   //DebugLn('TGtk2WidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
 end;
 
+{
+  Gdk has no native function for this, so we need to improvise by aproximating
+  the RoundRect to a Polygon:
+
+   ______<--- Top bar
+  /      \
+  |      |<--- Right bar
+  \______/<--- Bottom-Right Corner
+
+}
+function TGtk2WidgetSet.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse, nHeightEllipse: Integer): HRGN;
+var
+  points: array[0..15] of TGdkPoint;
+  n_points: Integer = 16;
+  GObject: PGdiObject;
+  RegionObj: PGdkRegion;
+begin
+  // Top bar
+  points[0].x := X1 + nWidthEllipse;
+  points[0].y := Y1;
+  points[1].x := X2 - nWidthEllipse;
+  points[1].y := Y1;
+  // Right-Top Rounding
+  points[2].x := X2 - nWidthEllipse div 2;
+  points[2].y := Y1 + nHeightEllipse div 5;
+  points[3].x := X2 - nWidthEllipse div 5;
+  points[3].y := Y1 + nHeightEllipse div 2;
+  // Right bar
+  points[4].x := X2;
+  points[4].y := Y1 + nHeightEllipse;
+  points[5].x := X2;
+  points[5].y := Y2 - nHeightEllipse;
+  // Right-Bottom Rounding
+  points[6].x := X2 - nWidthEllipse div 5;
+  points[6].y := Y2 - nHeightEllipse div 2;
+  points[7].x := X1 - nWidthEllipse div 2;
+  points[7].y := Y2 - nHeightEllipse div 5;
+  // Bottom bar
+  points[8].x := X2 - nWidthEllipse;
+  points[8].y := Y2;
+  points[9].x := X1 + nWidthEllipse;
+  points[9].y := Y2;
+  // Bottom-Left Rounding
+  points[10].x := X1 + nWidthEllipse div 2;
+  points[10].y := Y2 - nHeightEllipse div 5;
+  points[11].x := X1 + nWidthEllipse div 5;
+  points[11].y := Y2 - nHeightEllipse div 2;
+  // Left bar
+  points[12].x := X1;
+  points[12].y := Y2 - nHeightEllipse;
+  points[13].x := X1;
+  points[13].y := Y1 + nHeightEllipse;
+  // Left-Top Rounding
+  points[14].x := X1 + nWidthEllipse div 5;
+  points[14].y := Y1 + nHeightEllipse div 2;
+  points[15].x := X1 + nWidthEllipse div 2;
+  points[15].y := Y1 + nHeightEllipse div 5;
+
+  GObject := NewGDIObject(gdiRegion);
+  RegionObj := gdk2.gdk_region_polygon(@points[0], n_points, GDK_WINDING_RULE);
+  GObject^.GDIRegionObject := RegionObj;
+
+  Result := HRGN(PtrUInt(GObject));
+  //DebugLn('TGtk2WidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
+end;
+
 {------------------------------------------------------------------------------
   Function: CombineRgn
   Params:  Dest, Src1, Src2, fnCombineMode
