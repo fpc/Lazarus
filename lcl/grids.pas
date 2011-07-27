@@ -826,6 +826,7 @@ type
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
     function  BoxRect(ALeft,ATop,ARight,ABottom: Longint): TRect;
+    procedure CacheMouseDown(const X,Y:Integer);
     procedure CalcAutoSizeColumn(const Index: Integer; var AMin,AMax,APriority: Integer); virtual;
     procedure CalcFocusRect(var ARect: TRect);
     function  CalcMaxTopLeft: TPoint;
@@ -5659,8 +5660,7 @@ begin
   DebugLn('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
 
-  FGCache.ClickMouse := Point(X,Y);
-  FGCache.ClickCell  := MouseToCell(FGCache.ClickMouse);
+  CacheMouseDown(X,Y);
 
   case FGCache.HotGridZone of
 
@@ -6929,6 +6929,12 @@ begin
     Result.BottomRight := BottomRight;
 
   IntersectRect(Result, Result, FGCache.VisibleGrid);
+end;
+
+procedure TCustomGrid.CacheMouseDown(const X, Y: Integer);
+begin
+  FGCache.ClickMouse := Point(X,Y);
+  FGCache.ClickCell  := MouseToCell(FGCache.ClickMouse);
 end;
 
 procedure TCustomGrid.EndUpdate(aRefresh: boolean = true);

@@ -2233,6 +2233,7 @@ begin
 
   {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown INIT'); {$Endif}
   Gz:=MouseToGridZone(X,Y);
+  CacheMouseDown(X,Y);
   case Gz of
     gzFixedCells, gzFixedCols:
       doInherited;
