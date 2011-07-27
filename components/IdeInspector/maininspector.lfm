@@ -1,5 +1,5 @@
 object IdeInspectForm: TIdeInspectForm
-  Left = 2070
+  Left = 1070
   Height = 494
   Top = 157
   Width = 512
@@ -12,7 +12,7 @@ object IdeInspectForm: TIdeInspectForm
   OnClose = FormClose
   OnShow = FormShow
   Position = poDefault
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ToolBar1: TToolBar
     Left = 0
     Height = 24
@@ -27,23 +27,23 @@ object IdeInspectForm: TIdeInspectForm
     ShowHint = True
     TabOrder = 0
     object btnComponent: TToolButton
-      Left = 121
+      Left = 158
       Top = 0
       DropdownMenu = popComponent
       OnClick = btnComponentClick
       Style = tbsDropDown
     end
     object btnSubComponent: TToolButton
-      Left = 164
+      Left = 203
       Top = 0
       DropdownMenu = popSubComponent
       OnClick = btnSubComponentClick
       Style = tbsDropDown
     end
     object ToolButton1: TToolButton
-      Left = 113
+      Left = 148
       Top = 0
-      Width = 8
+      Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
@@ -54,28 +54,28 @@ object IdeInspectForm: TIdeInspectForm
       OnClick = btnRemoveSelectedClick
     end
     object ToolButton2: TToolButton
-      Left = 156
+      Left = 193
       Top = 0
-      Width = 8
+      Width = 10
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
     object btnControls: TToolButton
-      Left = 199
+      Left = 238
       Top = 0
       DropdownMenu = popControls
       OnClick = btnControlsClick
       Style = tbsDropDown
     end
     object ToolButton3: TToolButton
-      Left = 24
+      Left = 57
       Top = 0
-      Width = 8
+      Width = 10
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object ToolButtonFollowActive: TToolButton
-      Left = 55
+      Left = 90
       Hint = 'Follow Active Window or Frame'
       Top = 0
       ImageIndex = 1
@@ -84,21 +84,21 @@ object IdeInspectForm: TIdeInspectForm
       Style = tbsCheck
     end
     object ToolButtonActiveType: TToolButton
-      Left = 78
+      Left = 113
       Top = 0
       DropdownMenu = popFollowType
       OnClick = ToolButtonActiveTypeClick
       Style = tbsDropDown
     end
     object ToolButton4: TToolButton
-      Left = 234
+      Left = 273
       Top = 0
-      Width = 8
+      Width = 10
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object ToolButtonKey: TToolButton
-      Left = 242
+      Left = 283
       Hint = 'Set Key shortcut'
       Top = 0
       ImageIndex = 2
@@ -106,7 +106,7 @@ object IdeInspectForm: TIdeInspectForm
       ShowCaption = False
     end
     object btnEndModal: TToolButton
-      Left = 1
+      Left = 24
       Hint = 'Finish modal'
       Top = 0
       ImageIndex = 3
@@ -114,15 +114,15 @@ object IdeInspectForm: TIdeInspectForm
       Visible = False
     end
     object sepModal: TToolButton
-      Left = 1
+      Left = 47
       Top = 0
-      Width = 8
+      Width = 10
       Caption = 'sepModal'
       Style = tbsSeparator
       Visible = False
     end
     object btnKeepTop: TToolButton
-      Left = 32
+      Left = 67
       Hint = 'Keep on top'
       Top = 0
       ImageIndex = 4
@@ -260,28 +260,21 @@ object IdeInspectForm: TIdeInspectForm
       end
     end
   end
-  object Panel3: TPanel
+  object TabControl1: TTabControl
     Left = 222
     Height = 381
     Top = 24
     Width = 290
     Align = alClient
-    object TabControl1: TTabControl
-      Left = 0
-      Height = 81
-      Top = 0
-      Width = 290
-      Align = alTop
-      OnChange = TabControl1Change
-      TabIndex = 0
-      TabOrder = 4
-      Tabs.Strings = (
-        'Properties'
-        'Events'
-        'All'
-      )
-      TabStop = False
-    end
+    OnChange = TabControl1Change
+    TabIndex = 0
+    TabOrder = 4
+    Tabs.Strings = (
+      'Properties'
+      'Events'
+      'All'
+    )
+    TabStop = False
   end
   object popComponent: TPopupMenu
     OnPopup = popComponentPopup
