@@ -1,0 +1,13 @@
+diff --git a/lcl/interfaces/win32/win32lclintf.inc b/lcl/interfaces/win32/win32lclintf.inc
+index c006c15..ee1ef4a 100644
+--- a/lcl/interfaces/win32/win32lclintf.inc
++++ b/lcl/interfaces/win32/win32lclintf.inc
+@@ -483,7 +483,7 @@ const
+ var
+   WindowClass: WndClass;
+ begin
+-  if WindowsVersion >= wv2000 then
++  if False then  //todo: make LazDockWnd work before!
+   begin
+     case AOperation of
+       disShow:

@@ -1,0 +1,32 @@
+diff --git a/lcl/include/dragmanager.inc b/lcl/include/dragmanager.inc
+index e94e580..0624547 100644
+--- a/lcl/include/dragmanager.inc
++++ b/lcl/include/dragmanager.inc
+@@ -644,6 +644,9 @@ begin
+     FWaitForTreshold := not AImmediate;
+     GetCursorPos(FStartPosition);
+ 
++    if (AControl.DragKind<>dkDock) and (AControl.HostDockSite <> nil) then
++      AControl.DragKind := dkDock; //make docked control dockable
++
+     case AControl.DragKind of
+       dkDrag: FPerformer := TDragPerformer.Create(Self, AControl);
+       dkDock: FPerformer := TDockPerformer.Create(Self, AControl);
+@@ -780,6 +783,7 @@ var
+   AIsDragging,
+   AIsDocking: Boolean;
+ begin
++{$IFDEF old}
+   // if this is TWinControl, and it have controls (not TWinControls)
+   // then we should check Dragging in those controls
+   AIsDocking := False;
+@@ -803,6 +807,9 @@ begin
+   // belongs to parent => we should allow parent to get capture
+   if not (AIsDocking and (CaptureControl = OldCaptureControl.Parent)) then
+     DragStop(AIsDragging);
++{$ELSE}
++//ignore changes, they prevent proper drag start and stop
++{$ENDIF}
+ end;
+ 
+ 
