@@ -136,7 +136,7 @@ begin
   Result := 0;
 end;
 
-function TWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+function TWidgetSet.CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN;
 begin
   Result:=ERROR;
   DebugLn('WARNING: CreateEllipticRgn not yet implemented.');

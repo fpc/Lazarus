@@ -1292,6 +1292,51 @@ begin
   Result := True;
 end;
 
+{
+  Gtk2 has no function to build an elliptical region so we approximate it to a
+  polygon. Our Ellipse is axis-aligned, so it's parametrization is:
+
+  X(t) = Xc + a * cos(t)
+  Y(t) = Yc + b * sin(t)
+
+  (Xc,Yc) is the center of the ellipse
+}
+function TGtk2WidgetSet.CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN;
+var
+  points: array of TGdkPoint;
+  n_points: Integer;
+  i, Xc, Yc, a, b: Integer;
+  t: Double;
+  GObject: PGdiObject;
+  RegionObj: PGdkRegion;
+begin
+  a := (X2 - X1) div 2;
+  b := (Y2 - Y1) div 2;
+  Xc := X1 + a;
+  Yc := Y1 + b;
+
+  // Choose a large enough amount of points
+  n_points := Max(X2-X1,Y2-Y1) * 4;
+  SetLength(points, n_points);
+  // And fill them iterating through the ellipse
+  for i := 0 to n_points - 1 do
+  begin
+    t := (i / n_points) * 2 * Pi;
+    points[i].X := Round(Xc + a * cos(t));
+    points[i].Y := Round(Yc + b * sin(t));
+  end;
+
+  GObject := NewGDIObject(gdiRegion);
+  RegionObj := gdk2.gdk_region_polygon(@points[0], n_points, GDK_WINDING_RULE);
+  GObject^.GDIRegionObject := RegionObj;
+
+  Result := HRGN(PtrUInt(GObject));
+
+  // Free the allocated array
+  SetLength(points, 0);
+  //DebugLn('TGtk2WidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateFontIndirect
   Params:  const LogFont: TLogFont
@@ -8964,10 +9009,21 @@ var
   Widget: PGtkWidget;
   Window: PGdkWindow;
   ShapeRegion: PGdkRegion;
+  LCLObject: TObject;
 begin
-  Widget := GetFixedWidget(PGtkWidget(hWnd));
-  if Widget = nil then
+  // For normal widgets we should use GetFixedWidget,
+  // but for TForm we should apply the region in the raw hWnd
+  LCLObject := GetLCLObject(PGtkWidget(hWnd));
+  if (LCLObject <> nil) and (LCLObject is TCustomForm) then
+  begin
     Widget := PGtkWidget(hWnd);
+  end
+  else
+  begin
+    Widget := GetFixedWidget(PGtkWidget(hWnd));
+    if Widget = nil then
+      Widget := PGtkWidget(hWnd);
+  end;
   if Widget = nil then
     Exit(0);
   Window := GetControlWindow(Widget);

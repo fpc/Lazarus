@@ -1092,9 +1092,9 @@ end;
 {------------------------------------------------------------------------------
   function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
  ------------------------------------------------------------------------------}
-function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+function CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN;
 begin
-  Result := WidgetSet.CreateEllipticRgn(p1,p2,p3,p4);
+  Result := WidgetSet.CreateEllipticRgn(X1, Y1, X2, Y2);
 end;
 
 {------------------------------------------------------------------------------
