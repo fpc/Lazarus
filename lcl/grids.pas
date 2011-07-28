@@ -836,6 +836,7 @@ type
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); virtual;
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure CheckLimitsWithError(const aCol, aRow: Integer);
+    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); virtual;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); virtual;
@@ -2948,7 +2949,8 @@ var
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    DebugLn('ScrollbarRange: Which=',SbToStr(Which),' Range=',IntToStr(aRange));
+    DebugLn('ScrollbarRange: Which=%s Range=%d Page=%d Pos=%d',
+      [SbToStr(Which),aRange,aPage,aPos]);
     {$endif}
     FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
@@ -2968,6 +2970,12 @@ begin
     if APage<0 then
       APage := 0;
     ScrollInfo.nPage := APage;
+    if (Which=SB_HORZ) and UseRightToLeftAlignment then begin
+      ScrollInfo.nPos := ScrollInfo.nMax-ScrollInfo.nPage-ScrollInfo.nPos;
+      {$Ifdef DbgScroll}
+      DebugLn('ScrollbarRange: RTL nPos=%d',[ScrollInfo.nPos]);
+      {$endif}
+    end;
     SetScrollInfo(Handle, Which, ScrollInfo, True);
   end;
 end;
@@ -2986,6 +2994,14 @@ begin
     else vis := false;
     FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    if (Which=SB_HORZ) and Vis and UseRightToLeftAlignment then begin
+      ScrollInfo.fMask := SIF_PAGE or SIF_RANGE;
+      GetScrollInfo(Handle, SB_HORZ, ScrollInfo);
+      Value := (ScrollInfo.nMax-ScrollInfo.nPage)-Value;
+      {$Ifdef DbgScroll}
+      DebugLn('ScrollbarPosition: Which=',SbToStr(Which), ' RTL Value= ',IntToStr(Value));
+      {$endif}
+    end;
     ScrollInfo.fMask := SIF_POS;
     ScrollInfo.nPos:= Value;
     SetScrollInfo(Handle, Which, ScrollInfo, Vis);
@@ -4044,8 +4060,10 @@ end;
 
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
 var
-  C,TL,CTL: Integer;
+  C,TL,CTL,aPos: Integer;
   R: TRect;
+  ScrollInfo: TScrollInfo;
+  aCode: Smallint;
 
   function NextColWidth(aCol: Integer; Delta: Integer): integer;
   begin
@@ -4064,13 +4082,30 @@ begin
   if not FGCache.ValidGrid or not HandleAllocated then
     exit;
 
+  aCode := message.ScrollCode;
+  if UseRightToLeftAlignment then begin
+    ScrollInfo.cbSize:=SizeOf(ScrollInfo);
+    ScrollInfo.fMask:= SIF_PAGE or SIF_RANGE;
+    GetScrollInfo(Handle, SB_HORZ, ScrollInfo);
+    aPos := (ScrollInfo.nMax-ScrollInfo.nPage)-Message.Pos;
+    case aCode of
+      SB_LINERIGHT: aCode := SB_LINELEFT;
+      SB_LINELEFT: aCode := SB_LINERIGHT;
+      SB_PAGERIGHT: aCode := SB_PAGELEFT;
+      SB_PAGELEFT: aCode := SB_PAGERIGHT;
+    end;
+    {$IfDef dbgScroll}
+    DebugLn('HSCROLL: (RTL) Code=%d Position=%d',[aCode, aPos]);
+    {$Endif}
+  end else
+    aPos := Message.Pos;
+
   with FGCache do begin
     TL:=  integer(PtrUInt(AccumWidth[ MaxTopLeft.X ])) - FixedWidth;
     CTL:= integer(PtrUInt(AccumWidth[ FTopLeft.X ])) - FixedWidth + TLColOff;
   end;
 
-  case message.ScrollCode of
-      // Scrolls to start / end of the text
+  case aCode of
     SB_TOP:        C := 0;
     SB_BOTTOM:
     begin
@@ -4086,10 +4121,10 @@ begin
     SB_PAGELEFT:   C := CTL - FGCache.ClientWidth;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
-      C := Message.Pos;
+      C := aPos;
     SB_THUMBTRACK:
       if goThumbTracking in Options then
-        C := Message.Pos
+        C := aPos
       else
         Exit;
       // Ends scrolling
@@ -4114,6 +4149,8 @@ begin
   {$Ifdef dbgScroll}
   DebugLn('HSCROLL: NewPosition=%d',[C]);
   {$Endif}
+  if UseRightToLeftAlignment then
+    C := FlipX(C);
   //TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
   if not OffsetToColRow(True, False, C, TL, FGCache.TLColOff) then begin
     {$Ifdef dbgScroll}
@@ -4131,12 +4168,16 @@ begin
   end else
   if goSmoothScroll in Options then begin
     CacheVisibleGrid;
-    R.Topleft:=Point(FGCache.FixedWidth, 0);
-    R.BottomRight:= FGCache.MaxClientXY;
-    if FGcache.MaxClientXY.X<FGCache.ClientWidth then
-      R.BottomRight.x := FGCache.ClientWidth;
-    if not (csCustomPaint in ControlState) then
+    R.Topleft := Point(FGCache.FixedWidth, 0);
+    R.BottomRight := Point(FGCache.ClientWidth, FGCache.ClientHeight);
+    if not (csCustomPaint in ControlState) then begin
+      if UseRightToLeftAlignment then begin
+        C := FlipX(R.Right);
+        R.Right := FlipX(R.Left)+ 1;
+        R.Left := C + 1;
+      end;
       InvalidateRect(Handle, @R, false);
+    end;
   end;
 
   if EditorMode then
@@ -6852,6 +6893,12 @@ procedure TCustomGrid.CheckLimitsWithError(const aCol, aRow: Integer);
 begin
   if (aCol < 0) or (aRow < 0) or (aCol >= ColCount) or (aRow >= RowCount) then
     raise EGridException.Create(rsGridIndexOutOfRange);
+end;
+
+procedure TCustomGrid.CMBiDiModeChanged(var Message: TLMessage);
+begin
+  VisualChange;
+  inherited CMBidiModeChanged(Message);
 end;
 
 procedure TCustomGrid.CMMouseLeave(var Message: TLMessage);
