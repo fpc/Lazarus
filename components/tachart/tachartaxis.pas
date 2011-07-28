@@ -569,7 +569,9 @@ var
   function TitleSize: Integer;
   begin
     if not Title.Visible or (Title.Caption = '') then exit(0);
-    Result := TPointBoolArr(Title.MeasureLabel(d, Title.Caption))[not v];
+    // Workaround for issue #19780, fix after upgrade to FPC 2.6.
+    with Title.MeasureLabel(d, Title.Caption) do
+      Result := IfThen(v, cx, cy);
     if Title.DistanceToCenter then
       Result := Result div 2;
     Result += d.Scale(Title.Distance);
@@ -579,8 +581,9 @@ var
   var
     sz, fm, lm: Integer;
   begin
-    sz := TPointBoolArr(
-      Marks.MeasureLabel(d, FMarkValues[AIndex].FText))[v] div 2;
+    // Workaround for issue #19780, fix after upgrade to FPC 2.6.
+    with Marks.MeasureLabel(d, FMarkValues[AIndex].FText) do
+      sz := IfThen(v, cy, cx) div 2;
     fm := sz - ACoord + ARMin;
     lm := sz - ARMax + ACoord;
     if v then

@@ -530,8 +530,9 @@ begin
   Result := 0;
   if not Visible then exit;
   for t in AValues do
-    Result := Max(
-      TPointBoolArr(MeasureLabel(ADrawer, t.FText))[AIsVertical], Result);
+    // Workaround for issue #19780, fix after upgrade to FPC 2.6.
+    with MeasureLabel(ADrawer, t.FText) do
+      Result := Max(IfThen(AIsVertical, cy, cx), Result);
   if Result = 0 then exit;
   if DistanceToCenter then
     Result := Result div 2;
