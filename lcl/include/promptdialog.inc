@@ -503,12 +503,11 @@ end;
 function CreateMessageDialog(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons): TForm;
 var
   PDlg: TPromptDialog;
-  aCaption: String;
   Btns: PLongInt;
   CancelValue, DefaultIndex, ButtonCount: Longint;
 begin
   Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount, False, mbOk);
-  PDlg := TPromptDialog.CreateMessageDialog(aCaption, Msg, DialogIds[DlgType], Btns, ButtonCount, DefaultIndex);
+  PDlg := TPromptDialog.CreateMessageDialog('', Msg, DialogIds[DlgType], Btns, ButtonCount, DefaultIndex);
   Result := TForm(PDlg);
   ReallocMem(Btns, 0);
 end;
