@@ -432,7 +432,7 @@
       <!-- property Visibility: published -->
       <element name="TFloatSpinEdit.OnChange">
         <short>The OnChange event is fired when spin edit value has changed.</short>
-        <descr>This OnChange event is based on <var>TCustomEdit.OnChange</var>, so it is fired both on changed made by the user and also for changes made by code. A change is defined as a modification which will cause the text displayed on the screen by the control to change. This corresponds to a change in the property Value of the control. The event is called after the change takes place, so the Value property will contain the new value.</descr>
+        <descr>This OnChange event is based on <var>TCustomEdit.OnChange</var>, so it is fired both on changes made by the user and also for changes made by code. A change is defined as a modification which will cause the text displayed on the screen by the control to change. This corresponds to a change in the property Value of the control. The event is called after the change takes place, so the Value property will contain the new value.</descr>
         <seealso>
           <link id="#LCL.StdCtrls.TCustomEdit.OnChange">TCustomEdit.OnChange</link>
           <link id="#LCL.Spin.TSpinEdit.OnChange">TSpinEdit.OnChange</link>
@@ -768,7 +768,7 @@
       <!-- property Visibility: published -->
       <element name="TSpinEdit.OnChange">
         <short>The OnChange event is fired when the spin edit value has changed.</short>
-        <descr>This OnChange event is based on <var>TCustomEdit.OnChange</var>, so it is fired both on changed made by the user and also for changes made by code. A change is defined as a modification which will cause the text displayed on the screen by the control to change. This corresponds to a change in the property Value of the control. The event is called after the change takes place, so the Value property will contain the new value.</descr>
+        <descr>This OnChange event is based on <var>TCustomEdit.OnChange</var>, so it is fired both on changes made by the user and also for changes made by code. A change is defined as a modification which will cause the text displayed on the screen by the control to change. This corresponds to a change in the property Value of the control. The event is called after the change takes place, so the Value property will contain the new value.</descr>
         <seealso>
           <link id="#LCL.StdCtrls.TCustomEdit.OnChange">TCustomEdit.OnChange</link>
           <link id="#LCL.Spin.TFloatSpinEdit.OnChange">TFloatSpinEdit.OnChange</link>
