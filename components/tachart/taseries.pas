@@ -273,6 +273,7 @@ type
   published
     property Active default true;
     property Arrow: TChartArrow read FArrow write SetArrow;
+    property AxisIndexX;
     property LineStyle: TLineStyle
       read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
@@ -621,18 +622,20 @@ procedure TConstantLine.Draw(ADrawer: IChartDrawer);
 var
   p: Integer;
 begin
+  if Pen.Style = psClear then exit;
+
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := FPen;
 
   with ParentChart do
     case LineStyle of
       lsHorizontal: begin
-        p := YGraphToImage(FPosition);
+        p := YGraphToImage(AxisToGraphX(FPosition));
         DrawLineHoriz(ADrawer, p);
         Arrow.Draw(ADrawer, Point(ClipRect.Right - 1, p), 0);
       end;
       lsVertical: begin
-        p := XGraphToImage(FPosition);
+        p := XGraphToImage(AxisToGraphX(FPosition));
         DrawLineVert(ADrawer, p);
         Arrow.Draw(ADrawer, Point(p, ClipRect.Top), -Pi / 2);
       end;
