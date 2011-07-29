@@ -55,7 +55,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(ASource: TPersistent); override;
     function GetParentComponent: TComponent; override;
     function HasParent: Boolean; override;
   public
@@ -118,7 +118,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(ASource: TPersistent); override;
 
     function AxisToGraph(AX: Double): Double; override;
     function GraphToAxis(AX: Double): Double; override;
@@ -133,8 +133,8 @@ type
   private
     FMaxValue: Double;
     FMinValue: Double;
-    function MaxValueIsStored: boolean;
-    function MinValueIsStored: boolean;
+    function MaxValueIsStored: Boolean;
+    function MinValueIsStored: Boolean;
     procedure SetMaxValue(AValue: Double);
     procedure SetMinValue(AValue: Double);
   protected
@@ -144,7 +144,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(ASource: TPersistent); override;
 
     function AxisToGraph(AX: Double): Double; override;
     function GraphToAxis(AX: Double): Double; override;
@@ -183,7 +183,7 @@ type
     procedure SetOnAxisToGraph(AValue: TTransformEvent);
     procedure SetOnGraphToAxis(AValue: TTransformEvent);
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(ASource: TPersistent); override;
 
     function AxisToGraph(AX: Double): Double; override;
     function GraphToAxis(AX: Double): Double; override;
@@ -340,13 +340,13 @@ end;
 
 { TAxisTransform }
 
-procedure TAxisTransform.Assign(Source: TPersistent);
+procedure TAxisTransform.Assign(ASource: TPersistent);
 begin
-  if Source is TAxisTransform then
-    with TAxisTransform(Source) do
+  if ASource is TAxisTransform then
+    with TAxisTransform(ASource) do
       Self.FEnabled := Enabled
   else
-    inherited Assign(Source);
+    inherited Assign(ASource);
 end;
 
 function TAxisTransform.AxisToGraph(AX: Double): Double;
@@ -558,14 +558,14 @@ end;
 
 { TLinearAxisTransform }
 
-procedure TLinearAxisTransform.Assign(Source: TPersistent);
+procedure TLinearAxisTransform.Assign(ASource: TPersistent);
 begin
-  if Source is TLinearAxisTransform then
-    with Source as TLinearAxisTransform do begin
+  if ASource is TLinearAxisTransform then
+    with ASource as TLinearAxisTransform do begin
       Self.FOffset := Offset;
       Self.FScale := Scale;
     end;
-  inherited Assign(Source);
+  inherited Assign(ASource);
 end;
 
 function TLinearAxisTransform.AxisToGraph(AX: Double): Double;
@@ -648,14 +648,14 @@ end;
 
 { TAutoScaleAxisTransform }
 
-procedure TAutoScaleAxisTransform.Assign(Source: TPersistent);
+procedure TAutoScaleAxisTransform.Assign(ASource: TPersistent);
 begin
-  if Source is TAutoScaleAxisTransform then
-    with TAutoScaleAxisTransform(Source) do begin
+  if ASource is TAutoScaleAxisTransform then
+    with TAutoScaleAxisTransform(ASource) do begin
       Self.FMinValue := FMinValue;
       Self.FMaxValue := FMaxValue;
     end;
-  inherited Assign(Source);
+  inherited Assign(ASource);
 end;
 
 function TAutoScaleAxisTransform.AxisToGraph(AX: Double): Double;
@@ -691,12 +691,12 @@ begin
     Result := (AX - FOffset) / FScale;
 end;
 
-function TAutoScaleAxisTransform.MaxValueIsStored: boolean;
+function TAutoScaleAxisTransform.MaxValueIsStored: Boolean;
 begin
   Result := MaxValue <> 1.0;
 end;
 
-function TAutoScaleAxisTransform.MinValueIsStored: boolean;
+function TAutoScaleAxisTransform.MinValueIsStored: Boolean;
 begin
   Result := MinValue <> 0.0;
 end;
@@ -734,14 +734,14 @@ end;
 
 { TUserDefinedAxisTransform }
 
-procedure TUserDefinedAxisTransform.Assign(Source: TPersistent);
+procedure TUserDefinedAxisTransform.Assign(ASource: TPersistent);
 begin
-  if Source is TUserDefinedAxisTransform then
-    with TUserDefinedAxisTransform(Source) do begin
+  if ASource is TUserDefinedAxisTransform then
+    with TUserDefinedAxisTransform(ASource) do begin
       Self.FOnAxisToGraph := FOnAxisToGraph;
       Self.FOnGraphToAxis := FOnGraphToAxis;
     end;
-  inherited Assign(Source);
+  inherited Assign(ASource);
 end;
 
 function TUserDefinedAxisTransform.AxisToGraph(AX: Double): Double;

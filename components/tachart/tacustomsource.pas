@@ -30,8 +30,8 @@ type
   EYCountError = class(EChartError);
 
   TChartValueText = record
-    FValue: Double;
     FText: String;
+    FValue: Double;
   end;
 
   TChartValueTextArray = array of TChartValueText;
