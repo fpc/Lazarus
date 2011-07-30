@@ -422,7 +422,6 @@ begin
   inherited Create(ACollection, ACollection.Owner as TCustomChart);
   FAxisPen := TChartAxisPen.Create;
   FAxisPen.OnChange := @StyleChanged;
-  FAxisPen.Visible := false;
   FListener := TListener.Create(@FTransformations, @StyleChanged);
   FMarks := TChartAxisMarks.Create(ACollection.Owner as TCustomChart);
   FMinors := TChartMinorAxisList.Create(Self);

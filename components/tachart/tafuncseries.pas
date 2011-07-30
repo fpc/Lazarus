@@ -628,7 +628,6 @@ constructor TCubicSplineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FBadDataPen := TBadDataChartPen.Create;
-  FBadDataPen.Color := clRed;
   FBadDataPen.OnChange := @StyleChanged;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;

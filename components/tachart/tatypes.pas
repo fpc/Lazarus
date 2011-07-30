@@ -57,7 +57,7 @@ type
   public
     constructor Create; override;
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(ASource: TPersistent); override;
   published
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
@@ -405,18 +405,17 @@ uses
 
 { TChartPen }
 
-procedure TChartPen.Assign(Source: TPersistent);
+procedure TChartPen.Assign(ASource: TPersistent);
 begin
-  if Source is TChartPen then
-    with TChartPen(Source) do
-      FVisible := Visible;
-  inherited Assign(Source);
+  if ASource is TChartPen then
+    FVisible := TChartPen(ASource).Visible;
+  inherited Assign(ASource);
 end;
 
 constructor TChartPen.Create;
 begin
   inherited Create;
-  FVisible := true;
+  SetPropDefaults(Self, ['Color', 'Style', 'Visible']);
 end;
 
 procedure TChartPen.SetVisible(AValue: Boolean);
@@ -629,7 +628,6 @@ begin
   InitHelper(FFont, TFont);
   FFont.Color := clBlue;
   InitHelper(FFrame, TChartTitleFramePen);
-  FFrame.Visible := false;
   FMargin := DEF_MARGIN;
   FText := TStringList.Create;
   TStringList(FText).OnChange := @StyleChanged;
@@ -901,7 +899,6 @@ begin
   inherited Create(AOwner);
   FDistance := DEF_MARKS_DISTANCE;
   FLabelBrush.Color := clYellow;
-  FLinkPen.Color := clWhite;
 end;
 
 { TSeriesPointer }

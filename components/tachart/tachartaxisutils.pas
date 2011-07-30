@@ -78,11 +78,6 @@ type
   TChartAxisMarkToTextEvent =
     procedure (var AText: String; AMark: Double) of object;
 
-  TChartAxisGridPen = class(TChartPen)
-  published
-    property Style default psDot;
-  end;
-
   {$IFNDEF fpdoc} // Workaround for issue #18549.
   TBasicChartAxisMarks =
     specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>;
@@ -147,7 +142,10 @@ type
     property YIndex;
   end;
 
-  { TChartBasicAxis }
+  TChartAxisGridPen = class(TChartPen)
+  published
+    property Style default psDot;
+  end;
 
   TChartBasicAxis = class(TCollectionItem)
   strict private
@@ -487,7 +485,6 @@ constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := DEF_TITLE_DISTANCE;
-  Frame.Style := psClear;
   FLabelBrush.Style := bsClear;
   FVisible := false;
 end;
@@ -515,7 +512,6 @@ constructor TCustomChartAxisMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := 1;
-  Frame.Style := psClear;
   FLabelBrush.Style := bsClear;
 end;
 
@@ -624,7 +620,6 @@ begin
   FArrow := TChartArrow.Create(AChart);
   FGrid := TChartAxisGridPen.Create;
   FGrid.OnChange := @StyleChanged;
-  FGrid.Style := psDot;
   // FMarks must be created in descendants.
   FTickColor := clBlack;
   FVisible := true;
