@@ -110,6 +110,7 @@ type
     FInverted: Boolean;
     FMinors: TChartMinorAxisList;
     FOnMarkToText: TChartAxisMarkToTextEvent;
+    FRange: TChartRange;
     FTitle: TChartAxisTitle;
     FTransformations: TChartAxisTransformations;
     FZPosition: TChartDistance;
@@ -122,6 +123,7 @@ type
     procedure SetMarks(AValue: TChartAxisMarks);
     procedure SetMinors(AValue: TChartMinorAxisList);
     procedure SetOnMarkToText(AValue: TChartAxisMarkToTextEvent);
+    procedure SetRange(AValue: TChartRange);
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetTransformations(AValue: TChartAxisTransformations);
     procedure SetZPosition(AValue: TChartDistance);
@@ -155,6 +157,7 @@ type
     property Inverted: boolean read FInverted write SetInverted default false;
     property Marks: TChartAxisMarks read GetMarks write SetMarks;
     property Minors: TChartMinorAxisList read FMinors write SetMinors;
+    property Range: TChartRange read FRange write SetRange;
     property TickLength default DEF_TICK_LENGTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
     property Transformations: TChartAxisTransformations
@@ -233,6 +236,8 @@ type
     var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer);
   function TransformByAxis(
     AAxisList: TChartAxisList; AIndex: Integer): TChartAxisTransformations;
+  procedure UpdateBoundsByAxisRange(
+    AAxisList: TChartAxisList; AIndex: Integer; var AMin, AMax: Double);
 
 implementation
 
@@ -275,6 +280,18 @@ begin
     Result := AAxisList[AIndex].Transformations;
   if Result = nil then
     Result := VIdentityTransform;
+end;
+
+procedure UpdateBoundsByAxisRange(
+  AAxisList: TChartAxisList; AIndex: Integer; var AMin, AMax: Double);
+begin
+  if not InRange(AIndex, 0, AAxisList.Count - 1) then exit;
+  with AAxisList[AIndex].Range do begin
+    if UseMin then
+      AMin := Min;
+    if UseMax then
+      AMax := Max;
+  end;
 end;
 
 { TChartAxisEnumerator }
@@ -407,6 +424,7 @@ begin
   FListener := TListener.Create(@FTransformations, @StyleChanged);
   FMarks := TChartAxisMarks.Create(ACollection.Owner as TCustomChart);
   FMinors := TChartMinorAxisList.Create(Self);
+  FRange := TChartRange.Create(ACollection.Owner as TCustomChart);
   TickLength := DEF_TICK_LENGTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
 end;
@@ -414,6 +432,7 @@ end;
 destructor TChartAxis.Destroy;
 begin
   FreeAndNil(FTitle);
+  FreeAndNil(FRange);
   FreeAndNil(FMinors);
   FreeAndNil(FListener);
   FreeAndNil(FHelper);
@@ -708,6 +727,13 @@ begin
   if TMethod(FOnMarkToText) = TMethod(AValue) then exit;
   FOnMarkToText := AValue;
   StyleChanged(Self);
+end;
+
+procedure TChartAxis.SetRange(AValue: TChartRange);
+begin
+  if FRange = AValue then exit;
+  FRange.Assign(AValue);
+  StyleChanged(Range);
 end;
 
 procedure TChartAxis.SetTitle(AValue: TChartAxisTitle);

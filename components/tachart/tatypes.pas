@@ -307,6 +307,25 @@ type
 
   EExtentError = class(EChartError);
 
+  TChartRange = class(TChartElement)
+  private
+    FBounds: array [1..2] of Double;
+    FUseBounds: array [1..2] of Boolean;
+
+    function GetBounds(AIndex: Integer): Double;
+    function GetUseBounds(AIndex: integer): Boolean;
+    function IsBoundsStored(AIndex: Integer): Boolean;
+    procedure SetBounds(AIndex: Integer; const AValue: Double);
+    procedure SetUseBounds(AIndex: Integer; AValue: Boolean);
+  public
+    procedure CheckBoundsOrder;
+  published
+    property Max: Double index 2 read GetBounds write SetBounds stored IsBoundsStored;
+    property Min: Double index 1 read GetBounds write SetBounds stored IsBoundsStored;
+    property UseMax: Boolean index 2 read GetUseBounds write SetUseBounds default false;
+    property UseMin: Boolean index 1 read GetUseBounds write SetUseBounds default false;
+  end;
+
   { TChartExtent }
 
   TChartExtent = class(TChartElement)
@@ -316,20 +335,20 @@ type
 
     function GetBounds(AIndex: Integer): Double;
     function GetUseBounds(AIndex: integer): Boolean;
-    function IsBoundsStored(AIndex: Integer): boolean;
+    function IsBoundsStored(AIndex: Integer): Boolean;
     procedure SetBounds(AIndex: Integer; const AValue: Double);
     procedure SetUseBounds(AIndex: Integer; AValue: Boolean);
   public
     procedure CheckBoundsOrder;
   published
-    property XMin: Double index 1 read GetBounds write SetBounds stored IsBoundsStored;
-    property YMin: Double index 2 read GetBounds write SetBounds stored IsBoundsStored;
-    property XMax: Double index 3 read GetBounds write SetBounds stored IsBoundsStored;
-    property YMax: Double index 4 read GetBounds write SetBounds stored IsBoundsStored;
-    property UseXMin: Boolean index 1 read GetUseBounds write SetUseBounds default false;
-    property UseYMin: Boolean index 2 read GetUseBounds write SetUseBounds default false;
     property UseXMax: Boolean index 3 read GetUseBounds write SetUseBounds default false;
+    property UseXMin: Boolean index 1 read GetUseBounds write SetUseBounds default false;
     property UseYMax: Boolean index 4 read GetUseBounds write SetUseBounds default false;
+    property UseYMin: Boolean index 2 read GetUseBounds write SetUseBounds default false;
+    property XMax: Double index 3 read GetBounds write SetBounds stored IsBoundsStored;
+    property XMin: Double index 1 read GetBounds write SetBounds stored IsBoundsStored;
+    property YMax: Double index 4 read GetBounds write SetBounds stored IsBoundsStored;
+    property YMin: Double index 2 read GetBounds write SetBounds stored IsBoundsStored;
   end;
 
   TRectArray = array [1..4] of Integer;
@@ -1015,17 +1034,45 @@ begin
   StyleChanged(Self);
 end;
 
-{ TChartExtent }
+{ TChartRange }
 
-function TChartExtent.GetUseBounds(AIndex: Integer): Boolean;
+procedure TChartRange.CheckBoundsOrder;
+begin
+  if UseMin and UseMax and (Min >= Max) then begin
+    UseMin := false;
+    UseMax := false;
+    raise EExtentError.Create('ChartRange: Min >= Max');
+  end;
+end;
+
+function TChartRange.GetBounds(AIndex: Integer): Double;
+begin
+  Result := FBounds[AIndex];
+end;
+
+function TChartRange.GetUseBounds(AIndex: integer): Boolean;
 begin
   Result := FUseBounds[AIndex];
 end;
 
-function TChartExtent.IsBoundsStored(AIndex: Integer): boolean;
+function TChartRange.IsBoundsStored(AIndex: Integer): Boolean;
 begin
-  Result := FExtent.coords[AIndex] <> 0;
+  Result := FBounds[AIndex] <> 0;
 end;
+
+procedure TChartRange.SetBounds(AIndex: Integer; const AValue: Double);
+begin
+  FBounds[AIndex] := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartRange.SetUseBounds(AIndex: Integer; AValue: Boolean);
+begin
+  FUseBounds[AIndex] := AValue;
+  StyleChanged(Self);
+end;
+
+{ TChartExtent }
 
 procedure TChartExtent.CheckBoundsOrder;
 begin
@@ -1046,15 +1093,25 @@ begin
   Result := FExtent.coords[AIndex];
 end;
 
-procedure TChartExtent.SetUseBounds(AIndex: Integer; AValue: Boolean);
+function TChartExtent.GetUseBounds(AIndex: Integer): Boolean;
 begin
-  FUseBounds[AIndex] := AValue;
-  StyleChanged(Self);
+  Result := FUseBounds[AIndex];
+end;
+
+function TChartExtent.IsBoundsStored(AIndex: Integer): Boolean;
+begin
+  Result := FExtent.coords[AIndex] <> 0;
 end;
 
 procedure TChartExtent.SetBounds(AIndex: Integer; const AValue: Double);
 begin
   FExtent.coords[AIndex] := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartExtent.SetUseBounds(AIndex: Integer; AValue: Boolean);
+begin
+  FUseBounds[AIndex] := AValue;
   StyleChanged(Self);
 end;
 

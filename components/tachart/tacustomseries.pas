@@ -307,6 +307,8 @@ procedure TCustomChartSeries.GetGraphBounds(var ABounds: TDoubleRect);
 begin
   GetBounds(ABounds);
   with ABounds do begin
+    UpdateBoundsByAxisRange(FChart.AxisList, AxisIndexX, a.X, b.X);
+    UpdateBoundsByAxisRange(FChart.AxisList, AxisIndexY, a.Y, b.Y);
     TransformByAxis(FChart.AxisList, AxisIndexX).UpdateBounds(a.X, b.X);
     TransformByAxis(FChart.AxisList, AxisIndexY).UpdateBounds(a.Y, b.Y);
     if IsRotated then begin

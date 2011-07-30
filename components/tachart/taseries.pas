@@ -1222,7 +1222,7 @@ var
   ic: IChartTCanvasDrawer;
 begin
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(FOnDraw) then
-     FOnDraw(ic.Canvas, FChart.ClipRect);
+    FOnDraw(ic.Canvas, FChart.ClipRect);
 end;
 
 procedure TUserDrawnSeries.GetBounds(var ABounds: TDoubleRect);
