@@ -93,6 +93,10 @@ begin
     with TChartAxis.Create(ChartAxisGroup.AxisList) do begin
       Transformations := tr;
       Marks.AtDataOnly := true;
+      Marks.Range.UseMin := true;
+      Marks.Range.UseMax := true;
+      Marks.Range.Min := 1;
+      Marks.Range.Max := 9;
       Marks.LabelFont.Orientation := 900;
       Marks.LabelFont.Color := COLORS[i];
       TickColor := COLORS[i];
