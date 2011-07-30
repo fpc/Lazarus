@@ -590,6 +590,7 @@ type
     function  DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger; AContinueCommand: TGDBMIDebuggerCommand);
+    destructor Destroy; override;
     function  DebugText: String; override;
     property ContinueCommand: TGDBMIDebuggerCommand read FContinueCommand;
     property Success: Boolean read FSuccess;
@@ -3967,8 +3968,7 @@ begin
     if DebuggerState = dsPause
     then ProcessFrame;
   finally
-    if assigned(FContinueCommand)
-    then FContinueCommand.Free;
+    ReleaseAndNil(FContinueCommand);
   end;
 
   FSuccess := True;
@@ -3978,8 +3978,16 @@ constructor TGDBMIDebuggerCommandStartDebugging.Create(AOwner: TGDBMIDebugger;
   AContinueCommand: TGDBMIDebuggerCommand);
 begin
   inherited Create(AOwner);
+  // AContinueCommand, takes over the current reference.
+  // Caller will never Release it. So TGDBMIDebuggerCommandStartDebugging must do this
   FContinueCommand := AContinueCommand;
   FSuccess := False;
+end;
+
+destructor TGDBMIDebuggerCommandStartDebugging.Destroy;
+begin
+  ReleaseAndNil(FContinueCommand);
+  inherited Destroy;
 end;
 
 function TGDBMIDebuggerCommandStartDebugging.DebugText: String;
