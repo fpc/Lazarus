@@ -99,8 +99,6 @@ type
     dfForceBreak        // Debugger supports insertion of not yet known brekpoints
   );
 
-  TGDBMIRTLCallingConvention = (ccDefault, ccRegCall, ccStdCall);
-
   // Target info
   TGDBMITargetInfo = record
     TargetPID: Integer;
@@ -121,7 +119,6 @@ type
     FConsoleTty: String;
     {$ENDIF}
     FGDBOptions: String;
-    FOverrideRTLCallingConvention: TGDBMIRTLCallingConvention;
     FTimeoutForEval: Integer;
     FWarnOnTimeOut: Boolean;
     procedure SetTimeoutForEval(const AValue: Integer);
@@ -130,7 +127,6 @@ type
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
   published
-    property OverrideRTLCallingConvention: TGDBMIRTLCallingConvention read FOverrideRTLCallingConvention write FOverrideRTLCallingConvention;
     property Debugger_Startup_Options: String read FGDBOptions write FGDBOptions;
     {$IFDEF UNIX}
     property ConsoleTty: String read FConsoleTty write FConsoleTty;
@@ -5306,7 +5302,6 @@ end;
 
 constructor TGDBMIDebuggerProperties.Create;
 begin
-  FOverrideRTLCallingConvention := ccDefault;
   {$IFDEF UNIX}
   FConsoleTty := '';
   {$ENDIF}
@@ -5323,7 +5318,6 @@ procedure TGDBMIDebuggerProperties.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   FGDBOptions := TGDBMIDebuggerProperties(Source).FGDBOptions;
-  FOverrideRTLCallingConvention := TGDBMIDebuggerProperties(Source).FOverrideRTLCallingConvention;
   {$IFDEF UNIX}
   FConsoleTty := TGDBMIDebuggerProperties(Source).FConsoleTty;
   {$ENDIF}
