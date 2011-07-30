@@ -111,10 +111,18 @@ type
   end;
   PGDBMITargetInfo = ^TGDBMITargetInfo;
 
+  TConvertToGDBPathType = (cgptNone, cgptCurDir, cgptExeName);
+
+  TGDBMIDebuggerFilenameEncoding = (
+    gdfeNone, gdfeDefault, gdfeEscSpace, gdfeQuote
+  );
+
   { TGDBMIDebuggerProperties }
 
   TGDBMIDebuggerProperties = class(TDebuggerProperties)
   private
+    FEncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding;
+    FEncodeExeFileName: TGDBMIDebuggerFilenameEncoding;
     {$IFDEF UNIX}
     FConsoleTty: String;
     {$ENDIF}
@@ -133,6 +141,10 @@ type
     {$ENDIF}
     property TimeoutForEval: Integer read FTimeoutForEval write SetTimeoutForEval;
     property WarnOnTimeOut: Boolean  read FWarnOnTimeOut write SetWarnOnTimeOut;
+    property EncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding
+             read FEncodeCurrentDirPath write FEncodeCurrentDirPath default gdfeDefault;
+    property EncodeExeFileName: TGDBMIDebuggerFilenameEncoding
+             read FEncodeExeFileName write FEncodeExeFileName default gdfeDefault;
   end;
 
   TGDBMIDebugger = class;
@@ -376,6 +388,7 @@ type
     procedure QueueExecuteLock;
     procedure QueueExecuteUnlock;
 
+    function ConvertToGDBPath(APath: string; ConvType: TConvertToGDBPathType = cgptNone): string;
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
     function  CreateLocals: TLocalsSupplier; override;
@@ -1440,17 +1453,48 @@ begin
   then Result := 8;
 end;
 
-function ConvertToGDBPath(APath: string): string;
+function TGDBMIDebugger.ConvertToGDBPath(APath: string; ConvType: TConvertToGDBPathType = cgptNone): string;
 // GDB wants forward slashes in its filenames, even on win32.
+var
+  esc: TGDBMIDebuggerFilenameEncoding;
 begin
   Result := APath;
   // no need to process empty filename
-  if Result='' then exit;
+  if Result = '' then exit;
+
+  case ConvType of
+    cgptNone: esc := gdfeNone;
+    cgptCurDir:
+      begin
+        esc := TGDBMIDebuggerProperties(GetProperties).FEncodeCurrentDirPath;
+        //TODO: check FGDBOS
+        //Unix/Windows can use gdfeEscSpace, but work without too;
+        if esc = gdfeDefault
+        then esc :=
+        {$IFDEF darwin} gdfeQuote;
+        {$ELSE}         gdfeNone;
+        {$ENDIF}
+      end;
+    cgptExeName:
+      begin
+        esc := TGDBMIDebuggerProperties(GetProperties).FEncodeExeFileName;
+        if esc = gdfeDefault
+        then esc :=
+        //Unix/Windows can use gdfeEscSpace, but work without too;
+        {$IFDEF darwin} gdfeEscSpace;
+        {$ELSE}         gdfeNone;
+        {$ENDIF}
+      end;
+  end;
 
   {$WARNINGS off}
   if DirectorySeparator <> '/' then
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
   {$WARNINGS on}
+  if esc = gdfeEscSpace
+  then Result := StringReplace(Result, ' ', '\ ', [rfReplaceAll]);
+  if esc = gdfeQuote
+  then Result := '\"' + Result + '\"';
   Result := '"' + Result + '"';
 end;
 
@@ -3727,7 +3771,7 @@ begin
       // otherwise on second run within the same gdb session the workingdir
       // is set to c:\windows
       ExecuteCommand('-environment-cd %s', ['.'], []);
-      ExecuteCommand('-environment-cd %s', [ConvertToGDBPath(UTF8ToSys(FTheDebugger.WorkingDir))], [cfCheckError]);
+      ExecuteCommand('-environment-cd %s', [FTheDebugger.ConvertToGDBPath(UTF8ToSys(FTheDebugger.WorkingDir), cgptCurDir)], [cfCheckError]);
     end;
 
     TargetInfo^.TargetFlags := [tfHasSymbols]; // Set until proven otherwise
@@ -5311,6 +5355,8 @@ begin
   FTimeoutForEval := -1;
   {$ENDIF}
   FWarnOnTimeOut := True;
+  FEncodeCurrentDirPath := gdfeDefault;
+  FEncodeExeFileName := gdfeDefault;
   inherited;
 end;
 
@@ -5323,6 +5369,8 @@ begin
   {$ENDIF}
   FTimeoutForEval := TGDBMIDebuggerProperties(Source).FTimeoutForEval;
   FWarnOnTimeOut  := TGDBMIDebuggerProperties(Source).FWarnOnTimeOut;
+  FEncodeCurrentDirPath := TGDBMIDebuggerProperties(Source).FEncodeCurrentDirPath;
+  FEncodeExeFileName := TGDBMIDebuggerProperties(Source).FEncodeExeFileName;
 end;
 
 
@@ -5341,7 +5389,7 @@ var
   Cmd: TGDBMIDebuggerCommandChangeFilename;
 begin
   Result := False;
-  S := ConvertToGDBPath(UTF8ToSys(FileName));
+  S := ConvertToGDBPath(UTF8ToSys(FileName), cgptExeName);
 
   Cmd := TGDBMIDebuggerCommandChangeFilename.Create(Self, S);
   Cmd.AddReference;
