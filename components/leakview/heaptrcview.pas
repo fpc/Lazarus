@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, LeakInfo, LazIDEIntf, MenuIntf, contnrs, Clipbrd,
-  XMLConf;
+  XMLConf, LCLProc;
 
 type
   TJumpProc = procedure (Sender: TObject; const SourceName: string; Line: integer) of object;
@@ -415,11 +415,24 @@ begin
   Result:=(p.X>=r.Left) and (p.X<=r.Right) and (p.y>=r.Top) and (p.y<=r.Bottom);
 end;
 
-function inAnyMonitor(b: TRect): Boolean;
+procedure inAnyMonitor(var b: TRect);
+var
+  m: TMonitor;
+  mb: TRect;
+const
+  MinOverLap = 40;
 begin
-  Result:=Assigned(Screen.MonitorFromRect(b));
-  if not Result then
-    Result:=PointInRect( Point(b.Left, b.Top), Bounds(0, 0, Screen.Width, Screen.Height));
+  m := Screen.MonitorFromRect(b); // Nearest Monitor
+  if assigned(m)
+  then mb := m.BoundsRect
+  else mb := Screen.WorkAreaRect;
+
+  // make sure top(window-bar) is visible
+  if b.Top < mb.Top then OffsetRect(b, 0, mb.Top-b.Top);
+  if b.Top + MinOverLap > mb.Bottom then OffsetRect(b, 0, mb.Top-b.Top-MinOverLap);
+  // move left/right
+  if b.Left + MinOverLap > mb.Right then OffsetRect(b, mb.Right-b.Left-MinOverLap, 0);
+  if b.Right - MinOverLap < mb.Left then OffsetRect(b, mb.Left-b.Right+MinOverLap, 0);
 end;
 
 procedure THeapTrcViewForm.LoadState(cfg:TXMLConfig);
@@ -454,7 +467,7 @@ begin
 
   except
   end;
-  if not inAnyMonitor(b) then  b:=Bounds(40,40, 200, 200);
+  inAnyMonitor(b);
 
   FormStyle:=InitFormStyle[isTop];
   BoundsRect:=b;
