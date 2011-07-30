@@ -404,8 +404,10 @@ procedure TChartAxis.Assign(ASource: TPersistent);
 begin
   if ASource is TChartAxis then
     with TChartAxis(ASource) do begin
+      Self.FAxisPen.Assign(AxisPen);
       Self.FGroup := Group;
       Self.FInverted := Inverted;
+      Self.FRange.Assign(Range);
       Self.FTitle.Assign(Title);
       Self.FTransformations := Transformations;
       Self.FZPosition := ZPosition;
