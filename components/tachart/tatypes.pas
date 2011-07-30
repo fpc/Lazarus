@@ -318,6 +318,7 @@ type
     procedure SetBounds(AIndex: Integer; const AValue: Double);
     procedure SetUseBounds(AIndex: Integer; AValue: Boolean);
   public
+    procedure Assign(ASource: TPersistent); override;
     procedure CheckBoundsOrder;
   published
     property Max: Double index 2 read GetBounds write SetBounds stored IsBoundsStored;
@@ -339,6 +340,7 @@ type
     procedure SetBounds(AIndex: Integer; const AValue: Double);
     procedure SetUseBounds(AIndex: Integer; AValue: Boolean);
   public
+    procedure Assign(ASource: TPersistent); override;
     procedure CheckBoundsOrder;
   published
     property UseXMax: Boolean index 3 read GetUseBounds write SetUseBounds default false;
@@ -1036,6 +1038,16 @@ end;
 
 { TChartRange }
 
+procedure TChartRange.Assign(ASource: TPersistent);
+begin
+  if ASource is TChartRange then
+    with TChartRange(ASource) do begin
+      Self.FBounds := FBounds;
+      Self.FUseBounds := FUseBounds;
+    end;
+  inherited Assign(ASource);
+end;
+
 procedure TChartRange.CheckBoundsOrder;
 begin
   if UseMin and UseMax and (Min >= Max) then begin
@@ -1073,6 +1085,16 @@ begin
 end;
 
 { TChartExtent }
+
+procedure TChartExtent.Assign(ASource: TPersistent);
+begin
+  if ASource is TChartExtent then
+    with TChartExtent(ASource) do begin
+      Self.FExtent := FExtent;
+      Self.FUseBounds := FUseBounds;
+    end;
+  inherited Assign(ASource);
+end;
 
 procedure TChartExtent.CheckBoundsOrder;
 begin
