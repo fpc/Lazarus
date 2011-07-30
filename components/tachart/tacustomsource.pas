@@ -51,10 +51,10 @@ type
   { TCustomChartSource }
 
   TCustomChartSource = class(TComponent)
-  private
+  strict private
     FBroadcaster: TBroadcaster;
     FUpdateCount: Integer;
-  protected
+  strict protected
     FExtent: TDoubleRect;
     FExtentIsValid: Boolean;
     FValuesTotal: Double;
@@ -100,7 +100,7 @@ type
   { TChartSourceBuffer }
 
   TChartSourceBuffer = class
-  private
+  strict private
     FBuf: array of TChartDataItem;
     FCount: Cardinal;
     FStart: Cardinal;

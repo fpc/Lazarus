@@ -34,7 +34,7 @@ type
   { TCustomChartSeries }
 
   TCustomChartSeries = class(TBasicChartSeries)
-  private
+  strict private
     FAxisIndexX: Integer;
     FAxisIndexY: Integer;
     FLegend: TChartSeriesLegend;
@@ -60,11 +60,11 @@ type
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
 
-  protected
+  strict protected
     function GetIndex: Integer; override;
     procedure SetIndex(AValue: Integer); override;
 
-  protected
+  public
     function AxisToGraph(const APoint: TDoublePoint): TDoublePoint;
     function AxisToGraphX(AX: Double): Double; override;
     function AxisToGraphY(AY: Double): Double; override;
@@ -73,7 +73,6 @@ type
     function GraphToAxis(APoint: TDoublePoint): TDoublePoint;
     function GraphToAxisX(AX: Double): Double; override;
     function GraphToAxisY(AY: Double): Double; override;
-
     function IsRotated: Boolean;
 
   public
@@ -106,7 +105,7 @@ type
   { TChartSeries }
 
   TChartSeries = class(TCustomChartSeries)
-  private
+  strict private
     FBuiltinSource: TCustomChartSource;
     FListener: TListener;
     FMarks: TChartMarks;
@@ -187,13 +186,13 @@ type
   { TBasicPointSeries }
 
   TBasicPointSeries = class(TChartSeries)
-  private
+  strict private
     FMarkPositions: TLinearMarkPositions;
     function GetLabelDirection(AIndex: Integer): TLabelDirection;
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetPointer(AValue: TSeriesPointer);
     procedure SetUseReticule(AValue: Boolean);
-  protected
+  strict protected
     FGraphPoints: array of TDoublePoint;
     FLoBound: Integer;
     FMinXRange: Double;
@@ -201,6 +200,7 @@ type
     FUpBound: Integer;
     FUseReticule: Boolean;
 
+  protected
     procedure AfterAdd; override;
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
@@ -214,10 +214,10 @@ type
     procedure UpdateGraphPoints(AIndex: Integer);
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
     procedure UpdateMinXRange;
+
+    property Pointer: TSeriesPointer read FPointer write SetPointer;
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;
-  protected
-    property Pointer: TSeriesPointer read FPointer write SetPointer;
   public
     destructor Destroy; override;
   public

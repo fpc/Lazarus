@@ -51,7 +51,7 @@ type
   { TChartPen }
 
   TChartPen = class(TPen)
-  private
+  strict private
     FVisible: Boolean;
     procedure SetVisible(AValue: Boolean);
   public
@@ -67,7 +67,7 @@ type
   { TChartElement }
 
   TChartElement = class(TPersistent)
-  protected
+  strict protected
     FVisible: Boolean;
     procedure SetVisible(AValue: Boolean);
   protected
@@ -275,7 +275,7 @@ type
   { TSeriesPointer }
 
   TSeriesPointer = class(TChartElement)
-  private
+  strict private
     FBrush: TBrush;
     FHorizSize: Integer;
     FPen: TChartPen;
@@ -308,7 +308,7 @@ type
   EExtentError = class(EChartError);
 
   TChartRange = class(TChartElement)
-  private
+  strict private
     FBounds: array [1..2] of Double;
     FUseBounds: array [1..2] of Boolean;
 
@@ -330,7 +330,7 @@ type
   { TChartExtent }
 
   TChartExtent = class(TChartElement)
-  private
+  strict private
     FExtent: TDoubleRect;
     FUseBounds: array [1..4] of Boolean;
 
@@ -358,7 +358,7 @@ type
   { TChartMargins }
 
   TChartMargins = class(TChartElement)
-  private
+  strict private
     FData: record
       case Integer of
         0: (FRect: TRect;);
@@ -379,7 +379,7 @@ type
   end;
 
   TChartArrow = class(TChartElement)
-  private
+  strict private
     FLength: TChartDistance;
     FWidth: TChartDistance;
     procedure SetLength(AValue: TChartDistance);

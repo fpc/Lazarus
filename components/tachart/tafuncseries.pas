@@ -40,7 +40,7 @@ type
   { TBasicFuncSeries }
 
   TBasicFuncSeries = class(TCustomChartSeries)
-  private
+  strict private
     FExtent: TChartExtent;
     procedure SetExtent(AValue: TChartExtent);
   protected
@@ -61,7 +61,7 @@ type
   { TFuncSeries }
 
   TFuncSeries = class(TBasicFuncSeries)
-  private
+  strict private
     FDomainExclusions: TIntervalList;
     FOnCalculate: TFuncCalculateEvent;
     FPen: TChartPen;
@@ -99,7 +99,7 @@ type
   { TBSplineSeries }
 
   TBSplineSeries = class(TBasicPointSeries)
-  private
+  strict private
     FDegree: TSplineDegree;
     FPen: TChartPen;
     FStep: TFuncSeriesStep;
@@ -198,7 +198,7 @@ type
   { TColorMapSeries }
 
   TColorMapSeries = class(TBasicFuncSeries)
-  private
+  strict private
     FBrush: TBrush;
     FColorSource: TCustomChartSource;
     FColorSourceListener: TListener;
@@ -337,9 +337,6 @@ begin
   OnCalculate(AX, Result)
 end;
 
-type
-  TCustomSeriesCrack = class(TCustomChartSeries);
-
 procedure DrawFunction(
   ADrawer: IChartDrawer; ASeries: TCustomChartSeries;
   ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer);
@@ -388,10 +385,10 @@ var
   hint: Integer;
   xg, xa, xg1, xa1, xmax, graphStep: Double;
 begin
-  chart := TCustomSeriesCrack(ASeries).FChart;
+  chart := ASeries.ParentChart;
   r := chart.CurrentExtent;
 
-  with TCustomSeriesCrack(ASeries) do
+  with ASeries do
     if IsRotated then begin
       axisToGraphXr := @AxisToGraphY;
       axisToGraphYr := @AxisToGraphX;
@@ -444,9 +441,7 @@ begin
   else
     exit;
   ADrawer.Pen := Pen;
-  DrawFunction(
-    ADrawer, TCustomSeriesCrack(TCustomChartSeries(Self)),
-    DomainExclusions, calc, Step);
+  DrawFunction(ADrawer, Self, DomainExclusions, calc, Step);
 end;
 
 procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);

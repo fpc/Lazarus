@@ -67,7 +67,7 @@ type
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); virtual;
 
-  protected
+  public
     function AxisToGraphX(AX: Double): Double; virtual;
     function AxisToGraphY(AY: Double): Double; virtual;
     function GraphToAxisX(AX: Double): Double; virtual;

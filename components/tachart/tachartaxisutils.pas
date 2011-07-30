@@ -46,7 +46,7 @@ type
   { TChartAxisTitle }
 
   TChartAxisTitle = class(TCustomChartAxisTitle)
-  private
+  strict private
     FCaption: String;
 
     function GetFont: TFont;

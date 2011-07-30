@@ -122,7 +122,7 @@ type
   { TIndexedComponent }
 
   TIndexedComponent = class(TComponent)
-  protected
+  strict protected
     function GetIndex: Integer; virtual; abstract;
     procedure SetIndex(AValue: Integer); virtual; abstract;
   public
