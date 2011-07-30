@@ -260,6 +260,8 @@ function RoundChecked(A: Double): Integer; inline;
 function SafeInfinity: Double; inline;
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 
+procedure SetPropDefaults(AObject: TPersistent; APropNames: array of String);
+
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
 procedure Unused(const A1, A2);
@@ -281,7 +283,7 @@ resourcestring
 implementation
 
 uses
-  StrUtils;
+  StrUtils, TypInfo;
 
 const
   ORIENTATION_UNITS_PER_DEG = 10;
@@ -404,6 +406,18 @@ begin
 end;
 
 {$HINTS OFF}
+
+procedure SetPropDefaults(AObject: TPersistent; APropNames: array of String);
+var
+  n: String;
+  p: PPropInfo;
+begin
+  for n in APropNames do begin
+    p := GetPropInfo(AObject, n);
+    SetOrdProp(AObject, p, p^.Default);
+  end;
+end;
+
 procedure Unused(const A1);
 begin
 end;

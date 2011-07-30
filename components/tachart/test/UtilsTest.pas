@@ -66,6 +66,11 @@ type
     procedure TestInterpolate;
   end;
 
+  TRTTITest = class(TTestCase)
+  published
+    procedure TestSetPropDefaults;
+  end;
+
 implementation
 
 uses
@@ -307,9 +312,65 @@ begin
   AssertEqualsHex($01010102, InterpolateRGB($01010100, $02020214, 0.1));
 end;
 
+
+type
+  TE = (eA, eB, eC);
+  TESet = set of TE;
+
+  T1 = class(TPersistent)
+  private
+    FP1: Integer;
+    FP2: Boolean;
+    FP3: TESet;
+    procedure SetP2(AValue: Boolean);
+  public
+    constructor Create;
+  published
+    property P1: Integer read FP1 write FP1 default 5;
+    property P2: Boolean read FP2 write SetP2 default true;
+    property P3: TESet read FP3 write FP3 default [eC];
+  end;
+
+  T2 = class(T1)
+  published
+    property P1 default 6;
+    property P3 default [eA];
+  end;
+
+{ T1 }
+
+constructor T1.Create;
+begin
+  SetPropDefaults(Self, ['P1', 'P2', 'P3']);
+end;
+
+procedure T1.SetP2(AValue: Boolean);
+begin
+  FP2 := AValue;
+end;
+
+{ TRTTITest }
+
+procedure TRTTITest.TestSetPropDefaults;
+var
+  v1: T1;
+  v2: T2;
+begin
+  v1 := T1.Create;
+  AssertEquals(5, v1.P1);
+  AssertTrue(v1.P2);
+  AssertTrue(v1.P3 = [eC]);
+  v1.Free;
+  v2 := T2.Create;
+  AssertEquals(6, v2.P1);
+  AssertTrue(v2.P2);
+  AssertTrue(v2.P3 = [eA]);
+  v2.Free;
+end;
+
 initialization
 
-  RegisterTests([TIntervalListTest, TGeometryTest, TColorTest]);
+  RegisterTests([TIntervalListTest, TGeometryTest, TColorTest, TRTTITest]);
 
 end.
 
