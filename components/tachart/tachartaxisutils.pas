@@ -121,9 +121,11 @@ type
     FAtDataOnly: Boolean;
     FDefaultSource: TCustomChartSource;
     FListener: TListener;
+    FRange: TChartRange;
     FSource: TCustomChartSource;
 
     procedure SetAtDataOnly(AValue: Boolean);
+    procedure SetRange(AValue: TChartRange);
     procedure SetSource(AValue: TCustomChartSource);
   public
     constructor Create(AOwner: TCustomChart);
@@ -138,6 +140,7 @@ type
     property Frame;
     property LabelBrush;
     property OverlapPolicy;
+    property Range: TChartRange read FRange write SetRange;
     property Source: TCustomChartSource read FSource write SetSource;
     property Stripes;
     property Style default smsValue;
@@ -553,12 +556,14 @@ begin
   inherited Create(AOwner);
   FDefaultSource := TIntervalChartSource.Create(AOwner);
   FListener := TListener.Create(@FSource, @StyleChanged);
+  FRange := TChartRange.Create(AOwner);
   FStyle := smsValue;
   FFormat := SERIES_MARK_FORMATS[FStyle];
 end;
 
 destructor TChartAxisMarks.Destroy;
 begin
+  FreeAndNil(FRange);
   FreeAndNil(FListener);
   FreeAndNil(FDefaultSource);
   inherited;
@@ -568,6 +573,13 @@ procedure TChartAxisMarks.SetAtDataOnly(AValue: Boolean);
 begin
   if FAtDataOnly = AValue then exit;
   FAtDataOnly := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartAxisMarks.SetRange(AValue: TChartRange);
+begin
+  if FRange = AValue then exit;
+  FRange.Assign(AValue);
   StyleChanged(Self);
 end;
 

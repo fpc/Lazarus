@@ -545,6 +545,12 @@ begin
   AMin := GetTransform.GraphToAxis(AMin);
   AMax := GetTransform.GraphToAxis(AMax);
   EnsureOrder(AMin, AMax);
+  with Marks.Range do begin
+    if UseMin then
+      AMin := Math.Max(Min, AMin);
+    if UseMax then
+      AMax := Math.Min(Max, AMax);
+  end;
   SetLength(FMarkValues, 0);
   vis := TChartAxisList(Collection).OnVisitSources;
   if Marks.AtDataOnly and Assigned(vis) then begin
