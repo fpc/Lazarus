@@ -4347,7 +4347,7 @@ procedure TObjectInspectorDlg.ComponentTreeKeyDown(Sender: TObject;
 begin
   if (Shift = []) and (Key = VK_DELETE) and
      (Selection.Count > 0) and
-     (MessageDlg(oisDeleteComponents, mtConfirmation,[mbYes, mbNo],0) = mrYes) then
+     (MessageDlg(oiscDelete, mtConfirmation,[mbYes, mbNo],0) = mrYes) then
   begin
     OnDeletePopupmenuItemClick(nil);
   end;

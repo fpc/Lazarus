@@ -161,7 +161,7 @@ begin
   Caption := fesFeTitle + ' - ' + LinkDataset.Name;
   AddFieldsActn.Caption := oisAddFields;
   AddFieldsActn.Hint := oisAddFieldsFromFieldDefs;
-  DeleteFieldsActn.Caption:=oiscDelete;
+  DeleteFieldsActn.Caption:=oisDeleteComponents;
   DeleteFieldsActn.Hint:=oisDeleteSelectedFieldS;
   NewActn.Caption:=oisNew;
   NewActn.Hint:=oisCreateNewFieldAndAddItAtCurrentPosition;

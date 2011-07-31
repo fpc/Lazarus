@@ -25,7 +25,7 @@ resourcestring
   oisItemsSelected = '%u items selected';
   
   oiscAdd = '&Add';
-  oiscDelete = '&Delete';
+  oiscDelete = 'Delete?';
   oisDeleteSelectedFieldS = 'Delete selected field(s)';
   oisNew = '&New';
   oisCreateNewFieldAndAddItAtCurrentPosition = 'Create new field and add it '
