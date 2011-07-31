@@ -426,9 +426,8 @@ msgid "Category"
 msgstr "Kategoria"
 
 #: objinspstrconsts.oiscdelete
-msgctxt "objinspstrconsts.oiscdelete"
-msgid "&Delete"
-msgstr "&Usuń"
+msgid "Delete?"
+msgstr ""
 
 #: objinspstrconsts.oischar
 msgid "Char"

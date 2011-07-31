@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-02-15 02:09+0300\n"
+"PO-Revision-Date: 2011-07-31 16:05+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -427,9 +427,8 @@ msgid "Category"
 msgstr "Категория"
 
 #: objinspstrconsts.oiscdelete
-msgctxt "objinspstrconsts.oiscdelete"
-msgid "&Delete"
-msgstr "&Удалить"
+msgid "Delete?"
+msgstr "Удалить?"
 
 #: objinspstrconsts.oischar
 msgid "Char"
