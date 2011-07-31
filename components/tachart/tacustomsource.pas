@@ -24,6 +24,49 @@ interface
 uses
   Classes, Types, TAChartUtils;
 
+
+const
+  DEF_INTERVAL_STEPS = '0.2|0.5|1.0';
+
+type
+  TAxisIntervalParamOption = (
+    aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps);
+
+  TAxisIntervalParamOptions = set of TAxisIntervalParamOption;
+
+  TChartAxisIntervalParams = class(TPersistent)
+  strict private
+    FCount: Integer;
+    FMaxLength: Integer;
+    FMinLength: Integer;
+    FNiceSteps: String;
+    FStepValues: TDoubleDynArray;
+    FOptions: TAxisIntervalParamOptions;
+    FOwner: TPersistent;
+    function NiceStepsIsStored: Boolean;
+    procedure ParseNiceSteps;
+    procedure SetCount(AValue: Integer);
+    procedure SetMaxLength(AValue: Integer);
+    procedure SetMinLength(AValue: Integer);
+    procedure SetNiceSteps(const AValue: String);
+    procedure SetOptions(AValue: TAxisIntervalParamOptions);
+  strict protected
+    procedure Changed; virtual;
+  protected
+    function GetOwner: TPersistent; override;
+  public
+    constructor Create(AOwner: TPersistent);
+    property StepValues: TDoubleDynArray read FStepValues;
+  published
+    property Count: Integer read FCount write SetCount default 5;
+    property MaxLength: Integer read FMaxLength write SetMaxLength default 100;
+    property MinLength: Integer read FMinLength write SetMinLength default 5;
+    property NiceSteps: String
+      read FNiceSteps write SetNiceSteps stored NiceStepsIsStored;
+    property Options: TAxisIntervalParamOptions
+      read FOptions write SetOptions default [];
+  end;
+
 type
   EBufferError = class(EChartError);
   EEditableSourceRequired = class(EChartError);
@@ -125,7 +168,7 @@ procedure SetDataItemDefaults(var AItem: TChartDataItem);
 implementation
 
 uses
-  Math, SysUtils;
+  Math, StrUtils, SysUtils;
 
 procedure SetDataItemDefaults(var AItem: TChartDataItem);
 var
@@ -137,6 +180,86 @@ begin
   AItem.Text := '';
   for i := 0 to High(AItem.YList) do
     AItem.YList[i] := 0;
+end;
+
+{ TChartAxisIntervalParams }
+
+procedure TChartAxisIntervalParams.Changed;
+begin
+  // Empty.
+end;
+
+constructor TChartAxisIntervalParams.Create(AOwner: TPersistent);
+begin
+  FOwner := AOwner;
+  SetPropDefaults(Self, ['Count', 'MaxLength', 'MinLength', 'Options']);
+  FNiceSteps := DEF_INTERVAL_STEPS;
+  ParseNiceSteps;
+end;
+
+function TChartAxisIntervalParams.GetOwner: TPersistent;
+begin
+  Result := FOwner;
+end;
+
+function TChartAxisIntervalParams.NiceStepsIsStored: Boolean;
+begin
+  Result := NiceSteps <> DEF_INTERVAL_STEPS;
+end;
+
+procedure TChartAxisIntervalParams.ParseNiceSteps;
+var
+  parts: TStringList;
+  i: Integer;
+begin
+  parts := TStringList.Create;
+  try
+    parts.Delimiter := '|';
+    parts.StrictDelimiter := true;
+    parts.DelimitedText := IfThen(NiceSteps = '', DEF_INTERVAL_STEPS, NiceSteps);
+    SetLength(FStepValues, parts.Count);
+    for i := 0 to parts.Count - 1 do
+      FStepValues[i] := StrToFloatDefSep(parts[i]);
+  finally
+    parts.Free;
+  end;
+end;
+
+procedure TChartAxisIntervalParams.SetCount(AValue: Integer);
+begin
+  if FCount = AValue then exit;
+  FCount := AValue;
+  Changed;
+end;
+
+procedure TChartAxisIntervalParams.SetMaxLength(AValue: Integer);
+begin
+  if FMaxLength = AValue then exit;
+  FMaxLength := AValue;
+  Changed;
+end;
+
+procedure TChartAxisIntervalParams.SetMinLength(AValue: Integer);
+begin
+  if FMinLength = AValue then exit;
+  FMinLength := AValue;
+  Changed;
+end;
+
+procedure TChartAxisIntervalParams.SetNiceSteps(const AValue: String);
+begin
+  if FNiceSteps = AValue then exit;
+  FNiceSteps := AValue;
+  ParseNiceSteps;
+  Changed;
+end;
+
+procedure TChartAxisIntervalParams.SetOptions(
+  AValue: TAxisIntervalParamOptions);
+begin
+  if FOptions = AValue then exit;
+  FOptions := AValue;
+  Changed;
 end;
 
 { TChartDataItem }

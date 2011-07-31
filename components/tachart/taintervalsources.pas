@@ -28,14 +28,22 @@ type
   { TIntervalChartSource }
 
   TIntervalChartSource = class(TCustomChartSource)
+  strict private
+    FParams: TChartAxisIntervalParams;
+    procedure SetParams(AValue: TChartAxisIntervalParams);
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
     procedure SetYCount(AValue: Cardinal); override;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
     procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
       var AValues: TChartValueTextArray); override;
+  published
+    property Params: TChartAxisIntervalParams read FParams write SetParams;
   end;
 
   TDateTimeStep = (
@@ -52,7 +60,7 @@ type
   { TDateTimeIntervalChartSource }
 
   TDateTimeIntervalChartSource = class(TIntervalChartSource)
-  private
+  strict private
     FDateTimeFormat: String;
     FSteps: TDateTimeSteps;
   public
@@ -73,6 +81,12 @@ implementation
 
 uses
   DateUtils, Math, StrUtils, SysUtils;
+
+type
+  TSourceIntervalParams = class(TChartAxisIntervalParams)
+  strict protected
+    procedure Changed; override;
+  end;
 
 procedure CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
@@ -186,7 +200,29 @@ begin
     ]);
 end;
 
+{ TSourceIntervalParams }
+
+procedure TSourceIntervalParams.Changed;
+begin
+  with GetOwner as TCustomChartSource do begin
+    BeginUpdate;
+    EndUpdate;
+  end;
+end;
+
 { TIntervalChartSource }
+
+constructor TIntervalChartSource.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FParams := TChartAxisIntervalParams.Create(Self);
+end;
+
+destructor TIntervalChartSource.Destroy;
+begin
+  FreeAndNil(FParams);
+  inherited;
+end;
 
 function TIntervalChartSource.GetCount: Integer;
 begin
@@ -197,6 +233,12 @@ function TIntervalChartSource.GetItem(AIndex: Integer): PChartDataItem;
 begin
   Unused(AIndex);
   Result := nil;
+end;
+
+procedure TIntervalChartSource.SetParams(AValue: TChartAxisIntervalParams);
+begin
+  if FParams = AValue then exit;
+  FParams.Assign(AValue);
 end;
 
 procedure TIntervalChartSource.SetYCount(AValue: Cardinal);
