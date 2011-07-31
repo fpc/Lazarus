@@ -36,6 +36,7 @@ type
   published
     procedure Basic;
     procedure DataPoint;
+    procedure DataPointSeparator;
     procedure Extent;
     procedure Multi;
   end;
@@ -190,6 +191,23 @@ begin
   AssertEquals('3|4|$000000|text1', FSource.DataPoints[0]);
   FSource.DataPoints.Add('7|8|0|two words');
   AssertEquals('two words', FSource[2]^.Text);
+end;
+
+procedure TListSourceTest.DataPointSeparator;
+var
+  oldSeparator: Char;
+begin
+  FSource.Clear;
+  oldSeparator := DecimalSeparator;
+  try
+    DecimalSeparator := ':';
+    FSource.DataPoints.Add('3:5');
+    AssertEquals(3.5, FSource[0]^.X);
+    FSource.DataPoints[0] := '4.5';
+    AssertEquals(4.5, FSource[0]^.X);
+  finally
+    DecimalSeparator := oldSeparator;
+  end;
 end;
 
 procedure TListSourceTest.Extent;
