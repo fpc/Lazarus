@@ -262,6 +262,9 @@ function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 
 procedure SetPropDefaults(AObject: TPersistent; APropNames: array of String);
 
+// Accept both locale-specific and default decimal separators.
+function StrToFloatDefSep(const AStr: String): Double;
+
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
 procedure Unused(const A1, A2);
@@ -416,6 +419,18 @@ begin
     p := GetPropInfo(AObject, n);
     SetOrdProp(AObject, p, p^.Default);
   end;
+end;
+
+var
+  DefSeparatorSettings: TFormatSettings;
+
+function StrToFloatDefSep(const AStr: String): Double;
+begin
+  if
+    not TryStrToFloat(AStr, Result, DefSeparatorSettings) and
+    not TryStrToFloat(AStr, Result)
+  then
+    Result := 0.0;
 end;
 
 procedure Unused(const A1);
@@ -749,6 +764,8 @@ end;
 initialization
 
   DrawData := TDrawDataRegistry.Create;
+  DefSeparatorSettings := DefaultFormatSettings;
+  DefSeparatorSettings.DecimalSeparator := '.';
 
 finalization
 
