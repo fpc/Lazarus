@@ -30,6 +30,10 @@ type
   TIntervalChartSource = class(TCustomChartSource)
   strict private
     FParams: TChartAxisIntervalParams;
+    procedure CalculateIntervals(
+      AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
+    function GetIntervals(
+      AMin, AMax: Double; AInverted: Boolean): TChartValueTextArray;
     procedure SetParams(AValue: TChartAxisIntervalParams);
   protected
     function GetCount: Integer; override;
@@ -88,24 +92,42 @@ type
     procedure Changed; override;
   end;
 
-procedure CalculateIntervals(
+procedure Register;
+begin
+  RegisterComponents(
+    CHART_COMPONENT_IDE_PAGE, [
+      TDateTimeIntervalChartSource
+    ]);
+end;
+
+{ TSourceIntervalParams }
+
+procedure TSourceIntervalParams.Changed;
+begin
+  with GetOwner as TCustomChartSource do begin
+    BeginUpdate;
+    EndUpdate;
+  end;
+end;
+
+{ TIntervalChartSource }
+
+procedure TIntervalChartSource.CalculateIntervals(
   AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
 var
-  extent, extentTmp, stepCount, scale, maxStepCount, m: Double;
-  i: Integer;
+  ext, extentTmp, stepCount, scale, maxStepCount, m, step: Double;
 const
-  GOOD_STEPS: array [1..3] of Double = (0.2, 0.5, 1.0);
   BASE = 10;
 begin
-  extent := AMax - AMin;
+  ext := AMax - AMin;
   AStep := 1;
   AStart := AMin;
-  if extent <= 0 then exit;
+  if ext <= 0 then exit;
 
   maxStepCount := 0;
   scale := 1.0;
-  for i := Low(GOOD_STEPS) to High(GOOD_STEPS) do begin
-    extentTmp := extent / GOOD_STEPS[i];
+  for step in Params.StepValues do begin
+    extentTmp := ext / step;
     m := IntPower(BASE, Round(logn(BASE, extentTmp)));
     while extentTmp * m > BASE do
       m /= BASE;
@@ -115,7 +137,7 @@ begin
     if stepCount > maxStepCount then begin
       maxStepCount := stepCount;
       scale := m;
-      AStep := GOOD_STEPS[i] / m;
+      AStep := step / m;
     end;
   end;
   case AxisScale of
@@ -158,7 +180,24 @@ begin
   end; {case AxisScale}
 end;
 
-function GetIntervals(
+constructor TIntervalChartSource.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FParams := TChartAxisIntervalParams.Create(Self);
+end;
+
+destructor TIntervalChartSource.Destroy;
+begin
+  FreeAndNil(FParams);
+  inherited;
+end;
+
+function TIntervalChartSource.GetCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TIntervalChartSource.GetIntervals(
   AMin, AMax: Double; AInverted: Boolean): TChartValueTextArray;
 const
   INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
@@ -190,43 +229,6 @@ begin
     m += step;
   until (crossCount = 2) or (m + step = m);
   Result[markCount].FValue := m;
-end;
-
-procedure Register;
-begin
-  RegisterComponents(
-    CHART_COMPONENT_IDE_PAGE, [
-      TDateTimeIntervalChartSource
-    ]);
-end;
-
-{ TSourceIntervalParams }
-
-procedure TSourceIntervalParams.Changed;
-begin
-  with GetOwner as TCustomChartSource do begin
-    BeginUpdate;
-    EndUpdate;
-  end;
-end;
-
-{ TIntervalChartSource }
-
-constructor TIntervalChartSource.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FParams := TChartAxisIntervalParams.Create(Self);
-end;
-
-destructor TIntervalChartSource.Destroy;
-begin
-  FreeAndNil(FParams);
-  inherited;
-end;
-
-function TIntervalChartSource.GetCount: Integer;
-begin
-  Result := 0;
 end;
 
 function TIntervalChartSource.GetItem(AIndex: Integer): PChartDataItem;
