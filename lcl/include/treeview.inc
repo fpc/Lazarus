@@ -1360,7 +1360,7 @@ var
   OldOnChange: TTVChangedEvent;
 begin
   if (Destination=nil)
-  and (Mode in [naAddChild,naAddChildFirst,naInsert,naInsertBehind]) then
+  and not(Mode in [naAdd,naAddFirst]) then
     TreeNodeError('TTreeNode.MoveTo Destination=nil');
   if Mode=naInsertBehind then begin
     // convert naInsertBehind
