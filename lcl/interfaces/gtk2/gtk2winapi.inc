@@ -1715,7 +1715,7 @@ var
   fr : TGDKFillRule;
 begin
   Result := 0;
-  if NumPts<=0 then exit;
+  if NumPts<=1 then exit; // gdk_region_polygon will crash on a polygon with 1 point
   GObject := NewGDIObject(gdiRegion);
 
   GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
