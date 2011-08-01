@@ -681,7 +681,7 @@ begin
 
   ResHandle := FindResource(Instance, PChar(ResName), PChar(ResType));
   if ResHandle = 0 then
-    raise EResNotFound.Create(ResName); // todo: valid exception
+    raise EResNotFound.Create(Format('[TCustomIcon.LoadFromResourceName] The resource "%s" was not found', [ResName])); // todo: valid exception
   LoadFromResourceHandle(Instance, ResHandle);
 end;
 
@@ -695,7 +695,7 @@ begin
 
   ResHandle := FindResource(Instance, PChar(ResID), PChar(ResType));
   if ResHandle = 0 then
-    raise EResNotFound.Create(''); // todo: valid exception
+    raise EResNotFound.Create(Format('[TCustomIcon.LoadFromResourceID] The resource #%d was not found', [ResID])); // todo: valid exception
   LoadFromResourceHandle(Instance, ResHandle);
 end;
 
