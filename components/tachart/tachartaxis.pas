@@ -244,11 +244,6 @@ implementation
 uses
   LResources, Math, PropEdits, TAGeometry;
 
-type
-  TAxisDataExtent = record
-    FMin, FMax: Double;
-  end;
-
 var
   VIdentityTransform: TChartAxisTransformations;
 
@@ -539,7 +534,7 @@ end;
 procedure TChartAxis.GetMarkValues(AMin, AMax: Double);
 var
   i: Integer;
-  d: TAxisDataExtent;
+  d: TValuesInRangeParams;
   vis: TChartOnVisitSources;
   t: TChartValueText;
 begin
@@ -552,16 +547,16 @@ begin
     if UseMax then
       AMax := Math.Min(Max, AMax);
   end;
+  d.FMin := AMin;
+  d.FMax := AMax;
+  d.FFormat := Marks.Format;
+  d.FUseY := IsVertical;
   SetLength(FMarkValues, 0);
   vis := TChartAxisList(Collection).OnVisitSources;
-  if Marks.AtDataOnly and Assigned(vis) then begin
-    d.FMin := AMin;
-    d.FMax := AMax;
-    vis(@VisitSource, Self, d);
-  end
+  if Marks.AtDataOnly and Assigned(vis) then
+    vis(@VisitSource, Self, d)
   else
-    Marks.SourceDef.ValuesInRange(
-      AMin, AMax, Marks.Format, IsVertical, FMarkValues);
+    Marks.SourceDef.ValuesInRange(d, FMarkValues);
   if Inverted then
     for i := 0 to High(FMarkValues) div 2 do begin
       t := FMarkValues[i];
@@ -781,13 +776,13 @@ end;
 procedure TChartAxis.VisitSource(ASource: TCustomChartSource; var AData);
 var
   ext: TDoubleRect;
+  p: TValuesInRangeParams;
 begin
   ext := ASource.Extent;
-  with TAxisDataExtent(AData) do
-    Marks.SourceDef.ValuesInRange(
-      Max(TDoublePointBoolArr(ext.a)[IsVertical], FMin),
-      Min(TDoublePointBoolArr(ext.b)[IsVertical], FMax),
-      Marks.Format, IsVertical, FMarkValues);
+  p := TValuesInRangeParams(AData);
+  p.FMin := Max(TDoublePointBoolArr(ext.a)[IsVertical], p.FMin);
+  p.FMax := Min(TDoublePointBoolArr(ext.b)[IsVertical], p.FMax);
+  Marks.SourceDef.ValuesInRange(p, FMarkValues);
 end;
 
 const

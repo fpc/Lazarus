@@ -40,9 +40,9 @@ type
     FMaxLength: Integer;
     FMinLength: Integer;
     FNiceSteps: String;
-    FStepValues: TDoubleDynArray;
     FOptions: TAxisIntervalParamOptions;
     FOwner: TPersistent;
+    FStepValues: TDoubleDynArray;
     function NiceStepsIsStored: Boolean;
     procedure ParseNiceSteps;
     procedure SetCount(AValue: Integer);
@@ -82,7 +82,6 @@ type
   { TChartDataItem }
 
   TChartDataItem = object
-  public
     X, Y: Double;
     Color: TChartColor;
     Text: String;
@@ -90,6 +89,12 @@ type
     function GetY(AIndex: Integer): Double;
   end;
   PChartDataItem = ^TChartDataItem;
+
+  TValuesInRangeParams = record
+    FFormat: String;
+    FMin, FMax: Double;
+    FUseY: Boolean;
+  end;
 
   { TCustomChartSource }
 
@@ -128,8 +133,7 @@ type
       const AFormat: String; AIndex, AYIndex: Integer): String;
     function IsSorted: Boolean; virtual;
     procedure ValuesInRange(
-      AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-      var AValues: TChartValueTextArray); virtual;
+      AParams: TValuesInRangeParams; var AValues: TChartValueTextArray); virtual;
     function ValuesTotal: Double; virtual;
     function XOfMax: Double;
     function XOfMin: Double;
@@ -540,8 +544,7 @@ begin
 end;
 
 procedure TCustomChartSource.ValuesInRange(
-  AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-  var AValues: TChartValueTextArray);
+  AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
 
 var
   cnt: Integer;
@@ -549,7 +552,7 @@ var
   procedure Push(AValue: Double; AIndex: Integer);
   begin
     AValues[cnt].FValue := AValue;
-    AValues[cnt].FText := FormatItem(AFormat, AIndex, 0);
+    AValues[cnt].FText := FormatItem(AParams.FFormat, AIndex, 0);
     cnt += 1;
   end;
 
@@ -563,14 +566,14 @@ begin
   li := 0;
   for i := 0 to Count - 1 do begin
     pv := v;
-    v := IfThen(AUseY, Item[i]^.Y, Item[i]^.X);
-    if not InRange(v, AMin, AMax) then continue;
+    v := IfThen(AParams.FUseY, Item[i]^.Y, Item[i]^.X);
+    if not InRange(v, AParams.FMin, AParams.FMax) then continue;
     if (cnt = 0) and (i > 0) then
       Push(pv, i - 1);
     Push(v, i);
     li := i;
   end;
-  if not InRange(v, AMin, AMax) then
+  if not InRange(v, AParams.FMin, AParams.FMax) then
     Push(v, li);
   SetLength(AValues, cnt);
 end;
