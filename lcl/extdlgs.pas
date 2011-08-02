@@ -101,6 +101,7 @@ type
   TSavePictureDialog = class(TOpenPictureDialog)
   protected
     class procedure WSRegisterClass; override;
+    function DefaultTitle: string; override;
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -133,13 +134,11 @@ type
     FOnCalcKey: TKeyPressEvent;
     FOnDisplayChange: TNotifyEvent;
     function GetDisplay: Double;
-    function GetTitle: string;
-    procedure SetTitle(const AValue: string);
-    function TitleStored: Boolean;
   protected
     class procedure WSRegisterClass; override;
     procedure Change; virtual;
     procedure CalcKey(var Key: char); virtual;
+    function DefaultTitle: string; override;
     procedure DisplayChange; virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -152,7 +151,7 @@ type
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property CalculatorLayout : TCalculatorLayout Read FLayout Write Flayout;
     property Precision: Byte read FPrecision write FPrecision default DefCalcPrecision;
-    property Title: string read GetTitle write SetTitle stored TitleStored;
+    property Title;
     property Value: Double read FValue write FValue;
     property OnCalcKey: TKeyPressEvent read FOnCalcKey write FOnCalcKey;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -208,15 +207,14 @@ Type
     FHelpContext: THelpContext;
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
-    FDialogTitle:TCaption;
     FOKCaption:TCaption;
     FCancelCaption:TCaption;
     FCalendar:TCalendar;
-    function IsTitleStored: Boolean;
   protected
     class procedure WSRegisterClass; override;
     procedure GetNewDate(Sender:TObject);//or onClick
     procedure CalendarDblClick(Sender: TObject);
+    function DefaultTitle: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean; override;
@@ -228,7 +226,6 @@ Type
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
     property DialogPosition: TPosition read FDialogPosition write FDialogPosition default poMainFormCenter;
-    property DialogTitle:TCaption read FDialogTitle write FDialogTitle stored IsTitleStored;
     property OKCaption:TCaption read FOKCaption write FOKCaption;
     property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
   end;
@@ -436,10 +433,15 @@ begin
   RegisterSavePictureDialog;
 end;
 
+function TSavePictureDialog.DefaultTitle: string;
+begin
+  Result := rsfdFileSaveAs;
+end;
+
 constructor TSavePictureDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Title:=rsfdFileSaveAs;
+  fCompStyle:=csSaveFileDialog;
 end;
 
 type
@@ -1005,7 +1007,6 @@ end;
 constructor TCalculatorDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FTitle:=rsCalculator;
   FPrecision:=DefCalcPrecision;
   FBeepOnError:=True;
 end;
@@ -1015,21 +1016,6 @@ begin
   FOnChange:=nil;
   FOnDisplayChange:=nil;
   inherited Destroy;
-end;
-
-function TCalculatorDialog.GetTitle: string;
-begin
-  Result:=FTitle;
-end;
-
-procedure TCalculatorDialog.SetTitle(const AValue: string);
-begin
-  FTitle:=AValue;
-end;
-
-function TCalculatorDialog.TitleStored: Boolean;
-begin
-  Result:=Title <> rsCalculator;
 end;
 
 class procedure TCalculatorDialog.WSRegisterClass;
@@ -1048,6 +1034,11 @@ end;
 procedure TCalculatorDialog.CalcKey(var Key: char);
 begin
   if Assigned(FOnCalcKey) then FOnCalcKey(Self, Key);
+end;
+
+function TCalculatorDialog.DefaultTitle: string;
+begin
+  Result := rsCalculator;
 end;
 
 procedure TCalculatorDialog.DisplayChange;
@@ -1235,7 +1226,6 @@ begin
   DisplaySettings := DefaultDisplaySettings;
   Date := trunc(Now);
   DialogPosition := poMainFormCenter;
-  DialogTitle := rsPickDate;
   OKCaption := rsMbOK;
   CancelCaption := rsMbCancel;
 end;
@@ -1260,9 +1250,9 @@ begin
   end;
 end;
 
-function TCalendarDialog.IsTitleStored: Boolean;
+function TCalendarDialog.DefaultTitle: string;
 begin
-  Result:=DialogTitle<>rsPickDate;//controllare
+  Result := rsPickDate;
 end;
 
 class procedure TCalendarDialog.WSRegisterClass;
@@ -1280,7 +1270,7 @@ begin
   DF:=TForm(TForm.NewInstance);
   DF.DisableAlign;
   DF.Create(Self.Owner); // Self.Owner, so that poOwnerFormCenter works
-  DF.Caption:=DialogTitle;
+  DF.Caption:=Title;
   DF.Position:=DialogPosition;
   DF.BorderStyle:=bsDialog;
   DF.AutoScroll:=false;
