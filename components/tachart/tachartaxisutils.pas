@@ -87,6 +87,7 @@ type
   TCustomChartAxisMarks = class(TBasicChartAxisMarks)
   strict private
     FDefaultSource: TIntervalChartSource;
+    FDefaultListener: TListener;
     FStripes: TChartStyles;
     procedure SetStripes(AValue: TChartStyles);
   strict protected
@@ -524,13 +525,16 @@ end;
 constructor TCustomChartAxisMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FDefaultListener := TListener.Create(nil, @StyleChanged);
   FDefaultSource := TIntervalChartSource.Create(AOwner);
+  FDefaultSource.Broadcaster.Subscribe(FDefaultListener);
   FDistance := 1;
   FLabelBrush.Style := bsClear;
 end;
 
 destructor TCustomChartAxisMarks.Destroy;
 begin
+  FreeAndNil(FDefaultListener);
   FreeAndNil(FDefaultSource);
   inherited;
 end;

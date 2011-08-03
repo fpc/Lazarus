@@ -556,6 +556,8 @@ begin
         FValueMax := Math.Min(Max, FValueMax);
     end;
     d := MakeValuesInRangeParams(FValueMin, FValueMax);
+    FValueMin := GetTransform.AxisToGraph(FValueMin);
+    FValueMax := GetTransform.AxisToGraph(FValueMax);
   end;
   SetLength(FMarkValues, 0);
   vis := TChartAxisList(Collection).OnVisitSources;

@@ -637,7 +637,8 @@ end;
 procedure TListener.Forget;
 begin
   FBroadcaster := nil;
-  FRef^ := nil;
+  if FRef <> nil then
+    FRef^ := nil;
 end;
 
 function TListener.GetIsListening: Boolean;

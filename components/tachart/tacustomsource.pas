@@ -196,7 +196,10 @@ end;
 
 procedure TChartAxisIntervalParams.Changed;
 begin
-  // Empty.
+  with FOwner as TCustomChartSource do begin
+    BeginUpdate;
+    EndUpdate;
+  end;
 end;
 
 constructor TChartAxisIntervalParams.Create(AOwner: TPersistent);
