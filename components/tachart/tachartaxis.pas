@@ -551,6 +551,8 @@ begin
   d.FMax := AMax;
   d.FFormat := Marks.Format;
   d.FUseY := IsVertical;
+  d.FAxisToGraph := @GetTransform.AxisToGraph;
+  d.FGraphToImage := @FHelper.GraphToImage;
   SetLength(FMarkValues, 0);
   vis := TChartAxisList(Collection).OnVisitSources;
   if Marks.AtDataOnly and Assigned(vis) then

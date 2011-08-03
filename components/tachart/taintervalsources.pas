@@ -31,9 +31,7 @@ type
   strict private
     FParams: TChartAxisIntervalParams;
     procedure CalculateIntervals(
-      AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
-    function GetIntervals(
-      AMin, AMax: Double; AInverted: Boolean): TChartValueTextArray;
+      AParams: TValuesInRangeParams; out ABestStart, ABestStep: Double);
     procedure SetParams(AValue: TChartAxisIntervalParams);
   protected
     function GetCount: Integer; override;
@@ -111,71 +109,89 @@ end;
 { TIntervalChartSource }
 
 procedure TIntervalChartSource.CalculateIntervals(
-  AMin, AMax: Double; AxisScale: TAxisScale; out AStart, AStep: Double);
-var
-  ext, extentTmp, stepCount, scale, maxStepCount, m, step: Double;
-const
-  BASE = 10;
-begin
-  ext := AMax - AMin;
-  AStep := 1;
-  AStart := AMin;
-  if ext <= 0 then exit;
+  AParams: TValuesInRangeParams; out ABestStart, ABestStep: Double);
 
-  maxStepCount := 0;
-  scale := 1.0;
-  for step in Params.StepValues do begin
-    extentTmp := ext / step;
-    m := IntPower(BASE, Round(logn(BASE, extentTmp)));
-    while extentTmp * m > BASE do
-      m /= BASE;
-    while extentTmp * m <= 1 do
-      m *= BASE;
-    stepCount := extentTmp * m;
-    if stepCount > maxStepCount then begin
-      maxStepCount := stepCount;
-      scale := m;
-      AStep := step / m;
+  function A2I(AX: Double): Integer; inline;
+  begin
+    Result := AParams.FGraphToImage(AParams.FAxisToGraph(AX));
+  end;
+
+  procedure CalcMinMaxCount(out AMinCount, AMaxCount: Integer);
+  var
+    imageWidth, d: Integer;
+  begin
+    // If the axis transformation is non-linear, steps may not be equidistant.
+    // However, both minimax and maximin will be achieved on equal steps.
+    imageWidth := Abs(A2I(AParams.FMax) - A2I(AParams.FMin));
+    d := IfThen(aipUseMinLength in Params.Options, Max(Params.MinLength, 2), 2);
+    AMaxCount := Max(imageWidth div d, 2);
+    if aipUseMaxLength in Params.Options then
+      AMinCount := Max((imageWidth + 1) div Max(Params.MaxLength, 2), 2)
+    else
+      AMinCount := 2;
+  end;
+
+  function CountToStep(ACount: Integer): Double;
+  begin
+    Result := (AParams.FMax - AParams.FMin) / ACount;
+    Result := Power(10, Floor(Log10(Result)));
+  end;
+
+  procedure TryStep(AStep: Double; var ABestCount: Integer);
+  var
+    m, start: Double;
+    mi, prev, cnt: Integer;
+  begin
+    start := Floor(AParams.FMin / AStep) * AStep;
+    m := start;
+    prev := A2I(m);
+    cnt := 0;
+    while m <= AParams.FMax do begin
+      mi := A2I(m + AStep);
+      prev := Abs(prev - mi);
+      if
+        (aipUseMinLength in Params.Options) and (prev < Params.MinLength) or
+        (aipUseMaxLength in Params.Options) and (prev > Params.MaxLength)
+      then
+        exit;
+      m += AStep;
+      prev := mi;
+      cnt += 1;
+    end;
+    if
+      not (aipUseCount in Params.Options) or
+      (Abs(cnt - Params.Count) < Abs(ABestCount - Params.Count))
+    then begin
+      ABestStart := start - AStep;
+      ABestStep := AStep;
+      ABestCount := cnt;
     end;
   end;
-  case AxisScale of
-    asIncreasing: begin
-      // If 0 is in the interval, set it as a mark.
-      if InRange(0, AMin, AMax) then
-        AStart := 0
-      else
-        AStart := Round((AMin - AStep) * scale) / scale;
-      while AStart >= AMin do AStart -= AStep;
+
+var
+  minCount, maxCount, cnt: Integer;
+  s, sv: Double;
+begin
+  CalcMinMaxCount(minCount, maxCount);
+  cnt := MaxInt;
+  if aipUseNiceSteps in Params.Options then begin
+    s := CountToStep(minCount)  * 10;
+    while s >= CountToStep(maxCount) do begin
+      for sv in Params.StepValues do
+        TryStep(s * sv, cnt);
+      // We are not required to pick best count, so any one will do.
+      if not (aipUseCount in Params.Options) and (cnt < MaxInt) then break;
+      s *= 0.1;
     end;
-    asDecreasing: begin
-      // If 0 is in the interval, set it as a mark.
-      if InRange(0, AMin, AMax) then
-        AStart := 0
-      else
-        AStart := Round((AMax + AStep) * scale) / scale;
-      while AStart <= AMax do AStart += AStep;
-    end;
-    asLogIncreasing: begin
-      // FIXME: asLogIncreasing is still not implemented.
-      // The following is the same code for asIncreasing;
-      // If 0 is in the interval, set it as a mark.
-      if InRange(0, AMin, AMax) then
-        AStart := 0
-      else
-        AStart := Round((AMin - AStep) * scale) / scale;
-      while AStart > AMin do AStart -= AStep;
-    end;
-    asLogDecreasing: begin
-      // FIXME: asLogDecreasing is still not implemented.
-      // The following is the same code for asIncreasing;
-      // If 0 is in the interval, set it as a mark.
-      if InRange(0, AMin, AMax) then
-        AStart := 0
-      else
-        AStart := Round((AMax + AStep) * scale) / scale;
-      while AStart < AMax do AStart += AStep;
-    end;
-  end; {case AxisScale}
+  end;
+  if cnt < MaxInt then exit;
+  // Either nice steps were not required, or we failed to find one.
+  if aipUseCount in Params.Options then
+    cnt := EnsureRange(Params.Count, minCount, maxCount)
+  else
+    cnt := minCount;
+  ABestStep := (AParams.FMax - AParams.FMin) / cnt;
+  ABestStart := AParams.FMin - ABestStep;
 end;
 
 constructor TIntervalChartSource.Create(AOwner: TComponent);
@@ -193,40 +209,6 @@ end;
 function TIntervalChartSource.GetCount: Integer;
 begin
   Result := 0;
-end;
-
-function TIntervalChartSource.GetIntervals(
-  AMin, AMax: Double; AInverted: Boolean): TChartValueTextArray;
-const
-  INV_TO_SCALE: array [Boolean] of TAxisScale = (asIncreasing, asDecreasing);
-var
-  start, step, m: Double;
-  markCount, crossCount: Integer;
-begin
-  CalculateIntervals(AMin, AMax, INV_TO_SCALE[AInverted], start, step);
-  if AInverted then
-    step := - step;
-  m := start;
-  crossCount := 0;
-  markCount := 1;
-  repeat
-    markCount += 1;
-    crossCount += Ord(InRange(m, AMin, AMax) <> InRange(m + step, AMin, AMax));
-    m += step;
-  until (crossCount = 2) or (m + step = m);
-  SetLength(Result, markCount);
-  m := start;
-  crossCount := 0;
-  markCount := 0;
-  repeat
-    if IsZero(m) then
-      m := 0;
-    Result[markCount].FValue := m;
-    markCount += 1;
-    crossCount += Ord(InRange(m, AMin, AMax) <> InRange(m + step, AMin, AMax));
-    m += step;
-  until (crossCount = 2) or (m + step = m);
-  Result[markCount].FValue := m;
 end;
 
 function TIntervalChartSource.GetItem(AIndex: Integer): PChartDataItem;
@@ -249,11 +231,28 @@ end;
 
 procedure TIntervalChartSource.ValuesInRange(
   AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
+const
+  // Arbitrary limit to prevent hangup/OOM in case of bug in CalculateIntervals.
+  MAX_COUNT = 10000;
 var
+  start, step, m: Double;
   i: Integer;
 begin
-  if AParams.FMin > AParams.FMax then exit;
-  AValues := GetIntervals(AParams.FMin, AParams.FMax, false);
+  if AParams.FMin >= AParams.FMax then exit;
+  CalculateIntervals(AParams, start, step);
+  if step <= 0 then exit;
+  m := start;
+  SetLength(AValues, Trunc(Min((AParams.FMax - m) / step + 2, MAX_COUNT)));
+  for i := 0 to High(AValues) do begin
+    if IsZero(m) then
+      m := 0;
+    AValues[i].FValue := m;
+    if m > AParams.FMax then begin
+      SetLength(AValues, i + 1);
+      break;
+    end;
+    m += step;
+  end;
   for i := 0 to High(AValues) do
     // Extra format arguments for compatibility with FormatItem.
     AValues[i].FText := Format(

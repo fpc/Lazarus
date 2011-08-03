@@ -24,14 +24,15 @@ interface
 uses
   Classes, Types, TAChartUtils;
 
-
-const
-  DEF_INTERVAL_STEPS = '0.2|0.5|1.0';
-
 type
   TAxisIntervalParamOption = (
     aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps);
 
+const
+  DEF_INTERVAL_STEPS = '0.2|0.5|1.0';
+  DEF_INTERVAL_OPTIONS = [aipUseMaxLength, aipUseMinLength, aipUseNiceSteps];
+
+type
   TAxisIntervalParamOptions = set of TAxisIntervalParamOption;
 
   TChartAxisIntervalParams = class(TPersistent)
@@ -59,12 +60,12 @@ type
     property StepValues: TDoubleDynArray read FStepValues;
   published
     property Count: Integer read FCount write SetCount default 5;
-    property MaxLength: Integer read FMaxLength write SetMaxLength default 100;
-    property MinLength: Integer read FMinLength write SetMinLength default 5;
+    property MaxLength: Integer read FMaxLength write SetMaxLength default 50;
+    property MinLength: Integer read FMinLength write SetMinLength default 10;
     property NiceSteps: String
       read FNiceSteps write SetNiceSteps stored NiceStepsIsStored;
     property Options: TAxisIntervalParamOptions
-      read FOptions write SetOptions default [];
+      read FOptions write SetOptions default DEF_INTERVAL_OPTIONS;
   end;
 
 type
@@ -90,10 +91,14 @@ type
   end;
   PChartDataItem = ^TChartDataItem;
 
+  TGraphToImageFunc = function (AX: Double): Integer of object;
+
   TValuesInRangeParams = record
     FFormat: String;
     FMin, FMax: Double;
     FUseY: Boolean;
+    FAxisToGraph: TTransformFunc;
+    FGraphToImage: TGraphToImageFunc;
   end;
 
   { TCustomChartSource }
