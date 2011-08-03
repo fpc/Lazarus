@@ -92,7 +92,7 @@ procedure Register;
 begin
   RegisterComponents(
     CHART_COMPONENT_IDE_PAGE, [
-      TDateTimeIntervalChartSource
+      TIntervalChartSource, TDateTimeIntervalChartSource
     ]);
 end;
 

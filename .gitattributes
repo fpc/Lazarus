@@ -2466,6 +2466,7 @@ components/tachart/icons/tchartstyles.png -text svneol=unset#images/png
 components/tachart/icons/tcharttoolset.png -text svneol=unset#images/png
 components/tachart/icons/tdatetimeintervalchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tdbchartsource.png -text svneol=unset#images/png
+components/tachart/icons/tintervalchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tlistchartsource.png -text svneol=unset#images/png
 components/tachart/icons/trandomchartsource.png -text svneol=unset#images/png
 components/tachart/icons/tuserdefinedchartsource.png -text svneol=unset#images/png
