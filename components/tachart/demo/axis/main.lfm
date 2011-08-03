@@ -126,6 +126,9 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
           end        
           item
+            Intervals.MaxLength = 100
+            Intervals.MinLength = 30
+            Intervals.NiceSteps = '0.2|0.25|0.5|1.0'
             TickLength = 6
             Alignment = calBottom
             Group = 2
@@ -134,6 +137,9 @@ object Form1: TForm1
               item
                 Grid.Color = clGray
                 Grid.Cosmetic = False
+                Intervals.Count = 10
+                Intervals.MinLength = 5
+                Intervals.Options = [aipUseCount, aipUseMinLength]
                 Marks.Distance = 4
                 Marks.LabelFont.Height = -9
                 Marks.LabelFont.Orientation = 900
@@ -203,6 +209,102 @@ object Form1: TForm1
         end
       end
     end
+    object tsIntervals: TTabSheet
+      Caption = 'Intervals'
+      ClientHeight = 404
+      ClientWidth = 525
+      object ChartIntervals: TChart
+        Left = 0
+        Height = 404
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Visible = False
+            Intervals.NiceSteps = '0.25|1.0'
+            TickColor = clMaroon
+            TickLength = 3
+            AxisPen.Color = clMaroon
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clMaroon
+            Minors = <>
+            Title.LabelFont.Color = clMaroon
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'NiceSteps = 0.25'
+          end        
+          item
+            Grid.Visible = False
+            Intervals.MinLength = 20
+            Intervals.NiceSteps = '0.3|0.6'
+            Alignment = calBottom
+            AxisPen.Visible = True
+            Marks.Format = '%0:.6g'
+            Marks.Range.Max = 0.6
+            Marks.Range.Min = -0.3
+            Marks.Range.UseMax = True
+            Marks.Range.UseMin = True
+            Marks.Style = smsCustom
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'Marks.Range = -0.3 .. 0.6'
+          end        
+          item
+            Grid.Visible = False
+            Intervals.Count = 10
+            Intervals.MinLength = 4
+            Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+            TickColor = clGreen
+            TickLength = 3
+            AxisPen.Color = clGreen
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clGreen
+            Minors = <>
+            Title.LabelFont.Color = clGreen
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'MinLength = 4'
+          end        
+          item
+            Grid.Visible = False
+            Intervals.MaxLength = 200
+            Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+            TickColor = clNavy
+            TickLength = 3
+            AxisPen.Color = clNavy
+            AxisPen.Visible = True
+            Marks.LabelFont.Color = clNavy
+            Minors = <>
+            Title.LabelFont.Color = clNavy
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'MaxLength = 200'
+          end        
+          item
+            Grid.Visible = False
+            Intervals.Options = [aipUseMaxLength, aipUseMinLength]
+            TickLength = 3
+            AxisPen.Visible = True
+            Marks.Format = '%0:.4g'
+            Marks.Style = smsCustom
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'No nice steps'
+          end>
+        BackColor = clSilver
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Frame.Visible = False
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+      end
+    end
   end
   object lcsMarks: TListChartSource
     DataPoints.Strings = (
@@ -222,7 +324,7 @@ object Form1: TForm1
     XMin = 0
     YMax = 50
     YMin = 5
-    left = 87
+    left = 216
     top = 216
   end
   object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource

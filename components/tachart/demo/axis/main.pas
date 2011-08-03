@@ -18,6 +18,7 @@ type
     catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTFahrToCel: TLinearAxisTransform;
+    ChartIntervals: TChart;
     ChartAxisGroup: TChart;
     ChartCustomMarks: TChart;
     ChartCustomMarksBarSeries1: TBarSeries;
@@ -33,6 +34,7 @@ type
     lcsMarks: TListChartSource;
     PageControl1: TPageControl;
     rcsDates: TRandomChartSource;
+    tsIntervals: TTabSheet;
     tsAxisGroup: TTabSheet;
     tsCustomMarks: TTabSheet;
     tsDateTime: TTabSheet;
@@ -99,6 +101,11 @@ begin
       Marks.Range.Max := 9;
       Marks.LabelFont.Orientation := 900;
       Marks.LabelFont.Color := COLORS[i];
+      with Marks.DefaultSource.Params do begin
+        MinLength := 5;
+        MaxLength := 20;
+        Options := Options + [aipUseCount];
+      end;
       TickColor := COLORS[i];
       Group := 1;
     end;
