@@ -247,14 +247,23 @@ uses
 var
   VIdentityTransform: TChartAxisTransformations;
 
-function AxisGroupCompare(Item1, Item2: Pointer): Integer;
+function AxisZCompare(AItem1, AItem2: Pointer): Integer; forward;
+
+function AxisGroupCompare(AItem1, AItem2: Pointer): Integer;
 begin
-  Result := TChartAxis(Item1).Group - TChartAxis(Item2).Group;
+  Result := TChartAxis(AItem1).Group - TChartAxis(AItem2).Group;
+  if Result = 0 then
+    Result := AxisZCompare(AItem1, AItem2);
 end;
 
-function AxisZCompare(Item1, Item2: Pointer): Integer;
+function AxisZCompare(AItem1, AItem2: Pointer): Integer;
+var
+  a1: TChartAxis absolute AItem1;
+  a2: TChartAxis absolute AItem2;
 begin
-  Result := TChartAxis(Item1).ZPosition - TChartAxis(Item2).ZPosition;
+  Result := a1.ZPosition - a2.ZPosition;
+  if Result = 0 then
+    Result := a2.Index - a1.Index;
 end;
 
 procedure SideByAlignment(
