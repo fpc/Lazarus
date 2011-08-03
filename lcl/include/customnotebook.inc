@@ -874,11 +874,6 @@ begin
     TWSCustomPageClass(Page[i].WidgetSetClass).UpdateProperties(Page[i]);
 end;
 
-function TCustomTabControl.ChildClassAllowed(ChildClass: TClass): boolean;
-begin
-  Result:=(ChildClass<>nil) and (ChildClass.InheritsFrom(PageClass));
-end;
-
 class function TCustomTabControl.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 200;

@@ -115,6 +115,11 @@ begin
     OnChange(Self);
 end;
 
+function TPageControl.ChildClassAllowed(ChildClass: TClass): boolean;
+begin
+  Result:=(ChildClass<>nil) and (ChildClass.InheritsFrom(PageClass));
+end;
+
 constructor TPageControl.Create(TheOwner: TComponent);
 begin
   PageClass:=TTabSheet;

@@ -689,6 +689,8 @@ begin
   Result:=(FTabs<>nil) and TTabControlStrings(fTabs).IsUpdating;
 end;
 
+{$ifdef LCL_NEW_TABCONTROL}
+
 { TTabPage }
 
 type
@@ -838,6 +840,7 @@ begin
       Dec(FPageIndex);
   end;
 end;
+{$endif}
 
 // included by comctrls.pp
 

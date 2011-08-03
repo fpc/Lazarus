@@ -374,7 +374,6 @@ type
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
-    function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property ActivePageComponent: TCustomPage read GetActivePageComponent
@@ -510,6 +509,7 @@ type
     procedure DoRemoveDockClient(Client: TControl); override;
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
     procedure DoChange; override;
+    function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     function FindNextPage(CurPage: TTabSheet;
@@ -806,6 +806,8 @@ type
     property Visible;
   end;
 
+{$ifdef LCL_NEW_TABCONTROL}
+
   { TNewTabControl }
 
 (* TNewTabControl is a replacement for TTabControl, derived from TCustomTabControl.
@@ -880,6 +882,8 @@ type
     property TabWidth;
     property Visible;
   end;
+
+{$endif}
 
   { Custom draw }
 
@@ -3452,7 +3456,9 @@ end;
 procedure Register;
 begin
   RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
-    TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl,THeaderControl]);
+    TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl,
+{$ifdef LCL_NEW_TABCONTROL}TNewTabControl,{$endif}
+    THeaderControl]);
   RegisterNoIcon([TToolButton,TTabSheet]);
 end;
 
