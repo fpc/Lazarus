@@ -562,6 +562,7 @@ begin
   d.FUseY := IsVertical;
   d.FAxisToGraph := @GetTransform.AxisToGraph;
   d.FGraphToImage := @FHelper.GraphToImage;
+  d.FAxisIntervals := Intervals;
   SetLength(FMarkValues, 0);
   vis := TChartAxisList(Collection).OnVisitSources;
   if Marks.AtDataOnly and Assigned(vis) then

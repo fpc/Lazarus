@@ -22,7 +22,8 @@ interface
 
 uses
   Classes, Graphics,
-  TAChartUtils, TACustomSource, TADrawUtils, TAStyles, TATypes;
+  TAChartUtils, TACustomSource, TADrawUtils, TAIntervalSources, TAStyles,
+  TATypes;
 
 const
   DEF_TITLE_DISTANCE = 4;
@@ -85,15 +86,18 @@ type
 
   TCustomChartAxisMarks = class(TBasicChartAxisMarks)
   strict private
+    FDefaultSource: TIntervalChartSource;
     FStripes: TChartStyles;
     procedure SetStripes(AValue: TChartStyles);
   strict protected
     function IsFormatStored: Boolean;
   public
     constructor Create(AOwner: TCustomChart);
+    destructor Destroy; override;
     function Measure(
       ADrawer: IChartDrawer; AIsVertical: Boolean; ATickLength: Integer;
       AValues: TChartValueTextArray): Integer;
+    property DefaultSource: TIntervalChartSource read FDefaultSource;
     property Stripes: TChartStyles read FStripes write SetStripes;
   end;
 
@@ -114,7 +118,6 @@ type
   TChartAxisMarks = class(TCustomChartAxisMarks)
   strict private
     FAtDataOnly: Boolean;
-    FDefaultSource: TCustomChartSource;
     FListener: TListener;
     FRange: TChartRange;
     FSource: TCustomChartSource;
@@ -154,8 +157,10 @@ type
     FTickColor: TColor;
     FTickLength: Integer;
     FVisible: Boolean;
+    function GetIntervals: TChartAxisIntervalParams;
     procedure SetArrow(AValue: TChartArrow);
     procedure SetGrid(AValue: TChartAxisGridPen);
+    procedure SetIntervals(AValue: TChartAxisIntervalParams);
     procedure SetTickColor(AValue: TColor);
     procedure SetTickLength(AValue: Integer);
     procedure SetVisible(AValue: Boolean);
@@ -174,11 +179,13 @@ type
       ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
 
     property Alignment: TChartAxisAlignment
-    read GetAlignment write SetAlignment;
+      read GetAlignment write SetAlignment;
     property Arrow: TChartArrow read FArrow write SetArrow;
     property Marks: TCustomChartAxisMarks read FMarks write SetMarks;
   published
     property Grid: TChartAxisGridPen read FGrid write SetGrid;
+    property Intervals: TChartAxisIntervalParams
+      read GetIntervals write SetIntervals;
     property TickColor: TColor read FTickColor write SetTickColor default clBlack;
     property TickLength: Integer read FTickLength write SetTickLength;
     property Visible: Boolean read FVisible write SetVisible default true;
@@ -258,7 +265,7 @@ implementation
 
 uses
   Math, SysUtils,
-  TAGeometry, TAIntervalSources;
+  TAGeometry;
 
 { TChartMinorAxisMarks }
 
@@ -511,8 +518,15 @@ end;
 constructor TCustomChartAxisMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
+  FDefaultSource := TIntervalChartSource.Create(AOwner);
   FDistance := 1;
   FLabelBrush.Style := bsClear;
+end;
+
+destructor TCustomChartAxisMarks.Destroy;
+begin
+  FreeAndNil(FDefaultSource);
+  inherited;
 end;
 
 function TCustomChartAxisMarks.IsFormatStored: Boolean;
@@ -550,7 +564,6 @@ end;
 constructor TChartAxisMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
-  FDefaultSource := TIntervalChartSource.Create(AOwner);
   FListener := TListener.Create(@FSource, @StyleChanged);
   FRange := TChartRange.Create(AOwner);
   FStyle := smsValue;
@@ -561,7 +574,6 @@ destructor TChartAxisMarks.Destroy;
 begin
   FreeAndNil(FRange);
   FreeAndNil(FListener);
-  FreeAndNil(FDefaultSource);
   inherited;
 end;
 
@@ -594,7 +606,7 @@ function TChartAxisMarks.SourceDef: TCustomChartSource;
 begin
   Result := FSource;
   if Result = nil then
-    Result := FDefaultSource;
+    Result := DefaultSource;
 end;
 
 { TChartBasicAxis }
@@ -633,6 +645,11 @@ begin
   inherited;
 end;
 
+function TChartBasicAxis.GetIntervals: TChartAxisIntervalParams;
+begin
+  Result := Marks.DefaultSource.Params;
+end;
+
 procedure TChartBasicAxis.SetArrow(AValue: TChartArrow);
 begin
   FArrow.Assign(AValue);
@@ -643,6 +660,11 @@ procedure TChartBasicAxis.SetGrid(AValue: TChartAxisGridPen);
 begin
   FGrid.Assign(AValue);
   StyleChanged(Self);
+end;
+
+procedure TChartBasicAxis.SetIntervals(AValue: TChartAxisIntervalParams);
+begin
+  Marks.DefaultSource.Params := AValue;
 end;
 
 procedure TChartBasicAxis.SetMarks(AValue: TCustomChartAxisMarks);

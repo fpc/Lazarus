@@ -94,6 +94,7 @@ type
   TGraphToImageFunc = function (AX: Double): Integer of object;
 
   TValuesInRangeParams = record
+    FAxisIntervals: TChartAxisIntervalParams;
     FFormat: String;
     FMin, FMax: Double;
     FUseY: Boolean;
