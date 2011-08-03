@@ -93,7 +93,7 @@ type
     FListener: TListener;
     FMarkValues: TChartValueTextArray;
 
-    procedure GetMarkValues(AMin, AMax: Double);
+    procedure GetMarkValues;
     function MakeValuesInRangeParams(AMin, AMax: Double): TValuesInRangeParams;
     procedure VisitSource(ASource: TCustomChartSource; var AData);
   private
@@ -538,23 +538,25 @@ begin
   Result := TChartAxisMarks(inherited Marks);
 end;
 
-procedure TChartAxis.GetMarkValues(AMin, AMax: Double);
+procedure TChartAxis.GetMarkValues;
 var
   i: Integer;
   d: TValuesInRangeParams;
   vis: TChartOnVisitSources;
   t: TChartValueText;
 begin
-  AMin := GetTransform.GraphToAxis(AMin);
-  AMax := GetTransform.GraphToAxis(AMax);
-  EnsureOrder(AMin, AMax);
-  with Marks.Range do begin
-    if UseMin then
-      AMin := Math.Max(Min, AMin);
-    if UseMax then
-      AMax := Math.Min(Max, AMax);
+  with FHelper do begin
+    FValueMin := GetTransform.GraphToAxis(FValueMin);
+    FValueMax := GetTransform.GraphToAxis(FValueMax);
+    EnsureOrder(FValueMin, FValueMax);
+    with Marks.Range do begin
+      if UseMin then
+        FValueMin := Math.Max(Min, FValueMin);
+      if UseMax then
+        FValueMax := Math.Min(Max, FValueMax);
+    end;
+    d := MakeValuesInRangeParams(FValueMin, FValueMax);
   end;
-  d := MakeValuesInRangeParams(AMin, AMax);
   SetLength(FMarkValues, 0);
   vis := TChartAxisList(Collection).OnVisitSources;
   if Marks.AtDataOnly and Assigned(vis) then
@@ -642,7 +644,7 @@ begin
   d := FHelper.FDrawer;
   FHelper.FValueMin := TDoublePointBoolArr(AExtent.a)[v];
   FHelper.FValueMax := TDoublePointBoolArr(AExtent.b)[v];
-  GetMarkValues(FHelper.FValueMin, FHelper.FValueMax);
+  GetMarkValues;
   sz := Marks.Measure(d, not v, TickLength, FMarkValues);
   FHelper.GetClipRange(rmin, rmax);
   minc := MaxInt;
