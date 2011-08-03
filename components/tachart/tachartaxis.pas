@@ -29,7 +29,6 @@ uses
 
 const
   DEF_TICK_LENGTH = 4;
-  DEF_INTERVALS_COUNT = 5;
 
 type
 
@@ -37,9 +36,7 @@ type
 
   TChartMinorAxis = class(TChartBasicAxis)
   strict private
-    FIntervalsCount: Cardinal;
     function GetMarks: TChartMinorAxisMarks; inline;
-    procedure SetIntervalsCount(AValue: Cardinal);
     procedure SetMarks(AValue: TChartMinorAxisMarks);
   protected
     function GetDisplayName: String; override;
@@ -49,10 +46,9 @@ type
     procedure StyleChanged(ASender: TObject); override;
   public
     constructor Create(ACollection: TCollection); override;
-    function GetMarkValues(AMin, AMax: Double): TChartValueTextArray;
+    function GetMarkValues(
+      const AParams: TValuesInRangeParams): TChartValueTextArray;
   published
-    property IntervalsCount: Cardinal
-      read FIntervalsCount write SetIntervalsCount default DEF_INTERVALS_COUNT;
     property Marks: TChartMinorAxisMarks read GetMarks write SetMarks;
     property TickLength default DEF_TICK_LENGTH div 2;
   end;
@@ -74,6 +70,7 @@ type
     function Add: TChartMinorAxis;
     function GetChart: TCustomChart; inline;
     property Axes[AIndex: Integer]: TChartMinorAxis read GetAxes; default;
+    property ParentAxis: TChartAxis read FAxis;
   end;
 
   TChartAxisGroup = record
@@ -97,6 +94,7 @@ type
     FMarkValues: TChartValueTextArray;
 
     procedure GetMarkValues(AMin, AMax: Double);
+    function MakeValuesInRangeParams(AMin, AMax: Double): TValuesInRangeParams;
     procedure VisitSource(ASource: TCustomChartSource; var AData);
   private
     FAxisRect: TRect;
@@ -310,9 +308,12 @@ end;
 constructor TChartMinorAxis.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection, (ACollection as TChartMinorAxisList).GetChart);
-  FIntervalsCount := DEF_INTERVALS_COUNT;
   FMarks := TChartMinorAxisMarks.Create(
     (ACollection as TChartMinorAxisList).GetChart);
+  with Intervals do begin
+    Options := [aipUseCount, aipUseMinLength];
+    MinLength := 5;
+  end;
   TickLength := DEF_TICK_LENGTH div 2;
 end;
 
@@ -331,32 +332,29 @@ begin
   Result := TChartMinorAxisMarks(inherited Marks);
 end;
 
-function TChartMinorAxis.GetMarkValues(AMin, AMax: Double): TChartValueTextArray;
+function TChartMinorAxis.GetMarkValues(
+  const AParams: TValuesInRangeParams): TChartValueTextArray;
 var
-  c, ic: Integer;
+  i, j: Integer;
 begin
   if not Visible then exit(nil);
-  ic := IntervalsCount;
-  SetLength(Result, ic - 1);
-  for c := 1 to ic - 1 do
-    with Result[c - 1] do begin
-      FValue := WeightedAverage(AMin, AMax, c / ic);
-      if Marks.Visible then
-        FText := Format(Marks.Format, [FValue, 0.0, '', 0.0, 0.0]);
-    end;
+  Marks.DefaultSource.ValuesInRange(AParams, Result);
+  // Remove values on the ends and outside of the interval.
+  i := 0;
+  while (i < Length(Result)) and (Result[i].FValue <= AParams.FMin) do
+    i += 1;
+  j := i;
+  while (j < Length(Result)) and (Result[j].FValue < AParams.FMax) do begin
+    Result[j - i] := Result[j];
+    j += 1;
+  end;
+  SetLength(Result, j);
 end;
 
 procedure TChartMinorAxis.SetAlignment(AValue: TChartAxisAlignment);
 begin
   Unused(AValue);
   raise EChartError.Create('TChartMinorAxis.SetAlignment');
-end;
-
-procedure TChartMinorAxis.SetIntervalsCount(AValue: Cardinal);
-begin
-  if FIntervalsCount = AValue then exit;
-  FIntervalsCount := AValue;
-  StyleChanged(Self);
 end;
 
 procedure TChartMinorAxis.SetMarks(AValue: TChartMinorAxisMarks);
@@ -455,7 +453,7 @@ procedure TChartAxis.Draw;
   begin
     if IsNan(AMin) or (AMin = AMax) then exit;
     for j := 0 to Minors.Count - 1 do begin
-      minorMarks := Minors[j].GetMarkValues(AMin, AMax);
+      minorMarks := Minors[j].GetMarkValues(MakeValuesInRangeParams(AMin, AMax));
       if minorMarks = nil then continue;
       with FHelper.Clone do begin
         FAxis := Minors[j];
@@ -556,13 +554,7 @@ begin
     if UseMax then
       AMax := Math.Min(Max, AMax);
   end;
-  d.FMin := AMin;
-  d.FMax := AMax;
-  d.FFormat := Marks.Format;
-  d.FUseY := IsVertical;
-  d.FAxisToGraph := @GetTransform.AxisToGraph;
-  d.FGraphToImage := @FHelper.GraphToImage;
-  d.FAxisIntervals := Intervals;
+  d := MakeValuesInRangeParams(AMin, AMax);
   SetLength(FMarkValues, 0);
   vis := TChartAxisList(Collection).OnVisitSources;
   if Marks.AtDataOnly and Assigned(vis) then
@@ -591,6 +583,18 @@ end;
 function TChartAxis.IsVertical: Boolean; inline;
 begin
   Result := Alignment in [calLeft, calRight];
+end;
+
+function TChartAxis.MakeValuesInRangeParams(
+  AMin, AMax: Double): TValuesInRangeParams;
+begin
+  Result.FMin := AMin;
+  Result.FMax := AMax;
+  Result.FFormat := Marks.Format;
+  Result.FUseY := IsVertical;
+  Result.FAxisToGraph := @GetTransform.AxisToGraph;
+  Result.FGraphToImage := @FHelper.GraphToImage;
+  Result.FAxisIntervals := Intervals;
 end;
 
 procedure TChartAxis.Measure(
@@ -647,7 +651,7 @@ begin
     if not IsNan(pv) then begin
       for j := 0 to Minors.Count - 1 do
         with Minors[j] do begin
-          minorValues := GetMarkValues(pv, cv);
+          minorValues := GetMarkValues(MakeValuesInRangeParams(pv, cv));
           sz := Max(Marks.Measure(d, not v, TickLength, minorValues), sz);
         end;
     end;
