@@ -61,10 +61,14 @@ rm -rf %FPCSVNDIR%\fpcsrc\compiler\*.exe
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -PB') DO SET COMPILER=%FPCSVNDIR%\fpcsrc\compiler\%%L
 FOR /F %%L IN ('%COMPILER% -iSO') DO SET FPCSourceOS=%%L
 FOR /F %%L IN ('%FPCSVNDIR%\fpcsrc\compiler\utils\fpc.exe -P%TARGETCPU% -PB') DO SET PPCNAME=%%L
+SET FPCFPMAKE=%COMPILER%
 
 :: rebuild the rtl without WPO information
 %MAKEEXE% rtl_clean rtl PP=%COMPILER%
-%MAKEEXE% -C utils/fpcm all FPC=%COMPILER% 
+%MAKEEXE% -C packages fcl-base fcl-process FPC=%COMPILER% 
+%MAKEEXE% -C utils/fpcm all FPC=%COMPILER%
+:: Add -gtttt so that ShowBuiltinCommand is initialized to false, bug in fpc 2.4.4 
+%MAKEEXE% -C utils/fpcmkcfg all OPT="-gtttt" FPC=%COMPILER% 
 
 %MAKEEXE% compiler FPC=%COMPILER% PPC_TARGET=%TARGETCPU% EXENAME=%PPCNAME%
 IF ERRORLEVEL 1 GOTO CLEANUP
@@ -93,7 +97,7 @@ cp %CROSSBINDIR%\* %INSTALL_BINDIR%
 %MAKEEXE% rtl_install packages_install FPCMAKE=%FPCSVNDIR%\fpcsrc\utils\fpcm\fpcmake.exe INSTALL_PREFIX=%INSTALL_BASE% FPC=%COMPILER%
 
 copy %COMPILER% %INSTALL_BINDIR%
-%FPCSVNDIR%\fpcsrc\compiler\utils\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
+%FPCSVNDIR%\fpcsrc\utils\fpcmkcfg\fpcmkcfg.exe -d "basepath=%INSTALL_BASE%" -o %INSTALL_BINDIR%\fpc.cfg
 SET COMPILER=%INSTALL_BINDIR%\%PPCNAME%
 
 gmkdir -p %BUILDDIR%\packager
