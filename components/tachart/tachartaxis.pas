@@ -640,8 +640,9 @@ begin
   if not Visible then exit;
   v := IsVertical;
   d := FHelper.FDrawer;
-  GetMarkValues(
-    TDoublePointBoolArr(AExtent.a)[v], TDoublePointBoolArr(AExtent.b)[v]);
+  FHelper.FValueMin := TDoublePointBoolArr(AExtent.a)[v];
+  FHelper.FValueMax := TDoublePointBoolArr(AExtent.b)[v];
+  GetMarkValues(FHelper.FValueMin, FHelper.FValueMax);
   sz := Marks.Measure(d, not v, TickLength, FMarkValues);
   FHelper.GetClipRange(rmin, rmax);
   minc := MaxInt;

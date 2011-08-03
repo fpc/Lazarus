@@ -215,6 +215,8 @@ type
     FScaledTickLength: Integer;
     FStripeIndex: Cardinal;
     FTransf: ICoordTransformer;
+    FValueMax: Double;
+    FValueMin: Double;
     FZOffset: TPoint;
 
     procedure BeginDrawing; virtual;
@@ -297,6 +299,8 @@ begin
   Result.FClipRect := FClipRect;
   Result.FDrawer := FDrawer;
   Result.FTransf := FTransf;
+  Result.FValueMax := FValueMax;
+  Result.FValueMin := FValueMin;
   Result.FZOffset := FZOffset;
 end;
 
@@ -318,7 +322,9 @@ var
   coord: Integer;
 begin
   coord := GraphToImage(AMark);
-  if not IsInClipRange(coord) then exit;
+  if
+    not IsInClipRange(coord) or not InRange(AMark, FValueMin, FValueMax)
+  then exit;
 
   if FAxis.Grid.Visible then begin
     FDrawer.Pen := FAxis.Grid;
