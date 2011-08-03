@@ -30,9 +30,10 @@ object Form1: TForm1
         AxisList = <        
           item
             Grid.Visible = False
+            TickColor = clRed
             Marks.LabelFont.Color = clRed
             Marks.AtDataOnly = True
-            TickColor = clRed
+            Minors = <>
             Title.LabelFont.Color = clRed
             Title.LabelFont.Orientation = 900
             Title.Visible = True
@@ -40,17 +41,21 @@ object Form1: TForm1
             Transformations = catTAuto
           end        
           item
+            Intervals.MaxLength = 100
+            Intervals.MinLength = 20
             Alignment = calBottom
+            Minors = <>
             Title.Visible = True
             Title.Caption = 'Year'
           end        
           item
-            Alignment = calRight
             Grid.Visible = False
+            TickColor = clBlue
+            Alignment = calRight
             Marks.Distance = 4
             Marks.LabelFont.Color = clBlue
             Marks.AtDataOnly = True
-            TickColor = clBlue
+            Minors = <>
             Title.LabelFont.Color = clBlue
             Title.LabelFont.Orientation = 900
             Title.Visible = True
@@ -118,17 +123,20 @@ object Form1: TForm1
         AxisList = <        
           item
             Grid.Visible = False
+            Minors = <>
             Title.LabelFont.Orientation = 900
             Transformations = catIndependent1
           end        
           item
-            Alignment = calBottom
             Grid.Visible = False
+            Alignment = calBottom
             Marks.Visible = False
+            Minors = <>
           end        
           item
-            Alignment = calRight
             Grid.Visible = False
+            Alignment = calRight
+            Minors = <>
             Transformations = catIndependent2
           end>
         BackColor = clWhite
@@ -221,7 +229,12 @@ object Form1: TForm1
         Width = 525
         AxisList = <        
           item
+            Intervals.Count = 10
+            Intervals.MinLength = 5
+            Intervals.NiceSteps = '0.2|0.25|0.5|1.0'
+            Intervals.Options = [aipUseCount, aipUseMinLength, aipUseNiceSteps]
             Marks.Stripes = csStripes
+            Minors = <>
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Left'
@@ -229,13 +242,15 @@ object Form1: TForm1
           end        
           item
             Alignment = calBottom
+            Minors = <>
             Title.Distance = 0
             Title.Visible = True
             Title.Caption = 'Bottom'
           end        
           item
-            Alignment = calRight
             Grid.Visible = False
+            Alignment = calRight
+            Minors = <>
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Right 1'
@@ -243,6 +258,7 @@ object Form1: TForm1
           item
             Alignment = calTop
             Inverted = True
+            Minors = <>
             Title.Caption = 'Top'
           end>
         Foot.Brush.Color = clBtnFace
@@ -262,10 +278,10 @@ object Form1: TForm1
         end
         object cfsLog: TFuncSeries
           Active = False
-          Extent.XMin = -1
-          Extent.XMax = 3
-          Extent.UseXMin = True
           Extent.UseXMax = True
+          Extent.UseXMin = True
+          Extent.XMax = 3
+          Extent.XMin = -1
           AxisIndexY = 0
           OnCalculate = ChartLogFuncSeries1Calculate
         end
@@ -303,11 +319,16 @@ object Form1: TForm1
         Width = 525
         AxisList = <        
           item
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
-            Alignment = calBottom
             Grid.Visible = False
+            Intervals.Count = 20
+            Intervals.NiceSteps = '0.2|0.25|0.4|0.5|1.0'
+            Intervals.Options = [aipUseCount, aipUseNiceSteps]
+            Alignment = calBottom
+            Minors = <>
             Transformations = catUser
           end>
         Foot.Brush.Color = clBtnFace
