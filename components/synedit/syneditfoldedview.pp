@@ -3936,7 +3936,9 @@ procedure TSynEditFoldedView.LineCountChanged(Sender: TSynEditStrings; AIndex, A
 begin
   {$IFDEF SynFoldDebug}try DebugLnEnter(['>> FOLD-- LineCountChanged AIndex=', AIndex, '  Acount=',ACount]);{$ENDIF}
   // no need for fix folding => synedit will be called, and scanlines will call fixfolding
-  {TODO: a "need fix folding" flag => to ensure it will be called if synedit doesnt}
+  {TODO: a "need fix folding" flag => to ensure it will be called if synedit doesnt
+         SynEdit.ScanRanges, calls Fixfolding as workaroound => review
+  }
   if (fLockCount > 0) and (AIndex < max(fNeedFixFrom, fNeedFixMinEnd)) then begin
     // adapt the fixfold range. Could be done smarter, but it doesn't matter if the range gets bigger than needed.
     if (ACount < 0) and (AIndex < fNeedFixFrom) then inc(fNeedFixFrom, ACount);
