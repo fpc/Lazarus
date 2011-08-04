@@ -1917,7 +1917,7 @@ var
       if MouseDownComponent is TWinControl then
         NewParentControl := TWinControl(MouseDownComponent)
       else
-        NewParentControl := WinControlAtPos(MouseDownPos.X, MouseUpPos.X, true, true);
+        NewParentControl := WinControlAtPos(MouseUpPos.X, MouseUpPos.Y, true, true);
 
       while (NewParentControl <> nil) and
         ((not (csAcceptsControls in NewParentControl.ControlStyle)) or
