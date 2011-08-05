@@ -153,7 +153,8 @@ type
     bbtIfBegin,   // child of bbtIfThen or bbtIfElse
     bbtStatement,
     bbtStatementRoundBracket,
-    bbtStatementEdgedBracket
+    bbtStatementEdgedBracket,
+    bbtProperty   // global or class property
     );
   TFABBlockTypes = set of TFABBlockType;
 
@@ -227,7 +228,8 @@ const
     'bbtIfBegin',
     'bbtStatement',
     'bbtStatementRoundBracket',
-    'bbtStatementEdgedBracket'
+    'bbtStatementEdgedBracket',
+    'bbtProperty'
     );
 
 type
@@ -689,11 +691,17 @@ var
   begin
     if Stack.TopType<>bbtDefinition then
       EndIdentifierSectionAndProc;
-    if Stack.TopType in (bbtAllCodeSections+bbtAllProcedures+[bbtNone,bbtDefinition])
+    if Stack.TopType in (bbtAllCodeSections+bbtAllProcedures+[bbtNone,bbtDefinition,bbtClassSection])
     then begin
       BeginBlock(Typ);
       BeginBlock(bbtProcedureHead);
     end;
+  end;
+
+  procedure StartProperty;
+  begin
+    if Stack.TopType in [bbtNone, bbtClassSection] then
+      BeginBlock(bbtProperty);
   end;
 
   procedure StartClassSection;
@@ -1080,6 +1088,9 @@ begin
             StartClassSection;
         'O': // PRO
           case UpChars[r[3]] of
+          'P': // PROP
+            if (CompareIdentifiers('PROPERTY',r)=0) then
+              StartProperty;
           'T': // PROT
             if (CompareIdentifiers('PROTECTED',r)=0) then
               StartClassSection;
@@ -1160,7 +1171,7 @@ begin
         while Stack.TopType in [bbtStatementRoundBracket,bbtStatementEdgedBracket] do
           EndBlock;
         case Stack.TopType of
-        bbtUsesSection,bbtDefinition:
+        bbtUsesSection,bbtDefinition,bbtProperty:
           EndBlock;
         bbtIfThen,bbtIfElse,bbtStatement,bbtFor,bbtForDo,bbtCaseColon,bbtCaseLabel:
           begin
@@ -1177,15 +1188,11 @@ begin
             EndProcedureHead;
         bbtClassSection,bbtClass:
           begin
-            if (LastAtomStart>0)
-            and (LastAtomStart=Stack.Stack[Stack.Top].StartPos) then
-            begin
-              if Stack.TopType=bbtClassSection then
-                EndBlock;
+            if Stack.TopType=bbtClassSection then
               EndBlock;
-              if Stack.TopType=bbtDefinition then
-                EndBlock;
-            end;
+            EndBlock;
+            if Stack.TopType=bbtDefinition then
+              EndBlock;
           end;
         end;
       end;
