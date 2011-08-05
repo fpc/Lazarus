@@ -595,17 +595,23 @@ var
   end;
 
 var
-  i, li: Integer;
+  i, li, vi, pvi: Integer;
   pv, v: Double;
 begin
   cnt := Length(AValues);
   SetLength(AValues, cnt + Count + 2);
   v := 0;
   li := 0;
+  pvi := MaxInt;
   for i := 0 to Count - 1 do begin
     pv := v;
     v := IfThen(AParams.FUseY, Item[i]^.Y, Item[i]^.X);
     if not InRange(v, AParams.FMin, AParams.FMax) then continue;
+    if aipUseMinLength in AParams.FIntervals.Options then begin
+      vi := AParams.ToImage(v);
+      if Abs(vi - pvi) < AParams.FIntervals.MinLength then continue;
+      pvi := vi;
+    end;
     if (cnt = 0) and (i > 0) then
       Push(pv, i - 1);
     Push(v, i);
