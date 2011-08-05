@@ -451,8 +451,8 @@ procedure TChartAxis.Draw;
       with FHelper.Clone do begin
         FAxis := Minors[j];
         // Only draw minor marks strictly inside the major mark interval.
-        FValueMin := AMin;
-        FValueMax := AMax;
+        FValueMin := FAxisTransf(AMin);
+        FValueMax := FAxisTransf(AMax);
         ExpandRange(FValueMin, FValueMax, -EPS);
         try
           BeginDrawing;
@@ -594,6 +594,7 @@ begin
   Result.FFormat := Marks.Format;
   Result.FUseY := IsVertical;
   Result.FAxisToGraph := @GetTransform.AxisToGraph;
+  Result.FGraphToAxis := @GetTransform.GraphToAxis;
   Result.FGraphToImage := @FHelper.GraphToImage;
   Result.FAxisIntervals := Intervals;
 end;

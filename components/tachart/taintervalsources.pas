@@ -113,7 +113,9 @@ procedure TIntervalChartSource.CalculateIntervals(
 
   function A2I(AX: Double): Integer; inline;
   begin
-    Result := AParams.FGraphToImage(AParams.FAxisToGraph(AX));
+    if not (aipGraphCoords in Params.Options) then
+      AX := AParams.FAxisToGraph(AX);
+    Result := AParams.FGraphToImage(AX);
   end;
 
   procedure CalcMinMaxCount(out AMinCount, AMaxCount: Integer);
@@ -239,6 +241,11 @@ var
   i: Integer;
 begin
   if AParams.FMin >= AParams.FMax then exit;
+
+  if aipGraphCoords in Params.Options then begin
+    AParams.FMin := AParams.FAxisToGraph(AParams.FMin);
+    AParams.FMax := AParams.FAxisToGraph(AParams.FMax);
+  end;
   CalculateIntervals(AParams, start, step);
   if step <= 0 then exit;
   m := start;
@@ -253,6 +260,9 @@ begin
     end;
     m += step;
   end;
+  if aipGraphCoords in Params.Options then
+    for i := 0 to High(AValues) do
+      AValues[i].FValue := AParams.FGraphToAxis(AValues[i].FValue);
   for i := 0 to High(AValues) do
     // Extra format arguments for compatibility with FormatItem.
     AValues[i].FText := Format(

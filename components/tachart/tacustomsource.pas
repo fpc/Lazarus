@@ -26,6 +26,7 @@ uses
 
 type
   TAxisIntervalParamOption = (
+    aipGraphCoords,
     aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps);
 
 const
@@ -95,11 +96,12 @@ type
 
   TValuesInRangeParams = record
     FAxisIntervals: TChartAxisIntervalParams;
+    FAxisToGraph: TTransformFunc;
     FFormat: String;
+    FGraphToAxis: TTransformFunc;
+    FGraphToImage: TGraphToImageFunc;
     FMin, FMax: Double;
     FUseY: Boolean;
-    FAxisToGraph: TTransformFunc;
-    FGraphToImage: TGraphToImageFunc;
   end;
 
   { TCustomChartSource }
