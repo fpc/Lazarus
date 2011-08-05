@@ -137,7 +137,10 @@ begin
   if FVisibleButtons=AValue then exit;
   FVisibleButtons:=AValue;
   for CurButton:=Low(Buttons) to High(Buttons) do
+  begin
     Buttons[CurButton].Visible:=CurButton in FVisibleButtons;
+    FocusableButtons[CurButton].Visible:=CurButton in FVisibleButtons;
+  end;
   if not (csLoading in ComponentState) then
     UpdateButtons;
 end;
@@ -153,6 +156,7 @@ var
 begin
   PriorEnable:=Enabled and FDataLink.Active and not FDataLink.DataSet.BOF;
   NextEnable:=Enabled and FDataLink.Active and not FDataLink.DataSet.EOF;
+
   Buttons[nbFirst].Enabled:=PriorEnable;
   Buttons[nbPrior].Enabled:=PriorEnable;
   Buttons[nbNext].Enabled:=NextEnable;
@@ -160,6 +164,12 @@ begin
   Buttons[nbDelete].Enabled:=Enabled and FDataLink.Active
                     and FDataLink.DataSet.CanModify
                     and (not (FDataLink.DataSet.BOF and FDataLink.DataSet.EOF));
+
+  FocusableButtons[nbFirst].Enabled:=PriorEnable;
+  FocusableButtons[nbPrior].Enabled:=PriorEnable;
+  FocusableButtons[nbNext].Enabled:=NextEnable;
+  FocusableButtons[nbLast].Enabled:=NextEnable;
+  FocusableButtons[nbDelete].Enabled:=Buttons[nbDelete].Enabled;
 end;
 
 procedure TDBCustomNavigator.EditingChanged;
@@ -167,21 +177,34 @@ var
   CanModify: Boolean;
 begin
   CanModify:=Enabled and FDataLink.Active and FDataLink.DataSet.CanModify;
+
   Buttons[nbInsert].Enabled:=CanModify;
   Buttons[nbEdit].Enabled:=CanModify and not FDataLink.Editing;
   Buttons[nbPost].Enabled:=CanModify and FDataLink.Editing;
   Buttons[nbCancel].Enabled:=CanModify and FDataLink.Editing;
   Buttons[nbRefresh].Enabled:=CanModify;
+
+  FocusableButtons[nbInsert].Enabled:=CanModify;
+  FocusableButtons[nbEdit].Enabled:=CanModify and not FDataLink.Editing;
+  FocusableButtons[nbPost].Enabled:=CanModify and FDataLink.Editing;
+  FocusableButtons[nbCancel].Enabled:=CanModify and FDataLink.Editing;
+  FocusableButtons[nbRefresh].Enabled:=CanModify;
 end;
 
 procedure TDBCustomNavigator.ActiveChanged;
 var
   CurButton: TDBNavButtonType;
 begin
-  if not (Enabled and FDataLink.Active) then begin
+  if not (Enabled and FDataLink.Active) then
+  begin
     for CurButton:=Low(Buttons) to High(Buttons) do
-      Buttons[CurButton].Enabled:=False
-  end else begin
+    begin
+      Buttons[CurButton].Enabled:=False;
+      FocusableButtons[CurButton].Enabled:=False;
+    end;
+  end
+  else
+  begin
     DataChanged;
     EditingChanged;
   end;
@@ -209,6 +232,7 @@ procedure TDBCustomNavigator.UpdateButtons;
 var
   CurButtonType: TDBNavButtonType;
   CurButton: TDBNavButton;
+  CurFocusableButton: TDBNavFocusableButton;
 begin
   if FUpdateButtonsLock>0
   then begin
@@ -223,6 +247,7 @@ begin
   else
     ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
 
+  // not-focusable buttons
   for CurButtonType:=Low(Buttons) to High(Buttons) do
   begin
     // create/get button
@@ -245,7 +270,37 @@ begin
     CurButton.Flat:=Flat;
     CurButton.Index:=CurButtonType;
     CurButton.Visible:=CurButtonType in FVisibleButtons;
+    if not (noFocusableButtons in FOptions) then CurButton.Parent := Self
+    else CurButton.Parent := nil;
   end;
+
+  // focusable buttons
+  for CurButtonType:=Low(Buttons) to High(Buttons) do
+  begin
+    // create/get button
+    if FocusableButtons[CurButtonType]=nil then
+    begin
+      CurFocusableButton:=TDBNavFocusableButton.Create(Self);
+      //CurFocusableButton.Name:=DBNavButtonResourceName[CurButtonType];
+      FocusableButtons[CurButtonType]:=CurFocusableButton;
+      if CurButtonType in [nbPrior,nbNext] then
+        CurFocusableButton.NavStyle:=CurFocusableButton.NavStyle+[nsAllowTimer];
+      CurFocusableButton.LoadGlyphFromLazarusResource(DBNavButtonResourceName[CurButtonType]);
+      CurFocusableButton.NumGlyphs:=1;
+      CurFocusableButton.TabStop := True;
+      CurFocusableButton.Parent:=Self;
+      CurFocusableButton.OnClick:=@ButtonClickHandler;
+      CurFocusableButton.ControlStyle := CurFocusableButton.ControlStyle + [csNoDesignSelectable];
+    end else
+      CurFocusableButton:=FocusableButtons[CurButtonType];
+
+    // update button properties
+    CurFocusableButton.Index:=CurButtonType;
+    CurFocusableButton.Visible:=CurButtonType in FVisibleButtons;
+    if (noFocusableButtons in FOptions) then CurFocusableButton.Parent := Self
+    else CurFocusableButton.Parent := nil;
+  end;
+
   EnableAlign;
   ActiveChanged;
 end;
@@ -254,6 +309,7 @@ procedure TDBCustomNavigator.UpdateHints;
 var
   CurButton: TDBNavButtonType;
   DBNavButtonDefaultHint: array[TDBNavButtonType] of string;
+  NewHint: string;
 
   procedure AssignHintsCaptions;
   begin
@@ -282,10 +338,15 @@ begin
   for CurButton := Low(Buttons) to High(Buttons) do
   begin
     if FHints.Count > Ord(CurButton) then
-      Buttons[CurButton].Hint := FHints[Ord(CurButton)]
+      NewHint := FHints[Ord(CurButton)]
     else
-      Buttons[CurButton].Hint := FDefaultHints[Ord(CurButton)];
+      NewHint := FDefaultHints[Ord(CurButton)];
+
+    Buttons[CurButton].Hint := NewHint;
     Buttons[CurButton].ShowHint := ShowButtonHints;
+
+    FocusableButtons[CurButton].Hint := NewHint;
+    FocusableButtons[CurButton].ShowHint := ShowButtonHints;
   end;
 end;
 

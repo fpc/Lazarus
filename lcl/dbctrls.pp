@@ -1094,6 +1094,7 @@ Type
 
 type
   TDBNavButton = class;
+  TDBNavFocusableButton = class;
   TDBNavDataLink = class;
 
   TDBNavGlyph = (ngEnabled, ngDisabled);
@@ -1102,7 +1103,9 @@ type
   TDBNavButtonSet = set of TDBNavButtonType;
   TDBNavButtonStyle = set of (nsAllowTimer, nsFocusRect);
   TDBNavButtonDirection = (nbdHorizontal,nbdVertical);
-  
+  TDBNavigatorOption = (noFocusableButtons);
+  TDBNavigatorOptions = set of TDBNavigatorOption;
+
   // for Delphi compatibility
   TNavigateBtn = TDBNavButtonType;
 
@@ -1144,6 +1147,7 @@ type
     FUpdateButtonsNeeded: boolean;
     FUpdateButtonsLock: integer;
     FOriginalHints: String;
+    FOptions: TDBNavigatorOptions;
     procedure DefaultHintsChanged(Sender: TObject);
     function GetDataSource: TDataSource;
     function GetHints: TStrings;
@@ -1156,6 +1160,7 @@ type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     Buttons: array[TDBNavButtonType] of TDBNavButton;
+    FocusableButtons: array[TDBNavButtonType] of TDBNavFocusableButton;
     procedure DataChanged; virtual;
     procedure EditingChanged; virtual;
     procedure ActiveChanged; virtual;
@@ -1182,6 +1187,7 @@ type
     property Direction: TDBNavButtonDirection read FDirection write SetDirection default nbdHorizontal;
     property Flat: Boolean read FFlat write SetFlat default False;
     property Hints: TStrings read GetHints write SetHints;
+    property Options: TDBNavigatorOptions read FOptions write FOptions;
     property OnClick: TDBNavClickEvent read FOnNavClick write FOnNavClick;
     property VisibleButtons: TDBNavButtonSet read FVisibleButtons
                              write SetVisibleButtons default DefaultDBNavigatorButtons;
@@ -1202,6 +1208,16 @@ type
     property Index: TDBNavButtonType read FIndex write FIndex;
   end;
 
+  { TDBNavFocusableButton }
+
+  TDBNavFocusableButton = class(TBitBtn)
+  private
+    FIndex: TDBNavButtonType;
+    FNavStyle: TDBNavButtonStyle;
+  public
+    property NavStyle: TDBNavButtonStyle read FNavStyle write FNavStyle;
+    property Index: TDBNavButtonType read FIndex write FIndex;
+  end;
 
   { TNavDataLink }
 
@@ -1259,6 +1275,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property Options;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
