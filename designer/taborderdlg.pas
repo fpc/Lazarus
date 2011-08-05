@@ -32,9 +32,8 @@ unit TabOrderDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
-  ComCtrls, StdCtrls, Arrow, LazarusIDEStrConsts, ButtonPanel,
-  PropEdits, IDEWindowIntf;
+  Classes, SysUtils, Forms, Controls, Dialogs, Buttons, ComCtrls, IDEWindowIntf,
+  LCLType, PropEdits, LazarusIDEStrConsts;
 
 type
 
@@ -44,12 +43,15 @@ type
     ArrowDown: TSpeedButton;
     ArrowUp: TSpeedButton;
     ItemTreeview: TTreeView;
+    SortByPositionButton: TBitBtn;
+    procedure SortByPositionButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure ItemTreeviewClick(Sender: TObject);
     procedure TabOrderDialogCREATE(Sender: TObject);
     procedure UpSpeedbuttonCLICK(Sender: TObject);
     procedure DownSpeedbuttonCLICK(Sender: TObject);
+    procedure ItemTreeviewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FUpdating: Boolean;
     procedure SwapNodes(ANode1, ANode2, NewSelected: TTreeNode);
@@ -79,6 +81,43 @@ implementation
 
 {$R *.lfm}
 
+function SortNodeByControlPos(Item1, Item2: Pointer): Integer;
+var
+  Node1: TTreeNode absolute Item1;
+  Node2: TTreeNode absolute Item2;
+  Control1, Control2: TControl;
+  HorzDiff, TopDiff: Integer;
+begin
+  Control1 := TControl(Node1.Data);
+  Control2 := TControl(Node2.Data);
+  Assert(Control1.Parent = Control2.Parent);
+  HorzDiff := Control1.Left - Control2.Left;
+  if Control1.Parent.BiDiMode <> bdLeftToRight then
+  begin
+    Inc(HorzDiff, Control1.Width);
+    Dec(HorzDiff, Control2.Width);
+    HorzDiff := -HorzDiff;
+  end;
+  TopDiff := Control1.Top - Control2.Top;
+  if TopDiff = 0 then
+    Exit(HorzDiff);
+
+  // Control1/2 will now refer to upper and lower control.
+  if TopDiff > 0 then
+  begin
+    Control1 := TControl(Node2.Data);
+    Control2 := TControl(Node1.Data);
+  end;
+  // If a control is "almost completely" above the other, it takes precedence
+  //regardless of the horizontal positioning.
+  if (Control1.Top + Control1.Height div 2 < Control2.Top)
+    and (Control1.Top + Control1.Height < Control2.Top + Control2.Height)
+  then
+    Result := TopDiff
+  else
+    Result := HorzDiff;
+end;
+
 { TTabOrderDialog }
 
 procedure TTabOrderDialog.TabOrderDialogCREATE(Sender: TObject);
@@ -92,6 +131,11 @@ begin
 
   ArrowDown.LoadGlyphFromLazarusResource('arrow_down');
   ArrowUp.LoadGlyphFromLazarusResource('arrow_up');
+  SortByPositionButton.LoadGlyphFromLazarusResource('menu_edit_sort');
+
+  ArrowDown.Hint:=lisTabOrderDownHint;
+  ArrowUp.Hint:=lisTabOrderUpHint;
+  SortByPositionButton.Hint:=lisTabOrderSortHint;
 
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
@@ -114,6 +158,49 @@ end;
 procedure TTabOrderDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TTabOrderDialog.SortByPositionButtonClick(Sender: TObject);
+var
+  FirstItem, CurrItem: TTreeNode;
+  SortedNodes: TFPList;
+  i: Integer;
+begin
+  if (ItemTreeview.Selected <> nil) and (ItemTreeview.Selected.Parent <> nil) then
+    FirstItem := ItemTreeview.Selected.Parent.GetFirstChild
+  else
+    FirstItem := ItemTreeview.Items.GetFirstNode;
+  if MessageDlg('', Format(lisTabOrderConfirmSort, [TControl(FirstItem.Data).Parent.Name]),
+    mtConfirmation, mbOKCancel, 0) <> mrOK then
+  begin
+    Exit;
+  end;
+
+  ItemTreeview.BeginUpdate;
+  SortedNodes := TFPList.Create;
+  try
+    CurrItem := FirstItem;
+    repeat
+      SortedNodes.Add(CurrItem);
+      CurrItem := CurrItem.GetNextSibling;
+    until CurrItem = nil;
+
+    SortedNodes.Sort(@SortNodeByControlPos);
+
+    for i := SortedNodes.Count - 1 downto 0 do
+    begin
+      CurrItem := TTreeNode(SortedNodes[i]);
+      CurrItem.MoveTo(FirstItem, naAddFirst);
+      TWinControl(CurrItem.Data).TabOrder := i;
+      CurrItem.Text := TWinControl(CurrItem.Data).Name + '   (' + IntToStr(i) + ')';
+    end;
+  finally
+    SortedNodes.Free;
+    ItemTreeview.EndUpdate;
+  end;
+  GlobalDesignHook.Modified(Self);
+  GlobalDesignHook.RefreshPropertyValues;
+  CheckButtonsEnabled;
 end;
 
 procedure TTabOrderDialog.ItemTreeviewClick(Sender: TObject);
@@ -139,6 +226,26 @@ begin
   if (CurItem=nil) or (CurItem.GetNextSibling=nil) then exit;
   NewItem := CurItem.GetNextSibling;
   SwapNodes(CurItem, NewItem, CurItem);
+end;
+
+procedure TTabOrderDialog.ItemTreeviewKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Shift = [ssCtrl] then
+  begin
+    case Key of
+      VK_UP:
+      begin
+        ArrowUp.Click;
+        Key := 0;
+      end;
+      VK_DOWN:
+      begin
+        ArrowDown.Click;
+        Key := 0;
+      end;
+    end;
+  end;
 end;
 
 procedure TTabOrderDialog.SwapNodes(ANode1, ANode2, NewSelected: TTreeNode);
@@ -177,6 +284,7 @@ begin
   CurItem := ItemTreeview.Selected;
   ArrowUp.Enabled   := Assigned(CurItem) and Assigned(CurItem.GetPrevSibling);
   ArrowDown.Enabled := Assigned(CurItem) and Assigned(CurItem.GetNextSibling);
+  SortByPositionButton.Enabled := Assigned(ItemTreeview.Items.GetFirstNode);
 end;
 
 procedure TTabOrderDialog.CreateNodes(ParentControl: TWinControl; ParentNode: TTreeNode);

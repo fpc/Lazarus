@@ -22,6 +22,8 @@ object TabOrderDialog: TTabOrderDialog
     BorderSpacing.Around = 6
     NumGlyphs = 0
     OnClick = UpSpeedbuttonCLICK
+    ShowHint = True
+    ParentShowHint = False
   end
   object ArrowDown: TSpeedButton
     AnchorSideRight.Control = Owner
@@ -34,6 +36,8 @@ object TabOrderDialog: TTabOrderDialog
     BorderSpacing.Around = 6
     NumGlyphs = 0
     OnClick = DownSpeedbuttonCLICK
+    ShowHint = True
+    ParentShowHint = False
   end
   object ItemTreeview: TTreeView
     AnchorSideLeft.Control = Owner
@@ -44,12 +48,24 @@ object TabOrderDialog: TTabOrderDialog
     Width = 267
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    DefaultItemHeight = 15
+    DefaultItemHeight = 17
     HideSelection = False
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 0
     OnClick = ItemTreeviewClick
+    OnKeyDown = ItemTreeviewKeyDown
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object SortByPositionButton: TBitBtn
+    Left = 279
+    Height = 25
+    Top = 232
+    Width = 25
+    GlyphShowMode = gsmAlways
+    OnClick = SortByPositionButtonClick
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
   end
 end

@@ -4305,6 +4305,11 @@ resourcestring
   lisRightSpaceEqually = 'Right space equally';
   lisVertical = 'Vertical';
   lisScalingFactor = 'Scaling factor:';
+  lisTabOrderUpHint = 'Move the selected control up in tab order';
+  lisTabOrderDownHint = 'Move the selected control down in tab order';
+  lisTabOrderSortHint = 'Calculate the tab order of controls by their X- and Y- positions';
+  lisTabOrderConfirmSort = 'Sort tab orders of all child controls of "%s" by their positions?';
+
   lisCustomProgram = 'Custom Program';
   lisProgram = 'Program';
   lisConsoleApplication = 'Console application';
