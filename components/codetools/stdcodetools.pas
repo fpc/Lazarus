@@ -957,15 +957,10 @@ begin
       usImplementation: SectionNode:=FindImplementationNode;
       end;
       if SectionNode<>nil then begin
-        // add uses to existing interface/implementation behind title and directives
-        if SectionNode.FirstChild<>nil then begin
-          // section not empty => add in front of first node
-          InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.FirstChild.StartPos,
-            true);
-        end else begin
-          // section empty => add at end of interface section
-          InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos,true);
-        end;
+        // add uses to existing interface/implementation before any content
+        MoveCursorToNodeStart(SectionNode);
+        ReadNextAtom;
+        InsertPos := CurPos.EndPos;
       end else begin
         // section is missing => add it
         SectionNode:=Tree.Root;
