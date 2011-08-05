@@ -917,6 +917,7 @@ var
   idx: Integer;
 begin
   // this is the top item of a menu, so we must undo TWinCEWSMenu.CreateHandle
+  // See bug 19898
   if AMenuItem = AMenuItem.Menu.Items then 
   begin
     idx := MenuHandleList.IndexOf(Pointer(AMenuItem.Handle));
