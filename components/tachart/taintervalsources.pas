@@ -30,9 +30,10 @@ type
   TIntervalChartSource = class(TCustomChartSource)
   strict private
     FParams: TChartAxisIntervalParams;
+    procedure SetParams(AValue: TChartAxisIntervalParams);
+  strict protected
     procedure CalculateIntervals(
       AParams: TValuesInRangeParams; out ABestStart, ABestStep: Double);
-    procedure SetParams(AValue: TChartAxisIntervalParams);
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
@@ -48,8 +49,8 @@ type
   end;
 
   TDateTimeStep = (
-    dtsCentury, dtsDecade, dtsYear, dtsQuarter, dtsMonth, dtsWeek, dtsDay,
-    dtsHour, dtsTenMinutes, dtsMinute, dtsTenSeconds, dtsSecond, dtsMillisecond
+    dtsYear, dtsQuarter, dtsMonth, dtsWeek, dtsDay,
+    dtsHour, dtsMinute, dtsSecond, dtsMillisecond
   );
   TDateTimeSteps = set of TDateTimeStep;
 
@@ -82,10 +83,30 @@ implementation
 uses
   DateUtils, Math, StrUtils, SysUtils;
 
+const
+  YEAR = 365.25;
+  DATE_STEP_INTERVALS: array [TDateTimeStep] of Double = (
+    YEAR, YEAR / 4, YEAR / 12, 7, 1,
+    OneHour, OneMinute, OneSecond, OneMillisecond
+  );
+
 type
   TSourceIntervalParams = class(TChartAxisIntervalParams)
   strict protected
     procedure Changed; override;
+  end;
+
+  TDateTimeIntervalsHelper = object
+    FBestStep: TDateTimeStep;
+    FBestStepCoeff: Double;
+    FOrigParams: TValuesInRangeParams;
+    FStep: TDateTimeStep;
+    FStepLen: Double;
+
+    function AxisToGraph(AX: Double): Double;
+    procedure CheckStep(AStepCoeff: Double);
+    function GraphToAxis(AX: Double): Double;
+    function NextValue(AValue: TDateTime): Double;
   end;
 
 procedure Register;
@@ -94,6 +115,47 @@ begin
     CHART_COMPONENT_IDE_PAGE, [
       TIntervalChartSource, TDateTimeIntervalChartSource
     ]);
+end;
+
+function SafeRound(AValue: Double): Double; inline;
+begin
+  Result := Int(AValue * 1e9) / 1e9;
+end;
+
+{ TDateTimeIntervalsHelper }
+
+function TDateTimeIntervalsHelper.AxisToGraph(AX: Double): Double;
+begin
+  Result := FOrigParams.FAxisToGraph(AX) * DATE_STEP_INTERVALS[FStep];
+end;
+
+procedure TDateTimeIntervalsHelper.CheckStep(AStepCoeff: Double);
+begin
+  // Strict inequaltity is importatnt to avoid steps like "ten quarters".
+  if (1.0 <= AStepCoeff) and (AStepCoeff < FBestStepCoeff) then begin
+    FBestStepCoeff := AStepCoeff;
+    FBestStep := FStep;
+    FStepLen := DATE_STEP_INTERVALS[FBestStep] * FBestStepCoeff;
+  end;
+end;
+
+function TDateTimeIntervalsHelper.GraphToAxis(AX: Double): Double;
+begin
+  Result := FOrigParams.FGraphToAxis(AX / DATE_STEP_INTERVALS[FStep]);
+end;
+
+function TDateTimeIntervalsHelper.NextValue(AValue: TDateTime): Double;
+begin
+  case FBestStep of
+    dtsYear:
+      if FBestStepCoeff > 10 then
+        // DateTime arithmetics fails on large year numbers.
+        Result := AValue + FStepLen
+      else
+        Result := IncYear(AValue, Round(FBestStepCoeff));
+    dtsMonth: Result := IncMonth(AValue, Round(FBestStepCoeff));
+    otherwise Result := AValue + FStepLen;
+  end;
 end;
 
 { TSourceIntervalParams }
@@ -111,20 +173,14 @@ end;
 procedure TIntervalChartSource.CalculateIntervals(
   AParams: TValuesInRangeParams; out ABestStart, ABestStep: Double);
 
-  function A2I(AX: Double): Integer; inline;
-  begin
-    if not (aipGraphCoords in Params.Options) then
-      AX := AParams.FAxisToGraph(AX);
-    Result := AParams.FGraphToImage(AX);
-  end;
-
   procedure CalcMinMaxCount(out AMinCount, AMaxCount: Integer);
   var
     imageWidth, d: Integer;
   begin
     // If the axis transformation is non-linear, steps may not be equidistant.
     // However, both minimax and maximin will be achieved on equal steps.
-    imageWidth := Abs(A2I(AParams.FMax) - A2I(AParams.FMin));
+    with AParams do
+      imageWidth := Abs(ToImage(FMax) - ToImage(FMin));
     d := IfThen(aipUseMinLength in Params.Options, Max(Params.MinLength, 2), 2);
     AMaxCount := Max(imageWidth div d, 2);
     if aipUseMaxLength in Params.Options then
@@ -133,35 +189,24 @@ procedure TIntervalChartSource.CalculateIntervals(
       AMinCount := 2;
   end;
 
-  function CountToStep(ACount: Integer): Double;
-  begin
-    Result := (AParams.FMax - AParams.FMin) / ACount;
-    Result := Power(10, Floor(Log10(Result)));
-  end;
-
   procedure TryStep(AStep: Double; var ABestCount: Integer);
   var
     m, start: Double;
     mi, prev, cnt: Integer;
   begin
-    start := Floor(AParams.FMin / AStep) * AStep;
+    start := Int(AParams.FMin / AStep) * AStep;
     m := start;
-    prev := A2I(m);
+    prev := AParams.ToImage(m);
     cnt := 0;
     while m <= AParams.FMax do begin
-      mi := A2I(m + AStep);
-      prev := Abs(prev - mi);
-      if
-        (aipUseMinLength in Params.Options) and (prev < Params.MinLength) or
-        (aipUseMaxLength in Params.Options) and (prev > Params.MaxLength)
-      then
-        exit;
+      mi := AParams.ToImage(m + AStep);
+      if not AParams.IsAcceptableStep(Abs(prev - mi)) then exit;
       m += AStep;
       prev := mi;
       cnt += 1;
     end;
     if
-      not (aipUseCount in Params.Options) or
+      not (aipUseCount in Params.Options) or (ABestCount <= 0) or
       (Abs(cnt - Params.Count) < Abs(ABestCount - Params.Count))
     then begin
       ABestStart := start - AStep;
@@ -171,28 +216,28 @@ procedure TIntervalChartSource.CalculateIntervals(
   end;
 
 var
-  minCount, maxCount, cnt: Integer;
+  minCount, maxCount, bestCount: Integer;
   s, sv: Double;
 begin
   CalcMinMaxCount(minCount, maxCount);
-  cnt := MaxInt;
+  bestCount := 0;
   if aipUseNiceSteps in Params.Options then begin
-    s := CountToStep(minCount)  * 10;
-    while s >= CountToStep(maxCount) do begin
+    s := AParams.CountToStep(minCount)  * 10;
+    while s >= Max(AParams.CountToStep(maxCount), AParams.FMinStep) do begin
       for sv in Params.StepValues do
-        TryStep(s * sv, cnt);
+        TryStep(s * sv, bestCount);
       // We are not required to pick best count, so any one will do.
-      if not (aipUseCount in Params.Options) and (cnt < MaxInt) then break;
+      if not (aipUseCount in Params.Options) and (bestCount > 0) then break;
       s *= 0.1;
     end;
   end;
-  if cnt < MaxInt then exit;
+  if bestCount > 0 then exit;
   // Either nice steps were not required, or we failed to find one.
   if aipUseCount in Params.Options then
-    cnt := EnsureRange(Params.Count, minCount, maxCount)
+    bestCount := EnsureRange(Params.Count, minCount, maxCount)
   else
-    cnt := minCount;
-  ABestStep := (AParams.FMax - AParams.FMin) / cnt;
+    bestCount := minCount;
+  ABestStep := (AParams.FMax - AParams.FMin) / bestCount;
   ABestStart := AParams.FMin - ABestStep;
 end;
 
@@ -241,6 +286,7 @@ var
   i: Integer;
 begin
   if AParams.FMin >= AParams.FMax then exit;
+  AParams.FIntervals := Params;
 
   if aipGraphCoords in Params.Options then begin
     AParams.FMin := AParams.FAxisToGraph(AParams.FMin);
@@ -279,100 +325,104 @@ end;
 
 procedure TDateTimeIntervalChartSource.ValuesInRange(
   AParams: TValuesInRangeParams; var AValues: TChartValueTextArray);
-const
-  YEAR = 365.25;
-  STEP_INTERVALS: array [TDateTimeStep] of Double = (
-    100 * YEAR, 10 * YEAR, YEAR, YEAR / 4, YEAR / 12, 7, 1,
-    OneHour, 10 * OneMinute, OneMinute, 10 * OneSecond, OneSecond, OneMillisecond
-  );
-  MIN_STEPS = 4;
-  MAX_STEPS = 20;
 var
-  s: TDateTimeStep;
-  si, x, start: TDateTime;
+  helper: TDateTimeIntervalsHelper;
   prevSt: TSystemTime;
 
-  function FormatLabel: String;
+  function FormatLabel(AValue: TDateTime): String;
   var
     st: TSystemTime;
   begin
     if DateTimeFormat <> '' then
-      exit(FormatDateTime(DateTimeFormat, x));
-    DateTimeToSystemTime(x, st);
-    case s of
-      dtsCentury, dtsDecade, dtsYear:
-        Result := FormatDateTime('yyyy', x);
+      exit(FormatDateTime(DateTimeFormat, AValue));
+    DateTimeToSystemTime(AValue, st);
+    case helper.FBestStep of
+      dtsYear:
+        Result := FormatDateTime('yyyy', AValue);
       dtsQuarter:
-        Result := FormatDateTime('yyyy/', x) + IntToStr(Floor(x / si) mod 4 + 1);
+        Result :=
+          IntToRoman(Floor(AValue / helper.FStepLen) mod 4 + 1) +
+          FormatDateTime('/yyyy', AValue);
       dtsMonth:
         Result := FormatDateTime(
-          IfThen(st.Year = prevSt.Year, 'mm', 'mm/yyyy'), x);
+          IfThen(st.Year = prevSt.Year, 'mm', 'mm/yyyy'), AValue);
       dtsWeek:
-        Result := FormatDateTime('dd/mm', x);
+        Result := FormatDateTime('dd/mm', AValue);
       dtsDay:
         Result := FormatDateTime(
-          IfThen(st.Month = prevSt.Month, 'dd', 'dd/mm'), x);
+          IfThen(st.Month = prevSt.Month, 'dd', 'dd/mm'), AValue);
       dtsHour:
         Result := FormatDateTime(
-          IfThen(st.Day = prevSt.Day, 'hh:00', 'dd hh:00'), x);
-      dtsTenMinutes, dtsMinute:
+          IfThen(st.Day = prevSt.Day, 'hh:00', 'dd hh:00'), AValue);
+      dtsMinute:
         Result := FormatDateTime(
-          IfThen(st.Hour = prevSt.Hour, 'nn', 'hh:nn'), x);
-      dtsTenSeconds, dtsSecond:
+          IfThen(st.Hour = prevSt.Hour, 'nn', 'hh:nn'), AValue);
+      dtsSecond:
         Result := FormatDateTime(
-          IfThen(st.Minute = prevSt.Minute, 'ss', 'nn:ss'), x);
+          IfThen(st.Minute = prevSt.Minute, 'ss', 'nn:ss'), AValue);
       dtsMillisecond:
-        Result := IntToStr(st.Millisecond) + 'ms';
+        Result :=
+          IfThen(st.Second = prevSt.Second, '', IntToStr(st.Second) + '.') +
+          IntToStr(st.Millisecond) + 'ms';
     end;
-    prevSt := st;
+    if InRange(AValue, helper.FOrigParams.FMin, helper.FOrigParams.FMax) then
+      prevSt := st;
   end;
 
-var
-  i, cnt: Integer;
-  r: Double;
-begin
-  with AParams do begin
-    r := FMax - FMin;
-    if r / STEP_INTERVALS[dtsCentury] > MAX_STEPS then begin
-      FMin /= STEP_INTERVALS[dtsYear];
-      FMax /= STEP_INTERVALS[dtsYear];
-      inherited ValuesInRange(AParams, AValues);
-      exit;
+  procedure AddValue(AIndex: Integer; AValue: Double);
+  begin
+    with AValues[AIndex] do begin
+      FValue := AValue;
+      FText := Format(
+        AParams.FFormat, [AValue, 0.0, FormatLabel(AValue), 0.0, 0.0]);
     end;
   end;
-  s := Low(s);
-  while s < High(s) do begin
-    si := STEP_INTERVALS[s];
-    if (s in Steps) and (r / si > MIN_STEPS) then
-      break;
-    Inc(s);
+
+const
+  MAX_COUNT = 1000; // Arbitraty limit to prevent OOM in case of a bug.
+var
+  i, cnt: Integer;
+  x, start, stepLen: Double;
+begin
+  if
+    (AParams.FMin >= AParams.FMax) or (aipGraphCoords in Params.options)
+  then
+    exit;
+  AParams.FIntervals := Params;
+
+  helper.FOrigParams := AParams;
+  AParams.FAxisToGraph := @helper.AxisToGraph;
+  AParams.FGraphToAxis := @helper.GraphToAxis;
+  AParams.FMinStep := 1.0;
+  helper.FBestStepCoeff := SafeInfinity;
+  for helper.FStep in Steps do begin
+    AParams.FMin := helper.FOrigParams.FMin / DATE_STEP_INTERVALS[helper.FStep];
+    AParams.FMax := helper.FOrigParams.FMax / DATE_STEP_INTERVALS[helper.FStep];
+    CalculateIntervals(AParams, start, stepLen);
+    helper.CheckStep(stepLen);
   end;
-  start := Int(AParams.FMin / si - 1) * si;
-  x := start;
+
+  if IsInfinite(helper.FBestStepCoeff) then exit;
+
+  with helper do
+    start := Int(FOrigParams.FMin / FStepLen - 1) * FStepLen;
   cnt := 1;
-  while x <= AParams.FMax do begin
+  x := start;
+  while (x <= helper.FOrigParams.FMax) and (cnt < MAX_COUNT) do begin
     cnt += 1;
-    x += si;
+    x := helper.NextValue(x);
   end;
   i := Length(AValues);
   SetLength(AValues, i + cnt);
 
   FillChar(prevSt, SizeOf(prevSt), $FF);
   x := start;
-  while x <= AParams.FMax do begin
-    AValues[i].FValue := x;
-    AValues[i].FText := Format(AParams.FFormat, [x, 0.0, FormatLabel, 0.0, 0.0]);
+  while (x <= helper.FOrigParams.FMax) and (i < cnt - 1) do begin
+    AddValue(i, x);
     i += 1;
-    case s of
-      dtsCentury: x := IncYear(x, 100);
-      dtsDecade: x := IncYear(x, 10);
-      dtsYear: x := IncYear(x);
-      dtsMonth: x := IncMonth(x);
-      otherwise x += si;
-    end;
+    x := helper.NextValue(x);
   end;
-  AValues[i].FValue := x;
-  AValues[i].FText := Format(AParams.FFormat, [x, 0.0, FormatLabel, 0.0, 0.0]);
+  AddValue(i, x);
 end;
 
 end.

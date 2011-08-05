@@ -328,6 +328,10 @@ object Form1: TForm1
     top = 216
   end
   object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource
+    Params.Count = 10
+    Params.MaxLength = 150
+    Params.MinLength = 20
+    Params.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
     left = 352
     top = 232
   end

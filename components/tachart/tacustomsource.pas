@@ -94,14 +94,19 @@ type
 
   TGraphToImageFunc = function (AX: Double): Integer of object;
 
-  TValuesInRangeParams = record
-    FAxisIntervals: TChartAxisIntervalParams;
+  TValuesInRangeParams = object
     FAxisToGraph: TTransformFunc;
     FFormat: String;
     FGraphToAxis: TTransformFunc;
     FGraphToImage: TGraphToImageFunc;
+    FIntervals: TChartAxisIntervalParams;
     FMin, FMax: Double;
+    FMinStep: Double;
     FUseY: Boolean;
+
+    function CountToStep(ACount: Integer): Double; inline;
+    function IsAcceptableStep(AStep: Integer): Boolean; inline;
+    function ToImage(AX: Double): Integer; inline;
   end;
 
   { TCustomChartSource }
@@ -192,6 +197,28 @@ begin
   AItem.Text := '';
   for i := 0 to High(AItem.YList) do
     AItem.YList[i] := 0;
+end;
+
+{ TValuesInRangeParams }
+
+function TValuesInRangeParams.CountToStep(ACount: Integer): Double;
+begin
+  Result := Power(10, Floor(Log10((FMax - FMin) / ACount)));
+end;
+
+function TValuesInRangeParams.IsAcceptableStep(AStep: Integer): Boolean;
+begin
+  with FIntervals do
+    Result := not (
+      (aipUseMinLength in Options) and (AStep < MinLength) or
+      (aipUseMaxLength in Options) and (AStep > MaxLength));
+end;
+
+function TValuesInRangeParams.ToImage(AX: Double): Integer;
+begin
+  if not (aipGraphCoords in FIntervals.Options) then
+    AX := FAxisToGraph(AX);
+  Result := FGraphToImage(AX);
 end;
 
 { TChartAxisIntervalParams }

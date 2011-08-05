@@ -596,7 +596,8 @@ begin
   Result.FAxisToGraph := @GetTransform.AxisToGraph;
   Result.FGraphToAxis := @GetTransform.GraphToAxis;
   Result.FGraphToImage := @FHelper.GraphToImage;
-  Result.FAxisIntervals := Intervals;
+  Result.FIntervals := Intervals;
+  Result.FMinStep := 0;
 end;
 
 procedure TChartAxis.Measure(
