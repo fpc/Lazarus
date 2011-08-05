@@ -8930,7 +8930,7 @@ procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
     // check if in a string constant
     p:=1;
     InStringConstant:=false;
-    while (p<=LogCaret.X) and (p<=length(Line)) do begin
+    while (p<LogCaret.X) and (p<=length(Line)) do begin
       if Line[p]='''' then
         InStringConstant:=not InStringConstant;
       inc(p);
