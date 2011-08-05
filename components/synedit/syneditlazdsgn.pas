@@ -196,10 +196,19 @@ end;
 
 procedure Register;
 begin
-  RegisterUnit('SynCompletion',@RegisterSynCompletion);
-  RegisterUnit('SynExportHTML',@RegisterSynExportHTML);
-  RegisterUnit('SynMacroRecorder',@RegisterSynMacroRecorder);
+  RegisterUnit('SynGutter',@RegisterSynGutter);
+  RegisterUnit('SynGutterCodeFolding',@RegisterSynGutterCodeFolding);
+  RegisterUnit('SynGutterLineNumber',@RegisterSynGutterLineNumber);
+  RegisterUnit('SynGutterChanges',@RegisterSynGutterChanges);
+  RegisterUnit('SynGutterMarks',@RegisterSynGutterMarks);
+
+  RegisterUnit('SynEdit',@RegisterSynEdit);
   RegisterUnit('SynMemo',@RegisterSynMemo);
+
+  RegisterUnit('SynCompletion',@RegisterSynCompletion);
+  RegisterUnit('SynMacroRecorder',@RegisterSynMacroRecorder);
+  RegisterUnit('SynExportHTML',@RegisterSynExportHTML);
+
   RegisterUnit('SynHighlighterPas',@RegisterSynHighlighterPas);
   RegisterUnit('SynHighlighterCPP',@RegisterSynHighlighterCPP);
   RegisterUnit('SynHighlighterJava',@RegisterSynHighlighterJava);
@@ -221,13 +230,6 @@ begin
   RegisterUnit('SynHighlighterMulti',@RegisterSynHighlighterMulti);
   RegisterUnit('SynHighlighterBat',@RegisterSynHighlighterBat);
   RegisterUnit('SynHighlighterIni',@RegisterSynHighlighterIni);
-
-  RegisterUnit('SynGutter',@RegisterSynGutter);
-  RegisterUnit('SynGutterCodeFolding',@RegisterSynGutterCodeFolding);
-  RegisterUnit('SynGutterLineNumber',@RegisterSynGutterLineNumber);
-  RegisterUnit('SynGutterChanges',@RegisterSynGutterChanges);
-  RegisterUnit('SynGutterMarks',@RegisterSynGutterMarks);
-  RegisterUnit('SynEdit',@RegisterSynEdit);
 
   RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
