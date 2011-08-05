@@ -270,7 +270,7 @@ begin
     CurButton.Flat:=Flat;
     CurButton.Index:=CurButtonType;
     CurButton.Visible:=CurButtonType in FVisibleButtons;
-    if not (noFocusableButtons in FOptions) then CurButton.Parent := Self
+    if not (navFocusableButtons in FOptions) then CurButton.Parent := Self
     else CurButton.Parent := nil;
   end;
 
@@ -297,7 +297,7 @@ begin
     // update button properties
     CurFocusableButton.Index:=CurButtonType;
     CurFocusableButton.Visible:=CurButtonType in FVisibleButtons;
-    if (noFocusableButtons in FOptions) then CurFocusableButton.Parent := Self
+    if (navFocusableButtons in FOptions) then CurFocusableButton.Parent := Self
     else CurFocusableButton.Parent := nil;
   end;
 

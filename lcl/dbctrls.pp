@@ -1103,7 +1103,7 @@ type
   TDBNavButtonSet = set of TDBNavButtonType;
   TDBNavButtonStyle = set of (nsAllowTimer, nsFocusRect);
   TDBNavButtonDirection = (nbdHorizontal,nbdVertical);
-  TDBNavigatorOption = (noFocusableButtons);
+  TDBNavigatorOption = (navFocusableButtons);
   TDBNavigatorOptions = set of TDBNavigatorOption;
 
   // for Delphi compatibility
