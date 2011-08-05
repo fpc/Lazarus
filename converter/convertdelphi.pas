@@ -365,8 +365,8 @@ end;
 constructor TCacheUnitsThread.Create(aConverter: TConvertDelphiPBase; aBasePath: string);
 begin
   inherited Create(True);
-  fConverter:=aConverter;
-  fPath:=TrimFilename(aBasePath+'../'); // Will scan one level up from base path.
+  fConverter:=aConverter;    // Will scan one level up from base path.
+  fPath:=TrimFilename(aBasePath+'..'+DirectorySeparator);
 end;
 
 destructor TCacheUnitsThread.Destroy;
@@ -1612,7 +1612,6 @@ end;
 function TConvertDelphiPackage.FindAllUnits: TModalResult;
 var
   FoundInUnits, MissingInUnits, NormalUnits: TStrings;
-  NotFoundUnits: String;
   i: Integer;
   NewSearchPath, AllPath, UselessPath: String;
   CurFilename: string;
