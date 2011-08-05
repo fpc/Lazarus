@@ -41,6 +41,7 @@ type
     FLCLRefCount: integer;
   protected
     class procedure WSRegisterClass; virtual;
+    class function GetWSComponentClass(ASelf: TLCLComponent): TWSLCLComponentClass; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -89,6 +90,20 @@ begin
   //
 end;
 
+// This method allows descendents to override the FWidgetSetClass
+class function TLCLComponent.GetWSComponentClass(ASelf: TLCLComponent): TWSLCLComponentClass;
+begin
+  Result := FindWSComponentClass(Self);
+
+  if Result = nil then
+  begin
+    {$IFDEF VerboseLCL}
+    DebugLn(['TLCLComponent.NewInstance WARNING: missing FWidgetSetClass ',ClassName]);
+    {$ENDIF}
+    Result := TWSLCLComponent;
+  end;
+end;
+
 constructor TLCLComponent.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -115,15 +130,8 @@ class function TLCLComponent.NewInstance: TObject;
 begin
   Result := inherited NewInstance;
   WSRegisterClass;
-  TLCLComponent(Result).FWidgetSetClass := FindWSComponentClass(Self);
 
-  if TLCLComponent(Result).FWidgetSetClass = nil then
-  begin
-    {$IFDEF VerboseLCL}
-    DebugLn(['TLCLComponent.NewInstance WARNING: missing FWidgetSetClass ',ClassName]);
-    {$ENDIF}
-    TLCLComponent(Result).FWidgetSetClass := TWSLCLComponent;
-  end;
+  TLCLComponent(Result).FWidgetSetClass := GetWSComponentClass(TLCLComponent(Result));
 end;
 
 procedure TLCLComponent.RemoveAllHandlersOfObject(AnObject: TObject);
