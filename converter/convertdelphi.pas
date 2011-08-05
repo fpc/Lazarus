@@ -768,6 +768,11 @@ var
   // The initial unit name cache is done in a thread so that GUI shows at once.
   CacheUnitsThread: TCacheUnitsThread;
 begin
+  if CompareFileExt(fOrigPFilename,'.dproj',false)=0 then begin
+    ShowMessage('.dproj file is not supported yet. The file is used by Delphi 2007 and newer.'+
+                ' Please select a .dpr file for projects or .dpk file for packages.');
+    Exit(mrCancel);
+  end;
   IDEMessagesWindow.Clear;
   // Start scanning unit files one level above project path. The GUI will appear
   // without delay but then we must wait for the thread before continuing.
