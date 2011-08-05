@@ -46,8 +46,7 @@ type
     procedure StyleChanged(ASender: TObject); override;
   public
     constructor Create(ACollection: TCollection); override;
-    function GetMarkValues(
-      const AParams: TValuesInRangeParams): TChartValueTextArray;
+    function GetMarkValues(AMin, AMax: Double): TChartValueTextArray;
   published
     property Marks: TChartMinorAxisMarks read GetMarks write SetMarks;
     property TickLength default DEF_TICK_LENGTH div 2;
@@ -94,7 +93,6 @@ type
     FMarkValues: TChartValueTextArray;
 
     procedure GetMarkValues;
-    function MakeValuesInRangeParams(AMin, AMax: Double): TValuesInRangeParams;
     procedure VisitSource(ASource: TCustomChartSource; var AData);
   private
     FAxisRect: TRect;
@@ -141,6 +139,7 @@ type
     procedure DrawTitle(const ACenter: TPoint; ASize: Integer);
     function GetChart: TCustomChart; inline;
     function IsVertical: Boolean; inline;
+    function MakeValuesInRangeParams(AMin, AMax: Double): TValuesInRangeParams;
     procedure Measure(
       const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
     procedure PrepareHelper(
@@ -332,23 +331,15 @@ begin
   Result := TChartMinorAxisMarks(inherited Marks);
 end;
 
-function TChartMinorAxis.GetMarkValues(
-  const AParams: TValuesInRangeParams): TChartValueTextArray;
+function TChartMinorAxis.GetMarkValues(AMin, AMax: Double): TChartValueTextArray;
 var
-  i, j: Integer;
+  vp: TValuesInRangeParams;
 begin
   if not Visible then exit(nil);
-  Marks.DefaultSource.ValuesInRange(AParams, Result);
-  // Remove values on the ends and outside of the interval.
-  i := 0;
-  while (i < Length(Result)) and (Result[i].FValue <= AParams.FMin) do
-    i += 1;
-  j := i;
-  while (j < Length(Result)) and (Result[j].FValue < AParams.FMax) do begin
-    Result[j - i] := Result[j];
-    j += 1;
-  end;
-  SetLength(Result, j);
+  with Collection as TChartMinorAxisList do
+    vp := ParentAxis.MakeValuesInRangeParams(AMin, AMax);
+  vp.FFormat := Marks.Format;
+  Marks.DefaultSource.ValuesInRange(vp, Result);
 end;
 
 procedure TChartMinorAxis.SetAlignment(AValue: TChartAxisAlignment);
@@ -446,6 +437,8 @@ end;
 procedure TChartAxis.Draw;
 
   procedure DrawMinors(AFixedCoord: Integer; AMin, AMax: Double);
+  const
+    EPS = 1e-6;
   var
     j: Integer;
     minorMarks: TChartValueTextArray;
@@ -453,14 +446,18 @@ procedure TChartAxis.Draw;
   begin
     if IsNan(AMin) or (AMin = AMax) then exit;
     for j := 0 to Minors.Count - 1 do begin
-      minorMarks := Minors[j].GetMarkValues(MakeValuesInRangeParams(AMin, AMax));
+      minorMarks := Minors[j].GetMarkValues(AMin, AMax);
       if minorMarks = nil then continue;
       with FHelper.Clone do begin
         FAxis := Minors[j];
+        // Only draw minor marks strictly inside the major mark interval.
+        FValueMin := AMin;
+        FValueMax := AMax;
+        ExpandRange(FValueMin, FValueMax, -EPS);
         try
           BeginDrawing;
           for m in minorMarks do
-            DrawMark(AFixedCoord, m.FValue, m.FText);
+            DrawMark(AFixedCoord, FHelper.FAxisTransf(m.FValue), m.FText);
           EndDrawing;
         finally
           Free;
@@ -484,8 +481,8 @@ begin
   for t in FMarkValues do begin
     v := FHelper.FAxisTransf(t.FValue);
     FHelper.DrawMark(fixedCoord, v, t.FText);
-    DrawMinors(fixedCoord, pv, v);
-    pv := v;
+    DrawMinors(fixedCoord, pv, t.FValue);
+    pv := t.FValue;
   end;
   FHelper.EndDrawing;
 end;
@@ -656,7 +653,7 @@ begin
     if not IsNan(pv) then begin
       for j := 0 to Minors.Count - 1 do
         with Minors[j] do begin
-          minorValues := GetMarkValues(MakeValuesInRangeParams(pv, cv));
+          minorValues := GetMarkValues(pv, cv);
           sz := Max(Marks.Measure(d, not v, TickLength, minorValues), sz);
         end;
     end;
