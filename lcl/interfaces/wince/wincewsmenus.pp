@@ -913,7 +913,21 @@ begin
 end;
 
 class procedure TWinCEWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+var
+  idx: Integer;
 begin
+  // this is the top item of a menu, so we must undo TWinCEWSMenu.CreateHandle
+  if AMenuItem = AMenuItem.Menu.Items then 
+  begin
+    idx := MenuHandleList.IndexOf(Pointer(AMenuItem.Handle));
+    if idx >= 0 then 
+    begin
+      // the object is at the same position as the handle
+      MenuHandleList.Delete(idx);
+      MenuLCLObjectList.Delete(idx);
+    end;
+  end;
+
   if Assigned(AMenuItem.Parent) then
     DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
   DestroyMenu(AMenuItem.Handle);
