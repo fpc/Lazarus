@@ -135,6 +135,8 @@ type
     bbtMainBegin,
     bbtFreeBegin, // a normal begin
     bbtRepeat,
+    bbtWhile,
+    bbtWhileDo,   // child of bbtWhile
     bbtFor,
     bbtForDo,     // child of bbtFor
     bbtCase,
@@ -162,7 +164,7 @@ const
   bbtAllCodeSections = [bbtInterface,bbtImplementation,bbtInitialization,
                         bbtFinalization];
   bbtAllStatementParents = [bbtMainBegin,bbtFreeBegin,bbtProcedureBegin,
-                        bbtRepeat,bbtForDo,
+                        bbtRepeat,bbtWhileDo,bbtForDo,
                         bbtCaseColon,bbtCaseElse,
                         bbtTry,bbtFinally,bbtExcept,
                         bbtIfThen,bbtIfElse,bbtIfBegin];
@@ -170,8 +172,8 @@ const
                       bbtStatement,bbtStatementRoundBracket,bbtStatementEdgedBracket];
   bbtAllBrackets = [bbtTypeRoundBracket,bbtTypeEdgedBracket,
                     bbtStatementRoundBracket,bbtStatementEdgedBracket];
-  bbtAllAutoEnd = [bbtStatement,bbtIf,bbtIfThen,bbtIfElse,bbtFor,bbtForDo,
-                  bbtCaseLabel,bbtCaseColon];
+  bbtAllAutoEnd = [bbtStatement,bbtIf,bbtIfThen,bbtIfElse,bbtWhile,bbtWhileDo,
+                  bbtFor,bbtForDo,bbtCaseLabel,bbtCaseColon];
   bbtAllAlignToSibling = [bbtNone]+bbtAllStatements;
 
 const
@@ -207,6 +209,8 @@ const
     'bbtMainBegin',
     'bbtFreeBegin',
     'bbtRepeat',
+    'bbtWhile',
+    'bbtWhileDo',
     'bbtFor',
     'bbtForDo',
     'bbtCase',
@@ -859,8 +863,10 @@ begin
       case UpChars[r[1]] of
       'O':
         if CompareIdentifiers('DO',r)=0 then begin
-          if Stack.TopType=bbtFor then
-            BeginBlock(bbtForDo);
+          case Stack.TopType of
+            bbtWhile: BeginBlock(bbtWhileDo);
+            bbtFor: BeginBlock(bbtForDo);
+          end;
         end;
       'E':
         if CompareIdentifiers('DESTRUCTOR',r)=0 then
@@ -1142,6 +1148,11 @@ begin
     'V':
       if CompareIdentifiers('VAR',r)=0 then begin
         StartIdentifierSection(bbtVarSection);
+      end;
+    'W':
+      if CompareIdentifiers('WHILE',r)=0 then begin
+        if Stack.TopType in bbtAllStatements then
+          BeginBlock(bbtWhile)
       end;
     ';':
       begin
