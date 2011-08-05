@@ -230,17 +230,23 @@ object Form1: TForm1
         AxisList = <        
           item
             Intervals.Count = 10
-            Intervals.MinLength = 5
-            Intervals.NiceSteps = '0.2|0.25|0.5|1.0'
-            Intervals.Options = [aipUseCount, aipUseMinLength, aipUseNiceSteps]
+            Intervals.MaxLength = 200
+            Intervals.NiceSteps = '1.0'
+            Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMinLength, aipUseNiceSteps]
             Marks.Stripes = csStripes
-            Minors = <>
+            Minors = <            
+              item
+                Grid.Visible = False
+                Intervals.Count = 9
+                Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+              end>
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Left'
             Transformations = catLog
           end        
           item
+            Grid.Visible = False
             Alignment = calBottom
             Minors = <>
             Title.Distance = 0
@@ -256,6 +262,7 @@ object Form1: TForm1
             Title.Caption = 'Right 1'
           end        
           item
+            Grid.Visible = False
             Alignment = calTop
             Inverted = True
             Minors = <>
@@ -325,8 +332,9 @@ object Form1: TForm1
           item
             Grid.Visible = False
             Intervals.Count = 20
+            Intervals.MinLength = 20
             Intervals.NiceSteps = '0.2|0.25|0.4|0.5|1.0'
-            Intervals.Options = [aipUseCount, aipUseNiceSteps]
+            Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
             Alignment = calBottom
             Minors = <>
             Transformations = catUser
