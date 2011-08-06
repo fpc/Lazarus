@@ -91,6 +91,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses
   UnitMove, UnitSummary;
 
@@ -208,10 +210,10 @@ procedure TFormMain.FormCreate(Sender: TObject);
 begin
   XMLConfig := TXMLConfig.Create('FPDocUpdater.xml');
 
-  EditDocs.Directory := XMLConfig.GetValue('FPDocsPath/Value', 'E:\lazarus\docs\xml\lcl\');
-  EditUnits.Directory := XMLConfig.GetValue('UnitsPath/Value', 'E:\lazarus\lcl\');
-  EditInclude.Directory := XMLConfig.GetValue('IncludePath/Value', 'E:\lazarus\lcl\include\');
-  EditMakeSkel.FileName := XMLConfig.GetValue('MakeSkelPath/Value', 'E:\lazarus\fpc\2.2.1\bin\i386-win32\makeskel.exe');
+ EditDocs.Directory := XMLConfig.GetValue('FPDocsPath/Value', 'Please set path to <Docs\xml\lcl\>');
+  EditUnits.Directory := XMLConfig.GetValue('UnitsPath/Value', 'Please set path to <LCL\>');
+  EditInclude.Directory := XMLConfig.GetValue('IncludePath/Value', 'Please set path to <LCL\Include\>');
+  EditMakeSkel.FileName := XMLConfig.GetValue('MakeSkelPath/Value', 'Please set path to <makeskel.exe>');
   CheckBoxBackup.Checked := XMLConfig.GetValue('BackupFPDocs/Value', True);
   EditBackup.Text := XMLConfig.GetValue('BackupExt/Value', 'bak');
   EditPackage.Text := XMLConfig.GetValue('Package/Value', 'lcl');
@@ -471,9 +473,6 @@ begin
     WriteStatus('Move Element: ' + SrcPackage.Name + '\' + SrcModule.Name + '\' + Src.Name +
       ' Dest: ' + DestList[Dest]);
 end;
-
-initialization
-  {$I mainunit.lrs}
 
 end.
 

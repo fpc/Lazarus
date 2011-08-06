@@ -29,6 +29,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TFormSummary }
 
 procedure TFormSummary.PaintBoxPaint(Sender: TObject);
@@ -72,9 +74,6 @@ begin
     PaintBox.Canvas.TextOut(4, Y, 'No change was made!');
   end;
 end;
-
-initialization
-  {$I unitsummary.lrs}
 
 end.
 

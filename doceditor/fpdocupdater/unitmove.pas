@@ -57,6 +57,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TFormMove }
 
 procedure TFormMove.ListBoxDestDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
@@ -86,9 +88,6 @@ procedure TFormMove.ComboBoxJumpSelect(Sender: TObject);
 begin
   ListBoxDest.ItemIndex := ListBoxDest.Items.IndexOf(ComboBoxJump.Text);
 end;
-
-initialization
-  {$I unitmove.lrs}
 
 end.
 

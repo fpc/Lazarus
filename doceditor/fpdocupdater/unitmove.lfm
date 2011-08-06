@@ -13,6 +13,7 @@ object FormMove: TFormMove
   ChildSizing.TopBottomSpacing = 10
   ClientHeight = 471
   ClientWidth = 559
+  LCLVersion = '0.9.31'
   object LabelSrc: TLabel
     Left = 10
     Height = 42
@@ -32,11 +33,12 @@ object FormMove: TFormMove
   end
   object LabelSrcElement: TLabel
     Left = 10
-    Height = 20
+    Height = 1
     Top = 120
-    Width = 44
+    Width = 1
     Font.Style = [fsBold]
     ParentColor = False
+    ParentFont = False
   end
   object ButtonYes: TButton
     Left = 384
@@ -69,6 +71,9 @@ object FormMove: TFormMove
     Caption = 'The following FPDoc element is not present in the skeleton. Move its contents into different one?'
     Color = clBtnFace
     Font.Style = [fsBold]
+    ParentFont = False
+    ParentColor = False
+    TabOrder = 4
   end
   object ListBoxDest: TListBox
     Left = 10
@@ -76,6 +81,7 @@ object FormMove: TFormMove
     Top = 180
     Width = 538
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
     OnDrawItem = ListBoxDestDrawItem
     Style = lbOwnerDrawFixed
     TabOrder = 2
@@ -86,7 +92,6 @@ object FormMove: TFormMove
     Top = 153
     Width = 309
     Anchors = [akTop, akRight]
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 13
     OnSelect = ComboBoxJumpSelect
     Style = csDropDownList

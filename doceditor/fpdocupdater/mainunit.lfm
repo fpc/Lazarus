@@ -1,7 +1,7 @@
 object FormMain: TFormMain
   Left = 253
   Height = 528
-  Top = 156
+  Top = 138
   Width = 598
   HorzScrollBar.Page = 597
   VertScrollBar.Page = 527
@@ -14,6 +14,7 @@ object FormMain: TFormMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
+  LCLVersion = '0.9.31'
   object LabelDocs: TLabel
     Left = 12
     Height = 14
@@ -66,27 +67,27 @@ object FormMain: TFormMain
   end
   object EditDocs: TDirectoryEdit
     Left = 180
-    Height = 23
+    Height = 21
     Top = 12
     Width = 359
-    Directory = 'D:\Projects\Lazarus\Docs\xml\lcl\'
+    ShowHidden = False
     ButtonWidth = 45
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
-    ParentColor = False
+    MaxLength = 0
     TabOrder = 0
     OnChange = EditDocsChange
   end
   object EditUnits: TDirectoryEdit
     Left = 180
-    Height = 23
+    Height = 21
     Top = 48
     Width = 359
-    Directory = 'D:\Projects\Lazarus\LCL\'
+    ShowHidden = False
     ButtonWidth = 45
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
-    ParentColor = False
+    MaxLength = 0
     TabOrder = 1
     OnChange = EditUnitsChange
   end
@@ -122,6 +123,7 @@ object FormMain: TFormMain
     Caption = 'Update New'
     Font.Color = clRed
     OnClick = ButtonUpdateNewClick
+    ParentFont = False
     TabOrder = 4
   end
   object ButtonRefresh: TButton
@@ -141,16 +143,17 @@ object FormMain: TFormMain
     Top = 156
     Width = 409
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
     MultiSelect = True
     OnDrawItem = ListBoxDrawItem
     Style = lbOwnerDrawFixed
     TabOrder = 6
   end
   object CheckBoxBackup: TCheckBox
-    Left = 426
-    Height = 19
+    Left = 439
+    Height = 17
     Top = 222
-    Width = 120
+    Width = 107
     Anchors = [akTop, akRight]
     Caption = 'Backup FPDoc files'
     Checked = True
@@ -159,7 +162,7 @@ object FormMain: TFormMain
   end
   object EditBackup: TEdit
     Left = 444
-    Height = 23
+    Height = 21
     Top = 276
     Width = 80
     Anchors = [akTop, akRight]
@@ -168,7 +171,7 @@ object FormMain: TFormMain
   end
   object EditPackage: TEdit
     Left = 444
-    Height = 23
+    Height = 21
     Top = 186
     Width = 80
     Anchors = [akTop, akRight]
@@ -177,39 +180,42 @@ object FormMain: TFormMain
   end
   object EditMakeSkel: TFileNameEdit
     Left = 180
-    Height = 23
+    Height = 21
     Top = 120
     Width = 359
-    FileName = 'D:\Projects\fpcbeta\bin\i386-win32\makeskel'
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
     ButtonWidth = 45
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
-    ParentColor = False
+    MaxLength = 0
     TabOrder = 10
   end
   object EditInclude: TDirectoryEdit
     Left = 180
-    Height = 23
+    Height = 21
     Top = 84
     Width = 360
-    Directory = 'D:\Projects\Lazarus\LCL\Include'
+    ShowHidden = False
     ButtonWidth = 45
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
-    ParentColor = False
+    MaxLength = 0
     TabOrder = 11
   end
   object StatusBar: TStatusBar
-    Height = 20
-    Top = 508
+    Left = 0
+    Height = 23
+    Top = 505
     Width = 598
     Panels = <>
   end
   object CheckBoxShowSummary: TCheckBox
-    Left = 426
-    Height = 19
+    Left = 433
+    Height = 17
     Top = 312
-    Width = 97
+    Width = 90
     Anchors = [akTop, akRight]
     Caption = 'Show summary'
     Checked = True

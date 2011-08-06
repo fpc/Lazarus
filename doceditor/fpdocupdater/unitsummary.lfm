@@ -9,6 +9,7 @@ object FormSummary: TFormSummary
   Caption = 'Update Summary'
   ClientHeight = 273
   ClientWidth = 303
+  LCLVersion = '0.9.31'
   object LabelFileName: TLabel
     Left = 10
     Height = 14
