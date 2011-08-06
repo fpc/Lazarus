@@ -12,7 +12,7 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Label3: TLabel
     Left = 8
     Height = 14
@@ -26,16 +26,23 @@ object Form1: TForm1
     Height = 273
     Top = 112
     Width = 497
+    Color = clWindow
     Columns = <    
       item
+        Title.Caption = 'ADATE'
+        Title.PrefixOption = poNone
         Width = 180
         FieldName = 'ADATE'
       end    
       item
+        Title.Caption = 'ASTR'
+        Title.PrefixOption = poNone
         Width = 100
         FieldName = 'ASTR'
       end    
       item
+        Title.Caption = 'AINT'
+        Title.PrefixOption = poNone
         Width = 100
         FieldName = 'AINT'
       end>
@@ -50,9 +57,16 @@ object Form1: TForm1
     Top = 392
     Width = 497
     BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.EnlargeVertical = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 100
     ClientHeight = 42
     ClientWidth = 497
     DataSource = DataSource1
+    Options = []
     TabOrder = 1
   end
   object DBEdit1: TDBEdit
@@ -64,7 +78,7 @@ object Form1: TForm1
     DataSource = DataSource1
     CharCase = ecNormal
     EditMask = '!99/99/00;1;_'
-    MaxLength = 0
+    MaxLength = 8
     TabOrder = 2
   end
   object ShowLongDateCheckBox: TCheckBox
@@ -85,7 +99,7 @@ object Form1: TForm1
     DataSource = DataSource1
     CharCase = ecNormal
     EditMask = '!99;1;_'
-    MaxLength = 0
+    MaxLength = 2
     TabOrder = 4
   end
   object Label1: TLabel
@@ -102,11 +116,9 @@ object Form1: TForm1
     top = 288
   end
   object Dbf1: TDbf
-    FilePath = 'D:\repositories\lazarus\examples\dbeditmask\'
     IndexDefs = <>
     TableName = 'test.db'
     TableLevel = 4
-    Active = True
     FilterOptions = []
     left = 312
     top = 288

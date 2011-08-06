@@ -3315,6 +3315,7 @@ examples/dbeditmask/Unit1.lfm svneol=native#text/plain
 examples/dbeditmask/Unit1.pas svneol=native#text/plain
 examples/dbeditmask/project1.lpi svneol=native#text/plain
 examples/dbeditmask/project1.lpr svneol=native#text/plain
+examples/dbeditmask/project1.res -text
 examples/designerbaseclass/README.txt svneol=native#text/plain
 examples/designerbaseclass/customcomponentclass.pas svneol=native#text/plain
 examples/designerbaseclass/designbaseclassdemopkg.lpk svneol=native#text/plain

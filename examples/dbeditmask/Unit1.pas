@@ -44,6 +44,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses
   strutils;
 
@@ -113,8 +115,5 @@ begin
   else
     DateField.DisplayFormat := '';
 end;
-
-initialization
-  {$i unit1.lrs}
 
 end.
