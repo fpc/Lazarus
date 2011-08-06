@@ -1467,6 +1467,7 @@ components/lazreport/license-rus.txt svneol=native#text/plain
 components/lazreport/license.txt svneol=native#text/plain
 components/lazreport/samples/barcode/cb.lpi svneol=native#text/plain
 components/lazreport/samples/barcode/cb.lpr svneol=native#text/pascal
+components/lazreport/samples/barcode/cb.res -text
 components/lazreport/samples/barcode/cbunit.lfm svneol=native#text/plain
 components/lazreport/samples/barcode/cbunit.pas svneol=native#text/pascal
 components/lazreport/samples/barcode/reports/codigobarras.lrf svneol=native#text/xml
