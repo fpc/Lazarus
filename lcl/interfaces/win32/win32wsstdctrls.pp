@@ -769,8 +769,8 @@ begin
     if AIndex >= 0 then
     begin
       Windows.SendMessage(Handle, LB_SETSEL, Windows.WParam(true), Windows.LParam(AIndex));
-      Windows.SendMessage(Handle, LB_SETCARETINDEX, Windows.WParam(AIndex), 0);
     end;
+    Windows.SendMessage(Handle, LB_SETCARETINDEX, Windows.WParam(AIndex), 0);
   end else
     Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
 end;

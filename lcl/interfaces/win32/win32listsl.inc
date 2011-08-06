@@ -53,21 +53,23 @@ end;
 
 procedure TWin32ListStringList.InitFlags;
 begin
-  FFlagSort         := UINT(LBS_SORT);
-  FFlagGetText      := UINT(LB_GETTEXT);
-  FFlagGetTextLen   := UINT(LB_GETTEXTLEN);
-  FFlagGetCount     := UINT(LB_GETCOUNT);
-  FFlagResetContent := UINT(LB_RESETCONTENT);
-  FFlagDeleteString := UINT(LB_DELETESTRING);
-  FFlagInsertString := UINT(LB_INSERTSTRING);
-  FFlagAddString    := UINT(LB_ADDSTRING);
-  FFlagGetItemData  := UINT(LB_GETITEMDATA);
-  FFlagSetItemData  := UINT(LB_SETITEMDATA);
-  FFlagGetItemIndex := UINT(LB_GETCURSEL);
-  FFlagSetItemIndex := UINT(LB_SETCURSEL);
-  FFlagGetSelected  := UINT(LB_GETSEL);
-  FFlagSetSelected  := UINT(LB_SETSEL);
-  FFlagInitStorage  := UINT(LB_INITSTORAGE);
+  FFlagSort          := UINT(LBS_SORT);
+  FFlagGetText       := UINT(LB_GETTEXT);
+  FFlagGetTextLen    := UINT(LB_GETTEXTLEN);
+  FFlagGetCount      := UINT(LB_GETCOUNT);
+  FFlagResetContent  := UINT(LB_RESETCONTENT);
+  FFlagDeleteString  := UINT(LB_DELETESTRING);
+  FFlagInsertString  := UINT(LB_INSERTSTRING);
+  FFlagAddString     := UINT(LB_ADDSTRING);
+  FFlagGetItemData   := UINT(LB_GETITEMDATA);
+  FFlagSetItemData   := UINT(LB_SETITEMDATA);
+  FFlagGetItemIndex  := UINT(LB_GETCURSEL);
+  FFlagSetItemIndex  := UINT(LB_SETCURSEL);
+  FFlagGetCaretIndex := UINT(LB_GETCARETINDEX);
+  FFlagSetCaretIndex := UINT(LB_SETCARETINDEX);
+  FFlagGetSelected   := UINT(LB_GETSEL);
+  FFlagSetSelected   := UINT(LB_SETSEL);
+  FFlagInitStorage   := UINT(LB_INITSTORAGE);
 end;
 
 {------------------------------------------------------------------------------
@@ -244,7 +246,12 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
+var
+  lItemIndex: Integer;
 begin
+  if (FFlagGetCaretIndex <> 0) and (GetCount = 0) then
+    lItemIndex := SendMessage(FWin32List, FFlagGetCaretIndex, 0, 0);
+
   FLastInsertedIndex := Index;
   if FSorted then
   begin
@@ -268,6 +275,9 @@ begin
     Windows.SendMessage(FWin32List, FFlagInsertString, Index, LPARAM(PChar(S)));
     {$endif}
   end;
+
+  if (FFlagSetCaretIndex <> 0) and (GetCount = 1) then
+    SendMessage(FWin32List, FFlagSetCaretIndex, lItemIndex, 0);
 end;
 
 procedure TWin32ListStringList.Put(Index: integer; const S: string);
@@ -333,21 +343,23 @@ end;
 
 procedure TWin32ComboBoxStringList.InitFlags;
 begin
-  FFlagSort         := UINT(CBS_SORT);
-  FFlagGetText      := UINT(CB_GETLBTEXT);
-  FFlagGetTextLen   := UINT(CB_GETLBTEXTLEN);
-  FFlagGetCount     := UINT(CB_GETCOUNT);
-  FFlagResetContent := UINT(CB_RESETCONTENT);
-  FFlagDeleteString := UINT(CB_DELETESTRING);
-  FFlagInsertString := UINT(CB_INSERTSTRING);
-  FFlagAddString    := UINT(CB_ADDSTRING);
-  FFlagGetItemData  := UINT(CB_GETITEMDATA);
-  FFlagSetItemData  := UINT(CB_SETITEMDATA);
-  FFlagGetItemIndex := UINT(CB_GETCURSEL);
-  FFlagSetItemIndex := UINT(CB_SETCURSEL);
-  FFlagGetSelected  := UINT(0);
-  FFlagSetSelected  := UINT(0);
-  FFlagInitStorage  := UINT(CB_INITSTORAGE);
+  FFlagSort          := UINT(CBS_SORT);
+  FFlagGetText       := UINT(CB_GETLBTEXT);
+  FFlagGetTextLen    := UINT(CB_GETLBTEXTLEN);
+  FFlagGetCount      := UINT(CB_GETCOUNT);
+  FFlagResetContent  := UINT(CB_RESETCONTENT);
+  FFlagDeleteString  := UINT(CB_DELETESTRING);
+  FFlagInsertString  := UINT(CB_INSERTSTRING);
+  FFlagAddString     := UINT(CB_ADDSTRING);
+  FFlagGetItemData   := UINT(CB_GETITEMDATA);
+  FFlagSetItemData   := UINT(CB_SETITEMDATA);
+  FFlagGetItemIndex  := UINT(CB_GETCURSEL);
+  FFlagSetItemIndex  := UINT(CB_SETCURSEL);
+  FFlagGetCaretIndex := UINT(0);
+  FFlagSetCaretIndex := UINT(0);
+  FFlagGetSelected   := UINT(0);
+  FFlagSetSelected   := UINT(0);
+  FFlagInitStorage   := UINT(CB_INITSTORAGE);
   //Get edit and item sizes
   FDropDownCount := TCustomComboBox(FSender).DropDownCount;
   if FDropDownCount = 0 then

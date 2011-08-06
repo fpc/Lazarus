@@ -50,6 +50,8 @@ Type
     FFlagSetItemData: Cardinal;
     FFlagGetItemIndex: cardinal;
     FFlagSetItemIndex: cardinal;
+    FFlagGetCaretIndex: cardinal;
+    FFlagSetCaretIndex: cardinal;
     FFlagGetSelected: cardinal;
     FFlagsetSelected: cardinal;
     FFlagInitStorage: cardinal;
