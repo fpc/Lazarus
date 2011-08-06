@@ -12,7 +12,7 @@ object LazConverterForm: TLazConverterForm
   Constraints.MinWidth = 578
   OnShow = Form1Show
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Panel1: TPanel
     Left = 0
     Height = 200
@@ -124,7 +124,6 @@ object LazConverterForm: TLazConverterForm
     Top = 200
     Width = 578
     Align = alClient
-    Directory = 'i:\FPC\Lazarus\examples\codepageconverter'
     ItemHeight = 13
     PopupMenu = PopupMenu1
     TabOrder = 1

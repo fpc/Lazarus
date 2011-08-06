@@ -21,6 +21,11 @@ msgstr "Пошук"
 msgid "Convert"
 msgstr "Конвертувати"
 
+#: TLAZCONVERTERFORM.CAPTION
+msgctxt "TLAZCONVERTERFORM.CAPTION"
+msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
+msgstr "Codepage LazConverter для PAS, LFM, LRS, LRT & INC файлів v0.0.6"
+
 #: TLAZCONVERTERFORM.LABEL1.CAPTION
 msgid "Path to your project:"
 msgstr "Шлях до вашого проекту:"
@@ -37,12 +42,11 @@ msgstr "Конвертувати В:"
 msgid "Ready..."
 msgstr "Готовий..."
 
-#: TLAZCONVERTERFORM.LAZCONVERTERFORM.CAPTION
-msgctxt "TLAZCONVERTERFORM.LAZCONVERTERFORM.CAPTION"
-msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
-msgstr "Codepage LazConverter для PAS, LFM, LRS, LRT & INC файлів v0.0.6"
-
 #: TLAZCONVERTERFORM.MENUITEM1.CAPTION
 msgid "Remove from conversion"
 msgstr "Видалити з конвертування"
+
+#: TLAZCONVERTERFORM.SELECTDIRECTORYDIALOG1.TITLE
+msgid "Select Directory"
+msgstr ""
 

@@ -23,6 +23,7 @@ msgid "Convert"
 msgstr "Převést"
 
 #: TLAZCONVERTERFORM.CAPTION
+msgctxt "TLAZCONVERTERFORM.CAPTION"
 msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
 msgstr "Kódová stránka LazConverteru pro PAS, LFM, LRS, LRT a INC soubory v0.0.6"
 
@@ -45,4 +46,8 @@ msgstr "Připraveno..."
 #: TLAZCONVERTERFORM.MENUITEM1.CAPTION
 msgid "Remove from conversion"
 msgstr "Odebrat z převodu"
+
+#: TLAZCONVERTERFORM.SELECTDIRECTORYDIALOG1.TITLE
+msgid "Select Directory"
+msgstr ""
 
