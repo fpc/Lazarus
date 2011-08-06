@@ -6089,7 +6089,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index + param list
           AccessFunc:='function '+AccessParam
-                      +'(AIndex:integer;'+ParamList+'):'+PropType+';';
+                      +'(AIndex:Integer;'+ParamList+'):'+PropType+';';
         end;
       end else begin
         if (Parts[ppIndexWord].StartPos<1) then begin
@@ -6098,7 +6098,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index, no param list
           AccessFunc:='function '+AccessParam
-                      +'(AIndex:integer):'+PropType+';';
+                      +'(AIndex:Integer):'+PropType+';';
         end;
       end;
       if IsClassProp then
@@ -6216,7 +6216,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index + param list
           AccessFunc:='procedure '+AccessParam
-                      +'(AIndex:integer;'+ParamList+';'
+                      +'(AIndex:Integer;'+ParamList+';'
                       +SetPropertyVariablename+':'+PropType+');';
         end;
       end else begin
@@ -6243,7 +6243,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
               +BeautifyCodeOpts.LineEnd
               +'begin'+BeautifyCodeOpts.LineEnd
               +GetIndentStr(BeautifyCodeOpts.Indent)
-                +'if '+VariableName+'='+SetPropertyVariablename+' then exit;'
+                +'if '+VariableName+'='+SetPropertyVariablename+' then Exit;'
                 +BeautifyCodeOpts.LineEnd
               +GetIndentStr(BeautifyCodeOpts.Indent)
                 +VariableName+':='+SetPropertyVariablename+';'
@@ -6253,7 +6253,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end else begin
           // index, no param list
           AccessFunc:='procedure '+AccessParam
-                  +'(AIndex:integer;'+SetPropertyVariablename+':'+PropType+');';
+                  +'(AIndex:Integer;'+SetPropertyVariablename+':'+PropType+');';
         end;
       end;
       // add new Insert Node
@@ -6296,10 +6296,17 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
     then begin
       // add insert demand for function
       // build function code
-      AccessFunc:='function '+AccessParam+':boolean;';
+      if Parts[ppIndexWord].StartPos < 1 then begin
+        // no index
+        AccessFunc := 'function ' + AccessParam + ':Boolean;';
+        CleanAccessFunc := CleanAccessFunc+';';
+      end else begin
+        // index
+        AccessFunc := 'function ' + AccessParam + '(AIndex:Integer):Boolean;';
+        CleanAccessFunc := CleanAccessFunc + '(INTEGER);';
+      end;
       if IsClassProp then
         AccessFunc:='class '+AccessFunc;
-      CleanAccessFunc:=CleanAccessFunc+';';
       // add new Insert Node
       if CompleteProperties then
         AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
