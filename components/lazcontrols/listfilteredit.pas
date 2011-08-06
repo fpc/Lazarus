@@ -5,8 +5,8 @@ unit ListFilterEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, LResources, LCLType, Graphics,
-  Controls, StdCtrls, ComCtrls, EditBtn, FileUtil, AvgLvlTree, ImgList;
+  Classes, SysUtils, Forms, LResources, Graphics, Controls, StdCtrls, ComCtrls,
+  LCLProc, EditBtn, FileUtil;
 
 type
 
@@ -102,6 +102,9 @@ begin
       fFilteredListbox.Selected[i]:=fSelectedPart=fSortedData.Objects[i];
   end;
   fFilteredListbox.Items.EndUpdate;
+  DebugLn('TListFilterEdit.ApplyFilterCore 1, ItemIndex = ' + IntToStr(fFilteredListbox.ItemIndex));
+  fFilteredListbox.ItemIndex:=-1;
+  DebugLn('TListFilterEdit.ApplyFilterCore 2 after setting "ItemIndex:=-1;", ItemIndex = ' + IntToStr(fFilteredListbox.ItemIndex));
 end;
 
 function TListFilterEdit.CompareFNs(AFilename1,AFilename2: string): integer;
