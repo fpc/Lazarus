@@ -14251,11 +14251,27 @@ msgstr ""
 msgid "Tab"
 msgstr "Tabulação"
 
+#: lazarusidestrconsts.listaborderconfirmsort
+msgid "Sort tab orders of all child controls of \"%s\" by their positions?"
+msgstr ""
+
+#: lazarusidestrconsts.listaborderdownhint
+msgid "Move the selected control down in tab order"
+msgstr ""
+
 #: lazarusidestrconsts.listaborderof
 #, fuzzy
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Ordem tabulação de"
+
+#: lazarusidestrconsts.listabordersorthint
+msgid "Calculate the tab order of controls by their X- and Y- positions"
+msgstr ""
+
+#: lazarusidestrconsts.listaborderuphint
+msgid "Move the selected control up in tab order"
+msgstr ""
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"

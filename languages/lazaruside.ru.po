@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-07-24 00:31+0300\n"
+"PO-Revision-Date: 2011-08-06 16:23+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -14213,10 +14213,26 @@ msgstr "не найден system.ppu. Проверьте, что файл fpc.cf
 msgid "Tab"
 msgstr "Таб"
 
+#: lazarusidestrconsts.listaborderconfirmsort
+msgid "Sort tab orders of all child controls of \"%s\" by their positions?"
+msgstr "Изменить порядок перехода по всем дочерним компонентам \"%s\" в соответствии с их расположением?"
+
+#: lazarusidestrconsts.listaborderdownhint
+msgid "Move the selected control down in tab order"
+msgstr "Переместить выбранный компонент вниз в порядке перехода"
+
 #: lazarusidestrconsts.listaborderof
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Порядок перехода для %s"
+
+#: lazarusidestrconsts.listabordersorthint
+msgid "Calculate the tab order of controls by their X- and Y- positions"
+msgstr "Вычислить порядок перехода по координатам X и Y компонентов"
+
+#: lazarusidestrconsts.listaborderuphint
+msgid "Move the selected control up in tab order"
+msgstr "Переместить выбранный компонент вверх в порядке перехода"
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"
