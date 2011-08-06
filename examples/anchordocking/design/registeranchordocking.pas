@@ -134,6 +134,8 @@ begin
   LazarusIDE.AddHandlerOnProjectClose(@IDEAnchorDockMaster.OnProjectClose);
 
   // add menu section
+  // As this procedure seems to be called too early, menuitems names will be
+  // not localized. So we will localize them in TIDEAnchorDockMaster.OnIDERestoreWindows for now
   mnuAnchorDockSection:=RegisterIDEMenuSection(itmSecondaryTools,'AnchorDocking');
   mnuADSaveLayoutAsDefault:=RegisterIDEMenuCommand(mnuAnchorDockSection,
     'ADSaveLayoutAsDefault', adrsSaveWindowLayoutAsDefault,
@@ -477,7 +479,25 @@ begin
 end;
 
 procedure TIDEAnchorDockMaster.OnIDERestoreWindows(Sender: TObject);
+var
+  i: Integer;
 begin
+  i:=0;
+  while i<mnuAnchorDockSection.Count do
+  begin
+    if mnuAnchorDockSection[i].Name='ADSaveLayoutAsDefault' then
+      mnuAnchorDockSection[i].Caption:=adrsSaveWindowLayoutAsDefault
+    else
+      if mnuAnchorDockSection[i].Name='ADSaveLayoutToFile' then
+        mnuAnchorDockSection[i].Caption:=adrsSaveWindowLayoutToFile
+      else
+        if mnuAnchorDockSection[i].Name='ADLoadLayoutFromFile' then
+          mnuAnchorDockSection[i].Caption:=adrsLoadWindowLayoutFromFile
+        else
+          if mnuAnchorDockSection[i].Name='ADRestoreDefaultLayout' then
+            mnuAnchorDockSection[i].Caption:=adrsRestoreDefaultLayout;
+    inc(i);
+  end;
   LoadUserLayout;
 end;
 
