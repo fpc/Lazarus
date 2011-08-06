@@ -61,6 +61,10 @@ msgstr ""
 msgid "Custom dock site %s%s%s can have only one site."
 msgstr ""
 
+#: anchordockstr.adrsdockinganchordocking
+msgid "Docking / Anchordocking"
+msgstr ""
+
 #: anchordockstr.adrsdockingenabledrequiresarestartoftheide
 msgid "Docking enabled (Requires a restart of the IDE)"
 msgstr ""

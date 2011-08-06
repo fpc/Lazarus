@@ -61,6 +61,10 @@ msgstr "объект уже является областью стыковки"
 msgid "Custom dock site %s%s%s can have only one site."
 msgstr "Пользовательская область стыковки %s%s%s может иметь только один стыковочный элемент."
 
+#: anchordockstr.adrsdockinganchordocking
+msgid "Docking / Anchordocking"
+msgstr "Стыковка / Anchordocking"
+
 #: anchordockstr.adrsdockingenabledrequiresarestartoftheide
 msgid "Docking enabled (Requires a restart of the IDE)"
 msgstr "Включить стыковку (требует перезапуска IDE)"
@@ -199,7 +203,7 @@ msgstr "Запрошен %s, но создан %s"
 
 #: anchordockstr.adrsrestoredefaultlayout
 msgid "Restore default layout"
-msgstr ""
+msgstr "Восстановить разбивку окна по умолчанию"
 
 #: anchordockstr.adrsright
 msgid "right"

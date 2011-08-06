@@ -61,6 +61,10 @@ msgstr "об'єкт вже є областю стикування"
 msgid "Custom dock site %s%s%s can have only one site."
 msgstr "Користув. область стикування %s%s%s може мати лише одну область."
 
+#: anchordockstr.adrsdockinganchordocking
+msgid "Docking / Anchordocking"
+msgstr ""
+
 #: anchordockstr.adrsdockingenabledrequiresarestartoftheide
 msgid "Docking enabled (Requires a restart of the IDE)"
 msgstr "Стикування ввімкнене (Потребує перезавантажння IDE)"

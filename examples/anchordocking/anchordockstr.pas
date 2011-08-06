@@ -117,6 +117,7 @@ resourcestring
   adrsSaveWindowLayoutToFileXml = 'Save window layout to file (*.xml)';
   adrsAllFiles = 'All files';
   adrsAnchorDockingLayout = 'Anchor Docking Layout';
+  adrsDockingAnchordocking = 'Docking / Anchordocking';
 
 implementation
 

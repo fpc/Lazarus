@@ -573,7 +573,7 @@ end;
 
 function TAnchorDockIDEFrame.GetTitle: String;
 begin
-  Result:='Docking / Anchordocking';
+  Result:=adrsDockingAnchordocking;
 end;
 
 procedure TAnchorDockIDEFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
