@@ -334,7 +334,6 @@ type
     FTabHeight: Smallint;
     FTabPosition: TTabPosition;
     FTabWidth: Smallint;
-    procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     procedure DoSendPageIndex;
     procedure DoSendShowTabs;
     procedure DoSendTabPosition;
@@ -363,6 +362,7 @@ type
     procedure UpdateDesignerFlags(APageIndex: integer);
   protected
     PageClass: TCustomPageClass;
+    procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     class procedure WSRegisterClass; override;
     procedure CreateWnd; override;
     procedure DoCreateWnd; virtual;

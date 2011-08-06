@@ -13,11 +13,19 @@ unit ExtendedNotebook;
 
 {$mode objfpc}{$H+}
 
+// Order Of Events are:
+// W32:     Changing, Change, MDown,                    MMove,                    MUp
+// Gtk, QT:                   MDown, Changing, Change,  MMove,                    MUp
+// Carbon:                    MDown,                    MMove,  Changing, Change, MUp
+
+{$DEFINE ExtNBookDebug}
+
 interface
 
 uses
   Classes, sysutils, math, LCLIntf, LCLType, LResources, Forms, Controls,
-  Graphics, Dialogs, ExtCtrls, ComCtrls;
+  Graphics, Dialogs, ExtCtrls, ComCtrls, LMessages
+  {$IFDEF ExtNBookDebug} , LCLProc {$ENDIF};
 
 type
 
@@ -29,6 +37,9 @@ type
                                         OldIndex, NewIndex: Integer;
                                         CopyDrag: Boolean;
                                         var Accept: Boolean) of object;
+
+  //TNotebookTabDragFlag = (ndfWaitForDrag, ndfTabDragged);
+  //TNotebookTabDragFlags = set of TNotebookTabDragFlag;
 
   { TExtendedNotebook }
 
@@ -49,6 +60,10 @@ type
     FDragToRightSide: Boolean;
     FDragOverTabRect, FDragNextToTabRect: TRect;
 
+    FMouseWaitForDrag: Boolean;
+    FMouseDownIndex: Integer;
+    FMouseDownX, FMouseDownY, FTriggerDragX, FTriggerDragY: Integer;
+
     procedure InitDrag;
     procedure InvalidateRect(ARect: TRect);
     function  TabIndexForDrag(x, y: Integer): Integer;
@@ -57,6 +72,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X,
              Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DoEndDrag(Target: TObject; X,Y: Integer); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
@@ -95,7 +112,8 @@ end;
 { TExtendedNotebook }
 
 procedure TExtendedNotebook.InitDrag;
-begin
+Begin
+  FMouseWaitForDrag := False;
   DragCursor := crDrag;
   FDragOverIndex := -1;
   FDragOverTabRect   := Rect(0, 0, 0, 0);
@@ -136,21 +154,35 @@ procedure TExtendedNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; 
   Y: Integer);
 var
   t: Integer;
-begin
+Begin
+  {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.MouseDown']);{$ENDIF}
   InitDrag;
   FTabDragged:=false;
   inherited MouseDown(Button, Shift, X, Y);
-  t := TabIndexAtClientPos(Point(X,Y));
-  if (fTabDragMode = dmAutomatic) and (Button = mbLeft) and (t >= 0) then
-    BeginDragTab(t, False);
+  if (fTabDragMode = dmAutomatic) and (Button = mbLeft) then Begin
+    // Defer BeginDrag to MouseMove.
+    // On GTK2 if BeginDrag is called before PageChanging, the GTK notebook no longer works
+    FMouseWaitForDrag := True;
+    if FMouseDownIndex < 0 then
+      FMouseDownIndex := TabIndexAtClientPos(Point(X,Y));
+    FMouseDownX := X;
+    FMouseDownY := Y;
+    FTriggerDragX := GetSystemMetrics(SM_CXDRAG);
+    FTriggerDragY := GetSystemMetrics(SM_CYDRAG);
+  end;
+  MouseCapture := True;
 end;
 
 procedure TExtendedNotebook.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   MouseUpTabIndex: LongInt;
 begin
+  {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.MouseUp']);{$ENDIF}
+  MouseCapture := False;
+  FMouseDownIndex := -1;
   InitDrag;
   inherited MouseUp(Button, Shift, X, Y);
+  {$IFnDEF LCLWIN32}
   if not FTabDragged then begin
     // no drag => check for normal click and activate page
     MouseUpTabIndex := TabIndexAtClientPos(Point(X,Y));
@@ -159,10 +191,34 @@ begin
     then
       PageIndex:=MouseUpTabIndex;
   end;
+  {$ENDIF}
+end;
+
+procedure TExtendedNotebook.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  if (FMouseWaitForDrag) and (FMouseDownIndex >= 0) and
+     ( (Abs(fMouseDownX - X) >= FTriggerDragX) or (Abs(fMouseDownY - Y) >= FTriggerDragY) )
+  then begin
+    {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.MouseMove: BeginDragTab Idx=',FMouseDownIndex]);{$ENDIF}
+    FMouseWaitForDrag := False;
+    BeginDragTab(FMouseDownIndex, True);
+  end;
+end;
+
+procedure TExtendedNotebook.CNNotify(var Message: TLMNotify);
+Begin
+  if Message.NMHdr^.code = TCN_SELCHANGING then Begin
+    if (fTabDragMode = dmAutomatic) and (not FMouseWaitForDrag) then
+      FMouseDownIndex := TabIndexAtClientPos(ScreenToClient(Mouse.CursorPos));
+    {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.CNNotify: FMouseWaitForDrag=', FMouseWaitForDrag, ' Idx=',FMouseDownIndex]);{$ENDIF}
+  end;
+  inherited CNNotify(Message);
 end;
 
 procedure TExtendedNotebook.DoStartDrag(var DragObject: TDragObject);
 begin
+  {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.DoStartDrag  FDraggingTabIndex=', FDraggingTabIndex]);{$ENDIF}
   if FDraggingTabIndex < 0 then
     inherited DoStartDrag(DragObject)
   else
@@ -171,6 +227,7 @@ end;
 
 procedure TExtendedNotebook.DoEndDrag(Target: TObject; X, Y: Integer);
 begin
+  {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.DoEndDrag  FDraggingTabIndex=', FDraggingTabIndex]);{$ENDIF}
   if FDraggingTabIndex < 0 then
     inherited DoEndDrag(Target, X, Y)
   else
@@ -375,6 +432,7 @@ constructor TExtendedNotebook.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   InitDrag;
+  FMouseDownIndex := -1;
   fTabDragMode := dmManual;
 end;
 
