@@ -7,7 +7,7 @@ interface
 uses
   LCLType, LclIntf, Types,
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, CheckLst, Grids, Menus, sqldb, Themes;
+  StdCtrls, ExtCtrls, Grids, Menus, sqldb, Themes;
 
 type
 
