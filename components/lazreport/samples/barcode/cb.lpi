@@ -1,21 +1,25 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <IconPath Value=".\"/>
-      <TargetFileExt Value=".exe"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
+      <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
@@ -29,53 +33,66 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="3">
       <Item1>
         <PackageName Value="LCL"/>
       </Item1>
       <Item2>
         <PackageName Value="lazreport"/>
-        <MinVersion Minor="9" Release="4" Valid="True"/>
+        <MinVersion Minor="9" Valid="True" Release="4"/>
       </Item2>
       <Item3>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
-      </Item3>
-      <Item4>
         <PackageName Value="DBFLaz"/>
-        <MinVersion Minor="1" Release="1" Valid="True"/>
-      </Item4>
+        <MinVersion Minor="1" Valid="True" Release="1"/>
+      </Item3>
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
         <Filename Value="cb.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="cb"/>
-        <CursorPos X="27" Y="11"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
         <TopLine Value="1"/>
+        <CursorPos X="51" Y="20"/>
         <UsageCount Value="26"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="cbunit.pas"/>
-        <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="cbunit.lrs"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="cbunit"/>
-        <CursorPos X="54" Y="63"/>
-        <TopLine Value="33"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="22"/>
+        <CursorPos X="47" Y="49"/>
         <UsageCount Value="26"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="5"/>
+    <Version Value="10"/>
     <PathDelim Value="\"/>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
+    <Target>
+      <Filename Value="cb"/>
+    </Target>
+    <SearchPaths>
+      <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 302
+  Left = 301
   Height = 151
-  Top = 154
+  Top = 162
   Width = 685
   HorzScrollBar.Page = 684
   VertScrollBar.Page = 150
@@ -10,19 +10,16 @@ object Form1: TForm1
   ClientHeight = 151
   ClientWidth = 685
   OnCreate = FormCreate
+  LCLVersion = '0.9.31'
   object DBGrid1: TDBGrid
     Left = 8
     Height = 100
     Top = 40
     Width = 632
+    Color = clWindow
+    Columns = <>
     DataSource = Datasource1
-    FixedColor = clBtnFace
-    FixedHotColor = cl3DLight
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-    OptionsExtra = [dgeAutoColumns, dgeCheckboxColumn]
-    ParentColor = False
     TabOrder = 0
-    TabStop = True
   end
   object Button1: TButton
     Left = 456
@@ -45,10 +42,10 @@ object Form1: TForm1
     TabOrder = 2
   end
   object Dbf1: TDbf
-    FilePath = 'C:\Documents and Settings\javiVF\Escritorio\lazarus\Proyectos\cb\db\/\'
     IndexDefs = <>
     TableName = 'disco.dbf'
     TableLevel = 3
+    FilterOptions = []
   end
   object Datasource1: TDatasource
     DataSet = Dbf1
@@ -60,10 +57,13 @@ object Form1: TForm1
   end
   object frReport1: TfrReport
     Dataset = frDBDataSet1
+    InitialZoom = pzDefault
+    Options = []
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
     top = 124
     ReportForm = {
-      18000000
+      19000000
     }
   end
   object frBarCodeObject1: TfrBarCodeObject

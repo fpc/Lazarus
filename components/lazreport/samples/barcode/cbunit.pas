@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, dbf, db,
-  DBGrids, LR_DBSet, LR_Class, LR_BarC, Buttons;
+  DBGrids, LR_DBSet, LR_Class, LR_BarC, Buttons, StdCtrls;
 
 type
 
@@ -36,6 +36,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -60,9 +62,6 @@ begin
   Dbf1.TableName := SetDirSeparators('..\editor\db\disco.dbf');
   Dbf1.Open;
 end;
-
-initialization
-  {$I cbunit.lrs}
 
 end.
 

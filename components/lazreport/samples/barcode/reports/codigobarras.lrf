@@ -1,22 +1,27 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <CONFIG>
   <LazReport>
-    <Version Value="24"/>
+    <Version Value="25"/>
     <Title Value=""/>
     <Subject Value=""/>
     <KeyWords Value=""/>
     <Comments Value=""/>
+    <ReportVersionBuild Value=""/>
+    <ReportVersionMajor Value=""/>
+    <ReportVersionMinor Value=""/>
+    <ReportVersionRelease Value=""/>
+    <ReportAutor Value=""/>
     <Pages>
       <PrintToDefault Value="True"/>
       <DoublePass Value="False"/>
-      <SelectedPrinter Value="hp psc 1310 series"/>
+      <SelectedPrinter Value="Epson Stylus COLOR 440 ESC/P 2"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
         <ClassName Value="TfrPageReport"/>
         <Visible Value="1"/>
-        <Width Value="4799"/>
-        <Height Value="6674" PageType="0"/>
+        <Width Value="1"/>
+        <Height Value="1" PageType="0"/>
         <PgSize Value="9"/>
         <Margins>
           <left Value="0"/>
@@ -29,6 +34,7 @@
         <PrintToPrevPage Value="False"/>
         <ColCount Value="2"/>
         <ColGap Value="0"/>
+        <LayoutOrder Value="loColumns"/>
         <ObjectCount Value="11"/>
         <Object1>
           <Name Value="MasterData1"/>
@@ -43,7 +49,9 @@
             <Height Value="228"/>
           </Size>
           <Flags Value="48"/>
-          <Data><Script Value=""/></Data>
+          <Data>
+            <Script Value=""/>
+          </Data>
           <BandType Value="btMasterData"/>
           <Condition Value=""/>
           <DatasetStr Value="frDBDataSet1"/>
@@ -62,12 +70,14 @@
           </Size>
           <Flags Value="1"/>
           <Frames>
-            <FrameWidth Value="6"/>
             <FrameColor Value="clGreen"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="6"/>
+            <FrameBorders Value=""/>
           </Frames>
-          <Data><Memo Value="[Dbf1.&quot;AUTHOR&quot;]&#xD;&#xA;"/></Data>
+          <Data>
+            <Memo Value="[Dbf1.&quot;AUTHOR&quot;]&#xD;&#xA;"/>
+          </Data>
           <BarCode Zoom="1" BarType="bcCode128A" CheckSum="1" ShowText="1"/>
         </Object2>
         <Object3>
@@ -85,10 +95,10 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
@@ -128,10 +138,10 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
@@ -171,15 +181,15 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;COUNTRY&quot;] &#xD;&#xA;"/>
+            <Memo Value="[Dbf1.&quot;COUNTRYID&quot;] &#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -214,10 +224,10 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
@@ -257,10 +267,10 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
@@ -300,10 +310,10 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
@@ -343,10 +353,10 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
@@ -386,10 +396,10 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
@@ -429,10 +439,10 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
@@ -458,7 +468,9 @@
           <Angle Value="0"/>
         </Object11>
       </Page1>
-      <FVal><Count Value="0"/></FVal>
+      <FVal>
+        <Count Value="0"/>
+      </FVal>
       <ParentVars Value=""/>
     </Pages>
   </LazReport>
