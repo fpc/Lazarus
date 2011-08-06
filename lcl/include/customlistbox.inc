@@ -107,17 +107,20 @@ end;
 procedure TCustomListBox.InitializeWnd;
 var
   NewStrings: TStrings;
+  OldItems: TStrings; // TExtendedStringList or TGtkListStoreStringList or something else
   i, cnt: integer;
-  OldItems: TExtendedStringList;
 begin
   LockSelectionChange;
   inherited InitializeWnd;
   // fetch the interface item list
   NewStrings := TWSCustomListBoxClass(WidgetSetClass).GetStrings(Self);
   // copy the items (text+objects)
-  OldItems := FItems as TExtendedStringList;
-  OldItems.Sorted := False;// make sure the items are not reordered (needed for ItemIndex and attributes)
-  NewStrings.Assign(Items);
+  OldItems := FItems;
+  // make sure the items are not reordered (needed for ItemIndex and attributes)
+  // Note: TGtkListStoreStringList and other also have "Sorted" but it does not inherit from TStrings.
+  if FItems is TExtendedStringList then
+    (OldItems as TExtendedStringList).Sorted := False;
+  NewStrings.Assign(FItems);
 
   // new item list is the interface item list
   FItems := NewStrings;
@@ -129,10 +132,11 @@ begin
     SendItemIndex;
 
   // copy items attributes
-  cnt := OldItems.Count;
-  for i := 0 to cnt - 1 do
-    AssignCacheToItemData(i, OldItems.Records[i]);
-
+  if FItems is TExtendedStringList then begin
+    cnt := OldItems.Count;
+    for i := 0 to cnt - 1 do
+      AssignCacheToItemData(i, (OldItems as TExtendedStringList).Records[i]);
+  end;
   // free old items
   OldItems.Free;
   TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, FSorted);
