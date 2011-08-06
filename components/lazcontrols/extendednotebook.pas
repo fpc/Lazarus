@@ -18,7 +18,7 @@ unit ExtendedNotebook;
 // Gtk, QT:                   MDown, Changing, Change,  MMove,                    MUp
 // Carbon:                    MDown,                    MMove,  Changing, Change, MUp
 
-{$DEFINE ExtNBookDebug}
+{off $DEFINE ExtNBookDebug}
 
 interface
 
@@ -179,7 +179,6 @@ var
 begin
   {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.MouseUp']);{$ENDIF}
   MouseCapture := False;
-  FMouseDownIndex := -1;
   InitDrag;
   inherited MouseUp(Button, Shift, X, Y);
   {$IFnDEF LCLWIN32}
@@ -192,6 +191,7 @@ begin
       PageIndex:=MouseUpTabIndex;
   end;
   {$ENDIF}
+  FMouseDownIndex := -1;
 end;
 
 procedure TExtendedNotebook.MouseMove(Shift: TShiftState; X, Y: Integer);
