@@ -8,13 +8,15 @@ object Form1: TForm1
   ClientHeight = 439
   ClientWidth = 554
   OnShow = FormShow
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object DBGrid1: TDBGrid
     Left = 0
     Height = 171
     Top = 0
     Width = 554
     Align = alTop
+    Color = clWindow
+    Columns = <>
     DataSource = Datasource1
     TabOrder = 0
   end
@@ -24,6 +26,8 @@ object Form1: TForm1
     Top = 176
     Width = 554
     Align = alClient
+    Color = clWindow
+    Columns = <>
     DataSource = Datasource2
     TabOrder = 1
   end
@@ -120,10 +124,10 @@ object Form1: TForm1
     top = 176
   end
   object Dbf1: TDbf
-    FilePath = 'C:\LazarusProjects\DBLookupTest\data\'
+    FilePath = '.\data\'
     IndexDefs = <    
       item
-        IndexFile = 'months.mbf'
+        IndexFile = 'MONTHS.MBF'
         SortField = 'ID'
         Options = [ixPrimary]
       end>
@@ -177,10 +181,10 @@ object Form1: TForm1
     end
   end
   object Dbf2: TDbf
-    FilePath = 'C:\LazarusProjects\DBLookupTest\data\'
+    FilePath = '.\data\'
     IndexDefs = <    
       item
-        IndexFile = 'lookerup.mbf'
+        IndexFile = 'LOOKERUP.MBF'
         SortField = 'ID'
         Options = [ixPrimary]
       end>

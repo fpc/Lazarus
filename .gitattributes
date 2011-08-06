@@ -3307,12 +3307,9 @@ examples/database/dblookup/data/months.mbf -text
 examples/database/dblookup/project1.ico -text svneol=unset#image/ico
 examples/database/dblookup/project1.lpi svneol=native#text/plain
 examples/database/dblookup/project1.lpr svneol=native#text/plain
-examples/database/dblookup/project1.lrs svneol=native#text/pascal
-examples/database/dblookup/project1.manifest svneol=native#text/plain
-examples/database/dblookup/project1.rc svneol=native#text/plain
+examples/database/dblookup/project1.res -text
 examples/database/dblookup/readme.txt svneol=native#text/plain
 examples/database/dblookup/unit1.lfm svneol=native#text/plain
-examples/database/dblookup/unit1.lrs svneol=native#text/pascal
 examples/database/dblookup/unit1.pas svneol=native#text/plain
 examples/dbeditmask/Unit1.lfm svneol=native#text/plain
 examples/dbeditmask/Unit1.pas svneol=native#text/plain

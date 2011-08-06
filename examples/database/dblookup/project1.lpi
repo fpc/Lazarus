@@ -1,20 +1,22 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
-    <Version Value="7"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=".exe"/>
-      <Icon Value="0"/>
+      <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <VersionInfo>
-      <ProjectVersion Value=""/>
       <Language Value=""/>
       <CharSet Value=""/>
+      <StringTable ProductVersion=""/>
     </VersionInfo>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -30,7 +32,7 @@
     <RequiredPackages Count="3">
       <Item1>
         <PackageName Value="DBFLaz"/>
-        <MinVersion Minor="1" Release="1" Valid="True"/>
+        <MinVersion Minor="1" Valid="True" Release="1"/>
       </Item1>
       <Item2>
         <PackageName Value="FCL"/>
@@ -40,530 +42,40 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="76">
+    <Units Count="4">
       <Unit0>
         <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="project1"/>
-        <CursorPos X="25" Y="13"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="259"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
-        <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="6" Y="38"/>
-        <TopLine Value="6"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="259"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\lazarus\lcl\dbctrls.pp"/>
-        <UnitName Value="DbCtrls"/>
-        <CursorPos X="28" Y="42"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="129"/>
-        <Bookmarks Count="1">
-          <Item0 X="1" Y="148" ID="0"/>
-        </Bookmarks>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\lazarus\lcl\include\customdbcombobox.inc"/>
-        <CursorPos X="41" Y="155"/>
-        <TopLine Value="118"/>
-        <UsageCount Value="129"/>
-      </Unit3>
-      <Unit4>
         <Filename Value="..\lazarus\lcl\include\dblookup.inc"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="63" Y="195"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="259"/>
-      </Unit4>
-      <Unit5>
+      </Unit2>
+      <Unit3>
         <Filename Value="..\lazarus\lcl\include\dblookupcombobox.inc"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="8" Y="38"/>
-        <TopLine Value="27"/>
-        <UsageCount Value="259"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="..\lazarus\lcl\include\dblistbox.inc"/>
-        <CursorPos X="38" Y="41"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="129"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\packages\fcl-db\src\base\db.pas"/>
-        <UnitName Value="db"/>
-        <CursorPos X="26" Y="1476"/>
-        <TopLine Value="1454"/>
-        <UsageCount Value="104"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\rtl\inc\variants.pp"/>
-        <UnitName Value="variants"/>
-        <CursorPos X="46" Y="2804"/>
-        <TopLine Value="2782"/>
-        <UsageCount Value="103"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="..\lazarus\lcl\include\customform.inc"/>
-        <CursorPos X="54" Y="437"/>
-        <TopLine Value="403"/>
-        <UsageCount Value="7"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\packages\fcl-db\src\memds\memds.pp"/>
-        <UnitName Value="memds"/>
-        <CursorPos X="20" Y="168"/>
-        <TopLine Value="164"/>
-        <UsageCount Value="7"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\lazarus\ideintf\dbpropedits.pas"/>
-        <UnitName Value="DBPropEdits"/>
-        <CursorPos X="85" Y="133"/>
-        <TopLine Value="105"/>
-        <UsageCount Value="10"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\lazarus\components\memds\frmselectdataset.pp"/>
-        <ComponentName Value="SelectSrcDatasetForm"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmSelectDataset"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="7"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\lazarus\components\memds\memdslaz.pas"/>
-        <UnitName Value="MemDSLaz"/>
-        <CursorPos X="42" Y="6"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="7"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="..\lazarus\components\memds\memdslaz.lpk"/>
-        <CursorPos X="41" Y="14"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="7"/>
-        <SyntaxHighlighter Value="XML"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="..\lazarus\ideintf\checkgroupeditordlg.lfm"/>
-        <CursorPos X="22" Y="5"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="7"/>
-        <SyntaxHighlighter Value="LFM"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="..\lazarus\ideintf\lazideintf.pas"/>
-        <UnitName Value="LazIDEIntf"/>
-        <CursorPos X="73" Y="374"/>
-        <TopLine Value="366"/>
-        <UsageCount Value="7"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="..\lazarus\ideintf\allideintf.pas"/>
-        <UnitName Value="AllIDEIntf"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="29"/>
-        <UsageCount Value="7"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="unit1.lfm"/>
-        <CursorPos X="34" Y="251"/>
-        <TopLine Value="225"/>
-        <UsageCount Value="10"/>
-        <SyntaxHighlighter Value="LFM"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\packages\fcl-db\src\sdf\sdfdata.pp"/>
-        <UnitName Value="SdfData"/>
-        <CursorPos X="14" Y="133"/>
-        <TopLine Value="132"/>
-        <UsageCount Value="8"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\packages\fcl-db\src\base\datasource.inc"/>
-        <CursorPos X="3" Y="559"/>
-        <TopLine Value="614"/>
-        <UsageCount Value="11"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\packages\fcl-db\src\base\dataset.inc"/>
-        <CursorPos X="26" Y="1678"/>
-        <TopLine Value="1663"/>
-        <UsageCount Value="9"/>
-      </Unit21>
-      <Unit22>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\packages\fcl-db\src\dbase\dbf.pas"/>
-        <UnitName Value="dbf"/>
-        <CursorPos X="30" Y="1675"/>
-        <TopLine Value="1651"/>
-        <UsageCount Value="8"/>
-      </Unit22>
-      <Unit23>
-        <Filename Value="..\lazarus\lcl\include\control.inc"/>
-        <CursorPos X="7" Y="2006"/>
-        <TopLine Value="1987"/>
-        <UsageCount Value="8"/>
-      </Unit23>
-      <Unit24>
-        <Filename Value="..\lazarus\lcl\include\buttoncontrol.inc"/>
-        <CursorPos X="1" Y="53"/>
-        <TopLine Value="34"/>
-        <UsageCount Value="8"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="..\lazarus\lcl\include\buttons.inc"/>
-        <CursorPos X="14" Y="309"/>
-        <TopLine Value="296"/>
-        <UsageCount Value="8"/>
-      </Unit25>
-      <Unit26>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\packages\fcl-db\src\dbase\dbf_idxcur.pas"/>
-        <UnitName Value="dbf_idxcur"/>
-        <CursorPos X="3" Y="95"/>
-        <TopLine Value="93"/>
-        <UsageCount Value="8"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\packages\fcl-db\src\dbase\dbf_dbffile.pas"/>
-        <UnitName Value="dbf_dbffile"/>
-        <CursorPos X="3" Y="43"/>
-        <TopLine Value="111"/>
-        <UsageCount Value="8"/>
-      </Unit27>
-      <Unit28>
-        <Filename Value="..\lazarus\components\tdbf\registerdbf.pas"/>
-        <UnitName Value="RegisterDBF"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="8"/>
-      </Unit28>
-      <Unit29>
-        <Filename Value="..\lazarus\lcl\include\dbradiogroup.inc"/>
-        <CursorPos X="3" Y="107"/>
-        <TopLine Value="105"/>
-        <UsageCount Value="9"/>
-      </Unit29>
-      <Unit30>
-        <Filename Value="..\lazarus\lcl\stdctrls.pp"/>
-        <UnitName Value="StdCtrls"/>
-        <CursorPos X="14" Y="614"/>
-        <TopLine Value="595"/>
-        <UsageCount Value="8"/>
-      </Unit30>
-      <Unit31>
-        <Filename Value="..\lazarus\lcl\include\customlistbox.inc"/>
-        <CursorPos X="31" Y="467"/>
-        <TopLine Value="448"/>
-        <UsageCount Value="8"/>
-      </Unit31>
-      <Unit32>
-        <Filename Value="..\lazarus\lcl\controls.pp"/>
-        <UnitName Value="Controls"/>
-        <CursorPos X="25" Y="999"/>
-        <TopLine Value="998"/>
-        <UsageCount Value="8"/>
-      </Unit32>
-      <Unit33>
-        <Filename Value="..\lazarus\components\synedit\synedit.pp"/>
-        <UnitName Value="SynEdit"/>
-        <CursorPos X="25" Y="10014"/>
-        <TopLine Value="9986"/>
-        <UsageCount Value="8"/>
-      </Unit33>
-      <Unit34>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\rtl\objpas\classes\classesh.inc"/>
-        <CursorPos X="55" Y="1529"/>
-        <TopLine Value="1502"/>
-        <UsageCount Value="8"/>
-      </Unit34>
-      <Unit35>
-        <Filename Value="..\lazarus\fpc\2.2.3\source\packages\fcl-db\src\base\fields.inc"/>
-        <CursorPos X="3" Y="293"/>
-        <TopLine Value="271"/>
-        <UsageCount Value="9"/>
-      </Unit35>
-      <Unit36>
-        <Filename Value="..\lazarus\lcl\include\dbcombobox.inc"/>
-        <CursorPos X="17" Y="37"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="13"/>
-      </Unit36>
-      <Unit37>
-        <Filename Value="..\lazarus\lcl\include\dblookuplistbox.inc"/>
-        <CursorPos X="10" Y="31"/>
-        <TopLine Value="15"/>
-        <UsageCount Value="12"/>
-      </Unit37>
-      <Unit38>
-        <Filename Value="..\lazarus\lcl\include\dbedit.inc"/>
-        <CursorPos X="3" Y="69"/>
-        <TopLine Value="67"/>
-        <UsageCount Value="11"/>
-      </Unit38>
-      <Unit39>
-        <Filename Value="..\lazarus\ideintf\propedits.pp"/>
-        <UnitName Value="PropEdits"/>
-        <CursorPos X="11" Y="1023"/>
-        <TopLine Value="1001"/>
-        <UsageCount Value="9"/>
-      </Unit39>
-      <Unit40>
-        <Filename Value="..\lazarus\components\images\lazpng.pas"/>
-        <UnitName Value="LazPNG"/>
-        <CursorPos X="32" Y="31"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-      </Unit40>
-      <Unit41>
-        <Filename Value="..\lazarus\components\README.txt"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit41>
-      <Unit42>
-        <Filename Value="..\lazarus\images\components_images.lrs"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-      </Unit42>
-      <Unit43>
-        <Filename Value="..\lazarus\images\components_images.bat"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit43>
-      <Unit44>
-        <Filename Value="..\lazarus\images\components_images_list.txt"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit44>
-      <Unit45>
-        <Filename Value="..\..\usr\local\share\fpcsrc\packages\fcl-base\src\custapp.pp"/>
-        <UnitName Value="CustApp"/>
-        <CursorPos X="73" Y="12"/>
-        <TopLine Value="9"/>
-        <UsageCount Value="9"/>
-      </Unit45>
-      <Unit46>
-        <Filename Value="..\components\tdbf\registerdbf.pas"/>
-        <UnitName Value="RegisterDBF"/>
-        <CursorPos X="100" Y="7"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-      </Unit46>
-      <Unit47>
-        <Filename Value="..\..\fpc\packages\fcl-base\src\custapp.pp"/>
-        <UnitName Value="CustApp"/>
-        <CursorPos X="98" Y="4"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-      </Unit47>
-      <Unit48>
-        <Filename Value="..\..\fpc\rtl\objpas\sysutils\finah.inc"/>
-        <CursorPos X="96" Y="6"/>
-        <TopLine Value="3"/>
-        <UsageCount Value="9"/>
-      </Unit48>
-      <Unit49>
-        <Filename Value="..\..\fpc\rtl\objpas\sysutils\fina.inc"/>
-        <CursorPos X="91" Y="38"/>
-        <TopLine Value="37"/>
-        <UsageCount Value="9"/>
-      </Unit49>
-      <Unit50>
-        <Filename Value="..\..\fpc\rtl\unix\sysunixh.inc"/>
-        <CursorPos X="2" Y="34"/>
-        <TopLine Value="14"/>
-        <UsageCount Value="9"/>
-      </Unit50>
-      <Unit51>
-        <Filename Value="..\lcl\dbctrls.pp"/>
-        <UnitName Value="DbCtrls"/>
-        <CursorPos X="17" Y="159"/>
-        <TopLine Value="132"/>
-        <UsageCount Value="18"/>
-      </Unit51>
-      <Unit52>
-        <Filename Value="..\lcl\include\dblookup.inc"/>
-        <CursorPos X="1" Y="64"/>
-        <TopLine Value="43"/>
-        <UsageCount Value="18"/>
-      </Unit52>
-      <Unit53>
-        <Filename Value="..\lcl\include\dblookuplistbox.inc"/>
-        <CursorPos X="27" Y="109"/>
-        <TopLine Value="71"/>
-        <UsageCount Value="18"/>
-      </Unit53>
-      <Unit54>
-        <Filename Value="..\..\fpc\packages\fcl-db\src\base\db.pas"/>
-        <UnitName Value="db"/>
-        <CursorPos X="16" Y="286"/>
-        <TopLine Value="286"/>
-        <UsageCount Value="13"/>
-      </Unit54>
-      <Unit55>
-        <Filename Value="..\lcl\include\dblookupcombobox.inc"/>
-        <CursorPos X="15" Y="100"/>
-        <TopLine Value="67"/>
-        <UsageCount Value="14"/>
-      </Unit55>
-      <Unit56>
-        <Filename Value="..\..\fpc\packages\fcl-db\src\base\dataset.inc"/>
-        <CursorPos X="3" Y="2252"/>
-        <TopLine Value="2247"/>
-        <UsageCount Value="13"/>
-      </Unit56>
-      <Unit57>
-        <Filename Value="..\..\fpc\packages\fcl-db\src\base\fields.inc"/>
-        <CursorPos X="38" Y="718"/>
-        <TopLine Value="696"/>
-        <UsageCount Value="12"/>
-      </Unit57>
-      <Unit58>
-        <Filename Value="..\..\lazarus\lcl\dbctrls.pp"/>
-        <UnitName Value="DbCtrls"/>
-        <CursorPos X="45" Y="1338"/>
-        <TopLine Value="1330"/>
-        <UsageCount Value="14"/>
-      </Unit58>
-      <Unit59>
-        <Filename Value="..\..\lazarus\fpc\2.2.5\source\packages\fcl-db\src\dbase\dbf.pas"/>
-        <UnitName Value="dbf"/>
-        <CursorPos X="25" Y="1184"/>
-        <TopLine Value="1180"/>
-        <UsageCount Value="10"/>
-      </Unit59>
-      <Unit60>
-        <Filename Value="..\DBLookupTestOld\unit1.lfm"/>
-        <CursorPos X="60" Y="102"/>
-        <TopLine Value="83"/>
-        <UsageCount Value="10"/>
-        <SyntaxHighlighter Value="LFM"/>
-      </Unit60>
-      <Unit61>
-        <Filename Value="..\..\lazarus\fpc\2.2.5\source\packages\fcl-db\src\base\db.pas"/>
-        <UnitName Value="db"/>
-        <CursorPos X="15" Y="1280"/>
-        <TopLine Value="1260"/>
-        <UsageCount Value="11"/>
-      </Unit61>
-      <Unit62>
-        <Filename Value="..\..\lazarus\fpc\2.2.5\source\rtl\inc\variants.pp"/>
-        <UnitName Value="variants"/>
-        <CursorPos X="5" Y="4014"/>
-        <TopLine Value="4010"/>
-        <UsageCount Value="10"/>
-      </Unit62>
-      <Unit63>
-        <Filename Value="..\..\lazarus\fpc\2.2.5\source\packages\fcl-db\src\base\fields.inc"/>
-        <CursorPos X="46" Y="697"/>
-        <TopLine Value="677"/>
-        <UsageCount Value="10"/>
-      </Unit63>
-      <Unit64>
-        <Filename Value="..\..\lazarus\lcl\include\customdblistbox.inc"/>
-        <CursorPos X="3" Y="34"/>
-        <TopLine Value="32"/>
-        <UsageCount Value="10"/>
-      </Unit64>
-      <Unit65>
-        <Filename Value="..\..\lazarus\lcl\stdctrls.pp"/>
-        <UnitName Value="StdCtrls"/>
-        <CursorPos X="53" Y="475"/>
-        <TopLine Value="474"/>
-        <UsageCount Value="10"/>
-      </Unit65>
-      <Unit66>
-        <Filename Value="..\..\lazarus\lcl\include\customlistbox.inc"/>
-        <CursorPos X="51" Y="287"/>
-        <TopLine Value="287"/>
-        <UsageCount Value="10"/>
-      </Unit66>
-      <Unit67>
-        <Filename Value="..\..\lazarus\lcl\controls.pp"/>
-        <UnitName Value="Controls"/>
-        <CursorPos X="59" Y="1201"/>
-        <TopLine Value="1198"/>
-        <UsageCount Value="10"/>
-      </Unit67>
-      <Unit68>
-        <Filename Value="..\..\lazarus\lcl\include\control.inc"/>
-        <CursorPos X="61" Y="256"/>
-        <TopLine Value="255"/>
-        <UsageCount Value="10"/>
-      </Unit68>
-      <Unit69>
-        <Filename Value="..\..\lazarus\lcl\include\customdbcombobox.inc"/>
-        <CursorPos X="18" Y="46"/>
-        <TopLine Value="34"/>
-        <UsageCount Value="10"/>
-      </Unit69>
-      <Unit70>
-        <Filename Value="..\..\lazarus\fpc\2.2.5\source\packages\fcl-db\src\base\datasource.inc"/>
-        <CursorPos X="52" Y="293"/>
-        <TopLine Value="292"/>
-        <UsageCount Value="10"/>
-      </Unit70>
-      <Unit71>
-        <Filename Value="..\..\lazarus\lcl\include\dblookuplistbox.inc"/>
-        <CursorPos X="41" Y="44"/>
-        <TopLine Value="27"/>
-        <UsageCount Value="11"/>
-      </Unit71>
-      <Unit72>
-        <Filename Value="..\..\lazarus\lcl\include\dblookup.inc"/>
-        <CursorPos X="71" Y="299"/>
-        <TopLine Value="281"/>
-        <UsageCount Value="11"/>
-      </Unit72>
-      <Unit73>
-        <Filename Value="..\..\lazarus\fpc\2.2.5\source\rtl\objpas\classes\classesh.inc"/>
-        <CursorPos X="16" Y="1531"/>
-        <TopLine Value="1511"/>
-        <UsageCount Value="10"/>
-      </Unit73>
-      <Unit74>
-        <Filename Value="..\..\lazarus\fpc\2.2.5\source\packages\fcl-db\src\base\dataset.inc"/>
-        <CursorPos X="3" Y="1443"/>
-        <TopLine Value="1439"/>
-        <UsageCount Value="10"/>
-      </Unit74>
-      <Unit75>
-        <Filename Value="..\..\lazarus\lcl\include\dblookupcombobox.inc"/>
-        <CursorPos X="28" Y="42"/>
-        <TopLine Value="40"/>
-        <UsageCount Value="10"/>
-      </Unit75>
+      </Unit3>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
-      <Position1>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="31" Column="38" TopLine="1"/>
-      </Position1>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="10"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)\"/>
+      <IncludeFiles Value="$(ProjOutDir)"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Options>
         <Win32>
@@ -572,6 +84,9 @@
       </Options>
     </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

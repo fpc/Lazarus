@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  DbCtrls, db, DBGrids, StdCtrls, dbf, memds, ExtCtrls;
+  DbCtrls, db, DBGrids, dbf, ExtCtrls;
 
 type
 
@@ -47,6 +47,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormShow(Sender: TObject);
@@ -65,9 +67,6 @@ begin
   Dbf2.FilePath := Dbf1.FilePath;
   Dbf2.Open;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 
