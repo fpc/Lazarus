@@ -199,6 +199,10 @@ msgstr "Esci %s"
 msgid "%s requested, but %s created"
 msgstr "Era richiesto %s, invece è stato creato %s"
 
+#: anchordockstr.adrsrestoredefaultlayout
+msgid "Restore default layout"
+msgstr ""
+
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "destra"

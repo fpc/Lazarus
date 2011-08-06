@@ -198,6 +198,10 @@ msgstr "Sair %s"
 msgid "%s requested, but %s created"
 msgstr "%s requerido, mas %s criado"
 
+#: anchordockstr.adrsrestoredefaultlayout
+msgid "Restore default layout"
+msgstr ""
+
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "direita"

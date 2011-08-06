@@ -197,6 +197,10 @@ msgstr "Выход из %s"
 msgid "%s requested, but %s created"
 msgstr "Запрошен %s, но создан %s"
 
+#: anchordockstr.adrsrestoredefaultlayout
+msgid "Restore default layout"
+msgstr ""
+
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "справа"

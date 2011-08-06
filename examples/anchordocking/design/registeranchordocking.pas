@@ -56,6 +56,7 @@ var
     mnuADSaveLayoutAsDefault: TIDEMenuCommand;
     mnuADSaveLayoutToFile: TIDEMenuCommand;
     mnuADLoadLayoutFromFile: TIDEMenuCommand;
+    mnuADRestoreDefaultLayout: TIDEMenuCommand;
 
 type
 
@@ -90,6 +91,7 @@ type
     procedure CloseAll; override;
     procedure OnIDERestoreWindows(Sender: TObject);
     function OnProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
+    procedure RestoreDefaultLayoutClicked(Sender: TObject);
     procedure LoadLayoutFromFileClicked(Sender: TObject);
     procedure SaveLayoutToFileClicked(Sender: TObject);
     procedure SaveLayoutAsDefaultClicked(Sender: TObject);
@@ -142,6 +144,9 @@ begin
   mnuADLoadLayoutFromFile:=RegisterIDEMenuCommand(mnuAnchorDockSection,
     'ADLoadLayoutFromFile', adrsLoadWindowLayoutFromFile,
     @IDEAnchorDockMaster.LoadLayoutFromFileClicked);
+  mnuADRestoreDefaultLayout:=RegisterIDEMenuCommand(mnuAnchorDockSection,
+    'ADRestoreDefaultLayout', adrsRestoreDefaultLayout,
+    @IDEAnchorDockMaster.RestoreDefaultLayoutClicked);
 
   // add options frame
   {$R *.lfm}
@@ -464,6 +469,11 @@ begin
   if AProject=nil then exit;
   // do not auto save user layout, the restore is not yet stable
   //SaveUserLayout;
+end;
+
+procedure TIDEAnchorDockMaster.RestoreDefaultLayoutClicked(Sender: TObject);
+begin
+  LoadDefaultLayout;
 end;
 
 procedure TIDEAnchorDockMaster.OnIDERestoreWindows(Sender: TObject);

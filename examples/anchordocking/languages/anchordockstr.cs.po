@@ -197,6 +197,10 @@ msgstr "Ukončit %s"
 msgid "%s requested, but %s created"
 msgstr ""
 
+#: anchordockstr.adrsrestoredefaultlayout
+msgid "Restore default layout"
+msgstr ""
+
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "vpravo"

@@ -110,6 +110,7 @@ resourcestring
   adrsSaveWindowLayoutAsDefault = 'Save window layout as default';
   adrsSaveWindowLayoutToFile = 'Save window layout to file ...';
   adrsLoadWindowLayoutFromFile = 'Load window layout from file ...';
+  adrsRestoreDefaultLayout = 'Restore default layout';
   adrsErrorLoadingWindowLayoutFromFile = 'Error loading window layout from '
     +'file "%s"%s%s';
   adrsError = 'Error';
