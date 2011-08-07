@@ -5425,6 +5425,9 @@ begin
   if SaveAsFilename='' then
     SaveAsFilename:=lisnoname;
 
+  //suggest lowercased name to user in order to avoid asking for lowercase name later
+  SaveAsFilename:=LowerCase(SaveAsFilename);
+
   // let user choose a filename
   SaveDialog:=TSaveDialog.Create(nil);
   try
