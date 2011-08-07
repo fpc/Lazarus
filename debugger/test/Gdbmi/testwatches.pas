@@ -502,9 +502,9 @@ procedure TTestWatches.TestWatches;
     flag := AWatch <> nil;
     if flag then begin;
       WV := AWatch.Values[1, 0];// trigger read
+      s := WV.Value;
       flag := flag and TestTrue  (Name+ ' (HasValue)',   WV.Validity = ddsValid);
       //flag := flag and TestFalse (Name+ ' (One Value)',  AWatch.HasMultiValue);
-      s := WV.Value;
     end
     else
       s := WatchValue;
@@ -644,8 +644,8 @@ begin
 
     dbg.Stop;
   finally
-    CleanGdb;
     dbg.Free;
+    CleanGdb;
 
     if (DbgMemo <> nil) and (TestErrors <> '') then DbgMemo.Lines.Add(TestErrors);
     //debugln(FailText)

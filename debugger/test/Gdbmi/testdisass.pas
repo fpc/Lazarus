@@ -361,6 +361,7 @@ var
   end;
   procedure CleanGdb;
   begin
+    FreeAndNil(Gdb);
     FWatches.Supplier := nil;
     FThreads.Supplier := nil;
     //FLocals.Master := nil;

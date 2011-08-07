@@ -418,7 +418,7 @@ begin
   FDisassembler.Master := nil;
   FExceptions.Master := nil;
   FSignals.Master := nil;
-  FRegisters.Master := nil;
+//  FRegisters.Master := nil;
 
   FreeAndNil(FWatches);
   FreeAndNil(FThreads);
@@ -955,7 +955,7 @@ initialization
   EnvironmentOptions := TEnvironmentOptions.Create;
   with EnvironmentOptions do
   begin
-    SetLazarusDefaultFilename;
+    CreateConfig;
     Load(false);
   end;
 
