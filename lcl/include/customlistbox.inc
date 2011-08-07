@@ -210,7 +210,7 @@ end;
 
 procedure TCustomListBox.RaiseIndexOutOfBounds(AIndex: integer);
 begin
-  Exception.CreateFmt(rsIndexOutOfBounds, [ClassName, AIndex, FItems.Count-1]);
+  raise Exception.CreateFmt(rsIndexOutOfBounds, [ClassName, AIndex, FItems.Count-1]);
 end;
 
 procedure TCustomListBox.SetColumns(const AValue: Integer);
