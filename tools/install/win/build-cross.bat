@@ -141,6 +141,7 @@ FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
 %ISCC% lazarus-cross.iss 
 
 :CLEANUP
+SET FPCFPMAKE=
 SET CPU_TARGET=
 SET OS_TARGET=
 SET CROSSBINDIR=
