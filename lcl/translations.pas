@@ -65,6 +65,7 @@
 unit Translations;
 
 {$mode objfpc}{$H+}{$INLINE ON}
+{$include include/lcl_defines.inc}
 
 interface
 

@@ -15,6 +15,7 @@
 unit LConvEncoding;
 
 {$mode objfpc}{$H+}
+{$include include/lcl_defines.inc}
 
 interface
 
