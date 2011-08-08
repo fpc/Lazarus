@@ -73,6 +73,7 @@ type
   TLinearLayout = class(TViewGroup)
   public
     constructor Create();
+    procedure setOrientation(orientation: Integer);
   end;
 
   TAbsoluteLayout = class(TViewGroup)
@@ -197,6 +198,7 @@ const
   amkUI_TViewGroup_addView = $00106000;
   // TLinearLayout
   amkUI_TLinearLayout_Create = $00107000;
+  amkUI_TLinearLayout_setOrientation = $00107001;
   // TAbsoluteLayout
   amkUI_TAbsoluteLayout_Create = $00108000;
   // TAbsoluteLayout_LayoutParams
@@ -302,7 +304,7 @@ begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TDisplay_getMetrics);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  vAndroidPipesComm.SendInt(Integer(outMetrics));
+  vAndroidPipesComm.SendInt(Integer(outMetrics.Index));
   vAndroidPipesComm.WaitForReturn();
 end;
 
@@ -327,7 +329,7 @@ begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TView_setLayoutParams);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  vAndroidPipesComm.SendInt(Integer(params));
+  vAndroidPipesComm.SendInt(Integer(params.Index));
   vAndroidPipesComm.WaitForReturn();
 end;
 
@@ -345,8 +347,8 @@ begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TViewGroup_addView);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  vAndroidPipesComm.SendInt(Integer(child));
-  vAndroidPipesComm.SendInt(Integer(params));
+  vAndroidPipesComm.SendInt(Integer(child.Index));
+  vAndroidPipesComm.SendInt(Integer(params.Index));
   vAndroidPipesComm.WaitForReturn();
 end;
 
@@ -356,6 +358,15 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TLinearLayout_Create);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
+procedure TLinearLayout.setOrientation(orientation: Integer);
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TLinearLayout_setOrientation);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.SendInt(Integer(orientation));
+  vAndroidPipesComm.WaitForReturn();
+end;
+
 constructor TAbsoluteLayout.Create();
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
@@ -380,15 +391,15 @@ begin
 end;
 procedure TTextView.setText(var AText: string);
 var
-  lString: TString;
+  lString_1: TString;
 begin
+  lString_1 := TString.Create(AText);
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TTextView_setText);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  lString := TString.Create(AText);
-  vAndroidPipesComm.SendInt(lString.Index); // text
-  lString.Free;
+  vAndroidPipesComm.SendInt(lString_1.Index); // text
   vAndroidPipesComm.WaitForReturn();
+  lString_1.Free;
 end;
 
 procedure TTextView.setOnClickListener(ACallback: TOnClickListener);
@@ -423,15 +434,15 @@ begin
 end;
 procedure TEditText.setText(var AText: string);
 var
-  lString: TString;
+  lString_1: TString;
 begin
+  lString_1 := TString.Create(AText);
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TEditText_setText);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  lString := TString.Create(AText);
-  vAndroidPipesComm.SendInt(lString.Index); // text
-  lString.Free;
+  vAndroidPipesComm.SendInt(lString_1.Index); // text
   vAndroidPipesComm.WaitForReturn();
+  lString_1.Free;
 end;
 
 constructor TButton.Create();
@@ -442,15 +453,15 @@ begin
 end;
 procedure TButton.setText(var AText: string);
 var
-  lString: TString;
+  lString_1: TString;
 begin
+  lString_1 := TString.Create(AText);
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TButton_setText);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  lString := TString.Create(AText);
-  vAndroidPipesComm.SendInt(lString.Index); // text
-  lString.Free;
+  vAndroidPipesComm.SendInt(lString_1.Index); // text
   vAndroidPipesComm.WaitForReturn();
+  lString_1.Free;
 end;
 
 constructor TTimePicker.Create();
