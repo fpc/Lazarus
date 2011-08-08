@@ -11,7 +11,7 @@ type
   TDisplayMetrics = class;
   TDisplay = class;
   TWindowManager = class;
-  TLayoutParams = class;
+  TViewGroup_LayoutParams = class;
   TView = class;
   TViewGroup = class;
   TLinearLayout = class;
@@ -54,14 +54,14 @@ type
     function getDefaultDisplay(): TDisplay;
   end;
 
-  TLayoutParams = class(TJavaObject)
+  TViewGroup_LayoutParams = class(TJavaObject)
   public
-    constructor Create();
+    constructor Create(width: Integer; height: Integer);
   end;
 
   TView = class(TJavaObject)
   public
-    procedure setLayoutParams(var params: TLayoutParams);
+    procedure setLayoutParams(var params: TViewGroup_LayoutParams);
     procedure setVisibility(visibility: Integer);
   end;
 
@@ -79,9 +79,9 @@ type
     constructor Create();
   end;
 
-  TAbsoluteLayout_LayoutParams = class(TLayoutParams)
+  TAbsoluteLayout_LayoutParams = class(TViewGroup_LayoutParams)
   public
-    constructor Create();
+    constructor Create(param_width: Integer; param_height: Integer; param_x: Integer; param_y: Integer);
   end;
 
   TTextView = class(TView)
@@ -151,7 +151,7 @@ const
   { TDisplayMetrics }
   { TDisplay }
   { TWindowManager }
-  { TLayoutParams }
+  { TViewGroup_LayoutParams }
   FILL_PARENT = $FFFFFFFF;
   { TView }
   VISIBLE = 0;
@@ -187,8 +187,8 @@ const
   amkUI_TDisplay_getMetrics = $00102000;
   // TWindowManager
   amkUI_TWindowManager_getDefaultDisplay = $00103000;
-  // TLayoutParams
-  amkUI_TLayoutParams_Create = $00104000;
+  // TViewGroup_LayoutParams
+  amkUI_TViewGroup_LayoutParams_Create = $00104000;
   // TView
   amkUI_TView_setLayoutParams = $00105000;
   amkUI_TView_setVisibility = $00105001;
@@ -312,13 +312,15 @@ begin
   Result := TDisplay(vAndroidPipesComm.WaitForIntReturn());
 end;
 
-constructor TLayoutParams.Create();
+constructor TViewGroup_LayoutParams.Create(width: Integer; height: Integer);
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TLayoutParams_Create);
+  vAndroidPipesComm.SendInt(amkUI_TViewGroup_LayoutParams_Create);
+  vAndroidPipesComm.SendInt(Integer(width));
+  vAndroidPipesComm.SendInt(Integer(height));
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-procedure TView.setLayoutParams(var params: TLayoutParams);
+procedure TView.setLayoutParams(var params: TViewGroup_LayoutParams);
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TView_setLayoutParams);
@@ -348,10 +350,14 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TAbsoluteLayout_Create);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-constructor TAbsoluteLayout_LayoutParams.Create();
+constructor TAbsoluteLayout_LayoutParams.Create(param_width: Integer; param_height: Integer; param_x: Integer; param_y: Integer);
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TAbsoluteLayout_LayoutParams_Create);
+  vAndroidPipesComm.SendInt(Integer(param_width));
+  vAndroidPipesComm.SendInt(Integer(param_height));
+  vAndroidPipesComm.SendInt(Integer(param_x));
+  vAndroidPipesComm.SendInt(Integer(param_y));
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
 constructor TTextView.Create();
