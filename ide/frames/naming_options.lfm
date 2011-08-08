@@ -3,6 +3,7 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
   Width = 507
   ClientHeight = 367
   ClientWidth = 507
+  TabOrder = 0
   Visible = False
   DesignLeft = 353
   DesignTop = 291
@@ -10,7 +11,6 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 47
     Top = 0
@@ -34,7 +34,6 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CharcaseFileActionRadioGroup
     AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 67
     Top = 53
@@ -59,7 +58,6 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AmbiguousFileActionRadioGroup
     AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 58
     Top = 126
@@ -113,5 +111,23 @@ inherited NamingOptionsFrame: TNamingOptionsFrame
     BorderSpacing.Around = 6
     Caption = 'AskForFilenameOnNewCheckBox'
     TabOrder = 4
+  end
+  object LowercaseDefaultFilenameCheckBox: TCheckBox[5]
+    AnchorSideLeft.Control = AskForFilenameOnNewCheckBox
+    AnchorSideTop.Control = AskForFilenameOnNewCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 17
+    Top = 269
+    Width = 193
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'LowercaseDefaultFilenameCheckBox'
+    Checked = True
+    ParentShowHint = False
+    ShowHint = True
+    State = cbChecked
+    TabOrder = 5
   end
 end

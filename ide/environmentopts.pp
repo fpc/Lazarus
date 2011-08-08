@@ -310,6 +310,7 @@ type
     fAmbiguousFileAction: TAmbiguousFileAction;
     FUnitRenameReferencesAction: TUnitRenameReferencesAction;
     FAskForFilenameOnNewFile: boolean;
+    FLowercaseDefaultFilename: boolean;
 
     // lazdoc
     FLazDocPaths: string;
@@ -554,9 +555,12 @@ type
     property CharcaseFileAction: TCharCaseFileAction read fCharcaseFileAction
                                                      write fCharcaseFileAction;
     property UnitRenameReferencesAction: TUnitRenameReferencesAction
-             read FUnitRenameReferencesAction write FUnitRenameReferencesAction;
+                                              read FUnitRenameReferencesAction
+                                              write FUnitRenameReferencesAction;
     property AskForFilenameOnNewFile: boolean read FAskForFilenameOnNewFile
-                   write FAskForFilenameOnNewFile;
+                                              write FAskForFilenameOnNewFile;
+    property LowercaseDefaultFilename: boolean read FLowercaseDefaultFilename
+                                               write FLowercaseDefaultFilename;
 
     // lazdoc
     property LazDocPaths: string read FLazDocPaths write FLazDocPaths;
@@ -838,6 +842,7 @@ begin
   fCharcaseFileAction:=ccfaAutoRename;
   FUnitRenameReferencesAction:=urraAsk;
   FAskForFilenameOnNewFile:=false;
+  FLowercaseDefaultFilename:=true;
 
   // lazdoc
   FLazDocPaths:=SetDirSeparators(DefaultLazDocPath);
@@ -1241,6 +1246,8 @@ begin
         Path+'UnitRenameReferencesAction/Value',UnitRenameReferencesActionNames[urraAsk]));
       FAskForFilenameOnNewFile:=XMLConfig.GetValue(
         Path+'AskForFilenameOnNewFile/Value',false);
+      FLowercaseDefaultFilename:=XMLConfig.GetValue(
+        Path+'LowercaseDefaultFilename/Value',true);
 
       //lazdoc
       FLazDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultLazDocPath);
@@ -1556,6 +1563,8 @@ begin
         AmbiguousFileActionNames[afaAsk]);
       XMLConfig.SetDeleteValue(Path+'AskForFilenameOnNewFile/Value',
                      FAskForFilenameOnNewFile,false);
+      XMLConfig.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
+                               FLowercaseDefaultFilename,true);
 
       // lazdoc
       XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,DefaultLazDocPath);

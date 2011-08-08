@@ -36,6 +36,7 @@ type
     AmbiguousFileActionRadioGroup: TRadioGroup;
     CharcaseFileActionRadioGroup: TRadioGroup;
     AskForFilenameOnNewCheckBox: TCheckBox;
+    LowercaseDefaultFilenameCheckBox: TCheckBox;
     PascalFileExtRadiogroup: TRadioGroup;
     UnitReferencesRadioGroup: TRadioGroup;
   private
@@ -118,6 +119,11 @@ begin
   end;
 
   AskForFilenameOnNewCheckBox.Caption:=lisAskForFileNameOnNewFile;
+
+  LowercaseDefaultFilenameCheckBox.Caption:=
+    lisSuggestDefaultNameOfNewFileInLowercase;
+  LowercaseDefaultFilenameCheckBox.Hint:=
+    lisAlwaysConvertSuggestedDefaultFileNameToLowercase;
 end;
 
 procedure TNamingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -133,7 +139,8 @@ begin
     CharCaseFileActionRadioGroup.ItemIndex  := ord(CharCaseFileAction);
     AmbiguousFileActionRadioGroup.ItemIndex := ord(AmbiguousFileAction);
     UnitReferencesRadioGroup.ItemIndex := ord(UnitRenameReferencesAction);
-    AskForFilenameOnNewCheckBox.Checked:=AskForFilenameOnNewFile;
+    AskForFilenameOnNewCheckBox.Checked := AskForFilenameOnNewFile;
+    LowercaseDefaultFilenameCheckBox.Checked := LowercaseDefaultFilename;
   end;
 end;
 
@@ -148,7 +155,8 @@ begin
     CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
     AmbiguousFileAction := TAmbiguousFileAction(AmbiguousFileActionRadioGroup.ItemIndex);
     UnitRenameReferencesAction := TUnitRenameReferencesAction(UnitReferencesRadioGroup.ItemIndex);
-    AskForFilenameOnNewFile:=AskForFilenameOnNewCheckBox.Checked;
+    AskForFilenameOnNewFile := AskForFilenameOnNewCheckBox.Checked;
+    LowercaseDefaultFilename := LowercaseDefaultFilenameCheckBox.Checked;
   end;
 end;
 
