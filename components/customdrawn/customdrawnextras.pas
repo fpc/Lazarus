@@ -162,6 +162,7 @@ type
 
 
   TCDButtonDrawer = class;
+  TCDButtonDrawerCustom = class;
   TCDButtonDrawerWinCE = class;
   TCDButtonDrawerAndroid = class;
   TCDButtonDrawerXPTB = class;
@@ -172,6 +173,7 @@ type
   private
     FDrawStyle: TCDDrawStyle;
     FCurrentDrawer: TCDButtonDrawer;
+    FDrawerCustom: TCDButtonDrawerCustom;
     FDrawerWinCE: TCDButtonDrawerWinCE;
     FDrawerAndroid: TCDButtonDrawerAndroid;
     FDrawerXPTB: TCDButtonDrawerXPTB;
@@ -250,6 +252,16 @@ type
       FState: TBitmappedButtonState); virtual; abstract;
   end;
 
+  { TCDButtonDrawerCustom }
+
+  TCDButtonDrawerCustom = class(TCDButtonDrawer)
+  public
+    procedure SetClientRectPos(CDButton: TCDButton); override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
+      FState: TBitmappedButtonState); override;
+  end;
+
   { TCDButtonDrawerWinCE }
 
   TCDButtonDrawerWinCE = class(TCDButtonDrawer)
@@ -298,6 +310,7 @@ type
   }
 
   TCDGroupBoxDrawer = class;
+  TCDGroupBoxDrawerCustom = class;
   TCDGroupBoxDrawerWinCE = class;
 
   { TCDGroupBox }
@@ -306,6 +319,7 @@ type
   private
     FDrawStyle: TCDDrawStyle;
     FCurrentDrawer: TCDGroupBoxDrawer;
+    FDrawerCustom: TCDGroupBoxDrawerCustom;
     FDrawerWinCE: TCDGroupBoxDrawerWinCE;
     procedure PrepareCurrentDrawer();
     procedure SetDrawStyle(const AValue: TCDDrawStyle);
@@ -329,6 +343,16 @@ type
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox);
       virtual; abstract;
     procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); virtual; abstract;
+  end;
+
+  { TCDGroupBoxDrawerCustom }
+
+  TCDGroupBoxDrawerCustom = class(TCDGroupBoxDrawer)
+  public
+    FCaptionMiddle: integer;
+    procedure SetClientRectPos(CDGroupBox: TCDGroupBox); override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); override;
   end;
 
   { TCDGroupBoxDrawerWinCE }
@@ -573,6 +597,7 @@ type
   { TCDPageControl }
 
   TCDPageControlDrawer = class;
+  TCDPageControlDrawerCustom = class;
   TCDPageControlDrawerWinCE = class;
 
   { TCDPageControlEditor }
@@ -594,6 +619,7 @@ type
     FCaptionHeight: integer;
     FActivePage: TCDTabSheet;
     FCurrentDrawer: TCDPageControlDrawer;
+    FDrawerCustom: TCDPageControlDrawerCustom;
     FDrawerWinCE: TCDPageControlDrawerWinCE;
     FGrad: boolean;
     FShowTabs: boolean;
@@ -674,6 +700,16 @@ type
       virtual; abstract;
   end;
 
+  { TCDPageControlDrawerCustom }
+
+  TCDPageControlDrawerCustom = class(TCDPageControlDrawer)
+  public
+    procedure SetClientRectPos(CDPageControl: TCDPageControl); override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
+      CDPageControl: TCDPageControl); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDPageControl: TCDPageControl); override;
+  end;
+
   TCDPageControlDrawerWinCE = class(TCDPageControlDrawer)
   public
     procedure SetClientRectPos(CDPageControl: TCDPageControl); override;
@@ -729,6 +765,7 @@ begin
     end;
   end;
 end;
+
 
 { TCustomBitmappedButton }
 
@@ -1063,11 +1100,13 @@ constructor TCDButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   TabStop := True;
+  FDrawerCustom := TCDButtonDrawerCustom.Create;
   FDrawerWinCE := TCDButtonDrawerWinCE.Create;
   FDrawerAndroid := TCDButtonDrawerAndroid.Create;
   FDrawerXPTB := TCDButtonDrawerXPTB.Create;
   FDrawerGrad := TCDButtonDrawerGrad.Create;
   FDrawerWin2k := TCDButtonDrawerWin2k.Create;
+  CustomDrawer:=FDrawerCustom;
   Width := 120;
   Height := 43;
   //Color := clTeal;
@@ -1203,6 +1242,41 @@ begin
     (CDButton.Height - ADest.TextHeight(Str)) div 2, Str);
   {$endif}
 end;
+
+{ TCDButtonDrawerCustom }
+
+procedure TCDButtonDrawerCustom.SetClientRectPos(CDButton: TCDButton);
+var
+  lRect: TRect;
+begin
+  lRect := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
+  CDButton.AdjustClientRect(lRect);
+end;
+
+procedure TCDButtonDrawerCustom.DrawToIntfImage(ADest: TFPImageCanvas;
+  CDButton: TCDButton);
+begin
+
+end;
+
+procedure TCDButtonDrawerCustom.DrawToCanvas(ADest: TCanvas;
+  CDButton: TCDButton; FState: TBitmappedButtonState);
+var
+  Str: string;
+begin
+  ADest.Brush.Color := CDButton.Color;
+  ADest.Brush.Style := bsSolid;
+  ADest.Rectangle(0, 0, CDButton.Width, CDButton.Height);
+  ADest.Font.Assign(CDButton.Font);
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Style := psSolid;
+  Str := CDButton.Name;
+  ADest.TextOut((CDButton.Width - ADest.TextWidth(Str)) div 2,
+    (CDButton.Height) div 2 - ADest.TextHeight(Str), Str);
+  ADest.TextOut((CDButton.Width - ADest.TextWidth(Str)) div 2,
+    (CDButton.Height) div 2, 'dsCustom');
+end;
+
 
 { TCDButtonDrawerWinCE }
 
@@ -1515,7 +1589,9 @@ begin
   Width := 100;
   Height := 100;
   TabStop := False;
+  FDrawerCustom := TCDGroupBoxDrawerCustom.Create;
   FDrawerWinCE := TCDGroupBoxDrawerWinCE.Create;
+  CustomDrawer := FDrawerCustom;
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
     csDoubleClicks, csReplicatable];
 end;
@@ -1561,6 +1637,41 @@ begin
   end;
 end;
 
+{ TCDGroupBoxDrawerCustom }
+
+procedure TCDGroupBoxDrawerCustom.SetClientRectPos(CDGroupBox: TCDGroupBox);
+var
+  lRect: TRect;
+  lCaptionHeight: integer;
+begin
+  lCaptionHeight := 10;
+  lRect := Rect(1, lCaptionHeight, CDGroupBox.Width - 1, CDGroupBox.Height - 1);
+  CDGroupBox.AdjustClientRect(lRect);
+end;
+
+procedure TCDGroupBoxDrawerCustom.DrawToIntfImage(ADest: TFPImageCanvas;
+  CDGroupBox: TCDGroupBox);
+begin
+
+end;
+
+procedure TCDGroupBoxDrawerCustom.DrawToCanvas(ADest: TCanvas;
+  CDGroupBox: TCDGroupBox);
+var
+  Str: string;
+begin
+  ADest.Brush.Color := clWhite;
+  ADest.Brush.Style := bsSolid;
+  ADest.Rectangle(0, 0, CDGroupBox.Width, CDGroupBox.Height);
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Style := psSolid;
+  Str := CDGroupBox.Name;
+  ADest.TextOut((CDGroupBox.Width - ADest.TextWidth(Str)) div 2,
+    (CDGroupBox.Height) div 2 - ADest.TextHeight(Str), Str);
+  ADest.TextOut((CDGroupBox.Width - ADest.TextWidth(Str)) div 2,
+    (CDGroupBox.Height) div 2, 'dsCustom');
+end;
+
 { TCDGroupBoxDrawerWinCE }
 
 procedure TCDGroupBoxDrawerWinCE.SetClientRectPos(CDGroupBox: TCDGroupBox);
@@ -1585,6 +1696,8 @@ begin
   // Background
   if CDGroupBox.Parent = nil then
     ADest.Brush.FPColor := colLtGray
+  else if CDGroupBox.Parent.Color = clDefault then
+    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(clForm))
   else
     ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDGroupBox.Parent.Color));
   ADest.Brush.Style := bsSolid;
@@ -1629,6 +1742,8 @@ begin
   {$ifndef CUSTOMDRAWN_USE_FREETYPE}
   if CDGroupBox.Parent = nil then
     ADest.Brush.Color := clLtGray
+  else if CDGroupBox.Parent.Color = clDefault then
+    ADest.Brush.Color := ColorToRGB(clForm)
   else
     ADest.Brush.Color := ColorToRGB(CDGroupBox.Parent.Color);
 
@@ -2799,7 +2914,9 @@ begin
   Width := 232;
   Height := 184;
   TabStop := False;
+  FDrawerCustom := TCDPageControlDrawerCustom.Create;
   FDrawerWinCE := TCDPageControlDrawerWinCE.Create;
+  CustomDrawer := FDrawerCustom;
   FCaptionHeight := 28;
   ParentColor := True;
   parentFont := True;
@@ -3184,6 +3301,47 @@ begin
   inherited MouseLeave;
   SetMouseUP;
   invalidate;
+end;
+
+{ TCDPageControlDrawerCustom }
+
+procedure TCDPageControlDrawerCustom.SetClientRectPos(
+  CDPageControl: TCDPageControl);
+var
+  lRect: TRect;
+  lCaptionHeight: integer;
+begin
+  lCaptionHeight := CDPageControl.CaptionHeight;
+  lRect := Rect(10, lCaptionHeight + 1, CDPageControl.Width - 10,
+    CDPageControl.Height - 1);
+  CDPageControl.AdjustClientRect(lRect);
+end;
+
+procedure TCDPageControlDrawerCustom.DrawToIntfImage(ADest: TFPImageCanvas;
+  FPImg: TLazIntfImage; CDPageControl: TCDPageControl);
+begin
+
+end;
+
+procedure TCDPageControlDrawerCustom.DrawToCanvas(ADest: TCanvas;
+  CDPageControl: TCDPageControl);
+var
+  Str: string;
+begin
+  if CDPageControl.Color=clDefault then
+    ADest.Brush.Color := clWhite
+  else
+    ADest.Brush.Color := CDPageControl.Color;
+  ADest.Brush.Style := bsSolid;
+  ADest.Rectangle(0, 0, CDPageControl.Width, CDPageControl.Height);
+  ADest.Font.Assign(CDPageControl.Font);
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Style := psSolid;
+  Str := CDPageControl.Name;
+  ADest.TextOut((CDPageControl.Width - ADest.TextWidth(Str)) div 2,
+    (CDPageControl.Height) div 2 - ADest.TextHeight(Str), Str);
+  ADest.TextOut((CDPageControl.Width - ADest.TextWidth(Str)) div 2,
+    (CDPageControl.Height) div 2, 'dsCustom');
 end;
 
 { TCDPageControlDrawerWinCE }
