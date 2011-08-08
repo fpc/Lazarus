@@ -617,8 +617,9 @@ begin
     Push(v, i);
     li := i;
   end;
-  if not InRange(v, AParams.FMin, AParams.FMax) then
-    Push(v, li);
+  if li < Count - 1 then
+    with Item[li + 1]^ do
+      Push(IfThen(AParams.FUseY, Y, X), li + 1);
   SetLength(AValues, cnt);
 end;
 
