@@ -50,10 +50,10 @@ SET MAKEEXE=%FPCBINDIR%\make.exe
 
 :: set path to make sure the right tools are used
 SET OLDPATH=%PATH%
-PATH=%FPCBINDIR%
+PATH=%FPCBINDIR%;
 cd %FPCSVNDIR%\fpcsrc
 
-%MAKEEXE% distclean FPC=%RELEASE_PPC% > NUL
+%MAKEEXE% distclean FPC=%RELEASE_PPC% 
 rm -rf %FPCSVNDIR%\fpcsrc\compiler\*.exe
 :: create a native compiler + utils
 %MAKEEXE% compiler_cycle FPC=%RELEASE_PPC%
@@ -65,10 +65,10 @@ SET FPCFPMAKE=%COMPILER%
 
 :: rebuild the rtl without WPO information
 %MAKEEXE% rtl_clean rtl PP=%COMPILER%
-%MAKEEXE% -C packages fcl-base fcl-process FPC=%COMPILER% 
-%MAKEEXE% -C utils/fpcm all FPC=%COMPILER%
+%MAKEEXE% -C packages fpmkunit_all fcl-base_all FPC=%COMPILER% 
+%MAKEEXE% -C utils fpcm_all FPC=%COMPILER%
 :: Add -gtttt so that ShowBuiltinCommand is initialized to false, bug in fpc 2.4.4 
-%MAKEEXE% -C utils/fpcmkcfg all OPT="-gtttt" FPC=%COMPILER% 
+%MAKEEXE% -C utils fpcmkcfg_all OPT="-gtttt" FPC=%COMPILER% 
 
 %MAKEEXE% compiler FPC=%COMPILER% PPC_TARGET=%TARGETCPU% EXENAME=%PPCNAME%
 IF ERRORLEVEL 1 GOTO CLEANUP
