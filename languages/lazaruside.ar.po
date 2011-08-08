@@ -3673,6 +3673,10 @@ msgstr ""
 msgid "Always"
 msgstr ""
 
+#: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
+msgid "Always convert suggested default file name to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr ""
@@ -14015,6 +14019,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
+msgstr ""
+
+#: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
+msgid "Suggest default name of new file in lowercase"
 msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath

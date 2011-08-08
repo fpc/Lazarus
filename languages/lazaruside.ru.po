@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-06 16:23+0300\n"
+"PO-Revision-Date: 2011-08-09 02:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3728,6 +3728,10 @@ msgstr "Альтернативная клавиша (или двухклавиш
 #: lazarusidestrconsts.lisalways
 msgid "Always"
 msgstr "Всегда"
+
+#: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
+msgid "Always convert suggested default file name to lowercase"
+msgstr "Всегда преобразовывать предлагаемое по умолчанию имя файла в нижний регистр"
 
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
@@ -14176,6 +14180,10 @@ msgstr "Подпроцедура того же уровня"
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Успешно"
+
+#: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
+msgid "Suggest default name of new file in lowercase"
+msgstr "Предлагать имя файла по умолчанию в нижнем регистре"
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"

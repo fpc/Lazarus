@@ -3665,6 +3665,10 @@ msgstr "Vaihtoehtoinen näppäin (tai 2 peräkkäistä yhdistelmää)"
 msgid "Always"
 msgstr "Aina"
 
+#: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
+msgid "Always convert suggested default file name to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr ""
@@ -14004,6 +14008,10 @@ msgstr ""
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Onnistui"
+
+#: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
+msgid "Suggest default name of new file in lowercase"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"

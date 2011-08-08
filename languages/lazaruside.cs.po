@@ -3688,6 +3688,10 @@ msgstr "Alternativní klávesa (nebo sekvence dvou kláves)"
 msgid "Always"
 msgstr "Vždy"
 
+#: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
+msgid "Always convert suggested default file name to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr "Vždy ignorovat"
@@ -14128,6 +14132,10 @@ msgstr "Vnořená procedura na stejné úrovni"
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Úspěch"
+
+#: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
+msgid "Suggest default name of new file in lowercase"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"

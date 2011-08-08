@@ -3724,6 +3724,10 @@ msgstr "代替キー （あるいは２つのキー配列）"
 msgid "Always"
 msgstr "常に"
 
+#: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
+msgid "Always convert suggested default file name to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr "常に無視"
@@ -14244,6 +14248,10 @@ msgstr "同じレベルのサブ手続き"
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "成功"
+
+#: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
+msgid "Suggest default name of new file in lowercase"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"

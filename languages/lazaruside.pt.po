@@ -3724,6 +3724,10 @@ msgstr "Tecla alternativa (ou sequência de 2 teclas)"
 msgid "Always"
 msgstr "Sempre"
 
+#: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
+msgid "Always convert suggested default file name to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr "Sempre ignorar"
@@ -14214,6 +14218,10 @@ msgstr "Sub procedimento no mesmo nível"
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Sucesso"
+
+#: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
+msgid "Suggest default name of new file in lowercase"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"

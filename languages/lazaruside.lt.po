@@ -3717,6 +3717,10 @@ msgstr "Alternatyvus klavišas (arba dviejų klavišų seka)"
 msgid "Always"
 msgstr "Visada"
 
+#: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
+msgid "Always convert suggested default file name to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr "Nepaisyti visada"
@@ -14225,6 +14229,10 @@ msgstr "Vidinė procedūra tame pačiame lygyje"
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Tvarka"
+
+#: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
+msgid "Suggest default name of new file in lowercase"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"

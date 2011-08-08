@@ -3673,6 +3673,10 @@ msgstr "Альтернативна клавіша (або двоклавішна
 msgid "Always"
 msgstr "Завжди"
 
+#: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
+msgid "Always convert suggested default file name to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr "Завжди ігнорувати"
@@ -14007,6 +14011,10 @@ msgstr "Підпроцедура того ж рівня"
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Успішно"
+
+#: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
+msgid "Suggest default name of new file in lowercase"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"

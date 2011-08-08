@@ -3699,6 +3699,10 @@ msgstr "מקש חלופי (או רצף של 2 מקשים)"
 msgid "Always"
 msgstr "תמיד"
 
+#: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
+msgid "Always convert suggested default file name to lowercase"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr "התעלם תמיד"
@@ -14204,6 +14208,10 @@ msgstr "תת שגרה באותה רמה"
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "הצלחה"
+
+#: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
+msgid "Suggest default name of new file in lowercase"
+msgstr ""
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
