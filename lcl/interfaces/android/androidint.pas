@@ -31,10 +31,13 @@ uses
   android_all, androidapp, androidpipescomm,
   // FPC
   Classes, SysUtils, Math, Types, maps,
-  // LCL}
+  // LCL
   InterfaceBase, LCLProc, LCLType, LMessages, LCLMessageGlue, LCLStrConsts,
-  GraphType;
-{  Controls, ExtCtrls, Forms,
+  GraphType, Forms,
+  // LCL-Android
+  androidprivate
+  ;
+{  Controls, ExtCtrls,
   Dialogs, StdCtrls, Comctrls, LCLIntf, GraphUtil, Themes,
   Arrow, CheckLst;}
 

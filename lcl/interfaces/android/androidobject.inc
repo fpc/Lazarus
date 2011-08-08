@@ -155,7 +155,16 @@ end;
   Enter the main message loop
  ------------------------------------------------------------------------------}
 procedure TAndroidWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
+var
+  MainFormHandle: TAndroidWindow;
 begin
+  if Application.MainForm <> nil then
+  begin
+    MainFormHandle := TAndroidWindow(Application.MainForm.Handle);
+    if MainFormHandle <> nil then
+      Activity.setContentView(MainFormHandle.MainView);
+  end;
+
   vAndroidPipesComm.onCreateFinished();
   vAndroidPipesComm.MessageLoop();
 end;

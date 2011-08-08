@@ -5,6 +5,7 @@ uses
   androidint,
   androidwsfactory,
   androidwsforms,
+  androidwsstdctrls,
   androidprivate,
   interfaces;
 implementation

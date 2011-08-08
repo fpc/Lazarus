@@ -109,13 +109,13 @@ uses
   Gtk2WSDialogs,
   Gtk2WSExtCtrls,
   Gtk2WSExtDlgs,}
-  AndroidWSForms;
+  AndroidWSForms,
 {  Gtk2WSGrids,
   Gtk2WSImgList,
   Gtk2WSMenus,
-  Gtk2WSSpin,
-  Gtk2WSStdCtrls,
-  Gtk2WSPairSplitter,
+  Gtk2WSSpin,}
+  AndroidWSStdCtrls;
+{  Gtk2WSPairSplitter,
   Gtk2WSPrivate;   }
 
 // imglist
@@ -346,10 +346,8 @@ end;
 
 function RegisterCustomButton: Boolean; alias : 'WSRegisterCustomButton';
 begin
-  Result := False;
-//  RegisterWSComponent(TCustomButton, TGtk2WSButton, TGtk2PrivateButton); { enabled(ifdef) in GTK1 }
-//  RegisterWSComponent(TCustomButton, TGtk2WSButton);
-//  Result := True;
+  RegisterWSComponent(TCustomButton, TAndroidWSButton);
+  Result := True;
 end;
 
 function RegisterCustomCheckBox: Boolean; alias : 'WSRegisterCustomCheckBox';
