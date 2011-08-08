@@ -28,6 +28,7 @@ interface
 
 uses
   // Android Bindings
+  android_all, androidapp, androidpipescomm,
   // FPC
   Classes, SysUtils, Math, Types, maps,
   // LCL}

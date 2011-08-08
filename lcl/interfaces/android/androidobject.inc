@@ -156,9 +156,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TAndroidWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 begin
-  // use LCL loop
-//  if Assigned(ALoop) then
-//    ALoop;
+  vAndroidPipesComm.onCreateFinished();
+  vAndroidPipesComm.MessageLoop();
 end;
 
 {------------------------------------------------------------------------------

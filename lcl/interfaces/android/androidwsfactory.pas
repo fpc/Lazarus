@@ -573,9 +573,8 @@ end;
 
 function RegisterCustomForm: Boolean; alias : 'WSRegisterCustomForm';
 begin
-  Result := False;
-//  RegisterWSComponent(TCustomForm, TGtk2WSCustomForm);
-//  Result := True;
+  RegisterWSComponent(TCustomForm, TAndroidWSCustomForm);
+  Result := True;
 end;
 
 function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';
