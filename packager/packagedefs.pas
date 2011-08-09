@@ -1083,12 +1083,16 @@ end;
 procedure DeleteDependencyInList(ADependency: TPkgDependency;
   var First: TPkgDependency; ListType: TPkgDependencyList);
 var
-  NextDependency: TPkgDependency;
+  NextDependency, PrevDependency: TPkgDependency;
 begin
-  NextDependency:=ADependency.NextDependency[ListType];
+  NextDependency := ADependency.NextDependency[ListType];
+  PrevDependency := ADependency.PrevDependency[ListType];
+  if First = ADependency then First := NextDependency;
+  if Assigned(NextDependency) then
+    NextDependency.PrevDependency[ListType] := PrevDependency;
+  if Assigned(PrevDependency) then
+    PrevDependency.NextDependency[ListType] := NextDependency;
   ADependency.Free;
-  if First=ADependency then
-    First:=NextDependency;
 end;
 
 procedure FreeDependencyList(var First: TPkgDependency;
