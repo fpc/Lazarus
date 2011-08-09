@@ -25,7 +25,9 @@ type
     // Data sorted for viewing.
     fSortedData: TStringList;
     function CompareFNs(AFilename1,AFilename2: string): integer;
+    function GetFirstSelected: Integer;
     procedure SetFilteredListbox(const AValue: TListBox);
+    procedure UnselectAll;
   protected
     procedure MoveNext; override;
     procedure MovePrev; override;
@@ -102,9 +104,6 @@ begin
       fFilteredListbox.Selected[i]:=fSelectedPart=fSortedData.Objects[i];
   end;
   fFilteredListbox.Items.EndUpdate;
-  DebugLn('TListFilterEdit.ApplyFilterCore 1, ItemIndex = ' + IntToStr(fFilteredListbox.ItemIndex));
-  fFilteredListbox.ItemIndex:=-1;
-  DebugLn('TListFilterEdit.ApplyFilterCore 2 after setting "ItemIndex:=-1;", ItemIndex = ' + IntToStr(fFilteredListbox.ItemIndex));
 end;
 
 function TListFilterEdit.CompareFNs(AFilename1,AFilename2: string): integer;
@@ -156,20 +155,46 @@ begin
   end;
 end;
 
+function TListFilterEdit.GetFirstSelected: Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  for i := 0 to fFilteredListbox.Count - 1 do
+    if fFilteredListbox.Selected[i] then
+      Exit(i);
+end;
+
+procedure TListFilterEdit.UnselectAll;
+var
+  i: Integer;
+begin
+  for i := 0 to fFilteredListbox.Count - 1 do
+    fFilteredListbox.Selected[i] := False;
+end;
+
 procedure TListFilterEdit.MoveNext;
 var
   i: Integer;
 begin
-  i := fFilteredListbox.ItemIndex + 1;
-  if i < fFilteredListbox.Count then fFilteredListbox.ItemIndex := i;
+  i := GetFirstSelected + 1;
+  if i < fFilteredListbox.Count then
+  begin
+    UnselectAll;
+    fFilteredListbox.Selected[i] := True;
+  end;
 end;
 
 procedure TListFilterEdit.MovePrev;
 var
   i: Integer;
 begin
-  i := fFilteredListbox.ItemIndex - 1;
-  if i >= 0 then fFilteredListbox.ItemIndex := i;
+  i := GetFirstSelected - 1;
+  if i >= 0 then
+  begin
+    UnselectAll;
+    fFilteredListbox.Selected[i] := True;
+  end;
 end;
 
 end.
