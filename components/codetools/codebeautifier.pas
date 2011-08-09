@@ -162,7 +162,7 @@ type
 
 const
   bbtAllIdentifierSections = [bbtTypeSection,bbtConstSection,bbtVarSection,
-       bbtResourceStringSection,bbtLabelSection];
+       bbtResourceStringSection,bbtLabelSection,bbtClassSection];
   bbtAllProcedures = [bbtProcedure,bbtFunction];
   bbtAllCodeSections = [bbtInterface,bbtImplementation,bbtInitialization,
                         bbtFinalization];
