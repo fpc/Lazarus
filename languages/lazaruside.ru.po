@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-09 02:18+0300\n"
+"PO-Revision-Date: 2011-08-09 04:05+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -14183,7 +14183,7 @@ msgstr "Успешно"
 
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
-msgstr "Предлагать имя файла по умолчанию в нижнем регистре"
+msgstr "Предлагать имя нового файла по умолчанию в нижнем регистре"
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
