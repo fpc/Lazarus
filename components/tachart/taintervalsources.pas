@@ -25,6 +25,7 @@ uses
   Classes, TAChartUtils, TACustomSource;
 
 type
+
   { TIntervalChartSource }
 
   TIntervalChartSource = class(TCustomChartSource)
@@ -175,16 +176,21 @@ procedure TIntervalChartSource.CalculateIntervals(
 
   procedure CalcMinMaxCount(out AMinCount, AMaxCount: Integer);
   var
-    imageWidth, d: Integer;
+    imageWidth, len: Integer;
   begin
     // If the axis transformation is non-linear, steps may not be equidistant.
     // However, both minimax and maximin will be achieved on equal steps.
     with AParams do
       imageWidth := Abs(ToImage(FMax) - ToImage(FMin));
-    d := IfThen(aipUseMinLength in Params.Options, Max(Params.MinLength, 2), 2);
-    AMaxCount := Max(imageWidth div d, 2);
-    if aipUseMaxLength in Params.Options then
-      AMinCount := Max((imageWidth + 1) div Max(Params.MaxLength, 2), 2)
+    if aipUseMinLength in Params.Options then
+      len := AParams.FScale(Max(Params.MinLength, 2))
+    else
+      len := 2;
+    AMaxCount := Max(imageWidth div len, 2);
+    if aipUseMaxLength in Params.Options then begin
+      len := AParams.FScale(Max(Params.MaxLength, 2));
+      AMinCount := Max((imageWidth + 1) div len, 2);
+    end
     else
       AMinCount := 2;
   end;

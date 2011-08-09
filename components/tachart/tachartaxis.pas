@@ -98,6 +98,7 @@ type
     FAxisRect: TRect;
     FGroupIndex: Integer;
     FTitleRect: TRect;
+    function MakeValuesInRangeParams(AMin, AMax: Double): TValuesInRangeParams;
   strict private
     FAlignment: TChartAxisAlignment;
     FAxisPen: TChartAxisPen;
@@ -139,7 +140,6 @@ type
     procedure DrawTitle(const ACenter: TPoint; ASize: Integer);
     function GetChart: TCustomChart; inline;
     function IsVertical: Boolean; inline;
-    function MakeValuesInRangeParams(AMin, AMax: Double): TValuesInRangeParams;
     procedure Measure(
       const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
     procedure PrepareHelper(
@@ -596,6 +596,7 @@ begin
   Result.FAxisToGraph := @GetTransform.AxisToGraph;
   Result.FGraphToAxis := @GetTransform.GraphToAxis;
   Result.FGraphToImage := @FHelper.GraphToImage;
+  Result.FScale := @FHelper.FDrawer.Scale;
   Result.FIntervals := Intervals;
   Result.FMinStep := 0;
 end;

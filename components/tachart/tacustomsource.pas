@@ -58,6 +58,7 @@ type
     function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TPersistent);
+    procedure Assign(ASource: TPersistent); override;
     property StepValues: TDoubleDynArray read FStepValues;
   published
     property Count: Integer read FCount write SetCount default 5;
@@ -93,6 +94,7 @@ type
   PChartDataItem = ^TChartDataItem;
 
   TGraphToImageFunc = function (AX: Double): Integer of object;
+  TIntegerTransformFunc = function (AX: Integer): Integer of object;
 
   TValuesInRangeParams = object
     FAxisToGraph: TTransformFunc;
@@ -102,6 +104,7 @@ type
     FIntervals: TChartAxisIntervalParams;
     FMin, FMax: Double;
     FMinStep: Double;
+    FScale: TIntegerTransformFunc;
     FUseY: Boolean;
 
     function CountToStep(ACount: Integer): Double; inline;
@@ -210,8 +213,8 @@ function TValuesInRangeParams.IsAcceptableStep(AStep: Integer): Boolean;
 begin
   with FIntervals do
     Result := not (
-      (aipUseMinLength in Options) and (AStep < MinLength) or
-      (aipUseMaxLength in Options) and (AStep > MaxLength));
+      (aipUseMinLength in Options) and (AStep < FScale(MinLength)) or
+      (aipUseMaxLength in Options) and (AStep > FScale(MaxLength)));
 end;
 
 function TValuesInRangeParams.ToImage(AX: Double): Integer;
@@ -223,8 +226,23 @@ end;
 
 { TChartAxisIntervalParams }
 
+procedure TChartAxisIntervalParams.Assign(ASource: TPersistent);
+begin
+  if ASource is TChartAxisIntervalParams then
+    with TChartAxisIntervalParams(ASource) do begin
+      Self.FCount := Count;
+      Self.FMaxLength := MaxLength;
+      Self.FMinLength := MinLength;
+      Self.FNiceSteps := NiceSteps;
+      Self.FOptions := Options;
+    end
+  else
+    inherited Assign(ASource);
+end;
+
 procedure TChartAxisIntervalParams.Changed;
 begin
+  if not (FOwner is TCustomChartSource) then exit;
   with FOwner as TCustomChartSource do begin
     BeginUpdate;
     EndUpdate;
@@ -607,11 +625,12 @@ begin
     pv := v;
     v := IfThen(AParams.FUseY, Item[i]^.Y, Item[i]^.X);
     if not InRange(v, AParams.FMin, AParams.FMax) then continue;
-    if aipUseMinLength in AParams.FIntervals.Options then begin
-      vi := AParams.ToImage(v);
-      if Abs(vi - pvi) < AParams.FIntervals.MinLength then continue;
-      pvi := vi;
-    end;
+    with AParams do
+      if aipUseMinLength in FIntervals.Options then begin
+        vi := ToImage(v);
+        if Abs(vi - pvi) < FScale(FIntervals.MinLength) then continue;
+        pvi := vi;
+      end;
     if (cnt = 0) and (i > 0) then
       Push(pv, i - 1);
     Push(v, i);
