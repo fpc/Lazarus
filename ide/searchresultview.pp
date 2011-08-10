@@ -848,7 +848,6 @@ function TSearchResultsView.AddSearch(const ResultsName: string;
 var
   NewTreeView: TLazSearchResultTV;
   NewPage: LongInt;
-  i: integer;
   SearchObj: TLazSearch;
 begin
   Result:= nil;
@@ -856,43 +855,30 @@ begin
     with ResultsNoteBook do
     begin
       FWorkedSearchText:=BeautifyPageName(ResultsName);
-      i:= GetPageIndex(FWorkedSearchText);
-      if i>=0 then
+      NewPage:= TCustomTabControl(ResultsNoteBook).Pages.Add(FWorkedSearchText);
+      PageIndex:= NewPage;
+      Page[PageIndex].OnKeyDown := @TreeViewKeyDown;
+      if NewPage > -1 then
       begin
-        NewTreeView:= GetTreeView(i);
-        PageIndex:= i;
-        //Free backup objects and list since its a new search with the same TreeView
-        NewTreeView.FreeObjects(NewTreeView.BackUpStrings);
-        NewTreeView.BackUpStrings.Clear;
-        NewTreeView.Filtered := False;
-      end//if
-      else
-      begin
-        NewPage:= TCustomTabControl(ResultsNoteBook).Pages.Add(FWorkedSearchText);
-        PageIndex:= NewPage;
-        Page[PageIndex].OnKeyDown := @TreeViewKeyDown;
-        if NewPage > -1 then
+        NewTreeView:= TLazSearchResultTV.Create(Page[NewPage]);
+        with NewTreeView do
         begin
-          NewTreeView:= TLazSearchResultTV.Create(Page[NewPage]);
-          with NewTreeView do
-          begin
-            Parent:= Page[NewPage];
-            Align:= alClient;
-            BorderSpacing.Around := 0;
-            OnKeyDown := @TreeViewKeyDown;
-            OnAdvancedCustomDrawItem:= @TreeViewAdvancedCustomDrawItem;
-            OnShowHint:= @LazTVShowHint;
-            OnMouseMove:= @LazTVMousemove;
-            OnMouseWheel:= @LazTVMouseWheel;
-            OnMouseDown:=@TreeViewMouseDown;
-            ShowHint:= true;
-            RowSelect := True;                        // we are using custom draw
-            Options := Options + [tvoAllowMultiselect] - [tvoThemedDraw];
-            PopupMenu := popList;
-            NewTreeView.Canvas.Brush.Color:= clWhite;
-          end;//with
-        end;//if
-      end;//else
+          Parent:= Page[NewPage];
+          Align:= alClient;
+          BorderSpacing.Around := 0;
+          OnKeyDown := @TreeViewKeyDown;
+          OnAdvancedCustomDrawItem:= @TreeViewAdvancedCustomDrawItem;
+          OnShowHint:= @LazTVShowHint;
+          OnMouseMove:= @LazTVMousemove;
+          OnMouseWheel:= @LazTVMouseWheel;
+          OnMouseDown:=@TreeViewMouseDown;
+          ShowHint:= true;
+          RowSelect := True;                        // we are using custom draw
+          Options := Options + [tvoAllowMultiselect] - [tvoThemedDraw];
+          PopupMenu := popList;
+          NewTreeView.Canvas.Brush.Color:= clWhite;
+        end;//with
+      end;//if
       SearchObj:=NewTreeView.SearchObject;
       if SearchObj<>nil then begin
         SearchObj.SearchString:= SearchText;
