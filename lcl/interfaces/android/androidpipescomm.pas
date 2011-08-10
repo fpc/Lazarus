@@ -141,14 +141,8 @@ begin
       begin
         lInt := ReadInt(); // Android Message subtype
         android_all.HandleMessage(lInt);
-{        case lInt of
-          amkUI_TextView_OnClickCallback_Start:
-          begin
-            lPascalPointer := ReadInt();
-            TTextView(lPascalPointer).callOnClickListener();
-            vAndroidPipesComm.SendMessage(amkUICommand, amkUI_TextView_OnClickCallback_Finished);
-          end;
-          amkUI_MenuItem_setOnMenuItemClickListener_Start:
+        case lInt of
+{          amkUI_MenuItem_setOnMenuItemClickListener_Start:
           begin
             lInt := ReadInt();
             lMenuItem := TMenuItem(FindItemIdInList(MenuItems, lInt));
@@ -156,8 +150,8 @@ begin
               lInt := lMenuItem.callOnMenuItemClickListener();
             vAndroidPipesComm.SendMessage(amkUICommand, amkUI_MenuItem_setOnMenuItemClickListener_Finished);
             vAndroidPipesComm.SendInt(lInt);
-          end;
-        end;      }
+          end;}
+        end;
       end;
       amkTimer: // A Timer Callback
       begin

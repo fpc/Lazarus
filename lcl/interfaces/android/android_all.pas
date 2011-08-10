@@ -159,18 +159,15 @@ type
     constructor Create();
   end;
 
-function HandleMessage(AFirstInt: Integer): Boolean;
-
-implementation
-
 const
   { Constants }
-
   { TDisplayMetrics }
   { TDisplay }
   { TWindowManager }
   { TViewGroup_LayoutParams }
   FILL_PARENT = $FFFFFFFF;
+  MATCH_PARENT = $FFFFFFFF;
+  WRAP_CONTENT = $FFFFFFFE;
   { TView }
   VISIBLE = 0;
   INVISIBLE = 4;
@@ -193,6 +190,11 @@ const
   { TAbsSpinner }
   { TSpinner }
 
+function HandleMessage(AFirstInt: Integer): Boolean;
+
+implementation
+
+const
   { IDs }
 
   // TDisplayMetrics
@@ -226,9 +228,9 @@ const
   amkUI_TTextView_Create = $0010A000;
   amkUI_TTextView_setText = $0010A001;
   amkUI_TTextView_setOnClickListener = $0010A002;
-  amkUI_TTextView_OnClickListener_Start = $0010A002;
-  amkUI_TTextView_OnClickListener_Finished = $0010A002;
-  amkUI_TTextView_setTextSize = $0010A002;
+  amkUI_TTextView_OnClickListener_Start = $0010A003;
+  amkUI_TTextView_OnClickListener_Finished = $0010A004;
+  amkUI_TTextView_setTextSize = $0010A005;
   // TEditText
   amkUI_TEditText_Create = $0010B000;
   amkUI_TEditText_setText = $0010B001;

@@ -37,11 +37,14 @@ uses
 type
   TAndroidComboBoxStrings = class;
 
+  { TAndroidView }
+
   TAndroidView = class
   public
     LCLObject: TWinControl;
     ParentGroupView: TViewGroup;
     MainView: TView;
+    function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT;
   end;
 
   TAndroidViewGroup = class(TAndroidView)
@@ -67,6 +70,7 @@ type
     params: TAbsoluteLayout_LayoutParams;
     constructor Create(const AObject: TCustomButton; const AParams: TCreateParams);
     destructor Destroy; override;
+    procedure buttonClickCallback(v: TView);
   end;
 
   { TAndroidCheckBox }
@@ -141,6 +145,31 @@ type
 
 implementation
 
+{ TAndroidView }
+
+function TAndroidView.DeliverMessage(var Msg; const AIsInputEvent: Boolean
+  ): LRESULT;
+begin
+  Result := LRESULT(AIsInputEvent);
+  if LCLObject = nil then Exit;
+
+  try
+    if LCLObject.HandleAllocated then
+    begin
+      LCLObject.WindowProc(TLMessage(Msg));
+      Result := TLMessage(Msg).Result;
+    end;
+  except
+    {if AIsInputEvent and (LCLObject = nil) and (PtrUInt(Widget) = 0) and
+      QtWidgetSet.IsValidHandle(HWND(Self)) then
+    begin
+      raise Exception.CreateFmt('%s.DeliverMessage(): error in input event %d ',
+        [ClassName, TLMessage(Msg).Msg]);
+    end else}
+      Application.HandleException(nil);
+  end;
+end;
+
 { TAndroidComboBoxStrings }
 
 procedure TAndroidComboBoxStrings.Put(Index: Integer; const S: string);
@@ -204,7 +233,7 @@ begin
 
   spinner := android_all.TSpinner.Create;
   MainView := spinner;
-  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, AObject.Height, AObject.Left, AObject.Top);
+  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, WRAP_CONTENT, AObject.Left, AObject.Top);
   ParentGroupView.addView(MainView, TViewGroup_LayoutParams(params));
   params.Free;
 end;
@@ -228,7 +257,7 @@ begin
   MainView := textview;
   Str := AObject.Caption;
   textview.setText(Str);
-  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, AObject.Height, AObject.Left, AObject.Top);
+  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, WRAP_CONTENT, AObject.Left, AObject.Top);
   ParentGroupView.addView(MainView, TViewGroup_LayoutParams(params));
   params.Free;
 end;
@@ -252,7 +281,7 @@ begin
   MainView := checkbox;
   Str := AObject.Caption;
   checkbox.setText(Str);
-  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, AObject.Height, AObject.Left, AObject.Top);
+  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, WRAP_CONTENT, AObject.Left, AObject.Top);
   ParentGroupView.addView(MainView, TViewGroup_LayoutParams(params));
   params.Free;
 end;
@@ -264,12 +293,17 @@ end;
 
 function TAndroidCheckBox.GetState: TCheckBoxState;
 begin
-
+  if checkbox.isChecked() then Result := cbChecked
+  else Result := cbUnchecked;
 end;
 
 procedure TAndroidCheckBox.SetState(const AState: TCheckBoxState);
 begin
-
+  case AState of
+  cbUnchecked: checkbox.setChecked(False);
+  cbChecked:   checkbox.setChecked(True);
+  cbGrayed:    checkbox.setChecked(True);// Android does not support cbGrayed
+  end;
 end;
 
 { TAndroidEdit }
@@ -286,7 +320,7 @@ begin
   MainView := edittext;
   Str := AObject.Caption;
   edittext.setText(Str);
-  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, AObject.Height, AObject.Left, AObject.Top);
+  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, WRAP_CONTENT, AObject.Left, AObject.Top);
   ParentGroupView.addView(MainView, TViewGroup_LayoutParams(params));
   params.Free;
 end;
@@ -310,8 +344,8 @@ begin
   MainView := btn;
   Str := AObject.Caption;
   btn.setText(Str);
-//  btn.setOnClickListener(buttonClickCallback);
-  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, AObject.Height, AObject.Left, AObject.Top);
+  btn.setOnClickListener(@buttonClickCallback);
+  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, WRAP_CONTENT{AObject.Height}, AObject.Left, AObject.Top);
   ParentGroupView.addView(MainView, TViewGroup_LayoutParams(params));
   params.Free;
 end;
@@ -319,6 +353,15 @@ end;
 destructor TAndroidButton.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TAndroidButton.buttonClickCallback(v: TView);
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CLICKED;
+  DeliverMessage(Msg);
 end;
 
 { TCarbonWidget }
