@@ -1,10 +1,10 @@
 inherited PackageEditorForm: TPackageEditorForm
   Left = 344
-  Height = 450
+  Height = 455
   Top = 119
   Width = 577
   Caption = 'PackageEditorForm'
-  ClientHeight = 450
+  ClientHeight = 455
   ClientWidth = 577
   Constraints.MinHeight = 300
   Constraints.MinWidth = 400
@@ -29,14 +29,14 @@ inherited PackageEditorForm: TPackageEditorForm
     Width = 577
     Align = alBottom
     Caption = 'FilePropsGroupBox'
-    ClientHeight = 101
+    ClientHeight = 100
     ClientWidth = 573
     TabOrder = 2
     object CallRegisterProcCheckBox: TCheckBox
       Left = 0
-      Height = 18
+      Height = 19
       Top = 0
-      Width = 173
+      Width = 158
       Caption = 'CallRegisterProcCheckBox'
       OnChange = CallRegisterProcCheckBoxChange
       ParentShowHint = False
@@ -46,10 +46,10 @@ inherited PackageEditorForm: TPackageEditorForm
     object AddToUsesPkgSectionCheckBox: TCheckBox
       AnchorSideLeft.Control = CallRegisterProcCheckBox
       AnchorSideLeft.Side = asrBottom
-      Left = 183
-      Height = 18
+      Left = 168
+      Height = 19
       Top = 0
-      Width = 204
+      Width = 191
       BorderSpacing.Left = 10
       Caption = 'AddToUsesPkgSectionCheckBox'
       OnChange = AddToUsesPkgSectionCheckBoxChange
@@ -62,9 +62,9 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Control = MinVersionEdit
       AnchorSideTop.Side = asrCenter
       Left = 0
-      Height = 18
-      Top = 1
-      Width = 163
+      Height = 19
+      Top = 2
+      Width = 151
       Caption = 'UseMinVersionCheckBox'
       OnChange = UseMinVersionCheckBoxChange
       TabOrder = 2
@@ -73,8 +73,8 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Control = UseMinVersionCheckBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FilePropsGroupBox
-      Left = 173
-      Height = 20
+      Left = 161
+      Height = 23
       Top = 0
       Width = 100
       BorderSpacing.Left = 10
@@ -87,9 +87,9 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Control = MaxVersionEdit
       AnchorSideTop.Side = asrCenter
       Left = 0
-      Height = 18
-      Top = 23
-      Width = 166
+      Height = 19
+      Top = 27
+      Width = 152
       Caption = 'UseMaxVersionCheckBox'
       OnChange = UseMaxVersionCheckBoxChange
       TabOrder = 4
@@ -99,9 +99,9 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = MinVersionEdit
       AnchorSideTop.Side = asrBottom
-      Left = 176
-      Height = 20
-      Top = 22
+      Left = 162
+      Height = 23
+      Top = 25
       Width = 100
       BorderSpacing.Left = 10
       BorderSpacing.Top = 2
@@ -114,9 +114,9 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Control = MaxVersionEdit
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 23
-      Top = 48
-      Width = 146
+      Height = 25
+      Top = 54
+      Width = 159
       AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'ApplyDependencyButton'
@@ -127,19 +127,19 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Control = CallRegisterProcCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 77
-      Top = 24
+      Height = 75
+      Top = 25
       Width = 573
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       Caption = 'RegisteredPluginsGroupBox'
-      ClientHeight = 60
+      ClientHeight = 57
       ClientWidth = 569
       TabOrder = 7
       object RegisteredListBox: TListBox
         Left = 0
-        Height = 60
+        Height = 57
         Top = 0
         Width = 569
         Align = alClient
@@ -152,7 +152,7 @@ inherited PackageEditorForm: TPackageEditorForm
   end
   object StatusBar: TStatusBar[2]
     Left = 0
-    Height = 18
+    Height = 23
     Top = 432
     Width = 577
     Panels = <>
@@ -177,14 +177,16 @@ inherited PackageEditorForm: TPackageEditorForm
     ClientWidth = 577
     TabOrder = 1
     object FilesTreeView: TTreeView
+      AnchorSideTop.Control = FilterEdit
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 237
-      Top = 24
+      Height = 235
+      Top = 26
       Width = 577
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
-      DefaultItemHeight = 15
+      BorderSpacing.Top = 3
+      DefaultItemHeight = 17
       PopupMenu = FilesPopupMenu
       ReadOnly = True
       TabOrder = 1
@@ -197,7 +199,7 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Control = ItemsPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 20
+      Height = 23
       Top = 0
       Width = 23
       AllowAllUp = True
@@ -213,7 +215,7 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 23
-      Height = 20
+      Height = 23
       Top = 0
       Width = 23
       AllowAllUp = True
@@ -230,10 +232,9 @@ inherited PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Control = ItemsPanel
       AnchorSideRight.Side = asrBottom
       Left = 46
-      Height = 20
+      Height = 23
       Top = 0
       Width = 508
-      FilteredTreeview = FilesTreeView
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]
@@ -241,6 +242,7 @@ inherited PackageEditorForm: TPackageEditorForm
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
+      FilteredTreeview = FilesTreeView
     end
   end
   object FilesPopupMenu: TPopupMenu[5]
