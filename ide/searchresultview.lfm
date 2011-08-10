@@ -8,6 +8,7 @@ object SearchResultsView: TSearchResultsView
   ClientHeight = 273
   ClientWidth = 799
   KeyPreview = True
+  OnClose = FormClose
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
@@ -270,6 +271,16 @@ object SearchResultsView: TSearchResultsView
     object mniCopySelected: TMenuItem
       Caption = 'Copy Selected'
       OnClick = mniCopySelectedClick
+    end
+  end
+  object ActionList: TActionList
+    Images = ImageList
+    left = 93
+    top = 133
+    object actClosePage: TAction
+      ImageIndex = 1
+      OnExecute = ClosePageButtonClick
+      ShortCut = 16499
     end
   end
 end

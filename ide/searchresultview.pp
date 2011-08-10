@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf, Menus, strutils,
   IDEWindowIntf, IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts,
-  InputHistory, IDEProcs, Project, MainIntf, Clipbrd;
+  InputHistory, IDEProcs, Project, MainIntf, Clipbrd, ActnList, IDECommands;
 
 type
   { TLazSearchMatchPos }
@@ -119,7 +119,7 @@ type
     property Filtered: Boolean read fFiltered write fFiltered;
     property SearchInListPhrases: string read FSearchInListPhrases write FSearchInListPhrases;
     property UpdateItems: TStrings read fUpdateStrings write fUpdateStrings;
-    property UpdateState: boolean read fUpdating;
+    property Updating: boolean read fUpdating;
     property Skipped: integer read FSkipped write SetSkipped;
     property Items;
     function ItemsAsStrings: TStrings;
@@ -129,6 +129,8 @@ type
   { TSearchResultsView }
 
   TSearchResultsView = class(TForm)
+    actClosePage: TAction;
+    ActionList: TActionList;
     mniCopySelected: TMenuItem;
     mniCopyAll: TMenuItem;
     mniCopyItem: TMenuItem;
@@ -145,6 +147,7 @@ type
     ResetResultsButton: TToolButton;
     procedure ClosePageButtonClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mniCopyAllClick(Sender: TObject);
     procedure mniCopyItemClick(Sender: TObject);
@@ -274,6 +277,8 @@ begin
 end;
 
 procedure TSearchResultsView.Form1Create(Sender: TObject);
+var
+  CloseCommand: TIDECommand;
 begin
   FMaxItems:=50000;
   
@@ -288,6 +293,15 @@ begin
   ForwardSearchButton.Hint:=rsGoToTheNextItemInTheSearchList;
   ResetResultsButton.Hint:=rsResetFilter;
   SearchInListEdit.Hint:=rsEnterOneOrMorePhrasesThatYouWantToSearchOrFilterIn;
+  CloseCommand := IDECommandList.FindIDECommand(ecClose);
+  if CloseCommand <> nil then
+  begin
+    if CloseCommand.AsShortCut <> 0 then
+      actClosePage.ShortCut:=CloseCommand.AsShortCut;
+    if (CloseCommand.ShortcutB.Key1 <> 0) and (CloseCommand.ShortcutB.Key2 = 0) then
+      actClosePage.SecondaryShortCuts.Append(ShortCutToText(
+        ShortCut(CloseCommand.ShortcutB.Key1, CloseCommand.ShortcutB.Shift1)));
+  end;
 
   Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
   fOnSelectionChanged:= nil;
@@ -299,10 +313,29 @@ begin
   mniCopyAll.Caption := lisCopyAllItemsToClipboard;
 end;//Create
 
+procedure TSearchResultsView.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  // Using a dock manager...
+  if Parent<>nil then
+  begin
+    CloseAction := caNone;
+    //todo: helper function in DockManager or IDEDockMaster for closing forms.
+    // Only close the window if it's floating.
+    // AnchorDocking doesn't seem to initialize 'FloatingDockSiteClass' so we can't just check 'Floating'.
+    // Also, AnchorDocking use nested forms, so the check for HostDockSite.Parent.
+    if Assigned(HostDockSite) and (HostDockSite.DockClientCount <= 1)
+      and (HostDockSite is TCustomForm) and (HostDockSite.Parent = nil) then
+    begin
+      TCustomForm(HostDockSite).Close;
+    end;
+  end;
+end;
+
 procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word; 
   Shift: TShiftState);
 begin
-  if (Key = VK_ESCAPE) and (Parent=nil) then
+  if (Key = VK_ESCAPE) then
   begin
     Key := VK_UNKNOWN;
     Close;
@@ -606,7 +639,7 @@ begin
   CurrentTV:=GetTreeView(APageIndex);
   if Assigned(CurrentTV) then
   begin
-    if CurrentTV.UpdateState then begin
+    if CurrentTV.Updating then begin
       if CurrentTV.UpdateItems.Count>=MaxItems then begin
         CurrentTV.Skipped:=CurrentTV.Skipped+1;
         exit;
@@ -628,7 +661,7 @@ begin
     SearchPos.ShownFilename:=SearchPos.Filename;
     ShownText:=CurrentTV.BeautifyLine(SearchPos);
     LastPos:=nil;
-    if CurrentTV.UpdateState then begin
+    if CurrentTV.Updating then begin
       if (CurrentTV.UpdateItems.Count>0)
       and (CurrentTV.UpdateItems.Objects[CurrentTV.UpdateItems.Count-1] is TLazSearchMatchPos) then
         LastPos:=TLazSearchMatchPos(CurrentTV.UpdateItems.Objects[CurrentTV.UpdateItems.Count-1]);
@@ -643,7 +676,7 @@ begin
         LastPos := LastPos.NextInThisLine;
       LastPos.NextInThisLine:=SearchPos
     end
-    else if CurrentTV.UpdateState then
+    else if CurrentTV.Updating then
       CurrentTV.UpdateItems.AddObject(ShownText, SearchPos)
     else
       CurrentTV.AddNode(ShownText, SearchPos);
@@ -705,15 +738,16 @@ procedure TSearchResultsView.ClosePage(PageIndex: integer);
 var
   CurrentTV: TLazSearchResultTV;
 begin
-  if (PageIndex<0) or (PageIndex>=ResultsNoteBook.PageCount) then exit;
+  if (PageIndex>=0) and (PageIndex<ResultsNoteBook.PageCount) then
+  begin
+    CurrentTV:= GetTreeView(PageIndex);
+    if Assigned(CurrentTV) and CurrentTV.Updating then
+      exit;
 
-  CurrentTV:= GetTreeView(PageIndex);
-  if Assigned(CurrentTV) and CurrentTV.UpdateState then
-    exit;
-
-  ResultsNoteBook.Pages[PageIndex].Free;
+    ResultsNoteBook.Pages[PageIndex].Free;
+  end;
   if ResultsNoteBook.PageCount = 0 then
-    Hide;
+    Close;
 end;
 
 {Sets the Items from the treeview on the currently selected page in the TNoteBook}
@@ -726,7 +760,7 @@ begin
     CurrentTV:= GetTreeView(Index);
     if Assigned(CurrentTV) then
     begin
-      if CurrentTV.UpdateState then
+      if CurrentTV.Updating then
         CurrentTV.UpdateItems.Assign(Value)
       else
         CurrentTV.Items.Assign(Value);
@@ -743,7 +777,7 @@ begin
   CurrentTV:= GetTreeView(Index);
   if Assigned(CurrentTV) then
   begin
-    if CurrentTV.UpdateState then
+    if CurrentTV.Updating then
       result:= CurrentTV.UpdateItems
     else
       Result := CurrentTV.ItemsAsStrings;
@@ -762,7 +796,7 @@ var
   state: Boolean;
 begin
   CurrentTV:= GetTreeView(ResultsNoteBook.PageIndex);
-  state := Assigned(CurrentTV) and not CurrentTV.UpdateState;
+  state := Assigned(CurrentTV) and not CurrentTV.Updating;
   SearchAgainButton.Enabled := state;
   ClosePageButton.Enabled := state;
   FilterButton.Enabled := state;
