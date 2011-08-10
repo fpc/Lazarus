@@ -2134,7 +2134,7 @@ resourcestring
     +'letters e.g. A and a';
   dlgWholeWordsOnly = '&Whole Words Only';
   lisOnlySearchForWholeWords = 'Only search for whole words';
-  dlgRegularExpressions = '&Regular Expressions';
+  dlgRegularExpressions = 'Regular E&xpressions';
   lisActivateRegularExpressionSyntaxForTextAndReplaceme = 'Activate regular '
     +'expression syntax for text and replacement (pretty much like perl)';
   lisAllowSearchingForMultipleLines = 'Allow searching for multiple lines';
@@ -2144,7 +2144,7 @@ resourcestring
   dlgPLDPackageGroup = 'Package group';
   lisPLDExists = 'Exists';
   dlgFromCursor = '&From Cursor';
-  dlgFromBeginning = 'From &Beginning';
+  dlgFromBeginning = 'From B&eginning';
   dlgScope = 'Scope';
   lisWithRequiredPackages = 'With required packages';
   lisLevels = 'Levels';
