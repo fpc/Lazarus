@@ -59,7 +59,7 @@ var Form1 : TForm1;
 
 constructor TForm1.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner, 1);
   Caption := 'Groubox Demo v0.1';
   LoadMainMenu;
 end;

@@ -60,7 +60,7 @@ var
 
 constructor TMyForm.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner, 1);
 
   Caption := 'List View Test';
   Width := 300;

@@ -52,7 +52,7 @@ implementation
 
 constructor TSampleDialogs.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner, 1);
   Caption := 'Common Dialogs';
   SetBounds(200, 200, 400, 230);
   Color := clTeal;

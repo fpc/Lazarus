@@ -46,7 +46,7 @@ var
 {------------------------------------------------------------------------------}
 constructor TListBoxTestForm.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner, 1);
   Width := 300;
   Height := 200;
   Left := 200;

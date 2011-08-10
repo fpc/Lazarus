@@ -49,7 +49,7 @@ var
 {------------------------------------------------------------------------------}
 constructor TMemoTestForm.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner, 1);
   Width := 350;
   Height := 245;
   Left := 200;

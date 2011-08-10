@@ -42,7 +42,7 @@ implementation
 
 constructor THello.Create(AOwner: TComponent);
 begin
-   inherited Create(AOwner);
+   inherited CreateNew(AOwner, 1);
    Caption := 'Hello World';
    Width := 200;
    Height := 75;

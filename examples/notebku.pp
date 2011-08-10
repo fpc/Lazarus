@@ -69,7 +69,7 @@ constructor TForm1.Create(AOwner: TComponent);
 var
   i: integer;
 begin
-   inherited Create(AOwner);
+   inherited CreateNew(AOwner, 1);
    Caption := 'Notebook/PageControl Test';
    Width := 300;
    Height := 400;

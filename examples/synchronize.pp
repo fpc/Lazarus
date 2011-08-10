@@ -243,7 +243,7 @@ end;
 
 constructor TForm1.Create(AOwner: TComponent);
 begin
-   inherited Create(AOwner);
+   inherited CreateNew(AOwner, 1);
    Caption := 'Thread Synchronize Demo v0.1';
    ThreadList := TList.Create;
    LoadMainMenu;

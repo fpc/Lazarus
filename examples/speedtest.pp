@@ -48,7 +48,7 @@ constructor TForm1.Create(AOwner: TComponent);
 var
   S: TFileStream;
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner, 1);
   Width := 300;
   Height := 150;
 

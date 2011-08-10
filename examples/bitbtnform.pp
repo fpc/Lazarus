@@ -73,7 +73,7 @@ implementation
 
 constructor TForm1.Create(AOwner: TComponent);
 begin
-   inherited Create(AOwner);
+   inherited CreateNew(AOwner, 1);
    Caption := 'TBitBtn Verify';
    Width := 335;
    Height := 170;

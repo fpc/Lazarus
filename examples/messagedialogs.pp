@@ -49,7 +49,7 @@ var
 
 constructor TMainForm.Create(AOwner: TComponent);
 begin
-   inherited Create(AOwner);
+   inherited CreateNew(AOwner, 1);
    Caption := 'Message Show';
    Width   := 200;
    Height  := 75;

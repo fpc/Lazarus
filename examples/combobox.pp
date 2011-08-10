@@ -75,7 +75,7 @@ var
 
 constructor TForm1.Create(AOwner: TComponent);	
 begin
-   inherited Create(AOwner);
+   inherited CreateNew(AOwner, 1);
    Caption := 'ComboBox Demo v 0.1';
    LoadMainMenu;
 end;

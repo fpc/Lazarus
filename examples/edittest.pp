@@ -61,7 +61,7 @@ var
 {------------------------------------------------------------------------------}
 constructor TEditTestForm.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner, 1);
   Width := 300;
   Height := 250;
   Left := 200;

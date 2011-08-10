@@ -352,7 +352,7 @@ implementation
 //******** Create Form1.TForm1 ******************************************************
 constructor TForm1.Create(AOwner: TComponent);
 begin
-   inherited Create(AOwner);
+   inherited CreateNew(AOwner, 1);
    OnMouseDown    := @EventOnMouseDown;
    OnMouseUp      := @EventOnMouseUp;
  //OnMouseMove    := @EventOnMouseMove;

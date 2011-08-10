@@ -59,7 +59,7 @@ implementation
 
 constructor TForm1.Create(Owner: TComponent); 
 begin
-  inherited Create(Owner);
+  inherited CreateNew(Owner, 1);
 
   Left := 154;
   Top := 117;

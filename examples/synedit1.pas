@@ -95,7 +95,7 @@ end;
 
 constructor TForm1.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner, 1);
   SetBounds(10,20,980,700);
   OnResize:=@Form1Resize;
   

@@ -58,7 +58,7 @@ type
   
 constructor TForm1.Create(AOwner: TComponent);	
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner, 1);
   Caption := 'Notebook testing';
   Left := 0;
   Top := 0;

@@ -39,7 +39,7 @@ type
 
 constructor TForm1.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner, 1);
   Name:='Form1';
   Caption:='Nested Groupbox demo';
   

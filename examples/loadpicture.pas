@@ -39,7 +39,7 @@ constructor TLoadBitmapForm.Create(TheOwner: TComponent);
 var
   Filename: String;
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner, 1);
   
   Filename:=SetDirSeparators('../images/splash_logo.xpm');
 
