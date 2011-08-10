@@ -175,10 +175,11 @@ constructor TDividerBevel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := [csSetCaption];
-  Font.Style := Font.Style + [fsBold];
   FCaptionSpacing := 10;
   LeftIndent := 60;
   FNeedCalcSize := True;
+  if (AOwner = nil) or not(csLoading in AOwner.ComponentState) then
+    Font.Style := Font.Style + [fsBold];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
 end;
