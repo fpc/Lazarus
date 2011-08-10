@@ -1430,7 +1430,7 @@ msgid "Form Editor"
 msgstr "עורך טפסים"
 
 #: lazarusidestrconsts.dlgfrombeginning
-msgid "From &Beginning"
+msgid "From B&eginning"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
@@ -2480,7 +2480,9 @@ msgid "Reference"
 msgstr "מקור"
 
 #: lazarusidestrconsts.dlgregularexpressions
-msgid "&Regular Expressions"
+#, fuzzy
+#| msgid "&Regular Expressions"
+msgid "Regular E&xpressions"
 msgstr "ביטוי רגולרי"
 
 #: lazarusidestrconsts.dlgreplaceall

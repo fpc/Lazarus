@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-09 04:05+0300\n"
+"PO-Revision-Date: 2011-08-11 01:16+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1450,7 +1450,8 @@ msgid "Form Editor"
 msgstr "Редактор форм"
 
 #: lazarusidestrconsts.dlgfrombeginning
-msgid "From &Beginning"
+#| msgid "From &Beginning"
+msgid "From B&eginning"
 msgstr "С на&чала"
 
 #: lazarusidestrconsts.dlgfromcursor
@@ -2506,7 +2507,8 @@ msgid "Reference"
 msgstr "Ссылка"
 
 #: lazarusidestrconsts.dlgregularexpressions
-msgid "&Regular Expressions"
+#| msgid "&Regular Expressions"
+msgid "Regular E&xpressions"
 msgstr "&Регулярные выражения"
 
 #: lazarusidestrconsts.dlgreplaceall
@@ -2515,7 +2517,7 @@ msgstr "Заменить &Все"
 
 #: lazarusidestrconsts.dlgreplacewith
 msgid "&Replace With"
-msgstr "&Заменить на"
+msgstr "За&менить на"
 
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
@@ -2858,7 +2860,7 @@ msgstr "Каталог для сборки пробных проектов"
 
 #: lazarusidestrconsts.dlgtexttofing
 msgid "&Text to Find"
-msgstr "&Найти текст"
+msgstr "Н&айти текст"
 
 #: lazarusidestrconsts.dlgthedirectory
 msgid "The directory \""
@@ -3540,7 +3542,7 @@ msgstr "Действия:"
 
 #: lazarusidestrconsts.lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
-msgstr "Активировать синтаксис регулярных выражений для текста и замены (почти как в perl)"
+msgstr "Включить синтаксис регулярных выражений для текста и замены (почти как в Perl)"
 
 #: lazarusidestrconsts.lisactive
 msgid "Active"

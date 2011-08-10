@@ -1432,7 +1432,7 @@ msgid "Form Editor"
 msgstr "Editor formulára"
 
 #: lazarusidestrconsts.dlgfrombeginning
-msgid "From &Beginning"
+msgid "From B&eginning"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
@@ -2484,7 +2484,9 @@ msgid "Reference"
 msgstr "Odkazy"
 
 #: lazarusidestrconsts.dlgregularexpressions
-msgid "&Regular Expressions"
+#, fuzzy
+#| msgid "&Regular Expressions"
+msgid "Regular E&xpressions"
 msgstr "&Regulárne výrazy"
 
 #: lazarusidestrconsts.dlgreplaceall

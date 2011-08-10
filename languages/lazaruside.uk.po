@@ -1419,7 +1419,7 @@ msgid "Form Editor"
 msgstr "Редактор форм"
 
 #: lazarusidestrconsts.dlgfrombeginning
-msgid "From &Beginning"
+msgid "From B&eginning"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
@@ -2463,7 +2463,9 @@ msgid "Reference"
 msgstr "Посилання"
 
 #: lazarusidestrconsts.dlgregularexpressions
-msgid "&Regular Expressions"
+#, fuzzy
+#| msgid "&Regular Expressions"
+msgid "Regular E&xpressions"
 msgstr "&Регулярний Вираз"
 
 #: lazarusidestrconsts.dlgreplaceall

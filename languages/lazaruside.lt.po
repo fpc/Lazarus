@@ -1435,7 +1435,7 @@ msgid "Form Editor"
 msgstr "Formų konstruktorius"
 
 #: lazarusidestrconsts.dlgfrombeginning
-msgid "From &Beginning"
+msgid "From B&eginning"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
@@ -2488,7 +2488,9 @@ msgid "Reference"
 msgstr "Nuoroda"
 
 #: lazarusidestrconsts.dlgregularexpressions
-msgid "&Regular Expressions"
+#, fuzzy
+#| msgid "&Regular Expressions"
+msgid "Regular E&xpressions"
 msgstr "&Reguliarusis reiškinys"
 
 #: lazarusidestrconsts.dlgreplaceall

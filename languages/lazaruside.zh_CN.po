@@ -1432,7 +1432,7 @@ msgid "Form Editor"
 msgstr "窗体编辑器"
 
 #: lazarusidestrconsts.dlgfrombeginning
-msgid "From &Beginning"
+msgid "From B&eginning"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
@@ -2488,7 +2488,9 @@ msgid "Reference"
 msgstr "参考"
 
 #: lazarusidestrconsts.dlgregularexpressions
-msgid "&Regular Expressions"
+#, fuzzy
+#| msgid "&Regular Expressions"
+msgid "Regular E&xpressions"
 msgstr "正则表达式(&R)"
 
 #: lazarusidestrconsts.dlgreplaceall
