@@ -109,7 +109,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="336">
+    <Files Count="345">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1157,6 +1157,7 @@ end;"/>
       </Item225>
       <Item226>
         <Filename Value="win32/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item226>
       <Item227>
@@ -1492,6 +1493,7 @@ end;"/>
       </Item297>
       <Item298>
         <Filename Value="wince/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="AllLCLIntfUnits"/>
       </Item298>
       <Item299>
@@ -1676,6 +1678,51 @@ end;"/>
         <Filename Value="android/alllclintfunits.pas"/>
         <UnitName Value="alllclintfunits"/>
       </Item336>
+      <Item337>
+        <Filename Value="android/android_all.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="android_all"/>
+      </Item337>
+      <Item338>
+        <Filename Value="android/androidapp.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="androidapp"/>
+      </Item338>
+      <Item339>
+        <Filename Value="android/androidpipescomm.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="androidpipescomm"/>
+      </Item339>
+      <Item340>
+        <Filename Value="android/androidprivate.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="androidprivate"/>
+      </Item340>
+      <Item341>
+        <Filename Value="android/androidtimer.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="androidtimer"/>
+      </Item341>
+      <Item342>
+        <Filename Value="android/androidwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="androidwsfactory"/>
+      </Item342>
+      <Item343>
+        <Filename Value="android/androidwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="androidwsforms"/>
+      </Item343>
+      <Item344>
+        <Filename Value="android/androidwsstdctrls.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="androidwsstdctrls"/>
+      </Item344>
+      <Item345>
+        <Filename Value="android/javalang.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="javalang"/>
+      </Item345>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

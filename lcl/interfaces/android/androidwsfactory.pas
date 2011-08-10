@@ -309,9 +309,8 @@ end;
 
 function RegisterCustomComboBox: Boolean; alias : 'WSRegisterCustomComboBox';
 begin
-  Result := False;
-//  RegisterWSComponent(TCustomComboBox, TGtk2WSCustomComboBox);
-//  Result := True;
+  RegisterWSComponent(TCustomComboBox, TAndroidWSCustomComboBox);
+  Result := True;
 end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
@@ -324,10 +323,8 @@ end;
 
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
 begin
-  Result := False;
-//  RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit, TGtkPrivateEntry); { GTK1 }
-//  RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
-//  Result := True;
+  RegisterWSComponent(TCustomEdit, TAndroidWSCustomEdit);
+  Result := True;
 end;
 
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
@@ -352,9 +349,8 @@ end;
 
 function RegisterCustomCheckBox: Boolean; alias : 'WSRegisterCustomCheckBox';
 begin
-  Result := False;
-//  RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
-//  Result := True;
+  RegisterWSComponent(TCustomCheckBox, TAndroidWSCustomCheckBox);
+  Result := True;
 end;
 
 function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';
@@ -373,9 +369,8 @@ end;
 
 function RegisterCustomStaticText: Boolean; alias : 'WSRegisterCustomStaticText';
 begin
-  Result := False;
-//  RegisterWSComponent(TCustomStaticText, TGtk2WSCustomStaticText); { GTK1 }
-//  Result := True;
+  RegisterWSComponent(TCustomStaticText, TAndroidWSCustomStaticText); { GTK1 }
+  Result := True;
 end;
 
 function RegisterCustomLabel: Boolean; alias : 'WSRegisterCustomLabel';

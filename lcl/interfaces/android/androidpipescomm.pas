@@ -8,6 +8,9 @@ unit androidpipescomm;
 
 {$mode objfpc}{$H+}
 
+// ANDROID_NO_COMM is utilized to test the code flow in the desktop
+{$ifndef ARM}{$define ANDROID_NO_COMM}{$endif}
+
 interface
 
 uses
@@ -170,11 +173,13 @@ end;
 
 function TAndroidPipesComm.ReadByte: ShortInt;
 begin
+  {$ifdef ANDROID_NO_COMM}Exit(0);{$ENDIF}
   Result := InputStream.ReadByte();
 end;
 
 function TAndroidPipesComm.ReadInt: Integer;
 begin
+  {$ifdef ANDROID_NO_COMM}Exit(0);{$ENDIF}
   Result := BEToN(InputStream.ReadDWord());
 end;
 
@@ -182,6 +187,7 @@ function TAndroidPipesComm.ReadFloat: Single;
 var
   lNum: DWord;
 begin
+  {$ifdef ANDROID_NO_COMM}Exit(0.0);{$ENDIF}
   lNum := BEToN(InputStream.ReadDWord());
   Move(lNum, Result, 4);
 end;
@@ -230,6 +236,7 @@ procedure TAndroidPipesComm.WaitForReturn();
 var
   lByte: ShortInt;
 begin
+  {$ifdef ANDROID_NO_COMM}Exit;{$ENDIF}
   lByte := ReadByte();
   if lByte <> amkResult then CommError('[TAndroidPipesComm.WaitForIntReturn] expected amkResult but got: ' + IntToStr(lByte));
 end;
@@ -238,6 +245,7 @@ function TAndroidPipesComm.WaitForIntReturn(): Integer;
 var
   lByte: ShortInt;
 begin
+  {$ifdef ANDROID_NO_COMM}Exit(0);{$ENDIF}
   lByte := ReadByte();
   if lByte <> amkIntResult then CommError('[TAndroidPipesComm.WaitForIntReturn] expected amkIntResult but got: ' + IntToStr(lByte));
   Result := ReadInt();
@@ -247,6 +255,7 @@ function TAndroidPipesComm.WaitForFloatReturn(): Single;
 var
   lByte: ShortInt;
 begin
+  {$ifdef ANDROID_NO_COMM}Exit(0.0);{$ENDIF}
   lByte := ReadByte();
   if lByte <> amkFloatResult then CommError('[TAndroidPipesComm.WaitForFloatReturn] expected amkFloatResult but got: ' + IntToStr(lByte));
   Result := ReadFloat();

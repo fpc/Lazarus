@@ -7,7 +7,7 @@ unit LCL;
 interface
 
 uses
-  AllLCLIntfUnits, LazarusPackageIntf;
+  alllclintfunits, LazarusPackageIntf;
 
 implementation
 

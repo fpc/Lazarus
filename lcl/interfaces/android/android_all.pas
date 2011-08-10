@@ -25,6 +25,9 @@ type
   TScrollView = class;
   TCompoundButton = class;
   TCheckBox = class;
+  TAdapterView = class;
+  TAbsSpinner = class;
+  TSpinner = class;
 
   { Types }
 
@@ -143,6 +146,19 @@ type
     constructor Create();
   end;
 
+  TAdapterView = class(TViewGroup)
+  public
+  end;
+
+  TAbsSpinner = class(TAdapterView)
+  public
+  end;
+
+  TSpinner = class(TAbsSpinner)
+  public
+    constructor Create();
+  end;
+
 function HandleMessage(AFirstInt: Integer): Boolean;
 
 implementation
@@ -173,6 +189,9 @@ const
   { TScrollView }
   { TCompoundButton }
   { TCheckBox }
+  { TAdapterView }
+  { TAbsSpinner }
+  { TSpinner }
 
   { IDs }
 
@@ -234,6 +253,10 @@ const
   amkUI_TCompoundButton_toggle = $00110003;
   // TCheckBox
   amkUI_TCheckBox_Create = $00111000;
+  // TAdapterView
+  // TAbsSpinner
+  // TSpinner
+  amkUI_TSpinner_Create = $00114000;
 
 { Implementation of Classes }
 
@@ -564,6 +587,12 @@ constructor TCheckBox.Create();
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TCheckBox_Create);
+  Index := vAndroidPipesComm.WaitForIntReturn();
+end;
+constructor TSpinner.Create();
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TSpinner_Create);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
 
