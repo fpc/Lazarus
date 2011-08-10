@@ -4864,8 +4864,11 @@ begin
     exit;
   end;
   if not assigned(FHighlighter) then begin
-    if ATextChanged then
+    if ATextChanged then begin
       fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
+      // TODO: see TSynEditFoldedView.LineCountChanged, this is only needed, because NeedFixFrom does not always work
+      FFoldedLinesView.FixFoldingAtTextIndex(FChangedLinesStart, FChangedLinesEnd);
+    end;
     Topline := TopLine;
     exit;
   end;
