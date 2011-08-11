@@ -303,7 +303,7 @@ end;
 
 procedure TChartLegendItems.SetItem(AIndex: Integer; AValue: TLegendItem);
 begin
-  inherited;
+  inherited SetItem(AIndex, AValue);
 end;
 
 { TLegendItem }

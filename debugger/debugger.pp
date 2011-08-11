@@ -4878,7 +4878,7 @@ end;
 
 procedure TThreadEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
 begin
-  inherited;
+  inherited LoadDataFromXMLConfig(AConfig, APath);
   FThreadId    := AConfig.GetValue(APath + 'ThreadId', -1);
   FThreadName  := AConfig.GetValue(APath + 'ThreadName', '');
   FThreadState := AConfig.GetValue(APath + 'ThreadState', '');
@@ -4886,7 +4886,7 @@ end;
 
 procedure TThreadEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
 begin
-  inherited;
+  inherited SaveDataToXMLConfig(AConfig, APath);
   AConfig.SetValue(APath + 'ThreadId', FThreadId);
   AConfig.SetValue(APath + 'ThreadName', FThreadName);
   AConfig.SetValue(APath + 'ThreadState', FThreadState);
