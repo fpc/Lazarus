@@ -338,7 +338,7 @@ type
     {$IFNDEF SYN_LAZARUS}
     procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     {$ENDIF}
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
+    procedure WMSetFocus(var Msg: TLMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
   private
     FBlockIndent: integer;
@@ -4695,7 +4695,7 @@ begin
   inherited;
 end;
 
-procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
+procedure TCustomSynEdit.WMSetFocus(var Msg: TLMSetFocus);
 begin
   if fCaret = nil then exit; // This SynEdit is in Destroy
   Exclude(FStateFlags, sfHideCursor);
