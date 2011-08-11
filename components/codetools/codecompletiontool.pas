@@ -1177,6 +1177,7 @@ begin
           Params:=TFindDeclarationParams.Create;
         if ContextNode=nil then
           ContextNode:=FindDeepestNodeAtPos(CurPos.StartPos,true);
+        ContextNode := ContextNode.GetNodeOfType(ctnProcedureType);
         Params.ContextNode:=ContextNode;
         Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
         Params.Flags:=fdfDefaultForExpressions+[fdfExceptionOnPredefinedIdent];
