@@ -108,7 +108,7 @@ end;
 function TIpChmDataProvider.DoCheckURL(const URL: string;
   var ContentType: string): Boolean;
 var
-Reader: TChmReader = nil;
+  Reader: TChmReader = nil;
 begin
   //DebugLn('RequestedUrl: ',URL);
   Result := fChm.ObjectExists(StripInPageLink(Url), Reader) > 0;

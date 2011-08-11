@@ -608,7 +608,6 @@ begin
   FileMenuCloseItem.Enabled := en;
   ViewMenuContents.Enabled := en;
 
-
   if en and not (csDestroying in ActivePage.ComponentState) then
     Caption := 'LHelp - ' + ActivePage.fContentProvider.Title
   else
@@ -647,10 +646,7 @@ end;
 
 finalization
   if IPCServer <> nil then
-    try
     FreeAndNil(IPCServer);
-    except
-    end;
 
 end.
 

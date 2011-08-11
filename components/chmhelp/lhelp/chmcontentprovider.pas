@@ -448,12 +448,12 @@ end;
 
 procedure TChmContentProvider.FillTOC(Data: PtrInt);
 var
- fChm: TChmReader;
- ParentNode: TTreeNode;
- i: Integer;
- SM: TChmSiteMap;
- HasSearchIndex: Boolean = False;
- Stream: TMemoryStream;
+  fChm: TChmReader;
+  ParentNode: TTreeNode;
+  i: Integer;
+  SM: TChmSiteMap;
+  HasSearchIndex: Boolean = False;
+  Stream: TMemoryStream;
 begin
   if fFillingToc or fFillingIndex then begin
     Application.QueueAsyncCall(@FillToc, Data);
@@ -575,10 +575,10 @@ end;
 
 procedure TChmContentProvider.ContentsTreeSelectionChanged(Sender: TObject);
 var
-ATreeNode: TContentTreeNode;
-ARootNode: TTreeNode;
-fChm: TChmReader = nil;
-Uri: String;
+  ATreeNode: TContentTreeNode;
+  ARootNode: TTreeNode;
+  fChm: TChmReader = nil;
+  Uri: String;
 begin
   if (fContentsTree.Selected = nil) then Exit;
   if fContentsTree.Selected.Parent = nil then
@@ -676,7 +676,7 @@ var
   SearchText: String;
   Node: TTreeNode;
 begin
-if not fIndexEdit.Focused then Exit;
+  if not fIndexEdit.Focused then Exit;
   SearchText := LowerCase(fIndexEdit.Text);
   Node := fIndexView.Items.GetFirstNode;
   while Node<>nil do begin
@@ -872,6 +872,7 @@ var
   k: Integer;
   Item: TContentTreeNode;
 begin
+//  if fKeywordCombo.Text = '' then Exit;
   SearchWords := TStringList.Create;
   SearchWords.Delimiter := ' ';
   Searchwords.DelimitedText := fKeywordCombo.Text;
