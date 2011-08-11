@@ -3531,6 +3531,8 @@ begin
     ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
   end;
   ReadConstExpr;
+  // optional: hint modifier
+  ReadHintModifier;
 end;
 
 procedure TPascalParserTool.ReadTypeNameAndDefinition;
@@ -4483,6 +4485,9 @@ begin
     and (not IsKeyWordInConstAllowed.DoIdentifier(@Src[CurPos.StartPos]))
     and AtomIsKeyWord then
       RaiseStringExpectedButAtomFound('constant');
+    if (CurPos.Flag = cafWord) and
+       (UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM')
+       or UpAtomIs('UNIMPLEMENTED') or UpAtomIs('EXPERIMENTAL')) then Break;
     if (CurPos.Flag = cafSemicolon) then break;
     CurNode.EndPos := CurPos.EndPos;
     ReadNextAtom;

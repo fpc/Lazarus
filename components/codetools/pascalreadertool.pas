@@ -1487,7 +1487,8 @@ begin
       end;
     end;
 
-  ctnVarDefinition,ctnConstant,ctnTypeDefinition,ctnGenericType:
+  ctnVarDefinition,ctnConstant,ctnConstDefinition,
+  ctnTypeDefinition,ctnGenericType:
     begin
       Node:=FindTypeNodeOfDefinition(Node);
       if Node=nil then exit;
