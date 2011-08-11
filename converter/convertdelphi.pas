@@ -1258,6 +1258,7 @@ begin
   finally
     ConvTool.Free;
   end;
+  CompOpts.Win32GraphicApp := not fIsConsoleApp;
   with fMainUnitConverter do begin
     fUsedUnitsTool.IsMainFile:=True;
     fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
