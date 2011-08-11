@@ -548,6 +548,7 @@ begin
       FActionList:=nil;
       FillCategories;
       FillActionByCategory(-1);
+      Close;
     end;
   end;
 end;
