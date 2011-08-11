@@ -3145,6 +3145,7 @@ begin
       NewDefItemHeight:=Images.Height;
     if (StateImages<>nil) and (StateImages.Height>NewDefItemHeight) then
       NewDefItemHeight:=StateImages.Height;
+    if Odd(NewDefItemHeight) then Inc(NewDefItemHeight);
     if NewDefItemHeight<>FDefItemHeight then begin
       FDefItemHeight:=NewDefItemHeight;
       FStates:=FStates+[tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,
@@ -4297,12 +4298,6 @@ var
       Exit;
     if TreeLinePenStyle = psPattern then
     begin
-      // since we draw node by node and always add 2 pixels we need to start always
-      // only from odd or only from even points. Let's choose to start from odd
-
-      if not Odd(Y1) then
-        inc(Y1);
-
       // TODO: implement psPattern support in the LCL
       while Y1 < Y2 do
       begin
@@ -4323,10 +4318,6 @@ var
       Exit;
     if TreeLinePenStyle = psPattern then
     begin
-      // to match our DrawVertLine rules
-      if not Odd(Y) then
-        inc(Y);
-
       // TODO: implement psPattern support in the LCL
       while X1 < X2 do
       begin
