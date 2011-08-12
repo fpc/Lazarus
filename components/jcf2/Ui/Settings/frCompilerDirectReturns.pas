@@ -85,7 +85,6 @@ end;
 
 procedure TfCompilerDirectReturns.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  inherited Setup(ADialog);
   Label1.Caption := lisCDUseANewLineBeforeCompilerDirectives;
   rgBeforeUses.Caption := lisCDUsesClause;
   rgBeforeUses.Items[0] := lisCaseBlocksAlways;

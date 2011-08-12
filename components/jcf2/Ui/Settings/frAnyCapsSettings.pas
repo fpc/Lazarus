@@ -75,7 +75,6 @@ end;
 
 procedure TfrAnyCapsSettings.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  inherited Setup(ADialog);
   cbEnableAnyWords.Caption := lisCapsAnyWordEnable;
   Label1.Caption := lisCapsAnyWordSetCapitalisationOnTheseWords;
 end;

@@ -71,7 +71,6 @@ end;
 
 procedure TfrUnitNameCaps.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  inherited Setup(ADialog);
   cbEnableAnyWords.Caption := lisCapsAnyWordEnable;
   Label1.Caption := lisCapsUnitNamesSetCapitalisationOnTheseUnitNames;
 end;

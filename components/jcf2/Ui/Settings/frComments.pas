@@ -72,7 +72,6 @@ end;
 
 procedure TfComments.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  inherited Setup(ADialog);
   cbRemoveEmptyDoubleSlashComments.Caption :=
     lisCommentsRemoveEmptySlashComments;
   cbRemoveEmptyCurlyBraceComments.Caption :=
