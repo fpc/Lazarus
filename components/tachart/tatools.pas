@@ -33,6 +33,7 @@ type
   TChartToolEvent = procedure (ATool: TChartTool; APoint: TPoint) of object;
 
   TChartToolDrawingMode = (tdmDefault, tdmNormal, tdmXor);
+  TChartToolEffectiveDrawingMode = tdmNormal .. tdmXor;
 
   { TChartTool }
 
@@ -61,6 +62,7 @@ type
   strict protected
     procedure Activate; override;
     procedure Deactivate; override;
+    function EffectiveDrawingMode: TChartToolEffectiveDrawingMode;
     function GetIndex: Integer; override;
     function IsActive: Boolean;
     procedure KeyDown(APoint: TPoint); virtual;
@@ -385,7 +387,7 @@ resourcestring
 implementation
 
 uses
-  ComponentEditors, Forms, GraphMath, Math, PropEdits, SysUtils,
+  ComponentEditors, Forms, GraphMath, InterfaceBase, Math, PropEdits, SysUtils,
   TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry,
   TASubcomponentsEditor;
 
@@ -587,6 +589,16 @@ procedure TChartTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   Unused(ADrawer);
   FChart := AChart;
+end;
+
+function TChartTool.EffectiveDrawingMode: TChartToolEffectiveDrawingMode;
+begin
+  if DrawingMode <> tdmDefault then
+    Result := DrawingMode
+  else if WidgetSet.LCLPlatform in [lpGtk, lpGtk2, lpWin32] then
+    Result := tdmXor
+  else
+    Result := tdmNormal;
 end;
 
 function TChartTool.GetAfterEvent(AIndex: Integer): TChartToolEvent;
@@ -902,8 +914,8 @@ procedure TZoomDragTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   if not IsActive or IsAnimating then exit;
   inherited;
-  case DrawingMode of
-    tdmDefault, tdmXor:
+  case EffectiveDrawingMode of
+    tdmXor:
       PrepareXorPen(FChart.Canvas);
     tdmNormal:
       FChart.Drawer.Pen := Frame;
@@ -928,8 +940,8 @@ end;
 procedure TZoomDragTool.MouseMove(APoint: TPoint);
 begin
   if not IsActive or IsAnimating then exit;
-  case DrawingMode of
-    tdmDefault, tdmXor: begin
+  case EffectiveDrawingMode of
+    tdmXor: begin
       PrepareXorPen(FChart.Canvas);
       FChart.Canvas.Rectangle(FSelectionRect);
       FSelectionRect.BottomRight := APoint;
