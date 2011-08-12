@@ -186,18 +186,23 @@ type
 
   TZoomDragTool = class(TBasicZoomTool)
   strict private
+    FFrame: TChartPen;
     FRatioLimit: TZoomRatioLimit;
     FSelectionRect: TRect;
     function GetProportional: Boolean;
+    procedure SetFrame(AValue: TChartPen);
     procedure SetProportional(AValue: Boolean);
   public
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
   published
     property DrawingMode;
+    property Frame: TChartPen read FFrame write SetFrame;
     property Proportional: Boolean
       read GetProportional write SetProportional stored false default false;
       deprecated;
@@ -881,6 +886,18 @@ end;
 
 { TZoomDragTool }
 
+constructor TZoomDragTool.Create(AOwner: TComponent);
+begin
+  inherited;
+  FFrame := TChartPen.Create;
+end;
+
+destructor TZoomDragTool.Destroy;
+begin
+  FreeAndNil(FFrame);
+  inherited;
+end;
+
 procedure TZoomDragTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   if not IsActive or IsAnimating then exit;
@@ -889,7 +906,7 @@ begin
     tdmDefault, tdmXor:
       PrepareXorPen(FChart.Canvas);
     tdmNormal:
-      FChart.Drawer.PrepareSimplePen($0);
+      FChart.Drawer.Pen := Frame;
   end;
   FChart.Drawer.Rectangle(FSelectionRect);
 end;
@@ -979,6 +996,11 @@ begin
   CheckProportions;
   DoZoom(ext, false);
   Handled;
+end;
+
+procedure TZoomDragTool.SetFrame(AValue: TChartPen);
+begin
+  FFrame.Assign(AValue);
 end;
 
 procedure TZoomDragTool.SetProportional(AValue: Boolean);
