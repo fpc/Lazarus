@@ -322,8 +322,7 @@ type
     FNewFormTemplate: string;
     FNewUnitTemplate: string;
 
-    function GetDebuggerEventLogColors(AIndex: TDBGEventType
-      ): TDebuggerEventLogColor;
+    function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     procedure SetCompilerFilename(const AValue: string);
     procedure SetDebuggerEventLogColors(AIndex: TDBGEventType;
       const AValue: TDebuggerEventLogColor);
@@ -921,6 +920,17 @@ var
   XMLConfig: TXMLConfig;
   FileVersion: integer;
 
+  procedure AddRecentProjectInitial(aProjPath, aProjFile: string);
+  var
+    WholeFilePath: String;
+  begin
+    aProjPath:=SwitchPathDelims(aProjPath, True);
+    aProjFile:=SwitchPathDelims(aProjFile, True);
+    WholeFilePath:=ExtractFilePath(Application.ExeName) + aProjPath + aProjFile;
+    if FileIsWritable(aProjPath) and FileIsWritable(WholeFilePath) then
+      AddToRecentList(WholeFilePath, FRecentProjectFiles, FMaxRecentProjectFiles);
+  end;
+
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
   begin
@@ -982,9 +992,7 @@ begin
     Cfg:=TXMLOptionsStorage.Create(XMLConfig);
     try
       Path:='EnvironmentOptions/';
-
       FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
-
 
       // language
       LoadLanguage;
@@ -1218,6 +1226,15 @@ begin
         Path+'Recent/PackageFiles/Max',FMaxRecentOpenFiles);
       LoadRecentList(XMLConfig,FRecentPackageFiles,
         Path+'Recent/PackageFiles/');
+
+      // Add example projects to an empty project list if examples have write access
+      if FRecentProjectFiles.count=0 then begin
+        AddRecentProjectInitial('examples/jpeg/',          'jpegexample.lpi');
+        AddRecentProjectInitial('examples/sprites/',       'spriteexample.lpi');
+        AddRecentProjectInitial('examples/openglcontrol/', 'openglcontrol_demo.lpi');
+        AddRecentProjectInitial('examples/barchart/',      'chartdemo.lpi');
+        AddRecentProjectInitial('examples/',               'hello.lpi');
+      end;
 
       // external tools
       fExternalTools.Load(FConfigStore,Path+'ExternalTools/');
