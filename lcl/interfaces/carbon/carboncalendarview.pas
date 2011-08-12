@@ -151,14 +151,14 @@ begin
 		minutes:=0;
 		seconds:=0;
   end;
-	// What is the first day of this month?
-	tempTime := CFGregorianDateGetAbsoluteTime( inData.date, inData.timeZone );
-	inData.firstDay := CFAbsoluteTimeGetDayOfWeek( tempTime, inData.timeZone ) mod 7;
+  // What is the first day of this month?
+  tempTime := CFGregorianDateGetAbsoluteTime( inData.date, inData.timeZone );
+  inData.firstDay := CFAbsoluteTimeGetDayOfWeek( tempTime, inData.timeZone ) mod 7;
 
-	// How many days in this month?
-	tempTime := CFAbsoluteTimeAddGregorianUnits( tempTime, inData.timeZone, nextMonthMinusADay );
-	tempDate := CFAbsoluteTimeGetGregorianDate( tempTime, inData.timeZone );
-	inData.daysInMonth := tempDate.day;
+  // How many days in this month?
+  tempTime := CFAbsoluteTimeAddGregorianUnits( tempTime, inData.timeZone, nextMonthMinusADay );
+  tempDate := CFAbsoluteTimeGetGregorianDate( tempTime, inData.timeZone );
+  inData.daysInMonth := tempDate.day;
 end;
 
 // -----------------------------------------------------------------------------
@@ -721,82 +721,84 @@ var
 	sz      : Size;
 	outSize : Size;
 begin
-	Result := GetEventParameter( inEvent, kEventParamControlPart, typeControlPartCode,	nil, sizeof( ControlPartCode ), nil, @part );
+  Result := GetEventParameter( inEvent, kEventParamControlPart, typeControlPartCode,	nil, sizeof( ControlPartCode ), nil, @part );
   if Result <> noErr then Exit;
 
-	Result := GetEventParameter( inEvent, kEventParamControlDataTag, typeEnumeration, nil, sizeof( OSType ), nil, @tag );
+  Result := GetEventParameter( inEvent, kEventParamControlDataTag, typeEnumeration, nil, sizeof( OSType ), nil, @tag );
   if Result <> noErr then Exit;
 
-	Result := GetEventParameter( inEvent, kEventParamControlDataBuffer, typePtr, nil, sizeof( Ptr ), nil, @ptr );
+  Result := GetEventParameter( inEvent, kEventParamControlDataBuffer, typePtr, nil, sizeof( Ptr ), nil, @ptr );
   if Result <> noErr then Exit;
 
-	Result := GetEventParameter( inEvent, kEventParamControlDataBufferSize, typeLongInteger, nil, sizeof( Size ), nil, @sz );
-	if Result <> noErr then Exit;
+  Result := GetEventParameter( inEvent, kEventParamControlDataBufferSize, typeLongInteger, nil, sizeof( Size ), nil, @sz );
+  if Result <> noErr then Exit;
 
-	case tag of
-		kControlCalendarTitleRatioTag:
+  case tag of
+    kControlCalendarTitleRatioTag:
     begin
-			if sz = sizeof( single ) then
-				PSingle(ptr)^ := inData.titleRowRatio
-			else
-				Result := errDataSizeMismatch;
-			outSize := sizeof( single);
-		end;
-
-		kControlCalendarDayNameRatioTag:
-    begin
-    	if sz = sizeof( single ) then
-				PSingle(ptr)^ := inData.dayNameRowRatio
-			else
-				Result := errDataSizeMismatch;
-			outSize := sizeof( single );
+      if sz = sizeof( single ) then
+	PSingle(ptr)^ := inData.titleRowRatio
+      else
+	Result := errDataSizeMismatch;
+      outSize := sizeof( single);
     end;
 
-		kControlCalendarDayRatioTag:
+    kControlCalendarDayNameRatioTag:
     begin
-			if ( sz = sizeof( single ) ) then
-				PSingle(ptr)^ := inData.dayRowRatio
-			else
-				Result := errDataSizeMismatch;
-			outSize := sizeof( single );
-		end;
+      if sz = sizeof( single ) then
+	PSingle(ptr)^ := inData.dayNameRowRatio
+      else
+	Result := errDataSizeMismatch;
+      outSize := sizeof( single );
+    end;
 
-		kControlCalendarDateTag:
+    kControlCalendarDayRatioTag:
     begin
-			if sz = sizeof( CFGregorianDate ) then begin
-				CFGregorianDatePtr(ptr)^ := inData.date;
+      if ( sz = sizeof( single ) ) then
+	PSingle(ptr)^ := inData.dayRowRatio
+      else
+	Result := errDataSizeMismatch;
+      outSize := sizeof( single );
+    end;
+
+    kControlCalendarDateTag:
+    begin
+      if sz = sizeof( CFGregorianDate ) then
+      begin
+	CFGregorianDatePtr(ptr)^ := inData.date;
         if (inData.selDay>0) and (inData.selDay<inData.daysInMonth) then
           CFGregorianDatePtr(ptr)^.day := inData.selDay;
-			end else
-				Result := errDataSizeMismatch;
-			outSize := sizeof( CFGregorianDate );
-		end;
+      end
+      else
+        Result := errDataSizeMismatch;
+      outSize := sizeof( CFGregorianDate );
+    end;
 
-		kControlCalendarDrawProcTag:
+    kControlCalendarDrawProcTag:
     begin
-			if sz =sizeof( CalendarDrawProc ) then
+      if sz =sizeof( CalendarDrawProc ) then
         CalendarDrawProc(Ptr^):=inData.drawProc
-			else
-				Result := errDataSizeMismatch;
-			outSize := sizeof( CalendarDrawProc );
-		end;
+      else
+	Result := errDataSizeMismatch;
+      outSize := sizeof( CalendarDrawProc );
+    end;
 
-		kControlCalendarLabelProcTag:
+    kControlCalendarLabelProcTag:
     begin
-			if sz = sizeof( CalendarDrawProc ) then
+      if sz = sizeof( CalendarDrawProc ) then
         CalendarDrawProc(Ptr^):=inData.labelProc
-			else
-				Result := errDataSizeMismatch;
-			outSize := sizeof( CalendarDrawProc );
-		end;
+      else
+        Result := errDataSizeMismatch;
+      outSize := sizeof( CalendarDrawProc );
+    end;
 
   else
-  	Result := errDataNotSupported;
-		outSize := 0;
-	end;
+    Result := errDataNotSupported;
+    outSize := 0;
+  end;
 
-	if ( Result = noErr ) then
-		Result := SetEventParameter( inEvent, kEventParamControlDataBufferSize, typeLongInteger, sizeof( sz ), @outSize );
+  if ( Result = noErr ) then
+    Result := SetEventParameter( inEvent, kEventParamControlDataBufferSize, typeLongInteger, sizeof( sz ), @outSize );
 end;
 
 // -----------------------------------------------------------------------------
@@ -986,35 +988,35 @@ end;
 
 function CalendarViewCreate(inWindow : WindowRef; const inBounds : Rect; var outControl: ControlRef): OSStatus;
 var
-	root  : ControlRef;
-	event : EventRef;
+  root  : ControlRef;
+  event : EventRef;
 const
   BounName : PChar = 'Boun';
 begin
-	// Make sure this type of view is registered
-	Result := CalendarViewRegister;
+  // Make sure this type of view is registered
+  Result := CalendarViewRegister;
   if Result <> noErr then Exit;
 
-	// Make the initialization event
-	Result := CreateEvent(nil, kEventClassHIObject, kEventHIObjectInitialize, GetCurrentEventTime(), 0, event );
+  // Make the initialization event
+  Result := CreateEvent(nil, kEventClassHIObject, kEventHIObjectInitialize, GetCurrentEventTime(), 0, event );
   if Result <> noErr then Exit;
   try
-	// Set the bounds into the event
-  	Result := SetEventParameter( event, EventParamNamePtr(BounName)^, typeQDRectangle,	sizeof( Rect ), @inBounds );
-  	if Result <> noErr then Exit;
-
-  	Result := HIObjectCreate( kCalendarViewClassID, event, outControl );
+    // Set the bounds into the event
+    Result := SetEventParameter( event, EventParamNamePtr(BounName)^, typeQDRectangle,	sizeof( Rect ), @inBounds );
     if Result <> noErr then Exit;
 
-  	// Get the content root
-  	Result := GetRootControl( inWindow, root );
+    Result := HIObjectCreate( kCalendarViewClassID, event, outControl );
+    if Result <> noErr then Exit;
+
+    // Get the content root
+    Result := GetRootControl( inWindow, root );
     if Result <> noErr then Exit;
 
     // - added -
     //HIViewFindByID(root, kHIViewWindowContentID, root);
 
-  	// And stick this view into it
-  	Result := HIViewAddSubview( root, outControl );
+    // And stick this view into it
+    Result := HIViewAddSubview( root, outControl );
   finally
     ReleaseEvent(event);
   end;
