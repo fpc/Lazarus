@@ -35,29 +35,26 @@ type
   { TChartTool }
 
   TChartTool = class(TBasicChartTool)
-  private
+  strict private
     FActiveCursor: TCursor;
     FEnabled: Boolean;
     FEventsAfter: array [TChartToolEventId] of TChartToolEvent;
     FEventsBefore: array [TChartToolEventId] of TChartToolEvent;
+    FOldCursor: TCursor;
     FShift: TShiftState;
     FToolset: TChartToolset;
-    procedure SetActiveCursor(AValue: TCursor);
-    procedure SetToolset(AValue: TChartToolset);
-  private
-    FOldCursor: TCursor;
     function GetAfterEvent(AIndex: Integer): TChartToolEvent;
     function GetBeforeEvent(AIndex: Integer): TChartToolEvent;
+    procedure SetActiveCursor(AValue: TCursor);
     procedure SetAfterEvent(AIndex: Integer; AValue: TChartToolEvent);
     procedure SetBeforeEvent(AIndex: Integer; AValue: TChartToolEvent);
+    procedure SetToolset(AValue: TChartToolset);
   protected
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
-  protected
+  strict protected
     procedure Activate; override;
     procedure Deactivate; override;
-    procedure Dispatch(
-      AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint); overload;
     function GetIndex: Integer; override;
     function IsActive: Boolean;
     procedure KeyDown(APoint: TPoint); virtual;
@@ -73,6 +70,8 @@ type
     destructor Destroy; override;
   public
     procedure Assign(Source: TPersistent); override;
+    procedure Dispatch(
+      AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint); overload;
     function GetParentComponent: TComponent; override;
     procedure Handled;
     function HasParent: Boolean; override;
@@ -107,18 +106,25 @@ type
       index 4 read GetBeforeEvent write SetBeforeEvent;
   end;
 
+  {$IFNDEF fpdoc} // Workaround for issue #18549.
+  TChartToolsEnumerator = specialize TTypedFPListEnumerator<TChartTool>;
+  {$ENDIF}
+
   TChartToolClass = class of TChartTool;
 
   TChartTools = class(TIndexedComponentList)
+  public
+    function GetEnumerator: TChartToolsEnumerator;
   end;
 
   { TChartToolset }
 
   TChartToolset = class(TBasicChartToolset)
-  private
-    FIsHandled: Boolean;
+  strict private
     FTools: TChartTools;
     function GetItem(AIndex: Integer): TChartTool;
+  private
+    FIsHandled: Boolean;
   protected
     procedure SetName(const AValue: TComponentName); override;
   public
@@ -142,7 +148,7 @@ type
   { TBasicZoomTool }
 
   TBasicZoomTool = class(TChartTool)
-  private
+  strict private
     FAnimationInterval: Cardinal;
     FAnimationSteps: Cardinal;
     FCurrentStep: Cardinal;
@@ -170,7 +176,7 @@ type
   { TZoomDragTool }
 
   TZoomDragTool = class(TBasicZoomTool)
-  private
+  strict private
     FRatioLimit: TZoomRatioLimit;
     FSelectionRect: TRect;
     function GetProportional: Boolean;
@@ -190,7 +196,7 @@ type
   { TZoomClickTool }
 
   TZoomClickTool = class(TBasicZoomTool)
-  private
+  strict private
     FFixedPoint: Boolean;
     FZoomFactor: Double;
     FZoomRatio: Double;
@@ -218,9 +224,9 @@ type
   { TBasicPanTool }
 
   TBasicPanTool = class(TChartTool)
-  private
+  strict private
     FLimitToExtent: TPanDirectionSet;
-  protected
+  strict protected
     procedure PanBy(AOffset: TPoint);
   public
     constructor Create(AOwner: TComponent); override;
@@ -249,7 +255,7 @@ type
   { TPanClickTool }
 
   TPanClickTool = class(TBasicPanTool)
-  private
+  strict private
     FInterval: Cardinal;
     FMargins: TChartMargins;
     FOffset: TPoint;
@@ -275,13 +281,13 @@ type
   { TDataPointTool }
 
   TDataPointTool = class(TChartTool)
-  private
+  strict private
     FAffectedSeries: String;
     FGrabRadius: Integer;
+    function ParseAffectedSeries: TBooleanDynArray;
+  strict protected
     FPointIndex: Integer;
     FSeries: TBasicChartSeries;
-    function ParseAffectedSeries: TBooleanDynArray;
-  protected
     procedure FindNearestPoint(APoint: TPoint);
   public
     constructor Create(AOwner: TComponent); override;
@@ -310,7 +316,7 @@ type
   { TDataPointClickTool }
 
   TDataPointClickTool = class(TDataPointTool)
-  private
+  strict private
     FMouseDownPoint: TPoint;
     FOnPointClick: TChartToolEvent;
   public
@@ -678,10 +684,17 @@ procedure TChartTool.SetToolset(AValue: TChartToolset);
 begin
   if FToolset = AValue then exit;
   if FToolset <> nil then
-    FToolset.FTools.Remove(Self);
+    FToolset.Tools.Remove(Self);
   FToolset := AValue;
   if FToolset <> nil then
-    FToolset.FTools.Add(Self);
+    FToolset.Tools.Add(Self);
+end;
+
+{ TChartTools }
+
+function TChartTools.GetEnumerator: TChartToolsEnumerator;
+begin
+  Result := TChartToolsEnumerator.Create(Self);
 end;
 
 { TChartToolset }
@@ -738,14 +751,11 @@ end;
 
 procedure TChartToolset.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
-  i: Integer;
   t: TChartTool;
 begin
-  for i := 0 to Tools.Count - 1 do begin
-    t := Item[i];
+  for t in Tools do
     if t.Owner = Root then
       Proc(t);
-  end;
 end;
 
 function TChartToolset.GetItem(AIndex: Integer): TChartTool;
@@ -1008,7 +1018,7 @@ end;
 constructor TBasicPanTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FActiveCursor := crSizeAll;
+  ActiveCursor := crSizeAll;
 end;
 
 procedure TBasicPanTool.PanBy(AOffset: TPoint);
@@ -1206,7 +1216,7 @@ end;
 constructor TDataPointDragTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FActiveCursor := crSizeAll;
+  ActiveCursor := crSizeAll;
 end;
 
 procedure TDataPointDragTool.MouseDown(APoint: TPoint);
