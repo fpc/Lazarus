@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, Controls, CustomTimer, Types,
-  TAChartUtils, TAGraph, TATypes;
+  TAChartUtils, TADrawUtils, TAGraph, TATypes;
 
 type
 
@@ -32,11 +32,14 @@ type
 
   TChartToolEvent = procedure (ATool: TChartTool; APoint: TPoint) of object;
 
+  TChartToolDrawingMode = (tdmDefault, tdmNormal, tdmXor);
+
   { TChartTool }
 
   TChartTool = class(TBasicChartTool)
   strict private
     FActiveCursor: TCursor;
+    FDrawingMode: TChartToolDrawingMode;
     FEnabled: Boolean;
     FEventsAfter: array [TChartToolEventId] of TChartToolEvent;
     FEventsBefore: array [TChartToolEventId] of TChartToolEvent;
@@ -48,10 +51,13 @@ type
     procedure SetActiveCursor(AValue: TCursor);
     procedure SetAfterEvent(AIndex: Integer; AValue: TChartToolEvent);
     procedure SetBeforeEvent(AIndex: Integer; AValue: TChartToolEvent);
+    procedure SetDrawingMode(AValue: TChartToolDrawingMode);
     procedure SetToolset(AValue: TChartToolset);
   protected
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
+    property DrawingMode: TChartToolDrawingMode
+      read FDrawingMode write SetDrawingMode default tdmDefault;
   strict protected
     procedure Activate; override;
     procedure Deactivate; override;
@@ -69,12 +75,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
+    function GetParentComponent: TComponent; override;
+    function HasParent: Boolean; override;
+  public
     procedure Assign(Source: TPersistent); override;
     procedure Dispatch(
       AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint); overload;
-    function GetParentComponent: TComponent; override;
+    procedure Draw(AChart: TChart; ADrawer: IChartDrawer); virtual;
     procedure Handled;
-    function HasParent: Boolean; override;
 
     property ActiveCursor: TCursor
       read FActiveCursor write SetActiveCursor default crDefault;
@@ -137,6 +145,7 @@ type
     function Dispatch(
       AChart: TChart; AEventId: TChartToolEventId;
       AShift: TShiftState; APoint: TPoint): Boolean; override;
+    procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
     property Item[AIndex: Integer]: TChartTool read GetItem; default;
   published
     property Tools: TChartTools read FTools;
@@ -185,7 +194,10 @@ type
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
+  public
+    procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
   published
+    property DrawingMode;
     property Proportional: Boolean
       read GetProportional write SetProportional stored false default false;
       deprecated;
@@ -566,6 +578,12 @@ begin
     ev(Self, APoint);
 end;
 
+procedure TChartTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
+begin
+  Unused(ADrawer);
+  FChart := AChart;
+end;
+
 function TChartTool.GetAfterEvent(AIndex: Integer): TChartToolEvent;
 begin
   Result := FEventsAfter[TChartToolEventId(AIndex)];
@@ -669,6 +687,12 @@ begin
   FChart.Cursor := ActiveCursor;
 end;
 
+procedure TChartTool.SetDrawingMode(AValue: TChartToolDrawingMode);
+begin
+  if FDrawingMode = AValue then exit;
+  FDrawingMode := AValue;
+end;
+
 procedure TChartTool.SetIndex(AValue: Integer);
 begin
   Toolset.Tools.Move(Index, EnsureRange(AValue, 0, Toolset.Tools.Count - 1));
@@ -747,6 +771,14 @@ begin
     if FIsHandled then exit(true);
   end;
   Result := false;
+end;
+
+procedure TChartToolset.Draw(AChart: TChart; ADrawer: IChartDrawer);
+var
+  t: TChartTool;
+begin
+  for t in Tools do
+    t.Draw(AChart, ADrawer);
 end;
 
 procedure TChartToolset.GetChildren(Proc: TGetChildProc; Root: TComponent);
@@ -849,6 +881,19 @@ end;
 
 { TZoomDragTool }
 
+procedure TZoomDragTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
+begin
+  if not IsActive or IsAnimating then exit;
+  inherited;
+  case DrawingMode of
+    tdmDefault, tdmXor:
+      PrepareXorPen(FChart.Canvas);
+    tdmNormal:
+      FChart.Drawer.PrepareSimplePen($0);
+  end;
+  FChart.Drawer.Rectangle(FSelectionRect);
+end;
+
 function TZoomDragTool.GetProportional: Boolean;
 begin
   Result := RatioLimit = zrlProportional;
@@ -866,10 +911,18 @@ end;
 procedure TZoomDragTool.MouseMove(APoint: TPoint);
 begin
   if not IsActive or IsAnimating then exit;
-  PrepareXorPen(FChart.Canvas);
-  FChart.Canvas.Rectangle(FSelectionRect);
-  FSelectionRect.BottomRight := APoint;
-  FChart.Canvas.Rectangle(FSelectionRect);
+  case DrawingMode of
+    tdmDefault, tdmXor: begin
+      PrepareXorPen(FChart.Canvas);
+      FChart.Canvas.Rectangle(FSelectionRect);
+      FSelectionRect.BottomRight := APoint;
+      FChart.Canvas.Rectangle(FSelectionRect);
+    end;
+    tdmNormal: begin
+      FSelectionRect.BottomRight := APoint;
+      FChart.StyleChanged(Self);
+    end;
+  end;
   Handled;
 end;
 

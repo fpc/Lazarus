@@ -111,6 +111,7 @@ type
     function Dispatch(
       AChart: TChart; AEventId: TChartToolEventId;
       AShift: TShiftState; APoint: TPoint): Boolean; virtual; abstract; overload;
+      procedure Draw(AChart: TChart; ADrawer: IChartDrawer); virtual; abstract;
   end;
 
   TBasicChartSeriesEnumerator = class(TFPListEnumerator)
@@ -297,6 +298,7 @@ type
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure StyleChanged(Sender: TObject); override;
     procedure ZoomFull; override;
+    property Drawer: IChartDrawer read FDrawer;
 
   public // Coordinate conversion
     function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
@@ -746,6 +748,7 @@ begin
     ldd.FItems.Free;
   end;
   DrawReticule(ADrawer);
+  GetToolset.Draw(Self, ADrawer);
 
   for s in Series do
     s.AfterDraw;
