@@ -355,6 +355,7 @@ object Form1: TForm1
           Source = rcsUser
         end
         object ChartUserConstantLine1: TConstantLine
+          AxisIndexX = 1
           LineStyle = lsVertical
           Pen.Color = clFuchsia
           Pen.Width = 2

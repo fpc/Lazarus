@@ -105,7 +105,7 @@ procedure TForm1.catUserUserDefinedAxisTransform1AxisToGraph(
 const
   R1 = 8.0;
   C = 2.5;
-  R2 = R1 * 0.5 / C;
+  R2 = R1 / C;
 var
   zx: Double;
 begin

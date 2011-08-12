@@ -630,12 +630,12 @@ begin
   with ParentChart do
     case LineStyle of
       lsHorizontal: begin
-        p := YGraphToImage(AxisToGraphX(FPosition));
+        p := YGraphToImage(AxisToGraphX(Position));
         DrawLineHoriz(ADrawer, p);
         Arrow.Draw(ADrawer, Point(ClipRect.Right - 1, p), 0);
       end;
       lsVertical: begin
-        p := XGraphToImage(AxisToGraphX(FPosition));
+        p := XGraphToImage(AxisToGraphX(Position));
         DrawLineVert(ADrawer, p);
         Arrow.Draw(ADrawer, Point(p, ClipRect.Top), -Pi / 2);
       end;
@@ -665,11 +665,11 @@ begin
   // Return the actual nearest point of the line.
   if LineStyle = lsVertical then begin
     AValue.Y := FChart.YImageToGraph(APoint.Y);
-    AImg.X := FChart.XGraphToImage(Position);
+    AImg.X := FChart.XGraphToImage(AxisToGraphX(Position));
   end
   else begin
     AValue.X := FChart.XImageToGraph(APoint.X);
-    AImg.Y := FChart.YGraphToImage(Position);
+    AImg.Y := FChart.YGraphToImage(AxisToGraphX(Position));
   end;
   SavePosToCoord(AValue);
 end;
@@ -683,9 +683,9 @@ procedure TConstantLine.MovePoint(var AIndex: Integer; const ANewPos: TPoint);
 begin
   Unused(AIndex);
   if LineStyle = lsVertical then
-    Position := FChart.XImageToGraph(ANewPos.X)
+    Position := GraphToAxisX(FChart.XImageToGraph(ANewPos.X))
   else
-    Position := FChart.YImageToGraph(ANewPos.Y);
+    Position := GraphToAxisX(FChart.YImageToGraph(ANewPos.Y));
 end;
 
 procedure TConstantLine.SavePosToCoord(var APoint: TDoublePoint);
