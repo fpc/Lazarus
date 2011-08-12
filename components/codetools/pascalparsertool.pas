@@ -1214,8 +1214,16 @@ begin
     end;
     if not Extract then
       ReadNextAtom
-    else
+    else begin
       ExtractNextAtom(not (phpWithoutBrackets in Attr),Attr);
+      if (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose])
+      and (Src[CurPos.StartPos] = CloseBracket)
+      then begin                               // skip parenthesis
+        ExtractMemStream.Position := ExtractMemStream.Position - 1;
+        ReadNextAtom;
+        Exit(True);
+      end;
+    end;
   end else
     CloseBracket:=#0;
   if not (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]) then begin
