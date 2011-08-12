@@ -75,6 +75,7 @@ begin
   ProjectWizardDialog := TProjectWizardDialog.create(nil);
   with ProjectWizardDialog do
   begin
+    Caption:=lisProjectWizard;
     btnNewProject.caption:=lisPWNewProject;
     btnOpenProject.caption:=lisPWOpenProject;
     btnConvertProject.caption:=lisPWConvertProject;

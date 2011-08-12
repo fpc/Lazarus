@@ -921,6 +921,8 @@ var
   FileVersion: integer;
 
   procedure AddRecentProjectInitial(aProjPath, aProjFile: string);
+  // Add a project to the list of recent projects if the project has write access.
+  // The check can be removed when the IDE allows compiling read-only projects.
   var
     WholeFilePath: String;
   begin
