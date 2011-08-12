@@ -243,7 +243,9 @@ begin
     begin
       CreateDesignerMenu;
       DesignerMainMenu.RealignDesigner;
-    end;
+     end
+     else
+       Close;
   end;
 end;
 
