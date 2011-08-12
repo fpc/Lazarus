@@ -211,6 +211,7 @@ type
   TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol)
     callback  : TCommonCallback;
     list      : TCocoaComboBoxList;
+    resultNS  : NSString;  //use to return values to combo
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id;
       message 'comboBox:objectValueForItemAtIndex:';
     function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger;
@@ -241,10 +242,12 @@ type
   TCocoaListView = objcclass(NSTableView, NSTableViewDataSourceProtocol)
     callback  : TCommonCallback;
     list      : TCocoaStringList;
+    resultNS  : NSString;  //use to return values to combo
     function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
     function tableView_objectValueForTableColumn_row(tableView: NSTableView;
       objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
       message 'tableView:objectValueForTableColumn:row:';
+    procedure dealloc; override;
   end;
 
   { TCocoaGroupBox }
@@ -654,8 +657,24 @@ begin
     Result:=nil
   else begin
     if row>=list.count then Result:=nil
-    else Result:=NSStringUtf8(list[row]);
+    else
+    begin
+      resultNS.release;  //so we can reuse it
+      resultNS := NSStringUtf8(list[row]);
+      Result:= ResultNS;
+    end;
   end;
+end;
+
+procedure TCocoaListView.dealloc;
+begin
+  if Assigned(list) then
+  begin
+    list.Free;
+    list:=nil;
+  end;
+  resultNS.release;
+  inherited dealloc;
 end;
 
 { TCocoaStringList }
@@ -703,10 +722,12 @@ end;
 
 procedure TCocoaComboBox.dealloc;
 begin
-  if Assigned(list) then begin
+  if Assigned(list) then
+  begin
     list.Free;
     list:=nil;
   end;
+  resultNS.release;
   inherited dealloc;
 end;
 

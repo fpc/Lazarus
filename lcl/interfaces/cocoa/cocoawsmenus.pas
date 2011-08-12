@@ -143,9 +143,10 @@ begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) or not Assigned(AMenuItem.Parent) or (AMenuItem.Parent.Handle=0) then Exit;
   ParObj:=NSObject(AMenuItem.Parent.Handle);
 
-  if ParObj.isKindOfClass_(NSMenuItem) then begin
+  if ParObj.isKindOfClass_(NSMenuItem) then
+  begin
     item:=NSMenuItem(AMenuItem.Handle);
-    if not item.hasSubmenu then item.setSubmenu(TCocoaMenu.alloc.initWithTitle(NSString.alloc.init));
+    if not item.hasSubmenu then item.setSubmenu(TCocoaMenu.alloc.initWithTitle(NSSTR('')));
     Parent:=TCocoaMenu(item.submenu);
   end else if ParObj.isKindOfClass_(NSMenu) then
     Parent:=TCocoaMenu(ParObj)
@@ -172,7 +173,8 @@ begin
 
   if AMenuItem.Caption='-' then
     item:=NSMenuItem.separatorItem
-  else begin
+  else
+  begin
     ns := NSStringUtf8(AMenuItem.Caption);
     item:=TCocoaMenuItem.alloc.initWithTitle_action_keyEquivalent(
       NSStringUtf8(AMenuItem.Caption),

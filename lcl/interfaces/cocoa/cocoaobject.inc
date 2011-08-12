@@ -189,7 +189,8 @@ var
 begin
   if not Assigned(NSApp.dockTile) then Exit;
   //todo: setBadgeLabel is for 10.5 only, should be removed
-  if NSApp.dockTile.respondsToSelector_(objcselector('setBadgeLabel:')) then begin
+  if NSApp.dockTile.respondsToSelector_(objcselector('setBadgeLabel:')) then
+  begin
     ns := NSStringUtf8(ATitle);
     NSApp.dockTile.setBadgeLabel(NSStringUtf8(ATitle));
     ns.release;
