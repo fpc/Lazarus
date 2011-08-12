@@ -766,7 +766,7 @@ begin
       if sz = sizeof( CFGregorianDate ) then
       begin
 	CFGregorianDatePtr(ptr)^ := inData.date;
-        if (inData.selDay>0) and (inData.selDay<inData.daysInMonth) then
+        if (inData.selDay>0) and (inData.selDay<=inData.daysInMonth) then
           CFGregorianDatePtr(ptr)^.day := inData.selDay;
       end
       else
