@@ -70,6 +70,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); override;
     procedure Toggle(AIndex: Integer);
+    procedure CheckAll(AState: TCheckBoxState; AllowGrayed: Boolean = True; AllowDisabled: Boolean = True);
     
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default False;
     property Checked[AIndex: Integer]: Boolean read GetChecked write SetChecked;
@@ -212,6 +213,17 @@ const
   );
 begin
   State[AIndex] := NextStateMap[State[AIndex]][AllowGrayed];
+end;
+
+procedure TCustomCheckListBox.CheckAll(AState: TCheckBoxState;
+  AllowGrayed: Boolean; AllowDisabled: Boolean);
+var
+  i: Integer;
+begin
+  for i := 0 to Items.Count - 1 do begin
+    if (AllowGrayed or (State[i] <> cbGrayed)) and (AllowDisabled or ItemEnabled[i]) then
+      State[i] := AState;
+  end;
 end;
 
 procedure TCustomCheckListBox.DoChange(var Msg: TLMessage);
