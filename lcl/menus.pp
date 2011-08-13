@@ -229,6 +229,7 @@ type
     function IndexOfCaption(const ACaption: string): Integer; virtual;
     function VisibleIndexOf(Item: TMenuItem): Integer;
     procedure Add(Item: TMenuItem);
+    procedure Add(const AItems: array of TMenuItem);
     procedure AddSeparator;
     procedure Click; virtual;
     procedure Delete(Index: Integer);

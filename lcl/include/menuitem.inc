@@ -30,6 +30,14 @@ begin
   Insert(GetCount, Item);
 end;
 
+procedure TMenuItem.Add(const AItems: array of TMenuItem);
+var
+  i: Integer;
+begin
+  for i := Low(AItems) to High(AItems) do
+    Add(AItems[i]);
+end;
+
 {------------------------------------------------------------------------------
   procedure TMenuItem.AddSeparator;
  ------------------------------------------------------------------------------}
