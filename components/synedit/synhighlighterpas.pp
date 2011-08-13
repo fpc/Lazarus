@@ -1827,8 +1827,8 @@ begin
 
       if InClass then
         fRange := fRange + [rsAfterClassMembers];
-      fRange := fRange + [rsInProcHeader];
     end;
+    fRange := fRange + [rsInProcHeader];
     Result := tkKey;
   end
   else Result := tkIdentifier;
