@@ -15,19 +15,21 @@ object Form1: TForm1
     Width = 554
     AxisList = <    
       item
+        Minors = <>
         Title.LabelFont.Orientation = 900
       end    
       item
         Alignment = calBottom
+        Minors = <>
       end>
-    Extent.XMin = -3
-    Extent.YMin = -2
-    Extent.XMax = 3
-    Extent.YMax = 2
-    Extent.UseXMin = True
-    Extent.UseYMin = True
     Extent.UseXMax = True
+    Extent.UseXMin = True
     Extent.UseYMax = True
+    Extent.UseYMin = True
+    Extent.XMax = 3
+    Extent.XMin = -3
+    Extent.YMax = 2
+    Extent.YMin = -2
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
     ReticuleMode = rmCross
@@ -189,11 +191,6 @@ object Form1: TForm1
       ActiveCursor = crSizeNS
       Directions = [pdUp, pdDown]
     end
-    object ChartToolset1ReticuleTool1: TReticuleTool
-      Shift = [ssCtrl]
-      OnAfterKeyUp = ChartToolset1ReticuleTool1AfterKeyUp
-      OnAfterMouseMove = ChartToolset1ReticuleTool1AfterMouseMove
-    end
     object ChartToolset1DataPointDragTool1: TDataPointDragTool
       Shift = [ssAlt, ssLeft]
       OnBeforeMouseMove = ChartToolset1DataPointDragTool1BeforeMouseMove
@@ -206,6 +203,13 @@ object Form1: TForm1
       Margins.Top = 30
       Margins.Right = 30
       Margins.Bottom = 30
+    end
+    object ChartToolset1DataPointCrosshairTool1: TDataPointCrosshairTool
+      Shift = [ssCtrl]
+      OnAfterKeyUp = ChartToolset1DataPointCrosshairTool1AfterKeyUp
+      OnAfterMouseMove = ChartToolset1DataPointCrosshairTool1AfterMouseMove
+      GrabRadius = 200
+      OnDraw = ChartToolset1DataPointCrosshairTool1Draw
     end
   end
   object RandomChartSource1: TRandomChartSource

@@ -19,12 +19,12 @@ type
     ChartLine1: TConstantLine;
     Chart1FuncSeries1: TFuncSeries;
     ChartToolset1: TChartToolset;
+    ChartToolset1DataPointCrosshairTool1: TDataPointCrosshairTool;
     ChartToolset1DataPointDragTool1: TDataPointDragTool;
     ChartToolset1PanAny: TPanDragTool;
     ChartToolset1PanClickTool1: TPanClickTool;
     ChartToolset1PanHor: TPanDragTool;
     ChartToolset1PanVert: TPanDragTool;
-    ChartToolset1ReticuleTool1: TReticuleTool;
     ChartToolset1ZoomDragTool1: TZoomDragTool;
     ChartToolset1ZoomOut: TZoomClickTool;
     ChartToolset1ZoomIn: TZoomClickTool;
@@ -38,11 +38,13 @@ type
     procedure cbAnimateClick(Sender: TObject);
     procedure cbFixedPointChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
+    procedure ChartToolset1DataPointCrosshairTool1AfterKeyUp(ATool: TChartTool;
+      APoint: TPoint);
+    procedure ChartToolset1DataPointCrosshairTool1AfterMouseMove(
+      ATool: TChartTool; APoint: TPoint);
+    procedure ChartToolset1DataPointCrosshairTool1Draw(
+      ASender: TDataPointCrosshairTool);
     procedure ChartToolset1DataPointDragTool1BeforeMouseMove(ATool: TChartTool;
-      APoint: TPoint);
-    procedure ChartToolset1ReticuleTool1AfterKeyUp(ATool: TChartTool;
-      APoint: TPoint);
-    procedure ChartToolset1ReticuleTool1AfterMouseMove(ATool: TChartTool;
       APoint: TPoint);
     procedure rgPanClick(Sender: TObject);
     procedure rgZoomClick(Sender: TObject);
@@ -81,6 +83,27 @@ begin
   AY := Sin(AX * 10) + 0.7 * Cos(AX * 30) + 0.3 * Sin(AX * 80);
 end;
 
+procedure TForm1.ChartToolset1DataPointCrosshairTool1AfterKeyUp(
+  ATool: TChartTool; APoint: TPoint);
+begin
+  ChartToolset1DataPointCrosshairTool1.Hide;
+end;
+
+procedure TForm1.ChartToolset1DataPointCrosshairTool1AfterMouseMove(
+  ATool: TChartTool; APoint: TPoint);
+begin
+  Chart1.SetFocus;
+end;
+
+procedure TForm1.ChartToolset1DataPointCrosshairTool1Draw(
+  ASender: TDataPointCrosshairTool);
+const
+  R = 20;
+begin
+  with Chart1.GraphToImage(ASender.Position) do
+    Chart1.Drawer.Ellipse(X - R, Y - R, X + R, Y + R);
+end;
+
 procedure TForm1.ChartToolset1DataPointDragTool1BeforeMouseMove(
   ATool: TChartTool; APoint: TPoint);
 const
@@ -95,18 +118,6 @@ begin
     then
       Handled;
   end;
-end;
-
-procedure TForm1.ChartToolset1ReticuleTool1AfterKeyUp(
-  ATool: TChartTool; APoint: TPoint);
-begin
-  Chart1.ReticulePos := Point(-1, -1);
-end;
-
-procedure TForm1.ChartToolset1ReticuleTool1AfterMouseMove(ATool: TChartTool;
-  APoint: TPoint);
-begin
-  Chart1.SetFocus;
 end;
 
 procedure TForm1.rgPanClick(Sender: TObject);
