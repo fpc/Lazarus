@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-11 01:16+0300\n"
+"PO-Revision-Date: 2011-08-13 21:49+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2858,7 +2858,8 @@ msgstr "Целевой процессор"
 msgid "Directory for building test projects"
 msgstr "Каталог для сборки пробных проектов"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "Н&айти текст"
 
@@ -7840,21 +7841,23 @@ msgstr "Фильтр: %s"
 msgid "Filter Sets"
 msgstr "Наборы фильтров"
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "&Учитывать регистр"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr "Ката&лог"
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "Параметры каталогов"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
-msgstr "Маска файлов"
+#| msgid "File mask"
+msgid "Fi&le mask"
+msgstr "Маска фа&йлов"
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
-msgstr "Искать в подкаталогах"
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
+msgstr "&Искать в подкаталогах"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
 msgid "&Multiline pattern"
@@ -7863,10 +7866,6 @@ msgstr "Многострочный &шаблон"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "Только текстовые файлы"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "&Регулярные выражения"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7880,17 +7879,9 @@ msgstr "искать во всех &открытых файлах"
 msgid "search in &directories"
 msgstr "искать в &каталогах"
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "Искать текст:"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Где"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "&Только целые слова"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

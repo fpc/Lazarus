@@ -2832,7 +2832,8 @@ msgstr "המעבד שאליו מתאימה התוכנית"
 msgid "Directory for building test projects"
 msgstr "תיקייה לבניית פרוייקטים לנסיון"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "טקסט לחיפוש"
 
@@ -7821,20 +7822,22 @@ msgstr "מסנן: s%"
 msgid "Filter Sets"
 msgstr "הגדרת מסנן"
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "תלוי בריש&יות"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "אפשרויות ספרייה"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "כלול תיקיות משנה"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7844,10 +7847,6 @@ msgstr "דפוס רב שורות"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "רק קבצי טקסט"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "ביטויים רגו&לריים"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7861,17 +7860,9 @@ msgstr "חפש את כל הקבצים הפתוחים&"
 msgid "search in &directories"
 msgstr "חפש בס&פריות"
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "טקסט לחיפוש:"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "מיקום"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "מילים שלמו&ת בלבד"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

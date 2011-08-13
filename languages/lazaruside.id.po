@@ -2835,7 +2835,8 @@ msgstr ""
 msgid "Directory for building test projects"
 msgstr "Direktori untuk pembangunan proyek tes"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "&Teks yang Dicari"
 
@@ -7829,8 +7830,8 @@ msgstr ""
 msgid "Filter Sets"
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
@@ -7838,11 +7839,13 @@ msgid "Directory options"
 msgstr "Opsi direktori"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "Sertakan sub direktori"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7852,10 +7855,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "Hanya file teks"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7869,17 +7868,9 @@ msgstr ""
 msgid "search in &directories"
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "Teks yang dicari:"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Dimana"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr ""
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

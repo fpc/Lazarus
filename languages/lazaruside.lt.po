@@ -2843,7 +2843,8 @@ msgstr "Skirtas procesoriui"
 msgid "Directory for building test projects"
 msgstr "Aplankas testo projektų darymui"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "Ieškomasis t&ekstas"
 
@@ -7839,20 +7840,22 @@ msgstr ""
 msgid "Filter Sets"
 msgstr "Filtrų aibės"
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "Skirti raidžių &dydį"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "Aplanko parinktys"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "Ir pakatalogiuose"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7862,10 +7865,6 @@ msgstr "&Keletos eilučių šablonas"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "Tik teksto failai"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "&Reguliarusis reiškinys"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7879,17 +7878,9 @@ msgstr "Visuose &atvertuose failuose"
 msgid "search in &directories"
 msgstr "Aplan&kuose"
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "Ieškoti teksto:"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Kur"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "Tik vie&ntisi žodžiai"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

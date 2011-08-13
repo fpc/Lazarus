@@ -2805,7 +2805,8 @@ msgstr "Kohde prosessori"
 msgid "Directory for building test projects"
 msgstr "Kansio jossa käännetään testiprojektit"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "Etsittävä"
 
@@ -7753,20 +7754,22 @@ msgstr "Suodatin: %s"
 msgid "Filter Sets"
 msgstr "Suodatinryhmät"
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "Sama kirjainkoko"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "Kansion lisäasetukset"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "Sisällytetään myös alikansiot "
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7776,10 +7779,6 @@ msgstr "Monirivinen"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "Vain tekstitiedostot"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "Säännölliset lausekkeet"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7793,17 +7792,9 @@ msgstr "Hae kaikista avoinna olevista tiedostoista"
 msgid "search in &directories"
 msgstr "Etsi kansioista"
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "Etsittävä teksti:"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Mistä"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "Etsi vain kokonaisia sanoja"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

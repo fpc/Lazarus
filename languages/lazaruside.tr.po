@@ -2817,7 +2817,8 @@ msgstr ""
 msgid "Directory for building test projects"
 msgstr ""
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "Aranacak Me&tin"
 
@@ -7775,20 +7776,20 @@ msgstr ""
 msgid "Filter Sets"
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "Büyük/Küçük harf duyarlı"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7798,10 +7799,6 @@ msgstr "Çok satırlı şablon"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr ""
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "Düzenli ifadeler"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7815,17 +7812,9 @@ msgstr ""
 msgid "search in &directories"
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr ""
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr ""
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "Yalnızca eşleşen sözcükler"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

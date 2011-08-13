@@ -2833,7 +2833,8 @@ msgstr ""
 msgid "Directory for building test projects"
 msgstr "Directori per a muntar els projectes de prova"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "Cerca el &text"
 
@@ -7813,8 +7814,8 @@ msgstr ""
 msgid "Filter Sets"
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
@@ -7822,11 +7823,13 @@ msgid "Directory options"
 msgstr "Opcions del directori"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "Inclou els subdirectoris"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7836,10 +7839,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "Només fitxers de text"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7853,17 +7852,9 @@ msgstr ""
 msgid "search in &directories"
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "Text a cercar:"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "On"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr ""
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

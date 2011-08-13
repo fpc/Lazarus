@@ -2846,7 +2846,8 @@ msgstr "目标处理器"
 msgid "Directory for building test projects"
 msgstr "工程构建测试目录"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "查找文本(&T)"
 
@@ -7846,20 +7847,22 @@ msgstr ""
 msgid "Filter Sets"
 msgstr "过滤设置"
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "区分大小写(&C)"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "目录选项"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "包括子目录"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7869,10 +7872,6 @@ msgstr "多行模式(&M)"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "只在文本文件"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "正则表达式(&R)"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7886,17 +7885,9 @@ msgstr "搜索所有打开的文件(&o)"
 msgid "search in &directories"
 msgstr "在目录中搜索(&d)"
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "查找文本:"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "位置"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "仅整词(&W)"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

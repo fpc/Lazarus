@@ -2833,7 +2833,8 @@ msgstr ""
 msgid "Directory for building test projects"
 msgstr "Folder voor bouwen van test projecten"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "&Zoek tekst"
 
@@ -7821,8 +7822,8 @@ msgstr ""
 msgid "Filter Sets"
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
@@ -7830,11 +7831,13 @@ msgid "Directory options"
 msgstr "Folder opties"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "Include sub directories"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7844,10 +7847,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "Alleen tekst bestanden"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7861,17 +7860,9 @@ msgstr ""
 msgid "search in &directories"
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "Te zoeken tekst"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Waar"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr ""
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

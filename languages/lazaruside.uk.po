@@ -2811,7 +2811,8 @@ msgstr "Цільовий процесор"
 msgid "Directory for building test projects"
 msgstr "Тека для побудови пробних проектів"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "&Текст не знайдено"
 
@@ -7758,20 +7759,22 @@ msgstr "Фільтр: %s"
 msgid "Filter Sets"
 msgstr "Набори Фільтрів"
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "&Чутливий до регістру"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "Параметри тек"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "Включити підтеки"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7781,10 +7784,6 @@ msgstr "&Багаторядковий шаблон"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "Тільки текстові файли"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "&Регулярні вирази"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7798,17 +7797,9 @@ msgstr "шукати в усіх від&критих файлах"
 msgid "search in &directories"
 msgstr "шукати в &директоріях"
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "Шукати текст:"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Де"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "&Лише цілі слова"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

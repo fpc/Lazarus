@@ -2826,7 +2826,8 @@ msgstr "Cílový procesor"
 msgid "Directory for building test projects"
 msgstr "Složka pro sestavení pokusných projektů"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "&Text k nalezení"
 
@@ -7802,20 +7803,22 @@ msgstr "Filtr: %s"
 msgid "Filter Sets"
 msgstr "Sady filtrů"
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "&Rozlišovat velikost znaků"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "Nastavení složky"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "Zahrnout podadresáře"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7825,10 +7828,6 @@ msgstr "&Víceřádkový vzor"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "Pouze textové soubory"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "&Regulární výrazy"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7842,17 +7841,9 @@ msgstr "hledat všechny &otevřené soubory"
 msgid "search in &directories"
 msgstr "hledat v &adresářích"
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "Text k nalezení:"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Kde"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "&Pouze celková slova"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

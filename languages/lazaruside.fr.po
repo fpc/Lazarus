@@ -2857,7 +2857,8 @@ msgstr "Processeur cible"
 msgid "Directory for building test projects"
 msgstr "Répertoire pour la création de projets test"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "&Texte à trouver"
 
@@ -7852,20 +7853,22 @@ msgstr "Filtre: %s"
 msgid "Filter Sets"
 msgstr "Jeu de filtres"
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "&Sensible à la casse"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "Options du répertoire"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "Inclure les sous-répertoires"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7875,10 +7878,6 @@ msgstr "Modèle &Multi-ligne"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "Seulement les fichiers texte"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "&Expressions régulières"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7892,17 +7891,9 @@ msgstr "Rechercher dans tous les fichiers &ouverts"
 msgid "search in &directories"
 msgstr "Rechercher dans les &répertoires"
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "Texte à trouver :"
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "Ou"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "&Mots entiers seulement"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"

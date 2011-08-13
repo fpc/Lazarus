@@ -2844,7 +2844,8 @@ msgstr "対象プロセッサ"
 msgid "Directory for building test projects"
 msgstr "テストプロジェクトを構築するディレクトリ"
 
-#: lazarusidestrconsts.dlgtexttofing
+#: lazarusidestrconsts.dlgtexttofind
+msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to Find"
 msgstr "検索テキスト(&T)"
 
@@ -7851,20 +7852,22 @@ msgstr "フィルタ: %s"
 msgid "Filter Sets"
 msgstr "フィルタセット"
 
-#: lazarusidestrconsts.lisfindfilecasesensitive
-msgid "&Case sensitive"
-msgstr "大文字小文字を区別(&C)"
+#: lazarusidestrconsts.lisfindfiledirectory
+msgid "D&irectory"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "ディレクトリオプション"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-msgid "File mask"
+msgid "Fi&le mask"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-msgid "Include sub directories"
+#, fuzzy
+#| msgid "Include sub directories"
+msgid "Include &sub directories"
 msgstr "インクルードサブディレクトリ"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
@@ -7874,10 +7877,6 @@ msgstr "複数行パターン(&M)"
 #: lazarusidestrconsts.lisfindfileonlytextfiles
 msgid "Only text files"
 msgstr "テキストファイルのみ"
-
-#: lazarusidestrconsts.lisfindfileregularexpressions
-msgid "&Regular expressions"
-msgstr "正規表現(&R)"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -7891,17 +7890,9 @@ msgstr "すべて検索し、ファイルを開く(&o)"
 msgid "search in &directories"
 msgstr "ディレクトリ内を検索(&d)"
 
-#: lazarusidestrconsts.lisfindfiletexttofind
-msgid "Text to find:"
-msgstr "検索するテキスト："
-
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
 msgstr "どこに"
-
-#: lazarusidestrconsts.lisfindfilewholewordsonly
-msgid "&Whole words only"
-msgstr "単語全体のみ(&W)"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"
