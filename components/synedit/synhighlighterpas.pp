@@ -1857,8 +1857,8 @@ begin
 
       if InClass then
         fRange := fRange + [rsAfterClassMembers];
-      fRange := fRange + [rsInProcHeader];
     end;
+    fRange := fRange + [rsInProcHeader];
     Result := tkKey;
   end
   {$IFDEF SYN_LAZARUS}
@@ -2813,6 +2813,8 @@ begin
   fTokenID := tkSymbol;
   PasCodeFoldRange.DecBracketNestLevel;
   fRange := fRange + [rsAtClosingBracket];
+  if (PasCodeFoldRange.BracketNestLevel = 0) then
+    Exclude(fRange, rsInProcHeader);
 end;
 
 procedure TSynPasSyn.SquareOpenProc;
