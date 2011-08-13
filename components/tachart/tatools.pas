@@ -377,7 +377,7 @@ type
     FOnDraw: TChartCrosshairDrawEvent;
     FPosition: TDoublePoint;
     FShape: TChartCrosshairShape;
-
+    FSize: Integer;
     procedure DoDraw;
   public
     constructor Create(AOwner: TComponent); override;
@@ -390,6 +390,7 @@ type
     property OnDraw: TChartCrosshairDrawEvent read FOnDraw write FOnDraw;
     property Shape: TChartCrosshairShape
       read FShape write FShape default ccsCross;
+    property Size: Integer read FSize write FSize default -1;
   end;
 
   { TReticuleTool }
@@ -1424,7 +1425,7 @@ end;
 constructor TDataPointCrosshairTool.Create(AOwner: TComponent);
 begin
   inherited;
-  SetPropDefaults(Self, ['Shape']);
+  SetPropDefaults(Self, ['Shape', 'Size']);
 end;
 
 procedure TDataPointCrosshairTool.DoDraw;
@@ -1433,9 +1434,15 @@ var
 begin
   p := FChart.GraphToImage(Position);
   if Shape in [ccsVertical, ccsCross] then
-    FChart.DrawLineVert(FChart.Drawer, p.X);
+    if Size < 0 then
+      FChart.DrawLineVert(FChart.Drawer, p.X)
+    else
+      FChart.Drawer.Line(p - Point(0, Size), p + Point(0, Size));
   if Shape in [ccsHorizontal, ccsCross] then
-    FChart.DrawLineHoriz(FChart.Drawer, p.Y);
+    if Size < 0 then
+      FChart.DrawLineHoriz(FChart.Drawer, p.Y)
+    else
+      FChart.Drawer.Line(p - Point(Size, 0), p + Point(Size, 0));
 end;
 
 procedure TDataPointCrosshairTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
