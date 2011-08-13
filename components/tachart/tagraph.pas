@@ -1024,20 +1024,26 @@ begin
 end;
 
 procedure TChart.KeyDownAfterInterface(var AKey: Word; AShift: TShiftState);
+var
+  p: TPoint;
 begin
-  if GetToolset.Dispatch(Self, evidKeyDown, AShift, Mouse.CursorPos) then exit;
+  p := ScreenToClient(Mouse.CursorPos);
+  if GetToolset.Dispatch(Self, evidKeyDown, AShift, p) then exit;
   inherited;
 end;
 
 procedure TChart.KeyUpAfterInterface(var AKey: Word; AShift: TShiftState);
+var
+  p: TPoint;
 begin
+  p := ScreenToClient(Mouse.CursorPos);
   // To find a tool, toolset must see the shift state with the key still down.
   case AKey of
     VK_CONTROL: AShift += [ssCtrl];
     VK_MENU: AShift += [ssAlt];
     VK_SHIFT: AShift += [ssShift];
   end;
-  if GetToolset.Dispatch(Self, evidKeyUp, AShift, Mouse.CursorPos) then exit;
+  if GetToolset.Dispatch(Self, evidKeyUp, AShift, p) then exit;
   inherited;
 end;
 
