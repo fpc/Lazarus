@@ -382,6 +382,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
+    procedure Hide;
+    procedure KeyDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     property Position: TDoublePoint read FPosition;
   published
@@ -1443,10 +1445,13 @@ begin
       FChart.DrawLineHoriz(FChart.Drawer, p.Y)
     else
       FChart.Drawer.Line(p - Point(Size, 0), p + Point(Size, 0));
+  if Assigned(OnDraw) then
+    OnDraw(Self);
 end;
 
 procedure TDataPointCrosshairTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
+  if FSeries = nil then exit;
   inherited;
   case EffectiveDrawingMode of
     tdmXor:
@@ -1457,21 +1462,34 @@ begin
   DoDraw;
 end;
 
-procedure TDataPointCrosshairTool.MouseMove(APoint: TPoint);
+procedure TDataPointCrosshairTool.Hide;
 begin
-  FindNearestPoint(APoint);
   if FSeries = nil then exit;
+  FSeries := nil;
   case EffectiveDrawingMode of
     tdmXor: begin
       PrepareXorPen(FChart.Canvas);
       DoDraw;
-      FPosition := FNearestGraphPoint;
-      DoDraw;
     end;
-    tdmNormal: begin
-      FPosition := FNearestGraphPoint;
+    tdmNormal:
       FChart.StyleChanged(Self);
-    end;
+  end;
+end;
+
+procedure TDataPointCrosshairTool.KeyDown(APoint: TPoint);
+begin
+  MouseMove(APoint);
+end;
+
+procedure TDataPointCrosshairTool.MouseMove(APoint: TPoint);
+begin
+  Hide;
+  FindNearestPoint(APoint);
+  if FSeries = nil then exit;
+  FPosition := FNearestGraphPoint;
+  if EffectiveDrawingMode = tdmXor then begin
+    PrepareXorPen(FChart.Canvas);
+    DoDraw;
   end;
 end;
 
