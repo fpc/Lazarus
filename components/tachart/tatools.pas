@@ -293,10 +293,6 @@ type
     property Margins: TChartMargins read FMargins write FMargins;
   end;
 
-const
-  DEF_GRAB_RADIUS = 4;
-
-type
   { TDataPointTool }
 
   TDataPointTool = class(TChartTool)
@@ -305,6 +301,7 @@ type
     FGrabRadius: Integer;
     function ParseAffectedSeries: TBooleanDynArray;
   strict protected
+    FNearestGraphPoint: TDoublePoint;
     FPointIndex: Integer;
     FSeries: TBasicChartSeries;
     procedure FindNearestPoint(APoint: TPoint);
@@ -314,10 +311,8 @@ type
     property PointIndex: Integer read FPointIndex;
     property Series: TBasicChartSeries read FSeries;
   published
-    property AffectedSeries: String
-      read FAffectedSeries write FAffectedSeries;
-    property GrabRadius: Integer
-      read FGrabRadius write FGrabRadius default DEF_GRAB_RADIUS;
+    property AffectedSeries: String read FAffectedSeries write FAffectedSeries;
+    property GrabRadius: Integer read FGrabRadius write FGrabRadius default 4;
   end;
 
   { TDataPointDragTool }
@@ -368,6 +363,33 @@ type
     property OnHint: TChartToolHintEvent read FOnHint write FOnHint;
     property UseDefaultHintText: Boolean
       read FUseDefaultHintText write FUseDefaultHintText default true;
+  end;
+
+  TDataPointCrosshairTool = class;
+
+  TChartCrosshairDrawEvent = procedure (
+    ASender: TDataPointCrosshairTool) of object;
+
+  TChartCrosshairShape = (ccsNone, ccsVertical, ccsHorizontal, ccsCross);
+
+  TDataPointCrosshairTool = class(TDataPointTool)
+  strict private
+    FOnDraw: TChartCrosshairDrawEvent;
+    FPosition: TDoublePoint;
+    FShape: TChartCrosshairShape;
+
+    procedure DoDraw;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure Draw(AChart: TChart; ADrawer: IChartDrawer); override;
+    procedure MouseMove(APoint: TPoint); override;
+    property Position: TDoublePoint read FPosition;
+  published
+    property DrawingMode;
+    property GrabRadius default 20;
+    property OnDraw: TChartCrosshairDrawEvent read FOnDraw write FOnDraw;
+    property Shape: TChartCrosshairShape
+      read FShape write FShape default ccsCross;
   end;
 
   { TReticuleTool }
@@ -1248,7 +1270,7 @@ end;
 constructor TDataPointTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FGrabRadius := DEF_GRAB_RADIUS;
+  SetPropDefaults(Self, ['GrabRadius']);
   FPointIndex := -1;
 end;
 
@@ -1256,19 +1278,20 @@ procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
 var
   d, bestd, idx: Integer;
   s, bests: TCustomChartSeries;
-  dummy: TDoublePoint;
-  nearest: TPoint;
+  nearImg: TPoint;
+  nearGraph: TDoublePoint;
 begin
   bestd := MaxInt;
   bests := nil;
   for s in CustomSeries(FChart, ParseAffectedSeries) do begin
-    if not s.GetNearestPoint(@PointDist, APoint, idx, nearest, dummy) then
+    if not s.GetNearestPoint(@PointDist, APoint, idx, nearImg, nearGraph) then
       continue;
-    d := PointDist(APoint, nearest);
+    d := PointDist(APoint, nearImg);
     if d < bestd then begin
       bestd := d;
       bests := s;
       FPointIndex := idx;
+      FNearestGraphPoint := nearGraph;
     end;
   end;
   if (bests = nil) or (bestd > Sqr(GrabRadius)) then exit;
@@ -1396,6 +1419,55 @@ begin
   Application.ActivateHint(FChart.ClientToScreen(APoint));
 end;
 
+{ TDataPointCrosshairTool }
+
+constructor TDataPointCrosshairTool.Create(AOwner: TComponent);
+begin
+  inherited;
+  SetPropDefaults(Self, ['Shape']);
+end;
+
+procedure TDataPointCrosshairTool.DoDraw;
+var
+  p: TPoint;
+begin
+  p := FChart.GraphToImage(Position);
+  if Shape in [ccsVertical, ccsCross] then
+    FChart.DrawLineVert(FChart.Drawer, p.X);
+  if Shape in [ccsHorizontal, ccsCross] then
+    FChart.DrawLineHoriz(FChart.Drawer, p.Y);
+end;
+
+procedure TDataPointCrosshairTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
+begin
+  inherited;
+  case EffectiveDrawingMode of
+    tdmXor:
+      PrepareXorPen(FChart.Canvas);
+    tdmNormal:
+      FChart.Drawer.PrepareSimplePen($0);
+  end;
+  DoDraw;
+end;
+
+procedure TDataPointCrosshairTool.MouseMove(APoint: TPoint);
+begin
+  FindNearestPoint(APoint);
+  if FSeries = nil then exit;
+  case EffectiveDrawingMode of
+    tdmXor: begin
+      PrepareXorPen(FChart.Canvas);
+      DoDraw;
+      FPosition := FNearestGraphPoint;
+      DoDraw;
+    end;
+    tdmNormal: begin
+      FPosition := FNearestGraphPoint;
+      FChart.StyleChanged(Self);
+    end;
+  end;
+end;
+
 initialization
 
   ToolsClassRegistry := TStringList.Create;
@@ -1408,6 +1480,7 @@ initialization
   RegisterChartToolClass(TDataPointClickTool, 'Data point click');
   RegisterChartToolClass(TDataPointDragTool, 'Data point drag');
   RegisterChartToolClass(TDataPointHintTool, 'Data point hint');
+  RegisterChartToolClass(TDataPointCrosshairTool, 'Data point crosshair');
   RegisterChartToolClass(TUserDefinedTool, 'User-defined');
 
 finalization
