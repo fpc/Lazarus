@@ -2117,7 +2117,7 @@ resourcestring
   lisRunParamsTheHostApplicationIsNotExecutable = 'The host application %s%s%'
     +'s is not executable.';
   dlgTheDirectory = 'The directory "';
-  dlgTextToFing = '&Text to Find';
+  dlgTextToFind = '&Text to Find';
   dlgReplaceWith = '&Replace With';
   dlgFROpts = 'Options';
   lisBFWhenThisFileIsActiveInSourceEditor = 'When this file is active in '
@@ -3503,18 +3503,15 @@ resourcestring
     +'at least a title and a filename.';
     
   // find in files dialog
-  lisFindFileTextToFind = 'Text to find:';
-  lisFindFileCaseSensitive = '&Case sensitive';
-  lisFindFileWholeWordsOnly = '&Whole words only';
-  lisFindFileRegularExpressions = '&Regular expressions';
   lisFindFileMultiLinePattern = '&Multiline pattern';
   lisFindFileWhere = 'Where';
   lisFindFilesearchAllFilesInProject = 'search all files in &project';
   lisFindFilesearchAllOpenFiles = 'search all &open files';
   lisFindFilesearchInDirectories = 'search in &directories';
   lisFindFileDirectoryOptions = 'Directory options';
-  lisFindFileFileMask = 'File mask';
-  lisFindFileIncludeSubDirectories = 'Include sub directories';
+  lisFindFileDirectory = 'D&irectory';
+  lisFindFileFileMask = 'Fi&le mask';
+  lisFindFileIncludeSubDirectories = 'Include &sub directories';
   lisFindFileOnlyTextFiles = 'Only text files';
 
   // package manager

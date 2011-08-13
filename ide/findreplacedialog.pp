@@ -138,7 +138,7 @@ begin
   inherited Create(TheOwner);
   Caption:='';
   TextToFindComboBox.Text:='';
-  TextToFindLabel.Caption:=dlgTextToFing;
+  TextToFindLabel.Caption:=dlgTextToFind;
   ReplaceTextComboBox.Text:='';
   ReplaceWithCheckbox.Caption:=dlgReplaceWith;
   EnableAutoCompleteSpeedButton.LoadGlyphFromLazarusResource('menu_stepinto');

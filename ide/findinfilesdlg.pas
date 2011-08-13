@@ -147,13 +147,13 @@ procedure TLazFindInFilesDialog.FormCreate(Sender: TObject);
 begin
   Caption := srkmecFindInFiles;
 
-  TextToFindLabel.Caption := lisFindFileTextToFind;
-  ReplaceCheckBox.Caption := lisMenuReplace;
+  TextToFindLabel.Caption := dlgTextToFind;
+  ReplaceCheckBox.Caption := dlgReplaceWith;
 
   OptionsCheckGroupBox.Caption := dlgFROpts;
-  OptionsCheckGroupBox.Items[0] := lisFindFileCaseSensitive;
-  OptionsCheckGroupBox.Items[1] := lisFindFileWholeWordsOnly;
-  OptionsCheckGroupBox.Items[2] := lisFindFileRegularExpressions;
+  OptionsCheckGroupBox.Items[0] := dlgCaseSensitive;
+  OptionsCheckGroupBox.Items[1] := dlgWholeWordsOnly;
+  OptionsCheckGroupBox.Items[2] := dlgRegularExpressions;
   OptionsCheckGroupBox.Items[3] := lisFindFileMultiLinePattern;
 
   WhereRadioGroup.Caption:=lisFindFileWhere;
@@ -162,15 +162,12 @@ begin
   WhereRadioGroup.Items[2] := lisFindFilesearchInDirectories;
 
   DirectoryOptionsGroupBox.Caption := lisFindFileDirectoryOptions;
-  DirectoryLabel.Caption := lisCodeToolsDefsInsertBehindDirectory;
+  DirectoryLabel.Caption := lisFindFileDirectory;
   FileMaskLabel.Caption := lisFindFileFileMask;
 
   IncludeSubDirsCheckBox.Caption := lisFindFileIncludeSubDirectories;
 
-  ButtonPanel1.OkButton.Caption := lisLazBuildOk;
-  ButtonPanel1.OKButton.OnClick := @OKButtonClick;
   ButtonPanel1.HelpButton.Caption := lisMenuHelp;
-  ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;
   ButtonPanel1.CancelButton.Caption := dlgCancel;
 
   ReplaceCheckBox.Enabled:=true;
