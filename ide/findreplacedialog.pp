@@ -23,7 +23,7 @@
     Usage:
       Add to program
         "Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);"
-      Set the FindReplaceDlg.Options poperty
+      Set the FindReplaceDlg.Options property
       then do MResult:=FindReplaceDlg.ShowModal
       ShowModal can have three possible results:
         - mrOk for Find/Replace.
