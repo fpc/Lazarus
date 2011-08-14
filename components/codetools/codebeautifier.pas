@@ -693,7 +693,7 @@ var
 
   procedure StartProcedure(Typ: TFABBlockType);
   begin
-    if Stack.TopType<>bbtDefinition then
+    if not (Stack.TopType in [bbtDefinition,bbtClassSection]) then
       EndIdentifierSectionAndProc;
     if Stack.TopType in (bbtAllCodeSections+bbtAllProcedures+[bbtNone,bbtDefinition,bbtClassSection])
     then begin
@@ -727,8 +727,11 @@ var
     if Stack.TopType=bbtProcedureHead then
       EndBlock;
     if (Stack.TopType in bbtAllProcedures) and (not IsProcedureImplementation)
-    then
+    then begin
       EndBlock;
+      if Stack.TopType=bbtDefinition then
+        EndBlock;
+    end;
   end;
 
   function CheckProcedureModifiers: boolean;
