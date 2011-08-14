@@ -118,7 +118,7 @@ begin
   OldItems := FItems;
   // make sure the items are not reordered (needed for ItemIndex and attributes)
   // Note: TGtkListStoreStringList and other also have "Sorted" but it does not inherit from TStrings.
-  if FItems is TExtendedStringList then
+  if OldItems is TExtendedStringList then
     (OldItems as TExtendedStringList).Sorted := False;
   NewStrings.Assign(FItems);
 
@@ -132,7 +132,7 @@ begin
     SendItemIndex;
 
   // copy items attributes
-  if FItems is TExtendedStringList then begin
+  if OldItems is TExtendedStringList then begin
     cnt := OldItems.Count;
     for i := 0 to cnt - 1 do
       AssignCacheToItemData(i, (OldItems as TExtendedStringList).Records[i]);
