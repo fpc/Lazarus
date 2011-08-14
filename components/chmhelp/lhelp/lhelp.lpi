@@ -59,6 +59,7 @@
         <Filename Value="chmpopup.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="HelpPopupForm"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="ChmPopup"/>
       </Unit3>
       <Unit4>

@@ -53,6 +53,7 @@ type
     fChm: TObject;
     fBranchCount: DWord;
     fStop: PBoolean;
+    fLastNode: TTreeNode;
     procedure AddItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode);
   public
     constructor Create(ATreeView: TTreeView; ASitemap: TChmSiteMap; StopBoolean: PBoolean; AChm: TObject);
@@ -80,22 +81,32 @@ procedure TContentsFiller.AddItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode
 var
   NewNode: TContentTreeNode;
   X: Integer;
+  txt: string;
 begin
   if fStop^ then Exit;
-  NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, AItem.Text));
-  NewNode.Url:=FixURL('/'+AItem.Local);
-  NewNode.Data:=fChm;
-  if fTreeView.Images <> nil then
+  txt := AItem.KeyWord;
+  if txt = '' then txt := AItem.Text;
+  txt := Trim(txt);
+  if not Assigned(fLastNode) or (fLastNode.Text <> txt) then
   begin
-    NewNode.ImageIndex := 3;
-    NewNode.SelectedIndex := 3;
-
-    if (AParentNode.ImageIndex < 0) or (AParentNode.ImageIndex > 2) then
+    fLastNode := AParentNode;
+    NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, txt));
+    NewNode.Url:=FixURL('/'+AItem.Local);
+    NewNode.Data:=fChm;
+    if fTreeView.Images <> nil then
     begin
-      AParentNode.ImageIndex := 1;
-      AParentNode.SelectedIndex := 1;
+      NewNode.ImageIndex := 3;
+      NewNode.SelectedIndex := 3;
+
+      if (AParentNode.ImageIndex < 0) or (AParentNode.ImageIndex > 2) then
+      begin
+        AParentNode.ImageIndex := 1;
+        AParentNode.SelectedIndex := 1;
+      end;
     end;
-  end;
+  end else
+    NewNode := TContentTreeNode(fLastNode);
+
   Inc(fBranchCount);
 
   if fBranchCount mod 200 = 0 then
