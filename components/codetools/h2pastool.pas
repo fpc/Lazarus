@@ -46,6 +46,43 @@
     const char a; -> const a: char;
     #define name value  ->  alias  (const, var, type, proc)
     more complex expressions and statements
+
+A basic record type definition in C is
+
+  struct structname { <struct_definition> };
+
+The full name of this type is "struct structname". If you want to avoid typing the extra "struct" everywhere, you can create an alias for the type name using typedef:
+
+  typedef struct structname aliasname;
+
+You can combine both statements into one:
+
+  typedef struct structname { <struct_definition> } aliasname; // (***)
+
+You can also create multiple type aliases using a single typedef statement:
+
+  typedef struct structname aliasname, anotheraliasname;
+  typedef struct structname { <struct_definition> } aliasname, anotheraliasname; // same as line above
+
+You can also create pointer type names at the same time:
+
+  typedef struct structname aliasname, anotheraliasname, *pointeraliasname;
+  typedef struct structname { <struct_definition> } aliasname, anotheraliasname, *pointeraliasname; // same as line above
+  typedef struct structname aliasname, anotheraliasname; typedef aliasname *pointeraliasname; // same as line above
+
+If you want to declare a variable whose type is a struct, it works the same as with any other C type: the type definition/name followed by the variable name (and in case of multiple variables, those are in turn separated by commas).
+
+  struct structname structvar1, *structvar2;
+  aliasname structvar1, *strucvar2; // same as line above
+  aliasname structvar1; pointeraliasname structvar2; // same as line above
+  struct structname { <struct_definition> } structvar1, *structvar2; // same as line above
+
+It is also possible to define anonymous structs (without any identifier following the "struct" keyword). In that case it should either be used in a variable definition, or in a typedef declaration. Otherwise the statement has no meaning, since there is no way to refer to that struct definition later on:
+
+struct { <struct_definition> }; // no meaning: does not define a variable, and no name to refer to the type again in later declarations; gcc will warn
+struct { <struct_definition> } structvar; // same as "var structvar: record <struct_definition> end;"
+typedef struct { <struct_definition> } aliasname; // same as (***) above, except that you can only use "aliasname" to refer to this type, rather than also "struct structname"
+
 }
 unit H2PasTool;
 
