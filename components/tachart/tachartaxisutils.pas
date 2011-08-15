@@ -346,7 +346,7 @@ begin
   if not APen.Visible and not FAxis.Arrow.Visible then exit;
   FDrawer.Pen := APen;
   if APen.Visible then
-    LineZ(Astart, AEnd);
+    LineZ(AStart, AEnd);
   if FAxis.Arrow.Visible then
     FAxis.Arrow.Draw(FDrawer, AEnd + FZOffset, AAngle);
 end;
@@ -356,7 +356,7 @@ var
   rmin, rmax: Integer;
 begin
   GetClipRange(rmin, rmax);
-  Result := InRange(ACoord, rmin, rmax);
+  Result := InRange(ACoord, rmin + 1, rmax - 1);
 end;
 
 procedure TAxisDrawHelper.LineZ(AP1, AP2: TPoint);
