@@ -1247,7 +1247,7 @@ begin
   fSplitter := TSplitter.Create(Parent);
   with fSplitter do begin
     //Align  := alLeft;
-
+    Left := 1;
     AnchorSide[akLeft].Control := fTabsControl;
     AnchorSide[akLeft].Side:= asrRight;
     AnchorSide[akRight].Control := fHtml;
