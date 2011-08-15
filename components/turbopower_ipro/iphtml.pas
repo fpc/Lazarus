@@ -3148,6 +3148,7 @@ type
     {$IFDEF IP_LAZARUS}
     procedure MouseLeave; override;
     {$ENDIF}
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure DoHotChange;
     procedure DoCurElementChange;
     procedure DoHotInvoke;
@@ -3157,7 +3158,6 @@ type
     procedure ScrollInViewRaw(R : TRect);
     function PagePtToScreen(const Pt : TPoint): TPoint;
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
-    procedure DoOnMouseWheel(Shift : TShiftState; Delta, XPos, YPos : SmallInt);
     procedure HideHint;
     function HtmlPanel: TIpHtmlCustomPanel;
     procedure BeginPrint;                                              {!!.10}
@@ -3184,9 +3184,6 @@ type
     property OnClick : TNotifyEvent read FOnClick write FOnClick;
     destructor Destroy; override;
     procedure ScrollRequest(Sender: TIpHtml; const R: TRect);
-    {$IFDEF Version4}
-    procedure MouseWheelHandler(var Message: TMessage); override;
-    {$ENDIF}
     function GetPrintPageCount: Integer;
     procedure PrintPages(FromPage, ToPage: Integer);
     procedure PrintPreview;
@@ -17487,6 +17484,18 @@ begin
 end;
 {$ENDIF}
 
+function TIpHtmlInternalPanel.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
+var
+  i: Integer;
+begin
+  Result:=inherited DoMouseWheel(Shift, WheelDelta, MousePos);
+  for i := 0 to Mouse.WheelScrollLines-1 do
+    if WheelDelta < 0 then
+      Perform(WM_VSCROLL, MAKELONG(SB_LINEDOWN, 0), 0)
+    else
+      Perform(WM_VSCROLL, MAKELONG(SB_LINEUP, 0), 0);
+end;
+
 procedure TIpHtmlInternalPanel.Paint;
 var
   CR : TRect;
@@ -17863,32 +17872,6 @@ procedure TIpHtmlInternalPanel.WMEraseBkgnd(var Message: TWmEraseBkgnd);
 begin
   Message.Result := 1;
 end;
-
-procedure TIpHtmlInternalPanel.DoOnMouseWheel(Shift: TShiftState; Delta, XPos,
-  YPos: SmallInt);
-var
-  I : Integer;
-begin
-  if Delta < 0 then begin
-    for I := 1 to WheelDelta do
-      Perform(WM_VSCROLL, MAKELONG(SB_LINEDOWN, 0), 0);
-  end else if Delta > 0 then begin
-    for I := 1 to WheelDelta do
-      Perform(WM_VSCROLL, MAKELONG(SB_LINEUP, 0), 0);
-  end;
-
-end;
-
-{$IFDEF Version4}
-procedure TIpHtmlInternalPanel.MouseWheelHandler(var Message: TMessage);
-begin
-  inherited;
-  with Message do
-    DoOnMouseWheel(KeysToShiftState(LOWORD(wParam)),
-                   HIWORD(wParam),
-                   LOWORD(lParam), HIWORD(lParam));
-end;
-{$ENDIF}
 
 procedure TIpHtmlInternalPanel.ClearSelection;
 begin
