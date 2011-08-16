@@ -69,7 +69,7 @@ function PredefinedClipboardFormat(
   AFormat: TPredefinedClipboardFormat): TClipboardFormat;
 
 
-function MsgKeyDataToShiftState(KeyData: Longint): TShiftState;
+function MsgKeyDataToShiftState(KeyData: PtrInt): TShiftState;
 
 
 {$IFDEF WINDOWS}
@@ -190,7 +190,7 @@ begin
   Result:=FPredefinedClipboardFormats[AFormat];
 end;
 
-function MsgKeyDataToShiftState(KeyData: Longint): TShiftState;
+function MsgKeyDataToShiftState(KeyData: PtrInt): TShiftState;
 begin
   Result := [];
 
