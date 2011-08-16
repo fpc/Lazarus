@@ -1118,8 +1118,8 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="FrameRect">
-        <short/>
-        <descr/>
+        <short>Draws the border of a rectangle with the brush</short>
+        <descr>Draws the border of a rectangle with the current brush</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2259,8 +2259,18 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="PolyBezier">
-        <short/>
-        <descr/>
+        <short>Draws Bézier curves</short>
+        <descr>Use Polybezier to draw cubic Bézier curves. The first curve is drawn from the
+  first point to the fourth point with the second and third points being the
+  control points. If the Continuous flag is TRUE then each subsequent curve
+  requires three more points, using the end-point of the previous Curve as its
+  starting point, the first and second points being used as its control points,
+  and the third point its end-point. If the continous flag is set to FALSE,
+  then each subsequent Curve requires 4 additional points, which are used
+  exactly as in the first curve. Any additonal points which do not add up to
+  a full bezier(4 for Continuous, 3 otherwise) are ignored. There must be at
+  least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
+  then the resulting Poly-Bézier will be drawn as a Polygon.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2290,8 +2300,23 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="Polygon">
-        <short/>
-        <descr/>
+        <short>Draws a Polygon</short>
+        <descr>Use Polygon to draw a closed, many-sided shape on the canvas, using the value
+  of Pen. After drawing the complete shape, Polygon fills the shape using the
+  value of Brush.
+  The Points parameter is an array of points that give the vertices of the
+  polygon.
+  Winding determines how the polygon is filled. When Winding is True, Polygon
+  fills the shape using the Winding fill algorithm. When Winding is False,
+  Polygon uses the even-odd (alternative) fill algorithm.
+  StartIndex gives the index of the first point in the array to use. All points
+  before this are ignored.
+  NumPts indicates the number of points to use, starting at StartIndex.
+  If NumPts is -1 (the default), Polygon uses all points from StartIndex to the
+  end of the array.
+  The first point is always connected to the last point.
+  To draw a polygon on the canvas, without filling it, use the Polyline method,
+  specifying the first point a second time at the end.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2317,8 +2342,17 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="Polyline">
-        <short/>
-        <descr/>
+        <short>Draws a sequence of lines</short>
+        <descr>Use Polyline to connect a set of points on the canvas. If you specify only two
+  points, Polyline draws a single line.
+  The Points parameter is an array of points to be connected.
+  StartIndex identifies the first point in the array to use.
+  NumPts indicates the number of points to use. If NumPts is -1 (the default),
+  PolyLine uses all the points from StartIndex to the end of the array.
+  Calling the MoveTo function with the value of the first point, and then
+  repeatedly calling LineTo with all subsequent points will draw the same image
+  on the canvas. However, unlike LineTo, Polyline does not change the value of
+  PenPos.</descr>
         <errors/>
         <seealso/>
       </element>
