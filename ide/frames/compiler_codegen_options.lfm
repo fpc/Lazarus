@@ -196,6 +196,7 @@ inherited CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       BorderSpacing.Around = 6
       ItemHeight = 13
       TabOrder = 0
+      Style = csDropDownList
       Text = 'TargetOSComboBox'
     end
     object TargetCPUComboBox: TComboBox
@@ -214,6 +215,7 @@ inherited CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       BorderSpacing.Around = 6
       ItemHeight = 13
       TabOrder = 1
+      Style = csDropDownList
       Text = 'TargetCPUComboBox'
     end
     object TargetProcessorProcComboBox: TComboBox
@@ -232,6 +234,7 @@ inherited CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       BorderSpacing.Around = 6
       ItemHeight = 13
       TabOrder = 2
+      Style = csDropDownList
       Text = 'TargetProcessorProcComboBox'
     end
   end
