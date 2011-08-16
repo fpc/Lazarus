@@ -2836,16 +2836,21 @@ begin
       //debugln('TMainIDE.mnuOpenClicked OpenDialog.Files.Count=',dbgs(OpenDialog.Files.Count));
       if OpenDialog.Files.Count>1 then
         Include(OpenFlags,ofRegularFile);
-      For I := 0 to OpenDialog.Files.Count-1 do
-        Begin
-          AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
-          if i<OpenDialog.Files.Count-1 then
-            Include(OpenFlags,ofMultiOpen)
-          else
-            Exclude(OpenFlags,ofMultiOpen);
-          if DoOpenEditorFile(AFilename,-1,-1,OpenFlags)=mrAbort then begin
-            break;
+      try
+        SourceEditorManager.IncUpdateLock;
+        For I := 0 to OpenDialog.Files.Count-1 do
+          Begin
+            AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
+            if i<OpenDialog.Files.Count-1 then
+              Include(OpenFlags,ofMultiOpen)
+            else
+              Exclude(OpenFlags,ofMultiOpen);
+            if DoOpenEditorFile(AFilename,-1,-1,OpenFlags)=mrAbort then begin
+              break;
+            end;
           end;
+        finally
+          SourceEditorManager.DecUpdateLock;
         end;
       UpdateEnvironment;
     end;
@@ -17068,16 +17073,21 @@ begin
     if Length(FileNames) > 1 then
       Include(OpenFlags, ofRegularFile);
 
-    for I := 0 to High(FileNames) do
-    begin
-      AFilename := CleanAndExpandFilename(FileNames[I]);
+    try
+      SourceEditorManager.IncUpdateLock;
+      for I := 0 to High(FileNames) do
+      begin
+        AFilename := CleanAndExpandFilename(FileNames[I]);
 
-      if I < High(FileNames) then
-        Include(OpenFlags, ofMultiOpen)
-      else
-        Exclude(OpenFlags, ofMultiOpen);
+        if I < High(FileNames) then
+          Include(OpenFlags, ofMultiOpen)
+        else
+          Exclude(OpenFlags, ofMultiOpen);
 
-      if DoOpenEditorFile(AFilename, -1, -1, OpenFlags) = mrAbort then Break;
+        if DoOpenEditorFile(AFilename, -1, -1, OpenFlags) = mrAbort then Break;
+      end;
+    finally
+      SourceEditorManager.DecUpdateLock;
     end;
 
     SetRecentFilesMenu;

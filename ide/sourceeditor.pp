@@ -5915,8 +5915,10 @@ end;
 
 procedure TSourceNotebook.IncUpdateLockInternal;
 begin
-  if FUpdateLock = 0 then
+  if FUpdateLock = 0 then begin
     FUpdateFlags := [];
+    Screen.Cursor := crHourGlass;
+  end;
   inc(FUpdateLock);
 end;
 
@@ -5924,6 +5926,7 @@ procedure TSourceNotebook.DecUpdateLockInternal;
 begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then begin
+    Screen.Cursor := crDefault;
     PageIndex := FPageIndex;
     if (ufPageNames in FUpdateFlags)    then UpdatePageNames;
     if (ufTabsAndPage in FUpdateFlags)  then UpdateTabsAndPageTitle;
@@ -5931,7 +5934,7 @@ begin
     if (ufProjectFiles in FUpdateFlags) then UpdateProjectFiles;
     if (ufFocusEditor in FUpdateFlags)  then FocusEditor;
     if (ufActiveEditorChanged in FUpdateFlags) then DoActiveEditorChanged;
-  FUpdateFlags := [];
+    FUpdateFlags := [];
   end;
 end;
 
