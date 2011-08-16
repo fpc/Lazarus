@@ -12,7 +12,7 @@ object SearchResultsView: TSearchResultsView
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ResultsNoteBook: TPageControl
     Left = 0
     Height = 248
@@ -21,6 +21,7 @@ object SearchResultsView: TSearchResultsView
     Align = alClient
     MultiLine = True
     TabOrder = 0
+    OnChange = ResultsNoteBookPageChanged
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
     OnMouseDown = ResultsNoteBookMouseDown
     OnPageChanged = ResultsNoteBookPageChanged
@@ -52,33 +53,33 @@ object SearchResultsView: TSearchResultsView
     object ToolButton3: TToolButton
       Left = 47
       Top = 2
-      Width = 8
+      Width = 10
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object FilterButton: TToolButton
-      Left = 55
+      Left = 57
       Top = 2
       Caption = 'FilterButton'
       ImageIndex = 2
       OnClick = FilterButtonClick
     end
     object ForwardSearchButton: TToolButton
-      Left = 78
+      Left = 80
       Top = 2
       Caption = 'ForwardSearchButton'
       ImageIndex = 3
       OnClick = ForwardSearchButtonClick
     end
     object ResetResultsButton: TToolButton
-      Left = 449
+      Left = 451
       Top = 2
       Caption = 'ResetResultsButton'
       ImageIndex = 4
       OnClick = ResetResultsButtonClick
     end
     object SearchInListEdit: TEdit
-      Left = 101
+      Left = 103
       Height = 23
       Top = 2
       Width = 348
@@ -272,6 +273,17 @@ object SearchResultsView: TSearchResultsView
       Caption = 'Copy Selected'
       OnClick = mniCopySelectedClick
     end
+    object MenuItem1: TMenuItem
+      Caption = '-'
+    end
+    object mniExpandAll: TMenuItem
+      Caption = 'Expand All'
+      OnClick = mniExpandAllClick
+    end
+    object mniCollapseAll: TMenuItem
+      Caption = 'Collapse All'
+      OnClick = mniCollapseAllClick
+    end
   end
   object ActionList: TActionList
     Images = ImageList
@@ -281,6 +293,14 @@ object SearchResultsView: TSearchResultsView
       ImageIndex = 1
       OnExecute = ClosePageButtonClick
       ShortCut = 16499
+    end
+    object actNextPage: TAction
+      OnExecute = actNextPageExecute
+      ShortCut = 16393
+    end
+    object actPrevPage: TAction
+      OnExecute = actPrevPageExecute
+      ShortCut = 24585
     end
   end
 end

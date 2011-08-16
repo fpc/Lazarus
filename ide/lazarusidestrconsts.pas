@@ -282,6 +282,8 @@ resourcestring
   lisCopyItemToClipboard = 'Copy item to clipboard';
   lisCopySelectedItemToClipboard = 'Copy selected items to clipboard';
   lisCopyAllItemsToClipboard = 'Copy all items to clipboard';
+  lisExpandAll = 'Expand All (*)';
+  lisCollapseAll = 'Collapse All (/)';
   lisSaveAllMessagesToFile = 'Save all messages to file';
   lisMenuViewSearchResults = 'Search Results';
   lisMenuViewAnchorEditor = 'Anchor Editor';

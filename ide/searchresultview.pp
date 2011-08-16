@@ -130,7 +130,12 @@ type
 
   TSearchResultsView = class(TForm)
     actClosePage: TAction;
+    actNextPage: TAction;
+    actPrevPage: TAction;
     ActionList: TActionList;
+    MenuItem1: TMenuItem;
+    mniCollapseAll: TMenuItem;
+    mniExpandAll: TMenuItem;
     mniCopySelected: TMenuItem;
     mniCopyAll: TMenuItem;
     mniCopyItem: TMenuItem;
@@ -145,6 +150,8 @@ type
     ClosePageButton: TToolButton;
     ForwardSearchButton: TToolButton;
     ResetResultsButton: TToolButton;
+    procedure actNextPageExecute(Sender: TObject);
+    procedure actPrevPageExecute(Sender: TObject);
     procedure ClosePageButtonClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -152,6 +159,8 @@ type
     procedure mniCopyAllClick(Sender: TObject);
     procedure mniCopyItemClick(Sender: TObject);
     procedure mniCopySelectedClick(Sender: TObject);
+    procedure mniExpandAllClick(Sender: TObject);
+    procedure mniCollapseAllClick(Sender: TObject);
     procedure ResultsNoteBookMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -165,6 +174,7 @@ type
                              X, Y: Integer);
     Procedure LazTVMouseWheel(Sender: TObject; Shift: TShiftState;
                    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure TreeViewKeyPress(Sender: TObject; var Key: char);
     procedure edSearchInListChange(Sender: TObject );
     procedure ResultsNoteBookPageChanged (Sender: TObject );
     procedure ForwardSearchButtonClick(Sender: TObject );
@@ -311,6 +321,8 @@ begin
   mniCopyItem.Caption := lisCopyItemToClipboard;
   mniCopySelected.Caption := lisCopySelectedItemToClipboard;
   mniCopyAll.Caption := lisCopyAllItemsToClipboard;
+  mniExpandAll.Caption := lisExpandAll;
+  mniCollapseAll.Caption := lisCollapseAll;
 end;//Create
 
 procedure TSearchResultsView.FormClose(Sender: TObject;
@@ -368,6 +380,26 @@ begin
   Clipboard.AsText := GetTreeSelectedItemsAsText(popList.PopupComponent as TCustomTreeView);
 end;
 
+procedure TSearchResultsView.mniExpandAllClick(Sender: TObject);
+var
+  CurrentTV: TLazSearchResultTV;
+  Key: Char = '*';
+begin
+  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
+  if Assigned(CurrentTV) then
+    TreeViewKeyPress(CurrentTV, Key);
+end;
+
+procedure TSearchResultsView.mniCollapseAllClick(Sender: TObject);
+var
+  CurrentTV: TLazSearchResultTV;
+  Key: Char = '/';
+begin
+  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
+  if Assigned(CurrentTV) then
+    TreeViewKeyPress(CurrentTV, Key);
+end;
+
 procedure TSearchResultsView.ResultsNoteBookMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -383,6 +415,16 @@ end;
 procedure TSearchResultsView.ClosePageButtonClick(Sender: TObject);
 begin
   ClosePage(ResultsNoteBook.PageIndex);
+end;
+
+procedure TSearchResultsView.actNextPageExecute(Sender: TObject);
+begin
+  ResultsNoteBook.SelectNextPage(True);
+end;
+
+procedure TSearchResultsView.actPrevPageExecute(Sender: TObject);
+begin
+  ResultsNoteBook.SelectNextPage(False);
 end;
 
 {Keeps track of the Index of the Item the mouse is over, Sets ShowHint to true
@@ -417,6 +459,29 @@ begin
   LazTVMouseMove(Sender,Shift,MousePos.X, MousePos.Y);
   Handled:= false;
 end;//LazTVMouseWheel
+
+procedure TSearchResultsView.TreeViewKeyPress(Sender: TObject; var Key: char);
+var
+  i: Integer;
+  Tree: TLazSearchResultTV;
+  Node: TTreeNode;
+  Collapse: Boolean;
+begin
+  if Key in ['/', '*'] then
+  begin
+    Collapse := Key = '/';
+    Tree := (Sender as TLazSearchResultTV);
+    for i := Tree.Items.TopLvlCount -1 downto 0 do
+    begin
+      Node := Tree.Items.TopLvlItems[i];
+      if Collapse then
+        Node.Collapse(False)
+      else
+        Node.Expand(False);
+    end;
+    Key := #0;
+  end;
+end;
 
 procedure TSearchResultsView.edSearchInListChange (Sender: TObject );
 var CurrentTV: TLazSearchResultTV;
@@ -872,6 +937,7 @@ begin
           OnMouseMove:= @LazTVMousemove;
           OnMouseWheel:= @LazTVMouseWheel;
           OnMouseDown:=@TreeViewMouseDown;
+          OnKeyPress:=@TreeViewKeyPress;
           ShowHint:= true;
           RowSelect := True;                        // we are using custom draw
           Options := Options + [tvoAllowMultiselect] - [tvoThemedDraw];
