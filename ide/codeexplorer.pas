@@ -918,6 +918,13 @@ begin
         ShowChilds:=false;
       end;
 
+      // don't show single hint modifiers
+      if (CodeNode.Desc = ctnHintModifier) and (ParentViewNode = nil) then
+      begin
+        ShowNode:=false;
+        ShowChilds:=false;
+      end;
+
       // category mode: put nodes in categories
       Category:=cecNone;
       if ShowNode
@@ -948,7 +955,8 @@ begin
               fCategoryNodes[Category].ImageIndex:=NodeImageIndex;
               fCategoryNodes[Category].SelectedIndex:=NodeImageIndex;
             end;
-            ParentViewNode:=fCategoryNodes[Category];
+            if not Assigned(ParentViewNode) then
+              ParentViewNode:=fCategoryNodes[Category];
             InFrontViewNode:=nil;
           end;
         end else begin
