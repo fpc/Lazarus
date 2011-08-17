@@ -81,7 +81,7 @@ type
                              SubType: TDrawNodeSymbolOptions);
   protected
     function  PreferedWidth: Integer; override;
-    procedure CreatePopUpMenuEntries(APopUp: TPopupMenu; ALine: Integer); virtual;
+    procedure CreatePopUpMenuEntries(var APopUp: TPopupMenu; ALine: Integer); virtual;
     procedure PopClicked(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
@@ -107,6 +107,10 @@ type
 implementation
 uses
   SynEdit;
+
+var
+  GlobalPopUpImageList: TImageList = nil;
+
 
 { TSynGutterCodeFolding }
 
@@ -220,7 +224,7 @@ begin
 
 end;
 
-procedure TSynGutterCodeFolding.CreatePopUpMenuEntries(APopUp: TPopupMenu;
+procedure TSynGutterCodeFolding.CreatePopUpMenuEntries(var APopUp: TPopupMenu;
   ALine: Integer);
 
   function AddPopUpItem(const ACaption: String): TMenuItem;
@@ -241,6 +245,23 @@ var
   m: TMenuItem;
   s, s2: String;
 begin
+  if APopUp = nil then begin
+    if not assigned(GlobalPopUpImageList) then begin
+      // Todo: Add a flag, when using global list, or make list ref-counted
+      // See Destroy
+      GlobalPopUpImageList  := TImageList.Create(nil);
+      FPopUpImageList := GlobalPopUpImageList;
+      InitPopUpImageList;
+    end
+    else
+      FPopUpImageList := GlobalPopUpImageList;
+
+    APopUp := TPopupMenu.Create(nil);
+    APopUp.Images := FPopUpImageList;
+  end
+  else
+    APopUp.Items.Clear;
+
   c := FoldView.OpenFoldCount(ALine-1);
   if c > 0 then begin
     SetLength(FMenuInf,c);
@@ -298,11 +319,6 @@ begin
   FMouseActionsCollapsed.ResetDefaults;
   FMouseActionsExpanded.ResetDefaults;
 
-  FPopUpImageList := TImageList.Create(nil);
-  InitPopUpImageList;
-  FPopUp := TPopupMenu.Create(nil);
-  FPopUp.Images := FPopUpImageList;
-
   inherited Create(AOwner);
 
   MarkupInfo.Background := clNone;
@@ -316,7 +332,11 @@ begin
   FreeAndNil(FMouseActionsCollapsed);
   FreeAndNil(FMouseActionsExpanded);
   FreeAndNil(FPopUp);
-  FreeAndNil(FPopUpImageList);
+  // Todo: Currently only the global list is used. No Free is ever needed.
+  // See: CreatePopUpMenuEntries
+  // SynEdit could be destroyed, after finalization of this unit, then the condition would fail
+  //if FPopUpImageList <> GlobalPopUpImageList then
+  //  FreeAndNil(FPopUpImageList);
   inherited Destroy;
 end;
 
@@ -429,7 +449,6 @@ begin
       end;
     emcCodeFoldContextMenu:
       begin
-        FPopUp.Items.Clear;
         CreatePopUpMenuEntries(FPopUp, line);
         FPopUp.PopUp;
       end;
@@ -698,6 +717,9 @@ begin
   AddCommand(emcCodeFoldExpand, False, mbLeft, ccAny, cdDown, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
   AddCommand(emcCodeFoldExpand, False, mbLeft, ccAny, cdDown, [], [ssCtrl], emcoCodeFoldExpandAll);
 end;
+
+finalization
+  FreeAndNil(GlobalPopUpImageList);
 
 end.
 
