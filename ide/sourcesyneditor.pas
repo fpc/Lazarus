@@ -201,7 +201,7 @@ type
     procedure PopClickedUnfoldComment(Sender: TObject);
     procedure PopClickedFoldComment(Sender: TObject);
     procedure PopClickedHideComment(Sender: TObject);
-    procedure CreatePopUpMenuEntries(APopUp: TPopupMenu; ALine: Integer); override;
+    procedure CreatePopUpMenuEntries(var APopUp: TPopupMenu; ALine: Integer); override;
   end;
 
 implementation
@@ -872,7 +872,7 @@ begin
   end;
 end;
 
-procedure TIDESynGutterCodeFolding.CreatePopUpMenuEntries(APopUp: TPopupMenu; ALine: Integer);
+procedure TIDESynGutterCodeFolding.CreatePopUpMenuEntries(var APopUp: TPopupMenu; ALine: Integer);
 var
   i, j, y1, y2: Integer;
   HasFolds, HasHideableComments, HasFoldableComments, HasCollapsedComments: Boolean;
