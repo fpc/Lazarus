@@ -927,7 +927,6 @@ var
     WholeFilePath: String;
   begin
     aProjPath:=SwitchPathDelims(aProjPath, True);
-    aProjFile:=SwitchPathDelims(aProjFile, True);
     WholeFilePath:=ExtractFilePath(Application.ExeName) + aProjPath + aProjFile;
     if FileIsWritable(aProjPath) and FileIsWritable(WholeFilePath) then
       AddToRecentList(WholeFilePath, FRecentProjectFiles, FMaxRecentProjectFiles);
