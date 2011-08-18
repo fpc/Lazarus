@@ -9055,14 +9055,15 @@ begin
           AText:=Format(lisSourceOfPageHasChangedSave, ['"',
             TSourceEditor(AEditor).PageName, '"']);
         ACaption:=lisSourceModified;
-        Result:=QuestionDlg(ACaption, AText, mtConfirmation,
-                            [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrCancel], 0);
+        Result:=QuestionDlg(ACaption, AText,
+            mtConfirmation, [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort
+              ], 0);
       end else
         Result:=mrYes;
       if Result=mrYes then begin
         Result:=DoSaveEditorFile(AnEditorInfo.EditorComponent,[sfCheckAmbiguousFiles]);
       end;
-      if Result=mrCancel then exit;
+      if Result=mrAbort then exit;
       Result:=mrOk;
     end;
 
