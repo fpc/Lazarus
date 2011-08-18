@@ -5917,7 +5917,6 @@ procedure TSourceNotebook.IncUpdateLockInternal;
 begin
   if FUpdateLock = 0 then begin
     FUpdateFlags := [];
-    Screen.Cursor := crHourGlass;
   end;
   inc(FUpdateLock);
 end;
@@ -5926,7 +5925,6 @@ procedure TSourceNotebook.DecUpdateLockInternal;
 begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then begin
-    Screen.Cursor := crDefault;
     PageIndex := FPageIndex;
     if (ufPageNames in FUpdateFlags)    then UpdatePageNames;
     if (ufTabsAndPage in FUpdateFlags)  then UpdateTabsAndPageTitle;
@@ -8131,6 +8129,7 @@ begin
     FUpdateFlags := [];
     // Debugger cause ProcessMessages, which could lead to entering methods in unexpected order
     DebugBoss.LockCommandProcessing;
+    Screen.Cursor := crHourGlass;
   end;
   inc(FUpdateLock);
 end;
@@ -8140,6 +8139,7 @@ begin
   dec(FUpdateLock);
   if FUpdateLock = 0 then begin
     try
+      Screen.Cursor := crDefault;
       if (ufShowWindowOnTop in FUpdateFlags) then
         ShowActiveWindowOnTop(ufShowWindowOnTopFocus in FUpdateFlags);
       if (ufMgrActiveEditorChanged in FUpdateFlags) then
