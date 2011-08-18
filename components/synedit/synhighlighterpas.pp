@@ -1434,7 +1434,9 @@ end;
 
 function TSynPasSyn.Func72: TtkTokenKind;
 begin
-  if KeyComp('Static') and (TopPascalCodeFoldBlockType in [cfbtClassSection]) then
+  if KeyComp('Static') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
+     (fRange * [rsAfterClassMembers, rsInProcHeader, rsProperty] = [rsAfterClassMembers])
+  then
     Result := tkKey
   else
     Result := tkIdentifier;
