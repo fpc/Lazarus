@@ -1643,13 +1643,7 @@ begin
   InvalidateEditor;
   if (Application<>nil) and FIdleHandlerConnected then
     Application.RemoveOnIdleHandler(@OnApplicationIdle);
-  if FLinkNotifier<>nil then begin
-    if FTIObject is TComponent then begin
-      TComponent(FTIObject).RemoveFreeNotification(FLinkNotifier);
-      FTIObject:=nil;
-    end;
-    FreeThenNil(FLinkNotifier);
-  end;
+  FreeThenNil(FLinkNotifier);
   FreeThenNil(FAliasValues);
   FreeThenNil(FHook);
   FreeThenNil(FCollectedValues);
