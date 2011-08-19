@@ -1,6 +1,7 @@
 unit javalang;
 
 {$mode objfpc}{$H+}
+{$INTERFACES CORBA}
 
 interface
 
@@ -11,7 +12,7 @@ type
 
   { IJavaInterface }
 
-  IJavaInterface = interface(IInterface)
+  IJavaInterface = interface
     function GetIndex: Integer;
     procedure SetIndex(AValue: Integer);
     property Index: Integer read GetIndex write SetIndex;
@@ -19,7 +20,7 @@ type
 
   { TJavaObject }
 
-  TJavaObject = class(TInterfacedObject, IJavaInterface)
+  TJavaObject = class(IJavaInterface)
   public
     FIndex: Integer;
     constructor Create(AIndex: Integer); virtual;

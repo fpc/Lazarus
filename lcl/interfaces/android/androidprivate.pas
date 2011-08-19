@@ -27,7 +27,7 @@ interface
 
 uses
   // libs
-  android_all,
+  android_all, androidpipescomm,
   // wdgetset
   WSLCLClasses, LCLClasses,
   // LCL + RTL
@@ -106,6 +106,7 @@ type
     constructor Create(const AObject: TCustomComboBox; const AParams: TCreateParams);
     destructor Destroy; override;
     procedure UpdateItems();
+    procedure Put(Index: Integer; const S: string);
     procedure InsertItem(Index: Integer; const S: string);
     procedure Clear;
     procedure Delete(Index: Integer);
@@ -181,6 +182,7 @@ procedure TAndroidComboBoxStrings.Put(Index: Integer; const S: string);
 begin
   inherited Put(Index, S);
   //FOwner.BeginUpdate;
+  FOwner.Put(Index, S);
 //  FOwner.setItemText(Index, S);
 //  FOwner.EndUpdate;
 end;
@@ -216,6 +218,9 @@ begin
   inherited Create;
   FWinControl := AWinControl;
   FOwner := AOwner;
+  {$ifdef LCL_ANDROID_STDCTRLS_VERBOSE}
+  vAndroidPipesComm.Log(Format('[TAndroidComboBox.Clear] AWinControl=%P AOwner=%P', [@AWinControl, @AOwner]));
+  {$endif}
 end;
 
 procedure TAndroidComboBoxStrings.Assign(Source: TPersistent);
@@ -249,9 +254,9 @@ end;
 
 constructor TAndroidComboBox.Create(const AObject: TCustomComboBox;
   const AParams: TCreateParams);
-var
-  Str: string;
 begin
+  inherited Create;
+
   LCLObject := AObject;
   ParentGroupView := TAndroidViewGroup(AObject.Parent.Handle).mainviewgroup;
 
@@ -261,8 +266,11 @@ begin
   ParentGroupView.addView(MainView, TViewGroup_LayoutParams(params));
   params.Free;
 
-  Adapter := TArrayAdapter_String_.Create(simple_spinner_dropdown_item);
+  Adapter := TArrayAdapter_String_.Create(simple_spinner_item);
   Spinner.setAdapter(Adapter);
+  {$ifdef LCL_ANDROID_STDCTRLS_VERBOSE}
+  vAndroidPipesComm.Log(Format('[TAndroidComboBox.Create] AObject=%P Self=%P Adapter=%P Index=%X', [@AObject, @Self, @Adapter, Adapter.Index]));
+  {$endif}
 end;
 
 destructor TAndroidComboBox.Destroy;
@@ -275,13 +283,30 @@ begin
 
 end;
 
+// Put substitutes an existing value
+procedure TAndroidComboBox.Put(Index: Integer; const S: string);
+var
+  lStr: string;
+begin
+  lStr := TCustomComboBox(LCLObject).Items.Strings[Index];
+  Adapter.remove(lStr);
+  InsertItem(Index, S);
+end;
+
 procedure TAndroidComboBox.InsertItem(Index: Integer; const S: string);
 begin
+  {$ifdef LCL_ANDROID_STDCTRLS_VERBOSE}
+  vAndroidPipesComm.Log(Format('[TAndroidComboBox.InsertItem] Self=%P Adapter=%P Index=%X', [@Self, @Adapter, Adapter.Index]));
+  {$endif}
   Adapter.insert(S, Index);
+  Spinner.setAdapter(Adapter);
 end;
 
 procedure TAndroidComboBox.Clear;
 begin
+  {$ifdef LCL_ANDROID_STDCTRLS_VERBOSE}
+  vAndroidPipesComm.Log(Format('[TAndroidComboBox.Clear] Self=%P Adapter=%P Index=%X', [@Self, @Adapter, Adapter.Index]));
+  {$endif}
   Adapter.Clear();
 end;
 

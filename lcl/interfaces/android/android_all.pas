@@ -2,7 +2,9 @@ unit android_all;
 
 interface
 
-uses javalang, androidpipescomm;
+uses SysUtils, javalang, androidpipescomm;
+
+{$INTERFACES CORBA}
 
 type
 
@@ -719,6 +721,7 @@ end;
 
 procedure TArrayAdapter_String_.clear();
 begin
+  vAndroidPipesComm.Log(Format('[TArrayAdapter_String_.Clear] Self=%P Index=%X', [@Self, Index]));
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TArrayAdapter_String__clear);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer

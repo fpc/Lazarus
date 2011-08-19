@@ -71,6 +71,7 @@ type
     function WaitForIntReturn(): Integer;
     function WaitForFloatReturn(): Single;
     procedure CommError(AStr: string);
+    procedure Log(AStr: string);
   end;
 
 var
@@ -196,7 +197,7 @@ begin
     end;
     amkLog:
     begin
-//      SendString(dataString1);
+      SendString(dataString1);
     end;
   else
     OutputStream.WriteDWord(NToBe(ASubType));
@@ -256,6 +257,12 @@ begin
 end;
 
 procedure TAndroidPipesComm.CommError(AStr: string);
+begin
+  dataString1 := AStr;
+  SendMessage(amkLog, 0);
+end;
+
+procedure TAndroidPipesComm.Log(AStr: string);
 begin
   dataString1 := AStr;
   SendMessage(amkLog, 0);
