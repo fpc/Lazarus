@@ -355,6 +355,7 @@ begin
       while (EndPos<=length(Result)) do begin
         if Result[EndPos]='"' then begin
           // skip " tag
+          inc(EndPos);
           while (EndPos<=length(Result)) and (Result[EndPos]<>'"') do
             inc(EndPos);
           if EndPos>length(Result) then break;
@@ -434,6 +435,28 @@ begin
       end
       else
         Result:=copy(Result,1,p-1)+copy(Result,EndPos,length(Result));
+    end else if Result[p]='&' then begin
+      // special chars: &lt; &gt; &amp;
+      if (Result[p+1]='l') and (Result[p+2]='t') then begin
+        EndPos:=p+3;
+        if (EndPos<length(Result)) and (Result[EndPos]=';') then
+          inc(EndPos);
+        Result:=copy(Result,1,p-1)+'<'+copy(Result,EndPos,length(Result));
+      end else
+      if (Result[p+1]='g') and (Result[p+2]='t') then begin
+        EndPos:=p+3;
+        if (EndPos<length(Result)) and (Result[EndPos]=';') then
+          inc(EndPos);
+        Result:=copy(Result,1,p-1)+'>'+copy(Result,EndPos,length(Result));
+      end else
+      if (Result[p+1]='a') and (Result[p+2]='m') and (Result[p+3]='p') then begin
+        EndPos:=p+4;
+        if (EndPos<length(Result)) and (Result[EndPos]=';') then
+          inc(EndPos);
+        // double '&' to prevent underlining
+        Result:=copy(Result,1,p-1)+'&&'+copy(Result,EndPos,length(Result));
+      end;
+      inc(p);
     end else
       inc(p);
   end;
