@@ -28,6 +28,12 @@ type
   TAdapterView = class;
   TAbsSpinner = class;
   TSpinner = class;
+  TFilterable = interface;
+  TAdapter = interface;
+  TListAdapter = interface;
+  TSpinnerAdapter = interface;
+  TBaseAdapter = class;
+  TArrayAdapter_String_ = class;
 
   { Types }
 
@@ -152,11 +158,35 @@ type
 
   TAbsSpinner = class(TAdapterView)
   public
+    function getCount(): Integer;
+    procedure setAdapter(var adapter: TSpinnerAdapter);
   end;
 
   TSpinner = class(TAbsSpinner)
   public
     constructor Create();
+  end;
+
+  TFilterable = interface(IJavaInterface)
+  end;
+
+  TAdapter = interface(IJavaInterface)
+  end;
+
+  TListAdapter = interface(TAdapter)
+  end;
+
+  TSpinnerAdapter = interface(TAdapter)
+  end;
+
+  TBaseAdapter = class(TJavaObject, TListAdapter, TSpinnerAdapter)
+  public
+  end;
+
+  TArrayAdapter_String_ = class(TBaseAdapter, TFilterable)
+  public
+    constructor Create(textViewResourceId: Integer);
+    procedure add(var aobject: string);
   end;
 
 const
@@ -189,6 +219,12 @@ const
   { TAdapterView }
   { TAbsSpinner }
   { TSpinner }
+  { TFilterable }
+  { TAdapter }
+  { TListAdapter }
+  { TSpinnerAdapter }
+  { TBaseAdapter }
+  { TArrayAdapter_String_ }
 
 function HandleMessage(AFirstInt: Integer): Boolean;
 
@@ -257,8 +293,18 @@ const
   amkUI_TCheckBox_Create = $00111000;
   // TAdapterView
   // TAbsSpinner
+  amkUI_TAbsSpinner_getCount = $00113000;
+  amkUI_TAbsSpinner_setAdapter = $00113001;
   // TSpinner
   amkUI_TSpinner_Create = $00114000;
+  // TFilterable
+  // TAdapter
+  // TListAdapter
+  // TSpinnerAdapter
+  // TBaseAdapter
+  // TArrayAdapter_String_
+  amkUI_TArrayAdapter_String__Create = $0011A000;
+  amkUI_TArrayAdapter_String__add = $0011A001;
 
 { Implementation of Classes }
 
@@ -591,12 +637,49 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TCheckBox_Create);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
+function TAbsSpinner.getCount(): Integer;
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TAbsSpinner_getCount);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  Result := Integer(vAndroidPipesComm.WaitForIntReturn());
+end;
+
+procedure TAbsSpinner.setAdapter(var adapter: TSpinnerAdapter);
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TAbsSpinner_setAdapter);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.SendInt(Integer(adapter.Index));
+  vAndroidPipesComm.WaitForReturn();
+end;
+
 constructor TSpinner.Create();
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TSpinner_Create);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
+constructor TArrayAdapter_String_.Create(textViewResourceId: Integer);
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TArrayAdapter_String__Create);
+  vAndroidPipesComm.SendInt(Integer(textViewResourceId));
+  Index := vAndroidPipesComm.WaitForIntReturn();
+end;
+procedure TArrayAdapter_String_.add(var aobject: string);
+var
+  lString_1: TString;
+begin
+  lString_1 := TString.Create(aobject);
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TArrayAdapter_String__add);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.SendInt(lString_1.Index); // text
+  vAndroidPipesComm.WaitForReturn();
+  lString_1.Free;
+end;
+
 
 { Message Handling }
 

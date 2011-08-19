@@ -104,6 +104,8 @@ type
     FList: TAndroidComboBoxStrings;
     constructor Create(const AObject: TCustomComboBox; const AParams: TCreateParams);
     destructor Destroy; override;
+    procedure UpdateItems();
+    procedure InsertItem(Index: Integer; const S: string);
   end;
 
   { TAndroidWindow }
@@ -175,11 +177,28 @@ end;
 procedure TAndroidComboBoxStrings.Put(Index: Integer; const S: string);
 begin
   inherited Put(Index, S);
+  //FOwner.BeginUpdate;
+//  FOwner.setItemText(Index, S);
+//  FOwner.EndUpdate;
 end;
 
 procedure TAndroidComboBoxStrings.InsertItem(Index: Integer; const S: string);
+var
+  FSavedIndex: Integer;
+  FSavedText: WideString;
 begin
   inherited InsertItem(Index, S);
+{  //FOwner.BeginUpdate;
+  FSavedText := FOwner.getText;
+  FSavedIndex := FOwner.currentIndex;}
+  FOwner.insertItem(Index, S);
+{  if FOwner.getEditable then
+  begin
+    if (FSavedIndex <> FOwner.currentIndex) then
+      FOwner.setCurrentIndex(FSavedIndex);
+    FOwner.setText(FSavedText);
+  end;
+  FOwner.EndUpdate;}
 end;
 
 procedure TAndroidComboBoxStrings.InsertItem(Index: Integer; const S: string;
@@ -241,6 +260,16 @@ end;
 destructor TAndroidComboBox.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TAndroidComboBox.UpdateItems();
+begin
+
+end;
+
+procedure TAndroidComboBox.InsertItem(Index: Integer; const S: string);
+begin
+
 end;
 
 { TAndroidStaticText }

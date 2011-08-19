@@ -9,12 +9,23 @@ uses
 
 type
 
+  { IJavaInterface }
+
+  IJavaInterface = interface(IInterface)
+    function GetIndex: Integer;
+    procedure SetIndex(AValue: Integer);
+    property Index: Integer read GetIndex write SetIndex;
+  end;
+
   { TJavaObject }
 
-  TJavaObject = class
+  TJavaObject = class(TInterfacedObject, IJavaInterface)
   public
-    Index: Integer;
+    FIndex: Integer;
     constructor Create(AIndex: Integer); virtual;
+    function GetIndex: Integer;
+    procedure SetIndex(AValue: Integer);
+    property Index: Integer read GetIndex write SetIndex;
   end;
 
   TCharSequence = class(TJavaObject)
@@ -56,6 +67,16 @@ end;
 constructor TJavaObject.Create(AIndex: Integer);
 begin
   Index := AIndex;
+end;
+
+function TJavaObject.GetIndex: Integer;
+begin
+  Result := FIndex;
+end;
+
+procedure TJavaObject.SetIndex(AValue: Integer);
+begin
+  FIndex := AValue;
 end;
 
 { TString }
