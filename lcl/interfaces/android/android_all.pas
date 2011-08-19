@@ -34,6 +34,7 @@ type
   TSpinnerAdapter = interface;
   TBaseAdapter = class;
   TArrayAdapter_String_ = class;
+  Tlayout = class;
 
   { Types }
 
@@ -55,7 +56,7 @@ type
 
   TDisplay = class(TJavaObject)
   public
-    procedure getMetrics(var outMetrics: TDisplayMetrics);
+    procedure getMetrics(outMetrics: TDisplayMetrics);
   end;
 
   TWindowManager = class(TJavaObject)
@@ -70,13 +71,13 @@ type
 
   TView = class(TJavaObject)
   public
-    procedure setLayoutParams(var params: TViewGroup_LayoutParams);
+    procedure setLayoutParams(params: TViewGroup_LayoutParams);
     procedure setVisibility(visibility: Integer);
   end;
 
   TViewGroup = class(TView)
   public
-    procedure addView(var child: TView; var params: TViewGroup_LayoutParams);
+    procedure addView(child: TView; params: TViewGroup_LayoutParams);
   end;
 
   TLinearLayout = class(TViewGroup)
@@ -98,7 +99,7 @@ type
   TTextView = class(TView)
   public
     constructor Create();
-    procedure setText(var AText: string);
+    procedure setText(AText: string);
   public
     OnClickListener: TOnClickListener;
     procedure setOnClickListener(ACallback: TOnClickListener);
@@ -110,13 +111,13 @@ type
   TEditText = class(TTextView)
   public
     constructor Create();
-    procedure setText(var AText: string);
+    procedure setText(AText: string);
   end;
 
   TButton = class(TTextView)
   public
     constructor Create();
-    procedure setText(var AText: string);
+    procedure setText(AText: string);
   end;
 
   TFrameLayout = class(TViewGroup)
@@ -159,7 +160,7 @@ type
   TAbsSpinner = class(TAdapterView)
   public
     function getCount(): Integer;
-    procedure setAdapter(var adapter: TSpinnerAdapter);
+    procedure setAdapter(adapter: TSpinnerAdapter);
   end;
 
   TSpinner = class(TAbsSpinner)
@@ -186,7 +187,14 @@ type
   TArrayAdapter_String_ = class(TBaseAdapter, TFilterable)
   public
     constructor Create(textViewResourceId: Integer);
-    procedure add(var aobject: string);
+    procedure add(aobject: string);
+    procedure clear();
+    procedure insert(aobject: string; aindex: Integer);
+    procedure remove(aobject: string);
+  end;
+
+  Tlayout = class(TJavaObject)
+  public
   end;
 
 const
@@ -225,6 +233,31 @@ const
   { TSpinnerAdapter }
   { TBaseAdapter }
   { TArrayAdapter_String_ }
+  { Tlayout }
+  activity_list_item = $01090000;
+  browser_link_context_header = $0109000e;
+  expandable_list_content = $01090001;
+  list_content = $01090014;
+  preference_category = $01090002;
+  select_dialog_item = $01090011;
+  select_dialog_multichoice = $01090013;
+  select_dialog_singlechoice = $01090012;
+  simple_dropdown_item_1line = $0109000a;
+  simple_expandable_list_item_1 = $01090006;
+  simple_expandable_list_item_2 = $01090007;
+  simple_gallery_item = $0109000b;
+  simple_list_item_1 = $01090003;
+  simple_list_item_2 = $01090004;
+  simple_list_item_activated_1 = $01090016;
+  simple_list_item_activated_2 = $01090017;
+  simple_list_item_checked = $01090005;
+  simple_list_item_multiple_choice = $01090010;
+  simple_list_item_single_choice = $0109000f;
+  simple_selectable_list_item = $01090015;
+  simple_spinner_dropdown_item = $01090009;
+  simple_spinner_item = $01090008;
+  test_list_item = $0109000c;
+  two_line_list_item = $0109000d;
 
 function HandleMessage(AFirstInt: Integer): Boolean;
 
@@ -305,6 +338,10 @@ const
   // TArrayAdapter_String_
   amkUI_TArrayAdapter_String__Create = $0011A000;
   amkUI_TArrayAdapter_String__add = $0011A001;
+  amkUI_TArrayAdapter_String__clear = $0011A002;
+  amkUI_TArrayAdapter_String__insert = $0011A003;
+  amkUI_TArrayAdapter_String__remove = $0011A004;
+  // Tlayout
 
 { Implementation of Classes }
 
@@ -370,7 +407,7 @@ begin
   Result := Single(vAndroidPipesComm.WaitForIntReturn());
 end;
 
-procedure TDisplay.getMetrics(var outMetrics: TDisplayMetrics);
+procedure TDisplay.getMetrics(outMetrics: TDisplayMetrics);
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TDisplay_getMetrics);
@@ -395,7 +432,7 @@ begin
   vAndroidPipesComm.SendInt(Integer(height));
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-procedure TView.setLayoutParams(var params: TViewGroup_LayoutParams);
+procedure TView.setLayoutParams(params: TViewGroup_LayoutParams);
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TView_setLayoutParams);
@@ -413,7 +450,7 @@ begin
   vAndroidPipesComm.WaitForReturn();
 end;
 
-procedure TViewGroup.addView(var child: TView; var params: TViewGroup_LayoutParams);
+procedure TViewGroup.addView(child: TView; params: TViewGroup_LayoutParams);
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TViewGroup_addView);
@@ -460,7 +497,7 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TTextView_Create);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-procedure TTextView.setText(var AText: string);
+procedure TTextView.setText(AText: string);
 var
   lString_1: TString;
 begin
@@ -503,7 +540,7 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TEditText_Create);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-procedure TEditText.setText(var AText: string);
+procedure TEditText.setText(AText: string);
 var
   lString_1: TString;
 begin
@@ -522,7 +559,7 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TButton_Create);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-procedure TButton.setText(var AText: string);
+procedure TButton.setText(AText: string);
 var
   lString_1: TString;
 begin
@@ -645,7 +682,7 @@ begin
   Result := Integer(vAndroidPipesComm.WaitForIntReturn());
 end;
 
-procedure TAbsSpinner.setAdapter(var adapter: TSpinnerAdapter);
+procedure TAbsSpinner.setAdapter(adapter: TSpinnerAdapter);
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TAbsSpinner_setAdapter);
@@ -667,13 +704,48 @@ begin
   vAndroidPipesComm.SendInt(Integer(textViewResourceId));
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-procedure TArrayAdapter_String_.add(var aobject: string);
+procedure TArrayAdapter_String_.add(aobject: string);
 var
   lString_1: TString;
 begin
   lString_1 := TString.Create(aobject);
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TArrayAdapter_String__add);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.SendInt(lString_1.Index); // text
+  vAndroidPipesComm.WaitForReturn();
+  lString_1.Free;
+end;
+
+procedure TArrayAdapter_String_.clear();
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TArrayAdapter_String__clear);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.WaitForReturn();
+end;
+
+procedure TArrayAdapter_String_.insert(aobject: string; aindex: Integer);
+var
+  lString_1: TString;
+begin
+  lString_1 := TString.Create(aobject);
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TArrayAdapter_String__insert);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.SendInt(lString_1.Index); // text
+  vAndroidPipesComm.SendInt(Integer(aindex));
+  vAndroidPipesComm.WaitForReturn();
+  lString_1.Free;
+end;
+
+procedure TArrayAdapter_String_.remove(aobject: string);
+var
+  lString_1: TString;
+begin
+  lString_1 := TString.Create(aobject);
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TArrayAdapter_String__remove);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(lString_1.Index); // text
   vAndroidPipesComm.WaitForReturn();

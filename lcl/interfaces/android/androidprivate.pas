@@ -100,12 +100,15 @@ type
   TAndroidComboBox = class(TAndroidView)
   public
     spinner: android_all.TSpinner;
+    Adapter: TArrayAdapter_String_;
     params: TAbsoluteLayout_LayoutParams;
     FList: TAndroidComboBoxStrings;
     constructor Create(const AObject: TCustomComboBox; const AParams: TCreateParams);
     destructor Destroy; override;
     procedure UpdateItems();
     procedure InsertItem(Index: Integer; const S: string);
+    procedure Clear;
+    procedure Delete(Index: Integer);
   end;
 
   { TAndroidWindow }
@@ -223,11 +226,13 @@ end;
 procedure TAndroidComboBoxStrings.Clear;
 begin
   inherited Clear;
+  FOwner.clear;
 end;
 
 procedure TAndroidComboBoxStrings.Delete(Index: Integer);
 begin
   inherited Delete(Index);
+  FOwner.delete(Index);
 end;
 
 procedure TAndroidComboBoxStrings.Sort;
@@ -255,6 +260,9 @@ begin
   params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, WRAP_CONTENT, AObject.Left, AObject.Top);
   ParentGroupView.addView(MainView, TViewGroup_LayoutParams(params));
   params.Free;
+
+  Adapter := TArrayAdapter_String_.Create(simple_spinner_dropdown_item);
+  Spinner.setAdapter(Adapter);
 end;
 
 destructor TAndroidComboBox.Destroy;
@@ -269,7 +277,20 @@ end;
 
 procedure TAndroidComboBox.InsertItem(Index: Integer; const S: string);
 begin
+  Adapter.insert(S, Index);
+end;
 
+procedure TAndroidComboBox.Clear;
+begin
+  Adapter.Clear();
+end;
+
+procedure TAndroidComboBox.Delete(Index: Integer);
+var
+  lStr: string;
+begin
+  lStr := TCustomComboBox(LCLObject).Items.Strings[Index];
+  Adapter.remove(lStr);
 end;
 
 { TAndroidStaticText }
