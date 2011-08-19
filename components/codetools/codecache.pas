@@ -1038,7 +1038,7 @@ begin
     Result:=false;
     exit;
   end;
-  if not IsVirtual then begin
+  if (not IsVirtual) or (Filename='') then begin
     if CompareFilenames(AFilename,Filename)=0 then begin
       //DebugLn('****** [TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAgeUTF8(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
       if FileNeedsUpdate then begin
