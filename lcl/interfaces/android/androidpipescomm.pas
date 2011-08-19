@@ -18,9 +18,10 @@ uses
 
 const
   // Android Message Kind
-  amkFloatResult = 103;
-  amkIntResult = 102;
-  amkResult = 101;
+  amkStringResult = 14;
+  amkFloatResult = 13;
+  amkIntResult = 12;
+  amkResult = 11;
   amkActivityCallback = 0;
   amkLog = 1;
   amkUICommand = 2;
@@ -62,6 +63,7 @@ type
     function ReadByte: ShortInt;
     function ReadInt: Integer;
     function ReadFloat: Single;
+    function ReadString: string;
     procedure SendMessage(AKind: ShortInt; ASubtype: DWord);
     procedure SendByte(AData: ShortInt);
     procedure SendInt(AData: Integer);
@@ -70,6 +72,7 @@ type
     procedure WaitForReturn();
     function WaitForIntReturn(): Integer;
     function WaitForFloatReturn(): Single;
+    function WaitForStringReturn(): string;
     procedure CommError(AStr: string);
     procedure Log(AStr: string);
   end;
@@ -187,6 +190,18 @@ begin
   Move(lNum, Result, 4);
 end;
 
+function TAndroidPipesComm.ReadString: string;
+var
+  lSize, i: Integer;
+begin
+  Result := '';
+  lSize := ReadInt();
+  for i := 1 to lSize do
+  begin
+    Result := Result + Char(ReadByte());
+  end;
+end;
+
 procedure TAndroidPipesComm.SendMessage(AKind: ShortInt; ASubtype: DWord);
 begin
   OutputStream.WriteByte(AKind);
@@ -254,6 +269,16 @@ begin
   lByte := ReadByte();
   if lByte <> amkFloatResult then CommError('[TAndroidPipesComm.WaitForFloatReturn] expected amkFloatResult but got: ' + IntToStr(lByte));
   Result := ReadFloat();
+end;
+
+function TAndroidPipesComm.WaitForStringReturn: string;
+var
+  lByte: ShortInt;
+begin
+  {$ifdef ANDROID_NO_COMM}Exit(0.0);{$ENDIF}
+  lByte := ReadByte();
+  if lByte <> amkStringResult then CommError('[TAndroidPipesComm.WaitForStringReturn] expected amkStringResult but got: ' + IntToStr(lByte));
+  Result := ReadString();
 end;
 
 procedure TAndroidPipesComm.CommError(AStr: string);

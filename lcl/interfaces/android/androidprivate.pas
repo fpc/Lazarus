@@ -60,6 +60,8 @@ type
     params: TAbsoluteLayout_LayoutParams;
     constructor Create(const AObject: TCustomEdit; const AParams: TCreateParams);
     destructor Destroy; override;
+    function GetText: string;
+    procedure SetText(AText: string);
   end;
 
   { TAndroidButton }
@@ -403,6 +405,16 @@ end;
 destructor TAndroidEdit.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TAndroidEdit.GetText: string;
+begin
+  Result := edittext.GetText();
+end;
+
+procedure TAndroidEdit.SetText(AText: string);
+begin
+  edittext.SetText(AText);
 end;
 
 { TAndroidButton }

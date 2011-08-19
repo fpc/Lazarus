@@ -108,6 +108,7 @@ type
     procedure callOnClickListener();
   public
     procedure setTextSize(unit_: Integer; size: Single);
+    function getText(): string;
   end;
 
   TEditText = class(TTextView)
@@ -302,6 +303,7 @@ const
   amkUI_TTextView_OnClickListener_Start = $0010A003;
   amkUI_TTextView_OnClickListener_Finished = $0010A004;
   amkUI_TTextView_setTextSize = $0010A005;
+  amkUI_TTextView_getText = $0010A006;
   // TEditText
   amkUI_TEditText_Create = $0010B000;
   amkUI_TEditText_setText = $0010B001;
@@ -536,6 +538,14 @@ begin
   vAndroidPipesComm.WaitForReturn();
 end;
 
+function TTextView.getText(): string;
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TTextView_getText);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  Result := vAndroidPipesComm.WaitForStringReturn();
+end;
+
 constructor TEditText.Create();
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
@@ -721,7 +731,6 @@ end;
 
 procedure TArrayAdapter_String_.clear();
 begin
-  vAndroidPipesComm.Log(Format('[TArrayAdapter_String_.Clear] Self=%P Index=%X', [@Self, Index]));
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TArrayAdapter_String__clear);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer

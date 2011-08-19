@@ -329,10 +329,8 @@ end;
 
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
 begin
-  Result := False;
-//  RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo, TGtkPrivateScrolling); { GTK1 }
-//  RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);
-//  Result := True;
+  RegisterWSComponent(TCustomMemo, TAndroidWSCustomMemo);
+  Result := True;
 end;
 
 function RegisterButtonControl: Boolean; alias : 'WSRegisterButtonControl';
