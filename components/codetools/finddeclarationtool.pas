@@ -1275,7 +1275,7 @@ begin
   begin
     MoveCursorToNodeStart(SpecializeParamsNode);
     if not ReadNextAtomIsChar('<') then
-      FParamValuesTool.RaiseException('"<" expected');
+      FParamValuesTool.RaiseException(Format(ctsExpected, ['<']));
     ReadNextAtom;
     while CurPos.Flag = cafWord do
     begin
@@ -1284,7 +1284,7 @@ begin
       if CurPos.Flag = cafComma then ReadNextAtom;
     end;
     if not AtomIsChar('>') then
-      FParamValuesTool.RaiseException('">" expected');
+      FParamValuesTool.RaiseException(Format(ctsExpected, ['>']));
   end;
 end;
 
