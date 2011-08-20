@@ -242,7 +242,9 @@ type
     FBufStart: DOMPChar;
     FDecoder: TDecoder;
     FHasBOM: Boolean;
+    {$IFDEF UseWideString}
     FFixedUCS2: string;
+    {$ENDIF}
     FBufSize: Integer;
     procedure DecodingError(const Msg: string);
   protected
@@ -1143,6 +1145,7 @@ begin
 
   FDecoder.Decode := @Decode_UTF8;
 
+  {$IFDEF UseWideString}
   FFixedUCS2 := '';
   if FCharBufEnd-FCharBuf > 1 then
   begin
@@ -1157,13 +1160,21 @@ begin
       FDecoder.Decode := {$IFDEF ENDIAN_BIG} @Decode_UCS2_Swapped {$ELSE} @Decode_UCS2 {$ENDIF};
     end;
   end;
+  {$ENDIF}
   FBufSize := 6;             //  possible BOM and '<?xml'
   Reload;
+  {$IFDEF UseWideString}
   if FBuf^ = #$FEFF then
   begin
     FHasBOM := True;
     Inc(FBuf);
   end;
+  {$ELSE}
+  if (FBuf[0]=#$EF) and (FBuf[1]=#$BB) and (FBuf[2]=#$BF) then begin
+    FHasBOM := true;
+    inc(FBuf,3);
+  end;
+  {$ENDIF}
   LFPos := FBuf-1;
   if CompareMem(FBuf, @XmlSign[0], sizeof(XmlSign)) then
   begin
@@ -1179,6 +1190,7 @@ var
   NewDecoder: TDecoder;
 begin
   Result := True;
+  {$IFDEF UseWideString}
   if (FFixedUCS2 = '') and SameText(AEncoding, 'UTF-8') then
     Exit;
   if FFixedUCS2 <> '' then
@@ -1188,8 +1200,12 @@ begin
        SameText(AEncoding, 'unicode');
     Exit;
   end;
-// TODO: must fail when a byte-based stream is labeled as word-based.
-// see rmt-e2e-61, it now fails but for a completely different reason.
+  // TODO: must fail when a byte-based stream is labeled as word-based.
+  // see rmt-e2e-61, it now fails but for a completely different reason.
+  {$ELSE}
+  if SameText(AEncoding, 'UTF-8') then
+    Exit;
+  {$ENDIF}
   FillChar(NewDecoder, sizeof(TDecoder), 0);
   if Is_8859_1(AEncoding) then
     FDecoder.Decode := @Decode_88591
