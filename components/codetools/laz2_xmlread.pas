@@ -645,6 +645,7 @@ end;
 
 function Decode_88591(Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
 {$IFDEF UseUTF8}
+// convert ISO-8859-1 to UTF-8
 var
   u: cardinal;
   OldOutCnt: cardinal;
@@ -654,7 +655,24 @@ begin
   while InCnt>0 do begin
     u:=ord(InBuf^);
     inc(InBuf);
-    if not WriteUTF8(u,OutBuf,OutCnt) then break;
+    if  u<128 then begin
+      if OutCnt<1 then break;
+      dec(OutCnt);
+      OutBuf[0]:=char(byte(u));
+      inc(OutBuf);
+    end else if u<192 then begin
+      if OutCnt<2 then break;
+      dec(OutCnt,2);
+      OutBuf[0]:=#194;
+      OutBuf[1]:=char(byte(u));
+      inc(OutBuf,2);
+    end else begin
+      if OutCnt<2 then break;
+      dec(OutCnt,2);
+      OutBuf[0]:=#195;
+      OutBuf[1]:=char(byte(u-64));
+      inc(OutBuf,2);
+    end;
     dec(InCnt);
   end;
   Result:=OldOutCnt-OutCnt;
