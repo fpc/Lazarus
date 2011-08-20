@@ -459,6 +459,15 @@ begin
       // read classname and name
       repeat
         ExtractNextAtom(true,Attr);
+        if Scanner.CompilerMode = cmDELPHI then
+        begin { delphi generics }
+          if AtomIsChar('<') then
+          begin
+            while not AtomIsChar('>') and (CurPos.EndPos < SrcLen) do
+              ExtractNextAtom(true,Attr);
+            ExtractNextAtom(true,Attr);
+          end;
+        end;
         if CurPos.Flag<>cafPoint then break;
         ExtractNextAtom(true,Attr);
         if not AtomIsIdentifier(false) then exit;
@@ -467,6 +476,12 @@ begin
       // read only part of name
       repeat
         ReadNextAtom;
+        if (Scanner.CompilerMode = cmDELPHI) and AtomIsChar('<') then
+        begin
+          while not AtomIsChar('>') and (CurPos.EndPos < SrcLen) do
+            ReadNextAtom;
+          ReadNextAtom;
+        end;
         IsClassName:=(CurPos.Flag=cafPoint);
         UndoReadNextAtom;
         if IsClassName then begin
@@ -558,7 +573,11 @@ begin
       if ClassNode.Desc=ctnTypeDefinition then
         Result:=GetIdentifier(@Src[ClassNode.StartPos])+Result
       else if ClassNode.FirstChild<>nil then
+      begin
+        if (Scanner.CompilerMode = cmDELPHI) and (ClassNode.Desc = ctnGenericType) then
+          Result := Result + ExtractNode(ClassNode.FirstChild.NextBrother, []);
         Result:=GetIdentifier(@Src[ClassNode.FirstChild.StartPos])+Result;
+      end;
       if not WithParents then break;
     end;
     ClassNode:=ClassNode.Parent;
@@ -612,6 +631,15 @@ begin
     if not AtomIsIdentifier(false) then break;
     Part:=GetAtom;
     ReadNextAtom;
+    if (Scanner.CompilerMode = cmDELPHI) and AtomIsChar('<') then
+    begin { delphi generics }
+      Part := Part + GetAtom;
+      repeat
+        ReadNextAtom;
+        Part := Part + GetAtom;
+      until (CurPos.StartPos > SrcLen) or AtomIsChar('>');
+      ReadNextAtom;
+    end;
     if (CurPos.Flag<>cafPoint) then break;
     if Result<>'' then Result:=Result+'.';
     Result:=Result+Part;
@@ -1652,6 +1680,11 @@ begin
   p:=AClassName;
   if SkipFirst then begin
     while IsIdentChar[p^] do inc(p);
+    if p^='<' then
+    begin
+      while not (p^ in [#0,'>']) do Inc(p);
+      if p^ = '>' then Inc(p);
+    end;
     if p^=#0 then exit(RootClassNode);
     if p^<>'.' then exit;
     inc(p);

@@ -1542,9 +1542,11 @@ var
   CurAtom: string;
   OldIndent: Integer;
   OldAtomStart: LongInt;
+  AfterProcedure: Boolean;
 begin
   //DebugLn('**********************************************************');
   //DebugLn('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
+  AfterProcedure := False;
   // set flags
   CurFlags:=BeautifyFlags;
   OldIndent:=Indent;
@@ -1589,6 +1591,20 @@ begin
         else
           break;
       until false;
+      if AfterProcedure then
+      begin
+        if CurAtomType = atSemicolon then
+          AfterProcedure := False
+        else
+        // in implementation of generic methods in DELPHI mode
+        // "<" and ">" have a sense of brackets
+        if (CurAtomType = atSymbol) and (CurAtom[1] in ['<', '>']) then
+          CurAtomType := atBracket;
+      end else
+      if (CurAtomType = atKeyword)
+        and (SameText(CurAtom, 'procedure') or SameText(CurAtom, 'function'))
+      then
+        AfterProcedure := True;
       //DebugLn(['TBeautifyCodeOptions.BeautifyStatement ',CurAtom,' LastAtomType=',AtomTypeNames[LastAtomType],',',LastAtomType in DoNotInsertSpaceAfter,',',LastAtomType in DoInsertSpaceAfter,' CurAtomType=',AtomTypeNames[CurAtomType],',',CurAtomType in DoNotInsertSpaceInFront,',',CurAtomType in DoInsertSpaceInFront]);
       if ((Result='') or (Result[length(Result)]<>' '))
       and (not (CurAtomType in DoNotInsertSpaceInFront))
@@ -1670,8 +1686,16 @@ begin
   end else begin
     // there is already a name
     if AClassName<>'' then begin
-      while (StartPos<=ProcLen) and (IsSpaceChar[AProcCode[StartPos]]) do
-        inc(StartPos);
+      while (StartPos<=ProcLen) do
+        if IsSpaceChar[AProcCode[StartPos]] then
+          inc(StartPos)
+        else
+        if AProcCode[StartPos] = '<' then { the case of delphi style generics }
+        begin
+          while (StartPos<=ProcLen) and (AProcCode[StartPos]<>'>') do
+            inc(StartPos);
+          inc(StartPos)
+        end else Break;
       if (StartPos<=ProcLen) and (AProcCode[StartPos]<>'.') then
         Result:=copy(AProcCode,1,NamePos-1)+AClassName+'.'
                +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1)

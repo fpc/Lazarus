@@ -2488,6 +2488,19 @@ begin
   end;
   ReadNextAtom;
   if (CurSection<>ctnInterface) then begin
+    if (Scanner.CompilerMode = cmDELPHI) and AtomIsChar('<') then
+    begin
+      repeat
+        ReadNextAtom;
+        if CurPos.Flag <> cafWord then
+          RaiseExceptionFmt(ctsIdentExpectedButAtomFound, [GetAtom]);
+        ReadNextAtom;
+        if AtomIsChar('>') then Break;
+        if CurPos.Flag <> cafColon then
+          RaiseCharExpectedButAtomFound(',');
+      until False;
+      ReadNextAtom;
+    end;
     while (CurPos.Flag=cafPoint) do begin
       // read procedure name of a class method (the name after the . )
       ReadNextAtom;
@@ -3639,7 +3652,9 @@ procedure TPascalParserTool.ReadTypeReference;
     controls.TButton
     TGenericClass<TypeReference,TypeReference>
 }
+var SavePos: TAtomPosition;
 begin
+  SavePos := CurPos;
   ReadNextAtom;
   while CurPos.Flag=cafPoint do begin
     ReadNextAtom;
@@ -3647,24 +3662,16 @@ begin
     ReadNextAtom;
   end;
   if not AtomIsChar('<') then exit;
+  if Scanner.CompilerMode <> cmDELPHI then
+    RaiseException('Unexpected character "<"');
   // read specialization parameters
-  repeat
-    ReadNextAtom;
-    if AtomIsIdentifier(false) then begin
-      ReadTypeReference;
-      if CurPos.Flag=cafComma then begin
-        // read another parameter
-        continue;
-      end;
-    end;
-    if AtomIs('>=') then
-      // this is the only case where >= are two atoms
-      dec(CurPos.EndPos);
-    if not AtomIsChar('>') then
-      RaiseCharExpectedButAtomFound('>');
-    ReadNextAtom;
-    break;
-  until false;
+  CurPos := SavePos;
+  ReadPriorAtom; // unread generic name
+  CurNode := CurNode.Parent;
+  FreeAndNil(CurNode.FirstChild);
+  CurNode.LastChild := nil;
+  ReadSpecialize(True);
+  CurNode.EndPos := CurPos.EndPos;
 end;
 
 function TPascalParserTool.KeyWordFuncTypePacked: boolean;
@@ -4167,6 +4174,8 @@ begin
   if CurPos.Flag in AllCommonAtomWords then begin
     AtomIsIdentifier(true);
     ReadTypeReference;
+    if CurNode.EndPos > 0 then
+      Exit(True);
     while (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) do begin
       ReadTilBracketClose(true);
       ReadNextAtom;
@@ -4924,7 +4933,7 @@ begin
           CurNode.Desc:=ctnIdentifier;
         end;
         ReadTypeReference;
-        if CreateChildNodes then begin
+        if (CurNode.EndPos < 0) and CreateChildNodes then begin
           CurNode.EndPos:=CurPos.EndPos;
           EndChildNode;
         end;
