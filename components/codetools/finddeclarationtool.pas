@@ -438,6 +438,25 @@ type
   TOnGetDirectoryCache = function(const ADirectory: string
                                   ): TCTDirectoryCache of object;
 
+  { TGenericParams }
+
+  TGenericParams = class
+  private
+    FParamValuesTool: TFindDeclarationTool;
+    FSpecializeParamsNode: TCodeTreeNode;
+    FParams: TStringList; // "ParamName" => PChar("real type")
+    procedure RaiseParamsMissmatch(const AMessage: string);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure SetParamNames(CT: TFindDeclarationTool;
+      GenericParamsNode: TCodeTreeNode);
+    procedure SetParamValues(CT: TFindDeclarationTool;
+      SpecializeParamsNode: TCodeTreeNode);
+    function FindRealType(GenParam: PChar): PChar;
+    function ParamExists(ParamName: PChar): Boolean;
+  end;
+
   TFindDeclarationInput = record
     Flags: TFindDeclarationFlags;
     Identifier: PChar;
@@ -472,6 +491,7 @@ type
   private
     FirstFoundProc: PFoundProc;//list of all saved PFoundProc
     LastFoundProc: PFoundProc;
+    FGenParams: TGenericParams;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
   public
@@ -506,6 +526,11 @@ type
     procedure SetIdentifier(NewIdentifierTool: TFindDeclarationTool;
                 NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound);
     procedure SetFirstFoundProc(const ProcContext: TFindContext);
+    procedure SetGenericParamNames(GenericType: TFindContext);
+    procedure SetGenericParamValues(SpecializeParamsTool: TFindDeclarationTool;
+                SpecializeNode: TCodeTreeNode);
+    function ExistsGenericParam(ParamName: PChar): Boolean;
+    procedure SetForGenericParam(ParamName: PChar; FindParams: TFindDeclarationParams);
     procedure ChangeFoundProc(const ProcContext: TFindContext;
                               ProcCompatibility: TTypeCompatibility;
                               ParamCompatibilityList: TTypeCompatibilityList);
@@ -1199,6 +1224,92 @@ begin
   ListOfPFindContext:=nil;
 end;
 
+{ TGenericParams }
+
+procedure TGenericParams.RaiseParamsMissmatch(const AMessage: string);
+begin
+  FParamValuesTool.MoveCursorToNodeStart(FSpecializeParamsNode);
+  FParamValuesTool.RaiseException(AMessage);
+end;
+
+constructor TGenericParams.Create;
+begin
+  FParams := TStringList.Create;
+end;
+
+destructor TGenericParams.Destroy;
+begin
+  FParams.Free;
+  inherited Destroy;
+end;
+
+procedure TGenericParams.SetParamNames(CT: TFindDeclarationTool;
+  GenericParamsNode: TCodeTreeNode);
+var p: TCodeTreeNode; n: Integer;
+begin
+  if not Assigned(CT) then Exit;
+  p := GenericParamsNode.FirstChild;
+  n := 0;
+  while (p <> nil) do
+  begin
+    if n >= FParams.Count then
+      RaiseParamsMissmatch(ctsNotEnoughGenParams);
+    CT.MoveCursorToNodeStart(p);
+    CT.ReadNextAtom;
+    FParams[n] := CT.GetAtom;
+    Inc(n);
+    p := p.NextBrother;
+  end;
+  if n < FParams.Count then
+    RaiseParamsMissmatch(ctsTooManyGenParams);
+end;
+
+procedure TGenericParams.SetParamValues(CT: TFindDeclarationTool;
+  SpecializeParamsNode: TCodeTreeNode);
+begin
+  FParams.Clear;
+  FParamValuesTool := CT;
+  FSpecializeParamsNode := SpecializeParamsNode;
+  if not Assigned(CT) then Exit;
+  with FParamValuesTool do
+  begin
+    MoveCursorToNodeStart(SpecializeParamsNode);
+    if not ReadNextAtomIsChar('<') then
+      FParamValuesTool.RaiseException('"<" expected');
+    ReadNextAtom;
+    while CurPos.Flag = cafWord do
+    begin
+      FParams.AddObject('', TObject(@Src[CurPos.StartPos]));
+      ReadNextAtom;
+      if CurPos.Flag = cafComma then ReadNextAtom;
+    end;
+    if not AtomIsChar('>') then
+      FParamValuesTool.RaiseException('">" expected');
+  end;
+end;
+
+function TGenericParams.FindRealType(GenParam: PChar): PChar;
+var i: Integer; s: string;
+begin
+  Result := nil;
+  for i := 0 to FParams.Count - 1 do
+  begin
+    s := FParams[i];
+    if CompareIdentifiers(GenParam, PChar(s)) = 0 then
+      Exit(PChar(FParams.Objects[i]));
+  end;
+end;
+
+function TGenericParams.ParamExists(ParamName: PChar): Boolean;
+var i: Integer; s: string;
+begin
+  for i := 0 to FParams.Count - 1 do
+  begin
+    s := FParams[i];
+    if CompareIdentifiers(PChar(s), ParamName) = 0 then Exit(True);
+  end;
+  Result := False;
+end;
 
 { TFindDeclarationTool }
 
@@ -3407,10 +3518,14 @@ var
       {$IFDEF ShowTriedBaseContexts}
       debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier Identifier=',GetIdentifier(@Src[IdentStart])]);
       {$ENDIF}
-      SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
       SubParams.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
                     +(fdfGlobals*SubParams.Flags);
-      SubParams.ContextNode:=StartNode.Parent;
+      if Params.ExistsGenericParam(@Src[IdentStart]) then
+        Params.SetForGenericParam(@Src[IdentStart], SubParams)
+      else begin
+        SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
+        SubParams.ContextNode:=StartNode.Parent;
+      end;
       if (SubParams.ContextNode.Desc in AllIdentifierDefinitions) then begin
         // pascal allows things like 'var a: a;' -> skip var definition
         Include(SubParams.Flags,fdfIgnoreCurContextNode);
@@ -3457,7 +3572,7 @@ var
         // only types allowed here
         TestContext.Tool:=SubParams.NewCodeTool;
         TestContext.Node:=SubParams.NewNode;
-        if not (TestContext.Node.Desc in [ctnTypeDefinition,ctnGenericParameter]) then
+        if not (TestContext.Node.Desc in [ctnTypeDefinition,ctnGenericType,ctnGenericParameter]) then
         begin
           // not a type
           {$IFDEF ShowTriedBaseContexts}
@@ -3758,6 +3873,7 @@ begin
         NameNode:=SpecializeNode.FirstChild;
         Result.Node:=NameNode;
         if Result.Node=nil then break;
+        Params.SetGenericParamValues(Self, SpecializeNode);
         SearchIdentifier(SpecializeNode,NameNode.StartPos,IsPredefined,Result);
         if (Result.Node=nil) or (Result.Node.Desc<>ctnGenericType) then begin
           // not a generic
@@ -3766,6 +3882,7 @@ begin
           RaiseExceptionFmt(ctsStrExpectedButAtomFound,
                             [ctsGenericIdentifier,GetAtom]);
         end;
+        Params.SetGenericParamNames(Result);
       end else
         break;
     end;
@@ -3774,7 +3891,9 @@ begin
   finally
     if NodeStack=@MyNodeStack then begin
       // cache the result in all nodes
-      CreateBaseTypeCaches(NodeStack,Result);
+      // do not cache the result of generic type
+      if not Assigned(Params.FGenParams) then
+        CreateBaseTypeCaches(NodeStack,Result);
       // free node stack
       FinalizeNodeStack(NodeStack);
     end;
@@ -10469,6 +10588,7 @@ end;
 
 destructor TFindDeclarationParams.Destroy;
 begin
+  FGenParams.Free;
   Clear;
   FreeFoundProc(FirstFoundProc,true);
   inherited Destroy;
@@ -10670,6 +10790,53 @@ begin
   //DebugLn(['TFindDeclarationParams.SetFirstFoundProc New=',dbgs(FoundProc)]);
   FillChar(FoundProc^,SizeOf(TFoundProc),0);
   FoundProc^.Context:=ProcContext;
+end;
+
+procedure TFindDeclarationParams.SetGenericParamNames(
+  GenericType: TFindContext);
+var GenericTypeNode: TCodeTreeNode;
+begin
+  if not Assigned(FGenParams) then
+    IdentifierTool.RaiseException(ctsSyntaxErrorInGeneric);
+  GenericTypeNode := GenericType.Node;
+  if not Assigned(GenericTypeNode)
+    or not Assigned(GenericTypeNode.FirstChild)
+    or not Assigned(GenericTypeNode.FirstChild.NextBrother)
+  then
+    GenericType.Tool.RaiseException(ctsSyntaxErrorInGeneric);
+  FGenParams.SetParamNames(GenericType.Tool,
+    GenericTypeNode.FirstChild.NextBrother);
+end;
+
+procedure TFindDeclarationParams.SetGenericParamValues(
+  SpecializeParamsTool: TFindDeclarationTool;
+  SpecializeNode: TCodeTreeNode);
+begin
+  if not Assigned(FGenParams) then
+    FGenParams := TGenericParams.Create;
+  if not Assigned(SpecializeNode)
+    or not Assigned(SpecializeNode.FirstChild)
+    or not Assigned(SpecializeNode.FirstChild.NextBrother)
+  then
+    SpecializeParamsTool.RaiseException('error in specialize syntax');
+  FGenParams.SetParamValues(SpecializeParamsTool,
+    SpecializeNode.FirstChild.NextBrother);
+end;
+
+function TFindDeclarationParams.ExistsGenericParam(ParamName: PChar): Boolean;
+begin
+  if not Assigned(FGenParams) then
+    Result := False
+  else
+    Result := FGenParams.ParamExists(ParamName);
+end;
+
+procedure TFindDeclarationParams.SetForGenericParam(ParamName: PChar;
+  FindParams: TFindDeclarationParams);
+begin
+  FindParams.SetIdentifier(FGenParams.FParamValuesTool,
+    FGenParams.FindRealType(ParamName), nil);
+  FindParams.ContextNode := FGenParams.FSpecializeParamsNode;
 end;
 
 procedure TFindDeclarationParams.ChangeFoundProc(
