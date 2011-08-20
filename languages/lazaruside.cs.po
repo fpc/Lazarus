@@ -5549,6 +5549,10 @@ msgstr "Spustit pak"
 msgid "Execute before"
 msgstr "Spustit před"
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr "Sesunout všechny třídy"
@@ -7590,6 +7594,10 @@ msgstr "Vykonání zastaveno"
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "Programy"
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"

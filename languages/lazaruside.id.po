@@ -5576,6 +5576,10 @@ msgstr "Jalankan setelah"
 msgid "Execute before"
 msgstr "Jalankan sebelum"
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr "Sempitkan semua kelas"
@@ -7618,6 +7622,10 @@ msgstr "Eksekusi dihentikan"
 
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
+msgstr ""
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses

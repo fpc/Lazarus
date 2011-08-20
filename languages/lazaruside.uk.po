@@ -5522,6 +5522,10 @@ msgstr "Виконати після"
 msgid "Execute before"
 msgstr "Виконати перед"
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr "Колапс всіх класів"
@@ -7548,6 +7552,10 @@ msgstr "Виконання завершене"
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "Програми"
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"

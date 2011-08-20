@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-13 21:49+0300\n"
+"PO-Revision-Date: 2011-08-20 20:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5585,6 +5585,10 @@ msgstr "Выполнить после компиляции"
 msgid "Execute before"
 msgstr "Выполнить перед компиляцией"
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr "Свернуть всё (/)"
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr "Свернуть все классы"
@@ -7629,6 +7633,10 @@ msgstr "Выполнение остановлено"
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "Программы"
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
+msgstr "Развернуть всё (*)"
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"

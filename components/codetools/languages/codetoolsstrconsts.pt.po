@@ -323,6 +323,10 @@ msgstr "erro lista parâmetro"
 msgid "execute access denied for %s"
 msgstr "acesso de execução negado para %s"
 
+#: codetoolsstrconsts.ctsexpected
+msgid "\"%s\" expected"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
 msgstr "\"(\" esperado, mas encontrado %s"
@@ -669,6 +673,10 @@ msgstr "Nenhum \"scanner\" disponível"
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr "Nenhum \"scanner\" encontrado para \"%s\". Se este é um arquivo de inclusões, favor abrir o fonte principal primeiro."
 
+#: codetoolsstrconsts.ctsnotenoughgenparams
+msgid "Not enough actual generic parameters"
+msgstr ""
+
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "método antigo não encontrado: %s"
@@ -813,6 +821,10 @@ msgstr "constante sequência caracteres"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Erro de Sintaxe na expressão \"%s\""
 
+#: codetoolsstrconsts.ctssyntaxerroringeneric
+msgid "Syntax error in generic type declaration"
+msgstr ""
+
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr "TCodeToolManager.ConsistencyCheck=%d"
@@ -828,6 +840,10 @@ msgstr "\"then\" esperado, mas %s encontrado"
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Diretório Ferramentas"
+
+#: codetoolsstrconsts.ctstoomanygenparams
+msgid "Too many actual generic parameters"
+msgstr ""
 
 #: codetoolsstrconsts.ctstype
 msgid "type"

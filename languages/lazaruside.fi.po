@@ -5516,6 +5516,10 @@ msgstr ""
 msgid "Execute before"
 msgstr ""
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr "Supista kaikki luokat"
@@ -7543,6 +7547,10 @@ msgstr "Ohjelman suoritus on pysäytetty"
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "Ohjelmat"
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"

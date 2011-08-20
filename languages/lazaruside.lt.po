@@ -5587,6 +5587,10 @@ msgstr "Startuoti po"
 msgid "Execute before"
 msgstr "Startuoti prieš"
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr "Suskleisti visas klases"
@@ -7627,6 +7631,10 @@ msgstr "Veika sustabdyta"
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "Programos"
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"

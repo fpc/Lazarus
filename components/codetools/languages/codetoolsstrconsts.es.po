@@ -323,6 +323,10 @@ msgstr "error en lista de parametros"
 msgid "execute access denied for %s"
 msgstr "acceso de ejecutar denegado para %s"
 
+#: codetoolsstrconsts.ctsexpected
+msgid "\"%s\" expected"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
 msgstr ""
@@ -669,6 +673,10 @@ msgstr "Sin escáner disponible"
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr "No se encontró escáner para \"%s\". Si este es un archivo incluido, por favor abra primero el código fuente principal."
 
+#: codetoolsstrconsts.ctsnotenoughgenparams
+msgid "Not enough actual generic parameters"
+msgstr ""
+
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "método viejo no encontrado: %s"
@@ -813,6 +821,10 @@ msgstr "constante de cadena"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Error de sintáxis en expresión \"%s\""
 
+#: codetoolsstrconsts.ctssyntaxerroringeneric
+msgid "Syntax error in generic type declaration"
+msgstr ""
+
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr ""
@@ -828,6 +840,10 @@ msgstr ""
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Directorio de las Herramientas"
+
+#: codetoolsstrconsts.ctstoomanygenparams
+msgid "Too many actual generic parameters"
+msgstr ""
 
 #: codetoolsstrconsts.ctstype
 msgid "type"

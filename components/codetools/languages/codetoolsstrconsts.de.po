@@ -326,6 +326,10 @@ msgstr "Fehler in der Parameterliste"
 msgid "execute access denied for %s"
 msgstr "ausführbarer Zugriff auf %s abgelehnt"
 
+#: codetoolsstrconsts.ctsexpected
+msgid "\"%s\" expected"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
 msgstr ""
@@ -672,6 +676,10 @@ msgstr "Kein Scanner verfügbar"
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr "Kein Scanner für \"%s\" gefunden. Wenn das eine Include-Datei ist, öffnen Sie bitte zuerst die Haupt-Quelltextdatei."
 
+#: codetoolsstrconsts.ctsnotenoughgenparams
+msgid "Not enough actual generic parameters"
+msgstr ""
+
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "alte Methode nicht gefunden: %s"
@@ -816,6 +824,10 @@ msgstr "Zeichenkettenkonstante"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Syntaxfehler im Ausdruck \"%s\""
 
+#: codetoolsstrconsts.ctssyntaxerroringeneric
+msgid "Syntax error in generic type declaration"
+msgstr ""
+
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr "TCodeToolManager.ConsistencyCheck=%d"
@@ -831,6 +843,10 @@ msgstr ""
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Tools-Verzeichnis"
+
+#: codetoolsstrconsts.ctstoomanygenparams
+msgid "Too many actual generic parameters"
+msgstr ""
 
 #: codetoolsstrconsts.ctstype
 msgid "type"

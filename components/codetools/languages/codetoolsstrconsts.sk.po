@@ -322,6 +322,10 @@ msgstr ""
 msgid "execute access denied for %s"
 msgstr ""
 
+#: codetoolsstrconsts.ctsexpected
+msgid "\"%s\" expected"
+msgstr ""
+
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
 msgstr ""
@@ -668,6 +672,10 @@ msgstr ""
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr ""
 
+#: codetoolsstrconsts.ctsnotenoughgenparams
+msgid "Not enough actual generic parameters"
+msgstr ""
+
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr ""
@@ -812,6 +820,10 @@ msgstr ""
 msgid "Syntax Error in expression \"%s\""
 msgstr ""
 
+#: codetoolsstrconsts.ctssyntaxerroringeneric
+msgid "Syntax error in generic type declaration"
+msgstr ""
+
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr ""
@@ -826,6 +838,10 @@ msgstr ""
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
+msgstr ""
+
+#: codetoolsstrconsts.ctstoomanygenparams
+msgid "Too many actual generic parameters"
 msgstr ""
 
 #: codetoolsstrconsts.ctstype

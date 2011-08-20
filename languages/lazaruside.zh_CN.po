@@ -5591,6 +5591,10 @@ msgstr "执行后"
 msgid "Execute before"
 msgstr "执行前"
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr ""
@@ -7634,6 +7638,10 @@ msgstr "停止执行"
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "程序"
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"

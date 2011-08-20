@@ -5570,6 +5570,10 @@ msgstr "Voer uit Na"
 msgid "Execute before"
 msgstr "Voer uit Voor"
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr ""
@@ -7610,6 +7614,10 @@ msgstr "Uitvoering afgebroken"
 
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
+msgstr ""
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses

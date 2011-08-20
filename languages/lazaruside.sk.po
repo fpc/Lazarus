@@ -5585,6 +5585,10 @@ msgstr "Spustiť po"
 msgid "Execute before"
 msgstr "Spustiť pred"
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr "Zbaliť všetky triedy"
@@ -7628,6 +7632,10 @@ msgstr "Vykonávanie zastavené"
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "Programy"
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"

@@ -5562,6 +5562,10 @@ msgstr "בצע אחרי"
 msgid "Execute before"
 msgstr "בצע לפני"
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr "צמצם את כל המחלקות"
@@ -7609,6 +7613,10 @@ msgstr "הריצה נעצרה"
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "תוכנות"
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"

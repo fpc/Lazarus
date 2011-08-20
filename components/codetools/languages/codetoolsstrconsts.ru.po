@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-04 01:25+0300\n"
+"PO-Revision-Date: 2011-08-20 21:14+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -322,6 +322,10 @@ msgstr "ошибка в списке параметров"
 msgid "execute access denied for %s"
 msgstr "нет доступа для выполнения %s"
 
+#: codetoolsstrconsts.ctsexpected
+msgid "\"%s\" expected"
+msgstr "Ожидается \"%s\""
+
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
 msgstr "ожидается (, но найдено %s"
@@ -406,7 +410,7 @@ msgstr "функция GetEnumerator не найдена в данном кла�
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
-msgstr "generic-идентификатор"
+msgstr "идентификатор обобщённого типа"
 
 #: codetoolsstrconsts.ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
@@ -668,6 +672,10 @@ msgstr "Отсутствуют доступные лексические ана�
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr "Не найдено лексического анализатора для \"%s\". Если это включаемый файл, откройте сначала главный файл исходного кода."
 
+#: codetoolsstrconsts.ctsnotenoughgenparams
+msgid "Not enough actual generic parameters"
+msgstr "Недостаточное количество фактических параметров обобщённого типа"
+
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
 msgstr "не найден старый метод: %s"
@@ -812,6 +820,10 @@ msgstr "строковая константа"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Синтаксическая ошибка в выражении \"%s\""
 
+#: codetoolsstrconsts.ctssyntaxerroringeneric
+msgid "Syntax error in generic type declaration"
+msgstr "Синтаксическая ошибка в объявлении обобщённого типа"
+
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr "TCodeToolManager.ConsistencyCheck=%d"
@@ -828,6 +840,10 @@ msgstr "ожидается then, но найдено %s"
 msgid "Tools Directory"
 msgstr "Каталог средств пользователя"
 
+#: codetoolsstrconsts.ctstoomanygenparams
+msgid "Too many actual generic parameters"
+msgstr "Слишком много фактических параметров обобщённого типа"
+
 #: codetoolsstrconsts.ctstype
 msgid "type"
 msgstr "тип"
@@ -838,7 +854,7 @@ msgstr "идентификатор типа"
 
 #: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
 msgid "type is only allowed in generics, end of class not found"
-msgstr "секция type разрешена только в обобщённых описаниях, конец класса не найден"
+msgstr "секция type разрешена только в обобщённых типах, конец класса не найден"
 
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
@@ -922,7 +938,7 @@ msgstr "Каталоги утилит"
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr "секция var разрешена только в обобщённых описаниях, конец класса не найден"
+msgstr "секция var разрешена только в обобщённых типах, конец класса не найден"
 
 #: codetoolsstrconsts.ctswidgetdirectory
 msgid "Widget Directory"

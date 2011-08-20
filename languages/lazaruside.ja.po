@@ -5589,6 +5589,10 @@ msgstr "次の後に実行："
 msgid "Execute before"
 msgstr "次の前に実行："
 
+#: lazarusidestrconsts.liscollapseall
+msgid "Collapse All (/)"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
 msgstr "すべてのクラスを折り畳み"
@@ -7639,6 +7643,10 @@ msgstr "実行を停止しました"
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
 msgstr "プログラム"
+
+#: lazarusidestrconsts.lisexpandall
+msgid "Expand All (*)"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
