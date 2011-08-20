@@ -445,7 +445,7 @@ type
     FParamValuesTool: TFindDeclarationTool;
     FSpecializeParamsNode: TCodeTreeNode;
     FParams: TStringList; // "ParamName" => PChar("real type")
-    procedure RaiseParamsMissmatch(const AMessage: string);
+    procedure RaiseParamsMismatch(const AMessage: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -1226,7 +1226,7 @@ end;
 
 { TGenericParams }
 
-procedure TGenericParams.RaiseParamsMissmatch(const AMessage: string);
+procedure TGenericParams.RaiseParamsMismatch(const AMessage: string);
 begin
   FParamValuesTool.MoveCursorToNodeStart(FSpecializeParamsNode);
   FParamValuesTool.RaiseException(AMessage);
@@ -1253,7 +1253,7 @@ begin
   while (p <> nil) do
   begin
     if n >= FParams.Count then
-      RaiseParamsMissmatch(ctsNotEnoughGenParams);
+      RaiseParamsMismatch(ctsNotEnoughGenParams);
     CT.MoveCursorToNodeStart(p);
     CT.ReadNextAtom;
     FParams[n] := CT.GetAtom;
@@ -1261,7 +1261,7 @@ begin
     p := p.NextBrother;
   end;
   if n < FParams.Count then
-    RaiseParamsMissmatch(ctsTooManyGenParams);
+    RaiseParamsMismatch(ctsTooManyGenParams);
 end;
 
 procedure TGenericParams.SetParamValues(CT: TFindDeclarationTool;
