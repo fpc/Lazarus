@@ -1464,7 +1464,7 @@ function TFullyAutomaticBeautifier.AdjustByNextAtom(
   begin
     if StackTopType=bbtDefinition then
       EndBlock;
-    if StackTopType in bbtAllIdentifierSections then
+    if StackTopType in (bbtAllIdentifierSections-[bbtClassSection]) then
       EndBlock;
     BeginBlock(bbtProcedure);
   end;
