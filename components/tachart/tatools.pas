@@ -381,6 +381,7 @@ type
     FShape: TChartCrosshairShape;
     FSize: Integer;
     procedure DoDraw;
+    procedure DoHide;
     procedure SetCrosshairPen(AValue: TChartPen);
   public
     constructor Create(AOwner: TComponent); override;
@@ -1461,6 +1462,20 @@ begin
     OnDraw(Self);
 end;
 
+procedure TDataPointCrosshairTool.DoHide;
+begin
+  if FSeries = nil then exit;
+  FSeries := nil;
+  case EffectiveDrawingMode of
+    tdmXor: begin
+      PrepareXorPen(FChart.Canvas);
+      DoDraw;
+    end;
+    tdmNormal:
+      FChart.StyleChanged(Self);
+  end;
+end;
+
 procedure TDataPointCrosshairTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
 begin
   if FSeries = nil then exit;
@@ -1476,16 +1491,8 @@ end;
 
 procedure TDataPointCrosshairTool.Hide;
 begin
-  if FSeries = nil then exit;
-  FSeries := nil;
-  case EffectiveDrawingMode of
-    tdmXor: begin
-      PrepareXorPen(FChart.Canvas);
-      DoDraw;
-    end;
-    tdmNormal:
-      FChart.StyleChanged(Self);
-  end;
+  DoHide;
+  FChart := nil;
 end;
 
 procedure TDataPointCrosshairTool.KeyDown(APoint: TPoint);
@@ -1495,7 +1502,7 @@ end;
 
 procedure TDataPointCrosshairTool.MouseMove(APoint: TPoint);
 begin
-  Hide;
+  DoHide;
   FindNearestPoint(APoint);
   if FSeries = nil then exit;
   FPosition := FNearestGraphPoint;
