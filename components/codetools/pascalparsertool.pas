@@ -2496,7 +2496,7 @@ begin
           RaiseExceptionFmt(ctsIdentExpectedButAtomFound, [GetAtom]);
         ReadNextAtom;
         if AtomIsChar('>') then Break;
-        if CurPos.Flag <> cafColon then
+        if CurPos.Flag <> cafComma then
           RaiseCharExpectedButAtomFound(',');
       until False;
       ReadNextAtom;
