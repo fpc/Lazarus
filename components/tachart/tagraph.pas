@@ -917,8 +917,18 @@ function TChart.GetFullExtent: TDoubleRect;
     end;
   end;
 
+  procedure JoinBounds(const ABounds: TDoubleRect);
+  begin
+    with Result do begin
+      a.X := Min(a.X, ABounds.a.X);
+      b.X := Max(b.X, ABounds.b.X);
+      a.Y := Min(a.Y, ABounds.a.Y);
+      b.Y := Max(b.Y, ABounds.b.Y);
+    end;
+  end;
+
 var
-  seriesBounds: TDoubleRect;
+  seriesBounds, axisBounds: TDoubleRect;
   s: TBasicChartSeries;
   a: TChartAxis;
 begin
@@ -938,12 +948,17 @@ begin
       s.Active := false;
       raise;
     end;
-    with Result do begin
-      a.X := Min(a.X, seriesBounds.a.X);
-      b.X := Max(b.X, seriesBounds.b.X);
-      a.Y := Min(a.Y, seriesBounds.a.Y);
-      b.Y := Max(b.Y, seriesBounds.b.Y);
-    end;
+    JoinBounds(seriesBounds);
+  end;
+  for a in AxisList do begin
+    axisBounds := EmptyExtent;
+    if a.Range.UseMin then
+      TDoublePointBoolArr(axisBounds.a)[a.IsVertical] :=
+        a.GetTransform.AxisToGraph(a.Range.Min);
+    if a.Range.UseMax then
+      TDoublePointBoolArr(axisBounds.b)[a.IsVertical] :=
+        a.GetTransform.AxisToGraph(a.Range.Max);
+    JoinBounds(axisBounds);
   end;
   with Extent do begin
     SetBounds(Result.a.X, Result.b.X, XMin, XMax, UseXMin, UseXMax);

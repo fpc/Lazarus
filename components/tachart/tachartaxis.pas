@@ -113,7 +113,6 @@ type
     FZPosition: TChartDistance;
 
     function GetMarks: TChartAxisMarks; inline;
-    function GetTransform: TChartAxisTransformations;
     procedure SetAxisPen(AValue: TChartAxisPen);
     procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
@@ -139,12 +138,14 @@ type
     procedure Draw;
     procedure DrawTitle(const ACenter: TPoint; ASize: Integer);
     function GetChart: TCustomChart; inline;
+    function GetTransform: TChartAxisTransformations;
     function IsVertical: Boolean; inline;
     procedure Measure(
       const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
     procedure PrepareHelper(
       ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
       AClipRect: PRect; AMaxZPosition: Integer);
+    procedure UpdateBounds(var AMin, AMax: Double);
   published
     property Alignment default calLeft;
     property Arrow;
@@ -287,12 +288,7 @@ procedure UpdateBoundsByAxisRange(
   AAxisList: TChartAxisList; AIndex: Integer; var AMin, AMax: Double);
 begin
   if not InRange(AIndex, 0, AAxisList.Count - 1) then exit;
-  with AAxisList[AIndex].Range do begin
-    if UseMin then
-      AMin := Min;
-    if UseMax then
-      AMax := Max;
-  end;
+  AAxisList[AIndex].UpdateBounds(AMin, AMax);
 end;
 
 { TChartAxisEnumerator }
@@ -791,6 +787,16 @@ begin
     if ASender is TAxisTransform then
       ZoomFull;
     Invalidate;
+  end;
+end;
+
+procedure TChartAxis.UpdateBounds(var AMin, AMax: Double);
+begin
+  with Range do begin
+    if UseMin then
+      AMin := Min;
+    if UseMax then
+      AMax := Max;
   end;
 end;
 
