@@ -836,8 +836,13 @@ begin
   while AIndex < FZOrder.Count do
     with TChartAxis(FZOrder[AIndex]) do begin
       if ACurrentZ < ZPosition then break;
-      Draw;
-      DrawTitle(FCenterPoint, FGroups[FGroupIndex].FTitleSize);
+      try
+        Draw;
+        DrawTitle(FCenterPoint, FGroups[FGroupIndex].FTitleSize);
+      except
+        Visible := false;
+        raise;
+      end;
       AIndex += 1;
     end;
 end;
@@ -899,7 +904,12 @@ begin
     g^.FTitleSize := 0;
     for j := 0 to g^.FCount - 1 do begin
       axis := TChartAxis(FGroupOrder[ai]);
-      axis.Measure(AExtent, g^);
+      try
+        axis.Measure(AExtent, g^);
+      except
+        axis.Visible := false;
+        raise;
+      end;
       ai += 1;
     end;
     // Axises of the same group should have the same Alignment and ZPosition.
