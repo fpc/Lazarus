@@ -308,6 +308,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   public
+    property NearestGraphPoint: TDoublePoint read FNearestGraphPoint;
     property PointIndex: Integer read FPointIndex;
     property Series: TBasicChartSeries read FSeries;
   published

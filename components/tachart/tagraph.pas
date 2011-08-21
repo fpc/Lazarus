@@ -99,6 +99,8 @@ type
 
     procedure Activate; virtual;
     procedure Deactivate; virtual;
+  public
+    property Chart: TChart read FChart;
   end;
 
   TChartToolEventId = (
