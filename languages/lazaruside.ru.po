@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-20 20:50+0300\n"
+"PO-Revision-Date: 2011-08-21 18:39+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -9857,7 +9857,7 @@ msgstr "Главный модуль является исходым кодом �
 
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
-msgstr "Исполнимый файл Make"
+msgstr "Собрать исполнимый файл"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
