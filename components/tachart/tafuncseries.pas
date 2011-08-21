@@ -81,6 +81,9 @@ type
     destructor Destroy; override;
 
     procedure Draw(ADrawer: IChartDrawer); override;
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc; const APoint: TPoint; out AIndex: Integer;
+      out AImg: TPoint; out AValue: TDoublePoint): Boolean; override;
     function IsEmpty: Boolean; override;
   public
     property DomainExclusions: TIntervalList read FDomainExclusions;
@@ -447,6 +450,28 @@ end;
 procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
+end;
+
+function TFuncSeries.GetNearestPoint(ADistFunc: TPointDistFunc;
+  const APoint: TPoint; out AIndex: Integer; out AImg: TPoint;
+  out AValue: TDoublePoint): Boolean;
+var
+  t: Double;
+  dummy: Integer = 0;
+begin
+  Unused(ADistFunc);
+  Result := false;
+  AIndex := -1;
+  if OnCalculate = nil then exit;
+  // Instead of true nearest point, just calculate the function at the cursor.
+  with GraphToAxis(ParentChart.ImageToGraph(APoint)) do begin
+    t := X;
+    if DomainExclusions.Intersect(t, t, dummy) then exit;
+    AValue.X := X;
+  end;
+  OnCalculate(AValue.X, AValue.Y);
+  AImg := ParentChart.GraphToImage(AxisToGraph(AValue));
+  Result := true;
 end;
 
 function TFuncSeries.IsEmpty: Boolean;
