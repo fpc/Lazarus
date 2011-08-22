@@ -6,6 +6,7 @@ uses
   androidwsfactory,
   androidwsforms,
   androidwsstdctrls,
+  androidwscontrols,
   androidprivate,
   androidstringlists,
   interfaces;

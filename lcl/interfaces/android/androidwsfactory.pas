@@ -104,9 +104,9 @@ uses
   Gtk2WSButtons,
   Gtk2WSCalendar,
   Gtk2WSCheckLst,
-  Gtk2WSComCtrls,
-  Gtk2WSControls,
-  Gtk2WSDialogs,
+  Gtk2WSComCtrls,}
+  AndroidWSControls,
+{  Gtk2WSDialogs,
   Gtk2WSExtCtrls,
   Gtk2WSExtDlgs,}
   AndroidWSForms,
@@ -142,10 +142,8 @@ end;
 
 function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';
 begin
-  Result := False;
-//  RegisterWSComponent(TWinControl, TGtk2WSWinControl, TGtkPrivateWidget); { GTK2 }
-  //RegisterWSComponent(TWinControl, TGtk2WSWinControl);
-//  Result := True;
+  RegisterWSComponent(TWinControl, TAndroidWSWinControl);
+  Result := True;
 end;
 
 function RegisterGraphicControl: Boolean; alias : 'WSRegisterGraphicControl';

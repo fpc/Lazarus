@@ -42,6 +42,8 @@ type
     LCLObject: TWinControl;
     ParentGroupView: TViewGroup;
     MainView: TView;
+    params: TAbsoluteLayout_LayoutParams;
+    constructor Create(const AObject: TWinControl; const AParams: TCreateParams);
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT;
   end;
 
@@ -55,7 +57,6 @@ type
   TAndroidStaticText = class(TAndroidView)
   public
     textview: android_all.TTextView;
-    params: TAbsoluteLayout_LayoutParams;
     constructor Create(const AObject: TCustomStaticText; const AParams: TCreateParams);
     destructor Destroy; override;
     function GetText: string;
@@ -86,7 +87,6 @@ type
   TAndroidCheckBox = class(TAndroidView)
   public
     checkbox: android_all.TCheckBox;
-    params: TAbsoluteLayout_LayoutParams;
     constructor Create(const AObject: TCustomCheckBox; const AParams: TCreateParams);
     destructor Destroy; override;
     function GetState: TCheckBoxState;
@@ -99,7 +99,6 @@ type
   public
     spinner: android_all.TSpinner;
     Adapter: TArrayAdapter_String_;
-    params: TAbsoluteLayout_LayoutParams;
     FList: TAndroidComboBoxStrings;
     constructor Create(const AObject: TCustomComboBox; const AParams: TCreateParams);
     destructor Destroy; override;
@@ -134,6 +133,18 @@ implementation
 
 { TAndroidView }
 
+constructor TAndroidView.Create(const AObject: TWinControl;
+  const AParams: TCreateParams);
+begin
+  LCLObject := AObject;
+  ParentGroupView := TAndroidViewGroup(AObject.Parent.Handle).mainviewgroup;
+
+  MainView := android_all.TView.Create;
+  params := TAbsoluteLayout_LayoutParams.Create(AObject.Width, AObject.Height, AObject.Left, AObject.Top);
+  ParentGroupView.addView(MainView, TViewGroup_LayoutParams(params));
+  params.Free;
+end;
+
 function TAndroidView.DeliverMessage(var Msg; const AIsInputEvent: Boolean
   ): LRESULT;
 begin
@@ -162,8 +173,6 @@ end;
 constructor TAndroidComboBox.Create(const AObject: TCustomComboBox;
   const AParams: TCreateParams);
 begin
-  inherited Create;
-
   LCLObject := AObject;
   ParentGroupView := TAndroidViewGroup(AObject.Parent.Handle).mainviewgroup;
 

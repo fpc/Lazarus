@@ -159,8 +159,8 @@ type
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
     property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;}
 
-//    {$I qtwinapih.inc}
-//    {$I qtlclintfh.inc}
+    {$I androidwinapih.inc}
+    {$I androidlclintfh.inc}
   end;
 
 
@@ -186,7 +186,7 @@ uses
 
 
 {$I androidobject.inc}
-//{$I qtwinapi.inc}
-//{$I qtlclintf.inc}
+{$I androidwinapi.inc}
+{$I androidlclintf.inc}
 
 end.
