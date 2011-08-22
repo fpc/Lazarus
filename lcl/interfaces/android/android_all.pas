@@ -125,13 +125,11 @@ type
   TEditText = class(TTextView)
   public
     constructor Create();
-    procedure setText(AText: string);
   end;
 
   TButton = class(TTextView)
   public
     constructor Create();
-    procedure setText(AText: string);
   end;
 
   TFrameLayout = class(TViewGroup)
@@ -169,12 +167,14 @@ type
 
   TAdapterView = class(TViewGroup)
   public
+    function getSelectedItemPosition(): Integer;
   end;
 
   TAbsSpinner = class(TAdapterView)
   public
     function getCount(): Integer;
     procedure setAdapter(adapter: TSpinnerAdapter);
+    procedure setSelection(position: Integer); overload;
   end;
 
   TSpinner = class(TAbsSpinner)
@@ -328,10 +328,8 @@ const
   amkUI_TTextView_getText_6 = $0010B006;
   // TEditText
   amkUI_TEditText_Create_0 = $0010C000;
-  amkUI_TEditText_setText_1 = $0010C001;
   // TButton
   amkUI_TButton_Create_0 = $0010D000;
-  amkUI_TButton_setText_1 = $0010D001;
   // TFrameLayout
   // TTimePicker
   amkUI_TTimePicker_Create_0 = $0010F000;
@@ -351,9 +349,11 @@ const
   // TCheckBox
   amkUI_TCheckBox_Create_0 = $00112000;
   // TAdapterView
+  amkUI_TAdapterView_getSelectedItemPosition_0 = $00113000;
   // TAbsSpinner
   amkUI_TAbsSpinner_getCount_0 = $00114000;
   amkUI_TAbsSpinner_setAdapter_1 = $00114001;
+  amkUI_TAbsSpinner_setSelection_2 = $00114002;
   // TSpinner
   amkUI_TSpinner_Create_0 = $00115000;
   // TFilterable
@@ -634,38 +634,12 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TEditText_Create_0);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-procedure TEditText.setText(AText: string);
-var
-  lString_1: TString;
-begin
-  lString_1 := TString.Create(AText);
-  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TEditText_setText_1);
-  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  vAndroidPipesComm.SendInt(lString_1.Index); // text
-  vAndroidPipesComm.WaitForReturn();
-  lString_1.Free;
-end;
-
 constructor TButton.Create();
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TButton_Create_0);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-procedure TButton.setText(AText: string);
-var
-  lString_1: TString;
-begin
-  lString_1 := TString.Create(AText);
-  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TButton_setText_1);
-  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  vAndroidPipesComm.SendInt(lString_1.Index); // text
-  vAndroidPipesComm.WaitForReturn();
-  lString_1.Free;
-end;
-
 constructor TTimePicker.Create();
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
@@ -768,6 +742,14 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TCheckBox_Create_0);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
+function TAdapterView.getSelectedItemPosition(): Integer;
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TAdapterView_getSelectedItemPosition_0);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  Result := Integer(vAndroidPipesComm.WaitForIntReturn());
+end;
+
 function TAbsSpinner.getCount(): Integer;
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
@@ -782,6 +764,15 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TAbsSpinner_setAdapter_1);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(Integer(adapter.Index));
+  vAndroidPipesComm.WaitForReturn();
+end;
+
+procedure TAbsSpinner.setSelection(position: Integer);
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TAbsSpinner_setSelection_2);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.SendInt(Integer(position));
   vAndroidPipesComm.WaitForReturn();
 end;
 

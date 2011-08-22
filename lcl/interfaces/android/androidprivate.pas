@@ -50,24 +50,32 @@ type
     mainviewgroup: TViewGroup;
   end;
 
-  { TAndroidEdit }
+  { TAndroidStaticText }
 
-  TAndroidEdit = class(TAndroidView)
+  TAndroidStaticText = class(TAndroidView)
   public
-    edittext: android_all.TEditText;
+    textview: android_all.TTextView;
     params: TAbsoluteLayout_LayoutParams;
-    constructor Create(const AObject: TCustomEdit; const AParams: TCreateParams);
+    constructor Create(const AObject: TCustomStaticText; const AParams: TCreateParams);
     destructor Destroy; override;
     function GetText: string;
     procedure SetText(AText: string);
   end;
 
+  { TAndroidEdit }
+
+  TAndroidEdit = class(TAndroidStaticText)
+  public
+    edittext: android_all.TEditText;
+    constructor Create(const AObject: TCustomEdit; const AParams: TCreateParams);
+    destructor Destroy; override;
+  end;
+
   { TAndroidButton }
 
-  TAndroidButton = class(TAndroidView)
+  TAndroidButton = class(TAndroidStaticText)
   public
     btn: android_all.TButton;
-    params: TAbsoluteLayout_LayoutParams;
     constructor Create(const AObject: TCustomButton; const AParams: TCreateParams);
     destructor Destroy; override;
     procedure buttonClickCallback(v: TView);
@@ -85,16 +93,6 @@ type
     procedure SetState(const AState: TCheckBoxState);
   end;
 
-  { TAndroidStaticText }
-
-  TAndroidStaticText = class(TAndroidView)
-  public
-    textview: android_all.TTextView;
-    params: TAbsoluteLayout_LayoutParams;
-    constructor Create(const AObject: TCustomStaticText; const AParams: TCreateParams);
-    destructor Destroy; override;
-  end;
-
   { TAndroidComboBox }
 
   TAndroidComboBox = class(TAndroidView)
@@ -110,6 +108,9 @@ type
     procedure InsertItem(Index: Integer; const S: string);
     procedure Clear;
     procedure Delete(Index: Integer);
+    //
+    function GetItemIndex(): Integer;
+    procedure SetItemIndex(NewIndex: integer);
   end;
 
   { TAndroidWindow }
@@ -224,6 +225,16 @@ begin
   Adapter.remove(lStr);
 end;
 
+function TAndroidComboBox.GetItemIndex: Integer;
+begin
+  Result := spinner.getSelectedItemPosition();
+end;
+
+procedure TAndroidComboBox.SetItemIndex(NewIndex: integer);
+begin
+  spinner.setSelection(NewIndex);
+end;
+
 { TAndroidStaticText }
 
 constructor TAndroidStaticText.Create(const AObject: TCustomStaticText;
@@ -246,6 +257,16 @@ end;
 destructor TAndroidStaticText.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TAndroidStaticText.GetText: string;
+begin
+  Result := textview.GetText();
+end;
+
+procedure TAndroidStaticText.SetText(AText: string);
+begin
+  textview.SetText(AText);
 end;
 
 { TAndroidCheckBox }
@@ -298,6 +319,7 @@ begin
   ParentGroupView := TAndroidViewGroup(AObject.Parent.Handle).mainviewgroup;
 
   edittext := android_all.TEditText.Create;
+  textview := edittext;
   MainView := edittext;
   Str := AObject.Caption;
   edittext.setText(Str);
@@ -311,16 +333,6 @@ begin
   inherited Destroy;
 end;
 
-function TAndroidEdit.GetText: string;
-begin
-  Result := edittext.GetText();
-end;
-
-procedure TAndroidEdit.SetText(AText: string);
-begin
-  edittext.SetText(AText);
-end;
-
 { TAndroidButton }
 
 constructor TAndroidButton.Create(const AObject: TCustomButton;
@@ -332,6 +344,7 @@ begin
   ParentGroupView := TAndroidViewGroup(AObject.Parent.Handle).mainviewgroup;
 
   btn := android_all.TButton.Create;
+  textview := btn;
   MainView := btn;
   Str := AObject.Caption;
   btn.setText(Str);
