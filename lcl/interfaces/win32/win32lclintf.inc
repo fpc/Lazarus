@@ -731,7 +731,11 @@ begin
       DialogButtons[i].pszButtonText := UTF8StringToPWideChar(GetButtonCaption(Buttons[i]));
     end;
     TaskConfig.pButtons := DialogButtons;
-    TaskConfig.nDefaultButton := DefaultIndex;
+    //we need idButtonXX value
+    if DefaultIndex < ButtonCount then
+      TaskConfig.nDefaultButton := Buttons[DefaultIndex]
+    else
+      TaskConfig.nDefaultButton := 0;
 
     State := SaveApplicationState;
     try
