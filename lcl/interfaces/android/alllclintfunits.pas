@@ -7,6 +7,7 @@ uses
   androidwsforms,
   androidwsstdctrls,
   androidprivate,
+  androidstringlists,
   interfaces;
 implementation
 end.

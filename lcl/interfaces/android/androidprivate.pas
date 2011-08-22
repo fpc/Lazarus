@@ -27,7 +27,7 @@ interface
 
 uses
   // libs
-  android_all, androidpipescomm,
+  android_all, androidpipescomm, androidstringlists,
   // wdgetset
   WSLCLClasses, LCLClasses,
   // LCL + RTL
@@ -35,8 +35,6 @@ uses
   AVL_Tree, LMessages, LCLMessageGlue, stdctrls, Forms;
 
 type
-  TAndroidComboBoxStrings = class;
-
   { TAndroidView }
 
   TAndroidView = class
@@ -120,31 +118,11 @@ type
   public
     layout: TAbsoluteLayout;
     scroller: TScrollView;
+    FVertScrollable: Boolean;
     constructor Create(const AObject: TCustomForm; const AParams: TCreateParams);
     destructor Destroy; override;
-  end;
-
-  // Now StringLists
-
-  { TAndroidComboBoxStrings }
-
-  TAndroidComboBoxStrings = class(TStringList)
-  private
-    FWinControl: TWinControl;
-    FOwner: TAndroidComboBox;
-  protected
-    procedure Put(Index: Integer; const S: string); override;
-    procedure InsertItem(Index: Integer; const S: string); override;
-    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
-  public
-    constructor Create(AWinControl: TWinControl; AOwner: TAndroidComboBox);
-    procedure Assign(Source: TPersistent); override;
-    procedure Clear; override;
-    procedure Delete(Index: Integer); override;
-    procedure Sort; override;
-    procedure Exchange(AIndex1, AIndex2: Integer); override;
-  public
-    property Owner: TAndroidComboBox read FOwner;
+    function GetText: string;
+    procedure SetText(AText: string);
   end;
 
 //function CheckHandle(const AWinControl: TWinControl; const AClass: TClass; const DbgText: String): Boolean;
@@ -176,80 +154,6 @@ begin
     end else}
       Application.HandleException(nil);
   end;
-end;
-
-{ TAndroidComboBoxStrings }
-
-procedure TAndroidComboBoxStrings.Put(Index: Integer; const S: string);
-begin
-  inherited Put(Index, S);
-  //FOwner.BeginUpdate;
-  FOwner.Put(Index, S);
-//  FOwner.setItemText(Index, S);
-//  FOwner.EndUpdate;
-end;
-
-procedure TAndroidComboBoxStrings.InsertItem(Index: Integer; const S: string);
-var
-  FSavedIndex: Integer;
-  FSavedText: WideString;
-begin
-  inherited InsertItem(Index, S);
-{  //FOwner.BeginUpdate;
-  FSavedText := FOwner.getText;
-  FSavedIndex := FOwner.currentIndex;}
-  FOwner.insertItem(Index, S);
-{  if FOwner.getEditable then
-  begin
-    if (FSavedIndex <> FOwner.currentIndex) then
-      FOwner.setCurrentIndex(FSavedIndex);
-    FOwner.setText(FSavedText);
-  end;
-  FOwner.EndUpdate;}
-end;
-
-procedure TAndroidComboBoxStrings.InsertItem(Index: Integer; const S: string;
-  O: TObject);
-begin
-  inherited InsertItem(Index, S, O);
-end;
-
-constructor TAndroidComboBoxStrings.Create(AWinControl: TWinControl;
-  AOwner: TAndroidComboBox);
-begin
-  inherited Create;
-  FWinControl := AWinControl;
-  FOwner := AOwner;
-  {$ifdef LCL_ANDROID_STDCTRLS_VERBOSE}
-  vAndroidPipesComm.Log(Format('[TAndroidComboBox.Clear] AWinControl=%P AOwner=%P', [@AWinControl, @AOwner]));
-  {$endif}
-end;
-
-procedure TAndroidComboBoxStrings.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-end;
-
-procedure TAndroidComboBoxStrings.Clear;
-begin
-  inherited Clear;
-  FOwner.clear;
-end;
-
-procedure TAndroidComboBoxStrings.Delete(Index: Integer);
-begin
-  inherited Delete(Index);
-  FOwner.delete(Index);
-end;
-
-procedure TAndroidComboBoxStrings.Sort;
-begin
-  inherited Sort;
-end;
-
-procedure TAndroidComboBoxStrings.Exchange(AIndex1, AIndex2: Integer);
-begin
-  inherited Exchange(AIndex1, AIndex2);
 end;
 
 { TAndroidComboBox }
@@ -458,17 +362,39 @@ constructor TAndroidWindow.Create(const AObject: TCustomForm;
 begin
   LCLObject := AObject;
 
-  layout := TAbsoluteLayout.Create;
-//  scroller := TScrollView.Create;
-//  scroller.addView(layout);
+  FVertScrollable := AObject.VertScrollBar.Visible;
 
-  mainviewgroup := layout;
-  MainView := layout;//scroller;
+  if FVertScrollable then
+  begin
+    layout := TAbsoluteLayout.Create;
+    scroller := TScrollView.Create;
+    scroller.addView(layout);
+
+    mainviewgroup := layout;
+    MainView := scroller;
+  end
+  else
+  begin
+    layout := TAbsoluteLayout.Create;
+
+    mainviewgroup := layout;
+    MainView := layout;
+  end;
 end;
 
 destructor TAndroidWindow.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TAndroidWindow.GetText: string;
+begin
+  Result := activity.getTitle();
+end;
+
+procedure TAndroidWindow.SetText(AText: string);
+begin
+  activity.setTitle(AText);
 end;
 
 end.

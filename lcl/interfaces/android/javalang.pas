@@ -24,6 +24,7 @@ type
   public
     FIndex: Integer;
     constructor Create(AIndex: Integer); virtual;
+    constructor Create(); virtual;
     function GetIndex: Integer;
     procedure SetIndex(AValue: Integer);
     property Index: Integer read GetIndex write SetIndex;
@@ -68,6 +69,12 @@ end;
 constructor TJavaObject.Create(AIndex: Integer);
 begin
   Index := AIndex;
+end;
+
+// For global objects which have no Index
+constructor TJavaObject.Create;
+begin
+  inherited Create;
 end;
 
 function TJavaObject.GetIndex: Integer;
