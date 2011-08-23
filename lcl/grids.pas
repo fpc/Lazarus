@@ -1438,6 +1438,7 @@ type
 
   TStringGridStrings = class(TStrings)
   private
+    FAddedCount: Integer;
     FGrid: TCustomStringGrid;
     FIsCol: Boolean;
     FIndex: Integer;
@@ -8881,30 +8882,19 @@ begin
       FGrid.Objects[I, FIndex] := nil;
     end;
   end;
+  FAddedCount := 0;
 end;
 
 function TStringGridStrings.Add(const S: string): Integer;
 var
-  I: Integer;
+  Line, Col: Integer;
 begin
-  if FIsCol then begin
-    for I := 0 to FGrid.RowCount - 1 do begin
-      if FGrid.Cells[FIndex, I] = '' then begin
-        FGrid.Cells[FIndex, I] := S;
-        Result := I;
-        Exit;
-      end;
-    end;
-  end else begin
-    for I := 0 to FGrid.ColCount - 1 do begin
-      if FGrid.Cells[I, FIndex] = '' then begin
-        FGrid.Cells[I, FIndex] := S;
-        Result := I;
-        Exit;
-      end;
-    end;
-  end;
-  Result := -1;
+  if ConvertIndexLineCol(FAddedCount, Line, Col) then begin
+    FGrid.Cells[Line, Col] := S;
+    Result := FAddedCount;
+    Inc(FAddedCount);
+  end else
+    Result := -1;
 end;
 
 function TStringGridStrings.Get(Index: Integer): string;
