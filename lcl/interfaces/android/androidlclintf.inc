@@ -865,10 +865,10 @@ var
   alert: TAlertDialog_Builder;
   input: TEditText;
 begin
-  if InputDialogFunction<>nil then
+{  if InputDialogFunction<>nil then
     Result := InputDialogFunction(InputCaption, InputPrompt, MaskInput, Value)
   else
-  begin
+  begin}
     Result := True;
 
     alert := TAlertDialog_Builder.Create;
@@ -894,7 +894,7 @@ begin
     });*)
 
     alert.show();
-  end;
+//  end;
 end;
 
 (*procedure TQtWidgetSet.SetEventHandlerFlags(AHandler: PEventHandler;

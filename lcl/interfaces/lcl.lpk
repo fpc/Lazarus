@@ -109,7 +109,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="345">
+    <Files Count="350">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1723,6 +1723,27 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="javalang"/>
       </Item345>
+      <Item346>
+        <Filename Value="android/androidstringlists.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="androidstringlists"/>
+      </Item346>
+      <Item347>
+        <Filename Value="android/androidwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item347>
+      <Item348>
+        <Filename Value="android/androidwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item348>
+      <Item349>
+        <Filename Value="android/androidlclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item349>
+      <Item350>
+        <Filename Value="android/androidlclintf.inc"/>
+        <Type Value="Include"/>
+      </Item350>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
