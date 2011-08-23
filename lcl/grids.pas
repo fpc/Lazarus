@@ -8850,7 +8850,7 @@ end;
 function TStringGridStrings.ConvertIndexLineCol(Index: Integer; var Line, Col: Integer): boolean;
 begin
   if FIsCol then
-    if (Index < 0) or (Index > FGrid.RowCount) then
+    if (Index < 0) or (Index >= FGrid.RowCount) then
       Result := False
     else begin
       Line := FIndex;
@@ -8858,7 +8858,7 @@ begin
       Result := True;
     end
   else
-    if (Index < 0) or (Index > FGrid.ColCount) then
+    if (Index < 0) or (Index >= FGrid.ColCount) then
       Result := False
     else begin
       Line := Index;
