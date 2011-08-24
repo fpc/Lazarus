@@ -214,7 +214,7 @@ resourceString
   
   // StringHashList, LResource, Menus, ExtCtrls, ImgList, Spin
   // StdCtrls, Calendar, CustomTimer, Forms, Grids, LCLProc, Controls, ComCtrls,
-  // ExtDlgs, EditBtn, Masks
+  // ExtDlgs, EditBtn, Masks, MaskEdit
   sInvalidActionRegistration = 'Invalid action registration';
   sInvalidActionUnregistration = 'Invalid action unregistration';
   sInvalidActionEnumeration = 'Invalid action enumeration';
@@ -228,6 +228,7 @@ resourceString
   sDuplicateMenus = 'Duplicate menus';
   sCannotFocus = 'Cannot focus a disabled or invisible window';
   sInvalidCharSet = 'The char set in mask "%s" is not valid!';
+  SMaskEditNoMatch = 'The current text does not match the specified mask.';
 
   rsListMustBeEmpty = 'List must be empty';
   rsInvalidPropertyValue = 'Invalid property value';

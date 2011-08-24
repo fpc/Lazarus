@@ -25,7 +25,6 @@
 
 {
 ToDo List:
-- Make the EDBEditError errormessage (SMaskEditNoMatch) a Resource string in LCLStrconsts.pas
 - Better handling of cut/clear/paste messages
 
 Bugs:
@@ -69,7 +68,7 @@ interface
 
 uses
   Classes, SysUtils, strutils, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, LMessages, Clipbrd, LCLType, LCLProc;
+  ExtCtrls, StdCtrls, LMessages, Clipbrd, LCLType, LCLProc, LCLStrConsts;
 
 const
   { Mask Type }
@@ -128,12 +127,9 @@ type
   { Exception class }
 type
   EDBEditError = class(Exception);
-
-const
-  SMaskEditNoMatch = 'The current text does not match the specified mask.';
-
-type
   TMaskeditTrimType = (metTrimLeft, metTrimRight);
+
+
   { TCustomMaskEdit }
 
 
