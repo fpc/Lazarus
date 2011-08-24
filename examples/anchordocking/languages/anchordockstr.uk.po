@@ -63,7 +63,7 @@ msgstr "Користув. область стикування %s%s%s може м
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
-msgstr ""
+msgstr "Стикування / Якірне Стикування"
 
 #: anchordockstr.adrsdockingenabledrequiresarestartoftheide
 msgid "Docking enabled (Requires a restart of the IDE)"
@@ -203,7 +203,7 @@ msgstr "Даний запит на %s, але створений %s"
 
 #: anchordockstr.adrsrestoredefaultlayout
 msgid "Restore default layout"
-msgstr ""
+msgstr "Відновити стандартну схему"
 
 #: anchordockstr.adrsright
 msgid "right"

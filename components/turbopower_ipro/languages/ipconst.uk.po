@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-06-12 17:03+0200\n"
+"PO-Revision-Date: 2011-08-19 13:58+0200\n"
 "Last-Translator: Igor Paliychuk <mansonigor@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -177,7 +177,7 @@ msgstr "Один непарний символ"
 
 #: ipconst.sbinhexresourceforkerr
 msgid "Resource fork present"
-msgstr ""
+msgstr "Наявне розгалуження ресурсу"
 
 #: ipconst.sbrokerdownloadreq
 msgid "Download %s?"
@@ -1236,11 +1236,11 @@ msgstr "Вибір Групи"
 
 #: ipconst.soriginfrombegin
 msgid "When origin is soFromBeginning, Offset must be >= 0"
-msgstr ""
+msgstr "Коли початком є soFromBeginning, зсув має бути >= 0"
 
 #: ipconst.soriginfromend
 msgid "When origin is soFromEnd, Offset must be <= 0"
-msgstr ""
+msgstr "Коли початком є soFromEnd, зсув має бути <= 0"
 
 #: ipconst.spngbadbitdepth
 msgid "Unsupported Bit Depth of %d"
@@ -1304,7 +1304,7 @@ msgstr "Прохід дефільтрування %d  Розмір: %dx%d  Ві�
 
 #: ipconst.spngeffectivefilter
 msgid "Effective filter is %s"
-msgstr ""
+msgstr "Ефективний фільтр - %s"
 
 #: ipconst.spngerrorconstant
 msgid "**** ERROR ****"
@@ -1312,7 +1312,7 @@ msgstr "**** ПОМИЛКА ****"
 
 #: ipconst.spngfilterchange
 msgid "Filter changed on Row %d to %x"
-msgstr ""
+msgstr "Фільтр змінився в Рядку %d на %x"
 
 #: ipconst.spngfiltermethod
 msgid "Filter Method: %d"
@@ -1400,7 +1400,7 @@ msgstr "Дані послідовності обрізані"
 
 #: ipconst.spngunsupportedfeature
 msgid "A %s chunk was found in the PNG File. This feature is not supported in this version of the PNG decoder"
-msgstr ""
+msgstr "Послідовність %s була знайдена в файлі PNG. Ця функція не підтримується у цій версії PNG декодера"
 
 #: ipconst.spngwarningconstant
 msgid "**** WARNING ****"
@@ -1463,11 +1463,11 @@ msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
 msgid "%s can not be called in transaction state"
-msgstr ""
+msgstr "%s не може бути викликаний в стані транзакції"
 
 #: ipconst.spop3nottransacting
 msgid "%s can not be called in authentication state"
-msgstr ""
+msgstr "%s не може бути викликаний в стані ідентифікації"
 
 #: ipconst.spop3okresp
 msgid "+OK"
@@ -1475,11 +1475,11 @@ msgstr "+OK"
 
 #: ipconst.sposreqd
 msgid "%s: count must be positive"
-msgstr ""
+msgstr "%s: кількість повинна бути додатньою"
 
 #: ipconst.spsapop
 msgid "Logging on with APOP"
-msgstr ""
+msgstr "Вхід в систему з APOP"
 
 #: ipconst.spsconnect
 msgid "Connecting to server"
@@ -1487,12 +1487,12 @@ msgstr "Під'єднання до сервера"
 
 #: ipconst.spsdele
 msgid "Marking message for deletion"
-msgstr ""
+msgstr "Маркування повідомлення для видалення"
 
 #: ipconst.spslist
 msgctxt "ipconst.spslist"
 msgid "Retrieving mailbox list"
-msgstr ""
+msgstr "Отримання списку листів поштової скриньки"
 
 #: ipconst.spsnoop
 msgctxt "ipconst.spsnoop"
@@ -1501,7 +1501,7 @@ msgstr "Немає операцій"
 
 #: ipconst.spspass
 msgid "Logging on with Password"
-msgstr ""
+msgstr "Вхід в систему з Паролем"
 
 #: ipconst.spsquit
 msgctxt "ipconst.spsquit"
@@ -1510,11 +1510,11 @@ msgstr "Від'єднання"
 
 #: ipconst.spsretr
 msgid "Retrieving message"
-msgstr ""
+msgstr "Отримання повідомлення"
 
 #: ipconst.spsrset
 msgid "Resetting messages"
-msgstr ""
+msgstr "Скидання повідомлень"
 
 #: ipconst.spsspecial
 msgid "Special command"
@@ -1522,16 +1522,16 @@ msgstr "Спеціальна команда"
 
 #: ipconst.spsstat
 msgid "Retrieving mailbox status"
-msgstr ""
+msgstr "Отримання стану поштової скриньки"
 
 #: ipconst.spstop
 msgid "Retrieving top of message"
-msgstr ""
+msgstr "Отримання верхівки повідомлення"
 
 #: ipconst.spsuidl
 msgctxt "ipconst.spsuidl"
 msgid "Retrieving mailbox UID list"
-msgstr ""
+msgstr "Отримання списку UID поштової скриньки"
 
 #: ipconst.spsunknown
 msgid "Unknown state"
@@ -1539,21 +1539,21 @@ msgstr "Невідомий стан"
 
 #: ipconst.spsuser
 msgid "Logging on with User"
-msgstr ""
+msgstr "Вхід в систему з Користувачем"
 
 #: ipconst.spterror
 msgid "An error occured with the last task."
-msgstr ""
+msgstr "Виникла помилка з останнім завданням."
 
 #: ipconst.sptlist
 msgctxt "ipconst.sptlist"
 msgid "Retrieving mailbox list"
-msgstr ""
+msgstr "Отримання списку листів поштової скриньки"
 
 #: ipconst.sptlogon
 msgctxt "ipconst.sptlogon"
 msgid "Logging on"
-msgstr ""
+msgstr "Вхід в систему"
 
 #: ipconst.sptnone
 msgctxt "ipconst.sptnone"
@@ -1563,7 +1563,7 @@ msgstr "Немає завдань"
 #: ipconst.sptuidl
 msgctxt "ipconst.sptuidl"
 msgid "Retrieving mailbox UID list"
-msgstr ""
+msgstr "Отримання списку UID поштової скриньки"
 
 #: ipconst.sptunknown
 msgid "Unknown task"
@@ -1744,111 +1744,111 @@ msgstr "Статус іншої адреси"
 
 #: ipconst.ssmtpresponse11
 msgid "Bad destination mailbox address"
-msgstr ""
+msgstr "Погана адреса поштової скриньки одержувача"
 
 #: ipconst.ssmtpresponse12
 msgid "Bad destination system address"
-msgstr ""
+msgstr "Погана адреса системи одержувача"
 
 #: ipconst.ssmtpresponse13
 msgid "Bad destination mailbox address syntax"
-msgstr ""
+msgstr "Поганий синтаксис адреси поштової скриньки одержувача"
 
 #: ipconst.ssmtpresponse14
 msgid "Destination mailbox address ambiguous"
-msgstr ""
+msgstr "Адреса поштової скриньки одержувача двозначна"
 
 #: ipconst.ssmtpresponse15
 msgid "Destination mailbox address valid"
-msgstr ""
+msgstr "Адреса поштової скриньки одержувача дійсна"
 
 #: ipconst.ssmtpresponse16
 msgid "Mailbox has moved"
-msgstr ""
+msgstr "Поштова скринька переїхала"
 
 #: ipconst.ssmtpresponse17
 msgid "Bad sender's mailbox address syntax"
-msgstr ""
+msgstr "Поганий синтаксис адреси поштової скриньки відправника"
 
 #: ipconst.ssmtpresponse18
 msgid "Bad sender's system address"
-msgstr ""
+msgstr "Погана адреса системи відправника"
 
 #: ipconst.ssmtpresponse20
 msgid "Other or undefined mailbox status"
-msgstr ""
+msgstr "Інший або невизначений стан поштової скриньки"
 
 #: ipconst.ssmtpresponse21
 msgid "Mailbox disabled, not accepting messages"
-msgstr ""
+msgstr "Поштова скринька відключена, не приймає повідомлення"
 
 #: ipconst.ssmtpresponse22
 msgid "Mailbox full"
-msgstr ""
+msgstr "Поштова скринька заповнена"
 
 #: ipconst.ssmtpresponse23
 msgid "Message length exceeds administrative limit."
-msgstr ""
+msgstr "Довжина повідомлення перевищує адміністративні обмеження."
 
 #: ipconst.ssmtpresponse24
 msgid "Mailing list expansion problem"
-msgstr ""
+msgstr "Проблеиа розширення списку розсилки"
 
 #: ipconst.ssmtpresponse30
 msgid "Other or undefined mail system status"
-msgstr ""
+msgstr "Інший або невизначений стан поштової системи"
 
 #: ipconst.ssmtpresponse31
 msgid "Mail system full"
-msgstr ""
+msgstr "Поштова система заповнена"
 
 #: ipconst.ssmtpresponse32
 msgid "System not accepting network messages"
-msgstr ""
+msgstr "Система не приймає мережеві повідомлення"
 
 #: ipconst.ssmtpresponse33
 msgid "System not capable of selected features"
-msgstr ""
+msgstr "Система не містить вибраних функцій"
 
 #: ipconst.ssmtpresponse34
 msgid "Message too big for system"
-msgstr ""
+msgstr "Повідомлення занадто велике для системи"
 
 #: ipconst.ssmtpresponse40
 msgid "Other or undefined network or routing status"
-msgstr ""
+msgstr "Інший або невизначений мережий або стан маршрутизації"
 
 #: ipconst.ssmtpresponse41
 msgid "No answer from host"
-msgstr ""
+msgstr "Немає відповіді від хоста"
 
 #: ipconst.ssmtpresponse42
 msgid "Bad connection"
-msgstr ""
+msgstr "Погане з'єднання"
 
 #: ipconst.ssmtpresponse43
 msgid "Routing server failure"
-msgstr ""
+msgstr "Збій сервера маршрутизації"
 
 #: ipconst.ssmtpresponse44
 msgid "Unable to route"
-msgstr ""
+msgstr "Не вдалося знайти маршрут"
 
 #: ipconst.ssmtpresponse45
 msgid "Network congestion"
-msgstr ""
+msgstr "Перевантаження мережі"
 
 #: ipconst.ssmtpresponse46
 msgid "Routing loop detected"
-msgstr ""
+msgstr "Виявлене зациклення маршруту"
 
 #: ipconst.ssmtpresponse47
 msgid "Delivery time expired"
-msgstr ""
+msgstr "Термін поставки минув"
 
 #: ipconst.ssmtpresponse50
 msgid "Other or undefined protocol status"
-msgstr ""
+msgstr "Інший або невизначений стан протоколу"
 
 #: ipconst.ssmtpresponse51
 msgid "Invalid command"
@@ -1860,95 +1860,95 @@ msgstr "Синтаксична помилка"
 
 #: ipconst.ssmtpresponse53
 msgid "Too many recipients"
-msgstr ""
+msgstr "Занадто багато одержувачів"
 
 #: ipconst.ssmtpresponse54
 msgid "Invalid command arguments"
-msgstr ""
+msgstr "Невірні командні аргументи"
 
 #: ipconst.ssmtpresponse55
 msgid "Wrong protocol version"
-msgstr ""
+msgstr "Неправильна версія протоколу"
 
 #: ipconst.ssmtpresponse60
 msgid "Other or undefined media error"
-msgstr ""
+msgstr "Інша або невизначена помилка медіа"
 
 #: ipconst.ssmtpresponse61
 msgid "Media not supported"
-msgstr ""
+msgstr "Медіа не підтримується"
 
 #: ipconst.ssmtpresponse62
 msgid "Conversion required and prohibited"
-msgstr ""
+msgstr "Перетворення необхідне і заборонене"
 
 #: ipconst.ssmtpresponse63
 msgid "Conversion required but not supported"
-msgstr ""
+msgstr "Перетворення необхідне але не підтримується"
 
 #: ipconst.ssmtpresponse64
 msgid "Conversion with loss performed"
-msgstr ""
+msgstr "Перетворення здійснене з втратою"
 
 #: ipconst.ssmtpresponse65
 msgid "Conversion failed"
-msgstr ""
+msgstr "Перетворення не вдалось"
 
 #: ipconst.ssmtpresponse70
 msgid "Other or undefined security status"
-msgstr ""
+msgstr "Інший або невизначений стан безпеки"
 
 #: ipconst.ssmtpresponse71
 msgid "Delivery not authorized, message refused"
-msgstr ""
+msgstr "Доставка не авторизована, повідомлення відхилене"
 
 #: ipconst.ssmtpresponse72
 msgid "Mailing list expansion prohibited"
-msgstr ""
+msgstr "Розширення списку розсилки заборонене"
 
 #: ipconst.ssmtpresponse73
 msgid "Security conversion required but not possible"
-msgstr ""
+msgstr "Перетворення безпеки необхідне але не є можливим"
 
 #: ipconst.ssmtpresponse74
 msgid "Security features not supported"
-msgstr ""
+msgstr "Функції безпеки не підтримуються"
 
 #: ipconst.ssmtpresponse75
 msgid "Cryptographic failure"
-msgstr ""
+msgstr "Провал шифрування"
 
 #: ipconst.ssmtpresponse76
 msgid "Cryptographic algorithm not supported"
-msgstr ""
+msgstr "Алгоритм шифрування не підтримується"
 
 #: ipconst.ssmtpresponse77
 msgid "Message integrity failure"
-msgstr ""
+msgstr "Помилка цілісності повідомлення"
 
 #: ipconst.ssmtpresponsesubunknown
 msgid "Unknown subcode"
-msgstr ""
+msgstr "Невідомий субкод"
 
 #: ipconst.ssmtpresponseunknown
 msgid "Unknown response code"
-msgstr ""
+msgstr "Невідомий код відповіді"
 
 #: ipconst.ssockserr
 msgid "SOCKS request refused - %d"
-msgstr ""
+msgstr "SOCKS-запит відхилено  - %d"
 
 #: ipconst.sssauthlogin
 msgid "Requesting authentication"
-msgstr ""
+msgstr "Запит аутентифікації"
 
 #: ipconst.sssauthpass
 msgid "Authenticating password"
-msgstr ""
+msgstr "Перевірка паролю"
 
 #: ipconst.sssauthuser
 msgid "Authenticating username"
-msgstr ""
+msgstr "Перевірка імені користувача"
 
 #: ipconst.sssconnect
 msgctxt "ipconst.sssconnect"
@@ -1957,19 +1957,19 @@ msgstr "При'єднання"
 
 #: ipconst.sssdata
 msgid "Sending Data"
-msgstr ""
+msgstr "Відсилання даних"
 
 #: ipconst.sssehlo
 msgid "Logging on with EHLO"
-msgstr ""
+msgstr "Вхід в систему з EHLO"
 
 #: ipconst.sssexpand
 msgid "Expanding"
-msgstr ""
+msgstr "Розширення"
 
 #: ipconst.ssshelo
 msgid "Logging on with HELO"
-msgstr ""
+msgstr "Вхід в систему з HELO"
 
 #: ipconst.ssshelp
 msgid "Help"
@@ -1981,111 +1981,111 @@ msgstr "Невірний сертифікат."
 
 #: ipconst.ssslbadcerttype
 msgid "Cert type not found"
-msgstr ""
+msgstr "Тип сертифікату не знайдено"
 
 #: ipconst.ssslbadcompressionvalue
 msgid "Compression value is wrong."
-msgstr ""
+msgstr "Значення стиснення невірно."
 
 #: ipconst.ssslbadkeyexchangetype
 msgid "Key exchange message expected but not received"
-msgstr ""
+msgstr "Повідолмення обміну ключами очікувалося, але не отримане"
 
 #: ipconst.ssslbadmac
 msgid "MAC did not match."
-msgstr ""
+msgstr "MAC не збігаються."
 
 #: ipconst.ssslbadmd5hash
 msgid "MD5 hash did not match."
-msgstr ""
+msgstr "MD5-хеш не збігаються."
 
 #: ipconst.ssslbadpublicencoding
 msgid "Bad public encoding type."
-msgstr ""
+msgstr "Поганий тип відкритого кодування."
 
 #: ipconst.ssslbadrecordmac
 msgid "Server received a bad record MAC."
-msgstr ""
+msgstr "Сервер отримав поганий запис MAC."
 
 #: ipconst.ssslbadsha1hash
 msgid "SHA1 hash did not match."
-msgstr ""
+msgstr "SHA1-хеш не збігаються."
 
 #: ipconst.ssslblocksizeerror
 msgid "Block size error"
-msgstr ""
+msgstr "Помилка розміру блоку"
 
 #: ipconst.ssslbufferoverflow
 msgid "Buffer overflow error."
-msgstr ""
+msgstr "Помилка переповнення буфера."
 
 #: ipconst.ssslbuffersizemissmatch
 msgid "Buffer size miss-match."
-msgstr ""
+msgstr "Невідповідність розміру буфера."
 
 #: ipconst.ssslclosenotify
 msgid "Server sent close notify."
-msgstr ""
+msgstr "Сервер надіслав повідомлення про закриття."
 
 #: ipconst.ssslcompressionfailure
 msgid "Compression failure."
-msgstr ""
+msgstr "Провал стиснення."
 
 #: ipconst.ssslconnectchange
 msgid "Can not change SSL status while connected."
-msgstr ""
+msgstr "Неможливо змінити SSL статус при активному підключеппі."
 
 #: ipconst.ssslencryptbuf2small
 msgid "Encrypt buffer to small."
-msgstr ""
+msgstr "Буфер шифрування надто малий."
 
 #: ipconst.ssslencryptiontype
 msgid "Encryption type not defined."
-msgstr ""
+msgstr "Тип шифрування не визначений."
 
 #: ipconst.ssslexpiredcertificate
 msgid "Expired Certificate."
-msgstr ""
+msgstr "Протермінований Сертифікат."
 
 #: ipconst.ssslfailedhelloparse
 msgid "Did not parse server hello correctly."
-msgstr ""
+msgstr "Не розібрав привіт від сервера правильно."
 
 #: ipconst.ssslhandshakefailure
 msgid "Handshake failure."
-msgstr ""
+msgstr "Провал рукостискання."
 
 #: ipconst.ssslillegalparameter
 msgid "Illegal Parameter."
-msgstr ""
+msgstr "Неприпустимий параметр."
 
 #: ipconst.ssslinvalidcipher
 msgid "Invalid cipher."
-msgstr ""
+msgstr "Невірний шифр."
 
 #: ipconst.ssslnocertificate
 msgid "Certificate is not available."
-msgstr ""
+msgstr "Сертифікат недоступний."
 
 #: ipconst.ssslnohashtype
 msgid "No hash type selected."
-msgstr ""
+msgstr "Не вибраний тип хешу."
 
 #: ipconst.ssslnomessageencslected
 msgid "No message encoding type selected."
-msgstr ""
+msgstr "Не вибраний тип кодування повідомлень."
 
 #: ipconst.ssslnoroom
 msgid "Not enough memory available to read SSL record."
-msgstr ""
+msgstr "Недостатньо пам'яті для читання SSL запису."
 
 #: ipconst.ssslnotenoughkeymaterail
 msgid "Not enough key material."
-msgstr ""
+msgstr "Не вистачає ключового матеріалу."
 
 #: ipconst.ssslpaddingerror
 msgid "Padding error."
-msgstr ""
+msgstr "Помилка заповнення."
 
 #: ipconst.ssslparsererror
 msgid "Parsing error."
@@ -2101,31 +2101,31 @@ msgstr "Помилка читання."
 
 #: ipconst.ssslreadsizemissmatch
 msgid "Read size miss-match."
-msgstr ""
+msgstr "Невідповідність розміру читання."
 
 #: ipconst.ssslrevokedcertificate
 msgid "Revoked Certificate."
-msgstr ""
+msgstr "Відкликаний Сертифікат."
 
 #: ipconst.ssslservernohandshake
 msgid "Server cid not return a handshake message."
-msgstr ""
+msgstr "Сервер не повернув повідомлення рукостискання."
 
 #: ipconst.ssslservernoserverhello
 msgid "Server cid not return a server hello message."
-msgstr ""
+msgstr "Сервер не повернув вітальне повідомлення сервера."
 
 #: ipconst.ssslsessidtolong
 msgid "Session ID is longer than 32 bytes."
-msgstr ""
+msgstr "ID сесії довше 32 байт."
 
 #: ipconst.ssslshabuf2small
 msgid "SHA1 buffer to small."
-msgstr ""
+msgstr "SHA1 буфер надто малий."
 
 #: ipconst.ssslunexpectedmessage
 msgid "Server received an unexpected message."
-msgstr ""
+msgstr "Сервер отримав несподіване повідомлення."
 
 #: ipconst.ssslunknowncertificate
 msgid "Unknown Certificate."
@@ -2133,7 +2133,7 @@ msgstr "Невідомий Сертифікат."
 
 #: ipconst.ssslunprocesseddata
 msgid "SSL data processing error."
-msgstr ""
+msgstr "Помилка обробки даних SSL."
 
 #: ipconst.ssslunsupportedcertificate
 msgid "Unsupported Certificate."
@@ -2141,15 +2141,15 @@ msgstr "Непідтримуваний Сертифікат."
 
 #: ipconst.ssslunsupportedchiper
 msgid "Unsupported cipher chosen."
-msgstr ""
+msgstr "Вибраний непідтримуваний шифр."
 
 #: ipconst.ssslunsupportedencoding
 msgid "Unsupported public encoding."
-msgstr ""
+msgstr "Непідтримуване відкрите кодування."
 
 #: ipconst.sssmailfrom
 msgid "Sending sender's info"
-msgstr ""
+msgstr "Відправлення інформації відправника"
 
 #: ipconst.sssnoop
 msgctxt "ipconst.sssnoop"
@@ -2224,23 +2224,23 @@ msgstr "Немає"
 
 #: ipconst.sstreamcreated
 msgid "Successfully created "
-msgstr ""
+msgstr "Успішно створено "
 
 #: ipconst.sstreamcreateerror
 msgid "Stream create error "
-msgstr ""
+msgstr "Помилка створення потоку "
 
 #: ipconst.sstsendmail
 msgid "Sending mail"
-msgstr ""
+msgstr "Відсилання пошти"
 
 #: ipconst.sunsupportedencoding
 msgid "Encoding method not supported"
-msgstr ""
+msgstr "Метод кодування не підтримується"
 
 #: ipconst.suuencodecounterr
 msgid "Count <> Len or Count > 63"
-msgstr ""
+msgstr "Count <> Len або Count > 63"
 
 #: ipconst.swebimagecannotload
 msgid "Cannot load %s"
@@ -2264,7 +2264,7 @@ msgstr "***Записати після перейменування"
 
 #: ipconst.swrongstateerr
 msgid "Can not comply, wrong state"
-msgstr ""
+msgstr "Не можу виконати, невірний стан"
 
 #: ipconst.swsaeacces
 msgid "Permission denied"
@@ -2276,11 +2276,11 @@ msgstr "Адреса вже використовується"
 
 #: ipconst.swsaeaddrnotavail
 msgid "Cannot assign requested address"
-msgstr ""
+msgstr "Неможливо присвоїти запитану адресу"
 
 #: ipconst.swsaeafnosupport
 msgid "Address family not supported by protocol family"
-msgstr ""
+msgstr "Сімейство адреси не підтримуються сімейством протоколів"
 
 #: ipconst.swsaealready
 msgid "Operation already in progress"
@@ -2288,7 +2288,7 @@ msgstr "Операція вже виконується"
 
 #: ipconst.swsaebadf
 msgid "Bad file descriptor"
-msgstr ""
+msgstr "Поганий файловий дескриптор"
 
 #: ipconst.swsaecancelled
 msgid "Cancelled"
@@ -2296,23 +2296,23 @@ msgstr "Скасовано"
 
 #: ipconst.swsaeconnaborted
 msgid "Software caused connection abort"
-msgstr ""
+msgstr "Програмне забезпечення викликало розрив зв'язку"
 
 #: ipconst.swsaeconnrefused
 msgid "Connection refused"
-msgstr ""
+msgstr "Відмова у з'єднанні"
 
 #: ipconst.swsaeconnreset
 msgid "Connection reset by peer"
-msgstr ""
+msgstr "З'єднання скинуто іншою стороною"
 
 #: ipconst.swsaedestaddrreq
 msgid "Destination address required"
-msgstr ""
+msgstr "Необхідна адреса призначення"
 
 #: ipconst.swsaediscon
 msgid "Graceful shutdown in progress"
-msgstr ""
+msgstr "Витончене вимкнення в процесі"
 
 #: ipconst.swsaedquot
 msgid "Disk quota exceeded"
@@ -2336,7 +2336,7 @@ msgstr "Операція виконується"
 
 #: ipconst.swsaeintr
 msgid "Interrupted function call"
-msgstr ""
+msgstr "Перерваний виклик функції"
 
 #: ipconst.swsaeinval
 msgid "Invalid argument"
@@ -2344,11 +2344,11 @@ msgstr "Невірний аргумент"
 
 #: ipconst.swsaeinvalidproctable
 msgid "Invalid procedure table from service provider"
-msgstr ""
+msgstr "Неприпустима таблиця процедур від постачальника послуг"
 
 #: ipconst.swsaeinvalidprovider
 msgid "Invalid service provider version number"
-msgstr ""
+msgstr "Неприпустимий номер версії постачальника послуг"
 
 #: ipconst.swsaeisconn
 msgid "Socket is already connected"
@@ -2356,7 +2356,7 @@ msgstr "Сокет вже під'єднаний"
 
 #: ipconst.swsaeloop
 msgid "Too many levels of symbolic links"
-msgstr ""
+msgstr "Занадто багато рівнів символічних посилань"
 
 #: ipconst.swsaemfile
 msgid "Too many open files"
@@ -2449,7 +2449,7 @@ msgstr "Тип сокету не підтримується"
 
 #: ipconst.swsaestale
 msgid "Stale NFS file handle"
-msgstr ""
+msgstr "Застаріла рукоятка файлу NFS"
 
 #: ipconst.swsaetimedout
 msgid "Connection timed out"
@@ -2497,7 +2497,7 @@ msgstr "Мережна підсистема недоступна"
 
 #: ipconst.swsatry_again
 msgid "Nonauthoritative host not found"
-msgstr ""
+msgstr "Безвладний хост не знайдено"
 
 #: ipconst.swsatype_not_found
 msgid "Type not found"
@@ -2505,11 +2505,11 @@ msgstr "Тип не знайдено"
 
 #: ipconst.swsavernotsupported
 msgid "WinSock DLL version not supported"
-msgstr ""
+msgstr "Версія WinSock DLL не підтримується"
 
 #: ipconst.swsa_e_cancelled
 msgid "Lookup cancelled"
-msgstr ""
+msgstr "Пошук скасовано"
 
 #: ipconst.swsa_e_no_more
 msgctxt "ipconst.swsa_e_no_more"
@@ -2522,7 +2522,7 @@ msgstr "Помилка через відсутність ресурсів"
 
 #: ipconst.swsa_qos_bad_object
 msgid "Problem filterspec or providerspecific buffer"
-msgstr ""
+msgstr "Проблема filterspec або буферу провайдера"
 
 #: ipconst.swsa_qos_bad_style
 msgid "Unknown or conflicting style"
@@ -2542,21 +2542,21 @@ msgstr "Немає відправників"
 
 #: ipconst.swsa_qos_policy_failure
 msgid "Rejected for administrative reasons - bad credentials"
-msgstr ""
+msgstr "Відхилено з адміністративних причин - погані повноваження"
 
 #: ipconst.swsa_qos_receivers
 msgid "At least one Reserve has arrived"
-msgstr ""
+msgstr "Принаймні один Резерв прибув"
 
 #: ipconst.swsa_qos_request_confirmed
 msgid "Reserve has been confirmed"
-msgstr ""
+msgstr "Резерв був підтверджений"
 
 #: ipconst.swsa_qos_senders
 msgid "At least one Path has arrived"
-msgstr ""
+msgstr "Принаймні один Шлях прибув"
 
 #: ipconst.swsa_qos_traffic_ctrl_error
 msgid "Problem with some part of the flowspec"
-msgstr ""
+msgstr "Проблема з якоюсь частиною flowspec"
 

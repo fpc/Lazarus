@@ -48,5 +48,5 @@ msgstr "Видалити з конвертування"
 
 #: TLAZCONVERTERFORM.SELECTDIRECTORYDIALOG1.TITLE
 msgid "Select Directory"
-msgstr ""
+msgstr "Виберіть Теку"
 
