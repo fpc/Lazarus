@@ -899,6 +899,7 @@ components/fppkg/images/package_manager.png -text
 components/fppkg/images/update.png -text
 components/fppkg/languages/fppkg_const.po svneol=native#text/plain
 components/fppkg/languages/fppkg_const.pt_BR.po svneol=native#text/plain
+components/fppkg/languages/fppkg_const.ru.po svneol=native#text/plain
 components/fppkg/languages/fppkg_const.uk.po svneol=native#text/plain
 components/fppkg/readme.txt svneol=native#text/plain
 components/fppkg/src/fppkg_aboutfrm.lfm svneol=native#text/plain
