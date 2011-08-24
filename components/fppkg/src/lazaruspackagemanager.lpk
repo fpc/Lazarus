@@ -23,12 +23,52 @@
     <Description Value="A lazarus packagemanager based on FPC's fppkg"/>
     <License Value="GPL"/>
     <Version Release="1"/>
-    <Files Count="1">
+    <Files Count="11">
       <Item1>
         <Filename Value="lazpackagemanagerintf.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="LazPackageManagerIntf"/>
       </Item1>
+      <Item2>
+        <Filename Value="fppkg_const.pas"/>
+        <UnitName Value="fppkg_const"/>
+      </Item2>
+      <Item3>
+        <Filename Value="fppkg_details.lfm"/>
+        <Type Value="LFM"/>
+      </Item3>
+      <Item4>
+        <Filename Value="fppkg_details.pas"/>
+        <UnitName Value="fppkg_details"/>
+      </Item4>
+      <Item5>
+        <Filename Value="fppkg_mainfrm.lfm"/>
+        <Type Value="LFM"/>
+      </Item5>
+      <Item6>
+        <Filename Value="fppkg_mainfrm.pas"/>
+        <UnitName Value="fppkg_mainfrm"/>
+      </Item6>
+      <Item7>
+        <Filename Value="fppkg_optionsfrm.lfm"/>
+        <Type Value="LFM"/>
+      </Item7>
+      <Item8>
+        <Filename Value="fppkg_optionsfrm.pas"/>
+        <UnitName Value="fppkg_optionsfrm"/>
+      </Item8>
+      <Item9>
+        <Filename Value="laz_pkgcommands.pas"/>
+        <UnitName Value="laz_pkgcommands"/>
+      </Item9>
+      <Item10>
+        <Filename Value="laz_pkghandler.pas"/>
+        <UnitName Value="laz_pkghandler"/>
+      </Item10>
+      <Item11>
+        <Filename Value="laz_pkgrepos.pas"/>
+        <UnitName Value="laz_pkgrepos"/>
+      </Item11>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
@@ -44,7 +84,7 @@
       </Item2>
       <Item3>
         <PackageName Value="FCL"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
+        <MinVersion Major="1" Valid="True" Release="1"/>
       </Item3>
     </RequiredPkgs>
     <UsageOptions>
@@ -53,5 +93,8 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

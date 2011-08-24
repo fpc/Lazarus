@@ -7,7 +7,9 @@ unit LazarusPackageManager;
 interface
 
 uses
-  LazPackageManagerIntf, LazarusPackageIntf;
+  LazPackageManagerIntf, fppkg_const, fppkg_details, fppkg_mainfrm, 
+  fppkg_optionsfrm, laz_pkgcommands, laz_pkghandler, laz_pkgrepos, 
+  LazarusPackageIntf;
 
 implementation
 
