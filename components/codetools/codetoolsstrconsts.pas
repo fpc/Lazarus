@@ -122,8 +122,6 @@ ResourceString
   ctsSourceNotFoundUnit = 'source not found: unit %s';
   ctsIdentifierNotFound = 'identifier not found: %s';
   ctsNotEnoughGenParams = 'Not enough actual generic parameters';
-  ctsTooManyGenParams = 'Too many actual generic parameters';
-  ctsSyntaxErrorInGeneric = 'Syntax error in generic type declaration';
   ctsExpected = '"%s" expected';
   ctsNoContextNodeFoundAtCursor = 'no context node found at cursor';
   ctsInheritedKeywordOnlyAllowedInMethods =

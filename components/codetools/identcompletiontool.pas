@@ -2986,6 +2986,7 @@ begin
     Tool.ActivateGlobalWriteLock;
     Params:=TFindDeclarationParams.Create;
     try
+      if ANode.HasParentOfType(ctnGenericType) then exit;
       BaseExprType.Context:=Tool.FindBaseTypeOfNode(Params,ANode);
       if (BaseExprType.Context.Node<>nil) then
         BaseExprType.Desc:=xtContext;
