@@ -1330,6 +1330,10 @@ msgstr "Neplatná veľkosť obrázku"
 msgid "Invalid ImageList Index"
 msgstr "Neplatný index ImageList"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "Index menu mimo rozsahu"

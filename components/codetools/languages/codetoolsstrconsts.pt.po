@@ -821,10 +821,6 @@ msgstr "constante sequência caracteres"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Erro de Sintaxe na expressão \"%s\""
 
-#: codetoolsstrconsts.ctssyntaxerroringeneric
-msgid "Syntax error in generic type declaration"
-msgstr ""
-
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr "TCodeToolManager.ConsistencyCheck=%d"
@@ -840,10 +836,6 @@ msgstr "\"then\" esperado, mas %s encontrado"
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Diretório Ferramentas"
-
-#: codetoolsstrconsts.ctstoomanygenparams
-msgid "Too many actual generic parameters"
-msgstr ""
 
 #: codetoolsstrconsts.ctstype
 msgid "type"

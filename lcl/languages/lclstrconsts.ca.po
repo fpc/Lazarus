@@ -1327,6 +1327,10 @@ msgstr "Mida de la imatge no vàlida"
 msgid "Invalid ImageList Index"
 msgstr "Índex de llista d'imatges no vàlid"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "Índex de menú fora de rang"

@@ -822,10 +822,6 @@ msgstr "řetězcová konstanta"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Syntaktická chyba ve výrazu \"%s\""
 
-#: codetoolsstrconsts.ctssyntaxerroringeneric
-msgid "Syntax error in generic type declaration"
-msgstr ""
-
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr "TCodeToolManager.ConsistencyCheck=%d"
@@ -841,10 +837,6 @@ msgstr ""
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Adresář nástrojů"
-
-#: codetoolsstrconsts.ctstoomanygenparams
-msgid "Too many actual generic parameters"
-msgstr ""
 
 #: codetoolsstrconsts.ctstype
 msgid "type"

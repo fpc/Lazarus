@@ -821,10 +821,6 @@ msgstr "קבוע מסוג מחרוזת"
 msgid "Syntax Error in expression \"%s\""
 msgstr "שגיאת תחביר בביטוי \"%s\""
 
-#: codetoolsstrconsts.ctssyntaxerroringeneric
-msgid "Syntax error in generic type declaration"
-msgstr ""
-
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr "TCodeToolManager.ConsistencyCheck=%d"
@@ -840,10 +836,6 @@ msgstr "מחכה ל then, אבל נמצא %s"
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "תיקיית הכלים"
-
-#: codetoolsstrconsts.ctstoomanygenparams
-msgid "Too many actual generic parameters"
-msgstr ""
 
 #: codetoolsstrconsts.ctstype
 msgid "type"

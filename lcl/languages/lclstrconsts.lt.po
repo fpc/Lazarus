@@ -1329,6 +1329,10 @@ msgstr "Netinkamas paveikslo dydis"
 msgid "Invalid ImageList Index"
 msgstr "Netinkamas „ImageList“ indeksas"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "Meniu indeksas peržengia ribas"

@@ -1331,6 +1331,10 @@ msgstr "Taille d'image non valide"
 msgid "Invalid ImageList Index"
 msgstr "Index de liste d'images non valide"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "Index de menu hors limites"

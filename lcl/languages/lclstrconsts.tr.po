@@ -1327,6 +1327,10 @@ msgstr "Geçersiz görüntü boyutu"
 msgid "Invalid ImageList Index"
 msgstr "Geçersiz ImageList tanımlayıcısı"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "Menü tanımlayıcısı sınırın dışında"

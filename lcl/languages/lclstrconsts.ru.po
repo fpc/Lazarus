@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-07-20 00:24+0300\n"
+"PO-Revision-Date: 2011-08-25 01:00+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1328,6 +1328,10 @@ msgstr "Неверный размер рисунка"
 #: lclstrconsts.sinvalidindex
 msgid "Invalid ImageList Index"
 msgstr "Неверный индекс ImageList"
+
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr "Текущий текст не соответствует заданной маске."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"

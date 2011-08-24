@@ -1333,6 +1333,10 @@ msgstr "Ugyldig bildestørrelse"
 msgid "Invalid ImageList Index"
 msgstr "Ugyldig bildeliste-indeks"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "Menyindeks utenfor område"

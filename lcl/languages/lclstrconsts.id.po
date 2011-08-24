@@ -1328,6 +1328,10 @@ msgstr "Ukuran gambar tidak benar"
 msgid "Invalid ImageList Index"
 msgstr "Indeks ImageList tidak benar"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "Indeks Menu diluar jangkauan"

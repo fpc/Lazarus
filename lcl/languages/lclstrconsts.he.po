@@ -1322,6 +1322,10 @@ msgstr "גודל דמות לא חוקי"
 msgid "Invalid ImageList Index"
 msgstr "אינדקס לא חוקי של ImageList"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "אינדקס התפריט מחוץ לתחום"

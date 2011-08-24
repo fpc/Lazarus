@@ -819,10 +819,6 @@ msgstr "рядкова константа"
 msgid "Syntax Error in expression \"%s\""
 msgstr "Помилка синтаксису в виразі \"%s\""
 
-#: codetoolsstrconsts.ctssyntaxerroringeneric
-msgid "Syntax error in generic type declaration"
-msgstr "Синтаксична помилка в оголошенні узагальненого типу"
-
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
 msgstr "TCodeToolManager.ConsistencyCheck=%d"
@@ -838,10 +834,6 @@ msgstr "очікується then,  але знайдено %s"
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
 msgstr "Тека інструментів"
-
-#: codetoolsstrconsts.ctstoomanygenparams
-msgid "Too many actual generic parameters"
-msgstr "Занадто багато фактичних універсальних параметрів"
 
 #: codetoolsstrconsts.ctstype
 msgid "type"

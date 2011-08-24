@@ -1330,6 +1330,10 @@ msgstr "无效图像大小"
 msgid "Invalid ImageList Index"
 msgstr "无效 ImageList 索引"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "菜单索引超过范围"

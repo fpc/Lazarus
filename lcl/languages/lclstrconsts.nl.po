@@ -1327,6 +1327,10 @@ msgstr "Ongeldig formaat voor afbeelding "
 msgid "Invalid ImageList Index"
 msgstr "Ongeldige index van ImageList"
 
+#: lclstrconsts.smaskeditnomatch
+msgid "The current text does not match the specified mask."
+msgstr ""
+
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
 msgstr "Index van menu buiten de grenzen"
