@@ -557,6 +557,7 @@ type
     procedure SetExtraCharSpacing(const Value: integer);
     procedure SetLastMouseCaret(const AValue: TPoint);
     function  CurrentMaxLeftChar: Integer;
+    function  CurrentMaxLineLen: Integer;
     procedure SetLeftChar(Value: Integer);
     procedure SetLineText(Value: string);
     procedure SetMaxLeftChar(Value: integer);
@@ -1585,10 +1586,10 @@ begin
   TSynEditStringList(FLines).AttachSynEdit(Self);
 
   FCaret := TSynEditCaret.Create;
-  FCaret.MaxLeftChar := @FMaxLeftChar;
+  FCaret.MaxLeftChar := @CurrentMaxLineLen;
   FCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}CaretChanged);
   FInternalCaret := TSynEditCaret.Create;
-  FInternalCaret.MaxLeftChar := @FMaxLeftChar;
+  FInternalCaret.MaxLeftChar := @CurrentMaxLineLen;
 
   // Create the lines/views
   FTrimmedLinesView := TSynEditStringTrimmingList.Create(fLines, fCaret);
@@ -4269,6 +4270,15 @@ begin
   if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
     Result := fMaxLeftChar;
   Result := Result - fCharsInWindow + 1 + FScreenCaret.ExtraLineChars;
+end;
+
+function TCustomSynEdit.CurrentMaxLineLen: Integer;
+begin
+  if not HandleAllocated then // don't know chars in window yet
+    exit(MaxInt);
+  Result := FTheLinesView.LengthOfLongestLine + 1;
+  if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
+    Result := fMaxLeftChar;
 end;
 
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
