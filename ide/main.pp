@@ -3834,8 +3834,8 @@ begin
     itmEditPaste.Enabled:=Editable;
   //itmEditSelect: TIDEMenuSection; [...]
   //itmEditBlockActions: TIDEMenuSection;
-    itmEditIndentBlock.Enabled:=SelEditable;
-    itmEditUnindentBlock.Enabled:=SelEditable;
+    itmEditIndentBlock.Enabled:=Editable;
+    itmEditUnindentBlock.Enabled:=Editable;
     itmEditUpperCaseBlock.Enabled:=SelEditable;
     itmEditLowerCaseBlock.Enabled:=SelEditable;
     itmEditSwapCaseBlock.Enabled:=SelEditable;
