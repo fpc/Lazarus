@@ -126,6 +126,7 @@ type
     procedure SetTopLine(ALine: Integer);
     function  IndexOfAddr(const AAddr: TDBGPtr): Integer;
     procedure UpdateLocation(const AAddr: TDBGPtr);
+    procedure DoEditorOptsChanged(Sender: TObject; Restore: boolean);
   protected
     function GetSourceCodeLine(SrcFileName: string; SrcLineNumber: Integer): string;
     procedure InitializeWnd; override;
@@ -215,6 +216,7 @@ begin
 
   Caption := lisDisAssAssembler;
 
+  EditorOpts.AddHandlerAfterWrite(@DoEditorOptsChanged);
   pbAsm.Font.Height := EditorOpts.EditorFontHeight;
   pbAsm.Font.Name := EditorOpts.EditorFont;
   Caption := lisMenuViewAssembler;
@@ -254,6 +256,7 @@ end;
 
 destructor TAssemblerDlg.Destroy;
 begin
+  EditorOpts.RemoveHandlerAfterWrite(@DoEditorOptsChanged);
   SetDisassembler(nil);
   SetDebugger(nil);
   FDisassemblerNotification.OnChange := nil;
@@ -421,17 +424,9 @@ begin
 end;
 
 procedure TAssemblerDlg.InitializeWnd;
-var
-  TM: TTextMetric;
 begin
   inherited InitializeWnd;
-
-  GetTextMetrics(pbAsm.Canvas.Handle, TM);
-  FCharWidth := EditorOpts.ExtraCharSpacing + TM.tmMaxCharWidth;
-  sbHorizontal.SmallChange := FCHarWidth;
-
-  FLineHeight := EditorOpts.ExtraLineSpacing + TM.tmHeight;
-  SetLineCount(pbAsm.Height div FLineHeight);
+  DoEditorOptsChanged(nil, False);
 end;
 
 procedure TAssemblerDlg.pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -678,6 +673,25 @@ begin
   FSelectionEndLine := FSelectLine;
   UpdateActionEnabled;
   UpdateView;
+end;
+
+procedure TAssemblerDlg.DoEditorOptsChanged(Sender: TObject; Restore: boolean);
+var
+  TM: TTextMetric;
+begin
+  pbAsm.Font.Height := EditorOpts.EditorFontHeight;
+  pbAsm.Font.Name := EditorOpts.EditorFont;
+  if EditorOpts.DisableAntialiasing then
+    pbAsm.Font.Quality := fqNonAntialiased
+  else
+    pbAsm.Font.Quality := fqDefault;
+
+  GetTextMetrics(pbAsm.Canvas.Handle, TM);
+  FCharWidth := TM.tmMaxCharWidth; // EditorOpts.ExtraCharSpacing +
+  sbHorizontal.SmallChange := FCHarWidth;
+
+  FLineHeight := EditorOpts.ExtraLineSpacing + TM.tmHeight;
+  SetLineCount(pbAsm.Height div FLineHeight);
 end;
 
 procedure TAssemblerDlg.SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
