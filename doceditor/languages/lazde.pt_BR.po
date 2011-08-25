@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -649,7 +649,7 @@ msgstr "Fontes"
 
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
-msgstr ""
+msgstr "Elemento inicial \"%s\" não encontrado"
 
 #: lazdemsg.stargetos
 msgid "Target OS"

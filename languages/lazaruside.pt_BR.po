@@ -52,7 +52,7 @@ msgstr "Medianiz"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
 msgid "Right mouse includes caret move"
-msgstr "Mouse direita inclui movimento marca"
+msgstr "Mouse direita inclui movimento cursor texto"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
@@ -1444,7 +1444,6 @@ msgid "Form Editor"
 msgstr "Editor de Formulário"
 
 #: lazarusidestrconsts.dlgfrombeginning
-#, fuzzy
 #| msgid "From &Beginning"
 msgid "From B&eginning"
 msgstr "Do &Início"
@@ -1797,7 +1796,7 @@ msgstr "Cor dos marcadores"
 
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Word under Caret Highlight"
-msgstr "Realçar Palavra sob Marca"
+msgstr "Realçar Palavra sob Cursor Texto"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 #| msgid "Ignore bounds for words longer than"
@@ -2016,7 +2015,7 @@ msgstr "Capturar"
 
 #: lazarusidestrconsts.dlgmouseoptcaretmove
 msgid "Move Caret (extra)"
-msgstr "Mover Marca (extra)"
+msgstr "Mover Cursor Texto (extra)"
 
 #: lazarusidestrconsts.dlgmouseoptcheckupdown
 msgid "Act on Mouse up"
@@ -2056,7 +2055,7 @@ msgstr "Botão"
 
 #: lazarusidestrconsts.dlgmouseoptheadcaret
 msgid "Caret"
-msgstr "Marca"
+msgstr "Cursor Texto"
 
 #: lazarusidestrconsts.dlgmouseoptheadcontext
 msgid "Context"
@@ -2498,7 +2497,6 @@ msgid "Reference"
 msgstr "Referência"
 
 #: lazarusidestrconsts.dlgregularexpressions
-#, fuzzy
 #| msgid "&Regular Expressions"
 msgid "Regular E&xpressions"
 msgstr "Expressões &Regulares"
@@ -2625,7 +2623,7 @@ msgstr "Rolar para o final do arquivo"
 #: lazarusidestrconsts.dlgscrollpastendline
 #| msgid "Scroll past end of line"
 msgid "Caret past end of line"
-msgstr "Marca após final da linha"
+msgstr "Cursor Texto após final da linha"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 msgid "Search directory \"%s\" not found."
@@ -2993,10 +2991,9 @@ msgid "Use tab history when closing tabs"
 msgstr "Usar aba histórico quando fechando abas"
 
 #: lazarusidestrconsts.dlguseunitcaption
-#, fuzzy
 #| msgid "Use a unit from this project"
 msgid "Add unit to Uses section"
-msgstr "Usar uma Unidade deste Projeto"
+msgstr "Adicionar unidade à seção \"Uses\""
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3729,7 +3726,7 @@ msgstr "Sempre"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
-msgstr ""
+msgstr "Sempre converter nome de arquivo padrão sugerido para minúsculas"
 
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
@@ -3923,7 +3920,7 @@ msgstr "Relacionado anteriormente"
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
-msgstr ""
+msgstr "Melhor visualizado instalando um controle HTML como \"turbopowerprodsgn\""
 
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
@@ -4630,7 +4627,7 @@ msgstr "Alterar controle-pai"
 
 #: lazarusidestrconsts.lischangeswerenotsaved
 msgid "Changes were not saved"
-msgstr ""
+msgstr "Alterações não foram salvas"
 
 #: lazarusidestrconsts.lischangetounix
 msgid "Change to Unix /"
@@ -5581,7 +5578,7 @@ msgstr "Executar antes"
 
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
-msgstr ""
+msgstr "Retrair tudo (/)"
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
@@ -6927,15 +6924,15 @@ msgstr "Descartar todas alterações"
 
 #: lazarusidestrconsts.lisdiscardchangesandopenproject
 msgid "Discard changes and open project"
-msgstr ""
+msgstr "Descartar alterações e abrir projeto"
 
 #: lazarusidestrconsts.lisdiscardchangesandquit
 msgid "Discard changes and quit"
-msgstr ""
+msgstr "Descartar alterações e sair"
 
 #: lazarusidestrconsts.lisdiscardchangescreatenewproject
 msgid "Discard changes, create new project"
-msgstr ""
+msgstr "Descartar alterações, criar novo projeto"
 
 #: lazarusidestrconsts.lisdiskdiffchangedfiles
 msgid "Changed files:"
@@ -7007,15 +7004,15 @@ msgstr "Não exibir esta mensagem novamente"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
-msgstr ""
+msgstr "Você ainda deseja criar um novo projeto?"
 
 #: lazarusidestrconsts.lisdoyoustillwanttoopenanotherproject
 msgid "Do you still want to open another project?"
-msgstr ""
+msgstr "Você ainda deseja abrir outro projeto?"
 
 #: lazarusidestrconsts.lisdoyoustillwanttoquit
 msgid "Do you still want to quit?"
-msgstr ""
+msgstr "Você ainda deseja sair?"
 
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
@@ -7083,7 +7080,7 @@ msgstr "Tipos Editor arquivos"
 
 #: lazarusidestrconsts.lisedoptsloadascheme
 msgid "Load a scheme"
-msgstr ""
+msgstr "Carregar um esquema"
 
 #: lazarusidestrconsts.lisedtdefallpackages
 msgid "All packages"
@@ -7626,7 +7623,7 @@ msgstr "Programas"
 
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
-msgstr ""
+msgstr "Expandir Tudo (*)"
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -7841,23 +7838,21 @@ msgstr "Definições Filtro"
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
-msgstr ""
+msgstr "D&iretório"
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "Opções de diretório"
 
 #: lazarusidestrconsts.lisfindfilefilemask
-#, fuzzy
 #| msgid "File mask"
 msgid "Fi&le mask"
-msgstr "Máscara arquivo"
+msgstr "&Máscara arquivo"
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-#, fuzzy
 #| msgid "Include sub directories"
 msgid "Include &sub directories"
-msgstr "Incluir subdiretórios"
+msgstr "Incluir &subdiretórios"
 
 #: lazarusidestrconsts.lisfindfilemultilinepattern
 msgid "&Multiline pattern"
@@ -7905,7 +7900,7 @@ msgstr "Ponto Flutuante"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
-msgstr ""
+msgstr "Dica de foco"
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -10309,10 +10304,9 @@ msgid "ChangeLog entry"
 msgstr "Entrada no registro alterações"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
-#, fuzzy
 #| msgid "Insert from Character Map"
 msgid "Insert from Character Map ..."
-msgstr "Inserir do Mapa de Caracteres"
+msgstr "Inserir do Mapa de Caracteres ..."
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
 #| msgid "CVS keyword"
@@ -13902,7 +13896,7 @@ msgstr "Exibir medianiz"
 
 #: lazarusidestrconsts.lisshowhelp
 msgid "Show help"
-msgstr ""
+msgstr "Exibir ajuda"
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"
@@ -14169,7 +14163,7 @@ msgstr "Sucesso"
 
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
-msgstr ""
+msgstr "Sugerir nome padrão do novo arquivo em minúsculas"
 
 #: lazarusidestrconsts.lissuspiciousincludepath
 msgid "Suspicious include path"
@@ -14209,11 +14203,11 @@ msgstr "Tabulação"
 
 #: lazarusidestrconsts.listaborderconfirmsort
 msgid "Sort tab orders of all child controls of \"%s\" by their positions?"
-msgstr ""
+msgstr "Classificar ordens de tabulação de todos os controles filhos de \"%s\" por suas posições?"
 
 #: lazarusidestrconsts.listaborderdownhint
 msgid "Move the selected control down in tab order"
-msgstr ""
+msgstr "Mover o controle selecionado abaixo na ordem de tabulação"
 
 #: lazarusidestrconsts.listaborderof
 #| msgid "Tab Order of"
@@ -14222,11 +14216,11 @@ msgstr "Ordem tabulação de %s"
 
 #: lazarusidestrconsts.listabordersorthint
 msgid "Calculate the tab order of controls by their X- and Y- positions"
-msgstr ""
+msgstr "Calcular a ordem de tabulação dos controles pelas suas posições X- e Y-"
 
 #: lazarusidestrconsts.listaborderuphint
 msgid "Move the selected control up in tab order"
-msgstr ""
+msgstr "Mover o controle selecionado acima na ordem de tabulação"
 
 #: lazarusidestrconsts.listakesnapshot
 msgid "Take a Snapshot"

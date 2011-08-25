@@ -290,10 +290,9 @@ msgid "expected end., but %s found"
 msgstr "esperado \"end.\", mas %s encontrado"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#, fuzzy
 #| msgid "End of source not found"
 msgid "End of source not found."
-msgstr "Final do fonte não encontrado"
+msgstr "Final do fonte não encontrado."
 
 #: codetoolsstrconsts.ctsenumerationtype
 msgid "enumeration type"
@@ -325,7 +324,7 @@ msgstr "acesso de execução negado para %s"
 
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
-msgstr ""
+msgstr "esperado \"%s\""
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
@@ -675,7 +674,7 @@ msgstr "Nenhum \"scanner\" encontrado para \"%s\". Se este é um arquivo de incl
 
 #: codetoolsstrconsts.ctsnotenoughgenparams
 msgid "Not enough actual generic parameters"
-msgstr ""
+msgstr "Parâmetros presentes insuficientes para genérico"
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"

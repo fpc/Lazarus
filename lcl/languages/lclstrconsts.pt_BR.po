@@ -244,7 +244,7 @@ msgstr "impossível executar %s"
 
 #: lclstrconsts.liscefilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(Filtro)"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -680,11 +680,11 @@ msgstr "Banco de dados de ajuda %s%s%s não encontrado"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 msgid "Help for directive %s%s%s not found."
-msgstr ""
+msgstr "Ajuda para diretiva %s%s%s não encontrada."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 msgid "Help for directive %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "Ajuda para diretiva %s%s%s não encontrada no Banco de Dados %s%s%s."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
@@ -1322,7 +1322,7 @@ msgstr "Índice \"ImageList\" inválido"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr ""
+msgstr "O texto atuak não coincide com a máscara especificada."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
@@ -1440,10 +1440,9 @@ msgid "Invalid integer number: %s"
 msgstr "Número inteiro inválido: %s"
 
 #: lclstrconsts.sparlocinfo
-#, fuzzy
 #| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
-msgstr "(em %s,%s, deslocamento fluxo %.8x)"
+msgstr "(em %d,%d, deslocamento fluxo %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"

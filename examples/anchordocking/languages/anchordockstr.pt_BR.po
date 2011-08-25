@@ -63,8 +63,9 @@ msgid "Custom dock site %s%s%s can have only one site."
 msgstr "Local de ancoragem customizado %s%s%s só pode ter um local."
 
 #: anchordockstr.adrsdockinganchordocking
+#, fuzzy
 msgid "Docking / Anchordocking"
-msgstr ""
+msgstr "Docking / Anchordocking"
 
 #: anchordockstr.adrsdockingenabledrequiresarestartoftheide
 msgid "Docking enabled (Requires a restart of the IDE)"
@@ -204,7 +205,7 @@ msgstr "%s requerido, mas %s criado"
 
 #: anchordockstr.adrsrestoredefaultlayout
 msgid "Restore default layout"
-msgstr ""
+msgstr "Restaurar layout padrão"
 
 #: anchordockstr.adrsright
 msgid "right"

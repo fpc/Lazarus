@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
@@ -424,7 +424,7 @@ msgstr "Categoria"
 
 #: objinspstrconsts.oiscdelete
 msgid "Delete?"
-msgstr ""
+msgstr "Excluir?"
 
 #: objinspstrconsts.oischar
 msgid "Char"
