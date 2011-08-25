@@ -312,10 +312,11 @@ var
     // or from the window main menu
     // if the 'PopupMenu' property exists, there is a big probability
     // that the command is from a popup menu
+
     PopupMenu := WindowInfo^.PopupMenu;
     if Assigned(PopupMenu) then
     begin
-      Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
+      Result := PopupMenu.FindItem(LOWORD(Integer(WParam)), fkCommand);
       if Assigned(Result) then
         Exit;
     end;
@@ -324,7 +325,7 @@ var
     MenuInfo.cbSize := MMenuItemInfoSize;
     MenuInfo.fMask := MIIM_DATA;
 
-    if GetMenuItemInfo(GetMenu(Window), LOWORD(WParam), ByPosition, @MenuInfo) then
+    if GetMenuItemInfo(GetMenu(Window), LOWORD(Integer(WParam)), ByPosition, @MenuInfo) then
       Result := TObject(MenuInfo.dwItemData)
     else
       Result := nil;
@@ -1000,7 +1001,7 @@ var
         end;
     end;
   end;
-  
+
 begin
   FillChar(LMessage, SizeOf(LMessage), 0);
   PLMsg := @LMessage;
@@ -1187,7 +1188,7 @@ begin
     
     WM_MENUSELECT:
     begin
-      TargetObject := GetMenuItemObject((HIWORD(WParam) and MF_POPUP) <> 0);
+      TargetObject := GetMenuItemObject((HIWORD(Integer(WParam)) and MF_POPUP) <> 0);
       if TargetObject is TMenuItem then
         TMenuItem(TargetObject).IntfDoSelect
       else
@@ -1826,8 +1827,8 @@ begin
         Windows.ScreenToClient(TargetWindow, P);
         X := P.X;
         Y := P.Y;
-        Button := LOWORD(WParam);
-        WheelDelta := SmallInt(HIWORD(WParam));
+        Button := LOWORD(Integer(WParam));
+        WheelDelta := SmallInt(HIWORD(Integer(WParam)));
         State := GetShiftState;
         Result := 0;
         UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));

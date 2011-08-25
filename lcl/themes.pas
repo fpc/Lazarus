@@ -2147,7 +2147,7 @@ begin
               Dec(Bottom);
           end;
           Rectangle(DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
-          Tmp := (ARect.Bottom + ARect.Top) shr 1;
+          Tmp := Integer((ARect.Bottom + ARect.Top) shr 1);
           MoveToEx(DC, ARect.Left + 2, Tmp, nil);
           LineTo(DC, ARect.Right - 2, Tmp);
           if Details.State = GLPS_CLOSED then
