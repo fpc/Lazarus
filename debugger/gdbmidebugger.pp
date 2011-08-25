@@ -465,7 +465,7 @@ resourcestring
       '%0:sThe GDB command:%0:s"%1:s"%0:sreturned the error:%0:s"%2:s"%0:s';
   gdbmiErrorStateInfoCommandNoResult =
       '%0:sThe GDB command:%0:s"%1:s"%0:sdid not return any result%0:s';
-  gdbmiErrorStateInfoFailedWrite = '%0:sCould not send a command to GDB%0:s';
+  gdbmiErrorStateInfoFailedWrite = '%0:sCould not send a command to GDB.%0:s';
   gdbmiErrorStateInfoFailedRead = '%0:sCould not read output from GDB.%0:s';
   gdbmiErrorStateInfoGDBGone = '%0:sThe GDB process is no longer running.%0:s';
 
