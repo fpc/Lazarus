@@ -1734,6 +1734,10 @@ end;
 
 procedure TSynEditScreenCaret.SetClipRect(const AValue: TRect);
 begin
+  if (FClipLeft = AValue.Left) and (FClipRight = AValue.Right) and
+     (FClipTop = AValue.Top) and (FClipBottom = AValue.Bottom)
+  then
+    exit;
   {$IFDeF SynCaretDebug}
   debugln(['SynEditCaret ClipRect for HandleOwner=',FHandleOwner, ' Rect=', dbgs(AValue)]);
   {$ENDIF}
