@@ -1,0 +1,47 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: gdbmidebugger.gdbmibreakpointerroronruncommand
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
+msgstr ""
+
+#: gdbmidebugger.gdbmierroronruncommand
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
+msgstr ""
+
+#: gdbmidebugger.gdbmierroronruncommandwithwarning
+msgid "%0:s%0:sIn addition to the Error the following warning was encountered:%0:s%0:s%1:s"
+msgstr ""
+
+#: gdbmidebugger.gdbmierrorstategenericinfo
+msgid "Error in: %1:s %0:s"
+msgstr ""
+
+#: gdbmidebugger.gdbmierrorstateinfocommanderror
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
+msgstr ""
+
+#: gdbmidebugger.gdbmierrorstateinfocommandnoresult
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result%0:s"
+msgstr ""
+
+#: gdbmidebugger.gdbmierrorstateinfofailedread
+msgid "%0:sCould not read output from GDB.%0:s"
+msgstr ""
+
+#: gdbmidebugger.gdbmierrorstateinfofailedwrite
+msgid "%0:sCould not send a command to GDB.%0:s"
+msgstr ""
+
+#: gdbmidebugger.gdbmierrorstateinfogdbgone
+msgid "%0:sThe GDB process is no longer running.%0:s"
+msgstr ""
+
+#: gdbmidebugger.gdbmifatalerroroccured
+msgid "Unrecoverable Error: \"%s\""
+msgstr ""
+
+#: gdbmidebugger.gdbmitimeoutforcmd
+msgid "Time-out for command: \"%s\""
+msgstr ""
+
