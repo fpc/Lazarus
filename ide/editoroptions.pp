@@ -3501,6 +3501,7 @@ procedure TEditorOptions.DoAfterWrite(Restore: boolean);
 begin
   if not Restore then
     Save;
+  inherited;
 end;
 
 function TEditorOptions.GetSynEditOptionName(SynOption: TSynEditorOption): string;

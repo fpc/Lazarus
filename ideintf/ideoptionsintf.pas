@@ -624,9 +624,9 @@ var
 begin
   if Assigned(FOnAfterWrite) then
     FOnAfterWrite(Self,Restore);
-  i:=fHandlers[iohBeforeWrite].Count;
-  while fHandlers[iohBeforeWrite].NextDownIndex(i) do
-    TIDEOptionsWriteEvent(fHandlers[iohBeforeWrite][i])(Self,Restore);
+  i:=fHandlers[iohAfterWrite].Count;
+  while fHandlers[iohAfterWrite].NextDownIndex(i) do
+    TIDEOptionsWriteEvent(fHandlers[iohAfterWrite][i])(Self,Restore);
 end;
 
 procedure TAbstractIDEOptions.AddHandlerBeforeRead(const Handler: TNotifyEvent;
