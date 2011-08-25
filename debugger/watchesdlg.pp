@@ -683,9 +683,6 @@ begin
     Item.Selected := True;
   end;
   
-  Watch := GetSelected;
-  if Watch <> nil then Watch.Enabled := True;
-
   UpdateItem(Item, AWatch);
   lvWatchesSelectItem(nil, nil, False);
 end;
