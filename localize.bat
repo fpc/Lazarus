@@ -39,8 +39,8 @@ echo on
 tools\updatepofiles %IDE_RST% languages\lazaruside.po
 
 @REM Debugger
-@set IDE_DBG=units\%ArchOS%\gdbmidebugger.rst
-tools\updatepofiles %IDE_DBG% languages\gdbmidebugger.po
+@set DBG_RST=units\%ArchOS%\gdbmidebugger.rst
+tools\updatepofiles %DBG_RST% languages\gdbmidebugger.po
 
 @REM IDEIntf
 @set ObjInsp_RST=ideintf\units\%ArchOS%\ObjInspStrConsts.rst
