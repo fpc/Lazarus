@@ -1272,7 +1272,7 @@ procedure RepairEditorFontHeight(var FontHeight: integer);
 begin
   if ((FontHeight>=0) and (FontHeight<=5))
   or ((FontHeight<0) and (FontHeight>=-5)) then
-    FontHeight:=12;
+    FontHeight := SynDefaultFontHeight;
 end;
 
 function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter;
