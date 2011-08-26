@@ -412,6 +412,9 @@ type
     procedure DoProjectOptionsBeforeRead(Sender: TObject);
     procedure DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
 
+    // ComponentPalette events
+    procedure ComponentPaletteClassSelected(Sender: TObject);
+
     // SourceNotebook events
     procedure OnSrcNoteBookActivated(Sender: TObject);
     procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer;
@@ -3717,6 +3720,7 @@ begin
   IDEComponentPalette.HideControls:=(FLastFormActivated<>nil)
     and (not (TDesigner(FLastFormActivated.Designer).LookupRoot is TControl));
   IDEComponentPalette.UpdateVisible;
+  TComponentPalette(IDEComponentPalette).OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
 end;
 
@@ -5095,6 +5099,11 @@ begin
   end;
   if Restore then
     AProject.RestoreSession;
+end;
+
+procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
+begin
+  DoShowDesignerFormOfCurrentSrc;
 end;
 
 procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender: TObject);

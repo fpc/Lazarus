@@ -71,6 +71,7 @@ type
     fNoteBookNeedsUpdate: boolean;
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
+    FOnClassSelected: TNotifyEvent;
     FSelected: TRegisteredComponent;
     FSelectionMode: TComponentSelectionMode;
     fUnregisteredIcon: TCustomBitmap;
@@ -118,6 +119,7 @@ type
     property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
+    property OnClassSelected: TNotifyEvent read FOnClassSelected write FOnClassSelected;
   end;
 
 function CompareControlsWithTag(Control1, Control2: Pointer): integer;
@@ -260,6 +262,8 @@ begin
   else
     SelectionMode := csmSingle;
   SelectButton(TComponent(Sender));
+  if Assigned(OnClassSelected) then
+    OnClassSelected(Self);
 end;
 
 procedure TComponentPalette.ComponentBtnMouseUp(Sender: TObject; Button: TMouseButton;
@@ -305,6 +309,8 @@ begin
     end;
   end;
   Selected:=nil;
+  if Assigned(OnClassSelected) then
+    OnClassSelected(Self);
 end;
 
 // unselect all other buttons on all other PageControl pages
