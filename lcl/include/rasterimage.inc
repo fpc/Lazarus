@@ -692,8 +692,11 @@ begin
 end;
 
 procedure TRasterImage.SetTransparent(AValue: Boolean);
+var
+  lTransparent: Boolean;
 begin
-  if AValue = Transparent then Exit;
+  lTransparent := GetTransparent();
+  if AValue = lTransparent then Exit;
 
   // some delphi compatibility, we can only change transparency through the mask.
   Masked := AValue;
