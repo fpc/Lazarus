@@ -79,7 +79,7 @@ type
     btn: android_all.TButton;
     constructor Create(const AObject: TCustomButton; const AParams: TCreateParams);
     destructor Destroy; override;
-    procedure buttonClickCallback(v: TView);
+    procedure buttonClickCallback({v: TView});
   end;
 
   { TAndroidCheckBox }
@@ -368,7 +368,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TAndroidButton.buttonClickCallback(v: TView);
+procedure TAndroidButton.buttonClickCallback({v: TView});
 var
   Msg: TLMessage;
 begin

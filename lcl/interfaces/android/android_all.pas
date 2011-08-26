@@ -11,6 +11,7 @@ type
   { Forward declaration of classes }
 
   TDisplayMetrics = class;
+  TDialogInterface = interface;
   TActivity = class;
   TDisplay = class;
   TWindowManager = class;
@@ -44,7 +45,8 @@ type
 
   { Types }
 
-  TOnClickListener = procedure (v: TView) of object;
+  TDialogInterface_OnClickListener = procedure () of object;
+  TView_OnClickListener = procedure () of object;
 
   { Classes }
 
@@ -58,6 +60,9 @@ type
     function widthPixels(): Integer;
     function xdpi(): Single;
     function ydpi(): Single;
+  end;
+
+  TDialogInterface = interface(IJavaInterface)
   end;
 
   TActivity = class(TJavaObject)
@@ -78,15 +83,25 @@ type
 
   TDialog = class(TJavaObject)
   public
+    procedure show();
   end;
 
   TAlertDialog = class(TDialog)
   public
+  public
+    Button: TDialogInterface_OnClickListener;
+    procedure setButton(whichButton: Integer; text: string; ACallback: TDialogInterface_OnClickListener);
+    procedure callButton();
+  public
+    procedure setMessage(message: string);
+    procedure setTitle(title: string);
+    procedure setView(view: TView);
   end;
 
   TAlertDialog_Builder = class(TJavaObject)
   public
     constructor Create();
+    function create(): TAlertDialog;
     function setMessage(message: string): TAlertDialog_Builder;
     function setTitle(title: string): TAlertDialog_Builder;
     function setView(view: TView): TAlertDialog_Builder;
@@ -134,8 +149,8 @@ type
     constructor Create();
     procedure setText(AText: string);
   public
-    OnClickListener: TOnClickListener;
-    procedure setOnClickListener(ACallback: TOnClickListener);
+    OnClickListener: TView_OnClickListener;
+    procedure setOnClickListener(ACallback: TView_OnClickListener);
     procedure callOnClickListener();
   public
     procedure setTextSize(unit_: Integer; size: Single);
@@ -234,11 +249,15 @@ type
 const
   { Constants }
   { TDisplayMetrics }
+  { TDialogInterface }
   { TActivity }
   { TDisplay }
   { TWindowManager }
   { TDialog }
   { TAlertDialog }
+  THEME_HOLO_DARK = $00000002;
+  THEME_HOLO_LIGHT = $00000003;
+  THEME_TRADITIONAL = $00000001;
   { TAlertDialog_Builder }
   { TViewGroup_LayoutParams }
   FILL_PARENT = $FFFFFFFF;
@@ -316,88 +335,97 @@ const
   amkUI_TDisplayMetrics_widthPixels_5 = $00101005;
   amkUI_TDisplayMetrics_xdpi_6 = $00101006;
   amkUI_TDisplayMetrics_ydpi_7 = $00101007;
+  // TDialogInterface
   // TActivity
-  amkUI_TActivity_setTitle_0 = $00102000;
-  amkUI_TActivity_getTitle_1 = $00102001;
+  amkUI_TActivity_setTitle_0 = $00103000;
+  amkUI_TActivity_getTitle_1 = $00103001;
   // TDisplay
-  amkUI_TDisplay_getMetrics_0 = $00103000;
+  amkUI_TDisplay_getMetrics_0 = $00104000;
   // TWindowManager
-  amkUI_TWindowManager_getDefaultDisplay_0 = $00104000;
+  amkUI_TWindowManager_getDefaultDisplay_0 = $00105000;
   // TDialog
+  amkUI_TDialog_show_0 = $00106000;
   // TAlertDialog
+  amkUI_TAlertDialog_setButton_0 = $00107000;
+  amkUI_TAlertDialog_Button_Start_1 = $00107001;
+  amkUI_TAlertDialog_Button_Finished_2 = $00107002;
+  amkUI_TAlertDialog_setMessage_3 = $00107003;
+  amkUI_TAlertDialog_setTitle_4 = $00107004;
+  amkUI_TAlertDialog_setView_5 = $00107005;
   // TAlertDialog_Builder
-  amkUI_TAlertDialog_Builder_Create_0 = $00107000;
-  amkUI_TAlertDialog_Builder_setMessage_1 = $00107001;
-  amkUI_TAlertDialog_Builder_setTitle_2 = $00107002;
-  amkUI_TAlertDialog_Builder_setView_3 = $00107003;
-  amkUI_TAlertDialog_Builder_show_4 = $00107004;
+  amkUI_TAlertDialog_Builder_Create_0 = $00108000;
+  amkUI_TAlertDialog_Builder_create_1 = $00108001;
+  amkUI_TAlertDialog_Builder_setMessage_2 = $00108002;
+  amkUI_TAlertDialog_Builder_setTitle_3 = $00108003;
+  amkUI_TAlertDialog_Builder_setView_4 = $00108004;
+  amkUI_TAlertDialog_Builder_show_5 = $00108005;
   // TViewGroup_LayoutParams
-  amkUI_TViewGroup_LayoutParams_Create_0 = $00108000;
+  amkUI_TViewGroup_LayoutParams_Create_0 = $00109000;
   // TView
-  amkUI_TView_setLayoutParams_0 = $00109000;
-  amkUI_TView_setVisibility_1 = $00109001;
+  amkUI_TView_setLayoutParams_0 = $0010A000;
+  amkUI_TView_setVisibility_1 = $0010A001;
   // TViewGroup
-  amkUI_TViewGroup_addView_0 = $0010A000;
-  amkUI_TViewGroup_addView_1 = $0010A001;
-  amkUI_TViewGroup_addView_2 = $0010A002;
-  amkUI_TViewGroup_addView_3 = $0010A003;
-  amkUI_TViewGroup_addView_4 = $0010A004;
+  amkUI_TViewGroup_addView_0 = $0010B000;
+  amkUI_TViewGroup_addView_1 = $0010B001;
+  amkUI_TViewGroup_addView_2 = $0010B002;
+  amkUI_TViewGroup_addView_3 = $0010B003;
+  amkUI_TViewGroup_addView_4 = $0010B004;
   // TLinearLayout
-  amkUI_TLinearLayout_Create_0 = $0010B000;
-  amkUI_TLinearLayout_setOrientation_1 = $0010B001;
+  amkUI_TLinearLayout_Create_0 = $0010C000;
+  amkUI_TLinearLayout_setOrientation_1 = $0010C001;
   // TAbsoluteLayout
-  amkUI_TAbsoluteLayout_Create_0 = $0010C000;
+  amkUI_TAbsoluteLayout_Create_0 = $0010D000;
   // TAbsoluteLayout_LayoutParams
-  amkUI_TAbsoluteLayout_LayoutParams_Create_0 = $0010D000;
+  amkUI_TAbsoluteLayout_LayoutParams_Create_0 = $0010E000;
   // TTextView
-  amkUI_TTextView_Create_0 = $0010E000;
-  amkUI_TTextView_setText_1 = $0010E001;
-  amkUI_TTextView_setOnClickListener_2 = $0010E002;
-  amkUI_TTextView_OnClickListener_Start_3 = $0010E003;
-  amkUI_TTextView_OnClickListener_Finished_4 = $0010E004;
-  amkUI_TTextView_setTextSize_5 = $0010E005;
-  amkUI_TTextView_getText_6 = $0010E006;
+  amkUI_TTextView_Create_0 = $0010F000;
+  amkUI_TTextView_setText_1 = $0010F001;
+  amkUI_TTextView_setOnClickListener_2 = $0010F002;
+  amkUI_TTextView_OnClickListener_Start_3 = $0010F003;
+  amkUI_TTextView_OnClickListener_Finished_4 = $0010F004;
+  amkUI_TTextView_setTextSize_5 = $0010F005;
+  amkUI_TTextView_getText_6 = $0010F006;
   // TEditText
-  amkUI_TEditText_Create_0 = $0010F000;
+  amkUI_TEditText_Create_0 = $00110000;
   // TButton
-  amkUI_TButton_Create_0 = $00110000;
+  amkUI_TButton_Create_0 = $00111000;
   // TFrameLayout
   // TTimePicker
-  amkUI_TTimePicker_Create_0 = $00112000;
-  amkUI_TTimePicker_getCurrentHour_1 = $00112001;
-  amkUI_TTimePicker_setCurrentHour_2 = $00112002;
-  amkUI_TTimePicker_getCurrentMinute_3 = $00112003;
-  amkUI_TTimePicker_setCurrentMinute_4 = $00112004;
-  amkUI_TTimePicker_is24HourView_5 = $00112005;
-  amkUI_TTimePicker_setIs24HourView_6 = $00112006;
+  amkUI_TTimePicker_Create_0 = $00113000;
+  amkUI_TTimePicker_getCurrentHour_1 = $00113001;
+  amkUI_TTimePicker_setCurrentHour_2 = $00113002;
+  amkUI_TTimePicker_getCurrentMinute_3 = $00113003;
+  amkUI_TTimePicker_setCurrentMinute_4 = $00113004;
+  amkUI_TTimePicker_is24HourView_5 = $00113005;
+  amkUI_TTimePicker_setIs24HourView_6 = $00113006;
   // TScrollView
-  amkUI_TScrollView_Create_0 = $00113000;
+  amkUI_TScrollView_Create_0 = $00114000;
   // TCompoundButton
-  amkUI_TCompoundButton_isChecked_0 = $00114000;
-  amkUI_TCompoundButton_performClick_1 = $00114001;
-  amkUI_TCompoundButton_setChecked_2 = $00114002;
-  amkUI_TCompoundButton_toggle_3 = $00114003;
+  amkUI_TCompoundButton_isChecked_0 = $00115000;
+  amkUI_TCompoundButton_performClick_1 = $00115001;
+  amkUI_TCompoundButton_setChecked_2 = $00115002;
+  amkUI_TCompoundButton_toggle_3 = $00115003;
   // TCheckBox
-  amkUI_TCheckBox_Create_0 = $00115000;
+  amkUI_TCheckBox_Create_0 = $00116000;
   // TAdapterView
-  amkUI_TAdapterView_getSelectedItemPosition_0 = $00116000;
+  amkUI_TAdapterView_getSelectedItemPosition_0 = $00117000;
   // TAbsSpinner
-  amkUI_TAbsSpinner_getCount_0 = $00117000;
-  amkUI_TAbsSpinner_setAdapter_1 = $00117001;
-  amkUI_TAbsSpinner_setSelection_2 = $00117002;
+  amkUI_TAbsSpinner_getCount_0 = $00118000;
+  amkUI_TAbsSpinner_setAdapter_1 = $00118001;
+  amkUI_TAbsSpinner_setSelection_2 = $00118002;
   // TSpinner
-  amkUI_TSpinner_Create_0 = $00118000;
+  amkUI_TSpinner_Create_0 = $00119000;
   // TFilterable
   // TAdapter
   // TListAdapter
   // TSpinnerAdapter
   // TBaseAdapter
   // TArrayAdapter_String_
-  amkUI_TArrayAdapter_String__Create_0 = $0011E000;
-  amkUI_TArrayAdapter_String__add_1 = $0011E001;
-  amkUI_TArrayAdapter_String__clear_2 = $0011E002;
-  amkUI_TArrayAdapter_String__insert_3 = $0011E003;
-  amkUI_TArrayAdapter_String__remove_4 = $0011E004;
+  amkUI_TArrayAdapter_String__Create_0 = $0011F000;
+  amkUI_TArrayAdapter_String__add_1 = $0011F001;
+  amkUI_TArrayAdapter_String__clear_2 = $0011F002;
+  amkUI_TArrayAdapter_String__insert_3 = $0011F003;
+  amkUI_TArrayAdapter_String__remove_4 = $0011F004;
   // Tlayout
 
 { Implementation of Classes }
@@ -500,19 +528,90 @@ begin
   Result := TDisplay(vAndroidPipesComm.WaitForIntReturn());
 end;
 
+procedure TDialog.show();
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TDialog_show_0);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.WaitForReturn();
+end;
+
+procedure TAlertDialog.setButton(whichButton: Integer; text: string; ACallback: TDialogInterface_OnClickListener);
+var
+  lString_1: TString;
+begin
+  lString_1 := TString.Create(text);
+  Button := ACallback;
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_setButton_0);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Index
+  vAndroidPipesComm.SendInt(PtrInt(Self)); // Self, Pascal pointer
+  vAndroidPipesComm.SendInt(Integer(whichButton));
+  vAndroidPipesComm.SendInt(lString_1.Index); // text
+  lString_1.Free;
+  vAndroidPipesComm.WaitForReturn();
+end;
+
+procedure TAlertDialog.callButton();
+begin
+  if Assigned(Button) then Button();
+end;
+procedure TAlertDialog.setMessage(message: string);
+var
+  lString_1: TString;
+begin
+  lString_1 := TString.Create(message);
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_setMessage_3);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.SendInt(lString_1.Index); // text
+  vAndroidPipesComm.WaitForReturn();
+  lString_1.Free;
+end;
+
+procedure TAlertDialog.setTitle(title: string);
+var
+  lString_1: TString;
+begin
+  lString_1 := TString.Create(title);
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_setTitle_4);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.SendInt(lString_1.Index); // text
+  vAndroidPipesComm.WaitForReturn();
+  lString_1.Free;
+end;
+
+procedure TAlertDialog.setView(view: TView);
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_setView_5);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  vAndroidPipesComm.SendInt(Integer(view.Index));
+  vAndroidPipesComm.WaitForReturn();
+end;
+
 constructor TAlertDialog_Builder.Create();
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_Create_0);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
+function TAlertDialog_Builder.create(): TAlertDialog;
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_create_1);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  Result := TAlertDialog(vAndroidPipesComm.WaitForIntReturn());
+end;
+
 function TAlertDialog_Builder.setMessage(message: string): TAlertDialog_Builder;
 var
   lString_1: TString;
 begin
   lString_1 := TString.Create(message);
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_setMessage_1);
+  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_setMessage_2);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(lString_1.Index); // text
   Result := TAlertDialog_Builder(vAndroidPipesComm.WaitForIntReturn());
@@ -525,7 +624,7 @@ var
 begin
   lString_1 := TString.Create(title);
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_setTitle_2);
+  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_setTitle_3);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(lString_1.Index); // text
   Result := TAlertDialog_Builder(vAndroidPipesComm.WaitForIntReturn());
@@ -535,7 +634,7 @@ end;
 function TAlertDialog_Builder.setView(view: TView): TAlertDialog_Builder;
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_setView_3);
+  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_setView_4);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(Integer(view.Index));
   Result := TAlertDialog_Builder(vAndroidPipesComm.WaitForIntReturn());
@@ -544,7 +643,7 @@ end;
 function TAlertDialog_Builder.show(): TAlertDialog;
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_show_4);
+  vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_show_5);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   Result := TAlertDialog(vAndroidPipesComm.WaitForIntReturn());
 end;
@@ -676,7 +775,7 @@ begin
   lString_1.Free;
 end;
 
-procedure TTextView.setOnClickListener(ACallback: TOnClickListener);
+procedure TTextView.setOnClickListener(ACallback: TView_OnClickListener);
 begin
   OnClickListener := ACallback;
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
@@ -688,7 +787,7 @@ end;
 
 procedure TTextView.callOnClickListener();
 begin
-  if Assigned(OnClickListener) then OnClickListener(Self);
+  if Assigned(OnClickListener) then OnClickListener();
 end;
 procedure TTextView.setTextSize(unit_: Integer; size: Single);
 begin
@@ -926,6 +1025,12 @@ var
   lPascalPointer: PtrInt = -1;
 begin
   case AFirstInt of
+  amkUI_TAlertDialog_Button_Start_1:
+  begin
+    lPascalPointer := vAndroidPipesComm.ReadInt();
+    TAlertDialog(lPascalPointer).callButton();
+    vAndroidPipesComm.SendMessage(amkUICommand, amkUI_TAlertDialog_Button_Finished_2);
+  end;
   amkUI_TTextView_OnClickListener_Start_3:
   begin
     lPascalPointer := vAndroidPipesComm.ReadInt();

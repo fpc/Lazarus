@@ -865,7 +865,10 @@ var
   alert: TAlertDialog_Builder;
   input: TEditText;
 begin
-{  if InputDialogFunction<>nil then
+{  The LCL fills InputDialogFunction, so we cannot uncomment this code or
+  else we will end up with non-native dialogs, which is not a great idea in Android
+
+  if InputDialogFunction<>nil then
     Result := InputDialogFunction(InputCaption, InputPrompt, MaskInput, Value)
   else
   begin}
