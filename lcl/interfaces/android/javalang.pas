@@ -23,8 +23,8 @@ type
   TJavaObject = class(IJavaInterface)
   public
     FIndex: Integer;
-    constructor Create(AIndex: Integer); virtual;
-    constructor Create(); virtual;
+    constructor Create(AIndex: Integer); virtual; overload;
+    constructor Create(); virtual; overload;
     function GetIndex: Integer;
     procedure SetIndex(AValue: Integer);
     property Index: Integer read GetIndex write SetIndex;

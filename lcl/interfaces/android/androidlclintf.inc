@@ -863,15 +863,17 @@ end;*)
 function TAndroidWidgetSet.RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
 var
   alert: TAlertDialog_Builder;
+  alertdlg: TAlertDialog;
   input: TEditText;
 begin
 {  The LCL fills InputDialogFunction, so we cannot uncomment this code or
-  else we will end up with non-native dialogs, which is not a great idea in Android
-
+  else we will end up with non-native dialogs, which is not a great idea in Android }
+  {$IFDEF LCL_ANDROID_USE_NON_NATIVE_DIALOGS}
   if InputDialogFunction<>nil then
     Result := InputDialogFunction(InputCaption, InputPrompt, MaskInput, Value)
   else
-  begin}
+  begin
+  {$ENDIF}
     Result := True;
 
     alert := TAlertDialog_Builder.Create;
@@ -883,21 +885,27 @@ begin
     input := TEditText.Create;
     alert.setView(input);
 
-(*    alert.setPositiveButton('Ok', new DialogInterface.OnClickListener() {
-    public void onClick(DialogInterface dialog, int whichButton) {
-      String value = input.getText();
-      // Do something with value!
-      }
-    });
+    // Now add the buttons
+    alertdlg := alert.create_();
+    alertdlg.setButton(
+       BUTTON_POSITIVE,
+       'Ok',
+       @HandleAlertButtonPositive
+      );
+    alertdlg.setButton(
+       BUTTON_NEGATIVE,
+       'Cancel',
+       @HandleAlertButtonNegative
+      );
 
-    alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-      public void onClick(DialogInterface dialog, int whichButton) {
-        // Canceled.
-      }
-    });*)
+    alertdlg.show();
 
-    alert.show();
-//  end;
+    // Clean-up
+    alert.Free;
+    alertdlg.Free;
+  {$IFDEF LCL_ANDROID_USE_NON_NATIVE_DIALOGS}
+  end;
+  {$ENDIF}
 end;
 
 (*procedure TQtWidgetSet.SetEventHandlerFlags(AHandler: PEventHandler;

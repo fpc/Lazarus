@@ -328,5 +328,15 @@ begin
   end;}
 end;
 
+// Android Callbacks
+procedure TAndroidWidgetSet.HandleAlertButtonPositive();
+begin
+  AndroidDialogResult := BUTTON_POSITIVE;
+end;
+
+procedure TAndroidWidgetSet.HandleAlertButtonNegative();
+begin
+  AndroidDialogResult := BUTTON_NEGATIVE;
+end;
 
 //------------------------------------------------------------------------

@@ -159,6 +159,12 @@ type
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
     property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;}
 
+  public
+    // Android Callbacks
+    AndroidDialogResult: Integer;
+    procedure HandleAlertButtonPositive();
+    procedure HandleAlertButtonNegative();
+
     {$I androidwinapih.inc}
     {$I androidlclintfh.inc}
   end;

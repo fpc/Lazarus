@@ -52,7 +52,7 @@ type
 
   TDisplayMetrics = class(TJavaObject)
   public
-    constructor Create();
+    constructor Create(); override;
     function density(): Single;
     function densityDpi(): Integer;
     function heightPixels(): Integer;
@@ -100,8 +100,8 @@ type
 
   TAlertDialog_Builder = class(TJavaObject)
   public
-    constructor Create();
-    function create(): TAlertDialog;
+    constructor Create(); override;
+    function create_(): TAlertDialog;
     function setMessage(message: string): TAlertDialog_Builder;
     function setTitle(title: string): TAlertDialog_Builder;
     function setView(view: TView): TAlertDialog_Builder;
@@ -130,13 +130,13 @@ type
 
   TLinearLayout = class(TViewGroup)
   public
-    constructor Create();
+    constructor Create(); override;
     procedure setOrientation(orientation: Integer);
   end;
 
   TAbsoluteLayout = class(TViewGroup)
   public
-    constructor Create();
+    constructor Create(); override;
   end;
 
   TAbsoluteLayout_LayoutParams = class(TViewGroup_LayoutParams)
@@ -146,7 +146,7 @@ type
 
   TTextView = class(TView)
   public
-    constructor Create();
+    constructor Create(); override;
     procedure setText(AText: string);
   public
     OnClickListener: TView_OnClickListener;
@@ -159,12 +159,12 @@ type
 
   TEditText = class(TTextView)
   public
-    constructor Create();
+    constructor Create(); override;
   end;
 
   TButton = class(TTextView)
   public
-    constructor Create();
+    constructor Create(); override;
   end;
 
   TFrameLayout = class(TViewGroup)
@@ -173,7 +173,7 @@ type
 
   TTimePicker = class(TFrameLayout)
   public
-    constructor Create();
+    constructor Create(); override;
     function getCurrentHour(): Integer;
     procedure setCurrentHour(currentHour: Integer);
     function getCurrentMinute(): Integer;
@@ -184,7 +184,7 @@ type
 
   TScrollView = class(TFrameLayout)
   public
-    constructor Create();
+    constructor Create(); override;
   end;
 
   TCompoundButton = class(TButton)
@@ -197,7 +197,7 @@ type
 
   TCheckBox = class(TCompoundButton)
   public
-    constructor Create();
+    constructor Create(); override;
   end;
 
   TAdapterView = class(TViewGroup)
@@ -214,7 +214,7 @@ type
 
   TSpinner = class(TAbsSpinner)
   public
-    constructor Create();
+    constructor Create(); override;
   end;
 
   TFilterable = interface(IJavaInterface)
@@ -250,6 +250,9 @@ const
   { Constants }
   { TDisplayMetrics }
   { TDialogInterface }
+  BUTTON_NEGATIVE = $fffffffe;
+  BUTTON_NEUTRAL = $fffffffd;
+  BUTTON_POSITIVE = $ffffffff;
   { TActivity }
   { TDisplay }
   { TWindowManager }
@@ -525,7 +528,7 @@ begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TWindowManager_getDefaultDisplay_0);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  Result := TDisplay(vAndroidPipesComm.WaitForIntReturn());
+  Result := TDisplay.Create(vAndroidPipesComm.WaitForIntReturn());
 end;
 
 procedure TDialog.show();
@@ -597,12 +600,12 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_Create_0);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
-function TAlertDialog_Builder.create(): TAlertDialog;
+function TAlertDialog_Builder.create_(): TAlertDialog;
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_create_1);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  Result := TAlertDialog(vAndroidPipesComm.WaitForIntReturn());
+  Result := TAlertDialog.Create(vAndroidPipesComm.WaitForIntReturn());
 end;
 
 function TAlertDialog_Builder.setMessage(message: string): TAlertDialog_Builder;
@@ -614,7 +617,7 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_setMessage_2);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(lString_1.Index); // text
-  Result := TAlertDialog_Builder(vAndroidPipesComm.WaitForIntReturn());
+  Result := TAlertDialog_Builder.Create(vAndroidPipesComm.WaitForIntReturn());
   lString_1.Free;
 end;
 
@@ -627,7 +630,7 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_setTitle_3);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(lString_1.Index); // text
-  Result := TAlertDialog_Builder(vAndroidPipesComm.WaitForIntReturn());
+  Result := TAlertDialog_Builder.Create(vAndroidPipesComm.WaitForIntReturn());
   lString_1.Free;
 end;
 
@@ -637,7 +640,7 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_setView_4);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(Integer(view.Index));
-  Result := TAlertDialog_Builder(vAndroidPipesComm.WaitForIntReturn());
+  Result := TAlertDialog_Builder.Create(vAndroidPipesComm.WaitForIntReturn());
 end;
 
 function TAlertDialog_Builder.show(): TAlertDialog;
@@ -645,7 +648,7 @@ begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
   vAndroidPipesComm.SendInt(amkUI_TAlertDialog_Builder_show_5);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  Result := TAlertDialog(vAndroidPipesComm.WaitForIntReturn());
+  Result := TAlertDialog.Create(vAndroidPipesComm.WaitForIntReturn());
 end;
 
 constructor TViewGroup_LayoutParams.Create(width: Integer; height: Integer);
