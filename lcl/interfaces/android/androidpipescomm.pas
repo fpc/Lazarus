@@ -275,7 +275,7 @@ function TAndroidPipesComm.WaitForStringReturn: string;
 var
   lByte: ShortInt;
 begin
-  {$ifdef ANDROID_NO_COMM}Exit(0.0);{$ENDIF}
+  {$ifdef ANDROID_NO_COMM}Exit('');{$ENDIF}
   lByte := ReadByte();
   if lByte <> amkStringResult then CommError('[TAndroidPipesComm.WaitForStringReturn] expected amkStringResult but got: ' + IntToStr(lByte));
   Result := ReadString();

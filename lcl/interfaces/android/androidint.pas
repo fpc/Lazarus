@@ -162,8 +162,8 @@ type
   public
     // Android Callbacks
     AndroidDialogResult: Integer;
-    procedure HandleAlertButtonPositive();
-    procedure HandleAlertButtonNegative();
+    procedure HandleAlertButtonPositive(); virtual;
+    procedure HandleAlertButtonNegative(); virtual;
 
     {$I androidwinapih.inc}
     {$I androidlclintfh.inc}
