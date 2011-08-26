@@ -272,6 +272,7 @@ begin
   FOwner := AnOwner;
   FSubTreeCount := 1;
   FIndex := -1;
+  FVisible := True;
   if Owner<>nil then inc(Owner.FCount);
 end;
 
@@ -454,6 +455,16 @@ procedure TTreeNode.SetSelectedIndex(AValue: Integer);
 begin
   if FSelectedIndex = AValue then exit;
   FSelectedIndex := AValue;
+  Update;
+end;
+
+procedure TTreeNode.SetVisible(const AValue: Boolean);
+begin
+  if FVisible = AValue then exit;
+  FVisible := AValue;
+  Selected := False;
+  if TreeView<>nil then
+    TreeView.FStates:=TreeView.FStates+[tvsScrollbarChanged,tvsTopsNeedsUpdate,tvsBottomItemNeedsUpdate, tvsTopItemNeedsUpdate];
   Update;
 end;
 
@@ -805,16 +816,26 @@ end;
 
 function TTreeNode.GetNextVisible: TTreeNode;
 begin
-  if Expanded and (GetFirstChild<>nil) then
-    Result:=GetFirstChild
+  if FVisible and Expanded and (GetFirstVisibleChild<>nil) then
+    Result:=GetFirstVisibleChild
   else begin
     Result:=Self;
-    while (Result<>nil) and (Result.GetNextSibling=nil) do
+    while (Result<>nil) and (Result.GetNextVisibleSibling=nil) do
       Result:=Result.Parent;
-    if Result<>nil then Result:=Result.GetNextSibling;
+    if Result<>nil then Result:=Result.GetNextVisibleSibling;
   end;
-  if (Result<>nil) and (not Result.IsVisible) then
+  if (Result<>nil) and ((not Result.IsVisible) or (not Result.FVisible)) then
     Result:=nil;
+end;
+
+function TTreeNode.GetNextVisibleSibling: TTreeNode;
+begin
+  Result := Self;
+  repeat
+    Result := Result.GetNextSibling;
+  until ((Result=nil) or (Result.FVisible));
+  if (Result<>nil) and (not Result.FVisible) then
+    Result := nil
 end;
 
 function TTreeNode.GetPrevVisible: TTreeNode;
@@ -894,6 +915,13 @@ begin
     Result:=FItems[0]
   else
     Result:=nil;
+end;
+
+function TTreeNode.GetFirstVisibleChild: TTreeNode;
+begin
+  Result := GetFirstChild;
+  if (Result<>nil) and (not Result.FVisible) then
+    Result := Result.GetNextVisibleSibling;
 end;
 
 function TTreeNode.GetLastSibling: TTreeNode;
@@ -2915,7 +2943,7 @@ var
 begin
   //DebugLn(['TCustomTreeView.BeginEditing tvsIsEditing=',tvsIsEditing in FStates,' Selected=',Selected<>nil]);
   if (tvsIsEditing in FStates) or (ANode=nil) then exit;
-  if not CanEdit(ANode) then exit;
+  if (not CanEdit(ANode)) or (not ANode.FVisible) then exit;
   // if we are asked to edit another node while one is already being edited then
   // stop editing that node
   if FEditingItem <> nil then
@@ -3160,10 +3188,12 @@ procedure TCustomTreeView.UpdateAllTops;
   procedure CalculateTops(FirstSibling: TTreeNode; var CurTop: integer);
   begin
     while FirstSibling<>nil do begin
-      FirstSibling.fTop:=CurTop;
-      inc(CurTop,FirstSibling.Height);
-      if FirstSibling.Expanded then
-        CalculateTops(FirstSibling.GetFirstChild,CurTop);
+      if FirstSibling.FVisible then begin;
+        FirstSibling.fTop:=CurTop;
+        inc(CurTop,FirstSibling.Height);
+        if FirstSibling.Expanded then
+          CalculateTops(FirstSibling.GetFirstChild,CurTop);
+      end;
       FirstSibling:=FirstSibling.GetNextSibling;
     end;
   end;
@@ -3615,7 +3645,7 @@ end;
 
 function TCustomTreeView.IsNodeVisible(ANode: TTreeNode): Boolean;
 begin
-  Result:=(ANode<>nil) and (ANode.AreParentsExpanded);
+  Result:=(ANode<>nil) and (ANode.Visible) and (ANode.AreParentsExpanded);
   //DebugLn('[TCustomTreeView.IsNodeVisible] A Node=',DbgS(ANode),
   //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
   if Result then begin
@@ -4209,7 +4239,8 @@ begin
       //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
       while Node <> nil do
       begin
-        DoPaintNode(Node);
+        if Node.Visible then
+          DoPaintNode(Node);
         Node := Node.GetNextVisible;
         //write('[TCustomTreeView.DoPaint] B Node=',DbgS(Node));
         //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
@@ -4352,7 +4383,7 @@ var
             DrawHorzLine(VertMid, CurMid, Result + Indent);
         end;
 
-        if (CurNode.GetNextSibling <> nil) then
+        if (CurNode.GetNextVisibleSibling <> nil) then
         begin
           // draw vertical line to next brother
           if (CurNode = Node) and HasExpandSign then

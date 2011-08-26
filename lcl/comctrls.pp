@@ -2386,6 +2386,7 @@ type
     FSubTreeCount: integer;// total of all child nodes and self
     FText: string;
     FTop: integer;        // top coordinate
+    FVisible: Boolean;
     function AreParentsExpanded: Boolean;
     procedure BindToMultiSelected;
     function CompareCount(CompareMe: Integer): Boolean;
@@ -2432,6 +2433,7 @@ type
     procedure SetSelectedIndex(AValue: Integer);
     procedure SetStateIndex(AValue: Integer);
     procedure SetText(const S: string);
+    procedure SetVisible(const AValue: Boolean);
     procedure Unbind;
     procedure UnbindFromMultiSelected;
     procedure WriteData(Stream: TStream);
@@ -2464,6 +2466,7 @@ type
     function BottomExpanded: integer;
     function GetParentNodeOfAbsoluteLevel(TheAbsoluteLevel: integer): TTreeNode;
     function GetFirstChild: TTreeNode;
+    function GetFirstVisibleChild: TTreeNode;
     function GetHandle: THandle;
     function GetLastSibling: TTreeNode;
     function GetLastChild: TTreeNode;
@@ -2475,6 +2478,7 @@ type
     function GetNextMultiSelected: TTreeNode;
     function GetNextSibling: TTreeNode;
     function GetNextVisible: TTreeNode;
+    function GetNextVisibleSibling: TTreeNode;
     function GetPrev: TTreeNode;
     function GetPrevChild(AValue: TTreeNode): TTreeNode;
     function GetPrevExpanded: TTreeNode;
@@ -2521,6 +2525,7 @@ type
     property TreeNodes: TTreeNodes read GetTreeNodes;
     property TreeView: TCustomTreeView read GetTreeView;
     property Top: integer read GetTop;
+    property Visible: Boolean read FVisible write SetVisible default True;
   end;
 
   { TTreeNodesEnumerator }
