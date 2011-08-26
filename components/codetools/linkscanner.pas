@@ -173,14 +173,14 @@ const
     [cmsResult,cmsProperty,cmsNested_comment,cmsCvar_support],
     // cmDELPHI
     [cmsDefault_ansistring,cmsResult,cmsAdvancedRecords,cmsProperty,
-     cmsCvar_support],
+     cmsCvar_support,cmsOut],
     // cmGPC
     [],
     // cmTP
     [cmsResult,cmsTp_procvar],
     // cmOBJFPC
     [cmsDefault_ansistring,cmsResult,cmsProperty,cmsNested_comment,
-     cmsCvar_support],
+     cmsCvar_support,cmsOut],
     // cmMacPas
     [cmsMac_procvar,cmsProperty],
     // cmISO

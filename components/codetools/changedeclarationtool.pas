@@ -314,7 +314,7 @@ var
   begin
     // read parameter prefix modifier
     if UpAtomIs('VAR') or UpAtomIs('CONST') or UpAtomIs('CONSTREF')
-    or (UpAtomIs('OUT') and (Scanner.CompilerMode in [cmOBJFPC,cmDELPHI,cmFPC]))
+    or (UpAtomIs('OUT') and (cmsOut in Scanner.CompilerModeSwitches))
     then begin
       CurParam.Modifier:=CurPos;
       ReadNextAtom;

@@ -1630,7 +1630,7 @@ var
                 ParameterType:=ptConst
               else if UpAtomIs('VAR') then
                 ParameterType:=ptVar
-              else if UpAtomIs('OUT') then
+              else if UpAtomIs('OUT') and (cmsOut in Scanner.CompilerModeSwitches) then
                 ParameterType:=ptOut
               else
                 ParameterType:=ptNoSpecifier;

@@ -998,7 +998,7 @@ begin
   KeyWordLists.Add(WordIsKeyWord);
   with WordIsKeyWord do begin
     //Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
-    Add('OUT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    //Add('OUT',{$ifdef FPC}@{$endif}AllwaysTrue); only if modeswitch out+
     Add('AND',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ARRAY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);

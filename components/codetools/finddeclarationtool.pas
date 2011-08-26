@@ -7939,7 +7939,8 @@ begin
     if (ParamCompatibility=tcIncompatible)
     or ((ParamCompatibility=tcCompatible)
         and MoveCursorToParameterSpecifier(ParamNode)
-        and (UpAtomIs('VAR') or UpAtomIs('OUT') or UpAtomIs('CONSTREF')))
+        and (UpAtomIs('VAR') or UpAtomIs('CONSTREF')
+             or (UpAtomIs('OUT') and (cmsOut in Scanner.CompilerModeSwitches))))
     then begin
       Result:=tcIncompatible;
       exit;
