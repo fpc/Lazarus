@@ -1486,6 +1486,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
 
 var IsSpecifier: boolean;
   Attr: TProcHeadAttributes;
+  Level: Integer;
 begin
   //DebugLn('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
   //'Method=',IsMethod,', Function=',IsFunction,', Type=',IsType);
@@ -1531,6 +1532,26 @@ begin
           EndChildNode;
         end;
         ReadNextAtom;
+      end;
+      // Support generics in the function return type
+      Level:=1;
+      if GetAtom='<' then
+      begin
+        ReadNextAtom;
+        while Level>0 do begin
+          AtomIsIdentifier(true);
+          ReadNextAtom;
+          if CurPos.Flag=cafPoint then
+            Continue;
+          if CurPos.Flag=cafComma then
+            ReadNextAtom
+          else if GetAtom='<' then
+            Inc(Level)
+          else if GetAtom='>' then begin
+            ReadNextAtom;
+            Dec(Level);
+          end;
+        end;
       end;
     end else begin
       if (Scanner.CompilerMode<>cmDelphi) then
