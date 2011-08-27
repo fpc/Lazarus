@@ -2566,7 +2566,7 @@ function TPascalReaderTool.FindCommentInFront(const StartPos: integer;
   SearchInParentNode, WithCommentBounds, CaseSensitive,
   IgnoreSpaces, CompareOnlyStart: boolean;
   out CommentStart, CommentEnd: integer): boolean;
-// searches a comment in front.
+// searches a comment in front of StartPos starting with CommentText.
 var
   FoundStartPos: integer;
   FoundEndPos: integer;

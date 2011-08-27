@@ -65,7 +65,7 @@ type
     function FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
         out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function GatherProcNodes(StartNode: TCodeTreeNode;
-        Attr: TProcHeadAttributes; const UpperClassName: string): TAVLTree;
+        Attr: TProcHeadAttributes; const FilterClassName: string): TAVLTree;
     function FindFirstDifferenceNode(SearchForNodes, SearchInNodes: TAVLTree;
         var DiffTxtPos: integer): TAVLTreeNode;
     function JumpToMethod(const ProcHead: string; Attr: TProcHeadAttributes;
@@ -765,7 +765,7 @@ begin
 end;
 
 function TMethodJumpingCodeTool.GatherProcNodes(StartNode: TCodeTreeNode;
-  Attr: TProcHeadAttributes; const UpperClassName: string): TAVLTree;
+  Attr: TProcHeadAttributes; const FilterClassName: string): TAVLTree;
 // create a tree of TCodeTreeNodeExtension
 var CurProcName: string;
   ANode: TCodeTreeNode;
@@ -786,9 +786,9 @@ begin
         cmp:=true;
         if (phpOnlyWithClassname in Attr) then begin
           CurClassName:=ExtractClassNameOfProcNode(ANode,true);
-          //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] B2 "',CurClassName,'" =? ',UpperClassName);
+          //DebugLn('[TMethodJumpingCodeTool.GatherProcNodes] B2 "',CurClassName,'" =? ',FilterClassName);
 
-          if CompareIdentifiers(PChar(UpperClassName),PChar(CurClassName))<>0 then
+          if CompareText(FilterClassName,CurClassName)<>0 then
             cmp:=false;
         end;
         if cmp and (phpIgnoreMethods in Attr) then begin
