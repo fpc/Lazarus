@@ -880,7 +880,7 @@ begin
       Exchange(p.X, p.Y);
     p.X += ofs;
     heights[0] := z;
-    heights[1] := p.Y - z;
+    heights[1] := p.Y;
     for stackIndex := 1 to Source.YCount - 1 do
       heights[stackIndex + 1] :=
         heights[stackIndex] + Source[pointIndex]^.YList[stackIndex - 1];
