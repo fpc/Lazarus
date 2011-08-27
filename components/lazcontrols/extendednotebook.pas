@@ -152,8 +152,6 @@ end;
 
 procedure TExtendedNotebook.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
-var
-  t: Integer;
 Begin
   {$IFDEF ExtNBookDebug}debugln(['TExtendedNotebook.MouseDown']);{$ENDIF}
   InitDrag;
