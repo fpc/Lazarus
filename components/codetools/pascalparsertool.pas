@@ -1443,7 +1443,6 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
   var HasForwardModifier: boolean): boolean;
 { parse parameter list, result type, of object, method specifiers
 
-
  examples:
    procedure ProcName;  virtual; abstract;
    function FuncName(Parameter1: Type1; Parameter2: Type2): ResultType;
@@ -1459,7 +1458,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
 
    Delphi mode:
    Function TPOSControler.Logout; // missing function type
-
+   function SomeMethod: IDictionary<string, IDictionary<K, V>>; // generics
 
  proc specifiers without parameters:
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline
@@ -1535,23 +1534,22 @@ begin
       end;
       // Support generics in the function return type
       Level:=1;
-      if GetAtom='<' then
-      begin
-        ReadNextAtom;
+      if GetAtom='<' then begin
         while Level>0 do begin
-          AtomIsIdentifier(true);
           ReadNextAtom;
-          if CurPos.Flag=cafPoint then
-            Continue;
-          if CurPos.Flag=cafComma then
-            ReadNextAtom
-          else if GetAtom='<' then
-            Inc(Level)
-          else if GetAtom='>' then begin
+          if CurPos.Flag in [cafPoint, cafComma] then begin
             ReadNextAtom;
+            AtomIsIdentifier(true);
+          end
+          else if GetAtom='<' then begin
+            ReadNextAtom;
+            AtomIsIdentifier(true);
+            Inc(Level);
+          end
+          else if GetAtom='>' then
             Dec(Level);
-          end;
         end;
+        ReadNextAtom;
       end;
     end else begin
       if (Scanner.CompilerMode<>cmDelphi) then
