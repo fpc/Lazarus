@@ -657,7 +657,6 @@ function TConstantLine.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 begin
-  Result := true;
   AResults.FIndex := -1;
   AResults.FImg := AParams.FPoint;
   // Return the actual nearest point of the line.
@@ -670,6 +669,7 @@ begin
     AResults.FImg.Y := FChart.YGraphToImage(AxisToGraphX(Position));
   end;
   AResults.FDist := AParams.FDistFunc(AParams.FPoint, AResults.FImg);
+  Result := AResults.FDist <= Sqr(AParams.FRadius);
   SavePosToCoord(AResults.FValue);
 end;
 

@@ -1069,6 +1069,7 @@ begin
   best.FDist := MaxInt;
   p.FDistFunc := DIST_FUNCS[FChart.ReticuleMode];
   p.FPoint := APoint;
+  p.FRadius := Trunc(Sqrt(MaxInt));
   for s in CustomSeries(FChart) do
     if
       s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) and
@@ -1276,24 +1277,24 @@ end;
 
 procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
 var
-  s, bests: TCustomChartSeries;
+  s, bestS: TCustomChartSeries;
   p: TNearestPointParams;
   cur, best: TNearestPointResults;
 begin
   p.FDistFunc := @PointDist;
   p.FPoint := APoint;
+  p.FRadius := GrabRadius;
   best.FDist := MaxInt;
-  bests := nil;
   for s in CustomSeries(FChart, ParseAffectedSeries) do
     if
       s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) and
       (cur.FDist < best.FDist)
     then begin
-      bests := s;
+      bestS := s;
       best := cur;
     end;
-  if (bests = nil) or (best.FDist > Sqr(GrabRadius)) then exit;
-  FSeries := bests;
+  if best.FDist = MaxInt then exit;
+  FSeries := bestS;
   FPointIndex := best.FIndex;
   FNearestGraphPoint := FChart.ImageToGraph(best.FImg);
 end;

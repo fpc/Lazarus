@@ -508,7 +508,7 @@ begin
   OnCalculate(AResults.FValue.X, AResults.FValue.Y);
   AResults.FImg := ParentChart.GraphToImage(AxisToGraph(AResults.FValue));
   AResults.FDist := AParams.FDistFunc(AParams.FPoint, AResults.FImg);
-  Result := true;
+  Result := AResults.FDist <= Sqr(AParams.FRadius);
 end;
 
 function TFuncSeries.IsEmpty: Boolean;

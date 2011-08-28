@@ -34,6 +34,7 @@ type
   TNearestPointParams = record
     FDistFunc: TPointDistFunc;
     FPoint: TPoint;
+    FRadius: Integer;
   end;
 
   TNearestPointResults = record
@@ -921,7 +922,7 @@ begin
     // an integer overflow, so ADistFunc should use saturation arithmetics.
     pt := Point(GetXImgValue(i), GetYImgValue(i));
     dist := AParams.FDistFunc(AParams.FPoint, pt);
-    if dist >= AResults.FDist then continue;
+    if (dist >= AResults.FDist) or (dist > Sqr(AParams.FRadius)) then continue;
     AResults.FDist := dist;
     AResults.FIndex := i;
     AResults.FImg := pt;
