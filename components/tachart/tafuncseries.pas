@@ -248,10 +248,135 @@ implementation
 uses
   ipf, Math, SysUtils, TAGeometry, TAGraph;
 
+type
+  TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;
+
+  TDrawFuncHelper = class
+  strict private
+    FAxisToGraphXr, FAxisToGraphYr, FGraphToAxisXr: TTransformFunc;
+    FCalc: TTransformFunc;
+    FChart: TChart;
+    FDomainExclusions: TIntervalList;
+    FDrawer: IChartDrawer;
+    FExtent: TDoubleRect;
+    FGraphStep: Double;
+    FMakeDP: TMakeDoublePoint;
+    FPrev: TDoublePoint;
+    FPrevInExtent: Boolean;
+    FSeries: TCustomChartSeries;
+
+    procedure CalcAt(AXg, AXa: Double; out APt: TDoublePoint; out AIn: Boolean);
+    procedure LineTo(AXg, AXa: Double);
+    procedure MoveTo(AXg, AXa: Double);
+  public
+    constructor Create(
+      ADrawer: IChartDrawer; ASeries: TCustomChartSeries;
+      ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer);
+    procedure DrawFunction;
+  end;
+
 function DoublePointRotated(AX, AY: Double): TDoublePoint;
 begin
   Result.X := AY;
   Result.Y := AX;
+end;
+
+{ TDrawFuncHelper }
+
+procedure TDrawFuncHelper.CalcAt(
+  AXg, AXa: Double; out APt: TDoublePoint; out AIn: Boolean);
+begin
+  APt := FMakeDP(AXg, FAxisToGraphYr(FCalc(AXa)));
+  AIn := (FExtent.a <= APt) and (APt <= FExtent.b);
+end;
+
+constructor TDrawFuncHelper.Create(
+  ADrawer: IChartDrawer; ASeries: TCustomChartSeries;
+  ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer);
+begin
+  FChart := ASeries.ParentChart;
+  FExtent := FChart.CurrentExtent;
+  FDrawer := ADrawer;
+  FSeries := ASeries;
+  FDomainExclusions := ADomainExclusions;
+  FCalc := ACalc;
+
+  with FSeries do
+    if IsRotated then begin
+      FAxisToGraphXr := @AxisToGraphY;
+      FAxisToGraphYr := @AxisToGraphX;
+      FGraphToAxisXr := @GraphToAxisY;
+      FMakeDP := @DoublePointRotated;
+      FGraphStep := FChart.YImageToGraph(-AStep) - FChart.YImageToGraph(0);
+    end
+    else begin
+      FAxisToGraphXr := @AxisToGraphX;
+      FAxisToGraphYr := @AxisToGraphY;
+      FGraphToAxisXr := @GraphToAxisX;
+      FMakeDP := @DoublePoint;
+      FGraphStep := FChart.XImageToGraph(AStep) - FChart.XImageToGraph(0);
+    end;
+end;
+
+procedure TDrawFuncHelper.DrawFunction;
+var
+  hint: Integer;
+  xg, xa, xg1, xa1, xmax: Double;
+begin
+  with FSeries do
+    if IsRotated then begin
+      xg := FExtent.a.Y;
+      xmax := FExtent.b.Y;
+    end
+    else begin
+      xg := FExtent.a.X;
+      xmax := FExtent.b.X;
+    end;
+
+  hint := 0;
+  xa := FGraphToAxisXr(xg);
+  if FDomainExclusions.Intersect(xa, xa, hint) then
+    xg := FAxisToGraphXr(xa);
+
+  MoveTo(xg, xa);
+
+  while xg < xmax do begin
+    xg1 := xg + FGraphStep;
+    xa1 := FGraphToAxisXr(xg1);
+    if FDomainExclusions.Intersect(xa, xa1, hint) then begin
+      LineTo(FAxisToGraphXr(xa), xa);
+      xg1 := FAxisToGraphXr(xa1);
+      MoveTo(xg1, xa1);
+    end
+    else
+      LineTo(xg1, xa1);
+    xg := xg1;
+    xa := xa1;
+  end;
+end;
+
+procedure TDrawFuncHelper.LineTo(AXg, AXa: Double);
+var
+  p, t: TDoublePoint;
+  inExtent: Boolean;
+begin
+  CalcAt(AXg, AXa, p, inExtent);
+  t := p;
+  if inExtent and FPrevInExtent then
+    FDrawer.LineTo(FChart.GraphToImage(p))
+  else if LineIntersectsRect(FPrev, t, FExtent) then begin
+    FDrawer.MoveTo(FChart.GraphToImage(FPrev));
+    FDrawer.LineTo(FChart.GraphToImage(t));
+  end;
+  FPrevInExtent := inExtent;
+  FPrev := p;
+end;
+
+procedure TDrawFuncHelper.MoveTo(AXg, AXa: Double);
+begin
+  CalcAt(AXg, AXa, FPrev, FPrevInExtent);
+  if FPrevInExtent then
+    FDrawer.MoveTo(FChart.GraphToImage(FPrev));
 end;
 
 { TBasicFuncSeries }
@@ -340,99 +465,6 @@ begin
   OnCalculate(AX, Result)
 end;
 
-procedure DrawFunction(
-  ADrawer: IChartDrawer; ASeries: TCustomChartSeries;
-  ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer);
-type
-  TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;
-
-var
-  axisToGraphXr, axisToGraphYr, graphToAxisXr: TTransformFunc;
-  makeDP: TMakeDoublePoint;
-  r: TDoubleRect = (coords:(NegInfinity, NegInfinity, Infinity, Infinity));
-  prev: TDoublePoint;
-  prevInExtent: Boolean;
-  chart: TChart;
-
-  procedure CalcAt(AXg, AXa: Double; out APt: TDoublePoint; out AIn: Boolean);
-  begin
-    APt := makeDP(AXg, axisToGraphYr(ACalc(AXa)));
-    AIn := (r.a <= APt) and (APt <= r.b);
-  end;
-
-  procedure MoveTo(AXg, AXa: Double);
-  begin
-    CalcAt(AXg, AXa, prev, prevInExtent);
-    if prevInExtent then
-      ADrawer.MoveTo(chart.GraphToImage(prev));
-  end;
-
-  procedure LineTo(AXg, AXa: Double);
-  var
-    p, t: TDoublePoint;
-    inExtent: Boolean;
-  begin
-    CalcAt(AXg, AXa, p, inExtent);
-    t := p;
-    if inExtent and prevInExtent then
-      ADrawer.LineTo(chart.GraphToImage(p))
-    else if LineIntersectsRect(prev, t, r) then begin
-      ADrawer.MoveTo(chart.GraphToImage(prev));
-      ADrawer.LineTo(chart.GraphToImage(t));
-    end;
-    prevInExtent := inExtent;
-    prev := p;
-  end;
-
-var
-  hint: Integer;
-  xg, xa, xg1, xa1, xmax, graphStep: Double;
-begin
-  chart := ASeries.ParentChart;
-  r := chart.CurrentExtent;
-
-  with ASeries do
-    if IsRotated then begin
-      axisToGraphXr := @AxisToGraphY;
-      axisToGraphYr := @AxisToGraphX;
-      graphToAxisXr := @GraphToAxisY;
-      makeDP := @DoublePointRotated;
-      graphStep := chart.YImageToGraph(-AStep) - chart.YImageToGraph(0);
-      xg := r.a.Y;
-      xmax := r.b.Y;
-    end
-    else begin
-      axisToGraphXr := @AxisToGraphX;
-      axisToGraphYr := @AxisToGraphY;
-      graphToAxisXr := @GraphToAxisX;
-      makeDP := @DoublePoint;
-      graphStep := chart.XImageToGraph(AStep) - chart.XImageToGraph(0);
-      xg := r.a.X;
-      xmax := r.b.X;
-    end;
-
-  hint := 0;
-  xa := graphToAxisXr(xg);
-  if ADomainExclusions.Intersect(xa, xa, hint) then
-    xg := axisToGraphXr(xa);
-
-  MoveTo(xg, xa);
-
-  while xg < xmax do begin
-    xg1 := xg + graphStep;
-    xa1 := graphToAxisXr(xg1);
-    if ADomainExclusions.Intersect(xa, xa1, hint) then begin
-      LineTo(axisToGraphXr(xa), xa);
-      xg1 := axisToGraphXr(xa1);
-      MoveTo(xg1, xa1);
-    end
-    else
-      LineTo(xg1, xa1);
-    xg := xg1;
-    xa := xa1;
-  end;
-end;
-
 procedure TFuncSeries.Draw(ADrawer: IChartDrawer);
 var
   calc: TTransformFunc;
@@ -444,7 +476,12 @@ begin
   else
     exit;
   ADrawer.Pen := Pen;
-  DrawFunction(ADrawer, Self, DomainExclusions, calc, Step);
+  with TDrawFuncHelper.Create(ADrawer, Self, DomainExclusions, calc, Step) do
+    try
+      DrawFunction;
+    finally
+      Free;
+    end;
 end;
 
 procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -711,7 +748,12 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
         de.AddRange(NegInfinity, FX[0]);
       if not (csoExtrapolateRight in Options) then
         de.AddRange(FX[High(FX)], SafeInfinity);
-      DrawFunction(ADrawer, Self, de, @Calculate, Step);
+      with TDrawFuncHelper.Create(ADrawer, Self, de, @Calculate, Step) do
+        try
+          DrawFunction;
+        finally
+          Free;
+        end;
     finally
       de.Free;
     end;
