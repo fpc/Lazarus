@@ -274,9 +274,9 @@ type
     procedure MoveTo(AXg, AXa: Double);
   public
     constructor Create(
-      ADrawer: IChartDrawer; ASeries: TCustomChartSeries;
-      ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer);
-    procedure DrawFunction;
+      ASeries: TCustomChartSeries; ADomainExclusions:
+      TIntervalList; ACalc: TTransformFunc; AStep: Integer);
+    procedure DrawFunction(ADrawer: IChartDrawer);
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean;
@@ -298,12 +298,11 @@ begin
 end;
 
 constructor TDrawFuncHelper.Create(
-  ADrawer: IChartDrawer; ASeries: TCustomChartSeries;
-  ADomainExclusions: TIntervalList; ACalc: TTransformFunc; AStep: Integer);
+  ASeries: TCustomChartSeries; ADomainExclusions: TIntervalList;
+  ACalc: TTransformFunc; AStep: Integer);
 begin
   FChart := ASeries.ParentChart;
   FExtent := FChart.CurrentExtent;
-  FDrawer := ADrawer;
   FSeries := ASeries;
   FDomainExclusions := ADomainExclusions;
   FCalc := ACalc;
@@ -325,11 +324,12 @@ begin
     end;
 end;
 
-procedure TDrawFuncHelper.DrawFunction;
+procedure TDrawFuncHelper.DrawFunction(ADrawer: IChartDrawer);
 var
   hint: Integer;
   xg, xa, xg1, xa1, xmax: Double;
 begin
+  FDrawer := ADrawer;
   with FSeries do
     if IsRotated then begin
       xg := FExtent.a.Y;
@@ -545,9 +545,9 @@ begin
   else
     exit;
   ADrawer.Pen := Pen;
-  with TDrawFuncHelper.Create(ADrawer, Self, DomainExclusions, calc, Step) do
+  with TDrawFuncHelper.Create(Self, DomainExclusions, calc, Step) do
     try
-      DrawFunction;
+      DrawFunction(ADrawer);
     finally
       Free;
     end;
@@ -566,7 +566,7 @@ begin
   AResults.FIndex := -1;
   if not Assigned(OnCalculate) then exit;
 
-  with TDrawFuncHelper.Create(nil, Self, DomainExclusions, @DoCalculate, Step) do
+  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
     try
       Result := GetNearestPoint(AParams, AResults);
     finally
@@ -807,9 +807,9 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
     ADrawer.Pen := p;
     de := PrepareIntervals;
     try
-      with TDrawFuncHelper.Create(ADrawer, Self, de, @Calculate, Step) do
+      with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
         try
-          DrawFunction;
+          DrawFunction(ADrawer);
         finally
           Free;
         end;
@@ -862,7 +862,7 @@ begin
     exit(false);
   de := PrepareIntervals;
   try
-    with TDrawFuncHelper.Create(nil, Self, de, @Calculate, Step) do
+    with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
       try
         Result := GetNearestPoint(AParams, AResults);
       finally
