@@ -162,6 +162,7 @@ type
 
     function Calculate(AX: Double): Double;
     procedure PrepareCoeffs;
+    function PrepareIntervals: TIntervalList;
     procedure SetBadDataPen(AValue: TBadDataChartPen);
     procedure SetOptions(AValue: TCubicSplineOptions);
   protected
@@ -175,6 +176,9 @@ type
 
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
+    function GetNearestPoint(
+      const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
   published
     property Active default true;
     property AxisIndexX;
@@ -801,12 +805,8 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
       p := Pen;
     if not p.Visible then exit;
     ADrawer.Pen := p;
-    de := TIntervalList.Create;
+    de := PrepareIntervals;
     try
-      if not (csoExtrapolateLeft in Options) then
-        de.AddRange(NegInfinity, FX[0]);
-      if not (csoExtrapolateRight in Options) then
-        de.AddRange(FX[High(FX)], SafeInfinity);
       with TDrawFuncHelper.Create(ADrawer, Self, de, @Calculate, Step) do
         try
           DrawFunction;
@@ -852,6 +852,27 @@ begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
+function TCubicSplineSeries.GetNearestPoint(
+  const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
+var
+  de: TIntervalList;
+begin
+  if FUnorderedX and not (csoDrawUnorderedX in Options) then
+    exit(false);
+  de := PrepareIntervals;
+  try
+    with TDrawFuncHelper.Create(nil, Self, de, @Calculate, Step) do
+      try
+        Result := GetNearestPoint(AParams, AResults);
+      finally
+        Free;
+      end;
+  finally
+    de.Free;
+  end;
+end;
+
 procedure TCubicSplineSeries.PrepareCoeffs;
 var
   i, n: Integer;
@@ -877,6 +898,20 @@ begin
   ipfisn(n - 1, FX[0], FY[0], FCoeff[0], i);
   if i > 1 then
     FCoeff := nil;
+end;
+
+function TCubicSplineSeries.PrepareIntervals: TIntervalList;
+begin
+  Result := TIntervalList.Create;
+  try
+    if not (csoExtrapolateLeft in Options) then
+      Result.AddRange(NegInfinity, FX[0]);
+    if not (csoExtrapolateRight in Options) then
+      Result.AddRange(FX[High(FX)], SafeInfinity);
+  except
+    Result.Free;
+    raise;
+  end;
 end;
 
 procedure TCubicSplineSeries.SetBadDataPen(AValue: TBadDataChartPen);
