@@ -5,12 +5,13 @@ unit TADataPointsEditor;
 interface
 
 uses
-  ButtonPanel, Classes, ExtCtrls, Grids, Menus, SysUtils, FileUtil, Forms,
+  ButtonPanel, Classes, ExtCtrls, Grids, Menus, SysUtils, Forms,
   Controls, Graphics, Dialogs;
 
 type
   TDataPointsEditorForm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    cdItemColor: TColorDialog;
     miInsertRow: TMenuItem;
     miDeleteRow: TMenuItem;
     pmRows: TPopupMenu;
@@ -18,6 +19,10 @@ type
     procedure miDeleteRowClick(Sender: TObject);
     procedure miInsertRowClick(Sender: TObject);
     procedure pmRowsPopup(Sender: TObject);
+    procedure sgDataButtonClick(ASender: TObject; ACol, ARow: Integer);
+    procedure sgDataDrawCell(
+      ASender: TObject; ACol, ARow: Integer; ARect: TRect;
+      AState: TGridDrawState);
   strict private
     FCurrentRow: Integer;
     FDataPoints: TStrings;
@@ -32,7 +37,7 @@ procedure Register;
 implementation
 
 uses
-  Math, PropEdits, TASources;
+  LCLIntf, Math, PropEdits, TAChartUtils, TASources;
 
 {$R *.lfm}
 
@@ -123,6 +128,31 @@ begin
   if not InRange(FCurrentRow, 1, sgData.RowCount - 1) then
     Abort;
   sgData.Row := FCurrentRow;
+end;
+
+procedure TDataPointsEditorForm.sgDataButtonClick(
+  ASender: TObject; ACol, ARow: Integer);
+begin
+  Unused(ASender);
+  if (ARow < 1) or (ACol <> FYCount + 2) then exit;
+  cdItemColor.Color := StrToIntDef(sgData.Cells[ACol, ARow], clRed);
+  if not cdItemColor.Execute then exit;
+  sgData.Cells[ACol, ARow] := IntToColorHex(cdItemColor.Color);
+end;
+
+procedure TDataPointsEditorForm.sgDataDrawCell(
+  ASender: TObject; ACol, ARow: Integer; ARect: TRect; AState: TGridDrawState);
+var
+  c: Integer;
+begin
+  Unused(ASender, AState);
+  if (ARow < 1) or (ACol <> FYCount + 2) then exit;
+  if not TryStrToInt(sgData.Cells[ACol, ARow], c) then exit;
+  sgData.Canvas.Pen.Color := clBlack;
+  sgData.Canvas.Brush.Color := c;
+  InflateRect(ARect, -2, -2);
+  ARect.Left := ARect.Right - 12;
+  sgData.Canvas.Rectangle(ARect);
 end;
 
 { TDataPointsPropertyEditor }

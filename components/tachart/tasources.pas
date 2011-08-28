@@ -265,8 +265,7 @@ begin
       Result += Format('|%g', [Y], fs);
     for i := 0 to High(YList) do
       Result += Format('|%g', [YList[i]], fs);
-    Result += Format('|%s|%s',
-      [IfThen(Color = clTAColor, '?', '$' + IntToHex(Color, 6)), Text]);
+    Result += Format('|%s|%s', [IntToColorHex(Color), Text]);
   end;
 end;
 

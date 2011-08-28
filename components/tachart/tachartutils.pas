@@ -249,6 +249,7 @@ procedure Exchange(var A, B: String); overload; inline;
 procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
+function IntToColorHex(AColor: Integer): String; inline;
 
 function OrientToRad(AOrient: Integer): Double; inline;
 
@@ -371,6 +372,14 @@ begin
   ACoeff := EnsureRange(ACoeff, 0.0, 1.0);
   for i := 1 to 4 do
     r[i] := Round(c1[i]  + (c2[i] - c1[i]) * ACoeff);
+end;
+
+function IntToColorHex(AColor: Integer): String;
+begin
+  if AColor = clTAColor then
+    Result := '?'
+  else
+    Result := '$' + IntToHex(AColor, 6);
 end;
 
 function OrientToRad(AOrient: Integer): Double;
