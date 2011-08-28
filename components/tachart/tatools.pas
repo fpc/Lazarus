@@ -293,11 +293,14 @@ type
     property Margins: TChartMargins read FMargins write FMargins;
   end;
 
+  TChartDistanceMode = (cdmXY, cdmOnlyX, cdmOnlyY);
+
   { TDataPointTool }
 
   TDataPointTool = class(TChartTool)
   strict private
     FAffectedSeries: String;
+    FDistanceMode: TChartDistanceMode;
     FGrabRadius: Integer;
     function ParseAffectedSeries: TBooleanDynArray;
   strict protected
@@ -313,6 +316,8 @@ type
     property Series: TBasicChartSeries read FSeries;
   published
     property AffectedSeries: String read FAffectedSeries write FAffectedSeries;
+    property DistanceMode: TChartDistanceMode
+      read FDistanceMode write FDistanceMode default cdmXY;
     property GrabRadius: Integer read FGrabRadius write FGrabRadius default 4;
   end;
 
@@ -1277,12 +1282,15 @@ begin
 end;
 
 procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
+const
+  DIST_FUNCS: array [TChartDistanceMode] of TPointDistFunc = (
+    @PointDist, @PointDistX, @PointDistY);
 var
   s, bestS: TCustomChartSeries;
   p: TNearestPointParams;
   cur, best: TNearestPointResults;
 begin
-  p.FDistFunc := @PointDist;
+  p.FDistFunc := DIST_FUNCS[DistanceMode];
   p.FPoint := APoint;
   p.FRadius := GrabRadius;
   best.FDist := MaxInt;
