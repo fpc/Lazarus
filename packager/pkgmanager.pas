@@ -2699,7 +2699,7 @@ var
       if (RegComp<>nil) then begin
         if RegComp.ComponentClass<>nil then
           NewUnitName:=GetClassUnitName(RegComp.ComponentClass);
-        //DebugLn(['CollectNeededUnitnamesAndPackages AAA1 NewUnitName=',NewUnitName]);
+        //DebugLn(['CollectNeededUnitnamesAndPackages NewUnitName=',NewUnitName]);
         if NewUnitName='' then
           NewUnitName:=RegComp.GetUnitName;
       end else begin
@@ -2712,15 +2712,14 @@ var
         UnitNames.Add(NewUnitName);
         // find package
         PkgFile:=PackageGraph.FindUnitInAllPackages(NewUnitName,true);
-        //DebugLn(['CollectNeededUnitnamesAndPackages AAA2 PkgFile=',PkgFile<>nil]);
-        if (PkgFile=nil) and (RegComp is TPkgComponent) then begin
+        //DebugLn(['CollectNeededUnitnamesAndPackages PkgFile=',PkgFile<>nil]);
+        if (PkgFile=nil) and (RegComp is TPkgComponent) then
           PkgFile:=TPkgComponent(RegComp).PkgFile;
-          if (PkgFile<>nil) then begin
-            APackage:=PkgFile.LazPackage;
-            APackage:=TLazPackage(RedirectPackageDependency(APackage));
-            if (Packages.IndexOf(APackage)<0) then
-              Packages.Add(APackage);
-          end;
+        if (PkgFile<>nil) then begin
+          APackage:=PkgFile.LazPackage;
+          APackage:=TLazPackage(RedirectPackageDependency(APackage));
+          if (APackage<>nil) and (Packages.IndexOf(APackage)<0) then
+            Packages.Add(APackage);
         end;
       end;
     end;
@@ -2915,15 +2914,16 @@ begin
           CurUnitName:='';
           if CurRegisteredComponent.ComponentClass<>nil then
             CurUnitName:=GetClassUnitName(CurRegisteredComponent.ComponentClass);
-          //DebugLn(['TPkgManager.GetMissingDependenciesForUnit AAA1 CurUnitName=',CurUnitName]);
+          //DebugLn(['TPkgManager.GetMissingDependenciesForUnit CurUnitName=',CurUnitName]);
           if CurUnitName='' then
             CurUnitName:=CurRegisteredComponent.GetUnitName;
           PkgFile:=PackageGraph.FindUnitInAllPackages(CurUnitName,true);
-          //DebugLn(['TPkgManager.GetMissingDependenciesForUnit AAA2 PkgFile=',PkgFile<>nil]);
+          //DebugLn(['TPkgManager.GetMissingDependenciesForUnit PkgFile=',PkgFile<>nil]);
           if PkgFile=nil then
             PkgFile:=TPkgComponent(CurRegisteredComponent).PkgFile;
           if PkgFile<>nil then begin
             RequiredPackage:=PkgFile.LazPackage;
+            RequiredPackage:=TLazPackage(RedirectPackageDependency(RequiredPackage));
             if (RequiredPackage<>nil)
             and (RequiredPackage<>UnitOwner)
             and (FindCompatibleDependencyInList(FirstDependency,pdlRequires,
