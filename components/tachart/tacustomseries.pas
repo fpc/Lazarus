@@ -228,8 +228,6 @@ type
     procedure UpdateMinXRange;
 
     property Pointer: TSeriesPointer read FPointer write SetPointer;
-    property UseReticule: Boolean
-      read FUseReticule write SetUseReticule default false;
   public
     destructor Destroy; override;
   public
@@ -240,6 +238,8 @@ type
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
     property MarkPositions: TLinearMarkPositions
       read FMarkPositions write SetMarkPositions default lmpOutside;
+    property UseReticule: Boolean
+      read FUseReticule write SetUseReticule default false;
   end;
 
 implementation
@@ -914,7 +914,7 @@ var
   dist, i: Integer;
   pt: TPoint;
 begin
-  Result := UseReticule and (Count > 0);
+  Result := Count > 0;
   AResults.FDist := MaxInt;
   for i := 0 to Count - 1 do begin
     // Since axis transformation may be non-linear, the distance should be

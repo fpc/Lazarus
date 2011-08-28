@@ -1072,6 +1072,7 @@ begin
   p.FRadius := Trunc(Sqrt(MaxInt));
   for s in CustomSeries(FChart) do
     if
+      (not (s is TBasicPointSeries) or TBasicPointSeries(s).UseReticule) and
       s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) and
       (cur.FDist < best.FDist)
     then begin
