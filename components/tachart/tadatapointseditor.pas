@@ -82,15 +82,18 @@ var
 begin
   FYCount := AYCount;
   FDataPoints := ADataPoints;
-  sgData.ColCount := AYCount + 4;
   sgData.RowCount := Max(ADataPoints.Count + 1, 2);
-  sgData.Cells[0, 0] := 'No.';
-  sgData.Cells[1, 0] := 'X';
-  sgData.Cells[2, 0] := 'Y';
-  for i := 2 to AYCount do
-    sgData.Cells[i + 1, 0] := 'Y' + IntToStr(i);
-  sgData.Cells[AYCount + 2, 0] := 'Color';
-  sgData.Cells[AYCount + 3, 0] := 'Text';
+  for i := sgData.Columns.Count - 1 downto 0 do
+    with sgData.Columns[i].Title do
+      if (Caption[1] = 'Y') and (Caption <> 'Y') then
+        sgData.Columns.Delete(i);
+  for i := 2 to AYCount do begin
+    with sgData.Columns.Add do begin
+      Assign(sgData.Columns[1]);
+      Title.Caption := 'Y' + IntToStr(i);
+      Index := i;
+    end;
+  end;
   for i := 0 to ADataPoints.Count - 1 do
     with sgData.Rows[i + 1] do begin
       Delimiter := '|';
@@ -105,9 +108,8 @@ begin
     sgData.Rows[1].Clear;
     exit;
   end;
-  if InRange(FCurrentRow, 1, sgData.RowCount - 1) then begin
+  if InRange(FCurrentRow, 1, sgData.RowCount - 1) then
     sgData.DeleteRow(FCurrentRow);
-  end;
 end;
 
 procedure TDataPointsEditorForm.miInsertRowClick(Sender: TObject);

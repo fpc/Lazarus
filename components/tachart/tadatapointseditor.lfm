@@ -13,9 +13,49 @@ object DataPointsEditorForm: TDataPointsEditorForm
     Top = 0
     Width = 357
     Align = alClient
+    AutoFillColumns = True
+    Columns = <    
+      item
+        Alignment = taRightJustify
+        Title.Alignment = taCenter
+        Title.Caption = 'X'
+        Title.Font.Style = [fsBold]
+        Title.PrefixOption = poNone
+        Width = 72
+      end    
+      item
+        Alignment = taRightJustify
+        Title.Alignment = taCenter
+        Title.Caption = 'Y'
+        Title.Font.Style = [fsBold]
+        Title.PrefixOption = poNone
+        Width = 72
+      end    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Color'
+        Title.Font.Style = [fsBold]
+        Title.PrefixOption = poNone
+        Width = 72
+      end    
+      item
+        Title.Alignment = taCenter
+        Title.Caption = 'Text'
+        Title.Font.Style = [fsBold]
+        Title.PrefixOption = poNone
+        Width = 73
+      end>
+    DefaultColWidth = 32
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowMoving, goEditing, goAutoAddRows, goRowSelect, goAlwaysShowEditor, goSmoothScroll, goFixedRowNumbering]
     PopupMenu = pmRows
     TabOrder = 0
+    ColWidths = (
+      32
+      72
+      72
+      72
+      73
+    )
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
