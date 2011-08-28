@@ -124,6 +124,7 @@ type
     function GetResourceSource(const ResourceName: string): string; virtual;
     procedure Release;
     procedure Reference;
+    function CheckOwner(Quiet: boolean): TModalResult; virtual;
     function CreateSource(const Filename, SourceName,
                           ResourceName: string): string; virtual;
     procedure UpdateDefaultPascalFileExtension(const DefPasExt: string); virtual;
@@ -177,6 +178,7 @@ type
                                 ResourceName: string): string; virtual;
     function GetImplementationSource(const Filename, SourceName,
                                      ResourceName: string): string; virtual;
+    function CheckOwner(Quiet: boolean): TModalResult; override;
     class function CompilerOptionsToUnitDirectives(CompOpts: TLazCompilerOptions): string;
   end;
 
@@ -229,7 +231,7 @@ function FileDescriptorText: TProjectFileDescriptor;
 
 type
   TCheckCompOptsAndMainSrcForNewUnitEvent =
-    procedure(CompOpts: TLazCompilerOptions) of object;
+    function(CompOpts: TLazCompilerOptions): TModalResult of object;
 var
   CheckCompOptsAndMainSrcForNewUnitEvent: TCheckCompOptsAndMainSrcForNewUnitEvent; // set by the IDE
 type
@@ -717,6 +719,11 @@ begin
   inc(FReferenceCount);
 end;
 
+function TProjectFileDescriptor.CheckOwner(Quiet: boolean): TModalResult;
+begin
+  Result:=mrOk;
+end;
+
 function TProjectFileDescriptor.CreateSource(const Filename, SourceName,
   ResourceName: string): string;
 begin
@@ -802,6 +809,18 @@ begin
   Result:='';
 end;
 
+function TFileDescPascalUnit.CheckOwner(Quiet: boolean): TModalResult;
+begin
+  Result:=inherited CheckOwner(Quiet);
+  if Result<>mrOK then exit;
+  if Owner=nil then exit;
+  if Assigned(CheckCompOptsAndMainSrcForNewUnitEvent) then begin
+    if Owner is TLazProject then
+      Result:=CheckCompOptsAndMainSrcForNewUnitEvent(
+                                         TLazProject(Owner).LazCompilerOptions);
+  end;
+end;
+
 class function TFileDescPascalUnit.CompilerOptionsToUnitDirectives(
   CompOpts: TLazCompilerOptions): string;
 var
@@ -809,8 +828,6 @@ var
 begin
   Result:='{$mode objfpc}{$H+}';
   if CompOpts=nil then exit;
-  if Assigned(CheckCompOptsAndMainSrcForNewUnitEvent) then
-    CheckCompOptsAndMainSrcForNewUnitEvent(CompOpts);
   SyntaxMode:=CompOpts.SyntaxMode;
   if SyntaxMode<>'' then begin
     Result:='{$mode '+lowercase(SyntaxMode)+'}';

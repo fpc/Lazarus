@@ -60,12 +60,12 @@ type
     property MainAnsistring: char read FMainAnsistring write FMainAnsistring;
   end;
 
-procedure CheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions);
+function CheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
 function GetIgnorePathForCompOptsAndMainSrcDiffer(CompOpts: TLazCompilerOptions): string;
 
 implementation
 
-procedure CheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions);
+function CheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
 var
   ProjCompOpts: TProjectCompilerOptions;
   MainUnit: TUnitInfo;
@@ -78,6 +78,7 @@ var
   Dlg: TCheckCompOptsForNewUnitDialog;
   IgnoreIdentifier: String;
 begin
+  Result:=mrOK;
   if CompOpts is TProjectCompilerOptions then
   begin
     ProjCompOpts:=TProjectCompilerOptions(CompOpts);
@@ -126,7 +127,8 @@ begin
         Dlg.MainMode:=Mode;
         Dlg.MainAnsistring:=AnsistringMode;
         Dlg.UpdateOptions;
-        Dlg.ShowModal;
+        if Dlg.ShowModal<>mrOk then
+          Result:=mrCancel;
       finally
         Dlg.Free;
       end;

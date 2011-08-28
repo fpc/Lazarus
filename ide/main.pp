@@ -559,7 +559,8 @@ type
 
     // compiler options dialog events
     procedure OnCompilerOptionsDialogTest(Sender: TObject);
-    procedure OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions);
+    function OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions
+        ): TModalResult;
 
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
@@ -3037,12 +3038,12 @@ begin
   ShowCleanDirectoryDialog(Project1.ProjectDirectory,GlobalMacroList);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileNew(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookFileNew(Sender: TObject);
 begin
   mnuNewFormClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileClose(Sender: TObject;
+procedure TMainIDE.OnSrcNotebookFileClose(Sender: TObject;
   InvertedClose: boolean);
 var
   PageIndex: LongInt;
@@ -3126,27 +3127,27 @@ begin
     mnuCloseClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileOpen(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookFileOpen(Sender: TObject);
 begin
   mnuOpenClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNoteBookFileOpenAtCursor(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookFileOpenAtCursor(Sender: TObject);
 begin
   mnuOpenFileAtCursorClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileSave(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookFileSave(Sender: TObject);
 begin
   mnuSaveClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookFileSaveAs(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookFileSaveAs(Sender: TObject);
 begin
   mnuSaveAsClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNoteBookFindDeclaration(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookFindDeclaration(Sender: TObject);
 begin
   mnuFindDeclarationClicked(Sender);
 end;
@@ -3164,7 +3165,7 @@ begin
   Abort:=not DoShowCodeContext(JumpToError);
 end;
 
-Procedure TMainIDE.OnSrcNotebookSaveAll(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookSaveAll(Sender: TObject);
 begin
   mnuSaveAllClicked(Sender);
 end;
@@ -3969,17 +3970,17 @@ end;
 
 {------------------------------------------------------------------------------}
 
-Procedure TMainIDE.mnuViewUnitsClicked(Sender: TObject);
+procedure TMainIDE.mnuViewUnitsClicked(Sender: TObject);
 begin
   DoViewUnitsAndForms(false);
 end;
 
-Procedure TMainIDE.mnuViewFormsClicked(Sender: TObject);
+procedure TMainIDE.mnuViewFormsClicked(Sender: TObject);
 Begin
   DoViewUnitsAndForms(true);
 end;
 
-Procedure TMainIDE.mnuViewUnitDependenciesClicked(Sender: TObject);
+procedure TMainIDE.mnuViewUnitDependenciesClicked(Sender: TObject);
 begin
   DoViewUnitDependencies(true);
 end;
@@ -3989,17 +3990,17 @@ begin
   DoViewUnitInfo;
 end;
 
-Procedure TMainIDE.mnuViewCodeExplorerClick(Sender: TObject);
+procedure TMainIDE.mnuViewCodeExplorerClick(Sender: TObject);
 begin
   DoShowCodeExplorer(true);
 end;
 
-Procedure TMainIDE.mnuViewCodeBrowserClick(Sender: TObject);
+procedure TMainIDE.mnuViewCodeBrowserClick(Sender: TObject);
 begin
   DoShowCodeBrowser(true);
 end;
 
-Procedure TMainIDE.mnuViewComponentsClick(Sender: TObject);
+procedure TMainIDE.mnuViewComponentsClick(Sender: TObject);
 begin
   DoShowComponentList(true);
 end;
@@ -4009,18 +4010,18 @@ begin
   DoShowRestrictionBrowser(true);
 end;
 
-Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
+procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
 begin
   // it was already visible, but user does not see it, try to move in view
   DoShowMessagesView;
 end;
 
-Procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);
+procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);
 Begin
   ShowSearchResultView(true);
 End;
 
-Procedure TMainIDE.mnuNewProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuNewProjectClicked(Sender: TObject);
 var
   NewProjectDesc: TProjectDescriptor;
 Begin
@@ -4068,7 +4069,7 @@ Begin
   end;
 end;
 
-Procedure TMainIDE.mnuOpenProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuOpenProjectClicked(Sender: TObject);
 var
   OpenDialog:TOpenDialog;
   AFileName: string;
@@ -4203,7 +4204,7 @@ begin
   end;
 end;
 
-Procedure TMainIDE.mnuSaveProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuSaveProjectClicked(Sender: TObject);
 Begin
   DoSaveProject([]);
 end;
@@ -4336,7 +4337,7 @@ begin
   end;
 end;
 
-Procedure TMainIDE.mnuCompileProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuCompileProjectClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
@@ -4349,7 +4350,7 @@ Begin
     DoBuildProject(crCompile,[]);
 end;
 
-Procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
 Begin
   DoBuildProject(crBuild,[pbfCleanCompile,pbfCompileDependenciesClean]);
 end;
@@ -4375,12 +4376,12 @@ begin
   DoBuildProject(crBuild,[]);
 end;
 
-Procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
 Begin
   DoAbortBuild;
 end;
 
-Procedure TMainIDE.mnuRunProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuRunProjectClicked(Sender: TObject);
 var
   SrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
@@ -4392,22 +4393,22 @@ begin
     DoRunProject;
 end;
 
-Procedure TMainIDE.mnuPauseProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuPauseProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoPauseProject;
 end;
 
-Procedure TMainIDE.mnuShowExecutionPointClicked(Sender: TObject);
+procedure TMainIDE.mnuShowExecutionPointClicked(Sender: TObject);
 begin
   DebugBoss.DoShowExecutionPoint;
 end;
 
-Procedure TMainIDE.mnuStepIntoProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuStepIntoProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStepIntoProject;
 end;
 
-Procedure TMainIDE.mnuStepOverProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuStepOverProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStepOverProject;
 end;
@@ -4427,12 +4428,12 @@ begin
   DebugBoss.DoStepOutProject;
 end;
 
-Procedure TMainIDE.mnuRunToCursorProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuRunToCursorProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoRunToCursor;
 end;
 
-Procedure TMainIDE.mnuStopProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuStopProjectClicked(Sender: TObject);
 begin
   DebugBoss.DoStopProject;
 end;
@@ -5151,6 +5152,7 @@ var
 begin
   //debugln('TMainIDE.CreateNewCodeBuffer START NewFilename=',NewFilename,' ',Descriptor.DefaultFilename,' ',Descriptor.ClassName);
   NewUnitName:='';
+  NewCodeBuffer:=nil;
   if NewFilename='' then begin
     // create a new unique filename
     SearchFlags:=[siffCheckAllProjects];
@@ -8513,6 +8515,10 @@ begin
     AProject:=TProject(NewOwner)
   else
     AProject:=Project1;
+
+  // check if the new file fits into the project
+  Result:=NewFileDescriptor.CheckOwner(nfQuiet in NewFlags);
+  if Result<>mrOk then exit;
 
   // create new codebuffer and apply naming conventions
   Result:=CreateNewCodeBuffer(NewFileDescriptor,NewOwner,NewFilename,NewBuffer,
@@ -14944,10 +14950,10 @@ begin
   Result:=DoJumpToCodePos(nil,nil,CodeBuffer,NewX,NewY,NewTopLine,AddJumpPoint, True, MarkLine);
 end;
 
-function TMainIDE.DoJumpToCodePos(
-  ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
-  NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-  AddJumpPoint: boolean; FocusEditor: boolean; MarkLine: Boolean): TModalResult;
+function TMainIDE.DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo; NewSource: TCodeBuffer; NewX, NewY,
+  NewTopLine: integer; AddJumpPoint: boolean; FocusEditor: Boolean;
+  MarkLine: Boolean): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
   AnEditorInfo: TUnitEditorInfo;
@@ -15892,7 +15898,7 @@ begin
   SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
-Procedure TMainIDE.OnSrcNotebookEditorActived(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookEditorActived(Sender: TObject);
 var
   ActiveUnitInfo: TUnitInfo;
   ASrcEdit: TSourceEditor;
@@ -16709,7 +16715,7 @@ begin
   DoViewTabOrderEditor(True);
 end;
 
-Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;
+procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;
   ATopLine: integer; AEditor: TSourceEditor; DeleteForwardHistory: boolean);
 {off $DEFINE VerboseJumpHistory}
 var
@@ -16740,13 +16746,14 @@ begin
   {$ENDIF}
 end;
 
-Procedure TMainIDE.OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
 begin
   Project1.JumpHistory.DeleteLast;
 end;
 
-Procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
-  var NewTopLine: integer; var DestEditor: TSourceEditor; JumpAction: TJumpHistoryAction);
+procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
+  var NewTopLine: integer; var DestEditor: TSourceEditor;
+  JumpAction: TJumpHistoryAction);
 { How the HistoryIndex works:
 
   When the user jumps around each time an item is added to the history list
@@ -16887,7 +16894,7 @@ begin
   ActiveUnitInfo.UserReadOnly:=ActiveSourceEditor.ReadOnly;
 end;
 
-Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender: TObject);
 begin
   DoViewJumpHistory(true);
 end;
@@ -17358,10 +17365,10 @@ begin
   DoTestCompilerSettings(Sender as TCompilerOptions);
 end;
 
-procedure TMainIDE.OnCheckCompOptsAndMainSrcForNewUnit(
-  CompOpts: TLazCompilerOptions);
+function TMainIDE.OnCheckCompOptsAndMainSrcForNewUnit(
+  CompOpts: TLazCompilerOptions): TModalResult;
 begin
-  CheckCompOptsAndMainSrcForNewUnit(CompOpts);
+  Result:=CheckCompOptsAndMainSrcForNewUnit(CompOpts);
 end;
 
 procedure TMainIDE.ProjInspectorOpen(Sender: TObject);
