@@ -1,0 +1,49 @@
+object DataPointsEditorForm: TDataPointsEditorForm
+  Left = 418
+  Height = 303
+  Top = 235
+  Width = 357
+  Caption = 'DataPoints editor'
+  ClientHeight = 303
+  ClientWidth = 357
+  LCLVersion = '0.9.31'
+  object sgData: TStringGrid
+    Left = 0
+    Height = 257
+    Top = 0
+    Width = 357
+    Align = alClient
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowMoving, goEditing, goAutoAddRows, goRowSelect, goAlwaysShowEditor, goSmoothScroll, goFixedRowNumbering]
+    PopupMenu = pmRows
+    TabOrder = 0
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 263
+    Width = 345
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object pmRows: TPopupMenu
+    OnPopup = pmRowsPopup
+    left = 193
+    top = 124
+    object miInsertRow: TMenuItem
+      Caption = 'Insert row'
+      OnClick = miInsertRowClick
+    end
+    object miDeleteRow: TMenuItem
+      Caption = 'Delete row'
+      OnClick = miDeleteRowClick
+    end
+  end
+end
