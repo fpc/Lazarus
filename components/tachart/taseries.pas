@@ -669,6 +669,7 @@ begin
     AResults.FValue.X := FChart.XImageToGraph(AParams.FPoint.X);
     AResults.FImg.Y := FChart.YGraphToImage(AxisToGraphX(Position));
   end;
+  AResults.FDist := AParams.FDistFunc(AParams.FPoint, AResults.FImg);
   SavePosToCoord(AResults.FValue);
 end;
 

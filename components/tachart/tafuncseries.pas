@@ -507,6 +507,7 @@ begin
   end;
   OnCalculate(AResults.FValue.X, AResults.FValue.Y);
   AResults.FImg := ParentChart.GraphToImage(AxisToGraph(AResults.FValue));
+  AResults.FDist := AParams.FDistFunc(AParams.FPoint, AResults.FImg);
   Result := true;
 end;
 

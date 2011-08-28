@@ -37,6 +37,7 @@ type
   end;
 
   TNearestPointResults = record
+    FDist: Integer;
     FImg: TPoint;
     FIndex: Integer;
     FValue: TDoublePoint;
@@ -353,8 +354,9 @@ function TCustomChartSeries.GetNearestPoint(
   out AResults: TNearestPointResults): Boolean;
 begin
   Unused(AParams);
-  AResults.FIndex := 0;
+  AResults.FDist := MaxInt;
   AResults.FImg := Point(0, 0);
+  AResults.FIndex := 0;
   AResults.FValue := ZeroDoublePoint;
   Result := false;
 end;
@@ -908,20 +910,19 @@ function TBasicPointSeries.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 var
-  dist, minDist, i: Integer;
+  dist, i: Integer;
   pt: TPoint;
 begin
   Result := UseReticule and (Count > 0);
-  minDist := MaxInt;
+  AResults.FDist := MaxInt;
   for i := 0 to Count - 1 do begin
     // Since axis transformation may be non-linear, the distance should be
     // measured in screen coordinates. With high zoom ratios this may lead to
     // an integer overflow, so ADistFunc should use saturation arithmetics.
     pt := Point(GetXImgValue(i), GetYImgValue(i));
     dist := AParams.FDistFunc(AParams.FPoint, pt);
-    if dist >= minDist then
-      continue;
-    minDist := dist;
+    if dist >= AResults.FDist then continue;
+    AResults.FDist := dist;
     AResults.FIndex := i;
     AResults.FImg := pt;
     AResults.FValue := DoublePoint(GetXValue(i), GetYValue(i));

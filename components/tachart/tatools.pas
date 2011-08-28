@@ -1063,27 +1063,24 @@ const
 var
   cur, best: TNearestPointResults;
   p: TNearestPointParams;
-  d, minDist: Double;
   s, bestS: TCustomChartSeries;
 begin
   if FChart.ReticuleMode = rmNone then exit;
-  minDist := SafeInfinity;
+  best.FDist := MaxInt;
   p.FDistFunc := DIST_FUNCS[FChart.ReticuleMode];
   p.FPoint := APoint;
   for s in CustomSeries(FChart) do
-    if s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) then begin
-      d := p.FDistFunc(APoint, cur.FImg);
-      if d < minDist then begin
-        bestS := s;
-        best := cur;
-        minDist := d;
-      end;
+    if
+      s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) and
+      (cur.FDist < best.FDist)
+    then begin
+      bestS := s;
+      best := cur;
     end;
-  if not IsInfinite(minDist) and (best.FImg <> FChart.ReticulePos) then begin
-    FChart.ReticulePos := best.FImg;
-    if Assigned(FChart.OnDrawReticule) then
-      FChart.OnDrawReticule(FChart, bestS.Index, best.FIndex, best.FValue);
-  end;
+  if (best.FDist = MaxInt) or (best.FImg = FChart.ReticulePos) then exit;
+  FChart.ReticulePos := best.FImg;
+  if Assigned(FChart.OnDrawReticule) then
+    FChart.OnDrawReticule(FChart, bestS.Index, best.FIndex, best.FValue);
 end;
 
 { TZoomClickTool }
@@ -1279,25 +1276,23 @@ end;
 
 procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
 var
-  d, bestd: Integer;
   s, bests: TCustomChartSeries;
   p: TNearestPointParams;
   cur, best: TNearestPointResults;
 begin
-  bestd := MaxInt;
-  bests := nil;
   p.FDistFunc := @PointDist;
   p.FPoint := APoint;
-  for s in CustomSeries(FChart, ParseAffectedSeries) do begin
-    if not s.GetNearestPoint(p, cur) then continue;
-    d := PointDist(APoint, cur.FImg);
-    if d < bestd then begin
-      bestd := d;
+  best.FDist := MaxInt;
+  bests := nil;
+  for s in CustomSeries(FChart, ParseAffectedSeries) do
+    if
+      s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) and
+      (cur.FDist < best.FDist)
+    then begin
       bests := s;
       best := cur;
     end;
-  end;
-  if (bests = nil) or (bestd > Sqr(GrabRadius)) then exit;
+  if (bests = nil) or (best.FDist > Sqr(GrabRadius)) then exit;
   FSeries := bests;
   FPointIndex := best.FIndex;
   FNearestGraphPoint := FChart.ImageToGraph(best.FImg);
