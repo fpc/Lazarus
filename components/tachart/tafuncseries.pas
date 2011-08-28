@@ -82,8 +82,8 @@ type
 
     procedure Draw(ADrawer: IChartDrawer); override;
     function GetNearestPoint(
-      ADistFunc: TPointDistFunc; const APoint: TPoint; out AIndex: Integer;
-      out AImg: TPoint; out AValue: TDoublePoint): Boolean; override;
+      const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
     function IsEmpty: Boolean; override;
   public
     property DomainExclusions: TIntervalList read FDomainExclusions;
@@ -489,25 +489,24 @@ begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
-function TFuncSeries.GetNearestPoint(ADistFunc: TPointDistFunc;
-  const APoint: TPoint; out AIndex: Integer; out AImg: TPoint;
-  out AValue: TDoublePoint): Boolean;
+function TFuncSeries.GetNearestPoint(
+  const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
 var
   t: Double;
   dummy: Integer = 0;
 begin
-  Unused(ADistFunc);
   Result := false;
-  AIndex := -1;
+  AResults.FIndex := -1;
   if OnCalculate = nil then exit;
   // Instead of true nearest point, just calculate the function at the cursor.
-  with GraphToAxis(ParentChart.ImageToGraph(APoint)) do begin
+  with GraphToAxis(ParentChart.ImageToGraph(AParams.FPoint)) do begin
     t := X;
     if DomainExclusions.Intersect(t, t, dummy) then exit;
-    AValue.X := X;
+    AResults.FValue.X := X;
   end;
-  OnCalculate(AValue.X, AValue.Y);
-  AImg := ParentChart.GraphToImage(AxisToGraph(AValue));
+  OnCalculate(AResults.FValue.X, AResults.FValue.Y);
+  AResults.FImg := ParentChart.GraphToImage(AxisToGraph(AResults.FValue));
   Result := true;
 end;
 

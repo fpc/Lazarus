@@ -1061,34 +1061,28 @@ const
   DIST_FUNCS: array [TReticuleMode] of TPointDistFunc = (
     nil, @PointDistX, @PointDistY, @PointDist);
 var
-  cur, best: record
-    pointIndex: Integer;
-    retPos: TPoint;
-    value: TDoublePoint;
-  end;
+  cur, best: TNearestPointResults;
+  p: TNearestPointParams;
   d, minDist: Double;
-  df: TPointDistFunc;
   s, bestS: TCustomChartSeries;
 begin
   if FChart.ReticuleMode = rmNone then exit;
   minDist := SafeInfinity;
-  df := DIST_FUNCS[FChart.ReticuleMode];
+  p.FDistFunc := DIST_FUNCS[FChart.ReticuleMode];
+  p.FPoint := APoint;
   for s in CustomSeries(FChart) do
-    if
-      s.GetNearestPoint(df, APoint, cur.pointIndex, cur.retPos, cur.value) and
-      PtInRect(FChart.ClipRect, cur.retPos)
-    then begin
-       d := df(APoint, cur.retPos);
-       if d < minDist then begin
-         bestS := s;
-         best := cur;
-         minDist := d;
-       end;
+    if s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) then begin
+      d := p.FDistFunc(APoint, cur.FImg);
+      if d < minDist then begin
+        bestS := s;
+        best := cur;
+        minDist := d;
+      end;
     end;
-  if not IsInfinite(minDist) and (best.retPos <> FChart.ReticulePos) then begin
-    FChart.ReticulePos := best.retPos;
+  if not IsInfinite(minDist) and (best.FImg <> FChart.ReticulePos) then begin
+    FChart.ReticulePos := best.FImg;
     if Assigned(FChart.OnDrawReticule) then
-      FChart.OnDrawReticule(FChart, bestS.Index, best.pointIndex, best.value);
+      FChart.OnDrawReticule(FChart, bestS.Index, best.FIndex, best.FValue);
   end;
 end;
 
@@ -1285,26 +1279,28 @@ end;
 
 procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
 var
-  d, bestd, idx: Integer;
+  d, bestd: Integer;
   s, bests: TCustomChartSeries;
-  nearImg: TPoint;
-  nearGraph: TDoublePoint;
+  p: TNearestPointParams;
+  cur, best: TNearestPointResults;
 begin
   bestd := MaxInt;
   bests := nil;
+  p.FDistFunc := @PointDist;
+  p.FPoint := APoint;
   for s in CustomSeries(FChart, ParseAffectedSeries) do begin
-    if not s.GetNearestPoint(@PointDist, APoint, idx, nearImg, nearGraph) then
-      continue;
-    d := PointDist(APoint, nearImg);
+    if not s.GetNearestPoint(p, cur) then continue;
+    d := PointDist(APoint, cur.FImg);
     if d < bestd then begin
       bestd := d;
       bests := s;
-      FPointIndex := idx;
-      FNearestGraphPoint := nearGraph;
+      best := cur;
     end;
   end;
   if (bests = nil) or (bestd > Sqr(GrabRadius)) then exit;
   FSeries := bests;
+  FPointIndex := best.FIndex;
+  FNearestGraphPoint := FChart.ImageToGraph(best.FImg);
 end;
 
 function TDataPointTool.ParseAffectedSeries: TBooleanDynArray;

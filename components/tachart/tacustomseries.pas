@@ -31,6 +31,17 @@ const
   DEF_AXIS_INDEX = -1;
 
 type
+  TNearestPointParams = record
+    FDistFunc: TPointDistFunc;
+    FPoint: TPoint;
+  end;
+
+  TNearestPointResults = record
+    FImg: TPoint;
+    FIndex: Integer;
+    FValue: TDoublePoint;
+  end;
+
   { TCustomChartSeries }
 
   TCustomChartSeries = class(TBasicChartSeries)
@@ -80,9 +91,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetNearestPoint(
-      ADistFunc: TPointDistFunc; const APoint: TPoint;
-      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
-      virtual;
+      const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; virtual;
     function GetParentComponent: TComponent; override;
     procedure GetSingleLegendItem(AItems: TChartLegendItems);
     function HasParent: Boolean; override;
@@ -223,9 +233,8 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     function GetNearestPoint(
-      ADistFunc: TPointDistFunc; const APoint: TPoint;
-      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
-      override;
+      const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
     property MarkPositions: TLinearMarkPositions
       read FMarkPositions write SetMarkPositions default lmpOutside;
@@ -340,13 +349,13 @@ begin
 end;
 
 function TCustomChartSeries.GetNearestPoint(
-  ADistFunc: TPointDistFunc; const APoint: TPoint; out AIndex: Integer;
-  out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+  const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
 begin
-  Unused(ADistFunc, APoint);
-  AIndex := 0;
-  AImg := Point(0, 0);
-  AValue := ZeroDoublePoint;
+  Unused(AParams);
+  AResults.FIndex := 0;
+  AResults.FImg := Point(0, 0);
+  AResults.FValue := ZeroDoublePoint;
   Result := false;
 end;
 
@@ -896,8 +905,8 @@ begin
 end;
 
 function TBasicPointSeries.GetNearestPoint(
-  ADistFunc: TPointDistFunc; const APoint: TPoint;
-  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+  const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
 var
   dist, minDist, i: Integer;
   pt: TPoint;
@@ -909,14 +918,13 @@ begin
     // measured in screen coordinates. With high zoom ratios this may lead to
     // an integer overflow, so ADistFunc should use saturation arithmetics.
     pt := Point(GetXImgValue(i), GetYImgValue(i));
-    dist := ADistFunc(APoint, pt);
+    dist := AParams.FDistFunc(AParams.FPoint, pt);
     if dist >= minDist then
       continue;
     minDist := dist;
-    AIndex := i;
-    AImg := pt;
-    AValue.X := GetXValue(i);
-    AValue.Y := GetYValue(i);
+    AResults.FIndex := i;
+    AResults.FImg := pt;
+    AResults.FValue := DoublePoint(GetXValue(i), GetYValue(i));
   end;
 end;
 

@@ -265,9 +265,8 @@ type
 
     procedure Draw(ADrawer: IChartDrawer); override;
     function GetNearestPoint(
-      ADistFunc: TPointDistFunc;
-      const APoint: TPoint; out AIndex: Integer; out AImg: TPoint;
-      out AValue: TDoublePoint): Boolean; override;
+      const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
 
   published
@@ -654,24 +653,23 @@ begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
-function TConstantLine.GetNearestPoint(ADistFunc: TPointDistFunc;
-  const APoint: TPoint; out AIndex: Integer; out AImg: TPoint; out
-  AValue: TDoublePoint): Boolean;
+function TConstantLine.GetNearestPoint(
+  const AParams: TNearestPointParams;
+  out AResults: TNearestPointResults): Boolean;
 begin
-  Unused(ADistFunc);
   Result := true;
-  AIndex := -1;
-  AImg := APoint;
+  AResults.FIndex := -1;
+  AResults.FImg := AParams.FPoint;
   // Return the actual nearest point of the line.
   if LineStyle = lsVertical then begin
-    AValue.Y := FChart.YImageToGraph(APoint.Y);
-    AImg.X := FChart.XGraphToImage(AxisToGraphX(Position));
+    AResults.FValue.Y := FChart.YImageToGraph(AParams.FPoint.Y);
+    AResults.FImg.X := FChart.XGraphToImage(AxisToGraphX(Position));
   end
   else begin
-    AValue.X := FChart.XImageToGraph(APoint.X);
-    AImg.Y := FChart.YGraphToImage(AxisToGraphX(Position));
+    AResults.FValue.X := FChart.XImageToGraph(AParams.FPoint.X);
+    AResults.FImg.Y := FChart.YGraphToImage(AxisToGraphX(Position));
   end;
-  SavePosToCoord(AValue);
+  SavePosToCoord(AResults.FValue);
 end;
 
 function TConstantLine.GetSeriesColor: TColor;
