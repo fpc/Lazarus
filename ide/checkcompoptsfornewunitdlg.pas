@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls,
+  StdCtrls, ExtCtrls, ButtonPanel,
   CodeToolManager, BasicCodeTools, DefineTemplates,
   CompOptsIntf, ProjectIntf, IDEDialogs,
   InputHistory, TransferMacros, Project, LazarusIDEStrConsts;
@@ -43,8 +43,8 @@ type
 
   TCheckCompOptsForNewUnitDialog = class(TForm)
     AnsistringCheckBox: TCheckBox;
+    ButtonPanel1: TButtonPanel;
     DoNotWarnCheckBox: TCheckBox;
-    OkButton: TButton;
     ModeComboBox: TComboBox;
     ModeLabel: TLabel;
     NoteLabel: TLabel;
@@ -160,7 +160,7 @@ var
   i: Integer;
 begin
   Caption:=lisDirectivesForNewUnit;
-  OkButton.Caption:=lisContinue;
+  ButtonPanel1.OKButton.Caption:=lisContinue;
 
   ModeLabel.Caption:=lisSyntaxMode;
   sl:=TStringList.Create;
@@ -188,8 +188,7 @@ begin
     if i>High(FPCSyntaxModes) then
     begin
       MessageDlg(lisCCOErrorCaption, Format(lisInvalidMode, [NewMode]),
-        mtError, [mbCancel
-        ], 0);
+        mtError, [mbCancel], 0);
       exit;
     end;
   end;
