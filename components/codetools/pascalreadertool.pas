@@ -1899,28 +1899,50 @@ begin
   ReadNextAtom; // read source type 'program', 'unit' ...
   if (Tree.Root.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
   ReadNextAtom; // read name
+  if not AtomIsIdentifier(false) then exit;
   NamePos:=CurPos;
-  Result:=(NamePos.StartPos<=SrcLen);
+  Result:=true;
+  ReadNextAtom;
+  while CurPos.Flag=cafPoint do begin
+    ReadNextAtom;
+    if not AtomIsIdentifier(false) then exit;
+    NamePos.EndPos:=CurPos.EndPos;
+    ReadNextAtom;
+  end;
 end;
 
 function TPascalReaderTool.PositionInSourceName(CleanPos: integer): boolean;
-begin
-  Result:=false;
-  if Tree.Root=nil then exit;
-  MoveCursorToNodeStart(Tree.Root);
-  ReadNextAtom; // read source type 'program', 'unit' ...
-  if (Tree.Root.Desc=ctnProgram) and (not UpAtomIs('PROGRAM')) then exit;
-  ReadNextAtom; // read name
-  Result:=(CleanPos>=CurPos.StartPos) and (CleanPos<CurPos.EndPos);
-end;
-
-function TPascalReaderTool.ExtractSourceName: string;
 var
   NamePos: TAtomPosition;
 begin
-  if GetSourceNamePos(NamePos) then
-    Result:=GetAtom
-  else if (Tree.Root<>nil) and (Tree.Root.Desc=ctnProgram) then
+  Result:=false;
+  if not GetSourceNamePos(NamePos) then exit;
+  Result:=(CleanPos>=NamePos.StartPos) and (CleanPos<NamePos.EndPos);
+end;
+
+function TPascalReaderTool.ExtractSourceName: string;
+begin
+  Result:='';
+  if Tree.Root<>nil then begin
+    MoveCursorToNodeStart(Tree.Root);
+    ReadNextAtom; // read source type 'program', 'unit' ...
+    if (Tree.Root.Desc<>ctnProgram) or UpAtomIs('PROGRAM') then begin
+      ReadNextAtom; // read name
+      if AtomIsIdentifier(false) then begin
+        Result:=copy(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+        ReadNextAtom;
+        while CurPos.Flag=cafPoint do begin
+          ReadNextAtom;
+          if not AtomIsIdentifier(false) then exit;
+          Result:=Result+'.'+copy(Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+          ReadNextAtom;
+        end;
+        exit;
+      end;
+    end;
+  end;
+  if (Tree.Root<>nil) and (Tree.Root.Desc=ctnProgram) then
+    // a program without the 'program' header uses the file name as name
     Result:=ExtractFileNameOnly(MainFilename)
   else
     Result:='';

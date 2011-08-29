@@ -636,9 +636,11 @@ begin
         ScannedRange:=lsrSourceType;
         if ord(Range)<=ord(ScannedRange) then exit;
         if HasSourceType then begin
-          ReadNextAtom; // read source name
-          AtomIsIdentifier(true);
-          ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
+          repeat
+            ReadNextAtom; // read source name
+            AtomIsIdentifier(true);
+            ReadNextAtom; // read ';' (or 'platform;' or 'unimplemented;')
+          until CurPos.Flag<>cafPoint;
         end;
         ScannedRange:=lsrSourceName;
         if ord(Range)<=ord(ScannedRange) then exit;
