@@ -196,6 +196,10 @@ components/tachart/demo/nogui/lib
 components/tachart/demo/opengl/*.exe
 components/tachart/demo/opengl/*.lps
 components/tachart/demo/opengl/lib
+components/tachart/demo/panes/*.exe
+components/tachart/demo/panes/*.lps
+components/tachart/demo/panes/*.res
+components/tachart/demo/panes/lib
 components/tachart/demo/print/*.exe
 components/tachart/demo/print/*.lps
 components/tachart/demo/print/lib

@@ -1,0 +1,156 @@
+object Form1: TForm1
+  Left = 336
+  Height = 630
+  Top = 148
+  Width = 620
+  Caption = 'Form1'
+  ClientHeight = 630
+  ClientWidth = 620
+  LCLVersion = '0.9.31'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 630
+    Top = 0
+    Width = 620
+    ActivePage = tsLink
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tsLink: TTabSheet
+      Caption = 'Link'
+      ClientHeight = 604
+      ClientWidth = 612
+      object chLink1: TChart
+        Left = 0
+        Height = 200
+        Top = 0
+        Width = 612
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alTop
+        ParentColor = False
+        object chLink1LineSeries1: TLineSeries
+          LinePen.Color = clNavy
+          LinePen.Width = 2
+          Source = rcsLink1
+        end
+      end
+      object chLink2: TChart
+        Left = 0
+        Height = 200
+        Top = 200
+        Width = 612
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alTop
+        ParentColor = False
+        object chLink2LineSeries1: TLineSeries
+          LinePen.Color = clNavy
+          LinePen.Width = 2
+          Source = rcsLink2
+        end
+      end
+      object chLink3: TChart
+        Left = 0
+        Height = 200
+        Top = 400
+        Width = 612
+        AxisList = <        
+          item
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alTop
+        ParentColor = False
+        object chLink3LineSeries1: TLineSeries
+          LinePen.Color = clNavy
+          LinePen.Width = 2
+          Source = rcsLink3
+        end
+      end
+    end
+  end
+  object rcsLink1: TRandomChartSource
+    PointsNumber = 50
+    RandSeed = 2100819672
+    XMax = 50
+    XMin = 1
+    YMax = 50
+    YMin = 0
+    left = 32
+    top = 32
+  end
+  object rcsLink2: TRandomChartSource
+    PointsNumber = 50
+    RandSeed = 1938257043
+    XMax = 50
+    XMin = 1
+    YMax = 50
+    YMin = 0
+    left = 28
+    top = 232
+  end
+  object ChartExtentLink1: TChartExtentLink
+    LinkedCharts = <    
+      item
+        Chart = chLink1
+      end    
+      item
+        Chart = chLink2
+      end    
+      item
+        Chart = chLink3
+      end>
+    left = 508
+    top = 348
+  end
+  object rcsLink3: TRandomChartSource
+    PointsNumber = 50
+    RandSeed = 123452345
+    XMax = 50
+    XMin = 1
+    YMax = 50
+    YMin = 0
+    left = 28
+    top = 424
+  end
+end
