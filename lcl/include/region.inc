@@ -198,6 +198,7 @@ end;
  ------------------------------------------------------------------------------}
 function TRegion.GetClipRect : TRect;
 begin
+  Result := Rect(0, 0, 0, 0);
 //  Result := ClipRect;
 {  if FRegionData.Reference.Allocated
   then begin
