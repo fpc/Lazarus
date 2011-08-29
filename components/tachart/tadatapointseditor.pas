@@ -5,8 +5,8 @@ unit TADataPointsEditor;
 interface
 
 uses
-  ButtonPanel, Classes, ExtCtrls, Grids, Menus, SysUtils, Forms,
-  Controls, Graphics, Dialogs;
+  ButtonPanel, Classes, ExtCtrls, Grids, Menus, SysUtils, Forms, Controls,
+  Graphics, Dialogs;
 
 type
   TDataPointsEditorForm = class(TForm)
