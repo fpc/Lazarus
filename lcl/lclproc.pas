@@ -381,6 +381,7 @@ function CreateNextIdentifier(const Identifier: string): string;
 var
   DebugLnMaxNestPrefixLen: Integer = 15;
   DebugLnNestLvlIndent: Integer = 2;
+  DebugText: ^Text;
 
 implementation
 
@@ -393,7 +394,6 @@ var
   InterfaceInitializationHandlers: TFPList = nil;
   InterfaceFinalizationHandlers: TFPList = nil;
   DebugTextAllocated: boolean;
-  DebugText: ^Text;
   DebugNestLvl: Integer = 0;
   DebugNestPrefix: PChar = nil;
   DebugNestAtBOL: Boolean;

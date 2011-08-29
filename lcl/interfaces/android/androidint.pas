@@ -46,6 +46,9 @@ type
 
   TAndroidWidgetSet = Class(TWidgetSet)
   private
+    // For DebugOut
+    FPartialDebugLine: string;
+
 {    App: QApplicationH;
 
     // cache for WindowFromPoint
@@ -114,6 +117,9 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+
+    procedure DebugLogLn(const s: string); override;
+    procedure DebugLog(const s: string); override;
 
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;

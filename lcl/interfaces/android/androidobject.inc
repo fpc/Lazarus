@@ -86,6 +86,17 @@ begin
   inherited Destroy;
 end;
 
+procedure TAndroidWidgetSet.DebugLogLn(const s: string);
+begin
+  vAndroidPipesComm.Log(FPartialDebugLine + s);
+  FPartialDebugLine := '';
+end;
+
+procedure TAndroidWidgetSet.DebugLog(const s: string);
+begin
+  FPartialDebugLine := FPartialDebugLine + s;
+end;
+
 {------------------------------------------------------------------------------
   Method: TAndroidWidgetSet.Destroy
   Params:  None
