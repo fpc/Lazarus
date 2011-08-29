@@ -78,9 +78,9 @@ LazVersion=$(./get_lazarus_version.sh)
 cd -
 LazRelease='0'
 # Iceberg only supports a major and a minor version number
-# convert 1.2.3 => 1.23
+# convert 1.2.3 => 1.23 and 0.9.30.2RC1 => 0.93021
 LAZMAJORVERSION=$(echo $LazVersion | sed -e 's/\..*//')
-LAZMINORVERSION=$(echo $LazVersion | sed -e 's/[^.]*\.//' -e 's/\.//g')
+LAZMINORVERSION=$(echo $LazVersion | sed -e 's/[^.]*\.//' -e 's/\.//g'  | tr -d [A-Za-z])
 
 COMPILER=$PP
 if [ -z "$COMPILER" ]; then
