@@ -6226,7 +6226,7 @@ begin
     if b and (FChildOfComplexWidget = ccwAbstractScrollArea) then
     begin
       LCLObject.DoAdjustClientRectChange;
-      if not InUpdate then
+      if not InUpdate and getVisible then
         QAbstractSlider_triggerAction(QAbstractSliderH(Widget),
           QAbstractSliderSliderToMaximum);
     end;
