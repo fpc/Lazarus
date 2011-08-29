@@ -80,7 +80,7 @@ object Form1: TForm1
       end
       object chLink3: TChart
         Left = 0
-        Height = 200
+        Height = 204
         Top = 400
         Width = 612
         AxisList = <        
@@ -99,9 +99,77 @@ object Form1: TForm1
         Title.Text.Strings = (
           'TAChart'
         )
-        Align = alTop
+        Align = alClient
         ParentColor = False
         object chLink3LineSeries1: TLineSeries
+          LinePen.Color = clNavy
+          LinePen.Width = 2
+          Source = rcsLink3
+        end
+      end
+    end
+    object tsTransform: TTabSheet
+      Caption = 'Transform'
+      ClientHeight = 604
+      ClientWidth = 612
+      object chTransform: TChart
+        Left = 0
+        Height = 604
+        Top = 0
+        Width = 612
+        AxisList = <        
+          item
+            Group = 1
+            Marks.Range.Max = 50
+            Marks.Range.UseMax = True
+            Marks.Range.UseMin = True
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Transformations = catAuto1
+          end        
+          item
+            Group = 1
+            Marks.Range.Max = 50
+            Marks.Range.UseMax = True
+            Marks.Range.UseMin = True
+            Minors = <>
+            Transformations = catAuto2
+          end        
+          item
+            Group = 1
+            Marks.Range.Max = 50
+            Marks.Range.UseMax = True
+            Marks.Range.UseMin = True
+            Minors = <>
+            Transformations = catAuto3
+          end        
+          item
+            Alignment = calBottom
+            Minors = <>
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object chTransformLineSeries1: TLineSeries
+          AxisIndexY = 0
+          LinePen.Color = clNavy
+          LinePen.Width = 2
+          Source = rcsLink1
+        end
+        object chTransformLineSeries2: TLineSeries
+          AxisIndexY = 1
+          LinePen.Color = clNavy
+          LinePen.Width = 2
+          Source = rcsLink2
+        end
+        object chTransformLineSeries3: TLineSeries
+          AxisIndexY = 2
           LinePen.Color = clNavy
           LinePen.Width = 2
           Source = rcsLink3
@@ -152,5 +220,28 @@ object Form1: TForm1
     YMin = 0
     left = 28
     top = 424
+  end
+  object catAuto1: TChartAxisTransformations
+    left = 104
+    top = 32
+    object catAuto1AutoScaleAxisTransform1: TAutoScaleAxisTransform
+      MaxValue = 1.7
+    end
+  end
+  object catAuto2: TChartAxisTransformations
+    left = 96
+    top = 232
+    object catAuto1AutoScaleAxisTransform2: TAutoScaleAxisTransform
+      MaxValue = 3.7
+      MinValue = 2
+    end
+  end
+  object catAuto3: TChartAxisTransformations
+    left = 96
+    top = 424
+    object catAuto1AutoScaleAxisTransform3: TAutoScaleAxisTransform
+      MaxValue = 5.7
+      MinValue = 4
+    end
   end
 end
