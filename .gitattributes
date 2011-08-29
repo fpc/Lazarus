@@ -4736,6 +4736,7 @@ install/man/man1/svn2revisioninc.1 svneol=native#text/plain
 install/man/man1/updatepofiles.1 svneol=native#text/plain
 languages/README.txt svneol=native#text/plain
 languages/gdbmidebugger.po svneol=native#text/plain
+languages/gdbmidebugger.pt_BR.po svneol=native#text/plain
 languages/gdbmidebugger.ru.po svneol=native#text/plain
 languages/installerstrconsts.cs.po svneol=native#text/plain
 languages/installerstrconsts.de.po svneol=native#text/plain
