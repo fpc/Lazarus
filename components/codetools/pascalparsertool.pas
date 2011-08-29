@@ -182,6 +182,7 @@ type
     function UnexpectedKeyWord: boolean;
     function EndOfSourceExpected: boolean;
     // read functions
+    procedure ReadGenericParam;
     function ReadTilProcedureHeadEnd(ParseAttr: TParseProcHeadAttributes;
         var HasForwardModifier: boolean): boolean;
     function ReadConstant(ExceptionOnError, Extract: boolean;
@@ -1342,6 +1343,34 @@ begin
   Result:=true;
 end;
 
+// Support generics in methods parameters and return types
+procedure TPascalParserTool.ReadGenericParam;
+var
+  Atom: string;
+  Level: Integer;
+begin
+  Atom := GetAtom;
+  if Atom='<' then begin
+    Level:=1;
+    repeat
+      ReadNextAtom;
+      Atom := GetAtom;
+      if CurPos.Flag in [cafPoint, cafComma] then begin
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+      end
+      else if Atom='<' then begin
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+        Inc(Level);
+      end
+      else if Atom='>' then
+        Dec(Level);
+    until Level=0;
+    ReadNextAtom;
+  end;
+end;
+
 function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
   const Attr: TProcHeadAttributes): boolean;
 // after reading, CurPos is the atom after the type
@@ -1435,6 +1464,7 @@ begin
       RaiseStringExpectedButAtomFound(ctsIdentifier)
     else exit;
   end;
+  ReadGenericParam;
   Result:=true;
 end;
 
@@ -1485,7 +1515,6 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
 
 var IsSpecifier: boolean;
   Attr: TProcHeadAttributes;
-  Level: Integer;
 begin
   //DebugLn('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
   //'Method=',IsMethod,', Function=',IsFunction,', Type=',IsType);
@@ -1497,6 +1526,7 @@ begin
       Include(Attr,phpCreateNodes);
     ReadParamList(true,false,Attr);
   end;
+
   if (pphIsOperator in ParseAttr) and (CurPos.Flag<>cafColon) then begin
     // read operator result identifier
     AtomIsIdentifier(true);
@@ -1508,6 +1538,7 @@ begin
     end;
     ReadNextAtom;
   end;
+
   if ([pphIsFunction,pphIsOperator]*ParseAttr<>[]) then begin
     // read function result type
     if CurPos.Flag=cafColon then begin
@@ -1532,25 +1563,7 @@ begin
         end;
         ReadNextAtom;
       end;
-      // Support generics in the function return type
-      Level:=1;
-      if GetAtom='<' then begin
-        while Level>0 do begin
-          ReadNextAtom;
-          if CurPos.Flag in [cafPoint, cafComma] then begin
-            ReadNextAtom;
-            AtomIsIdentifier(true);
-          end
-          else if GetAtom='<' then begin
-            ReadNextAtom;
-            AtomIsIdentifier(true);
-            Inc(Level);
-          end
-          else if GetAtom='>' then
-            Dec(Level);
-        end;
-        ReadNextAtom;
-      end;
+      ReadGenericParam;
     end else begin
       if (Scanner.CompilerMode<>cmDelphi) then
         RaiseCharExpectedButAtomFound(':')
