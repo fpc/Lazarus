@@ -8752,7 +8752,7 @@ end;
 
 procedure TQtFloatSpinBox.SignalValueChanged(p1: Double); cdecl;
 var
-   Msg: TLMessage;
+  Msg: TLMessage;
 begin
   FValue := p1;
   FillChar(Msg, SizeOf(Msg), #0);
@@ -8826,7 +8826,7 @@ end;
 
 procedure TQtSpinBox.SignalValueChanged(p1: Integer); cdecl;
 var
-   Msg: TLMessage;
+  Msg: TLMessage;
 begin
   FValue := p1;
   FillChar(Msg, SizeOf(Msg), #0);

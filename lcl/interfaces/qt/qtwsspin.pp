@@ -102,9 +102,9 @@ begin
     QtSpinBox := TQtSpinBox.Create(AWinControl, AParams);
 
   QtSpinBox.setBorder(TCustomFloatSpinEdit(AWinControl).BorderStyle = bsSingle);
-  QtSpinBox.AttachEvents;
-  
   InternalUpdateControl(QtSpinBox, TCustomFloatSpinEdit(AWinControl));
+
+  QtSpinBox.AttachEvents;
   
   Result := TLCLIntfHandle(QtSpinBox);
 end;
