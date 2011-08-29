@@ -604,6 +604,7 @@ begin
   FBuiltinToolset := OnInitBuiltinTools(Self);
   FActiveToolIndex := -1;
 
+  FLogicalExtent := EmptyExtent;
   FPrevLogicalExtent := EmptyExtent;
 end;
 

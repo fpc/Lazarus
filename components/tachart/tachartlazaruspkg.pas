@@ -12,7 +12,8 @@ uses
   TATypes, TADrawUtils, TAMultiSeries, TALegend, TAStyles, TAFuncSeries, 
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
   TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
-  TAChartListbox, TAEnumerators, TADataPointsEditor, LazarusPackageIntf;
+  TAChartListbox, TAEnumerators, TADataPointsEditor, TAChartExtentLink, 
+  LazarusPackageIntf;
 
 implementation
 
@@ -30,6 +31,7 @@ begin
   RegisterUnit('TAIntervalSources', @TAIntervalSources.Register); 
   RegisterUnit('TAChartListbox', @TAChartListbox.Register); 
   RegisterUnit('TADataPointsEditor', @TADataPointsEditor.Register); 
+  RegisterUnit('TAChartExtentLink', @TAChartExtentLink.Register); 
 end; 
 
 initialization
