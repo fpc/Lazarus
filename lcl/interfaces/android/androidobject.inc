@@ -263,15 +263,15 @@ end;
 
 function TAndroidWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
-(*  case ACapability of
+  case ACapability of
     lcCanDrawOutsideOnPaint: Result := LCL_CAPABILITY_NO;
-    lcDragDockStartOnTitleClick: Result :=
-     {$ifdef MSWINDOWS} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
-     lcNeedMininimizeAppWithMainForm: Result :=
-     {$ifdef HASX11} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
+//    lcDragDockStartOnTitleClick: Result :=
+//     {$ifdef MSWINDOWS} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
+//     lcNeedMininimizeAppWithMainForm: Result :=
+//     {$ifdef HASX11} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
   else
     Result := inherited GetLCLCapability(ACapability);
-  end;*)
+  end;
 end;
 
 function TAndroidWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
