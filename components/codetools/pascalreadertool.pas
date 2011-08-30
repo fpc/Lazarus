@@ -212,6 +212,7 @@ type
     procedure ReadPriorUsedUnit(out UnitNameRange, InAtom: TAtomPosition);
     function ExtractUsedUnitName(UseUnitNode: TCodeTreeNode;
           InFilename: PAnsiString = nil): string;
+    function ReadAndCompareUsedUnit(const AnUnitName: string): boolean;
 
     // comments
     function FindCommentInFront(const StartPos: TCodeXYPosition;
@@ -2581,6 +2582,40 @@ begin
     if not AtomIsStringConstant then exit;
     InFilename^:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
   end;
+end;
+
+function TPascalReaderTool.ReadAndCompareUsedUnit(const AnUnitName: string
+  ): boolean;
+// after reading cursor is on atom behind unit name
+var
+  p: PChar;
+begin
+  Result:=false;
+  if not IsDottedIdentifier(AnUnitName) then exit;
+  p:=PChar(AnUnitName);
+  repeat
+    if not AtomIsIdentifier(false) then exit;
+    if (p<>nil) then begin
+      if CompareIdentifiers(p,@Src[CurPos.StartPos])=0 then
+        inc(p,CurPos.EndPos-CurPos.StartPos)
+      else
+        p:=nil;
+    end;
+    ReadNextAtom;
+    if CurPos.Flag<>cafPoint then begin
+      // end of unit name
+      Result:=(p<>nil) and (p^=#0);
+      exit;
+    end;
+    // dot
+    if (p<>nil) then begin
+      if p='.' then
+        inc(p)
+      else
+        p:=nil;
+    end;
+    ReadNextAtom;
+  until false;
 end;
 
 function TPascalReaderTool.FindCommentInFront(const StartPos: TCodeXYPosition;

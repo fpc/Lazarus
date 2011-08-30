@@ -1019,8 +1019,6 @@ end;
 
 function TStandardCodeTool.UnitExistsInUsesSection(UsesNode: TCodeTreeNode;
   const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
-var
-  p: PChar;
 begin
   Result:=false;
   if (UsesNode=nil) or (not IsDottedIdentifier(AnUnitName)) then
@@ -1028,30 +1026,11 @@ begin
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom; // read 'uses'
   repeat
-    p:=PChar(AnUnitName);
     ReadNextAtom; // read name
     if not AtomIsIdentifier(false) then exit;
-    while CompareIdentifiers(@Src[CurPos.StartPos],p)=0 do begin
-      inc(p,CurPos.EndPos-CurPos.StartPos);
-      ReadNextAtom;
-      if CurPos.Flag<>cafPoint then begin
-        // end of unit name reached
-        if p^=#0 then exit(true); // unit found
-        break;
-      end;
-      // dot
-      if p^<>'.' then begin
-        // skip rest of unit name
-        repeat
-          ReadNextAtom;
-          if not AtomIsIdentifier(false) then exit;
-          ReadNextAtom;
-        until CurPos.Flag<>cafPoint;
-        break;
-      end;
-      inc(p);
-      ReadNextAtom;
-      if not AtomIsIdentifier(false) then exit;
+    if ReadAndCompareUsedUnit(AnUnitName) then begin
+      // unit found
+      exit(true);
     end;
     if UpAtomIs('IN') then begin
       ReadNextAtom;
