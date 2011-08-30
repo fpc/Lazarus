@@ -208,8 +208,8 @@ type
     // uses sections
     procedure MoveCursorToUsesStart(UsesNode: TCodeTreeNode);
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
-    procedure ReadNextUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
-    procedure ReadPriorUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
+    procedure ReadNextUsedUnit(out UnitNameRange, InAtom: TAtomPosition);
+    procedure ReadPriorUsedUnit(out UnitNameRange, InAtom: TAtomPosition);
 
     // comments
     function FindCommentInFront(const StartPos: TCodeXYPosition;
@@ -2513,12 +2513,17 @@ begin
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
 end;
 
-procedure TPascalReaderTool.ReadNextUsedUnit(out UnitNameAtom,
+procedure TPascalReaderTool.ReadNextUsedUnit(out UnitNameRange,
   InAtom: TAtomPosition);
 begin
   AtomIsIdentifier(true);
-  UnitNameAtom:=CurPos;
-  ReadNextAtom;
+  UnitNameRange:=CurPos;
+  repeat
+    ReadNextAtom;
+    if CurPos.Flag<>cafPoint then break;
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+  until false;
   if UpAtomIs('IN') then begin
     ReadNextAtom; // read filename
     if not AtomIsStringConstant then
@@ -2530,7 +2535,7 @@ begin
   end;
 end;
 
-procedure TPascalReaderTool.ReadPriorUsedUnit(out UnitNameAtom,
+procedure TPascalReaderTool.ReadPriorUsedUnit(out UnitNameRange,
   InAtom: TAtomPosition);
 begin
   ReadPriorAtom; // read unitname
@@ -2544,7 +2549,14 @@ begin
     InAtom:=CleanAtomPosition;
   end;
   AtomIsIdentifier(true);
-  UnitNameAtom:=CurPos;
+  UnitNameRange:=CurPos;
+  repeat
+    ReadPriorAtom;
+    if CurPos.Flag<>cafPoint then break;
+    ReadPriorAtom;
+    AtomIsIdentifier(true);
+    UnitNameRange.StartPos:=CurPos.StartPos;
+  until false;
 end;
 
 function TPascalReaderTool.FindCommentInFront(const StartPos: TCodeXYPosition;
