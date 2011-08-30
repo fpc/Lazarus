@@ -124,8 +124,8 @@ type
                                ImplementationUsesSection: TStrings): boolean;
     function FindDelphiProjectUnits(var FoundInUnits, MissingInUnits,
                                     NormalUnits: TStrings;
-                                    UseContainsSection: boolean = false): boolean; // ToDo: dotted
-    function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings; // ToDo: dotted
+                                    UseContainsSection: boolean = false): boolean;
+    function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
     function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings; // ToDo: dotted
     function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
                               SearchImplementation: boolean;
@@ -1390,23 +1390,17 @@ end;
 function TStandardCodeTool.UsesSectionToFilenames(UsesNode: TCodeTreeNode
   ): TStrings;
 var
-  InAtom, UnitNameAtom: TAtomPosition;
   AnUnitName, AnUnitInFilename: string;
   NewCode: TCodeBuffer;
   UnitFilename: string;
+  Node: TCodeTreeNode;
 begin
   Result:=TStringList.Create;
   if UsesNode=nil then exit;
-  MoveCursorToUsesEnd(UsesNode);
-  repeat
-    // read prior unit name
-    ReadPriorUsedUnit(UnitNameAtom, InAtom);
-    AnUnitName:=GetAtom(UnitNameAtom);
-    if InAtom.StartPos>0 then
-      AnUnitInFilename:=copy(Src,InAtom.StartPos+1,
-                             InAtom.EndPos-InAtom.StartPos-2)
-    else
-      AnUnitInFilename:='';
+  Node:=UsesNode.LastChild;
+  while Node<>nil do begin
+    // read unit name
+    AnUnitName:=ExtractUsedUnitName(Node,@AnUnitInFilename);
     // find unit file
     NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
     if (NewCode=nil) then begin
@@ -1420,9 +1414,8 @@ begin
     end;
     // add filename to list
     Result.AddObject(UnitFilename,NewCode);
-    // read keyword 'uses' or comma
-    ReadPriorAtom;
-  until not AtomIsChar(',');
+    Node:=Node.PriorBrother;
+  end;
 end;
 
 function TStandardCodeTool.UsesSectionToUnitnames(UsesNode: TCodeTreeNode
