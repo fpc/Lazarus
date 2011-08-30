@@ -115,7 +115,7 @@ type
                                 SourceChangeCache: TSourceChangeCache): boolean;
     function FixUsedUnitCase(SourceChangeCache: TSourceChangeCache): boolean;
     function FixUsedUnitCaseInUsesSection(UsesNode: TCodeTreeNode;
-                                SourceChangeCache: TSourceChangeCache): boolean; // ToDo: dotted
+                                SourceChangeCache: TSourceChangeCache): boolean;
     function FindUsedUnitNames(var MainUsesSection,
                                ImplementationUsesSection: TStrings): boolean;
     function FindUsedUnitNames(var List: TStringToStringTree): boolean;
@@ -1150,47 +1150,36 @@ end;
 function TStandardCodeTool.FixUsedUnitCaseInUsesSection(
   UsesNode: TCodeTreeNode; SourceChangeCache: TSourceChangeCache): boolean;
   
-  function FindUnit(const AFilename: string): string;
+  function FindUnit(AFilename: string): string;
   var
     CurDir: String;
-    MainCodeIsVirtual: Boolean;
-    FileInfo: TSearchRec;
-    CurFilename: String;
+    MakeRelative: Boolean;
   begin
-    if FilenameIsAbsolute(AFilename) then
-      CurDir:=ExtractFilePath(AFilename)
-    else begin
-      MainCodeIsVirtual:=TCodeBuffer(Scanner.MainCode).IsVirtual;
-      if not MainCodeIsVirtual then begin
-        CurDir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename);
-      end else begin
-        CurDir:='';
-      end;
-    end;
-    CurFilename:=ExtractFilename(AFilename);
     Result:='';
-    if FindFirstUTF8(AppendPathDelim(CurDir)+FileMask,
-                          faAnyFile,FileInfo)=0 then
-    begin
-      repeat
-        // check if special file
-        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-        then
-          continue;
-        if (SysUtils.CompareText(CurFilename,FileInfo.Name)=0)
-        then begin
-          if (Result='') or (FileInfo.Name=CurFilename) then
-            Result:=FileInfo.Name;
-        end;
-      until FindNextUTF8(FileInfo)<>0;
+    AFilename:=TrimFilename(AFilename);
+    CurDir:='';
+    if FilenameIsAbsolute(AFilename) then begin
+      MakeRelative:=false;
+    end else begin
+      MakeRelative:=true;
+      if TCodeBuffer(Scanner.MainCode).IsVirtual then exit;
+      CurDir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename);
+      AFilename:=CurDir+AFilename;
     end;
-    FindCloseUTF8(FileInfo);
+    CheckDirectoryCache;
+    if DirectoryCache=nil then exit;
+    Result:=DirectoryCache.Pool.FindDiskFilename(AFilename);
+    if Result='' then exit;
+    if MakeRelative then
+      Result:=CreateRelativePath(Result,CurDir);
   end;
   
 var
   UnitInFilename: String;
   Changed: Boolean;
   RealUnitInFilename: String;
+  UnitNameRange: TAtomPosition;
+  InAtom: TAtomPosition;
 begin
   Result:=false;
   if (UsesNode=nil) then exit;
@@ -1199,11 +1188,9 @@ begin
   Changed:=false;
   repeat
     ReadNextAtom; // read name
-    if not AtomIsIdentifier(false) then exit;
-    ReadNextAtom;
-    if UpAtomIs('IN') then begin
-      ReadNextAtom;
-      UnitInFilename:=GetAtom;
+    if not ReadNextUsedUnit(UnitNameRange,InAtom,false) then exit;
+    if InAtom.StartPos>1 then begin
+      UnitInFilename:=GetAtom(InAtom);
       //debugln('TStandardCodeTool.FixUsedUnitCaseInUsesSection A UnitInFilename="',UnitInFilename,'"');
       if (UnitInFilename<>'') and (UnitInFilename[1]='''') then begin
         UnitInFilename:=copy(UnitInFilename,2,length(UnitInFilename)-2);
@@ -1217,13 +1204,12 @@ begin
           end;
           debugln('TStandardCodeTool.FixUsedUnitCaseInUsesSection Replacing UnitInFilename="',UnitInFilename,'" with "',RealUnitInFilename,'"');
           if not SourceChangeCache.Replace(gtNone,gtNone,
-            CurPos.StartPos,CurPos.EndPos,''''+RealUnitInFilename+'''') then exit;
+            InAtom.StartPos,InAtom.EndPos,''''+RealUnitInFilename+'''') then exit;
         end;
       end;
-      ReadNextAtom;
     end;
-    if AtomIsChar(';') then break;
-    if not AtomIsChar(',') then exit;
+    if CurPos.Flag=cafSemicolon then break;
+    if CurPos.Flag<>cafComma then exit;
   until (CurPos.StartPos>UsesNode.EndPos) or (CurPos.StartPos>SrcLen);
   if Changed and (not SourceChangeCache.Apply) then exit;
   Result:=true;

@@ -208,7 +208,8 @@ type
     // uses sections
     procedure MoveCursorToUsesStart(UsesNode: TCodeTreeNode);
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
-    procedure ReadNextUsedUnit(out UnitNameRange, InAtom: TAtomPosition);
+    function ReadNextUsedUnit(out UnitNameRange, InAtom: TAtomPosition;
+          SyntaxExceptions: boolean = true): boolean;
     procedure ReadPriorUsedUnit(out UnitNameRange, InAtom: TAtomPosition);
     function ExtractUsedUnitName(UseUnitNode: TCodeTreeNode;
           InFilename: PAnsiString = nil): string;
@@ -2516,26 +2517,32 @@ begin
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
 end;
 
-procedure TPascalReaderTool.ReadNextUsedUnit(out UnitNameRange,
-  InAtom: TAtomPosition);
+function TPascalReaderTool.ReadNextUsedUnit(out UnitNameRange,
+  InAtom: TAtomPosition; SyntaxExceptions: boolean): boolean;
+// after reading CurPos is on atom behind, i.e. comma or semicolon
 begin
+  Result:=false;
   AtomIsIdentifier(true);
   UnitNameRange:=CurPos;
   repeat
     ReadNextAtom;
     if CurPos.Flag<>cafPoint then break;
     ReadNextAtom;
-    AtomIsIdentifier(true);
+    if not AtomIsIdentifier(SyntaxExceptions) then exit;
+    UnitNameRange.EndPos:=CurPos.EndPos;
   until false;
   if UpAtomIs('IN') then begin
     ReadNextAtom; // read filename
-    if not AtomIsStringConstant then
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+    if not AtomIsStringConstant then begin
+      if not SyntaxExceptions then exit;
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom])
+    end;
     InAtom:=CurPos;
     ReadNextAtom; // read comma or semicolon
   end else begin
     InAtom:=CleanAtomPosition;
   end;
+  Result:=true;
 end;
 
 procedure TPascalReaderTool.ReadPriorUsedUnit(out UnitNameRange,
@@ -2591,8 +2598,10 @@ var
   p: PChar;
 begin
   Result:=false;
-  if not IsDottedIdentifier(AnUnitName) then exit;
-  p:=PChar(AnUnitName);
+  if IsDottedIdentifier(AnUnitName) then
+    p:=PChar(AnUnitName)
+  else
+    p:=nil;
   repeat
     if not AtomIsIdentifier(false) then exit;
     if (p<>nil) then begin
