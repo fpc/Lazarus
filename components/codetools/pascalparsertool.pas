@@ -1844,7 +1844,7 @@ function TPascalParserTool.ReadUsesSection(
 { parse uses section
 
   examples:
-    uses name1, name2 in '', name3;
+    uses name1, name2 in '', name3.dot;
 
 }
 begin
@@ -1865,7 +1865,12 @@ begin
     CreateChildNode;
     CurNode.Desc:=ctnUseUnit;
     CurNode.EndPos:=CurPos.EndPos;
-    ReadNextAtom;
+    repeat
+      ReadNextAtom;
+      if CurPos.Flag<>cafPoint then break;
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+    until false;
     if UpAtomIs('IN') then begin
       ReadNextAtom;
       if not AtomIsStringConstant then
