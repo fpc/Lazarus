@@ -597,7 +597,7 @@ type
     {$ENDIF}
     function FindDeclarationInUsesSection(UsesNode: TCodeTreeNode;
       CleanPos: integer;
-      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean; // ToDo: dotted
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
       var IncludeCode: TCodeBuffer): boolean;
     function FindEnumInContext(Params: TFindDeclarationParams): boolean;
@@ -2010,7 +2010,7 @@ begin
   DebugLn('TFindDeclarationTool.FindDeclarationInUsesSection A');
   {$ENDIF}
   {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
-  // reparse uses section
+  // reparse uses section, ignore errors after CleanPos
   MoveCursorToNodeStart(UsesNode);
   if (UsesNode.Desc=ctnUsesSection) then begin
     ReadNextAtom;
@@ -2020,26 +2020,13 @@ begin
   repeat
     ReadNextAtom;  // read name
     if CurPos.StartPos>CleanPos then break;
-    if AtomIsChar(';') then break;
-    AtomIsIdentifier(true);
-    UnitNamePos:=CurPos;
-    ReadNextAtom;
-    if UpAtomIs('IN') then begin
+    if CurPos.Flag=cafSemicolon then break;
+    ReadNextUsedUnit(UnitNamePos,UnitInFilePos);
+    if CleanPos<CurPos.StartPos then begin
+      // cursor is on an used unit -> try to locate it
+      MoveCursorToCleanPos(UnitNamePos.StartPos);
       ReadNextAtom;
-      if not AtomIsStringConstant then RaiseStrConstExpected;
-      UnitInFilePos:=CurPos;
-      ReadNextAtom;
-    end else
-      UnitInFilePos.StartPos:=-1;
-    if CleanPos<UnitNamePos.EndPos then begin
-      // cursor is on a AUnitName -> try to locate it
-      AUnitName:=copy(Src,UnitNamePos.StartPos,
-                     UnitNamePos.EndPos-UnitNamePos.StartPos);
-      if UnitInFilePos.StartPos>=1 then begin
-        UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
-                             UnitInFilePos.EndPos-UnitInFilePos.StartPos-2);
-      end else
-        UnitInFilename:='';
+      AUnitName:=ExtractUsedUnitNameAtCursor(@UnitInFilename);
       NewPos.Code:=FindUnitSource(AUnitName,UnitInFilename,true);
       if NewPos.Code=nil then
         RaiseExceptionInstance(
@@ -2051,8 +2038,8 @@ begin
       Result:=true;
       exit;
     end;
-    if AtomIsChar(';') then break;
-    if not AtomIsChar(',') then
+    if CurPos.Flag=cafSemicolon then break;
+    if CurPos.Flag<>cafComma then
       RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom])
   until (CurPos.StartPos>SrcLen);
   {$IFDEF ShowTriedContexts}

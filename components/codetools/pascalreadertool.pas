@@ -56,6 +56,7 @@ type
   TPascalReaderTool = class(TPascalParserTool)
   protected
     CachedSourceName: string;
+    procedure RaiseStrConstExpected;
   public
     // comments
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
@@ -211,6 +212,7 @@ type
     function ReadNextUsedUnit(out UnitNameRange, InAtom: TAtomPosition;
           SyntaxExceptions: boolean = true): boolean;
     procedure ReadPriorUsedUnit(out UnitNameRange, InAtom: TAtomPosition);
+    function ExtractUsedUnitNameAtCursor(InFilename: PAnsiString = nil): string;
     function ExtractUsedUnitName(UseUnitNode: TCodeTreeNode;
           InFilename: PAnsiString = nil): string;
     function ReadAndCompareUsedUnit(const AnUnitName: string): boolean;
@@ -240,6 +242,11 @@ type
 implementation
 
 { TPascalReaderTool }
+
+procedure TPascalReaderTool.RaiseStrConstExpected;
+begin
+  RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+end;
 
 function TPascalReaderTool.CleanPosIsInComment(CleanPos,
   CleanCodePosInFront: integer; var CommentStart, CommentEnd: integer
@@ -2522,7 +2529,7 @@ function TPascalReaderTool.ReadNextUsedUnit(out UnitNameRange,
 // after reading CurPos is on atom behind, i.e. comma or semicolon
 begin
   Result:=false;
-  AtomIsIdentifier(true);
+  if not AtomIsIdentifier(SyntaxExceptions) then exit;
   UnitNameRange:=CurPos;
   repeat
     ReadNextAtom;
@@ -2535,7 +2542,7 @@ begin
     ReadNextAtom; // read filename
     if not AtomIsStringConstant then begin
       if not SyntaxExceptions then exit;
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom])
+      RaiseStrConstExpected;
     end;
     InAtom:=CurPos;
     ReadNextAtom; // read comma or semicolon
@@ -2569,15 +2576,10 @@ begin
   until false;
 end;
 
-function TPascalReaderTool.ExtractUsedUnitName(UseUnitNode: TCodeTreeNode;
-  InFilename: PAnsiString): string;
-// after reading CurPos is on atom behind, i.e. comma or semicolon
+function TPascalReaderTool.ExtractUsedUnitNameAtCursor(InFilename: PAnsiString
+  ): string;
 begin
-  Result:='';
   if InFilename<>nil then InFilename^:='';
-  if (UseUnitNode=nil) or (UseUnitNode.Desc<>ctnUseUnit) then exit;
-  MoveCursorToCleanPos(UseUnitNode.StartPos);
-  ReadNextAtom;
   while CurPos.Flag=cafWord do begin
     if Result<>'' then Result:=Result+'.';
     Result:=Result+GetAtom;
@@ -2592,6 +2594,18 @@ begin
       InFilename^:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
     ReadNextAtom;
   end;
+end;
+
+function TPascalReaderTool.ExtractUsedUnitName(UseUnitNode: TCodeTreeNode;
+  InFilename: PAnsiString): string;
+// after reading CurPos is on atom behind, i.e. comma or semicolon
+begin
+  Result:='';
+  if InFilename<>nil then InFilename^:='';
+  if (UseUnitNode=nil) or (UseUnitNode.Desc<>ctnUseUnit) then exit;
+  MoveCursorToCleanPos(UseUnitNode.StartPos);
+  ReadNextAtom;
+  Result:=ExtractUsedUnitNameAtCursor(InFilename);
 end;
 
 function TPascalReaderTool.ReadAndCompareUsedUnit(const AnUnitName: string
