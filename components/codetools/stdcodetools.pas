@@ -85,7 +85,7 @@ type
     function RenameUsedUnit(const OldUnitName, NewUnitName,
           NewUnitInFile: string;
           SourceChangeCache: TSourceChangeCache): boolean;
-    function ReplaceUsedUnits(UnitNamePairs: TStringToStringTree;
+    function ReplaceUsedUnits(UnitNamePairs: TStringToStringTree; // ToDo: dotted
           SourceChangeCache: TSourceChangeCache): boolean;
     function AddUnitToUsesSection(UsesNode: TCodeTreeNode;
           const NewUnitName, NewUnitInFile: string;
@@ -115,7 +115,7 @@ type
                                 SourceChangeCache: TSourceChangeCache): boolean;
     function FixUsedUnitCase(SourceChangeCache: TSourceChangeCache): boolean;
     function FixUsedUnitCaseInUsesSection(UsesNode: TCodeTreeNode;
-                                SourceChangeCache: TSourceChangeCache): boolean;
+                                SourceChangeCache: TSourceChangeCache): boolean; // ToDo: dotted
     function FindUsedUnitNames(var MainUsesSection,
                                ImplementationUsesSection: TStrings): boolean;
     function FindUsedUnitNames(var List: TStringToStringTree): boolean;
@@ -124,15 +124,15 @@ type
                                ImplementationUsesSection: TStrings): boolean;
     function FindDelphiProjectUnits(var FoundInUnits, MissingInUnits,
                                     NormalUnits: TStrings;
-                                    UseContainsSection: boolean = false): boolean;
-    function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
-    function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
+                                    UseContainsSection: boolean = false): boolean; // ToDo: dotted
+    function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings; // ToDo: dotted
+    function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings; // ToDo: dotted
     function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
                               SearchImplementation: boolean;
-                              SourceChangeCache: TSourceChangeCache): boolean;
+                              SourceChangeCache: TSourceChangeCache): boolean; // ToDo: dotted
     function CommentUnitsInUsesSections(MissingUnits: TStrings;
-                                SourceChangeCache: TSourceChangeCache): boolean;
-    function FindUnusedUnits(Units: TStrings): boolean;
+                                SourceChangeCache: TSourceChangeCache): boolean; // ToDo: dotted
+    function FindUnusedUnits(Units: TStrings): boolean; // ToDo: dotted
 
     // lazarus resources
     function FindNextIncludeInInitialization(

@@ -597,7 +597,7 @@ type
     {$ENDIF}
     function FindDeclarationInUsesSection(UsesNode: TCodeTreeNode;
       CleanPos: integer;
-      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean; // ToDo: dotted
     function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
       var IncludeCode: TCodeBuffer): boolean;
     function FindEnumInContext(Params: TFindDeclarationParams): boolean;
@@ -613,7 +613,7 @@ type
     function FindIdentifierInAncestors(ClassNode: TCodeTreeNode;
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInUsesSection(UsesNode: TCodeTreeNode;
-      Params: TFindDeclarationParams): boolean;
+      Params: TFindDeclarationParams): boolean; // ToDo: dotted
     function FindIdentifierInHiddenUsedUnits(
       Params: TFindDeclarationParams): boolean;
     function FindIdentifierInUsedUnit(const AnUnitName: string;
@@ -714,10 +714,10 @@ type
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
     function FindUnitSourceWithUnitIdentifier(UsesNode: TCodeTreeNode;
        const AnUnitIdentifier: string; ExceptionOnNotFound: boolean
-       ): TCodeBuffer;
+       ): TCodeBuffer; // ToDo: dotted
     function FindCodeToolForUnitIdentifier(UsesNode: TCodeTreeNode;
        const AnUnitIdentifier: string; ExceptionOnNotFound: boolean
-       ): TFindDeclarationTool;
+       ): TFindDeclarationTool; // ToDo: dotted
     function FindIdentifierInInterface(AskingTool: TFindDeclarationTool;
       Params: TFindDeclarationParams): boolean;
     function CompareNodeIdentifier(Node: TCodeTreeNode;
@@ -776,7 +776,7 @@ type
     function FindDeclarationInInterface(const Identifier: string;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclarationWithMainUsesSection(const Identifier: string;
-      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean; // ToDo: dotted
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
       out NewContext: TFindContext; IgnoreTypeLess: boolean = false): boolean;
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
@@ -789,21 +789,22 @@ type
     function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
     function FindImplementationUsesSection: TCodeTreeNode;
     function FindNameInUsesSection(UsesNode: TCodeTreeNode;
-          const AUnitName: string): TCodeTreeNode;
+          const AUnitName: string): TCodeTreeNode; // ToDo: dotted
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
           const AnUnitName: string;
-          out NamePos, InPos: TAtomPosition): boolean;
+          out NamePos, InPos: TAtomPosition): boolean; // ToDo: dotted
     function FindUnitInAllUsesSections(const AnUnitName: string;
-          out NamePos, InPos: TAtomPosition): boolean;
-    function GetUnitForUsesSection(Tool: TFindDeclarationTool): string;
+          out NamePos, InPos: TAtomPosition): boolean; // ToDo: dotted
+    function GetUnitNameForUsesSection(TargetTool: TFindDeclarationTool): string;
+    function GetUnitForUsesSection(TargetTool: TFindDeclarationTool): string; deprecated;
 
     function FindUnitSource(const AnUnitName,
-      AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
+      AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer; // ToDo: dotted
     function FindUnitCaseInsensitive(var AnUnitName,
-                                     AnUnitInFilename: string): string;
+                                     AnUnitInFilename: string): string; // ToDo: dotted
     procedure GatherUnitAndSrcPath(var UnitPath, CompleteSrcPath: string);
-    function SearchUnitInUnitLinks(const TheUnitName: string): string;
-    function SearchUnitInUnitSet(const TheUnitName: string): string;
+    function SearchUnitInUnitLinks(const TheUnitName: string): string; deprecated;
+    function SearchUnitInUnitSet(const TheUnitName: string): string; // ToDo: dotted
 
     function FindSmartHint(const CursorPos: TCodeXYPosition;
                     Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
@@ -1937,16 +1938,16 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.GetUnitForUsesSection(Tool: TFindDeclarationTool
-  ): string;
+function TFindDeclarationTool.GetUnitNameForUsesSection(
+  TargetTool: TFindDeclarationTool): string;
 var
   UsesNode: TCodeTreeNode;
   Alternative: String;
 begin
   Result:='';
-  if (Tool=nil) or (Tool.MainFilename='') or (Tool=Self) then
+  if (TargetTool=nil) or (TargetTool.MainFilename='') or (TargetTool=Self) then
     exit;
-  Result:=ExtractFileNameOnly(Tool.MainFilename);
+  Result:=ExtractFileNameOnly(TargetTool.MainFilename);
   if Result='' then exit;
 
   // check if system unit
@@ -1981,10 +1982,16 @@ begin
 
   // beautify
   if Result=lowercase(Result) then begin
-    Alternative:=Tool.GetSourceName(false);
+    Alternative:=TargetTool.GetSourceName(false);
     if Alternative<>'' then
       Result:=Alternative;
   end;
+end;
+
+function TFindDeclarationTool.GetUnitForUsesSection(
+  TargetTool: TFindDeclarationTool): string;
+begin
+  Result:=GetUnitNameForUsesSection(TargetTool);
 end;
 
 function TFindDeclarationTool.FindInitializationSection: TCodeTreeNode;

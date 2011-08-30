@@ -1437,7 +1437,7 @@ begin
   MissingUnit:='';
   if (ExprType.Desc=xtContext)
   and (ExprType.Context.Tool<>nil) then
-    MissingUnit:=GetUnitForUsesSection(ExprType.Context.Tool);
+    MissingUnit:=GetUnitNameForUsesSection(ExprType.Context.Tool);
   Result:=AddLocalVariable(CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
                       NewType,MissingUnit,NewPos,NewTopLine,SourceChangeCache);
 end;
@@ -1833,7 +1833,7 @@ begin
   MissingUnit:='';
   if (ExprType.Desc=xtContext)
   and (ExprType.Context.Tool<>nil) then
-    MissingUnit:=GetUnitForUsesSection(ExprType.Context.Tool);
+    MissingUnit:=GetUnitNameForUsesSection(ExprType.Context.Tool);
 
   Result:=AddLocalVariable(CleanCursorPos,OldTopLine,GetAtom(VarNameAtom),
                       NewType,MissingUnit,NewPos,NewTopLine,SourceChangeCache);
