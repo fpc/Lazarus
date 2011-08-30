@@ -176,6 +176,7 @@ function CompareComments(p1, p2: PChar; NestedComments: boolean): integer; // co
 
 // dotted identifiers
 function IsDottedIdentifier(const Identifier: string): boolean;
+function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -3525,7 +3526,7 @@ end;
 
 function CompareIdentifierPtrs(Identifier1, Identifier2: Pointer): integer;
 begin
-  Result := CompareIdentifiers(PChar(Identifier1), PChar(Identifier2));
+  Result:=CompareIdentifiers(PChar(Identifier1), PChar(Identifier2));
 end;
 
 function CompareIdentifiersCaseSensitive(Identifier1, Identifier2: PChar
@@ -4213,6 +4214,46 @@ begin
     inc(p);
   until false;
   Result:=(p-PChar(Identifier))=length(Identifier);
+end;
+
+function CompareDottedIdentifiers(Identifier1, Identifier2: PChar): integer;
+begin
+  if (Identifier1<>nil) then begin
+    if (Identifier2<>nil) then begin
+      while (UpChars[Identifier1[0]]=UpChars[Identifier2[0]]) do begin
+        if (IsDottedIdentChar[Identifier1[0]]) then begin
+          inc(Identifier1);
+          inc(Identifier2);
+        end else begin
+          Result:=0; // for example  'aaA;' 'aAa;'
+          exit;
+        end;
+      end;
+      if (IsDottedIdentChar[Identifier1[0]]) then begin
+        if (IsDottedIdentChar[Identifier2[0]]) then begin
+          if UpChars[Identifier1[0]]>UpChars[Identifier2[0]] then
+            Result:=-1 // for example  'aab' 'aaa'
+          else
+            Result:=1; // for example  'aaa' 'aab'
+        end else begin
+          Result:=-1; // for example  'aaa' 'aa;'
+        end;
+      end else begin
+        if (IsDottedIdentChar[Identifier2[0]]) then
+          Result:=1 // for example  'aa;' 'aaa'
+        else
+          Result:=0; // for example  'aa;' 'aa,'
+      end;
+    end else begin
+      Result:=-1; // for example  'aaa' nil
+    end;
+  end else begin
+    if (Identifier2<>nil) then begin
+      Result:=1; // for example  nil 'bbb'
+    end else begin
+      Result:=0; // for example  nil nil
+    end;
+  end;
 end;
 
 function TrimCodeSpace(const ACode: string): string;

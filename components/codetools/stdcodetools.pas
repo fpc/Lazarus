@@ -131,7 +131,7 @@ type
                               SearchImplementation: boolean;
                               SourceChangeCache: TSourceChangeCache): boolean;
     function CommentUnitsInUsesSections(MissingUnits: TStrings;
-                                SourceChangeCache: TSourceChangeCache): boolean; // ToDo: dotted
+                                SourceChangeCache: TSourceChangeCache): boolean;
     function FindUnusedUnits(Units: TStrings): boolean; // ToDo: dotted
 
     // lazarus resources
@@ -1534,18 +1534,19 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
     LastCommaAfterCommentUnitsStart: Integer;
     LastNormalUnitEnd: Integer;
     LastCommentUnitEnd: Integer;
+    Node: TCodeTreeNode;
   begin
     Result:=true;
     if UsesNode=nil then exit;
-    MoveCursorToUsesStart(UsesNode);
     FirstCommentUnitStart:=-1;
     LastCommaAfterCommentUnitsStart:=-1;
     LastNormalUnitEnd:=-1;
     LastCommentUnitEnd:=-1;
-    repeat
+    Node:=UsesNode.FirstChild;
+    while Node<>nil do begin
       // check if unit should be commented
-      AtomIsIdentifier(true);
-      CurUnitName:=GetAtom;
+      CurUnitName:=ExtractUsedUnitName(Node);
+      // Note: CurPos is now on atom behind used unit, i.e. comma or semicolon
       i:=MissingUnits.Count-1;
       while (i>=0)
       and (CompareIdentifiers(PChar(Pointer(MissingUnits[i])),
@@ -1556,11 +1557,11 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
       
       if CommentCurUnit then begin
         // unit should be commented
-        if FirstCommentUnitStart<1 then FirstCommentUnitStart:=CurPos.StartPos;
-        LastCommentUnitEnd:=CurPos.EndPos;
+        if FirstCommentUnitStart<1 then FirstCommentUnitStart:=Node.StartPos;
+        LastCommentUnitEnd:=Node.EndPos;
       end else begin
         // unit should be kept
-        LastNormalUnitEnd:=CurPos.EndPos;
+        LastNormalUnitEnd:=Node.EndPos;
         if FirstCommentUnitStart>=1 then begin
           // there are some units to be commented
           // See examples: 1., 2., 3. and 6.
@@ -1571,18 +1572,6 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
         end;
       end;
       
-      ReadNextAtom;
-      if UpAtomIs('IN') then begin
-        ReadNextAtom; // read filename
-        if not AtomIsStringConstant then
-          RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
-        if (not CommentCurUnit) then
-          LastNormalUnitEnd:=CurPos.EndPos;
-        if CommentCurUnit then
-          LastCommentUnitEnd:=CurPos.EndPos;
-        ReadNextAtom; // read comma or semicolon
-      end;
-        
       if CommentCurUnit then
         LastCommaAfterCommentUnitsStart:=CurPos.EndPos;
         
@@ -1602,8 +1591,8 @@ function TStandardCodeTool.CommentUnitsInUsesSections(MissingUnits: TStrings;
         break;
       end;
       
-      ReadNextAtom;
-    until false;
+      Node:=Node.NextBrother;
+    end;
   end;
   
 begin

@@ -166,6 +166,7 @@ var
   IsNonWordChar,      // [#0..#127]-IsIdentChar
   IsIdentStartChar,
   IsIdentChar,
+  IsDottedIdentChar,
   IsNumberChar,
   IsCommentStartChar,
   IsCommentEndChar,
@@ -829,6 +830,7 @@ begin
     IsSpaceChar[c]:=c in [#0..#32];
     IsIdentStartChar[c]:=c in ['a'..'z','A'..'Z','_'];
     IsIdentChar[c]:=c in ['a'..'z','A'..'Z','_','0'..'9'];
+    IsDottedIdentChar[c]:=c in ['.','a'..'z','A'..'Z','_','0'..'9'];
     IsNumberChar[c]:=c in ['0'..'9'];
     IsCommentStartChar[c]:=c in ['/','{','('];
     IsCommentEndChar[c]:=c in ['}',')',#13,#10];
