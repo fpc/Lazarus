@@ -371,12 +371,25 @@ begin
     inc(AUnitName);
     inc(Filename);
   end;
-  if (AUnitName^=#0) then
-     if (Filename^='.') then
-       Result:=0
-     else
-       Result:=ord('.')-ord(Filename^)
-  else
+  if (AUnitName^=#0) then begin
+    // the unit name fits the start of the file name
+    if (Filename^='.') then begin
+      // check extension
+      inc(Filename);
+      while not (Filename^ in ['.',#0]) do inc(Filename);
+      if Filename^='.' then begin
+        // multi dots in filename
+        Result:=ord(#0)-ord('.');
+      end else begin
+        // rest is the extension => fits
+        Result:=0;
+      end;
+    end else if Filename^=#0 then begin
+      // file name has no extension => return not 0
+      Result:=ord('.');
+    end else
+      Result:=ord(#0)-ord(FPUpChars[Filename^]);
+  end else
     Result:=ord(FPUpChars[AUnitName^])-ord(FPUpChars[Filename^]);
 end;
 
