@@ -116,6 +116,11 @@ type
   TView = class(TJavaObject)
   public
     procedure setLayoutParams(params: TViewGroup_LayoutParams);
+  public
+    OnClickListener: TView_OnClickListener;
+    procedure setOnClickListener(ACallback: TView_OnClickListener);
+    procedure callOnClickListener();
+  public
     procedure setVisibility(visibility: Integer);
   end;
 
@@ -147,14 +152,9 @@ type
   TTextView = class(TView)
   public
     constructor Create(); override;
-    procedure setText(AText: string);
-  public
-    OnClickListener: TView_OnClickListener;
-    procedure setOnClickListener(ACallback: TView_OnClickListener);
-    procedure callOnClickListener();
-  public
-    procedure setTextSize(unit_: Integer; size: Single);
     function getText(): string;
+    procedure setText(AText: string);
+    procedure setTextSize(unit_: Integer; size: Single);
   end;
 
   TEditText = class(TTextView)
@@ -249,12 +249,19 @@ type
 const
   { Constants }
   { TDisplayMetrics }
+  DENSITY_DEFAULT = $000000a0;
+  DENSITY_HIGH = $000000f0;
+  DENSITY_LOW = $00000078;
+  DENSITY_MEDIUM = $000000a0;
+  DENSITY_TV = $000000d5;
+  DENSITY_XHIGH = $00000140;
   { TDialogInterface }
-  BUTTON_NEGATIVE = $fffffffe;
-  BUTTON_NEUTRAL = $fffffffd;
-  BUTTON_POSITIVE = $ffffffff;
+  BUTTON_NEGATIVE = -2;
+  BUTTON_NEUTRAL = -3;
+  BUTTON_POSITIVE = -1;
   { TActivity }
   { TDisplay }
+  DEFAULT_DISPLAY = 0;
   { TWindowManager }
   { TDialog }
   { TAlertDialog }
@@ -263,16 +270,63 @@ const
   THEME_TRADITIONAL = $00000001;
   { TAlertDialog_Builder }
   { TViewGroup_LayoutParams }
-  FILL_PARENT = $FFFFFFFF;
-  MATCH_PARENT = $FFFFFFFF;
-  WRAP_CONTENT = $FFFFFFFE;
+  FILL_PARENT = -1;
+  MATCH_PARENT = -1;
+  WRAP_CONTENT = -2;
   { TView }
-  VISIBLE = 0;
-  INVISIBLE = 4;
+  DRAWING_CACHE_QUALITY_AUTO = 0;
+  DRAWING_CACHE_QUALITY_HIGH = $00100000;
+  DRAWING_CACHE_QUALITY_LOW = $00080000;
+  FOCUSABLES_ALL = $00000000;
+  FOCUSABLES_TOUCH_MODE = 1;
+  FOCUS_BACKWARD = 1;
+  FOCUS_DOWN = $00000082;
+  FOCUS_FORWARD = 2;
+  FOCUS_LEFT = $00000011;
+  FOCUS_RIGHT = $00000042;
+  FOCUS_UP = $00000021;
   GONE = 8;
+  HAPTIC_FEEDBACK_ENABLED = $10000000;
+  INVISIBLE = 4;
+  KEEP_SCREEN_ON = $04000000;
+  LAYER_TYPE_HARDWARE = 2;
+  LAYER_TYPE_NONE = 0;
+  LAYER_TYPE_SOFTWARE = 1;
+  MEASURED_HEIGHT_STATE_SHIFT = $00000010;
+  MEASURED_SIZE_MASK = $00ffffff;
+  MEASURED_STATE_MASK = $ff000000;
+  MEASURED_STATE_TOO_SMALL = $01000000;
+  NO_ID = -1;
+  OVER_SCROLL_ALWAYS = 0;
+  OVER_SCROLL_IF_CONTENT_SCROLLS = 1;
+  OVER_SCROLL_NEVER = 2;
+  SCROLLBARS_INSIDE_INSET = $01000000;
+  SCROLLBARS_INSIDE_OVERLAY = 0;
+  SCROLLBARS_OUTSIDE_INSET = $03000000;
+  SCROLLBARS_OUTSIDE_OVERLAY = $02000000;
+  SCROLLBAR_POSITION_DEFAULT = 0;
+  SCROLLBAR_POSITION_LEFT = 1;
+  SCROLLBAR_POSITION_RIGHT = 2;
+  SOUND_EFFECTS_ENABLED = $08000000;
+  STATUS_BAR_HIDDEN = 1;
+  STATUS_BAR_VISIBLE = 0;
+  VIEW_LOG_TAG = 'View';
+  VISIBLE = 0;
   { TViewGroup }
+  CLIP_TO_PADDING_MASK = $00000022;
+  FOCUS_AFTER_DESCENDANTS = $00040000;
+  FOCUS_BEFORE_DESCENDANTS = $00020000;
+  FOCUS_BLOCK_DESCENDANTS = $00060000;
+  PERSISTENT_ALL_CACHES = 3;
+  PERSISTENT_ANIMATION_CACHE = 1;
+  PERSISTENT_NO_CACHE = 0;
+  PERSISTENT_SCROLLING_CACHE = 2;
   { TLinearLayout }
   HORIZONTAL = 0;
+  SHOW_DIVIDER_BEGINNING = 1;
+  SHOW_DIVIDER_END = 8;
+  SHOW_DIVIDER_MIDDLE = 2;
+  SHOW_DIVIDER_NONE = 0;
   VERTICAL = 1;
   { TAbsoluteLayout }
   { TAbsoluteLayout_LayoutParams }
@@ -366,7 +420,10 @@ const
   amkUI_TViewGroup_LayoutParams_Create_0 = $00109000;
   // TView
   amkUI_TView_setLayoutParams_0 = $0010A000;
-  amkUI_TView_setVisibility_1 = $0010A001;
+  amkUI_TView_setOnClickListener_1 = $0010A001;
+  amkUI_TView_OnClickListener_Start_2 = $0010A002;
+  amkUI_TView_OnClickListener_Finished_3 = $0010A003;
+  amkUI_TView_setVisibility_4 = $0010A004;
   // TViewGroup
   amkUI_TViewGroup_addView_0 = $0010B000;
   amkUI_TViewGroup_addView_1 = $0010B001;
@@ -382,12 +439,9 @@ const
   amkUI_TAbsoluteLayout_LayoutParams_Create_0 = $0010E000;
   // TTextView
   amkUI_TTextView_Create_0 = $0010F000;
-  amkUI_TTextView_setText_1 = $0010F001;
-  amkUI_TTextView_setOnClickListener_2 = $0010F002;
-  amkUI_TTextView_OnClickListener_Start_3 = $0010F003;
-  amkUI_TTextView_OnClickListener_Finished_4 = $0010F004;
-  amkUI_TTextView_setTextSize_5 = $0010F005;
-  amkUI_TTextView_getText_6 = $0010F006;
+  amkUI_TTextView_getText_1 = $0010F001;
+  amkUI_TTextView_setText_2 = $0010F002;
+  amkUI_TTextView_setTextSize_3 = $0010F003;
   // TEditText
   amkUI_TEditText_Create_0 = $00110000;
   // TButton
@@ -668,10 +722,24 @@ begin
   vAndroidPipesComm.WaitForReturn();
 end;
 
+procedure TView.setOnClickListener(ACallback: TView_OnClickListener);
+begin
+  OnClickListener := ACallback;
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TView_setOnClickListener_1);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Index
+  vAndroidPipesComm.SendInt(PtrInt(Self)); // Self, Pascal pointer
+  vAndroidPipesComm.WaitForReturn();
+end;
+
+procedure TView.callOnClickListener();
+begin
+  if Assigned(OnClickListener) then OnClickListener();
+end;
 procedure TView.setVisibility(visibility: Integer);
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TView_setVisibility_1);
+  vAndroidPipesComm.SendInt(amkUI_TView_setVisibility_4);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(Integer(visibility));
   vAndroidPipesComm.WaitForReturn();
@@ -765,49 +833,35 @@ begin
   vAndroidPipesComm.SendInt(amkUI_TTextView_Create_0);
   Index := vAndroidPipesComm.WaitForIntReturn();
 end;
+function TTextView.getText(): string;
+begin
+  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
+  vAndroidPipesComm.SendInt(amkUI_TTextView_getText_1);
+  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
+  Result := vAndroidPipesComm.WaitForStringReturn();
+end;
+
 procedure TTextView.setText(AText: string);
 var
   lString_1: TString;
 begin
   lString_1 := TString.Create(AText);
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TTextView_setText_1);
+  vAndroidPipesComm.SendInt(amkUI_TTextView_setText_2);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(lString_1.Index); // text
   vAndroidPipesComm.WaitForReturn();
   lString_1.Free;
 end;
 
-procedure TTextView.setOnClickListener(ACallback: TView_OnClickListener);
-begin
-  OnClickListener := ACallback;
-  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TTextView_setOnClickListener_2);
-  vAndroidPipesComm.SendInt(Index); // Self, Java Index
-  vAndroidPipesComm.SendInt(PtrInt(Self)); // Self, Pascal pointer
-  vAndroidPipesComm.WaitForReturn();
-end;
-
-procedure TTextView.callOnClickListener();
-begin
-  if Assigned(OnClickListener) then OnClickListener();
-end;
 procedure TTextView.setTextSize(unit_: Integer; size: Single);
 begin
   vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TTextView_setTextSize_5);
+  vAndroidPipesComm.SendInt(amkUI_TTextView_setTextSize_3);
   vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
   vAndroidPipesComm.SendInt(Integer(unit_));
   vAndroidPipesComm.SendInt(Integer(size));
   vAndroidPipesComm.WaitForReturn();
-end;
-
-function TTextView.getText(): string;
-begin
-  vAndroidPipesComm.SendByte(ShortInt(amkUICommand));
-  vAndroidPipesComm.SendInt(amkUI_TTextView_getText_6);
-  vAndroidPipesComm.SendInt(Index); // Self, Java Pointer
-  Result := vAndroidPipesComm.WaitForStringReturn();
 end;
 
 constructor TEditText.Create();
@@ -1034,11 +1088,11 @@ begin
     TAlertDialog(lPascalPointer).callButton();
     vAndroidPipesComm.SendMessage(amkUICommand, amkUI_TAlertDialog_Button_Finished_2);
   end;
-  amkUI_TTextView_OnClickListener_Start_3:
+  amkUI_TView_OnClickListener_Start_2:
   begin
     lPascalPointer := vAndroidPipesComm.ReadInt();
-    TTextView(lPascalPointer).callOnClickListener();
-    vAndroidPipesComm.SendMessage(amkUICommand, amkUI_TTextView_OnClickListener_Finished_4);
+    TView(lPascalPointer).callOnClickListener();
+    vAndroidPipesComm.SendMessage(amkUICommand, amkUI_TView_OnClickListener_Finished_3);
   end;
   end;
 end;
