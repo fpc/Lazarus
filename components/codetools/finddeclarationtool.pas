@@ -801,10 +801,10 @@ type
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
     function FindUnitCaseInsensitive(var AnUnitName,
-                                     AnUnitInFilename: string): string; // ToDo: dotted
+                                     AnUnitInFilename: string): string;
     procedure GatherUnitAndSrcPath(var UnitPath, CompleteSrcPath: string);
     function SearchUnitInUnitLinks(const TheUnitName: string): string; deprecated;
-    function SearchUnitInUnitSet(const TheUnitName: string): string; // ToDo: dotted
+    function SearchUnitInUnitSet(const TheUnitName: string): string;
 
     function FindSmartHint(const CursorPos: TCodeXYPosition;
                     Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
