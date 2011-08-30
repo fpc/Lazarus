@@ -1668,7 +1668,7 @@ begin
     if i<>ExtLen then continue;
     // check name is dotted identifier
     p:=@Filename[ExtPos];
-    while (p>Filename) and (p[-1]<>PathDelim) do dec(p^);
+    while (p>Filename) and (p[-1]<>PathDelim) do dec(p);
     repeat
       if not (p^ in ['a'..'z','A'..'Z','_']) then exit(false);
       inc(p);
