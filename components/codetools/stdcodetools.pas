@@ -1044,9 +1044,10 @@ end;
 function TStandardCodeTool.RemoveUnitFromUsesSection(UsesNode: TCodeTreeNode;
   const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
 var UnitPos, StartPos, EndPos: integer;
+  Found: Boolean;
 begin
   Result:=false;
-  if (UsesNode=nil) or (AnUnitName='') or (length(AnUnitName)>255) then
+  if (UsesNode=nil) or (not IsDottedIdentifier(AnUnitName)) then
     exit;
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom; // read 'uses'
@@ -1056,15 +1057,15 @@ begin
     ReadNextAtom; // read name
     if not AtomIsIdentifier(false) then exit;
     inc(UnitPos);
-    if AtomIsIdentifier(PChar(AnUnitName)) then begin
+    StartPos:=CurPos.StartPos;
+    Found:=ReadAndCompareUsedUnit(AnUnitName);
+    if UpAtomIs('IN') then begin
+      ReadNextAtom;
+      ReadNextAtom;
+    end;
+    if Found then begin
       // unit found
       SourceChangeCache.MainScanner:=Scanner;
-      StartPos:=CurPos.StartPos;
-      ReadNextAtom;
-      if UpAtomIs('IN') then begin
-        ReadNextAtom;
-        ReadNextAtom;
-      end;
       if UnitPos=1 then begin
         // first unit in uses section
         if AtomIsChar(';') then begin
@@ -1088,11 +1089,6 @@ begin
       if not SourceChangeCache.Apply then exit;
       Result:=true;
       exit;
-    end;
-    ReadNextAtom;
-    if UpAtomIs('IN') then begin
-      ReadNextAtom;
-      ReadNextAtom;
     end;
     if AtomIsChar(';') then break;
     if not AtomIsChar(',') then break;
@@ -1133,7 +1129,7 @@ function TStandardCodeTool.FixUsedUnitCase(
 var
   SectionNode: TCodeTreeNode;
 begin
-  debugln('TStandardCodeTool.FixUsedUnitCase ',MainFilename);
+  //debugln('TStandardCodeTool.FixUsedUnitCase ',MainFilename);
   Result:=false;
   BuildTree(lsrImplementationUsesSectionEnd);
   SectionNode:=Tree.Root;
