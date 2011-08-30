@@ -792,7 +792,7 @@ type
           const AUnitName: string): TCodeTreeNode;
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
           const AnUnitName: string;
-          out NamePos, InPos: TAtomPosition): boolean; // ToDo: dotted
+          out NamePos, InPos: TAtomPosition): boolean;
     function FindUnitInAllUsesSections(const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean; // ToDo: dotted
     function GetUnitNameForUsesSection(TargetTool: TFindDeclarationTool): string;
@@ -1880,11 +1880,14 @@ end;
 
 function TFindDeclarationTool.FindUnitInUsesSection(UsesNode: TCodeTreeNode;
   const AnUnitName: string; out NamePos, InPos: TAtomPosition): boolean;
+var
+  CurUnitName: String;
+  StartPos: Integer;
 begin
   Result:=false;
   NamePos:=CleanAtomPosition;
   InPos:=CleanAtomPosition;
-  if (UsesNode=nil) or (AnUnitName='') or (length(AnUnitName)>255)
+  if (UsesNode=nil) or (not IsDottedIdentifier(AnUnitName))
   or (UsesNode.Desc<>ctnUsesSection) then begin
     DebugLn(['TFindDeclarationTool.FindUnitInUsesSection invalid AnUnitName']);
     exit;
@@ -1893,26 +1896,20 @@ begin
   ReadNextAtom; // read 'uses'
   repeat
     ReadNextAtom; // read name
-    if AtomIsChar(';') then break;
+    if CurPos.Flag=cafSemicolon then break;
     if (CurPos.StartPos>SrcLen) then break;
-    if CompareSrcIdentifiers(CurPos.StartPos,@AnUnitName[1]) then begin
-      NamePos:=CurPos;
-      InPos.StartPos:=-1;
+    StartPos:=CurPos.StartPos;
+    CurUnitName:=ExtractUsedUnitNameAtCursor;
+    if CompareDottedIdentifiers(PChar(CurUnitName),PChar(AnUnitName))=0 then
+    begin
+      MoveCursorToCleanPos(StartPos);
       ReadNextAtom;
-      if UpAtomIs('IN') then begin
-        ReadNextAtom;
-        InPos:=CurPos;
-      end;
+      ReadNextUsedUnit(NamePos,InPos);
       Result:=true;
       exit;
     end;
-    ReadNextAtom;
-    if UpAtomIs('IN') then begin
-      ReadNextAtom;
-      ReadNextAtom;
-    end;
-    if AtomIsChar(';') then break;
-    if not AtomIsChar(',') then break;
+    if CurPos.Flag=cafSemicolon then break;
+    if CurPos.Flag<>cafComma then break;
   until (CurPos.StartPos>SrcLen);
 end;
 
