@@ -122,11 +122,11 @@ type
   TCTDirectoryListing = class
   public
     FileTimeStamp: integer;
-    Files: PChar; { all filenames: each: time:TCTDirectoryListingHeader+filename+#0
+    Files: PChar; { each file: TCTDirectoryListingHeader+filename+#0
                     sorted: first case insensitive then sensitive }
     Count: integer; // number of filenames
-    Size: PtrInt; // length of Names in bytes
-    Starts: PInteger; // offsets in 'Names'
+    Size: PtrInt; // length of Files in bytes
+    Starts: PInteger; // offsets of each file in Files
     destructor Destroy; override;
     procedure Clear;
     function CalcMemSize: PtrUInt;
@@ -373,9 +373,9 @@ begin
   end;
   if (AUnitName^=#0) then
      if (Filename^='.') then
-        Result:=0
+       Result:=0
      else
-        Result:=ord('.')-ord(Filename^) // TG 2007-10-21
+       Result:=ord('.')-ord(Filename^)
   else
     Result:=ord(FPUpChars[AUnitName^])-ord(FPUpChars[Filename^]);
 end;
