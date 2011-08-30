@@ -402,8 +402,9 @@ var UnitPos, InPos: TAtomPosition;
   NewUsesTerm: string;
 begin
   Result:=false;
-  if (OldUnitName='') or (length(OldUnitName)>255) or (NewUnitName='')
-  or (length(NewUnitName)>255) then exit;
+  if (not IsDottedIdentifier(OldUnitName))
+  or (not IsDottedIdentifier(NewUnitName)) then
+    exit;
   if not FindUnitInAllUsesSections(OldUnitName,UnitPos,InPos) then begin
     //debugln('TStandardCodeTool.RenameUsedUnit not found: ',OldUnitName,' ');
     exit;
@@ -663,7 +664,8 @@ var
     end;
   end;
 
-var LineStart, LineEnd, Indent, InsertPos, InsertToPos, InsertLen: integer;
+var
+  LineStart, LineEnd, Indent, InsertPos, InsertToPos, InsertLen: integer;
   NewUsesTerm: string;
   InsertBehind: Boolean;
   InsertNode: TCodeTreeNode;
@@ -686,9 +688,10 @@ var LineStart, LineEnd, Indent, InsertPos, InsertToPos, InsertLen: integer;
   InsertPosFound: Boolean;
 begin
   Result:=false;
-  if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) or (NewUnitName='')
-  or (length(NewUnitName)>255) or (UsesNode.StartPos<1)
-  or (UsesNode.EndPos<1) then exit;
+  if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection)
+  or (UsesNode.StartPos<1) or (UsesNode.EndPos<1)
+  or (not IsDottedIdentifier(NewUnitName))
+  then exit;
   SourceChangeCache.MainScanner:=Scanner;
   Options:=SourceChangeCache.BeautifyCodeOptions;
 
@@ -745,15 +748,7 @@ begin
           BestDiffCnt:=High(integer);
           Node:=FirstNormalUsesNode;
           while Node<>nil do begin
-            MoveCursorToCleanPos(Node.StartPos);
-            ReadNextAtom;
-            AnUnitName:=GetAtom;
-            ReadNextAtom;
-            if UpAtomIs('IN') then begin
-              ReadNextAtom;
-              AnUnitInFilename:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
-            end else
-              AnUnitInFilename:='';
+            AnUnitName:=ExtractUsedUnitName(Node,@AnUnitInFilename);
             // search unit
             //DebugLn(['TStandardCodeTool.AddUnitToUsesSection Unit=',AnUnitName,' in "',AnUnitInFilename,'"']);
             NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
@@ -867,10 +862,7 @@ begin
         InsertToPos:=Node.EndPos;
         if (Node=InsertNode) and (not InsertBehind) then
           AddUseUnit(Lines,FirstIndent,Indent,NewUsesTerm);
-        MoveCursorToCleanPos(Node.StartPos);
-        ReadNextAtom;
-        InsertCode:=GetAtom;
-        ReadNextAtom;
+        InsertCode:=ExtractUsedUnitName(Node);
         if UpAtomIs('IN') then begin
           ReadNextAtom;
           InsertCode:=InsertCode+' '+Options.BeautifyKeyWord('in')+' '+GetAtom;

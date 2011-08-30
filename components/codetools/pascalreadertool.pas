@@ -210,6 +210,8 @@ type
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
     procedure ReadNextUsedUnit(out UnitNameRange, InAtom: TAtomPosition);
     procedure ReadPriorUsedUnit(out UnitNameRange, InAtom: TAtomPosition);
+    function ExtractUsedUnitName(UseUnitNode: TCodeTreeNode;
+          InFilename: PAnsiString = nil): string;
 
     // comments
     function FindCommentInFront(const StartPos: TCodeXYPosition;
@@ -2557,6 +2559,28 @@ begin
     AtomIsIdentifier(true);
     UnitNameRange.StartPos:=CurPos.StartPos;
   until false;
+end;
+
+function TPascalReaderTool.ExtractUsedUnitName(UseUnitNode: TCodeTreeNode;
+  InFilename: PAnsiString): string;
+begin
+  Result:='';
+  if InFilename<>nil then InFilename^:='';
+  if (UseUnitNode=nil) or (UseUnitNode.Desc<>ctnUseUnit) then exit;
+  MoveCursorToCleanPos(UseUnitNode.StartPos);
+  ReadNextAtom;
+  while CurPos.Flag=cafWord do begin
+    if Result<>'' then Result:=Result+'.';
+    Result:=Result+GetAtom;
+    ReadNextAtom;
+    if CurPos.Flag<>cafPoint then break;
+    ReadNextAtom;
+  end;
+  if (InFilename<>nil) and (UpAtomIs('IN')) then begin
+    ReadNextAtom;
+    if not AtomIsStringConstant then exit;
+    InFilename^:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
+  end;
 end;
 
 function TPascalReaderTool.FindCommentInFront(const StartPos: TCodeXYPosition;

@@ -174,6 +174,9 @@ function CompareAtom(p1, p2: PChar; NestedComments: boolean): integer;
 function CompareStringConstants(p1, p2: PChar): integer; // compare case sensitive
 function CompareComments(p1, p2: PChar; NestedComments: boolean): integer; // compare case insensitive
 
+// dotted identifiers
+function IsDottedIdentifier(const Identifier: string): boolean;
+
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
 function CodeIsOnlySpace(const ACode: string; FromPos, ToPos: integer): boolean;
@@ -4193,6 +4196,23 @@ var
 begin
   Result:=LineEndCount(Txt,LengthOfLastLine);
   if LengthOfLastLine=0 then ;
+end;
+
+function IsDottedIdentifier(const Identifier: string): boolean;
+var
+  p: PChar;
+begin
+  Result:=false;
+  if Identifier='' then exit;;
+  p:=PChar(Identifier);
+  repeat
+    if not IsIdentStartChar[p^] then exit;
+    inc(p);
+    while IsIdentChar[p^] do inc(p);
+    if p^<>'.' then break;
+    inc(p);
+  until false;
+  Result:=(p-PChar(Identifier))=length(Identifier);
 end;
 
 function TrimCodeSpace(const ACode: string): string;
