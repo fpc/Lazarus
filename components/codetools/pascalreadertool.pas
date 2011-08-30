@@ -2585,10 +2585,11 @@ begin
     if CurPos.Flag<>cafPoint then break;
     ReadNextAtom;
   end;
-  if (InFilename<>nil) and (UpAtomIs('IN')) then begin
+  if UpAtomIs('IN') then begin
     ReadNextAtom;
     if not AtomIsStringConstant then exit;
-    InFilename^:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
+    if InFilename<>nil then
+      InFilename^:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
     ReadNextAtom;
   end;
 end;

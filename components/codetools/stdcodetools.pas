@@ -126,7 +126,7 @@ type
                                     NormalUnits: TStrings;
                                     UseContainsSection: boolean = false): boolean;
     function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
-    function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings; // ToDo: dotted
+    function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
     function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
                               SearchImplementation: boolean;
                               SourceChangeCache: TSourceChangeCache): boolean; // ToDo: dotted
@@ -1368,7 +1368,7 @@ begin
         // source found => add filename to list
         FoundInUnits.AddObject(AnUnitName+' in '+AnUnitInFilename,NewCode);
       end;
-    end else begin
+    end else if AnUnitName<>'' then begin
       // the units without 'in' are 'Forms' or units added by the user
       NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
       NormalUnits.AddObject(AnUnitName,NewCode);
@@ -1401,19 +1401,21 @@ begin
   while Node<>nil do begin
     // read unit name
     AnUnitName:=ExtractUsedUnitName(Node,@AnUnitInFilename);
-    // find unit file
-    NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
-    if (NewCode=nil) then begin
-      // no source found
-      UnitFilename:=AnUnitName;
-      if AnUnitInFilename<>'' then
-        UnitFilename:=UnitFilename+' in '+AnUnitInFilename;
-    end else begin
-      // source found
-      UnitFilename:=NewCode.Filename;
+    if AnUnitName<>'' then begin
+      // find unit file
+      NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
+      if (NewCode=nil) then begin
+        // no source found
+        UnitFilename:=AnUnitName;
+        if AnUnitInFilename<>'' then
+          UnitFilename:=UnitFilename+' in '+AnUnitInFilename;
+      end else begin
+        // source found
+        UnitFilename:=NewCode.Filename;
+      end;
+      // add filename to list
+      Result.AddObject(UnitFilename,NewCode);
     end;
-    // add filename to list
-    Result.AddObject(UnitFilename,NewCode);
     Node:=Node.PriorBrother;
   end;
 end;
@@ -1421,20 +1423,19 @@ end;
 function TStandardCodeTool.UsesSectionToUnitnames(UsesNode: TCodeTreeNode
   ): TStrings;
 var
-  InAtom, UnitNameAtom: TAtomPosition;
   AnUnitName: string;
+  Node: TCodeTreeNode;
 begin
   Result:=TStringList.Create;
   if UsesNode=nil then exit;
-  MoveCursorToUsesEnd(UsesNode);
-  repeat
-    // read prior unit name
-    ReadPriorUsedUnit(UnitNameAtom, InAtom);
-    AnUnitName:=GetAtom(UnitNameAtom);
-    Result.Add(AnUnitName);
-    // read keyword 'uses' or comma
-    ReadPriorAtom;
-  until not AtomIsChar(',');
+  Node:=UsesNode.LastChild;
+  while Node<>nil do begin
+    // read unit name
+    AnUnitName:=ExtractUsedUnitName(Node);
+    if AnUnitName<>'' then
+      Result.Add(AnUnitName);
+    Node:=Node.PriorBrother;
+  end;
 end;
 
 function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
