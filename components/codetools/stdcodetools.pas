@@ -254,6 +254,9 @@ type
           const Filename: string = ''): boolean;
     function AddIncludeDirective(const Filename: string;
           SourceChangeCache: TSourceChangeCache; const NewSrc: string = ''
+          ): boolean; deprecated;
+    function AddIncludeDirectiveForInit(const Filename: string;
+          SourceChangeCache: TSourceChangeCache; const NewSrc: string = ''
           ): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer;
           SourceChangeCache: TSourceChangeCache;
@@ -6180,6 +6183,12 @@ begin
 end;
 
 function TStandardCodeTool.AddIncludeDirective(const Filename: string;
+  SourceChangeCache: TSourceChangeCache; const NewSrc: string): boolean;
+begin
+  Result:=AddIncludeDirectiveForInit(Filename,SourceChangeCache,NewSrc);
+end;
+
+function TStandardCodeTool.AddIncludeDirectiveForInit(const Filename: string;
   SourceChangeCache: TSourceChangeCache; const NewSrc: string): boolean;
 var
   ANode: TCodeTreeNode;

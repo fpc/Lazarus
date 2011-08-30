@@ -633,7 +633,7 @@ begin
     if FLrsIncludeAllowed and HasLazarusResources then
     begin
       //debugln(['TProjectResources.UpdateMainSourceFile include directive not found: FCanHaveLrsInclude=',FLrsIncludeAllowed,' HasLazarusResources=',HasLazarusResources]);
-      if not CodeToolBoss.AddIncludeDirective(CodeBuf,
+      if not CodeToolBoss.AddIncludeDirectiveForInit(CodeBuf,
         Filename,'') then
       begin
         Result := False;
@@ -710,7 +710,7 @@ begin
         Messages.Add('Could not remove "{$I '+ oldLrsFileName +'"} from main source!');
         Exit;
       end;
-      if not CodeToolBoss.AddIncludeDirective(CodeBuf, newLrsFileName, '') then
+      if not CodeToolBoss.AddIncludeDirectiveForInit(CodeBuf, newLrsFileName, '') then
       begin
         Result := False;
         debugln(['TProjectResources.RenameDirectives adding include directive to main source failed']);

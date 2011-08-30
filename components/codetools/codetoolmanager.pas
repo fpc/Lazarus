@@ -350,6 +350,8 @@ type
           out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
           const Filename: string = ''; SearchInCleanSrc: boolean = true): boolean;
     function AddIncludeDirective(Code: TCodeBuffer; const Filename: string;
+          const NewSrc: string = ''): boolean; deprecated;
+    function AddIncludeDirectiveForInit(Code: TCodeBuffer; const Filename: string;
           const NewSrc: string = ''): boolean;
     function RemoveDirective(Code: TCodeBuffer; NewX, NewY: integer;
           RemoveEmptyIFs: boolean): boolean;
@@ -3051,16 +3053,21 @@ begin
 end;
 
 function TCodeToolManager.AddIncludeDirective(Code: TCodeBuffer;
-  const Filename: string; const NewSrc: string
-  ): boolean;
+  const Filename: string; const NewSrc: string): boolean;
+begin
+  Result:=AddIncludeDirectiveForInit(Code,Filename,NewSrc);
+end;
+
+function TCodeToolManager.AddIncludeDirectiveForInit(Code: TCodeBuffer;
+  const Filename: string; const NewSrc: string): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.AddIncludeDirective A ',Code.Filename,' Filename=',Filename);
+  DebugLn('TCodeToolManager.AddIncludeDirectiveForInit A ',Code.Filename,' Filename=',Filename);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.AddIncludeDirective(Filename,SourceChangeCache,NewSrc);
+    Result:=FCurCodeTool.AddIncludeDirectiveForInit(Filename,SourceChangeCache,NewSrc);
   except
     on e: Exception do Result:=HandleException(e);
   end;
