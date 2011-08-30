@@ -794,12 +794,12 @@ type
           const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
     function FindUnitInAllUsesSections(const AnUnitName: string;
-          out NamePos, InPos: TAtomPosition): boolean; // ToDo: dotted
+          out NamePos, InPos: TAtomPosition): boolean;
     function GetUnitNameForUsesSection(TargetTool: TFindDeclarationTool): string;
     function GetUnitForUsesSection(TargetTool: TFindDeclarationTool): string; deprecated;
 
     function FindUnitSource(const AnUnitName,
-      AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer; // ToDo: dotted
+      AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
     function FindUnitCaseInsensitive(var AnUnitName,
                                      AnUnitInFilename: string): string; // ToDo: dotted
     procedure GatherUnitAndSrcPath(var UnitPath, CompleteSrcPath: string);
@@ -1920,7 +1920,7 @@ begin
   Result:=false;
   NamePos.StartPos:=-1;
   InPos.StartPos:=-1;
-  if (AnUnitName='') or (length(AnUnitName)>255) then begin
+  if not IsDottedIdentifier(AnUnitName) then begin
     DebugLn(['TFindDeclarationTool.FindUnitInAllUsesSections invalid AnUnitName']);
     exit;
   end;
