@@ -1628,59 +1628,55 @@ end;
 
 function FilenameIsPascalUnit(const Filename: string;
   CaseSensitive: boolean): boolean;
-var
-  i: TCTPascalExtType;
 begin
-  for i:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
-    if CTPascalExtension[i]='' then continue;
-    if CompareFileExt(Filename,CTPascalExtension[i],CaseSensitive)=0 then
-      exit(true);
-  end;
-  Result:=false;
+  Result:=(Filename<>'')
+    and FilenameIsPascalUnit(PChar(Filename),length(Filename),CaseSensitive);
 end;
 
 function FilenameIsPascalUnit(Filename: PChar; FilenameLen: integer;
   CaseSensitive: boolean): boolean;
 var
-  StartPos: LongInt;
+  ExtPos: LongInt;
   ExtLen: Integer;
   e: TCTPascalExtType;
   i: Integer;
   p: PChar;
 begin
-  StartPos:=FilenameLen-1;
-  while (StartPos>=0) and (Filename[StartPos]<>'.') do dec(StartPos);
-  if StartPos<=0 then exit(false);
+  if (Filename=nil) or (FilenameLen<2) then exit(false);
+  ExtPos:=FilenameLen-1;
+  while (ExtPos>0) and (Filename[ExtPos]<>'.') do dec(ExtPos);
+  if ExtPos<=0 then exit(false);
   // check extension
-  ExtLen:=FilenameLen-StartPos;
+  ExtLen:=FilenameLen-ExtPos;
   for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
     if (CTPascalExtension[e]='') or (length(CTPascalExtension[e])<>ExtLen) then
       continue;
     i:=0;
     p:=PChar(Pointer(CTPascalExtension[e]));// pointer type cast avoids #0 check
     if CaseSensitive then begin
-      while (i<ExtLen) and (p^=Filename[StartPos+i]) do begin
+      while (i<ExtLen) and (p^=Filename[ExtPos+i]) do begin
         inc(i);
         inc(p);
       end;
     end else begin
-      while (i<ExtLen) and (FPUpChars[p^]=FPUpChars[Filename[StartPos+i]]) do
+      while (i<ExtLen) and (FPUpChars[p^]=FPUpChars[Filename[ExtPos+i]]) do
       begin
         inc(i);
         inc(p);
       end;
     end;
-    if i=ExtLen then begin
-      // check name is identifier
-      i:=0;
-      if not (Filename[i] in ['a'..'z','A'..'Z','_']) then exit(false);
-      inc(i);
-      while i<StartPos do begin
-        if not (Filename[i] in ['a'..'z','A'..'Z','_','0'..'9']) then exit(false);
-        inc(i);
-      end;
-      exit(true);
-    end;
+    if i<>ExtLen then continue;
+    // check name is dotted identifier
+    p:=@Filename[ExtPos];
+    while (p>Filename) and (p[-1]<>PathDelim) do dec(p^);
+    repeat
+      if not (p^ in ['a'..'z','A'..'Z','_']) then exit(false);
+      inc(p);
+      while (p^ in ['a'..'z','A'..'Z','_','0'..'9']) do inc(p);
+      if p^<>'.' then exit(false);
+      if p-Filename=ExtPos then exit(true);
+      inc(p);
+    until false;
   end;
   Result:=false;
 end;
