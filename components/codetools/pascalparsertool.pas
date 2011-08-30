@@ -1864,8 +1864,8 @@ begin
     AtomIsIdentifier(true);
     CreateChildNode;
     CurNode.Desc:=ctnUseUnit;
-    CurNode.EndPos:=CurPos.EndPos;
     repeat
+      CurNode.EndPos:=CurPos.EndPos;
       ReadNextAtom;
       if CurPos.Flag<>cafPoint then break;
       ReadNextAtom;

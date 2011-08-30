@@ -129,7 +129,7 @@ type
     function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
     function FindMissingUnits(var MissingUnits: TStrings; FixCase: boolean;
                               SearchImplementation: boolean;
-                              SourceChangeCache: TSourceChangeCache): boolean; // ToDo: dotted
+                              SourceChangeCache: TSourceChangeCache): boolean;
     function CommentUnitsInUsesSections(MissingUnits: TStrings;
                                 SourceChangeCache: TSourceChangeCache): boolean; // ToDo: dotted
     function FindUnusedUnits(Units: TStrings): boolean; // ToDo: dotted
@@ -1444,7 +1444,6 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
   
   function CheckUsesSection(UsesNode: TCodeTreeNode): boolean;
   var
-    InAtom, UnitNameAtom: TAtomPosition;
     OldUnitName: String;
     OldInFilename: String;
     AFilename: String;
@@ -1453,20 +1452,15 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
     NewInFilename: String;
     FromPos: LongInt;
     ToPos: LongInt;
+    Node: TCodeTreeNode;
   begin
     if UsesNode=nil then exit(true);
     if not CheckDirectoryCache then exit(false);
 
-    MoveCursorToUsesStart(UsesNode);
-    repeat
+    Node:=UsesNode.FirstChild;
+    while Node<>nil do begin
       // read next unit name
-      ReadNextUsedUnit(UnitNameAtom, InAtom);
-      OldUnitName:=GetAtom(UnitNameAtom);
-      if InAtom.StartPos>0 then
-        OldInFilename:=copy(Src,InAtom.StartPos+1,
-                               InAtom.EndPos-InAtom.StartPos-2)
-      else
-        OldInFilename:='';
+      OldUnitName:=ExtractUsedUnitName(Node,@OldInFilename);
       // find unit file
       NewUnitName:=OldUnitName;
       NewInFilename:=OldInFilename;
@@ -1481,11 +1475,8 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
         and ((NewUnitName<>OldUnitName) or (NewInFilename<>OldInFilename)) then
         begin
           // fix case
-          FromPos:=UnitNameAtom.StartPos;
-          if InAtom.StartPos>0 then
-            ToPos:=InAtom.EndPos
-          else
-            ToPos:=UnitNameAtom.EndPos;
+          FromPos:=Node.StartPos;
+          ToPos:=Node.EndPos;
           SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,s);
           DebugLn('CheckUsesSection fix case Unit Name(',OldUnitName,'->',NewUnitName,') InFile(',OldInFilename,'->',NewInFilename,')');
         end;
@@ -1494,14 +1485,8 @@ function TStandardCodeTool.FindMissingUnits(var MissingUnits: TStrings;
         if MissingUnits=nil then MissingUnits:=TStringList.Create;
         MissingUnits.Add(s);
       end;
-      if CurPos.Flag=cafComma then begin
-        // read next unit name
-        ReadNextAtom;
-      end else if CurPos.Flag=cafSemicolon then begin
-        break;
-      end else
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
-    until false;
+      Node:=Node.NextBrother;
+    end;
     Result:=true;
   end;
   

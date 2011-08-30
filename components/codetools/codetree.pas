@@ -80,7 +80,7 @@ const
   ctnVarDefinition      = 21;
   ctnConstDefinition    = 22;
   ctnGlobalProperty     = 23;
-  ctnUseUnit            = 24;
+  ctnUseUnit            = 24; // StartPos=unitname, EndPos=unitname+inFilename
   ctnVarArgs            = 25;
 
   ctnClass              = 30;
