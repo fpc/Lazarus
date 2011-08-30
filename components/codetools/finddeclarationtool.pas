@@ -776,7 +776,7 @@ type
     function FindDeclarationInInterface(const Identifier: string;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclarationWithMainUsesSection(const Identifier: string;
-      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean; // ToDo: dotted
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
       out NewContext: TFindContext; IgnoreTypeLess: boolean = false): boolean;
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
@@ -789,7 +789,7 @@ type
     function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode;
     function FindImplementationUsesSection: TCodeTreeNode;
     function FindNameInUsesSection(UsesNode: TCodeTreeNode;
-          const AUnitName: string): TCodeTreeNode; // ToDo: dotted
+          const AUnitName: string): TCodeTreeNode;
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
           const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean; // ToDo: dotted
@@ -1867,11 +1867,15 @@ end;
 
 function TFindDeclarationTool.FindNameInUsesSection(UsesNode: TCodeTreeNode;
   const AUnitName: string): TCodeTreeNode;
+var
+  CurUnitName: string;
 begin
   Result:=UsesNode.FirstChild;
-  while (Result<>nil)
-  and (not CompareSrcIdentifiers(Result.StartPos,PChar(AUnitName))) do
+  while (Result<>nil) do begin
+    CurUnitName:=ExtractUsedUnitName(Result);
+    if CompareDottedIdentifiers(PChar(CurUnitName),PChar(AUnitName))=0 then exit;
     Result:=Result.NextBrother;
+  end;
 end;
 
 function TFindDeclarationTool.FindUnitInUsesSection(UsesNode: TCodeTreeNode;
