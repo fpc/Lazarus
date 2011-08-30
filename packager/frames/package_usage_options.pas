@@ -193,6 +193,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;
+  UnitPathEdit.AnchorToNeighbour(akRight,0,UnitPathButton);
 
   IncludePathButton := TPathEditorButton.Create(Self);
   with IncludePathButton do
@@ -208,6 +209,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;
+  IncludePathEdit.AnchorToNeighbour(akRight,0,IncludePathButton);
 
   ObjectPathButton := TPathEditorButton.Create(Self);
   with ObjectPathButton do
@@ -223,6 +225,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;
+  ObjectPathEdit.AnchorToNeighbour(akRight,0,ObjectPathButton);
 
   LibraryPathButton := TPathEditorButton.Create(Self);
   with LibraryPathButton do
@@ -238,6 +241,7 @@ begin
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;
+  LibraryPathEdit.AnchorToNeighbour(akRight,0,LibraryPathButton);
 
   ProjectGroupBox.Caption := dlgEnvProject;
   AddPackageUnitToProjectCheckBox.Caption := podAddPackageUnitToUsesSection;
