@@ -132,7 +132,7 @@ type
                               SourceChangeCache: TSourceChangeCache): boolean;
     function CommentUnitsInUsesSections(MissingUnits: TStrings;
                                 SourceChangeCache: TSourceChangeCache): boolean;
-    function FindUnusedUnits(Units: TStrings): boolean; // ToDo: dotted
+    function FindUnusedUnits(Units: TStrings): boolean;
 
     // lazarus resources
     function FindNextIncludeInInitialization(
@@ -1615,6 +1615,7 @@ function TStandardCodeTool.FindUnusedUnits(Units: TStrings): boolean;
 //   'implementation': unit is in implementation uses section
 //   'used': an identifier of the interface is used
 //   'code': unit has non empty initialization/finalization section
+{ $DEFINE VerboseFindUnusedUnits}
 var
   Identifiers: TAVLTree;// all identifiers used in this unit
 
@@ -1640,7 +1641,9 @@ var
       if IsIdentStartChar[Src[CurPos.StartPos]] then begin
         Identifier:=@Src[CurPos.StartPos];
         if Identifiers.Find(Identifier)=nil then begin
+          {$IFDEF VerboseFindUnusedUnits}
           DebugLn(['Used Identifier=',GetIdentifier(Identifier)]);
+          {$ENDIF}
           Identifiers.Add(Identifier);
         end;
       end;
@@ -1664,7 +1667,9 @@ var
   begin
     if Identifiers<>nil then exit;
     Identifiers:=TAVLTree.Create(@CompareIdentifierPtrs);
+    {$IFDEF VerboseFindUnusedUnits}
     DebugLn(['GatherIdentifiers ']);
+    {$ENDIF}
     StartPos:=-1;
     Node:=Tree.Root;
     while Node<>nil do begin
@@ -1697,8 +1702,10 @@ var
 
     function IsIdentifierUsed(StartPos: integer): boolean;
     begin
+      {$IFDEF VerboseFindUnusedUnits}
       if CompareIdentifiers(PChar(GetIdentifier(@Tool.Src[StartPos])),'TComponent')=0 then
         DebugLn(['IsIdentifierUsed ',GetIdentifier(@Tool.Src[StartPos])]);
+      {$ENDIF}
       Result:=Identifiers.Find(@Tool.Src[StartPos])<>nil;
     end;
 
@@ -1773,47 +1780,25 @@ var
 
   procedure CheckUsesSection(UsesNode: TCodeTreeNode; InImplementation: boolean);
   var
-    UnitNamePos: TAtomPosition;
-    UnitInFilePos: TAtomPosition;
     Unit_Name: String;
     UnitInFilename: String;
     Tool: TFindDeclarationTool;
     HasCode: boolean;
     UseInterface: boolean;
     Flags: String;
-    OldPos: LongInt;
+    Node: TCodeTreeNode;
   begin
     HasCode:=false;
     UseInterface:=false;
     if UsesNode=nil then exit;
-    MoveCursorToNodeStart(UsesNode);
-    ReadNextAtom;
-    if not UpAtomIs('USES') then
-      RaiseUsesExpected;
-    repeat
-      ReadNextAtom;  // read name
-      if AtomIsChar(';') then break;
-      AtomIsIdentifier(true);
-      UnitNamePos:=CurPos;
-      ReadNextAtom;
-      if UpAtomIs('IN') then begin
-        ReadNextAtom;
-        if not AtomIsStringConstant then RaiseStrConstExpected;
-        UnitInFilePos:=CurPos;
-        ReadNextAtom;
-      end else
-        UnitInFilePos.StartPos:=-1;
-      Unit_Name:=copy(Src,UnitNamePos.StartPos,
-                     UnitNamePos.EndPos-UnitNamePos.StartPos);
+    Node:=UsesNode.FirstChild;
+    while Node<>nil do begin
+      Unit_Name:=ExtractUsedUnitName(Node,@UnitInFilename);
       if not IsUnitAlreadyChecked(Unit_Name) then begin
-        OldPos:=CurPos.StartPos;
-        if UnitInFilePos.StartPos>=1 then begin
-          UnitInFilename:=copy(Src,UnitInFilePos.StartPos+1,
-                               UnitInFilePos.EndPos-UnitInFilePos.StartPos-2);
-        end else
-          UnitInFilename:='';
         // try to load the used unit
-        DebugLn(['CheckUsesSection ',Unit_Name,UnitInFilename]);
+        {$IFDEF VerboseFindUnusedUnits}
+        DebugLn(['CheckUsesSection ',Unit_Name,' in ',UnitInFilename]);
+        {$ENDIF}
         Tool:=FindCodeToolForUsedUnit(Unit_Name,UnitInFilename,true);
         // parse the used unit
         CheckUnit(Tool,HasCode,UseInterface);
@@ -1824,21 +1809,20 @@ var
           Flags:=Flags+',code';
         if UseInterface then
           Flags:=Flags+',used';
+        {$IFDEF VerboseFindUnusedUnits}
         DebugLn(['CheckUsesSection ',Unit_Name,'=',Flags]);
+        {$ENDIF}
         Units.Add(Unit_Name+'='+Flags);
-        // restore cursor
-        MoveCursorToCleanPos(OldPos);
-        ReadNextAtom;
       end;
-      if AtomIsChar(';') then break;
-      if not AtomIsChar(',') then
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom])
-    until (CurPos.StartPos>SrcLen);
+      Node:=Node.NextBrother;
+    end;
   end;
 
 begin
   Result:=false;
-  DebugLn(['TStandardCodeTool.FindUnusedUnits ']);
+  {$IFDEF VerboseFindUnusedUnits}
+  DebugLn(['TStandardCodeTool.FindUnusedUnits START']);
+  {$ENDIF}
   BuildTree(lsrImplementationUsesSectionEnd);
   Identifiers:=nil;
   try
@@ -1847,6 +1831,9 @@ begin
   finally
     Identifiers.Free;
   end;
+  {$IFDEF VerboseFindUnusedUnits}
+  DebugLn(['TStandardCodeTool.FindUnusedUnits END']);
+  {$ENDIF}
   Result:=true;
 end;
 
