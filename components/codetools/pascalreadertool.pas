@@ -2571,6 +2571,7 @@ end;
 
 function TPascalReaderTool.ExtractUsedUnitName(UseUnitNode: TCodeTreeNode;
   InFilename: PAnsiString): string;
+// after reading CurPos is on atom behind, i.e. comma or semicolon
 begin
   Result:='';
   if InFilename<>nil then InFilename^:='';
@@ -2588,6 +2589,7 @@ begin
     ReadNextAtom;
     if not AtomIsStringConstant then exit;
     InFilename^:=copy(Src,CurPos.StartPos+1,CurPos.EndPos-CurPos.StartPos-2);
+    ReadNextAtom;
   end;
 end;
 

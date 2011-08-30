@@ -1337,33 +1337,26 @@ end;
 function TStandardCodeTool.FindDelphiProjectUnits(var FoundInUnits,
   MissingInUnits, NormalUnits: TStrings; UseContainsSection: boolean): boolean;
 var
-  InAtom, UnitNameAtom: TAtomPosition;
   AnUnitName, AnUnitInFilename: string;
   NewCode: TCodeBuffer;
   UsesNode: TCodeTreeNode;
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   FoundInUnits:=nil;
   MissingInUnits:=nil;
   NormalUnits:=nil;
-  DebugLn('TStandardCodeTool.FindDelphiProjectUnits UseContainsSection=',dbgs(UseContainsSection));
   // find the uses sections
-  BuildTree(lsrEnd);
+  BuildTree(lsrMainUsesSectionEnd);
   UsesNode:=FindMainUsesSection(UseContainsSection);
   if UsesNode=nil then exit;
-  MoveCursorToUsesStart(UsesNode);
   FoundInUnits:=TStringList.Create;
   MissingInUnits:=TStringList.Create;
   NormalUnits:=TStringList.Create;
-  repeat
+  Node:=UsesNode.FirstChild;
+  while Node<>nil do begin
     // read next unit name
-    ReadNextUsedUnit(UnitNameAtom, InAtom);
-    AnUnitName:=GetAtom(UnitNameAtom);
-    if InAtom.StartPos>0 then begin
-      AnUnitInFilename:=copy(Src,InAtom.StartPos+1,
-                             InAtom.EndPos-InAtom.StartPos-2);
-    end else
-      AnUnitInFilename:='';
+    AnUnitName:=ExtractUsedUnitName(Node,@AnUnitInFilename);
     // find unit file
     if AnUnitInFilename<>'' then begin
       // An 'in' unit => Delphi project file
@@ -1380,14 +1373,8 @@ begin
       NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
       NormalUnits.AddObject(AnUnitName,NewCode);
     end;
-    if CurPos.Flag=cafComma then begin
-      // read next unit name
-      ReadNextAtom;
-    end else if CurPos.Flag=cafSemicolon then begin
-      break;
-    end else
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
-  until false;
+    Node:=Node.NextBrother;
+  end;
   Result:=true;
 end;
 
