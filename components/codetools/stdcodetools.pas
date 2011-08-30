@@ -917,7 +917,7 @@ var
   Junk     : TAtomPosition;
 begin
   Result:=false;
-  if (NewUnitName='') or (length(NewUnitName)>255) then exit;
+  if not IsDottedIdentifier(NewUnitName) then exit;
   if UsesSection=usMain then
     BuildTree(lsrMainUsesSectionEnd)
   else
@@ -1003,7 +1003,7 @@ var
   UsesNode: TCodeTreeNode;
 begin
   Result:=false;
-  if (AnUnitName='') or (length(AnUnitName)>255) then
+  if not IsDottedIdentifier(AnUnitName) then
     exit;
   if UsesSection=usMain then
     BuildTree(lsrMainUsesSectionEnd)
@@ -1020,30 +1020,45 @@ end;
 function TStandardCodeTool.UnitExistsInUsesSection(UsesNode: TCodeTreeNode;
   const AnUnitName: string; SourceChangeCache: TSourceChangeCache): boolean;
 var
-  UnitCount: integer;
+  p: PChar;
 begin
   Result:=false;
-  if (UsesNode=nil) or (AnUnitName='') or (length(AnUnitName)>255) then
+  if (UsesNode=nil) or (not IsDottedIdentifier(AnUnitName)) then
     exit;
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom; // read 'uses'
-  UnitCount:=0;
   repeat
+    p:=PChar(AnUnitName);
     ReadNextAtom; // read name
     if not AtomIsIdentifier(false) then exit;
-    inc(UnitCount);
-    if AtomIsIdentifier(PChar(AnUnitName)) then begin
-      // unit found
-      Result:=true;
-      exit;
+    while CompareIdentifiers(@Src[CurPos.StartPos],p)=0 do begin
+      inc(p,CurPos.EndPos-CurPos.StartPos);
+      ReadNextAtom;
+      if CurPos.Flag<>cafPoint then begin
+        // end of unit name reached
+        if p^=#0 then exit(true); // unit found
+        break;
+      end;
+      // dot
+      if p^<>'.' then begin
+        // skip rest of unit name
+        repeat
+          ReadNextAtom;
+          if not AtomIsIdentifier(false) then exit;
+          ReadNextAtom;
+        until CurPos.Flag<>cafPoint;
+        break;
+      end;
+      inc(p);
+      ReadNextAtom;
+      if not AtomIsIdentifier(false) then exit;
     end;
-    ReadNextAtom;
     if UpAtomIs('IN') then begin
       ReadNextAtom;
       ReadNextAtom;
     end;
-    if AtomIsChar(';') then break;
-    if not AtomIsChar(',') then break;
+    if CurPos.Flag=cafSemicolon then break;
+    if CurPos.Flag<>cafComma then break;
   until (CurPos.StartPos>UsesNode.EndPos) or (CurPos.StartPos>SrcLen);
 end;
 
