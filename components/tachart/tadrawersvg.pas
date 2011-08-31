@@ -364,8 +364,7 @@ begin
   Result := 'stroke:' + ColorToHex(FPen.FPColor) + ';';
   if FPen.Width <> 1 then
     Result += 'stroke-width:' + IntToStr(FPen.Width) + ';';
-  if PEN_DASHARRAY[FPen.Style] <> '' then
-    Result += 'stroke-dasharray:' + PEN_DASHARRAY[FPen.Style] + ';';
+  Result += FormatIfNotEmpty('stroke-dasharray:%s;', PEN_DASHARRAY[FPen.Style]);
 end;
 
 procedure TSVGDrawer.WriteFmt(const AFormat: String; AParams: array of const);

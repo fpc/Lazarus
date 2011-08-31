@@ -518,12 +518,10 @@ const
     ('Left', 'Top', 'Right', 'Bottom');
   VISIBLE_NAME: array [Boolean] of String = (' Hidden', '');
   INVERTED_NAME: array [Boolean] of String = ('', ' Inverted');
-  CAPTION_FMT = ' (%s)';
 begin
   Result :=
-    SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[Inverted];
-  if Title.Caption <> '' then
-    Result += Format(CAPTION_FMT, [Title.Caption]);
+    SIDE_NAME[Alignment] + VISIBLE_NAME[Visible] + INVERTED_NAME[Inverted] +
+    FormatIfNotEmpty(' (%s)', Title.Caption);
 end;
 
 function TChartAxis.GetMarks: TChartAxisMarks;

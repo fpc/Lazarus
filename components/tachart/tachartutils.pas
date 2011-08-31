@@ -248,6 +248,8 @@ procedure Exchange(var A, B: String); overload; inline;
 
 procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
 
+function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
+
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IntToColorHex(AColor: Integer): String; inline;
 
@@ -358,6 +360,14 @@ begin
   d := AHi - ALo;
   ALo -= d * ACoeff;
   AHi += d * ACoeff;
+end;
+
+function FormatIfNotEmpty(AFormat, AStr: String): String;
+begin
+  if AStr = '' then
+    Result := ''
+  else
+    Result := Format(AFormat, [AStr]);
 end;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
