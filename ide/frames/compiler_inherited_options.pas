@@ -36,10 +36,10 @@ unit compiler_inherited_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls,
   CodeToolsCfgScript, IDEOptionsIntf, IDEImagesIntf, ProjectIntf, CompOptsIntf,
-  Project, CompilerOptions, LazarusIDEStrConsts, IDEProcs;
+  Project, PackageDefs, CompilerOptions, LazarusIDEStrConsts, IDEProcs;
 
 type
 
@@ -150,82 +150,113 @@ var
     ChildNode.SelectedIndex := ChildNode.ImageIndex;
   end;
 
+var
+  SkippedPkgList: TFPList;
+  AProject: TProject;
+  Pkg: TLazPackage;
 begin
   OptionsList := nil;
+  //debugln(['TCompilerInheritedOptionsFrame.UpdateInheritedTree START CompilerOpts=',DbgSName(CompilerOpts)]);
   CompilerOpts.GetInheritedCompilerOptions(OptionsList);
-  InhTreeView.BeginUpdate;
-  ClearInheritedTree;
-  if OptionsList <> nil then
-  begin
-    Vars:=GetBuildMacroValues(CompilerOpts,false);
-    // add All node
-    AncestorNode := InhTreeView.Items.Add(nil, lisAllInheritedOptions);
-    AncestorNode.ImageIndex := ImageIndexInherited;
-    AncestorNode.SelectedIndex := AncestorNode.ImageIndex;
-    with CompilerOpts do
-    begin
-      AddChildNode(lisunitPath,
-        GetInheritedOption(icoUnitPath, True), icoUnitPath);
-      AddChildNode(lisincludePath,
-        GetInheritedOption(icoIncludePath, True), icoIncludePath);
-      AddChildNode(lisobjectPath,
-        GetInheritedOption(icoObjectPath, True), icoObjectPath);
-      AddChildNode(lislibraryPath,
-        GetInheritedOption(icoLibraryPath, True), icoLibraryPath);
-      AddChildNode(lislinkerOptions, GetInheritedOption(icoLinkerOptions, True),
-        icoLinkerOptions);
-      AddChildNode(liscustomOptions, GetInheritedOption(icoCustomOptions, True),
-        icoCustomOptions);
+  SkippedPkgList:=nil;
+  try
+    if CompilerOpts is TProjectCompilerOptions then begin
+      AProject:=TProjectCompilerOptions(CompilerOpts).LazProject;
+      AProject.GetAllRequiredPackages(SkippedPkgList);
+      if (SkippedPkgList<>nil)
+      and (not (pfUseDesignTimePackages in AProject.Flags)) then begin
+        // keep design time only packages
+        for i:=SkippedPkgList.Count-1 downto 0 do
+          if TLazPackage(SkippedPkgList[i]).PackageType<>lptDesignTime then
+            SkippedPkgList.Delete(i);
+      end;
     end;
-    AncestorNode.Expanded := True;
-    // add detail nodes
-    for i := 0 to OptionsList.Count - 1 do
+    //debugln(['TCompilerInheritedOptionsFrame.UpdateInheritedTree END']);
+    InhTreeView.BeginUpdate;
+    ClearInheritedTree;
+    if OptionsList <> nil then
     begin
-      AncestorOptions := TAdditionalCompilerOptions(OptionsList[i]);
-      AncestorNode := InhTreeView.Items.Add(nil, '');
-      AncestorNode.Text := AncestorOptions.GetOwnerName;
-      AncestorNode.ImageIndex := ImageIndexPackage;
+      Vars:=GetBuildMacroValues(CompilerOpts,false);
+      // add All node
+      AncestorNode := InhTreeView.Items.Add(nil, lisAllInheritedOptions);
+      AncestorNode.ImageIndex := ImageIndexInherited;
       AncestorNode.SelectedIndex := AncestorNode.ImageIndex;
-      AncestorBaseOpts:=AncestorOptions.GetBaseCompilerOptions;
-      with AncestorOptions.ParsedOpts do
+      with CompilerOpts do
       begin
         AddChildNode(lisunitPath,
-          CreateRelativeSearchPath(GetParsedValue(pcosUnitPath),
-          CompilerOpts.BaseDirectory),
-          icoUnitPath);
+          GetInheritedOption(icoUnitPath, True), icoUnitPath);
         AddChildNode(lisincludePath,
-          CreateRelativeSearchPath(GetParsedValue(pcosIncludePath),
-          CompilerOpts.BaseDirectory),
-          icoIncludePath);
+          GetInheritedOption(icoIncludePath, True), icoIncludePath);
         AddChildNode(lisobjectPath,
-          CreateRelativeSearchPath(GetParsedValue(pcosObjectPath),
-          CompilerOpts.BaseDirectory),
-          icoObjectPath);
+          GetInheritedOption(icoObjectPath, True), icoObjectPath);
         AddChildNode(lislibraryPath,
-          CreateRelativeSearchPath(GetParsedValue(pcosLibraryPath),
-          CompilerOpts.BaseDirectory),
-          icoLibraryPath);
-        AddChildNode(lislinkerOptions, GetParsedValue(pcosLinkerOptions),
+          GetInheritedOption(icoLibraryPath, True), icoLibraryPath);
+        AddChildNode(lislinkerOptions, GetInheritedOption(icoLinkerOptions, True),
           icoLinkerOptions);
-        AddChildNode(liscustomOptions, GetParsedValue(pcosCustomOptions),
+        AddChildNode(liscustomOptions, GetInheritedOption(icoCustomOptions, True),
           icoCustomOptions);
       end;
-      if (AncestorBaseOpts<>nil) and (Vars<>nil) then begin
-        for j:=0 to AncestorBaseOpts.BuildMacros.Count-1 do
-        begin
-          Macro:=AncestorBaseOpts.BuildMacros[j];
-          AddChildNode(Macro.Identifier,Vars.Values[Macro.Identifier],icoNone);
-        end;
-      end;
       AncestorNode.Expanded := True;
+      // add detail nodes
+      for i := 0 to OptionsList.Count - 1 do
+      begin
+        AncestorOptions := TAdditionalCompilerOptions(OptionsList[i]);
+        AncestorNode := InhTreeView.Items.Add(nil, '');
+        AncestorNode.Text := AncestorOptions.GetOwnerName;
+        AncestorNode.ImageIndex := ImageIndexPackage;
+        AncestorNode.SelectedIndex := AncestorNode.ImageIndex;
+        AncestorBaseOpts:=AncestorOptions.GetBaseCompilerOptions;
+        with AncestorOptions.ParsedOpts do
+        begin
+          AddChildNode(lisunitPath,
+            CreateRelativeSearchPath(GetParsedValue(pcosUnitPath),
+            CompilerOpts.BaseDirectory),
+            icoUnitPath);
+          AddChildNode(lisincludePath,
+            CreateRelativeSearchPath(GetParsedValue(pcosIncludePath),
+            CompilerOpts.BaseDirectory),
+            icoIncludePath);
+          AddChildNode(lisobjectPath,
+            CreateRelativeSearchPath(GetParsedValue(pcosObjectPath),
+            CompilerOpts.BaseDirectory),
+            icoObjectPath);
+          AddChildNode(lislibraryPath,
+            CreateRelativeSearchPath(GetParsedValue(pcosLibraryPath),
+            CompilerOpts.BaseDirectory),
+            icoLibraryPath);
+          AddChildNode(lislinkerOptions, GetParsedValue(pcosLinkerOptions),
+            icoLinkerOptions);
+          AddChildNode(liscustomOptions, GetParsedValue(pcosCustomOptions),
+            icoCustomOptions);
+        end;
+        if (AncestorBaseOpts<>nil) and (Vars<>nil) then begin
+          for j:=0 to AncestorBaseOpts.BuildMacros.Count-1 do
+          begin
+            Macro:=AncestorBaseOpts.BuildMacros[j];
+            AddChildNode(Macro.Identifier,Vars.Values[Macro.Identifier],icoNone);
+          end;
+        end;
+        AncestorNode.Expanded := True;
+      end;
+      OptionsList.Free;
+    end
+    else
+    begin
+      InhTreeView.Items.Add(nil, lisNoCompilerOptionsInherited);
     end;
-    OptionsList.Free;
-  end
-  else
-  begin
-    InhTreeView.Items.Add(nil, lisNoCompilerOptionsInherited);
+    if SkippedPkgList<>nil then begin
+      for i:=0 to SkippedPkgList.Count-1 do begin
+        Pkg:=TLazPackage(SkippedPkgList[i]);
+        AncestorNode := InhTreeView.Items.Add(nil, '');
+        AncestorNode.Text := Format(lisExcludedAtRunTime, [Pkg.Name]);
+        AncestorNode.ImageIndex := ImageIndexPackage;
+        AncestorNode.SelectedIndex := AncestorNode.ImageIndex;
+      end;
+    end;
+    InhTreeView.EndUpdate;
+  finally
+    SkippedPkgList.Free;
   end;
-  InhTreeView.EndUpdate;
 end;
 
 destructor TCompilerInheritedOptionsFrame.Destroy;

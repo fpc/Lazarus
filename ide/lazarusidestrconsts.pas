@@ -1773,6 +1773,7 @@ resourcestring
   dlgCOOpts = 'Options: ';
   dlgCOAsmStyle = 'Assembler style:';
   lisNoCompilerOptionsInherited = 'No compiler options inherited.';
+  lisExcludedAtRunTime = '%s excluded at run time';
   lisAllInheritedOptions = 'All inherited options';
   lisunitPath = 'unit path';
   lisincludePath = 'include path';
