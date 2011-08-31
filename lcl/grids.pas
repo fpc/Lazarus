@@ -103,7 +103,8 @@ type
     goHeaderHotTracking,  // Header cells change look when mouse is over them
     goHeaderPushedLook,   // Header cells looks pushed when clicked
     goSelectionActive,    // Setting grid.Selection moves also cell cursor
-    goFixedColSizing
+    goFixedColSizing,     // Allow to resize fixed columns
+    goDontScrollPartCell  // clicking partially visible cells will not scroll
   );
   TGridOptions = set of TGridOption;
 
@@ -3156,7 +3157,8 @@ begin
       Xinc := 1               // hidden at the right of clientwidth line
     else
     if (RNew.Left > FGCache.FixedWidth+GetBorderWidth) and
-       (RNew.Left < CWidth) and (CWidth < RNew.Right) then begin
+       (RNew.Left < CWidth) and (CWidth < RNew.Right) and
+       (not (goDontScrollPartCell in Options)) then begin
       Xinc := 1;              // partially visible at the right
       FGCache.TLColOff := 0;  // cancel col-offset for next calcs
     end;
@@ -3169,7 +3171,8 @@ begin
       YInc := 1               // hidden at the bottom of clientheight line
     else
     if (RNew.Top > FGCache.FixedHeight+GetBorderWidth) and
-       (RNew.Top < CHeight) and (CHeight < RNew.Bottom) then begin
+       (RNew.Top < CHeight) and (CHeight < RNew.Bottom) and
+       (not (goDontScrollPartCell in Options)) then begin
       Yinc := 1;              // partially visible at bottom
       FGCache.TLRowOff := 0;  // cancel row-offset for next calcs
     end;
