@@ -2,6 +2,13 @@
 EnableISX=true
 [Defines]
 #define AppVersion GetEnv('LazVersion')
+// LazVersion may be 0.9.30.2RC1
+// A valid file version contains only digits, so drop the RC part
+#if pos('RC',AppVersion)>0
+  #define FileVersion = copy(AppVersion, 1, pos('RC', AppVersion)-1)
+#else
+  #define FileVersion = AppVersion
+#endif
 #define FPCVersion GetEnv('FPCVersion')
 #define FPCTargetOS GetEnv('FPCTargetOS')
 #define FPCFullTarget GetEnv('FPCFullTarget')
@@ -27,7 +34,7 @@ InternalCompressLevel=ultra
 ;InternalCompressLevel=ultra64
 ;Compression=lzma2/ultra64
 SolidCompression=true
-VersionInfoVersion={#AppVersion}
+VersionInfoVersion={#FileVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
 ShowLanguageDialog=yes
 WizardImageFile=lazarus_install_cheetah.bmp
