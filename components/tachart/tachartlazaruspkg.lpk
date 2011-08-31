@@ -165,7 +165,7 @@
         <UnitName Value="TAEnumerators"/>
       </Item30>
       <Item31>
-        <Filename Value="tadatapointseditor.pas"/>
+        <Filename Value="editors\tadatapointseditor.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TADataPointsEditor"/>
       </Item31>
