@@ -34,6 +34,7 @@ type
 
   TChartExtentLink = class(TComponent)
   strict private
+    FEnabled: Boolean;
     FLinkedCharts: TLinkedCharts;
     FMode: TChartExtendLinkMode;
   public
@@ -42,6 +43,7 @@ type
 
     procedure SyncWith(AChart: TChart);
   published
+    property Enabled: Boolean read FEnabled write FEnabled default true;
     property LinkedCharts: TLinkedCharts read FLinkedCharts write FLinkedCharts;
     property Mode: TChartExtendLinkMode read FMode write FMode default elmXY;
   end;
@@ -106,6 +108,7 @@ end;
 constructor TChartExtentLink.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FEnabled := true;
   FLinkedCharts := TLinkedCharts.Create(Self);
 end;
 
@@ -126,7 +129,7 @@ procedure TChartExtentLink.SyncWith(AChart: TChart);
 var
   c: TCollectionItem;
 begin
-  if AChart = nil then exit;
+  if not FEnabled or (AChart = nil) then exit;
   for c in LinkedCharts do
     with TLinkedChart(c).Chart do begin
       // Do not sync if the chart was never drawn yet.
