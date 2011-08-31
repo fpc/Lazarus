@@ -63,12 +63,12 @@
         <UnitName Value="TASeries"/>
       </Item7>
       <Item8>
-        <Filename Value="taserieseditor.pas"/>
+        <Filename Value="editors\taserieseditor.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TASeriesEditor"/>
       </Item8>
       <Item9>
-        <Filename Value="tasubcomponentseditor.pas"/>
+        <Filename Value="editors\tasubcomponentseditor.pas"/>
         <UnitName Value="TASubcomponentsEditor"/>
       </Item9>
       <Item10>
