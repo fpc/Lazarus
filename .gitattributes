@@ -2449,6 +2449,7 @@ components/tachart/demo/wmf/main.lfm svneol=native#text/plain
 components/tachart/demo/wmf/main.pas svneol=native#text/pascal
 components/tachart/demo/wmf/wmfdemo.lpi svneol=native#text/plain
 components/tachart/demo/wmf/wmfdemo.lpr svneol=native#text/pascal
+components/tachart/editors/tatooleditors.pas svneol=native#text/pascal
 components/tachart/fpdoc/descr.lst svneol=native#text/plain
 components/tachart/fpdoc/input.lst svneol=native#text/plain
 components/tachart/fpdoc/tachartaxis.xml svneol=native#text/plain
