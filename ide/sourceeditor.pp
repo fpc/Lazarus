@@ -1728,7 +1728,7 @@ begin
     if (Editor<>nil) then
       Font := Editor.Font
     else begin
-      Font.Height:=EditorOpts.EditorFontHeight; // set Height before name for XLFD !
+      Font.Size:=EditorOpts.EditorFontSize; // set Size before name for XLFD !
       Font.Name:=EditorOpts.EditorFont;
     end;
     Font.Style:=[];
@@ -1763,7 +1763,7 @@ begin
     if (Editor<>nil) then
       Font:=Editor.Font
     else begin
-      Font.Height:=EditorOpts.EditorFontHeight; // set Height before name of XLFD !
+      Font.Size:=EditorOpts.EditorFontSize; // set Size before name of XLFD !
       Font.Name:=EditorOpts.EditorFont;
     end;
     Font.Style:=[];

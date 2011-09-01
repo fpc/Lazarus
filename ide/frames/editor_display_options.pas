@@ -39,8 +39,8 @@ type
     EditorFontButton: TButton;
     EditorFontComboBox: TComboBox;
     EditorFontGroupBox: TGroupBox;
-    EditorFontHeightComboBox: TComboBox;
-    EditorFontHeightLabel: TLabel;
+    EditorFontSizeSpinEdit: TSpinEdit;
+    EditorFontSizeLabel: TLabel;
     ExtraCharSpacingComboBox: TComboBox;
     ExtraCharSpacingLabel: TLabel;
     ExtraLineSpacingComboBox: TComboBox;
@@ -58,6 +58,7 @@ type
     VisibleRightMarginCheckBox: TCheckBox;
     procedure EditorFontButtonClick(Sender: TObject);
     procedure EditorFontComboBoxEditingDone(Sender: TObject);
+    procedure EditorFontSizeSpinEditChange(Sender: TObject);
     procedure ComboboxOnExit(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -69,7 +70,10 @@ type
     procedure ShowLineNumbersCheckBoxClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
+    FUpdatingFontSizeRange: Boolean;
+    function FontSizeNegativeToPositive(NegativeSize: Integer): Integer;
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
+    procedure SetEditorFontSizeSpinEditValue(FontSize: Integer);
 
     procedure FontDialogApplyClicked(Sender: TObject);
     function DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
@@ -86,6 +90,20 @@ implementation
 
 {$R *.lfm}
 
+uses
+  LCLIntf;
+
+function TEditorDisplayOptionsFrame.FontSizeNegativeToPositive(NegativeSize: Integer): Integer;
+var
+  tm: TTextMetric;
+begin
+  DisplayPreview.Canvas.Font.Assign(DisplayPreview.Font);
+  if LCLIntf.GetTextMetrics(DisplayPreview.Canvas.Handle, tm) then
+    Result := -(NegativeSize + MulDiv(tm.tmInternalLeading, 72, DisplayPreview.Font.PixelsPerInch))
+  else
+    Result := -NegativeSize;
+end;
+
 procedure TEditorDisplayOptionsFrame.FontDialogApplyClicked(Sender: TObject);
 var
   a: Integer;
@@ -96,7 +114,7 @@ begin
         PreviewEdits[a].Font.Assign(TFontDialog(Sender).Font);
 
   SetComboBoxText(EditorFontComboBox, DisplayPreview.Font.Name,cstCaseInsensitive);
-  SetComboBoxText(EditorFontHeightComboBox, IntToStr(DisplayPreview.Font.Height),cstCaseInsensitive);
+  SetEditorFontSizeSpinEditValue(DisplayPreview.Font.Size);
 end;
 
 function TEditorDisplayOptionsFrame.DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
@@ -108,16 +126,20 @@ end;
 procedure TEditorDisplayOptionsFrame.EditorFontButtonClick(Sender: TObject);
 var
   FontDialog: TFontDialog;
-  NewHeight: LongInt;
+  CurFontSize: Integer;
 begin
   FontDialog := TFontDialog.Create(nil);
   try
     with FontDialog do
     begin
       Font.Name := EditorFontComboBox.Text;
-      NewHeight := StrToIntDef(EditorFontHeightComboBox.Text, DisplayPreview.Font.Height);
-      RepairEditorFontHeight(NewHeight);
-      Font.Height := NewHeight;
+      CurFontSize := EditorFontSizeSpinEdit.Value;
+      if CurFontSize < 0 then
+      begin
+        CurFontSize := FontSizeNegativeToPositive(CurFontSize);
+        RepairEditorFontSize(CurFontSize);
+      end;
+      Font.Size := CurFontSize;
       Options := Options + [fdApplyButton];
       OnApplyClicked := @FontDialogApplyClicked;
       if Execute then
@@ -138,21 +160,32 @@ begin
         PreviewEdits[i].Font.Name := EditorFontComboBox.Text;
 end;
 
+procedure TEditorDisplayOptionsFrame.EditorFontSizeSpinEditChange(Sender: TObject);
+var
+  NewVal, a: Integer;
+begin
+  NewVal := EditorFontSizeSpinEdit.Value;
+  if (NewVal < 0) and (NewVal > -EditorOptionsMinimumFontSize) then
+  begin
+    // Skip to minimum positive value. Will trigger OnChange again.
+    SetEditorFontSizeSpinEditValue(EditorOptionsMinimumFontSize);
+  end
+  else
+  begin
+    if (NewVal > 0) and not FUpdatingFontSizeRange then
+      EditorFontSizeSpinEdit.MinValue := EditorOptionsMinimumFontSize;
+
+    with GeneralPage do
+      for a := Low(PreviewEdits) to High(PreviewEdits) do
+        if PreviewEdits[a] <> nil then
+          PreviewEdits[a].Font.Size := NewVal;
+  end;
+end;
+
 procedure TEditorDisplayOptionsFrame.ComboboxOnExit(Sender: TObject);
 var
   NewVal, a: Integer;
 begin
-  if Sender = EditorFontHeightComboBox then
-  begin
-    NewVal := StrToIntDef(EditorFontHeightComboBox.Text, DisplayPreview.Font.Height);
-    RepairEditorFontHeight(NewVal);
-    SetComboBoxText(EditorFontHeightComboBox, IntToStr(NewVal),cstCaseInsensitive);
-    with GeneralPage do
-      for a := Low(PreviewEdits) to High(PreviewEdits) do
-        if PreviewEdits[a] <> nil then
-          PreviewEdits[a].Font.Height := NewVal;
-  end
-  else
   if Sender = ExtraCharSpacingComboBox then
   begin
     NewVal := StrToIntDef(ExtraCharSpacingComboBox.Text, DisplayPreview.ExtraCharSpacing);
@@ -277,6 +310,17 @@ begin
   Result := TEditorGeneralOptionsFrame(FDialog.FindEditor(TEditorGeneralOptionsFrame));
 end;
 
+procedure TEditorDisplayOptionsFrame.SetEditorFontSizeSpinEditValue(FontSize: Integer);
+begin
+  FUpdatingFontSizeRange := True;
+  if FontSize < 0 then
+    EditorFontSizeSpinEdit.MinValue := -EditorFontSizeSpinEdit.MaxValue
+  else
+    EditorFontSizeSpinEdit.MinValue := EditorOptionsMinimumFontSize;
+  FUpdatingFontSizeRange := False;
+  EditorFontSizeSpinEdit.Value := FontSize;
+end;
+
 function TEditorDisplayOptionsFrame.GetTitle: String;
 begin
   Result := dlgEdDisplay;
@@ -287,6 +331,7 @@ begin
   // Prevent the caret from moving
   DisplayPreview.RegisterMouseActionSearchHandler(@DoSynEditMouse);
   FDialog := ADialog;
+  FUpdatingFontSizeRange := False;
 
   MarginAndGutterGroupBox.Caption := dlgMarginGutter;
   VisibleRightMarginCheckBox.Caption := dlgVisibleRightMargin;
@@ -296,7 +341,7 @@ begin
   GutterSeparatorIndexLabel.Caption := dlgGutterSeparatorIndex;
   RightMarginLabel.Caption := dlgRightMargin;
   EditorFontGroupBox.Caption := dlgDefaultEditorFont;
-  EditorFontHeightLabel.Caption := dlgEditorFontHeight;
+  EditorFontSizeLabel.Caption := dlgEditorFontSize;
   ExtraCharSpacingLabel.Caption := dlgExtraCharSpacing;
   ExtraLineSpacingLabel.Caption := dlgExtraLineSpacing;
   DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
@@ -320,7 +365,7 @@ begin
     VisibleRightMarginCheckBox.Checked := VisibleRightMargin;
     SetComboBoxText(RightMarginComboBox, IntToStr(RightMargin),cstCaseInsensitive);
     SetComboBoxText(EditorFontComboBox, EditorFont,cstCaseInsensitive);
-    SetComboBoxText(EditorFontHeightComboBox, IntToStr(EditorFontHeight),cstCaseInsensitive);
+    SetEditorFontSizeSpinEditValue(EditorFontSize);
     SetComboBoxText(ExtraCharSpacingComboBox, IntToStr(ExtraCharSpacing),cstCaseInsensitive);
     SetComboBoxText(ExtraLineSpacingComboBox, IntToStr(ExtraLineSpacing),cstCaseInsensitive);
     DisableAntialiasingCheckBox.Checked := DisableAntialiasing;
@@ -342,7 +387,7 @@ begin
     VisibleRightMargin := VisibleRightMarginCheckBox.Checked;
     RightMargin := StrToIntDef(RightMarginComboBox.Text, 80);
     EditorFont := EditorFontComboBox.Text;
-    EditorFontHeight := StrToIntDef(EditorFontHeightComboBox.Text, EditorFontHeight);
+    EditorFontSize := EditorFontSizeSpinEdit.Value;
     ExtraCharSpacing := StrToIntDef(ExtraCharSpacingComboBox.Text, ExtraCharSpacing);
     ExtraLineSpacing := StrToIntDef(ExtraLineSpacingComboBox.Text, ExtraLineSpacing);
     DisableAntialiasing := DisableAntialiasingCheckBox.Checked;

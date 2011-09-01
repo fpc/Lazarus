@@ -177,17 +177,17 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     ClientHeight = 87
     ClientWidth = 497
     TabOrder = 1
-    object EditorFontHeightLabel: TLabel
-      AnchorSideLeft.Control = EditorFontHeightComboBox
+    object EditorFontSizeLabel: TLabel
+      AnchorSideLeft.Control = EditorFontSizeSpinEdit
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = EditorFontHeightComboBox
+      AnchorSideTop.Control = EditorFontSizeSpinEdit
       AnchorSideTop.Side = asrCenter
       Left = 112
       Height = 14
       Top = 36
       Width = 107
       BorderSpacing.Around = 6
-      Caption = 'EditorFontHeightLabel'
+      Caption = 'EditorFontSizeLabel'
       ParentColor = False
     end
     object ExtraLineSpacingLabel: TLabel
@@ -248,34 +248,20 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
       OnClick = EditorFontButtonClick
       TabOrder = 1
     end
-    object EditorFontHeightComboBox: TComboBox
+    object EditorFontSizeSpinEdit: TSpinEdit
       AnchorSideLeft.Control = EditorFontGroupBox
       AnchorSideTop.Control = EditorFontComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 33
-      Width = 100
+      Height = 29
+      Top = 41
+      Width = 50
       BorderSpacing.Around = 6
-      ItemHeight = 13
-      Items.Strings = (
-        '10'
-        '11'
-        '12'
-        '13'
-        '14'
-        '15'
-        '16'
-        '17'
-        '18'
-      )
-      OnChange = ComboboxOnChange
-      OnExit = ComboboxOnExit
-      OnKeyDown = ComboBoxOnKeyDown
+      OnChange = EditorFontSizeSpinEditChange
       TabOrder = 2
     end
     object ExtraLineSpacingComboBox: TComboBox
-      AnchorSideLeft.Control = EditorFontHeightLabel
+      AnchorSideLeft.Control = EditorFontSizeLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = EditorFontComboBox
       AnchorSideTop.Side = asrBottom
@@ -318,7 +304,7 @@ inherited EditorDisplayOptionsFrame: TEditorDisplayOptionsFrame
     end
     object DisableAntialiasingCheckBox: TCheckBox
       AnchorSideLeft.Control = EditorFontGroupBox
-      AnchorSideTop.Control = EditorFontHeightComboBox
+      AnchorSideTop.Control = EditorFontSizeSpinEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 21

@@ -217,7 +217,7 @@ begin
   Caption := lisDisAssAssembler;
 
   EditorOpts.AddHandlerAfterWrite(@DoEditorOptsChanged);
-  pbAsm.Font.Height := EditorOpts.EditorFontHeight;
+  pbAsm.Font.Size := EditorOpts.EditorFontSize;
   pbAsm.Font.Name := EditorOpts.EditorFont;
   Caption := lisMenuViewAssembler;
   CopyToClipboard.Caption := lisDbgAsmCopyToClipboard;
@@ -679,7 +679,7 @@ procedure TAssemblerDlg.DoEditorOptsChanged(Sender: TObject; Restore: boolean);
 var
   TM: TTextMetric;
 begin
-  pbAsm.Font.Height := EditorOpts.EditorFontHeight;
+  pbAsm.Font.Size := EditorOpts.EditorFontSize;
   pbAsm.Font.Name := EditorOpts.EditorFont;
   if EditorOpts.DisableAntialiasing then
     pbAsm.Font.Quality := fqNonAntialiased

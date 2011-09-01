@@ -1427,7 +1427,7 @@ resourcestring
   dlgGutterColor = 'Gutter Color';
   dlgEditorFont = 'Editor font';
   dlgDefaultEditorFont='Default editor font';
-  dlgEditorFontHeight = 'Editor font height';
+  dlgEditorFontSize = 'Editor font size';
   dlgExtraCharSpacing = 'Extra char spacing';
   dlgExtraLineSpacing = 'Extra line spacing';
   dlgDisableAntialiasing = 'Disable anti-aliasing';

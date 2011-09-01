@@ -570,13 +570,15 @@ const
     );
 
 const
-  EditorOptsFormatVersion = 7;
+  EditorOptsFormatVersion = 8;
   { * Changes in Version 6:
        - ColorSchemes now have a Global settings part.
          Language specific changes must save UseSchemeGlobals=False (Default is true)
          Since Version 5 did not have this setting, in Version 5 the default is false.
     * Changes in Version 7:
          DisableAntialiasing default true to false
+    * Changes in Version 8:
+         Replaced EditorFontHeight with EditorFontSize.
   }
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
@@ -614,6 +616,8 @@ const
   SynEditDefaultOptions = SYNEDIT_DEFAULT_OPTIONS - [eoShowScrollHint]
                                                   + [eoHalfPageScroll];
   SynEditDefaultOptions2 = SYNEDIT_DEFAULT_OPTIONS2;
+
+  EditorOptionsMinimumFontSize = 5;
 
 type
   { TEditOptLanguageInfo stores lazarus IDE additional information
@@ -957,7 +961,7 @@ type
     FGutterSeparatorIndex: Integer;
     fRightMargin: Integer;
     fEditorFont:  String;
-    fEditorFontHeight: Integer;
+    fEditorFontSize:   Integer;
     fExtraCharSpacing: Integer;
     fExtraLineSpacing: Integer;
     fDisableAntialiasing: Boolean;
@@ -1092,8 +1096,8 @@ type
     property RightMargin: Integer
       read fRightMargin write fRightMargin default 80;
     property EditorFont: String read fEditorFont write fEditorFont;
-    property EditorFontHeight: Integer
-      read fEditorFontHeight write FEditorFontHeight;
+    property EditorFontSize: Integer
+      read fEditorFontSize write fEditorFontSize;
     property ExtraCharSpacing: Integer
       read fExtraCharSpacing write fExtraCharSpacing default 0;
     property ExtraLineSpacing: Integer
@@ -1210,7 +1214,7 @@ var
 function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter;
 function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter;
 function FilenameToLazSyntaxHighlighter(Filename: String): TLazSyntaxHighlighter;
-procedure RepairEditorFontHeight(var FontHeight: integer);
+procedure RepairEditorFontSize(var FontSize: integer);
 
 function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
 function ColorSchemeFactory: TColorSchemeFactory;
@@ -1254,6 +1258,16 @@ const
 var
   DefaultColorSchemeName: String;
 
+function FontHeightToSize(Height: Integer): Integer;
+var
+  AFont: TFont;
+begin
+  AFont := TFont.Create;
+  AFont.Height := Height;
+  Result := AFont.Size;
+  AFont.Free;
+end;
+
 { TSynEditMouseActionKeyCmdHelper }
 
 function TSynEditMouseActionKeyCmdHelper.GetOptionKeyCmd: TSynEditorCommand;
@@ -1268,11 +1282,11 @@ begin
 end;
 
 
-procedure RepairEditorFontHeight(var FontHeight: integer);
+procedure RepairEditorFontSize(var FontSize: integer);
 begin
-  if ((FontHeight>=0) and (FontHeight<=5))
-  or ((FontHeight<0) and (FontHeight>=-5)) then
-    FontHeight := SynDefaultFontHeight;
+  if ((FontSize>=0) and (FontSize<=EditorOptionsMinimumFontSize))
+  or ((FontSize<0) and (FontSize>=-EditorOptionsMinimumFontSize)) then
+    FontSize := SynDefaultFontSize;
 end;
 
 function StrToLazSyntaxHighlighter(const s: String): TLazSyntaxHighlighter;
@@ -3047,7 +3061,7 @@ begin
 
   // Display options
   fEditorFont := SynDefaultFontName;
-  fEditorFontHeight := SynDefaultFontHeight;
+  fEditorFontSize := SynDefaultFontSize;
   fDisableAntialiasing := DefaultEditorDisableAntiAliasing;
 
   // Key Mappings
@@ -3199,10 +3213,17 @@ begin
       XMLConfig.GetValue('EditorOptions/Display/RightMargin', 80);
     fEditorFont  :=
       XMLConfig.GetValue('EditorOptions/Display/EditorFont', SynDefaultFontName);
-    fEditorFontHeight :=
-      XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight',
-      SynDefaultFontHeight);
-    RepairEditorFontHeight(fEditorFontHeight);
+    if FileVersion < 8 then begin
+      fEditorFontSize :=
+        XMLConfig.GetValue('EditorOptions/Display/EditorFontHeight',
+        SynDefaultFontHeight);
+      fEditorFontSize := FontHeightToSize(fEditorFontSize);
+    end else begin
+      fEditorFontSize :=
+        XMLConfig.GetValue('EditorOptions/Display/EditorFontSize',
+        SynDefaultFontSize);
+    end;
+    RepairEditorFontSize(fEditorFontSize);
     fExtraCharSpacing :=
       XMLConfig.GetValue('EditorOptions/Display/ExtraCharSpacing', 0);
     fExtraLineSpacing :=
@@ -3391,8 +3412,9 @@ begin
       fRightMargin, 80);
     XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFont',
       fEditorFont, SynDefaultFontName);
-    XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFontHeight'
-      ,fEditorFontHeight, SynDefaultFontHeight);
+    XMLConfig.DeleteValue('EditorOptions/Display/EditorFontHeight'); // unused old value
+    XMLConfig.SetDeleteValue('EditorOptions/Display/EditorFontSize'
+      ,fEditorFontSize, SynDefaultFontSize);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraCharSpacing'
       ,fExtraCharSpacing, 0);
     XMLConfig.SetDeleteValue('EditorOptions/Display/ExtraLineSpacing'
@@ -3922,7 +3944,7 @@ end;
 
 procedure TEditorOptions.ApplyFontSettingsTo(ASynEdit: TSynEdit);
 begin
-  ASynEdit.Font.Height := fEditorFontHeight;// set height before name for XLFD !
+  ASynEdit.Font.Size := fEditorFontSize;// set size before name for XLFD !
   ASynEdit.Font.Name := fEditorFont;
   if fDisableAntialiasing then
     ASynEdit.Font.Quality := fqNonAntialiased
