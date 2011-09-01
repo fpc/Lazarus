@@ -33,7 +33,8 @@ uses
   Classes, SysUtils, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons,
   ButtonPanel, Dialogs, LCLProc, FileProcs, Graphics, LCLType, EditBtn, StrUtils,
   SourceEditor, LazIDEIntf, IDEImagesIntf, LazarusIDEStrConsts, ProjectIntf,
-  Project, CodeCache, CodeToolManager, IdentCompletionTool, ListFilterEdit;
+  Project, CodeCache, CodeToolManager, IdentCompletionTool, CodeAtom, CodeTree,
+  PascalParserTool, ListFilterEdit, LinkScanner;
 
 type
 
@@ -48,6 +49,7 @@ type
     procedure AllUnitsCheckBoxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure SectionRadioGroupClick(Sender: TObject);
     procedure UnitsListBoxDblClick(Sender: TObject);
     procedure UnitsListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
@@ -61,7 +63,7 @@ type
     procedure CreateOtherUnitsList;
     function SelectedUnit: string;
     function InterfaceSelected: Boolean;
-    procedure EnableOnlyInterface;
+    procedure DetermineUsesSection(ACode: TCodeBuffer; ACursorPos: TPoint);
   public
 
   end; 
@@ -74,7 +76,7 @@ implementation
 
 function ShowUseUnitDialog: TModalResult;
 var
-  UseProjUnitDlg: TUseUnitDialog;
+  UseUnitDlg: TUseUnitDialog;
   SrcEdit: TSourceEditor;
   s: String;
   CTRes: Boolean;
@@ -83,18 +85,23 @@ begin
   if not LazarusIDE.BeginCodeTools then exit;
   // get cursor position
   SrcEdit:=SourceEditorManager.ActiveEditor;
-  UseProjUnitDlg:=TUseUnitDialog.Create(nil);
+  UseUnitDlg:=TUseUnitDialog.Create(nil);
   try
-    Result:=UseProjUnitDlg.GetAvailableProjUnits(SrcEdit);
+    Result:=UseUnitDlg.GetAvailableProjUnits(SrcEdit);
     if Result<>mrOK then exit;
     // there is only main uses section in program/library/package
-    if SrcEdit.GetProjectFile=Project1.MainUnitInfo then
-      UseProjUnitDlg.EnableOnlyInterface;
+    if SrcEdit.GetProjectFile=Project1.MainUnitInfo then begin
+      // only main (interface) section is available
+      UseUnitDlg.SectionRadioGroup.Enabled := False
+    end else begin
+      // automatic choise of dest uses-section by cursor position
+      UseUnitDlg.DetermineUsesSection(SrcEdit.CodeBuffer, SrcEdit.GetCursorTextXY);
+    end;
     // Show the dialog.
-    if UseProjUnitDlg.ShowModal=mrOk then begin
-      s:=UseProjUnitDlg.SelectedUnit;
+    if UseUnitDlg.ShowModal=mrOk then begin
+      s:=UseUnitDlg.SelectedUnit;
       if s <> '' then begin
-        if UseProjUnitDlg.InterfaceSelected then
+        if UseUnitDlg.InterfaceSelected then
           CTRes:=CodeToolBoss.AddUnitToMainUsesSection(SrcEdit.CodeBuffer, s, '')
         else
           CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(SrcEdit.CodeBuffer, s, '');
@@ -105,7 +112,7 @@ begin
       end;
     end;
   finally
-    UseProjUnitDlg.Free;
+    UseUnitDlg.Free;
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
   end;
 end;
@@ -121,7 +128,7 @@ begin
   SectionRadioGroup.Items.Clear;
   SectionRadioGroup.Items.Add(dlgInsertInterface);
   SectionRadioGroup.Items.Add(dlgInsertImplementation);
-  SectionRadioGroup.ItemIndex:=1;
+  SectionRadioGroup.ItemIndex:=0;
   ButtonPanel1.OKButton.Caption:=lisOk;
   ButtonPanel1.CancelButton.Caption:=dlgCancel;
   UnitImgInd := IDEImages.LoadImage(16, 'item_unit');
@@ -134,6 +141,12 @@ begin
   FProjUnits.Free;
   FImplUsedUnits.Free;
   FMainUsedUnits.Free;
+end;
+
+procedure TUseUnitDialog.SectionRadioGroupClick(Sender: TObject);
+begin
+  if Visible then
+    FilterEdit.SetFocus;
 end;
 
 procedure TUseUnitDialog.AllUnitsCheckBoxChange(Sender: TObject);
@@ -285,10 +298,30 @@ begin
   Result:=SectionRadioGroup.ItemIndex=0;
 end;
 
-procedure TUseUnitDialog.EnableOnlyInterface;
+procedure TUseUnitDialog.DetermineUsesSection(ACode: TCodeBuffer; ACursorPos: TPoint);
+var
+  CursorPos: TCodeXYPosition;
+  CleanCursorPos: Integer;
+  CursorNode: TCodeTreeNode;
 begin
-  SectionRadioGroup.ItemIndex := 0;
-  SectionRadioGroup.Enabled := False;
+  if not CodeToolBoss.InitCurCodeTool(ACode) then Exit;
+  with CodeToolBoss.CurCodeTool do
+  begin
+    CursorPos := CodeXYPosition(ACursorPos.X, ACursorPos.Y, ACode);
+    ActivateGlobalWriteLock;
+    try
+      // build code tree
+      BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                 [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
+      // find CodeTreeNode at cursor
+      if (Tree.Root = nil) or (Tree.Root.StartPos > CleanCursorPos) then Exit;
+      CursorNode := BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos, True);
+      if CursorNode.HasParentOfType(ctnImplementation) then
+        SectionRadioGroup.ItemIndex := 1;
+    finally
+      DeactivateGlobalWriteLock
+    end;
+  end;
 end;
 
 end.
