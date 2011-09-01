@@ -23,7 +23,7 @@
   Icons added by Marcelo B Paula
   All available units added to the list by Anton Panferov
 }
-unit UseProjUnitDlg;
+unit UseUnitDlg;
 
 {$mode objfpc}{$H+}
 

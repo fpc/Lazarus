@@ -144,7 +144,7 @@ uses
   IDEFPCInfo, IDEInfoDlg, ProcessList, InitialSetupDlgs, NewDialog,
   MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer,
   BuildFileDlg, ProcedureList, ExtractProcDlg, FindRenameIdentifier,
-  AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg, UseProjUnitDlg, FindOverloadsDlg,
+  AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg, UseUnitDlg, FindOverloadsDlg,
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
   // main ide
