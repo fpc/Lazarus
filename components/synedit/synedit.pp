@@ -98,6 +98,7 @@ const
   // SynDefaultFont is determined in InitSynDefaultFont()
   SynDefaultFontName:    String       = '';
   SynDefaultFontHeight:  Integer      = 13;
+  SynDefaultFontSize:    Integer      = 10;
   SynDefaultFontPitch:   TFontPitch   = fpFixed;
   SynDefaultFontQuality: TFontQuality = fqNonAntialiased;
 
@@ -7809,14 +7810,14 @@ begin
     if not SelAvail then begin
       BB := CaretXY;
       BE := CaretXY;
+      e := BE.y;
     end else begin
       BB := BlockBegin;
       BE := BlockEnd;
+      if (BE.X = 1)
+      then e := BE.y - 1
+      else e := BE.y;
     end;
-    if (BE.X = 1) then
-      e := BE.y - 1
-    else
-      e := BE.y;
 
     Spaces := StringOfChar(#32, fBlockIndent);
     fUndoList.Lock;
@@ -7870,15 +7871,16 @@ begin
   if not SelAvail then begin
     BB := CaretXY;
     BE := CaretXY;
+    e := BE.y;
   end else begin
     BB := BlockBegin;
     BE := BlockEnd;
+    // convert selection to complete lines
+    if BE.X = 1 then
+      e := BE.y - 1
+    else
+      e := BE.y;
   end;
-  // convert selection to complete lines
-  if BE.X = 1 then
-    e := BE.y - 1
-  else
-    e := BE.y;
 
   IncPaintLock;
   FBlockSelection.IncPersistentLock;
