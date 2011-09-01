@@ -584,7 +584,7 @@ begin
   ecOpenPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageOfCurUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecAddCurUnitToPkg: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddCurFileToPkg: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPackageGraph: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditInstallPkgs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigCustomComps: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1035,7 +1035,7 @@ begin
   ecOpenPackage: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageFile: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageOfCurUnit: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecAddCurUnitToPkg: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddCurFileToPkg: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPackageGraph: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditInstallPkgs: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigCustomComps: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1668,7 +1668,7 @@ begin
   ecOpenPackage: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageFile: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageOfCurUnit: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecAddCurUnitToPkg: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddCurFileToPkg: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPackageGraph: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditInstallPkgs: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigCustomComps: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -2214,7 +2214,7 @@ begin
     ecOpenPackage             : Result:= lisMenuOpenPackage;
     ecOpenPackageFile         : Result:= lisMenuOpenPackageFile;
     ecOpenPackageOfCurUnit    : Result:= lisMenuOpenPackageOfCurUnit;
-    ecAddCurUnitToPkg         : Result:= lisMenuAddCurUnitToPkg;
+    ecAddCurFileToPkg         : Result:= lisMenuAddCurFileToPkg;
     ecPackageGraph            : Result:= lisMenuPackageGraph;
     ecEditInstallPkgs         : Result:= lisMenuEditInstallPkgs;
     ecConfigCustomComps       : Result:= lisMenuConfigCustomComps;
@@ -2827,7 +2827,7 @@ begin
   AddDefault(C, 'Publish project', lisKMPublishProject, ecPublishProject);
   AddDefault(C, 'Project Inspector', lisMenuProjectInspector, ecProjectInspector);
   AddDefault(C, 'Add editor file to Project', lisMenuAddToProject, ecAddCurUnitToProj);
-  AddDefault(C, 'Remove active unit from project', lisKMRemoveActiveUnitFromProject, ecRemoveFromProj);
+  AddDefault(C, 'Remove active unit from project', lisKMRemoveActiveFileFromProject, ecRemoveFromProj);
   AddDefault(C, 'View Units', lisHintViewUnits, ecViewProjectUnits);
   AddDefault(C, 'View Forms', lisHintViewForms, ecViewProjectForms);
   AddDefault(C, 'View project source', lisKMViewProjectSource, ecViewProjectSource);
@@ -2869,7 +2869,7 @@ begin
   AddDefault(C, 'Open package', lisCompPalOpenPackage, ecOpenPackage);
   AddDefault(C, 'Open package file', lisKMOpenPackageFile, ecOpenPackageFile);
   AddDefault(C, 'Open package of current unit', lisMenuOpenPackageOfCurUnit, ecOpenPackageOfCurUnit);
-  AddDefault(C, 'Add active unit to a package', lisMenuAddCurUnitToPkg, ecAddCurUnitToPkg);
+  AddDefault(C, 'Add active unit to a package', lisMenuAddCurFileToPkg, ecAddCurFileToPkg);
   AddDefault(C, 'Package graph', lisMenuPackageGraph, ecPackageGraph);
   AddDefault(C, 'Configure installed packages', lisInstallUninstallPackages, ecEditInstallPkgs);
   AddDefault(C, 'Configure custom components', lisKMConfigureCustomComponents, ecConfigCustomComps);

@@ -127,7 +127,7 @@ type
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
     procedure MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
-    procedure MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
+    procedure MainIDEitmPkgAddCurFileToPkgClick(Sender: TObject);
     procedure MainIDEitmPkgOpenPackageOfCurUnitClicked(Sender: TObject);
     procedure MainIDEitmConfigCustomCompsClicked(Sender: TObject);
     procedure MainIDEitmOpenRecentPackageClicked(Sender: TObject);
@@ -551,7 +551,7 @@ begin
   end;
 end;
 
-procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
+procedure TPkgManager.MainIDEitmPkgAddCurFileToPkgClick(Sender: TObject);
 begin
   DoAddActiveUnitToAPackage;
 end;
@@ -1559,7 +1559,7 @@ begin
     itmPkgOpenPackage.OnClick :=@MainIDEitmPkgOpenPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
     itmPkgOpenPackageOfCurUnit.OnClick :=@MainIDEitmPkgOpenPackageOfCurUnitClicked;
-    itmPkgAddCurUnitToPkg.OnClick:=@MainIDEitmPkgAddCurUnitToPkgClick;
+    itmPkgAddCurFileToPkg.OnClick:=@MainIDEitmPkgAddCurFileToPkgClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
     itmPkgEditInstallPkgs.OnClick:=@MainIDEitmPkgEditInstallPkgsClick;
     {$IFDEF CustomIDEComps}
@@ -1673,7 +1673,7 @@ begin
   ecOpenPackage: MainIDEitmPkgOpenPackageClicked(Self);
   ecOpenPackageFile: MainIDEitmPkgOpenPackageFileClick(Self);
   ecOpenPackageOfCurUnit: MainIDEitmPkgOpenPackageOfCurUnitClicked(Self);
-  ecAddCurUnitToPkg: MainIDEitmPkgAddCurUnitToPkgClick(Self);
+  ecAddCurFileToPkg: MainIDEitmPkgAddCurFileToPkgClick(Self);
   ecPackageGraph: MainIDEitmPkgPkgGraphClick(Self);
   ecEditInstallPkgs: MainIDEitmPkgEditInstallPkgsClick(Self);
   else

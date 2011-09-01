@@ -281,7 +281,8 @@ const
   ecOpenPackage             = ecFirstLazarus + 600;
   ecOpenPackageFile         = ecFirstLazarus + 601;
   ecOpenPackageOfCurUnit    = ecFirstLazarus + 602;
-  ecAddCurUnitToPkg         = ecFirstLazarus + 603;
+  ecAddCurFileToPkg         = ecFirstLazarus + 603;
+  ecAddCurUnitToPkg         = ecAddCurFileToPkg deprecated;
   ecPackageGraph            = ecFirstLazarus + 604;
   ecEditInstallPkgs         = ecFirstLazarus + 605;
   ecConfigCustomComps       = ecFirstLazarus + 606;

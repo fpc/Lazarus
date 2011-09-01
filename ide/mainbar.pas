@@ -312,7 +312,7 @@ type
         itmPkgOpenPackageOfCurUnit: TIDEMenuCommand;
         //itmPkgOpenRecent: TIDEMenuSection;
       //itmPkgUnits: TIDEMenuSection;
-        itmPkgAddCurUnitToPkg: TIDEMenuCommand;
+        itmPkgAddCurFileToPkg: TIDEMenuCommand;
       //itmPkgGraphSection: TIDEMenuSection;
         itmPkgPkgGraph: TIDEMenuCommand;
         itmPkgEditInstallPkgs: TIDEMenuCommand;

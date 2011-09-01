@@ -319,7 +319,7 @@ resourcestring
   lisMenuSaveProjectAs = 'Save Project As ...';
   lisMenuPublishProject = 'Publish Project ...';
   lisMenuProjectInspector = 'Project Inspector';
-  lisKMRemoveActiveUnitFromProject = 'Remove active unit from project';
+  lisKMRemoveActiveFileFromProject = 'Remove active file from project';
   lisKMViewProjectSource = 'View project source';
   lisMenuAddToProject = 'Add editor file to Project';
   lisMenuRemoveFromProject = 'Remove from Project ...';
@@ -395,7 +395,7 @@ resourcestring
   lisMenuOpenRecentPkg = 'Open recent package';
   lisMenuOpenPackageFile = 'Open package file (.lpk) ...';
   lisMenuOpenPackageOfCurUnit = 'Open package of current unit';
-  lisMenuAddCurUnitToPkg = 'Add active unit to a package ...';
+  lisMenuAddCurFileToPkg = 'Add active file to a package ...';
   lisKMConfigureCustomComponents = 'Configure custom components';
   lisMenuConfigCustomComps = 'Configure custom components ...';
 

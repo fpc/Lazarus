@@ -3937,19 +3937,19 @@ var
   ASrcEdit: TSourceEditor;
   AUnitInfo: TUnitInfo;
   PkgFile: TPkgFile;
-  OpenPkgCurU, AddCurU: Boolean;
+  OpenPkgCurF, AddCurF: Boolean;
 begin
-  OpenPkgCurU:=False;
-  AddCurU:=False;
+  OpenPkgCurF:=False;
+  AddCurF:=False;
   GetCurrentUnit(ASrcEdit,AUnitInfo);
   if Assigned(ASrcEdit) then begin
     PkgFile:=PackageGraph.FindFileInAllPackages(AUnitInfo.Filename,true,
                                             not AUnitInfo.IsPartOfProject);
-    OpenPkgCurU:=Assigned(PkgFile);
-    AddCurU:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename);
+    OpenPkgCurF:=Assigned(PkgFile);
+    AddCurF:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename);
   end;
-  MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=OpenPkgCurU;
-  MainIDEBar.itmPkgAddCurUnitToPkg.Enabled:=AddCurU;
+  MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=OpenPkgCurF;
+  MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=AddCurF;
 end;
 
 {------------------------------------------------------------------------------}
