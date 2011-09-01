@@ -3235,7 +3235,7 @@ var
 begin
   if FAlign = Value then exit;
   //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',AlignNames[FAlign],' New=',AlignNames[Value],' ',Anchors<>AnchorAlign[FAlign]]);
-  DisableAutoSizing;
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.setalign'){$ENDIF};
   OldAlign := FAlign;
   FAlign := Value;
   for a:=low(TAnchorKind) to High(TAnchorKind) do
@@ -3250,7 +3250,7 @@ begin
     Anchors := AnchorAlign[FAlign];
   if not (csLoading in ComponentState) then
     BoundsRect:=BaseBounds;
-  EnableAutoSizing;
+  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.setalign'){$ENDIF};
 end;
 
 {------------------------------------------------------------------------------
