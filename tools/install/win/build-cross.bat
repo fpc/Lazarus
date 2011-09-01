@@ -138,6 +138,10 @@ del %INSTALL_BINDIR%\fpc.cfg
 %OLDCURDRIVE%
 cd %OLDCURDIR%
 FOR /F "delims='" %%F IN (%LAZSVNDIR%\ide\version.inc) DO set LAZVERSION=%%F
+
+SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-cross-%FPCFULLTARGET%-%FPCSourceOS%
+if [%BUILDLAZRELEASE%]==[] SET OutputFileName=lazarus-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-cross-%FPCFULLTARGET%-%FPCSourceOS%
+
 %ISCC% lazarus-cross.iss 
 
 :CLEANUP
