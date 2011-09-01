@@ -72,7 +72,7 @@ SET PATH=%FPCBINDIR%
 :: copy lazarus dir
 rmdir /s /q %BUILDDIR%
 %SVN% export %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
-..\..\svn2revisioninc %LAZSVNDIR% %BUILDDIR%\ide\revision.inc
+call svn2revisioninc.bat %LAZSVNDIR% %BUILDDIR%\ide\revision.inc
 
 call build-fpc.bat
 
@@ -100,8 +100,16 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 if exist %GDBDIR% %SVN% export %GDBDIR% %BUILDDIR%\mingw
 
 :: create the installer
+IF [%BUILDLAZRELEASE%]==[] GOTO SNAPSHOT
+SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCFULLVERSION%-%FPCTARGETOS%
+if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-fpc-%FPCFULLVERSION%-%FPCTARGETOS%
+GOTO GO_ON
+
+:SNAPSHOT
 SET OutputFileName=lazarus-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
 if not [%IDE_WIDGETSET%]==[win32] SET OutputFileName=lazarus-%IDE_WIDGETSET%-%LAZVERSION%-%LAZREVISION%-fpc-%FPCFULLVERSION%-%DATESTAMP%-%FPCTARGETOS%
+
+:GO_ON
 %ISCC% lazarus.iss >> installer.log
 
 :: do not delete build dir, if installer failed.

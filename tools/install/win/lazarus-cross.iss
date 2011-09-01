@@ -2,7 +2,6 @@
 EnableISX=true
 [Defines]
 #define AppVersion GetEnv('LazVersion')
-#define LazRevision GetEnv('LazRevision')
 // LazVersion may be 0.9.30.2RC1
 // A valid file version contains only digits, so drop the RC part
 #if pos('RC',AppVersion)>0
@@ -10,6 +9,7 @@ EnableISX=true
 #else
   #define FileVersion = AppVersion
 #endif
+#define LazRevision GetEnv('LazRevision')
 #define FPCVersion GetEnv('FPCVersion')
 #define FPCFullVersion GetEnv('FPCFullVersion')
 #define FPCSourceOS GetEnv('FPCSourceOS')
@@ -18,6 +18,7 @@ EnableISX=true
 #define AppName "Lazarus"
 #define SetupDate GetEnv('DateStamp')
 #define BuildDir GetEnv('BuildDir')
+#define OutputFileName GetEnv('OutputFileName')
 [Setup]
 AppName={#AppName}
 AppVersion={#AppVersion}
@@ -29,7 +30,7 @@ ArchitecturesInstallIn64BitMode=x64
 DefaultDirName={code:GetDefDir|c:\lazarus}
 DefaultGroupName={#AppName}
 InternalCompressLevel=ultra
-OutputBaseFilename={#AppName}-{#AppVersion}-{#LazRevision}-fpc-{#FPCFullVersion}-{#SetupDate}-cross-{#FPCFullTarget}-{#FPCSourceOS}
+OutputBaseFilename={#OutputFileName}
 SolidCompression=true
 VersionInfoVersion={#FileVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
