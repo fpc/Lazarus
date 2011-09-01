@@ -82,16 +82,16 @@ Filename: {app}\Lazarus Forums.url; Section: InternetShortcut; Key: URL; String:
 Filename: {app}\Lazarus Wiki Help.url; Section: InternetShortcut; Key: URL; String: http://wiki.lazarus.freepascal.org/
 
 [Icons]
-Name: {group}\{#AppName}; Filename: {app}\lazarus.exe; IconFilename: {app}\images\mainicon.ico; Comment: "Open Source IDE for Free Pascal"
+Name: {group}\{#AppName}; Filename: {app}\lazarus.exe; IconFilename: {app}\images\mainicon.ico; Comment: Open Source IDE for Free Pascal
 Name: {group}\{cm:ProgramOnTheWeb,Lazarus}; Filename: {app}\Lazarus Home Page.url; IconFilename: {app}\images\LazarusProject.ico
 Name: {group}\Lazarus Forums; Filename: {app}\Lazarus Forums.url; IconFilename: {app}\images\LazarusProject.ico
 Name: {group}\Lazarus Wiki Help; Filename: {app}\Lazarus Wiki Help.url; IconFilename: {app}\images\LazarusProject.ico
 Name: {group}\{cm:UninstallProgram,Lazarus}; Filename: {uninstallexe}
-Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon; IconFilename: {app}\images\mainicon.ico; Comment: "Open Source IDE for Free Pascal"
-Name: {group}\{#AppName} (debug); Filename: {app}\startlazarus.exe; Parameters: --debug; WorkingDir: {app}; IconFilename: {app}\images\mainicon.ico; Comment: "Lazarus --debug"
+Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon; IconFilename: {app}\images\mainicon.ico; Comment: Open Source IDE for Free Pascal
+Name: {group}\{#AppName} (debug); Filename: {app}\startlazarus.exe; Parameters: --debug; WorkingDir: {app}; IconFilename: {app}\images\mainicon.ico; Comment: Lazarus --debug
 
 [Run]
-Filename: {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpcmkcfg.exe; Parameters: "-d ""basepath={app}\fpc\{#FPCVersion}"" -o fpc.cfg"; Flags: runhidden; Tasks: ; Languages: 
+Filename: fpcmkcfg.exe; Parameters: """-d """"basepath={app}\fpc\$FPCVERSION"" -o {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpc.cfg""; Flags: runhidden; Tasks: ; Languages:"; WorkingDir: {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}
 
 [UninstallDelete]
 Name: {app}\compilertest.pas; Type: files
@@ -102,104 +102,104 @@ Name: {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpc.cfg; Type: files
 
 [Registry]
 ; HKLM
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lfm"; ValueType: String; ValueData: "Lazarus Form"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lfm\DefaultIcon"; ValueType: String; ValueData: "{app}\images\LazarusForm.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lfm\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\LazarusForm.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lfm\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lfm; ValueType: String; ValueData: Lazarus Form; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lfm\DefaultIcon; ValueType: String; ValueData: {app}\images\LazarusForm.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lfm\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\LazarusForm.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lfm\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
 
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpi"; ValueType: String; ValueData: "Lazarus Project Information"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpi\DefaultIcon"; ValueType: String; ValueData: "{app}\images\LazarusProject.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpi\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\LazarusProject.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpi\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpi; ValueType: String; ValueData: Lazarus Project Information; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpi\DefaultIcon; ValueType: String; ValueData: {app}\images\LazarusProject.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpi\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\LazarusProject.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpi\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
 
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpk"; ValueType: String; ValueData: "Lazarus Package File"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpk\DefaultIcon"; ValueType: String; ValueData: "{app}\images\lazaruspackage.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpk\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\lazaruspackage.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpk\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpk; ValueType: String; ValueData: Lazarus Package File; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpk\DefaultIcon; ValueType: String; ValueData: {app}\images\lazaruspackage.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpk\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lazaruspackage.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpk\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
 
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpr"; ValueType: String; ValueData: "Lazarus Project Main Source"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpr\DefaultIcon"; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpr\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.lpr\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpr; ValueType: String; ValueData: Lazarus Project Main Source; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpr\DefaultIcon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpr\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.lpr\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
 
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.inc"; ValueType: String; ValueData: "Object Pascal Include File"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.inc\DefaultIcon"; ValueType: String; ValueData: "{app}\images\includefile.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.inc\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\includefile.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.inc\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.inc; ValueType: String; ValueData: Object Pascal Include File; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.inc\DefaultIcon; ValueType: String; ValueData: {app}\images\includefile.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.inc\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\includefile.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.inc\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
 
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.pas"; ValueType: String; ValueData: "Pascal Source Code"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.pas\DefaultIcon"; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.pas\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.pas\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pas; ValueType: String; ValueData: Pascal Source Code; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pas\DefaultIcon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pas\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pas\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
 
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.pp"; ValueType: String; ValueData: "Pascal Source Code"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.pp\DefaultIcon"; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.pp\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Classes\Lazarus.AssocFile.pp\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pp; ValueType: String; ValueData: Pascal Source Code; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pp\DefaultIcon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pp\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Classes\Lazarus.AssocFile.pp\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMWriteable
 
-Root: HKLM; Subkey: "Software\Classes\.lfm"; ValueType: String; ValueData: "Lazarus.AssocFile.lfm"; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelfm
-Root: HKLM; Subkey: "Software\Classes\.lpi"; ValueType: String; ValueData: "Lazarus.AssocFile.lpi"; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelpi
-Root: HKLM; Subkey: "Software\Classes\.lpk"; ValueType: String; ValueData: "Lazarus.AssocFile.lpk"; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelpk
-Root: HKLM; Subkey: "Software\Classes\.lpr"; ValueType: String; ValueData: "Lazarus.AssocFile.lpr"; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelpr
-Root: HKLM; Subkey: "Software\Classes\.inc"; ValueType: String; ValueData: "Lazarus.AssocFile.inc"; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associateinc
-Root: HKLM; Subkey: "Software\Classes\.pas"; ValueType: String; ValueData: "Lazarus.AssocFile.pas"; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatepas
-Root: HKLM; Subkey: "Software\Classes\.pp"; ValueType: String; ValueData: "Lazarus.AssocFile.pp"; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatepp
+Root: HKLM; Subkey: Software\Classes\.lfm; ValueType: String; ValueData: Lazarus.AssocFile.lfm; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelfm
+Root: HKLM; Subkey: Software\Classes\.lpi; ValueType: String; ValueData: Lazarus.AssocFile.lpi; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelpi
+Root: HKLM; Subkey: Software\Classes\.lpk; ValueType: String; ValueData: Lazarus.AssocFile.lpk; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelpk
+Root: HKLM; Subkey: Software\Classes\.lpr; ValueType: String; ValueData: Lazarus.AssocFile.lpr; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatelpr
+Root: HKLM; Subkey: Software\Classes\.inc; ValueType: String; ValueData: Lazarus.AssocFile.inc; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associateinc
+Root: HKLM; Subkey: Software\Classes\.pas; ValueType: String; ValueData: Lazarus.AssocFile.pas; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatepas
+Root: HKLM; Subkey: Software\Classes\.pp; ValueType: String; ValueData: Lazarus.AssocFile.pp; Flags: uninsdeletevalue; Check: IsHKLMWriteable; Components: associatepp
 
-Root: HKLM; Subkey: "Software\Lazarus\Capabilities"; ValueType: String; ValueName: "ApplicationName"; ValueData: "Lazarus IDE"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Lazarus\Capabilities"; ValueType: String; ValueName: "ApplicationDescription"; ValueData: "Open Source IDE for Free Pascal."; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Lazarus\Capabilities\FileAssociations"; ValueName: ".lfm"; ValueType: String; ValueData: "Lazarus.AssocFile.lfm"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Lazarus\Capabilities\FileAssociations"; ValueName: ".lpi"; ValueType: String; ValueData: "Lazarus.AssocFile.lpi"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Lazarus\Capabilities\FileAssociations"; ValueName: ".lpk"; ValueType: String; ValueData: "Lazarus.AssocFile.lpk"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Lazarus\Capabilities\FileAssociations"; ValueName: ".lpr"; ValueType: String; ValueData: "Lazarus.AssocFile.lpr"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Lazarus\Capabilities\FileAssociations"; ValueName: ".inc"; ValueType: String; ValueData: "Lazarus.AssocFile.inc"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Lazarus\Capabilities\FileAssociations"; ValueName: ".pas"; ValueType: String; ValueData: "Lazarus.AssocFile.pas"; Flags: uninsdeletekey; Check: IsHKLMWriteable
-Root: HKLM; Subkey: "Software\Lazarus\Capabilities\FileAssociations"; ValueName: ".pp"; ValueType: String; ValueData: "Lazarus.AssocFile.pp"; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Lazarus\Capabilities; ValueType: String; ValueName: ApplicationName; ValueData: Lazarus IDE; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Lazarus\Capabilities; ValueType: String; ValueName: ApplicationDescription; ValueData: Open Source IDE for Free Pascal.; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Lazarus\Capabilities\FileAssociations; ValueName: .lfm; ValueType: String; ValueData: Lazarus.AssocFile.lfm; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Lazarus\Capabilities\FileAssociations; ValueName: .lpi; ValueType: String; ValueData: Lazarus.AssocFile.lpi; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Lazarus\Capabilities\FileAssociations; ValueName: .lpk; ValueType: String; ValueData: Lazarus.AssocFile.lpk; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Lazarus\Capabilities\FileAssociations; ValueName: .lpr; ValueType: String; ValueData: Lazarus.AssocFile.lpr; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Lazarus\Capabilities\FileAssociations; ValueName: .inc; ValueType: String; ValueData: Lazarus.AssocFile.inc; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Lazarus\Capabilities\FileAssociations; ValueName: .pas; ValueType: String; ValueData: Lazarus.AssocFile.pas; Flags: uninsdeletekey; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\Lazarus\Capabilities\FileAssociations; ValueName: .pp; ValueType: String; ValueData: Lazarus.AssocFile.pp; Flags: uninsdeletekey; Check: IsHKLMWriteable
 
-Root: HKLM; Subkey: "Software\RegisteredApplications"; ValueType: String; ValueName: "Lazarus"; ValueData: "Software\Lazarus\Capabilities"; Flags: uninsdeletevalue; Check: IsHKLMWriteable
+Root: HKLM; Subkey: Software\RegisteredApplications; ValueType: String; ValueName: Lazarus; ValueData: Software\Lazarus\Capabilities; Flags: uninsdeletevalue; Check: IsHKLMWriteable
 
 ; HKCU
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lfm"; ValueType: String; ValueData: "Lazarus Form"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lfm\DefaultIcon"; ValueType: String; ValueData: "{app}\images\LazarusForm.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lfm\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\LazarusForm.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lfm\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lfm; ValueType: String; ValueData: Lazarus Form; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lfm\DefaultIcon; ValueType: String; ValueData: {app}\images\LazarusForm.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lfm\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\LazarusForm.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lfm\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
 
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpi"; ValueType: String; ValueData: "Lazarus Project Information"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpi\DefaultIcon"; ValueType: String; ValueData: "{app}\images\LazarusProject.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpi\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\LazarusProject.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpi\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpi; ValueType: String; ValueData: Lazarus Project Information; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpi\DefaultIcon; ValueType: String; ValueData: {app}\images\LazarusProject.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpi\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\LazarusProject.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpi\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
 
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpk"; ValueType: String; ValueData: "Lazarus Package File"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpk\DefaultIcon"; ValueType: String; ValueData: "{app}\images\lazaruspackage.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpk\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\lazaruspackage.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpk\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpk; ValueType: String; ValueData: Lazarus Package File; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpk\DefaultIcon; ValueType: String; ValueData: {app}\images\lazaruspackage.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpk\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lazaruspackage.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpk\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
 
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpr"; ValueType: String; ValueData: "Lazarus Project Main Source"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpr\DefaultIcon"; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpr\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.lpr\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpr; ValueType: String; ValueData: Lazarus Project Main Source; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpr\DefaultIcon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpr\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.lpr\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
 
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.inc"; ValueType: String; ValueData: "Object Pascal Include File"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.inc\DefaultIcon"; ValueType: String; ValueData: "{app}\images\includefile.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.inc\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\includefile.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.inc\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.inc; ValueType: String; ValueData: Object Pascal Include File; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.inc\DefaultIcon; ValueType: String; ValueData: {app}\images\includefile.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.inc\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\includefile.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.inc\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
 
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.pas"; ValueType: String; ValueData: "Pascal Source Code"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.pas\DefaultIcon"; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.pas\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.pas\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pas; ValueType: String; ValueData: Pascal Source Code; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pas\DefaultIcon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pas\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pas\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
 
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.pp"; ValueType: String; ValueData: "Pascal Source Code"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.pp\DefaultIcon"; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.pp\Shell\Open"; ValueName: Icon; ValueType: String; ValueData: "{app}\images\lprfile.ico"; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
-Root: HKCU; Subkey: "Software\Classes\Lazarus.AssocFile.pp\Shell\Open\Command"; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pp; ValueType: String; ValueData: Pascal Source Code; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pp\DefaultIcon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pp\Shell\Open; ValueName: Icon; ValueType: String; ValueData: {app}\images\lprfile.ico; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
+Root: HKCU; Subkey: Software\Classes\Lazarus.AssocFile.pp\Shell\Open\Command; ValueType: String; ValueData: """{app}\lazarus.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsHKLMNotWriteable
 
-Root: HKCU; Subkey: "Software\Classes\.lfm"; ValueType: String; ValueData: "Lazarus.AssocFile.lfm"; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelfm
-Root: HKCU; Subkey: "Software\Classes\.lpi"; ValueType: String; ValueData: "Lazarus.AssocFile.lpi"; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelpi
-Root: HKCU; Subkey: "Software\Classes\.lpk"; ValueType: String; ValueData: "Lazarus.AssocFile.lpk"; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelpk
-Root: HKCU; Subkey: "Software\Classes\.lpr"; ValueType: String; ValueData: "Lazarus.AssocFile.lpr"; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelpr
-Root: HKCU; Subkey: "Software\Classes\.inc"; ValueType: String; ValueData: "Lazarus.AssocFile.inc"; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associateinc
-Root: HKCU; Subkey: "Software\Classes\.pas"; ValueType: String; ValueData: "Lazarus.AssocFile.pas"; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatepas
-Root: HKCU; Subkey: "Software\Classes\.pp"; ValueType: String; ValueData: "Lazarus.AssocFile.pp"; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatepp
+Root: HKCU; Subkey: Software\Classes\.lfm; ValueType: String; ValueData: Lazarus.AssocFile.lfm; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelfm
+Root: HKCU; Subkey: Software\Classes\.lpi; ValueType: String; ValueData: Lazarus.AssocFile.lpi; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelpi
+Root: HKCU; Subkey: Software\Classes\.lpk; ValueType: String; ValueData: Lazarus.AssocFile.lpk; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelpk
+Root: HKCU; Subkey: Software\Classes\.lpr; ValueType: String; ValueData: Lazarus.AssocFile.lpr; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatelpr
+Root: HKCU; Subkey: Software\Classes\.inc; ValueType: String; ValueData: Lazarus.AssocFile.inc; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associateinc
+Root: HKCU; Subkey: Software\Classes\.pas; ValueType: String; ValueData: Lazarus.AssocFile.pas; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatepas
+Root: HKCU; Subkey: Software\Classes\.pp; ValueType: String; ValueData: Lazarus.AssocFile.pp; Flags: uninsdeletevalue; Check: IsHKLMNotWriteable; Components: associatepp
 
 [Languages]
 Name: default; MessagesFile: compiler:Default.isl
