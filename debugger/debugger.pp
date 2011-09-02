@@ -41,7 +41,7 @@ unit Debugger;
 interface
 
 uses
-  TypInfo, Classes, SysUtils, Laz_XMLCfg, math,
+  TypInfo, Classes, SysUtils, Laz_XMLCfg, math, FileUtil,
   LCLProc, IDEProcs, DebugUtils, maps;
 
 type
@@ -7222,6 +7222,7 @@ begin
     TCurrentWatchValueList(FValueList).SnapShot := nil;
   end else begin
     FSnapShot.Assign(self);
+    FSnapShot.Enabled := True; // Snapshots are always enabled
     TCurrentWatchValueList(FValueList).SnapShot := FSnapShot.FValueList;
   end;
 end;
@@ -7917,7 +7918,7 @@ begin
   then FArguments.Assign(AnArguments);
   FFunctionName := AFunctionName;
   FSource := ASource;
-  FFullFileName := AFullFileName;
+  FFullFileName := TrimFilename(AFullFileName);
   FLine := ALine;
   FState := AState;
 end;
