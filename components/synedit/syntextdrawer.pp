@@ -1363,7 +1363,7 @@ begin
     DeleteObject(SelectObject(FDC, OldPen));
   end;
 
-  NeedDistArray:= ForceEto or (FCharExtra > 0) or
+  NeedDistArray:= ForceEto or (FCharExtra <> 0) or
     (FBaseCharWidth <> FFontStock.CharAdvance) or FFontStock.NeedETO;
   ForceEto := False;
   //DebugLn(['TheTextDrawer.ExtTextOut NeedDistArray=',NeedDistArray]);
