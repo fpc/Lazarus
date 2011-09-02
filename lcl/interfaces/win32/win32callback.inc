@@ -1133,7 +1133,7 @@ begin
           Msg := CN_CHAR;
           KeyData := LParam;
           if UnicodeEnabledOS then
-            CharCode := Word(Char(WideChar(WParam)))
+            CharCode := Word(WideChar(WParam))
           else
             CharCode := Word(WParam);
           OrgCharCode := CharCode;
@@ -1158,7 +1158,7 @@ begin
 
     WM_MENUCHAR:
     begin
-      PLMsg^.Result := FindMenuItemAccelerator(chr(LOWORD(WParam)), HMENU(LParam));
+      PLMsg^.Result := FindMenuItemAccelerator(LOWORD(WParam), HMENU(LParam));
       WinProcess := false;
     end;
 
@@ -2429,7 +2429,7 @@ begin
         // to unicode char, if not change was made WParam has
         // the right unicode char so just use it.
         if (LMChar.Result = 1) or (OrgCharCode <> LMChar.CharCode) then
-          WParam := Word(WideChar(Char(LMChar.CharCode)));
+          WParam := Word(WideChar(LMChar.CharCode));
       end
       else
       {$ENDIF}

@@ -1824,25 +1824,29 @@ end;
 
 //------------------------------------------------------------------------------
 function IsAccel(VK: word; const Str: string): Boolean;
+const
+  AmpersandChar = '&';
 var
-  lPos: integer;
+  position: integer;
+  ACaption, FoundChar: string;
 begin
-  lPos:=1;
-  while (lPos<length(Str)) do begin
-    if Str[lPos]<>'&' then begin
-      inc(lPos);
-    end else begin
-      inc(lPos);
-      if (Str[lPos]<>'&') then begin
-        Result := UpCase(Str[lPos]) = UpCase(char(VK));
-        exit;
-      end else begin
-        // skip double &&
-        inc(lPos);
-      end;
+  ACaption := Str;
+  Result := false;
+  position := UTF8Pos(AmpersandChar, ACaption);
+  // if AmpersandChar is on the last position then there is nothing to underscore, ignore this character
+  while (position > 0) and (position < UTF8Length(ACaption)) do
+  begin
+    FoundChar := UTF8Copy(ACaption, position+1, 1);
+    // two AmpersandChar characters together are not valid hot key
+    if FoundChar <> AmpersandChar then begin
+      Result := UTF8UpperCase(UTF16ToUTF8(WideString(WideChar(VK)))) = UTF8UpperCase(FoundChar);
+      exit;
+    end
+    else begin
+      UTF8Delete(ACaption, 1, position+1);
+      position := UTF8Pos(AmpersandChar, ACaption);
     end;
   end;
-  Result := false;
 end;
 
 //==============================================================================
