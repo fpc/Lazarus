@@ -13604,9 +13604,7 @@ begin
         end;
         SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
         SrcEdit.EditorComponent.TopLine:=TopLine;
-        with SrcEdit.EditorComponent do begin
-          LeftChar:=Max(LogCaretXY.X - (CharsInWindow * 4 div 5),1);
-        end;
+        SrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
         SrcEdit.ErrorLine:=LogCaretXY.Y;
       end;
     end else begin
@@ -13712,10 +13710,9 @@ begin
         try
           SrcEdit.BeginUpdate;
           SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
-          if not SrcEdit.IsLocked then
+          if not SrcEdit.IsLocked then begin
             SrcEdit.CenterCursor(True);
-          with SrcEdit.EditorComponent do begin
-            LeftChar:= Math.Max(LogCaretXY.X - (CharsInWindow * 4 div 5),1);
+            SrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
           end;
         finally
           SrcEdit.EndUpdate;
@@ -15020,8 +15017,7 @@ begin
           NewSrcEdit.TopLine:=NewTopLine;
       end;
       //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
-      with NewSrcEdit.EditorComponent do
-        LeftChar:=Max(NewX - (CharsInWindow * 4 div 5), 1);
+      NewSrcEdit.CenterCursorHoriz(hcmSoftKeepEOL);
     finally
       NewSrcEdit.EndUpdate;
     end;

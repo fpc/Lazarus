@@ -84,6 +84,15 @@ type
 
   TCharSet = set of Char;
 
+  // for TSourcEditor.CenterCursorHoriz
+  TSourceEditHCenterMode =
+  ( hcmCenter,          // Center X-Caret to exact middle of Screen
+    hcmCenterKeepEOL,   // Center X-Caret to middle of Screen, but keep EOL at right border
+    hcmSoft,            // Soft Center (distance to screen edge) Caret
+    hcmSoftKeepEOL      // Soft Center (distance to screen edge) Caret, but keep EOL at right border
+  );
+
+
   { TSynEditPlugin1 }
 
   TSynEditPlugin1 = class(TSynEditPlugin)
@@ -416,7 +425,8 @@ type
     function CaretInSelection(const ACaretPos: TPoint): Boolean;
 
     // cursor
-    procedure CenterCursor(SoftCenter: Boolean = False);
+    procedure CenterCursor(SoftCenter: Boolean = False); // vertical
+    procedure CenterCursorHoriz(HCMode: TSourceEditHCenterMode); // horiz
     function TextToScreenPosition(const Position: TPoint): TPoint; override;
     function ScreenToTextPosition(const Position: TPoint): TPoint; override;
     function ScreenToPixelPosition(const Position: TPoint): TPoint; override;
@@ -4556,6 +4566,38 @@ begin
 
   if NewTopLine < 1 then NewTopLine := 1;
   EditorComponent.TopView := NewTopLine;
+end;
+
+procedure TSourceEditor.CenterCursorHoriz(HCMode: TSourceEditHCenterMode);
+var
+  i, j: Integer;
+begin
+  case HCMode of
+    hcmCenter:
+      with EditorComponent do begin
+        LeftChar:=Max(LogicalCaretXY.X - (CharsInWindow div 2), 1);
+      end;
+    hcmCenterKeepEOL:
+      with EditorComponent do begin
+        i := LogicalToPhysicalPos(Point(Length(Lines[CaretY]) + 1, CaretY)).X;
+        LeftChar:=Max(Min(LogicalCaretXY.X - (CharsInWindow div 2),
+                          i - CharsInWindow
+                         ), 1);
+      end;
+    hcmSoft:
+      // TODO: offset on left side
+      with EditorComponent do begin
+        LeftChar:=Max(LogicalCaretXY.X - (CharsInWindow * 4 div 5), 1);
+      end;
+    hcmSoftKeepEOL:
+      // TODO: offset on left side
+      with EditorComponent do begin
+        i := LogicalToPhysicalPos(Point(Length(Lines[CaretY]) + 1, CaretY)).X;
+        LeftChar:=Max(Min(LogicalCaretXY.X - (CharsInWindow * 4 div 5),
+                          i - CharsInWindow
+                         ), 1);
+      end;
+  end;
 end;
 
 function TSourceEditor.TextToScreenPosition(const Position: TPoint): TPoint;
