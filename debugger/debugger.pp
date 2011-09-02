@@ -686,7 +686,8 @@ type
   type
   TDBGSymbolKind = (skClass, skRecord, skEnum, skSet, skProcedure, skFunction, skSimple, skPointer, skVariant);
   TDBGSymbolAttribute = (saRefParam,        // var, const, constref passed by reference
-                         saInternalPointer // PointerToObject
+                         saInternalPointer, // PointerToObject
+                         saArray, saDynArray
                         );
   TDBGSymbolAttributes = set of TDBGSymbolAttribute;
   TDBGFieldLocation = (flPrivate, flProtected, flPublic, flPublished);

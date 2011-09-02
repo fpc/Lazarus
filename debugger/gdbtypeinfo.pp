@@ -1248,6 +1248,9 @@ var
     end;
 
     FKind := skSimple;
+    if (ptprfDynArray in PTypeResult.Flags)
+    then include(FAttributes, saDynArray)
+    else include(FAttributes, saArray);
 
     if not(gtcfSkipTypeName in FCreationFlags) then begin
       if not RequireRequests([gptrWhatisExpr])

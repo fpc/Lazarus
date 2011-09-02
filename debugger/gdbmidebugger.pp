@@ -10783,6 +10783,9 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
         if (ResultInfo.TypeName = '&ShortString') then
           FTextValue := GetStrValue('ShortString(%s)', [AnExpression]) // we have an address here, so we need to typecast
         else
+        if saDynArray in ResultInfo.Attributes then
+          FTextValue := PascalizePointer(FTextValue)
+        else
           FTextValue := FTextValue;
       end;
     end;
