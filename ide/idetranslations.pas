@@ -261,6 +261,10 @@ end;
     - lclstrconsts.pas
     - codetoolsstrconsts.pas
     - lazarusidestrconsts.pas
+    - objinspstrconsts.pas
+    - syneditstrconst.pp
+    - synmacrorecorder.pas
+    - gdbmidebugger.pp
 -------------------------------------------------------------------------------}
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 const
@@ -298,6 +302,9 @@ begin
   // SynMacroRecorder
   TranslateUnitResourceStrings('SynMacroRecorder',
     Dir+'components/synedit/languages/synmacrorecorder'+Ext,Lang,FallbackLang);
+  // GDB MI interface
+  TranslateUnitResourceStrings('GDBMIDebugger',
+    Dir+'languages/gdbmidebugger'+Ext,Lang,FallbackLang);
 end;
 
 { TLazarusTranslations }
