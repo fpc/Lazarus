@@ -77,8 +77,8 @@ const
   cMask_LowerCase     = '<'; // after this the chars is in lower case
   cMask_Letter        = 'l'; // only a letter but not necessary
   cMask_LetterFixed   = 'L'; // only a letter
-  cMask_AlphaNum      = 'a'; // a char from space and #122 but not necessary
-  cMask_AlphaNumFixed = 'A'; // a char from space and #122
+  cMask_AlphaNum      = 'a'; // an alphanumeric char (['A'..'Z','a..'z','0'..'9']) but not necessary
+  cMask_AlphaNumFixed = 'A'; // an alphanumeric char
   cMask_AllChars      = 'c'; // any char #32 - #255 but not necessary (needs fixing for UTF8 characters!!)
   cMask_AllCharsFixed = 'C'; // any char #32 - #255 (needs fixing for UTF8 characters!!)
   cMask_Number        = '9'; // only a number but not necessary
