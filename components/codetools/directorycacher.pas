@@ -366,6 +366,7 @@ function ComparePCharUnitNameWithFilename(UnitNameP, FilenameP: Pointer): intege
 var
   AUnitName: PChar absolute UnitNameP;
   Filename: PChar absolute FilenameP;
+  ExtStart: PChar;
 begin
   while (FPUpChars[AUnitName^]=FPUpChars[Filename^]) and (AUnitName^<>#0) do begin
     inc(AUnitName);
@@ -376,19 +377,17 @@ begin
     if (Filename^='.') then begin
       // check extension
       inc(Filename);
+      ExtStart:=Filename;
       while not (Filename^ in ['.',#0]) do inc(Filename);
       if Filename^='.' then begin
         // multi dots in filename
-        Result:=ord(#0)-ord('.');
+        Result:=ord(#0)-ord(FPUpChars[ExtStart^]);
       end else begin
         // rest is the extension => fits
         Result:=0;
       end;
-    end else if Filename^=#0 then begin
-      // file name has no extension => return not 0
-      Result:=ord('.');
     end else
-      Result:=ord(#0)-ord(FPUpChars[Filename^]);
+      Result:=ord('.')-ord(FPUpChars[Filename^]);
   end else
     Result:=ord(FPUpChars[AUnitName^])-ord(FPUpChars[Filename^]);
 end;
