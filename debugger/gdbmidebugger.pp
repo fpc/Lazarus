@@ -449,22 +449,22 @@ resourcestring
   gdbmiErrorOnRunCommand = 'The debugger encountered an error when trying to '
     + 'run/step the application:%0:s%0:s%1:s%0:s%0:s'
     + 'Press "Ok" to continue debugging (paused), '
-    + 'and correct the problem, or choose an alternative run command%0:s'
-    + 'Press "Stop" to end the debug session';
-  gdbmiErrorOnRunCommandWithWarning = '%0:s%0:sIn addition to the Error the following '
+    + 'and correct the problem, or choose an alternative run command.%0:s'
+    + 'Press "Stop" to end the debug session.';
+  gdbmiErrorOnRunCommandWithWarning = '%0:s%0:sIn addition to the error the following '
     + 'warning was encountered:%0:s%0:s%1:s';
   gdbmiBreakPointErrorOnRunCommand = 'The debugger encountered an error when trying to '
     + 'run/step the application:%0:s%0:s%1:s%0:s%0:s'
     + 'Press "Ok" to remove the breakpoints and continue debugging (paused), '
-    + 'and correct the problem, or choose an alternative run command%0:s'
-    + 'Press "Stop" to end the debug session';
+    + 'and correct the problem, or choose an alternative run command.%0:s'
+    + 'Press "Stop" to end the debug session.';
   gdbmiTimeOutForCmd = 'Time-out for command: "%s"';
-  gdbmiFatalErrorOccured = 'Unrecoverable Error: "%s"';
+  gdbmiFatalErrorOccured = 'Unrecoverable error: "%s"';
   gdbmiErrorStateGenericInfo = 'Error in: %1:s %0:s';
   gdbmiErrorStateInfoCommandError =
       '%0:sThe GDB command:%0:s"%1:s"%0:sreturned the error:%0:s"%2:s"%0:s';
   gdbmiErrorStateInfoCommandNoResult =
-      '%0:sThe GDB command:%0:s"%1:s"%0:sdid not return any result%0:s';
+      '%0:sThe GDB command:%0:s"%1:s"%0:sdid not return any result.%0:s';
   gdbmiErrorStateInfoFailedWrite = '%0:sCould not send a command to GDB.%0:s';
   gdbmiErrorStateInfoFailedRead = '%0:sCould not read output from GDB.%0:s';
   gdbmiErrorStateInfoGDBGone = '%0:sThe GDB process is no longer running.%0:s';
