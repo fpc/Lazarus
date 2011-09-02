@@ -1115,9 +1115,9 @@ msgstr "Курсив"
 msgid "Editor font"
 msgstr "Шрифт редактора"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "Висота шрифту"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7514,6 +7514,10 @@ msgstr ""
 msgid "Debugger Exception Notification"
 msgstr "Повідомлення про виняток налагоджувача"
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Фільтр для виключення"
@@ -8989,9 +8993,9 @@ msgstr "Опублікувати проект"
 msgid "Quick compile, no linking"
 msgstr "Швидке компілювання, без компонування"
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "Видалити активний модуль з проекту"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9852,9 +9856,9 @@ msgstr "Про FPC"
 msgid "Add &Breakpoint"
 msgstr "Додати &точку зупинки"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package ..."
-msgstr "Додати активний модуль до пакету ..."
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"

@@ -1126,9 +1126,9 @@ msgstr "Kurzíva"
 msgid "Editor font"
 msgstr "Písmo editoru"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "Výška písma editoru"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7559,6 +7559,10 @@ msgstr "Příklady:%sIdentifikátor%sTMyEnum.Enum%sUnitname.Identifier%s#Package
 msgid "Debugger Exception Notification"
 msgstr "Upozornění výjimky Ladiče"
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Filtr vyřazení"
@@ -9051,9 +9055,9 @@ msgstr "Zveřejnit projekt"
 msgid "Quick compile, no linking"
 msgstr "Rychlý překlad, bez spojování"
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "Odstranit aktivní jednotku z projektu"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9920,11 +9924,9 @@ msgstr "O FPC"
 msgid "Add &Breakpoint"
 msgstr "Přidat bod přerušení"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-#, fuzzy
-#| msgid "Add active unit to a package"
-msgid "Add active unit to a package ..."
-msgstr "Přidat aktivní jednotku do balíčku"
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"

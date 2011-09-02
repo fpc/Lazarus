@@ -1126,9 +1126,9 @@ msgstr "斜体"
 msgid "Editor font"
 msgstr "编辑器字体"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "编辑器字体高度"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7603,6 +7603,10 @@ msgstr ""
 msgid "Debugger Exception Notification"
 msgstr "调试器异常通知"
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr "排除过滤器"
@@ -9095,9 +9099,9 @@ msgstr "发布工程"
 msgid "Quick compile, no linking"
 msgstr "快速编译，不连接"
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "从工程移除当前单元"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9970,11 +9974,9 @@ msgstr ""
 msgid "Add &Breakpoint"
 msgstr "添加断点"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-#, fuzzy
-#| msgid "Add active unit to a package"
-msgid "Add active unit to a package ..."
-msgstr "将活动单元添加到包 "
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"

@@ -1129,9 +1129,9 @@ msgstr "Kursyvas"
 msgid "Editor font"
 msgstr "Rengyklės šriftas"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "Rengyklės šrifto dydis"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7596,6 +7596,10 @@ msgstr "Pavyzdžiai:%sIdentifikatorius%sTManoEnum.Enum%sModulioPavadinimas.Ident
 msgid "Debugger Exception Notification"
 msgstr "Derintuvės pranešimas apie išimtinę situaciją"
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Neįtraukimo filtras"
@@ -9089,9 +9093,9 @@ msgstr "Skelbti projektą"
 msgid "Quick compile, no linking"
 msgstr "Kompiliuoti greitai, nesaistyti"
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "Pašalinti iš projekto aktyvųjį modulį"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9969,11 +9973,9 @@ msgstr ""
 msgid "Add &Breakpoint"
 msgstr "Padėti stabdos tašką"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-#, fuzzy
-#| msgid "Add active unit to a package"
-msgid "Add active unit to a package ..."
-msgstr "Įdėti aktyvųjį modulį į paketą"
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"

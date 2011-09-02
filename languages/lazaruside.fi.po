@@ -1110,9 +1110,9 @@ msgstr "Kursivoitu"
 msgid "Editor font"
 msgstr "Editorin käyttämä kirjasin"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "Editorin käyttämän kirjasimen koko"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7512,6 +7512,10 @@ msgstr ""
 msgid "Debugger Exception Notification"
 msgstr "Virheejäljettimen kiinniottaman poikkeuksen havainto"
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr ""
@@ -8990,9 +8994,9 @@ msgstr "Julkaise ohjelma"
 msgid "Quick compile, no linking"
 msgstr "Nopea käännös, ei linkkausta"
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "Poista aktiivinen käännösyksikkö projektista"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9853,9 +9857,9 @@ msgstr "Tietoja FPC:stä"
 msgid "Add &Breakpoint"
 msgstr "Lisää keskeytyskohta"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package ..."
-msgstr "Lisää aktiivinen käännösyksikkö pakettiin ..."
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"

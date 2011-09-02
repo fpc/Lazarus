@@ -1123,9 +1123,9 @@ msgstr "Miring"
 msgid "Editor font"
 msgstr "Font editor"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "Tinggi font editor"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7588,6 +7588,10 @@ msgstr ""
 msgid "Debugger Exception Notification"
 msgstr ""
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Filter Kekecualian"
@@ -9072,9 +9076,9 @@ msgstr "Terbitkan proyek"
 msgid "Quick compile, no linking"
 msgstr ""
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "Hapus unit aktif dari proyek"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9943,11 +9947,9 @@ msgstr ""
 msgid "Add &Breakpoint"
 msgstr "Tambah breakpoint"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-#, fuzzy
-#| msgid "Add active unit to a package"
-msgid "Add active unit to a package ..."
-msgstr "Tambah unit aktif ke paket"
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"

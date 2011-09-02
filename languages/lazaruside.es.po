@@ -1123,9 +1123,9 @@ msgstr "Cursiva"
 msgid "Editor font"
 msgstr "Fuente del Editor"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "Altura de la fuente del Editor"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7583,6 +7583,10 @@ msgstr "Ejemplos:%sIdentificador%sTMyEnum.Enum%sNombreUnidad.Identificador%s#Nom
 msgid "Debugger Exception Notification"
 msgstr "Notificación de Excepciones del Depurador"
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Excluir filtro"
@@ -9076,9 +9080,9 @@ msgstr "Publicar proyecto"
 msgid "Quick compile, no linking"
 msgstr "Compilación rápida, sin enlazar"
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "Quitar unidad activa del proyecto"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9949,11 +9953,9 @@ msgstr "Acerca de FPC"
 msgid "Add &Breakpoint"
 msgstr "Añadir punto de interrupción"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-#, fuzzy
-#| msgid "Add active unit to a package"
-msgid "Add active unit to a package ..."
-msgstr "Añadir unidad activa a un paquete"
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"

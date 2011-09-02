@@ -1123,9 +1123,9 @@ msgstr "Itàlica"
 msgid "Editor font"
 msgstr "Font de l'editor"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "Alçada fonts editor"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7572,6 +7572,10 @@ msgstr ""
 msgid "Debugger Exception Notification"
 msgstr ""
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr ""
@@ -9052,8 +9056,8 @@ msgstr ""
 msgid "Quick compile, no linking"
 msgstr ""
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
 msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
@@ -9923,11 +9927,9 @@ msgstr ""
 msgid "Add &Breakpoint"
 msgstr "Afegeix un punt de ruptura"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-#, fuzzy
-#| msgid "Add active unit to a package"
-msgid "Add active unit to a package ..."
-msgstr "Afegeix la unitat activa a un paquet"
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"

@@ -1125,9 +1125,9 @@ msgstr "כתב נטוי"
 msgid "Editor font"
 msgstr "גופני עורך"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "גובה גופן העורך"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7578,6 +7578,10 @@ msgstr "דוגמה: מזהים TMyEnum.Enum \"שם יחידה.מ/nזהה\"  \"#�
 msgid "Debugger Exception Notification"
 msgstr "הערת חריגה של מנפה השגיאות"
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr "אל תכלול מסנן"
@@ -9072,9 +9076,9 @@ msgstr "פרסם פרויקט"
 msgid "Quick compile, no linking"
 msgstr "הידור מהיר ללא קישור"
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "הסר את היחידה הפעילה מהפרוייקט"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9949,11 +9953,9 @@ msgstr "אודות FPC"
 msgid "Add &Breakpoint"
 msgstr "הוסף נקודת עצירה"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-#, fuzzy
-#| msgid "Add active unit to a package"
-msgid "Add active unit to a package ..."
-msgstr "הוסף את היחידה הפעילה לחבילה"
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"

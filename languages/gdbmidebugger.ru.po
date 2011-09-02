@@ -10,15 +10,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gdbmidebugger.gdbmibreakpointerroronruncommand
-msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
-msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для удаления точек останова и продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска%0:sНажмите \"Остановить\" для окончания отладки"
+#| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для удаления точек останова и продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска.%0:sНажмите \"Остановить\" для окончания отладки."
 
 #: gdbmidebugger.gdbmierroronruncommand
-msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
-msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска%0:sНажмите \"Остановить\" для окончания отладки"
+#| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
+msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
+msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска.%0:sНажмите \"Остановить\" для окончания отладки."
 
 #: gdbmidebugger.gdbmierroronruncommandwithwarning
-msgid "%0:s%0:sIn addition to the Error the following warning was encountered:%0:s%0:s%1:s"
+#| msgid "%0:s%0:sIn addition to the Error the following warning was encountered:%0:s%0:s%1:s"
+msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
 msgstr "%0:s%0:sКроме ошибки, было получено следующее предупреждение:%0:s%0:s%1:s"
 
 #: gdbmidebugger.gdbmierrorstategenericinfo
@@ -30,8 +33,9 @@ msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
 msgstr "%0:sКоманда GDB:%0:s\"%1:s\"%0:sвозвратила ошибку:%0:s\"%2:s\"%0:s"
 
 #: gdbmidebugger.gdbmierrorstateinfocommandnoresult
-msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result%0:s"
-msgstr "%0:sКоманда GDB:%0:s\"%1:s\"%0:sне возвратила никакого результата%0:s"
+#| msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result%0:s"
+msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
+msgstr "%0:sКоманда GDB:%0:s\"%1:s\"%0:sне возвратила никакого результата.%0:s"
 
 #: gdbmidebugger.gdbmierrorstateinfofailedread
 msgid "%0:sCould not read output from GDB.%0:s"
@@ -47,7 +51,8 @@ msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr "%0:sПроцесс GDB больше не выполняется.%0:s"
 
 #: gdbmidebugger.gdbmifatalerroroccured
-msgid "Unrecoverable Error: \"%s\""
+#| msgid "Unrecoverable Error: \"%s\""
+msgid "Unrecoverable error: \"%s\""
 msgstr "Неустранимая ошибка: \"%s\""
 
 #: gdbmidebugger.gdbmitimeoutforcmd

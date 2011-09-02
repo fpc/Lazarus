@@ -1117,8 +1117,8 @@ msgstr ""
 msgid "Editor font"
 msgstr ""
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
 msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
@@ -7514,6 +7514,10 @@ msgstr ""
 msgid "Debugger Exception Notification"
 msgstr ""
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr ""
@@ -8988,8 +8992,8 @@ msgstr ""
 msgid "Quick compile, no linking"
 msgstr ""
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
 msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
@@ -9851,8 +9855,8 @@ msgstr ""
 msgid "Add &Breakpoint"
 msgstr ""
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-msgid "Add active unit to a package ..."
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory

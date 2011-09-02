@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-21 18:39+0300\n"
+"PO-Revision-Date: 2011-09-03 03:10+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -238,7 +238,7 @@ msgstr "Выделенная область"
 #| msgid "SyncronEdit Current Cells"
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditcur"
 msgid "Active Cell"
-msgstr "Активное поле"
+msgstr "Текущее поле"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditother
 #| msgid "SyncronEdit Other Cells"
@@ -256,7 +256,7 @@ msgstr "Синхронизируемые поля"
 #| msgid "TemplateEdit Current"
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditcur"
 msgid "Active Cell"
-msgstr "Активное поле"
+msgstr "Текущее поле"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditother
 #| msgid "TemplateEdit Cells"
@@ -1100,7 +1100,7 @@ msgstr "Использование этого критерия приводит 
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
 msgid "This option will check if the current active editor has the target file and if it is, it will use the current editor, even if it is locked and/or needs scrolling."
-msgstr "Использование этого критерия приводит к проверке наличия целевого файла в текущем активном редакторе. Если файл открыт, будет использоваться текущий редактор, даже если он зафиксирован и/или ему требуется прокрутка."
+msgstr "Использование этого критерия приводит к проверке наличия целевого файла в текущем редакторе. Если файл открыт, будет использоваться текущий редактор, даже если он зафиксирован и/или ему требуется прокрутка."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactwin
 #| msgid "This option will check if there is an editorfor the target file in the current windowand if there is, it will use this editor, even if it is locked and/or needs scrolling."
@@ -1145,9 +1145,9 @@ msgstr "Курсив"
 msgid "Editor font"
 msgstr "Шрифт редактора"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "Высота шрифта"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr "Размер шрифта"
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7598,6 +7598,10 @@ msgstr "Примеры:%s<Идентификатор>%sTMyEnum.<Перечисл
 msgid "Debugger Exception Notification"
 msgstr "Уведомление об исключении отладчика"
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr "%s исключён во время исполнения"
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr "Исключающий фильтр"
@@ -7620,15 +7624,15 @@ msgstr "Выполнить команду до"
 
 #: lazarusidestrconsts.lisexecutionpaused
 msgid "Execution paused"
-msgstr "Выполнение приостановлено"
+msgstr "Исполнение приостановлено"
 
 #: lazarusidestrconsts.lisexecutionpausedadress
 msgid "Execution paused%s  Address: $%s%s  Procedure: %s%s  File: %s%s(Some day an assembler window might popup here :)%s"
-msgstr "Выполнение остановлено%s Адрес: %s%s Процедура: %s%s Файл: %s%s(Когда-нибудь здесь появится окно ассемблера :)%s"
+msgstr "Исполнение остановлено%s Адрес: %s%s Процедура: %s%s Файл: %s%s(Когда-нибудь здесь появится окно ассемблера :)%s"
 
 #: lazarusidestrconsts.lisexecutionstopped
 msgid "Execution stopped"
-msgstr "Выполнение остановлено"
+msgstr "Исполнение остановлено"
 
 #: lazarusidestrconsts.lisexeprograms
 msgid "Programs"
@@ -9085,9 +9089,9 @@ msgstr "Опубликовать проект"
 msgid "Quick compile, no linking"
 msgstr "Быстрая компиляция, без компоновки"
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "Удалить текущий модуль из проекта"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr "Удалить текущий файл из проекта"
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9534,7 +9538,7 @@ msgstr "Управление профилями"
 
 #: lazarusidestrconsts.lislazbuildnameoftheactiveprofile
 msgid "Name of the active profile"
-msgstr "Имя активного профиля"
+msgstr "Имя текущего профиля"
 
 #: lazarusidestrconsts.lislazbuildnewprof
 msgid "Add New Profile"
@@ -9957,10 +9961,9 @@ msgstr "Информация о компиляторе FPC"
 msgid "Add &Breakpoint"
 msgstr "Добавить &точку останова"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-#| msgid "Add active unit to a package"
-msgid "Add active unit to a package ..."
-msgstr "Добавить активный модуль к пакету ..."
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr "Добавить текущий файл к пакету ..."
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"
@@ -12027,7 +12030,7 @@ msgstr "Описание или аннотация"
 
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
 msgid "Designtime and Runtime"
-msgstr "Времени разработки и выполнения"
+msgstr "Времени разработки и исполнения"
 
 #: lazarusidestrconsts.lispckoptsdesigntimeonly
 msgid "Designtime only"
@@ -12096,7 +12099,7 @@ msgstr "Релиз"
 
 #: lazarusidestrconsts.lispckoptsruntimeonly
 msgid "Runtime only"
-msgstr "Только времени выполнения"
+msgstr "Только времени исполнения"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
@@ -12670,7 +12673,7 @@ msgstr "Имя пакета %s%s%s в%s%s%s%s не является коррек
 
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
-msgstr "Пакет %s является пакетом времени выполнения.%sТакие пакеты не могут встраиваться в IDE."
+msgstr "Пакет %s является пакетом времени исполнения.%sТакие пакеты не могут встраиваться в IDE."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
 msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also uses the default unit search of the compiler. This creates a circle.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
@@ -12871,7 +12874,7 @@ msgstr "Пакет %s%s%s установлен, но не был найден к
 
 #: lazarusidestrconsts.lispkgsysthertlfreepascalcomponentlibraryprovidesthebase
 msgid "The RTL - The Run-Time Library is the basis of all Free Pascal programs."
-msgstr "RTL - библиотека времени выполнения (Run-Time Library) - является основой всех программ Free Pascal."
+msgstr "RTL - библиотека времени исполнения (Run-Time Library) - является основой всех программ Free Pascal."
 
 #: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
 msgid "This is the default package. Used only for components without a package. These components are outdated."

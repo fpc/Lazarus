@@ -1128,9 +1128,9 @@ msgstr "イタリック"
 msgid "Editor font"
 msgstr "エディタのフォント"
 
-#: lazarusidestrconsts.dlgeditorfontheight
-msgid "Editor font height"
-msgstr "エディタのフォントの大きさ"
+#: lazarusidestrconsts.dlgeditorfontsize
+msgid "Editor font size"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -7608,6 +7608,10 @@ msgstr "例：%s識別子%sTMyEnum.Enum%sUnitname.Identifie"
 msgid "Debugger Exception Notification"
 msgstr "デバッガ例外通知"
 
+#: lazarusidestrconsts.lisexcludedatruntime
+msgid "%s excluded at run time"
+msgstr ""
+
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
 msgstr "除外フィルタ"
@@ -9102,9 +9106,9 @@ msgstr "プロジェクトを発行"
 msgid "Quick compile, no linking"
 msgstr "リンクなしの迅速コンパイル"
 
-#: lazarusidestrconsts.liskmremoveactiveunitfromproject
-msgid "Remove active unit from project"
-msgstr "プロジェクトからアクティブなユニットを削除"
+#: lazarusidestrconsts.liskmremoveactivefilefromproject
+msgid "Remove active file from project"
+msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9979,11 +9983,9 @@ msgstr "FPCについて"
 msgid "Add &Breakpoint"
 msgstr "ブレークポイントを追加"
 
-#: lazarusidestrconsts.lismenuaddcurunittopkg
-#, fuzzy
-#| msgid "Add active unit to a package"
-msgid "Add active unit to a package ..."
-msgstr "アクティブなユニットをパッケージに追加"
+#: lazarusidestrconsts.lismenuaddcurfiletopkg
+msgid "Add active file to a package ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"
