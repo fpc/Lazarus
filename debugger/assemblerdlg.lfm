@@ -88,34 +88,34 @@ inherited AssemblerDlg: TAssemblerDlg
     object ToolButton2: TToolButton
       Left = 24
       Top = 2
-      Width = 8
+      Width = 10
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
     object ToolButtonStepOverInstr: TToolButton
-      Left = 32
+      Left = 57
       Top = 2
       Action = actStepOverInstr
     end
     object ToolButtonStepIntoInstr: TToolButton
-      Left = 55
+      Left = 34
       Top = 2
       Action = actStepIntoInstr
     end
     object ToolButton4: TToolButton
-      Left = 78
+      Left = 80
       Top = 2
-      Width = 8
+      Width = 10
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object ToolButtonGotoCurrent: TToolButton
-      Left = 86
+      Left = 90
       Top = 2
       Action = actCurrentInstr
     end
     object pnlToolAddr: TPanel
-      Left = 109
+      Left = 113
       Height = 23
       Top = 2
       Width = 80
@@ -140,19 +140,19 @@ inherited AssemblerDlg: TAssemblerDlg
       end
     end
     object ToolButtonGoto: TToolButton
-      Left = 189
+      Left = 193
       Top = 2
       Action = actGotoAddr
     end
     object ToolButton1: TToolButton
-      Left = 212
+      Left = 216
       Top = 2
-      Width = 4
+      Width = 5
       Caption = 'ToolButton1'
       Style = tbsDivider
     end
     object ToolButtonCopy: TToolButton
-      Left = 216
+      Left = 221
       Top = 2
       Action = actCopy
     end
