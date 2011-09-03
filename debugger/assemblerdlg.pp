@@ -637,7 +637,6 @@ end;
 procedure TAssemblerDlg.DoDebuggerDestroyed(Sender: TObject);
 begin
   FDebugger := nil;
-  FDisassembler := nil;
   UpdateView;
 end;
 
