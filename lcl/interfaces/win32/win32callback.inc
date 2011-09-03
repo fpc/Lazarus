@@ -1133,7 +1133,7 @@ begin
           Msg := CN_CHAR;
           KeyData := LParam;
           if UnicodeEnabledOS then
-            CharCode := Word(WideChar(WParam))
+            CharCode := Word(Char(WideChar(WParam)))
           else
             CharCode := Word(WParam);
           OrgCharCode := CharCode;
