@@ -168,6 +168,9 @@ type
 
   { TGDBTestCase }
 
+  TGDBTestResult = class(TTestResult)
+  end;
+
   TGDBTestCase = class(TTestCase)
   private
     // stuff for the debugger
@@ -184,13 +187,16 @@ type
     FRegisters: TIDERegisters;
   private
     FParent: TGDBTestsuite;
+    FTestResult: TGDBTestResult;
     FTestErrors, FIgnoredErrors, FUnexpectedSuccess: String;
+    FTestCnt, FTestErrorCnt, FIgnoredErrorCnt, FUnexpectedSuccessCnt, FSucessCnt: Integer;
     FCurrentPrgName, FCurrentExename: String;
     FLogFile: TextFile;
     function GetCompilerInfo: TCompilerInfo;
     function GetDebuggerInfo: TDebuggerInfo;
     function GetSymbolType: TSymbolType;
   protected
+    function CreateResult: TTestResult; override;
     function GetLogActive: Boolean;
     procedure SetUp; override;
     procedure TearDown; override;
@@ -331,6 +337,12 @@ begin
   Result := Parent.SymbolType;
 end;
 
+function TGDBTestCase.CreateResult: TTestResult;
+begin
+  FTestResult := TGDBTestResult.Create;
+  Result := FTestResult;
+end;
+
 function TGDBTestCase.GetLogActive: Boolean;
 begin
   Result := WriteLog;
@@ -436,6 +448,13 @@ end;
 procedure TGDBTestCase.ClearTestErrors;
 begin
   FTestErrors := '';
+  FIgnoredErrors := '';
+  FUnexpectedSuccess := '';
+  FTestErrorCnt := 0;
+  FIgnoredErrorCnt := 0;
+  FUnexpectedSuccessCnt := 0;
+  FSucessCnt := 0;
+  FTestCnt := 0;
 end;
 
 procedure TGDBTestCase.AddTestError(s: string; MinGdbVers: Integer = 0);
@@ -443,29 +462,37 @@ var
   IgnoreReason: String;
   i: Integer;
 begin
+  inc(FTestCnt);
   IgnoreReason := '';
   if MinGdbVers > 0 then begin
     i := GetDebuggerInfo.Version;
     if (i > 0) and (i < MinGdbVers) then
       IgnoreReason := 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers);
   end;
-  if IgnoreReason <> '' then
-    FIgnoredErrors := FIgnoredErrors + '### '+IgnoreReason +' >>> '+s+LineEnding
-  else
-    FTestErrors := FTestErrors + s + LineEnding;
+  if IgnoreReason <> '' then begin
+    FIgnoredErrors := FIgnoredErrors + IntToStr(FTestCnt) + ': ' + '### '+IgnoreReason +' >>> '+s+LineEnding;
+    inc(FIgnoredErrorCnt);
+  end else begin
+    FTestErrors := FTestErrors + IntToStr(FTestCnt) + ': ' + s + LineEnding;
+    inc(FTestErrorCnt);
+  end;
 end;
 
 procedure TGDBTestCase.AddTestSuccess(s: string; MinGdbVers: Integer);
 var
   i: Integer;
 begin
+  inc(FTestCnt);
   if MinGdbVers > 0 then begin
     i := GetDebuggerInfo.Version;
     if (i > 0) and (i < MinGdbVers) then
-      FUnexpectedSuccess := FUnexpectedSuccess + s
+      FUnexpectedSuccess := FUnexpectedSuccess + IntToStr(FTestCnt) + ': ' + s
         + 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers)
         + LineEnding;
-  end;
+    inc(FUnexpectedSuccessCnt);
+  end
+  else
+    inc(FSucessCnt);
 end;
 
 function TGDBTestCase.TestEquals(Expected, Got: string): Boolean;
@@ -512,11 +539,14 @@ end;
 
 procedure TGDBTestCase.AssertTestErrors;
 var
-  s: String;
+  s, s1: String;
 begin
   s := FTestErrors;
+  s1 := Format('Failed: %d of %d - Ignored: %d Unexpected: %d - Success: %d',
+               [FTestErrorCnt, FTestCnt, FIgnoredErrorCnt, FUnexpectedSuccessCnt, FSucessCnt ]);
   FTestErrors := '';
   if GetLogActive then begin
+    writeln(FLogFile, '***' + s1 + '***' +LineEnding);
     writeln(FLogFile, '================= Failed:'+LineEnding);
     writeln(FLogFile, s);
     writeln(FLogFile, '================= Ignored'+LineEnding);
@@ -526,7 +556,7 @@ begin
     writeln(FLogFile, '================='+LineEnding);
   end;
   if s <> '' then begin
-    Fail(s);
+    Fail(s1+ LineEnding + s);
   end;
 end;
 

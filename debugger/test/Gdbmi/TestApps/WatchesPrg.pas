@@ -1,3 +1,30 @@
+(* Struture
+  program WatchesPrg;
+  type
+    {$DEFINE Global_Types}
+    {$DEFINE Global_Implementation}
+
+  procedure FooFunc(  {$DEFINE FooFunc_Param}  }
+    type
+      {$DEFINE FooFunc_LocalType}
+    var
+      {$DEFINE FooFunc_Local}
+    function SubFoo()():Integer; begin end;
+  begin
+    {$DEFINE FooFunc_Body}
+  end;
+
+  var
+    {$DEFINE Global_Var}
+  begin
+    {$DEFINE Global_Body}
+    FooFunc(   {$DEFINE Global_Call_FooFunc}   );
+    {$DEFINE Global_Body_NIL}
+    FooFunc(   {$DEFINE Global_Call_FooFunc}   );
+  end;
+
+*)
+
 program WatchesPrg;
 {$H-}
 
@@ -64,6 +91,26 @@ procedure FooFunc(
     Dummy: Integer
   {$UNDEF FooFunc_Param}
 );
+type
+  (***  local type  ***)
+  {$DEFINE FooFunc_LocalType}
+    { class/record/object }
+    {$I WatchesPrgStruct.inc}
+    { strings }
+    {$I WatchesPrgString.inc}
+    { simple }
+    {$I WatchesPrgSimple.inc}
+    { enum/set }
+    {$I WatchesPrgEnum.inc}
+    { Array }
+    {$I WatchesPrgArray.inc}
+    { variants }
+    {$I WatchesPrgVariant.inc}
+    { procedure/function/method }
+    {$I WatchesPrgProc.inc}
+
+  {$UNDEF FooFunc_LocalType}
+
 var
   (***  local var  ***)
   {$DEFINE FooFunc_Local}
@@ -86,7 +133,7 @@ var
 
   function SubFoo(var AVal1: Integer; AVal2: Integer) : Integer;
   begin
-    writeln(1);
+    writeln(1); // nested break
   end;
 
 begin

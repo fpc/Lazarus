@@ -1,13 +1,184 @@
+(* Struture
+  program WatchesPrg;
+  type
+    {$DEFINE Global_Types}
+    {$DEFINE Global_Implementation}
+
+  procedure FooFunc(  {$DEFINE FooFunc_Param}  }
+    type
+      {$DEFINE FooFunc_LocalType}
+    var
+      {$DEFINE FooFunc_Local}
+    function SubFoo()():Integer; begin end;
+  begin
+    {$DEFINE FooFunc_Body}
+  end;
+
+  var
+    {$DEFINE Global_Var}
+  begin
+    {$DEFINE Global_Body}
+    FooFunc(   {$DEFINE Global_Call_FooFunc}   );
+    {$DEFINE Global_Body_NIL}
+    FooFunc(   {$DEFINE Global_Call_FooFunc}   );
+  end;
+
+*)
+
+//TODO: globla/local const
+
+{$IFDEF Global_Types}
+//type
+  TFoo = class;
+{$ENDIF}
+
+
+{%region RECORD}
+
+  {%region  TYPE}
+    {$IFDEF Global_Types}
+    //type
+      PRec = ^TRec;
+      PPRec = ^PRec;
+      TRec = record
+        ValInt: Integer;
+        ValFoo: TFoo;
+      end;
+
+      PRec2 = ^TRec2;
+      PPRec2 = ^PRec2;
+      TRec2 = record
+        ValInt:    Integer;
+        ValPRec:   PRec;
+        ValPPRec:  PPRec;
+        ValPRec2:  PRec2;
+        ValPPRec2: PPRec2;
+      end;
+
+      TNewRec = type TRec;
+    {$ENDIF}
+
+    {$IFDEF FooFunc_LocalType}
+    //type
+      PLocalRec = ^TLocalRec;
+      TLocalRec = record
+        ValInt:       Integer;
+        ValBar:       TFoo;
+        ValPRec:      PRec;
+        ValPLocalRec: PLocalRec;
+      end;
+    {$ENDIF}
+
+  {%endregion TYPE}
+
+  {%region VARIABLES}
+    {$IFDEF FooFunc_Param}
+    //procedure FooFunc(
+      ArgTRec: TRec;                         var VArgTRec: TRec;
+      ArgPRec: PRec;                         var VArgPRec: PRec;
+      ArgPPRec: PPRec;                       var VArgPPRec: PPRec;
+      ArgTNewRec: TNewRec;                   var VArgTNewRec: TNewRec;
+    {$ENDIF}
+    {$IFDEF Global_Call_FooFunc}
+    //FooFunc(
+      { records }
+      GlobTRec,                         GlobTRec,
+      GlobPRec,                         GlobPRec,
+      GlobPPRec,                       GlobPPRec,
+      GlobTNewRec,                   GlobTNewRec,
+    {$ENDIF}
+
+    {$IFDEF FooFunc_Local}
+    //var
+      { records }
+      VarTRec: TRec;
+      VarPRec: PRec;
+      VarPPRec: PPRec;
+      VarTNewRec: TNewRec;
+
+      PVarTRec: ^TRec;
+      PVarTNewRec: ^TNewRec;
+
+      VarRecA: record val: Integer; end;
+    {$ENDIF}
+
+    {$IFDEF Global_Var}
+    //var
+      { records }
+      GlobTRec, GlobTRec1, GlobTRec2: TRec;
+      GlobPRec: PRec;
+      GlobPPRec: PPRec;
+      GlobTNewRec: TNewRec;
+
+      PGlobTRec: ^TRec;
+      PGlobTNewRec: ^TNewRec;
+    {$ENDIF}
+
+  {%endregion VARIABLES}
+
+  {%region CODE (initilization)}
+    {$IFDEF FooFunc_Body}
+    //begin
+      { records }
+      VarTRec := ArgTRec;
+      VarPRec := ArgPRec;
+      VarPPRec := ArgPPRec;
+      VarTNewRec := ArgTNewRec;
+
+      PVarTRec := @ArgTRec;
+      PVarTNewRec := @ArgTNewRec;
+
+      VarRecA.val := 1;
+    {$ENDIF}
+
+    {$IFDEF Global_Body}
+    //begin
+      { records }
+      with GlobTRec do begin
+        ValInt := -1;
+        ValFoo := nil;
+      end;
+      with GlobTRec1 do begin
+        ValInt := 1;
+        ValFoo := TFoo.Create;
+        ValFoo.ValueInt := 11;
+      end;
+      with GlobTRec2 do begin
+        ValInt := 2;
+        ValFoo := TFoo.Create;
+        ValFoo.ValueInt := 22;
+      end;
+
+      GlobPRec  := @GlobTRec1;
+      GlobPPRec := @GlobPRec;
+
+      with GlobTNewRec do begin
+        ValInt := 3;
+        ValFoo := nil;
+      end;
+
+      PGlobTRec    := @GlobTNewRec;
+      PGlobTNewRec := @GlobTNewRec;
+    {$ENDIF}
+
+    {$IFDEF Global_Body_NIL}
+    //begin
+      { records }
+      //GlobTRec := nil;
+      GlobPRec := nil;
+      GlobPPRec := nil;
+      //GlobTNewRec := nil;
+    {$ENDIF}
+
+  {%endregion CODE (initilization)}
+
+{%endregion RECORD}
+
+
 
 {%region FooFunc}
   {$IFDEF FooFunc_Param}
   //procedure FooFunc(
-    { records }
-    ArgTRec: TRec;                         var VArgTRec: TRec;
-    ArgPRec: PRec;                         var VArgPRec: PRec;
-    ArgPPRec: PPRec;                       var VArgPPRec: PPRec;
-    ArgTNewRec: TNewRec;                   var VArgTNewRec: TNewRec;
-
     { Classes }
     ArgTFoo: TFoo;                        var VArgTFoo: TFoo;
     ArgPFoo: PFoo;                        var VArgPFoo: PFoo;
@@ -29,17 +200,6 @@
 
   {$IFDEF FooFunc_Local}
   //var
-    { records }
-    VarTRec: TRec;
-    VarPRec: PRec;
-    VarPPRec: PPRec;
-    VarTNewRec: TNewRec;
-
-    PVarTRec: ^TRec;
-    PVarTNewRec: ^TNewRec;
-
-    VarRecA: record val: Integer; end;
-
     { Classes }
     VarTFoo: TFoo;
     VarPFoo: PFoo;
@@ -71,17 +231,6 @@
 
   {$IFDEF FooFunc_Body}
   //begin
-    { records }
-    VarTRec := ArgTRec;
-    VarPRec := ArgPRec;
-    VarPPRec := ArgPPRec;
-    VarTNewRec := ArgTNewRec;
-
-    PVarTRec := @ArgTRec;
-    PVarTNewRec := @ArgTNewRec;
-
-    VarRecA.val := 1;
-
     { Classes }
     VarTFoo := ArgTFoo;
     VarPFoo := ArgPFoo;
@@ -114,20 +263,6 @@
 
 {%region GLOBAL}
   {$IFDEF Global_Types}
-  //type
-    TFoo = class;
-
-    { records }
-    TRec = record
-      ValInt: Integer;
-      ValFoo: TFoo;
-    end;
-
-    PRec = ^TRec;
-    PPRec = ^PRec;
-
-    TNewRec = type TRec;
-
     { Classes }
 
     TFoo = class
@@ -169,15 +304,6 @@
 
   {$IFDEF Global_Var}
   //var
-    { records }
-    GlobTRec, GlobTRec1, GlobTRec2: TRec;
-    GlobPRec: PRec;
-    GlobPPRec: PPRec;
-    GlobTNewRec: TNewRec;
-
-    PGlobTRec: ^TRec;
-    PGlobTNewRec: ^TNewRec;
-
     { Classes }
     GlobTFoo, GlobTFoo1, GlobTFoo2, GlobTFooNil: TFoo;
     GlobPFoo: PFoo;
@@ -206,24 +332,6 @@
 
   {$IFDEF Global_Body}
   //begin
-    { records }
-    GlobTRec.ValInt := -1;
-    GlobTRec.ValFoo := nil;
-    GlobTRec1.ValInt := 1;
-    GlobTRec1.ValFoo := TFoo.Create;
-    GlobTRec1.ValFoo.ValueInt := 11;
-    GlobTRec2.ValInt := 2;
-    GlobTRec2.ValFoo := TFoo.Create;
-    GlobTRec2.ValFoo.ValueInt := 22;
-
-    GlobPRec := @GlobTRec1;
-    GlobPPRec := @GlobPRec;
-    GlobTNewRec.ValInt := 3;
-    GlobTNewRec.ValFoo := nil;
-
-    PGlobTRec := @GlobTNewRec;
-    PGlobTNewRec := @GlobTNewRec;
-
     { Classes }
     GlobTFoo := TFoo.Create;
     GlobTFoo.ValueInt := -11;
@@ -263,12 +371,6 @@
 
   {$IFDEF Global_Body_NIL}
   //begin
-    { records }
-    //GlobTRec := nil;
-    GlobPRec := nil;
-    GlobPPRec := nil;
-    //GlobTNewRec := nil;
-
     { Classes }
     GlobTFoo := nil;
     GlobPFoo := nil;
@@ -290,12 +392,6 @@
 
   {$IFDEF Global_Call_FooFunc}
   //FooFunc(
-    { records }
-    GlobTRec,                         GlobTRec,
-    GlobPRec,                         GlobPRec,
-    GlobPPRec,                       GlobPPRec,
-    GlobTNewRec,                   GlobTNewRec,
-
     { Classes }
     GlobTFoo,                        GlobTFoo,
     GlobPFoo,                        GlobPFoo,
