@@ -2356,6 +2356,7 @@ begin
           if (not OldCTTool.FindDeclaration(OldXYPos,[fsfSearchSourceName],
             CTTool,CTNode,XYPos,aTopLine))
           or (CTNode=OldCTNode)
+          or (CTNode=nil)
           then begin
             {$ifdef VerboseLazDoc}
             debugln(['TCodeHelpManager.GetHTMLHint inherited not found: ',dbgs(OldXYPos)]);
