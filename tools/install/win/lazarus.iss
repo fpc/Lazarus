@@ -91,7 +91,7 @@ Name: {userdesktop}\Lazarus; Filename: {app}\lazarus.exe; Tasks: desktopicon; Ic
 Name: {group}\{#AppName} (debug); Filename: {app}\startlazarus.exe; Parameters: --debug; WorkingDir: {app}; IconFilename: {app}\images\mainicon.ico; Comment: Lazarus --debug
 
 [Run]
-Filename: fpcmkcfg.exe; Parameters: """-d """"basepath={app}\fpc\$FPCVERSION"" -o {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpc.cfg""; Flags: runhidden; Tasks: ; Languages:"; WorkingDir: {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}
+Filename: {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpcmkcfg.exe; Parameters: "-d """"basepath={app}\fpc\$FPCVERSION"" -o ""{app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\fpc.cfg""; Flags: runhidden; Tasks: ; Languages:"; WorkingDir: {app}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}
 
 [UninstallDelete]
 Name: {app}\compilertest.pas; Type: files
