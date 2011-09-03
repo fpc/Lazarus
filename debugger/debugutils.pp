@@ -63,11 +63,13 @@ type
     Len: Integer;
   end;
 
+  TGdbUnEscapeFlags = set of (uefOctal, uefTab, uefNewLine);
+
 function GetLine(var ABuffer: String): String;
 function ConvertToCString(const AText: String): String;
 function ConvertPathDelims(const AFileName: String): String;
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char = '\'): String;
-function UnEscapeOctal(const AValue: String): String;
+function UnEscapeBackslashed(const AValue: String; AFlags: TGdbUnEscapeFlags = [uefOctal]; ATabWidth: Integer = 0): String;
 function UnQuote(const AValue: String): String;
 function ConvertGdbPathAndFile(const AValue: String): String; // fix path, delim, unescape, and to utf8
 
@@ -194,7 +196,7 @@ begin
       Result[i] := PathDelim;
 end;
 
-function UnEscapeOctal(const AValue: String): String;
+function UnEscapeBackslashed(const AValue: String; AFlags: TGdbUnEscapeFlags = [uefOctal]; ATabWidth: Integer = 0): String;
 var
   c, cnt, len: Integer;
   Src, Dst: PChar;
@@ -209,26 +211,69 @@ begin
   Dst := @Result[1];
   while cnt > 0 do
   begin
-    if (Src^ = '\') and ((Src+1)^ in ['0'..'7', '\'])
-    then begin
-      inc(Src);
-      dec(cnt);
-      if Src^ <> '\'
-      then begin
-        c := 0;
-        while (Src^ in ['0'..'7']) and (cnt > 0)
-        do begin
-          c := (c * 8) + ord(Src^) - ord('0');
-          Inc(Src);
-          Dec(cnt);
-        end;
-        //c := UnicodeToUTF8SkipErrors(c, Dst);
-        //inc(Dst, c);
-        Dst^ := chr(c and 255);
-        if (c and 255) <> 0
-        then Inc(Dst);
-        if cnt = 0 then Break;
-        continue;
+    if (Src^ = '\') then begin
+      case (Src+1)^ of
+        '\' :
+          begin
+            inc(Src);
+            dec(cnt);
+          end;
+        '0'..'7' :
+          if uefOctal in AFlags then begin
+            inc(Src);
+            dec(cnt);
+            c := 0;
+            while (Src^ in ['0'..'7']) and (cnt > 0)
+            do begin
+              c := (c * 8) + ord(Src^) - ord('0');
+              Inc(Src);
+              Dec(cnt);
+            end;
+            //c := UnicodeToUTF8SkipErrors(c, Dst);
+            //inc(Dst, c);
+            Dst^ := chr(c and 255);
+            if (c and 255) <> 0
+            then Inc(Dst);
+            if cnt = 0 then Break;
+            continue;
+          end;
+        'n' :
+          if uefNewLine in AFlags then begin
+            inc(Src, 2);
+            dec(cnt, 2);
+            Dst^ := #10;
+            Inc(Dst);
+            continue;
+          end;
+        'r' :
+          if uefNewLine in AFlags then begin
+            inc(Src, 2);
+            dec(cnt, 2);
+            Dst^ := #13;
+            Inc(Dst);
+            continue;
+          end;
+        't' :
+          if uefTab in AFlags then begin
+            inc(Src, 2);
+            dec(cnt, 2);
+            if ATabWidth > 0 then begin;
+              c := Dst - @Result[1];
+              if Length(Result) < c + cnt + ATabWidth + 1 then begin
+                SetLength(Result, Length(Result) + ATabWidth);
+                Dst := @Result[1] + c;
+              end;
+              repeat
+                Dst^ := ' ';
+                Inc(Dst);
+              until ((Dst - @Result[1]) mod ATabWidth) = 0;
+            end
+            else begin
+              Dst^ := #9;
+              Inc(Dst);
+            end;
+            continue;
+          end;
       end;
     end;
     Dst^ := Src^;
@@ -254,7 +299,7 @@ end;
 
 function ConvertGdbPathAndFile(const AValue: String): String;
 begin
-  Result := AnsiToUtf8(ConvertPathDelims(UnEscapeOctal(AValue)));
+  Result := AnsiToUtf8(ConvertPathDelims(UnEscapeBackslashed(AValue, [uefOctal])));
 end;
 
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char): String;

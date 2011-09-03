@@ -2194,7 +2194,8 @@ begin
   // SrcStatementIndex, SrcStatementCount are already set
 
   FItems[Index].ParsedInfo.Addr      := PCLenToQWord(AsmList.ValuesPtr['address'], 0);
-  FItems[Index].ParsedInfo.Statement := PCLenToString(AsmList.ValuesPtr['inst'], True);
+  FItems[Index].ParsedInfo.Statement :=
+    UnEscapeBackslashed(PCLenToString(AsmList.ValuesPtr['inst'], True), [uefTab], 16);
   FItems[Index].ParsedInfo.FuncName  := PCLenToString(AsmList.ValuesPtr['func-name'], True);
   FItems[Index].ParsedInfo.Offset    := PCLenToInt(AsmList.ValuesPtr['offset'], 0);
 
