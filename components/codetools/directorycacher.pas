@@ -363,10 +363,14 @@ begin
 end;
 
 function ComparePCharUnitNameWithFilename(UnitNameP, FilenameP: Pointer): integer;
+{ Checks if UnitNameP is a dotted prefix of FilenameP.
+  For example:
+    a.b is prefix of a.b.c.d, A.b.c, a.b.c
+      but not of a.bc
+}
 var
   AUnitName: PChar absolute UnitNameP;
   Filename: PChar absolute FilenameP;
-  ExtStart: PChar;
 begin
   while (FPUpChars[AUnitName^]=FPUpChars[Filename^]) and (AUnitName^<>#0) do begin
     inc(AUnitName);
@@ -374,19 +378,9 @@ begin
   end;
   if (AUnitName^=#0) then begin
     // the unit name fits the start of the file name
-    if (Filename^='.') then begin
-      // check extension
-      inc(Filename);
-      ExtStart:=Filename;
-      while not (Filename^ in ['.',#0]) do inc(Filename);
-      if Filename^='.' then begin
-        // multi dots in filename
-        Result:=ord(#0)-ord(FPUpChars[ExtStart^]);
-      end else begin
-        // rest is the extension => fits
-        Result:=0;
-      end;
-    end else
+    if (Filename^='.') then
+      Result:=0
+    else
       Result:=ord('.')-ord(FPUpChars[Filename^]);
   end else
     Result:=ord(FPUpChars[AUnitName^])-ord(FPUpChars[Filename^]);
@@ -1029,9 +1023,8 @@ begin
         break;
     end;
     if cmp<>0 then exit;
-    // m is now on a filename with the right unit name, but maybe not the right
-    // extension
-    // go to the first filename with the right unit name
+    // m is now on a filename with the right prefix
+    // go to the first pascal unit with the right unit name
     while (m>0)
     and (ComparePCharUnitNameWithFilename(Pointer(AUnitName),
                                      @Files[FListing.Starts[m-1]+NameOffset])=0)
@@ -1040,7 +1033,7 @@ begin
     // -> now find a filename with correct case and extension
     while m<FListing.Count do begin
       CurFilename:=@Files[FListing.Starts[m]+NameOffset];
-      // check if filename has the right AUnitName
+      // check if filename has the right AUnitName prefix
       if (ComparePCharUnitNameWithFilename(Pointer(AUnitName),CurFilename)<>0)
       then
         break;
@@ -1051,14 +1044,16 @@ begin
       CurFilenameLen:=strlen(CurFilename);
       if FilenameIsPascalUnit(CurFilename,CurFilenameLen,false) then
       begin
-        // the AUnitName is ok and the extension is ok
+        // the extension is ok
         Result:=CurFilename;
         if AnyCase then begin
-          exit;
+          if SysUtils.CompareText(ExtractFileNameOnly(Result),AUnitName)=0 then
+            exit;
         end else begin
           // check case platform dependent
           {$IFDEF CaseInsensitiveFilenames}
-          exit;
+          if SysUtils.CompareText(ExtractFileNameOnly(Result),AUnitName)=0 then
+            exit;
           {$ELSE}
           if (Result=lowercase(Result))
           or (Result=uppercase(Result))
