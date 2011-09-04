@@ -2177,7 +2177,7 @@ begin
     ecRemoveFromProj          : Result:= lisMenuRemoveFromProject;
     ecViewProjectUnits        : Result:= srkmecViewUnits;
     ecViewProjectForms        : Result:= srkmecViewForms;
-    ecViewProjectSource       : Result:= lisMenuViewSource;
+    ecViewProjectSource       : Result:= lisMenuViewProjectSource;
     ecProjectOptions          : Result:= lisMenuProjectOptions;
 
     // run menu (menu string resource)

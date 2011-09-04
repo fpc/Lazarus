@@ -323,7 +323,7 @@ resourcestring
   lisKMViewProjectSource = 'View project source';
   lisMenuAddToProject = 'Add editor file to Project';
   lisMenuRemoveFromProject = 'Remove from Project ...';
-  lisMenuViewSource = '&View Source';
+  lisMenuViewProjectSource = '&View Project Source';
   lisMenuProjectOptions = 'Project Options ...';
 
   lisMenuCompile = 'Compile';
@@ -4596,6 +4596,7 @@ resourcestring
 
   // Call Stack Dialog
   lisCurrent = 'Current';
+  lisViewSource = 'View Source';
   lisMaxS = 'Max %d';
   lisMore = 'More';
   lisTop = 'Top';

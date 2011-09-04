@@ -659,7 +659,7 @@ begin
   actViewTop.Caption := lisTop;
   actViewBottom.Caption := lisBottom;
   actViewGoto.Caption := lisGotoSelectedSourceLine;
-  actShow.Caption := lisMenuViewSource;
+  actShow.Caption := lisViewSource;
   actToggleBreakPoint.Caption := uemToggleBreakpoint;
   actSetCurrent.Caption := lisCurrent;
   actCopyAll.Caption := lisCopyAll;

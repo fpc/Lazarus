@@ -303,7 +303,7 @@ begin
   lvBreakPoints.Columns[4].Caption:= lisLazBuildABOAction;
   lvBreakPoints.Columns[5].Caption:= lisPassCount;
   lvBreakPoints.Columns[6].Caption:= lisGroup;
-  actShow.Caption := lisMenuViewSource;
+  actShow.Caption := lisViewSource;
   popAdd.Caption:= lisLazBuildAdd;
   actAddSourceBP.Caption := lisSourceBreakpoint;
   actAddAddressBP.Caption := lisAddressBreakpoint;
