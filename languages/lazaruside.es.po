@@ -10961,6 +10961,10 @@ msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Inspector de Objetos"
 
+#: lazarusidestrconsts.lismenuviewprojectsource
+msgid "&View Project Source"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgid "Terminal Output"
 msgstr ""
@@ -10977,10 +10981,6 @@ msgstr "Explorador de Restricciones"
 #: lazarusidestrconsts.lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Buscar Resultados"
-
-#: lazarusidestrconsts.lismenuviewsource
-msgid "&View Source"
-msgstr "&Ver Fuente"
 
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
@@ -15558,6 +15558,10 @@ msgstr "Ver propiedades del Punto de Interrupción"
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
 msgstr "Ver unidades del proyecto"
+
+#: lazarusidestrconsts.lisviewsource
+msgid "View Source"
+msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"

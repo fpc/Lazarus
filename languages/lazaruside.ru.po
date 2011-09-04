@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-09-03 03:10+0300\n"
+"PO-Revision-Date: 2011-09-05 00:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -8114,7 +8114,7 @@ msgstr "Переход к строке"
 #: lazarusidestrconsts.lisgotoselectedsourceline
 msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
 msgid "Goto selected source line"
-msgstr "Перейти к выделенной строке исходного кода"
+msgstr "Перейти к выделенной строке"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -10952,6 +10952,10 @@ msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Инспектор объектов"
 
+#: lazarusidestrconsts.lismenuviewprojectsource
+msgid "&View Project Source"
+msgstr "&Просмотреть исходный код проекта"
+
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgid "Terminal Output"
 msgstr "Вывод в терминал"
@@ -10968,10 +10972,6 @@ msgstr "Браузер ограничений"
 #: lazarusidestrconsts.lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Результаты поиска"
-
-#: lazarusidestrconsts.lismenuviewsource
-msgid "&View Source"
-msgstr "&Просмотреть исходный код проекта"
 
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
@@ -15541,6 +15541,10 @@ msgstr "Параметры точки останова ..."
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
 msgstr "Показать модули проекта"
+
+#: lazarusidestrconsts.lisviewsource
+msgid "View Source"
+msgstr "Просмотреть исходный код"
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"

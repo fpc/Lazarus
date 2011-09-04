@@ -10993,6 +10993,10 @@ msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Objektinspektor"
 
+#: lazarusidestrconsts.lismenuviewprojectsource
+msgid "&View Project Source"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgid "Terminal Output"
 msgstr ""
@@ -11009,10 +11013,6 @@ msgstr "Browser für bedingte Eigenschaften"
 #: lazarusidestrconsts.lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Suchergebnisse"
-
-#: lazarusidestrconsts.lismenuviewsource
-msgid "&View Source"
-msgstr "&Quelltext anzeigen"
 
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
@@ -15602,6 +15602,10 @@ msgstr "Haltepunkt-Eigenschaften ..."
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
 msgstr "Projektunits anzeigen"
+
+#: lazarusidestrconsts.lisviewsource
+msgid "View Source"
+msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"

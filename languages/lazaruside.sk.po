@@ -10991,6 +10991,10 @@ msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Inšpektor objektov"
 
+#: lazarusidestrconsts.lismenuviewprojectsource
+msgid "&View Project Source"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgid "Terminal Output"
 msgstr ""
@@ -11007,10 +11011,6 @@ msgstr "Prehliadač obmedzení"
 #: lazarusidestrconsts.lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Výsledky hľadania"
-
-#: lazarusidestrconsts.lismenuviewsource
-msgid "&View Source"
-msgstr "&Zobraziť zdrojový kód"
 
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
@@ -15596,6 +15596,10 @@ msgstr ""
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
 msgstr "Zobraziť jednotky projektu"
+
+#: lazarusidestrconsts.lisviewsource
+msgid "View Source"
+msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"

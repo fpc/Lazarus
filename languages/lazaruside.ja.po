@@ -11010,6 +11010,10 @@ msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "オブジェクトインスペクタ"
 
+#: lazarusidestrconsts.lismenuviewprojectsource
+msgid "&View Project Source"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgid "Terminal Output"
 msgstr ""
@@ -11026,10 +11030,6 @@ msgstr "制限ブラウザ"
 #: lazarusidestrconsts.lismenuviewsearchresults
 msgid "Search Results"
 msgstr "結果を検索"
-
-#: lazarusidestrconsts.lismenuviewsource
-msgid "&View Source"
-msgstr "ソースを表示(&V)"
 
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
@@ -15619,6 +15619,10 @@ msgstr "ブレークポイントのプロパティを表示"
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
 msgstr "プロジェクトユニットを表示"
+
+#: lazarusidestrconsts.lisviewsource
+msgid "View Source"
+msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"

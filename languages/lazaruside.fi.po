@@ -10810,6 +10810,10 @@ msgctxt "lazarusidestrconsts.lismenuviewobjectinspector"
 msgid "Object Inspector"
 msgstr "Komponenttimuokkain"
 
+#: lazarusidestrconsts.lismenuviewprojectsource
+msgid "&View Project Source"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgid "Terminal Output"
 msgstr "Komentorivin tuloste"
@@ -10826,10 +10830,6 @@ msgstr "Rajoituksien selain"
 #: lazarusidestrconsts.lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Hakutulokset"
-
-#: lazarusidestrconsts.lismenuviewsource
-msgid "&View Source"
-msgstr "Näytä lähdekoodi"
 
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
@@ -15349,6 +15349,10 @@ msgstr "Keskeytyskohdan ominaisuudet ..."
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
 msgstr "Näytä projektin käännösyksiköt"
+
+#: lazarusidestrconsts.lisviewsource
+msgid "View Source"
+msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
