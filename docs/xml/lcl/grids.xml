@@ -12523,16 +12523,11 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
         <short>How to use  <var>Grids</var> including  <var>StringGrids</var>,  <var>DrawGrids</var> and  <var>DbGrids</var>
         </short>
         <descr>
-          <p>How to use <var>Grids</var> including <var>StringGrids</var>, <var>DrawGrids</var> and <var>DbGrids</var>
-          </p>
-          <p>
-            <b>Customizing grids</b>
-          </p>
+          <p><b>Customizing grids</b></p>
           <p>Grid are components derived from the <var>TCustomControl</var> class and don't have a native widget associated with them, so they are not restricted by the look of the current interface theme. This can be both an advantage and a disadvantage: usually programmers want to create a uniform-look application. Lazarus grids are flexible enough to allow programmers to make them look similar to other native controls; alternatively they can customize the grid to obtain almost the same look in any platform or widget interface (with the exception of scrollbars, whose look is still determined by the current theme).</p>
           <p>Some properties can affect the way the grid looks by acting when the cell is about to be painted in <var>PrepareCanvas/OnPrepareCanvas</var> by changing default canvas properties like brush color or font. Following is a list of such properties:</p>
           <table>
-            <caption>Properties and Events for customizing grids
-  </caption>
+            <caption>Properties and Events for customizing grids</caption>
             <th>
               <td>Property</td>
               <td>Meaning</td>
@@ -12559,14 +12554,12 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
             </tr>
             <tr>
               <td>TitleStyle</td>
-              <td>Changes the 3D look of fixed cells. There are 3 settings:
-		      <ul>
-                  <li>
-                    <var>tsLazarus</var> The default look</li>
-                  <li>
-                    <var>tsNative</var> Tries to set a look that is in concordance with current widgetset theme.</li>
-                  <li>
-                    <var>tsStandard</var> A more contrasted look, like Delphi grids.</li>
+              <td>
+                <p>Changes the 3D look of fixed cells. There are 3 settings:</p>
+      		      <ul>
+                  <li><var>tsLazarus</var> The default look</li>
+                  <li><var>tsNative</var> Tries to set a look that is in concordance with current widgetset theme.</li>
+                  <li><var>tsStandard</var> A more contrasted look, like Delphi grids.</li>
                 </ul>
               </td>
             </tr>
@@ -12631,26 +12624,17 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
               <var>goVertLine, goHorzLine</var>: the same as previous, but for the normal browseable area. A grid can be made to simulate a listbox by unsetting both of these options.</li>
             <li>
               <var>goDrawFocusSelected</var>: if this option is enabled, a selection background is painted in the focused cell in addition to the focused dotted rectangle (note this doesn't work yet when the 
-    
               <var>goRowSelect</var> option is set; in such case the row is always painted as if 
-    
               <var>goDrawFocusSelected</var> is set)</li>
             <li>
               <var>goRowSelect</var>: selects the full row instead of individual cells</li>
             <li>
               <var>goFixedRowNumbering</var>: if set, grid will do numbering of rows in first fixed column</li>
             <li>
-              <var>goHeaderHotTracking</var>: if set, the grid will try to show a different look when the mouse cursor is overlying any fixed cell. In order for this to work, desired cell zone needs to be enabled with the property 
-    
-              <var>HeaderHotZones</var>. Try combining this option with property 
-    
-              <var>TitleStyle</var>=
-    
-              <var>tsNative</var> to get themed hot tracking look.</li>
+              <var>goHeaderHotTracking</var>: if set, the grid will try to show a different look when the mouse cursor is over any fixed cell. In order for this to work, desired cell zone needs to be enabled with the property
+              <var>HeaderHotZones</var>. Try combining this option with property <var>TitleStyle</var>= <var>tsNative</var> to get themed hot tracking look.</li>
             <li>
-              <var>goHeaderPushedLook</var>: if set, this option enables a pushed look when clicking any fixed cell. The zone of "pushable" cells is enabled using 
-    
-              <var>HeaderPushedZones</var> property.</li>
+              <var>goHeaderPushedLook</var>: if set, this option enables a pushed look when clicking any fixed cell. The zone of "pushable" cells is enabled using <var>HeaderPushedZones</var> property.</li>
           </ul>
           <p>
             <b>Description of grid's drawing process</b>
@@ -12685,59 +12669,33 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
               </table>
             </li>
             <li>
+              <p>
               <var>DrawCell</var>. The DrawCell method is virtual and may be overriden in descendent grids to do custom drawing. The information passed to 
-    
               <var>DrawCell</var> helps to identify which particular cell is being painted, the physical area occupied on the screen and its visible status. See 
-    
               <link id="TCustomGrid.DrawCell">DrawCell</link> reference for details. For each cell the following occurs:
-			    
-    
+              </p>
               <ul>
                 <li>
                   <b>PrepareCanvas.</b> If the DefaultDrawing property is set, the grid canvas is setup with default properties for brush and font based on current visual state. For several design and runtime properties, the text alignment is set to match programmer selection in custom columns if they exists.  If DefaultDrawing is false, brush color is set to clWindow and Font color to clWindowText, the text alignment is set with grids defaultTextStyle property value.</li>
                 <li>
                   <b>OnPrepareCanvas.</b> If the programmer wrote an event handler for the 
-        
                   <var>OnPrepareCanvas</var> event, it is called at this point. This event can be used for doing simple customization like changing a cell's background color, font's properties like color, fontface and style, Text layout like different combinations of left, center, top, bottom, right alignment, etc. Any change made to the canvas for a particular cell in this event would be lost, because the next cell drawing will reset canvas again to a default state. So it's safe doing changes only for a particular cell or cells and forget about it for the rest. Using this event sometimes helps to avoid using the 
-        
-                  <var>OnDrawCell</var> grid event, where users would be forced to duplicate the grid's drawing code.     Todo: samples of what can be made and what to leave for OnDrawCell?</li>
+                  <var>OnDrawCell</var> grid event, where users would be forced to duplicate the grid's drawing code.
+                  [Todo: samples of what can be made and what to leave for OnDrawCell?]</li>
                 <li>
-                  <b>OnDrawCell.</b> Next, if no handler for the 
-        
-                  <var>OnDrawCell</var> event was specified, the grid calls the 
-        
-                  <var>DefaultDrawCell</var> method which simply paints the cell background using the current canvas brush color and style. 
-    
-					    If the 
-        
-                  <var>OnDrawCell</var> handler exists, the grid first paints the cell background, but only if the  
-        
-                  <var>DefaultDrawing</var> property was set; then it calls the 
-        
-                  <var>OnDrawCell</var> event to do custom cell painting. 
-        
-					    Usually programmers want to do custom drawing only for particular cells, but standard drawing for others: in this case, they can restrict custom operation to certain cell or cells by looking into 
-        
-                  <var>ACol, ARow</var> and 
-        
-                  <var>AState</var> arguments, and for other cells simply call the 
-        
-                  <var>DefaultDrawCell</var> method and let the grid to take care of it.</li>
+                  <b>OnDrawCell.</b> Next, if no handler for the <var>OnDrawCell</var> event was specified, the grid calls the
+                  <var>DefaultDrawCell</var> method which simply paints the cell background using the current canvas brush color and style.
+					        If the <var>OnDrawCell</var> handler exists, the grid first paints the cell background, but only if the
+                  <var>DefaultDrawing</var> property was set; then it calls the <var>OnDrawCell</var> event to do custom cell painting.
+					        Usually programmers want to do custom drawing only for particular cells, but standard drawing for others: in this case, they can restrict custom operation to certain cell or cells by looking into
+                  <var>ACol, ARow</var> and <var>AState</var> arguments, and for other cells simply call the <var>DefaultDrawCell</var> method and let the grid to take care of it.</li>
                 <li>
-                  <b>Text.</b> At this point, if the 
-        
-                  <var>DefaultDrawing</var> property is true, the cell's text content is painted (only for 
-        
-                  <var>TStringGrid</var>) .</li>
+                  <b>Text.</b> At this point, if the <var>DefaultDrawing</var> property is true, the cell's text content is painted (only for <var>TStringGrid</var>) .</li>
                 <li>
-                  <b>Grid lines</b> The last step for each cell is to paint the grid lines: if grid options 
-        
-                  <var>goVertLine, goHorzLine, goFixedVertLine</var> and 
-        
+                  <b>Grid lines</b> The last step for each cell is to paint the grid lines: if grid options <var>goVertLine, goHorzLine, goFixedVertLine</var> and
                   <var>goFixedHorzLine</var> are specified the cell grid is drawn at this point. Grids with only rows or only cols can be obtained by changing these options. If the programmer elected to have a "themed" look it is done at this point also (see property TitleStyle).</li>
                 <li>
                   <b>FocusRect</b> When all columns of the current row have been painted it is time to draw the focus rectangle for the current selected cell or for the whole row if the 
-        
                   <var>goRowSelect</var> option is set.</li>
               </ul>
             </li>
@@ -12757,29 +12715,14 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
           <ol>
             <li>
               <b>Using a custom column and selecting the ButtonStyle property of the column.</b> In this method the user can select the style of the editor that will be shown. Available values are: 
-    
               <var>cbsAuto, cbsEllipsis, cbsNone, cbsPickList, cbsCheckboxColumn</var>.</li>
             <li>
-              <b>Using the OnSelectEditor grid event</b>. Here the user specifies in the 
-    
-              <var>Editor</var> parameter which editor to use for a cell identified by 
-    
-              <var>aCol</var>, 
-    
-              <var>ARow</var> in a 
-    
-              <var>TCustomDrawGrid</var> derived grid or 
-    
-              <var>TColumn</var> in 
-    
-              <var>TCustomDBGrid</var>. The public 
-    
-              <var>EditorByStyle()</var> function takes as parameter one of the following values: 
-    
-              <var>cbsAuto, cbsEllipsis, cbsNone, cbsPickList, cbsCheckboxColumn</var>. 
-    
+              <b>Using the OnSelectEditor grid event</b>. Here the user specifies in the <var>Editor</var> parameter which editor to use for a cell identified by
+              <var>aCol</var>, <var>ARow</var> in a <var>TCustomDrawGrid</var> derived grid or <var>TColumn</var> in <var>TCustomDBGrid</var>.
+              The public <var>EditorByStyle()</var> function takes as parameter one of the following values:
+              <var>cbsAuto, cbsEllipsis, cbsNone, cbsPickList, cbsCheckboxColumn</var>.
               <br/>
-			    This method takes precedence over the first one using custom columns. A Custom cell editor can be specified here, with values specific to the cell, row or column.</li>
+			        This method takes precedence over the first one using custom columns. A Custom cell editor can be specified here, with values specific to the cell, row or column.</li>
           </ol>
           <p>
             <b>Description of editor styles</b>
@@ -12789,9 +12732,9 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
             <li>
               <b>cbsAuto</b> This is the default editor style for TCustomGrid derived grids. The TStringCellEditor derived from TCustomMaskEdit is specialized to edit single line strings and is used by default in TStringGrid and TDrawGrid. When using Custom Columns, if the programmer filled the Column's PickList property, this behaves as if cbsPickList editor style was set. For a TCustomDBGrid that has a field of type boolean, it behaves as if cbsCheckBoxColumn editor style was specified. This is the recommended value for Custom Cell Editors.   TODO: related OnEditingDone.</li>
             <li>
+              <p>
               <b>cbsEllipsis</b> This editor style is the most generic one. A button with ellipsis (...) appears in the editing cell and the programmer can use the OnEditButtonClick grid event to take any programmed action  when the user presses the button. For example a calendar dialog could pop up to allow the user to select a specific date,  a file open dialog could appear to find files, or a calculator could appear so the user could enter the numeric result of calculations, etc.
-	      
-    
+              </p>
               <ul>
                 <li>OnEditButtonClick is just a notification, to find out in which cell a button has been clicked by taking  a look at the grid.Row and grid.Col properties.</li>
                 <li>A DBGrid has specific properties to retrieve the active column or field and because this event occurs in the active record, it could update the information in the active field.</li>
@@ -12802,13 +12745,12 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
               <b>cbsNone</b> This editor style instructs the grid not to use any editor for a specific cell or column; it behaves then, as if the grid were readonly for such a cell or column.</li>
             <li>
               <b>cbsPickList</b> Used to present the user with a list of values that can be entered. This editor style is implemented using TPickListCellEditor, a component derived from TCustomComboBox. The list of values that are shown is filled in one of two ways depending on the method used to select the editor style.
-    
               <br/>
-				   When using custom columns, programmers can enter a list of values using the column's PickList property. [FOR BEGINNERS: TODO: exact procedure to edit the list]</li>
+				      When using custom columns, programmers can enter a list of values using the column's PickList property. [FOR BEGINNERS: TODO: exact procedure to edit the list]</li>
             <li>
+              <p>
               <b>cbsCheckboxColumn</b> This editor style is at the moment only available in TDBGrid. If a field's contents associated with the column are restricted to a pair of values, for example, yes-no, true-false, on-off, 1-0, etc then cbsCheckboxColumn is used to modify the apearance of a column by using a checkbox representation that the user can toggle by using a mouse click or pressing the SPACE key.
-	      
-    
+              </p>
               <ul>
                 <li>If a columns' ButtonStyle property is set to cbsAuto and DBGrid detects that the field associated with the column is a boolean field, then the grid uses this editor style automatically. This automatic selection can be disabled or enabled using DBGrid's OptionsExtra property; setting dgeCheckboxColumn element to false disables this feature.</li>
                 <li>The values that are used to recognize the checked or unchecked states are set in a column's properties ValueChecked and ValueUnchecked.</li>
@@ -12890,8 +12832,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
       <element name="TCompositeCellEditor.SendChar">
         <short>
           <var>SendChar</var> - transmits the specified character and returns an integer status result</short>
-        <descr>0 - failure
-1 - success</descr>
+        <descr>0 - failure, 1 - success</descr>
       </element>
       <element link="#LCL.Controls.TControl.WndProc" name="TCompositeCellEditor.WndProc"/>
       <element link="#rtl.Classes.TComponent.Destroy" name="TCompositeCellEditor.Destroy"/>

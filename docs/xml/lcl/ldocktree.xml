@@ -40,7 +40,7 @@
         <seealso/>
       </element>
       <!-- unresolved type reference Visibility: default -->
-      <element name="ExtCtrls">
+      <element name="ComCtrls">
         <short/>
         <descr/>
         <seealso/>
@@ -66,7 +66,7 @@
       <!-- object Visibility: default -->
       <element name="TLazDockSplitter">
         <short>
-          <var>TLazDockSplitter</var> - a spltter used with Lazarus Docking components</short>
+          <var>TLazDockSplitter</var> - a splitter used with Lazarus Docking components</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -74,7 +74,7 @@
       <!-- object Visibility: default -->
       <element name="TLazDockZone">
         <short>
-          <var>TLazDockZone</var> - a zone for docking in a Lazarus form</short>
+          <var>TLazDockZone</var> - a zone for docking in a Lazarus form[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -503,7 +503,7 @@
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomNotebook.Create">TCustomNotebook.Create</link>
+          <link id="#LCL.ComCtrls.TCustomTabControl.Create">TCustomTabControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -523,13 +523,13 @@
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TLazDockPages.ActivePageComponent" link="#LCL.ExtCtrls.TCustomNotebook.ActivePageComponent">
+      <element name="TLazDockPages.ActivePageComponent" link="#LCL.ComCtrls.TCustomNotebook.ActivePageComponent">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TLazDockPages.Pages" link="#LCL.ExtCtrls.TCustomNotebook.Pages">
+      <element name="TLazDockPages.Pages" link="#LCL.ComCtrls.TCustomNotebook.Pages">
         <short/>
         <descr/>
         <seealso/>
@@ -537,7 +537,7 @@
       <!-- object Visibility: default -->
       <element name="TLazDockSplitter">
         <short>
-          <var>TLazDockSplitter</var> - a spltter used with Lazarus Docking components</short>
+          <var>TLazDockSplitter</var> - a splitter used with Lazarus Docking components</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -717,7 +717,7 @@
         <short>
           <var>Change</var> - calls inherited method, then ensures that all parents recognise MainControl</short>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomNotebook.Change">TCustomNotebook.Change</link>
+          <link id="#LCL.ComCtrls.TCustomTabControl.Change">TCustomTabControl.Change</link>
         </seealso>
       </element>
       <element name="TLazDockSplitter.Create">
