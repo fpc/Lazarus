@@ -70,8 +70,8 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  AddFile(ExtractFilePath(ParamStrUTF8(0)) + 'images\edit-clear.png');
-  AddFile(ExtractFilePath(ParamStrUTF8(0)) + 'images\edit-find-replace.png');
+  AddFile(ExtractFilePath(ParamStrUTF8(0)) + SetDirSeparators('images\edit-clear.png'));
+  AddFile(ExtractFilePath(ParamStrUTF8(0)) + SetDirSeparators('images\edit-find-replace.png'));
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);

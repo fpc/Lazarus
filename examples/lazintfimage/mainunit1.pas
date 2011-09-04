@@ -51,7 +51,7 @@ end;
 procedure TForm1.Form1Create(Sender: TObject);
 begin
   SampleBitmapABitmap:=TBitmap.Create;
-  SampleBitmapABitmap.LoadFromFile(SetDirSeparators('../../images/lazarusform.bmp'));
+  SampleBitmapABitmap.LoadFromFile(SetDirSeparators('../../images/LazarusForm.bmp'));
 end;
 
 procedure TForm1.Form1Destroy(Sender: TObject);
