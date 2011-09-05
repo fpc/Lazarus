@@ -603,8 +603,8 @@ var
     if Cfg.RealCompiler='' then begin
       debugln(['PPUFilesAndCompilerMatch Compiler=',Cfg.Compiler,' RealComp=',Cfg.RealCompiler,' InPath=',Cfg.RealCompilerInPath]);
       IDEMessageDialog(lisCCOErrorCaption, Format(
-        lisCompilerDoesNotSupportTarget, [Cfg.Compiler, Cfg.TargetOS, Cfg.
-        TargetCPU]),
+        lisCompilerDoesNotSupportTarget, [Cfg.Compiler, Cfg.TargetCPU,
+        Cfg.TargetOS]),
         mtError,[mbOk]);
       exit(false);
     end;
