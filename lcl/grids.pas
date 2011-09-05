@@ -1517,6 +1517,8 @@ type
       procedure Clean(aRect: TRect; CleanOptions: TGridZoneSet); overload;
       procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
       procedure CopyToClipboard(AUseSelection: boolean = false);
+      procedure LoadFromCSVFile(AFilename: string; ADelimiter:Char=','; WithHeader:boolean=true);
+      procedure SaveToCSVFile(AFileName: string; ADelimiter:Char=','; WithHeader:boolean=true);
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
       property DefaultTextStyle;
@@ -10013,6 +10015,115 @@ begin
     doCopyToClipboard
   else
     CopyCellRectToClipboard(Rect(0,0,ColCount-1,RowCount-1));
+end;
+
+procedure TCustomStringGrid.LoadFromCSVFile(AFilename: string;
+  ADelimiter:Char=','; WithHeader:boolean=true);
+var
+  L,SubL: TStringList;
+  i,j,StartRow: Integer;
+begin
+  L := TStringList.Create;
+  SubL := TStringList.Create;
+  BeginUpdate;
+  try
+    L.LoadFromFile(AFilename);
+
+    // check for empty lines
+    for i:=L.Count-1 downto 0 do
+      if Trim(L[i])='' then
+        L.Delete(i);
+
+    if L.Count>0 then begin
+
+      SubL.Delimiter:=ADelimiter;
+      SubL.DelimitedText:=L[0];
+
+      if Columns.Enabled then begin
+        while Columns.VisibleCount<>SubL.Count do
+          if Columns.VisibleCount<SubL.Count then
+            Columns.Add
+          else
+            Columns.Delete(Columns.Count-1);
+      end else
+        ColCount := SubL.Count;
+
+      if WithHeader and (FixedRows=0) then
+        RowCount := L.Count
+      else
+        RowCount := FixedRows + L.Count-1;
+
+      if WithHeader then begin
+        // load header
+        if FixedRows>0 then
+          if Columns.Enabled then begin
+            for i:=0 to Columns.Count-1 do
+              Columns[i].Title.Caption:=SubL[i]
+          end;
+        StartRow := Max(FixedRows-1, 0);
+        j := 0;
+      end else begin
+        StartRow := FixedRows;
+        j := 1;
+      end;
+
+      for i:=StartRow to RowCount-1 do begin
+        Rows[i].Delimiter := ADelimiter;
+        Rows[i].DelimitedText:=L[i-StartRow+j];
+      end;
+    end;
+  finally
+    SubL.Free;
+    L.Free;
+    EndUpdate;
+  end;
+end;
+
+procedure TCustomStringGrid.SaveToCSVFile(AFileName: string; ADelimiter:Char=','; WithHeader:boolean=true);
+var
+  F: TextFile;
+  i,StartRow: Integer;
+  L: TStringList;
+  C: TGridColumn;
+begin
+  if (RowCount=0) or (ColCount=0) then
+    exit;
+  AssignFile(F, AFilename);
+  try
+    Rewrite(F);
+    if WithHeader then begin
+      if Columns.Enabled then begin
+        if FixedRows>0 then begin
+          L := TStringList.Create;
+          try
+            for i := 0 to ColCount-1 do begin
+              c := ColumnFromGridColumn(i);
+              if c=nil then
+                L.Add(Cells[i, 0])
+              else
+                L.Add(c.Title.Caption);
+            end;
+            L.Delimiter:=ADelimiter;
+            WriteLn(F, L.DelimitedText);
+          finally
+            L.Free;
+          end;
+        end;
+        StartRow := FixedRows;
+      end else
+      if FixedRows>0 then
+        StartRow := FixedRows-1
+      else
+        StartRow := 0;
+    end else
+      StartRow := FixedRows;
+    for i:=StartRow to RowCount-1 do begin
+      Rows[i].Delimiter:=ADelimiter;
+      WriteLn(F, Rows[i].DelimitedText);
+    end;
+  finally
+    CloseFile(F);
+  end;
 end;
 
 
