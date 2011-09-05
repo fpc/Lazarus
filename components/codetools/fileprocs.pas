@@ -365,6 +365,7 @@ procedure DbgOut(const s1,s2,s3,s4: string);
 procedure DbgOut(const s1,s2,s3,s4,s5: string);
 procedure DbgOut(const s1,s2,s3,s4,s5,s6: string);
 
+function DbgS(Args: array of const): string; overload;
 function DbgS(const c: char): string; overload;
 function DbgS(const c: cardinal): string; overload;
 function DbgS(const i: integer): string; overload;
@@ -410,6 +411,7 @@ function CompareCTMemStat(Stat1, Stat2: TCTMemStat): integer;
 function CompareNameWithCTMemStat(KeyAnsiString: Pointer; Stat: TCTMemStat): integer;
 function MemSizeString(const s: string): PtrUInt;
 function MemSizeFPList(const List: TFPList): PtrUInt;
+function GetStringRefCount(const s: string): PtrInt;
 
 function GetTicks: int64;
 
@@ -2751,41 +2753,11 @@ begin
 end;
 
 procedure DbgOut(Args: array of const);
-var
-  i: Integer;
 begin
-  for i:=Low(Args) to High(Args) do begin
-    case Args[i].VType of
-    vtInteger: DbgOut(dbgs(Args[i].vinteger));
-    vtInt64: DbgOut(dbgs(Args[i].VInt64^));
-    vtQWord: DbgOut(dbgs(Args[i].VQWord^));
-    vtBoolean: DbgOut(dbgs(Args[i].vboolean));
-    vtExtended: DbgOut(dbgs(Args[i].VExtended^));
-{$ifdef FPC_CURRENCY_IS_INT64}
-    // MWE:
-    // fpc 2.x has troubles in choosing the right dbgs()
-    // so we convert here
-    vtCurrency: DbgOut(dbgs(int64(Args[i].vCurrency^)/10000 , 4));
-{$else}
-    vtCurrency: DbgOut(dbgs(Args[i].vCurrency^));
-{$endif}
-    vtString: DbgOut(Args[i].VString^);
-    vtAnsiString: DbgOut(AnsiString(Args[i].VAnsiString));
-    vtChar: DbgOut(Args[i].VChar);
-    vtPChar: DbgOut(Args[i].VPChar);
-    vtPWideChar: DbgOut(Args[i].VPWideChar);
-    vtWideChar: DbgOut(Args[i].VWideChar);
-    vtWidestring: DbgOut(WideString(Args[i].VWideString));
-    vtObject: DbgOut(DbgSName(Args[i].VObject));
-    vtClass: DbgOut(DbgSName(Args[i].VClass));
-    vtPointer: DbgOut(Dbgs(Args[i].VPointer));
-    else
-      DbgOut('?unknown variant?');
-    end;
-  end;
+  dbgout(dbgs(Args));
 end;
 
-procedure DBGOut(const s: string);
+procedure DbgOut(const s: string);
 begin
   if Assigned(CTDbgOutEvent) then
     CTDbgOutEvent(s)
@@ -2793,7 +2765,7 @@ begin
     write(s);
 end;
 
-procedure DBGOut(const s1, s2: string);
+procedure DbgOut(const s1, s2: string);
 begin
   DbgOut(s1+s2);
 end;
@@ -2816,6 +2788,42 @@ end;
 procedure DbgOut(const s1, s2, s3, s4, s5, s6: string);
 begin
   DbgOut(s1+s2+s3+s4+s5+s6);
+end;
+
+function DbgS(Args: array of const): string;
+var
+  i: Integer;
+begin
+  Result:='';
+  for i:=Low(Args) to High(Args) do begin
+    case Args[i].VType of
+    vtInteger: Result:=Result+dbgs(Args[i].vinteger);
+    vtInt64: Result:=Result+dbgs(Args[i].VInt64^);
+    vtQWord: Result:=Result+dbgs(Args[i].VQWord^);
+    vtBoolean: Result:=Result+dbgs(Args[i].vboolean);
+    vtExtended: Result:=Result+dbgs(Args[i].VExtended^);
+{$ifdef FPC_CURRENCY_IS_INT64}
+    // MWE:
+    // fpc 2.x has troubles in choosing the right dbgs()
+    // so we convert here
+    vtCurrency: Result:=Result+dbgs(int64(Args[i].vCurrency^)/10000 , 4));
+{$else}
+    vtCurrency: Result:=Result+dbgs(Args[i].vCurrency^);
+{$endif}
+    vtString: Result:=Result+Args[i].VString^;
+    vtAnsiString: Result:=Result+AnsiString(Args[i].VAnsiString);
+    vtChar: Result:=Result+Args[i].VChar;
+    vtPChar: Result:=Result+Args[i].VPChar;
+    vtPWideChar: Result:=Result+Args[i].VPWideChar;
+    vtWideChar: Result:=Result+Args[i].VWideChar;
+    vtWidestring: Result:=Result+WideString(Args[i].VWideString);
+    vtObject: Result:=Result+DbgSName(Args[i].VObject);
+    vtClass: Result:=Result+DbgSName(Args[i].VClass);
+    vtPointer: Result:=Result+Dbgs(Args[i].VPointer);
+    else
+      Result:=Result+'?unknown variant?';
+    end;
+  end;
 end;
 
 function DbgS(const c: char): string;
@@ -2979,6 +2987,14 @@ begin
   if List=nil then exit(0);
   Result:=PtrUInt(List.InstanceSize)
     +PtrUInt(List.Capacity)*SizeOf(Pointer);
+end;
+
+function GetStringRefCount(const s: string): PtrInt;
+begin
+  if s='' then
+    Result:=-1
+  else
+    Result:=PPtrInt(s)[-2];
 end;
 
 function GetTicks: int64;

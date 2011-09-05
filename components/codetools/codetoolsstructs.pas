@@ -753,17 +753,21 @@ var
   Node: TAVLTreeNode;
   h: String;
 begin
+  if GetStringRefCount(s)<=0 then exit;
   Node:=FindNode(s);
   if Node=nil then begin
     // increase refcount
     h:=s;
     Tree.Add(Pointer(h));
     Pointer(h):=nil; // keep refcount
+    //debugln(['TStringTree.ReplaceString new string: refcount=',GetStringRefCount(s)]);
     //debugln(['TStringTree.ReplaceString NewString="',dbgstr(s),'"']);
   end else begin
     s:=AnsiString(Node.Data);
+    //debugln(['TStringTree.ReplaceString old string: refcount=',GetStringRefCount(s)]);
     //debugln(['TStringTree.ReplaceString OldString="',dbgstr(s),'"']);
   end;
+  //debugln(['TStringTree.ReplaceString ',GetStringRefCount(s),' ',Node<>nil]);
 end;
 
 function TStringTree.CalcMemSize: PtrUInt;
