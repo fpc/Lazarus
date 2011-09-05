@@ -156,7 +156,7 @@ object Form1: TForm1
       ClientWidth = 637
       object chCalc: TChart
         Left = 0
-        Height = 453
+        Height = 419
         Top = 0
         Width = 637
         AxisList = <        
@@ -200,6 +200,31 @@ object Form1: TForm1
           LinePen.Color = clTeal
           LinePen.Width = 2
           Source = ccsAvg
+        end
+        object chCalcLineSeriesDerivative: TLineSeries
+          Title = 'Derivative'
+          Source = ccsDerivative
+        end
+      end
+      object Panel2: TPanel
+        Left = 0
+        Height = 34
+        Top = 419
+        Width = 637
+        Align = alBottom
+        ClientHeight = 34
+        ClientWidth = 637
+        TabOrder = 1
+        object cbCumulative: TCheckBox
+          Left = 8
+          Height = 17
+          Top = 7
+          Width = 73
+          Caption = 'Cumulative'
+          Checked = True
+          OnChange = cbCumulativeChange
+          State = cbChecked
+          TabOrder = 0
         end
       end
     end
@@ -292,13 +317,20 @@ object Form1: TForm1
     AccumulationRange = 5
     Origin = RandomChartSource1
     left = 464
-    top = 148
+    top = 108
   end
   object ccsSum: TCalculatedChartSource
     AccumulationMethod = camSum
     AccumulationRange = 0
     Origin = RandomChartSource1
     left = 464
-    top = 96
+    top = 52
+  end
+  object ccsDerivative: TCalculatedChartSource
+    AccumulationMethod = camDerivative
+    AccumulationRange = 2
+    Origin = RandomChartSource1
+    left = 464
+    top = 160
   end
 end
