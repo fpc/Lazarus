@@ -90,6 +90,7 @@ type
     Text: String;
     YList: TDoubleDynArray;
     function GetY(AIndex: Integer): Double;
+    procedure ClearY;
   end;
   PChartDataItem = ^TChartDataItem;
 
@@ -176,7 +177,8 @@ type
     procedure AddFirst(const AItem: TChartDataItem);
     procedure AddLast(const AItem: TChartDataItem);
     procedure Clear; inline;
-    function GetPLast: PChartDataItem;
+    function GetPLast: PChartDataItem; overload;
+    function GetPLast(AOffset: Cardinal): PChartDataItem; overload;
     procedure GetSum(var AItem: TChartDataItem);
     procedure RemoveLast; overload;
     procedure RemoveValue(const AItem: TChartDataItem);
@@ -324,6 +326,15 @@ end;
 
 { TChartDataItem }
 
+procedure TChartDataItem.ClearY;
+var
+  i: Integer;
+begin
+  Y := 0;
+  for i := 0 to High(YList) do
+    YList[i] := 0;
+end;
+
 function TChartDataItem.GetY(AIndex: Integer): Double;
 begin
   AIndex := EnsureRange(AIndex, 0, Length(YList));
@@ -393,6 +404,14 @@ end;
 function TChartSourceBuffer.GetCapacity: Cardinal;
 begin
   Result := Length(FBuf);
+end;
+
+function TChartSourceBuffer.GetPLast(AOffset: Cardinal): PChartDataItem;
+begin
+  if AOffset >= FCount then
+    raise EBufferError.Create('AOffset');
+  AOffset := FCount - 1 - AOffset;
+  Result := @FBuf[(FStart + AOffset + Capacity) mod Capacity];
 end;
 
 function TChartSourceBuffer.GetPLast: PChartDataItem;

@@ -157,7 +157,7 @@ type
     property Sorted: Boolean read FSorted write FSorted default false;
   end;
 
-  TChartAccumulationMethod = (camNone, camSum, camAverage);
+  TChartAccumulationMethod = (camNone, camSum, camAverage, camDerivative);
 
   { TCalculatedChartSource }
 
@@ -176,8 +176,9 @@ type
     FYOrder: array of Integer;
 
     procedure CalcAccumulation(AIndex: Integer);
+    procedure CalcDerivative(AIndex: Integer);
     procedure CalcPercentage;
-    procedure Changed(ASender: TObject); inline;
+    procedure Changed(ASender: TObject);
     procedure ExtractItem(out AItem: TChartDataItem; AIndex: Integer);
     procedure SetAccumulationMethod(AValue: TChartAccumulationMethod);
     procedure SetAccumulationRange(AValue: Integer);
@@ -846,12 +847,53 @@ begin
       FHistory.AddLast(FItem);
     end;
   end;
-  FHistory.GetSum(FItem);
-  if AccumulationMethod = camAverage then begin
-    FItem.Y /= Min(ar, AIndex + 1);
-    for i := 0 to High(FItem.YList) do
-      FItem.YList[i] /= Min(ar, AIndex + 1);
+  case AccumulationMethod of
+    camSum:
+      FHistory.GetSum(FItem);
+    camAverage: begin
+      FHistory.GetSum(FItem);
+      FItem.Y /= Min(ar, AIndex + 1);
+      for i := 0 to High(FItem.YList) do
+        FItem.YList[i] /= Min(ar, AIndex + 1);
+    end;
+    camDerivative:
+      CalcDerivative(AIndex);
   end;
+
+end;
+
+// Derivative is approximated by backwards finite difference
+// with accuracy order of (AccumulationRange - 1).
+procedure TCalculatedChartSource.CalcDerivative(AIndex: Integer);
+const
+  COEFFS: array [2..7, 0..6] of Double = (
+    (     1, -1,    0,     0,    0,    0,   0),
+    (   3/2, -2,  1/2,     0,    0,    0,   0),
+    (  11/6, -3,  3/2,  -1/3,    0,    0,   0),
+    ( 25/12, -4,    3,  -4/3,  1/4,    0,   0),
+    (137/60, -5,    5, -10/3,  5/4, -1/5,   0),
+    ( 49/20, -6, 15/2, -20/3, 15/4, -6/5, 1/6));
+var
+  prevItem: PChartDataItem;
+  i, j, ar: Integer;
+  dx: Double;
+begin
+  FItem.ClearY;
+  if AIndex = 0 then exit;
+  dx := FItem.X - FHistory.GetPLast(1)^.X;
+  if dx = 0 then exit;
+  ar := Min(AccumulationRange, AIndex);
+  if (ar = 0) or (ar > High(COEFFS)) then
+    ar := High(COEFFS);
+  for j := 0 to ar - 1 do begin
+    prevItem := FHistory.GetPLast(j);
+    FItem.Y += prevItem^.Y * COEFFS[ar, j];
+    for i := 0 to High(FItem.YList) do
+      FItem.YList[i] += prevItem^.YList[i] * COEFFS[ar, j];
+  end;
+  FItem.Y /= dx;
+  for i := 0 to High(FItem.YList) do
+    FItem.YList[i] /= dx;
 end;
 
 procedure TCalculatedChartSource.CalcPercentage;
