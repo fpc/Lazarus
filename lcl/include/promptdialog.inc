@@ -56,10 +56,12 @@ var
   curBtn      : Longint; // variable to loop through TMsgDlgButtons
   ButtonIndex : integer;
   CurButton: TBitBtn;
+  DefaultButton: TBitBtn;
 begin
   Result := 0;
 
   ButtonIndex := -1;
+  DefaultButton := nil;
   for curBtn := 0 to NumButtons - 1 do
   begin
     if (Buttons[curBtn] >= Low(DialogButtonKind)) and
@@ -81,7 +83,7 @@ begin
           Height := Glyph.Height + 5;
 
         if ButtonIndex = TheDefaultIndex then
-          Default := true;
+          DefaultButton := CurButton;
 
         Inc(Result, ASpacing);
 
@@ -94,6 +96,8 @@ begin
       end;
     end;
   end;
+  if DefaultButton <> nil then
+    DefaultButton.Default := True;
 end;
 
 procedure TPromptDialog.Paint;
@@ -213,6 +217,7 @@ var
   CurButton: TBitBtn;
   ButtonTop: Integer;
   CurBtnSize: TPoint;
+  DefaultButton: TBitBtn;
 
   function GetButtonSize(AButton: TBitBtn): TPoint;
   begin
@@ -243,6 +248,7 @@ begin
 
   // create the buttons, without positioning
   ButtonIndex := -1;
+  DefaultButton := nil;
   for curBtn := 0 to NumButtons - 1 do
   begin
     if (Buttons[curBtn] >= Low(DialogButtonKind)) and
@@ -261,7 +267,7 @@ begin
           Height := Glyph.Height + 5;
 
         if ButtonIndex = TheDefaultIndex then
-          Default := true;
+          DefaultButton := CurButton;
 
         CurBtnSize:=GetButtonSize(CurButton);
         if reqBtnWidth > 0 then inc(reqBtnWidth, cBtnDist);
@@ -269,6 +275,8 @@ begin
       end;
     end;
   end;
+  if DefaultButton <> nil then
+    DefaultButton.Default := True;
 
   // calculate the minimum text offset from left
   if FBitmap <> nil then
