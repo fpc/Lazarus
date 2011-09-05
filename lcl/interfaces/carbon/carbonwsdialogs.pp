@@ -303,7 +303,7 @@ begin
         
       if ofOverwritePrompt in TOpenDialog(FileDialog).Options then
         CreationOptions.optionFlags :=
-           CreationOptions.optionFlags xor kNavDontConfirmReplacement
+           CreationOptions.optionFlags and (not kNavDontConfirmReplacement)
       else
         CreationOptions.optionFlags :=
           CreationOptions.optionFlags or kNavDontConfirmReplacement;
@@ -327,7 +327,7 @@ begin
         begin
           if not (ofAllowMultiSelect in TOpenDialog(FileDialog).Options) then
             CreationOptions.optionFlags :=
-              CreationOptions.optionFlags xor kNavAllowMultipleFiles
+              CreationOptions.optionFlags and (not kNavAllowMultipleFiles)
           else
             CreationOptions.optionFlags :=
               CreationOptions.optionFlags or kNavAllowMultipleFiles;
