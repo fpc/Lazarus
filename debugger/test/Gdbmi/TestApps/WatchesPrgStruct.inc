@@ -225,6 +225,8 @@
 
     PVarTFooClass: ^TFooClass;
 
+    VarFooComp, VarFooComp1: TFooComp;
+
     { OBJECT }
     VarOldObject: TOldObject;
   {$ENDIF}
@@ -258,6 +260,9 @@
 
     { OBJECT }
     VarOldObject.OldVal := 1;
+
+    VarFooComp := TFooComp.Create(nil);
+    VarFooComp := nil;
   {$ENDIF}
 {%endregion FooFunc}
 
@@ -265,7 +270,17 @@
   {$IFDEF Global_Types}
     { Classes }
 
+    TFooComp = class(TComponent)
+    public
+      ValueInt: Integer;
+    end;
+
+    { TFoo }
+
     TFoo = class
+    private
+      function GetValueInt: Integer;
+      procedure SetValueInt(AValue: Integer);
     public
       ValueInt: Integer;
       ValueFoo: TFoo;
@@ -274,6 +289,7 @@
       FooString: String;
       FooChar: Char;
       property PropInt: Integer read ValueInt write ValueInt;
+      property PropIntGS: Integer read GetValueInt write SetValueInt;
     end;
 
     TFooChild = class(TFoo) end;
@@ -303,6 +319,20 @@
   {$ENDIF}
 
   {$IFDEF Global_Var}
+    { TFoo }
+
+    function TFoo.GetValueInt: Integer;
+    begin
+      Result := PropInt;
+    end;
+
+    procedure TFoo.SetValueInt(AValue: Integer);
+    begin
+      PropInt := AValue;
+    end;
+
+  var
+
   //var
     { Classes }
     GlobTFoo, GlobTFoo1, GlobTFoo2, GlobTFooNil: TFoo;

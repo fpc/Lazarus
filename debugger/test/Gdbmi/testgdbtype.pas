@@ -9,11 +9,14 @@ uses
 
 type
 
+  { TTestGdbType }
+
   TTestGdbType = class(TTestCase)
   private
     FIgnoreBaseDeclaration: Boolean;
   published
     procedure TestPTypeParser;
+    procedure TestUnEscape;
   end; 
 
 implementation
@@ -320,6 +323,17 @@ begin
   r := ParseTypeFromGdb('type = function  (LONGINT, SHORTSTRING) : LONGINT'+LN);
   CheckResult('type = function  (LONGINT, SHORTSTRING) : LONGINT', R, ptprkFunction, [], [], '', 'function  (LONGINT, SHORTSTRING) : LONGINT');
 
+end;
+
+procedure TTestGdbType.TestUnEscape;
+begin
+  AssertEquals('a\102c', 'aBc',            UnEscapeBackslashed('a\102c', [uefOctal]));
+  AssertEquals('4:a\tc', 'a   c',         UnEscapeBackslashed('a\tc',    [uefTab], 4));
+  AssertEquals('4:a\t\tc', 'a       c',   UnEscapeBackslashed('a\t\tc',  [uefTab], 4));
+  AssertEquals('6:a\tc', 'a     c',       UnEscapeBackslashed('a\tc',    [uefTab], 6));
+  AssertEquals('4:a\102\tc\\d', 'aB  c\d', UnEscapeBackslashed('a\102\tc\\d', [uefOctal, uefTab],4));
+  AssertEquals('a\102\tc\\d', 'aB\tc\d',   UnEscapeBackslashed('a\102\tc\\d', [uefOctal],4));
+  AssertEquals('4:a\102\tc\\d (no oct)', 'a\102   c\d', UnEscapeBackslashed('a\102\tc\\d', [uefTab],4));
 end;
 
 

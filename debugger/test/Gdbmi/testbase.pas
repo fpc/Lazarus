@@ -50,6 +50,12 @@ type
         Version: Integer;
       end;
 
+  TUsesDir = record
+    DirName: String;
+    SymbolType: TSymbolType;
+    ExtraOpts, NamePostFix: string;
+  end;
+
   { TBaseList }
 
   TBaseList = class
@@ -121,7 +127,16 @@ type
     procedure Run(AResult: TTestResult); override;
     procedure RunTest(ATest: TTest; AResult: TTestResult); override;
     procedure RegisterDbgTest(ATestClass: TTestCaseClass);
-    Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String='');
+    Procedure TestCompileUses(UsesDir: TUsesDir; out UsesLibDir);
+    Procedure TestCompile(const PrgName: string;
+                          out ExeName: string;
+                          NamePostFix: String=''; ExtraArgs: String=''
+                         ); overload;
+    Procedure TestCompile(const PrgName: string;
+                          out ExeName: string;
+                          UsesDirs: array of TUsesDir;
+                          NamePostFix: String=''; ExtraArgs: String=''
+                         ); overload;
   public
     property SymbolType: TSymbolType read FSymbolType;
     property SymbolSwitch: String read FSymbolSwitch;
@@ -795,8 +810,19 @@ begin
       TDebuggerSuite(Test[i]).RegisterDbgTest(ATestClass);
 end;
 
+procedure TCompilerSuite.TestCompileUses(UsesDir: TUsesDir; out UsesLibDir);
+begin
+
+end;
+
 procedure TCompilerSuite.TestCompile(const PrgName: string; out ExeName: string;
   NamePostFix: String=''; ExtraArgs: String='');
+begin
+  TestCompile(PrgName, ExeName, [], NamePostFix, ExtraArgs);
+end;
+
+procedure TCompilerSuite.TestCompile(const PrgName: string; out ExeName: string;
+  UsesDirs: array of TUsesDir; NamePostFix: String; ExtraArgs: String);
 var
   ExePath, ErrMsg: String;
 begin
@@ -813,7 +839,7 @@ begin
     if FileExists(ExeName) then
       raise EAssertionFailedError.Create('Found existing file before compiling: ' + ExeName);
     FCompiledList.Add(ExeName);
-    ErrMsg := CompileHelpers.TestCompile(PrgName, FSymbolSwitch + ' ' + FCompilerInfo.ExtraOpts + ExtraArgs, ExeName, CompilerInfo.ExeName);
+    ErrMsg := CompileHelper.TestCompile(PrgName, FSymbolSwitch + ' ' + FCompilerInfo.ExtraOpts + ExtraArgs, ExeName, CompilerInfo.ExeName);
     if ErrMsg <> '' then begin
       debugln(ErrMsg);
       raise EAssertionFailedError.Create('Compilation Failed: ' + ExeName + LineEnding + ErrMsg);

@@ -7,7 +7,22 @@ interface
 uses
   Classes, SysUtils, process, UTF8Process, LCLProc;
 
-function TestCompile(const PrgName, FpcOpts, ExeName, FpcExe: string): String;
+type
+
+  { TCompileHelper }
+
+  TCompileHelper = class
+  private
+    FLastError: String;
+  public
+    function TestCompile(const PrgName, FpcOpts, ExeName, FpcExe: string): String;
+    function TestCompileUnits(const FpcExe, FpcOpts, SrcDirName, OutLibName: string): Boolean;
+    property LastError: String read FLastError;
+  end;
+
+var CompileHelper: TCompileHelper;
+
+
 
 implementation
 
@@ -58,7 +73,9 @@ begin
 end;
 
 
-function TestCompile(const PrgName, FpcOpts, ExeName, FpcExe: string): String;
+{ TCompileHelper }
+
+function TCompileHelper.TestCompile(const PrgName, FpcOpts, ExeName, FpcExe: string): String;
 var
   FpcBuild: TProcessUTF8;
   OutputLines: TStrings;
@@ -95,6 +112,51 @@ begin
     OutputLines.Free;
   end;
 end;
+
+function TCompileHelper.TestCompileUnits(const FpcExe, FpcOpts, SrcDirName,
+  OutLibName: string): Boolean;
+var
+  FpcBuild: TProcessUTF8;
+  OutputLines: TStrings;
+  CmdLine: string;
+begin
+  Result := False;
+  FpcBuild := TProcessUTF8.Create(nil);
+  OutputLines := nil;
+  try
+    {$IFDEF windows}
+    FpcBuild.Options := [poNewConsole, poUsePipes];
+    {$ELSE}
+    FpcBuild.Options := [poNoConsole, poUsePipes];
+    {$ENDIF}
+    FpcBuild.ShowWindow := swoHIDE;
+
+    CmdLine := FpcExe + ' -MObjFPC  -FU' + OutLibName + ' ' + FpcOpts + ' ' + SrcDirName;
+    debugln(['**** running compiler: ', CmdLine]);
+    FpcBuild.CommandLine := CmdLine;
+
+    FpcBuild.CurrentDirectory := ExtractFileDir(SrcDirName);
+
+    FpcBuild.Execute;
+    OutputLines := ReadOutput(FpcBuild);
+    if FpcBuild.Running then begin
+      FpcBuild.Terminate(99);
+    end;
+    FLastError := OutputLines.Text;
+    if FpcBuild.ExitStatus = 0
+    then Result := True
+    else Result := False;
+  finally
+    FpcBuild.Free;
+    OutputLines.Free;
+  end;
+end;
+
+initialization
+  CompileHelper:= TCompileHelper.Create;
+
+finalization
+  FreeAndNil(CompileHelper);
 
 end.
 

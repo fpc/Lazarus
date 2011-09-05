@@ -28,7 +28,7 @@
 program WatchesPrg;
 {$H-}
 
-uses sysutils, variants;
+uses sysutils, variants, Classes;
 
 type
 {$DEFINE Global_Types}
