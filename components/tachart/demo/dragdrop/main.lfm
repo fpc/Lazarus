@@ -16,10 +16,12 @@ object Form1: TForm1
     Width = 483
     AxisList = <    
       item
+        Minors = <>
         Title.LabelFont.Orientation = 900
       end    
       item
         Alignment = calBottom
+        Minors = <>
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
@@ -70,19 +72,21 @@ object Form1: TForm1
     top = 129
     object ChartToolset1DataPointDragTool1: TDataPointDragTool
       Shift = [ssShift, ssLeft]
+      GrabRadius = 10
       ActiveCursor = crDrag
     end
     object ChartToolset1DataPointClickTool1: TDataPointClickTool
       Shift = [ssRight]
+      GrabRadius = 10
       ActiveCursor = crHandPoint
       OnPointClick = ChartToolset1DataPointClickTool1PointClick
     end
     object ChartToolset1DataPointHintTool1: TDataPointHintTool
       Shift = []
-      GrabRadius = 8
+      GrabRadius = 10
       ActiveCursor = crHandPoint
-      UseDefaultHintText = False
       OnHint = ChartToolset1DataPointHintTool1Hint
+      UseDefaultHintText = False
     end
   end
 end

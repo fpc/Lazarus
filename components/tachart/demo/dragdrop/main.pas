@@ -39,7 +39,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TAChartUtils;
+  Math, TAChartUtils;
 
 { TForm1 }
 
@@ -53,20 +53,26 @@ procedure TForm1.Chart1LineSeries1GetMark(
 begin
   if AIndex = ChartToolset1DataPointDragTool1.PointIndex then
     with Chart1LineSeries1 do
-      AFormattedMark := Source.FormatItem(Marks.Format, AIndex)
+      AFormattedMark := Source.FormatItem(Marks.Format, AIndex, 0)
   else
     AFormattedMark := '';
 end;
 
 procedure TForm1.ChartToolset1DataPointClickTool1PointClick(
   ATool: TChartTool; APoint: TPoint);
+var
+  pi: Integer;
 begin
-  Chart1LineSeries1.SetColor(ChartToolset1DataPointClickTool1.PointIndex, clRed);
+  Unused(ATool, APoint);
+  pi := ChartToolset1DataPointClickTool1.PointIndex;
+  with Chart1LineSeries1 do
+    SetColor(pi, IfThen(GetColor(pi) = clRed, clTAColor, clRed));
 end;
 
 procedure TForm1.ChartToolset1DataPointHintTool1Hint(ATool: TDataPointHintTool;
   const APoint: TPoint; var AHint: String);
 begin
+  Unused(APoint);
   AHint := 'Custom hint for point ' + IntToStr(ATool.PointIndex);
 end;
 
