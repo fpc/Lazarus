@@ -2900,6 +2900,7 @@ docs/xml/lcl/lazhelpintf.xml svneol=native#text/plain
 docs/xml/lcl/lazlinkedlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lcl.xml svneol=LF#text/plain eol=lf
 docs/xml/lcl/lclbase.xml svneol=native#text/plain
+docs/xml/lcl/lclbasedowngrade.xml svneol=native#text/plain
 docs/xml/lcl/lclclasses.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclintf.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclmemmanager.xml svneol=LF#text/xml eol=lf
