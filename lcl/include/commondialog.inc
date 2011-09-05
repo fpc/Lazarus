@@ -40,9 +40,11 @@ end;
 
 procedure TCommonDialog.Close;
 begin
-  DoClose;
-  TWSCommonDialogClass(WidgetSetClass).DestroyHandle(Self);
-  FHandle := 0;
+  if HandleAllocated then begin
+    DoClose;
+    TWSCommonDialogClass(WidgetSetClass).DestroyHandle(Self);
+    FHandle := 0;
+  end;
 end;
 
 procedure TCommonDialog.DoShow;
