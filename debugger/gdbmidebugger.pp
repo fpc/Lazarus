@@ -317,7 +317,8 @@ type
     FReleaseLock: Integer;
 
     // Internal Current values
-    FCurrentStackFrame, FCurrentThreadId: Integer;
+    FCurrentStackFrame, FCurrentThreadId: Integer; // User set values
+    FInternalStackFrame, FInternalThreadId: Integer; // Internal (update for every temporary change)
     FCurrentLocation: TDBGLocationRec;
 
     // GDB info (move to ?)
@@ -330,6 +331,7 @@ type
     FTargetInfo: TGDBMITargetInfo;
 
     FThreadGroups: TStringList;
+    FTypeRequestCache: TGDBPTypeRequestCache;
 
     procedure DoPseudoTerminalRead(Sender: TObject);
     // Implementation of external functions
@@ -1628,6 +1630,7 @@ function TGDBMIDebuggerCommandStackSetCurrent.DoExecute: Boolean;
 begin
   Result := True;
   ExecuteCommand('-stack-select-frame %d', [FNewCurrent], []);
+  FTheDebugger.FInternalStackFrame := FNewCurrent;
 end;
 
 constructor TGDBMIDebuggerCommandStackSetCurrent.Create(AOwner: TGDBMIDebugger;
@@ -1651,6 +1654,7 @@ begin
   if FCallstack.ThreadId = FTheDebugger.FCurrentThreadId then exit;
   FThreadChanged := True;
   Result := ExecuteCommand('-thread-select %d', [FCallstack.ThreadId], R);
+  FTheDebugger.FInternalThreadId := FCallstack.ThreadId;
   Result := Result and (R.State <> dsError);
 end;
 
@@ -1660,6 +1664,7 @@ var
 begin
   if not FThreadChanged then exit;
   ExecuteCommand('-thread-select %d', [FTheDebugger.FCurrentThreadId], R);
+  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
 end;
 
 constructor TGDBMIDebuggerCommandStack.Create(AOwner: TGDBMIDebugger;
@@ -1718,6 +1723,7 @@ begin
   if FSuccess then
     FSuccess := R.State <> dsError;
   FTheDebugger.FCurrentThreadId := FNewId;
+  FTheDebugger.FInternalThreadId:= FNewId;
 end;
 
 constructor TGDBMIDebuggerCommandChangeThread.Create(AOwner: TGDBMIDebugger; ANewId: Integer);
@@ -1905,6 +1911,7 @@ begin
   ArgList := TGDBMINameValueList.Create;
 
   FCurrentThreadId := StrToIntDef(List.Values['current-thread-id'], -1);
+  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
   if FCurrentThreadId < 0 then exit;
   FSuccess := True;
 
@@ -4219,6 +4226,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       List.Free;
 	  if FTheDebugger.FCurrentStackFrame <> i
       then ExecuteCommand('-stack-select-frame %u', [FTheDebugger.FCurrentStackFrame], R);
+      FTheDebugger.FInternalStackFrame := FTheDebugger.FCurrentStackFrame;
     end;
     FTheDebugger.FCurrentLocation := Result;
   end;
@@ -4356,7 +4364,9 @@ begin
   List := TGDBMINameValueList.Create(AParams);
 
   FTheDebugger.FCurrentStackFrame :=  0;
+  FTheDebugger.FInternalStackFrame := 0;
   FTheDebugger.FCurrentThreadId := StrToIntDef(List.Values['thread-id'], -1);
+  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
   FTheDebugger.FCurrentLocation := FrameToLocation(List.Values['frame']);
 
   try
@@ -4540,6 +4550,7 @@ begin
 
   Result := ExecuteCommand('-thread-select %d', [ID2], []);
   FTheDebugger.FCurrentThreadId := ID2;
+  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
 end;
 {$ENDIF}
 
@@ -5435,6 +5446,8 @@ begin
   FCommandQueueExecLock := 0;
   FRunQueueOnUnlock := False;
   FThreadGroups := TStringList.Create;
+  FTypeRequestCache := TGDBPTypeRequestCache.Create;
+
 
 {$IFdef MSWindows}
   InitWin32;
@@ -5504,6 +5517,7 @@ begin
   {$IFDEF DBG_ENABLE_TERMINAL}
   FreeAndNil(FPseudoTerminal);
   {$ENDIF}
+  FreeAndNil(FTypeRequestCache);
 end;
 
 procedure TGDBMIDebugger.Done;
@@ -5568,6 +5582,7 @@ end;
 
 procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
 begin
+  FTypeRequestCache.Clear;
   if State in [dsStop, dsError]
   then begin
     ClearSourceInfo;
@@ -6133,6 +6148,7 @@ begin
 
   TGDBMILocals(Locals).Changed;
   TGDBMIWatches(Watches).Changed;
+  FTypeRequestCache.Clear;
 end;
 
 function TGDBMIDebugger.GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
@@ -8004,6 +8020,7 @@ begin
   end;
 
   TGDBMIDebugger(Debugger).FCurrentStackFrame := -1;
+  TGDBMIDebugger(Debugger).FInternalStackFrame := -1;
   tid := Debugger.Threads.Monitor.CurrentThreads.CurrentThreadId;
   cs := TCurrentCallStack(CurrentCallStackList.EntriesForThreads[tid]);
   idx := cs.CurrentIndex;  // CURRENT
@@ -9460,6 +9477,8 @@ var
   R: TGDBMIExecResult;
   f: Boolean;
   AReq: PGDBPTypeRequest;
+  CReq: TGDBPTypeRequest;
+  i: Integer;
 begin
   (*   Analyze what type is in AExpression
      * "whatis AExpr"
@@ -9538,19 +9557,36 @@ begin
         exit;
       end;
 
-      f :=  ExecuteCommand(AReq^.Request, R);
-      if f and (R.State <> dsError) then begin
-        if AReq^.ReqType = gcrtPType
-        then AReq^.Result := ParseTypeFromGdb(R.Values)
-        else begin
-          AReq^.Result.GdbDescription := R.Values;
-          AReq^.Result.Kind := ptprkSimple;
-        end;
+      i := FTheDebugger.FTypeRequestCache.IndexOf
+        (FTheDebugger.FInternalThreadId, FTheDebugger.FInternalStackFrame, AReq^);
+      if i >= 0 then begin
+        {$IFDEF DBGMI_QUEUE_DEBUG}
+        DebugLn(['DBG TypeRequest-Cache: Found entry for T=',  FTheDebugger.FInternalThreadId,
+          ' F=', FTheDebugger.FInternalStackFrame, ' R="', AReq^.Request,'"']);
+        {$ENDIF}
+        CReq := FTheDebugger.FTypeRequestCache.Request[i];
+        AReq^.Result := CReq.Result;
+        AReq^.Error := CReq.Error;
       end
       else begin
-        AReq^.Result.GdbDescription := R.Values;
-        AReq^.Error := R.Values;
+        f :=  ExecuteCommand(AReq^.Request, R);
+        if f and (R.State <> dsError) then begin
+          if AReq^.ReqType = gcrtPType
+          then AReq^.Result := ParseTypeFromGdb(R.Values)
+          else begin
+            AReq^.Result.GdbDescription := R.Values;
+            AReq^.Result.Kind := ptprkSimple;
+          end;
+        end
+        else begin
+          AReq^.Result.GdbDescription := R.Values;
+          AReq^.Error := R.Values;
+        end;
+
+        FTheDebugger.FTypeRequestCache.Add
+          (FTheDebugger.FInternalThreadId, FTheDebugger.FInternalStackFrame, AReq^);
       end;
+
       AReq := AReq^.Next;
     end;
   end;
@@ -10424,6 +10460,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
       then exit(False);
 
       inc(aFrameIdx);
+      FTheDebugger.FInternalStackFrame := aFrame;;
       if not ExecuteCommand('-stack-select-frame %u', [aFrame], R)
       or (R.State = dsError)
       then
@@ -10467,6 +10504,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
     until ParentFP = Fp;
     List.Free;
+    FTheDebugger.FInternalStackFrame := aFrame;
 
     FrameCache^.ParentFPList[i] := aFrame;
     Result := True;
@@ -11072,6 +11110,7 @@ begin
       then begin
         // Restore current frame
         ExecuteCommand('-stack-select-frame %u', [frame], []);
+        FTheDebugger.FInternalStackFrame := frame;
       end;
       FreeAndNil(ResultList);
     end;
@@ -11098,6 +11137,7 @@ begin
   if FWatchValue.ThreadId <> FTheDebugger.FCurrentThreadId then begin
     FThreadChanged := True;
     Result := ExecuteCommand('-thread-select %d', [FWatchValue.ThreadId], R);
+    FTheDebugger.FInternalThreadId := FWatchValue.ThreadId;
     Result := Result and (R.State <> dsError);
   end;
   if not Result then exit;
@@ -11105,6 +11145,7 @@ begin
   if (FWatchValue.StackFrame <> FTheDebugger.FCurrentStackFrame) or FThreadChanged then begin
     FStackFrameChanged := True;
     Result := ExecuteCommand('-stack-select-frame %d', [FWatchValue.StackFrame], R);
+    FTheDebugger.FInternalStackFrame := FWatchValue.StackFrame;
     Result := Result and (R.State <> dsError);
   end;
 end;
@@ -11115,8 +11156,10 @@ var
 begin
   if FThreadChanged
   then ExecuteCommand('-thread-select %d', [FTheDebugger.FCurrentThreadId], R);
+  FTheDebugger.FInternalThreadId := FTheDebugger.FCurrentThreadId;
   if FStackFrameChanged
   then ExecuteCommand('-stack-select-frame %d', [FTheDebugger.FCurrentStackFrame], R);
+  FTheDebugger.FInternalStackFrame := FTheDebugger.FCurrentStackFrame;
 end;
 
 constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebugger; AExpression: String;

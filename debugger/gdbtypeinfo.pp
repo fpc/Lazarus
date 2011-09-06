@@ -56,32 +56,40 @@ uses
   * procedure x(ArgTFoo: TFoo; var VArgTFoo: TFoo); // TFoo = class end;
   * procedure x(ArgPFoo: PFoo; var VArgPFoo: PFoo); // PFoo = ^TFoo;
 
-  "WhatIs" Results:     Normal                          Param-by-ref
-                 Stabs    Dwarf        |               Stabs    Dwarf
-    ArgTFoo      TFOO     TFOO         |  VArgTFoo     TFOO     &TFOO
-    @ArgTFoo     PFOO     ^TFOO        |  @VArgTFoo    PFOO     ^&TFOO     ## whatis @ArgTFoo  may be ^TFoo under Stabs if no named type PFoo exists
-    ArgPFoo      PFOO     PFOO         |  VArgPFoo     PFOO     &PFOO
-    @ArgPFoo     PPFOO    ^PFOO        |  @VArgPFoo    PPFOO    ^&PFOO     ## whatis @ArgPFoo  may be ^PFoo under Stabs if no named type PPFoo exists
-
-                 Stabs    Dwarf
-    TFoo         TFOO     ^TFOO = class
-    PFoo         PFOO     ^TFOO
-
-  "PType" Results:
+  "PType" Results (for the "???" part):
     ptype Arg<YYY>       ~"type = <???> = class : public TOBJECT \n"   ## followed by lines of fields (exlude inherited)
-                       Normal                           Param-by-ref
-                 Stabs    Dwarf        |               Stabs    Dwarf
-    ArgTFoo      ^TFOO    ^TFOO        |  VArgTFoo     ^TFOO    &TFOO
-    @ArgTFoo     ^TFOO    ^TFOO        |  @VArgTFoo    ^TFOO    ^&TFOO
-    ArgPFoo      ^TFOO    ^TFOO        |  VArgPFoo     ^TFOO    &TFOO
-    @ArgPFoo      ^TFOO   ^TFOO        |  @VArgPFoo    ^TFOO    ^&TFOO
+                       Normal          |                Param-by-ref
+                 Stabs    Dwarf        |               Stabs    Dwarf   Dwarf(fpc 2.6 up)
+    ArgTFoo      ^TFOO    ^TFOO        |  VArgTFoo     ^TFOO    &TFOO   ^TFOO
+    ArgTFoo^      TFOO     TFOO        |  VArgTFoo^    ^TFOO    ^TFOO    TFOO
+   @ArgTFoo      ^TFOO    ^TFOO        | @VArgTFoo     ^TFOO   ^&TFOO   ^TFOO
+
+    ArgPFoo      ^TFOO    ^TFOO        |  VArgPFoo     ^TFOO    &TFOO   ^TFOO
+    ArgPFoo^     ^TFOO    ^TFOO        |  VArgPFoo^    ^TFOO    ^TFOO   ^TFOO
+   @ArgPFoo      ^TFOO    ^TFOO        | @VArgPFoo     ^TFOO   ^&TFOO   ^TFOO
 
                  Stabs    Dwarf
     TFoo         TFOO     ^TFOO
     PFoo         ^TFOO    ^TFOO
 
+  "WhatIs" Results:     Normal         |                Param-by-ref
+    - some "whatis" have a trailing "=class\n" (indicated by a "=" below
+                 Stabs    Dwarf        |               Stabs    Dwarf   Dwarf(fpc 2.6 up)
+    ArgTFoo      TFOO      TFOO        |  VArgTFoo     TFOO     &TFOO   TFOO
+    ArgTFoo^     TFOO      TFOO=       |  VArgTFoo^    TFOO      TFOO   TFOO=
+   @ArgTFoo      PFOO     ^TFOO        | @VArgTFoo     PFOO    ^&TFOO  ^TFOO    ## whatis @ArgTFoo  may be ^TFoo under Stabs if no named type PFoo exists
+
+    ArgPFoo      PFOO      PFOO        |  VArgPFoo     PFOO     &PFOO   PFOO
+    ArgPFoo^     TFOO      TFOO        |  VArgPFoo^    TFOO      PFOO   TFOO
+   @ArgPFoo      PPFOO    ^PFOO        | @VArgPFoo     PPFOO   ^&PFOO  ^PFOO    ## whatis @ArgPFoo  may be ^PFoo under Stabs if no named type PPFoo exists
+
+                 Stabs    Dwarf
+    TFoo         TFOO     ^TFOO = class
+    PFoo         PFOO     ^TFOO               ## requires gdb 7 (mayb 6.7)
+
     ==> "ptype SomeVariable" does not differ between TFoo and PFoo
     ==> dwarf ptype is the same for TFoo and PFoo (whatis can tell the diff)
+
 
   * procedure x(ArgEnum: TEnum); // TEnum = (One, Two, Three);
   * procedure x(ArgEnumSet: TEnumSet; var VArgEnumSet: TEnumSet); // TEnumSet = set of TEnum;
@@ -164,6 +172,32 @@ type
     Result: TGDBPTypeResult;
     Error: string;
     Next: PGDBPTypeRequest;
+  end;
+
+  { TGDBPTypeRequestCacheEntry }
+
+  TGDBPTypeRequestCacheEntry = class
+  protected
+    FRequest: TGDBPTypeRequest;
+    FStackFrame: Integer;
+    FThreadId: Integer;
+  public
+    property ThreadId: Integer read FThreadId;
+    property StackFrame: Integer read FStackFrame;
+    property Request: TGDBPTypeRequest read FRequest;
+  end;
+
+  TGDBPTypeRequestCache = class
+  private
+    FList: TFPList;
+    function GetRequest(Index: Integer): TGDBPTypeRequest;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function IndexOf(AThreadId, AStackFrame: Integer; ARequest: TGDBPTypeRequest): Integer;
+    procedure Add(AThreadId, AStackFrame: Integer; ARequest: TGDBPTypeRequest);
+    property Request[Index: Integer]: TGDBPTypeRequest read GetRequest;
   end;
 
   { TGDBTypes }
@@ -787,6 +821,63 @@ begin
         Result.Declaration.Len := EndPtr - DeclPtr + 1;
       end;
   end;
+end;
+
+{ TGDBPTypeRequestCache }
+
+function TGDBPTypeRequestCache.GetRequest(Index: Integer): TGDBPTypeRequest;
+begin
+  Result := TGDBPTypeRequestCacheEntry(FList[Index]).FRequest;
+end;
+
+constructor TGDBPTypeRequestCache.Create;
+begin
+  FList := TFPList.Create;
+end;
+
+destructor TGDBPTypeRequestCache.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+  FreeAndNil(FList);
+end;
+
+procedure TGDBPTypeRequestCache.Clear;
+begin
+  while FList.Count > 0 do begin
+    TGDBPTypeRequestCacheEntry(FList[0]).Free;
+    FList.Delete(0);
+  end;
+end;
+
+function TGDBPTypeRequestCache.IndexOf(AThreadId, AStackFrame: Integer;
+  ARequest: TGDBPTypeRequest): Integer;
+var
+  e: TGDBPTypeRequestCacheEntry;
+begin
+  Result := FList.Count - 1;
+  while Result >= 0 do begin
+    e := TGDBPTypeRequestCacheEntry(FList[Result]);
+    if (e.ThreadId = AThreadId) and (e.StackFrame = AStackFrame) and
+       (e.Request.Request =ARequest.Request) and
+       (e.Request.ReqType =ARequest.ReqType)
+    then
+      exit;
+    dec(Result);
+  end;
+end;
+
+procedure TGDBPTypeRequestCache.Add(AThreadId, AStackFrame: Integer;
+  ARequest: TGDBPTypeRequest);
+var
+  e: TGDBPTypeRequestCacheEntry;
+begin
+  e := TGDBPTypeRequestCacheEntry.Create;
+  e.FThreadId := AThreadId;
+  e.FStackFrame := AStackFrame;
+  e.FRequest := ARequest;
+  e.FRequest.Next := nil;
+  FList.Add(e);
 end;
 
 { TGDBPType }
