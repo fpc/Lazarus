@@ -42,6 +42,9 @@ type
   private
   protected
   public
+  published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSSpeedButton }
@@ -54,6 +57,22 @@ type
 
 
 implementation
+
+{ TFpGuiWSBitBtn }
+
+class function TFpGuiWSBitBtn.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateButton.Create(AWinControl, AParams));
+end;
+
+class procedure TFpGuiWSBitBtn.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TFPGUIPrivateButton(AWinControl.Handle).Free;
+  AWinControl.Handle := 0;
+end;
+
+
 
 initialization
 

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Controls, StdCtrls, Forms, Menus, ExtCtrls, Dialogs, ComCtrls,
-  WSLCLClasses;
+  Buttons, WSLCLClasses;
 
 // imglist
 function RegisterCustomImageList: Boolean;
@@ -374,7 +374,7 @@ end;
 function RegisterCustomPanel: Boolean; alias : 'WSRegisterCustomPanel';
 begin
   RegisterWSComponent(TCustomPanel, TFpGuiWSCustomPanel);
-  Result := False;
+  Result := True;
 end;
 
 function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';
@@ -427,7 +427,8 @@ end;
 // Buttons
 function RegisterCustomBitBtn: Boolean; alias : 'WSRegisterCustomBitBtn';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomBitBtn, TFpGuiWSBitBtn);
+  Result := True;
 end;
 
 function RegisterCustomSpeedButton: Boolean; alias : 'WSRegisterCustomSpeedButton';
