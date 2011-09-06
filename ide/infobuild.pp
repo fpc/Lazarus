@@ -130,8 +130,12 @@ end;
 
 procedure TCompileInfoDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  EnvironmentOptions.AutoCloseCompileDialog := cbAutoCloseOnSuccess.Checked;
-  EnvironmentOptions.Save(False);
+  tmrCloseForm.Enabled := False;
+  if EnvironmentOptions.AutoCloseCompileDialog <> cbAutoCloseOnSuccess.Checked then
+  begin
+    EnvironmentOptions.AutoCloseCompileDialog := cbAutoCloseOnSuccess.Checked;
+    EnvironmentOptions.Save(False);
+  end;
 end;
 
 procedure TCompileInfoDlg.FormCreate (Sender: TObject);
@@ -171,7 +175,8 @@ end;
 
 procedure TCompileInfoDlg.tmrCloseFormTimer(Sender: TObject);
 begin
-  Close;
+  tmrCloseForm.Enabled := False;
+  if Showing then Close;
 end;
 
 procedure TCompileInfoDlg.SetProjectName(const Sname : String);
