@@ -9,8 +9,8 @@ uses
   TestBase, Debugger, GDBMIDebugger, LCLProc, SynRegExpr, Forms, StdCtrls, Controls;
 
 const
-  BREAK_LINE_FOOFUNC      = 160;
-  BREAK_LINE_FOOFUNC_NEST = 136;
+  BREAK_LINE_FOOFUNC      = 230;
+  BREAK_LINE_FOOFUNC_NEST = 206;
   RUN_GDB_TEST_ONLY = -1; // -1 run all
   RUN_TEST_ONLY = -1; // -1 run all
 
@@ -26,33 +26,7 @@ const
 *)
 
 type
-  { TTestWatches }
 
-  TTestWatches = class(TGDBTestCase)
-  private
-    FWatches: TcurrentWatches;
-    FDbgOutPut: String;
-    FDbgOutPutEnable: Boolean;
-    procedure DoDbgOutput(Sender: TObject; const AText: String); override;
-  public
-    procedure DebugInteract(dbg: TGDBMIDebugger);
-
-  published
-    procedure TestWatches;
-  end;
-
-implementation
-
-var
-  DbgForm: TForm;
-  DbgMemo: TMemo;
-  DbgLog: Boolean;
-
-const
-  RNoPreQuote  = '(^|[^''])'; // No open qoute (Either at start, or other char)
-  RNoPostQuote = '($|[^''])'; // No close qoute (Either at end, or other char)
-
-type
   TWatchExpectationFlag =
     (fnoDwrf,      // no dwarf at all
      fnoDwrfNoSet, // no dwarf2 (-gw) without set
@@ -62,23 +36,61 @@ type
      fTpMtch
     );
   TWatchExpectationFlags = set of TWatchExpectationFlag;
-  TWatchExpectation = record
-    Exp:  string;
-    Fmt: TWatchDisplayFormat;
 
-    Mtch: string;
-    Kind: TDBGSymbolKind;
-    TpNm: string;
+  TWatchExpectation = record
+    Expression:  string;
+    DspFormat: TWatchDisplayFormat;
+    StackFrame: Integer;
+    ExpMatch: string;
+    ExpKind: TDBGSymbolKind;
+    ExpTypeName: string;
     Flgs: TWatchExpectationFlags;
   end;
+  TWatchExpectationArray = array of TWatchExpectation;
 
-var
-  // direct commands to gdb, to check assumptions  // only Exp and Mtch
-  ExpectGdbBrk1NoneNil: Array of TWatchExpectation;
-  // Watches
-  ExpectBrk1NoneNil: Array of TWatchExpectation;
+
+  { TTestWatches }
+
+  TTestWatches = class(TGDBTestCase)
+  private
+    FWatches: TcurrentWatches;
+
+    ExpectBreakFooGdb: TWatchExpectationArray;    // direct commands to gdb, to check assumptions  // only Exp and Mtch
+    ExpectBreakSubFoo: TWatchExpectationArray;    // Watches, evaluated in SubFoo (nested)
+    ExpectBreakFoo: TWatchExpectationArray;       // Watches, evaluated in Foo
+
+    FDbgOutPut: String;
+    FDbgOutPutEnable: Boolean;
+
+    procedure DoDbgOutput(Sender: TObject; const AText: String); override;
+    procedure ClearAllTestArrays;
+    procedure AddTo(var ExpArray: TWatchExpectationArray;
+      AnExpr:  string; AFmt: TWatchDisplayFormat;
+      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+      AFlgs: TWatchExpectationFlags = [];
+      AStackFrame: Integer = 0
+    );
+
+    procedure AddExpectBreakFooGdb;
+    procedure AddExpectBreakFooAll;
+    procedure AddExpectBreakFooMixInfo;
+    //procedure AddExpectBreakSubFoo;
+    procedure AddExpectBreakFooAndSubFoo;  // check for caching issues
+    procedure RunTestWatches(NamePreFix: String;
+                             TestExeName, ExtraOpts: String;
+                             UsedUnits: array of TUsesDir
+                            );
+  public
+    procedure DebugInteract(dbg: TGDBMIDebugger);
+  published
+    procedure TestWatches;
+  end;
+
+implementation
 
 const
+  RNoPreQuote  = '(^|[^''])'; // No open qoute (Either at start, or other char)
+  RNoPostQuote = '($|[^''])'; // No close qoute (Either at end, or other char)
   Match_Pointer = '\$[0-9A-F]+';
   M_Int = 'Integer|LongInt';
 
@@ -89,20 +101,53 @@ const
   {%ebdregion    * Classes * }
   // Todo: Dwarf fails with dereferenced var pointer types
 
-procedure InitializeExpectGdbBrk1NoneNil;
-  procedure Add(AnExp:  string; AFmt: TWatchDisplayFormat;
-    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags
-  );
+function MatchPointer(TypeName: String=''): String;
+begin
+  if TypeName = ''
+  then Result := '\$[0-9A-F]+'
+  else Result := TypeName+'\(\$[0-9A-F]+';
+end;
+
+function MatchRecord(TypeName: String; AContent: String = ''): String;
+begin
+  Result := 'record '+TypeName+' .+'+AContent;
+end;
+function MatchRecord(TypeName: String; AValInt: integer; AValFoo: String = ''): String;
+begin
+  Result := 'record '+TypeName+' .+ valint = '+IntToStr(AValInt);
+  If AValFoo <> '' then Result := Result + ',.* valfoo = '+AValFoo;
+end;
+
+{ TTestWatches }
+
+procedure TTestWatches.ClearAllTestArrays;
+begin
+  SetLength(ExpectBreakFooGdb, 0);
+  SetLength(ExpectBreakSubFoo, 0);
+  SetLength(ExpectBreakFoo, Length(ExpectBreakFoo)+1);
+end;
+
+procedure TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string;
+  AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  AFlgs: TWatchExpectationFlags; AStackFrame: Integer = 0);
+begin
+  SetLength(ExpArray, Length(ExpArray)+1);
+  with ExpArray[Length(ExpArray)-1] do begin
+    Expression   := AnExpr;
+    DspFormat    := AFmt;
+    ExpMatch     := AMtch;
+    ExpKind      := AKind;
+    ExpTypeName  := ATpNm;
+    Flgs         := AFlgs;
+    StackFrame   := AStackFrame;
+  end;
+end;
+
+procedure TTestWatches.AddExpectBreakFooGdb;
+  procedure Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
+    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
   begin
-    SetLength(ExpectGdbBrk1NoneNil, Length(ExpectGdbBrk1NoneNil)+1);
-    with ExpectGdbBrk1NoneNil[Length(ExpectGdbBrk1NoneNil)-1] do begin
-      Exp  := AnExp;
-      Fmt  := AFmt;
-      Mtch := AMtch;
-      Kind := AKind;
-      TpNm := ATpNm;
-      Flgs := AFlgs;
-    end;
+    AddTo(ExpectBreakFooGdb,AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
   end;
 begin
   Add('ptype ArgTFoo',  wdfDefault, 'type = \^TFoo = class : PUBLIC TObject', skClass, '', []);
@@ -110,39 +155,18 @@ begin
 
   Add('-data-evaluate-expression sizeof(ArgTFoo)',  wdfDefault, 'value="(4|8)"|(parse|syntax) error in expression', skClass, '',  []);
   Add('-data-evaluate-expression sizeof(ArgTFoo^)', wdfDefault, 'value="\d\d+"|(parse|syntax) error in expression', skClass, '',  []);
+
+  if RUN_GDB_TEST_ONLY > 0 then begin
+    ExpectBreakFooGdb[0] := ExpectBreakFooGdb[abs(RUN_GDB_TEST_ONLY)];
+    SetLength(ExpectBreakFooGdb, 1);
+  end;
 end;
 
-procedure InitializeExpectBrk1NoneNil;
-  procedure Add(AnExp:  string; AFmt: TWatchDisplayFormat;
-    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-    AFlgs: TWatchExpectationFlags = []
-  );
+procedure TTestWatches.AddExpectBreakFooAll;
+  procedure Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
+    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
   begin
-    SetLength(ExpectBrk1NoneNil, Length(ExpectBrk1NoneNil)+1);
-    with ExpectBrk1NoneNil[Length(ExpectBrk1NoneNil)-1] do begin
-      Exp  := AnExp;
-      Fmt  := AFmt;
-      Mtch := AMtch;
-      Kind := AKind;
-      TpNm := ATpNm;
-      Flgs := AFlgs;
-    end;
-  end;
-
-  function MatchPointer(TypeName: String=''): String;
-  begin
-    if TypeName = ''
-    then Result := '\$[0-9A-F]+'
-    else Result := TypeName+'\(\$[0-9A-F]+';
-  end;
-  function MatchRecord(TypeName: String; AContent: String = ''): String;
-  begin
-    Result := 'record '+TypeName+' .+'+AContent;
-  end;
-  function MatchRecord(TypeName: String; AValInt: integer; AValFoo: String = ''): String;
-  begin
-    Result := 'record '+TypeName+' .+ valint = '+IntToStr(AValInt);
-    If AValFoo <> '' then Result := Result + ',.* valfoo = '+AValFoo;
+    AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
   end;
 begin
   {%region    * records * }
@@ -294,6 +318,7 @@ begin
   //Add('ArgTFoo=nil',          wdfDefault,  'False',        skSimple,      'bool', []);
   //Add('not(ArgTFoo=nil)',     wdfDefault,  'True',         skSimple,      'bool', []);
   //Add('ArgTFoo<>nil',         wdfDefault,  'True',         skSimple,      'bool', []);
+
   {%endregion    * Classes * }
 
   {%region    * Strings * }
@@ -510,17 +535,55 @@ begin
   *)
   {%endregion    * procedure/function/method * }
 
+  if RUN_TEST_ONLY > 0 then begin
+    ExpectBreakFoo[0] := ExpectBreakFoo[abs(RUN_TEST_ONLY)];
+    SetLength(ExpectBreakFoo, 1);
+  end;
 end;
 
-{ TTestWatches }
+procedure TTestWatches.AddExpectBreakFooMixInfo;
+  procedure Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
+    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
+  begin
+    AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
+  end;
+begin
+  // MIXED symbol info types
+  Add('VarFooOther',  wdfDefault,  '<TObject>',        skClass,   'TObject',  []);
+  Add('TFooTestTestBase(VarFooOther)',  wdfDefault,  '<TFooTestTestBase>',        skClass,   'TFooTestTestBase',  []);
+  Add('VarStatIntArray',      wdfDefault,      '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
+                                skSimple,       'TStatIntArray',
+                                []);
+end;
+
+procedure TTestWatches.AddExpectBreakFooAndSubFoo;
+  procedure AddF(AnExpr:  string; AFmt: TWatchDisplayFormat;
+    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
+    AStackFrame: Integer=0);
+  begin
+    AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
+  end;
+  procedure AddS(AnExpr:  string; AFmt: TWatchDisplayFormat;
+    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
+    AStackFrame: Integer=0);
+  begin
+    AddTo(ExpectBreakSubFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
+  end;
+begin
+  AddS('VarCacheTest1', wdfDefault, MatchRecord('TCacheTest', 'CTVal = 101'),
+       skRecord, 'TCacheTest',  []);
+  AddF('VarCacheTest1', wdfDefault, '<TCacheTest(Type)?> = \{.*(<|vptr\$)TObject>?.+CTVal = 201',
+       skClass, 'TCacheTest(Type)?',  [fTpMtch]);
+
+  AddS('VarCacheTest2', wdfDefault, '102',  skSimple, M_Int,  [fTpMtch], 0);
+  AddS('VarCacheTest2', wdfDefault, '202',  skSimple, M_Int,  [fTpMtch], 1);
+end;
 
 procedure TTestWatches.DoDbgOutput(Sender: TObject; const AText: String);
 begin
   inherited DoDbgOutput(Sender, AText);
   if FDbgOutPutEnable then
     FDbgOutPut := FDbgOutPut + AText;
-  if DbgLog and (DbgMemo <> nil) then
-    DbgMemo.Lines.Add(AText);
 end;
 
 procedure TTestWatches.DebugInteract(dbg: TGDBMIDebugger);
@@ -533,7 +596,9 @@ begin
   end;
 end;
 
-procedure TTestWatches.TestWatches;
+procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts: String;
+  UsedUnits: array of TUsesDir);
+
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
   begin
@@ -556,13 +621,15 @@ procedure TTestWatches.TestWatches;
     s: String;
     flag: Boolean;
     WV: TWatchValue;
+    Stack: Integer;
   begin
     rx := nil;
+    Stack := Data.StackFrame;
 
-    Name := Name + ' ' + Data.Exp + ' (' + TWatchDisplayFormatNames[Data.Fmt] + ')';
+    Name := Name + ' ' + Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ')';
     flag := AWatch <> nil;
     if flag then begin;
-      WV := AWatch.Values[1, 0];// trigger read
+      WV := AWatch.Values[1, Stack];// trigger read
       s := WV.Value;
       flag := flag and TestTrue  (Name+ ' (HasValue)',   WV.Validity = ddsValid);
       //flag := flag and TestFalse (Name+ ' (One Value)',  AWatch.HasMultiValue);
@@ -573,14 +640,14 @@ procedure TTestWatches.TestWatches;
     if flag then begin
       rx := TRegExpr.Create;
       rx.ModifierI := true;
-      rx.Expression := Data.Mtch;
-      if Data.Mtch <> ''
-      then TestTrue(Name + ' Matches "'+Data.Mtch + '", but was "' + s + '"', rx.Exec(s));
+      rx.Expression := Data.ExpMatch;
+      if Data.ExpMatch <> ''
+      then TestTrue(Name + ' Matches "'+Data.ExpMatch + '", but was "' + s + '"', rx.Exec(s));
     end;
 
-    flag := (AWatch <> nil) and (Data.TpNm <> '');
+    flag := (AWatch <> nil) and (Data.ExpTypeName <> '');
     if flag then flag := TestTrue(Name + ' has typeinfo',  WV.TypeInfo <> nil);
-    if flag then flag := TestEquals(Name + ' kind',  KindName[Data.Kind], KindName[WV.TypeInfo.Kind]);
+    if flag then flag := TestEquals(Name + ' kind',  KindName[Data.ExpKind], KindName[WV.TypeInfo.Kind]);
     if flag then begin
       if fTpMtch  in Data.Flgs
       then begin
@@ -588,138 +655,190 @@ procedure TTestWatches.TestWatches;
         s := WV.TypeInfo.TypeName;
         rx := TRegExpr.Create;
         rx.ModifierI := true;
-        rx.Expression := Data.TpNm;
-        TestTrue(Name + ' TypeName matches '+Data.TpNm+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s))
-      end
-      else TestEquals(Name + ' TypeName',  LowerCase(Data.TpNm), LowerCase(WV.TypeInfo.TypeName));
+        rx.Expression := Data.ExpTypeName;
+        TestTrue(Name + ' TypeName matches '+Data.ExpTypeName+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s))
+       end
+      else TestEquals(Name + ' TypeName',  LowerCase(Data.ExpTypeName), LowerCase(WV.TypeInfo.TypeName));
     end;
     FreeAndNil(rx);
   end;
 
 var
-  TestExeName: string;
   dbg: TGDBMIDebugger;
   i: Integer;
-  WList: Array of TCurrentWatch;
-begin
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch')] then exit;
+  WList, WListSub: Array of TCurrentWatch;
 
-  ClearTestErrors;
+begin
+  TestBaseName := NamePreFix;
+
   try
-    TestCompile(AppDir + 'WatchesPrg.pas', TestExeName);
+    TestCompile(AppDir + 'WatchesPrg.pas', TestExeName, UsedUnits, '', ExtraOpts);
   except
-    on e: Exception do Fail('Compile error: ' + e.Message);
+    on e: Exception do begin
+      TestTrue('Compile error: ' + e.Message, False);
+      exit;
+    end;
   end;
 
   try
     dbg := StartGDB(AppDir, TestExeName);
     FWatches := Watches.CurrentWatches;
 
-    if (RUN_TEST_ONLY >= 0) or (RUN_GDB_TEST_ONLY >= 0) then begin
-      DbgLog := False;
-      if DbgForm = nil then begin
-        DbgForm := TForm.Create(Application);
-        DbgMemo := TMemo.Create(DbgForm);
-        DbgMemo.Parent := DbgForm;
-        DbgMemo.Align := alClient;
-        DbgForm.Show;
-      end;
-      DbgMemo.Lines.Add('');
-      DbgMemo.Lines.Add(' *** ' + Parent.TestSuiteName + ' ' + Parent.TestName + ' ' + TestSuiteName+' '+TestName);
-      DbgMemo.Lines.Add('');
-    end;
-
-    (* Add breakpoints *)
-    //with dbg.BreakPoints.Add('WatchesPrg.pas', 44) do begin
-    //  InitialEnabled := True;
-    //  Enabled := True;
-    //end;
     with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
       InitialEnabled := True;
       Enabled := True;
     end;
+    with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC_NEST) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
 
-    (* Create all watches *)
-    SetLength(WList, high(ExpectBrk1NoneNil)+1);
-    if RUN_TEST_ONLY >= 0 then begin
-      i := RUN_TEST_ONLY;
-      WList[i] := TCurrentWatch.Create(FWatches);
-      WList[i].Expression := ExpectBrk1NoneNil[i].Exp;
-      WList[i].DisplayFormat := ExpectBrk1NoneNil[i].Fmt;
-      WList[i].enabled := True;
-    end
-    else
-      for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do begin
-        if not SkipTest(ExpectBrk1NoneNil[i]) then begin
-          WList[i] := TCurrentWatch.Create(FWatches);
-          WList[i].Expression := ExpectBrk1NoneNil[i].Exp;
-          WList[i].DisplayFormat := ExpectBrk1NoneNil[i].Fmt;
-          WList[i].enabled := True;
-        end;
-      end;
-
-
-    (* Start debugging *)
     if dbg.State = dsError then
       Fail(' Failed Init');
 
-    dbg.ShowConsole := True;
+    (* Create all watches *)
+    SetLength(WList, length(ExpectBreakFoo));
+    for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
+      if not SkipTest(ExpectBreakFoo[i]) then begin
+        WList[i] := TCurrentWatch.Create(FWatches);
+        WList[i].Expression := ExpectBreakFoo[i].Expression;
+        WList[i].DisplayFormat := ExpectBreakFoo[i].DspFormat;
+        WList[i].enabled := True;
+      end;
+    end;
+    SetLength(WListSub, length(ExpectBreakSubFoo));
+    for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
+      if not SkipTest(ExpectBreakSubFoo[i]) then begin
+        WListSub[i] := TCurrentWatch.Create(FWatches);
+        WListSub[i].Expression := ExpectBreakSubFoo[i].Expression;
+        WListSub[i].DisplayFormat := ExpectBreakSubFoo[i].DspFormat;
+        WListSub[i].enabled := True;
+      end;
+    end;
 
+    (* Start debugging *)
+    dbg.ShowConsole := True;
     dbg.Run;
 
     (* Hit first breakpoint: Test *)
+    (* SubFoo -- Called with none nil data *)
     FDbgOutPutEnable := True;
-    if (RUN_TEST_ONLY < 0) or (RUN_GDB_TEST_ONLY >= 0) then begin
-      if RUN_GDB_TEST_ONLY >= 0 then begin
-        i := RUN_GDB_TEST_ONLY;
+    for i := low(ExpectBreakFooGdb) to high(ExpectBreakFooGdb) do begin
+      if not SkipTest(ExpectBreakFooGdb[i]) then begin
         FDbgOutPut := '';
-        dbg.TestCmd(ExpectGdbBrk1NoneNil[i].Exp);
-        TestWatch('Brk1 Direct Gdb '+IntToStr(i)+' ', nil, ExpectGdbBrk1NoneNil[i], FDbgOutPut);
-      end
-      else
-        for i := low(ExpectGdbBrk1NoneNil) to high(ExpectGdbBrk1NoneNil) do begin
-          if not SkipTest(ExpectGdbBrk1NoneNil[i]) then begin
-            FDbgOutPut := '';
-            dbg.TestCmd(ExpectGdbBrk1NoneNil[i].Exp);
-            TestWatch('Brk1 Direct Gdb '+IntToStr(i)+' ', nil, ExpectGdbBrk1NoneNil[i], FDbgOutPut);
-          end;
-        end;
+        dbg.TestCmd(ExpectBreakFooGdb[i].Expression);
+        TestWatch('Brk1 Direct Gdb '+IntToStr(i)+' ', nil, ExpectBreakFooGdb[i], FDbgOutPut);
+      end;
     end;
     FDbgOutPutEnable := False;
 
-    if (RUN_GDB_TEST_ONLY < 0) or (RUN_TEST_ONLY >= 0) then begin
-      if RUN_TEST_ONLY >= 0 then begin
-        i := RUN_TEST_ONLY;
-        TestWatch('Brk1 ', WList[i], ExpectBrk1NoneNil[i]);
-      end
-      else
-        for i := low(ExpectBrk1NoneNil) to high(ExpectBrk1NoneNil) do begin
-          if not SkipTest(ExpectBrk1NoneNil[i]) then
-            TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBrk1NoneNil[i]);
-        end;
+    for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
+      if not SkipTest(ExpectBreakSubFoo[i]) then
+        TestWatch('Brk1 '+IntToStr(i)+' ', WListSub[i], ExpectBreakSubFoo[i]);
     end;
 
     dbg.Run;
 
+    (* Hit second breakpoint: Test *)
+    (* Foo -- Called with none nil data *)
+
+    for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
+      if not SkipTest(ExpectBreakFoo[i]) then
+        TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBreakFoo[i]);
+    end;
+
+    // TODO: 2nd round, with NIL data
 	//DebugInteract(dbg);
 
     dbg.Stop;
-  finally
-    dbg.Free;
-    CleanGdb;
-
-    if (DbgMemo <> nil) and (TestErrors <> '') then DbgMemo.Lines.Add(TestErrors);
-    //debugln(FailText)
-    AssertTestErrors;
+  except
+    on e: Exception do begin
+      TestTrue('Error: ' + e.Message, False);
+      exit;
+    end;
   end;
+  dbg.Free;
+  CleanGdb;
+end;
+
+procedure TTestWatches.TestWatches;
+var
+  TestExeName: string;
+  UsedUnits: TUsesDir;
+begin
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch')] then exit;
+
+  ClearTestErrors;
+
+  ClearAllTestArrays;
+  AddExpectBreakFooGdb;
+  AddExpectBreakFooAll;
+  //AddExpectBreakFooMixInfo;
+  AddExpectBreakFooAndSubFoo;
+  RunTestWatches('', TestExeName,  '', []);
+
+
+  ClearAllTestArrays;
+  AddExpectBreakFooMixInfo;
+  with UsedUnits do begin
+    DirName:= AppDir + 'u1\unitw1.pas';
+    ExeId:= '';
+    SymbolType:= stNone;
+    ExtraOpts:= '';
+    NamePostFix:= ''
+  end;
+  RunTestWatches('unitw1=none', TestExeName,  '-dUSE_W1', [UsedUnits]);
+
+  if (stStabs in CompilerInfo.SymbolTypes) and (stStabs in DebuggerInfo.SymbolTypes)
+  then begin
+    ClearAllTestArrays;
+    AddExpectBreakFooMixInfo;
+    with UsedUnits do begin
+      DirName:= AppDir + 'u1\unitw1.pas';
+      ExeId:= '';
+      SymbolType:= stStabs;
+      ExtraOpts:= '';
+      NamePostFix:= ''
+    end;
+    RunTestWatches('unitw1=stabs', TestExeName,  '-dUSE_W1', [UsedUnits]);
+  end;
+
+  if (stDwarf in CompilerInfo.SymbolTypes) and (stDwarf in DebuggerInfo.SymbolTypes)
+  then begin
+    ClearAllTestArrays;
+    AddExpectBreakFooMixInfo;
+    with UsedUnits do begin
+      DirName:= AppDir + 'u1\unitw1.pas';
+      ExeId:= '';
+      SymbolType:= stDwarf;
+      ExtraOpts:= '';
+      NamePostFix:= ''
+    end;
+    RunTestWatches('unitw1=dwarf', TestExeName,  '-dUSE_W1', [UsedUnits]);
+  end;
+
+  if (stDwarf3 in CompilerInfo.SymbolTypes) and (stDwarf3 in DebuggerInfo.SymbolTypes)
+  then begin
+    ClearAllTestArrays;
+    AddExpectBreakFooMixInfo;
+    with UsedUnits do begin
+      DirName:= AppDir + 'u1\unitw1.pas';
+      ExeId:= '';
+      SymbolType:= stDwarf3;
+      ExtraOpts:= '';
+      NamePostFix:= ''
+    end;
+    RunTestWatches('unitw1=dwarf_3', TestExeName,  '-dUSE_W1', [UsedUnits]);
+  end;
+
+
+  AssertTestErrors;
 end;
 
 
 
 initialization
 
-  InitializeExpectBrk1NoneNil;
-  InitializeExpectGdbBrk1NoneNil;
   RegisterDbgTest(TTestWatches);
 end.
 

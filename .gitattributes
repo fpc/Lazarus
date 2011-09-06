@@ -2789,6 +2789,7 @@ debugger/test/Gdbmi/TestApps/WatchesPrgSimple.inc svneol=native#text/pascal
 debugger/test/Gdbmi/TestApps/WatchesPrgString.inc svneol=native#text/pascal
 debugger/test/Gdbmi/TestApps/WatchesPrgStruct.inc svneol=native#text/pascal
 debugger/test/Gdbmi/TestApps/WatchesPrgVariant.inc svneol=native#text/pascal
+debugger/test/Gdbmi/TestApps/u1/unitw1.pas svneol=native#text/pascal
 debugger/test/Gdbmi/TestGdbmi.lpi svneol=native#text/pascal
 debugger/test/Gdbmi/TestGdbmi.lpr svneol=native#text/pascal
 debugger/test/Gdbmi/compilehelpers.pas svneol=native#text/pascal

@@ -33,6 +33,7 @@
 {$ENDIF}
 
 
+{* ******************** RECORD ******************** *}
 {%region RECORD}
 
   {%region  TYPE}
@@ -174,7 +175,171 @@
 
 {%endregion RECORD}
 
+{* ******************** CLASSES ******************** *}
+{%region  CLASSES}
 
+  {%region  TYPE}
+    {$IFDEF Global_Types}
+      //type
+      { Classes }
+      TFooComp = class(TComponent)
+      public
+        ValueInt: Integer;
+      end;
+
+      {$IFDEF USE_W1}
+      TFooCompOtherBase = class(TFooTestTestBase)
+      {$ELSE}
+      TFooCompOtherBase = class(TObject)
+      {$ENDIF}
+      public
+        ValueInt: Integer;
+      end;
+
+      { TFoo }
+
+      TFoo = class
+      private
+        function GetValueInt: Integer;
+        procedure SetValueInt(AValue: Integer);
+      public
+        ValueInt: Integer;
+        ValueFoo: TFoo;
+        ValueRec: TRec;
+        FooText: string[20];
+        FooString: String;
+        FooChar: Char;
+        property PropInt: Integer read ValueInt write ValueInt;
+        property PropIntGS: Integer read GetValueInt write SetValueInt;
+      end;
+
+      TFooChild = class(TFoo) end;
+      TFooKid = class(TFoo) end;
+
+      PFoo = ^TFoo;
+      PPFoo = ^PFoo;
+      TSamePFoo = PFoo;
+      TNewPFoo = {type} PFoo; // fpc crash
+
+      TSameFoo = TFoo;
+      TNewFoo = type TFoo;
+      PNewFoo = ^TNewFoo;
+    {$ENDIF}
+
+    {$IFDEF FooFunc_LocalType}
+      //type
+    {$ENDIF}
+  {%endregion TYPE}
+
+  {%region VARIABLES}
+    {$IFDEF FooFunc_Param}
+    {$ENDIF}
+    {$IFDEF Global_Call_FooFunc}
+      //FooFunc(
+      { Classes }
+      GlobTFoo,                        GlobTFoo,
+      GlobPFoo,                        GlobPFoo,
+      GlobPPFoo,                      GlobPPFoo,
+      GlobTSamePFoo,              GlobTSamePFoo,
+      GlobTNewPFoo,                GlobTNewPFoo,
+
+      GlobTSameFoo,                 GlobTSameFoo,
+      GlobTNewFoo,                   GlobTNewFoo,
+      GlobPNewFoo,                   GlobPNewFoo,
+    {$ENDIF}
+
+    {$IFDEF FooFunc_Local}
+    //var
+    {$ENDIF}
+
+    {$IFDEF Global_Var}
+    //var
+      { Classes }
+      GlobTFoo, GlobTFoo1, GlobTFoo2, GlobTFooNil: TFoo;
+      GlobPFoo: PFoo;
+      GlobPPFoo: PPFoo;
+      GlobTSamePFoo: TSamePFoo;
+      GlobTNewPFoo: TNewPFoo;
+
+      GlobTSameFoo: TSameFoo;
+      GlobTNewFoo: TNewFoo;
+      GlobPNewFoo: PNewFoo;
+
+      PGlobTFoo: ^TFoo;
+      PGlobPFoo: ^PFoo;
+      PGlobTSamePFoo: ^TSamePFoo;
+      PGlobTSameFoo: ^TSameFoo;
+    {$ENDIF}
+
+    {$IFDEF Global_Implementation}
+      { TFoo }
+
+      function TFoo.GetValueInt: Integer;
+      begin
+        Result := PropInt;
+      end;
+
+      procedure TFoo.SetValueInt(AValue: Integer);
+      begin
+        PropInt := AValue;
+      end;
+    {$ENDIF}
+  {%endregion VARIABLES}
+
+  {%region CODE (initilization)}
+    {$IFDEF FooFunc_Body}
+    //begin
+    {$ENDIF}
+
+    {$IFDEF Global_Body}
+      //begin
+      { Classes }
+      GlobTFoo := TFoo.Create;
+      GlobTFoo.ValueInt := -11;
+      GlobTFoo.FooText := 'mem of TFoo '' "';
+      GlobTFoo.FooString := 'a 1 \ " '' '#9'...';
+      GlobTFoo.FooChar := '\';
+      GlobTFoo1 := TFoo.Create;
+      GlobTFoo1.ValueInt := 31;
+      GlobTFoo2 := TFoo.Create;
+      GlobTFoo2.ValueInt := 32;
+      GlobTFooNil := nil;
+      GlobPFoo := @GlobTFoo1;
+      GlobPPFoo := @GlobPFoo;
+      GlobTSamePFoo := @GlobTFoo2;
+      GlobTNewPFoo := @GlobTFoo;
+
+      GlobTSameFoo := TFoo.Create;
+      GlobTSameFoo.ValueInt := 41;
+      GlobTNewFoo := TNewFoo.Create;
+      GlobTNewFoo.ValueInt := 42;
+      GlobPNewFoo := @GlobTSameFoo;
+
+      PGlobTFoo := @GlobTFoo;
+      PGlobPFoo := @PGlobTFoo;
+      PGlobTSamePFoo := @GlobTFoo;
+      PGlobTSameFoo := @GlobTFoo;
+    {$ENDIF}
+
+    {$IFDEF Global_Body_NIL}
+      //begin
+      { Classes }
+      GlobTFoo := nil;
+      GlobPFoo := nil;
+      GlobPPFoo := nil;
+      GlobTSamePFoo := nil;
+      GlobTNewPFoo := nil;
+
+      GlobTSameFoo := nil;
+      GlobTNewFoo := nil;
+      GlobPNewFoo := nil;
+    {$ENDIF}
+
+  {%endregion CODE (initilization)}
+{%endregion CLASSES}
+
+
+{* ******************** CLASSTYPES ******************** *}
 
 {%region FooFunc}
   {$IFDEF FooFunc_Param}
@@ -225,7 +390,8 @@
 
     PVarTFooClass: ^TFooClass;
 
-    VarFooComp, VarFooComp1: TFooComp;
+    VarFooComp, VarFooComp1: TObject; // TFooComp;
+    VarFooOther, VarFooOther1: TObject; // TFooCompOtherBase;
 
     { OBJECT }
     VarOldObject: TOldObject;
@@ -262,48 +428,16 @@
     VarOldObject.OldVal := 1;
 
     VarFooComp := TFooComp.Create(nil);
-    VarFooComp := nil;
+    VarFooComp1 := nil;
+
+    VarFooOther := TFooCompOtherBase.Create;
+    VarFooOther1 := nil;
   {$ENDIF}
 {%endregion FooFunc}
 
+
 {%region GLOBAL}
   {$IFDEF Global_Types}
-    { Classes }
-
-    TFooComp = class(TComponent)
-    public
-      ValueInt: Integer;
-    end;
-
-    { TFoo }
-
-    TFoo = class
-    private
-      function GetValueInt: Integer;
-      procedure SetValueInt(AValue: Integer);
-    public
-      ValueInt: Integer;
-      ValueFoo: TFoo;
-      ValueRec: TRec;
-      FooText: string[20];
-      FooString: String;
-      FooChar: Char;
-      property PropInt: Integer read ValueInt write ValueInt;
-      property PropIntGS: Integer read GetValueInt write SetValueInt;
-    end;
-
-    TFooChild = class(TFoo) end;
-    TFooKid = class(TFoo) end;
-
-    PFoo = ^TFoo;
-    PPFoo = ^PFoo;
-    TSamePFoo = PFoo;
-    TNewPFoo = {type} PFoo; // fpc crash
-
-    TSameFoo = TFoo;
-    TNewFoo = type TFoo;
-    PNewFoo = ^TNewFoo;
-
     { ClassesTypes }
     TFooClass = Class of TFoo;
     PFooClass = ^TFooClass;
@@ -319,37 +453,6 @@
   {$ENDIF}
 
   {$IFDEF Global_Var}
-    { TFoo }
-
-    function TFoo.GetValueInt: Integer;
-    begin
-      Result := PropInt;
-    end;
-
-    procedure TFoo.SetValueInt(AValue: Integer);
-    begin
-      PropInt := AValue;
-    end;
-
-  var
-
-  //var
-    { Classes }
-    GlobTFoo, GlobTFoo1, GlobTFoo2, GlobTFooNil: TFoo;
-    GlobPFoo: PFoo;
-    GlobPPFoo: PPFoo;
-    GlobTSamePFoo: TSamePFoo;
-    GlobTNewPFoo: TNewPFoo;
-
-    GlobTSameFoo: TSameFoo;
-    GlobTNewFoo: TNewFoo;
-    GlobPNewFoo: PNewFoo;
-
-    PGlobTFoo: ^TFoo;
-    PGlobPFoo: ^PFoo;
-    PGlobTSamePFoo: ^TSamePFoo;
-    PGlobTSameFoo: ^TSameFoo;
-
     { ClassesTyps }
     GlobTFooClass: TFooClass;
     GlobPFooClass: PFooClass;
@@ -362,33 +465,6 @@
 
   {$IFDEF Global_Body}
   //begin
-    { Classes }
-    GlobTFoo := TFoo.Create;
-    GlobTFoo.ValueInt := -11;
-    GlobTFoo.FooText := 'mem of TFoo '' "';
-    GlobTFoo.FooString := 'a 1 \ " '' '#9'...';
-    GlobTFoo.FooChar := '\';
-    GlobTFoo1 := TFoo.Create;
-    GlobTFoo1.ValueInt := 31;
-    GlobTFoo2 := TFoo.Create;
-    GlobTFoo2.ValueInt := 32;
-    GlobTFooNil := nil;
-    GlobPFoo := @GlobTFoo1;
-    GlobPPFoo := @GlobPFoo;
-    GlobTSamePFoo := @GlobTFoo2;
-    GlobTNewPFoo := @GlobTFoo;
-
-    GlobTSameFoo := TFoo.Create;
-    GlobTSameFoo.ValueInt := 41;
-    GlobTNewFoo := TNewFoo.Create;
-    GlobTNewFoo.ValueInt := 42;
-    GlobPNewFoo := @GlobTSameFoo;
-
-    PGlobTFoo := @GlobTFoo;
-    PGlobPFoo := @PGlobTFoo;
-    PGlobTSamePFoo := @GlobTFoo;
-    PGlobTSameFoo := @GlobTFoo;
-
     { ClassesTyps }
     GlobTFooClass := TFooKid;
     GlobPFooClass := @GlobTFooClass;
@@ -401,17 +477,6 @@
 
   {$IFDEF Global_Body_NIL}
   //begin
-    { Classes }
-    GlobTFoo := nil;
-    GlobPFoo := nil;
-    GlobPPFoo := nil;
-    GlobTSamePFoo := nil;
-    GlobTNewPFoo := nil;
-
-    GlobTSameFoo := nil;
-    GlobTNewFoo := nil;
-    GlobPNewFoo := nil;
-
     { ClassesTyps }
     GlobTFooClass := nil;
     GlobPFooClass := nil;
@@ -422,17 +487,6 @@
 
   {$IFDEF Global_Call_FooFunc}
   //FooFunc(
-    { Classes }
-    GlobTFoo,                        GlobTFoo,
-    GlobPFoo,                        GlobPFoo,
-    GlobPPFoo,                      GlobPPFoo,
-    GlobTSamePFoo,              GlobTSamePFoo,
-    GlobTNewPFoo,                GlobTNewPFoo,
-
-    GlobTSameFoo,                 GlobTSameFoo,
-    GlobTNewFoo,                   GlobTNewFoo,
-    GlobPNewFoo,                   GlobPNewFoo,
-
     { ClassesTyps }
     GlobTFooClass,               GlobTFooClass,
     GlobPFooClass,               GlobPFooClass,

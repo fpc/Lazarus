@@ -1,4 +1,54 @@
 
+{* ******************** CACHE-TEST ******************** *}
+{%region CACHE-TEST}
+  {%region  TYPE}
+    {$IFDEF Global_Types}
+      TCacheTestType = class
+      public
+        CTVal: Integer;
+      end;
+    {$ENDIF}
+
+    {$IFDEF SubFooFunc_LocalType}
+      TCacheTest = record
+        CTVal: Integer;
+      end;
+    {$ENDIF}
+
+    {$IFDEF FooFunc_LocalType}
+      TCacheTest = TCacheTestType;
+    {$ENDIF}
+  {%endregion TYPE}
+
+  {%region VARIABLES}
+    {$IFDEF SubFooFunc_Local}
+      VarCacheTest1: TCacheTest; // record
+      VarCacheTest2: Integer;
+    {$ENDIF}
+
+    {$IFDEF FooFunc_Local}
+      VarCacheTest1: TCacheTest; // class
+      VarCacheTest2: Integer;
+    {$ENDIF}
+  {%endregion VARIABLES}
+
+  {%region CODE (initilization)}
+    {$IFDEF SubFooFunc_Body}
+      VarCacheTest1.CTVal := 101;
+      VarCacheTest2 := 102;
+    {$ENDIF}
+
+    {$IFDEF FooFunc_Body}
+      VarCacheTest1 := TCacheTest.Create;
+      VarCacheTest1.CTVal := 201;
+      VarCacheTest2 := 202;
+    {$ENDIF}
+  {%endregion CODE (initilization)}
+
+{%endregion CACHE-TEST}
+
+{* ******************** -- ******************** *}
+
 {%region FooFunc}
   {$IFDEF FooFunc_Param}
   //procedure FooFunc(
