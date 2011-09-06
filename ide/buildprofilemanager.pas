@@ -600,7 +600,12 @@ begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
     fUpdateRevisionInc:=True;
+    {$IFDEF Darwin}
+    // FPC on darwin has a bug with -Cr
+    fOptions.Add('-gw -gl -godwarfsets -gh -gt -Co -Ci -Sa');
+    {$ELSE}
     fOptions.Add('-gw -gl -godwarfsets -gh -gt -Co -Cr -Ci -Sa');
+    {$ENDIF}
     for i:=0 to fMakeModeDefs.Count-1 do
       if fMakeModeDefs[i].Description=lisIDE then
         fMakeModes[i]:=mmBuild
