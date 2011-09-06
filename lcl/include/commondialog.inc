@@ -40,10 +40,12 @@ end;
 
 procedure TCommonDialog.Close;
 begin
-  if HandleAllocated then begin
+  if HandleAllocated and not FClosing then begin
+    FClosing := true;
     DoClose;
     TWSCommonDialogClass(WidgetSetClass).DestroyHandle(Self);
     FHandle := 0;
+    FClosing := false;
   end;
 end;
 

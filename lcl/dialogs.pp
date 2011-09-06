@@ -71,6 +71,7 @@ type
     FUserChoice: integer;
     FHelpContext: THelpContext;
     FCanCloseCalled: Boolean;
+    FClosing: boolean;
     procedure SetHandle(const AValue: THandle);
     procedure SetHeight(const AValue: integer);
     procedure SetWidth(const AValue: integer);
