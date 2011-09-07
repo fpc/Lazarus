@@ -299,10 +299,13 @@ type
 
   TDataPointTool = class(TChartTool)
   strict private
-    FAffectedSeries: String;
+    FAffectedSeries: TPublishedIntegerSet;
     FDistanceMode: TChartDistanceMode;
     FGrabRadius: Integer;
-    function ParseAffectedSeries: TBooleanDynArray;
+    function GetAffectedSeries: String; inline;
+    function GetIsSeriesAffected(AIndex: Integer): Boolean; inline;
+    procedure SetAffectedSeries(AValue: String); inline;
+    procedure SetIsSeriesAffected(AIndex: Integer; AValue: Boolean); inline;
   strict protected
     FNearestGraphPoint: TDoublePoint;
     FPointIndex: Integer;
@@ -311,11 +314,14 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   public
+    property IsSeriesAffected[AIndex: Integer]: Boolean
+      read GetIsSeriesAffected write SetIsSeriesAffected;
     property NearestGraphPoint: TDoublePoint read FNearestGraphPoint;
     property PointIndex: Integer read FPointIndex;
     property Series: TBasicChartSeries read FSeries;
   published
-    property AffectedSeries: String read FAffectedSeries write FAffectedSeries;
+    property AffectedSeries: String
+      read GetAffectedSeries write SetAffectedSeries;
     property DistanceMode: TChartDistanceMode
       read FDistanceMode write FDistanceMode default cdmXY;
     property GrabRadius: Integer read FGrabRadius write FGrabRadius default 4;
@@ -1173,6 +1179,7 @@ end;
 constructor TDataPointTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FAffectedSeries.Init;
   SetPropDefaults(Self, ['GrabRadius']);
   FPointIndex := -1;
 end;
@@ -1190,7 +1197,7 @@ begin
   p.FPoint := APoint;
   p.FRadius := GrabRadius;
   best.FDist := MaxInt;
-  for s in CustomSeries(FChart, ParseAffectedSeries) do
+  for s in CustomSeries(FChart, FAffectedSeries.AsBooleans(FChart.SeriesCount)) do
     if
       s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) and
       (cur.FDist < best.FDist)
@@ -1204,27 +1211,24 @@ begin
   FNearestGraphPoint := FChart.ImageToGraph(best.FImg);
 end;
 
-function TDataPointTool.ParseAffectedSeries: TBooleanDynArray;
-var
-  sl: TStringList;
-  p: Integer;
-  s: String;
+function TDataPointTool.GetAffectedSeries: String;
 begin
-  SetLength(Result, FChart.SeriesCount);
-  if AffectedSeries = '' then begin
-    FillChar(Result[0], Length(Result), true);
-    exit;
-  end;
-  sl := TStringList.Create;
-  try
-    sl.CommaText := AffectedSeries;
-    FillChar(Result[0], Length(Result), false);
-    for s in sl do
-      if TryStrToInt(s, p) and InRange(p, 0, High(Result)) then
-        Result[p] := true;
-  finally
-    sl.Free;
-  end;
+  Result := FAffectedSeries.AsString;
+end;
+
+function TDataPointTool.GetIsSeriesAffected(AIndex: Integer): Boolean;
+begin
+  Result := FAffectedSeries.IsSet[AIndex];
+end;
+
+procedure TDataPointTool.SetAffectedSeries(AValue: String);
+begin
+  FAffectedSeries.AsString := AValue;
+end;
+
+procedure TDataPointTool.SetIsSeriesAffected(AIndex: Integer; AValue: Boolean);
+begin
+  FAffectedSeries.IsSet[AIndex] := AValue;
 end;
 
 { TDataPointDragTool }
