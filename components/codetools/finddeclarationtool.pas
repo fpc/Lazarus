@@ -67,7 +67,7 @@ interface
 { $DEFINE ShowCollect}
 { $DEFINE ShowProcSearch}
 { $DEFINE DebugAddToolDependency}
-{$DEFINE VerboseFindDeclarationOfPropertyPath}
+{ $DEFINE VerboseFindDeclarationOfPropertyPath}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
@@ -1619,7 +1619,7 @@ begin
   Result:=false;
   NewContext:=CleanFindContext;
   {$IFDEF VerboseFindDeclarationOfPropertyPath}
-  DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
+  DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath MainFilename=',MainFilename,' PropertyPath="',PropertyPath,'"');
   {$ENDIF}
   if PropertyPath='' then exit;
   ActivateGlobalWriteLock;
@@ -1634,7 +1634,8 @@ begin
     Identifier:=GetNextIdentifier;
     if Identifier='' then exit;
     Context.Tool:=Self;
-    Context.Node:=FindDeclarationNodeInInterface(Identifier,true);
+    //debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath MainFilename=',MainFilename,' Identifier=',Identifier]);
+    Context.Node:=FindDeclarationNodeInInterface(Identifier,false);
     if Context.Node=nil then begin
       DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier not found in interface ',Identifier]);
       exit;
