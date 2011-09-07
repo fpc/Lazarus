@@ -1141,6 +1141,7 @@ const
   space = '                      ';
 var
   AHelp: TStringList;
+  HelpLang: string;
 
   procedure AddHelp(Args: array of const);
   var
@@ -1190,7 +1191,17 @@ begin
   EnableRemoteControl:=false;
   if IsHelpRequested then
   begin
-    TranslateResourceStrings(ProgramDirectory(true),'');
+    EnvironmentOptions := nil;
+    HelpLang := GetLanguageSpecified;
+    if HelpLang <> '' then
+      TranslateResourceStrings(ProgramDirectory(true), HelpLang)
+    else
+    begin
+      EnvironmentOptions := TEnvironmentOptions.Create;
+      EnvironmentOptions.CreateConfig;
+      EnvironmentOptions.Load(true);
+      TranslateResourceStrings(ProgramDirectory(true), EnvironmentOptions.LanguageID);
+    end;
 
     AHelp := TStringList.Create;
     AddHelp([lislazarusOptionsProjectFilename]);
@@ -1237,6 +1248,7 @@ begin
    
     WriteHelp(AHelp.Text);
     AHelp.Free;
+    FreeThenNil(EnvironmentOptions);
     exit;
   end;
   if IsVersionRequested then

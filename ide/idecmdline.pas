@@ -61,6 +61,7 @@ function GetCommandLineParameters(aCmdLineParams : TStrings;
 
 function IsHelpRequested (index : Integer = 1) : Boolean;
 function IsVersionRequested : boolean;
+function GetLanguageSpecified : string;
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
 function ParamIsOptionPlusValue(ParamIndex : integer;
             const Option : string; out AValue : string) : boolean;
@@ -158,6 +159,26 @@ begin
   Result := (ParamCount=1) and
             ((SysUtils.CompareText (ParamStrUTF8(1), '--version') = 0) or
              (SysUtils.CompareText (ParamStrUTF8(1), '-v')     = 0));
+end;
+
+function GetLanguageSpecified : string;
+var
+  i: integer;
+  AValue: string;
+begin
+  // return language specified in command line (empty string if no language specified)
+  Result := '';
+  AValue := '';
+  i := 1;
+  while i <= ParamCount do
+  begin
+    if ParamIsOptionPlusValue(i, LanguageOpt, AValue) = true then
+    begin
+      Result := AValue;
+      exit;
+    end;
+    inc(i);
+  end;
 end;
 
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
