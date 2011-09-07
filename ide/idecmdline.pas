@@ -59,7 +59,7 @@ procedure ParseCommandLine(aCmdLineParams : TStrings; out IDEPid : Integer;
 function GetCommandLineParameters(aCmdLineParams : TStrings;
             isStartLazarus : Boolean = False) : String;
 
-function IsHelpRequested (index : Integer = 1) : Boolean;
+function IsHelpRequested : Boolean;
 function IsVersionRequested : boolean;
 function GetLanguageSpecified : string;
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
@@ -145,20 +145,27 @@ begin
     Result := Result + ' ' + aCmdLineParams[i];
 end;
 
-function IsHelpRequested (index : Integer = 1) : Boolean;
+function IsHelpRequested : Boolean;
+var
+  i: integer;
 begin
-  Result := (ParamCount>=index) and
-            ((SysUtils.CompareText (ParamStrUTF8(index), '--help') = 0) or
-             (SysUtils.CompareText (ParamStrUTF8(index), '-help')  = 0) or
-             (SysUtils.CompareText (ParamStrUTF8(index), '-?')     = 0) or
-             (SysUtils.CompareText (ParamStrUTF8(index), '-h')     = 0));
+  Result := false;
+  i:=1;
+  while (i <= ParamCount) and (Result = false) do
+  begin
+    Result := ParamIsOption(i, '--help') or
+              ParamIsOption(i, '-help')  or
+              ParamIsOption(i, '-?')     or
+              ParamIsOption(i, '-h');
+    inc(i);
+  end;
 end;
 
 function IsVersionRequested: boolean;
 begin
   Result := (ParamCount=1) and
-            ((SysUtils.CompareText (ParamStrUTF8(1), '--version') = 0) or
-             (SysUtils.CompareText (ParamStrUTF8(1), '-v')     = 0));
+            (ParamIsOption(1, '--version') or
+             ParamIsOption(1, '-v'));
 end;
 
 function GetLanguageSpecified : string;
