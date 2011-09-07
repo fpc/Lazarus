@@ -213,7 +213,29 @@ type
     function Find(AChart, AOwner: TObject): TDrawDataItem;
   end;
 
+  // An ordered set of integers represented as a comma-separated string
+  // for publushing as a single property.
+  TPublishedIntegerSet = object
+  strict private
+    FAllSet: Boolean;
+    FData: TIntegerDynArray;
+    function GetAsString: String;
+    function GetIsSet(AIndex: Integer): Boolean;
+    procedure SetAllSet(AValue: Boolean);
+    procedure SetAsString(AValue: String);
+    procedure SetIsSet(AIndex: Integer; AValue: Boolean);
+  public
+    constructor Init;
+  public
+    property AllSet: Boolean read FAllSet write SetAllSet;
+    function AsBooleans(AMax: Integer): TBooleanDynArray;
+    property AsString: String read GetAsString write SetAsString;
+    property IsSet[AIndex: Integer]: Boolean read GetIsSet write SetIsSet;
+  end;
+
 const
+  PUB_INT_SET_ALL = '';
+  PUB_INT_SET_EMPTY = '-';
   // 0-value, 1-percent, 2-label, 3-total, 4-xvalue
   SERIES_MARK_FORMATS: array [TSeriesMarksStyle] of String = (
     '', '',
@@ -779,6 +801,105 @@ begin
     if (Result.Chart = AChart) and (Result.Owner = AOwner) then exit;
   end;
   Result := nil;
+end;
+
+{ TPublishedIntegerSet }
+
+function TPublishedIntegerSet.AsBooleans(AMax: Integer): TBooleanDynArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, AMax);
+  if AllSet then begin
+    FillChar(Result[0], Length(Result), true);
+    exit;
+  end;
+  for i in FData do
+    if InRange(i, 0, High(Result)) then
+      Result[i] := true;
+end;
+
+function TPublishedIntegerSet.GetAsString: String;
+var
+  i: Integer;
+begin
+  if AllSet then
+    Result := PUB_INT_SET_ALL
+  else if Length(FData) = 0 then
+    Result := PUB_INT_SET_EMPTY
+  else begin
+    Result := IntToStr(FData[0]);
+    for i := 1 to High(FData) do
+      Result += ',' + IntToStr(FData[i]);
+  end;
+end;
+
+function TPublishedIntegerSet.GetIsSet(AIndex: Integer): Boolean;
+var
+  i: Integer;
+begin
+  Result := true;
+  if AllSet then exit;
+  for i in FData do
+    if i = AIndex then exit;
+  Result := false;
+end;
+
+constructor TPublishedIntegerSet.Init;
+begin
+  FAllSet := true;
+end;
+
+procedure TPublishedIntegerSet.SetAllSet(AValue: Boolean);
+begin
+  if FAllSet = AValue then exit;
+  FAllSet := AValue;
+  if FAllSet then
+    SetLength(FData, 0);
+end;
+
+procedure TPublishedIntegerSet.SetAsString(AValue: String);
+var
+  sl: TStringList;
+  i, p: Integer;
+  s: String;
+begin
+  AllSet := AValue = PUB_INT_SET_ALL;
+  if AllSet then exit;
+  sl := TStringList.Create;
+  try
+    sl.CommaText := AValue;
+    SetLength(FData, sl.Count);
+    i := 0;
+    for s in sl do
+      if TryStrToInt(s, p) then begin
+        FData[i] := p;
+        i += 1;
+      end;
+  finally
+    sl.Free;
+  end;
+  SetLength(FData, i);
+end;
+
+procedure TPublishedIntegerSet.SetIsSet(AIndex: Integer; AValue: Boolean);
+var
+  i, j: Integer;
+begin
+  if AllSet or (IsSet[AIndex] = AValue) then exit;
+  if AValue then begin
+    SetLength(FData, Length(FData) + 1);
+    FData[High(FData)] := AIndex;
+  end
+  else begin
+    j := 0;
+    for i := 0 to High(FData) do
+      if FData[i] <> AIndex then begin
+        FData[j] := FData[i];
+        j += 1;
+      end;
+    SetLength(FData, j);
+  end;
 end;
 
 initialization

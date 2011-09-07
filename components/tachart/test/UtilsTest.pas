@@ -25,10 +25,8 @@ uses
 
 type
 
-  { TIntervalListTest }
-
   TIntervalListTest = class(TTestCase)
-  private
+  strict private
     FIList: TIntervalList;
   protected
     procedure SetUp; override;
@@ -40,10 +38,8 @@ type
   end;
 
 
-  { TGeometryTest }
-
   TGeometryTest = class(TTestCase)
-  private
+  strict private
     procedure AssertEquals(const Expected, Actual: TDoublePoint); overload;
     procedure AssertEquals(const Expected, Actual: TPoint); overload;
     procedure AssertEquals(const Expected, Actual: TRect); overload;
@@ -57,10 +53,8 @@ type
     procedure TestPolygonIntersectsPolygon;
   end;
 
-  { TColorTest }
-
   TColorTest = class(TTestCase)
-  private
+  strict private
     procedure AssertEqualsHex(Expected, Actual: Integer); overload;
   published
     procedure TestInterpolate;
@@ -69,6 +63,16 @@ type
   TRTTITest = class(TTestCase)
   published
     procedure TestSetPropDefaults;
+  end;
+
+  TPublishedIntegerSetTest = class(TTestCase)
+  strict private
+    FISet: TPublishedIntegerSet;
+  protected
+    procedure SetUp; override;
+  published
+    procedure TestAsString;
+    procedure TestIsSet;
   end;
 
 implementation
@@ -368,9 +372,50 @@ begin
   v2.Free;
 end;
 
+{ TPublishedIntegerSetTest }
+
+procedure TPublishedIntegerSetTest.SetUp;
+begin
+  inherited SetUp;
+  FISet.Init;
+end;
+
+procedure TPublishedIntegerSetTest.TestAsString;
+begin
+  AssertTrue(FISet.AllSet);
+  AssertEquals(PUB_INT_SET_ALL, FISet.AsString);
+  FISet.AllSet := false;
+  AssertFalse(FISet.AllSet);
+  AssertEquals(PUB_INT_SET_EMPTY, FISet.AsString);
+  FISet.AsString := '3 ,1,,  2';
+  AssertEquals('3,1,2', FISet.AsString);
+  FISet.AsString := PUB_INT_SET_ALL;
+  AssertTrue(FISet.AllSet);
+  FISet.AsString := '+';
+  AssertEquals(PUB_INT_SET_EMPTY, FISet.AsString);
+end;
+
+procedure TPublishedIntegerSetTest.TestIsSet;
+begin
+  AssertTrue(FISet.AllSet);
+  AssertTrue(FISet.IsSet[100000]);
+  FISet.AllSet := false;
+  AssertFalse(FISet.IsSet[100000]);
+  FISet.IsSet[99] := true;
+  AssertEquals('99', FISet.AsString);
+  FISet.AsString := '3,5';
+  AssertTrue(FISet.IsSet[3]);
+  AssertFalse(FISet.IsSet[99]);
+  FISet.IsSet[3] := false;
+  FISet.IsSet[5] := false;
+  AssertEquals(PUB_INT_SET_EMPTY, FISet.AsString);
+end;
+
 initialization
 
-  RegisterTests([TIntervalListTest, TGeometryTest, TColorTest, TRTTITest]);
+  RegisterTests([
+    TIntervalListTest, TGeometryTest, TColorTest, TRTTITest,
+    TPublishedIntegerSetTest]);
 
 end.
 
