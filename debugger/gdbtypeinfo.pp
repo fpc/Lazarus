@@ -217,7 +217,7 @@ type
   TGDBTypeCreationFlags = set of TGDBTypeCreationFlag;
 
   TGDBTypeProcessState =
-    (gtpsInitial, gtpsInitialSimple,
+    (gtpsInitial, gtpsInitialSimple, gtpsInitFixTypeCast,
      gtpsSimplePointer,
      gtpsClass, gtpsClassPointer, gtpsClassAncestor,
      gtpsArray, gtpsArrayEntry,
@@ -227,7 +227,8 @@ type
   TGDBTypeProcessRequest =
     (gptrPTypeExpr, gptrWhatisExpr, gptrPTypeOfWhatis,
      gptrPTypeExprDeRef, gptrPTypeExprDeDeRef,  // "Foo^", "Foo^^"  for Foo=Object, or &Object
-     gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast
+     gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast,
+     gptrPtypeCustom
     );
   TGDBTypeProcessRequests = set of TGDBTypeProcessRequest;
 
@@ -257,11 +258,12 @@ type
     FReqResults: Array [TGDBTypeProcessRequest] of TGDBPTypeRequest;
 
     FArrayEntryIndexExpr: String;
+    FHasTypeCastFix: Boolean;
 
     procedure AddTypeReq(var AReq :TGDBPTypeRequest; const ACmd: string = '');
     procedure AddSubType(ASubType :TGDBType);
     function GetIsFinished: Boolean;
-    function RequireRequests(ARequired: TGDBTypeProcessRequests): Boolean;
+    function RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomData: String = ''): Boolean;
     function IsReqError(AReqType: TGDBTypeProcessRequest; CheckResKind: Boolean = True): Boolean;
   protected
     procedure Init; override;
@@ -906,7 +908,7 @@ begin
   Result := FProcessState = gtpsFinished;
 end;
 
-function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests): Boolean;
+function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomData: String = ''): Boolean;
 
   function ApplyBrackets(e: string): string;
   var
@@ -933,6 +935,7 @@ function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests): Boolean;
       gptrEvalExpr:      Result := '-data-evaluate-expression '+FExpression;
       gptrEvalExprDeRef: Result := '-data-evaluate-expression '+FExpression+'^';
       gptrEvalExprCast:  Result := '-data-evaluate-expression '+InternalTypeName+'('+FExpression+')';
+      gptrPtypeCustom:   Result := 'ptype ' + ACustomData;
     end;
   end;
 
@@ -988,6 +991,7 @@ begin
   FNextProcessingSubType := nil;
   FProcessState := gtpsInitial;
   FHasExprEvaluatedAsText := False;
+  FHasTypeCastFix := False;
 end;
 
 destructor TGDBType.Destroy;
@@ -1461,20 +1465,34 @@ var
 
   procedure ProcessInitialSimple;
   var
-    i: Integer;
+    i, j: Integer;
     PTypeResult: TGDBPTypeResult;
-    wi: TGDBTypeProcessRequests;
+    //wi: TGDBTypeProcessRequests;
   begin
     FProcessState := gtpsInitialSimple;
 
-    if (gtcfFullTypeInfo in FCreationFlags)
-    and not (gtcfExprIsType in FCreationFlags)
-    then wi := [gptrWhatisExpr]
-    else wi := [];
-    if not RequireRequests([gptrPTypeExpr]+wi)
+    (* Will get gptrWhatisExpr later, it may fail, if expression is a typecast and needs ^ prefix *)
+    //if (gtcfFullTypeInfo in FCreationFlags)
+    //and not (gtcfExprIsType in FCreationFlags)
+    //then wi := [gptrWhatisExpr]
+    //else wi := [];
+    if not RequireRequests([gptrPTypeExpr]) //+wi)
     then exit;
 
     if IsReqError(gptrPTypeExpr) then begin
+      // maybe a typecast
+      if not FHasTypeCastFix then begin
+        j := length(FExpression);
+        i := 1;
+        while (i < j) and (FExpression[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) do inc(i);
+        if (i <= j) and (FExpression[i] = '(')
+        then begin
+          RequireRequests([gptrPtypeCustom], copy(FExpression, 1, i-1));
+          FProcessState := gtpsInitFixTypeCast;
+          exit;
+        end;
+      end;
+
       FEvalError := True;
       exit;
     end;
@@ -1644,7 +1662,7 @@ var
     end;
     // parse expression
 
-    // Array entry ?
+    // Array entry ? (May need a deref of array Foo^[x])
     p := @FExpression[length(FExpression)];
     while (p^ in [#9, #32]) and (p > @FExpression[1]) do dec(p);
     if p^ = ']' then begin
@@ -1655,6 +1673,23 @@ var
     end;
 
 
+    ProcessInitialSimple;
+  end;
+
+  procedure ProcessInitFixTypeCast;
+  begin
+    if FHasTypeCastFix or IsReqError(gptrPtypeCustom) or
+       not(FReqResults[gptrPtypeCustom].Result.Kind = ptprkClass)
+    then begin
+      FEvalError := True;
+      exit;
+    end;
+
+    FHasTypeCastFix := True;
+    FExpression := '^' + FExpression;
+
+    // Redo the ptype
+    Exclude(FProccesReuestsMade, gptrPTypeExpr);
     ProcessInitialSimple;
   end;
 
@@ -1714,6 +1749,7 @@ begin
   case FProcessState of
     gtpsInitial:         ProcessInitial;
     gtpsInitialSimple:   ProcessInitialSimple;
+    gtpsInitFixTypeCast: ProcessInitFixTypeCast;
     gtpsSimplePointer:   ProcessSimplePointer;
     gtpsClass:           ProcessClass;
     gtpsClassPointer:    ProcessClassPointer;
