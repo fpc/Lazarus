@@ -1390,7 +1390,7 @@ type
   private
     MinBtn: TControl;// TSpeedButton
     MaxBtn: TControl;// TSpeedButton
-    BTimerProc: procedure of Object;
+    BTimerProc: TProcedureOfObject;
     BTimerBounds : TRect;
     FArrowKeys: Boolean;
     FAssociate: TWinControl;
