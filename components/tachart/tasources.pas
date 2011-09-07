@@ -199,7 +199,7 @@ type
     property AccumulationMethod: TChartAccumulationMethod
       read FAccumulationMethod write SetAccumulationMethod default camNone;
     property AccumulationRange: Integer
-      read FAccumulationRange write SetAccumulationRange default 1;
+      read FAccumulationRange write SetAccumulationRange default 2;
 
     property Origin: TCustomChartSource read FOrigin write SetOrigin;
     property Percentage: Boolean
@@ -925,7 +925,7 @@ end;
 constructor TCalculatedChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FAccumulationRange := 1;
+  FAccumulationRange := 2;
   FIndex := -1;
   FHistory := TChartSourceBuffer.Create;
   FListener := TListener.Create(@FOrigin, @Changed);
