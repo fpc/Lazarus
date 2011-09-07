@@ -176,7 +176,7 @@ type
     FYOrder: array of Integer;
 
     procedure CalcAccumulation(AIndex: Integer);
-    procedure CalcDerivative(AIndex: Integer);
+    procedure CalcDerivative(var AIndex: Integer);
     procedure CalcPercentage;
     procedure Changed(ASender: TObject);
     procedure ExtractItem(out AItem: TChartDataItem; AIndex: Integer);
@@ -859,12 +859,12 @@ begin
     camDerivative:
       CalcDerivative(AIndex);
   end;
-
+  FIndex := AIndex;
 end;
 
 // Derivative is approximated by backwards finite difference
 // with accuracy order of (AccumulationRange - 1).
-procedure TCalculatedChartSource.CalcDerivative(AIndex: Integer);
+procedure TCalculatedChartSource.CalcDerivative(var AIndex: Integer);
 const
   COEFFS: array [2..7, 0..6] of Double = (
     (     1, -1,    0,     0,    0,    0,   0),
@@ -877,14 +877,20 @@ var
   prevItem: PChartDataItem;
   i, j, ar: Integer;
   dx: Double;
+  t: TChartDataItem;
 begin
+  if AIndex = 0 then begin
+    AIndex := 1;
+    ExtractItem(t, AIndex);
+    FHistory.AddLast(t);
+    dx := t.X - FHistory.GetPLast(1)^.X;
+  end
+  else
+    dx := FItem.X - FHistory.GetPLast(1)^.X;
   FItem.ClearY;
-  if AIndex = 0 then exit;
-  dx := FItem.X - FHistory.GetPLast(1)^.X;
   if dx = 0 then exit;
-  ar := Min(AccumulationRange, AIndex);
-  if (ar = 0) or (ar > High(COEFFS)) then
-    ar := High(COEFFS);
+  ar := IfThen(AccumulationRange = 0, MaxInt, AccumulationRange);
+  ar := MinValue([ar, AIndex + 1, High(COEFFS)]);
   for j := 0 to ar - 1 do begin
     prevItem := FHistory.GetPLast(j);
     FItem.Y += prevItem^.Y * COEFFS[ar, j];
@@ -969,7 +975,6 @@ begin
   else
     CalcAccumulation(AIndex);
   CalcPercentage;
-  FIndex := AIndex;
 end;
 
 function TCalculatedChartSource.IsSorted: Boolean;
