@@ -67,6 +67,7 @@ interface
 { $DEFINE ShowCollect}
 { $DEFINE ShowProcSearch}
 { $DEFINE DebugAddToolDependency}
+{$DEFINE VerboseFindDeclarationOfPropertyPath}
 
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
@@ -1617,13 +1618,15 @@ var
 begin
   Result:=false;
   NewContext:=CleanFindContext;
-  //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
+  {$IFDEF VerboseFindDeclarationOfPropertyPath}
+  DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
+  {$ENDIF}
   if PropertyPath='' then exit;
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
   try
     BuildTree(false);
-
+    //debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath MainFilename=',MainFilename]);
     //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath ',Src]);
 
     // first search the class/variable in the interface
@@ -1645,7 +1648,9 @@ begin
     repeat
       Identifier:=GetNextIdentifier;
       IsLastProperty:=StartPos>length(PropertyPath);
-      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Context=',Context.Node.DescAsString,' Identifier=',Identifier);
+      {$IFDEF VerboseFindDeclarationOfPropertyPath}
+      DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Context=',Context.Node.DescAsString,' Identifier=',Identifier);
+      {$ENDIF}
       if Identifier='' then exit;
       if Context.Node.Desc=ctnSetType then begin
         // set
@@ -1663,7 +1668,9 @@ begin
         Context.Node:=Params.NewNode;
         // search enum base type
         Context:=Context.Tool.FindBaseTypeOfNode(Params,Context.Node);
-        //debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath enum base type ',FindContextToString(Context)]);
+        {$IFDEF VerboseFindDeclarationOfPropertyPath}
+        debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath enum base type ',FindContextToString(Context)]);
+        {$ENDIF}
         if (Context.Node=nil) or (Context.Node.Desc<>ctnEnumerationType) then
           exit;
         // search enum
@@ -1671,10 +1678,14 @@ begin
         while Node<>nil do begin
           if CompareIdentifiers(PChar(Pointer(Identifier)),@Context.Tool.Src[Node.StartPos])=0
           then begin
-            //debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath identifier=',Identifier]);
+            {$IFDEF VerboseFindDeclarationOfPropertyPath}
+            debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath identifier=',Identifier]);
+            {$ENDIF}
             NewContext.Tool:=Context.Tool;
             NewContext.Node:=Node;
-            //debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath FOUND ',FindContextToString(NewContext)]);
+            {$IFDEF VerboseFindDeclarationOfPropertyPath}
+            debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath FOUND ',FindContextToString(NewContext)]);
+            {$ENDIF}
             exit(true);
           end;
           Node:=Node.NextBrother;
@@ -1687,7 +1698,9 @@ begin
         debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath failed Context=',Context.Node.DescAsString]);
         exit;
       end;
-      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
+      {$IFDEF VerboseFindDeclarationOfPropertyPath}
+      DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
+      {$ENDIF}
       Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors];
       Params.SetIdentifier(Self,PChar(Pointer(Identifier)),nil);
       Params.ContextNode:=Context.Node;
@@ -1707,21 +1720,27 @@ begin
             and Context.Tool.PropNodeIsTypeLess(Context.Node) then
               IsTypeLess:=true;
             if not IsTypeLess then break;
-            //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath has not type, searching next ...']);
+            {$IFDEF VerboseFindDeclarationOfPropertyPath}
+            DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath has not type, searching next ...']);
+            {$ENDIF}
             Params.SetIdentifier(Self,PChar(Pointer(Identifier)),nil);
             Params.ContextNode:=Context.Tool.FindClassOrInterfaceNode(Context.Node);
             if Params.ContextNode=nil then
               Params.ContextNode:=Context.Node;
             Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors,
                            fdfFindVariable,fdfIgnoreCurContextNode];
-            //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Tool.MainFilename,' ',Params.ContextNode.DescAsString,' ',Context.Tool.CleanPosToStr(Params.ContextNode.StartPos)]);
+            {$IFDEF VerboseFindDeclarationOfPropertyPath}
+            DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Tool.MainFilename,' ',Params.ContextNode.DescAsString,' ',Context.Tool.CleanPosToStr(Params.ContextNode.StartPos)]);
+            {$ENDIF}
             if not Context.Tool.FindIdentifierInContext(Params) then exit;
             Context.Tool:=Params.NewCodeTool;
             Context.Node:=Params.NewNode;
             if Context.Node=nil then exit;
           until false;
         end;
-        //DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath FOUND']);
+        {$IFDEF VerboseFindDeclarationOfPropertyPath}
+        DebugLn(['TFindDeclarationTool.FindDeclarationOfPropertyPath FOUND']);
+        {$ENDIF}
         NewContext:=Context;
         Result:=true;
         exit;
