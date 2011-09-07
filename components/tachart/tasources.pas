@@ -164,7 +164,7 @@ type
   TCalculatedChartSource = class(TCustomChartSource)
   private
     FAccumulationMethod: TChartAccumulationMethod;
-    FAccumulationRange: Integer;
+    FAccumulationRange: Cardinal;
     FHistory: TChartSourceBuffer;
     FIndex: Integer;
     FItem: TChartDataItem;
@@ -181,7 +181,7 @@ type
     procedure Changed(ASender: TObject);
     procedure ExtractItem(out AItem: TChartDataItem; AIndex: Integer);
     procedure SetAccumulationMethod(AValue: TChartAccumulationMethod);
-    procedure SetAccumulationRange(AValue: Integer);
+    procedure SetAccumulationRange(AValue: Cardinal);
     procedure SetOrigin(AValue: TCustomChartSource);
     procedure SetPercentage(AValue: Boolean);
     procedure SetReorderYList(const AValue: String);
@@ -198,7 +198,7 @@ type
   published
     property AccumulationMethod: TChartAccumulationMethod
       read FAccumulationMethod write SetAccumulationMethod default camNone;
-    property AccumulationRange: Integer
+    property AccumulationRange: Cardinal
       read FAccumulationRange write SetAccumulationRange default 2;
 
     property Origin: TCustomChartSource read FOrigin write SetOrigin;
@@ -817,7 +817,10 @@ procedure TCalculatedChartSource.CalcAccumulation(AIndex: Integer);
 var
   i, ar: Integer;
 begin
-  FHistory.Capacity := AccumulationRange;
+  if (AccumulationMethod = camDerivative) and (AccumulationRange = 0) then
+    FHistory.Capacity := 10
+  else
+    FHistory.Capacity := AccumulationRange;
   ar := IfThen(AccumulationRange = 0, MaxInt, AccumulationRange);
   if FIndex = AIndex - 1 then begin
     ExtractItem(FItem, AIndex);
@@ -993,7 +996,7 @@ begin
   Changed(nil);
 end;
 
-procedure TCalculatedChartSource.SetAccumulationRange(AValue: Integer);
+procedure TCalculatedChartSource.SetAccumulationRange(AValue: Cardinal);
 begin
   if FAccumulationRange = AValue then exit;
   FAccumulationRange := AValue;
