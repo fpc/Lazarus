@@ -4,8 +4,21 @@ unit unitw1;
 
 interface
 
+uses classes;
+
 type
-  TFooTestTestBase = class
+  TClassUW1Base = class
+  public
+    a: integer;
+  end;
+
+  TClassUW1BaseObject = class(TObject)
+  public
+    a: integer;
+  end;
+
+  TClassUW1BaseComponent = class(TComponent)
+  public
     a: integer;
   end;
 

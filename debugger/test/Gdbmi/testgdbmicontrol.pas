@@ -56,6 +56,14 @@ begin
   CheckListBox1.Checked[j] := True;
   j := CheckListBox1.Items.Add('TTestWatch');
   CheckListBox1.Checked[j] := True;
+  j := CheckListBox1.Items.Add('TTestWatch.Gdb');
+  CheckListBox1.Checked[j] := True;
+  j := CheckListBox1.Items.Add('TTestWatch.All');
+  CheckListBox1.Checked[j] := True;
+  j := CheckListBox1.Items.Add('TTestWatch.Mix');
+  CheckListBox1.Checked[j] := True;
+  j := CheckListBox1.Items.Add('TTestWatch.Cache');
+  CheckListBox1.Checked[j] := True;
   j := CheckListBox1.Items.Add('TTestBreakPoint');
   CheckListBox1.Checked[j] := True;
 

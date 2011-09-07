@@ -1,14 +1,14 @@
 (* Struture
   program WatchesPrg;
   type
-    {$DEFINE Global_Types}
+    {$DEFINE Global_Type}
     {$DEFINE Global_Implementation}
 
   procedure FooFunc(  {$DEFINE FooFunc_Param}  }
     type
       {$DEFINE FooFunc_LocalType}
     var
-      {$DEFINE FooFunc_Local}
+      {$DEFINE FooFunc_LocalVar}
     function SubFoo()():Integer; begin end;
   begin
     {$DEFINE FooFunc_Body}
@@ -27,7 +27,7 @@
 
 //TODO: globla/local const
 
-{$IFDEF Global_Types}
+{$IFDEF Global_Type}
 //type
   TFoo = class;
 {$ENDIF}
@@ -37,7 +37,7 @@
 {%region RECORD}
 
   {%region  TYPE}
-    {$IFDEF Global_Types}
+    {$IFDEF Global_Type}
     //type
       PRec = ^TRec;
       PPRec = ^PRec;
@@ -89,7 +89,7 @@
       GlobTNewRec,                   GlobTNewRec,
     {$ENDIF}
 
-    {$IFDEF FooFunc_Local}
+    {$IFDEF FooFunc_LocalVar}
     //var
       { records }
       VarTRec: TRec;
@@ -176,28 +176,117 @@
 {%endregion RECORD}
 
 {* ******************** CLASSES ******************** *}
+{%region  CLASSES  TypeCast }
+  {%region  TYPE}
+    {$IFDEF Global_Type}
+      //type
+      TClassTCast = class                        public b: Integer;  end;
+      TClassTCastObject = class(TObject)         public b: Integer;  end;
+      TClassTCastComponent = class(TComponent)   public b: Integer;  end;
+
+      {$IFDEF USE_W1}
+      TClassTCastUW1 = class(TClassUW1Base)                     public b: Integer;  end;
+      TClassTCastUW1Object = class(TClassUW1BaseObject)         public b: Integer;  end;
+      TClassTCastUW1Component = class(TClassUW1BaseComponent)   public b: Integer;  end;
+      {$ENDIF}
+
+      TClassTCast2 = class(TClassTCast)          public c: Integer;  end;
+      TClassTCast3 = type TClassTCast;
+    {$ENDIF}
+
+    {$IFDEF FooFunc_LocalVar}
+      // VarO..., VarNO... : TObject; // cast to real class
+      VarOTestTCast, VarOTestTCastObj, VarOTestTCastComp, VarOTestTCast2: TObject;
+      VarNOTestTCast, VarNOTestTCastObj, VarNOTestTCastComp, VarNOTestTCast2: TObject; // nil
+      {$IFDEF USE_W1}
+      VarOTestTCastUW1, VarOTestTCastUW1Obj, VarOTestTCastUW1Comp: TObject;
+      VarNOTestTCastUW1, VarNOTestTCastUW1Obj, VarNOTestTCastUW1Comp: TObject; // nil
+      {$ENDIF}
+
+      // VarC..., VarNC...: TComponent; // cast to real class OR object
+      VarCTestTCastComp, VarNCTestTCastComp: TComponent;
+      {$IFDEF USE_W1}
+      VarCTestTCastUW1Comp, VarNCTestTCastUW1Comp: TComponent;
+      {$ENDIF}
+
+      // VarB.., VarBN...: TBase;
+      VarBTestTCast2, VarBNTestTCast2: TClassTCast;
+
+      // Var.., VarN...: TRealType; // cast to lower class
+      VarTestTCast, VarNTestTCast: TClassTCast;
+      VarTestTCastObj, VarNTestTCastObj: TClassTCastObject;
+      VarTestTCastComp, VarNTestTCastComp: TClassTCastComponent;
+      VarTestTCast2, VarNTestTCast2: TClassTCast2;
+      VarTestTCast3, VarNTestTCast3: TClassTCast3;
+      {$IFDEF USE_W1}
+      VarUTestTCastUW1, VarNUTestTCastUW1: TClassUW1Base;
+      VarUTestTCastUW1Obj, VarNUTestTCastUW1Obj: TClassUW1BaseObject;
+      VarUTestTCastUW1Comp, VarNUTestTCastUW1Comp: TClassUW1BaseComponent;
+      VarTestTCastUW1, VarNTestTCastUW1: TClassTCastUW1;
+      VarTestTCastUW1Obj, VarNTestTCastUW1Obj: TClassTCastUW1Object;
+      VarTestTCastUW1Comp, VarNTestTCastUW1Comp: TClassTCastUW1Component;
+      {$ENDIF}
+    {$ENDIF}
+
+    {$IFDEF FooFunc_Body}
+      VarOTestTCast := TClassTCast.Create;
+      VarOTestTCastObj := TClassTCastObject.Create;
+      VarOTestTCastComp := TClassTCastComponent.Create(nil);
+      VarOTestTCast2 := TClassTCast.Create;
+      VarNOTestTCast := nil;
+      VarNOTestTCastObj := nil;
+      VarNOTestTCastComp := nil;
+      VarNOTestTCast2 := nil;
+      {$IFDEF USE_W1}
+      VarOTestTCastUW1 := TClassTCastUW1.Create;
+      VarOTestTCastUW1Obj := TClassTCastUW1Object.Create;
+      VarOTestTCastUW1Comp := TClassTCastUW1Component.Create(nil);
+      VarNOTestTCastUW1 := nil;
+      VarNOTestTCastUW1Obj := nil;
+      VarNOTestTCastUW1Comp := nil;
+      {$ENDIF}
+
+      VarCTestTCastComp := TClassTCastComponent.Create(nil);
+      VarNCTestTCastComp := nil;
+      {$IFDEF USE_W1}
+      VarCTestTCastUW1Comp := TClassTCastUW1Component.Create(nil);
+      VarNCTestTCastUW1Comp := nil;
+      {$ENDIF}
+
+      VarBTestTCast2 := TClassTCast2.Create;
+      VarBNTestTCast2 := nil;
+
+      VarTestTCast := TClassTCast.Create;
+      VarNTestTCast := nil;
+      VarTestTCastObj := TClassTCastObject.Create;
+      VarNTestTCastObj := nil;
+      VarTestTCastComp := TClassTCastComponent.Create(nil);
+      VarNTestTCastComp := nil;
+      VarTestTCast2 := TClassTCast2.Create;
+      VarNTestTCast2 := nil;
+      VarTestTCast3 := TClassTCast3.Create;
+      VarNTestTCast3 := nil;
+      {$IFDEF USE_W1}
+      VarUTestTCastUW1 := TClassTCastUW1.Create;
+      VarNUTestTCastUW1 := nil;
+      VarUTestTCastUW1Obj := TClassTCastUW1Object.Create;
+      VarNUTestTCastUW1Obj := nil;
+      VarUTestTCastUW1Comp := TClassTCastUW1Component.Create(nil);
+      VarNUTestTCastUW1Comp := nil;
+      VarTestTCastUW1 := TClassTCastUW1.Create;
+      VarNTestTCastUW1 := nil;
+      VarTestTCastUW1Obj := TClassTCastUW1Object.Create;
+      VarNTestTCastUW1Obj := nil;
+      VarTestTCastUW1Comp := TClassTCastUW1Component.Create(nil);
+      VarNTestTCastUW1Comp := nil;
+      {$ENDIF}
+    {$ENDIF}
+{%endregion  CLASSES  TypeCast}
+
 {%region  CLASSES}
 
   {%region  TYPE}
-    {$IFDEF Global_Types}
-      //type
-      { Classes }
-      TFooComp = class(TComponent)
-      public
-        ValueInt: Integer;
-      end;
-
-      {$IFDEF USE_W1}
-      TFooCompOtherBase = class(TFooTestTestBase)
-      {$ELSE}
-      TFooCompOtherBase = class(TObject)
-      {$ENDIF}
-      public
-        ValueInt: Integer;
-      end;
-
-      { TFoo }
-
+    {$IFDEF Global_Type}
       TFoo = class
       private
         function GetValueInt: Integer;
@@ -226,6 +315,20 @@
       PNewFoo = ^TNewFoo;
     {$ENDIF}
 
+    {$IFDEF Global_Implementation}
+      { TFoo }
+
+      function TFoo.GetValueInt: Integer;
+      begin
+        Result := PropInt;
+      end;
+
+      procedure TFoo.SetValueInt(AValue: Integer);
+      begin
+        PropInt := AValue;
+      end;
+    {$ENDIF}
+
     {$IFDEF FooFunc_LocalType}
       //type
     {$ENDIF}
@@ -233,6 +336,16 @@
 
   {%region VARIABLES}
     {$IFDEF FooFunc_Param}
+      { Classes }
+      ArgTFoo: TFoo;                        var VArgTFoo: TFoo;
+      ArgPFoo: PFoo;                        var VArgPFoo: PFoo;
+      ArgPPFoo: PPFoo;                      var VArgPPFoo: PPFoo;
+      ArgTSamePFoo: TSamePFoo;              var VArgTSamePFoo: TSamePFoo;
+      ArgTNewPFoo: TNewPFoo;                var VArgTNewPFoo: TNewPFoo;
+
+      ArgTSameFoo: TSameFoo;                 var VArgTSameFoo: TSameFoo;
+      ArgTNewFoo: TNewFoo;                   var VArgTNewFoo: TNewFoo;
+      ArgPNewFoo: PNewFoo;                   var VArgPNewFoo: PNewFoo;
     {$ENDIF}
     {$IFDEF Global_Call_FooFunc}
       //FooFunc(
@@ -248,8 +361,23 @@
       GlobPNewFoo,                   GlobPNewFoo,
     {$ENDIF}
 
-    {$IFDEF FooFunc_Local}
-    //var
+    {$IFDEF FooFunc_LocalVar}
+      //var
+      { Classes }
+      VarTFoo: TFoo;
+      VarPFoo: PFoo;
+      VarPPFoo: PPFoo;
+      VarTSamePFoo: TSamePFoo;
+      VarTNewPFoo: TNewPFoo;
+
+      VarTSameFoo: TSameFoo;
+      VarTNewFoo: TNewFoo;
+      VarPNewFoo: PNewFoo;
+
+      PVarTFoo: ^TFoo;
+      PVarPFoo: ^PFoo;
+      PVarTSamePFoo: ^TSamePFoo;
+      PVarTSameFoo: ^TSameFoo;
     {$ENDIF}
 
     {$IFDEF Global_Var}
@@ -270,25 +398,26 @@
       PGlobTSamePFoo: ^TSamePFoo;
       PGlobTSameFoo: ^TSameFoo;
     {$ENDIF}
-
-    {$IFDEF Global_Implementation}
-      { TFoo }
-
-      function TFoo.GetValueInt: Integer;
-      begin
-        Result := PropInt;
-      end;
-
-      procedure TFoo.SetValueInt(AValue: Integer);
-      begin
-        PropInt := AValue;
-      end;
-    {$ENDIF}
   {%endregion VARIABLES}
 
   {%region CODE (initilization)}
     {$IFDEF FooFunc_Body}
-    //begin
+      //begin
+      { Classes }
+      VarTFoo := ArgTFoo;
+      VarPFoo := ArgPFoo;
+      VarPPFoo := ArgPPFoo;
+      VarTSamePFoo := ArgTSamePFoo;
+      VarTNewPFoo := ArgTNewPFoo;
+
+      VarTSameFoo := ArgTSameFoo;
+      VarTNewFoo := ArgTNewFoo;
+      VarPNewFoo := ArgPNewFoo;
+
+      PVarTFoo := @ArgTFoo;
+      PVarPFoo := @ArgPFoo;
+      PVarTSamePFoo := @ArgTSamePFoo;
+      PVarTSameFoo :=  @ArgTSameFoo;
     {$ENDIF}
 
     {$IFDEF Global_Body}
@@ -344,17 +473,6 @@
 {%region FooFunc}
   {$IFDEF FooFunc_Param}
   //procedure FooFunc(
-    { Classes }
-    ArgTFoo: TFoo;                        var VArgTFoo: TFoo;
-    ArgPFoo: PFoo;                        var VArgPFoo: PFoo;
-    ArgPPFoo: PPFoo;                      var VArgPPFoo: PPFoo;
-    ArgTSamePFoo: TSamePFoo;              var VArgTSamePFoo: TSamePFoo;
-    ArgTNewPFoo: TNewPFoo;                var VArgTNewPFoo: TNewPFoo;
-
-    ArgTSameFoo: TSameFoo;                 var VArgTSameFoo: TSameFoo;
-    ArgTNewFoo: TNewFoo;                   var VArgTNewFoo: TNewFoo;
-    ArgPNewFoo: PNewFoo;                   var VArgPNewFoo: PNewFoo;
-
     { ClassesTyps }
     ArgTFooClass: TFooClass;               var VArgTFooClass: TFooClass;
     ArgPFooClass: PFooClass;               var VArgPFooClass: PFooClass;
@@ -363,24 +481,8 @@
     ArgPNewFooClass: PNewFooClass;         var VArgPNewFooClass: PNewFooClass;
   {$ENDIF}
 
-  {$IFDEF FooFunc_Local}
+  {$IFDEF FooFunc_LocalVar}
   //var
-    { Classes }
-    VarTFoo: TFoo;
-    VarPFoo: PFoo;
-    VarPPFoo: PPFoo;
-    VarTSamePFoo: TSamePFoo;
-    VarTNewPFoo: TNewPFoo;
-
-    VarTSameFoo: TSameFoo;
-    VarTNewFoo: TNewFoo;
-    VarPNewFoo: PNewFoo;
-
-    PVarTFoo: ^TFoo;
-    PVarPFoo: ^PFoo;
-    PVarTSamePFoo: ^TSamePFoo;
-    PVarTSameFoo: ^TSameFoo;
-
     { ClassesTyps }
     VarTFooClass: TFooClass;
     VarPFooClass: PFooClass;
@@ -390,31 +492,12 @@
 
     PVarTFooClass: ^TFooClass;
 
-    VarFooComp, VarFooComp1: TObject; // TFooComp;
-    VarFooOther, VarFooOther1: TObject; // TFooCompOtherBase;
-
     { OBJECT }
     VarOldObject: TOldObject;
   {$ENDIF}
 
   {$IFDEF FooFunc_Body}
   //begin
-    { Classes }
-    VarTFoo := ArgTFoo;
-    VarPFoo := ArgPFoo;
-    VarPPFoo := ArgPPFoo;
-    VarTSamePFoo := ArgTSamePFoo;
-    VarTNewPFoo := ArgTNewPFoo;
-
-    VarTSameFoo := ArgTSameFoo;
-    VarTNewFoo := ArgTNewFoo;
-    VarPNewFoo := ArgPNewFoo;
-
-    PVarTFoo := @ArgTFoo;
-    PVarPFoo := @ArgPFoo;
-    PVarTSamePFoo := @ArgTSamePFoo;
-    PVarTSameFoo :=  @ArgTSameFoo;
-
     { ClassesTypes }
     VarTFooClass := ArgTFooClass;
     VarPFooClass := ArgPFooClass;
@@ -426,18 +509,12 @@
 
     { OBJECT }
     VarOldObject.OldVal := 1;
-
-    VarFooComp := TFooComp.Create(nil);
-    VarFooComp1 := nil;
-
-    VarFooOther := TFooCompOtherBase.Create;
-    VarFooOther1 := nil;
   {$ENDIF}
 {%endregion FooFunc}
 
 
 {%region GLOBAL}
-  {$IFDEF Global_Types}
+  {$IFDEF Global_Type}
     { ClassesTypes }
     TFooClass = Class of TFoo;
     PFooClass = ^TFooClass;

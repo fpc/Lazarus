@@ -4,7 +4,7 @@
   //procedure FooFunc(
   {$ENDIF}
 
-  {$IFDEF FooFunc_Local}
+  {$IFDEF FooFunc_LocalVar}
   //var
     VarArrayHelperI: Integer;
 
@@ -103,7 +103,7 @@
 {%endregion FooFunc}
 
 {%region GLOBAL}
-  {$IFDEF Global_Types}
+  {$IFDEF Global_Type}
   //type
     TObjectInArray = class public foo: Integer; end;
     TRecordInArray = record foo: Integer; end;

@@ -8,7 +8,7 @@
     ArgObjFunction: TObjFunction;         var VArgObjFunction: TObjFunction;
   {$ENDIF}
 
-  {$IFDEF FooFunc_Local}
+  {$IFDEF FooFunc_LocalVar}
   //var
     VarProcedureA: procedure(a1: Integer; var a2: String);
     VarFunctionA:  function(a1: Integer; var a2: String): Integer;
@@ -39,7 +39,7 @@
     function  TMethodHolderClass.FuncObjFuntion(a1: Integer; var a2: String): Integer; begin end;
   {$ENDIF}
 
-  {$IFDEF Global_Types}
+  {$IFDEF Global_Type}
   //type
     TProcedure = procedure(a1: Integer; var a2: String);
     TFunction  = function(a1: Integer; var a2: String): Integer;

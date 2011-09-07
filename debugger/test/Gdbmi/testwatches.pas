@@ -38,6 +38,7 @@ type
   TWatchExpectationFlags = set of TWatchExpectationFlag;
 
   TWatchExpectation = record
+    TestName: String;
     Expression:  string;
     DspFormat: TWatchDisplayFormat;
     StackFrame: Integer;
@@ -65,6 +66,12 @@ type
     procedure DoDbgOutput(Sender: TObject; const AText: String); override;
     procedure ClearAllTestArrays;
     procedure AddTo(var ExpArray: TWatchExpectationArray;
+      AnExpr:  string; AFmt: TWatchDisplayFormat;
+      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+      AFlgs: TWatchExpectationFlags = [];
+      AStackFrame: Integer = 0
+    );
+    procedure AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
       AnExpr:  string; AFmt: TWatchDisplayFormat;
       AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
       AFlgs: TWatchExpectationFlags = [];
@@ -118,6 +125,16 @@ begin
   If AValFoo <> '' then Result := Result + ',.* valfoo = '+AValFoo;
 end;
 
+function MatchClass(TypeName: String; AContent: String = ''): String;
+begin
+  Result := '<'+TypeName+'> = \{.*(vptr\$|<TObject>).+'+AContent;
+end;
+
+function MatchClassNil(TypeName: String): String;
+begin
+  Result := '<'+TypeName+'> = nil';
+end;
+
 { TTestWatches }
 
 procedure TTestWatches.ClearAllTestArrays;
@@ -133,6 +150,24 @@ procedure TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: strin
 begin
   SetLength(ExpArray, Length(ExpArray)+1);
   with ExpArray[Length(ExpArray)-1] do begin
+    TestName     := AnExpr;
+    Expression   := AnExpr;
+    DspFormat    := AFmt;
+    ExpMatch     := AMtch;
+    ExpKind      := AKind;
+    ExpTypeName  := ATpNm;
+    Flgs         := AFlgs;
+    StackFrame   := AStackFrame;
+  end;
+end;
+
+procedure TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
+  AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind;
+  ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer);
+begin
+  SetLength(ExpArray, Length(ExpArray)+1);
+  with ExpArray[Length(ExpArray)-1] do begin
+    TestName     := ATestName;
     Expression   := AnExpr;
     DspFormat    := AFmt;
     ExpMatch     := AMtch;
@@ -150,6 +185,7 @@ procedure TTestWatches.AddExpectBreakFooGdb;
     AddTo(ExpectBreakFooGdb,AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
   end;
 begin
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Gdb')] then exit;
   Add('ptype ArgTFoo',  wdfDefault, 'type = \^TFoo = class : PUBLIC TObject', skClass, '', []);
   Add('ptype ArgTFoo^', wdfDefault, 'type = TFoo = class : PUBLIC TObject',   skClass, '', []);
 
@@ -168,7 +204,14 @@ procedure TTestWatches.AddExpectBreakFooAll;
   begin
     AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
   end;
+var
+  NoStatIntArray: Boolean;
 begin
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.All')] then exit;
+
+  // GDB 7.0 with fpc 2.4.x has issues with "array of int"
+  NoStatIntArray := (pos('2.4.', CompilerInfo.Name) > 0) and (DebuggerInfo.Version = 70000);
+
   {%region    * records * }
   // Foo(var XXX: PRecord); DWARF has problems with the implicit pointer for "var"
 
@@ -458,6 +501,7 @@ begin
                                 skSimple,       'TDynIntArray',
                                 []);
   //TODO add () around list
+  if not NoStatIntArray then
   Add('VarStatIntArray',      wdfDefault,      '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       'TStatIntArray',
                                 []);
@@ -470,6 +514,7 @@ begin
   Add('VarDynIntArrayA',      wdfDefault,      Match_Pointer+'|\{\}|0,[\s\r\n]+2',
                                 skSimple,       '',
                                 []);
+  if not NoStatIntArray then
   Add('VarStatIntArrayA',     wdfDefault,      '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       '',
                                 []);
@@ -542,16 +587,126 @@ begin
 end;
 
 procedure TTestWatches.AddExpectBreakFooMixInfo;
-  procedure Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
+  procedure Add(AName, AnExpr:  string; AFmt: TWatchDisplayFormat;
     AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
   begin
-    AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
+    AddTo(ExpectBreakFoo, AName, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
+  end;
+  procedure AddTC(AVar, ATCast:  string; AExpClass: String = ''; AFlgs: TWatchExpectationFlags = []);
+  begin
+    if AExpClass = '' then AExpClass := ATCast;
+    If ATCast <> ''
+    then Add('',ATCast+'('+AVar+')', wdfDefault, MatchClass(AExpClass, ''), skClass, AExpClass, AFlgs)
+    else Add('',AVar,                wdfDefault, MatchClass(AExpClass, ''), skClass, AExpClass, AFlgs);
+  end;
+  procedure AddTCN(AVar, ATCast:  string; AExpClass: String = ''; AFlgs: TWatchExpectationFlags = []);
+  begin
+    if AExpClass = '' then AExpClass := ATCast;
+    If ATCast <> ''
+    then Add('',ATCast+'('+AVar+')', wdfDefault, MatchClassNil(AExpClass), skClass, AExpClass, AFlgs)
+    else Add('',AVar,                wdfDefault, MatchClassNil(AExpClass), skClass, AExpClass, AFlgs);
   end;
 begin
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Mix')] then exit;
+
+  // Type Casting objects with mixed symbol type
+  AddTC('VarOTestTCast', '', 'TObject');
+  AddTC('VarOTestTCast', 'TObject', '');
+  AddTC('VarOTestTCast', 'TClassTCast', '');
+  AddTC('VarOTestTCast', 'TClassTCast3', 'TClassTCast(3)?', [fTpMtch]);
+
+  AddTC('VarOTestTCastObj', '', 'TObject');
+  AddTC('VarOTestTCastObj', 'TObject', '');
+  AddTC('VarOTestTCastObj', 'TClassTCastObject', '');
+
+  AddTC('VarOTestTCastComp', '', 'TObject');
+  AddTC('VarOTestTCastComp', 'TObject', '');
+  AddTC('VarOTestTCastComp', 'TComponent', '');
+  AddTC('VarOTestTCastComp', 'TClassTCastComponent', '');
+
+  AddTC('VarOTestTCast2', '', 'TObject');
+  AddTC('VarOTestTCast2', 'TObject', '');
+  AddTC('VarOTestTCast2', 'TClassTCast', '');
+  AddTC('VarOTestTCast2', 'TClassTCast2', '');
+
+  AddTC('VarOTestTCastUW1', '', 'TObject');
+  AddTC('VarOTestTCastUW1', 'TObject', '');
+  AddTC('VarOTestTCastUW1', 'TClassUW1Base', '');
+  AddTC('VarOTestTCastUW1', 'TClassTCastUW1', '');
+
+  AddTC('VarOTestTCastUW1Obj', '', 'TObject');
+  AddTC('VarOTestTCastUW1Obj', 'TObject', '');
+  AddTC('VarOTestTCastUW1Obj', 'TClassUW1BaseObject', '');
+  AddTC('VarOTestTCastUW1Obj', 'TClassTCastUW1Object', '');
+
+  AddTC('VarOTestTCastUW1Comp', '', 'TObject');
+  AddTC('VarOTestTCastUW1Comp', 'TObject', '');
+  AddTC('VarOTestTCastUW1Comp', 'TComponent', '');
+  AddTC('VarOTestTCastUW1Comp', 'TClassUW1BaseComponent', '');
+  AddTC('VarOTestTCastUW1Comp', 'TClassTCastUW1Component', '');
+
+
+  AddTC('VarCTestTCastComp', '', 'TComponent');
+  AddTC('VarCTestTCastComp', 'TObject', '');
+  AddTC('VarCTestTCastComp', 'TComponent', '');
+  AddTC('VarCTestTCastComp', 'TClassTCast', '');
+
+  AddTC('VarCTestTCastUW1Comp', '', 'TComponent');
+  AddTC('VarCTestTCastUW1Comp', 'TObject', '');
+  AddTC('VarCTestTCastUW1Comp', 'TComponent', '');
+  AddTC('VarCTestTCastUW1Comp', 'TClassUW1BaseComponent', '');
+  AddTC('VarCTestTCastUW1Comp', 'TClassTCastUW1Component', '');
+
+
+  AddTC('VarTestTCast', '', 'TClassTCast');
+  AddTC('VarTestTCast', 'TObject', '');
+  AddTC('VarTestTCast', 'TClassTCast', '');
+  AddTC('VarTestTCast', 'TClassTCast3', 'TClassTCast(3)?', [fTpMtch]);
+
+  AddTC('VarTestTCastObj', '', 'TClassTCastObject');
+  AddTC('VarTestTCastObj', 'TObject', '');
+  AddTC('VarTestTCastObj', 'TClassTCastObject', '');
+
+  AddTC('VarTestTCastComp', '', 'TClassTCastComponent');
+  AddTC('VarTestTCastComp', 'TObject', '');
+  AddTC('VarTestTCastComp', 'TComponent', '');
+  AddTC('VarTestTCastComp', 'TClassTCastComponent', '');
+
+  AddTC('VarTestTCast2', '', 'TClassTCast2');
+  AddTC('VarTestTCast2', 'TObject', '');
+  AddTC('VarTestTCast2', 'TClassTCast', '');
+  AddTC('VarTestTCast2', 'TClassTCast2', '');
+
+  AddTC('VarTestTCast3', '', 'TClassTCast(3)?', [fTpMtch]);
+  AddTC('VarTestTCast3', 'TObject', '');
+  AddTC('VarTestTCast3', 'TClassTCast', '');
+
+  AddTC('VarTestTCastUW1', '', 'TClassTCastUW1');
+  AddTC('VarTestTCastUW1', 'TObject', '');
+  AddTC('VarTestTCastUW1', 'TClassUW1Base', '');
+  AddTC('VarTestTCastUW1', 'TClassTCastUW1', '');
+
+  AddTC('VarTestTCastUW1Obj', '', 'TClassTCastUW1Object');
+  AddTC('VarTestTCastUW1Obj', 'TObject', '');
+  AddTC('VarTestTCastUW1Obj', 'TClassUW1BaseObject', '');
+  AddTC('VarTestTCastUW1Obj', 'TClassTCastUW1Object', '');
+
+  AddTC('VarTestTCastUW1Comp', '', 'TClassTCastUW1Component');
+  AddTC('VarTestTCastUW1Comp', 'TObject', '');
+  AddTC('VarTestTCastUW1Comp', 'TComponent', '');
+  AddTC('VarTestTCastUW1Comp', 'TClassUW1BaseComponent', '');
+  AddTC('VarTestTCastUW1Comp', 'TClassTCastUW1Component', '');
+
+
+
+  AddTCN('VarNOTestTCast', '', 'TObject');
+  AddTCN('VarNOTestTCast', 'TObject', '');
+  AddTCN('VarNOTestTCast', 'TClassTCast', '');
+  AddTCN('VarNOTestTCast', 'TClassTCast3', 'TClassTCast(3)?', [fTpMtch]);
+
+
   // MIXED symbol info types
-  Add('VarFooOther',  wdfDefault,  '<TObject>',        skClass,   'TObject',  []);
-  Add('TFooTestTestBase(VarFooOther)',  wdfDefault,  '<TFooTestTestBase>',        skClass,   'TFooTestTestBase',  []);
-  Add('VarStatIntArray',      wdfDefault,      '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
+  Add('', 'VarStatIntArray',  wdfDefault,     '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       'TStatIntArray',
                                 []);
 end;
@@ -570,6 +725,7 @@ procedure TTestWatches.AddExpectBreakFooAndSubFoo;
     AddTo(ExpectBreakSubFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
   end;
 begin
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Cache')] then exit;
   AddS('VarCacheTest1', wdfDefault, MatchRecord('TCacheTest', 'CTVal = 101'),
        skRecord, 'TCacheTest',  []);
   AddF('VarCacheTest1', wdfDefault, '<TCacheTest(Type)?> = \{.*(<|vptr\$)TObject>?.+CTVal = 201',
@@ -622,11 +778,14 @@ procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts
     flag: Boolean;
     WV: TWatchValue;
     Stack: Integer;
+    n: String;
   begin
     rx := nil;
     Stack := Data.StackFrame;
 
-    Name := Name + ' ' + Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ')';
+    n := Data.TestName;
+    if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ')';
+    Name := Name + ' ' + n;
     flag := AWatch <> nil;
     if flag then begin;
       WV := AWatch.Values[1, Stack];// trigger read
@@ -777,60 +936,63 @@ begin
   AddExpectBreakFooAndSubFoo;
   RunTestWatches('', TestExeName,  '', []);
 
-
-  ClearAllTestArrays;
-  AddExpectBreakFooMixInfo;
-  with UsedUnits do begin
-    DirName:= AppDir + 'u1\unitw1.pas';
-    ExeId:= '';
-    SymbolType:= stNone;
-    ExtraOpts:= '';
-    NamePostFix:= ''
-  end;
-  RunTestWatches('unitw1=none', TestExeName,  '-dUSE_W1', [UsedUnits]);
-
-  if (stStabs in CompilerInfo.SymbolTypes) and (stStabs in DebuggerInfo.SymbolTypes)
+  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Mix')]
   then begin
+
     ClearAllTestArrays;
     AddExpectBreakFooMixInfo;
     with UsedUnits do begin
       DirName:= AppDir + 'u1\unitw1.pas';
       ExeId:= '';
-      SymbolType:= stStabs;
+      SymbolType:= stNone;
       ExtraOpts:= '';
       NamePostFix:= ''
     end;
-    RunTestWatches('unitw1=stabs', TestExeName,  '-dUSE_W1', [UsedUnits]);
-  end;
+    RunTestWatches('unitw1=none', TestExeName,  '-dUSE_W1', [UsedUnits]);
 
-  if (stDwarf in CompilerInfo.SymbolTypes) and (stDwarf in DebuggerInfo.SymbolTypes)
-  then begin
-    ClearAllTestArrays;
-    AddExpectBreakFooMixInfo;
-    with UsedUnits do begin
-      DirName:= AppDir + 'u1\unitw1.pas';
-      ExeId:= '';
-      SymbolType:= stDwarf;
-      ExtraOpts:= '';
-      NamePostFix:= ''
+    if (stStabs in CompilerInfo.SymbolTypes) and (stStabs in DebuggerInfo.SymbolTypes)
+    then begin
+      ClearAllTestArrays;
+      AddExpectBreakFooMixInfo;
+      with UsedUnits do begin
+        DirName:= AppDir + 'u1\unitw1.pas';
+        ExeId:= '';
+        SymbolType:= stStabs;
+        ExtraOpts:= '';
+        NamePostFix:= ''
+      end;
+      RunTestWatches('unitw1=stabs', TestExeName,  '-dUSE_W1', [UsedUnits]);
     end;
-    RunTestWatches('unitw1=dwarf', TestExeName,  '-dUSE_W1', [UsedUnits]);
-  end;
 
-  if (stDwarf3 in CompilerInfo.SymbolTypes) and (stDwarf3 in DebuggerInfo.SymbolTypes)
-  then begin
-    ClearAllTestArrays;
-    AddExpectBreakFooMixInfo;
-    with UsedUnits do begin
-      DirName:= AppDir + 'u1\unitw1.pas';
-      ExeId:= '';
-      SymbolType:= stDwarf3;
-      ExtraOpts:= '';
-      NamePostFix:= ''
+    if (stDwarf in CompilerInfo.SymbolTypes) and (stDwarf in DebuggerInfo.SymbolTypes)
+    then begin
+      ClearAllTestArrays;
+      AddExpectBreakFooMixInfo;
+      with UsedUnits do begin
+        DirName:= AppDir + 'u1\unitw1.pas';
+        ExeId:= '';
+        SymbolType:= stDwarf;
+        ExtraOpts:= '';
+        NamePostFix:= ''
+      end;
+      RunTestWatches('unitw1=dwarf', TestExeName,  '-dUSE_W1', [UsedUnits]);
     end;
-    RunTestWatches('unitw1=dwarf_3', TestExeName,  '-dUSE_W1', [UsedUnits]);
-  end;
 
+    if (stDwarf3 in CompilerInfo.SymbolTypes) and (stDwarf3 in DebuggerInfo.SymbolTypes)
+    then begin
+      ClearAllTestArrays;
+      AddExpectBreakFooMixInfo;
+      with UsedUnits do begin
+        DirName:= AppDir + 'u1\unitw1.pas';
+        ExeId:= '';
+        SymbolType:= stDwarf3;
+        ExtraOpts:= '';
+        NamePostFix:= ''
+      end;
+      RunTestWatches('unitw1=dwarf_3', TestExeName,  '-dUSE_W1', [UsedUnits]);
+    end;
+
+  end;
 
   AssertTestErrors;
 end;

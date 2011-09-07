@@ -5,7 +5,7 @@
   program WatchesPrg;
 
   type
-   {$DEFINE Global_Types}
+   {$DEFINE Global_Type}
 
   {$DEFINE Global_Implementation}
 
@@ -13,15 +13,15 @@
     type
       {$DEFINE FooFunc_LocalType}
     var
-      {$DEFINE FooFunc_Local}
+      {$DEFINE FooFunc_LocalVar}
 
     function SubFoo()():Integer;
       type
-        {$DEFINE SubFooFunc_LocalType}
+        {$DEFINE Sub_FooFunc_LocalType}
       var
-        {$DEFINE SubFooFunc_Local}
+        {$DEFINE Sub_FooFunc_LocalVar}
       begin
-        {$DEFINE SubFooFunc_Body}
+        {$DEFINE Sub_FooFunc_Body}
       end;
 
     begin
@@ -46,7 +46,7 @@ program WatchesPrg;
 uses sysutils, variants, Classes {$IFDEF USE_W1} , unitw1 {$ENDIF};
 
 type
-{$DEFINE Global_Types}
+{$DEFINE Global_Type}
 
   { class/record/object }
   {$I WatchesPrgStruct.inc}
@@ -64,7 +64,7 @@ type
   {$I WatchesPrgProc.inc}
 
 
-{$UNDEF Global_Types}
+{$UNDEF Global_Type}
 
 {$DEFINE Global_Implementation}
   { class/record/object }
@@ -128,7 +128,7 @@ type
 
 var
   (***  local var  ***)
-  {$DEFINE FooFunc_Local}
+  {$DEFINE FooFunc_LocalVar}
     { class/record/object }
     {$I WatchesPrgStruct.inc}
     { strings }
@@ -144,12 +144,12 @@ var
     { procedure/function/method }
     {$I WatchesPrgProc.inc}
 
-  {$UNDEF FooFunc_Local}
+  {$UNDEF FooFunc_LocalVar}
 
   function SubFoo(var AVal1: Integer; AVal2: Integer) : Integer;
   type
     (***  local type  ***)
-    {$DEFINE SubFooFunc_LocalType}
+    {$DEFINE Sub_FooFunc_LocalType}
       { class/record/object }
       {$I WatchesPrgStruct.inc}
       { strings }
@@ -165,11 +165,11 @@ var
       { procedure/function/method }
       {$I WatchesPrgProc.inc}
       DummySubFooType12345 = Integer;
-    {$UNDEF SubFooFunc_LocalType}
+    {$UNDEF Sub_FooFunc_LocalType}
 
   var
     (***  local var  ***)
-    {$DEFINE SubFooFunc_Local}
+    {$DEFINE Sub_FooFunc_LocalVar}
       { class/record/object }
       {$I WatchesPrgStruct.inc}
       { strings }
@@ -185,9 +185,9 @@ var
       { procedure/function/method }
       {$I WatchesPrgProc.inc}
       DummySubFooVar12345: Integer;
-    {$UNDEF SubFooFunc_Local}
+    {$UNDEF Sub_FooFunc_LocalVar}
   begin
-    {$DEFINE SubFooFunc_Body}
+    {$DEFINE Sub_FooFunc_Body}
       { class/record/object }
       {$I WatchesPrgStruct.inc}
       { strings }
@@ -202,7 +202,7 @@ var
       {$I WatchesPrgVariant.inc}
       { procedure/function/method }
       {$I WatchesPrgProc.inc}
-    {$UNDEF SubFooFunc_Body}
+    {$UNDEF Sub_FooFunc_Body}
     writeln(1); // nested break
   end;
 

@@ -29,7 +29,7 @@
     ArgPPMyString10: PPMyString10;             var VArgPPMyString10: PPMyString10;
   {$ENDIF}
 
-  {$IFDEF FooFunc_Local}
+  {$IFDEF FooFunc_LocalVar}
   //var
     VarTMyAnsiString: TMyAnsiString;
     VarPMyAnsiString: PMyAnsiString;
@@ -99,7 +99,7 @@
 {%endregion FooFunc}
 
 {%region GLOBAL}
-  {$IFDEF Global_Types}
+  {$IFDEF Global_Type}
   //type
     TMyAnsiString = AnsiString;
     PMyAnsiString = ^TMyAnsiString;

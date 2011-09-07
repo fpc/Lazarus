@@ -6,7 +6,7 @@
     ArgVariantString: Variant;  var VArgVariantString: Variant;
   {$ENDIF}
 
-  {$IFDEF FooFunc_Local}
+  {$IFDEF FooFunc_LocalVar}
   //var
   {$ENDIF}
 
@@ -16,7 +16,7 @@
 {%endregion FooFunc}
 
 {%region GLOBAL}
-  {$IFDEF Global_Types}
+  {$IFDEF Global_Type}
   //type
   {$ENDIF}
 

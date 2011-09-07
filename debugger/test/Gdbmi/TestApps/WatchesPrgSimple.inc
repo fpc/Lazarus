@@ -2,14 +2,14 @@
 {* ******************** CACHE-TEST ******************** *}
 {%region CACHE-TEST}
   {%region  TYPE}
-    {$IFDEF Global_Types}
+    {$IFDEF Global_Type}
       TCacheTestType = class
       public
         CTVal: Integer;
       end;
     {$ENDIF}
 
-    {$IFDEF SubFooFunc_LocalType}
+    {$IFDEF Sub_FooFunc_LocalType}
       TCacheTest = record
         CTVal: Integer;
       end;
@@ -21,19 +21,19 @@
   {%endregion TYPE}
 
   {%region VARIABLES}
-    {$IFDEF SubFooFunc_Local}
+    {$IFDEF Sub_FooFunc_LocalVar}
       VarCacheTest1: TCacheTest; // record
       VarCacheTest2: Integer;
     {$ENDIF}
 
-    {$IFDEF FooFunc_Local}
+    {$IFDEF FooFunc_LocalVar}
       VarCacheTest1: TCacheTest; // class
       VarCacheTest2: Integer;
     {$ENDIF}
   {%endregion VARIABLES}
 
   {%region CODE (initilization)}
-    {$IFDEF SubFooFunc_Body}
+    {$IFDEF Sub_FooFunc_Body}
       VarCacheTest1.CTVal := 101;
       VarCacheTest2 := 102;
     {$ENDIF}
@@ -79,7 +79,7 @@
     ArgExtended: Extended;               var VArgExtended: Extended;
   {$ENDIF}
 
-  {$IFDEF FooFunc_Local}
+  {$IFDEF FooFunc_LocalVar}
   //var
     VarByte: Byte;
     VarWord: Word;

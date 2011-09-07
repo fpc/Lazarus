@@ -7,7 +7,7 @@
     ArgSet: TSet;         var VArgSet: TSet;
   {$ENDIF}
 
-  {$IFDEF FooFunc_Local}
+  {$IFDEF FooFunc_LocalVar}
   //var
     VarEnumA: (e1,e2,e3);
     VarEnumSetA: set of TEnum;
@@ -23,7 +23,7 @@
 {%endregion FooFunc}
 
 {%region GLOBAL}
-  {$IFDEF Global_Types}
+  {$IFDEF Global_Type}
   //type
     TEnum = (One, Two, Three);
     TEnumSet = set of TEnum;
