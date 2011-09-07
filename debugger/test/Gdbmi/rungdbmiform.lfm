@@ -2,23 +2,23 @@ object Form1: TForm1
   Left = 493
   Height = 519
   Top = 232
-  Width = 731
+  Width = 717
   Caption = 'Form1'
   ClientHeight = 519
-  ClientWidth = 731
+  ClientWidth = 717
   OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object Panel1: TPanel
     Left = 6
-    Height = 81
+    Height = 110
     Top = 6
-    Width = 719
+    Width = 705
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 81
-    ClientWidth = 719
+    ClientHeight = 110
+    ClientWidth = 705
     TabOrder = 0
     object edBreakFile: TEdit
       AnchorSideLeft.Control = Label1
@@ -28,7 +28,7 @@ object Form1: TForm1
       Left = 36
       Height = 23
       Top = 58
-      Width = 214
+      Width = 222
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       OnChange = edPasFileChange
@@ -38,7 +38,7 @@ object Form1: TForm1
       AnchorSideLeft.Control = Label2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edBreakFile
-      Left = 285
+      Left = 293
       Height = 23
       Top = 58
       Width = 115
@@ -52,9 +52,9 @@ object Form1: TForm1
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
-      Left = 611
+      Left = 597
       Height = 25
-      Top = 56
+      Top = 85
       Width = 108
       Anchors = [akRight, akBottom]
       Caption = 'Run'
@@ -77,7 +77,7 @@ object Form1: TForm1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edBreakFile
       AnchorSideTop.Side = asrCenter
-      Left = 256
+      Left = 264
       Height = 16
       Top = 61
       Width = 23
@@ -149,7 +149,7 @@ object Form1: TForm1
       AnchorSideTop.Control = Panel1
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 611
+      Left = 597
       Height = 19
       Top = 0
       Width = 108
@@ -163,7 +163,7 @@ object Form1: TForm1
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 611
+      Left = 597
       Height = 19
       Top = 21
       Width = 108
@@ -172,30 +172,76 @@ object Form1: TForm1
       Caption = 'CSF'
       TabOrder = 7
     end
+    object edUses: TEdit
+      AnchorSideLeft.Control = edBreakFile
+      AnchorSideTop.Control = edBreakFile
+      AnchorSideTop.Side = asrBottom
+      Left = 36
+      Height = 23
+      Top = 87
+      Width = 216
+      BorderSpacing.Top = 6
+      TabOrder = 8
+    end
+    object Label4: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = edUses
+      AnchorSideTop.Side = asrCenter
+      Left = 0
+      Height = 16
+      Top = 90
+      Width = 25
+      Caption = 'Uses'
+      ParentColor = False
+    end
+    object Label5: TLabel
+      AnchorSideLeft.Control = edUses
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edUses
+      AnchorSideTop.Side = asrCenter
+      Left = 262
+      Height = 16
+      Top = 90
+      Width = 35
+      BorderSpacing.Left = 10
+      Caption = 'Define'
+      ParentColor = False
+    end
+    object EdDefine: TEdit
+      AnchorSideLeft.Control = Label5
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edUses
+      Left = 301
+      Height = 23
+      Top = 87
+      Width = 80
+      BorderSpacing.Left = 4
+      TabOrder = 9
+    end
   end
   object Panel2: TPanel
     Left = 175
-    Height = 426
-    Top = 93
-    Width = 556
+    Height = 397
+    Top = 122
+    Width = 542
     Align = alClient
-    ClientHeight = 426
-    ClientWidth = 556
+    ClientHeight = 397
+    ClientWidth = 542
     TabOrder = 1
     object Memo1: TMemo
       Left = 1
       Height = 125
       Top = 4
-      Width = 554
+      Width = 540
       Align = alTop
       ScrollBars = ssAutoBoth
       TabOrder = 0
     end
     object Memo2: TMemo
       Left = 1
-      Height = 296
+      Height = 267
       Top = 129
-      Width = 554
+      Width = 540
       Align = alClient
       ScrollBars = ssAutoBoth
       TabOrder = 1
@@ -205,18 +251,18 @@ object Form1: TForm1
       Left = 1
       Height = 3
       Top = 1
-      Width = 554
+      Width = 540
       Align = alTop
       ResizeAnchor = akTop
     end
   end
   object Panel3: TPanel
     Left = 5
-    Height = 426
-    Top = 93
+    Height = 397
+    Top = 122
     Width = 170
     Align = alLeft
-    ClientHeight = 426
+    ClientHeight = 397
     ClientWidth = 170
     TabOrder = 2
     object CheckListBox1: TCheckListBox
@@ -239,7 +285,7 @@ object Form1: TForm1
     end
     object CheckListBox2: TCheckListBox
       Left = 1
-      Height = 243
+      Height = 214
       Top = 182
       Width = 168
       Align = alClient
@@ -249,8 +295,8 @@ object Form1: TForm1
   end
   object Splitter3: TSplitter
     Left = 0
-    Height = 426
-    Top = 93
+    Height = 397
+    Top = 122
     Width = 5
   end
   object OpenDialog1: TOpenDialog

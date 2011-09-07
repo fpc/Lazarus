@@ -20,6 +20,8 @@ type
     chkStripEcho: TCheckBox;
     CheckListBox1: TCheckListBox;
     CheckListBox2: TCheckListBox;
+    EdDefine: TEdit;
+    edUses: TEdit;
     edPasFile: TEdit;
     edPasHistory: TComboBox;
     edBreakFile: TEdit;
@@ -27,6 +29,8 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
     Memo1: TMemo;
     Memo2: TMemo;
     OpenDialog1: TOpenDialog;
@@ -116,106 +120,151 @@ end;
 type THack = class(TCmdLineDebugger) end;
 
 procedure TRunner.DoRun;
+  procedure DoOneRun(Name: String; UsesDirs: array of TUsesDir);
+  var
+    TestExeName: string;
+    dbg: TGDBMIDebugger;
+    i: Integer;
+    j: Integer;
+  begin
+    ClearTestErrors;
+    FTesting := False;
+    if Form1.chkCSF.Checked
+    then begin
+      Form1.MemoText := Form1.MemoText + LineEnding  + '"' + EscQ(Parent.Parent.TestName) + ' ' + Name + '",';
+      Form1.Memo2.Text := Form1.MemoText;
+    end
+    else
+      Form1.Memo2.Lines.Add('***** '+ Parent.TestName + ' ' + Parent.Parent.TestName + ' ' + Name);
+
+    try
+      TestCompile(Form1.edPasFile.Text, TestExeName, UsesDirs, '', Form1.EdDefine.Text);
+    except
+      on e: Exception do
+        Form1.Memo2.Lines.Add('Compile error: ' + e.Message);
+    end;
+
+
+    try
+      dbg := StartGDB(AppDir, TestExeName);
+      dbg.OnDbgOutput  := @DoDbgOut;
+      dbg.OnBreakPointHit  := @dobrk;
+
+      (* Add breakpoints *)
+      with dbg.BreakPoints.Add(Form1.edBreakFile.Text, StrToInt(Form1.edBreakLine.Text)) do begin
+        InitialEnabled := True;
+        Enabled := True;
+      end;
+
+      (* Start debugging *)
+      //if dbg.State = dsError then begin
+      //  Form1.Memo2.Lines.Add('Failed to start');
+      //  exit;
+      //end;
+
+      dbg.Run;
+
+      //t:= GetTickCount;
+      if Form1.chkCSF.Checked then begin
+        Form1.MemoText := Form1.MemoText + '"';
+      end;
+
+      for i := 0 to Form1.Memo1.Lines.Count - 1 do begin
+        if Trim(Form1.Memo1.Lines[i])<> '' then begin
+          FTesting := True;
+          Form1.EchoText := Trim(Form1.Memo1.Lines[i]);
+          dbg.TestCmd(Form1.EchoText);
+          FTesting := False;
+        end;
+        if Form1.chkCSF.Checked then
+          Form1.MemoText := Form1.MemoText + '","';
+      end;
+      if Form1.chkCSF.Checked then begin
+        Form1.MemoText := Form1.MemoText + '"';
+        Form1.Memo2.Text := Form1.MemoText;
+      end;
+
+
+      dbg.Stop;
+    finally
+      dbg.Free;
+      CleanGdb;
+    end;
+    Form1.Memo2.Lines.Add(' ');
+  end;
+
 var
-  TestExeName: string;
-  dbg: TGDBMIDebugger;
+  AUsesDir: TUsesDir;
   i: Integer;
-  j: Integer;
-  //t: LongWord;
-  //S: String;
 begin
   i := Form1.CheckListBox1.Items.IndexOf(CompilerInfo.Name);
   if not Form1.CheckListBox1.Checked[i] then exit;
   i := Form1.CheckListBox2.Items.IndexOf(DebuggerInfo.Name);
   if not Form1.CheckListBox2.Checked[i] then exit;
 
-  ClearTestErrors;
-  FTesting := False;
-  if Form1.chkCSF.Checked
-  then begin
-    Form1.MemoText := Form1.MemoText + LineEnding  + '"' + EscQ(Parent.Parent.TestName) + '",';
-    Form1.Memo2.Text := Form1.MemoText;
+  if Form1.edUses.Text <> '' then begin
+
+    with AUsesDir do begin
+      DirName := Form1.edUses.Text;
+      ExeId:= '';
+      SymbolType:= stNone;
+      ExtraOpts:= '';
+      NamePostFix:= ''
+    end;
+    DoOneRun('none', [AUsesDir]);
+
+    if (stStabs in CompilerInfo.SymbolTypes) and (stStabs in DebuggerInfo.SymbolTypes)
+    then begin
+      with AUsesDir do begin
+        DirName := Form1.edUses.Text;
+        ExeId:= '';
+        SymbolType:= stStabs;
+        ExtraOpts:= '';
+        NamePostFix:= ''
+      end;
+      DoOneRun('stabs', [AUsesDir]);
+    end;
+
+    if (stDwarf in CompilerInfo.SymbolTypes) and (stDwarf in DebuggerInfo.SymbolTypes)
+    then begin
+      with AUsesDir do begin
+        DirName := Form1.edUses.Text;
+        ExeId:= '';
+        SymbolType:= stDwarf;
+        ExtraOpts:= '';
+        NamePostFix:= ''
+      end;
+      DoOneRun('stDwarf', [AUsesDir]);
+    end;
+
+    if (stDwarfSet in CompilerInfo.SymbolTypes) and (stDwarfSet in DebuggerInfo.SymbolTypes)
+    then begin
+      with AUsesDir do begin
+        DirName := Form1.edUses.Text;
+        ExeId:= '';
+        SymbolType:= stDwarfSet;
+        ExtraOpts:= '';
+        NamePostFix:= ''
+      end;
+      DoOneRun('stabsSet', [AUsesDir]);
+    end;
+
+    if (stDwarf3 in CompilerInfo.SymbolTypes) and (stDwarf3 in DebuggerInfo.SymbolTypes)
+    then begin
+      with AUsesDir do begin
+        DirName := Form1.edUses.Text;
+        ExeId:= '';
+        SymbolType:= stDwarf3;
+        ExtraOpts:= '';
+        NamePostFix:= ''
+      end;
+      DoOneRun('stDwarf3', [AUsesDir]);
+    end;
+
+
   end
   else
-    Form1.Memo2.Lines.Add('***** '+ Parent.TestName + ' ' + Parent.Parent.TestName);
-
-  try
-    TestCompile(Form1.edPasFile.Text, TestExeName);
-  except
-    on e: Exception do
-      Form1.Memo2.Lines.Add('Compile error: ' + e.Message);
-  end;
-
-
-  try
-    dbg := StartGDB(AppDir, TestExeName);
-    dbg.OnDbgOutput  := @DoDbgOut;
-    dbg.OnBreakPointHit  := @dobrk;
-
-    (* Add breakpoints *)
-    with dbg.BreakPoints.Add(Form1.edBreakFile.Text, StrToInt(Form1.edBreakLine.Text)) do begin
-      InitialEnabled := True;
-      Enabled := True;
-    end;
-
-    (* Start debugging *)
-    //if dbg.State = dsError then begin
-    //  Form1.Memo2.Lines.Add('Failed to start');
-    //  exit;
-    //end;
-
-    dbg.Run;
-
-    //t:= GetTickCount;
-    if Form1.chkCSF.Checked then begin
-      Form1.MemoText := Form1.MemoText + '"';
-    end;
-
-    for i := 0 to Form1.Memo1.Lines.Count - 1 do begin
-      if Trim(Form1.Memo1.Lines[i])<> '' then begin
-        FTesting := True;
-        Form1.EchoText := Trim(Form1.Memo1.Lines[i]);
-        dbg.TestCmd(Form1.EchoText);
-        FTesting := False;
-      end;
-      if Form1.chkCSF.Checked then
-        Form1.MemoText := Form1.MemoText + '","';
-    end;
-    if Form1.chkCSF.Checked then begin
-      Form1.MemoText := Form1.MemoText + '"';
-      Form1.Memo2.Text := Form1.MemoText;
-    end;
-
-    //t := GetTickCount - t;
-    //Form1.Memo2.Lines.Add('many '+IntToStr(t));
-
-    //j:=0;
-    //t:= GetTickCount;
-    //for i := 0 to Form1.Memo1.Lines.Count - 1 do begin
-    //  if Trim(Form1.Memo1.Lines[i]) = '' then Continue;
-    //  FTesting := True;
-    //  THack(dbg).sendcmdLn(Form1.Memo1.Lines[i]);
-    //  inc(j);
-    //
-    //  //dbg.TestCmd(Trim(Form1.Memo1.Lines[i]));
-    //  FTesting := False;
-    //end;
-    //while j > 0 do begin
-    //  S := THack(dbg).ReadLine;
-    //  Form1.Memo2.Lines.Add(s);
-    //  if S = '(gdb) ' then dec(j);
-    //end;
-    //t := GetTickCount - t;
-    //Form1.Memo2.Lines.Add('one  '+IntToStr(t));
-
-
-
-    dbg.Stop;
-  finally
-    dbg.Free;
-    CleanGdb;
-  end;
-  Form1.Memo2.Lines.Add(' ');
+    DoOneRun('', []);
 end;
 
 { TForm1 }
@@ -226,7 +275,7 @@ var
   i: Integer;
 begin
   edPasHistory.AddHistoryItem
-    (edPasFile.Text + '*' + edBreakFile.Text + '*' + edBreakLine.Text,
+    (edPasFile.Text + '*' + edBreakFile.Text + '*' + edBreakLine.Text + '*' + edUses.Text  + '*' + EdDefine.Text,
      15, True, False);
   edPasHistory.Items.SaveToFile(AppendPathDelim(ExtractFilePath(Paramstr(0))) + 'run_gdbmi_cmds.txt');
 
@@ -277,7 +326,17 @@ begin
   edBreakFile.Text := copy(t, 1, i);
   delete(t,1,i+1);
 
+  i := pos('*', t)-1;
+  if i <= 0 then i := length(t);
   edBreakLine.Text := copy(t, 1, i);
+  delete(t,1,i+1);
+
+  i := pos('*', t)-1;
+  if i <= 0 then i := length(t);
+  edUses.Text := copy(t, 1, i);
+  delete(t,1,i+1);
+
+  EdDefine.Text := copy(t, 1, i);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

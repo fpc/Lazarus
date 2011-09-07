@@ -141,7 +141,7 @@ procedure TTestWatches.ClearAllTestArrays;
 begin
   SetLength(ExpectBreakFooGdb, 0);
   SetLength(ExpectBreakSubFoo, 0);
-  SetLength(ExpectBreakFoo, Length(ExpectBreakFoo)+1);
+  SetLength(ExpectBreakFoo, 0);
 end;
 
 procedure TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string;
@@ -592,12 +592,15 @@ procedure TTestWatches.AddExpectBreakFooMixInfo;
   begin
     AddTo(ExpectBreakFoo, AName, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
   end;
-  procedure AddTC(AVar, ATCast:  string; AExpClass: String = ''; AFlgs: TWatchExpectationFlags = []);
+  procedure AddTC(AVar, ATCast:  string; AExpClass: String = ''; AFlgs: TWatchExpectationFlags = [];
+                  AIntMember: String = ''; AIntValue: integer = 0);
   begin
     if AExpClass = '' then AExpClass := ATCast;
     If ATCast <> ''
     then Add('',ATCast+'('+AVar+')', wdfDefault, MatchClass(AExpClass, ''), skClass, AExpClass, AFlgs)
     else Add('',AVar,                wdfDefault, MatchClass(AExpClass, ''), skClass, AExpClass, AFlgs);
+    if AIntMember <> '' then
+      Add('', ATCast+'('+AVar+').'+AIntMember,  wdfDefault, IntToStr(AIntValue), skSimple, M_Int, [fTpMtch]);
   end;
   procedure AddTCN(AVar, ATCast:  string; AExpClass: String = ''; AFlgs: TWatchExpectationFlags = []);
   begin
@@ -612,8 +615,8 @@ begin
   // Type Casting objects with mixed symbol type
   AddTC('VarOTestTCast', '', 'TObject');
   AddTC('VarOTestTCast', 'TObject', '');
-  AddTC('VarOTestTCast', 'TClassTCast', '');
-  AddTC('VarOTestTCast', 'TClassTCast3', 'TClassTCast(3)?', [fTpMtch]);
+  AddTC('VarOTestTCast', 'TClassTCast', '', [], 'b', 0);
+  AddTC('VarOTestTCast', 'TClassTCast3', 'TClassTCast(3)?', [fTpMtch], 'b', 0);
 
   AddTC('VarOTestTCastObj', '', 'TObject');
   AddTC('VarOTestTCastObj', 'TObject', '');
@@ -622,12 +625,12 @@ begin
   AddTC('VarOTestTCastComp', '', 'TObject');
   AddTC('VarOTestTCastComp', 'TObject', '');
   AddTC('VarOTestTCastComp', 'TComponent', '');
-  AddTC('VarOTestTCastComp', 'TClassTCastComponent', '');
+  AddTC('VarOTestTCastComp', 'TClassTCastComponent', '', [], 'b', 0);
 
   AddTC('VarOTestTCast2', '', 'TObject');
   AddTC('VarOTestTCast2', 'TObject', '');
-  AddTC('VarOTestTCast2', 'TClassTCast', '');
-  AddTC('VarOTestTCast2', 'TClassTCast2', '');
+  AddTC('VarOTestTCast2', 'TClassTCast', '', [], 'b', 0);
+  AddTC('VarOTestTCast2', 'TClassTCast2', '', [], 'b', 0);
 
   AddTC('VarOTestTCastUW1', '', 'TObject');
   AddTC('VarOTestTCastUW1', 'TObject', '');
@@ -699,13 +702,14 @@ begin
 
 
 
-  AddTCN('VarNOTestTCast', '', 'TObject');
-  AddTCN('VarNOTestTCast', 'TObject', '');
-  AddTCN('VarNOTestTCast', 'TClassTCast', '');
-  AddTCN('VarNOTestTCast', 'TClassTCast3', 'TClassTCast(3)?', [fTpMtch]);
+  //AddTCN('VarNOTestTCast', '', 'TObject');
+  //AddTCN('VarNOTestTCast', 'TObject', '');
+  //AddTCN('VarNOTestTCast', 'TClassTCast', '');
+  //AddTCN('VarNOTestTCast', 'TClassTCast3', 'TClassTCast(3)?', [fTpMtch]);
 
 
   // MIXED symbol info types
+  if not( (pos('2.4.', CompilerInfo.Name) > 0) and (DebuggerInfo.Version = 70000) ) then
   Add('', 'VarStatIntArray',  wdfDefault,     '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       'TStatIntArray',
                                 []);
