@@ -893,7 +893,7 @@ begin
   FItem.ClearY;
   if dx = 0 then exit;
   ar := IfThen(AccumulationRange = 0, MaxInt, AccumulationRange);
-  ar := MinValue([ar, AIndex + 1, High(COEFFS)]);
+  ar := math.MinValue([ar, Integer(AIndex + 1), High(COEFFS)]);
   for j := 0 to ar - 1 do begin
     prevItem := FHistory.GetPLast(j);
     FItem.Y += prevItem^.Y * COEFFS[ar, j];
