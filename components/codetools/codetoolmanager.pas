@@ -457,6 +457,8 @@ type
     function RemoveIdentifierDefinition(Code: TCodeBuffer; X, Y: integer
           ): boolean; // e.g. remove the variable definition at X,Y
     function RemoveWithBlock(Code: TCodeBuffer; X, Y: integer): boolean;
+    function CheckAddWithBlock(Code: TCodeBuffer; X1, Y1, X2, Y2: integer;
+          var Candidates: TStrings): boolean;
     function ChangeParamList(Code: TCodeBuffer;
        Changes: TObjectList; // list of TChangeParamListItem
        var ProcPos: TCodeXYPosition; // if it is in this unit the proc declaration is changed and this position is cleared
@@ -2579,6 +2581,29 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.RemoveWithBlock(CursorPos,SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.CheckAddWithBlock(Code: TCodeBuffer; X1, Y1, X2,
+  Y2: integer; var Candidates: TStrings): boolean;
+var
+  StartPos, EndPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.AddWithBlock A ',Code.Filename,' X1=',X1,' Y1=',Y1,' X2=',X2,' Y2=',Y2);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  StartPos.X:=X1;
+  StartPos.Y:=Y1;
+  StartPos.Code:=Code;
+  EndPos.X:=X2;
+  EndPos.Y:=Y2;
+  EndPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.CheckAddWithBlock(StartPos,EndPos,Candidates);
   except
     on e: Exception do HandleException(e);
   end;

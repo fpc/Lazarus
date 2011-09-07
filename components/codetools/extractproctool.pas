@@ -91,6 +91,8 @@ type
         IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
         MissingIdentifiers: TAVLTree // tree of PCodeXYPosition
         ): boolean;
+    function CheckIfRangeOnSameLevel(const StartPos, EndPos: TCodeXYPosition;
+      out CleanStartPos, CleanEndPos: integer; out StartNode: TCodeTreeNode): boolean;
     function InitExtractProc(const StartPos, EndPos: TCodeXYPosition;
       out MethodPossible, SubProcPossible, SubProcSameLvlPossible: boolean): boolean;
   public
@@ -108,6 +110,8 @@ type
 
     function RemoveWithBlock(const CursorPos: TCodeXYPosition;
       SourceChangeCache: TSourceChangeCache): boolean;
+    function CheckAddWithBlock(const StartPos, EndPos: TCodeXYPosition;
+      var Candidates: TStrings): boolean;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
@@ -183,10 +187,7 @@ function TExtractProcTool.InitExtractProc(const StartPos,
   SubProcSameLvlPossible: boolean): boolean;
 var
   CleanStartPos, CleanEndPos: integer;
-  CursorNode: TCodeTreeNode;
-  BeginBlockNode: TCodeTreeNode;
-  BlockCleanEnd: Integer;
-  BlockCleanStart: LongInt;
+  StartNode: TCodeTreeNode;
   ANode: TCodeTreeNode;
   ProcLvl: Integer;
 begin
@@ -197,76 +198,8 @@ begin
   {$IFDEF CTDebug}
   DebugLn('TExtractProcTool.InitExtractProc syntax and cursor check ..');
   {$ENDIF}
-  // check syntax
-  BuildTreeAndGetCleanPos(StartPos,CleanStartPos);
-  if CaretToCleanPos(EndPos,CleanEndPos)<>0 then exit;
-  if CleanStartPos>=CleanEndPos then exit;
-  {$IFDEF CTDebug}
-  debugln('TExtractProcTool.InitExtractProc Selection="',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"');
-  DebugLn('TExtractProcTool.InitExtractProc node check ..');
-  {$ENDIF}
-  // check if in a Begin..End block
-  CursorNode:=FindDeepestNodeAtPos(CleanStartPos,true);
-  if CursorNode=nil then exit;
-  BeginBlockNode:=CursorNode.GetNodeOfType(ctnBeginBlock);
-  if BeginBlockNode=nil then exit;
-  {$IFDEF CTDebug}
-  DebugLn('TExtractProcTool.InitExtractProc Start/End check ..');
-  {$ENDIF}
-  // check if Start and End on same block level
-  MoveCursorToNodeStart(CursorNode);
-  // check every block in selection
-  while true do begin
-    ReadNextAtom;
-    if (CurPos.EndPos>CleanEndPos) or (CurPos.StartPos>SrcLen)
-    or (CurPos.StartPos>CursorNode.EndPos) then
-      break;
-    //debugln('TExtractProcTool.InitExtractProc A "',GetAtom,'"');
-    if WordIsBlockStatementStart.DoItCaseInsensitive(Src,
-      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-    then begin
-      //debugln('TExtractProcTool.InitExtractProc WordIsBlockStatementStart "',GetAtom,'"');
-      BlockCleanStart:=CurPos.StartPos;
-      if not ReadTilBlockStatementEnd(true) then exit;
-      BlockCleanEnd:=CurPos.EndPos;
-      debugln(copy(Src,BlockCleanStart,BlockCleanEnd-BlockCleanStart));
-      //debugln('TExtractProcTool.InitExtractProc BlockEnd "',GetAtom,'" BlockCleanEnd=',dbgs(BlockCleanEnd),' CleanEndPos=',dbgs(CleanEndPos),' Result=',dbgs(Result),' BlockStartedInside=',dbgs(BlockCleanStart>=CleanStartPos));
-      if BlockCleanStart<CleanStartPos then begin
-        // this block started outside the selection
-        // -> it should end outside
-        if (BlockCleanEnd>=CleanStartPos) and (BlockCleanEnd<CleanEndPos) then
-        begin
-          // block overlaps selection
-          exit;
-        end;
-        if BlockCleanEnd>=CleanEndPos then begin
-          // set cursor back to block start
-          MoveCursorToCleanPos(BlockCleanStart);
-          ReadNextAtom;
-        end;
-      end else begin
-        // this block started inside the selection
-        // -> it should end inside
-        if (BlockCleanEnd>CleanEndPos) then begin
-          // block overlaps selection
-          exit;
-        end;
-      end;
-      //debugln('TExtractProcTool.InitExtractProc Block ok');
-    end
-    else if WordIsBlockStatementEnd.DoItCaseInsensitive(Src,
-      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-    then begin
-      // a block ended inside, that started outside
-      exit;
-    end
-    else if WordIsBlockStatementMiddle.DoItCaseInsensitive(Src,
-      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-    then begin
-      // a block ended inside, that started outside
-      exit;
-    end;
-  end;
+  Result:=CheckIfRangeOnSameLevel(StartPos,EndPos,CleanStartPos,CleanEndPos,
+                                  StartNode);
   // check if start not in a statement
   // ToDo
   // check if end not in a statement
@@ -275,7 +208,7 @@ begin
   DebugLn('TExtractProcTool.InitExtractProc Method check ..');
   {$ENDIF}
   // check if in a method body
-  ANode:=CursorNode;
+  ANode:=StartNode;
   ProcLvl:=0;
   while ANode<>nil do begin
     if (ANode.Desc=ctnProcedure) then begin
@@ -1453,6 +1386,19 @@ begin
   end;
 end;
 
+function TExtractProcTool.CheckAddWithBlock(const StartPos,
+  EndPos: TCodeXYPosition; var Candidates: TStrings): boolean;
+var
+  CleanStartPos: integer;
+  CleanEndPos: integer;
+  StartNode: TCodeTreeNode;
+begin
+  Result:=false;
+  if not CheckIfRangeOnSameLevel(StartPos,EndPos,CleanStartPos,CleanEndPos,
+                                  StartNode) then exit;
+  debugln(['TExtractProcTool.CheckAddWithBlock ']);
+end;
+
 procedure TExtractProcTool.CalcMemSize(Stats: TCTMemStats);
 begin
   inherited CalcMemSize(Stats);
@@ -1729,6 +1675,93 @@ begin
     DeactivateGlobalWriteLock;
   end;
   Result:=true;
+end;
+
+function TExtractProcTool.CheckIfRangeOnSameLevel(const StartPos,
+  EndPos: TCodeXYPosition; out CleanStartPos, CleanEndPos: integer; out
+  StartNode: TCodeTreeNode): boolean;
+var
+  BeginBlockNode: TCodeTreeNode;
+  BlockCleanStart: Integer;
+  BlockCleanEnd: Integer;
+begin
+  Result:=false;
+  {$IFDEF CTDebug}
+  DebugLn('TExtractProcTool.CheckIfRangeOnSameLevel syntax and cursor check ..');
+  {$ENDIF}
+  CleanStartPos:=0;
+  CleanEndPos:=0;
+  StartNode:=nil;
+  // check syntax
+  BuildTreeAndGetCleanPos(StartPos,CleanStartPos);
+  if CaretToCleanPos(EndPos,CleanEndPos)<>0 then exit;
+  if CleanStartPos>=CleanEndPos then exit;
+  {$IFDEF CTDebug}
+  debugln('TExtractProcTool.CheckIfRangeOnSameLevel Selection="',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"');
+  DebugLn('TExtractProcTool.CheckIfRangeOnSameLevel node check ..');
+  {$ENDIF}
+  // check if in a Begin..End block
+  StartNode:=FindDeepestNodeAtPos(CleanStartPos,true);
+  if StartNode=nil then exit;
+  BeginBlockNode:=StartNode.GetNodeOfType(ctnBeginBlock);
+  if BeginBlockNode=nil then exit;
+  {$IFDEF CTDebug}
+  DebugLn('TExtractProcTool.CheckIfRangeOnSameLevel Start/End check ..');
+  {$ENDIF}
+  // check if Start and End on same block level
+  MoveCursorToNodeStart(StartNode);
+  // check every block in selection
+  while true do begin
+    ReadNextAtom;
+    if (CurPos.EndPos>CleanEndPos) or (CurPos.StartPos>SrcLen)
+    or (CurPos.StartPos>StartNode.EndPos) then
+      exit(true);
+    //debugln('TExtractProcTool.CheckIfRangeOnSameLevel A "',GetAtom,'"');
+    if WordIsBlockStatementStart.DoItCaseInsensitive(Src,
+      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+    then begin
+      //debugln('TExtractProcTool.CheckIfRangeOnSameLevel WordIsBlockStatementStart "',GetAtom,'"');
+      BlockCleanStart:=CurPos.StartPos;
+      if not ReadTilBlockStatementEnd(true) then exit;
+      BlockCleanEnd:=CurPos.EndPos;
+      //debugln(copy(Src,BlockCleanStart,BlockCleanEnd-BlockCleanStart));
+      //debugln('TExtractProcTool.CheckIfRangeOnSameLevel BlockEnd "',GetAtom,'" BlockCleanEnd=',dbgs(BlockCleanEnd),' CleanEndPos=',dbgs(CleanEndPos),' Result=',dbgs(Result),' BlockStartedInside=',dbgs(BlockCleanStart>=CleanStartPos));
+      if BlockCleanStart<CleanStartPos then begin
+        // this block started outside the selection
+        // -> it should end outside
+        if (BlockCleanEnd>=CleanStartPos) and (BlockCleanEnd<CleanEndPos) then
+        begin
+          // block overlaps selection
+          exit;
+        end;
+        if BlockCleanEnd>=CleanEndPos then begin
+          // set cursor back to block start
+          MoveCursorToCleanPos(BlockCleanStart);
+          ReadNextAtom;
+        end;
+      end else begin
+        // this block started inside the selection
+        // -> it should end inside
+        if (BlockCleanEnd>CleanEndPos) then begin
+          // block overlaps selection
+          exit;
+        end;
+      end;
+      //debugln('TExtractProcTool.CheckIfRangeOnSameLevel Block ok');
+    end
+    else if WordIsBlockStatementEnd.DoItCaseInsensitive(Src,
+      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+    then begin
+      // a block ended inside, that started outside
+      exit;
+    end
+    else if WordIsBlockStatementMiddle.DoItCaseInsensitive(Src,
+      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+    then begin
+      // a block ended inside, that started outside
+      exit;
+    end;
+  end;
 end;
 
 end.
