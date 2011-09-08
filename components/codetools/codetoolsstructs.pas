@@ -147,6 +147,21 @@ type
     constructor Create(CaseInsensitive: boolean); // false = system default
   end;
 
+  TStringTree = class;
+
+  { TStringTreeEnumerator }
+
+  TStringTreeEnumerator = class
+  private
+    FTree: TStringTree;
+    FCurrent: TAVLTreeNode;
+    function GetCurrent: string;
+  public
+    constructor Create(Tree: TStringTree);
+    function MoveNext: boolean;
+    property Current: string read GetCurrent;
+  end;
+
   { TStringTree }
 
   TStringTree = class
@@ -158,6 +173,7 @@ type
     function FindNode(const s: string): TAVLTreeNode; inline;
     procedure ReplaceString(var s: string);
     function CalcMemSize: PtrUInt;
+    function GetEnumerator: TStringTreeEnumerator;
   end;
 
 type
@@ -310,6 +326,27 @@ end;
 function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 begin
   Result:=CompareStr(AnsiString(Data1),AnsiString(Data2));
+end;
+
+{ TStringTreeEnumerator }
+
+function TStringTreeEnumerator.GetCurrent: string;
+begin
+  Result:=AnsiString(FCurrent.Data);
+end;
+
+constructor TStringTreeEnumerator.Create(Tree: TStringTree);
+begin
+  FTree:=Tree;
+end;
+
+function TStringTreeEnumerator.MoveNext: boolean;
+begin
+  if FCurrent=nil then
+    FCurrent:=FTree.Tree.FindLowest
+  else
+    FCurrent:=FTree.Tree.FindSuccessor(FCurrent);
+  Result:=FCurrent<>nil;
 end;
 
 { TCodeXYPositions }
@@ -782,6 +819,11 @@ begin
     inc(Result,MemSizeString(AnsiString(Node.Data)));
     Node:=Tree.FindSuccessor(Node);
   end;
+end;
+
+function TStringTree.GetEnumerator: TStringTreeEnumerator;
+begin
+  Result:=TStringTreeEnumerator.Create(Self);
 end;
 
 { TComponentChildCollector }
