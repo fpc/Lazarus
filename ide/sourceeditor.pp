@@ -4575,7 +4575,7 @@ end;
 
 procedure TSourceEditor.CenterCursorHoriz(HCMode: TSourceEditHCenterMode);
 var
-  i, j: Integer;
+  i: Integer;
 begin
   case HCMode of
     hcmCenter:
