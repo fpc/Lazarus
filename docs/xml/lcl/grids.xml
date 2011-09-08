@@ -12644,8 +12644,10 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
           <ul>
             <li>First the visible cells area is determined: each row is tested to see if it intersects the canvas clipping region; if it's ok, then the visible area is painted by drawing columns of each row.</li>
             <li>The column and row values are used to identify the cell that is about to be painted and again each column is tested for intersection with the clippling region; if everything is ok, some additional properties like the cell's rectangular extent and visual state are passed as arguments to the DrawCell method.</li>
-            <li>As the drawing process is running, the visual state of each cell is adjusted according to grid options and position within grid. The visual state is retained in a variable of type <var>TGridDrawState</var> which is a set with following elements:
-			     <table>
+            <li>
+              <p>As the drawing process is running, the visual state of each cell is adjusted according to grid options and position within grid. The visual state is retained in a variable of type <var>TGridDrawState</var> which is a set with following elements:
+              </p>
+    			     <table>
                 <tr>
                   <td>gdSelected</td>
                   <td>The cell will have a selected look.</td>

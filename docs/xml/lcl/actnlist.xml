@@ -515,7 +515,7 @@ Take the following precautions when creating your own Destroy method:
         <descr>
           <var>Destroy</var> sends a <var>opRemove</var> notification to all components 
 in the free-notification list. After that, all owned components are
-destroyed by calling <link id="TComponent.DestroyComponents">DestroyComponents</link> 
+destroyed by calling <link id="#rtl.Classes.TComponent.DestroyComponents">DestroyComponents</link>
 (and hence removed from the list of owned components). When this
 is done, the component removes itself from its owner's child component list.
 After that, the parent's destroy method is called.
