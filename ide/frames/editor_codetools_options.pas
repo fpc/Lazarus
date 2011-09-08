@@ -36,6 +36,7 @@ type
   TEditorCodetoolsOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCompleteBlockCheckBox: TCheckBox;
     AutoDelayLabel: TLabel;
+    DbgToolTipAutoCastClass: TCheckBox;
     CompletionDropDownHintLabel: TLabel;
     CompletionDropDownHint: TComboBox;
     CompletionDropDownDelayLabel: TLabel;
@@ -79,6 +80,7 @@ begin
   AutoRemoveEmptyMethodsOnSave.Caption := dlgAutoRemoveEmptyMethods;
   AutoToolTipSymbToolsCheckBox.Caption := lisShowDeclarationHints;
   AutoToolTipExprEvalCheckBox.Caption := lisShowValueHintsWhileDebugging;
+  DbgToolTipAutoCastClass.Caption := lisDebugHintAutoTypeCastClass;
   AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
 
   AutoHintAndCompletionDelayLabel.Caption:=lisDelayForHintsAndCompletionBox;
@@ -98,6 +100,7 @@ begin
     AutoCompleteBlockCheckBox.Checked := AutoBlockCompletion;
     AutoToolTipExprEvalCheckBox.Checked := AutoToolTipExprEval;
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
+    DbgToolTipAutoCastClass.Checked := DbgHintAutoTypeCastClass;
     AutoDelayTrackBar.Position := AutoDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
 
@@ -115,6 +118,7 @@ begin
     AutoBlockCompletion := AutoCompleteBlockCheckBox.Checked;
     AutoToolTipExprEval := AutoToolTipExprEvalCheckBox.Checked;
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
+    DbgHintAutoTypeCastClass := DbgToolTipAutoCastClass.Checked;
     AutoDelayInMSec := AutoDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
 

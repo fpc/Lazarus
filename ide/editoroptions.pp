@@ -993,6 +993,7 @@ type
     FAutoRemoveEmptyMethods: Boolean;
     fAutoToolTipExprEval: Boolean;
     fAutoToolTipSymbTools: Boolean;
+    FDbgHintAutoTypeCastClass: Boolean;
     fCodeTemplateFileName: String;
     fCTemplIndentToTokenStart: Boolean;
 
@@ -1143,6 +1144,10 @@ type
       read fAutoToolTipExprEval write fAutoToolTipExprEval default True; // debugger hints
     property AutoToolTipSymbTools: Boolean
       read fAutoToolTipSymbTools write fAutoToolTipSymbTools default True; // declaration hints
+  published
+    property DbgHintAutoTypeCastClass: Boolean
+      read FDbgHintAutoTypeCastClass write FDbgHintAutoTypeCastClass default True; // declaration hints
+  public
     property AutoDelayInMSec: Integer read fAutoDelayInMSec
       write fAutoDelayInMSec default 1000;
     property CodeTemplateFileName: String
@@ -3083,6 +3088,9 @@ begin
   FMarkupCurWordNoKeyword := True;
   FMarkupCurWordTrim := True;
   FMarkupCurWordNoTimer := False;
+
+  // hints
+  FDbgHintAutoTypeCastClass := True;
 
   // Code Tools options
   FCompletionLongLineHintType := DefaultCompletionLongLineHintType;

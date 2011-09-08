@@ -16197,6 +16197,7 @@ var
   DBGType,DBGTypeDerefer: TDBGType;
   HasHint: Boolean;
   p: SizeInt;
+  Opts: TDBGEvaluateFlags;
 begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
@@ -16231,7 +16232,10 @@ begin
       //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
       DBGType:=nil;
       DBGTypeDerefer:=nil;
-      if not DebugBoss.Evaluate(Expression, DebugEval, DBGType, [defClassAutoCast]) or (DebugEval = '') then
+      Opts := [];
+      if EditorOpts.DbgHintAutoTypeCastClass
+      then Opts := [defClassAutoCast];
+      if not DebugBoss.Evaluate(Expression, DebugEval, DBGType, Opts) or (DebugEval = '') then
         DebugEval := '???';
       // deference a pointer - maybe it is a class
       if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
@@ -16240,7 +16244,7 @@ begin
       begin
         if DBGType.Value.AsPointer <> nil then
         begin
-          if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer, [defClassAutoCast]) then
+          if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer, Opts) then
           begin
             if Assigned(DBGTypeDerefer) and
               ( (DBGTypeDerefer.Kind <> skPointer) or

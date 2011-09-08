@@ -1464,6 +1464,7 @@ resourcestring
   dlgEdIdComlet = 'Identifier completion';
   dlgEdCompleteBlocks = 'Add close statement for pascal blocks';
   lisShowValueHintsWhileDebugging = 'Show value hints while debugging';
+  lisDebugHintAutoTypeCastClass = 'Automatic type-cast for objects';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
   dlgMarkupGroup = 'Word under Caret Highlight';

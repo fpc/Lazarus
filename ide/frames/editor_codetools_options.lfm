@@ -1,10 +1,11 @@
 inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   Height = 492
   Width = 634
+  HorzScrollBar.Page = 634
+  VertScrollBar.Page = 492
   AutoScroll = True
   ClientHeight = 492
   ClientWidth = 634
-  TabOrder = 0
   Visible = False
   DesignLeft = 263
   DesignTop = 222
@@ -12,10 +13,10 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideLeft.Control = AutoHintAndCompletionDelayLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = AutoHintAndCompletionDelayLabel
-    Left = 193
-    Height = 14
-    Top = 107
-    Width = 76
+    Left = 218
+    Height = 16
+    Top = 134
+    Width = 84
     BorderSpacing.Left = 20
     Caption = 'AutoDelayLabel'
     ParentColor = False
@@ -28,7 +29,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 52
+    Top = 56
     Width = 634
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -38,9 +39,9 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 17
+    Height = 19
     Top = 6
-    Width = 189
+    Width = 210
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoRemoveEmptyMethodsOnSave'
@@ -51,9 +52,9 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = ToolTipBevel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 61
-    Width = 173
+    Height = 19
+    Top = 65
+    Width = 198
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoToolTipSymbToolsCheckBox'
@@ -64,9 +65,9 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = AutoRemoveEmptyMethodsOnSave
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 29
-    Width = 157
+    Height = 19
+    Top = 31
+    Width = 179
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoCompleteBlockCheckBox'
@@ -77,9 +78,9 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = AutoToolTipSymbToolsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 17
-    Top = 84
-    Width = 164
+    Height = 19
+    Top = 90
+    Width = 182
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoToolTipExprEvalCheckBox'
@@ -93,7 +94,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 30
-    Top = 122
+    Top = 151
     Width = 622
     Frequency = 250
     Max = 4000
@@ -109,12 +110,12 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   end
   object AutoHintAndCompletionDelayLabel: TLabel[7]
     AnchorSideLeft.Control = ToolTipBevel
-    AnchorSideTop.Control = AutoToolTipExprEvalCheckBox
+    AnchorSideTop.Control = DbgToolTipAutoCastClass
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 14
-    Top = 107
-    Width = 167
+    Height = 16
+    Top = 134
+    Width = 192
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoHintAndCompletionDelayLabel'
@@ -128,7 +129,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 30
-    Top = 173
+    Top = 204
     Width = 622
     Frequency = 250
     Max = 4000
@@ -146,9 +147,9 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = AutoDelayTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 14
-    Top = 158
-    Width = 129
+    Height = 16
+    Top = 187
+    Width = 149
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'CompletionDropDownLabel'
@@ -158,10 +159,10 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideLeft.Control = CompletionDropDownLabel
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = CompletionDropDownLabel
-    Left = 155
-    Height = 14
-    Top = 158
-    Width = 156
+    Left = 175
+    Height = 16
+    Top = 187
+    Width = 178
     BorderSpacing.Left = 20
     Caption = 'CompletionDropDownDelayLabel'
     ParentColor = False
@@ -173,12 +174,12 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 21
-    Top = 205
+    Height = 23
+    Top = 236
     Width = 220
     BorderSpacing.Left = 6
     BorderSpacing.Top = 2
-    ItemHeight = 13
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 6
   end
@@ -188,11 +189,23 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = CompletionDropDownHint
     AnchorSideTop.Side = asrCenter
     Left = 232
-    Height = 14
-    Top = 208
-    Width = 148
+    Height = 16
+    Top = 239
+    Width = 172
     BorderSpacing.Around = 6
     Caption = 'CompletionDropDownHintLabel'
     ParentColor = False
+  end
+  object DbgToolTipAutoCastClass: TCheckBox[13]
+    AnchorSideLeft.Control = AutoToolTipExprEvalCheckBox
+    AnchorSideTop.Control = AutoToolTipExprEvalCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 26
+    Height = 19
+    Top = 109
+    Width = 159
+    BorderSpacing.Left = 20
+    Caption = 'DbgToolTipAutoCastClass'
+    TabOrder = 7
   end
 end
