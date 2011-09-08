@@ -1459,9 +1459,6 @@ var
             begin
               Identifier:=Identifier+GetAtom;
             end else begin
-              if (not IsValidIdent(Identifier))
-              and (Identifier[length(Identifier)]<>'.') then
-                Add(Identifier);
               if Code<>nil then
                 Code^:=Code^+Identifier;
               break;
