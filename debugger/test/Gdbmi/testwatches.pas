@@ -62,9 +62,11 @@ type
 
     FDbgOutPut: String;
     FDbgOutPutEnable: Boolean;
+    FDoStatIntArray: Boolean;
 
     procedure DoDbgOutput(Sender: TObject; const AText: String); override;
     procedure ClearAllTestArrays;
+    function  HasTestArraysData: Boolean;
     procedure AddTo(var ExpArray: TWatchExpectationArray;
       AnExpr:  string; AFmt: TWatchDisplayFormat;
       AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
@@ -144,6 +146,14 @@ begin
   SetLength(ExpectBreakFoo, 0);
 end;
 
+function TTestWatches.HasTestArraysData: Boolean;
+begin
+  Result := (Length(ExpectBreakFooGdb) > 0) or
+            (Length(ExpectBreakSubFoo) > 0) or
+            (Length(ExpectBreakFoo) >0 );
+
+end;
+
 procedure TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string;
   AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags; AStackFrame: Integer = 0);
@@ -204,13 +214,8 @@ procedure TTestWatches.AddExpectBreakFooAll;
   begin
     AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
   end;
-var
-  NoStatIntArray: Boolean;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.All')] then exit;
-
-  // GDB 7.0 with fpc 2.4.x has issues with "array of int"
-  NoStatIntArray := (pos('2.4.', CompilerInfo.Name) > 0) and (DebuggerInfo.Version = 70000);
 
   {%region    * records * }
   // Foo(var XXX: PRecord); DWARF has problems with the implicit pointer for "var"
@@ -501,7 +506,7 @@ begin
                                 skSimple,       'TDynIntArray',
                                 []);
   //TODO add () around list
-  if not NoStatIntArray then
+  if FDoStatIntArray then
   Add('VarStatIntArray',      wdfDefault,      '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       'TStatIntArray',
                                 []);
@@ -514,7 +519,7 @@ begin
   Add('VarDynIntArrayA',      wdfDefault,      Match_Pointer+'|\{\}|0,[\s\r\n]+2',
                                 skSimple,       '',
                                 []);
-  if not NoStatIntArray then
+  if FDoStatIntArray then
   Add('VarStatIntArrayA',     wdfDefault,      '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       '',
                                 []);
@@ -709,7 +714,7 @@ begin
 
 
   // MIXED symbol info types
-  if not( (pos('2.4.', CompilerInfo.Name) > 0) and (DebuggerInfo.Version = 70000) ) then
+  if FDoStatIntArray then
   Add('', 'VarStatIntArray',  wdfDefault,     '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       'TStatIntArray',
                                 []);
@@ -833,6 +838,8 @@ var
 
 begin
   TestBaseName := NamePreFix;
+  if not HasTestArraysData then exit;
+
 
   try
     TestCompile(AppDir + 'WatchesPrg.pas', TestExeName, UsedUnits, '', ExtraOpts);
@@ -931,6 +938,11 @@ var
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch')] then exit;
 
+  FDoStatIntArray := TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Unstable')];
+  // GDB 7.0 with fpc 2.4.x has issues with "array of int"
+  FDoStatIntArray := FDoStatIntArray and
+                     not ((pos('2.4.', CompilerInfo.Name) > 0) and (DebuggerInfo.Version = 70000));
+
   ClearTestErrors;
 
   ClearAllTestArrays;
@@ -946,7 +958,7 @@ begin
     ClearAllTestArrays;
     AddExpectBreakFooMixInfo;
     with UsedUnits do begin
-      DirName:= AppDir + 'u1\unitw1.pas';
+      DirName:= AppDir + 'u1' + DirectorySeparator + 'unitw1.pas';
       ExeId:= '';
       SymbolType:= stNone;
       ExtraOpts:= '';
@@ -954,46 +966,49 @@ begin
     end;
     RunTestWatches('unitw1=none', TestExeName,  '-dUSE_W1', [UsedUnits]);
 
-    if (stStabs in CompilerInfo.SymbolTypes) and (stStabs in DebuggerInfo.SymbolTypes)
+    if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Mix.All')]
     then begin
-      ClearAllTestArrays;
-      AddExpectBreakFooMixInfo;
-      with UsedUnits do begin
-        DirName:= AppDir + 'u1\unitw1.pas';
-        ExeId:= '';
-        SymbolType:= stStabs;
-        ExtraOpts:= '';
-        NamePostFix:= ''
+      if (stStabs in CompilerInfo.SymbolTypes) and (stStabs in DebuggerInfo.SymbolTypes)
+      then begin
+        ClearAllTestArrays;
+        AddExpectBreakFooMixInfo;
+        with UsedUnits do begin
+          DirName:= AppDir + 'u1' + DirectorySeparator + 'unitw1.pas';
+          ExeId:= '';
+          SymbolType:= stStabs;
+          ExtraOpts:= '';
+          NamePostFix:= ''
+        end;
+        RunTestWatches('unitw1=stabs', TestExeName,  '-dUSE_W1', [UsedUnits]);
       end;
-      RunTestWatches('unitw1=stabs', TestExeName,  '-dUSE_W1', [UsedUnits]);
-    end;
 
-    if (stDwarf in CompilerInfo.SymbolTypes) and (stDwarf in DebuggerInfo.SymbolTypes)
-    then begin
-      ClearAllTestArrays;
-      AddExpectBreakFooMixInfo;
-      with UsedUnits do begin
-        DirName:= AppDir + 'u1\unitw1.pas';
-        ExeId:= '';
-        SymbolType:= stDwarf;
-        ExtraOpts:= '';
-        NamePostFix:= ''
+      if (stDwarf in CompilerInfo.SymbolTypes) and (stDwarf in DebuggerInfo.SymbolTypes)
+      then begin
+        ClearAllTestArrays;
+        AddExpectBreakFooMixInfo;
+        with UsedUnits do begin
+          DirName:= AppDir + 'u1' + DirectorySeparator + 'unitw1.pas';
+          ExeId:= '';
+          SymbolType:= stDwarf;
+          ExtraOpts:= '';
+          NamePostFix:= ''
+        end;
+        RunTestWatches('unitw1=dwarf', TestExeName,  '-dUSE_W1', [UsedUnits]);
       end;
-      RunTestWatches('unitw1=dwarf', TestExeName,  '-dUSE_W1', [UsedUnits]);
-    end;
 
-    if (stDwarf3 in CompilerInfo.SymbolTypes) and (stDwarf3 in DebuggerInfo.SymbolTypes)
-    then begin
-      ClearAllTestArrays;
-      AddExpectBreakFooMixInfo;
-      with UsedUnits do begin
-        DirName:= AppDir + 'u1\unitw1.pas';
-        ExeId:= '';
-        SymbolType:= stDwarf3;
-        ExtraOpts:= '';
-        NamePostFix:= ''
+      if (stDwarf3 in CompilerInfo.SymbolTypes) and (stDwarf3 in DebuggerInfo.SymbolTypes)
+      then begin
+        ClearAllTestArrays;
+        AddExpectBreakFooMixInfo;
+        with UsedUnits do begin
+          DirName:= AppDir + 'u1' + DirectorySeparator + 'unitw1.pas';
+          ExeId:= '';
+          SymbolType:= stDwarf3;
+          ExtraOpts:= '';
+          NamePostFix:= ''
+        end;
+        RunTestWatches('unitw1=dwarf_3', TestExeName,  '-dUSE_W1', [UsedUnits]);
       end;
-      RunTestWatches('unitw1=dwarf_3', TestExeName,  '-dUSE_W1', [UsedUnits]);
     end;
 
   end;
