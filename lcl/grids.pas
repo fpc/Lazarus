@@ -245,6 +245,7 @@ type
   public
     procedure EditingDone; override;
     property BorderStyle;
+    property OnEditingDone;
   end;
 
   { TCompositeCellEditor }
