@@ -1649,7 +1649,7 @@ var
 begin
   Result:=false;
   NewContext:=CleanFindContext;
-  DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath PropertyPath="',PropertyPath,'"');
+  DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath ',MainFilename,' PropertyPath="',PropertyPath,'"');
   if PropertyPath='' then exit;
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;

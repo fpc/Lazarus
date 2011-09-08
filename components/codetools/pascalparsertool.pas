@@ -96,6 +96,10 @@ type
     sbcStopOnSemicolon
     );
   TSkipBracketChecks = set of TSkipBracketCheck;
+const
+  sbcStopOnAll = [sbcStopOnRecord,sbcStopOnSemicolon];
+
+type
 
   TTreeRange = (trTillRange, trTillCursor, trTillCursorSection);
 

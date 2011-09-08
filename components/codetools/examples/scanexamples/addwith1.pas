@@ -36,6 +36,7 @@ begin
   Son1.Name:=Son2.Name;
   Son2.Mother:=Son1;
   Son1.Mother:=Son2.Mother.Mother;
+  Son1.Components[0].Create(nil);
 end;
 
 end.

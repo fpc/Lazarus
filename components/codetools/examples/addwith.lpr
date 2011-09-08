@@ -46,7 +46,7 @@ begin
     writeln('Usage:');
     writeln('  ',ParamStr(0));
     writeln('  ',ParamStr(0),' <filename> <X> <Y>');
-    writeln('  ',ParamStr(0),' scanexamples/addwith1.pas 1 35 1 39');
+    writeln('  ',ParamStr(0),' scanexamples/addwith1.pas 1 35 1 40');
   end;
 
   CodeToolBoss.SimpleInit(ConfigFilename);
@@ -56,7 +56,7 @@ begin
   X1:=1;
   Y1:=35;
   X2:=1;
-  Y2:=36;
+  Y2:=40;
   if Paramcount=5 then begin
     Filename:=ParamStrUTF8(1);
     X1:=StrToIntDef(ParamStrUTF8(2),1);

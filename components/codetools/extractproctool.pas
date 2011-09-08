@@ -1392,11 +1392,97 @@ var
   CleanStartPos: integer;
   CleanEndPos: integer;
   StartNode: TCodeTreeNode;
+
+  procedure Add(const Identifier: string);
+  var
+    i: Integer;
+  begin
+    if Candidates=nil then
+      Candidates:=TStringList.Create;
+    i:=Candidates.IndexOf(Identifier);
+    if i<0 then
+      Candidates.AddObject(Identifier,TObject(Pointer(1)))
+    else
+      Candidates.Objects[i]:=TObject(PtrUInt(Candidates.Objects[i])+1);
+    //debugln(['TExtractProcTool.CheckAddWithBlock.Add ',Identifier]);
+  end;
+
+  function ReadBlock(Code: PAnsiString): boolean;
+  var
+    LastPos: TAtomPosition;
+    Identifier: String;
+    StartFlag: TCommonAtomFlag;
+  begin
+    Result:=false;
+    StartFlag:=CurPos.Flag;
+    while true do begin
+      if Code<>nil then
+        Code^:=Code^+GetAtom;
+      //debugln(['TExtractProcTool.CheckAddWithBlock Atom=',GetAtom]);
+      if (CurPos.EndPos>CleanEndPos) or (CurPos.StartPos>SrcLen)
+      or (CurPos.StartPos>StartNode.EndPos) then
+        break;
+      if (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose]) then begin
+        if (StartFlag=cafRoundBracketOpen) then begin
+          if (CurPos.Flag=cafRoundBracketClose) then
+            break
+          else
+            RaiseCharExpectedButAtomFound(')');
+        end;
+        if (StartFlag=cafEdgedBracketOpen) then begin
+          if (CurPos.Flag=cafEdgedBracketClose) then
+            break
+          else
+            RaiseCharExpectedButAtomFound(']');
+        end;
+      end;
+      if AtomIsIdentifier(false) then begin
+        LastPos:=LastAtoms.GetValueAt(0);
+        if not ((LastPos.Flag in [cafPoint]) or LastAtomIs(0,'^')
+          or LastUpAtomIs(0,'INHERITED'))
+        then begin
+          // start of identifier
+          //debugln(['TExtractProcTool.CheckAddWithBlock identifier start ',GetAtom]);
+          Identifier:=GetAtom;
+          repeat
+            ReadNextAtom;
+            //debugln(['TExtractProcTool.CheckAddWithBlock identifier next ',GetAtom]);
+            if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
+            begin
+              if not ReadBlock(@Identifier) then exit;
+            end else if (CurPos.Flag=cafPoint) then begin
+              Add(Identifier);
+              Identifier:=Identifier+GetAtom;
+            end else if AtomIsChar('^') then begin
+              Identifier:=Identifier+GetAtom;
+            end else if AtomIsIdentifier(false) and (LastAtomIs(0,'.')) then
+            begin
+              Identifier:=Identifier+GetAtom;
+            end else begin
+              if (not IsValidIdent(Identifier))
+              and (Identifier[length(Identifier)]<>'.') then
+                Add(Identifier);
+              if Code<>nil then
+                Code^:=Code^+Identifier;
+              break;
+            end;
+          until false;
+        end;
+      end;
+      ReadNextAtom;
+    end;
+    Result:=true;
+  end;
+
 begin
   Result:=false;
   if not CheckIfRangeOnSameLevel(StartPos,EndPos,CleanStartPos,CleanEndPos,
-                                  StartNode) then exit;
-  debugln(['TExtractProcTool.CheckAddWithBlock ']);
+                                 StartNode) then exit;
+  MoveCursorToNodeStart(StartNode);
+  ReadNextAtom;
+  if not ReadBlock(nil) then exit;
+  // ToDo: check if identifiers are variables
+  Result:=true;
 end;
 
 procedure TExtractProcTool.CalcMemSize(Stats: TCTMemStats);
