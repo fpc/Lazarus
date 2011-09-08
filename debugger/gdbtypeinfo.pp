@@ -261,7 +261,7 @@ type
     FReqResults: Array [TGDBTypeProcessRequest] of TGDBPTypeRequest;
 
     FArrayEntryIndexExpr: String;
-    FHasTypeCastFix: Boolean;
+    FHasTypeCastFix, FHasAutoTypeCastFix: Boolean;
     FAutoTypeCastName: String;
 
     procedure AddTypeReq(var AReq :TGDBPTypeRequest; const ACmd: string = '');
@@ -998,6 +998,7 @@ begin
   FProcessState := gtpsInitial;
   FHasExprEvaluatedAsText := False;
   FHasTypeCastFix := False;
+  FHasAutoTypeCastFix := False;
   FAutoTypeCastName := '';
 end;
 
@@ -1336,7 +1337,6 @@ var
             FAutoTypeCastName := copy(s, 2, i);
             RequireRequests([gptrPtypeCustomAutoCast], FAutoTypeCastName);
             FProcessState := gtpsClassAutoCast;
-            FHasTypeCastFix := False;
             exit;
           end;
           // continue without type cast
@@ -1348,22 +1348,28 @@ var
   end;
 
   procedure ProcessClassAutoCast;
+  var
+    s: String;
   begin
     if IsReqError(gptrPtypeCustomAutoCast) or
-       not(FReqResults[gptrPtypeCustomAutoCast].Result.Kind = ptprkClass)
+       (not(FReqResults[gptrPtypeCustomAutoCast].Result.Kind = ptprkClass)) or
+       (LowerCase(FAutoTypeCastName) = LowerCase(PCLenToString(FReqResults[gptrPTypeExpr].Result.BaseName))) // don't typecast to itself
     then begin
       FinishProcessClass; // normal class finish
       exit;
     end;
 
-    FExpression := FAutoTypeCastName + '(' + FExpression + ')';
-    if not RequireRequests([gptrPtypeCustomAutoCast2], FExpression)
+    s := FAutoTypeCastName + '(' + FExpression + ')';
+    if not RequireRequests([gptrPtypeCustomAutoCast2], s)
     then exit;
 
-    if IsReqError(gptrPtypeCustomAutoCast2) and (not FHasTypeCastFix)
+    if FHasAutoTypeCastFix
+    then s := '^' + s;
+
+    if IsReqError(gptrPtypeCustomAutoCast2) and (not FHasAutoTypeCastFix)
     then begin
-      FExpression := '^' + FExpression;
-      FHasTypeCastFix := True;
+      s := '^' + s;
+      FHasAutoTypeCastFix := True;
       exclude(FProccesReuestsMade, gptrPtypeCustomAutoCast2);
       RequireRequests([gptrPtypeCustomAutoCast2], FExpression);
       exit;
@@ -1376,6 +1382,7 @@ var
       exit;
     end;
 
+    FExpression := s;
     FReqResults[gptrPTypeExpr] := FReqResults[gptrPtypeCustomAutoCast2];
     exclude(FProccesReuestsMade, gptrWhatisExpr);
     FinishProcessClass;
