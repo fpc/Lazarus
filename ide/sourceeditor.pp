@@ -4435,16 +4435,21 @@ begin
 end;
 
 procedure TSourceEditor.EditorEnter(Sender: TObject);
+var
+  SrcEdit: TSourceEditor;
 begin
   if (FSourceNoteBook.FUpdateLock <> 0) or
      (FSourceNoteBook.FFocusLock <> 0)
   then exit;
   if (FSourceNoteBook.PageIndex = PageIndex) then
     Activate
-  else
-    SourceNotebook.GetActiveSE.FocusEditor;
+  else begin
+    SrcEdit:=SourceNotebook.GetActiveSE;
+    if SrcEdit<>nil then
+      SrcEdit.FocusEditor;
     // Navigating with mousebuttons between editors (eg jump history on btn 4/5)
     // can trigger the old editor to be refocused (while not visible)
+  end;
 end;
 
 procedure TSourceEditor.EditorActivateSyncro(Sender: TObject);
