@@ -205,6 +205,7 @@ type
     procedure msg_GetGrid(var Msg: TGridMessage); message GM_GETGRID;
   public
     procedure EditingDone; override;
+    property OnEditingDone;
   end;
 
   { TButtonCellEditor }
