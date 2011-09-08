@@ -9659,23 +9659,31 @@ var
   S: String;
   R: TGDBMIExecResult;
   ResultList: TGDBMINameValueList;
+  UseShortString: Boolean;
+  i: Integer;
 begin
   Result := '';
+  UseShortString := False;
 
   if dfImplicidTypes in FTheDebugger.DebuggerFlags
   then begin
     S := Format(AExpression, AValues);
-    if tfFlagHasTypeShortstring in TargetInfo^.TargetFlags
+    UseShortString := tfFlagHasTypeShortstring in TargetInfo^.TargetFlags;
+    if UseShortString
     then s := Format('^^shortstring(%s+%d)^^', [S, TargetInfo^.TargetPtrSize * 3])
-    else s := Format('^^char(%s+%d)^+1', [S, TargetInfo^.TargetPtrSize * 3]);
+    else s := Format('^^char(%s+%d)^', [S, TargetInfo^.TargetPtrSize * 3]);
     OK :=  ExecuteCommand('-data-evaluate-expression %s',
           [S], R);
     if (not OK) or (LastExecResult.State = dsError)
     or (pos('value="#0', LastExecResult.Values) > 0)
-    then OK :=  ExecuteCommand('-data-evaluate-expression ^char(^pointer(%s+%d)^+1)',
-          [S, TargetInfo^.TargetPtrSize * 3], R);
+    then begin
+      OK :=  ExecuteCommand('-data-evaluate-expression ^char(^pointer(%s+%d)^)',
+             [S, TargetInfo^.TargetPtrSize * 3], R);
+      UseShortString := False;
+    end;
   end
   else begin
+    UseShortString := True;
     Str(TDbgPtr(GetData(AExpression + '+12', AValues)), S);
     OK := ExecuteCommand('-data-evaluate-expression pshortstring(%s)^', [S], R);
   end;
@@ -9683,8 +9691,25 @@ begin
   if OK
   then begin
     ResultList := TGDBMINameValueList.Create(R);
-    S := DeleteEscapeChars(ResultList.Values['value']);
-    Result := GetPart('''', '''', S);
+    S := ResultList.Values['value'];
+    if UseShortString then begin
+      Result := GetPart('''', '''', S);
+    end
+    else begin
+      s := ParseGDBString(s);
+      if s <> ''
+      then i := ord(s[1])
+      else i := 1;
+      if i <= length(s)-1 then begin
+        Result := copy(s, 2, i);
+      end
+      else begin
+        // fall back
+        S := DeleteEscapeChars(S);
+        Result := GetPart('''', '''', S);
+      end;
+    end;
+
     ResultList.Free;
   end;
 end;
