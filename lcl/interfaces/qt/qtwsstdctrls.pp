@@ -465,6 +465,8 @@ class function TQtWSCustomListBox.GetIndexAtXY(
 var
   APoint: TQtPoint;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetIndexAtXY') then
+    Exit(-1);
   APoint := QtPoint(X, Y);
   Result := TQtListWidget(ACustomListBox.Handle).indexAt(@APoint);
 end;
@@ -478,6 +480,8 @@ class function TQtWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListB
 var
   QtListWidget: TQtListWidget;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetSelCount') then
+    Exit(0);
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   Result := QtListWidget.getSelCount;
 end;
@@ -492,6 +496,8 @@ var
   QtListWidget: TQtListWidget;
   ListItem: QListWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetSelected') then
+    Exit(False);
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   ListItem := QtListWidget.getItem(AIndex);
   Result := QtListWidget.getItemSelected(ListItem);
@@ -506,6 +512,9 @@ class function TQtWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBo
 var
   ListWidget: TQtListWidget;
 begin
+  Result := nil;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetStrings') then
+    Exit;
   ListWidget := TQtListWidget(ACustomListBox.Handle);
   if not Assigned(ListWidget.FList) then
     ListWidget.FList := TQtListStrings.Create(ACustomListBox, ListWidget);
@@ -520,6 +529,8 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetItemIndex') then
+    Exit(-1);
   Result := TQtListWidget(ACustomListBox.Handle).currentRow;
 end;
 
@@ -530,6 +541,8 @@ var
   QtListWidget: TQtListWidget;
   Item: QListWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetItemRect') then
+    Exit(False);
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   Item := QtListWidget.getItem(Index);
   Result := Item <> nil;
@@ -544,6 +557,8 @@ class function TQtWSCustomListBox.GetScrollWidth(
 var
   QtListWidget: TQtListWidget;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetScrollWidth') then
+    Exit(0);
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   Result := QtListWidget.horizontalScrollBar.getMax;
 end;
@@ -569,6 +584,8 @@ var
   QtListWidget: TQtListWidget;
   ListItem: QListWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SelectItem') then
+    Exit;
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   ListItem := QtListWidget.getItem(AIndex);
   if ListItem <> nil then
@@ -610,6 +627,8 @@ end;
 class procedure TQtWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox;
   const AIndex: integer);
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then
+    Exit;
   TQtListWidget(ACustomListBox.Handle).setCurrentRow(AIndex);
 end;
 
@@ -620,6 +639,8 @@ var
   QtListWidget: TQtListWidget;
   ClientWidth: Integer;
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetScrollWidth') then
+    Exit;
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
   QtListWidget.horizontalScrollBar.setMaximum(AScrollWidth);
   with QtListWidget.getClientBounds do
@@ -666,6 +687,8 @@ end;
 
 class procedure TQtWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetStyle') then
+    Exit;
   TQtListWidget(ACustomListBox.Handle).OwnerDrawn :=
     ACustomListBox.Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 end;
@@ -678,6 +701,8 @@ end;
 class procedure TQtWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
   const NewTopIndex: integer);
 begin
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetTopIndex') then
+    Exit;
   TQtListWidget(ACustomListBox.Handle).scrollToItem(NewTopIndex,
     QAbstractItemViewPositionAtTop);
 end;
