@@ -1362,7 +1362,8 @@ begin
   end;
 
   ACtl := TWinControl(Data);
-  if not (csCaptureMouse in ACtl.ControlStyle) and
+  if not (csDesigning in ACtl.ComponentState) and
+     not (csCaptureMouse in ACtl.ControlStyle) and
     ([ssLeft,ssRight,ssMiddle]*ShiftState <> []) and
     not (ACtl is TCustomForm) and not DragManager.IsDragging then
   begin
