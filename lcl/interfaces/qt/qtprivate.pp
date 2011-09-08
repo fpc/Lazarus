@@ -629,10 +629,18 @@ begin
 end;
 
 procedure TQtListStrings.Exchange(AIndex1, AIndex2: Integer);
+var
+  ARow: Integer;
 begin
   inherited Exchange(AIndex1, AIndex2);
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
-    FOwner.exchangeItems(AIndex1, AIndex2);
+  begin
+    ARow := FOwner.currentRow;
+    FOwner.BeginUpdate;
+    FOwner.ExchangeItems(AIndex1, AIndex2);
+    FOwner.setCurrentRow(ARow);
+    FOwner.EndUpdate;
+  end;
 end;
 
 end.
