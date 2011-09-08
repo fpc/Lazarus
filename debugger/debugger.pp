@@ -145,7 +145,8 @@ type
   TDBGEvaluateFlag =
     (defNoTypeInfo,        // No Typeinfo object will be returned
      defSimpleTypeInfo,    // Returns: Kind (skSimple, skClass, ..); TypeName (but does make no attempt to avoid an alias)
-     defFullTypeInfo       // Get all typeinfo, resolve all anchestors
+     defFullTypeInfo,      // Get all typeinfo, resolve all anchestors
+     defClassAutoCast      // Find real class of instance, and use, instead of declared class of variable
     );
   TDBGEvaluateFlags = set of TDBGEvaluateFlag;
 

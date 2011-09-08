@@ -72,6 +72,7 @@ function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char = '\'):
 function UnEscapeBackslashed(const AValue: String; AFlags: TGdbUnEscapeFlags = [uefOctal]; ATabWidth: Integer = 0): String;
 function UnQuote(const AValue: String): String;
 function ConvertGdbPathAndFile(const AValue: String): String; // fix path, delim, unescape, and to utf8
+function ParseGDBString(const AValue: String): String; // remove quotes(') and convert #dd chars: #9'ab'#9'x'
 
 procedure SmartWriteln(const s: string);
 
@@ -300,6 +301,49 @@ end;
 function ConvertGdbPathAndFile(const AValue: String): String;
 begin
   Result := AnsiToUtf8(ConvertPathDelims(UnEscapeBackslashed(AValue, [uefOctal])));
+end;
+
+function ParseGDBString(const AValue: String): String;
+var
+  i, j, v: Integer;
+  InQuote: Boolean;
+begin
+  if AValue = '' then exit('');
+
+  SetLength(Result, length(AValue));
+  j := 0;
+  i := 0;
+  InQuote := False;
+
+  if copy(AValue,1,2) = '0x' then begin
+    // skip leading address: 0x010aa00 'abc'
+    i := 2;
+    while (i < length(AValue)) and (AValue[i+1] in ['0'..'9', 'a'..'f', 'A'..'F']) do inc(i);
+    while (i < length(AValue)) and (AValue[i+1] in [' ']) do inc(i);
+  end;
+
+  while i < length(AValue) do begin
+    inc(i);
+    If AValue[i] = '''' then begin
+      InQuote := not InQuote;
+      continue;
+    end;
+    if InQuote or not(AValue[i] = '#' ) then begin
+      inc(j);
+      Result[j] := AValue[i];
+      continue;
+    end;
+    // must be #
+    v := 0;
+    inc(i);
+    while (i < length(AValue)) and (AValue[i] in ['0'..'9']) do begin
+      v:= v * 10 + ord(AValue[i]) - ord('0');
+      inc(i);
+    end;
+    inc(j);
+    Result[j] := chr(v and 255);
+  end;
+  SetLength(Result, j);
 end;
 
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char): String;

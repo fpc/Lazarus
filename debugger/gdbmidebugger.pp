@@ -9994,6 +9994,8 @@ begin
 end;
 
 function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
+var
+  TypeInfoFlags: TGDBTypeCreationFlags;
 
   function MakePrintable(const AString: String): String;
   var
@@ -10764,7 +10766,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
   begin
     // Check for strings
     if ResultInfo = nil then
-      ResultInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags);
+      ResultInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags, TypeInfoFlags);
     if (ResultInfo = nil) then Exit;
     FTypeInfo := ResultInfo;
 
@@ -10949,7 +10951,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
 
     function PrepareExpr(var expr: string; NoAddressOp: Boolean = False): boolean;
     begin
-      FTypeInfo := GetGDBTypeInfo(expr, defFullTypeInfo in FEvalFlags);
+      FTypeInfo := GetGDBTypeInfo(expr, defFullTypeInfo in FEvalFlags, TypeInfoFlags);
       Result := FTypeInfo <> nil;
       if (not Result) then begin
         ParseLastError;
@@ -11082,7 +11084,7 @@ function TGDBMIDebuggerCommandEvaluate.DoExecute: Boolean;
       else // wdfDefault
         begin
           Result := False;
-          FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags, [gtcfExprEvaluate], FDisplayFormat);
+          FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags, TypeInfoFlags + [gtcfExprEvaluate], FDisplayFormat);
 
           if (FTypeInfo = nil) or (dcsCanceled in SeenStates)
           then begin
@@ -11118,6 +11120,9 @@ begin
   try
     FTextValue:='';
     FTypeInfo:=nil;
+    TypeInfoFlags := [];
+    if defClassAutoCast in FEvalFlags
+    then include(TypeInfoFlags, gtcfAutoCastClass);
 
 
     S := StripExprNewlines(FExpression);

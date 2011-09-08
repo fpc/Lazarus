@@ -213,13 +213,15 @@ type
                           gtcfFullTypeInfo,
                           gtcfSkipTypeName,
                           gtcfExprIsType,
-                          gtcfExprEvaluate);
+                          gtcfExprEvaluate,
+                          gtcfAutoCastClass          // Find real class of instance, and use, instead of declared class of variable
+                         );
   TGDBTypeCreationFlags = set of TGDBTypeCreationFlag;
 
   TGDBTypeProcessState =
     (gtpsInitial, gtpsInitialSimple, gtpsInitFixTypeCast,
      gtpsSimplePointer,
-     gtpsClass, gtpsClassPointer, gtpsClassAncestor,
+     gtpsClass, gtpsClassAutoCast, gtpsClassPointer, gtpsClassAncestor,
      gtpsArray, gtpsArrayEntry,
      gtpsEvalExpr,
      gtpsFinished
@@ -228,7 +230,8 @@ type
     (gptrPTypeExpr, gptrWhatisExpr, gptrPTypeOfWhatis,
      gptrPTypeExprDeRef, gptrPTypeExprDeDeRef,  // "Foo^", "Foo^^"  for Foo=Object, or &Object
      gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast,
-     gptrPtypeCustom
+     gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2,
+     gptrInstanceClassName
     );
   TGDBTypeProcessRequests = set of TGDBTypeProcessRequest;
 
@@ -259,6 +262,7 @@ type
 
     FArrayEntryIndexExpr: String;
     FHasTypeCastFix: Boolean;
+    FAutoTypeCastName: String;
 
     procedure AddTypeReq(var AReq :TGDBPTypeRequest; const ACmd: string = '');
     procedure AddSubType(ASubType :TGDBType);
@@ -935,7 +939,9 @@ function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomDat
       gptrEvalExpr:      Result := '-data-evaluate-expression '+FExpression;
       gptrEvalExprDeRef: Result := '-data-evaluate-expression '+FExpression+'^';
       gptrEvalExprCast:  Result := '-data-evaluate-expression '+InternalTypeName+'('+FExpression+')';
-      gptrPtypeCustom:   Result := 'ptype ' + ACustomData;
+      gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2:
+                         Result := 'ptype ' + ACustomData;
+      gptrInstanceClassName: Result := '-data-evaluate-expression (^^^char('+FExpression+')^+3)^';
     end;
   end;
 
@@ -957,7 +963,7 @@ begin
   for i := low(TGDBTypeProcessRequest) to high(TGDBTypeProcessRequest) do
     if i in NeededReq then begin
       AddTypeReq(FReqResults[i], GetReqText(i));
-      if i in [gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast]
+      if i in [gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast, gptrInstanceClassName]
       then FReqResults[i].ReqType := gcrtEvalExpr
       else FReqResults[i].ReqType := gcrtPType;
     end;
@@ -992,6 +998,7 @@ begin
   FProcessState := gtpsInitial;
   FHasExprEvaluatedAsText := False;
   FHasTypeCastFix := False;
+  FAutoTypeCastName := '';
 end;
 
 destructor TGDBType.Destroy;
@@ -1266,9 +1273,27 @@ var
     Result := True;
   end;
 
+  procedure FinishProcessClass;
+  begin
+    if (gtcfFullTypeInfo in FCreationFlags) and  not (gtcfExprIsType in FCreationFlags) then
+      if not RequireRequests([gptrWhatisExpr]) then
+        exit;
+
+    // Handle Error in ptype^ as normal class
+    // May need a whatis, if aliased names are needed "type TFooAlias = type TFoo"
+    SetTypNameFromReq(gptrWhatisExpr, True);
+    DoClass;
+    if (gtcfFullTypeInfo in FCreationFlags) and (FAncestor <> '')
+    then ProcessClassAncestor
+    else Result := True; // ====> DONE
+  end;
+
   procedure ProcessClass;
   var
     t: TGDBTypeProcessRequest;
+    ResultList: TGDBMINameValueList;
+    s: String;
+    i: Integer;
   begin
     FProcessState := gtpsClass;
 
@@ -1297,14 +1322,63 @@ var
       exit;
     end
     else begin
-      // Handle Error in ptype^ as normal class
-      // May need a whatis, if aliased names are needed "type TFooAlias = type TFoo"
-      SetTypNameFromReq(gptrWhatisExpr, True);
-      DoClass;
-      if (gtcfFullTypeInfo in FCreationFlags) and (FAncestor <> '')
-      then ProcessClassAncestor
-      else Result := True; // ====> DONE
+      if (gtcfAutoCastClass in FCreationFlags) then begin
+        if not RequireRequests([gptrInstanceClassName]) then
+          exit;
+        if not IsReqError(gptrInstanceClassName) then begin
+          ResultList := TGDBMINameValueList.Create(FReqResults[gptrInstanceClassName].Result.GdbDescription);
+          s := ParseGDBString(ResultList.Values['value']);
+          ResultList.Free;
+          if s <> ''
+          then i := ord(s[1])
+          else i := 1;
+          if i <= length(s)-1 then begin
+            FAutoTypeCastName := copy(s, 2, i);
+            RequireRequests([gptrPtypeCustomAutoCast], FAutoTypeCastName);
+            FProcessState := gtpsClassAutoCast;
+            FHasTypeCastFix := False;
+            exit;
+          end;
+          // continue without type cast
+        end;
+      end;
+
+      FinishProcessClass;
     end;
+  end;
+
+  procedure ProcessClassAutoCast;
+  begin
+    if IsReqError(gptrPtypeCustomAutoCast) or
+       not(FReqResults[gptrPtypeCustomAutoCast].Result.Kind = ptprkClass)
+    then begin
+      FinishProcessClass; // normal class finish
+      exit;
+    end;
+
+    FExpression := FAutoTypeCastName + '(' + FExpression + ')';
+    if not RequireRequests([gptrPtypeCustomAutoCast2], FExpression)
+    then exit;
+
+    if IsReqError(gptrPtypeCustomAutoCast2) and (not FHasTypeCastFix)
+    then begin
+      FExpression := '^' + FExpression;
+      FHasTypeCastFix := True;
+      exclude(FProccesReuestsMade, gptrPtypeCustomAutoCast2);
+      RequireRequests([gptrPtypeCustomAutoCast2], FExpression);
+      exit;
+    end;
+
+    if IsReqError(gptrPtypeCustomAutoCast2) or
+       not(FReqResults[gptrPtypeCustomAutoCast2].Result.Kind = ptprkClass)
+    then begin
+      FinishProcessClass; // normal class finish
+      exit;
+    end;
+
+    FReqResults[gptrPTypeExpr] := FReqResults[gptrPtypeCustomAutoCast2];
+    exclude(FProccesReuestsMade, gptrWhatisExpr);
+    FinishProcessClass;
   end;
   {%endregion    * Class * }
 
@@ -1467,7 +1541,6 @@ var
   var
     i, j: Integer;
     PTypeResult: TGDBPTypeResult;
-    //wi: TGDBTypeProcessRequests;
   begin
     FProcessState := gtpsInitialSimple;
 
@@ -1487,7 +1560,7 @@ var
         while (i < j) and (FExpression[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) do inc(i);
         if (i <= j) and (FExpression[i] = '(')
         then begin
-          RequireRequests([gptrPtypeCustom], copy(FExpression, 1, i-1));
+          RequireRequests([gptrPtypeCustomFixCast], copy(FExpression, 1, i-1));
           FProcessState := gtpsInitFixTypeCast;
           exit;
         end;
@@ -1678,8 +1751,8 @@ var
 
   procedure ProcessInitFixTypeCast;
   begin
-    if FHasTypeCastFix or IsReqError(gptrPtypeCustom) or
-       not(FReqResults[gptrPtypeCustom].Result.Kind = ptprkClass)
+    if FHasTypeCastFix or IsReqError(gptrPtypeCustomFixCast) or
+       not(FReqResults[gptrPtypeCustomFixCast].Result.Kind = ptprkClass)
     then begin
       FEvalError := True;
       exit;
@@ -1689,7 +1762,7 @@ var
     FExpression := '^' + FExpression;
 
     // Redo the ptype
-    Exclude(FProccesReuestsMade, gptrPTypeExpr);
+    exclude(FProccesReuestsMade, gptrPTypeExpr);
     ProcessInitialSimple;
   end;
 
@@ -1752,6 +1825,7 @@ begin
     gtpsInitFixTypeCast: ProcessInitFixTypeCast;
     gtpsSimplePointer:   ProcessSimplePointer;
     gtpsClass:           ProcessClass;
+    gtpsClassAutoCast:   ProcessClassAutoCast;
     gtpsClassPointer:    ProcessClassPointer;
     gtpsClassAncestor:   ProcessClassAncestor;
     gtpsArray:           ProcessArray;
