@@ -2660,7 +2660,6 @@ dmFindTarget: find child control under the mouse
       <element name="TControlBorderSpacing.Create">
         <short/>
         <descr/>
-        </descr>
         <errors/>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
@@ -5622,7 +5621,6 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.InvalidateControl">
-        <short>
         <short>Request a repaint of the control.</short>
         <descr/>
         <errors/>
@@ -5964,7 +5962,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- procedure Visibility: protected -->
       <element name="TControl.ActionChange">
         <short>
-          Handler for changed Action property.
+          Handler for changed Action property.</short>
         <descr>Several properties are copied from the new Action.</descr>
         <errors/>
         <seealso/>
@@ -6589,7 +6587,6 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <short>
           Returns True if there is a parent component responsible for streaming</short>
         <descr>
-          <p>
           <p>This function will be called during streaming to decide if a component has to be streamed by its owner or parent</p>
         </descr>
         <seealso>
@@ -6782,7 +6779,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- function Visibility: public -->
       <element name="TControl.Perform">
         <short>
-          <var>Direct call of an message handler, bypassing the message queue.</short>
+          Direct call of an message handler, bypassing the message queue.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7032,7 +7029,6 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.BorderSpacing">
         <short>Determines the border spacing for this control</short>
         <descr/>
-        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BoundsRect">
@@ -7156,7 +7152,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- property Visibility: public -->
       <element name="TControl.IsControl">
         <short>Determines whether this object shall be streamed as a control.</short>
-        <descr>Delphi compatible property, affecting only the streaming of <var>Form<var> properties. [Has no effect in the LCL?]</descr>
+        <descr>Delphi compatible property, affecting only the streaming of <var>Form</var> properties. [Has no effect in the LCL?]</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.MouseEntered">
