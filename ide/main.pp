@@ -16231,7 +16231,7 @@ begin
       //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
       DBGType:=nil;
       DBGTypeDerefer:=nil;
-      if not DebugBoss.Evaluate(Expression, DebugEval, DBGType) or (DebugEval = '') then
+      if not DebugBoss.Evaluate(Expression, DebugEval, DBGType, [defClassAutoCast]) or (DebugEval = '') then
         DebugEval := '???';
       // deference a pointer - maybe it is a class
       if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
@@ -16240,7 +16240,7 @@ begin
       begin
         if DBGType.Value.AsPointer <> nil then
         begin
-          if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer) then
+          if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer, [defClassAutoCast]) then
           begin
             if Assigned(DBGTypeDerefer) and
               ( (DBGTypeDerefer.Kind <> skPointer) or
