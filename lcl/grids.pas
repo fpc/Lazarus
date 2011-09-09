@@ -204,6 +204,7 @@ type
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
     procedure msg_GetGrid(var Msg: TGridMessage); message GM_GETGRID;
   public
+    constructor Create(Aowner : TComponent); override;
     procedure EditingDone; override;
     property OnEditingDone;
   end;
@@ -8309,7 +8310,6 @@ begin
   FStringEditor.name :='StringEditor';
   FStringEditor.Text:='';
   FStringEditor.Visible:=False;
-  FStringEditor.AutoSize:=False;
   FStringEditor.Align:=alNone;
   FStringEditor.BorderStyle := bsNone;
 
@@ -8855,6 +8855,12 @@ procedure TStringCellEditor.msg_GetGrid(var Msg: TGridMessage);
 begin
   Msg.Grid := FGrid;
   Msg.Options:= EO_IMPLEMENTED;
+end;
+
+constructor TStringCellEditor.Create(Aowner: TComponent);
+begin
+  inherited Create(Aowner);
+  AutoSize := false;
 end;
 
 { TStringGridStrings }
