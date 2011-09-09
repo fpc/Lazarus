@@ -2806,7 +2806,7 @@ begin
     // MWE:
     // fpc 2.x has troubles in choosing the right dbgs()
     // so we convert here
-    vtCurrency: Result:=Result+dbgs(int64(Args[i].vCurrency^)/10000 , 4));
+    vtCurrency: Result:=Result+dbgs(int64(Args[i].vCurrency^)/10000 , 4);
 {$else}
     vtCurrency: Result:=Result+dbgs(Args[i].vCurrency^);
 {$endif}
