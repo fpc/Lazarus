@@ -1223,7 +1223,7 @@ begin
         Result:=FindUnitSourceInCleanSearchPath(AUnitName,SrcPath,AnyCase);
       end;
       if Result='' then begin
-        // search in unit links
+        // search in unit set
         {$IFDEF ShowTriedUnits}
         DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'" searchin in unitset ...']);
         {$ENDIF}

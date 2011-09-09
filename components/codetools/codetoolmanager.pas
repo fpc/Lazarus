@@ -5630,7 +5630,7 @@ begin
     debugln(['TCodeToolManager.DirectoryCachePoolGetUnitFromSet outdated UnitSet="',dbgstr(UnitSet),'"']);
     exit;
   end;
-  Result:=UnitSetCache.GetUnitSrcFile(AnUnitName);
+  Result:=UnitSetCache.GetUnitSrcFile(AnUnitName,false);
 end;
 
 function TCodeToolManager.DirectoryCachePoolGetCompiledUnitFromSet(

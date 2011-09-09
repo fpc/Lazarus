@@ -8810,7 +8810,7 @@ begin
       if ConfigCache.HasPPUs then begin
         // but there are other ppu files
         {$IFDEF ShowTriedUnits}
-        debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" unit has no ppu file in FPC path, but there are other']);
+        debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" unit has no ppu file in FPC path, but there are other ppu']);
         {$ENDIF}
         exit;
       end else begin
@@ -8828,8 +8828,19 @@ begin
   end;
   if Tree<>nil then begin
     Result:=Tree[AnUnitName];
-    if Result<>'' then
+    if (Result<>'') and (not FilenameIsAbsolute(Result)) then
       Result:=FPCSourceDirectory+Result;
+    if (Result='') then begin
+      // maybe the source is in the fpc search path
+      ConfigCache:=GetConfigCache(false);
+      if ConfigCache<>nil then begin
+        Result:=ConfigCache.Units[AnUnitName];
+        if (CompareFileExt(Result,'ppu',false)=0) then begin
+          Result:='';
+          exit;
+        end;
+      end;
+    end;
     {$IFDEF ShowTriedUnits}
     debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" Result=',Result]);
     {$ENDIF}
