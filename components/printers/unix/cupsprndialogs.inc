@@ -6,6 +6,12 @@ Var Dlg : Tdlgpropertiesprinter;
 begin
   Dlg:=TdlgPropertiesPrinter.Create(nil);
   try
+    if (Title='') then
+    begin
+      if Printer<>nil then
+        Dlg.Caption := Printer.PrinterName;
+    end else
+      Dlg.Caption := Title;
     Result:=(Dlg.ShowModal=mrOk);
     if Result then
       Dlg.InitProperties;

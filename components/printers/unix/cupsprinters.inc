@@ -359,7 +359,8 @@ end;
 
 //Print the file aFileName with a selected printer an options
 function TCUPSPrinter.PrintFile(aFileName: String): longint;
-var PrinterName : string;
+var
+  aPrinterName : string;
 begin
   Result:=-1;
   if not CUPSLibInstalled then Exit;
@@ -371,11 +372,11 @@ begin
         SetOptionsOfPrinter;
 
     if Assigned(fcupsPrinter) then
-       PrinterName:=fcupsPrinter^.Name
+       aPrinterName:=fcupsPrinter^.Name
     else
-       PrinterName:='';
+       aPrinterName:='';
 
-    Result:=cupsdyn.cupsPrintFile(PChar(PrinterName),PChar(aFileName),
+    Result:=cupsdyn.cupsPrintFile(PChar(aPrinterName),PChar(aFileName),
                                   PChar(Self.Title),
                                   fcupsNumOpts,fcupsOptions);
 

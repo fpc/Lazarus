@@ -209,6 +209,7 @@ type
     function GetPageWidth: Integer;
     function GetPaperSize: TPaperSize;
     function GetPrinterIndex: integer;
+    function GetPrinterName: string;
     function GetPrinters: TStrings;
     procedure SetCanvasClass(const AValue: TPrinterCanvasRef);
     procedure SetCopies(AValue: Integer);
@@ -262,6 +263,7 @@ type
 
 
      property PrinterIndex : integer read GetPrinterIndex write SetPrinterIndex;
+     property PrinterName: string read GetPrinterName;
      property PaperSize : TPaperSize read GetPaperSize;
      property Orientation: TPrinterOrientation read GetOrientation write SetOrientation;
      property PrinterState : TPrinterState read DoGetPrinterState;
@@ -605,6 +607,14 @@ begin
   Result:=fPrinterIndex;
   if (Result<0) and (Printers.Count>0) then
      Result:=0; //printer by default
+end;
+
+function TPrinter.GetPrinterName: string;
+begin
+  if PrinterIndex<0 then
+    result := ''
+  else
+    result := Printers[PrinterIndex];
 end;
 
 //Return & initialize the printers list
