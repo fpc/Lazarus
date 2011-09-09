@@ -110,8 +110,9 @@ type
 
     function RemoveWithBlock(const CursorPos: TCodeXYPosition;
       SourceChangeCache: TSourceChangeCache): boolean;
-    function CheckAddWithBlock(const StartPos, EndPos: TCodeXYPosition;
-      var Candidates: TStrings): boolean;
+    function AddWithBlock(const StartPos, EndPos: TCodeXYPosition;
+      const WithExpr: string; // if empty: collect Candidates
+      Candidates: TStrings; SourceChangeCache: TSourceChangeCache): boolean;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
@@ -1386,25 +1387,36 @@ begin
   end;
 end;
 
-function TExtractProcTool.CheckAddWithBlock(const StartPos,
-  EndPos: TCodeXYPosition; var Candidates: TStrings): boolean;
+function TExtractProcTool.AddWithBlock(const StartPos, EndPos: TCodeXYPosition;
+  const WithExpr: string; Candidates: TStrings;
+  SourceChangeCache: TSourceChangeCache): boolean;
 var
   CleanStartPos: integer;
   CleanEndPos: integer;
   StartNode: TCodeTreeNode;
 
-  procedure Add(const Identifier: string);
+  function Add(IdentifierStart, IdentifierEnd: integer;
+    const Identifier: string): boolean;
   var
     i: Integer;
   begin
-    if Candidates=nil then
-      Candidates:=TStringList.Create;
-    i:=Candidates.IndexOf(Identifier);
-    if i<0 then
-      Candidates.AddObject(Identifier,TObject(Pointer(1)))
-    else
-      Candidates.Objects[i]:=TObject(PtrUInt(Candidates.Objects[i])+1);
-    //debugln(['TExtractProcTool.CheckAddWithBlock.Add ',Identifier]);
+    Result:=true;
+    if WithExpr<>'' then begin
+      if CompareText(Identifier,WithExpr)=0 then begin
+        if not SourceChangeCache.Replace(gtNone,gtNone,
+          IdentifierStart,IdentifierEnd,'')
+        then
+          exit(false);
+      end;
+    end else begin
+      if Candidates=nil then exit;
+      i:=Candidates.IndexOf(Identifier);
+      if i<0 then
+        Candidates.AddObject(Identifier,TObject(Pointer(1)))
+      else
+        Candidates.Objects[i]:=TObject(PtrUInt(Candidates.Objects[i])+1);
+      //debugln(['TExtractProcTool.AddWithBlock.Add ',Identifier]);
+    end;
   end;
 
   function ReadBlock(Code: PAnsiString): boolean;
@@ -1412,13 +1424,14 @@ var
     LastPos: TAtomPosition;
     Identifier: String;
     StartFlag: TCommonAtomFlag;
+    IdentifierStart: Integer;
   begin
     Result:=false;
     StartFlag:=CurPos.Flag;
     while true do begin
       if Code<>nil then
         Code^:=Code^+GetAtom;
-      //debugln(['TExtractProcTool.CheckAddWithBlock Atom=',GetAtom]);
+      //debugln(['TExtractProcTool.AddWithBlock Atom=',GetAtom]);
       if (CurPos.EndPos>CleanEndPos) or (CurPos.StartPos>SrcLen)
       or (CurPos.StartPos>StartNode.EndPos) then
         break;
@@ -1442,16 +1455,17 @@ var
           or LastUpAtomIs(0,'INHERITED'))
         then begin
           // start of identifier
-          //debugln(['TExtractProcTool.CheckAddWithBlock identifier start ',GetAtom]);
+          //debugln(['TExtractProcTool.AddWithBlock identifier start ',GetAtom]);
           Identifier:=GetAtom;
+          IdentifierStart:=CurPos.StartPos;
           repeat
             ReadNextAtom;
-            //debugln(['TExtractProcTool.CheckAddWithBlock identifier next ',GetAtom]);
+            //debugln(['TExtractProcTool.AddWithBlock identifier next ',GetAtom]);
             if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
             begin
               if not ReadBlock(@Identifier) then exit;
             end else if (CurPos.Flag=cafPoint) then begin
-              Add(Identifier);
+              if not Add(IdentifierStart,CurPos.EndPos,Identifier) then exit;
               Identifier:=Identifier+GetAtom;
             end else if AtomIsChar('^') then begin
               Identifier:=Identifier+GetAtom;
@@ -1471,14 +1485,44 @@ var
     Result:=true;
   end;
 
+var
+  Code: String;
+  Indent: Integer;
 begin
   Result:=false;
   if not CheckIfRangeOnSameLevel(StartPos,EndPos,CleanStartPos,CleanEndPos,
                                  StartNode) then exit;
+  //debugln(['TExtractProcTool.AddWithBlock ',SrcLen,' ',CleanStartPos,' ',CleanEndPos]);
   MoveCursorToNodeStart(StartNode);
+  if WithExpr<>'' then
+    SourceChangeCache.MainScanner:=Scanner;
   ReadNextAtom;
   if not ReadBlock(nil) then exit;
+
   // ToDo: check if identifiers are variables
+
+  if WithExpr<>'' then begin
+    // add 'with expr do begin'
+    Indent:=GetLineIndentWithTabs(Src,CleanStartPos,
+                                SourceChangeCache.BeautifyCodeOptions.TabWidth);
+    Code:='with '+WithExpr+' do begin';
+    Code:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(Code,Indent);
+    //debugln(['TExtractProcTool.AddWithBlock Header=',Code]);
+    if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
+      CleanStartPos,CleanStartPos,Code) then exit;
+    // add 'end;'
+    Code:='end;';
+    Code:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(Code,Indent);
+    //debugln(['TExtractProcTool.AddWithBlock Footer=',Code]);
+    if not SourceChangeCache.Replace(gtNewLine,gtNewLine,
+      CleanEndPos,CleanEndPos,Code) then exit;
+    // indent all between
+    //debugln(['TExtractProcTool.AddWithBlock Indent...']);
+    if not SourceChangeCache.IndentBlock(CleanStartPos,CleanEndPos,
+      SourceChangeCache.BeautifyCodeOptions.Indent) then exit;
+    //debugln(['TExtractProcTool.AddWithBlock Apply']);
+    if not SourceChangeCache.Apply then exit;
+  end;
   Result:=true;
 end;
 

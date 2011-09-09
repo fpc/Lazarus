@@ -41,28 +41,32 @@ var
   X2: Integer;
   Y2: Integer;
   Candidates: TStrings;
+  WithExpr: String;
 begin
-  if (ParamCount>=1) and (Paramcount<>5) then begin
-    writeln('Usage:');
-    writeln('  ',ParamStr(0));
-    writeln('  ',ParamStr(0),' <filename> <X> <Y>');
-    writeln('  ',ParamStr(0),' scanexamples/addwith1.pas 1 35 1 40');
-  end;
-
-  CodeToolBoss.SimpleInit(ConfigFilename);
-
-  // load the file
   Filename:='scanexamples/addwith1.pas';
   X1:=1;
   Y1:=35;
   X2:=1;
   Y2:=40;
-  if Paramcount=5 then begin
+  WithExpr:='Son1';
+
+  if (ParamCount>=1) and (Paramcount<>6) then begin
+    writeln('Usage:');
+    writeln('  ',ParamStr(0));
+    writeln('  ',ParamStr(0),' <filename> <X1> <Y1> <X2> <Y2> <WithExpression>');
+    writeln('  ',ParamStr(0),' ',Filename,' ',X1,' ',Y1,' ',X2,' ',Y2,' ',WithExpr);
+  end;
+
+  CodeToolBoss.SimpleInit(ConfigFilename);
+
+  // load the file
+  if Paramcount=6 then begin
     Filename:=ParamStrUTF8(1);
     X1:=StrToIntDef(ParamStrUTF8(2),1);
     Y1:=StrToIntDef(ParamStrUTF8(3),1);
     X2:=StrToIntDef(ParamStrUTF8(4),1);
     Y2:=StrToIntDef(ParamStrUTF8(5),1);
+    WithExpr:=ParamStrUTF8(6);
   end;
 
   Filename:=ExpandFileName(SetDirSeparators(Filename));
@@ -71,9 +75,12 @@ begin
     raise Exception.Create('loading failed: '+Filename);
 
   // parse the unit and remove the with variable
-  Candidates:=nil;
-  if not CodeToolBoss.CheckAddWithBlock(Code,X1,Y1,X2,Y2,Candidates) then
-    raise Exception.Create('CheckAddWithBlock failed');
+  Candidates:=TStringList.Create;
+  if not CodeToolBoss.AddWithBlock(Code,X1,Y1,X2,Y2,'',Candidates) then
+    raise Exception.Create('Finding candidates for "With" block failed');
+  Candidates.Free;
+  if not CodeToolBoss.AddWithBlock(Code,X1,Y1,X2,Y2,WithExpr,nil) then
+    raise Exception.Create('Adding "With" block for "'+WithExpr+'" failed');
 
   // write the new source:
   writeln('-----------------------------------');

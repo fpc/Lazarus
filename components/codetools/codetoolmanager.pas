@@ -457,8 +457,9 @@ type
     function RemoveIdentifierDefinition(Code: TCodeBuffer; X, Y: integer
           ): boolean; // e.g. remove the variable definition at X,Y
     function RemoveWithBlock(Code: TCodeBuffer; X, Y: integer): boolean;
-    function CheckAddWithBlock(Code: TCodeBuffer; X1, Y1, X2, Y2: integer;
-          var Candidates: TStrings): boolean;
+    function AddWithBlock(Code: TCodeBuffer; X1, Y1, X2, Y2: integer;
+          const WithExpr: string; // if empty: collect Candidates
+          Candidates: TStrings): boolean;
     function ChangeParamList(Code: TCodeBuffer;
        Changes: TObjectList; // list of TChangeParamListItem
        var ProcPos: TCodeXYPosition; // if it is in this unit the proc declaration is changed and this position is cleared
@@ -2586,14 +2587,14 @@ begin
   end;
 end;
 
-function TCodeToolManager.CheckAddWithBlock(Code: TCodeBuffer; X1, Y1, X2,
-  Y2: integer; var Candidates: TStrings): boolean;
+function TCodeToolManager.AddWithBlock(Code: TCodeBuffer; X1, Y1, X2,
+  Y2: integer; const WithExpr: string; Candidates: TStrings): boolean;
 var
   StartPos, EndPos: TCodeXYPosition;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.AddWithBlock A ',Code.Filename,' X1=',X1,' Y1=',Y1,' X2=',X2,' Y2=',Y2);
+  DebugLn('TCodeToolManager.AddWithBlock A ',Code.Filename,' X1=',X1,' Y1=',Y1,' X2=',X2,' Y2=',Y2,' WithExpr="',WithExpr,'"');
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   StartPos.X:=X1;
@@ -2603,7 +2604,8 @@ begin
   EndPos.Y:=Y2;
   EndPos.Code:=Code;
   try
-    Result:=FCurCodeTool.CheckAddWithBlock(StartPos,EndPos,Candidates);
+    Result:=FCurCodeTool.AddWithBlock(StartPos,EndPos,WithExpr,Candidates,
+                                      SourceChangeCache);
   except
     on e: Exception do HandleException(e);
   end;

@@ -701,6 +701,7 @@ begin
 
   p:=FromPos;
   while p<ToPos do begin
+    //debugln(['TSourceChangeCache.IndentBlock ',p]);
     if not IndentLine(p,IndentDiff) then exit(false);
     // go to next line
     while (p<ToPos) and (not (Src[p] in [#10,#13])) do inc(p);
@@ -730,7 +731,7 @@ begin
   NewIndent:=OldIndent+IndentDiff;
   if NewIndent<0 then NewIndent:=0;
   if OldIndent=NewIndent then exit(true);
-  //debugln(['TSourceChangeCache.IndentLine change indent OldIndent=',OldIndent,' NewIndent=',NewIndent]);
+  //debugln(['TSourceChangeCache.IndentLine change indent at ',LineStartPos,' OldIndent=',OldIndent,' NewIndent=',NewIndent]);
 
   p:=LineStartPos;
   // use as much of the old space as possible
@@ -746,6 +747,7 @@ begin
         if NextIndent>NewIndent then break;
         Indent:=NextIndent;
       end;
+    else break;
     end;
     inc(p);
   end;
@@ -753,7 +755,7 @@ begin
   StartPos:=p;
   while (p<=SrcLen) and (Src[p] in [' ',#9]) do inc(p);
   IndentStr:=GetIndentStr(NewIndent-Indent);
-
+  //debugln(['TSourceChangeCache.IndentLine Replace ',StartPos,'..',p,' IndentStr="',dbgstr(IndentStr),'"']);
   Result:=Replace(gtNone,gtNone,StartPos,p,IndentStr);
 end;
 
