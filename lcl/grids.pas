@@ -3534,15 +3534,14 @@ begin
     dx := 4;
     dy := 4;
     Canvas.pen.Width := 1;
-    Canvas.Pen.Color := clHighlight;
-    Canvas.Brush.Color := clHighlight;
+    Canvas.Pen.Color := clBlack;
+    Canvas.Brush.Color := clWhite;
     R := CellRect(FMoveLast.X, 0);
-    X := R.Left;
-    Y := R.Bottom - dy;
-    //TODO need Bidi
-    Canvas.Polygon([Point(x-dx,y),point(x+dx,y),point(x,y+dy), point(x-dx,y)]);
-    Y := R.Top + dy;
-    Canvas.Polygon([Point(x-dx,y),point(x+dx,y),point(x,y-dy), point(x-dx,y)]);
+    Y := R.Top + (R.Bottom-R.Top) div 2;
+    X := R.Left - 2*dx;
+    Canvas.Polygon([Point(x,y+dy),point(x,y-dy),point(x+dx,y), point(x,y+dy)]);
+    X := R.Left + 2*dx;
+    Canvas.Polygon([Point(x,y+dy),point(x,y-dy),point(x-dx,y), point(x,y+dy)]);
     {$else}
     Canvas.Pen.Width:=3;
     Canvas.Pen.Color:=clRed;
@@ -3556,14 +3555,14 @@ begin
     dx := 4;
     dy := 4;
     Canvas.pen.Width := 1;
-    Canvas.Pen.Color := clHighlight;
-    Canvas.Brush.Color := clHighlight;
+    Canvas.Pen.Color := clBlack;
+    Canvas.Brush.Color := clWhite;
     R := CellRect(0, FMoveLast.Y);
-    X := R.Right - dx;
-    Y := R.Top;
-    Canvas.Polygon([Point(x,y+dy),point(x,y-dy),point(x+dx,y), point(x,y+dy)]);
-    X := R.Left + dx;
-    Canvas.Polygon([Point(x,y+dy),point(x,y-dy),point(x-dx,y), point(x,y+dy)]);
+    X := R.Left + (R.Right-R.Left) div 2;
+    Y := R.Top - 2*dy;
+    Canvas.Polygon([Point(x-dx,y),point(x+dx,y),point(x,y+dy), point(x-dx,y)]);
+    Y := R.Top + 2*dy;
+    Canvas.Polygon([Point(x-dx,y),point(x+dx,y),point(x,y-dy), point(x-dx,y)]);
     {$else}
     Canvas.Pen.Width:=3;
     Canvas.Pen.Color:=clRed;
@@ -5918,6 +5917,12 @@ begin
       begin
         //DebugLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
         if FMoveLast.Y>=0 then begin
+          if FMoveLast.Y=FGCache.ClickCell.Y then
+            {$ifdef AlternativeMoveIndicator}
+            InvalidateCol(0);
+            {$else}
+            Invalidate;
+            {$endif}
           DoOPMoveColRow(False, FGCache.ClickCell.Y, FMoveLast.Y);
           ChangeCursor;
         end else
