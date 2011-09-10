@@ -65,7 +65,6 @@ begin
   //the changes have been validated
   ValidateEdit;
   FDataLink.Field.Text := Text;
-  //FDataLink.Field.AsString := Text;// I shouldn't have to do this, but text seems broken
 end;
 
 procedure TDBEdit.FocusRequest(Sender: TObject);
@@ -295,8 +294,7 @@ end;
 
 destructor TDBEdit.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink := nil;
+  FDataLink.Destroy;
   inherited Destroy;
 end;
 
