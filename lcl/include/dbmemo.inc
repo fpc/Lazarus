@@ -217,8 +217,7 @@ end;
 
 destructor TDBMemo.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink:=nil;
+  FDataLink.Destroy;
   inherited Destroy;
 end;
 
