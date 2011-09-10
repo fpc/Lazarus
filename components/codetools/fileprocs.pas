@@ -81,6 +81,8 @@ function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer
 function CompareFileExt(const Filename, Ext: string;
                         CaseSensitive: boolean): integer;
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
+function CompareFilenames(Filename1: PChar; Len1: integer;
+  Filename2: PChar; Len2: integer): integer;
 function DirPathExists(DirectoryName: string): boolean;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
@@ -1136,6 +1138,39 @@ begin
     Result:=-1
   else
     Result:=1;
+end;
+
+function CompareFilenames(Filename1: PChar; Len1: integer; Filename2: PChar;
+  Len2: integer): integer;
+var
+  {$IFDEF NotLiteralFilenames}
+  File1: string;
+  File2: string;
+  {$ELSE}
+  i: Integer;
+  {$ENDIF}
+begin
+  if (Len1=0) or (Len2=0) then begin
+    Result:=Len1-Len2;
+    exit;
+  end;
+  {$IFDEF NotLiteralFilenames}
+  SetLength(File1,Len1);
+  System.Move(Filename1^,File1[1],Len1);
+  SetLength(File2,Len2);
+  System.Move(Filename2^,File2[1],Len2);
+  Result:=CompareFilenames(File1,File2);
+  {$ELSE}
+  Result:=0;
+  i:=0;
+  while (Result=0) and ((i<Len1) and (i<Len2)) do begin
+    Result:=Ord(Filename1[i])
+           -Ord(Filename2[i]);
+    Inc(i);
+  end;
+  if Result=0 Then
+    Result:=Len1-Len2;
+  {$ENDIF}
 end;
 
 function DirPathExists(DirectoryName: string): boolean;
