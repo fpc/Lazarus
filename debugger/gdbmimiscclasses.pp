@@ -481,24 +481,40 @@ var
     if FPTy <> InvalHandle
     then __Close(FPTy);
     FPTy := InvalHandle;
+    FDeviceName := '';
   end;
 
 begin
   Close;
   FPTy := getpt;
   if FPTy < 0 then Error;
-  if (grantpt(FPTy) < 0) or (unlockpt(FPTy) < 0) then Error;
+  if (grantpt(FPTy) < 0) or (unlockpt(FPTy) < 0) then begin
+    Error;
+    exit;
+  end;
   setlength(FDeviceName, BufLen);
-  if ptsname_r(FPTy, @FDeviceName[1], BufLen) < 0 then Error;
+  if ptsname_r(FPTy, @FDeviceName[1], BufLen) < 0 then then begin
+    Error;
+    exit;
+  end;
   setlength(FDeviceName,length(pchar(FDeviceName)));
-  if tcgetattr(FPTy, @ios) <> 0 then Error;
+  if tcgetattr(FPTy, @ios) <> 0 then begin
+    Error;
+    exit;
+  end;
   ios.c_lflag:= ios.c_lflag and not (icanon); // or echo);
   ios.c_cc[vmin]:= 1;
   ios.c_cc[vtime]:= 0;
-  if tcsetattr(FPTy, tcsanow, @ios) <> 0 then Error;
+  if tcsetattr(FPTy, tcsanow, @ios) <> 0 then begin
+    Error;
+    exit;
+  end;
 
   int1 := fcntl(FPTy, f_getfl, 0);
-  if int1 = InvalHandle then Error;
+  if int1 = InvalHandle then begin
+    Error;
+    exit;
+  end;
   if fcntl(FPTy, f_setfl, int1 or o_nonblock) = InvalHandle then Error;
 end;
 
