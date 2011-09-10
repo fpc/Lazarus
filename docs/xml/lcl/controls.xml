@@ -1254,101 +1254,128 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TDragOverEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The type of an OnDragOver handler.</short>
+        <descr>
+          <p>An OnDragOver event is sent by a control, when an object is dragged over it.
+            The handler can specify whether a drop will be accepted or rejected.</p>
+          <remark><var>Source</var> is polymorphic, can be either the DragObject or the dragged control!
+            This depends on DragObject.AutoCreated, for no sane reason :-(
+          </remark>
+        </descr>
+        <seealso><link id="TDockOverEvent"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDragOverEvent.Sender">
-        <short/>
+        <short>The possible drop target (control).</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDragOverEvent.Source">
-        <short/>
+        <short>The object (TDragObject or TControl) being dragged.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDragOverEvent.X">
-        <short/>
+        <short>X coordinate of the mouse on screen.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDragOverEvent.Y">
-        <short/>
+        <short>Y coordinate of the mouse on screen.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDragOverEvent.State">
-        <short/>
+        <short>The current DragState (entering, leaving or moving over the target).</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDragOverEvent.Accept">
-        <short/>
+        <short>Set Accept to False to reject an drop (default is True).</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TDragDropEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The type of an OnDragDrop (notification) handler.</short>
+        <descr>An OnDragDrop event is sent by the drop target (control) on the drop of a dragged object.
+        </descr>
+        <seealso>
+          <link id="TDockDropEvent"/>
+          <link id="TEndDragEvent"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDragDropEvent.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDragDropEvent.Source">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDragDropEvent.X">
+      <element name="TDragDropEvent.Sender"
+        link="TDragOverEvent.Sender">
         <short/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDragDropEvent.Y">
+      <element name="TDragDropEvent.Source"
+        link="TDragOverEvent.Source">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragDropEvent.X"
+        link="TDragOverEvent.X">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragDropEvent.Y"
+        link="TDragOverEvent.Y">
         <short/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TStartDragEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The type of an OnStartDrag handler.</short>
+        <descr>An OnStartDrag event is sent by a control when it shall be dragged and its DragKind is dkDrag.
+          The handler can provide a specific DragDrop object, else a standard TDragDropObjectEx is automatically created by the DragManager.
+        </descr>
+        <seealso><link id="TStartDragEvent"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStartDragEvent.Sender">
-        <short/>
+        <short>The control to be dragged.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStartDragEvent.DragObject">
-        <short/>
+        <short>Supply your own DragObject, or leave it Nil for automatic creation.</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TEndDragEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The type of an OnEndDrag handler.</short>
+        <descr>
+          <p>An OnEndDrag event is sent by a dragged control, when dragging is finished.
+            This happens regardless of whether the operation was drag-drop or drag-dock,
+            and whether the operation ended with a drop or was cancel'd.
+          </p>
+          <p>Check Target=Nil to distinguish between a drop and a cancel'd operation (Nil).</p>
+        </descr>
+        <seealso>
+          <link id="TDragDropEvent"/>
+          <link id="TDockDropEvent"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TEndDragEvent.Sender">
-        <short/>
+        <short>The dragged control.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TEndDragEvent.Target">
+        <short>The drop target (control), or Nil if cancel'd.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEndDragEvent.X"
+        link="TDragOverEvent.X">
         <short/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TEndDragEvent.X">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TEndDragEvent.Y">
+      <element name="TEndDragEvent.Y"
+        link="TDragOverEvent.Y">
         <short/>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PDragRec">
-        <short/>
+      <element name="PDragRec" link="TDragRec">
+        <short>[dropped!] A pointer to TDragRec drag message parameter record.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- record type Visibility: default -->
       <element name="TDragRec">
-        <short>Drag message parameters.</short>
+        <short>[dropped!] Drag message parameters.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1378,7 +1405,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- record type Visibility: default -->
       <element name="TCMDrag">
-        <short/>
+        <short>[dropped!]</short>
         <descr/>
         <seealso/>
       </element>
@@ -1425,13 +1452,16 @@ dmFindTarget: find child control under the mouse
           <p>Every dragging operation has an associated DragObject, holding references to the source and target controls, and other parameters for the customization of the visual user feedback.</p>
           <p>A default DragObject is created automatically when a dragging operation starts, and is destroyed when the operation has ended, so that you must not take special care on it.
             But an application can provide a customized DragObject in the <link id="TControl.OnStartDrag"/> or <link id="TControl.OnStartDock"/> handlers of the source control (being dragged).</p>
-          <p>TDragObject is the ancestor of an whole tree of dragging objects, with the main branches supporting either drag-drop or dock-drop operations.
-            The type of the operation is determined from the <link id="TControl.DragKind"/> property of the source control.
-            In contrast to the Delphi implementation, Lazarus has moved a couple of methods into the drag performers, so that these are no more available for customization.</p>
+          <remark>AutoCreated DragObjects imply different behaviour in the DragOver and DragDrop events, where the Source becomes the dragged control, while else the DragObject itself is passed as Source.
+          </remark>
+          <p>TDragObject is the ancestor of an whole tree of dragging objects, with the main branches supporting either drag-drop or drag-dock operations.
+            The type of the operation is determined from the <link id="TControl.DragKind"/> property of the source control.</p>
+          <remark>
+            In contrast to the Delphi implementation, Lazarus has moved a couple of methods into the drag performers, so that these are no more available for customization.</remark>
           <p>A Lazarus DragObject mainly supplies the cursor and images, used in visual user feedback.
             Drag-drop operations typically signal acceptance of an possible drop by variations of the mouse cursor, and optionally can attach to it shapes of the dragged object(s).
-              Dock-drop operations instead show a docking rectangle, that snaps to possible target locations when the mouse moves over docksites.</p>
-          <p>[entire review DoDi 2011-09-09]</p>
+            Drag-dock operations instead show a docking rectangle, that snaps to possible target locations when the mouse moves over docksites.</p>
+          <p>[entire review DoDi 2011-09-10]</p>
         </descr>
         <seealso>
           <link id="TDragControlObject"/>
@@ -1840,56 +1870,56 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockDropEvent.Sender">
-        <short>The drop target (docksite).</short>
+        <short>The drop target (docksite control).</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockDropEvent.Source">
         <short>The DragDock object, containing information about the dragged object.</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDockDropEvent.X">
-        <short>X coordinate of the mouse.</short>
+      <element name="TDockDropEvent.X" link="TDragOverEvent.X">
+        <short/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDockDropEvent.Y">
-        <short>Y coordinate of the mouse.</short>
+      <element name="TDockDropEvent.Y" link="TDragOverEvent.Y">
+        <short/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TDockOverEvent">
         <short>The type of an OnDockOver handler.</short>
         <descr>An OnDockOver event is sent by a dock site, when an object is dragged over it.
+          The handler can specify whether a drop will be accepted or rejected.
         </descr>
-        <seealso/>
+        <seealso><link id="TDragOverEvent"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDockOverEvent.Sender">
         <short>The possible drop target.</short>
-        <seealso><link id="TDragOverEvent"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element link="TDockDropEvent.Source" name="TDockOverEvent.Source">
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockOverEvent.X" link="TDragOverEvent.X">
         <short/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDockOverEvent.X" link="TDockDropEvent.X">
+      <element name="TDockOverEvent.Y" link="TDragOverEvent.Y">
         <short/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDockOverEvent.Y" link="TDockDropEvent.Y">
+      <element name="TDockOverEvent.State" link="TDragOverEvent.State">
         <short/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDockOverEvent.State">
-        <short>The current DragState (entering, moving, leaving)</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDockOverEvent.Accept">
-        <short>Set Accept to False to reject an drop.</short>
+      <element name="TDockOverEvent.Accept" link="TDragOverEvent.Accept">
+        <short/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TUnDockEvent">
         <short>The type of an OnUnDock handler.</short>
         <descr>An UnDock event is sent by a dock site, before a control is undocked from it.
+          The handler can reject undocking, by setting Allow to False.
         </descr>
         <seealso/>
       </element>
@@ -1913,6 +1943,7 @@ dmFindTarget: find child control under the mouse
       <element name="TStartDockEvent">
         <short>The type of an OnStartDock handler.</short>
         <descr>An OnStartDock event is sent by a control when it shall be dragged and its DragKind is dkDock.
+          The handler can provide a specific DragDock object, else a standard TDragDockObjectEx is automatically created by the DragManager.
         </descr>
         <seealso><link id="TStartDragEvent"/></seealso>
       </element>
@@ -1956,7 +1987,7 @@ dmFindTarget: find child control under the mouse
       <element name="TDragDockObject">
         <short>A drag object for drag-dock.</short>
         <descr>
-          <p>This object type serves two main purposes: it allows to distinguish between drag-drop and dock-drop operations, and it implements docking specific information and behaviour.</p>
+          <p>This object type serves two main purposes: it allows to distinguish between drag-drop and drag-dock operations, and it implements docking specific information and behaviour.</p>
           <p>The primary use is for tree docking, as assumed in the TControl and TWinControl methods.</p>
           <p>[entire review DoDi 2011-09-10]</p>
         </descr>
