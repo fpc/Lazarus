@@ -493,7 +493,7 @@ begin
     exit;
   end;
   setlength(FDeviceName, BufLen);
-  if ptsname_r(FPTy, @FDeviceName[1], BufLen) < 0 then then begin
+  if ptsname_r(FPTy, @FDeviceName[1], BufLen) < 0 then begin
     Error;
     exit;
   end;
@@ -548,7 +548,7 @@ var
   buf: String;
   i: Integer;
 begin
-  if (FPTy = InvalHandle) then exit'');
+  if (FPTy = InvalHandle) then exit('');
 
   SetLength(buf, BufLen + 1);
   Result := FReadBuf;
