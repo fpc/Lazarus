@@ -1390,41 +1390,19 @@ begin
 end;
 
 {
-  Set the FieldName and then update the field to match,
-
-  If we are changing the field from a previously valid field
-  we need to make sure the editing state is updated, and that the
-  DataChanged method is called, easiest way I think is to set the field
-  to nil then call EditingChanged and Reset before we actually set the
-  proper field. This way if this turns out to be an invalid fieldname we
-  are already nil anyway and all the changes to state have been made.
-
-  Next we look up the FieldByName on the attatched DataSource.. which we have
-  to make sure exists first. assuming this worked properly, then we will have a
-  valid Field again, so now we need to update the Editing state again
-  and call the DataChanged again, so Reset. And then we are done... I think.
-
-  If I am missing anything or am doing this all wrong please fix :)
+  Set the FieldName and then notify the changes though EditingChanged and Reset
+  Ensure FField is nil if something goes wrong or FieldName is empty
 }
 procedure TFieldDataLink.SetFieldName(const Value: string);
 begin
   if FFieldName <> Value then
   begin
     FFieldName := Value;
-    If Assigned(FField) then begin
-      FField := nil;
-      EditingChanged;
-      Reset;
-    end;
-    if (Value = '') then
-      Exit;
-    If Assigned(DataSource) and Assigned(DataSource.DataSet) then
-      FField := DataSource.DataSet.FieldByName(FFieldName);
-
-    If Assigned(FField) then begin
-      EditingChanged;
-      Reset;
-    end;
+    FField := nil;
+    if (Value <> '') and Assigned(DataSource) and Assigned(DataSource.DataSet) then
+      FField := DataSource.DataSet.FieldByName(Value);
+    EditingChanged;
+    Reset;
   end;
 end;
 
