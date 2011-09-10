@@ -1773,6 +1773,8 @@ begin
   fTabWidth := 8;
   fLeftChar := 1;
   fTopLine := 1;
+  fLinesInWindow := -1;
+  fCharsInWindow := -1;
   FOldTopLine := 1;
   FOldTopView := 1;
   FFoldedLinesView.TopLine := 1;
@@ -4409,7 +4411,7 @@ begin
   if (eoScrollPastEof in Options) then
     Result := FTheLinesView.Count
   else
-    Result := FFoldedLinesView.TextPosAddLines(FTheLinesView.Count+1, -fLinesInWindow);
+    Result := FFoldedLinesView.TextPosAddLines(FTheLinesView.Count+1, -Max(0, fLinesInWindow));
   Result := Max(Result, 1);
 end;
 
@@ -4689,9 +4691,9 @@ begin
     SB_LINEUP: LeftChar := LeftChar - 1;
       // Scrolls one page of chars left / right
     SB_PAGEDOWN: LeftChar := LeftChar
-      + (fCharsInWindow - Ord(eoScrollByOneLess in fOptions));
+      + Max(1, (fCharsInWindow - Ord(eoScrollByOneLess in fOptions)));
     SB_PAGEUP: LeftChar := LeftChar
-      - (fCharsInWindow - Ord(eoScrollByOneLess in fOptions));
+      - Max(1, (fCharsInWindow - Ord(eoScrollByOneLess in fOptions)));
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK: LeftChar := Msg.Pos;
@@ -4785,38 +4787,18 @@ begin
     SB_TOP: TopLine := 1;
     SB_BOTTOM: TopLine := FTheLinesView.Count;
       // Scrolls one line up / down
-{$IFDEF SYN_LAZARUS}
     SB_LINEDOWN: TopView := TopView + 1;
     SB_LINEUP: TopView := TopView - 1;
       // Scrolls one page of lines up / down
     SB_PAGEDOWN: TopView := TopView
-      + (fLinesInWindow - Ord(eoScrollByOneLess in fOptions));
+      + Max(1, (fLinesInWindow - Ord(eoScrollByOneLess in fOptions))); // TODO: scroll half page ?
     SB_PAGEUP: TopView := TopView
-      - (fLinesInWindow - Ord(eoScrollByOneLess in fOptions));
-{$ELSE}
-    SB_LINEDOWN: TopLine := TopLine + 1;
-    SB_LINEUP: TopLine := TopLine - 1;
-      // Scrolls one page of lines up / down
-    SB_PAGEDOWN: TopLine := TopLine
-      + (fLinesInWindow - Ord(eoScrollByOneLess in fOptions));
-    SB_PAGEUP: TopLine := TopLine
-      - (fLinesInWindow - Ord(eoScrollByOneLess in fOptions));
-{$ENDIF}
+      - Max(1, (fLinesInWindow - Ord(eoScrollByOneLess in fOptions)));
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK:
       begin
-{$IFNDEF SYN_LAZARUS}
-        if Lines.Count > MAX_SCROLL then
-          TopLine := MulDiv(LinesInWindow + Lines.Count - 1, Msg.Pos,
-            MAX_SCROLL)
-        else
-{$ENDIF}
-          {$IFDEF SYN_LAZARUS}
-          TopView := Msg.Pos;
-          {$ELSE}
-          TopLine := Msg.Pos;
-          {$ENDIF}
+        TopView := Msg.Pos;
 
         if eoShowScrollHint in fOptions then begin
           ScrollHint := GetScrollHint;
@@ -6212,9 +6194,10 @@ begin
       ecPageUp, ecSelPageUp, ecPageDown, ecSelPageDown, ecColSelPageUp, ecColSelPageDown:
         begin
           counter := fLinesInWindow;
-          if (eoHalfPageScroll in fOptions) then counter:=counter shr 1;
+          if (eoHalfPageScroll in fOptions) then counter:=counter div 2;
           if eoScrollByOneLess in fOptions then
             Dec(counter);
+          counter := Max(1, counter);
           if (Command in [ecPageUp, ecSelPageUp, ecColSelPageUp]) then
             counter := -counter;
           TopView := TopView + counter;
@@ -7088,12 +7071,9 @@ begin
     nDelta := LinesToScroll
 {$ENDIF}
   else begin
-    {$IFDEF SYN_LAZARUS}
     nDelta := fLinesInWindow;
-    if (eoHalfPageScroll in fOptions) then counter:=counter shr 1;
-    {$ELSE}
-    nDelta := fLinesInWindow shr Ord(eoHalfPageScroll in fOptions);
-    {$ENDIF}
+    if (eoHalfPageScroll in fOptions) then nDelta :=nDelta div 2;
+    nDelta := Max(1, nDelta);
   end;
 
   Inc(fMouseWheelAccumulator, SmallInt(Msg.wParamHi));
@@ -7101,11 +7081,7 @@ begin
   fMouseWheelAccumulator := fMouseWheelAccumulator mod WHEEL_DELTA;
   if (nDelta = integer(WHEEL_PAGESCROLL)) or (nDelta > LinesInWindow) then
     nDelta := LinesInWindow;
-  {$IFDEF SYN_LAZARUS}
   TopView := TopView - (nDelta * nWheelClicks);
-  {$ELSE}
-  TopLine := TopLine - (nDelta * nWheelClicks);
-  {$ENDIF}
   Update;
 end;
 
@@ -7514,10 +7490,11 @@ begin
 
   NewLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
   if NewLinesInWindow <> FLinesInWindow then begin
+    if fLinesInWindow >= 0 then
+      StatusChanged([scLinesInWindow]);
     FLinesInWindow := NewLinesInWindow;
     FFoldedLinesView.LinesInWindow := fLinesInWindow;
     FMarkupManager.LinesInWindow:= fLinesInWindow;
-    StatusChanged([scLinesInWindow]);
   end;
 
   FScreenCaret.Lock;
