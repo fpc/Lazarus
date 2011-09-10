@@ -86,8 +86,6 @@ Type
     procedure FocusControl(aField: TFieldRef); Override;
   public
     constructor Create;
-    destructor Destroy; override;
-
     // for control intitiating db changes etc
     function Edit: Boolean;
 
@@ -1593,13 +1591,8 @@ constructor TFieldDataLink.Create;
 begin
   inherited Create;
   VisualControl := True;
-  FField := nil;
-  FFieldname := '';
-end;
-
-destructor TFieldDataLink.Destroy;
-begin
-  inherited Destroy;
+  //FField := nil;
+  //FFieldname := '';
 end;
 
 { Delphi Help ->
