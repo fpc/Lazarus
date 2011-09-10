@@ -75,7 +75,9 @@ Type
   protected
     // Testing Events
     procedure ActiveChanged; override;
+    {$IF ((FPC_VERSION = 2) and (FPC_RELEASE = 4) and (FPC_PATCH = 2))}
     procedure DataSetChanged; override;
+    {$ENDIF}
     procedure EditingChanged; override;
     procedure LayoutChanged; override;
     procedure RecordChanged(aField: TField); override;
@@ -1464,19 +1466,18 @@ begin
     FOnActiveChange(Self);
 end;
 
-{ not in the delphi version(well not int the help anyway)
-  but the db version is calling RecordChange with nil,
-  which is invalid if we have a real value, so just call reset
+{$IF ((FPC_VERSION = 2) and (FPC_RELEASE = 4) and (FPC_PATCH = 2))}
+{
+ This is not necessary since TDataLink.DatasetChanged calls RecordChanged
+ Keep for now as a workaround to fpc bug 16428 (LayoutChanged not being called)
+ The bug is present in fpc 242 (the last LCL supported version) but fixed in fpc 244 and up
 }
 procedure TFieldDataLink.DataSetChanged;
 begin
-  //workaround to fpc bug 16428 (LayoutChanged not being called)
-  //in some situations (e.g. creating fields at design time) the
-  //FField can point to an invalid reference leading to a crash
-  //todo: remove ValidateField after fpc bug 16428 is fixed
   ValidateField;
   reset;
 end;
+{$ENDIF}
 
 
 { Delphi Help ->
@@ -1540,25 +1541,18 @@ end;
     Applications can not call this protected method. It is triggered
     automatically when the contents of the current record change.
     RecordChanged calls the OnDataChange event handler if there is one.
+
+    TDataLink.RecordChanged:
+    The Field parameter indicates which field of the current record has changed in value.
+    If Field is nil (Delphi) or NULL (C++), any number of fields within the current record may have changed.
   <-- Delphi Help
 
-  Ok so just a simple Event Handler.. what. no extra tests? we gotta
-  have at least one.. :)
-
-  yeah lets go ahead and make sure the field matches the
-  internal one. can it ever not? and if not what about nil? do we
-  need to do something special? maybe another test is needed later....
-
-  does this only get called after Modified? assume so till I know otherwise
-  and turn off IsModified.
-
-  hah. same thing as Reset but with a test so lets just call Reset and let
-  it do the work
+  Call Reset if AField = FField or aField = nil
 }
 procedure TFieldDataLink.RecordChanged(aField: TField);
 begin
-  if (aField = FField) then
-     Reset;
+  if (aField = nil) or (aField = FField) then
+    Reset;
 end;
 
 { Delphi Help ->
