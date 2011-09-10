@@ -548,6 +548,8 @@ var
   buf: String;
   i: Integer;
 begin
+  if (FPTy = InvalHandle) then exit'');
+
   SetLength(buf, BufLen + 1);
   Result := FReadBuf;
   FReadBuf := '';
