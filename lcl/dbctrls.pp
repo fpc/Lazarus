@@ -855,7 +855,6 @@ Type
     function GetReadOnly: Boolean; override;
     procedure SetReadOnly(AValue: Boolean); override;
     procedure DataChange(Sender: TObject); virtual;
-    procedure ActiveChange(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;

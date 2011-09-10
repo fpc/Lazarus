@@ -92,16 +92,6 @@ begin
   end;
 end;
 
-procedure TDBMemo.ActiveChange(Sender: TObject);
-begin
-  if FDatalink.Active then datachange(sender)
-  else
-    begin
-    Lines.Clear;
-    FDataLink.reset;
-    end;
-end;
-
 procedure TDBMemo.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -127,7 +117,6 @@ begin
   FDataLink:=TFieldDataLink.Create;
   FDataLink.Control:=Self;
   FDataLink.OnDataChange:=@DataChange;
-  FDataLInk.OnActiveChange := @ActiveChange;
   FDataLink.OnUpdateData:=@UpdateData;
 end;
 
