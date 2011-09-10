@@ -79,8 +79,18 @@ resourcestring
   crsCopyDeclarationToClipboard = 'Copy declaration to clipboard';
   crsCutDeclarationToClipboard = 'Cut declaration to clipboard';
   crsExplodeAWithBlock = 'Explode a "With" block';
+  crsAddAWithBlock = 'Add a "With" block';
 
   crsCWError = 'Error';
+  crsPleaseSelectSomeCodeInTheSourceEditorForANewWithBl = 'Please select some '
+    +'code in the Source Editor for a new "With" block. No candidate for a '
+    +'with expression was found.';
+  crsPleaseSelectSomeCodeInTheSourceEditor = 'Please select some code in the '
+    +'Source Editor.';
+  crsAddWithBlock = 'Add "With" Block';
+  crsSelectExpression = 'Select expression';
+  crsExpression = 'Expression';
+  crsCount = 'Count';
   crsPleasePlaceTheCursorOfTheSourceEditorOnAnIdentifie = 'Please place the '
     +'cursor of the source editor on an identifier of a declaration.';
   crsPleaseSpecifyAType = 'Please specify a type';

@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LResources, Controls,
   IDECommands, MenuIntf, IDEWindowIntf, SrcEditorIntf,
-  CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg,
+  CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
   CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration;
 
 procedure Register;
@@ -47,6 +47,7 @@ var
   PPUListCommand: TIDECommand;
   AddAssignMethodCommand: TIDECommand;
   ExplodeAWithBlockCommand: TIDECommand;
+  AddAWithBlockCommand: TIDECommand;
   InsertFileAtCursorCommand: TIDECommand;
   DeclareVariableCommand: TIDECommand;
   TVIconRes: TLResource;
@@ -131,6 +132,12 @@ begin
     CleanIDEShortCut,CleanIDEShortCut,nil,@ExplodeAWithBlockCmd);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'ExplodeAWithBlock',
     crsExplodeAWithBlock, nil, nil, ExplodeAWithBlockCommand);
+  // add a With block
+  AddAWithBlockCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddAWithBlock',
+    crsAddAWithBlock,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowAddWithBlockDialog);
+  RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'AddAWithBlock',
+    crsAddAWithBlock, nil, nil, AddAWithBlockCommand);
 
   // IDE internals menu - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

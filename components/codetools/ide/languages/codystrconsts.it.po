@@ -18,8 +18,16 @@ msgstr ""
 msgid "Add Assign method ..."
 msgstr ""
 
+#: codystrconsts.crsaddawithblock
+msgid "Add a \"With\" block"
+msgstr ""
+
 #: codystrconsts.crsaddcallinherited
 msgid "Add call inherited"
+msgstr ""
+
+#: codystrconsts.crsaddwithblock
+msgid "Add \"With\" Block"
 msgstr ""
 
 #: codystrconsts.crsalreadydefined
@@ -150,6 +158,10 @@ msgstr ""
 msgid "Copy declaration to clipboard"
 msgstr ""
 
+#: codystrconsts.crscount
+msgid "Count"
+msgstr ""
+
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
 msgstr ""
@@ -208,6 +220,10 @@ msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" block"
+msgstr ""
+
+#: codystrconsts.crsexpression
+msgid "Expression"
 msgstr ""
 
 #: codystrconsts.crsfile
@@ -314,6 +330,14 @@ msgstr ""
 msgid "Please place the cursor of the source editor on an identifier of a declaration."
 msgstr ""
 
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditor
+msgid "Please select some code in the Source Editor."
+msgstr ""
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
+msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
+msgstr ""
+
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
 msgstr ""
@@ -365,6 +389,10 @@ msgstr ""
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "Ricerca in corso..."
+
+#: codystrconsts.crsselectexpression
+msgid "Select expression"
+msgstr ""
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools node info ..."

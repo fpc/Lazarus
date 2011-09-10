@@ -17,9 +17,17 @@ msgstr "Добавить метод Assign"
 msgid "Add Assign method ..."
 msgstr "Добавить метод Assign ..."
 
+#: codystrconsts.crsaddawithblock
+msgid "Add a \"With\" block"
+msgstr ""
+
 #: codystrconsts.crsaddcallinherited
 msgid "Add call inherited"
 msgstr "Добавить вызов унаследованного метода"
+
+#: codystrconsts.crsaddwithblock
+msgid "Add \"With\" Block"
+msgstr ""
 
 #: codystrconsts.crsalreadydefined
 msgid "Already defined"
@@ -149,6 +157,10 @@ msgstr "Сведения об элементе кода"
 msgid "Copy declaration to clipboard"
 msgstr "Копировать объявление в буфер обмена"
 
+#: codystrconsts.crscount
+msgid "Count"
+msgstr ""
+
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
 msgstr "%s|Все файлы (%s)|%s"
@@ -208,6 +220,10 @@ msgstr "\"%s\" является ключевым словом."
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" block"
 msgstr "Раскрыть блок \"With\""
+
+#: codystrconsts.crsexpression
+msgid "Expression"
+msgstr ""
 
 #: codystrconsts.crsfile
 msgid "File"
@@ -314,6 +330,14 @@ msgstr "Расположите курсор редактора исходног�
 msgid "Please place the cursor of the source editor on an identifier of a declaration."
 msgstr "Расположите курсор редактора исходного кода на идентификаторе в объявлении."
 
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditor
+msgid "Please select some code in the Source Editor."
+msgstr ""
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
+msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
+msgstr ""
+
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
 msgstr "Укажите расположение"
@@ -365,6 +389,10 @@ msgstr "Отчёт"
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "поиск ..."
+
+#: codystrconsts.crsselectexpression
+msgid "Select expression"
+msgstr ""
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools node info ..."

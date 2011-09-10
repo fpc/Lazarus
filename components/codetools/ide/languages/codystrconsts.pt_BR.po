@@ -17,9 +17,17 @@ msgstr "Adicionar método \"Assign\""
 msgid "Add Assign method ..."
 msgstr "Adicionar método \"Assign\" ..."
 
+#: codystrconsts.crsaddawithblock
+msgid "Add a \"With\" block"
+msgstr ""
+
 #: codystrconsts.crsaddcallinherited
 msgid "Add call inherited"
 msgstr "Adicionar chamada \"inherited\""
+
+#: codystrconsts.crsaddwithblock
+msgid "Add \"With\" Block"
+msgstr ""
 
 #: codystrconsts.crsalreadydefined
 msgid "Already defined"
@@ -149,6 +157,10 @@ msgstr "Informação Nó de Código"
 msgid "Copy declaration to clipboard"
 msgstr "Copiar declaração para área transferência"
 
+#: codystrconsts.crscount
+msgid "Count"
+msgstr ""
+
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
 msgstr "%s|Todos arquivos (%s)|%s"
@@ -208,6 +220,10 @@ msgstr "\"%s\" é uma palavra-chave."
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" block"
 msgstr "Expandir um bloco \"With\""
+
+#: codystrconsts.crsexpression
+msgid "Expression"
+msgstr ""
 
 #: codystrconsts.crsfile
 msgid "File"
@@ -313,6 +329,14 @@ msgstr "Favor colocar o cursor do editor de código em um identificador na afirm
 msgid "Please place the cursor of the source editor on an identifier of a declaration."
 msgstr "Favor colocar o cursor do editor de código em um identificador da declaração."
 
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditor
+msgid "Please select some code in the Source Editor."
+msgstr ""
+
+#: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
+msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
+msgstr ""
+
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
 msgstr "Favor especificar um local"
@@ -364,6 +388,10 @@ msgstr "Relatório"
 #: codystrconsts.crssearching
 msgid "searching ..."
 msgstr "localizando ..."
+
+#: codystrconsts.crsselectexpression
+msgid "Select expression"
+msgstr ""
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools node info ..."

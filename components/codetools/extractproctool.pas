@@ -1401,6 +1401,8 @@ var
     i: Integer;
   begin
     Result:=true;
+    if (IdentifierStart<CleanStartPos) or (IdentifierEnd>CleanEndPos) then
+      exit;
     if WithExpr<>'' then begin
       if CompareText(Identifier,WithExpr)=0 then begin
         if not SourceChangeCache.Replace(gtNone,gtNone,
@@ -1493,6 +1495,7 @@ begin
   if not CheckIfRangeOnSameLevel(StartPos,EndPos,CleanStartPos,CleanEndPos,
                                  StartNode) then exit;
   //debugln(['TExtractProcTool.AddWithBlock ',SrcLen,' ',CleanStartPos,' ',CleanEndPos]);
+  //debugln(['TExtractProcTool.AddWithBlock Src="',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"']);
   MoveCursorToNodeStart(StartNode);
   if WithExpr<>'' then
     SourceChangeCache.MainScanner:=Scanner;

@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    An IDE dialog to add a Assign method to a pascal class.
+    An IDE dialog to add an Assign method to a pascal class.
 }
 unit AddAssignMethodDlg;
 
