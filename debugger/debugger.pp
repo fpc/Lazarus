@@ -6361,10 +6361,11 @@ begin
   begin
     Entry := CallStack.Entries[I];
     StackString := Spacing + Entry.Source;
-    if StackString = '' then // we do not have a source file => just show an adress
-      StackString := ':' + IntToHex(Entry.Address, 8);
+    if Entry.Source = '' then // we do not have a source file => just show an adress
+      StackString := Spacing + ':' + IntToHex(Entry.Address, 8);
     StackString := StackString + ' ' + Entry.GetFunctionWithArg;
-    StackString := StackString + ' line ' + IntToStr(Entry.Line);
+    if line > 0 then
+      StackString := StackString + ' line ' + IntToStr(Entry.Line);
 
     Debugger.DoDbgEvent(ecBreakpoint, etBreakpointStackDump, StackString);
   end;
