@@ -213,6 +213,7 @@ type
     procedure ReadVariableType;
     function ReadHintModifier: boolean;
     function ReadTilTypeOfProperty(PropertyNode: TCodeTreeNode): boolean;
+    function ReadTilGetterOfProperty(PropertyNode: TCodeTreeNode): boolean;
     procedure ReadGUID;
     procedure ReadClassInheritance(CreateChildNodes: boolean);
     procedure ReadSpecialize(CreateChildNodes: boolean);
@@ -4928,6 +4929,32 @@ begin
   ReadNextAtom; // read type
   AtomIsIdentifier(true);
   Result:=true;
+end;
+
+function TPascalParserTool.ReadTilGetterOfProperty(
+  PropertyNode: TCodeTreeNode): boolean;
+begin
+  Result := False;
+  if ReadTilTypeOfProperty(PropertyNode) then begin
+    ReadNextAtom;
+    while CurPos.Flag=cafPoint do begin
+      ReadNextAtom;
+      if not AtomIsIdentifier(False) then Exit;
+      ReadNextAtom;
+    end;
+    if UpAtomIs('INDEX') then begin
+      // read index constant
+      ReadNextAtom;
+      while CurPos.Flag=cafPoint do begin
+        ReadNextAtom;
+        if not AtomIsIdentifier(False) then Exit;
+        ReadNextAtom;
+      end;
+    end;
+    if not UpAtomIs('READ') then Exit;
+    ReadNextAtom;
+    Result := CurPos.StartPos < SrcLen;
+  end;
 end;
 
 procedure TPascalParserTool.ReadGUID;

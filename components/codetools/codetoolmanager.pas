@@ -504,6 +504,8 @@ type
     function ExtractOperand(Code: TCodeBuffer; X,Y: integer;
           out Operand: string; WithPostTokens, WithAsOperator,
           WithoutTrailingPoints: boolean): boolean;
+    function GetExpandedOperand(Code: TCodeBuffer; X, Y: Integer;
+          out Operand: string; ResolveProperty: Boolean): Boolean;
 
     // code completion = auto class completion, auto forward proc completion,
     //             local var assignment completion, event assignment completion
@@ -2872,6 +2874,24 @@ begin
   try
     Result:=FCurCodeTool.ExtractOperand(CursorPos,Operand,
                            WithPostTokens,WithAsOperator,WithoutTrailingPoints);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GetExpandedOperand(Code: TCodeBuffer; X, Y: Integer;
+  out Operand: string; ResolveProperty: Boolean): Boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result := False;
+  Operand := '';
+  if not InitCurCodeTool(Code) then Exit;
+  CursorPos.X := X;
+  CursorPos.Y := Y;
+  CursorPos.Code := Code;
+  try
+    Result := FCurCodeTool.GetExpandedOperand(CursorPos, Operand, ResolveProperty);
   except
     on e: Exception do HandleException(e);
   end;

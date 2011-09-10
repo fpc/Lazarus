@@ -166,12 +166,15 @@ type
     fdfCollect,             // return every reachable identifier
     fdfTopLvlResolving,     // set, when searching for an identifier of the
                             //   top lvl variable. Calling DoOnIdentifierFound.
-    fdfDoNotCache           // result will not be cached
+    fdfDoNotCache,          // result will not be cached
+    fdfExtractOperand,      // operand will be extracted
+    fdfPropertyResolving    // used with fdfExtractOperand to resolve properties to getters
     );
   TFindDeclarationFlags = set of TFindDeclarationFlag;
   
 const
-  fdfGlobals = [fdfExceptionOnNotFound, fdfTopLvlResolving];
+  fdfGlobals = [fdfExceptionOnNotFound, fdfTopLvlResolving,
+                fdfExtractOperand, fdfPropertyResolving];
   fdfGlobalsSameIdent = fdfGlobals+[fdfExceptionOnPredefinedIdent,
                 fdfIgnoreMissingParams, fdfIgnoreUsedUnits, fdfDoNotCache,
                 fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect];
@@ -198,7 +201,9 @@ const
     'fdfSkipClassForward',
     'fdfCollect',
     'fdfTopLvlResolving',
-    'fdfDoNotCache'
+    'fdfDoNotCache',
+    'fdfExtractOperand',
+    'fdfPropertyResolving'
   );
 
 type
@@ -477,6 +482,7 @@ type
   private
     FirstFoundProc: PFoundProc;//list of all saved PFoundProc
     LastFoundProc: PFoundProc;
+    FExtractedOperand: string;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
   public
@@ -515,6 +521,8 @@ type
     procedure SetGenericParamValues(SpecializeParamsTool: TFindDeclarationTool;
                 SpecializeNode: TCodeTreeNode);
     function FindGenericParamType: Boolean;
+    procedure AddOperandPart;
+    property ExtractedOperand: string read FExtractedOperand;
     procedure ChangeFoundProc(const ProcContext: TFindContext;
                               ProcCompatibility: TTypeCompatibility;
                               ParamCompatibilityList: TTypeCompatibilityList);
@@ -866,6 +874,9 @@ type
         out NewPos: TCodeXYPosition; out NewTopLine: integer;
         IgnoreJumpCentered: boolean): boolean;
     function NodeIsForwardDeclaration(Node: TCodeTreeNode): boolean;
+
+    function GetExpandedOperand(const CursorPos: TCodeXYPosition;
+          out Operand: string; ResolveProperty: Boolean): Boolean;
 
     property InterfaceIdentifierCache: TInterfaceIdentifierCache
                                                  read FInterfaceIdentifierCache;
@@ -2531,7 +2542,7 @@ var
   begin
     Result:=false;
     // the node cache is identifier based
-    if (fdfCollect in Params.Flags) then exit;
+    if ([fdfCollect,fdfExtractOperand]*Params.Flags<>[]) then exit;
     
     NodeCache:=GetNodeCache(ContextNode,false);
     if (NodeCache<>LastNodeCache) then begin
@@ -2581,7 +2592,7 @@ var
     if not Found then exit;
     FindIdentifierInContext:=true;
     if (FirstSearchedNode=nil) then exit;
-    if ([fdfDoNotCache,fdfCollect]*Params.Flags<>[]) then exit;
+    if ([fdfDoNotCache,fdfCollect,fdfExtractOperand]*Params.Flags<>[]) then exit;
     if ([fodDoNotCache]*Params.NewFlags<>[]) then exit;
     if (Params.OnIdentifierFound<>@CheckSrcIdentifier) then exit;
     if (Params.FoundProc<>nil) then exit; // do not cache proc searches
@@ -2634,6 +2645,27 @@ var
     {$ENDIF}
     if NewResult then begin
       // identifier found
+      if fdfExtractOperand in Params.Flags then
+        case Params.NewNode.Desc of
+          ctnVarDefinition, ctnConstDefinition:
+            Params.AddOperandPart;
+          ctnProperty:
+            begin
+              if fdfPropertyResolving in Params.Flags then begin
+                if not PropNodeIsTypeLess(Params.NewNode)
+                and ReadTilGetterOfProperty(Params.NewNode) then begin
+                  // continue searching of getter
+                  Params.Identifier := @Src[CurPos.StartPos];
+                end;
+                ContextNode := Params.NewNode;
+                Exit(False);
+              end else Params.AddOperandPart;
+            end;
+          ctnProcedure:
+            // function execution is not implemented yet
+            RaiseException('not implemented');
+        end;
+
       if CallOnIdentifierFound then begin
         {
         debugln('[TFindDeclarationTool.FindIdentifierInContext.CheckResult] CallOnIdentifierFound Ident=',
@@ -3253,7 +3285,7 @@ begin
   end;}
   // if we are here, the identifier was not found and there was no error
   if (FirstSearchedNode<>nil) and (Params.FoundProc=nil)
-  and (not (fdfCollect in Params.Flags)) then begin
+  and ([fdfCollect,fdfExtractOperand]*Params.Flags=[]) then begin
     // add result to cache
     Params.NewNode:=nil;
     Params.NewCodeTool:=nil;
@@ -4937,6 +4969,78 @@ begin
   end;
 end;
 
+function TFindDeclarationTool.GetExpandedOperand(const CursorPos: TCodeXYPosition;
+  out Operand: string; ResolveProperty: Boolean): Boolean;
+var
+  CursorNode: TCodeTreeNode;
+  CleanCursorPos: integer;
+  Params: TFindDeclarationParams;
+  Identifier: PChar;
+  LineRange: TLineRange;
+begin
+  Result := False;
+  Operand := '';
+  if (CursorPos.Y<1) or (CursorPos.Y>CursorPos.Code.LineCount)
+  or (CursorPos.X<1) then Exit;
+  CursorPos.Code.GetLineRange(CursorPos.Y-1,LineRange);
+  if LineRange.EndPos-LineRange.StartPos+1<CursorPos.X then Exit;
+
+  ActivateGlobalWriteLock;
+  try
+    // build code tree
+    if DirtySrc<>nil then DirtySrc.Clear;
+    BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
+                  [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
+    // find CodeTreeNode at cursor
+    if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then
+      CursorNode := BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos, True)
+    else
+      CursorNode := nil;
+
+    if CursorNode = nil then begin
+      // raise exception
+      CursorNode := FindDeepestNodeAtPos(CleanCursorPos, True);
+    end;
+    if CursorNode.Desc = ctnBeginBlock then begin
+      BuildSubTreeForBeginBlock(CursorNode);
+      CursorNode := FindDeepestNodeAtPos(CursorNode, CleanCursorPos, True);
+    end;
+    // set cursor on identifier
+    MoveCursorToCleanPos(CleanCursorPos);
+    if IsDirtySrcValid then begin
+      DirtySrc.SetCursorToIdentStartEndAtPosition;
+      if DirtySrc.CurPos.StartPos >= DirtySrc.CurPos.EndPos then Exit;
+      Identifier := DirtySrc.GetCursorSrcPos;
+    end else begin
+      GetIdentStartEndAtPosition(Src,CleanCursorPos,
+                                 CurPos.StartPos,CurPos.EndPos);
+      if CurPos.StartPos >= CurPos.EndPos then Exit;
+      Identifier := @Src[CurPos.StartPos];
+    end;
+    // find declaration of identifier
+    Params := TFindDeclarationParams.Create;
+    try
+      Params.ContextNode := CursorNode;
+      Params.SetIdentifier(Self, Identifier, nil);
+      Params.Flags := [fdfSearchInParentNodes, fdfTopLvlResolving,
+                       fdfSearchInAncestors, fdfSkipClassForward,
+                       fdfExtractOperand];
+      if ResolveProperty then
+        Include(Params.Flags, fdfPropertyResolving);
+      if FindDeclarationOfIdentAtParam(Params) then
+      begin
+        Operand := Params.ExtractedOperand;
+        Result := Operand <> '';
+      end;
+    finally
+      Params.Free;
+    end;
+  finally
+    ClearIgnoreErrorAfter;
+    DeactivateGlobalWriteLock;
+  end;
+end;
+
 function TFindDeclarationTool.FindIdentifierInProcContext(
   ProcContextNode: TCodeTreeNode;
   Params: TFindDeclarationParams): TIdentifierFoundResult;
@@ -5384,7 +5488,7 @@ begin
   // search identifier in 'with' context
   // Note: do not search in parent nodes (e.g. with ListBox1 do Items)
   Params.Load(OldInput,false);
-  Params.Flags:=Params.Flags-[fdfExceptionOnNotFound,fdfSearchInParentNodes];
+  Params.Flags:=Params.Flags-[fdfExceptionOnNotFound,fdfSearchInParentNodes,fdfExtractOperand];
   Params.ContextNode:=WithVarExpr.Context.Node;
   Result:=WithVarExpr.Context.Tool.FindIdentifierInContext(Params);
   Params.Load(OldInput,true);
@@ -7073,6 +7177,10 @@ var
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveEdgedBracketOpen']);
     {$ENDIF}
+    if fdfExtractOperand in Params.Flags then begin
+      // extract operand2: [] not implemented yet
+      RaiseException('not implemented');
+    end;
     if (not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
       vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen]))
     or ((ExprType.Context.Node=nil)
@@ -10732,6 +10840,13 @@ begin
     ContextNode:=GenParams.SpecializeParamsNode;
     Result:=FindIdentifierInContext(Self);
   end;
+end;
+
+procedure TFindDeclarationParams.AddOperandPart;
+begin
+  if FExtractedOperand <> '' then
+    FExtractedOperand := FExtractedOperand + '.';
+  FExtractedOperand := FExtractedOperand + GetIdentifier(Identifier);
 end;
 
 procedure TFindDeclarationParams.ChangeFoundProc(
