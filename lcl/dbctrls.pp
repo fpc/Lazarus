@@ -71,7 +71,7 @@ Type
     procedure UpdateField;
 
     // make sure the field/fieldname is valid before we do stuff with it
-    function ValidateField : Boolean;
+    procedure ValidateField;
   protected
     // Testing Events
     procedure ActiveChanged; override;
@@ -1418,26 +1418,13 @@ begin
 end;
 
 {
-  Several functions seem to need to test the validity of
-  the field/fieldname, so lets put it into its own function.
-  This function checks if FField is assigned and if matches with current field
-  instance of the linked dataset. If not, try to set the field name.
-  Returns true if FField is set.
+  This function checks if FField is still associated with the dataset
+  If not update the field
 }
-function TFieldDataLink.ValidateField : Boolean;
-var
-  RealFieldName : String;
+procedure TFieldDataLink.ValidateField;
 begin
-  Result := (FField <> nil) and (DataSet.FindField(FFieldName) = FField);
-  if not Result then begin
-    RealFieldName := FFieldName;
-    if (RealFieldName <> '') then begin
-      FFieldName := '';
-      SetFieldName(RealFieldName);
-    end;
-
-    Result := (RealFieldName <> '') and Assigned(FField);
-  end;
+  if not (DataSet.FindField(FFieldName) = FField) then
+    UpdateField;
 end;
 
 
@@ -1528,11 +1515,16 @@ end;
     property for the Control might become invalid.
   <-- Delphi Help
 
-  So... just another field validity check? call our mock routine...
+  Ensure FField is valid and notify
 }
 procedure TFieldDataLink.LayoutChanged;
 begin
   ValidateField;
+  if FField <> nil then
+  begin
+    EditingChanged;
+    Reset;
+  end;
   if Assigned(FOnLayoutChange) then
     FOnLayoutChange(Self);
 end;
