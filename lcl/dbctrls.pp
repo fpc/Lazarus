@@ -68,6 +68,7 @@ Type
 
     // set current field
     procedure SetFieldName(const Value: string);
+    procedure UpdateField;
 
     // make sure the field/fieldname is valid before we do stuff with it
     function ValidateField : Boolean;
@@ -1398,12 +1399,21 @@ begin
   if FFieldName <> Value then
   begin
     FFieldName := Value;
-    FField := nil;
-    if (Value <> '') and Assigned(DataSource) and Assigned(DataSource.DataSet) then
-      FField := DataSource.DataSet.FieldByName(Value);
-    EditingChanged;
-    Reset;
+    UpdateField;
+    if Active then
+    begin
+      EditingChanged;
+      Reset;
+    end;
   end;
+end;
+
+procedure TFieldDataLink.UpdateField;
+begin
+  if Active and (FFieldName <> '') then
+    FField := DataSet.FieldByName(FFieldName)
+  else
+    FField := nil;
 end;
 
 {
@@ -1440,21 +1450,17 @@ end;
     sure that the Field for this TFieldDataLink is still valid.
   <-- Delphi Help
 
-   So... just call event if exists? unles Active then we test validity of
-   field. does this simply mean not nil? or is more involved?
-   call mock routine for now
-   
-   if it becomes inactive then the field is not valid anymore isn't?
+   Update the field instance. When not Active field will be set to nil
+   Call OnActiveChange
 }
 procedure TFieldDataLink.ActiveChanged;
 begin
-  if Active and not ValidateField
-  then
-    exit;
-
-  if not Active then
-    FField := nil;
-    
+  if FFieldName <> '' then
+  begin
+    UpdateField;
+    EditingChanged;
+    Reset;
+  end;
   if Assigned(FOnActiveChange) then
     FOnActiveChange(Self);
 end;
@@ -1670,15 +1676,11 @@ end;
     record in the dataset.
   <-- Delphi Help
 
-  hrmm. just call to the OnDataChange Event, and turn off IsModified I guess
-  better ideas anyone?
-
-  oh huh. same thing as RecordChanged but without the test so I can just
-  have it call this instead :)
+  Just call to the OnDataChange Event, and turn off IsModified
 }
 procedure TFieldDataLink.Reset;
 begin
-  if active and Assigned(FOnDataChange) then
+  if Assigned(FOnDataChange) then
     FOnDataChange(Self);
 
   IsModified := False;
