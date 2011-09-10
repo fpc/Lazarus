@@ -104,6 +104,21 @@ type
   end;
   PStringToStringTreeItem = ^TStringToStringTreeItem;
 
+  TStringToStringTree = class;
+
+  { TStringToStringTreeEnumerator }
+
+  TStringToStringTreeEnumerator = class
+  private
+    FTree: TStringToStringTree;
+    FCurrent: TAVLTreeNode;
+    function GetCurrent: PStringToStringTreeItem;
+  public
+    constructor Create(Tree: TStringToStringTree);
+    function MoveNext: boolean;
+    property Current: PStringToStringTreeItem read GetCurrent;
+  end;
+
   { TStringToStringTree }
 
   TStringToStringTree = class
@@ -138,6 +153,7 @@ type
     property CompareKeyItemFunc: TListSortCompare read FCompareKeyItemFunc;
     procedure SetCompareFuncs(
             const NewCompareItemsFunc, NewCompareKeyItemFunc: TListSortCompare);
+    function GetEnumerator: TStringToStringTreeEnumerator;
   end;
 
   { TFilenameToStringTree }
@@ -326,6 +342,27 @@ end;
 function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 begin
   Result:=CompareStr(AnsiString(Data1),AnsiString(Data2));
+end;
+
+{ TStringToStringTreeEnumerator }
+
+function TStringToStringTreeEnumerator.GetCurrent: PStringToStringTreeItem;
+begin
+  Result:=PStringToStringTreeItem(FCurrent.Data);
+end;
+
+constructor TStringToStringTreeEnumerator.Create(Tree: TStringToStringTree);
+begin
+  FTree:=Tree;
+end;
+
+function TStringToStringTreeEnumerator.MoveNext: boolean;
+begin
+  if FCurrent=nil then
+    FCurrent:=FTree.Tree.FindLowest
+  else
+    FCurrent:=FTree.Tree.FindSuccessor(FCurrent);
+  Result:=FCurrent<>nil;
 end;
 
 { TStringTreeEnumerator }
@@ -739,6 +776,11 @@ procedure TStringToStringTree.SetCompareFuncs(const NewCompareItemsFunc,
 begin
   FCompareKeyItemFunc:=NewCompareKeyItemFunc;
   Tree.OnCompare:=NewCompareItemsFunc;
+end;
+
+function TStringToStringTree.GetEnumerator: TStringToStringTreeEnumerator;
+begin
+  Result:=TStringToStringTreeEnumerator.Create(Self);
 end;
 
 { TFilenameToStringTree }
