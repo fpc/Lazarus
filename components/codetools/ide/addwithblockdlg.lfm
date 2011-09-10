@@ -1,0 +1,67 @@
+object AddWithBlockDialog: TAddWithBlockDialog
+  Left = 275
+  Height = 251
+  Top = 250
+  Width = 362
+  Caption = 'AddWithBlockDialog'
+  ClientHeight = 251
+  ClientWidth = 362
+  OnCreate = FormCreate
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 203
+    Width = 350
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object WithExprGroupBox: TGroupBox
+    Left = 6
+    Height = 191
+    Top = 6
+    Width = 350
+    Align = alClient
+    BorderSpacing.Around = 6
+    Caption = 'WithExprGroupBox'
+    ClientHeight = 170
+    ClientWidth = 342
+    TabOrder = 1
+    object WithExprStringGrid: TStringGrid
+      Left = 0
+      Height = 170
+      Top = 0
+      Width = 342
+      Align = alClient
+      AutoFillColumns = True
+      ColCount = 2
+      Columns = <      
+        item
+          SizePriority = 2
+          Title.Caption = 'Expression'
+          Title.PrefixOption = poNone
+          Width = 170
+        end      
+        item
+          Title.Caption = 'Count'
+          Title.PrefixOption = poNone
+          Width = 170
+        end>
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goColSpanning, goSmoothScroll]
+      TabOrder = 0
+      ColWidths = (
+        170
+        170
+      )
+    end
+  end
+end
