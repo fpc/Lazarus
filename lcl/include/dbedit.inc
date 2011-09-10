@@ -48,23 +48,8 @@ begin
     //todo: uncomment this when TField implements EditMask
     //EditMask := ''
     Text := '';
-  end;
-end;
-
-procedure TDBEdit.ActiveChange(Sender: TObject);
-begin
-  if FDatalink.Active then 
-    DataChange(Sender)
-  else begin
-    Text := '';
-    FDataLink.Reset;
     MaxLength := 0;
   end;
-end;
-
-procedure TDBEdit.LayoutChange(Sender: TObject);
-begin
-  DataChange(Sender);
 end;
 
 procedure TDBEdit.UpdateData(Sender: TObject);
@@ -306,8 +291,6 @@ begin
   FDataLink.Control := Self;
   FDataLink.OnDataChange := @DataChange;
   FDataLink.OnUpdateData := @UpdateData;
-  FDataLink.OnActiveChange := @ActiveChange;
-  FDataLink.OnLayoutChange := @LayoutChange;
 end;
 
 destructor TDBEdit.Destroy;

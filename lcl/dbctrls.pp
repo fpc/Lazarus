@@ -190,9 +190,6 @@ Type
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure FocusRequest(Sender: TObject);
-    procedure ActiveChange(Sender: TObject);
-    procedure LayoutChange(Sender: TObject);
-    
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
