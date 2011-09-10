@@ -32,13 +32,6 @@ begin
     Caption := '';
 end;
 
-procedure TDBText.ActiveChange(Sender: TObject);
-
-begin
-  if FDatalink.Active then datachange(sender)
-    else text := '';
-end;
-
 function TDBText.GetDataField: string;
 begin
   Result := FDataLink.FieldName;
@@ -109,12 +102,10 @@ begin
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := @DataChange;
-  FDataLInk.OnActiveChange := @ActiveChange;
 end;
 
 destructor TDBText.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink := nil;
+  FDataLink.Destroy;
   inherited Destroy;
 end;

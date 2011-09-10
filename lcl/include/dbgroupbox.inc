@@ -81,8 +81,7 @@ end;
 
 destructor TDBGroupBox.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink:=nil;
+  FDataLink.Destroy;
   inherited Destroy;
 end;
 

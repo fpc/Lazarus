@@ -136,17 +136,6 @@ begin
     Text := '';
 end;
 
-procedure TCustomDBComboBox.ActiveChange(Sender: TObject);
-
-begin
-  if FDatalink.Active then DataChange(Sender)
-  else
-    begin
-    Text := '';
-    FDataLink.Reset;
-    end;
-end;
-
 constructor TCustomDBComboBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -155,14 +144,12 @@ begin
   FDataLink.Control:=Self;
   FDataLink.OnDataChange:=@DataChange;
   FDataLink.OnUpdateData:=@UpdateData;
-  FDataLInk.OnActiveChange := @ActiveChange;
   FDataLink.OnEditingChange:=@EditingChange;
 end;
 
 destructor TCustomDBComboBox.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink:=nil;
+  FDataLink.Destroy;
   inherited Destroy;
 end;
 

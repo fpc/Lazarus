@@ -277,8 +277,6 @@ Type
     FDataLink: TFieldDataLink;
 
     procedure DataChange(Sender: TObject);
-    procedure ActiveChange(Sender: TObject);
-
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -664,7 +662,6 @@ Type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure DataChange(Sender: TObject); virtual;
-    procedure ActiveChange(Sender: TObject); //virtual;
     procedure EditingChange(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
@@ -990,7 +987,6 @@ Type
       Operation: TOperation); override;
     procedure DataChange(Sender: TObject); virtual;
     procedure UpdateData(Sender: TObject); virtual;
-    procedure ActiveChange(Sender: TObject); virtual;
     procedure PictureChanged(Sender: TObject); override;
     procedure LoadPicture; virtual;
     procedure Loaded; override;
@@ -1227,7 +1223,6 @@ type
     procedure ActiveChanged; override;
   public
     constructor Create(TheNavigator: TDBCustomNavigator);
-    destructor Destroy; override;
   end;
 
 

@@ -115,16 +115,6 @@ begin
     end;
 end;
 
-procedure TDBImage.ActiveChange(Sender: TObject);
-begin
-  if FDatalink.Active then datachange(sender)
-  else
-    begin
-    Picture.Clear;
-    FDataLink.reset;
-    end;
-end;
-
 procedure TDBImage.PictureChanged(Sender: TObject);
 begin
   Inherited;
@@ -214,14 +204,12 @@ begin
   FDataLink.Control:=Self;
   FDataLink.OnDataChange:=@DataChange;
   FDataLink.OnUpdateData:=@UpdateData;
-  FDataLInk.OnActiveChange := @ActiveChange;
   FUpdatingRecord := False;
 end;
 
 destructor TDBImage.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink:=nil;
+  FDataLink.Destroy;
   inherited Destroy;
 end;
 

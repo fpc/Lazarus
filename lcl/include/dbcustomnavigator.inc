@@ -45,12 +45,6 @@ begin
   VisualControl := True;
 end;
 
-destructor TDBNavDataLink.Destroy;
-begin
-  FNavigator := nil;
-  inherited Destroy;
-end;
-
 { TDBCustomNavigator }
 
 procedure TDBCustomNavigator.DefaultHintsChanged(Sender: TObject);
@@ -421,12 +415,9 @@ end;
 
 destructor TDBCustomNavigator.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink:=nil;
-  FHints.Free;
-  FHints:=nil;
-  FDefaultHints.Free;
-  FDefaultHints:=nil;
+  FDataLink.Destroy;
+  FHints.Destroy;
+  FDefaultHints.Destroy;
   inherited Destroy;
 end;
 

@@ -138,8 +138,7 @@ end;
 
 destructor TDBCalendar.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink := nil;
+  FDataLink.Destroy;
   inherited Destroy;
 end;
 
