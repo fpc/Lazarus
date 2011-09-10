@@ -54,7 +54,7 @@ end;
 procedure TSynGutterMarks.Init;
 begin
   inherited Init;
-  FBookMarkOpt := TSynEdit(SynEdit).BookMarkOptions;
+  FBookMarkOpt := TCustomSynEdit(SynEdit).BookMarkOptions;
 end;
 
 function TSynGutterMarks.PreferedWidth: Integer;
@@ -116,7 +116,7 @@ begin
   aFirstCustomColumnIdx := 0;
   if FBookMarkOpt.DrawBookmarksFirst then
     aFirstCustomColumnIdx := 1;
-  MLine := TSynEdit(SynEdit).Marks.Line[FoldView.TextIndex[aScreenLine] + 1];
+  MLine := TCustomSynEdit(SynEdit).Marks.Line[FoldView.TextIndex[aScreenLine] + 1];
   if MLine = nil then
     exit;
 
@@ -125,7 +125,7 @@ begin
   else
     MLine.Sort(smsoBookMarkLast, smsoPriority);
 
-  LineHeight := TSynEdit(SynEdit).LineHeight;
+  LineHeight := TCustomSynEdit(SynEdit).LineHeight;
   //Gutter.Paint always supplies AClip.Left = GutterPart.Left
   MarkRect := Rect(AClip.Left + FBookMarkOpt.LeftMargin,
                    aScreenLine * LineHeight,

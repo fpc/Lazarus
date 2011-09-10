@@ -896,8 +896,8 @@ procedure TSynGutterLOvProviderCurrentPage.SynStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
-  FCurTopLine := TSynEdit(SynEdit).TopLine;
-  FCurLinesInWindow := TSynEdit(SynEdit).LinesInWindow;
+  FCurTopLine := TCustomSynEdit(SynEdit).TopLine;
+  FCurLinesInWindow := TCustomSynEdit(SynEdit).LinesInWindow;
   ReCalc;
   InvalidatePixelLines(FPixelTopLine, FPixelBottomLine);
 end;
@@ -927,13 +927,13 @@ begin
   inherited;
   FColor := 0;
   Color := $C0C0C0;
-  TSynEdit(SynEdit).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}SynStatusChanged,
+  TCustomSynEdit(SynEdit).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}SynStatusChanged,
                                                  [scTopLine, scLinesInWindow]);
 end;
 
 destructor TSynGutterLOvProviderCurrentPage.Destroy;
 begin
-  TSynEdit(SynEdit).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}SynStatusChanged);
+  TCustomSynEdit(SynEdit).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}SynStatusChanged);
   inherited;
 end;
 
@@ -1052,7 +1052,7 @@ end;
 procedure TSynGutterLOvProviderModifiedLines.SynStatusChanged(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
-  if (scModified in Changes) and not TSynEdit(SynEdit).Modified then begin;
+  if (scModified in Changes) and not TCustomSynEdit(SynEdit).Modified then begin;
     FFirstTextLineChanged := 1;
     FLastTextLineChanged := 0; // open end
     InvalidateTextLines(FFirstTextLineChanged, TextBuffer.Count);
@@ -1065,7 +1065,7 @@ begin
   TSynEditStringList(TextBuffer).AddGenericHandler(senrLineChange, TMethod({$IFDEF FPC}@{$ENDIF}LineChanged));
   TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod({$IFDEF FPC}@{$ENDIF}LineCountChanged));
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
-  TSynEdit(SynEdit).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}SynStatusChanged, [scModified]);
+  TCustomSynEdit(SynEdit).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}SynStatusChanged, [scModified]);
   FFirstTextLineChanged := -1;
   FLastTextLineChanged := -1;
   Color := clYellow;
@@ -1075,7 +1075,7 @@ end;
 destructor TSynGutterLOvProviderModifiedLines.Destroy;
 begin
   TSynEditStringList(TextBuffer).RemoveHanlders(self);
-  TSynEdit(SynEdit).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}SynStatusChanged);
+  TCustomSynEdit(SynEdit).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}SynStatusChanged);
   inherited Destroy;
 end;
 
@@ -1154,7 +1154,7 @@ end;
 
 procedure TSynGutterLOvProviderBookmarks.BufferChanging(Sender: TObject);
 begin
-  TSynEdit(SynEdit).Marks.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange);
+  TCustomSynEdit(SynEdit).Marks.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange);
 end;
 
 procedure TSynGutterLOvProviderBookmarks.BufferChanged(Sender: TObject);
@@ -1164,7 +1164,7 @@ begin
   TSynEditStringList(Sender).RemoveHanlders(self);
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanging, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanging));
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
-  TSynEdit(SynEdit).Marks.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange,
+  TCustomSynEdit(SynEdit).Marks.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange,
     [smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged]);
 
   while FMarkList.Count > 0 do begin
@@ -1172,9 +1172,9 @@ begin
     FMarkList.Delete(0);
   end;
 
-  for i := 0 to TSynEdit(SynEdit).Marks.Count - 1 do
-    if TSynEdit(SynEdit).Marks[i].Visible then
-      CreateGutterMark(TSynEdit(SynEdit).Marks[i]);
+  for i := 0 to TCustomSynEdit(SynEdit).Marks.Count - 1 do
+    if TCustomSynEdit(SynEdit).Marks[i].Visible then
+      CreateGutterMark(TCustomSynEdit(SynEdit).Marks[i]);
 end;
 
 constructor TSynGutterLOvProviderBookmarks.Create(AOwner: TComponent);
@@ -1186,18 +1186,18 @@ begin
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanging, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanging));
   TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
 
-  TSynEdit(SynEdit).Marks.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange,
+  TCustomSynEdit(SynEdit).Marks.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange,
     [smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged]);
 
-  for i := 0 to TSynEdit(SynEdit).Marks.Count - 1 do
-    if TSynEdit(SynEdit).Marks[i].Visible then
-      CreateGutterMark(TSynEdit(SynEdit).Marks[i]);
+  for i := 0 to TCustomSynEdit(SynEdit).Marks.Count - 1 do
+    if TCustomSynEdit(SynEdit).Marks[i].Visible then
+      CreateGutterMark(TCustomSynEdit(SynEdit).Marks[i]);
 end;
 
 destructor TSynGutterLOvProviderBookmarks.Destroy;
 begin
   TSynEditStringList(TextBuffer).RemoveHanlders(self);
-  TSynEdit(SynEdit).Marks.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange);
+  TCustomSynEdit(SynEdit).Marks.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}DoMarkChange);
   inherited Destroy;
 end;
 

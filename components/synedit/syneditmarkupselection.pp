@@ -103,7 +103,7 @@ begin
   nSelStart := 0;
   nSelEnd := 0;
 
-  if (not TSynEdit(SynEdit).HideSelection or TSynEdit(SynEdit).Focused) then begin
+  if (not TCustomSynEdit(SynEdit).HideSelection or TCustomSynEdit(SynEdit).Focused) then begin
     p1 := FSelection.FirstLineBytePos;  // always ordered
     p2 := FSelection.LastLineBytePos;
 

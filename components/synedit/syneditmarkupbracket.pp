@@ -124,7 +124,7 @@ begin
     if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
     begin
       StartBracket := PhysCaret;
-      EndBracket := TSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
+      EndBracket := TCustomSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
       Exit;
     end;
     // check for bracket after caret
@@ -138,7 +138,7 @@ begin
     if (x <= length(StartLine)) and (StartLine[x] in Brackets) then
     begin
       StartBracket := PhysCaret;
-      EndBracket := TSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
+      EndBracket := TCustomSynEdit(SynEdit).FindMatchingBracket(PhysCaret, False, False, False, False);
     end;
   end;
 end;
@@ -179,7 +179,7 @@ begin
   FNeedInvalidate := False;
   NewPos.Y:=-1;
   NewAntiPos.Y:=-1;
-  if eoBracketHighlight in TSynEdit(SynEdit).Options 
+  if eoBracketHighlight in TCustomSynEdit(SynEdit).Options
   then FindMatchingBracketPair(Caret.LineCharPos, NewPos, NewAntiPos);
 
   // Always keep ordered

@@ -1042,10 +1042,10 @@ procedure TSynBaseCompletionForm.SetCurrentEditor(const AValue: TComponent);
 begin
   if fCurrentEditor = AValue then exit;
   if fCurrentEditor <> nil then
-    TSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
+    TCustomSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
   fCurrentEditor := AValue;
   if (fCurrentEditor <> nil) and Visible then
-    TSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged,
+    TCustomSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged,
                                                           [scTopLine]);
 end;
 
@@ -1070,10 +1070,10 @@ begin
   inherited SetVisible(Value);
   if (fCurrentEditor <> nil) then begin
     if Visible then
-      TSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged,
+      TCustomSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged,
                                                             [scTopLine])
     else
-      TSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
+      TCustomSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
   end;
   if Value then
     Application.AddOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated)
@@ -1220,7 +1220,7 @@ end;
 
 procedure TSynBaseCompletion.Execute(s: string; x, y: integer);
 var
-  CurSynEdit: TSynEdit;
+  CurSynEdit: TCustomSynEdit;
 begin
   //writeln('TSynBaseCompletion.Execute ',Form.CurrentEditor.Name);
 
@@ -1239,8 +1239,8 @@ begin
     exit;
   end;
 
-  if (Form.CurrentEditor is TSynEdit) then begin
-    CurSynEdit:=TSynEdit(Form.CurrentEditor);
+  if (Form.CurrentEditor is TCustomSynEdit) then begin
+    CurSynEdit:=TCustomSynEdit(Form.CurrentEditor);
     FAddedPersistentCaret := not(eoPersistentCaret in CurSynEdit.Options);
     if FAddedPersistentCaret then
       CurSynEdit.Options:=CurSynEdit.Options+[eoPersistentCaret];
@@ -1474,12 +1474,12 @@ end;
 
 procedure TSynBaseCompletion.Deactivate;
 var
-  CurSynEdit: TSynEdit;
+  CurSynEdit: TCustomSynEdit;
 begin
   if FAddedPersistentCaret and
-     (Form<>nil) and (Form.CurrentEditor is TSynEdit)
+     (Form<>nil) and (Form.CurrentEditor is TCustomSynEdit)
   then begin
-    CurSynEdit:=TSynEdit(Form.CurrentEditor);
+    CurSynEdit:=TCustomSynEdit(Form.CurrentEditor);
     CurSynEdit.Options:=CurSynEdit.Options-[eoPersistentCaret];
   end;
   if Assigned(Form) then Form.Deactivate;

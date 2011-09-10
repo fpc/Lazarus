@@ -686,27 +686,27 @@ begin
     exit('');
   if FToggledWord <> '' then
     exit(FToggledWord);
-  If TSynEdit(SynEdit).SelAvail then begin
-    LowBnd := TSynEdit(SynEdit).BlockBegin;
-    UpBnd := TSynEdit(SynEdit).BlockEnd;
+  If TCustomSynEdit(SynEdit).SelAvail then begin
+    LowBnd := TCustomSynEdit(SynEdit).BlockBegin;
+    UpBnd := TCustomSynEdit(SynEdit).BlockEnd;
     i := UpBnd.y - LowBnd.y + 1;
     if (i > LowBnd.y) and (i > Lines.Count - UpBnd.y) then
       exit('');
     if FTrim then
-      Result := TrimS(TSynEdit(SynEdit).SelText)
+      Result := TrimS(TCustomSynEdit(SynEdit).SelText)
     else
-      Result := TSynEdit(SynEdit).SelText;
+      Result := TCustomSynEdit(SynEdit).SelText;
     if TrimS(Result) = '' then Result := '';
     FLowBound := LowBnd;
     FUpBound := UpBnd;
   end else begin
-    Result :=  TSynEdit(SynEdit).GetWordAtRowCol(Caret.LineBytePos);
+    Result :=  TCustomSynEdit(SynEdit).GetWordAtRowCol(Caret.LineBytePos);
     if FIgnoreKeywords and assigned(FHighlighter)
        and FHighlighter.IsKeyword(Result) then
       Result := '';
     FLowBound.Y := Caret.LinePos;
     FUpBound.Y := Caret.LinePos;
-    TSynEdit(SynEdit).GetWordBoundsAtRowCol(Caret.LineBytePos, FLowBound.X, FUpBound.X);
+    TCustomSynEdit(SynEdit).GetWordBoundsAtRowCol(Caret.LineBytePos, FLowBound.X, FUpBound.X);
   end;
 end;
 
@@ -714,7 +714,7 @@ function TSynEditMarkupHighlightAllCaret.GetCurrentOption: TSynSearchOptions;
 begin
   if FToggledWord <> '' then
     exit(FToggledOption);
-  If TSynEdit(SynEdit).SelAvail or not(FFullWord) then
+  If TCustomSynEdit(SynEdit).SelAvail or not(FFullWord) then
     Result := []
   else
     if (FFullWordMaxLen >0) and (UTF8Length(GetCurrentText) > FFullWordMaxLen) then

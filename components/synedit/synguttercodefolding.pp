@@ -643,7 +643,7 @@ var
 
 begin
   if not Visible then exit;
-  LineHeight := TSynEdit(SynEdit).LineHeight;
+  LineHeight := TCustomSynEdit(SynEdit).LineHeight;
   LineOffset := 0;
   if (FirstLine > 0) and
      (FoldView.FoldType[FirstLine-1] - [cfFoldBody] = [cfFoldEnd]) then

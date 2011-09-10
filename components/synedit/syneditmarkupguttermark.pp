@@ -92,7 +92,7 @@ var
   i, j: Integer;
   s: string;
 begin
-  MLine := TSynEdit(SynEdit).Marks.Line[ARow];
+  MLine := TCustomSynEdit(SynEdit).Marks.Line[ARow];
   if MLine = nil then begin
     SetLength(FRowData, 0);
     exit;

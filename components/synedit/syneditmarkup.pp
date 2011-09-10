@@ -307,12 +307,12 @@ end;
 
 function TSynEditMarkup.ScreenRowToRow(aRow : Integer) : Integer;
 begin
-  Result := TSynEdit(SynEdit).ScreenRowToRow(aRow);
+  Result := TCustomSynEdit(SynEdit).ScreenRowToRow(aRow);
 end;
 
 function TSynEditMarkup.RowToScreenRow(aRow : Integer) : Integer;
 begin
-  Result := TSynEdit(SynEdit).RowToScreenRow(aRow);
+  Result := TCustomSynEdit(SynEdit).RowToScreenRow(aRow);
 end;
 
 function TSynEditMarkup.LogicalToPhysicalPos(const p : TPoint) : TPoint;
@@ -327,7 +327,7 @@ end;
 
 function TSynEditMarkup.Highlighter : TSynCustomHighlighter;
 begin
-  Result := TSynEdit(SynEdit).Highlighter;
+  Result := TCustomSynEdit(SynEdit).Highlighter;
 end;
 
 function TSynEditMarkup.OwnedByMgr: Boolean;

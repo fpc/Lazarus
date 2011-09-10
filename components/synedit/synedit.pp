@@ -909,7 +909,6 @@ type
       read GetMarkupByClass;
     property TrimSpaceType: TSynEditStringTrimmingType
       read GetTrimSpaceType write SetTrimSpaceType;
-  protected
     property BookMarkOptions: TSynBookMarkOpt
       read fBookMarkOpt write fBookMarkOpt;
     property BlockIndent: integer read fBlockIndent write SetBlockIndent default 2;
@@ -940,6 +939,7 @@ type
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
     property OverwriteCaret: TSynEditCaretType read FOverwriteCaret
       write SetOverwriteCaret default ctBlock;
+  protected
     property RightEdge: Integer read fRightEdge write SetRightEdge default 80;
     property RightEdgeColor: TColor
       read fRightEdgeColor write SetRightEdgeColor default clSilver;
@@ -995,8 +995,6 @@ type
   end;
 
   TSynEdit = class(TCustomSynEdit)
-  public
-    property ShareOptions;
   published
     // inherited properties
     property Align;
@@ -1156,6 +1154,7 @@ type
     FCaretPos: TPoint;
   protected
     function IsEqualContent(AnItem: TSynEditUndoItem): Boolean; override;
+    function DebugString: String; override;
   public
     constructor Create(CaretPos: TPoint);
     function IsCaretInfo: Boolean; override;
@@ -1170,6 +1169,7 @@ type
     FBlockMode: TSynSelectionMode;
   protected
     function IsEqualContent(AnItem: TSynEditUndoItem): Boolean; override;
+    function DebugString: String; override;
   public
     function IsCaretInfo: Boolean; override;
     constructor Create(CaretPos, BeginPos, EndPos: TPoint; BlockMode: TSynSelectionMode);
@@ -1205,9 +1205,15 @@ begin
         and (FCaretPos.y = TSynEditUndoCaret(AnItem).FCaretPos.y);
 end;
 
+function TSynEditUndoCaret.DebugString: String;
+begin
+  Result := 'CaretPos='+dbgs(FCaretPos);
+end;
+
 constructor TSynEditUndoCaret.Create(CaretPos: TPoint);
 begin
   FCaretPos := CaretPos;
+  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoCaret.IsCaretInfo: Boolean;
@@ -1217,9 +1223,10 @@ end;
 
 function TSynEditUndoCaret.PerformUndo(Caller: TObject): Boolean;
 begin
-  Result := Caller is TSynEdit;
+  Result := Caller is TCustomSynEdit;
   if Result then
-    with TSynEdit(Caller) do begin
+    {$IFDEF SynUndoDebug}debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+    with TCustomSynEdit(Caller) do begin
       FCaret.LineCharPos := FCaretPos;
       FTheLinesView.CurUndoList.AddChange(TSynEditUndoCaret.Create(FCaretPos));
     end;
@@ -1234,6 +1241,7 @@ begin
   FBeginPos := BeginPos;
   FEndPos   := EndPos;
   FBlockMode := BlockMode;
+  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoSelCaret.IsEqualContent(AnItem: TSynEditUndoItem): Boolean;
@@ -1247,6 +1255,11 @@ begin
         and (FBlockMode = TSynEditUndoSelCaret(AnItem).FBlockMode);
 end;
 
+function TSynEditUndoSelCaret.DebugString: String;
+begin
+  Result := 'CaretPos='+dbgs(FCaretPos) + ' Begin=' + dbgs(FBeginPos) + ' End=' + dbgs(FEndPos) + ' Mode=' + dbgs(ord(FBlockMode));
+end;
+
 function TSynEditUndoSelCaret.IsCaretInfo: Boolean;
 begin
   Result := True;
@@ -1254,9 +1267,10 @@ end;
 
 function TSynEditUndoSelCaret.PerformUndo(Caller: TObject): Boolean;
 begin
-  Result := Caller is TSynEdit;
+  Result := Caller is TCustomSynEdit;
   if Result then
-    with TSynEdit(Caller) do begin
+    {$IFDEF SynUndoDebug}debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
+    with TCustomSynEdit(Caller) do begin
       SetCaretAndSelection(FCaretPos, FBeginPos, FEndPos, FBlockMode, True);
       FTheLinesView.CurUndoList.AddChange(TSynEditUndoSelCaret.Create(FCaretPos, FBeginPos,
                                                      FEndPos, FBlockMode));
@@ -5449,7 +5463,7 @@ begin
   j := 0;
   i := TSynEditStringList(FLines).AttachedSynEditCount - 1;
   while (i >= 0) and (j <= 1) do begin
-    if TSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).FMarkList = FMarkList then
+    if TCustomSynEdit(TSynEditStringList(FLines).AttachedSynEdits[i]).FMarkList = FMarkList then
       inc(j);
     dec(i);
   end;
@@ -5469,10 +5483,10 @@ begin
     s := TSynEditStringList(FLines).AttachedSynEdits[0];
     if s = Self then
       s := TSynEditStringList(FLines).AttachedSynEdits[1];
-    FMarkList := TSynEdit(s).FMarkList;
+    FMarkList := TCustomSynEdit(s).FMarkList;
     TSynEditMarkListInternal(fMarkList).AddOwnerEdit(Self);
     for i := 0 to 9 do
-      FBookMarks[i] := TSynEdit(s).fBookMarks[i];
+      FBookMarks[i] := TCustomSynEdit(s).fBookMarks[i];
   end
   else begin
     FMarkList := TSynEditMarkListInternal.Create(self, FTheLinesView);
@@ -5501,7 +5515,7 @@ begin
       s := TSynEditStringList(FLines).AttachedSynEdits[1]; // TODO: find one that shares the MarkList (if someday partial sharing of Marks is avail)
 
     if TSynEditMarkListInternal(FMarkList).LinesView = FTheLinesView then
-      TSynEditMarkListInternal(FMarkList).LinesView := TSynEdit(s).FTheLinesView;
+      TSynEditMarkListInternal(FMarkList).LinesView := TCustomSynEdit(s).FTheLinesView;
 
     it := TSynEditMarkIterator.Create(FMarkList);
     it.GotoBOL;
@@ -8914,7 +8928,7 @@ end;
 
 function TSynEditPlugin.GetEditor: TCustomSynEdit;
 begin
-  Result := FriendEdit as TSynEdit;
+  Result := FriendEdit as TCustomSynEdit;
 end;
 
 function TSynEditPlugin.OwnedByEditor: Boolean;

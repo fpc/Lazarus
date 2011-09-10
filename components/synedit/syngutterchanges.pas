@@ -81,7 +81,7 @@ var
 begin
   if not Visible then exit;
 
-  LineHeight := TSynEdit(SynEdit).LineHeight;
+  LineHeight := TCustomSynEdit(SynEdit).LineHeight;
 
   if MarkupInfo.Background <> clNone then
   begin

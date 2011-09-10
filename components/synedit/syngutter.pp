@@ -191,7 +191,7 @@ begin
   // Clear all
   TextDrawer.BeginDrawing(dc);
   TextDrawer.SetBackColor(Color);
-  TextDrawer.SetForeColor(TSynEdit(SynEdit).Font.Color);
+  TextDrawer.SetForeColor(TCustomSynEdit(SynEdit).Font.Color);
   TextDrawer.SetFrameColor(clNone);
    with AClip do
      TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);

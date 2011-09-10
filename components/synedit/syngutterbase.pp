@@ -699,14 +699,14 @@ end;
 
 function TSynGutterPartList.FindGutter: TSynGutterBase;
 begin
-  Result := TSynEdit(SynEdit).Gutter;
+  Result := TCustomSynEdit(SynEdit).Gutter;
 end;
 
 { TSynRightGutterPartList }
 
 function TSynRightGutterPartList.FindGutter: TSynGutterBase;
 begin
-  Result := TSynEdit(SynEdit).RightGutter;
+  Result := TCustomSynEdit(SynEdit).RightGutter;
 end;
 
 end.

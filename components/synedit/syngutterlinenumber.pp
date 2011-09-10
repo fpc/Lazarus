@@ -226,7 +226,7 @@ var
 begin
   if not Visible then exit;
 
-  LineHeight := TSynEdit(SynEdit).LineHeight;
+  LineHeight := TCustomSynEdit(SynEdit).LineHeight;
   // Changed to use fTextDrawer.BeginDrawing and fTextDrawer.EndDrawing only
   // when absolutely necessary.  Note: Never change brush / pen / font of the
   // canvas inside of this block (only through methods of fTextDrawer)!
@@ -245,7 +245,7 @@ begin
     if MarkupInfo.Foreground <> clNone then
       fTextDrawer.SetForeColor(MarkupInfo.Foreground)
     else
-      fTextDrawer.SetForeColor(TSynEdit(SynEdit).Font.Color);
+      fTextDrawer.SetForeColor(TCustomSynEdit(SynEdit).Font.Color);
     fTextDrawer.SetFrameColor(MarkupInfo.FrameColor);
     fTextDrawer.Style := MarkupInfo.Style;
     // prepare the rect initially
@@ -260,7 +260,7 @@ begin
       // line number is not the first, the last, the current line
       // or a multiple of ShowOnlyLineNumbersMultiplesOf
       ShowDot := ((iLine mod ShowOnlyLineNumbersMultiplesOf) <> 0)
-          and (iLine <> TSynEdit(SynEdit).CaretY) and (iLine <> 1)
+          and (iLine <> TCustomSynEdit(SynEdit).CaretY) and (iLine <> 1)
           and (iLine <> SynEdit.Lines.Count);
       // Get the formatted line number or dot
       s := FormatLineNumber(iLine, ShowDot);

@@ -128,7 +128,7 @@ procedure TSynEditMarkupCtrlMouseLink.InternalUpdateCtrlMouse;
   procedure doNotShowLink;
   begin
     if CtrlMouseLine > 0 then
-      TSynEdit(SynEdit).Invalidate;
+      TCustomSynEdit(SynEdit).Invalidate;
     FCursor := crDefault;
     CtrlMouseLine:=-1;
     FCtrlLinkable := False;
@@ -140,17 +140,17 @@ begin
   if FLastControlIsPressed and (LastMouseCaret.X>0) and (LastMouseCaret.Y>0) then begin
     // show link
     NewY := LastMouseCaret.Y;
-    TSynEdit(SynEdit).GetWordBoundsAtRowCol(Lines.PhysicalToLogicalPos(LastMouseCaret),NewX1,NewX2);
+    TCustomSynEdit(SynEdit).GetWordBoundsAtRowCol(Lines.PhysicalToLogicalPos(LastMouseCaret),NewX1,NewX2);
     if (NewY = CtrlMouseLine) and
        (NewX1 = CtrlMouseX1) and
        (NewX2 = CtrlMouseX2)
     then
       exit;
-    FCtrlLinkable := TSynEdit(SynEdit).IsLinkable(NewY, NewX1, NewX2);
+    FCtrlLinkable := TCustomSynEdit(SynEdit).IsLinkable(NewY, NewX1, NewX2);
     CtrlMouseLine := fLastMouseCaret.Y;
     CtrlMouseX1 := NewX1;
     CtrlMouseX2 := NewX2;
-    TSynEdit(SynEdit).Invalidate;
+    TCustomSynEdit(SynEdit).Invalidate;
     if FCtrlLinkable then
       FCursor := crHandPoint
     else
@@ -167,8 +167,8 @@ var
 begin
   Result := False;
   // todo: check FMouseSelActions if over selection?
-  for i := 0 to TSynEdit(SynEdit).MouseActions.Count - 1 do begin
-    act := TSynEdit(SynEdit).MouseActions.Items[i];
+  for i := 0 to TCustomSynEdit(SynEdit).MouseActions.Count - 1 do begin
+    act := TCustomSynEdit(SynEdit).MouseActions.Items[i];
     if (act.Command = emcMouseLink) and
        ( (act.Option = emcoMouseLinkShow) or (not OnlyShowLink) ) and
        act.IsMatchingShiftState(AShift)
@@ -213,12 +213,12 @@ var
   temp : TPoint;
 begin
   if (FCtrlMouseLine < 1) or (not FCtrlLinkable) then exit;
-  LineTop := (RowToScreenRow(FCtrlMouseLine)+1)*TSynEdit(SynEdit).LineHeight-1;
+  LineTop := (RowToScreenRow(FCtrlMouseLine)+1)*TCustomSynEdit(SynEdit).LineHeight-1;
   Temp := LogicalToPhysicalPos(Point(FCtrlMouseX1, FCtrlMouseLine));
-  LineLeft := TSynEdit(SynEdit).ScreenColumnToXValue(Temp.x);
+  LineLeft := TCustomSynEdit(SynEdit).ScreenColumnToXValue(Temp.x);
   Temp := LogicalToPhysicalPos(Point(FCtrlMouseX2, FCtrlMouseLine));
-  LineRight := TSynEdit(SynEdit).ScreenColumnToXValue(Temp.x);
-  with TSynEdit(SynEdit).Canvas do begin
+  LineRight := TCustomSynEdit(SynEdit).ScreenColumnToXValue(Temp.x);
+  with TCustomSynEdit(SynEdit).Canvas do begin
     Pen.Color := MarkupInfo.Foreground;
     MoveTo(LineLeft,LineTop);
     LineTo(LineRight,LineTop);

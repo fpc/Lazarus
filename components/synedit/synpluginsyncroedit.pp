@@ -730,7 +730,7 @@ begin
   if SynEdit.HandleAllocated then begin
     rcInval := GetGutterGlyphRect;
     // and make sure we trigger the Markup // TODO: triigger markup on gutter paint too
-    rcInval.Right := Max(rcInval.Right, TSynEdit(SynEdit).Gutter.Width + 2);
+    rcInval.Right := Max(rcInval.Right, TCustomSynEdit(SynEdit).Gutter.Width + 2);
     InvalidateRect(SynEdit.Handle, @rcInval, False);
   end;
 end;
@@ -789,7 +789,7 @@ begin
     src :=  Classes.Rect(0, 0, FGutterGlyph.Width, FGutterGlyph.Height);
     dst := GutterGlyphRect;
     FGlyphLastLine := GetGutterGlyphPaintLine;
-    TSynEdit(SynEdit).Canvas.CopyRect(dst, FGutterGlyph.Canvas, src);
+    TCustomSynEdit(SynEdit).Canvas.CopyRect(dst, FGutterGlyph.Canvas, src);
   end;
 end;
 
@@ -806,10 +806,10 @@ function TSynPluginSyncroEditMarkup.GetGutterGlyphRect(aLine: Integer): TRect;
 begin
   Result :=  Classes.Rect(0, 0, FGutterGlyph.Width, FGutterGlyph.Height);
   if aLine = -1 then
-    aLine := TSynEdit(SynEdit).CaretY;
+    aLine := TCustomSynEdit(SynEdit).CaretY;
   Result.Top := Max( Min( RowToScreenRow(aLine)
-                          * TSynEdit(SynEdit).LineHeight,
-                          TSynEdit(SynEdit).ClientHeight - FGutterGlyph.Height),
+                          * TCustomSynEdit(SynEdit).LineHeight,
+                          TCustomSynEdit(SynEdit).ClientHeight - FGutterGlyph.Height),
                           0);
   Result.Bottom := Result.Bottom + Result.Top;
 end;
@@ -825,7 +825,7 @@ var
 begin
   Result := FGlyphAtLine;
   if Result < 0 then
-    Result := TSynEdit(SynEdit).CaretY;
+    Result := TCustomSynEdit(SynEdit).CaretY;
   if Result < TopLine then
     Result := TopLine;
   i := ScreenRowToRow(LinesInWindow);
