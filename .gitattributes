@@ -1777,6 +1777,18 @@ components/mouseandkeyinput/winmouseinput.pas svneol=native#text/pascal
 components/mouseandkeyinput/xkeyinput.pas svneol=native#text/pascal
 components/mouseandkeyinput/xmouseinput.pas svneol=native#text/pascal
 components/mpaslex/mpaslex.pp svneol=native#text/pascal
+components/mrumenu/demo/frmmain.lfm svneol=native#text/plain
+components/mrumenu/demo/frmmain.pp svneol=native#text/plain
+components/mrumenu/demo/mrudemo.ico -text svneol=unset#image/ico
+components/mrumenu/demo/mrudemo.lpi svneol=native#text/plain
+components/mrumenu/demo/mrudemo.lpr svneol=native#text/plain
+components/mrumenu/demo/mrudemo.res -text
+components/mrumenu/lazmrumenu.lpk svneol=native#text/plain
+components/mrumenu/lazmrumenu.pas svneol=native#text/plain
+components/mrumenu/mrumanager.pp svneol=native#text/plain
+components/mrumenu/reglazmru.pp svneol=native#text/plain
+components/mrumenu/regmru.lrs svneol=native#text/plain
+components/mrumenu/tmrumenumanager.png -text svneol=unset#image/png
 components/opengl/example/imgui.lpi svneol=native#text/plain
 components/opengl/example/imgui.pas svneol=native#text/pascal
 components/opengl/example/imgui.res -text

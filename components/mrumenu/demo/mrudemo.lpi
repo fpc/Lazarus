@@ -1,0 +1,208 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <General>
+      <MainUnit Value="0"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1" Active="Default">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="3">
+      <Item1>
+        <PackageName Value="lazmrumenu"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCLBase"/>
+        <MinVersion Valid="True"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+    </RequiredPackages>
+    <Units Count="7">
+      <Unit0>
+        <Filename Value="mrudemo.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mrudemo"/>
+        <UsageCount Value="22"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="frmmain.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="frmmain"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="124"/>
+        <CursorPos X="44" Y="138"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="../mrumanager.pp"/>
+        <UnitName Value="mrumanager"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="14"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../regmru.lrs"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="17" Y="1"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../reglazmru.pp"/>
+        <UnitName Value="reglazmru"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="44" Y="8"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/demo/frmmain.pp"/>
+        <UnitName Value="frmmain"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="124"/>
+        <CursorPos X="16" Y="136"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
+        <UnitName Value="mrumanager"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="85"/>
+        <CursorPos X="1" Y="113"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit6>
+    </Units>
+    <JumpHistory Count="16" HistoryIndex="15">
+      <Position1>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="84" Column="37" TopLine="68"/>
+      </Position1>
+      <Position2>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="94" Column="21" TopLine="76"/>
+      </Position2>
+      <Position3>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="103" Column="21" TopLine="86"/>
+      </Position3>
+      <Position4>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="93" Column="10" TopLine="85"/>
+      </Position4>
+      <Position5>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="115" Column="41" TopLine="111"/>
+      </Position5>
+      <Position6>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="128" Column="36" TopLine="122"/>
+      </Position6>
+      <Position7>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="148" Column="21" TopLine="124"/>
+      </Position7>
+      <Position8>
+        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
+        <Caret Line="101" Column="1" TopLine="84"/>
+      </Position8>
+      <Position9>
+        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
+        <Caret Line="102" Column="1" TopLine="84"/>
+      </Position9>
+      <Position10>
+        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
+        <Caret Line="103" Column="1" TopLine="84"/>
+      </Position10>
+      <Position11>
+        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
+        <Caret Line="105" Column="1" TopLine="84"/>
+      </Position11>
+      <Position12>
+        <Filename Value="/data/wisa/projects/fpcpackages/wisawebdb/menueditor/mrumanager.pp"/>
+        <Caret Line="106" Column="1" TopLine="84"/>
+      </Position12>
+      <Position13>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="69" Column="19" TopLine="54"/>
+      </Position13>
+      <Position14>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="283" Column="27" TopLine="279"/>
+      </Position14>
+      <Position15>
+        <Filename Value="../mrumanager.pp"/>
+        <Caret Line="72" Column="89" TopLine="65"/>
+      </Position15>
+      <Position16>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="138" Column="44" TopLine="124"/>
+      </Position16>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="10"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <UseAnsiStrings Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>
