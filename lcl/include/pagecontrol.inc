@@ -175,5 +175,13 @@ begin
   if NextPage<>nil then ActivePage:=NextPage;
 end;
 
+// Convenience routine, to make the TPageControl more intuitive to use
+// A Lazarus addition
+function TPageControl.AddTabSheet: TTabSheet;
+begin
+  Result := TTabSheet.Create(Self);
+  Result.PageControl := Self;
+end;
+
 
 // included by comctrls.pp

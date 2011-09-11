@@ -516,6 +516,7 @@ type
                           GoForward, CheckTabVisible: Boolean): TTabSheet;
     procedure SelectNextPage(GoForward: Boolean);
     procedure SelectNextPage(GoForward: Boolean; CheckTabVisible: Boolean);
+    function AddTabSheet: TTabSheet;
     property ActivePageIndex: Integer read GetActivePageIndex
                                       write SetActivePageIndex;
     property Pages[Index: Integer]: TTabSheet read GetTabSheet;
