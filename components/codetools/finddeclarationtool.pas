@@ -7343,6 +7343,17 @@ var
       {$IFDEF ShowExprEval}
       debugln(['  FindExpressionTypeOfTerm ResolveRoundBracketOpen skip typecast/paramlist="',dbgstr(Src,CurAtom.StartPos,CurAtomBracketEndPos-CurAtom.StartPos),'"']);
       {$ENDIF}
+      if fdfExtractOperand in Params.Flags then begin
+        if ExprType.Context.Node.Desc=ctnTypeDefinition then begin
+          // typecast
+          Params.AddOperandPart(GetIdentifier(@Src[ExprType.Context.Node.StartPos]));
+          Params.AddOperandPart('(');
+          // assumption: one term in brakets
+          FindExpressionTypeOfTerm(CurAtom.StartPos+1,CurAtomBracketEndPos-1,
+            Params,false);
+          Params.AddOperandPart(')');
+        end;
+      end;
     end else begin
       // expression
       {$IFDEF ShowExprEval}

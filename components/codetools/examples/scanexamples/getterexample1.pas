@@ -26,6 +26,7 @@ type
     function GetBar: integer; override;
   public
     procedure DoSomething;
+    function GetOldest(Older: TOlder): TOldest;
   end;
 
 implementation
@@ -49,9 +50,15 @@ var
   Older: TOlder;
 begin
   Older:=TOlder.Create;
-  with TOlder(Older) do begin
+  with TOlder(Older) do
     writeln(Bar);
-  end;
+  with Older.GetOldest(Self) do
+    writeln(Bar);
+end;
+
+function TOlder.GetOldest(Older: TOlder): TOldest;
+begin
+  Result:=Older;
 end;
 
 end.
