@@ -95,9 +95,13 @@
   <CompilerOptions>
     <Version Value="10"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="lhelp"/>
+    </Target>
     <SearchPaths>
       <Libraries Value="\emul\linux\x86\lib\;\emul\linux\x86\usr\lib32\"/>
       <OtherUnitFiles Value="..\..\..\..\fpc\packages\chm\src"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       <SrcPath Value="$(LazarusDir)\lcl;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)"/>
     </SearchPaths>
     <Parsing>
