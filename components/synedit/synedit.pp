@@ -7828,13 +7828,17 @@ var
   end;
 
 begin
-  if not SelAvail then exit;
   IncPaintLock;
   FBlockSelection.IncPersistentLock;
   try
     // build text to insert
-    BB := BlockBegin;
-    BE := BlockEnd;
+    if not SelAvail then begin
+      BB := CaretXY;
+      BE := CaretXY;
+    end else begin
+      BB := BlockBegin;
+      BE := BlockEnd;
+    end;
     if (BE.X = 1) then
       e := BE.y - 1
     else
@@ -7889,10 +7893,13 @@ var
   end;
 
 begin
-  if not SelAvail then exit;
-
-  BB := BlockBegin;
-  BE := BlockEnd;
+  if not SelAvail then begin
+    BB := CaretXY;
+    BE := CaretXY;
+  end else begin
+    BB := BlockBegin;
+    BE := BlockEnd;
+  end;
   // convert selection to complete lines
   if BE.X = 1 then
     e := BE.y - 1
