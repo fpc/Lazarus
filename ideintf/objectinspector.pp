@@ -1259,7 +1259,8 @@ begin
     end else begin
       // expand row
       CurParentRow:=Result;
-      ExpandRow(CurParentRow.Index);
+      if s<=length(PropPath) then
+        ExpandRow(CurParentRow.Index);
     end;
   end;
   if s<=length(PropPath) then Result:=nil;
