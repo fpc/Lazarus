@@ -48,28 +48,20 @@ Type
   private
     FField: TField;
     FFieldName: string;
-
     FControl: TComponent;
-
-    // Curent State of Affairs
-    FEditing: Boolean;
-    IsModified: Boolean;
-
     // Callbacks
     FOnDataChange: TNotifyEvent;
     FOnEditingChange: TNotifyEvent;
     FOnUpdateData: TNotifyEvent;
     FOnActiveChange: TNotifyEvent;
-    FOnFocusRequest: TNotifyEvent;
-    FOnLayoutChange: TNotifyEvent;
-
+    // Curent State of Affairs
+    FEditing: Boolean;
+    IsModified: Boolean;
     function FieldCanModify: boolean;
     function GetCanModify: Boolean;
-
     // set current field
     procedure SetFieldName(const Value: string);
     procedure UpdateField;
-
     // make sure the field/fieldname is valid before we do stuff with it
     procedure ValidateField;
   protected
@@ -109,8 +101,6 @@ Type
     property OnEditingChange: TNotifyEvent read FOnEditingChange write FOnEditingChange;
     property OnUpdateData: TNotifyEvent read FOnUpdateData write FOnUpdateData;
     property OnActiveChange: TNotifyEvent read FOnActiveChange write FOnActiveChange;
-    property OnFocusRequest: TNotifyEvent read FOnFocusRequest write FOnFocusRequest;
-    property OnLayoutChange: TNotifyevent read FOnLayoutChange write FOnLayoutChange;
   end;
 
 
@@ -1505,8 +1495,6 @@ begin
     EditingChanged;
     Reset;
   end;
-  if Assigned(FOnLayoutChange) then
-    FOnLayoutChange(Self);
 end;
 
 { Delphi Help ->
@@ -1563,11 +1551,9 @@ end;
 
 procedure TFieldDataLink.FocusControl(aField: TFieldRef);
 begin
+  //todo
   If Assigned(aField) and (aField^ = FField) then
-    if Assigned(FOnFocusRequest) then begin
       aField^ := nil;
-      FOnFocusRequest(Self);
-    end;
 end;
 
 {TFieldDataLink  Public Methods}
