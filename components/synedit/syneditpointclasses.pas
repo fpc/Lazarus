@@ -262,7 +262,7 @@ type
     FClipTop: Integer;
     FDisplayPos: TPoint;
     FDisplayType: TSynCaretType;
-    FExtraLineChars: Integer;
+    FExtraLinePixel, FExtraLineChars: Integer;
     FOnExtraLineCharsChanged: TNotifyEvent;
     FVisible: Boolean;
     FHandleOwner: TWinControl;
@@ -275,6 +275,7 @@ type
     procedure SetDisplayType(const AType: TSynCaretType);
     procedure SetVisible(const AValue: Boolean);
   private
+    FClipExtraPixel: Integer;
     {$IFDeF SynCaretDebug}
     FDebugShowCount: Integer;
     {$ENDIF}
@@ -286,9 +287,11 @@ type
     FLockCount: Integer;
     FLockedUpdateNeeded: Boolean;
     procedure SetClipBottom(const AValue: Integer);
+    procedure SetClipExtraPixel(AValue: Integer);
     procedure SetClipLeft(const AValue: Integer);
     procedure SetClipRect(const AValue: TRect);
     procedure SetClipTop(const AValue: Integer);
+    procedure CalcExtraLineChars;
     procedure UpdateDisplayType;
     procedure UpdateDisplay;
     procedure ShowCaret;
@@ -310,6 +313,7 @@ type
     property ClipTop:     Integer read FClipTop write SetClipTop;
     property ClipRect:    TRect write SetClipRect;
     property ClipBottom:  Integer read FClipBottom write SetClipBottom;
+    property ClipExtraPixel: Integer read FClipExtraPixel write SetClipExtraPixel; // Amount of pixels, after  the last full char (half visible char width)
     property Visible:     Boolean read FVisible write SetVisible;
     property DisplayType: TSynCaretType read FDisplayType write SetDisplayType;
     property DisplayPos:  TPoint  read FDisplayPos write SetDisplayPos;
@@ -1580,6 +1584,7 @@ begin
   FCurrentPosX := -1;
   FCurrentPosY := -1;
   FCurrentClippedWidth := -1;
+  FClipExtraPixel := 0;
   FLockCount := 0;
 end;
 
@@ -1675,10 +1680,7 @@ begin
 end;
 
 procedure TSynEditScreenCaret.UpdateDisplayType;
-var
-  OldExtraChars: Integer;
 begin
-  OldExtraChars := FExtraLineChars;
   case FDisplayType of
     ctVerticalLine:
       begin
@@ -1686,7 +1688,7 @@ begin
         FPixelHeight    := FCharHeight - 2;
         FOffsetX        := -1;
         FOffsetY        :=  1;
-        FExtraLineChars :=  0;
+        FExtraLinePixel :=  1;
       end;
     ctBlock:
       begin
@@ -1694,7 +1696,7 @@ begin
         FPixelHeight    := FCharHeight - 2;
         FOffsetX        := 0;
         FOffsetY        := 1;
-        FExtraLineChars := 1;
+        FExtraLinePixel := FCharWidth;
       end;
     ctHalfBlock:
       begin
@@ -1702,7 +1704,7 @@ begin
         FPixelHeight    := (FCharHeight - 2) div 2;
         FOffsetX        := 0;
         FOffsetY        := FPixelHeight + 1;
-        FExtraLineChars := 1;
+        FExtraLinePixel := FCharWidth;
       end;
     ctHorizontalLine:
       begin
@@ -1710,11 +1712,10 @@ begin
         FPixelHeight    := 2;
         FOffsetX        := 0;
         FOffsetY        := FCharHeight - 1;
-        FExtraLineChars := 1;
+        FExtraLinePixel := FCharWidth;
       end;
   end;
-  if (FExtraLineChars <> OldExtraChars) and assigned(FOnExtraLineCharsChanged) then
-    FOnExtraLineCharsChanged(Self);
+  CalcExtraLineChars;
   UpdateDisplay;
 end;
 
@@ -1722,6 +1723,17 @@ procedure TSynEditScreenCaret.SetClipBottom(const AValue: Integer);
 begin
   if FClipBottom = AValue then exit;
   FClipBottom := AValue;
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.SetClipExtraPixel(AValue: Integer);
+begin
+  if FClipExtraPixel = AValue then Exit;
+  {$IFDeF SynCaretDebug}
+  debugln(['SynEditCaret ClipRect for HandleOwner=',FHandleOwner, ' ExtraPixel=', dbgs(AValue)]);
+  {$ENDIF}
+  FClipExtraPixel := AValue;
+  CalcExtraLineChars;
   UpdateDisplay;
 end;
 
@@ -1753,6 +1765,17 @@ begin
   if FClipTop = AValue then exit;
   FClipTop := AValue;
   UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.CalcExtraLineChars;
+var
+  OldExtraChars: Integer;
+begin
+  OldExtraChars := FExtraLineChars;
+  FExtraLineChars := Max(0, FExtraLinePixel - FClipExtraPixel + FCharWidth - 1)
+                     div FCharWidth;
+  if (FExtraLineChars <> OldExtraChars) and assigned(FOnExtraLineCharsChanged) then
+    FOnExtraLineCharsChanged(Self);
 end;
 
 procedure TSynEditScreenCaret.UpdateDisplay;

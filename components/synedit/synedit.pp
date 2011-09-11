@@ -7522,10 +7522,10 @@ end;
 procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
 var
   NewLinesInWindow: Integer;
+  w: Integer;
 begin
-  FCharsInWindow := Max(1, (ClientWidth
-                            - TextLeftPixelOffset - TextRightPixelOffset
-                            - ScrollBarWidth) div fCharWidth);
+  w := ClientWidth - TextLeftPixelOffset - TextRightPixelOffset - ScrollBarWidth;
+  FCharsInWindow := Max(1, w div fCharWidth);
 
   NewLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
   if NewLinesInWindow <> FLinesInWindow then begin
@@ -7535,9 +7535,12 @@ begin
     StatusChanged([scLinesInWindow]);
   end;
 
+  FScreenCaret.Lock;
   FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
                                 ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
                                 ClientHeight - ScrollBarWidth);
+  FScreenCaret.ClipExtraPixel := w - fCharsInWindow * fCharWidth;
+  FScreenCaret.UnLock;
 
   if CheckCaret then begin
     if not (eoScrollPastEol in Options) then
