@@ -101,15 +101,6 @@ begin
   Message.Result := PtrUInt(FDataLink);
 end;
 
-{ Protected Methods}
-procedure TDBCalendar.Loaded;
-begin
-  inherited Loaded;
-  //need to make sure the state is updated on first load
-  if (csDesigning in ComponentState) then
-    DataChange(Self);
-end;
-
 procedure TDBCalendar.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin

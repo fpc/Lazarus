@@ -115,13 +115,6 @@ begin
   SetFocus;
 end;
 
-procedure TCustomDBComboBox.Loaded;
-begin
-  inherited Loaded;
-  if (csDesigning in ComponentState) then
-    DataChange(Self);
-end;
-
 procedure TCustomDBComboBox.EditingDone;
 begin
   FDataLink.UpdateRecord;

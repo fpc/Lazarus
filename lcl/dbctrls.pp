@@ -203,7 +203,6 @@ Type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
 
-    procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
 
@@ -285,7 +284,6 @@ Type
     procedure SetDataSource(Value: TDataSource);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     class procedure WSRegisterClass; override;
@@ -360,7 +358,6 @@ Type
     procedure DataChange(Sender: TObject); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
-    procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
@@ -535,7 +532,6 @@ Type
     property DataLink: TFieldDataLink read FDataLink;
     function GetButtonValue(Index: Integer): string;
     procedure UpdateRadioButtonStates; override;
-    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -599,7 +595,6 @@ Type
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
-    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -668,7 +663,6 @@ Type
     procedure Change; override;
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
-    procedure Loaded; override;
     procedure UpdateText; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -853,7 +847,6 @@ Type
                            Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
-    procedure Loaded; override;
     procedure Change; override;
     procedure KeyPress(var Key:Char); override;
     procedure WndProc(var AMessage : TLMessage); override;
@@ -915,7 +908,6 @@ Type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure DataChange(Sender: TObject); virtual;
-    procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
   public
@@ -989,7 +981,6 @@ Type
     procedure UpdateData(Sender: TObject); virtual;
     procedure PictureChanged(Sender: TObject); override;
     procedure LoadPicture; virtual;
-    procedure Loaded; override;
     class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1049,7 +1040,6 @@ Type
     procedure UpdateDate(const AValue: string);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
   public

@@ -114,14 +114,6 @@ begin
   end;
 end;
 
-procedure TCustomDBListBox.Loaded;
-begin
-  inherited Loaded;
-  //need to make sure the state is updated on first load
-  if (csDesigning in ComponentState) then
-    DataChange(Self);
-end;
-
 procedure TCustomDBListBox.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin

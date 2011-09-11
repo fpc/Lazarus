@@ -62,15 +62,6 @@ begin
   Message.Result := PtrUInt(FDataLink);
 end;
 
-{ Protected Methods}
-procedure TDBText.Loaded;
-begin
-  inherited Loaded;
-  //need to make sure the state is updated on first load
-  if (csDesigning in ComponentState) then
-    DataChange(Self);
-end;
-
 procedure TDBText.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin

@@ -176,13 +176,6 @@ begin
     end;
 end;
 
-procedure TDBImage.Loaded;
-begin
-  inherited Loaded;
-  if (csDesigning in ComponentState) then
-    DataChange(Self);
-end;
-
 class procedure TDBImage.WSRegisterClass;
 const
   Done: Boolean = False;

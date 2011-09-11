@@ -128,13 +128,6 @@ begin
   SetFocus;
 end;
 
-procedure TDBMemo.Loaded;
-begin
-  inherited Loaded;
-  if (csDesigning in ComponentState) then
-    DataChange(Self);
-end;
-
 procedure TDBMemo.EditingDone;
 begin
   if FDataLink.CanModify and FDatalink.Editing then begin

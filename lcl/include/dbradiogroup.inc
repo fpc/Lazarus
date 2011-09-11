@@ -148,13 +148,6 @@ begin
   end;
 end;
 
-procedure TDBRadioGroup.Loaded;
-begin
-  inherited Loaded;
-  if (csDesigning in ComponentState) then
-    DataChange(Self);
-end;
-
 procedure TDBRadioGroup.EditingDone;
 begin
   FDataLink.UpdateRecord;

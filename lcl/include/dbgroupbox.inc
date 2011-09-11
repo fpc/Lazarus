@@ -54,14 +54,6 @@ begin
     Caption:='';
 end;
 
-procedure TDBGroupBox.Loaded;
-begin
-  inherited Loaded;
-  //need to make sure the state is updated on first load
-  if (csDesigning in ComponentState) then
-    DataChange(Self);
-end;
-
 procedure TDBGroupBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);

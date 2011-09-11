@@ -181,13 +181,6 @@ begin
   end;
 end;
 
-procedure TDBCheckBox.Loaded;
-begin
-  inherited Loaded;
-  if (csDesigning in ComponentState) then
-    DataChange(Self);
-end;
-
 procedure TDBCheckBox.CMGetDataLink(var Message: TLMessage);
 begin
   Message.Result := PtrUInt(FDataLink);
