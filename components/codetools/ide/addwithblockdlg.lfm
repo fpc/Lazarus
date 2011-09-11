@@ -10,11 +10,12 @@ object AddWithBlockDialog: TAddWithBlockDialog
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 203
+    Height = 34
+    Top = 211
     Width = 350
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
+    OKButton.OnClick = ButtonPanel1OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
@@ -26,20 +27,20 @@ object AddWithBlockDialog: TAddWithBlockDialog
   end
   object WithExprGroupBox: TGroupBox
     Left = 6
-    Height = 191
+    Height = 199
     Top = 6
     Width = 350
     Align = alClient
     BorderSpacing.Around = 6
     Caption = 'WithExprGroupBox'
-    ClientHeight = 170
-    ClientWidth = 342
+    ClientHeight = 181
+    ClientWidth = 346
     TabOrder = 1
     object WithExprStringGrid: TStringGrid
       Left = 0
-      Height = 170
+      Height = 181
       Top = 0
-      Width = 342
+      Width = 346
       Align = alClient
       AutoFillColumns = True
       ColCount = 2
@@ -48,19 +49,19 @@ object AddWithBlockDialog: TAddWithBlockDialog
           SizePriority = 2
           Title.Caption = 'Expression'
           Title.PrefixOption = poNone
-          Width = 170
+          Width = 171
         end      
         item
           Title.Caption = 'Count'
           Title.PrefixOption = poNone
-          Width = 170
+          Width = 171
         end>
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goColSpanning, goSmoothScroll]
       TabOrder = 0
       ColWidths = (
-        170
-        170
+        171
+        171
       )
     end
   end

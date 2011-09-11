@@ -127,7 +127,9 @@ begin
   WithExprStringGrid.Columns[0].Title.Caption:=crsExpression;
   WithExprStringGrid.Columns[1].Title.Caption:=crsCount;
 
-  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
+  ButtonPanel1.HelpButton.Caption:=crsHelp;
+  ButtonPanel1.OKButton.Caption:=crsBTNOK;
+  ButtonPanel1.CancelButton.Caption:=crsBTNCancel;
 end;
 
 procedure TAddWithBlockDialog.ButtonPanel1OKButtonClick(Sender: TObject);
