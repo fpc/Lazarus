@@ -57,7 +57,7 @@ object AddWithBlockDialog: TAddWithBlockDialog
           Width = 171
         end>
       FixedCols = 0
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goColSpanning, goSmoothScroll]
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goRowSelect, goColSpanning, goSmoothScroll]
       TabOrder = 0
       ColWidths = (
         171
