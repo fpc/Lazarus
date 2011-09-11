@@ -43,7 +43,7 @@ var
   Operand: string;
 begin
   Filename:='scanexamples/getterexample1.pas';
-  X:=20;
+  X:=14;
   Y:=53;
   if (ParamCount>=1) and (Paramcount<3) then begin
     writeln('Usage:');

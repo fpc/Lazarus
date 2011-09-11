@@ -49,8 +49,8 @@ var
   Older: TOlder;
 begin
   Older:=TOlder.Create;
-  with Older do begin
-    writeln(Older.Bar);
+  with TOlder(Older) do begin
+    writeln(Bar);
   end;
 end;
 

@@ -521,7 +521,7 @@ type
     procedure SetGenericParamValues(SpecializeParamsTool: TFindDeclarationTool;
                 SpecializeNode: TCodeTreeNode);
     function FindGenericParamType: Boolean;
-    procedure AddOperandPart;
+    procedure AddOperandPart(aPart: string);
     property ExtractedOperand: string read FExtractedOperand;
     procedure ChangeFoundProc(const ProcContext: TFindContext;
                               ProcCompatibility: TTypeCompatibility;
@@ -2648,7 +2648,7 @@ var
       if fdfExtractOperand in Params.Flags then
         case Params.NewNode.Desc of
           ctnVarDefinition, ctnConstDefinition:
-            Params.AddOperandPart;
+            Params.AddOperandPart(GetIdentifier(@Src[Params.NewNode.StartPos]));
           ctnProperty:
             begin
               if fdfPropertyResolving in Params.Flags then begin
@@ -2659,7 +2659,7 @@ var
                 end;
                 ContextNode := Params.NewNode;
                 Exit(False);
-              end else Params.AddOperandPart;
+              end else Params.AddOperandPart(GetIdentifier(Params.Identifier));
             end;
           ctnProcedure:
             // function execution is not implemented yet
@@ -5460,6 +5460,7 @@ function TFindDeclarationTool.FindIdentifierInWithVarContext(
 var
   WithVarExpr: TExpressionType;
   OldInput: TFindDeclarationInput;
+  OldExtractedOperand, NewExtractedOperand: string;
 begin
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.FindIdentifierInWithVarContext] Ident=',
@@ -5475,7 +5476,10 @@ begin
   Params.ContextNode:=WithVarNode;
   Params.Flags:=Params.Flags*fdfGlobals
                 +[fdfExceptionOnNotFound,fdfFunctionResult,fdfFindChilds];
+  OldExtractedOperand:=Params.ExtractedOperand;
   WithVarExpr:=FindExpressionTypeOfTerm(WithVarNode.StartPos,-1,Params,true);
+  if fdfExtractOperand in Params.Flags then
+    NewExtractedOperand:=Params.ExtractedOperand+'.';
   if (WithVarExpr.Desc<>xtContext)
   or (WithVarExpr.Context.Node=nil)
   or (WithVarExpr.Context.Node=OldInput.ContextNode)
@@ -5488,10 +5492,15 @@ begin
   // search identifier in 'with' context
   // Note: do not search in parent nodes (e.g. with ListBox1 do Items)
   Params.Load(OldInput,false);
-  Params.Flags:=Params.Flags-[fdfExceptionOnNotFound,fdfSearchInParentNodes,fdfExtractOperand];
+  Params.Flags:=Params.Flags-[fdfExceptionOnNotFound,fdfSearchInParentNodes];
   Params.ContextNode:=WithVarExpr.Context.Node;
   Result:=WithVarExpr.Context.Tool.FindIdentifierInContext(Params);
   Params.Load(OldInput,true);
+  if fdfExtractOperand in Params.Flags then
+    if Result then
+      Params.FExtractedOperand:=NewExtractedOperand
+    else
+      Params.FExtractedOperand:=OldExtractedOperand;
 end;
 
 function TFindDeclarationTool.FindIdentifierInAncestors(
@@ -7067,6 +7076,7 @@ var
   procedure ResolvePoint;
   begin
     // for example 'A.B'
+    if fdfExtractOperand in Params.Flags then Params.AddOperandPart('.');
     if (not (NextAtomType in [vatSpace,vatIdentifier,vatPreDefIdentifier])) then
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
@@ -7112,6 +7122,7 @@ var
     {$IFDEF ShowExprEval}
     debugln(['  FindExpressionTypeOfTerm ResolveUp']);
     {$ENDIF}
+    if fdfExtractOperand in Params.Flags then Params.AddOperandPart('^');
     if (not (NextAtomType in [vatSpace,vatPoint,vatUp,vatAS,vatEdgedBracketOpen]))
     or ((ExprType.Context.Node=nil) and (ExprType.Desc<>xtPointer))
     then begin
@@ -10842,11 +10853,9 @@ begin
   end;
 end;
 
-procedure TFindDeclarationParams.AddOperandPart;
+procedure TFindDeclarationParams.AddOperandPart(aPart: string);
 begin
-  if FExtractedOperand <> '' then
-    FExtractedOperand := FExtractedOperand + '.';
-  FExtractedOperand := FExtractedOperand + GetIdentifier(Identifier);
+  FExtractedOperand := FExtractedOperand + aPart;
 end;
 
 procedure TFindDeclarationParams.ChangeFoundProc(
