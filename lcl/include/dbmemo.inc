@@ -120,14 +120,6 @@ begin
   FDataLink.OnUpdateData:=@UpdateData;
 end;
 
-procedure TDBMemo.FocusRequest(Sender: TObject);
-begin
-  //the FieldLink has requested the control
-  //recieve focus for some reason..
-  //perhaps an error occured?
-  SetFocus;
-end;
-
 procedure TDBMemo.EditingDone;
 begin
   if FDataLink.CanModify and FDatalink.Editing then begin

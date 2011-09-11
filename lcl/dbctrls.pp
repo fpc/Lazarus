@@ -177,7 +177,6 @@ Type
 
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
-    procedure FocusRequest(Sender: TObject);
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -331,8 +330,6 @@ Type
   TCustomDBListBox = class(TCustomListBox)
   private
     procedure EditingChange(Sender: TObject);
-    procedure FocusRequest(Sender: TObject);
-
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -582,7 +579,6 @@ Type
     procedure DataChange(Sender: TObject); virtual;
     procedure DoOnChange; override;
     procedure UpdateData(Sender: TObject); virtual;
-    procedure FocusRequest(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
   public
@@ -652,7 +648,6 @@ Type
                            Operation: TOperation); override;
     procedure Change; override;
     procedure UpdateData(Sender: TObject); virtual;
-    procedure FocusRequest(Sender: TObject); virtual;
     procedure UpdateText; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -836,7 +831,6 @@ Type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
-    procedure FocusRequest(Sender: TObject); virtual;
     procedure Change; override;
     procedure KeyPress(var Key:Char); override;
     procedure WndProc(var AMessage : TLMessage); override;
@@ -1014,8 +1008,6 @@ Type
 
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
-    procedure FocusRequest(Sender: TObject);
-
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -1543,17 +1535,23 @@ end;
     Control.
   <-- Delphi Help
 
-  so seems it just calls SetFocus on TWinControls, since this DataLink should
-  really go into the FCL, we just add our own callback which the DB aware
-  controls that can get focus then assign to do the real SetFocus, thus removing
-  need for visual dependency.
+  Check if the field matches and if Control is TWinControl than call SetFocus
+  Set the FieldRef to nil so no other control get focus
 }
 
 procedure TFieldDataLink.FocusControl(aField: TFieldRef);
+var
+  WinControl: TWinControl;
 begin
-  //todo
-  If Assigned(aField) and (aField^ = FField) then
+  if Assigned(aField) and (aField^ = FField) and (FControl is TWinControl) then
+  begin
+    WinControl := TWinControl(FControl);
+    if WinControl.CanFocus then
+    begin
       aField^ := nil;
+      WinControl.SetFocus;
+    end;
+  end;
 end;
 
 {TFieldDataLink  Public Methods}

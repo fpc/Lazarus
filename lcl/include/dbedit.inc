@@ -67,14 +67,6 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TDBEdit.FocusRequest(Sender: TObject);
-begin
-  //the FieldLink has requested the control
-  //recieve focus for some reason..
-  //perhaps an error occured?
-  SetFocus;
-end;
-
 function TDBEdit.GetDataField: string;
 begin
   Result := FDataLink.FieldName;

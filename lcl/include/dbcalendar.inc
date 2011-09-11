@@ -37,14 +37,6 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TDBCalendar.FocusRequest(Sender: TObject);
-begin
-  //the FieldLink has requested the control
-  //recieve focus for some reason..
-  //perhaps an error occured?
-  SetFocus;
-end;
-
 function TDBCalendar.GetDataField: string;
 begin
   Result := FDataLink.FieldName;

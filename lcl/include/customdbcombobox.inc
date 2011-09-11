@@ -107,14 +107,6 @@ begin
   //
 end;
 
-procedure TCustomDBComboBox.FocusRequest(Sender: TObject);
-begin
-  //the FieldLink has requested the control
-  //receive focus for some reason..
-  //perhaps an error occured?
-  SetFocus;
-end;
-
 procedure TCustomDBComboBox.EditingDone;
 begin
   FDataLink.UpdateRecord;

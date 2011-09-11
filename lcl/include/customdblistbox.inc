@@ -39,14 +39,6 @@ begin
   //
 end;
 
-procedure TCustomDBListBox.FocusRequest(Sender: TObject);
-begin
-  //the FieldLink has requested the control
-  //recieve focus for some reason..
-  //perhaps an error occured?
-  SetFocus;
-end;
-
 function TCustomDBListBox.GetDataField: string;
 begin
   Result := FDataLink.FieldName;
