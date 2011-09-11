@@ -160,7 +160,6 @@ type
     FUnorderedX: Boolean;
     FX, FY, FCoeff: array of ArbFloat;
 
-    function Calculate(AX: Double): Double;
     procedure PrepareCoeffs;
     function PrepareIntervals: TIntervalList;
     procedure SetBadDataPen(AValue: TBadDataChartPen);
@@ -171,6 +170,7 @@ type
 
   public
     procedure Assign(ASource: TPersistent); override;
+    function Calculate(AX: Double): Double;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -747,6 +747,8 @@ var
   ok: Integer = 0;
 begin
   Result := ipfspn(High(FCoeff), FX[0], FY[0], FCoeff[0], AX, ok);
+  if ok > 1 then
+    Result := NaN;
 end;
 
 constructor TCubicSplineSeries.Create(AOwner: TComponent);
