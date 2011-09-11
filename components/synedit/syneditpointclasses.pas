@@ -46,6 +46,7 @@ type
 
   TInvalidateLines = procedure(FirstLine, LastLine: integer) of Object;
   TLinesCountChanged = procedure(FirstLine, Count: integer) of Object;
+  TMaxLeftCharFunc = function: Integer of object;
 
   { TSynEditPointBase }
 
@@ -180,7 +181,7 @@ type
     FOldLinePos: Integer; // 1 based
     FOldCharPos: Integer; // 1 based
     FAdjustToNextChar: Boolean;
-    FMaxLeftChar: PInteger;
+    FMaxLeftChar: TMaxLeftCharFunc;
     FChangeOnTouch: Boolean;
     FSkipTabs: Boolean;
     FTouched: Boolean;
@@ -244,7 +245,7 @@ type
     property SkipTabs: Boolean read FSkipTabs write SetSkipTabs;
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
-    property MaxLeftChar: PInteger write FMaxLeftChar;
+    property MaxLeftChar: TMaxLeftCharFunc write FMaxLeftChar;
   end;
 
   TSynCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
@@ -572,7 +573,7 @@ begin
   try
     if (fCharPos <> NewCharPos) or (fLinePos <> NewLine) or ForceSet then begin
       if FMaxLeftChar <> nil then
-        nMaxX := FMaxLeftChar^
+        nMaxX := FMaxLeftChar()
       else
         nMaxX := MaxInt;
       if NewLine > FLines.Count then
