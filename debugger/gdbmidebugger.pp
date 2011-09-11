@@ -3761,6 +3761,7 @@ var
   {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
   s: String;
   h: THandle;
+  isConsole: Boolean;
   {$ENDIF}
 begin
   Result := True;
@@ -3798,22 +3799,37 @@ begin
     ExecuteCommand('set width 50000', []);
     {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
       // Make sure consule output will ot be mixed with gbd output
-      {$IFDEF UNIX}
-        s := DebuggerProperties.ConsoleTty;
-      {$ENDIF}
       {$IFDEF DBG_ENABLE_TERMINAL}
-        FTheDebugger.FPseudoTerminal.Open;
-        {$IFDEF UNIX}if s = '' then{$ENDIF}
-        s := FTheDebugger.FPseudoTerminal.Devicename;
+        {$IFDEF UNIX}
+          (* DBG_ENABLE_TERMINAL and UNIX *)
+          s := DebuggerProperties.ConsoleTty;
+          if s = '' then begin
+            FTheDebugger.FPseudoTerminal.Open;
+            s := FTheDebugger.FPseudoTerminal.Devicename;
+            isConsole := True;
+          end;
+        {$ELSE}
+          (* only DBG_ENABLE_TERMINAL *)
+          FTheDebugger.FPseudoTerminal.Open;
+          s := FTheDebugger.FPseudoTerminal.Devicename;
+          isConsole := True;
+        {$ENDIF}
       {$ELSE}
-        if s = '' then s := '/dev/null';
+          (* only UNIX *)
+          s := DebuggerProperties.ConsoleTty;
+          if s = '' then s := '/dev/null';
       {$ENDIF}
-      h := fileopen(S, fmOpenWrite);
-      if (IsATTY(h) <> 1)
-      or (not ExecuteCommand('set inferior-tty %s', [s], R)) or (r.State = dsError)
-      then
+
+      if not isConsole then begin
+        h := fileopen(S, fmOpenWrite);
+        isConsole := IsATTY(h) = 1;
+        FileClose(h);
+      end;
+
+      if isConsole then
+        isConsole := ExecuteCommand('set inferior-tty %s', [s], R) and (r.State <> dsError);
+      if not isConsole then
         ExecuteCommand('set inferior-tty /dev/null', []);
-      FileClose(h);
     {$ENDIF}
 
     if tfHasSymbols in TargetInfo^.TargetFlags
