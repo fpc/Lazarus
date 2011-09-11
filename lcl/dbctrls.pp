@@ -576,9 +576,9 @@ Type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     function GetFieldCheckState: TCheckBoxState; virtual;
-    procedure DataChange(Sender: TObject); virtual;
+    procedure DataChange(Sender: TObject);
     procedure DoOnChange; override;
-    procedure UpdateData(Sender: TObject); virtual;
+    procedure UpdateData(Sender: TObject);
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
   public
@@ -642,8 +642,8 @@ Type
     procedure SetReadOnly(const AValue: Boolean);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    procedure DataChange(Sender: TObject); virtual;
-    procedure EditingChange(Sender: TObject); virtual;
+    procedure DataChange(Sender: TObject);
+    procedure EditingChange(Sender: TObject);
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure Change; override;
@@ -827,10 +827,10 @@ Type
   protected
     function GetReadOnly: Boolean; override;
     procedure SetReadOnly(AValue: Boolean); override;
-    procedure DataChange(Sender: TObject); virtual;
+    procedure DataChange(Sender: TObject);
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
-    procedure UpdateData(Sender: TObject); virtual;
+    procedure UpdateData(Sender: TObject);
     procedure Change; override;
     procedure KeyPress(var Key:Char); override;
     procedure WndProc(var AMessage : TLMessage); override;
@@ -891,7 +891,7 @@ Type
     procedure SetDataSource(const AValue: TDataSource);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    procedure DataChange(Sender: TObject); virtual;
+    procedure DataChange(Sender: TObject);
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
   public
@@ -961,8 +961,8 @@ Type
   protected
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure DataChange(Sender: TObject); virtual;
-    procedure UpdateData(Sender: TObject); virtual;
+    procedure DataChange(Sender: TObject);
+    procedure UpdateData(Sender: TObject);
     procedure PictureChanged(Sender: TObject); override;
     procedure LoadPicture; virtual;
     class procedure WSRegisterClass; override;
