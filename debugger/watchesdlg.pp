@@ -672,7 +672,6 @@ end;
 procedure TWatchesDlg.WatchAdd(const ASender: TWatches; const AWatch: TWatch);
 var
   Item: TListItem;
-  Watch: TCurrentWatch;
 begin
   Item := lvWatches.Items.FindData(AWatch);
   if Item = nil
