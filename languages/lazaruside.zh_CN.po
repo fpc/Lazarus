@@ -6520,6 +6520,10 @@ msgstr "调试器错误"
 msgid "%s (debugging ...)"
 msgstr "%s (正在调试...)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr ""

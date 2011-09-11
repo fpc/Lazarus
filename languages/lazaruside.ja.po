@@ -6525,6 +6525,10 @@ msgstr "デバッガが無効"
 msgid "%s (debugging ...)"
 msgstr "%s (デバック中 ...)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr "例外を追加"

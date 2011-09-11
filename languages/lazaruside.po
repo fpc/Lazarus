@@ -6427,6 +6427,10 @@ msgstr ""
 msgid "%s (debugging ...)"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr ""

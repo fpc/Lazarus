@@ -6435,6 +6435,10 @@ msgstr "Неправильний налагоджувач"
 msgid "%s (debugging ...)"
 msgstr "%s (йде налагодження ...)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr "Додати Виняток"

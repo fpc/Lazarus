@@ -6527,6 +6527,10 @@ msgstr "Débogueur non valide"
 msgid "%s (debugging ...)"
 msgstr "%s (débogage ...)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr "Ajouter une exception"

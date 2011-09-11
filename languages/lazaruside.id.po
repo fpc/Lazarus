@@ -6505,6 +6505,10 @@ msgstr "Debugger tidak benar"
 msgid "%s (debugging ...)"
 msgstr "%s (debugging ...)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr ""

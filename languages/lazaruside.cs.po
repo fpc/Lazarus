@@ -6478,6 +6478,10 @@ msgstr "Neplatný ladič"
 msgid "%s (debugging ...)"
 msgstr "%s (ladění ...)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr "Přidat výjimku"

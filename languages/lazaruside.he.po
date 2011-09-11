@@ -6495,6 +6495,10 @@ msgstr "מנפה שגיאות לא תקין"
 msgid "%s (debugging ...)"
 msgstr "(ניפוי שגיאות)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr "הוסף חריגה"

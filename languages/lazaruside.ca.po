@@ -6493,6 +6493,10 @@ msgstr "Depurador invàlid"
 msgid "%s (debugging ...)"
 msgstr "%s (s'està depurant ...)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr ""

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-09-05 00:17+0300\n"
+"PO-Revision-Date: 2011-09-11 18:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6514,6 +6514,10 @@ msgstr "Неверный отладчик"
 #: lazarusidestrconsts.lisdebugging
 msgid "%s (debugging ...)"
 msgstr "%s (идёт отладка ...)"
+
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr "Автоматически выполнять приведение типов объектов"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"

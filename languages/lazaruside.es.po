@@ -6501,6 +6501,10 @@ msgstr "Depurador no válido"
 msgid "%s (debugging ...)"
 msgstr "%s (depurando ...)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr "Agregar Excepción"

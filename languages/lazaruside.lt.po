@@ -6514,6 +6514,10 @@ msgstr "Netinkama derintuvė"
 msgid "%s (debugging ...)"
 msgstr "%s (derinama…)"
 
+#: lazarusidestrconsts.lisdebughintautotypecastclass
+msgid "Automatic type-cast for objects"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
 msgstr "Pridėti išimtinę situaciją"
