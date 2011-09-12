@@ -1,16 +1,23 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="lazmrumenu"/>
+    <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
       <Version Value="10"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Most Recent User menu item manager component."/>
+    <License Value="Modified LGPL"/>
+    <Version Major="1"/>
     <Files Count="2">
       <Item1>
         <Filename Value="reglazmru.pp"/>
