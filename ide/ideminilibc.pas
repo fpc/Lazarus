@@ -33,7 +33,11 @@ const
   F_SETFD   = 2;
   F_GETFL   = 3;
   F_SETFL   = 4;
+  {$ifdef cpusparc}
+  O_NONBLOCK = $4000;
+  {$else}
   O_NONBLOCK = &04000;
+  {$endif}
   EINTR = 4;
   NCCS = 32;
 
