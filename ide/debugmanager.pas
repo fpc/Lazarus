@@ -966,8 +966,11 @@ begin
   end;
 
   // update inspect
-  if (FDebugger.State in [dsPause]) and (OldState = dsRun)
-  and (FDialogs[ddtInspect] <> nil)
+  // TODO: Move here from DebuggerCurrentLine / Only currently State change locks execution of gdb
+  //if ( ((FDebugger.State in [dsPause]) and (OldState = dsRun)) or
+  //     (OldState in [dsPause]) ) and
+  if (OldState in [dsPause]) and
+     (FDialogs[ddtInspect] <> nil)
   then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
 
   case FDebugger.State of
@@ -1070,6 +1073,10 @@ begin
     TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, Alocation.Address);
     if SrcLine < 1 then Exit;
   end;
+
+  // TODO: do in DebuggerChangeState / Only currently State change locks execution of gdb
+  if (FDialogs[ddtInspect] <> nil)
+  then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
 
   if (SrcFullName = '') or not GetFullFilename(SrcFullName, False) then
   begin
