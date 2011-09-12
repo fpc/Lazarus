@@ -50,7 +50,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg,
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM,
   {$ELSE}
   Laz_XMLRead, Laz_XMLWrite, Laz_DOM,
@@ -421,7 +421,7 @@ begin
       try
         Buf.SaveToStream(ms);
         ms.Position:=0;
-        {$IFDEF NewXMLCfg}
+        {$IFNDEF OldXMLCfg}
         Laz2_XMLRead.ReadXMLFile(ADoc, ms, ReadFlags);
         {$ELSE}
         Laz_XMLRead.ReadXMLFile(ADoc, ms);
@@ -454,7 +454,7 @@ begin
       fKeepFileAttributes:=true;
       ms:=TMemoryStream.Create;
       try
-        {$IFDEF NewXMLCfg}
+        {$IFNDEF OldXMLCfg}
         Laz2_XMLWrite.WriteXMLFile(ADoc, ms, WriteFlags);
         {$ELSE}
         Laz_XMLWrite.WriteXMLFile(ADoc, ms);

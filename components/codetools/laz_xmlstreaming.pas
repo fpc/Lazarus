@@ -37,7 +37,7 @@ interface
 
 uses
   SysUtils, Classes, TypInfo, FileProcs,
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   Laz2_DOM, Laz2_XMLWrite
   {$ELSE}
   Laz_DOM, Laz_XMLWrite

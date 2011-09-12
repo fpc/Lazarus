@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, ButtonPanel, FileUtil, LCLType, AvgLvlTree,
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   Laz2_DOM,
   {$ELSE}
   Laz_DOM,

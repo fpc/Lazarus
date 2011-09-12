@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   laz2_DOM,
   {$ELSE}
   Laz_DOM,

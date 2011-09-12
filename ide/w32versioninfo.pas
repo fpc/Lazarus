@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Process, LCLProc, Controls, Forms, FileUtil,
   CodeToolManager, LazConf, Laz_XMLCfg,
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   laz2_DOM,
   {$ELSE}
   Laz_DOM,
@@ -449,7 +449,7 @@ begin
     if Assigned(Node) then
     begin
       StringTable.Clear;
-      for i := 0 to Node.Attributes.{$IFDEF NewXMLCfg}Length{$ELSE}Count{$ENDIF} - 1 do
+      for i := 0 to Node.Attributes.{$IFNDEF OldXMLCfg}Length{$ELSE}Count{$ENDIF} - 1 do
         StringTable[Node.Attributes[i].NodeName] := Node.Attributes[i].NodeValue;
       StringTable.AddRequired;
     end

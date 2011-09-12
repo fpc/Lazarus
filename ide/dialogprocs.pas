@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileProcs,
   FileUtil, Laz_XMLCfg,
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   Laz2_XMLWrite,
   {$ELSE}
   Laz_XMLWrite,

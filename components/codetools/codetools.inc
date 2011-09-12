@@ -25,7 +25,7 @@
 
 }
 
-{off $DEFINE NewXMLCfg}
+{off $DEFINE OldXMLCfg}
 
 {off $DEFINE MEM_CHECK}
 

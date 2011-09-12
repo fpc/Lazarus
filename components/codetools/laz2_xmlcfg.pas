@@ -27,12 +27,10 @@ interface
 
 {off $DEFINE MEM_CHECK}
 
-{$DEFINE NewXMLCfg}
-
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
   Classes, sysutils,
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   {$ELSE}
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
@@ -51,7 +49,7 @@ type
   TXMLConfig = class(TComponent)
   private
     FFilename: String;
-    {$IFDEF NewXMLCfg}
+    {$IFNDEF OldXMLCfg}
     FReadFlags: TXMLReaderFlags;
     FWriteFlags: TXMLWriterFlags;
     {$ENDIF}
@@ -109,7 +107,7 @@ type
   published
     property Filename: String read FFilename write SetFilename;
     property Document: TXMLDocument read doc;
-    {$IFDEF NewXMLCfg}
+    {$IFNDEF OldXMLCfg}
     property ReadFlags: TXMLReaderFlags read FReadFlags write FReadFlags;
     property WriteFlags: TXMLWriterFlags read FWriteFlags write FWriteFlags;
     {$ENDIF}
@@ -140,7 +138,7 @@ implementation
 constructor TXMLConfig.Create(const AFilename: String);
 begin
   //DebugLn(['TXMLConfig.Create ',AFilename]);
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   // for compatibility with old TXMLConfig, which wrote #13 as #13, not as &xD;
   FReadFlags:=[xrfAllowLowerThanInAttributeValue,xrfAllowSpecialCharsInAttributeValue];
   FWriteFlags:=[xwfSpecialCharsInAttributeValue];
@@ -197,7 +195,7 @@ begin
   if Modified and (Filename<>'') then
   begin
     //DebugLn(['TXMLConfig.Flush ',Filename]);
-    {$IFDEF NewXMLCfg}
+    {$IFNDEF OldXMLCfg}
     Laz2_XMLWrite.WriteXMLFile(Doc,Filename,WriteFlags);
     {$ELSE}
     Laz_XMLWrite.WriteXMLFile(Doc,Filename);
@@ -210,7 +208,7 @@ end;
 procedure TXMLConfig.ReadFromStream(s: TStream);
 begin
   FreeDoc;
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   Laz2_XMLRead.ReadXMLFile(Doc,s,ReadFlags);
   {$ELSE}
   Laz_XMLRead.ReadXMLFile(Doc,s);
@@ -221,7 +219,7 @@ end;
 
 procedure TXMLConfig.WriteToStream(s: TStream);
 begin
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   Laz2_XMLWrite.WriteXMLFile(Doc,s,WriteFlags);
   {$ELSE}
   Laz_XMLWrite.WriteXMLFile(Doc,s);
@@ -460,7 +458,7 @@ end;
 procedure TXMLConfig.ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);
 begin
   InvalidatePathCache;
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   Laz2_XMLRead.ReadXMLFile(ADoc,AFilename,ReadFlags);
   {$ELSE}
   Laz_XMLRead.ReadXMLFile(ADoc,AFilename);
@@ -469,7 +467,7 @@ end;
 
 procedure TXMLConfig.WriteXMLFile(ADoc: TXMLDocument; const AFileName: String);
 begin
-  {$IFDEF NewXMLCfg}
+  {$IFNDEF OldXMLCfg}
   Laz2_XMLWrite.WriteXMLFile(ADoc,AFileName,WriteFlags);
   {$ELSE}
   Laz_XMLWrite.WriteXMLFile(ADoc,AFileName);
@@ -605,7 +603,7 @@ begin
   doc:=nil;
   //debugln(['TXMLConfig.SetFilename Load=',not fDoNotLoadFromFile,' FileExists=',FileExistsCached(Filename),' File=',Filename]);
   if (not fDoNotLoadFromFile) and FileExistsCached(Filename) then
-    {$IFDEF NewXMLCfg}
+    {$IFNDEF OldXMLCfg}
     Laz2_XMLRead.ReadXMLFile(doc,Filename,ReadFlags)
     {$ELSE}
     Laz_XMLRead.ReadXMLFile(doc,Filename)
@@ -615,7 +613,7 @@ begin
     try
       ms.Write(fAutoLoadFromSource[1],length(fAutoLoadFromSource));
       ms.Position:=0;
-      {$IFDEF NewXMLCfg}
+      {$IFNDEF OldXMLCfg}
       Laz2_XMLRead.ReadXMLFile(doc,ms,ReadFlags);
       {$ELSE}
       Laz_XMLRead.ReadXMLFile(doc,ms);

@@ -378,6 +378,7 @@ function DbgS(const p: TPoint): string; overload;
 function DbgS(const p: pointer): string; overload;
 function DbgS(const e: extended; MaxDecimals: integer = 999): string; overload;
 function DbgS(const b: boolean): string; overload;
+function DbgS(const ms: TCustomMemoryStream; Count: PtrInt = -1): string; overload;
 function DbgSName(const p: TObject): string; overload;
 function DbgSName(const p: TClass): string; overload;
 function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; overload;
@@ -2919,6 +2920,23 @@ end;
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
   Result:=dbgs(i1)+','+dbgs(i2)+','+dbgs(i3)+','+dbgs(i4);
+end;
+
+function DbgS(const ms: TCustomMemoryStream; Count: PtrInt): string;
+var
+  OldPos: Int64;
+begin
+  if Count<0 then
+    Count:=ms.Size-ms.Position;
+  if Count=0 then
+    exit('');
+  OldPos:=ms.Position;
+  try
+    SetLength(Result,Count);
+    ms.Read(Result[1],length(Result));
+  finally
+    ms.Position:=OldPos;
+  end;
 end;
 
 function DbgSName(const p: TObject): string;
