@@ -3627,15 +3627,17 @@ end;
 function TCarbonWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord;
   pvParam: Pointer; fWinIni: DWord): LongBool;
 begin
-  Result:=False;
+  Result:=True;
   Case uiAction of
     SPI_GETWORKAREA: begin
       TRect(pvParam^):=Bounds(GetSystemMetrics(SM_XVIRTUALSCREEN),
                               GetSystemMetrics(SM_YVIRTUALSCREEN),
                               GetSystemMetrics(SM_CXVIRTUALSCREEN),
                               GetSystemMetrics(SM_CYVIRTUALSCREEN));
-      Result:=True;
     end;
+    SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 3;
+    else
+      Result := False;
   end;
 end;
 
