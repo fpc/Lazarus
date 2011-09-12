@@ -765,6 +765,7 @@ type
     property Anchors;
     property AutoFill;
     property AutoSize;
+    property BiDiMode;
     property BorderSpacing;
     property Caption;
     property ChildSizing;
@@ -791,6 +792,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnUTF8KeyPress;
+    property ParentBiDiMode;
     property ParentFont;
     property ParentColor;
     property ParentShowHint;

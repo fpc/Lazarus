@@ -296,6 +296,7 @@ type
     property Anchors;
     property AutoScroll;
     property AutoSize;
+    property BiDiMode;
     property BorderSpacing;
     property ChildSizing;
     property ClientHeight;
@@ -334,6 +335,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;

@@ -504,7 +504,7 @@ type
     property AutoAdvance default aaRightDown;
     property AutoEdit;
     property AutoFillColumns;
-    //property BiDiMode;
+    property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
     property Color;
@@ -528,7 +528,7 @@ type
     //property ImeName;
     property Options;
     property OptionsExtra;
-    //property ParentBiDiMode;
+    property ParentBiDiMode;
     property ParentColor default false;
     property ParentFont;
     //property ParentShowHint;

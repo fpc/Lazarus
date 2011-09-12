@@ -217,6 +217,7 @@ Type
 
     property Anchors;
     property AutoSize;
+    property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
     property CharCase;
@@ -229,6 +230,7 @@ Type
     property EditMask;
     property Font;
     property MaxLength;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -373,6 +375,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
     property DataField;
@@ -400,6 +403,7 @@ Type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBiDiMode;
     property ParentShowHint;
     property ReadOnly;
     property ShowHint;
@@ -444,6 +448,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
     property DataField;
@@ -477,6 +482,7 @@ Type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBiDiMode;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
@@ -529,6 +535,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BiDiMode;
     property BorderSpacing;
     property Caption;
     property Columns;
@@ -549,6 +556,7 @@ Type
     property OnMouseuP;
     property OnResize;
     property OnStartDrag;
+    property ParentBiDiMode;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property TabOrder;
     property TabStop;
@@ -592,6 +600,7 @@ Type
     property Align;
     property Anchors;
     property AutoSize;
+    property BiDiMode;
     property BorderSpacing;
     property Caption;
     property Color;
@@ -614,6 +623,7 @@ Type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -673,6 +683,7 @@ Type
     property ArrowKeysTraverseList;
     property AutoDropDown;
     property AutoSize;
+    property BiDiMode;
     property BorderSpacing;
     property Color;
     property DataField;
@@ -708,6 +719,7 @@ Type
     property OnSelect;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -756,6 +768,7 @@ Type
     property AutoComplete;
     property AutoDropDown;
     property AutoSize;
+    property BiDiMode;
     property BorderSpacing;
     property Color;
     property DataField;
@@ -796,6 +809,7 @@ Type
     property OnSelect;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -845,6 +859,7 @@ Type
     property Align;
     property Anchors;
     property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
+    property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
     property CharCase;
@@ -868,6 +883,7 @@ Type
     property OnKeyUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBiDiMode;
     property ParentFont;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
@@ -901,6 +917,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BiDiMode;
     property BorderSpacing;
     property Caption;
     property ClientHeight;
@@ -929,6 +946,7 @@ Type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -1206,6 +1224,7 @@ type
     property Alignment;
     property Anchors;
     property AutoSize;
+    property BidiMode;
     property BeforeAction;
     property BevelInner;
     property BevelOuter;
@@ -1240,6 +1259,7 @@ type
     property OnResize;
     property OnStartDrag;
     property Options;
+    property ParentBidiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
