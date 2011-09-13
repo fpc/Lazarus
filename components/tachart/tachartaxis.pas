@@ -471,7 +471,7 @@ begin
   if Marks.Visible then
     FHelper.FDrawer.Font := Marks.LabelFont;
   fixedCoord := TChartAxisMargins(FAxisRect)[Alignment];
-  pv := NaN;
+  pv := SafeNaN;
   FHelper.BeginDrawing;
   FHelper.DrawAxisLine(AxisPen, fixedCoord);
   for t in FMarkValues do begin

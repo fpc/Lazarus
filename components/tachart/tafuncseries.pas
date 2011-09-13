@@ -748,7 +748,7 @@ var
 begin
   Result := ipfspn(High(FCoeff), FX[0], FY[0], FCoeff[0], AX, ok);
   if ok > 1 then
-    Result := NaN;
+    Result := SafeNaN;
 end;
 
 constructor TCubicSplineSeries.Create(AOwner: TComponent);

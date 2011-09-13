@@ -284,6 +284,7 @@ function RoundChecked(A: Double): Integer; inline;
 
 function SafeInfinity: Double; inline;
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
+function SafeNan: Double; inline;
 
 procedure SetPropDefaults(AObject: TPersistent; APropNames: array of String);
 
@@ -447,6 +448,13 @@ function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 begin
   EnsureOrder(ABound1, ABound2);
   Result := InRange(AValue, ABound1, ABound2);
+end;
+
+function SafeNan: Double;
+begin
+  {$PUSH}{$R-}{$Q-}
+  Result := NaN;
+  {$POP}
 end;
 
 {$HINTS OFF}
