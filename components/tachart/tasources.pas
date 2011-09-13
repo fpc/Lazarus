@@ -72,7 +72,7 @@ type
   // A generator is incapsulated in a class to allow using many simultaneous
   // random sequences, each determined by its own seed.
   TMWCRandomGenerator = class
-  private
+  strict private
     FHistory: array [0..4] of LongWord;
     procedure SetSeed(AValue: Integer);
   public
@@ -84,7 +84,7 @@ type
   { TRandomChartSource }
 
   TRandomChartSource = class(TCustomChartSource)
-  private
+  strict private
     FPointsNumber: Integer;
     FRandomX: Boolean;
     FRandSeed: Integer;
@@ -92,7 +92,7 @@ type
     FXMin: Double;
     FYMax: Double;
     FYMin: Double;
-  private
+  strict private
     FCurIndex: Integer;
     FCurItem: TChartDataItem;
     FRNG: TMWCRandomGenerator;
@@ -134,7 +134,7 @@ type
   { TUserDefinedChartSource }
 
   TUserDefinedChartSource = class(TCustomChartSource)
-  private
+  strict private
     FItem: TChartDataItem;
     FOnGetChartDataItem: TGetChartDataItemEvent;
     FPointsNumber: Integer;
@@ -162,7 +162,7 @@ type
   { TCalculatedChartSource }
 
   TCalculatedChartSource = class(TCustomChartSource)
-  private
+  strict private
     FAccumulationMethod: TChartAccumulationMethod;
     FAccumulationRange: Cardinal;
     FHistory: TChartSourceBuffer;
@@ -219,7 +219,7 @@ type
   { TListChartSourceStrings }
 
   TListChartSourceStrings = class(TStrings)
-  private
+  strict private
     FSource: TListChartSource;
     procedure Parse(AString: String; ADataItem: PChartDataItem);
   protected
@@ -227,6 +227,7 @@ type
     function GetCount: Integer; override;
     procedure Put(Index: Integer; const S: String); override;
   public
+    constructor Create(ASource: TListChartSource);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
@@ -246,6 +247,12 @@ end;
 procedure TListChartSourceStrings.Clear;
 begin
   FSource.Clear;
+end;
+
+constructor TListChartSourceStrings.Create(ASource: TListChartSource);
+begin
+  inherited Create;
+  FSource := ASource;
 end;
 
 procedure TListChartSourceStrings.Delete(Index: Integer);
@@ -404,8 +411,7 @@ constructor TListChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FData := TFPList.Create;
-  FDataPoints := TListChartSourceStrings.Create;
-  TListChartSourceStrings(FDataPoints).FSource := Self;
+  FDataPoints := TListChartSourceStrings.Create(Self);
   FYCount := 1;
   ClearCaches;
 end;
