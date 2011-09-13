@@ -913,20 +913,19 @@ var
   prevItem: PChartDataItem;
   i, j, ar: Integer;
   dx: Double;
-  t: TChartDataItem;
 begin
-  if AIndex = 0 then begin
-    AIndex := 1;
-    ExtractItem(t, AIndex);
-    FHistory.AddLast(t);
-    dx := t.X - FHistory.GetPLast(1)^.X;
-  end
-  else
-    dx := FItem.X - FHistory.GetPLast(1)^.X;
   FItem.ClearY;
-  if dx = 0 then exit;
+  if AIndex = 0 then begin
+    FItem.X := SafeNan;
+    exit;
+  end;
+  dx := FItem.X - FHistory.GetPLast(1)^.X;
+  if dx = 0 then begin
+    FItem.X := SafeNan;
+    exit;
+  end;
   ar := IfThen(AccumulationRange = 0, MaxInt, AccumulationRange);
-  ar := math.MinValue([ar, Integer(AIndex + 1), High(COEFFS)]);
+  ar := MinValue([ar, Integer(AIndex + 1), High(COEFFS)]);
   for j := 0 to ar - 1 do begin
     prevItem := FHistory.GetPLast(j);
     FItem.Y += prevItem^.Y * COEFFS[ar, j];
