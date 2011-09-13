@@ -275,6 +275,7 @@ function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IntToColorHex(AColor: Integer): String; inline;
 function IsNan(const APoint: TDoublePoint): Boolean; overload; inline;
+function NumberOr(ANum: Double; ADefault: Double = 0.0): Double; inline;
 
 function OrientToRad(AOrient: Integer): Double; inline;
 
@@ -285,6 +286,7 @@ function RoundChecked(A: Double): Integer; inline;
 
 function SafeInfinity: Double; inline;
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
+function SafeMin(A, B: Double): Double;
 function SafeNan: Double; inline;
 
 procedure SetPropDefaults(AObject: TPersistent; APropNames: array of String);
@@ -421,6 +423,11 @@ begin
   Result := IsNan(APoint.X) or IsNan(APoint.Y);
 end;
 
+function NumberOr(ANum: Double; ADefault: Double): Double;
+begin
+  Result := IfThen(IsNan(ANum), ADefault, ANum);
+end;
+
 function OrientToRad(AOrient: Integer): Double;
 begin
   Result := DegToRad(AOrient / ORIENTATION_UNITS_PER_DEG);
@@ -452,6 +459,18 @@ function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 begin
   EnsureOrder(ABound1, ABound2);
   Result := InRange(AValue, ABound1, ABound2);
+end;
+
+function SafeMin(A, B: Double): Double;
+begin
+  if IsNan(A) then
+    Result := B
+  else if IsNan(B) then
+    Result := A
+  else if A < B then
+    Result := A
+  else
+    Result := B;
 end;
 
 function SafeNan: Double;

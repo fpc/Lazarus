@@ -873,7 +873,7 @@ var
   end;
 
 var
-  z, ofs: Double;
+  z, ofs, y: Double;
 begin
   if IsEmpty then exit;
 
@@ -894,12 +894,15 @@ begin
     p := FGraphPoints[pointIndex - FLoBound];
     if IsRotated then
       Exchange(p.X, p.Y);
+    if IsNan(p.X) then continue;
     p.X += ofs;
     heights[0] := z;
-    heights[1] := p.Y;
-    for stackIndex := 1 to Source.YCount - 1 do
-      heights[stackIndex + 1] :=
-        heights[stackIndex] + Source[pointIndex]^.YList[stackIndex - 1];
+    heights[1] := NumberOr(p.Y, z);
+    for stackIndex := 1 to Source.YCount - 1 do begin
+      y := Source[pointIndex]^.YList[stackIndex - 1];
+      if not IsNan(y) then
+        heights[stackIndex + 1] := heights[stackIndex] + y;
+    end;
     for stackIndex := 0 to Source.YCount - 1 do
       BuildBar;
   end;
@@ -910,6 +913,7 @@ end;
 function TBarSeries.Extent: TDoubleRect;
 var
   x, ofs, w: Double;
+  i: Integer;
 begin
   Result := inherited Extent;
   if IsEmpty then exit;
@@ -917,12 +921,18 @@ begin
     UpdateMinXRange;
   UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
   // Show first and last bars fully.
-  x := GetGraphPointX(0);
-  BarOffsetWidth(x, 0, ofs, w);
-  Result.a.X := Min(Result.a.X, x + ofs - w);
-  x := GetGraphPointX(Count - 1);
-  BarOffsetWidth(x, Count - 1, ofs, w);
-  Result.b.X := Max(Result.b.X, x + ofs + w);
+  i := 0;
+  x := NearestXNumber(i, +1);
+  if not IsNan(x) then begin
+    BarOffsetWidth(x, i, ofs, w);
+    Result.a.X := Min(Result.a.X, x + ofs - w);
+  end;
+  i := Count - 1;
+  x := NearestXNumber(i, -1);
+  if not IsNan(x) then begin
+    BarOffsetWidth(x, i, ofs, w);
+    Result.b.X := Max(Result.b.X, x + ofs + w);
+  end;
 end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);

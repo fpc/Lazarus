@@ -552,9 +552,9 @@ begin
   Result := Extent;
   if YCount < 2 then exit;
   for i := 0 to Count - 1 do begin
-    h := Item[i]^.Y;
+    h := NumberOr(Item[i]^.Y);
     for j := 0 to YCount - 2 do begin
-      h += Item[i]^.YList[j];
+      h += NumberOr(Item[i]^.YList[j]);
       // If some of Y values are negative, h may be non-monotonic.
       UpdateMinMax(h, Result.a.Y, Result.b.Y);
     end;
@@ -607,10 +607,10 @@ begin
   end
   else begin
     ALB := 0;
-    while (ALB < Count) and (Item[ALB]^.X < AXMin) do
+    while (ALB < Count) and (IsNan(Item[ALB]^.X) or (Item[ALB]^.X < AXMin)) do
       Inc(ALB);
     AUB := Count - 1;
-    while (AUB >= 0) and (Item[AUB]^.X > AXMax) do
+    while (AUB >= 0) and (IsNan(Item[AUB]^.X) or (Item[AUB]^.X > AXMax)) do
       Dec(AUB);
   end;
 end;

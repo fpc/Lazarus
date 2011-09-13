@@ -219,6 +219,7 @@ type
     procedure DrawLabels(ADrawer: IChartDrawer);
     procedure DrawPointers(ADrawer: IChartDrawer);
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
+    function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
     procedure PrepareGraphPoints(
@@ -931,15 +932,15 @@ begin
 end;
 
 function TBasicPointSeries.GetXRange(AX: Double; AIndex: Integer): Double;
+var
+  wl, wr: Double;
+  i: Integer;
 begin
-  case CASE_OF_TWO[AIndex > 0, AIndex < Count - 1] of
-    cotNone: Result := 1.0;
-    cotFirst: Result := Abs(AX - GetGraphPointX(AIndex - 1));
-    cotSecond: Result := Abs(AX - GetGraphPointX(AIndex + 1));
-    cotBoth: Result := Min(
-      Abs(AX - GetGraphPointX(AIndex - 1)),
-      Abs(AX - GetGraphPointX(AIndex + 1)));
-  end;
+  i := AIndex - 1;
+  wl := Abs(AX - NearestXNumber(i, -1));
+  i := AIndex + 1;
+  wr := Abs(AX - NearestXNumber(i, +1));
+  Result := NumberOr(SafeMin(wl, wr), 1.0);
 end;
 
 function TBasicPointSeries.GetZeroLevel: Double;
@@ -958,6 +959,18 @@ begin
     AIndex := SetXValue(AIndex, p.X);
     SetYValue(AIndex, p.Y);
   end;
+end;
+
+function TBasicPointSeries.NearestXNumber(
+  var AIndex: Integer; ADir: Integer): Double;
+begin
+  while InRange(AIndex, 0, Count - 1) do
+    with Source[AIndex]^ do
+      if IsNan(X) then
+        AIndex += ADir
+      else
+        exit(AxisToGraphX(X));
+  Result := SafeNan;
 end;
 
 procedure TBasicPointSeries.PrepareGraphPoints(
@@ -1062,7 +1075,7 @@ begin
   FMinXRange := Abs(x - prevX);
   for i := 2 to Count - 1 do begin
     x := Source[i]^.X;
-    FMinXRange := Min(Abs(x - prevX), FMinXRange);
+    FMinXRange := SafeMin(Abs(x - prevX), FMinXRange);
     prevX := x;
   end;
 end;
