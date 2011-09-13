@@ -285,6 +285,8 @@ type
     procedure mnuSourceInsertDateTimeClick(Sender: TObject);
     procedure mnuSourceInsertChangeLogEntryClick(Sender: TObject);
     procedure mnuSourceInsertGUID(Sender: TObject);
+    // source->insert full Filename
+    procedure mnuSourceInsertFilename(Sender: TObject);
     // source->Tools
     procedure mnuSourceUnitInfoClicked(Sender: TObject);
 
@@ -1046,6 +1048,7 @@ type
     function DoDiff: TModalResult;
     function DoFindInFiles: TModalResult;
     procedure DoInsertGUID;
+    procedure DoInsertFilename;
 
     // conversion
     function DoConvertDFMtoLFM: TModalResult;
@@ -2587,6 +2590,7 @@ begin
     itmSourceInsertDateTime.OnClick:=@mnuSourceInsertDateTimeClick;
     itmSourceInsertChangeLogEntry.OnClick:=@mnuSourceInsertChangeLogEntryClick;
     itmSourceInsertGUID.OnClick:=@mnuSourceInsertGUID;
+    itmSourceInsertFilename.OnClick:=@mnuSourceInsertFilename;
     // Tools
     itmSourceUnitInfo.OnClick := @mnuSourceUnitInfoClicked;
   end;
@@ -3398,6 +3402,9 @@ begin
 
   ecInsertGUID:
     mnuSourceInsertGUID(self);
+
+  ecInsertFilename:
+    mnuSourceInsertFilename(self);
 
   else
     Handled:=false;
@@ -18159,6 +18166,11 @@ begin
   DoInsertGUID;
 end;
 
+procedure TMainIDE.mnuSourceInsertFilename(Sender: TObject);
+begin
+  DoInsertFilename;
+end;
+
 procedure TMainIDE.mnuSearchFindInFiles(Sender: TObject);
 begin
   DoFindInFiles;
@@ -18312,11 +18324,26 @@ var
 begin
   // get active source editor
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  if ActiveSrcEdit = nil then
-    Exit; //==>
+  if ActiveSrcEdit = nil then Exit;
 
   CreateGUID(lGUID);
   ActiveSrcEdit.Selection := Format(cGUID, [GUIDToString(lGUID)]);
+end;
+
+procedure TMainIDE.DoInsertFilename;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if ActiveSrcEdit = nil then Exit;
+  with TOpenDialog.Create(nil) do
+  try
+     if Execute then
+       ActiveSrcEdit.Selection := FileName;
+  finally
+    Free;
+  end;
 end;
 
 function TMainIDE.DoReplaceUnitUse(OldFilename, OldUnitName, NewFilename,

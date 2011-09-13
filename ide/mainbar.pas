@@ -212,27 +212,27 @@ type
         itmSourceSyntaxCheck: TIDEMenuCommand;
         itmSourceGuessUnclosedBlock: TIDEMenuCommand;
         itmSourceGuessMisplacedIFDEF: TIDEMenuCommand;
-      //itmSourceInsertions: TIDEMenuSection;
-        //itmSourceInsertCVSKeyWord: TIDEMenuSection;
-          itmSourceInsertCVSAuthor: TIDEMenuCommand;
-          itmSourceInsertCVSDate: TIDEMenuCommand;
-          itmSourceInsertCVSHeader: TIDEMenuCommand;
-          itmSourceInsertCVSID: TIDEMenuCommand;
-          itmSourceInsertCVSLog: TIDEMenuCommand;
-          itmSourceInsertCVSName: TIDEMenuCommand;
-          itmSourceInsertCVSRevision: TIDEMenuCommand;
-          itmSourceInsertCVSSource: TIDEMenuCommand;
-        //itmSourceInsertGeneral: TIDEMenuSection;
-          itmSourceInsertGPLNotice: TIDEMenuCommand;
-          itmSourceInsertLGPLNotice: TIDEMenuCommand;
-          itmSourceInsertModifiedLGPLNotice: TIDEMenuCommand;
-          itmSourceInsertUsername: TIDEMenuCommand;
-          itmSourceInsertDateTime: TIDEMenuCommand;
-          itmSourceInsertChangeLogEntry: TIDEMenuCommand;
-          itmSourceInsertGUID: TIDEMenuCommand;
-          itmSourceInsertTodo: TIDEMenuCommand;
-      // itmSourceTools
-        itmSourceUnitInfo: TIDEMenuCommand;
+      //itmSourceInsertCVSKeyWord: TIDEMenuSection;
+        itmSourceInsertCVSAuthor: TIDEMenuCommand;
+        itmSourceInsertCVSDate: TIDEMenuCommand;
+        itmSourceInsertCVSHeader: TIDEMenuCommand;
+        itmSourceInsertCVSID: TIDEMenuCommand;
+        itmSourceInsertCVSLog: TIDEMenuCommand;
+        itmSourceInsertCVSName: TIDEMenuCommand;
+        itmSourceInsertCVSRevision: TIDEMenuCommand;
+        itmSourceInsertCVSSource: TIDEMenuCommand;
+      //itmSourceInsertGeneral: TIDEMenuSection;
+        itmSourceInsertGPLNotice: TIDEMenuCommand;
+        itmSourceInsertLGPLNotice: TIDEMenuCommand;
+        itmSourceInsertModifiedLGPLNotice: TIDEMenuCommand;
+        itmSourceInsertUsername: TIDEMenuCommand;
+        itmSourceInsertDateTime: TIDEMenuCommand;
+        itmSourceInsertChangeLogEntry: TIDEMenuCommand;
+        itmSourceInsertGUID: TIDEMenuCommand;
+        itmSourceInsertTodo: TIDEMenuCommand;
+      itmSourceInsertFilename: TIDEMenuCommand;
+    // itmSourceTools
+      itmSourceUnitInfo: TIDEMenuCommand;
 
     // refactor menu
     //mnuRefactor: TIDEMenuSection;

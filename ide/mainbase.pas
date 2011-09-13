@@ -617,6 +617,8 @@ begin
       CreateMenuItem(SubParentMI,itmSourceInsertChangeLogEntry,'itmSourceInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
       CreateMenuItem(SubParentMI,itmSourceInsertGUID,'itmSourceInsertGUID',srkmecInsertGUID);
 
+    CreateMenuItem(itmSourceInsertions,itmSourceInsertFilename,'itmSourceInsertFilename',lisMenuInsertFilename);
+
     CreateMenuSeparatorSection(mnuSource,itmSourceTools,'itmSourceTools');
     ParentMI:=itmSourceTools;
     CreateMenuItem(ParentMI,itmSourceUnitInfo,'itmViewUnitInfo',lisMenuViewUnitInfo, 'menu_view_unit_info');
@@ -933,6 +935,7 @@ begin
     itmSourceInsertDateTime.Command:=GetCommand(ecInsertDateTime);
     itmSourceInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);
     itmSourceInsertGUID.Command:=GetCommand(ecInsertGUID);
+    itmSourceInsertFilename.Command:=GetCommand(ecInsertFilename);
 
     itmSourceUnitInfo.Command:=GetCommand(ecViewUnitInfo);
 

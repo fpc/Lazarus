@@ -354,6 +354,7 @@ begin
   ecInsertCVSRevision: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertCVSSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertGUID: SetResult(VK_G, [ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecInsertFilename: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // command commands
   ecUndo: SetResult(VK_Z,[ssCtrl],VK_UNKNOWN,[]);
@@ -1449,6 +1450,7 @@ begin
   ecInsertCVSRevision: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertCVSSource: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertGUID: SetSingle(VK_G, [ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecInsertFilename: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // command commands
   ecUndo: SetSingle(VK_Z,[ssMeta],VK_UNKNOWN,[]);
@@ -2086,6 +2088,7 @@ begin
     ecInsertCVSRevision       : Result:= srkmecInsertCVSRevision;
     ecInsertCVSSource         : Result:= srkmecInsertCVSSource;
     ecInsertGUID              : Result:= srkmecInsertGUID;
+    ecInsertFilename          : Result:= srkmecInsertFilename;
 
     // search menu
     ecFind                    : Result:= srkmecFind;
@@ -2572,6 +2575,7 @@ begin
   AddDefault(C, 'Insert CVS keyword Revision', srkmecInsertCVSRevision, ecInsertCVSRevision);
   AddDefault(C, 'Insert CVS keyword Source', srkmecInsertCVSSource, ecInsertCVSSource);
   AddDefault(C, 'Insert a GUID',srkmecInsertGUID, ecInsertGUID);
+  AddDefault(C, 'Insert full Filename',srkmecInsertFilename, ecInsertFilename);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,nil)];
