@@ -55,6 +55,8 @@ type
     FAngle: Double;
     FBase: TPoint;
     FLabel: TLabelParams;
+    FOrigIndex: Integer;
+    FVisible: Boolean;
   end;
 
   TPieMarkPositions = (pmpAround, pmpInside, pmpLeftRight);
@@ -193,9 +195,9 @@ end;
 
 procedure TCustomPieSeries.Draw(ADrawer: IChartDrawer);
 var
-  i: Integer;
   prevAngle: Double = 0;
   prevLabelPoly: TPointArray = nil;
+  ps: TPieSlice;
 begin
   if IsEmpty then exit;
 
@@ -203,27 +205,28 @@ begin
   Measure(ADrawer);
 
   ADrawer.PrepareSimplePen(clBlack);
-  for i := 0 to Count - 1 do begin
-    ADrawer.SetBrushParams(bsSolid, SliceColor(i));
-    with FSlices[i] do begin
+  for ps in FSlices do begin
+    if ps.FVisible then begin
+      ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
       ADrawer.RadialPie(
-        FBase.X - FRadius, FBase.Y - FRadius,
-        FBase.X + FRadius, FBase.Y + FRadius,
-        RadToDeg16(prevAngle), RadToDeg16(FAngle));
-      prevAngle += FAngle;
+        ps.FBase.X - FRadius, ps.FBase.Y - FRadius,
+        ps.FBase.X + FRadius, ps.FBase.Y + FRadius,
+        RadToDeg16(prevAngle), RadToDeg16(ps.FAngle));
     end;
+    prevAngle += ps.FAngle;
   end;
   if not Marks.IsMarkLabelsVisible then exit;
   prevAngle := 0;
-  for i := 0 to Count - 1 do
-    with FSlices[i].FLabel do begin
-      if FText <> '' then begin
-        if RotateLabels then
-          Marks.SetAdditionalAngle(prevAngle + FSlices[i].FAngle / 2);
-        Marks.DrawLabel(ADrawer, FAttachment, FCenter, FText, prevLabelPoly);
-      end;
-      prevAngle += FSlices[i].FAngle;
-    end;
+  for ps in FSlices do begin
+    if ps.FVisible then
+      with ps.FLabel do
+        if FText <> '' then begin
+          if RotateLabels then
+            Marks.SetAdditionalAngle(prevAngle + ps.FAngle / 2);
+          Marks.DrawLabel(ADrawer, FAttachment, FCenter, FText, prevLabelPoly);
+        end;
+    prevAngle += ps.FAngle;
+  end;
 end;
 
 function TCustomPieSeries.FindContainingSlice(const APoint: TPoint): Integer;
@@ -411,7 +414,7 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
 const
   MARGIN = 4;
 var
-  i: Integer;
+  i, j: Integer;
   di: PChartDataItem;
   prevAngle: Double = 0;
   a: Double;
@@ -419,20 +422,28 @@ begin
   Result.TopLeft := FCenter;
   Result.BottomRight := FCenter;
   SetLength(FSlices, Count);
+  j := 0;
   for i := 0 to Count - 1 do begin
     di := Source[i];
-    with FSlices[i] do begin
+    if IsNan(di^.Y) then continue;
+    with FSlices[j] do begin
+      FOrigIndex := i;
       FAngle := CycleToRad(di^.Y / Source.ValuesTotal);
-      FBase := FCenter;
-      a := prevAngle + FAngle / 2;
-      if Exploded and (di^.X > 0) then
-        FBase += EndPoint(a, FRadius * di^.X);
-      ExpandRect(Result, FBase, FRadius, - prevAngle, - prevAngle - FAngle);
-      FLabel.FAttachment := EndPoint(a, FRadius) + FBase;
-      PrepareLabel(FLabel, i, a);
+      FVisible := not IsNan(di^.X);
+      if FVisible then begin
+        FBase := FCenter;
+        a := prevAngle + FAngle / 2;
+        if Exploded and (di^.X > 0) then
+          FBase += EndPoint(a, FRadius * di^.X);
+        ExpandRect(Result, FBase, FRadius, - prevAngle, - prevAngle - FAngle);
+        FLabel.FAttachment := EndPoint(a, FRadius) + FBase;
+        PrepareLabel(FLabel, i, a);
+      end;
       prevAngle += FAngle;
     end;
+    j += 1;
   end;
+  SetLength(FSlices, j);
   InflateRect(Result, MARGIN, MARGIN);
 end;
 
