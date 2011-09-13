@@ -31,7 +31,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="292">
+    <Files Count="293">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1205,6 +1205,11 @@
         <Filename Value="include/lclcolordialog.inc"/>
         <Type Value="Include"/>
       </Item292>
+      <Item293>
+        <Filename Value="paswstring.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="paswstring"/>
+      </Item293>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
