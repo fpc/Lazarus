@@ -188,7 +188,7 @@ procedure TCarbonPrinter.BeginEnumPrinters(Lst: TStrings);
 var
   P: PMPrinter;
   I, C: CFIndex;
-  PrinterName: String;
+  NewPrinterName: String;
 begin
   if OSError(PMServerCreatePrinterList(kPMServerLocal, FPrinterArray),
     Self, 'DoEnumPrinters', 'PMServerCreatePrinterList') then Exit;
@@ -197,13 +197,13 @@ begin
   for I := 0 to C - 1 do
   begin
     P := CFArrayGetValueAtIndex(FPrinterArray, I);
-    PrinterName := CFStringToStr(PMPrinterGetName(P));
+    NewPrinterName := CFStringToStr(PMPrinterGetName(P));
 
     //DebugLn(DbgS(I) + ' ' + PrinterName);
-    if PrinterName = FDefaultPrinter then
-      Lst.InsertObject(0, PrinterName, TObject(I))
+    if NewPrinterName = FDefaultPrinter then
+      Lst.InsertObject(0, NewPrinterName, TObject(I))
     else
-      Lst.AddObject(PrinterName, TObject(I));
+      Lst.AddObject(NewPrinterName, TObject(I));
   end;
 end;
 
