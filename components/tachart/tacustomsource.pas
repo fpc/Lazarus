@@ -113,7 +113,19 @@ type
     function ToImage(AX: Double): Integer; inline;
   end;
 
-  { TCustomChartSource }
+  TCustomChartSource = class;
+
+  TCustomChartSourceEnumerator = class
+  strict private
+    FSource: TCustomChartSource;
+    FIndex: Integer;
+  public
+    constructor Create(ASource: TCustomChartSource);
+    function GetCurrent: PChartDataItem;
+    function MoveNext: Boolean;
+    procedure Reset;
+    property Current: PChartDataItem read GetCurrent;
+  end;
 
   TCustomChartSource = class(TComponent)
   strict private
@@ -148,6 +160,7 @@ type
     procedure FindBounds(AXMin, AXMax: Double; out ALB, AUB: Integer);
     function FormatItem(
       const AFormat: String; AIndex, AYIndex: Integer): String;
+    function GetEnumerator: TCustomChartSourceEnumerator;
     function IsSorted: Boolean; virtual;
     procedure ValuesInRange(
       AParams: TValuesInRangeParams; var AValues: TChartValueTextArray); virtual;
@@ -451,6 +464,30 @@ begin
   Clear;
 end;
 
+{ TCustomChartSourceEnumerator }
+
+constructor TCustomChartSourceEnumerator.Create(ASource: TCustomChartSource);
+begin
+  FSource := ASource;
+  FIndex := -1;
+end;
+
+function TCustomChartSourceEnumerator.GetCurrent: PChartDataItem;
+begin
+  Result := FSource[FIndex];
+end;
+
+function TCustomChartSourceEnumerator.MoveNext: Boolean;
+begin
+  FIndex += 1;
+  Result := FIndex < FSource.Count;
+end;
+
+procedure TCustomChartSourceEnumerator.Reset;
+begin
+  FIndex := 0;
+end;
+
 { TCustomChartSource }
 
 procedure TCustomChartSource.AfterDraw;
@@ -594,6 +631,11 @@ begin
     vy := GetY(AYIndex);
     Result := Format(AFormat, [vy, vy * percent, Text, total, X]);
   end;
+end;
+
+function TCustomChartSource.GetEnumerator: TCustomChartSourceEnumerator;
+begin
+  Result := TCustomChartSourceEnumerator.Create(Self);
 end;
 
 procedure TCustomChartSource.InvalidateCaches;

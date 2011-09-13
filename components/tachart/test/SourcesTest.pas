@@ -37,6 +37,7 @@ type
     procedure Basic;
     procedure DataPoint;
     procedure DataPointSeparator;
+    procedure Enum;
     procedure Extent;
     procedure Multi;
   end;
@@ -66,7 +67,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils;
+  Math, TAChartUtils, TACustomSource;
 
 { TCalculatedSourceTest }
 
@@ -208,6 +209,22 @@ begin
   finally
     DecimalSeparator := oldSeparator;
   end;
+end;
+
+procedure TListSourceTest.Enum;
+var
+  it: PChartDataItem;
+  s: Double = 0;
+begin
+  FSource.Clear;
+  for it in FSource do
+    s += 1;
+  AssertEquals(0, s);
+  FSource.Add(10, 1);
+  FSource.Add(20, 7);
+  for it in FSource do
+    s += it^.X + it^.Y;
+  AssertEquals(38, s);
 end;
 
 procedure TListSourceTest.Extent;
