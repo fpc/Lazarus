@@ -1716,7 +1716,7 @@ begin
   FName.Length := 0;
   FColonPos := -1;
   NameStartFlag := not (cnToken in aFlags);
-
+  //writeln('TXMLReader.CheckName ',PtrUInt(FSource.FBuf),' ',ord(p^));
   repeat
     if NameStartFlag then
     begin
@@ -1740,7 +1740,6 @@ begin
       begin
         // here we come either when first char of name is bad (it may be a colon),
         // or when a colon is not followed by a valid NameStartChar
-        FSource.FBuf := p;
         Result := False;
         Break;
       end;
@@ -1791,6 +1790,7 @@ begin
 
     p := FSource.FBuf;
   until False;
+  //writeln('TXMLReader.CheckName END ',PtrUInt(FSource.FBuf),' Result=',Result);
   if not (Result or (cnOptional in aFlags)) then
     RaiseNameNotFound;
 end;
@@ -1806,12 +1806,12 @@ begin
   if FColonPos <> -1 then
     FatalError('Bad QName syntax, local part is missing')
   else
-  // Coming at no cost, this allows more user-friendly error messages
-  with FSource do
-  if (FBuf^ = #32) or (FBuf^ = #10) or (FBuf^ = #9) or (FBuf^ = #13) then
-    FatalError('Whitespace is not allowed here')
-  else
-    FatalError('Name starts with invalid character');
+    // Coming at no cost, this allows more user-friendly error messages
+    with FSource do
+      if (FBuf^ = #32) or (FBuf^ = #10) or (FBuf^ = #9) or (FBuf^ = #13) then
+        FatalError('Whitespace is not allowed here')
+      else
+        FatalError('Name starts with invalid character '+IntToStr(ord(fbuf^)));
 end;
 
 function TXMLReader.ExpectName: DOMString;
@@ -3255,8 +3255,10 @@ begin
         DoText(FValue.Buffer, FValue.Length, not nonWs);
         ParsePI;
       end
-      else
+      else begin
+        //writeln('TXMLReader.ParseContent FAIL ',PtrUInt(FSource.FBuf),' Buf=',ord(FSource.FBuf^),' ',FSource.FBuf);
         RaiseNameNotFound;
+      end;
     end
     else if wc = #0 then
     begin
