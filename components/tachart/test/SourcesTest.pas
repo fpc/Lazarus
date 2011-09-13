@@ -256,11 +256,18 @@ begin
   FSource.SetXValue(1, -2);
   AssertExtent(-2, 2, -1, 4);
 
+  FSource.SetXValue(1, SafeNaN);
+  AssertExtent(-1, 2, -1, 4);
+  FSource.SetXValue(1, -2);
+
   FSource.SetYValue(0, 5);
   AssertExtent(-2, 4, -1, 5);
 
   FSource.SetYValue(0, 4.5);
   AssertExtent(-2, 4, -1, 4.5);
+
+  FSource.SetYValue(1, SafeNaN);
+  AssertExtent(-2, 4.5, -1, 4.5);
 end;
 
 procedure TListSourceTest.Multi;

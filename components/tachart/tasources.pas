@@ -477,29 +477,44 @@ end;
 
 function TListChartSource.SetXValue(AIndex: Integer; AValue: Double): Integer;
 var
-  i: Integer;
   oldX: Double;
-begin
-  oldX := Item[AIndex]^.X;
-  Item[AIndex]^.X := AValue;
 
-  if FExtentIsValid then begin
-    if AValue <= FExtent.a.X then FExtent.a.X := AValue
-    else if AValue >= FExtent.b.X then FExtent.b.X := AValue;
+  procedure UpdateExtent;
+  var
+    it: PChartDataItem;
+  begin
+    if not FExtentIsValid then exit;
+
+    if not IsNan(AValue) then begin
+      if AValue <= FExtent.a.X then
+        FExtent.a.X := AValue
+      else if AValue >= FExtent.b.X then
+        FExtent.b.X := AValue;
+    end;
+
+    if IsNan(oldX) then exit;
     if oldX = FExtent.b.X then begin
       FExtent.b.X := NegInfinity;
-      for i := 0 to Count - 1 do
-        FExtent.b.X := Max(FExtent.b.X, Item[i]^.X);
+      for it in Self do
+        if not IsNan(it^.X) then
+          FExtent.b.X := Max(FExtent.b.X, it^.X);
     end;
     if oldX = FExtent.a.X then begin
       FExtent.a.X := SafeInfinity;
-      for i := 0 to Count - 1 do
-        FExtent.a.X := Min(FExtent.a.X, Item[i]^.X);
+      for it in Self do
+        if not IsNan(it^.X) then
+          FExtent.a.X := Min(FExtent.a.X, it^.X);
     end;
   end;
 
+begin
+  oldX := Item[AIndex]^.X;
+  Item[AIndex]^.X := AValue;
+  UpdateExtent;
   Result := AIndex;
   if Sorted then begin
+    if IsNan(AValue) then
+      raise EChartError.Create('X = NaN in a sorted source');
     if AValue > oldX then
       while (Result < Count - 1) and (Item[Result + 1]^.X < AValue) do
         Inc(Result)
@@ -534,28 +549,46 @@ end;
 
 procedure TListChartSource.SetYValue(AIndex: Integer; AValue: Double);
 var
-  i: Integer;
   oldY: Double;
-begin
-  oldY := Item[AIndex]^.Y;
-  Item[AIndex]^.Y := AValue;
-  if FValuesTotalIsValid then
-    FValuesTotal += AValue - oldY;
 
-  if FExtentIsValid then begin
-    if AValue <= FExtent.a.Y then FExtent.a.Y := AValue
-    else if AValue >= FExtent.b.Y then FExtent.b.Y := AValue;
+  procedure UpdateExtent;
+  var
+    it: PChartDataItem;
+  begin
+    if not FExtentIsValid then exit;
+
+    if not IsNan(AValue) then begin
+      if AValue <= FExtent.a.Y then
+        FExtent.a.Y := AValue
+      else if AValue >= FExtent.b.Y then
+        FExtent.b.Y := AValue;
+    end;
+
+    if IsNan(oldY) then exit;
     if oldY = FExtent.b.Y then begin
       FExtent.b.Y := NegInfinity;
-      for i := 0 to Count - 1 do
-        FExtent.b.Y := Max(FExtent.b.Y, Item[i]^.Y);
+      for it in Self do
+        if not IsNan(it^.Y) then
+          FExtent.b.Y := Max(FExtent.b.Y, it^.Y);
     end;
     if oldY = FExtent.a.Y then begin
       FExtent.a.Y := SafeInfinity;
-      for i := 0 to Count - 1 do
-        FExtent.a.Y := Min(FExtent.a.Y, Item[i]^.Y);
+      for it in Self do
+        if not IsNan(it^.Y) then
+          FExtent.a.Y := Min(FExtent.a.Y, it^.Y);
     end;
   end;
+
+begin
+  oldY := Item[AIndex]^.Y;
+  Item[AIndex]^.Y := AValue;
+  if FValuesTotalIsValid then begin
+    if not IsNan(AValue) then
+      FValuesTotal += AValue;
+    if not IsNan(oldY) then
+      FValuesTotal -= oldY;
+  end;
+  UpdateExtent;
   Notify;
 end;
 
