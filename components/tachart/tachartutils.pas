@@ -437,11 +437,9 @@ end;
 
 function SafeInfinity: Double;
 begin
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
-  {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
-  {$R-}{$Q-}
+  {$PUSH}{$R-}{$Q-}
   Result := Infinity;
-  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
+  {$POP}
 end;
 
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
