@@ -187,6 +187,11 @@ components/tachart/demo/listbox/lib
 components/tachart/demo/multi/*.exe
 components/tachart/demo/multi/*.lps
 components/tachart/demo/multi/lib
+components/tachart/demo/nan/*.dbg
+components/tachart/demo/nan/*.exe
+components/tachart/demo/nan/*.lps
+components/tachart/demo/nan/*.res
+components/tachart/demo/nan/lib
 components/tachart/demo/navigate/*.exe
 components/tachart/demo/navigate/*.lps
 components/tachart/demo/navigate/lib
