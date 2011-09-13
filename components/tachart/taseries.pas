@@ -441,10 +441,23 @@ var
     pointCount += 1;
   end;
 
+  procedure DrawStep(const AP1, AP2: TDoublePoint);
+  var
+    m: TDoublePoint;
+  begin
+    if (LineType = ltStepXY) xor IsRotated then
+      m := DoublePoint(AP2.X, AP1.Y)
+    else
+      m := DoublePoint(AP1.X, AP2.Y);
+    CacheLine(AP1, m);
+    CacheLine(m, AP2);
+  end;
+
   procedure DrawLines;
   var
     i, j: Integer;
-    orig, m: TDoublePoint;
+    p, pPrev: TDoublePoint;
+    pNan, pPrevNan: Boolean;
   begin
     if LineType = ltNone then exit;
     // For extremely long series (10000 points or more), the Canvas.Line call
@@ -452,26 +465,30 @@ var
     // This achieves approximately 3x speedup for the typical case.
     SetLength(points, 2 * Length(FGraphPoints));
     SetLength(breaks, Length(FGraphPoints) + 1);
+    pPrevNan := true;
+    // Actually needed only for ltFromOrigin, but moved to silence a warning.
+    pPrev := AxisToGraph(ZeroDoublePoint);
     case LineType of
-      ltFromPrevious: begin
-        for i := 0 to High(FGraphPoints) - 1 do
-          CacheLine(FGraphPoints[i], FGraphPoints[i + 1]);
-      end;
-      ltFromOrigin: begin
-        orig := AxisToGraph(ZeroDoublePoint);
-        for i := 0 to High(FGraphPoints) do
-          CacheLine(orig, FGraphPoints[i]);
-      end;
-      ltStepXY, ltStepYX: begin
-        for i := 0 to High(FGraphPoints) - 1 do begin
-          if (LineType = ltStepXY) xor IsRotated then
-            m := DoublePoint(FGraphPoints[i + 1].X, FGraphPoints[i].Y)
-          else
-            m := DoublePoint(FGraphPoints[i].X, FGraphPoints[i + 1].Y);
-          CacheLine(FGraphPoints[i], m);
-          CacheLine(m, FGraphPoints[i + 1]);
+      ltFromPrevious:
+        for p in FGraphPoints do begin
+          pNan := IsNan(p);
+          if not (pNan or pPrevNan) then
+            CacheLine(pPrev, p);
+          pPrev := p;
+          pPrevNan := pNan;
         end;
-      end;
+      ltFromOrigin:
+        for p in FGraphPoints do
+          if not IsNan(p) then
+            CacheLine(pPrev, p);
+      ltStepXY, ltStepYX:
+        for p in FGraphPoints do begin
+          pNan := IsNan(p);
+          if not (pNan or pPrevNan) then
+            DrawStep(pPrev, p);
+          pPrev := p;
+          pPrevNan := pNan;
+        end;
     end;
     breaks[breakCount] := pointCount;
     breakCount += 1;

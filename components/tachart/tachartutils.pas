@@ -274,6 +274,7 @@ function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IntToColorHex(AColor: Integer): String; inline;
+function IsNan(const APoint: TDoublePoint): Boolean; overload; inline;
 
 function OrientToRad(AOrient: Integer): Double; inline;
 
@@ -415,6 +416,11 @@ begin
     Result := '$' + IntToHex(AColor, 6);
 end;
 
+function IsNan(const APoint: TDoublePoint): Boolean;
+begin
+  Result := IsNan(APoint.X) or IsNan(APoint.Y);
+end;
+
 function OrientToRad(AOrient: Integer): Double;
 begin
   Result := DegToRad(AOrient / ORIENTATION_UNITS_PER_DEG);
@@ -491,6 +497,7 @@ end;
 
 procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
 begin
+  if IsNan(AValue) then exit;
   if AValue < AMin then
     AMin := AValue;
   if AValue > AMax then
