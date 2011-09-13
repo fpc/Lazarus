@@ -36,7 +36,6 @@ type
     fHelpLabel: String;
     fHelpConnection: TLHelpConnection;
     fChmsFilePath: String;
-    fHelpExeParams: String;
     function GetHelpEXE: String;
     function DBFindViewer({%H-}HelpDB: THelpDatabase; {%H-}const MimeType: string;
       var {%H-}ErrMsg: string; out Viewer: THelpViewer): TShowHelpResult;
@@ -53,7 +52,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function SupportsTableOfContents: boolean; override;
-    procedure ShowTableOfContents({%H-}Node: THelpNode); override;
+    procedure ShowTableOfContents(Node: THelpNode); override;
     function SupportsMimeType(const AMimeType: string): boolean; override;
     function ShowNode(Node: THelpNode; var ErrMsg: string): TShowHelpResult; override;
     //procedure Hide; virtual;
@@ -65,13 +64,11 @@ type
     property HelpEXE: String read GetHelpEXE write SetHelpEXE;
     property HelpLabel: String read GetHelpLabel write SetHelpLabel;
     property HelpFilesPath: String read fChmsFilePath write SetChmsFilePath;
-    property HelpExeParams: String read fHelpExeParams write fHelpExeParams;
   end;
   
   procedure Register;
 
 implementation
-
 uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc, IDEMsgIntf;
 
 function FixSlash(AStr: String): String;
@@ -190,16 +187,14 @@ begin
   then
     Exit;
 
-  WS := '--ws='+LCLPlatformDirNames[WidgetSet.LCLPlatform];
+  WS := ' --ws='+LCLPlatformDirNames[WidgetSet.LCLPlatform]+' ';
 
   //Result := MessageDlg('The help viewer is not compiled yet. Try to compile it now?', mtConfirmation, mbYesNo ,0);
   //if Result <> mrYes then
   //  Exit;
 
   Proc := TProcess.Create(nil);
-  Proc.Executable := Utf8ToSys(Lazbuild);
-  Proc.Parameters.Add(WS);
-  Proc.Parameters.Add(Utf8ToSys(LHelpProject));
+  Proc.CommandLine := Lazbuild + WS + LHelpProject;
   Proc.Options := [poUsePipes, poStderrToOutPut];
   Proc.Execute;
 
@@ -343,7 +338,6 @@ var
   Url: String;
   Res: TLHelpResponse;
   DocsDir: String;
-  Proc: TProcess;
 begin
   if Pos('file://', Node.URL) = 1 then
   begin
@@ -351,7 +345,7 @@ begin
     Exit;
   end;
   Result:=shrNone;
-  if (ExtractFileNameOnly(HelpEXE) = 'lhelp') and (CheckBuildLHelp <> mrOK) then begin
+  if CheckBuildLHelp <> mrOK then begin
     ErrMsg := 'The program "' + HelpEXE + '" doesn''t seem to exist'+LineEnding+
               'or could not be built!';
     Exit(shrViewerNotFound);
@@ -382,34 +376,8 @@ begin
 
   FileName := IncludeTrailingPathDelimiter(DocsDir)+FileName;
 
-  if ExtractFileNameOnly(HelpExe) = 'lhelp' then begin
-    fHelpConnection.StartHelpServer(HelpLabel, HelpExe);
-    Res := fHelpConnection.OpenURL(FileName, Url);
-  end else begin
-    if Trim(fHelpExeParams) = '' then
-    begin
-      Result := shrViewerError;
-      ErrMsg := 'If you do not use "lhelp" as viewer you have to setup '
-              + 'HelpExeParams correctly in' + sLineBreak
-              + 'Environment Options -> Help -> Help Options -> '
-              + 'under HelpViewers - CHM Help Viewer' + sLineBreak
-              + 'e.g. for HH.EXE (HTML Help in Windows) it must be' + sLineBreak
-              + '  "%s::%s"' + sLineBreak
-              + 'where first %s will be replaced by CHM file name' + sLineBreak
-              + 'and the second one will be replaced by URL';
-      Exit;
-    end;
-    Proc := TProcess.Create(nil);
-    try
-      Proc.Executable := Utf8ToSys(fHelpExe);
-      Proc.Parameters.Add(Utf8ToSys(Format(fHelpExeParams, [FileName, Url])));
-      Proc.Execute;
-      Res := srSuccess;
-    except
-      Res := srUnknown;
-    end;
-    Proc.Free;
-  end;
+  fHelpConnection.StartHelpServer(HelpLabel, HelpExe);
+  Res := fHelpConnection.OpenURL(FileName, Url);
 
   case Res of
     srSuccess: Result := shrSuccess;
@@ -438,7 +406,6 @@ end;
 procedure TChmHelpViewer.Load(Storage: TConfigStorage);
 begin
   HelpEXE:=Storage.GetValue('CHMHelp/Exe','');
-  HelpExeParams := Storage.GetValue('CHMHelp/ExeParams','');
   HelpLabel:=Storage.GetValue('CHMHelp/Name','lazhelp');
   HelpFilesPath := Storage.GetValue('CHMHelp/FilesPath','');
 end;
@@ -446,7 +413,6 @@ end;
 procedure TChmHelpViewer.Save(Storage: TConfigStorage);
 begin
   Storage.SetDeleteValue('CHMHelp/Exe',HelpEXE,'');
-  Storage.SetDeleteValue('CHMHelp/ExeParams',HelpExeParams,'');
   Storage.SetDeleteValue('CHMHelp/Name',HelpLabel,'lazhelp');
   Storage.SetDeleteValue('CHMHelp/FilesPath',HelpFilesPath,'');
 end;
