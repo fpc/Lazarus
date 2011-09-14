@@ -10343,6 +10343,10 @@ msgstr "מלת מפתח של CVS"
 msgid "Current date and time"
 msgstr "תאריך ושעה נוכחיים"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #, fuzzy
 #| msgid "General"
@@ -16578,6 +16582,10 @@ msgstr "הכנס מקור מלת קוד של CVS"
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
 msgstr "הכנס תאריך וזמן עכשווים"
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"

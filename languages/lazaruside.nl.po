@@ -10323,6 +10323,10 @@ msgstr "CVS-sleutelwoord"
 msgid "Current date and time"
 msgstr "Huidige datum en tijd"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #, fuzzy
 #| msgid "General"
@@ -16544,6 +16548,10 @@ msgstr "Invoegen CVS keyword Broncode"
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
 msgstr "Huidige datum tijd invoegen"
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"

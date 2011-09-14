@@ -10367,6 +10367,10 @@ msgstr "CVS-Schlüsselwort"
 msgid "Current date and time"
 msgstr "Aktuelles Datum und Uhrzeit"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #, fuzzy
 #| msgid "General"
@@ -16606,6 +16610,10 @@ msgstr "CVS-Schlüsselwort für die Quelle einfügen"
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
 msgstr "Aktuelles Datum und Uhrzeit einfügen"
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"

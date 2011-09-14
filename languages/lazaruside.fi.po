@@ -10221,6 +10221,10 @@ msgstr "Liitä CVS avainsana"
 msgid "Current date and time"
 msgstr "Päivämäärä ja aika"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 msgid "Insert General"
 msgstr "Liitä kenttiä"
@@ -16345,6 +16349,10 @@ msgstr "Aseta CVS:n avainsana Source"
 
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice

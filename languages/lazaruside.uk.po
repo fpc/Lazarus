@@ -10219,6 +10219,10 @@ msgstr "Вставити Ключ CVS"
 msgid "Current date and time"
 msgstr "Поточні дата і час"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "Insert General"
@@ -16342,6 +16346,10 @@ msgstr "Вставити ключове слово CVS Source"
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
 msgstr "Вставити поточні дату і час"
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"

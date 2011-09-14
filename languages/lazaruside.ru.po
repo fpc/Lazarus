@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-09-11 18:12+0300\n"
+"PO-Revision-Date: 2011-09-15 02:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -10338,6 +10338,10 @@ msgstr "Вставить ключ CVS"
 msgid "Current date and time"
 msgstr "Текущие дата и время"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr "Вставить полное имя файла ..."
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
@@ -16543,6 +16547,10 @@ msgstr "Вставить ключевое слово CVS Source"
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
 msgstr "Вставить текущие дату и время"
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
+msgstr "Вставить полное имя файла"
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"

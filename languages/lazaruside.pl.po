@@ -10334,6 +10334,10 @@ msgstr "Słowo kluczowe CVS"
 msgid "Current date and time"
 msgstr "Bieżąca data i czas"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #, fuzzy
 #| msgid "General"
@@ -16537,6 +16541,10 @@ msgstr "Wstaw słowo kluczowe CVS: Source"
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
 msgstr "Wstaw bieżącą datę i czas"
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"

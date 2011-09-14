@@ -10225,6 +10225,10 @@ msgstr ""
 msgid "Current date and time"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #, fuzzy
 #| msgid "General"
@@ -16380,6 +16384,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice

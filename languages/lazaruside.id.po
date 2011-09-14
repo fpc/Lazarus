@@ -10335,6 +10335,10 @@ msgstr "kata kunci CVS"
 msgid "Current date and time"
 msgstr "Tanggal dan waktu saat ini"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #, fuzzy
 #| msgid "General"
@@ -16558,6 +16562,10 @@ msgstr "Sisipkan Sumber kata kunci CVS"
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
 msgstr "Sisipkan tanggal dan waktu saat ini"
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"

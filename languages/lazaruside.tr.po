@@ -10265,6 +10265,10 @@ msgstr "CVS anahtar sözcüğü"
 msgid "Current date and time"
 msgstr "Şu anki tarih ve saat"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #, fuzzy
 #| msgid "General"
@@ -16453,6 +16457,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice

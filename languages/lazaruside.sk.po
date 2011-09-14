@@ -10358,6 +10358,10 @@ msgstr "Kľúčové slovo CVS"
 msgid "Current date and time"
 msgstr "Aktuálny dátum a čas"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #, fuzzy
 #| msgid "General"
@@ -16599,6 +16603,10 @@ msgstr "Vložiť kľúčové slovo CVS Source"
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
 msgstr "Vložiť aktuálny dátum a čas"
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"

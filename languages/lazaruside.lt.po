@@ -10362,6 +10362,10 @@ msgstr "CVS bazinis žodis"
 msgid "Current date and time"
 msgstr "Dabartinė data ir laikas"
 
+#: lazarusidestrconsts.lismenuinsertfilename
+msgid "Insert full Filename ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertgeneral
 #, fuzzy
 #| msgid "General"
@@ -16605,6 +16609,10 @@ msgstr "Įterpti CVS bazinį žodį „Source“"
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
 msgstr "Įterpti dabartinę datą ir laiką"
+
+#: lazarusidestrconsts.srkmecinsertfilename
+msgid "Insert full Filename"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"
