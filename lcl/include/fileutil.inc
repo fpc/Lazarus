@@ -264,10 +264,10 @@ end;
 
 function FilenameIsWinAbsolute(const TheFilename: string): boolean;
 begin
-  Result:=((length(TheFilename)>=2) and (TheFilename[1] in ['A'..'Z','a'..'z'])
-           and (TheFilename[2]=':'))
-     or ((length(TheFilename)>=2)
-         and (TheFilename[1]='\') and (TheFilename[2]='\'));
+  Result:=(length(TheFilename)>=2) and (
+          (TheFilename[1] in ['A'..'Z','a'..'z']) and (TheFilename[2]=':')
+      or ((TheFilename[1]='\') and (TheFilename[2]='\'))
+  );
 end;
 
 function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
