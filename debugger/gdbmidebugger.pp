@@ -6049,7 +6049,11 @@ end;
 
 class function TGDBMIDebugger.ExePaths: String;
 begin
+  {$IFdef MSWindows}
+  Result := '$(LazarusDir)\mingw\bin\gdb.exe;C:\lazarus\mingw\bin\gdb.exe';
+  {$ELSE}
   Result := '/usr/bin/gdb;/usr/local/bin/gdb;/opt/fpc/gdb';
+  {$ENDIF}
 end;
 
 function TGDBMIDebugger.FindBreakpoint(

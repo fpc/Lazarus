@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, FileUtil, Forms, Controls, StdCtrls,
   ExtCtrls, Buttons, Dialogs, LCLProc,
-  PropEdits, ObjectInspector,
+  PropEdits, ObjectInspector, TransferMacros,
   LazarusIDEStrConsts, IDEOptionsIntf, PathEditorDlg, InputHistory, IDEProcs,
   EnvironmentOpts, BaseDebugManager, Debugger;
 
@@ -159,7 +159,7 @@ end;
 
 procedure TDebuggerGeneralOptionsFrame.FetchDebuggerSpecificOptions;
 var
-  S: String;
+  S, S2, S3: String;
   i: Integer;
   Filename: string;
   NewFilename: string;
@@ -174,7 +174,11 @@ begin
       S := FCurDebuggerClass.ExePaths;
       while S <> '' do
       begin
-        Add(GetPart([], [';'], S));
+        S2 := GetPart([], [';'], S);
+        S3 := S2;
+        if GlobalMacroList.SubstituteStr(S2)
+        then Add(S2)
+        else Add(S3);
         if S <> '' then System.Delete(S, 1, 1);
       end;
     end;
