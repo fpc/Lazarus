@@ -150,84 +150,6 @@ object Form1: TForm1
         end
       end
     end
-    object tsStats: TTabSheet
-      Caption = 'Statistics'
-      ClientHeight = 453
-      ClientWidth = 637
-      object chCalc: TChart
-        Left = 0
-        Height = 419
-        Top = 0
-        Width = 637
-        AxisList = <        
-          item
-            Minors = <>
-            Title.LabelFont.Orientation = 900
-          end        
-          item
-            Alignment = calBottom
-            Minors = <>
-          end>
-        Foot.Brush.Color = clBtnFace
-        Foot.Font.Color = clBlue
-        Legend.Alignment = laTopLeft
-        Legend.MarginX = 40
-        Legend.MarginY = 10
-        Legend.UseSidebar = False
-        Legend.Visible = True
-        Title.Brush.Color = clBtnFace
-        Title.Font.Color = clBlue
-        Title.Text.Strings = (
-          'TAChart'
-        )
-        Align = alClient
-        ParentColor = False
-        object chCalcLineSeries1: TLineSeries
-          Title = 'Data'
-          LineType = ltNone
-          ShowPoints = True
-          Source = RandomChartSource1
-        end
-        object chCalcLineSeriesSum: TLineSeries
-          Title = 'Cumulative'
-          LinePen.Color = clMaroon
-          LinePen.Width = 2
-          Source = ccsSum
-        end
-        object chCalcLineSeriesAvg: TLineSeries
-          Title = 'Running average'
-          ZPosition = 1
-          LinePen.Color = clTeal
-          LinePen.Width = 2
-          Source = ccsAvg
-        end
-        object chCalcLineSeriesDerivative: TLineSeries
-          Title = 'Derivative'
-          Source = ccsDerivative
-        end
-      end
-      object Panel2: TPanel
-        Left = 0
-        Height = 34
-        Top = 419
-        Width = 637
-        Align = alBottom
-        ClientHeight = 34
-        ClientWidth = 637
-        TabOrder = 1
-        object cbCumulative: TCheckBox
-          Left = 8
-          Height = 17
-          Top = 7
-          Width = 73
-          Caption = 'Cumulative'
-          Checked = True
-          OnChange = cbCumulativeChange
-          State = cbChecked
-          TabOrder = 0
-        end
-      end
-    end
     object tsPointers: TTabSheet
       Caption = 'Pointers'
       ClientHeight = 453
@@ -289,7 +211,7 @@ object Form1: TForm1
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 25
-    RandSeed = -840176578
+    RandSeed = 840176578
     XMax = 20
     XMin = -10
     YMax = 8
@@ -328,7 +250,6 @@ object Form1: TForm1
   end
   object ccsDerivative: TCalculatedChartSource
     AccumulationMethod = camDerivative
-    AccumulationRange = 2
     Origin = RandomChartSource1
     left = 464
     top = 160

@@ -22,13 +22,7 @@ type
     ccsAvg: TCalculatedChartSource;
     ccsDerivative: TCalculatedChartSource;
     ccsSum: TCalculatedChartSource;
-    cbCumulative: TCheckBox;
-    chCalcLineSeriesDerivative: TLineSeries;
     chPointers: TChart;
-    chCalc: TChart;
-    chCalcLineSeries1: TLineSeries;
-    chCalcLineSeriesAvg: TLineSeries;
-    chCalcLineSeriesSum: TLineSeries;
     chFast: TChart;
     chFastConstantLine1: TConstantLine;
     chFastLineSeries1: TLineSeries;
@@ -41,17 +35,14 @@ type
     lblPointsCount: TLabel;
     PageControl2: TPageControl;
     Panel1: TPanel;
-    Panel2: TPanel;
     pnlPointers: TPanel;
     RandomChartSource1: TRandomChartSource;
     sePointerSize: TSpinEdit;
     tsPointers: TTabSheet;
-    tsStats: TTabSheet;
     tsFast: TTabSheet;
     procedure btnAddSeriesClick(Sender: TObject);
     procedure btnRefreshClick(Sender: TObject);
     procedure cb3DChange(Sender: TObject);
-    procedure cbCumulativeChange(Sender: TObject);
     procedure cbLineTypeChange(Sender: TObject);
     procedure cbRotatedChange(Sender: TObject);
     procedure cbSortedChange(Sender: TObject);
@@ -108,11 +99,6 @@ var
 begin
   for ls in TLineSeriesEnum.Create(chFast) do
     ls.Depth := 15 - ls.Depth;
-end;
-
-procedure TForm1.cbCumulativeChange(Sender: TObject);
-begin
-  chCalcLineSeriesSum.Active := cbCumulative.Checked;
 end;
 
 procedure TForm1.cbLineTypeChange(Sender: TObject);
