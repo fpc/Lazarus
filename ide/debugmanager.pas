@@ -1623,6 +1623,8 @@ begin
     // Inspect
     SrcEditMenuInspect.Enabled := CanRun and DebuggerIsValid
             and (dcEvaluate in FDebugger.Commands);
+    itmRunMenuInspect.Enabled := CanRun and DebuggerIsValid
+            and (dcEvaluate in FDebugger.Commands);
     // Add watch
     itmRunMenuAddWatch.Enabled := True; // always allow to add a watch
 
