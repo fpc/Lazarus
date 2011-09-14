@@ -1,15 +1,16 @@
 object Form1: TForm1
   Left = 342
-  Height = 415
+  Height = 438
   Top = 199
-  Width = 595
+  Width = 637
   Caption = 'Form1'
-  ClientHeight = 415
-  ClientWidth = 595
+  ClientHeight = 438
+  ClientWidth = 637
+  OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object Splitter1: TSplitter
-    Left = 590
-    Height = 415
+    Left = 632
+    Height = 438
     Top = 0
     Width = 5
     Align = alRight
@@ -18,22 +19,22 @@ object Form1: TForm1
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 415
+    Height = 438
     Top = 0
-    Width = 590
+    Width = 632
     ActivePage = tsBasic
     Align = alClient
     TabIndex = 0
     TabOrder = 1
     object tsBasic: TTabSheet
       Caption = 'Basic'
-      ClientHeight = 389
-      ClientWidth = 582
+      ClientHeight = 412
+      ClientWidth = 624
       object Memo1: TMemo
         Left = 0
         Height = 34
         Top = 0
-        Width = 582
+        Width = 624
         Align = alTop
         Lines.Strings = (
           'Modify sources at design-time.'
@@ -43,9 +44,9 @@ object Form1: TForm1
       end
       object Chart2: TChart
         Left = 0
-        Height = 355
+        Height = 378
         Top = 34
-        Width = 291
+        Width = 333
         AxisList = <        
           item
             Minors = <>
@@ -77,8 +78,8 @@ object Form1: TForm1
         end
       end
       object Chart1: TChart
-        Left = 291
-        Height = 355
+        Left = 333
+        Height = 378
         Top = 34
         Width = 291
         AxisList = <        
@@ -114,13 +115,13 @@ object Form1: TForm1
     end
     object tsStatistics: TTabSheet
       Caption = 'Statistics'
-      ClientHeight = 389
-      ClientWidth = 582
+      ClientHeight = 412
+      ClientWidth = 624
       object chCalc: TChart
         Left = 0
-        Height = 355
+        Height = 378
         Top = 0
-        Width = 582
+        Width = 624
         AxisList = <        
           item
             Minors = <>
@@ -167,11 +168,11 @@ object Form1: TForm1
       object Panel2: TPanel
         Left = 0
         Height = 34
-        Top = 355
-        Width = 582
+        Top = 378
+        Width = 624
         Align = alBottom
         ClientHeight = 34
-        ClientWidth = 582
+        ClientWidth = 624
         TabOrder = 1
         object cbCumulative: TCheckBox
           Left = 8
@@ -183,6 +184,115 @@ object Form1: TForm1
           OnChange = cbCumulativeChange
           State = cbChecked
           TabOrder = 0
+        end
+      end
+    end
+    object tsDerivative: TTabSheet
+      Caption = 'Derivative'
+      ClientHeight = 412
+      ClientWidth = 624
+      object chDerivative: TChart
+        Left = 0
+        Height = 327
+        Top = 0
+        Width = 624
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'y, dy/dx'
+          end        
+          item
+            Grid.Color = clSilver
+            Alignment = calBottom
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'x'
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Legend.Alignment = laTopCenter
+        Legend.ColumnCount = 2
+        Legend.Visible = True
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object chDerivativeLineOrig: TLineSeries
+          Title = 'y'
+          Source = lcsDerivative
+        end
+        object chDerivativeLineDeriv: TLineSeries
+          Title = 'dy/dx'
+          LinePen.Color = clRed
+          Source = ccsDerivative
+        end
+      end
+      object rgDataShape: TRadioGroup
+        Left = 0
+        Height = 54
+        Top = 327
+        Width = 624
+        Align = alBottom
+        AutoFill = True
+        Caption = 'Functions'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 7
+        ClientHeight = 36
+        ClientWidth = 620
+        Columns = 7
+        ItemIndex = 0
+        Items.Strings = (
+          'y = x'
+          'y = sin(x)'
+          'y = sin(x) / x'
+          'y = exp(-x/3)'
+          'Gaussian'
+          'Noisy Gaussian'
+          'Data from table'
+        )
+        OnClick = rgDataShapeClick
+        ParentFont = False
+        TabOrder = 1
+      end
+      object Panel1: TPanel
+        Left = 0
+        Height = 31
+        Top = 381
+        Width = 624
+        Align = alBottom
+        BevelOuter = bvNone
+        ClientHeight = 31
+        ClientWidth = 624
+        TabOrder = 2
+        object lblAccumulationRange: TLabel
+          Left = 8
+          Height = 14
+          Top = 9
+          Width = 95
+          Caption = 'AccumulationRange'
+          ParentColor = False
+        end
+        object seAccumulationRange: TSpinEdit
+          Left = 116
+          Height = 21
+          Top = 4
+          Width = 82
+          OnChange = seAccumulationRangeChange
+          TabOrder = 0
+          Value = 2
         end
       end
     end
@@ -231,5 +341,15 @@ object Form1: TForm1
     YMin = 1
     left = 504
     top = 268
+  end
+  object lcsDerivative: TListChartSource
+    left = 156
+    top = 84
+  end
+  object ccsDerivative: TCalculatedChartSource
+    AccumulationMethod = camDerivative
+    Origin = lcsDerivative
+    left = 156
+    top = 140
   end
 end
