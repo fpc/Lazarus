@@ -1491,7 +1491,7 @@ end;
 
 constructor TExternHelpFileSelector.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner);
 
   FileListBox:=TListBox.Create(Self);
   with FileListBox do begin

@@ -68,51 +68,41 @@ var
 begin
   ADirective := UpperCase(ADirective);
   Result := False;
-  if FDocsDir = '' then
-  begin
-    FDocsDir := '$(LazarusDir)';
-    IDEMacros.SubstituteMacros(FDocsDir);
-    FDocsDir := AppendPathDelim(FDocsDir) + 'docs' + PathDelim + 'html';
-  end;
-  FDocsDir := AppendPathDelim(FDocsDir);
 
-  if FileExistsUTF8(FDocsDir + 'prog.chm') then
-  begin
-    chm := TChmFileList.Create(Utf8ToSys(FDocsDir + 'prog.chm'));
-    try
-      if chm.Count = 0 then Exit;
-      fchm := chm.Chm[0];
+  chm := TChmFileList.Create(Utf8ToSys(FDocsDir + 'prog.chm'));
+  try
+    if chm.Count = 0 then Exit;
+    fchm := chm.Chm[0];
 
-      if fchm.SearchReader = nil then
-      begin
-        ms := fchm.GetObject('/$FIftiMain');
-        if ms = nil then Exit;
-        SearchReader := TChmSearchReader.Create(ms, True); //frees the stream when done
-        fchm.SearchReader := SearchReader;
-      end
-      else
-        SearchReader := fchm.SearchReader;
-      SearchReader.LookupWord(Copy(ADirective, 2, MaxInt), TitleResults);
-      for k := 0 to High(TitleResults) do
-      begin
-        URL := fchm.LookupTopicByID(TitleResults[k].TopicIndex, DocTitle);
-        i := Pos(ADirective, DocTitle);
-        if (i = 0) or (Length(DocTitle) >= i + Length(ADirective))
-          and (upCase(DocTitle[i + Length(ADirective)]) in ['A'..'Z','0'..'9']) then Continue;
-        if (Length(URL) > 0) and (URL[1] = '/') then
-          Delete(URL, 1, 1);
-        if URL = '' then Continue;
-        DirectiveNode := THelpNode.CreateURL(Self, ADirective, 'prog.chm://' + URL);
-        DirectiveNode.Title := 'FPC directives: ' + DocTitle;
-        CreateNodeQueryListAndAdd(DirectiveNode, nil, ListOfNodes, True);
-        FDirectiveNodes.Add(DirectiveNode);
-        Result := True;
-      end;
-
-      fchm.Free;
-    finally
-      chm.Free;
+    if fchm.SearchReader = nil then
+    begin
+      ms := fchm.GetObject('/$FIftiMain');
+      if ms = nil then Exit;
+      SearchReader := TChmSearchReader.Create(ms, True); //frees the stream when done
+      fchm.SearchReader := SearchReader;
+    end
+    else
+      SearchReader := fchm.SearchReader;
+    SearchReader.LookupWord(Copy(ADirective, 2, MaxInt), TitleResults);
+    for k := 0 to High(TitleResults) do
+    begin
+      URL := fchm.LookupTopicByID(TitleResults[k].TopicIndex, DocTitle);
+      i := Pos(ADirective, DocTitle);
+      if (i = 0) or (Length(DocTitle) >= i + Length(ADirective))
+        and (upCase(DocTitle[i + Length(ADirective)]) in ['A'..'Z','0'..'9']) then Continue;
+      if (Length(URL) > 0) and (URL[1] = '/') then
+        Delete(URL, 1, 1);
+      if URL = '' then Continue;
+      DirectiveNode := THelpNode.CreateURL(Self, ADirective, 'prog.chm://' + URL);
+      DirectiveNode.Title := 'FPC directives: ' + DocTitle;
+      CreateNodeQueryListAndAdd(DirectiveNode, nil, ListOfNodes, True);
+      FDirectiveNodes.Add(DirectiveNode);
+      Result := True;
     end;
+
+    fchm.Free;
+  finally
+    chm.Free;
   end;
 end;
 
@@ -148,6 +138,13 @@ begin
   if (FPCDirectiveHelpPrefix<>'')
   and (LeftStr(HelpDirective, Length(FPCDirectiveHelpPrefix)) = FPCDirectiveHelpPrefix) then
   begin
+    if FDocsDir = '' then
+    begin
+      FDocsDir := '$(LazarusDir)';
+      IDEMacros.SubstituteMacros(FDocsDir);
+      FDocsDir := AppendPathDelim(FDocsDir) + 'docs' + PathDelim + 'html';
+    end;
+    FDocsDir := AppendPathDelim(FDocsDir);
     if not FileExistsUTF8(FDocsDir + 'prog.chm') then
     begin
       Result := shrDatabaseNotFound;
