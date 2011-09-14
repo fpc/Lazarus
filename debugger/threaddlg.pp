@@ -154,16 +154,8 @@ begin
   // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
   DebugBoss.LockCommandProcessing;
   try
-    // check the full name first
-    Filename := Entry.FullFileName;
-    if (Filename = '') or not DebugBoss.GetFullFilename(Filename, False) then
-    begin
-      // if fails the check the short file name
-      Filename := Entry.Source;
-      if (FileName = '') or not DebugBoss.GetFullFilename(Filename, True) then
-        Exit;
-    end;
-    MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True, True);
+    if DebugBoss.GetFullFilename(Entry.UnitInfo, Filename, False) then
+      MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True, True);
   finally
     DebugBoss.UnLockCommandProcessing;
   end;end;

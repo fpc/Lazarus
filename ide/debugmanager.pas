@@ -95,13 +95,13 @@ type
     procedure DebugDialogDestroy(Sender: TObject);
   private
     FDebugger: TDebugger;
+    FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
     FInStateChange: Boolean;
     FPrevShownWindow: HWND;
     FStepping: Boolean;
     // keep track of the last reported location
     FCurrentLocation: TDBGLocationRec;
-    FIgnoreSourceFiles: TStringList; // a list of unfindable sourcefiles, that should not be prompted anymore
     // last hit breakpoint
     FCurrentBreakpoint: TIDEBreakpoint;
     FAutoContinueTimer: TTimer;
@@ -203,6 +203,7 @@ type
     procedure EvaluateModify(const AExpression: String); override;
     procedure Inspect(const AExpression: String); override;
 
+    function GetFullFilename(const AUnitinfo: TDebuggerUnitInfo; out Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
@@ -516,6 +517,59 @@ end;
 //-----------------------------------------------------------------------------
 // Menu events
 //-----------------------------------------------------------------------------
+
+function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
+  out Filename: string; AskUserIfNotFound: Boolean): Boolean;
+
+  procedure ResolveFromDbg;
+  begin
+    Filename := AUnitinfo.DbgFullName;
+    Result := Filename <> '';
+    if Result then
+      Result := GetFullFilename(Filename, False);
+    if not Result then begin
+      Filename := AUnitinfo.FileName;
+      Result := GetFullFilename(Filename, AskUserIfNotFound);
+    end;
+  end;
+
+begin
+  Result := False;
+  if Destroying or (AUnitinfo = nil) then exit;
+  Filename := AUnitinfo.LocationFullFile;
+  Result := Filename <> '';
+  if Result then exit;
+
+  case AUnitinfo.LocationType of
+    dltUnknown:
+      begin
+        ResolveFromDbg;
+      end;
+    dltUnresolvable: Result := False;
+    dltProject:
+      begin
+        Filename := TrimFilename(AUnitinfo.LocationName);
+        Filename:= MainIDE.FindSourceFile(Filename, Project1.ProjectDirectory,
+                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
+                       fsfMapTempToVirtualFiles, fsfSkipPackages]);
+        Result := Filename <> '';
+        if not Result then
+          ResolveFromDbg;
+      end;
+    dltPackage:
+      begin
+        ResolveFromDbg;
+      end;
+  end;
+
+  if Result then
+    AUnitinfo.LocationFullFile := Filename
+  else begin
+    Filename := AUnitinfo.FileName;
+    if AskUserIfNotFound
+    then AUnitinfo.LocationType := dltUnresolvable;
+  end;
+end;
 
 function TDebugManager.GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean;
 var
@@ -1024,23 +1078,22 @@ procedure TDebugManager.DebuggerCurrentLine(Sender: TObject; const ALocation: TD
   end;
 
 var
-  SrcFile, SrcFullName: String;
+  SrcFullName: String;
   NewSource: TCodeBuffer;
   Editor: TSourceEditor;
   SrcLine: Integer;
   i, TId: Integer;
   StackEntry: TCallStackEntry;
   FocusEditor: Boolean;
-  InIgnore: Boolean;
+  CurrentSourceUnitInfo: TDebuggerUnitInfo;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
   if FDebugger.State = dsInternalPause then exit;
   if Destroying then exit;
 
   FCurrentLocation := ALocation;
-  SrcFile := ALocation.SrcFile;
-  SrcFullName := ALocation.SrcFullName;
   SrcLine := ALocation.SrcLine;
+  CurrentSourceUnitInfo := nil;
 
   if SrcLine < 1
   then begin
@@ -1053,71 +1106,69 @@ begin
       StackEntry := CallStack.CurrentCallStackList.EntriesForThreads[TId].Entries[i];
       if StackEntry.Line > 0
       then begin
+        CurrentSourceUnitInfo := StackEntry.UnitInfo;
+        CurrentSourceUnitInfo.AddReference;
         SrcLine := StackEntry.Line;
-        SrcFile := StackEntry.Source;
-        SrcFullName := StackEntry.FullFileName;
         StackEntry.MakeCurrent;
         Break;
       end;
       Inc(i);
     end;
-    if SrcLine < 1
-    then begin
-      ViewDebugDialog(ddtAssembler);
-      Exit;
-    end;
-  end;
-
-  if FDialogs[ddtAssembler] <> nil
-  then begin
-    TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, Alocation.Address);
-    if SrcLine < 1 then Exit;
+  end
+  else begin
+    CurrentSourceUnitInfo := Debugger.UnitInfoProvider.GetUnitInfoFor(ALocation.SrcFile, ALocation.SrcFullName);
+    CurrentSourceUnitInfo.AddReference;
   end;
 
   // TODO: do in DebuggerChangeState / Only currently State change locks execution of gdb
+  // Must be after stack frame selection (for inspect)
+  if FDialogs[ddtAssembler] <> nil
+  then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, Alocation.Address);
   if (FDialogs[ddtInspect] <> nil)
   then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
 
-  if (SrcFullName = '') or not GetFullFilename(SrcFullName, False) then
-  begin
-    SrcFullName := SrcFile;
-    InIgnore := FIgnoreSourceFiles.IndexOf(FileLocationToId(ALocation)) >= 0;
-    if not GetFullFilename(SrcFullName, not InIgnore) then begin
-      if not InIgnore
-      then FIgnoreSourceFiles.Add(FileLocationToId(ALocation));
-      ViewDebugDialog(ddtAssembler);
-      exit;
-    end;
-  end;
-
-  NewSource := CodeToolBoss.LoadFile(SrcFullName, true, false);
-  if NewSource = nil
+  if (SrcLine > 0) and (CurrentSourceUnitInfo <> nil) and
+     GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True)
   then begin
-    InIgnore := FIgnoreSourceFiles.IndexOf(FileLocationToId(ALocation)) >= 0;
-    if (FIgnoreSourceFiles.IndexOf(FileLocationToId(ALocation)) < 0)
+    // Load the file
+    NewSource := CodeToolBoss.LoadFile(SrcFullName, true, false);
+    if NewSource = nil
     then begin
-      FIgnoreSourceFiles.Add(FileLocationToId(ALocation));
-      MessageDlg(lisDebugUnableToLoadFile,
-        Format(lisDebugUnableToLoadFile2, ['"', SrcFullName, '"']),
-        mtError,[mbCancel],0);
+      if not (dlfLoadError in CurrentSourceUnitInfo.Flags) then begin
+        MessageDlg(lisDebugUnableToLoadFile,
+                   Format(lisDebugUnableToLoadFile2, ['"', SrcFullName, '"']),
+                   mtError,[mbCancel],0);
+        CurrentSourceUnitInfo.Flags := CurrentSourceUnitInfo.Flags + [dlfLoadError];
+      end;
+      SrcLine := -1;
     end;
-    ViewDebugDialog(ddtAssembler);
-    Exit;
-  end;
+  end
+  else
+    SrcLine := -1;
+
+  ReleaseAndNil(CurrentSourceUnitInfo);
 
   // clear old error and execution lines
-  Editor := nil;
   if SourceEditorManager <> nil
   then begin
-    Editor := SourceEditorManager.SourceEditorIntfWithFilename(NewSource.Filename);
     SourceEditorManager.ClearExecutionLines;
     SourceEditorManager.ClearErrorLines;
   end;
 
+  if SrcLine < 1
+  then begin
+    ViewDebugDialog(ddtAssembler);
+    exit;
+  end;
+
+  Editor := nil;
+  if SourceEditorManager <> nil
+  then Editor := SourceEditorManager.SourceEditorIntfWithFilename(NewSource.Filename);
+
   // jump editor to execution line
   FocusEditor := (FCurrentBreakPoint = nil) or (FCurrentBreakPoint.AutoContinueTime = 0);
   i := SrcLine;
-  if Editor <> nil then
+  if (Editor <> nil) then
     i := Editor.DebugToSourceLine(i);
   if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,i,-1,true, FocusEditor)<>mrOk
   then exit;
@@ -1380,6 +1431,7 @@ begin
     FDialogs[DialogType] := nil;
 
   FDebugger := nil;
+  FUnitInfoProvider := TDebuggerUnitInfoProvider.Create;
   FBreakPoints := TManagedBreakPoints.Create(Self);
   FBreakPointGroups := TIDEBreakPointGroups.Create;
   FWatches := TWatchesMonitor.Create;
@@ -1397,9 +1449,9 @@ begin
   FSnapshots.CallStack := FCallStack;
   FSnapshots.Watches := FWatches;
   FSnapshots.Locals := FLocals;
+  FSnapshots.UnitInfoProvider := FUnitInfoProvider;
 
   FUserSourceFiles := TStringList.Create;
-  FIgnoreSourceFiles := TStringList.Create;
 
   FAutoContinueTimer := TTimer.Create(Self);
   FAutoContinueTimer.Enabled := False;
@@ -1440,9 +1492,9 @@ begin
   FreeAndNil(FRegisters);
 
   FreeAndNil(FUserSourceFiles);
-  FreeAndNil(FIgnoreSourceFiles);
   FreeAndNil(FHiddenDebugOutputLog);
   FreeAndNil(FHiddenDebugEventsLog);
+  FreeAndNil(FUnitInfoProvider);
 
   inherited Destroy;
 end;
@@ -1456,7 +1508,9 @@ begin
   FExceptions.Reset;
   FSignals.Reset;
   FUserSourceFiles.Clear;
-  FIgnoreSourceFiles.Clear;
+  FUnitInfoProvider.Clear;
+  if FDebugger <> nil
+  then FDebugger.UnitInfoProvider.Clear;
 end;
 
 procedure TDebugManager.ConnectMainBarEvents;
@@ -1819,7 +1873,7 @@ begin
   end;
   if (Project1.MainUnitID < 0) or Destroying then Exit;
 
-  FIgnoreSourceFiles.Clear;
+  FUnitInfoProvider.Clear;
   FIsInitializingDebugger:= True;
   try
     DebuggerClass := GetDebuggerClass;
@@ -2109,7 +2163,9 @@ begin
       MainIDE.ToolStatus:=itNone;
   end;
 
-  FIgnoreSourceFiles.Clear;
+  FUnitInfoProvider.Clear; // Maybe keep locations? But clear "not found"/"not loadable" flags?
+  if FDebugger <> nil
+  then FDebugger.UnitInfoProvider.Clear;
   Result := mrOk;
 end;
 
@@ -2444,6 +2500,7 @@ begin
     FSnapshots.Debugger := nil;
   end
   else begin
+    FDebugger.UnitInfoProvider := FUnitInfoProvider;
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
     FWatches.Supplier := FDebugger.Watches;
     FThreads.Supplier := FDebugger.Threads;

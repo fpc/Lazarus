@@ -190,6 +190,81 @@ type
 procedure ReleaseAndNil(var ARefCountedObject);
 
 type
+
+  TDebuggerLocationType = (dltUnknown,        // not jet looked up
+                           dltUnresolvable,   // lookup failed
+                           dltProject,
+                           dltPackage
+                          );
+  TDebuggerLocationFlags = set of (dlfLoadError  // resolved but failed to load
+                                  );
+
+  { TDebuggerUnitInfo }
+
+  TDebuggerUnitInfo = class(TRefCountedObject)
+  private
+    FFileName, FDbgFullName: String;
+    FFlags: TDebuggerLocationFlags;
+    FLocationName, FLocationOwnerName, FLocationFullFile: String;
+    FLocationType: TDebuggerLocationType;
+    function GetFileName: String;
+    function GetDbgFullName: String;
+    function GetLocationFullFile: String;
+    function GetLocationName: String;
+    function GetLocationOwnerName: String;
+    function GetLocationType: TDebuggerLocationType;
+    procedure SetLocationFullFile(AValue: String);
+    procedure SetLocationType(AValue: TDebuggerLocationType);
+  public
+    constructor Create(const AFileName: String; const AFullFileName: String);
+    function IsEqual(const AFileName: String; const AFullFileName: String): boolean;
+    function IsEqual(AnOther: TDebuggerUnitInfo): boolean;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                    const APath: string); virtual;
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                                  const APath: string); virtual;
+    property FileName: String read GetFileName;
+    property DbgFullName: String read GetDbgFullName;
+    property LocationType: TDebuggerLocationType read GetLocationType write SetLocationType;
+    property LocationOwnerName: String read GetLocationOwnerName;
+    property LocationName: String read GetLocationName;
+    property LocationFullFile: String read GetLocationFullFile write SetLocationFullFile;
+    property Flags: TDebuggerLocationFlags read FFlags write FFlags;
+  end;
+
+  { TDebuggerUnitInfoList }
+
+  TDebuggerUnitInfoList = class(TRefCntObjList)
+  private
+    function GetInfo(Index: Integer): TDebuggerUnitInfo;
+    procedure PutInfo(Index: Integer; AValue: TDebuggerUnitInfo);
+  public
+    property Items[Index: Integer]: TDebuggerUnitInfo read GetInfo write PutInfo; default;
+  end;
+
+  { TDebuggerUnitInfoProvider }
+
+  TDebuggerUnitInfoProvider = class
+  private
+    FList: TDebuggerUnitInfoList;
+    FLoader: TDebuggerUnitInfo;
+    function GetInfo(Index: Integer): TDebuggerUnitInfo;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function GetUnitInfoFor(const AFileName: String; const AFullFileName: String): TDebuggerUnitInfo;
+    function IndexOf(AnInfo: TDebuggerUnitInfo; AddIfNotExists: Boolean = False): Integer;
+    function Count: integer;
+    property Items[Index: Integer]: TDebuggerUnitInfo read GetInfo; default;
+  public
+    // Load/Save all entries with ID
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+                                    const APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
+                                  const APath: string);
+  end;
+
 { ---------------------------------------------------------<br>
   TDebuggerNotification is a reference counted baseclass
   for handling notifications for locals, watches, breakpoints etc.<br>
@@ -1464,31 +1539,34 @@ type
     FFunctionName: String;
     FLine: Integer;
     FArguments: TStrings;
-    FSource: String;
-    FFullFileName: String;
+    FUnitInfo: TDebuggerUnitInfo;
     FState: TDebuggerDataState;
     function GetArgumentCount: Integer;
     function GetArgumentName(const AnIndex: Integer): String;
     function GetArgumentValue(const AnIndex: Integer): String;
-    function GetFullFileName: String;
     function GetFunctionName: String;
     function GetSource: String;
+    procedure SetUnitInfo(AUnitInfo: TDebuggerUnitInfo);
   protected
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
-                                APath: string);
+                                    const APath: string;
+                                    AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                   );
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
-                              APath: string);
+                                  APath: string;
+                                  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                 );
   public
     constructor Create;
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
-                       const ASource: String; const AFullFileName: String;
+                       const AUnitInfo: TDebuggerUnitInfo;
                        const ALine: Integer; AState: TDebuggerDataState = ddsValid);
     constructor CreateCopy(const ASource: TCallStackEntry);
     destructor Destroy; override;
     procedure Init(const AnAdress: TDbgPtr;
                    const AnArguments: TStrings; const AFunctionName: String;
-                   const ASource: String; const AFullFileName: String;
+                   const AUnitInfo: TDebuggerUnitInfo;
                    const ALine: Integer; AState: TDebuggerDataState = ddsValid);
     function GetFunctionWithArg: String;
     function IsCurrent: Boolean;
@@ -1501,7 +1579,7 @@ type
     property Index: Integer read FIndex;
     property Line: Integer read FLine;
     property Source: String read GetSource;
-    property FullFileName: String read GetFullFileName;
+    property UnitInfo: TDebuggerUnitInfo read FUnitInfo;
     property State: TDebuggerDataState read FState write FState;
   end;
 
@@ -1525,9 +1603,13 @@ type
     procedure AddEntry(AnEntry: TCallStackEntry); virtual; // must be added in correct order
     procedure AssignEntriesTo(AnOther: TCallStack); virtual;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
-                                APath: string);
+                                    APath: string;
+                                    AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                   );
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
-                              APath: string);
+                                  APath: string;
+                                  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                 );
   public
     constructor Create;
     constructor CreateCopy(const ASource: TCallStack);
@@ -1551,9 +1633,13 @@ type
     function  GetEntryForThread(const AThreadId: Integer): TCallStack; virtual;
     procedure Add(ACallStack: TCallStack);
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
-                                APath: string);
+                                    APath: string;
+                                    AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                   );
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
-                              APath: string);
+                                  APath: string;
+                                  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                 );
   public
     constructor Create;
     destructor Destroy; override;
@@ -1889,13 +1975,17 @@ type
     FThreadState: String;
   protected
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
-                                const APath: string); reintroduce;
+                                    const APath: string;
+                                    AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                   ); reintroduce;
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
-                              const APath: string); reintroduce;
+                                  const APath: string;
+                                  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                 ); reintroduce;
   public
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
-                       const ASource: String; const AFullFileName: String;
+                       const ALocationInfo: TDebuggerUnitInfo;
                        const ALine: Integer;
                        const AThreadId: Integer; const AThreadName: String;
                        const AThreadState: String;
@@ -1917,9 +2007,13 @@ type
   protected
     procedure Assign(AOther: TThreads);
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
-                                APath: string); virtual;
+                                    APath: string;
+                                    AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                   );
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
-                              APath: string); virtual;
+                                  APath: string;
+                                  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                 );
   public
     constructor Create;
     destructor Destroy; override;
@@ -2011,9 +2105,13 @@ type
     function GetLocationAsText: String;
   protected
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
-                                APath: string); virtual;
+                                    APath: string;
+                                    AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                   );
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
-                              APath: string); virtual;
+                                  APath: string;
+                                  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil
+                                 );
   public
     constructor Create(ASnapMgr: TSnapshotManager);
     destructor Destroy; override;
@@ -2054,6 +2152,7 @@ type
     FThreads: TThreadsMonitor;
   private
     FActive: Boolean;
+    FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FUpdateLock: Integer;
     FUpdateFlags: set of (ufSnapChanged, ufSnapCurrent, ufInDebuggerIdle);
     FCurrentState: TDBGState;
@@ -2090,9 +2189,9 @@ type
     procedure DoCurrent;
   protected
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
-                                APath: string); virtual;
+                                    APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
-                              APath: string); virtual;
+                                  APath: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -2125,6 +2224,7 @@ type
     property CallStack: TCallStackMonitor read FCallStack write FCallStack;
     property Threads: TThreadsMonitor read FThreads write FThreads;
     property Debugger: TDebugger read FDebugger write FDebugger;
+    property UnitInfoProvider: TDebuggerUnitInfoProvider read FUnitInfoProvider write FUnitInfoProvider;
   end;
 {%endregion   ^^^^^  Snapshots  ^^^^^   }
 
@@ -2424,6 +2524,7 @@ type
                                AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults
                               ): TDBGFeedbackResult of object;
 
+
   TDebuggerNotifyReason = (dnrDestroy);
 
   { TDebuggerProperties }
@@ -2454,6 +2555,7 @@ type
     FFileName: String;
     FLocals: TLocalsSupplier;
     FLineInfo: TDBGLineInfo;
+    FUnitInfoProvider, FInternalUnitInfoProvider: TDebuggerUnitInfoProvider;
     FOnBeforeState: TDebuggerStateChangedEvent;
     FOnConsoleOutput: TDBGOutputEvent;
     FOnFeedback: TDBGFeedbackEvent;
@@ -2476,6 +2578,7 @@ type
     FDestroyNotificationList: array [TDebuggerNotifyReason] of TMethodList;
     procedure DebuggerEnvironmentChanged(Sender: TObject);
     procedure EnvironmentChanged(Sender: TObject);
+    function GetUnitInfoProvider: TDebuggerUnitInfoProvider;
     function  GetState: TDBGState;
     function  ReqCmd(const ACommand: TDBGCommand;
                      const AParams: array of const): Boolean;
@@ -2582,6 +2685,8 @@ type
     property IsIdle: Boolean read GetIsIdle;                                     // Nothing queued
     property ErrorStateMessage: String read FErrorStateMessage;
     property ErrorStateInfo: String read FErrorStateInfo;
+    property UnitInfoProvider: TDebuggerUnitInfoProvider                        // Provided by DebugBoss, to map files to packages or project
+             read GetUnitInfoProvider write FUnitInfoProvider;
     // Events
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput
@@ -2744,6 +2849,213 @@ begin
   Result:=bpaStop;
 end;
 
+{ TDebuggerUnitInfoProvider }
+
+function TDebuggerUnitInfoProvider.GetInfo(Index: Integer): TDebuggerUnitInfo;
+begin
+  Result := FList.Items[Index];
+end;
+
+constructor TDebuggerUnitInfoProvider.Create;
+begin
+  FList := TDebuggerUnitInfoList.Create;
+  FLoader := TDebuggerUnitInfo.Create('', '');
+end;
+
+destructor TDebuggerUnitInfoProvider.Destroy;
+begin
+  FList.Clear;
+  inherited Destroy;
+  FreeAndNil(FLoader);
+  FreeAndNil(FList);
+end;
+
+procedure TDebuggerUnitInfoProvider.Clear;
+begin
+  FList.Clear;
+end;
+
+function TDebuggerUnitInfoProvider.GetUnitInfoFor(const AFileName: String;
+  const AFullFileName: String): TDebuggerUnitInfo;
+var
+  i: Integer;
+begin
+  i := FList.Count - 1;
+  while i >= 0 do begin
+    if FList[i].IsEqual(AFileName, AFullFileName) then begin
+      {$IFDEF DBG_LOCATION_INFO}
+      debugln(['TDebuggerLocationProvider.GetLocationInfoFor  Found entry for: ', AFileName, ' / ', AFullFileName]);
+      {$ENDIF}
+      exit(FList[i])
+    end;
+    dec(i);
+  end;
+  Result := TDebuggerUnitInfo.Create(AFileName, AFullFileName);
+  FList.Add(Result);
+  {$IFDEF DBG_LOCATION_INFO}
+  debugln(['TDebuggerLocationProvider.GetLocationInfoFor  Created new entry (Cnt=',FList.Count,') for: ', AFileName, ' / ', AFullFileName]);
+  {$ENDIF}
+end;
+
+function TDebuggerUnitInfoProvider.IndexOf(AnInfo: TDebuggerUnitInfo;
+  AddIfNotExists: Boolean): Integer;
+begin
+  Result := FList.Count - 1;
+  while Result >= 0 do begin
+    if FList[Result].IsEqual(AnInfo) then begin
+      exit;
+    end;
+    dec(Result);
+  end;
+  if AddIfNotExists then
+    Result := FList.Add(AnInfo);
+end;
+
+function TDebuggerUnitInfoProvider.Count: integer;
+begin
+  Result := FList.Count;
+end;
+
+procedure TDebuggerUnitInfoProvider.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+  const APath: string);
+var
+  i, c: Integer;
+  Item: TDebuggerUnitInfo;
+begin
+  c := AConfig.GetValue(APath + 'UnitInfoCount', 0);
+  for i := 0 to c - 1 do begin
+    Item := TDebuggerUnitInfo.Create('', '');
+    Item.LoadDataFromXMLConfig(AConfig, APath + 'UnitInfo_' + IntToStr(i) + '/');
+    FList.Add(Item);
+  end;
+end;
+
+procedure TDebuggerUnitInfoProvider.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string);
+var
+  i: Integer;
+begin
+  AConfig.SetValue(APath + 'UnitInfoCount', FList.Count);
+  for i := 0 to FList.Count - 1 do
+    FList[i].SaveDataToXMLConfig(AConfig, APath + 'UnitInfo_' + IntToStr(i) + '/');
+end;
+
+{ TDebuggerUnitInfoList }
+
+function TDebuggerUnitInfoList.GetInfo(Index: Integer): TDebuggerUnitInfo;
+begin
+  Result := TDebuggerUnitInfo(inherited Items[Index]);
+end;
+
+procedure TDebuggerUnitInfoList.PutInfo(Index: Integer; AValue: TDebuggerUnitInfo);
+begin
+  inherited Items[Index] := AValue;
+end;
+
+{ TDebuggerUnitInfo }
+
+function TDebuggerUnitInfo.GetFileName: String;
+begin
+  Result := FFileName;
+end;
+
+function TDebuggerUnitInfo.GetDbgFullName: String;
+begin
+  Result := FDbgFullName;
+end;
+
+function TDebuggerUnitInfo.GetLocationFullFile: String;
+begin
+  Result := FLocationFullFile;;
+end;
+
+function TDebuggerUnitInfo.GetLocationName: String;
+begin
+  Result := FLocationName;
+end;
+
+function TDebuggerUnitInfo.GetLocationOwnerName: String;
+begin
+  Result := FLocationOwnerName;
+end;
+
+function TDebuggerUnitInfo.GetLocationType: TDebuggerLocationType;
+begin
+  Result := FLocationType;
+end;
+
+procedure TDebuggerUnitInfo.SetLocationFullFile(AValue: String);
+begin
+  FLocationFullFile := AValue;
+end;
+
+procedure TDebuggerUnitInfo.SetLocationType(AValue: TDebuggerLocationType);
+begin
+  FLocationType := AValue;
+end;
+
+constructor TDebuggerUnitInfo.Create(const AFileName: String; const AFullFileName: String);
+begin
+  FFileName := AFileName;
+  FDbgFullName := TrimFilename(AFullFileName);
+  FLocationType := dltUnknown;
+end;
+
+function TDebuggerUnitInfo.IsEqual(const AFileName: String;
+  const AFullFileName: String): boolean;
+begin
+  Result := (FFileName = AFileName) and
+            (FDbgFullName = AFullFileName);
+end;
+
+function TDebuggerUnitInfo.IsEqual(AnOther: TDebuggerUnitInfo): boolean;
+begin
+  Result := (FFileName = AnOther.FFileName);
+  if not Result then exit;
+
+  case LocationType of
+    dltUnknown, dltUnresolvable:
+      Result := Result and (FDbgFullName = AnOther.FDbgFullName);
+    dltProject, dltPackage:
+      Result := Result and
+                (FLocationType = AnOther.FLocationType) and
+                (FLocationOwnerName = AnOther.FLocationOwnerName) and
+                (FLocationName = AnOther.FLocationName);
+  end;
+end;
+
+procedure TDebuggerUnitInfo.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+  const APath: string);
+begin
+  try
+    ReadStr(AConfig.GetValue(APath + 'Type', 'dltUnknown'), FLocationType);
+    if LocationType = dltUnresolvable
+    then LocationType := dltUnknown;
+  except
+    FLocationType := dltUnknown;
+  end;
+
+  FFileName          := AConfig.GetValue(APath + 'File', '');
+  FLocationOwnerName := AConfig.GetValue(APath + 'UnitOwner', '');
+  FLocationName      := AConfig.GetValue(APath + 'UnitFile',  '');
+  FDbgFullName       := AConfig.GetValue(APath + 'DbgFile',  '');
+  FLocationFullFile := '';
+end;
+
+procedure TDebuggerUnitInfo.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string);
+var
+  s: String;
+begin
+  WriteStr(s, LocationType);
+  AConfig.SetValue(APath + 'Type', s);
+  AConfig.SetValue(APath + 'File', FileName);
+
+  AConfig.SetValue(APath + 'UnitOwner', LocationOwnerName);
+  AConfig.SetValue(APath + 'UnitFile',  LocationName);
+  AConfig.SetValue(APath + 'DbgFile',   FDbgFullName);
+end;
+
 { TSnapshotList }
 
 function TSnapshotList.Get(Index: Integer): TSnapshot;
@@ -2797,7 +3109,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TSnapshot.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TSnapshot.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 begin
   FLocation.Address     := StrToQWordDef(AConfig.GetValue(APath + 'LocationAddress', '0'), 0);
   FLocation.FuncName    := AConfig.GetValue(APath + 'LocationFuncName', '');
@@ -2810,9 +3123,9 @@ begin
     FTimeStamp := 0;
   end;
   if FSnapMgr.Threads.Snapshots[Pointer(Self)] <> nil then
-    FSnapMgr.Threads.Snapshots[Pointer(Self)].LoadDataFromXMLConfig(AConfig, APath + 'SnapThreads/');
+    FSnapMgr.Threads.Snapshots[Pointer(Self)].LoadDataFromXMLConfig(AConfig, APath + 'SnapThreads/', AUnitInvoPrv);
   if FSnapMgr.CallStack.Snapshots[Pointer(Self)] <> nil then
-    FSnapMgr.CallStack.Snapshots[Pointer(Self)].LoadDataFromXMLConfig(AConfig, APath + 'SnapCallstack/');
+    FSnapMgr.CallStack.Snapshots[Pointer(Self)].LoadDataFromXMLConfig(AConfig, APath + 'SnapCallstack/', AUnitInvoPrv);
   if FSnapMgr.Locals.Snapshots[Pointer(Self)] <> nil then
     FSnapMgr.Locals.Snapshots[Pointer(Self)].LoadDataFromXMLConfig(AConfig, APath + 'SnapLocals/');
   if FSnapMgr.Watches.Snapshots[Pointer(Self)] <> nil then
@@ -2822,7 +3135,8 @@ begin
   if AConfig.GetValue(APath + 'IsHistory', True)  then AddToHistory;
 end;
 
-procedure TSnapshot.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TSnapshot.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 begin
   AConfig.SetValue(APath + 'LocationAddress', IntToStr(FLocation.Address));
   AConfig.SetValue(APath + 'LocationFuncName', FLocation.FuncName);
@@ -2834,9 +3148,9 @@ begin
   AConfig.SetValue(APath + 'IsSnapshot', IsSnapshot);
 
   if FSnapMgr.Threads.Snapshots[Pointer(Self)] <> nil then
-    FSnapMgr.Threads.Snapshots[Pointer(Self)].SaveDataToXMLConfig(AConfig, APath + 'SnapThreads/');
+    FSnapMgr.Threads.Snapshots[Pointer(Self)].SaveDataToXMLConfig(AConfig, APath + 'SnapThreads/', AUnitInvoPrv);
   if FSnapMgr.CallStack.Snapshots[Pointer(Self)] <> nil then
-    FSnapMgr.CallStack.Snapshots[Pointer(Self)].SaveDataToXMLConfig(AConfig, APath + 'SnapCallstack/');
+    FSnapMgr.CallStack.Snapshots[Pointer(Self)].SaveDataToXMLConfig(AConfig, APath + 'SnapCallstack/', AUnitInvoPrv);
   if FSnapMgr.Locals.Snapshots[Pointer(Self)] <> nil then
     FSnapMgr.Locals.Snapshots[Pointer(Self)].SaveDataToXMLConfig(AConfig, APath + 'SnapLocals/');
   if FSnapMgr.Watches.Snapshots[Pointer(Self)] <> nil then
@@ -2982,8 +3296,11 @@ procedure TSnapshotManager.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APat
 var
   c, i: Integer;
   NewSnap: TSnapshot;
+  UIProv: TDebuggerUnitInfoProvider;
 begin
   Clear;
+  UIProv := TDebuggerUnitInfoProvider.Create;
+  UIProv.LoadDataFromXMLConfig(AConfig, APath + 'UnitInfos/');
 
   c := AConfig.GetValue(APath + 'SnapCount', 0);
   for i := 0 to c - 1 do begin
@@ -2992,7 +3309,7 @@ begin
     FCallStack.NewSnapshot(NewSnap, True);
     FLocals.NewSnapshot(NewSnap, True);
     FWatches.NewSnapshot(NewSnap, True);
-    NewSnap.LoadDataFromXMLConfig(AConfig, APath + 'SnapEntry' + IntToStr(i) + '/');
+    NewSnap.LoadDataFromXMLConfig(AConfig, APath + 'SnapEntry' + IntToStr(i) + '/', UIProv);
     if not(NewSnap.IsHistory or NewSnap.IsSnapshot) then begin
       RemoveHistoryEntryFromMonitors(NewSnap); // TODO: add user feedback / warning
       debugln(['************** Snapshot loaded, but not kept']);
@@ -3007,13 +3324,15 @@ begin
     FCallStack.NewSnapshot(NewSnap, True);
     FLocals.NewSnapshot(NewSnap, True);
     FWatches.NewSnapshot(NewSnap, True);
-    NewSnap.LoadDataFromXMLConfig(AConfig, APath + 'HistEntry' + IntToStr(i) + '/');
+    NewSnap.LoadDataFromXMLConfig(AConfig, APath + 'HistEntry' + IntToStr(i) + '/', UIProv);
     if not(NewSnap.IsHistory or NewSnap.IsSnapshot) then begin
       RemoveHistoryEntryFromMonitors(NewSnap); // TODO: add user feedback / warning
       debugln(['************** Snapshot loaded, but not kept']);
     end;
     NewSnap.ReleaseReference;
   end;
+
+  UIProv.Free;
 
   //FThreads.CurrentThreads.SnapShot := nil;
   //FCallStack.CurrentCallStackList.SnapShot := nil;
@@ -3026,21 +3345,27 @@ end;
 procedure TSnapshotManager.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
 var
   c, i: Integer;
+  UIProv: TDebuggerUnitInfoProvider;
 begin
+  UIProv := TDebuggerUnitInfoProvider.Create;
+
   c := 0;
   for i := 0 to FSnapshotList.Count - 1 do begin
     if FSnapshotList[i].IsHistory then continue;
-    FSnapshotList[i].SaveDataToXMLConfig(AConfig, APath + 'SnapEntry' + IntToStr(i) + '/');
+    FSnapshotList[i].SaveDataToXMLConfig(AConfig, APath + 'SnapEntry' + IntToStr(i) + '/', UIProv);
     inc(c);
   end;
   AConfig.SetValue(APath + 'SnapCount', c);
 
   c := 0;
   for i := 0 to FHistoryList.Count - 1 do begin
-    FHistoryList[i].SaveDataToXMLConfig(AConfig, APath + 'HistEntry' + IntToStr(i) + '/');
+    FHistoryList[i].SaveDataToXMLConfig(AConfig, APath + 'HistEntry' + IntToStr(i) + '/', UIProv);
     inc(c);
   end;
   AConfig.SetValue(APath + 'HistCount', c);
+
+  UIProv.SaveDataToXMLConfig(AConfig, APath + 'UnitInfos/');
+  UIProv.Free;
 end;
 
 procedure TSnapshotManager.ClearHistory;
@@ -4312,7 +4637,7 @@ begin
   Result := nil;
   if FEntries.GetData(AIndex, Result) then Exit;
 
-  Result := TCallStackEntry.Create(AIndex, 0, nil, '', '', '', 0, ddsRequested);
+  Result := TCallStackEntry.Create(AIndex, 0, nil, '', nil, 0, ddsRequested);
   if Result = nil then Exit;
   FEntries.Add(AIndex, Result);
   Result.FOwner := Self;
@@ -4497,7 +4822,7 @@ begin
 end;
 
 procedure TCallStackList.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
-  APath: string);
+  APath: string; AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   c, i: Integer;
   e: TCallStack;
@@ -4507,19 +4832,20 @@ begin
   APath := APath + 'Entry';
   for i := 0 to c - 1 do begin
     e := TCallStack.Create;
-    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
     Add(e);
   end;
 end;
 
-procedure TCallStackList.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TCallStackList.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   i: Integer;
 begin
   AConfig.SetDeleteValue(APath + 'Count', Count, 0);
   APath := APath + 'Entry';
   for i := 0 to Count - 1 do
-    Entries[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    Entries[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
 end;
 
 procedure TCallStackList.Assign(AnOther: TCallStackList);
@@ -4878,30 +5204,32 @@ end;
 
 { TThreadEntry }
 
-procedure TThreadEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TThreadEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 begin
-  inherited LoadDataFromXMLConfig(AConfig, APath);
+  inherited LoadDataFromXMLConfig(AConfig, APath, AUnitInvoPrv);
   FThreadId    := AConfig.GetValue(APath + 'ThreadId', -1);
   FThreadName  := AConfig.GetValue(APath + 'ThreadName', '');
   FThreadState := AConfig.GetValue(APath + 'ThreadState', '');
 end;
 
-procedure TThreadEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+procedure TThreadEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 begin
-  inherited SaveDataToXMLConfig(AConfig, APath);
+  inherited SaveDataToXMLConfig(AConfig, APath, AUnitInvoPrv);
   AConfig.SetValue(APath + 'ThreadId', FThreadId);
   AConfig.SetValue(APath + 'ThreadName', FThreadName);
   AConfig.SetValue(APath + 'ThreadState', FThreadState);
 end;
 
 constructor TThreadEntry.Create(const AIndex: Integer; const AnAdress: TDbgPtr;
-  const AnArguments: TStrings; const AFunctionName: String; const ASource: String;
-  const AFullFileName: String; const ALine: Integer; const AThreadId: Integer;
+  const AnArguments: TStrings; const AFunctionName: String;
+  const ALocationInfo: TDebuggerUnitInfo; const ALine: Integer; const AThreadId: Integer;
   const AThreadName: String; const AThreadState: String;
   AState: TDebuggerDataState);
 begin
-  inherited Create(AIndex, AnAdress, AnArguments, AFunctionName, ASource,
-                   AFullFileName, ALine, AState);
+  inherited Create(AIndex, AnAdress, AnArguments, AFunctionName, ALocationInfo,
+                   ALine, AState);
   FThreadId    := AThreadId;
   FThreadName  := AThreadName;
   FThreadState := AThreadState;
@@ -4939,7 +5267,8 @@ begin
     FList.Add(TThreadEntry.CreateCopy(TThreadEntry(AOther.FList[i])));
 end;
 
-procedure TThreads.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TThreads.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   c, i: Integer;
   e: TThreadEntry;
@@ -4950,12 +5279,13 @@ begin
   APath := APath + 'Entry';
   for i := 0 to c - 1 do begin
     e := TThreadEntry.Create;
-    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
     FList.Add(e);
   end;
 end;
 
-procedure TThreads.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TThreads.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   i: Integer;
 begin
@@ -4963,7 +5293,7 @@ begin
   AConfig.SetDeleteValue(APath + 'Count', Count, 0);
   APath := APath + 'Entry';
   for i := 0 to Count - 1 do
-    Entries[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    Entries[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
 end;
 
 constructor TThreads.Create;
@@ -5093,6 +5423,7 @@ begin
   list.OnChange := @EnvironmentChanged;
   FEnvironment := list;
   FCurEnvironment := TStringList.Create;
+  FInternalUnitInfoProvider := TDebuggerUnitInfoProvider.Create;
 
   FBreakPoints := CreateBreakPoints;
   FLocals := CreateLocals;
@@ -5191,6 +5522,7 @@ begin
   FWatches.Debugger := nil;
   FThreads.Debugger := nil;
 
+  FreeAndNil(FInternalUnitInfoProvider);
   FreeAndNil(FExceptions);
   FreeAndNil(FBreakPoints);
   FreeAndNil(FLocals);
@@ -5351,6 +5683,13 @@ begin
     end;
   end;
   FCurEnvironment.Assign(FEnvironment);
+end;
+
+function TDebugger.GetUnitInfoProvider: TDebuggerUnitInfoProvider;
+begin
+  Result := FUnitInfoProvider;
+  if Result = nil then
+    Result := FInternalUnitInfoProvider;
 end;
 
 function TDebugger.GetIsIdle: Boolean;
@@ -7910,7 +8249,7 @@ end;
 
 constructor TCallStackEntry.Create(const AIndex: Integer;
   const AnAdress: TDbgPtr; const AnArguments: TStrings;
-  const AFunctionName: String; const ASource: String; const AFullFileName: String;
+  const AFunctionName: String; const AUnitInfo: TDebuggerUnitInfo;
   const ALine: Integer; AState: TDebuggerDataState = ddsValid);
 begin
   inherited Create;
@@ -7920,8 +8259,7 @@ begin
   if AnArguments <> nil
   then FArguments.Assign(AnArguments);
   FFunctionName := AFunctionName;
-  FSource := ASource;
-  FFullFileName := TrimFilename(AFullFileName);
+  SetUnitInfo(AUnitInfo);
   FLine := ALine;
   FState := AState;
 end;
@@ -7929,26 +8267,27 @@ end;
 constructor TCallStackEntry.CreateCopy(const ASource: TCallStackEntry);
 begin
   Create(ASource.FIndex, ASource.FAdress, ASource.FArguments,
-         ASource.FFunctionName, ASource.FSource, ASource.FFullFileName,
+         ASource.FFunctionName, ASource.FUnitInfo,
          ASource.FLine, ASource.FState);
 end;
 
 destructor TCallStackEntry.Destroy;
 begin
   inherited;
+  if FUnitInfo <> nil then FUnitInfo.ReleaseReference;
   FreeAndNil(FArguments);
 end;
 
 procedure TCallStackEntry.Init(const AnAdress: TDbgPtr;
-  const AnArguments: TStrings; const AFunctionName: String; const ASource: String;
-  const AFullFileName: String; const ALine: Integer; AState: TDebuggerDataState);
+  const AnArguments: TStrings; const AFunctionName: String;
+  const AUnitInfo: TDebuggerUnitInfo; const ALine: Integer; AState: TDebuggerDataState);
 begin
   FAdress := AnAdress;
   if AnArguments <> nil
   then FArguments.Assign(AnArguments);
   FFunctionName := AFunctionName;
-  FSource := ASource;
-  FFullFileName := AFullFileName;
+
+  SetUnitInfo(AUnitInfo);
   FLine := ALine;
   FState := AState;
 end;
@@ -7999,13 +8338,6 @@ begin
   Result := GetPart('=', '', Result);
 end;
 
-function TCallStackEntry.GetFullFileName: String;
-begin
-  if FState = ddsValid
-  then Result := FFullFileName
-  else Result := '';
-end;
-
 function TCallStackEntry.GetFunctionName: String;
 begin
   case FState of
@@ -8019,20 +8351,41 @@ end;
 
 function TCallStackEntry.GetSource: String;
 begin
-  if FState = ddsValid
-  then Result := FSource
+  if (FState = ddsValid)  and (FUnitInfo <> nil)
+  then Result := FUnitInfo.FileName
   else Result := '';
 end;
 
-procedure TCallStackEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TCallStackEntry.SetUnitInfo(AUnitInfo: TDebuggerUnitInfo);
+begin
+  if FUnitInfo <> nil then FUnitInfo.ReleaseReference;
+  FUnitInfo := AUnitInfo;
+  if FUnitInfo <> nil then FUnitInfo.AddReference;
+end;
+
+procedure TCallStackEntry.LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
+var
+  UInfo: TDebuggerUnitInfo;
+  i: Integer;
 begin
   FIndex          := AConfig.GetValue(APath + 'Index', 0);
   FAdress         := StrToQWordDef(AConfig.GetValue(APath + 'Address', '0'), 0);
   FFunctionName   := AConfig.GetValue(APath + 'FunctionName', '');
   FLine           := AConfig.GetValue(APath + 'Line', 0);
   FArguments.Text := AConfig.GetValue(APath + 'Arguments', '');
-  FSource         := AConfig.GetValue(APath + 'Source', '');
-  FFullFileName   := AConfig.GetValue(APath + 'FullFileName', '');
+
+  i := AConfig.GetValue(APath + 'UnitInfoRef', -1);
+  UInfo := nil;
+  if (i >= 0) and (AUnitInvoPrv <> nil) then begin
+    if i < AUnitInvoPrv.Count then
+      UInfo := AUnitInvoPrv[i];
+  end
+  else begin
+    UInfo := TDebuggerUnitInfo.Create('','');
+    UInfo.LoadDataFromXMLConfig(AConfig, APath + 'UnitInfo/');
+  end;
+  SetUnitInfo(UInfo);
   try
     ReadStr(AConfig.GetValue(APath + 'State', 'ddsUnknown'), FState);
   except
@@ -8040,17 +8393,26 @@ begin
   end;
 end;
 
-procedure TCallStackEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TCallStackEntry.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   s: string;
+  i: Integer;
 begin
   AConfig.SetValue(APath + 'Index', FIndex);
   AConfig.SetValue(APath + 'Address', IntToStr(FAdress));
   AConfig.SetValue(APath + 'FunctionName', FFunctionName);
   AConfig.SetValue(APath + 'Line', FLine);
   AConfig.SetValue(APath + 'Arguments', FArguments.Text);
-  AConfig.SetValue(APath + 'Source', FSource);
-  AConfig.SetValue(APath + 'FullFileName', FFullFileName);
+  if FUnitInfo <> nil then begin
+    if AUnitInvoPrv <> nil
+    then begin
+      i := AUnitInvoPrv.IndexOf(FUnitInfo, True);
+      AConfig.SetValue(APath + 'UnitInfoRef', i);
+    end
+    else
+      FUnitInfo.SaveDataToXMLConfig(AConfig, APath + 'UnitInfo/');
+  end;
   WriteStr(s, FState);
   AConfig.SetValue(APath + 'State', s);
 end;
@@ -8114,7 +8476,8 @@ begin
   end;
 end;
 
-procedure TCallStack.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TCallStack.LoadDataFromXMLConfig(const AConfig: TXMLConfig; APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   c, i: Integer;
   e: TCallStackEntry;
@@ -8128,12 +8491,13 @@ begin
   for i := 0 to c - 1 do begin
     e := TCallStackEntry.Create();
     e.FOwner := self;
-    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    e.LoadDataFromXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
     FList.Add(e);
   end;
 end;
 
-procedure TCallStack.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string);
+procedure TCallStack.SaveDataToXMLConfig(const AConfig: TXMLConfig; APath: string;
+  AUnitInvoPrv: TDebuggerUnitInfoProvider = nil);
 var
   i: Integer;
 begin
@@ -8143,7 +8507,7 @@ begin
   AConfig.SetDeleteValue(APath + 'Count', FList.Count, 0);
   APath := APath + 'Entry';
   for i := 0 to FList.Count - 1 do
-    TCallStackEntry(FList[i]).SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
+    TCallStackEntry(FList[i]).SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/', AUnitInvoPrv);
 end;
 
 function TCallStack.IndexError(AIndex: Integer): TCallStackEntry;

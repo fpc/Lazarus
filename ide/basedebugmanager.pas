@@ -148,6 +148,8 @@ type
                       EvalFlags: TDBGEvaluateFlags = []): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
     function Modify(const AExpression: String; const ANewValue: String): Boolean; virtual; abstract; // Modify the given expression, returns true if valid
 
+    function GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
+                             out Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
 
     procedure EvaluateModify(const AExpression: String); virtual; abstract;

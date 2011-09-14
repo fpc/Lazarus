@@ -1940,7 +1940,9 @@ begin
     FThreads[i] := TThreadEntry.Create(
       0, addr,
       Arguments,
-      func, filename, fullname, line,
+      func,
+      FTheDebugger.UnitInfoProvider.GetUnitInfoFor(filename, fullname),
+      line,
       ThrId,ThrName, ThrState
     );
 
@@ -5098,8 +5100,7 @@ var
       addr,
       Arguments,
       func,
-      filename,
-      fullname,
+      FTheDebugger.UnitInfoProvider.GetUnitInfoFor(filename, fullname),
       StrToIntDef(line, 0)
     );
 
