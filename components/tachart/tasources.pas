@@ -918,16 +918,16 @@ var
   i, j, ar: Integer;
   dx: Double;
 begin
-  FItem.SetY(0.0);
   if AIndex = 0 then begin
-    FItem.X := SafeNan;
+    FItem.SetY(SafeNan);
     exit;
   end;
   dx := FItem.X - FHistory.GetPLast(1)^.X;
   if dx = 0 then begin
-    FItem.X := SafeNan;
+    FItem.SetY(SafeNan);
     exit;
   end;
+  FItem.SetY(0.0);
   ar := IfThen(AccumulationRange = 0, MaxInt, AccumulationRange);
   ar := MinValue([ar, Integer(AIndex + 1), High(COEFFS)]);
   for j := 0 to ar - 1 do begin
