@@ -304,19 +304,40 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  ClipboardFormatToMimeType
-  Params:  FormatID - a registered format identifier (0 is invalid)
+  Params:  FormatID - a registered format identifier (can't be a predefined format)
   Returns: the corresponding mime type as string
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): String;
 var
   FormatLength: Integer;
 begin
-  SetLength(Result,1000);
-  FormatLength:= Windows.GetClipboardFormatName(FormatID, PChar(Result), 1000);
-  SetLength(Result,FormatLength);
-  {$IFDEF VerboseWin32Clipbrd}
-  debugln('TWin32WidgetSet.ClipboardFormatToMimeType FormatID=',dbgs(FormatID),' ',Result);
-  {$ENDIF}
+  case FormatID of
+    CF_BITMAP, CF_DIB, CF_PALETTE:
+      Result := PredefinedClipboardMimeTypes[pcfBitmap];
+    CF_TEXT, CF_UNICODETEXT:
+      Result := PredefinedClipboardMimeTypes[pcfText];
+    CF_METAFILEPICT:
+      Result := 'image/x-wmf';
+    CF_ENHMETAFILE:
+      Result := 'image/x-emf';
+    CF_TIFF:
+      Result := 'image/tiff';
+    CF_WAVE:
+      Result := 'audio/wav';
+    CF_RIFF:
+      Result := 'audio/riff';
+    CF_SYLK:
+      Result := 'application/x-ms-shortcut';
+  else
+    SetLength(Result,1000);
+    FormatLength:= Windows.GetClipboardFormatName(FormatID, PChar(Result), 1000);
+    if FormatLength = 0 then
+      raise Exception.Create('Unknown clipboard format');
+    SetLength(Result,FormatLength);
+    {$IFDEF VerboseWin32Clipbrd}
+    debugln('TWin32WidgetSet.ClipboardFormatToMimeType FormatID=',dbgs(FormatID),' ',Result);
+    {$ENDIF}
+  end;
 end;
 
 {------------------------------------------------------------------------------
