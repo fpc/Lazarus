@@ -913,7 +913,7 @@ begin
                    [mbCancel],0);
     end;
   finally
-    ListPage.Caption:= Format('%s (%d)',[SearchResultsView.WorkedSearchText,Cnt]);
+    ListPage.Caption:= Format('%s (%d)',[ListPage.Caption,Cnt]);
     SearchResultsView.EndUpdate(ListPage.PageIndex);
     // bring to front
     IDEWindowCreators.ShowForm(SearchResultsView,true);
