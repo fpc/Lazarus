@@ -90,7 +90,8 @@ type
     Text: String;
     YList: TDoubleDynArray;
     function GetY(AIndex: Integer): Double;
-    procedure ClearY;
+    procedure SetY(AValue: Double);
+    procedure MultiplyY(ACoeff: Double);
   end;
   PChartDataItem = ^TChartDataItem;
 
@@ -339,15 +340,6 @@ end;
 
 { TChartDataItem }
 
-procedure TChartDataItem.ClearY;
-var
-  i: Integer;
-begin
-  Y := 0;
-  for i := 0 to High(YList) do
-    YList[i] := 0;
-end;
-
 function TChartDataItem.GetY(AIndex: Integer): Double;
 begin
   AIndex := EnsureRange(AIndex, 0, Length(YList));
@@ -355,6 +347,24 @@ begin
     Result := Y
   else
     Result := YList[AIndex - 1];
+end;
+
+procedure TChartDataItem.MultiplyY(ACoeff: Double);
+var
+  i: Integer;
+begin
+  Y *= ACoeff;
+  for i := 0 to High(YList) do
+    YList[i] *= ACoeff;
+end;
+
+procedure TChartDataItem.SetY(AValue: Double);
+var
+  i: Integer;
+begin
+  Y := AValue;
+  for i := 0 to High(YList) do
+    YList[i] := AValue;
 end;
 
 { TChartSourceBuffer }

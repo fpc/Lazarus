@@ -894,9 +894,7 @@ begin
       FHistory.GetSum(FItem);
     camAverage: begin
       FHistory.GetSum(FItem);
-      FItem.Y /= Min(ar, AIndex + 1);
-      for i := 0 to High(FItem.YList) do
-        FItem.YList[i] /= Min(ar, AIndex + 1);
+      FItem.MultiplyY(1 / Min(ar, AIndex + 1));
     end;
     camDerivative:
       CalcDerivative(AIndex);
@@ -920,7 +918,7 @@ var
   i, j, ar: Integer;
   dx: Double;
 begin
-  FItem.ClearY;
+  FItem.SetY(0.0);
   if AIndex = 0 then begin
     FItem.X := SafeNan;
     exit;
@@ -938,21 +936,17 @@ begin
     for i := 0 to High(FItem.YList) do
       FItem.YList[i] += prevItem^.YList[i] * COEFFS[ar, j];
   end;
-  FItem.Y /= dx;
-  for i := 0 to High(FItem.YList) do
-    FItem.YList[i] /= dx;
+  FItem.MultiplyY(1 / dx);
 end;
 
 procedure TCalculatedChartSource.CalcPercentage;
 var
   s: Double;
-  i: Integer;
 begin
   if not Percentage then exit;
   s := (FItem.Y + Sum(FItem.YList)) * PERCENT;
-  FItem.Y /= s;
-  for i := 0 to High(FItem.YList) do
-    FItem.YList[i] /= s;
+  if s = 0 then exit;
+  FItem.MultiplyY(1 / s);
 end;
 
 procedure TCalculatedChartSource.Changed(ASender: TObject);
