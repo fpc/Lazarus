@@ -124,7 +124,8 @@ type
     fsfSearchForProject,
     fsfUseIncludePaths,
     fsfUseDebugPath,
-    fsfMapTempToVirtualFiles
+    fsfMapTempToVirtualFiles,
+    fsfSkipPackages
     );
   TFindSourceFlags = set of TFindSourceFlag;
   

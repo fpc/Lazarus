@@ -14126,12 +14126,14 @@ begin
     SearchPath:=TrimSearchPath(SearchPath,BaseDir);
     if SearchInPath(StartUnitPath,AFilename,Result) then exit;
 
-    // search include file in source directories of all required packages
-    SearchFile:=AFilename;
-    Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
-    {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.FindSourceFile trying packages "',SearchPath,'" Result=',Result]);
-    {$ENDIF}
+    if not(fsfSkipPackages in Flags) then begin
+      // search include file in source directories of all required packages
+      SearchFile:=AFilename;
+      Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
+      {$IFDEF VerboseFindSourceFile}
+      debugln(['TMainIDE.FindSourceFile trying packages "',SearchPath,'" Result=',Result]);
+      {$ENDIF}
+    end;
     if Result<>'' then exit;
 
     Result:=SearchIndirectIncludeFile;
