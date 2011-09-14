@@ -5123,7 +5123,7 @@ end;
 
 procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
 begin
-  if (Screen.CustomFormZOrderCount > 0)
+  if (Screen.CustomFormZOrderCount > 1)
   and Assigned(Screen.CustomFormsZOrdered[1].Designer) then begin
     // previous active form was designer form
     ShowDesignerForm(Screen.CustomFormsZOrdered[1]);
