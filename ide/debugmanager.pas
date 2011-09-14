@@ -1116,7 +1116,7 @@ begin
     end;
   end
   else begin
-    CurrentSourceUnitInfo := Debugger.UnitInfoProvider.GetUnitInfoFor(ALocation.SrcFile, ALocation.SrcFullName);
+    CurrentSourceUnitInfo := FDebugger.UnitInfoProvider.GetUnitInfoFor(ALocation.SrcFile, ALocation.SrcFullName);
     CurrentSourceUnitInfo.AddReference;
   end;
 
