@@ -59,6 +59,12 @@ begin
     Text := '';
 end;
 
+procedure TCustomLabeledEdit.Loaded;
+begin
+  inherited Loaded;
+  DoPositionLabel;
+end;
+
 procedure TCustomLabeledEdit.DoPositionLabel;
 begin
   if FEditLabel = nil then exit;

@@ -855,6 +855,7 @@ type
     class procedure WSRegisterClass; override;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetName(const Value: TComponentName); override;
+    procedure Loaded; override;
     procedure DoPositionLabel; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
