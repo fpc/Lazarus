@@ -43,15 +43,13 @@ end;
 procedure TCustomLabeledEdit.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
-  if FEditLabel = nil then exit;
   DoPositionLabel; 
 end;
 
 procedure TCustomLabeledEdit.SetName(const Value: TComponentName);
 begin
   if (csDesigning in ComponentState)
-  and ((FEditLabel.Text='') or
-       (AnsiCompareText(FEditLabel.Caption, Name) = 0))
+    and ((FEditLabel.Text='') or (AnsiSameText(FEditLabel.Caption, Name)))
   then
     FEditLabel.Caption := Value;
   inherited SetName(Value);
@@ -76,26 +74,22 @@ begin
   case FLabelPosition of
     lpAbove: 
       begin
-        FEditLabel.Anchors:=[akLeft,akBottom]; 
         FEditLabel.AnchorParallel(akLeft,0,Self); 
-        FEditLabel.AnchorToNeighbour(akBottom,FLabelSpacing,Self); 
+        FEditLabel.AnchorToCompanion(akBottom,FLabelSpacing,Self);
       end; 
     lpBelow: 
       begin
-        FEditLabel.Anchors:=[akLeft,akTop]; 
         FEditLabel.AnchorParallel(akLeft,0,Self); 
-        FEditLabel.AnchorToNeighbour(akTop,FLabelSpacing,Self); 
+        FEditLabel.AnchorToCompanion(akTop,FLabelSpacing,Self);
       end; 
     lpLeft : 
       begin
-        FEditLabel.Anchors:=[akRight,akTop]; 
-        FEditLabel.AnchorToNeighbour(akRight,FLabelSpacing,Self); 
+        FEditLabel.AnchorToCompanion(akRight,FLabelSpacing,Self);
         FEditLabel.AnchorVerticalCenterTo(Self); 
       end; 
     lpRight:
       begin
-        FEditLabel.Anchors:=[akLeft,akTop]; 
-        FEditLabel.AnchorToNeighbour(akLeft,FLabelSpacing,Self); 
+        FEditLabel.AnchorToCompanion(akLeft,FLabelSpacing,Self);
         FEditLabel.AnchorVerticalCenterTo(Self); 
       end; 
   end;
@@ -137,9 +131,7 @@ procedure TCustomLabeledEdit.CreateInternalLabel;
 begin
   if FEditLabel<>nil then exit;
   FEditLabel := TBoundLabel.Create(Self);
-  //Include(FEditLabel.ComponentStyle,csSubComponent);
   FEditLabel.ControlStyle := FEditLabel.ControlStyle + [csNoDesignSelectable];
-  FEditLabel.FreeNotification(Self);
   FEditLabel.FocusControl := Self;
 end;
 
