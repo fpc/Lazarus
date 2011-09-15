@@ -2824,12 +2824,18 @@ var
   Filter: String;
   AllEditorExt: String;
   AllFilter: String;
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+
+    GetCurrentUnit(ASrcEdit,AnUnitInfo);
+    if Assigned(AnUnitInfo) then
+      OpenDialog.InitialDir:=ExtractFilePath(AnUnitInfo.Filename);
 
     // create default filter list
     Filter := lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
