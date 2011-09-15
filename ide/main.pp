@@ -15043,7 +15043,10 @@ begin
     end;
     if NewX<1 then NewX:=1;
     if NewY<1 then NewY:=1;
+    if jfMapLineFromDebug in Flags then
+      NewY := NewSrcEdit.DebugToSourceLine(NewY);
     //debugln(['[TMainIDE.DoJumpToCodePosition] ',NewX,',',NewY,',',NewTopLine]);
+
     try
       NewSrcEdit.BeginUpdate;
       NewSrcEdit.EditorComponent.MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
