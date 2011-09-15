@@ -218,8 +218,8 @@ type
     procedure DrawObjectName(Index: integer; const aRect: TRect;
                              aState: TGridDrawState);
     procedure GetCellEditor(aCol, aRow: integer;
-                            out PropEditor: TPropertyEditor;
-                            out IndependentEditor: boolean);
+                            out aPropEditor: TPropertyEditor;
+                            out aIndependentEditor: boolean);
     procedure FreeCellEditor(PropEditor: TPropertyEditor);
     function GridStateToPropEditState(GridState: TGridDrawState
                                       ): TPropEditDrawState;
@@ -903,13 +903,19 @@ begin
       //debugln('TTICustomGrid.DefaultDrawCell B ',dbgsName(PropEditor),' ',PropEditor.GetName,' ',PropEditor.GetValue);
       try
         if gdFixed in aState then begin
-          PropName:=PropEditor.GetName;
-          AliasPropName:=AliasPropertyNames.ValueToAlias(PropName);
-          if AliasPropName=PropName then begin
-            PropEditor.PropDrawName(Canvas,aRect,
-                                    GridStateToPropEditState(aState));
-          end else begin
-            WriteCellText(aRect,AliasPropName);
+          if Properties[PropertyIndex].Title <> '' then
+          begin
+            WriteCellText(aRect,Properties[PropertyIndex].Title);
+          end
+          else begin
+            PropName:=PropEditor.GetName;
+            AliasPropName:=AliasPropertyNames.ValueToAlias(PropName);
+            if AliasPropName=PropName then begin
+              PropEditor.PropDrawName(Canvas,aRect,
+                                      GridStateToPropEditState(aState));
+            end else begin
+              WriteCellText(aRect,AliasPropName);
+            end;
           end;
         end else
           PropEditor.PropDrawValue(Canvas,aRect,GridStateToPropEditState(aState));
@@ -962,47 +968,39 @@ begin
 end;
 
 procedure TTICustomGrid.GetCellEditor(aCol, aRow: integer;
-  out PropEditor: TPropertyEditor; out IndependentEditor: boolean);
+  out aPropEditor: TPropertyEditor; out aIndependentEditor: boolean);
 var
   ObjectIndex: Integer;
   PropertyIndex: Integer;
   EditorClass: TPropertyEditorClass;
-  Hook: TPropertyEditorHook;
   GridProperty: TTIGridProperty;
-  ok: Boolean;
+  NewEditor: TPropertyEditor;
   CurObject: TPersistent;
   CellType: TTIGridCellType;
 begin
-  PropEditor:=nil;
-  IndependentEditor:=true;
+  aPropEditor:=nil;
+  aIndependentEditor:=true;
   MapCell(aCol,aRow,ObjectIndex,PropertyIndex,CellType);
   if CellType in [tgctValue,tgctPropName] then begin
     GridProperty:=Properties[PropertyIndex];
     if CellType=tgctPropName then begin
-      IndependentEditor:=false;
-      PropEditor:=GridProperty.Editor;
+      aIndependentEditor:=false;
+      aPropEditor:=GridProperty.Editor;
     end
     else begin
       CurObject:=GetTIObject(ObjectIndex);
       if (CurObject<>nil) then begin
-        ok:=false;
-        Hook:=nil;
+        NewEditor:=nil;
         try
-          Hook:=TPropertyEditorHook.Create;
-          Hook.LookupRoot:=CurObject;
           EditorClass:=TPropertyEditorClass(GridProperty.Editor.ClassType);
-          PropEditor:=EditorClass.Create(Hook,1);
-          PropEditor.SetPropEntry(0,CurObject,GridProperty.PropInfo);
-          PropEditor.Initialize;
-          ok:=true;
+          NewEditor:=EditorClass.Create(nil,1);
+          NewEditor.SetPropEntry(0,CurObject,GridProperty.PropInfo);
+          NewEditor.Initialize;
+          aPropEditor := NewEditor;
         finally
-          if not ok then begin
+          if aPropEditor = nil then begin
             try
-              PropEditor.free;
-            except
-            end;
-            try
-              Hook.free;
+              NewEditor.Free;
             except
             end;
           end;
