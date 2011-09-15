@@ -1190,7 +1190,7 @@ begin
   else
     SrcEdit := ActiveSrcEdit as TSourceEditor;
   Result := DoJumpToCodePos(SrcEdit as TSourceEditor, ActiveUnitInfo,
-                            NewSource, NewX, NewY, NewTopLine, AddJumpPoint, MarkLine);
+                            NewSource, NewX, NewY, NewTopLine, AddJumpPoint, True, MarkLine);
 end;
 
 procedure TMainIDEBase.FindInFilesPerDialog(AProject: TProject);
