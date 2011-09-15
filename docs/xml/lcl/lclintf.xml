@@ -2374,10 +2374,13 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="PostMessage">
-        <short/>
-        <descr/>
+        <short>Sends a message directed to a window to the message pool of the application</short>
+        <descr><p>This method is a thread-safe solution to send messages to windows. Those messages will be handled in the message loop of the application and therefore can be sent from any thread. They are not immediate, but they will awake the main thread if it is waiting for messages. These messages can be handled by procedures with the keyword message in the class of a form for example. One would then use the handle of this form as the Handle parameter of this routine. Custom messages should always have an identification number (represented by the parameter Msg) larger then the constant LM_USER. The two parameters WParam and LParam will be passed along to the window together with the Msg identification number.</p>
+        <p>The difference between SendMessage and PostMessage is the way that they return control to the calling thread. With SendMessage control is not returned until the window that the message was sent to has completed processing the sent message, however with PostMessage control is returned immediately.</p></descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.LCLIntf.SendMessage">LCLIntf.SendMessage</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="PostMessage.Result">
@@ -2715,10 +2718,12 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SendMessage">
-        <short>Sends a message directed to a window to the message pool of the application</short>
-        <descr>This method is a thread-safe solution to send messages to windows. Those messages will be handled in the message loop of the application and therefore can be sent from any thread. They are not immediate, but they will awake the main thread if it is waiting for messages. These messages can be handled by procedures with the keyword message in the class of a form for example. One would then use the handle of this form as the HandleWnd parameter of this routine. Custom messages should always have an identification number (represented by the parameter Msg) larger then the constant LM_USER. The two parameters WParam and LParam will be passed along to the window together with the Msg identification number.</descr>
-        <errors/>
-        <seealso/>
+<short>Sends a message directed to a window to the message pool of the application</short>
+        <descr><p>This method is a thread-safe solution to send messages to windows. Those messages will be handled in the message loop of the application and therefore can be sent from any thread. They are not immediate, but they will awake the main thread if it is waiting for messages. These messages can be handled by procedures with the keyword message in the class of a form for example. One would then use the handle of this form as the HandleWnd parameter of this routine. Custom messages should always have an identification number (represented by the parameter Msg) larger then the constant LM_USER. The two parameters WParam and LParam will be passed along to the window together with the Msg identification number.</p>
+        <p>The difference between SendMessage and PostMessage is the way that they return control to the calling thread. With SendMessage control is not returned until the window that the message was sent to has completed processing the sent message, however with PostMessage control is returned immediately.</p></descr>        <errors/>
+        <seealso>
+          <link id="#lcl.LCLIntf.PostMessage">LCLIntf.PostMessage</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="SendMessage.Result">
