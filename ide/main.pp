@@ -2913,7 +2913,7 @@ end;
 procedure TMainIDE.mnuRevertClicked(Sender: TObject);
 begin
   if (SourceEditorManager.ActiveSourceWindowIndex < 0)
-     or (SourceEditorManager.ActiveSourceWindow.PageIndex < 0) then exit;
+  or (SourceEditorManager.ActiveSourceWindow.PageIndex < 0) then exit;
   DoOpenEditorFile('', SourceEditorManager.ActiveSourceWindow.PageIndex,
     SourceEditorManager.ActiveSourceWindowIndex, [ofRevert]);
 end;
