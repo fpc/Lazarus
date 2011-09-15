@@ -1084,7 +1084,7 @@ var
   SrcLine: Integer;
   i, TId: Integer;
   StackEntry: TCallStackEntry;
-  FocusEditor: Boolean;
+  Flags: TJumpToCodePosFlags;
   CurrentSourceUnitInfo: TDebuggerUnitInfo;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
@@ -1166,11 +1166,13 @@ begin
   then Editor := SourceEditorManager.SourceEditorIntfWithFilename(NewSource.Filename);
 
   // jump editor to execution line
-  FocusEditor := (FCurrentBreakPoint = nil) or (FCurrentBreakPoint.AutoContinueTime = 0);
+  Flags := [jfAddJumpPoint];
+  if (FCurrentBreakPoint = nil) or (FCurrentBreakPoint.AutoContinueTime = 0)
+  then include(Flags, jfFocusEditor);
   i := SrcLine;
   if (Editor <> nil) then
     i := Editor.DebugToSourceLine(i);
-  if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,i,-1,true, FocusEditor)<>mrOk
+  if MainIDE.DoJumpToCodePosition(nil,nil,NewSource,1,i,-1, Flags)<>mrOk
   then exit;
 
   // mark execution line

@@ -118,6 +118,8 @@ type
     ieorExport
     );
 
+  TJumpToCodePosFlag = (jfAddJumpPoint, jfFocusEditor, jfMarkLine);
+  TJumpToCodePosFlags = set of TJumpToCodePosFlag;
 
   { TMainIDEInterface }
 
@@ -180,13 +182,21 @@ type
     function DoJumpToSourcePosition(const Filename: string;
                                NewX, NewY, NewTopLine: integer;
                                AddJumpPoint: boolean;
-                               MarkLine: Boolean = False): TModalResult; virtual; abstract;
+                               MarkLine: Boolean = False): TModalResult;
+    function DoJumpToSourcePosition(const Filename: string;
+                               NewX, NewY, NewTopLine: integer;
+                               Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; virtual; abstract;
     function DoJumpToCodePosition(
                         ActiveSrcEdit: TSourceEditorInterface;
                         ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
                         AddJumpPoint: boolean;
-                        MarkLine: Boolean = False): TModalResult; virtual; abstract;
+                        MarkLine: Boolean = False): TModalResult;
+    function DoJumpToCodePosition(
+                        ActiveSrcEdit: TSourceEditorInterface;
+                        ActiveUnitInfo: TUnitInfo;
+                        NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
+                        Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; virtual; abstract;
 
     procedure FindInFilesPerDialog(AProject: TProject); virtual; abstract;
     procedure FindInFiles(AProject: TProject; const FindText: string); virtual; abstract;
@@ -428,6 +438,30 @@ begin
   if MainBarSubTitle=AValue then exit;
   inherited SetMainBarSubTitle(AValue);
   UpdateCaption;
+end;
+
+function TMainIDEInterface.DoJumpToSourcePosition(const Filename: string; NewX, NewY,
+  NewTopLine: integer; AddJumpPoint: boolean; MarkLine: Boolean): TModalResult;
+var
+  Flags: TJumpToCodePosFlags;
+begin
+  Flags := [jfFocusEditor];
+  if AddJumpPoint then Include(Flags, jfAddJumpPoint);
+  if MarkLine then Include(Flags, jfMarkLine);
+  DoJumpToSourcePosition(Filename, NewX, NewY, NewTopLine, Flags)
+end;
+
+function TMainIDEInterface.DoJumpToCodePosition(ActiveSrcEdit: TSourceEditorInterface;
+  ActiveUnitInfo: TUnitInfo; NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
+  AddJumpPoint: boolean; MarkLine: Boolean): TModalResult;
+var
+  Flags: TJumpToCodePosFlags;
+begin
+  Flags := [jfFocusEditor];
+  if AddJumpPoint then Include(Flags, jfAddJumpPoint);
+  if MarkLine then Include(Flags, jfMarkLine);
+  DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo, NewSource, NewX, NewY, NewTopLine,
+    Flags)
 end;
 
 class function TMainIDEInterface.GetPrimaryConfigPath: String;

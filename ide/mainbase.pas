@@ -163,19 +163,13 @@ type
                                OnClickEvent: TNotifyEvent); override;
     procedure UpdateHighlighters(Immediately: boolean = false); override;
 
-    function DoJumpToCodePosition(
-                        ActiveSrcEdit: TSourceEditorInterface;
-                        ActiveUnitInfo: TUnitInfo;
-                        NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-                        AddJumpPoint: boolean;
-                        MarkLine: Boolean = False): TModalResult; override;
-    function DoJumpToCodePos(
-                        ActiveSrcEdit: TSourceEditor;
-                        ActiveUnitInfo: TUnitInfo;
-                        NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-                        AddJumpPoint: boolean;
-                        FocusEditor: Boolean = True;
-                        MarkLine: Boolean = False): TModalResult; virtual; abstract;
+    //function DoJumpToCodePos(
+    //                    ActiveSrcEdit: TSourceEditor;
+    //                    ActiveUnitInfo: TUnitInfo;
+    //                    NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
+    //                    AddJumpPoint: boolean;
+    //                    FocusEditor: Boolean = True;
+    //                    MarkLine: Boolean = False): TModalResult; virtual;
 
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
@@ -1178,20 +1172,19 @@ begin
   end;
 end;
 
-function TMainIDEBase.DoJumpToCodePosition(
-  ActiveSrcEdit: TSourceEditorInterface; ActiveUnitInfo: TUnitInfo;
-  NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer; AddJumpPoint: boolean;
-  MarkLine: Boolean): TModalResult;
-var
-  SrcEdit: TSourceEditor;
-begin
-  if ActiveSrcEdit = nil then
-    SrcEdit := nil
-  else
-    SrcEdit := ActiveSrcEdit as TSourceEditor;
-  Result := DoJumpToCodePos(SrcEdit as TSourceEditor, ActiveUnitInfo,
-                            NewSource, NewX, NewY, NewTopLine, AddJumpPoint, True, MarkLine);
-end;
+//function TMainIDEBase.DoJumpToCodePos(ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
+//  NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer; AddJumpPoint: boolean;
+//  FocusEditor: Boolean; MarkLine: Boolean): TModalResult;
+//var
+//  Flags: TJumpToCodePosFlags;
+//begin
+//  Flags := [];
+//  if FocusEditor then Include(Flags, jfFocusEditor);
+//  if AddJumpPoint then Include(Flags, jfAddJumpPoint);
+//  if MarkLine then Include(Flags, jfMarkLine);
+//  DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo, NewSource, NewX, NewY, NewTopLine,
+//    Flags)
+//end;
 
 procedure TMainIDEBase.FindInFilesPerDialog(AProject: TProject);
 begin
