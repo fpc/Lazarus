@@ -38,7 +38,7 @@ interface
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls, Spin,
-  ActnList, MainBase, IDEImagesIntf, IDECommands;
+  ActnList, MainIntf, MainBase, IDEImagesIntf, IDECommands;
 
 type
 
@@ -321,7 +321,7 @@ begin
         if Source = '' then // we do not have a source file => just show an adress
           Source := ':' + IntToHex(Entry.Address, 8);
         Item.SubItems[1] := Source;
-        Item.SubItems[2] := IntToStr(Entry.Line);
+        Item.SubItems[2] := IntToStr(Entry.Line); // TODO: if editor is open, map line SrcEdit.DebugToSourceLine
         Item.SubItems[3] := GetFunction(Entry);
       end;
     end;
@@ -439,7 +439,8 @@ begin
   DebugBoss.LockCommandProcessing;
   try
     if DebugBoss.GetFullFilename(Entry.UnitInfo, Filename, False) then
-      MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True, True);
+      MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0,
+                                     [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug]);
   finally
     DebugBoss.UnLockCommandProcessing;
   end;

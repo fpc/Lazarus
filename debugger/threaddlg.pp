@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, ComCtrls, LCLProc, Debugger, DebuggerDlg, LazarusIDEStrConsts,
-  BaseDebugManager, MainBase, IDEImagesIntf;
+  BaseDebugManager, MainIntf, MainBase, IDEImagesIntf;
 
 type
 
@@ -155,7 +155,8 @@ begin
   DebugBoss.LockCommandProcessing;
   try
     if DebugBoss.GetFullFilename(Entry.UnitInfo, Filename, False) then
-      MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0, True, True);
+      MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0,
+                                     [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug]);
   finally
     DebugBoss.UnLockCommandProcessing;
   end;end;
