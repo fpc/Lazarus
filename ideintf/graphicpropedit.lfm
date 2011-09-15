@@ -11,7 +11,7 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
   Constraints.MinWidth = 200
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object GroupBox1: TGroupBox
     Left = 6
     Height = 337
@@ -25,13 +25,13 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     TabOrder = 0
     object ScrollBox: TScrollBox
       AnchorSideRight.Control = GroupBox1
-      AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = GroupBox1
-      AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 307
       Top = 6
       Width = 322
+      HorzScrollBar.Page = 318
+      VertScrollBar.Page = 303
       Align = alClient
       BorderSpacing.Around = 6
       ClientHeight = 303
@@ -59,7 +59,6 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       ClientWidth = 86
       TabOrder = 1
       object LoadButton: TButton
-        AnchorSideRight.Side = asrBottom
         Left = 6
         Height = 25
         Top = 6
@@ -92,6 +91,22 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
         OnClick = ClearButtonClick
         TabOrder = 2
       end
+      object CopyButton: TButton
+        Left = 6
+        Height = 25
+        Top = 112
+        Width = 74
+        Action = CopyAction
+        TabOrder = 3
+      end
+      object PasteButton: TButton
+        Left = 6
+        Height = 25
+        Top = 143
+        Width = 74
+        Action = PasteAction
+        TabOrder = 4
+      end
     end
   end
   object OkCancelButtonPanel: TButtonPanel
@@ -99,6 +114,14 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     Height = 26
     Top = 349
     Width = 424
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
@@ -108,8 +131,27 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
     top = 182
   end
   object SaveDialog: TSavePictureDialog
-    Title = 'Save file as'
     left = 186
     top = 182
+  end
+  object ActionList: TActionList
+    left = 355
+    top = 244
+    object CopyAction: TEditCopy
+      Category = 'Edit'
+      Caption = '&Copy'
+      Hint = 'Copy'
+      OnExecute = CopyActionExecute
+      OnUpdate = CopyActionUpdate
+      ShortCut = 16451
+    end
+    object PasteAction: TEditPaste
+      Category = 'Edit'
+      Caption = '&Paste'
+      Hint = 'Paste'
+      OnExecute = PasteActionExecute
+      OnUpdate = PasteActionUpdate
+      ShortCut = 16470
+    end
   end
 end

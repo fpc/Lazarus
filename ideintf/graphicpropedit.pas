@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, ButtonPanel, ExtDlgs,
+  ExtCtrls, Buttons, ButtonPanel, ExtDlgs, ActnList, StdActns, Clipbrd,
   IDEDialogs, ObjInspStrConsts;
 
 type
@@ -32,6 +32,11 @@ type
   { TGraphicPropertyEditorForm }
 
   TGraphicPropertyEditorForm = class(TForm)
+    ActionList: TActionList;
+    CopyButton: TButton;
+    PasteButton: TButton;
+    CopyAction: TEditCopy;
+    PasteAction: TEditPaste;
     OkCancelButtonPanel: TButtonPanel;
     ImagePreview: TImage;
     LoadButton: TButton;
@@ -42,6 +47,10 @@ type
     GroupBox1: TGroupBox;
     SaveDialog: TSavePictureDialog;
     ScrollBox: TScrollBox;
+    procedure CopyActionExecute(Sender: TObject);
+    procedure CopyActionUpdate(Sender: TObject);
+    procedure PasteActionExecute(Sender: TObject);
+    procedure PasteActionUpdate(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure LoadButtonClick(Sender: TObject);
@@ -89,6 +98,26 @@ begin
   ScrollBox.Invalidate;
   SaveButton.Enabled := False;
   Modified := True;
+end;
+
+procedure TGraphicPropertyEditorForm.CopyActionExecute(Sender: TObject);
+begin
+  Clipboard.Assign(ImagePreview.Picture.Graphic);
+end;
+
+procedure TGraphicPropertyEditorForm.CopyActionUpdate(Sender: TObject);
+begin
+  CopyAction.Enabled := ImagePreview.Picture.Graphic <> nil;
+end;
+
+procedure TGraphicPropertyEditorForm.PasteActionExecute(Sender: TObject);
+begin
+  ImagePreview.Picture.Assign(Clipboard);
+end;
+
+procedure TGraphicPropertyEditorForm.PasteActionUpdate(Sender: TObject);
+begin
+  PasteAction.Enabled := Clipboard.HasPictureFormat;
 end;
 
 procedure TGraphicPropertyEditorForm.LoadButtonClick(Sender: TObject);
