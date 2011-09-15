@@ -1395,6 +1395,7 @@ begin
   if CursorNode.Desc=ctnBeginBlock then
     BuildSubTreeForBeginBlock(CursorNode);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  debugln(['TCodeCompletionCodeTool.CompleteLocalVariableAssignment FFF1 ',CursorNode.DescAsString]);
 
   {$IFDEF CTDEBUG}
   DebugLn('  CompleteLocalVariableAssignment: B CheckLocalVarAssignmentSyntax ...');
@@ -1425,7 +1426,9 @@ begin
     ' Term="',copy(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"');
     {$ENDIF}
     // find type of term
-    NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params,ExprType);
+    debugln(['TCodeCompletionCodeTool.CompleteLocalVariableAssignment FFF2 ',CursorNode.DescAsString]);
+    Params.ContextNode:=CursorNode;
+    NewType:=FindTermTypeAsString(TermAtom,Params,ExprType);
     if NewType='' then
       RaiseException('CompleteLocalVariableAssignment Internal error: NewType=""');
 
@@ -5437,7 +5440,8 @@ begin
       // find type of term
       Params:=TFindDeclarationParams.Create;
       try
-        NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params,NewExprType);
+        Params.ContextNode:=CursorNode;
+        NewType:=FindTermTypeAsString(TermAtom,Params,NewExprType);
       finally
         Params.Free;
       end;

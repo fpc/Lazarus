@@ -672,8 +672,7 @@ type
     function GetExpressionTypeOfTypeIdentifier(
       Params: TFindDeclarationParams): TExpressionType;
     function FindTermTypeAsString(TermPos: TAtomPosition;
-      CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
-      out ExprType: TExpressionType): string;
+      Params: TFindDeclarationParams; out ExprType: TExpressionType): string;
     function FindForInTypeAsString(TermPos: TAtomPosition;
       CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
       out ExprType: TExpressionType): string;
@@ -7696,6 +7695,7 @@ begin
     ReadNextAtom;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.ReadOperandTypeAtCursor] A Atom=',GetAtom);
+  debugln(['TFindDeclarationTool.ReadOperandTypeAtCursor StartContext=',Params.ContextNode.DescAsString,'="',dbgstr(Src,Params.ContextNode.StartPos,15),'"']);
   {$ENDIF}
   if (AtomIsIdentifier(false))
   or (CurPos.Flag=cafRoundBracketOpen)
@@ -9668,7 +9668,7 @@ begin
 end;
 
 function TFindDeclarationTool.FindTermTypeAsString(TermPos: TAtomPosition;
-  CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
+  Params: TFindDeclarationParams;
   out ExprType: TExpressionType): string;
 var
   EdgedBracketsStartPos: integer;
@@ -9676,7 +9676,7 @@ var
   SetTool: TFindDeclarationTool;
   AliasType: TFindContext;
 begin
-  {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
+  {$IFDEF CheckNodeTool}CheckNodeTool(Params.ContextNode);{$ENDIF}
   Result:='';
   AliasType:=CleanFindContext;
   if IsTermEdgedBracket(TermPos,EdgedBracketsStartPos) then begin
@@ -9686,11 +9686,12 @@ begin
     ReadNextAtom;
     if CurPos.Flag=cafWord then begin
       {$IFDEF ShowExprEval}
-      debugln(['TFindDeclarationTool.FindTermTypeAsString [name check for enumeration type ...']);
+      debugln(['TFindDeclarationTool.FindTermTypeAsString "[name" : check for enumeration type ...']);
+      debugln(['TFindDeclarationTool.FindTermTypeAsString StartContext=',Params.ContextNode.DescAsString,'=',dbgstr(Src,Params.ContextNode.StartPos,15),'"']);
       {$ENDIF}
       ExprType:=FindExpressionResultType(Params,EdgedBracketsStartPos+1,-1);
       {$IFDEF ShowExprEval}
-      debugln(['TFindDeclarationTool.FindTermTypeAsString [name: ',ExprTypeToString(ExprType)]);
+      debugln(['TFindDeclarationTool.FindTermTypeAsString "[name" : ',ExprTypeToString(ExprType)]);
       {$ENDIF}
       if (ExprType.Desc=xtContext)
       and (ExprType.Context.Node.Desc in [ctnEnumerationType,ctnEnumIdentifier])
@@ -9714,7 +9715,6 @@ begin
     // pointer type
   end else begin
     ExprType:=CleanExpressionType;
-    Params.ContextNode:=CursorNode;
     Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                    fdfTopLvlResolving,fdfFunctionResult];
     ExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos,
