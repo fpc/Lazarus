@@ -2715,8 +2715,8 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SendMessage">
-        <short/>
-        <descr/>
+        <short>Sends a message directed to a window to the message pool of the application</short>
+        <descr>This method is a thread-safe solution to send messages to windows. Those messages will be handled in the message loop of the application and therefore can be sent from any thread. They are not immediate, but they will awake the main thread if it is waiting for messages. These messages can be handled by procedures with the keyword message in the class of a form for example. One would then use the handle of this form as the HandleWnd parameter of this routine. Custom messages should always have an identification number (represented by the parameter Msg) larger then the constant LM_USER. The two parameters WParam and LParam will be passed along to the window together with the Msg identification number.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2726,7 +2726,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- argument Visibility: default -->
       <element name="SendMessage.HandleWnd">
-        <short/>
+        <short>The handle of the window to receive the message.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SendMessage.Msg">

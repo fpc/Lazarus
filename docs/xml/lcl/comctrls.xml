@@ -2775,15 +2775,14 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TPageControl.OnChange">
-        <short>
-          <var>OnChange</var> - event handler for a change in the current page</short>
-        <descr/>
+        <short><var>OnChange</var> - Occurs immediately after a tab is selected.</short>
+        <descr>Occurs immediately after a tab is selected.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnChanging" link="#LCL.ExtCtrls.TCustomTabControl.OnChanging">
-        <short/>
-        <descr/>
+      <element name="TPageControl.OnChanging">
+        <short><var>OnChanging</var> - Occurs immediately before a tab is selected.</short>
+        <descr>Occurs immediately before a tab is selected.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
