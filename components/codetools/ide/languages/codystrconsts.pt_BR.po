@@ -19,7 +19,7 @@ msgstr "Adicionar método \"Assign\" ..."
 
 #: codystrconsts.crsaddawithblock
 msgid "Add a \"With\" block"
-msgstr ""
+msgstr "Adicionar um bloco \"With\""
 
 #: codystrconsts.crsaddcallinherited
 msgid "Add call inherited"
@@ -27,7 +27,7 @@ msgstr "Adicionar chamada \"inherited\""
 
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
-msgstr ""
+msgstr "Adicionar bloco \"With\""
 
 #: codystrconsts.crsalreadydefined
 msgid "Already defined"
@@ -159,7 +159,7 @@ msgstr "Copiar declaração para área transferência"
 
 #: codystrconsts.crscount
 msgid "Count"
-msgstr ""
+msgstr "Conta"
 
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
@@ -223,7 +223,7 @@ msgstr "Expandir um bloco \"With\""
 
 #: codystrconsts.crsexpression
 msgid "Expression"
-msgstr ""
+msgstr "Expressão"
 
 #: codystrconsts.crsfile
 msgid "File"
@@ -331,11 +331,11 @@ msgstr "Favor colocar o cursor do editor de código em um identificador da decla
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditor
 msgid "Please select some code in the Source Editor."
-msgstr ""
+msgstr "Favor selecionar algum código no Editor Fonte."
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
 msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
-msgstr ""
+msgstr "Favor selecionar algum código no Editor Fonte para um novo bloco \"With\". Nenhum candidato para uma expressão \"with\" foi encontrado."
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
@@ -391,7 +391,7 @@ msgstr "localizando ..."
 
 #: codystrconsts.crsselectexpression
 msgid "Select expression"
-msgstr ""
+msgstr "Selecionar expressão"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools node info ..."

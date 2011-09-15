@@ -1141,7 +1141,7 @@ msgstr "Fonte do Editor"
 
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
-msgstr ""
+msgstr "Tamanho da fonte do editor"
 
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
@@ -6505,7 +6505,7 @@ msgstr "%s (depurando ...)"
 
 #: lazarusidestrconsts.lisdebughintautotypecastclass
 msgid "Automatic type-cast for objects"
-msgstr ""
+msgstr "\"Type-cast\" automático para objetos"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmaddexception
 msgid "Add Exception"
@@ -7590,7 +7590,7 @@ msgstr "Notificação Exceções Depurador"
 
 #: lazarusidestrconsts.lisexcludedatruntime
 msgid "%s excluded at run time"
-msgstr ""
+msgstr "%s excluído em tempo de execução"
 
 #: lazarusidestrconsts.lisexcludefilter
 msgid "Exclude Filter"
@@ -9080,7 +9080,7 @@ msgstr "Compilação rápida, sem vinculação"
 
 #: lazarusidestrconsts.liskmremoveactivefilefromproject
 msgid "Remove active file from project"
-msgstr ""
+msgstr "Remover arquivo ativo do projeto"
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
@@ -9951,7 +9951,7 @@ msgstr "Adicionar &ponto de parada"
 
 #: lazarusidestrconsts.lismenuaddcurfiletopkg
 msgid "Add active file to a package ..."
-msgstr ""
+msgstr "Adicionar arquivo ativo para um pacote ..."
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
 msgid "Add jump point to history"
@@ -10326,7 +10326,7 @@ msgstr "Data e hora atuais"
 
 #: lazarusidestrconsts.lismenuinsertfilename
 msgid "Insert full Filename ..."
-msgstr ""
+msgstr "Inserir nome-de-arquivo completo ..."
 
 #: lazarusidestrconsts.lismenuinsertgeneral
 #| msgid "General"
@@ -10947,7 +10947,7 @@ msgstr "Inspetor de Objetos"
 
 #: lazarusidestrconsts.lismenuviewprojectsource
 msgid "&View Project Source"
-msgstr ""
+msgstr "&Exibir Fonte do Projeto"
 
 #: lazarusidestrconsts.lismenuviewpseudoterminal
 msgid "Terminal Output"
@@ -15529,7 +15529,7 @@ msgstr "Exibir Unidades do Projeto"
 
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
-msgstr ""
+msgstr "Exibir Fonte"
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
@@ -16524,7 +16524,7 @@ msgstr "Inserir data e hora atual"
 
 #: lazarusidestrconsts.srkmecinsertfilename
 msgid "Insert full Filename"
-msgstr ""
+msgstr "Inserir nome-de-arquivo completo"
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"
