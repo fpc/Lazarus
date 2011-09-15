@@ -734,21 +734,18 @@ begin
     ACanvas.Brush.Color := clHighlight;
     ACanvas.Font.Color := clHighlightText;
   end
-  else
-  begin
+  else begin
     ACanvas.Brush.Color := clWindow;
     ACanvas.Font.Color := clWindowText;
   end;
-
-  AAction := TListBox(Control).Items.Objects[Index] as TCustomAction;
-  S := TListBox(Control).Items[Index];
-
   R := ARect;
   dh := R.Bottom - R.Top;
   ACanvas.FillRect(R);
   inc(R.Left, 2);
-  if FActionList.Images <> nil then
-  begin
+  if (TListBox(Control).Items.Objects[Index] is TCustomAction)
+  and (FActionList.Images <> nil) then begin
+    AAction := TListBox(Control).Items.Objects[Index] as TCustomAction;
+    S := TListBox(Control).Items[Index];
     R.Right := R.Left + dh;
     if AAction.ImageIndex <> -1 then
     begin
