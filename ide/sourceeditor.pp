@@ -4057,8 +4057,8 @@ Begin
     bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
     FEditor.SyncroEdit.GutterGlyph.Assign(bmp);
     bmp.Free;
-    FEditor.SyncroEdit.OnActivate := @EditorActivateSyncro;
-    FEditor.SyncroEdit.OnDeactivate := @EditorDeactivateSyncro;
+    FEditor.SyncroEdit.OnBeginEdit := @EditorActivateSyncro;
+    FEditor.SyncroEdit.OnEndEdit := @EditorDeactivateSyncro;
 
     RefreshEditorSettings;
     FEditor.EndUpdate;
