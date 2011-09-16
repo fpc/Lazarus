@@ -48,6 +48,7 @@ type
     procedure TestContextForProcedure;
     procedure TestContextForDeprecated;
     procedure TestContextForClassModifier; // Sealed abstract
+    procedure TestContextForStatic;
   end;
 
 implementation
@@ -768,6 +769,65 @@ begin
   CheckTokensForLine('procedure in class "',  4,
     [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
 
+end;
+
+procedure TTestHighlighterPas.TestContextForStatic;
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface',
+       'type',
+       'static=class end;',
+       'TFoo=class(static)',
+       '  Ffoo,static: static; static;',
+       '  static: static; static;',  // static as var-name can be first in list, IF previous was static modifier
+       '  function static(static:static): static; static;',
+       '  property static[static:static]: static read static write static;',
+       'public',
+       '  Ffoo,static: static; static;',
+       '  static: static; static;',  // static as var-name can be first in list, IF previous was static modifier
+       '  function static(static:static): static; static;',
+       '  property static[static:static]: static read static write static;',
+       'end;',
+       ''
+    ]);
+
+  CheckTokensForLine('static = class',      2,
+                     [tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSymbol]);
+  CheckTokensForLine('Tfoo=class(static)',  3,
+  [tkIdentifier, tkSymbol, tkKey,tkSymbol, tkIdentifier, tkSymbol]);
+  CheckTokensForLine('fields',              4,
+                     [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+  CheckTokensForLine('fields 2',            5,
+                     [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+  CheckTokensForLine('function',            6,
+                     [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                      tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
+                      tkSpace, tkKey, tkSymbol                   // #32 static ;
+                     ]);
+  CheckTokensForLine('property',            7,
+                     [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                      tkSymbol, tkSpace, tkIdentifier,           // : #32 static
+                      tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 read static
+                      tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 write static
+                      tkSymbol                   // ;
+                     ]);
+  CheckTokensForLine('pup fields',          9,
+                     [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+  CheckTokensForLine('pup fields 2',       10,
+                     [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+  CheckTokensForLine('pup function',       11,
+                     [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                      tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
+                      tkSpace, tkKey, tkSymbol                   // #32 static ;
+                     ]);
+  CheckTokensForLine('pup property',       12,
+                     [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                      tkSymbol, tkSpace, tkIdentifier,           // : #32 static
+                      tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 read static
+                      tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 write static
+                      tkSymbol                   // ;
+                     ]);
 end;
 
 initialization
