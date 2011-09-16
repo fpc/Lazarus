@@ -200,6 +200,7 @@ procedure TIntervalChartSource.CalculateIntervals(
     m, start: Double;
     mi, prev, cnt: Integer;
   begin
+    if AStep <= 0 then exit;
     start := Int(AParams.FMin / AStep) * AStep;
     m := start;
     prev := AParams.ToImage(m);
@@ -232,7 +233,7 @@ begin
     while s >= Max(AParams.CountToStep(maxCount), AParams.FMinStep) do begin
       for sv in Params.StepValues do
         TryStep(s * sv, bestCount);
-      // We are not required to pick best count, so any one will do.
+      // We are not required to pick the best count, so any one will do.
       if not (aipUseCount in Params.Options) and (bestCount > 0) then break;
       s *= 0.1;
     end;
