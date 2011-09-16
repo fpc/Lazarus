@@ -981,7 +981,7 @@ end;
 
 class function TWin32WSCustomListView.GetHeader(const AHandle: THandle): THandle;
 begin
-  Result := SendMessage(AHandle, LVM_GETHEADER, 0, 0);
+  Result := THandle(SendMessage(AHandle, LVM_GETHEADER, 0, 0));
   if Result <> 0 then Exit;
 
   // probably old version, try the first child
