@@ -92,6 +92,9 @@ type
    );
   TSynStatusChanges = set of TSynStatusChange;
 
+  TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
+  TSynVisibleSpecialChars = set of TSynVisibleSpecialChar;
+
   TSynLineStyle = (
     slsSolid,  // PS_SOLID pen
     slsDashed, // PS_DASH pen

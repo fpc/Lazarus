@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="SynEdit"/>
-    <AddToProjectUsesSection Value="False"/>
     <Author Value="Lazarus Team, SynEdit"/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="10"/>
       <SearchPaths>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -33,7 +32,7 @@ Alternatively, the contents of these files may be used under the terms of the GN
 If you wish to allow use of your version of these files only under the terms of the GPL and not to allow others to use your version of this file under the MPL, indicate your decision by deleting the provisions above and replace them with the notice and other provisions required by the GPL. If you do not delete the provisions above, a recipient may use your version of this file under either the MPL or the GPL.
 "/>
     <Version Major="1"/>
-    <Files Count="77">
+    <Files Count="78">
       <Item1>
         <Filename Value="synbeautifier.pas"/>
         <UnitName Value="SynBeautifier"/>
@@ -345,6 +344,10 @@ If you wish to allow use of your version of these files only under the terms of 
         <Filename Value="synhighlighterini.pas"/>
         <UnitName Value="SynHighlighterIni"/>
       </Item77>
+      <Item78>
+        <Filename Value="syneditmarkupspecialchar.pp"/>
+        <UnitName Value="SynEditMarkupSpecialChar"/>
+      </Item78>
     </Files>
     <LazDoc Paths="docs/xml"/>
     <i18n>
@@ -363,5 +366,8 @@ If you wish to allow use of your version of these files only under the terms of 
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

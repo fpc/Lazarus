@@ -74,6 +74,7 @@ uses
   SynEditPointClasses, SynBeautifier, SynEditMarks,
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket, SynEditMarkupWordGroup,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
+  SynEditMarkupSpecialChar,
   SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
   SynEditTextDoubleWidthChars,
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
@@ -245,8 +246,7 @@ type
   );
   TSynEditorShareOptions = set of TSynEditorShareOption;
 
-  TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
-  TSynVisibleSpecialChars = set of TSynVisibleSpecialChar;
+  TSynVisibleSpecialChars = SynEditTypes.TSynVisibleSpecialChars;
 
 const
   // MouseAction related options will have no effect (as default), unless they
@@ -365,6 +365,7 @@ type
     fMarkupCtrlMouse : TSynEditMarkupCtrlMouseLink;
     fMarkupSpecialLine : TSynEditMarkupSpecialLine;
     fMarkupSelection : TSynEditMarkupSelection;
+    fMarkupSpecialChar : TSynEditMarkupSpecialChar;
     fCharsInWindow: Integer;
     fCharWidth: Integer;
     fFontDummy: TFont;
@@ -1722,8 +1723,10 @@ begin
   fMarkupCtrlMouse := TSynEditMarkupCtrlMouseLink.Create(self);
   fMarkupSpecialLine := TSynEditMarkupSpecialLine.Create(self);
   fMarkupSelection := TSynEditMarkupSelection.Create(self, FBlockSelection);
+  fMarkupSpecialChar := TSynEditMarkupSpecialChar.Create(self);
 
   fMarkupManager := TSynEditMarkupManager.Create(self);
+  fMarkupManager.AddMarkUp(fMarkupSpecialChar);
   fMarkupManager.AddMarkUp(fMarkupSpecialLine);
   fMarkupManager.AddMarkUp(fMarkupHighCaret);
   fMarkupManager.AddMarkUp(fMarkupHighAll);
@@ -1796,6 +1799,7 @@ begin
   FOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
   FShareOptions := SYNEDIT_DEFAULT_SHARE_OPTIONS;
   FVisibleSpecialChars := SYNEDIT_DEFAULT_VISIBLESPECIALCHARS;
+  fMarkupSpecialChar.VisibleSpecialChars := SYNEDIT_DEFAULT_VISIBLESPECIALCHARS;
   UpdateOptions;
   UpdateOptions2;
   fScrollTimer := TTimer.Create(Self);
@@ -5623,6 +5627,7 @@ procedure TCustomSynEdit.SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars)
 begin
   if FVisibleSpecialChars = AValue then Exit;
   FVisibleSpecialChars := AValue;
+  fMarkupSpecialChar.VisibleSpecialChars := AValue;
   if eoShowSpecialChars in Options then Invalidate;
 end;
 
@@ -7377,6 +7382,7 @@ begin
       UpdateCaret;
     if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
       Invalidate;
+    fMarkupSpecialChar.Enabled := (eoShowSpecialChars in ChangedOptions);
 
     (* Deal with deprecated values
        Those are all controlled by mouse-actions.
