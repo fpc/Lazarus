@@ -738,6 +738,7 @@ begin
     ACanvas.Brush.Color := clWindow;
     ACanvas.Font.Color := clWindowText;
   end;
+  S := TListBox(Control).Items[Index];
   R := ARect;
   dh := R.Bottom - R.Top;
   ACanvas.FillRect(R);
@@ -745,7 +746,6 @@ begin
   if (TListBox(Control).Items.Objects[Index] is TCustomAction)
   and (FActionList.Images <> nil) then begin
     AAction := TListBox(Control).Items.Objects[Index] as TCustomAction;
-    S := TListBox(Control).Items[Index];
     R.Right := R.Left + dh;
     if AAction.ImageIndex <> -1 then
     begin
