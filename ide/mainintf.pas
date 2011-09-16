@@ -448,7 +448,7 @@ begin
   Flags := [jfFocusEditor];
   if AddJumpPoint then Include(Flags, jfAddJumpPoint);
   if MarkLine then Include(Flags, jfMarkLine);
-  DoJumpToSourcePosition(Filename, NewX, NewY, NewTopLine, Flags)
+  Result := DoJumpToSourcePosition(Filename, NewX, NewY, NewTopLine, Flags);
 end;
 
 function TMainIDEInterface.DoJumpToCodePosition(ActiveSrcEdit: TSourceEditorInterface;
@@ -460,8 +460,8 @@ begin
   Flags := [jfFocusEditor];
   if AddJumpPoint then Include(Flags, jfAddJumpPoint);
   if MarkLine then Include(Flags, jfMarkLine);
-  DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo, NewSource, NewX, NewY, NewTopLine,
-    Flags)
+  Result := DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo, NewSource, NewX, NewY, NewTopLine,
+    Flags);
 end;
 
 class function TMainIDEInterface.GetPrimaryConfigPath: String;
