@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLProc,
-  StdCtrls, IDEOptionsIntf, Project, CompilerOptions, LazarusIDEStrConsts;
+  StdCtrls, IDEOptionsIntf, Project, CompilerOptions, CompOptsIntf, LazarusIDEStrConsts;
 
 type
 
@@ -14,7 +14,6 @@ type
 
   TCompilerLinkingOptionsFrame = class(TAbstractIDEOptionsEditor)
     chkDebugGDB: TCheckBox;
-    chkGenerateDwarf: TCheckBox;
     chkGenGProfCode: TCheckBox;
     chkLinkSmart: TCheckBox;
     chkOptionsLinkOpt: TCheckBox;
@@ -24,11 +23,14 @@ type
     chkUseLineInfoUnit: TCheckBox;
     chkUseValgrind: TCheckBox;
     chkWin32GraphicApp: TCheckBox;
+    dropDbgSymbolType: TComboBox;
     edtOptionsLinkOpt: TEdit;
     grpDebugging: TGroupBox;
     grpLinkLibraries: TGroupBox;
     grpOptions: TGroupBox;
+    lblDbgSymbolType: TLabel;
     TargetSpecificsGrpBox: TGroupBox;
+    procedure chkDebugGDBChange(Sender: TObject);
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -41,8 +43,41 @@ implementation
 
 {$R *.lfm}
 
+const
+  ST_AUTO_IDX      = 0;
+  ST_STABS_IDX     = 3;
+  ST_DWARF2_IDX    = 2;
+  ST_DWARF2SET_IDX = 1;
+  ST_DWARF3_IDX    = 4;
+
+function SymbolToIndex(SymbolType: TCompilerDbgSymbolType): Integer;
+begin
+  case SymbolType of
+    dsAuto:      Result := ST_AUTO_IDX;
+    dsStabs:     Result := ST_STABS_IDX;
+    dsDwarf2:    Result := ST_DWARF2_IDX;
+    dsDwarf2Set: Result := ST_DWARF2SET_IDX;
+    dsDwarf3:    Result := ST_DWARF3_IDX;
+  end;
+end;
+
+function IndexToSymbol(Index: Integer): TCompilerDbgSymbolType;
+begin
+  case Index of
+    ST_AUTO_IDX:      Result := dsAuto;
+    ST_STABS_IDX:     Result := dsStabs;
+    ST_DWARF2_IDX:    Result := dsDwarf2;
+    ST_DWARF2SET_IDX: Result := dsDwarf2Set;
+    ST_DWARF3_IDX:    Result := dsDwarf3;
+  end;
+end;
 
 { TCompilerLinkingOptionsFrame }
+
+procedure TCompilerLinkingOptionsFrame.chkDebugGDBChange(Sender: TObject);
+begin
+  dropDbgSymbolType.Enabled := chkDebugGDB.Checked;
+end;
 
 function TCompilerLinkingOptionsFrame.GetTitle: string;
 begin
@@ -59,8 +94,17 @@ begin
   end;
 
   chkDebugGDB.Caption := dlgCOGDB + ' (-g)';
+  lblDbgSymbolType.Caption := dlgCOSymbolType;
+  dropDbgSymbolType.Items.Clear;
+  // Adjust constants above, if re-ordering
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeAuto);                             // 0: automatic
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2Set+ '(-gw -godwarfests)');  // 1: dwarf2 + set
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2+ '(-gw2)');                 // 2: dwarf2
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeStabs+ '(-gs)');                   // 3: stabs
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf3+ '(-gw3)');
+  dropDbgSymbolType.Items[0] := dropDbgSymbolType.Items[0] // auto
+    + ' (' + dropDbgSymbolType.Items[SymbolToIndex(CompilerDbgSymbolTypeDefault)] + ')';
   chkUseLineInfoUnit.Caption := dlgLNumsBct + ' (-gl)';
-  chkGenerateDwarf.Caption := dlgGenerateDwarf + '(-gw)';
   chkUseHeaptrc.Caption := dlgCOHeaptrc + ' (-gh)';
   chkUseValgrind.Caption := dlgCOValgrind + ' (-gv)';
   chkGenGProfCode.Caption := dlgGPROF + ' (-pg)';
@@ -83,8 +127,8 @@ begin
   with AOptions as TBaseCompilerOptions do
   begin
     chkDebugGDB.Checked := GenerateDebugInfo;
+    dropDbgSymbolType.ItemIndex := SymbolToIndex(DebugInfoType);
     chkUseLineInfoUnit.Checked := UseLineInfoUnit;
-    chkGenerateDwarf.Checked := GenerateDwarf;
     chkUseHeaptrc.Checked := UseHeaptrc;
     chkUseValgrind.Checked := UseValgrind;
     chkGenGProfCode.Checked := GenGProfCode;
@@ -101,6 +145,8 @@ begin
     chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
     grpOptions.Enabled := NeedsLinkerOpts;
   end;
+
+  dropDbgSymbolType.Enabled := chkDebugGDB.Checked;
 end;
 
 procedure TCompilerLinkingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -108,8 +154,8 @@ begin
   with AOptions as TBaseCompilerOptions do
   begin
     GenerateDebugInfo := chkDebugGDB.Checked;
+    DebugInfoType := IndexToSymbol(dropDbgSymbolType.ItemIndex);
     UseLineInfoUnit := chkUseLineInfoUnit.Checked;
-    GenerateDwarf := chkGenerateDwarf.Checked;
     UseHeaptrc := chkUseHeaptrc.Checked;
     UseValgrind := chkUseValgrind.Checked;
     GenGProfCode := chkGenGProfCode.Checked;

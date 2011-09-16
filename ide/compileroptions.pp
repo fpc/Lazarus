@@ -1276,10 +1276,11 @@ procedure TBaseCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
 var
   p: String;
-  PathDelimChange: boolean;
+  b, PathDelimChange: boolean;
   FileVersion: Integer;
   i: LongInt;
   s: String;
+  dit: TCompilerDbgSymbolType;
   
   function f(const Filename: string): string;
   begin
@@ -1413,8 +1414,24 @@ begin
   { Linking }
   p:=Path+'Linking/';
   GenerateDebugInfo := aXMLConfig.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
+  try
+    // fail, if not present
+    ReadStr(aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '-'), dit);
+    DebugInfoType := dit;
+  except
+    DebugInfoType := dsAuto;
+    if aXMLConfig.HasPath(p+'Debugging/GenerateDwarf/', False) then begin
+      // upgrading old setting
+      if GenerateDebugInfo then
+        DebugInfoType := dsStabs;
+      b := aXMLConfig.GetValue(p+'Debugging/GenerateDwarf/Value', false);
+      if b then begin
+        GenerateDebugInfo := True;    // The old setting implied this
+        DebugInfoType := dsDwarf2Set; // explicit dwarf, upgrade to +set
+      end;
+    end;
+  end;
   UseLineInfoUnit := aXMLConfig.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
-  GenerateDwarf := aXMLConfig.GetValue(p+'Debugging/GenerateDwarf/Value', false);
   UseHeaptrc := aXMLConfig.GetValue(p+'Debugging/UseHeaptrc/Value', false);
   UseValgrind := aXMLConfig.GetValue(p+'Debugging/UseValgrind/Value', false);
   GenGProfCode := aXMLConfig.GetValue(p+'Debugging/GenGProfCode/Value', false);
@@ -1532,7 +1549,7 @@ var
   end;
 
 var
-  P: string;
+  P, s: string;
   i: Integer;
 begin
   { Save the compiler options to the XML file }
@@ -1600,8 +1617,10 @@ begin
   { Linking }
   p:=Path+'Linking/';
   aXMLConfig.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo,false);
+  WriteStr(s, DebugInfoType);
+  aXMLConfig.SetDeleteValue(p+'Debugging/DebugInfoType/Value', s, '');
+  aXMLConfig.DeletePath(p+'Debugging/GenerateDwarf'); // old deprecated setting
   aXMLConfig.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
-  aXMLConfig.SetDeleteValue(p+'Debugging/GenerateDwarf/Value', GenerateDwarf, false);
   aXMLConfig.SetDeleteValue(p+'Debugging/UseHeaptrc/Value', UseHeaptrc,false);
   aXMLConfig.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
   aXMLConfig.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
@@ -2229,6 +2248,7 @@ var
   CurTargetOS: String;
   CurTargetCPU: String;
   CurSrcOS: String;
+  dit: TCompilerDbgSymbolType;
 begin
   CurMainSrcFile:=MainSourceFileName;
   if CurMainSrcFile='' then
@@ -2543,16 +2563,21 @@ begin
   
   { Debugging }
   { Debug Info for GDB }
-  if (GenerateDebugInfo) then
-    switches := switches + ' -g';
+  if (GenerateDebugInfo) then begin
+    dit := DebugInfoType;
+    if dit = dsAuto then dit := CompilerDbgSymbolTypeDefault;
+    case dit of
+      dsStabs:     switches := switches + ' -gs';
+      dsDwarf2:    switches := switches + ' -gw2';
+      dsDwarf2Set: switches := switches + ' -gw2 -godwarfsets';
+      dsDwarf3:    switches := switches + ' -gw3';
+    end;
+  end;
+
 
   { Line Numbers in Run-time Error Backtraces - Use LineInfo Unit }
   if (UseLineInfoUnit) then
     switches := switches + ' -gl';
-
-  { Generate dwarf debug information }
-  if (GenerateDwarf) then
-    switches := switches + ' -gw';
 
   { Use Heaptrc Unit }
   if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
@@ -2940,8 +2965,8 @@ begin
     
   // linking
   fGenDebugInfo := false;
+  fDebugInfoType := CompilerDbgSymbolTypeDefault;
   fUseLineInfoUnit := true;
-  FGenerateDwarf := false;
   fUseHeaptrc := false;
   fUseValgrind := false;
   fGenGProfCode := false;
@@ -3056,8 +3081,8 @@ begin
 
   // Linking
   fGenDebugInfo := CompOpts.fGenDebugInfo;
+  FDebugInfoType := CompOpts.FDebugInfoType;
   fUseLineInfoUnit := CompOpts.fUseLineInfoUnit;
-  FGenerateDwarf := CompOpts.FGenerateDwarf;
   fUseHeaptrc := CompOpts.fUseHeaptrc;
   fUseValgrind := CompOpts.fUseValgrind;
   fGenGProfCode := CompOpts.fGenGProfCode;
@@ -3204,8 +3229,8 @@ begin
   // linking
   if Tool<>nil then Tool.Path:='Linking';
   if Done(Tool.AddDiff('GenDebugInfo',fGenDebugInfo,CompOpts.fGenDebugInfo)) then exit;
+  if Done(Tool.AddDiff('DebugInfoType',DebugInfoTypeStr,CompOpts.DebugInfoTypeStr)) then exit;
   if Done(Tool.AddDiff('UseLineInfoUnit',fUseLineInfoUnit,CompOpts.fUseLineInfoUnit)) then exit;
-  if Done(Tool.AddDiff('GenerateDwarf',FGenerateDwarf,CompOpts.FGenerateDwarf)) then exit;
   if Done(Tool.AddDiff('UseHeaptrc',fUseHeaptrc,CompOpts.fUseHeaptrc)) then exit;
   if Done(Tool.AddDiff('UseValgrind',fUseValgrind,CompOpts.fUseValgrind)) then exit;
   if Done(Tool.AddDiff('GenGProfCode',fGenGProfCode,CompOpts.fGenGProfCode)) then exit;

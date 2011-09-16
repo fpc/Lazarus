@@ -88,8 +88,16 @@ type
     crRun       // quick build before run
     );
   TCompileReasons = set of TCompileReason;
+
+  TCompilerDbgSymbolType = (dsAuto, dsStabs, dsDwarf2, dsDwarf2Set, dsDwarf3);
+
 const
   crAll = [crCompile, crBuild, crRun];
+  {$IFDEF darwin}
+  CompilerDbgSymbolTypeDefault = dsStabs;
+  {$ELSE}
+  CompilerDbgSymbolTypeDefault = dsDwarf2Set;
+  {$ENDIF}
 
 type
   { TLazCompilerOptions }
@@ -99,6 +107,8 @@ type
     FOnModified: TNotifyEvent;
     fOwner: TObject;
     SetEmulatedFloatOpcodes: boolean;
+    function GetDebugInfoTypeStr: String;
+    function GetGenerateDwarf: Boolean;
     procedure SetAllowLabel(const AValue: Boolean);
     procedure SetAssemblerStyle(const AValue: Integer);
     procedure SetCMacros(const AValue: Boolean);
@@ -106,6 +116,7 @@ type
     procedure SetCPPInline(const AValue: Boolean);
     procedure SetCStyleOp(const AValue: Boolean);
     procedure SetCustomConfigFile(const AValue: Boolean);
+    procedure SetDebugInfoType(AValue: TCompilerDbgSymbolType);
     procedure SetDontUseConfigFile(const AValue: Boolean);
     procedure SetExecutableType(const AValue: TCompilationExecutableType);
     procedure SetGenDebugInfo(const AValue: Boolean);
@@ -203,8 +214,8 @@ type
 
     // Linking:
     fGenDebugInfo: Boolean;
+    FDebugInfoType: TCompilerDbgSymbolType;
     fUseLineInfoUnit: Boolean;
-    FGenerateDwarf: Boolean;
     fUseHeaptrc: Boolean;
     fUseValgrind: Boolean;
     fGenGProfCode: Boolean;
@@ -342,8 +353,10 @@ type
 
     // linking:
     property GenerateDebugInfo: Boolean read fGenDebugInfo write SetGenDebugInfo;
+    property DebugInfoType: TCompilerDbgSymbolType read FDebugInfoType write SetDebugInfoType;
+    property DebugInfoTypeStr: String read GetDebugInfoTypeStr;
+    property GenerateDwarf: Boolean read GetGenerateDwarf write SetGenerateDwarf; deprecated 'use DebugInfoType';
     property UseLineInfoUnit: Boolean read fUseLineInfoUnit write SetUseLineInfoUnit;
-    property GenerateDwarf: Boolean read FGenerateDwarf write SetGenerateDwarf;
     property UseHeaptrc: Boolean read fUseHeaptrc write SetUseHeaptrc;
     property UseValgrind: Boolean read fUseValgrind write SetUseValgrind;
     property GenGProfCode: Boolean read fGenGProfCode write SetGenGProfCode;
@@ -607,6 +620,16 @@ begin
   IncreaseChangeStamp;
 end;
 
+function TLazCompilerOptions.GetGenerateDwarf: Boolean;
+begin
+  Result := FDebugInfoType in [dsDwarf2, dsDwarf2Set];
+end;
+
+function TLazCompilerOptions.GetDebugInfoTypeStr: String;
+begin
+  WriteStr(Result, FDebugInfoType);
+end;
+
 procedure TLazCompilerOptions.SetAssemblerStyle(const AValue: Integer);
 begin
   if fAssemblerStyle=AValue then exit;
@@ -649,6 +672,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TLazCompilerOptions.SetDebugInfoType(AValue: TCompilerDbgSymbolType);
+begin
+  if FDebugInfoType = AValue then Exit;
+  FDebugInfoType := AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TLazCompilerOptions.SetDontUseConfigFile(const AValue: Boolean);
 begin
   if fDontUseConfigFile=AValue then exit;
@@ -673,8 +703,9 @@ end;
 
 procedure TLazCompilerOptions.SetGenerateDwarf(const AValue: Boolean);
 begin
-  if FGenerateDwarf=AValue then exit;
-  FGenerateDwarf:=AValue;
+  if (FDebugInfoType = dsDwarf2) = AValue then exit;
+  if AValue then
+    FDebugInfoType := dsDwarf2;
   IncreaseChangeStamp;
 end;
 

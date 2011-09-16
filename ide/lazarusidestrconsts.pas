@@ -1820,10 +1820,15 @@ resourcestring
   dlgTargetOS = 'Target OS';
   dlgTargetCPUFamily = 'Target CPU family';
   dlgCODebugging = 'Debugging:';
-  dlgCOGDB = 'Generate Debugging Info For GDB (Slows Compiling)';
+  dlgCOGDB = 'Generate Debugging Info For GDB (Slower / Increases exe-size)';
+  dlgCOSymbolType = 'Chose type of debug info';
+  dlgCOSymbolTypeAuto = 'Automatic';
+  dlgCOSymbolTypeStabs = 'Stabs';
+  dlgCOSymbolTypeDwarf2 = 'Dwarf2';
+  dlgCOSymbolTypeDwarf2Set = 'Dwarf with Sets';
+  dlgCOSymbolTypeDwarf3 = 'Dwarf3 (beta)';
   dlgCODBX = 'Generate Debugging Info For DBX (Slows Compiling)';
   dlgLNumsBct = 'Display Line Numbers in Run-time Error Backtraces';
-  dlgGenerateDwarf = 'Generate dwarf debug information';
   dlgCOHeaptrc = 'Use Heaptrc Unit';
   dlgCOValgrind = 'Generate code for valgrind';
   dlgGPROF = 'Generate code for gprof';
