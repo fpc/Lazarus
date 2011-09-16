@@ -7,26 +7,24 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
   DesignLeft = 273
   DesignTop = 145
   object VersionInfoGroupBox: TGroupBox[0]
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 97
-    Top = 23
+    Height = 109
+    Top = 32
     Width = 594
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Version Numbering'
-    ClientHeight = 79
+    ClientHeight = 92
     ClientWidth = 590
     TabOrder = 0
     object MajorVersionLabel: TLabel
       AnchorSideLeft.Control = VersionInfoGroupBox
       AnchorSideTop.Control = VersionInfoGroupBox
       Left = 6
-      Height = 14
+      Height = 16
       Top = 6
-      Width = 70
+      Width = 88
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 3
@@ -38,11 +36,11 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideLeft.Control = MajorVersionSpinEdit
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = VersionInfoGroupBox
-      Left = 106
-      Height = 14
+      Left = 131
+      Height = 16
       Top = 6
-      Width = 69
-      BorderSpacing.Left = 30
+      Width = 88
+      BorderSpacing.Left = 55
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 3
       Caption = 'Mi&nor version:'
@@ -53,11 +51,11 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideLeft.Control = MinorVersionSpinEdit
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = VersionInfoGroupBox
-      Left = 206
-      Height = 14
+      Left = 256
+      Height = 16
       Top = 6
-      Width = 45
-      BorderSpacing.Left = 30
+      Width = 55
+      BorderSpacing.Left = 55
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 3
       Caption = '&Revision:'
@@ -68,11 +66,11 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideLeft.Control = RevisionSpinEdit
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = VersionInfoGroupBox
-      Left = 306
-      Height = 14
+      Left = 381
+      Height = 16
       Top = 6
-      Width = 27
-      BorderSpacing.Left = 30
+      Width = 35
+      BorderSpacing.Left = 55
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 3
       Caption = '&Build:'
@@ -84,8 +82,8 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideTop.Control = MajorVersionLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 23
+      Height = 23
+      Top = 25
       Width = 70
       MaxValue = 65535
       TabOrder = 0
@@ -94,9 +92,9 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideLeft.Control = MinorVersionLabel
       AnchorSideTop.Control = MinorVersionLabel
       AnchorSideTop.Side = asrBottom
-      Left = 106
-      Height = 21
-      Top = 23
+      Left = 131
+      Height = 23
+      Top = 25
       Width = 70
       MaxValue = 65535
       TabOrder = 1
@@ -105,9 +103,9 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideLeft.Control = RevisionLabel
       AnchorSideTop.Control = RevisionLabel
       AnchorSideTop.Side = asrBottom
-      Left = 206
-      Height = 21
-      Top = 23
+      Left = 256
+      Height = 23
+      Top = 25
       Width = 70
       MaxValue = 65535
       TabOrder = 2
@@ -117,9 +115,9 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideTop.Control = MajorVersionSpinEdit
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 56
-      Width = 150
+      Height = 26
+      Top = 60
+      Width = 203
       BorderSpacing.Top = 6
       BorderSpacing.Around = 6
       Caption = 'Automatically increase Build'
@@ -129,9 +127,9 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideLeft.Control = BuildLabel
       AnchorSideTop.Control = BuildLabel
       AnchorSideTop.Side = asrBottom
-      Left = 306
-      Height = 21
-      Top = 23
+      Left = 381
+      Height = 23
+      Top = 25
       Width = 70
       MaxValue = 65535
       TabOrder = 3
@@ -139,7 +137,7 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
   end
   object UseVersionInfoCheckBox: TCheckBox[1]
     Left = 0
-    Height = 17
+    Height = 26
     Top = 0
     Width = 594
     Align = alTop
@@ -148,26 +146,24 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
     TabOrder = 1
   end
   object LanguageSettingsGroupBox: TGroupBox[2]
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 71
-    Top = 126
+    Height = 76
+    Top = 147
     Width = 594
     Align = alTop
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Language Options'
-    ClientHeight = 53
+    ClientHeight = 59
     ClientWidth = 590
     TabOrder = 2
     object LanguageSelectionLabel: TLabel
       AnchorSideLeft.Control = LanguageSettingsGroupBox
       AnchorSideTop.Control = LanguageSettingsGroupBox
       Left = 6
-      Height = 14
+      Height = 16
       Top = 6
-      Width = 98
+      Width = 129
       BorderSpacing.Around = 6
       Caption = 'Language Selection:'
       ParentColor = False
@@ -177,9 +173,9 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LanguageSettingsGroupBox
       Left = 260
-      Height = 14
+      Height = 16
       Top = 6
-      Width = 72
+      Width = 92
       BorderSpacing.Around = 6
       Caption = 'Character Set:'
       ParentColor = False
@@ -189,12 +185,12 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideTop.Control = LanguageSelectionLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 26
+      Height = 25
+      Top = 28
       Width = 248
       BorderSpacing.Top = 2
       BorderSpacing.Bottom = 6
-      ItemHeight = 13
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 0
     end
@@ -204,34 +200,32 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       AnchorSideRight.Control = LanguageSettingsGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 260
-      Height = 21
-      Top = 26
+      Height = 25
+      Top = 28
       Width = 324
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      ItemHeight = 13
+      ItemHeight = 0
       Style = csDropDownList
       TabOrder = 1
     end
   end
   object OtherInfoGroupBox: TGroupBox[3]
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 161
-    Top = 203
+    Height = 135
+    Top = 229
     Width = 594
     Align = alClient
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Other Info'
-    ClientHeight = 143
+    ClientHeight = 118
     ClientWidth = 590
     TabOrder = 3
     object StringInfo: TStringGrid
       Left = 6
-      Height = 131
+      Height = 106
       Top = 6
       Width = 578
       Align = alClient
@@ -239,16 +233,17 @@ inherited ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       ColCount = 2
       Columns = <      
         item
-          Color = clWindow
           MinSize = 50
           ReadOnly = True
           Title.Caption = 'Key'
+          Title.PrefixOption = poNone
           Width = 150
         end      
         item
           MinSize = 100
           MaxSize = 400
           Title.Caption = 'Value'
+          Title.PrefixOption = poNone
           Width = 300
         end>
       FixedCols = 0
