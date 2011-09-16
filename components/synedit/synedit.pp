@@ -7382,7 +7382,7 @@ begin
       UpdateCaret;
     if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
       Invalidate;
-    fMarkupSpecialChar.Enabled := (eoShowSpecialChars in ChangedOptions);
+    fMarkupSpecialChar.Enabled := (eoShowSpecialChars in fOptions);
 
     (* Deal with deprecated values
        Those are all controlled by mouse-actions.
