@@ -44,6 +44,7 @@ uses
   SynGutter, SynGutterBase, SynGutterCodeFolding, SynGutterLineNumber,
   SynGutterChanges, SynCompletion,
   SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
+  SynEditMarkupSpecialChar,
   SourceSynEditor,
   // SynEdit Highlighters
   SynEditHighlighter, SynEditHighlighterFoldBase,
@@ -89,7 +90,7 @@ type
      ahaWordGroup,         ahaTemplateEditCur,    ahaTemplateEditSync,
      ahaTemplateEditOther, ahaSyncroEditCur,      ahaSyncroEditSync,
      ahaSyncroEditOther,   ahaSyncroEditArea,     ahaGutterSeparator,
-     ahaGutter,            ahaRightMargin);
+     ahaGutter,            ahaRightMargin,        ahaSpecialVisibleChars);
 
   TAhaGroupName = (agnDefault, agnLanguage, agnText, agnLine, agnGutter, agnTemplateMode, agnSyncronMode);
 
@@ -116,7 +117,8 @@ const
     'SyncronEdit Other Cells', 'SyncronEdit Range',
     '', // scaGutterSeparator => uses RTTI only
     '', // ahaGutter
-    ''  // ahaRightMargin
+    '',  // ahaRightMargin
+    ''   // ahaSpecialVisibleChars
   );
 
   ahaGroupMap: array[TAdditionalHilightAttribute] of TAhaGroupName = (
@@ -148,7 +150,8 @@ const
     { ahaSyncroEditArea }      agnSyncronMode,
     { ahaGutterSeparator }     agnGutter,
     { ahaGutter }              agnGutter,
-    { ahaRightMargin}          agnGutter
+    { ahaRightMargin}          agnGutter,
+    { ahaSpecialVisibleChars } agnText
   );
   ahaSupportedFeatures: array[TAdditionalHilightAttribute] of TSynHighlighterAttrFeatures =
   (
@@ -180,7 +183,8 @@ const
     { ahaSyncroEditArea }     [hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaGutterSeparator }    [hafBackColor, hafForeColor],
     { ahaGutter }             [hafBackColor],
-    { ahaRightMargin}         [hafForeColor]
+    { ahaRightMargin}         [hafForeColor],
+    { ahaSpecialVisibleChars }[hafBackColor, hafForeColor, hafFrameColor, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask]
   );
 
 
@@ -1590,6 +1594,7 @@ begin
   AdditionalHighlightAttributes[ahaGutterSeparator]     := dlgAddHiAttrGutterSeparator;
   AdditionalHighlightAttributes[ahaGutter]              := dlgGutter;
   AdditionalHighlightAttributes[ahaRightMargin]         := dlgRightMargin;
+  AdditionalHighlightAttributes[ahaSpecialVisibleChars] := dlgAddHiSpecialVisibleChars;
 
   AdditionalHighlightGroupNames[agnDefault]      := dlgAddHiAttrGroupDefault;
   AdditionalHighlightGroupNames[agnText]         := dlgAddHiAttrGroupText;
@@ -4657,10 +4662,12 @@ begin
     SetMarkupColor(ahaLineHighlight,     aSynEdit.LineHighlightColor);
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
     SetMarkupColorByClass(ahaWordGroup,     TSynEditMarkupWordGroup);
+    SetMarkupColorByClass(ahaSpecialVisibleChars, TSynEditMarkupSpecialChar);
     SetGutterColorByClass(ahaLineNumber,      TSynGutterLineNumber);
     SetGutterColorByClass(ahaModifiedLine,    TSynGutterChanges);
     SetGutterColorByClass(ahaCodeFoldingTree, TSynGutterCodeFolding);
     SetGutterColorByClass(ahaGutterSeparator, TSynGutterSeparator);
+
     i := aSynEdit.PluginCount - 1;
     while (i >= 0) and not(aSynEdit.Plugin[i] is TSynPluginTemplateEdit) do
       dec(i);
