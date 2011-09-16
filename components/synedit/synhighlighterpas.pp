@@ -96,6 +96,7 @@ type
     rsAtCaseLabel,
     rsInProcHeader,       // Declaration or implementation header of a Procedure, function, constructor...
     rsAfterClassMembers,  // Encountered a procedure, function, property, constructor or destructor in a class
+    rsAfterClassField,    // after ";" of a field (static needs highlight)
     rsVarTypeInSpecification // between ":"/"=" and ";" in a var or type section (or class members)
                              // var a: Integer; type b = Int64;
   );
@@ -1435,7 +1436,9 @@ end;
 function TSynPasSyn.Func72: TtkTokenKind;
 begin
   if KeyComp('Static') and (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
-     (fRange * [rsAfterClassMembers, rsInProcHeader, rsProperty] = [rsAfterClassMembers])
+     (fRange * [rsAfterEqualOrColon, rsInProcHeader, rsProperty] = []) and
+     (fRange * [rsAfterClassMembers, rsAfterClassField] <> []) and
+     (PasCodeFoldRange.BracketNestLevel = 0)
   then
     Result := tkKey
   else
@@ -2861,6 +2864,11 @@ begin
   if (tfb = cfbtCase) then
     fRange := fRange + [rsAtCaseLabel];
 
+  if (tfb in [cfbtClass, cfbtClassSection]) and
+     (fRange * [rsVarTypeInSpecification, rsAfterClassMembers] = [rsVarTypeInSpecification])
+  then
+    fRange := fRange + [rsAfterClassField];
+
   if (fRange * [rsProperty, rsInProcHeader] <> []) and
      (PasCodeFoldRange.BracketNestLevel = 0)
   then
@@ -2969,7 +2977,7 @@ end;
 procedure TSynPasSyn.Next;
 var
   IsAtCaseLabel: Boolean;
-  WasAtEqualOrColon, WasAtProperty: Boolean;
+  OldRange: TRangeStates;
 begin
   fAsmStart := False;
   fTokenPos := Run;
@@ -2992,8 +3000,7 @@ begin
       else if rsSlash in fRange then
         SlashContinueProc
       else begin
-        WasAtEqualOrColon := rsAfterEqualOrColon in fRange;
-        WasAtProperty := rsAtPropertyOrReadWrite in fRange;
+        OldRange := fRange;
         //if rsAtEqual in fRange then
         //  fRange := fRange + [rsAfterEqualOrColon] - [rsAtEqual]
         //else
@@ -3013,11 +3020,13 @@ begin
              not(rsAtClosingBracket in fRange)
           then
             fRange := fRange - [rsAfterClass];
-          if WasAtEqualOrColon then
+          if rsAfterEqualOrColon in OldRange then
             fRange := fRange - [rsAfterEqualOrColon];
-          if WasAtProperty then
+          if rsAtPropertyOrReadWrite in OldRange then
             fRange := fRange - [rsAtPropertyOrReadWrite];
           fRange := fRange - [rsAtClosingBracket];
+          if rsAfterClassField in OldRange then
+            fRange := fRange - [rsAfterClassField];
         end
         else
           fRange := fRange - [rsAtClosingBracket];
