@@ -245,6 +245,9 @@ type
   );
   TSynEditorShareOptions = set of TSynEditorShareOption;
 
+  TSynVisibleSpecialChar = (vscSpace, vscTabAtFirst, vscTabAtLast);
+  TSynVisibleSpecialChars = set of TSynVisibleSpecialChar;
+
 const
   // MouseAction related options will have no effect (as default), unless they
   // are also updated in the Constructor of the MouseAction-class
@@ -281,6 +284,11 @@ const
     eoOverwriteBlock
   ];
   {$ENDIF}
+
+  SYNEDIT_DEFAULT_VISIBLESPECIALCHARS = [
+    vscSpace,
+    vscTabAtLast
+  ];
 
 type
 // use scAll to update a statusbar when another TCustomSynEdit got the focus
@@ -374,6 +382,7 @@ type
 
     FFoldedLinesView:  TSynEditFoldedView;
     FShareOptions: TSynEditorShareOptions;
+    FVisibleSpecialChars: TSynVisibleSpecialChars;
     FTrimmedLinesView: TSynEditStringTrimmingList;
     FDoubleWidthChrLinesView: SynEditStringDoubleWidthChars;
     FTabbedLinesView:  TSynEditStringTabExpander;
@@ -476,6 +485,7 @@ type
     procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint; const AValue: String);
     procedure SetTextBetweenPointsEx(aStartPoint, aEndPoint: TPoint;
       aCaretMode: TSynCaretAdjustMode; const AValue: String);
+    procedure SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars);
     procedure SurrenderPrimarySelection;
     procedure BookMarkOptionsChanged(Sender: TObject);
     procedure ComputeCaret(X, Y: Integer);
@@ -937,6 +947,7 @@ type
       default SYNEDIT_DEFAULT_OPTIONS2;
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
+    property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars;
     property OverwriteCaret: TSynEditCaretType read FOverwriteCaret
       write SetOverwriteCaret default ctBlock;
   protected
@@ -1079,6 +1090,7 @@ type
     property MaxUndo;
     property Options;
     property Options2;
+    property VisibleSpecialChars;
     property OverwriteCaret;
     property ReadOnly;
     property RightEdge;
@@ -1783,6 +1795,7 @@ begin
   FOptions := SYNEDIT_DEFAULT_OPTIONS;
   FOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
   FShareOptions := SYNEDIT_DEFAULT_SHARE_OPTIONS;
+  FVisibleSpecialChars := SYNEDIT_DEFAULT_VISIBLESPECIALCHARS;
   UpdateOptions;
   UpdateOptions2;
   fScrollTimer := TTimer.Create(Self);
@@ -3219,7 +3232,7 @@ var
     Dest: PChar;
     c: Char;
     CharLen: Integer;
-    Special, HasTabs: boolean;
+    Special, SpecialTab1, SpecialTab2, SpecialSpace, HasTabs: boolean;
     Fill: Integer;
   begin
       LengthNeeded := 0;
@@ -3237,6 +3250,9 @@ var
     if (not Special) and (LengthNeeded=0) and (not HasTabs)
     and (FindInvalidUTF8Character(p,Count)<0) then
       exit;
+    SpecialTab1 := Special and (vscTabAtFirst in FVisibleSpecialChars);
+    SpecialTab2 := Special and (vscTabAtLast in FVisibleSpecialChars);
+    SpecialSpace := Special and (vscSpace in FVisibleSpecialChars);
     LengthNeeded := LengthNeeded + Count;
     if Special then LengthNeeded:=LengthNeeded*2;
     if length(ExpandedPaintToken)<LengthNeeded then
@@ -3250,16 +3266,24 @@ var
         c:=p[SrcPos];
         Fill := CharWidths[CurLogIndex + SrcPos] - 1;
         if c = #9 then begin
-          // tab char, fill spaces at start
-          for i := 0 to Fill do begin
+          // tab char, fill with spaces
+          if SpecialTab1 then begin
+            // #194#187 looks like >>
+            Dest[DestPos]   := #194;
+            Dest[DestPos+1] := #187;
+            inc(DestPos, 2);
+            dec(Fill);
+          end;
+          while Fill >= 0 do begin //for i := 0 to Fill do begin
             Dest[DestPos]:= ' ';
             inc(DestPos);
+            dec(Fill);
           end;
-          if Special then begin
+          if SpecialTab2 then begin
             // #194#187 looks like >>
             Dest[DestPos-1] := #194;
             Dest[DestPos]   := #187;
-            inc(DestPos);
+            inc(DestPos, 1);
           end;
           inc(SrcPos);
         end
@@ -3280,7 +3304,7 @@ var
               inc(DestPos);
               inc(SrcPos);
             end;
-            if (c = #32) and Special then begin
+            if (c = #32) and SpecialSpace then begin
               // #194#183 looks like .
               Dest[DestPos-1] := #194;
               Dest[DestPos]   := #183;
@@ -5593,6 +5617,13 @@ begin
       FCaret.DecAutoMoveOnEdit;
     InternalEndUndoBlock;
   end;
+end;
+
+procedure TCustomSynEdit.SetVisibleSpecialChars(AValue: TSynVisibleSpecialChars);
+begin
+  if FVisibleSpecialChars = AValue then Exit;
+  FVisibleSpecialChars := AValue;
+  if eoShowSpecialChars in Options then Invalidate;
 end;
 
 function TCustomSynEdit.GetLineState(ALine: Integer): TSynLineState;
