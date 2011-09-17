@@ -4300,14 +4300,19 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
+    //TODO, decide how much (if any) to run before asking the user
+    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+
     FTheDebugger.DoException(deInternal, AInfo.Name, Location.Address, ExceptionMessage, CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
       Result := True; // outer funciton result
       exit;
-    end
-    else FTheDebugger.DoCurrent(Location);
+    end;
+
+    //SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+    FTheDebugger.DoCurrent(Location);
   end;
 
   procedure ProcessBreak;
@@ -4328,14 +4333,19 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
+    //TODO, decide how much (if any) to run before asking the user
+    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+
     FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), Location.Address, '', CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
       Result := True; // outer funciton result
       exit;
-    end
-    else FTheDebugger.DoCurrent(Location);
+    end;
+
+    //SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+    FTheDebugger.DoCurrent(Location);
   end;
 
   procedure ProcessRunError;
@@ -4353,14 +4363,18 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
+    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+
     FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), 0, '', CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
       Result := True; // outer funciton result
       exit;
-    end
-    else ProcessFrame(GetFrame(1));
+    end;
+
+    //SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+    ProcessFrame(GetFrame(1));
   end;
 
   procedure ProcessSignalReceived(const AList: TGDBMINameValueList);
@@ -4472,15 +4486,13 @@ begin
 
       if BreakID = FTheDebugger.FBreakErrorBreakID
       then begin
-        SetDebuggerState(dsPause);
-        ProcessBreak;
+        ProcessBreak; // will set dsPause / unless CanContinue
         Exit;
       end;
 
       if BreakID = FTheDebugger.FRunErrorBreakID
       then begin
-        SetDebuggerState(dsPause);
-        ProcessRunError;
+        ProcessRunError; // will set dsPause / unless CanCuntinue
         Exit;
       end;
 
@@ -4491,15 +4503,10 @@ begin
         // check if we should ignore this exception
         if FTheDebugger.Exceptions.IgnoreAll
         or (FTheDebugger.Exceptions.Find(ExceptionInfo.Name) <> nil)
-        then begin
-          //ExecuteCommand('-exec-continue')
-          Result := True;
-          exit;
-        end
-        else begin
-          SetDebuggerState(dsPause);
-          ProcessException(ExceptionInfo);
-        end;
+        then
+          Result := True //ExecuteCommand('-exec-continue')
+        else
+          ProcessException(ExceptionInfo); // will set dsPause / unless CanCuntinue
         Exit;
       end;
 
@@ -10983,9 +10990,9 @@ var
     begin
       if (dcsCanceled in SeenStates)
       then begin
-        exit;
         FTextValue := '<Canceled>';
         FValidity := ddsInvalid;
+        exit;
       end;
       ResultList := TGDBMINameValueList.Create(LastExecResult.Values);
       FTextValue := ResultList.Values['msg'];
