@@ -10042,6 +10042,9 @@ end;
 
 procedure TGDBMIDebuggerCommandEvaluate.DoWatchFreed(Sender: TObject);
 begin
+  {$IFDEF DBGMI_QUEUE_DEBUG}
+  debugln(['DoWatchFreed: ', DebugText]);
+  {$ENDIF}
   FWatchValue := nil;
   Cancel;
 end;
@@ -11233,24 +11236,27 @@ end;
 function TGDBMIDebuggerCommandEvaluate.SelectContext: Boolean;
 var
   R: TGDBMIExecResult;
+  t, f: Integer;
 begin
   Result := True;
   FThreadChanged := False;
   FStackFrameChanged := False;
   if FWatchValue = nil then exit;
+  t := FWatchValue.ThreadId;
+  f := FWatchValue.StackFrame;
 
-  if FWatchValue.ThreadId <> FTheDebugger.FCurrentThreadId then begin
+  if t <> FTheDebugger.FCurrentThreadId then begin
     FThreadChanged := True;
-    Result := ExecuteCommand('-thread-select %d', [FWatchValue.ThreadId], R);
-    FTheDebugger.FInternalThreadId := FWatchValue.ThreadId;
+    Result := ExecuteCommand('-thread-select %d', [t], R);
+    FTheDebugger.FInternalThreadId := t;
     Result := Result and (R.State <> dsError);
   end;
   if not Result then exit;
 
-  if (FWatchValue.StackFrame <> FTheDebugger.FCurrentStackFrame) or FThreadChanged then begin
+  if (f <> FTheDebugger.FCurrentStackFrame) or FThreadChanged then begin
     FStackFrameChanged := True;
-    Result := ExecuteCommand('-stack-select-frame %d', [FWatchValue.StackFrame], R);
-    FTheDebugger.FInternalStackFrame := FWatchValue.StackFrame;
+    Result := ExecuteCommand('-stack-select-frame %d', [f], R);
+    FTheDebugger.FInternalStackFrame := f;
     Result := Result and (R.State <> dsError);
   end;
 end;
