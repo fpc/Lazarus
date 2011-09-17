@@ -17,10 +17,9 @@ type
 
   TTreeFilterEdit = class(TCustomControlFilterEdit)
   private
-    // A control showing the (filtered) data. These are exclusive, only one is used.
-    fFilteredTreeview: TTreeview;
-    fImageIndexDirectory: integer;     // Needed if directory structure is shown.
-    fSelectionList: TStringList;    // or store/restore the old selections here.
+    fFilteredTreeview: TTreeview;   // A control showing the (filtered) data.
+    fImageIndexDirectory: integer;  // Needed if directory structure is shown.
+    fSelectionList: TStringList;    // Store/restore the old selections here.
     fShowDirHierarchy: Boolean;     // Show direcories / files as a tree structure.
     // Full filename in node data is needed when showing the directory hierarchy.
     // It is stored automatically if the map is populated by MapShortToFullFilename.

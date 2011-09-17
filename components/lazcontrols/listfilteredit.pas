@@ -17,9 +17,8 @@ type
 
   TListFilterEdit = class(TCustomControlFilterEdit)
   private
-    // A control showing the (filtered) data. These are exclusive, only one is used.
-    fFilteredListbox: TListbox;
-    fSelectionList: TStringList;       // or store/restore the old selections here.
+    fFilteredListbox: TListbox;      // A control showing the (filtered) data.
+    fSelectionList: TStringList;     // Store/restore the old selections here.
     // Data supplied by caller through Data property.
     fOriginalData: TStringList;
     // Data sorted for viewing.
