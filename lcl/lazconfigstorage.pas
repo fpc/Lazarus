@@ -22,7 +22,7 @@ unit LazConfigStorage;
 interface
 
 uses
-  Classes, SysUtils, AvgLvlTree, LCLProc;
+  Classes, SysUtils, typinfo, AvgLvlTree, LCLProc;
   
 type
   { TConfigStorage }
@@ -43,6 +43,13 @@ type
     procedure SetDeleteFullPathValue(const APath: String; AValue, DefValue: Boolean); virtual; abstract;
     procedure DeleteFullPath(const APath: string); virtual; abstract;
     procedure DeleteFullPathValue(const APath: string); virtual; abstract;
+  protected
+    procedure WriteProperty(Path: String; Instance: TPersistent;
+                            PropInfo: Pointer; DefInstance: TPersistent = nil;
+                            OnlyProperty: String= '');
+    procedure ReadProperty(Path: String; Instance: TPersistent;
+                            PropInfo: Pointer; DefInstance: TPersistent = nil;
+                            OnlyProperty: String= '');
   public
     constructor Create(const Filename: string; LoadFromDisk: Boolean); virtual;
     destructor Destroy; override;
@@ -74,6 +81,10 @@ type
     procedure UndoAppendBasePath;
     procedure WriteToDisk; virtual; abstract;
     function GetFilename: string; virtual; abstract;
+    procedure WriteObject(Path: String; Obj: TPersistent;
+                          DefObject: TPersistent= nil; OnlyProperty: String= '');
+    procedure ReadObject(Path: String; Obj: TPersistent;
+                          DefObject: TPersistent= nil; OnlyProperty: String= '');
   end;
   
   TConfigStorageClass = class of TConfigStorage;
@@ -243,6 +254,252 @@ end;
 
 { TConfigStorage }
 
+procedure TConfigStorage.WriteProperty(Path: String; Instance: TPersistent; PropInfo: Pointer;
+  DefInstance: TPersistent; OnlyProperty: String);
+// based on FPC TWriter
+// path is already extende
+type
+  tset = set of 0..31;
+var
+  i: Integer;
+  PropType: PTypeInfo;
+  Value, DefValue: LongInt;
+  Ident: String;
+  IntToIdentFn: TIntToIdent;
+  SetType: Pointer;
+  FloatValue, DefFloatValue: Extended;
+  //WStrValue, WDefStrValue: WideString;
+  StrValue, DefStrValue: String;
+  //Int64Value, DefInt64Value: Int64;
+  BoolValue, DefBoolValue: boolean;
+
+begin
+  // do not stream properties without getter and setter
+  if not (Assigned(PPropInfo(PropInfo)^.GetProc) and
+          Assigned(PPropInfo(PropInfo)^.SetProc)) then
+    exit;
+
+  PropType := PPropInfo(PropInfo)^.PropType;
+  Path := Path + PPropInfo(PropInfo)^.Name;
+  if (OnlyProperty <> '') and (OnlyProperty <> PPropInfo(PropInfo)^.Name) then
+    exit;
+
+  case PropType^.Kind of
+    tkInteger, tkChar, tkEnumeration, tkSet, tkWChar:
+      begin
+        Value := GetOrdProp(Instance, PropInfo);
+        if (DefInstance <> nil) then
+          DefValue := GetOrdProp(DefInstance, PropInfo);
+        if (DefInstance <> nil)  and (Value = DefValue) then
+          DeleteValue(Path)
+        else begin
+          case PropType^.Kind of
+            tkInteger:
+              begin                      // Check if this integer has a string identifier
+                IntToIdentFn := FindIntToIdent(PPropInfo(PropInfo)^.PropType);
+                if Assigned(IntToIdentFn) and IntToIdentFn(Value, Ident{%H-}) then
+                  SetValue(Path, Ident) // Integer can be written a human-readable identifier
+                else
+                  SetValue(Path, Value); // Integer has to be written just as number
+              end;
+            tkChar:
+              SetValue(Path, Chr(Value));
+            tkWChar:
+              SetValue(Path, Value);
+            tkSet:
+              begin
+                SetType := GetTypeData(PropType)^.CompType;
+                Ident := '';
+                for i := 0 to 31 do
+                  if (i in tset(Value)) then begin
+                    if Ident <> '' then Ident := Ident + ',';
+                    Ident := Ident + GetEnumName(PTypeInfo(SetType), i);
+                  end;
+                SetValue(Path, Ident);
+              end;
+            tkEnumeration:
+              SetValue(Path, GetEnumName(PropType, Value));
+          end;
+        end;
+      end;
+    tkFloat:
+      begin
+        FloatValue := GetFloatProp(Instance, PropInfo);
+        if (DefInstance <> nil) then
+         DefFloatValue := GetFloatProp(DefInstance, PropInfo);
+        if (DefInstance <> nil)  and (DefFloatValue = FloatValue) then
+          DeleteValue(Path)
+        else
+          SetValue(Path, FloatToStr(FloatValue));
+      end;
+    tkSString, tkLString, tkAString:
+      begin
+        StrValue := GetStrProp(Instance, PropInfo);
+        if (DefInstance <> nil) then
+           DefStrValue := GetStrProp(DefInstance, PropInfo);
+        if (DefInstance <> nil)  and (DefStrValue = StrValue) then
+          DeleteValue(Path)
+        else
+          SetValue(Path, StrValue);
+      end;
+(*    tkWString:
+      begin
+        WStrValue := GetWideStrProp(Instance, PropInfo);
+        if (DefInstance <> nil) then
+           WDefStrValue := GetWideStrProp(DefInstance, PropInfo);
+        if (DefInstance <> nil)  and (WDefStrValue = WStrValue) then
+          DeleteValue(Path)
+        else
+          SetValue(Path, WStrValue);
+      end;*)
+(*    tkInt64, tkQWord:
+      begin
+        Int64Value := GetInt64Prop(Instance, PropInfo);
+        if (DefInstance <> nil) then
+          DefInt64Value := GetInt64Prop(DefInstance, PropInfo)
+        if (DefInstance <> nil) and (Int64Value = DefInt64Value) then
+          DeleteValue(Path, Path)
+        else
+          SetValue(StrValue);
+      end;*)
+    tkBool:
+      begin
+        BoolValue := GetOrdProp(Instance, PropInfo)<>0;
+        if (DefInstance <> nil) then
+          DefBoolValue := GetOrdProp(DefInstance, PropInfo)<>0;
+        if (DefInstance <> nil) and (BoolValue = DefBoolValue) then
+          DeleteValue(Path)
+        else
+          SetValue(Path, BoolValue);
+      end;
+  end;
+end;
+
+procedure TConfigStorage.ReadProperty(Path: String; Instance: TPersistent; PropInfo: Pointer;
+  DefInstance: TPersistent; OnlyProperty: String);
+type
+  tset = set of 0..31;
+var
+  i, j: Integer;
+  PropType: PTypeInfo;
+  Value, DefValue: LongInt;
+  Ident, s: String;
+  IdentToIntFn: TIdentToInt;
+  SetType: Pointer;
+  FloatValue, DefFloatValue: Extended;
+  //WStrValue, WDefStrValue: WideString;
+  StrValue, DefStrValue: String;
+  //Int64Value, DefInt64Value: Int64;
+  BoolValue, DefBoolValue: boolean;
+
+begin
+  // do not stream properties without getter and setter
+  if not (Assigned(PPropInfo(PropInfo)^.GetProc) and
+          Assigned(PPropInfo(PropInfo)^.SetProc)) then
+    exit;
+
+  PropType := PPropInfo(PropInfo)^.PropType;
+  Path := Path + PPropInfo(PropInfo)^.Name;
+  if (OnlyProperty <> '') and (OnlyProperty <> PPropInfo(PropInfo)^.Name) then
+    exit;
+  if DefInstance = nil then
+    DefInstance := Instance;
+
+  case PropType^.Kind of
+    tkInteger, tkChar, tkEnumeration, tkSet, tkWChar:
+      begin
+        DefValue := GetOrdProp(DefInstance, PropInfo);
+        case PropType^.Kind of
+          tkInteger:
+            begin                      // Check if this integer has a string identifier
+              Ident := GetValue(Path, IntToStr(DefValue));
+              IdentToIntFn := FindIdentToInt(PPropInfo(PropInfo)^.PropType);
+              if TryStrToInt(Ident, Value) then
+                SetOrdProp(Instance, PropInfo, Value)
+              else if Assigned(IdentToIntFn) and IdentToIntFn(Ident, Value) then
+                SetOrdProp(Instance, PropInfo, Value)
+              else
+                SetOrdProp(Instance, PropInfo, DefValue)
+            end;
+          tkChar:
+            begin
+              Ident := GetValue(Path, chr(DefValue));
+              if Length(Ident) > 0 then
+                SetOrdProp(Instance, PropInfo, ord(Ident[1]))
+              else
+                SetOrdProp(Instance, PropInfo, DefValue);
+            end;
+          tkWChar:
+            SetOrdProp(Instance, PropInfo, GetValue(Path, DefValue));
+          tkSet:
+            begin
+              SetType := GetTypeData(PropType)^.CompType;
+              Ident := GetValue(Path, '-');
+              If Ident = '-' then
+                Value := DefValue
+              else begin
+                Value := 0;
+                while length(Ident) > 0 do begin
+                  i := Pos(',', Ident);
+                  if i < 1 then
+                    i := length(Ident) + 1;
+                  s := copy(Ident, 1, i-1);
+                  Ident := copy(Ident, i+1, length(Ident));
+                  j := GetEnumValue(PTypeInfo(SetType), s);
+                  if j <> -1 then
+                    include(tset(Value), j)
+                  else Begin
+                    Value := DefValue;
+                    break;
+                  end;
+                end;
+              end;
+              SetOrdProp(Instance, PropInfo, Value);
+            end;
+          tkEnumeration:
+            begin
+              Ident := GetValue(Path, '-');
+              If Ident = '-' then
+                Value := DefValue
+              else
+                Value := GetEnumValue(PropType, Ident);
+              if Value <> -1 then
+                SetOrdProp(Instance, PropInfo, Value)
+              else
+                SetOrdProp(Instance, PropInfo, DefValue);
+            end;
+        end;
+      end;
+    tkFloat:
+      begin
+        DefFloatValue := GetFloatProp(DefInstance, PropInfo);
+        Ident := GetValue(Path, FloatToStr(DefFloatValue));
+        if TryStrToFloat(Ident, FloatValue) then
+          SetFloatProp(Instance, PropInfo, FloatValue)
+        else
+          SetFloatProp(Instance, PropInfo, DefFloatValue)
+      end;
+    tkSString, tkLString, tkAString:
+      begin
+        DefStrValue := GetStrProp(DefInstance, PropInfo);
+        StrValue := GetValue(Path, DefStrValue);
+        SetStrProp(Instance, PropInfo, StrValue)
+      end;
+(*    tkWString:
+      begin
+      end;*)
+(*    tkInt64, tkQWord:
+      begin
+      end;*)
+    tkBool:
+      begin
+        DefBoolValue := GetOrdProp(DefInstance, PropInfo) <> 0;
+        BoolValue := GetValue(Path, DefBoolValue);
+        SetOrdProp(Instance, PropInfo, ord(BoolValue));
+      end;
+  end;
+end;
+
 constructor TConfigStorage.Create(const Filename: string; LoadFromDisk: Boolean
   );
 begin
@@ -407,6 +664,42 @@ begin
     raise Exception.Create('TConfigStorage.UndoAppendBasePath');
   FCurrentBasePath:=FPathStack[FPathStack.Count-1];
   FPathStack.Delete(FPathStack.Count-1);
+end;
+
+procedure TConfigStorage.WriteObject(Path: String; Obj: TPersistent; DefObject: TPersistent;
+  OnlyProperty: String);
+var
+  PropCount,i : integer;
+  PropList  : PPropList;
+begin
+  Path := ExtendPath(Path);
+  PropCount:=GetPropList(Obj,PropList);
+  if PropCount>0 then begin
+    try
+      for i := 0 to PropCount-1 do
+        WriteProperty(Path, Obj, PropList^[i], DefObject, OnlyProperty);
+    finally
+      Freemem(PropList);
+    end;
+  end;
+end;
+
+procedure TConfigStorage.ReadObject(Path: String; Obj: TPersistent; DefObject: TPersistent;
+  OnlyProperty: String);
+var
+  PropCount,i : integer;
+  PropList  : PPropList;
+begin
+  Path := ExtendPath(Path);
+  PropCount:=GetPropList(Obj,PropList);
+  if PropCount>0 then begin
+    try
+      for i := 0 to PropCount-1 do
+        ReadProperty(Path, Obj, PropList^[i], DefObject, OnlyProperty);
+    finally
+      Freemem(PropList);
+    end;
+  end;
 end;
 
 { TConfigMemStorage }
