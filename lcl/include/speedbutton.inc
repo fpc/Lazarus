@@ -291,7 +291,7 @@ var
   OldState: TButtonState;
 begin
   OldState := FState;
-  if not Enabled then
+  if not VisuallyEnabled then
   begin
     FState := bsDisabled;
     FDragging := False;
@@ -339,7 +339,7 @@ function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
     
     // no check states available
     Result := tbPushButtonNormal;
-    if not Enabled then
+    if not VisuallyEnabled then
       Result := tbPushButtonDisabled
     else
     if FState in [bsDown, bsExclusive] then
@@ -355,7 +355,7 @@ function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
   begin
     // ttbButtonNormal, ttbButtonHot, ttbButtonPressed, ttbButtonDisabled
     // ttbButtonChecked, ttbButtonCheckedHot
-    if not Enabled then
+    if not VisuallyEnabled then
       Result := ttbButtonDisabled
     else
     begin
@@ -738,7 +738,7 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if csDesigning in ComponentState then exit;
 
-  if (Button = mbLeft) and Enabled then
+  if (Button = mbLeft) and VisuallyEnabled then
   begin
     if not FDown then
     begin
@@ -1053,7 +1053,7 @@ end;
 procedure TCustomSpeedButton.MouseEnter;
 begin
   if csDesigning in ComponentState then exit;
-  if not FMouseInControl and Enabled and (GetCapture = 0) then
+  if not FMouseInControl and VisuallyEnabled and (GetCapture = 0) then
   begin
     FMouseInControl := True;
     UpdateState(true);
@@ -1074,7 +1074,7 @@ begin
   if FMouseInControl then
   begin
     FMouseInControl := False;
-    if Enabled then
+    if VisuallyEnabled then
     begin
       if FDragging and (not MouseCapture) then
       begin

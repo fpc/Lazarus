@@ -2017,6 +2017,7 @@ type
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
   protected
     class procedure WSRegisterClass; override;
+    function VisuallyEnabled: Boolean;
     procedure FontChanged(Sender: TObject); override;
     procedure Paint; virtual;
     procedure DoOnChangeBounds; override;

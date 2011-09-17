@@ -412,7 +412,7 @@ begin
   R := Rect(0,0,Width,Height);
   with Canvas do
   begin
-    if Enabled then
+    if VisuallyEnabled then
       Brush.Color := Self.Color
     else
       Brush.Color := clNone;
@@ -463,7 +463,7 @@ begin
     //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
     LabelText := GetLabelText;
     OldFontColor := Font.Color;
-    if not Enabled then
+    if not VisuallyEnabled then
     begin
       Font.Color := clBtnHighlight;
       TextRect(R, TextLeft + 1, TextTop + 1, LabelText, TR);

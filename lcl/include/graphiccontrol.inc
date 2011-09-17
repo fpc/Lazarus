@@ -77,6 +77,22 @@ begin
   RegisterGraphicControl;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TGraphicControl.VisuallyEnabled
+  Params:   none
+  Returns:  Boolean
+
+  Returns True only if both TGraphicControl and it's parent are enabled.
+  Used internally by TGraphicControls for painting and various states during
+  runtime.
+ ------------------------------------------------------------------------------}
+function TGraphicControl.VisuallyEnabled: Boolean;
+begin
+  Result := Enabled;
+  if Result and Assigned(Parent) then
+    Result := Result and Parent.Enabled;
+end;
+
 procedure TGraphicControl.FontChanged(Sender: TObject);
 begin
   Canvas.Font:=Font;
