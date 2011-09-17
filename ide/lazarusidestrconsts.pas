@@ -2621,8 +2621,8 @@ resourcestring
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';
   lisMenuCompleteCode             = 'Complete Code';
-  lisUseProjectUnit               = 'Add unit to uses section';
-  lisMenuUseProjectUnit           = 'Add unit to uses section ...';
+  lisUseUnit                      = 'Add unit to uses section';
+  lisMenuUseUnit                  = 'Add unit to uses section ...';
   srkmecShowCodeContext           = 'Show code context';
   srkmecExtractProc               = 'Extract procedure';
   lisMenuExtractProc              = 'Extract procedure ...';

@@ -1174,9 +1174,10 @@ var
     // source
     SrcEditMenuEncloseSelection: TIDEMenuCommand;
     SrcEditMenuEncloseInIFDEF: TIDEMenuCommand;
+    SrcEditMenuCompleteCode: TIDEMenuCommand;
+    SrcEditMenuUseUnit: TIDEMenuCommand;
     SrcEditMenuShowUnitInfo: TIDEMenuCommand;
     // refactoring
-    SrcEditMenuCompleteCode: TIDEMenuCommand;
     SrcEditMenuRenameIdentifier: TIDEMenuCommand;
     SrcEditMenuExtractProc: TIDEMenuCommand;
     SrcEditMenuInvertAssignment: TIDEMenuCommand;
@@ -1468,6 +1469,8 @@ begin
         (AParent,'itmSourceEncloseInIFDEF',lisMenuEncloseInIFDEF);
     SrcEditMenuCompleteCode := RegisterIDEMenuCommand
         (AParent,'CompleteCode', lisMenuCompleteCode, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuUseUnit := RegisterIDEMenuCommand
+        (AParent,'UseUnit', lisMenuUseUnit, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand
         (AParent,'ShowUnitInfo', lisMenuViewUnitInfo);
   {%endregion}
@@ -8701,10 +8704,11 @@ begin
   {%region *** Source Section ***}
     SrcEditMenuEncloseSelection.Command:=GetCommand(ecSelectionEnclose);
     SrcEditMenuEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
+    SrcEditMenuCompleteCode.Command:=GetCommand(ecCompleteCode);
+    SrcEditMenuUseUnit.Command:=GetCommand(ecUseProjectUnit);
   {%endregion}
 
   {%region *** Refactoring Section ***}
-    SrcEditMenuCompleteCode.Command:=GetCommand(ecCompleteCode);
     SrcEditMenuRenameIdentifier.Command:=GetCommand(ecRenameIdentifier);
     SrcEditMenuFindIdentifierReferences.Command:=GetCommand(ecFindIdentifierRefs);
     SrcEditMenuExtractProc.Command:=GetCommand(ecExtractProc);
