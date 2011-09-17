@@ -907,7 +907,7 @@ begin
     itmSourceEncloseBlock.Command:=GetCommand(ecSelectionEnclose);
     itmSourceEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
     itmSourceCompleteCode.Command:=GetCommand(ecCompleteCode);
-    itmSourceUseUnit.Command:=GetCommand(ecUseProjectUnit);
+    itmSourceUseUnit.Command:=GetCommand(ecUseUnit);
 
     itmSourceSyntaxCheck.Command:=GetCommand(ecSyntaxCheck);
     itmSourceGuessUnclosedBlock.Command:=GetCommand(ecGuessUnclosedBlock);

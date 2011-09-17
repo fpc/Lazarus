@@ -1024,7 +1024,7 @@ type
     function DoShowAbstractMethods: TModalResult;
     function DoRemoveEmptyMethods: TModalResult;
     function DoRemoveUnusedUnits: TModalResult;
-    function DoUseProjectUnit: TModalResult;
+    function DoUseUnit: TModalResult;
     function DoFindOverloads: TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
@@ -3303,8 +3303,8 @@ begin
   ecRemoveUnusedUnits:
     DoRemoveUnusedUnits;
 
-  ecUseProjectUnit:
-    DoUseProjectUnit;
+  ecUseUnit:
+    DoUseUnit;
 
   ecFindOverloads:
     DoFindOverloads;
@@ -15493,7 +15493,7 @@ begin
   Result:=ShowUnusedUnitsDialog;
 end;
 
-function TMainIDE.DoUseProjectUnit: TModalResult;
+function TMainIDE.DoUseUnit: TModalResult;
 begin
   Result:=ShowUseUnitDialog;
 end;
@@ -18257,7 +18257,7 @@ end;
 
 procedure TMainIDE.mnuSourceUseUnitClicked(Sender: TObject);
 begin
-  DoSourceEditorCommand(ecUseProjectUnit);
+  DoSourceEditorCommand(ecUseUnit);
 end;
 
 procedure TMainIDE.mnuRefactorRenameIdentifierClicked(Sender: TObject);

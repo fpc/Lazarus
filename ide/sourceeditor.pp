@@ -8690,7 +8690,7 @@ begin
     SrcEditMenuEncloseSelection.Command:=GetCommand(ecSelectionEnclose);
     SrcEditMenuEncloseInIFDEF.Command:=GetCommand(ecSelectionEncloseIFDEF);
     SrcEditMenuCompleteCode.Command:=GetCommand(ecCompleteCode);
-    SrcEditMenuUseUnit.Command:=GetCommand(ecUseProjectUnit);
+    SrcEditMenuUseUnit.Command:=GetCommand(ecUseUnit);
   {%endregion}
 
   {%region *** Refactoring Section ***}
