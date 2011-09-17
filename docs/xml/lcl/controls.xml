@@ -4699,6 +4699,9 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.CalculatePreferredSize.PreferredHeight">
         <short/>
       </element>
+      <element name="TControl.CalculatePreferredSize.WithThemeSpace">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoAllAutoSize">
         <short>[?]</short>
@@ -5187,10 +5190,6 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.OnMouseWheelUp">
         <short>
           <var>OnMouseWheelUp</var> - event handler for upward movement of mouse wheel</short>
-      </element>
-      <element name="TWinControl.InvalidatePreferredChildSizes">
-        <short>
-          <var>InvalidatePreferredChildSizes</var> - renders the preferred child sizes invalid</short>
       </element>
       <element name="TControl.WMMouseWheel">
         <short>Protected message to system - when mouse wheel moves</short>
@@ -6895,16 +6894,16 @@ Without a DockManager both extents are required, because no (valid) alignment in
             <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
         </descr>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TControl.GetPreferredSize.PreferredWidth">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TControl.GetPreferredSize.PreferredHeight">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TControl.GetPreferredSize.Raw">
+        <short/>
+      </element>
+      <element name="TControl.GetPreferredSize.WithThemeSpace">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
@@ -8289,6 +8288,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TWinControlFlag.wcfUpdateShowing">
         <short></short>
       </element>
+      <element name="TWinControlFlag.wcfHandleVisible">
+        <short/>
+      </element>
       <element name="TWinControlFlag.wcfAdjustedLogicalClientRectValid">
         <short></short>
       </element>
@@ -8415,6 +8417,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TWinControl.FOnAlignPosition" link="TWinControl.OnAlignPosition"/>
       <element name="TWinControl.FOnDockDrop" link="TWinControl.OnDockDrop"/>
       <element name="TWinControl.FOnDockOver" link="TWinControl.OnDockOver"/>
+      <element name="TWinControl.FOnGetDockCaption" link="TWinControl.OnGetDockCaption"/>
       <element name="TWinControl.FOnGetSiteInfo" link="TWinControl.OnGetSiteInfo"/>
       <element name="TWinControl.FOnKeyDown" link="TWinControl.OnKeyDown"/>
       <element name="TWinControl.FOnKeyPress" link="TWinControl.OnKeyPress"/>
@@ -8492,8 +8495,30 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.AlignControl.AControl">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TWinControl.AlignNonAlignedControls">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWinControl.AlignNonAlignedControls.ListOfControls">
+        <short/>
+      </element>
+      <element name="TWinControl.AlignNonAlignedControls.BoundsModified">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TWinControl.IsClientHeightStored" link="#LCL.Controls.TControl.IsClientHeightStored"/>
+      <element name="TWinControl.IsClientHeightStored.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TWinControl.IsClientWidthStored" link="#LCL.Controls.TControl.IsClientWidthStored"/>
+      <element name="TWinControl.IsClientWidthStored.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
@@ -8686,6 +8711,31 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TWinControl.AlignControls.RemainingClientRect">
         <short/>
       </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.CreateControlAlignList">
+        <short>
+          <var>CreateControlAlignList</var> - creates a list of the controls that are aligned with the present window control</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWinControl.CreateControlAlignList.TheAlign">
+        <short/>
+      </element>
+      <element name="TWinControl.CreateControlAlignList.AlignList">
+        <short/>
+      </element>
+      <element name="TWinControl.CreateControlAlignList.StartControl">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.ResizeDelayedAutoSizeChildren">
+        <short>
+          <var>ResizeDelayedAutoSizeChildren</var> - method for re-sizing children, using autosize delayed</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoAlignChildControls">
         <short>
@@ -8737,29 +8787,85 @@ Without a DockManager both extents are required, because no (valid) alignment in
           <link id="#LCL.Controls.TControl.DoDragMsg"/>
         </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWinControl.DoDragMsg.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.DoDragMsg.ADragMessage">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.DoDragMsg.APosition">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.DoDragMsg.ADragObject">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.DoDragMsg.ATarget">
         <short/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.DoDragMsg.ADocking">
         <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TWinControl.DoDockClientMsg">
+        <short>Handles dmDragDock message, when a control has been docked to this site.</short>
+        <descr>
+          <p>Called when a control is dropped for docking.</p>
+          <p>Asks the dropped control to Dock itself into this control (adjust HostDockSite etc.).<br/>
+            Calls an installed DockManager to adjust the coordinates of the docked control.</p>
+          <p>The Result is always True (unless overridden).</p>
+        </descr>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TWinControl.DoDockClientMsg.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoDockClientMsg.DragDockObject">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoDockClientMsg.aPosition">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TWinControl.DoUndockClientMsg">
+        <short>Notifies the DockManager of the undock of a client control; always returns True.</short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="TDockManager.RemoveControl"/>
+        </seealso>
+      </element>
+      <element name="TWinControl.DoUndockClientMsg.Result">
+        <short/>
+      </element>
+      <element name="TWinControl.DoUndockClientMsg.NewTarget">
+        <short/>
+      </element>
+      <element name="TWinControl.DoUndockClientMsg.Client">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.CMBiDiModeChanged">
+        <short>Message handler for
+          changed <var>BiDiMode</var> property
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWinControl.CMBiDiModeChanged.Message">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.CMBorderChanged">
+        <short>Handler for
+          changed <var>Border</var>
+          message.</short>
+      </element>
+      <element name="TWinControl.CMBorderChanged.Message">
+        <short></short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMDrag">
@@ -8858,11 +8964,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWinControl.ContainsControl.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.ContainsControl.Control">
         <short/>
       </element>
@@ -8883,9 +8987,26 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
+      <element name="TWinControl.DoSendShowHideToInterface">
+        <descr/>
+        <errors/>
+        <seealso/>
+        <short>
+          <var>DoSendShowHideToInterface</var> - send the Show/Hide status to the interface</short>
+      </element>
+      <!-- procedure Visibility: protected -->
       <element name="TWinControl.RealizeBounds">
         <short>
           <var>RealizeBounds</var> - checks for changes and calls DoSendBoundsToInterface</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.RealizeBoundsRecursive">
+        <short>
+          <var>RealizeBoundsRecursive</var> - perform
+          <var>RealizeBounds</var> in a recursive manner</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8974,7 +9095,6 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <short>
           <var>CalculatePreferredSize</var> returns the default/preferred width and height for a TWinControl, for use by LCL autosizing.</short>
         <descr>
-          <remark>[todo: don't duplicate description of inherited]</remark>
           <p>Calls the inherited method to calculate the default/preferred width and height for a <var>TWinControl</var>, which is used by the LCL autosizing algorithms as default size.
             Only positive values are valid. Negative or 0 are treated as undefined and the LCL uses other sizes instead.</p>
           <p>
@@ -8989,7 +9109,6 @@ Without a DockManager both extents are required, because no (valid) alignment in
           <p>This value is independent of constraints and siblings, only the inner parts are relevant.</p>
           <p>
             <var>WithThemeSpace</var>: If true, adds space for stacking. For example:
-            
             <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be some space around.
             This space is theme dependent, so it is passed as a parameter to the widgetset. </p>
         </descr>
@@ -8998,13 +9117,50 @@ Without a DockManager both extents are required, because no (valid) alignment in
           <link id="#LCL.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.CalculatePreferredSize.PreferredWidth">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.CalculatePreferredSize.PreferredHeight">
         <short/>
+      </element>
+      <element name="TWinControl.CalculatePreferredSize.WithThemeSpace">
+        <short/>
+      </element>
+      <element name="TWinControl.CustomAlignInsertBefore">
+        <short>Invokes the <var>OnAlignInsertBefore</var> event handler.</short>
+      </element>
+      <element name="TWinControl.CustomAlignInsertBefore.Result">
+        <short></short>
+      </element>
+      <element name="TWinControl.CustomAlignInsertBefore.AControl1">
+        <short></short>
+      </element>
+      <element name="TWinControl.CustomAlignInsertBefore.AControl2">
+        <short></short>
+      </element>
+      <element name="TWinControl.CustomAlignPosition">
+        <short>Invokes the <var>OnAlignPosition</var> handler.</short>
+      </element>
+      <element name="TWinControl.CustomAlignPosition.AControl">
+        <short></short>
+      </element>
+      <element name="TWinControl.CustomAlignPosition.ANewLeft">
+        <short></short>
+      </element>
+      <element name="TWinControl.CustomAlignPosition.ANewTop">
+        <short></short>
+      </element>
+      <element name="TWinControl.CustomAlignPosition.ANewWidth">
+        <short></short>
+      </element>
+      <element name="TWinControl.CustomAlignPosition.ANewHeight">
+        <short></short>
+      </element>
+      <element name="TWinControl.CustomAlignPosition.AlignRect">
+        <short></short>
+      </element>
+      <element name="TWinControl.CustomAlignPosition.AlignInfo">
+        <short></short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoAllAutoSize" link="TControl.DoAllAutoSize"/>
@@ -9210,6 +9366,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <errors/>
         <seealso/>
       </element>
+      <element name="TWinControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMEnabledChanged">
         <short>Message handler for a change in the <var>Enabled</var> property.</short>
@@ -9609,12 +9766,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TWinControl.DoUnDock.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.DoUnDock.NewTarget">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWinControl.DoUnDock.Client">
+        <short/>
+      </element>
+      <element name="TWinControl.DoUnDock.KeepDockSiteSize">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
@@ -10427,6 +10585,14 @@ End;
           <var>BorderStyle</var>
  - none, or single</short>
       </element>
+      <element name="TWinControl.OnAlignInsertBefore">
+        <short>
+          <var>OnAlignInsertBefore</var> - event handler for an aligned insertion before action</short>
+      </element>
+      <element name="TWinControl.OnAlignPosition">
+        <short>
+          <var>OnAlignPosition</var> - event handler for supplying align position</short>
+      </element>
       <!-- property Visibility: protected -->
       <element name="TWinControl.OnGetSiteInfo">
         <short>
@@ -10827,6 +10993,10 @@ End;
       </element>
       <element name="TWinControl.DoAdjustClientRectChange.InvalidateRect">
         <short></short>
+      </element>
+      <element name="TWinControl.InvalidatePreferredChildSizes">
+        <short>
+          <var>InvalidatePreferredChildSizes</var> - renders the preferred child sizes invalid</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.InvalidateClientRectCache">
@@ -11294,6 +11464,183 @@ End;
       <element name="TWinControl.IntfUTF8KeyPress.RepeatCount">
         <short/>
       </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.DoFloatMsg" link="#LCL.Controls.TControl.DoFloatMsg">
+        <short>Handler called when the control starts floating.</short>
+        <descr>TWinControls can float for themselves, unless they request a special FloatingDockSiteClass.
+[Bug: when no FloatingDockSiteClass was assigned, a default floating site is created?]
+</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoFloatMsg.ADockSource">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.DoGetDockCaption">
+        <short>Calls an OnGetDockCaption handler, to adjust the dock-caption for the docked control.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoGetDockCaption.AControl">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoGetDockCaption.ACaption">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TWinControl.SendDialogChar">
+        <short>
+          <var>SendDialogChar</var> - LCL key message: returns True if a dialog character has been sent</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TWinControl.SendDialogChar.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.SendDialogChar.Message">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.SelectFirst">
+        <short>
+          <var>SelectFirst</var> - select the first control on the list</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.FinalizeWnd">
+        <short>
+          <var>FinalizeWnd</var> -  getting ready to remove window (gets called before the Handle is destroyed)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.FormEndUpdated">
+        <short>
+          <var>FormEndUpdated</var> - calls inherited
+          <var>FormEndUpdated</var> then informs each child control</short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#LCL.Controls.TControl.FormEndUpdated">TControl.FormEndUpdated</link>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.SetChildZPosition">
+        <short>
+          <var>SetChildZPosition</var> - specify the position of the child control in the Z plane (ie front-to-back)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.SetChildZPosition.AChild">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.SetChildZPosition.APosition">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.WSSetText">
+        <short>
+          <var>WSSetText</var> - writes the name of the current widget set to a local variable</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.WSSetText.AText">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TWinControl.OnGetDockCaption">
+        <short>
+          <var>OnGetDockCaption</var> - event handler to find the caption for the docked control</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.ControlAtPos.Flags">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.WriteLayoutDebugReport" link="#LCL.Controls.TControl.WriteLayoutDebugReport"/>
+      <element name="TWinControl.WriteLayoutDebugReport.Prefix">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DockDrop.DragDockObject">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.SetTempCursor" link="#LCL.Controls.TControl.SetTempCursor"/>
+      <element name="TWinControl.SetTempCursor.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.AddControl">
+        <short>
+          <var>AddControl</var> - add this control to the list of controls</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWinControl.GetDockCaption">
+        <short>Returns the caption for the docked control.</short>
+      </element>
+      <element name="TWinControl.GetDockCaption.Result">
+        <short/>
+      </element>
+      <element name="TWinControl.GetDockCaption.AControl">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.IntfUTF8KeyPress.SystemKey">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.PaintTo">
+        <short>
+          <var>PaintTo</var> - Paint to a specified position on the canvas</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWinControl.PaintTo.DC">
+        <short/>
+      </element>
+      <element name="TWinControl.PaintTo.X">
+        <short/>
+      </element>
+      <element name="TWinControl.PaintTo.Y">
+        <short/>
+      </element>
+      <element name="TWinControl.PaintTo.ACanvas">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.SetShape">
+        <short>
+          <var>SetShape</var> - make the specified shape appear on the Window</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWinControl.SetShape.AShape">
+        <short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TGraphicControl">
         <short>
@@ -11388,11 +11735,18 @@ End;
       <!-- variable Visibility: private -->
       <element name="TCustomControl.FCanvas" link="TCustomControl.Canvas"/>
       <!-- variable Visibility: private -->
-      <element name="TCustomControl.FOnPaint">
+      <element name="TCustomControl.FOnPaint" link="TCustomControl.OnPaint"/>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomControl.FontChanged" link="#LCL.Controls.TControl.FontChanged"/>
+      <element name="TCustomControl.FontChanged.Sender">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomControl.SetColor" link="#LCL.Controls.TControl.SetColor"/>
+      <element name="TCustomControl.SetColor.Value">
+        <short/>
+      </element>
+      <element name="TCustomControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: protected -->
       <element name="TCustomControl.WMPaint">
         <short>
@@ -11442,6 +11796,8 @@ descendants to do the actual painting
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
+      <element name="TCustomControl.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd"/>
+      <!-- procedure Visibility: public -->
       <element name="TCustomControl.DestroyComponent">
         <short>If the custom control has been destroyed, free its handle as well</short>
       </element>
@@ -11477,6 +11833,26 @@ and that description should be read to understand their definitions more fully.
       <element name="TImageList">
         <short>A list of images, as used for dragging.</short>
       </element>
+      <!-- property Visibility: published -->
+      <element name="TImageList.AllocBy">
+        <short>
+          <var>AllocBy</var> - for allocation</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TImageList.BlendColor">
+        <short>
+          <var>BlendColor</var> - the color for blending</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TImageList.DrawingStyle" link="#LCL.ImgList.TCustomImageList.DrawingStyle"/>
+      <!-- property Visibility: published -->
+      <element name="TImageList.ImageType" link="#LCL.ImgList.TCustomImageList.ImageType"/>
+      <!-- property Visibility: published -->
+      <element name="TImageList.ShareImages" link="#LCL.ImgList.TCustomImageList.ShareImages"/>
       <!-- property Visibility: published -->
       <element name="TImageList.BkColor" link="#LCL.ImgList.TCustomImageList.BkColor"/>
       <!-- property Visibility: published -->
@@ -11520,7 +11896,7 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockZone.FChildControl" link="TDockZone.ChildControl"/>
       <element name="TDockZone.FChildCount" link="TDockZone.ChildCount"/>
       <element name="TDockZone.FFirstChildZone" link="TDockZone.FirstChild"/>
-      <element name="TDockZone.FTree" link="TDockZone.Tree">
+      <element name="TDockZone.FTree" link="TDockZone.Tree"/>
       <element name="TDockZone.FParentZone" link="TDockZone.Parent"/>
       <element name="TDockZone.FOrientation" link="TDockZone.Orientation"/>
       <element name="TDockZone.FNextSibling" link="TDockZone.NextSibling"/>
@@ -11589,6 +11965,104 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockZone.Create.TheTree">
         <short>The dock tree to which this zone belongs.</short>
       </element>
+      <element name="TDockZone.Create.TheChildControl">
+        <short>The control in this zone (may be Nil).</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDockZone.FindZone">
+        <short>
+          <var>FindZone</var> - returns the Dockzone for the nominated control</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDockZone.FindZone.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.FindZone.AControl">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TDockZone.AddAsFirstChild">
+        <short>
+          <var>AddAsFirstChild</var> - add a new zone as the first child</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.AddAsFirstChild.NewChildZone">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TDockZone.AddAsLastChild">
+        <short>
+          <var>AddAsLastChild</var> - add an new zone as the last child</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.AddAsLastChild.NewChildZone">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TDockZone.ReplaceChild">
+        <short>
+          <var>ReplaceChild</var> - replace the
+          <var>OldChild</var> zone by
+          <var>NewChild</var>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.ReplaceChild.OldChild">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.ReplaceChild.NewChild">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDockZone.GetLastChild">
+        <short>
+          <var>GetLastChild</var> - returns the last child zone.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDockZone.GetLastChild.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDockZone.GetIndex">
+        <short>
+          <var>GetIndex</var> - returns the index of the current zone</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDockZone.GetIndex.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TDockZone.Remove">
+        <short>
+          <var>Remove</var> the nominated child zone</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.Remove.ChildZone">
+        <short/>
+      </element>
       <element name="TDockZone.AddSibling">
         <short>
           <var>AddSibling</var> - inserts a new sibling zone.</short>
@@ -11599,6 +12073,18 @@ and that description should be read to understand their definitions more fully.
       </element>
       <element name="TDockZone.AddSibling.InsertAt">
         <short>How to add the zone.</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.NextSibling">
+        <short>The next sibling zone.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.PrevSibling">
+        <short>The preceding sibling zone.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TDockZone.FirstVisibleChild">
@@ -11643,8 +12129,20 @@ and that description should be read to understand their definitions more fully.
         <seealso/>
       </element>
       <!-- property Visibility: public -->
+      <element name="TDockZone.ChildControl">
+        <short>The child control to be docked here</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
       <element name="TDockZone.ChildCount">
         <short>The number of child zones.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.FirstChild">
+        <short>The first child zone.</short>
         <descr/>
         <seealso/>
       </element>
@@ -11654,11 +12152,19 @@ and that description should be read to understand their definitions more fully.
         <descr/>
         <seealso/>
       </element>
+      <element name="TDockZone.SetHeight" link="TDockZone.Height"/>
+      <element name="TDockZone.SetHeight.AValue">
+        <short></short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Left">
         <short>The left coordinate of the zone.</short>
         <descr/>
         <seealso/>
+      </element>
+      <element name="TDockZone.SetLeft" link="TDockZone.Left"/>
+      <element name="TDockZone.SetLeft.AValue">
+        <short></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.LimitBegin">
@@ -11666,9 +12172,34 @@ and that description should be read to understand their definitions more fully.
         <descr/>
         <seealso/>
       </element>
+      <element name="TDockZone.SetLimitBegin" link="TDockZone.LimitBegin"/>
+      <element name="TDockZone.SetLimitBegin.AValue">
+        <short></short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.LimitSize">
         <short>The free size of the DockZone (Width or Height).</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDockZone.SetLimitSize" link="TDockZone.LimitSize"/>
+      <element name="TDockZone.SetLimitSize.AValue">
+        <short></short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.Orientation" link="TDockOrientation">
+        <short>Whether docking is oriented vertically, horizontally, in pages, or not at all</short>
+        <descr>
+          <p>doNoOrient   : zone contains a TControl and no child zones.</p>
+          <p>doHorizontal : zone's children are stacked top-to-bottom.</p>
+          <p>doVertical     : zone's children are arranged left-to-right.</p>
+          <p>doPages       : zone's children are pages arranged left-to-right.</p>
+        </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.Parent">
+        <short>The parent dock zone to which this control is docked</short>
         <descr/>
         <seealso/>
       </element>
@@ -11677,6 +12208,10 @@ and that description should be read to understand their definitions more fully.
         <short>The top coordinate of this zone.</short>
         <descr/>
         <seealso/>
+      </element>
+      <element name="TDockZone.SetTop" link="TDockZone.Top"/>
+      <element name="TDockZone.SetTop.AValue">
+        <short></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Visible">
@@ -11696,6 +12231,10 @@ and that description should be read to understand their definitions more fully.
         <short>The width of this zone.</short>
         <descr/>
         <seealso/>
+      </element>
+      <element name="TDockZone.SetWidth" link="TDockZone.Width"/>
+      <element name="TDockZone.SetWidth.AValue">
+        <short></short>
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TDockZoneClass">
@@ -11840,11 +12379,26 @@ and that description should be read to understand their definitions more fully.
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TDockTree.FUpdateCount">
+      <element name="TDockTree.FRootZone">
         <short/>
         <descr/>
         <seealso/>
       </element>
+      <!-- variable Visibility: private -->
+      <element name="TDockTree.FUpdateCount" link="TDockTree.BeginUpdate"/>
+      <!-- procedure Visibility: private -->
+      <element name="TDockTree.SetDockSite" link="TDockTree.DockSite"/>
+      <element name="TDockTree.SetDockSite.AValue">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockTree.RootZone">
+        <short>
+          <var>RootZone</var> - the zone that forms the root of the current Dock Tree</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDockTree.MouseMessage" link="#LCL.Controls.TDockManager.MouseMessage"/>
       <!-- procedure Visibility: private -->
       <element name="TDockTree.DeleteZone">
         <short/>
@@ -11999,9 +12553,6 @@ and that description should be read to understand their definitions more fully.
       <element name="TDockTree.PositionDockRect.DropAlign">
         <short/>
       </element>
-
-</element>
-
       <element name="TDockTree.PositionDockRect.DockRect">
         <short/>
       </element>
@@ -12055,9 +12606,14 @@ and that description should be read to understand their definitions more fully.
       <!-- property Visibility: public -->
       <element name="TDockTree.DockZoneClass">
         <short>
-          <var>DockZoneClass</var> - the class of dock zone</short>
+          The class of all dock zones in this tree.</short>
         <descr/>
         <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDockTree.SetDockZoneClass" link="TDockTree.DockZoneClass"/>
+      <element name="TDockTree.SetDockZoneClass.AValue">
+        <short/>
       </element>
       <!-- object Visibility: default -->
       <element name="TMouse">
@@ -13266,10 +13822,6 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.IsBorderSpacingInnerBorderStored.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TControl.CalculatePreferredSize.WithThemeSpace">
-        <short/>
-      </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CheckOnChangeBounds">
         <short>Checks for changes and calls <var>DoOnChangeBounds</var>
@@ -13553,19 +14105,13 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.AnchoredControls">
         <short>The indexed list of controls anchored to this one</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TControl.AnchoredControls.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TControl.GetPreferredSize.WithThemeSpace">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetDefaultWidth">
         <short>Find default width (by reference to ancestor)</short>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TControl.GetDefaultWidth.Result">
         <short/>
       </element>
@@ -13573,7 +14119,6 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.GetDefaultHeight">
         <short>Find the default height (by reference to ancestor)</short>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TControl.GetDefaultHeight.Result">
         <short/>
       </element>
@@ -13597,7 +14142,6 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.GetControlClassDefaultSize">
         <short>Find the default size for this class of controls (by reference to parents)</short>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TControl.GetControlClassDefaultSize.Result">
         <short/>
       </element>
@@ -13605,11 +14149,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.GetSidePosition">
         <short>Find which side is being used for anchoring</short>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TControl.GetSidePosition.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TControl.GetSidePosition.Side">
         <short/>
       </element>
@@ -13621,11 +14163,9 @@ and that description should be read to understand their definitions more fully.
       <element name="TControl.GetAnchorsDependingOnParent">
         <short>Find out the required anchor settings by reference to the parents</short>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TControl.GetAnchorsDependingOnParent.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TControl.GetAnchorsDependingOnParent.WithNormalAnchors">
         <short/>
       </element>
@@ -13642,12 +14182,12 @@ and that description should be read to understand their definitions more fully.
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BaseBounds">
-        <short>The rectangle defining   [what?].</short>
+        <short>The rectangle of the designed bounds.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ReadBounds">
         <short>
-          <var>ReadBounds</var> - find out what bounds have been defined</short>
+          <var>ReadBounds</var> - find out what bounds have been defined[???]</short>
         <descr/>
         <seealso/>
       </element>
@@ -14011,10 +14551,6 @@ and that description should be read to understand their definitions more fully.
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TWinControlFlag.wcfHandleVisible">
-        <short/>
-      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TControlAtPosFlag">
         <short>Flags for finding a control at given (client) position.</short>
@@ -14051,330 +14587,6 @@ capfHasScrollOffset: crap, ScrollOffset is taken into account only for the first
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TWinControl.FOnGetDockCaption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TWinControl.AlignNonAlignedControls">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.AlignNonAlignedControls.ListOfControls">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.AlignNonAlignedControls.BoundsModified">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TWinControl.IsClientHeightStored" link="#LCL.Controls.TControl.IsClientHeightStored"/>
-      <element name="TWinControl.IsClientHeightStored.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TWinControl.IsClientWidthStored" link="#LCL.Controls.TControl.IsClientWidthStored"/>
-      <element name="TWinControl.IsClientWidthStored.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.CreateControlAlignList">
-        <short>
-          <var>CreateControlAlignList</var> - creates a list of the controls that are aligned with the present window control</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.CreateControlAlignList.TheAlign">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.CreateControlAlignList.AlignList">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.CreateControlAlignList.StartControl">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.ResizeDelayedAutoSizeChildren">
-        <short>
-          <var>ResizeDelayedAutoSizeChildren</var> - method for re-sizing children, using autosize delayed</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TWinControl.DoDockClientMsg">
-        <short>Handles dmDragDock message, when a control has been docked to this site.</short>
-        <descr>
-          <p>Called when a control is dropped for docking.</p>
-          <p>Asks the dropped control to Dock itself into this control (adjust HostDockSite etc.).<br/>
-            Calls an installed DockManager to adjust the coordinates of the docked control.</p>
-          <p>The Result is always True (unless overridden).</p>
-        </descr>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWinControl.DoDockClientMsg.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.DoDockClientMsg.DragDockObject">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.DoDockClientMsg.aPosition">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TWinControl.DoUndockClientMsg">
-        <short>Notifies the DockManager of the undock of a client control; always returns True.</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="TDockManager.RemoveControl"/>
-        </seealso>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWinControl.DoUndockClientMsg.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.DoUndockClientMsg.NewTarget">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.DoUndockClientMsg.Client">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoSendShowHideToInterface">
-        <descr/>
-        <errors/>
-        <seealso/>
-        <short>
-          <var>DoSendShowHideToInterface</var> - send the Show/Hide status to the interface</short>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.RealizeBoundsRecursive">
-        <short>
-          <var>RealizeBoundsRecursive</var> - perform 
-          <var>RealizeBounds</var> in a recursive manner</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.CalculatePreferredSize.WithThemeSpace">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.CMBiDiModeChanged">
-        <short>Message handler for
-          changed <var>BiDiMode</var> property
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.CMBiDiModeChanged.Message">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.DoUnDock.KeepDockSiteSize">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoFloatMsg" link="#LCL.Controls.TControl.DoFloatMsg">
-        <short>Handler called when the control starts floating.</short>
-        <descr>TWinControls can float for themselves, unless they request a special FloatingDockSiteClass.
-[Bug: when no FloatingDockSiteClass was assigned, a default floating site is created?]
-</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.DoFloatMsg.ADockSource">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoGetDockCaption">
-        <short>Calls an OnGetDockCaption handler, to adjust the dock-caption for the docked control.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.DoGetDockCaption.AControl">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.DoGetDockCaption.ACaption">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TWinControl.SendDialogChar">
-        <short>
-          <var>SendDialogChar</var> - LCL key message: returns True if a dialog character has been sent</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWinControl.SendDialogChar.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.SendDialogChar.Message">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.SelectFirst">
-        <short>
-          <var>SelectFirst</var> - select the first control on the list</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.FinalizeWnd">
-        <short>
-          <var>FinalizeWnd</var> -  getting ready to remove window (gets called before the Handle is destroyed)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.FormEndUpdated">
-        <short>
-          <var>FormEndUpdated</var> - calls inherited 
-          <var>FormEndUpdated</var> then informs each child control</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TControl.FormEndUpdated">TControl.FormEndUpdated</link>
-        </seealso>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.SetChildZPosition">
-        <short>
-          <var>SetChildZPosition</var> - specify the position of the child control in the Z plane (ie front-to-back)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.SetChildZPosition.AChild">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.SetChildZPosition.APosition">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.WSSetText">
-        <short>
-          <var>WSSetText</var> - writes the name of the current widget set to a local variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.WSSetText.AText">
-        <short/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TWinControl.OnGetDockCaption">
-        <short>
-          <var>OnGetDockCaption</var> - event handler to find the caption for the docked control</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.ControlAtPos.Flags">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWinControl.WriteLayoutDebugReport" link="#LCL.Controls.TControl.WriteLayoutDebugReport"/>
-      <element name="TWinControl.WriteLayoutDebugReport.Prefix">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.DockDrop.DragDockObject">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWinControl.SetTempCursor" link="#LCL.Controls.TControl.SetTempCursor"/>
-      <element name="TWinControl.SetTempCursor.Value">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWinControl.AddControl">
-        <short>
-          <var>AddControl</var> - add this control to the list of controls</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWinControl.GetDockCaption">
-        <short>Returns the caption for the docked control.</short>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWinControl.GetDockCaption.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.GetDockCaption.AControl">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.IntfUTF8KeyPress.SystemKey">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWinControl.PaintTo">
-        <short>
-          <var>PaintTo</var> - Paint to a specified position on the canvas</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.PaintTo.DC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.PaintTo.X">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.PaintTo.Y">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.PaintTo.ACanvas">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWinControl.SetShape">
-        <short>
-          <var>SetShape</var> - make the specified shape appear on the Window</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWinControl.SetShape.AShape">
-        <short/>
-      </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicControl.FontChanged" link="#LCL.Controls.TControl.FontChanged"/>
       <element name="TGraphicControl.FontChanged.Sender">
@@ -14382,214 +14594,6 @@ capfHasScrollOffset: crap, ScrollOffset is taken into account only for the first
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicControl.DoOnChangeBounds" link="#LCL.Controls.TControl.DoOnChangeBounds"/>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomControl.FontChanged" link="#LCL.Controls.TControl.FontChanged"/>
-      <element name="TCustomControl.FontChanged.Sender">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomControl.SetColor" link="#LCL.Controls.TControl.SetColor"/>
-      <element name="TCustomControl.SetColor.Value">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomControl.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd"/>
-      <!-- property Visibility: published -->
-      <element name="TImageList.AllocBy">
-        <short>
-          <var>AllocBy</var> - for allocation</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TImageList.BlendColor">
-        <short>
-          <var>BlendColor</var> - the color for blending</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TImageList.DrawingStyle" link="#LCL.ImgList.TCustomImageList.DrawingStyle"/>
-      <!-- property Visibility: published -->
-      <element name="TImageList.ImageType" link="#LCL.ImgList.TCustomImageList.ImageType"/>
-      <!-- property Visibility: published -->
-      <element name="TImageList.ShareImages" link="#LCL.ImgList.TCustomImageList.ShareImages"/>
-      <!-- argument Visibility: default -->
-      <element name="TDockZone.Create.TheChildControl">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDockZone.FindZone">
-        <short>
-          <var>FindZone</var> - returns the Dockzone for the nominated control</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDockZone.FindZone.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDockZone.FindZone.AControl">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDockZone.AddAsFirstChild">
-        <short>
-          <var>AddAsFirstChild</var> - add a new zone as the first child</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDockZone.AddAsFirstChild.NewChildZone">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDockZone.AddAsLastChild">
-        <short>
-          <var>AddAsLastChild</var> - add an new zone as the last child</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDockZone.AddAsLastChild.NewChildZone">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDockZone.ReplaceChild">
-        <short>
-          <var>ReplaceChild</var> - replace the 
-          <var>OldChild</var> zone by 
-          <var>NewChild</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDockZone.ReplaceChild.OldChild">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDockZone.ReplaceChild.NewChild">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDockZone.GetLastChild">
-        <short>
-          <var>GetLastChild</var> - returns the last child zone</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDockZone.GetLastChild.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TDockZone.GetIndex">
-        <short>
-          <var>GetIndex</var> - returns the index of the current zone</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TDockZone.GetIndex.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TDockZone.Remove">
-        <short>
-          <var>Remove</var> the nominated child zone</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDockZone.Remove.ChildZone">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDockZone.ChildControl">
-        <short>The child control to be docked here</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDockZone.FirstChild">
-        <short>The first child control in the list of controls for docking</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDockZone.Orientation">
-        <short>Whether docking is oriented vertically, horizontally, in pages, or not at all</short>
-        <descr>
-          <p>doNoOrient   : zone contains a TControl and no child zones.</p>
-          <p>doHorizontal : zone's children are stacked top-to-bottom.</p>
-          <p>doVertical     : zone's children are arranged left-to-right.</p>
-          <p>doPages       : zone's children are pages arranged left-to-right.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDockZone.Parent">
-        <short>The parent dock zone to which this control is docked</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDockZone.NextSibling">
-        <short>The next sibling (related control atthe same level) in the list of docked controls</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDockZone.PrevSibling">
-        <short>The previous sibling (control at the same level) in the list of docked controls</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDockTree.FRootZone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TDockTree.SetDockSite">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDockTree.SetDockSite.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TDockTree.SetDockZoneClass">
-        <short>
-          <var>SetDockZoneClass</var> - specifies the class of dock zone</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TDockTree.SetDockZoneClass.AValue">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TDockTree.RootZone">
-        <short>
-          <var>RootZone</var> - the zone that forms the root of the current Dock Tree</short>
-        <descr/>
-        <seealso/>
-      </element>
       <!-- variable Visibility: default -->
       <element name="DockSplitterClass">
         <short/>
@@ -14740,10 +14744,6 @@ capfHasScrollOffset: crap, ScrollOffset is taken into account only for the first
       <element name="TControl.AnchAnchor">
         <short>Anchor to the bottom</short>
       </element>
-      <element name="TDockZone.Height">
-        <short>The height of this control</short>
-      </element>
-      <element name="TDockTree.MouseMessage" link="#LCL.Controls.TDockManager.MouseMessage"/>
       <element name="TControl.CreateControlBorderSpacing">
         <short>
           <var>CreateControlBorderSpacing</var> - calls 
@@ -14771,86 +14771,8 @@ capfHasScrollOffset: crap, ScrollOffset is taken into account only for the first
       <element name="TControl.CMWantSpecialKey.Message">
         <short></short>
       </element>
-      <element name="TWinControl.CustomAlignInsertBefore">
-        <short>Invokes the <var>OnAlignInsertBefore</var> event handler.</short>
-      </element>
-      <element name="TWinControl.CustomAlignInsertBefore.Result">
-        <short></short>
-      </element>
-      <element name="TWinControl.CustomAlignInsertBefore.AControl1">
-        <short></short>
-      </element>
-      <element name="TWinControl.CustomAlignInsertBefore.AControl2">
-        <short></short>
-      </element>
-      <element name="TWinControl.CustomAlignPosition">
-        <short>Invokes the <var>OnAlignPosition</var> handler.</short>
-      </element>
-      <element name="TWinControl.CustomAlignPosition.AControl">
-        <short></short>
-      </element>
-      <element name="TWinControl.CustomAlignPosition.ANewLeft">
-        <short></short>
-      </element>
-      <element name="TWinControl.CustomAlignPosition.ANewTop">
-        <short></short>
-      </element>
-      <element name="TWinControl.CustomAlignPosition.ANewWidth">
-        <short></short>
-      </element>
-      <element name="TWinControl.CustomAlignPosition.ANewHeight">
-        <short></short>
-      </element>
-      <element name="TWinControl.CustomAlignPosition.AlignRect">
-        <short></short>
-      </element>
-      <element name="TWinControl.CustomAlignPosition.AlignInfo">
-        <short></short>
-      </element>
-      <element name="TWinControl.CMBorderChanged">
-        <short>Handler for
-          changed <var>Border</var>
-          message.</short>
-      </element>
-      <element name="TWinControl.CMBorderChanged.Message">
-        <short></short>
-      </element>
-      <element name="TWinControl.OnAlignInsertBefore">
-        <short>
-          <var>OnAlignInsertBefore</var> - event handler for an aligned insertion before action</short>
-      </element>
-      <element name="TWinControl.OnAlignPosition">
-        <short>
-          <var>OnAlignPosition</var> - event handler for supplying align position</short>
-      </element>
-      <element name="TDockZone.SetLimitBegin" link="TDockZone.LimitBegin"/>
-      <element name="TDockZone.SetLimitBegin.AValue">
-        <short></short>
-      </element>
-      <element name="TDockZone.SetLimitSize" link="TDockZone.LimitSize"/>
-      <element name="TDockZone.SetLimitSize.AValue">
-        <short></short>
-      </element>
-      <element name="TDockZone.SetHeight" link="TDockZone.Height"/>
-      <element name="TDockZone.SetHeight.AValue">
-        <short></short>
-      </element>
-      <element name="TDockZone.SetLeft" link="TDockZone.Left"/>
-      <element name="TDockZone.SetLeft.AValue">
-        <short></short>
-      </element>
-      <element name="TDockZone.SetTop" link="TDockZone.Top"/>
-      <element name="TDockZone.SetTop.AValue">
-        <short></short>
-      </element>
-      <element name="TDockZone.SetWidth" link="TDockZone.Width"/>
-      <element name="TDockZone.SetWidth.AValue">
-        <short></short>
-      </element>
-      <element name="TWinControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TGraphicControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <!-- function Visibility: default -->
       <element name="operator :=(Variant): TCaption">
         <short></short>
