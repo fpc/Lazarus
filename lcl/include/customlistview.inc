@@ -475,8 +475,9 @@ end;
 
 class procedure TCustomListView.WSRegisterClass;
 begin
-  RegisterPropertyToSkip(Self, 'ItemIndex', 
-    'Property streamed in older Lazarus revision', '');
+  RegisterPropertyToSkip(Self, 'ItemIndex', 'Property streamed in older Lazarus revision', '');
+  RegisterPropertyToSkip(Self, 'AlignWithMargins', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(Self, 'BevelKind', 'VCL compatibility property', '');
   inherited WSRegisterClass;
   RegisterCustomListView;
 end;

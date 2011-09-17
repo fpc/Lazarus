@@ -59,6 +59,7 @@ end;
 
 class procedure TBevel.WSRegisterClass;
 begin
+  RegisterPropertyToSkip(Self, 'ParentCustomHint', 'VCL compatibility property', '');
   inherited WSRegisterClass;
   RegisterBevel;
 end;
