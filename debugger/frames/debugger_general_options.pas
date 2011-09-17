@@ -136,7 +136,7 @@ begin
     DbgClass := DebugBoss.Debuggers[n];
     List.AddObject(DbgClass.Caption, TObject(n));
     if  (FCurDebuggerClass = nil)
-    and (CompareText(DbgClass.ClassName, EnvironmentOptions.DebuggerClass) = 0)
+    and (CompareText(DbgClass.ClassName, EnvironmentOptions.DebuggerConfig.DebuggerClass) = 0)
     then CurClass := DbgClass;
   end;
 
@@ -343,8 +343,8 @@ begin
                              TDebuggerProperties(FCurrentDebPropertiesList.Objects[i]));
 
     if FCurDebuggerClass = nil
-    then DebuggerClass := ''
-    else DebuggerClass := FCurDebuggerClass.ClassName;
+    then DebuggerConfig.DebuggerClass := ''
+    else DebuggerConfig.DebuggerClass := FCurDebuggerClass.ClassName;
   end;
 end;
 

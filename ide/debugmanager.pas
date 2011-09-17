@@ -2342,7 +2342,7 @@ function TDebugManager.DoCreateBreakPoint(const AFilename: string;
   ALine: integer; WarnIfNoDebugger: boolean): TModalResult;
 begin
   if WarnIfNoDebugger
-  and ((FindDebuggerClass(EnvironmentOptions.DebuggerClass)=nil)
+  and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
     or (not FileIsExecutable(EnvironmentOptions.DebuggerFilename)))
   then begin
     if QuestionDlg(lisDbgMangNoDebuggerSpecified,
@@ -2457,7 +2457,7 @@ end;
 
 function TDebugManager.GetDebuggerClass: TDebuggerClass;
 begin
-  Result := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
+  Result := FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass);
   if Result = nil then
     Result := TProcessDebugger;
 end;

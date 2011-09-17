@@ -42,7 +42,7 @@ interface
 
 uses
   TypInfo, Classes, SysUtils, Laz_XMLCfg, math, FileUtil,
-  LCLProc, IDEProcs, DebugUtils, maps;
+  LCLProc, LazConfigStorage, IDEProcs, DebugUtils, maps;
 
 type
   // datatype pointing to data on the target
@@ -164,6 +164,20 @@ type
   EDBGExceptions = class(EDebuggerException);
 
 type
+  { TDebuggerConfigStore }
+  (* TODO: maybe revert relations. Create this in Debugger, and call environmentoptions for the configstore only? *)
+
+  TDebuggerConfigStore = class
+  private
+    FConfigStore: TConfigStorage;
+    FDebuggerClass: String;
+  public
+    property ConfigStore: TConfigStorage read FConfigStore write FConfigStore;
+    procedure Load;
+    procedure Save;
+  public
+    property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
+  end;
 
   { TRefCountedObject }
 
@@ -2847,6 +2861,42 @@ begin
   for Result:=Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
     if AnsiCompareText(s,DBGBreakPointActionNames[Result])=0 then exit;
   Result:=bpaStop;
+end;
+
+{ TDebuggerConfigStore }
+
+procedure TDebuggerConfigStore.Load;
+type
+  TDebuggerType = (dtNone, dtGnuDebugger, dtSSHGNUDebugger);
+const
+  DebuggerName: array[TDebuggerType] of string = (
+    '(None)','GNU debugger (gdb)', 'GNU debugger through SSH (gdb)'
+  );
+
+  function DebuggerNameToType(const s: string): TDebuggerType;
+  begin
+    for Result:=Low(TDebuggerType) to High(TDebuggerType) do
+      if CompareText(DebuggerName[Result],s)=0 then exit;
+    Result:=dtNone;
+  end;
+
+var
+  OldDebuggerType: TDebuggerType;
+begin
+  FDebuggerClass := FConfigStore.GetValue('Class', '');
+  if FDebuggerClass='' then begin
+    // try old format
+    OldDebuggerType := DebuggerNameToType(FConfigStore.GetValue('Type', ''));
+    if OldDebuggerType=dtGnuDebugger then
+      FDebuggerClass:='TGDBMIDEBUGGER';
+  end;
+
+end;
+
+procedure TDebuggerConfigStore.Save;
+begin
+  FConfigStore.SetDeleteValue('Class', FDebuggerClass, '');
+  FConfigStore.DeletePath('Type');
 end;
 
 { TDebuggerUnitInfoProvider }

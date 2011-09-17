@@ -11888,7 +11888,7 @@ begin
     Result := mrAbort;
     Exit;
   end;
-  debugln('[TMainIDE.DoRunProject] B ',EnvironmentOptions.DebuggerClass);
+  debugln('[TMainIDE.DoRunProject] B ',EnvironmentOptions.DebuggerConfig.DebuggerClass);
 
   Result := mrCancel;
 

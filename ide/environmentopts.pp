@@ -73,14 +73,6 @@ type
   { Debugging }
 
 type
-  TDebuggerType = (dtNone, dtGnuDebugger, dtSSHGNUDebugger);
-
-const
-  DebuggerName: array[TDebuggerType] of string = (
-    '(None)','GNU debugger (gdb)', 'GNU debugger through SSH (gdb)'
-  );
-
-type
   TDebuggerEventLogColor = record
     Foreground: TColor;
     Background: TColor;
@@ -193,6 +185,7 @@ type
     FShowMenuGlyphs: TApplicationShowGlyphs;
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
+    FDbgConfigStore: TXMLOptionsStorage; // for debugger
 
     // auto save
     FAutoSaveEditorFiles: boolean;
@@ -265,8 +258,8 @@ type
 
    // TODO: store per debuggerclass options
     // Maybe these should go to a new TDebuggerOptions class
+    FDebuggerConfig: TDebuggerConfigStore;
     FDebuggerSearchPath: string;
-    FDebuggerClass: string;
     FDebuggerFilename: string;         // per debugger class
     FDebuggerFileHistory: TStringList; // per debugger class
     FDebuggerProperties: TStringList; // per debugger class
@@ -350,7 +343,6 @@ type
     property Filename: string read FFilename write SetFilename;
     procedure CreateConfig;
     procedure GetDefaultFPCSourceDirectory;
-    function IsDebuggerClassDefined: boolean;
     function GetTestBuildDirectory: string;
     function GetFPCSourceDirectory: string;
     function GetCompilerFilename: string;
@@ -378,6 +370,7 @@ type
     procedure SaveDebuggerPropertiesList;
     procedure SaveDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
     procedure LoadDebuggerProperties(DebuggerClass: String; Properties: TDebuggerProperties);
+    property  DebuggerConfig: TDebuggerConfigStore read FDebuggerConfig;
 
     // auto save
     property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles
@@ -479,7 +472,6 @@ type
                                       write SetMakeFilename;
     property MakeFileHistory: TStringList read FMakeFileHistory
                                               write FMakeFileHistory;
-    property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
     property DebuggerFilename: string read FDebuggerFilename
                                       write SetDebuggerFilename;
     property DebuggerFileHistory: TStringList read FDebuggerFileHistory
@@ -584,7 +576,6 @@ type
 var
   EnvironmentOptions: TEnvironmentOptions = nil;
 
-function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
 function AmbiguousFileActionNameToType(const Action: string): TAmbiguousFileAction;
 function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction;
@@ -606,13 +597,6 @@ const
   BakMaxCounterInfiniteTxt = 'infinite';
   
 implementation
-
-function DebuggerNameToType(const s: string): TDebuggerType;
-begin
-  for Result:=Low(TDebuggerType) to High(TDebuggerType) do
-    if CompareText(DebuggerName[Result],s)=0 then exit;
-  Result:=dtNone;
-end;
 
 function PascalExtToType(const Ext: string): TPascalExtType;
 begin
@@ -843,6 +827,10 @@ begin
   FAskForFilenameOnNewFile:=false;
   FLowercaseDefaultFilename:=true;
 
+  //debug
+  (* TODO: maybe revert relations. Create this in Debugger, and call environmentoptions for the configstore only? *)
+  FDebuggerConfig := TDebuggerConfigStore.Create;
+
   // lazdoc
   FLazDocPaths:=SetDirSeparators(DefaultLazDocPath);
 end;
@@ -869,7 +857,9 @@ begin
   if IDEWindowIntf.IDEDialogLayoutList=FIDEDialogLayoutList then
     IDEWindowIntf.IDEDialogLayoutList:=nil;
   FreeAndNil(FIDEDialogLayoutList);
+  FreeAndNil(FDebuggerConfig);
   FreeAndNil(FConfigStore);
+  FreeAndNil(FDbgConfigStore);
   FreeAndNil(FXMLCfg);
   inherited Destroy;
 end;
@@ -955,13 +945,6 @@ var
     end;
   end;
 
-  procedure LoadDebuggerType(var ADebuggerType: TDebuggerType;
-    const Path: string);
-  begin
-    ADebuggerType:=DebuggerNameToType(
-                                   XMLConfig.GetValue(Path+'Debugger/Type',''));
-  end;
-
   procedure LoadPascalFileExt(const Path: string);
   begin
     fPascalFileExtension:=PascalExtToType(XMLConfig.GetValue(
@@ -977,7 +960,6 @@ var
 
 var
   CurDebuggerClass: String;
-  OldDebuggerType: TDebuggerType;
   Path: String;
   CurPath: String;
   i, j: Integer;
@@ -1138,18 +1120,7 @@ begin
           ,Path+'BackupOtherFiles/');
 
         // Debugger
-        // first try to load the old type
-        // it will be overwritten by Class if found
-        CurDebuggerClass := XMLConfig.GetValue(
-           Path+'Debugger/Class','');
-        if CurDebuggerClass='' then begin
-          // try old format
-          OldDebuggerType := DebuggerNameToType(XMLConfig.GetValue(
-            Path+'Debugger/Type',''));
-          if OldDebuggerType=dtGnuDebugger then
-            CurDebuggerClass:='TGDBMIDEBUGGER';
-        end;
-        DebuggerClass:=CurDebuggerClass;
+        FDebuggerConfig.Load;
         DebuggerFilename:=XMLConfig.GetValue(
            Path+'DebuggerFilename/Value','');
         LoadRecentList(XMLConfig,FDebuggerFileHistory,
@@ -1330,12 +1301,6 @@ var
     end;
   end;
 
-  procedure SaveDebuggerType(ADebuggerType: TDebuggerType; Path:string);
-  begin
-    XMLConfig.SetDeleteValue(Path+'Debugger/Type',DebuggerName[ADebuggerType],
-                             DebuggerName[dtNone]);
-  end;
-  
 var
   Path: String;
   i, j: Integer;
@@ -1487,8 +1452,7 @@ begin
           ,Path+'BackupOtherFiles/');
 
         // debugger
-        XMLConfig.SetDeleteValue(Path+'Debugger/Class',
-            FDebuggerClass,'');
+        FDebuggerConfig.Save;
         SaveDebuggerPropertiesList;
         XMLConfig.SetDeleteValue(Path+'DebuggerFilename/Value',
             FDebuggerFilename,'');
@@ -1658,12 +1622,6 @@ begin
   IDEWindowCreators.SimpleLayoutStorage.CreateWindowLayout(DefaultObjectInspectorName);
 end;
 
-function TEnvironmentOptions.IsDebuggerClassDefined: boolean;
-begin
-  Result := (FDebuggerClass <> '')
-         and (CompareText(FDebuggerClass, DebuggerName[dtNone]) <> 0);
-end;
-
 function TEnvironmentOptions.GetTestBuildDirectory: string;
 begin
   Result:=AppendPathDelim(TestBuildDirectory);
@@ -1822,6 +1780,7 @@ function TEnvironmentOptions.GetXMLCfg(CleanConfig: boolean): TXMLConfig;
 begin
   if FileHasChangedOnDisk or (FXMLCfg=nil) then begin
     FreeAndNil(FConfigStore);
+    FreeAndNil(FDbgConfigStore);
     FreeAndNil(FXMLCfg);
     InvalidateFileStateCache;
     if CleanConfig then
@@ -1830,6 +1789,8 @@ begin
       FXMLCfg:=TRttiXMLConfig.Create(Filename);
     FConfigStore:=TXMLOptionsStorage.Create(FXMLCfg);
     ObjectInspectorOptions.ConfigStore:=FConfigStore;
+    FDbgConfigStore:=TXMLOptionsStorage.Create(FXMLCfg, 'EnvironmentOptions/Debugger/');
+    FDebuggerConfig.ConfigStore := FDbgConfigStore;
   end;
   Result:=FXMLCfg;
 end;
