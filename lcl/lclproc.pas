@@ -368,8 +368,8 @@ function ConvertUTF16ToUTF8(Dest: PChar; DestCharCount: SizeUInt;
   Src: PWideChar; SrcWideCharCount: SizeUInt; Options: TConvertOptions;
   out ActualCharCount: SizeUInt): TConvertResult;
 
-function UTF8ToUTF16(const S: UTF8String): UTF16String;
-function UTF16ToUTF8(const S: UTF16String): UTF8String;
+function UTF8ToUTF16(const S: AnsiString): UTF16String;
+function UTF16ToUTF8(const S: UTF16String): AnsiString;
 
 // locale
 procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
@@ -4487,7 +4487,7 @@ end;
   Avoid copying the result string since on windows a widestring requires a full 
   copy
  ------------------------------------------------------------------------------}
-function UTF8ToUTF16(const S: UTF8String): UTF16String;
+function UTF8ToUTF16(const S: AnsiString): UTF16String;
 var
   L: SizeUInt;
 begin
@@ -4512,7 +4512,7 @@ end;
 
   Converts the specified UTF-16 encoded string (system endian) to UTF-8 encoded
  ------------------------------------------------------------------------------}
-function UTF16ToUTF8(const S: UTF16String): UTF8String;
+function UTF16ToUTF8(const S: UTF16String): AnsiString;
 var
   L: SizeUInt;
   R: UTF8String;
