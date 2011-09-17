@@ -938,7 +938,10 @@ type
 
   TGDBMIDebuggerParentFrameCache = record
       ThreadId: Integer;
-      ParentFPList: Array of Integer; // TODO per thread
+      ParentFPList: Array of
+        record
+          fp, parentfp: string; // empty=unknown / '-'=evaluated-no-data
+        end;
     end;
     PGDBMIDebuggerParentFrameCache = ^TGDBMIDebuggerParentFrameCache;
 
@@ -10551,67 +10554,87 @@ var
     R: TGDBMIExecResult;
     List: TGDBMINameValueList;
     ParentFp, Fp: String;
-    i, aFrame, ThreadId: Integer;
+    i, j, ThreadId: Integer;
     FrameCache: PGDBMIDebuggerParentFrameCache;
   begin
     if FWatchValue <> nil
     then ThreadId := FWatchValue.ThreadId
     else ThreadId := FTheDebugger.FCurrentThreadId;
-    FrameCache := TGDBMIWatches(FTheDebugger.Watches).GetParentFPList(ThreadId);
-
-    if aFrameIdx < Length(FrameCache^.ParentFPList) then begin
-      aFrame := FrameCache^.ParentFPList[aFrameIdx];
-      if aFrame = -1
-      then exit(False);
-
-      inc(aFrameIdx);
-      FTheDebugger.FInternalStackFrame := aFrame;;
-      if not ExecuteCommand('-stack-select-frame %u', [aFrame], R)
-      or (R.State = dsError)
-      then
-        Exit(False);
-      Exit(True);
-    end;
+    FrameCache := TGDBMIWatches(FTheDebugger.Watches).GetParentFPList(ThreadId); {$note framecache always starts at 0, never current}
+    List := nil;
 
     i := length(FrameCache^.ParentFPList);
-    SetLength(FrameCache^.ParentFPList, i + 1);
-    FrameCache^.ParentFPList[i] := -1; // assume failure
-    inc(aFrameIdx);
+    j := Max(i, aFrameIdx+1);
+    if j >= i
+    then SetLength(FrameCache^.ParentFPList, j + 3);
 
-    if i > 0
-    then aFrame := FrameCache^.ParentFPList[i-1]
-    else aFrame := TGDBMIDebugger(FTheDebugger).FCurrentStackFrame;
-
-    if not ExecuteCommand('-data-evaluate-expression parentfp', R)
-    or (R.State = dsError)
+    // Did a previous check for parentfp fail?
+    ParentFP := FrameCache^.ParentFPList[aFrameIdx].parentfp;
+    if ParentFp = '-'
     then Exit(False);
 
-    List := TGDBMINameValueList.Create(R);
-    ParentFP := List.Values['value'];
+    if ParentFp = '' then begin
+      // not yet evaluated
+      if ExecuteCommand('-data-evaluate-expression parentfp', R)
+      and (R.State <> dsError)
+      then begin
+        List := TGDBMINameValueList.Create(R);
+        ParentFP := List.Values['value'];
+      end;
+      if ParentFp = '' then begin
+        FrameCache^.ParentFPList[aFrameIdx].parentfp := '-'; // mark as no parentfp
+        List.Free;
+        Exit(False);
+      end;
+      FrameCache^.ParentFPList[aFrameIdx].parentfp := ParentFp;
+    end;
+
+    if List = nil
+    then List := TGDBMINameValueList.Create('');
+
     repeat
-      if not ExecuteCommand('-stack-select-frame %u', [aFrame+1], R)
-      or (R.State = dsError)
+      Inc(aFrameIdx);
+      i := length(FrameCache^.ParentFPList);
+      j := Max(i, aFrameIdx+1);
+      if j >= i
+      then SetLength(FrameCache^.ParentFPList, j + 5);
+
+      Fp := FrameCache^.ParentFPList[aFrameIdx].Fp;
+      if Fp = '-'
       then begin
         List.Free;
         Exit(False);
       end;
 
-      Inc(AFrame);
+      if (Fp = '') or (Fp = ParentFP) then begin
+        if not ExecuteCommand('-stack-select-frame %u', [aFrameIdx], R)
+        or (R.State = dsError)
+         then begin
+          FrameCache^.ParentFPList[aFrameIdx].Fp := '-'; // mark as no Fp (not accesible)
+          List.Free;
+          Exit(False);
+        end;
+        FStackFrameChanged := True; // Force UnSelectContext() to restore current frame
+        FTheDebugger.FInternalStackFrame := aFrameIdx;
 
-      if not ExecuteCommand('-data-evaluate-expression $fp', R)
-      or (R.State = dsError)
-      then begin
-        List.Free;
-        Exit(False);
+        if (Fp = '') then begin
+          if not ExecuteCommand('-data-evaluate-expression $fp', R)
+          or (R.State = dsError)
+          then begin
+            FrameCache^.ParentFPList[aFrameIdx].Fp := '-'; // mark as no Fp (not accesible)
+            List.Free;
+            Exit(False);
+          end;
+          List.Init(R.Values);
+          Fp := List.Values['value'];
+          if Fp = ''
+          then Fp := '-';
+          FrameCache^.ParentFPList[aFrameIdx].Fp := Fp;
+        end;
       end;
-      List.Init(R.Values);
-      Fp := List.Values['value'];
-
     until ParentFP = Fp;
     List.Free;
-    FTheDebugger.FInternalStackFrame := aFrame;
 
-    FrameCache^.ParentFPList[i] := aFrame;
     Result := True;
   end;
 
@@ -10985,7 +11008,7 @@ var
     SetLength(Result, j + 1);
   end;
 
-  function TryExecute(AnExpression: string; StoreError: Boolean): Boolean;
+  function TryExecute(AnExpression: string): Boolean;
 
     procedure ParseLastError;
     var
@@ -11032,8 +11055,10 @@ var
         begin
           Result := ExecuteCommand('-data-evaluate-expression %s', [AnExpression], R);
           Result := Result and (R.State <> dsError);
-          if (not Result) and (not StoreError)
-          then exit;
+          if (not Result) then begin
+            ParseLastError;
+            exit;
+          end;
 
           ResultList := TGDBMINameValueList.Create(R.Values);
           if Result
@@ -11166,7 +11191,7 @@ var
   S: String;
   ResultList: TGDBMINameValueList;
   Expr: TGDBMIExpression;
-  frame, frameidx: Integer;
+  frameidx: Integer;
 begin
   if not SelectContext then begin
     FTextValue:='<Error>';
@@ -11199,27 +11224,20 @@ begin
     end;
 
     ResultList := TGDBMINameValueList.Create('');
-    // original
-    frame := TGDBMIDebugger(FTheDebugger).FCurrentStackFrame;
-    frameidx := 0;
+    // keep the internal stackframe => same as requested by watch
+    frameidx := TGDBMIDebugger(FTheDebugger).FInternalStackFrame;
     DefaultTimeOut := DebuggerProperties.TimeoutForEval;
     try
       repeat
-        if TryExecute(S, frame = -1)
+        if TryExecute(S)
         then Break;
         FreeAndNil(FTypeInfo);
         if (dcsCanceled in SeenStates)
         then break;
-      until not SelectParentFrame(frameidx);
+      until not SelectParentFrame(frameidx); // may set FStackFrameChanged to force UnSelectContext()
 
     finally
       DefaultTimeOut := -1;
-      if frameidx <> 0
-      then begin
-        // Restore current frame
-        ExecuteCommand('-stack-select-frame %u', [frame], []);
-        FTheDebugger.FInternalStackFrame := frame;
-      end;
       FreeAndNil(ResultList);
     end;
     Result := True;
