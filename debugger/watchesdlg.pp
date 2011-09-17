@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, math,
   StdCtrls, Buttons, Menus, ComCtrls, LCLType, ActnList, IDEImagesIntf,
-  LazarusIDEStrConsts, Debugger, DebuggerDlg, BaseDebugManager;
+  EnvironmentOpts, LazarusIDEStrConsts, Debugger, DebuggerDlg, BaseDebugManager;
 
 type
 
@@ -108,6 +108,7 @@ type
     function GetWatches: TWatches;
     procedure ContextChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
+    procedure SaveColumnWidths;
   private
     FWatchesInView: TWatches;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
@@ -340,18 +341,27 @@ begin
 end;
 
 procedure TWatchesDlg.FormShow(Sender: TObject);
+var
+  Conf: TDebuggerWatchesDlgConfig;
 begin
   UpdateAll;
+  Conf := EnvironmentOptions.DebuggerConfig.DlgWatchesConfig;
+  if Conf.ColumnNameWidth > 0 then
+    lvWatches.Column[0].Width := Conf.ColumnNameWidth;
+  if Conf.ColumnValueWidth > 0 then
+    lvWatches.Column[1].Width := Conf.ColumnValueWidth;
 end;
 
 procedure TWatchesDlg.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
   //DebugLn('TWatchesDlg.FormCloseQuery ',dbgs(CanClose));
+  SaveColumnWidths;
 end;
 
 procedure TWatchesDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   //DebugLn('TWatchesDlg.FormClose ',dbgs(ord(CloseAction)));
+  SaveColumnWidths;
 end;
 
 procedure TWatchesDlg.actPowerExecute(Sender: TObject);
@@ -451,6 +461,15 @@ begin
   finally
     lvWatches.EndUpdate;
   end;
+end;
+
+procedure TWatchesDlg.SaveColumnWidths;
+var
+  Conf: TDebuggerWatchesDlgConfig;
+begin
+  Conf := EnvironmentOptions.DebuggerConfig.DlgWatchesConfig;
+  Conf.ColumnNameWidth  := lvWatches.Column[0].Width;
+  Conf.ColumnValueWidth := lvWatches.Column[1].Width;
 end;
 
 function TWatchesDlg.GetWatches: TWatches;

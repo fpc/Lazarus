@@ -167,16 +167,45 @@ type
   { TDebuggerConfigStore }
   (* TODO: maybe revert relations. Create this in Debugger, and call environmentoptions for the configstore only? *)
 
-  TDebuggerConfigStore = class
+  { TDebuggerConfigStoreBase }
+
+  TDebuggerConfigStoreBase = class(TPersistent)
   private
     FConfigStore: TConfigStorage;
-    FDebuggerClass: String;
   public
     property ConfigStore: TConfigStorage read FConfigStore write FConfigStore;
-    procedure Load;
-    procedure Save;
+    procedure Load; virtual;
+    procedure Save; virtual;
+  end;
+
+  { TDebuggerWatchesDlgConfig }
+
+  TDebuggerWatchesDlgConfig = class(TDebuggerConfigStoreBase)
+  private
+    FColumnNameWidth: Integer;
+    FColumnValueWidth: Integer;
   public
+    constructor Create;
+    procedure Init;
+    procedure Load; override;
+    procedure Save; override;
+  published
+    property ColumnNameWidth: Integer read FColumnNameWidth write FColumnNameWidth;
+    property ColumnValueWidth: Integer read FColumnValueWidth write FColumnValueWidth;
+  end;
+
+  TDebuggerConfigStore = class(TDebuggerConfigStoreBase)
+  private
+    FDebuggerClass: String;
+    FTDebuggerWatchesDlgConfig: TDebuggerWatchesDlgConfig;
+  public
+    procedure Load; override;
+    procedure Save; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
     property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
+    property DlgWatchesConfig: TDebuggerWatchesDlgConfig read FTDebuggerWatchesDlgConfig;
   end;
 
   { TRefCountedObject }
@@ -2863,40 +2892,89 @@ begin
   Result:=bpaStop;
 end;
 
+{ TDebuggerWatchesDlgConfig }
+
+constructor TDebuggerWatchesDlgConfig.Create;
+begin
+  Init;
+end;
+
+procedure TDebuggerWatchesDlgConfig.Init;
+begin
+  FColumnNameWidth := -1;
+  FColumnValueWidth := -1;
+end;
+
+procedure TDebuggerWatchesDlgConfig.Load;
+begin
+  Init;
+  ConfigStore.ReadObject('', self);
+end;
+
+procedure TDebuggerWatchesDlgConfig.Save;
+begin
+  ConfigStore.WriteObject('', self);
+end;
+
+{ TDebuggerConfigStoreBase }
+
+procedure TDebuggerConfigStoreBase.Load;
+begin
+  //
+end;
+
+procedure TDebuggerConfigStoreBase.Save;
+begin
+  //
+end;
+
 { TDebuggerConfigStore }
 
 procedure TDebuggerConfigStore.Load;
-type
-  TDebuggerType = (dtNone, dtGnuDebugger, dtSSHGNUDebugger);
 const
-  DebuggerName: array[TDebuggerType] of string = (
-    '(None)','GNU debugger (gdb)', 'GNU debugger through SSH (gdb)'
-  );
-
-  function DebuggerNameToType(const s: string): TDebuggerType;
-  begin
-    for Result:=Low(TDebuggerType) to High(TDebuggerType) do
-      if CompareText(DebuggerName[Result],s)=0 then exit;
-    Result:=dtNone;
-  end;
-
+  OLD_GDB_DBG_NAME = 'GNU debugger (gdb)';
+  OLD_SSH_DBG_NAME = 'GNU debugger through SSH (gdb)';
 var
-  OldDebuggerType: TDebuggerType;
+  s: String;
 begin
-  FDebuggerClass := FConfigStore.GetValue('Class', '');
+  FDebuggerClass := ConfigStore.GetValue('Class', '');
   if FDebuggerClass='' then begin
     // try old format
-    OldDebuggerType := DebuggerNameToType(FConfigStore.GetValue('Type', ''));
-    if OldDebuggerType=dtGnuDebugger then
-      FDebuggerClass:='TGDBMIDEBUGGER';
+    s := ConfigStore.GetValue('Type', '');
+    if s = OLD_GDB_DBG_NAME then FDebuggerClass:='TGDBMIDEBUGGER';
+    if s = OLD_SSH_DBG_NAME then FDebuggerClass:='TSSHGDBMIDEBUGGER';
   end;
-
+  ConfigStore.AppendBasePath('WatchesDlg/');
+  try
+    FTDebuggerWatchesDlgConfig.ConfigStore := ConfigStore;
+    FTDebuggerWatchesDlgConfig.Load;
+  finally
+    ConfigStore.UndoAppendBasePath;
+  end;
 end;
 
 procedure TDebuggerConfigStore.Save;
 begin
-  FConfigStore.SetDeleteValue('Class', FDebuggerClass, '');
-  FConfigStore.DeletePath('Type');
+  ConfigStore.SetDeleteValue('Class', FDebuggerClass, '');
+  ConfigStore.DeletePath('Type');
+  ConfigStore.AppendBasePath('WatchesDlg/');
+  try
+    FTDebuggerWatchesDlgConfig.ConfigStore := ConfigStore;
+    FTDebuggerWatchesDlgConfig.Save;
+  finally
+    ConfigStore.UndoAppendBasePath;
+  end;
+end;
+
+constructor TDebuggerConfigStore.Create;
+begin
+  FTDebuggerWatchesDlgConfig := TDebuggerWatchesDlgConfig.Create;
+end;
+
+destructor TDebuggerConfigStore.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FTDebuggerWatchesDlgConfig);
 end;
 
 { TDebuggerUnitInfoProvider }
