@@ -6027,6 +6027,8 @@ begin
     if i >= FCommandQueue.Count
     then i := FCommandQueue.Count - 1;
   end;
+  if FCurrentCommand <> nil
+  then FCurrentCommand.Cancel;
 end;
 
 procedure TGDBMIDebugger.CancelBeforeRun;
@@ -6041,6 +6043,8 @@ begin
     if i >= FCommandQueue.Count
     then i := FCommandQueue.Count - 1;
   end;
+  if (FCurrentCommand <> nil) and (dcpCancelOnRun in FCurrentCommand.Properties)
+  then FCurrentCommand.Cancel;
 end;
 
 procedure TGDBMIDebugger.CancelAfterStop;
@@ -6055,6 +6059,7 @@ begin
     if i >= FCommandQueue.Count
     then i := FCommandQueue.Count - 1;
   end;
+  // do not cancel FCurrentCommand;
 end;
 
 class function TGDBMIDebugger.ExePaths: String;
