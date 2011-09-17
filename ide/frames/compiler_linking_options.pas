@@ -77,6 +77,7 @@ end;
 procedure TCompilerLinkingOptionsFrame.chkDebugGDBChange(Sender: TObject);
 begin
   dropDbgSymbolType.Enabled := chkDebugGDB.Checked;
+  chkUseLineInfoUnit.Enabled := chkDebugGDB.Checked;
 end;
 
 function TCompilerLinkingOptionsFrame.GetTitle: string;
@@ -147,6 +148,7 @@ begin
   end;
 
   dropDbgSymbolType.Enabled := chkDebugGDB.Checked;
+  chkUseLineInfoUnit.Enabled := chkDebugGDB.Checked;
 end;
 
 procedure TCompilerLinkingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

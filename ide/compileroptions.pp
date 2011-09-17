@@ -1414,6 +1414,7 @@ begin
   { Linking }
   p:=Path+'Linking/';
   GenerateDebugInfo := aXMLConfig.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
+  UseLineInfoUnit := aXMLConfig.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
   try
     // fail, if not present
     ReadStr(aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '-'), dit);
@@ -1421,6 +1422,8 @@ begin
   except
     DebugInfoType := dsAuto;
     if aXMLConfig.HasPath(p+'Debugging/GenerateDwarf/', False) then begin
+      if UseLineInfoUnit then
+        GenerateDebugInfo := True; // LineInfo implies debug info
       // upgrading old setting
       if GenerateDebugInfo then
         DebugInfoType := dsStabs;
@@ -1431,7 +1434,6 @@ begin
       end;
     end;
   end;
-  UseLineInfoUnit := aXMLConfig.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
   UseHeaptrc := aXMLConfig.GetValue(p+'Debugging/UseHeaptrc/Value', false);
   UseValgrind := aXMLConfig.GetValue(p+'Debugging/UseValgrind/Value', false);
   GenGProfCode := aXMLConfig.GetValue(p+'Debugging/GenGProfCode/Value', false);
@@ -2564,6 +2566,7 @@ begin
   { Debugging }
   { Debug Info for GDB }
   if (GenerateDebugInfo) then begin
+
     dit := DebugInfoType;
     if dit = dsAuto then dit := CompilerDbgSymbolTypeDefault;
     case dit of
@@ -2572,12 +2575,13 @@ begin
       dsDwarf2Set: switches := switches + ' -gw2 -godwarfsets';
       dsDwarf3:    switches := switches + ' -gw3';
     end;
+
+    { Line Numbers in Run-time Error Backtraces - Use LineInfo Unit }
+    if (UseLineInfoUnit) then
+      switches := switches + ' -gl';
+
   end;
 
-
-  { Line Numbers in Run-time Error Backtraces - Use LineInfo Unit }
-  if (UseLineInfoUnit) then
-    switches := switches + ' -gl';
 
   { Use Heaptrc Unit }
   if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
