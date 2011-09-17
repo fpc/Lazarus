@@ -1264,12 +1264,10 @@ begin
   AParent:=SourceEditorMenuRoot;
 
   // register the first dynamic section for often used context sensitive stuff
-  SrcEditMenuSectionFirstDynamic :=
-    RegisterIDEMenuSection(AParent, 'First dynamic section');
+  SrcEditMenuSectionFirstDynamic:=RegisterIDEMenuSection(AParent, 'First dynamic section');
 
   {%region *** first static section *** }
-    SrcEditMenuSectionFirstStatic :=
-      RegisterIDEMenuSection(AParent, 'First static section');
+    SrcEditMenuSectionFirstStatic:=RegisterIDEMenuSection(AParent, 'First static section');
     AParent:=SrcEditMenuSectionFirstStatic;
 
     SrcEditMenuFindDeclaration := RegisterIDEMenuCommand
@@ -1296,15 +1294,12 @@ begin
   {%endregion}
 
   {%region *** Pages section ***}
-  SrcEditMenuSectionPages :=
-    RegisterIDEMenuSection(SourceEditorMenuRoot, 'Pages');
+  SrcEditMenuSectionPages:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Pages');
 
-    SrcEditMenuClosePage := RegisterIDEMenuCommand
-        (SrcEditMenuSectionPages, 'Close Page',uemClosePage, nil,
-         @ExecuteIdeMenuClick, nil, 'menu_close');
-    SrcEditMenuCloseOtherPages := RegisterIDEMenuCommand
-        (SrcEditMenuSectionPages, 'Close All Other Pages',uemCloseOtherPages,
-         nil, @ExecuteIdeMenuClick);
+    SrcEditMenuClosePage := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+        'Close Page', uemClosePage, nil, @ExecuteIdeMenuClick, nil, 'menu_close');
+    SrcEditMenuCloseOtherPages := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+        'Close All Other Pages',uemCloseOtherPages, nil, @ExecuteIdeMenuClick);
 
     {$IFnDEF SingleSrcWindow}
     // Lock Editor
@@ -1319,7 +1314,7 @@ begin
       SrcEditMenuMoveToOtherWindow := RegisterIDESubMenu
           (SrcEditMenuSectionPages, 'MoveToOtherWindow', uemMoveToOtherWindow);
 
-      SrcEditMenuMoveToOtherWindowNew  := RegisterIDEMenuCommand
+      SrcEditMenuMoveToOtherWindowNew := RegisterIDEMenuCommand
           (SrcEditMenuMoveToOtherWindow, 'MoveToOtherWindowNew', uemMoveToOtherWindowNew,
            nil, @ExecuteIdeMenuClick);
       // Section for dynamically created targets
@@ -1327,15 +1322,14 @@ begin
           (SrcEditMenuMoveToOtherWindow, 'MoveToOtherWindowList Section');
     {%endregion}
 
-    SrcEditMenuCopyToNewWindow   := RegisterIDEMenuCommand
-        (SrcEditMenuSectionPages, 'CopyToNewWindow', uemCopyToNewWindow, nil,
-         @ExecuteIdeMenuClick);
+    SrcEditMenuCopyToNewWindow := RegisterIDEMenuCommand
+        (SrcEditMenuSectionPages, 'CopyToNewWindow', uemCopyToNewWindow, nil, @ExecuteIdeMenuClick);
 
     {%region * Copy To Other *}
       SrcEditMenuCopyToOtherWindow := RegisterIDESubMenu
           (SrcEditMenuSectionPages, 'CopyToOtherWindow', uemCopyToOtherWindow);
 
-      SrcEditMenuCopyToOtherWindowNew  := RegisterIDEMenuCommand
+      SrcEditMenuCopyToOtherWindowNew := RegisterIDEMenuCommand
           (SrcEditMenuCopyToOtherWindow, 'CopyToOtherWindowNew', uemCopyToOtherWindowNew,
            nil, @ExecuteIdeMenuClick);
       // Section for dynamically created targets
@@ -1364,9 +1358,8 @@ begin
         RegisterIDESubMenu(SrcEditMenuSectionPages, 'Open File', lisOpenFile);
       AParent:=SrcEditSubMenuOpenFile;
 
-      SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand
-          (AParent, 'Open File At Cursor',uemOpenFileAtCursor, nil,
-           @ExecuteIdeMenuClick, nil, 'menu_search_openfile_atcursor');
+      SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent, 'Open File At Cursor',
+          uemOpenFileAtCursor, nil, @ExecuteIdeMenuClick, nil, 'menu_search_openfile_atcursor');
       // register the File Specific dynamic section
       SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent, 'File dynamic section');
     {%endregion}
@@ -1378,30 +1371,23 @@ begin
 
       SrcEditMenuReadOnly := RegisterIDEMenuCommand(AParent,'ReadOnly',uemReadOnly);
       SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
-      SrcEditMenuShowLineNumbers := RegisterIDEMenuCommand
-          (AParent, 'ShowLineNumbers',uemShowLineNumbers);
+      SrcEditMenuShowLineNumbers := RegisterIDEMenuCommand(AParent, 'ShowLineNumbers',uemShowLineNumbers);
       SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
-      SrcEditMenuDisableI18NForLFM := RegisterIDEMenuCommand
-          (AParent, 'DisableI18NForLFM',lisDisableI18NForLFM);
-      SrcEditSubMenuHighlighter := RegisterIDESubMenu
-          (AParent,'Highlighter', uemHighlighter);
-      SrcEditSubMenuEncoding := RegisterIDESubMenu
-          (AParent,'Encoding', uemEncoding);
-      SrcEditSubMenuLineEnding := RegisterIDESubMenu
-          (AParent,'LineEnding', uemLineEnding);
+      SrcEditMenuDisableI18NForLFM := RegisterIDEMenuCommand(AParent, 'DisableI18NForLFM',lisDisableI18NForLFM);
+      SrcEditSubMenuHighlighter := RegisterIDESubMenu(AParent,'Highlighter', uemHighlighter);
+      SrcEditSubMenuEncoding := RegisterIDESubMenu(AParent,'Encoding', uemEncoding);
+      SrcEditSubMenuLineEnding := RegisterIDESubMenu(AParent,'LineEnding', uemLineEnding);
     {%endregion}
   {%endregion}
 
   {%region *** Clipboard section ***}
-    SrcEditMenuSectionClipboard :=
-      RegisterIDEMenuSection(SourceEditorMenuRoot, 'Clipboard');
+    SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Clipboard');
     AParent:=SrcEditMenuSectionClipboard;
 
     SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut, nil, nil, nil, 'laz_cut');
     SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy, nil, nil, nil, 'laz_copy');
     SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste, nil, nil, nil, 'laz_paste');
-    SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename',
-                                                    uemCopyFilename);
+    SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename', uemCopyFilename);
   {%endregion}
 
   {%region *** Goto Marks section ***}
@@ -1427,9 +1413,8 @@ begin
         (SrcEditMenuSectionMarks, 'Toggle bookmarks',uemToggleBookmark);
     AParent:=SrcEditSubMenuToggleBookmarks;
       for I := 0 to 9 do
-        RegisterIDEMenuCommand
-            (AParent,'ToggleBookmark'+IntToStr(I), uemBookmarkN+IntToStr(i), nil,
-             @ExecuteIdeMenuClick);
+        RegisterIDEMenuCommand(AParent, 'ToggleBookmark'+IntToStr(I), uemBookmarkN+IntToStr(i),
+                               nil, @ExecuteIdeMenuClick);
       SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand
           (AParent, 'Set a free Bookmark',uemSetFreeBookmark, nil, @ExecuteIdeMenuClick);
   {%endregion}
@@ -1453,10 +1438,10 @@ begin
       SrcEditMenuInspect:=RegisterIDEMenuCommand
           (AParent, 'Inspect...', uemInspect, nil, nil, nil, 'debugger_inspect');
       SrcEditMenuInspect.Enabled:=False;
-      SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
-                                                'Run to cursor', uemRunToCursor, nil, nil, nil, 'menu_run_cursor');
+      SrcEditMenuRunToCursor:=RegisterIDEMenuCommand
+          (AParent, 'Run to cursor', uemRunToCursor, nil, nil, nil, 'menu_run_cursor');
       SrcEditMenuViewCallStack:=RegisterIDEMenuCommand
-        (AParent, 'View Call Stack', uemViewCallStack, nil, @ExecuteIdeMenuClick, nil, 'debugger_call_stack');
+          (AParent, 'View Call Stack', uemViewCallStack, nil, @ExecuteIdeMenuClick, nil, 'debugger_call_stack');
   {%endregion}
 
   {%region *** Source Section ***}
