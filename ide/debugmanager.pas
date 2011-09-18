@@ -88,7 +88,9 @@ type
       AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
     procedure DebuggerException(Sender: TObject;
       const AExceptionType: TDBGExceptionType;
-      const AExceptionClass, AExceptionText: String;
+      const AExceptionClass: String;
+      const AExceptionLocation: TDBGLocationRec;
+      const AExceptionText: String;
       out AContinue: Boolean);
 
     // Dialog events
@@ -794,7 +796,9 @@ end;
 
 procedure TDebugManager.DebuggerException(Sender: TObject;
   const AExceptionType: TDBGExceptionType;
-  const AExceptionClass, AExceptionText: String;
+  const AExceptionClass: String;
+  const AExceptionLocation: TDBGLocationRec;
+  const AExceptionText: String;
   out AContinue: Boolean);
 
   function GetTitle: String;
@@ -806,8 +810,9 @@ procedure TDebugManager.DebuggerException(Sender: TObject;
 
 var
   ExceptMsg: string;
-  msg: String;
+  msg, SrcText: String;
   Ignore: Boolean;
+  Editor: TSourceEditor;
 begin
   if Destroying then
   begin
@@ -828,16 +833,44 @@ begin
     if FindInvalidUTF8Character(pchar(ExceptMsg),length(ExceptMsg), False) > 0 then
       ExceptMsg := AnsiToUtf8(ExceptMsg);
     msg := Format(lisProjectSRaisedExceptionClassSWithMessageSS,
-                  [GetTitle, AExceptionClass, #13, ExceptMsg]);
+                  [GetTitle, AExceptionClass, LineEnding, ExceptMsg]);
   end;
 
-  if AExceptionType <> deInternal then
-    MessageDlg(lisCCOErrorCaption, msg, mtError, [mbOk], 0)
-  else
-  begin
-    AContinue := ExecuteExceptionDialog(msg, Ignore) = mrCancel;
+  if AExceptionLocation.SrcFile <> '' then begin
+    if AExceptionLocation.SrcLine <> 0 then begin
+      SrcText := '';
+      if (AExceptionLocation.SrcFullName <> '') then begin
+        Editor := SourceEditorManager.SourceEditorIntfWithFilename(AExceptionLocation.SrcFullName);
+        if Editor <> nil then begin
+          try
+            SrcText := Trim(Editor.Lines[Editor.DebugToSourceLine(AExceptionLocation.SrcLine)]);
+          except
+          end;
+    	end;
+      end;
+      if SrcText <> '' then
+        msg := msg + Format(lisProjectSRaisedExceptionInFileLineSrc,
+                      [LineEnding, AExceptionLocation.SrcFile, AExceptionLocation.SrcLine, SrcText])
+      else
+        msg := msg + Format(lisProjectSRaisedExceptionInFileLine,
+                      [LineEnding, AExceptionLocation.SrcFile, AExceptionLocation.SrcLine]);
+    end
+    else
+      msg := msg + Format(lisProjectSRaisedExceptionInFileAddress,
+                    [LineEnding, AExceptionLocation.SrcFile, AExceptionLocation.Address]);
+  end
+  else if AExceptionLocation.Address <> 0 then begin
+      msg := msg + Format(lisProjectSRaisedExceptionAtAddress,
+                    [LineEnding, AExceptionLocation.Address]);
+  end;
+
+  if (AExceptionType in [deInternal, deRunError]) then begin
+    AContinue := ExecuteExceptionDialog(msg, Ignore, AExceptionType = deInternal) = mrCancel;
     if Ignore then
       Exceptions.AddIfNeeded(AExceptionClass);
+  end
+  else begin
+    MessageDlg(lisCCOErrorCaption, msg, mtError, [mbOk], 0)
   end;
 end;
 

@@ -2560,6 +2560,7 @@ type
                                    const ALocation: TDBGLocationRec) of object;
   TDBGExceptionEvent = procedure(Sender: TObject; const AExceptionType: TDBGExceptionType; 
                                  const AExceptionClass: String;
+                                 const AExceptionLocation: TDBGLocationRec;
                                  const AExceptionText: String;
                                  out AContinue: Boolean) of object;
 
@@ -2643,7 +2644,10 @@ type
     procedure DoDbgOutput(const AText: String);
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
     procedure DoException(const AExceptionType: TDBGExceptionType;
-      const AExceptionClass: String; AExceptionAddress: TDBGPtr; const AExceptionText: String; out AContinue: Boolean);
+                          const AExceptionClass: String;
+                          const AExceptionLocation: TDBGLocationRec;
+                          const AExceptionText: String;
+                          out AContinue: Boolean);
     procedure DoOutput(const AText: String);
     procedure DoBreakpointHit(const ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
     procedure DoBeforeState(const OldState: TDBGState); virtual;
@@ -5733,13 +5737,15 @@ begin
 end;
 
 procedure TDebugger.DoException(const AExceptionType: TDBGExceptionType;
-  const AExceptionClass: String; AExceptionAddress: TDBGPtr; const AExceptionText: String; out AContinue: Boolean);
+  const AExceptionClass: String; const AExceptionLocation: TDBGLocationRec; const AExceptionText: String; out AContinue: Boolean);
 begin
   {$IFDEF DBG_EVENTS} DebugLnEnter(['DebugEvent: Enter >> DoException >>  State=', DBGStateNames[FState]]); {$ENDIF}
   if AExceptionType = deInternal then
-    DoDbgEvent(ecDebugger, etExceptionRaised, Format('Exception class "%s" at $%.' + IntToStr(TargetWidth div 4) + 'x with message "%s"', [AExceptionClass, AExceptionAddress, AExceptionText]));
+    DoDbgEvent(ecDebugger, etExceptionRaised,
+               Format('Exception class "%s" at $%.' + IntToStr(TargetWidth div 4) + 'x with message "%s"',
+                      [AExceptionClass, AExceptionLocation.Address, AExceptionText]));
   if Assigned(FOnException) then
-    FOnException(Self, AExceptionType, AExceptionClass, AExceptionText, AContinue)
+    FOnException(Self, AExceptionType, AExceptionClass, AExceptionLocation, AExceptionText, AContinue)
   else
     AContinue := True;
   {$IFDEF DBG_EVENTS} DebugLnExit(['DebugEvent: Exit  << DoException <<']);  {$ENDIF}

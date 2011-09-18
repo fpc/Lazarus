@@ -792,6 +792,10 @@ resourcestring
     'Project %s raised exception class ''%s''.';
   lisProjectSRaisedExceptionClassSWithMessageSS = 'Project %s raised '
     +'exception class ''%s'' with message:%s%s';
+  lisProjectSRaisedExceptionInFileLineSrc = '%0:s%0:s In file ''%1:s'' at line %2:d:%0:s%3:s';
+  lisProjectSRaisedExceptionInFileLine    = '%0:s%0:s In file ''%1:s'' at line %2:d';
+  lisProjectSRaisedExceptionInFileAddress = '%0:s%0:s In file ''%1:s'' at address %2:x';
+  lisProjectSRaisedExceptionAtAddress     = '%0:s%0:s At address %1:x';
   lisPEEditVirtualUnit = 'Edit Virtual Unit';
   lisIECOExportFileExists = 'Export file exists';
   lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti = 'Export file %s%'

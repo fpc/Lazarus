@@ -47,18 +47,21 @@ type
     function Execute(AMessage: String; out IgnoreException: Boolean): TModalResult;
   end;
 
-function ExecuteExceptionDialog(AMessage: String; out IgnoreException: Boolean): TModalResult;
+function ExecuteExceptionDialog(AMessage: String; out IgnoreException: Boolean;
+                                AskIgnore: Boolean = True): TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ExecuteExceptionDialog(AMessage: String; out IgnoreException: Boolean): TModalResult;
+function ExecuteExceptionDialog(AMessage: String; out IgnoreException: Boolean;
+  AskIgnore: Boolean = True): TModalResult;
 var
   ADialog: TIDEExceptionDlg;
 begin
   ADialog := TIDEExceptionDlg.Create(Application);
   try
+    ADialog.cbIgnoreExceptionType.Visible := AskIgnore;
     Result := ADialog.Execute(AMessage, IgnoreException);
   finally
     ADialog.Free;
