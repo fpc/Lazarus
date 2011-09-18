@@ -34,6 +34,7 @@ type
     chCalcLineSeriesAvg: TLineSeries;
     chCalcLineSeriesSum: TLineSeries;
     cbAccDirStatistics: TComboBox;
+    cbSmooth: TCheckBox;
     seAccumulationRange: TSpinEdit;
     lblAccumulationRange: TLabel;
     ListChartSource1: TListChartSource;
@@ -52,6 +53,7 @@ type
     procedure cbAccDirDerivativeChange(Sender: TObject);
     procedure cbAccDirStatisticsChange(Sender: TObject);
     procedure cbCumulativeChange(Sender: TObject);
+    procedure cbSmoothChange(Sender: TObject);
     procedure CreateData;
     procedure seAccumulationRangeChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -86,6 +88,14 @@ end;
 procedure TForm1.cbCumulativeChange(Sender: TObject);
 begin
   chCalcLineSeriesSum.Active := cbCumulative.Checked;
+end;
+
+procedure TForm1.cbSmoothChange(Sender: TObject);
+begin
+  if cbSmooth.Checked then
+    ccsDerivative.AccumulationMethod := camSmoothDerivative
+  else
+    ccsDerivative.AccumulationMethod := camDerivative;
 end;
 
 procedure TForm1.CreateData;

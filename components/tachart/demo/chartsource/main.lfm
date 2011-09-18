@@ -329,6 +329,15 @@ object Form1: TForm1
           TabOrder = 1
           Text = 'Backward'
         end
+        object cbSmooth: TCheckBox
+          Left = 332
+          Height = 17
+          Top = 5
+          Width = 56
+          Caption = 'Smooth'
+          OnChange = cbSmoothChange
+          TabOrder = 2
+        end
       end
     end
   end
