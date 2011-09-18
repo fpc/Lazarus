@@ -6956,7 +6956,7 @@ function TGDBMIDebuggerCommandBreakPointBase.ExecCheckLineInUnit(ASource: string
   ALine: Integer): Boolean;
 var
   R: TGDBMIExecResult;
-  i, m: Integer;
+  i, m, n: Integer;
 begin
   Result := ALine > 0;
   if not Result then exit;
@@ -6968,13 +6968,13 @@ begin
 
   if ALine <= m then exit;;
 
-  if ExecuteCommand('info line ' + ASource + ':' + IntToStr(ALine), R)
+  if ExecuteCommand('info line "' + ASource + '":' + IntToStr(ALine), R)
   and (R.State <> dsError)
   then begin
-    Result :=pos('out of range', R.Values) < 1;
-  end
-  else
-    Result := False;
+    m := pos('"', R.Values);  // find start of filename in messages
+    n := pos('out of range', R.Values);
+    Result := (n < 1) or (n >= m);
+  end;
 
   if not Result then exit;
 
