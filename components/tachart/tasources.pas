@@ -182,7 +182,7 @@ type
     procedure CalcPercentage;
     procedure Changed(ASender: TObject);
     function EffectiveAccumulationRange: Cardinal;
-    procedure ExtractItem(out AItem: TChartDataItem; AIndex: Integer);
+    procedure ExtractItem(AIndex: Integer);
     procedure RangeAround(AIndex: Integer; out ALeft, ARight: Integer);
     procedure SetAccumulationDirection(AValue: TChartAccumulationDirection);
     procedure SetAccumulationMethod(AValue: TChartAccumulationMethod);
@@ -865,6 +865,17 @@ end;
 
 procedure TCalculatedChartSource.CalcAccumulation(AIndex: Integer);
 var
+  lastItemIndex: Integer = -1;
+
+  function GetOriginItem(AItemIndex: Integer): PChartDataItem;
+  begin
+    Result := @FItem;
+    if lastItemIndex = AItemIndex then exit;
+    ExtractItem(AItemIndex);
+    lastItemIndex := AItemIndex;
+  end;
+
+var
   i, oldLeft, oldRight, newLeft, newRight: Integer;
 begin
   if AccumulationDirection = cadCenter then
@@ -878,39 +889,28 @@ begin
     (Abs(oldRight - newRight) > 1)
   then begin
     FHistory.Clear;
-    for i := newLeft to newRight do begin
-      ExtractItem(FItem, i);
-      FHistory.AddLast(FItem);
-    end;
+    for i := newLeft to newRight do
+      FHistory.AddLast(GetOriginItem(i)^);
   end
   else begin
     if FHistory.Capacity = 0 then
-      for i := oldLeft to newLeft - 1 do begin
-        ExtractItem(FItem, i);
-        FHistory.RemoveValue(FItem);
-      end
+      for i := oldLeft to newLeft - 1 do
+        FHistory.RemoveValue(GetOriginItem(i)^)
     else
       for i := oldLeft to newLeft - 1 do
         FHistory.RemoveFirst;
     if FHistory.Capacity = 0 then
-      for i := oldRight downto newRight + 1 do begin
-        ExtractItem(FItem, i);
-        FHistory.RemoveValue(FItem);
-      end
+      for i := oldRight downto newRight + 1 do
+        FHistory.RemoveValue(GetOriginItem(i)^)
     else
       for i := oldRight downto newRight + 1 do
         FHistory.RemoveLast;
-    for i := oldLeft - 1 downto newLeft do begin
-      ExtractItem(FItem, i);
-      FHistory.AddFirst(FItem);
-    end;
-    for i := oldRight + 1 to newRight do begin
-      ExtractItem(FItem, i);
-      FHistory.AddLast(FItem);
-    end;
+    for i := oldLeft - 1 downto newLeft do
+      FHistory.AddFirst(GetOriginItem(i)^);
+    for i := oldRight + 1 to newRight do
+      FHistory.AddLast(GetOriginItem(i)^);
   end;
-  if (AIndex <> newLeft) and (AIndex <> newRight) then
-    ExtractItem(FItem, AIndex);
+  GetOriginItem(AIndex);
   case AccumulationMethod of
     camSum:
       FHistory.GetSum(FItem);
@@ -1010,17 +1010,16 @@ begin
     Result := AccumulationRange;
 end;
 
-procedure TCalculatedChartSource.ExtractItem(
-  out AItem: TChartDataItem; AIndex: Integer);
+procedure TCalculatedChartSource.ExtractItem(AIndex: Integer);
 var
   t: TDoubleDynArray;
   i: Integer;
 begin
-  AItem := Origin[AIndex]^;
+  FItem := Origin[AIndex]^;
   SetLength(t, Length(FYOrder));
   for i := 0 to High(FYOrder) do
-    t[i] := AItem.YList[FYOrder[i]];
-  AItem.YList := t;
+    t[i] := FItem.YList[FYOrder[i]];
+  FItem.YList := t;
 end;
 
 function TCalculatedChartSource.GetCount: Integer;
@@ -1037,7 +1036,7 @@ begin
   Result := @FItem;
   if FIndex = AIndex then exit;
   if (AccumulationMethod = camNone) or (AccumulationRange = 1) then
-    ExtractItem(FItem, AIndex)
+    ExtractItem(AIndex)
   else
     CalcAccumulation(AIndex);
   CalcPercentage;
