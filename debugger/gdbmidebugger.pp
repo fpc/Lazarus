@@ -332,6 +332,7 @@ type
 
     FThreadGroups: TStringList;
     FTypeRequestCache: TGDBPTypeRequestCache;
+    FMaxLineForUnitCache: TStringList;
 
     procedure DoPseudoTerminalRead(Sender: TObject);
     // Implementation of external functions
@@ -720,6 +721,7 @@ type
 
   TGDBMIDebuggerCommandBreakPointBase = class(TGDBMIDebuggerCommand)
   protected
+    function ExecCheckLineInUnit(ASource: string; ALine: Integer): Boolean;
     function ExecBreakDelete(ABreakId: Integer): Boolean;
     function ExecBreakInsert(AKind: TDBGBreakPointKind; AAddress: TDBGPtr;
         ASource: string; ALine: Integer; AEnabled: Boolean;
@@ -5532,6 +5534,7 @@ begin
   FRunQueueOnUnlock := False;
   FThreadGroups := TStringList.Create;
   FTypeRequestCache := TGDBPTypeRequestCache.Create;
+  FMaxLineForUnitCache := TStringList.Create;
 
 
 {$IFdef MSWindows}
@@ -5603,6 +5606,7 @@ begin
   FreeAndNil(FPseudoTerminal);
   {$ENDIF}
   FreeAndNil(FTypeRequestCache);
+  FreeAndNil(FMaxLineForUnitCache);
 end;
 
 procedure TGDBMIDebugger.Done;
@@ -5668,6 +5672,9 @@ end;
 procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
 begin
   FTypeRequestCache.Clear;
+  if not (State in [dsRun, dsPause, dsInit])
+  then FMaxLineForUnitCache.Clear;
+
   if State in [dsStop, dsError]
   then begin
     ClearSourceInfo;
@@ -6945,6 +6952,37 @@ end;
 
 { TGDBMIDebuggerCommandBreakPointBase }
 
+function TGDBMIDebuggerCommandBreakPointBase.ExecCheckLineInUnit(ASource: string;
+  ALine: Integer): Boolean;
+var
+  R: TGDBMIExecResult;
+  i, m: Integer;
+begin
+  Result := ALine > 0;
+  if not Result then exit;
+
+  m := -1;
+  i := FTheDebugger.FMaxLineForUnitCache.IndexOf(ASource);
+  if i >= 0 then
+    m := PtrInt(FTheDebugger.FMaxLineForUnitCache.Objects[i]);
+
+  if ALine <= m then exit;;
+
+  if ExecuteCommand('info line ' + ASource + ':' + IntToStr(ALine), R)
+  and (R.State <> dsError)
+  then begin
+    Result :=pos('out of range', R.Values) < 1;
+  end
+  else
+    Result := False;
+
+  if not Result then exit;
+
+  if i < 0 then
+    i := FTheDebugger.FMaxLineForUnitCache.Add(ASource);
+  FTheDebugger.FMaxLineForUnitCache.Objects[i] := TObject(PtrInt(ALine));
+end;
+
 function TGDBMIDebuggerCommandBreakPointBase.ExecBreakDelete(ABreakId: Integer): Boolean;
 begin
   Result := False;
@@ -6967,6 +7005,9 @@ begin
     bpkSource:
       begin
         if (ASource = '') or (ALine < 0) then exit;
+        Result := ExecCheckLineInUnit(ASource, ALine);
+        if not Result then exit;
+
         if dfForceBreak in FTheDebugger.FDebuggerFlags
         then Result := ExecuteCommand('-break-insert -f %s:%d', [ExtractFileName(ASource), ALine], R)
         else Result := ExecuteCommand('-break-insert %s:%d',    [ExtractFileName(ASource), ALine], R);
