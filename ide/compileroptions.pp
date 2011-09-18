@@ -1418,10 +1418,11 @@ begin
 
   if aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '') = '' then begin
     // upgrading old setting
-    if UseLineInfoUnit then
-      GenerateDebugInfo := True; // LineInfo implies debug info
+    DebugInfoType := dsAuto;
     if GenerateDebugInfo then
       DebugInfoType := dsStabs;
+    if UseLineInfoUnit then
+      GenerateDebugInfo := True; // LineInfo implies debug info
     b := aXMLConfig.GetValue(p+'Debugging/GenerateDwarf/Value', false);
     if b then begin
       GenerateDebugInfo := True;    // The old setting implied this
