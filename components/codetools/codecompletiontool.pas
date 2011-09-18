@@ -914,7 +914,8 @@ begin
   
   // find assignment operator
   ReadNextAtom;
-  if not AtomIs(':=') then exit;
+  if not (AtomIs(':=') or AtomIs('+=') or AtomIs('-=') or AtomIs('*=')
+    or AtomIs('/=')) then exit;
   AssignmentOperator:=CurPos;
   
   // find term
@@ -1395,7 +1396,6 @@ begin
   if CursorNode.Desc=ctnBeginBlock then
     BuildSubTreeForBeginBlock(CursorNode);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-  debugln(['TCodeCompletionCodeTool.CompleteLocalVariableAssignment FFF1 ',CursorNode.DescAsString]);
 
   {$IFDEF CTDEBUG}
   DebugLn('  CompleteLocalVariableAssignment: B CheckLocalVarAssignmentSyntax ...');
@@ -1426,7 +1426,6 @@ begin
     ' Term="',copy(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"');
     {$ENDIF}
     // find type of term
-    debugln(['TCodeCompletionCodeTool.CompleteLocalVariableAssignment FFF2 ',CursorNode.DescAsString]);
     Params.ContextNode:=CursorNode;
     NewType:=FindTermTypeAsString(TermAtom,Params,ExprType);
     if NewType='' then
