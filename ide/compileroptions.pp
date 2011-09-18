@@ -1415,13 +1415,15 @@ begin
   p:=Path+'Linking/';
   GenerateDebugInfo := aXMLConfig.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
   UseLineInfoUnit := aXMLConfig.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
+  UseHeaptrc := aXMLConfig.GetValue(p+'Debugging/UseHeaptrc/Value', false);
+  UseValgrind := aXMLConfig.GetValue(p+'Debugging/UseValgrind/Value', false);
 
   if aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '') = '' then begin
     // upgrading old setting
     DebugInfoType := dsAuto;
     if GenerateDebugInfo then
       DebugInfoType := dsStabs;
-    if UseLineInfoUnit then
+    if UseLineInfoUnit or UseHeaptrc or UseValgrind then
       GenerateDebugInfo := True; // LineInfo implies debug info
     b := aXMLConfig.GetValue(p+'Debugging/GenerateDwarf/Value', false);
     if b then begin
@@ -1437,8 +1439,7 @@ begin
       DebugInfoType := dsAuto;
     end;
   end;
-  UseHeaptrc := aXMLConfig.GetValue(p+'Debugging/UseHeaptrc/Value', false);
-  UseValgrind := aXMLConfig.GetValue(p+'Debugging/UseValgrind/Value', false);
+
   GenGProfCode := aXMLConfig.GetValue(p+'Debugging/GenGProfCode/Value', false);
   StripSymbols := aXMLConfig.GetValue(p+'Debugging/StripSymbols/Value', false);
   UseExternalDbgSyms := aXMLConfig.GetValue(p+'Debugging/UseExternalDbgSyms/Value', false);
