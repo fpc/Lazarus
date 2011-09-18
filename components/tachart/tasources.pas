@@ -178,7 +178,7 @@ type
     FYOrder: array of Integer;
 
     procedure CalcAccumulation(AIndex: Integer);
-    procedure CalcDerivative(var AIndex: Integer);
+    procedure CalcDerivative(AIndex: Integer);
     procedure CalcPercentage;
     procedure Changed(ASender: TObject);
     function EffectiveAccumulationRange: Cardinal;
@@ -221,9 +221,6 @@ implementation
 
 uses
   Math, StrUtils, SysUtils;
-
-const
-  MAX_DERIVATIVE_RANGE = 10;
 
 type
 
@@ -924,41 +921,76 @@ begin
   FIndex := AIndex;
 end;
 
-// Derivative is approximated by backwards finite difference
+// Derivative is approximated by finite differences
 // with accuracy order of (AccumulationRange - 1).
-procedure TCalculatedChartSource.CalcDerivative(var AIndex: Integer);
+procedure TCalculatedChartSource.CalcDerivative(AIndex: Integer);
+
+  procedure WeightedSum(const ACoeffs: array of Double; ADir, ACount: Integer);
+  var
+    i, j: Integer;
+    prevItem: PChartDataItem;
+  begin
+    for j := 0 to ACount - 1 do begin
+      prevItem := FHistory.GetPtr(AIndex + ADir * j);
+      FItem.Y += prevItem^.Y * ADir * ACoeffs[j];
+      for i := 0 to High(FItem.YList) do
+        FItem.YList[i] += prevItem^.YList[i] * ADir * ACoeffs[j];
+    end;
+  end;
+
 const
-  COEFFS: array [2..7, 0..6] of Double = (
-    (     1, -1,    0,     0,    0,    0,   0),
-    (   3/2, -2,  1/2,     0,    0,    0,   0),
-    (  11/6, -3,  3/2,  -1/3,    0,    0,   0),
-    ( 25/12, -4,    3,  -4/3,  1/4,    0,   0),
-    (137/60, -5,    5, -10/3,  5/4, -1/5,   0),
-    ( 49/20, -6, 15/2, -20/3, 15/4, -6/5, 1/6));
+  COEFFS_BF: array [2..7, 0..6] of Double = (
+    (     -1, 1,     0,    0,     0,   0,    0),
+    (   -3/2, 2,  -1/2,    0,     0,   0,    0),
+    (  -11/6, 3,  -3/2,  1/3,     0,   0,    0),
+    ( -25/12, 4,    -3,  4/3,  -1/4,   0,    0),
+    (-137/60, 5,    -5, 10/3,  -5/4, 1/5,    0),
+    ( -49/20, 6, -15/2, 20/3, -15/4, 6/5, -1/6));
+  COEFFS_C: array [2..5, 0..4] of Double = (
+    (0,  1/2,     0,     0,      0),
+    (0,  2/3, -1/12,     0,      0),
+    (0,  3/4, -3/20,  1/60,      0),
+    (0,  4/5,  -1/5, 4/105, -1/280));
 var
-  prevItem: PChartDataItem;
-  i, j, ar, iLeft, iRight: Integer;
+  ar, iLeft, iRight, dir: Integer;
   dx: Double;
 begin
   RangeAround(AIndex, iLeft, iRight);
-  if (AccumulationDirection <> cadBackward) or (AIndex = 0) then begin
-    FItem.SetY(SafeNan);
-    exit;
+  case CASE_OF_TWO[iLeft = AIndex, iRight = AIndex] of
+    cotNone: begin
+      dx := Max(
+        FItem.X - FHistory.GetPtr(AIndex - iLeft - 1)^.X,
+        FHistory.GetPtr(AIndex - iLeft + 1)^.X - FItem.X);
+      ar := Min(Min(AIndex - iLeft, iRight - AIndex) + 1, High(COEFFS_C));
+      dir := 0;
+    end;
+    cotFirst: begin
+      dx := FHistory.GetPtr(1)^.X - FItem.X;
+      ar := Min(iRight - AIndex + 1, High(COEFFS_C));
+      dir := 1;
+    end;
+    cotSecond: begin
+      dx := FItem.X - FHistory.GetPtr(AIndex - iLeft - 1)^.X;
+      ar := Min(AIndex - iLeft + 1, High(COEFFS_C));
+      dir := -1;
+    end;
+    cotBoth: begin
+      FItem.SetY(SafeNan);
+      exit;
+    end
   end;
-  dx := FItem.X - FHistory.GetPtr(AIndex - iLeft - 1)^.X;
   if dx = 0 then begin
     FItem.SetY(SafeNan);
     exit;
   end;
   FItem.SetY(0.0);
-  ar := IfThen(AccumulationRange = 0, MaxInt, AccumulationRange);
-  ar := MinValue([ar, Integer(AIndex + 1), High(COEFFS)]);
-  for j := 0 to ar - 1 do begin
-    prevItem := FHistory.GetPtr(AIndex - iLeft - j);
-    FItem.Y += prevItem^.Y * COEFFS[ar, j];
-    for i := 0 to High(FItem.YList) do
-      FItem.YList[i] += prevItem^.YList[i] * COEFFS[ar, j];
-  end;
+  AIndex -= iLeft;
+  if dir = 0 then begin
+    WeightedSum(COEFFS_C[ar], -1, ar);
+    WeightedSum(COEFFS_C[ar], +1, ar);
+  end
+  else
+    WeightedSum(COEFFS_BF[ar], dir, ar);
   FItem.MultiplyY(1 / dx);
 end;
 
@@ -1003,6 +1035,8 @@ begin
 end;
 
 function TCalculatedChartSource.EffectiveAccumulationRange: Cardinal;
+const
+  MAX_DERIVATIVE_RANGE = 10;
 begin
   if (AccumulationMethod = camDerivative) and (AccumulationRange = 0) then
     Result := MAX_DERIVATIVE_RANGE

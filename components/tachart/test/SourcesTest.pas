@@ -60,6 +60,7 @@ type
     procedure TearDown; override;
   published
     procedure Accumulate;
+    procedure Derivative;
     procedure Percentage;
     procedure Reorder;
   end;
@@ -117,6 +118,17 @@ begin
   finally
     rng.Free;
   end;
+end;
+
+procedure TCalculatedSourceTest.Derivative;
+begin
+  FSource.AccumulationMethod := camDerivative;
+  FSource.AccumulationRange := 2;
+  FOrigin.SetYValue(1, 202);
+  AssertTrue(IsNan(FSource[0]^.Y));
+  AssertEquals(100, FSource[1]^.Y);
+  FSource.AccumulationDirection := cadCenter;
+  AssertEquals(100, FSource[0]^.Y);
 end;
 
 procedure TCalculatedSourceTest.Percentage;
