@@ -1304,6 +1304,42 @@ begin
   end;
 end;
 
+type
+
+  { TListDirectoriesSearcher }
+
+  TListDirectoriesSearcher = class(TFileSearcher)
+  private
+    FDirectoriesList :TStrings;
+  protected
+    procedure DoDirectoryFound; override;
+  public
+    constructor Create(AList: TStrings);
+  end;
+
+constructor TListDirectoriesSearcher.Create(AList: TStrings);
+begin
+  FDirectoriesList := AList;
+end;
+
+procedure TListDirectoriesSearcher.DoDirectoryFound;
+begin
+  FDirectoriesList.Add(FileName);
+end;
+
+function FindAllDirectories(const SearchPath : string): TStringList;
+var
+  Searcher :TFileSearcher;
+begin
+  Result := TStringList.Create;
+  Searcher := TListDirectoriesSearcher.Create(Result);
+  try
+    Searcher.Search(SearchPath, AllFilesMask, False);
+  finally
+    Searcher.Free;
+  end;
+end;
+
 { TFileIterator }
 
 function TFileIterator.GetFileName: String;

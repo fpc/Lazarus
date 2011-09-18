@@ -170,6 +170,7 @@ type
 
 function FindAllFiles(const SearchPath: String; SearchMask: String = '';
   SearchSubDirs: Boolean = True): TStringList;
+function FindAllDirectories(const SearchPath : string): TStringList;
 
 // file actions
 function ReadFileToString(const Filename: string): string;
