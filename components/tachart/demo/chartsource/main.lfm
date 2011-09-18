@@ -185,6 +185,23 @@ object Form1: TForm1
           State = cbChecked
           TabOrder = 0
         end
+        object cbAccDirStatistics: TComboBox
+          Left = 108
+          Height = 21
+          Top = 7
+          Width = 100
+          ItemHeight = 13
+          ItemIndex = 0
+          Items.Strings = (
+            'Backward'
+            'Forward'
+            'Center'
+          )
+          OnChange = cbAccDirStatisticsChange
+          Style = csDropDownList
+          TabOrder = 1
+          Text = 'Backward'
+        end
       end
     end
     object tsDerivative: TTabSheet
@@ -223,6 +240,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        DoubleBuffered = True
         ParentColor = False
         object chDerivativeLineOrig: TLineSeries
           Title = 'y'
@@ -293,6 +311,23 @@ object Form1: TForm1
           OnChange = seAccumulationRangeChange
           TabOrder = 0
           Value = 2
+        end
+        object cbAccDirDerivative: TComboBox
+          Left = 216
+          Height = 21
+          Top = 4
+          Width = 100
+          ItemHeight = 13
+          ItemIndex = 0
+          Items.Strings = (
+            'Backward'
+            'Forward'
+            'Center'
+          )
+          OnChange = cbAccDirDerivativeChange
+          Style = csDropDownList
+          TabOrder = 1
+          Text = 'Backward'
         end
       end
     end

@@ -13,6 +13,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    cbAccDirDerivative: TComboBox;
     ccsDerivative: TCalculatedChartSource;
     cbCumulative: TCheckBox;
     ccsAvg: TCalculatedChartSource;
@@ -32,6 +33,7 @@ type
     chCalcLineSeries1: TLineSeries;
     chCalcLineSeriesAvg: TLineSeries;
     chCalcLineSeriesSum: TLineSeries;
+    cbAccDirStatistics: TComboBox;
     seAccumulationRange: TSpinEdit;
     lblAccumulationRange: TLabel;
     ListChartSource1: TListChartSource;
@@ -47,6 +49,8 @@ type
     tsDerivative: TTabSheet;
     tsStatistics: TTabSheet;
     tsBasic: TTabSheet;
+    procedure cbAccDirDerivativeChange(Sender: TObject);
+    procedure cbAccDirStatisticsChange(Sender: TObject);
     procedure cbCumulativeChange(Sender: TObject);
     procedure CreateData;
     procedure seAccumulationRangeChange(Sender: TObject);
@@ -65,6 +69,19 @@ uses
   Math;
 
 { TForm1 }
+
+procedure TForm1.cbAccDirDerivativeChange(Sender: TObject);
+begin
+  ccsDerivative.AccumulationDirection :=
+    TChartAccumulationDirection(cbAccDirDerivative.ItemIndex);
+end;
+
+procedure TForm1.cbAccDirStatisticsChange(Sender: TObject);
+begin
+  ccsAvg.AccumulationDirection :=
+    TChartAccumulationDirection(cbAccDirStatistics.ItemIndex);
+  ccsSum.AccumulationDirection := ccsAvg.AccumulationDirection;
+end;
 
 procedure TForm1.cbCumulativeChange(Sender: TObject);
 begin
