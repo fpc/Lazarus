@@ -4515,7 +4515,7 @@ end;
 function UTF16ToUTF8(const S: UTF16String): AnsiString;
 var
   L: SizeUInt;
-  R: UTF8String;
+  R: AnsiString;
 begin
   Result := '';
   if S = '' then Exit;
