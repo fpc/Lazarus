@@ -1565,7 +1565,7 @@ var
         j := length(FExpression);
         i := 1;
         while (i < j) and (FExpression[i] in ['a'..'z', 'A'..'Z', '0'..'9', '_']) do inc(i);
-        if (i <= j) and (FExpression[i] = '(')
+        if (i <= j) and (i > 1) and (FExpression[i] = '(')
         then begin
           RequireRequests([gptrPtypeCustomFixCast], copy(FExpression, 1, i-1));
           FProcessState := gtpsInitFixTypeCast;
