@@ -191,10 +191,10 @@ type
     procedure AddFirst(const AItem: TChartDataItem);
     procedure AddLast(const AItem: TChartDataItem);
     procedure Clear; inline;
-    function GetPLast: PChartDataItem; overload;
-    function GetPLast(AOffset: Cardinal): PChartDataItem; overload;
+    function GetPtr(AOffset: Cardinal): PChartDataItem; overload;
     procedure GetSum(var AItem: TChartDataItem);
-    procedure RemoveLast; overload;
+    procedure RemoveFirst;
+    procedure RemoveLast;
     procedure RemoveValue(const AItem: TChartDataItem);
     property Capacity: Cardinal read GetCapacity write SetCapacity;
   end;
@@ -415,6 +415,7 @@ end;
 procedure TChartSourceBuffer.Clear;
 begin
   FCount := 0;
+  FStart := 0;
   FSum.Y := 0;
   FSum.YList := nil;
 end;
@@ -429,23 +430,26 @@ begin
   Result := Length(FBuf);
 end;
 
-function TChartSourceBuffer.GetPLast(AOffset: Cardinal): PChartDataItem;
+function TChartSourceBuffer.GetPtr(AOffset: Cardinal): PChartDataItem;
 begin
   if AOffset >= FCount then
     raise EBufferError.Create('AOffset');
-  AOffset := FCount - 1 - AOffset;
   Result := @FBuf[(FStart + AOffset + Capacity) mod Capacity];
-end;
-
-function TChartSourceBuffer.GetPLast: PChartDataItem;
-begin
-  Result := @FBuf[EndIndex];
 end;
 
 procedure TChartSourceBuffer.GetSum(var AItem: TChartDataItem);
 begin
   AItem.Y := FSum.Y;
   AItem.YList := Copy(FSum.YList);
+end;
+
+procedure TChartSourceBuffer.RemoveFirst;
+begin
+  if FCount = 0 then
+    raise EBufferError.Create('Empty');
+  RemoveValue(FBuf[FStart]);
+  FCount -= 1;
+  FStart := (FStart + 1) mod Capacity;
 end;
 
 procedure TChartSourceBuffer.RemoveLast;

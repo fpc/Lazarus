@@ -158,11 +158,13 @@ type
   end;
 
   TChartAccumulationMethod = (camNone, camSum, camAverage, camDerivative);
+  TChartAccumulationDirection = (cadBackward, cadForward, cadCenter);
 
   { TCalculatedChartSource }
 
   TCalculatedChartSource = class(TCustomChartSource)
   strict private
+    FAccumulationDirection: TChartAccumulationDirection;
     FAccumulationMethod: TChartAccumulationMethod;
     FAccumulationRange: Cardinal;
     FHistory: TChartSourceBuffer;
@@ -179,7 +181,10 @@ type
     procedure CalcDerivative(var AIndex: Integer);
     procedure CalcPercentage;
     procedure Changed(ASender: TObject);
+    function EffectiveAccumulationRange: Cardinal;
     procedure ExtractItem(out AItem: TChartDataItem; AIndex: Integer);
+    procedure RangeAround(AIndex: Integer; out ALeft, ARight: Integer);
+    procedure SetAccumulationDirection(AValue: TChartAccumulationDirection);
     procedure SetAccumulationMethod(AValue: TChartAccumulationMethod);
     procedure SetAccumulationRange(AValue: Cardinal);
     procedure SetOrigin(AValue: TCustomChartSource);
@@ -196,6 +201,9 @@ type
 
     function IsSorted: Boolean; override;
   published
+    property AccumulationDirection: TChartAccumulationDirection
+      read FAccumulationDirection write SetAccumulationDirection
+      default cadBackward;
     property AccumulationMethod: TChartAccumulationMethod
       read FAccumulationMethod write SetAccumulationMethod default camNone;
     property AccumulationRange: Cardinal
@@ -213,6 +221,9 @@ implementation
 
 uses
   Math, StrUtils, SysUtils;
+
+const
+  MAX_DERIVATIVE_RANGE = 10;
 
 type
 
@@ -854,47 +865,58 @@ end;
 
 procedure TCalculatedChartSource.CalcAccumulation(AIndex: Integer);
 var
-  i, ar: Integer;
+  i, oldLeft, oldRight, newLeft, newRight: Integer;
 begin
-  if (AccumulationMethod = camDerivative) and (AccumulationRange = 0) then
-    FHistory.Capacity := 10
+  if AccumulationDirection = cadCenter then
+    FHistory.Capacity := EffectiveAccumulationRange * 2
   else
-    FHistory.Capacity := AccumulationRange;
-  ar := IfThen(AccumulationRange = 0, MaxInt, AccumulationRange);
-  if FIndex = AIndex - 1 then begin
-    ExtractItem(FItem, AIndex);
-    FHistory.AddLast(FItem);
-  end
-  else if FIndex = AIndex + 1 then begin
-    if AccumulationRange = 0 then begin
-      ExtractItem(FItem, FIndex);
-      FHistory.RemoveValue(FItem);
-      ExtractItem(FItem, AIndex);
-    end
-    else begin
-      i := AIndex - AccumulationRange + 1;
-      if i < 0 then
-        FHistory.RemoveLast
-      else begin
-        ExtractItem(FItem, i);
-        FHistory.AddFirst(FItem);
-      end;
-      FItem := FHistory.GetPLast^;
+    FHistory.Capacity := EffectiveAccumulationRange;
+  RangeAround(FIndex, oldLeft, oldRight);
+  RangeAround(AIndex, newLeft, newRight);
+  if
+    (FIndex < 0) or (Abs(oldLeft - newLeft) > 1) or
+    (Abs(oldRight - newRight) > 1)
+  then begin
+    FHistory.Clear;
+    for i := newLeft to newRight do begin
+      ExtractItem(FItem, i);
+      FHistory.AddLast(FItem);
     end;
   end
   else begin
-    FHistory.Clear;
-    for i := Max(AIndex - ar + 1, 0) to AIndex do begin
+    if FHistory.Capacity = 0 then
+      for i := oldLeft to newLeft - 1 do begin
+        ExtractItem(FItem, i);
+        FHistory.RemoveValue(FItem);
+      end
+    else
+      for i := oldLeft to newLeft - 1 do
+        FHistory.RemoveFirst;
+    if FHistory.Capacity = 0 then
+      for i := oldRight downto newRight + 1 do begin
+        ExtractItem(FItem, i);
+        FHistory.RemoveValue(FItem);
+      end
+    else
+      for i := oldRight downto newRight + 1 do
+        FHistory.RemoveLast;
+    for i := oldLeft - 1 downto newLeft do begin
+      ExtractItem(FItem, i);
+      FHistory.AddFirst(FItem);
+    end;
+    for i := oldRight + 1 to newRight do begin
       ExtractItem(FItem, i);
       FHistory.AddLast(FItem);
     end;
   end;
+  if (AIndex <> newLeft) and (AIndex <> newRight) then
+    ExtractItem(FItem, AIndex);
   case AccumulationMethod of
     camSum:
       FHistory.GetSum(FItem);
     camAverage: begin
       FHistory.GetSum(FItem);
-      FItem.MultiplyY(1 / Min(ar, AIndex + 1));
+      FItem.MultiplyY(1 / (newRight - newLeft + 1));
     end;
     camDerivative:
       CalcDerivative(AIndex);
@@ -915,14 +937,15 @@ const
     ( 49/20, -6, 15/2, -20/3, 15/4, -6/5, 1/6));
 var
   prevItem: PChartDataItem;
-  i, j, ar: Integer;
+  i, j, ar, iLeft, iRight: Integer;
   dx: Double;
 begin
-  if AIndex = 0 then begin
+  RangeAround(AIndex, iLeft, iRight);
+  if (AccumulationDirection <> cadBackward) or (AIndex = 0) then begin
     FItem.SetY(SafeNan);
     exit;
   end;
-  dx := FItem.X - FHistory.GetPLast(1)^.X;
+  dx := FItem.X - FHistory.GetPtr(AIndex - iLeft - 1)^.X;
   if dx = 0 then begin
     FItem.SetY(SafeNan);
     exit;
@@ -931,7 +954,7 @@ begin
   ar := IfThen(AccumulationRange = 0, MaxInt, AccumulationRange);
   ar := MinValue([ar, Integer(AIndex + 1), High(COEFFS)]);
   for j := 0 to ar - 1 do begin
-    prevItem := FHistory.GetPLast(j);
+    prevItem := FHistory.GetPtr(AIndex - iLeft - j);
     FItem.Y += prevItem^.Y * COEFFS[ar, j];
     for i := 0 to High(FItem.YList) do
       FItem.YList[i] += prevItem^.YList[i] * COEFFS[ar, j];
@@ -979,6 +1002,14 @@ begin
   inherited Destroy;
 end;
 
+function TCalculatedChartSource.EffectiveAccumulationRange: Cardinal;
+begin
+  if (AccumulationMethod = camDerivative) and (AccumulationRange = 0) then
+    Result := MAX_DERIVATIVE_RANGE
+  else
+    Result := AccumulationRange;
+end;
+
 procedure TCalculatedChartSource.ExtractItem(
   out AItem: TChartDataItem; AIndex: Integer);
 var
@@ -1018,6 +1049,27 @@ begin
     Result := Origin.IsSorted
   else
     Result := false;
+end;
+
+procedure TCalculatedChartSource.RangeAround(
+  AIndex: Integer; out ALeft, ARight: Integer);
+var
+  ar: Integer;
+begin
+  ar := EffectiveAccumulationRange;
+  ar := IfThen(ar = 0, MaxInt div 2, ar - 1);
+  ALeft := AIndex - IfThen(AccumulationDirection = cadForward, 0, ar);
+  ARight := AIndex + IfThen(AccumulationDirection = cadBackward, 0, ar);
+  ALeft := EnsureRange(ALeft, 0, Count - 1);
+  ARight := EnsureRange(ARight, 0, Count - 1);
+end;
+
+procedure TCalculatedChartSource.SetAccumulationDirection(
+  AValue: TChartAccumulationDirection);
+begin
+  if FAccumulationDirection = AValue then exit;
+  FAccumulationDirection := AValue;
+  Changed(nil);
 end;
 
 procedure TCalculatedChartSource.SetAccumulationMethod(

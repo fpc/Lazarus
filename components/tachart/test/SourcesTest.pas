@@ -84,12 +84,19 @@ begin
   AssertEquals(2, FSource[1]^.X);
   AssertEquals(102 + 202, FSource[1]^.Y);
   AssertEquals(202 + 302, FSource[2]^.Y);
+  FSource.AccumulationDirection := cadForward;
+  AssertEquals(202 + 302, FSource[1]^.Y);
+  AssertEquals(302 + 402, FSource[2]^.Y);
+  FSource.AccumulationDirection := cadBackward;
   FSource.AccumulationMethod := camAverage;
   AssertEquals((2002 + 2102) / 2, FSource[20]^.Y);
   AssertEquals(1, FSource[0]^.X);
   AssertEquals(102, FSource[0]^.Y);
   AssertEquals((102 + 202) / 2, FSource[1]^.Y);
   AssertEquals(102, FSource[0]^.Y);
+  FSource.AccumulationDirection := cadCenter;
+  AssertEquals((1102 + 1202 + 1302) / 3, FSource[11]^.Y);
+  FSource.AccumulationDirection := cadBackward;
 
   FSource.AccumulationRange := 5;
   rng := TMWCRandomGenerator.Create;
