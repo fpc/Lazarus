@@ -400,6 +400,8 @@ var
 
 procedure RegisterComponentEditor(ComponentClass: TComponentClass;
   ComponentEditor: TComponentEditorClass);
+procedure RegisterComponentEditor(ComponentClasses: array of TComponentClass;
+  ComponentEditor: TComponentEditorClass);
 function GetComponentEditor(Component: TComponent;
   const Designer: TComponentEditorDesigner): TBaseComponentEditor;
 
@@ -484,6 +486,15 @@ procedure RegisterComponentEditor(ComponentClass: TComponentClass;
 begin
   if Assigned(RegisterComponentEditorProc) then
     RegisterComponentEditorProc(ComponentClass, ComponentEditor);
+end;
+
+procedure RegisterComponentEditor(ComponentClasses: array of TComponentClass;
+  ComponentEditor: TComponentEditorClass);
+var
+  I: Integer;
+begin
+  for I := 0 to High(ComponentClasses) do
+    RegisterComponentEditor(ComponentClasses[I], ComponentEditor);
 end;
 
 function GetComponentEditor(Component: TComponent;
