@@ -1415,23 +1415,25 @@ begin
   p:=Path+'Linking/';
   GenerateDebugInfo := aXMLConfig.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
   UseLineInfoUnit := aXMLConfig.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
-  try
-    // fail, if not present
-    ReadStr(aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '-'), dit);
-    DebugInfoType := dit;
-  except
-    DebugInfoType := dsAuto;
-    if aXMLConfig.HasPath(p+'Debugging/GenerateDwarf/', False) then begin
-      if UseLineInfoUnit then
-        GenerateDebugInfo := True; // LineInfo implies debug info
-      // upgrading old setting
-      if GenerateDebugInfo then
-        DebugInfoType := dsStabs;
-      b := aXMLConfig.GetValue(p+'Debugging/GenerateDwarf/Value', false);
-      if b then begin
-        GenerateDebugInfo := True;    // The old setting implied this
-        DebugInfoType := dsDwarf2Set; // explicit dwarf, upgrade to +set
-      end;
+
+  if aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '') = '' then begin
+    // upgrading old setting
+    if UseLineInfoUnit then
+      GenerateDebugInfo := True; // LineInfo implies debug info
+    if GenerateDebugInfo then
+      DebugInfoType := dsStabs;
+    b := aXMLConfig.GetValue(p+'Debugging/GenerateDwarf/Value', false);
+    if b then begin
+      GenerateDebugInfo := True;    // The old setting implied this
+      DebugInfoType := dsDwarf2Set; // explicit dwarf, upgrade to +set
+    end;
+  end
+  else begin
+    try
+      ReadStr(aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '-'), dit);
+      DebugInfoType := dit;
+    except
+      DebugInfoType := dsAuto;
     end;
   end;
   UseHeaptrc := aXMLConfig.GetValue(p+'Debugging/UseHeaptrc/Value', false);
