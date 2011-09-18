@@ -4193,19 +4193,20 @@ end;
 function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   const AIgnoreSigIntState: Boolean): Boolean;
 
-  function GetLocation: TDBGLocationRec;
+  function GetLocation: TDBGLocationRec; // update current location
   var
     R: TGDBMIExecResult;
     List: TGDBMINameValueList;
     S: String;
     FP: TDBGPtr;
-    i, cnt: longint;
+    i, f, cnt: longint;
   begin
     FTheDebugger.QueueExecuteLock;
     try
       Result.SrcLine := -1;
       Result.SrcFile := '';
       Result.FuncName := '';
+      // Get the frame and addr info from the call-params
       if tfRTLUsesRegCall in TargetInfo^.TargetFlags
       then begin
         Result.Address := GetPtrValue(TargetInfo^.TargetRegisters[1], []);
@@ -4213,13 +4214,6 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       end else begin
         Result.Address := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 3]);
         FP := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 4]);
-      end;
-
-      Str(Result.Address, S);
-      if ExecuteCommand('info line * POINTER(%s)', [S], R)
-      then begin
-        Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
-        Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
       end;
 
       if FP <> 0 then begin
@@ -4249,8 +4243,29 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
         List.Free;
 	    if FTheDebugger.FCurrentStackFrame <> i
         then ExecuteCommand('-stack-select-frame %u', [FTheDebugger.FCurrentStackFrame], R);
+	    if FTheDebugger.FCurrentStackFrame <> 0
+        then begin
+          // This frame should have all the info we need
+          s := GetFrame(FTheDebugger.FCurrentStackFrame);
+          if s <> '' then
+            FTheDebugger.FCurrentLocation := FrameToLocation(S);
+          Result.SrcFile     := FTheDebugger.FCurrentLocation.SrcFile;
+          Result.SrcFullName := FTheDebugger.FCurrentLocation.SrcFullName;
+          Result.FuncName    := FTheDebugger.FCurrentLocation.FuncName;
+          Result.SrcLine     := FTheDebugger.FCurrentLocation.SrcLine;
+        end;
         FTheDebugger.FInternalStackFrame := FTheDebugger.FCurrentStackFrame;
       end;
+
+      if (Result.SrcLine = -1) or (Result.SrcFile = '') then begin
+        Str(Result.Address, S);
+        if ExecuteCommand('info line * POINTER(%s)', [S], R)
+        then begin
+            Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
+            Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
+        end;
+      end;
+
       FTheDebugger.FCurrentLocation := Result;
     finally
       FTheDebugger.QueueExecuteUnlock;
@@ -4303,10 +4318,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
-    //TODO, decide how much (if any) to run before asking the user
-    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
-
-    FTheDebugger.DoException(deInternal, AInfo.Name, Location.Address, ExceptionMessage, CanContinue);
+    FTheDebugger.DoException(deInternal, AInfo.Name, Location, ExceptionMessage, CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
@@ -4314,7 +4326,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       exit;
     end;
 
-    //SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
     FTheDebugger.DoCurrent(Location);
   end;
 
@@ -4336,10 +4348,8 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
-    //TODO, decide how much (if any) to run before asking the user
-    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
 
-    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), Location.Address, '', CanContinue);
+    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), Location, '', CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
@@ -4347,7 +4357,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       exit;
     end;
 
-    //SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
     FTheDebugger.DoCurrent(Location);
   end;
 
@@ -4355,6 +4365,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   var
     ErrorNo: Integer;
     CanContinue: Boolean;
+    Location: TDBGLocationRec;
   begin
     FTheDebugger.QueueExecuteLock;
     try
@@ -4362,13 +4373,13 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[0], [])
       else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
       ErrorNo := ErrorNo and $FFFF;
+
+      Location := GetLocation;
     finally
       FTheDebugger.QueueExecuteUnlock;
     end;
 
-    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
-
-    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), 0, '', CanContinue);
+    FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), Location, '', CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
@@ -4376,7 +4387,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       exit;
     end;
 
-    //SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
     ProcessFrame(GetFrame(1));
   end;
 
@@ -4413,7 +4424,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     end;
 
     if not SigInt
-    then FTheDebugger.DoException(deExternal, 'External: ' + S, 0, '', CanContinue);
+    then FTheDebugger.DoException(deExternal, 'External: ' + S, FTheDebugger.FCurrentLocation, '', CanContinue);
 
     FTheDebugger.QueueExecuteLock;
     try
@@ -4466,7 +4477,7 @@ begin
     if Reason = 'exited-signalled'
     then begin
       SetDebuggerState(dsStop);
-      FTheDebugger.DoException(deExternal, 'External: ' + List.Values['signal-name'], 0, '', CanContinue);
+      FTheDebugger.DoException(deExternal, 'External: ' + List.Values['signal-name'], FTheDebugger.FCurrentLocation, '', CanContinue);
       // ProcessFrame(List.Values['frame']);
       Exit;
     end;
