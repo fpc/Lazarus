@@ -49,8 +49,8 @@ type
     { private declarations }
   public
     { public declarations }
-    CurMemoLine: Integer;
-    EchoText, MemoText: string;
+    EchoText: string;
+    procedure AppendToMemo2(Txt: String);
   end; 
 
 var
@@ -110,8 +110,7 @@ begin
     end;
     //S := AnsiReplaceStr(AText, #13, '\r');
     //S := AnsiReplaceStr(AText, #10, '\n');
-    Form1.MemoText := Form1.MemoText + EscQ(s) + LineEnding;
-    Form1.Memo2.Text := Form1.MemoText;
+    Form1.AppendToMemo2(EscQ(s) + LineEnding);
   end
   else
     Form1.Memo2.Lines.Add(AText);
@@ -131,8 +130,7 @@ procedure TRunner.DoRun;
     FTesting := False;
     if Form1.chkCSF.Checked
     then begin
-      Form1.MemoText := Form1.MemoText + LineEnding  + '"' + EscQ(Parent.Parent.TestName) + ' ' + Name + '",';
-      Form1.Memo2.Text := Form1.MemoText;
+      Form1.AppendToMemo2('"' + EscQ(Parent.Parent.TestName) + ' ' + Name + '",');
     end
     else
       Form1.Memo2.Lines.Add('***** '+ Parent.TestName + ' ' + Parent.Parent.TestName + ' ' + Name);
@@ -166,7 +164,7 @@ procedure TRunner.DoRun;
 
       //t:= GetTickCount;
       if Form1.chkCSF.Checked then begin
-        Form1.MemoText := Form1.MemoText + '"';
+        Form1.AppendToMemo2('"');
       end;
 
       for i := 0 to Form1.Memo1.Lines.Count - 1 do begin
@@ -177,11 +175,10 @@ procedure TRunner.DoRun;
           FTesting := False;
         end;
         if Form1.chkCSF.Checked then
-          Form1.MemoText := Form1.MemoText + '","';
+          Form1.AppendToMemo2('","');
       end;
       if Form1.chkCSF.Checked then begin
-        Form1.MemoText := Form1.MemoText + '"';
-        Form1.Memo2.Text := Form1.MemoText;
+        Form1.AppendToMemo2('"');
       end;
 
 
@@ -285,15 +282,13 @@ begin
     Memo2.Lines.Add('----- ***** ----- ***** ----- ***** -----');
     Memo2.Lines.Add('');
   end;
-  MemoText := Memo2.Text;
 
   if Form1.chkCSF.Checked then begin
-    MemoText := MemoText + LineEnding + '"-","';
+    Form1.AppendToMemo2(LineEnding + '"-","');
     for i := 0 to Form1.Memo1.Lines.Count - 1 do begin
-      MemoText := MemoText + EscQ(Trim(Form1.Memo1.Lines[i])) + '","';
+      Form1.AppendToMemo2(EscQ(Trim(Form1.Memo1.Lines[i])) + '","');
     end;
-    MemoText := MemoText + '"' + LineEnding;
-    Form1.Memo2.Text := MemoText;
+    Form1.AppendToMemo2('"' + LineEnding);
   end;
 
   Dummy := TTestResult.Create;
@@ -317,22 +312,22 @@ var
 begin
   t := edPasHistory.Text;
   i := pos('*', t)-1;
-  if i <= 0 then i := length(t);
+  if i < 0 then i := length(t);
   edPasFile.Text := copy(t, 1, i);
   delete(t,1,i+1);
 
   i := pos('*', t)-1;
-  if i <= 0 then i := length(t);
+  if i < 0 then i := length(t);
   edBreakFile.Text := copy(t, 1, i);
   delete(t,1,i+1);
 
   i := pos('*', t)-1;
-  if i <= 0 then i := length(t);
+  if i < 0 then i := length(t);
   edBreakLine.Text := copy(t, 1, i);
   delete(t,1,i+1);
 
   i := pos('*', t)-1;
-  if i <= 0 then i := length(t);
+  if i < 0 then i := length(t);
   edUses.Text := copy(t, 1, i);
   delete(t,1,i+1);
 
@@ -365,6 +360,17 @@ begin
     j := CheckListBox2.Items.Add(l2.Name[i]);
     CheckListBox2.Checked[j] := True;
   end;
+end;
+
+procedure TForm1.AppendToMemo2(Txt: String);
+var
+  i: Integer;
+begin
+  i := Memo2.Lines.Count;
+  if (i = 0)then
+    Memo2.Append(Txt)
+  else
+    Memo2.Lines[i-1] := Memo2.Lines[i-1] + Txt;
 end;
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
