@@ -146,7 +146,7 @@ resourcestring
 
 implementation
 
-uses LazarusPackageIntf,FormEditingIntf;
+uses LazarusPackageIntf,FormEditingIntf, PropEdits, DBPropEdits;
 
 Const
   fpWebTab = 'fpWeb';
@@ -199,6 +199,9 @@ begin
 {$ENDIF HasFastCGISupport}
   FormEditingHook.RegisterDesignerBaseClass(TFPWebModule);
   FormEditingHook.RegisterDesignerBaseClass(TFPHTMLModule);
+
+  RegisterPropertyEditor(TypeInfo(string), THTMLDatasetSelectProducer, 'ItemField', TFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), THTMLDatasetSelectProducer, 'ValueField', TFieldProperty);
 end;
 
 { TCGIApplicationDescriptor }
