@@ -102,7 +102,7 @@ begin
   dropDbgSymbolType.Items.Clear;
   // Adjust constants above, if re-ordering
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeAuto);                             // 0: automatic
-  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2Set+ '(-gw -godwarfests)');  // 1: dwarf2 + set
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2Set+ '(-gw -godwarfsets)');  // 1: dwarf2 + set
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2+ '(-gw2)');                 // 2: dwarf2
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeStabs+ '(-gs)');                   // 3: stabs
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf3+ '(-gw3)');
