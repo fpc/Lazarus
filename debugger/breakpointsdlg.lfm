@@ -138,6 +138,9 @@ inherited BreakpointsDlg: TBreakpointsDlg
       object popAddAddressBP: TMenuItem
         Action = actAddAddressBP
       end
+      object popAddWatchPoint: TMenuItem
+        Action = actAddWatchPoint
+      end
     end
     object N1: TMenuItem
       Caption = '-'
@@ -178,8 +181,8 @@ inherited BreakpointsDlg: TBreakpointsDlg
     end
   end
   object ActionList1: TActionList[3]
-    left = 108
-    top = 49
+    left = 96
+    top = 72
     object actToggleCurrentEnable: TAction
       Caption = 'actToggleCurrentEnable'
       OnExecute = popEnabledClick
@@ -237,6 +240,11 @@ inherited BreakpointsDlg: TBreakpointsDlg
       Category = 'Add'
       Caption = 'actAddAddressBP'
       OnExecute = actAddAddressBPExecute
+    end
+    object actAddWatchPoint: TAction
+      Category = 'Add'
+      Caption = 'actAddWatchPoint'
+      OnExecute = actAddWatchPointExecute
     end
     object actShow: TAction
       Caption = 'actShow'

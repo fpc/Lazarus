@@ -60,11 +60,14 @@ type
     actEnableAll: TAction;
     actEnableSelected: TAction;
     actAddWatch: TAction;
+    actAddWatchPoint: TAction;
     actToggleCurrentEnable: TAction;
     actPower: TAction;
     ActionList1: TActionList;
     actProperties: TAction;
     lvWatches: TListView;
+    N3: TMenuItem;
+    popAddWatchPoint: TMenuItem;
     mnuPopup: TPopupMenu;
     popAdd: TMenuItem;
     N1: TMenuItem; //--------------
@@ -88,6 +91,7 @@ type
     ToolButtonEnableAll: TToolButton;
     ToolButtonDisableAll: TToolButton;
     ToolButtonTrashAll: TToolButton;
+    procedure actAddWatchPointExecute(Sender: TObject);
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
@@ -135,6 +139,7 @@ type
     property WatchesMonitor;
     property ThreadsMonitor;
     property CallStackMonitor;
+    property BreakPoints;
     property SnapshotManager;
   end;
 
@@ -199,6 +204,8 @@ begin
 
   actProperties.Caption:= liswlProperties;
   actProperties.ImageIndex := IDEImages.LoadImage(16, 'menu_environment_options');
+
+  actAddWatchPoint.Caption := lisWatchToWatchPoint;
 
   Caption:=liswlWatchList;
 
@@ -287,6 +294,7 @@ begin
     actProperties.Enabled := False;
     actAddWatch.Enabled := False;
     actPower.Enabled := False;
+    actAddWatchPoint.Enabled := False;
     exit;
   end;
 
@@ -316,6 +324,8 @@ begin
   actEnableSelected.Enabled := SelCanEnable;
   actDisableSelected.Enabled := SelCanDisable;
   actDeleteSelected.Enabled := ItemSelected;
+
+  actAddWatchPoint.Enabled := ItemSelected;
 
   actEnableAll.Enabled := AllCanEnable;
   actDisableAll.Enabled := AllCanDisable;
@@ -418,6 +428,18 @@ begin
   finally
     lvWatchesSelectItem(nil, nil, False);
   end;
+end;
+
+procedure TWatchesDlg.actAddWatchPointExecute(Sender: TObject);
+var
+  NewBreakpoint: TIDEBreakPoint;
+  Watch: TCurrentWatch;
+begin
+  Watch := GetSelected;
+  if Watch = nil then Exit;
+  NewBreakpoint := BreakPoints.Add(Watch.Expression, wpsGlobal, wpkWrite);
+  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) <> mrOk then
+    NewBreakpoint.Free;
 end;
 
 procedure TWatchesDlg.popAddClick(Sender: TObject);

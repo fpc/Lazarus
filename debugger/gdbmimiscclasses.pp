@@ -63,13 +63,16 @@ type
 
   TGDBMINameValueList = class(TObject)
   private
+    FDataLen: Integer;
     FText: String;
+    FData: PChar;
     FCount: Integer;
     FIndex: array of TGDBMINameValue;
     FUseTrim: Boolean;
 
     function Find(const AName : string): PGDBMINameValue;
     function GetItem(const AIndex: Integer): PGDBMINameValue;
+    function GetText: String;
     function GetValue(const AName : string): string;
     function GetValuePtr(const AName: string): TPCharWithLen;
   public
@@ -92,6 +95,9 @@ type
     property Values[const AName: string]: string read GetValue;
     property ValuesPtr[const AName: string]: TPCharWithLen read GetValuePtr;
     property UseTrim: Boolean read FUseTrim write FUseTrim;
+    property Data: PChar read FData;
+    property DataLen: Integer read FDataLen;
+    property Text: String read GetText;
   end;
 
   {$IFDEF DBG_ENABLE_TERMINAL}
@@ -178,6 +184,11 @@ begin
   if AIndex < 0 then Exit(nil);
   if AIndex >= FCount then Exit(nil);
   Result := @FIndex[AIndex];
+end;
+
+function TGDBMINameValueList.GetText: String;
+begin
+  Result := copy(FData, 1, FDataLen);
 end;
 
 function TGDBMINameValueList.GetString(const AIndex : Integer) : string;
@@ -337,6 +348,8 @@ var
 begin
   // clear
   FCount := 0;
+  FData := AResultValues;
+  FDataLen := ALength;
 
   if AResultValues = nil then Exit;
   if ALength <= 0 then Exit;

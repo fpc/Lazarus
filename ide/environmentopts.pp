@@ -959,7 +959,6 @@ var
   end;
 
 var
-  CurDebuggerClass: String;
   Path: String;
   CurPath: String;
   i, j: Integer;

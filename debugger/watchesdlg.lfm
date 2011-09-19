@@ -57,61 +57,61 @@ inherited WatchesDlg: TWatchesDlg
     object ToolButton2: TToolButton
       Left = 24
       Top = 2
-      Width = 4
+      Width = 5
       Caption = 'ToolButton2'
       Style = tbsDivider
     end
     object ToolButtonEnable: TToolButton
-      Left = 51
+      Left = 52
       Top = 2
       Action = actEnableSelected
     end
     object ToolButtonDisable: TToolButton
-      Left = 74
+      Left = 75
       Top = 2
       Action = actDisableSelected
     end
     object ToolButtonTrash: TToolButton
-      Left = 97
+      Left = 98
       Top = 2
       Action = actDeleteSelected
     end
     object ToolButton6: TToolButton
-      Left = 120
+      Left = 121
       Top = 2
-      Width = 4
+      Width = 5
       Caption = 'ToolButton6'
       Style = tbsDivider
     end
     object ToolButtonEnableAll: TToolButton
-      Left = 124
+      Left = 126
       Top = 2
       Action = actEnableAll
     end
     object ToolButtonDisableAll: TToolButton
-      Left = 147
+      Left = 149
       Top = 2
       Action = actDisableAll
     end
     object ToolButtonTrashAll: TToolButton
-      Left = 170
+      Left = 172
       Top = 2
       Action = actDeleteAll
     end
     object ToolButton10: TToolButton
-      Left = 193
+      Left = 195
       Top = 2
-      Width = 4
+      Width = 5
       Caption = 'ToolButton10'
       Style = tbsDivider
     end
     object ToolButtonAdd: TToolButton
-      Left = 28
+      Left = 29
       Top = 2
       Action = actAddWatch
     end
     object ToolButtonProperties: TToolButton
-      Left = 197
+      Left = 200
       Top = 2
       Action = actProperties
     end
@@ -145,6 +145,12 @@ inherited WatchesDlg: TWatchesDlg
     end
     object popDeleteAll: TMenuItem
       Action = actDeleteAll
+    end
+    object N3: TMenuItem
+      Caption = '-'
+    end
+    object popAddWatchPoint: TMenuItem
+      Action = actAddWatchPoint
     end
   end
   object ActionList1: TActionList[3]
@@ -202,6 +208,10 @@ inherited WatchesDlg: TWatchesDlg
         'enter'
       )
       ShortCut = 16453
+    end
+    object actAddWatchPoint: TAction
+      Caption = 'actAddWatchPoint'
+      OnExecute = actAddWatchPointExecute
     end
   end
 end

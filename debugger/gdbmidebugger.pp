@@ -179,6 +179,8 @@ type
       ectReturn            // -exec-return (step out immediately, skip execution)
     );
 
+  TGDBMIBreakpointReason = (gbrBreak, gbrWatchTrigger, gbrWatchScope);
+
   TGDBMIDebuggerCommand = class(TRefCountedObject)
   private
     FDefaultTimeOut: Integer;
@@ -421,7 +423,9 @@ type
     procedure DoRelease; override;   // Destroy self (or schedule)
 
     procedure DoNotifyAsync(Line: String);
-    procedure DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; Location: TDBGLocationRec);
+    procedure DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; Location: TDBGLocationRec;
+                                   AReason: TGDBMIBreakpointReason;
+                                   AOldVal: String = ''; ANewVal: String = '');
     procedure AddThreadGroup(const S: String);
     procedure RemoveThreadGroup(const S: String);
     function ParseLibraryLoaded(const S: String): String;
@@ -471,9 +475,16 @@ resourcestring
   gdbmiErrorStateInfoFailedWrite = '%0:sCould not send a command to GDB.%0:s';
   gdbmiErrorStateInfoFailedRead = '%0:sCould not read output from GDB.%0:s';
   gdbmiErrorStateInfoGDBGone = '%0:sThe GDB process is no longer running.%0:s';
+  gdbmiWarningUnknowBreakPoint = 'The debugger reached an unexpected %1:s%0:s%0:s'
+    + 'Press "Ok" to continue debugging (paused).%0:s'
+    + 'Press "Stop" to end the debug session.';
 
 
 implementation
+
+const
+  GDBMIBreakPointReasonNames: Array[TGDBMIBreakpointReason] of string =
+    ('Breakpoint', 'Watchpoint', 'Watchpoint (scope)');
 
 type
   THackDBGType = class(TGDBType) end;
@@ -4301,24 +4312,39 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     end;
   end;
 
-  procedure ProcessException(AInfo: TGDBMIExceptionInfo);
+  procedure ProcessException;
   var
     ExceptionMessage: String;
     CanContinue: Boolean;
     Location: TDBGLocationRec;
+    ExceptInfo: TGDBMIExceptionInfo;
   begin
+    if FTheDebugger.Exceptions.IgnoreAll
+    then begin
+      Result := True; //ExecuteCommand('-exec-continue')
+      exit;
+    end;
+
+    ExceptInfo := GetExceptionInfo;
+    // check if we should ignore this exception
+    if (FTheDebugger.Exceptions.Find(ExceptInfo.Name) <> nil)
+    then begin
+      Result := True; //ExecuteCommand('-exec-continue')
+      exit;
+    end;
+
     FTheDebugger.QueueExecuteLock;
     try
       if (dfImplicidTypes in FTheDebugger.DebuggerFlags)
       then begin
         if (tfFlagHasTypeException in TargetInfo^.TargetFlags) then begin
           if tfExceptionIsPointer in TargetInfo^.TargetFlags
-          then ExceptionMessage := GetText('Exception(%s).FMessage', [AInfo.ObjAddr])
-          else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
+          then ExceptionMessage := GetText('Exception(%s).FMessage', [ExceptInfo.ObjAddr])
+          else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [ExceptInfo.ObjAddr]);
           //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
         end else begin
           // Only works if Exception class is not changed. FMessage must be first member
-          ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, AInfo.ObjAddr]);
+          ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, ExceptInfo.ObjAddr]);
         end;
       end
       else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
@@ -4328,7 +4354,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
       FTheDebugger.QueueExecuteUnlock;
     end;
 
-    FTheDebugger.DoException(deInternal, AInfo.Name, Location, ExceptionMessage, CanContinue);
+    FTheDebugger.DoException(deInternal, ExceptInfo.Name, Location, ExceptionMessage, CanContinue);
     if CanContinue
     then begin
       //ExecuteCommand('-exec-continue')
@@ -4446,20 +4472,111 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     end;
   end;
 
+  procedure ProcessBreakPoint(ABreakId: Integer; const List: TGDBMINameValueList;
+    AReason: TGDBMIBreakpointReason; AOldVal: String = ''; ANewVal: String = '');
+  var
+    BreakPoint: TGDBMIBreakPoint;
+    CanContinue: Boolean;
+    Location: TDBGLocationRec;
+  begin
+    BreakPoint := nil;
+    if ABreakId >= 0 then
+      BreakPoint := TGDBMIBreakPoint(FTheDebugger.FindBreakpoint(ABreakID));
+
+    if (BreakPoint <> nil) and (BreakPoint.Kind <> bpkData) and
+       (AReason in [gbrWatchScope, gbrWatchTrigger])
+    then BreakPoint := nil;
+
+    if BreakPoint <> nil
+    then begin
+      CanContinue := False;
+      FTheDebugger.QueueExecuteLock;
+      try
+        Location := FrameToLocation(List.Values['frame']);
+        FTheDebugger.FCurrentLocation := Location;
+      finally
+        FTheDebugger.QueueExecuteUnlock;
+      end;
+      FTheDebugger.DoDbgBreakpointEvent(BreakPoint, Location, AReason, AOldVal, ANewVal);
+      // Important: The Queue must be unlocked
+      //   BreakPoint.Hit may evaluate stack and expressions
+      //   SetDebuggerState may evaluate data for Snapshot
+      BreakPoint.Hit(CanContinue);
+      if CanContinue
+      then begin
+        // Important trigger State => as snapshot is taken in TDebugManager.DebuggerChangeState
+        SetDebuggerState(dsInternalPause);
+        Result := True;
+      end
+      else begin
+        SetDebuggerState(dsPause);
+        ProcessFrame(Location);
+        // inform the user, why we stopped
+        // TODO: Add a dedicated callback
+        case AReason of
+          gbrWatchTrigger: FTheDebugger.OnFeedback
+             (self, Format('The Watchpoint for "%1:s" was triggered.%0:s%0:sOld value: %2:s%0:sNew value: %3:s',
+                           [LineEnding, BreakPoint.WatchData, AOldVal, ANewVal]),
+              '', ftInformation, [frOk]);
+          gbrWatchScope: FTheDebugger.OnFeedback
+             (self, Format('The Watchpoint for "%s" went out of scope', [BreakPoint.WatchData]),
+              '', ftInformation, [frOk]);
+        end;
+      end;
+
+      if AReason = gbrWatchScope
+      then begin
+        BreakPoint.ReleaseBreakPoint; // gdb should have released already => ignore error
+        BreakPoint.Enabled := False;
+        BreakPoint.FBreakID := 0; // removed by debugger, ID no longer exists
+      end;
+
+      exit;
+    end;
+
+    // The temp-at-start breakpoint is not checked. Ignore it
+    if (DebuggerState = dsRun) and (FTheDebugger.TargetPID <> 0) // not in startup
+    then begin
+      debugln(['********** WARNING: breakpoint hit, but nothing known about it ABreakId=', ABreakID, ' brbtno=', List.Values['bkptno'] ]);
+      {$IFDEF DBG_VERBOSE_BRKPOINT}
+      debugln(['-*- List of breakpoints Cnt=', FTheDebugger.Breakpoints.Count]);
+      for ABreakID := 0 to FTheDebugger.Breakpoints.Count - 1 do
+        debugln(['* ',Dbgs(FTheDebugger.Breakpoints[ABreakID]), ':', DbgsName(FTheDebugger.Breakpoints[ABreakID]), ' ABreakId=',TGDBMIBreakPoint(FTheDebugger.Breakpoints[ABreakID]).FBreakID, ' Source=', FTheDebugger.Breakpoints[ABreakID].Source, ' Line=', FTheDebugger.Breakpoints[ABreakID].Line ]);
+      debugln(['************************************************************************ ']);
+      debugln(['************************************************************************ ']);
+      debugln(['************************************************************************ ']);
+      {$ENDIF}
+
+      case FTheDebugger.OnFeedback
+             (self, Format(gdbmiWarningUnknowBreakPoint,
+                           [LineEnding, GDBMIBreakPointReasonNames[AReason]]),
+              List.Text, ftWarning, [frOk, frStop]
+             )
+      of
+        frOk: begin
+            SetDebuggerState(dsPause);
+            ProcessFrame(List.Values['frame']); // and jump to it
+          end;
+        frStop: begin
+            FTheDebugger.Stop;
+          end;
+      end;
+
+    end;
+  end;
+
 var
-  List: TGDBMINameValueList;
+  List, List2: TGDBMINameValueList;
   Reason: String;
   BreakID: Integer;
-  BreakPoint: TGDBMIBreakPoint;
   CanContinue: Boolean;
-  ExceptionInfo: TGDBMIExceptionInfo;
-  Location: TDBGLocationRec;
 begin
   (* The Queue is not locked / This code can be interupted
      Therefore all calls to ExecuteCommand (gdb cmd) must be wrapped in QueueExecuteLock
   *)
   Result := False;
   List := TGDBMINameValueList.Create(AParams);
+  List2 := nil;
 
   FTheDebugger.FCurrentStackFrame :=  0;
   FTheDebugger.FInternalStackFrame := 0;
@@ -4498,13 +4615,30 @@ begin
       Exit;
     end;
 
+    if Reason = 'watchpoint-trigger'
+    then begin
+      List2 := TGDBMINameValueList.Create(List.Values['wpt']);
+      BreakID := StrToIntDef(List2.Values['number'], -1);
+      // Use List2.Values['exp'] ? It may contain globalized expression
+      List2.Init(List.Values['value']);
+      ProcessBreakPoint(BreakID, List, gbrWatchTrigger, List2.Values['old'], List2.Values['new']);
+      exit;
+    end;
+
+    if Reason = 'watchpoint-scope'
+    then begin
+      BreakID := StrToIntDef(List.Values['wpnum'], -1);
+      ProcessBreakPoint(BreakID, List, gbrWatchScope);
+      exit;
+    end;
+
     if Reason = 'breakpoint-hit'
     then begin
       BreakID := StrToIntDef(List.Values['bkptno'], -1);
       if BreakID = -1
       then begin
+        ProcessBreakPoint(BreakID, List, gbrBreak);
         SetDebuggerState(dsError);
-        // ???
         Exit;
       end;
 
@@ -4522,59 +4656,12 @@ begin
 
       if BreakID = FTheDebugger.FExceptionBreakID
       then begin
-        ExceptionInfo := GetExceptionInfo;
-
-        // check if we should ignore this exception
-        if FTheDebugger.Exceptions.IgnoreAll
-        or (FTheDebugger.Exceptions.Find(ExceptionInfo.Name) <> nil)
-        then
-          Result := True //ExecuteCommand('-exec-continue')
-        else
-          ProcessException(ExceptionInfo); // will set dsPause / unless CanCuntinue
+        ProcessException; // will set dsPause / unless CanCuntinue
         Exit;
       end;
 
-      BreakPoint := TGDBMIBreakPoint(FTheDebugger.FindBreakpoint(BreakID));
-      if BreakPoint <> nil
-      then begin
-        CanContinue := False;
-        FTheDebugger.QueueExecuteLock;
-        try
-          Location := FrameToLocation(List.Values['frame']);
-        finally
-          FTheDebugger.QueueExecuteUnlock;
-        end;
-        FTheDebugger.FCurrentLocation := Location;
-        FTheDebugger.DoDbgBreakpointEvent(BreakPoint, Location);
-        BreakPoint.Hit(CanContinue);
-        if CanContinue
-        then begin
-          SetDebuggerState(dsInternalPause);
-          //ExecuteCommand('-exec-continue');
-          Result := True;
-          exit;
-        end
-        else begin
-          SetDebuggerState(dsPause);
-          ProcessFrame(Location);
-        end;
-      end;
-      // The temp-at-start breakpoint is not checked. Ignore it
-      if (DebuggerState = dsRun) and (FTheDebugger.TargetPID <> 0) // not in startup
-      then begin
-        debugln(['********** WARNING: breakpoint hit, but nothing known about it BreakId=', BreakID, ' brbtno=', List.Values['bkptno'] ]);
-        {$IFDEF DBG_VERBOSE_BRKPOINT}
-        debugln(['-*- List of breakpoints Cnt=', FTheDebugger.Breakpoints.Count]);
-        for BreakID := 0 to FTheDebugger.Breakpoints.Count - 1 do
-          debugln(['* ',Dbgs(FTheDebugger.Breakpoints[BreakID]), ':', DbgsName(FTheDebugger.Breakpoints[BreakID]), ' BreakId=',TGDBMIBreakPoint(FTheDebugger.Breakpoints[BreakID]).FBreakID, ' Source=', FTheDebugger.Breakpoints[BreakID].Source, ' Line=', FTheDebugger.Breakpoints[BreakID].Line ]);
-        debugln(['************************************************************************ ']);
-        debugln(['************************************************************************ ']);
-        debugln(['************************************************************************ ']);
-        {$ENDIF}
-        SetDebuggerState(dsPause);
-        ProcessFrame(List.Values['frame']); // and jump to it
-      end;
-      Exit;
+      ProcessBreakPoint(BreakID, List, gbrBreak);
+      exit;
     end;
 
     if Reason = 'function-finished'
@@ -4608,6 +4695,7 @@ begin
     end;
   finally
     List.Free;
+    list2.Free;
   end;
 end;
 
@@ -5826,25 +5914,52 @@ begin
   end;
 end;
 
-procedure TGDBMIDebugger.DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; Location: TDBGLocationRec);
+procedure TGDBMIDebugger.DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint;
+  Location: TDBGLocationRec; AReason: TGDBMIBreakpointReason;
+  AOldVal: String = ''; ANewVal: String = '');
 var
-  SrcName: String;
+  SrcName, Msg: String;
+  SrcLine: Integer;
 begin
-  case ABreakPoint.Kind of
-    bpkSource:
-      begin
-        SrcName := Location.SrcFullName;
-        if SrcName = '' then
-          SrcName := Location.SrcFile;
-        if SrcName = '' then
-          SrcName := ABreakpoint.Source;
-        DoDbgEvent(ecBreakpoint, etBreakpointHit, Format('Source Breakpoint at $%.' + IntToStr(TargetPtrSize * 2) + 'x: %s line %d', [Location.Address, SrcName, Location.SrcLine]));
-      end;
-    bpkAddress:
-      begin
-        DoDbgEvent(ecBreakpoint, etBreakpointHit, Format('Address Breakpoint at $%.' + IntToStr(TargetPtrSize * 2) + 'x', [Location.Address]));
-      end;
+  SrcName := Location.SrcFullName;
+  if SrcName = '' then
+    SrcName := Location.SrcFile;
+  if (SrcName = '') and (ABreakPoint <> nil) and (ABreakPoint.Kind = bpkSource) then
+    SrcName := ABreakpoint.Source;
+  SrcLine := Location.SrcLine;
+  if (SrcLine < 1) and (ABreakPoint <> nil) and (ABreakPoint.Kind = bpkSource) then
+    SrcLine := ABreakpoint.Line;
+
+  if ABreakpoint = nil then begin
+    Msg := Format('Unknown %s', [GDBMIBreakPointReasonNames[AReason]]);
+    if AReason = gbrWatchTrigger then
+      Msg := Msg + Format(' changed from "%s" to "%s"', [AOldVal, ANewVal]);
+  end
+  else begin
+    case ABreakPoint.Kind of
+      bpkSource:  Msg := 'Source Breakpoint';
+      bpkAddress: Msg := 'Address Breakpoint';
+      bpkData:
+        begin
+          if AReason = gbrWatchScope then
+            Msg := Format('Watchpoint for "%s" out of scope', [ABreakpoint.WatchData])
+          else
+            Msg := Format('Watchpoint for "%s" was triggered. Old value "%s", New Value "%s"', [ABreakpoint.WatchData, AOldVal, ANewVal]);
+        end;
+    end;
   end;
+
+  if SrcName <> '' then begin
+    DoDbgEvent(ecBreakpoint, etBreakpointHit,
+               Format('%s at $%.' + IntToStr(TargetPtrSize * 2) + 'x: %s line %d',
+                      [Msg, Location.Address, SrcName, SrcLine]));
+  end
+  else begin
+    DoDbgEvent(ecBreakpoint, etBreakpointHit,
+               Format('%s at $%.' + IntToStr(TargetPtrSize * 2) + 'x',
+                      [Msg, Location.Address]));
+  end;
+
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -7061,9 +7176,11 @@ begin
         WatchExpr := WatchData;
         if FWatchScope = wpsGlobal then begin
           Result := ExecuteCommand('ptype %s', [WatchExpr], R);
+          Result := Result and (R.State <> dsError);
           if not Result then exit;
           WatchDecl := PCLenToString(ParseTypeFromGdb(R.Values).Name);
           Result := ExecuteCommand('-data-evaluate-expression @%s', [WatchExpr], R);
+          Result := Result and (R.State <> dsError);
           if not Result then exit;
           WatchAddr := StripLN(GetPart('value="', '"', R.Values));
           WatchExpr := WatchDecl+'(' + WatchAddr + '^)';
@@ -7073,6 +7190,7 @@ begin
           wpkRead:      Result := ExecuteCommand('-break-watch -r %s', [WatchExpr], R);
           wpkReadWrite: Result := ExecuteCommand('-break-watch -a %s', [WatchExpr], R);
         end;
+        Result := Result and (R.State <> dsError);
         GdbRes := 'wpt';
       end;
   end;
@@ -7153,7 +7271,14 @@ end;
 
 function TGDBMIDebuggerCommandBreakInsert.DebugText: String;
 begin
-  Result := Format('%s: Source=%s, Line=%d, Enabled=%s', [ClassName, FSource, FLine, dbgs(FEnabled)]);
+  case FKind of
+    bpkAddress:
+      Result := Format('%s: Address=%x, Enabled=%s', [ClassName, FAddress, dbgs(FEnabled)]);
+    bpkData:
+      Result := Format('%s: Data=%s, Enabled=%s', [ClassName, FWatchData, dbgs(FEnabled)]);
+    else
+      Result := Format('%s: Source=%s, Line=%d, Enabled=%s', [ClassName, FSource, FLine, dbgs(FEnabled)]);
+  end;
 end;
 
 { TGDBMIDebuggerCommandBreakRemove }
@@ -7259,7 +7384,12 @@ end;
 
 procedure TGDBMIBreakPoint.DoEnableChange;
 begin
-  UpdateProperties([bufEnabled]);
+  if (FBreakID = 0) and Enabled and
+     (TGDBMIDebugger(Debugger).State in [dsPause, dsInternalPause, dsRun])
+  then
+    SetBreakPoint
+  else
+    UpdateProperties([bufEnabled]);
   inherited;
 end;
 
@@ -7271,7 +7401,12 @@ begin
   if TGDBMIDebugger(Debugger).ConvertPascalExpression(S)
   then FParsedExpression := S
   else FParsedExpression := Expression;
-  UpdateProperties([bufCondition]);
+  if (FBreakID = 0) and Enabled and
+     (TGDBMIDebugger(Debugger).State in [dsPause, dsInternalPause, dsRun])
+  then
+    SetBreakPoint
+  else
+    UpdateProperties([bufCondition]);
   inherited;
 end;
 
@@ -7404,10 +7539,22 @@ begin
 
   if (Sender is TGDBMIDebuggerCommandBreakInsert)
   then begin
+    // Check Insert Result
     BeginUpdate;
+
     if TGDBMIDebuggerCommandBreakInsert(Sender).Valid
     then SetValid(vsValid)
-    else SetValid(vsInvalid);
+    else begin
+      if (TGDBMIDebuggerCommandBreakInsert(Sender).Kind = bpkData) and
+         (TGDBMIDebugger(Debugger).State = dsInit)
+      then begin
+        // disable data breakpoint, if unable to set (only at startup)
+        SetValid(vsValid);
+        SetEnabled(False);
+      end
+      else SetValid(vsInvalid);
+    end;
+
     FBreakID := TGDBMIDebuggerCommandBreakInsert(Sender).BreakID;
     SetHitCount(TGDBMIDebuggerCommandBreakInsert(Sender).HitCnt);
 

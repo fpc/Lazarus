@@ -53,6 +53,7 @@ type
   TBreakPointsDlg = class(TDebuggerDlg)
     actAddSourceBP: TAction;
     actAddAddressBP: TAction;
+    actAddWatchPoint: TAction;
     actShow: TAction;
     actProperties: TAction;
     actToggleCurrentEnable: TAction;
@@ -67,6 +68,7 @@ type
     actDisableAllInSrc: TAction;
     ActionList1: TActionList;
     lvBreakPoints: TListView;
+    popAddWatchPoint: TMenuItem;
     popAddAddressBP: TMenuItem;
     N0: TMenuItem;
     popShow: TMenuItem;
@@ -97,6 +99,7 @@ type
     ToolButtonTrashAll: TToolButton;
     procedure actAddAddressBPExecute(Sender: TObject);
     procedure actAddSourceBPExecute(Sender: TObject);
+    procedure actAddWatchPointExecute(Sender: TObject);
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
     procedure actShowExecute(Sender: TObject);
@@ -307,6 +310,7 @@ begin
   popAdd.Caption:= lisLazBuildAdd;
   actAddSourceBP.Caption := lisSourceBreakpoint;
   actAddAddressBP.Caption := lisAddressBreakpoint;
+  actAddWatchPoint.Caption := lisWatchPoint;
 end;
 
 procedure TBreakPointsDlg.actEnableSelectedExecute(Sender: TObject);
@@ -360,6 +364,17 @@ begin
     NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CurrentCursorYLine)
   else
     NewBreakpoint := BreakPoints.Add('', 0);
+  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
+    UpdateAll
+  else
+    NewBreakpoint.Free;
+end;
+
+procedure TBreakPointsDlg.actAddWatchPointExecute(Sender: TObject);
+var
+  NewBreakpoint: TIDEBreakPoint;
+begin
+  NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite);
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then
     UpdateAll
   else
@@ -640,6 +655,7 @@ begin
     (ActionList1.Actions[i] as TAction).Enabled := False;
   actAddSourceBP.Enabled := True;
   actAddAddressBP.Enabled := True;
+  actAddWatchPoint.Enabled := True;
 end;
 
 procedure TBreakPointsDlg.UpdateItem(const AnItem: TListItem;

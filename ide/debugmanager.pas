@@ -977,6 +977,7 @@ begin
   then FCurrentBreakpoint := nil;
 
   // Notify FSnapshots of new state (while dialogs still in updating)
+  // TODO: Maybe move to TIDEBreakPoint.DoHit
   if (FCurrentBreakpoint <> nil) and (bpaTakeSnapshot in FCurrentBreakpoint.Actions) and
      (State in [dsPause, dsInternalPause])
   then begin
@@ -1372,6 +1373,7 @@ begin
   TheDialog.WatchesMonitor := FWatches;
   TheDialog.ThreadsMonitor := FThreads;
   TheDialog.CallStackMonitor := FCallStack;
+  TheDialog.BreakPoints := FBreakPoints;
   TheDialog.SnapshotManager := FSnapshots;
 end;
 
@@ -1598,9 +1600,7 @@ begin
 
     itmRunMenuAddBpSource.OnClick  := @mnuAddBpSource;
     itmRunMenuAddBpAddress.OnClick  := @mnuAddBpAddress;
-    {$IFDEF DBG_WITH_WATCHPOINT}
     itmRunMenuAddBpWatchPoint.OnClick := @mnuAddBpData;
-    {$ENDIF}
 
     // TODO: add capacibilities to DebuggerClass
     // and disable unsuported items
@@ -1648,9 +1648,7 @@ begin
     itmRunMenuAddWatch.Command:=GetCommand(ecAddWatch);
     itmRunMenuAddBpSource.Command:=GetCommand(ecAddBpSource);
     itmRunMenuAddBpAddress.Command:=GetCommand(ecAddBpAddress);
-    {$IFDEF DBG_WITH_WATCHPOINT}
-    //itmRunMenuAddBpWatchPoint.Command:=GetCommand(ecAddBpAddress);
-    {$ENDIF}
+    itmRunMenuAddBpWatchPoint.Command:=GetCommand(ecAddBpDataWatch);
   end;
 end;
 
@@ -1736,9 +1734,7 @@ begin
     // Add Breakpoint
     itmRunMenuAddBpSource.Enabled := True;
     itmRunMenuAddBpAddress.Enabled := True;
-    {$IFDEF DBG_WITH_WATCHPOINT}
     itmRunMenuAddBpWatchPoint.Enabled := True;
-    {$ENDIF}
 
     // TODO: add capacibilities to DebuggerClass
     // menu view

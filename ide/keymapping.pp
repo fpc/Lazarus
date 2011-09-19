@@ -579,6 +579,7 @@ begin
   ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_UNKNOWN,[]);
   ecAddBpSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddBpAddress: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpDataWatch: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // components menu
   ecNewPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1030,6 +1031,7 @@ begin
   ecAddWatch: SetSingle(VK_F7,[ssCtrl],VK_UNKNOWN,[]);
   ecAddBpSource: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddBpAddress: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpDataWatch: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // components menu
   ecNewPackage: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1664,6 +1666,7 @@ begin
   ecAddWatch: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddBpSource: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddBpAddress: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpDataWatch: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // components menu
   ecNewPackage: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1832,6 +1835,7 @@ begin
   ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_F5,[ssCtrl,ssMeta]);
   ecAddBpSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddBpAddress: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpDataWatch: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   end;
 end;
 
@@ -2211,6 +2215,7 @@ begin
     ecAddWatch                : Result:= srkmecAddWatch;
     ecAddBpSource             : Result:= srkmecAddBpSource;
     ecAddBpAddress            : Result:= srkmecAddBpAddress;
+    ecAddBpDataWatch          : Result:= srkmecAddBpWatchPoint;
 
     // components menu
     ecNewPackage              : Result:= lisKMNewPackage;
@@ -2866,6 +2871,7 @@ begin
   AddDefault(C, 'Add watch', lisKMAddWatch, ecAddWatch);
   AddDefault(C, 'Add source breakpoint', lisKMAddBpSource, ecAddBpSource);
   AddDefault(C, 'Add address breakpoint', lisKMAddBpAddress, ecAddBpAddress);
+  AddDefault(C, 'Add data watchpoint', lisKMAddBpWatchPoint, ecAddBpDataWatch);
 
   // components menu
   C:=Categories[AddCategory('Components',srkmCatPackageMenu,nil)];

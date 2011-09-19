@@ -65,6 +65,9 @@ function TDbgFeedbackDlg.Execute(const AText, AInfo: String; AType: TDBGFeedback
   AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
 begin
   case AType of
+    ftInformation: begin
+        Caption := lisDebuggerFeedbackInformation;
+      end;
     ftWarning: begin
         Caption := lisDebuggerFeedbackWarning;
       end;

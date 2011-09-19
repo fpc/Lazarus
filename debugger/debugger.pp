@@ -655,6 +655,7 @@ type
     function GetDebugger: TDebugger;
     procedure SetSlave(const ASlave : TBaseBreakPoint);
   protected
+    procedure SetEnabled(const AValue: Boolean); override;
     procedure DoChanged; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     procedure DoLogMessage(const AMessage: String); virtual;
@@ -2590,7 +2591,7 @@ type
       True: (Ptr: Pointer);
   end;
 
-  TDBGFeedbackType = (ftWarning, ftError);
+  TDBGFeedbackType = (ftInformation, ftWarning, ftError);
   TDBGFeedbackResult = (frOk, frStop);
   TDBGFeedbackResults = set of TDBGFeedbackResult;
 
@@ -6214,6 +6215,7 @@ begin
   if Dest is TBaseBreakPoint
   then begin
     DestBreakPoint.SetKind(FKind);
+    DestBreakPoint.SetWatch(FWatchData, FWatchScope, FWatchKind);
     DestBreakPoint.SetAddress(FAddress);
     AssignLocationTo(DestBreakPoint);
     DestBreakPoint.SetBreakHitCount(FBreakHitCount);
@@ -6590,6 +6592,7 @@ begin
   then FMaster.DoLogMessage(FLogMessage);
   if bpaLogCallStack in Actions
   then FMaster.DoLogCallStack(FLogCallStackLimit);
+  // SnapShot is taken in TDebugManager.DebuggerChangeState
   if bpaEnableGroup in Actions
   then EnableGroups;
   if bpaDisableGroup in Actions
@@ -6648,15 +6651,24 @@ begin
   FLoading:=true;
   try
     Kind:=TDBGBreakPointKind(GetEnumValueDef(TypeInfo(TDBGBreakPointKind),XMLConfig.GetValue(Path+'Kind/Value',''),0));
-    Address:=XMLConfig.GetValue(Path+'Address/Value',0);
     GroupName:=XMLConfig.GetValue(Path+'Group/Name','');
     Group:=OnGetGroup(GroupName);
     Expression:=XMLConfig.GetValue(Path+'Expression/Value','');
     AutoContinueTime:=XMLConfig.GetValue(Path+'AutoContinueTime/Value',0);
     BreakHitCount := XMLConfig.GetValue(Path+'BreakHitCount/Value',0);
+
+    Address:=XMLConfig.GetValue(Path+'Address/Value',0);
+
+    FWatchData := XMLConfig.GetValue(Path+'WatchData/Value', '');
+    try ReadStr(XMLConfig.GetValue(Path+'WatchScope/Value', 'wpsGlobal'), FWatchScope);
+    except FWatchScope := wpsGlobal; end;
+    try ReadStr(XMLConfig.GetValue(Path+'WatchKind/Value', 'wpkWrite'), FWatchKind);
+    except FWatchKind:= wpkWrite; end;
+
     Filename:=XMLConfig.GetValue(Path+'Source/Value','');
     if Assigned(OnLoadFilename) then OnLoadFilename(Filename);
     FSource:=Filename;
+
     InitialEnabled:=XMLConfig.GetValue(Path+'InitialEnabled/Value',true);
     Enabled:=FInitialEnabled;
     FLine:=XMLConfig.GetValue(Path+'Line/Value',-1);
@@ -6712,11 +6724,18 @@ procedure TIDEBreakPoint.SaveToXMLConfig(const AConfig: TXMLConfig;
   end;
 
 var
-  Filename: String;
+  s, Filename: String;
   CurAction: TIDEBreakPointAction;
 begin
   AConfig.SetDeleteValue(APath+'Kind/Value',GetEnumName(TypeInfo(TDBGBreakPointKind), Ord(Kind)), '');
   AConfig.SetDeleteValue(APath+'Address/Value',Address,0);
+
+  AConfig.SetDeleteValue(APath+'WatchData/Value', FWatchData, '');
+  WriteStr(s, FWatchScope);
+  AConfig.SetDeleteValue(APath+'WatchScope/Value', s, '');
+  WriteStr(s, FWatchKind);
+  AConfig.SetDeleteValue(APath+'WatchKind/Value', s, '');
+
   if Group <> nil
   then AConfig.SetDeleteValue(APath+'Group/Name',Group.Name,'');
 
@@ -6935,6 +6954,14 @@ begin
   FSlave := ASlave;
 end;
 
+procedure TDBGBreakPoint.SetEnabled(const AValue: Boolean);
+begin
+  if Enabled = AValue then exit;
+  inherited SetEnabled(AValue);
+  // feedback to IDEBreakPoint
+  if FSlave <> nil then FSlave.Enabled := AValue;
+end;
+
 { =========================================================================== }
 { TIDEBreakPoints }
 { =========================================================================== }
@@ -7115,6 +7142,12 @@ begin
           BreakPoint := Find(LoadBreakPoint.Address, LoadBreakPoint);
           if BreakPoint = nil then
             BreakPoint := Add(LoadBreakPoint.Address);
+        end;
+      bpkData:
+        begin
+          BreakPoint := Find(LoadBreakPoint.WatchData, LoadBreakPoint.WatchScope, LoadBreakPoint.WatchKind, LoadBreakPoint);
+          if BreakPoint = nil then
+            BreakPoint := Add(LoadBreakPoint.WatchData, LoadBreakPoint.WatchScope, LoadBreakPoint.WatchKind);
         end;
     end;
 

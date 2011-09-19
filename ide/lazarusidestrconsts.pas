@@ -379,6 +379,7 @@ resourcestring
   lisKMAddWatch = 'Add watch';
   lisKMAddBpSource = 'Add source breakpoint';
   lisKMAddBpAddress = 'Add address breakpoint';
+  lisKMAddBpWatchPoint = 'Add data/watchPoint';
   lisMenuConfigBuildFile = 'Configure Build+Run File ...';
   lisMenuInspect = '&Inspect ...';
   lisMenuEvaluate = 'E&valuate/Modify ...';
@@ -2697,6 +2698,7 @@ resourcestring
   srkmecAddWatch                  = 'add watch';
   srkmecAddBpSource               = 'add source breakpoint';
   srkmecAddBpAddress              = 'add address breakpoint';
+  srkmecAddBpWatchPoint           = 'add data/watchpoint';
 
   // tools menu
   srkmecExtToolSettings           = 'External tools settings';
@@ -4627,6 +4629,7 @@ resourcestring
   lisGroup = 'Group';
   lisSourceBreakpoint = '&Source Breakpoint ...';
   lisAddressBreakpoint = '&Address Breakpoint ...';
+  lisWatchPoint = '&Data/Watch Breakpoint ...';
   lisWatchPointBreakpoint = '&Data/watch Breakpoint ...';
   lisEnableAll = '&Enable All';
   lisDeleteAll = '&Delete All';
@@ -4686,6 +4689,9 @@ resourcestring
   // Designer Size Components Dialog
   lisShrinkToSmal = 'Shrink to smallest';
   lisGrowToLarges = 'Grow to Largest';
+
+  // Watch Dialog
+  lisWatchToWatchPoint = 'Create &Data/Watch Breakpoint ...';
 
   // Watch Property Dialog
   lisWatchPropert = 'Watch Properties';
@@ -5346,6 +5352,7 @@ resourcestring
   lisFileNotFound3 = 'file %s not found';
   lisFileNotFound4 = 'file not found';
   lisISDDirectoryNotFound = 'directory not found';
+  lisDebuggerFeedbackInformation = 'Debugger Information';
   lisDebuggerFeedbackWarning = 'Debugger Warning';
   lisDebuggerFeedbackError = 'Debugger Error';
   lisDebuggerFeedbackStop = 'Stop';
