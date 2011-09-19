@@ -2584,23 +2584,30 @@ begin
     if (UseLineInfoUnit) then
       switches := switches + ' -gl';
 
+    { Use Heaptrc Unit }
+    if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
+      switches := switches + ' -gh';
+
+    { Generate code for Valgrind }
+    if (UseValgrind) and (not (ccloNoLinkerOpts in Flags)) then
+      switches := switches + ' -gv';
+
+    if (UseExternalDbgSyms) then
+      switches := switches + ' -Xg';
+
+  end
+  else begin
+    // no debug info wanted
+
+    { Use Heaptrc Unit }
+    if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
+      switches := switches + ' -g-h'; // heaptrc, without -g
+
   end;
-
-
-  { Use Heaptrc Unit }
-  if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
-    switches := switches + ' -gh';
-
-  { Generate code for Valgrind }
-  if (UseValgrind) and (not (ccloNoLinkerOpts in Flags)) then
-    switches := switches + ' -gv';
 
   { Generate code gprof }
   if (GenGProfCode) then
     switches := switches + ' -pg';
-
-  if (UseExternalDbgSyms) then
-    switches := switches + ' -Xg';
 
   { Strip Symbols }
   if (StripSymbols) and (not (ccloNoLinkerOpts in Flags)) then

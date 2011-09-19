@@ -25,9 +25,11 @@ type
     chkWin32GraphicApp: TCheckBox;
     dropDbgSymbolType: TComboBox;
     edtOptionsLinkOpt: TEdit;
+    grpDebug2: TGroupBox;
     grpDebugging: TGroupBox;
     grpLinkLibraries: TGroupBox;
     grpOptions: TGroupBox;
+    lblEmpty: TLabel;
     lblDbgSymbolType: TLabel;
     TargetSpecificsGrpBox: TGroupBox;
     procedure chkDebugGDBChange(Sender: TObject);
@@ -76,8 +78,7 @@ end;
 
 procedure TCompilerLinkingOptionsFrame.chkDebugGDBChange(Sender: TObject);
 begin
-  dropDbgSymbolType.Enabled := chkDebugGDB.Checked;
-  chkUseLineInfoUnit.Enabled := chkDebugGDB.Checked;
+  grpDebugging.Enabled := chkDebugGDB.Checked;
 end;
 
 function TCompilerLinkingOptionsFrame.GetTitle: string;
@@ -94,7 +95,9 @@ begin
     Caption := dlgCODebugging;
   end;
 
-  chkDebugGDB.Caption := dlgCOGDB + ' (-g)';
+  grpDebug2.Caption := dlgCODebugging2;
+
+  chkDebugGDB.Caption := dlgCOGDB;
   lblDbgSymbolType.Caption := dlgCOSymbolType;
   dropDbgSymbolType.Items.Clear;
   // Adjust constants above, if re-ordering
@@ -147,8 +150,7 @@ begin
     grpOptions.Enabled := NeedsLinkerOpts;
   end;
 
-  dropDbgSymbolType.Enabled := chkDebugGDB.Checked;
-  chkUseLineInfoUnit.Enabled := chkDebugGDB.Checked;
+  grpDebugging.Enabled := chkDebugGDB.Checked;
 end;
 
 procedure TCompilerLinkingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

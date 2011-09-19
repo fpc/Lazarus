@@ -5,12 +5,28 @@ inherited CompilerLinkingOptionsFrame: TCompilerLinkingOptionsFrame
   ClientWidth = 639
   DesignLeft = 346
   DesignTop = 181
-  object grpLinkLibraries: TGroupBox[0]
+  object chkDebugGDB: TCheckBox[0]
+    Left = 6
+    Height = 19
+    Top = 6
+    Width = 627
+    Align = alTop
+    BorderSpacing.Around = 6
+    Caption = 'chkDebugGDB'
+    OnChange = chkDebugGDBChange
+    TabOrder = 4
+  end
+  object grpLinkLibraries: TGroupBox[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = grpDebug2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 49
-    Top = 234
+    Top = 270
     Width = 639
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'grpLinkLibraries'
@@ -28,12 +44,17 @@ inherited CompilerLinkingOptionsFrame: TCompilerLinkingOptionsFrame
       TabOrder = 0
     end
   end
-  object TargetSpecificsGrpBox: TGroupBox[1]
+  object TargetSpecificsGrpBox: TGroupBox[2]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = grpLinkLibraries
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 49
-    Top = 289
+    Top = 325
     Width = 639
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'TargetSpecificsGrpBox'
@@ -51,12 +72,17 @@ inherited CompilerLinkingOptionsFrame: TCompilerLinkingOptionsFrame
       TabOrder = 0
     end
   end
-  object grpOptions: TGroupBox[2]
+  object grpOptions: TGroupBox[3]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = grpLinkLibraries
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 78
-    Top = 344
+    Top = 325
     Width = 639
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'grpOptions'
@@ -84,117 +110,82 @@ inherited CompilerLinkingOptionsFrame: TCompilerLinkingOptionsFrame
       Text = 'edtOptionsLinkOpt'
     end
   end
-  object grpDebugging: TGroupBox[3]
+  object grpDebugging: TGroupBox[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = chkDebugGDB
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 228
-    Top = 0
+    Height = 128
+    Top = 31
     Width = 639
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     Caption = 'grpDebugging'
-    ClientHeight = 210
+    ClientHeight = 110
     ClientWidth = 635
     TabOrder = 3
-    object chkDebugGDB: TCheckBox
-      AnchorSideLeft.Control = grpDebugging
-      AnchorSideTop.Control = grpDebugging
-      Left = 6
-      Height = 19
-      Top = 6
-      Width = 97
-      BorderSpacing.Around = 6
-      Caption = 'chkDebugGDB'
-      OnChange = chkDebugGDBChange
-      TabOrder = 0
-    end
     object chkUseLineInfoUnit: TCheckBox
       AnchorSideLeft.Control = grpDebugging
       AnchorSideTop.Control = dropDbgSymbolType
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpDebugging
+      AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 60
-      Width = 123
+      Top = 35
+      Width = 623
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'chkUseLineInfoUnit'
-      TabOrder = 1
-    end
-    object chkUseHeaptrc: TCheckBox
-      AnchorSideLeft.Control = grpDebugging
-      AnchorSideTop.Control = chkUseLineInfoUnit
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 85
-      Width = 100
-      BorderSpacing.Around = 6
-      Caption = 'chkUseHeaptrc'
-      TabOrder = 2
+      TabOrder = 0
     end
     object chkUseValgrind: TCheckBox
       AnchorSideLeft.Control = grpDebugging
-      AnchorSideTop.Control = chkUseHeaptrc
+      AnchorSideTop.Control = chkUseLineInfoUnit
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpDebugging
+      AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 110
-      Width = 102
+      Top = 60
+      Width = 623
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'chkUseValgrind'
-      TabOrder = 3
-    end
-    object chkGenGProfCode: TCheckBox
-      AnchorSideLeft.Control = grpDebugging
-      AnchorSideTop.Control = chkUseValgrind
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 135
-      Width = 118
-      BorderSpacing.Around = 6
-      Caption = 'chkGenGProfCode'
-      TabOrder = 4
-    end
-    object chkSymbolsStrip: TCheckBox
-      AnchorSideLeft.Control = grpDebugging
-      AnchorSideTop.Control = chkGenGProfCode
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 160
-      Width = 108
-      BorderSpacing.Around = 6
-      Caption = 'chkSymbolsStrip'
-      TabOrder = 5
+      TabOrder = 1
     end
     object chkUseExternalDbgSyms: TCheckBox
       AnchorSideLeft.Control = grpDebugging
-      AnchorSideTop.Control = chkSymbolsStrip
+      AnchorSideTop.Control = chkUseValgrind
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpDebugging
+      AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 19
-      Top = 185
-      Width = 149
+      Top = 85
+      Width = 623
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       Caption = 'chkUseExternalDbgSyms'
-      TabOrder = 6
+      TabOrder = 3
     end
     object dropDbgSymbolType: TComboBox
       AnchorSideLeft.Control = lblDbgSymbolType
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = chkDebugGDB
-      AnchorSideTop.Side = asrBottom
+      AnchorSideTop.Control = lblEmpty
       AnchorSideRight.Control = grpDebugging
       AnchorSideRight.Side = asrBottom
       Left = 114
       Height = 23
-      Top = 31
+      Top = 6
       Width = 515
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
       ItemHeight = 15
       Style = csDropDownList
-      TabOrder = 7
+      TabOrder = 2
     end
     object lblDbgSymbolType: TLabel
       AnchorSideLeft.Control = grpDebugging
@@ -202,11 +193,75 @@ inherited CompilerLinkingOptionsFrame: TCompilerLinkingOptionsFrame
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
-      Top = 34
+      Top = 9
       Width = 102
       BorderSpacing.Around = 6
       Caption = 'lblDbgSymbolType'
       ParentColor = False
+    end
+    object lblEmpty: TLabel
+      Left = 0
+      Height = 1
+      Top = 0
+      Width = 635
+      Align = alTop
+      ParentColor = False
+    end
+  end
+  object grpDebug2: TGroupBox[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = grpDebugging
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 99
+    Top = 165
+    Width = 639
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Top = 6
+    Caption = 'grpDebug2'
+    ClientHeight = 81
+    ClientWidth = 635
+    TabOrder = 5
+    object chkUseHeaptrc: TCheckBox
+      Left = 6
+      Height = 19
+      Top = 6
+      Width = 623
+      Align = alTop
+      BorderSpacing.Around = 6
+      Caption = 'chkUseHeaptrc'
+      TabOrder = 0
+    end
+    object chkGenGProfCode: TCheckBox
+      AnchorSideTop.Control = chkUseHeaptrc
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpDebug2
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 31
+      Width = 623
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'chkGenGProfCode'
+      TabOrder = 1
+    end
+    object chkSymbolsStrip: TCheckBox
+      AnchorSideTop.Control = chkGenGProfCode
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpDebug2
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 56
+      Width = 623
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'chkSymbolsStrip'
+      TabOrder = 2
     end
   end
 end

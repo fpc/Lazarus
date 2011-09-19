@@ -1824,7 +1824,8 @@ resourcestring
   dlgLevel3Opt = 'Level 3 (Level 2 + slow optimizations)';
   dlgTargetOS = 'Target OS';
   dlgTargetCPUFamily = 'Target CPU family';
-  dlgCODebugging = 'Debugging:';
+  dlgCODebugging = 'Debugging Info:';
+  dlgCODebugging2 = 'Debugging:';
   dlgCOGDB = 'Generate Debugging Info For GDB (Slower / Increases exe-size)';
   dlgCOSymbolType = 'Chose type of debug info';
   dlgCOSymbolTypeAuto = 'Automatic';
@@ -1834,7 +1835,7 @@ resourcestring
   dlgCOSymbolTypeDwarf3 = 'Dwarf3 (beta)';
   dlgCODBX = 'Generate Debugging Info For DBX (Slows Compiling)';
   dlgLNumsBct = 'Display Line Numbers in Run-time Error Backtraces';
-  dlgCOHeaptrc = 'Use Heaptrc Unit';
+  dlgCOHeaptrc = 'Use Heaptrc Unit (check for mem-leaks)';
   dlgCOValgrind = 'Generate code for valgrind';
   dlgGPROF = 'Generate code for gprof';
   dlgCOStrip = 'Strip Symbols From Executable';
