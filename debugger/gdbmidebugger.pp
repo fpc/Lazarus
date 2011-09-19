@@ -4930,13 +4930,13 @@ begin
     FTheDebugger.QueueExecuteUnlock;
   end;
 
-  if (StoppedParams <> '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
-    debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams]);
-    //SetDebuggerState(dsError); // we cannot be running anymore
-    SetDebuggerState(dsPause);
-  end;
-  if (StoppedParams = '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
-    debugln(['ERROR: Got NO stop params at all, but was running']);
+
+  if (not ContinueExecution) and (DebuggerState = dsRun) and
+     (TargetInfo^.TargetPID <> 0) and (FTheDebugger.PauseWaitState <> pwsInternal)
+  then begin
+    if (StoppedParams <> '')
+    then debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams])
+    else debugln(['ERROR: Got NO stop params at all, but was running']);
     //SetDebuggerState(dsError); // we cannot be running anymore
     SetDebuggerState(dsPause);
   end;
@@ -7429,11 +7429,11 @@ end;
 procedure TGDBMIBreakPoint.DoLogExpression(const AnExpression: String);
 var
   s: String;
-  t: TDBGType;
+  t: TGDBType;
 begin
   if TGDBMIDebugger(Debugger).GDBEvaluate(AnExpression, s, t, [defNoTypeInfo])
   then begin
-    Debugger.DoDbgEvent(ecBreakpoint, etBreakpointEvaluation, s);
+    TGDBMIDebugger(Debugger).DoDbgEvent(ecBreakpoint, etBreakpointEvaluation, s);
   end;
 end;
 
