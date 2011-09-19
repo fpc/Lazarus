@@ -70,16 +70,16 @@ begin
         Ellipse(PaintRect);
       stSquaredDiamond, stDiamond:
       begin
-        with Self do
+        with PaintRect do
         begin
-          P[0].x := PenInc;
-          P[0].y := (Height - 1) div 2;
-          P[1].x := (Width - 1) div 2;
-          P[1].y := PenInc;
-          P[2].x := Width - PenInc - 1;
+          P[0].x := Left;
+          P[0].y := (Top + Bottom) div 2;
+          P[1].x := (Left + Right) div 2;
+          P[1].y := Top;
+          P[2].x := Right - 1;
           P[2].y := P[0].y;
           P[3].x := P[1].x;
-          P[3].y := Height - PenInc - 1;
+          P[3].y := Bottom - 1;
           Polygon(P);
         end;
       end;
@@ -97,7 +97,7 @@ begin
           P[3].y := P[0].y;
           Polygon(P);
         end;
-      end; 
+      end;
     end;
   end;
   // to fire OnPaint event
