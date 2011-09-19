@@ -3596,7 +3596,7 @@ end;
 procedure TWinCEWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-  Windows.LeaveCriticalSection(LPCRITICAL_SECTION(CritSection));
+  Windows.ENTERCRITICALSECTION(LPCRITICAL_SECTION(CritSection));
 end;
 
 {We interprete CritSection as a pointer to a LPCRITICAL_SECTION structure}
