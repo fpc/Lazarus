@@ -34,6 +34,9 @@ type
     edtCounter: TEdit;
     edtFilename: TEdit;
     gbActions: TGroupBox;
+    Label1: TLabel;
+    lblWatchKind: TLabel;
+    lblWatchScope: TLabel;
     lblLogCallStackLimit: TLabel;
     lblMS: TLabel;
     lblFileName: TLabel;
@@ -43,6 +46,13 @@ type
     lblGroup: TLabel;
     lblAutoContinue: TLabel;
     edtLogCallStack: TSpinEdit;
+    rbWrite: TRadioButton;
+    rbRead: TRadioButton;
+    rbReadWrite: TRadioButton;
+    rbGlobal: TRadioButton;
+    rbLocal: TRadioButton;
+    rgWatchKind: TPanel;
+    rgWatchScope: TPanel;
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure BreakPointRemove(const ASender: TIDEBreakPoints;
@@ -101,6 +111,8 @@ var
   Actions: TIDEBreakPointActions;
   GroupName: String;
   NewGroup: TIDEBreakPointGroup;
+  ws: TDBGWatchPointScope;
+  wk: TDBGWatchPointKind;
 begin
   if FBreakpoint = nil then Exit;
 
@@ -114,6 +126,18 @@ begin
     bpkAddress:
       begin
         FBreakpoint.SetAddress(StrToQWordDef(edtFilename.Text, 0));
+      end;
+    bpkData:
+      begin
+        if rbGlobal.Checked
+        then ws := wpsGlobal
+        else ws := wpsLocal;
+        wk := wpkWrite;
+        if rbRead.Checked
+        then wk := wpkRead;
+        if rbReadWrite.Checked
+        then wk := wpkReadWrite;
+        FBreakpoint.SetWatch(edtFilename.Text, ws, wk);
       end;
   end;
   // expression
@@ -173,6 +197,15 @@ begin
       begin
         edtFilename.Text := '$' + IntToHex(FBreakpoint.Address, 8); // todo: 8/16 depends on platform
       end;
+    bpkData:
+      begin
+        edtFilename.Text := FBreakpoint.WatchData;
+        rbGlobal.Checked := FBreakpoint.WatchScope = wpsGlobal;
+        rbLocal.Checked := FBreakpoint.WatchScope = wpsLocal;
+        rbWrite.Checked := FBreakpoint.WatchKind = wpkWrite;
+        rbRead.Checked := FBreakpoint.WatchKind = wpkRead;
+        rbReadWrite.Checked := FBreakpoint.WatchKind = wpkReadWrite;
+      end;
   end;
   // expression
   edtCondition.Text := FBreakpoint.Expression;
@@ -218,6 +251,25 @@ begin
         edtLine.Visible := False;
         edtFilename.ReadOnly := False;
         edtFilename.Color := clDefault;
+      end;
+    bpkData:
+      begin
+        lblFileName.Caption := lisWatchData;
+        lblLine.Visible := False;
+        edtLine.Visible := False;
+        edtFilename.ReadOnly := False;
+        edtFilename.Color := clDefault;
+        lblWatchKind.Visible := True;
+        lblWatchScope.Visible := True;
+        rgWatchKind.Visible := True;
+        rgWatchScope.Visible := True;
+        lblWatchScope.Caption := lisWatchScope;
+        lblWatchKind.Caption := lisWatchKind;
+        rbGlobal.Caption := lisWatchScopeGlobal;
+        rbLocal.Caption := lisWatchScopeLocal;
+        rbWrite.Caption := lisWatchKindWrite;
+        rbRead.Caption := lisWatchKindRead;
+        rbReadWrite.Caption := lisWatchKindReadWrite;
       end;
   end;
   lblCondition.Caption := lisCondition + ':';

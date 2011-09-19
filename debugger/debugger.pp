@@ -484,7 +484,19 @@ type
 
   TDBGBreakPointKind = (
     bpkSource,  // source breakpoint
-    bpkAddress  // address breakpoint
+    bpkAddress, // address breakpoint
+    bpkData     // data/watchpoint
+  );
+
+  TDBGWatchPointScope = (
+    wpsLocal,
+    wpsGlobal
+  );
+
+  TDBGWatchPointKind = (
+    wpkWrite,
+    wpkRead,
+    wpkReadWrite
   );
 
   { TBaseBreakPoint }
@@ -492,12 +504,15 @@ type
   TBaseBreakPoint = class(TDelayedUdateItem)
   private
     FAddress: TDBGPtr;
+    FWatchData: String;
     FEnabled: Boolean;
     FExpression: String;
     FHitCount: Integer;
     FBreakHitCount: Integer;
     FKind: TDBGBreakPointKind;
     FLine: Integer;
+    FWatchScope: TDBGWatchPointScope;
+    FWatchKind: TDBGWatchPointKind;
     FSource: String;
     FValid: TValidState;
     FInitialEnabled: Boolean;
@@ -521,6 +536,9 @@ type
     function GetKind: TDBGBreakPointKind; virtual;
     function GetLine: Integer; virtual;
     function GetSource: String; virtual;
+    function GetWatchData: String; virtual;
+    function GetWatchScope: TDBGWatchPointScope; virtual;
+    function GetWatchKind: TDBGWatchPointKind; virtual;
     function GetValid: TValidState; virtual;
 
     procedure SetAddress(const AValue: TDBGPtr); virtual;
@@ -531,19 +549,29 @@ type
     procedure SetKind(const AValue: TDBGBreakPointKind); virtual;
   public
     constructor Create(ACollection: TCollection); override;
-    procedure SetLocation(const ASource: String; const ALine: Integer); virtual;// PublicProtectedFix ide/debugmanager.pas(867,32) Error: identifier idents no member "SetLocation"
+    // PublicProtectedFix ide/debugmanager.pas(867,32) Error: identifier idents no member "SetLocation"
     property BreakHitCount: Integer read GetBreakHitCount write SetBreakHitCount;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
     property HitCount: Integer read GetHitCount;
     property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
     property Kind: TDBGBreakPointKind read GetKind write SetKind;
-    // TDBGBreakPoint: Line is the line-number as stored in the debug info
-    // TIDEBreakPoint: Line is the location in the Source (potentially modified Source)
+    property Valid: TValidState read GetValid;
+  public
+    procedure SetLocation(const ASource: String; const ALine: Integer); virtual;
+    procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
+                       const AKind: TDBGWatchPointKind); virtual;
+    // bpkAddress
     property Address: TDBGPtr read GetAddress write SetAddress;
+    // bpkSource
+    //   TDBGBreakPoint: Line is the line-number as stored in the debug info
+    //   TIDEBreakPoint: Line is the location in the Source (potentially modified Source)
     property Line: Integer read GetLine;
     property Source: String read GetSource;
-    property Valid: TValidState read GetValid;
+    // bpkData
+    property WatchData: String read GetWatchData;
+    property WatchScope: TDBGWatchPointScope read GetWatchScope;
+    property WatchKind: TDBGWatchPointKind read GetWatchKind;
   end;
   TBaseBreakPointClass = class of TBaseBreakPoint;
 
@@ -606,6 +634,8 @@ type
                       const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
     procedure SetAddress(const AValue: TDBGPtr); override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
+    procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
+                       const AKind: TDBGWatchPointKind); override;
     procedure ResetMaster;
   public
     property Actions: TIDEBreakPointActions read GetActions write SetActions;
@@ -663,10 +693,16 @@ type
     constructor Create(const ABreakPointClass: TBaseBreakPointClass);
     function Add(const ASource: String; const ALine: Integer): TBaseBreakPoint; overload;
     function Add(const AAddress: TDBGPtr): TBaseBreakPoint; overload;
+    function Add(const AData: String; const AScope: TDBGWatchPointScope;
+                 const AKind: TDBGWatchPointKind): TBaseBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer): TBaseBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TBaseBreakPoint): TBaseBreakPoint; overload;
     function Find(const AAddress: TDBGPtr): TBaseBreakPoint; overload;
     function Find(const AAddress: TDBGPtr; const AIgnore: TBaseBreakPoint): TBaseBreakPoint; overload;
+    function Find(const AData: String; const AScope: TDBGWatchPointScope;
+                  const AKind: TDBGWatchPointKind): TBaseBreakPoint; overload;
+    function Find(const AData: String; const AScope: TDBGWatchPointScope;
+                  const AKind: TDBGWatchPointKind; const AIgnore: TBaseBreakPoint): TBaseBreakPoint; overload;
     // no items property needed, it is "overridden" anyhow
   end;
 
@@ -688,10 +724,16 @@ type
     destructor Destroy; override;
     function Add(const ASource: String; const ALine: Integer): TIDEBreakPoint; overload;
     function Add(const AAddress: TDBGPtr): TIDEBreakPoint; overload;
+    function Add(const AData: String; const AScope: TDBGWatchPointScope;
+                 const AKind: TDBGWatchPointKind): TIDEBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer): TIDEBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TIDEBreakPoint): TIDEBreakPoint; overload;
     function Find(const AAddress: TDBGPtr): TIDEBreakPoint; overload;
     function Find(const AAddress: TDBGPtr; const AIgnore: TIDEBreakPoint): TIDEBreakPoint; overload;
+    function Find(const AData: String; const AScope: TDBGWatchPointScope;
+                  const AKind: TDBGWatchPointKind): TIDEBreakPoint; overload;
+    function Find(const AData: String; const AScope: TDBGWatchPointScope;
+                  const AKind: TDBGWatchPointKind; const AIgnore: TIDEBreakPoint): TIDEBreakPoint; overload;
     procedure AddNotification(const ANotification: TIDEBreakPointsNotification);
     procedure RemoveNotification(const ANotification: TIDEBreakPointsNotification);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -720,10 +762,16 @@ type
                        const ABreakPointClass: TDBGBreakPointClass);
     function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint; overload;
     function Add(const AAddress: TDBGPtr): TDBGBreakPoint; overload;
+    function Add(const AData: String; const AScope: TDBGWatchPointScope;
+                 const AKind: TDBGWatchPointKind): TDBGBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer): TDBGBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
     function Find(const AAddress: TDBGPtr): TDBGBreakPoint; overload;
     function Find(const AAddress: TDBGPtr; const AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
+    function Find(const AData: String; const AScope: TDBGWatchPointScope;
+                  const AKind: TDBGWatchPointKind): TDBGBreakPoint; overload;
+    function Find(const AData: String; const AScope: TDBGWatchPointScope;
+                  const AKind: TDBGWatchPointKind; const AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
 
     property Items[const AnIndex: Integer]: TDBGBreakPoint read GetItem write SetItem; default;
   end;
@@ -6136,6 +6184,21 @@ begin
   end;
 end;
 
+function TBaseBreakPoint.GetWatchData: String;
+begin
+  Result := FWatchData;
+end;
+
+function TBaseBreakPoint.GetWatchScope: TDBGWatchPointScope;
+begin
+  Result := FWatchScope;
+end;
+
+function TBaseBreakPoint.GetWatchKind: TDBGWatchPointKind;
+begin
+  Result := FWatchKind;
+end;
+
 procedure TBaseBreakPoint.AssignLocationTo(Dest: TPersistent);
 var
   DestBreakPoint: TBaseBreakPoint absolute Dest;
@@ -6283,6 +6346,16 @@ begin
   if (FSource = ASource) and (FLine = ALine) then exit;
   FSource := ASource;
   FLine := ALine;
+  Changed;
+end;
+
+procedure TBaseBreakPoint.SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind);
+begin
+  if (AData = FWatchData) and (AScope = FWatchScope) and (AKind = FWatchKind) then exit;
+  FWatchData := AData;
+  FWatchScope := AScope;
+  FWatchKind := AKind;
   Changed;
 end;
 
@@ -6682,6 +6755,13 @@ begin
   if FMaster<>nil then FMaster.SetLocation(ASource, DebugExeLine);
 end;
 
+procedure TIDEBreakPoint.SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind);
+begin
+  inherited SetWatch(AData, AScope, AKind);
+  if FMaster<>nil then FMaster.SetWatch(AData, AScope, AKind);
+end;
+
 procedure TIDEBreakPoint.ResetMaster;
 begin
   if FMaster <> nil then FMaster.Slave := nil;
@@ -6872,6 +6952,13 @@ begin
   NotifyAdd(Result);
 end;
 
+function TIDEBreakPoints.Add(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind): TIDEBreakPoint;
+begin
+  Result := TIDEBreakPoint(inherited Add(AData, AScope, AKind));
+  NotifyAdd(Result);
+end;
+
 procedure TIDEBreakPoints.AddNotification(
   const ANotification: TIDEBreakPointsNotification);
 begin
@@ -6918,6 +7005,18 @@ end;
 function TIDEBreakPoints.Find(const AAddress: TDBGPtr; const AIgnore: TIDEBreakPoint): TIDEBreakPoint;
 begin
   Result := TIDEBreakPoint(inherited Find(AAddress, AIgnore));
+end;
+
+function TIDEBreakPoints.Find(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind): TIDEBreakPoint;
+begin
+  Result := TIDEBreakPoint(inherited Find(AData, AScope, AKind));
+end;
+
+function TIDEBreakPoints.Find(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind; const AIgnore: TIDEBreakPoint): TIDEBreakPoint;
+begin
+  Result := TIDEBreakPoint(inherited Find(AData, AScope, AKind, AIgnore));
 end;
 
 procedure TIDEBreakPoints.SetMaster(const AValue: TDBGBreakPoints);
@@ -7074,6 +7173,12 @@ begin
   Result := TDBGBreakPoint(inherited Add(AAddress));
 end;
 
+function TDBGBreakPoints.Add(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(inherited Add(AData, AScope, AKind));
+end;
+
 constructor TDBGBreakPoints.Create (const ADebugger: TDebugger; const ABreakPointClass: TDBGBreakPointClass );
 begin
   FDebugger := ADebugger;
@@ -7108,6 +7213,18 @@ begin
   Result := TDBGBreakPoint(inherited Find(AAddress, nil));
 end;
 
+function TDBGBreakPoints.Find(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(inherited Find(AData, AScope, AKind, nil));
+end;
+
+function TDBGBreakPoints.Find(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind; const AIgnore: TDBGBreakPoint): TDBGBreakPoint;
+begin
+  Result := TDBGBreakPoint(inherited Find(AData, AScope, AKind, AIgnore));
+end;
+
 function TDBGBreakPoints.GetItem (const AnIndex: Integer ): TDBGBreakPoint;
 begin
   Result := TDBGBreakPoint(inherited GetItem(AnIndex));
@@ -7134,6 +7251,14 @@ begin
   Result := TBaseBreakPoint(inherited Add);
   Result.SetKind(bpkAddress);
   Result.SetAddress(AAddress);
+end;
+
+function TBaseBreakPoints.Add(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind): TBaseBreakPoint;
+begin
+  Result := TBaseBreakPoint(inherited Add);
+  Result.SetKind(bpkData);
+  Result.SetWatch(AData, AScope, AKind);
 end;
 
 constructor TBaseBreakPoints.Create(const ABreakPointClass: TBaseBreakPointClass);
@@ -7176,6 +7301,30 @@ begin
     Result := TBaseBreakPoint(GetItem(n));
     if  (Result.Kind = bpkAddress)
     and (Result.Address = AAddress)
+    and (AIgnore <> Result)
+    then Exit;
+  end;
+  Result := nil;
+end;
+
+function TBaseBreakPoints.Find(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind): TBaseBreakPoint;
+begin
+  Result := Find(AData, AScope, AKind, nil);
+end;
+
+function TBaseBreakPoints.Find(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind; const AIgnore: TBaseBreakPoint): TBaseBreakPoint;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+  begin
+    Result := TBaseBreakPoint(GetItem(n));
+    if  (Result.Kind = bpkData)
+    and (Result.WatchData = AData)
+    and (Result.WatchScope = AScope)
+    and (Result.WatchKind = AKind)
     and (AIgnore <> Result)
     then Exit;
   end;

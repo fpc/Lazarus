@@ -302,6 +302,9 @@ type
         //itmRunMenuAddBreakpoint: TIDEMenuSection;
           itmRunMenuAddBpSource: TIDEMenuCommand;
           itmRunMenuAddBpAddress: TIDEMenuCommand;
+          {$IFDEF DBG_WITH_WATCHPOINT}
+          itmRunMenuAddBpWatchPoint: TIDEMenuCommand;
+          {$ENDIF}
 
     // components menu
     //mnuComponents: TIDEMenuSection;

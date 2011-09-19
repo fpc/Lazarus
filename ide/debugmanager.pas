@@ -75,6 +75,7 @@ type
     procedure mnuAddWatchClicked(Sender: TObject);
     procedure mnuAddBpAddress(Sender: TObject);
     procedure mnuAddBpSource(Sender: TObject);
+    procedure mnuAddBpData(Sender: TObject);
 
     // Debugger events
     procedure DebuggerBreakPointHit(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
@@ -701,6 +702,15 @@ begin
   else
     NewBreakpoint := BreakPoints.Add('', 0);
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) <> mrOk then
+    NewBreakpoint.Free;
+end;
+
+procedure TDebugManager.mnuAddBpData(Sender: TObject);
+var
+  NewBreakpoint: TIDEBreakPoint;
+begin
+  NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite);
+  if ShowBreakPointProperties(NewBreakpoint) <> mrOk then
     NewBreakpoint.Free;
 end;
 
@@ -1588,6 +1598,9 @@ begin
 
     itmRunMenuAddBpSource.OnClick  := @mnuAddBpSource;
     itmRunMenuAddBpAddress.OnClick  := @mnuAddBpAddress;
+    {$IFDEF DBG_WITH_WATCHPOINT}
+    itmRunMenuAddBpWatchPoint.OnClick := @mnuAddBpData;
+    {$ENDIF}
 
     // TODO: add capacibilities to DebuggerClass
     // and disable unsuported items
@@ -1635,6 +1648,9 @@ begin
     itmRunMenuAddWatch.Command:=GetCommand(ecAddWatch);
     itmRunMenuAddBpSource.Command:=GetCommand(ecAddBpSource);
     itmRunMenuAddBpAddress.Command:=GetCommand(ecAddBpAddress);
+    {$IFDEF DBG_WITH_WATCHPOINT}
+    //itmRunMenuAddBpWatchPoint.Command:=GetCommand(ecAddBpAddress);
+    {$ENDIF}
   end;
 end;
 
@@ -1720,6 +1736,9 @@ begin
     // Add Breakpoint
     itmRunMenuAddBpSource.Enabled := True;
     itmRunMenuAddBpAddress.Enabled := True;
+    {$IFDEF DBG_WITH_WATCHPOINT}
+    itmRunMenuAddBpWatchPoint.Enabled := True;
+    {$ENDIF}
 
     // TODO: add capacibilities to DebuggerClass
     // menu view

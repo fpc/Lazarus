@@ -645,7 +645,7 @@ end;
 procedure TBreakPointsDlg.UpdateItem(const AnItem: TListItem;
   const ABreakpoint: TIDEBreakPoint);
 var
-  Filename: String;
+  s, Filename: String;
 begin
   // Filename/Address
   // Line/Length
@@ -674,6 +674,21 @@ begin
       begin
         // todo: how to define digits count? 8 or 16 depends on gdb pointer size for platform
         AnItem.SubItems[0] := '$' + IntToHex(ABreakpoint.Address, 8);
+      end;
+    bpkData:
+      begin
+        AnItem.SubItems[0] := ABreakpoint.WatchData;
+        case ABreakpoint.WatchScope of
+          wpsGlobal: s:= lisWatchScopeGlobal;
+          wpsLocal:  s:= lisWatchScopeLocal;
+        end;
+        s := s +' / ';
+        case ABreakpoint.WatchKind of
+          wpkRead:      s := s + lisWatchKindRead;
+          wpkReadWrite: s := s + lisWatchKindReadWrite;
+          wpkWrite:     s := s + lisWatchKindWrite;
+        end;
+        AnItem.SubItems[1] := s;
       end;
   end;
 
@@ -730,6 +745,7 @@ begin
     case CurBreakPoint.Kind of
       bpkSource: Msg := Format(lisDeleteBreakpointAtLine, [#13, CurBreakPoint.Source, CurBreakPoint.Line]);
       bpkAddress: Msg := Format(lisDeleteBreakpointForAddress, ['$' + IntToHex(CurBreakPoint.Address, 8)]);
+      bpkData: Msg := Format(lisDeleteBreakpointForWatch, [CurBreakPoint.WatchData]);
     end;
   end
   else

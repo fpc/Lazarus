@@ -1,6 +1,6 @@
 inherited BreakPropertyDlg: TBreakPropertyDlg
   Left = 620
-  Height = 440
+  Height = 491
   Top = 132
   Width = 450
   HorzScrollBar.Page = 386
@@ -11,7 +11,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Breakpoint Properties'
-  ClientHeight = 440
+  ClientHeight = 491
   ClientWidth = 450
   Constraints.MinWidth = 450
   Position = poScreenCenter
@@ -30,6 +30,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
   end
   object lblLine: TLabel[1]
     AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtLine
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 16
@@ -46,7 +47,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 16
-    Top = 67
+    Top = 117
     Width = 57
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -59,7 +60,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 16
-    Top = 96
+    Top = 146
     Width = 51
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -72,7 +73,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 16
-    Top = 154
+    Top = 204
     Width = 37
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -85,7 +86,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 6
     Height = 16
-    Top = 125
+    Top = 175
     Width = 104
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -99,7 +100,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Side = asrCenter
     Left = 206
     Height = 16
-    Top = 125
+    Top = 175
     Width = 25
     BorderSpacing.Left = 6
     Caption = '(ms)'
@@ -113,7 +114,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 140
     Height = 23
-    Top = 122
+    Top = 172
     Width = 60
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
@@ -129,7 +130,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 140
     Height = 23
-    Top = 93
+    Top = 143
     Width = 304
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
@@ -164,7 +165,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 140
     Height = 23
-    Top = 151
+    Top = 201
     Width = 304
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
@@ -181,7 +182,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 213
-    Top = 180
+    Top = 230
     Width = 438
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -395,8 +396,8 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Control = gbActions
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 35
-    Top = 399
+    Height = 36
+    Top = 449
     Width = 438
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'
@@ -417,13 +418,13 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
   object edtCondition: TComboBox[13]
     AnchorSideLeft.Control = lblAutoContinue
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = edtLine
+    AnchorSideTop.Control = rgWatchScope
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 140
     Height = 23
-    Top = 64
+    Top = 114
     Width = 304
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
@@ -446,5 +447,136 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     BorderSpacing.Around = 6
     MaxValue = 999999
     TabOrder = 7
+  end
+  object rgWatchKind: TPanel[15]
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtLine
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 140
+    Height = 19
+    Top = 64
+    Width = 304
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 24
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 19
+    ClientWidth = 304
+    TabOrder = 8
+    Visible = False
+    object rbWrite: TRadioButton
+      Left = 6
+      Height = 19
+      Top = 0
+      Width = 59
+      Caption = 'rbWrite'
+      Checked = True
+      TabOrder = 2
+      TabStop = True
+    end
+    object rbRead: TRadioButton
+      Left = 65
+      Height = 19
+      Top = 0
+      Width = 57
+      BorderSpacing.Left = 3
+      Caption = 'rbRead'
+      TabOrder = 0
+    end
+    object rbReadWrite: TRadioButton
+      Left = 122
+      Height = 19
+      Top = 0
+      Width = 85
+      BorderSpacing.Left = 3
+      Caption = 'rbReadWrite'
+      TabOrder = 1
+    end
+  end
+  object rgWatchScope: TPanel[16]
+    AnchorSideLeft.Control = lblAutoContinue
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = rgWatchKind
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 140
+    Height = 19
+    Top = 89
+    Width = 304
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 24
+    BorderSpacing.Around = 6
+    BevelOuter = bvNone
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 19
+    ClientWidth = 304
+    TabOrder = 9
+    Visible = False
+    object rbGlobal: TRadioButton
+      Left = 6
+      Height = 19
+      Top = 0
+      Width = 65
+      Caption = 'rbGlobal'
+      TabOrder = 0
+    end
+    object rbLocal: TRadioButton
+      Left = 71
+      Height = 19
+      Top = 0
+      Width = 59
+      BorderSpacing.Left = 3
+      Caption = 'rbLocal'
+      TabOrder = 1
+    end
+    object Label1: TLabel
+      Left = 130
+      Height = 19
+      Top = 0
+      Width = 4
+      Caption = ' '
+      ParentColor = False
+    end
+  end
+  object lblWatchKind: TLabel[17]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rgWatchKind
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 16
+    Top = 65
+    Width = 72
+    BorderSpacing.Left = 6
+    Caption = 'lblWatchKind'
+    ParentColor = False
+    Visible = False
+  end
+  object lblWatchScope: TLabel[18]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rgWatchScope
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 16
+    Top = 90
+    Width = 80
+    BorderSpacing.Left = 6
+    Caption = 'lblWatchScope'
+    ParentColor = False
+    Visible = False
   end
 end

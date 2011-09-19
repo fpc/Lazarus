@@ -88,34 +88,34 @@ inherited BreakpointsDlg: TBreakpointsDlg
     object ToolButton6: TToolButton
       Left = 70
       Top = 2
-      Width = 8
+      Width = 10
       Caption = 'ToolButton6'
       Style = tbsSeparator
     end
     object ToolButtonEnableAll: TToolButton
-      Left = 78
+      Left = 80
       Top = 2
       Action = actEnableAll
     end
     object ToolButtonDisableAll: TToolButton
-      Left = 101
+      Left = 103
       Top = 2
       Action = actDisableAll
     end
     object ToolButtonTrashAll: TToolButton
-      Left = 124
+      Left = 126
       Top = 2
       Action = actDeleteAll
     end
     object ToolButton10: TToolButton
-      Left = 147
+      Left = 149
       Top = 2
-      Width = 8
+      Width = 10
       Caption = 'ToolButton10'
       Style = tbsSeparator
     end
     object ToolButtonProperties: TToolButton
-      Left = 155
+      Left = 159
       Top = 2
       Action = actProperties
     end

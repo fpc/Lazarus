@@ -723,9 +723,6 @@ type
   protected
     function ExecCheckLineInUnit(ASource: string; ALine: Integer): Boolean;
     function ExecBreakDelete(ABreakId: Integer): Boolean;
-    function ExecBreakInsert(AKind: TDBGBreakPointKind; AAddress: TDBGPtr;
-        ASource: string; ALine: Integer; AEnabled: Boolean;
-        out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
     function ExecBreakEnabled(ABreakId: Integer; AnEnabled: Boolean): Boolean;
     function ExecBreakCondition(ABreakId: Integer; AnExpression: string): Boolean;
   end;
@@ -746,18 +743,27 @@ type
     FBreakID: Integer;
     FHitCnt: Integer;
     FValid: Boolean;
+    FWatchData: String;
+    FWatchKind: TDBGWatchPointKind;
+    FWatchScope: TDBGWatchPointScope;
   protected
+    function ExecBreakInsert(out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
     function DoExecute: Boolean; override;
   public
     constructor Create(AOwner: TGDBMIDebugger; ASource: string; ALine: Integer;
                        AEnabled: Boolean; AnExpression: string; AReplaceId: Integer); overload;
     constructor Create(AOwner: TGDBMIDebugger; AAddress: TDBGPtr;
                        AEnabled: Boolean; AnExpression: string; AReplaceId: Integer); overload;
+    constructor Create(AOwner: TGDBMIDebugger; AData: string; AScope: TDBGWatchPointScope;
+                       AKind: TDBGWatchPointKind; AEnabled: Boolean; AnExpression: string; AReplaceId: Integer); overload;
     function DebugText: String; override;
     property Kind: TDBGBreakPointKind read FKind write FKind;
     property Address: TDBGPtr read FAddress write FAddress;
     property Source: string read FSource write FSource;
     property Line: Integer read FLine write FLine;
+    property WatchData: String read FWatchData write FWatchData;
+    property WatchScope: TDBGWatchPointScope read FWatchScope write FWatchScope;
+    property WatchKind: TDBGWatchPointKind read FWatchKind write FWatchKind;
     property Enabled: Boolean read FEnabled write FEnabled;
     property Expression: string read FExpression write FExpression;
     property ReplaceId: Integer read FReplaceId write FReplaceId;
@@ -830,6 +836,8 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
+    procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
+                       const AKind: TDBGWatchPointKind); override;
   end;
 
   { TGDBMIBreakPoints }
@@ -4201,7 +4209,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     List: TGDBMINameValueList;
     S: String;
     FP: TDBGPtr;
-    i, f, cnt: longint;
+    i, cnt: longint;
   begin
     FTheDebugger.QueueExecuteLock;
     try
@@ -5674,7 +5682,7 @@ end;
 procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
 begin
   FTypeRequestCache.Clear;
-  if not (State in [dsRun, dsPause, dsInit])
+  if not (State in [dsRun, dsPause, dsInit, dsInternalPause])
   then FMaxLineForUnitCache.Clear;
 
   if State in [dsStop, dsError]
@@ -6993,44 +7001,6 @@ begin
   Result := ExecuteCommand('-break-delete %d', [ABreakID], []);
 end;
 
-function TGDBMIDebuggerCommandBreakPointBase.ExecBreakInsert(AKind: TDBGBreakPointKind; AAddress: TDBGPtr;
-  ASource: string; ALine: Integer; AEnabled: Boolean; out ABreakId, AHitCnt: Integer; out AnAddr: TDBGPtr): Boolean;
-var
-  R: TGDBMIExecResult;
-  ResultList: TGDBMINameValueList;
-begin
-  Result := False;
-  ABreakId := 0;
-  AHitCnt := 0;
-  AnAddr := 0;
-  case AKind of
-    bpkSource:
-      begin
-        if (ASource = '') or (ALine < 0) then exit;
-        Result := ExecCheckLineInUnit(ASource, ALine);
-        if not Result then exit;
-
-        if dfForceBreak in FTheDebugger.FDebuggerFlags
-        then Result := ExecuteCommand('-break-insert -f %s:%d', [ExtractFileName(ASource), ALine], R)
-        else Result := ExecuteCommand('-break-insert %s:%d',    [ExtractFileName(ASource), ALine], R);
-      end;
-    bpkAddress:
-      begin
-        if dfForceBreak in FTheDebugger.FDebuggerFlags
-        then Result := ExecuteCommand('-break-insert -f *%u', [AAddress], R)
-        else Result := ExecuteCommand('-break-insert *%u',    [AAddress], R);
-      end;
-  end;
-
-  ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
-  ABreakID := StrToIntDef(ResultList.Values['number'], 0);
-  AHitCnt  := StrToIntDef(ResultList.Values['times'], 0);
-  AnAddr   := StrToQWordDef(ResultList.Values['addr'], 0);
-  if ABreakID = 0
-  then Result := False;
-  ResultList.Free;
-end;
-
 function TGDBMIDebuggerCommandBreakPointBase.ExecBreakEnabled(ABreakId: Integer;
   AnEnabled: Boolean): Boolean;
 const
@@ -7054,6 +7024,68 @@ end;
 
 { TGDBMIDebuggerCommandBreakInsert }
 
+function TGDBMIDebuggerCommandBreakInsert.ExecBreakInsert(out ABreakId, AHitCnt: Integer; out
+  AnAddr: TDBGPtr): Boolean;
+var
+  R: TGDBMIExecResult;
+  ResultList: TGDBMINameValueList;
+  WatchExpr, WatchDecl, WatchAddr: String;
+  GdbRes: String;
+begin
+  Result := False;
+  ABreakId := 0;
+  AHitCnt := 0;
+  AnAddr := 0;
+  GdbRes := 'bkpt';
+  case FKind of
+    bpkSource:
+      begin
+        if (FSource = '') or (FLine < 0) then exit;
+        Result := ExecCheckLineInUnit(FSource, FLine);
+        if not Result then exit;
+
+        if dfForceBreak in FTheDebugger.FDebuggerFlags
+        then Result := ExecuteCommand('-break-insert -f %s:%d', [ExtractFileName(FSource), FLine], R)
+        else Result := ExecuteCommand('-break-insert %s:%d',    [ExtractFileName(FSource), FLine], R);
+      end;
+    bpkAddress:
+      begin
+        if (FAddress = 0) then exit;
+        if dfForceBreak in FTheDebugger.FDebuggerFlags
+        then Result := ExecuteCommand('-break-insert -f *%u', [FAddress], R)
+        else Result := ExecuteCommand('-break-insert *%u',    [FAddress], R);
+      end;
+    bpkData:
+      begin
+        if (FWatchData = '') then exit;
+        WatchExpr := WatchData;
+        if FWatchScope = wpsGlobal then begin
+          Result := ExecuteCommand('ptype %s', [WatchExpr], R);
+          if not Result then exit;
+          WatchDecl := PCLenToString(ParseTypeFromGdb(R.Values).Name);
+          Result := ExecuteCommand('-data-evaluate-expression @%s', [WatchExpr], R);
+          if not Result then exit;
+          WatchAddr := StripLN(GetPart('value="', '"', R.Values));
+          WatchExpr := WatchDecl+'(' + WatchAddr + '^)';
+        end;
+        case FWatchKind of
+          wpkWrite:     Result := ExecuteCommand('-break-watch %s', [WatchExpr], R);
+          wpkRead:      Result := ExecuteCommand('-break-watch -r %s', [WatchExpr], R);
+          wpkReadWrite: Result := ExecuteCommand('-break-watch -a %s', [WatchExpr], R);
+        end;
+        GdbRes := 'wpt';
+      end;
+  end;
+
+  ResultList := TGDBMINameValueList.Create(R, [GdbRes]);
+  ABreakID := StrToIntDef(ResultList.Values['number'], 0);
+  AHitCnt  := StrToIntDef(ResultList.Values['times'], 0);
+  AnAddr   := StrToQWordDef(ResultList.Values['addr'], 0);
+  if ABreakID = 0
+  then Result := False;
+  ResultList.Free;
+end;
+
 function TGDBMIDebuggerCommandBreakInsert.DoExecute: Boolean;
 begin
   Result := True;
@@ -7062,7 +7094,7 @@ begin
   if FReplaceId <> 0
   then ExecBreakDelete(FReplaceId);
 
-  FValid := ExecBreakInsert(FKind, FAddress, FSource, FLine, FEnabled, FBreakID, FHitCnt, FAddr);
+  FValid := ExecBreakInsert(FBreakID, FHitCnt, FAddr);
   if not FValid then Exit;
 
   if (FExpression <> '') and not (dcsCanceled in SeenStates)
@@ -7100,6 +7132,20 @@ begin
   inherited Create(AOwner);
   FKind := bpkAddress;
   FAddress := AAddress;
+  FEnabled := AEnabled;
+  FExpression := AnExpression;
+  FReplaceId := AReplaceId;
+end;
+
+constructor TGDBMIDebuggerCommandBreakInsert.Create(AOwner: TGDBMIDebugger; AData: string;
+  AScope: TDBGWatchPointScope; AKind: TDBGWatchPointKind; AEnabled: Boolean;
+  AnExpression: string; AReplaceId: Integer);
+begin
+  inherited Create(AOwner);
+  FKind := bpkData;
+  FWatchData := AData;
+  FWatchScope := AScope;
+  FWatchKind := AKind;
   FEnabled := AEnabled;
   FExpression := AnExpression;
   FReplaceId := AReplaceId;
@@ -7294,6 +7340,11 @@ begin
           begin
             TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Address := Address;
           end;
+        bpkData:
+          begin
+            TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).WatchData := WatchData;
+            TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).WatchScope := WatchScope;
+          end;
       end;
       TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Enabled := Enabled;
       TGDBMIDebuggerCommandBreakInsert(FCurrentCmd).Expression := FParsedExpression;
@@ -7322,6 +7373,8 @@ begin
       FCurrentCmd := TGDBMIDebuggerCommandBreakInsert.Create(TGDBMIDebugger(Debugger), Source, Line, Enabled, FParsedExpression, FBreakID);
     bpkAddress:
       FCurrentCmd := TGDBMIDebuggerCommandBreakInsert.Create(TGDBMIDebugger(Debugger), Address, Enabled, FParsedExpression, FBreakID);
+    bpkData:
+      FCurrentCmd := TGDBMIDebuggerCommandBreakInsert.Create(TGDBMIDebugger(Debugger), WatchData, WatchScope, WatchKind, Enabled, FParsedExpression, FBreakID);
   end;
   FBreakID := 0; // will be replaced => no longer valid
   FCurrentCmd.OnDestroy  := @DoCommandDestroyed;
@@ -7422,6 +7475,16 @@ begin
   if (Source = ASource) and (Line = ALine) then exit;
   inherited;
   if (Debugger = nil) or (Source = '')  then Exit;
+  if TGDBMIDebugger(Debugger).State in [dsPause, dsInternalPause, dsRun]
+  then SetBreakpoint;
+end;
+
+procedure TGDBMIBreakPoint.SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
+  const AKind: TDBGWatchPointKind);
+begin
+  if (AData = WatchData) and (AScope = WatchScope) and (AKind = WatchKind) then exit;
+  inherited SetWatch(AData, AScope, AKind);
+  if (Debugger = nil) or (WatchData = '')  then Exit;
   if TGDBMIDebugger(Debugger).State in [dsPause, dsInternalPause, dsRun]
   then SetBreakpoint;
 end;
@@ -10619,7 +10682,7 @@ var
     if FWatchValue <> nil
     then ThreadId := FWatchValue.ThreadId
     else ThreadId := FTheDebugger.FCurrentThreadId;
-    FrameCache := TGDBMIWatches(FTheDebugger.Watches).GetParentFPList(ThreadId); {$note framecache always starts at 0, never current}
+    FrameCache := TGDBMIWatches(FTheDebugger.Watches).GetParentFPList(ThreadId);
     List := nil;
 
     i := length(FrameCache^.ParentFPList);

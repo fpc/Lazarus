@@ -4627,6 +4627,7 @@ resourcestring
   lisGroup = 'Group';
   lisSourceBreakpoint = '&Source Breakpoint ...';
   lisAddressBreakpoint = '&Address Breakpoint ...';
+  lisWatchPointBreakpoint = '&Data/watch Breakpoint ...';
   lisEnableAll = '&Enable All';
   lisDeleteAll = '&Delete All';
   lisDisableAllInSameSource = 'Disable All in same source';
@@ -4636,6 +4637,7 @@ resourcestring
   lisDeleteAllSelectedBreakpoints = 'Delete all selected breakpoints?';
   lisDeleteBreakpointAtLine = 'Delete breakpoint at%s"%s" line %d?';
   lisDeleteBreakpointForAddress = 'Delete breakpoint for address %s?';
+  lisDeleteBreakpointForWatch = 'Delete watchpoint for "%s"?';
   lisDeleteAllBreakpoints = 'Delete all breakpoints?';
   lisDeleteAllBreakpoints2 = 'Delete all breakpoints in file %s%s%s?';
   lisBreak = 'Break';
@@ -4665,6 +4667,14 @@ resourcestring
   lisBreakPointProperties = 'Breakpoint Properties';
   lisLine = 'Line:';
   lisAddress = 'Address:';
+  lisWatchData = 'Watch:';
+  lisWatchScope = 'Watch scope';
+  lisWatchScopeGlobal = 'Global';
+  lisWatchScopeLocal = 'Declaration';
+  lisWatchKind = 'Watch action';
+  lisWatchKindRead = 'Read';
+  lisWatchKindWrite = 'Write';
+  lisWatchKindReadWrite = 'Read/Write';
   lisAutoContinueAfter = 'Auto continue after:';
   lisMS = '(ms)';
   lisActions = 'Actions:';

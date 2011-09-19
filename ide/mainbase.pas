@@ -697,6 +697,9 @@ begin
     CreateMenuSubSection(ParentMI,itmRunMenuAddBreakpoint,'itmRunMenuAddBreakpoint',lisMenuAddBreakpoint, '');
     CreateMenuItem(itmRunMenuAddBreakpoint,itmRunMenuAddBPSource,'itmRunMenuAdddBPSource',lisSourceBreakpoint, '', False);
     CreateMenuItem(itmRunMenuAddBreakpoint,itmRunMenuAddBPAddress,'itmRunMenuAddBPAddress',lisAddressBreakpoint, '', False);
+    {$IFDEF DBG_WITH_WATCHPOINT}
+    CreateMenuItem(itmRunMenuAddBreakpoint,itmRunMenuAddBpWatchPoint,'itmRunMenuAddBpWatchPoint',lisWatchPointBreakpoint, '', False);
+    {$ENDIF}
   end;
 end;
 
