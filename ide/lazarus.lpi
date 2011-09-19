@@ -14,6 +14,9 @@
       <Title Value="Lazarus"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
       <Icon Value="0"/>
     </General>
     <LazDoc Paths="docs/xml/ide"/>
@@ -42,7 +45,7 @@
     <RequiredPackages Count="6">
       <Item1>
         <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
+        <MinVersion Major="1" Valid="True" Release="1"/>
       </Item1>
       <Item2>
         <PackageName Value="LazControls"/>
@@ -655,13 +658,19 @@
         <CStyleOperator Value="False"/>
       </SyntaxOptions>
     </Parsing>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsAuto"/>
+      </Debugging>
+    </Linking>
     <Other>
       <CompilerMessages>
         <UseMsgFile Value="True"/>
       </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
-    <CompileReasons Compile="False" Build="False" Run="False"/>
+    <CompileReasons Run="False" Build="False" Compile="False"/>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="2">
