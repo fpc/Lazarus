@@ -841,6 +841,7 @@ type
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure DoLogExpression(const AnExpression: String); override;
     procedure MakeInvalid;
     procedure SetAddress(const AValue: TDBGPtr); override;
   public
@@ -7422,6 +7423,17 @@ begin
       if FBreakID > 0
       then ReleaseBreakpoint;
     end;
+  end;
+end;
+
+procedure TGDBMIBreakPoint.DoLogExpression(const AnExpression: String);
+var
+  s: String;
+  t: TDBGType;
+begin
+  if TGDBMIDebugger(Debugger).GDBEvaluate(AnExpression, s, t, [defNoTypeInfo])
+  then begin
+    Debugger.DoDbgEvent(ecBreakpoint, etBreakpointEvaluation, s);
   end;
 end;
 

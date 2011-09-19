@@ -281,7 +281,6 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Eval expression'
-      Enabled = False
       TabOrder = 5
     end
     object chkLogMessage: TCheckBox
@@ -314,7 +313,6 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
-      Enabled = False
       TabOrder = 6
     end
     object edtLogMessage: TEdit

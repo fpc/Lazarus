@@ -160,11 +160,12 @@ begin
   if chkActionBreak.Checked then Include(Actions, bpaStop);
   if chkDisableGroups.Checked then Include(Actions, bpaDisableGroup);
   if chkEnableGroups.Checked then Include(Actions, bpaEnableGroup);
-//  if chkEvalExpression.Checked then Include(Actions, bpaEValExpression);
+  if chkEvalExpression.Checked then Include(Actions, bpaEValExpression);
   if chkLogMessage.Checked then Include(Actions, bpaLogMessage);
   if chkLogCallStack.Checked then Include(Actions, bpaLogCallStack);
   if chkTakeSnap.Checked then include(Actions, bpaTakeSnapshot);
   FBreakpoint.Actions := Actions;
+  FBreakpoint.LogEvalExpression := edtEvalExpression.Text;
   FBreakpoint.LogMessage := edtLogMessage.Text;
   FBreakpoint.LogCallStackLimit := edtLogCallStack.Value;
 
@@ -225,9 +226,10 @@ begin
   chkActionBreak.Checked := bpaStop in Actions;
   chkDisableGroups.Checked := bpaDisableGroup in Actions;
   chkEnableGroups.Checked := bpaEnableGroup in Actions;
-//  chkEvalExpression.Checked := bpaEValExpression in Actions;
+  chkEvalExpression.Checked := bpaEValExpression in Actions;
   chkLogMessage.Checked := bpaLogMessage in Actions;
   edtLogMessage.Text := FBreakpoint.LogMessage;
+  edtEvalExpression.Text := FBreakpoint.LogEvalExpression;
   chkLogCallStack.Checked := bpaLogCallStack in Actions;
   edtLogCallStack.Value := FBreakpoint.LogCallStackLimit;
   chkTakeSnap.Checked := bpaTakeSnapshot in Actions;

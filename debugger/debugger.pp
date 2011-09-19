@@ -477,6 +477,7 @@ type
     bpaEnableGroup,
     bpaDisableGroup,
     bpaLogMessage,
+    bpaEValExpression,
     bpaLogCallStack,
     bpaTakeSnapshot
     );
@@ -579,6 +580,7 @@ type
 
   TIDEBreakPoint = class(TBaseBreakPoint)
   private
+    FLogEvalExpression: String;
     FMaster: TDBGBreakPoint;
     FAutoContinueTime: Cardinal;
     FActions: TIDEBreakPointActions;
@@ -618,6 +620,7 @@ type
     procedure SetActions(const AValue: TIDEBreakPointActions); virtual;
     procedure SetGroup(const AValue: TIDEBreakPointGroup); virtual;
     procedure SetAutoContinueTime(const AValue: Cardinal); virtual;
+    procedure SetLogEvalExpression(AValue: String);
     procedure SetLogMessage(const AValue: String); virtual;
     procedure SetLogCallStackLimit(const AValue: Integer);
   public
@@ -641,6 +644,7 @@ type
     property Actions: TIDEBreakPointActions read GetActions write SetActions;
     property AutoContinueTime: Cardinal read GetAutoContinueTime write SetAutoContinueTime;
     property Group: TIDEBreakPointGroup read GetGroup write SetGroup;
+    property LogEvalExpression: String read FLogEvalExpression write SetLogEvalExpression;
     property Loading: Boolean read FLoading;
     property LogMessage: String read GetLogMessage write SetLogMessage;
     property LogCallStackLimit: Integer read GetLogCallStackLimit write SetLogCallStackLimit;
@@ -660,6 +664,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     procedure DoLogMessage(const AMessage: String); virtual;
     procedure DoLogCallStack(const Limit: Integer); virtual;
+    procedure DoLogExpression(const AnExpression: String); virtual; // implemented in TGDBMIBreakpoint
     property  Debugger: TDebugger read GetDebugger;
   public
     constructor Create(ACollection: TCollection); override;
@@ -2838,6 +2843,7 @@ const
     'EnableGroup',
     'DisableGroup',
     'LogMessage',
+    'EvalExpression',
     'LogCallStack',
     'TakeSnapshot'
     );
@@ -6402,6 +6408,15 @@ begin
   Changed;
 end;
 
+procedure TIDEBreakPoint.SetLogEvalExpression(AValue: String);
+begin
+  if FLogEvalExpression <> AValue then
+  begin
+    FLogEvalExpression := AValue;
+    Changed;
+  end;
+end;
+
 procedure TIDEBreakPoint.SetLogMessage(const AValue: String);
 begin
   if FLogMessage <> AValue then
@@ -6448,6 +6463,7 @@ begin
     TIDEBreakPoint(Dest).Actions := FActions;
     TIDEBreakPoint(Dest).AutoContinueTime := FAutoContinueTime;
     TIDEBreakPoint(Dest).Group := FGroup;
+    TIDEBreakPoint(Dest).LogEvalExpression := FLogEvalExpression;
     TIDEBreakPoint(Dest).LogMessage := FLogMessage;
     TIDEBreakPoint(Dest).LogCallStackLimit := FLogCallStackLimit;
   end;
@@ -6590,6 +6606,8 @@ begin
   AContinue := AContinue or not (bpaStop in Actions);
   if bpaLogMessage in Actions
   then FMaster.DoLogMessage(FLogMessage);
+  if (bpaEValExpression in Actions) and (Trim(FLogEvalExpression) <> '')
+  then FMaster.DoLogExpression(Trim(FLogEvalExpression));
   if bpaLogCallStack in Actions
   then FMaster.DoLogCallStack(FLogCallStackLimit);
   // SnapShot is taken in TDebugManager.DebuggerChangeState
@@ -6672,6 +6690,7 @@ begin
     InitialEnabled:=XMLConfig.GetValue(Path+'InitialEnabled/Value',true);
     Enabled:=FInitialEnabled;
     FLine:=XMLConfig.GetValue(Path+'Line/Value',-1);
+    FLogEvalExpression := XMLConfig.GetValue(Path+'LogEvalExpression/Value', '');
     FLogMessage:=XMLConfig.GetValue(Path+'LogMessage/Value','');
     FLogCallStackLimit:=XMLConfig.GetValue(Path+'LogCallStackLimit/Value',0);
     NewActions:=[];
@@ -6749,6 +6768,7 @@ begin
   AConfig.SetDeleteValue(APath+'Source/Value',Filename,'');
   AConfig.SetDeleteValue(APath+'InitialEnabled/Value',InitialEnabled,true);
   AConfig.SetDeleteValue(APath+'Line/Value',Line,-1);
+  AConfig.SetDeleteValue(APath+'LogEvalExpression/Value', FLogEvalExpression,'');
   AConfig.SetDeleteValue(APath+'LogMessage/Value',LogMessage,'');
   AConfig.SetDeleteValue(APath+'LogCallStackLimit/Value',LogCallStackLimit,0);
 
@@ -6941,6 +6961,11 @@ begin
 
     Debugger.DoDbgEvent(ecBreakpoint, etBreakpointStackDump, StackString);
   end;
+end;
+
+procedure TDBGBreakPoint.DoLogExpression(const AnExpression: String);
+begin
+  // will be called while Debgger.State = dsRun => can not call Evaluate
 end;
 
 function TDBGBreakPoint.GetDebugger: TDebugger;

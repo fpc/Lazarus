@@ -4648,6 +4648,7 @@ resourcestring
   lisEnableGroups = 'Enable Groups';
   lisDisableGroups = 'Disable Groups';
   lisLogMessage = 'Log Message';
+  lisLogEvalExpression = 'Eval expression';
   lisLogCallStack = 'Log Call Stack';
   lisLogCallStackLimit = '(frames limit. 0 - no limits)';
   lisAutoContinue = 'Auto Continue';
