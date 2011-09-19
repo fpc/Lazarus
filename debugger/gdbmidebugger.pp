@@ -4836,10 +4836,12 @@ begin
   if (StoppedParams <> '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
     debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams]);
     //SetDebuggerState(dsError); // we cannot be running anymore
+    SetDebuggerState(dsPause);
   end;
   if (StoppedParams = '') and (not ContinueExecution) and (DebuggerState = dsRun) and (TargetInfo^.TargetPID <> 0) then begin
     debugln(['ERROR: Got NO stop params at all, but was running']);
     //SetDebuggerState(dsError); // we cannot be running anymore
+    SetDebuggerState(dsPause);
   end;
 end;
 
