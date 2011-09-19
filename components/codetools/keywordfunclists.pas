@@ -886,6 +886,7 @@ begin
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
     ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMPILERPROC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RTLPROC'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPORT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTERNAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);

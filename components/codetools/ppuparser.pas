@@ -248,6 +248,7 @@ type
     po_inline,
     { Procedure is used for internal compiler calls }
     po_compilerproc,
+    po_rtlproc,
     { importing }
     po_has_importdll,
     po_has_importname,
@@ -347,6 +348,7 @@ const
     'inline',
     { Procedure is used for internal compiler calls }
     'compilerproc',
+    'rtlproc',
     { importing }
     'has_importdll',
     'has_importname',
