@@ -2647,7 +2647,8 @@ var
       if fdfExtractOperand in Params.Flags then
         case Params.NewNode.Desc of
           ctnVarDefinition, ctnConstDefinition:
-            Params.AddOperandPart(GetIdentifier(@Src[Params.NewNode.StartPos]));
+            with Params do
+              AddOperandPart(GetIdentifier(@NewCodeTool.Src[NewNode.StartPos]));
           ctnProperty:
             begin
               if fdfPropertyResolving in Params.Flags then begin
@@ -7188,8 +7189,8 @@ var
     debugln(['  FindExpressionTypeOfTerm ResolveEdgedBracketOpen']);
     {$ENDIF}
     if fdfExtractOperand in Params.Flags then begin
-      // extract operand2: [] not implemented yet
-      RaiseException('not implemented');
+      // simple copying, todo: expand argument
+      Params.AddOperandPart(Copy(Src, CurPos.StartPos, CurAtomBracketEndPos-CurPos.StartPos));
     end;
     if (not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
       vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen]))
