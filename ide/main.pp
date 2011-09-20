@@ -14975,9 +14975,13 @@ function TMainIDE.DoJumpToSourcePosition(const Filename: string; NewX, NewY,
   NewTopLine: integer; Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult;
 var
   CodeBuffer: TCodeBuffer;
+  aFilename: String;
 begin
   Result:=mrCancel;
-  CodeBuffer:=CodeToolBoss.LoadFile(TrimAndExpandFilename(Filename),true,false);
+  aFilename:=Filename;
+  if not (jfDoNotExpandFilename in Flags) then
+    aFilename:=TrimAndExpandFilename(aFilename);
+  CodeBuffer:=CodeToolBoss.LoadFile(aFilename,true,false);
   if CodeBuffer=nil then exit;
   Result:=DoJumpToCodePosition(nil,nil,CodeBuffer,NewX,NewY,NewTopLine, Flags);
 end;

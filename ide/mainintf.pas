@@ -118,7 +118,12 @@ type
     ieorExport
     );
 
-  TJumpToCodePosFlag = (jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug);
+  TJumpToCodePosFlag = (
+    jfAddJumpPoint,
+    jfFocusEditor,
+    jfMarkLine,
+    jfMapLineFromDebug,
+    jfDoNotExpandFilename);
   TJumpToCodePosFlags = set of TJumpToCodePosFlag;
 
   { TMainIDEInterface }
