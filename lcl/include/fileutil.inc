@@ -266,7 +266,7 @@ function FilenameIsWinAbsolute(const TheFilename: string): boolean;
 begin
   Result:=((length(TheFilename)>=3) and
            (TheFilename[1] in ['A'..'Z','a'..'z']) and (TheFilename[2]=':')  and (TheFilename[3]='\'))
-      or ((length(TheFilename)>=3) and (TheFilename[1]='\') and (TheFilename[2]='\'))
+      or ((length(TheFilename)>=2) and (TheFilename[1]='\') and (TheFilename[2]='\'))
       ;
 end;
 
