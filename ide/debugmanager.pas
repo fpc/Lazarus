@@ -582,8 +582,10 @@ var
   OpenDialog: TOpenDialog;
   AnUnitInfo: TLazProjectFile;
 begin
-  Result:=False;
+  Result := False;
   if Destroying then exit;
+  Result := FilenameIsAbsolute(Filename);
+  if Result then exit;
 
   // some debuggers (e.g. gdb) sometimes returns linux path delims under windows
   // => fix that
