@@ -3654,27 +3654,39 @@ var
   Marks: PSourceMark;
   i, MarkCount: Integer;
   BreakFound: Boolean;
+  Ctrl: Boolean;
+  ABrkPoint: TIDEBreakPoint;
+  Mrk: TSourceMark;
 begin
   // create or delete breakpoint
   // find breakpoint mark at line
   Marks := nil;
+  Ctrl := ssCtrl in GetKeyShiftState;
   try
     SourceEditorMarks.GetMarksForLine(Self, Line, Marks, MarkCount);
     BreakFound := False;
     for i := 0 to MarkCount - 1 do
     begin
-      if Marks[i].IsBreakPoint then
-      begin
+      Mrk := Marks[i];
+      if Mrk.IsBreakPoint and
+        (Mrk.Data <> nil) and (Mrk.Data is TIDEBreakPoint)
+      then begin
         BreakFound := True;
-        DebugBoss.DoDeleteBreakPointAtMark(Marks[i])
+        if Ctrl then
+          TIDEBreakPoint(Mrk.Data).Enabled := not TIDEBreakPoint(Mrk.Data).Enabled
+        else
+          DebugBoss.DoDeleteBreakPointAtMark(Mrk)
       end;
     end;
   finally
     FreeMem(Marks);
   end;
 
-  if not BreakFound then
-    DebugBoss.DoCreateBreakPoint(Filename, Line, True);
+  if not BreakFound then begin
+    DebugBoss.DoCreateBreakPoint(Filename, Line, True, ABrkPoint);
+    if Ctrl and (ABrkPoint <> nil)
+    then ABrkPoint.Enabled := False;
+  end;
 end;
 
 procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;

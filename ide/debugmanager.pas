@@ -211,6 +211,9 @@ type
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; override;
+    function DoCreateBreakPoint(const AFilename: string; ALine: integer;
+                                WarnIfNoDebugger: boolean;
+                                out ABrkPoint: TIDEBreakPoint): TModalResult; override;
 
     function DoDeleteBreakPoint(const AFilename: string;
                                 ALine: integer): TModalResult; override;
@@ -2390,7 +2393,16 @@ end;
 
 function TDebugManager.DoCreateBreakPoint(const AFilename: string;
   ALine: integer; WarnIfNoDebugger: boolean): TModalResult;
+var
+  ABrkPoint: TIDEBreakPoint;
 begin
+  DoCreateBreakPoint(AFilename, ALine, WarnIfNoDebugger, ABrkPoint);
+end;
+
+function TDebugManager.DoCreateBreakPoint(const AFilename: string; ALine: integer;
+  WarnIfNoDebugger: boolean; out ABrkPoint: TIDEBreakPoint): TModalResult;
+begin
+  ABrkPoint := nil;
   if WarnIfNoDebugger
   and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
     or (not FileIsExecutable(EnvironmentOptions.DebuggerFilename)))
@@ -2404,7 +2416,7 @@ begin
       exit;
   end;
 
-  FBreakPoints.Add(AFilename, ALine);
+  ABrkPoint := FBreakPoints.Add(AFilename, ALine);
   Result := mrOK
 end;
 
