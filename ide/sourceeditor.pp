@@ -3683,9 +3683,14 @@ begin
   end;
 
   if not BreakFound then begin
-    DebugBoss.DoCreateBreakPoint(Filename, Line, True, ABrkPoint);
-    if Ctrl and (ABrkPoint <> nil)
-    then ABrkPoint.Enabled := False;
+    DebugBoss.LockCommandProcessing;
+    try
+      DebugBoss.DoCreateBreakPoint(Filename, Line, True, ABrkPoint);
+      if Ctrl and (ABrkPoint <> nil)
+      then ABrkPoint.Enabled := False;
+    finally
+      DebugBoss.UnLockCommandProcessing;
+    end;
   end;
 end;
 
