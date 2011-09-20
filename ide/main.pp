@@ -13944,6 +13944,8 @@ end;
   compiled unit (.ppu).
   Find the source filename (pascal source or include file) and returns
   the absolute path.
+  With fsfMapTempToVirtualFiles files in the temp directory are stripped off
+  the temporary files resulting in the virtual file name of the CodeTools.
 
   First it searches in the current projects src path, then its unit path, then
   its include path. Then all used package source directories are searched.
