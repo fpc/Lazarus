@@ -11349,43 +11349,50 @@ var
           ResultList.Free;
 
           if Result
-          then FixUpResult(AnExpression);
+          then begin
+            FixUpResult(AnExpression);
+            FValidity := ddsValid;
+          end;
         end;
       wdfChar:
         begin
           Result := PrepareExpr(AnExpression);
           if not Result
           then exit;
+          FValidity := ddsValid;
           FTextValue := GetChar(AnExpression, []);
           if LastExecResult.State = dsError
-          then FTextValue := '<error>';
+          then ParseLastError;
         end;
       wdfString:
         begin
           Result := PrepareExpr(AnExpression);
           if not Result
           then exit;
+          FValidity := ddsValid;
           FTextValue := GetText(AnExpression, []); // GetText takes Addr
           if LastExecResult.State = dsError
-          then FTextValue := '<error>';
+          then ParseLastError;
         end;
       wdfDecimal:
         begin
           Result := PrepareExpr(AnExpression, True);
           if not Result
           then exit;
+          FValidity := ddsValid;
           FTextValue := IntToStr(Int64(GetPtrValue(AnExpression, [], True)));
           if LastExecResult.State = dsError
-          then FTextValue := '<error>';
+          then ParseLastError;
         end;
       wdfUnsigned:
         begin
           Result := PrepareExpr(AnExpression, True);
           if not Result
           then exit;
+          FValidity := ddsValid;
           FTextValue := IntToStr(GetPtrValue(AnExpression, [], True));
           if LastExecResult.State = dsError
-          then FTextValue := '<error>';
+          then ParseLastError;
         end;
       //wdfFloat:
       //  begin
@@ -11402,10 +11409,11 @@ var
           if not Result
           then exit;
           FTextValue := IntToHex(GetPtrValue(AnExpression, [], True), 2);
+          FValidity := ddsValid;
           if length(FTextValue) mod 2 = 1
           then FTextValue := '0'+FTextValue; // make it an even number of digets
           if LastExecResult.State = dsError
-          then FTextValue := '<error>';
+          then ParseLastError;
         end;
       wdfPointer:
         begin
@@ -11413,6 +11421,7 @@ var
           if not Result
           then exit;
           FTextValue := PascalizePointer('0x' + IntToHex(GetPtrValue(AnExpression, [], True), TargetInfo^.TargetPtrSize*2));
+          FValidity := ddsValid;
           if LastExecResult.State = dsError
           then FTextValue := '<error>';
         end;
@@ -11440,6 +11449,7 @@ var
             exit;
           end;
           MemDump := TGDBMIMemoryDumpResultList.Create(R);
+          FValidity := ddsValid;
           FTextValue := MemDump.AsText(0, MemDump.Count, TargetInfo^.TargetPtrSize*2);
           MemDump.Free;
         end;
@@ -11456,6 +11466,7 @@ var
           if FTypeInfo.HasExprEvaluatedAsText then begin
             FTextValue := FTypeInfo.ExprEvaluatedAsText;
             FTextValue := DeleteEscapeChars(FTextValue);
+            FValidity := ddsValid;
             Result := True;
             FixUpResult(AnExpression, FTypeInfo);
             exit;
