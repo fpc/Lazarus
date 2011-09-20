@@ -1,0 +1,117 @@
+Some suggestions for documentation writers
+==========================================
+By DoDi <DrDiettrich1@aol.com>
+
+Content
+-------
+
+Have a look at the generated (HTML) docs.
+FPDoc inserts a lot of information and links automatically. Don't bother with
+adding extra links in text and <seealso>.
+
+Add short descriptions to procedure arguments and function results, these are
+shown in the copied declaration. The visibility comments can be removed for
+arguments or enum elements, so that it will become easier to spot related items.
+
+Add long parameter descriptions if required, don't put these into the procedure
+description. This allows for links to this description!
+
+Don't duplicate descriptions, use links to already existing descriptions.
+
+Consider the later reader.
+Public items (methods...) are for use by coders, the short description can read like
+"Use ... to ..."
+Other items can be hit during coding or debugging, the short description should
+provide meaningful information in the FPDoc editor or in the popup hints. Avoid
+excess decoration, e.g.:
+"Returns ..."
+instead of
+"<var>ThisItem<var> - reads the <link id="Class.FItem">FItem</link> field."
+
+Don't describe the obvious.
+Constructors and destructors deserve special descriptions only, when they have
+special parameters. Even then short notes on the parameters are sufficient,
+because FPDoc inserts the inherited descriptions for empty descriptions.
+
+Don't describe overridden methods again.
+FPDoc inserts the inherited description (at least in HTML output).
+
+
+Style
+-----
+
+Write sentences, terminated with a full stop (dot).
+Unterminated descriptions should be revised by (native) English speakers.
+
+Everybody can add revision marks.
+I use brackets for now, to indicate passages with questionable content:
+[?] unclear wording, possibly wrong. Long: [what's this?]
+[???] unreadable or definitely wrong description.
+[~] somebody else should make this proper and nice English.
+[!] Incompatible or wrong implementation, e.g. [Delphi incompatible!]
+
+
+XML Syntax
+----------
+Copy and run mkhtml.bat in docs\html\, I cannot commit to that directory :-(
+
+Use mkhtml.bat for quick compilation of single unit documentation, and fix the
+reported errors before committing. E.g.
+> mkthml controls pp
+The result is stored in the html\test directory. It's a good idea to delete this
+directory before, because FPDoc does not always update existing files properly!
+> mkthml grids pas >log.txt
+stores the error log in log.txt, which can be loaded into the IDE, to simplify
+searching for missing references and tracking of fixed errors.
+
+Common errors result from a mix of plain text with paragraphs, remarks, pre,
+code, lists or tables. Then you get "#text" error messages for such dangling text.
+
+"Warning: Target ID of <link> is unknown: ..." often result from protected items,
+which are not normally part of the RTL and FCL documentation. Try to link to a
+public property instead, if one exists.
+
+Unmatched beginning and ending tags are hard to find. It often helps to insert
+an dummy tag of the missing or excess type, somewhere in the xml source, run again
+and narrow down the exact location by a binary search.
+
+
+Sync with the source
+--------------------
+Use updateXML.bat to find removed or missing items. E.g.
+> updateXML controls pp
+creates controls.upd.xml, containing added or otherwise missing elements.
+
+Check the console output for "... no longer used" messages, and remove these
+items from the XML file. Check the source code for only renamed items, and update
+only the name field, in order to preserve already existing documentation.
+
+The *.upd.xml file contains added or renamed items. Find a good location where to
+insert added elements. New subroutine argument should be added just after the
+procedure element, while changed argument names can be updated in place.
+
+Take the chance to compare the entries with the descriptions in the source code.
+But be careful with differing descriptions, and check the implementation as well,
+before copying possibly outdated comments from the source code over more current docs!
+Hereby it can help a lot to rearrange the entries, for easy comparison with the
+declarations in the source code.
+
+Multiple editor windows can help in the comparison of source and xml files,
+eventual log files or upd files. Obviously misplaced items (arguments!) can be
+moved into an dummy xml file, then moved back from there to their proper locations.
+Don't search for whole words in the xml files, because this will *not* find the
+quoted procedure names etc.!
+
+
+The following applies in detail to HTML output format.
+------------------------------------------------------
+
+Use links to identical items, this simplifies the document maintenance a lot.
+(See TDragObject descendants and TDrag...Event handlers)
+<element name=TDerived.Override.Param link="TBase.Method.Param"/>
+
+Describe properties only once, and link fields, getters and setters to the
+property description:
+<element name=TClass.FProp link="TClass.Property"/>
+<element name=TClass.SetProp link="TClass.Property"/>
+

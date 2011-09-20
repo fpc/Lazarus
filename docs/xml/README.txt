@@ -20,6 +20,8 @@ makeskel --update --package=lcl --input="..\..\lcl\forms.pp" --descr=lcl\forms.x
 To create a new file use:
 makeskel --package=lcl --input="..\..\lcl\forms.pp" --output=lcl\forms.xml
 
+See also: StyleGuide.txt
+
 --------------------------------------------------------------------------------
 Examples for gtk interface:
 

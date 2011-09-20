@@ -2979,6 +2979,7 @@ docs/images/laztitle.svg -text svneol=native#image/svg%2Bxml
 docs/index.html svneol=native#text/html
 docs/lazdoc.css svneol=native#text/plain
 docs/xml/README.txt svneol=native#text/plain
+docs/xml/StyleGuide.txt svneol=native#text/plain
 docs/xml/fcl/bmpcomn.xml svneol=native#text/xml
 docs/xml/fcl/clipping.xml svneol=native#text/xml
 docs/xml/fcl/ellipses.xml svneol=native#text/xml
@@ -3164,11 +3165,13 @@ docs/xml/lcl/utf8process.xml svneol=native#text/plain
 docs/xml/lcl/utrace.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/wscontrols.xml svneol=native#text/plain
 docs/xml/lcl/xmlpropstorage.xml svneol=LF#text/xml eol=lf
+docs/xml/mkhtml.bat svneol=native#text/plain
 docs/xml/multi_makeskel.pl svneol=native#text/plain
 docs/xml/rtl/README.txt svneol=native#text/plain
 docs/xml/rtl/classes.xml svneol=native#text/xml
 docs/xml/rtl/system.xml svneol=native#text/xml
 docs/xml/rtl/sysutils.xml svneol=native#text/xml
+docs/xml/updateXML.bat svneol=native#text/plain
 examples/SynEdit/Completion/SynCompletionSample.ico -text
 examples/SynEdit/Completion/SynCompletionSample.lpi svneol=native#text/plain
 examples/SynEdit/Completion/SynCompletionSample.lpr svneol=native#text/pascal
