@@ -190,15 +190,13 @@
           <pre>Details held include:
           the Message associated with the wheel;
           the shift state (ie whether Shift, Alt, Control etc keys have been pressed);
-          wheel data which can either be 
-	  a position (X, Y coordinates) or 
-	  a position plus an integer result.</pre>
+          mouse position and the message Result.</pre>
         </descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TCMMouseWheel.MSg">
-        <short>The exact Message ID.</short>
+        <short>The exact Message ID (WM_MOUSEWHEEL?).</short>
         <descr/>
         <seealso/>
       </element>
@@ -214,12 +212,26 @@
         <descr/>
         <seealso/>
       </element>
-      <element name="TCMMouseWheel.Pos">
-        <short>Mouse[?] position.</short>
-      </element>
-      <!-- variable Visibility: default -->
       <element name="TCMMouseWheel.WheelData">
-        <short>How many notches the wheel has turned.</short>
+        <short>How many notches the wheel has been turned; negative for turned backwards.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCMMouseWheel.Pos">
+        <short>Mouse position.</short>
+      </element>
+      <element name="TCMMouseWheel.XPos">
+        <short>Mouse X position.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCMMouseWheel.YPos">
+        <short>Mouse Y position.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCMMouseWheel.Result">
+        <short>Zero indicates that the message was handled.</short>
         <descr/>
         <seealso/>
       </element>
@@ -232,25 +244,21 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMControlChange.Msg">
         <short/>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMControlChange.Control">
         <short/>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMControlChange.Inserting">
         <short/>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMControlChange.Result">
         <short/>
         <descr/>
@@ -258,39 +266,35 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TCMControlListChange">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMControlListChange.Msg">
-      <short></short>
+        <short></short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMControlListChange.Control">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMControlListChange.Inserting">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMControlListChange.Result">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
       <!-- alias type Visibility: default -->
       <element name="TCMDialogChar" link="TLMKey">
@@ -312,19 +316,15 @@
       <element name="TCMCancelMode">
         <short>[?]</short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMCancelMode.Msg">
-      <short></short>
+        <short></short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMCancelMode.Unused">
         <short></short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMCancelMode.Sender">
         <short></short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMCancelMode.Result">
         <short></short>
       </element>
@@ -336,22 +336,17 @@
         <seealso>
         </seealso>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMChildKey.Msg">
         <short></short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMChildKey.Unused">
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMChildKey.CharCode">
         <short>VK_XXX constants for TLMKeyDown/Up, ASCII for TLMChar.</short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMChildKey.Sender">
         <short></short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TCMChildKey.Result">
         <short></short>
       </element>
@@ -441,39 +436,79 @@
       <element name="TAnchors">
         <short>Set of possible anchor positions</short>
       </element>
+      <!-- constant Visibility: default -->
+      <element name="AnchorAlign">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="MainAlignAnchor" link="TAnchorKind">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="OppositeAnchor" link="TAnchorKind">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ClockwiseAnchor" link="TAnchorKind">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="DefaultSideForAnchorKind">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="AnchorReferenceSide">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="AlignNames">
+        <short>Array of names for the <link id="TAlign"/> elements.</short>
+        <descr>
+          <remark>The names include the "al;" prefix, e.g. alNone.</remark>
+        </descr>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="AnchorNames" link="TAnchorKind">
+        <short>Names for the TAnchorKind elements.</short>
+        <descr/>
+        <seealso/>
+      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TAnchorSideReference">
         <short>The side of another control, to which this control's side is anchored.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TAnchorSideReference.asrTop">
         <short>Anchor to the top side.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TAnchorSideReference.asrBottom">
         <short>Anchor to the bottom side.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TAnchorSideReference.asrCenter">
         <short>Anchor to the center of the other control.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="asrLeft">
-        <short>Anchor to the left side.</short>
+        <short>Anchor to the left side (=asrTop).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="asrRight">
-        <short>Anchor to the right side.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- "type" alias type Visibility: default -->
-      <element name="TTranslateString">
-        <short>[?]</short>
+        <short>Anchor to the right side (=asrBottom).</short>
         <descr/>
         <seealso/>
       </element>
@@ -481,39 +516,40 @@
       <element name="TCaption">
         <short>A string type for the caption of a control: may be translated</short>
       </element>
-      <!-- range type Visibility: default -->
-      <element name="TCursor">
-        <short>
-          <var>TCursor</var> - integer type defining range of values for cursor</short>
-      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFormStyle">
         <short>Defines special form behaviour.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStyle.fsNormal">
         <short>An ordinary (overlapping) form.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStyle.fsMDIChild">
         <short>The form is an MDI child.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStyle.fsMDIForm">
         <short>The form is an MDI parent form, containing MDI child forms.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStyle.fsStayOnTop">
         <short>The form is in the foreground, on top of all other application forms.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStyle.fsSplash">
         <short>A splash form [meaning what?].</short>
       </element>
       <element name="TFormStyle.fsSystemStayOnTop">
         <short>The form stays system-wide on top[?].</short>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="fsAllStayOnTop">
+        <short>Set of form styles, which make a form stay on top.</short>
+        <descr/>
+        <seealso><link id="TFormStyle"/></seealso>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="fsAllNonSystemStayOnTop">
+        <short>Set of form styles, which make a form stay on top [not system-wide?].</short>
+        <seealso><link id="TFormStyle"/></seealso>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFormBorderStyle">
@@ -521,27 +557,21 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormBorderStyle.bsNone">
         <short>No border at all.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormBorderStyle.bsSingle">
         <short>Single line border, the form cannot be resized.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormBorderStyle.bsSizeable">
         <short>The form can be resized (standard).</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormBorderStyle.bsDialog">
         <short>[legacy?] The form is a dialog, cannot be resized.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormBorderStyle.bsToolWindow">
         <short>Single line border, small caption, not resizeable.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormBorderStyle.bsSizeToolWin">
         <short>Small caption, form can be resized.</short>
       </element>
@@ -562,11 +592,9 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlRoleForForm.crffDefault">
         <short>This control is notified when user presses Return.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlRoleForForm.crffCancel">
         <short>This control is notified when user presses Escape.</short>
       </element>
@@ -579,18 +607,14 @@
         <short>Enumeration of recognized mouse buttons.</short>
         <descr>
           <p>These are <b>logical</b> buttons, left and right physical buttons can be swapped for left handed users.</p>
-          <p>[Nowadays mice with more buttons are available - how are these handled?]</p>
         </descr>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMouseButton.mbLeft">
         <short>Left button (can be physical right button for left handed).</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMouseButton.mbRight">
         <short>Right button (can be physical left button for left handed).</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TMouseButton.mbMiddle">
         <short>Middle button.</short>
       </element>
@@ -600,175 +624,155 @@
       <element name="TMouseButton.mbExtra2">
         <short>Second extra button.</short>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="fsAllStayOnTop">
-        <short>Set of form styles, which make a form stay on top.</short>
-        <descr/>
-        <seealso><link id="TFormStyle"/></seealso>
+      <!-- range type Visibility: default -->
+      <element name="TCursor">
+        <short>
+          <var>TCursor</var> - integer type defining range of values for cursor shapes.</short>
+        <descr>
+          <p>Allowed values are:</p>
+<pre>
+Standard cursors
+  crDefault     = TCursor(0);   //current cursor unchanged
+  crNone        = TCursor(-1);  //hide cursor
+  crArrow       = TCursor(-2);  //normal cursor
+  crCross       = TCursor(-3);  //graphics cursor, for pixel or rectangle selection
+  crIBeam       = TCursor(-4);  //text cursor, for setting insertion point
+Sizing cursors
+  crSize        = TCursor(-22);
+  crSizeAll     = TCursor(-22);
+  crSizeNESW    = TCursor(-6); // diagonal north east - south west
+  crSizeNS      = TCursor(-7);
+  crSizeNWSE    = TCursor(-8);
+  crSizeWE      = TCursor(-9);
+  crSizeNW      = TCursor(-23);
+  crSizeN       = TCursor(-24);
+  crSizeNE      = TCursor(-25);
+  crSizeW       = TCursor(-26);
+  crSizeE       = TCursor(-27);
+  crSizeSW      = TCursor(-28);
+  crSizeS       = TCursor(-29);
+  crSizeSE      = TCursor(-30);
+DragDrop cursors
+  crDrag        = TCursor(-12); //dragging, drop allowed
+  crNoDrop      = TCursor(-13); //dragging, drop disallowed/rejected
+  crMultiDrag   = TCursor(-16); //dragging multiple items
+  crNo          = TCursor(-18);
+Splitter cursors
+  crHSplit      = TCursor(-14);
+  crVSplit      = TCursor(-15);
+More cursors
+  crUpArrow     = TCursor(-10);
+  crHourGlass   = TCursor(-11); //busy
+  crSQLWait     = TCursor(-17);
+  crAppStart    = TCursor(-19);
+  crHelp        = TCursor(-20);
+  crHandPoint   = TCursor(-21);
+</pre>
+        </descr>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="fsAllNonSystemStayOnTop">
-        <short>Set of form styles, which make a form stay on top system-wide[?].</short>
-        <seealso><link id="TFormStyle"/></seealso>
-      </element>
-      <!-- constant Visibility: default -->
       <element name="crHigh">
         <short>Highest defined cursor constant (0).</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crDefault">
         <short>Default (parent) cursor constant (0)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crNone">
         <short>Invisible cursor constant: no cursor (-1)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crArrow">
         <short>Arrow cursor constant (-2)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crCross">
         <short>Cross cursor constant (-3)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crIBeam">
         <short>I-Beam cursor constant, often used in text editors (-4)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSize">
         <short>Sizing cursor constant (-22), alias for crSizeAll.</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeNESW">
         <short>crSizeNESW - cursor constant: runs diagonally from NorthEast to SouthWest (-6)</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeNS">
         <short>crSizeNS - cursor constant: cursor runs from North to South (-7)</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeNWSE">
         <short>crNWSE - cursor constant: cursor runs from NorthWest to SouthEast</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeWE">
         <short>Horizontal Size cursor constant (-9)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeNW">
         <short>NorthWest sizing cursor.</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeN">
         <short>crSizeN - cursor constant: cursor North (-24)</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeNE">
         <short>crSizeNW - cursor constant: NorthWest (-23)</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeW">
         <short>West (left) sizing cursor.</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeE">
         <short>East (right) sizing cursor.</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeSW">
         <short>SouthWest sizing cursor.</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeS">
         <short>South (bottom) sizing cursor.</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeSE">
         <short>SouthEast sizing cursor.</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crUpArrow">
         <short>Up Arrow cursor constant (-10)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crHourGlass">
         <short>Busy cursor constant (wait while action proceeds) (-11)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crDrag">
         <short>Dragging cursor constant (-12)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crNoDrop">
         <short>No Drop Allowed dragging cursor constant (-13)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crHSplit">
         <short>Horizontal Splitter cursor constant (-14)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crVSplit">
         <short>Vertical Split cursor constant (-15)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crMultiDrag">
         <short>Multiple Object dragging cursor constant (-16)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSQLWait">
         <short>Waiting for SQL cursor constant (-17)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crNo">
         <short>"No" cursor constant (-18), see also <link id="crNoDrop"/>.
         </short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crAppStart">
         <short>Application starting[?] cursor.</short>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crHelp">
         <short>"What's This" Help cursor constant (-20)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crHandPoint">
         <short>Pointing hand cursor constant (-21)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crSizeAll">
         <short>All Directions sizing cursor constant (-22)</short>
       </element>
-      <!-- constant Visibility: default -->
       <element name="crLow">
         <short>Lowest defined cursor constant (-30).</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TWndMethod">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -801,7 +805,7 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlStyleType.csSetCaption">
-        <short>As long as Name=Text, changing the Name will set the Caption</short>
+        <short>As long as Name=Text, changing the Name will set the Caption.</short>
         <descr>When for example a button's Name and Caption have the value 'Button1' and the Name is changed to 'Button2' then the Caption is changed as well. When Name and Caption differs this flag has no effect. This flag has no effect during loading.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -886,7 +890,7 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlStyleType.csNoDesignSelectable">
-        <short/>
+        <short>control can not be selected at design time</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlStyleType.csOwnedChildrenNotSelectable">
@@ -894,7 +898,7 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlStyleType.csAutoSize0x0">
-        <short>if the preferred size is 0x0 then control is shrinked ot 0x0</short>
+        <short>if the preferred size is 0x0 then control is shrinked to 0x0</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlStyleType.csAutoSizeKeepChildLeft">
@@ -902,7 +906,7 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlStyleType.csAutoSizeKeepChildTop">
-      <short>when AutoSize=true do not move children vertically</short>
+        <short>when AutoSize=true do not move children vertically</short>
       </element>
       <!-- set type Visibility: default -->
       <element name="TControlStyle" link="TControlStyleType">
@@ -932,57 +936,42 @@
 </pre>
         </descr>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csLButtonDown">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csClicked">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csPalette">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csReadingState">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TControlStateType.csAlignmentNeeded">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csFocusing">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csCreating">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csPaintCopy">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csCustomPaint">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csDestroyingHandle">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csDocking">
         <short/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TControlStateType.csVisibleSetInLoading">
         <short/>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TControlState">
-        <short>Set of permissible Control States</short>
+      <element name="TControlState" link="TControlStateType">
+        <short>Set of permissible Control states</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TControlCanvas">
@@ -994,31 +983,11 @@
           <link id="#lcl.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TControlCanvas.FControl">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TControlCanvas.FDeviceContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TControlCanvas.FWindowHandle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TControlCanvas.FControl"/>
+      <element name="TControlCanvas.FDeviceContext"/>
+      <element name="TControlCanvas.FWindowHandle"/>
       <!-- procedure Visibility: private -->
-      <element name="TControlCanvas.SetControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TControlCanvas.SetControl" link="TControlCanvas.Control"/>
       <element name="TControlCanvas.SetControl.AControl">
         <short/>
       </element>
@@ -1060,7 +1029,7 @@
       <!-- object Visibility: default -->
       <element name="TDragImageList">
         <short>
-          <var>TDragImageList</var> - a list of Images to be dragged</short>
+          <var>TDragImageList</var> - a list of Images for dragging.</short>
         <descr>
           <p>A drag image is shown when a DragImageList is supplied at all, 
             <b>and</b> when no accepting target is under the mouse, or the source control style includes csDisplayDragImage, or AlwaysShowDragImage is set in the DragObject.</p>
@@ -1068,64 +1037,29 @@
           <pre>This is a vague idea of the usage of this class:
 
 SetDragImage selects an image from the list, and defines the hotspot within this image.
+  (the hotspot typically is the offset of the mouse position to the origin of the dragged control)
 
-DragLock specifies a window (handle), to which the image should be attached [what exactly does this mean?]
+BeginDrag starts dragging, the image is shown at the starting location.
 
-ShowDragImage shows the image, combined with the mouse cursor. The HotSpot indicates the shift of the image, relative to the current mouse position.
+DragMove moves the image.
 
-HideDragImage hides the image, shown at its last position.
+EndDrag stops dragging, the image is removed from the screen.
 </pre>
         </descr>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TDragImageList.FDragCursor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDragImageList.FDragging">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDragImageList.FDragHotspot">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDragImageList.FOldCursor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDragImageList.FImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
+      <element name="TDragImageList.FDragCursor"/>
+      <element name="TDragImageList.FDragging"/>
+      <element name="TDragImageList.FDragHotspot"/>
+      <element name="TDragImageList.FOldCursor"/>
+      <element name="TDragImageList.FImageIndex"/>
       <element name="TDragImageList.FLastDragPos">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Remember position where the image was painted.</short>
       </element>
-      <!-- variable Visibility: private -->
       <element name="TDragImageList.FLockedWindow">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>window where drag started and locked via DragLock, invalid=NoLockedWindow=High(PtrInt)</short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TDragImageList.SetDragCursor">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TDragImageList.SetDragCursor" link="TDragImageList.DragCursor"/>
       <element name="TDragImageList.SetDragCursor.AValue">
         <short/>
       </element>
@@ -1134,7 +1068,7 @@ HideDragImage hides the image, shown at its last position.
       <!-- procedure Visibility: protected -->
       <element name="TDragImageList.Initialize">
         <short>
-          <var>Initialize</var> the list of images for dragging</short>
+          <var>Initialize</var> the list of images for dragging.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -1144,77 +1078,77 @@ HideDragImage hides the image, shown at its last position.
       <!-- function Visibility: public -->
       <element name="TDragImageList.BeginDrag">
         <short>
-          <var>BeginDrag</var> - start the drag process; returns True if successful</short>
-        <descr/>
+          <var>BeginDrag</var> - start the drag process; returns True if successful.</short>
+        <descr>
+          Locks window updates[?], remembers the current cursor shape and sets the new shape.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TDragImageList.BeginDrag.Result">
-        <short/>
+        <short>True if successful.</short>
       </element>
       <element name="TDragImageList.BeginDrag.Window">
-        <short/>
+        <short>The associated (locked) window.</short>
       </element>
       <element name="TDragImageList.BeginDrag.X">
-        <short/>
+        <short>The mouse[?] position.</short>
       </element>
       <element name="TDragImageList.BeginDrag.Y">
-        <short/>
+        <short>The mouse[?] position.</short>
       </element>
+      <!-- function Visibility: public -->
       <element name="TDragImageList.DragLock">
-        <short>
-          <var>DragLock</var> - returns True if dragging has been locked for the specifies window at given location</short>
+        <short>Show drag image and lock updates of Window during drag operation.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TDragImageList.DragLock.Result">
-        <short/>
+        <short>True if Dragging and image shown.</short>
       </element>
       <element name="TDragImageList.DragLock.Window">
-        <short/>
+        <short>The locked window.</short>
       </element>
       <element name="TDragImageList.DragLock.XPos">
-        <short/>
+        <short>The mouse[?] position.</short>
       </element>
       <element name="TDragImageList.DragLock.YPos">
-        <short/>
+        <short>The mouse[?] position.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.DragMove">
         <short>
-          <var>DragMove</var> - move dragged images to specified location and return True if successful</short>
-        <descr/>
+          <var>DragMove</var> - move the dragged image to specified location and return True if successful</short>
+        <descr>The image at the old position is erased.</descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TDragImageList.DragMove.Result">
-        <short/>
+        <short>True if Dragging and image moved.</short>
       </element>
       <element name="TDragImageList.DragMove.X">
-        <short/>
+        <short>The new mouse position.</short>
       </element>
       <element name="TDragImageList.DragMove.Y">
-        <short/>
+        <short>The new mouse position.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragImageList.DragUnlock">
-        <short>
-          <var>DragUnlock</var> - unlock the list of images for dragging</short>
+        <short>Hide drag image and unlock window updates.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.EndDrag">
-        <short>
-          <var>EndDrag</var> - retuns True if the drag process has ended</short>
+        <short>Finish dragging of the image.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TDragImageList.EndDrag.Result">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.GetHotSpot" link="#LCL.ImgList.TCustomImageList.GetHotSpot"/>
@@ -1223,35 +1157,34 @@ HideDragImage hides the image, shown at its last position.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragImageList.HideDragImage">
-        <short>
-          <var>HideDragImage</var> - method for making dragged image invisible</short>
+        <short>Hide dragging image without unlocking the window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.SetDragImage">
-        <short>Determines the image to be shown</short>
+        <short>Set index of dragging image and hotspot.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TDragImageList.SetDragImage.Result">
-        <short/>
+        <short>Always True[?]</short>
       </element>
       <element name="TDragImageList.SetDragImage.Index">
-        <short/>
+        <short>List index of the image to use.</short>
       </element>
       <element name="TDragImageList.SetDragImage.HotSpotX">
-        <short/>
+        <short>Offset from mouse position to image position.</short>
       </element>
       <element name="TDragImageList.SetDragImage.HotSpotY">
-        <short/>
+        <short>Offset from mouse position to image position.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragImageList.ShowDragImage">
         <short>
-          <var>ShowDragImage</var> - display the dragged image</short>
+          <var>ShowDragImage</var> - display the dragged image.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1259,27 +1192,27 @@ HideDragImage hides the image, shown at its last position.
       <!-- property Visibility: public -->
       <element name="TDragImageList.DragCursor">
         <short>
-          <var>DragCursor</var> - the cursor for use during the dragging process</short>
+          <var>DragCursor</var> - the cursor shape to use while dragging.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragImageList.DragHotspot">
         <short>
-          <var>DragHotspot</var> - the position of the HotSpot (usually the pointer of the cursor)</short>
+          <var>DragHotspot</var> - the position of the HotSpot, i.e. the offset from the mouse position while dragging.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragImageList.Dragging">
         <short>
-          <var>Dragging</var> - True if dragging is proceeding</short>
+          <var>Dragging</var> - True if dragging in progress.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TKeyEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -1294,7 +1227,7 @@ HideDragImage hides the image, shown at its last position.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TKeyPressEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -1314,7 +1247,7 @@ HideDragImage hides the image, shown at its last position.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMouseEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -1335,7 +1268,7 @@ HideDragImage hides the image, shown at its last position.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMouseMoveEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -1353,7 +1286,7 @@ HideDragImage hides the image, shown at its last position.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMouseWheelEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -1374,7 +1307,7 @@ HideDragImage hides the image, shown at its last position.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMouseWheelUpDownEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -1392,47 +1325,43 @@ HideDragImage hides the image, shown at its last position.
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragState">
-        <short/>
-        <descr/>
+        <short>State changes while dragging - when mouse enters, leaves or moves over a control.</short>
+        <descr>These values are sent with drag messages, allowing the control to perform special actions while the mouse moves over it.
+        </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragState.dsDragEnter">
-        <short/>
+        <short>Mouse has just entered the control.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragState.dsDragLeave">
-        <short/>
+        <short>Mouse has just left the control.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TDragState.dsDragMove"/>
+      <element name="TDragState.dsDragMove">
+        <short>Mouse is moving over the control.</short>
+      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragMode">
-        <short/>
+        <short>Indicates whether dragging can start automatically.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragMode.dmManual">
-        <short/>
+        <short>Dragging can start only by explicit code.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragMode.dmAutomatic">
-        <short/>
+        <short>Dragging starts when the left mouse button is pressed on the control.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragKind">
-        <short/>
+        <short>Indicates whether the control performs drag-drop or drag-dock.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragKind.dkDrag">
-        <short/>
+        <short>Control is dragged for dropping.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragKind.dkDock">
-        <short/>
+        <short>Control is dragged for docking.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragOperation">
@@ -1440,17 +1369,14 @@ HideDragImage hides the image, shown at its last position.
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragOperation.dopNone">
-        <short/>
+        <short>Dragging not started.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragOperation.dopDrag">
-        <short/>
+        <short>Drag-drop started.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragOperation.dopDock">
-        <short/>
+        <short>Drag-dock started.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragMessage">
@@ -1466,27 +1392,21 @@ dmFindTarget: find child control under the mouse
 </pre>
         </descr>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragMessage.dmDragEnter">
         <short>mouse enters control</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragMessage.dmDragLeave">
         <short>mouse leaves control</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragMessage.dmDragMove">
         <short>mouse moves over control (after dmDragEnter)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragMessage.dmDragDrop">
         <short>control dropped</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragMessage.dmDragCancel">
         <short>dragging aborted</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDragMessage.dmFindTarget">
         <short>find possible target control under the mouse</short>
       </element>
@@ -1593,29 +1513,17 @@ dmFindTarget: find child control under the mouse
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TDragRec.Pos">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TDragRec.Source">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TDragRec.Target">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TDragRec.Docking">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TDragObject">
@@ -1640,23 +1548,17 @@ dmFindTarget: find child control under the mouse
           <link id="TDragDockObject"/>
         </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TDragObject.FDragPos"/>
-      <!-- variable Visibility: private -->
-      <element name="TDragObject.FDragTarget"/>
-      <!-- variable Visibility: private -->
-      <element name="TDragObject.FDragTargetPos"/>
-      <!-- variable Visibility: private -->
-      <element name="TDragObject.FAutoFree"/>
-      <!-- variable Visibility: private -->
-      <element name="TDragObject.FAutoCreated"/>
-      <!-- variable Visibility: private -->
-      <element name="TDragObject.FDropped"/>
-      <!-- variable Visibility: private -->
+      <element name="TDragObject.FDragPos" link="TDragObject.DragPos"/>
+      <element name="TDragObject.FDragTarget" link="TDragObject.DragTarget"/>
+      <element name="TDragObject.FDragTargetPos" link="TDragObject.DragTargetPos"/>
+      <element name="TDragObject.FAutoFree" link="TDragObject.AutoFree"/>
+      <element name="TDragObject.FAutoCreated" link="TDragObject.AutoCreated"/>
+      <element name="TDragObject.FDropped" link="TDragObject.Dropped"/>
+      <element name="TDragObject.FAlwaysShowDragImages" link="TDragObject.AlwaysShowDragImage"/>
+      <element name="TDragObject.FControl" link="TDragObject.Control"/>
       <element name="TDragObject.MouseDeltaX">
         <short>[Delphi compatible - dropped!]</short>
       </element>
-      <!-- variable Visibility: private -->
       <element name="TDragObject.MouseDeltaY">
         <short>[Delphi compatible - dropped!]</short>
       </element>
@@ -1688,7 +1590,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TDragObject.GetDragCursor">
-        <short>Returns the dragging cursor type.</short>
+        <short>Returns the dragging cursor type (shape).</short>
         <descr>In drag-drop operations the cursor signals acceptance or rejection of an drop, depending on Accepted.</descr>
         <errors/>
         <seealso/>
@@ -1700,10 +1602,10 @@ dmFindTarget: find child control under the mouse
         <short>Which cursor to return (rejected:crNoDrop or accepted:crDrag).</short>
       </element>
       <element name="TDragObject.GetDragCursor.X">
-        <short/>
+        <short>[?]</short>
       </element>
       <element name="TDragObject.GetDragCursor.Y">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TDragObject.GetDragImages">
@@ -1809,18 +1711,6 @@ dmFindTarget: find child control under the mouse
       <element name="TDragObject.KeyUp.Shift">
         <short/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TDragObject.FAlwaysShowDragImages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TDragObject.FControl">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
       <!-- constructor Visibility: public -->
       <element name="TDragObject.Create">
         <short>Remembers the dragged control.</short>
@@ -1845,9 +1735,7 @@ dmFindTarget: find child control under the mouse
         <descr>This is a Lazarus specific property, introduced to get rid of the special Delphi TDrag...Ex classes.</descr>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TDragObject.Destroy">
-        <short/>
-      </element>
+      <element name="TDragObject.Destroy"/>
       <!-- property Visibility: public -->
       <element name="TDragObject.AlwaysShowDragImages">
         <short>Should the image of dragged objects always be shown?</short>
@@ -1953,7 +1841,7 @@ dmFindTarget: find child control under the mouse
         <descr>The default implementation calls Control.DoEndDrag, which in turn invokes an OnEndDrag handler.</descr>
       </element>
       <element name="TDragObject.EndDrag.Target">
-        <short></short>
+        <short>The control onto which the dragged object is dropped (can be Nil).</short>
       </element>
       <element name="TDragObject.EndDrag.X">
         <short></short>
@@ -2029,19 +1917,15 @@ dmFindTarget: find child control under the mouse
         </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDockOrientation.doNoOrient">
         <short>no orientation applies (like alNone)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDockOrientation.doHorizontal">
         <short>siblings are arranged horizontally, children top-to-bottom</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDockOrientation.doVertical">
         <short>siblings are arranged vertically, children left-to-right</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDockOrientation.doPages">
         <short>children are pages in a tabbed control</short>
       </element>
@@ -2127,7 +2011,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure type Visibility: default -->
       <element name="TGetSiteInfoEvent">
         <short>An OnGetSiteInfo handler returns information about a docksite.</short>
-        <descr>An OnGetSiteInfo event is sent by the DragManager to the nearest docksite.
+        <descr>An OnGetSiteInfo event is sent by the DragManager to all docksites.
           The handler can adjust the snapping rectangle (InfluenceRect), and can reject an drop.
         </descr>
         <seealso/>
@@ -2142,7 +2026,7 @@ dmFindTarget: find child control under the mouse
         <short>The screen rectangle within which a drop or mouse move will be directed to this docksite.</short>
       </element>
       <element name="TGetSiteInfoEvent.MousePos">
-        <short>The current position of the mouse.</short>
+        <short>The current [screen?] position of the mouse.</short>
       </element>
       <element name="TGetSiteInfoEvent.CanDock">
         <short>Set CanDock to False to reject docking.</short>
@@ -2161,17 +2045,17 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TDragDockObject.FBrush">
-        <short>[dropped!]</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
       <element name="TDragDockObject.FDockOffset" link="TDragDockObject.DockOffset"/>
       <element name="TDragDockObject.FDockRect" link="TDragDockObject.DockRect"/>
       <element name="TDragDockObject.FDropAlign" link="TDragDockObject.DropAlign"/>
       <element name="TDragDockObject.FDropOnControl" link="TDragDockObject.DropOnControl"/>
       <element name="TDragDockObject.FFloating" link="TDragDockObject.Floating"/>
+      <!-- variable Visibility: private -->
+      <element name="TDragDockObject.FBrush">
+        <short>[dropped!]</short>
+        <descr/>
+        <seealso/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDragDockObject.SetBrush">
         <short>[Delphi compatible - dropped!]</short>
@@ -2181,9 +2065,6 @@ dmFindTarget: find child control under the mouse
       </element>
       <element name="TDragDockObject.SetBrush.Value">
         <short/>
-      </element>
-      <element name="TDragDockObject.DockOffset">
-        <short>The hotspot offset of the dragged DockRect.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDragDockObject.AdjustDockRect">
@@ -2289,12 +2170,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TDragDockObject.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TDragDockObject.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TDragDockObject.Assign">
         <short>[Delphi compatible - dropped!]</short>
@@ -2362,7 +2238,7 @@ dmFindTarget: find child control under the mouse
         <descr>Every docksite can have an DockManager, which handles dropping and arranges the docked controls.
         </descr>
         <seealso>
-          <link id="TDockTree"/>
+          <link id="controls.TDockTree"/>
         </seealso>
       </element>
       <element name="TDockManager.Create">
@@ -2537,7 +2413,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: default -->
       <element name="TDockManager.ResetBounds">
         <short>
-          <var>ResetBounds</var> refreshes the layout of the docksite</short>
+          <var>ResetBounds</var> refreshes the layout of the docksite.</short>
         <descr>
           <p>This method typically notifies the DockManager of a Resize of the docksite.</p>
           <p>When the extent of the docksite really has changed, the DockManager should reposition and resize all docked controls accordingly.</p>
@@ -2597,38 +2473,30 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- range type Visibility: default -->
       <element name="TConstraintSize">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TSizeConstraintsOption">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TSizeConstraintsOption.scoAdviceWidthAsMin">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TSizeConstraintsOption.scoAdviceWidthAsMax">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TSizeConstraintsOption.scoAdviceHeightAsMin">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TSizeConstraintsOption.scoAdviceHeightAsMax">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TSizeConstraintsOptions">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TSizeConstraintsOptions" link="TSizeConstraintsOption"/>
       <!-- object Visibility: default -->
       <element name="TSizeConstraints">
         <short>Holds maximum and minimum values that can be used in sizing objects.</short>
@@ -12502,31 +12370,6 @@ and that description should be read to understand their definitions more fully.
         <descr/>
         <seealso/>
       </element>
-      <!-- constant Visibility: default -->
-      <element name="AnchorAlign">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="DefaultSideForAnchorKind">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="AnchorReferenceSide">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="AlignNames">
-        <short>Array of names for the <link id="TAlign"/> elements.</short>
-        <descr>
-          <remark>The names include the "al;" prefix, e.g. alNone.</remark>
-        </descr>
-      </element>
       <!-- function Visibility: default -->
       <element name="FindDragTarget">
         <short>Get control at screen position.</short>
@@ -12961,30 +12804,6 @@ and that description should be read to understand their definitions more fully.
       </element>
       <!-- constant Visibility: default -->
       <element name="bvSpace">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TCMMouseWheel.XPos">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TCMMouseWheel.YPos">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TCMMouseWheel.Pos">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TCMMouseWheel.Result">
         <short/>
         <descr/>
         <seealso/>
@@ -13556,30 +13375,6 @@ capfHasScrollOffset: crap, ScrollOffset is taken into account only for the first
       </element>
       <!-- variable Visibility: default -->
       <element name="DockSplitterClass">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="MainAlignAnchor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="OppositeAnchor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="ClockwiseAnchor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="AnchorNames">
         <short/>
         <descr/>
         <seealso/>

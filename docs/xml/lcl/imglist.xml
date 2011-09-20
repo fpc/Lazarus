@@ -7,89 +7,11 @@
   ====================================================================
 -->
     <module name="ImgList">
-      <short>Contains definitions for TCustomImageList. base class for TImageList</short>
+      <short>Contains definitions for TCustomImageList, the base class for TImageList.</short>
       <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="FPCAdds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LResources">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLClasses">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="IntfGraphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="FPReadBMP">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
       <!-- "type" alias type Visibility: default -->
       <element name="TImageIndex">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -102,24 +24,10 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TChangeLink.FSender">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TChangeLink.FOnChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TChangeLink.FSender" link="TChangeLink.Sender"/>
+      <element name="TChangeLink.FOnChange" link="TChangeLink.OnChange"/>
       <!-- destructor Visibility: public -->
-      <element name="TChangeLink.Destroy" link="#rtl.System.TObject.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TChangeLink.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TChangeLink.Change">
         <short>
@@ -144,128 +52,74 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDrawingStyle">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDrawingStyle.dsFocus">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDrawingStyle.dsSelected">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDrawingStyle.dsNormal">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDrawingStyle.dsTransparent">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TImageType">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TImageType.itImage">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TImageType.itMask">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomImageList">
         <short>Base class for TImageList (not the same as a <var>TBitmap</var> collection)</short>
-        <descr>An ImageList contains images (bitmaps or icons) of the same Width and Height, accessible by index. The images are stored in one big (wide) bitmap, whose width is Width*Count. When an image of a different Width or Height is inserted, the previous contents of the list are discarded!
-
-It's okay, however, to insert an imagelist-like bitmap, that contains multiple bitmaps of the same Width and Height as used by the ImageList. This allows to insert e.g. other (compatible) ImageLists, or bitmaps for multiple states of essentially the same image (button pressed, released and disabled).
-
-Transparency is implemented in the alpha channel of the raw 32 bit RGBA imagedata array - but not all platforms support such an alpha channel. [What exactly does this mean to the user?]
-
-The painting of an image from the list is handled by the widgetset, no bitmap or icon component is involved. The widgetset can use a different internal organization of the data, optimized for immediate painting of an image.
-
-<b>NOTE:</b> A TCustomImageList is <b>not</b> a TBitmap collection.
-If a storage of distinct bitmaps is needed, create your own list of TBitMaps (array or TList).</descr>
+        <descr>
+          <p>An ImageList contains images (bitmaps or icons) of the same Width and Height, accessible by index.
+            The images are stored in one big (wide) bitmap, whose width is Width*Count.
+          </p><p>When an image of a different Width or Height is inserted, the previous contents of the list are discarded!
+          </p><p>
+            It's okay, however, to insert an imagelist-like bitmap, that contains multiple bitmaps of the same Width and Height as used by the ImageList.
+            This allows to insert e.g. other (compatible) ImageLists, or bitmaps for multiple states of essentially the same image (button pressed, released and disabled).
+          </p><p>
+            Transparency is implemented in the alpha channel of the raw 32 bit RGBA imagedata array - but not all platforms support such an alpha channel.
+            [What exactly does this mean to the user?]
+          </p><p>
+            The painting of an image from the list is handled by the widgetset, no bitmap or icon component is involved.
+            The widgetset can use a different internal organization of the data, optimized for immediate painting of an image.
+          </p><p>
+            <b>NOTE:</b> A TCustomImageList is <b>not</b> a TBitmap collection.
+            If a storage of distinct bitmaps is needed, create your own list of TBitMaps (array or TList).
+          </p><p>[What about Mask and ShareImages?]
+          </p>
+        </descr>
         <errors>Currently only the insertion of Bitmaps is supported. Other image types should be rendered as bitmaps of Width and Height, which then can be inserted.</errors>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FDrawingStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FImageList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FMaskList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FBitmap">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FImageType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FMaskBitmap">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FMasked">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FShareImages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FAllocBy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomImageList.FAllocBy" link="TCustomImageList.AllocBy"/>
+      <element name="TCustomImageList.FBkColor" link="TCustomImageList.BkColor"/>
+      <element name="TCustomImageList.FBlendColor" link="TCustomImageList.BlendColor"/>
+      <element name="TCustomImageList.FCount" link="TCustomImageList.Count"/>
+      <element name="TCustomImageList.FDrawingStyle" link="TCustomImageList.DrawingStyle"/>
+      <element name="TCustomImageList.FHeight" link="TCustomImageList.Height"/>
+      <element name="TCustomImageList.FImageType" link="TCustomImageList.ImageType"/>
+      <element name="TCustomImageList.FMasked" link="TCustomImageList.Masked"/>
+      <element name="TCustomImageList.FOnChange" link="TCustomImageList.OnChange"/>
+      <element name="TCustomImageList.FShareImages" link="TCustomImageList.ShareImages"/>
+      <element name="TCustomImageList.FReference" link="TCustomImageList.Reference"/>
+      <element name="TCustomImageList.FWidth" link="TCustomImageList.Width"/>
       <!-- variable Visibility: private -->
       <element name="TCustomImageList.FAllocCount">
         <short/>
@@ -273,13 +127,7 @@ If a storage of distinct bitmaps is needed, create your own list of TBitMaps (ar
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FBlendColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FOnChange">
+      <element name="TCustomImageList.FChanged">
         <short/>
         <descr/>
         <seealso/>
@@ -291,136 +139,146 @@ If a storage of distinct bitmaps is needed, create your own list of TBitMaps (ar
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FBkColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FHandle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomImageList.FChanged">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomImageList.FData">
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomImageList.AllocBitmap">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TCustomImageList.AllocData">
+        <short>Allocates data for ACount images</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.AllocBitmap.Amount">
-        <short/>
+      <element name="TCustomImageList.AllocData.ACount">
+        <short>the number of images</short>
+      </element>
+      <element name="TCustomImageList.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomImageList.InternalInsert">
+        <short>Insert bitmap (with split if necessary) into position AIndex with shifting other images.</short>
+      </element>
+      <element name="TCustomImageList.InternalInsert.AIndex">
+        <short>Index to insert images</short>
+      </element>
+      <element name="TCustomImageList.InternalInsert.AImage">
+        <short>Image handle</short>
+      </element>
+      <element name="TCustomImageList.InternalInsert.AMask">
+        <short>Mask handle</short>
+      </element>
+      <element name="TCustomImageList.InternalInsert.AWidth">
+        <short>Width in pixels</short>
+      </element>
+      <element name="TCustomImageList.InternalInsert.AHeight">
+        <short>Height in pixels</short>
+      </element>
+      <element name="TCustomImageList.InternalInsert.ARawImage">
+        <short>[?]</short>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomImageList.InternalMove">
+        <short>Moves an image from CurIndex to NewIndex, without notifying the widgetset.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TCustomImageList.InternalMove.ACurIndex">
+        <short>the index of the image to be moved</short>
+      </element>
+      <element name="TCustomImageList.InternalMove.ANewIndex">
+        <short>the new index of the image</short>
+      </element>
+      <element name="TCustomImageList.InternalMove.AIgnoreCurrent">
+        <short>[?]</short>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomImageList.InternalReplace">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TCustomImageList.InternalReplace.AIndex">
+        <short></short>
+      </element>
+      <element name="TCustomImageList.InternalReplace.AImage">
+        <short></short>
+      </element>
+      <element name="TCustomImageList.InternalReplace.AMask">
+        <short></short>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCustomImageList.InternalSetImage">
+        <short>Copies the imagedata into the FData array and then frees the image.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TCustomImageList.InternalSetImage.Result">
+        <short>Pointer to the updated image data</short>
+      </element>
+      <element name="TCustomImageList.InternalSetImage.AIndex">
+        <short>the index of the location where the image should be set</short>
+      </element>
+      <element name="TCustomImageList.InternalSetImage.AImage">
+        <short>the new image</short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImageList.NotifyChangeLink">
-        <short/>
+        <short>Internal function to notify the subscribed objects of a change of the imagelist.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomImageList.SetBkColor">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomImageList.SetBkColor" link="TCustomImageList.BkColor"/>
       <element name="TCustomImageList.SetBkColor.Value">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomImageList.SetDrawingStyle">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomImageList.SetDrawingStyle" link="TCustomImageList.DrawingStyle"/>
       <element name="TCustomImageList.SetDrawingStyle.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomImageList.SetHeight">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomImageList.SetHeight" link="TCustomImageList.Height"/>
       <element name="TCustomImageList.SetHeight.Value">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomImageList.SetMasked">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomImageList.SetMasked" link="TCustomImageList.Masked"/>
       <element name="TCustomImageList.SetMasked.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomImageList.SetShareImages">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomImageList.SetShareImages" link="TCustomImageList.ShareImages"/>
       <element name="TCustomImageList.SetShareImages.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomImageList.SetWidth">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomImageList.SetWidth" link="TCustomImageList.Width"/>
       <element name="TCustomImageList.SetWidth.Value">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TCustomImageList.GetCount">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomImageList.GetCount.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomImageList.ShiftImages">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.ShiftImages.Source">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.ShiftImages.Start">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.ShiftImages.Shift">
-        <short/>
+      <element name="TCustomImageList.GetReference" link="TCustomImageList.Reference"/>
+      <element name="TCustomImageList.GetReference.Result">
+        <short></short>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TCustomImageList.FUpdateCount">
@@ -429,29 +287,13 @@ If a storage of distinct bitmaps is needed, create your own list of TBitMaps (ar
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomImageList.GetImages">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.GetImages.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.GetImages.Image">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.GetImages.Mask">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
       <element name="TCustomImageList.Initialize">
         <short>
           <var>Initialize</var> - sets up the list</short>
-        <descr/>
+        <descr>
+          Initializes the internal bitmap structures and the changelink list.
+          It is used by the Create and CreateSize constructors.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -463,56 +305,35 @@ If a storage of distinct bitmaps is needed, create your own list of TBitMaps (ar
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.DefineProperties.Filer">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomImageList.SetWidthHeight">
         <short>
-          <var>SetWidthHeight</var> - specifies the dimensions for display</short>
-        <descr/>
+          <var>SetWidthHeight</var> - set Width and Height of the images.</short>
+        <descr>Writing clears the entire list.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.SetWidthHeight.NewWidth">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.SetWidthHeight.NewHeight">
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomImageList.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Create.TheOwner">
+      <element name="TCustomImageList.Create"/>
+      <element name="TCustomImageList.Create.AOwner">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomImageList.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomImageList.AssignTo"/>
       <element name="TCustomImageList.AssignTo.Dest">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomImageList.Assign" link="#rtl.Classes.TPersistent.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomImageList.Assign"/>
       <element name="TCustomImageList.Assign.Source">
         <short/>
       </element>
@@ -523,7 +344,6 @@ If a storage of distinct bitmaps is needed, create your own list of TBitMaps (ar
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.WriteData.AStream">
         <short/>
       </element>
@@ -534,25 +354,26 @@ If a storage of distinct bitmaps is needed, create your own list of TBitMaps (ar
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.ReadData.AStream">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.BeginUpdate">
         <short>
-          <var>BeginUpdate</var> - start updating the data</short>
-        <descr>Use together with EndUpdate to speed up the insertion of multiple images.
-
-Every BeginUpdate must be matched by an EndUpdate, i.e. update operations can be nested.
-</descr>
+          Start updating the data, block the OnChange event.</short>
+        <descr>
+          <p>Use together with EndUpdate to speed up the insertion of multiple images.
+          </p><p>
+            Every BeginUpdate must be matched by an EndUpdate, i.e. update operations can be nested.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.EndUpdate">
         <short>
-          <var>EndUpdate</var> - finish updating the data</short>
+          <var>EndUpdate</var> - finish updating the data, call Change.</short>
         <descr>Decrements the internal UpdateCount and, when it reaches zero, does whatever is required to reflect the new content.
 </descr>
         <errors/>
@@ -564,74 +385,37 @@ Every BeginUpdate must be matched by an EndUpdate, i.e. update operations can be
       <element name="TCustomImageList.Add">
         <short>
           <var>Add</var> an Image and Mask bitmap to the list. Returns the index of the added image or -1 if unsucessful</short>
-        <descr/>
+        <descr>
+<pre>
+  Adds one or more (bitmap width / imagelist width) bitmaps to the list.
+  If Mask is nil, the image has no transparent parts.
+</pre>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomImageList.Add.Result">
-        <short/>
+        <short>The index of the added image, -1 if unsuccesful.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.Add.Image">
-        <short/>
+        <short>a bitmap image</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.Add.Mask">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomImageList.AddDirect">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomImageList.AddDirect.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.AddDirect.Image">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.AddDirect.Mask">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomImageList.AddCopy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomImageList.AddCopy.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.AddCopy.SrcImage">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.AddCopy.SrcMask">
-        <short/>
+        <short>a bitmap which defines the transparent parts of Image</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomImageList.AddIcon">
-        <short>Adds an icon to the list (not yet!), returning the index of the icon or -1 if not successful</short>
-        <descr>Adding graphics other than bitmaps can be implemented by converting the graphics item into a bitmap, which then can be added to the image list. Most graphics classes support such a conversion, so that specialized methods are redundant.</descr>
+        <short>Adds an icon to the list [not yet!?], returning the index of the icon or -1 if not successful</short>
+        <descr>Adding graphics other than bitmaps can be implemented by converting the graphics item into a bitmap, which then can be added to the image list.
+          Most graphics classes support such a conversion, so that specialized methods are redundant.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomImageList.AddIcon.Result">
-        <short/>
+        <short>The index of the added icon, -1 if unsuccesful.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.AddIcon.Image">
-        <short/>
+        <short>the Icon to be added.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.AddImages">
@@ -641,53 +425,53 @@ Every BeginUpdate must be matched by an EndUpdate, i.e. update operations can be
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.AddImages.Value">
-        <short/>
+      <element name="TCustomImageList.AddImages.AValue">
+        <short>
+          <var>AValue</var> - the ImageList containing images to add</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomImageList.AddMasked">
         <short>
           <var>AddMasked</var> - adds one or more bitmaps to the list</short>
-        <descr>Every pixel of MaskColor will become transparent.
+        <descr>
+<pre>
+Every pixel of MaskColor will become transparent.
 
 Image can contain multiple images of the same Width and Height.
 
-Returns the index of the first added bitmap, or -1 if unsuccessful.</descr>
+Returns the index of the first added bitmap, or -1 if unsuccessful.
+</pre>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomImageList.AddMasked.Result">
-        <short/>
+        <short>The index of the [last?] added icon, -1 if unsuccesful.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.AddMasked.Image">
-        <short/>
+        <short>A bitmap to be added</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.AddMasked.MaskColor">
-        <short/>
+        <short>The color acting as transparant color</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomImageList.AddFromLazarusResource">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TCustomImageList.AddLazarusResource">
+        <short>
+          <var>AddLazarusResource</var> - load <var>TBitmap</var> from lazarus resources and add it</short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomImageList.AddFromLazarusResource.Result">
-        <short/>
+      <element name="TCustomImageList.AddLazarusResource.Result">
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.AddFromLazarusResource.ResourceName">
-        <short/>
+      <element name="TCustomImageList.AddLazarusResource.ResourceName">
+        <short>[?]</short>
+      </element>
+      <element name="TCustomImageList.AddLazarusResource.MaskColor">
+        <short>[?]</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Change">
         <short>
-          <var>Change</var> - send change notifications</short>
+          <var>Change</var> - send change notifications.</short>
         <descr>Notifies all members of the ChangeLinkList, and calls the <var>OnChange</var> handler.</descr>
         <errors/>
         <seealso/>
@@ -695,7 +479,7 @@ Returns the index of the first added bitmap, or -1 if unsuccessful.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Clear">
         <short>
-          <var>Clear</var> - removes all images from the list</short>
+          <var>Clear</var> - removes all images from the list.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -703,36 +487,30 @@ Returns the index of the first added bitmap, or -1 if unsuccessful.</descr>
       <!-- constructor Visibility: public -->
       <element name="TCustomImageList.CreateSize">
         <short>Initialize the list for image(s) with the given height and width</short>
-        <descr>The Width and Height is reset with every insertion of a bitmap. It may be useful, however, to initialize a list for the insertion of graphics other than bitmaps, so that the images can be rendered as bitmaps of the intended width and height, before they are inserted.</descr>
+        <descr>The Width and Height is reset with every[? first only?] insertion of a bitmap.
+          It may be useful, however, to initialize a list for the insertion of graphics other than bitmaps,
+          so that the images can be rendered as bitmaps of the intended width and height, before they are inserted.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.CreateSize.AWidth">
-        <short/>
+        <short>The width of all images, in pixels.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.CreateSize.AHeight">
-        <short/>
+        <short>The height of all images, in pixels.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Delete">
-        <short>Delete the specified image</short>
+        <short>Delete the specified image(s)</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Delete.Index">
-        <short/>
+      <element name="TCustomImageList.Delete.AIndex">
+        <short>the index of the image to be deleted. -1 for delete all.</short>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomImageList.Destroy" link="#rtl.Classes.TComponent.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomImageList.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Draw">
         <short>Paint an image</short>
@@ -740,25 +518,29 @@ Returns the index of the first added bitmap, or -1 if unsuccessful.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Draw.Canvas">
-        <short/>
+      <element name="TCustomImageList.Draw.ACanvas">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Draw.X">
-        <short/>
+      <element name="TCustomImageList.Draw.AX">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Draw.Y">
-        <short/>
+      <element name="TCustomImageList.Draw.AY">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Draw.Index">
-        <short/>
+      <element name="TCustomImageList.Draw.AIndex">
+        <short>The image index.</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Draw.Enabled">
-        <short/>
+      <element name="TCustomImageList.Draw.AEnabled">
+         <short>If False, draw the image disabled.</short>
+     </element>
+      <element name="TCustomImageList.Draw.ADrawEffect">
+        <short></short>
+      </element>
+      <element name="TCustomImageList.Draw.ADrawingStyle">
+        <short></short>
+      </element>
+      <element name="TCustomImageList.Draw.AImageType">
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.GetBitmap">
@@ -767,71 +549,28 @@ Returns the index of the first added bitmap, or -1 if unsuccessful.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.GetBitmap.Index">
-        <short/>
+        <short>the index of the requested image</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.GetBitmap.Image">
-        <short/>
+        <short>a bitmap as a container for the bitmap</short>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomImageList.GetInternalImage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.GetInternalImage.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.GetInternalImage.Image">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.GetInternalImage.Mask">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.GetInternalImage.ImageRect">
-        <short/>
+      <element name="TCustomImageList.GetBitmap.AEffect">
+        <short>how to copy</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomImageList.GetHotSpot">
         <short>
-          <var>GetHotSpot</var> - returns the co-ordinates for the hotspot of the drag image</short>
+          <var>GetHotSpot</var> - returns the offset from the drawing[?] position to the image origin.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomImageList.GetHotSpot.Result">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomImageList.GetIcon">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.GetIcon.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.GetIcon.Image">
-        <short/>
-      </element>
       <!-- function Visibility: public -->
-      <element name="TCustomImageList.HandleAllocated" link="#LCL.LCLClasses.TLCLReferenceComponent.HandleAllocated">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomImageList.HandleAllocated"/>
       <!-- function result Visibility: default -->
       <element name="TCustomImageList.HandleAllocated.Result">
         <short/>
@@ -848,32 +587,27 @@ If Mask is nil, the inserted images have no transparent parts.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Insert.Index">
-        <short/>
+      <element name="TCustomImageList.Insert.AIndex">
+        <short>insert position</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Insert.Image">
-        <short/>
+      <element name="TCustomImageList.Insert.AImage">
+        <short>bitmap to insert</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Insert.Mask">
-        <short/>
+      <element name="TCustomImageList.Insert.AMask">
+        <short>transparency mask, Nil for opaque</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.InsertIcon">
-        <short/>
+        <short>Insert an Icon into the list.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.InsertIcon.Index">
-        <short/>
+      <element name="TCustomImageList.InsertIcon.AIndex">
+        <short>insertion point</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.InsertIcon.Image">
-        <short/>
+      <element name="TCustomImageList.InsertIcon.AIcon">
+        <short>The Icon to insert.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.InsertMasked">
@@ -885,22 +619,19 @@ If Mask is nil, the inserted images have no transparent parts.</descr>
           <link id="TCustomImageList.Insert"/>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.InsertMasked.Index">
-        <short/>
+        <short>The index of the inserted image</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.InsertMasked.Image">
-        <short/>
+      <element name="TCustomImageList.InsertMasked.AImage">
+        <short>The bitmap to be inserted</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.InsertMasked.MaskColor">
-        <short/>
+        <short>The color acting as transparant color</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Move">
         <short>
-          <var>Move</var> an image from index <var>CurIndex</var> to <var>NewIndex</var>
+          Move an image from index <var>CurIndex</var> to <var>NewIndex</var>
         </short>
         <descr/>
         <errors/>
@@ -908,70 +639,47 @@ If Mask is nil, the inserted images have no transparent parts.</descr>
           <link id="TCustomImageList"/>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Move.CurIndex">
-        <short/>
+      <element name="TCustomImageList.Move.ACurIndex">
+        <short>the index of the image to be moved</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Move.NewIndex">
-        <short/>
+      <element name="TCustomImageList.Move.ANewIndex">
+        <short>the new index of the image</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Replace">
         <short>
-          <var>Replace</var> an indexed image with the Bitmap given</short>
+          <var>Replace</var> the indexed image with the Bitmap given</short>
         <descr>AMask can be nil, if the image has no transparent parts.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Replace.Index">
-        <short/>
+      <element name="TCustomImageList.Replace.AIndex">
+        <short>the index of the replaceded image</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Replace.Image">
-        <short/>
+      <element name="TCustomImageList.Replace.AImage">
+        <short>a bitmap image</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.Replace.Mask">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomImageList.ReplaceIcon">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.ReplaceIcon.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomImageList.ReplaceIcon.Image">
-        <short/>
+      <element name="TCustomImageList.Replace.AMask">
+        <short>a bitmap which defines the transparent parts of Image</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.ReplaceMasked">
         <short>
           <var>ReplaceMasked</var> - replaces the indexed image with the image given.</short>
-        <descr>Every instance of MaskColor will be converted to transparent</descr>
+        <descr>Every pixel of MaskColor will be converted to transparent</descr>
         <errors/>
         <seealso>
           <link id="TCustomImageList.InsertMasked"/>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.ReplaceMasked.Index">
-        <short/>
+        <short>the index of the replaceded image</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.ReplaceMasked.NewImage">
-        <short/>
+        <short>A bitmap image</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.ReplaceMasked.MaskColor">
-        <short/>
+        <short>The color acting as transparant color</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.RegisterChanges">
@@ -980,40 +688,38 @@ If Mask is nil, the inserted images have no transparent parts.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.RegisterChanges.Value">
-        <short/>
+        <short>a reference to changelink object</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.UnRegisterChanges">
         <short>
-          <var>UnRegisterChanges</var> - remove the changes from the register</short>
+          Unregisters an notification object.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomImageList.UnRegisterChanges.Value">
-        <short/>
+        <short>Reference to the changelink object to remove.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.AllocBy">
         <short>
-          <var>AllocBy</var> - allocate images by an integer value</short>
+          <var>AllocBy</var> - the number of images in every allocated block.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.BlendColor">
         <short>
-          <var>BlendColor</var> - the colour for a blend</short>
+          <var>BlendColor</var> - the colour for a blend[???]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.BkColor">
         <short>
-          <var>BkColor</var> - background colour (default none)</short>
+          The background color for transparent parts.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1032,23 +738,17 @@ If Mask is nil, the inserted images have no transparent parts.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomImageList.Handle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
       <element name="TCustomImageList.Height">
         <short>
-          <var>Height</var> of images on list</short>
-        <descr/>
+          <var>Height</var> of the images in the list.</short>
+        <descr>Writing clears the entire list.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.Width">
         <short>
-          <var>Width</var> of images on list</short>
-        <descr/>
+          <var>Width</var> of all images in the list</short>
+        <descr>Writing clears the entire list.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -1061,26 +761,14 @@ If Mask is nil, the inserted images have no transparent parts.</descr>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.Masked">
         <short>
-          <var>Masked</var> - if True, a mask is applied to the bitmap</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomImageList.Bitmap">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomImageList.MaskBitmap">
-        <short/>
+          <var>Masked</var> - if True, a mask [what's this?] is applied to the bitmap.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImageList.ShareImages">
         <short>
-          <var>ShareImages</var> - if True, images are allowed to be shared</short>
+          <var>ShareImages</var> - if True, images are allowed to be shared[???]</short>
         <descr/>
         <seealso/>
       </element>
@@ -1091,21 +779,44 @@ If Mask is nil, the inserted images have no transparent parts.</descr>
         <descr/>
         <seealso/>
       </element>
-      <element name="TCustomImageList.AddImages.AValue">
-        <short>
-          <var>AValue</var> - the ImageList containing images to add</short>
-      </element>
-      <element name="TCustomImageList.AddLazarusResource">
-        <short>
-          <var>AddLazarusResource</var> - load <var>TBitmap</var> from lazarus resources and add it</short>
-      </element>
       <element name="TCustomImageList.FillDescription">
         <short>
           <var>FillDescription</var> - fills the description with the default info of the imagedata</short>
       </element>
+      <element name="TCustomImageList.FillDescription.ADesc">
+        <short>the description to fill</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomImageList.GetFullBitmap">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TCustomImageList.GetFullBitmap.Image">
+        <short>the target bitmap</short>
+      </element>
+      <element name="TCustomImageList.GetFullBitmap.AEffect">
+        <short>how to copy</short>
+      </element>
+      <element name="TCustomImageList.GetFullRawImage">
+        <short>Copies the image description and the data pointer</short>
+      </element>
+      <element name="TCustomImageList.GetFullRawImage.Image">
+        <short></short>
+      </element>
       <element name="TCustomImageList.GetRawImage">
         <short>
           <var>GetRawImage</var> - primitive method for loading an image: you have to fill in all the description fields yourself</short>
+      </element>
+      <element name="TCustomImageList.GetRawImage.Index">
+        <short>the index of the image to copy</short>
+      </element>
+      <element name="TCustomImageList.GetRawImage.Image">
+        <short>the target bitmap</short>
       </element>
       <element name="TCustomImageList.Reference">
         <short>
@@ -1115,26 +826,54 @@ If Mask is nil, the inserted images have no transparent parts.</descr>
         <short>
           <var>CheckIndex</var> - method for checking whether the indexed item is supposed to be inserted (default condition is False)</short>
       </element>
+      <element name="TCustomImageList.CheckIndex.AIndex">
+        <short></short>
+      </element>
+      <element name="TCustomImageList.CheckIndex.AForInsert">
+        <short></short>
+      </element>
       <element name="TCustomImageList.GetReferenceHandle">
         <short>
           <var>GetReferenceHandle</var> - returns a handle for the reference</short>
       </element>
+      <element name="TCustomImageList.GetReferenceHandle.Result">
+        <short></short>
+      </element>
       <element name="TCustomImageList.WSCreateReference">
         <short>
-          <var>WSCreateReference</var> - creates a reference for the Imagelist (returns this as a result), passing the defined parameters for the creation process</short>
+          Instructs the widgtset to create an imagelist.</short>
+      </element>
+      <element name="TCustomImageList.WSCreateReference.Result">
+        <short>Handle to created imagelist</short>
+      </element>
+      <element name="TCustomImageList.WSCreateReference.AParams">
+        <short>ignored</short>
       </element>
       <element name="TCustomImageList.StretchDraw">
         <short>
-          <var>StretchDraw</var> - draw the image to fill the canvas</short>
+          Draws an image stretched to ARect.</short>
       </element>
-      <element name="TCustomImageList.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomImageList.InternalInsert"/>
+      <element name="TCustomImageList.StretchDraw.Canvas">
+        <short>[?]</short>
+      </element>
+      <element name="TCustomImageList.StretchDraw.Index">
+        <short>[?]</short>
+      </element>
+      <element name="TCustomImageList.StretchDraw.ARect">
+        <short>[?]</short>
+      </element>
+      <element name="TCustomImageList.StretchDraw.Enabled">
+        <short>[?]</short>
+      </element>
       <element name="TCustomImageList.Equals">
         <short>Check for equivalence with another ImageList</short>
         <descr>This is an expensive operation, since both imagelists are written into memory streams, which then are compared bytewise.</descr>
       </element>
-      <element name="TCustomImageList.GetFullRawImage">
-        <short>Copies the image description and the data pointer</short>
+      <element name="TCustomImageList.Equals.Result">
+        <short></short>
+      </element>
+      <element name="TCustomImageList.Equals.Obj">
+        <short></short>
       </element>
     </module>
     <!-- ImgList -->
