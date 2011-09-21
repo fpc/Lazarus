@@ -2666,9 +2666,12 @@ function TGDBMIDebuggerCommandDisassembe.DoExecute: Boolean;
   var
     DisAssList: TGDBMIDisassembleResultList;
     DisAssItm: PDisassemblerEntry;
+    s: TDBGPtr;
   begin
     Result := False;
-    DisAssList := ExecDisassmble(AStartAddr.GuessedValue -1, AStartAddr.GuessedValue, False);
+    // TODO: maybe try "info symbol <addr>
+    s := (AStartAddr.GuessedValue -1) div 4 * 4;  // 4 byte boundary
+    DisAssList := ExecDisassmble(s, s+1, False);
     if DisAssList.Count > 0 then begin
       DisAssItm := DisAssList.Item[0];
       if (DisAssItm^.FuncName <> '') and (DisAssItm^.Addr <> 0) and (DisAssItm^.Offset >= 0)
