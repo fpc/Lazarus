@@ -326,7 +326,8 @@ procedure TComponentListForm.ListboxComponentsKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then
-    ListboxComponentsDblClick(Sender);
+    if (ListboxComponents.ItemIndex >= 0) then
+      ListboxComponentsDblClick(Sender);
 end;
 
 procedure TComponentListForm.SetFocusToDataList;
