@@ -37,8 +37,8 @@ unit DebuggerDlg;
 interface
 
 uses
-  Classes, Forms, Controls, IDEProcs, Debugger, EnvironmentOpts, IDEOptionDefs,
-  EditorOptions, IDECommands;
+  Classes, Forms, Controls, IDEProcs, FileUtil, Debugger, EnvironmentOpts, IDEOptionDefs,
+  MainIntf, EditorOptions, IDECommands, BaseDebugManager;
 
 type
 
@@ -83,6 +83,7 @@ type
     procedure SetWatchesMonitor(const AValue: TWatchesMonitor);
     procedure SetBreakPoints(const AValue: TIDEBreakPoints);
   protected
+    procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer);
     procedure DoWatchesChanged; virtual; // called if the WatchesMonitor object was changed
     procedure DoBreakPointsChanged; virtual; // called if the BreakPoint(Monitor) object was changed
     property SnapshotNotification:    TSnapshotNotification  read GetSnapshotNotification;
@@ -296,6 +297,33 @@ begin
     DoBreakPointsChanged;
   finally
     EndUpdate;
+  end;
+end;
+
+procedure TDebuggerDlg.JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer);
+var
+  Filename: String;
+  ok: Boolean;
+begin
+  // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
+  DebugBoss.LockCommandProcessing;
+  try
+  (* Maybe trim the filename here and use jfDoNotExpandFilename
+     ExpandFilename works with the current IDE path, and may be wrong
+  *)
+  // TODO: better detcion of unsaved project files
+    if DebugBoss.GetFullFilename(AnUnitInfo, Filename, False) then begin
+      ok := false;
+      if FilenameIsAbsolute(Filename) then
+        ok := MainIDEIntf.DoJumpToSourcePosition(Filename, 0, ALine, 0,
+                                             [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug]
+                                            ) = mrOK;
+      if not ok then
+        MainIDEIntf.DoJumpToSourcePosition(Filename, 0, ALine, 0,
+                                       [jfDoNotExpandFilename, jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug]);
+    end;
+  finally
+    DebugBoss.UnLockCommandProcessing;
   end;
 end;
 

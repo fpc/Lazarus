@@ -143,7 +143,6 @@ end;
 procedure TThreadsDlg.JumpToSource;
 var
   Entry: TThreadEntry;
-  Filename: String;
   Item: TListItem;
 begin
   Item := lvThreads.Selected;
@@ -151,15 +150,8 @@ begin
   Entry := TThreadEntry(Item.Data);
   if Entry = nil then Exit;
 
-  // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
-  DebugBoss.LockCommandProcessing;
-  try
-    if DebugBoss.GetFullFilename(Entry.UnitInfo, Filename, False) then
-      MainIDE.DoJumpToSourcePosition(Filename, 0, Entry.Line, 0,
-                                     [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug]);
-  finally
-    DebugBoss.UnLockCommandProcessing;
-  end;end;
+  JumpToUnitSource(Entry.UnitInfo, Entry.Line);
+end;
 
 function TThreadsDlg.GetSelectedSnapshot: TSnapshot;
 begin

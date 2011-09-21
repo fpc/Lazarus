@@ -216,8 +216,8 @@ type
 
 var
   MainIDEInterface: TMainIDEInterface;
-
   ObjectInspector1: TObjectInspectorDlg = nil;
+  MainIDEIntf: TMainIDEInterface = nil;
 
 const
   OpenFlagNames: array[TOpenFlag] of string = (

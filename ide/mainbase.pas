@@ -175,8 +175,10 @@ type
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
   end;
 
-var
-  MainIDE: TMainIDEBase = nil;
+function  GetMainIde: TMainIDEBase;
+procedure SetMainIde(AValue: TMainIDEBase);
+
+property MainIDE: TMainIDEBase read GetMainIde write SetMainIde;
 
   { Normally the IDE builds itself with packages named in config files.
     When the IDE should keep the packages installed in the current executable
@@ -187,6 +189,16 @@ implementation
 
 uses
   IDEImagesIntf;
+
+function GetMainIde: TMainIDEBase;
+begin
+  Result := TMainIDEBase(MainIDEIntf)
+end;
+
+procedure SetMainIde(AValue: TMainIDEBase);
+begin
+  MainIDEIntf := AValue;
+end;
 
 //{$IFDEF LCLCarbon}
 //var

@@ -587,8 +587,14 @@ var
 begin
   Result := False;
   if Destroying then exit;
-  Result := FilenameIsAbsolute(Filename);
-  if Result then exit;
+  (* The below currently does not work for unsaved projects *)
+  //Result := FilenameIsAbsolute(Filename);
+  //if Result then exit;
+
+  // TODO, check for virtual file, and flag it
+  // Project1.IsVirtual
+  // Left(Filename,1, xxx) = LazarusIDE.GetTestBuildDirectory
+
 
   // some debuggers (e.g. gdb) sometimes returns linux path delims under windows
   // => fix that
