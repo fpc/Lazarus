@@ -1068,11 +1068,91 @@ var
   end;
 
 var
-  i, j, n2, numPrevPts: Integer;
-  a, b: TDoublePoint;
   ext, ext2: TDoubleRect;
-  z, z1, z2: Double;
   prevPts: TPointArray;
+
+  procedure DrawSegment(AStart, AEnd: Integer);
+  var
+    i, j, n2, numPrevPts: Integer;
+    a, b: TDoublePoint;
+    z, z1, z2: Double;
+  begin
+    numPts := 0;
+    numPrevPts := 0;
+
+    if UseZeroLevel then
+      z := AxisToGraphY(ZeroLevel)
+    else
+      z := IfThen(IsRotated, ext2.a.X, ext2.a.Y);
+    z1 := z;
+    z2 := z;
+
+    for j := 0 to Source.YCount - 1 do begin
+      if j > 0 then
+        UpdateGraphPoints(j - 1, AStart, AEnd);
+      numPts := 0;
+      a := ProjToRect(FGraphPoints[AStart], ext2);
+      PushPoint(ProjToLine(a, z1));
+      z1 := IfThen(IsRotated, a.X, a.Y);
+      for i := AStart to AEnd - 1 do begin
+        a := FGraphPoints[i];
+        b := FGraphPoints[i + 1];
+        case ConnectType of
+          ctLine: ;
+          ctStepXY:
+            if IsRotated then
+              b.X := a.X
+            else
+              b.Y := a.Y;
+          ctStepYX:
+            if IsRotated then
+              a.X := b.X
+            else
+              a.Y := b.Y;
+        end;
+        // Avoid integer overflow at extreme zoom levels.
+        if LineIntersectsRect(a, b, ext2) then begin
+          PushPoint(a);
+          PushPoint(b);
+        end
+        else begin
+          PushPoint(ProjToRect(a, ext2));
+          PushPoint(ProjToRect(b, ext2));
+        end;
+      end;
+      a := ProjToRect(FGraphPoints[AEnd], ext2);
+      PushPoint(ProjToLine(a, z2));
+      z2 := IfThen(IsRotated, a.X, a.Y);
+      n2 := numPts;
+
+      for i := 0 to numPrevPts - 1 do
+        PushPoint(prevPts[numPrevPts - i - 1]);
+      for i := 0 to n2 - 1 do
+        prevPts[i] := pts[i];
+      numPrevPts := n2;
+
+      ADrawer.Brush := AreaBrush;
+      ADrawer.Pen := AreaContourPen;
+      if Styles <> nil then
+        Styles.Apply(ADrawer, j);
+      if Depth > 0 then
+        // Rendering is incorrect when values cross zero level.
+        for i := 1 to n2 - 2 do
+          ADrawer.DrawLineDepth(pts[i], pts[i + 1], Depth);
+      ADrawer.Polygon(pts, 0, numPts);
+    end;
+    if AreaLinesPen.Style <> psClear then begin
+      ADrawer.Pen := AreaLinesPen;
+      for i := AStart + 1 to AEnd - 1 do begin
+        a := ProjToRect(FGraphPoints[i], ext2);
+        b := ProjToLine(a, z);
+        ADrawer.Line(ParentChart.GraphToImage(a), ParentChart.GraphToImage(b));
+      end;
+    end;
+  end;
+
+var
+  i, j: Integer;
 begin
   if IsEmpty then exit;
 
@@ -1086,77 +1166,17 @@ begin
 
   SetLength(pts, Length(FGraphPoints) * 4 + 4);
   SetLength(prevPts, Length(pts));
-  numPrevPts := 0;
-
-  if UseZeroLevel then
-    z := AxisToGraphY(ZeroLevel)
-  else
-    z := IfThen(IsRotated, ext2.a.X, ext2.a.Y);
-  z1 := z;
-  z2 := z;
-
-  for j := 0 to Source.YCount - 1 do begin
-    if j > 0 then
-      UpdateGraphPoints(j - 1);
-    numPts := 0;
-    a := ProjToRect(FGraphPoints[0], ext2);
-    PushPoint(ProjToLine(a, z1));
-    z1 := IfThen(IsRotated, a.X, a.Y);
-    for i := 0 to High(FGraphPoints) - 1 do begin
-      a := FGraphPoints[i];
-      b := FGraphPoints[i + 1];
-      case ConnectType of
-        ctLine: ;
-        ctStepXY:
-          if IsRotated then
-            b.X := a.X
-          else
-            b.Y := a.Y;
-        ctStepYX:
-          if IsRotated then
-            a.X := b.X
-          else
-            a.Y := b.Y;
-      end;
-      // Avoid integer overflow at extreme zoom levels.
-      if LineIntersectsRect(a, b, ext2) then begin
-        PushPoint(a);
-        PushPoint(b);
+  j := -1;
+  for i := 0 to High(FGraphPoints) do
+    if IsNan(FGraphPoints[i]) = (j >= 0) then
+      if j >= 0 then begin
+        DrawSegment(j, i - 1);
+        j := -1;
       end
-      else begin
-        PushPoint(ProjToRect(a, ext2));
-        PushPoint(ProjToRect(b, ext2));
-      end;
-    end;
-    a := ProjToRect(FGraphPoints[High(FGraphPoints)], ext2);
-    PushPoint(ProjToLine(a, z2));
-    z2 := IfThen(IsRotated, a.X, a.Y);
-    n2 := numPts;
-
-    for i := 0 to numPrevPts - 1 do
-      PushPoint(prevPts[numPrevPts - i - 1]);
-    for i := 0 to n2 - 1 do
-      prevPts[i] := pts[i];
-    numPrevPts := n2;
-
-    ADrawer.Brush := AreaBrush;
-    ADrawer.Pen := AreaContourPen;
-    if Styles <> nil then
-      Styles.Apply(ADrawer, j);
-    if Depth > 0 then
-      // Rendering is incorrect when values cross zero level.
-      for i := 1 to n2 - 2 do
-        ADrawer.DrawLineDepth(pts[i], pts[i + 1], Depth);
-    ADrawer.Polygon(pts, 0, numPts);
-  end;
-  if AreaLinesPen.Style <> psClear then begin
-    ADrawer.Pen := AreaLinesPen;
-    for i := 1 to High(FGraphPoints) - 1 do begin
-      a := ProjToRect(FGraphPoints[i], ext2);
-      b := ProjToLine(a, z);
-      ADrawer.Line(ParentChart.GraphToImage(a), ParentChart.GraphToImage(b));
-    end;
-  end;
+      else
+        j := i;
+  if j >= 0 then
+    DrawSegment(j, High(FGraphPoints));
   DrawLabels(ADrawer);
 end;
 

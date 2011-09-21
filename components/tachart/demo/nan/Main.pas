@@ -11,6 +11,7 @@ uses
 type
   TForm1 = class(TForm)
     Chart1: TChart;
+    Chart1AreaSeries1: TAreaSeries;
     Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
     Chart1PieSeries1: TPieSeries;

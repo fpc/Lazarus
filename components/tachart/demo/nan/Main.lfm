@@ -41,6 +41,10 @@ object Form1: TForm1
       BarBrush.Color = clRed
       Source = lcs1
     end
+    object Chart1AreaSeries1: TAreaSeries
+      Active = False
+      Source = lcs1
+    end
     object Chart1PieSeries1: TPieSeries
       Active = False
       Source = lcs1
@@ -79,6 +83,7 @@ object Form1: TForm1
       Items.Strings = (
         'Line'
         'Bar'
+        'Area'
         'Pie'
       )
       OnClick = rgSeriesTypeClick

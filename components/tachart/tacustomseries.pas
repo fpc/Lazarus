@@ -212,6 +212,9 @@ type
     FUpBound: Integer;
     FUseReticule: Boolean;
 
+  strict protected
+    procedure UpdateGraphPoints(AIndex: Integer); overload; inline;
+    procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer); overload;
   protected
     procedure AfterAdd; override;
     procedure AfterDrawPointer(
@@ -224,7 +227,6 @@ type
     function GetZeroLevel: Double; virtual;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
-    procedure UpdateGraphPoints(AIndex: Integer);
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
     procedure UpdateMinXRange;
 
@@ -1025,16 +1027,21 @@ begin
   UpdateParentChart;
 end;
 
-procedure TBasicPointSeries.UpdateGraphPoints(AIndex: Integer);
+procedure TBasicPointSeries.UpdateGraphPoints(AIndex, ALo, AUp: Integer);
 var
   i: Integer;
 begin
   if IsRotated then
-    for i := FLoBound to FUpBound do
-      FGraphPoints[i - FLoBound].X += AxisToGraphY(Source[i]^.YList[AIndex])
+    for i := ALo to AUp do
+      FGraphPoints[i - ALo].X += AxisToGraphY(Source[i]^.YList[AIndex])
   else
-    for i := FLoBound to FUpBound do
-      FGraphPoints[i - FLoBound].Y += AxisToGraphY(Source[i]^.YList[AIndex]);
+    for i := ALo to AUp do
+      FGraphPoints[i - ALo].Y += AxisToGraphY(Source[i]^.YList[AIndex]);
+end;
+
+procedure TBasicPointSeries.UpdateGraphPoints(AIndex: Integer);
+begin
+  UpdateGraphPoints(AIndex, FLoBound, FUpBound);
 end;
 
 procedure TBasicPointSeries.UpdateMargins(

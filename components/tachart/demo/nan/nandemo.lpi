@@ -64,6 +64,8 @@
     </SearchPaths>
     <Linking>
       <Debugging>
+        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsAuto"/>
         <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <Options>
