@@ -56,6 +56,7 @@ interface
 uses
   Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms,
   Controls, Laz_XMLCfg, ExprEval, DefineTemplates, CodeToolsCfgScript,
+  CodeToolManager,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf,
@@ -520,6 +521,8 @@ type
     function GetDefaultMainSourceFileName: string; virtual;
     function CanBeDefaulForProject: boolean; virtual;
     function NeedsLinkerOpts: boolean;
+    function GetEffectiveTargetOS: string;
+    function GetEffectiveTargetCPU: string;
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
                          WithBaseDir: boolean = true): string;
@@ -1935,6 +1938,52 @@ end;
 function TBaseCompilerOptions.NeedsLinkerOpts: boolean;
 begin
   Result:=not (ccloNoLinkerOpts in fDefaultMakeOptionsFlags);
+end;
+
+function TBaseCompilerOptions.GetEffectiveTargetOS: string;
+var
+  Vars: TCTCfgScriptVariables;
+  UnitSet: TFPCUnitSetCache;
+  CfgCache: TFPCTargetConfigCache;
+begin
+  Result:='';
+  Vars:=GetBuildMacroValues(Self,true);
+  if Vars<>nil then
+    Result:=GetFPCTargetOS(Vars.Values['TargetOS']);
+  if Result='' then begin
+    UnitSet:=CodeToolBoss.GetUnitSetForDirectory(BaseDirectory);
+    if UnitSet<>nil then begin
+      CfgCache:=UnitSet.GetConfigCache(false);
+      if CfgCache<>nil then begin
+        Result:=CfgCache.RealTargetOS;
+      end;
+    end;
+  end;
+  if Result='' then
+    Result:=GetCompiledTargetOS;
+end;
+
+function TBaseCompilerOptions.GetEffectiveTargetCPU: string;
+var
+  Vars: TCTCfgScriptVariables;
+  UnitSet: TFPCUnitSetCache;
+  CfgCache: TFPCTargetConfigCache;
+begin
+  Result:='';
+  Vars:=GetBuildMacroValues(Self,true);
+  if Vars<>nil then
+    Result:=GetFPCTargetOS(Vars.Values['TargetCPU']);
+  if Result='' then begin
+    UnitSet:=CodeToolBoss.GetUnitSetForDirectory(BaseDirectory);
+    if UnitSet<>nil then begin
+      CfgCache:=UnitSet.GetConfigCache(false);
+      if CfgCache<>nil then begin
+        Result:=CfgCache.RealTargetCPU;
+      end;
+    end;
+  end;
+  if Result='' then
+    Result:=GetCompiledTargetCPU;
 end;
 
 function TBaseCompilerOptions.GetUnitPath(RelativeToBaseDir: boolean;
