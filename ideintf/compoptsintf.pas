@@ -93,11 +93,6 @@ type
 
 const
   crAll = [crCompile, crBuild, crRun];
-  {$IFDEF darwin}
-  CompilerDbgSymbolTypeDefault = dsStabs;
-  {$ELSE}
-  CompilerDbgSymbolTypeDefault = dsDwarf2Set;
-  {$ENDIF}
 
 type
   { TLazCompilerOptions }

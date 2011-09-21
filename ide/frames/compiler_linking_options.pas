@@ -106,8 +106,6 @@ begin
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2+ '(-gw2)');                 // 2: dwarf2
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeStabs+ '(-gs)');                   // 3: stabs
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf3+ '(-gw3)');
-  dropDbgSymbolType.Items[0] := dropDbgSymbolType.Items[0] // auto
-    + ' (' + dropDbgSymbolType.Items[SymbolToIndex(CompilerDbgSymbolTypeDefault)] + ')';
   chkUseLineInfoUnit.Caption := dlgLNumsBct + ' (-gl)';
   chkUseHeaptrc.Caption := dlgCOHeaptrc + ' (-gh)';
   chkUseValgrind.Caption := dlgCOValgrind + ' (-gv)';
@@ -148,6 +146,9 @@ begin
     chkWin32GraphicApp.Checked := Win32GraphicApp;
     chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
     grpOptions.Enabled := NeedsLinkerOpts;
+
+    dropDbgSymbolType.Items[0] := dlgCOSymbolTypeAuto
+      + ' (' + dropDbgSymbolType.Items[SymbolToIndex(DbgSymbolTypeDefault)] + ')';
   end;
 
   grpDebugging.Enabled := chkDebugGDB.Checked;
