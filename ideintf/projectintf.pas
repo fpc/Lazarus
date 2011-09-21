@@ -372,6 +372,7 @@ type
     constructor Create(ProjectDescription: TProjectDescriptor); virtual;
     destructor Destroy; override;
     procedure Clear; virtual;
+    function IsVirtual: boolean; virtual; abstract;
     function CreateProjectFile(const Filename: string
                                ): TLazProjectFile; virtual; abstract;
     procedure AddFile(ProjectFile: TLazProjectFile;

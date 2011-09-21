@@ -872,7 +872,7 @@ type
     function IsReverting(AnUnitInfo: TUnitInfo): boolean;
 
     // load/save
-    function IsVirtual: boolean;
+    function IsVirtual: boolean; override;
     function SomethingModified(CheckData, CheckSession: boolean; Verbose: boolean = false): boolean;
     function SomeDataModified(Verbose: boolean = false): boolean;
     function SomeSessionModified(Verbose: boolean = false): boolean;
