@@ -1563,7 +1563,7 @@ begin
           NewTool:=Params.NewCodeTool;
           NewPos:=Params.NewPos;
           NewTopLine:=Params.NewTopLine;
-          if NewPos.Code=nil then begin
+          if (NewPos.Code=nil) or (NewNode=nil) then begin
             if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
               Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier)
             else
