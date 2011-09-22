@@ -305,6 +305,16 @@ type
     function GetHTMLHint(Code: TCodeBuffer; X, Y: integer; Options: TCodeHelpHintOptions;
                      out BaseURL, HTMLHint: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
+    function GetHTMLHintForNode(CTTool: TFindDeclarationTool; CTNode: TCodeTreeNode;
+                     XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions;
+                     out BaseURL, HTMLHint: string;
+                     out CacheWasUsed: boolean): TCodeHelpParseResult;
+    function GetHTMLHintForUnit(AUnitName, InFilename: string; BaseDir: string;
+                     Options: TCodeHelpHintOptions;
+                     out BaseURL, HTMLHint: string;
+                     out CacheWasUsed: boolean): TCodeHelpParseResult;
+    function GetHTMLDeclarationHeader(Tool: TFindDeclarationTool;
+                           Node: TCodeTreeNode; XYPos: TCodeXYPosition): string;
     function GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool; Node: TCodeTreeNode): string;
     function GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile; DOMNode: TDOMNode): string;
     function TextToHTML(Txt: string): string;
@@ -2227,7 +2237,51 @@ var
   CTNode: TCodeTreeNode;
   XYPos: TCodeXYPosition;
   aTopLine: integer;
-  CTHint: String;
+begin
+  Result:=chprFailed;
+  BaseURL:='lazdoc://';
+  HTMLHint:='';
+  CacheWasUsed:=true;
+
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  if not CodeToolBoss.InitCurCodeTool(Code) then exit;
+  try
+    // find declaration
+    if not CodeToolBoss.CurCodeTool.FindDeclaration(CursorPos,
+      DefaultFindSmartHintFlags+[fsfSearchSourceName],
+      CTTool,CTNode,XYPos,aTopLine)
+    then
+      exit;
+    if (CTNode=nil) then begin
+      // codetools found a source file, not a declararion
+      debugln(['TCodeHelpManager.GetHTMLHint not a declaration']);
+      exit;
+    end;
+
+    Result:=GetHTMLHintForNode(CTTool,CTNode,XYPos,Options,BaseURL,HTMLHint,
+                               CacheWasUsed);
+  except
+    on E: ECodeToolError do begin
+      //debugln(['TCodeHelpManager.GetHTMLHint ECodeToolError: ',E.Message]);
+    end;
+    on E: Exception do begin
+      debugln(['TCodeHelpManager.GetHTMLHint Exception: ',E.Message]);
+      //DumpExceptionBackTrace;
+    end;
+  end;
+  {$ifdef VerboseLazDoc}
+  debugln(['TCodeHelpManager.GetHTMLHint ',HTMLHint]);
+  {$endif}
+end;
+
+function TCodeHelpManager.GetHTMLHintForNode(CTTool: TFindDeclarationTool;
+  CTNode: TCodeTreeNode; XYPos: TCodeXYPosition; Options: TCodeHelpHintOptions;
+  out BaseURL, HTMLHint: string; out CacheWasUsed: boolean
+  ): TCodeHelpParseResult;
+var
+  aTopLine: integer;
   ListOfPCodeXYPosition: TFPList;
   ElementName: String;
   AnOwner: TObject;
@@ -2262,39 +2316,13 @@ begin
   HTMLHint:='';
   CacheWasUsed:=true;
 
-  CursorPos.X:=X;
-  CursorPos.Y:=Y;
-  CursorPos.Code:=Code;
   ListOfPCodeXYPosition:=nil;
   Complete:=not (chhoSmallStep in Options);
   ElementNames:=TStringList.Create;
   try
-    if not CodeToolBoss.InitCurCodeTool(Code) then exit;
     try
-      // find declaration
-      if not CodeToolBoss.CurCodeTool.FindDeclaration(CursorPos,
-        DefaultFindSmartHintFlags+[fsfSearchSourceName],
-        CTTool,CTNode,XYPos,aTopLine)
-      then
-        exit;
-      if (CTNode=nil) then begin
-        // codetools found a source file, not a declararion
-        exit;
-      end;
-
-      if chhoDeclarationHeader in Options then begin
-        HTMLHint:=HTMLHint+'<div class="header">';
-        // add declaration
-        CTHint:=CTTool.GetSmartHint(CTNode,XYPos,false);
-        HTMLHint:=HTMLHint+'  '+SourceToFPDocHint(CTHint);
-
-        // add link to declaration
-        HTMLHint:=HTMLHint+'<br>'+LineEnding;
-        if XYPos.Code=nil then
-          CTTool.CleanPosToCaret(CTNode.StartPos,XYPos);
-        HTMLHint:=HTMLHint+'  '+SourcePosToFPDocHint(XYPos)+LineEnding;
-        HTMLHint:=HTMLHint+'</div>'+LineEnding;
-      end;
+      if chhoDeclarationHeader in Options then
+        HTMLHint:=HTMLHint+GetHTMLDeclarationHeader(CTTool,CTNode,XYPos);
 
       LastOwner:=nil;
       for n:=1 to 30 do begin
@@ -2407,6 +2435,78 @@ begin
   {$ifdef VerboseLazDoc}
   debugln(['TCodeHelpManager.GetHTMLHint ',HTMLHint]);
   {$endif}
+end;
+
+function TCodeHelpManager.GetHTMLHintForUnit(AUnitName, InFilename: string;
+  BaseDir: string; Options: TCodeHelpHintOptions; out BaseURL,
+  HTMLHint: string; out CacheWasUsed: boolean): TCodeHelpParseResult;
+var
+  aFilename: String;
+  Code: TCodeBuffer;
+  CTTool: TCodeTool;
+  NamePos: TAtomPosition;
+  XYPos: TCodeXYPosition;
+begin
+  Result:=chprFailed;
+  BaseURL:='lazdoc://';
+  HTMLHint:='';
+  CacheWasUsed:=true;
+
+  try
+    aFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+      BaseDir,AUnitName,InFilename);
+    if aFilename='' then begin
+      debugln(['TCodeHelpManager.GetHTMLHintForUnit unit "',AUnitName,'" not found, BaseDir="',BaseDir,'"']);
+      exit; // unit not found
+    end;
+    Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+    if Code=nil then begin
+      debugln(['TCodeHelpManager.GetHTMLHintForUnit unable to load file "',aFilename,'"']);
+      exit; // can not load source file
+    end;
+    CodeToolBoss.Explore(Code,CTTool,false,true);
+    if CTTool=nil then begin
+      debugln(['TCodeHelpManager.GetHTMLHintForUnit unable to explore ',Code.Filename]);
+      exit; // e.g. main source not found
+    end;
+    if not CTTool.GetSourceNamePos(NamePos) then begin
+      debugln(['TCodeHelpManager.GetHTMLHintForUnit unit has no header ',CTTool.MainFilename]);
+      exit;
+    end;
+    if not CTTool.CleanPosToCaret(NamePos.StartPos,XYPos) then begin
+      debugln(['TCodeHelpManager.GetHTMLHintForUnit CTTool.CleanPosToCaret failed']);
+      exit;
+    end;
+    debugln(['TCodeHelpManager.GetHTMLHintForUnit ',dbgs(XYPos)]);
+    Result:=GetHTMLHintForNode(CTTool,CTTool.Tree.Root,XYPos,
+                               Options,BaseURL,HTMLHint,CacheWasUsed);
+  except
+    on E: ECodeToolError do begin
+      debugln(['TCodeHelpManager.GetHTMLHint ECodeToolError: ',E.Message]);
+    end;
+    on E: Exception do begin
+      debugln(['TCodeHelpManager.GetHTMLHintForUnit Exception: ',E.Message]);
+      //DumpExceptionBackTrace;
+    end;
+  end;
+end;
+
+function TCodeHelpManager.GetHTMLDeclarationHeader(Tool: TFindDeclarationTool;
+  Node: TCodeTreeNode; XYPos: TCodeXYPosition): string;
+var
+  CTHint: String;
+begin
+  Result:='<div class="header">';
+  // add declaration
+  CTHint:=Tool.GetSmartHint(Node,XYPos,false);
+  Result:=Result+'  '+SourceToFPDocHint(CTHint);
+
+  // add link to declaration
+  Result:=Result+'<br>'+LineEnding;
+  if XYPos.Code=nil then
+    Tool.CleanPosToCaret(Node.StartPos,XYPos);
+  Result:=Result+'  '+SourcePosToFPDocHint(XYPos)+LineEnding;
+  Result:=Result+'</div>'+LineEnding;
 end;
 
 function TCodeHelpManager.GetPasDocCommentsAsHTML(Tool: TFindDeclarationTool;

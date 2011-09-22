@@ -96,6 +96,7 @@ var
   HelpResult: TCodeHelpParseResult;
   Caret: TCodeXYPosition;
   CleanPos: LongInt;
+  BaseDir: String;
 begin
   FBaseURL:='';
   FHTMLHint:='';
@@ -118,7 +119,18 @@ begin
     // find current codetool node
     Node:=Item.Node;
     if (Node=nil) then begin
-      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED no node']);
+      if (Item.DefaultDesc=ctnUnit)
+      and (CodeToolBoss.IdentifierList.StartContextPos.Code<>nil) then begin
+        BaseDir:=CodeToolBoss.IdentifierList.StartContextPos.Code.Filename;
+        HelpResult:=CodeHelpBoss.GetHTMLHintForUnit(Item.Identifier,'',BaseDir,
+                                        [chhoDeclarationHeader],
+                                        FBaseURL,FHTMLHint,CacheWasUsed);
+        if HelpResult<>chprSuccess then begin
+          DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Unit=',Item.Identifier]);
+        end;
+        exit;
+      end;
+      DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED no node ',NodeDescriptionAsString(Item.DefaultDesc),' Identifier=',Item.Identifier]);
       exit;
     end;
     if (Item.Tool.Scanner=nil) then exit;
