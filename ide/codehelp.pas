@@ -2273,9 +2273,14 @@ begin
     try
       // find declaration
       if not CodeToolBoss.CurCodeTool.FindDeclaration(CursorPos,
-        DefaultFindSmartHintFlags,CTTool,CTNode,XYPos,aTopLine)
+        DefaultFindSmartHintFlags+[fsfSearchSourceName],
+        CTTool,CTNode,XYPos,aTopLine)
       then
         exit;
+      if (CTNode=nil) then begin
+        // codetools found a source file, not a declararion
+        exit;
+      end;
 
       if chhoDeclarationHeader in Options then begin
         HTMLHint:=HTMLHint+'<div class="header">';
