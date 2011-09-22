@@ -9829,7 +9829,7 @@ begin
       CurLocation := CurLocation + 2;
     end;
   until (OneChar = #0);
-  Result := UTF8Encode(WStr);
+  Result := UTF16ToUTF8(WStr);
 end;
 
 function TGDBMIDebuggerCommand.GetGDBTypeInfo(const AExpression: String;
@@ -11142,7 +11142,8 @@ var
 
         AnExpression := Lowercase(ResultInfo.TypeName);
         case StringCase(AnExpression, ['char', 'character', 'ansistring', '__vtbl_ptr_type',
-                                       'wchar', 'widechar', 'pointer'])
+                                       'wchar', 'widechar', 'widestring', 'unicodestring',
+                                       'pointer'])
         of
           0, 1, 2: begin // 'char', 'character', 'ansistring'
             // check for addr 'text' / 0x1234 'abc'
@@ -11168,14 +11169,14 @@ var
               FTextValue := 'class of ' + AnExpression + ' ' + FTextValue;
             end;
           end;
-          4,5: begin // 'wchar', 'widechar'
+          4,5,6,7: begin // 'wchar', 'widechar'
             // widestring handling
             if Addr = 0
             then FTextValue := ''''''
             else FTextValue := MakePrintable(GetWideText(Addr));
             PrintableString := FTextValue;
           end;
-          6: begin // pointer
+          8: begin // pointer
             if Addr = 0
             then FTextValue := 'nil';
             FTextValue := PascalizePointer(FTextValue);
