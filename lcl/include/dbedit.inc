@@ -255,7 +255,15 @@ end;
 procedure TDBEdit.LMPasteFromClip(var Message: TLMessage);
 begin
   if not IsReadOnly then
+  begin
+    //LCL changes the Text before LM_PASTE is called and not after like Delphi. Issue 20330
+    //When Edit is called the Text property is reset to the previous value
+    //Add a workaround while bug is not fixed
+    FDataLink.OnDataChange := nil;
     FDatalink.Edit;
+    FDataLink.Modified;
+    FDataLink.OnDataChange := @DataChange;
+  end;
   inherited LMPasteFromClip(Message);
 end;
 
