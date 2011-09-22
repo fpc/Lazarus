@@ -2494,7 +2494,7 @@ end;
 function TPascalParserTool.KeyWordFuncProc: boolean;
 // procedure, function, constructor, destructor, operator
 var ChildCreated: boolean;
-  IsFunction, HasForwardModifier, IsClassProc, IsOperator: boolean;
+  IsFunction, HasForwardModifier, IsClassProc, IsOperator, IsMethod: boolean;
   ProcNode: TCodeTreeNode;
   ParseAttr: TParseProcHeadAttributes;
 begin
@@ -2522,6 +2522,7 @@ begin
   end;
   IsFunction:=UpAtomIs('FUNCTION');
   IsOperator:=UpAtomIs('OPERATOR');
+  IsMethod:=False;
   ReadNextAtom;// read first atom of head (= name/operator + parameterlist + resulttype;)
   if not IsOperator then AtomIsIdentifier(true);
   if ChildCreated then begin
@@ -2547,6 +2548,7 @@ begin
     end;
     while (CurPos.Flag=cafPoint) do begin
       // read procedure name of a class method (the name after the . )
+      IsMethod:=True;
       ReadNextAtom;
       AtomIsIdentifier(true);
       ReadNextAtom;
@@ -2557,6 +2559,7 @@ begin
   ParseAttr:=[];
   if IsFunction then Include(ParseAttr,pphIsFunction);
   if IsOperator then Include(ParseAttr,pphIsOperator);
+  if IsMethod then Include(ParseAttr,pphIsMethod);
   ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   if ChildCreated then begin
     if HasForwardModifier then
