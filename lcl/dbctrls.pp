@@ -121,21 +121,21 @@ Type
     FLinkBookMark: TBookMark;
     FControlLink: TFieldDataLink;
     FControlItems: TStrings;
-    FHasLookUpField: Boolean;
     FListLink: TFieldDataLink;
     FListSource: TDataSource;
     FDataFieldNames: string;
     FKeyFieldNames: string;
     FListFieldName: string;
     FListFieldIndex: Integer;
-    FListLinkTmpSetActive: Boolean;
-    FLookUpFieldIsCached: Boolean;
     FDataFields: TList;  // Data Fields to lookup/edit
     FKeyFields: TList;   // Keyfields in lookup dataset
     FListField: TField;  // Result field in lookup dataset
-    FLookupCache: boolean;
     FLookupList: TLookupList;
     FNullValueKey: TShortcut;
+    FHasLookUpField: Boolean;
+    FListLinkTmpSetActive: Boolean;
+    FLookUpFieldIsCached: Boolean;
+    FLookupCache: boolean;
     procedure ActiveChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     procedure FetchLookupData;
@@ -503,8 +503,8 @@ Type
     FDataLink: TFieldDataLink;
     FOnChange: TNotifyEvent;
     FValue: string;
-    FInSetValue: boolean;
     FValues: TStrings;
+    FInSetValue: boolean;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -962,8 +962,8 @@ Type
 
   TDBImage = class(TCustomImage)
   private
-    FAutoDisplay: Boolean;
     FDataLink: TFieldDataLink;
+    FAutoDisplay: Boolean;
     FQuickDraw: Boolean;
     FPictureLoaded: boolean;
     FUpdatingRecord: boolean;
@@ -1118,19 +1118,19 @@ type
   TDBCustomNavigator = class(TCustomPanel)
   private
     FBeforeAction: TDBNavClickEvent;
-    FConfirmDelete: Boolean;
     FDataLink: TDBNavDataLink;
     FDirection: TDBNavButtonDirection;
-    FFlat: Boolean;
     FOnNavClick: TDBNavClickEvent;
-    FShowButtonHints: boolean;
     FVisibleButtons: TDBNavButtonSet;
     FDefaultHints: TStrings;
     FHints: TStrings;
-    FUpdateButtonsNeeded: boolean;
     FUpdateButtonsLock: integer;
     FOriginalHints: String;
     FOptions: TDBNavigatorOptions;
+    FFlat: Boolean;
+    FConfirmDelete: Boolean;
+    FUpdateButtonsNeeded: boolean;
+    FShowButtonHints: boolean;
     procedure DefaultHintsChanged(Sender: TObject);
     function GetDataSource: TDataSource;
     function GetHints: TStrings;
