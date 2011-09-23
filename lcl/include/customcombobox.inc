@@ -181,7 +181,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomComboBox.DoChange
+  Method: TCustomComboBox.LMChanged
   Params: msg -
   Returns: Nothing
 
@@ -672,8 +672,7 @@ end;
 procedure TCustomComboBox.SetDropDownCount(const AValue: Integer);
 begin
   FDropDownCount := AValue;
-  // ToDo
-  if (HandleAllocated) then
+  if HandleAllocated then
     TWSCustomComboBoxClass(WidgetSetClass).SetDropDownCount(Self, AValue);
 end;
 
@@ -734,11 +733,6 @@ begin
     AutoCompleteText := AutoCompleteText - [cbactEnabled]
 end;
 
-{------------------------------------------------------------------------------
-  function TCustomComboBox.GetDroppedDown: Boolean;
-
-
- ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetDroppedDown(const AValue: Boolean);
 begin
   if GetDroppedDown = AValue then
