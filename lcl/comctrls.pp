@@ -1736,6 +1736,8 @@ type
     class procedure WSRegisterClass; override;
     procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure OnAssociateChangeBounds(Sender: TObject);
+    procedure OnAssociateChangeEnabled(Sender: TObject);
+    procedure OnAssociateChangeVisible(Sender: TObject);
     procedure DoOnResize; override;
     procedure SetEnabled(Value: Boolean); override;
     class function GetControlClassDefaultSize: TSize; override;

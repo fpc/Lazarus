@@ -359,6 +359,8 @@ begin
     UpdateAlignButtonPos;
     FAssociate.AddHandlerOnKeyDown(@AssociateKeyDown,true);
     FAssociate.AddHandlerOnChangeBounds(@OnAssociateChangeBounds,true);
+    FAssociate.AddHandlerOnEnabledChanged(@OnAssociateChangeEnabled,true);
+    FAssociate.AddHandlerOnVisibleChanged(@OnAssociateChangeVisible,true);
   end;
 end;
 
@@ -388,6 +390,18 @@ end;
 procedure TCustomUpDown.OnAssociateChangeBounds(Sender: TObject);
 begin
   UpdateAlignButtonPos;
+end;
+
+procedure TCustomUpDown.OnAssociateChangeEnabled(Sender: TObject);
+begin
+  if Assigned(FAssociate) then
+    SetEnabled(FAssociate.Enabled);
+end;
+
+procedure TCustomUpDown.OnAssociateChangeVisible(Sender: TObject);
+begin
+  if Assigned(FAssociate) then
+    SetVisible(FAssociate.Visible);
 end;
 
 procedure TCustomUpDown.DoOnResize;
