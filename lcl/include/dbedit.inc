@@ -118,9 +118,7 @@ begin
     Key := VK_UNKNOWN;
   end else
   if Key in [VK_DELETE, VK_BACK] then begin
-    if FDataLink.CanModify then
-      FDatalink.Edit
-    else
+    if not FDataLink.Edit then
       Key := VK_UNKNOWN;
   end;
 end;
@@ -143,15 +141,11 @@ begin
   begin
     case Key of
       #8: // special keys
-        if FDataLink.CanModify then
-          FDatalink.Edit
-        else
+        if not FDatalink.Edit then
           Key:=#0;
 
       #32..#255: //standard keys
-        if FDataLink.CanModify and FieldCanAcceptKey(FDataLink.Field, Key) then
-          FDatalink.Edit
-        else
+        if not FieldCanAcceptKey(FDataLink.Field, Key) or not FDatalink.Edit then
           Key:=#0;
     end;//case
   end
@@ -159,10 +153,9 @@ begin
   begin
     case SavedKey of
       #8: // special keys
-        if FDataLink.CanModify then
-          FDatalink.Edit;
+        FDatalink.Edit;
       #32..#255: //standard keys
-        if FDataLink.CanModify and FieldCanAcceptKey(FDataLink.Field, SavedKey) then
+        if FieldCanAcceptKey(FDataLink.Field, SavedKey) then
           FDatalink.Edit;
     end;//case
   end;
