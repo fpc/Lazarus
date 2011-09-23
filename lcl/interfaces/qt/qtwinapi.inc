@@ -4938,7 +4938,10 @@ begin
   if Result then
   begin
     {$IFDEF MSWINDOWS}
-    windows.ReleaseCapture;
+    if w is TQtMainWindow then
+      w.releaseMouse()
+    else
+      windows.ReleaseCapture;
     {$ELSE}
     w.releaseMouse();
     {$ENDIF}
