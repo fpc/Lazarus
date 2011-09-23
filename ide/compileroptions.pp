@@ -450,7 +450,6 @@ type
     fMsgFileName: String;  // messages file name 
     fCompilerMessages: TCompilerMessagesList;
 
-    function GetDbgSymbolTypeDefault: TCompilerDbgSymbolType;
     procedure OnItemChanged(Sender: TObject);
   protected
     function GetCompilerPath: String;
@@ -574,7 +573,6 @@ type
     property BaseDirectory: string read GetBaseDirectory write SetBaseDirectory;
     property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
                  read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
-    property DbgSymbolTypeDefault: TCompilerDbgSymbolType read GetDbgSymbolTypeDefault;
 
     // for dialog only
     property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault;
@@ -1159,34 +1157,6 @@ end;
 procedure TBaseCompilerOptions.OnItemChanged(Sender: TObject);
 begin
   IncreaseChangeStamp;
-end;
-
-function TBaseCompilerOptions.GetDbgSymbolTypeDefault: TCompilerDbgSymbolType;
-begin
-  // set defaults
-  {$IFDEF darwin}
-  Result := dsStabs;
-  {$ELSE}
-  Result := dsDwarf2Set;
-  {$ENDIF}
-  // check current settings
-
-  if CompareText(copy(TargetOS,1,3), 'win') = 0
-  then Result := dsDwarf2Set
-  else if CompareText(TargetOS, 'darwin') = 0
-  then Result := dsStabs
-  else if (CompareText(TargetOS, 'linux') = 0)
-  or (CompareText(TargetOS, 'freebsd') = 0)
-  or (CompareText(TargetOS, 'openbsd') = 0)
-  or (CompareText(TargetOS, 'netbsd') = 0)
-  or (CompareText(TargetOS, 'haiku') = 0)
-  then Result := dsDwarf2Set;
-
-  if Result <> dsStabs then begin
-    if SysUtils.CompareText(TargetCPU,'x86_64')=0
-    then Result := dsStabs;
-    // powerpc sparc m68k alpha arm
-  end;
 end;
 
 function TBaseCompilerOptions.GetCompilerPath: String;
@@ -2651,8 +2621,8 @@ begin
   if (GenerateDebugInfo) then begin
 
     dit := DebugInfoType;
-    if dit = dsAuto then dit := DbgSymbolTypeDefault;
     case dit of
+      dsAuto:      switches := switches + ' -g';
       dsStabs:     switches := switches + ' -gs';
       dsDwarf2:    switches := switches + ' -gw2';
       dsDwarf2Set: switches := switches + ' -gw2 -godwarfsets';
@@ -3059,7 +3029,7 @@ begin
     
   // linking
   fGenDebugInfo := false;
-  fDebugInfoType := DbgSymbolTypeDefault;
+  fDebugInfoType := dsAuto;
   fUseLineInfoUnit := true;
   fUseHeaptrc := false;
   fUseValgrind := false;

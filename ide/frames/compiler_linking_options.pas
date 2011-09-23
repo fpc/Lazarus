@@ -101,7 +101,7 @@ begin
   lblDbgSymbolType.Caption := dlgCOSymbolType;
   dropDbgSymbolType.Items.Clear;
   // Adjust constants above, if re-ordering
-  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeAuto);                             // 0: automatic
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeAuto+' (-g)');                             // 0: automatic
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2Set+ '(-gw -godwarfsets)');  // 1: dwarf2 + set
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2+ '(-gw2)');                 // 2: dwarf2
   dropDbgSymbolType.Items.Add(dlgCOSymbolTypeStabs+ '(-gs)');                   // 3: stabs
@@ -146,9 +146,6 @@ begin
     chkWin32GraphicApp.Checked := Win32GraphicApp;
     chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
     grpOptions.Enabled := NeedsLinkerOpts;
-
-    dropDbgSymbolType.Items[0] := dlgCOSymbolTypeAuto
-      + ' (' + dropDbgSymbolType.Items[SymbolToIndex(DbgSymbolTypeDefault)] + ')';
   end;
 
   grpDebugging.Enabled := chkDebugGDB.Checked;
