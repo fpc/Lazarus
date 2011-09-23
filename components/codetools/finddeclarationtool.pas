@@ -6899,6 +6899,7 @@ var
         if CompareSrcIdentifiers(CurAtom.StartPos,'SELF') then begin
           // SELF in a method is the object itself
           // -> check if in a method or nested proc of a method
+          if fdfExtractOperand in Params.Flags then Params.AddOperandPart('Self');
           ProcNode:=StartNode;
           while (ProcNode<>nil) do begin
             if (ProcNode.Desc=ctnProcedure) and NodeIsMethodBody(ProcNode) then
@@ -6916,6 +6917,7 @@ var
         and CompareSrcIdentifiers(CurAtom.StartPos,'RESULT') then begin
           // RESULT has a special meaning in a function
           // -> check if in a function
+          if fdfExtractOperand in Params.Flags then Params.AddOperandPart('Result');
           ProcNode:=StartNode.GetNodeOfType(ctnProcedure);
           if (ProcNode<>nil) then begin
             if IsEnd and (fdfFindVariable in StartFlags) then begin
@@ -7147,7 +7149,8 @@ var
         ReadNextAtom;
         RaisePointNotFound;
       end;
-      if ExprType.Context.Node.Desc<>ctnPointerType then begin
+      if (ExprType.Context.Node=nil)
+      or (ExprType.Context.Node.Desc<>ctnPointerType) then begin
         MoveCursorToCleanPos(CurAtom.StartPos);
         RaiseExceptionFmt(ctsIllegalQualifier,['^']);
       end;
@@ -7348,7 +7351,8 @@ var
       if fdfExtractOperand in Params.Flags then begin
         if ExprType.Context.Node.Desc=ctnTypeDefinition then begin
           // typecast
-          Params.AddOperandPart(GetIdentifier(@Src[ExprType.Context.Node.StartPos]));
+          with ExprType.Context do
+            Params.AddOperandPart(GetIdentifier(@Tool.Src[Node.StartPos]));
           Params.AddOperandPart('(');
           // assumption: one term in brakets
           FindExpressionTypeOfTerm(CurAtom.StartPos+1,CurAtomBracketEndPos-1,
