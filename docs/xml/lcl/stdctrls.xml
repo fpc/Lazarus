@@ -102,220 +102,134 @@
       <!-- enumeration type Visibility: default -->
       <element name="TEditCharCase">
         <short>
-          <var>TEditCharCase</var> - enumerated type that determines the case of text displayed in the edit box or combobox.</short>
+          The case of text displayed in an edit box or combobox.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TEditCharCase.ecNormal">
-        <short>Normal mode - Character case according to what the user types.</short>
+        <short>Normal mode - no conversion.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TEditCharCase.ecUppercase">
-        <short>Converts every character that the user types into upper case characters.</short>
+        <short>Converts every entered character to upper case.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TEditCharCase.ecLowerCase">
-        <short>Converts every character that the user types into lower case characters.</short>
+        <short>Converts every entered character to lower case.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TEchoMode">
         <short>
-          <var>TEchoMode</var> - enumerated type that determines how strings in the edit box are displayed.</short>
+          How strings in the edit box are displayed.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TEchoMode.emNormal">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TEchoMode.emNone">
-        <short/>
+        <short>Nothing displayed[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TEchoMode.emPassword">
-        <short/>
+        <short>Replaced by PasswordChar[?]</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollStyle">
-        <short>
-          <var>TScrollStyle</var> - enumerated type determining style of scroll bars on a control</short>
+        <short>The appearance of scroll bars on a control.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollStyle.ssNone">
-        <short/>
+        <short>No scrollbars.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollStyle.ssHorizontal">
-        <short/>
+        <short>A horizontal scrollbar is shown.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollStyle.ssVertical">
-        <short/>
+        <short>A vertical scrollbar is shown.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollStyle.ssBoth">
-        <short/>
+        <short>Both horizontal and vertical scrollbar is shown.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollStyle.ssAutoHorizontal">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollStyle.ssAutoVertical">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollStyle.ssAutoBoth">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollCode">
-        <short>
-          <var>TScrollCode</var> - the scroll action type.</short>
+        <short>The scroll action type.</short>
         <descr>
-          <p>!!! Beware. The position of these enums must correspond to the SB_xxx values in LCLType  (Delphi compatibility, not our decision)</p>
-          <pre>scLineUp,   // = SB_LINEUP
-    scLineDown, // = SB_LINEDOWN
-    scPageUp,   // = SB_PAGEUP
-    scPageDown, // = SB_PAGEDOWN
-    scPosition, // = SB_THUMBPOSITION
-    scTrack,    // = SB_THUMBTRACK
-    scTop,      // = SB_TOP
-    scBottom,   // = SB_BOTTOM
-    scEndScroll // = SB_ENDSCROLL
- </pre>
+          <p>These values must correspond to the SB_xxx values in LCLType.</p>
         </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollCode.scLineUp">
         <short>Scroll one line up.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollCode.scLineDown">
         <short>Scroll one line down.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollCode.scPageUp">
         <short>Scroll one page up.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollCode.scPageDown">
         <short>Scroll one page down.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollCode.scPosition">
         <short>Scroll to the specified position.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollCode.scTrack">
         <short>Scroll tracking to the specified position.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollCode.scTop">
         <short>Scroll to the top.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollCode.scBottom">
         <short>Scroll to the bottom.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollCode.scEndScroll">
-        <short>Scroll ends.</short>
+        <short>Scrolling finished.</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TScrollEvent">
         <short>
-          <var>TScrollEvent</var> - generic event method for processing a scrolling event</short>
-        <descr/>
+          Handler type for scrolling events.</short>
+        <descr>
+          The handler is called before the new Position is set.
+          It can adjust the new position, based on the parameters and the (old) scrollbar.Position.
+        </descr>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TScrollEvent.Sender">
-        <short/>
+        <short>The scrollbar[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TScrollEvent.ScrollCode">
-        <short>Determines the scroll action.</short>
+        <short>The scroll action.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TScrollEvent.ScrollPos">
-        <short>Contains the current scroll position.</short>
+        <short>The suggested new scroll position. Change this value to implement custom scroll behaviour.</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomScrollBar">
-        <short>
-          <var>TCustomScrollBar</var>
-
-
-
-:  the base class for <var>TScrollBar</var>
-        </short>
+        <short>The base class for <var>TScrollBar</var>.</short>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomScrollBar.FKind">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomScrollBar.FPosition">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomScrollBar.FMin">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomScrollBar.FMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomScrollBar.FPageSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
+      <element name="TCustomScrollBar.FKind"/>
+      <element name="TCustomScrollBar.FPosition"/>
+      <element name="TCustomScrollBar.FMin"/>
+      <element name="TCustomScrollBar.FMax"/>
+      <element name="TCustomScrollBar.FPageSize"/>
       <element name="TCustomScrollBar.FRTLFactor">
         <short/>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomScrollBar.FSmallChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomScrollBar.FLargeChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomScrollBar.FOnChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomScrollBar.FOnScroll">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomScrollBar.FSmallChange"/>
+      <element name="TCustomScrollBar.FLargeChange"/>
+      <element name="TCustomScrollBar.FOnChange"/>
+      <element name="TCustomScrollBar.FOnScroll"/>
       <!-- procedure Visibility: private -->
       <element name="TCustomScrollBar.DoScroll">
         <short/>
@@ -323,7 +237,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.DoScroll.Message">
         <short/>
       </element>
@@ -334,62 +247,31 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomScrollBar.NotRightToLeft.Result">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomScrollBar.SetKind">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomScrollBar.SetKind" link="TCustomScrollBar.Kind"/>
       <element name="TCustomScrollBar.SetKind.Value">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomScrollBar.SetMax">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomScrollBar.SetMax" link="TCustomScrollBar.Max"/>
       <element name="TCustomScrollBar.SetMax.Value">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomScrollBar.SetMin">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomScrollBar.SetMin" link="TCustomScrollBar.Min"/>
       <element name="TCustomScrollBar.SetMin.Value">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomScrollBar.SetPosition">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomScrollBar.SetPosition" link="TCustomScrollBar.Position"/>
       <element name="TCustomScrollBar.SetPosition.Value">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomScrollBar.SetPageSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomScrollBar.SetPageSize" link="TCustomScrollBar.PageSize"/>
       <element name="TCustomScrollBar.SetPageSize.Value">
         <short/>
       </element>
@@ -400,7 +282,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.CNHScroll.Message">
         <short/>
       </element>
@@ -411,7 +292,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.CNVScroll.Message">
         <short/>
       </element>
@@ -422,7 +302,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.CNCtlColorScrollBar.Message">
         <short/>
       </element>
@@ -433,31 +312,24 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.WMEraseBkgnd.Message">
         <short/>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomScrollBar.CreateParams">
-        <descr>
-          <p>
-            <printshort id="TCustomScrollBar.CreateParams"/>
-          </p>
-          <p>The inherited method creates parameters such as caption, style, size and position for a Control</p>
-        </descr>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.CreateParams">WinControl.CreateParams</link>
-        </seealso>
-        <short>
-          <var>CreateParams</var> - calls inherited <var>CreateParams</var> then sets up style and alignment depending on whether horizontal or vertical</short>
+      <element name="TCustomScrollBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <!-- class function Visibility: default -->
+      <element name="TCustomScrollBar.GetControlClassDefaultSize"/>
+      <element name="TCustomScrollBar.GetControlClassDefaultSize.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomScrollBar.CreateParams"/>
       <element name="TCustomScrollBar.CreateParams.Params">
-        <short>The paramaeter list</short>
+        <short>The parameter list.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomScrollBar.CreateWnd">
+        <short>
+          <var>CreateWnd</var> - calls inherited <var>CreateWnd</var> then initialises various Scroll Info properties</short>
         <descr>
           <p>
             <printshort id="TCustomScrollBar.CreateWnd"/>
@@ -469,13 +341,10 @@
         <seealso>
           <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
         </seealso>
-        <short>
-          <var>CreateWnd</var> - calls inherited <var>CreateWnd</var> then initialises various Scroll Info properties</short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomScrollBar.Change">
-        <short>
-          <var>Change</var> - method to signal that a change has occured</short>
+      <element name="TCustomScrollBar.Change" link="TCustomScrollBar.OnChange">
+        <short>Invokes the OnChange handler.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -483,31 +352,31 @@
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomScrollBar.Scroll">
-        <short>The scrolling process</short>
+      <element name="TCustomScrollBar.Scroll" link="TCustomScrollBar.OnScroll">
+        <short>Invokes the OnScroll handler.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.Scroll.ScrollCode">
         <short>The code used for scrolling - up or down a line, a page, to the top or bottom etc</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.Scroll.ScrollPos">
         <short>The position of the scrolling device</short>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCustomScrollBar.Create">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
-        </seealso>
-        <short>
-          <var>Create</var> - constructor for <var>TCustomScrollBar</var>: calls inherited <var>Create</var> then initialises size, style and various local variables</short>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomScrollBar.CalculatePreferredSize"/>
+      <element name="TCustomScrollBar.CalculatePreferredSize.PreferredWidth">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomScrollBar.CalculatePreferredSize.PreferredHeight">
+        <short></short>
+      </element>
+      <element name="TCustomScrollBar.CalculatePreferredSize.WithThemeSpace">
+        <short></short>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCustomScrollBar.Create"/>
       <element name="TCustomScrollBar.Create.AOwner">
         <short/>
       </element>
@@ -518,788 +387,236 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.SetParams.APosition">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.SetParams.AMin">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.SetParams.AMax">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.SetParams.APageSize">
         <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Kind">
-        <short>
-          <var>Kind</var>
-
-
-
- of scroll bar - whether Horizontal or Vertical</short>
+        <short>The scrollbar orientation, Horizontal or Vertical.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.LargeChange">
-        <short>
-          <var>LargeChange </var>
-
-
-
-- the size of the step to be taken by the slider for a large change</short>
-        <descr>A <var>LargeChange</var> is produced by the user clicking on the blank area above or below the slider; it is rather analogous to the Page Down or Page Up functions of the Keyboard and is typically set up to move the slider and the contents of the page or canvas by a whole paragraph or half a page or a full page.</descr>
+        <short>The distance to scroll on an click beneath the slider.</short>
+        <descr>A large change is produced by clicks on the blank area above or below the slider;
+          it is rather analogous to the Page Down or Page Up functions of the Keyboard,
+          and is typically set up to move the slider and the control contents by a full page (window size).</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Max">
-        <short>The maximum value (for bottom of the scroll bar or the right-most extent)</short>
+        <short>The maximum value, for the bottom or rightmost position.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Min">
-        <short>The minimum value, for the top of the scroll bar or its left-most extent</short>
+        <short>The minimum value, for the top or leftmost position.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.PageSize">
-        <short>
-          <var>PageSize:</var>
-
-
-
- the size of a page - typically used for <var>LargeChange</var>
-        </short>
+        <short>The size of the slider, relative to the total scroll range.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Position">
-        <short>The <var>Position</var> of the scroller along the ScrollBar</short>
+        <short>The position value of the slider in the ScrollBar.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.SmallChange">
         <short>
-          <var>SmallChange</var> - the size of the step to be taken by the scroller for a small change</short>
-        <descr>A small change is produced by the user clicking on one of the triangular tags at either end of the scrollbar. It is rather analogous to the effect of using the up or down arrows on the keyboard, and is typically set to produce a movement of a few pixels or a single line of text
-</descr>
+          The distance to scroll on an click on the up/down buttons.</short>
+        <descr>
+          A small change occurs when the up or down buttons are clicked, or by up/down keyboard commands.
+          It is typically used for scrolling by a few pixels, or by a single row or column of text.
+        </descr>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomScrollBar.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomScrollBar.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.OnChange">
         <short>
-          <var>OnChange</var> - Event handler for any change in position of the slider or other mouse movement or keyboard event associated with the scrollbar</short>
+          Event handler for any change of the Position.</short>
         <descr/>
-        <seealso/>
+        <seealso><link id="TCustomScrollBar.OnScroll"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.OnScroll">
-        <short>
-          <var>OnScroll</var>
-
-
-
-  - Handler for a scrolling event (by mouse, keyboard or program)</short>
+        <short>Handler for a scrolling event by mouse, keyboard or code.</short>
         <descr>
-          <p>
-            <var>OnScroll</var>
-
-
-
- - Handler for a scrolling event</p>
-          <p>Called when there is any movement of the slider by mouse, arrow keys or Page Up/Down keys, or if the display in the main window is caused to scroll</p>
+          <p>The handler can override the new position, based on the scrolling parameters.</p>
         </descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TScrollBar">
         <short>
-          <var>TScrollBar</var>
-
-
-
-  - a control that allows the user to scroll the current page or document window by moving a slider</short>
+          A control that allows the user to scroll the content of an associated control by moving an slider.</short>
         <descr>
-          <p>
-            <var>TScrollBar</var>
-
-
-
- - a control that allows the user to scroll the current page or document window by moving a slider</p>
-          <p>It appears as a long rectangular track or bar within which a smaller contrasting block or slider can move up and down (or from side to side in a horizontal ScrollBar)</p>
-          <p>It has small triangular indicators or pointers at each end. Typically, for a vertical ScrollBar the top indicator points up, and at the bottom there is a pair of pointers, one up and one down. Clicking with the mouse on one of the pointers moves the slider a small distance (<var>SmallChange</var>) in the specified direction, and the programmer's responsibility is to ensure that the page, image or document in which the ScrollBar is found will scroll by a corresponding small amount</p>
-          <p>Clicking with the mouse in the blank area of the scrollbar above or below the slider makes the slider move by a larger increment (<var>LargeChange</var>) and scrolls the contents of the window by a larger amount - several lines, a paragraph, half a page or anything up to a page (<var>PageSize</var>)</p>
-          <p>The slider can also be moved by clicking on it with the mouse, and holding down the button while moving the mouse. The slider follows the mouse until the button is released. If the mouse has a scrollwheel, the slider can be similarly moved by rotating the wheel. In each case, the contents of the window scroll by a corresponding amount</p>
-          <p>Scrolling of the window and movement of the slider can also be achieved by using the directional arrows or the Page Up/Page Down keys on the keyboard</p>
-          <p>The location of the slider along the track is held in the <var>Position</var> property, which reports where the mouse has placed it, or can alternatively be set to an arbitrary location by the program. If the mouse or arrow keys are used to move the cursor somewhere on the main window so as to make the display scroll (eg by moving beyond the top or bottom line in a text display) the scroll bar slider moves to indicate the corresponding location along the scroll bar</p>
+          <p>A control that allows the user to scroll the content of a window, by moving an slider.
+          </p><p>
+            It appears as a long rectangular track bar, within which a smaller contrasting block or slider can move up and down (or from side to side in a horizontal ScrollBar).
+          </p><p>
+            It has small triangular indicators or pointers on one or both ends of the bar, depending on the widgetset.
+            Clicking with the mouse on one of the pointers moves the slider a small distance (<var>SmallChange</var>) in the specified direction.
+          </p><p>
+            Clicking with the mouse in the blank area of the scrollbar above or below the slider makes the slider move by a larger increment (<var>LargeChange</var>).
+          </p><p>
+            The slider can also be moved by clicking on it with the mouse, and holding down the button while moving the mouse.
+            The slider then follows the mouse until the button is released.
+          </p><p>
+            If the mouse has a scrollwheel, the slider also can be moved by rotating the wheel.
+          </p><p>
+            The arrow keys or the Page Up/Page Down keys on the keyboard can be used to move the slider, too.
+          </p><p>
+            The location of the slider along the track is held in the <var>Position</var> property.
+            It's the programmer's responsibility to ensure that the content of the window is scrolled to the new Position of the scrollbar.
+          </p>
         </descr>
         <seealso>
+          <link id="TCustomScrollBar.OnChange"/>
           <link id="HowToUseStdCtrls"/>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Align" link="#LCL.Controls.TControl.Align">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
-          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.Anchors" link="#LCL.Controls.TControl.Anchors">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
-        <descr>Allows Languages such as Arabic and Hebrew to be used
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines the border spacing for this control</p>
-          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.Constraints" link="#LCL.Controls.TControl.Constraints">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.DragCursor" link="#LCL.Controls.TControl.DragCursor">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.DragKind" link="#LCL.Controls.TControl.DragKind">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.DragMode" link="#LCL.Controls.TControl.DragMode">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.Enabled" link="#LCL.Controls.TControl.Enabled">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
-          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+      <element name="TScrollBar.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TScrollBar.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TScrollBar.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="TScrollBar.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TScrollBar.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TScrollBar.Ctl3D" link="#LCL.Controls.TControl.Ctl3D"/>
+      <element name="TScrollBar.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TScrollBar.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TScrollBar.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TScrollBar.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TScrollBar.Kind" link="#LCL.StdCtrls.TCustomScrollBar.Kind"/>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.LargeChange" link="#LCL.StdCtrls.TCustomScrollBar.LargeChange">
-        <descr>A <var>LargeChange</var> is produced by the user clicking on the blank area above or below the slider; it is rather analogous to the Page Down or Page Up functions of the Keyboard and is typically set up to move the slider and the contents of the page or canvas by a whole paragraph or half a page or a full page.
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.Max" link="#LCL.StdCtrls.TCustomScrollBar.Max">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.Min" link="#LCL.StdCtrls.TCustomScrollBar.Min">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.PageSize" link="#LCL.StdCtrls.TCustomScrollBar.PageSize">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
-        <descr>// standard properties, which should be supported by all descendants<br/>
- Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.Position" link="#LCL.StdCtrls.TCustomScrollBar.Position">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.ShowHint" link="#LCL.Controls.TControl.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.SmallChange" link="#LCL.StdCtrls.TCustomScrollBar.SmallChange">
-        <descr>A small change is produced by the user clicking on one of the triangular tags at either end of the scrollbar. It is rather analogous to the effect of using the up or down arrows on the keyboard, and is typically set to produce a movement of a few pixels or a single line of text
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
-        <descr>Reads or writes information in flag; default is -1
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.Visible" link="#LCL.Controls.TControl.Visible">
-        <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
-          If Visible is True the control is shown, otherwise it is hidden.
-          Calling Show sets, among others, Visible to True.
-          Setting Visible to False is equivalent to calling Hide method.</pre>
-          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnChange" link="#LCL.StdCtrls.TCustomScrollBar.OnChange">
-        <seealso>
-          <link id="TScrollBar.OnScroll"/>
-        </seealso>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnExit" link="#LCL.Controls.TWinControl.OnExit">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
-        <descr>
-          <p>
-            <var>OnKeyDown</var>
-
- - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
-        <descr>
-          <p>
-            <var>OnKeyPress</var>
-
- - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
-        <descr>
-          <p>
-            <var>OnKeyUp</var>
-
-  - event handler for instance when a key is up (not pressed) while the control has focus</p>
-          <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnScroll" link="#LCL.StdCtrls.TCustomScrollBar.OnScroll">
-        <seealso>
-          <link id="TScrollBar.OnChange"/>
-        </seealso>
-        <descr>
-          <p>
-            <var>OnScroll</var>
-
-
-
-
- - Handler for a scrolling event</p>
-          <p>Called when there is any movement of the slider by mouse, arrow keys or Page Up/Down keys, or if the display in the main window is caused to scroll</p>
-        </descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TScrollBar.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TScrollBar.LargeChange" link="#LCL.StdCtrls.TCustomScrollBar.LargeChange"/>
+      <element name="TScrollBar.Max" link="#LCL.StdCtrls.TCustomScrollBar.Max"/>
+      <element name="TScrollBar.Min" link="#LCL.StdCtrls.TCustomScrollBar.Min"/>
+      <element name="TScrollBar.PageSize" link="#LCL.StdCtrls.TCustomScrollBar.PageSize"/>
+      <element name="TScrollBar.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+      <element name="TScrollBar.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D"/>
+      <element name="TScrollBar.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TScrollBar.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="TScrollBar.Position" link="#LCL.StdCtrls.TCustomScrollBar.Position"/>
+      <element name="TScrollBar.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TScrollBar.SmallChange" link="#LCL.StdCtrls.TCustomScrollBar.SmallChange"/>
+      <element name="TScrollBar.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <element name="TScrollBar.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TScrollBar.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <element name="TScrollBar.OnChange" link="#LCL.StdCtrls.TCustomScrollBar.OnChange"/>
+      <element name="TScrollBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TScrollBar.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TScrollBar.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TScrollBar.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TScrollBar.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TScrollBar.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TScrollBar.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TScrollBar.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TScrollBar.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TScrollBar.OnScroll" link="#LCL.StdCtrls.TCustomScrollBar.OnScroll"/>
+      <element name="TScrollBar.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TScrollBar.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <!-- object Visibility: default -->
       <element name="TCustomGroupBox">
-        <short>
-          <var>TCustomGroupBox </var>
-
-
-
-- the base class for <var>TGroupBox</var>, <var>TRadioGroup</var> and <var>TCheckGroup</var>
-        </short>
+        <short>The base class for <var>TGroupBox</var>, <var>TRadioGroup</var> and <var>TCheckGroup</var>.</short>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomGroupBox.GetControlClassDefaultSize">
-        <short>
-          <var>GetControlClassDefaultSize</var> - sets its own defaults, overriding the inherited values</short>
-        <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
-        </seealso>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomGroupBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomGroupBox.GetControlClassDefaultSize"/>
       <element name="TCustomGroupBox.GetControlClassDefaultSize.Result">
         <short/>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCustomGroupBox.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomGroupBox</var>: calls inherited <var>Create</var> then initialises style and bounds</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
-        </seealso>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomGroupBox.CreateParams"/>
+      <element name="TCustomGroupBox.CreateParams.Params">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
+      <!-- constructor Visibility: public -->
+      <element name="TCustomGroupBox.Create"/>
       <element name="TCustomGroupBox.Create.AOwner">
         <short/>
       </element>
       <!-- object Visibility: default -->
       <element name="TGroupBox">
-        <short>
-          <var>TGroupBox </var>
-
-
-
-- a container that allows a number of objects to be grouped physically and conceptually on the form</short>
+        <short>A container that allows a number of objects to be grouped physically and conceptually on a form.</short>
         <descr>
-          <p>Group Box. Allows a number of objects to be grouped physically and conceptually on the form; they can be moved around together and have certain properties in common.</p>
+          <p>The objects can be moved around together and have certain properties in common.[?]</p>
         </descr>
         <seealso>
           <link id="HowToUseStdCtrls"/>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TGroupBox.Align" link="#LCL.Controls.TControl.Align">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
-          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.Anchors" link="#LCL.Controls.TControl.Anchors">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
-        <descr>Allows Languages such as Arabic and Hebrew to be used
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines the border spacing for this control</p>
-          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+      <element name="TGroupBox.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TGroupBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TGroupBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TGroupBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="TGroupBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TGroupBox.Caption" link="#LCL.Controls.TControl.Caption">
+        <short>The text displayed in the border around the box.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TGroupBox.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing">
-        <descr>Reads values from flag or stores values to flag. Most of the properties are inherited from TControlChildSizing, <br/>
-which you should read to find out more about this control
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.ClientHeight" link="#LCL.Controls.TControl.ClientHeight">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Finds or sets the client height, and sets a flag if it has been stored</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.ClientWidth" link="#LCL.Controls.TControl.ClientWidth">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>
-            <var>ClientWidth</var>
-
- - determines the width of the client within which the control exists; reads the width of the client control or sets the value. Sets flag if value is stored</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.Color" link="#LCL.Controls.TControl.Color">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
-          <p>The default colour is the same as the window in which the control is located.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.Constraints" link="#LCL.Controls.TControl.Constraints">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.DockSite" link="#LCL.Controls.TWinControl.DockSite">
-        <descr>Reads or sets a flag to show whether this is a dock site. Default false
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.DragKind" link="#LCL.Controls.TControl.DragKind">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.DragMode" link="#LCL.Controls.TControl.DragMode">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.Enabled" link="#LCL.Controls.TControl.Enabled">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
-          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.Font" link="#LCL.Controls.TControl.Font">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
-        <descr>// standard properties, which should be supported by all descendants<br/>
- Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
-        <descr>// standard properties, which should be supported by all descendants<br/>
-Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
-        <descr>Reads or writes information in flag; default is -1
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <descr>
-          <p>Reads or writes boolean flag; default is False</p>
-          <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.Visible" link="#LCL.Controls.TControl.Visible">
-        <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
-          If Visible is True the control is shown, otherwise it is hidden.
-          Calling Show sets, among others, Visible to True.
-          Setting Visible to False is equivalent to calling Hide method.</pre>
-          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads or Writes flag if bounds are changed</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnClick" link="#LCL.Controls.TControl.OnClick">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
-          </p>
-          <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
-        <descr>
-          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnEndDock" link="#LCL.Controls.TControl.OnEndDock">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
-        <descr>
-          <p>
-            <var>OnKeyDown</var>
-
- - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
-        <descr>
-          <p>
-            <var>OnKeyPress</var>
-
- - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
-        <descr>
-          <p>
-            <var>OnKeyUp</var>
-
-  - event handler for instance when a key is up (not pressed) while the control has focus</p>
-          <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnResize" link="#LCL.Controls.TControl.OnResize">
-        <descr>// standard properties, which should be supported by all descendants<br/>
-Reads or Writes flag if control is re-sized.
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnStartDock" link="#LCL.Controls.TControl.OnStartDock">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TGroupBox.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration type Visibility: default -->
+      <element name="TGroupBox.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing"/>
+      <element name="TGroupBox.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
+      <element name="TGroupBox.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
+      <element name="TGroupBox.Color" link="#LCL.Controls.TControl.Color"/>
+      <element name="TGroupBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TGroupBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D"/>
+      <element name="TGroupBox.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
+      <element name="TGroupBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TGroupBox.DragKind" link="#LCL.Controls.TControl.DragKind"/>
+      <element name="TGroupBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TGroupBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="TGroupBox.Font" link="#LCL.Controls.TControl.Font"/>
+      <element name="TGroupBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+      <element name="TGroupBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TGroupBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D"/>
+      <element name="TGroupBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TGroupBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TGroupBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="TGroupBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TGroupBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <element name="TGroupBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TGroupBox.Visible" link="#LCL.Controls.TControl.Visible"/>
+      <element name="TGroupBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
+      <element name="TGroupBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TGroupBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TGroupBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
+      <element name="TGroupBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TGroupBox.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop"/>
+      <element name="TGroupBox.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver"/>
+      <element name="TGroupBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TGroupBox.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
+      <element name="TGroupBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TGroupBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TGroupBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TGroupBox.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
+      <element name="TGroupBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TGroupBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TGroupBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TGroupBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TGroupBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="TGroupBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
+      <element name="TGroupBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TGroupBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TGroupBox.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="TGroupBox.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
+      <element name="TGroupBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TGroupBox.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
+      <element name="TGroupBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TComboBoxAutoCompleteTextOption">
-        <short>
-          <var>TComboBoxAutoCompleteTextOption</var> - Enumerated type that defines the behavior of the <var>AutoComplete</var> feature in a combobox control.</short>
+        <short>Defines the behavior of the <var>AutoComplete</var> feature in a combobox control.</short>
         <descr>
-          <p>
-            <var>TComboBoxAutoCompleteTextOption</var>
-
-
-
-
-
-
- defines the behavior of the <var>AutoComplete</var> feature.</p>
           <ul>
             <li>cbactEnabled: Enable Auto-Completion feature.</li>
             <li>cbactEndOfLineComplete: Perform Auto-Complete only when cursor is at the end of the string.</li>
@@ -1310,434 +627,210 @@ Reads or Writes flag if control is re-sized.
         </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxAutoCompleteTextOption.cbactEnabled">
-        <short/>
+        <short>Enable Auto-Completion feature.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxAutoCompleteTextOption.cbactEndOfLineComplete">
-        <short/>
+        <short>Perform Auto-Complete only when cursor is at the end of the string.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxAutoCompleteTextOption.cbactRetainPrefixCase">
-        <short/>
+        <short>Retains the case of characters user has typed. This option has no effect if cbactEndOfLineComplete is not set.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxAutoCompleteTextOption.cbactSearchCaseSensitive">
-        <short/>
+        <short>Search completion string with case sensitivity.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxAutoCompleteTextOption.cbactSearchAscending">
-        <short/>
+        <short>Search completion strings in ascending order, if set. Otherwise search in descending order.</short>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TComboBoxAutoCompleteText">
+      <element name="TComboBoxAutoCompleteText" link="TComboBoxAutoCompleteTextOption">
         <short>
-          <var>TComboBoxAutoCompleteText </var>- Set of <var>TComboBoxAutoCompleteTextOption</var>
+          Set of <var>TComboBoxAutoCompleteTextOption.</var>
         </short>
         <descr/>
-        <seealso>
-          <link id="TComboBoxAutoCompleteTextOption"/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="DefaultComboBoxAutoCompleteText">
+        <short>Set of [cbactEndOfLineComplete, cbactSearchAscending]</short>
+        <descr>
+        </descr>
+        <seealso><link id="TComboBoxAutoCompleteTextOption"/>
         </seealso>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TComboBoxStyle">
         <short>
-          <var>ComboBox Style</var> - enumerated type for style of combobox</short>
-        <descr>ComboBox Style: may be Simple, a single-line Drop-Down or a Drop-Down list, or some version drawn by the Owner
-</descr>
+          The styles of a combobox.</short>
+        <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxStyle.csDropDown">
-        <short/>
+        <short>The box has a drop-down list.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxStyle.csSimple">
-        <short/>
+        <short>The box has a fixed size list.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxStyle.csDropDownList">
-        <short/>
+        <short>The box has a drop-down list, from which entries can be selected (manual text entry disabled).</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxStyle.csOwnerDrawFixed">
-        <short/>
+        <short>The drop-down list elements are owner drawn and have a common fixed height.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TComboBoxStyle.csOwnerDrawVariable">
-        <short/>
+        <short>The drop-down list elements are owner drawn and have an individual height.</short>
       </element>
       <!-- alias type Visibility: default -->
-      <element name="TOwnerDrawState">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TOwnerDrawState" link="lcltype.TOwnerDrawState"/>
       <!-- procedure type Visibility: default -->
       <element name="TDrawItemEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TDrawItemEvent.Control">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TDrawItemEvent.Index">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TDrawItemEvent.ARect">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TDrawItemEvent.State">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMeasureItemEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TMeasureItemEvent.Control">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TMeasureItemEvent.Index">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TMeasureItemEvent.Height">
-        <short/>
+      <element name="TMeasureItemEvent.AHeight">
+        <short>[?]</short>
       </element>
-      <!-- object Visibility: default -->
+<!-- object Visibility: default -->
       <element name="TCustomComboBox">
-        <short>
-          <var>TCustomComboBox</var>
-
-
-
-  - the base class from which <var>TComboBox </var> is derived</short>
+        <short>The base class from which <var>TComboBox </var> is derived.</short>
         <descr>
-          <p>
-            <var>TCustomComboBox</var>
-
-
-
- - the base class from which <var>TComboBox </var>is derived</p>
-          <p>Despite similarities in appearance to <var>TCustomEdit</var>
- and <var>TCustomList</var>
-, the class inherits no properties from these classes, but only from <link id="#lcl.Controls.TWinControl">TWinControl</link>
+          <p>Despite similarities in appearance to <var>TCustomEdit</var> and <var>TCustomList</var>,
+            the class inherits no properties from these classes, but only from <link id="#lcl.Controls.TWinControl">TWinControl</link>
           </p>
           <p>It has some interesting properties including <var>AutoComplete</var> and <var>AutoCompleteText</var>, <var>AutoDropDown</var> and the ability to create and add a History display</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FCharCase">
-        <short>FCharCase: TEditCharCase</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FAutoCompleteText">
-        <short>FAutoCompleteText: TComboBoxAutoCompleteText</short>
-        <descr>Private variable of property AutoCompleteText.
-
-Options for behavior of the Auto-Complete feature.
-</descr>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FAutoSelect">
-        <short>FAutoSelect: Boolean</short>
-        <descr>
-          <p>Private variable for property AutoSelect.
-
-When True, the edit control will select all its text when:</p>
-          <ul>
-            <li>It receives focus</li>
-            <li>The Enter key is pressed.</li>
-            <li>A new item is selected.</li>
-          </ul>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FAutoSelected">
-        <short>FAutoSelected: Boolean</short>
-        <descr>Private variable for property AutoSelected.
-
-True indicate that the edit or combobox control has just performed
-an AutoSelect operation so that subsequent mouse-clicks and keystrokes
-proceed normally without selecting the text.
-
-False is set when the edit or combobox control loses focus.
-</descr>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FAutoDropDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FCanvas">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FDropDownCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FDroppedDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FItemHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FItemIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FItemWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FMaxLength">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FOnChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FOnCloseUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FOnDrawItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FOnDropDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FOnGetItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FOnMeasureItem">
-        <short/>
-        <descr>
-          <short>Combo Box</short>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FOnSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FSelLength">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FSelStart">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FSorted">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.FArrowKeysTraverseList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomComboBox.FCharCase"/>
+      <element name="TCustomComboBox.FAutoCompleteText"/>
+      <element name="TCustomComboBox.FAutoSelect"/>
+      <element name="TCustomComboBox.FAutoSelected"/>
+      <element name="TCustomComboBox.FAutoDropDown"/>
+      <element name="TCustomComboBox.FCanvas"/>
+      <element name="TCustomComboBox.FDropDownCount"/>
+      <element name="TCustomComboBox.FDroppedDown"/>
+      <element name="TCustomComboBox.FItemHeight"/>
+      <element name="TCustomComboBox.FItemIndex"/>
+      <element name="TCustomComboBox.FItemWidth"/>
+      <element name="TCustomComboBox.FItems"/>
+      <element name="TCustomComboBox.FMaxLength"/>
+      <element name="TCustomComboBox.FOnChange"/>
+      <element name="TCustomComboBox.FOnCloseUp"/>
+      <element name="TCustomComboBox.FOnDrawItem"/>
+      <element name="TCustomComboBox.FOnDropDown"/>
+      <element name="TCustomComboBox.FOnGetItems"/>
+      <element name="TCustomComboBox.FOnMeasureItem"/>
+      <element name="TCustomComboBox.FOnSelect"/>
+      <element name="TCustomComboBox.FReadOnly"/>
+      <element name="TCustomComboBox.FSelLength"/>
+      <element name="TCustomComboBox.FSelStart"/>
+      <element name="TCustomComboBox.FSorted"/>
+      <element name="TCustomComboBox.FStyle"/>
+      <element name="TCustomComboBox.FArrowKeysTraverseList"/>
       <!-- variable Visibility: private -->
       <element name="TCustomComboBox.FReturnArrowState">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>used to return the state of arrow keys from temporary change</short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TCustomComboBox.GetAutoComplete">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetAutoComplete" link="TCustomComboBox.AutoComplete"/>
       <element name="TCustomComboBox.GetAutoComplete.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TCustomComboBox.GetDroppedDown">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetDroppedDown" link="TCustomComboBox.DroppedDown"/>
       <element name="TCustomComboBox.GetDroppedDown.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TCustomComboBox.GetItemWidth">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetItemWidth" link="TCustomComboBox.ItemWidth"/>
       <element name="TCustomComboBox.GetItemWidth.Result">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomComboBox.SetAutoComplete">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetAutoComplete" link="TCustomComboBox.AutoComplete"/>
       <element name="TCustomComboBox.SetAutoComplete.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomComboBox.SetItemWidth">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetItemWidth" link="TCustomComboBox.ItemWidth"/>
       <element name="TCustomComboBox.SetItemWidth.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomComboBox.SetItems">
-        <short>
-          <var>SetItems</var> writes the strings specified in <var>Value</var> to the <var>Items</var> list</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetItems" link="TCustomComboBox.Items"/>
       <element name="TCustomComboBox.SetItems.Value">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.LMDrawListItem">
-        <short/>
+        <short>Handler for custom drawing items, invokes DrawItem.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.LMDrawListItem.TheMessage">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.LMMeasureItem">
-        <short/>
+        <short>Determines the height of an item, using MeasureItem in variable owner-draw mode.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.LMMeasureItem.TheMessage">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.LMSelChange">
-        <short/>
+        <short>Invokes the OnSelect handler.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.LMSelChange.TheMessage">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.CNCommand">
-        <short/>
+        <short>Invokes the OnDropDown or OnCloseUp handlers.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.CNCommand.TheMessage">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomComboBox.SetReadOnly">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetReadOnly" link="TCustomComboBox.ReadOnly"/>
       <element name="TCustomComboBox.SetReadOnly.AValue">
         <short/>
       </element>
@@ -1749,13 +842,7 @@ False is set when the edit or combobox control loses focus.
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomComboBox.SetArrowKeysTraverseList">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetArrowKeysTraverseList" link="TCustomComboBox.ArrowKeysTraverseList"/>
       <element name="TCustomComboBox.SetArrowKeysTraverseList.Value">
         <short/>
       </element>
@@ -1770,52 +857,25 @@ False is set when the edit or combobox control loses focus.
       <element name="TCustomComboBox.WMChar.Message">
         <short/>
       </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomComboBox.SetCharCase">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomComboBox.CreateParams"/>
+      <element name="TCustomComboBox.CreateParams.Params">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
+      <!-- procedure Visibility: private -->
+      <element name="TCustomComboBox.SetCharCase" link="TCustomComboBox.CharCase"/>
       <element name="TCustomComboBox.SetCharCase.eccCharCase">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.InitializeWnd">
-        <descr>
-          <p>
-            <printshort id="TCustomComboBox.InitializeWnd"/>
-          </p>
-          <p>Inherited method works out the correct bounds, sets style, fonts and colours, performs any pending resize operations</p>
-        </descr>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
-        </seealso>
-        <short>
-          <var>InitializeWnd</var> - creates the underlying interface-object: calls inherited <var>InitializeWnd</var> then sets up several local lists and variables notably for style and size</short>
-      </element>
+      <element name="TCustomComboBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TCustomComboBox.InitializeWnd"/>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.DestroyWnd">
-        <descr>
-          <p>
-            <printshort id="TCustomComboBox.DestroyWnd"/>
-          </p>
-          <p>Inherited method removes handles and restores colour and font flags</p>
-        </descr>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.DestroyWnd">TWinControl.DestroyWnd</link>
-        </seealso>
-        <short>
-          <var>DestroyWnd</var> - finds somewhere to store locally held variables then frees lists, calls inherited <var>DestroyWnd</var>
-        </short>
-      </element>
+      <element name="TCustomComboBox.DestroyWnd"/>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.DoEnter">
         <short>
-          <var>DoEnter</var> - cals inherited method then autoselects text in dropdown list if required</short>
+          <var>DoEnter</var> - calls inherited method then autoselects text in dropdown list if required</short>
         <descr/>
         <errors/>
         <seealso>
@@ -1825,7 +885,7 @@ False is set when the edit or combobox control loses focus.
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.DoExit">
         <short>
-          <var>DoExit</var> - disables <var>AutoSelect</var> then calls inherited <var>DoExit</var>
+          Clears <var>AutoSelect</var>, then calls inherited <var>DoExit</var>
         </short>
         <descr/>
         <errors/>
@@ -1836,89 +896,107 @@ False is set when the edit or combobox control loses focus.
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.DrawItem">
         <short>
-          <var>DrawItem</var> - perform the action necessary to draw the specified indexed item at the specified position</short>
+          Draws the specified indexed item at the specified position.</short>
         <descr>
-          <p>
-            <var>DrawItem</var> - perform the action necessary to draw the specified indexed item at the specified position</p>
-          <p>Software emulation of <var>OnDrawItem</var> event</p>
+          <p>Software emulation of <var>OnDrawItem</var> event, in OwnerDraw mode.</p>
+          <p>Calls the <link id="TCustomComboBox.OnDrawItem">OnDrawItem</link> handler, if installed.
+            Otherwise default painting is performed (InternalDrawItem).</p>
         </descr>
         <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.DrawItem.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.DrawItem.ARect">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.DrawItem.State">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.GetControlClassDefaultSize">
-        <short>
-          <var>GetControlClassDefaultSize</var> - sets its own defaults, overriding inherited values</short>
-        <descr/>
-        <errors/>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+          <link id="TCustomComboBox.OnDrawItem"/>
+          <link id="TDrawItemEvent"/>
         </seealso>
       </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.DrawItem.Index">
+        <short>The item to draw.</short>
+      </element>
+      <element name="TCustomComboBox.DrawItem.ARect">
+        <short>The area to paint in the Canvas.</short>
+      </element>
+      <element name="TCustomComboBox.DrawItem.State">
+        <short>The state of the item (selected...).</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomComboBox.MeasureItem">
+        <short>Invokes the OnMeasureItem handler, to get the height of the item in the drop-down list.</short>
+        <descr/>
+        <errors/>
+        <seealso><link id="TCustomComboBox.OnMeasureItem"/></seealso>
+      </element>
+      <element name="TCustomComboBox.MeasureItem.Index">
+        <short>The index of the item whose height is required.</short>
+      </element>
+      <element name="TCustomComboBox.MeasureItem.TheHeight">
+        <short>The height of the indicated item, in pixels, adjustable by the OnMeasureItem handler.</short>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomComboBox.GetControlClassDefaultSize"/>
       <element name="TCustomComboBox.GetControlClassDefaultSize.Result">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.LMChanged">
         <short>
-          <var>LMChanged</var> - LCL Message to signify that the control has changed</short>
+          <var>LMChanged</var> - LCL Message to signify that the control[?] has changed</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.LMChanged.Msg">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.Change">
-        <short>
-          <var>Change</var> - software emulation of <var>OnChange</var> event</short>
+        <short>Invokes the OnChange handler.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.Select">
-        <short>
-          <var>Select</var> - software emulation of <var>OnSelect</var> event</short>
-        <descr/>
+        <short>Invokes the <var>OnSelect</var> handler.</short>
+        <descr>
+          Called whenever the user changes the ItemIndex.
+          For Delphi compatibility ignore when user unselects by changing Text.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.DropDown">
-        <short>
-          <var>DropDown</var> - software emulation of <var>OnDropDown</var> event</short>
-        <descr/>
+        <short>Invokes the <var>OnDropDown</var> handler.</short>
+        <descr>Called whenever the list pops up.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.CloseUp">
+      <element name="TCustomComboBox.GetItems">
+        <short>Invokes the <var>OnGetItems</var> handler.</short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomListBox.SetItems">
         <short>
-          <var>CloseUp</var> - software emulation of <var>OnCloseUp</var> event</short>
+          <var>SetItems</var> - specifies the string values of the items[???]</short>
         <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TCustomListBox.SetItems.Value">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomComboBox.CloseUp">
+        <short>Called whenever the list hides.</short>
+        <descr>Handles selection in the edit box, also invokes the OnEditingDone and OnCloseUp handlers.</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.AdjustDropDown">
         <short>
-          <var>AdjustDropDown</var> - adjust the properties of the DropDown list</short>
+          Adjusts the extent of the DropDown list.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1926,216 +1004,96 @@ False is set when the edit or combobox control loses focus.
       <!-- function Visibility: protected -->
       <element name="TCustomComboBox.GetItemCount">
         <short>
-          <var>GetItemCount</var> - returns the number of items in the DropDown list</short>
+          Returns the number of list items.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomComboBox.GetItemCount.Result">
-        <short/>
+        <short>The Items.Count.</short>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.GetItemHeight">
-        <short>
-          <var>GetItemHeight</var> - returns the height of the current list item</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetItemHeight" link="TCustomComboBox.ItemHeight"/>
       <element name="TCustomComboBox.GetItemHeight.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.GetSelLength">
-        <short>
-          <var>GetSelLength</var> - returns the length of the current selection</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetSelLength" link="TCustomComboBox.SelLength"/>
       <element name="TCustomComboBox.GetSelLength.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.GetSelStart">
-        <short>
-          <var>GetSelStart</var> - returns the start position of the current selection</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetSelStart" link="TCustomComboBox.SelStart"/>
       <element name="TCustomComboBox.GetSelStart.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.GetSelText">
-        <short>
-          <var>GetSelText</var> - returns the currently selected text string</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetSelText" link="TCustomComboBox.SelText"/>
       <element name="TCustomComboBox.GetSelText.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.GetItemIndex">
-        <short>
-          <var>GetItemIndex</var> - returns the Index value of the current list item</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetItemIndex" link="TCustomComboBox.ItemIndex"/>
       <element name="TCustomComboBox.GetItemIndex.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.GetMaxLength">
-        <short>
-          <var>GetMaxLength</var> - returns the maximum length of a list item</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetMaxLength" link="TCustomComboBox.MaxLength"/>
       <element name="TCustomComboBox.GetMaxLength.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.IsReadOnlyStored">
-        <short>
-          <var>IsReadOnlyStored</var> - returns True if ReadOnly status is stored</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.IsReadOnlyStored" link="TCustomComboBox.ReadOnly"/>
       <element name="TCustomComboBox.IsReadOnlyStored.Result">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetDropDownCount">
-        <short>
-          <var>SetDropDownCount</var> - writes the number of items in DropDown list to local variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetDropDownCount" link="TCustomComboBox.DropDownCount"/>
       <element name="TCustomComboBox.SetDropDownCount.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetDroppedDown">
-        <short>
-          <var>SetDroppedDown</var> - writes DroppedDown status to local boolean variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetDroppedDown" link="TCustomComboBox.DroppedDown"/>
       <element name="TCustomComboBox.SetDroppedDown.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetItemHeight">
-        <short>
-          <var>SetItemHeight</var> - writes height of current list item to local variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetItemHeight" link="TCustomComboBox.ItemHeight"/>
       <element name="TCustomComboBox.SetItemHeight.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetItemIndex">
-        <short>
-          <var>SetItemIndex</var> - writes index value of current item to local variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetItemIndex" link="TCustomComboBox.ItemIndex"/>
       <element name="TCustomComboBox.SetItemIndex.Val">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetMaxLength">
-        <short>
-          <var>SetMaxLength</var> - writes maximum length of list item to local variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SetMaxLength.Val">
+      <element name="TCustomComboBox.SetMaxLength" link="TCustomComboBox.MaxLength"/>
+      <element name="TCustomComboBox.SetMaxLength.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetSelLength">
-        <short>
-          <var>SetSelLength</var> - writes length of current selection to local variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetSelLength" link="TCustomComboBox.SelLength"/>
       <element name="TCustomComboBox.SetSelLength.Val">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetSelStart">
-        <short>
-          <var>SetSelStart</var> - writes start position of current selection to local variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetSelStart" link="TCustomComboBox.SelStart"/>
       <element name="TCustomComboBox.SetSelStart.Val">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetSelText">
-        <short>
-          <var>SetSelText</var> - writes currently selected text string to local variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetSelText" link="TCustomComboBox.SelText"/>
       <element name="TCustomComboBox.SetSelText.Val">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetSorted">
-        <short>
-          <var>SetSorted</var> - writes to local (boolean) variable to show if list is Sorted</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetSorted" link="TCustomComboBox.Sorted"/>
       <element name="TCustomComboBox.SetSorted.Val">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.SetStyle">
-        <short>
-          <var>SetStyle</var> - writes the current Style specifier to local variable</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetStyle" link="TCustomComboBox.Style"/>
       <element name="TCustomComboBox.SetStyle.Val">
         <short/>
       </element>
@@ -2154,7 +1112,6 @@ False is set when the edit or combobox control loses focus.
           <link id="#LCL.Controls.TControl.RealSetText">TControl.RealSetText</link>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.RealSetText.AValue">
         <short/>
       </element>
@@ -2164,9 +1121,6 @@ False is set when the edit or combobox control loses focus.
           <var>KeyDown</var> - performs code for traversing the dropdown list to the correct location before calling inherited <var>KeyDown</var>
         </short>
         <descr>
-          <p>
-            <printshort id="TCustomComboBox.KeyDown"/>
-          </p>
           <p>The inherited method provides software emulation of the event handler <var>OnKeyDown</var> which acts if a key has been pressed and is still down</p>
         </descr>
         <errors/>
@@ -2174,355 +1128,147 @@ False is set when the edit or combobox control loses focus.
           <link id="#LCL.Controls.TWinControl.KeyDown">TWinControl.KeyDown</link>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.KeyDown.Key">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.KeyDown.Shift">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.KeyUp">
-        <short>
-          <var>KeyUp</var> calls inherited method then performs specific actions depending on which key is being processed</short>
-        <descr>
-          <p>
-            <printshort id="TCustomComboBox.KeyUp"/>
-          </p>
-          <p>The inherited method provides software emulation for the <var>OnKeyUp</var> event.</p>
-        </descr>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.KeyUp">TWinControl.KeyUp</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.KeyUp"/>
       <element name="TCustomComboBox.KeyUp.Key">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.KeyUp.Shift">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.KeyPress">
         <short>
-          <var>KeyPress</var> adjusts character case if necessary then calls inherited method</short>
+          Adjusts character case before calling the inherited method.</short>
         <descr>
-          <p>
-            <printshort id="TCustomComboBox.KeyPress"/>
+          <p>The inherited method invokes the <var>OnKeyPress</var> handler, allowing for further input processing.
           </p>
-          <p>The inherited method provides software emulation of the <var>OnKeyPress</var> event, which acts when a key is pressed. </p>
-          <p>The <var>OnKeyPress</var> event handler is usually provided by the application programmer as a specific action to be performed when the event occurs; it often contains a case statement or similar choice structure to divert execution along specific pathways in response to pressing different keys</p>
         </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.KeyPress">TWinControl.KeyPress</link>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.KeyPress.Key">
         <short/>
+      </element>
+      <element name="TCustomComboBox.UTF8KeyPress" link="TCustomComboBox.KeyPress">
+        <short>
+          <var>UTF8KeyPress</var> converts character case if required then calls inherited method</short>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.UTF8KeyPress">TWinControl.UTF8KeyPress</link>
+        </seealso>
+        <descr>
+          <p>The inherited method emulates the pressing of a key, with UTF8 coding. The UTF8 coding should be used where there is the possibility that input/output will occur in any language that requires multiple bytes to represent each character, i.e. all languages except English.</p>
+        </descr>
+      </element>
+      <element name="TCustomComboBox.UTF8KeyPress.UTF8Key">
+        <short></short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.MouseUp">
         <short>
-          <var>MouseUp</var> calls inherited method then sets <var>AutoSelect</var> if left mouse button is clicked for the first time after receiving focus</short>
+          Invokes the <var>OnMouseUp</var> handler, then sets <var>AutoSelect</var> if left mouse button is clicked for the first time after receiving focus</short>
         <descr>
-          <p>
-            <printshort id="TCustomComboBox.MouseUp"/>
-          </p>
-          <p>The inherited method allows the programmer to simulate the action to be taken when the mouse is in the Up position over the specified control. It is usually a programmer-supplied method similar to the <var>OnMouseUp</var> event handler.</p>
         </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TControl.MouseUp">TControl.MouseUp</link>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.MouseUp.Button">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.MouseUp.Shift">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.MouseUp.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.MouseUp.Y">
         <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomComboBox.SelectItem">
-        <short>
-          <var>SelectItem</var> - returns True if current item (specified by a string) is to be selected</short>
-        <descr/>
+        <short>Selects the item with the given text.</short>
+        <descr>When a matching item was found, invokes the OnClick and OnSelect handlers.
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCustomComboBox.SelectItem.Result">
-        <short/>
+        <short>True when a matching item was found and selected.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.SelectItem.AnItem">
-        <short/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.DropDownCount">
-        <short>
-          <var>DropDownCount </var>
-
-
-
-- number of entries in the drop-down list</short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.ItemHeight">
-        <short>
-          <var>ItemHeight</var>
-
-
-
-  - the height of the current item in the drop-down list</short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.ItemWidth">
-        <short>
-          <var>ItemWidth </var>
-
-
-
-- the width of the current item in the drop-down list</short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.MaxLength">
-        <short>
-          <var>MaxLength </var>
-
-
-
-- the maximum allowed length of a string</short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.OnChange">
-        <short>
-          <var>OnChange</var>
-
-
-
- - event handler for any change in properties of the combo box</short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.OnCloseUp">
-        <short>
-          <var>OnCloseUp</var>
-
-
-
- - event handler for when the drop-down box is closed up again</short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.OnDrawItem">
-        <short>
-          <var>OnDrawItem</var>
-
-
-
- - event handler for when an entry is written to the <var>Items </var>list</short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.OnDropDown">
-        <short>
-          <var>OnDropDown </var>
-
-
-
-- event handler for when the drop-down list appears</short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.OnGetItems">
-        <short>Event handler when items can be populated</short>
-        <descr>Some widgetsets like gtk call this just before the list drops down, while others do it on handle creation. This event allows to handle both cases with one event.
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.OnMeasureItem">
-        <short>Event handler when measurement of an item is required</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.OnSelect">
-        <short>Event handler when an item or some text is selected</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TCustomComboBox.Sorted">
-        <short>
-          <var>Sorted </var>
-
-
-
-- whether the entries in the drop-down list have been sorted</short>
+        <short>The text to find in Items.</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomComboBox.Create">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
-        </seealso>
-        <short>
-          <var>Create</var> - constructor for <var>TCustomComboBox</var>: calls inherited <var>Create</var> then initialises styles, item lists, bounds and various other local variables</short>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.Create"/>
       <element name="TCustomComboBox.Create.TheOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TCustomComboBox.Destroy">
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.Destroy">TWinControl.Destroy</link>
-        </seealso>
-        <short>
-          <var>Destroy</var> - destructor for <var>TCustomComboBox</var>: frees handles, itemlists, canvas and items then calls inherited <var>Destroy</var>
-        </short>
-      </element>
+      <element name="TCustomComboBox.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.IntfGetItems">
-        <short>
-          <var>IntfGetItems</var> - gets list of items from the interface</short>
-        <descr/>
+        <short>Called whenever the items can [must?] be just-in-time populated.</short>
+        <descr>
+          Gets list of items from the interface[?].
+          Invokes GetItems, which calls the OnGetItems handler.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.AddItem">
-        <short>
-          <var>AddItem </var>
-
-
-
-- adds an Item to the list in the drop-down box</short>
+        <short>Adds an item to the Items list.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddItem.Item">
-        <short/>
+        <short>The item text.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddItem.AnObject">
-        <short/>
+        <short>The associated object, can be Nil.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.AddHistoryItem">
-        <short>
-          <var>AddHistoryItem</var>
-
-
-
-  - Add an Item as first entry in History List</short>
+        <short>Add an item as the first entry in History List.</short>
         <descr>
-          <p>
-            <var>AddHistoryItem</var>
-
-
-
- - Add an Item as first entry in History List</p>
-          <p>Removes the Item from old position and removes  last item if history is full</p>
+          <p>When the item is already in the history list, it is moved to the begin of the list.
+          </p><p>
+            Otherwise the item is added as the first entry; when the list is full, the last item is removed.
+          </p>
         </descr>
+        <seealso><link id="TCustomComboBox.AutoComplete"/></seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddHistoryItem.Item">
-        <short>The item to be addd to the list</short>
+        <short>The string to be added to the list.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddHistoryItem.MaxHistoryCount">
         <short>The maximum number of items that can be added to the history</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddHistoryItem.SetAsText">
-        <short>Whether the item is to be set as text</short>
+        <short>When True the string also is copied into the edit box.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddHistoryItem.CaseSensitive">
-        <short>Whether the item is added in a case sensitive manner (eg determines how they are sorted)</short>
+        <short>True means that only an exactly matching item is removed from the list.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddHistoryItem.AnObject">
-        <short>The history item to be added, expressed as an object</short>
+        <short>The object associated with the item; can be Nil.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.Clear">
-        <short>
-          <var>Clear</var>
-
-
-
- - remove all text and drop-down list</short>
+        <short>Removes all items from the list, clears the edit box.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.ClearSelection">
-        <short>
-          <var>ClearSelection </var>
-
-
-
-- clear the currently selected text or items from drop-down list</short>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomComboBox.CharCase">
-        <short>
-          <var>CharCase:</var>
-
-
-
- indicates whether text is to be displayed as Upper, Lower or Normal case (as entered)</short>
-        <descr>
-          <p>Indicates how text is displayed in a text editing control in the following ways:</p>
-          <ul>
-            <li>Normal case letters</li>
-            <li>Upper case letters</li>
-            <li>Lower case letters</li>
-          </ul>
-        </descr>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomComboBox.DroppedDown">
-        <short>
-          <var>DroppedDown </var>
-
-
-
-- indicates whether or not the drop-down list has appeared</short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomComboBox.MeasureItem">
-        <short>Measure the size (Height) of an item in the drop-down list</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.MeasureItem.Index">
-        <short>The index number of the item whose height is to be measured</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.MeasureItem.TheHeight">
-        <short>The height as measured by the procedure</short>
+        <short>Unselect a possibly selected item (ItemIndex becomes -1).</short>
+        <descr>The text selection is not affected. Set SelLength to zero to remove a selection from the text box.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.SelectAll">
@@ -2531,30 +1277,19 @@ False is set when the edit or combobox control loses focus.
         <errors/>
         <seealso/>
       </element>
+<!-- keep all properties together, alpha sorted -->
+      <!-- property Visibility: public -->
+      <element name="TCustomComboBox.ArrowKeysTraverseList">
+        <short>Enables the operator to use the keyboard Arrow keys to move through the list as an alternative to using the mouse</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoComplete">
-        <short>
-          <var>AutoComplete</var>
-
-
-
- - enables the facility to offer suggestions for completing text-strings</short>
+        <short>Enables the facility to offer suggestions for completing text-strings</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoCompleteText">
-        <short>
-          <var>AutoCompleteText</var>
-
-
-
- : Options for behavior of the Auto-Complete feature</short>
+        <short>Options for behavior of the Auto-Complete feature</short>
         <descr>
-          <p>
-            <var>AutoCompleteText</var>
-
-
-
-: Options for behavior of the <var>Auto-Complete</var> feature</p>
           <ul>
             <li>Enabled: Enable Auto-Completion feature.</li>
             <li>EndOfLineComplete: Perform Auto-Complete only when cursor is at the end of the string.</li>
@@ -2570,30 +1305,14 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoDropDown">
-        <short>
-          <var>AutoDropDown </var>
-
-
-
-- if True, the drop-down list appears as soon as the cursor moves over the text box</short>
+        <short>If True, the drop-down list appears as soon as the cursor moves over the text box</short>
         <descr>
-          <p>
-            <var>AutoDropDown </var>
-
-
-
-- if True, the drop-down list appears as soon as the cursor moves over the text box</p>
-          <p>If False, the drop-down box only appears when the downward triangular indicator at the end of the box is selected</p>
+          <p>If False, the drop-down box only appears when the down button at the end of the box is selected</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoSelect">
-        <short>
-          <var>AutoSelect</var>
-
-
-
-: Boolean. If True, all contents of <var>Text</var> box are selected when control receives focus</short>
+        <short>If True, all contents of <var>Text</var> box are selected when control receives focus</short>
         <descr>
           <p>When True, the edit control will select all its text when:</p>
           <ul>
@@ -2605,63 +1324,46 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoSelected">
-        <short>
-          <var>AutoSelected</var>
-
-
-
-: True indicates that the combobox control has just performed an <var>AutoSelect</var> operation</short>
+        <short>True indicates that the combobox control has just performed an <var>AutoSelect</var> operation</short>
         <descr>
           <p>True indicates that the combobox control has just performed an <var>AutoSelect</var> operation so that subsequent mouse-clicks and keystrokes
-proceed normally without selecting the text.</p>
+            proceed normally without selecting the text.</p>
           <p>False is set when the combobox control loses focus.</p>
         </descr>
       </element>
+      <element name="TCustomComboBox.AutoSize"/>
       <!-- property Visibility: public -->
-      <element name="TCustomComboBox.ArrowKeysTraverseList">
-        <short>
-          <var>ArrowKeysTraverseList</var>
-
-
-
- - enables the operator to use the keyboard Arrow keys to move through the list as an alternative to using the mouse</short>
+      <element name="TCustomComboBox.Canvas"/>
+      <!-- property Visibility: public -->
+      <element name="TCustomComboBox.CharCase">
+        <short>Indicates whether text is to be displayed as Upper, Lower or Normal case (as entered).</short>
+        <descr>
+          <p>Indicates how text is displayed in a text editing control</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomComboBox.Canvas">
-        <short>
-          <var>Canvas</var>
-
-
-
- - the area on which the components are drawn or painted</short>
+      <element name="TCustomComboBox.DroppedDown">
+        <short>Indicates whether the drop-down list has appeared.</short>
+        <descr>Setting this property opens or closes the drop-down list.</descr>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomComboBox.Items">
-        <short>
-          <var>Items </var>
-
-
-
-- an array  of strings that holds the entries of the drop-down list</short>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.DropDownCount">
+        <short>The height of the drop-down list, measured in number of items.</short>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.ItemHeight">
+        <short>The default height of a list item.</short>
+        <descr>In owner-draw mode the value can be adjusted by the application, otherwise it is determined by the widget.
+        </descr>
+        <seealso><link id="TCustomComboBox.OnMeasureItem"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.ItemIndex">
-        <short>
-          <var>Index </var>
-
-
-
-- the number of the currently selected item (starting at zero)</short>
+        <short>The index of the currently selected item, -1 if none is selected.</short>
         <descr>
-          <p>
-            <var>Index </var>
-
-
-
-- the number of the currently selected item</p>
+          <p>Setting the ItemIndex selects the item in the list.</p>
           <p>The first item has number 0, the second has number 1, the third number 2, etc. </p>
-          <p>In case no item is selected, ItemIndex
-has value -1.</p>
+          <p>If no item is selected, ItemIndex is -1.</p>
         </descr>
         <seealso>
           <link id="TCustomComboBox"/>
@@ -2669,76 +1371,177 @@ has value -1.</p>
         </seealso>
       </element>
       <!-- property Visibility: public -->
+      <element name="TCustomComboBox.Items">
+        <short>The list of all items in the control.</short>
+        <descr>
+          <p>
+            The Items strings are displayed in the static or drop-down list of the control.
+          </p><p>
+            Reading allows to access the contents of the list (TStrings compatible).
+          </p><p>
+            Assign another string list to replace the items.
+          </p>
+        </descr>
+        <seealso><link id="TCustomComboBox.ItemIndex"/></seealso>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.ItemWidth">
+        <short>The minimum width of the items in the drop-down list.</short>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.MaxLength">
+        <short>The maximum length for user input.</short>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.OnChange">
+        <short>Event handler for user changed text in the edit box.</short>
+        <descr>
+          <p>
+            This event covers only changes made by the user, not by code.
+            It also covers a selection from the list.
+          </p><p>
+            [from Delphi docs - matches LCL?]
+          </p>
+        </descr>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.OnCloseUp">
+        <short>Handler for
+          the drop-down box closes
+          event.</short>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.OnDrawItem">
+        <short>Event handler for painting an item.</short>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.OnDropDown">
+        <short>Event handler for list has dropped down.</short>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.OnGetItems">
+        <short>Event handler when widgetset[?] items list can [must?] be populated</short>
+        <descr>
+          <p>Some widgetsets like gtk call this just before the list drops down, while others do it on handle creation.
+            This event allows to handle both cases with one event.
+          </p><p>
+            [What's the purpose or task of the handler?]
+          </p>
+        </descr>
+        <seealso><link id="TCustomComboBox.IntfGetItems"/></seealso>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.OnMeasureItem">
+        <short>Event handler when the size of an item is required.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.OnSelect">
+        <short>Event handler when an item or some text is selected</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <!-- property Visibility: public -->
       <element name="TCustomComboBox.ReadOnly">
-        <short>
-          <var>ReadOnly </var>
-
-
-
-- if True, information in the control can only be Read, not Written or Deleted</short>
+        <short>Whether text can be entered in the edit box.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelLength">
-        <short>
-          <var>SelLength </var>- the length of the text that has been selected in bytes</short>
+        <short>The number of selected UTF-8 characters in the edit box.</short>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.SelStart"/>
+          <link id="TCustomComboBox.SelText"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelStart">
-        <short>
-          <var>SelStart </var>- if text is selected this is the starting position otherwise the cursor position in bytes starting at 0</short>
+        <short>The <b>zero-based</b> index of the begin of the selection in the edit box.</short>
+        <descr>
+          <p>If text is selected, this is the starting position, otherwise the cursor position.
+          </p>
+          <p>When no text is selected, SelStart is the cursor position, and SelLength=0.
+          </p><p>
+            Writing moves the cursor, and removes the selection[?].
+            Set SelLength after changing SelStart, to establish a new selection.
+          </p><p>
+            SelStart is a <b>zero-based</b> index into Text, in contrast to usual <b>1-based</b> string indices.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.SelLength"/>
+          <link id="TCustomComboBox.SelText"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelText">
-        <short>
-          <var>SelText</var>
-
-
-
- - the text string that has been selected for editing</short>
+        <short>The selected text in the edit box.</short>
+        <descr>Assign an new string to replace the selected text.
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.SelStart"/>
+          <link id="TCustomComboBox.SelLength"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.Sorted">
+        <short>Determines whether the list entries are sorted.</short>
+        <descr>Setting this property to True enforces sorting of the list.
+          When True, new entries are added in sort order, not to the end of the list.
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.Style">
-        <short>
-          <var>Style</var>
-
-
-
-: may be Simple, a single-line Drop-Down or a Drop-Down list, or some version drawn by the Owner</short>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomComboBox.Text">
-        <short>
-          <var>Text</var>
-
-
-
- - the string appearing in the main box. If an item on the drop-down list is selected, it replaces the contents of <var>Text</var>
+        <short>Appearance and behaviour of the ComboBox (static/drop-down, owner-draw...).
         </short>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCustomComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <descr>
-          <p>Reads or writes boolean flag; default is False</p>
-          <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TComboBox">
-        <short>
-          <var>TComboBox </var>
-
-
-
-- a simple combination of text box for free text entry, and a drop-down list allowing one of several options to be chosen.</short>
         <descr>
           <p>
-            <var>TComboBox </var>
-
-
-
-- a simple combination of text box for free text entry, and a drop-down list allowing one of several options to be chosen.</p>
+            The Style is quite Windows centric, reflecting the evolution of ComboBox styles.
+          </p><p>
+            Basic styles are</p>
+          <ul>
+            <li>csSimple: edit box with a static list (no drop-down).</li>
+            <li>csDropDown: edit box with a drop-down list.</li>
+            <li>csDropDownList: strings can not be entered by the user, only selected from the drop-down list.</li>
+          </ul>
+          <p>Later owner-drawn drop-down lists have been added, with</p>
+          <ul>
+            <li>csOwnerDrawFixed: all items in the drop-down list have the same height.</li>
+            <li>csOwnerDrawVariable: every item can have a different height.</li>
+          </ul>
+          <p>The ReadOnly property affects the edit box behaviour even in the owner-draw styles.
+          </p>
+        </descr>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCustomComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <!-- property Visibility: public -->
+      <element name="TCustomComboBox.Text">
+        <short>The string appearing in the edit box.</short>
+        <descr>
+          <p>Setting Text selects a possibly matching item in the list.
+          </p><p>
+           If an item is selected from the list, it replaces the contents of <var>Text</var>.
+          </p><p>
+            Free user input can be disallowed by the ReadOnly property, so that only strings from the list can be selected.
+          </p><p>
+            Text completion can be established by the AutoComplete property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.ReadOnly"/>
+          <link id="TCustomComboBox.Style"/>
+          <link id="TCustomComboBox.AutoComplete"/>
+        </seealso>
+      </element>
+<!-- object Visibility: default -->
+      <element name="TComboBox">
+        <short>A combination of an edit box and a (drop-down) list allowing one of several options to be chosen.</short>
+        <descr>
           <p>The default text-string (if any, entered in the Form Designer) and the value of the text string that is ultimately selected from the drop-down list, is held in <var>Text</var>
           </p>
           <p>The values that can be selected from the drop-down list are held in the string-array <var>Items</var>. Clicking on the ellipsis (...) next to <var>Items</var> in the Object Inspector opens a pop-up string-list editor which allows the designer to enter and edit a number of lines of text to represent the selections</p>
@@ -2750,399 +1553,73 @@ has value -1.</p>
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TComboBox.Align" link="#LCL.Controls.TControl.Align">
-        <descr>Align the Control with other Controls in its vicinity
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Anchors" link="#LCL.Controls.TControl.Anchors">
-        <descr>Anchors
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ArrowKeysTraverseList" link="#LCL.StdCtrls.TCustomComboBox.ArrowKeysTraverseList">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+      <element name="TComboBox.Align" link="#LCL.Controls.TControl.Align"/>
+      <element name="TComboBox.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TComboBox.ArrowKeysTraverseList" link="#LCL.StdCtrls.TCustomComboBox.ArrowKeysTraverseList"/>
       <element name="TComboBox.AutoComplete" link="#LCL.StdCtrls.TCustomComboBox.AutoComplete"/>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.AutoCompleteText" link="#LCL.StdCtrls.TCustomComboBox.AutoCompleteText">
-        <seealso>
-          <link id="TComboBoxAutoCompleteTextOption"/>
-        </seealso>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+      <element name="TComboBox.AutoCompleteText" link="#LCL.StdCtrls.TCustomComboBox.AutoCompleteText"/>
+      <element name="TComboBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown"/>
       <element name="TComboBox.AutoSelect" link="#LCL.StdCtrls.TCustomComboBox.AutoSelect"/>
-      <!-- property Visibility: published -->
-      <!-- property Visibility: published -->
-      <element name="TComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
-          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Constraints" link="#LCL.Controls.TControl.Constraints">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="TComboBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode">
-        <descr>Allows Languages such as Arabic and Hebrew to be used
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines the border spacing for this control</p>
-          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.CharCase" link="#LCL.StdCtrls.TCustomComboBox.CharCase">
-        <descr>
-          <p>Indicates how text is displayed in a text editing control in the following ways:</p>
-          <ul>
-            <li>Normal case letters</li>
-            <li>Upper case letters</li>
-            <li>Lower case letters</li>
-          </ul>
-        </descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Color" link="#LCL.Controls.TControl.Color">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
-          <p>The default colour is the same as the window in which the control is located.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.DragMode" link="#LCL.Controls.TControl.DragMode">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.DropDownCount" link="#LCL.StdCtrls.TCustomComboBox.DropDownCount">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Enabled" link="#LCL.Controls.TControl.Enabled">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
-          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Font" link="#LCL.Controls.TControl.Font">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ItemHeight" link="#LCL.StdCtrls.TCustomComboBox.ItemHeight">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex">
-        <descr>
-          <p>
-            <var>Index </var>
-
-
-
-
-- the number of the currently selected item</p>
-          <p>The first item has number 0, the second has number 1, the third number 2, etc. </p>
-          <p>In case no item is selected, ItemIndex
-has value -1.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Items" link="#LCL.StdCtrls.TCustomComboBox.Items">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ItemWidth" link="#LCL.StdCtrls.TCustomComboBox.ItemWidth">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.MaxLength" link="#LCL.StdCtrls.TCustomComboBox.MaxLength">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnChange" link="#LCL.StdCtrls.TCustomComboBox.OnChange">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads or Writes flag if bounds are changed</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnClick" link="#LCL.Controls.TControl.OnClick">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
-          </p>
-          <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnCloseUp" link="#LCL.StdCtrls.TCustomComboBox.OnCloseUp">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
-        <descr>
-          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnDrawItem" link="#LCL.StdCtrls.TCustomComboBox.OnDrawItem">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnDropDown" link="#LCL.StdCtrls.TCustomComboBox.OnDropDown">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnDropDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
-        <descr>
-          <p>
-            <var>OnKeyDown</var>
-
- - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
-        <descr>
-          <p>
-            <var>OnKeyPress</var>
-
- - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
-        <descr>
-          <p>
-            <var>OnKeyUp</var>
-
-  - event handler for instance when a key is up (not pressed) while the control has focus</p>
-          <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnMeasureItem" link="#LCL.StdCtrls.TCustomComboBox.OnMeasureItem">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.OnSelect" link="#LCL.StdCtrls.TCustomComboBox.OnSelect">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
-        <descr>// standard properties, which should be supported by all descendants<br/>
- Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ReadOnly" link="#LCL.StdCtrls.TCustomComboBox.ReadOnly">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
-        <descr>// standard properties, which should be supported by all descendants<br/>
-Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Sorted" link="#LCL.StdCtrls.TCustomComboBox.Sorted">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
-        <descr>Reads or writes information in flag; default is -1
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <descr>
-          <p>Reads or writes boolean flag; default is False</p>
-          <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Text" link="#LCL.StdCtrls.TCustomComboBox.Text">
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TComboBox.Visible" link="#LCL.Controls.TControl.Visible">
-        <descr>
-          <pre>The Visible property represents the ability to see a visual control. 
-          If Visible is True the control is shown, otherwise it is hidden.
-          Calling Show sets, among others, Visible to True.
-          Setting Visible to False is equivalent to calling Hide method.</pre>
-          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
-        </descr>
-        <seealso/>
-      </element>
-      <!-- enumeration type Visibility: default -->
+      <element name="TComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
+      <element name="TComboBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
+      <element name="TComboBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="TComboBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TComboBox.CharCase" link="#LCL.StdCtrls.TCustomComboBox.CharCase"/>
+      <element name="TComboBox.Color" link="#LCL.Controls.TControl.Color"/>
+      <element name="TComboBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D"/>
+      <element name="TComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
+      <element name="TComboBox.DragKind"/>
+      <element name="TComboBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
+      <element name="TComboBox.DropDownCount" link="#LCL.StdCtrls.TCustomComboBox.DropDownCount"/>
+      <element name="TComboBox.Enabled" link="#LCL.Controls.TControl.Enabled"/>
+      <element name="TComboBox.Font" link="#LCL.Controls.TControl.Font"/>
+      <element name="TComboBox.ItemHeight" link="#LCL.StdCtrls.TCustomComboBox.ItemHeight"/>
+      <element name="TComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex"/>
+      <element name="TComboBox.Items" link="#LCL.StdCtrls.TCustomComboBox.Items"/>
+      <element name="TComboBox.ItemWidth" link="#LCL.StdCtrls.TCustomComboBox.ItemWidth"/>
+      <element name="TComboBox.MaxLength" link="#LCL.StdCtrls.TCustomComboBox.MaxLength"/>
+      <element name="TComboBox.OnChange" link="#LCL.StdCtrls.TCustomComboBox.OnChange"/>
+      <element name="TComboBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
+      <element name="TComboBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TComboBox.OnCloseUp" link="#LCL.StdCtrls.TCustomComboBox.OnCloseUp"/>
+      <element name="TComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
+      <element name="TComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
+      <element name="TComboBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
+      <element name="TComboBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
+      <element name="TComboBox.OnDrawItem" link="#LCL.StdCtrls.TCustomComboBox.OnDrawItem"/>
+      <element name="TComboBox.OnDropDown" link="#LCL.StdCtrls.TCustomComboBox.OnDropDown"/>
+      <element name="TComboBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
+      <element name="TComboBox.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone"/>
+      <element name="TComboBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TComboBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TComboBox.OnGetItems" link="TCustomComboBox.OnGetItems"/>
+      <element name="TComboBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TComboBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TComboBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TComboBox.OnMeasureItem" link="#LCL.StdCtrls.TCustomComboBox.OnMeasureItem"/>
+      <element name="TComboBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TComboBox.OnMouseEnter"/>
+      <element name="TComboBox.OnMouseLeave"/>
+      <element name="TComboBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TComboBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TComboBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
+      <element name="TComboBox.OnSelect" link="#LCL.StdCtrls.TCustomComboBox.OnSelect"/>
+      <element name="TComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TComboBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
+      <element name="TComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
+      <element name="TComboBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D"/>
+      <element name="TComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="TComboBox.ReadOnly" link="#LCL.StdCtrls.TCustomComboBox.ReadOnly"/>
+      <element name="TComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TComboBox.Sorted" link="#LCL.StdCtrls.TCustomComboBox.Sorted"/>
+      <element name="TComboBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>
+      <element name="TComboBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
+      <element name="TComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
+      <element name="TComboBox.Text" link="#LCL.StdCtrls.TCustomComboBox.Text"/>
+      <element name="TComboBox.Visible" link="#LCL.Controls.TControl.Visible"/>
+<!-- enumeration type Visibility: default -->
       <element name="TListBoxStyle">
         <short>
           <var>TListBoxStyle</var> - enumerated type for style of listbox</short>
@@ -3631,18 +2108,6 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListBox.SetItemIndex.Val">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.SetItems">
-        <short>
-          <var>SetItems</var> - specifies the string values of the items</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomListBox.SetItems.Value">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
@@ -4895,18 +3360,16 @@ Indicates how text is displayed in a text editing control.</p>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.Change">
-        <short>
-          <var>Change</var> - software emulation of the <var>OnChange</var> event</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomEdit.Change"/>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.DoEnter">
         <short>
-          <var>DoEnter</var> - sets <var>AutoSelect</var> if required then calls inherited method</short>
-        <descr/>
+          Sets <var>AutoSelect</var> if appropriate, after calling the inherited method.</short>
+        <descr>
+          Nothing special happens in csDropDownList (read only) style.
+          Else if the control was entered by a keystroke, the whole edit text is selected;
+          if the whole text is selected, AutoSelected becomes True.
+        </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TWinControl.DoEnter">TWinControl.DoEnter</link>
@@ -4925,14 +3388,14 @@ Indicates how text is displayed in a text editing control.</p>
       <!-- function Visibility: protected -->
       <element name="TCustomEdit.GetSelLength">
         <short>
-          <var>GetSelLength</var> - returns the length of the selected text</short>
+          Returns the length of the selected text, in UTF-8 characters.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomEdit.GetSelLength.Result">
-        <short/>
+        <short>The number of selected UTF-8 characters.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomEdit.GetSelStart">
@@ -9653,12 +8116,6 @@ Reads or Writes flag if control is re-sized.
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
-      <element name="DefaultButtonControlUseOnChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
       <!-- procedure Visibility: default -->
       <element name="Register">
         <short/>
@@ -9902,20 +8359,6 @@ Reads or Writes flag if control is re-sized.
           </table>
         </descr>
       </topic>
-      <element name="TCustomComboBox.AutoSize">
-        <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
-          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
-        </descr>
-        <short>
-          <var>AutoSize</var> defaults to True, overriding any previous default</short>
-        <seealso>
-          <link id="#LCL.Controls.TControl.AutoSize">TControl.AutoSize</link>
-        </seealso>
-      </element>
-      <element name="TGroupBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TCustomListBox.SelectAll">
         <short>
           <var>SelectAll</var> - select all items in list</short>
@@ -9947,7 +8390,6 @@ Reads or Writes flag if control is re-sized.
       <element name="TCheckBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
       <element name="TRadioButton.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TLabel.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TScrollBar.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
       <element name="TCustomListBox.CalculateStandardItemHeight">
         <short>
           <var>CalculateStandardItemHeight</var> - returns a calculated value for the standard height of items in th elistbox</short>
@@ -9965,17 +8407,6 @@ Reads or Writes flag if control is re-sized.
           <var>SetCaretPos</var> - specifies the position of the caret or edit cursor</short>
       </element>
       <element name="TCustomMemo.GetCaretPos" link="#LCL.StdCtrls.TCustomEdit.GetCaretPos"/>
-      <element name="TScrollBar.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TGroupBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TCustomComboBox.GetItems">
-        <short>
-          <var>GetItems</var> - finds the list of items for the dropdown box</short>
-      </element>
-      <element name="TComboBox.OnGetItems">
-        <short>
-          <var>OnGetItems</var> - event handler for getting list of items for dropdown box</short>
-      </element>
-      <element name="TComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TCustomListBox.GetIndexAtXY">
         <short>
           <var>GetIndexAtXY</var> - returns the index of an item at the specified coordinates</short>
@@ -9990,19 +8421,6 @@ Reads or Writes flag if control is re-sized.
       <element name="TMemo.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TButton.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TCheckBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TCustomComboBox.UTF8KeyPress">
-        <short>
-          <var>UTF8KeyPress</var> converts character case if required then calls inherited method</short>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.UTF8KeyPress">TWinControl.UTF8KeyPress</link>
-        </seealso>
-        <descr>
-          <p>
-            <printshort id="TCustomComboBox.UTF8KeyPress"/>
-          </p>
-          <p>The inherited method emulates the pressing of a key, with UTF8 coding. The UTF8 coding should be used where there is the possibility that input/output will occur in any language that requires multiple bytes to represent each character, ie almost all languages except the standard Western European languages.</p>
-        </descr>
-      </element>
       <element name="TCustomButton.Loaded">
         <short>
           <var>Loaded</var> calls inherited method, checks to see whether it is a default or cancel control, sets the default widget set</short>
@@ -10035,15 +8453,10 @@ Reads or Writes flag if control is re-sized.
       <element name="TEdit.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <element name="TEdit.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
-      <element name="TGroupBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
-      <element name="TGroupBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
       <element name="TLabel.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TRadioButton.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomCheckBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TButtonControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomScrollBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomGroupBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomComboBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomListBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomEdit.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomMemo.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
