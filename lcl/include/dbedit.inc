@@ -36,7 +36,6 @@ begin
     if Focused and FDataLink.CanModify then begin
       //display the real text since we can modify it
       RestoreMask(FDatalink.Field.Text);
-      SelectAll;
     end else
       //otherwise display the pretified/formated text since we can't
       DisableMask(FDataLink.Field.DisplayText);
