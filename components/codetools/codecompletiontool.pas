@@ -1917,7 +1917,7 @@ begin
     // find declaration of parameter list
     Params.ContextNode:=Context.Node;
     Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],nil);
-    Params.Flags:=fdfGlobals+[fdfSearchInAncestors,fdfFindVariable];
+    Params.Flags:=fdfDefaultForExpressions+[fdfSearchInAncestors,fdfFindVariable];
     if Context.Node=CursorNode then
       Params.Flags:=Params.Flags+[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
     CleanPosToCodePos(VarNameAtom.StartPos,IgnorePos);

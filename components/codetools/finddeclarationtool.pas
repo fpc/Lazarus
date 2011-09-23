@@ -173,11 +173,13 @@ type
   TFindDeclarationFlags = set of TFindDeclarationFlag;
   
 const
+  // masks to pass flags to sub searches
   fdfGlobals = [fdfExceptionOnNotFound, fdfTopLvlResolving,
                 fdfExtractOperand, fdfPropertyResolving];
   fdfGlobalsSameIdent = fdfGlobals+[fdfExceptionOnPredefinedIdent,
                 fdfIgnoreMissingParams, fdfIgnoreUsedUnits, fdfDoNotCache,
                 fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect];
+  // initial flags for searches
   fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
                               fdfExceptionOnNotFound];
 
@@ -3444,7 +3446,7 @@ var
       debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier Identifier=',GetIdentifier(@Src[IdentStart])]);
       {$ENDIF}
       SubParams.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                    +(fdfGlobals*SubParams.Flags);
+                      +(fdfGlobals*SubParams.Flags);
       SubParams.SetIdentifier(Self,@Src[IdentStart],nil);
       SubParams.ContextNode:=StartNode.Parent;
       if (SubParams.ContextNode.Desc in AllIdentifierDefinitions) then begin

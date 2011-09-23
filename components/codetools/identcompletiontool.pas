@@ -2608,14 +2608,14 @@ begin
 
     Params:=TFindDeclarationParams.Create;
     Params.ContextNode:=CursorNode;
-    Params.Flags:=fdfGlobals+fdfDefaultForExpressions+[fdfFunctionResult];
+    Params.Flags:=fdfDefaultForExpressions+[fdfFunctionResult];
     ExprType:=FindExpressionTypeOfTerm(CaseAtom.EndPos,EndPos,Params,true);
     //DebugLn(['TIdentCompletionTool.GetValuesOfCaseVariable Type=',ExprTypeToString(ExprType)]);
 
     if ExprType.Desc=xtContext then begin
       // resolve aliases and properties
       Params.Clear;
-      Params.Flags:=fdfGlobals+fdfDefaultForExpressions;
+      Params.Flags:=fdfDefaultForExpressions;
       ExprType.Context:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                  ExprType.Context.Node);
     end;
