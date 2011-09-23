@@ -103,18 +103,6 @@ begin
   ChangeDataSource(Self,FDataLink,Value);
 end;
 
-function TDBEdit.IsReadOnly: boolean;
-begin
-  // This function in unneccesary for fpc versions > 2.2.4.
-  // In those versions FDatalink.CanModify already checks if the dataset is active.
-  // So this temporary method should be removed in the future, and the calls to
-  // 'not IsReadOnly' should then be replaced by calls to FDatalink.CanModify.
-  If FDatalink.Active then
-    Result := not FDatalink.CanModify
-  else
-    Result := False;
-end;
-
 procedure TDBEdit.CMGetDataLink(var Message: TLMessage);
 begin
   Message.Result := PtrUInt(FDataLink);
@@ -131,19 +119,20 @@ begin
     Key := VK_UNKNOWN;
   end else
   if Key in [VK_DELETE, VK_BACK] then begin
-    if not IsReadOnly then
+    if FDataLink.CanModify then
       FDatalink.Edit
     else
       Key := VK_UNKNOWN;
   end;
 end;
 
+function FieldCanAcceptKey(Field: TField; AKey: char): boolean;
+begin
+  Result := (Field<>nil) and Field.IsValidChar(AKey) and
+            (Field.DataType<>ftAutoInc);
+end;
+
 procedure TDBEdit.KeyPress(var Key: char);
-  function CanAcceptKey(AKey: char): boolean;
-  begin
-    Result := (Field<>nil) and Field.IsValidChar(AKey) and
-              (Field.DataType<>ftAutoInc);
-  end;
 var
   SavedKey: Char;
 begin
@@ -155,13 +144,13 @@ begin
   begin
     case Key of
       #8: // special keys
-        if not IsReadOnly then
+        if FDataLink.CanModify then
           FDatalink.Edit
         else
           Key:=#0;
 
       #32..#255: //standard keys
-        if not IsReadOnly and CanAcceptKey(Key) then
+        if FDataLink.CanModify and FieldCanAcceptKey(FDataLink.Field, Key) then
           FDatalink.Edit
         else
           Key:=#0;
@@ -171,10 +160,10 @@ begin
   begin
     case SavedKey of
       #8: // special keys
-        if not IsReadOnly then
+        if FDataLink.CanModify then
           FDatalink.Edit;
       #32..#255: //standard keys
-        if not IsReadOnly and CanAcceptKey(SavedKey) then
+        if FDataLink.CanModify and FieldCanAcceptKey(FDataLink.Field, SavedKey) then
           FDatalink.Edit;
     end;//case
   end;
@@ -254,7 +243,7 @@ end;
 
 procedure TDBEdit.LMPasteFromClip(var Message: TLMessage);
 begin
-  if not IsReadOnly then
+  if FDataLink.CanModify then
   begin
     //LCL changes the Text before LM_PASTE is called and not after like Delphi. Issue 20330
     //When Edit is called the Text property is reset to the previous value
@@ -269,7 +258,7 @@ end;
 
 procedure TDBEdit.LMCutToClip(var Message: TLMessage);
 begin
-  if not IsReadOnly then
+  if FDataLink.CanModify then
     FDatalink.Edit;
   inherited LMCutToClip(Message);
 end;
