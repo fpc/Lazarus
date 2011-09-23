@@ -250,8 +250,7 @@ end;
 
 procedure TDBEdit.LMCutToClip(var Message: TLMessage);
 begin
-  if FDataLink.CanModify then
-    FDatalink.Edit;
+  FDatalink.Edit;
   inherited LMCutToClip(Message);
 end;
 
