@@ -244,8 +244,8 @@ begin
     FDatalink.Edit;
     FDataLink.Modified;
     FDataLink.OnDataChange := @DataChange;
+    inherited LMPasteFromClip(Message);
   end;
-  inherited LMPasteFromClip(Message);
 end;
 
 procedure TDBEdit.LMCutToClip(var Message: TLMessage);
