@@ -1387,9 +1387,22 @@ end;
 
 procedure TControl.VisibleChanged;
 begin
-{ TODO -cdocking : For docked controls, the docking manager must receive a notification!
- }
+{ TODO -cdocking : For docked controls, the docking manager must receive a notification! }
   DoCallNotifyHandler(chtOnVisibleChanged);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.EnabledChanging;
+------------------------------------------------------------------------------}
+procedure TControl.EnabledChanging;
+begin
+  DoCallNotifyHandler(chtOnEnabledChanging);
+end;
+
+procedure TControl.EnabledChanged;
+begin
+{ TODO -cdocking : For docked controls, the docking manager must receive a notification! }
+  DoCallNotifyHandler(chtOnEnabledChanged);
 end;
 
 procedure TControl.AddHandler(HandlerType: TControlHandlerType;
@@ -2662,8 +2675,10 @@ procedure TControl.SetEnabled(Value: Boolean);
 begin
   if FEnabled <> Value
   then begin
+    EnabledChanging;
     FEnabled := Value;
     Perform(CM_ENABLEDCHANGED, 0, 0);
+    EnabledChanged;
   end;
 end;
 
@@ -4096,6 +4111,18 @@ procedure TControl.RemoveHandlerOnVisibleChanged(
   const OnVisibleChangedEvent: TNotifyEvent);
 begin
   RemoveHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent));
+end;
+
+procedure TControl.AddHandlerOnEnabledChanged(
+  const OnEnabledChangedEvent: TNotifyEvent; AsFirst: boolean);
+begin
+  AddHandler(chtOnEnabledChanged,TMethod(OnEnabledChangedEvent),AsFirst);
+end;
+
+procedure TControl.RemoveHandlerOnEnableChanging(
+  const OnEnableChangingEvent: TNotifyEvent);
+begin
+  RemoveHandler(chtOnEnabledChanged,TMethod(OnEnableChangingEvent));
 end;
 
 procedure TControl.AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;

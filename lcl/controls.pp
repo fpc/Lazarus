@@ -874,6 +874,8 @@ type
     chtOnChangeBounds,
     chtOnVisibleChanging,
     chtOnVisibleChanged,
+    chtOnEnabledChanging,
+    chtOnEnabledChanged,
     chtOnKeyDown
     );
 
@@ -1230,6 +1232,8 @@ type
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
     procedure VisibleChanging; virtual;
     procedure VisibleChanged; virtual;
+    procedure EnabledChanging; virtual;
+    procedure EnabledChanged; virtual;
     procedure AddHandler(HandlerType: TControlHandlerType;
                          const AMethod: TMethod; AsFirst: boolean = false);
     procedure RemoveHandler(HandlerType: TControlHandlerType;
@@ -1398,6 +1402,9 @@ type
     procedure AddHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent;
                                          AsFirst: boolean = false);
     procedure RemoveHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent);
+    procedure AddHandlerOnEnabledChanged(const OnEnabledChangedEvent: TNotifyEvent;
+                                         AsFirst: boolean = false);
+    procedure RemoveHandlerOnEnableChanging(const OnEnableChangingEvent: TNotifyEvent);
     procedure AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;
                                   AsFirst: boolean = false);
     procedure RemoveHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent);
