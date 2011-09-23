@@ -294,7 +294,10 @@ const
   
 initialization
   { initialize mousedownclick to far before double click time }
-  MouseDownTime := GetTickCount - 5000;
+  if GetTickCount > 5000 then
+    MouseDownTime := GetTickCount - 5000
+  else
+    MouseDownTime := 0;
   {$IFDEF WindowsUnicodeSupport}
   SystemCharSetIsUTF8:=true;
   {$ELSE}
