@@ -184,7 +184,6 @@ Type
 
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
-    function IsReadOnly: boolean;
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     function GetReadOnly: Boolean; override;
