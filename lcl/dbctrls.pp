@@ -1283,13 +1283,13 @@ procedure Register;
 implementation
 
 var
-  FieldClasses: TList;
+  FieldClasses: TFpList;
 
 procedure RegFields(const AFieldClasses: array of TFieldClass);
 var I: Integer;
     FieldClass: TFieldClass;
 begin
-  if FieldClasses = nil then FieldClasses := TList.Create;
+  if FieldClasses = nil then FieldClasses := TFpList.Create;
   for I := Low(AFieldClasses) to High(AFieldClasses) do begin
     FieldClass := AFieldClasses[I];
     if (FieldClass <> Nil) And (FieldClasses.IndexOf(FieldClass) = -1) then
