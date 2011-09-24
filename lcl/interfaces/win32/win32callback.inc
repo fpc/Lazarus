@@ -1009,7 +1009,6 @@ begin
   NotifyUserInput := False;
 
   // WriteLn('Msg: ', WM_To_String(Msg));
-
   WindowInfo := GetWin32WindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
@@ -1041,6 +1040,7 @@ begin
     
     // filter messages we want to pass on to LCL
     if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS) and (Msg <> WM_NCDESTROY)
+      and not ((Msg >= WM_CUT) and (Msg <= WM_CLEAR))
       and ((Msg < WM_KEYFIRST) or (Msg > WM_KEYLAST))
       and ((Msg < WM_MOUSEFIRST) or (Msg > WM_MOUSELAST)) then
     begin
