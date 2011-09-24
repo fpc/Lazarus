@@ -55,9 +55,14 @@ fi
 
 RPMDIR=$(./get_rpm_source_dir.sh)
 RPMARCH=$(rpm --eval "%{_arch}")
+RPMTARGETCPU=$(rpm --eval "%{_target_cpu}")
 MOCKCONFIG=fedora-15-$RPMARCH
+MOCKCONFIG=buildlazarus
+MOCKRESULTDIR=~/tmp/mockresult
 
-FPCRPM=$RPMDIR/RPMS/$RPMARCH/fpc-$FPCFullVersion-0.$RPMARCH.rpm
+rm -rf $MOCKRESULTDIR
+
+FPCRPM=$RPMDIR/RPMS/$RPMTARGETCPU/fpc-$FPCFullVersion-0.$RPMTARGETCPU.rpm
 if [ ! -f $FPCRPM ]; then
   echo ERROR: fpc rpm $FPCRPM not available
   exit
@@ -79,21 +84,21 @@ cat lazarus.spec.template | \
 ../create_lazarus_export_tgz.sh $SrcTGZ
 
 #init mock environment
-mock -r $MOCKCONFIG --init
+mock -r $MOCKCONFIG --init --resultdir $MOCKRESULTDIR
 
 #install fpc in mock
-mock -r $MOCKCONFIG --install $FPCRPM  
+mock -r $MOCKCONFIG --install $FPCRPM --resultdir $MOCKRESULTDIR 
 
 #build lazarus source rpm
 rpmbuild --verbose -bs --nodeps $LAZSPEC
 
 #build lazarus rpm
-mock -r $MOCKCONFIG --no-clean --installdeps --rebuild $RPMDIR/SRPMS/lazarus-$LazVersion-$LazRelease.src.rpm
+mock -r $MOCKCONFIG --no-clean --installdeps --rebuild $RPMDIR/SRPMS/lazarus-$LazVersion-$LazRelease.src.rpm --resultdir $MOCKRESULTDIR
 
 #copy result into non-root rpm repository
-cp /var/lib/mock/$MOCKCONFIG/result/*.src.rpm $RPMDIR/SRPMS/
-cp /var/lib/mock/$MOCKCONFIG/result/*.$RPMARCH.rpm $RPMDIR/RPMS/$RPMARCH/
+cp $MOCKRESULTDIR/*.src.rpm $RPMDIR/SRPMS/
+cp $MOCKRESULTDIR/*.$RPMTARGETCPU.rpm $RPMDIR/RPMS/$RPMTARGETCPU/
 
-echo "The new rpm can be found at $RPMDIR/RPMS/$RPMARCH/lazarus-$LazVersion-$LazRelease.$RPMARCH.rpm"
+echo "The new rpm can be found at $RPMDIR/RPMS/$RPMTARGETCPU/lazarus-$LazVersion-$LazRelease.$RPMTARGETCPU.rpm"
 
 
