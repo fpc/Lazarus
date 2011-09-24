@@ -23,22 +23,6 @@
 
 { Private Methods }
 
-//update the Selected item on next record etc...
-procedure TCustomDBListBox.DataChange(Sender: TObject);
-begin
-  //
-end;
-
-procedure TCustomDBListBox.EditingChange(Sender: TObject);
-begin
-  //
-end;
-
-procedure TCustomDBListBox.UpdateData(Sender: TObject);
-begin
-  //
-end;
-
 function TCustomDBListBox.GetDataField: string;
 begin
   Result := FDataLink.FieldName;
@@ -133,7 +117,6 @@ begin
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := @DataChange;
-  //FDataLink.OnEditingChange := @EditingChange;
   FDataLink.OnUpdateData := @UpdateData;
 end;
 

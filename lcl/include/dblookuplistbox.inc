@@ -164,8 +164,6 @@ begin
   if [csLoading, csDestroying] * ComponentState = [] then
   begin
     FLookup.Initialize(FDataLink, Items);
-    WriteLn('Lookup: ', ItemIndex, '  IndexOf ', Items.IndexOf(FLookup.ListFieldValue), ' Value ',
-    FLookup.ListFieldValue);
     ItemIndex := Items.IndexOf(FLookup.ListFieldValue);
   end;
 end;

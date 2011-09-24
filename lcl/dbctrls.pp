@@ -329,7 +329,6 @@ Type
 
   TCustomDBListBox = class(TCustomListBox)
   private
-    procedure EditingChange(Sender: TObject);
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -342,12 +341,12 @@ Type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     FDataLink: TFieldDataLink;
-    procedure DataChange(Sender: TObject); virtual;
+    procedure DataChange(Sender: TObject); virtual; abstract;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
-    procedure UpdateData(Sender: TObject); virtual;
+    procedure UpdateData(Sender: TObject); virtual; abstract;
     // we need to override the Items Write method for db aware.
     procedure SetItems(Values : TStrings); override;
   public
