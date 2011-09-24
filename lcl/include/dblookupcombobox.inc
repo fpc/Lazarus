@@ -26,8 +26,8 @@
 constructor TDBLookupComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FLookup:= TDBLookup.Create(Self);
-  FDataLink.OnActiveChange:= @ActiveChange;
+  FLookup := TDBLookup.Create(Self);
+  FDataLink.OnActiveChange := @ActiveChange;
 end;
 
 procedure TDBLookupComboBox.UpdateData(Sender: TObject);
@@ -59,7 +59,8 @@ end;
 procedure TDBLookupComboBox.Loaded;
 begin
   inherited Loaded;
-  UpdateLookup;
+  if FDataLink.Active then
+    UpdateLookup;
 end;
 
 function TDBLookupComboBox.GetKeyField: string;
@@ -99,7 +100,7 @@ end;
 
 procedure TDBLookupComboBox.SetKeyField(const Value: string);
 begin
-  FLookup.KeyField:= Value;
+  FLookup.KeyField := Value;
   UpdateLookup;
 end;
 
@@ -113,19 +114,19 @@ end;
 
 procedure TDBLookupComboBox.SetListField(const Value: string);
 begin
-  FLookup.ListField:= Value;
+  FLookup.ListField := Value;
   UpdateLookup;
 end;
 
 procedure TDBLookupComboBox.SetListFieldIndex(const Value: Integer);
 begin
-  FLookup.ListFieldIndex:= Value;
+  FLookup.ListFieldIndex := Value;
   UpdateLookup;
 end;
 
 procedure TDBLookupComboBox.SetListSource(const Value: TDataSource);
 begin
-  FLookup.ListSource:= Value;
+  FLookup.ListSource := Value;
   UpdateLookup;
 end;
 
@@ -142,7 +143,7 @@ end;
 
 procedure TDBLookupComboBox.UpdateLookup;
 begin
-  if not (csLoading in ComponentState) then
+  if ([csLoading, csDestroying] * ComponentState) = [] then
   begin
     FLookup.Initialize(FDataLink, Items);
     Text := FLookup.ListFieldValue;
