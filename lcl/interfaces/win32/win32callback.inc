@@ -915,7 +915,7 @@ var
       if Length(Files) > 0 then
       begin
         if lWinControl is TCustomForm then
-          (lWinControl as TCustomForm).IntfDropFiles(Files);
+          TCustomForm(lWinControl).IntfDropFiles(Files);
         if Application <> nil then
           Application.IntfDropFiles(Files);
       end;
