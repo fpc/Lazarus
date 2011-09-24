@@ -4614,9 +4614,10 @@ end;
 function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI Invalidate Rect]');
+    WriteLn('[WinAPI InvalidateRect]');
   {$endif}
-
+  if AHandle = 0 then
+    exit(False);
   if Rect <> nil then
   begin
     with TQtWidget(aHandle).getClientOffset do
@@ -4627,6 +4628,28 @@ begin
     TQtWidget(aHandle).Update;
 
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Function: InvalidateRgn
+  Params: aHandle:
+          Rect:
+          bErase:
+  Returns: True if invalidate is successfull.
+  Invalidates region of widget.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean
+  ): Boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI InvalidateRgn]');
+  {$endif}
+  if aHandle = 0 then
+    exit(False);
+  if IsValidGDIObject(Rgn) and (TQtRegion(Rgn).Widget <> nil) then
+    TQtWidget(aHandle).UpdateRegion(TQtRegion(Rgn).Widget)
+  else
+    TQtWidget(aHandle).Update;
 end;
 
 {------------------------------------------------------------------------------

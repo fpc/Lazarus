@@ -201,6 +201,7 @@ type
     procedure clearMask;
     procedure OffsetMousePos(APoint: PQtPoint); virtual;
     procedure Update(ARect: PRect = nil); virtual;
+    procedure UpdateRegion(ARgn: QRegionH); virtual;
     procedure Repaint(ARect: PRect = nil); virtual;
     procedure setWindowTitle(Str: PWideString);
     procedure WindowTitle(Str: PWideString);
@@ -415,6 +416,7 @@ type
     procedure DestroyNotify(AWidget: TQtWidget); override;
     destructor Destroy; override;
     procedure Update(ARect: PRect = nil); override;
+    procedure UpdateRegion(ARgn: QRegionH); override;
     procedure Repaint(ARect: PRect = nil); override;
     property ScrollBarPolicy[AIndex: Boolean]: QtScrollBarPolicy read getScrollBarsPolicy write setScrollBarPolicy;
   end;
@@ -3507,6 +3509,14 @@ procedure TQtWidget.Update(ARect: PRect = nil);
 begin
   if ARect <> nil then
     QWidget_update(Widget, ARect)
+  else
+    QWidget_update(Widget);
+end;
+
+procedure TQtWidget.UpdateRegion(ARgn: QRegionH);
+begin
+  if ARgn <> nil then
+    QWidget_update(Widget, ARgn)
   else
     QWidget_update(Widget);
 end;
@@ -12519,6 +12529,14 @@ begin
     OffsetRect(ARect^, -P.X , -P.Y);
     QWidget_update(viewportWidget, ARect);
   end else
+    QWidget_update(viewportWidget);
+end;
+
+procedure TQtAbstractScrollArea.UpdateRegion(ARgn: QRegionH);
+begin
+  if ARgn <> nil then
+    QWidget_update(viewportWidget, ARgn)
+  else
     QWidget_update(viewportWidget);
 end;
 
