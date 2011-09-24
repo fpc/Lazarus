@@ -244,7 +244,7 @@ type
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
-    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
+    function ChooseImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
     procedure UpdateTitle;
     procedure UpdateButtons;
     procedure UpdateFiles;
@@ -1611,7 +1611,7 @@ begin
 end;
 
 function TPackageEditorForm.ChooseImageIndex(Str: String; Data: TObject;
-                                             var IsEnabled: Boolean): Integer;
+                                             var AIsEnabled: Boolean): Integer;
 begin
   case TPkgFile(Data).FileType of
     pftUnit,pftVirtualUnit,pftMainUnit:

@@ -655,6 +655,26 @@ begin
                   and (not (csNoDesignVisible in ControlStyle))));
 end;
 
+{------------------------------------------------------------------------------
+  Method: TControl.IsEnabled
+  Params:   none
+  Returns:  Boolean
+
+  Returns True only if both TControl and it's parent hierarchy are enabled.
+  Used internally by TGraphicControls for painting and various states during
+  runtime.
+ ------------------------------------------------------------------------------}
+function TControl.IsEnabled: Boolean;
+var
+  TheControl: TControl;
+begin
+  TheControl := Self;
+  repeat
+    Result := TheControl.Enabled;
+    TheControl := TheControl.Parent;
+  until (not Result) or (TheControl.Parent = nil);
+end;
+
 function TControl.FormIsUpdating: boolean;
 begin
   Result := Assigned(Parent) and Parent.FormIsUpdating;

@@ -152,7 +152,7 @@ type
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
-    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
+    function ChooseImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
     procedure UpdateProjectFiles(Immediately: boolean);
     procedure UpdateRequiredPackages;
     procedure UpdateRemovedRequiredPackages;
@@ -600,7 +600,7 @@ begin
 end;
 
 function TProjectInspectorForm.ChooseImageIndex(Str: String; Data: TObject;
-                                                var IsEnabled: Boolean): Integer;
+                                                var AIsEnabled: Boolean): Integer;
 begin
   if FilenameIsPascalUnit((Data as TUnitInfo).Filename) then
     Result:=ImageIndexUnit

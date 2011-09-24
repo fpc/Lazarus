@@ -1357,6 +1357,7 @@ type
     function GetTopParent: TControl;
     function IsVisible: Boolean; virtual;// checks parents too
     function IsControlVisible: Boolean; virtual;// does not check parents
+    function IsEnabled: Boolean; // checks parent too
     function FormIsUpdating: boolean; virtual;
     function IsProcessingPaintMsg: boolean;
     procedure Hide;
@@ -2024,7 +2025,6 @@ type
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
   protected
     class procedure WSRegisterClass; override;
-    function VisuallyEnabled: Boolean;
     procedure FontChanged(Sender: TObject); override;
     procedure Paint; virtual;
     procedure DoOnChangeBounds; override;

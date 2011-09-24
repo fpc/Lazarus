@@ -11,7 +11,7 @@ uses
 type
 
   TImageIndexEvent = function (Str: String; Data: TObject;
-                               var IsEnabled: Boolean): Integer of object;
+                               var AIsEnabled: Boolean): Integer of object;
 
   { TTreeFilterEdit }
 

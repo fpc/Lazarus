@@ -99,7 +99,7 @@ type
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
     function PackageInInstallList(PkgName: string): boolean;
-    function ChooseImageIndex(Str: String; Data: TObject; var IsEnabled: Boolean): Integer;
+    function ChooseImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
     procedure UpdateAvailablePackages(Immediately: boolean = false);
     procedure UpdateNewInstalledPackages;
     procedure OnIteratePackages(APackageID: TLazPackageID);
@@ -354,7 +354,7 @@ begin
 end;
 
 function TInstallPkgSetDialog.ChooseImageIndex(Str: String; Data: TObject;
-                                               var IsEnabled: Boolean): Integer;
+                                               var AIsEnabled: Boolean): Integer;
 var
   Pkg: TLazPackageID;
   APackage: TLazPackage;
