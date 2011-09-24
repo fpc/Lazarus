@@ -66,21 +66,24 @@ begin
 end;
 
 procedure TDBMemo.DataChange(Sender: TObject);
+var
+  DataLinkField: TField;
 begin
-  if FDataLink.Field<>nil then begin
-    if FDataLink.Field.IsBlob then begin
+  DataLinkField := FDataLink.Field;
+  if DataLinkField<>nil then begin
+    if DataLinkField.IsBlob then begin
       if FAutoDisplay or (FDataLink.Editing and FDBMemoLoaded) then begin
         FDBMemoLoaded:=False;
         LoadMemo;
       end else begin
-        Text:=Format('(%s)', [FDataLink.Field.DisplayLabel]);
+        Text:=Format('(%s)', [DataLinkField.DisplayLabel]);
         FDBMemoLoaded:=False;
       end;
     end else begin
       if FDBMemoFocused and FDataLink.CanModify then
-        Text:=FDataLink.Field.Text
+        Text:=DataLinkField.Text
       else
-        Text:=FDataLink.Field.DisplayText;
+        Text:=DataLinkField.DisplayText;
       FDBMemoLoaded:=True;
     end
   end else begin

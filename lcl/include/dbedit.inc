@@ -25,23 +25,26 @@
 
 //update the caption on next record etc...
 procedure TDBEdit.DataChange(Sender: TObject);
+var
+  DataLinkField: TField;
 begin
-  if FDataLink.Field <> nil then begin
+  DataLinkField := FDataLink.Field;
+  if DataLinkField <> nil then begin
     //use the right EditMask if any
     //EditMask := FDataLink.Field.EditMask; doesn't exist yet
-    Alignment := FDataLink.Field.Alignment;
+    Alignment := DataLinkField.Alignment;
 
     //if we are focused its possible to edit,
     //if the field is currently modifiable
     if Focused and FDataLink.CanModify then begin
       //display the real text since we can modify it
-      RestoreMask(FDatalink.Field.Text);
+      RestoreMask(DatalinkField.Text);
     end else
       //otherwise display the pretified/formated text since we can't
-      DisableMask(FDataLink.Field.DisplayText);
-    if (FDataLink.Field.DataType in [ftString, ftFixedChar, ftWidestring, ftFixedWideChar])
+      DisableMask(DataLinkField.DisplayText);
+    if (DataLinkField.DataType in [ftString, ftFixedChar, ftWidestring, ftFixedWideChar])
       and (MaxLength = 0) then
-      MaxLength := FDatalink.Field.Size;
+      MaxLength := DatalinkField.Size;
   end
   else begin
     //todo: uncomment this when TField implements EditMask
