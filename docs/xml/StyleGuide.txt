@@ -50,6 +50,18 @@ I use brackets for now, to indicate passages with questionable content:
 [~] somebody else should make this proper and nice English.
 [!] Incompatible or wrong implementation, e.g. [Delphi incompatible!]
 
+For lenghty descriptions I use paragraphs like this:
+<descr>
+  <p>
+    ...
+  </p><p>
+    ...
+  </p>
+</descr>
+
+Then it's easy to copy a </p><p> line to all places, where paragraph breaks
+should occur.
+
 
 XML Syntax
 ----------
