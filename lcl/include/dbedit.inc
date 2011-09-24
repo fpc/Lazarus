@@ -123,12 +123,6 @@ begin
   end;
 end;
 
-function FieldCanAcceptKey(Field: TField; AKey: char): boolean;
-begin
-  Result := (Field<>nil) and Field.IsValidChar(AKey) and
-            (Field.DataType<>ftAutoInc);
-end;
-
 procedure TDBEdit.KeyPress(var Key: char);
 var
   SavedKey: Char;
@@ -233,25 +227,28 @@ begin
     FDatalink.Reset;
 end;
 
-procedure TDBEdit.LMPasteFromClip(var Message: TLMessage);
+procedure TDBEdit.WndProc(var Message: TLMessage);
 begin
-  if FDataLink.CanModify then
-  begin
-    //LCL changes the Text before LM_PASTE is called and not after like Delphi. Issue 20330
-    //When Edit is called the Text property is reset to the previous value
-    //Add a workaround while bug is not fixed
-    FDataLink.OnDataChange := nil;
-    FDatalink.Edit;
-    FDataLink.Modified;
-    FDataLink.OnDataChange := @DataChange;
-    inherited LMPasteFromClip(Message);
+  case Message.Msg of
+    LM_CLEAR,
+    LM_CUT,
+    LM_PASTE:
+      begin
+        if FDataLink.CanModify then
+        begin
+          //LCL changes the Text before LM_PASTE is called and not after like Delphi. Issue 20330
+          //When Edit is called the Text property is reset to the previous value
+          //Add a workaround while bug is not fixed
+          FDataLink.OnDataChange := nil;
+          FDatalink.Edit;
+          FDataLink.Modified;
+          FDataLink.OnDataChange := @DataChange;
+          inherited WndProc(Message);
+        end;
+      end;
+    else
+      inherited WndProc(Message);
   end;
-end;
-
-procedure TDBEdit.LMCutToClip(var Message: TLMessage);
-begin
-  FDatalink.Edit;
-  inherited LMCutToClip(Message);
 end;
 
 { Public Methods }

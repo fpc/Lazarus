@@ -202,8 +202,7 @@ Type
 
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
-    procedure LMPasteFromClip(var Message: TLMessage); message LM_PASTE;
-    procedure LMCutToClip(var Message: TLMessage); message LM_CUT;
+    procedure WndProc(var Message: TLMessage); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
