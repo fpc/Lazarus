@@ -660,6 +660,7 @@ Type
     procedure Change; override;
     procedure UpdateData(Sender: TObject); virtual;
     procedure UpdateText; virtual;
+    procedure WndProc(var Message: TLMessage); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
