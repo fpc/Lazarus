@@ -1034,9 +1034,7 @@ begin
     lWinControl := WindowInfo^.AWinControl;
     {for ComboBox IME sends WM_IME_NOTIFY with WParam=WM_IME_ENDCOMPOSITION}
     if (Msg = WM_IME_NOTIFY) and (WPARAM=WM_IME_ENDCOMPOSITION) then
-    begin
-      if Assigned(WindowInfo) then WindowInfo^.IMEComposed:=True;
-    end;    
+      WindowInfo^.IMEComposed:=True;
     
     // filter messages we want to pass on to LCL
     if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS) and (Msg <> WM_NCDESTROY)
