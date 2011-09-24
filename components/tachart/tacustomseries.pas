@@ -923,7 +923,7 @@ begin
     // Since axis transformation may be non-linear, the distance should be
     // measured in screen coordinates. With high zoom ratios this may lead to
     // an integer overflow, so ADistFunc should use saturation arithmetics.
-    pt := Point(GetXImgValue(i), GetYImgValue(i));
+    pt := ParentChart.GraphToImage(AxisToGraph(Source[i]^.Point));
     dist := AParams.FDistFunc(AParams.FPoint, pt);
     if (dist >= AResults.FDist) or (dist > Sqr(AParams.FRadius)) then continue;
     AResults.FDist := dist;
