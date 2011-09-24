@@ -352,6 +352,11 @@ function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): widestring;
 
+//compare functions
+
+function UTF8CompareStr(const S1, S2: String): Integer;
+function UTF8CompareText(const S1, S2: String): Integer;
+
 type
   TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
     trInvalidChar, trUnfinishedChar);
@@ -4116,6 +4121,39 @@ begin
     Result:=system.widechar(u)
   else
     Result:=system.widechar($D800+((u - $10000) shr 10))+system.widechar($DC00+((u - $10000) and $3ff));
+end;
+
+
+{------------------------------------------------------------------------------
+  Name:    UTF8CompareStr
+  Params: S1, S2 - UTF8 encoded strings
+  Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S2 > S1.
+  Compare 2 UTF8 encoded strings, case sensitive.
+  Remark: A widestring manager must be installed in order for this function
+  to work correctly with various character sets. eg. under unixes cwstring unit
+  must be included in project.
+  Note: Use this function instead of AnsiCompareStr.
+  This function guarantees proper collation on all supported platforms.
+ ------------------------------------------------------------------------------}
+function UTF8CompareStr(const S1, S2: String): Integer;
+begin
+  Result := WideCompareStr(UTF8ToUTF16(S1), UTF8ToUTF16(S2));
+end;
+
+{------------------------------------------------------------------------------
+  Name:    UTF8CompareText
+  Params: S1, S2 - UTF8 encoded strings
+  Returns: < 0 if S1 < S2, 0 if S1 = S2, > 0 if S2 > S1.
+  Compare 2 UTF8 encoded strings, case insensitive.
+  Remark: A widestring manager must be installed in order for this function
+  to work correctly with various character sets. eg. under unixes cwstring unit
+  must be included in project.
+  Note: Use this function instead of AnsiCompareText.
+  This function guarantees proper collation on all supported platforms.
+ ------------------------------------------------------------------------------}
+function UTF8CompareText(const S1, S2: String): Integer;
+begin
+  Result := WideCompareText(UTF8ToUTF16(S1), UTF8ToUTF16(S2));
 end;
 
 {------------------------------------------------------------------------------
