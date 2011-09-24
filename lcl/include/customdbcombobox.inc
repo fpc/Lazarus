@@ -40,18 +40,8 @@ end;
 
 procedure TCustomDBComboBox.Change;
 begin
-  //need to override this to make sure the datalink gets notified
-  //its been modified, then when post etc, it will call
-  //updatedata to update the field data with current value
-  if FDatalink.Active then
-    if FDatalink.Edit then
-    begin
-      FDataLink.Modified;
-      inherited Change;
-    end else
-      UpdateText
-  else
-    inherited Change;
+  FDataLink.Modified;
+  inherited Change;
 end;
 
 
@@ -91,6 +81,35 @@ end;
 procedure TCustomDBComboBox.EditingChange(Sender: TObject);
 begin
   // ToDo
+end;
+
+procedure TCustomDBComboBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if Key=VK_ESCAPE then begin
+    //cancel out of editing by reset on esc
+    FDataLink.Reset;
+    SelectAll;
+    Key := VK_UNKNOWN;
+  end else
+  if Key in [VK_DELETE, VK_BACK] then begin
+    if not FDataLink.Edit then
+      Key := VK_UNKNOWN;
+  end;
+end;
+
+procedure TCustomDBComboBox.KeyPress(var Key: char);
+begin
+  inherited KeyPress(Key);
+  case Key of
+    #8: // special keys
+      if not FDatalink.Edit then
+        Key:=#0;
+
+    #32..#255: //standard keys
+      if not FieldCanAcceptKey(FDataLink.Field, Key) or not FDatalink.Edit then
+        Key:=#0;
+  end;//case
 end;
 
 procedure TCustomDBComboBox.Notification(AComponent: TComponent; Operation: TOperation);

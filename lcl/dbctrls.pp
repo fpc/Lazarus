@@ -653,6 +653,8 @@ Type
   protected
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: char); override;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure Change; override;
@@ -1320,6 +1322,12 @@ begin
   Link.DataSource:=NewDataSource;
   if Link.DataSource<>nil then
     Link.DataSource.FreeNotification(AControl);
+end;
+
+function FieldCanAcceptKey(Field: TField; AKey: char): boolean;
+begin
+  Result := (Field<>nil) and Field.IsValidChar(AKey) and
+            (Field.DataType<>ftAutoInc);
 end;
 
 procedure Register;
