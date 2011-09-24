@@ -18,19 +18,12 @@
 
 { TDBComboBox }
 
-{
-  procedure TDBComboBox.DataChange(Sender: TObject);
-  begin
-    inherited DataChange(Sender);
-  end;
-}
-
 procedure TDBComboBox.UpdateData(Sender: TObject);
 begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TDBComboBox.UpdateText;
+procedure TDBComboBox.DataChange(Sender: TObject);
 var
   DataLinkField: TField;
 begin
@@ -38,5 +31,5 @@ begin
   if Assigned(DataLinkField) then
     Text := DataLinkField.Text
   else
-    inherited;
+    Text := '';
 end;

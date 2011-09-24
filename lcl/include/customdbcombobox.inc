@@ -71,18 +71,6 @@ begin
   Message.Result := PtrUInt(FDataLink);
 end;
 
-procedure TCustomDBComboBox.DataChange(Sender: TObject);
-begin
-  if not (Style=csSimple) and DroppedDown then
-    Exit;
-  UpdateText;
-end;
-
-procedure TCustomDBComboBox.EditingChange(Sender: TObject);
-begin
-  // ToDo
-end;
-
 procedure TCustomDBComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
@@ -121,23 +109,10 @@ begin
   end;
 end;
 
-procedure TCustomDBComboBox.UpdateData(Sender: TObject);
-begin
-  //
-end;
-
 procedure TCustomDBComboBox.EditingDone;
 begin
   FDataLink.UpdateRecord;
   inherited EditingDone;
-end;
-
-procedure TCustomDBComboBox.UpdateText;
-begin
-  if csDesigning in ComponentState then
-    Text := Name
-  else
-    Text := '';
 end;
 
 procedure TCustomDBComboBox.WndProc(var Message: TLMessage);
@@ -172,7 +147,6 @@ begin
   FDataLink.Control:=Self;
   FDataLink.OnDataChange:=@DataChange;
   FDataLink.OnUpdateData:=@UpdateData;
-  FDataLink.OnEditingChange:=@EditingChange;
 end;
 
 destructor TCustomDBComboBox.Destroy;

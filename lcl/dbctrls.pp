@@ -650,15 +650,13 @@ Type
     procedure SetReadOnly(const AValue: Boolean);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    procedure DataChange(Sender: TObject);
-    procedure EditingChange(Sender: TObject);
+    procedure DataChange(Sender: TObject); virtual; abstract;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure Change; override;
-    procedure UpdateData(Sender: TObject); virtual;
-    procedure UpdateText; virtual;
+    procedure UpdateData(Sender: TObject); virtual; abstract;
     procedure WndProc(var Message: TLMessage); override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -678,7 +676,7 @@ Type
   TDBComboBox = class(TCustomDBComboBox)
   protected
     procedure UpdateData(Sender: TObject); override;
-    procedure UpdateText; override;
+    procedure DataChange(Sender: TObject); override;
   published
     property Anchors;
     property ArrowKeysTraverseList;
@@ -754,11 +752,12 @@ Type
     procedure SetListSource(const Value: TDataSource);
     procedure SetLookupCache(const Value: boolean);
     procedure SetNullValueKey(const AValue: TShortCut);
+    procedure UpdateLookup;
   protected
-    procedure InitializeWnd; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
-    procedure UpdateText; override;
+    procedure DataChange(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
     property KeyValue: variant read GetKeyValue write SetKeyValue;
