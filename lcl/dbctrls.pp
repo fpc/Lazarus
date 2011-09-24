@@ -350,6 +350,7 @@ Type
     procedure UpdateData(Sender: TObject); virtual;
     // we need to override the Items Write method for db aware.
     procedure SetItems(Values : TStrings); override;
+    procedure WMLButtonDown(var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

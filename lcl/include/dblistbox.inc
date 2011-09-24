@@ -39,20 +39,7 @@ end;
 procedure TDBListBox.DoSelectionChange(User: Boolean);
 begin
   if User then
-  begin
-    //make sure we are in modify mode if can edit
-    //so if a user changed the selection it can be
-    //updated, and if not cancel out ala ReadOnly
-    if FDataLink.Edit then
-      FDataLink.Modified
-    else
-    begin
-      // restore value
-      DataChange(Self);
-      //necessary to avoid double call of SelectionChange
-      Exit;
-    end;
-  end;
+    FDataLink.Modified;
   inherited DoSelectionChange(User);
 end;
 

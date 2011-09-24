@@ -60,6 +60,12 @@ begin
   DataChange(Self);
 end;
 
+procedure TCustomDBListBox.WMLButtonDown(var Message: TLMLButtonDown);
+begin
+  FDataLink.Edit;
+  inherited;
+end;
+
 //we want to override the readonly state so we can
 //reflect the state of the Datalink/Field
 function TCustomDBListBox.GetReadOnly: Boolean;
@@ -99,10 +105,17 @@ end;
 procedure TCustomDBListBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key,Shift);
-  if Key=VK_ESCAPE then begin
-    //cancel out of editing by reset on esc
-    FDataLink.Reset;
-    Key := VK_UNKNOWN;
+  case Key of
+  VK_ESCAPE:
+    begin
+      //cancel out of editing by reset on esc
+      FDataLink.Reset;
+      Key := VK_UNKNOWN;
+    end;
+  VK_DOWN, VK_UP:
+    begin
+      FDataLink.Edit;
+    end;
   end;
 end;
 
