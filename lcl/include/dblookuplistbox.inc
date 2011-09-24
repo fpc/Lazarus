@@ -38,24 +38,15 @@ end;
 
 procedure TDBLookupListBox.ActiveChange(Sender: TObject);
 begin
-  if not (csLoading in ComponentState) and HandleAllocated then
-  begin
-    LockSelectionChange;
-    ItemIndex := -1;
-    FLookup.Initialize(FDataLink, Items);
-    UnLockSelectionChange;
-    DataChange(Self);
-  end;
+  UpdateLookup;
 end;
 
 procedure TDBLookupListBox.DataChange(Sender: TObject);
 begin
   if FDatalink.Active then
-  begin
-    LockSelectionChange;
-    ItemIndex := Items.IndexOf(FLookup.ListFieldValue);
-    UnlockSelectionChange;
-  end;
+    ItemIndex := Items.IndexOf(FLookup.ListFieldValue)
+  else
+    ItemIndex := -1;
 end;
 
 procedure TDBLookupListBox.DoSelectionChange(User: Boolean);
@@ -73,18 +64,18 @@ begin
   if FLookup.HandleNullKey(Key, Shift) then
   begin
     //clear selection
-    if not assigned(FDatalink.DataSet) or not FDatalink.DataSet.Active or
-       not assigned(FDatalink.Field) then
+    if not FDataLink.Active then
       GetItemIndex; // a list-only dblookuplist do not automatically update itemindex
     ItemIndex := -1;
   end;
   inherited KeyDown(Key, Shift);
 end;
 
-procedure TDBLookupListBox.InitializeWnd;
+procedure TDBLookupListBox.Loaded;
 begin
-  inherited InitializeWnd;
-  ActiveChange(Self);
+  inherited Loaded;
+  if FDataLink.Active then
+    UpdateLookup;
 end;
 
 function TDBLookupListBox.GetKeyField: string;
@@ -128,7 +119,7 @@ end;
 procedure TDBLookupListBox.SetKeyField(const Value: string);
 begin
   FLookup.KeyField:= Value;
-  ActiveChange(Self);
+  UpdateLookup;
 end;
 
 procedure TDBLookupListBox.SetKeyValue(const AValue: Variant);
@@ -142,29 +133,40 @@ end;
 procedure TDBLookupListBox.SetListField(const Value: string);
 begin
   FLookup.ListField:= Value;
-  ActiveChange(Self);
+  UpdateLookup;
 end;
 
 procedure TDBLookupListBox.SetListFieldIndex(const Value: Integer);
 begin
   FLookup.ListFieldIndex:= Value;
-  ActiveChange(Self);
+  UpdateLookup;
 end;
 
 procedure TDBLookupListBox.SetListSource(const Value: TDataSource);
 begin
   FLookup.ListSource:= Value;
-  ActiveChange(Self);
+  UpdateLookup;
 end;
 
 procedure TDBLookupListBox.SetLookupCache(const Value: boolean);
 begin
   FLookup.LookupCache := Value;
-  ActiveChange(Self);
+  UpdateLookup;
 end;
 
 procedure TDBLookupListBox.SetNullValueKey(const AValue: TShortCut);
 begin
   FLookup.NullValueKey := AValue;
+end;
+
+procedure TDBLookupListBox.UpdateLookup;
+begin
+  if [csLoading, csDestroying] * ComponentState = [] then
+  begin
+    FLookup.Initialize(FDataLink, Items);
+    WriteLn('Lookup: ', ItemIndex, '  IndexOf ', Items.IndexOf(FLookup.ListFieldValue), ' Value ',
+    FLookup.ListFieldValue);
+    ItemIndex := Items.IndexOf(FLookup.ListFieldValue);
+  end;
 end;
 

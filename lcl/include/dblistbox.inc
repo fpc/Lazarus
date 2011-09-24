@@ -39,7 +39,13 @@ end;
 procedure TDBListBox.DoSelectionChange(User: Boolean);
 begin
   if User then
-    FDataLink.Modified;
+  begin
+    //protect against undesired call to DataChange
+    FDataLink.OnDataChange := nil;
+    if FDataLink.Edit then
+      FDataLink.Modified;
+    FDataLink.OnDataChange := @DataChange;
+  end;
   inherited DoSelectionChange(User);
 end;
 

@@ -60,12 +60,6 @@ begin
   DataChange(Self);
 end;
 
-procedure TCustomDBListBox.WMLButtonDown(var Message: TLMLButtonDown);
-begin
-  FDataLink.Edit;
-  inherited;
-end;
-
 //we want to override the readonly state so we can
 //reflect the state of the Datalink/Field
 function TCustomDBListBox.GetReadOnly: Boolean;
@@ -139,7 +133,7 @@ begin
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := @DataChange;
-  FDataLink.OnEditingChange := @EditingChange;
+  //FDataLink.OnEditingChange := @EditingChange;
   FDataLink.OnUpdateData := @UpdateData;
 end;
 
