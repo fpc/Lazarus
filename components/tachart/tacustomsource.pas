@@ -57,8 +57,8 @@ type
   protected
     function GetOwner: TPersistent; override;
   public
-    constructor Create(AOwner: TPersistent);
     procedure Assign(ASource: TPersistent); override;
+    constructor Create(AOwner: TPersistent);
     property StepValues: TDoubleDynArray read FStepValues;
   published
     property Count: Integer read FCount write SetCount default 5;
@@ -92,6 +92,7 @@ type
     function GetY(AIndex: Integer): Double;
     procedure SetY(AValue: Double);
     procedure MultiplyY(ACoeff: Double);
+    function Point: TDoublePoint; inline;
   end;
   PChartDataItem = ^TChartDataItem;
 
@@ -356,6 +357,12 @@ begin
   Y *= ACoeff;
   for i := 0 to High(YList) do
     YList[i] *= ACoeff;
+end;
+
+function TChartDataItem.Point: TDoublePoint;
+begin
+  Result.X := X;
+  Result.Y := Y;
 end;
 
 procedure TChartDataItem.SetY(AValue: Double);
