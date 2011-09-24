@@ -177,7 +177,7 @@ end;
 function TDBEdit.EditCanModify: Boolean;
 begin
   //should follow the FieldLink for this one
-  Result := FDataLink.Edit;
+  Result := FDataLink.CanModify;
 end;
 
 function TDBEdit.GetEditText: string;
