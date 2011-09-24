@@ -9887,9 +9887,12 @@ begin
   try
     L.Text := TheText;
     for j:=0 to L.Count-1 do begin
+      if j+StartRow >= RowCount then
+        break;
       CollectCols(L[j]);
       for i:=0 to SubL.Count-1 do
-        Cells[i + StartCol, j + StartRow] := SubL[i];
+        if (i+StartCol<ColCount) and (not GetColumnReadonly(i+StartCol)) then
+           Cells[i + StartCol, j + StartRow] := SubL[i];
     end;
   finally
     SubL.Free;
