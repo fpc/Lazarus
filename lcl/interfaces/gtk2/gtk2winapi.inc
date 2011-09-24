@@ -2461,6 +2461,8 @@ var
   TempPen: HPEN;
   TempBrush: HBRUSH;
   l: LongInt;
+  Pt: TPoint;
+  SavedRect: TRect; // if font orientation <> 0
 
   function LeftOffset: Longint;
   begin
@@ -2576,6 +2578,63 @@ var
       end;
   end;
 
+  // if our Font.Orientation <> 0 we must recalculate X,Y offset
+  // also it works only with DT_TOP DT_LEFT. Gtk2 can handle multiline
+  // text in this case too.
+  procedure CalculateOffsetWithAngle(const AFontAngle: Integer;
+    var TextLeft,TextTop: Integer);
+  var
+    OffsX, OffsY: integer;
+    Angle: Integer;
+    Size: TSize;
+    R: TRect;
+  begin
+    R := SavedRect;
+    OffsX := R.Right - R.Left;
+    OffsY := R.Bottom - R.Top;
+    Size.cX := OffsX;
+    Size.cy := OffsY;
+    Angle := AFontAngle div 10;
+    if Angle < 0 then
+      Angle := 360 + Angle;
+
+    if Angle <= 90 then
+    begin
+      OffsX := 0;
+      OffsY := Trunc(Size.cx * sin(Angle * Pi / 180));
+    end else
+    if Angle <= 180 then
+    begin
+      OffsX := Trunc(Size.cx * -cos(Angle * Pi / 180));
+      OffsY := Trunc(Size.cx * sin(Angle * Pi / 180) +
+         Size.cy * cos((180 - Angle) * Pi / 180));
+    end else
+    if Angle <= 270 then
+    begin
+      OffsX := Trunc(Size.cx * -cos(Angle * Pi / 180) +
+        Size.cy * sin((Angle - 180) * Pi / 180));
+      OffsY := Trunc(Size.cy * sin((270 - Angle) * Pi / 180));
+    end else
+    if Angle <= 360 then
+    begin
+      OffsX := Trunc(Size.cy * sin((360 - Angle) * Pi / 180));
+      OffsY := 0;
+    end;
+    TextTop := OffsY;
+    TextLeft := OffsX;
+  end;
+
+  function NeedOffsetCalc: Boolean;
+  begin
+
+    Result := (TGtk2DeviceContext(DC).CurrentFont^.LogFont.lfOrientation <> 0) and
+        (Flags and DT_SINGLELINE <> 0) and
+        (Flags and DT_VCENTER = 0) and (Flags and DT_CENTER = 0) and
+        (Flags and DT_RIGHT = 0) and (Flags and  DT_BOTTOM = 0) and
+        (Flags and DT_CALCRECT = 0) and not IsRectEmpty(SavedRect);
+  end;
+
+
   procedure DrawLineRaw(theLine: PChar; LineLength, TopPos: Longint);
   var
     Points: array[0..1] of TSize;
@@ -2596,8 +2655,15 @@ var
         LeftPos := theRect.Right - Points[0].cX;
     end;
 
+    Pt := Point(0, 0);
     // Draw line of Text
-    TextUtf8Out(DC, LeftPos, TopPos, theLine, lineLength);
+    if NeedOffsetCalc then
+    begin
+      Pt.X := SavedRect.Left;
+      Pt.Y := SavedRect.Top;
+      CalculateOffsetWithAngle(TGtk2DeviceContext(DC).CurrentFont^.LogFont.lfOrientation, Pt.X, Pt.Y);
+    end;
+    TextUtf8Out(DC, LeftPos + Pt.X, TopPos + Pt.Y, theLine, lineLength);
   end;
 
   procedure DrawLine(theLine: PChar; LineLength, TopPos: Longint);
@@ -2622,8 +2688,15 @@ var
         LeftPos := theRect.Right - Points[0].cX;
     end;
 
+    Pt := Point(0, 0);
+    if NeedOffsetCalc then
+    begin
+      Pt.X := SavedRect.Left;
+      Pt.Y := SavedRect.Top;
+      CalculateOffsetWithAngle(TGtk2DeviceContext(DC).CurrentFont^.LogFont.lfOrientation, Pt.X, Pt.Y);
+    end;
     // Draw line of Text
-    TextUtf8Out(DC, LeftPos, TopPos, theLine, LineLength);
+    TextUtf8Out(DC, LeftPos + Pt.X, TopPos + Pt.Y, theLine, LineLength);
 
     // Draw Prefix
     if (pIndex > 0) and (pIndex<=LineLength) then
@@ -2672,12 +2745,14 @@ begin
   TempDC := HDC(-1);
   TempPen := HPEN(-1);
   TempBrush := HBRUSH(-1);
+
   try
     if (Flags and (DT_SINGLELINE or DT_CALCRECT or DT_NOPREFIX or DT_NOCLIP or DT_EXPANDTABS)) =
        (DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP)
     then begin
       //DebugLn(['TGtk2WidgetSet.DrawText Calc single line']);
       CopyRect(theRect, Rect);
+      SavedRect := Rect;
       DrawLineRaw(Str, Count, Rect.Top);
       Result := Rect.Bottom - Rect.Top;
       Exit;
@@ -2711,8 +2786,8 @@ begin
 
     TempDC := SaveDC(DC);
 
-    if (Flags and DT_NOCLIP) <> DT_NOCLIP
-    then begin
+    if (Flags and DT_NOCLIP) <> DT_NOCLIP then
+    begin
       if theRect.Right > Rect.Right then
         theRect.Right := Rect.Right;
       if theRect.Bottom > Rect.Bottom then
@@ -2723,7 +2798,8 @@ begin
 
     if (Flags and DT_SINGLELINE) = DT_SINGLELINE
     then begin
-      //DebugLn(['TGtk2WidgetSet.DrawText Draw single line']);
+      // DebugLn(['TGtk2WidgetSet.DrawText Draw single line']);
+      SavedRect := TheRect;
       DrawLine(PChar(AStr), length(AStr), theRect.Top);
       Exit; //we're ready
     end;
@@ -2734,6 +2810,7 @@ begin
     
     
     //DebugLn(['TGtk2WidgetSet.DrawText Draw multiline']);
+    SavedRect := Classes.Rect(0, 0, 0, 0); // no font orientation change if multilined text
     for i := 0 to NumLines - 1 do
     begin
       if theRect.Top > theRect.Bottom then Break;

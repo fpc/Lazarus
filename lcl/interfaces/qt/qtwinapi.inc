@@ -1359,8 +1359,8 @@ var
       OffsX := Trunc(Size.cy * sin((360 - Angle) * Pi / 180));
       OffsY := 0;
     end;
-    TextTop := TextTop + OffsY;
-    TextLeft := TextLeft + OffsX;
+    TextTop := OffsY;
+    TextLeft := OffsX;
   end;
 
 begin
