@@ -2402,7 +2402,7 @@ function TDebugManager.DoCreateBreakPoint(const AFilename: string;
 var
   ABrkPoint: TIDEBreakPoint;
 begin
-  DoCreateBreakPoint(AFilename, ALine, WarnIfNoDebugger, ABrkPoint);
+  Result := DoCreateBreakPoint(AFilename, ALine, WarnIfNoDebugger, ABrkPoint);
 end;
 
 function TDebugManager.DoCreateBreakPoint(const AFilename: string; ALine: integer;
@@ -2414,8 +2414,7 @@ begin
     or (not FileIsExecutable(EnvironmentOptions.DebuggerFilename)))
   then begin
     if QuestionDlg(lisDbgMangNoDebuggerSpecified,
-      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]
-        ),
+      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]),
       mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway], 0)
       <>mrIgnore
     then
