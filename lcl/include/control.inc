@@ -672,7 +672,7 @@ begin
   repeat
     Result := TheControl.Enabled;
     TheControl := TheControl.Parent;
-  until (TheControl = nil) or (not Result) or (TheControl.Parent = nil);
+  until (TheControl = nil) or (not Result);
 end;
 
 function TControl.FormIsUpdating: boolean;
