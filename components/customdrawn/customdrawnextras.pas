@@ -1875,7 +1875,7 @@ begin
   Width := 100;
   FCurrentDrawer := TCDTrackBarDrawerGraph.Create;
   Color := clBtnFace;
-  FMax := 100;
+  FMax := 10;
   FMin := 0;
   TabStop := True;
   FFromColor := clWhite;
@@ -1947,19 +1947,25 @@ end;
 procedure TCDTrackBarDrawerGraph.DrawToIntfImage(ADest: TFPImageCanvas;
   FPImg: TLazIntfImage; CDTrackBar: TCDTrackBar; FromColor, ToColor: TColor;
   pWidth: integer);
-const CDBarEdge = 16;
+const
+  CDBarEdge = 16;
 var
-  aStart, RNum, i, pStart, pEnd, pDelta: integer;
+  aStart, StepsCount, i, pStart, pEnd, pDelta: integer;
   dRect: TRect;
   TempB: TLazIntfImage;
   BCanvas: TFPImageCanvas;
   ABmp: TBitmap = nil;
+  pStepWidth: Double;
 begin
   if CDTrackBar.Max - CDTrackBar.Min <= 0 then
     Exit;
-  RNum := CDTrackBar.Max - CDTrackBar.Min + 1;
+  StepsCount := CDTrackBar.Max - CDTrackBar.Min + 1;
   if CDTrackBar.AutoWidth then
-    pWidth := (CDTrackBar.Width - CDBarEdge) div RNum;
+    pStepWidth := (CDTrackBar.Width - CDBarEdge) / StepsCount
+  else
+    pStepWidth := Round(pWidth);
+  if pWidth <= 0 then pWidth := 1;
+
   // Background
   if CDTrackBar.Parent = nil then
     ADest.Brush.FPColor := colLtGray
@@ -1997,6 +2003,7 @@ begin
   ABmp := TBitmap.Create;
   ABmp.Width := CDTrackBar.Width;
   ABmp.Height := CDTrackBar.Height;
+
   TempB := ABmp.CreateIntfImage;
   //TempB := TLazIntfImage.Create(0, 0);
   //TempB.UsePalette := False;
@@ -2008,9 +2015,10 @@ begin
   //GradHFill(BCanvas, Rect(0, 0, CDTrackBar.Width, CDTrackBar.Height),
   //  GetAColor(FromColor, 70 + i), GetAColor(ToColor, 90 + i));
   GradCenterFill(BCanvas, Rect(0, 0, CDTrackBar.Width, CDTrackBar.Height),
-    FromColor, ToColor, CDTrackBar.Position / RNum);
+    FromColor, ToColor, CDTrackBar.Position / StepsCount);
+
   pStart := 10 - 1;
-  for i := 0 to RNum - 1 do
+  for i := 0 to StepsCount - 1 do
   begin
     ADest.Brush.Style := bsSolid;
     //  GradHFill(ADest, dRect, GetAColor(FromColor, 70 + i), GetAColor(ToColor, 90 + i));
@@ -2020,11 +2028,11 @@ begin
         pDelta := CDTrackBar.Width - (10 + i * pWidth + pWidth - 3) - 11
       else
         pDelta := 0;   }
-      if i > RNum - (CDTrackBar.Width - CDBarEdge) mod pWidth then
+      if i > StepsCount - (CDTrackBar.Width - CDBarEdge) mod pWidth then
         pDelta := 1
       else
         pDelta := 0;
-      pEnd := pStart + pWidth - 3 + pDelta;
+      pEnd := pStart + Round(pStepWidth) - 3 + pDelta;
       dRect := Rect(pStart, aStart - 5 - i, pEnd, aStart - 1);
       //FPImgCloneRect(TempB, FPImg, Rect(10 + i * pWidth, aStart - 5 -
       //  i, 10 + i * pWidth + pWidth - 3 + pDelta, aStart - 1), False);
