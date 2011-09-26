@@ -872,6 +872,9 @@ Type
     property Font;
     property MaxLength;
     property OnChange;
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEditingDone;
@@ -881,6 +884,9 @@ Type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBiDiMode;
