@@ -400,11 +400,11 @@ msgstr ""
 #, fuzzy
 #| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "La séquence \"%s\" est déjà affectée à une autre commande de l'éditeur. (%s)"
+msgstr "La s?quence \"%s\" est d?j? affect?e ? une autre commande de l'?diteur. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
 msgid "Mouse-Shortcut already exists"
-msgstr "Raccourci déjà existant"
+msgstr "Raccourci d?j? existant"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
 msgid "Toggle Breakpoint"

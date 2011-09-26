@@ -84,19 +84,23 @@ procedure CopySecondaryConfigFile(const AFilename: String);
 function GetProjectSessionsConfigPath: String;
 
 function GetDefaultTestBuildDirectory: string;
+procedure GetDefaultTestBuildDirs(List: TStrings);
+// create a pascal file, which can be used to test the compiler
+function CreateCompilerTestPascalFilename: string;
 
 function FindDefaultExecutablePath(const Executable: string): string;
-function FindDefaultCompilerPath: string;
-function FindDefaultMakePath: string;
-function FindDefaultFPCSrcDirectory: string;
+function GetDefaultCompilerFilename: string; // e.g. ppc386.exe
+procedure GetDefaultCompilerFilenames(List: TStrings); // list of standard paths of compiler on various distributions
+function FindDefaultCompilerPath: string; // full path of GetDefaultCompilerFilename
+function FindDefaultMakePath: string; // full path of "make"
+procedure GetDefaultMakeFilenames(List: TStrings); // list of standard paths of "make" on various distributions
 function GetDefaultFPCSrcDirectories: TStringList;
-function FindDefaultLazarusSrcDirectory: string;
 function GetDefaultLazarusSrcDirectories: TStringList;
 function CheckFPCSourceDir(ADirectory: string): boolean;
 function CheckLazarusDirectory(const ADirectory: string): boolean;
 
-// create a pascal file, which can be used to test the compiler
-function CreateCompilerTestPascalFilename: string;
+function GetDefaultTargetCPU: string;
+function GetDefaultTargetOS: string;
 
 // returns the standard executable extension (e.g '.exe')
 function GetExecutableExt(TargetOS: string = ''): string;
@@ -112,19 +116,12 @@ function GetDefaultCompiledUnitExt({%H-}FPCVersion, {%H-}FPCRelease: integer): s
 
 function OSLocksExecutables: boolean;
 
-procedure GetDefaultCompilerFilenames(List: TStrings);
-procedure GetDefaultMakeFilenames(List: TStrings);
-procedure GetDefaultTestBuildDirs(List: TStrings);
-function GetDefaultCompilerFilename: string;
+// returns the default browser
+procedure GetDefaultBrowser(var Browser, Params: string);
 
-function GetDefaultTargetCPU: string;
-function GetDefaultTargetOS: string;
-
+// LCL
 function GetDefaultLCLWidgetType: TLCLPlatform;
 function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
-
-// returrns the default browser
-procedure GetDefaultBrowser(var Browser, Params: string);
 
 // Replace OnGetApplicationName, so that Application.Title
 // doesn't interfere with GetAppConfigDir and related.
@@ -430,17 +427,6 @@ begin
         and (DirPathExists(SetDirSeparators(Dir+'packages/fcl-base'))
           or DirPathExists(SetDirSeparators(Dir+'fcl')));
   end;
-end;
-
-function FindDefaultFPCSrcDirectory: string;
-var
-  i: integer;
-begin
-  for i:=Low(DefaultFPCSrcDirs) to High(DefaultFPCSrcDirs) do begin
-    Result:=DefaultFPCSrcDirs[i];
-    if CheckFPCSourceDir(Result) then exit;
-  end;
-  Result:='';
 end;
 
 function GetDefaultFPCSrcDirectories: TStringList;
