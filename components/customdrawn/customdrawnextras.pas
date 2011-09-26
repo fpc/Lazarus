@@ -1985,7 +1985,7 @@ begin
     ADest.Brush.Style := bsSolid;
     ADest.Pen.Style := psSolid;
     ADest.Pen.FPColor := colBlack;
-    if i + CDTrackBar.Min = CDTrackBar.Position then
+    if i + CDTrackBar.Min <= CDTrackBar.Position then
       ADest.Brush.FPColor := colDkGray
     else
       ADest.Brush.FPColor := colWhite;
