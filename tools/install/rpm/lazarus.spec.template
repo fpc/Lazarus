@@ -10,7 +10,7 @@ Source0:        http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}-%{
 Packager:       Mattias Gaertner
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-#BuildRequires:  
+BuildRequires:  fpc = FPCVERSION, gtk2-devel, glibc-devel
 Requires:       fpc-src = FPCSRCVERSION, fpc = FPCVERSION, gtk2-devel, glibc-devel, binutils, gdb
 
 Requires(post): desktop-file-utils

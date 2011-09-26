@@ -1,7 +1,8 @@
-%SVN% info %1 | %windir%\system32\find "Last Changed Rev:" > svninfo.txt
+%SVN% info %1 | %windir%\system32\find.exe "Last Changed Rev:" > svninfo.txt
 
 set /P SVNINFO=<svninfo.txt
 
-echo const RevisionStr = '%SVNINFO:~18%'; > %2
+echo // Created by Svn2RevisionInc> %2
+echo const RevisionStr = '%SVNINFO:~18%';>> %2
 
 
