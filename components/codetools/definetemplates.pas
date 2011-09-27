@@ -5117,11 +5117,9 @@ function TDefinePool.CreateFPCSrcTemplate(
   UnitLinkListValid: boolean; var UnitLinkList: string;
   Owner: TObject): TDefineTemplate;
 var
-  Dir, SrcOS, SrcOS2, TargetProcessor, UnitLinks,
-  IncPathMacro: string;
-  DS: char; // dir separator
+  Dir, SrcOS, SrcOS2, TargetProcessor, UnitLinks: string;
   UnitTree: TAVLTree; // tree of TDefTemplUnitNameLink
-  DefaultSrcOS, DefaultSrcOS2: string;
+  IncPathMacro, DefaultSrcOS, DefaultSrcOS2: string;
   ProgressID: integer;
   
   function d(const Filenames: string): string;
@@ -5623,23 +5621,8 @@ var
   end;
 
 var
-  DefTempl, MainDir, FCLDir, RTLDir, RTLOSDir, PackagesDir, CompilerDir,
-  UtilsDir, DebugSvrDir: TDefineTemplate;
-  s: string;
-  FCLDBDir: TDefineTemplate;
-  FCLDBInterbaseDir: TDefineTemplate;
-  InstallerDir: TDefineTemplate;
-  IFTempl: TDefineTemplate;
-  FCLBaseDir: TDefineTemplate;
-  FCLBaseSrcDir: TDefineTemplate;
-  PackagesFCLAsyncDir: TDefineTemplate;
-  PackagesExtraDir: TDefineTemplate;
-  PkgExtraGraphDir: TDefineTemplate;
-  PkgExtraAMunitsDir: TDefineTemplate;
-  FCLSubSrcDir: TDefineTemplate;
-  FCLSubDir: TDefineTemplate;
+  DefTempl: TDefineTemplate;
   Ok: Boolean;
-  PackagesFCLExtraDir: TDefineTemplate;
 begin
   {$IFDEF VerboseFPCSrcScan}
   DebugLn('CreateFPCSrcTemplate ',FPCSrcDir,': length(UnitSearchPath)=',DbgS(length(UnitSearchPath)),' Valid=',DbgS(UnitLinkListValid),' PPUExt=',PPUExt);
@@ -5651,6 +5634,14 @@ begin
   ProgressID:=0;
   Ok:=false;
   try
+    Dir:=AppendPathDelim(FPCSrcDir);
+    SrcOS:='$('+ExternalMacroStart+'SrcOS)';
+    SrcOS2:='$('+ExternalMacroStart+'SrcOS2)';
+    TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
+    IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
+    DefaultSrcOS:=GetDefaultSrcOSForTargetOS(DefaultTargetOS);
+    DefaultSrcOS2:=GetDefaultSrcOS2ForTargetOS(DefaultTargetOS);
+
     if (FPCSrcDir='') or (not DirPathExists(FPCSrcDir)) then begin
       DebugLn(['TDefinePool.CreateFPCSrcTemplate FPCSrcDir does not exist: FPCSrcDir="',FPCSrcDir,'"']);
       exit;
