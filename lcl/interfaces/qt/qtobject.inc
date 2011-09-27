@@ -673,10 +673,16 @@ end;
 
 procedure TQtWidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean);
 var
-  DC: TQtDeviceContext absolute CanvasHandle;
+  DC: TQtDeviceContext;
 begin
   if IsValidDC(CanvasHandle) then
+  begin
+    if CanvasHandle = 1 then
+      DC := QtDefaultContext
+    else
+      DC := TQtDeviceContext(CanvasHandle);
     DC.setRenderHint(QPainterAntialiasing, AEnabled);
+  end;
 end;
 
 procedure TQtWidgetSet.SetDesigning(AComponent: TComponent);
