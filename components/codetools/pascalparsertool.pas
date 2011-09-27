@@ -3384,6 +3384,7 @@ function TPascalParserTool.KeyWordFuncConst: boolean;
       const a:b=3;
       ;
       c =4;
+      ErrorBase : Pointer = nil;public name 'FPC_ERRORBASE';
 
     implementation
 
@@ -3591,6 +3592,7 @@ begin
 end;
 
 procedure TPascalParserTool.ReadConst;
+// ErrorBase : Pointer = nil;public name 'FPC_ERRORBASE';
 begin
   ReadNextAtom;
   if (CurPos.Flag=cafColon) then begin
@@ -3601,6 +3603,21 @@ begin
   ReadConstExpr;
   // optional: hint modifier
   ReadHintModifier;
+  if CurPos.Flag=cafSemicolon then begin
+    ReadNextAtom;
+    if UpAtomIs('PUBLIC') then begin
+      ReadNextAtom;
+      if UpAtomIs('NAME') then begin
+        ReadNextAtom;
+        if not AtomIsStringConstant then
+          RaiseStringExpectedButAtomFound(ctsStringConstant);
+        ReadNextAtom;
+      end;
+      if CurPos.Flag<>cafSemicolon then
+        RaiseStringExpectedButAtomFound(';');
+    end else
+      UndoReadNextAtom;
+  end;
 end;
 
 procedure TPascalParserTool.ReadTypeNameAndDefinition;
