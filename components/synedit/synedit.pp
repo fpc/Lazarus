@@ -1926,6 +1926,8 @@ begin
         EnsureCursorPosVisible;              // TODO: This may call SetTopLine, change order
                                              // This does Paintlock, should be before final decrease
       // Must be after EnsureCursorPosVisible (as it does MoveCaretToVisibleArea)
+      if FCaret.LinePos > FLines.Count then
+        FCaret.LinePos := FLines.Count;
       if sfCaretChanged in fStateFlags then
         UpdateCaret;
       //if sfScrollbarChanged in fStateFlags then
@@ -4926,6 +4928,7 @@ begin
     ScanRanges;
     InvalidateLines(AIndex + 1, -1);
     InvalidateGutterLines(AIndex + 1, -1);
+    if FCaret.LinePos > FLines.Count then FCaret.LinePos := FLines.Count;
   end;
   if TopLine > AIndex + 1 then
     TopLine := TopLine + ACount // will call UpdateScrollBars
