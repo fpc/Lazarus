@@ -463,6 +463,7 @@ begin
   Result:='';
   if aProject=nil then exit;
   Result:=aProject.RunParameterOptions.HostApplicationFilename;
+  GlobalMacroList.SubstituteStr(Result);
   if Result='' then begin
     if aProject.IsVirtual then
       Result:=GetTestProjectFilename(aProject)

@@ -1027,7 +1027,7 @@ begin
   DefineTree.Add(FPCDefines);
 
   // create template for FPC source directory
-  FPCSrcDefines:=CreateFPCSrcTemplate(UnitSetCache,nil);
+  FPCSrcDefines:=CreateFPCSourceTemplate(UnitSetCache,nil);
   DefineTree.Add(FPCSrcDefines);
 
   // create template for lazarus source directory

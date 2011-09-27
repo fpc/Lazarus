@@ -729,7 +729,7 @@ begin
     UnitSetCache:=Boss.FPCDefinesCache.FindUnitSet(CompilerPath,
                                     TargetOS,TargetProcessor,'',FPCSrcDir,true);
     // create FPC Source defines
-    FPCSrcTemplate:=CreateFPCSrcTemplate(UnitSetCache,CodeToolsOpts);
+    FPCSrcTemplate:=CreateFPCSourceTemplate(UnitSetCache,CodeToolsOpts);
     if FPCSrcTemplate=nil then begin
       DebugLn('ERROR: unable to create FPC CVS Src defines for "',FPCSrcDir,'"');
       exit;

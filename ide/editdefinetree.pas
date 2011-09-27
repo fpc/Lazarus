@@ -124,7 +124,7 @@ end;
 function CreateFPCSourceTemplate(Config: TFPCUnitSetCache; Owner: TObject
   ): TDefineTemplate;
 begin
-  Result:=CreateFPCSrcTemplate(Config,Owner);
+  Result:=DefineTemplates.CreateFPCSourceTemplate(Config,Owner);
   DisableDefaultsInDirectories(Result,true);
 end;
 
