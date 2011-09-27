@@ -6867,46 +6867,55 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.IsVisible">
-        <short>Returns True if the control is visible in its form.</short>
+        <short>Returns True if the control is visible, including all of its Parents.</short>
+        <seealso><link id="TControl.Visible"/></seealso>
       </element>
       <element name="TControl.IsVisible.Result">
         <short>True only if all Parents also are visible.</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TControl.IsProcessingPaintMsg">
-        <short></short>
+      <element name="TControl.IsControlVisible">
+        <short>True if the control is Visible, or is in design mode.</short>
         <descr>
+          <p>Does not check for invisible parents</p>
         </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <errors/>
+        <seealso><link id="TControl.Visible"/></seealso>
+      </element>
+      <element name="TControl.IsControlVisible.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.IsEnabled">
+        <short>Returns True if the control is Enabled, including all of its Parents.</short>
+      </element>
+      <element name="TControl.IsEnabled.Result">
+        <short>True only if all Parents also are enabled.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.IsProcessingPaintMsg">
+        <short>True while painting the control[?]</short>
       </element>
       <element name="TControl.IsProcessingPaintMsg.Result">
         <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Hide">
-        <short>
-          <var>Hide </var>this control</short>
+        <short>Hides this control, by setting Visible to False.</short>
         <seealso>
           <link id="#lcl.Controls.TControl.Visible"/>
           <link id="#lcl.Controls.TControl.Show"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TControl.Refresh">
-        <short>
-          <var>Refresh</var> the data on this control</short>
-      </element>
+      <element name="TControl.Refresh" link="TControl.Repaint"/>
       <!-- procedure Visibility: public -->
       <element name="TControl.Repaint">
-        <short>
-          <var>Repaint</var> the control, ie refill its canvas</short>
+        <short>Immediate redraw of the control, bypassing the message queue.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Invalidate">
-        <short>Render this control non-valid</short>
+        <short>Force a delayed Repaint of the control, by marking its visible area of the control as invalid.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AddControl">
@@ -6917,23 +6926,23 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.CheckChildClassAllowed">
-        <short>Function checks whether a particular child class is allowed</short>
+        <short>Returns True if the class is allowed for child controls.</short>
       </element>
       <element name="TControl.CheckChildClassAllowed.Result">
-        <short>Function returns True if child class has been checked and is allowed</short>
+        <short>True if the class is allowed for child controls.</short>
       </element>
       <element name="TControl.CheckChildClassAllowed.ChildClass">
-        <short>The child class which is being checked to see whether it is allowed</short>
+        <short>The class of the intended child control.</short>
       </element>
       <element name="TControl.CheckChildClassAllowed.ExceptionOnInvalid">
-        <short>Boolean set to True if a non-valid class is found and an exception has been raised</short>
+        <short>When True, raise an exception when the class is not allowed.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.CheckNewParent">
-        <short>Checks a new parent for this control</short>
+        <short>Checks a new parent for this control[?]</short>
       </element>
       <element name="TControl.CheckNewParent.AParent">
-        <short>The new parent associated with this control</short>
+        <short>The new Parent for this control.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SendToBack">
@@ -6950,7 +6959,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateMouseCursor">
         <short>
-          <var>UpdateMouseCursor</var> - ensure coordinates
+          <var>UpdateMouseCursor</var> - ensure[???] coordinates
           <var>X, Y </var> for the cursor are correctly stored</short>
         <descr/>
         <errors/>
@@ -7742,18 +7751,6 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <seealso/>
       </element>
       <element name="TControl.GetTopParent.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TControl.IsControlVisible">
-        <short>Is the control visible on the current desktop?</short>
-        <descr>
-          <p>Does not check for invisible parents</p>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TControl.IsControlVisible.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->
