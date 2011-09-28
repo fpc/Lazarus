@@ -16402,7 +16402,7 @@ var
     end;
 
     // check if classname
-    ConflictingClass:=AComponent.ClassType;
+    ConflictingClass:=AComponent.ClassType.ClassParent;
     while ConflictingClass<>nil do begin
       if SysUtils.CompareText(AName,ConflictingClass.ClassName)=0 then begin
         s:='This component has already the class '+ConflictingClass.ClassName;
