@@ -2940,6 +2940,8 @@ begin
       if fScrollDeltaY > 0
       then Y := FFoldedLinesView.TextIndex[LinesInWindow-1]+1  // scrolling down
       else Y := TopLine;  // scrolling up
+      if Y < 1   // past end of file
+      then y := FCaret.LinePos;
       FCaret.LineCharPos := Point(C.X, Y);
       if (not(sfIsDragging in fStateFlags)) then
         SetBlockEnd(LogicalCaretXY);
@@ -4862,8 +4864,11 @@ begin
     exit;
   end;
   if not assigned(FHighlighter) then begin
-    if ATextChanged then
+    if ATextChanged then begin
       fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
+      // TODO: see TSynEditFoldedView.LineCountChanged, this is only needed, because NeedFixFrom does not always work
+      FFoldedLinesView.FixFoldingAtTextIndex(FChangedLinesStart, FChangedLinesEnd);
+    end;
     Topline := TopLine;
     exit;
   end;

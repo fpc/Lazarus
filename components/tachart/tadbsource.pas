@@ -28,7 +28,7 @@ type
   { TDbChartSource }
 
   TDbChartSource = class(TCustomChartSource)
-  private
+  strict private
     FBookmark: TBookmark;
     FCurItem: TChartDataItem;
     FDataLink: TDataLink;
@@ -74,16 +74,21 @@ type
 
   { TDbChartSourceDataLink }
 
-  TDbChartSourceDataLink = class(TDatalink)
-  private
+  TDbChartSourceDataLink = class(TDataLink)
+  strict private
     FChartSrc: TDbChartSource;
   protected
     procedure DataSetChanged; override;
-    procedure DataSetScrolled(Distance: Integer); override;
+    procedure DataSetScrolled(ADistance: Integer); override;
     procedure UpdateData; override;
   public
     constructor Create(ASrc: TDbChartSource);
   end;
+
+// FIXME: This is a workaround for issue #19887.
+// Remove when dataset gains the capability to turn data events off.
+var
+  VLockedDatasets: TFPList;
 
 { TDbChartSourceDataLink }
 
@@ -96,21 +101,19 @@ end;
 procedure TDbChartSourceDataLink.DataSetChanged;
 begin
   inherited DataSetChanged;
-  if (FChartSrc.FBookmark = nil) and (DataSet.State = dsBrowse) then
+  if DataSet.State = dsBrowse then
     FChartSrc.Reset;
 end;
 
-procedure TDbChartSourceDataLink.DataSetScrolled(Distance: Integer);
+procedure TDbChartSourceDataLink.DataSetScrolled(ADistance: Integer);
 begin
-  Unused(Distance);
-  // No need to react on scrolling
+  Unused(ADistance); // No need to react on scrolling.
 end;
 
 procedure TDbChartSourceDataLink.UpdateData;
 begin
   inherited UpdateData;
-  if FChartSrc.FBookmark = nil then
-    FChartSrc.Reset;
+  FChartSrc.Reset;
 end;
 
 procedure Register;
@@ -123,18 +126,20 @@ end;
 procedure TDbChartSource.AfterDraw;
 begin
   inherited AfterDraw;
-  if not FDataLink.Active or (FBookmark = nil) then exit;
   try
+    if not FDataLink.Active or (FBookmark = nil) then exit;
     FDataLink.DataSet.GotoBookmark(FBookmark);
     FDataLink.DataSet.FreeBookmark(FBookmark);
   finally
     FBookmark := nil;
+    VLockedDatasets.Remove(FDataLink.DataSet);
   end;
 end;
 
 procedure TDbChartSource.BeforeDraw;
 begin
   inherited BeforeDraw;
+  VLockedDatasets.Add(FDataLink.DataSet);
   if FDataLink.Active then
     FBookmark := FDataLink.DataSet.GetBookmark;
 end;
@@ -209,6 +214,7 @@ end;
 
 procedure TDbChartSource.Reset;
 begin
+  if VLockedDatasets.IndexOf(FDataLink.DataSet) >= 0 then exit;
   InvalidateCaches;
   Notify;
 end;
@@ -258,6 +264,12 @@ begin
   Unused(AValue);
   raise EYCountError.Create('Set FieldY instead');
 end;
+
+initialization
+  VLockedDatasets := TFPList.Create;
+
+finalization
+  FreeAndNil(VLockedDatasets);
 
 end.
 
