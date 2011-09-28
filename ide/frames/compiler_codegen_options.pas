@@ -119,7 +119,7 @@ begin
   chkChecksStack.Caption := dlgCOStack + ' (-Ct)';
   chkVerifyObjMethodCall.Caption := lisVerifyMethodCalls + ' (-CR)';
 
-  grpHeapSize.Caption := dlgHeapSize + ' (-Ch):';
+  grpHeapSize.Caption := dlgHeapSize + ' (-Ch)';
   edtHeapSize.Text := '';
 
   grpTargetPlatform.Caption := dlgTargetPlatform;
