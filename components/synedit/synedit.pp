@@ -1926,6 +1926,8 @@ begin
         EnsureCursorPosVisible;              // TODO: This may call SetTopLine, change order
                                              // This does Paintlock, should be before final decrease
       // Must be after EnsureCursorPosVisible (as it does MoveCaretToVisibleArea)
+      if FCaret.LinePos > FLines.Count then
+        FCaret.LinePos := FLines.Count;
       if sfCaretChanged in fStateFlags then
         UpdateCaret;
       //if sfScrollbarChanged in fStateFlags then
@@ -4926,6 +4928,7 @@ begin
     ScanRanges;
     InvalidateLines(AIndex + 1, -1);
     InvalidateGutterLines(AIndex + 1, -1);
+    if FCaret.LinePos > FLines.Count then FCaret.LinePos := FLines.Count;
   end;
   if TopLine > AIndex + 1 then
     TopLine := TopLine + ACount // will call UpdateScrollBars
@@ -6389,13 +6392,14 @@ begin
           end;
         end;
       ecDeleteLine:
-        if not ReadOnly and not ((FTheLinesView.Count = 1) and (Length(FTheLinesView[0]) = 0))
+        if not ReadOnly
         then begin
-          if FTheLinesView.Count = 1 then
-            FTheLinesView.EditDelete(1, 1, length(FTheLinesView[0]))
-          else begin
-            FTheLinesView.EditLinesDelete(CaretY, 1);
-          end;
+          CY := FCaret.LinePos;
+          if (Cy < FTheLinesView.Count) then
+            FTheLinesView.EditLinesDelete(CaretY, 1)
+          else
+          if (Cy = FTheLinesView.Count) and (FTheLinesView[CY-1] <> '') then
+            FTheLinesView.EditDelete(1, Cy, length(FTheLinesView[Cy-1]));
           CaretXY := Point(1, CaretY); // like seen in the Delphi editor
         end;
       ecClearAll:
