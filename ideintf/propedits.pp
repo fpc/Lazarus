@@ -543,6 +543,7 @@ type
   TSetPropertyEditor = class(TOrdinalPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
+    function GetEditLimit: Integer; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
     function OrdValueToVisualValue(OrdValue: longint): string; override;
   end;
@@ -3361,6 +3362,11 @@ begin
   Result := [paMultiSelect, paSubProperties, paReadOnly, paRevertable];
   if GetDefaultOrdValue <> NoDefaultValue then
     Result := Result + [paHasDefaultValue];
+end;
+
+function TSetPropertyEditor.GetEditLimit: Integer;
+begin
+  Result := 0;
 end;
 
 procedure TSetPropertyEditor.GetProperties(Proc: TGetPropEditProc);
