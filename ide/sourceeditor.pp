@@ -2812,6 +2812,7 @@ Procedure TSourceEditor.ProcessCommand(Sender: TObject;
 var
   AddChar: Boolean;
   s: String;
+  i: Integer;
 begin
   //DebugLn('TSourceEditor.ProcessCommand Command=',dbgs(Command));
   FSharedValues.SetActiveSharedEditor(Self);
@@ -2843,9 +2844,9 @@ begin
 
     ecDeleteLastChar:
       begin
-        FSourceNoteBook.IncrementalSearchStr:=
-          LeftStr(FSourceNoteBook.IncrementalSearchStr,
-            length(FSourceNoteBook.IncrementalSearchStr)-1);
+        i := length(FSourceNoteBook.IncrementalSearchStr);
+        i := UTF8FindNearestCharStart(PChar(FSourceNoteBook.IncrementalSearchStr), i, i-1);
+        FSourceNoteBook.IncrementalSearchStr:= LeftStr(FSourceNoteBook.IncrementalSearchStr, i);
         Command:=ecNone;
       end;
 

@@ -15617,40 +15617,42 @@ begin
   end;
   case ToolStatus of
     itDebugger: begin
-      if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then
-        Expression := SrcEdit.GetText(True)
-      else
-        Expression := SrcEdit.GetOperandFromCaret(CaretPos);
-      if Expression='' then exit;
-      //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
-      DBGType:=nil;
-      DBGTypeDerefer:=nil;
-      if not DebugBoss.Evaluate(Expression, DebugEval, DBGType) or (DebugEval = '') then
-        DebugEval := '???';
-      // deference a pointer - maybe it is a class
-      if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
-         not( StringCase(Lowercase(DBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
-      then
-      begin
-        if DBGType.Value.AsPointer <> nil then
+      if EditorOpts.AutoToolTipExprEval then begin
+        if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then
+          Expression := SrcEdit.GetText(True)
+        else
+          Expression := SrcEdit.GetOperandFromCaret(CaretPos);
+        if Expression='' then exit;
+        //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
+        DBGType:=nil;
+        DBGTypeDerefer:=nil;
+        if not DebugBoss.Evaluate(Expression, DebugEval, DBGType) or (DebugEval = '') then
+          DebugEval := '???';
+        // deference a pointer - maybe it is a class
+        if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
+           not( StringCase(Lowercase(DBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
+        then
         begin
-          if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer) then
+          if DBGType.Value.AsPointer <> nil then
           begin
-            if Assigned(DBGTypeDerefer) and
-              ( (DBGTypeDerefer.Kind <> skPointer) or
-                (StringCase(Lowercase(DBGTypeDerefer.TypeName), ['char', 'character', 'ansistring']) in [0..2])
-              )
-            then
-              DebugEval := DebugEval + ' = ' + DebugEvalDerefer;
+            if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer) then
+            begin
+              if Assigned(DBGTypeDerefer) and
+                ( (DBGTypeDerefer.Kind <> skPointer) or
+                  (StringCase(Lowercase(DBGTypeDerefer.TypeName), ['char', 'character', 'ansistring']) in [0..2])
+                )
+              then
+                DebugEval := DebugEval + ' = ' + DebugEvalDerefer;
+            end;
           end;
         end;
+        FreeAndNil(DBGType);
+        FreeAndNil(DBGTypeDerefer);
+        Expression := Expression + ' = ' + DebugEval;
+        if SmartHintStr<>'' then
+          SmartHintStr:=LineEnding+LineEnding+SmartHintStr;
+        SmartHintStr:=Expression+SmartHintStr;
       end;
-      FreeAndNil(DBGType);
-      FreeAndNil(DBGTypeDerefer);
-      Expression := Expression + ' = ' + DebugEval;
-      if SmartHintStr<>'' then
-        SmartHintStr:=LineEnding+LineEnding+SmartHintStr;
-      SmartHintStr:=Expression+SmartHintStr;
     end;
   end;
 

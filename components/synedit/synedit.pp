@@ -561,6 +561,7 @@ type
     procedure SetExtraCharSpacing(const Value: integer);
     procedure SetLastMouseCaret(const AValue: TPoint);
     function  CurrentMaxLeftChar: Integer;
+    function  CurrentMaxLineLen: Integer;
     procedure SetLeftChar(Value: Integer);
     procedure SetLineText(Value: string);
     procedure SetMaxLeftChar(Value: integer);
@@ -1607,10 +1608,10 @@ begin
   TSynEditStringList(FLines).AttachSynEdit(Self);
 
   FCaret := TSynEditCaret.Create;
-  FCaret.MaxLeftChar := @FMaxLeftChar;
+  FCaret.MaxLeftChar := @CurrentMaxLineLen;
   FCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}CaretChanged);
   FInternalCaret := TSynEditCaret.Create;
-  FInternalCaret.MaxLeftChar := @FMaxLeftChar;
+  FInternalCaret.MaxLeftChar := @CurrentMaxLineLen;
 
   // Create the lines/views
   FTrimmedLinesView := TSynEditStringTrimmingList.Create(fLines, fCaret);
@@ -4294,6 +4295,15 @@ begin
   Result := Result - fCharsInWindow + 1 + FScreenCaret.ExtraLineChars;
 end;
 
+function TCustomSynEdit.CurrentMaxLineLen: Integer;
+begin
+  if not HandleAllocated then // don't know chars in window yet
+    exit(MaxInt);
+  Result := FTheLinesView.LengthOfLongestLine + 1;
+  if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
+    Result := fMaxLeftChar;
+end;
+
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
 begin
   Value := Min(Value, CurrentMaxLeftChar);
@@ -4347,9 +4357,6 @@ begin
     inherited CreateHandle;   //SizeOrFontChanged will be called
     FLeftGutter.RecalcBounds;
     FRightGutter.RecalcBounds;
-    FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
-                                  ClientWidth - TextRightPixelOffset - ScrollBarWidth,
-                                  ClientHeight - ScrollBarWidth);
     UpdateScrollBars;
   finally
     DoDecPaintLock(nil);
@@ -4684,7 +4691,7 @@ begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the line
     SB_TOP: LeftChar := 1;
-    SB_BOTTOM: LeftChar := Max(FTheLinesView.LengthOfLongestLine, MaxLeftChar);
+    SB_BOTTOM: LeftChar := CurrentMaxLeftChar;
       // Scrolls one char left / right
     SB_LINEDOWN: LeftChar := LeftChar + 1;
     SB_LINEUP: LeftChar := LeftChar - 1;
@@ -4749,9 +4756,6 @@ begin
     if sfEnsureCursorPosAtResize in fStateFlags then
       EnsureCursorPosVisible;
     Exclude(fStateFlags, sfEnsureCursorPosAtResize);
-    FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
-                                  ClientWidth - TextRightPixelOffset - ScrollBarWidth,
-                                  ClientHeight - ScrollBarWidth);
   finally
     FScreenCaret.UnLock;
     dec(FScrollBarUpdateLock);
@@ -7029,16 +7033,12 @@ end;
 procedure TCustomSynEdit.GutterResized(Sender: TObject);
 begin
   if (csLoading in ComponentState) then exit;
-  FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
-                                ClientWidth - TextRightPixelOffset - ScrollBarWidth,
-                                ClientHeight - ScrollBarWidth);
+
   GutterChanged(Sender);
   fTextOffset := TextLeftPixelOffset - (LeftChar - 1) * fCharWidth;
+
   if HandleAllocated then begin
-    FCharsInWindow := Max(1, (ClientWidth
-                              - TextLeftPixelOffset - TextRightPixelOffset
-                              - ScrollBarWidth) div fCharWidth);
-    //debugln('TCustomSynEdit.SetGutterWidth A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth));
+    RecalcCharsAndLinesInWin(False);
     UpdateScrollBars;
     Invalidate;
   end;
@@ -7520,14 +7520,28 @@ begin
 end;
 
 procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
+var
+  NewLinesInWindow: Integer;
+  w: Integer;
 begin
-  FCharsInWindow := Max(1, (ClientWidth
-                            - TextLeftPixelOffset - TextRightPixelOffset
-                            - ScrollBarWidth) div fCharWidth);
-  FLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
-  FFoldedLinesView.LinesInWindow := fLinesInWindow;
-  FMarkupManager.LinesInWindow:= fLinesInWindow;
-  StatusChanged([scLinesInWindow]);
+  w := ClientWidth - TextLeftPixelOffset - TextRightPixelOffset - ScrollBarWidth;
+  FCharsInWindow := Max(1, w div fCharWidth);
+
+  NewLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
+  if NewLinesInWindow <> FLinesInWindow then begin
+    FLinesInWindow := NewLinesInWindow;
+    FFoldedLinesView.LinesInWindow := fLinesInWindow;
+    FMarkupManager.LinesInWindow:= fLinesInWindow;
+    StatusChanged([scLinesInWindow]);
+  end;
+
+  FScreenCaret.Lock;
+  FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
+                                ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
+                                ClientHeight - ScrollBarWidth);
+  FScreenCaret.ClipExtraPixel := w - fCharsInWindow * fCharWidth;
+  FScreenCaret.UnLock;
+
   if CheckCaret then begin
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
@@ -7818,13 +7832,17 @@ var
   end;
 
 begin
-  if not SelAvail then exit;
   IncPaintLock;
   FBlockSelection.IncPersistentLock;
   try
     // build text to insert
-    BB := BlockBegin;
-    BE := BlockEnd;
+    if not SelAvail then begin
+      BB := CaretXY;
+      BE := CaretXY;
+    end else begin
+      BB := BlockBegin;
+      BE := BlockEnd;
+    end;
     if (BE.X = 1) then
       e := BE.y - 1
     else
@@ -7879,10 +7897,13 @@ var
   end;
 
 begin
-  if not SelAvail then exit;
-
-  BB := BlockBegin;
-  BE := BlockEnd;
+  if not SelAvail then begin
+    BB := CaretXY;
+    BE := CaretXY;
+  end else begin
+    BB := BlockBegin;
+    BE := BlockEnd;
+  end;
   // convert selection to complete lines
   if BE.X = 1 then
     e := BE.y - 1

@@ -3295,33 +3295,43 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     R: TGDBMIExecResult;
     S: String;
   begin
-    Result.SrcLine := -1;
-    Result.SrcFile := '';
-    Result.FuncName := '';
-    if tfRTLUsesRegCall in TargetInfo^.TargetFlags
-    then Result.Address := GetPtrValue(TargetInfo^.TargetRegisters[1], [])
-    else Result.Address := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 3]);
+    FTheDebugger.QueueExecuteLock;
+    try
+      Result.SrcLine := -1;
+      Result.SrcFile := '';
+      Result.FuncName := '';
+      if tfRTLUsesRegCall in TargetInfo^.TargetFlags
+      then Result.Address := GetPtrValue(TargetInfo^.TargetRegisters[1], [])
+      else Result.Address := GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 3]);
 
-    Str(Result.Address, S);
-    if ExecuteCommand('info line * POINTER(%s)', [S], R)
-    then begin
-      Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
-      Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
+      Str(Result.Address, S);
+      if ExecuteCommand('info line * POINTER(%s)', [S], R)
+      then begin
+        Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
+        Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
+      end;
+    finally
+      FTheDebugger.QueueExecuteUnlock;
     end;
   end;
 
   function GetExceptionInfo: TGDBMIExceptionInfo;
   begin
-    if tfRTLUsesRegCall in TargetInfo^.TargetFlags
-    then  Result.ObjAddr := TargetInfo^.TargetRegisters[0]
-    else begin
-      if dfImplicidTypes in FTheDebugger.DebuggerFlags
-      then Result.ObjAddr := Format('^%s($fp+%d)^', [PointerTypeCast, TargetInfo^.TargetPtrSize * 2])
-      else Str(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]), Result.ObjAddr);
+    FTheDebugger.QueueExecuteLock;
+    try
+      if tfRTLUsesRegCall in TargetInfo^.TargetFlags
+      then  Result.ObjAddr := TargetInfo^.TargetRegisters[0]
+      else begin
+        if dfImplicidTypes in FTheDebugger.DebuggerFlags
+        then Result.ObjAddr := Format('^%s($fp+%d)^', [PointerTypeCast, TargetInfo^.TargetPtrSize * 2])
+        else Str(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]), Result.ObjAddr);
+      end;
+      Result.Name := GetInstanceClassName(Result.ObjAddr, []);
+      if Result.Name = ''
+      then Result.Name := 'Unknown';
+    finally
+      FTheDebugger.QueueExecuteUnlock;
     end;
-    Result.Name := GetInstanceClassName(Result.ObjAddr, []);
-    if Result.Name = ''
-    then Result.Name := 'Unknown';
   end;
 
   procedure ProcessException(AInfo: TGDBMIExceptionInfo);
@@ -3329,19 +3339,24 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     ExceptionMessage: String;
     CanContinue: Boolean;
   begin
-    if (dfImplicidTypes in FTheDebugger.DebuggerFlags)
-    then begin
-      if (tfFlagHasTypeException in TargetInfo^.TargetFlags) then begin
-        if tfExceptionIsPointer in TargetInfo^.TargetFlags
-        then ExceptionMessage := GetText('Exception(%s).FMessage', [AInfo.ObjAddr])
-        else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
-        //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
-      end else begin
-        // Only works if Exception class is not changed. FMessage must be first member
-        ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, AInfo.ObjAddr]);
-      end;
-    end
-    else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
+    FTheDebugger.QueueExecuteLock;
+    try
+      if (dfImplicidTypes in FTheDebugger.DebuggerFlags)
+      then begin
+        if (tfFlagHasTypeException in TargetInfo^.TargetFlags) then begin
+          if tfExceptionIsPointer in TargetInfo^.TargetFlags
+          then ExceptionMessage := GetText('Exception(%s).FMessage', [AInfo.ObjAddr])
+          else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [AInfo.ObjAddr]);
+          //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
+        end else begin
+          // Only works if Exception class is not changed. FMessage must be first member
+          ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, AInfo.ObjAddr]);
+        end;
+      end
+      else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
+    finally
+      FTheDebugger.QueueExecuteUnlock;
+    end;
 
     FTheDebugger.DoException(deInternal, AInfo.Name, ExceptionMessage, CanContinue);
     if CanContinue
@@ -3358,10 +3373,15 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     ErrorNo: Integer;
     CanContinue: Boolean;
   begin
-    if tfRTLUsesRegCall in TargetInfo^.TargetFlags
-    then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[0], [])
-    else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
-    ErrorNo := ErrorNo and $FFFF;
+    FTheDebugger.QueueExecuteLock;
+    try
+      if tfRTLUsesRegCall in TargetInfo^.TargetFlags
+      then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[0], [])
+      else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
+      ErrorNo := ErrorNo and $FFFF;
+    finally
+      FTheDebugger.QueueExecuteUnlock;
+    end;
 
     FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '', CanContinue);
     if CanContinue
@@ -3378,10 +3398,15 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     ErrorNo: Integer;
     CanContinue: Boolean;
   begin
-    if tfRTLUsesRegCall in TargetInfo^.TargetFlags
-    then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[0], [])
-    else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
-    ErrorNo := ErrorNo and $FFFF;
+    FTheDebugger.QueueExecuteLock;
+    try
+      if tfRTLUsesRegCall in TargetInfo^.TargetFlags
+      then ErrorNo := GetIntValue(TargetInfo^.TargetRegisters[0], [])
+      else ErrorNo := Integer(GetData('$fp+%d', [TargetInfo^.TargetPtrSize * 2]));
+      ErrorNo := ErrorNo and $FFFF;
+    finally
+      FTheDebugger.QueueExecuteUnlock;
+    end;
 
     FTheDebugger.DoException(deRunError, Format('RunError(%d)', [ErrorNo]), '', CanContinue);
     if CanContinue
@@ -3397,6 +3422,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   var
     SigInt, CanContinue: Boolean;
     S, F: String;
+    fixed: Boolean;
   begin
     // TODO: check to run (un)handled
 
@@ -3411,8 +3437,14 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     or not SigInt
     then begin
       {$IFdef MSWindows}
+      FTheDebugger.QueueExecuteLock;
+      try
+        fixed := FixThreadForSigTrap;
+      finally
+        FTheDebugger.QueueExecuteUnlock;
+      end;
       // Before anything else goes => correct the thred
-      if FixThreadForSigTrap
+      if fixed
       then F := '';
       {$ENDIF}
       SetDebuggerState(dsPause);
@@ -3421,9 +3453,14 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     if not SigInt
     then FTheDebugger.DoException(deExternal, 'External: ' + S, '', CanContinue);
 
-    if not AIgnoreSigIntState
-    or not SigInt
-    then ProcessFrame(F);
+    FTheDebugger.QueueExecuteLock;
+    try
+      if not AIgnoreSigIntState
+      or not SigInt
+      then ProcessFrame(F);
+    finally
+      FTheDebugger.QueueExecuteUnlock;
+    end;
   end;
 
 var
@@ -3434,6 +3471,9 @@ var
   CanContinue: Boolean;
   ExceptionInfo: TGDBMIExceptionInfo;
 begin
+  (* The Queue is not locked / This code can be interupted
+     Therefore all calls to ExecuteCommand (gdb cmd) must be wrapped in QueueExecuteLock
+  *)
   Result := False;
   FTheDebugger.FCurrentStackFrame :=  0;
 
