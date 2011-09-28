@@ -709,8 +709,8 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     function IsEqual(Spacing: TControlBorderSpacing): boolean;
     procedure GetSpaceAround(var SpaceAround: TRect);
+    function GetSideSpace(Kind: TAnchorKind): Integer; // Around+GetSpace
     function GetSpace(Kind: TAnchorKind): Integer;
-    function GetSideSpace(Kind: TAnchorKind): Integer;
   public
     property Control: TControl read FControl;
     property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
@@ -3199,12 +3199,12 @@ begin
 end;
 
 
-function TControlBorderSpacing.GetSpace(Kind: TAnchorKind): Integer;
+function TControlBorderSpacing.GetSideSpace(Kind: TAnchorKind): Integer;
 begin
-  Result:=Around+GetSideSpace(Kind);
+  Result:=Around+GetSpace(Kind);
 end;
 
-function TControlBorderSpacing.GetSideSpace(Kind: TAnchorKind): Integer;
+function TControlBorderSpacing.GetSpace(Kind: TAnchorKind): Integer;
 begin
   case Kind of
   akLeft: Result:=Left;
@@ -3581,7 +3581,7 @@ begin
         ReferenceSide:=CurReferenceSide;
 
         // -> calculate Position
-        OwnerBorderSpacing:=FOwner.BorderSpacing.GetSpace(Kind);
+        OwnerBorderSpacing:=FOwner.BorderSpacing.GetSideSpace(Kind);
         //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition ',dbgsName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' ',dbgs(ReferenceControl.BoundsRect),' OwnerBorderSpacing=',OwnerBorderSpacing,' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
         case ReferenceSide of
 
@@ -3597,7 +3597,7 @@ begin
                                       OwnerParent.ChildSizing.LeftRightSpacing)
             else if Kind=akRight then
               OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
-                   ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                   ReferenceControl.BorderSpacing.GetSideSpace(OppositeAnchor[Kind])),
                    OwnerParent.ChildSizing.HorizontalSpacing);
             if Kind=akLeft then begin
               // anchor left of ReferenceControl and left of Owner
@@ -3617,7 +3617,7 @@ begin
                                       OwnerParent.ChildSizing.TopBottomSpacing)
             else if Kind=akBottom then
               OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
-                   ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                   ReferenceControl.BorderSpacing.GetSideSpace(OppositeAnchor[Kind])),
                    OwnerParent.ChildSizing.VerticalSpacing);
             if Kind=akTop then begin
               // anchor top of ReferenceControl and top of Owner
@@ -3640,7 +3640,7 @@ begin
                                       OwnerParent.ChildSizing.LeftRightSpacing)
             else if Kind=akLeft then
               OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
-                   ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                   ReferenceControl.BorderSpacing.GetSideSpace(OppositeAnchor[Kind])),
                    OwnerParent.ChildSizing.HorizontalSpacing);
             if Kind=akLeft then begin
               // anchor right of ReferenceControl and left of Owner
@@ -3660,7 +3660,7 @@ begin
                                       OwnerParent.ChildSizing.TopBottomSpacing)
             else if Kind=akTop then
               OwnerBorderSpacing:=Max(Max(OwnerBorderSpacing,
-                   ReferenceControl.BorderSpacing.GetSpace(OppositeAnchor[Kind])),
+                   ReferenceControl.BorderSpacing.GetSideSpace(OppositeAnchor[Kind])),
                    OwnerParent.ChildSizing.VerticalSpacing);
             if Kind=akTop then begin
               // anchor bottom of ReferenceControl and top of Owner

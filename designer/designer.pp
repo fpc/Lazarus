@@ -2776,10 +2776,10 @@ begin
         if csNoDesignSelectable in CurControl.ControlStyle then
           Continue;
         aDDC.Canvas.FrameRect(
-          CurControl.Left-CurControl.BorderSpacing.GetSpace(akLeft),
-          CurControl.Top-CurControl.BorderSpacing.GetSpace(akTop),
-          CurControl.Left+CurControl.Width+CurControl.BorderSpacing.GetSpace(akRight)-1,
-          CurControl.Top+CurControl.Height+CurControl.BorderSpacing.GetSpace(akBottom)-1
+          CurControl.Left-CurControl.BorderSpacing.GetSideSpace(akLeft),
+          CurControl.Top-CurControl.BorderSpacing.GetSideSpace(akTop),
+          CurControl.Left+CurControl.Width+CurControl.BorderSpacing.GetSideSpace(akRight)-1,
+          CurControl.Top+CurControl.Height+CurControl.BorderSpacing.GetSideSpace(akBottom)-1
           );
       end;
     end;

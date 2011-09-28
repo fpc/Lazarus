@@ -848,7 +848,7 @@ begin
       // this is a non aligned control
       //DebugLn(['TAutoSizeCtrlData.DoMoveNonAlignedChilds Child=',DbgSName(Child),' Side=',dbgs(Side)]);
       if FindMinimum then begin
-        AddSpace:=Child.BorderSpacing.GetSpace(Side);
+        AddSpace:=Child.BorderSpacing.GetSideSpace(Side);
         if Side=akLeft then
           AddSpace:=Max(AddSpace,WinControl.ChildSizing.LeftRightSpacing)
         else
