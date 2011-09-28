@@ -811,6 +811,7 @@ type
     FSourceWindowByFocusList: TFPList;
     FUpdateLock: Integer;
     FActiveEditorLock: Integer;
+    FAutoFocusLock: Integer;
     FShowWindowOnTop: Boolean;
     FShowWindowOnTopFocus: Boolean;
     procedure FreeSourceWindows;
@@ -832,6 +833,9 @@ type
     function  GetUniqueSourceEditors(Index: integer): TSourceEditorInterface; override;
     function GetMarklingProducers(Index: integer): TSourceMarklingProducer; override;
   public
+    procedure BeginAutoFocusLock;
+    procedure EndAutoFocusLock;
+    function  HasAutoFocusLock: Boolean;
     // Windows
     function SourceWindowWithEditor(const AEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
               override;
@@ -6840,7 +6844,9 @@ Begin
       TempEditor.EditorComponent.CaretXY := CaretXY;
       TempEditor.EditorComponent.TopLine := TopLine;
     end;
-    if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) then
+    if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) and
+       not(Manager.HasAutoFocusLock)
+    then
     begin
       {$IFDEF VerboseFocus}
       writeln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
@@ -7697,6 +7703,21 @@ begin
   Result:=TSourceMarklingProducer(fProducers[Index]);
 end;
 
+procedure TSourceEditorManagerBase.BeginAutoFocusLock;
+begin
+  inc(FAutoFocusLock);
+end;
+
+procedure TSourceEditorManagerBase.EndAutoFocusLock;
+begin
+  dec(FAutoFocusLock);
+end;
+
+function TSourceEditorManagerBase.HasAutoFocusLock: Boolean;
+begin
+  Result := FAutoFocusLock > 0;
+end;
+
 function TSourceEditorManagerBase.GetActiveCompletionPlugin: TSourceEditorCompletionPlugin;
 begin
   Result := FActiveCompletionPlugin;
@@ -7824,6 +7845,7 @@ constructor TSourceEditorManagerBase.Create(AOwner: TComponent);
 var
   i: TsemChangeReason;
 begin
+  FAutoFocusLock := 0;
   for i := low(TsemChangeReason) to high(TsemChangeReason) do
     FChangeNotifyLists[i] := TMethodList.Create;
   SrcEditorIntf.SourceEditorManagerIntf := Self;

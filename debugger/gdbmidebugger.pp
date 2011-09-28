@@ -3151,8 +3151,7 @@ begin
     if DebuggerState = dsPause
     then ProcessFrame;
   finally
-    if assigned(FContinueCommand)
-    then FContinueCommand.Free;
+    FreeAndNil(FContinueCommand);
   end;
 
   FSuccess := True;
