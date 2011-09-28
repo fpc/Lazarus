@@ -262,6 +262,10 @@ msgstr "Tuntematon keskeytyskohta"
 msgid "Word-Brackets"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhispecialvisiblechars
+msgid "Visualized Special Chars"
+msgstr ""
+
 #: lazarusidestrconsts.dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
 msgstr "Lisätty lähdekoodin hakupolku kaikille projekteille (.pp;.pas)"
@@ -556,7 +560,9 @@ msgid "Messages"
 msgstr "Viestit"
 
 #: lazarusidestrconsts.dlgcochecks
-msgid "Checks:"
+#, fuzzy
+#| msgid "Checks:"
+msgid "Checks"
 msgstr "Tarkistukset:"
 
 #: lazarusidestrconsts.dlgcocompilation
@@ -593,7 +599,17 @@ msgid "Generate Debugging Info For DBX (Slows Compiling)"
 msgstr "Lisää virheenjäljitystieto DBX:lle (hidastaa käännöstä)"
 
 #: lazarusidestrconsts.dlgcodebugging
-msgid "Debugging:"
+#, fuzzy
+#| msgid "Debugging Info:"
+msgctxt "lazarusidestrconsts.dlgcodebugging"
+msgid "Debugging Info"
+msgstr "Virheenjäljitys:"
+
+#: lazarusidestrconsts.dlgcodebugging2
+#, fuzzy
+#| msgid "Debugging:"
+msgctxt "lazarusidestrconsts.dlgcodebugging2"
+msgid "Debugging"
 msgstr "Virheenjäljitys:"
 
 #: lazarusidestrconsts.dlgcodebugpath
@@ -638,15 +654,15 @@ msgid "Faster Code"
 msgstr "Nopeampi koodi"
 
 #: lazarusidestrconsts.dlgcogdb
-msgid "Generate Debugging Info For GDB (Slows Compiling)"
+#, fuzzy
+#| msgid "Generate Debugging Info For GDB (Slows Compiling)"
+msgid "Generate Debugging Info For GDB (Slower / Increases exe-size)"
 msgstr "Lisää virheenjäljitystieto GDB:tä varten (hidastaa käännöstä)"
 
-#: lazarusidestrconsts.dlgcogenerate
-msgid "Generate:"
-msgstr "Luo:"
-
 #: lazarusidestrconsts.dlgcoheaptrc
-msgid "Use Heaptrc Unit"
+#, fuzzy
+#| msgid "Use Heaptrc Unit"
+msgid "Use Heaptrc Unit (check for mem-leaks)"
 msgstr "Käytä Heaptrc käännösyksikköä"
 
 #: lazarusidestrconsts.dlgcoincfiles
@@ -802,8 +818,33 @@ msgstr "Pino"
 msgid "Strip Symbols From Executable"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcosymboltype
+msgid "Chose type of debug info"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypeauto
+msgctxt "lazarusidestrconsts.dlgcosymboltypeauto"
+msgid "Automatic"
+msgstr "Automaattinen"
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf2
+msgid "Dwarf2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf2set
+msgid "Dwarf with Sets"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf3
+msgid "Dwarf3 (beta)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypestabs
+msgid "Stabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcounitstyle
-msgid "Unit Style:"
+msgid "Unit Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcouseasdefault
@@ -1426,10 +1467,6 @@ msgctxt "lazarusidestrconsts.dlgfropts"
 msgid "Options"
 msgstr "Optiot"
 
-#: lazarusidestrconsts.dlggeneratedwarf
-msgid "Generate dwarf debug information"
-msgstr "Lisää dwarf virheenjäljitystieto"
-
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
 msgstr "Hae sijainti"
@@ -1718,7 +1755,7 @@ msgid "Line Splitting"
 msgstr "Rivin katkaisu"
 
 #: lazarusidestrconsts.dlglinklibraries
-msgid "Link Style:"
+msgid "Link Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlglinksmart
@@ -2270,7 +2307,9 @@ msgid "Use default Lazarus settings"
 msgstr "Käytä Lazaruksen oletusasetuksia"
 
 #: lazarusidestrconsts.dlgoptimiz
-msgid "Optimizations:"
+#, fuzzy
+#| msgid "Optimizations:"
+msgid "Optimizations"
 msgstr "Optimoinnit:"
 
 #: lazarusidestrconsts.dlgotherunitfiles
@@ -2794,7 +2833,9 @@ msgid "Target OS"
 msgstr "Kohde käyttis"
 
 #: lazarusidestrconsts.dlgtargetplatform
-msgid "Target Platform:"
+#, fuzzy
+#| msgid "Target Platform:"
+msgid "Target Platform"
 msgstr "Kohdealusta:"
 
 #: lazarusidestrconsts.dlgtargetproc
@@ -3797,6 +3838,7 @@ msgid "Markup and Matches"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomatic
+msgctxt "lazarusidestrconsts.lisautomatic"
 msgid "Automatic"
 msgstr "Automaattinen"
 
@@ -6402,6 +6444,10 @@ msgstr ""
 msgid "Debugger Error"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebuggerfeedbackinformation
+msgid "Debugger Information"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebuggerfeedbackless
 msgid "Less"
 msgstr "Vähemmän"
@@ -6629,6 +6675,10 @@ msgstr "Poista keskeytyskohta kohdassa%s\"%s\" rivi %d?"
 #: lazarusidestrconsts.lisdeletebreakpointforaddress
 msgid "Delete breakpoint for address %s?"
 msgstr "Poista osoitteen %s keskeytyskohta?"
+
+#: lazarusidestrconsts.lisdeletebreakpointforwatch
+msgid "Delete watchpoint for \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
@@ -7465,6 +7515,7 @@ msgid "Edit custom scanners (%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisevalexpression
+msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr ""
 
@@ -8728,6 +8779,10 @@ msgstr "Lisää keskeytyskohta osoitteeseen"
 msgid "Add source breakpoint"
 msgstr "Lisää keskeytyskohta lähdekoodiin"
 
+#: lazarusidestrconsts.liskmaddbpwatchpoint
+msgid "Add data/watchPoint"
+msgstr ""
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr "Lisää vahti"
@@ -9698,6 +9753,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lislogcallstacklimit
 msgid "(frames limit. 0 - no limits)"
+msgstr ""
+
+#: lazarusidestrconsts.lislogevalexpression
+msgctxt "lazarusidestrconsts.lislogevalexpression"
+msgid "Eval expression"
 msgstr ""
 
 #: lazarusidestrconsts.lislogmessage
@@ -10734,7 +10794,8 @@ msgstr "Poista lohkon sisennys"
 msgid "Uppercase selection"
 msgstr "Muuta isoiksi kirjaimiksi"
 
-#: lazarusidestrconsts.lismenuuseprojectunit
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
 msgid "Add unit to uses section ..."
 msgstr "Lisää käännösyksikkö uses-lauseeseen ..."
 
@@ -13092,6 +13153,10 @@ msgstr "Hekemisto missä projektin päätiedoston pitää olla"
 msgid "Project source directories"
 msgstr "Projektin lähdehakemisto"
 
+#: lazarusidestrconsts.lisprojectsraisedexceptionataddress
+msgid "%0:s%0:s At address %1:x"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr ""
@@ -13099,6 +13164,18 @@ msgstr ""
 #: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
 msgid "Project %s raised exception class '%s' with message:%s%s"
 msgstr "Projekti %s nosti poikkeuksen luokalla '%s' jossa viestinä oli:%s%s"
+
+#: lazarusidestrconsts.lisprojectsraisedexceptioninfileaddress
+msgid "%0:s%0:s In file '%1:s' at address %2:x"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptioninfileline
+msgid "%0:s%0:s In file '%1:s' at line %2:d"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptioninfilelinesrc
+msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"
@@ -15300,14 +15377,14 @@ msgstr "Käytä pakettia %s projektissa"
 msgid "Use package in project"
 msgstr "Käytä pakettia projektissa"
 
-#: lazarusidestrconsts.lisuseprojectunit
-msgctxt "lazarusidestrconsts.lisuseprojectunit"
-msgid "Add unit to uses section"
-msgstr "Lisää käännösyksikkö uses-lauseeseen"
-
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
 msgstr "Käyttäjän kotihakemisto"
+
+#: lazarusidestrconsts.lisuseunit
+msgctxt "lazarusidestrconsts.lisuseunit"
+msgid "Add unit to uses section"
+msgstr "Lisää käännösyksikkö uses-lauseeseen"
 
 #: lazarusidestrconsts.lisuseunitinunit
 msgid "Use unit %s in unit %s"
@@ -15390,9 +15467,54 @@ msgstr ""
 msgid "&Watch"
 msgstr "Vahti"
 
+#: lazarusidestrconsts.liswatchdata
+msgid "Watch:"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkind
+msgid "Watch action"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkindread
+msgid "Read"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkindreadwrite
+msgid "Read/Write"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkindwrite
+msgid "Write"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchpoint
+msgid "&Data/Watch Breakpoint ..."
+msgstr ""
+
+#: lazarusidestrconsts.liswatchpointbreakpoint
+msgid "&Data/watch Breakpoint ..."
+msgstr ""
+
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
 msgstr "Vahdin ominaisuudet"
+
+#: lazarusidestrconsts.liswatchscope
+msgid "Watch scope"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchscopeglobal
+msgctxt "lazarusidestrconsts.liswatchscopeglobal"
+msgid "Global"
+msgstr "Kaiken kattava"
+
+#: lazarusidestrconsts.liswatchscopelocal
+msgid "Declaration"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchtowatchpoint
+msgid "Create &Data/Watch Breakpoint ..."
+msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
@@ -15953,6 +16075,10 @@ msgstr "lisää keskeytyskohta osoitteeseen"
 #: lazarusidestrconsts.srkmecaddbpsource
 msgid "add source breakpoint"
 msgstr "lisää keskeytyskohta lähdekoodiin"
+
+#: lazarusidestrconsts.srkmecaddbpwatchpoint
+msgid "add data/watchpoint"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"

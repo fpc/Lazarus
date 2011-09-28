@@ -12,17 +12,17 @@ msgstr ""
 #: gdbmidebugger.gdbmibreakpointerroronruncommand
 #| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для удаления точек останова и продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска.%0:sНажмите \"Остановить\" для окончания отладки."
+msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для удаления точек останова и продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска.%0:sНажмите \"Остановить\", чтобы закончить отладку."
 
 #: gdbmidebugger.gdbmierroronruncommand
 #| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска.%0:sНажмите \"Остановить\" для окончания отладки."
+msgstr "Возникла ошибка отладчика при попытке запустить/сделать шаг в приложении:%0:s%0:s%1:s%0:s%0:sНажмите \"ОК\" для продолжения отладки (приостановлена), и затем исправьте проблему, или выберите другую команду запуска.%0:sНажмите \"Остановить\", чтобы закончить отладку."
 
 #: gdbmidebugger.gdbmierroronruncommandwithwarning
 #| msgid "%0:s%0:sIn addition to the Error the following warning was encountered:%0:s%0:s%1:s"
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
-msgstr "%0:s%0:sКроме ошибки, было получено следующее предупреждение:%0:s%0:s%1:s"
+msgstr "%0:s%0:sПомимо ошибки, было получено следующее предупреждение:%0:s%0:s%1:s"
 
 #: gdbmidebugger.gdbmierrorstategenericinfo
 msgid "Error in: %1:s %0:s"
@@ -58,4 +58,8 @@ msgstr "Неустранимая ошибка: \"%s\""
 #: gdbmidebugger.gdbmitimeoutforcmd
 msgid "Time-out for command: \"%s\""
 msgstr "Истекло время ожидания для команды: \"%s\""
+
+#: gdbmidebugger.gdbmiwarningunknowbreakpoint
+msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
+msgstr "Отладчик достиг не ожидавшейся точки останова %1:s(%0:s)%0:sНажмите \"ОК\" для продолжения отладки (приостановлена).%0:sНажмите \"Остановить\", чтобы закончить отладку."
 

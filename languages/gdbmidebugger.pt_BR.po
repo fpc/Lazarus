@@ -63,3 +63,7 @@ msgstr "Erro irrecuperável: \"%s\""
 msgid "Time-out for command: \"%s\""
 msgstr "Tempo expirado para o comando: \"%s\""
 
+#: gdbmidebugger.gdbmiwarningunknowbreakpoint
+msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
+msgstr ""
+

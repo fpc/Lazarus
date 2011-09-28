@@ -276,6 +276,10 @@ msgstr "Nieznana pułapka"
 msgid "Word-Brackets"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhispecialvisiblechars
+msgid "Visualized Special Chars"
+msgstr ""
+
 #: lazarusidestrconsts.dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
 msgstr "Dodatkowa ścieżka poszukiwań dla wszystkich projektów (.pp;.pas)"
@@ -575,7 +579,9 @@ msgid "Messages"
 msgstr "Komunikaty"
 
 #: lazarusidestrconsts.dlgcochecks
-msgid "Checks:"
+#, fuzzy
+#| msgid "Checks:"
+msgid "Checks"
 msgstr "Sprawdzaj:"
 
 #: lazarusidestrconsts.dlgcocompilation
@@ -612,7 +618,17 @@ msgid "Generate Debugging Info For DBX (Slows Compiling)"
 msgstr "Twórz informację odpluskwiacza dla DBX (zwalnia kompilację)"
 
 #: lazarusidestrconsts.dlgcodebugging
-msgid "Debugging:"
+#, fuzzy
+#| msgid "Debugging Info:"
+msgctxt "lazarusidestrconsts.dlgcodebugging"
+msgid "Debugging Info"
+msgstr "Odpluskwianie:"
+
+#: lazarusidestrconsts.dlgcodebugging2
+#, fuzzy
+#| msgid "Debugging:"
+msgctxt "lazarusidestrconsts.dlgcodebugging2"
+msgid "Debugging"
 msgstr "Odpluskwianie:"
 
 #: lazarusidestrconsts.dlgcodebugpath
@@ -659,15 +675,15 @@ msgid "Faster Code"
 msgstr "Szybki"
 
 #: lazarusidestrconsts.dlgcogdb
-msgid "Generate Debugging Info For GDB (Slows Compiling)"
+#, fuzzy
+#| msgid "Generate Debugging Info For GDB (Slows Compiling)"
+msgid "Generate Debugging Info For GDB (Slower / Increases exe-size)"
 msgstr "Twórz informację odpluskwiacza dla GDB (zwalnia kompilację)"
 
-#: lazarusidestrconsts.dlgcogenerate
-msgid "Generate:"
-msgstr "Kod:"
-
 #: lazarusidestrconsts.dlgcoheaptrc
-msgid "Use Heaptrc Unit"
+#, fuzzy
+#| msgid "Use Heaptrc Unit"
+msgid "Use Heaptrc Unit (check for mem-leaks)"
 msgstr "Użyj modułu Heaptrc"
 
 #: lazarusidestrconsts.dlgcoincfiles
@@ -825,8 +841,35 @@ msgstr "Stos"
 msgid "Strip Symbols From Executable"
 msgstr "Wyczyść z symboli plik wykonywalny"
 
+#: lazarusidestrconsts.dlgcosymboltype
+msgid "Chose type of debug info"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypeauto
+msgctxt "lazarusidestrconsts.dlgcosymboltypeauto"
+msgid "Automatic"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf2
+msgid "Dwarf2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf2set
+msgid "Dwarf with Sets"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf3
+msgid "Dwarf3 (beta)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypestabs
+msgid "Stabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcounitstyle
-msgid "Unit Style:"
+#, fuzzy
+#| msgid "Unit Style:"
+msgid "Unit Style"
 msgstr "Rodzaj modułu:"
 
 #: lazarusidestrconsts.dlgcouseasdefault
@@ -1464,10 +1507,6 @@ msgctxt "lazarusidestrconsts.dlgfropts"
 msgid "Options"
 msgstr "Opcje"
 
-#: lazarusidestrconsts.dlggeneratedwarf
-msgid "Generate dwarf debug information"
-msgstr "Generuj informacje odpluskiwacza dwarf"
-
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
 msgstr "Pobierz pozycję"
@@ -1758,7 +1797,9 @@ msgid "Line Splitting"
 msgstr "Dzielenie linii"
 
 #: lazarusidestrconsts.dlglinklibraries
-msgid "Link Style:"
+#, fuzzy
+#| msgid "Link Style:"
+msgid "Link Style"
 msgstr "Styl łączenia:"
 
 #: lazarusidestrconsts.dlglinksmart
@@ -2315,7 +2356,9 @@ msgid "Use default Lazarus settings"
 msgstr "Użyj domyślnych ustawień Lazarusa"
 
 #: lazarusidestrconsts.dlgoptimiz
-msgid "Optimizations:"
+#, fuzzy
+#| msgid "Optimizations:"
+msgid "Optimizations"
 msgstr "Optymalizacje:"
 
 #: lazarusidestrconsts.dlgotherunitfiles
@@ -2852,7 +2895,9 @@ msgid "Target OS"
 msgstr "Docelowy system operacyjny"
 
 #: lazarusidestrconsts.dlgtargetplatform
-msgid "Target Platform:"
+#, fuzzy
+#| msgid "Target Platform:"
+msgid "Target Platform"
 msgstr "Docelowa Platforma:"
 
 #: lazarusidestrconsts.dlgtargetproc
@@ -3863,6 +3908,7 @@ msgid "Markup and Matches"
 msgstr "Zaznaczenie i dopasowania"
 
 #: lazarusidestrconsts.lisautomatic
+msgctxt "lazarusidestrconsts.lisautomatic"
 msgid "Automatic"
 msgstr ""
 
@@ -6474,6 +6520,10 @@ msgstr "Błąd odpluskwiacza%sOoops, odpluskwiacz wszedł w stan błędu%sZapisz
 msgid "Debugger Error"
 msgstr ""
 
+#: lazarusidestrconsts.lisdebuggerfeedbackinformation
+msgid "Debugger Information"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebuggerfeedbackless
 msgid "Less"
 msgstr ""
@@ -6704,6 +6754,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdeletebreakpointforaddress
 msgid "Delete breakpoint for address %s?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletebreakpointforwatch
+msgid "Delete watchpoint for \"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletebuildmacro
@@ -7541,6 +7595,7 @@ msgid "Edit custom scanners (%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisevalexpression
+msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr ""
 
@@ -8812,6 +8867,10 @@ msgstr ""
 msgid "Add source breakpoint"
 msgstr ""
 
+#: lazarusidestrconsts.liskmaddbpwatchpoint
+msgid "Add data/watchPoint"
+msgstr ""
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr "Dodaj czujkę"
@@ -9788,6 +9847,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lislogcallstacklimit
 msgid "(frames limit. 0 - no limits)"
+msgstr ""
+
+#: lazarusidestrconsts.lislogevalexpression
+msgctxt "lazarusidestrconsts.lislogevalexpression"
+msgid "Eval expression"
 msgstr ""
 
 #: lazarusidestrconsts.lislogmessage
@@ -10881,7 +10945,8 @@ msgstr "Zmniększ wcięcie zaznaczenia"
 msgid "Uppercase selection"
 msgstr "Zaznaczenie wielkimi literami"
 
-#: lazarusidestrconsts.lismenuuseprojectunit
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
 msgid "Add unit to uses section ..."
 msgstr ""
 
@@ -13269,12 +13334,28 @@ msgstr ""
 msgid "Project source directories"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectsraisedexceptionataddress
+msgid "%0:s%0:s At address %1:x"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
 msgid "Project %s raised exception class '%s' with message:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptioninfileaddress
+msgid "%0:s%0:s In file '%1:s' at address %2:x"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptioninfileline
+msgid "%0:s%0:s In file '%1:s' at line %2:d"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptioninfilelinesrc
+msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsrcpath
@@ -15489,13 +15570,13 @@ msgstr ""
 msgid "Use package in project"
 msgstr ""
 
-#: lazarusidestrconsts.lisuseprojectunit
-msgctxt "lazarusidestrconsts.lisuseprojectunit"
-msgid "Add unit to uses section"
-msgstr ""
-
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisuseunit
+msgctxt "lazarusidestrconsts.lisuseunit"
+msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseunitinunit
@@ -15579,9 +15660,54 @@ msgstr ""
 msgid "&Watch"
 msgstr ""
 
+#: lazarusidestrconsts.liswatchdata
+msgid "Watch:"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkind
+msgid "Watch action"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkindread
+msgid "Read"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkindreadwrite
+msgid "Read/Write"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkindwrite
+msgid "Write"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchpoint
+msgid "&Data/Watch Breakpoint ..."
+msgstr ""
+
+#: lazarusidestrconsts.liswatchpointbreakpoint
+msgid "&Data/watch Breakpoint ..."
+msgstr ""
+
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
 msgstr "Właściwości czujki"
+
+#: lazarusidestrconsts.liswatchscope
+msgid "Watch scope"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchscopeglobal
+msgctxt "lazarusidestrconsts.liswatchscopeglobal"
+msgid "Global"
+msgstr "Globalny"
+
+#: lazarusidestrconsts.liswatchscopelocal
+msgid "Declaration"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchtowatchpoint
+msgid "Create &Data/Watch Breakpoint ..."
+msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
@@ -16143,6 +16269,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecaddbpsource
 msgid "add source breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecaddbpwatchpoint
+msgid "add data/watchpoint"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecaddjumppoint

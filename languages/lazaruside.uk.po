@@ -267,6 +267,10 @@ msgstr "Невідома точка зупинки"
 msgid "Word-Brackets"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhispecialvisiblechars
+msgid "Visualized Special Chars"
+msgstr ""
+
 #: lazarusidestrconsts.dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
 msgstr "Додаткові шляхи до коду для всіх проектів (.pp;.pas)"
@@ -561,7 +565,9 @@ msgid "Messages"
 msgstr "Повідомлення"
 
 #: lazarusidestrconsts.dlgcochecks
-msgid "Checks:"
+#, fuzzy
+#| msgid "Checks:"
+msgid "Checks"
 msgstr "Перевірки:"
 
 #: lazarusidestrconsts.dlgcocompilation
@@ -598,7 +604,17 @@ msgid "Generate Debugging Info For DBX (Slows Compiling)"
 msgstr "Створити інформацію для DBX (уповільнює зборку)"
 
 #: lazarusidestrconsts.dlgcodebugging
-msgid "Debugging:"
+#, fuzzy
+#| msgid "Debugging Info:"
+msgctxt "lazarusidestrconsts.dlgcodebugging"
+msgid "Debugging Info"
+msgstr "Налагоджування:"
+
+#: lazarusidestrconsts.dlgcodebugging2
+#, fuzzy
+#| msgid "Debugging:"
+msgctxt "lazarusidestrconsts.dlgcodebugging2"
+msgid "Debugging"
 msgstr "Налагоджування:"
 
 #: lazarusidestrconsts.dlgcodebugpath
@@ -643,15 +659,15 @@ msgid "Faster Code"
 msgstr "Швидкий код"
 
 #: lazarusidestrconsts.dlgcogdb
-msgid "Generate Debugging Info For GDB (Slows Compiling)"
+#, fuzzy
+#| msgid "Generate Debugging Info For GDB (Slows Compiling)"
+msgid "Generate Debugging Info For GDB (Slower / Increases exe-size)"
 msgstr "Створити інформацію для GDB (уповільнює зборку)"
 
-#: lazarusidestrconsts.dlgcogenerate
-msgid "Generate:"
-msgstr "Створити:"
-
 #: lazarusidestrconsts.dlgcoheaptrc
-msgid "Use Heaptrc Unit"
+#, fuzzy
+#| msgid "Use Heaptrc Unit"
+msgid "Use Heaptrc Unit (check for mem-leaks)"
 msgstr "Використовувати модуль Heaprc"
 
 #: lazarusidestrconsts.dlgcoincfiles
@@ -807,8 +823,35 @@ msgstr "Стек"
 msgid "Strip Symbols From Executable"
 msgstr "Вирізати символи з виконуваного"
 
+#: lazarusidestrconsts.dlgcosymboltype
+msgid "Chose type of debug info"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypeauto
+msgctxt "lazarusidestrconsts.dlgcosymboltypeauto"
+msgid "Automatic"
+msgstr "Автоматично"
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf2
+msgid "Dwarf2"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf2set
+msgid "Dwarf with Sets"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypedwarf3
+msgid "Dwarf3 (beta)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcosymboltypestabs
+msgid "Stabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcounitstyle
-msgid "Unit Style:"
+#, fuzzy
+#| msgid "Unit Style:"
+msgid "Unit Style"
 msgstr "Стиль модуля:"
 
 #: lazarusidestrconsts.dlgcouseasdefault
@@ -1431,10 +1474,6 @@ msgctxt "lazarusidestrconsts.dlgfropts"
 msgid "Options"
 msgstr "Параметри"
 
-#: lazarusidestrconsts.dlggeneratedwarf
-msgid "Generate dwarf debug information"
-msgstr "Генерувати налагоджувальну інформацію у форматі dwarf"
-
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
 msgstr "Задіяти позицію"
@@ -1723,7 +1762,9 @@ msgid "Line Splitting"
 msgstr "Розчіплювання рядка"
 
 #: lazarusidestrconsts.dlglinklibraries
-msgid "Link Style:"
+#, fuzzy
+#| msgid "Link Style:"
+msgid "Link Style"
 msgstr "Стиль компонування"
 
 #: lazarusidestrconsts.dlglinksmart
@@ -2275,7 +2316,9 @@ msgid "Use default Lazarus settings"
 msgstr "Викор. типові параметри Lazarus"
 
 #: lazarusidestrconsts.dlgoptimiz
-msgid "Optimizations:"
+#, fuzzy
+#| msgid "Optimizations:"
+msgid "Optimizations"
 msgstr "Оптимізації:"
 
 #: lazarusidestrconsts.dlgotherunitfiles
@@ -2799,7 +2842,9 @@ msgid "Target OS"
 msgstr "Цільова ОС"
 
 #: lazarusidestrconsts.dlgtargetplatform
-msgid "Target Platform:"
+#, fuzzy
+#| msgid "Target Platform:"
+msgid "Target Platform"
 msgstr "Платформа"
 
 #: lazarusidestrconsts.dlgtargetproc
@@ -3803,6 +3848,7 @@ msgid "Markup and Matches"
 msgstr "Розмітка і Співпадіння"
 
 #: lazarusidestrconsts.lisautomatic
+msgctxt "lazarusidestrconsts.lisautomatic"
 msgid "Automatic"
 msgstr "Автоматично"
 
@@ -6404,6 +6450,10 @@ msgstr "Помилка налагоджувача%sОпа! Налагоджув�
 msgid "Debugger Error"
 msgstr "Помилка Налагоджувача"
 
+#: lazarusidestrconsts.lisdebuggerfeedbackinformation
+msgid "Debugger Information"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebuggerfeedbackless
 msgid "Less"
 msgstr "Менше"
@@ -6631,6 +6681,10 @@ msgstr "Видалити точку зупинки в%s\"%s\" рядок %d?"
 #: lazarusidestrconsts.lisdeletebreakpointforaddress
 msgid "Delete breakpoint for address %s?"
 msgstr "Видалити точку зупинки для адреси %s?"
+
+#: lazarusidestrconsts.lisdeletebreakpointforwatch
+msgid "Delete watchpoint for \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
@@ -7467,6 +7521,7 @@ msgid "Edit custom scanners (%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisevalexpression
+msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
 msgstr ""
 
@@ -8727,6 +8782,10 @@ msgstr ""
 msgid "Add source breakpoint"
 msgstr ""
 
+#: lazarusidestrconsts.liskmaddbpwatchpoint
+msgid "Add data/watchPoint"
+msgstr ""
+
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
 msgstr "Додати спостереження"
@@ -9697,6 +9756,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lislogcallstacklimit
 msgid "(frames limit. 0 - no limits)"
+msgstr ""
+
+#: lazarusidestrconsts.lislogevalexpression
+msgctxt "lazarusidestrconsts.lislogevalexpression"
+msgid "Eval expression"
 msgstr ""
 
 #: lazarusidestrconsts.lislogmessage
@@ -10732,7 +10796,8 @@ msgstr "Відмінити зсув блоку вправо"
 msgid "Uppercase selection"
 msgstr "Верхний регістр виділення"
 
-#: lazarusidestrconsts.lismenuuseprojectunit
+#: lazarusidestrconsts.lismenuuseunit
+msgctxt "lazarusidestrconsts.lismenuuseunit"
 msgid "Add unit to uses section ..."
 msgstr "Додати модуль в секцію uses ..."
 
@@ -13090,12 +13155,28 @@ msgstr ""
 msgid "Project source directories"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectsraisedexceptionataddress
+msgid "%0:s%0:s At address %1:x"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
 msgid "Project %s raised exception class '%s' with message:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptioninfileaddress
+msgid "%0:s%0:s In file '%1:s' at address %2:x"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptioninfileline
+msgid "%0:s%0:s In file '%1:s' at line %2:d"
+msgstr ""
+
+#: lazarusidestrconsts.lisprojectsraisedexceptioninfilelinesrc
+msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectsrcpath
@@ -15296,13 +15377,13 @@ msgstr "Використати пакунок %s в проекті"
 msgid "Use package in project"
 msgstr "Використати пакунок в проекті"
 
-#: lazarusidestrconsts.lisuseprojectunit
-msgctxt "lazarusidestrconsts.lisuseprojectunit"
-msgid "Add unit to uses section"
-msgstr ""
-
 #: lazarusidestrconsts.lisusershomedirectory
 msgid "User's home directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisuseunit
+msgctxt "lazarusidestrconsts.lisuseunit"
+msgid "Add unit to uses section"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseunitinunit
@@ -15386,9 +15467,54 @@ msgstr ""
 msgid "&Watch"
 msgstr "&Спостерігати"
 
+#: lazarusidestrconsts.liswatchdata
+msgid "Watch:"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkind
+msgid "Watch action"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkindread
+msgid "Read"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkindreadwrite
+msgid "Read/Write"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchkindwrite
+msgid "Write"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchpoint
+msgid "&Data/Watch Breakpoint ..."
+msgstr ""
+
+#: lazarusidestrconsts.liswatchpointbreakpoint
+msgid "&Data/watch Breakpoint ..."
+msgstr ""
+
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
 msgstr "Властивості Спостерігання"
+
+#: lazarusidestrconsts.liswatchscope
+msgid "Watch scope"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchscopeglobal
+msgctxt "lazarusidestrconsts.liswatchscopeglobal"
+msgid "Global"
+msgstr "Глобально"
+
+#: lazarusidestrconsts.liswatchscopelocal
+msgid "Declaration"
+msgstr ""
+
+#: lazarusidestrconsts.liswatchtowatchpoint
+msgid "Create &Data/Watch Breakpoint ..."
+msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
@@ -15949,6 +16075,10 @@ msgstr "додати точку зупинки за адресою"
 #: lazarusidestrconsts.srkmecaddbpsource
 msgid "add source breakpoint"
 msgstr "додати точку зупинки в початковому коді"
+
+#: lazarusidestrconsts.srkmecaddbpwatchpoint
+msgid "add data/watchpoint"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
