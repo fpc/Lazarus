@@ -3774,7 +3774,7 @@ begin
       List[i] := RegisterFormat(Str);
     end;
 
-    Result := Count > 0;
+    Result := True;
 
   finally
     QStringList_destroy(QtList);
