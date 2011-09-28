@@ -101,11 +101,11 @@ begin
   lblDbgSymbolType.Caption := dlgCOSymbolType;
   dropDbgSymbolType.Items.Clear;
   // Adjust constants above, if re-ordering
-  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeAuto+' (-g)');                             // 0: automatic
-  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2Set+ '(-gw -godwarfsets)');  // 1: dwarf2 + set
-  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2+ '(-gw2)');                 // 2: dwarf2
-  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeStabs+ '(-gs)');                   // 3: stabs
-  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf3+ '(-gw3)');
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeAuto+' (-g)');                      // 0: automatic
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2Set+ ' (-gw -godwarfsets)');  // 1: dwarf2 + set
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf2+ ' (-gw2)');                 // 2: dwarf2
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeStabs+ ' (-gs)');                   // 3: stabs
+  dropDbgSymbolType.Items.Add(dlgCOSymbolTypeDwarf3+ ' (-gw3)');
   chkUseLineInfoUnit.Caption := dlgLNumsBct + ' (-gl)';
   chkUseHeaptrc.Caption := dlgCOHeaptrc + ' (-gh)';
   chkUseValgrind.Caption := dlgCOValgrind + ' (-gv)';
