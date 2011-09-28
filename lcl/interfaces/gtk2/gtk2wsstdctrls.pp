@@ -1556,7 +1556,7 @@ begin
      (csDesigning in AWinControl.ComponentState) then
     Exit;
   Value.g_type := G_TYPE_BOOLEAN;
-  Value.data[0].v_int := gTRUE;
+  Value.data[0].v_int := longint(gTRUE);
 
   g_object_set_property(PGObject(AWidget), 'button-sensitivity', @Value);
 end;

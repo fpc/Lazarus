@@ -168,6 +168,7 @@ var
   TopLine: integer;
   NewCode: TCodeBuffer;
   Path: String;
+  AComponent: TComponent;
 begin
   Result:=false;
   Filename:='';
@@ -183,9 +184,9 @@ begin
     debugln(['FindDeclarationOfIDEControl control '+DbgSName(AControl)+' is not on a form/frame']);
     exit;
   end;
-  //debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',UnitControl.UnitName]);
+  debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',UnitControl.UnitName]);
   FormFilename:=LazarusIDE.FindUnitFile(GetClassUnitName(UnitControl.ClassType),LazarusIDE);
-  //debugln(['FindDeclarationOfIDEControl FormFilename=',FormFilename]);
+  debugln(['FindDeclarationOfIDEControl FormFilename=',FormFilename]);
   if FormFilename='' then begin
     debugln(['FindDeclarationOfIDEControl UnitControl=',DbgSName(UnitControl),' Unitname=',GetClassUnitName(UnitControl.ClassType),': unit source not found']);
     exit;
@@ -196,9 +197,13 @@ begin
     exit;
   end;
 
-  Path:=UnitControl.ClassName;
-  if UnitControl<>AControl then
-    Path:=Path+'.'+AControl.Name;
+  Path:='';
+  AComponent:=AControl;
+  while (AComponent<>nil) and (AComponent<>UnitControl) do begin
+    Path:='.'+AComponent.Name+Path;
+    AComponent:=AComponent.Owner;
+  end;
+  Path:=UnitControl.ClassName+Path;
   if not CodeToolBoss.FindDeclarationOfPropertyPath(Code,Path,NewCode,X,Y,TopLine)
   then begin
     debugln(['FindDeclarationOfIDEControl path ',Path,' not found in unit ',Code.Filename]);
