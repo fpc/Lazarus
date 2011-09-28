@@ -916,9 +916,12 @@ class procedure TWinCEWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 var
   idx: Integer;
 begin
+  if AMenuItem = nil then Exit; // safety measure
+
   // this is the top item of a menu, so we must undo TWinCEWSMenu.CreateHandle
   // See bug 19898
-  if AMenuItem = AMenuItem.Menu.Items then 
+  // The Assigned(AMenuitem.Menu) is a fix from http://bugs.freepascal.org/view.php?id=20274
+  if Assigned(AMenuitem.Menu) and (AMenuItem = AMenuItem.Menu.Items) then
   begin
     idx := MenuHandleList.IndexOf(Pointer(AMenuItem.Handle));
     if idx >= 0 then 
