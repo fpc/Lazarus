@@ -18,6 +18,7 @@ var
   ShowCmd: Boolean;
   RTLPrefix: String;
   FCLPrefix: String;
+  WarningsCount: Integer;
 
 const
   PackageName   = 'lcl';
@@ -49,6 +50,7 @@ begin
   WriteLn('                       many times as needed.');
   WriteLn('    --outfmt html|chm  Use value as the format fpdoc will use. Default is "html"');
   WriteLn('    --showcmd          Print the command that would be run instead if running it.');
+  WriteLn('    --warnings         Show warnings while working.');
   WriteLn;
   WriteLn('The following are Environment variables that will override the above params if set:');
   WriteLn('     FPDOCFORMAT, FPDOCPARAMS, FPDOC, FPDOCFOOTER, FPCDOCS, RTLLINKPREFIX, FCLLINKPREFIX');
@@ -63,7 +65,7 @@ var
  OptIndex: Longint;
 begin
   ShowCmd := False;
-  
+  WarningsCount:=-1;
   SetLength(Options, 10);
 
   Options[0].Name:='help';
@@ -78,8 +80,9 @@ begin
   Options[5].Has_arg:=1;
   Options[6].Name:='footer';
   Options[6].Has_arg:=1;
+  Options[7].Name:='warnings';
   repeat
-    c := GetLongOpts('help:arg:fpdoc:outfmt:showcmd:fpcdocs:footer', @Options[0], OptIndex);
+    c := GetLongOpts('help:arg:fpdoc:outfmt:showcmd:fpcdocs:footer:warnings', @Options[0], OptIndex);
     case c of
       #0:
          begin
@@ -92,6 +95,7 @@ begin
              4:  ShowCmd := True;
              5:  FPCDocsPath := OptArg;
              6:  fpdocfooter := OptArg;
+             7:  WarningsCount:=0;
            else
              WriteLn('Unknown Value: ', OptIndex);
            end;
@@ -99,7 +103,7 @@ begin
       '?': PrintHelp;
       EndOfOptions: Break;
     else
-      WriteLn('UNknown option ', c, ' ', ord(c), ' ',OptArg);
+      WriteLn('Unknown option ', c, ' ', ord(c), ' ',OptArg);
     end;
   until c = EndOfOptions;
 end;
@@ -166,12 +170,14 @@ begin
     //WriteLn('Checking file ' +FRec.Name);
     if ((FRec.Attr and faDirectory) <> 0) and (FRec.Name[1] <> '.')then
     begin
-      AddFilesToList(IncludeTrailingPathDelimiter(Dir)+FRec.Name, Ext, List);
+      AddFilesToList(IncludeTrailingPathDelimiter(Dir+FRec.Name), Ext, List);
       //WriteLn('Checking Subfolder ',Dir+ FRec.Name);
     end
     else if Lowercase(ExtractFileExt(FRec.Name)) = Ext then
     begin
       SubDirs := IncludeTrailingPathDelimiter(Copy(Dir, Length(PasSrcDir)+1, Length(Dir)));
+      if Length(SubDirs) = 1 then
+        SubDirs:='';
       List.Add(SubDirs+FRec.Name);
 
     end;
@@ -226,7 +232,12 @@ begin
       ArgParams:=ArgParams+' --descr='+XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
     end
     else
-      WriteLn('Warning! No corresponding xml file for unit ' + FileList[I]);
+    begin
+      if WarningsCount >= 0 then
+        WriteLn('Warning! No corresponding xml file for unit ' + FileList[I])
+      else
+      Dec(WarningsCount);
+    end;
   end;
   FileList.Free;
   InputList.SaveToFile(PackageName+PathDelim+InputFileList);
@@ -256,6 +267,8 @@ begin
   Process.CurrentDirectory := GetCurrentDir+PathDelim+PackageName;
   Process.CommandLine := CmdLine;
   Process.Execute;
+  if WarningsCount < -1 then
+    WriteLn(abs(WarningsCount+1), ' Warnings hidden. Use --warnings to see them all.') ;
   Process.Free;
 end;
 
