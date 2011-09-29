@@ -47,21 +47,21 @@ fi
 
 LazVersion=$(../get_lazarus_version.sh)$LazVersionPostfix
 if [ "$1" = "snapshot" ]; then
-  LazRelease=`date +%Y%m%d`
+  LazRelease=`date +%Y%m%d`.laz
 else
-  LazRelease=0
+  LazRelease=0.laz
 fi
 
 RPMDIR=$(./get_rpm_source_dir.sh)
 RPMARCH=$(rpm --eval "%{_arch}")
 RPMTARGETCPU=$(rpm --eval "%{_target_cpu}")
-MOCKCONFIG=fedora-15-$RPMARCH
+
 MOCKCONFIG=buildlazarus
 MOCKRESULTDIR=~/tmp/mockresult
 
 rm -rf $MOCKRESULTDIR
 
-FPCRPM=$RPMDIR/RPMS/$RPMTARGETCPU/fpc-$FPCFullVersion-0.$RPMTARGETCPU.rpm
+FPCRPM=$RPMDIR/RPMS/$RPMTARGETCPU/fpc-$FPCFullVersion-0.laz.$RPMTARGETCPU.rpm
 if [ ! -f $FPCRPM ]; then
   echo ERROR: fpc rpm $FPCRPM not available
   exit
