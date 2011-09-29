@@ -2135,7 +2135,6 @@ var
     var
       i: Integer;
       Item: TMenuItem;
-      MenuItemWidget: PGtkWidget;
     begin
       Result:=false;
       if (AMenuItem=nil) or (not AMenuItem.HandleAllocated) then exit;
@@ -2143,17 +2142,7 @@ var
         Item:=AMenuItem[i];
         if not Item.HandleAllocated then continue;
         if not GTK_WIDGET_SENSITIVE(PGTKWidget(Item.Handle)) then continue;
-        if IsAccel(Msg.CharCode,Item.Caption) then begin
-          // found
-          Result:=true;
-          MenuItemWidget:=PGTKWidget(Item.Handle);
-          if GtkWidgetIsA(MenuItemWidget,gtk_menu_item_get_type) then begin
-            //DebugLn(['CheckMenuChilds popup: ',dbgsName(Item)]);
-            // popup the submenu
-            gtk_signal_emit_by_name(PGtkObject(MenuItemWidget),'activate-item');
-          end;
-          exit;
-        end;
+        if IsAccel(Msg.CharCode,Item.Caption) then Result:=true;
       end;
     end;
   
