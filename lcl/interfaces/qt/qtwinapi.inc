@@ -3400,7 +3400,12 @@ begin
   begin
     // POS
     if (ScrollInfo.fMask and SIF_POS) <> 0 then
-      ScrollInfo.nPos := QtScrollBar.getValue;
+    begin
+      if QtScrollBar.ChildOfComplexWidget = ccwAbstractScrollArea then
+        ScrollInfo.nPos := QtScrollBar.getSliderPosition
+      else
+        ScrollInfo.nPos := QtScrollBar.getValue;
+    end;
 
     // RANGE
     if (ScrollInfo.fMask and SIF_RANGE) <> 0 then
