@@ -49,8 +49,8 @@ type
     function StyleIndex(p: PfrTextRec; AddIfNotFound: boolean = true): Integer;
     function TextStyleID(p: PfrTextRec): AnsiString;
   protected
-    procedure AppendLine(const s: UTF8String);
-    procedure InsertLine(const s: UTF8String; position: Integer);
+    procedure AppendLine(const s: AnsiString);
+    procedure InsertLine(const s: AnsiString; position: Integer);
     function  GetviewText(View:TfrView): string; override;
     procedure CalcXCoords(var x,w: integer); override;
   public
@@ -386,13 +386,13 @@ begin
 end;
 
 
-procedure TfrHTMExportFilter.AppendLine(const s: UTF8String);
+procedure TfrHTMExportFilter.AppendLine(const s: AnsiString);
 begin
   outputLines.Add(s);
 end;
 
 
-procedure TfrHTMExportFilter.InsertLine(const s: UTF8String; position: Integer);
+procedure TfrHTMExportFilter.InsertLine(const s: AnsiString; position: Integer);
 begin
   outputLines.Insert(position, s);
 end;
