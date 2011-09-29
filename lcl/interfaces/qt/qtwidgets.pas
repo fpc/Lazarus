@@ -6443,6 +6443,21 @@ begin
           end;
         end;
     end;
+
+    QEventHide:
+    begin
+      if Assigned(FOwner) and (FOwner is TQtCustomControl) then
+      begin
+        if Assigned(TQtCustomControl(FOwner).FViewPortWidget) then
+          case getOrientation of
+            QtVertical: TQtCustomControl(FOwner).FViewPortWidget.FScrollY := 0;
+            QtHorizontal: TQtCustomControl(FOwner).FViewPortWidget.FScrollX := 0;
+          end;
+      end;
+      if FOwnWidget then
+        Result := inherited EventFilter(Sender, Event);
+    end;
+
     QEventMouseButtonRelease:
     QAbstractSlider_triggerAction(QAbstractSliderH(Widget),
                         QAbstractSliderSliderNoAction);

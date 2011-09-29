@@ -2495,7 +2495,8 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetClientBounds]');
   {$endif}
-
+  if Handle = 0 then
+    Exit(False);
   ARect := TQtWidget(handle).getClientBounds;
   Result := True;
 end;
