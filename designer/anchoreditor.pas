@@ -1061,7 +1061,7 @@ var
   CurSide: TAnchorSide;
 begin
   FAmbiguousBorderSpace:=false;
-  FBorderSpace:=AControl.BorderSpacing.GetSideSpace(FAnchorKind);
+  FBorderSpace:=AControl.BorderSpacing.GetSpace(FAnchorKind);
   FAmbiguousEnabled:=false;
   FEnabled:=(FAnchorKind in AControl.Anchors);
   CurSide:=AControl.AnchorSide[FAnchorKind];
@@ -1076,7 +1076,7 @@ var
   CurSide: TAnchorSide;
 begin
   FAmbiguousBorderSpace:=FAmbiguousBorderSpace
-            or (FBorderSpace<>AControl.BorderSpacing.GetSideSpace(FAnchorKind));
+            or (FBorderSpace<>AControl.BorderSpacing.GetSpace(FAnchorKind));
   FAmbiguousEnabled:=FAmbiguousEnabled
                      or (FEnabled<>(FAnchorKind in AControl.Anchors));
   CurSide:=AControl.AnchorSide[FAnchorKind];
