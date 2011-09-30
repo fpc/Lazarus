@@ -1687,11 +1687,25 @@ begin
   end;
 end;
 
+// -----------------------------------------------------------
+
+function AlignToPtr(const p: Pointer): Pointer;
+begin
+{$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
+  Result := Align(p, SizeOf(Pointer));
+{$ELSE}
+  Result := p;
+{$ENDIF}
+end;
+
+// -----------------------------------------------------------
+
 procedure WritePublishedProperties(Instance: TPersistent);
 var
   TypeInfo: PTypeInfo;
   TypeData: PTypeData;
   PropInfo: PPropInfo;
+  PropData: ^TPropData;
   CurCount: integer;
 begin
   TypeInfo:=Instance.ClassInfo;
@@ -1706,10 +1720,10 @@ begin
     // read all property infos of current class
     TypeData:=GetTypeData(TypeInfo);
     // skip unitname
-    PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
+    PropData:=AlignToPtr(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
     // read property count
-    CurCount:=PWord(PropInfo)^;
-    inc(PtrUInt(PropInfo),SizeOf(Word));
+    CurCount:=PWord(PropData)^;
+    PropInfo:=PPropInfo(@PropData^.PropList);
     debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
 
     {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',DbgS(TypeData^.ClassType));
@@ -1731,7 +1745,7 @@ begin
       // point PropInfo to next propinfo record.
       // Located at Name[Length(Name)+1] !
       debugln('      Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name);
-      PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+      PropInfo:=PPropInfo(AlignToPtr(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1));
       dec(CurCount);
     end;
     TypeInfo:=TypeData^.ParentInfo;
@@ -1786,19 +1800,6 @@ const
     ,nil                       // tkHelper
 {$ENDIF}
     );
-
-// -----------------------------------------------------------
-
-function AlignToPtr(const p: Pointer): Pointer;
-begin
-{$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
-  Result := Align(p, SizeOf(Pointer));
-{$ELSE}
-  Result := p;
-{$ENDIF}
-end;
-
-// -----------------------------------------------------------
 
 var
   PropertyEditorMapperList:TList;
