@@ -579,7 +579,7 @@ begin
   ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_UNKNOWN,[]);
   ecAddBpSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddBpAddress: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecAddBpDataWatch: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpDataWatch: SetResult(VK_F5,[ssShift],VK_UNKNOWN,[]);
 
   // components menu
   ecNewPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1835,7 +1835,7 @@ begin
   ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_F5,[ssCtrl,ssMeta]);
   ecAddBpSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecAddBpAddress: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecAddBpDataWatch: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecAddBpDataWatch: SetResult(VK_F5,[ssShift],VK_UNKNOWN,[]);
   end;
 end;
 

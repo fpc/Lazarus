@@ -76,6 +76,7 @@ type
     procedure mnuAddBpAddress(Sender: TObject);
     procedure mnuAddBpSource(Sender: TObject);
     procedure mnuAddBpData(Sender: TObject);
+    procedure mnuAddBpDataAtCursor(Sender: TObject);
 
     // Debugger events
     procedure DebuggerBreakPointHit(ADebugger: TDebugger; ABreakPoint: TBaseBreakPoint; var ACanContinue: Boolean);
@@ -721,8 +722,41 @@ var
   NewBreakpoint: TIDEBreakPoint;
 begin
   NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite);
-  if ShowBreakPointProperties(NewBreakpoint) <> mrOk then
+  if ShowBreakPointProperties(NewBreakpoint) = mrOk then
+    ViewDebugDialog(ddtBreakpoints, False)
+  else
     NewBreakpoint.Free;
+end;
+
+procedure TDebugManager.mnuAddBpDataAtCursor(Sender: TObject);
+var
+  SE: TSourceEditor;
+  WatchVar: String;
+  NewBreakpoint: TIDEBreakPoint;
+begin
+  SE := SourceEditorManager.GetActiveSE;
+
+  if Assigned(SE) then
+  begin
+    if SE.SelectionAvailable then
+      WatchVar := SE.Selection
+    else
+      WatchVar := SE.GetOperandAtCurrentCaret;
+
+    if (WatchVar <> '') and SE.EditorComponent.Focused then
+    begin
+      // TODO: find existing?
+      NewBreakpoint := BreakPoints.Add(WatchVar, wpsGlobal, wpkWrite);
+      if ShowBreakPointProperties(NewBreakpoint) = mrOk then
+        ViewDebugDialog(ddtBreakpoints, False)
+      else
+        NewBreakpoint.Free;
+      exit;
+    end;
+  end;
+
+  // watch was not added automatically => show a dialog
+  mnuAddBpData(nil);
 end;
 
 procedure TDebugManager.BreakAutoContinueTimer(Sender: TObject);
@@ -808,7 +842,7 @@ begin
   end;
 
   // watch was not added automatically => show a dialog
-  ShowWatchProperties(nil, WatchVar);
+  ShowWatchProperties(nil, '');
 end;
 
 //-----------------------------------------------------------------------------
@@ -1625,6 +1659,7 @@ end;
 procedure TDebugManager.ConnectSourceNotebookEvents;
 begin
   SrcEditMenuAddWatchAtCursor.OnClick:=@mnuAddWatchClicked;
+  SrcEditMenuAddWatchPointAtCursor.OnClick:=@mnuAddBpDataAtCursor;
   SrcEditMenuEvaluateModify.OnClick:=@mnuViewDebugDialogClick;
   SrcEditMenuEvaluateModify.Tag := Ord(ddtEvaluate);
   SrcEditMenuInspect.OnClick:=@mnuViewDebugDialogClick;
@@ -1675,6 +1710,7 @@ begin
   SrcEditMenuRunToCursor.Command:=GetCommand(ecRunToCursor);
   SrcEditMenuEvaluateModify.Command:=GetCommand(ecEvaluate);
   SrcEditMenuAddWatchAtCursor.Command:=GetCommand(ecAddWatch);
+  SrcEditMenuAddWatchPointAtCursor.Command:=GetCommand(ecAddBpDataWatch);
   SrcEditMenuInspect.Command:=GetCommand(ecInspect);
   SrcEditMenuViewCallStack.Command:=GetCommand(ecToggleCallStack);
 end;
