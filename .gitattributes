@@ -5951,6 +5951,7 @@ test/runtestsgui.lpr svneol=native#text/plain
 test/semiauto/idesemiautotests.pas svneol=native#text/pascal
 test/semiauto/lclsemiautotests.pas svneol=native#text/pascal
 test/semiauto/semiautotest.pas svneol=native#text/pascal
+test/synedit/testregexpr.pas svneol=native#text/plain
 test/testglobals.pas svneol=native#text/plain
 test/testlpi.pas svneol=native#text/plain
 test/testresult-db/createdb.sql svneol=native#text/plain
