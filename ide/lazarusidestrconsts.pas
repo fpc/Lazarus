@@ -3316,6 +3316,10 @@ resourcestring
   lisUnableToReadFile = 'Unable to read file';
   lisUnableToReadFilename = 'Unable to read file %s%s%s.';
   lisErrorDeletingFile = 'Error deleting file';
+  lisInvalidMask = 'Invalid Mask';
+  lisTheFileMaskIsNotAValidRegularExpression = 'The file mask "%s" is not a '
+    +'valid regular expression.';
+  lisTheFileMaskIsInvalid = 'The file mask "%s" is invalid.';
   lisUnableToDeleteAmbiguousFile = 'Unable to delete ambiguous file %s%s%s';
   lisErrorRenamingFile = 'Error renaming file';
   lisUnableToRenameAmbiguousFileTo = 'Unable to rename ambiguous file %s%s%s%'

@@ -2515,12 +2515,12 @@ end;
 {------------------------------------------------------------------------------
   function SimpleSyntaxToRegExpr(const Src: string): string;
 
-  . -> \.
   * -> .*
   ? -> .
   , -> |
   ; -> |
-  
+  Backslash characters .+
+
   Finally enclose by ^( )$
 ------------------------------------------------------------------------------}
 function SimpleSyntaxToRegExpr(const Src: string): string;
@@ -2538,7 +2538,7 @@ begin
     c:=Src[SrcPos];
     case c of
     '\': inc(SrcPos);
-    '*','.':
+    '*','.','+':
       inc(DestLen);
     end;
     inc(SrcPos);
@@ -2559,11 +2559,11 @@ begin
         Result[DestPos]:=Src[SrcPos];
         inc(DestPos);
       end;
-    '.':
+    '.','+':
       begin
         Result[DestPos]:='\';
         inc(DestPos);
-        Result[DestPos]:='.';
+        Result[DestPos]:=c;
         inc(DestPos);
       end;
     '*':

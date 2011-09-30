@@ -100,6 +100,7 @@ procedure TCleanDirectoryDialog.OkButtonClick(Sender: TObject);
 var
   List: TStrings;
 begin
+  ModalResult:=mrNone;
   SaveSettings;
   if not SearchFilesToDelete(List) then exit;
   try
@@ -325,6 +326,7 @@ var
     const FilterAsText: string): boolean;
   var
     Expr: String;
+    s: String;
   begin
     Result:=false;
     if FilterAsText='' then begin
@@ -339,12 +341,16 @@ var
       Expr:=FilterAsText;
     try
       Filter.Expression:=Expr;
+      // do a simple test
+      Filter.Exec('test.file');
       Result:=true;
     except
       on E: Exception do begin
-        MessageDlg('Invalid Mask',
-          'The mask "'+FilterAsText+'" is not a valid expression.',
-          mtError,[mbCancel],0);
+        if SimpleSyntax then
+          s:=Format(lisTheFileMaskIsInvalid, [FilterAsText])
+        else
+          s:=Format(lisTheFileMaskIsNotAValidRegularExpression, [FilterAsText]);
+        MessageDlg(lisInvalidMask, s, mtError, [mbCancel], 0);
       end;
     end;
   end;
@@ -364,10 +370,10 @@ begin
     Directory:=AppendPathDelim(Directory);
 
     // setup filters
-    SetupFilter(RemoveFilterRegExpr,SimpleSyntaxRemoveCheckbox.Checked,
-      RemoveCombobox.Text);
-    SetupFilter(KeepFilterRegExpr,SimpleSyntaxKeepCheckbox.Checked,
-      KeepCombobox.Text);
+    if not SetupFilter(RemoveFilterRegExpr,SimpleSyntaxRemoveCheckbox.Checked,
+      RemoveCombobox.Text) then exit;
+    if not SetupFilter(KeepFilterRegExpr,SimpleSyntaxKeepCheckbox.Checked,
+      KeepCombobox.Text) then exit;
 
     // search files
     List:=TStringList.Create;
