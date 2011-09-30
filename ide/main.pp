@@ -16300,7 +16300,9 @@ begin
         if SmartHintStr<>'' then begin
           p:=System.Pos('<body>',lowercase(SmartHintStr));
           if p>0 then begin
-            Insert('<div class="debuggerhint">'+Expression+'</div><br>',SmartHintStr,p+length('<body>'));
+            Insert('<div class="debuggerhint">'
+                   +CodeHelpBoss.TextToHTML(Expression)+'</div><br>',
+                   SmartHintStr,p+length('<body>'));
           end else begin
             SmartHintStr:=Expression+LineEnding+LineEnding+SmartHintStr;
           end;
