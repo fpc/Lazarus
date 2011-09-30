@@ -3139,7 +3139,7 @@ begin
       ReadNextAtom;
     end;
     if (CurNode.Parent.Desc=ctnVarSection)
-    and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')) then
+    and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('CVAR')) then
     begin
       // examples:
       //   a: b; public;
@@ -3147,7 +3147,7 @@ begin
       //   a: b; external c;
       //   a: b; external name 'c';
       //   a: b; external 'library' name 'c';
-      if UpAtomIs('EXTERNAL') then begin
+      if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') then begin
         // read external identifier
         ReadNextAtom;
         if (CurPos.Flag<>cafSemicolon) and (not UpAtomIs('NAME')) then
@@ -3612,25 +3612,35 @@ begin
   // optional: hint modifier
   ReadHintModifier;
   if CurPos.Flag=cafSemicolon then begin
-    ReadNextAtom;
-    if UpAtomIs('PUBLIC') then begin
+    repeat
       ReadNextAtom;
-      if UpAtomIs('NAME') then begin
+      if UpAtomIs('PUBLIC') then begin
         ReadNextAtom;
-        if not AtomIsStringConstant then
-          RaiseStringExpectedButAtomFound(ctsStringConstant);
-        ReadNextAtom;
-        if UpAtomIs('SECTION') then begin
+        if UpAtomIs('NAME') then begin
           ReadNextAtom;
           if not AtomIsStringConstant then
             RaiseStringExpectedButAtomFound(ctsStringConstant);
           ReadNextAtom;
+          if UpAtomIs('SECTION') then begin
+            ReadNextAtom;
+            if not AtomIsStringConstant then
+              RaiseStringExpectedButAtomFound(ctsStringConstant);
+            ReadNextAtom;
+          end;
         end;
+        if CurPos.Flag<>cafSemicolon then
+          RaiseStringExpectedButAtomFound(';');
+      end else
+      if UpAtomIs('CVAR') then begin
+        ReadNextAtom;
+        if CurPos.Flag<>cafSemicolon then
+          RaiseStringExpectedButAtomFound(';');
+      end else
+      begin
+        UndoReadNextAtom;
+        break;
       end;
-      if CurPos.Flag<>cafSemicolon then
-        RaiseStringExpectedButAtomFound(';');
-    end else
-      UndoReadNextAtom;
+    until false;
   end;
 end;
 
