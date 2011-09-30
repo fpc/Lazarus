@@ -4644,7 +4644,8 @@ procedure TProject.UpdateUnitComponentDependencies;
     TypeInfo: PTypeInfo;
     TypeData: PTypeData;
     PropInfo: PPropInfo;
-    CurCount: Word;
+    PropList: PPropList;
+    CurCount,i: integer;
     ReferenceComponent: TComponent;
     OwnerComponent: TComponent;
     ReferenceUnit: TUnitInfo;
@@ -4670,49 +4671,46 @@ procedure TProject.UpdateUnitComponentDependencies;
     repeat
       // read all property infos of current class
       TypeData:=GetTypeData(TypeInfo);
-      // skip unitname
-      PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
       // read property count
-      CurCount:=PWord(PropInfo)^;
-      inc(PtrUInt(PropInfo),SizeOf(Word));
-      
-      // read properties
-      while CurCount>0 do begin
-        // point PropInfo to next propinfo record.
-        // Located at Name[Length(Name)+1] !
-        if (PropInfo^.PropType^.Kind=tkClass) then begin
-          // property of kind TObject
-          ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
-          //debugln('TProject.UpdateUnitComponentDependencies Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
-          if ReferenceComponent is TComponent then begin
-            // reference is a TComponent
-            OwnerComponent:=ReferenceComponent;
-            while OwnerComponent.Owner<>nil do
-              OwnerComponent:=OwnerComponent.Owner;
-            if OwnerComponent<>AnUnitInfo.Component then begin
-              // property references a component that is not owned
-              // by the current unit
-              ReferenceUnit:=UnitWithComponent(OwnerComponent);
-              if ReferenceUnit<>nil then begin
-                // property references another unit
-                {$IFDEF VerboseIDEMultiForm}
-                DebugLn(['TProject.UpdateUnitComponentDependencies multi form reference found: ',AnUnitInfo.Filename,' -> ',ReferenceUnit.Filename]);
-                {$ENDIF}
-                AnUnitInfo.AddRequiresComponentDependency(
-                                     ReferenceUnit,[ucdtProperty]);
-                if FRevertLockCount>0 then begin
-                  Dependency:=AnUnitInfo.AddRequiresComponentDependency(
-                                       ReferenceUnit,[ucdtOldProperty]);
-                  Dependency.SetUsedByPropPath(
-                    Dependency.CreatePropPath(AComponent,PropInfo^.Name),
-                    Dependency.CreatePropPath(ReferenceComponent));
+      CurCount:=GetPropList(TypeInfo,PropList);
+      try
+         // read properties
+        for i:=0 to CurCount-1 do begin
+          PropInfo:=PropList^[i];
+          if (PropInfo^.PropType^.Kind=tkClass) then begin
+            // property of kind TObject
+            ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
+            //debugln('TProject.UpdateUnitComponentDependencies Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
+            if ReferenceComponent is TComponent then begin
+              // reference is a TComponent
+              OwnerComponent:=ReferenceComponent;
+              while OwnerComponent.Owner<>nil do
+                OwnerComponent:=OwnerComponent.Owner;
+              if OwnerComponent<>AnUnitInfo.Component then begin
+                // property references a component that is not owned
+                // by the current unit
+                ReferenceUnit:=UnitWithComponent(OwnerComponent);
+                if ReferenceUnit<>nil then begin
+                  // property references another unit
+                  {$IFDEF VerboseIDEMultiForm}
+                  DebugLn(['TProject.UpdateUnitComponentDependencies multi form reference found: ',AnUnitInfo.Filename,' -> ',ReferenceUnit.Filename]);
+                  {$ENDIF}
+                  AnUnitInfo.AddRequiresComponentDependency(
+                                       ReferenceUnit,[ucdtProperty]);
+                  if FRevertLockCount>0 then begin
+                    Dependency:=AnUnitInfo.AddRequiresComponentDependency(
+                                         ReferenceUnit,[ucdtOldProperty]);
+                    Dependency.SetUsedByPropPath(
+                      Dependency.CreatePropPath(AComponent,PropInfo^.Name),
+                      Dependency.CreatePropPath(ReferenceComponent));
+                  end;
                 end;
               end;
             end;
           end;
         end;
-        PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
-        dec(CurCount);
+      finally
+        FreeMem(PropList);
       end;
       TypeInfo:=TypeData^.ParentInfo;
     until TypeInfo=nil;
@@ -4824,7 +4822,8 @@ procedure TProject.FindUnitsUsingSubComponent(SubComponent: TComponent;
     TypeInfo: PTypeInfo;
     TypeData: PTypeData;
     PropInfo: PPropInfo;
-    CurCount: Word;
+    PropList: PPropList;
+    CurCount,i: integer;
     ReferenceComponent: TComponent;
   begin
     if csDestroying in AComponent.ComponentState then exit;
@@ -4834,27 +4833,24 @@ procedure TProject.FindUnitsUsingSubComponent(SubComponent: TComponent;
     repeat
       // read all property infos of current class
       TypeData:=GetTypeData(TypeInfo);
-      // skip unitname
-      PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
       // read property count
-      CurCount:=PWord(PropInfo)^;
-      inc(PtrUInt(PropInfo),SizeOf(Word));
-
-      // read properties
-      while CurCount>0 do begin
-        // point PropInfo to next propinfo record.
-        // Located at Name[Length(Name)+1] !
-        if PropInfo^.PropType^.Kind=tkClass then begin
-          // property of kind TObject
-          ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
-          //debugln('TProject.FindUnitsUsingSubComponent Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
-          if ReferenceComponent=SubComponent then begin
-            if List.IndexOf(AnUnitInfo)<0 then
-              List.Add(AnUnitInfo);
+      CurCount:=GetPropList(TypeInfo,PropList);
+      try
+         // read properties
+        for i:=0 to CurCount-1 do begin
+          PropInfo:=PropList^[i];
+          if PropInfo^.PropType^.Kind=tkClass then begin
+            // property of kind TObject
+            ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
+            //debugln('TProject.FindUnitsUsingSubComponent Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
+            if ReferenceComponent=SubComponent then begin
+              if List.IndexOf(AnUnitInfo)<0 then
+                List.Add(AnUnitInfo);
+            end;
           end;
         end;
-        PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
-        dec(CurCount);
+      finally
+        FreeMem(PropList);
       end;
       TypeInfo:=TypeData^.ParentInfo;
     until TypeInfo=nil;
