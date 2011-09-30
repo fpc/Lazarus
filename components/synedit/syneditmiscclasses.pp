@@ -336,7 +336,11 @@ type
     property Options: TSynSearchOptions write SetOptions;
   end;
 
+  {$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
+  TSynClipboardStreamTag = type integer;
+  {$ELSE }
   TSynClipboardStreamTag = type word;
+  {$ENDIF}
 
   { TSynClipboardStream }
 
@@ -1283,6 +1287,9 @@ begin
       inc(ctag, SizeOf(TSynClipboardStreamTag));
       inc(ctag, PInteger(ctag)^);
       inc(ctag, SizeOf(Integer));
+      {$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
+      ctag := Align(ctag, SizeOf(integer));
+      {$ENDIF}
     end;
   end;
   if (Result <> nil) and
@@ -1310,9 +1317,14 @@ procedure TSynClipboardStream.AddTag(ATag: TSynClipboardStreamTag; Location: Poi
 var
   msize: Int64;
   mpos: Pointer;
+  LenBlock:PtrUInt;
 begin
   msize := FMemStream.Size;
-  FMemStream.Size := msize + Len + SizeOf(TSynClipboardStreamTag) + SizeOf(Integer);
+  LenBlock:= Len + SizeOf(TSynClipboardStreamTag) + SizeOf(Integer);
+  {$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
+  LenBlock := Align(LenBlock, SizeOf(integer));
+  {$ENDIF}
+  FMemStream.Size := msize +LenBlock;
   mpos := FMemStream.Memory + msize;
   TSynClipboardStreamTag(mpos^) := ATag;
   inc(mpos, SizeOf(TSynClipboardStreamTag));
