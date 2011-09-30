@@ -557,6 +557,7 @@ var
   TypeInfo: PTypeInfo;
   TypeData: PTypeData;
   PropInfo: PPropInfo;
+  PropList: PPropList;
   CurCount: integer;
   i: Integer;
 begin
@@ -582,23 +583,21 @@ begin
   Result:=Result+' PropCount='+IntToStr(TypeData^.PropCount);
   Result:=Result+' UnitName="'+TypeData^.UnitName+'"';
 
-  // skip unitname
-  PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
   // read property count
-  CurCount:=PWord(PropInfo)^;
+  CurCount:=GetPropList(TypeInfo,PropList);;
   Result:=Result+' CurPropCnt='+IntToStr(CurCount);
-  inc(PropInfo,SizeOf(Word));
 
   // read properties
   Result:=Result+' Properties={';
   for i:=0 to CurCount-1 do begin
+    PropInfo:=PropList^[i];
     if i>0 then Result:=Result+',';
     // point PropInfo to next propinfo record.
     // Located at Name[Length(Name)+1] !
     Result:=Result+IntToStr(i)+':PropName="'+PropInfo^.Name+'"'
                   +':Type="'+PropInfo^.PropType^.Name+'"';
-    PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
   end;
+  FreeMem(PropList);
   Result:=Result+'}';
 end;
 
@@ -632,7 +631,7 @@ begin
       + ':Name="' + FieldInfo^.Name + '"'
       + ':Offset=' +IntToStr(FieldInfo^.FieldOffset);
     FieldInfo := PFieldInfo(PByte(@FieldInfo^.Name) + 1 + Length(FieldInfo^.Name));
-    {$ifndef FPC_REQUIRES_PROPER_ALIGNMENT}
+    {$ifdef FPC_REQUIRES_PROPER_ALIGNMENT}
     FieldInfo := Align(FieldInfo, SizeOf(Pointer));
     {$endif FPC_REQUIRES_PROPER_ALIGNMENT}
   end;
@@ -1468,9 +1467,6 @@ begin
   NewTypeInfo^.Kind:=tkClass;
   System.Move(NewClassName[0],NewTypeInfo^.Name[0],length(NewClassName)+1);
   NewTypeData:=GetTypeData(NewTypeInfo);
-  if NewTypeData<>Pointer(Pointer(@NewTypeInfo^.Name[0])+1+length(NewClassName))
-  then
-    raise Exception.Create('CreateNewClass new aligned TypeData');
 
   // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
